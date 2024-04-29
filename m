@@ -1,248 +1,181 @@
-Return-Path: <linux-kernel+bounces-162360-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-162361-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7A3C88B59CB
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 15:24:04 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 016F08B59CC
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 15:24:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E80321F2502F
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 13:24:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AC1A3288791
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 13:24:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F9CD6A00B;
-	Mon, 29 Apr 2024 13:23:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="aqgzuNpG"
-Received: from mail-pj1-f41.google.com (mail-pj1-f41.google.com [209.85.216.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A136745C0
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 13:23:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C60275803;
+	Mon, 29 Apr 2024 13:23:42 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F7B570CDB
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 13:23:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714397017; cv=none; b=myiB4PaQ2olni5HidGiUCUZXG8taieZVS9uwNMdddmc4mLUeG9Ur4UviTHy1Qpj5x/CbTa0pp2bcKqg8sVxx4jnXGUrIX4gR/4dnEz3g7K5G/v2u1fg/Kp7yLysjYxtWV/ppc75+m4SBLZ08cnHdOy9rSIvv6J5BnEIZ5u6nPI0=
+	t=1714397021; cv=none; b=T3AZYJV9+GhPUffRMtxdawHjB1m22/ZmJkg3TWDGKzCPj1bHSluyY8StL+kr8JhQ/nbZ1Zmso5LdyHLk+MZ6854bVzwdi5cNEX/q+fvh2PrkgYCEylGTE6I9QIBahXRN5gv9BLGp/lrZwxfTvXxtd/1/tzoTVcTuUMGsqXK6wnE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714397017; c=relaxed/simple;
-	bh=PNAY2B0twHR0g+eIobtMmiBXo8e2//D9L4cS+khsXzs=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=YHlXdUaCHi9XfeQiSJ93q7anLtm0jeeFXvNsAhVnDNE4BSy2VqoBcN+3/Shgk0WPk1A98o/YvS78zhfx6fJemuDeaHi5wZxT6wwHbgfeYISX/87/jko+yXfrivHPiO+oE3sHuoS/M52U2L0v1tm45Pcxtji2l5QGwb7JgzndwH4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=aqgzuNpG; arc=none smtp.client-ip=209.85.216.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f41.google.com with SMTP id 98e67ed59e1d1-2b18e829acfso710840a91.0
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 06:23:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714397015; x=1715001815; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Yyi8NgAotG2uQx5M1DNlDhdviU8akK6rE5R0Kl6KUlU=;
-        b=aqgzuNpGTtBVAjFAjAwndHNo/Z91G+kntT3ltydIVQ3p63/A+bWUv81SNGEAOcv628
-         7dHJMUbzxJ0OoNYn7b+nH4v8Lzph5vPcUFlai8kJoPyO9aFcdzslS75z7DFe/2arX9DY
-         EQtSwMXDiOJHjgAKyxrNiT1jxgOKbfdbQSKbLMId8MytjVGpKkqEcLlsFvZvP9fRl58E
-         ZZum5vqW3HFZIvuJ5eDZBQELAX6WNGpkqqF6MSJccaFsaOJK25mz7tzs97YJUlgvUSy3
-         bpAD2hIDQq/Vy7LA6lSRAeFYbATLmoiVlXZoAdNMZIPXo6UjbEf+l6O+RBzCUGGODitU
-         n8Og==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714397016; x=1715001816;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Yyi8NgAotG2uQx5M1DNlDhdviU8akK6rE5R0Kl6KUlU=;
-        b=rTzAuLCXLwWXv5gqlxhmzWKQfP7gGYQwo0vb1UamiP7JOL9lQyp0sXhxVIxwzP6eZZ
-         vVVeqd13Pt5mmtVc6HoAAbnYF4eRTF5SLA/MtO3KUSMAP2pb7FeqpBQtpNTeyDDatO55
-         yYTmLh/lYiDZTOgaYTRBIze9vuA3aFhl9yhBtcG02/YbflVO+wp9kPzeWwK9unk88Gnf
-         44znrn3msvuYlbrB29BtXYbqVdSkg9MWbIZoZ2uNCEhQYH24q+zGB1A3BR+vy2IrK09f
-         RywtlIF+M2jPNPfLP0KRGr/nQkNba63aOVebid0RBAZzCMTM3KpsvLlzg2NEQSFENFTv
-         5q5g==
-X-Forwarded-Encrypted: i=1; AJvYcCUENx1dSMCLUXiowDN93fFbY/S0N8Oyf4fGb8kq+UiYjrK/D0izmn88PB16D3gYr2c39yfDyzO4Hn3lE9BUOs6FJa5e39Nh2uKAakam
-X-Gm-Message-State: AOJu0YzIXN+BpwbFsAJabSMLqOnhr1lMlc2JdVwum5C1ulsVKZxBMRF5
-	jRC7bixlpYvu/aTSBH3bCtKUv2ApQNqqR4JlHIxInEmKsiEQr/zs
-X-Google-Smtp-Source: AGHT+IE3glKHvTVXbEue7ZJjzMdZwSs4YepE3f+DkJR5stamEyLLZPKJxPWIl3KdJI4v7bdaHehPKw==
-X-Received: by 2002:a17:90a:654c:b0:2a0:215f:dc9c with SMTP id f12-20020a17090a654c00b002a0215fdc9cmr9546775pjs.35.1714397015463;
-        Mon, 29 Apr 2024 06:23:35 -0700 (PDT)
-Received: from LancedeMBP.lan ([112.10.225.242])
-        by smtp.gmail.com with ESMTPSA id pa5-20020a17090b264500b002b113ad5f10sm3562203pjb.12.2024.04.29.06.23.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Apr 2024 06:23:35 -0700 (PDT)
-From: Lance Yang <ioworker0@gmail.com>
-To: akpm@linux-foundation.org
-Cc: willy@infradead.org,
-	maskray@google.com,
-	ziy@nvidia.com,
-	ryan.roberts@arm.com,
-	david@redhat.com,
-	21cnbao@gmail.com,
-	mhocko@suse.com,
-	fengwei.yin@intel.com,
-	zokeefe@google.com,
-	shy828301@gmail.com,
-	xiehuan09@gmail.com,
-	libang.li@antgroup.com,
-	wangkefeng.wang@huawei.com,
-	songmuchun@bytedance.com,
-	peterx@redhat.com,
-	minchan@kernel.org,
-	linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org,
-	Lance Yang <ioworker0@gmail.com>
-Subject: [PATCH v3 3/3] mm/vmscan: avoid split lazyfree THP during shrink_folio_list()
-Date: Mon, 29 Apr 2024 21:23:08 +0800
-Message-Id: <20240429132308.38794-4-ioworker0@gmail.com>
-X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20240429132308.38794-1-ioworker0@gmail.com>
-References: <20240429132308.38794-1-ioworker0@gmail.com>
+	s=arc-20240116; t=1714397021; c=relaxed/simple;
+	bh=RJNe2/zqHTI5PmIO/BAY9aqVrI5+SR3aM4haSDw11i8=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
+	 In-Reply-To:Content-Type; b=HeU542gH+yIHacg+kF0BOZ5noVYVsCNOCIuYL6VdIRx0g6qxHsv9p39o/hb3U91GkaCizwpQnO8aZ2C7cj+n4Nai+ySPWQlBj9ADoUzDjnk3wQXl7VepDOX7jT7ZEvoIbcdb9J4QABZW0VWqYYI2NHFNque5N9nnUHJlpgjz3tY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2FE312F4;
+	Mon, 29 Apr 2024 06:24:05 -0700 (PDT)
+Received: from [10.57.65.53] (unknown [10.57.65.53])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id CABAE3F73F;
+	Mon, 29 Apr 2024 06:23:36 -0700 (PDT)
+Message-ID: <3ee07020-74d9-4f13-a3d0-4924a1aa69c6@arm.com>
+Date: Mon, 29 Apr 2024 14:23:35 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 1/2] arm64/mm: Move PTE_PROT_NONE and
+ PMD_PRESENT_INVALID
+Content-Language: en-GB
+From: Ryan Roberts <ryan.roberts@arm.com>
+To: Catalin Marinas <catalin.marinas@arm.com>
+Cc: David Hildenbrand <david@redhat.com>, Will Deacon <will@kernel.org>,
+ Joey Gouly <joey.gouly@arm.com>, Ard Biesheuvel <ardb@kernel.org>,
+ Mark Rutland <mark.rutland@arm.com>,
+ Anshuman Khandual <anshuman.khandual@arm.com>, Peter Xu <peterx@redhat.com>,
+ Mike Rapoport <rppt@linux.ibm.com>, Shivansh Vij <shivanshvij@outlook.com>,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20240424111017.3160195-1-ryan.roberts@arm.com>
+ <20240424111017.3160195-2-ryan.roberts@arm.com>
+ <b55558a5-a9d4-4aea-956a-1babad01b6cd@redhat.com>
+ <df0475e1-9078-4629-b23d-0919ab1e37c2@arm.com>
+ <eed172b5-c71a-469f-a790-76126760ca7c@arm.com> <Ziu-r2nkssCQ_uCS@arm.com>
+ <f5de5685-d955-4aa0-a307-a4da927f36f0@arm.com> <Zi-UyS5IC_truh8M@arm.com>
+ <e946c510-9ba3-4d7b-9561-5ded86086df0@arm.com>
+In-Reply-To: <e946c510-9ba3-4d7b-9561-5ded86086df0@arm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-When the user no longer requires the pages, they would use
-madvise(MADV_FREE) to mark the pages as lazy free. Subsequently, they
-typically would not re-write to that memory again.
+On 29/04/2024 14:01, Ryan Roberts wrote:
+> On 29/04/2024 13:38, Catalin Marinas wrote:
+>> On Mon, Apr 29, 2024 at 11:04:53AM +0100, Ryan Roberts wrote:
+>>> On 26/04/2024 15:48, Catalin Marinas wrote:
+>>>> On Thu, Apr 25, 2024 at 11:37:42AM +0100, Ryan Roberts wrote:
+>>>>> Also, IMHO we shouldn't really need to reserve PMD_PRESENT_INVALID for swap
+>>>>> ptes; it would be cleaner to have one bit that defines "present" when valid is
+>>>>> clear (similar to PTE_PROT_NONE today) then another bit which is only defined
+>>>>> when "present && !valid" which tells us if this is PTE_PROT_NONE or
+>>>>> PMD_PRESENT_INVALID (I don't think you can ever have both at the same time?).
+>>>>
+>>>> I think this make sense, maybe rename the above to PTE_PRESENT_INVALID
+>>>> and use it for both ptes and pmds.
+>>>
+>>> Yep, sounds good. I've already got a patch to do this, but it's exposed a bug in
+>>> core-mm so will now fix that before I can validate my change. see
+>>> https://lore.kernel.org/linux-arm-kernel/ZiuyGXt0XWwRgFh9@x1n/
+>>>
+>>> With this in place, I'm proposing to remove PTE_PROT_NONE entirely and instead
+>>> represent PROT_NONE as a present but invalid pte (PTE_VALID=0, PTE_INVALID=1)
+>>> with both PTE_WRITE=0 and PTE_RDONLY=0.
+>>>
+>>> While the HW would interpret PTE_WRITE=0/PTE_RDONLY=0 as "RW without dirty bit
+>>> modification", this is not a problem as the pte is invalid, so the HW doesn't
+>>> interpret it. And SW always uses the PTE_WRITE bit to interpret the writability
+>>> of the pte. So PTE_WRITE=0/PTE_RDONLY=0 was previously an unused combination
+>>> that we now repurpose for PROT_NONE.
+>>
+>> Why not just keep the bits currently in PAGE_NONE (PTE_RDONLY would be
+>> set) and check PTE_USER|PTE_UXN == 0b01 which is a unique combination
+>> for PAGE_NONE (bar the kernel mappings).
+> 
+> Yes I guess that works. I personally prefer my proposal because it is more
+> intuitive; you have an R bit and a W bit, and you encode RO, WR, and NONE. But
+> if you think reusing the kernel mapping check (PTE_USER|PTE_UXN == 0b01) is
+> preferable, then I'll go with that.
 
-During memory reclaim, if we detect that the large folio and its PMD are
-both still marked as clean and there are no unexpected references
-(such as GUP), so we can just discard the memory lazily, improving the
-efficiency of memory reclamation in this case.
+Ignore this - I looked at your proposed approach and agree it's better. I'll use
+`PTE_USER|PTE_UXN==0b01`. Posting shortly...
 
-On an Intel i5 CPU, reclaiming 1GiB of lazyfree THPs using
-mem_cgroup_force_empty() results in the following runtimes in seconds
-(shorter is better):
-
---------------------------------------------
-|     Old       |      New       |  Change  |
---------------------------------------------
-|   0.683426    |    0.049197    |  -92.80% |
---------------------------------------------
-
-Suggested-by: Zi Yan <ziy@nvidia.com>
-Suggested-by: David Hildenbrand <david@redhat.com>
-Signed-off-by: Lance Yang <ioworker0@gmail.com>
----
- include/linux/huge_mm.h |  2 ++
- mm/huge_memory.c        | 75 +++++++++++++++++++++++++++++++++++++++++
- mm/rmap.c               |  3 ++
- 3 files changed, 80 insertions(+)
-
-diff --git a/include/linux/huge_mm.h b/include/linux/huge_mm.h
-index 2daadfcc6776..fd330f72b4f3 100644
---- a/include/linux/huge_mm.h
-+++ b/include/linux/huge_mm.h
-@@ -38,6 +38,8 @@ int change_huge_pmd(struct mmu_gather *tlb, struct vm_area_struct *vma,
- 		    unsigned long cp_flags);
- void split_huge_pmd_locked(struct vm_area_struct *vma, unsigned long address,
- 			   pmd_t *pmd, bool freeze, struct folio *folio);
-+bool unmap_huge_pmd_locked(struct vm_area_struct *vma, unsigned long addr,
-+			   pmd_t *pmdp, struct folio *folio);
- 
- vm_fault_t vmf_insert_pfn_pmd(struct vm_fault *vmf, pfn_t pfn, bool write);
- vm_fault_t vmf_insert_pfn_pud(struct vm_fault *vmf, pfn_t pfn, bool write);
-diff --git a/mm/huge_memory.c b/mm/huge_memory.c
-index 145505a1dd05..d35d526ed48f 100644
---- a/mm/huge_memory.c
-+++ b/mm/huge_memory.c
-@@ -2690,6 +2690,81 @@ static void unmap_folio(struct folio *folio)
- 	try_to_unmap_flush();
- }
- 
-+static bool __discard_trans_pmd_locked(struct vm_area_struct *vma,
-+				       unsigned long addr, pmd_t *pmdp,
-+				       struct folio *folio)
-+{
-+	struct mm_struct *mm = vma->vm_mm;
-+	int ref_count, map_count;
-+	pmd_t orig_pmd = *pmdp;
-+	struct mmu_gather tlb;
-+	struct page *page;
-+
-+	if (pmd_dirty(orig_pmd) || folio_test_dirty(folio))
-+		return false;
-+	if (unlikely(!pmd_present(orig_pmd) || !pmd_trans_huge(orig_pmd)))
-+		return false;
-+
-+	page = pmd_page(orig_pmd);
-+	if (unlikely(page_folio(page) != folio))
-+		return false;
-+
-+	tlb_gather_mmu(&tlb, mm);
-+	orig_pmd = pmdp_huge_get_and_clear(mm, addr, pmdp);
-+	tlb_remove_pmd_tlb_entry(&tlb, pmdp, addr);
-+
-+	/*
-+	 * Syncing against concurrent GUP-fast:
-+	 * - clear PMD; barrier; read refcount
-+	 * - inc refcount; barrier; read PMD
-+	 */
-+	smp_mb();
-+
-+	ref_count = folio_ref_count(folio);
-+	map_count = folio_mapcount(folio);
-+
-+	/*
-+	 * Order reads for folio refcount and dirty flag
-+	 * (see comments in __remove_mapping()).
-+	 */
-+	smp_rmb();
-+
-+	/*
-+	 * If the PMD or folio is redirtied at this point, or if there are
-+	 * unexpected references, we will give up to discard this folio
-+	 * and remap it.
-+	 *
-+	 * The only folio refs must be one from isolation plus the rmap(s).
-+	 */
-+	if (ref_count != map_count + 1 || folio_test_dirty(folio) ||
-+	    pmd_dirty(orig_pmd)) {
-+		set_pmd_at(mm, addr, pmdp, orig_pmd);
-+		return false;
-+	}
-+
-+	folio_remove_rmap_pmd(folio, page, vma);
-+	zap_deposited_table(mm, pmdp);
-+	add_mm_counter(mm, MM_ANONPAGES, -HPAGE_PMD_NR);
-+	folio_put(folio);
-+
-+	return true;
-+}
-+
-+bool unmap_huge_pmd_locked(struct vm_area_struct *vma, unsigned long addr,
-+			   pmd_t *pmdp, struct folio *folio)
-+{
-+	VM_WARN_ON_FOLIO(!folio_test_pmd_mappable(folio), folio);
-+	VM_WARN_ON_FOLIO(!folio_test_locked(folio), folio);
-+	VM_WARN_ON_ONCE(!IS_ALIGNED(addr, HPAGE_PMD_SIZE));
-+
-+#ifdef CONFIG_TRANSPARENT_HUGEPAGE
-+	if (folio_test_anon(folio) && !folio_test_swapbacked(folio))
-+		return __discard_trans_pmd_locked(vma, addr, pmdp, folio);
-+#endif
-+
-+	return false;
-+}
-+
- static void remap_page(struct folio *folio, unsigned long nr)
- {
- 	int i = 0;
-diff --git a/mm/rmap.c b/mm/rmap.c
-index e42f436c7ff3..ab37af4f47aa 100644
---- a/mm/rmap.c
-+++ b/mm/rmap.c
-@@ -1677,6 +1677,9 @@ static bool try_to_unmap_one(struct folio *folio, struct vm_area_struct *vma,
- 		}
- 
- 		if (!pvmw.pte && (flags & TTU_SPLIT_HUGE_PMD)) {
-+			if (unmap_huge_pmd_locked(vma, range.start, pvmw.pmd,
-+						  folio))
-+				goto walk_done;
- 			/*
- 			 * We temporarily have to drop the PTL and start once
- 			 * again from that now-PTE-mapped page table.
--- 
-2.33.1
+> 
+>>
+>> For ptes, it doesn't matter, we can assume that PTE_PRESENT_INVALID
+>> means pte_protnone(). For pmds, however, we can end up with
+>> pmd_protnone(pmd_mkinvalid(pmd)) == true for any of the PAGE_*
+>> permissions encoded into a valid pmd. That's where a dedicated
+>> PTE_PROT_NONE bit helped.
+> 
+> Yes agreed.
+> 
+>>
+>> Let's say a CPU starts splitting a pmd and does a pmdp_invalidate*()
+>> first to set PTE_PRESENT_INVALID. A different CPU gets a fault and since
+>> the pmd is present, it goes and checks pmd_protnone() which returns
+>> true, ending up on do_huge_pmd_numa_page() path. Maybe some locks help
+>> but it looks fragile to rely on them.
+>>
+>> So I think for protnone we need to check some other bits (like USER and
+>> UXN) in addition to PTE_PRESENT_INVALID.
+> 
+> Yes 100% agree. But using PTE_WRITE|PTE_RDONLY==0b00 is just as valid for that
+> purpose, I think?
+> 
+>>
+>>> This will subtly change behaviour in an edge case though. Imagine:
+>>>
+>>> pte_t pte;
+>>>
+>>> pte = pte_modify(pte, PAGE_NONE);
+>>> pte = pte_mkwrite_novma(pte);
+>>> WARN_ON(pte_protnone(pte));
+>>>
+>>> Should that warning fire or not? Previously, because we had a dedicated bit for
+>>> PTE_PROT_NONE it would fire. With my proposed change it will not fire. To me
+>>> it's more intuitive if it doesn't fire. Regardless there is no core code that
+>>> ever does this. Once you have a protnone pte, its terminal - nothing ever
+>>> modifies it with these helpers AFAICS.
+>>
+>> I don't think any core code should try to make page a PAGE_NONE pte
+>> writeable.
+> 
+> I looked at some other arches; some (at least alpha and hexagon) will not fire
+> this warning because they have R and W bits and 0b00 means NONE. Others (x86)
+> will fire it because they have an explicit NONE bit and don't remove it on
+> permission change. So I conclude its UB and fine to do either.
+> 
+>>
+>>> Personally I think this is a nice tidy up that saves a SW bit in both present
+>>> and swap ptes. What do you think? (I'll just post the series if its easier to
+>>> provide feedback in that context).
+>>
+>> It would be nice to tidy this up and get rid of PTE_PROT_NONE as long as
+>> it doesn't affect the pmd case I mentioned above.
+>>
+>>>>> But there is a problem with this: __split_huge_pmd_locked() calls
+>>>>> pmdp_invalidate() for a pmd before it determines that it is pmd_present(). So
+>>>>> the PMD_PRESENT_INVALID can be set in a swap pte today. That feels wrong to me,
+>>>>> but was trying to avoid the whole thing unravelling so didn't persue.
+>>>>
+>>>> Maybe what's wrong is the arm64 implementation setting this bit on a
+>>>> swap/migration pmd (though we could handle this in the core code as
+>>>> well, it depends what the other architectures do). The only check for
+>>>> the PMD_PRESENT_INVALID bit is in the arm64 code and it can be absorbed
+>>>> into the pmd_present() check. I think it is currently broken as
+>>>> pmd_present() can return true for a swap pmd after pmd_mkinvalid().
+>>>
+>>> I've posted a fix here:
+>>> https://lore.kernel.org/linux-mm/20240425170704.3379492-1-ryan.roberts@arm.com/
+>>>
+>>> My position is that you shouldn't be calling pmd_mkinvalid() on a non-present pmd.
+>>
+>> I agree, thanks.
+>>
+> 
 
 
