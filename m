@@ -1,115 +1,80 @@
-Return-Path: <linux-kernel+bounces-163114-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-163115-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E01BC8B65E9
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 00:51:45 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4144F8B65EE
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 00:54:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 06AABB212B7
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 22:51:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 06A082827D4
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 22:54:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5FD5043AA1;
-	Mon, 29 Apr 2024 22:51:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8407B38DF2;
+	Mon, 29 Apr 2024 22:54:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TU0otH5G"
-Received: from mail-pf1-f169.google.com (mail-pf1-f169.google.com [209.85.210.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="s3WD8QOG"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 893232561F;
-	Mon, 29 Apr 2024 22:51:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C99382E3E5
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 22:54:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714431094; cv=none; b=cPniosq8peyQKEV9DwEuf7f1luUO2uYhYwtHDVh5qfuGWSCZSUYvc6OXnFaTeyqhahKeAxWzPLkBJOWgqd8cdvXCJqFKUyCG0UiJ/9OC5p43bXswll3snrfFC4Li+I9f2iPlSfIshWw1tGGbvRD3d9uhtXWDQ98kELh7LqsgqLI=
+	t=1714431254; cv=none; b=uEiqWPMWYvehoZZHpd4WKDtI6i+D9qk+V2uyORUVPBd6+O3tSzAqFDTXjuQTZcl0JelxVL1Tzv/CdkQgu6Y0UTD4AmDNYQZcwD5CgDN9UCsf5OJW0guOkwrq2m3J6Ar+CPHNtPFwTW7DVqqB4JSPSGXfM0xFRuERZS6WhZ/C4cc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714431094; c=relaxed/simple;
-	bh=0VKKG+/MRHxZ5zvfz7WQUGj8U1xV2HSSeJPTsaTJWTs=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=udqY9iGkDTuHgbFBX8hyVNLVbh4bjdMtW6Zy8wMSz1jzOLGXPSfs31J6HXAZPJKtLfP3i4IA+LRTE2fdVtmFYrxhFS6dnYaJBbyP7G5jnueJM2EyAp5DdKa0aPl3PcA7SqPnBIFkhZE1yEQLixIFzCeimmUUDsAMLOA7GkZz6PQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TU0otH5G; arc=none smtp.client-ip=209.85.210.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f169.google.com with SMTP id d2e1a72fcca58-6ecee1f325bso4519613b3a.2;
-        Mon, 29 Apr 2024 15:51:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714431093; x=1715035893; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=0GQybxBCQIzUHs6cWJR+BEq7BKv8ohBRppC+jb7zUHo=;
-        b=TU0otH5GS//J4wsH1K6J9GROLs1y0lz9PHaXocc7j41QZiPWY4tU5j0KWLXc7eu22I
-         aS6je1PyYjkvvICssg869HOEuGlIEt7s45kJnjI0INh7xE3UzGmq2KURUOXK9mG+DP+o
-         YEbrHWvtApWZKzkWVT6SUIkj8rdpNqv0H3xaROj9yOWKWxexVZSmzwR+aLirTvl3hk02
-         7zH3wVNUfZsKH2MPOtq3EwN5rWGDnw7bAknpwqxYTgBcRlA2URUpds6JQIFpABzUUlyU
-         cas7MiLzL6R3WQJeJJIgc0nIlYA7sYYcacgmaMRL7xDpUVfHKehAugvkXd37VO6zFrw9
-         I/bA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714431093; x=1715035893;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=0GQybxBCQIzUHs6cWJR+BEq7BKv8ohBRppC+jb7zUHo=;
-        b=enaOSL6Hs3AGfm4xZk5+hkyxKutWZmUMmhormlH/WJCgJoSgLhoXhP+YEWSCEdnC6K
-         FomGZDL1lNqN5Njk4LwUMq69JrPNDMJ9bnsWTVIh1rBTvTTrx0t3xOpBhxDQhE6N0J2d
-         kt7eeze95YbWkBKfMPzw12fCc7VZhMKt/6nuupR0Gx1Hd+evHErUb7hxM/RMBEm13QGq
-         iz6aEm4NPJpdnu7cy0RXeOml66RNJqAoocVMkS6+f7Hq3WU3pKsicQUI9QYK/JNc+xf8
-         LQNGotdT4BDggD1TYhjtCFIZ3GBedj7ja/yKSW3OKz6ovU/qFX8GTZWUa1MzEQIv1Xxc
-         VkZg==
-X-Forwarded-Encrypted: i=1; AJvYcCWSKe9vg4YyehLuvV8QIkDTJ/ptw3ZRBF46EYyptUwRkPexHxgawxlHzj/9g70iI47luFz6Dsu3JHPstl3ywEmIPPA90z0OEeua3+KDleJZr2qvr7R3ePZxerjqwsgVsW+8JGU1
-X-Gm-Message-State: AOJu0YxsTpOeO1PXSLbTGkxhDPK+vjANLV3YtTBzp+AtcxMG/xDwAstJ
-	sktDdXmLvyhSr7whqlIzt0xa0mY6xH4JpOrNAcRdwerImasPW3WQzrO593z0
-X-Google-Smtp-Source: AGHT+IEuVcuq6ujat2QJAa27PDqEgKnECV5cPO7TC0iv2mewdglY0NN93dnMKUP8D2/hbQ8g4hZ96Q==
-X-Received: by 2002:a05:6a00:7114:b0:6ed:d8d2:5040 with SMTP id lh20-20020a056a00711400b006edd8d25040mr10823106pfb.21.1714431092773;
-        Mon, 29 Apr 2024 15:51:32 -0700 (PDT)
-Received: from fourcolor-Home.. ([203.121.254.74])
-        by smtp.gmail.com with ESMTPSA id fm8-20020a056a002f8800b006ed059cdf02sm19841235pfb.116.2024.04.29.15.51.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Apr 2024 15:51:32 -0700 (PDT)
-From: Shi-Sheng Yang <fourcolor4c@gmail.com>
-X-Google-Original-From: Shi-Sheng Yang <james1qaz2wsx12qw@gmail.com>
-To: matttbe@kernel.org,
-	martineau@kernel.org,
-	davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com
-Cc: geliang@kernel.org,
-	netdev@vger.kernel.org,
-	mptcp@lists.linux.dev,
-	linux-kernel@vger.kernel.org,
-	Shi-Sheng Yang <james1qaz2wsx12qw@gmail.com>
-Subject: [PATCH] mptcp: subflow.c: fix typo
-Date: Tue, 30 Apr 2024 06:50:33 +0800
-Message-Id: <20240429225033.3920874-1-james1qaz2wsx12qw@gmail.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1714431254; c=relaxed/simple;
+	bh=UINAM3jfrtDSz6xncnBT2xl1julRSpzBGzj/C06DS5M=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=dp7krXn3F+pWT4ROkCMxw+CFKfFuzsNmIy7xqvlO9vzgZXl/S1+V8I/C2XItxe5ZX+MMwRBHAhEG7xrZHc7U31vz0FVVPWCZRrOimO+V71qQDheX+TKYD7Qfs8P966d/x4RqvGx3BJL8n8KYJ50k9ZvQSK6OECoCT3f6R5c+AiA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=s3WD8QOG; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 54DACC113CD;
+	Mon, 29 Apr 2024 22:54:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714431254;
+	bh=UINAM3jfrtDSz6xncnBT2xl1julRSpzBGzj/C06DS5M=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=s3WD8QOGW7N3J0WsE3hFkq8hIiSlAnZB/ZgrIhyAlC2wDSgaBktIaKrqHpWURdf7a
+	 tCEIpBR8Ii/isvjeYm9gQdUmqDNVfgyTECyTvUpu6E8zgzCLVacausMH719VLhaX3q
+	 Kg6kWJhdKmuE6/LM2dekBNwpXaSMjsS70uIKYIWmy5PjQOP2kHOgFEI4iIB/8c+sGz
+	 cIXI2HQ9PtxyZHf9MGargYh12tpz2yu0auATqSvxB10yWJBC9LC2n659wOrNrOv1un
+	 DVufirrHZyCQms1/e5zAL1Er71pXdh4f3dsFFnmdRCBgvnNGsspu4s3pR7eZ3zKviL
+	 5TpKLg8j1H7/w==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id F177ECE0B6B; Mon, 29 Apr 2024 15:54:13 -0700 (PDT)
+Date: Mon, 29 Apr 2024 15:54:13 -0700
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Borislav Petkov <bp@alien8.de>
+Cc: Borislav Petkov <bp@kernel.org>, Thomas Gleixner <tglx@linutronix.de>,
+	X86 ML <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+	Waiman Long <longman@redhat.com>
+Subject: Re: [PATCH] clocksource: Make the int help prompt unit readable in
+ ncurses
+Message-ID: <8ff9a27c-e060-48c5-aad8-96026d77d765@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20240428102143.26764-1-bp@kernel.org>
+ <ecde0c52-3a91-4762-b0c3-6455d3cedecd@paulmck-laptop>
+ <20240429222902.GLZjAfLjanzLuH3iOl@fat_crate.local>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240429222902.GLZjAfLjanzLuH3iOl@fat_crate.local>
 
-Replace 'greceful' with 'graceful'.
+On Tue, Apr 30, 2024 at 12:29:02AM +0200, Borislav Petkov wrote:
+> On Mon, Apr 29, 2024 at 09:04:30AM -0700, Paul E. McKenney wrote:
+> > So all the world is not yet a UTF-8?  ;-)
+> 
+> ... and it's not like I'm not trying. I have a fairly new debian
+> testing, xterm v390 and libncurses5 v6.3 but nope, no joy.
+> 
+> I betcha it is some stupid conversion thing.
 
-Signed-off-by: Shi-Sheng Yang <james1qaz2wsx12qw@gmail.com>
----
- net/mptcp/subflow.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Worse things could happen!  ;-)
 
-diff --git a/net/mptcp/subflow.c b/net/mptcp/subflow.c
-index 6042a47da61b..c794288f6224 100644
---- a/net/mptcp/subflow.c
-+++ b/net/mptcp/subflow.c
-@@ -1234,7 +1234,7 @@ static void mptcp_subflow_fail(struct mptcp_sock *msk, struct sock *ssk)
- 	struct mptcp_subflow_context *subflow = mptcp_subflow_ctx(ssk);
- 	unsigned long fail_tout;
- 
--	/* greceful failure can happen only on the MPC subflow */
-+	/* graceful failure can happen only on the MPC subflow */
- 	if (WARN_ON_ONCE(ssk != READ_ONCE(msk->first)))
- 		return;
- 
--- 
-2.34.1
-
+							Thanx, Paul
 
