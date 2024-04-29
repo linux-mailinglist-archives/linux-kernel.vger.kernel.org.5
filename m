@@ -1,47 +1,47 @@
-Return-Path: <linux-kernel+bounces-162328-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-162330-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id AE5D98B5973
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 15:09:56 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0FED48B5976
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 15:10:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3C82328C2CB
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 13:09:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BAE921F226ED
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 13:10:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 725E057302;
-	Mon, 29 Apr 2024 13:09:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F6986FE0D;
+	Mon, 29 Apr 2024 13:09:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=digikod.net header.i=@digikod.net header.b="0xkNle6Q"
-Received: from smtp-42ae.mail.infomaniak.ch (smtp-42ae.mail.infomaniak.ch [84.16.66.174])
+	dkim=pass (1024-bit key) header.d=digikod.net header.i=@digikod.net header.b="qNsnniR9"
+Received: from smtp-190b.mail.infomaniak.ch (smtp-190b.mail.infomaniak.ch [185.125.25.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9437AC127
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 13:09:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=84.16.66.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7881F481C7
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 13:09:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.125.25.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714396188; cv=none; b=eExg86pyQweGSNBKs9oE4r6ntKWAzVYufinqyt59SYReWXduFognt4w96Fe928QFlcgph1WDHdtxhILkLJbFauNkQo+533XL8roeqhubwg0pW9K9sifePe7mFNGFDZ6Mf0Op5CCCRwQB+Dl0ljBqqzdJBraJkprC5SSxBqXL0rY=
+	t=1714396189; cv=none; b=TmAsZSfFsWlHEgkhqfLammbM2lsQwihNKdGkjMTxcjNw8eRJ7mcmYA98PUxZ3+9nuLk9ilpDQJJ8sIE4nvTrRLsSOI5/P7XySBzqMe0untjVL+bQFs966M5ytQYkYeXPEXCHOOaWjGl/QPgdhrEIRok0Db34sbCDUrpNYSqNEow=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714396188; c=relaxed/simple;
-	bh=kn14BchHtCQvu/LYPhR9K5I83FUKH0/ZA+8in3/b4Ng=;
+	s=arc-20240116; t=1714396189; c=relaxed/simple;
+	bh=G/CFiEQPBLvZ7poYbqwJYJrPoOi67Om8bQiF65fhYdE=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Ogg5+Top9lgn5qB8BUeVAJFdIMmDAoGK5zExrr4u9z5Hq7Dhc8TbsHDE8ZxZ+Ngml5Pit6DgHU5eNpj8GmqrS0wSVuI4FKiDMt//Y8Agph6B4E/JBkvL0ksxMpatMbk3fJGGQMDjUQ74FXyKoa1nqj3IdOfk8JLJKnBV/IHz2t0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=digikod.net; spf=pass smtp.mailfrom=digikod.net; dkim=pass (1024-bit key) header.d=digikod.net header.i=@digikod.net header.b=0xkNle6Q; arc=none smtp.client-ip=84.16.66.174
+	 MIME-Version:Content-Type; b=tWImuc1gOabYG631rKuccYEU3Rj4K4+zCVacT7skLnxNuq9cE4FSzzdUEVPfJMzu+fWxQc+/FX4ra1AUUfQ4puMeMLlBh+aTcIkXbaNt3GExch0jGzVqoEsfA2kQ7g8vVRe4Q52JHx4gOBRVXNfDHPpviWX0H3OkNeOiJWMpO3w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=digikod.net; spf=pass smtp.mailfrom=digikod.net; dkim=pass (1024-bit key) header.d=digikod.net header.i=@digikod.net header.b=qNsnniR9; arc=none smtp.client-ip=185.125.25.11
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=digikod.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=digikod.net
-Received: from smtp-4-0001.mail.infomaniak.ch (smtp-4-0001.mail.infomaniak.ch [10.7.10.108])
-	by smtp-3-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4VSkFM49x2zLcl;
-	Mon, 29 Apr 2024 15:09:43 +0200 (CEST)
+Received: from smtp-3-0000.mail.infomaniak.ch (smtp-3-0000.mail.infomaniak.ch [10.4.36.107])
+	by smtp-4-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4VSkFN68rjzGFv;
+	Mon, 29 Apr 2024 15:09:44 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=digikod.net;
-	s=20191114; t=1714396183;
-	bh=kn14BchHtCQvu/LYPhR9K5I83FUKH0/ZA+8in3/b4Ng=;
+	s=20191114; t=1714396184;
+	bh=G/CFiEQPBLvZ7poYbqwJYJrPoOi67Om8bQiF65fhYdE=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=0xkNle6QPtDvfqigQD7PPvu5ehz0l54nja4Mr13qD2FzXUckDX4cznG4nXFQZIi0Y
-	 C7UI/T0JpKOSZqUXASJgmWhFn9T/pXJsn8kJuK/YgGQ4JAh3nSJ+3Dd6qNLOb/zFvN
-	 aN8BjA0oh3wFQCOra0TOgumQvs4tcNwcBjEgrxQ8=
-Received: from unknown by smtp-4-0001.mail.infomaniak.ch (Postfix) with ESMTPA id 4VSkFL70D2zgvx;
-	Mon, 29 Apr 2024 15:09:42 +0200 (CEST)
+	b=qNsnniR953gMqqy/QjZcRxJ/zpeDoqtVqnrBv5GqYHGegNMoR/VMywB9jq5ieOAKc
+	 KcD2cPMTIEI/gqQvK3fzZkJ41ORVIm9ljAUsKK6uWVOCffESElznBFqHWtwsJW+Qdr
+	 bBbKRkPepYGoc74WNu20lrvDi8ZK5R7Sd/v9yDpI=
+Received: from unknown by smtp-3-0000.mail.infomaniak.ch (Postfix) with ESMTPA id 4VSkFN1zrkzdKB;
+	Mon, 29 Apr 2024 15:09:44 +0200 (CEST)
 From: =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>
 To: Christian Brauner <brauner@kernel.org>,
 	Jakub Kicinski <kuba@kernel.org>,
@@ -57,9 +57,9 @@ Cc: =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>,
 	linux-kernel@vger.kernel.org,
 	linux-kselftest@vger.kernel.org,
 	Shuah Khan <skhan@linuxfoundation.org>
-Subject: [PATCH v2 5/9] selftests/landlock: Do not allocate memory in fixture data
-Date: Mon, 29 Apr 2024 15:09:27 +0200
-Message-ID: <20240429130931.2394118-6-mic@digikod.net>
+Subject: [PATCH v2 6/9] selftests/harness: Constify fixture variants
+Date: Mon, 29 Apr 2024 15:09:28 +0200
+Message-ID: <20240429130931.2394118-7-mic@digikod.net>
 In-Reply-To: <20240429130931.2394118-1-mic@digikod.net>
 References: <20240429130931.2394118-1-mic@digikod.net>
 Precedence: bulk
@@ -72,160 +72,45 @@ Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-Infomaniak-Routing: alpha
 
-Do not allocate self->dir_path in the test process because this would
-not be visible in the FIXTURE_TEARDOWN() process when relying on
-fork()/clone3() instead of vfork().
+FIXTURE_VARIANT_ADD() types are passed as const pointers to
+FIXTURE_TEARDOWN().  Make that explicit by constifying the variants
+declarations.
 
-This change is required for a following commit removing vfork() call to
-not break the layout3_fs.* test cases.
-
-Cc: Günther Noack <gnoack@google.com>
 Cc: Kees Cook <keescook@chromium.org>
 Cc: Shuah Khan <skhan@linuxfoundation.org>
+Cc: Will Drewry <wad@chromium.org>
 Signed-off-by: Mickaël Salaün <mic@digikod.net>
-Link: https://lore.kernel.org/r/20240429130931.2394118-6-mic@digikod.net
+Link: https://lore.kernel.org/r/20240429130931.2394118-7-mic@digikod.net
 ---
 
 Changes since v1:
 * Extract change from a bigger patch (suggested by Kees).
 ---
- tools/testing/selftests/landlock/fs_test.c | 57 +++++++++++++---------
- 1 file changed, 35 insertions(+), 22 deletions(-)
+ tools/testing/selftests/kselftest_harness.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/tools/testing/selftests/landlock/fs_test.c b/tools/testing/selftests/landlock/fs_test.c
-index 46b9effd53e4..1e2cffde02b5 100644
---- a/tools/testing/selftests/landlock/fs_test.c
-+++ b/tools/testing/selftests/landlock/fs_test.c
-@@ -9,6 +9,7 @@
+diff --git a/tools/testing/selftests/kselftest_harness.h b/tools/testing/selftests/kselftest_harness.h
+index 9f04638707ae..8a7d899a75e0 100644
+--- a/tools/testing/selftests/kselftest_harness.h
++++ b/tools/testing/selftests/kselftest_harness.h
+@@ -338,7 +338,7 @@ static pid_t __attribute__((__unused__)) clone3_vfork(void)
+  * variant.
+  */
+ #define FIXTURE_VARIANT_ADD(fixture_name, variant_name) \
+-	extern FIXTURE_VARIANT(fixture_name) \
++	extern const FIXTURE_VARIANT(fixture_name) \
+ 		_##fixture_name##_##variant_name##_variant; \
+ 	static struct __fixture_variant_metadata \
+ 		_##fixture_name##_##variant_name##_object = \
+@@ -350,7 +350,7 @@ static pid_t __attribute__((__unused__)) clone3_vfork(void)
+ 		__register_fixture_variant(&_##fixture_name##_fixture_object, \
+ 			&_##fixture_name##_##variant_name##_object);	\
+ 	} \
+-	FIXTURE_VARIANT(fixture_name) \
++	const FIXTURE_VARIANT(fixture_name) \
+ 		_##fixture_name##_##variant_name##_variant =
  
- #define _GNU_SOURCE
- #include <fcntl.h>
-+#include <libgen.h>
- #include <linux/landlock.h>
- #include <linux/magic.h>
- #include <sched.h>
-@@ -4624,7 +4625,6 @@ FIXTURE(layout3_fs)
- {
- 	bool has_created_dir;
- 	bool has_created_file;
--	char *dir_path;
- 	bool skip_test;
- };
- 
-@@ -4683,11 +4683,24 @@ FIXTURE_VARIANT_ADD(layout3_fs, hostfs) {
- 	.cwd_fs_magic = HOSTFS_SUPER_MAGIC,
- };
- 
-+static char *dirname_alloc(const char *path)
-+{
-+	char *dup;
-+
-+	if (!path)
-+		return NULL;
-+
-+	dup = strdup(path);
-+	if (!dup)
-+		return NULL;
-+
-+	return dirname(dup);
-+}
-+
- FIXTURE_SETUP(layout3_fs)
- {
- 	struct stat statbuf;
--	const char *slash;
--	size_t dir_len;
-+	char *dir_path = dirname_alloc(variant->file_path);
- 
- 	if (!supports_filesystem(variant->mnt.type) ||
- 	    !cwd_matches_fs(variant->cwd_fs_magic)) {
-@@ -4697,25 +4710,15 @@ FIXTURE_SETUP(layout3_fs)
- 
- 	_metadata->teardown_parent = true;
- 
--	slash = strrchr(variant->file_path, '/');
--	ASSERT_NE(slash, NULL);
--	dir_len = (size_t)slash - (size_t)variant->file_path;
--	ASSERT_LT(0, dir_len);
--	self->dir_path = malloc(dir_len + 1);
--	self->dir_path[dir_len] = '\0';
--	strncpy(self->dir_path, variant->file_path, dir_len);
--
- 	prepare_layout_opt(_metadata, &variant->mnt);
- 
- 	/* Creates directory when required. */
--	if (stat(self->dir_path, &statbuf)) {
-+	if (stat(dir_path, &statbuf)) {
- 		set_cap(_metadata, CAP_DAC_OVERRIDE);
--		EXPECT_EQ(0, mkdir(self->dir_path, 0700))
-+		EXPECT_EQ(0, mkdir(dir_path, 0700))
- 		{
- 			TH_LOG("Failed to create directory \"%s\": %s",
--			       self->dir_path, strerror(errno));
--			free(self->dir_path);
--			self->dir_path = NULL;
-+			       dir_path, strerror(errno));
- 		}
- 		self->has_created_dir = true;
- 		clear_cap(_metadata, CAP_DAC_OVERRIDE);
-@@ -4736,6 +4739,8 @@ FIXTURE_SETUP(layout3_fs)
- 		self->has_created_file = true;
- 		clear_cap(_metadata, CAP_DAC_OVERRIDE);
- 	}
-+
-+	free(dir_path);
- }
- 
- FIXTURE_TEARDOWN(layout3_fs)
-@@ -4754,16 +4759,17 @@ FIXTURE_TEARDOWN(layout3_fs)
- 	}
- 
- 	if (self->has_created_dir) {
-+		char *dir_path = dirname_alloc(variant->file_path);
-+
- 		set_cap(_metadata, CAP_DAC_OVERRIDE);
- 		/*
- 		 * Don't check for error because the directory might already
- 		 * have been removed (cf. release_inode test).
- 		 */
--		rmdir(self->dir_path);
-+		rmdir(dir_path);
- 		clear_cap(_metadata, CAP_DAC_OVERRIDE);
-+		free(dir_path);
- 	}
--	free(self->dir_path);
--	self->dir_path = NULL;
- 
- 	cleanup_layout(_metadata);
- }
-@@ -4830,7 +4836,10 @@ TEST_F_FORK(layout3_fs, tag_inode_dir_mnt)
- 
- TEST_F_FORK(layout3_fs, tag_inode_dir_child)
- {
--	layer3_fs_tag_inode(_metadata, self, variant, self->dir_path);
-+	char *dir_path = dirname_alloc(variant->file_path);
-+
-+	layer3_fs_tag_inode(_metadata, self, variant, dir_path);
-+	free(dir_path);
- }
- 
- TEST_F_FORK(layout3_fs, tag_inode_file)
-@@ -4857,9 +4866,13 @@ TEST_F_FORK(layout3_fs, release_inodes)
- 	if (self->has_created_file)
- 		EXPECT_EQ(0, remove_path(variant->file_path));
- 
--	if (self->has_created_dir)
-+	if (self->has_created_dir) {
-+		char *dir_path = dirname_alloc(variant->file_path);
-+
- 		/* Don't check for error because of cgroup specificities. */
--		remove_path(self->dir_path);
-+		remove_path(dir_path);
-+		free(dir_path);
-+	}
- 
- 	ruleset_fd =
- 		create_ruleset(_metadata, LANDLOCK_ACCESS_FS_READ_DIR, layer1);
+ /**
 -- 
 2.44.0
 
