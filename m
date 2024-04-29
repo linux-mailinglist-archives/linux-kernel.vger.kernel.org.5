@@ -1,149 +1,206 @@
-Return-Path: <linux-kernel+bounces-161865-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161870-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 955628B526F
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 09:36:21 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 63FA48B527F
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 09:41:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B83771C21222
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 07:36:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D6E931F21A8E
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 07:41:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F3F3F14A9F;
-	Mon, 29 Apr 2024 07:36:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="uDB5j69l"
-Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B402A14A90;
+	Mon, 29 Apr 2024 07:41:41 +0000 (UTC)
+Received: from TWMBX01.aspeed.com (mail.aspeedtech.com [211.20.114.72])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD1C51426E
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 07:36:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 535A4EED4
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 07:41:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=211.20.114.72
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714376173; cv=none; b=n/3g+bcIKSZAIkYaCNVcpvyAtwL4X1BOBbPupUsH4S5vRn+5u4CwqUDE+TLAPfxZwLXs9TK+R6p4x/kSAzzbeH3QYNJbxlwhb1BFztr0yO+Az+ecdEG/SKxcPxI0r3qbVveI6uvnmPR4LzY6sQgIEz9v2HSqSH+MJtt0YlogoAk=
+	t=1714376501; cv=none; b=GyrlJP+P7fbTxykEfYS+YMY3lJQ9btQyPLGREeOjxCmgPMqG5xXP35qUXqUEi1OoMUEuDY3fOZE0zsvgobiDdhMLIJwfFekpDQ0e7NfcSi3tC2FLBQ+8Fk/PE/f/mfW/qfJfgMUefrQaVeYFTG7w7adCc7E7iyWhdWnwfSAFFoI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714376173; c=relaxed/simple;
-	bh=33GlNWDoneeKLX4h7qhhA3i8Q9JLIcERc+9AZY2t3hY=;
-	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
-	 In-Reply-To:Content-Type; b=kugvS+oPx3rRP7xfMrQ9eAIr0sWeUXvVjguavAs8tRfJCMoMjTq+xgQ+rF32HiXKqNFe9M+sr7tJhf+qpcLbOGSmpKjuse1dfMp5CLoY23UI+Up25ZgMDAaTPQRt7TG1YjnME4/P5TWHhJx8rRXzFVxpnwdwm3UZrbcdPuxTL9o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=uDB5j69l; arc=none smtp.client-ip=209.85.128.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-41b869326daso17934675e9.0
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 00:36:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1714376170; x=1714980970; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :content-language:references:cc:to:subject:reply-to:from:user-agent
-         :mime-version:date:message-id:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=2YPpX3LmNwDjVUlNB/0j3ZN9nZwfzcoxuiregVpsmGM=;
-        b=uDB5j69lAJ0QSAVsQrN7Xr0CfdOHoeDCmLqhW1vudwTv5Z2Es167dS91vf2yOav2Vg
-         pGfs7nvCLcwq5qpvCxElnkJtfT3i1r/HejbboGseVdbb+iL6e/oNOtC9ssqWO4LJt6c1
-         8wL3vs1ojcxvaZ1/yt5e1ODQPlAX2G2DUZ2rpIelGofkXpLcltnsm1SfKJvPYFWMDi8b
-         mZqzsVR6bI569Xtt9WoUQGGS4UeHkaIZAHB6mIHaJF8VTNEUxY/iXG+KbsjUbfSGgGcS
-         j5d+eRjHDOoEwwswA1J6i49IFONmya5xVRHefpN4fgp7xcYCl/UXvJQYe/1k6IGXYjjZ
-         /jIg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714376170; x=1714980970;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :content-language:references:cc:to:subject:reply-to:from:user-agent
-         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=2YPpX3LmNwDjVUlNB/0j3ZN9nZwfzcoxuiregVpsmGM=;
-        b=jkHWPd+rX+n7p9/8erIqJH/RyNTvJIPGtl/Zmy0MhBScUtiHa091VzR5ac7E4YWCAx
-         RYJX35/5fXhEKxaUdQjjy8b387sf7jSGulOYUftPC5zJHkw3yGMRHioINw0UKaB+efj9
-         mSYEh/S32ZtC/zRpki48riDaTY6YXnPegsazCudpxnN/5cVGD5dIZc7Lopp+ICme7/Ub
-         9UPlwxdteRpi7NBMbgIcxP1UNiSTKsXfPd2LWcQoMMLUo4YJBzkjK2bqXw97yDS08d0C
-         NDqc3FRaTaWoX1nE035mQHHYvJMOzWxMQvhossIW6A8kHX1lR/561FdiVPjbQ0Inn2Hh
-         jf3A==
-X-Forwarded-Encrypted: i=1; AJvYcCWjMkkGF2x2WQiBDi48Rwa0j9oXFfygKCrFf9x2vOR6BGCelS7YxA/a0Ci7KpVFzhgRAaMWcmkzt/Ahks14yK4BMBU3Wlzrk+HavHF3
-X-Gm-Message-State: AOJu0YziIIIqOd4odLU+tWui1yImSQG4PXLws+oixK6zclbWXqtmnf0S
-	psu+YUiok784wihGKU07i9Rr8iziKbU7yOsBhFrl271IzPbeRjGNuigrtDMpY4Y=
-X-Google-Smtp-Source: AGHT+IGUFxK98NOI5jFo2xQj8ldkC/5ShZT8LR1GFygIJ814JksY0q9Y/IXVYd6vZcmGjJbsKUX/qA==
-X-Received: by 2002:a05:600c:4508:b0:41b:f28a:a11e with SMTP id t8-20020a05600c450800b0041bf28aa11emr4477073wmo.22.1714376169980;
-        Mon, 29 Apr 2024 00:36:09 -0700 (PDT)
-Received: from ?IPV6:2a01:e0a:cad:2140:d72:4b40:65fa:89e6? ([2a01:e0a:cad:2140:d72:4b40:65fa:89e6])
-        by smtp.gmail.com with ESMTPSA id bi7-20020a05600c3d8700b0041be609b1c7sm7391629wmb.47.2024.04.29.00.36.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 29 Apr 2024 00:36:09 -0700 (PDT)
-Message-ID: <91d8143f-b79f-4108-8593-ac0165628728@linaro.org>
-Date: Mon, 29 Apr 2024 09:36:08 +0200
+	s=arc-20240116; t=1714376501; c=relaxed/simple;
+	bh=6snhrLpZm5fXvKkspgAPrTi0Vx4FvzZhbR2jxq0lRkU=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type; b=RmQXpNkuMzCObydCnBHeyVI2kN27GrFIZc0x1JxCUPbuR80rviDVWdLkxJp/4DwNScIKGHmhoXjIB7O/CxGZ+IKNQkllmj689LIiegwH0GBxgsJJ1hE2ju7v7SAitGcY6Qtg4Fu0aMXC622iyJVLBeSSQZ4bBghHNwPdph+B5lU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=aspeedtech.com; spf=pass smtp.mailfrom=aspeedtech.com; arc=none smtp.client-ip=211.20.114.72
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=aspeedtech.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=aspeedtech.com
+Received: from TWMBX02.aspeed.com (192.168.0.24) by TWMBX01.aspeed.com
+ (192.168.0.62) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.1258.12; Mon, 29 Apr
+ 2024 15:36:25 +0800
+Received: from TWMBX01.aspeed.com (192.168.0.62) by TWMBX02.aspeed.com
+ (192.168.0.24) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 29 Apr
+ 2024 15:36:25 +0800
+Received: from twmbx02.aspeed.com (192.168.10.10) by TWMBX01.aspeed.com
+ (192.168.0.62) with Microsoft SMTP Server id 15.2.1258.12 via Frontend
+ Transport; Mon, 29 Apr 2024 15:36:24 +0800
+From: Billy Tsai <billy_tsai@aspeedtech.com>
+To: <alexandre.belloni@bootlin.com>, <dylan_hung@aspeedtech.com>,
+	<gustavoars@kernel.org>, <keescook@chromium.org>,
+	<billy_tsai@aspeedtech.com>, <linux-i3c@lists.infradead.org>,
+	<linux-kernel@vger.kernel.org>
+Subject: [PATCH] i3c: dw: Add hot-join support.
+Date: Mon, 29 Apr 2024 15:36:24 +0800
+Message-ID: <20240429073624.256830-1-billy_tsai@aspeedtech.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From: neil.armstrong@linaro.org
-Reply-To: neil.armstrong@linaro.org
-Subject: Re: [PATCH] serial: msm: Unify TX and RX DMA paths
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Marek Szyprowski <m.szyprowski@samsung.com>,
- linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
- Jiri Slaby <jirislaby@kernel.org>
-References: <CGME20240423120821eucas1p2e8eb7aa059e00ee2bc6272cda24d1457@eucas1p2.samsung.com>
- <20240423120809.2678030-1-m.szyprowski@samsung.com>
- <4813aa76-6ce7-403d-8bff-1fb6e1d3f0a2@linaro.org>
- <2024042342-unmade-surely-da1c@gregkh>
-Content-Language: en-US, fr
-Autocrypt: addr=neil.armstrong@linaro.org; keydata=
- xsBNBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
- GTjuhvbleoQ5Cxjr+v+1ARGCH46MxFP5DwauzPekwJUD5QKZlaw/bURTLmS2id5wWi3lqVH4
- BVF2WzvGyyeV1o4RTCYDnZ9VLLylJ9bneEaIs/7cjCEbipGGFlfIML3sfqnIvMAxIMZrvcl9
- qPV2k+KQ7q+aXavU5W+yLNn7QtXUB530Zlk/d2ETgzQ5FLYYnUDAaRl+8JUTjc0CNOTpCeik
- 80TZcE6f8M76Xa6yU8VcNko94Ck7iB4vj70q76P/J7kt98hklrr85/3NU3oti3nrIHmHABEB
- AAHNKk5laWwgQXJtc3Ryb25nIDxuZWlsLmFybXN0cm9uZ0BsaW5hcm8ub3JnPsLAkQQTAQoA
- OwIbIwULCQgHAwUVCgkICwUWAgMBAAIeAQIXgBYhBInsPQWERiF0UPIoSBaat7Gkz/iuBQJk
- Q5wSAhkBAAoJEBaat7Gkz/iuyhMIANiD94qDtUTJRfEW6GwXmtKWwl/mvqQtaTtZID2dos04
- YqBbshiJbejgVJjy+HODcNUIKBB3PSLaln4ltdsV73SBcwUNdzebfKspAQunCM22Mn6FBIxQ
- GizsMLcP/0FX4en9NaKGfK6ZdKK6kN1GR9YffMJd2P08EO8mHowmSRe/ExAODhAs9W7XXExw
- UNCY4pVJyRPpEhv373vvff60bHxc1k/FF9WaPscMt7hlkbFLUs85kHtQAmr8pV5Hy9ezsSRa
- GzJmiVclkPc2BY592IGBXRDQ38urXeM4nfhhvqA50b/nAEXc6FzqgXqDkEIwR66/Gbp0t3+r
- yQzpKRyQif3OwE0ETVkGzwEIALyKDN/OGURaHBVzwjgYq+ZtifvekdrSNl8TIDH8g1xicBYp
- QTbPn6bbSZbdvfeQPNCcD4/EhXZuhQXMcoJsQQQnO4vwVULmPGgtGf8PVc7dxKOeta+qUh6+
- SRh3vIcAUFHDT3f/Zdspz+e2E0hPV2hiSvICLk11qO6cyJE13zeNFoeY3ggrKY+IzbFomIZY
- 4yG6xI99NIPEVE9lNBXBKIlewIyVlkOaYvJWSV+p5gdJXOvScNN1epm5YHmf9aE2ZjnqZGoM
- Mtsyw18YoX9BqMFInxqYQQ3j/HpVgTSvmo5ea5qQDDUaCsaTf8UeDcwYOtgI8iL4oHcsGtUX
- oUk33HEAEQEAAcLAXwQYAQIACQUCTVkGzwIbDAAKCRAWmrexpM/4rrXiB/sGbkQ6itMrAIfn
- M7IbRuiSZS1unlySUVYu3SD6YBYnNi3G5EpbwfBNuT3H8//rVvtOFK4OD8cRYkxXRQmTvqa3
- 3eDIHu/zr1HMKErm+2SD6PO9umRef8V82o2oaCLvf4WeIssFjwB0b6a12opuRP7yo3E3gTCS
- KmbUuLv1CtxKQF+fUV1cVaTPMyT25Od+RC1K+iOR0F54oUJvJeq7fUzbn/KdlhA8XPGzwGRy
- 4zcsPWvwnXgfe5tk680fEKZVwOZKIEuJC3v+/yZpQzDvGYJvbyix0lHnrCzq43WefRHI5XTT
- QbM0WUIBIcGmq38+OgUsMYu4NzLu7uZFAcmp6h8g
-Organization: Linaro
-In-Reply-To: <2024042342-unmade-surely-da1c@gregkh>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+Received-SPF: Fail (TWMBX02.aspeed.com: domain of billy_tsai@aspeedtech.com
+ does not designate 192.168.10.10 as permitted sender)
+ receiver=TWMBX02.aspeed.com; client-ip=192.168.10.10;
+ helo=twmbx02.aspeed.com;
 
-Hi Greg,
+Add hot-join support for dw i3c master controller.
+By default, the hot-join acknowledgment is disabled, and the hardware will
+automatically send the DISEC CCC when it receives the hot-join request.
+Users can use the sys entry to enable it.
 
-On 24/04/2024 01:33, Greg Kroah-Hartman wrote:
-> On Tue, Apr 23, 2024 at 04:08:04PM +0200, neil.armstrong@linaro.org wrote:
->> Hi Marek,
->>
->> On 23/04/2024 14:08, Marek Szyprowski wrote:
->>> Use scatterlist-based API also for RX mode to unify TX and RX DMA paths
->>> as well as simplify the whole driver code a bit.
->>
->> Thanks for the patch, I have no idea if this is right or wrong.
->>
->> Greg, I think we should wait until this change is fully tested on multiple
->> platforms including DMA usage (bluetooth) before aplying it.
-> 
-> Great, who is going to test that without me adding it to linux-next?
+Signed-off-by: Billy Tsai <billy_tsai@aspeedtech.com>
+---
+ drivers/i3c/master/dw-i3c-master.c | 67 ++++++++++++++++++++++++------
+ drivers/i3c/master/dw-i3c-master.h |  2 +
+ 2 files changed, 56 insertions(+), 13 deletions(-)
 
-Qcom developers, reviewers and maintainers will review it and test it like
-any other patch affecting the qcom platform.
-
-Thanks,
-Neil
-
-> 
-> thanks,
-> 
-> greg k-h
+diff --git a/drivers/i3c/master/dw-i3c-master.c b/drivers/i3c/master/dw-i3c-master.c
+index 276153e10f5a..0ec00e644bd4 100644
+--- a/drivers/i3c/master/dw-i3c-master.c
++++ b/drivers/i3c/master/dw-i3c-master.c
+@@ -1136,6 +1136,23 @@ static void dw_i3c_master_free_ibi(struct i3c_dev_desc *dev)
+ 	data->ibi_pool = NULL;
+ }
+ 
++static void dw_i3c_master_enable_sir_signal(struct dw_i3c_master *master, bool enable)
++{
++	u32 reg;
++
++	reg = readl(master->regs + INTR_STATUS_EN);
++	reg &= ~INTR_IBI_THLD_STAT;
++	if (enable)
++		reg |= INTR_IBI_THLD_STAT;
++	writel(reg, master->regs + INTR_STATUS_EN);
++
++	reg = readl(master->regs + INTR_SIGNAL_EN);
++	reg &= ~INTR_IBI_THLD_STAT;
++	if (enable)
++		reg |= INTR_IBI_THLD_STAT;
++	writel(reg, master->regs + INTR_SIGNAL_EN);
++}
++
+ static void dw_i3c_master_set_sir_enabled(struct dw_i3c_master *master,
+ 					  struct i3c_dev_desc *dev,
+ 					  u8 idx, bool enable)
+@@ -1170,23 +1187,34 @@ static void dw_i3c_master_set_sir_enabled(struct dw_i3c_master *master,
+ 	}
+ 	writel(reg, master->regs + IBI_SIR_REQ_REJECT);
+ 
+-	if (global) {
+-		reg = readl(master->regs + INTR_STATUS_EN);
+-		reg &= ~INTR_IBI_THLD_STAT;
+-		if (enable)
+-			reg |= INTR_IBI_THLD_STAT;
+-		writel(reg, master->regs + INTR_STATUS_EN);
+-
+-		reg = readl(master->regs + INTR_SIGNAL_EN);
+-		reg &= ~INTR_IBI_THLD_STAT;
+-		if (enable)
+-			reg |= INTR_IBI_THLD_STAT;
+-		writel(reg, master->regs + INTR_SIGNAL_EN);
+-	}
++	if (global)
++		dw_i3c_master_enable_sir_signal(master, enable);
++
+ 
+ 	spin_unlock_irqrestore(&master->devs_lock, flags);
+ }
+ 
++static int dw_i3c_master_enable_hotjoin(struct i3c_master_controller *m)
++{
++	struct dw_i3c_master *master = to_dw_i3c_master(m);
++
++	dw_i3c_master_enable_sir_signal(master, true);
++	writel(readl(master->regs + DEVICE_CTRL) & ~DEV_CTRL_HOT_JOIN_NACK,
++	       master->regs + DEVICE_CTRL);
++
++	return 0;
++}
++
++static int dw_i3c_master_disable_hotjoin(struct i3c_master_controller *m)
++{
++	struct dw_i3c_master *master = to_dw_i3c_master(m);
++
++	writel(readl(master->regs + DEVICE_CTRL) | DEV_CTRL_HOT_JOIN_NACK,
++	       master->regs + DEVICE_CTRL);
++
++	return 0;
++}
++
+ static int dw_i3c_master_enable_ibi(struct i3c_dev_desc *dev)
+ {
+ 	struct dw_i3c_i2c_dev_data *data = i3c_dev_get_master_data(dev);
+@@ -1326,6 +1354,8 @@ static void dw_i3c_master_irq_handle_ibis(struct dw_i3c_master *master)
+ 
+ 		if (IBI_TYPE_SIRQ(reg)) {
+ 			dw_i3c_master_handle_ibi_sir(master, reg);
++		} else if (IBI_TYPE_HJ(reg)) {
++			queue_work(master->base.wq, &master->hj_work);
+ 		} else {
+ 			len = IBI_QUEUE_STATUS_DATA_LEN(reg);
+ 			dev_info(&master->base.dev,
+@@ -1393,6 +1423,8 @@ static const struct i3c_master_controller_ops dw_mipi_i3c_ibi_ops = {
+ 	.enable_ibi = dw_i3c_master_enable_ibi,
+ 	.disable_ibi = dw_i3c_master_disable_ibi,
+ 	.recycle_ibi_slot = dw_i3c_master_recycle_ibi_slot,
++	.enable_hotjoin = dw_i3c_master_enable_hotjoin,
++	.disable_hotjoin = dw_i3c_master_disable_hotjoin,
+ };
+ 
+ /* default platform ops implementations */
+@@ -1412,6 +1444,14 @@ static const struct dw_i3c_platform_ops dw_i3c_platform_ops_default = {
+ 	.set_dat_ibi = dw_i3c_platform_set_dat_ibi_nop,
+ };
+ 
++static void dw_i3c_hj_work(struct work_struct *work)
++{
++	struct dw_i3c_master *master =
++		container_of(work, typeof(*master), hj_work);
++
++	i3c_master_do_daa(&master->base);
++}
++
+ int dw_i3c_common_probe(struct dw_i3c_master *master,
+ 			struct platform_device *pdev)
+ {
+@@ -1469,6 +1509,7 @@ int dw_i3c_common_probe(struct dw_i3c_master *master,
+ 	if (master->ibi_capable)
+ 		ops = &dw_mipi_i3c_ibi_ops;
+ 
++	INIT_WORK(&master->hj_work, dw_i3c_hj_work);
+ 	ret = i3c_master_register(&master->base, &pdev->dev, ops, false);
+ 	if (ret)
+ 		goto err_assert_rst;
+diff --git a/drivers/i3c/master/dw-i3c-master.h b/drivers/i3c/master/dw-i3c-master.h
+index ab862c5d15fe..4ab94aa72252 100644
+--- a/drivers/i3c/master/dw-i3c-master.h
++++ b/drivers/i3c/master/dw-i3c-master.h
+@@ -57,6 +57,8 @@ struct dw_i3c_master {
+ 
+ 	/* platform-specific data */
+ 	const struct dw_i3c_platform_ops *platform_ops;
++
++	struct work_struct hj_work;
+ };
+ 
+ struct dw_i3c_platform_ops {
+-- 
+2.25.1
 
 
