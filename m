@@ -1,193 +1,162 @@
-Return-Path: <linux-kernel+bounces-161863-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161864-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7BB1F8B5266
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 09:33:34 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 691DD8B526C
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 09:35:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9F1821C21196
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 07:33:33 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 49283B21431
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 07:35:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2977414AB0;
-	Mon, 29 Apr 2024 07:33:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51FD014A9F;
+	Mon, 29 Apr 2024 07:35:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TYkQM4bK"
-Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="p7adOmQ9"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C91E9EED4;
-	Mon, 29 Apr 2024 07:33:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7EA7C1426E;
+	Mon, 29 Apr 2024 07:35:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714376004; cv=none; b=GPdPlT3YOS44/f67sWmCqNoGaAk0EHUPvFrat26uiOnyESkpP9qugT4q+unYNna5EHuP3fmGzp98soDei5avXtdkL6IWwTM1/Z02JdxqNbrHAB8iai9V9CfML8cVJLqmy5sYjj+GFEJEja7+CDn1+eEFHQHc5z8AhxUQqyUqIIY=
+	t=1714376123; cv=none; b=MPLUjNwCfHSRcyYNjfIPnGYbG5wLespAV4vLq72bs/KDD2SaP8MCumheUk+lIIk2vaDvektOCgsp5J3OBJsP5x+nFGQ4INi3RHPCsPXQrpPWhtLUNC73cTSaf/5JnluFM7z2SekAfNO7C76xNm6RWxQ+ccxYOyGDRRSCTF5bAOw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714376004; c=relaxed/simple;
-	bh=xCAsyKsm0O2P5yVQziSDwhD1A5O80jRdVMDkGgybmbE=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=PQQW485q0b0MNh3nbe5NuIScGNTKYkJBC0pzZcwAXms+aXZv5APnyoZdlqRRN0qSPblN1iZpbFcrtI9CA+J+r3vVv2TgUVcuhn4F0+Ch/DoBpYlgyJzi2sStDpwlcQR8SdV8b8rpb5xza5VInuLfhPXCbL/p55gux4eU5wg/+rY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TYkQM4bK; arc=none smtp.client-ip=209.85.218.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-a52223e004dso432997166b.2;
-        Mon, 29 Apr 2024 00:33:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714376001; x=1714980801; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=aP2AX+lZetOMlju+FKo5C17Zuw89jaRcaprqSG8AZqE=;
-        b=TYkQM4bKL04oKQXRb+jPZPWaY7FLsgEg8l8JaSEbHeF34gt/zthTHhRXZN1qiM3f97
-         j4Zd8V/8a/jXgYnKCOlvupsrgRU0DhGyz8zqGBs0ZTPn0pzWf8qi4Ps1N3jaNL7b8hiO
-         Q3L0fLcydElOsmzKA5FqzlpwP/bcfDoSObUTpvXz3cJo78li0w3H72F/TWjzk2zHJz9b
-         4/u2iHxWdLj83EZ3sRz40x4sHtRtylIhFeoQ/m7pLxG2amo+Nqjlozb2dIwgTvT5xX6p
-         FBbj3W06QWQuPuCLPzY17KWjVYTcwycMnMrLzHAhiLLtb2Fply1nwcXuAJubEyWNNRsq
-         Wp1Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714376001; x=1714980801;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=aP2AX+lZetOMlju+FKo5C17Zuw89jaRcaprqSG8AZqE=;
-        b=EUGpHkLGXPM2xoZQ9ssHfinRQSDCFYSA58/L+hkESQ91rcHmsSlMXHvcN0yQWVTxmN
-         wTi2yF805zDdpPpCkGXHBCoTdWoSyNinB9HexqKaE79a4anGE1vG4Gnt0/NB9ew6IVHo
-         Dz0EflDYSxn6VkHLokiGgef5UiRiv355QJ/lMrBeP8sZ1/LfgQEbFvCjpSKEhe+zYXEc
-         mY49XGyaT/vcpGER4eccVUhBnwvJgwFh6YeC/54h/LPENOvTdtFr+7xQ79fmwtq+wR95
-         lj7MkUjLNBDWW7zrm+JsVIvEmGcBaR9yifmQyGDtOPA/+EhWkNTCjYCrA0Zv6/Dq+kqJ
-         imKQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWo1whroiDru7xHWDAeAak+VuLm92hlKmf+IJeXx02nFTtglZhYm+WXji2cwNi7U3STNk5hfxhAKp6/op/CJVcQzPTNG6VbpCQuUigkYBbfIleeoeSQW3BzUW95aTmO3C5ZBMH1q5ILyW8GT2PxooXZV6bZo84JVUVIr3Tl7GxNGt97+3G2TXBW97MXq8kpxfYKs+G+G6uS5zNBbkPE+FRS
-X-Gm-Message-State: AOJu0Yyistrf1R7HIVIAhSVqdIFCQuXttoBdR6pEtuTrl2fHl2RbZq3S
-	7lhWGsaPxNZ8cA+sTgyk16HJL5p/U4MCf9vGOBfRq+l3BUZU1TNa
-X-Google-Smtp-Source: AGHT+IGqylCf/ldo7kntYAX4/5eM2LWZUh5alQVvgKY0qk6DcwG4GzloggwFhM2IkqtpPIozmLqwoQ==
-X-Received: by 2002:a17:906:38c8:b0:a58:9707:685b with SMTP id r8-20020a17090638c800b00a589707685bmr8036509ejd.16.1714376000620;
-        Mon, 29 Apr 2024 00:33:20 -0700 (PDT)
-Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
-        by smtp.gmail.com with ESMTPSA id er1-20020a170907738100b00a58bf5ebc68sm4416505ejc.146.2024.04.29.00.33.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Apr 2024 00:33:20 -0700 (PDT)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Mon, 29 Apr 2024 09:33:17 +0200
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Steven Rostedt <rostedt@goodmis.org>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Oleg Nesterov <oleg@redhat.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>, linux-kernel@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org, linux-api@vger.kernel.org,
-	x86@kernel.org, bpf@vger.kernel.org,
-	Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	"Borislav Petkov (AMD)" <bp@alien8.de>,
-	Ingo Molnar <mingo@redhat.com>, Andy Lutomirski <luto@kernel.org>
-Subject: Re: [PATCHv3 bpf-next 5/7] selftests/bpf: Add uretprobe syscall call
- from user space test
-Message-ID: <Zi9NPfII8I7nWz6O@krava>
-References: <20240421194206.1010934-1-jolsa@kernel.org>
- <20240421194206.1010934-6-jolsa@kernel.org>
- <CAEf4BzbWr9s2HiWU=7=okwH7PR8LHGFj2marmaOxKW61BWKHGg@mail.gmail.com>
+	s=arc-20240116; t=1714376123; c=relaxed/simple;
+	bh=Og/gC5Ap5ugM800ZsNeti51wR1Sunw2lMQfNOvgcYK4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=NlrorQu4MJEtjgoHUR9pro4sCJLgF30pSStDGwoKVUEBGjCmkOvhbqlW+7CZj+QiiZGIQOGk/1saHhHKalzWOkXdmm/UTlUEDFiECiqcpx8T6JBSYue6FmOBmsXlNB/WPYCD3Q9k0hJ9AFBV+YpdEPXQKAlmFkHrOpBXx2+9CmA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=p7adOmQ9; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1EAABC113CD;
+	Mon, 29 Apr 2024 07:35:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714376123;
+	bh=Og/gC5Ap5ugM800ZsNeti51wR1Sunw2lMQfNOvgcYK4=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=p7adOmQ9axAbYp6Kwo09RE/l7nhfu1sbbt4IbY4z9cDl5IX8joe2ye3L37vdHk2n7
+	 quON2T0vP9fUaTnyrgZ4h1LyZ4NBEE550Wn4Ml119im7NuULw5V3YkSyRqSlfaM+WD
+	 KvviDGEvTDuZdZrVT2soFw7XErHh9ejOfT4PxeIJAfZJvie0wSo7Qp0Lp8se+1hJAl
+	 uODVJB9xfqhTlH0UwbN8xSNgKEckxcdrNAPjycVW7k8ayLZ0CN6DR26fqFhk8Y7QN5
+	 8CxM32Y64dHyRwvBJTpY+rS9qR5bjcdvHUHSVKYAkFUpEjDqAANL5XWMBvXn2IKxyf
+	 EJOLEPeV5pXeQ==
+Message-ID: <927c40c5-cfd7-4a22-a9c6-7b6f9592e4b0@kernel.org>
+Date: Mon, 29 Apr 2024 09:35:18 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAEf4BzbWr9s2HiWU=7=okwH7PR8LHGFj2marmaOxKW61BWKHGg@mail.gmail.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 2/2] Documentation: process: Recommend to put Cc: tags
+ after cutter '---' line
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+ workflows@vger.kernel.org, linux-doc@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Cc: Jonathan Corbet <corbet@lwn.net>
+References: <20240423132024.2368662-1-andriy.shevchenko@linux.intel.com>
+ <20240423132024.2368662-3-andriy.shevchenko@linux.intel.com>
+From: Krzysztof Kozlowski <krzk@kernel.org>
+Content-Language: en-US
+Autocrypt: addr=krzk@kernel.org; keydata=
+ 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 fv0=
+In-Reply-To: <20240423132024.2368662-3-andriy.shevchenko@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Fri, Apr 26, 2024 at 11:03:29AM -0700, Andrii Nakryiko wrote:
-> On Sun, Apr 21, 2024 at 12:43 PM Jiri Olsa <jolsa@kernel.org> wrote:
-> >
-> > Adding test to verify that when called from outside of the
-> > trampoline provided by kernel, the uretprobe syscall will cause
-> > calling process to receive SIGILL signal and the attached bpf
-> > program is no executed.
-> >
-> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> > ---
-> >  .../selftests/bpf/prog_tests/uprobe_syscall.c | 92 +++++++++++++++++++
-> >  .../selftests/bpf/progs/uprobe_syscall_call.c | 15 +++
-> >  2 files changed, 107 insertions(+)
-> >  create mode 100644 tools/testing/selftests/bpf/progs/uprobe_syscall_call.c
-> >
+On 23/04/2024 15:19, Andy Shevchenko wrote:
+> The recommendation is based on the following rationale:
 > 
-> See nits below, but overall LGTM
+> - it makes the commit messages much cleaner and easy to read, especially
+>   on the screens of the mobile devices;
 > 
-> Acked-by: Andrii Nakryiko <andrii@kernel.org>
+> - it reduces resources (memory, time, energy) to retrieve all these
+>   headers, which are barely needed by a mere user, as for automation
+>   they will be still available via mail archives, such as
+>   https://lore.kernel.org, assuming the Link: or Message-ID tag is
+>   provided.
 > 
-> [...]
+> Let's be environment friendly and save the planet!
 > 
-> > @@ -219,6 +301,11 @@ static void test_uretprobe_regs_change(void)
-> >  {
-> >         test__skip();
-> >  }
-> > +
-> > +static void test_uretprobe_syscall_call(void)
-> > +{
-> > +       test__skip();
-> > +}
-> >  #endif
-> >
-> >  void test_uprobe_syscall(void)
-> > @@ -228,3 +315,8 @@ void test_uprobe_syscall(void)
-> >         if (test__start_subtest("uretprobe_regs_change"))
-> >                 test_uretprobe_regs_change();
-> >  }
-> > +
-> > +void serial_test_uprobe_syscall_call(void)
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> ---
+>  Documentation/process/5.Posting.rst          | 4 ++++
+>  Documentation/process/submitting-patches.rst | 5 +++++
+>  2 files changed, 9 insertions(+)
 > 
-> does it need to be serial? non-serial are still run sequentially
-> within a process (there is no multi-threading), it's more about some
-> global effects on system.
+> diff --git a/Documentation/process/5.Posting.rst b/Documentation/process/5.Posting.rst
+> index 90a7fe2a85f2..157b3fc0087a 100644
+> --- a/Documentation/process/5.Posting.rst
+> +++ b/Documentation/process/5.Posting.rst
+> @@ -276,6 +276,10 @@ for addition without the explicit permission of the person named; using
+>  Reported-by: is fine most of the time as well, but ask for permission if
+>  the bug was reported in private.
+>  
+> +It's recommended to locate the additional Cc: tags after the cutter '---' line
+> +in the patches as it makes sure the commit message won't be polluted with them.
+> +At the same time they will be available via email headers on the mail archives,
+> +such as https://lore.kernel.org.
 
-plz see below
+Manually added useful Cc-tags should be kept in commit msg, because it
+annotates who could be interested in the patch.
 
-> 
-> > +{
-> > +       test_uretprobe_syscall_call();
-> > +}
-> > diff --git a/tools/testing/selftests/bpf/progs/uprobe_syscall_call.c b/tools/testing/selftests/bpf/progs/uprobe_syscall_call.c
-> > new file mode 100644
-> > index 000000000000..5ea03bb47198
-> > --- /dev/null
-> > +++ b/tools/testing/selftests/bpf/progs/uprobe_syscall_call.c
-> > @@ -0,0 +1,15 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +#include "vmlinux.h"
-> > +#include <bpf/bpf_helpers.h>
-> > +#include <string.h>
-> > +
-> > +struct pt_regs regs;
-> > +
-> > +char _license[] SEC("license") = "GPL";
-> > +
-> > +SEC("uretprobe//proc/self/exe:uretprobe_syscall_call")
-> > +int uretprobe(struct pt_regs *regs)
-> > +{
-> > +       bpf_printk("uretprobe called");
-> 
-> debugging leftover? we probably don't want to pollute trace_pipe from test
+The problem is that people put output of get_maintainers.pl as Cc to the
+commit list. This is 100% redundant because it can be recreated any
+given time with 100% accuracy (for given kernel tree). Therefore I would
+propose to rephrase it to something:
 
-the reason for this is to make sure the bpf program was not executed,
+====
+It is recommended to not add autogenerated scripts/get_maintainer.pl
+CC-entries into the commit msg, but keep them under cutter '---'. There
+is no single need to store automated output of get_maintainers.pl in the
+git log. It can be easily re-created at any given time, thus its
+presence in the git history is redundant and obfuscates the log.
 
-the test makes sure the child gets killed with SIGILL and also that
-the bpf program was not executed by checking the trace_pipe and
-making sure nothing was received
+====
 
-the trace_pipe reading is also why it's serial
+Best regards,
+Krzysztof
 
-jirka
-
-> 
-> > +       return 0;
-> > +}
-> > --
-> > 2.44.0
-> >
 
