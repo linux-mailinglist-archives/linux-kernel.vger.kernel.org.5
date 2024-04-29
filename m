@@ -1,177 +1,129 @@
-Return-Path: <linux-kernel+bounces-162633-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-162634-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 659FC8B5E53
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 17:59:02 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 542318B5E57
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 17:59:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 17FB52844B0
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 15:59:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0DF59284A2D
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 15:59:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 93F4685C77;
-	Mon, 29 Apr 2024 15:57:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE0A583CCC;
+	Mon, 29 Apr 2024 15:58:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="FjuVDr57"
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="ii8sjjsx"
+Received: from mail-pg1-f176.google.com (mail-pg1-f176.google.com [209.85.215.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A2BB83A08;
-	Mon, 29 Apr 2024 15:57:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.177.32
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A08E18614D
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 15:58:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714406278; cv=none; b=jlxIDYQMGKXoxXvn6bf6aP2y3KQ4LcSbEj8YxAF5Fm1bHfU9eH/UU2kE9PQjY3l4T1eYjPWPJeWpYe2CBBiIf5sefI5uaesTx6HS2Th1+QxKvKwS5cKEOX5agfN8VM0CpqKKv5q8S3cgm3TLApUOldSnpNJUgWdqgzly5OV4bUE=
+	t=1714406282; cv=none; b=Ig7M5O7TSBot+DbHkOakzRE1XF7ObCx/qSEkiUXTunlU7PQRqq01FlWpnWUrKSpzvn9VYS99HvWhS4Cb/QnJTEwSWREgqAr2HTEWOm1tp/mU26TVTlELa/owIO7MwSjtHD/xc+dTqUTALGKFs3TYsDvINmz4rW7uuYynCg/1bUw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714406278; c=relaxed/simple;
-	bh=R1npkU7NnhMaEAo02aQmqCLNDfuXn+An7TzBkaPxtlg=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=JyD8xt7EtM1UMqO3nJNtOHz0lFB1/FOgeJcIatGBHSqFols/nxbJ1yiWxmZ4n3fzNo+QoOzTVu4X6xoC/6SphXa1D/HlIlrP1oB2dSrYJMckPfCTucTLABYKX33vY3ZfIerOUUd595s5JMOQtCK8jRBw84KmW1wEjs9NEj++hiI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=FjuVDr57; arc=none smtp.client-ip=205.220.177.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0333520.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 43TFmj9k006699;
-	Mon, 29 Apr 2024 15:57:49 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=corp-2023-11-20;
- bh=7uCCKhplZr7mxOWs1OV2xLVt93NnadxTgAHX9zBzeUg=;
- b=FjuVDr57cVSzcGoZdM8Qv6BAvTVsKQYS+aR8llsLONHIspb1YGoxh6FivV7vLC+KzTxP
- um6PjlwebAXOmw6898HRX8FEQwzE6XWjp2WCYBnC6BYzp85HI+dYWNa/d3j5vP59QUYl
- /fEffKP2hi6kdo9CY34LX5KXzYZSluDaEX0dGmT/M3jp2qiJVFKPntrf0ZgfpPFmgwIq
- EYd7gxAWvGLXJEEUps4Usf8/T+64997XIXH+elczVtfipAkjCzi/Ii8NfieERXJH2yLE
- vcvD2gLx83socBWth/DV5eRZLtgXHAzUae3R/2OVcWlrJSQP8FX+7IvPyHTiLbCVeuFm ww== 
-Received: from phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta02.appoci.oracle.com [147.154.114.232])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3xrsdejwuu-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 29 Apr 2024 15:57:49 +0000
-Received: from pps.filterd (phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 43TFdB04011361;
-	Mon, 29 Apr 2024 15:57:48 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3xrqt6j99w-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 29 Apr 2024 15:57:48 +0000
-Received: from phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 43TFuxjS040299;
-	Mon, 29 Apr 2024 15:57:47 GMT
-Received: from alaljime-dev-e4flex-vm.osdevelopmeniad.oraclevcn.com (alaljime-dev-e4flex-vm.allregionaliads.osdevelopmeniad.oraclevcn.com [100.100.249.106])
-	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTP id 3xrqt6j91w-5;
-	Mon, 29 Apr 2024 15:57:47 +0000
-From: Alejandro Jimenez <alejandro.j.jimenez@oracle.com>
-To: kvm@vger.kernel.org
-Cc: seanjc@google.com, pbonzini@redhat.com, linux-kernel@vger.kernel.org,
-        suravee.suthikulpanit@amd.com, vashegde@amd.com, mlevitsk@redhat.com,
-        joao.m.martins@oracle.com, boris.ostrovsky@oracle.com,
-        mark.kanda@oracle.com, alejandro.j.jimenez@oracle.com
-Subject: [PATCH 4/4] KVM: x86: Add vCPU stat for APICv interrupt injections causing #VMEXIT
-Date: Mon, 29 Apr 2024 15:57:38 +0000
-Message-Id: <20240429155738.990025-5-alejandro.j.jimenez@oracle.com>
-X-Mailer: git-send-email 2.39.3
-In-Reply-To: <20240429155738.990025-1-alejandro.j.jimenez@oracle.com>
-References: <20240429155738.990025-1-alejandro.j.jimenez@oracle.com>
+	s=arc-20240116; t=1714406282; c=relaxed/simple;
+	bh=elJxk/k9sqYtC/MCZ2vFryQvPeupAL5xKULnIW6JfRU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=C88dzaQRUlO5Ha2+Z9ySLesC44d02YKFqcUiUaqXWfi6fnIjXUIOEgBNi1boNNkVzX61zpuDozPcNqrsCiH0rRflzSKN1CBiXyPh8/7zDgecZ8Cm/3jI6EHiy28H4mnD1al1ABS+Dkh4AG6O3OLOGxJjXIWDnyhJuQTK5I34iho=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=ii8sjjsx; arc=none smtp.client-ip=209.85.215.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pg1-f176.google.com with SMTP id 41be03b00d2f7-5c229dabbb6so2977131a12.0
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 08:58:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1714406280; x=1715011080; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=LXesceeVx7eAybXSMHvtACUpIAJaYRLCSDSMv3aiI6Y=;
+        b=ii8sjjsxUUoI7UJi0f+z1jQ/aZRF88qHkGEXQDr+zAffx5BYMijcwiwyB4dFA0o9wm
+         6jjVzaDFx9TOAQ+f33y8SRxnklbiFS9I6WS3Ia0t0CUD50obUEwy7AsguDN3iTo446so
+         TJ1y09rTSRdkD/nIXBLNDyJ2XAji/yACrcxFg=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714406280; x=1715011080;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=LXesceeVx7eAybXSMHvtACUpIAJaYRLCSDSMv3aiI6Y=;
+        b=CfNmI4GDz4/JIh2O9cfrSd0vjgGUaDWFvUusGMS7G+y1BLB91HrZUHQ/t9oZ3cIGOn
+         pzGIfRVY/3IwcDpZzb6/ec8xiatDl1p4d0pf45aQ2uUdDcwCKTYIq/VS+FObHZK5d2Sb
+         v7vtoX6QDSI4AmRHBHh6JsbumrAeiR5qATWpNxcsKKaf4n4Si2iWVbFuYX8rXX0XFj1O
+         NzEljwl7nPOYgHPB0bBjPs+KLEv2cuGTQ5PbU6e61ZqeGGgOik4bu1r9rsLlT1bdA7/l
+         M6zoRdH7yv2/AnV1DJzWvtN/73HPH9bZhBNP2DwCH/MEzoqavig/emAgWOiOOSZKZyGU
+         i+zQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWo8N/QwERzb2ib7NPA7nhq66RQqx2/CogMNsckAv0lVaDABN2X4xqRvoeDs6REjIbjbrU7kUOjgGR+JhgU8MPn4mwhsxAHabOb86hi
+X-Gm-Message-State: AOJu0Yy337wsHCWldJUIrQEL85R60gmK+kzNclyJmoamniVYRfMt3jDW
+	nixUkTgQwAP2hAOXHlldo0GGsopZ8cxNYryVe8Du+7KLbAWOL0YTwiD0bPqQeQ==
+X-Google-Smtp-Source: AGHT+IH5mn+xNGRLvYr66gOyWrbSH5iYC8VFZwOPTFbEPOgPuBjIRhHvM+Dtaw5Y0QSIqnQeruOFzw==
+X-Received: by 2002:a05:6300:808d:b0:1a7:6262:1dd1 with SMTP id ap13-20020a056300808d00b001a762621dd1mr9709716pzc.51.1714406279974;
+        Mon, 29 Apr 2024 08:57:59 -0700 (PDT)
+Received: from www.outflux.net ([198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id m19-20020aa78a13000000b006e697bd5285sm19380439pfa.203.2024.04.29.08.57.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Apr 2024 08:57:59 -0700 (PDT)
+Date: Mon, 29 Apr 2024 08:57:58 -0700
+From: Kees Cook <keescook@chromium.org>
+To: =?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@digikod.net>
+Cc: Christian Brauner <brauner@kernel.org>,
+	Jakub Kicinski <kuba@kernel.org>, Mark Brown <broonie@kernel.org>,
+	Shengyu Li <shengyu.li.evgeny@gmail.com>,
+	Shuah Khan <shuah@kernel.org>,
+	"David S . Miller" <davem@davemloft.net>,
+	=?iso-8859-1?Q?G=FCnther?= Noack <gnoack@google.com>,
+	Will Drewry <wad@chromium.org>,
+	kernel test robot <oliver.sang@intel.com>,
+	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH v2 9/9] selftests/harness: Fix vfork() side effects
+Message-ID: <202404290857.4BEAF6D55@keescook>
+References: <20240429130931.2394118-1-mic@digikod.net>
+ <20240429130931.2394118-10-mic@digikod.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
- definitions=2024-04-29_14,2024-04-29_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 malwarescore=0
- adultscore=0 mlxscore=0 suspectscore=0 phishscore=0 spamscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2404010000 definitions=main-2404290101
-X-Proofpoint-GUID: xg8gd8qHGZgxX_M2IfeAxc9sVgG0zQgs
-X-Proofpoint-ORIG-GUID: xg8gd8qHGZgxX_M2IfeAxc9sVgG0zQgs
+In-Reply-To: <20240429130931.2394118-10-mic@digikod.net>
 
-Even when APICv/AVIC is active, certain guest accesses to its local APIC(s)
-cannot be fully accelerated, and cause a #VMEXIT to allow the VMM to
-emulate the behavior and side effects. Expose a counter stat for these
-specific #VMEXIT types.
+On Mon, Apr 29, 2024 at 03:09:31PM +0200, Mickaël Salaün wrote:
+> Setting the time namespace with CLONE_NEWTIME returns -EUSERS if the
+> calling thread shares memory with another thread (because of the shared
+> vDSO), which is the case when it is created with vfork().
+> 
+> Fix pidfd_setns_test by replacing test harness's vfork() call with a
+> clone3() call with CLONE_VFORK, and an explicit sharing of the
+> _metadata and self objects.
+> 
+> Replace _metadata->teardown_parent with a new FIXTURE_TEARDOWN_PARENT()
+> helper that can replace FIXTURE_TEARDOWN().  This is a cleaner approach
+> and it enables to selectively share the fixture data between the child
+> process running tests and the parent process running the fixture
+> teardown.  This also avoids updating several tests to not rely on the
+> self object's copy-on-write property (e.g. storing the returned value of
+> a fork() call).
+> 
+> Cc: Christian Brauner <brauner@kernel.org>
+> Cc: David S. Miller <davem@davemloft.net>
+> Cc: Günther Noack <gnoack@google.com>
+> Cc: Jakub Kicinski <kuba@kernel.org>
+> Cc: Kees Cook <keescook@chromium.org>
+> Cc: Mark Brown <broonie@kernel.org>
+> Cc: Shuah Khan <shuah@kernel.org>
+> Cc: Will Drewry <wad@chromium.org>
+> Reported-by: kernel test robot <oliver.sang@intel.com>
+> Closes: https://lore.kernel.org/oe-lkp/202403291015.1fcfa957-oliver.sang@intel.com
+> Fixes: 0710a1a73fb4 ("selftests/harness: Merge TEST_F_FORK() into TEST_F()")
+> Signed-off-by: Mickaël Salaün <mic@digikod.net>
 
-Suggested-by: Paolo Bonzini <pbonzini@redhat.com>
-Signed-off-by: Alejandro Jimenez <alejandro.j.jimenez@oracle.com>
----
- arch/x86/include/asm/kvm_host.h | 1 +
- arch/x86/kvm/svm/avic.c         | 7 +++++++
- arch/x86/kvm/vmx/vmx.c          | 2 ++
- arch/x86/kvm/x86.c              | 1 +
- 4 files changed, 11 insertions(+)
+Thanks for splitting these up! I found it much more digestible. :)
 
-diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-index e7e3213cefae..388979dfe9f3 100644
---- a/arch/x86/include/asm/kvm_host.h
-+++ b/arch/x86/include/asm/kvm_host.h
-@@ -1576,6 +1576,7 @@ struct kvm_vcpu_stat {
- 	u64 guest_mode;
- 	u64 notify_window_exits;
- 	u64 apicv_active;
-+	u64 apicv_unaccelerated_inj;
- };
- 
- struct x86_instruction_info;
-diff --git a/arch/x86/kvm/svm/avic.c b/arch/x86/kvm/svm/avic.c
-index 4b74ea91f4e6..274041d3cf66 100644
---- a/arch/x86/kvm/svm/avic.c
-+++ b/arch/x86/kvm/svm/avic.c
-@@ -517,6 +517,8 @@ int avic_incomplete_ipi_interception(struct kvm_vcpu *vcpu)
- 			kvm_apic_write_nodecode(vcpu, APIC_ICR);
- 		else
- 			kvm_apic_send_ipi(apic, icrl, icrh);
-+
-+		++vcpu->stat.apicv_unaccelerated_inj;
- 		break;
- 	case AVIC_IPI_FAILURE_TARGET_NOT_RUNNING:
- 		/*
-@@ -525,6 +527,8 @@ int avic_incomplete_ipi_interception(struct kvm_vcpu *vcpu)
- 		 * vcpus. So, we just need to kick the appropriate vcpu.
- 		 */
- 		avic_kick_target_vcpus(vcpu->kvm, apic, icrl, icrh, index);
-+
-+		++vcpu->stat.apicv_unaccelerated_inj;
- 		break;
- 	case AVIC_IPI_FAILURE_INVALID_BACKING_PAGE:
- 		WARN_ONCE(1, "Invalid backing page\n");
-@@ -704,6 +708,9 @@ int avic_unaccelerated_access_interception(struct kvm_vcpu *vcpu)
- 
- 	trace_kvm_avic_unaccelerated_access(vcpu->vcpu_id, offset,
- 					    trap, write, vector);
-+
-+	++vcpu->stat.apicv_unaccelerated_inj;
-+
- 	if (trap) {
- 		/* Handling Trap */
- 		WARN_ONCE(!write, "svm: Handling trap read.\n");
-diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-index f10b5f8f364b..a7487f12ded1 100644
---- a/arch/x86/kvm/vmx/vmx.c
-+++ b/arch/x86/kvm/vmx/vmx.c
-@@ -5657,6 +5657,8 @@ static int handle_apic_write(struct kvm_vcpu *vcpu)
- {
- 	unsigned long exit_qualification = vmx_get_exit_qual(vcpu);
- 
-+	++vcpu->stat.apicv_unaccelerated_inj;
-+
- 	/*
- 	 * APIC-write VM-Exit is trap-like, KVM doesn't need to advance RIP and
- 	 * hardware has done any necessary aliasing, offset adjustments, etc...
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index 03cb933920cb..c8730b0fac87 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -307,6 +307,7 @@ const struct _kvm_stats_desc kvm_vcpu_stats_desc[] = {
- 	STATS_DESC_IBOOLEAN(VCPU, guest_mode),
- 	STATS_DESC_COUNTER(VCPU, notify_window_exits),
- 	STATS_DESC_IBOOLEAN(VCPU, apicv_active),
-+	STATS_DESC_COUNTER(VCPU, apicv_unaccelerated_inj),
- };
- 
- const struct kvm_stats_header kvm_vcpu_stats_header = {
+Reviewed-by: Kees Cook <keescook@chromium.org>
+
 -- 
-2.39.3
-
+Kees Cook
 
