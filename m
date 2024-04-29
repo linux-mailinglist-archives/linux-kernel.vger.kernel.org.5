@@ -1,263 +1,122 @@
-Return-Path: <linux-kernel+bounces-163135-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-163136-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 293118B6638
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 01:28:12 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5DDB98B663C
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 01:30:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AC9AB1F220ED
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 23:28:11 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BAD77B21B1D
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 23:30:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1AED190696;
-	Mon, 29 Apr 2024 23:28:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D6A33194C6B;
+	Mon, 29 Apr 2024 23:30:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="epxm1vmH"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=amacapital-net.20230601.gappssmtp.com header.i=@amacapital-net.20230601.gappssmtp.com header.b="LfmuV6E6"
+Received: from mail-vk1-f176.google.com (mail-vk1-f176.google.com [209.85.221.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 239CE17BCA
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 23:28:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BBBA817BCA
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 23:30:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714433285; cv=none; b=TPBE+n51b0nPEXj93rtMh3Pg8KiifsehleIMdAcnq7YyFPS63bALEQN4kozNDbWdYFydz3pmdSGmQtruPb9x25wHEwNxYcgr6UQyjHkd/XLgTxv9u1FLFEPJhjEJWFxO4AiEfTiyHyimKolJThpAFLVDIucuJ1FHH6hWbCvmFjw=
+	t=1714433409; cv=none; b=kYuEzdOaAb+FLj+mzytUbPTBSkeB8/VLzJHw+9jdlDQQEG4zalwSNWRBQA8dTVGOlbkNjP0QDCSD6/Yqsonqtp0kOJXo8hFNoWlfrxePyxxVRFadZVxd0a1t9ysvrgzt07RDIWFfAWy8gxba+LAaV84Vkz3A4w6kPSlXmNlG/XU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714433285; c=relaxed/simple;
-	bh=H6k59KmOlls6Z5sg9tP4to8hnCqR/EU1N0FDsxB2Drk=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=guVafEXG7AmAgwFEk9mekoZA6rn4T1OxLW1sfQw4V5n76tyOtq54H6bcC0v1Dy5nn9HuhxRsV0gA77jGQCmUVjyl8VqQ3IDPIl3MaQkbwg6d7etbwGLyjmvMTaI1WnhuIyYwAyQK1SCKSKQGQQoxRpn59/QyBaqlSqE25Evnsxc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=epxm1vmH; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1714433282;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=OCJW1MgBXkF7BNWKcXvqmsRR1QWiKl/A4ViS819f9ys=;
-	b=epxm1vmHQs/UYJb9OjjbWLXs88TTu5VcpAv0Xm+1+DWDDw4+SxzOhS3b6fMQqnQqJKLZwE
-	EfqLgNWe5kboeMhn5Qc6Vdq2RuiYe80zZDgMtGSTO4tVjsc/vySDQnhEju9pbeoK1tN6C5
-	99XFYgzBe+wY8yI7oBkXeAjpppmGfqs=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-53-XnHnUGSmPiyNr5P5OlAZhQ-1; Mon, 29 Apr 2024 19:28:00 -0400
-X-MC-Unique: XnHnUGSmPiyNr5P5OlAZhQ-1
-Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id EBC90830D37;
-	Mon, 29 Apr 2024 23:27:59 +0000 (UTC)
-Received: from gshan-thinkpadx1nanogen2.remote.csb (unknown [10.64.136.30])
-	by smtp.corp.redhat.com (Postfix) with ESMTPS id CB149492BC7;
-	Mon, 29 Apr 2024 23:27:57 +0000 (UTC)
-From: Gavin Shan <gshan@redhat.com>
-To: virtualization@lists.linux.dev
-Cc: linux-kernel@vger.kernel.org,
-	mst@redhat.com,
-	jasowang@redhat.com,
-	shan.gavin@gmail.com
-Subject: [PATCH v3] vhost: Improve vhost_get_avail_idx() with smp_rmb()
-Date: Tue, 30 Apr 2024 09:27:48 +1000
-Message-ID: <20240429232748.642356-1-gshan@redhat.com>
+	s=arc-20240116; t=1714433409; c=relaxed/simple;
+	bh=u0KHfnhQSTTAa6+Ev4aG0HxtMJ4Us7qI6bmhP7ma5po=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Edk1mJj1fmhENS969W/HOySsjDjbt7jMg6p0z8tafjlfTQtj+yoPVoi7/Ckp4R4QUnZkSgtfzrpDjGYJdkXtgHxmThrrwO6U53t8FGA05PSS9Q/Wzbue4NbeT1DTAXbkQRXRjmlUW/nLRBhTcob+aOM445fFlEu1U8mVxLi/q2A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=amacapital.net; spf=pass smtp.mailfrom=amacapital.net; dkim=pass (2048-bit key) header.d=amacapital-net.20230601.gappssmtp.com header.i=@amacapital-net.20230601.gappssmtp.com header.b=LfmuV6E6; arc=none smtp.client-ip=209.85.221.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=amacapital.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amacapital.net
+Received: by mail-vk1-f176.google.com with SMTP id 71dfb90a1353d-4daa5d0afb5so1636301e0c.0
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 16:30:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=amacapital-net.20230601.gappssmtp.com; s=20230601; t=1714433407; x=1715038207; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=uvmb57NgTeO8uIkd6BBuUzWtadOgqdJbm13OykRMpNU=;
+        b=LfmuV6E6gZYi6Es+LEXgCk/RfMr7RGVNOX6zzviputiPhgaRA6J1N5j/ppCA62Hm72
+         981ZWutuhS2GuOMheK/ARLSGpm+mAkcbfhXEcFVE5J2ydcjGvV8zAmQpOmGVBj3QhJ7t
+         E579D6GNeRg9Y9PaaT4w1+va60vcP7+WNSLrXdx3U2hFmZaYDU3WlFPjvSKx4PNjWnV/
+         q/5A/pvqzVD6dDJ5HSNrwnyZBDSBH5OfpSbi5EIkG31520ZbJpG5/I22UDU4WFyJRkSy
+         h8LPEtf8R9aNJ74qioxFueuTzq06qo146COEyhFZvKvKOxkJI28q/lndCL/Sal0Af+L6
+         tlNg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714433407; x=1715038207;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=uvmb57NgTeO8uIkd6BBuUzWtadOgqdJbm13OykRMpNU=;
+        b=S+qMiLbIrwE+bNOrbRDCuxfM8UYJHxhKQYmM8VOBtywQz2tcZ+k00xmdoMISAIEhED
+         7Q2K5HJNTfZan5MuMP1SfexKA+sUUkqem681CwB/uqiUVbmJQwGOUFlEb72cqfRUkryn
+         /ZCli8A5ihbQCLNduMGo2k1lLgpBK5yMMiER5X1fWGTFZj1emh/yEURISbXC/XQttJEg
+         FkcMz/4DYN6soj43jRaVTRIctB6lyx21IhLjG+E8pk97W+pA7ONHSExowomNec13kwZD
+         TZP4G9Hjp9xhZMS2R49sdZ2NT+y/YlEsCSLXGqB5hCOffF729fKAdbBXSPWcG4yjsQd1
+         kosg==
+X-Forwarded-Encrypted: i=1; AJvYcCWRguugmNrXFzwpUNcQv5Q/O/81zPr5R/oxpyWiG2a954yI1zShycd1fNnhd+9zRkyr2RvH5YoEbVb60A5eV3IrKazjFyzF7eLxdM/g
+X-Gm-Message-State: AOJu0Yy3/lYzfHJv0mWiobLYLDafrJBKKT6CoGY4nU6i01EplcNe5YUr
+	oJh8KqFLlEPnmyq1w/ZR3p3LVx2hdLZSSJ8m+hjUWHY2g4fSWvSX+KkGqsDlwTogRdtQ9IG+QVC
+	RaZ8VxuqutB83UjaiXt8cs5qYFNeP3jw9AKpu
+X-Google-Smtp-Source: AGHT+IFQ6TF11qD3dSWxMP3kCR/1GHDpO7sIX6dXB0PaZw3Ummfl3Kpezh5cj9LOGtzU4ydgTxtKPh9a3+35MtHp8fE=
+X-Received: by 2002:a05:6122:200c:b0:4d3:4ac2:29f4 with SMTP id
+ l12-20020a056122200c00b004d34ac229f4mr11565163vkd.2.1714433406711; Mon, 29
+ Apr 2024 16:30:06 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.10
+References: <0000000000009dfa6d0617197994@google.com> <20240427231321.3978-1-hdanton@sina.com>
+ <CAHk-=wjBvNvVggy14p9rkHA8W1ZVfoKXvW0oeX5NZWxWUv8gfQ@mail.gmail.com>
+ <20240428232302.4035-1-hdanton@sina.com> <CAHk-=wjma_sSghVTgDCQxHHd=e2Lqi45PLh78oJ4WeBj8erV9Q@mail.gmail.com>
+ <CAHk-=wh9D6f7HUkDgZHKmDCHUQmp+Co89GP+b8+z+G56BKeyNg@mail.gmail.com>
+ <Zi9Ts1HcqiKzy9GX@gmail.com> <CAHk-=wj9=+4k+sY6hNsQy2oQA4HABNA369cBPSgBNaeRHbbTZg@mail.gmail.com>
+ <CAHk-=wg63NPb-cEL7NTFTKN2=uM6Lygg_CcXwwDBTVCg=PeSRg@mail.gmail.com> <CAHk-=whuH+-swynMTVd9=uCB0uuhaoanQ5kfHEX=QaRZx7UgBw@mail.gmail.com>
+In-Reply-To: <CAHk-=whuH+-swynMTVd9=uCB0uuhaoanQ5kfHEX=QaRZx7UgBw@mail.gmail.com>
+From: Andy Lutomirski <luto@amacapital.net>
+Date: Mon, 29 Apr 2024 16:29:54 -0700
+Message-ID: <CALCETrXHJ7837+cmahg-wjR3iRHbDJ6JtVGaoDFC4dx-L8r8OA@mail.gmail.com>
+Subject: Re: [PATCH] x86/mm: Remove broken vsyscall emulation code from the
+ page fault code
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Ingo Molnar <mingo@kernel.org>, Hillf Danton <hdanton@sina.com>, Peter Anvin <hpa@zytor.com>, 
+	Adrian Bunk <bunk@kernel.org>, 
+	syzbot <syzbot+83e7f982ca045ab4405c@syzkaller.appspotmail.com>, 
+	Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>, andrii@kernel.org, bpf@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-From: "Michael S. Tsirkin" <mst@redhat.com>
+On Mon, Apr 29, 2024 at 12:07=E2=80=AFPM Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
+>
+> On Mon, 29 Apr 2024 at 11:47, Linus Torvalds
+> <torvalds@linux-foundation.org> wrote:
+> >
+> > In particular, I think the page fault emulation code should be moved
+> > from do_user_addr_fault() to do_kern_addr_fault(), and the horrible
+> > hack that is fault_in_kernel_space() should be removed (it is what now
+> > makes a vsyscall page fault be treated as a user address, and the only
+> > _reason_ for that is that we do the vsyscall handling in the wrong
+> > place).
+>
+> Final note: we should also remove the XONLY option entirely, and
+> remove all the strange page table handling we currently do for it.
+>
+> It won't work anyway on future CPUs with LASS, and we *have* to
+> emulate things (and not in the page fault path, I think LASS will
+> cause a GP fault).
 
-All the callers of vhost_get_avail_idx() are concerned with the
-memory barrier, imposed by smp_rmb() to ensure the order of the
-available ring entry read and avail_idx read.
+What strange page table handling do we do for XONLY?
 
-Improve vhost_get_avail_idx() so that smp_rmb() is executed when
-the avail_idx is accessed. With it, the callers needn't to worry
-about the memory barrier. As a side benefit, we also validate the
-index on all paths now, which will hopefully help to catch future
-errors earlier.
+EMULATE actually involves page tables.  XONLY is just in the "gate
+area" (which is more or less just a procfs thing) and the page fault
+code.
 
-Note that current code is inconsistent in how the errors are handled.
-They are treated as an empty ring in some places, but as non-empty
-ring in other places. This patch doesn't attempt to change the existing
-behaviour.
-
-No functional change intended.
-
-Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
-Reviewed-by: Gavin Shan <gshan@redhat.com>
-Acked-by: Will Deacon <will@kernel.org>
----
-v3: Improved commit log and comments as Michael suggested
----
- drivers/vhost/vhost.c | 105 +++++++++++++++++-------------------------
- 1 file changed, 42 insertions(+), 63 deletions(-)
-
-diff --git a/drivers/vhost/vhost.c b/drivers/vhost/vhost.c
-index 8995730ce0bf..60d9592eff7b 100644
---- a/drivers/vhost/vhost.c
-+++ b/drivers/vhost/vhost.c
-@@ -1290,10 +1290,36 @@ static void vhost_dev_unlock_vqs(struct vhost_dev *d)
- 		mutex_unlock(&d->vqs[i]->mutex);
- }
- 
--static inline int vhost_get_avail_idx(struct vhost_virtqueue *vq,
--				      __virtio16 *idx)
-+static inline int vhost_get_avail_idx(struct vhost_virtqueue *vq)
- {
--	return vhost_get_avail(vq, *idx, &vq->avail->idx);
-+	__virtio16 idx;
-+	int r;
-+
-+	r = vhost_get_avail(vq, idx, &vq->avail->idx);
-+	if (unlikely(r < 0)) {
-+		vq_err(vq, "Failed to access available index at %p (%d)\n",
-+		       &vq->avail->idx, r);
-+		return r;
-+	}
-+
-+	/* Check it isn't doing very strange thing with available indexes */
-+	vq->avail_idx = vhost16_to_cpu(vq, idx);
-+	if (unlikely((u16)(vq->avail_idx - vq->last_avail_idx) > vq->num)) {
-+		vq_err(vq, "Invalid available index change from %u to %u",
-+		       vq->last_avail_idx, vq->avail_idx);
-+		return -EINVAL;
-+	}
-+
-+	/* We're done if there is nothing new */
-+	if (vq->avail_idx == vq->last_avail_idx)
-+		return 0;
-+
-+	/*
-+	 * We updated vq->avail_idx so we need a memory barrier between
-+	 * the index read above and the caller reading avail ring entries.
-+	 */
-+	smp_rmb();
-+	return 1;
- }
- 
- static inline int vhost_get_avail_head(struct vhost_virtqueue *vq,
-@@ -2498,38 +2524,17 @@ int vhost_get_vq_desc(struct vhost_virtqueue *vq,
- {
- 	struct vring_desc desc;
- 	unsigned int i, head, found = 0;
--	u16 last_avail_idx;
--	__virtio16 avail_idx;
-+	u16 last_avail_idx = vq->last_avail_idx;
- 	__virtio16 ring_head;
- 	int ret, access;
- 
--	/* Check it isn't doing very strange things with descriptor numbers. */
--	last_avail_idx = vq->last_avail_idx;
--
- 	if (vq->avail_idx == vq->last_avail_idx) {
--		if (unlikely(vhost_get_avail_idx(vq, &avail_idx))) {
--			vq_err(vq, "Failed to access avail idx at %p\n",
--				&vq->avail->idx);
--			return -EFAULT;
--		}
--		vq->avail_idx = vhost16_to_cpu(vq, avail_idx);
--
--		if (unlikely((u16)(vq->avail_idx - last_avail_idx) > vq->num)) {
--			vq_err(vq, "Guest moved avail index from %u to %u",
--				last_avail_idx, vq->avail_idx);
--			return -EFAULT;
--		}
-+		ret = vhost_get_avail_idx(vq);
-+		if (unlikely(ret < 0))
-+			return ret;
- 
--		/* If there's nothing new since last we looked, return
--		 * invalid.
--		 */
--		if (vq->avail_idx == last_avail_idx)
-+		if (!ret)
- 			return vq->num;
--
--		/* Only get avail ring entries after they have been
--		 * exposed by guest.
--		 */
--		smp_rmb();
- 	}
- 
- 	/* Grab the next descriptor number they're advertising, and increment
-@@ -2790,35 +2795,21 @@ EXPORT_SYMBOL_GPL(vhost_add_used_and_signal_n);
- /* return true if we're sure that avaiable ring is empty */
- bool vhost_vq_avail_empty(struct vhost_dev *dev, struct vhost_virtqueue *vq)
- {
--	__virtio16 avail_idx;
- 	int r;
- 
- 	if (vq->avail_idx != vq->last_avail_idx)
- 		return false;
- 
--	r = vhost_get_avail_idx(vq, &avail_idx);
--	if (unlikely(r))
--		return false;
--
--	vq->avail_idx = vhost16_to_cpu(vq, avail_idx);
--	if (vq->avail_idx != vq->last_avail_idx) {
--		/* Since we have updated avail_idx, the following
--		 * call to vhost_get_vq_desc() will read available
--		 * ring entries. Make sure that read happens after
--		 * the avail_idx read.
--		 */
--		smp_rmb();
--		return false;
--	}
-+	r = vhost_get_avail_idx(vq);
- 
--	return true;
-+	/* Note: we treat error as non-empty here */
-+	return r == 0;
- }
- EXPORT_SYMBOL_GPL(vhost_vq_avail_empty);
- 
- /* OK, now we need to know about added descriptors. */
- bool vhost_enable_notify(struct vhost_dev *dev, struct vhost_virtqueue *vq)
- {
--	__virtio16 avail_idx;
- 	int r;
- 
- 	if (!(vq->used_flags & VRING_USED_F_NO_NOTIFY))
-@@ -2842,25 +2833,13 @@ bool vhost_enable_notify(struct vhost_dev *dev, struct vhost_virtqueue *vq)
- 	/* They could have slipped one in as we were doing that: make
- 	 * sure it's written, then check again. */
- 	smp_mb();
--	r = vhost_get_avail_idx(vq, &avail_idx);
--	if (r) {
--		vq_err(vq, "Failed to check avail idx at %p: %d\n",
--		       &vq->avail->idx, r);
--		return false;
--	}
- 
--	vq->avail_idx = vhost16_to_cpu(vq, avail_idx);
--	if (vq->avail_idx != vq->last_avail_idx) {
--		/* Since we have updated avail_idx, the following
--		 * call to vhost_get_vq_desc() will read available
--		 * ring entries. Make sure that read happens after
--		 * the avail_idx read.
--		 */
--		smp_rmb();
--		return true;
--	}
-+	r = vhost_get_avail_idx(vq);
-+	/* Note: we treat error as empty here */
-+	if (unlikely(r < 0))
-+		return false;
- 
--	return false;
-+	return r;
- }
- EXPORT_SYMBOL_GPL(vhost_enable_notify);
- 
--- 
-2.44.0
-
+So I think we should remove EMULATE before removing XONLY.  We already
+tried pretty hard to get everyone to stop using EMULATE.
 
