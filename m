@@ -1,50 +1,50 @@
-Return-Path: <linux-kernel+bounces-162713-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-162712-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1A46B8B5F6A
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 18:54:52 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B724E8B5F68
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 18:54:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A0A49283749
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 16:54:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DA80B1C210F3
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 16:54:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2708126F08;
-	Mon, 29 Apr 2024 16:54:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E4EF68664A;
+	Mon, 29 Apr 2024 16:54:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="kdZxOEY4"
-Received: from relay.smtp-ext.broadcom.com (relay.smtp-ext.broadcom.com [192.19.144.205])
+	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="M+vaCcAL"
+Received: from relay.smtp-ext.broadcom.com (relay.smtp-ext.broadcom.com [192.19.144.207])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62BB586136;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5AA078612E;
 	Mon, 29 Apr 2024 16:54:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.19.144.205
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.19.144.207
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714409662; cv=none; b=bCtyjeLYhC96Q4luS8UMd5edDsVLjPfZc3++jPy+R4Eom0LO+VCM9x5trzwt/t/crva/Ub84UNi6mEGQD96FuqJCO23uM0UjCbP/koIZ332JDHXynZa9OfcpVexM705bH4QUw7VmSFceZxyhPUTREurYloJOhJ/iENnGoszDuq4=
+	t=1714409661; cv=none; b=PJrTVDuNXpw4wqi0xeXkOM12dcXD+nQQOxkUDgXJnf0EU3QbUZndqSSS24D0Nhbgs8/uwHmYO+bncgZuOW5XrD5nDnJ3TIhmdrkO+QnYs/yukHTjwMAmKEirj1c/PZzyNq7QiQfFEHTpepawUcn/YKsL0Ck7otu3hSdZ/T4K7ew=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714409662; c=relaxed/simple;
-	bh=1cY9CF5Pxn/f+iiJlu9BrbQu3wy8IFak5Fd0SvXjG+c=;
+	s=arc-20240116; t=1714409661; c=relaxed/simple;
+	bh=YHT5rUvGSuucmsJOnLypI9mOEo8qAfWMPGLdOe9cpk0=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=h5wK+lCS6LPHCpTidvoQFsv095e1hk+qtOK3Ltrwk5TbnXCCCgpqZKX5tX0OwBkYe8LXQpIMv3nf7n9EDD1fsbkCivFL5V/9PV8/TGXvbF9I4UHfYOWxEF18jNVMx4gLicspwRS89qjK9I4ktPLaGRjjmqOLyLXYZpQcDsx94sA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=kdZxOEY4; arc=none smtp.client-ip=192.19.144.205
+	 MIME-Version; b=gXFEUu/tV/YcK1BFs5mL1LvOT54I8dZEa1EiZOZ24NYQ/CvTYwSy47oQMdngp/cZPLCWa4/cyj4F2YFz05V0zNghCo3VdjD2RfktG1mEvrZy1WD9Y5euW0Y9fhTon2VOue+rs+evunE6q6qhMAVQhWYJEI7syoyQL5NeQZvMJ4Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=M+vaCcAL; arc=none smtp.client-ip=192.19.144.207
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
 Received: from mail-lvn-it-01.lvn.broadcom.net (mail-lvn-it-01.lvn.broadcom.net [10.36.132.253])
-	by relay.smtp-ext.broadcom.com (Postfix) with ESMTP id 48DFAC0000E8;
+	by relay.smtp-ext.broadcom.com (Postfix) with ESMTP id 72CE7C0000ED;
 	Mon, 29 Apr 2024 09:54:12 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 relay.smtp-ext.broadcom.com 48DFAC0000E8
+DKIM-Filter: OpenDKIM Filter v2.11.0 relay.smtp-ext.broadcom.com 72CE7C0000ED
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=broadcom.com;
 	s=dkimrelay; t=1714409652;
-	bh=1cY9CF5Pxn/f+iiJlu9BrbQu3wy8IFak5Fd0SvXjG+c=;
+	bh=YHT5rUvGSuucmsJOnLypI9mOEo8qAfWMPGLdOe9cpk0=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=kdZxOEY4uYBrpxrmWDwwg/XQvixUhkhSanXXTM2C1F+am8ZirnmLbxjUOr31p8490
-	 Lvh8dHajpbReBZ6I4yiJWDDKgmkjL+S1Vw24W0lVBjqtsyr6ggi5PRfFwzGUOJxG24
-	 Sc8FjqZ6n+rlxfInpvZ5I3BC+8AzX++zX/sKfIng=
+	b=M+vaCcALWUI+Xh9vfCD2kHT0edLuFmYvK4v1oTcxrfbJt/9zQ51ooX64NydZF7y4h
+	 eWik99FLpwv8ASJn72kxU3DZkO5C86AJwA8MCnBXkXZO9VzcE4YmVvgFZq4wqlmpGO
+	 9JhGIdL5Al6e/XGw+tLrsybRzUdpNdVD5IhmbGuY=
 Received: from fainelli-desktop.igp.broadcom.net (fainelli-desktop.dhcp.broadcom.net [10.67.48.245])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail-lvn-it-01.lvn.broadcom.net (Postfix) with ESMTPSA id 5F2BC18041CAC6;
+	by mail-lvn-it-01.lvn.broadcom.net (Postfix) with ESMTPSA id 88EB218041CAC7;
 	Mon, 29 Apr 2024 09:54:10 -0700 (PDT)
 From: Florian Fainelli <florian.fainelli@broadcom.com>
 To: netdev@vger.kernel.org
@@ -58,9 +58,9 @@ Cc: Florian Fainelli <florian.fainelli@broadcom.com>,
 	Paolo Abeni <pabeni@redhat.com>,
 	Russell King <linux@armlinux.org.uk>,
 	linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH net-next v2 1/2] net: dsa: Remove fixed_link_update member
-Date: Mon, 29 Apr 2024 09:54:04 -0700
-Message-Id: <20240429165405.2298962-2-florian.fainelli@broadcom.com>
+Subject: [PATCH net-next v2 2/2] net: dsa: Remove adjust_link paths
+Date: Mon, 29 Apr 2024 09:54:05 -0700
+Message-Id: <20240429165405.2298962-3-florian.fainelli@broadcom.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240429165405.2298962-1-florian.fainelli@broadcom.com>
 References: <20240429165405.2298962-1-florian.fainelli@broadcom.com>
@@ -72,37 +72,251 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-We have not had a switch driver use a fixed_link_update callback since
-58d56fcc3964f9be0a9ca42fd126bcd9dc7afc90 ("net: dsa: bcm_sf2: Get rid of
-PHYLIB functions") remove this callback.
+Now that we no longer any drivers using PHYLIB's adjust_link callback,
+remove all paths that made use of adjust_link as well as the associated
+functions.
 
 Signed-off-by: Florian Fainelli <florian.fainelli@broadcom.com>
 ---
- include/net/dsa.h | 4 ----
- 1 file changed, 4 deletions(-)
+ include/net/dsa.h |   7 ---
+ net/dsa/dsa.c     |   3 +-
+ net/dsa/port.c    | 136 ++++------------------------------------------
+ 3 files changed, 12 insertions(+), 134 deletions(-)
 
 diff --git a/include/net/dsa.h b/include/net/dsa.h
-index a6ef7e4c503f..678f1fd8b189 100644
+index 678f1fd8b189..eef702dbea78 100644
 --- a/include/net/dsa.h
 +++ b/include/net/dsa.h
-@@ -25,7 +25,6 @@
+@@ -24,8 +24,6 @@
+ 
  struct dsa_8021q_context;
  struct tc_action;
- struct phy_device;
--struct fixed_phy_status;
- struct phylink_link_state;
+-struct phy_device;
+-struct phylink_link_state;
  
  #define DSA_TAG_PROTO_NONE_VALUE		0
-@@ -873,9 +872,6 @@ struct dsa_switch_ops {
- 	 */
- 	void	(*adjust_link)(struct dsa_switch *ds, int port,
- 				struct phy_device *phydev);
--	void	(*fixed_link_update)(struct dsa_switch *ds, int port,
--				struct fixed_phy_status *st);
--
+ #define DSA_TAG_PROTO_BRCM_VALUE		1
+@@ -867,11 +865,6 @@ struct dsa_switch_ops {
+ 	int	(*phy_write)(struct dsa_switch *ds, int port,
+ 			     int regnum, u16 val);
+ 
+-	/*
+-	 * Link state adjustment (called from libphy)
+-	 */
+-	void	(*adjust_link)(struct dsa_switch *ds, int port,
+-				struct phy_device *phydev);
  	/*
  	 * PHYLINK integration
  	 */
+diff --git a/net/dsa/dsa.c b/net/dsa/dsa.c
+index 2f347cd37316..12521a7d4048 100644
+--- a/net/dsa/dsa.c
++++ b/net/dsa/dsa.c
+@@ -1511,8 +1511,7 @@ static int dsa_switch_probe(struct dsa_switch *ds)
+ 		    ds->ops->phylink_mac_config ||
+ 		    ds->ops->phylink_mac_finish ||
+ 		    ds->ops->phylink_mac_link_down ||
+-		    ds->ops->phylink_mac_link_up ||
+-		    ds->ops->adjust_link)
++		    ds->ops->phylink_mac_link_up)
+ 			return -EINVAL;
+ 	}
+ 
+diff --git a/net/dsa/port.c b/net/dsa/port.c
+index c6febc3d96d9..68955014f83d 100644
+--- a/net/dsa/port.c
++++ b/net/dsa/port.c
+@@ -1535,25 +1535,6 @@ void dsa_port_set_tag_protocol(struct dsa_port *cpu_dp,
+ 	cpu_dp->tag_ops = tag_ops;
+ }
+ 
+-static struct phy_device *dsa_port_get_phy_device(struct dsa_port *dp)
+-{
+-	struct device_node *phy_dn;
+-	struct phy_device *phydev;
+-
+-	phy_dn = of_parse_phandle(dp->dn, "phy-handle", 0);
+-	if (!phy_dn)
+-		return NULL;
+-
+-	phydev = of_phy_find_device(phy_dn);
+-	if (!phydev) {
+-		of_node_put(phy_dn);
+-		return ERR_PTR(-EPROBE_DEFER);
+-	}
+-
+-	of_node_put(phy_dn);
+-	return phydev;
+-}
+-
+ static struct phylink_pcs *
+ dsa_port_phylink_mac_select_pcs(struct phylink_config *config,
+ 				phy_interface_t interface)
+@@ -1616,17 +1597,13 @@ static void dsa_port_phylink_mac_link_down(struct phylink_config *config,
+ 					   phy_interface_t interface)
+ {
+ 	struct dsa_port *dp = dsa_phylink_to_port(config);
+-	struct phy_device *phydev = NULL;
+ 	struct dsa_switch *ds = dp->ds;
+ 
+ 	if (dsa_port_is_user(dp))
+ 		phydev = dp->user->phydev;
+ 
+-	if (!ds->ops->phylink_mac_link_down) {
+-		if (ds->ops->adjust_link && phydev)
+-			ds->ops->adjust_link(ds, dp->index, phydev);
++	if (!ds->ops->phylink_mac_link_down)
+ 		return;
+-	}
+ 
+ 	ds->ops->phylink_mac_link_down(ds, dp->index, mode, interface);
+ }
+@@ -1641,11 +1618,8 @@ static void dsa_port_phylink_mac_link_up(struct phylink_config *config,
+ 	struct dsa_port *dp = dsa_phylink_to_port(config);
+ 	struct dsa_switch *ds = dp->ds;
+ 
+-	if (!ds->ops->phylink_mac_link_up) {
+-		if (ds->ops->adjust_link && phydev)
+-			ds->ops->adjust_link(ds, dp->index, phydev);
++	if (!ds->ops->phylink_mac_link_up)
+ 		return;
+-	}
+ 
+ 	ds->ops->phylink_mac_link_up(ds, dp->index, mode, interface, phydev,
+ 				     speed, duplex, tx_pause, rx_pause);
+@@ -1708,78 +1682,6 @@ void dsa_port_phylink_destroy(struct dsa_port *dp)
+ 	dp->pl = NULL;
+ }
+ 
+-static int dsa_shared_port_setup_phy_of(struct dsa_port *dp, bool enable)
+-{
+-	struct dsa_switch *ds = dp->ds;
+-	struct phy_device *phydev;
+-	int port = dp->index;
+-	int err = 0;
+-
+-	phydev = dsa_port_get_phy_device(dp);
+-	if (!phydev)
+-		return 0;
+-
+-	if (IS_ERR(phydev))
+-		return PTR_ERR(phydev);
+-
+-	if (enable) {
+-		err = genphy_resume(phydev);
+-		if (err < 0)
+-			goto err_put_dev;
+-
+-		err = genphy_read_status(phydev);
+-		if (err < 0)
+-			goto err_put_dev;
+-	} else {
+-		err = genphy_suspend(phydev);
+-		if (err < 0)
+-			goto err_put_dev;
+-	}
+-
+-	if (ds->ops->adjust_link)
+-		ds->ops->adjust_link(ds, port, phydev);
+-
+-	dev_dbg(ds->dev, "enabled port's phy: %s", phydev_name(phydev));
+-
+-err_put_dev:
+-	put_device(&phydev->mdio.dev);
+-	return err;
+-}
+-
+-static int dsa_shared_port_fixed_link_register_of(struct dsa_port *dp)
+-{
+-	struct device_node *dn = dp->dn;
+-	struct dsa_switch *ds = dp->ds;
+-	struct phy_device *phydev;
+-	int port = dp->index;
+-	phy_interface_t mode;
+-	int err;
+-
+-	err = of_phy_register_fixed_link(dn);
+-	if (err) {
+-		dev_err(ds->dev,
+-			"failed to register the fixed PHY of port %d\n",
+-			port);
+-		return err;
+-	}
+-
+-	phydev = of_phy_find_device(dn);
+-
+-	err = of_get_phy_mode(dn, &mode);
+-	if (err)
+-		mode = PHY_INTERFACE_MODE_NA;
+-	phydev->interface = mode;
+-
+-	genphy_read_status(phydev);
+-
+-	if (ds->ops->adjust_link)
+-		ds->ops->adjust_link(ds, port, phydev);
+-
+-	put_device(&phydev->mdio.dev);
+-
+-	return 0;
+-}
+-
+ static int dsa_shared_port_phylink_register(struct dsa_port *dp)
+ {
+ 	struct dsa_switch *ds = dp->ds;
+@@ -1983,44 +1885,28 @@ int dsa_shared_port_link_register_of(struct dsa_port *dp)
+ 					dsa_switches_apply_workarounds))
+ 		return -EINVAL;
+ 
+-	if (!ds->ops->adjust_link) {
+-		if (missing_link_description) {
+-			dev_warn(ds->dev,
+-				 "Skipping phylink registration for %s port %d\n",
+-				 dsa_port_is_cpu(dp) ? "CPU" : "DSA", dp->index);
+-		} else {
+-			dsa_shared_port_link_down(dp);
++	if (missing_link_description) {
++		dev_warn(ds->dev,
++			 "Skipping phylink registration for %s port %d\n",
++			 dsa_port_is_cpu(dp) ? "CPU" : "DSA", dp->index);
++	} else {
++		dsa_shared_port_link_down(dp);
+ 
+-			return dsa_shared_port_phylink_register(dp);
+-		}
+-		return 0;
++		return dsa_shared_port_phylink_register(dp);
+ 	}
+ 
+-	dev_warn(ds->dev,
+-		 "Using legacy PHYLIB callbacks. Please migrate to PHYLINK!\n");
+-
+-	if (of_phy_is_fixed_link(dp->dn))
+-		return dsa_shared_port_fixed_link_register_of(dp);
+-	else
+-		return dsa_shared_port_setup_phy_of(dp, true);
++	return 0;
+ }
+ 
+ void dsa_shared_port_link_unregister_of(struct dsa_port *dp)
+ {
+-	struct dsa_switch *ds = dp->ds;
+-
+-	if (!ds->ops->adjust_link && dp->pl) {
++	if (dp->pl) {
+ 		rtnl_lock();
+ 		phylink_disconnect_phy(dp->pl);
+ 		rtnl_unlock();
+ 		dsa_port_phylink_destroy(dp);
+ 		return;
+ 	}
+-
+-	if (of_phy_is_fixed_link(dp->dn))
+-		of_phy_deregister_fixed_link(dp->dn);
+-	else
+-		dsa_shared_port_setup_phy_of(dp, false);
+ }
+ 
+ int dsa_port_hsr_join(struct dsa_port *dp, struct net_device *hsr,
 -- 
 2.34.1
 
