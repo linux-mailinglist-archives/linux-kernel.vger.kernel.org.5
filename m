@@ -1,143 +1,161 @@
-Return-Path: <linux-kernel+bounces-162185-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-162189-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3B0CE8B5758
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 14:02:37 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A54918B5767
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 14:05:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E49291F23000
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 12:02:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 616392827EA
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 12:05:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F4BD38396;
-	Mon, 29 Apr 2024 12:02:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF82F535C1;
+	Mon, 29 Apr 2024 12:05:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LWhZaw0X"
-Received: from mail-ed1-f45.google.com (mail-ed1-f45.google.com [209.85.208.45])
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="DJVKtHeY";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="X1G0nalj";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="DJVKtHeY";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="X1G0nalj"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D448953383;
-	Mon, 29 Apr 2024 12:02:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9DD0052F9A;
+	Mon, 29 Apr 2024 12:05:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714392151; cv=none; b=Xpt3+bEs7o8meSIQ6hUAqOfCT5X4hffYfw1RFHpgUU9JXw0A4hSl5KKoLdVC9rJyD1TXL4SKfL0ygyeQ/BUz41s1FQ06e2HDevy1AZdV8exHPC/11SH2QJ9TcGj5fyS8/3oOKhP8oSeIxl3PTVbeeM7gj2jSY0S6+Lsc05qbQrQ=
+	t=1714392316; cv=none; b=M0scoVYOyTHbJwMweIslLsHptQUPlwCUBhKjvmPMkh07p/PBz34Xhv6LlH/y3uysooJn/8HYKcGD8N6wVBwheNHtvmewgS8PZJOUD9ch/iMFbhpt+1j1gcOwi0fJcEZhHoLMmILXWOcBkfa4sW/BDE8Wt1dcGnnOrJ+0aJFX+ao=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714392151; c=relaxed/simple;
-	bh=y+5yRp4hZZlhcS8Hnh7ujBkkvEUXh6QrchD4YdBX1c4=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=bZTAeccMMiY6wsEGnEb3/7azF8tD2wiHWO68ZQ/34elF4SujY3sj/Rk92WyUW3yU0A3a2k8oB5SRlISFbXOlXUz7mDVlhb4f+Fj8KzzfXVFzySuZEx/oXEpahp5Fn7GBn+uONoSpyTL3OzdaT4h1rU9KQugTct3NJXy+dxdwYgo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LWhZaw0X; arc=none smtp.client-ip=209.85.208.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-571ba432477so4505635a12.1;
-        Mon, 29 Apr 2024 05:02:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714392148; x=1714996948; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=GLFNprZuwHsZtlRkA4qR4RqYKlel9cjffFWXRNhhgPc=;
-        b=LWhZaw0XMiw565y0MyIEcFalbvRHGcpZXDoZYn3+S4SJxQnhtDiFGLcva1Id+uahns
-         JVFPnJ0m/EFA/l2xENsBNeVUbLFjVAuxYGX/cKQmq64NEnrI243BiGIEU2Vnthym2faZ
-         4l0neufTvUgDukl+C1Rs8Vk06oXKJMMueZHEQw5xNz56/O42isaMHPSivmb+aBhK3wZa
-         gW6pMvLSS94UEedDgCpkFk8SIjsXAAXJu2vmso/cxllKzixxd1ZAdtR7iXDHBuEvuOT/
-         Ey2duNswZdqQR2Qn0atDcQpqK4OA9v9V0/ZfiyxXdnNJ1gveh6w4iY0jJaaZ1HSZAXNs
-         s+6A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714392148; x=1714996948;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=GLFNprZuwHsZtlRkA4qR4RqYKlel9cjffFWXRNhhgPc=;
-        b=cpxHmwKi3iAOwL4Pe4FKZop8n1S24ZxLxVlBn1vx1qe5bVVTCqs3BTSmOkLuAYcFd8
-         0C5xwtU43A0fGsGPy4g7RL43LfnBy18kmaJe/dQ7FV6DUk+gDLD9lgy0hoU7YBI0VoBk
-         5fOw6CU3hDwWLIGTuA7Fmp5idP28+lfFxbtW/+CgZwzDxqLKCXM1F42lpSvgielBlOhY
-         T0oPI2PSQR7PfZhdaCIs+Q/LITd5ya7v6Mo3fr+1QkbsBhOqXP9faI4KpMNkKBcY3zbY
-         oeSF/bpU3/nojgaHN/hgbd8OizffDhQdRfyaIcmVTIq9dT7j9KMl0VwiqWPzmIbTQ8qe
-         dtvg==
-X-Forwarded-Encrypted: i=1; AJvYcCXFHSYPC82QGnjHi9V1autPXVF72G3gq+sNbAv6rriyqUthodIDql1UEoPHDUy9fcxLbaJb5pPZ/8yXXob6ejj4AEHVJx+wValwGgQaUKSnmeuKhoTOOktg0a1nMPlty7RpnpCnsSeT
-X-Gm-Message-State: AOJu0YwFRdRXGofv2+5INU4/C+KR232R3Rd+hzB2E+/WBSOwa7za7EFi
-	y1DmT20Pl+3kgeK0tZ5NkqH/75oLq/0VmuTB9go+kxJ9cqlhSa/E
-X-Google-Smtp-Source: AGHT+IHCwhcy1snUeqwen+Ie6UtT4Ir4L5ehHoHd1ao15B6fwE9gQFFI/3DtMTy2yR2SLjPrJk5b1w==
-X-Received: by 2002:a50:8747:0:b0:572:71b2:e200 with SMTP id 7-20020a508747000000b0057271b2e200mr3427265edv.22.1714392147757;
-        Mon, 29 Apr 2024 05:02:27 -0700 (PDT)
-Received: from ?IPv6:2003:f6:ef1c:c500:994e:fbde:478:1ce1? (p200300f6ef1cc500994efbde04781ce1.dip0.t-ipconnect.de. [2003:f6:ef1c:c500:994e:fbde:478:1ce1])
-        by smtp.gmail.com with ESMTPSA id 15-20020a508e0f000000b005726e5e8765sm2640289edw.3.2024.04.29.05.02.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Apr 2024 05:02:27 -0700 (PDT)
-Message-ID: <1d9cdfa05150a389433aa399b44fcbcff5bed258.camel@gmail.com>
-Subject: Re: [PATCH 1/8] iio: adc: ad_sigma_delta: use 'time_left' variable
- with wait_for_completion_timeout()
-From: Nuno =?ISO-8859-1?Q?S=E1?= <noname.nuno@gmail.com>
-To: Wolfram Sang <wsa+renesas@sang-engineering.com>, 
-	linux-iio@vger.kernel.org
-Cc: Lars-Peter Clausen <lars@metafoo.de>, Michael Hennerich
-	 <Michael.Hennerich@analog.com>, Jonathan Cameron <jic23@kernel.org>, 
-	linux-kernel@vger.kernel.org
-Date: Mon, 29 Apr 2024 14:06:05 +0200
-In-Reply-To: <20240429113313.68359-2-wsa+renesas@sang-engineering.com>
-References: <20240429113313.68359-1-wsa+renesas@sang-engineering.com>
-	 <20240429113313.68359-2-wsa+renesas@sang-engineering.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.52.1 
+	s=arc-20240116; t=1714392316; c=relaxed/simple;
+	bh=OmNjsWl0KvT4p5iOBj8Kvzg2oMkQflGASVR8UbH2pCg=;
+	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=oZP5TuhFWWJAEJhX5lpb+QQ/guzBSD9156Eq4ZnT6H2sk30Bdo5Gm0t08/4MzlVJfdk4vIGK7tecRjQ0HveR5oWJbO9+0B3agh5/KPp68a2e52av1eHrLudv6+K0xGPgZkCog+/wAbyqMlLiqcH2khP8znZHUZJoWKElj0q6IAw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=DJVKtHeY; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=X1G0nalj; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=DJVKtHeY; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=X1G0nalj; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from knuth.suse.de (unknown [IPv6:2a07:de40:a101:3:9249:faff:fe06:959])
+	by smtp-out2.suse.de (Postfix) with ESMTP id AA1461F390;
+	Mon, 29 Apr 2024 12:05:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1714392312; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=akRL7ROXXrCJ+02WODs6j3jnpy7lzzCLR0SqwV7vv9w=;
+	b=DJVKtHeYFwL/bwuOZisjUIi42dTAlT6ws+53p4TgHASB2dMBcuDPvMowX9Ci+32g4xninR
+	BjKO/gDFrebedq5smy87aToId7oRlS8chy/z+ka9ZpWqTHZBFiDILbXMO/dFCWz1tweEzf
+	9hj0sZA/WEamJ7HC2G8T/F7VLMSzmy0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1714392312;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=akRL7ROXXrCJ+02WODs6j3jnpy7lzzCLR0SqwV7vv9w=;
+	b=X1G0naljtqpQjWIzkwhu3rUOE094R4xZBQeO6JhKKVonvc+5mVI1h8XG9o3/JbyHwXA/dN
+	CD02QD7QosaXAYCg==
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=DJVKtHeY;
+	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=X1G0nalj
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1714392312; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=akRL7ROXXrCJ+02WODs6j3jnpy7lzzCLR0SqwV7vv9w=;
+	b=DJVKtHeYFwL/bwuOZisjUIi42dTAlT6ws+53p4TgHASB2dMBcuDPvMowX9Ci+32g4xninR
+	BjKO/gDFrebedq5smy87aToId7oRlS8chy/z+ka9ZpWqTHZBFiDILbXMO/dFCWz1tweEzf
+	9hj0sZA/WEamJ7HC2G8T/F7VLMSzmy0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1714392312;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=akRL7ROXXrCJ+02WODs6j3jnpy7lzzCLR0SqwV7vv9w=;
+	b=X1G0naljtqpQjWIzkwhu3rUOE094R4xZBQeO6JhKKVonvc+5mVI1h8XG9o3/JbyHwXA/dN
+	CD02QD7QosaXAYCg==
+Received: by knuth.suse.de (Postfix, from userid 10510)
+	id 94AAA34F8E1; Mon, 29 Apr 2024 14:05:12 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+	by knuth.suse.de (Postfix) with ESMTP id 7D59334F8E0;
+	Mon, 29 Apr 2024 14:05:12 +0200 (CEST)
+Date: Mon, 29 Apr 2024 14:05:12 +0200 (CEST)
+From: Michael Matz <matz@suse.de>
+To: Borislav Petkov <bp@alien8.de>
+cc: Jiri Slaby <jirislaby@kernel.org>, Ard Biesheuvel <ardb+git@google.com>, 
+    linux-kernel@vger.kernel.org, x86@kernel.org, 
+    Ard Biesheuvel <ardb@kernel.org>, Nathan Chancellor <nathan@kernel.org>, 
+    Nick Desaulniers <ndesaulniers@google.com>, 
+    Bill Wendling <morbo@google.com>, Justin Stitt <justinstitt@google.com>, 
+    Song Liu <song@kernel.org>, Ricardo Ribalda <ribalda@kernel.org>, 
+    Fangrui Song <maskray@google.com>, Arthur Eubanks <aeubanks@google.com>, 
+    stable@vger.kernel.org
+Subject: Re: [PATCH] x86/purgatory: Switch to the position-independent small
+ code model
+In-Reply-To: <20240420131717.GAZiPAXY9EAYnHajaw@fat_crate.local>
+Message-ID: <836c267f-a028-acce-8b19-180162a5febc@suse.de>
+References: <20240418201705.3673200-2-ardb+git@google.com> <3f23b551-4815-4a06-9217-ff5beeb80df2@kernel.org> <20240420131717.GAZiPAXY9EAYnHajaw@fat_crate.local>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spam-Level: *
+X-Spamd-Result: default: False [1.03 / 50.00];
+	HFILTER_HOSTNAME_UNKNOWN(2.50)[];
+	BAYES_HAM(-2.36)[97.02%];
+	HFILTER_HELO_IP_A(1.00)[knuth.suse.de];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	RDNS_NONE(1.00)[];
+	HFILTER_HELO_NORES_A_OR_MX(0.30)[knuth.suse.de];
+	R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	RCVD_NO_TLS_LAST(0.10)[];
+	MX_GOOD(-0.01)[];
+	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	ARC_NA(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	RCPT_COUNT_TWELVE(0.00)[15];
+	MIME_TRACE(0.00)[0:+];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DKIM_TRACE(0.00)[suse.de:+];
+	MISSING_XM_UA(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	TO_DN_SOME(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	MID_RHS_MATCH_FROM(0.00)[];
+	DNSWL_BLOCKED(0.00)[2a07:de40:a101:3:9249:faff:fe06:959:from];
+	TAGGED_RCPT(0.00)[git];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim]
+X-Spam-Score: 1.03
+X-Spam-Flag: NO
+X-Rspamd-Queue-Id: AA1461F390
+X-Spamd-Bar: +
 
-On Mon, 2024-04-29 at 13:33 +0200, Wolfram Sang wrote:
-> There is a confusing pattern in the kernel to use a variable named 'timeo=
-ut'
-> to
-> store the result of wait_for_completion_timeout() causing patterns like:
->=20
-> 	timeout =3D wait_for_completion_timeout(...)
-> 	if (!timeout) return -ETIMEDOUT;
->=20
-> with all kinds of permutations. Use 'time_left' as a variable to make the=
- code
-> self explaining.
->=20
-> Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
-> ---
+Hello,
 
-Reviewed-by: Nuno Sa <nuno.sa@analog.com>
+On Sat, 20 Apr 2024, Borislav Petkov wrote:
 
-> =C2=A0drivers/iio/adc/ad_sigma_delta.c | 6 +++---
-> =C2=A01 file changed, 3 insertions(+), 3 deletions(-)
->=20
-> diff --git a/drivers/iio/adc/ad_sigma_delta.c
-> b/drivers/iio/adc/ad_sigma_delta.c
-> index a602429cdde4..40ba6506bfc1 100644
-> --- a/drivers/iio/adc/ad_sigma_delta.c
-> +++ b/drivers/iio/adc/ad_sigma_delta.c
-> @@ -206,7 +206,7 @@ int ad_sd_calibrate(struct ad_sigma_delta *sigma_delt=
-a,
-> =C2=A0	unsigned int mode, unsigned int channel)
-> =C2=A0{
-> =C2=A0	int ret;
-> -	unsigned long timeout;
-> +	unsigned long time_left;
-> =C2=A0
-> =C2=A0	ret =3D ad_sigma_delta_set_channel(sigma_delta, channel);
-> =C2=A0	if (ret)
-> @@ -223,8 +223,8 @@ int ad_sd_calibrate(struct ad_sigma_delta *sigma_delt=
-a,
-> =C2=A0
-> =C2=A0	sigma_delta->irq_dis =3D false;
-> =C2=A0	enable_irq(sigma_delta->spi->irq);
-> -	timeout =3D wait_for_completion_timeout(&sigma_delta->completion, 2 *
-> HZ);
-> -	if (timeout =3D=3D 0) {
-> +	time_left =3D wait_for_completion_timeout(&sigma_delta->completion, 2 *
-> HZ);
-> +	if (time_left =3D=3D 0) {
-> =C2=A0		sigma_delta->irq_dis =3D true;
-> =C2=A0		disable_irq_nosync(sigma_delta->spi->irq);
-> =C2=A0		ret =3D -EIO;
+> Interesting. I thought gcc doesn't have problems here yet and was
+> talking to Matz on Thu about it and it seems he's forgotten about his
+> statement too that "you should simply stop using -mcmodel=large.  Noone
+> should use it." :-)
 
+It may be so ingrained in my brain that I'm not _always_ saying it when 
+talking about the large code model over a beer.  And indeed I know of no 
+particular problems with it vis GCC, but that doesn't mean it's a good 
+idea to use :-)
+
+So once again: "everyone should simply stop using -mcmodel=large.  Noone 
+should use it."
+
+So the patch goes strictly into the direction of betterment of the 
+universe. :)
+
+
+Ciao,
+Michael.
 
