@@ -1,195 +1,135 @@
-Return-Path: <linux-kernel+bounces-162703-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-162704-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1B1818B5F48
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 18:42:20 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D6C418B5F4B
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 18:43:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3E1CC1C21551
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 16:42:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0C1721C21891
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 16:43:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E4C0386130;
-	Mon, 29 Apr 2024 16:42:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07C858612C;
+	Mon, 29 Apr 2024 16:43:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YwtcTq69"
-Received: from mail-pg1-f182.google.com (mail-pg1-f182.google.com [209.85.215.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eCohTSKX"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE0B31DA23;
-	Mon, 29 Apr 2024 16:42:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 49D2184FDB;
+	Mon, 29 Apr 2024 16:43:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714408928; cv=none; b=hIHeNtk0FSLUYfNqPaKm4rxb+ShUq1JCIMH+xX4WXuGKCUDj7a2gBqk/kgHSyDpDUe40AcPJkj7lvrdbmSaeXijRHt66d/KpfsdTc67Gc6bbhszIwBwEfEy9w20YLvhA1MhWT9T88BADP1BS2hNJ9gahCcvOmrY2VDGuFR7Nxt8=
+	t=1714408992; cv=none; b=l+K+NJnoAu2I5GInODWG5aqPm+xGN3XycZqY1TeZ79O55IQ6x1QggL2+PDQjPD8FjnyyN06Y0PIj04KqcwwvkfOOkXABTnmrXHCSp/ss6H1sApzL09FzSckbHEafksSHWrsvumRpreh39kkgAzseD+S4Te4fHbSLiyVPVIfsqTc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714408928; c=relaxed/simple;
-	bh=UhXiadpeGI3efarCSZ4ivzcXZaiIy+ZRiyi3kVtsmMQ=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=sw5nmJgIgsmxq7WvvWnYNr4tSkbbd9c0T1nYzIFJ1g53ppPH5JIaAzsnTOeBHaO9Jyw+W6wkir5Sj735ZT9dXOKQKiHGHyFRN/oEfqvJEd+/ZkX91tL/fuDZpLzbI2++p+jNHLk1PSJkjspi2PRSBtJg2Ik8WPsx4TPfTi94gZc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YwtcTq69; arc=none smtp.client-ip=209.85.215.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f182.google.com with SMTP id 41be03b00d2f7-6082fd3e96eso3332122a12.1;
-        Mon, 29 Apr 2024 09:42:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714408926; x=1715013726; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=9Jd7Oanm4nSiWiwnB9IwoLbTq10zAou5UxTuvdRgHBc=;
-        b=YwtcTq69BLrnegOzbP0ZHEsAbgDVTfh1D8rmsZrBj0Y0iXaqLGRNNjE7pgbhPwxdgE
-         +Xsvx3i2jAGHgdO1Ytbk+lzWIQCO/PBHTl0TOrE7zwRixbaBB7+qHBu0j5sfECjMBOhj
-         QHyYJDewiagQo5rZTLQQUll7XCDZU/MoG/EgFIQny2+/OuPN8UyAdobppuVMUtUuEjwI
-         zLIWFYTz/OHQmnc42rhuaasj6xE+V+rNKfgrqY3MtOyvurcXfILdexOm0Sm8tlDYT5ZA
-         UYd/PbckhzF5rhaOBPD8xqjy8uuOfuFHXnshf5MufDuepSOYAXyxGBho7/UW5HZLYzV1
-         OOZg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714408926; x=1715013726;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=9Jd7Oanm4nSiWiwnB9IwoLbTq10zAou5UxTuvdRgHBc=;
-        b=X0+jBWh2+o+ZapjgZWvavk93V6Esnm6Q2d0ytRjOZ47GVUeL4f78FCVk9yRYHURrEY
-         hOSIiGskWmcxJeBNUMaAjbRGdAca4jDRAENrBIAaUXkJJBsT1AS9eTF8eAborBLJYjaa
-         Qo2yc/IlG1N29bgRoAHDxK2J2/yjqBZKz2yJXaBYzggah9Eq4ybP57+lZrkC/UfeEBzg
-         hAPhY7nGCI8Jr4Xarn1nbwr5RYHnbKgfEO/OFkxKvBEmftPF6dnrec5oJcQjAAPZV1UB
-         /WOqUsXw3NSqNqt24wvBZzzPOorfTmj9XGHSAfPejQU/lUHGI2ToFlAtFOX4936r8gMB
-         iLWg==
-X-Forwarded-Encrypted: i=1; AJvYcCUE9Fo8gV36+gQS1yViSYqZ7R+CFHbI266kxLc4H4YC3qa8f61kb+eumkmCPW6o23wHxgzz5Iil92D02iqZOWZc64DfFHI2mqUmn3FJS7SIuHe7FD2ESUOYMolKvY26K1DQ+kkLq4F71TfKzA9ZD5SXQS6PQFN7Iaa3jT6LocxRAHdC2QxL8t62CZk/NTGIKkv4lBOSdZnlslihkSJWPjws
-X-Gm-Message-State: AOJu0YwVKi04TnE6NZzPz8cclDUaVQL7r9apxXOajrwI9x8EZAWPGDAD
-	K1tzWBR+MhV1TtR7GONP8PczBl7KVq5pBO5tyOILxZJAJ9jh8hdcN3j7NAnNECi6M3vhCOJGzY9
-	orBtiFroZsAq9rY2LeUvVnHEzsQs=
-X-Google-Smtp-Source: AGHT+IE4IxzjkZnZxeSMThIyMWUmuVBhMxbEPOeKEToWqcmhE/J9jTcxCoAmje/rhqZ2jx6YJT0zAmHXpRs/eYj05/A=
-X-Received: by 2002:a17:90a:df02:b0:2ad:fa29:3989 with SMTP id
- gp2-20020a17090adf0200b002adfa293989mr9166083pjb.19.1714408926072; Mon, 29
- Apr 2024 09:42:06 -0700 (PDT)
+	s=arc-20240116; t=1714408992; c=relaxed/simple;
+	bh=q/1QRQoyEhR6GEBHvBAQqcf2WKQozplDb6iCZ4SM6zc=;
+	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:From:To:
+	 References:In-Reply-To; b=me+cZR1rpBejycER8CDgw/7qglnW7GlVniaONkxG7yIhmFhpxWtnZtuLd6Zj06AEnTYkdP8l5nm2Rsss9izqXJ4+Zkmlm8LkFvaCfBt9fhswvcEQSXYb2qV0kUcTIvID1wzIXJv/hPk0/BK0tCuCXmbJzehxQbsjUGu5VKclJ00=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eCohTSKX; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7106AC113CD;
+	Mon, 29 Apr 2024 16:43:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714408992;
+	bh=q/1QRQoyEhR6GEBHvBAQqcf2WKQozplDb6iCZ4SM6zc=;
+	h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
+	b=eCohTSKXbTUQ1mr84Gs3u02SxVL1vp05+WpEDbIzrb6Tc9htO0Sf0c/uOvAdCRAuQ
+	 fpm8DSmSBZbOiL6RcUJ47YqcEiYJ+KMCF2AcA8fHYR4Y1eCE5kbkix0LuBG55IbGjc
+	 1ttsijw+Cv6IO5mKYKXTwfiE64aqNTluyDSgzy6oxYXm+qn3Glj117MuiRPx49PmMN
+	 abyPNf2nJQnq+viVYE06vdu839vsgqyt1Zv9nHuur9cULQZwVLPo1NUXt8HBGGBs43
+	 iU7nIIFrIFJolbLJsL77ZesTFA8l5tJlnbIMehYQ3mYJpj7q4+LPdkffszhegXf6GT
+	 QjiDEqKU+z+Gg==
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20240421194206.1010934-1-jolsa@kernel.org> <20240421194206.1010934-6-jolsa@kernel.org>
- <CAEf4BzbWr9s2HiWU=7=okwH7PR8LHGFj2marmaOxKW61BWKHGg@mail.gmail.com> <Zi9NPfII8I7nWz6O@krava>
-In-Reply-To: <Zi9NPfII8I7nWz6O@krava>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Mon, 29 Apr 2024 09:41:53 -0700
-Message-ID: <CAEf4BzY8K6GXtdRkmo3b=ZnW=6jQZnDMtBbGOQpP8m7boTJRpg@mail.gmail.com>
-Subject: Re: [PATCHv3 bpf-next 5/7] selftests/bpf: Add uretprobe syscall call
- from user space test
-To: Jiri Olsa <olsajiri@gmail.com>
-Cc: Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>, 
-	Oleg Nesterov <oleg@redhat.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, linux-kernel@vger.kernel.org, 
-	linux-trace-kernel@vger.kernel.org, linux-api@vger.kernel.org, x86@kernel.org, 
-	bpf@vger.kernel.org, Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>, 
-	John Fastabend <john.fastabend@gmail.com>, Peter Zijlstra <peterz@infradead.org>, 
-	Thomas Gleixner <tglx@linutronix.de>, "Borislav Petkov (AMD)" <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>, 
-	Andy Lutomirski <luto@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date: Mon, 29 Apr 2024 19:43:05 +0300
+Message-Id: <D0WR9J2AICDK.GM1G85DEHDDF@kernel.org>
+Cc: "mikko.ylinen@linux.intel.com" <mikko.ylinen@linux.intel.com>,
+ "seanjc@google.com" <seanjc@google.com>, "anakrish@microsoft.com"
+ <anakrish@microsoft.com>, "Zhang, Bo" <zhanb@microsoft.com>,
+ "kristen@linux.intel.com" <kristen@linux.intel.com>,
+ "yangjie@microsoft.com" <yangjie@microsoft.com>, "Li, Zhiquan1"
+ <zhiquan1.li@intel.com>, "chrisyan@microsoft.com" <chrisyan@microsoft.com>
+Subject: Re: [PATCH v12 14/14] selftests/sgx: Add scripts for EPC cgroup
+ testing
+From: "Jarkko Sakkinen" <jarkko@kernel.org>
+To: "Haitao Huang" <haitao.huang@linux.intel.com>, "Dave Hansen"
+ <dave.hansen@intel.com>, "Huang, Kai" <kai.huang@intel.com>,
+ "hpa@zytor.com" <hpa@zytor.com>, "tim.c.chen@linux.intel.com"
+ <tim.c.chen@linux.intel.com>, "linux-sgx@vger.kernel.org"
+ <linux-sgx@vger.kernel.org>, "x86@kernel.org" <x86@kernel.org>,
+ "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+ "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "mkoutny@suse.com" <mkoutny@suse.com>, "tglx@linutronix.de"
+ <tglx@linutronix.de>, "Mehta, Sohil" <sohil.mehta@intel.com>,
+ "tj@kernel.org" <tj@kernel.org>, "mingo@redhat.com" <mingo@redhat.com>,
+ "bp@alien8.de" <bp@alien8.de>
+X-Mailer: aerc 0.17.0
+References: <20240416032011.58578-1-haitao.huang@linux.intel.com>
+ <20240416032011.58578-15-haitao.huang@linux.intel.com>
+ <op.2ma195shwjvjmi@hhuan26-mobl.amr.corp.intel.com>
+ <6b056faa6de2ba3a15c2e5dd576e96e3f85375ba.camel@intel.com>
+ <D0LLZTSVG3BC.8WIRM39WC7UU@kernel.org>
+ <f62c29ec-f893-4320-8097-f6b3a372267a@intel.com>
+ <D0W3G5GVNMMW.3OCGUH8AYNORY@kernel.org>
+ <op.2mzzkowowjvjmi@hhuan26-mobl.amr.corp.intel.com>
+In-Reply-To: <op.2mzzkowowjvjmi@hhuan26-mobl.amr.corp.intel.com>
 
-On Mon, Apr 29, 2024 at 12:33=E2=80=AFAM Jiri Olsa <olsajiri@gmail.com> wro=
-te:
+On Mon Apr 29, 2024 at 7:18 PM EEST, Haitao Huang wrote:
+> Hi Jarkko
 >
-> On Fri, Apr 26, 2024 at 11:03:29AM -0700, Andrii Nakryiko wrote:
-> > On Sun, Apr 21, 2024 at 12:43=E2=80=AFPM Jiri Olsa <jolsa@kernel.org> w=
-rote:
-> > >
-> > > Adding test to verify that when called from outside of the
-> > > trampoline provided by kernel, the uretprobe syscall will cause
-> > > calling process to receive SIGILL signal and the attached bpf
-> > > program is no executed.
-> > >
-> > > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> > > ---
-> > >  .../selftests/bpf/prog_tests/uprobe_syscall.c | 92 +++++++++++++++++=
-++
-> > >  .../selftests/bpf/progs/uprobe_syscall_call.c | 15 +++
-> > >  2 files changed, 107 insertions(+)
-> > >  create mode 100644 tools/testing/selftests/bpf/progs/uprobe_syscall_=
-call.c
-> > >
-> >
-> > See nits below, but overall LGTM
-> >
-> > Acked-by: Andrii Nakryiko <andrii@kernel.org>
-> >
-> > [...]
-> >
-> > > @@ -219,6 +301,11 @@ static void test_uretprobe_regs_change(void)
-> > >  {
-> > >         test__skip();
-> > >  }
-> > > +
-> > > +static void test_uretprobe_syscall_call(void)
-> > > +{
-> > > +       test__skip();
-> > > +}
-> > >  #endif
-> > >
-> > >  void test_uprobe_syscall(void)
-> > > @@ -228,3 +315,8 @@ void test_uprobe_syscall(void)
-> > >         if (test__start_subtest("uretprobe_regs_change"))
-> > >                 test_uretprobe_regs_change();
-> > >  }
-> > > +
-> > > +void serial_test_uprobe_syscall_call(void)
-> >
-> > does it need to be serial? non-serial are still run sequentially
-> > within a process (there is no multi-threading), it's more about some
-> > global effects on system.
+> On Sun, 28 Apr 2024 17:03:17 -0500, Jarkko Sakkinen <jarkko@kernel.org> =
+=20
+> wrote:
 >
-> plz see below
->
+> > On Fri Apr 26, 2024 at 5:28 PM EEST, Dave Hansen wrote:
+> >> On 4/16/24 07:15, Jarkko Sakkinen wrote:
+> >> > On Tue Apr 16, 2024 at 8:42 AM EEST, Huang, Kai wrote:
+> >> > Yes, exactly. I'd take one week break and cycle the kselftest part
+> >> > internally a bit as I said my previous response. I'm sure that there
+> >> > is experise inside Intel how to implement it properly. I.e. take som=
+e
+> >> > time to find the right person, and wait as long as that person has a
+> >> > bit of bandwidth to go through the test and suggest modifications.
+> >>
+> >> Folks, I worry that this series is getting bogged down in the selftest=
+s.
+> >>  Yes, selftests are important.  But getting _some_ tests in the kernel
+> >> is substantially more important than getting perfect tests.
+> >>
+> >> I don't think Haitao needs to "cycle" this back inside Intel.
 > >
-> > > +{
-> > > +       test_uretprobe_syscall_call();
-> > > +}
-> > > diff --git a/tools/testing/selftests/bpf/progs/uprobe_syscall_call.c =
-b/tools/testing/selftests/bpf/progs/uprobe_syscall_call.c
-> > > new file mode 100644
-> > > index 000000000000..5ea03bb47198
-> > > --- /dev/null
-> > > +++ b/tools/testing/selftests/bpf/progs/uprobe_syscall_call.c
-> > > @@ -0,0 +1,15 @@
-> > > +// SPDX-License-Identifier: GPL-2.0
-> > > +#include "vmlinux.h"
-> > > +#include <bpf/bpf_helpers.h>
-> > > +#include <string.h>
-> > > +
-> > > +struct pt_regs regs;
-> > > +
-> > > +char _license[] SEC("license") =3D "GPL";
-> > > +
-> > > +SEC("uretprobe//proc/self/exe:uretprobe_syscall_call")
-> > > +int uretprobe(struct pt_regs *regs)
-> > > +{
-> > > +       bpf_printk("uretprobe called");
+> > The problem with the tests was that they are hard to run anything else
+> > than Ubuntu (and perhaps Debian). It is hopefully now taken care of.
+> > Selftests do not have to be perfect but at minimum they need to be
+> > runnable.
 > >
-> > debugging leftover? we probably don't want to pollute trace_pipe from t=
-est
+> > I need ret-test the latest series because it is possible that I did not
+> > have right flags (I was travelling few days thus have not done it yet).
+> >
+> > BR, Jarkko
+> >
 >
-> the reason for this is to make sure the bpf program was not executed,
+> Let me know if you want me to send v13 before testing or you can just use=
+ =20
+> the sgx_cg_upstream_v12_plus branch in my repo.
 >
-> the test makes sure the child gets killed with SIGILL and also that
-> the bpf program was not executed by checking the trace_pipe and
-> making sure nothing was received
->
-> the trace_pipe reading is also why it's serial
+> Also thanks for the "Reviewed-by" tags for other patches. But I've not go=
+t =20
+> "Reviewed-by" from you for patches #8-12 (not sure I missed). Could you g=
+o =20
+> through those alsoe when you get chance?
 
-you could have attached BPF program from parent process and use a
-global variable (and thus eliminate all the trace_pipe system-wide
-dependency), but ok, it's fine by me the way this is done
+So, I compiled v12 branch. Was the only difference in selftests?
 
->
-> jirka
->
-> >
-> > > +       return 0;
-> > > +}
-> > > --
-> > > 2.44.0
-> > >
+I can just copy them to the device.
+
+BR, Jarkko
 
