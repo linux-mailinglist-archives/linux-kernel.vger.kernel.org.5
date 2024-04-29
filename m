@@ -1,247 +1,193 @@
-Return-Path: <linux-kernel+bounces-162587-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-162570-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B29C78B5DB2
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 17:30:02 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9775D8B5DE0
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 17:38:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6A17E28A650
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 15:30:01 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9CBCDB2CDDB
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 15:24:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AABDA839F1;
-	Mon, 29 Apr 2024 15:26:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9364183CC6;
+	Mon, 29 Apr 2024 15:23:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="YAXTYJiH"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.17])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gDCBA2FL"
+Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D18B81745;
-	Mon, 29 Apr 2024 15:26:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.17
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714404400; cv=fail; b=teFGxek8tVJtY73TyjXr1x9vkcwvMAiCuBWQAcQww/z/efGY31iTXUFWHg5zsIEbOMZpR/K1WClyvWhvMpuDLVQWD+6L/YMpE5kSXuYeIJgE60P00IoFuCcjWAtFTI3Op982goGdfR8wXFvEmqzY6RfaDrpgh2Gt52hqcNeC1R4=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714404400; c=relaxed/simple;
-	bh=vRRUBRxLjA5vNECBm4IaSYvjxwueVJWwjTolm41bHk4=;
-	h=Message-ID:Date:Subject:To:CC:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=Y2QggHf7LhbjOEE5azcpYckzmcmakcghjr7ttfHX3bTJDVgLfQMmT0bnbVcRnqTCOUkGiVTRjvxSwT1qI3i0PUVaAdN28j+b1arWORViUc4DaYJF+6bOMAY1jg3PquR2p5Bz7J59Q06nRkB+IwBVdFC3qwScyV4vy+DJqLKyxa8=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=YAXTYJiH; arc=fail smtp.client-ip=198.175.65.17
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1714404398; x=1745940398;
-  h=message-id:date:subject:to:cc:references:from:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=vRRUBRxLjA5vNECBm4IaSYvjxwueVJWwjTolm41bHk4=;
-  b=YAXTYJiH3yMDJokwRA6D2j8oIJjBISrc6DYVs1PdDKvHnGHmVlCcSLU2
-   ahmcgCRePwOG6mCgXYtDspJK/+xn9+1xrOQs/CcUKR6DURhFp6PLzOmwd
-   nQTb4OBkY8N9bse5eCDm2tsb1ANd67KITbdY4ySLb8ZPuhTW7e5yB6UY1
-   ACXvsgBpdgM9F0kYaszJKR9/R+eJqbgow6pLHYF6KnopL9xTofuYMYcrM
-   gWUQCjHPh2WGbnlM2KIuPRlqGnhat86BizP7PPCaCu/92wXpBDewxxfpf
-   sHMjQvQfLxRqvuBQ+luqTbcqD+T6lUPTv5th3MlLwGt77D8S53/FlZVFE
-   A==;
-X-CSE-ConnectionGUID: uNDhqX+WQf6y1hcCU1yFUQ==
-X-CSE-MsgGUID: ItkuUC7wS32U/PEOR19iRQ==
-X-IronPort-AV: E=McAfee;i="6600,9927,11059"; a="10190144"
-X-IronPort-AV: E=Sophos;i="6.07,239,1708416000"; 
-   d="scan'208";a="10190144"
-Received: from fmviesa009.fm.intel.com ([10.60.135.149])
-  by orvoesa109.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Apr 2024 08:23:59 -0700
-X-CSE-ConnectionGUID: Vbg7jf1CQWKwluPaI2CqRQ==
-X-CSE-MsgGUID: /rQN71kITQSXBMOjVLJ4FQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,239,1708416000"; 
-   d="scan'208";a="26099725"
-Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
-  by fmviesa009.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 29 Apr 2024 08:23:59 -0700
-Received: from fmsmsx602.amr.corp.intel.com (10.18.126.82) by
- fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Mon, 29 Apr 2024 08:23:58 -0700
-Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
- fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Mon, 29 Apr 2024 08:23:58 -0700
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.101)
- by edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Mon, 29 Apr 2024 08:23:58 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ejGZ5N/v0vdlq2D9aBYyjfP/Ij3DG6jT4Hl0L+Rj4sdnwBdhFThJGuLLcyc7QPsTtPZODXbehK0XtHa3rKm83tKkBQ1NEHr8YWlDuNBKOcAq/qqILxk5bE+kGxaMeIX9mxwQvsXlMy7cSJptdu0IVteDK8ER6TTWHyeWuev+f/GYWBiPqqL7++JQ4Z4uPkzSsjt3t/geuc7V9gSyLV/i9vO3pJ9ypxOI+s6Qx3Sy1S/6C7zB25tKkM7Mknz4ZQrJ37rKjdAGT4HXqcP1NF1m064hGxzp6yVlcREk5u3RqijSVt3LiVNRYGSPXf2etn5f8D5m+/hjDRYm/OYSeZ1CbA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Bf1r8DPLHif1LfoJbdE9sDT4GXSN5Ewjmrh9J6J3Vdo=;
- b=H+1Oew4BXDma1ZUkDPToB1UTLkpOiYfR+4ce8QGDqMzEIkYhHCLgTBPXgbk22pmzPhBw9jubtVkQx2nsfCUsyMtoIbvqorf+8rqdNKNOmRQyzxY9KfiwRTcB1G3R6IGQROxtT6J71b2Lugk3ahWyW1kLMBsMjGECaPV/rWsJhTQJ/uekpNxO5ypgIDA/v5OctVLfDXv/fN48fwc34FikARbt3IKmYpfF3lSqz+23Zh9Hxd7u77NFNZsD5E0DVdlNeOprpbnebQI/YBRdkqzY/mneHqXii1KXsH0l+ijgs+nF2gUMdl9cLSff3LaGOPIfRXrcVSCErTZKWdevttel6w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from SJ2PR11MB7573.namprd11.prod.outlook.com (2603:10b6:a03:4d2::10)
- by MW4PR11MB6888.namprd11.prod.outlook.com (2603:10b6:303:22d::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7519.34; Mon, 29 Apr
- 2024 15:23:56 +0000
-Received: from SJ2PR11MB7573.namprd11.prod.outlook.com
- ([fe80::d610:9c43:6085:9e68]) by SJ2PR11MB7573.namprd11.prod.outlook.com
- ([fe80::d610:9c43:6085:9e68%7]) with mapi id 15.20.7519.031; Mon, 29 Apr 2024
- 15:23:55 +0000
-Message-ID: <a65c696b-5947-45ee-a1a8-caa50c7ccf9f@intel.com>
-Date: Mon, 29 Apr 2024 08:23:46 -0700
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH V5 4/4] KVM: selftests: Add test for configure of x86 APIC
- bus frequency
-To: "Chen, Zide" <zide.chen@intel.com>, <isaku.yamahata@intel.com>,
-	<pbonzini@redhat.com>, <erdemaktas@google.com>, <vkuznets@redhat.com>,
-	<seanjc@google.com>, <vannapurve@google.com>, <jmattson@google.com>,
-	<mlevitsk@redhat.com>, <xiaoyao.li@intel.com>, <chao.gao@intel.com>,
-	<rick.p.edgecombe@intel.com>
-CC: <kvm@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <cover.1714081725.git.reinette.chatre@intel.com>
- <eac8c5e0431529282e7887aad0ba66506df28e9e.1714081726.git.reinette.chatre@intel.com>
- <f5a80896-e1aa-4f23-a739-5835f7430f78@intel.com>
- <12445519-efd9-42e9-a226-60cfa9d2a880@intel.com>
- <002340b7-86e2-4be3-8468-71d59233c32e@intel.com>
-Content-Language: en-US
-From: Reinette Chatre <reinette.chatre@intel.com>
-In-Reply-To: <002340b7-86e2-4be3-8468-71d59233c32e@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: DB8PR06CA0033.eurprd06.prod.outlook.com
- (2603:10a6:10:100::46) To SJ2PR11MB7573.namprd11.prod.outlook.com
- (2603:10b6:a03:4d2::10)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 27B4382D8E;
+	Mon, 29 Apr 2024 15:23:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1714404233; cv=none; b=C/Vq9FiXZSnuZBn15sptfrBIuMFbHhV7j1mUW2ryM7eVDJ13g2b+HQhcRq/LYGMkWcqWlXSY2oiar6mjlqP7AbGHnwdLta/futd/nuV8Cf0HvTutzxwd7TvHwXatmXbUDKxlFkNkPxCcbD1i6PucYDdmLIF4+mKeyuNvOEATSso=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1714404233; c=relaxed/simple;
+	bh=UoOiVi6NxaqejEwIzDKtIZ5vgKiX5KkoRm7zE3CAe6w=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=b9Q6+EZQZVA67p5oqTrZt9E19NqGt+G8tCFetlKNmIk6S+A7o2hVRKZzlBBVl4gELvmQQw4s29RHvG3NRHGw5498ll92RmMzV5PZEW8vO7rCMI+YBO1Cct5DiNEmVTHgQPS+PwnlQIMNcjgqUbtj9yR+5VOZSZ2pLmD0jS+FoY4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gDCBA2FL; arc=none smtp.client-ip=209.85.214.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-1e834159f40so36442245ad.2;
+        Mon, 29 Apr 2024 08:23:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1714404231; x=1715009031; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=3jBawfFhlA0UFRcAmeMLqv9bLy/zzapCJCHTZnIdO/k=;
+        b=gDCBA2FL3PIt+vvkwrkWZhGRsfpU2c2oZF1HAKqLrHOabu6/qgS5yu07G59pVqwQDl
+         SFzipIyxSnqJblhHrrcoEcnvJIr/D4mS7WF4kWCxMUg1FKLV8EiU9DoHoQ05nDJig11x
+         ldIGVyzETzhLVbX7Fh5aDvxiI3dGYFVwGZkvGebf6dEbq1GgqEFcoBGHdJoP1nVRndE/
+         ccgSCfoOKhVwwLtExKCiJhmrvujRfy7x0NBJwPz0BFevDu3CHw+7Rlfs8WZ6ZRtHHdPX
+         wrsyXpum9GrsEryzehX6TZS5LdQD4aCUGsidCvNwnCfXXkoa4jByEJBHCEw+nDonUGLc
+         Kvrw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714404231; x=1715009031;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:sender:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=3jBawfFhlA0UFRcAmeMLqv9bLy/zzapCJCHTZnIdO/k=;
+        b=WecselXdrGBayVE5MJ1JCSF0LrzRoY/Jj1dZi+hEkItdiSx4/sGjdsv3JHPAGR+Yhu
+         wYj2CFnTxi4+jKzGu+rl/SiaA6z/6kk2Dt3epwV0sXDJ6x1HlgEPueamC20ehqL6ljCA
+         1VXjwNXwnlC2wGT3dwtEBIN7Jvbg+jJ9XbW39RknMK0PrcEZlsrbS3/4YbDUXUFXnRag
+         iDUGziO4+G9m8w3Ip/ktSL4An5QTrikliXCPp0SOTYhMpygBlf62p3HLGx67GnAZ3nmd
+         matn3ruUK9G8aAbqB34AwHAFXhv6uNN6QrAObQu//TXdcQdFEL78PfzSYh+B9D/Vhyqc
+         ZUTQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUJK8lnRmyCGQUH55TmErJkE+zTFuw3dt5oe6an0HZBdb384BAgrh0stlj9tp6BgXWveDPJc4s9KOBZyttokXHWmmIvwyIRh2dFyfckv1wUK1uCaRKwikZQ1Z7v/qBiPgdddHUhnjba
+X-Gm-Message-State: AOJu0Yy1pfE/d0DZUr0AZM/gaLEQ3Ab8vEJFyg4R4s5db9VeE3KsjJuc
+	p6eTaofOt/VVH3d+gued2gL+MB/sYnVKe14umKawqb1pfwQJnDTM
+X-Google-Smtp-Source: AGHT+IG4M8a/5rwKelhbmpwTd0G8NkgLdEqlScPeP9urTIwVya3bVOOLSQLcRTcGzyfYiwAIzPnFhA==
+X-Received: by 2002:a17:902:ec8a:b0:1e4:203d:ab80 with SMTP id x10-20020a170902ec8a00b001e4203dab80mr11995464plg.57.1714404231247;
+        Mon, 29 Apr 2024 08:23:51 -0700 (PDT)
+Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id jz15-20020a170903430f00b001e4e8278847sm20440680plb.56.2024.04.29.08.23.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 29 Apr 2024 08:23:50 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Message-ID: <dd351be7-4ab4-436d-bfad-7f72aadfc1d1@roeck-us.net>
+Date: Mon, 29 Apr 2024 08:23:48 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SJ2PR11MB7573:EE_|MW4PR11MB6888:EE_
-X-MS-Office365-Filtering-Correlation-Id: 49b5ef4e-e2c8-4f6c-5426-08dc6860625a
-X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230031|1800799015|376005|366007|921011;
-X-Microsoft-Antispam-Message-Info: =?utf-8?B?K3VXZ2VSek8xQXlLSkhFdHQwQ2grczNvUVQ0UzNLMGJOWlAzOFFVQmVGRDRD?=
- =?utf-8?B?cXNXZVQ3NUxaSEE5ZUh5WXk3T3lnRG92cnUzL2pIc2ZKWUFDZUNpRVBnRzlZ?=
- =?utf-8?B?R2ZkNTRjSTZEZlpXOEdOMys4N2dod3ZSVldJVmNaNERnWlhCb1RCSUlUcHRQ?=
- =?utf-8?B?a3RLTXYzSGo2YVU0bEFjZ0RWRlc3N2dTenkrN3prY2YxOEdYcnlIRGsvUmtZ?=
- =?utf-8?B?V2sxdVRmZjd3RFc2UHZiNDljK2JrMVhnVFltUlNVeERCN0hLdkd6eXdxQjh2?=
- =?utf-8?B?Q2FOci9tbWdBZmY5OElWV2pDZ0hoSU44OGt6b3JCSVNaOVMrV0srNllPVkF0?=
- =?utf-8?B?NmUxR0duZUErU2NyVmRsWmd1Q2JxTHNOZnBLdkVzRmZRV09wY3I2RDgvNDNi?=
- =?utf-8?B?WUd0SWJkUFh5Z0FJZzNsQWtTcGlVeUZWTURnc1lvVHJxYnJ1YjMxbXVJL1dw?=
- =?utf-8?B?VklWclAyVGtod1FPTlRzOThhaDZYUjBMU0FsYUpuOTdWZzMyRjZyMWwzRVI1?=
- =?utf-8?B?TWRFRWlhTmttNnEyVEhERTQ0aGpXY0szOVE1Z2czK3FmUDJZa0ZadThuOVdM?=
- =?utf-8?B?V0lHTGJvKzVZMmZoZHp4WXphOVR0Sy9PVmhxVUFqVVUrODBETDBPeTRqNDRp?=
- =?utf-8?B?TUNMWTRGYzNzNGVab0VBcE9oZ08yYmFQZUFnd2lZRERRSUNjYnB0N3pQSGNL?=
- =?utf-8?B?KzhXc3JWeDd2U0dZN3dSak5ldTF3SVQ1MjN5OTdGVHd4aVh1V3VXeHhIaWNW?=
- =?utf-8?B?NnYrazNIMnVIcm5IdnQyaGYrYWw5WUliU3BWUWxtTlNidmtpUCtqYjFqRVhR?=
- =?utf-8?B?c0FRQnlXSGJnRHFzbzZYQjk0MVNmYmRFeGRxNG5SZ250WE9JTjRWaFU5ZkZ6?=
- =?utf-8?B?Y05ERXNmaUhsNUFkZHRnOVozaVMrLzlXTzM0V3dJbFhSNlBTcXpobHNPeUtJ?=
- =?utf-8?B?QlRSbjJnUFpJV01HTTUxUld1TWU5ZXNrdi9NOWp2Y2I1RXZtTURqZUViL05M?=
- =?utf-8?B?bGwvbTJVa1RnVlNHRzlrWHNOZVR0ODlMdk1aQWY5L2syQWRkTThSc3l1aE9V?=
- =?utf-8?B?UkdxNWkvaUlKL1pNMXJnTFdZUk1NSjMrVEdsRFRDWnZOMCtBTFMwemJHQW5V?=
- =?utf-8?B?ZHlOTXJkeG9PeFdkTWNoY0hLZDcrbUpaUUNidytUR0R0SUJoUnN3NUliUFFv?=
- =?utf-8?B?VjgyMFZUcG4xblA4ZXZRaTAxTGN4UFI2U0xWbXNlRHdkUXRNNlJzQThoVndv?=
- =?utf-8?B?MFRVQWRoK3d3akN5UzlJSHRnWHl1NkdQRFdtMkRPTmRDM3Y1Q2x5aGRMN0xa?=
- =?utf-8?B?SE5sZms1MmNQZ3ZVMTdBVGdSeUVIUGZjZ1pmTWJINW5MTGZ5TmFiV3BSUjcz?=
- =?utf-8?B?TVNFUk12NkY3SElrZzVqM1dWcU1uTFBEbXhDUnh3N0J6K0dRWW02VkxHekZK?=
- =?utf-8?B?eEhGSVgzQzI2bkFkeUM5NUkreDc4NFZ2UUJFeGJ2VnhsakJFRzZKbUdCMFov?=
- =?utf-8?B?Q0I5Q3ZvaVlhQVpFc3poQzdENVJBSmR0Vjg5by9wQnN6eUdFbXNWczh0UmhR?=
- =?utf-8?B?eWhlaUl2NUY5dVJvTENUVzRINFozcTdJYU9sNWtrYWV0QXA5WTlqbjA1dXNz?=
- =?utf-8?B?Ymp4a3NLMzc4T0lML3lmMDA1SmZPWGpkUDI4NEpEY0d5Q0k3ZURyYWVyc0V2?=
- =?utf-8?B?K2Q0SXlJais0NGNMejhybnFHbjQ3OWF3d3R0YkhZUVl2ZFNzb20xM1BDaUp3?=
- =?utf-8?Q?3KddjQ3wRYMXKseyChed3WyBMWs8DUkw81jmRQC?=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ2PR11MB7573.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(376005)(366007)(921011);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?c3o2RE0rUDdJTXNRVDg2NGRONU42RElyNER0VEtIemdKbTVzZm9UOHlXbUQy?=
- =?utf-8?B?QlViUjdBZHhTazNlOEViZzR0MjhWRjRyTmJYTkdQTmJ2YTZrRlVLNy8wTncw?=
- =?utf-8?B?QW1nODRhK0dLQWR6TSs5MmRRVDZHbEI0MEtsM3dWZ2g0eTVKWVhoTVFCRi9j?=
- =?utf-8?B?MGtjaUpvdmtXaTRKNUt2cXpGa25OV1dNVDBXcGNpNDk5L1NlM0dBRW9LZlFM?=
- =?utf-8?B?SisxNzhRNjNPU2dQOGdXM080bHllOHlNR0o4ZXlvOVBYdSszM01PYTl5bzlq?=
- =?utf-8?B?RllsMWJYVUI5QWVXd3pldThiNE92cGhJVDRwajQrdEs1dG1mNSs3Q0FMYWg5?=
- =?utf-8?B?eU5HOG9VcTMwMmlDQUxOYkhFaFhhQXdDUnU2a0hpTkpzZ1BBSnB0T1J2bkpz?=
- =?utf-8?B?Z2dxdmdBenJPNmpqMy91Nm5BU2pxNXJTZk0rM2lyUWZ1elVzZThHbWRBRVU1?=
- =?utf-8?B?Rk01UVpwbDlGUkJSLzhaWE5qa052VkUwdzdqUzNrOFlBZWlNMUJIbGk5SG1j?=
- =?utf-8?B?aHBRU1JVa1BoSXFxck5uQ2xLVFVDV2FyWTZ3Ly9zREkrSU1iMzN6bWtLYUI2?=
- =?utf-8?B?eEY0N2MreE9rbmEwL2JxdlZGamt4VmFhbEVxTGhEYW5KWmI3bUpkelpxZTRn?=
- =?utf-8?B?Qk9ULzNTSHJqT2hXNWRVQzNlZWdVSy9xMS82RGNFQ1ZCUW1wdHBGRmxsTGt3?=
- =?utf-8?B?MHJuT3dPaS95WWN2UkZnbnVGaWFOZVZkQXBuSHhaNkw5WkxOa3NCMEZnVEMr?=
- =?utf-8?B?VjZ0NEltUzhDRVBvZDB2b21oT0JneGt6Y2psc2dzQ1hIdU01QWlrTnV3Ymxs?=
- =?utf-8?B?dVBaUnhwSzM4dHl5U0dvNnpreWorSE5ITGY1TlROdks0UU1DWFc2VktCZk1E?=
- =?utf-8?B?aTd0NHB2Rlp2YzMydCtMR0lOT205aXFDU1ROSHhUUThwdGRZQzFkbEpPeGhl?=
- =?utf-8?B?b29NY1NCQzNVY3BVK2llNlIwRmhIV3hsTFZ3WWIvcWxybHkrM21VNHNKdzNW?=
- =?utf-8?B?R2plR3N4KzN3dTVqL0NXeEdXR1FjZG9MM3NXQU1pTnlJTDdOcFcyT1VBNFRG?=
- =?utf-8?B?NHQvbUw0aUUvVTVGclVlWjBJRjNuV0F4VlZFekxCQU9nOFFMU0dUbEMwNUg5?=
- =?utf-8?B?aGlSMGZqMFczWk1Vc3dLeGVvWFNUeUR1K0NwbXg3NmFUN2RyVXNuTllQemFx?=
- =?utf-8?B?Z0hVMU5rWVJJeThrQ2k1R1dOSDNSSWZSamQrV0tGL3JVUzdTVFVaUHdPZDJV?=
- =?utf-8?B?R2hvaGhEL1p1a08xMWZ5N05NOE45ZmZuMy9UYVNLVmVrbWhZZ1JOdlFINmJ6?=
- =?utf-8?B?M3JEMXYrYmtJYjJ2MjRRb3V2cUxoRjhsOGo0dStvdEw3akdjY3ZzUnJ1Tmo5?=
- =?utf-8?B?bmh4VUNyK05lU0g5eGdjL2p1dGVRL2dFK3dxMzhSSEU1L1ppRDgrUVB4eVMw?=
- =?utf-8?B?dDJVcUxtK3hSNEhHMUVNczY0RUNIckozYlVjZUlsOWtmL3R3ZHpuYytCMTE4?=
- =?utf-8?B?NGE3dktrTXJ4c0FhZ0F3cnk5ajlZUEJ1Y2RHaVRLdEZsVk5mUzl4a2FINmlh?=
- =?utf-8?B?WkQ1a1ZOOGx5dnp0a1Eva2N4SjB0Z3h1cjI1OExrMWY1eUV6bU1jNWdtY1oz?=
- =?utf-8?B?WjhXUWpIN0xmazJwK0lXNjU0L2ZZbmwxanpHejI5L1FpdC94T3FiYVc4eFZW?=
- =?utf-8?B?ZVRvVFhKNXNMSG84dHdFUmxZK0VCVlVEQWJ6N1JtaW14ZGNRMjRqL0krbjZB?=
- =?utf-8?B?SnFrcGlYQ2lwam9kVStKOE5talBtb3YzQk1rdjh0YnpUMGl2YlJMRjFvQjZS?=
- =?utf-8?B?d1EwRldBT2xDemtyTGxrRjJ4Z3pQQUFnS09jV00xQW8vcm5wTjNkTGxIMGFF?=
- =?utf-8?B?dE9VVXJxRnIxVlhaZjVRYVp6eVNDQnV3dGp2R2NZSjNHTEovMnlBcldTUytY?=
- =?utf-8?B?ZlBaa2tLcGlPeFhaTURBYVd5N1RNV0pxYk0zaDNPMTlsSFlwR0RRSFlnblN5?=
- =?utf-8?B?aFBLSHFVZEpKdGNqdjFmY0szZGZVazZQS3Iwb3NzVm9nUSs4d0t1Y09WMUdK?=
- =?utf-8?B?eFN5TUFyWUl2M0N2djFGaE1qWUk2Tk5SRnREUjc2YWxYTFJMR3FjQlo0NzVj?=
- =?utf-8?B?OThNR1U1R3JQS2NTenBVbm13bzE0emJiWWQ0S1kzK05GV1Q4OVFuVXZKYUFr?=
- =?utf-8?B?bFE9PQ==?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 49b5ef4e-e2c8-4f6c-5426-08dc6860625a
-X-MS-Exchange-CrossTenant-AuthSource: SJ2PR11MB7573.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Apr 2024 15:23:55.9031
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: EiFIVDA+HW+M4fXR443aUev/8DSq9sotcin84eozkeS2tt3ZeE8B891j9efOGiKm0lAczorPAp5kqyEOX/XrHfs7N9ryW2PbkEUKhJKe9qQ=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR11MB6888
-X-OriginatorOrg: intel.com
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] usb: ohci: Prevent missed ohci interrupts
+To: David Laight <David.Laight@ACULAB.COM>, Gerd Hoffmann <kraxel@redhat.com>
+Cc: Alan Stern <stern@rowland.harvard.edu>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20240424195951.3749388-1-linux@roeck-us.net>
+ <a1b4bac14c6a4334969cc7d671f3a8eb@AcuMS.aculab.com>
+ <d434c88a-6575-4d45-ab3e-e27ac7684b07@roeck-us.net>
+ <ef23ykui3axiwfkr4wi24abbuklvejx5r5wqem5cr4lq36x7py@kkxvsi3ibtbi>
+ <eafc8fb6-cecc-48c8-a053-cd00f094e781@roeck-us.net>
+ <2adc91aebb3a433997e13bd479d4b4b3@AcuMS.aculab.com>
+Content-Language: en-US
+From: Guenter Roeck <linux@roeck-us.net>
+Autocrypt: addr=linux@roeck-us.net; keydata=
+ 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
+ mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
+In-Reply-To: <2adc91aebb3a433997e13bd479d4b4b3@AcuMS.aculab.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Hi Zide,
-
-On 4/26/2024 10:38 PM, Chen, Zide wrote:
-> On 4/26/2024 4:26 PM, Reinette Chatre wrote:
->> On 4/26/2024 4:06 PM, Chen, Zide wrote:
->>> On 4/25/2024 3:07 PM, Reinette Chatre wrote:
->>>> diff --git a/tools/testing/selftests/kvm/x86_64/apic_bus_clock_test.c b/tools/testing/selftests/kvm/x86_64/apic_bus_clock_test.c
->>>> new file mode 100644
->>>> index 000000000000..5100b28228af
->>>> --- /dev/null
->>>> +++ b/tools/testing/selftests/kvm/x86_64/apic_bus_clock_test.c
->>>> @@ -0,0 +1,166 @@
->>>> +// SPDX-License-Identifier: GPL-2.0-only
->>>> +/*
->>>> + * Test configure of APIC bus frequency.
->>>> + *
->>>> + * Copyright (c) 2024 Intel Corporation
->>>> + *
->>>> + * To verify if the APIC bus frequency can be configured this test starts
->>>
->>> Nit: some typos here?
+On 4/29/24 07:01, David Laight wrote:
+> From: Guenter Roeck
+>> Sent: 29 April 2024 14:34
 >>
->> Apologies but this is not obvious to me. Could you please help
->> by pointing out all those typos to me?
+>> On 4/28/24 23:49, Gerd Hoffmann wrote:
+>>>     Hi,
+>>>
+>>>>>> +	/* repeat until all enabled interrupts are handled */
+>>>>>> +	if (ohci->rh_state != OHCI_RH_HALTED) {
+>>>>>> +		ints = ohci_readl(ohci, &regs->intrstatus);
+>>>>>> +		if (ints & ohci_readl(ohci, &regs->intrenable))
+>>>>>
+>>>>> Doesn't the driver know which interrupts are enabled?
+>>>>> So it should be able to avoid doing two (likely) slow io reads?
+>>>>> (PCIe reads are pretty much guaranteed to be high latency.)
+>>>>
+>>>> No, the driver does not cache intrenable.
+>>>
+>>> Does the driver ever change intrenable after initialization?
+>>>
+>>
+>> $ git grep -e intrenable -e intrdisable drivers/usb/host/*ohci*c | grep ohci_writel
+>> drivers/usb/host/ohci-hcd.c:	ohci_writel(ohci, (u32) ~0, &ohci->regs->intrdisable);
+>> drivers/usb/host/ohci-hcd.c:		ohci_writel (ohci, OHCI_INTR_OC, &ohci->regs->intrenable);
+>> drivers/usb/host/ohci-hcd.c:	ohci_writel (ohci, OHCI_INTR_MIE, &ohci->regs->intrdisable);
+>> drivers/usb/host/ohci-hcd.c:	ohci_writel (ohci, mask, &ohci->regs->intrenable);
+>> drivers/usb/host/ohci-hcd.c:			ohci_writel (ohci, OHCI_INTR_UE, &regs->intrdisable);
+>> drivers/usb/host/ohci-hcd.c:		ohci_writel(ohci, OHCI_INTR_RHSC, &regs->intrdisable);
+>> drivers/usb/host/ohci-hcd.c:		ohci_writel (ohci, OHCI_INTR_SF, &regs->intrdisable);
+>> drivers/usb/host/ohci-hcd.c:		ohci_writel (ohci, OHCI_INTR_MIE, &regs->intrenable);
+>> drivers/usb/host/ohci-hcd.c:	ohci_writel (ohci, OHCI_INTR_MIE, &ohci->regs->intrdisable);
+>> drivers/usb/host/ohci-hcd.c:	ohci_writel(ohci, OHCI_INTR_MIE, &ohci->regs->intrdisable);
+>> drivers/usb/host/ohci-hcd.c:		ohci_writel(ohci, OHCI_INTR_MIE, &ohci->regs->intrenable);
+>> drivers/usb/host/ohci-hub.c:	ohci_writel(ohci, OHCI_INTR_SF, &ohci->regs->intrdisable);
+>> drivers/usb/host/ohci-hub.c:	ohci_writel (ohci, OHCI_INTR_INIT, &ohci->regs->intrenable);
+>> drivers/usb/host/ohci-hub.c:		ohci_writel (ohci, OHCI_INTR_SF, &ohci->regs->intrenable);
+>> drivers/usb/host/ohci-hub.c:			ohci_writel(ohci, rhsc_enable, &ohci->regs->intrenable);
+>> drivers/usb/host/ohci-hub.c:	ohci_writel(ohci, OHCI_INTR_RHSC, &ohci->regs->intrenable);
+>> drivers/usb/host/ohci-q.c:	ohci_writel (ohci, OHCI_INTR_SF, &ohci->regs->intrenable);
 > 
-> Do you think it's more readable to add a ","?
+> At least the hardware has separate enable/disable registers
+> so the driver isn't doing RMW cycles.
 > 
-> - * To verify if the APIC bus frequency can be configured this test starts
-> + * To verify if the APIC bus frequency can be configured, this test starts
->   * by setting the TSC frequency in KVM, and then:
+> I'd guess that the normal condition is that no interrupts are pending.
+> So it can be held to one (slow) read by checking:
+> 	if (ints && (ints & ohci_readl(ohci, &regs->intrenable)))
 
-Sure. I'll do so in the next version.
+Guess that can't hurt. I'll send v3.
 
-Thank you.
+Thanks,
+Guenter
 
-Reinette
 
