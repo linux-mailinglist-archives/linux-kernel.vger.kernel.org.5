@@ -1,125 +1,142 @@
-Return-Path: <linux-kernel+bounces-163045-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-163051-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id ED0898B6436
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 23:04:35 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7AF538B6447
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 23:06:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2A3771C21469
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 21:04:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 324D6287860
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 21:06:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5EA891791EB;
-	Mon, 29 Apr 2024 21:02:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85FB217B4E1;
+	Mon, 29 Apr 2024 21:02:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="i2wP4CF9"
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="YAeGuRwV"
+Received: from out-188.mta1.migadu.com (out-188.mta1.migadu.com [95.215.58.188])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6064E18130B;
-	Mon, 29 Apr 2024 21:02:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C5D917A93B
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 21:02:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.188
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714424522; cv=none; b=aTCJS8537Dd/WAe0/iK7PxKCZV8CWaPtSJ4jl55p8/zoDhS0382vlUmUa/6ltU8bPDcTKUz+S4hfres3RqZX8GlIi+8GKFK0XKxXbxIOS30UICVpv5ocTTyXjT6tCHmrGXYvbAvhVMGaD17YpIIafl52f/4mNDgg+6kxEjxA1Gk=
+	t=1714424551; cv=none; b=W9sVkIC22xuoxmf98CVMOdpWuFm3jwGEo4b1hqK5QcmCrH1IEuD+DlwgdRYkX9fyP4egfNNKXB4mZtj/QCbJTZ/hsAK+2pgwK8eIJVxc3KJbS68FjYUUcX1mu1XDJrB/ttl3hiNccuHfA/SFWHNl7802nx5MPqFZz6FKoZEWpNA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714424522; c=relaxed/simple;
-	bh=of1Dij3+j9k3xvXT8A7Xb/AaiDrd1HEvh/VHm4CwrZI=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=E0LzZnwVtC8oJlcWf5lMksFTXMHLGEQJaNgpQTjzgGM/ZLGbDCFpkORZBsihZ1KDpsw4Rnk6Xlq5Y5qmNFxLzlto86jvt/1C3DSbMrbfOnTa+MC5aR27/XgSpy3XxZIIR4wf5e9MVgqOD/ZYSlJoh599eLojpxzyM5VgJwzewGA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=i2wP4CF9; arc=none smtp.client-ip=148.163.156.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0360083.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 43TKmxv1017139;
-	Mon, 29 Apr 2024 21:01:52 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=1gAEgtVC01rUBK9rzK9y84u+EoF7UresFf2yhNVvcfY=;
- b=i2wP4CF9C3R2pobJqFb1lkzW/YMev10ak9GkqE98pMXBtN75eHe5Tzh13bONobgAU6cw
- gF2njZTboJF7B0hCMq7gA64xe01wJquhwKJ2NX75Gv05BrlCKMM3OQvLESZFtFkQE503
- 1z9vxX1v0Dj5MHHkj5NF1bONjEO72ryEkAMMib+j78MoULwtsW2h906arKRqBs0QMbA0
- 4hm5xQ+5Yt38NTpXa3+WSjqvUkAhNt22qtfQr2Tl4njJPgijEqaw+dmgwJGXD0nYh/Z0
- MWuIJErkjRlTnh4tnbCWAHdCBTjQiuEVYjPYUBSOd0nyO2IqsOm4H+QXIpmj3sfnnRly fw== 
-Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xtjw101ak-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 29 Apr 2024 21:01:52 +0000
-Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 43THheLx027584;
-	Mon, 29 Apr 2024 21:01:51 GMT
-Received: from smtprelay07.dal12v.mail.ibm.com ([172.16.1.9])
-	by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3xsc309nqh-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 29 Apr 2024 21:01:51 +0000
-Received: from smtpav01.wdc07v.mail.ibm.com (smtpav01.wdc07v.mail.ibm.com [10.39.53.228])
-	by smtprelay07.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 43TL1mLc44564806
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 29 Apr 2024 21:01:50 GMT
-Received: from smtpav01.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id E090858063;
-	Mon, 29 Apr 2024 21:01:47 +0000 (GMT)
-Received: from smtpav01.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 209625804B;
-	Mon, 29 Apr 2024 21:01:47 +0000 (GMT)
-Received: from slate16.aus.stglabs.ibm.com (unknown [9.61.151.254])
-	by smtpav01.wdc07v.mail.ibm.com (Postfix) with ESMTP;
-	Mon, 29 Apr 2024 21:01:47 +0000 (GMT)
-From: Eddie James <eajames@linux.ibm.com>
-To: linux-aspeed@lists.ozlabs.org
-Cc: eajames@linux.ibm.com, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-fsi@lists.ozlabs.org,
-        linux-spi@vger.kernel.org, linux-i2c@vger.kernel.org,
-        lakshmiy@us.ibm.com, robh@kernel.org, krzk+dt@kernel.org,
-        conor+dt@kernel.org, joel@jms.id.au, andrew@codeconstruct.com.au,
-        andi.shyti@kernel.org
-Subject: [PATCH v4 17/17] fsi: scom: Update compatible string to match documentation
-Date: Mon, 29 Apr 2024 16:01:31 -0500
-Message-Id: <20240429210131.373487-18-eajames@linux.ibm.com>
-X-Mailer: git-send-email 2.39.3
-In-Reply-To: <20240429210131.373487-1-eajames@linux.ibm.com>
-References: <20240429210131.373487-1-eajames@linux.ibm.com>
+	s=arc-20240116; t=1714424551; c=relaxed/simple;
+	bh=R6DQE5EsEveF1QxT6jB+aOWRYl3SVpGaiivWdByl6x0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=lDYc14ley32gJiy8eoEzRnXJTjymzaEEU7GbNAnr3WQxBWnPB8PsuXUUkJSRnLyVbgDUUxTwMuQRwf/bpXHymoSq9HPAebGkMpsCdgbUY88dq01dK6nxJ0tSVXe39C4Mgxqbc9/AlBYR7sA7F/Inca6aSKlVfco3v65BJ+uvlDc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=YAeGuRwV; arc=none smtp.client-ip=95.215.58.188
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Mon, 29 Apr 2024 14:02:23 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1714424548;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=RRdids+X4QRv+bPxbj1QerCDqrODkmUYAv3YKJoUxHE=;
+	b=YAeGuRwVvnWMG41yijYTcJnXo+X+/idGkOR6uQlipgLmiPtOJmm94Fy2Hp3PXZzq1MhaEY
+	B2HdecrVJDxj9XN6NPrb7ronHcEwd0ONYsx+x+HVunOXNfYcMMcdTACiR2w4Y1/ci2iaN/
+	qMvcmUyyj/lTsdvaFCvu3GvbNDQOEmU=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Roman Gushchin <roman.gushchin@linux.dev>
+To: Shakeel Butt <shakeel.butt@linux.dev>,
+	Andrew Morton <akpm@linux-foundation.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Michal Hocko <mhocko@kernel.org>,
+	Muchun Song <muchun.song@linux.dev>, linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 2/7] memcg: dynamically allocate lruvec_stats
+Message-ID: <ZjAK32S2eG_sI-kv@P9FQF9L96D>
+References: <20240427003733.3898961-1-shakeel.butt@linux.dev>
+ <20240427003733.3898961-3-shakeel.butt@linux.dev>
+ <Zi_BsznrtoC1N_lq@P9FQF9L96D>
+ <fs26xbxmaylxwpv35pb3aak2ilb352glnabsi3wq4havqzlg4j@62cltkwiup4z>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: QBJO7x9uAUkPeR4E79XKqbxs5R1fjFU9
-X-Proofpoint-GUID: QBJO7x9uAUkPeR4E79XKqbxs5R1fjFU9
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
- definitions=2024-04-29_18,2024-04-29_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- impostorscore=0 mlxlogscore=999 mlxscore=0 phishscore=0 adultscore=0
- priorityscore=1501 suspectscore=0 malwarescore=0 spamscore=0 bulkscore=0
- clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2404010000 definitions=main-2404290138
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <fs26xbxmaylxwpv35pb3aak2ilb352glnabsi3wq4havqzlg4j@62cltkwiup4z>
+X-Migadu-Flow: FLOW_OUT
 
-Use p9-scom instead of fsi2pib.
+On Mon, Apr 29, 2024 at 12:46:32PM -0700, Shakeel Butt wrote:
+> On Mon, Apr 29, 2024 at 08:50:11AM -0700, Roman Gushchin wrote:
+> > On Fri, Apr 26, 2024 at 05:37:28PM -0700, Shakeel Butt wrote:
+> [...]
+> 
+> > > +	return x;
+> > > +}
+> > > +
+> > >  /* Subset of vm_event_item to report for memcg event stats */
+> > >  static const unsigned int memcg_vm_event_stat[] = {
+> > >  	PGPGIN,
+> > > @@ -5492,18 +5546,25 @@ static int alloc_mem_cgroup_per_node_info(struct mem_cgroup *memcg, int node)
+> > >  	if (!pn)
+> > >  		return 1;
+> > >  
+> > > +	pn->lruvec_stats = kzalloc_node(sizeof(struct lruvec_stats), GFP_KERNEL,
+> > > +					node);
+> > 
+> > Why not GFP_KERNEL_ACCOUNT?
+> > 
+> 
+> Previously struct lruvec_stats was part of struct mem_cgroup_per_node
+> and we use GFP_KERNEL to allocate struct mem_cgroup_per_node. I kept the
+> behavior same and if we want to switch to GFP_KERNEL_ACCOUNT, I think it
+> should be a separate patch.
 
-Signed-off-by: Eddie James <eajames@linux.ibm.com>
+Agree. Here is the patch:
+
+--
+
+From fd6854c0b272c5314bce6c9dee7d3c8f8cee3a86 Mon Sep 17 00:00:00 2001
+From: Roman Gushchin <roman.gushchin@linux.dev>
+Date: Mon, 29 Apr 2024 13:57:26 -0700
+Subject: [PATCH] mm: memcg: account memory used for memcg vmstats and lruvec
+ stats
+
+The percpu memory used by memcg's memory statistics is already accounted.
+For consistency, let's enable accounting for vmstats and lruvec stats
+as well.
+
+Signed-off-by: Roman Gushchin <roman.gushchin@linux.dev>
 ---
- drivers/fsi/fsi-scom.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ mm/memcontrol.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/fsi/fsi-scom.c b/drivers/fsi/fsi-scom.c
-index 61dbda9dbe2b..18ca213fdc7e 100644
---- a/drivers/fsi/fsi-scom.c
-+++ b/drivers/fsi/fsi-scom.c
-@@ -589,7 +589,7 @@ static int scom_remove(struct device *dev)
- }
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index d11536ef59ef..2fe25d49cfaa 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -5661,8 +5661,8 @@ static int alloc_mem_cgroup_per_node_info(struct mem_cgroup *memcg, int node)
+ 	if (!pn)
+ 		return 1;
  
- static const struct of_device_id scom_of_ids[] = {
--	{ .compatible = "ibm,fsi2pib" },
-+	{ .compatible = "ibm,p9-scom" },
- 	{ }
- };
- MODULE_DEVICE_TABLE(of, scom_of_ids);
+-	pn->lruvec_stats = kzalloc_node(sizeof(struct lruvec_stats), GFP_KERNEL,
+-					node);
++	pn->lruvec_stats = kzalloc_node(sizeof(struct lruvec_stats),
++					GFP_KERNEL_ACCOUNT, node);
+ 	if (!pn->lruvec_stats)
+ 		goto fail;
+ 
+@@ -5733,7 +5733,8 @@ static struct mem_cgroup *mem_cgroup_alloc(struct mem_cgroup *parent)
+ 		goto fail;
+ 	}
+ 
+-	memcg->vmstats = kzalloc(sizeof(struct memcg_vmstats), GFP_KERNEL);
++	memcg->vmstats = kzalloc(sizeof(struct memcg_vmstats),
++				 GFP_KERNEL_ACCOUNT);
+ 	if (!memcg->vmstats)
+ 		goto fail;
+ 
 -- 
-2.39.3
+2.43.2
 
 
