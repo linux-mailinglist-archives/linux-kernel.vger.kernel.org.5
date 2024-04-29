@@ -1,73 +1,79 @@
-Return-Path: <linux-kernel+bounces-161891-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161892-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6A4CB8B52CB
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 10:03:01 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 37B548B52D2
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 10:08:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8DDC01C20DF5
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 08:03:00 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 472C5B20B76
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 08:08:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 01C6D171A2;
-	Mon, 29 Apr 2024 08:02:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2336916419;
+	Mon, 29 Apr 2024 08:08:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="uLrmyNoi"
-Received: from mail-wr1-f48.google.com (mail-wr1-f48.google.com [209.85.221.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="DoUJ7T42"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 725EB15E85
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 08:02:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D3FEC883D
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 08:08:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714377770; cv=none; b=RTIGJPNjrFYd5MpaDx44aUuwTCVDRKxoG6HKcPWfhsyUPKLaXszxiKXp+ML8yojzvC9mOUN3QGp8SsblR/SkqkI04bSOXq+JsrwOVs/1jh0HgFqIOZ22KSopTuqa+zz+ABHiuzWKw2F1RylVLUFW373lcFEH/yBdJ5osCd7XDIg=
+	t=1714378105; cv=none; b=IW/Wjn8EMXAznM1f7E7UFgvB9i1r/ej7jEWNMhx/GuCwfd5W8+M36jSmzqCFjX49TUjNsqd5KTs9J9CltSYBm1nyqAJtYLKXblQxutHEQq8wVajKn1iPGehkqmHIuYRD4ciUzYkyAzf8SPUIuC2l/JhBp62zrHOHBd/9VoP3IHw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714377770; c=relaxed/simple;
-	bh=9HoXmHzHQZ9ELzIrBrYKNCb/oWvWn5TWjSoHPopcX6E=;
+	s=arc-20240116; t=1714378105; c=relaxed/simple;
+	bh=n4UbgoqCHIB7jgeCghFtvEcx2iNVwUURRXwMRBucCgc=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=mAiozZXzJ2DB2NGSfv9kEIGCfInTwSzKsAcp7ik+/eUA60/mfdLbv/R3YR9xmdIWgSLpg0Zn+WOfPg45UiaB3WtiHvsdNNOabVN0K+Hbh2eRzHe2H15UF0F3IaUmUakVw+hTBj7Lb7B26PKkVFuRF/aEgqBntAKUnbP7cFWwbr4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=uLrmyNoi; arc=none smtp.client-ip=209.85.221.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
-Received: by mail-wr1-f48.google.com with SMTP id ffacd0b85a97d-34a42d6e216so902979f8f.1
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 01:02:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1714377767; x=1714982567; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=9lk6J9c7nceHYPPSuxHCl/jFNOuQDl39RqYLkN6g2zo=;
-        b=uLrmyNoivx3LSuqSymvFaYWv9E98dWMFdUXz055tfEppaax/syZeM6hnC9AyWAziau
-         ohUoc62nwq4ReIlXzWipN31JfYleJL7l0i7T4RYimDyfDBulsM2uB1xMPwPCj6uxxe7L
-         n+9pzABtdkovUUKWLRDzKywvfya03I/uhaC8WiWG+2ap84BnjuR39Vd1J/tYESQ70h2F
-         HInkAfX8L7Tfa8LNnTzAGfpxlpcdWLcYZxRkly+O3iw1u1Zcdk4kdTfms0G4v8zVUx56
-         6ybgjL4EFBOrcwvt2IsGybTv8lHIuKiEcnXdfZrfKJjI1NvKIPPXe2W7d4KGPRHsy6st
-         zI0w==
+	 In-Reply-To:Content-Type; b=dzXxt5hCe7eOyg18UF8DlhG0ISWYe8IpES6G3pr/NuHEPR8W+PHC1wc7ubxKM0sR8JuXgxizpip8BDHBhVxNfYXPrMs1eQrSG108oYKvQiX2nhesG8uee5QoMaZXvv5R5y43e1O4s0J4uNxXIaa/zbdLcjsYdCSyhS/EPvRgORM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=DoUJ7T42; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1714378101;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=bvCOmGVAFf5Ef0h/Xn4WlU/W5Kebabz8DqE/Mw/nU0k=;
+	b=DoUJ7T42EUpa0iISn4UZjKlWMzXBA+eFHy4IrgOtnWwBtutwjW0i36ZcJp9eu5NPsLsCWB
+	72KyI5bX0PCebgY4wrC3gRJjPqN0me/gtxm2oZtSKbOLe6q7tmmg5uQ8VBNTo4hQpqhKmY
+	NJs0L1eOl2qlmxA9amm1Gfmgyk5i2OQ=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-636-_49jE9YNMde0LhQJG2wGUg-1; Mon, 29 Apr 2024 04:08:17 -0400
+X-MC-Unique: _49jE9YNMde0LhQJG2wGUg-1
+Received: by mail-ed1-f69.google.com with SMTP id 4fb4d7f45d1cf-572726d6e60so532293a12.2
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 01:08:17 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714377767; x=1714982567;
+        d=1e100.net; s=20230601; t=1714378096; x=1714982896;
         h=content-transfer-encoding:in-reply-to:from:content-language
          :references:cc:to:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=9lk6J9c7nceHYPPSuxHCl/jFNOuQDl39RqYLkN6g2zo=;
-        b=sifcMqSauDBqK9GnTuVh6vmHwoGLeX3VK2iBTAzRck1FS+r9jmPu55zI7nroyu+Abx
-         mdT0PwoaF+YtrjkFxhQONYPQ3R7k9CeFBo8t8crnVH5P4u7KVdbjZT/LgCMwaUhR272n
-         LaG2+m6RjSJU48MrSXe1zgZCxirsZzFep/usUr78oJn+zshd4ttL7HJze25QUiyy5VTW
-         0JmmmaS+Ew0b6iWY3nqXqPeKLSlX6v2z+NnFdV0aCZP7Uuy8Bn/1tdAmeZLXYR91GIdi
-         +FqCBCoqUgVSLTHF+GKG9/LKrsfZ/VgPqLgVB1iOlpnn5p3MvBf89Puyd+8RX1nV0NWA
-         uRXA==
-X-Forwarded-Encrypted: i=1; AJvYcCV4J+9HzLlz3wIZ2aaPzsWVHw+wZODLN1Vvtw5+67ICDcrZIlexdb6tGwRnBa0rK74hbAPg/t+eFjpuMDsiw3jo06Rs/ADxOLMrVKkT
-X-Gm-Message-State: AOJu0YzZKa+TNZijFVP7xwvPBQnhZu8iy1QcuOsstSV7i4KiiQvPvhAd
-	V8Mw2A4ddtCjiVrP1MEPHKmHcdFN3KrPsVOMWW1ghacVSrTCW/G0TA6ZRz7z/90=
-X-Google-Smtp-Source: AGHT+IGd/GTek2EtViHRdRFeIXZn3n2LYf5CPBHrEQdxd9jjHLyUtqDgKKXlzgWCD9IG4KWRHuQ70A==
-X-Received: by 2002:adf:eb88:0:b0:34c:a12:8722 with SMTP id t8-20020adfeb88000000b0034c0a128722mr6358975wrn.1.1714377766520;
-        Mon, 29 Apr 2024 01:02:46 -0700 (PDT)
-Received: from ?IPV6:2a01:e0a:999:a3a0:2fec:d20:2b60:e334? ([2a01:e0a:999:a3a0:2fec:d20:2b60:e334])
-        by smtp.gmail.com with ESMTPSA id n8-20020a5d6b88000000b0034c462f920csm8446915wrx.40.2024.04.29.01.02.45
+        bh=bvCOmGVAFf5Ef0h/Xn4WlU/W5Kebabz8DqE/Mw/nU0k=;
+        b=L0CUYaVFnRUm+/whNhUEMIBlr8TvmDHAxm13jKQNBNTM8y0LdNKsuIIkHWEwsqfINX
+         aXgI7KpfByBfsC1b2sqHpqmEwVF9f312xIeFP5lfp36zB90UAX5sz67jGWpyE3QWp6FX
+         xIVxF4aQw2jlSE8f2XAXSxP8ccpoIfyJg9hrl5LMGVLd6T+7gHk2Cfh6kEETZHtbAIe/
+         Kby81f0TWwwxNu0PwRGYouVENGk9y4/sXSCDbDvUcFqC1Atk0JEPc//W/5g+zn2EOXYy
+         lE5pG/3Ab5h4SvY8bYI50QhgFLtHVhvIesqy3FWB6oyg+I73tuYKNTY1udENluNrdzqU
+         9+7w==
+X-Forwarded-Encrypted: i=1; AJvYcCVIigz3iMRBEKjWK47nCEqBMxrqTRMiLAA2wfKz5nDvip0/ouPPUBT5dnCzBbIrll0LnzD8exi8x1HG4ejmTr0xhLv/odsJM6t00d6q
+X-Gm-Message-State: AOJu0YxGmdRaL+JEcBinY2yU9nCu14uaeNlNLW2tloHTkStFVOp5lv9+
+	Sl9VTp8aGdldlXvDwyLpXl+lxBjsLZzNIdJ8o61G2L//+VWQaiRlSs+V1iNWx7TEb2beSy6TCj/
+	m3jH4yfTrr/GnoAmPbwsDklddOKSrTKpdvos+cnNuR+m6+rmasvFXgknvYnT90h0m2G9nmw==
+X-Received: by 2002:a05:6402:1a4d:b0:572:8aab:4420 with SMTP id bf13-20020a0564021a4d00b005728aab4420mr29030edb.39.1714378096425;
+        Mon, 29 Apr 2024 01:08:16 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IG2PY7XCDmgXlbR7D5LD7OV6jKxY2gLjyhTyWooFsmVHoXR92UJBNXJ3PL4c2RbgWAhcI2qPg==
+X-Received: by 2002:a05:6402:1a4d:b0:572:8aab:4420 with SMTP id bf13-20020a0564021a4d00b005728aab4420mr29012edb.39.1714378096049;
+        Mon, 29 Apr 2024 01:08:16 -0700 (PDT)
+Received: from [10.40.98.157] ([78.108.130.194])
+        by smtp.gmail.com with ESMTPSA id r19-20020aa7cb93000000b00572031756a8sm8925347edt.16.2024.04.29.01.08.15
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 29 Apr 2024 01:02:45 -0700 (PDT)
-Message-ID: <7b2b8045-b814-4f93-a9ce-4e3d087c8f0e@rivosinc.com>
-Date: Mon, 29 Apr 2024 10:02:44 +0200
+        Mon, 29 Apr 2024 01:08:15 -0700 (PDT)
+Message-ID: <89949a4b-fe83-482f-99c7-e2b69cce535d@redhat.com>
+Date: Mon, 29 Apr 2024 10:08:14 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -75,418 +81,231 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 02/11] riscv: add ISA extensions validation
-To: Conor Dooley <conor@kernel.org>
-Cc: Jonathan Corbet <corbet@lwn.net>, Paul Walmsley
- <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>,
- Albert Ou <aou@eecs.berkeley.edu>, Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Anup Patel <anup@brainfault.org>, Shuah Khan <shuah@kernel.org>,
- Atish Patra <atishp@atishpatra.org>, linux-doc@vger.kernel.org,
- linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
- devicetree@vger.kernel.org, kvm@vger.kernel.org,
- kvm-riscv@lists.infradead.org, linux-kselftest@vger.kernel.org
-References: <20240423124326.2532796-1-cleger@rivosinc.com>
- <20240423124326.2532796-3-cleger@rivosinc.com>
- <20240426-smugly-jury-e933a4ef035c@spud>
+Subject: Re: [PATCH v4 00/71] New Intel CPUID families
+To: Tony Luck <tony.luck@intel.com>, Borislav Petkov <bp@alien8.de>,
+ =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Cc: x86@kernel.org, linux-kernel@vger.kernel.org, patches@lists.linux.dev
+References: <20240424181245.41141-1-tony.luck@intel.com>
 Content-Language: en-US
-From: =?UTF-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <cleger@rivosinc.com>
-In-Reply-To: <20240426-smugly-jury-e933a4ef035c@spud>
+From: Hans de Goede <hdegoede@redhat.com>
+In-Reply-To: <20240424181245.41141-1-tony.luck@intel.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 
+Hi,
 
-
-On 26/04/2024 16:23, Conor Dooley wrote:
-> On Tue, Apr 23, 2024 at 02:43:16PM +0200, Clément Léger wrote:
->> Since a few extensions (Zicbom/Zicboz) already needs validation and
->> future ones will need it as well (Zc*) add a validate() callback to
->> struct riscv_isa_ext_data. This require to rework the way extensions are
->> parsed and split it in two phases. First phase is isa string or isa
->> extension list parsing and consists in enabling all the extensions in a
->> temporary bitmask without any validation. The second step "resolves" the
->> final isa bitmap, handling potential missing dependencies. The mechanism
->> is quite simple and simply validate each extension described in the
->> temporary bitmap before enabling it in the final isa bitmap. This
->> process takes place until the final isa bitmap reaches a stable state.
->> In order to avoid any potential infinite looping, allow looping a
->> maximum of the number of extension we handle. Zicboz and Zicbom
->> extensions are modified to use this validation mechanism.
+On 4/24/24 8:12 PM, Tony Luck wrote:
+> Full v3 description and patches here:
+> Link: https://lore.kernel.org/all/20240416211941.9369-1-tony.luck@intel.com/
 > 
-> Yaknow, seeing the implemtation I'm having second thoughts. I think
-> there's two pretty separate actions going on here - the first is things
-> like Zicbom or Zicboz where we are looking at the DT to find some extra
-> properties which we can do exactly once. The other is the Zc* case,
-> where we are making sure that extensions they depend on are enabled.
-> I understand that the latter may need to loop, but I don't think there's
-> a reason to loop in the Zicbom or Zicboz case.
+> But the tl;dr version is that some surgery is required to make adding
+> CPUs with new CPUID "family" values elegant.
+> 
+> Signed-off-by: Tony Luck <tony.luck@intel.com>
+> 
+> Changes since v3:
+> 
+> *) Parts 1-3 have been applied to tip x86/cpu (Thanks Boris!) so dropped from this series.
+>    Patches haved trickled through system and are now in linux-next (tag next-20240424)
+>    or higher). So from this new series any of parts 1-69 could be tested against
+>    tip x86/cpu or linux-next. There are hardly any interdependencies. Mostly safe
+>    to just pick out the patches you care about.
 
-That's a good point, we could potentially avoid that by specifying
-different return values for the validate callback (Similar to what is
-done by platform driver probing):
+That is good to know, thank you.
 
-- 0 -> Ok, enable the extension
-- -EDEFER -> Try to probe again later
-- -E<whatever> -> Disabled the extension once for all in the original
-ISA bitmap so the callback won't get called again.
+So what is the plan for upstreaming the rest of this series ?
 
-That would also allows to get rid of at least the extra loop that is
-done to verify the stability of the ISA even if there were no defered
-probed extensions.
+I'm fine with the drivers/platform/x86 patches (patch 56-66) going upstream
+through tip x86/cpu too:
 
-Thanks,
+Acked-by: Hans de Goede <hdegoede@redhat.com>
 
-Clément
+for those patches. That or we can wait till 6.10-rc1 is out with parts 1-3 merged
+and then patches 56-66 can be merged directly into the pdx86 tree.
+
+The same goes for the atomisp patch (patch 67) (including my Acked-by).
+
+Regards,
+
+Hans
+
+
+
 
 > 
-> That said, I do actually like the idea of having specific callbacks for
-> extensions that require them, rather than calling extension_check()
-> unconditionally.
+> *) Base commit for v4 of the series is now tip x86/cpu
+> 	f055b6260eb3 ("x86/cpu/vfm: Update arch/x86/include/asm/intel-family.h")
 > 
-> I've not reviewed the actual code here FWIW, just spent some time
-> thinking about the idea. I might do that later on this revision, or on
-> another, depending on what you think of splitting the Zicbom and Zicboz
-> type extra prop checking from dependency related stuff like Zc*.
+> *) Fixed "Subject:" lines in each patch to use appropriate prefix for subsystem 
+>    followed by "Switch to new Intel CPU model defines"
 > 
-> Cheers,
-> Conor.
+> *) Re-ordered remmaining patches to bring those with Acked-by or Reviewed-by
+>    tags to the head of the queue in case Boris wants to pick off some/all of
+>    patches 0001..0015 into tip x86/cpu (hint hint!).
 > 
->>
->> Signed-off-by: Clément Léger <cleger@rivosinc.com>
->> ---
->>  arch/riscv/include/asm/cpufeature.h |   1 +
->>  arch/riscv/kernel/cpufeature.c      | 201 ++++++++++++++++------------
->>  2 files changed, 118 insertions(+), 84 deletions(-)
->>
->> diff --git a/arch/riscv/include/asm/cpufeature.h b/arch/riscv/include/asm/cpufeature.h
->> index 347805446151..328f895f6b8f 100644
->> --- a/arch/riscv/include/asm/cpufeature.h
->> +++ b/arch/riscv/include/asm/cpufeature.h
->> @@ -70,6 +70,7 @@ struct riscv_isa_ext_data {
->>  	const char *property;
->>  	const unsigned int *subset_ext_ids;
->>  	const unsigned int subset_ext_size;
->> +	bool (*validate)(const struct riscv_isa_ext_data *data, const unsigned long *isa_bitmap);
->>  };
->>  
->>  extern const struct riscv_isa_ext_data riscv_isa_ext[];
->> diff --git a/arch/riscv/kernel/cpufeature.c b/arch/riscv/kernel/cpufeature.c
->> index 115ba001f1bc..6d238c8dbccf 100644
->> --- a/arch/riscv/kernel/cpufeature.c
->> +++ b/arch/riscv/kernel/cpufeature.c
->> @@ -72,51 +72,62 @@ bool __riscv_isa_extension_available(const unsigned long *isa_bitmap, unsigned i
->>  }
->>  EXPORT_SYMBOL_GPL(__riscv_isa_extension_available);
->>  
->> -static bool riscv_isa_extension_check(int id)
->> +static bool riscv_isa_extension_valid(int id)
->>  {
->> -	switch (id) {
->> -	case RISCV_ISA_EXT_ZICBOM:
->> -		if (!riscv_cbom_block_size) {
->> -			pr_err("Zicbom detected in ISA string, disabling as no cbom-block-size found\n");
->> -			return false;
->> -		} else if (!is_power_of_2(riscv_cbom_block_size)) {
->> -			pr_err("Zicbom disabled as cbom-block-size present, but is not a power-of-2\n");
->> -			return false;
->> -		}
->> -		return true;
->> -	case RISCV_ISA_EXT_ZICBOZ:
->> -		if (!riscv_cboz_block_size) {
->> -			pr_err("Zicboz detected in ISA string, disabling as no cboz-block-size found\n");
->> -			return false;
->> -		} else if (!is_power_of_2(riscv_cboz_block_size)) {
->> -			pr_err("Zicboz disabled as cboz-block-size present, but is not a power-of-2\n");
->> -			return false;
->> -		}
->> -		return true;
->> -	case RISCV_ISA_EXT_INVALID:
->> +	return id != RISCV_ISA_EXT_INVALID;
->> +}
->> +
->> +static bool riscv_ext_zicbom_validate(const struct riscv_isa_ext_data *data,
->> +				      const unsigned long *isa_bitmap)
->> +{
->> +	if (!riscv_cbom_block_size) {
->> +		pr_err_once("Zicbom detected in ISA string,"
->> +			    "disabling as no cbom-block-size found\n");
->> +		return false;
->> +	} else if (!is_power_of_2(riscv_cbom_block_size)) {
->> +		pr_err_once("Zicbom disabled as cbom-block-size present,"
->> +			    "but is not a power-of-2\n");
->>  		return false;
->>  	}
->> +	return true;
->> +}
->>  
->> +static bool riscv_ext_zicboz_validate(const struct riscv_isa_ext_data *data,
->> +				      const unsigned long *isa_bitmap)
->> +{
->> +	if (!riscv_cboz_block_size) {
->> +		pr_err_once("Zicboz detected in ISA string,"
->> +			    "disabling as no cboz-block-size found\n");
->> +		return false;
->> +	} else if (!is_power_of_2(riscv_cboz_block_size)) {
->> +		pr_err_once("Zicboz disabled as cboz-block-size present,"
->> +			    "but is not a power-of-2\n");
->> +		return false;
->> +	}
->>  	return true;
->>  }
->>  
->> -#define _RISCV_ISA_EXT_DATA(_name, _id, _subset_exts, _subset_exts_size) {	\
->> -	.name = #_name,								\
->> -	.property = #_name,							\
->> -	.id = _id,								\
->> -	.subset_ext_ids = _subset_exts,						\
->> -	.subset_ext_size = _subset_exts_size					\
->> +#define _RISCV_ISA_EXT_DATA(_name, _id, _subset_exts, _subset_exts_size, _validate) {	\
->> +	.name = #_name,									\
->> +	.property = #_name,								\
->> +	.id = _id,									\
->> +	.subset_ext_ids = _subset_exts,							\
->> +	.subset_ext_size = _subset_exts_size,						\
->> +	.validate = _validate								\
->>  }
->>  
->> -#define __RISCV_ISA_EXT_DATA(_name, _id) _RISCV_ISA_EXT_DATA(_name, _id, NULL, 0)
->> +#define __RISCV_ISA_EXT_DATA(_name, _id) _RISCV_ISA_EXT_DATA(_name, _id, NULL, 0, NULL)
->>  
->>  /* Used to declare pure "lasso" extension (Zk for instance) */
->>  #define __RISCV_ISA_EXT_BUNDLE(_name, _bundled_exts) \
->> -	_RISCV_ISA_EXT_DATA(_name, RISCV_ISA_EXT_INVALID, _bundled_exts, ARRAY_SIZE(_bundled_exts))
->> +	_RISCV_ISA_EXT_DATA(_name, RISCV_ISA_EXT_INVALID, _bundled_exts, \
->> +			    ARRAY_SIZE(_bundled_exts), NULL)
->>  
->>  /* Used to declare extensions that are a superset of other extensions (Zvbb for instance) */
->>  #define __RISCV_ISA_EXT_SUPERSET(_name, _id, _sub_exts) \
->> -	_RISCV_ISA_EXT_DATA(_name, _id, _sub_exts, ARRAY_SIZE(_sub_exts))
->> +	_RISCV_ISA_EXT_DATA(_name, _id, _sub_exts, ARRAY_SIZE(_sub_exts), NULL)
->> +#define __RISCV_ISA_EXT_SUPERSET_VALIDATE(_name, _id, _sub_exts, _validate) \
->> +	_RISCV_ISA_EXT_DATA(_name, _id, _sub_exts, ARRAY_SIZE(_sub_exts), _validate)
->>  
->>  static const unsigned int riscv_zk_bundled_exts[] = {
->>  	RISCV_ISA_EXT_ZBKB,
->> @@ -247,8 +258,10 @@ const struct riscv_isa_ext_data riscv_isa_ext[] = {
->>  	__RISCV_ISA_EXT_DATA(c, RISCV_ISA_EXT_c),
->>  	__RISCV_ISA_EXT_DATA(v, RISCV_ISA_EXT_v),
->>  	__RISCV_ISA_EXT_DATA(h, RISCV_ISA_EXT_h),
->> -	__RISCV_ISA_EXT_SUPERSET(zicbom, RISCV_ISA_EXT_ZICBOM, riscv_xlinuxenvcfg_exts),
->> -	__RISCV_ISA_EXT_SUPERSET(zicboz, RISCV_ISA_EXT_ZICBOZ, riscv_xlinuxenvcfg_exts),
->> +	__RISCV_ISA_EXT_SUPERSET_VALIDATE(zicbom, RISCV_ISA_EXT_ZICBOM, riscv_xlinuxenvcfg_exts,
->> +					  riscv_ext_zicbom_validate),
->> +	__RISCV_ISA_EXT_SUPERSET_VALIDATE(zicboz, RISCV_ISA_EXT_ZICBOZ, riscv_xlinuxenvcfg_exts,
->> +					  riscv_ext_zicboz_validate),
->>  	__RISCV_ISA_EXT_DATA(zicntr, RISCV_ISA_EXT_ZICNTR),
->>  	__RISCV_ISA_EXT_DATA(zicond, RISCV_ISA_EXT_ZICOND),
->>  	__RISCV_ISA_EXT_DATA(zicsr, RISCV_ISA_EXT_ZICSR),
->> @@ -310,33 +323,70 @@ const struct riscv_isa_ext_data riscv_isa_ext[] = {
->>  
->>  const size_t riscv_isa_ext_count = ARRAY_SIZE(riscv_isa_ext);
->>  
->> -static void __init match_isa_ext(const struct riscv_isa_ext_data *ext, const char *name,
->> -				 const char *name_end, struct riscv_isainfo *isainfo)
->> +static void riscv_isa_set_ext(const struct riscv_isa_ext_data *ext, unsigned long *bitmap)
->>  {
->> -	if ((name_end - name == strlen(ext->name)) &&
->> -	     !strncasecmp(name, ext->name, name_end - name)) {
->> -		/*
->> -		 * If this is a bundle, enable all the ISA extensions that
->> -		 * comprise the bundle.
->> -		 */
->> -		if (ext->subset_ext_size) {
->> -			for (int i = 0; i < ext->subset_ext_size; i++) {
->> -				if (riscv_isa_extension_check(ext->subset_ext_ids[i]))
->> -					set_bit(ext->subset_ext_ids[i], isainfo->isa);
->> -			}
->> +	/*
->> +	 * This is valid even for bundle extensions which uses the RISCV_ISA_EXT_INVALID id
->> +	 * (rejected by riscv_isa_extension_valid()).
->> +	 */
->> +	if (riscv_isa_extension_valid(ext->id))
->> +		set_bit(ext->id, bitmap);
->> +
->> +	for (int i = 0; i < ext->subset_ext_size; i++) {
->> +		if (riscv_isa_extension_valid(ext->subset_ext_ids[i]))
->> +			set_bit(ext->subset_ext_ids[i], bitmap);
->> +	}
->> +}
->> +
->> +static void __init riscv_resolve_isa(const unsigned long *isa_bitmap, struct riscv_isainfo *isainfo,
->> +				     unsigned long *this_hwcap, unsigned long *isa2hwcap)
->> +{
->> +	const struct riscv_isa_ext_data *ext;
->> +	DECLARE_BITMAP(prev_bitmap, RISCV_ISA_EXT_MAX);
->> +	int max_loop_count = riscv_isa_ext_count + 1;
->> +
->> +	do {
->> +		if (max_loop_count-- < 0) {
->> +			pr_err("Failed to reach a stable ISA state\n");
->> +			return;
->>  		}
->> +		memcpy(prev_bitmap, isainfo->isa, sizeof(prev_bitmap));
->> +		for (int i = 0; i < riscv_isa_ext_count; i++) {
->> +			ext = &riscv_isa_ext[i];
->> +
->> +			/* Bundle extensions ids are invalid*/
->> +			if (!riscv_isa_extension_valid(ext->id))
->> +				continue;
->> +
->> +			if (!test_bit(ext->id, isa_bitmap) || test_bit(ext->id, isainfo->isa))
->> +				continue;
->> +
->> +			if (ext->validate && !ext->validate(ext, isainfo->isa))
->> +				continue;
->>  
->> -		/*
->> -		 * This is valid even for bundle extensions which uses the RISCV_ISA_EXT_INVALID id
->> -		 * (rejected by riscv_isa_extension_check()).
->> -		 */
->> -		if (riscv_isa_extension_check(ext->id))
->>  			set_bit(ext->id, isainfo->isa);
->> +
->> +			/* Only single letter extensions get set in hwcap */
->> +			if (ext->id < RISCV_ISA_EXT_BASE)
->> +				*this_hwcap |= isa2hwcap[ext->id];
->> +		}
->> +	} while (memcmp(prev_bitmap, isainfo->isa, sizeof(prev_bitmap)));
->> +}
->> +
->> +static void __init match_isa_ext(const char *name, const char *name_end, unsigned long *bitmap)
->> +{
->> +	for (int i = 0; i < riscv_isa_ext_count; i++) {
->> +		const struct riscv_isa_ext_data *ext = &riscv_isa_ext[i];
->> +
->> +		if ((name_end - name == strlen(ext->name)) &&
->> +		    !strncasecmp(name, ext->name, name_end - name)) {
->> +			riscv_isa_set_ext(ext, bitmap);
->> +			break;
->> +		}
->>  	}
->>  }
->>  
->> -static void __init riscv_parse_isa_string(unsigned long *this_hwcap, struct riscv_isainfo *isainfo,
->> -					  unsigned long *isa2hwcap, const char *isa)
->> +static void __init riscv_resolve_isa_string(const char *isa, unsigned long *bitmap)
->>  {
->>  	/*
->>  	 * For all possible cpus, we have already validated in
->> @@ -349,7 +399,7 @@ static void __init riscv_parse_isa_string(unsigned long *this_hwcap, struct risc
->>  	while (*isa) {
->>  		const char *ext = isa++;
->>  		const char *ext_end = isa;
->> -		bool ext_long = false, ext_err = false;
->> +		bool ext_err = false;
->>  
->>  		switch (*ext) {
->>  		case 's':
->> @@ -389,7 +439,6 @@ static void __init riscv_parse_isa_string(unsigned long *this_hwcap, struct risc
->>  			 * character itself while eliminating the extensions version number.
->>  			 * A simple re-increment solves this problem.
->>  			 */
->> -			ext_long = true;
->>  			for (; *isa && *isa != '_'; ++isa)
->>  				if (unlikely(!isalnum(*isa)))
->>  					ext_err = true;
->> @@ -469,17 +518,8 @@ static void __init riscv_parse_isa_string(unsigned long *this_hwcap, struct risc
->>  
->>  		if (unlikely(ext_err))
->>  			continue;
->> -		if (!ext_long) {
->> -			int nr = tolower(*ext) - 'a';
->>  
->> -			if (riscv_isa_extension_check(nr)) {
->> -				*this_hwcap |= isa2hwcap[nr];
->> -				set_bit(nr, isainfo->isa);
->> -			}
->> -		} else {
->> -			for (int i = 0; i < riscv_isa_ext_count; i++)
->> -				match_isa_ext(&riscv_isa_ext[i], ext, ext_end, isainfo);
->> -		}
->> +		match_isa_ext(ext, ext_end, bitmap);
->>  	}
->>  }
->>  
->> @@ -501,6 +541,7 @@ static void __init riscv_fill_hwcap_from_isa_string(unsigned long *isa2hwcap)
->>  	for_each_possible_cpu(cpu) {
->>  		struct riscv_isainfo *isainfo = &hart_isa[cpu];
->>  		unsigned long this_hwcap = 0;
->> +		DECLARE_BITMAP(isa_bitmap, RISCV_ISA_EXT_MAX) = { 0 };
->>  
->>  		if (acpi_disabled) {
->>  			node = of_cpu_device_node_get(cpu);
->> @@ -523,7 +564,7 @@ static void __init riscv_fill_hwcap_from_isa_string(unsigned long *isa2hwcap)
->>  			}
->>  		}
->>  
->> -		riscv_parse_isa_string(&this_hwcap, isainfo, isa2hwcap, isa);
->> +		riscv_resolve_isa_string(isa, isa_bitmap);
->>  
->>  		/*
->>  		 * These ones were as they were part of the base ISA when the
->> @@ -531,10 +572,10 @@ static void __init riscv_fill_hwcap_from_isa_string(unsigned long *isa2hwcap)
->>  		 * unconditionally where `i` is in riscv,isa on DT systems.
->>  		 */
->>  		if (acpi_disabled) {
->> -			set_bit(RISCV_ISA_EXT_ZICSR, isainfo->isa);
->> -			set_bit(RISCV_ISA_EXT_ZIFENCEI, isainfo->isa);
->> -			set_bit(RISCV_ISA_EXT_ZICNTR, isainfo->isa);
->> -			set_bit(RISCV_ISA_EXT_ZIHPM, isainfo->isa);
->> +			set_bit(RISCV_ISA_EXT_ZICSR, isa_bitmap);
->> +			set_bit(RISCV_ISA_EXT_ZIFENCEI, isa_bitmap);
->> +			set_bit(RISCV_ISA_EXT_ZICNTR, isa_bitmap);
->> +			set_bit(RISCV_ISA_EXT_ZIHPM, isa_bitmap);
->>  		}
->>  
->>  		/*
->> @@ -548,9 +589,11 @@ static void __init riscv_fill_hwcap_from_isa_string(unsigned long *isa2hwcap)
->>  		if (acpi_disabled && riscv_cached_mvendorid(cpu) == THEAD_VENDOR_ID &&
->>  		    riscv_cached_marchid(cpu) == 0x0) {
->>  			this_hwcap &= ~isa2hwcap[RISCV_ISA_EXT_v];
->> -			clear_bit(RISCV_ISA_EXT_v, isainfo->isa);
->> +			clear_bit(RISCV_ISA_EXT_v, isa_bitmap);
->>  		}
->>  
->> +		riscv_resolve_isa(isa_bitmap, isainfo, &this_hwcap, isa2hwcap);
->> +
->>  		/*
->>  		 * All "okay" hart should have same isa. Set HWCAP based on
->>  		 * common capabilities of every "okay" hart, in case they don't
->> @@ -579,6 +622,7 @@ static int __init riscv_fill_hwcap_from_ext_list(unsigned long *isa2hwcap)
->>  		unsigned long this_hwcap = 0;
->>  		struct device_node *cpu_node;
->>  		struct riscv_isainfo *isainfo = &hart_isa[cpu];
->> +		DECLARE_BITMAP(isa_bitmap, RISCV_ISA_EXT_MAX) = { 0 };
->>  
->>  		cpu_node = of_cpu_device_node_get(cpu);
->>  		if (!cpu_node) {
->> @@ -598,22 +642,11 @@ static int __init riscv_fill_hwcap_from_ext_list(unsigned long *isa2hwcap)
->>  						     ext->property) < 0)
->>  				continue;
->>  
->> -			if (ext->subset_ext_size) {
->> -				for (int j = 0; j < ext->subset_ext_size; j++) {
->> -					if (riscv_isa_extension_check(ext->subset_ext_ids[i]))
->> -						set_bit(ext->subset_ext_ids[j], isainfo->isa);
->> -				}
->> -			}
->> -
->> -			if (riscv_isa_extension_check(ext->id)) {
->> -				set_bit(ext->id, isainfo->isa);
->> -
->> -				/* Only single letter extensions get set in hwcap */
->> -				if (strnlen(riscv_isa_ext[i].name, 2) == 1)
->> -					this_hwcap |= isa2hwcap[riscv_isa_ext[i].id];
->> -			}
->> +			riscv_isa_set_ext(ext, isa_bitmap);
->>  		}
->>  
->> +		riscv_resolve_isa(isa_bitmap, isainfo, &this_hwcap, isa2hwcap);
->> +
->>  		of_node_put(cpu_node);
->>  
->>  		/*
->> -- 
->> 2.43.0
->>
+> *) Moved arch/x86/events/rapl.c patch to back of queue (patch 0069). It would
+>    have a conflict with the tip perf/core branch. This can be resolved with a
+>    future version against v6.10-rc1
+> 
+> *) Updated "peci" patches to have a copy of the VFM_*() macros instead of
+>    trying to include <asm/cpu_device_id.h> which doesn't work when building
+>    for a non-x86 target.
+> 
+> *) I had added #include <asm/cpu_device_id.h> to around a dozen files just before
+>    the #include <asm/intel-family.h>. But the former includes the latter. So
+>    simplify by just including <asm/cpu_device_id.h>
+> 
+> Tony Luck (71):
+>   tpm: Switch to new Intel CPU model defines
+>   platform/x86/intel/ifs: Switch to new Intel CPU model defines
+>   KVM: x86/pmu: Switch to new Intel CPU model defines
+>   KVM: VMX: Switch to new Intel CPU model defines
+>   ACPI: LPSS: Switch to new Intel CPU model defines
+>   ACPI: x86: Switch to new Intel CPU model defines
+>   cpufreq: intel_pstate: Switch to new Intel CPU model defines
+>   cpufreq: Switch to new Intel CPU model defines
+>   intel_idle: Switch to new Intel CPU model defines
+>   PCI: PM: Switch to new Intel CPU model defines
+>   powercap: intel_rapl: Switch to new Intel CPU model defines
+>   powercap: intel_rapl: Switch to new Intel CPU model defines
+>   ASoC: Intel: Switch to new Intel CPU model defines
+>   thermal: intel: intel_tcc_cooling: Switch to new Intel CPU model
+>     defines
+>   tools/power/turbostat: Switch to new Intel CPU model defines
+>   crypto: x86/poly1305 - Switch to new Intel CPU model defines
+>   crypto: x86/twofish - Switch to new Intel CPU model defines
+>   perf/x86/intel/cstate: Switch to new Intel CPU model defines
+>   perf/x86/lbr: Switch to new Intel CPU model defines
+>   perf/x86/intel/pt: Switch to new Intel CPU model defines
+>   perf/x86/intel/uncore: Switch to new Intel CPU model defines
+>   perf/x86/intel/uncore: Switch to new Intel CPU model defines
+>   perf/x86/intel/uncore: Switch to new Intel CPU model defines
+>   perf/x86/msr: Switch to new Intel CPU model defines
+>   x86/apic: Switch to new Intel CPU model defines
+>   x86/aperfmperf: Switch to new Intel CPU model defines
+>   x86/bugs: Switch to new Intel CPU model defines
+>   x86/bugs: Switch to new Intel CPU model defines
+>   x86/cpu/intel: Switch to new Intel CPU model defines
+>   x86/cpu/intel_epb: Switch to new Intel CPU model defines
+>   x86/cpu: Switch to new Intel CPU model defines
+>   x86/mce: Switch to new Intel CPU model defines
+>   x86/mce: Switch to new Intel CPU model defines
+>   x86/mce: Switch to new Intel CPU model defines
+>   x86/microcode/intel: Switch to new Intel CPU model defines
+>   x86/resctrl: Switch to new Intel CPU model defines
+>   x86/resctrl: Switch to new Intel CPU model defines
+>   x86/cpu/: Switch to new Intel CPU model defines
+>   x86/tsc: Switch to new Intel CPU model defines
+>   x86/tsc_msr: Switch to new Intel CPU model defines
+>   x86/mm: Switch to new Intel CPU model defines
+>   x86/PCI: Switch to new Intel CPU model defines
+>   x86/virt/tdx: Switch to new Intel CPU model defines
+>   perf/x86/intel: Switch to new Intel CPU model defines
+>   x86/platform/intel-mid: Switch to new Intel CPU model defines
+>   x86/platform/atom: Switch to new Intel CPU model defines
+>   x86/cpu: Switch to new Intel CPU model defines
+>   x86/boot: Switch to new Intel CPU model defines
+>   EDAC/i10nm: Switch to new Intel CPU model defines
+>   EDAC, pnd2: Switch to new Intel CPU model defines
+>   EDAC/sb_edac: Switch to new Intel CPU model defines
+>   EDAC/skx: Switch to new Intel CPU model defines
+>   extcon: axp288: Switch to new Intel CPU model defines
+>   peci: cpu: Switch to new Intel CPU model defines
+>   hwmon: (peci/cputemp) Switch to new Intel CPU model defines
+>   platform/x86: intel_ips: Switch to new Intel CPU model defines
+>   platform/x86/intel/pmc: Switch to new Intel CPU model defines
+>   platform/x86/intel: pmc: Switch to new Intel CPU model defines
+>   platform/x86: intel_scu_wdt: Switch to new Intel CPU model defines
+>   platform/x86: ISST: Switch to new Intel CPU model defines
+>   platform/x86: intel_speed_select_if: Switch to new Intel CPU model
+>     defines
+>   platform/x86: intel_telemetry: Switch to new Intel CPU model defines
+>   platform/x86: intel: telemetry: Switch to new Intel CPU model defines
+>   platform/x86: intel_turbo_max_3: Switch to new Intel CPU model defines
+>   platform/x86: intel-uncore-freq: Switch to new Intel CPU model defines
+>   platform/x86: p2sb: Switch to new Intel CPU model defines
+>   media: atomisp: Switch to new Intel CPU model defines
+>   ASoC: Intel: avs: es8336: Switch to new Intel CPU model defines
+>   perf/x86/rapl: Switch to new Intel CPU model defines
+>   x86/cpu/vfm: Delete X86_MATCH_INTEL_FAM6_MODEL[_STEPPING]() macros
+>   x86/cpu/vfm: Delete all the *_FAM6_ CPU #defines
+> 
+>  .../atomisp/include/linux/atomisp_platform.h  |  27 +--
+>  include/linux/peci-cpu.h                      |  24 ++
+>  include/linux/platform_data/x86/soc.h         |  12 +-
+>  arch/x86/include/asm/cpu_device_id.h          |  28 +--
+>  arch/x86/include/asm/intel-family.h           |  85 +------
+>  drivers/char/tpm/tpm.h                        |   2 +-
+>  drivers/char/tpm/tpm_tis_core.h               |   2 +-
+>  arch/x86/boot/cpucheck.c                      |   2 +-
+>  arch/x86/crypto/poly1305_glue.c               |   4 +-
+>  arch/x86/crypto/twofish_glue_3way.c           |  10 +-
+>  arch/x86/events/intel/core.c                  | 212 +++++++++---------
+>  arch/x86/events/intel/cstate.c                | 144 ++++++------
+>  arch/x86/events/intel/lbr.c                   |   3 +-
+>  arch/x86/events/intel/pt.c                    |  12 +-
+>  arch/x86/events/intel/uncore.c                | 100 ++++-----
+>  arch/x86/events/intel/uncore_nhmex.c          |   3 +-
+>  arch/x86/events/intel/uncore_snbep.c          |   5 +-
+>  arch/x86/events/msr.c                         | 132 +++++------
+>  arch/x86/events/rapl.c                        |  84 +++----
+>  arch/x86/kernel/apic/apic.c                   |  38 ++--
+>  arch/x86/kernel/cpu/aperfmperf.c              |  17 +-
+>  arch/x86/kernel/cpu/bugs.c                    |  30 +--
+>  arch/x86/kernel/cpu/common.c                  | 154 +++++++------
+>  arch/x86/kernel/cpu/intel.c                   | 115 +++++-----
+>  arch/x86/kernel/cpu/intel_epb.c               |  12 +-
+>  arch/x86/kernel/cpu/match.c                   |   2 +-
+>  arch/x86/kernel/cpu/mce/core.c                |   6 +-
+>  arch/x86/kernel/cpu/mce/intel.c               |  21 +-
+>  arch/x86/kernel/cpu/mce/severity.c            |  10 +-
+>  arch/x86/kernel/cpu/microcode/intel.c         |   5 +-
+>  arch/x86/kernel/cpu/resctrl/core.c            |  10 +-
+>  arch/x86/kernel/cpu/resctrl/pseudo_lock.c     |  22 +-
+>  arch/x86/kernel/smpboot.c                     |   6 +-
+>  arch/x86/kernel/tsc.c                         |   6 +-
+>  arch/x86/kernel/tsc_msr.c                     |  14 +-
+>  arch/x86/kvm/pmu.c                            |   8 +-
+>  arch/x86/kvm/vmx/vmx.c                        |  20 +-
+>  arch/x86/mm/init.c                            |  16 +-
+>  arch/x86/pci/intel_mid_pci.c                  |   4 +-
+>  arch/x86/platform/atom/punit_atom_debug.c     |  11 +-
+>  arch/x86/platform/intel-mid/intel-mid.c       |   7 +-
+>  arch/x86/virt/vmx/tdx/tdx.c                   |   8 +-
+>  drivers/acpi/acpi_lpss.c                      |   4 +-
+>  drivers/acpi/x86/utils.c                      |  42 ++--
+>  drivers/cpufreq/intel_pstate.c                |  90 ++++----
+>  drivers/cpufreq/speedstep-centrino.c          |   8 +-
+>  drivers/edac/i10nm_base.c                     |  20 +-
+>  drivers/edac/pnd2_edac.c                      |   4 +-
+>  drivers/edac/sb_edac.c                        |  14 +-
+>  drivers/edac/skx_base.c                       |   2 +-
+>  drivers/extcon/extcon-axp288.c                |   2 +-
+>  drivers/hwmon/peci/cputemp.c                  |   6 +-
+>  drivers/idle/intel_idle.c                     | 116 +++++-----
+>  drivers/pci/pci-mid.c                         |   4 +-
+>  drivers/peci/cpu.c                            |  28 +--
+>  drivers/platform/x86/intel/ifs/core.c         |  15 +-
+>  drivers/platform/x86/intel/pmc/core.c         |  46 ++--
+>  drivers/platform/x86/intel/pmc/pltdrv.c       |  16 +-
+>  .../intel/speed_select_if/isst_if_common.c    |   4 +-
+>  .../intel/speed_select_if/isst_if_mbox_msr.c  |   2 +-
+>  .../platform/x86/intel/telemetry/debugfs.c    |   4 +-
+>  drivers/platform/x86/intel/telemetry/pltdrv.c |   4 +-
+>  drivers/platform/x86/intel/turbo_max_3.c      |   4 +-
+>  .../intel/uncore-frequency/uncore-frequency.c |  56 ++---
+>  drivers/platform/x86/intel_ips.c              |   3 +-
+>  drivers/platform/x86/intel_scu_wdt.c          |   2 +-
+>  drivers/platform/x86/p2sb.c                   |   2 +-
+>  drivers/powercap/intel_rapl_common.c          | 118 +++++-----
+>  drivers/powercap/intel_rapl_msr.c             |  16 +-
+>  drivers/thermal/intel/intel_soc_dts_thermal.c |   2 +-
+>  drivers/thermal/intel/intel_tcc_cooling.c     |  30 +--
+>  sound/soc/intel/avs/boards/es8336.c           |   8 +-
+>  tools/power/x86/turbostat/turbostat.c         | 161 +++++++------
+>  73 files changed, 1103 insertions(+), 1163 deletions(-)
+> 
+> 
+> base-commit: f055b6260eb3ef20a6e310d1e555a5d5a0a28ca0
+
 
