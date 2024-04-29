@@ -1,60 +1,73 @@
-Return-Path: <linux-kernel+bounces-161814-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161815-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 78B0C8B5194
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 08:39:38 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id B189D8B5196
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 08:40:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2D87C281400
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 06:39:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 670661F219AD
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 06:40:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6617111C94;
-	Mon, 29 Apr 2024 06:39:29 +0000 (UTC)
-Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8C871119F;
+	Mon, 29 Apr 2024 06:40:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="F2nJFGMC"
+Received: from mail-lj1-f170.google.com (mail-lj1-f170.google.com [209.85.208.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 462D21118A;
-	Mon, 29 Apr 2024 06:39:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F5E710A09;
+	Mon, 29 Apr 2024 06:40:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714372768; cv=none; b=REOPkz1WtdUSWQp/Kpg6j+yOFX6+Pb2dIfyGBvJ2nm0Cjj6UJW8kKzgMNJkZsoLTE0tHsdQfFcJUGdzdkxoZvvDEpp7FgL//+nk5hO1jUA+w6NAqa2JtSfiJ/D4Pw/KFycqvsxBa4irSGMZ3AD5Is84KaeXAUsaFgV2KaOD11cg=
+	t=1714372848; cv=none; b=kzE6QTsHgflVEz+wWQD9bnO2mJHLxD9yPtvcaFvTwDgR0dHTnKvj+lYzeNTQDJSK7XEs5wxhavA7uuDNebTXiNNncViqWK66/fzhSJoZ240CF5WV5aP9824m4LxS08O/eqdMIAWI/ARDHhXROyLFaULezZxebxOK/7yeulv6Sug=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714372768; c=relaxed/simple;
-	bh=0uTdj+DLwPtNgb7rqdkpWnQhW3OkgzuJ/zq7PblRgPQ=;
+	s=arc-20240116; t=1714372848; c=relaxed/simple;
+	bh=fgvAz0sLTTktebTn14gaVVatU6mFkIDYuROOi6e1HvE=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=acoRHsKZxFg05v+wIqhjCDxi8K2ErfdhEy13hiMW1gWMlxDG9Y72PC2qyKpPYyetSsMqZELOCzWYf2x1Tz4MFbMGwUAFaIj5voqQ65XJ673aghQwkDj46XoOspuyLLVce+4W46+L/8pMIF5LKJvXOEYhwQAB6hMwhlqs7+5VGK8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.208.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	 In-Reply-To:Content-Type; b=LEUOrpAk5WTZUhCYAlOWtgBuBJpKKv22FiCwFOlGm/BIf9MYH2775L4qcJ5BWI2qR/uHsnKivogd3gyOQAFr8aYpcKJc+ss/gOgIwAtYOIDvBKh7uJ1i3w3Z7T4jvNeho9p/lnRU6X5xiYEsKLVrKAj5cG1iOeWbS8y9db6J4pY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=F2nJFGMC; arc=none smtp.client-ip=209.85.208.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-56e477db7fbso6665006a12.3;
-        Sun, 28 Apr 2024 23:39:26 -0700 (PDT)
+Received: by mail-lj1-f170.google.com with SMTP id 38308e7fff4ca-2dd615b6c44so43351971fa.0;
+        Sun, 28 Apr 2024 23:40:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1714372844; x=1714977644; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=+ySN0noyUH14atcen2ygoeKf0I5NwKf7EhALfl5OZZU=;
+        b=F2nJFGMCTq2EE5tS2mgJ2H0mB/otH8KqS3dBVAIL8vqcsLRdwA6Otsy5mN/x84HJuG
+         Afxf7rwEttY52y3ZVPOz0AqtJN8DRQxguTabcoMkYnPweKhyQA5PMlptZmXzIYPRi3f1
+         h9M9CyRfIKBICzv4H8HiOmpukECEioIYQMtPZpLBquOKydLxfRqm1coSnhriDCAMRkAU
+         iDvHTWqvksbnJzWEn2QUf+AsVq73Y9yc8x0wsbuNs4BEb8TXXEYuAr4UTIfeaPzDdpTS
+         UrVw6f/sb4fqnHlQih7ILDw6pqm1aq3XvXfz4cZgfnTIseitJZGMJ/fvKc31TnKl7Auj
+         BVxA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714372764; x=1714977564;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=OY9oeBWyxdXXlsTYn0DXXRwkgynS0Yhyhd4AqIGsWyY=;
-        b=kJ96GsWAilVwV663nLUbsrt7nzMB0bGWMwTB9hPzBRlhuDbBjs5nXiRb0Nsys6tgMY
-         ZdLnLDYPxACOnHSxp5BPI2cC7ZM8YBUyt2hiV5hm0eGvzVMCAuTT7/rZIh3kkfANOZe5
-         OIO4JKD7Ef7/bOxPveBEG6uCSN1VtFmViyJZsRiNVKHIDWl4OgvIZOGdqq0da7zGPHXG
-         KAnGKJf1GSB8aMlfzd91qIU7Yt+EVXHRX3mupqyjsvQSyy9/NMYKBBFikR6nVwg06+Mu
-         cmwsJmTtDzAxqsw4FfkW1SpWXXFqIrn25LoMEMNWuniTYuqg2Ms+P5y7+e1WggWoTtox
-         wo0Q==
-X-Forwarded-Encrypted: i=1; AJvYcCU1tIEMgUIhJzdWqLjSMqH2wDmS5zeRnlpMU52YxDU0B3rYl2eQW3vlHaqv8W5p8o2lLc+/Fd5yOrwa+S/rpPLL6l1L3KR8PK2sp+qA67SRxTXrq5UZVt4xh7gtzAmS95WhjPtjpRVWLaCynknneg1KHMafXPPav5ZOv3p+UJxnUc90
-X-Gm-Message-State: AOJu0YyZz0bvZbpe9eSDBlIaQghsjol4mDMrixTuBIbpYQbm5f9AQj2i
-	D5a5rttVxt04Fq6CoNA8Y+HZvcAkRtOFKq2MTgBvwI3eI2MYCIkA
-X-Google-Smtp-Source: AGHT+IHGhz5rOceE37OOJuNYQOh5BT5cJ3AQu8BjMY7uzLBItL/SNywwJrzVBQbwQjsGZoCCmW/RPw==
-X-Received: by 2002:a50:a6da:0:b0:56e:60d:9b16 with SMTP id f26-20020a50a6da000000b0056e060d9b16mr6416549edc.6.1714372764391;
-        Sun, 28 Apr 2024 23:39:24 -0700 (PDT)
-Received: from ?IPV6:2a0b:e7c0:0:107::aaaa:69? ([2a0b:e7c0:0:107::aaaa:69])
-        by smtp.gmail.com with ESMTPSA id c26-20020aa7c99a000000b00572405680e8sm4224454edt.21.2024.04.28.23.39.23
+        d=1e100.net; s=20230601; t=1714372844; x=1714977644;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=+ySN0noyUH14atcen2ygoeKf0I5NwKf7EhALfl5OZZU=;
+        b=wrzSFGdbGkitKmLcRwZL4c1bJpFV/4PGkO14UHsz/R1QZ8hLjbKTiwPMPFEX37lGZb
+         42UJ+CAmu+zVgpxNb2JKfZzKekWt771nv9bKDMInwRSFqPYMgcI+Qq25usgIYhCi0NiI
+         wCCTQoGGfuR6eE78KUOhWGLtsxrADehrfnPi6Fy5d1BvDlmsFNXYZM+LNv0PPzozXOya
+         mhCsxwuZeenkBRl0jcis4h+bvbgjLWQM5oUUFBmKYOWp6IAUOOxM9AB+a3u4g/AYAp/c
+         z0TJl+VkYpWpUOCMIwlzSzNYhN0pCmyotZhHnFW1Vn530clTLP7im8/+HNVwiThHjTHe
+         MNag==
+X-Forwarded-Encrypted: i=1; AJvYcCW0sjZ9KzUegFFWay8BIuwqRCGp3dKmwu5iVdaCJwpQPRQ3yHmhmGkgKa2Xt60DC3NCc4fMjod7qhbQrwKBgn2ngxEZZa9heUBMi+JAYXWhp4LChxTPH62PBm2J5Q+U8+zJO84egXPA
+X-Gm-Message-State: AOJu0YwuKfiYibiUwJJ7FZ0y+uH5ZvnMnXvvHHefLlSr5LLWBYKoBZW4
+	qFQuC5KMWEE/5Oc79w+Hj793kI9/Uj1rP+vvhsHDg095Or5tYPJJ
+X-Google-Smtp-Source: AGHT+IGccakOSvOuehrzUCUisMfZI7hs8SALqkXA/2RpJEU5gO4lg9UDYpmUo/aWKiMEMc1Yw+KpOQ==
+X-Received: by 2002:a2e:a789:0:b0:2e0:9ab7:22af with SMTP id c9-20020a2ea789000000b002e09ab722afmr363960ljf.53.1714372844359;
+        Sun, 28 Apr 2024 23:40:44 -0700 (PDT)
+Received: from ?IPV6:2a10:a5c0:800d:dd00:8cfe:d6e7:6701:9dfd? ([2a10:a5c0:800d:dd00:8cfe:d6e7:6701:9dfd])
+        by smtp.gmail.com with ESMTPSA id e20-20020a2e9e14000000b002df37b8e73bsm1094215ljk.37.2024.04.28.23.40.43
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 28 Apr 2024 23:39:23 -0700 (PDT)
-Message-ID: <17d2cc58-cf68-430d-9248-25abe4c5b0f0@kernel.org>
-Date: Mon, 29 Apr 2024 08:39:22 +0200
+        Sun, 28 Apr 2024 23:40:43 -0700 (PDT)
+Message-ID: <142a905d-f0e8-487e-a8db-ee1ded6da21f@gmail.com>
+Date: Mon, 29 Apr 2024 09:40:43 +0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -62,120 +75,65 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] serial: sc16is7xx: fix bug in sc16is7xx_set_baud() when
- using prescaler
-To: Hugo Villeneuve <hugo@hugovil.com>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Jon Ringle <jringle@gridpoint.com>
-Cc: ria.freelander@gmail.com, Hugo Villeneuve <hvilleneuve@dimonoff.com>,
- stable@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-serial@vger.kernel.org
-References: <20240426135937.3810959-1-hugo@hugovil.com>
-Content-Language: en-US
-From: Jiri Slaby <jirislaby@kernel.org>
-Autocrypt: addr=jirislaby@kernel.org; keydata=
- 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
-In-Reply-To: <20240426135937.3810959-1-hugo@hugovil.com>
+Subject: Re: [PATCH 1/2] iio: Fix the sorting functionality in
+ iio_gts_build_avail_time_table
+Content-Language: en-US, en-GB
+To: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+Cc: Jonathan Cameron <jic23@kernel.org>, Lars-Peter Clausen
+ <lars@metafoo.de>, linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Chenyuan Yang <chenyuan0y@gmail.com>
+References: <cover.1714371936.git.mazziesaccount@gmail.com>
+ <3d98589455726e812cf2ad2610f7351ee2b93b07.1714371936.git.mazziesaccount@gmail.com>
+From: Matti Vaittinen <mazziesaccount@gmail.com>
+In-Reply-To: <3d98589455726e812cf2ad2610f7351ee2b93b07.1714371936.git.mazziesaccount@gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
-On 26. 04. 24, 15:59, Hugo Villeneuve wrote:
-> From: Hugo Villeneuve <hvilleneuve@dimonoff.com>
+On 4/29/24 09:29, Chenyuan Yang wrote:
+> The sorting in iio_gts_build_avail_time_table is not working as intended.
+> It could result in an out-of-bounds access when the time is zero.
 > 
-> When using a high speed clock with a low baud rate, the 4x prescaler is
-> automatically selected if required. In that case, sc16is7xx_set_baud()
-> properly configures the chip registers, but returns an incorrect baud
-> rate by not taking into account the prescaler value. This incorrect baud
-> rate is then fed to uart_update_timeout().
+> Here are more details:
 > 
-> For example, with an input clock of 80MHz, and a selected baud rate of 50,
-> sc16is7xx_set_baud() will return 200 instead of 50.
+> 1. When the gts->itime_table[i].time_us is zero, e.g., the time
+> sequence is `3, 0, 1`, the inner for-loop will not terminate and do
+> out-of-bound writes. This is because once `times[j] > new`, the value
+> `new` will be added in the current position and the `times[j]` will be
+> moved to `j+1` position, which makes the if-condition always hold.
+> Meanwhile, idx will be added one, making the loop keep running without
+> termination and out-of-bound write.
+> 2. If none of the gts->itime_table[i].time_us is zero, the elements
+> will just be copied without being sorted as described in the comment
+> "Sort times from all tables to one and remove duplicates".
 > 
-> Fix this by first changing the prescaler variable to hold the selected
-> prescaler value instead of the MCR bitfield. Then properly take into
-> account the selected prescaler value in the return value computation.
+> For more details, please refer to
+> https://lore.kernel.org/all/6dd0d822-046c-4dd2-9532-79d7ab96ec05@gmail.com.
 > 
-> Also add better documentation about the divisor value computation.
-> 
-> Fixes: dfeae619d781 ("serial: sc16is7xx")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Hugo Villeneuve <hvilleneuve@dimonoff.com>
-> ---
->   drivers/tty/serial/sc16is7xx.c | 23 ++++++++++++++++++-----
->   1 file changed, 18 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/tty/serial/sc16is7xx.c b/drivers/tty/serial/sc16is7xx.c
-> index 03cf30e20b75..dcd6c5615401 100644
-> --- a/drivers/tty/serial/sc16is7xx.c
-> +++ b/drivers/tty/serial/sc16is7xx.c
-> @@ -555,16 +555,28 @@ static bool sc16is7xx_regmap_noinc(struct device *dev, unsigned int reg)
->   	return reg == SC16IS7XX_RHR_REG;
->   }
->   
-> +/*
-> + * Configure programmable baud rate generator (divisor) according to the
-> + * desired baud rate.
-> + *
-> + * From the datasheet, the divisor is computed according to:
-> + *
-> + *              XTAL1 input frequency
-> + *             -----------------------
-> + *                    prescaler
-> + * divisor = ---------------------------
-> + *            baud-rate x sampling-rate
-> + */
->   static int sc16is7xx_set_baud(struct uart_port *port, int baud)
->   {
->   	struct sc16is7xx_one *one = to_sc16is7xx_one(port, port);
->   	u8 lcr;
-> -	u8 prescaler = 0;
-> +	int prescaler = 1;
+> Reported-by: Chenyuan Yang <chenyuan0y@gmail.com>
+> Suggested-by: Matti Vaittinen <mazziesaccount@gmail.com>
+> Fixes: 38416c28e168 ("iio: light: Add gain-time-scale helpers")
+> Co-developed-by: Chenyuan Yang <chenyuan0y@gmail.com>
+> Signed-off-by: Chenyuan Yang <chenyuan0y@gmail.com>
+> Co-developed-by: Matti Vaittinen <mazziesaccount@gmail.com>
+> Signed-off-by: Matti Vaittinen <mazziesaccount@gmail.com> 
 
-Ugh, why do you move to signed arithmetics?
+Huh. I had never before sent a patch with co-authored tags. Just to 
+ensure there is no misunderstandings - I did send this patch mail. I 
+added the From: tag as was suggested in:
+https://www.kernel.org/doc/html/latest/process/submitting-patches.html
 
-regards,
+I am afraid mutt picked the email sender from this tag - which does not 
+fee like correct thing to do! Sorry! I did not intend to impersonate 
+Chenyuan!
+
+Yours,
+	-- Matti
+
 -- 
-js
-suse labs
+Matti Vaittinen
+Linux kernel developer at ROHM Semiconductors
+Oulu Finland
+
+~~ When things go utterly wrong vim users can always type :help! ~~
 
 
