@@ -1,68 +1,64 @@
-Return-Path: <linux-kernel+bounces-161734-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161735-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B233F8B5052
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 06:41:59 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7431E8B5055
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 06:49:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 67FDC1F225DB
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 04:41:59 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EC679B2280E
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 04:49:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6261DD515;
-	Mon, 29 Apr 2024 04:41:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 02001D26D;
+	Mon, 29 Apr 2024 04:49:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="iUD8i6Sk"
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sQNBQ/OW"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F5D279F9;
-	Mon, 29 Apr 2024 04:41:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 375C88BE2;
+	Mon, 29 Apr 2024 04:49:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714365708; cv=none; b=hhhPZZMSepA0/bThEMNCrYksjLwsNbv/P7G3EdwTHR91f2pro7UV4NmPGhq6/sMiwSFFMcQetGv4F0e7qRCcjrYhy0asL7VlIKjR22ofBv26OOmG4ORcJ4M0BX8kxPs/YfXLfjA1x/3lKk8A6nRpq3zQreVo0oDtY+cX0tek0B0=
+	t=1714366161; cv=none; b=L3IGEKlwunZ2lQMY5tX9YxXX59sO6QDM0+EejkvS3xKdwkP2mIIXR/2YwUT6BDtIYraIFFyDP/xJwQixVGN27GPpNCr9zLuCPKHTf5ILOMnVyEIa+Yxaf1+J8ef4Ilmz95pJG7QoQpIe/d4STIv86dAMs573H5DJBoC5NNkIM68=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714365708; c=relaxed/simple;
-	bh=owcXP+fsTgaHZFyUzCBMT1bCDgfz3/4CftWoEv2Acic=;
+	s=arc-20240116; t=1714366161; c=relaxed/simple;
+	bh=Pe63LePjMb2wHzOe1goi1rwylL6odcnrORw6iB84RVg=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=hMdjmxWcyDk2yVUinm4S+zGIJlSlm1VfkPG6PCy9uZwHVR9LoVL+HgZQ1jfyXhijIhLZAbzg7DNXBmgFuHyLYoMgFg3Cro2FwKG/3Rl5cGYMvHZv6pi/yca2X/RiEhjjzb3Cmntk8kvBjC3+5HsF74WttqrPd+Cn7ZrcOJ8RjJw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=iUD8i6Sk; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=wZLTTPnjjgVPc51teM35bkMR46cidPv+y0mcRd/jT54=; b=iUD8i6SkDwuRDoyxK+6J+lVAFg
-	kx4jy3bRbUcjCs4nzPAwR9bzpl1MCcr9+66rNBv8BQOwCgihP/M31/xiU6rvf6r13WjAAlIks3z5F
-	E+gJ21n42uwY3TvDgrjA7tdv/JQh8D1KeiEzCU2Us7SeCgo05e1CnOVRq2+M0bZistaRxizzW2KyC
-	/HeDnBbcWwCYkmXYrzI8i083Nx7QTWMMSQmUxm7GrcO6LVn3IiNzPC7vp3VGOHsxMSKBETn7Lm6Nu
-	mwnCMr9QxVldF1Mzq06V2VhvSTzzsbErJ554QUzi9NbcdxhwnM2GlcAvjveaVySRBJmC5mAN3Xm7y
-	ZqvYu4Nw==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1s1Ipl-00000001RPG-2exv;
-	Mon, 29 Apr 2024 04:41:45 +0000
-Date: Sun, 28 Apr 2024 21:41:45 -0700
-From: Christoph Hellwig <hch@infradead.org>
-To: Zhang Yi <yi.zhang@huaweicloud.com>
-Cc: Christoph Hellwig <hch@infradead.org>,
-	"Darrick J. Wong" <djwong@kernel.org>, linux-xfs@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-	brauner@kernel.org, david@fromorbit.com, chandanbabu@kernel.org,
-	tytso@mit.edu, jack@suse.cz, yi.zhang@huawei.com,
-	chengzhihao1@huawei.com, yukuai3@huawei.com
-Subject: Re: [PATCH v5 4/9] xfs: convert delayed extents to unwritten when
- zeroing post eof blocks
-Message-ID: <Zi8lCUjX8lByIVZI@infradead.org>
-References: <20240425131335.878454-1-yi.zhang@huaweicloud.com>
- <20240425131335.878454-5-yi.zhang@huaweicloud.com>
- <20240425182904.GA360919@frogsfrogsfrogs>
- <3be86418-e629-c7e6-fd73-f59f97a73a89@huaweicloud.com>
- <ZitKncYr0cCmU0NG@infradead.org>
- <5b6228ce-c553-3387-dfc4-2db78e3bd810@huaweicloud.com>
- <ZiyiNzQ6oY3ZAohg@infradead.org>
- <c4ab199e-92bf-4b22-fe41-1fca400bdc31@huaweicloud.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=jpgLDBi658+GR8sDnVpwXfELj0zwl7627P1pO5ZWDEj+A7NmeRfqEUK8409x/U6bnU8hQKB2a8yCNH5YFwp2yCzcNwIOQfNm+sG4lVQyJgiT7vHY5Omkll2zoZ+fI3IC32benXKVjTJXGb7n+rwKbbpl+YTy8mjbLlpU/wRFOoM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sQNBQ/OW; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 57A37C113CD;
+	Mon, 29 Apr 2024 04:49:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714366160;
+	bh=Pe63LePjMb2wHzOe1goi1rwylL6odcnrORw6iB84RVg=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=sQNBQ/OW3GPt1m4h0uwIn77iJZIryE1g05yK3qzgx8FPQusPhJkrJ6Fq11e5hPTDD
+	 uhzy8xBayerts43Xz3eN+GJ728C5fVXrjQY3uXaQo2rA/qBZWBOneusS+4jtNPLT1g
+	 1Q5qIRbEt1XR3rhk/HtID9modiLOCs5+J82OM0PsXWYcvmZX1wX6H6bd/GtxyUEtPO
+	 8Sgoau8juqZMv3XN+thgthnHOPEo28XS7j2++BI6HjpriWfTv/t+9ZyQIwhgzQXyZ8
+	 JUXqSm1K/CS7kv0HTPWj7ak3KZAEq8Wp+iLq0/6w1wqdi3xjce8XR5KBCC3BeFfYn3
+	 b9BijfOI+GzHw==
+Date: Mon, 29 Apr 2024 10:19:16 +0530
+From: Vinod Koul <vkoul@kernel.org>
+To: Linux regressions mailing list <regressions@lists.linux.dev>
+Cc: dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
+	parthiban@linumiz.com, saravanan@linumiz.com,
+	'karthikeyan' <karthikeyan@linumiz.com>,
+	"bumyong.lee" <bumyong.lee@samsung.com>
+Subject: Re: dmaengine: CPU stalls while loading bluetooth module
+Message-ID: <Zi8mzMWubkfi9UiV@matsya>
+References: <000001da6ecc$adb25420$0916fc60$@samsung.com>
+ <12de921e-ae42-4eb3-a61a-dadc6cd640b8@leemhuis.info>
+ <000001da7140$6a0f1570$3e2d4050$@samsung.com>
+ <07b0c5f6-1fe2-474e-a312-5eb85a14a5c8@leemhuis.info>
+ <001001da7a60$78603130$69209390$@samsung.com>
+ <9490757c-4d7c-4d8b-97e2-812a237f902b@leemhuis.info>
+ <8734a80b-c7a9-4cc2-91c9-123b391d468c@leemhuis.info>
+ <ZgUTbiL86_bg0ZkZ@matsya>
+ <2b2a6c9f-4df2-4962-b926-09adccd20715@leemhuis.info>
+ <0b5da67a-7482-4f18-9246-9c118f182b8b@leemhuis.info>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -71,28 +67,34 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <c4ab199e-92bf-4b22-fe41-1fca400bdc31@huaweicloud.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <0b5da67a-7482-4f18-9246-9c118f182b8b@leemhuis.info>
 
-On Sun, Apr 28, 2024 at 11:26:00AM +0800, Zhang Yi wrote:
-> > 
-> > Oh well.  Given that we're full in on the speculative allocations
-> > we might as well deal with it.
-> > 
+On 25-04-24, 12:03, Thorsten Leemhuis wrote:
+> On 28.03.24 16:06, Linux regression tracking (Thorsten Leemhuis) wrote:
+> > On 28.03.24 07:51, Vinod Koul wrote:
+> >> On 26-03-24, 14:50, Linux regression tracking (Thorsten Leemhuis) wrote:
+> >>>
+> >>> Vinod Koul, what's your option here? We have two reports about
+> >>> regressions caused by 22a9d958581244 ("dmaengine: pl330: issue_pending
+> >>> waits until WFP state") [v6.8-rc1] now:
+> >>>
+> >>> https://lore.kernel.org/lkml/1553a526-6f28-4a68-88a8-f35bd22d9894@linumiz.com/
+> >>>
+> >>> https://lore.kernel.org/all/ZYhQ2-OnjDgoqjvt@wens.tw/
+> >>> [the first link points to the start of this thread]
+> >>>
+> >>> To me it sounds like this is a change that better should be reverted,
+> >>> but you are of course the better judge here.
+> >>
+> >> Sure I have reverted this,
+> >
+> > Thx!
 > 
-> Let me confirm, so you also think the preallocations in the COW fork that
-> overlaps the unreflinked range is useless, we should avoid allocating
-> this range, is that right? If so, I suppose we can do this improvement in
-> another patch(set), this one works fine now.
+> That revert afaics has not made it to Linus yet. Is that intentional, or
+> did it just fell through the cracks?
 
-Well, not stop allocating it, but not actually convert it to a real
-allocation when we're just truncating it and replacing the blocks with
-reflinked blocks.
+Nope, it was sent to Linus last week and is now in -rc6...
 
-But yes, this is a bigger project.
-
-For now for this patch to go ahead:
-
-Reviewed-by: Christoph Hellwig <hch@lst.de>
-
+-- 
+~Vinod
 
