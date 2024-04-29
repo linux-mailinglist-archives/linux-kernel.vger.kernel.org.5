@@ -1,278 +1,134 @@
-Return-Path: <linux-kernel+bounces-162001-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-162003-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6259E8B5464
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 11:41:25 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4E64F8B5475
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 11:47:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 85A5A1C20F96
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 09:41:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E2EDF1F21FAC
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 09:47:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 93AA124B34;
-	Mon, 29 Apr 2024 09:41:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 14A972C6B9;
+	Mon, 29 Apr 2024 09:47:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="key not found in DNS" (0-bit key) header.d=mecka.net header.i=@mecka.net header.b="j/+AENdG"
-Received: from mecka.net (mecka.net [159.69.159.214])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4735171C9;
-	Mon, 29 Apr 2024 09:41:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=159.69.159.214
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HQO5NSRt"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56AFA29428;
+	Mon, 29 Apr 2024 09:47:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714383677; cv=none; b=a5Ee6MnHM4msHMIJNSB9an83QJOjPUPQXcywW0la7YMRQks3Kx3UCCz7Nn/fEKJ6WvFP9G8z2b+4w3rBC7wgxHg14LnBI8JNBOA7pCEBPhWnb+9zQrvEMfi+8mCmryUGaDZx5OctXPvejlJ9p+mDoEMR96+ckCh9yfWBTDjkyHo=
+	t=1714384043; cv=none; b=BBWUVq7JkqyU2wA4K3/Sn69KFFcgNUx209a83zY75sHDbmcifL/Ke3hoM5sl6eZmFww+/Eq45weaj4+EC4v3WZrxQpzLuoYJLQ2P7Xnn5qWAkOtaFvaWAeRzI7BWv5W6pWnG6j/k8k0uOJKcyYnGTNyj9EhuwcYa+4ckKqT05wQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714383677; c=relaxed/simple;
-	bh=lOtwTB1hQGTZTb9sPzIaDFMAGjapJfjC6odRs5U7n1g=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=cr0h5EWGSH9+yQuD/oL4doxmVkDyKl8Uz2Z9TUJ5vpHeMhwy2MqscuyBRmjdYVwcQHQgtjygSjyWE1s4dEsbGzajScrB1Q3Ddtj2DFloduzT32q7WeIwGTcRP9/vgKrUVR4GPi84xPMwhwEf6mjoBhw/GY52eOmdlse9ReI/LkY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=mecka.net; spf=pass smtp.mailfrom=mecka.net; dkim=fail (0-bit key) header.d=mecka.net header.i=@mecka.net header.b=j/+AENdG reason="key not found in DNS"; arc=none smtp.client-ip=159.69.159.214
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=mecka.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mecka.net
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mecka.net; s=2016.11;
-	t=1714383666; bh=lOtwTB1hQGTZTb9sPzIaDFMAGjapJfjC6odRs5U7n1g=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=j/+AENdGEJgLUzRuxmAVjBTu1Dv7L3DB6tnXIZ3HyfHC7UrUrIh4UQVnGzelkpl64
-	 wcBXG5etvmD5mw+PRGuUlvV324jyhFDyBddwaEipT/1KFeHzTPH6pFkQRJSft1Nq14
-	 R/kpWApQ845bATayE4z0UunU1RL5zfTgQiUY5PUEm78yBXX9V8U3E65vy1QuXDO+tO
-	 G6JC637ROQOHIqbLByCbzNG3hp/mqqzTNlbnlEO2v/qxZjZNHzxts/8hbt9v8rEs/e
-	 +dIbTG4P6ajgKN1qRXi+//d5+hjhrxROHbgsDGnjsW+JYmS3ckCIQVyWU3KAoDyuhe
-	 sDW3z+9n3gGVA==
-Received: from mecka.net (unknown [185.147.11.134])
-	by mecka.net (Postfix) with ESMTPSA id 5191747C02B;
-	Mon, 29 Apr 2024 11:41:05 +0200 (CEST)
-Date: Mon, 29 Apr 2024 11:40:59 +0200
-From: Manuel Traut <manut@mecka.net>
-To: Jens Wiklander <jens.wiklander@linaro.org>
-Cc: linux-kernel@vger.kernel.org, linux-mmc@vger.kernel.org,
-	op-tee@lists.trustedfirmware.org,
-	Shyam Saini <shyamsaini@linux.microsoft.com>,
-	Ulf Hansson <ulf.hansson@linaro.org>,
-	Linus Walleij <linus.walleij@linaro.org>,
-	Jerome Forissier <jerome.forissier@linaro.org>,
-	Sumit Garg <sumit.garg@linaro.org>,
-	Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-	Bart Van Assche <bvanassche@acm.org>,
-	Randy Dunlap <rdunlap@infradead.org>,
-	Ard Biesheuvel <ardb@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Tomas Winkler <tomas.winkler@intel.com>,
-	Alexander Usyskin <alexander.usyskin@intel.com>
-Subject: Re: [PATCH v5 2/3] mmc: block: register RPMB partition with the RPMB
- subsystem
-Message-ID: <Zi9rKzz8u8z7cIy0@mecka.net>
-References: <20240422091936.3714381-1-jens.wiklander@linaro.org>
- <20240422091936.3714381-3-jens.wiklander@linaro.org>
- <ZioXkvnIw5V5MXBU@mecka.net>
- <CAHUa44Fojanryuc+ciJrVZUopRLcTt2teS_pC4BBjt1Wmy240A@mail.gmail.com>
+	s=arc-20240116; t=1714384043; c=relaxed/simple;
+	bh=NM6evQjYLnroF7Q2T+xgCdVK89+I3dLZ0fOu5qXvXuU=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=UhQ0TKnm5jBNtUyYt8Gd2PqzhbHOEMwktNnpjYzrntojKXjTJsN6luQbpm32q4+I2dol875t/Hp/FeiOnw7ZHclIlibLlHJSeYEOoU1kH1q65sqhJSljSSMfNcYUys6n1xUxSPLLxfeRAuVmkouL1+SYZaFxurcwYSmsw8Jktlc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HQO5NSRt; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id D5BC3C113CD;
+	Mon, 29 Apr 2024 09:47:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714384042;
+	bh=NM6evQjYLnroF7Q2T+xgCdVK89+I3dLZ0fOu5qXvXuU=;
+	h=From:Date:Subject:To:Cc:Reply-To:From;
+	b=HQO5NSRtsNRAd5p8HtrxVIvFV7XzARyZBhe/9abXPitkqGgLwjgaGobgZzj2fr3Jy
+	 RNn4H9TdrU4r/kk0QoKFDGhYwSmj0TgUmsFo9C9qRWGC2bw9qEIUG+aCl6vrQBwn1P
+	 XtLiU54iDeVX4hRj/xByeoStQ79orF44wjz6Q/vQ1UV/5x374iDJEzDKCx40f13WVT
+	 TT0eyFag8yE14sQCNZG0aev1ppupFq1bIQE75Zft/x5c5Y+q4x0SSLc2IxrYRrDIBj
+	 573WNaIabG42dmqeAxKNxQgTNLUu04shvXv8ccuvOsN6lG1eyGAZ1bMyEpSff7b0l0
+	 uOfO8kJDq1wmQ==
+Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C5010C4345F;
+	Mon, 29 Apr 2024 09:47:22 +0000 (UTC)
+From: =?utf-8?q?Ar=C4=B1n=C3=A7_=C3=9CNAL_via_B4_Relay?= <devnull+arinc.unal.arinc9.com@kernel.org>
+Date: Mon, 29 Apr 2024 12:46:43 +0300
+Subject: [PATCH net-next] net: dsa: mt7530: detect PHY muxing when PHY is
+ defined on switch MDIO bus
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAHUa44Fojanryuc+ciJrVZUopRLcTt2teS_pC4BBjt1Wmy240A@mail.gmail.com>
+Message-Id: <20240429-b4-for-netnext-mt7530-use-switch-mdio-bus-for-phy-muxing-v1-1-1f775983e155@arinc9.com>
+X-B4-Tracking: v=1; b=H4sIAIJsL2YC/x3NQQ6DIBCF4auYWXcSRNDaq5guqo4yC8AAtjTGu
+ 5e6/JOX7x0QKTBFeFQHBHpzZO9K1LcKJvNyKyHPpUEKqYSSPY4KFx/QUXKUE9rU6UbgHgnjh9N
+ k0M7scdzjNdvMF+2e2a2o761s+6arJ62h8FughfN1PUDh8O/B8zx/gMKG6ZQAAAA=
+To: Daniel Golle <daniel@makrotopia.org>, DENG Qingfang <dqfext@gmail.com>, 
+ Sean Wang <sean.wang@mediatek.com>, Andrew Lunn <andrew@lunn.ch>, 
+ Florian Fainelli <f.fainelli@gmail.com>, 
+ Vladimir Oltean <olteanv@gmail.com>, 
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+ Matthias Brugger <matthias.bgg@gmail.com>, 
+ AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Cc: Bartel Eerdekens <bartel.eerdekens@constell8.be>, 
+ mithat.guner@xeront.com, erkin.bozoglu@xeront.com, netdev@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+ linux-mediatek@lists.infradead.org, 
+ =?utf-8?q?Ar=C4=B1n=C3=A7_=C3=9CNAL?= <arinc.unal@arinc9.com>
+X-Mailer: b4 0.13.0
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1714384017; l=1737;
+ i=arinc.unal@arinc9.com; s=arinc9-patatt; h=from:subject:message-id;
+ bh=aV0b87E50oYhQ0oa+qVZ0uBYjOG8eoZT/UzGqSKMX+s=;
+ b=Nq09mU0p4YPp/xi2o2FjpG+iFQnXvtEU3rSX2+/m1lN0qfURodE/M/xzNPYmVb0YMAjA29jt+
+ mrN3+nAmij2A4jISevUV4uDaSgAoMYbC1kaiDm0ucx49S8SbqUYx8X2
+X-Developer-Key: i=arinc.unal@arinc9.com; a=ed25519;
+ pk=VmvgMWwm73yVIrlyJYvGtnXkQJy9CvbaeEqPQO9Z4kA=
+X-Endpoint-Received: by B4 Relay for arinc.unal@arinc9.com/arinc9-patatt
+ with auth_id=115
+X-Original-From: =?utf-8?q?Ar=C4=B1n=C3=A7_=C3=9CNAL?= <arinc.unal@arinc9.com>
+Reply-To: arinc.unal@arinc9.com
 
-On Fri, Apr 26, 2024 at 03:24:21PM +0200, Jens Wiklander wrote:
-> On Thu, Apr 25, 2024 at 10:43 AM Manuel Traut <manut@mecka.net> wrote:
-> >
-> > On Mon, Apr 22, 2024 at 11:19:35AM +0200, Jens Wiklander wrote:
-> > > Register eMMC RPMB partition with the RPMB subsystem and provide
-> > > an implementation for the RPMB access operations abstracting
-> > > the actual multi step process.
-> > >
-> > > Add a callback to extract the needed device information at registration
-> > > to avoid accessing the struct mmc_card at a later stage as we're not
-> > > holding a reference counter for this struct.
-> > >
-> > > Taking the needed reference to md->disk in mmc_blk_alloc_rpmb_part()
-> > > instead of in mmc_rpmb_chrdev_open(). This is needed by the
-> > > route_frames() function pointer in struct rpmb_ops.
-> > >
-> > > Signed-off-by: Tomas Winkler <tomas.winkler@intel.com>
-> > > Signed-off-by: Alexander Usyskin <alexander.usyskin@intel.com>
-> > > Signed-off-by: Jens Wiklander <jens.wiklander@linaro.org>
-> > > ---
-> > >  drivers/mmc/core/block.c | 241 ++++++++++++++++++++++++++++++++++++++-
-> > >  1 file changed, 239 insertions(+), 2 deletions(-)
-> > >
-> > > diff --git a/drivers/mmc/core/block.c b/drivers/mmc/core/block.c
-> > > index 32d49100dff5..a7f126fbc605 100644
-> > > --- a/drivers/mmc/core/block.c
-> > > +++ b/drivers/mmc/core/block.c
-> > > @@ -33,6 +33,7 @@
-> > >  #include <linux/cdev.h>
-> > >  #include <linux/mutex.h>
-> > >  #include <linux/scatterlist.h>
-> > > +#include <linux/string.h>
-> > >  #include <linux/string_helpers.h>
-> > >  #include <linux/delay.h>
-> > >  #include <linux/capability.h>
-> > > @@ -40,6 +41,7 @@
-> > >  #include <linux/pm_runtime.h>
-> > >  #include <linux/idr.h>
-> > >  #include <linux/debugfs.h>
-> > > +#include <linux/rpmb.h>
-> > >
-> > >  #include <linux/mmc/ioctl.h>
-> > >  #include <linux/mmc/card.h>
-> > > @@ -76,6 +78,48 @@ MODULE_ALIAS("mmc:block");
-> > >  #define MMC_EXTRACT_INDEX_FROM_ARG(x) ((x & 0x00FF0000) >> 16)
-> > >  #define MMC_EXTRACT_VALUE_FROM_ARG(x) ((x & 0x0000FF00) >> 8)
-> > >
-> > > +/**
-> > > + * struct rpmb_frame - rpmb frame as defined by eMMC 5.1 (JESD84-B51)
-> > > + *
-> > > + * @stuff        : stuff bytes
-> > > + * @key_mac      : The authentication key or the message authentication
-> > > + *                 code (MAC) depending on the request/response type.
-> > > + *                 The MAC will be delivered in the last (or the only)
-> > > + *                 block of data.
-> > > + * @data         : Data to be written or read by signed access.
-> > > + * @nonce        : Random number generated by the host for the requests
-> > > + *                 and copied to the response by the RPMB engine.
-> > > + * @write_counter: Counter value for the total amount of the successful
-> > > + *                 authenticated data write requests made by the host.
-> > > + * @addr         : Address of the data to be programmed to or read
-> > > + *                 from the RPMB. Address is the serial number of
-> > > + *                 the accessed block (half sector 256B).
-> > > + * @block_count  : Number of blocks (half sectors, 256B) requested to be
-> > > + *                 read/programmed.
-> > > + * @result       : Includes information about the status of the write counter
-> > > + *                 (valid, expired) and result of the access made to the RPMB.
-> > > + * @req_resp     : Defines the type of request and response to/from the memory.
-> > > + *
-> > > + * The stuff bytes and big-endian properties are modeled to fit to the spec.
-> > > + */
-> > > +struct rpmb_frame {
-> > > +     u8     stuff[196];
-> > > +     u8     key_mac[32];
-> > > +     u8     data[256];
-> > > +     u8     nonce[16];
-> > > +     __be32 write_counter;
-> > > +     __be16 addr;
-> > > +     __be16 block_count;
-> > > +     __be16 result;
-> > > +     __be16 req_resp;
-> > > +} __packed;
-> > > +
-> > > +#define RPMB_PROGRAM_KEY       0x1    /* Program RPMB Authentication Key */
-> > > +#define RPMB_GET_WRITE_COUNTER 0x2    /* Read RPMB write counter */
-> > > +#define RPMB_WRITE_DATA        0x3    /* Write data to RPMB partition */
-> > > +#define RPMB_READ_DATA         0x4    /* Read data from RPMB partition */
-> > > +#define RPMB_RESULT_READ       0x5    /* Read result request  (Internal) */
-> > > +
-> > >  static DEFINE_MUTEX(block_mutex);
-> > >
-> > >  /*
-> > > @@ -163,6 +207,7 @@ struct mmc_rpmb_data {
-> > >       int id;
-> > >       unsigned int part_index;
-> > >       struct mmc_blk_data *md;
-> > > +     struct rpmb_dev *rdev;
-> > >       struct list_head node;
-> > >  };
-> > >
-> > > @@ -2672,7 +2717,6 @@ static int mmc_rpmb_chrdev_open(struct inode *inode, struct file *filp)
-> > >
-> > >       get_device(&rpmb->dev);
-> > >       filp->private_data = rpmb;
-> > > -     mmc_blk_get(rpmb->md->disk);
-> > >
-> > >       return nonseekable_open(inode, filp);
-> > >  }
-> > > @@ -2682,7 +2726,6 @@ static int mmc_rpmb_chrdev_release(struct inode *inode, struct file *filp)
-> > >       struct mmc_rpmb_data *rpmb = container_of(inode->i_cdev,
-> > >                                                 struct mmc_rpmb_data, chrdev);
-> > >
-> > > -     mmc_blk_put(rpmb->md);
-> > >       put_device(&rpmb->dev);
-> > >
-> > >       return 0;
-> > > @@ -2703,10 +2746,165 @@ static void mmc_blk_rpmb_device_release(struct device *dev)
-> > >  {
-> > >       struct mmc_rpmb_data *rpmb = dev_get_drvdata(dev);
-> > >
-> > > +     rpmb_dev_unregister(rpmb->rdev);
-> > > +     mmc_blk_put(rpmb->md);
-> > >       ida_simple_remove(&mmc_rpmb_ida, rpmb->id);
-> > >       kfree(rpmb);
-> > >  }
-> > >
-> > > +static void free_idata(struct mmc_blk_ioc_data **idata, unsigned int cmd_count)
-> > > +{
-> > > +     unsigned int n;
-> > > +
-> > > +     for (n = 0; n < cmd_count; n++)
-> > > +             kfree(idata[n]);
-> > > +     kfree(idata);
-> > > +}
-> > > +
-> > > +static struct mmc_blk_ioc_data **alloc_idata(struct mmc_rpmb_data *rpmb,
-> > > +                                          unsigned int cmd_count)
-> > > +{
-> > > +     struct mmc_blk_ioc_data **idata;
-> > > +     unsigned int n;
-> > > +
-> > > +     idata = kcalloc(cmd_count, sizeof(*idata), GFP_KERNEL);
-> > > +     if (!idata)
-> > > +             return NULL;
-> > > +     for (n = 0; n < cmd_count; n++) {
-> > > +             idata[n] = kcalloc(1, sizeof(**idata), GFP_KERNEL);
-> > > +             if (!idata[n]) {
-> > > +                     free_idata(idata, n);
-> > > +                     return NULL;
-> > > +             }
-> > > +             idata[n]->rpmb = rpmb;
-> > > +     }
-> > > +
-> > > +     return idata;
-> > > +}
-> > > +
-> > > +static void set_idata(struct mmc_blk_ioc_data *idata, u32 opcode,
-> > > +                   int write_flag, u8 *buf, unsigned int buf_bytes)
-> > > +{
-> > > +     /*
-> > > +      * The size of an RPMB frame must match what's expected by the
-> > > +      * hardware.
-> > > +      */
-> > > +     BUILD_BUG_ON(sizeof(struct rpmb_frame) != 512);
-> > > +
-> > > +     idata->ic.opcode = opcode;
-> > > +     idata->ic.flags = MMC_RSP_R1 | MMC_CMD_ADTC;
-> > > +     idata->ic.write_flag = write_flag;
-> > > +     idata->ic.blksz = sizeof(struct rpmb_frame);
-> > > +     idata->ic.blocks = buf_bytes /  idata->ic.blksz;
-> > > +     idata->buf = buf;
-> >
-> > I tested the series on a i.MX8MM with a eMMC connected via the imx-sdhci
-> > controller. Reading from RPMB does not work. It ends in timeouts due to
-> > no response from the SDHCI controller.
-> >
-> > If idata->buf is allocated here with kmalloc(buf_bytes, GFP_KERNEL) and
-> > the content of buf is copied to the new allocated area, transfers succeed.
-> >
-> > Is it possible that idata->buf is not DMA capable? Any other ideas?
-> 
-> Thanks for testing. I don't know, the idata->buf is allocated using
-> alloc_pages_exact(nr_pages * PAGE_SIZE, GFP_KERNEL | __GFP_ZERO); in
-> optee_pool_op_alloc_helper().
+From: Arınç ÜNAL <arinc.unal@arinc9.com>
 
-Is this really true for idata->buf or isnt the complete RPMB frame memory
-allocated like this and therefore idata->buf not page aligned?
+Currently, the MT7530 DSA subdriver configures the MT7530 switch to provide
+direct access to switch PHYs, meaning, the switch PHYs listen on the MDIO
+bus the switch listens on. The PHY muxing feature makes use of this.
 
-For RPMB via tee-supplicant the idata->buf is allocated within memdup_user
-and therefore page aligned.
+This is problematic as the PHY may be probed before the switch is
+initialised, in which case attaching the PHY will fail.
 
-> Alternatively, it's from the memory
-> range mapped using memremap() in optee_config_shm_memremap(), but
-> that's only if you don't have "dynamic shared memory is enabled" in
-> the boot log.
+Since commit 91374ba537bd ("net: dsa: mt7530: support OF-based registration
+of switch MDIO bus"), we can describe the switch PHYs on the MDIO bus of
+the switch on the device tree. Extend the check to detect PHY muxing when
+the PHY is defined on the MDIO bus of the switch on the device tree.
 
-"dynamic shared memory is enabled" is in the bootlog, ..
+When the PHY is described this way, the switch will be initialised first,
+then the switch MDIO bus will be registered. Only after these steps, the
+PHY will be probed.
 
-Thanks for your comments,
-Manuel
+Signed-off-by: Arınç ÜNAL <arinc.unal@arinc9.com>
+---
+ drivers/net/dsa/mt7530.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/net/dsa/mt7530.c b/drivers/net/dsa/mt7530.c
+index 2b9f904a98f0..6cf21c9d523b 100644
+--- a/drivers/net/dsa/mt7530.c
++++ b/drivers/net/dsa/mt7530.c
+@@ -2483,7 +2483,8 @@ mt7530_setup(struct dsa_switch *ds)
+ 			if (!phy_node)
+ 				continue;
+ 
+-			if (phy_node->parent == priv->dev->of_node->parent) {
++			if (phy_node->parent == priv->dev->of_node->parent ||
++			    phy_node->parent->parent == priv->dev->of_node) {
+ 				ret = of_get_phy_mode(mac_np, &interface);
+ 				if (ret && ret != -ENODEV) {
+ 					of_node_put(mac_np);
+
+---
+base-commit: 5c4c0edca68a5841a8d53ccd49596fe199c8334c
+change-id: 20240429-b4-for-netnext-mt7530-use-switch-mdio-bus-for-phy-muxing-586269371c55
+
+Best regards,
+-- 
+Arınç ÜNAL <arinc.unal@arinc9.com>
+
+
 
