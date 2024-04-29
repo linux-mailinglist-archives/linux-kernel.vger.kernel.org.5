@@ -1,166 +1,178 @@
-Return-Path: <linux-kernel+bounces-161966-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161967-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 07ACC8B53E7
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 11:12:58 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 816468B53ED
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 11:13:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0AA5BB21561
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 09:12:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0F6681F22050
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 09:13:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9306A210E9;
-	Mon, 29 Apr 2024 09:12:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0089A20DDB;
+	Mon, 29 Apr 2024 09:13:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Cp7ycruY"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="eO95AKU6"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0A5E17BCB;
-	Mon, 29 Apr 2024 09:12:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9EBC517C7B;
+	Mon, 29 Apr 2024 09:13:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714381966; cv=none; b=Rd873q7qpj8g8jqmf82Cum2CQohOugnrzryK0Sv6jp1qj1d2T04F8tj6cYKAoQfA8qhw7wo2v3PfKij/15crYI16plLaa91OKD3+G18JpfEBfYR0maZaDDouLmu4LDDn+yiCqXgv8spBUvqSDu3H9zp7xaDu4PtfGpCApxN9IiM=
+	t=1714382021; cv=none; b=gwT1OwFlOwIfG/+4ZSIzdign66ow44qgmYk0mfHqm7MxZvYEdoaLebiUz4Vld4rMOi0oCH+dCtGNIPI4Oy1rzeherun9w7dksL3ME9rBQcCQk1C+2hUU+bq1OjAcXvcu5oJzawRMsCz+aNkmozqblEbFTbkhS9pO/pNYNl/zmX8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714381966; c=relaxed/simple;
-	bh=rsGj0P8emcKb8hKu9ORzTWwrGWwZ6ES5DkeLfKwLzQY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=BNKnXpyoMwHy1rS1qjqF3qmogzr5umqgut3SJJNffuDOXZ9ffdszM7mEu065mvXpB8WCaVrds2JoR5Xn5/izgVvBgQ2I+FHRP+6vOR9Rl762MQh9lIp29Gks06OISaV5LK9TEBfSWRvTY9LS47u2qw2CTYGQl1ak9oSQRyqGLmA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Cp7ycruY; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F1F57C113CD;
-	Mon, 29 Apr 2024 09:12:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714381966;
-	bh=rsGj0P8emcKb8hKu9ORzTWwrGWwZ6ES5DkeLfKwLzQY=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Cp7ycruYXV7fRH86kj7Y1D1E71XzyLYhW96Mt5mpFGp/wKKJfCpS4Iq7+wyWRvWwC
-	 +HEtCIvs8RAbkpwoZ5vM4kfmJPZbPhr8bSYqd0qO8An0qpq4LlxQtAFQ73FXnmZ+GA
-	 Bb+8VZs/7w25/+f7SRxvfzauo5+Ox1LAbeliZssb99mOdHZkjrodD2gkceLydgwnAM
-	 X7uKYEwOB7X0jVKIaS0IWaNpo6Vu0CMbjmxIwtxULZR6cmq63p/Yph00iAxC7RsUuA
-	 GbP/Pc9koYev24eUXsnzFxcHCMJL7SorHZl2/bE7/AJBRtyuFjHkuvbmfaC46PCpqC
-	 tFyxL9uRXRzug==
-Date: Mon, 29 Apr 2024 11:12:39 +0200
-From: Christian Brauner <brauner@kernel.org>
-To: Andy Lutomirski <luto@amacapital.net>
-Cc: Stas Sergeev <stsp2@yandex.ru>, Aleksa Sarai <cyphar@cyphar.com>, 
-	"Serge E. Hallyn" <serge@hallyn.com>, linux-kernel@vger.kernel.org, 
-	Stefan Metzmacher <metze@samba.org>, Eric Biederman <ebiederm@xmission.com>, 
-	Alexander Viro <viro@zeniv.linux.org.uk>, Andy Lutomirski <luto@kernel.org>, Jan Kara <jack@suse.cz>, 
-	Jeff Layton <jlayton@kernel.org>, Chuck Lever <chuck.lever@oracle.com>, 
-	Alexander Aring <alex.aring@gmail.com>, David Laight <David.Laight@aculab.com>, 
-	linux-fsdevel@vger.kernel.org, linux-api@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>, 
-	Christian =?utf-8?B?R8O2dHRzY2hl?= <cgzones@googlemail.com>
-Subject: Re: [PATCH v5 0/3] implement OA2_CRED_INHERIT flag for openat2()
-Message-ID: <20240429-donnerstag-behilflich-a083311d8e00@brauner>
-References: <20240426133310.1159976-1-stsp2@yandex.ru>
- <CALCETrUL3zXAX94CpcQYwj1omwO+=-1Li+J7Bw2kpAw4d7nsyw@mail.gmail.com>
+	s=arc-20240116; t=1714382021; c=relaxed/simple;
+	bh=K71V5vlJ0l5Mbq96TatTk0xq4Q/ldrz0Y63gizbVfqA=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type; b=kUfBCbDqh4hfbdJxOs6lHknimVTV2H/Xjk+ugj0f1fmDbi4q45mmibrNZ7AJntyiclyVfux22RMEL3LH5VJ8fDIRgti965CiaHvZ55Z6HVUhrL0YzHSQvwxLxJCwC5KPXXRaM6BBZK5YtEn/6Vcd0CY453Qp60PZySNwdPnm98E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=eO95AKU6; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 43T6hJn5005455;
+	Mon, 29 Apr 2024 09:13:35 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	from:to:subject:date:message-id:mime-version
+	:content-transfer-encoding:content-type; s=qcppdkim1; bh=A2PJigd
+	t3jsok0gJZPi5HW71LprbEkA7YcePw8ftflA=; b=eO95AKU6pVQdOUem4Nc8Di+
+	qrLtZugxAYK/VGlmJOKmIsQ1IQVxeSHgoBUe/C9P2QPqDGy93AzQywcbIyHMgmw1
+	Y+4f2b4QaeHAtqjFcvQtf/rGeXiQEV6uqcyi3bUabfHoXObmG+yEwcQlNYIQ0r8u
+	okurbY2ZeFOVozQbMGBDIbDivKPoD59VIlyylAQD1q/AELeThYXpZhQifqCcGwXd
+	iY43ScdzYDONwhz6aQXsfHcbBopN9pmguICMzsLFzxk6u5fjDTIE9weug+6B/Bpb
+	0+Ywjlf9klk8PusFskd0GxRExwgQB97din6AJuxe9l/xhxr1+c7eJkbvMIvdHnw=
+	=
+Received: from nasanppmta01.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xrtnek5ws-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 29 Apr 2024 09:13:34 +0000 (GMT)
+Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
+	by NASANPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 43T9DYuQ002665
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 29 Apr 2024 09:13:34 GMT
+Received: from hu-varada-blr.qualcomm.com (10.80.80.8) by
+ nasanex01b.na.qualcomm.com (10.46.141.250) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.9; Mon, 29 Apr 2024 02:13:28 -0700
+From: Varadarajan Narayanan <quic_varada@quicinc.com>
+To: <andersson@kernel.org>, <mturquette@baylibre.com>, <sboyd@kernel.org>,
+        <robh@kernel.org>, <krzk+dt@kernel.org>, <conor+dt@kernel.org>,
+        <konrad.dybcio@linaro.org>, <djakov@kernel.org>,
+        <dmitry.baryshkov@linaro.org>, <quic_varada@quicinc.com>,
+        <quic_anusha@quicinc.com>, <linux-arm-msm@vger.kernel.org>,
+        <linux-clk@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-pm@vger.kernel.org>
+Subject: [PATCH v10 0/6] Add interconnect driver for IPQ9574 SoC
+Date: Mon, 29 Apr 2024 14:43:08 +0530
+Message-ID: <20240429091314.761900-1-quic_varada@quicinc.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CALCETrUL3zXAX94CpcQYwj1omwO+=-1Li+J7Bw2kpAw4d7nsyw@mail.gmail.com>
+Content-Type: text/plain
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nasanex01b.na.qualcomm.com (10.46.141.250)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: auyb5XcgAvBiWe0FjoJ8DNh9Ki9x_ai6
+X-Proofpoint-ORIG-GUID: auyb5XcgAvBiWe0FjoJ8DNh9Ki9x_ai6
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
+ definitions=2024-04-29_06,2024-04-26_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 malwarescore=0
+ bulkscore=0 lowpriorityscore=0 phishscore=0 priorityscore=1501
+ clxscore=1015 impostorscore=0 spamscore=0 mlxlogscore=978 adultscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2404010003 definitions=main-2404290057
 
-On Sun, Apr 28, 2024 at 09:41:20AM -0700, Andy Lutomirski wrote:
-> > On Apr 26, 2024, at 6:39 AM, Stas Sergeev <stsp2@yandex.ru> wrote:
-> > ﻿This patch-set implements the OA2_CRED_INHERIT flag for openat2() syscall.
-> > It is needed to perform an open operation with the creds that were in
-> > effect when the dir_fd was opened, if the dir was opened with O_CRED_ALLOW
-> > flag. This allows the process to pre-open some dirs and switch eUID
-> > (and other UIDs/GIDs) to the less-privileged user, while still retaining
-> > the possibility to open/create files within the pre-opened directory set.
-> >
-> 
-> I’ve been contemplating this, and I want to propose a different solution.
-> 
-> First, the problem Stas is solving is quite narrow and doesn’t
-> actually need kernel support: if I want to write a user program that
-> sandboxes itself, I have at least three solutions already.  I can make
-> a userns and a mountns; I can use landlock; and I can have a separate
-> process that brokers filesystem access using SCM_RIGHTS.
-> 
-> But what if I want to run a container, where the container can access
-> a specific host directory, and the contained application is not aware
-> of the exact technology being used?  I recently started using
-> containers in anger in a production setting, and “anger” was
-> definitely the right word: binding part of a filesystem in is
-> *miserable*.  Getting the DAC rules right is nasty.  LSMs are worse.
+MSM platforms manage NoC related clocks and scaling from RPM.
+However, in IPQ SoCs, RPM is not involved in managing NoC
+related clocks and there is no NoC scaling.
 
-Nowadays it's extremely simple due tue open_tree(OPEN_TREE_CLONE) and
-move_mount(). I rewrote the bind-mount logic in systemd based on that
-and util-linux uses that as well now.
-https://brauner.io/2023/02/28/mounting-into-mount-namespaces.html
+However, there is a requirement to enable some NoC interface
+clocks for the accessing the peripherals present in the
+system. Hence add a minimalistic interconnect driver that
+establishes a path from the processor/memory to those peripherals
+and vice versa.
 
-> Podman’s “bind,relabel” feature is IMO utterly disgusting.  I think I
-> actually gave up on making one of my use cases work on a Fedora
-> system.
-> 
-> Here’s what I wanted to do, logically, in production: pick a host
-> directory, pick a host *principal* (UID, GID, label, etc), and have
-> the *entire container* access the directory as that principal. This is
-> what happens automatically if I run the whole container as a userns
-> with only a single UID mapped, but I don’t really want to do that for
-> a whole variety and of reasons.
+---
+v10:	Set gcc-ipq9574 driver's sync_state to icc_sync_state
+v9:	Squash icc-clk driver change and cbf-msm8996 change
+	Remove HWS_DATA macro
+v8:	Change icc-clk driver to take master and slave ids instead
+	of auto generating
+	Remove ICC_xxx defines from dt-bindings header
+	Define MASTER/SLAVE_xxx macros from 0 .. n
 
-You're describing idmapped mounts for the most part which are upstream
-and are used in exactly that way by a lot of userspace.
+v7:	Fix macro names in dt-bindings header
+	Do clock get in icc driver
 
-> 
-> So maybe reimagining Stas’ feature a bit can actually solve this
-> problem.  Instead of a special dirfd, what if there was a special
-> subtree (in the sense of open_tree) that captures a set of creds and
-> does all opens inside the subtree using those creds?
+v6:	Removed 'Reviewed-by: Krzysztof' from dt-bindings patch
+	Remove clock get from ICC driver as suggested by Stephen Boyd
+	so that the actual peripheral can do the clock get
+	first_id -> icc_first_node_id
+	Remove tristate from INTERCONNECT_CLK
+v5:
+	Split gcc-ipq9574.c and common.c changes into separate patches
+	Introduce devm_icc_clk_register
+	Fix error handling
+v4:
+gcc-ipq9574.c
+	Use clk_hw instead of indices
+common.c
+	Do icc register in qcom_cc_probe() call stream
+common.h
+	Add icc clock info to qcom_cc_desc structure
 
-That would mean override creds in the VFS layer when accessing a
-specific subtree which is a terrible idea imho. Not just because it will
-quickly become a potential dos when you do that with a lot of subtrees
-it will also have complex interactions with overlayfs.
+v3:
+qcom,ipq9574.h
+	Move 'first id' define to clock driver
+gcc-ipq9574.c:
+	Use indexed identifiers here to avoid confusion
+	Fix error messages and move code to common.c as it can be
+	shared with future SoCs
 
-> 
-> This isn’t a fully formed proposal, but I *think* it should be
-> generally fairly safe for even an unprivileged user to clone a subtree
-> with a specific flag set to do this. Maybe a capability would be
-> needed (CAP_CAPTURE_CREDS?), but it would be nice to allow delegating
-> this to a daemon if a privilege is needed, and getting the API right
-> might be a bit tricky.
-> 
-> Then two different things could be done:
-> 
-> 1. The subtree could be used unmounted or via /proc magic links. This
-> would be for programs that are aware of this interface.
-> 
-> 2. The subtree could be mounted, and accessed through the mount would
-> use the captured creds.
-> 
-> (Hmm. What would a new open_tree() pointing at this special subtree do?)
-> 
-> 
-> With all this done, if userspace wired it up, a container user could
-> do something like:
-> 
-> —bind-capture-creds source=dest
-> 
-> And the contained program would access source *as the user who started
-> the container*, and this would just work without relabeling or
-> fiddling with owner uids or gids or ACLs, and it would continue to
-> work even if the container has multiple dynamically allocated subuids
-> mapped (e.g. one for “root” and one for the actual application).
-> 
-> Bonus points for the ability to revoke the creds in an already opened
-> subtree. Or even for the creds to automatically revoke themselves when
-> the opener exits (or maybe when a specific cred-pinning fd goes away).
-> 
-> (This should work for single files as well as for directories.)
-> 
-> New LSM hooks or extensions of existing hooks might be needed to make
-> LSMs comfortable with this.
-> 
-> What do you all think?
+v2:
+qcom,ipq9574.h
+	Fix license identifier
+	Rename macros
+qcom,ipq9574-gcc.yaml
+	Include interconnect-cells
+gcc-ipq9574.c
+	Update commit log
+	Remove IS_ENABLED(CONFIG_INTERCONNECT) and auto select it from Kconfig
+ipq9574.dtsi
+	Moved to separate patch
+	Include interconnect-cells to clock controller node
+drivers/clk/qcom/Kconfig:
+	Auto select CONFIG_INTERCONNECT & CONFIG_INTERCONNECT_CLK
 
-I think the problem you're describing is already mostly solved.
+Varadarajan Narayanan (6):
+  interconnect: icc-clk: Allow user to specify master/slave ids
+  dt-bindings: interconnect: Add Qualcomm IPQ9574 support
+  interconnect: icc-clk: Add devm_icc_clk_register
+  clk: qcom: common: Add interconnect clocks support
+  clk: qcom: ipq9574: Use icc-clk for enabling NoC related clocks
+  arm64: dts: qcom: ipq9574: Add icc provider ability to gcc
+
+ .../bindings/clock/qcom,ipq9574-gcc.yaml      |  3 +
+ arch/arm64/boot/dts/qcom/ipq9574.dtsi         |  2 +
+ drivers/clk/qcom/Kconfig                      |  2 +
+ drivers/clk/qcom/clk-cbf-8996.c               |  7 ++-
+ drivers/clk/qcom/common.c                     | 35 ++++++++++-
+ drivers/clk/qcom/common.h                     |  9 +++
+ drivers/clk/qcom/gcc-ipq9574.c                | 33 +++++++++++
+ drivers/interconnect/icc-clk.c                | 24 +++++++-
+ .../dt-bindings/interconnect/qcom,ipq9574.h   | 59 +++++++++++++++++++
+ include/linux/interconnect-clk.h              |  4 ++
+ 10 files changed, 173 insertions(+), 5 deletions(-)
+ create mode 100644 include/dt-bindings/interconnect/qcom,ipq9574.h
+
+-- 
+2.34.1
+
 
