@@ -1,130 +1,134 @@
-Return-Path: <linux-kernel+bounces-161802-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-161803-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 52E6F8B5171
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 08:30:15 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 53C478B5174
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 08:31:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 10316280FCF
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 06:30:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 861521C21346
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 06:31:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 77778ECC;
-	Mon, 29 Apr 2024 06:30:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="qDTcfWGQ"
-Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com [209.85.208.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6AA3B944E;
+	Mon, 29 Apr 2024 06:30:59 +0000 (UTC)
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25DE11118E
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 06:30:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1846810FF
+	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 06:30:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714372209; cv=none; b=RS2a7ogSlK4S+gWKO2lXb0SJq5apTJ/EcGmPK5cGOP37ydHuaipLbw98kGNZgMW63/07ZfLfBqjibjGox/d/jOWMVQK3ZBCF6zuDQGj+dQ4PrSeN6jUF0wrbRVUZGZPh+sA8iORpwMyHD1ZhwPV6YNvQZ2pXHeqe6BnC3fEWsuk=
+	t=1714372259; cv=none; b=q50ViepftY4UgZW0UhMciRy7idS6Qp/oPFI6RSuWucsKBMA3x0aXTwHnJhXcrpt8exHHFUhMXuAyQzqyjIliUyqaBKT75YmM2KHPF+kOi0Th8BvK7JfQWtaf9YOhDXieZgqBRpCF9qkSx1g8bv37N3drpb4r5TzpvJ8KBEJ3QxA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714372209; c=relaxed/simple;
-	bh=8n9nos46ZeCKMxrrh/FbGilPaqWbM17BK84mfxu0dZI=;
+	s=arc-20240116; t=1714372259; c=relaxed/simple;
+	bh=R7C5wr96MqWDYR44Ry+prYbPTSvDWaKrG2gXzaFYjI8=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=rgFsvH+TGH8Jw4/hMI0lqn5zZrv7HXiKrx/ll8B8ycLezpw076ctFtQ2y0oD3gvWMV3idUwGisrkttv/l0LUeaW8uLEDQWYWgmAOZH89jb6IrkzZyOrn+E5mEpFzcY/HsXJyj6iLQWcAn0hUXV1shbYVtweg+Ru2pZMxoXzEqQA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=qDTcfWGQ; arc=none smtp.client-ip=209.85.208.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-56e477db7fbso6650489a12.3
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Apr 2024 23:30:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1714372206; x=1714977006; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=KERnA4T0jCEQs34o3IlPybs8QOMiz93MooHjuPlhTb4=;
-        b=qDTcfWGQiqzfjSa73WXDla11hMgusX+XP5sddxz367GMuUQ6OJGAvBfblERspdVtkc
-         TSG5I8n7Zgt7v7XX6U30TqkNXuOjGndLQrevt7xyhyripPJh/FpoHYuuAAiJJ1M228tB
-         MlG/TdKTt6lPV0LAg3TeuPyGBqx3tpuFR+eh/qymSrff3xIFa9Yg8mn0mnP8uOfXdYLP
-         RNBvnkaPi0a+1pN4AE7VH9vBABA6LlrtU2XGbohUXd6Qxn0UsLxPQ0VlFAX70XJitW3Y
-         1vtd2/Mcglgri4Tyi71X1/Hg8UTDxp06rAtk9TugqhT0M/ILiNiD/UL8m7PnE4nmoZv+
-         cOxw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714372206; x=1714977006;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=KERnA4T0jCEQs34o3IlPybs8QOMiz93MooHjuPlhTb4=;
-        b=U8+pXKyLesG2AUR257ocZgQLjXw0MOT0mDAO8zOsvwLeiPl7SNIQKDbcP/HXvZbXMx
-         Y1skQnS5DHuaSdr78LJKFo9VQxy12yU8mpTal1QaAEyZmTF9aNeNMWieKUsTC0jo1C9o
-         tGtPHKtq2f/cfPyn72MIRzD0v6WPeYB2JJlFh8d6uJo0ox+dxTAHQZ7sFShX2gvBXk8p
-         A4PGqsYkV+NNogFshHcYqg6K2hRZ6R1VjyyTBjmqXCgG/kdPEaCgWT3EJXF5RSsLu3Lu
-         U8oYiZ3roGWCokuZiE96Rz2qS1Gji+U9YLpwyzsdQ+RyRyuPtOXxFQmopMaIikoJFZ77
-         vqlg==
-X-Forwarded-Encrypted: i=1; AJvYcCVUqfB+fW1wI20c8eXY8qqvSIvaBKvupJ5kXhl+3pwx8/CxLOUqhvnkZHReRPLIjnBw8TSKiE9aru5aUxICaNpUM1cBahLbtrC9R58o
-X-Gm-Message-State: AOJu0YyFSHLAXTkgTRrpFciv7/44wFUMhqlO2rLHcd8d3TU0TpfdQ4EW
-	22im8eHQ0+pn5bewiuLBezr2CLbmtun1k2bBKovaFR2jb1Fc5Cll+tkRFC+56Lc=
-X-Google-Smtp-Source: AGHT+IEuwGziIm6KgpZpUtsLTsqKVmTl4T2GUPgk2+IbpwCDyVrzevDmt0o2BYgkfnHK8qfanoQquQ==
-X-Received: by 2002:a17:906:3602:b0:a58:e569:1242 with SMTP id q2-20020a170906360200b00a58e5691242mr3198451ejb.4.1714372206208;
-        Sun, 28 Apr 2024 23:30:06 -0700 (PDT)
-Received: from localhost ([102.222.70.76])
-        by smtp.gmail.com with ESMTPSA id h26-20020a170906399a00b00a51f2b5b1fcsm13544638eje.75.2024.04.28.23.30.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 28 Apr 2024 23:30:05 -0700 (PDT)
-Date: Mon, 29 Apr 2024 09:30:01 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: Jim Liu <jim.t90615@gmail.com>
-Cc: KWLIU@nuvoton.com, JJLIU0@nuvoton.com, linus.walleij@linaro.org,
-	brgl@bgdev.pl, linux-gpio@vger.kernel.org,
-	linux-kernel@vger.kernel.org, openbmc@lists.ozlabs.org
-Subject: Re: [PATCH v2] gpio: nuvoton: Fix sgpio irq handle error
-Message-ID: <0ef4941c-ffa3-4f34-b3bb-4b97d923294f@moroto.mountain>
-References: <20240429060642.2920266-1-JJLIU0@nuvoton.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=SgxxySwu+oQA2KcnPEPrJ/xNQY8fHH4tI/ex2qW26+3tyU8hqe+uCXerOhA+mCxPxVzIkaqlWbZITD4p8N33GdlAfKj8woq9hX3G7D5D8OnKp+E6A8kv1GoFVxaGfJpeOo2FDG/80aGiZIn+5d2qa4RItEaSOTiO2l3uoMw7uVw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1s1KXJ-0007Fa-Dv; Mon, 29 Apr 2024 08:30:49 +0200
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1s1KXI-00Evg4-9u; Mon, 29 Apr 2024 08:30:48 +0200
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.96)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1s1KXI-00BDAk-0h;
+	Mon, 29 Apr 2024 08:30:48 +0200
+Date: Mon, 29 Apr 2024 08:30:47 +0200
+From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: Trevor Gamblin <tgamblin@baylibre.com>, linux-pwm@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, michael.hennerich@analog.com, nuno.sa@analog.com, 
+	dlechner@baylibre.com, devicetree@vger.kernel.org, krzysztof.kozlowski+dt@linaro.org, 
+	conor+dt@kernel.org
+Subject: Re: [PATCH 1/2 v5] dt-bindings: pwm: Add AXI PWM generator
+Message-ID: <sjgqbftxfz763qoj33p2diba4ify4lae2vc2amcpaudjtdlse7@buk2wrofz3fp>
+References: <20240424125850.4189116-1-tgamblin@baylibre.com>
+ <20240424125850.4189116-2-tgamblin@baylibre.com>
+ <8bc13253-db16-4801-9f69-b06ba4e129be@baylibre.com>
+ <148f8e69-ad44-40f8-b277-69c289b94c68@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="gvrldjymnq56fhzd"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240429060642.2920266-1-JJLIU0@nuvoton.com>
+In-Reply-To: <148f8e69-ad44-40f8-b277-69c289b94c68@linaro.org>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
-On Mon, Apr 29, 2024 at 02:06:42PM +0800, Jim Liu wrote:
-> User use gpiomon to monitor input pin ,if triger the system will call trace and rcu stall.
-> 
-> The irq_handler uses generic_handle_domain_irq, so there is need to remove irq_find_mapping.
-> 
-> Fixes: c4f8457d17ce ("gpio: nuvoton: Add Nuvoton NPCM sgpio driver")
-> Signed-off-by: Jim Liu <JJLIU0@nuvoton.com>
-> ---
-> Changes for v2:
->    - add more description
 
-Part of the commit is missing so it will break the build.
+--gvrldjymnq56fhzd
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-drivers/gpio/gpio-npcm-sgpio.c: In function ‘npcm_sgpio_irq_handler’:
-drivers/gpio/gpio-npcm-sgpio.c:437:28: warning: unused variable ‘girq’ [-Wunused-variable]
-  437 |         unsigned int i, j, girq;
-      |                            ^~~~
+Hello Krzysztof,
 
-Thanks for improving the commit message and adding a Fixes tag.  That's
-very helpful, but it still can be improved a bit.
+On Mon, Apr 29, 2024 at 08:23:19AM +0200, Krzysztof Kozlowski wrote:
+> On 26/04/2024 22:11, Trevor Gamblin wrote:
+> >=20
+> > On 2024-04-24 8:58 a.m., Trevor Gamblin wrote:
+> >> From: Drew Fustini <dfustini@baylibre.com>
+> >>
+> >> Add Analog Devices AXI PWM generator.
+> >>
+> >> Link: https://wiki.analog.com/resources/fpga/docs/axi_pwm_gen
+> >> Signed-off-by: Drew Fustini <dfustini@baylibre.com>
+> >> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> >> Co-developed-by: Trevor Gamblin <tgamblin@baylibre.com>
+> >> Signed-off-by: Trevor Gamblin <tgamblin@baylibre.com>
+> > Note that I missed the following two acks from the v4 series when=20
+> > preparing v5:
+> >=20
+> > Acked-by: Michael Hennerich<michael.hennerich@analog.com>
+> > Acked-by: Nuno Sa<nuno.sa@analog.com>
+>=20
+> You cannot add other people's tags that way. By default b4 ignores it.
 
-======================================
+I'm aware that I have to pay attention to that detail (i.e. using b4 am
+-S). Full disclosure: I asked off-list if Trevor missed to add these
+Acks and requested to add them this way if yes.
 
-Subject: [PATCH v3] gpio: nuvoton: Fix stall in npcm_sgpio_irq_handler()
+> Also, don't modify the tags...
 
-The generic_handle_domain_irq() function calls irq_resolve_mapping()
-so calling irq_find_mapping() is duplicative and will lead to a stack
-trace and an RCU stall.
+you mean the missing space between name and email address? I can fix
+that up when (and if) I apply the patches.
 
-[ cut and paste the call trace here]
+Best regards
+Uwe
 
-Fixes: c4f8457d17ce ("gpio: nuvoton: Add Nuvoton NPCM sgpio driver")
-Signed-off-by:
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
 
-======================================
+--gvrldjymnq56fhzd
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Otherwise it looks good.  Please fix and resend.
+-----BEGIN PGP SIGNATURE-----
 
-regards,
-dan carpenter
+iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmYvPpcACgkQj4D7WH0S
+/k7SUQf7BzKSUujDtEWtqcp4TGtptEioI6AM59Ll/ritKfTWBnFnWKdX7u4WnDJD
+3p5P4fNBG/KKUsJoRJTYUT397NhSkot00rGWFHgGDOwFTggpPjEt8BE8Kut+k0QX
+Nohl2BxUw6/UAeDG0zut9ObxmR9oGecTwtswRr9nK7Ol+5QOxlPQJn5jdwhiVAe4
+8UeF1Hp/zt7WeDkCHWw3q8wM6hlFvqclE/4WYB1h5UfQ3ZLXxFd/2kltlyZwAtFm
+YTuG2t/Ku/KnXlB07a+VIDFyHUPUj7xMXM3R7siYli+hZClqP+q12CK91dDu6fTh
+G1Wbqcs033VybfJGNg3u+24MJaGyiw==
+=6L5Y
+-----END PGP SIGNATURE-----
 
+--gvrldjymnq56fhzd--
 
