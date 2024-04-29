@@ -1,131 +1,246 @@
-Return-Path: <linux-kernel+bounces-162017-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-162039-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 391938B54B8
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 12:05:26 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2E47C8B550E
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 12:20:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C31091F222C4
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 10:05:25 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D8874282EF6
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 10:20:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 536AF2E41C;
-	Mon, 29 Apr 2024 10:05:01 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA9072DF84
-	for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 10:04:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95F313CF74;
+	Mon, 29 Apr 2024 10:19:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="RSpw6nIp"
+Received: from mailout2.w1.samsung.com (mailout2.w1.samsung.com [210.118.77.12])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1EA92D05D;
+	Mon, 29 Apr 2024 10:19:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=210.118.77.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714385100; cv=none; b=gcKkN2gdRVFbKHlRG70oFh/JBmwblbN9E2Jt1Wh6YnrrNfpBjFh4S/iFHlVgohl+EFPf3zRLKhJlC5xGdtU9IiY4WesbTEyGJHgLwY1AED0BmhPSbhl4aSC0MD1vj4M458LxyrV9tz1HXyNCpRku1TjHDeWnytGVuqQZM+GMfZc=
+	t=1714385997; cv=none; b=e8eECQiLmtMkPlXxeJn/Y2V2l63ZXnga3MVhatyNNLurhHFuxQyZgpNGBtS1ATWmrJxSqNX97CrlVWbSejC8ynPwcwA0AvrzpMCBBR270g2tRcwb4aMuuvcgBD+Z7XS1itTN2B6Kc/mqtMP45CFuHu66l86iHp6LcgYfZBi5ukA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714385100; c=relaxed/simple;
-	bh=34WzQl9GT4Za2QymXSBmg6u6dOgh91fS2RdcnWcNQf4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=s1cT4iRlrLdrt4mpPyFj1unimJikjWfNTgJTt1eMucoeaKMKLyM9pcpTMykZhLD3EuYYw10QfIxRlcrTF1tTsO80+q4ofxGXRHcFfSa91P0qtZPEnj84wJEYbcTXzsOugr5ctmP2uHD0Gbt2rZju2yRxxQQ6wdNZLhn9b5fCZjM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B0BC02F4;
-	Mon, 29 Apr 2024 03:05:23 -0700 (PDT)
-Received: from [10.57.65.53] (unknown [10.57.65.53])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 44F073F793;
-	Mon, 29 Apr 2024 03:04:55 -0700 (PDT)
-Message-ID: <f5de5685-d955-4aa0-a307-a4da927f36f0@arm.com>
-Date: Mon, 29 Apr 2024 11:04:53 +0100
+	s=arc-20240116; t=1714385997; c=relaxed/simple;
+	bh=+xuPfbXvhD2U4XcHwIfiRxmnbADxy6SiZ2zq4uWs7iw=;
+	h=Date:From:To:CC:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To:References; b=eHcMeS37GRliDblLAeiJJbB8AFvnXMaZoE+BGY/ponNxZvkYTbELiTFwEEdYlAWZjmUbSGZOVoXduDbIXLBbh/5PvR22YR+5ITf40Vdry2bkmzZa+QTyePFQxFiMf6pbwb6stPQi9r3STqXVBzmMMGn3HkPLxcI46Q2nimc+noc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com; spf=pass smtp.mailfrom=samsung.com; dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b=RSpw6nIp; arc=none smtp.client-ip=210.118.77.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samsung.com
+Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
+	by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20240429101946euoutp02bcba7df2dd482b14951a0e09fb36b1f1~KuPive-7J3135131351euoutp02A;
+	Mon, 29 Apr 2024 10:19:46 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20240429101946euoutp02bcba7df2dd482b14951a0e09fb36b1f1~KuPive-7J3135131351euoutp02A
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+	s=mail20170921; t=1714385986;
+	bh=IsX0/OYWENCn2AKVFXUYtEljPBkMSVXjMzGVqGRtqqY=;
+	h=Date:From:To:CC:Subject:In-Reply-To:References:From;
+	b=RSpw6nIps+sB50xXUP2hQnx6gtzdn+JgtCcQ4OlLWC6ZzJSQMDtlsdSqdimIxS1sj
+	 qutuFkfucSGuffUxWbbS2RUljuWojvrqprbWBHZqfjwUNfs+tBW2GMMy75pHczIH6E
+	 YGSTVsEeFqLVJowZ9tsPLPtdu8TXdkhRatlSQ1qo=
+Received: from eusmges3new.samsung.com (unknown [203.254.199.245]) by
+	eucas1p1.samsung.com (KnoxPortal) with ESMTP id
+	20240429101946eucas1p16e7be4f597183714ed35d847022021d5~KuPiaF5TY2266622666eucas1p14;
+	Mon, 29 Apr 2024 10:19:46 +0000 (GMT)
+Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
+	eusmges3new.samsung.com (EUCPMTA) with SMTP id 3D.CC.09620.1447F266; Mon, 29
+	Apr 2024 11:19:45 +0100 (BST)
+Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
+	eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
+	20240429101945eucas1p2dc8fc97bb946c330b71475078348f67e~KuPhxHl0R2151621516eucas1p2Y;
+	Mon, 29 Apr 2024 10:19:45 +0000 (GMT)
+Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
+	eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
+	20240429101945eusmtrp1d65903bf5cdc9f7d12521f49410530aa~KuPhvnvd_1698316983eusmtrp1C;
+	Mon, 29 Apr 2024 10:19:45 +0000 (GMT)
+X-AuditID: cbfec7f5-d31ff70000002594-9e-662f7441cf35
+Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
+	eusmgms1.samsung.com (EUCPMTA) with SMTP id E1.2A.08810.1447F266; Mon, 29
+	Apr 2024 11:19:45 +0100 (BST)
+Received: from CAMSVWEXC02.scsc.local (unknown [106.1.227.72]) by
+	eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
+	20240429101944eusmtip1f78b789847ce17b03a0ec2e1131a8947~KuPhaVhcL0051600516eusmtip1G;
+	Mon, 29 Apr 2024 10:19:44 +0000 (GMT)
+Received: from localhost (106.110.32.44) by CAMSVWEXC02.scsc.local
+	(2002:6a01:e348::6a01:e348) with Microsoft SMTP Server (TLS) id 15.0.1497.2;
+	Mon, 29 Apr 2024 11:19:44 +0100
+Date: Mon, 29 Apr 2024 12:05:48 +0200
+From: Joel Granados <j.granados@samsung.com>
+To: Sabrina Dubroca <sd@queasysnail.net>
+CC: "David S. Miller" <davem@davemloft.net>, Eric Dumazet
+	<edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni
+	<pabeni@redhat.com>, Alexander Aring <alex.aring@gmail.com>, Stefan Schmidt
+	<stefan@datenfreihafen.org>, Miquel Raynal <miquel.raynal@bootlin.com>,
+	"David Ahern" <dsahern@kernel.org>, Steffen Klassert
+	<steffen.klassert@secunet.com>, Herbert Xu <herbert@gondor.apana.org.au>,
+	Matthieu Baerts <matttbe@kernel.org>, Mat Martineau <martineau@kernel.org>,
+	Geliang Tang <geliang@kernel.org>, Remi Denis-Courmont
+	<courmisch@gmail.com>, "Allison Henderson" <allison.henderson@oracle.com>,
+	David Howells <dhowells@redhat.com>, Marc Dionne <marc.dionne@auristor.com>,
+	"Marcelo Ricardo Leitner" <marcelo.leitner@gmail.com>, Xin Long
+	<lucien.xin@gmail.com>, Wenjia Zhang <wenjia@linux.ibm.com>, Jan Karcher
+	<jaka@linux.ibm.com>, "D. Wythe" <alibuda@linux.alibaba.com>, Tony Lu
+	<tonylu@linux.alibaba.com>, "Wen Gu" <guwen@linux.alibaba.com>, Trond
+	Myklebust <trond.myklebust@hammerspace.com>, Anna Schumaker
+	<anna@kernel.org>, "Chuck Lever" <chuck.lever@oracle.com>, Jeff Layton
+	<jlayton@kernel.org>, Neil Brown <neilb@suse.de>, Olga Kornievskaia
+	<kolga@netapp.com>, Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey
+	<tom@talpey.com>, Jon Maloy <jmaloy@redhat.com>, Ying Xue
+	<ying.xue@windriver.com>, Martin Schiller <ms@dev.tdt.de>, Pablo Neira Ayuso
+	<pablo@netfilter.org>, Jozsef Kadlecsik <kadlec@netfilter.org>, Florian
+	Westphal <fw@strlen.de>, Roopa Prabhu <roopa@nvidia.com>, Nikolay
+	Aleksandrov <razor@blackwall.org>, Simon Horman <horms@verge.net.au>, Julian
+	Anastasov <ja@ssi.bg>, Joerg Reuter <jreuter@yaina.de>, Luis Chamberlain
+	<mcgrof@kernel.org>, Kees Cook <keescook@chromium.org>,
+	<netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<dccp@vger.kernel.org>, <linux-wpan@vger.kernel.org>,
+	<mptcp@lists.linux.dev>, <linux-hams@vger.kernel.org>,
+	<linux-rdma@vger.kernel.org>, <rds-devel@oss.oracle.com>,
+	<linux-afs@lists.infradead.org>, <linux-sctp@vger.kernel.org>,
+	<linux-s390@vger.kernel.org>, <linux-nfs@vger.kernel.org>,
+	<tipc-discussion@lists.sourceforge.net>, <linux-x25@vger.kernel.org>,
+	<netfilter-devel@vger.kernel.org>, <coreteam@netfilter.org>,
+	<bridge@lists.linux.dev>, <lvs-devel@vger.kernel.org>
+Subject: Re: [PATCH v5 8/8] ax.25: x.25: Remove the now superfluous sentinel
+ elements from ctl_table array
+Message-ID: <20240429100548.cl4b3wx7lww3yejl@joelS2.panther.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 1/2] arm64/mm: Move PTE_PROT_NONE and
- PMD_PRESENT_INVALID
-Content-Language: en-GB
-To: Catalin Marinas <catalin.marinas@arm.com>
-Cc: David Hildenbrand <david@redhat.com>, Will Deacon <will@kernel.org>,
- Joey Gouly <joey.gouly@arm.com>, Ard Biesheuvel <ardb@kernel.org>,
- Mark Rutland <mark.rutland@arm.com>,
- Anshuman Khandual <anshuman.khandual@arm.com>, Peter Xu <peterx@redhat.com>,
- Mike Rapoport <rppt@linux.ibm.com>, Shivansh Vij <shivanshvij@outlook.com>,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20240424111017.3160195-1-ryan.roberts@arm.com>
- <20240424111017.3160195-2-ryan.roberts@arm.com>
- <b55558a5-a9d4-4aea-956a-1babad01b6cd@redhat.com>
- <df0475e1-9078-4629-b23d-0919ab1e37c2@arm.com>
- <eed172b5-c71a-469f-a790-76126760ca7c@arm.com> <Ziu-r2nkssCQ_uCS@arm.com>
-From: Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <Ziu-r2nkssCQ_uCS@arm.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg="pgp-sha512";
+	protocol="application/pgp-signature"; boundary="io5uz7byzuh34bpr"
+Content-Disposition: inline
+In-Reply-To: <ZiyxJFnJimaRr9nK@hog>
+X-ClientProxiedBy: CAMSVWEXC01.scsc.local (2002:6a01:e347::6a01:e347) To
+	CAMSVWEXC02.scsc.local (2002:6a01:e348::6a01:e348)
+X-Brightmail-Tracker: H4sIAAAAAAAAA2WTW1ATdxTG57+7yQZq6IKM/geY4WJpqXeUTg+jtmB92Ic+SG2t40xLGV3B
+	CgETwFsdIyBKkIuCUJBC8BKQtGAhRhApDFqJAYlUKqhEhiRAJ3KxYlCuKWGxdaZvv/N955tz
+	zsMRkW55Ig/RXkk8J5VERPsJnSntnQnDqtD4NXvWtt0KhGb5x9B3UyEAeUoqASfq7BRoL6YT
+	YDcOEjBTd5KEsb5BAZRcqBFCkSGFgpmudCGMJE1RUHnjBAH9d0w0aDPUCNRJPRRcH3wlhHSr
+	FyRfsyGwZJkE0Kl6LoQJVQUNvTYTBROZ70CBIpmAtvQYqDVaKLivzRRAtj4QHl43EvDgRpEQ
+	7je1CmCgOYOC7NJkEvqVzwTQk6OioKmhBIGpapSA5JIXJCSPmUmYLG8RQHuGnYTCygoSurP7
+	Edw6+ZsA2qqSaBgv1pHQUCKn4I5yCWRX6ikYbx1CkD/0Jwn6l3YC2mvGBDBWFADdDjOnXENA
+	fdprGjSG70E/qSfA/GpQCPbuT+F4m5YGc1cXGRLCPjbZSHak/S5ii38+wp6Xd1Ds5MRyVnPl
+	EcGm37aSbF2hkWa1Tf6ssjqBnW7+lWarK9KEbF1fMJt9oQmxNZeOsX/VFKCtvjudN+7movcm
+	ctI1n3znHDVuaRDGKV0P3lPqKDmacFEgJxFmgrBi2k4rkLPIjSlHWGEsFvDFS4RfXL6G+GIM
+	4aSOXOJNpMVgXDDKEL46bqL/7RrOG1lwahAuyjHSjgjF+ONaXSPpYCGzEhuGeubZnQnAlpNa
+	0hEgmUlXPFzRMR9YzETj81kD801iJgQXT+XQPLviuwUWysEkcxBfHUiZmyaaY09cNityyE7M
+	MpxbbllY1RfbLj6leD6K9ZrHhGMWZn5fhO/1Wmne2IJnFQrE82JsbdEs6F64Nec0xQdyEG6c
+	fU7zhRph1XHbwogNOKXTspAIxe1/lAkcG2HGBXcPu/KLuuCz2nySl8X4VKob3/0+Vj8dorLR
+	ssK3Tit867TC/07j5ZVYWf9C+D95BVaVPiN53oQrK0cpJaIr0FIuQRYTycnWS7gDq2URMbIE
+	SeTqXbEx1WjuXVtnW2y1qNz69+pmRIhQM3pvLmy6qr6PPChJrITzcxdXF63Y4ybeHXHoMCeN
+	DZcmRHOyZuQpovyWiv13e3NuTGREPLeP4+I46RuXEDl5yIn9QdrPRr3Wr3I6vMN7w87t8cSj
+	d6vq8kO/cN51kM4XSnP3Hvpp25MTpcd+CPas3X/I92jLN+PyFVGJZvWR0P5QH5lTbFka1EeX
+	+Ozymx7evm7pwNONQZ7rnC433hZ7+ffbwrjTU57sw/yJA30Bm1blXVuSeripdio5VhxwJtD7
+	cqa5f1BlP64p8H4dHiyJa7mSunb/h0A9P9c+mWqQmAd6t0QrHwSHzf6ytdrAMhkqn9LEjX26
+	7lONnZulIQrjPd0Z69m4iq4hfflMlibMfBO+bMvzCKiP+ZZJKN5csK37SZ3k7NcffZB0rsN9
+	Z7hufMeI177Pe6cv0Xm+txb9qAuxqqe/SvSjZFERgctJqSziH4ZCIl4pBQAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA2WTeUyTdxjH83uPtkjqyuXeIFkEMTGwFcrlU4MMw+bemSxbzBLMzIJVXg6F
+	wtpCECerICBlIBtuC7UUhMk4HHKtUDaQoXIURgG5xqHh7AaoQ45a5BjQLTPZf5/f9/l+v3ny
+	Sx4Obl3JtueEi2WMRCyKcGLtIjo2WsfeOipzC3EvmbGAZvkhGP9FQYL8SgoGydpNAjSF6Rhs
+	jhkwWNem4rA4biAhr6CaBSr9FQLWB9NZ8DTxJQHl9ckYTLdMsEGTUYagLHGUgFqDkQXpsw6Q
+	9NMygqlrEyT0Ff3FAlNRKRseL08QYMq0hBxFEgad6ZFQNzZFQLcmk4QsnQAGascweFivYkF3
+	UwcJM80ZBGTdTMJhOn+OhNHsIgKaGvIQTNx5hkFS3nMckhYncVgtbiWhK2MTB2V5KQ5DWdMI
+	7qU2ktB5J5ENK+o2HBry5AS05O+BrHIdASsd8wi+m+/HQbe0iUFX9SIJi6qDMLQ9zC6uweDn
+	tBdsqNGfA92qDoNJo4EFm0Nvw+VODRsmBwdxf396eGIZp592tSNaffsifUPeQ9CrJhe6puR3
+	jE6/P4vTWuUYm9Y0HaDzq2LoteZKNl1VmsaiteNCOqugCdHV339B/1Gdgz5y/ITvK4mKkTH7
+	wqKksiNOpwTgwRcIge/hJeQLPA99etjD28nNzzeYiQiPZSRufqf5YQ+S34lWW8VlD9/C5ci4
+	W4EsOBTPi2rVjyEF2sWx5t1CVMlvd0nzwIGqXOr/h22otQEFy2xaQJSipQYzP6oRtawrwLZd
+	BO8AVdd2F99mFu9NSj8/usO2vIPUVKoG3w7gvFUr6n5/xU7AhhdB3bg2s2Pi8vwp9ctstrn1
+	BaJ6Bs2tXJ4V1Z4zRWwzzoulklYebgU4W7yX+mGDsy1b8PZT14unMPOqjtRy4SPCzJeoxfUZ
+	lIVslK80KV9pUv7XZJZdqKGNP7H/ya5U0c053MxHqPLyZ0Q+YpciWyZGGhkaKRXwpaJIaYw4
+	lH82KrIKbd2LpsVUXYfUswv8ZoRxUDNy3kpOVJR1I3tCHCVmnGy5VSrXEGtusOhCPCOJCpLE
+	RDDSZuS99Y1f4fZ2Z6O2jk8sCxL4uHsLvHyE7t5CH0+n17nvR18VWfNCRTLmPMNEM5J/cxjH
+	wl6OFWsLY0fiTqWwWICXxB4zwKP37pXujQlYsPITuno65/f2ug3rCz7GvlZmksd/NLkOeF8m
+	jSEfNqrP1IYf9m+Q8h0TngR2xrs7I1W3nU/vzH61xNU1PoG9wNYnB27mvnbSLvez8+K1grYl
+	B8vF9qoKndbZK04bQozsvriuTFuTWNakNHExvbzlVwvT0a6y49mi8H192LfBdZdkEQqi5bHf
+	yLsn92hz3niwn1GIj8mnwnLnCpefp9ZVfR6Q4BsXaeiz1DeeoFT1tSYHF4egD+ieuavG1dKN
+	6TPT38QauYN2gW7r8bdLiKLo/j6bEwEFqi91F2baG58YzvWTVrGnU4ROhDRMJHDBJVLR3zvr
+	51XEBAAA
+X-CMS-MailID: 20240429101945eucas1p2dc8fc97bb946c330b71475078348f67e
+X-Msg-Generator: CA
+X-RootMTR: 20240427081456eucas1p2618580c2e3463ebed3192108249d505c
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20240427081456eucas1p2618580c2e3463ebed3192108249d505c
+References: <20240426-jag-sysctl_remset_net-v5-0-e3b12f6111a6@samsung.com>
+	<20240426-jag-sysctl_remset_net-v5-8-e3b12f6111a6@samsung.com>
+	<CGME20240427081456eucas1p2618580c2e3463ebed3192108249d505c@eucas1p2.samsung.com>
+	<ZiyxJFnJimaRr9nK@hog>
 
-On 26/04/2024 15:48, Catalin Marinas wrote:
-> On Thu, Apr 25, 2024 at 11:37:42AM +0100, Ryan Roberts wrote:
->> Also, IMHO we shouldn't really need to reserve PMD_PRESENT_INVALID for swap
->> ptes; it would be cleaner to have one bit that defines "present" when valid is
->> clear (similar to PTE_PROT_NONE today) then another bit which is only defined
->> when "present && !valid" which tells us if this is PTE_PROT_NONE or
->> PMD_PRESENT_INVALID (I don't think you can ever have both at the same time?).
-> 
-> I think this make sense, maybe rename the above to PTE_PRESENT_INVALID
-> and use it for both ptes and pmds.
+--io5uz7byzuh34bpr
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Yep, sounds good. I've already got a patch to do this, but it's exposed a bug in
-core-mm so will now fix that before I can validate my change. see
-https://lore.kernel.org/linux-arm-kernel/ZiuyGXt0XWwRgFh9@x1n/
+On Sat, Apr 27, 2024 at 10:14:36AM +0200, Sabrina Dubroca wrote:
+> 2024-04-26, 12:47:00 +0200, Joel Granados via B4 Relay wrote:
+> > diff --git a/net/ax25/ax25_ds_timer.c b/net/ax25/ax25_ds_timer.c
+> > index c4f8adbf8144..8f385d2a7628 100644
+> > --- a/net/ax25/ax25_ds_timer.c
+> > +++ b/net/ax25/ax25_ds_timer.c
+> > @@ -49,12 +49,16 @@ void ax25_ds_del_timer(ax25_dev *ax25_dev)
+> > =20
+> >  void ax25_ds_set_timer(ax25_dev *ax25_dev)
+> >  {
+> > +#ifdef CONFIG_AX25_DAMA_SLAVE
+>=20
+> Is this really needed? Looks like this file is only compiled when this
+> config is set:
+>=20
+> grep ax25_ds_timer net/ax25/Makefile
+> ax25-$(CONFIG_AX25_DAMA_SLAVE) +=3D ax25_ds_in.o ax25_ds_subr.o ax25_ds_t=
+imer.o
+Good point. I had missed this detail when addressing
+https://lore.kernel.org/oe-kbuild-all/202404040301.qzKmVQGB-lkp@intel.com/.
+Thx for pointing it out. I'll remove the guards for V6.
 
-With this in place, I'm proposing to remove PTE_PROT_NONE entirely and instead
-represent PROT_NONE as a present but invalid pte (PTE_VALID=0, PTE_INVALID=1)
-with both PTE_WRITE=0 and PTE_RDONLY=0.
+Best
 
-While the HW would interpret PTE_WRITE=0/PTE_RDONLY=0 as "RW without dirty bit
-modification", this is not a problem as the pte is invalid, so the HW doesn't
-interpret it. And SW always uses the PTE_WRITE bit to interpret the writability
-of the pte. So PTE_WRITE=0/PTE_RDONLY=0 was previously an unused combination
-that we now repurpose for PROT_NONE.
+>=20
+>=20
+> >  	if (ax25_dev =3D=3D NULL)		/* paranoia */
+> >  		return;
+> > =20
+> >  	ax25_dev->dama.slave_timeout =3D
+> >  		msecs_to_jiffies(ax25_dev->values[AX25_VALUES_DS_TIMEOUT]) / 10;
+> >  	mod_timer(&ax25_dev->dama.slave_timer, jiffies + HZ);
+> > +#else
+> > +	return;
+> > +#endif
+> >  }
+>=20
+> --=20
+> Sabrina
+>=20
 
-This will subtly change behaviour in an edge case though. Imagine:
+--=20
 
-pte_t pte;
+Joel Granados
 
-pte = pte_modify(pte, PAGE_NONE);
-pte = pte_mkwrite_novma(pte);
-WARN_ON(pte_protnone(pte));
+--io5uz7byzuh34bpr
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Should that warning fire or not? Previously, because we had a dedicated bit for
-PTE_PROT_NONE it would fire. With my proposed change it will not fire. To me
-it's more intuitive if it doesn't fire. Regardless there is no core code that
-ever does this. Once you have a protnone pte, its terminal - nothing ever
-modifies it with these helpers AFAICS.
+-----BEGIN PGP SIGNATURE-----
 
-Personally I think this is a nice tidy up that saves a SW bit in both present
-and swap ptes. What do you think? (I'll just post the series if its easier to
-provide feedback in that context).
+iQGzBAABCgAdFiEErkcJVyXmMSXOyyeQupfNUreWQU8FAmYvcPsACgkQupfNUreW
+QU8kOgv/Szgz25tSMOfSIaZpyg2Cpnxp4UcX7u5vIz6oeGkD9oVszd+E6XY5iMw8
+4K2SSlMe0P4Z0OJhzl/kXrvweAvKKkVhqA/OQcSUb2XTaqiEQU1tcnif+JrqK4jB
+DkpPeP5wF8bLnYIoQxlyn44qkEnZCTVU5xX3eVB8Gt8Pc/JlV5M4H4gG+O62C277
+WeGuBsSUqBiRPpowjmv9a7q0NMnubQpbGsL8XDoTLhDd6ymzGtwI3QcTTS9WcYY7
+wDs7+59o3pCZ5+WBkyXvTGoWibP6WKzIpoXh1RPpey74uIu3wsxpJ8nYyaXy1Tp/
+A5TscEgHgU/V5pg9xfTeEWD9Cokep+yYumVvL8LiqtDNH1g7dNGtyf1QuCkKAtH3
+Q652w5aEB+gyyqv7uDlWVeK2BzM9WfhksxVeDTZAXxi5MPkQFnsxqzXs0ONL4k+R
+6w1r+BCxo+5TS2iyTapH9PGhkgK6WY2Fv747fpiSfDiJILXrTBD8qWI0woE2dPWI
+WZbNe4bq
+=lZ5V
+-----END PGP SIGNATURE-----
 
-> 
->> But there is a problem with this: __split_huge_pmd_locked() calls
->> pmdp_invalidate() for a pmd before it determines that it is pmd_present(). So
->> the PMD_PRESENT_INVALID can be set in a swap pte today. That feels wrong to me,
->> but was trying to avoid the whole thing unravelling so didn't persue.
-> 
-> Maybe what's wrong is the arm64 implementation setting this bit on a
-> swap/migration pmd (though we could handle this in the core code as
-> well, it depends what the other architectures do). The only check for
-> the PMD_PRESENT_INVALID bit is in the arm64 code and it can be absorbed
-> into the pmd_present() check. I think it is currently broken as
-> pmd_present() can return true for a swap pmd after pmd_mkinvalid().
-
-I've posted a fix here:
-https://lore.kernel.org/linux-mm/20240425170704.3379492-1-ryan.roberts@arm.com/
-
-My position is that you shouldn't be calling pmd_mkinvalid() on a non-present pmd.
-
-> 
-> So I don't think we lose anything if pmd_mkinvalid() skips any bit
-> setting when !PTE_VALID. Maybe it even fixes some corner case we never
-> hit yet (like pmd_present() on a swap/migration+invalid pmd).
-> 
-
+--io5uz7byzuh34bpr--
 
