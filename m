@@ -1,114 +1,73 @@
-Return-Path: <linux-kernel+bounces-162687-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-162700-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6DB138B5F05
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 18:29:43 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6E7568B5F41
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 18:40:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0F70E1F24996
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 16:29:43 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A9C83B2328F
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Apr 2024 16:40:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E7528562C;
-	Mon, 29 Apr 2024 16:29:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="WeJYpsdE"
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82A6C85C42;
+	Mon, 29 Apr 2024 16:39:51 +0000 (UTC)
+Received: from gentwo.org (gentwo.org [62.72.0.81])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 03A1D82881;
-	Mon, 29 Apr 2024 16:29:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8ECD8529A;
+	Mon, 29 Apr 2024 16:39:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.72.0.81
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714408168; cv=none; b=pwiPNM0dnd8a5olKvq6zlCrnLQ/ZJSnZX+wLMcxq6hOo7ZbXZ6ukZWBfPxK2Ne/34VzfZ37Y5Yv8WPYfnl3XZ1NsbnAu8eZ/jE2/1LOW59bYvPw8wVooiaa2qIu7XQ7j+Yqu4Ny7rsj4X4l/3eh7QAjFDv8J+Souq13vJCUP1ts=
+	t=1714408791; cv=none; b=tDZKXyCZtI+pgEPWUl/ZAtSZNHqwPFirVObLYX62hj9FB/BDSPlFB/0SOJCbyspElj1fvT0bNsgiBSPhelMw2ek41nmsScoZ0ZMVXP808jgdzvFF3Vj3d5KLzwlyTGGPIIUcN8Ad29F1UKAO04MOBr1Pt4xFEg7oXb6X0HSPy/8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714408168; c=relaxed/simple;
-	bh=nYPavCCoxidSZbCRihx8B881f2cuJlxE/5foMBuO5Lc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=SxSGEYurpSFh7g0ZnhocmQfmGn6KTOTDr8X6IcILLXDqE9myECmUnm5g1PlD1nlXYh7uDaFaNiJjCc7d3ycXSrDFSB01cfGqJ4+jleC7fXABHMzBElanKBoI0gonu9N0b/VKdps6TiOj9voIg5tBLuzQrU17AzCJSyl3w3nS0g4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=WeJYpsdE; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=KPqOap7oAAWDfgBIlLA+hhXhc3DGpgBlCQEjbi7Mkqg=; b=WeJYpsdE3pzRcYrUgXjXEHgq2F
-	Au0hu0pqNCFmhBhQ4KGrogKlFJGZwGMtM4SyFfUKNtbHcOXXep7Vnw+z0PRJndd8b2PkadZ7Zn3Ac
-	Bd44/JfmM5Zohl7D4h0zs8FSYQcvvYKs6qMG9ibpx1uCS9buAn8FVT19gnFMrXXiB2+gKId3huUSy
-	Z2Zftq+4UXv2spyyS8wfG+0A+n484k0N00StfXYvvfIeI6X9PrVp1Y56s2LcwAI5R44Jnehlf0rFO
-	PZ4u2QpnVH6ViWEp0fgDMWG03NWBmgbJMYFGUg1CJuVS0paDnd1njBSdL5tf7bYmwL6Z0+5iy1/L0
-	Lihz29cw==;
-Received: from mcgrof by bombadil.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1s1TsW-00000003aGE-0Yao;
-	Mon, 29 Apr 2024 16:29:20 +0000
-Date: Mon, 29 Apr 2024 09:29:20 -0700
-From: Luis Chamberlain <mcgrof@kernel.org>
-To: Mike Rapoport <rppt@kernel.org>
-Cc: linux-kernel@vger.kernel.org, Alexandre Ghiti <alexghiti@rivosinc.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	=?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	"David S. Miller" <davem@davemloft.net>,
-	Dinh Nguyen <dinguyen@kernel.org>,
-	Donald Dutile <ddutile@redhat.com>,
-	Eric Chanudet <echanude@redhat.com>,
-	Heiko Carstens <hca@linux.ibm.com>, Helge Deller <deller@gmx.de>,
-	Huacai Chen <chenhuacai@kernel.org>,
-	Kent Overstreet <kent.overstreet@linux.dev>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Nadav Amit <nadav.amit@gmail.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Philippe =?iso-8859-1?Q?Mathieu-Daud=E9?= <philmd@linaro.org>,
-	Rick Edgecombe <rick.p.edgecombe@intel.com>,
-	Russell King <linux@armlinux.org.uk>,
-	Sam Ravnborg <sam@ravnborg.org>, Song Liu <song@kernel.org>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	Thomas Gleixner <tglx@linutronix.de>, Will Deacon <will@kernel.org>,
-	bpf@vger.kernel.org, linux-arch@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
-	linux-mm@kvack.org, linux-modules@vger.kernel.org,
-	linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org,
-	linux-s390@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-	linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev,
-	netdev@vger.kernel.org, sparclinux@vger.kernel.org, x86@kernel.org
-Subject: Re: [PATCH v7 00/16] mm: jit/text allocator
-Message-ID: <Zi_K4K-j-VB_WI4i@bombadil.infradead.org>
-References: <20240429121620.1186447-1-rppt@kernel.org>
+	s=arc-20240116; t=1714408791; c=relaxed/simple;
+	bh=Wev12OxkAqraQWDSuLMLLN8uGNu7UeGEQlPZxgQavJM=;
+	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=WcOFuevvp1G8T6I5VWe19GHLumRoPMhC4u0ua0ICioea732Z6evyNCUYmd1/e3tJGFYAwl0KzysuIivZU7TWGuHpDzFxl6iHDtue/3QDj19j8ePeJECailxUtKhpXfcbz3RkYYxRvbsBEYMkPo8Nyc/Le9Qs3ywUipNfEXUVFKg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.com; spf=fail smtp.mailfrom=linux.com; arc=none smtp.client-ip=62.72.0.81
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=linux.com
+Received: by gentwo.org (Postfix, from userid 1003)
+	id B9A7240A98; Mon, 29 Apr 2024 09:29:58 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+	by gentwo.org (Postfix) with ESMTP id B8E7140A94;
+	Mon, 29 Apr 2024 09:29:58 -0700 (PDT)
+Date: Mon, 29 Apr 2024 09:29:58 -0700 (PDT)
+From: "Christoph Lameter (Ampere)" <cl@linux.com>
+To: Dan Carpenter <dan.carpenter@linaro.org>
+cc: Matthew Wilcox <willy@infradead.org>, 
+    Peter Zijlstra <peterz@infradead.org>, Pekka Enberg <penberg@kernel.org>, 
+    David Rientjes <rientjes@google.com>, Joonsoo Kim <iamjoonsoo.kim@lge.com>, 
+    Andrew Morton <akpm@linux-foundation.org>, 
+    Vlastimil Babka <vbabka@suse.cz>, 
+    Roman Gushchin <roman.gushchin@linux.dev>, 
+    Hyeonggon Yoo <42.hyeyoo@gmail.com>, linux-mm@kvack.org, 
+    linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org, 
+    Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Subject: Re: [PATCH] mm/slab: make __free(kfree) accept error pointers
+In-Reply-To: <571761df-fe50-49e8-8d56-65fbdec9a185@moroto.mountain>
+Message-ID: <6406512f-12de-1ab6-05c9-4583c0cb01e6@linux.com>
+References: <285fee25-b447-47a1-9e00-3deb8f9af53e@moroto.mountain> <Zi8N66yehahl6D59@casper.infradead.org> <571761df-fe50-49e8-8d56-65fbdec9a185@moroto.mountain>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240429121620.1186447-1-rppt@kernel.org>
-Sender: Luis Chamberlain <mcgrof@infradead.org>
+Content-Type: text/plain; charset=US-ASCII; format=flowed
 
-On Mon, Apr 29, 2024 at 03:16:04PM +0300, Mike Rapoport wrote:
-> From: "Mike Rapoport (IBM)" <rppt@kernel.org>
-> 
-> Hi,
-> 
-> The patches are also available in git:
-> https://git.kernel.org/pub/scm/linux/kernel/git/rppt/linux.git/log/?h=execmem/v7
-> 
-> v7 changes:
-> * define MODULE_{VADDR,END} for riscv32 to fix the build and avoid
->   #ifdefs in a function body
-> * add Acks, thanks everybody
+On Mon, 29 Apr 2024, Dan Carpenter wrote:
 
-Thanks, I've pushed this to modules-next for further exposure / testing.
-Given the status of testing so far with prior revisions, in that only a
-few issues were found and that those were fixed, and the status of
-reviews, this just might be ripe for v6.10.
+> I've always thought freeing pointers that have not been allocated is
+> sloppy so I like that kfree() doesn't allow error pointers.  We always
+> catch it before it reaches production and that teaches people better
+> habbits.  Personally, I like how free_netdev() only accepts valid
+> pointers.
 
-  Luis
+kfree() already checks for NULL and ZERO pointers. We should add these 
+checks in *one* location.
+
+Maybe issue a WARN_ONCE() and simply treat it as a NULL pointer if an 
+error code is passed?
 
