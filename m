@@ -1,202 +1,147 @@
-Return-Path: <linux-kernel+bounces-164709-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-164710-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5A8488B8175
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 22:34:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0598E8B8180
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 22:35:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 79B761C22ED3
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 20:34:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 34BC11C23254
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 20:35:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A2451A0AEE;
-	Tue, 30 Apr 2024 20:33:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 06C431A0AF9;
+	Tue, 30 Apr 2024 20:34:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UW3c+N99"
-Received: from mail-lf1-f48.google.com (mail-lf1-f48.google.com [209.85.167.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iamRaAMj"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 122F150287;
-	Tue, 30 Apr 2024 20:33:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 342D2179B2;
+	Tue, 30 Apr 2024 20:34:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714509235; cv=none; b=QrKf00EARnLfzC4/EBBKGKqQToesVcj0y6RiSomaL6vZUxdod6nVVzW9ifzd8vP7pVOXygkBrtJX5zQ7yrIu4SZlxwIyW50NJKvyhJ0EB3Ng74cxSC7db17ToAyaEQHW/zXDJkVZycg2yU3IuVIM2jzF11NZck7cIXM+Q+QckhY=
+	t=1714509293; cv=none; b=P6qbj/yk/+5H/0pzILK1ewOqC9PtUEUsKdkh/bV4BK8sz4EQHh3VqY/9xVzja9fnU4c5TZ/gavNLr8GTmAiSSiRX0tMvT70dXWuvLK2+XNJZpwjcEnQOCpRf2Q+p72hMsERB/dGLcdeVUDuKJjzD0MHTRQ5cJPwv46f9hKYhlkw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714509235; c=relaxed/simple;
-	bh=kcoGDHSpvqAd9PfuCoNtfRvVdf2uMHUY2SdpJjNDwFs=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=n16VTRZc6SrDDmP9h9M/kijorEPbTigEePVaN+l/OQfnwmh/PHlflERlMnInbbp6VGcRFXmHBDKaFbxVC61qioD+SehbvS+6oU/HzRxCNqCssUCbU1Ndq6fr3aHWWqYTOGTWMAm1yr2jKSWDTyUKwwb8B4PiJvDE7u4b5cMj7/E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UW3c+N99; arc=none smtp.client-ip=209.85.167.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f48.google.com with SMTP id 2adb3069b0e04-5196fe87775so6881672e87.3;
-        Tue, 30 Apr 2024 13:33:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714509232; x=1715114032; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=r4iUwetf6OktDd6c6v6370iAXTjd5m8pEJ3+fHMgbhc=;
-        b=UW3c+N99IFpSJqndRE0hRl3e/x09cOUuSsAuyoYe0b07P4EmPfYShbyNt6FO7YBgCU
-         6bd6NaJOndFdYDOKlKR8dqr/Ck0kKBz5DYTb83mJh+WyuAVa63xRFBO/Dbz2bDS3yNqC
-         kWzhgk7PxesA94WtuZAku9JmjXW1+86h10Cx5vE9WXbNIWG867ymsiT/1eo2SL6Jg6Tk
-         xNDJIscNXPc8ci4btxF7w9jJ9C5gKOFXW9NyqOpq1SVELniangvmcZTKXqlAiqw+l3B/
-         zyZ0ciAsZCEZyw3+2rNOJZ6ihTGTS1j5rVwON3B/anQTvmHFrex0ihxSuY4iPeSyncMa
-         e3BA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714509232; x=1715114032;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=r4iUwetf6OktDd6c6v6370iAXTjd5m8pEJ3+fHMgbhc=;
-        b=YHnYJv6G12VPRLoFTUJ3NsxW8ztZ0E+BCe9qElKb5nDk2RPDD6ZL8KP0NRDNHm8pRF
-         tw4YXtwpH6lBpnpwKV1ELK/3nvWO/ds9LAgv/TgL0pq2W0vxiYi+wqjdPSyum13+GRpG
-         S85bE6MMjex9qRNtsova4PcaZ2Sr216Fw62vYDVc1kuACCeCj/D/utWRa0YomeSKmQeN
-         7xjcMGmGMT8qz3LE81LoEbBW7/8GaQL8Vpv+MOmOTMtk/f0AhLfdv5cqJhS3yt5TCxIU
-         DJRcSCLdezfbNjVsnh9dC0UkEd/GMwz5yQkLJog7jSuyWL0EdF7V3jZeF8BbFRC+u8tk
-         G/Xw==
-X-Forwarded-Encrypted: i=1; AJvYcCVGGWAEeXsZgNvvTsP3HY/4JSSX342wL7USXNleeERrpTX5K32qNMqFSIM+HsGsG4+M1ibR4eepkkG4crS1ur+BLYcPf920NHUnyRi2/zf0Ml+Gk4l1AKrDEd3Mf08ON5BBRnRVC+wUjNS4B0je/TgDxEOoeOK8JbLIiajQ+pg82/fSiw==
-X-Gm-Message-State: AOJu0Yz/jpZP8qOsDZapTZ0bhEyWVr3DpUyLIR9qV9ts3rs0gnjUYLro
-	sqNmCxb3cRoWmEOEMUeKeN4hXf42kr/vJ0QlZjTAW734h5qxgrl/S9UvUlMdp3G6PIyy1BcTPh6
-	bMdlGNWZ+6zRfE0XbX9GIwPDXrVg=
-X-Google-Smtp-Source: AGHT+IHnLC/KbejKHWW+yQ4+q8FxBXyFA1l5qwN1YUn7hhxGGUDQwwW5CLG+lVTMyvKfMiCOb7xNYyMfERU/zNSbWsY=
-X-Received: by 2002:a05:6512:4896:b0:51b:fe4b:da45 with SMTP id
- eq22-20020a056512489600b0051bfe4bda45mr334480lfb.38.1714509231821; Tue, 30
- Apr 2024 13:33:51 -0700 (PDT)
+	s=arc-20240116; t=1714509293; c=relaxed/simple;
+	bh=HtcQHmj985eQ+dg3uqxVTbR5cUoWPjp4+IhThC+KEug=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=FqKbcnHHFrfRrifzRL3BLrX93q+ViL/VRbYQzz7W3xc7GI8OVWB6llAr4NUF11+2ebGd+svWZU2UCVS/xrcwA/qVo+CSL/CSXXFpw/TsGLc7GwVH1LX8Ip2sXsKmHOmwchr7S9YJTC2/+P0mdIi5dtxqqOctd0s2JBsUUVioYFM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=iamRaAMj; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 43DA5C4AF17;
+	Tue, 30 Apr 2024 20:34:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714509292;
+	bh=HtcQHmj985eQ+dg3uqxVTbR5cUoWPjp4+IhThC+KEug=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=iamRaAMjbqYlRtYkrz98dWDUYhZmMcb96S8p7LdlmCtD4/yhJ8PQjUQr1Btp+8gJx
+	 /6Ch4UmQM5/8EwAfTSUpsknGmRvk/dbKCpr1Pi1Ey1/c9twfezgVcvmFu/YocQjYIC
+	 SUZIGp0RKKIKQ8IwXL33Mm7XKs2nHJVMonNJ1bTV/3EOg/+L0TZVZw2+xt2uuvLc98
+	 wUxV/fK8Ts91A178VA8EhaC6AInd5GNuVtvHlJZrwN4NNZ0YAJ7rnbyk/sT8/G5Xfz
+	 mXGtJY5YxB7RnPbnatdptWWdxXgCXge1K2zSbKP6Z+2QCbZ5VVL9pVxK8m2qcPsLz5
+	 i9Wr//FfNBRZw==
+Date: Tue, 30 Apr 2024 21:34:43 +0100
+From: Simon Horman <horms@kernel.org>
+To: Herve Codina <herve.codina@bootlin.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>, Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Lee Jones <lee@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+	Horatiu Vultur <horatiu.vultur@microchip.com>,
+	UNGLinuxDriver@microchip.com, Andrew Lunn <andrew@lunn.ch>,
+	Heiner Kallweit <hkallweit1@gmail.com>,
+	Russell King <linux@armlinux.org.uk>,
+	Saravana Kannan <saravanak@google.com>,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	Philipp Zabel <p.zabel@pengutronix.de>,
+	Lars Povlsen <lars.povlsen@microchip.com>,
+	Steen Hegelund <Steen.Hegelund@microchip.com>,
+	Daniel Machon <daniel.machon@microchip.com>,
+	Alexandre Belloni <alexandre.belloni@bootlin.com>,
+	linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+	netdev@vger.kernel.org, linux-pci@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	Allan Nielsen <allan.nielsen@microchip.com>,
+	Luca Ceresoli <luca.ceresoli@bootlin.com>,
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+	=?utf-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <clement.leger@bootlin.com>
+Subject: Re: [PATCH 01/17] mfd: syscon: Add reference counting and device
+ managed support
+Message-ID: <20240430203443.GG2575892@kernel.org>
+References: <20240430083730.134918-1-herve.codina@bootlin.com>
+ <20240430083730.134918-2-herve.codina@bootlin.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240430162946.589423-1-alisa.roman@analog.com> <20240430162946.589423-7-alisa.roman@analog.com>
-In-Reply-To: <20240430162946.589423-7-alisa.roman@analog.com>
-From: Andy Shevchenko <andy.shevchenko@gmail.com>
-Date: Tue, 30 Apr 2024 23:33:15 +0300
-Message-ID: <CAHp75VcHa31nXwFwSJCnRvPTZ8K-5KBrM0jxAnyHh8jzPHE48Q@mail.gmail.com>
-Subject: Re: [PATCH v7 6/6] iio: adc: ad7192: Add AD7194 support
-To: Alisa-Dariana Roman <alisadariana@gmail.com>
-Cc: michael.hennerich@analog.com, linux-iio@vger.kernel.org, 
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	alexandru.tachici@analog.com, lars@metafoo.de, jic23@kernel.org, 
-	robh@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, 
-	lgirdwood@gmail.com, broonie@kernel.org, andy@kernel.org, nuno.sa@analog.com, 
-	marcelo.schmitt@analog.com, bigunclemax@gmail.com, dlechner@baylibre.com, 
-	okan.sahin@analog.com, fr0st61te@gmail.com, alisa.roman@analog.com, 
-	marcus.folkesson@gmail.com, schnelle@linux.ibm.com, liambeguin@gmail.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240430083730.134918-2-herve.codina@bootlin.com>
 
-On Tue, Apr 30, 2024 at 7:30=E2=80=AFPM Alisa-Dariana Roman
-<alisadariana@gmail.com> wrote:
->
-> Unlike the other AD719Xs, AD7194 has configurable channels. The user can
-> dynamically configure them in the devicetree.
->
-> Also modify config AD7192 description for better scaling.
+On Tue, Apr 30, 2024 at 10:37:10AM +0200, Herve Codina wrote:
+> From: Clément Léger <clement.leger@bootlin.com>
+> 
+> Syscon releasing is not supported.
+> Without release function, unbinding a driver that uses syscon whether
+> explicitly or due to a module removal left the used syscon in a in-use
+> state.
+> 
+> For instance a syscon_node_to_regmap() call from a consumer retrieve a
+> syscon regmap instance. Internally, syscon_node_to_regmap() can create
+> syscon instance and add it to the existing syscon list. No API is
+> available to release this syscon instance, remove it from the list and
+> free it when it is not used anymore.
+> 
+> Introduce reference counting in syscon in order to keep track of syscon
+> usage using syscon_{get,put}() and add a device managed version of
+> syscon_regmap_lookup_by_phandle(), to automatically release the syscon
+> instance on the consumer removal.
+> 
+> Signed-off-by: Clément Léger <clement.leger@bootlin.com>
+> Signed-off-by: Herve Codina <herve.codina@bootlin.com>
 
 ..
 
-> +static int ad7194_parse_channels(struct iio_dev *indio_dev)
+> diff --git a/include/linux/mfd/syscon.h b/include/linux/mfd/syscon.h
+> index c315903f6dab..164b9bcb49c3 100644
+> --- a/include/linux/mfd/syscon.h
+> +++ b/include/linux/mfd/syscon.h
+> @@ -15,6 +15,7 @@
+>  #include <linux/errno.h>
+>  
+>  struct device_node;
+> +struct device;
+>  
+>  #ifdef CONFIG_MFD_SYSCON
+>  struct regmap *device_node_to_regmap(struct device_node *np);
+> @@ -28,6 +29,11 @@ struct regmap *syscon_regmap_lookup_by_phandle_args(struct device_node *np,
+>  						    unsigned int *out_args);
+>  struct regmap *syscon_regmap_lookup_by_phandle_optional(struct device_node *np,
+>  							const char *property);
+> +void syscon_put_regmap(struct regmap *regmap);
+> +
+> +struct regmap *devm_syscon_regmap_lookup_by_phandle(struct device *dev,
+> +						    struct device_node *np,
+> +						    const char *property);
+>  #else
+>  static inline struct regmap *device_node_to_regmap(struct device_node *np)
+>  {
+> @@ -67,6 +73,18 @@ static inline struct regmap *syscon_regmap_lookup_by_phandle_optional(
+>  	return NULL;
+>  }
+>  
+> +static intline void syscon_put_regmap(struct regmap *regmap)
+
+intline -> inline
+
 > +{
-> +       struct device *dev =3D indio_dev->dev.parent;
-> +       struct iio_chan_spec *ad7194_channels;
-> +       struct fwnode_handle *child;
-> +       struct iio_chan_spec ad7194_chan =3D AD7193_CHANNEL(0, 0, 0);
-> +       struct iio_chan_spec ad7194_chan_diff =3D AD7193_DIFF_CHANNEL(0, =
-0, 0, 0);
-> +       struct iio_chan_spec ad7194_chan_temp =3D AD719x_TEMP_CHANNEL(0, =
-0);
-> +       struct iio_chan_spec ad7194_chan_timestamp =3D IIO_CHAN_SOFT_TIME=
-STAMP(0);
-> +       unsigned int num_channels, index =3D 0;
-> +       u32 ain[2];
-> +       int ret;
-> +
-> +       num_channels =3D device_get_child_node_count(dev);
-> +       if (num_channels > AD7194_CH_MAX_NR)
-> +               return dev_err_probe(dev, -EINVAL,
-> +                                    "Too many channels: %u\n", num_chann=
-els);
-> +
-> +       num_channels +=3D AD7194_CH_BASE_NR;
-> +
-> +       ad7194_channels =3D devm_kcalloc(dev, num_channels,
-> +                                      sizeof(*ad7194_channels), GFP_KERN=
-EL);
-> +       if (!ad7194_channels)
-> +               return -ENOMEM;
-> +
-> +       indio_dev->channels =3D ad7194_channels;
-> +       indio_dev->num_channels =3D num_channels;
-> +
-> +       device_for_each_child_node(dev, child) {
-
-You wanted _scoped version...
-
-> +               ret =3D fwnode_property_read_u32_array(child, "diff-chann=
-els",
-> +                                                    ain, ARRAY_SIZE(ain)=
-);
-> +               if (ret =3D=3D 0) {
-> +                       ret =3D ad7194_validate_ain_channel(dev, ain[0]);
-> +                       if (ret)
-
-..otherwise here is the reference count leakage.
-
-> +                               return ret;
-> +
-> +                       ret =3D ad7194_validate_ain_channel(dev, ain[1]);
-> +                       if (ret)
-
-Or here.
-
-> +                               return ret;
-> +
-> +                       *ad7194_channels =3D ad7194_chan_diff;
-> +                       ad7194_channels->scan_index =3D index++;
-> +                       ad7194_channels->channel =3D ain[0];
-> +                       ad7194_channels->channel2 =3D ain[1];
-> +                       ad7194_channels->address =3D AD7194_CH(ain[0], ai=
-n[1]);
-> +               } else {
-> +                       ret =3D fwnode_property_read_u32(child, "single-c=
-hannel",
-> +                                                      &ain[0]);
-> +                       if (ret) {
-> +                               fwnode_handle_put(child);
-> +                               return ret;
-> +                       }
-> +
-> +                       ret =3D ad7194_validate_ain_channel(dev, ain[0]);
-> +                       if (ret)
-
-Or here.
-
-> +                               return ret;
-> +
-> +                       *ad7194_channels =3D ad7194_chan;
-> +                       ad7194_channels->scan_index =3D index++;
-> +                       ad7194_channels->channel =3D ain[0];
-> +                       ad7194_channels->address =3D AD7194_CH(ain[0], 0)=
-;
-> +               }
-> +               ad7194_channels++;
-> +       }
-> +
-> +       *ad7194_channels =3D ad7194_chan_temp;
-> +       ad7194_channels->scan_index =3D index++;
-> +       ad7194_channels->address =3D AD7194_CH_TEMP;
-> +       ad7194_channels++;
-> +
-> +       *ad7194_channels =3D ad7194_chan_timestamp;
-> +       ad7194_channels->scan_index =3D index;
-> +
-> +       return 0;
 > +}
 
---=20
-With Best Regards,
-Andy Shevchenko
+..
 
