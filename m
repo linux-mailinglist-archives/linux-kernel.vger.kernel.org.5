@@ -1,94 +1,104 @@
-Return-Path: <linux-kernel+bounces-164228-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-164229-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id DE5E48B7AF4
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 17:04:51 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 11CE78B7AF5
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 17:05:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 190FE1C21AC9
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 15:04:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A7B1F1F2297A
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 15:05:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D7E6314373A;
-	Tue, 30 Apr 2024 15:04:05 +0000 (UTC)
-Received: from mail-io1-f69.google.com (mail-io1-f69.google.com [209.85.166.69])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7263F143749;
+	Tue, 30 Apr 2024 15:04:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="m9gpPdhE"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E3B777118
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 15:04:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.69
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD9E777110;
+	Tue, 30 Apr 2024 15:04:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714489445; cv=none; b=fELCUMUPJk1MrigM+k2XyPNi7D+kTJ4KwXbLQchz+zKhshhqV1EJdyIGXnmpyJNqtVLFRKEC8EqnSJdO0m1ZiovjbXMCHf3eYCsaHh91p+MhRh0Wly5eFUD7we8ZNofP1C/CyxgmCSRkN3MxwgRsSq6Pwv22kKOeTTzLUFYBeYA=
+	t=1714489462; cv=none; b=bvL+GBQ0G2SV3qn8OqW8oApS/pyNwbxZNyWGahiJe7l429d1swFEusopljo6U26rfl0MjDXyxaKhcDQ2vIzBKagM9P+FzrQTtNaYwGCdS2dmLZWRdC2ISe4u0hf6DfY5Gk+Hxa008ckryTwLYo1zwMOh3+1l4zDAo7f0MXqTwPU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714489445; c=relaxed/simple;
-	bh=g+eaDs/HNr91gYab7fvFMZUmUzQXEdyjAn6OH6gxOuM=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=okzuJTD4+CnzbkDHz7e1/U6MvHCJ8nXPChmQQHu8D98z5cqE3uFpB50pG+hS5wlXa/kymS/C44H45+XXKQaWlLFZuQnhrsMlQ9UNdj2HEUB7z4dl+R2p5bvD/fjxQPfjyYWsKFNA7tteA4ZaIQZ1nMVdQpePfjMLVGhgbPKp3dU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.69
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f69.google.com with SMTP id ca18e2360f4ac-7dabc125bddso630337939f.1
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 08:04:03 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714489443; x=1715094243;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=RXCBsJ9VpJqP069pIpVcCX4AQCkHuzifZjAsyl3v/7A=;
-        b=pTIxPqvsNOTC3akNOFaoTkSdm3QqqpPfpzftW4QDHUIJH2JTllLs0IwcpBOsB7WUHY
-         5ecqeXLxPEq+4A1IuJXhVyyfKBRHxiea7DT/xxqjRCu+QCyhk/vaOFeG2ybJC392PPHe
-         3jTawbY1RAvY/LhLbZD4LLzwTU/ssS7AJi6vEW49460RKzKvNifOKhzAWXBw8f9BfCXQ
-         UP1wV9DTJi00oU2MrYzsXXrnzO6bgq+oGGgTVO/mDI2O7ZvIlQCwJDl/haRwAYWAaHLY
-         rbXN0Y5Rja+eTA3b8ouCreM2CBZkaE/ZAUXlIpGWQp3MrLkm/uvh8E87bDNzshARu2jN
-         PtFA==
-X-Forwarded-Encrypted: i=1; AJvYcCVaR65J4CdQbJvxPLdmiaaRtiGOklsM5aSu0Q5plYSVW/pDLWivWI1jBckZLM5alQXXTDU55BB+i9VAKpaiJNayvlU7TE6OfD0P5Jko
-X-Gm-Message-State: AOJu0YxW3jvoOK1R50cS50efLD2Jo8YTmkNNGOtGhGyTa01Aee2D+CfS
-	xrQ+IWEzIOMk6TKqReIs5D4tJ9fzdeMDOnqHcERI7Puv6YL21FEvU5Dw2Gry1txpgpnDXVMMccL
-	xBvyd5+DH3GhbFT3siqd9Uu2AEeKHIvQg5QVXdjZY7HfgIQBzTV4uMrs=
-X-Google-Smtp-Source: AGHT+IGkd8oAm76xqllvXiuSWamFxZZiYiLXM1NPguwb9PwGX3UzuHCPrjUn7xv8FxEBtfkwICP8m65fHvN8Z8HUb/km2DGAfMWu
+	s=arc-20240116; t=1714489462; c=relaxed/simple;
+	bh=Z5q2Nql4gGeIGPKUOj7Ec9NwNGxgGzdUAKboktFQTuk=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=UAf6QyLdM64sE8xs/MultbHWtd+ZJfS+e3fihlu7fjsRRdFD4OpSvRpd0URQo7CDrsFZWEO0GLrMAsgXktP/qhf2OSxgc+CWzSGJrrN6EfbN/msFRE7nG0NOzVT195BhHmMMkNVrUchS0SeS+AgnTUzfUZrhOyYvA1TqAaU3iUQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=m9gpPdhE; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3421AC2BBFC;
+	Tue, 30 Apr 2024 15:04:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714489462;
+	bh=Z5q2Nql4gGeIGPKUOj7Ec9NwNGxgGzdUAKboktFQTuk=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=m9gpPdhEFevIbqTMDhkmmfgtymgffzJii7iwfv2uOu0LPbGLRxDdRn/cHMdupHSu8
+	 ZFQGipP2BUccq2362ZpvLHvh8UnMO3W0hp+byoY2j4YJNqAOfoJkV5dcwa2RI01Cwc
+	 hPpv5fgLj6RJkHiEIiDk2L5rKo9DeoQ6f1hgWyGjVyj9x2qTbwHIdFXW4sdGO9dcLt
+	 IFZYOdJ1I2qHPlHCALxhduYuiYSkdOHLrIieJk1J7u0hcVFyReC+x3ZMJqVAQCgP5i
+	 VRdETfEJ/Y+KhGlNiI3+4jGA/bjWt2CXVLIU5nXIdOu8icNy02PemRRJqc+24N8tsc
+	 5CsN+dPgh+a6w==
+From: Mark Brown <broonie@kernel.org>
+To: Liam Girdwood <lgirdwood@gmail.com>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>, "Rob Herring (Arm)" <robh@kernel.org>
+Cc: linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+In-Reply-To: <20240426215147.3138211-1-robh@kernel.org>
+References: <20240426215147.3138211-1-robh@kernel.org>
+Subject: Re: [PATCH] regulator: dt-bindings: fixed-regulator: Add a
+ preferred node name
+Message-Id: <171448946105.1878639.3147802468127954828.b4-ty@kernel.org>
+Date: Wed, 01 May 2024 00:04:21 +0900
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:37a9:b0:487:ea0:dc07 with SMTP id
- w41-20020a05663837a900b004870ea0dc07mr1194901jal.0.1714489443214; Tue, 30 Apr
- 2024 08:04:03 -0700 (PDT)
-Date: Tue, 30 Apr 2024 08:04:03 -0700
-In-Reply-To: <00000000000072c6ba06174b30b7@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000003bf5be061751ae70@google.com>
-Subject: Re: [syzbot] [ext4?] WARNING in mb_cache_destroy
-From: syzbot <syzbot+dd43bd0f7474512edc47@syzkaller.appspotmail.com>
-To: adilger.kernel@dilger.ca, jack@suse.cz, libaokun1@huawei.com, 
-	linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, llvm@lists.linux.dev, nathan@kernel.org, 
-	ndesaulniers@google.com, ritesh.list@gmail.com, 
-	syzkaller-bugs@googlegroups.com, trix@redhat.com, tytso@mit.edu
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.14-dev
 
-syzbot has bisected this issue to:
+On Fri, 26 Apr 2024 16:51:46 -0500, Rob Herring (Arm) wrote:
+> Define "regulator-[0-9]v[0-9]" as the preferred node name for fixed
+> regulators. Other suffixes with names are also accepted. Combined,
+> these make up about half of the existing names in use.
+> 
+> For now this only serves as documentation as the schema still allows
+> anything to avoid lots of additional warnings for something low priority
+> to fix. Once a "no deprecated" mode is added to the tools, warnings can
+> be enabled selectively.
+> 
+> [...]
 
-commit 67d7d8ad99beccd9fe92d585b87f1760dc9018e3
-Author: Baokun Li <libaokun1@huawei.com>
-Date:   Thu Jun 16 02:13:56 2022 +0000
+Applied to
 
-    ext4: fix use-after-free in ext4_xattr_set_entry
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git for-next
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1011bcf8980000
-start commit:   b947cc5bf6d7 Merge tag 'erofs-for-6.9-rc7-fixes' of git://..
-git tree:       upstream
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=1211bcf8980000
-console output: https://syzkaller.appspot.com/x/log.txt?x=1411bcf8980000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=d2f00edef461175
-dashboard link: https://syzkaller.appspot.com/bug?extid=dd43bd0f7474512edc47
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11d2957f180000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1620ca40980000
+Thanks!
 
-Reported-by: syzbot+dd43bd0f7474512edc47@syzkaller.appspotmail.com
-Fixes: 67d7d8ad99be ("ext4: fix use-after-free in ext4_xattr_set_entry")
+[1/1] regulator: dt-bindings: fixed-regulator: Add a preferred node name
+      commit: b6d4b3500d57370f5b3abf0701c9166b384db976
 
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
 
