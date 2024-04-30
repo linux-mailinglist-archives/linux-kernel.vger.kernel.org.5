@@ -1,156 +1,109 @@
-Return-Path: <linux-kernel+bounces-163417-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-163418-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id EF03D8B6A8C
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 08:37:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7E50F8B6A91
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 08:39:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A43631F21854
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 06:37:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 343771F21706
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 06:39:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8559B199B4;
-	Tue, 30 Apr 2024 06:37:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E34111B96B;
+	Tue, 30 Apr 2024 06:39:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="dPnWd5/x"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.18])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="d9i1p07A"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E120B18030;
-	Tue, 30 Apr 2024 06:37:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25D5A19477;
+	Tue, 30 Apr 2024 06:39:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714459025; cv=none; b=GkcsF0YGp6eyKMaLKihHCfdUpJ+Ir7+mRudoatsZZ3Yrh36eNaHyd4y/QQBO6DfFFhBO0eXnm8EZM5qJrqaL3zKrgnNsfXzcKohlMqTKMtVngVae8JvlUqOoUAGIRh8XHieY29bp6WIu4Ehmaipav2UOADLXL2syi3t1TCMx2aU=
+	t=1714459174; cv=none; b=aFBZJp4RLHZYW55VOfiK96UbIuHnDg7GACcMWK+3xdiUB+ul+XzlTrsqH+4PY6xNdEGMxxBEctoZDlVRj8s2pnScInms2PNGQk9Krv5rTnS1SYO5ydovzLDdC2lVzEybVWMlj1cCmIRiGVZ6D1erYJ/qevK00TMZZlJfjxVelAM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714459025; c=relaxed/simple;
-	bh=KGo6hIvlY2DFfXRayOwhLfEDabosAECVdBp2tiThtkc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=eNTPE4gT7vHOZLPd8PwO76bt6+vO5A5uKyEagq/op592y8plSs8Mc8ETd6yiwngDt5cNXGqTCYU9EBpOdiP5o/KuGiuIpgy7k5MXWMNJujxJXeQWndem2NTnxhnkFEEquzmF16ZkbqHA+qsgU6PVI5qL/4XV6TkJNI9e27GHjJU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=dPnWd5/x; arc=none smtp.client-ip=198.175.65.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1714459024; x=1745995024;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=KGo6hIvlY2DFfXRayOwhLfEDabosAECVdBp2tiThtkc=;
-  b=dPnWd5/xeYkPlqxRHYfq0ExU1qCfMTDM84c7I1GonJSy+PuOXOIcwQxE
-   Qw0CmqTGxmPXCoAu1SosSmCpPfWID7+Krn8Xy6nu+iuykHTEWnz3uFd5G
-   8jT2mKuC9+nU054yhcos3jd3YeaahZLrb2T+bGAzKurXpr36okRX7ulIS
-   1W2J9wEZ1oh9GSYNqUM69ZPxjOhatgJM9PJzf2/Qpfa7Y/F+jc+B2HL05
-   z3ZPMUGQnVejPq4O1+olotS2oVnr7gWYKgq/YSckxlY3Ial57tIZe1Avm
-   /fZioxOKlvEBvBgROlF0kH/cm6f/wbjjHL6LMC61rMTmA1XW01KJQik9u
-   w==;
-X-CSE-ConnectionGUID: SgMZENu0SwaZsTGMeNxM2g==
-X-CSE-MsgGUID: O6Vl92QJR2ab17VoNjb3Mg==
-X-IronPort-AV: E=McAfee;i="6600,9927,11059"; a="10316006"
-X-IronPort-AV: E=Sophos;i="6.07,241,1708416000"; 
-   d="scan'208";a="10316006"
-Received: from orviesa008.jf.intel.com ([10.64.159.148])
-  by orvoesa110.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Apr 2024 23:37:03 -0700
-X-CSE-ConnectionGUID: kgMW4csVRV6x1K/Yr6uucg==
-X-CSE-MsgGUID: 8JTDsJIoQByUwUenbUVmng==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,241,1708416000"; 
-   d="scan'208";a="26973237"
-Received: from ahunter6-mobl1.ger.corp.intel.com (HELO [10.0.2.15]) ([10.252.49.27])
-  by orviesa008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Apr 2024 23:36:53 -0700
-Message-ID: <a9b176c7-60e8-4793-a056-4ad9219fbe32@intel.com>
-Date: Tue, 30 Apr 2024 09:36:48 +0300
+	s=arc-20240116; t=1714459174; c=relaxed/simple;
+	bh=oqnLXrIFCIxkLdU3yGt5+mmee31pq5ZWUdGnKAC//2Y=;
+	h=From:To:Cc:Subject:References:Date:In-Reply-To:Message-ID:
+	 MIME-Version:Content-Type; b=ED0fxCMvgafT+GbchuNZBTTzYsSzRMGoLTUabKYSKmEdDgAU5sbq3KhuAIG76HVQFEUB3C3NFbgIva5eOJ+p83UjiEEjuGfrZsGJDOa+Y/lWUfPuLH3fduVB4El4otmZce4PZqxNncWsxZSazlssZzWvuBHLy9CTvDHpYJVWM3w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=d9i1p07A; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 51FDAC2BBFC;
+	Tue, 30 Apr 2024 06:39:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714459173;
+	bh=oqnLXrIFCIxkLdU3yGt5+mmee31pq5ZWUdGnKAC//2Y=;
+	h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
+	b=d9i1p07Aca+YWhFilcHBrCXtPHtGcJx8kthc0StbqTMZrqBtVGMJqiTBqBdbGQvRP
+	 hpl6YozRPgM604gTXkL2bWDOHwRQThwiGuQAQ+TD1HftHWCePUbzRXtD/kkAw9hl/1
+	 w6Qhlva/Rqny8+ncRVfMZ+5nlmlEobcWMNi9Dml15E+q8XUr0DMl6TcbSEFd7SHRkO
+	 9tdopBqtqwaCgjYEILSLLC/YnAeGDZKSApiRkNzxvxSABGn5UPACL3WQZTbgPk0osf
+	 zDrqMQaBKB+MDLl4qf8qOhDwo3/8ktquodGSmDosA6q4dwzKa0t8/7atnx/5nTO3rl
+	 l0F1JX1iFEpvA==
+From: Kalle Valo <kvalo@kernel.org>
+To: Kees Cook <keescook@chromium.org>
+Cc: "Gustavo A. R. Silva" <gustavoars@kernel.org>,  Jeff Johnson
+ <quic_jjohnson@quicinc.com>,  linux-wireless@vger.kernel.org,
+  linux-kernel@vger.kernel.org,  linux-hardening@vger.kernel.org
+Subject: Re: [PATCH v2][next] wifi: wil6210: wmi: Use __counted_by() in
+ struct wmi_set_link_monitor_cmd and avoid -Wfamnae warning
+References: <ZgSTCmdP+omePvWg@neat>
+	<171222554691.1806092.8730005090791383928.kvalo@kernel.org>
+	<202404291008.51DB333F@keescook> <877cggqdwb.fsf@kernel.org>
+	<202404291109.331E1704@keescook> <87bk5sf003.fsf@kernel.org>
+	<202404291251.9CBC42E481@keescook>
+Date: Tue, 30 Apr 2024 09:39:30 +0300
+In-Reply-To: <202404291251.9CBC42E481@keescook> (Kees Cook's message of "Mon,
+	29 Apr 2024 12:52:49 -0700")
+Message-ID: <87y18vpd5p.fsf@kernel.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 02/17] perf auxtrace: Allow number of queues to be
- specified
-To: James Clark <james.clark@arm.com>, linux-perf-users@vger.kernel.org,
- gankulkarni@os.amperecomputing.com, scclevenger@os.amperecomputing.com,
- coresight@lists.linaro.org, suzuki.poulose@arm.com, mike.leach@linaro.org
-Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>,
- Maxime Coquelin <mcoquelin.stm32@gmail.com>,
- Alexandre Torgue <alexandre.torgue@foss.st.com>,
- Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
- Arnaldo Carvalho de Melo <acme@kernel.org>,
- Namhyung Kim <namhyung@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
- Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
- John Garry <john.g.garry@oracle.com>, Will Deacon <will@kernel.org>,
- Leo Yan <leo.yan@linux.dev>, linux-arm-kernel@lists.infradead.org,
- linux-kernel@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com
-References: <20240429152207.479221-1-james.clark@arm.com>
- <20240429152207.479221-3-james.clark@arm.com>
-Content-Language: en-US
-From: Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-In-Reply-To: <20240429152207.479221-3-james.clark@arm.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 
-On 29/04/24 18:21, James Clark wrote:
-> Currently it's only possible to initialize with the default number of
-> queues and then use auxtrace_queues__add_event() to grow the array. But
-> that's problematic if you don't have a real event to pass into that
-> function yet.
-> 
-> The queues hold a void *priv member to store custom state, and for
-> Coresight we want to create decoders upfront before receiving data, so
-> add a new function that allows pre-allocating queues. One reason to do
-> this is because we might need to store metadata (HW_ID events) that
-> effects other queues, but never actually receive auxtrace data on that
-> queue.
-> 
-> Signed-off-by: James Clark <james.clark@arm.com>
+Kees Cook <keescook@chromium.org> writes:
 
-Acked-by: Adrian Hunter <adrian.hunter@intel.com>
+>> >> > I was just walking through our patch tracker and noticed that I don't
+>> >> > see this patch include in -next yet (as of next-20240429). Is there a
+>> >> > flush of the ath-next queue planned soon? Or did I miss some change?
+>> >> 
+>> >> Yeah, wireless-next was pulled last week so most likely we will create
+>> >> ath-next pull request this week.
+>> >> 
+>> >> BTW we are planning to move ath.git to a new location, rename branches
+>> >> etc. I think we'll see if we can also setup it so that it can be pulled
+>> >> to linux-next, so that you don't need to ask this every time ;)
+>> >> 
+>> >> (Just joking of course, there a lot of benefits from having the tree in
+>> >> linux-next)
+>> >
+>> > Ah-ha! Thanks. Yeah, sorry if I keep asking about that. It's different
+>> > from other trees, so it doesn't stick in my head. :) I should keep
+>> > better notes!
+>> 
+>> BTW I think all vendor specific wireless driver trees are not pulled to
+>> linux-next: iwlwifi, mt76, rtw (Realtek) and ath. So with all of these it will
+>> take a while before the commit is in linux-next.
+>
+> How long is "a while"?
 
-> ---
->  tools/perf/util/auxtrace.c | 9 +++++++--
->  tools/perf/util/auxtrace.h | 1 +
->  2 files changed, 8 insertions(+), 2 deletions(-)
-> 
-> diff --git a/tools/perf/util/auxtrace.c b/tools/perf/util/auxtrace.c
-> index 3684e6009b63..563b6c4fca31 100644
-> --- a/tools/perf/util/auxtrace.c
-> +++ b/tools/perf/util/auxtrace.c
-> @@ -218,15 +218,20 @@ static struct auxtrace_queue *auxtrace_alloc_queue_array(unsigned int nr_queues)
->  	return queue_array;
->  }
->  
-> -int auxtrace_queues__init(struct auxtrace_queues *queues)
-> +int auxtrace_queues__init_nr(struct auxtrace_queues *queues, int nr_queues)
->  {
-> -	queues->nr_queues = AUXTRACE_INIT_NR_QUEUES;
-> +	queues->nr_queues = nr_queues;
->  	queues->queue_array = auxtrace_alloc_queue_array(queues->nr_queues);
->  	if (!queues->queue_array)
->  		return -ENOMEM;
->  	return 0;
->  }
->  
-> +int auxtrace_queues__init(struct auxtrace_queues *queues)
-> +{
-> +	return auxtrace_queues__init_nr(queues, AUXTRACE_INIT_NR_QUEUES);
-> +}
-> +
->  static int auxtrace_queues__grow(struct auxtrace_queues *queues,
->  				 unsigned int new_nr_queues)
->  {
-> diff --git a/tools/perf/util/auxtrace.h b/tools/perf/util/auxtrace.h
-> index 55702215a82d..8a6ec9565835 100644
-> --- a/tools/perf/util/auxtrace.h
-> +++ b/tools/perf/util/auxtrace.h
-> @@ -521,6 +521,7 @@ int auxtrace_mmap__read_snapshot(struct mmap *map,
->  				 struct perf_tool *tool, process_auxtrace_t fn,
->  				 size_t snapshot_size);
->  
-> +int auxtrace_queues__init_nr(struct auxtrace_queues *queues, int nr_queues);
->  int auxtrace_queues__init(struct auxtrace_queues *queues);
->  int auxtrace_queues__add_event(struct auxtrace_queues *queues,
->  			       struct perf_session *session,
+The cadence can be anything from 1-4 times per release (~8 weeks).
+Depends on the maintainer, how busy we are etc.
 
+> And if the latency can be reduced for these, it'd be nice since it
+> would allow for longer bake-time in -next.
+
+Sure but our time is limited, as always :) There's extra overhead with
+linux-next, like the rule that no updates during the merge window, so I
+can understand why some maintainers have not included their tree to
+linux-next builds.
+
+-- 
+https://patchwork.kernel.org/project/linux-wireless/list/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
