@@ -1,54 +1,74 @@
-Return-Path: <linux-kernel+bounces-163514-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-163515-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9BE6D8B6C5D
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 10:00:54 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2168F8B6C60
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 10:01:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5181F1F221AA
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 08:00:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CBD48283E02
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 08:01:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8FC404502C;
-	Tue, 30 Apr 2024 08:00:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1887941775;
+	Tue, 30 Apr 2024 08:01:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="iL6LMZpP"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="N2DTlniL"
+Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com [209.85.167.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B2684085A;
-	Tue, 30 Apr 2024 08:00:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80C324085A
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 08:00:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714464043; cv=none; b=m3ht3kXIiPpFgXrN04DG3G1l0xdtKF95ldjP70HdxOkNGQHP6x/BOKC5PjHYbIYQSh8zY1mphEaLZlOsfgkpLGHhMNPvYqZUltRAb+DjF9b2ZQ8GYSavI4uzIBCbQ+zQQ/WmwoF8CJvwNmptOKbW/wQvRAEbxg4A6HvnCD22fUk=
+	t=1714464061; cv=none; b=R+eHv5DPbqnWWG+BAL4gXHu9dQnqWTKWvYubqa4zcVnMAU7cPdEUcmBang4NQNjoBSdOQLSVv9h2AshKkumSBp/bcdt++lZC3nRRuAWE9t09yg7yVf1DIBS+jS/NRd/+8zbOMgI0WfQKlQu3LXukXebwTnorh4U+DW/lmy/GNbQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714464043; c=relaxed/simple;
-	bh=Sdu/C7hyTUr/WF/VK529ijLrles5NiZWSgYvV8Hn1+s=;
+	s=arc-20240116; t=1714464061; c=relaxed/simple;
+	bh=dPf4UEqQCw2LaZ1eeiZsJ6PiGpuZaLeZZkNPI+mQXUo=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=mpA6HYxw/e/B1kLy7m0K149SbMzPOE5UDg3NXVU0SvP0Wf0Szi7cYO1UCgUayvVBLMHkSI5Rh1BbLyllmrYtGDCQzELpIYPqkdTuQGSHz1vwVBb7KsAe4jZogQIgyY2SIRjS/UnmvR5uC0NHYNoy61Ktt8T7uLC+hk/CNK5v4Z4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=iL6LMZpP; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1714464040;
-	bh=Sdu/C7hyTUr/WF/VK529ijLrles5NiZWSgYvV8Hn1+s=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=iL6LMZpPcspw/gXwxn6LU00o6c98eIlLAM6zdawslNrS8719ouaDwu6pj2GI5s0PB
-	 oUD5MLcvN4n5nlhEsc0qfh0t0tdeu8cwc8rQ1dBpmVUxBDBhYP/uuYvxH0GF4P0zLu
-	 I7p03DA/ZSVDtX6UZHKzWVCy9F5rB1iS7+VBbhcOhGzE+vKcNuKG3UojuixEGMJKur
-	 RCS5J7K7BDzbjS8KuGSzpzEM0hv6MshUCWrf100SpMr0kx6EgdDkS4trNBMgllhC+B
-	 lQvrfThjWnUYeH353fcSx2cBjsWobwDZRcCRs8uzvwn666rSpvQU9DbVmFu9861YqG
-	 O4apTxbJX6W6g==
-Received: from [100.95.196.182] (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: andrzej.p)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id CA69D3782039;
-	Tue, 30 Apr 2024 08:00:39 +0000 (UTC)
-Message-ID: <0c0e2d02-b719-4f8b-afca-c839bb77f287@collabora.com>
-Date: Tue, 30 Apr 2024 10:00:39 +0200
+	 In-Reply-To:Content-Type; b=XxF/L1GJ3qKsO8AXBZNpAz1u4cb+b14gkb3oo2MkwbLglBv0djBz0TDzt8Kc+MHkcQKSvRzfQA/TNT3EP+MiY5j6o+rEt7Zfv2DTRaHTZlE1/3SZnWeEj1KMXCz0WvJVFvfAd4ZQCxPwJo+hozugdD/bxi8D72aRv4Gj1TyGI7s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=N2DTlniL; arc=none smtp.client-ip=209.85.167.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lf1-f45.google.com with SMTP id 2adb3069b0e04-51967f75763so6221156e87.2
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 01:00:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1714464058; x=1715068858; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
+         :from:references:cc:to:subject:user-agent:mime-version:date
+         :message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=Rl/4sYkUY2PAAIjugPUNoG61Eymx4LWnwcn+JNq28QQ=;
+        b=N2DTlniLrJ8oQcd41+5aK5ED144ztX4Y7ubfWXU8Y9+viQdgopLPLqwFuOvt9yL3Hu
+         kKcy3F3sK6YGw37ktfhRgySdhpNde8TiCqA0ymX2n01f9F8VTiQd+jqAn0EWppDnPJ9u
+         kwhLo/TfeGdDCHLSfzbqMRrqd2qHGE/UJxzxI+PgHniBII/Yk0NXySf1LAV/+S7RbCia
+         gLMIm7cEb8qUSoYY8fEiBJYz8Pu6b4c8tKKt3OhxXIIsasiCpyXko9rmn1hwumO2enZZ
+         dI0D7IsJmNV/VUj7FM2+FNUKInD/uB6MP97aPH/TOtQv7zsjc3Zz+mFUzW/ZT8EG9gUB
+         55sQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714464058; x=1715068858;
+        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
+         :from:references:cc:to:subject:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Rl/4sYkUY2PAAIjugPUNoG61Eymx4LWnwcn+JNq28QQ=;
+        b=PTBRiO9HDM9+u6hE+wAGh74nkgJXT9SDA0V2PuYf8HpyAP0VYWH1AaYEM3jcgYCU6e
+         ohYTeYcBCGw1Qgj8z8j9N2x7xfinDAFoXZWHRdT2Mp1FP5V7YRfOKS1IXApGTdLPWpSU
+         0zKzMwh6Bgcv5wnv8mwYrGAu72bVHPAbs8dEaEqHQdhzXHR8IZtigjHYRiCH6jAFIuyu
+         iZmpDJ54RgkzbPs5vnLWS6fu5WO1D8zi3mQuixEyM3Ux+I2tLF8qgYxX/o0Ms437xwVh
+         sQtLRXET+ao/pkjG5rpx6NclCiOi+qrD4GYqwqosI6yP6mZM5dIZWzzCXlpSWJGQzsql
+         hkHA==
+X-Forwarded-Encrypted: i=1; AJvYcCUfoxAnMOcuVh/cj6sjPXdzh9AJSkaBR8lNyTm6Vr5Nx4sMo5egT5+feIL4m/09fEDiPyUunKlGFcbfS0JlrGC5iPOWYjI0zCk1hfun
+X-Gm-Message-State: AOJu0YxW+B8nSyh/GAGalSk8wxdsXsXK1pbuR5LuvVqiRtCWytrUU9hR
+	JZkJMxmhu32s5cBeHJrjYpAo/6JvIAuDtl4R5YsfhvKY1a/EgtgV4pkJhmHyawY=
+X-Google-Smtp-Source: AGHT+IHUNmed0l6wwAy40uJ3RW4/qBxqxBAs5tWbO8jcSaVCNn2pSO4jliO2sfooQY5m3+A7q2U+qQ==
+X-Received: by 2002:a05:6512:1328:b0:51c:8b45:c9fb with SMTP id x40-20020a056512132800b0051c8b45c9fbmr9768612lfu.69.1714464057560;
+        Tue, 30 Apr 2024 01:00:57 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.223.16])
+        by smtp.gmail.com with ESMTPSA id g2-20020a170906348200b00a51da296f66sm14746948ejb.41.2024.04.30.01.00.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 30 Apr 2024 01:00:56 -0700 (PDT)
+Message-ID: <2dc18bdd-0c82-47a2-b87d-b69028f3b251@linaro.org>
+Date: Tue, 30 Apr 2024 10:00:54 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -56,115 +76,103 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 3/3] media: amphion: Remove lock in s_ctrl callback
-To: ming qian <ming.qian@oss.nxp.com>, Ming Qian <ming.qian@nxp.com>,
- mchehab@kernel.org, hverkuil-cisco@xs4all.nl
-Cc: shawnguo@kernel.org, robh+dt@kernel.org, s.hauer@pengutronix.de,
- kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
- xiahong.bao@nxp.com, eagle.zhou@nxp.com, tao.jiang_2@nxp.com,
- imx@lists.linux.dev, linux-media@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-References: <20240425065011.105915-1-ming.qian@nxp.com>
- <20240425065011.105915-3-ming.qian@nxp.com>
- <8c39b3c3-8146-4418-8835-6dbfe38a85ec@collabora.com>
- <be54f273-7bba-4db0-bc52-5ddbb3982d84@oss.nxp.com>
+Subject: Re: [EXTERNAL] Re: [PATCH v3 4/5] spi: cadence: Allow to read basic
+ xSPI configuration from ACPI
+To: Witold Sadowski <wsadowski@marvell.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
+Cc: "broonie@kernel.org" <broonie@kernel.org>,
+ "robh@kernel.org" <robh@kernel.org>,
+ "krzysztof.kozlowski+dt@linaro.org" <krzysztof.kozlowski+dt@linaro.org>,
+ "conor+dt@kernel.org" <conor+dt@kernel.org>,
+ "pthombar@cadence.com" <pthombar@cadence.com>,
+ Piyush Malgujar <pmalgujar@marvell.com>
+References: <20240329194849.25554-1-wsadowski@marvell.com>
+ <20240418011353.1764672-1-wsadowski@marvell.com>
+ <20240418011353.1764672-5-wsadowski@marvell.com>
+ <16a4a58c-cae6-4b62-859b-3661c052468a@linaro.org>
+ <CO6PR18MB40989F97F92C9A37C6BA896DB01B2@CO6PR18MB4098.namprd18.prod.outlook.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Content-Language: en-US
-From: Andrzej Pietrasiewicz <andrzej.p@collabora.com>
-In-Reply-To: <be54f273-7bba-4db0-bc52-5ddbb3982d84@oss.nxp.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <CO6PR18MB40989F97F92C9A37C6BA896DB01B2@CO6PR18MB4098.namprd18.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Hi Ming,
-
-W dniu 30.04.2024 o 04:32, ming qian pisze:
-> Hi Andrzej,
-> 
->> Hi Ming Qian,
->>
->> W dniu 25.04.2024 o 08:50, Ming Qian pisze:
->>> There is no need to add lock in s_ctrl callback, it has been
->>> synchronized by the ctrl_handler's lock, otherwise it may led to
->>> deadlock if driver call v4l2_ctrl_s_ctrl().
+On 29/04/2024 16:30, Witold Sadowski wrote:
 >>>
->>> Signed-off-by: Ming Qian <ming.qian@nxp.com>
->>> ---
->>>   drivers/media/platform/amphion/vdec.c | 2 --
->>>   drivers/media/platform/amphion/venc.c | 2 --
->>>   2 files changed, 4 deletions(-)
->>>
->>> diff --git a/drivers/media/platform/amphion/vdec.c 
->>> b/drivers/media/platform/amphion/vdec.c
->>> index a57f9f4f3b87..6a38a0fa0e2d 100644
->>> --- a/drivers/media/platform/amphion/vdec.c
->>> +++ b/drivers/media/platform/amphion/vdec.c
->>> @@ -195,7 +195,6 @@ static int vdec_op_s_ctrl(struct v4l2_ctrl *ctrl)
->>>       struct vdec_t *vdec = inst->priv;
->>>       int ret = 0;
->>> -    vpu_inst_lock(inst);
+>>> +#ifdef CONFIG_ACPI
+>>> +static const struct acpi_device_id cdns_xspi_acpi_match[] = {
+>>> +	{
+>>> +		.id = "cdns,xspi-nor",
+>>> +		.driver_data = (kernel_ulong_t) &cdns_driver_data,
+>>> +	},
+>>> +	{
+>>> +		.id = "mrvl,xspi-nor",
+>>> +		.driver_data = (kernel_ulong_t) &mrvl_driver_data,
 >>
->> I assume that PATCH v2 2/3 might cause the said deadlock to happen?
->> If so, maybe it would make more sense to make the current patch preceed
->>   PATCH v2 2/3? Otherwise the kernel at PATCH v2 2/3 introduces a potential
->> deadlock.
->>
->> Regards,
->>
->> Andrzej
->>
+>> UEFI provides compatibles for ACPI? I think that's first such format in
+>> the kernel.
 > 
-> I actually discovered this problem when I was preparing the v2 2/3 patch.
-> 
-> But in the v2 2/3 patch, it tried to add a read-only ctrl, then I just
-> unset the s_ctrl callback for the new added ctrl, the potential deadlock
-> is caused by call the s_ctrl back in a locked environment, so after unset
-> the s_ctrl callback, the 2/3 patch won't trigger the deadlock even if
-> this patch is missing.
-> 
-> In order to avoid encountering similar problems in the future, that
-> driver may set or get some ctrl, I added this patch.
+> Yes, that code is not doing what was expected.
+> Current usage scenario in ACPI mode is:
+> xSPI block with HID PRP0001, and additional compatible package set to
+> correct compatible string
+> With that approach only issue(in ACPI mode) is with matching device
+> with data field from of_device_id. It looks like there are functions
+> to match that when DTB is used, but in ACPI mode it fails.
+> I believe solution is to traverse dev->driver->of_match_table manually
+> To match device name with correct compatible data structure.
+> That will be included in next patchset.
 
-Do I understand you correctly that patch 2/3 is written in such a way that
-it does not introduce a deadlock, and you add patch 3/3 only to prevent future
-problems? If so, it seems to me that patch 3/3 could/should be separate from
-this series, as it does not quite match "Add average qp control".
+PRP0001 should be handled by regular of_device_id table, of course
+assuming your kernel has build-in CONFIG_OF.
 
-Regards,
-
-Andrzej
-
-> 
-> Best regards,
-> Ming
-> 
->>>       switch (ctrl->id) {
->>>       case V4L2_CID_MPEG_VIDEO_DEC_DISPLAY_DELAY_ENABLE:
->>>           vdec->params.display_delay_enable = ctrl->val;
->>> @@ -207,7 +206,6 @@ static int vdec_op_s_ctrl(struct v4l2_ctrl *ctrl)
->>>           ret = -EINVAL;
->>>           break;
->>>       }
->>> -    vpu_inst_unlock(inst);
->>>       return ret;
->>>   }
->>> diff --git a/drivers/media/platform/amphion/venc.c 
->>> b/drivers/media/platform/amphion/venc.c
->>> index cdfaba9d107b..351b4edc8742 100644
->>> --- a/drivers/media/platform/amphion/venc.c
->>> +++ b/drivers/media/platform/amphion/venc.c
->>> @@ -518,7 +518,6 @@ static int venc_op_s_ctrl(struct v4l2_ctrl *ctrl)
->>>       struct venc_t *venc = inst->priv;
->>>       int ret = 0;
->>> -    vpu_inst_lock(inst);
->>>       switch (ctrl->id) {
->>>       case V4L2_CID_MPEG_VIDEO_H264_PROFILE:
->>>           venc->params.profile = ctrl->val;
->>> @@ -579,7 +578,6 @@ static int venc_op_s_ctrl(struct v4l2_ctrl *ctrl)
->>>           ret = -EINVAL;
->>>           break;
->>>       }
->>> -    vpu_inst_unlock(inst);
->>>       return ret;
->>>   }
->>
+Best regards,
+Krzysztof
 
 
