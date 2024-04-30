@@ -1,164 +1,304 @@
-Return-Path: <linux-kernel+bounces-163407-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-163409-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id F157D8B6A69
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 08:16:42 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E227F8B6A6E
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 08:17:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6BA901F254B8
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 06:16:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 97EFF281EC1
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 06:17:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27FA8126F3C;
-	Tue, 30 Apr 2024 06:14:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E5D418628;
+	Tue, 30 Apr 2024 06:16:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="WWfF+HS8"
-Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="qVyyusBt";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="ZkZ2ZP0S"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0996E85945
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 06:14:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4DDB26FB1;
+	Tue, 30 Apr 2024 06:16:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714457680; cv=none; b=kYOMdXEGeA/EpOjjfql/2dif5w3ycJyOpiukyoTXdvklnJ2Tvu/poyT8jiatuC95sEC4iSixqwRfOxrMy6JZR37HgYJMdGm2qXWXei4fjvB862YfMxaG/zI/BFwwfA1yl9EJ4oc4emoW/cLc6hEsd6CWUAiS21BbkFnpcMWhEhw=
+	t=1714457790; cv=none; b=ghjypSCXfelcyFYjK5qIYz9xVLbXyPv/cNsxECy6mE6/37LjeL7bnF1/Tp5T2J5z14kYdx0huGq9RXzmTXZFfPkSnYe6OQ+VrlEyOfPXmByUu6yw5La3bY/f7k+t+i3uEalsgUUoO1Drul3w0Ma7HjUtOkM6v28d9qPHEQR6cy8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714457680; c=relaxed/simple;
-	bh=gwJkiWxyW/wamW6kH7+GRx7VSH7hXsYT3WZXX3driJ8=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=Z+27HInfHPAVseQ/wMxmSkDxVDA2i7qdrJMK3BqwhGnKGgOxGla0OF0MXOG+tHn8CfeT2rk71OuK5WNJBOHhpfKfh9lQTt6AKNhJsweT9CCpWkN24Ys6M9gnK2iCI0Q7mT9VsrFZtuChssRkuEyqCbb0IFgaAjowlTVKUnKrOOE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=WWfF+HS8; arc=none smtp.client-ip=209.85.214.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-1e834159f40so42655595ad.2
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 23:14:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1714457678; x=1715062478; darn=vger.kernel.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=zfACtQQSDUwMHO1/0RK0ntsz+YmSOQ8ynC0u7vL0q8w=;
-        b=WWfF+HS8623sWjdYlAr6UUNKZJVc2+6d8C/ash6g0yNTqoeN0Rl9EB95SE6MfDfRY0
-         jC7ZkrpedNAic7BZ0yP9AI28zwK8J5RxVG/w7g88RFmdd+lvRz/pD98VNWYouq8k69BZ
-         YUENRNNN+1F7mJKOzQiK5FiTjVqFgUt0FRl0EnBIJZpfpDMyTfc13HXsDZ06/4XCoZ80
-         P3TJYeNVqeO/aTq8Teu0n2lkeZWwwayu20gtgqPKRK6fP6u9lgMBobWC6AqK/TloVpwP
-         qXgnbiCKNQuvR4xUt6afnHTheuMcP1/n/86vCdhqmrOrycZtUMRIa0cZXbzs6UoGvsb2
-         YMOA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714457678; x=1715062478;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=zfACtQQSDUwMHO1/0RK0ntsz+YmSOQ8ynC0u7vL0q8w=;
-        b=m55Akui6RUVwJ03x1WNOm1d52rMFwR8j/oF/teqjlEDbe5+4B4EKzT8oGeDxCJ+Eo5
-         he+t8tVHnFy9ClBrIcKPl6Ve4XSxIGvBaxDjL617Imz4w1IYqByOYqqbsywysjGXRQVm
-         2odvwtA48hVPV+5HYAzLOGgfJB2uhAfLIiEcLuOiUW44bU+Hb1aXwmpxsoLj9ylLzrZT
-         W3UkkI3TGyYgQvvLbjroo+WlmH5gOaRqp/TEtZFV5nUClropgPQELj8N5ct8AGvc1/Uf
-         wO81grW/Y7xmbJUMXux/yKnouVdWvwLTBplFgl9HLg+EHyEX28GyW66Ty5sR2fHj/FdI
-         F5qA==
-X-Forwarded-Encrypted: i=1; AJvYcCVpMgKx/ILKL3i8fi/HpMnF6HlE4MfhtKLi+mrhruz8JlwiFKm2atWKIUAguKZMDOyALu1InniHBoYmAyBVpqVM8xtwTpGZI4VvITCE
-X-Gm-Message-State: AOJu0Yy7a9tP0NH+fL0Hy7XVOkCWWi1EEulPEJY4AxBI+rGdojAlow4o
-	PnHf9R/PVU/Qg+1UEPwpzSaG9RHFZ9+vwXJWHGmW16dICFZi3iHmgAI45T/zGSHmk1xjXoU9+Fk
-	=
-X-Google-Smtp-Source: AGHT+IGWSiYL4QGZLQ9kxcs8EksybyJBj3Q5TS+tl4f5cOjnz0JQqoAPxUgOn1Wokxhf05hTLpZtWw==
-X-Received: by 2002:a17:902:7087:b0:1e6:68d0:d6c1 with SMTP id z7-20020a170902708700b001e668d0d6c1mr12539439plk.40.1714457678284;
-        Mon, 29 Apr 2024 23:14:38 -0700 (PDT)
-Received: from [127.0.1.1] ([220.158.156.15])
-        by smtp.gmail.com with ESMTPSA id bi2-20020a170902bf0200b001e27ad5199csm21393298plb.281.2024.04.29.23.14.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Apr 2024 23:14:37 -0700 (PDT)
-From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Date: Tue, 30 Apr 2024 11:43:51 +0530
-Subject: [PATCH v4 10/10] PCI: endpoint: pci-epf-test: Handle Link Down
- event
+	s=arc-20240116; t=1714457790; c=relaxed/simple;
+	bh=w1FtgFGbKATPky80HMgAKnT9l8yQIMkdWVHQFIOZAeU=;
+	h=Date:From:To:Subject:Cc:In-Reply-To:References:MIME-Version:
+	 Message-ID:Content-Type; b=Y58EuFJ/dPGaBrcT74O1PN7C6BGUx+nZxnAC7Z8GY8Acd25gKMrZG75N+39KPlSmW2nAg6f+RSmiYL1m8wPnUA3gOkYHgBH54SYrL8I0Vl3wr3e8Kd+TKNEpnlxoWxO6RXxVtlcCXfLYdrOAS7SNbYvAO72jVNjQw9Fl7NSPyz4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=qVyyusBt; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=ZkZ2ZP0S; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+Date: Tue, 30 Apr 2024 06:16:25 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1714457786;
+	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=yfrut0KQA7/LT2MTh/hFrudkeTIS+9cJoSYnPXB8YII=;
+	b=qVyyusBtE9afiQOzeWux2Im959q/Wh0eWz9BVUfSeyAEVI7D/EEXGVs5+vheCGYJElQsZc
+	I1u9QwV3raojSF6skVeBKXNjoIDJgA9jYQ+J+GxdqF4mNRlO6hnfHYQc3sJNtZc3eKOV5e
+	e74Q/PJEaCTtxSjPlD4tJhhptJXHZ9iC6UsvKs71hJNNyTY6fabtw6MWDytDo6xO3rV9lP
+	Pbbt1scK06vbW9zGICTHusX6q9ORzDRiANWcMoxJ+hgbnfkytsbpDLr/9zdGarmGdmyvDP
+	QYOKJd1wA4xpQQZO4ODrrmBKiVGrSgtIasgFunDjr4yx9LvZOPurzm2tftURxg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1714457786;
+	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=yfrut0KQA7/LT2MTh/hFrudkeTIS+9cJoSYnPXB8YII=;
+	b=ZkZ2ZP0SgbGk3bEVZ958dFw29DAyP04IYiw7VO3YEBz1ha1+siZw0aKUsHnfWNwCwmXixx
+	xplI+t4dEk0XTdDA==
+From: "tip-bot2 for Linus Torvalds" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To: linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/urgent] x86/mm: Remove broken vsyscall emulation code from
+ the page fault code
+Cc: syzbot+83e7f982ca045ab4405c@syzkaller.appspotmail.com,
+ Linus Torvalds <torvalds@linux-foundation.org>,
+ Ingo Molnar <mingo@kernel.org>, Jiri Olsa <jolsa@kernel.org>,
+ Andy Lutomirski <luto@kernel.org>, x86@kernel.org,
+ linux-kernel@vger.kernel.org
+In-Reply-To:
+ <CAHk-=wh9D6f7HUkDgZHKmDCHUQmp+Co89GP+b8+z+G56BKeyNg@mail.gmail.com>
+References:
+ <CAHk-=wh9D6f7HUkDgZHKmDCHUQmp+Co89GP+b8+z+G56BKeyNg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Message-ID: <171445778590.10875.11181834195203165765.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe:
+ Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Precedence: bulk
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240430-pci-epf-rework-v4-10-22832d0d456f@linaro.org>
-References: <20240430-pci-epf-rework-v4-0-22832d0d456f@linaro.org>
-In-Reply-To: <20240430-pci-epf-rework-v4-0-22832d0d456f@linaro.org>
-To: Lorenzo Pieralisi <lpieralisi@kernel.org>, 
- =?utf-8?q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>, 
- Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>, 
- Kishon Vijay Abraham I <kishon@kernel.org>, 
- Jingoo Han <jingoohan1@gmail.com>, 
- Thierry Reding <thierry.reding@gmail.com>, 
- Jonathan Hunter <jonathanh@nvidia.com>
-Cc: linux-pci@vger.kernel.org, linux-arm-msm@vger.kernel.org, 
- linux-kernel@vger.kernel.org, mhi@lists.linux.dev, 
- linux-tegra@vger.kernel.org, Niklas Cassel <cassel@kernel.org>, 
- Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1926;
- i=manivannan.sadhasivam@linaro.org; h=from:subject:message-id;
- bh=gwJkiWxyW/wamW6kH7+GRx7VSH7hXsYT3WZXX3driJ8=;
- b=owEBbQGS/pANAwAKAVWfEeb+kc71AcsmYgBmMIwd973TI9incgBAwvQzAk1axQR3EQfp2S+v7
- 0yLEScJY42JATMEAAEKAB0WIQRnpUMqgUjL2KRYJ5dVnxHm/pHO9QUCZjCMHQAKCRBVnxHm/pHO
- 9W9wB/9fKbNDwL0ouS8vXUIF1ITwHRCULxFhwVZnrKt6wJZZ10YPd6A9VuBZdad+tngXVjkuP8w
- y2VLFDcc4KgVEadpMF08dctlEfIju4UbBdEFJSEWUynyOkW//VQHFnjFFqRDUzgxJGS0/HVtCOx
- DIKJ2WR27vm+b9WdcJqbVuQvS2DJ0p3qbJatfzAVrFxcVxLDH+9DGD9CeExys4NrUyu9TKYZdB0
- ZiL8A0W9pOjEvFALzu9UAY1mhQpoZxwMX4Ldz8ABwFNHKktBYLKK4nD+YcsB2OrFE3EzmJo2Ol/
- GH7xP7PBMproKqyLDV/eCbdhGxKOw/9TTP1FAzdVXKFtqbz1
-X-Developer-Key: i=manivannan.sadhasivam@linaro.org; a=openpgp;
- fpr=C668AEC3C3188E4C611465E7488550E901166008
 
-As per the PCIe base spec r5.0, section 5.2, Link Down event can happen
-under any of the following circumstances:
+The following commit has been merged into the x86/urgent branch of tip:
 
-1. Fundamental/Hot reset
-2. Link disable transmission by upstream component
-3. Moving from L2/L3 to L0
+Commit-ID:     c9e1dc9825319392b44d3c22493dc543075933b9
+Gitweb:        https://git.kernel.org/tip/c9e1dc9825319392b44d3c22493dc543075933b9
+Author:        Linus Torvalds <torvalds@linux-foundation.org>
+AuthorDate:    Mon, 29 Apr 2024 10:00:51 +02:00
+Committer:     Ingo Molnar <mingo@kernel.org>
+CommitterDate: Tue, 30 Apr 2024 08:08:30 +02:00
 
-When the event happens, the EPC driver capable of detecting it may pass the
-notification to the EPF driver through link_down() callback in 'struct
-pci_epc_event_ops'.
+x86/mm: Remove broken vsyscall emulation code from the page fault code
 
-While the PCIe spec has not defined the actual behavior of the endpoint
-when the Link Down event happens, we may assume that at least the ongoing
-transactions need to be stopped as the link won't be active. So let's
-cancel the command handler work in the callback implementation
-pci_epf_test_link_down(). The work will be started again in
-pci_epf_test_link_up() once the link comes back again.
+The syzbot-reported stack trace from hell in this discussion thread
+actually has three nested page faults:
 
-Reviewed-by: Niklas Cassel <cassel@kernel.org>
-Tested-by: Niklas Cassel <cassel@kernel.org>
-Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+  https://lore.kernel.org/r/000000000000d5f4fc0616e816d4@google.com
+
+.. and I think that's actually the important thing here:
+
+ - the first page fault is from user space, and triggers the vsyscall
+   emulation.
+
+ - the second page fault is from __do_sys_gettimeofday(), and that should
+   just have caused the exception that then sets the return value to
+   -EFAULT
+
+ - the third nested page fault is due to _raw_spin_unlock_irqrestore() ->
+   preempt_schedule() -> trace_sched_switch(), which then causes a BPF
+   trace program to run, which does that bpf_probe_read_compat(), which
+   causes that page fault under pagefault_disable().
+
+It's quite the nasty backtrace, and there's a lot going on.
+
+The problem is literally the vsyscall emulation, which sets
+
+        current->thread.sig_on_uaccess_err = 1;
+
+and that causes the fixup_exception() code to send the signal *despite* the
+exception being caught.
+
+And I think that is in fact completely bogus.  It's completely bogus
+exactly because it sends that signal even when it *shouldn't* be sent -
+like for the BPF user mode trace gathering.
+
+In other words, I think the whole "sig_on_uaccess_err" thing is entirely
+broken, because it makes any nested page-faults do all the wrong things.
+
+Now, arguably, I don't think anybody should enable vsyscall emulation any
+more, but this test case clearly does.
+
+I think we should just make the "send SIGSEGV" be something that the
+vsyscall emulation does on its own, not this broken per-thread state for
+something that isn't actually per thread.
+
+The x86 page fault code actually tried to deal with the "incorrect nesting"
+by having that:
+
+                if (in_interrupt())
+                        return;
+
+which ignores the sig_on_uaccess_err case when it happens in interrupts,
+but as shown by this example, these nested page faults do not need to be
+about interrupts at all.
+
+IOW, I think the only right thing is to remove that horrendously broken
+code.
+
+The attached patch looks like the ObviouslyCorrect(tm) thing to do.
+
+NOTE! This broken code goes back to this commit in 2011:
+
+  4fc3490114bb ("x86-64: Set siginfo and context on vsyscall emulation faults")
+
+.. and back then the reason was to get all the siginfo details right.
+Honestly, I do not for a moment believe that it's worth getting the siginfo
+details right here, but part of the commit says:
+
+    This fixes issues with UML when vsyscall=emulate.
+
+.. and so my patch to remove this garbage will probably break UML in this
+situation.
+
+I do not believe that anybody should be running with vsyscall=emulate in
+2024 in the first place, much less if you are doing things like UML. But
+let's see if somebody screams.
+
+Reported-and-tested-by: syzbot+83e7f982ca045ab4405c@syzkaller.appspotmail.com
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Tested-by: Jiri Olsa <jolsa@kernel.org>
+Acked-by: Andy Lutomirski <luto@kernel.org>
+Link: https://lore.kernel.org/r/CAHk-=wh9D6f7HUkDgZHKmDCHUQmp+Co89GP+b8+z+G56BKeyNg@mail.gmail.com
 ---
- drivers/pci/endpoint/functions/pci-epf-test.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ arch/x86/entry/vsyscall/vsyscall_64.c | 25 +-------------------
+ arch/x86/include/asm/processor.h      |  1 +-
+ arch/x86/mm/fault.c                   | 33 +--------------------------
+ 3 files changed, 3 insertions(+), 56 deletions(-)
 
-diff --git a/drivers/pci/endpoint/functions/pci-epf-test.c b/drivers/pci/endpoint/functions/pci-epf-test.c
-index c8d0c51ae329..afb28df174c3 100644
---- a/drivers/pci/endpoint/functions/pci-epf-test.c
-+++ b/drivers/pci/endpoint/functions/pci-epf-test.c
-@@ -809,10 +809,20 @@ static int pci_epf_test_link_up(struct pci_epf *epf)
- 	return 0;
- }
+diff --git a/arch/x86/entry/vsyscall/vsyscall_64.c b/arch/x86/entry/vsyscall/vsyscall_64.c
+index a3c0df1..3b0f61b 100644
+--- a/arch/x86/entry/vsyscall/vsyscall_64.c
++++ b/arch/x86/entry/vsyscall/vsyscall_64.c
+@@ -98,11 +98,6 @@ static int addr_to_vsyscall_nr(unsigned long addr)
  
-+static int pci_epf_test_link_down(struct pci_epf *epf)
-+{
-+	struct pci_epf_test *epf_test = epf_get_drvdata(epf);
-+
-+	cancel_delayed_work_sync(&epf_test->cmd_handler);
-+
-+	return 0;
-+}
-+
- static const struct pci_epc_event_ops pci_epf_test_event_ops = {
- 	.epc_init = pci_epf_test_epc_init,
- 	.epc_deinit = pci_epf_test_epc_deinit,
- 	.link_up = pci_epf_test_link_up,
-+	.link_down = pci_epf_test_link_down,
- };
+ static bool write_ok_or_segv(unsigned long ptr, size_t size)
+ {
+-	/*
+-	 * XXX: if access_ok, get_user, and put_user handled
+-	 * sig_on_uaccess_err, this could go away.
+-	 */
+-
+ 	if (!access_ok((void __user *)ptr, size)) {
+ 		struct thread_struct *thread = &current->thread;
  
- static int pci_epf_test_alloc_space(struct pci_epf *epf)
-
--- 
-2.25.1
-
+@@ -123,7 +118,6 @@ bool emulate_vsyscall(unsigned long error_code,
+ 	struct task_struct *tsk;
+ 	unsigned long caller;
+ 	int vsyscall_nr, syscall_nr, tmp;
+-	int prev_sig_on_uaccess_err;
+ 	long ret;
+ 	unsigned long orig_dx;
+ 
+@@ -234,12 +228,8 @@ bool emulate_vsyscall(unsigned long error_code,
+ 		goto do_ret;  /* skip requested */
+ 
+ 	/*
+-	 * With a real vsyscall, page faults cause SIGSEGV.  We want to
+-	 * preserve that behavior to make writing exploits harder.
++	 * With a real vsyscall, page faults cause SIGSEGV.
+ 	 */
+-	prev_sig_on_uaccess_err = current->thread.sig_on_uaccess_err;
+-	current->thread.sig_on_uaccess_err = 1;
+-
+ 	ret = -EFAULT;
+ 	switch (vsyscall_nr) {
+ 	case 0:
+@@ -262,23 +252,12 @@ bool emulate_vsyscall(unsigned long error_code,
+ 		break;
+ 	}
+ 
+-	current->thread.sig_on_uaccess_err = prev_sig_on_uaccess_err;
+-
+ check_fault:
+ 	if (ret == -EFAULT) {
+ 		/* Bad news -- userspace fed a bad pointer to a vsyscall. */
+ 		warn_bad_vsyscall(KERN_INFO, regs,
+ 				  "vsyscall fault (exploit attempt?)");
+-
+-		/*
+-		 * If we failed to generate a signal for any reason,
+-		 * generate one here.  (This should be impossible.)
+-		 */
+-		if (WARN_ON_ONCE(!sigismember(&tsk->pending.signal, SIGBUS) &&
+-				 !sigismember(&tsk->pending.signal, SIGSEGV)))
+-			goto sigsegv;
+-
+-		return true;  /* Don't emulate the ret. */
++		goto sigsegv;
+ 	}
+ 
+ 	regs->ax = ret;
+diff --git a/arch/x86/include/asm/processor.h b/arch/x86/include/asm/processor.h
+index 811548f..78e51b0 100644
+--- a/arch/x86/include/asm/processor.h
++++ b/arch/x86/include/asm/processor.h
+@@ -472,7 +472,6 @@ struct thread_struct {
+ 	unsigned long		iopl_emul;
+ 
+ 	unsigned int		iopl_warn:1;
+-	unsigned int		sig_on_uaccess_err:1;
+ 
+ 	/*
+ 	 * Protection Keys Register for Userspace.  Loaded immediately on
+diff --git a/arch/x86/mm/fault.c b/arch/x86/mm/fault.c
+index 622d12e..bba4e02 100644
+--- a/arch/x86/mm/fault.c
++++ b/arch/x86/mm/fault.c
+@@ -723,39 +723,8 @@ kernelmode_fixup_or_oops(struct pt_regs *regs, unsigned long error_code,
+ 	WARN_ON_ONCE(user_mode(regs));
+ 
+ 	/* Are we prepared to handle this kernel fault? */
+-	if (fixup_exception(regs, X86_TRAP_PF, error_code, address)) {
+-		/*
+-		 * Any interrupt that takes a fault gets the fixup. This makes
+-		 * the below recursive fault logic only apply to a faults from
+-		 * task context.
+-		 */
+-		if (in_interrupt())
+-			return;
+-
+-		/*
+-		 * Per the above we're !in_interrupt(), aka. task context.
+-		 *
+-		 * In this case we need to make sure we're not recursively
+-		 * faulting through the emulate_vsyscall() logic.
+-		 */
+-		if (current->thread.sig_on_uaccess_err && signal) {
+-			sanitize_error_code(address, &error_code);
+-
+-			set_signal_archinfo(address, error_code);
+-
+-			if (si_code == SEGV_PKUERR) {
+-				force_sig_pkuerr((void __user *)address, pkey);
+-			} else {
+-				/* XXX: hwpoison faults will set the wrong code. */
+-				force_sig_fault(signal, si_code, (void __user *)address);
+-			}
+-		}
+-
+-		/*
+-		 * Barring that, we can do the fixup and be happy.
+-		 */
++	if (fixup_exception(regs, X86_TRAP_PF, error_code, address))
+ 		return;
+-	}
+ 
+ 	/*
+ 	 * AMD erratum #91 manifests as a spurious page fault on a PREFETCH
 
