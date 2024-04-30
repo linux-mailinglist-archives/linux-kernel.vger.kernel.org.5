@@ -1,57 +1,83 @@
-Return-Path: <linux-kernel+bounces-163908-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-163909-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 931E28B759A
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 14:20:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 941D88B759C
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 14:22:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C42401C21E12
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 12:20:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C588E1C222EC
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 12:22:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 43C2C13F449;
-	Tue, 30 Apr 2024 12:20:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1519513FD6F;
+	Tue, 30 Apr 2024 12:22:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UIjnRN8X"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JIHJIrZ5"
+Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 772AA13D2A6;
-	Tue, 30 Apr 2024 12:20:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DCC9F13D624;
+	Tue, 30 Apr 2024 12:22:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714479638; cv=none; b=eyBDS4HN0m/VISRz/g9jbRHdMHjSJGmrWY92b3k/2D8ohGN/i1+ms/1U4vkPGCSxKJCg7tUKSie3M4XwdRcPQpSUfoHRxFRozCIzguhuTlWSwBo3VXh4LledxcRsEK93NdjslZkniPzlBPpbRO7V9IjMjjvHy2xxaDJ+47gBuFU=
+	t=1714479723; cv=none; b=M/aiefhIx/S6WMP5JiFNt+bmyzFKPHkwp8uAQgOPKu0z3shVF4Pdc38EUwAYpdOoivz2zr7MQxcdQgwEeyMnsCrKiGZ7DZ2JrGWn/AM2ufsxX0B18LLa5KEhI9FhBaImRuO6zb+Jq2qNUXFRw9JmUt9vNA0Gl55gN/nBHSfBOEU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714479638; c=relaxed/simple;
-	bh=gkvysAfCfPH18qay0BvNJ5BN+KvihLOCCXlEpo/dq9A=;
+	s=arc-20240116; t=1714479723; c=relaxed/simple;
+	bh=U7E9s83TM3vOZgGKQGLCFOTAh5BRRpA5on5CT9L+mBA=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ki+MjwNe05WEiJZiWRbDEpytWF8lwiyGNVTPx9vHhrgboYEvOzdcVkMFfFvwwjJDYOXXJnwxNGJO1DEjjcxsWOOyw5C001/Fy8LJjJeycWcjtvOu1zogCD7zF2aP7phiO8XlsUJB6BjNciL10wUlVbhUtre9NIlOdZ2Jz1pI6TU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UIjnRN8X; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5AB43C2BBFC;
-	Tue, 30 Apr 2024 12:20:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714479638;
-	bh=gkvysAfCfPH18qay0BvNJ5BN+KvihLOCCXlEpo/dq9A=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=UIjnRN8X/xe5vUtE6o2nd9rsg8KZM0T7FDvMnFtAonzS0TY00JyKKnGNFshCo3C1w
-	 IagPyl82EAAOALf3ij4DeeZZ0HQRz72aU4Aa9QVniiLIpCrb53M+BqwtDm6rnN/65C
-	 bQdfGt9LoG++A3UPBurT5vANHdeFJoWmZqmFX8VfwVmnQKFUKV6cfyjXIXq7P9LpZX
-	 cTqb6IVIQFaZN/XW1eyJZtRBsrOQoogB0xTcMA7n3cCpekptuNt/4PuSsfCsiT6rN4
-	 3V6JLhQ8b+VAt+YYSgTnrZCdXrEV6aMGjVDjHGSwB4SctVOg5ghXFuK84QXsAtFtQD
-	 oM1LwzViIFj8w==
-Date: Tue, 30 Apr 2024 13:20:32 +0100
-From: Will Deacon <will@kernel.org>
-To: Dorine Tipo <dorine.a.tipo@gmail.com>
-Cc: Catalin Marinas <catalin.marinas@arm.com>,
-	Shuah Khan <shuah@kernel.org>, linux-arm-kernel@lists.infradead.org,
-	linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-kernel-mentees@lists.linuxfoundation.org,
-	Javier Carrasco <javier.carrasco.cruz@gmail.com>
-Subject: Re: [PATCH] selftests:arm64: Test PR_SVE_VL_INHERIT after a double
- fork
-Message-ID: <20240430122032.GA13690@willie-the-truck>
-References: <20240429044012.5018-1-dorine.a.tipo@gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=ksrONkv864l+vk2T66bpoftdG357DyX2Mk9gtBUY9xRgCuk8YErOQBUtZxlQg9BkkrrUQS5fgNRi3WqoW3Pua+YwMffK9bSgnU0RhjfjaiUKGaLB58UKoM/nUjglPHZhme1Rf/wZSr3WK+EtB4OR9mPp8ehf2GRA6rqzuge4hBo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JIHJIrZ5; arc=none smtp.client-ip=209.85.128.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-41b79451145so33172695e9.3;
+        Tue, 30 Apr 2024 05:22:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1714479720; x=1715084520; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=edsVaYpHVwrzrHgi4+EDjFOBJJwl4DyDVK7ckDTuNZk=;
+        b=JIHJIrZ5PiSoBAVMKwjIsGSMVfhBz2aZM5/K1pPT2aPezDxr+wa5r/H0Fg751e5te+
+         mHrOg9Lez+rlP0Q/0In6cngROfEZFdV90MuCXqTzwmsMuc4pa2sGSLOz67Z4laKfkzZL
+         5wwWAjit67I4jCvK2XEjqUVo/MT/tsnzb2J5C2zqRwsLB08WXQxpBSqlX2ObZsz44NDr
+         aJWd4L/N3XP6QrpLbEEvgYSt0WvyTXmvE/58kgvCBsH0nQ5WsJYxX2bMxsjrJDz0xF7D
+         DKS/8sAnxpiO6DpJj2j0F9Les2djmxfnAILG5Tl+7UvI6eXGFyQYtogAjTOjkQsgJIx6
+         KSOw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714479720; x=1715084520;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=edsVaYpHVwrzrHgi4+EDjFOBJJwl4DyDVK7ckDTuNZk=;
+        b=qXjdnX1FmELROdWQWQFll4c4mg7UMUQkwYpnZWKEYC3I39s0f7FoiEr7tXBMwkFmGU
+         01igmkBKvW1g0Ee+OQ/lq0hbia4rTkmpxbtXHTpUX5FdwV+j8tPTmCEhZSHptlBD5msW
+         hcxh14NTalwAqqXbJMzG3YxBQiqYWFtBD9cO9Br2IgZidh9z+TQCf5xkJZWsNpJFO3sD
+         b7TaH/w8uIloB1PdqMHc1xA4/yIbbWOqjkH+SS2Q2EKouAK/PjKMCm1jr3gcwKtBzCP+
+         lDRnUpzy0ZaAopnNIOgL20AhR70CtdxGl2w1qpDiP8OGNlOEr57nce1Jlad3RQP5WvQc
+         Kkog==
+X-Forwarded-Encrypted: i=1; AJvYcCWztP1owkb1Y5Y+SDkksjF5zr3fndEw/7LoZHO0BUkiVz7suKghjMHD4UdKYc/VAOa2OCEIuvBfOllsK2haHVqAUtsll13C+R4kepJIUjNHh+0AlLPxW34UI9OPM79GgmZxelxALeO0
+X-Gm-Message-State: AOJu0Yz1vFN/uug4fpdk4mwWiU5TpcnhWPkC+tbR3Ztdmw3B16DVmOtZ
+	rTtjczB88vfWslzrVr7yJ0aPLpQuussARmdYSEI/udG1jayDowOHQ/yl4w==
+X-Google-Smtp-Source: AGHT+IH/yppXXUbveh7nj+UBG+6YSOIKJEF1oiraKe7YSp92MrCb4r4z9hzES/XZ+7H/d1nwYA5daA==
+X-Received: by 2002:a05:600c:4f8e:b0:419:ec38:f34b with SMTP id n14-20020a05600c4f8e00b00419ec38f34bmr8023972wmq.20.1714479720114;
+        Tue, 30 Apr 2024 05:22:00 -0700 (PDT)
+Received: from debian ([93.184.186.109])
+        by smtp.gmail.com with ESMTPSA id bg5-20020a05600c3c8500b00419f419236fsm36442762wmb.41.2024.04.30.05.21.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 30 Apr 2024 05:21:59 -0700 (PDT)
+Date: Tue, 30 Apr 2024 14:21:57 +0200
+From: Dimitri Fedrau <dima.fedrau@gmail.com>
+To: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Cc: Jonathan Cameron <jic23@kernel.org>,
+	Lars-Peter Clausen <lars@metafoo.de>,
+	Andrew Hepp <andrew.hepp@ahepp.dev>,
+	Marcelo Schmitt <marcelo.schmitt1@gmail.com>,
+	linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/5] iio: temperature: mcp9600: set channel2 member
+Message-ID: <20240430122157.GA46332@debian>
+References: <20240430120535.46097-1-dima.fedrau@gmail.com>
+ <20240430120535.46097-2-dima.fedrau@gmail.com>
+ <20240430131102.00005e58@Huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -60,108 +86,52 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240429044012.5018-1-dorine.a.tipo@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20240430131102.00005e58@Huawei.com>
 
-On Mon, Apr 29, 2024 at 04:40:12AM +0000, Dorine Tipo wrote:
-> Add a new test, double_fork_test() to check the inheritance of the SVE
-> vector length after a double fork.
-> The `EXPECTED_TESTS` macro has been updated to account for this additional
-> test.
-> This patch addresses task 7 on the TODO list.
+Am Tue, Apr 30, 2024 at 01:11:02PM +0100 schrieb Jonathan Cameron:
+> On Tue, 30 Apr 2024 14:05:31 +0200
+> Dimitri Fedrau <dima.fedrau@gmail.com> wrote:
 > 
-> Signed-off-by: Dorine Tipo <dorine.a.tipo@gmail.com>
-> ---
->  tools/testing/selftests/arm64/fp/za-fork.c | 95 +++++++++++++++++++++-
->  1 file changed, 94 insertions(+), 1 deletion(-)
+> > Set channel2 member of channel 0 to IIO_MOD_TEMP_OBJECT and set modified
+> > member to 1.
+> This an ABI change, so needs a strong argument + must be a fix 
+> rather than an improvement.  So why does this need to change?
+>
+Hi Jonathan,
 
-I haven't tried compiling this, but some of the code looks a little off:
+I don't know if it is an valid argument but when using tool "iio_info"
+the temp_object wasn't displayed at all. After adding these two lines
+the temp_object is displayed. Don't know if it is a problem with the
+userspace tools.
 
-> diff --git a/tools/testing/selftests/arm64/fp/za-fork.c b/tools/testing/selftests/arm64/fp/za-fork.c
-> index 587b94648222..35229e570dcf 100644
-> --- a/tools/testing/selftests/arm64/fp/za-fork.c
-> +++ b/tools/testing/selftests/arm64/fp/za-fork.c
-> @@ -11,7 +11,7 @@
+iio_info version: 0.25 (git tag:b6028fde)
+Libiio version: 0.25 (git tag: b6028fd) backends: local xml ip usb serial
+
+Besides that it eases distinction between the two channels in the last
+patch, but I think this argument is not strong enough. :)
+
+Best regards,
+Dimitri
+
 > 
->  #include "kselftest.h"
+> > 
+> > Signed-off-by: Dimitri Fedrau <dima.fedrau@gmail.com>
+> > ---
+> >  drivers/iio/temperature/mcp9600.c | 2 ++
+> >  1 file changed, 2 insertions(+)
+> > 
+> > diff --git a/drivers/iio/temperature/mcp9600.c b/drivers/iio/temperature/mcp9600.c
+> > index 7a3eef5d5e75..e277edb4ae4b 100644
+> > --- a/drivers/iio/temperature/mcp9600.c
+> > +++ b/drivers/iio/temperature/mcp9600.c
+> > @@ -26,6 +26,8 @@ static const struct iio_chan_spec mcp9600_channels[] = {
+> >  	{
+> >  		.type = IIO_TEMP,
+> >  		.address = MCP9600_HOT_JUNCTION,
+> > +		.channel2 = IIO_MOD_TEMP_OBJECT,
+> > +		.modified = 1,
+> >  		.info_mask_separate =
+> >  			BIT(IIO_CHAN_INFO_RAW) | BIT(IIO_CHAN_INFO_SCALE),
+> >  	},
 > 
-> -#define EXPECTED_TESTS 1
-> +#define EXPECTED_TESTS 2
-> 
->  int fork_test(void);
->  int verify_fork(void);
-> @@ -69,6 +69,97 @@ int fork_test_c(void)
-> 	}
->  }
-> 
-> +int double_fork_test(void)
-> +{
-> +	pid_t newpid, grandchild_pid, waiting;
-> +	int ret, child_status, parent_result;
-> +
-> +	ret = prctl(PR_SVE_SET_VL, vl | PR_SVE_VL_INHERIT);
-> +	if (ret < 0)
-> +		ksft_exit_fail_msg("Failed to set SVE VL %d\n", vl);
-> +
-> +	newpid = fork();
-> +	if (newpid == 0) {
-> +		/* In child */
-> +		if (!verify_fork()) {
-> +			ksft_print_msg("ZA state invalid in child\n");
-> +			exit(0);
-> +		}
-> +
-> +		grandchild_pid = fork();
-> +		if (grandchild_pid == 0) {
-> +			/* in grandchild */
-> +			if (!verfy_fork()) {
-> +				ksft_print_msg("ZA state invalid in grandchild\n");
-> +				exit(0);
-> +			}
-> +
-> +			ret = prctl(PR_SVE_GET_VL);
-> +			if (ret & PR_SVE_VL_INHERIT) {
-> +				ksft_print_msg("prctl() reports _INHERIT\n");
-> +				return;
-
-Missing return value?
-
-> +			}
-> +			 ksft_print_msg("prctl() does not report _INHERIT\n");
-
-Indentation.
-
-> +
-> +		} else if (grandchild_pid < 0) {
-> +			ksft_print_msg("fork() failed in first child: %d\n", grandchild_pid);
-> +			return 0;
-> +		}
-> +
-> +		/*  Wait for the grandchild process to exit */
-> +		waiting = waitpid(grandchild_pid, &child_status, 0);
-> +		if (waiting < 0) {
-> +			if (errno == EINTR)
-> +				continue;
-
-'continue' outside of a loop?
-
-> +			ksft_print_msg("waitpid() failed: %d\n", errno);
-> +			return 0;
-> +		}
-> +		if (waiting != grandchild_pid) {
-> +			ksft_print_msg("waitpid() returned wrong PID\n");
-> +			return 0;
-> +		}
-> +
-> +		if (!WIFEXITED(child_status)) {
-> +			ksft_print_msg("grandchild did not exit\n");
-> +			return 0;
-> +		}
-> +
-> +		exit(1);
-> +		}
-
-Stray '}' ?
-
-Will
 
