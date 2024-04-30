@@ -1,74 +1,74 @@
-Return-Path: <linux-kernel+bounces-163509-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-163510-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F33178B6C4D
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 09:57:00 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7F2288B6C52
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 09:59:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AADF7283E51
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 07:56:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EC1601F21F16
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 07:59:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B89DD40BE5;
-	Tue, 30 Apr 2024 07:56:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C24E640BF5;
+	Tue, 30 Apr 2024 07:58:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="ibq7wA/x"
-Received: from mail-lf1-f49.google.com (mail-lf1-f49.google.com [209.85.167.49])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Uf3+Na7u"
+Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 631553FE51
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 07:56:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D2723FE37
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 07:58:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714463812; cv=none; b=ECHEzE7rq/Wct6FGs7SV+VhppksWcF9NhhA3sN+gjNae81V6bFJ6A1+D6Hcpd0vSHfoe7hxhsJdU52Nfa8yFvTNaXyu8n86PZqu9rhr1HLxMqweELzyl0t1YBiKa69oLkHGaOGhbC0OND40+CDNhAGdPcgRi18780yrDRd/oi50=
+	t=1714463939; cv=none; b=pUIje9hHghZ7yrvGaBDR8c9AouO+gRJcEMKcHM3WfhLfu+qZ5ViEM3nf2JhlCUUKVhVdmK/tLRXUd1R6kKSxXL871+szQr1qhPXZivTiLzS35r4PjGfRttAABF2qOGTTwYBp7QWmB5Ps5ATdy+aOOll++ukoB1ajogfWxB65L6Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714463812; c=relaxed/simple;
-	bh=PcaXhDvxLLTkfk407anVdJT3Akqt50K/hZKVXLLmpl0=;
+	s=arc-20240116; t=1714463939; c=relaxed/simple;
+	bh=hhKHIJC6+whpa+tQuWvAtS2rmhpOqavtc9tfLnFqM30=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=CXdYbsf622hZKPCwedsnigLQ7qOSjXzpmAIE2CkJ7zkhUiYSSeYgY0CNChFPqIjbfcDljVh3gQ9MDyi8genWNezBCBjVxVhQoviDK7EUWtJrbiR5sqsyu2z69oMpGAJ4jqU33LkjhvSYAlRSM8ADlhTM7It4yFF3DJBvi3HGr3o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=ibq7wA/x; arc=none smtp.client-ip=209.85.167.49
+	 In-Reply-To:Content-Type; b=lfZAb0vWAJfIA86HqvWb14f2DEQMt+LgEnDEO42mv9Q6/Q69JKVCQPdccja7JnPESTztZcXhJgCpIh1bKw5ms2lnnV8r6iPEF/qQn01RG5W2dsVRpJ6h8z1KQ9tAmQgXitqDQSnyXh71BjMTa4tuWcmDKY2YMmKJ82Fpcwz2CC0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Uf3+Na7u; arc=none smtp.client-ip=209.85.218.45
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f49.google.com with SMTP id 2adb3069b0e04-51abd9fcbf6so8909784e87.1
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 00:56:51 -0700 (PDT)
+Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-a519e1b0e2dso727645566b.2
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 00:58:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1714463810; x=1715068610; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1714463936; x=1715068736; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:content-language
          :from:references:cc:to:subject:user-agent:mime-version:date
          :message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=KArDFBHj2K7Rv6IgAh6+qe6uqz0BJOoQlTHtZUsTg04=;
-        b=ibq7wA/xvu5MjXvpLW+T3t1WhN2DQla6qpzC//frpVUam0FD5wzFd0/b6K/CLqXteq
-         0ZpjoQWODQkikSCdjVe1Oez5zqoMNd+CIcZGlJiqGoeH47/EOjG/QhKAaSr/Md99w1Bu
-         /obphp0hvCWlE/z1BPZ9imcJPARFFSejy4HRBQS8cYAlcSphbEJmuPKWuEjFzx74o12j
-         4x3CbE5HMqvYtJLZOz9Y3Os8r5stSS4B2jKswj7WrJ1+gzlTumRlu5HHOEJpdsOfgcqQ
-         tbZpJhveZWSJE1BKKTDMm/l+rJpKXxY2ZVLNv2W+M1XPPZ43BjPumc1lj8LpTF13C1cQ
-         B3MA==
+        bh=ndVw2ElrESy+7IyKTzMceMe7Vd6EB9jr3Li9gLFc5Jw=;
+        b=Uf3+Na7u/HWSK8UQb/IJ0dv9sgaG4tvT+LwRF8KsUSASW2QVrUWUANXkpoQNUxoK1Z
+         vn5X0A2tQzukTyLCl547JiDKsj9tVGgrbWxRAc5HqxtlVDt/0uEkvtMmNx863biU/Mme
+         2TFQ7sMqLy/qgrz8zqdHa/3Z7Mt/QQ0l9Y4JmOHvI7grg9FU/7/5bZvCvGPtFh8XK6lO
+         2BKSpgGiLZVSbD/7O2ZdwHBDmFiVvIARqcT8sLt1uScr7ikUnRmb7J/C1CIeyH3EqmNF
+         PcGhr8hq1eHYyQTYUn2TZpCJGUmdx6MUb5BVahWVlH7Pb9hR/k6rrRhVCPMrVZwLpNI+
+         2h2A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714463810; x=1715068610;
+        d=1e100.net; s=20230601; t=1714463936; x=1715068736;
         h=content-transfer-encoding:in-reply-to:autocrypt:content-language
          :from:references:cc:to:subject:user-agent:mime-version:date
          :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=KArDFBHj2K7Rv6IgAh6+qe6uqz0BJOoQlTHtZUsTg04=;
-        b=G3+kCzzlFhnSNMFxBAhNGZHE2FMV9uHHfw73xE9S1LARIRlPpyvkaK/7BBuxkJIXnu
-         8/G2hFIEtag0oYyyvSQy9xDgg+QbXeMPRObliyv2LKr9QrMDbyxdPcnljTw3f5kZ0rOc
-         72GkKXhQD+3YD9xYNZUlkK+slPlPrcYAZhlAKRa+hUDyXyGBu9ppTVSQOBO0qK7u5oUj
-         I99hon0s3d6gst4qGEFQLRhlcqvaFu8Zl/rAK0KLgPosTagq79yvUOkj44x8BuX94ZWx
-         b23oyh+l5VmqryFVjGRhqePB6EqOoDCKJcL1P4xiJDd81ehAHAlQLi1uyQhxKz1WHHnK
-         UQ2Q==
-X-Forwarded-Encrypted: i=1; AJvYcCWHxRnp4YUnYikHMyC4/5uFGDXUxopS5odWwk/cand0m8epDBY1rHPKrnaT7+6SpDQP8anxraVW9wMDG17t1IKOOcXJmPSuPCF7UIp0
-X-Gm-Message-State: AOJu0YzNzKBsM55rwWqSgrzLodvu3vgduGGYjDdpU7MUZ9DL1hSz9uPW
-	xC0Pc+S/cWJVj8AIJ6Giggbi7lbzXK8qMbK6V8YFatVMK7tNsKFL3sSnGcRQliI=
-X-Google-Smtp-Source: AGHT+IEz4WuZ81Sf4WVyPvh/ffK2uIzS248oDIkryL7qv6DNpzKCs7VRUafDp1D9psnvaxHRc1wX1w==
-X-Received: by 2002:a05:6512:4003:b0:51d:4383:9e59 with SMTP id br3-20020a056512400300b0051d43839e59mr7568415lfb.0.1714463809537;
-        Tue, 30 Apr 2024 00:56:49 -0700 (PDT)
+        bh=ndVw2ElrESy+7IyKTzMceMe7Vd6EB9jr3Li9gLFc5Jw=;
+        b=ijRQbeXakdTsUck80bNK5GoXAU8ld1Vkf6tNQswX0Fm58hhsBUiDB2bjmPYgIr4I7Q
+         XBcvk+vx2/aEv4JMMgNts1ruzIGw6pUdmJiq5ZMH7jYQFoqRLLuap4xaEwO456oNv6GB
+         GCUN0nmbtv8vuN7A6I7IgU4ka0BCgHVFyEKp5LRF9paMRxmk4y86QhBvfHen/xSQtcGr
+         /mZ9hzeiIMQAvddo7dZHNevczsugEZQbBNuSFSE6UdGL5FrQ2Nkq+J9zqIBk8JNkhRmw
+         GUY5m1DC57Yv8u8rBVkGSnDWf8H1RZCz5jAzuP7zNWFYgg0x3QUm5FTbzFOTSrcEDkha
+         L2Sw==
+X-Gm-Message-State: AOJu0YzQ3JX7zrmV65FWvBSR9q0jlywfb/6Skb77K54P0kIs+TqcFIUE
+	6funMmateNJHsKUHplk/46qGU9qpZBeWXmjHrJjyPvd31gk3oV6g3rnv49lQ+/RmLRk6MI5z518
+	qe4A=
+X-Google-Smtp-Source: AGHT+IFtNTiVmObbrSHEi2FaMWq9W2qGkl5bUdGZaWud+Aa3pxe75uBgXT4XNaUqOsCWv44IsriYcg==
+X-Received: by 2002:a17:906:354e:b0:a58:ee74:be38 with SMTP id s14-20020a170906354e00b00a58ee74be38mr5977807eja.17.1714463935701;
+        Tue, 30 Apr 2024 00:58:55 -0700 (PDT)
 Received: from [192.168.1.20] ([178.197.223.16])
-        by smtp.gmail.com with ESMTPSA id c19-20020a170906155300b00a526a99ccecsm14692918ejd.42.2024.04.30.00.56.48
+        by smtp.gmail.com with ESMTPSA id bt15-20020a170906b14f00b00a51eed4f0d7sm14835811ejb.130.2024.04.30.00.58.54
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 30 Apr 2024 00:56:49 -0700 (PDT)
-Message-ID: <95b95cde-c93c-404a-a520-4bf77c62a03a@linaro.org>
-Date: Tue, 30 Apr 2024 09:56:47 +0200
+        Tue, 30 Apr 2024 00:58:55 -0700 (PDT)
+Message-ID: <fb5a7670-0a52-4f15-8029-092ae0abe98c@linaro.org>
+Date: Tue, 30 Apr 2024 09:58:53 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -76,21 +76,24 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [EXTERNAL] Re: [PATCH 2/5] spi: cadence: Add Marvell IP
- modification changes
-To: Witold Sadowski <wsadowski@marvell.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+Subject: Re: [EXTERNAL] Re: [PATCH v3 2/5] spi: cadence: Add MRVL overlay
+ bindings documentation for Cadence XSPI
+To: Witold Sadowski <wsadowski@marvell.com>, Conor Dooley <conor@kernel.org>
+Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
  "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
-Cc: "broonie@kernel.org" <broonie@kernel.org>,
- "robh@kernel.org" <robh@kernel.org>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ "broonie@kernel.org" <broonie@kernel.org>, "robh@kernel.org"
+ <robh@kernel.org>,
  "krzysztof.kozlowski+dt@linaro.org" <krzysztof.kozlowski+dt@linaro.org>,
  "conor+dt@kernel.org" <conor+dt@kernel.org>,
  "pthombar@cadence.com" <pthombar@cadence.com>
 References: <20240329194849.25554-1-wsadowski@marvell.com>
- <20240329194849.25554-3-wsadowski@marvell.com>
- <7bd584b0-46e1-4dcb-a402-80784f7d11b7@linaro.org>
- <CO6PR18MB40984F6DAC8B8B2FA9C68477B01B2@CO6PR18MB4098.namprd18.prod.outlook.com>
+ <20240418011353.1764672-1-wsadowski@marvell.com>
+ <20240418011353.1764672-3-wsadowski@marvell.com>
+ <20240418-sacrament-cornea-fd6fd569827e@spud>
+ <CO6PR18MB4098C815325699975B1BD794B01B2@CO6PR18MB4098.namprd18.prod.outlook.com>
+ <20240429-quickstep-hypnotic-5b8d1fbeb920@spud>
+ <CO6PR18MB40985FCD4A28467DA36E07C0B01B2@CO6PR18MB4098.namprd18.prod.outlook.com>
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Content-Language: en-US
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
@@ -137,56 +140,31 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <CO6PR18MB40984F6DAC8B8B2FA9C68477B01B2@CO6PR18MB4098.namprd18.prod.outlook.com>
+In-Reply-To: <CO6PR18MB40985FCD4A28467DA36E07C0B01B2@CO6PR18MB4098.namprd18.prod.outlook.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On 29/04/2024 16:55, Witold Sadowski wrote:
->>
->>> +
->>> +static bool cdns_xspi_get_hw_overlay(struct platform_device *pdev) {
->>> +	int err;
->>> +
->>> +	err = device_property_match_string(&pdev->dev,
->>> +					   "compatible", "mrvl,xspi-nor");
->>
->> No, do not add matching in some random parts of the code, but use driver
->> match/data from ID table.
-> 
-> Ok. As I have written in different mail, a little bit of manual matching
-> Will be necessary to handle both ACPI and device-tree case.
-
-ACPI also handle variants with match data.
-
+On 30/04/2024 00:59, Witold Sadowski wrote:
 > 
 >>
->> ....
+>> Confusing wording aside, using the same generic compatible for different
+>> SoCs is what I trying to avoid. I don't mind there being a fallback
+>> compatible that's generic, but I want to see specific compatibles here for
+>> the individual SoCs.
 >>
->>>
->>> +	cdns_xspi_print_phy_config(cdns_xspi);
->>>  	ret = cdns_xspi_controller_init(cdns_xspi);
->>>  	if (ret) {
->>>  		dev_err(dev, "Failed to initialize controller\n"); @@ -613,6
->> +911,9
->>> @@ static const struct of_device_id cdns_xspi_of_match[] = {
->>>  	{
->>>  		.compatible = "cdns,xspi-nor",
->>>  	},
->>> +	{
->>> +		.compatible = "mrvl,xspi-nor",
->>
->> This falsely suggest they are compatible :/
+>> If you did actually mean that only the packaging is different between the
+>> devices, then I don't think you need specific compatibles for each
+>> different package, but you should have one for the SoC itself IMO.
 > 
-> I'm not sure if I understand what do you mean.
-> cdns, xspi will be compatible with overlay, as it won't touch any
-> additional HW. It possibly fail in second direction, as overlay
-> handling code will not see expected values.
+> We can have SoC A, B with common xSPI block, and both of them can share
+> Same dtb node with compatible property "marvell,cn10k,xspi-nor" for
+> example. I don't think it will be beneficial to have different compatible
+> name for each different SoC, for example "marvell,t98,xspi-nor", if all
+> other parts will be the same. Or am I not correct?
 
-That's clear rule for almost every driver: if you do not have any match
-data, it suggests entry is redundant, because devices are compatible.
-There is no different treatment for SPI. As seen in other pieces of this
-code, devices are not compatible, so it points to missing match data to
-handle variants.
+Please see writing bindings (or any presentation for DTS and bindings):
+you are expected to have SoC specific compatibles for every block in the
+SoC. There are many examples in recent bindings, so take a look there.
 
 Best regards,
 Krzysztof
