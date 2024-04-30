@@ -1,190 +1,205 @@
-Return-Path: <linux-kernel+bounces-163979-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-163981-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 161F18B76CA
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 15:18:26 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CB9558B76CE
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 15:20:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BE98B1F24B2C
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 13:18:25 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C6DA9B2367B
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 13:20:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3554E17166C;
-	Tue, 30 Apr 2024 13:18:19 +0000 (UTC)
-Received: from hi1smtp01.de.adit-jv.com (smtp1.de.adit-jv.com [93.241.18.167])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8886A171E70;
+	Tue, 30 Apr 2024 13:19:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="XqKNPmxV";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="+cGZ9RCy";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="XqKNPmxV";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="+cGZ9RCy"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3A6B17107C
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 13:18:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=93.241.18.167
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4FDFC171E40
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 13:19:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714483098; cv=none; b=iYH+SlCWhCwdQ6+azfh35nMLwhjII2y+9ukOcYo/VjdvqCngiyjhcYnGr/SyfE366BAn+hHffn6lo9C5lvS6uxXoaEF5L9RxFXQNtjTcc7qa8M290iJGO3kXjpXRI85noE/azKzXKdl7odQdcOWxwX3CUG5t4olE5tRov0PbtuY=
+	t=1714483178; cv=none; b=S3i11OwJ8aUwulVlZmnzUi7OZr+6bm7AyiGcDK0nJ+GgRfsoy1vmamTe2Lhgg0/8F2N3LDNl5EwATIh2MZCCyrnEw/Y92d2hd8rIsfAYfnpkzpj2Dz3xzPQbyktOSzRUXafYZgtkHYE5YVXq75WFOlmvU18ttTNEx8nuXujJtiw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714483098; c=relaxed/simple;
-	bh=87xMadzi3+AHnIOAzl3v2td19EDukezvR3UMXomLmaI=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=V5Iu5RksfBsRIW0jXGYdpg237VE7TiCn4T+C54jKMGTGN6sOP/KJQWUIDJ3A7EbuDWk9IqX/5Qc9U6Ph7QYNp4NHCYhDHtAP64WZdFVuzSi7K+UkGgu0RzcAoCTdjVDCopb/qC1gSAeiu4LHsoo94i2hDLhFkxeXm+/ECpdtPrU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=de.adit-jv.com; spf=pass smtp.mailfrom=de.adit-jv.com; arc=none smtp.client-ip=93.241.18.167
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=de.adit-jv.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=de.adit-jv.com
-Received: from hi2exch02.adit-jv.com (hi2exch02.adit-jv.com [10.72.92.28])
-	by hi1smtp01.de.adit-jv.com (Postfix) with ESMTP id 39B16520150;
-	Tue, 30 Apr 2024 15:18:13 +0200 (CEST)
-Received: from mypc (10.72.94.1) by hi2exch02.adit-jv.com (10.72.92.28) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.37; Tue, 30 Apr
- 2024 15:18:12 +0200
-Date: Tue, 30 Apr 2024 15:18:08 +0200
-From: Eugeniu Rosca <erosca@de.adit-jv.com>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-CC: Eugeniu Rosca <erosca@de.adit-jv.com>, Dirk Behme
-	<dirk.behme@de.bosch.com>, <linux-kernel@vger.kernel.org>, Rafael J Wysocki
-	<rafael@kernel.org>, <syzbot+ffa8143439596313a85a@syzkaller.appspotmail.com>,
-	Eugeniu Rosca <eugeniu.rosca@bosch.com>, Eugeniu Rosca
-	<roscaeugeniu@gmail.com>
-Subject: Re: [PATCH] drivers: core: Make dev->driver usage safe in
- dev_uevent()
-Message-ID: <20240430131808.GA5272@mypc>
-References: <20240430045531.4062232-1-dirk.behme@de.bosch.com>
- <2024043030-remnant-plenty-1eeb@gregkh>
- <20240430081754.GA1927@mypc>
- <2024043038-haunt-fastball-6db3@gregkh>
+	s=arc-20240116; t=1714483178; c=relaxed/simple;
+	bh=fqXn07NJ7GE3yV1s+ytTihFNdpEBLH0EaqCNH1hPBtY=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=W4p0fApxORDbX/cWpYpZj0KXROZhnsJ0wWsRSVvOA2hhOMrRG1ZCMdBI13BC5xak1MFKfMqTsQlmGikAwfKObrsCorfvWp49a7vFvgumhp0xeicBmynLPW//9/a6eOKwwLQLt3ozq8foQMhri6ZRTEDgjKuOr6hm9f2pGYmQ+BQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=XqKNPmxV; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=+cGZ9RCy; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=XqKNPmxV; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=+cGZ9RCy; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 622C91F7E3;
+	Tue, 30 Apr 2024 13:19:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1714483175; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=hP3+rSE6dC1kyvM4PrsVsdM9kaG51YId12Fi+b44hcM=;
+	b=XqKNPmxVbiW1ma3f5nSK4ojPJovfZdxxRlSBljL6bzxex075dvFUL81+hYyCV2/K5fX50p
+	bSvWcfzVFIWL+FKEljz5p9Tl4h6c2B+nsEh1tT7rUXJoZDOhmllHDm3u8ZWtdq1F+fSvuk
+	Fnp9nyoAofBsaEOTR4X+P0N1BXqAQgc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1714483175;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=hP3+rSE6dC1kyvM4PrsVsdM9kaG51YId12Fi+b44hcM=;
+	b=+cGZ9RCyuylUPb1e/HJB/Z2fU/Ssz7jqsHk54J1+9nZr8CC0WoAvquxQe90Gv/d/HFtqld
+	BfG9U2yIejIiGgAg==
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=XqKNPmxV;
+	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=+cGZ9RCy
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1714483175; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=hP3+rSE6dC1kyvM4PrsVsdM9kaG51YId12Fi+b44hcM=;
+	b=XqKNPmxVbiW1ma3f5nSK4ojPJovfZdxxRlSBljL6bzxex075dvFUL81+hYyCV2/K5fX50p
+	bSvWcfzVFIWL+FKEljz5p9Tl4h6c2B+nsEh1tT7rUXJoZDOhmllHDm3u8ZWtdq1F+fSvuk
+	Fnp9nyoAofBsaEOTR4X+P0N1BXqAQgc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1714483175;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=hP3+rSE6dC1kyvM4PrsVsdM9kaG51YId12Fi+b44hcM=;
+	b=+cGZ9RCyuylUPb1e/HJB/Z2fU/Ssz7jqsHk54J1+9nZr8CC0WoAvquxQe90Gv/d/HFtqld
+	BfG9U2yIejIiGgAg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 4F747133A7;
+	Tue, 30 Apr 2024 13:19:35 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id gyT2EefvMGZgMAAAD6G6ig
+	(envelope-from <dwagner@suse.de>); Tue, 30 Apr 2024 13:19:35 +0000
+From: Daniel Wagner <dwagner@suse.de>
+To: Christoph Hellwig <hch@lst.de>
+Cc: Keith Busch <kbusch@kernel.org>,
+	Sagi Grimberg <sagi@grimberg.me>,
+	James Smart <james.smart@broadcom.com>,
+	Hannes Reinecke <hare@suse.de>,
+	linux-nvme@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	Daniel Wagner <dwagner@suse.de>
+Subject: [PATCH v7 0/5] nvme-fabrics: short-circuit connect retries
+Date: Tue, 30 Apr 2024 15:19:23 +0200
+Message-ID: <20240430131928.29766-1-dwagner@suse.de>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <2024043038-haunt-fastball-6db3@gregkh>
-X-ClientProxiedBy: hi2exch02.adit-jv.com (10.72.92.28) To
- hi2exch02.adit-jv.com (10.72.92.28)
+Content-Transfer-Encoding: 8bit
+X-Spam-Flag: NO
+X-Spam-Score: -3.01
+X-Rspamd-Action: no action
+X-Rspamd-Queue-Id: 622C91F7E3
+X-Spam-Level: 
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-3.01 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	MID_CONTAINS_FROM(1.00)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	R_MISSING_CHARSET(0.50)[];
+	R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	ARC_NA(0.00)[];
+	TO_DN_SOME(0.00)[];
+	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	RCVD_TLS_ALL(0.00)[];
+	DKIM_TRACE(0.00)[suse.de:+];
+	RCVD_COUNT_TWO(0.00)[2];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	DNSWL_BLOCKED(0.00)[2a07:de40:b281:106:10:150:64:167:received,2a07:de40:b281:104:10:150:64:97:from];
+	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	RCPT_COUNT_SEVEN(0.00)[8];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.de:dkim]
 
-Hello Greg,
+I've splitted the last patch into the hopefully non controversial part 'do not
+retry when DNR is set' and the 'don't retry auth failures'. I hope we can get at
+least the first few patches in and have a lively discussion on the final patch
+at LSF.
 
-On Tue, Apr 30, 2024 at 10:27:19AM +0200, Greg Kroah-Hartman wrote:
-> On Tue, Apr 30, 2024 at 10:17:54AM +0200, Eugeniu Rosca wrote:
-> > Hi Greg,
-> > 
-> > On Tue, Apr 30, 2024 at 09:20:10AM +0200, Greg Kroah-Hartman wrote:
-> > > On Tue, Apr 30, 2024 at 06:55:31AM +0200, Dirk Behme wrote:
-> > > > Inspired by the function dev_driver_string() in the same file make sure
-> > > > in case of uninitialization dev->driver is used safely in dev_uevent(),
-> > > > as well.
-> > > 
-> > > I think you are racing and just getting "lucky" with your change here,
-> > > just like dev_driver_string() is doing there (that READ_ONCE() really
-> > > isn't doing much to protect you...)
-> > 
-> > I hope below details shed more details on the repro:
-> > https:// gist.github.com/erosca/1e8a87fbcc9e5ad0fecd32ebcb6266c3
-> 
-> Sometimes I only have access to email, nothing else, please include in
-> the email the full details.
+changes:
+v7:
+ - updated commit message patch #3
+ - split last patch so that only the DNR checks
+   are added first and then the auth reconnect failure test
 
-Will follow your preference in the future.
+v6:
+  - reorder series
+  - extended nvmf_should_reconnect
+  - added auth retry logic
+  - https://lore.kernel.org/linux-nvme/20240415124220.5433-1-dwagner@suse.de/
+  
+v5:
+  - nvme: do not mix kernel error code with nvme status
+  - nvmet: separate nvme status from dhchap status
+  - https://lore.kernel.org/linux-nvme/20240409093510.12321-1-dwagner@suse.de/
 
-> 
-> > To improve the occurrence rate:
-> >  - a dummy ds90ux9xx-dummy driver was used
-> >  - a dummy i2c node was added to DTS
-> >  - a dummy pr_alert() was added to dev_uevent() @ drivers/base/core.c
-> >  - UBSAN + KASAN enabled in .config
-> 
-> So this is entirely fake?  No real device or driver ever causes this
-> problem?
+v4:
+  - rebased
+  - added 'nvme: fixes for authentication errors' series
+  - https://lore.kernel.org/all/20240404154500.2101-1-dwagner@suse.de/
 
-Of course not. This issue is impacting the end user by resetting the HW
-target once in a couple of months. Our synthetic test-case tries to
-emulate the end user's scenario, for quicker reproduction & validation
-of potential/candidate solutions.
+v3:
+  - added my SOB tag
+  - fixed indention
+  - https://lore.kernel.org/linux-nvme/20240305080005.3638-1-dwagner@suse.de/
 
-Dirk's synthetic scenario leads to the same logs as shared by the user.
-Based on that evidence, we believe we found the root cause.
+v2:
+  - refresh/rebase on current head
+  - extended blktests (nvme/045) to cover this case
+    (see separate post)
+  - https://lore.kernel.org/linux-nvme/20240304161006.19328-1-dwagner@suse.de/
+  
+v1:
+  - initial version
+  - https://lore.kernel.org/linux-nvme/20210623143250.82445-1-hare@suse.de/
 
-> 
-> Why would you add a pr_alert() call?  What is that for?
-> 
-> totally confused.
+Daniel Wagner (1):
+  nvme: do not retry authentication failures
 
-pr_alert() acts as a simple delay, accelerating the reproduction.
+Hannes Reinecke (4):
+  nvmet: lock config semaphore when accessing DH-HMAC-CHAP key
+  nvmet: return DHCHAP status codes from nvmet_setup_auth()
+  nvme: return kernel error codes for admin queue connect
+  nvme-fabrics: short-circuit reconnect retries
 
-> 
-> 
-> > 
-> > > > This change is based on the observation of the following race condition:
-> > > > 
-> > > > Thread #1:
-> > > > ==========
-> > > > 
-> > > > really_probe() {
-> > > > ...
-> > > > probe_failed:
-> > > > ...
-> > > > device_unbind_cleanup(dev) {
-> > > >       ...
-> > > >       dev->driver = NULL;   // <= Failed probe sets dev->driver to NULL
-> > > >       ...
-> > > >       }
-> > > > ...
-> > > > }
-> > > > 
-> > > > Thread #2:
-> > > > ==========
-> > > > 
-> > > > dev_uevent() {
-> > > 
-> > > Wait, how can dev_uevent() be called if probe fails?  Who is calling
-> > > that?
-> > 
-> > dev_uevent() is called by reading /sys/bus/i2c/devices/<dev>/uevent.
-> > Not directly triggered by the probe failure.
-> > Please, kindly check the above gist/notes.
-> 
-> Again, put the info in the email so we can properly quote and read it,
-> and it's present for the history involved (web pages disappear, email is
-> for forever.)
+ drivers/nvme/host/auth.c               |  6 +--
+ drivers/nvme/host/core.c               |  6 +--
+ drivers/nvme/host/fabrics.c            | 51 ++++++++++++++++----------
+ drivers/nvme/host/fabrics.h            |  2 +-
+ drivers/nvme/host/fc.c                 |  4 +-
+ drivers/nvme/host/nvme.h               |  2 +-
+ drivers/nvme/host/rdma.c               | 19 ++++++----
+ drivers/nvme/host/tcp.c                | 22 +++++++----
+ drivers/nvme/target/auth.c             | 22 +++++------
+ drivers/nvme/target/configfs.c         | 22 ++++++++---
+ drivers/nvme/target/fabrics-cmd-auth.c | 49 +++++++++++++------------
+ drivers/nvme/target/fabrics-cmd.c      | 11 +++---
+ drivers/nvme/target/nvmet.h            |  8 ++--
+ 13 files changed, 129 insertions(+), 95 deletions(-)
 
-Agreed & will follow in the future (did not want to clutter the e-mail)
+-- 
+2.44.0
 
-> 
-> So you have userspace hammering on a uevent file?  Why is it being
-> called if userspace hasn't even been notified that the device has a
-> driver bound to it yet?  What causes this action?
-
-We know that uevent subsystem is involved, based on the post-mortem logs.
-Hence, reading sysfs was the easiest way to translate the real-life
-use-case to a synthetic one.
-
-> > 
-> > [--- cut ---]
-> > 
-> > > > -	if (dev->driver)
-> > > > -		add_uevent_var(env, "DRIVER=%s", dev->driver->name);
-> > > > +	/* dev->driver can change to NULL underneath us because of unbinding
-> > > > +	 * or failing probe(), so be careful about accessing it.
-> > > > +	 */
-> > > > +	drv = READ_ONCE(dev->driver);
-> > > > +	if (drv)
-> > > > +		add_uevent_var(env, "DRIVER=%s", drv->name);
-> > > 
-> > > Again, you are just reducing the window here.  Maybe a bit, but not all
-> > > that much overall as there is no real lock present.
-> > 
-> > The main objective of the patch is to "cache" dev->driver, such
-> > that it is not cleared asynchronously from a parallel thread.
-> > A refined/minimal locking alternative (if feasible) is welcome.
-> 
-> "cacheing" a stale pointer still results in a stale pointer :(
-
-Agreed. So, likely minimal/least-intrusive locking will be necessary.
-
-> 
-> thanks,
-> 
-> greg k-h
-
-BR, Eugeniu
 
