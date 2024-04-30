@@ -1,187 +1,113 @@
-Return-Path: <linux-kernel+bounces-164714-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-164715-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 80E198B8198
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 22:38:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 23E2B8B819A
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 22:40:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A07901C230BA
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 20:38:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 53AA31C22F76
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 20:40:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 216201A0AFA;
-	Tue, 30 Apr 2024 20:38:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 690811A0AF5;
+	Tue, 30 Apr 2024 20:40:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="fMjuTVxq"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=linuxtx.org header.i=@linuxtx.org header.b="D5iJH4+4"
+Received: from mail-ot1-f44.google.com (mail-ot1-f44.google.com [209.85.210.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94296179B2;
-	Tue, 30 Apr 2024 20:38:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0CD0C199E99
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 20:40:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714509510; cv=none; b=lLDd1hycp4gtCQFM1oQWjRqkPsKns/FW4bPypbzTPCBtYurBkGkcUh2lNbF3h1tBG211Ho4O3lWpKksX12idT3B6phfSPw8obSvd5+oQgqNqVZ4+jKLqcKG3lhwx8ddBSw5CpibO+GAxlnJhwiqxHDUvgxHgi2XaUQAE4aEFEww=
+	t=1714509607; cv=none; b=h3Ut/+jpPceOIVhrg6V0lSkVGeBM0HdWmoCfxpSRKr8c/08cV15h39x8qYmpYItMhtALvbKPxRDjGpqP4SZCbz5ToU32DO7F2hD2K5heIlSdQkzAcQa+3BLQR3Gd8e2P6SAdTEUJ5xQEi2KfdnAeW9FzOKuPmxlxOhMQJGuiOC4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714509510; c=relaxed/simple;
-	bh=Ni5zDZRBMky6sXd4A6eaIuT8CFCwjShfDzSbS3rGePE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=jYc4cEIAiP5OEZiTWI+BLOlIPaRrHoS8UfMfizTcOzUvUDT1l+XzqxHsc/pGB7arKROE0TgPZdM+/ZRKs2M2ijQnqmIkrwrcZt8OuPvB8MWgLFwT5v9q05CdC6mY7uVkHFjlK4V4vkbt761cu6TysSAvjOlKiZrZ6BjWqrRogxw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=fMjuTVxq; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 43UKMKjJ017327;
-	Tue, 30 Apr 2024 20:38:13 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=+F0XxWcRl3pzs5YJTlWUL7aO6XfqDBPOHAdM2dx9HOE=; b=fM
-	juTVxqNEs5pkud81T74MoGcLdrd7I/9iwXMkkyO4MAbqbnhPNtqC9NzPQxsYnR05
-	ABgFiZXmRzGXyn5dTxY9ZJduVf8hBGkLDAoxgUDCC4rI48F2+f6wddC9d1Ybz2gb
-	c/FW0ZJtYgUFtDgUGLUdupMGwgsTz8LWfiS4vLup9eYpAz8hAjV5GlNwjp3OUfi3
-	IZmuZb8J1b2AgV/Gtq6HqHHvs4oQUU7PpwZbLikPXuSbDm35sP5Za3ndh5DcAxBv
-	/yRv6F5sor3iC1BSkHK1zutF8bNR9kbAm+RQFEqKxWttxDfN151bAigZGI78/Vle
-	EaLn9OzfCYBJJzNcWDYA==
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xtw1hhv6p-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 30 Apr 2024 20:38:13 +0000 (GMT)
-Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
-	by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 43UKcCLY022623
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 30 Apr 2024 20:38:12 GMT
-Received: from [10.81.25.230] (10.49.16.6) by nalasex01b.na.qualcomm.com
- (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Tue, 30 Apr
- 2024 13:38:12 -0700
-Message-ID: <53c0e508-60fe-ee5d-cb2b-a5392c330377@quicinc.com>
-Date: Tue, 30 Apr 2024 13:37:50 -0700
+	s=arc-20240116; t=1714509607; c=relaxed/simple;
+	bh=oQSngsPwHpqjPWpk2CQtdzD5TSEeud66qrlHa2cPFsI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=BQr/pWblMAIWuTK8k97E+JD267rE1MWhmYlHRkBVC1e0UzBEysW6gzQ55WgCraR5s+GkKj/2T2dFxGiJlMkXBYkGP5LO4NMQwVnJ+XecApQGzezHmmgiag0AyO6ScR3iUwBpzh2uErBs1Dm3bOPDqxxPymGVQxX4Jv9T0AWalrU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=fedoraproject.org; spf=pass smtp.mailfrom=linuxtx.org; dkim=pass (1024-bit key) header.d=linuxtx.org header.i=@linuxtx.org header.b=D5iJH4+4; arc=none smtp.client-ip=209.85.210.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=fedoraproject.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxtx.org
+Received: by mail-ot1-f44.google.com with SMTP id 46e09a7af769-6ee3231d95eso115457a34.0
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 13:40:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxtx.org; s=google; t=1714509604; x=1715114404; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=2YYgSWxhf4zOPIcEbuWf3i+tS5g0up/+LJ/wCKYsmNQ=;
+        b=D5iJH4+4eWojvAlJFfFNbOK0NrVhneQ8iK0IT+BHCN9g9vbAyvAOJr21EZvUSLXIm2
+         gE68/bZfE9OiHviN+W7NsfkMoVLJ3Yysz+wceU1SngsmPQGBXUaMoCrW9KDZO9AZWqZr
+         TbMcS+PAEZgViIp0CER1c4Y6sgERL62oFaZGE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714509604; x=1715114404;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=2YYgSWxhf4zOPIcEbuWf3i+tS5g0up/+LJ/wCKYsmNQ=;
+        b=M5rXTcXn0kOKi0IwSFGFtN9ZlbIwxWa63Ra1xR9rLUU6S03dWTUqlLXKWJq+dRKtQ7
+         zv0cjapA1vUASLNBnk7eM88sBZdQ+73gUItaTHdtkSlg5l7hujbvIEYHUUdkHpLBMVhM
+         p4iydcT2pH75MyxO8AZzeo1sGbijy8BY5Msig1BagYiVjJZgtsaGxx8V+OM7BfSnE4j2
+         2AYsG+ddc5roe9yhafVMobfy2/vRvl53dcTCz/PnRpHHdNV2gP7BZW6/jKhfe8v85MY1
+         IkTejYIfadWjtxO52nrbTLrewJBz7/dtXDFx5NBAtr6yVlqvow35mdkC23MJQpzzCBbR
+         rkCw==
+X-Forwarded-Encrypted: i=1; AJvYcCVJPqeZdWbA0aedA245jGm+4AJmOwrwN9+9ysmM18DjB8LyRQQxhxdJIQ7y16kPkNrADuoJxWBnqOKwt32f+hbF50wymgxyb1mqGSM7
+X-Gm-Message-State: AOJu0YxGcKpkzlAjCoY2havEygSNEjtMlEYLb9QcVNGVCUghF19eSGL2
+	l7pRdYrQpExdNOzVumvk0d3+PCNcrekPnuN8xKBuLTXx9lMn2Fhr5Eoj6GzpoA==
+X-Google-Smtp-Source: AGHT+IFRIwaOZIJKk9q6FINe4lpZDhEXBbf7mbgHPgC2qdcV1d/X97KO1ZiGdcpPPLnYfRdPuBcpvw==
+X-Received: by 2002:a9d:6d90:0:b0:6ee:3f5f:c4ef with SMTP id x16-20020a9d6d90000000b006ee3f5fc4efmr1871923otp.0.1714509603829;
+        Tue, 30 Apr 2024 13:40:03 -0700 (PDT)
+Received: from fedora64.linuxtx.org ([99.47.93.78])
+        by smtp.gmail.com with ESMTPSA id l4-20020a056830268400b006ee64b1c8dfsm395000otu.23.2024.04.30.13.40.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 30 Apr 2024 13:40:03 -0700 (PDT)
+Sender: Justin Forbes <jmforbes@linuxtx.org>
+Date: Tue, 30 Apr 2024 15:40:01 -0500
+From: Justin Forbes <jforbes@fedoraproject.org>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: stable@vger.kernel.org, patches@lists.linux.dev,
+	linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+	akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+	patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+	jonathanh@nvidia.com, f.fainelli@gmail.com,
+	sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
+	conor@kernel.org, allen.lkml@gmail.com, broonie@kernel.org
+Subject: Re: [PATCH 6.8 000/228] 6.8.9-rc1 review
+Message-ID: <ZjFXIftVw8F1VT6T@fedora64.linuxtx.org>
+References: <20240430103103.806426847@linuxfoundation.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v3 3/3] PCI: qcom: Add rx margining settings for 16GT/s
-To: Konrad Dybcio <konrad.dybcio@linaro.org>, <agross@kernel.org>,
-        <andersson@kernel.org>, <mani@kernel.org>
-CC: <quic_msarkar@quicinc.com>, <quic_kraravin@quicinc.com>,
-        Lorenzo Pieralisi
-	<lpieralisi@kernel.org>,
-        =?UTF-8?Q?Krzysztof_Wilczy=c5=84ski?=
-	<kw@linux.com>,
-        Rob Herring <robh@kernel.org>, Bjorn Helgaas
-	<bhelgaas@google.com>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        Gustavo Pimentel
-	<gustavo.pimentel@synopsys.com>,
-        Manivannan Sadhasivam
-	<manivannan.sadhasivam@linaro.org>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-        Conor Dooley
-	<conor.dooley@microchip.com>,
-        <linux-kernel@vger.kernel.org>, <linux-pci@vger.kernel.org>,
-        <linux-arm-msm@vger.kernel.org>
-References: <20240419001013.28788-1-quic_schintav@quicinc.com>
- <20240419001013.28788-4-quic_schintav@quicinc.com>
- <02ae9e6b-b652-433e-b36d-e6106d4fbcd1@linaro.org>
-Content-Language: en-US
-From: Shashank Babu Chinta Venkata <quic_schintav@quicinc.com>
-In-Reply-To: <02ae9e6b-b652-433e-b36d-e6106d4fbcd1@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: nalasex01a.na.qualcomm.com (10.47.209.196) To
- nalasex01b.na.qualcomm.com (10.47.209.197)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: zmq2KtCfN41vITuEkBNrx0fHL7WwCvqz
-X-Proofpoint-ORIG-GUID: zmq2KtCfN41vITuEkBNrx0fHL7WwCvqz
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
- definitions=2024-04-30_12,2024-04-30_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 phishscore=0
- mlxlogscore=999 clxscore=1011 bulkscore=0 impostorscore=0 malwarescore=0
- suspectscore=0 spamscore=0 adultscore=0 priorityscore=1501
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2404010003 definitions=main-2404300148
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240430103103.806426847@linuxfoundation.org>
 
+On Tue, Apr 30, 2024 at 12:36:18PM +0200, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 6.8.9 release.
+> There are 228 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Thu, 02 May 2024 10:30:27 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.8.9-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.8.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
 
+Tested rc1 against the Fedora build system (aarch64, ppc64le, s390x,
+x86_64), and boot tested x86_64. No regressions noted.
 
-On 4/22/24 15:58, Konrad Dybcio wrote:
-> 
-> 
-> On 4/19/24 02:09, Shashank Babu Chinta Venkata wrote:
->> Add rx lane margining settings for 16GT/s(GEN 4) data rate. These
->> settings improve link stability while operating at high date rates
->> and helps to improve signal quality.
->>
->> Signed-off-by: Shashank Babu Chinta Venkata <quic_schintav@quicinc.com>
->> ---
->>   drivers/pci/controller/dwc/pcie-designware.h  | 18 ++++++++++++++
->>   drivers/pci/controller/dwc/pcie-qcom-common.c | 24 +++++++++++++++++++
->>   drivers/pci/controller/dwc/pcie-qcom-common.h |  1 +
->>   drivers/pci/controller/dwc/pcie-qcom-ep.c     |  4 +++-
->>   drivers/pci/controller/dwc/pcie-qcom.c        |  4 +++-
->>   5 files changed, 49 insertions(+), 2 deletions(-)
->>
->> diff --git a/drivers/pci/controller/dwc/pcie-designware.h b/drivers/pci/controller/dwc/pcie-designware.h
->> index ad771bb52d29..e8c48855143f 100644
->> --- a/drivers/pci/controller/dwc/pcie-designware.h
->> +++ b/drivers/pci/controller/dwc/pcie-designware.h
->> @@ -203,6 +203,24 @@
->>     #define PCIE_PL_CHK_REG_ERR_ADDR            0xB28
->>   +/*
->> + * GEN4 lane margining register definitions
->> + */
->> +#define GEN4_LANE_MARGINING_1_OFF        0xb80
->> +#define MARGINING_MAX_VOLTAGE_OFFSET(n)        FIELD_PREP(GENMASK(29, 24), n)
->> +#define MARGINING_NUM_VOLTAGE_STEPS(n)        FIELD_PREP(GENMASK(22, 16), n)
->> +#define MARGINING_MAX_TIMING_OFFSET(n)        FIELD_PREP(GENMASK(13, 8), n)
->> +#define MARGINING_NUM_TIMING_STEPS(n)        FIELD_PREP(GENMASK(5, 0), n)
->> +
->> +#define GEN4_LANE_MARGINING_2_OFF        0xb84
->> +#define MARGINING_IND_ERROR_SAMPLER(n)        FIELD_PREP(BIT(28), n)
->> +#define MARGINING_SAMPLE_REPORTING_METHOD(n)    FIELD_PREP(BIT(27), n)
->> +#define MARGINING_IND_LEFT_RIGHT_TIMING(n)    FIELD_PREP(BIT(26), n)
->> +#define MARGINING_IND_UP_DOWN_VOLTAGE(n)    FIELD_PREP(BIT(25), n)
->> +#define MARGINING_VOLTAGE_SUPPORTED(n)        FIELD_PREP(BIT(24), n)
->> +#define MARGINING_MAXLANES(n)            FIELD_PREP(GENMASK(20, 16), n)
->> +#define MARGINING_SAMPLE_RATE_TIMING(n)        FIELD_PREP(GENMASK(13, 8), n)
->> +#define MARGINING_SAMPLE_RATE_VOLTAGE(n)    FIELD_PREP(GENMASK(5, 0), n)
-> 
-> That's a.. rather unusual.. use of FIELD_/GENMASK.. Usually, the fields are
-> defined with GENMASK and then referenced through FIELD_xyz(BITFIELD_NAME, val)
-> 
-> That said, I'm not entirely against this if Mani is ok with it
-will fall back to conventional approach in my next series to avoid confusion.
-> 
->>   /*
->>    * iATU Unroll-specific register definitions
->>    * From 4.80 core version the address translation will be made by unroll
->> diff --git a/drivers/pci/controller/dwc/pcie-qcom-common.c b/drivers/pci/controller/dwc/pcie-qcom-common.c
->> index a6f3eb4c3ee6..3279314ae78c 100644
->> --- a/drivers/pci/controller/dwc/pcie-qcom-common.c
->> +++ b/drivers/pci/controller/dwc/pcie-qcom-common.c
->> @@ -46,6 +46,30 @@ void qcom_pcie_common_set_16gt_eq_settings(struct dw_pcie *pci)
->>   }
->>   EXPORT_SYMBOL_GPL(qcom_pcie_common_set_16gt_eq_settings);
->>   +void qcom_pcie_common_set_16gt_rx_margining_settings(struct dw_pcie *pci)
->> +{
->> +    u32 reg;
->> +
->> +    reg = dw_pcie_readl_dbi(pci, GEN4_LANE_MARGINING_1_OFF);
->> +    reg = MARGINING_MAX_VOLTAGE_OFFSET(0x24) |
->> +        MARGINING_NUM_VOLTAGE_STEPS(0x78) |
->> +        MARGINING_MAX_TIMING_OFFSET(0x32) |
->> +        MARGINING_NUM_TIMING_STEPS(0x10);
->> +    dw_pcie_writel_dbi(pci, GEN4_LANE_MARGINING_1_OFF, reg);
-> 
-> Since this is DW-common, why is this inside the qcom driver?
-Though this register space is in dw-common specific, these settings are purely vendor specific . These settings are determined by systems team on vendor hardware, as these settings are used as margin to compensate signal variance due to various physical factors(like connection length, retimers etc).
-> 
-> Konrad
+Tested-by: Justin M. Forbes <jforbes@fedoraproject.org>
 
