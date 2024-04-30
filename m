@@ -1,79 +1,79 @@
-Return-Path: <linux-kernel+bounces-163584-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-163585-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C7CDB8B6D53
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 10:51:50 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B364F8B6D56
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 10:52:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 106DBB21A5B
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 08:51:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E52DB1C2275E
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 08:52:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CBFD813C8E9;
-	Tue, 30 Apr 2024 08:49:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 63B71199E8C;
+	Tue, 30 Apr 2024 08:49:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="gyYTli2u"
-Received: from mail-lj1-f180.google.com (mail-lj1-f180.google.com [209.85.208.180])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="ncvnNbKg"
+Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8FB4E1422C6
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 08:49:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A65E1836D1
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 08:49:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714466995; cv=none; b=UGVbWY5lWEBDTf+CmwrSALqcFh0sVJvnvZ6LZ7Sb+0fJ+/i0o/QIi0Jm98izT2ORB2YXObLx+aaP/oR2rXdvCB32GsN3S1OEeUSTC9NH347H3jDR2QJEDIKXM5nrh5hdM4J3yY1ksKTofNByeo7I+bGeZOSMor3kLRg5aVqxjYI=
+	t=1714466996; cv=none; b=trpzaci28DBtz+3S2PXRE57KlcmO4yg2SdQYV6Ig2mpgaDfvn4KnvuhkLnSHdvCJfCTfxHhb8dnYmbQ1xBEMNmnqDTcqaWPmITzGqND/RQ2+PN1vH9tbKis+7/LK2Ir9iexpeIuXp/GEYsgBfLEoZ3YZWZ3eqqPoWQ5N9d7tid4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714466995; c=relaxed/simple;
-	bh=7wjKpcWomeef2GpdyAHv4UimoWYBzexJGiAWn3WFacI=;
+	s=arc-20240116; t=1714466996; c=relaxed/simple;
+	bh=iXPUW+LMiLWKSkHuVzYEAwqx5NsEndDBUymwE5N4n08=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=jKuRjecIrfEAXSd0QBPNw7m3wKhxiPZgDC8mAv6hlNGYeCfWQUyHqnusaHXSrOHNkSCer6g27jeeuTq0H4xL86mP50kasVfiroE2c2CA9V7oR8MBgR/gmMxjTkc4QcQZVBpzu+8LXI6VYK4ITRWSZCDK0r92jYi6l9a5MLgedmE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=gyYTli2u; arc=none smtp.client-ip=209.85.208.180
+	 MIME-Version; b=NeQZ90G1A82qv8z7dGcoGwtBzOyvsXTKnsJyMyeOWCoTQLtmEJchkpzVQZOz57zAGABAwrprnDAdB3sIEp7JEUFP2Gvm8LpsRe/NIpVYDyIcOzx1YYlLqlpT6peCPy35wm/Qv1dMOhXCGGrG/rBonsFn+NDd0zxKlhl8YryIx54=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=ncvnNbKg; arc=none smtp.client-ip=209.85.128.43
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lj1-f180.google.com with SMTP id 38308e7fff4ca-2dd7e56009cso70361611fa.3
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 01:49:53 -0700 (PDT)
+Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-41a1d2a7b81so36537415e9.0
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 01:49:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1714466992; x=1715071792; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1714466993; x=1715071793; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=7ANSD/jTE3niYWWeKByNoivltWAzS/VXBEIFpOF+Ww0=;
-        b=gyYTli2ul6euNdGIkxsXsApsV369xwheH8cEIQ2GLpgrYSP2ApgcyjeViV9NWHOdJz
-         7/XfqzkH8d8NpG7wT+z2LcI+KOhVY0d9TJUzLaksIxY/Ol1XxdWR+wu+Hb1Yu4T5L9NI
-         VexPAdDzTUIDOvfCBc917qo3iVfmKmGqeuU2l2LCe/VwqKwQ7A7+Pfd2s+IEe2H6hE57
-         Y/A0UIJwPcoXs1v8rhYQOYRy9RvVIcf1/Sq8F0tqKS7vREzPpF3iKNouG1UiuWzii4kL
-         6zCJDKXcRaw6hjlrkscVa67rSD5LTBdLndltsC6RPiQEYWPh6+hejhfqBoPV81mjU/pF
-         lOYA==
+        bh=v7ToIquEsTKSJQB0TYH115XKJn8YP40pUtTUrKsmnKY=;
+        b=ncvnNbKgO/43LTHr2tYqGeZXS/6ynzW5XyjrSiNaDU+AOhZ50C+v9YR8ErtJuqyYto
+         FK6a8sc0VZeEJO9Tywer3wS8Iv37Zni+x2tFOIB8j5TkajaHqab+OfafnYE3gK1k5zG2
+         zSAK/PjsnirxJ9pjiInkQo6oyxH8R6jkj5J6kwDWOzJQVA880C5JW9JvDTmw6FCCr1wF
+         ny3WnEJJjPktWO7nJEua0CXRqWaiCM6Da03j+HXituROxcb317v0AlwM6ZQtZNUObqaC
+         Fhs0XQ1fmD8BJhuzmh3U1bIfRBV/IzgTvt6botqdfPLwqX8WwkNFopgPXzB5vuMKRg75
+         US4A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714466992; x=1715071792;
+        d=1e100.net; s=20230601; t=1714466993; x=1715071793;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=7ANSD/jTE3niYWWeKByNoivltWAzS/VXBEIFpOF+Ww0=;
-        b=cq0OBycyYRRhXq0mJoZxZNY681sDD62kl90HU8qWl925dULT78Kb6c2iXHRLpBNoxn
-         VxMS6PKGXIm89UkqsiX/fP0isx2LPyPfF5J0WLKHWNTlk4qPKbrm8cUepoZJvFYlddk/
-         6eyyj3H/s5BwZyoQE4aWWknHB0d2Sj8qLgECkFPfQASjD2uavsHTJymrBT9y59Ibbik9
-         WsmHWoRzjlIEvN9hP94Bqo2KdnT9eYDBjP+EJKPchinRh66nOpvz1+QQFYwl36hKfqlU
-         izwgqrsKpkQYWHNR6tX5pE3k65M0ZK3wmSqRskJsQx8Jz6N++Ds4GLet48MDjQRaIOjH
-         rrrQ==
-X-Gm-Message-State: AOJu0Yxs4nNUw05Ts7ArEwdJt4uIJ5ULJ6YhWXRXC32coBgLT/QSNAF1
-	l+koQB803wMwgWgnhZpDwg6kR2/VpoIrw2se+x70zLi+4eaO14Yy3aO/yuhHgmU=
-X-Google-Smtp-Source: AGHT+IFp6rrkNn02DXKwI2QRG8X9c9MLtl56/QYa1nN1F64idZp1YpyuAvKxElUzeYMGz1VOeKteDw==
-X-Received: by 2002:a2e:92cb:0:b0:2de:74b1:6007 with SMTP id k11-20020a2e92cb000000b002de74b16007mr8316680ljh.36.1714466991891;
-        Tue, 30 Apr 2024 01:49:51 -0700 (PDT)
+        bh=v7ToIquEsTKSJQB0TYH115XKJn8YP40pUtTUrKsmnKY=;
+        b=VVxU+j/SajPktBMtxQ3pAa1Rd1gcO6Y5Zra2s15zn2tGI/tza3urmnOj7vDMsThKCk
+         SrOfKbsE3a45nFzxJN9MG+1vL3V/kAoXpQ4ERZ7TnN88vROVwbYWb48JgkxCZR4K4BaN
+         SoOKmBHqGTPBBrQtrunf+uerkn1SrfhwDV06zcc9iXgV1OcQOQ3lqbHwoornWtF5o7mA
+         dHiqyxeZGX8MzNHvzS2LB5KT1wifggeNSGpSC2yvbc2cHDWKI+RXQWJjQXCQyVjJgxYR
+         jaadQAtpglufagBXjmZI/QPuFJBL/uw5o4CAKyeK6xwecDWPW1Lmi/H2jKssVDB9B0xk
+         uUgg==
+X-Gm-Message-State: AOJu0YyCBdgUDsWDTCNyg5EIq4FjzjNZzHFTeCRy+lw1doKa+c/nT8pq
+	NaguQLJ70xCx17d8X5o4t76ygmEf5h57wYiRbz5Y3Zar9dDoeUwFymqQveo0u2Y=
+X-Google-Smtp-Source: AGHT+IE/G9jHVpNKkX+xMjhnNJjtEs4wHMuVc9/z3VooWi1NXVi0YQzDd+4olv+39n4lPeEMeLnUwA==
+X-Received: by 2002:a05:600c:1554:b0:41b:8041:53c2 with SMTP id f20-20020a05600c155400b0041b804153c2mr2088941wmg.15.1714466993103;
+        Tue, 30 Apr 2024 01:49:53 -0700 (PDT)
 Received: from localhost.localdomain ([5.133.47.210])
-        by smtp.gmail.com with ESMTPSA id q6-20020a05600c46c600b0041892857924sm44490309wmo.36.2024.04.30.01.49.50
+        by smtp.gmail.com with ESMTPSA id q6-20020a05600c46c600b0041892857924sm44490309wmo.36.2024.04.30.01.49.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Apr 2024 01:49:50 -0700 (PDT)
+        Tue, 30 Apr 2024 01:49:52 -0700 (PDT)
 From: srinivas.kandagatla@linaro.org
 To: gregkh@linuxfoundation.org
 Cc: linux-kernel@vger.kernel.org,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Rob Herring <robh@kernel.org>,
+	Mukesh Ojha <quic_mojha@quicinc.com>,
+	Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
 	Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [PATCH 10/11] dt-bindings: nvmem: Add compatible for SC8280XP
-Date: Tue, 30 Apr 2024 09:49:20 +0100
-Message-Id: <20240430084921.33387-11-srinivas.kandagatla@linaro.org>
+Subject: [PATCH 11/11] nvmem: meson-mx-efuse: Remove nvmem_device from efuse struct
+Date: Tue, 30 Apr 2024 09:49:21 +0100
+Message-Id: <20240430084921.33387-12-srinivas.kandagatla@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20240430084921.33387-1-srinivas.kandagatla@linaro.org>
 References: <20240430084921.33387-1-srinivas.kandagatla@linaro.org>
@@ -83,33 +83,57 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=896; i=srinivas.kandagatla@linaro.org; h=from:subject; bh=jj6AJwAcUwEN2oFrKiINJaSkA5BYMGMlh/s/nseFbZU=; b=owEBbQGS/pANAwAKAXqh/VnHNFU3AcsmYgBmMLCNLo0XrhKFBHzKafk8GIzsaolYO2Qdy5zGB dUgbXsAH1GJATMEAAEKAB0WIQQi509axvzi9vce3Y16of1ZxzRVNwUCZjCwjQAKCRB6of1ZxzRV NzfvB/981bnLrl/Sp0m71z2mJ1A45BI9vE39BKGkane7zH/K0DdcAY3vwfVvKERbEAy9tCh0tXB jhrJfx/RLDKb8SAEl74WnjkEYBkNKcCBEyVns1DoxLTC4EyfXjRZE+XVnsC/5x6SXejmsMNsibu hra6T6HtYhXa3rD1dhjsFy8+gttOUa5cKOgyrVji4XzhJ1zbQNhoU6wFy4GbrRWhX7boidhipo4 CHWFBMlvH4YwDZ4HaF4wX35m2jGi6veTcnb+qvKNYMjOAx9Y5AGLbmPfgoxdUztPdiqGCWkC8OE +EaPCfuMmbZmKqSeEKAnIamTN5R2RbhN3yqtFxp7Vi+6bkfy
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1590; i=srinivas.kandagatla@linaro.org; h=from:subject; bh=0sR9ujGCEP+6Q0XKApMGsZsmdsHiiV/V+Z/2e6aEhpc=; b=owEBbQGS/pANAwAKAXqh/VnHNFU3AcsmYgBmMLCNKCMkbHUBRwf5ImR7XHR18A89cIeREtD37 dx3VQZJe0mJATMEAAEKAB0WIQQi509axvzi9vce3Y16of1ZxzRVNwUCZjCwjQAKCRB6of1ZxzRV NzNHB/kBEGsuxmofyFVCAEgiIBxYZmfkwh9G3Pt4H7y1Trn454v1JLoFqaCPFArsp5b4wRIDTqO Id2wcbQRfWYtnhc0DbfjiJFnUO7Ch3NddwKuMotGB4bDTxbcLVpVFKIDFM1uqfSM03WuPZ9UWqm 0qaMw50/3PTHXnnvsmCY/vqmxwphtEP9tzu8Q9cQ3FxLwaw3V8ywqBEBTSJYIKSZySxje5E/u+N 5bSipP8dnRzPt2/I9qG+0Aj3xV0qfdGxGQPYU/pi7EStcI4YPHjuhat6cIULGj30r2FK3rqM9q8 fsHCZ7vON+E1wa6rL2co5XaSEZZz+CZrCME2qwiaGgvli61h
 X-Developer-Key: i=srinivas.kandagatla@linaro.org; a=openpgp; fpr=ED6472765AB36EC43B3EF97AD77E3FC0562560D6
 Content-Transfer-Encoding: 8bit
 
-From: Konrad Dybcio <konrad.dybcio@linaro.org>
+From: Mukesh Ojha <quic_mojha@quicinc.com>
 
-Document the QFPROM block found on SC8280XP.
+nvmem_device is used at one place while registering nvmem
+device and it is not required to be present in efuse struct
+for just this purpose.
 
-Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
-Acked-by: Rob Herring <robh@kernel.org>
+Drop nvmem_device and manage with nvmem device stack variable.
+
+Signed-off-by: Mukesh Ojha <quic_mojha@quicinc.com>
+Reviewed-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- Documentation/devicetree/bindings/nvmem/qcom,qfprom.yaml | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/nvmem/meson-mx-efuse.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/nvmem/qcom,qfprom.yaml b/Documentation/devicetree/bindings/nvmem/qcom,qfprom.yaml
-index aed90aff3593..80845c722ae4 100644
---- a/Documentation/devicetree/bindings/nvmem/qcom,qfprom.yaml
-+++ b/Documentation/devicetree/bindings/nvmem/qcom,qfprom.yaml
-@@ -34,6 +34,7 @@ properties:
-           - qcom,qcs404-qfprom
-           - qcom,sc7180-qfprom
-           - qcom,sc7280-qfprom
-+          - qcom,sc8280xp-qfprom
-           - qcom,sdm630-qfprom
-           - qcom,sdm670-qfprom
-           - qcom,sdm845-qfprom
+diff --git a/drivers/nvmem/meson-mx-efuse.c b/drivers/nvmem/meson-mx-efuse.c
+index 3ff04d5ca8f8..8a16f5f02657 100644
+--- a/drivers/nvmem/meson-mx-efuse.c
++++ b/drivers/nvmem/meson-mx-efuse.c
+@@ -43,7 +43,6 @@ struct meson_mx_efuse_platform_data {
+ struct meson_mx_efuse {
+ 	void __iomem *base;
+ 	struct clk *core_clk;
+-	struct nvmem_device *nvmem;
+ 	struct nvmem_config config;
+ };
+ 
+@@ -193,6 +192,7 @@ static int meson_mx_efuse_probe(struct platform_device *pdev)
+ {
+ 	const struct meson_mx_efuse_platform_data *drvdata;
+ 	struct meson_mx_efuse *efuse;
++	struct nvmem_device *nvmem;
+ 
+ 	drvdata = of_device_get_match_data(&pdev->dev);
+ 	if (!drvdata)
+@@ -223,9 +223,9 @@ static int meson_mx_efuse_probe(struct platform_device *pdev)
+ 		return PTR_ERR(efuse->core_clk);
+ 	}
+ 
+-	efuse->nvmem = devm_nvmem_register(&pdev->dev, &efuse->config);
++	nvmem = devm_nvmem_register(&pdev->dev, &efuse->config);
+ 
+-	return PTR_ERR_OR_ZERO(efuse->nvmem);
++	return PTR_ERR_OR_ZERO(nvmem);
+ }
+ 
+ static struct platform_driver meson_mx_efuse_driver = {
 -- 
 2.25.1
 
