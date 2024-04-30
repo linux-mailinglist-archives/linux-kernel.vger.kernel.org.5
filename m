@@ -1,90 +1,49 @@
-Return-Path: <linux-kernel+bounces-163734-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-163735-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A53968B6EF3
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 12:00:10 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B2D768B6EF7
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 12:00:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 41DE01F24367
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 10:00:10 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D2F51B20E46
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 10:00:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19708129A6B;
-	Tue, 30 Apr 2024 09:59:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 338311292EB;
+	Tue, 30 Apr 2024 10:00:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b="H0/CIus4"
-Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com [209.85.208.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jUW17jeW"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ADACB1292E6
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 09:59:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62EE0127B52;
+	Tue, 30 Apr 2024 10:00:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714471189; cv=none; b=WG7fS8SjLRWUbxsH79D+Shu/ipgPZtzUlz4gfXysIaULu/6uUW5WSZqlvHWOK/Awbo0znONTxxSVVqlRe1zcbV8QWodG06kpT0LhU4RT2UFrja/WCybgxNzbJHn8MKt0M9IBF9AoUs3jRQzQTE5skQyvDlV5doYnYDyGPNxLRN8=
+	t=1714471229; cv=none; b=o4NFsB+vI0jxqigemrPyx/WGt5XKh383g/w/Gwk0IwTkAcwoQ+8nUFJ4MwmR0/k1qCJUSYp5+biqT9tUAEtdBNRUs0rlhHQC+1+hKLvFdzOfHKgHOxGZGzo8RSqdXVnn6ct/Lyk92dzceFz4+rvvKzJGpHzF9G7/6fUfk5JgCaI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714471189; c=relaxed/simple;
-	bh=ejhjMJ/H/la8vRxMpwy+QTS9RzsFqN/Ot+U9tVzFz+U=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=bq90rSEDH0SDuxy7ynCPgc6c7Soi8L28cTrLweol2hTMwVZnm6IVIIdsXKhMgHZd0JQSEvOWh7geyPUaN1wWd+BCngAByq4T3r/eI2fpegoEWziioWJn8gApEgDXDAELFr5lN/pvdeNYGdCN36sbhnPXu0o/HBeFbPdcotL8Bz0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev; spf=pass smtp.mailfrom=tuxon.dev; dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b=H0/CIus4; arc=none smtp.client-ip=209.85.208.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tuxon.dev
-Received: by mail-lj1-f169.google.com with SMTP id 38308e7fff4ca-2df848f9325so41863211fa.1
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 02:59:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=tuxon.dev; s=google; t=1714471186; x=1715075986; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=M/lqUZe7iWGhXp3SSU9OPzFuI5U4ZOXzFyEcRUft5AI=;
-        b=H0/CIus4SB+nYZdYRqEpteBz3e6PY5AcLfqX+LjHTNC4llyzU4gLtEloZy8sdUy/of
-         HdAKI/6BQqaZm8TQVJPmi5QXtHIkBQs3c6D8CdU3+X7bE2kqCO3VkG+suMiXB9EmXUV3
-         McBvpPJWiTcmPMtQIsf5vlhDH+Xi1+SHgD4JmsWkXTSPmvkH8F3D0UOL6kENv49ueWoh
-         jnwZV66GwsZ/XLMG4A5tGAOVPPugMq4XI+wpkSEYhb3yiAIfiRR17KdhnANFgtzRDxAX
-         omS39iZHQdIFDER/n54RuyplOmu9usq5Fc0yaDCvxTk/yjjrkdlAJ4OQ2e16dh8FBjdT
-         2Lfg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714471186; x=1715075986;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=M/lqUZe7iWGhXp3SSU9OPzFuI5U4ZOXzFyEcRUft5AI=;
-        b=Vt7jkvlsvhOhVeqo4rf5CmbeW/I8jQc+vqwFUfepGHkd5JTGTEINLowno2npCLJMl/
-         AHjvUiPrcGF1sPV05AfTGl1WwJecS9Vz5qvul4cll3skEXSIJJmRzzpdiiXJDJcAImoD
-         Wju76H1YVMvxBAlIlNQ4WjEIhRClXaLtN2knEZ+KKT71ejgob/wPOaWDtEs44ySQ0iDG
-         kmF8CjNhhvZdhJ4koyjwOO2lm9ZWCjdyQ6+R1WhHR4vruuKITdNZxsVjKImfSyqTenN3
-         evC+lCIPFn9qHxhypSq0Wawbh3v9YhaattKX8+OgjbF9Y5e3dILHVI+aPrbKfeWTa2xf
-         cB5w==
-X-Gm-Message-State: AOJu0YxCo9X0uQqVXyVsiVrYarX4C8I/jHMIl7rw1WA5GrrlZj9rc2sb
-	ZwyWQolg5nehyVbX0485dCVDZzgErsCt2gHHQNISQftL0sj+BTfIzuJ4DzZ1JUg=
-X-Google-Smtp-Source: AGHT+IGHzZ1dA5BCORxcKkmsZov6zngxAi94VjevhE7m4ZD65kYUwu+nIIqc4hxd5b22oTtA0hrTZg==
-X-Received: by 2002:a05:651c:4ca:b0:2d9:f7f8:3e87 with SMTP id e10-20020a05651c04ca00b002d9f7f83e87mr11114534lji.32.1714471183887;
-        Tue, 30 Apr 2024 02:59:43 -0700 (PDT)
-Received: from claudiu-X670E-Pro-RS.. ([82.78.167.53])
-        by smtp.gmail.com with ESMTPSA id l37-20020a05600c1d2500b004186f979543sm48725235wms.33.2024.04.30.02.59.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Apr 2024 02:59:43 -0700 (PDT)
-From: Claudiu <claudiu.beznea@tuxon.dev>
-X-Google-Original-From: Claudiu <claudiu.beznea.uj@bp.renesas.com>
-To: gregkh@linuxfoundation.org,
-	jirislaby@kernel.org,
-	tony@atomide.com,
-	andriy.shevchenko@linux.intel.com,
-	l.sanfilippo@kunbus.com,
-	tglx@linutronix.de,
-	geert+renesas@glider.be,
-	ulf.hansson@linaro.org,
-	peng.fan@nxp.com
-Cc: linux-kernel@vger.kernel.org,
-	linux-serial@vger.kernel.org,
-	linux-pm@vger.kernel.org,
-	claudiu.beznea@tuxon.dev,
-	Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>,
-	Geert Uytterhoeven <geert@linux-m68k.org>,
-	Tony Lindgren <tony.lindgren@linux.intel.com>
-Subject: [PATCH v3] serial: core: Call device_set_awake_path() for console port
-Date: Tue, 30 Apr 2024 12:59:30 +0300
-Message-Id: <20240430095930.2806067-1-claudiu.beznea.uj@bp.renesas.com>
-X-Mailer: git-send-email 2.39.2
+	s=arc-20240116; t=1714471229; c=relaxed/simple;
+	bh=MHyZeaS+KsqiVPyuRvBCY6fQF1j4giypol4OIFp2woU=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=iO5O35wWH2Hqk4bb/b1z6AkFtzqss+AnrcydCB95EZry7M5H2PmJ5UrlHtP3oa0QOUQcs96QJkhl2i4Q6NJ1bhtCEhrvd9Z5AhVYJ1xboIksGgRvXHljir3h5yikvprgFAaBzt6PSZLaeov6urlx8S6BJekSCNBiavqdcFeDbuk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jUW17jeW; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id DCCC7C2BBFC;
+	Tue, 30 Apr 2024 10:00:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714471228;
+	bh=MHyZeaS+KsqiVPyuRvBCY6fQF1j4giypol4OIFp2woU=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=jUW17jeW3GnlgGV/snuIvTuQPb1MDqNEQy9Ic+rwX905MzYk5ZOvQuzUBWfLzWdkH
+	 ndKs+91rKHk+opObKK2Q8uIDdOLeb4hDH0do0SOMxCHJmUMHD7N5iu493d0DiVm7bU
+	 QitGTzqG5u6gYOClgkhUO7ngUq/GbArRE7RIJkb01S9wUBrF+PN+4E3bFdGBiXRi3T
+	 LZ81btDHeNIZkdqDidAB5e3VY406WIreQb5hMQ6z1ib1JyBX/IzctUwHINrAP8hvDG
+	 KjbQCHNWb1a4EKADHcGAllTWPAl1PGKPZoAF8RlmeFJgunBXE7pADjisSxE0Qj1oi3
+	 AF2bgpYNS7dzw==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id CAFDEC43440;
+	Tue, 30 Apr 2024 10:00:28 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -92,69 +51,47 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH] sctp: prefer struct_size over open coded arithmetic
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <171447122882.13432.12922160974724151108.git-patchwork-notify@kernel.org>
+Date: Tue, 30 Apr 2024 10:00:28 +0000
+References: <PAXPR02MB724871DB78375AB06B5171C88B152@PAXPR02MB7248.eurprd02.prod.outlook.com>
+In-Reply-To: <PAXPR02MB724871DB78375AB06B5171C88B152@PAXPR02MB7248.eurprd02.prod.outlook.com>
+To: Erick Archer <erick.archer@outlook.com>
+Cc: marcelo.leitner@gmail.com, lucien.xin@gmail.com, davem@davemloft.net,
+ edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+ keescook@chromium.org, gustavoars@kernel.org, justinstitt@google.com,
+ linux-sctp@vger.kernel.org, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
 
-From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+Hello:
 
-In case the UART port is used as a console, no_console_suspend is
-available in bootargs and UART port is part of a software-controlled power
-domain we need to call device_set_awake_path(). This lets the power
-domain core code know that this domain should not be powered off
-during system suspend. Otherwise, the UART port power domain is turned off,
-nothing is printed while suspending and the suspend/resume process is
-blocked. This was detected on the Renesas RZ/G3S SoC while adding support
-for power domains.
+This patch was applied to netdev/net-next.git (main)
+by Paolo Abeni <pabeni@redhat.com>:
 
-Based on code investigation (on v6.9-rc5), this issue is present on other
-SoCs (e.g., Renesas R-Mobile A1 [1], IMX8QXP [2]) and different SoCs have
-particular implementation to handle it. Due to this the patch added the
-call of device_set_awake_path() in uart_suspend_port() instead of having
-it in the platform specific UART driver.
+On Sat, 27 Apr 2024 19:23:36 +0200 you wrote:
+> This is an effort to get rid of all multiplications from allocation
+> functions in order to prevent integer overflows [1][2].
+> 
+> As the "ids" variable is a pointer to "struct sctp_assoc_ids" and this
+> structure ends in a flexible array:
+> 
+> struct sctp_assoc_ids {
+> 	[...]
+> 	sctp_assoc_t	gaids_assoc_id[];
+> };
+> 
+> [...]
 
-[1] drivers/pmdomain/renesas/rmobile-sysc.c:116
-[2] drivers/pmdomain/imx/scu-pd.c:357
+Here is the summary with links:
+  - sctp: prefer struct_size over open coded arithmetic
+    https://git.kernel.org/netdev/net-next/c/e5c5f3596de2
 
-Suggested-by: Ulf Hansson <ulf.hansson@linaro.org>
-Suggested-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Reviewed-by: Ulf Hansson <ulf.hansson@linaro.org>
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Reviewed-by: Tony Lindgren <tony.lindgren@linux.intel.com>
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Tested-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
----
-
-Changes in v3:
-- remove https links from commit description
-- collected tags
-- removed RFT tag
-
-Changes in v2:
-- used device_set_awake_path() instead of device_set_wakeup_path()
-- moved the support in uart_suspend_port() to make it generic for
-  other drivers
-- fixed typos in commit description
-- updated the commit description to reflect the new changes and the fact
-  that support may be applied to other SoCs
-- added Suggested-by tag; this was initially proposed by Ulf to move it
-  in the serial driver then Geert propose to have it more generic in
-  uart_suspend_port()
-
- drivers/tty/serial/serial_core.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/drivers/tty/serial/serial_core.c b/drivers/tty/serial/serial_core.c
-index 8a76f378c445..84ae70d52b05 100644
---- a/drivers/tty/serial/serial_core.c
-+++ b/drivers/tty/serial/serial_core.c
-@@ -2408,6 +2408,7 @@ int uart_suspend_port(struct uart_driver *drv, struct uart_port *uport)
- 			uport->ops->stop_rx(uport);
- 			uart_port_unlock_irq(uport);
- 		}
-+		device_set_awake_path(uport->dev);
- 		goto unlock;
- 	}
- 
+You are awesome, thank you!
 -- 
-2.39.2
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
 
