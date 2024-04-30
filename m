@@ -1,61 +1,96 @@
-Return-Path: <linux-kernel+bounces-164765-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-164766-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id BEF268B8290
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 00:01:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 027298B8297
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 00:08:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 748E11F23C37
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 22:01:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id ACA5F1F22C11
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 22:08:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 359231BF6CB;
-	Tue, 30 Apr 2024 22:01:36 +0000 (UTC)
-Received: from pidgin.makrotopia.org (pidgin.makrotopia.org [185.142.180.65])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 368341BF6E3;
+	Tue, 30 Apr 2024 22:08:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="C4a23aUH"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50C2B74E11;
-	Tue, 30 Apr 2024 22:01:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.142.180.65
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DBC271BED90;
+	Tue, 30 Apr 2024 22:08:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.8
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714514495; cv=none; b=kEMWbxzlmEKkk5uP3jALJBZt+gQUgdEW6bNKIQwOgCQCQsLCucL88B+rCi40Doex+az8s+hLNFub5MvBw3Qr8g0swmNi+rkr0tcIw8oGD8zAF8AAv/t9I3SfiwrGc2M19MH9lxXWBVPm1HsZPu080ILUsj4hPtIHfptPsHE0uLA=
+	t=1714514886; cv=none; b=g0fHHYiUIOgdWKyaCT1qX7gP3Vk4ahk2nmx4CWWTHZV8c317GMDtxDAoT1cnXTh80HZZhcCgwiCGIBpslIc7clII85Ddq0nuuxSYIunLz4xWkQc+/5jHjqU+L//neTP3S4jtXgEoGGPXnenbTSzVb8soDEclx45h+bLmAkzDZGE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714514495; c=relaxed/simple;
-	bh=iEt4z79Rp/ekOOktnvu3zl7uib0Zfw+JTHZVZY8sIzc=;
-	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=nrLp/sX76ERJqUJ0MBaAsqMQVIQNijW8czU9VrLOqjhjATDJjYL9FNezFTPLCjPtzoIjGgwofBrcUPQHtMFTWzGuOnT9bYcavF0UiRRoZFQLp79LlFGX7mO3EQwEWkZnEBWI+Bsy189yb9EoAGeqcRS9DVhMESKpW2fb3bofxU8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=makrotopia.org; spf=pass smtp.mailfrom=makrotopia.org; arc=none smtp.client-ip=185.142.180.65
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=makrotopia.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=makrotopia.org
-Received: from local
-	by pidgin.makrotopia.org with esmtpsa (TLS1.3:TLS_AES_256_GCM_SHA384:256)
-	 (Exim 4.97.1)
-	(envelope-from <daniel@makrotopia.org>)
-	id 1s1vXQ-0000000019H-1CUZ;
-	Tue, 30 Apr 2024 22:01:24 +0000
-Date: Tue, 30 Apr 2024 23:01:17 +0100
-From: Daniel Golle <daniel@makrotopia.org>
-To: =?utf-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>,
-	Felix Fietkau <nbd@nbd.name>, Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzk+dt@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>, Simon Horman <horms@kernel.org>,
-	DENG Qingfang <dqfext@gmail.com>,
-	Sean Wang <sean.wang@mediatek.com>, Andrew Lunn <andrew@lunn.ch>,
-	Florian Fainelli <f.fainelli@gmail.com>,
-	Vladimir Oltean <olteanv@gmail.com>,
+	s=arc-20240116; t=1714514886; c=relaxed/simple;
+	bh=2EjHvnib8nIL73tYT8O0yQJd84dh54YMSzAvf3H8Fns=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Yhd3QpwDv9K/yXeA8/WqOI67OdOhLLvruP0iCmdqSzwn3FStzQnVq9dW+RovfYjvUgHD8TZI7QezrRMazT5tpdKinj7m28o+h/JJT/W8O+4uIGfKst4bg1PReWzoqJJ1GF4J5QUqYrpIF9iczOb7wSVXgBpz26FBUqpmQrZitO4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=C4a23aUH; arc=none smtp.client-ip=192.198.163.8
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1714514885; x=1746050885;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=2EjHvnib8nIL73tYT8O0yQJd84dh54YMSzAvf3H8Fns=;
+  b=C4a23aUH5iNrqdD9DQRovFy9lWEcxwxXZZK6zv2QlKzNp9ijTn/8l8yj
+   2AwJ5RgSRTv+MJsStg4uZI5MxVcTLciDGw9tfs546oaEA8XtW7ejIo2iT
+   P5breemTvfD8rOQdCbYmuEUTZhiU5KcOzBFosMqF2aVfOPx+FNHw/O8Fx
+   RyX3eKOjp/znYVBqoES1GatdHT1CCGqROd3uA6YTLboNhigq3331JGmgk
+   dKqvfbTg832cdPCotHXn9AKifEkkfkEqG7H+a4NMGFq8xcJoifbC0YCpp
+   YI8gYILQWE9q2kOVZz5DtlGfETv1OgrbeicPXvtLo9RyIvKrsNM5B/P3N
+   Q==;
+X-CSE-ConnectionGUID: s6F63s9VS6SwWByOkmRnMA==
+X-CSE-MsgGUID: rPRkletIQHmUDc2v5RT82A==
+X-IronPort-AV: E=McAfee;i="6600,9927,11060"; a="27766915"
+X-IronPort-AV: E=Sophos;i="6.07,243,1708416000"; 
+   d="scan'208";a="27766915"
+Received: from fmviesa010.fm.intel.com ([10.60.135.150])
+  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Apr 2024 15:08:04 -0700
+X-CSE-ConnectionGUID: bF8HwEflShu++COMqEawgA==
+X-CSE-MsgGUID: OuoGHfjjTI6TiDd1H+p1vg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,243,1708416000"; 
+   d="scan'208";a="26692707"
+Received: from lkp-server01.sh.intel.com (HELO e434dd42e5a1) ([10.239.97.150])
+  by fmviesa010.fm.intel.com with ESMTP; 30 Apr 2024 15:07:58 -0700
+Received: from kbuild by e434dd42e5a1 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1s1vdj-0008eG-1o;
+	Tue, 30 Apr 2024 22:07:55 +0000
+Date: Wed, 1 May 2024 06:07:38 +0800
+From: kernel test robot <lkp@intel.com>
+To: Herve Codina <herve.codina@bootlin.com>,
+	Thomas Gleixner <tglx@linutronix.de>, Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzk@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>,
 	"David S. Miller" <davem@davemloft.net>,
 	Eric Dumazet <edumazet@google.com>,
 	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Matthias Brugger <matthias.bgg@gmail.com>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-	Landen Chao <Landen.Chao@mediatek.com>, devicetree@vger.kernel.org,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-mediatek@lists.infradead.org
-Subject: [PATCH net v2] net: dsa: mt7530: fix impossible MDIO address and
- issue warning
-Message-ID: <11f5f127d0350e72569c36f9060b6e642dfaddbb.1714514208.git.daniel@makrotopia.org>
+	Lee Jones <lee@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+	Horatiu Vultur <horatiu.vultur@microchip.com>,
+	UNGLinuxDriver@microchip.com, Andrew Lunn <andrew@lunn.ch>,
+	Heiner Kallweit <hkallweit1@gmail.com>,
+	Russell King <linux@armlinux.org.uk>,
+	Saravana Kannan <saravanak@google.com>,
+	Bjorn Helgaas <helgaas@kernel.org>,
+	Philipp Zabel <p.zabel@pengutronix.de>,
+	Lars Povlsen <lars.povlsen@microchip.com>,
+	Steen Hegelund <Steen.Hegelund@microchip.com>,
+	Daniel Machon <daniel.machon@microchip.com>,
+	Alexandre Belloni <alexandre.belloni@bootlin.com>
+Cc: oe-kbuild-all@lists.linux.dev, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-pci@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	Allan Nielsen <allan.nielsen@microchip.com>,
+	Luca Ceresoli <luca.ceresoli@bootlin.com>
+Subject: Re: [PATCH 01/17] mfd: syscon: Add reference counting and device
+ managed support
+Message-ID: <202405010513.GHoo4Vwg-lkp@intel.com>
+References: <20240430083730.134918-2-herve.codina@bootlin.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -64,57 +99,53 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <20240430083730.134918-2-herve.codina@bootlin.com>
 
-The MDIO address of the MT7530 and MT7531 switch ICs can be configured
-using bootstrap pins. However, there are only 4 possible options for the
-switch itself: 7, 15, 23 and 31. As in MediaTek's SDK the address of the
-switch is wrongly stated in the device tree as 0 (while in reality it is
-31), warn the user about such broken device tree and make a good guess
-what was actually intended.
+Hi Herve,
 
-This is imporant also to not break compatibility with older device trees
-as with commit 868ff5f4944a ("net: dsa: mt7530-mdio: read PHY address of
-switch from device tree") the address in device tree will be taken into
-account.
+kernel test robot noticed the following build errors:
 
-Fixes: b8f126a8d543 ("net-next: dsa: add dsa support for Mediatek MT7530 switch")
-Signed-off-by: Daniel Golle <daniel@makrotopia.org>
----
-Changes since v1:
- - use FW_WARN as suggested.
- - fix build on net tree which doesn't have 'mdiodev' as member of the
-   priv struct. Imho including this patch as fix makes sense to warn
-   users about broken firmware, even if the change introducing the
-   actual breakage is only present in net-next for now.
+[auto build test ERROR on tip/irq/core]
+[also build test ERROR on lee-mfd/for-mfd-next pza/reset/next linus/master v6.9-rc6 next-20240430]
+[cannot apply to lee-mfd/for-mfd-fixes pza/imx-drm/next]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
- drivers/net/dsa/mt7530-mdio.c | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
+url:    https://github.com/intel-lab-lkp/linux/commits/Herve-Codina/mfd-syscon-Add-reference-counting-and-device-managed-support/20240430-164912
+base:   tip/irq/core
+patch link:    https://lore.kernel.org/r/20240430083730.134918-2-herve.codina%40bootlin.com
+patch subject: [PATCH 01/17] mfd: syscon: Add reference counting and device managed support
+config: x86_64-rhel-8.3 (https://download.01.org/0day-ci/archive/20240501/202405010513.GHoo4Vwg-lkp@intel.com/config)
+compiler: gcc-13 (Ubuntu 13.2.0-4ubuntu3) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240501/202405010513.GHoo4Vwg-lkp@intel.com/reproduce)
 
-diff --git a/drivers/net/dsa/mt7530-mdio.c b/drivers/net/dsa/mt7530-mdio.c
-index fa3ee85a99c1..3c21c8d074c7 100644
---- a/drivers/net/dsa/mt7530-mdio.c
-+++ b/drivers/net/dsa/mt7530-mdio.c
-@@ -193,6 +193,19 @@ mt7530_probe(struct mdio_device *mdiodev)
- 			return PTR_ERR(priv->io_pwr);
- 	}
- 
-+	/* Only MDIO bus address 7, 15, 23 and 31 are valid options */
-+	if (~(mdiodev->addr & 0x7) & 0x7) {
-+		/* If the address in DT must be wrong, make a good guess about
-+		 * the most likely intention, and issue a warning.
-+		 */
-+		int correct_addr = ((((mdiodev->addr - 7) & ~0x7) % 0x20) + 7) & 0x1f;
-+
-+		dev_warn(&mdiodev->dev, FW_WARN
-+			 "impossible switch MDIO address in device tree: %d, assuming %d\n",
-+			 mdiodev->addr, correct_addr);
-+		mdiodev->addr = correct_addr;
-+	}
-+
- 	regmap_config = devm_kzalloc(&mdiodev->dev, sizeof(*regmap_config),
- 				     GFP_KERNEL);
- 	if (!regmap_config)
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202405010513.GHoo4Vwg-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+   In file included from drivers/net/can/c_can/c_can_platform.c:36:
+>> include/linux/mfd/syscon.h:76:15: error: expected ';' before 'void'
+      76 | static intline void syscon_put_regmap(struct regmap *regmap)
+         |               ^~~~~
+         |               ;
+   include/linux/mfd/syscon.h:76:21: warning: no previous prototype for 'syscon_put_regmap' [-Wmissing-prototypes]
+      76 | static intline void syscon_put_regmap(struct regmap *regmap)
+         |                     ^~~~~~~~~~~~~~~~~
+
+
+vim +76 include/linux/mfd/syscon.h
+
+    75	
+  > 76	static intline void syscon_put_regmap(struct regmap *regmap)
+    77	{
+    78	}
+    79	
+
 -- 
-2.44.0
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
