@@ -1,86 +1,138 @@
-Return-Path: <linux-kernel+bounces-164735-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-164749-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 05E7D8B81DD
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 23:24:58 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id E2CF18B8205
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 23:41:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BECB82866A6
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 21:24:56 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0959FB21280
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 21:41:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 756261BED61;
-	Tue, 30 Apr 2024 21:24:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 168D41BED74;
+	Tue, 30 Apr 2024 21:41:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sUQwX16Y"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ZBBbcPhV"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0B051A38DC;
-	Tue, 30 Apr 2024 21:24:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B782B1E52C;
+	Tue, 30 Apr 2024 21:41:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714512289; cv=none; b=jcnT5u3luB/+sL0gaiqFIHyb1rgVmvH7yzqUXJS5pqQ8RD0wJugvDVeI3ejLO+6UfXCD1cYtJzOf7c2zoERWK9eK6ntkl6TVdc8epUHnGKsfBUn2quxDGflfz+9D3oVBVOv5rMVcX1M6WqUr84cXlsj6IWHFYpDotvlSNkDQZUU=
+	t=1714513279; cv=none; b=As7W+g85etL3pjbzVQuNV8xoAAa8BMTPsYClcKN1LrHdUM9Ft6zlCpMRant4g0Oa2i7dN6tSHpF7X27BzBvuh5dFKjoDd1qsiuEoxZK5Eq2FefBPiojAVUHPy7kZIrN5axEhKA+F4nXQ266U+paoldTLsol6nv0m/tspN1Br2wg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714512289; c=relaxed/simple;
-	bh=Nr5PmSGMQPefRC+4B+dUJLySenVFlvsYqWT3rnlD9i8=;
-	h=Message-ID:Content-Type:MIME-Version:In-Reply-To:References:
-	 Subject:From:Cc:To:Date; b=GIQENMwlqHh0VIhM3gqHZ1x8gQo0vqfFpzhRop4jQuJnKh4U4WBA2y6upvRqDZEDHU4npV6srdfvcTYb6LdVxAIrS49FWZ0EVFomNQipH6+x8LxF6pgkSPGs2x0NtolZKsQIA85g/ta63w6fUrLq/Eo8x3ncADNe1bObZSY9iDI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sUQwX16Y; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 39B2BC2BBFC;
-	Tue, 30 Apr 2024 21:24:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714512289;
-	bh=Nr5PmSGMQPefRC+4B+dUJLySenVFlvsYqWT3rnlD9i8=;
-	h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-	b=sUQwX16YkqFFu05qj/j/D+qicatYaVabFaKbUJbB6OnHMyvYeaq8GQNg350aICltQ
-	 MkKVg4GtiNV1ePckPJlfoXEJ8uSIJyOLTcs0xikecc6B995CDIIAjlCHzGz30hcTkc
-	 Y3n62y9kdbW88nISGPxlIHVAxXS5lmUfSCdG2+owj/RsVJ544kt+m5v0kNNTEJw7kJ
-	 gamW1sQfcndXfXpu09tmlZ9mAnSao+XoathuwvT/vD7Z8fWnyOdOWBAliAv9YrQ2lR
-	 0KvLNgKFuDKne1m+FgU4YPXxA7d2Q95pnmJaGsTP9wuJTCYkG3cI8Fm59ghXPF47st
-	 y56l/um3TUS5g==
-Message-ID: <1ce3c1873130ff696101f781b4df239b.sboyd@kernel.org>
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1714513279; c=relaxed/simple;
+	bh=9/DOjDzMqqIpe1Cr5IpxE30sH9jmN38JRgc2UZCcRY4=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=ZUvnTqOLqNuAGkfUW9QBYfGcG7z+nmvT66KAN4UdbHIE4Qz3WrpioDIPP0jKy/OyCydSiE8uD7+nI4IwP5lo8uveIqxdsymOCHI40RFm4XM/qxQcyONWFSsfSNERkiY5EbPUKOhpebPfPEzWvE1VTYSpCMDXgmQeRL6EMYV9YX4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ZBBbcPhV; arc=none smtp.client-ip=198.175.65.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1714513278; x=1746049278;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=9/DOjDzMqqIpe1Cr5IpxE30sH9jmN38JRgc2UZCcRY4=;
+  b=ZBBbcPhVltPj7begrFMCcJ4Urnu/JjGWAJKfCqmDDs1cxPEx4XcK+1wx
+   YHTn4FDmNgV4jxV/81KiYDD1uAsPAXEwhhK7DvpZ9vCHkaEB5lw+woEZg
+   1+PNp8OA0taz4o/RfAFfMkPDmeR3zSV33qK5t8eZXLBMcsEQoBcZf7g20
+   w+Uzu3LOMbgUnfuFNRJrXY4/0hIgF80wZ/8txfdwO0WcGmNZiO5xwNhRL
+   7ix0getK9FVGwx9BYlxkJpVrn4zb0kYrlR357RRAaD1tq8Ad4WFFwv2Fr
+   rhIAvBTnKcbPbbD/q+uGdtW7fLX40jQiOaIHcuON5EPH5p089l+sjDaW9
+   g==;
+X-CSE-ConnectionGUID: PW5ojW1QTvu6gmapnjZ93A==
+X-CSE-MsgGUID: au6V1T2pRSaXsqq2WXX8bw==
+X-IronPort-AV: E=McAfee;i="6600,9927,11060"; a="14023056"
+X-IronPort-AV: E=Sophos;i="6.07,243,1708416000"; 
+   d="scan'208";a="14023056"
+Received: from fmviesa006.fm.intel.com ([10.60.135.146])
+  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Apr 2024 14:41:17 -0700
+X-CSE-ConnectionGUID: jyIqOWrdSd6haZJlHP9tDQ==
+X-CSE-MsgGUID: 8vyoVP9ORxifald+d/axjQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,243,1708416000"; 
+   d="scan'208";a="26693363"
+Received: from chang-linux-3.sc.intel.com ([172.25.66.175])
+  by fmviesa006.fm.intel.com with ESMTP; 30 Apr 2024 14:41:16 -0700
+From: "Chang S. Bae" <chang.seok.bae@intel.com>
+To: linux-kernel@vger.kernel.org
+Cc: x86@kernel.org,
+	platform-driver-x86@vger.kernel.org,
+	tglx@linutronix.de,
+	mingo@redhat.com,
+	bp@alien8.de,
+	dave.hansen@linux.intel.com,
+	hdegoede@redhat.com,
+	ilpo.jarvinen@linux.intel.com,
+	tony.luck@intel.com,
+	ashok.raj@intel.com,
+	jithu.joseph@intel.com,
+	chang.seok.bae@intel.com
+Subject: [PATCH 0/2] x86/fpu: Extend kernel_fpu_begin_mask() for the In-Field Scan driver
+Date: Tue, 30 Apr 2024 14:25:06 -0700
+Message-Id: <20240430212508.105117-1-chang.seok.bae@intel.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20240430184656.357805-1-krzysztof.kozlowski@linaro.org>
-References: <20240430184656.357805-1-krzysztof.kozlowski@linaro.org>
-Subject: Re: [GIT PULL fixes PATCH] clk: samsung: Revert "clk: Use device_get_match_data()"
-From: Stephen Boyd <sboyd@kernel.org>
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, Sylwester Nawrocki <s.nawrocki@samsung.com>, Chanwoo Choi <cw00.choi@samsung.com>, Alim Akhtar <alim.akhtar@samsung.com>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, Michael Turquette <mturquette@baylibre.com>, linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org, linux-samsung-soc@vger.kernel.org
-Date: Tue, 30 Apr 2024 14:24:47 -0700
-User-Agent: alot/0.10
+Content-Transfer-Encoding: 8bit
 
-Quoting Krzysztof Kozlowski (2024-04-30 11:46:56)
-> From: Marek Szyprowski <m.szyprowski@samsung.com>
->=20
-> device_get_match_data() function should not be used on the device other
-> than the one matched to the given driver, because it always returns the
-> match_data of the matched driver. In case of exynos-clkout driver, the
-> original code matches the OF IDs on the PARENT device, so replacing it
-> with of_device_get_match_data() broke the driver.
->=20
-> This has been already pointed once in commit 2bc5febd05ab ("clk: samsung:
-> Revert "clk: samsung: exynos-clkout: Use of_device_get_match_data()"").
-> To avoid further confusion, add a comment about this special case, which
-> requires direct of_match_device() call to pass custom IDs array.
->=20
-> This partially reverts commit 409c39ec92a35e3708f5b5798c78eae78512cd71.
->=20
-> Cc: <stable@vger.kernel.org>
-> Fixes: 409c39ec92a3 ("clk: Use device_get_match_data()")
-> Signed-off-by: Marek Szyprowski <m.szyprowski@samsung.com>
-> Link: https://lore.kernel.org/r/20240425075628.838497-1-m.szyprowski@sams=
-ung.com
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> ---
+The recent update [1] in the SDM highlights the requirement of
+initializing the AMX state for executing the scan test:
+    "... maintaining AMX state in a non-initialized state ... will
+     prevent the execution of In-Field Scan tests."
+which is one of CPU state conditions required for the test's execution.
 
-Applied to clk-fixes
+In situations where AMX workloads are running, the switched-away active
+user AMX state remains due to the optimization to reduce the state
+switching cost. A user state reload is fully completed right before
+returning to userspace. Consequently, if the switched-in kernel task is
+executing the scan test, this non-initialized AMX state causes the test
+to be unable to start.
+
+Given the benefit of the scan test in detecting hardware faults, ensuring
+its seamless execution is not negligible. This necessitates a proper API
+for the driver code to initialize AMX states. Although fpu_idle_fpregs()
+may initialize the AMX state, its primary usage should be limited to
+sleep state handling, making it unsuitable for the scan test.
+
+The across-architecture FPU API, kernel_fpu_begin()/kernel_fpu_end(), is
+universally established for floating-point SIMD code in the kernel. On
+x86, kernel_fpu_begin_mask() is available, with kernel_fpu_begin()
+serving as a wrapper to it for initializing legacy states by default.
+
+The proposed solution extends kernel_fpu_begin_mask() to accept a new
+option for initializing the AMX state. Additionally, it introduces custom
+FPU handling wrappers for the In-Field Scan driver, which are variants of
+kernel_fpu_begin()/kernel_fpu_end(). This approach is considerably
+compliant with established semantics, following the EFI case with
+efi_fpu_begin/efi_fpu_end().
+
+Thanks,
+Chang
+
+[1] Intel Software Development Manual as of March 2024, Section 18.2
+    RECOMMENDATIONS FOR SYSTEM SOFTWARE of Vol. 1.
+    https://www.intel.com/content/www/us/en/developer/articles/technical/intel-sdm.html
+
+Chang S. Bae (2):
+  x86/fpu: Extend kernel_fpu_begin_mask() to initialize AMX state
+  platform/x86/intel/ifs: Initialize AMX state for the scan test
+
+ arch/x86/include/asm/fpu/api.h           |  1 +
+ arch/x86/kernel/fpu/core.c               |  3 +++
+ drivers/platform/x86/intel/ifs/ifs.h     | 14 ++++++++++++++
+ drivers/platform/x86/intel/ifs/runtest.c |  6 ++++++
+ 4 files changed, 24 insertions(+)
+
+
+base-commit: e67572cd2204894179d89bd7b984072f19313b03
+-- 
+2.34.1
+
 
