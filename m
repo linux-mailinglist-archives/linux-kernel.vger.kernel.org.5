@@ -1,188 +1,132 @@
-Return-Path: <linux-kernel+bounces-163321-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-163322-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 262A88B696F
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 06:26:35 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 15E4C8B6971
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 06:28:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D157E283CE8
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 04:26:33 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 76CE9B22A46
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 04:28:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 239EE14A9D;
-	Tue, 30 Apr 2024 04:26:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6FAA134BE;
+	Tue, 30 Apr 2024 04:28:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="JosyabYK"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="dClXbTql"
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2EBD12E47
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 04:26:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC86C11CBD;
+	Tue, 30 Apr 2024 04:28:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714451185; cv=none; b=NJ3d9gY7FBpcamOHihEGPQZNDd5aG1+WhGryjoybDwhbGfMjGlj2oqcdl8m+vXbqMZNrjI94ytQkWEOrt04LTcLC/Nx336/2kKRABY6v1i9sgA+kMwllrJFO2+9mMTwv81AxWQNxY6vIl8ZOEvDJdoJ3sUgLKCJPJMFyjjhM30o=
+	t=1714451305; cv=none; b=Svy38hjIY7jcuEJqKQH7oSs7gKRGHXQ33KCxxmXKu0sAgs9ZrAaBa1Q6LP1hWaMNgQkEJBhKMHs7HzC1Az9YxTrhABFB+lneD082rd7tieqrvaYngaAE09lrw3dG3ir94L4sjd08LeZGX478r7H1WLPMCij3Iobd6fPVAG3rHsU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714451185; c=relaxed/simple;
-	bh=7/LvDV66mDIzCX8Ki3ehENh2BWy+/8sMXmXZYQ9n3Gw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=otdMrf+o1aszHMBOSPB2uIaFWjoEmCIXmBcXBU3WYYt4Alm1vEyI1+V5/DEfOD0ySmgbwBBha8iscxgAIWV4M2rq1ED3jPAjiv3GGhbDLW9J3jeIiBoOfugBMm+cH+BktwWPEWmZnUoq/mg2JTswedPmOBPec47Aa2yqIS0B9Ao=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=JosyabYK; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1714451183;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=/j3/XOns0oFgwfO5bxhGBltITHmRiIbor4kORGQYrjA=;
-	b=JosyabYKWBB7JgkSX2dxfOPiRlu4cT/CIIwIhFb1RWyLRccf9DM1RFBRVlkgmQblQuE5Fa
-	CM919Py2nIDzKstn9H/E8Ga1EZLsuiNjtk5U2r7MmGdLgkp8sy4mTHLbeyKKgvTxbXS4T3
-	oWwSfuqS1mQgOptV6vfBoQ7LRUmvFJk=
-Received: from mail-pg1-f200.google.com (mail-pg1-f200.google.com
- [209.85.215.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-224-htm8gXbRP6qRgx9hAcnbAQ-1; Tue, 30 Apr 2024 00:26:19 -0400
-X-MC-Unique: htm8gXbRP6qRgx9hAcnbAQ-1
-Received: by mail-pg1-f200.google.com with SMTP id 41be03b00d2f7-604bad9b2e8so5691264a12.2
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 21:26:19 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714451178; x=1715055978;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=/j3/XOns0oFgwfO5bxhGBltITHmRiIbor4kORGQYrjA=;
-        b=sEI9D1x+6SBT5WNoq7vx/Kv32QTr/Vw3AEg4E0a1cmZLJ3hST8SYZDTJxjpduMJZBX
-         qUhHa83LTF+FX4EdKgaFjyCD4XRToM+DfwJ3t+zP9EnN2M3Xs+Vy/9g+nQYnejOc5/YL
-         EueSN+CQ8HDlKGhGPpcV3e+2X97DdvsGi+pGe7mEmFLpjOJZSPVSjYpaPTljgjoKh6fg
-         sqFBcE3SIB4eSjP01aZBEbZfFxnOETfKOl9ChM3bBtbNDB85ojlWyOTLwxg3aOJO+FAM
-         nMu9sQ54DZAUHD/ypIq4HsN81u7SrYhQ2X5+H4A8XBz1zLPhZz0Ah83PCNGrKHsF2HAi
-         PjsA==
-X-Forwarded-Encrypted: i=1; AJvYcCXv1KyPIBV8iwZzMTSF860wup4h5L7c9yxa3o3JwAZ5GcCUKG4O8R0oqvLAuqexxeDBlC1qkTLs10rieA3ZhWCk2EMTMRtPhOPMpmKp
-X-Gm-Message-State: AOJu0YwUYJG7hQwzV59dAtfNRKt5I98D17e9J4gcWKld1JZP8+ju6Ug6
-	QjyQUFdkgorVYGau8ckDDTUzJm1HZlc9Ew5nJwW7uYI3Cvone+ub8QjomXnAWoCIbkihGofhSdB
-	4OPZz1G4l4OIugGhdFS6gk+yiwh9w+1Z2E/38FdIFG+n+hPa0HGe0WeSv5vuhlA==
-X-Received: by 2002:a05:6a20:43ab:b0:1af:597f:ffa4 with SMTP id i43-20020a056a2043ab00b001af597fffa4mr1773941pzl.14.1714451178654;
-        Mon, 29 Apr 2024 21:26:18 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IH07U3E59OEv3uasYAdnnN9/WYRlSaTmrz5sCzeoOlurs0CWJYXB3V+LTa+nYaZB59wKOeCng==
-X-Received: by 2002:a05:6a20:43ab:b0:1af:597f:ffa4 with SMTP id i43-20020a056a2043ab00b001af597fffa4mr1773917pzl.14.1714451178308;
-        Mon, 29 Apr 2024 21:26:18 -0700 (PDT)
-Received: from [192.168.68.50] ([43.252.112.88])
-        by smtp.gmail.com with ESMTPSA id p2-20020a170902e74200b001e223b9eb25sm21272994plf.153.2024.04.29.21.26.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 29 Apr 2024 21:26:17 -0700 (PDT)
-Message-ID: <63f7c71a-fa01-4604-8fc6-9f52b5b31d6b@redhat.com>
-Date: Tue, 30 Apr 2024 14:26:06 +1000
+	s=arc-20240116; t=1714451305; c=relaxed/simple;
+	bh=VGn9YL44m9zcpxkQnB83IyP3igbUiHLOnPeuJBsiuCs=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=MKsY2/hL+KPG5/qTe5XYu9duKFLOVG+c4odqExeQTHdc6oLXGLIYIqhnwVIQw3NN10BT67Ca5ECCTgUC6Zvog5e6dUhXDQE1cVfPQA7BKGahtPgAIPvZFXO59flFQL4HKgY339F7qbniDzIDwk9Dp6Jg92fQRZk+bZQpjsMnw/4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=dClXbTql; arc=none smtp.client-ip=150.107.74.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+	s=201702; t=1714451298;
+	bh=mmfMVWtuFLxiisLoXyHBRqFgLahvdQVawDE5DoqGBno=;
+	h=Date:From:To:Cc:Subject:From;
+	b=dClXbTqluRKIgUBYEg3nTbzU2+uF1JwwGTo2/3qmaZ7kHMM76nepxYjyxLqW0QtQe
+	 0bkQuaHc5WeVzKvaeLsKx4bIOP7TNT30u95h4RkVzdZn/6V+QBe9bqG7esUH4+3h4S
+	 6sYAknOxveqXqnAAzvlUsHniGyL4/498f9QmuIm+7+wZcVDk4mCjDhNZ5FFm3Q2eJL
+	 oWna5uJVUpvyN4AIYoCoxE9dgv98oqFVMV9Bvmt/NXiOmlAZag6ClMJtxa9LKmc619
+	 z+ANs7dvsX1s9YbGI0QD3Z8+7WU+IOkTBFtHeFsmzynFL1F/2UJeznwxpGknkByUgZ
+	 CrnxS9RZ6RejQ==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4VT6dF3gy2z4wyk;
+	Tue, 30 Apr 2024 14:28:17 +1000 (AEST)
+Date: Tue, 30 Apr 2024 14:28:14 +1000
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+To: Sean Christopherson <seanjc@google.com>, Christoffer Dall
+ <cdall@cs.columbia.edu>, Marc Zyngier <maz@kernel.org>
+Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux Next
+ Mailing List <linux-next@vger.kernel.org>, Oliver Upton
+ <oliver.upton@linux.dev>
+Subject: linux-next: manual merge of the kvm-x86 tree with the kvm-arm tree
+Message-ID: <20240430142814.183a8167@canb.auug.org.au>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v8 05/16] ACPI: processor: Add acpi_get_processor_handle()
- helper
-Content-Language: en-US
-To: Jonathan Cameron <Jonathan.Cameron@huawei.com>,
- Thomas Gleixner <tglx@linutronix.de>, Peter Zijlstra <peterz@infradead.org>,
- linux-pm@vger.kernel.org, loongarch@lists.linux.dev,
- linux-acpi@vger.kernel.org, linux-arch@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- kvmarm@lists.linux.dev, x86@kernel.org, Russell King
- <linux@armlinux.org.uk>, "Rafael J . Wysocki" <rafael@kernel.org>,
- Miguel Luis <miguel.luis@oracle.com>, James Morse <james.morse@arm.com>,
- Salil Mehta <salil.mehta@huawei.com>,
- Jean-Philippe Brucker <jean-philippe@linaro.org>,
- Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
- Marc Zyngier <maz@kernel.org>, Hanjun Guo <guohanjun@huawei.com>
-Cc: Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
- Dave Hansen <dave.hansen@linux.intel.com>, linuxarm@huawei.com,
- justin.he@arm.com, jianyong.wu@arm.com,
- Lorenzo Pieralisi <lpieralisi@kernel.org>,
- Sudeep Holla <sudeep.holla@arm.com>
-References: <20240426135126.12802-1-Jonathan.Cameron@huawei.com>
- <20240426135126.12802-6-Jonathan.Cameron@huawei.com>
-From: Gavin Shan <gshan@redhat.com>
-In-Reply-To: <20240426135126.12802-6-Jonathan.Cameron@huawei.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; boundary="Sig_/sHHn/d6V6_XHdWyEGUak66k";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 
-On 4/26/24 23:51, Jonathan Cameron wrote:
-> If CONFIG_ACPI_PROCESSOR provide a helper to retrieve the
-> acpi_handle for a given CPU allowing access to methods
-> in DSDT.
-> 
-> Tested-by: Miguel Luis <miguel.luis@oracle.com>
-> Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-> 
-> ---
-> v8: Code simplification suggested by Rafael.
->      Fixup ;; spotted by Gavin
-> ---
->   drivers/acpi/acpi_processor.c | 11 +++++++++++
->   include/linux/acpi.h          |  7 +++++++
->   2 files changed, 18 insertions(+)
-> 
+--Sig_/sHHn/d6V6_XHdWyEGUak66k
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Reviewed-by: Gavin Shan <gshan@redhat.com>
+Hi all,
 
-> diff --git a/drivers/acpi/acpi_processor.c b/drivers/acpi/acpi_processor.c
-> index 3b180e21f325..ecc2721fecae 100644
-> --- a/drivers/acpi/acpi_processor.c
-> +++ b/drivers/acpi/acpi_processor.c
-> @@ -35,6 +35,17 @@ EXPORT_PER_CPU_SYMBOL(processors);
->   struct acpi_processor_errata errata __read_mostly;
->   EXPORT_SYMBOL_GPL(errata);
->   
-> +acpi_handle acpi_get_processor_handle(int cpu)
-> +{
-> +	struct acpi_processor *pr;
-> +
-> +	pr = per_cpu(processors, cpu);
-> +	if (pr)
-> +		return pr->handle;
-> +
-> +	return NULL;
-> +}
-> +
+Today's linux-next merge of the kvm-x86 tree got a conflict in:
 
-Maybe it's worthy to have more check here, something like below.
-However, it's also fine without the extra check.
+  tools/testing/selftests/kvm/aarch64/psci_test.c
 
-	if (cpu >= nr_cpu_ids || !cpu_possible(cpu))
-		return NULL;
+between commit:
 
->   static int acpi_processor_errata_piix4(struct pci_dev *dev)
->   {
->   	u8 value1 = 0;
-> diff --git a/include/linux/acpi.h b/include/linux/acpi.h
-> index 34829f2c517a..9844a3f9c4e5 100644
-> --- a/include/linux/acpi.h
-> +++ b/include/linux/acpi.h
-> @@ -309,6 +309,8 @@ int acpi_map_cpu(acpi_handle handle, phys_cpuid_t physid, u32 acpi_id,
->   int acpi_unmap_cpu(int cpu);
->   #endif /* CONFIG_ACPI_HOTPLUG_CPU */
->   
-> +acpi_handle acpi_get_processor_handle(int cpu);
-> +
->   #ifdef CONFIG_ACPI_HOTPLUG_IOAPIC
->   int acpi_get_ioapic_id(acpi_handle handle, u32 gsi_base, u64 *phys_addr);
->   #endif
-> @@ -1077,6 +1079,11 @@ static inline bool acpi_sleep_state_supported(u8 sleep_state)
->   	return false;
->   }
->   
-> +static inline acpi_handle acpi_get_processor_handle(int cpu)
-> +{
-> +	return NULL;
-> +}
-> +
->   #endif	/* !CONFIG_ACPI */
->   
->   extern void arch_post_acpi_subsys_init(void);
+  c3c369b508d9 ("KVM: selftests: Use MPIDR_HWID_BITMASK from cputype.h")
 
-Thanks,
-Gavin
+from the kvm-arm tree and commit:
 
+  730cfa45b5f4 ("KVM: selftests: Define _GNU_SOURCE for all selftests code")
+
+from the kvm-x86 tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc tools/testing/selftests/kvm/aarch64/psci_test.c
+index 9fa3578d47d5,1c8c6f0c1ca3..000000000000
+--- a/tools/testing/selftests/kvm/aarch64/psci_test.c
++++ b/tools/testing/selftests/kvm/aarch64/psci_test.c
+@@@ -10,12 -10,7 +10,9 @@@
+   *  - A test for KVM's handling of PSCI SYSTEM_SUSPEND and the associated
+   *    KVM_SYSTEM_EVENT_SUSPEND UAPI.
+   */
+-=20
+- #define _GNU_SOURCE
+-=20
+ +#include <linux/kernel.h>
+  #include <linux/psci.h>
+ +#include <asm/cputype.h>
+ =20
+  #include "kvm_util.h"
+  #include "processor.h"
+
+--Sig_/sHHn/d6V6_XHdWyEGUak66k
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmYwc14ACgkQAVBC80lX
+0Gww7Af/aEPqvkljoKd262ArRNpAi25R6NGo4qkrr6R2doTW+/zeePVBEsF1KlAq
+du0jSpijF9aEvJAaXQERPTZR4cOiBYtCU0DtOEXtHIqKx4AnzkMhGG6fY+9/5giF
+NAA/MhIx1SeaxA6gzsg73QVW4rnhSQGXplKkqbMIF6NZ83/9MmWp9AS8o2vB47Gp
+EGcD/rpK1Ul6+kvwFNw9OC8QDprU43CPN/tfc3xs9aNFjb91adzjHLb2AbQkQTGh
+OdBIbs7tqUYZkO5pWOPezhk35DLUshn7mHH9ItqhQKQ62GzFYYHCCZOWLzw9bk4b
+jpohhFTDs9BO3YG6faBeK13DUYsasA==
+=VYBC
+-----END PGP SIGNATURE-----
+
+--Sig_/sHHn/d6V6_XHdWyEGUak66k--
 
