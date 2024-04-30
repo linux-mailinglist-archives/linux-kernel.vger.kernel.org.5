@@ -1,164 +1,159 @@
-Return-Path: <linux-kernel+bounces-164092-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-164093-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6C4548B78E3
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 16:18:35 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 388FA8B78E5
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 16:18:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 864121C226CE
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 14:18:34 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 57D5BB25A37
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 14:18:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 482FB17BB20;
-	Tue, 30 Apr 2024 14:04:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JUphrbgv"
-Received: from mail-lj1-f179.google.com (mail-lj1-f179.google.com [209.85.208.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E0BF4770FC;
-	Tue, 30 Apr 2024 14:04:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0BBD717F361;
+	Tue, 30 Apr 2024 14:04:38 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BAE7C17BB1E;
+	Tue, 30 Apr 2024 14:04:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714485861; cv=none; b=uC6m/akKqyzT7LiIUAr7HOTIJuhl8gLA5UPv59T90Fgyu4K1aLxU2aR1KU+TlSyb13sC5PONjeVycSH3gVlBmYgYlMjfpv6fSEJvZifZb0ppY425I/XahldBCJeiVY49sTgBgHweDz8qHCPB9N2NNLNFV3v2dOw7vB3uakTyFsg=
+	t=1714485877; cv=none; b=b2Q15wkVl6YNK4mqoNrz60YiCbKHt+wDAV/Ptvk5jcPYy/oquoXxOlok0e72nb1uAXtu9ig6dMFVzzSKPVTEb9joyWwlHaBA+a2cPj38Cf2KG84RIZnKW21zrfapJz3mD3GgtkPoC09xFcFhVXv5X+oe1tHnMO/STE1er+3tOSQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714485861; c=relaxed/simple;
-	bh=56t2+Ew9OfwDvnVrXTcXYDJr1lI7iCCB7vtMImxlk7Q=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ZVb+3+rGArWNePd69zyjV3YXUVxVEiMo+wRblhaau7mTKYOnddO8SxLUJ/luWAPTyUcQKIpaRs72oUJge1zT4l2Ez+fq9cvTvhNGDYgx3qOJPTOrPA2h/aJIzKzrMhCO1TNIj9ecII5ozgQt+6a7LWTGZbczV5yrkXtj8BabPPo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JUphrbgv; arc=none smtp.client-ip=209.85.208.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f179.google.com with SMTP id 38308e7fff4ca-2dac77cdf43so73026661fa.2;
-        Tue, 30 Apr 2024 07:04:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714485858; x=1715090658; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=56t2+Ew9OfwDvnVrXTcXYDJr1lI7iCCB7vtMImxlk7Q=;
-        b=JUphrbgvJRj5yewENT5dVWLb8yiNevloKM5oluyrkQlD8C/LL+BApZ6m3cJjXkeEDt
-         cIDY+xHh0hVwJaYJdY6iu2kICwdxA4+utXhEHJk2MXeeE+g28ulgpn4yg7moSa5rE//v
-         t058xI++wPK3wwdDIQVM2ZO1fEzHeizA4iIp6MbB7cifyr2Lzp8SPLTvTF7FHvLgKqO4
-         V84j8IA4ejYWxu6cY86Xe60q/6VC/e/ITY2ApR6+fUZQaHQePAPSdMjKilH5tTIF0fWz
-         +o863Y/Hm0uh7cDsSgecTHXN9NspVieF4GdzzfmhFcKDU2hALQgyNsrC3B5bT65MA7Vp
-         ic3w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714485858; x=1715090658;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=56t2+Ew9OfwDvnVrXTcXYDJr1lI7iCCB7vtMImxlk7Q=;
-        b=pe5xaFngcoOIkGtryGeyiCGa3I0PhpYgPgLuhgu2pvhRVUSlUVtqcdrbUdYyCvDBtT
-         gsAP09jl/zxPXpMnXw+J9RMN3z0DCt4RGABTpmODvyU77eWjvcmUVsPlZq8JREyL7C9p
-         kIddZeJ/iwo+GXuIoe5F2xPeL4+SGevdh/DS0O7NOpMDayAuWNYBH0d6ZrWboAkYb7sy
-         zMNaIOIrwS8j+NsZ5T6ZuDpzqb3uYe3ac0YQoMNrmiJfsTjOzOCrJ/quPIps+KdcmPWm
-         017I5Q7gO/xTiGD5csDk06c3NuWWmrS4nYkdxqfLuJAzb28gJ7JR5xR4MC8BlwRE1Rll
-         y/+Q==
-X-Forwarded-Encrypted: i=1; AJvYcCUqjgtfIarEKxn7qdGc5HTHbZguXrbCPEU72WuMipxOlwsl66GTsyq3u7BPaGQWfCP6lH7l4VaZqAXzLNEA8dU4Oqk2Yrg4ORZXgGz3IiDYS96vSobY1LZo5Dkb5rjUrUgYP9RneHQ/qQkczLb/wHFx2+oYHiQ6oY7k0xi/+DK8K56B/bDr
-X-Gm-Message-State: AOJu0Yyawp3BjYt4uvoFWGKFaG/naHSFRbs6l6zAX9BTBuLWKsQXSb7R
-	D85O2LXtyyoQXlG+0Ak2s9mKn3kU/hX2V8YumjKTs9Lks0igCu9zlGhDIgijg1c7GC0WxW3Ba/W
-	ZzCUt3jlyW7zo6etqeIIfgkS/Hk8=
-X-Google-Smtp-Source: AGHT+IGI+0eGY8xQlwtd+je04QG3F2m7nCFOP050A/s/nGK4Rsol3C96yicHc7QyGe5D1cbzoT+YGnYnsrGJzE09imI=
-X-Received: by 2002:a05:651c:11d1:b0:2e0:dc93:52ef with SMTP id
- z17-20020a05651c11d100b002e0dc9352efmr1906390ljo.26.1714485857803; Tue, 30
- Apr 2024 07:04:17 -0700 (PDT)
+	s=arc-20240116; t=1714485877; c=relaxed/simple;
+	bh=hIs71bhG4+cflhzz5GMNftsXvNAdBV+yukiIRd9yUsg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=FIwTAi8hapNAN7lSmrZibv/86csh8jEMaCM5gk7/bAxA0UnqnUTDgfHWuvSox86R/QyEOYyWp5zNeAhmKrIoZLGQuiY2XCMsIaOfCBAQzoZJ13fStFBEeTdMhre9Z3ocNSpyAU7I2ZoAEkNVxmCmvAlVOnVzaIAnqFQWp2kYh4E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 837FC2F4;
+	Tue, 30 Apr 2024 07:05:01 -0700 (PDT)
+Received: from [10.1.38.140] (XHFQ2J9959.cambridge.arm.com [10.1.38.140])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B13F13F793;
+	Tue, 30 Apr 2024 07:04:33 -0700 (PDT)
+Message-ID: <41a83b7a-17e0-469d-bec4-10ebfff4ef57@arm.com>
+Date: Tue, 30 Apr 2024 15:04:32 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240426155801.25277-1-johan+linaro@kernel.org>
- <CAD=FV=V-pG9+5fLonNvydmjS=ziUFUHAyF8T7YTkEHiO405aSA@mail.gmail.com>
- <ZizKmtcUIYAMpvOQ@hovoldconsulting.com> <dbba45d2-f955-4d3a-aeab-26b0900d5823@quicinc.com>
- <Zi-ohCWv58d2h5VM@hovoldconsulting.com> <CABBYNZJyqrNKebwPPPqjOAdrkpBJ0fqHyD2iVtypeQKCDcL+AQ@mail.gmail.com>
- <CABBYNZJyRR9FA7TYN4+aWMtG9FPUBWMvCtMNUfvaEzxVcYOt-g@mail.gmail.com>
- <ZjCYu2pc8376rjXk@hovoldconsulting.com> <9eebd77b-c070-4260-a979-9b97f14eb5b1@quicinc.com>
- <ZjDtDRCHT3z-3nHh@hovoldconsulting.com>
-In-Reply-To: <ZjDtDRCHT3z-3nHh@hovoldconsulting.com>
-From: Luiz Augusto von Dentz <luiz.dentz@gmail.com>
-Date: Tue, 30 Apr 2024 10:04:05 -0400
-Message-ID: <CABBYNZLCw08oo+RRWkBYAdBLhFK5+pQi59dz-f+P1QusfYoAAw@mail.gmail.com>
-Subject: Re: [PATCH] Bluetooth: qca: generalise device address check
-To: Johan Hovold <johan@kernel.org>
-Cc: Janaki Ramaiah Thota <quic_janathot@quicinc.com>, Doug Anderson <dianders@chromium.org>, 
-	Johan Hovold <johan+linaro@kernel.org>, Marcel Holtmann <marcel@holtmann.org>, 
-	linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	stable@vger.kernel.org, quic_mohamull@quicinc.com, quic_hbandi@quicinc.com, 
-	quic_anubhavg@quicinc.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] arm64/mm: pmd_mkinvalid() must handle swap pmds
+Content-Language: en-GB
+To: Will Deacon <will@kernel.org>
+Cc: Catalin Marinas <catalin.marinas@arm.com>,
+ Mark Rutland <mark.rutland@arm.com>,
+ Anshuman Khandual <anshuman.khandual@arm.com>,
+ Andrew Morton <akpm@linux-foundation.org>, Zi Yan <zi.yan@cs.rutgers.edu>,
+ "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>,
+ linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
+ linux-kernel@vger.kernel.org, stable@vger.kernel.org
+References: <20240430133138.732088-1-ryan.roberts@arm.com>
+ <20240430135534.GA14069@willie-the-truck>
+From: Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <20240430135534.GA14069@willie-the-truck>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Hi Johan,
+On 30/04/2024 14:55, Will Deacon wrote:
+> On Tue, Apr 30, 2024 at 02:31:38PM +0100, Ryan Roberts wrote:
+>> __split_huge_pmd_locked() can be called for a present THP, devmap or
+>> (non-present) migration entry. It calls pmdp_invalidate()
+>> unconditionally on the pmdp and only determines if it is present or not
+>> based on the returned old pmd.
+>>
+>> But arm64's pmd_mkinvalid(), called by pmdp_invalidate(),
+>> unconditionally sets the PMD_PRESENT_INVALID flag, which causes future
+>> pmd_present() calls to return true - even for a swap pmd. Therefore any
+>> lockless pgtable walker could see the migration entry pmd in this state
+>> and start interpretting the fields (e.g. pmd_pfn()) as if it were
+>> present, leading to BadThings (TM). GUP-fast appears to be one such
+>> lockless pgtable walker.
+>>
+>> While the obvious fix is for core-mm to avoid such calls for non-present
+>> pmds (pmdp_invalidate() will also issue TLBI which is not necessary for
+>> this case either), all other arches that implement pmd_mkinvalid() do it
+>> in such a way that it is robust to being called with a non-present pmd.
+>> So it is simpler and safer to make arm64 robust too. This approach means
+>> we can even add tests to debug_vm_pgtable.c to validate the required
+>> behaviour.
+>>
+>> This is a theoretical bug found during code review. I don't have any
+>> test case to trigger it in practice.
+>>
+>> Cc: stable@vger.kernel.org
+>> Fixes: 53fa117bb33c ("arm64/mm: Enable THP migration")
+>> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
+>> ---
+>>
+>> Hi all,
+>>
+>> v1 of this fix [1] took the approach of fixing core-mm to never call
+>> pmdp_invalidate() on a non-present pmd. But Zi Yan highlighted that only arm64
+>> suffers this problem; all other arches are robust. So his suggestion was to
+>> instead make arm64 robust in the same way and add tests to validate it. Despite
+>> my stated reservations in the context of the v1 discussion, having thought on it
+>> for a bit, I now agree with Zi Yan. Hence this post.
+>>
+>> Andrew has v1 in mm-unstable at the moment, so probably the best thing to do is
+>> remove it from there and have this go in through the arm64 tree? Assuming there
+>> is agreement that this approach is right one.
+>>
+>> This applies on top of v6.9-rc5. Passes all the mm selftests on arm64.
+>>
+>> [1] https://lore.kernel.org/linux-mm/20240425170704.3379492-1-ryan.roberts@arm.com/
+>>
+>> Thanks,
+>> Ryan
+>>
+>>
+>>  arch/arm64/include/asm/pgtable.h | 12 +++++--
+>>  mm/debug_vm_pgtable.c            | 61 ++++++++++++++++++++++++++++++++
+>>  2 files changed, 71 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/arch/arm64/include/asm/pgtable.h b/arch/arm64/include/asm/pgtable.h
+>> index afdd56d26ad7..7d580271a46d 100644
+>> --- a/arch/arm64/include/asm/pgtable.h
+>> +++ b/arch/arm64/include/asm/pgtable.h
+>> @@ -511,8 +511,16 @@ static inline int pmd_trans_huge(pmd_t pmd)
+>>
+>>  static inline pmd_t pmd_mkinvalid(pmd_t pmd)
+>>  {
+>> -	pmd = set_pmd_bit(pmd, __pgprot(PMD_PRESENT_INVALID));
+>> -	pmd = clear_pmd_bit(pmd, __pgprot(PMD_SECT_VALID));
+>> +	/*
+>> +	 * If not valid then either we are already present-invalid or we are
+>> +	 * not-present (i.e. none or swap entry). We must not convert
+>> +	 * not-present to present-invalid. Unbelievably, the core-mm may call
+>> +	 * pmd_mkinvalid() for a swap entry and all other arches can handle it.
+>> +	 */
+>> +	if (pmd_valid(pmd)) {
+>> +		pmd = set_pmd_bit(pmd, __pgprot(PMD_PRESENT_INVALID));
+>> +		pmd = clear_pmd_bit(pmd, __pgprot(PMD_SECT_VALID));
+>> +	}
+>>
+>>  	return pmd;
+>>  }
+> 
+> Acked-by: Will Deacon <will@kernel.org>
 
-On Tue, Apr 30, 2024 at 9:07=E2=80=AFAM Johan Hovold <johan@kernel.org> wro=
-te:
->
-> On Tue, Apr 30, 2024 at 06:22:26PM +0530, Janaki Ramaiah Thota wrote:
-> > On 4/30/2024 12:37 PM, Johan Hovold wrote:
-> > > On Mon, Apr 29, 2024 at 01:31:53PM -0400, Luiz Augusto von Dentz wrot=
-e:
->
-> > >> Anyway the fact that firmware loading itself is programming a
-> > >> potentially duplicated address already seems wrong enough to me,
-> > >> either it shall leave it as 00... or set a valid address otherwise w=
-e
-> > >> always risk missing yet another duplicate address being introduced a=
-nd
-> > >> then used over the air causing all sorts of problems for users.
-> > >>
-> > >> So to be clear, QCA firmware shall never attempt to flash anything
-> > >> other than 00:00:00:00:00:00 if you don't have a valid and unique
-> > >> identity address, so we can get rid of this table altogether.
-> > >
-> >
-> > Yes agree with this point.
-> > BD address should be treated as invalid if it is 00:00:00:00:00:00.
->
-> We all agree on that.
->
-> > NVM Tag 2: bd address is default BD address (other than 0), should be
-> > configured as valid address and as its not unique address and it will
-> > be same for all devices so mark it is configured but still allow
-> > user-space to change the address.
->
-> But here we disagree. A non-unique address is not a valid one as it will
-> cause collisions if you have more than one such controller.
->
-> I understand that this may be convenient/good enough for developers in
-> some cases, but this can hurt end users that do not realise why things
-> break.
->
-> And a developer can always configure an address manually or patch the
-> driver as needed for internal use.
->
-> Are there any other reasons that makes you want to keep the option to
-> configure the device address through NVM files? I'm assuming you're not
-> relying on patching NVM files to provision device-specific addresses
-> after installation on target?
+Thanks
 
-Exactly, a duplicated address is not a valid public/identity address.
+> 
+> But it might be worth splitting the tests from the fix to make backporting
+> easier.
 
-Regarding them already been in use, we will need to have it fixed one
-way or the other, so it is better to change whatever it comer within
-the firmware file to 00:00:00:00:00:00 and have it setup a proper
-address after that rather than have a table that detect the use of
-duplicated addresses since the result would be the same since
-userspace stores pairing/devices based on adapter addresses they will
-be lost and the user will need to pair its peripherals again, so my
-recommendation is that this is done via firmware update rather than
-introducing a table containing duplicate addresses.
+Yes good point. I'll leave this hanging for today to see if any more comments
+come in, and will re-post tomorrow as 2 patches. I assume we need to go fast to
+catch 6.9.
 
-That said it seems the patch in this thread actually reads the address
-with use of EDL_TAG_ID_BD_ADDR and then proceed to check if that is
-what the controller returns as address, while that is better than
-having a table I think there is still a risk that the duplicated
-address gets used on older kernels if that is not updated in the
-firmware directly, anyway perhaps we shall be doing both so we capture
-both cases where duplicated addresses are used or when BDADDR_ANY is.
+> 
+> Catalin -- I assume you'll pick this up, but please shout if you want me
+> to take it instead.
+> 
+> Will
 
---=20
-Luiz Augusto von Dentz
 
