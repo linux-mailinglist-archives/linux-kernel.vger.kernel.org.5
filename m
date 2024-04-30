@@ -1,157 +1,117 @@
-Return-Path: <linux-kernel+bounces-163393-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-163394-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 03DF48B6A33
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 08:08:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2D1738B6A35
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 08:10:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AE4E2280F01
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 06:08:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DCFA9281268
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 06:10:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 02DDB1B5A0;
-	Tue, 30 Apr 2024 06:06:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E0F017BC2;
+	Tue, 30 Apr 2024 06:10:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="rotHBScM"
-Received: from out-175.mta1.migadu.com (out-175.mta1.migadu.com [95.215.58.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fpkz2ITt"
+Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com [209.85.167.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A74CA3FBAA
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 06:06:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 01EC52F2B;
+	Tue, 30 Apr 2024 06:10:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714457210; cv=none; b=Ucc4BMZ+OTvXQoWEvVTkShZ3GdDLe3IyHWH65wcxvfUKEf4jkyzFBcSexxDn6luYwrreN7U+t0pYmVTXEVBdpe/t70xbNINoWDexmCFcCvql3ZWHrI/bNRftGHpZHN1gS/WaM67mLdFYUT/fU+D9uvQL67Fv6oxMj2O7wcbRGqk=
+	t=1714457422; cv=none; b=MCUVJRPAufn9HuMznwpjkexIGoRVntvRrxtAr0fi8A88rlHAdx+erDxITy+XqkwV/9ijqSyi52LWiGdUM2EGodXCNH0ljS14HNd8ME482kTUoUh5qM3opHbcyC9QOnPJRDMRsPodtQU42lovmbKcSYaqiiWheCcz8VZJiOQ4mVg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714457210; c=relaxed/simple;
-	bh=M6Cfe210NCjI1yL10FhmrelwHlZmt4J9rn9QcetojBI=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=cJClAvN+/C/k+Cl/FulFXzkkIi7/8E+U47hcfx8/vtL6l1djW3MVWbFdZVPTC3zbEFsgitBaJZVTO1fkpu0mOiAGXad5bQdUPcz1dZVHzUXTwc/TNNjcnx5TYDtjpQ5ovfOdtK1tLhLD/ByuTQiOQS0qYtNnxwHhuTL/uh3NnaQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=rotHBScM; arc=none smtp.client-ip=95.215.58.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1714457207;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=oQu7rbPfAQy6XdrYuqRfpS3viClFCHuzUf1lmpnIBnw=;
-	b=rotHBScM1JlySEyfeor2cpEW+V9EK+9UeCwpDcgSfKbo+f1dWWgvcQN7mi7VyWHyq1/fRf
-	IzfXcU8ln7O4xZudZdXn5uue6q1VbcyhdHtiuhipO4lqg7CJmp+yB/63oyYllZKOXFUrxN
-	tFEkBtSRbv0k1HFIJIKt5si+4wW9Xvk=
-From: Shakeel Butt <shakeel.butt@linux.dev>
-To: Andrew Morton <akpm@linux-foundation.org>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Michal Hocko <mhocko@kernel.org>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Muchun Song <muchun.song@linux.dev>,
-	Yosry Ahmed <yosryahmed@google.com>,
-	"T . J . Mercier" <tjmercier@google.com>
-Cc: kernel-team@meta.com,
-	linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v3 8/8] memcg: use proper type for mod_memcg_state
-Date: Mon, 29 Apr 2024 23:06:12 -0700
-Message-ID: <20240430060612.2171650-9-shakeel.butt@linux.dev>
-In-Reply-To: <20240430060612.2171650-1-shakeel.butt@linux.dev>
-References: <20240430060612.2171650-1-shakeel.butt@linux.dev>
+	s=arc-20240116; t=1714457422; c=relaxed/simple;
+	bh=xLk6olRuLjszn77c4N+vYNQwx3BiTeXJEPu82YWbAWE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=nm7qoue28lo1gbT7y4TpFkq8z0wNOApoBAPHus7hgpwY0188DPOow1r5xFzeQ1uxyJSSJ6h3TKhEPNDo67uOGjMC5NaRlq5j9JLQ2ZKet4U/cLLoRaI1pvHDZRwge5m0jlK9wHzCaAceBeRjgGkLwAck+StMIArcODncyKonOkI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fpkz2ITt; arc=none smtp.client-ip=209.85.167.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f47.google.com with SMTP id 2adb3069b0e04-516d1ecaf25so7343556e87.2;
+        Mon, 29 Apr 2024 23:10:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1714457419; x=1715062219; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ZKZTzZ8YF36Lg/+Y4l3XbLB30NDAuLh0Neyfhx6Ouxk=;
+        b=fpkz2ITtseIYzT2e4HF7grqzvjb+YsLYkMgVSNwmfooYaeD+IJXy+1Umz0S3E6Lu/s
+         DT2oIu/RA1N/+hywZMicGBeTizXJzSGKwHHTSXdp0a0hc/ZALDysxA6FvVLlcWodtCwI
+         D8kDEBxdZlLP/TKVy6iPHY2UNZZJVkhmNSMqRIcvFxjJRBmdbs7rBVNH9oTVYPdcTrkb
+         A4TvBUGl/T0i1HxBNm0gIpQ19bAMlEZb/WqGcmPxYs/Msje7IPgAEfwFOm1GdirGtlZc
+         wSHxFbQpFsNuer7XT2mCprrMpXnDUaXFvl6uilJziKN8iSgOdiKmVv0F2fISIZkSLdFJ
+         5Ojw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714457419; x=1715062219;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ZKZTzZ8YF36Lg/+Y4l3XbLB30NDAuLh0Neyfhx6Ouxk=;
+        b=DYERbssi7HDgMgnEcDADYWDQhj02zNqXA0hnxjsGEYctes6pN7g5Gb/J0hA+EWuRzB
+         aDCMa1RZgbo6i3ZXmV+6EJAPPM6Agry4DLNKjQt7ZPN2hiKK70aQPgR0wnEA1S5JFzFH
+         HlaN3htwLj64FJAdv80lAII3vJa/+pSalg/pj9Mqg8Sk/dpcJaxvjRJUM4/WdXCZmLZf
+         s64Fmx3OjZjMUiK29U4mI0W3X6MMTF3izLAEabwOVzEen9jC4FmtZFgzBjxk/xrFu8/q
+         Z3C+5PZ70N9tQycX4rw5B/bmECL5+UZ+pGmtUDAkPytkciPaP1Ey88GdPLnMLy+4h2Ol
+         cgaQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXmkRrA89Vg4mdhcC7HzfAI/ymCMu32ohMsKtpwKvS8nP/Z5iw6p0EWPA2HcuqxNZ8rxyz4nkvdqHY+2yCIAYgz7WmT1TZXbH7sMLcu/uiXMRquXHnnt4YYm0ef0piXPHDM
+X-Gm-Message-State: AOJu0Yy8bxbI/ciEXSkUsPbuAmiQmp7QcCk2Rg7jIiqym/i1ynEhHTuU
+	1KFTyVB3e1jNjuq/glnk6b0OJ5i9LRwgOna6BcSPECUEk8d+8UNpTaEmVNOR
+X-Google-Smtp-Source: AGHT+IEWT/1/BvNmIdzytlSnSL5+oBNDY6IX7icEQAeMeszGxmfg3QImt1BKOEbeB8QiR4cswlx1Ng==
+X-Received: by 2002:ac2:5510:0:b0:51c:f00c:2243 with SMTP id j16-20020ac25510000000b0051cf00c2243mr958004lfk.35.1714457418692;
+        Mon, 29 Apr 2024 23:10:18 -0700 (PDT)
+Received: from gmail.com (1F2EF046.nat.pool.telekom.hu. [31.46.240.70])
+        by smtp.gmail.com with ESMTPSA id y18-20020adff152000000b0034d7a555047sm872704wro.96.2024.04.29.23.10.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Apr 2024 23:10:17 -0700 (PDT)
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date: Tue, 30 Apr 2024 08:10:16 +0200
+From: Ingo Molnar <mingo@kernel.org>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Hillf Danton <hdanton@sina.com>, Andy Lutomirski <luto@amacapital.net>,
+	Peter Anvin <hpa@zytor.com>, Adrian Bunk <bunk@kernel.org>,
+	syzbot <syzbot+83e7f982ca045ab4405c@syzkaller.appspotmail.com>,
+	Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+	andrii@kernel.org, bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Subject: Re: [PATCH] x86/mm: Remove broken vsyscall emulation code from the
+ page fault code
+Message-ID: <ZjCLSLQ4WttYQXVd@gmail.com>
+References: <0000000000009dfa6d0617197994@google.com>
+ <20240427231321.3978-1-hdanton@sina.com>
+ <CAHk-=wjBvNvVggy14p9rkHA8W1ZVfoKXvW0oeX5NZWxWUv8gfQ@mail.gmail.com>
+ <20240428232302.4035-1-hdanton@sina.com>
+ <CAHk-=wjma_sSghVTgDCQxHHd=e2Lqi45PLh78oJ4WeBj8erV9Q@mail.gmail.com>
+ <CAHk-=wh9D6f7HUkDgZHKmDCHUQmp+Co89GP+b8+z+G56BKeyNg@mail.gmail.com>
+ <Zi9Ts1HcqiKzy9GX@gmail.com>
+ <CAHk-=wj9=+4k+sY6hNsQy2oQA4HABNA369cBPSgBNaeRHbbTZg@mail.gmail.com>
+ <CAHk-=wg63NPb-cEL7NTFTKN2=uM6Lygg_CcXwwDBTVCg=PeSRg@mail.gmail.com>
+ <CAHk-=whuH+-swynMTVd9=uCB0uuhaoanQ5kfHEX=QaRZx7UgBw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=whuH+-swynMTVd9=uCB0uuhaoanQ5kfHEX=QaRZx7UgBw@mail.gmail.com>
 
-The memcg stats update functions can take arbitrary integer but the
-only input which make sense is enum memcg_stat_item and we don't
-want these functions to be called with arbitrary integer, so replace
-the parameter type with enum memcg_stat_item and compiler will be able
-to warn if memcg stat update functions are called with incorrect index
-value.
 
-Signed-off-by: Shakeel Butt <shakeel.butt@linux.dev>
----
-Change since v2:
-- Fixed whitespace issue based on TJ's suggestion.
+* Linus Torvalds <torvalds@linux-foundation.org> wrote:
 
- include/linux/memcontrol.h | 13 +++++++------
- mm/memcontrol.c            |  3 ++-
- 2 files changed, 9 insertions(+), 7 deletions(-)
+> I guess that patch to rip out sig_on_uaccess_err needs to go into 6.9 and 
+> even be marked for stable, since it most definitely breaks some stuff 
+> currently. Even if that "some stuff" is pretty esoteric (ie 
+> "vsyscall=emulate" together with tracing).
 
-diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-index ab8a6e884375..030d34e9d117 100644
---- a/include/linux/memcontrol.h
-+++ b/include/linux/memcontrol.h
-@@ -974,7 +974,8 @@ void mem_cgroup_print_oom_group(struct mem_cgroup *memcg);
- void folio_memcg_lock(struct folio *folio);
- void folio_memcg_unlock(struct folio *folio);
- 
--void __mod_memcg_state(struct mem_cgroup *memcg, int idx, int val);
-+void __mod_memcg_state(struct mem_cgroup *memcg, enum memcg_stat_item idx,
-+		       int val);
- 
- /* try to stablize folio_memcg() for all the pages in a memcg */
- static inline bool mem_cgroup_trylock_pages(struct mem_cgroup *memcg)
-@@ -995,7 +996,7 @@ static inline void mem_cgroup_unlock_pages(void)
- 
- /* idx can be of type enum memcg_stat_item or node_stat_item */
- static inline void mod_memcg_state(struct mem_cgroup *memcg,
--				   int idx, int val)
-+				   enum memcg_stat_item idx, int val)
- {
- 	unsigned long flags;
- 
-@@ -1005,7 +1006,7 @@ static inline void mod_memcg_state(struct mem_cgroup *memcg,
- }
- 
- static inline void mod_memcg_page_state(struct page *page,
--					int idx, int val)
-+					enum memcg_stat_item idx, int val)
- {
- 	struct mem_cgroup *memcg;
- 
-@@ -1491,19 +1492,19 @@ static inline void mem_cgroup_print_oom_group(struct mem_cgroup *memcg)
- }
- 
- static inline void __mod_memcg_state(struct mem_cgroup *memcg,
--				     int idx,
-+				     enum memcg_stat_item idx,
- 				     int nr)
- {
- }
- 
- static inline void mod_memcg_state(struct mem_cgroup *memcg,
--				   int idx,
-+				   enum memcg_stat_item idx,
- 				   int nr)
- {
- }
- 
- static inline void mod_memcg_page_state(struct page *page,
--					int idx, int val)
-+					enum memcg_stat_item idx, int val)
- {
- }
- 
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 72e36977a96e..f5fc16b918ba 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -956,7 +956,8 @@ static int memcg_state_val_in_pages(int idx, int val)
-  * @idx: the stat item - can be enum memcg_stat_item or enum node_stat_item
-  * @val: delta to add to the counter, can be negative
-  */
--void __mod_memcg_state(struct mem_cgroup *memcg, int idx, int val)
-+void __mod_memcg_state(struct mem_cgroup *memcg, enum memcg_stat_item idx,
-+		       int val)
- {
- 	int i = memcg_stats_index(idx);
- 
--- 
-2.43.0
+Yeah - I just put it into tip:x86/urgent as-is, with the various Tested-by 
+and Acked-by tags added, and we'll send it to you later this week if all 
+goes well.
 
+Thanks,
+
+	Ingo
 
