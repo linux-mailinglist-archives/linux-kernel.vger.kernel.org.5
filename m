@@ -1,126 +1,107 @@
-Return-Path: <linux-kernel+bounces-163865-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-163866-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C86818B74C8
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 13:45:54 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 679C98B74CA
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 13:46:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 699DA1F2264B
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 11:45:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 23D6A280F6D
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 11:46:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3DB57134411;
-	Tue, 30 Apr 2024 11:45:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6903133422;
+	Tue, 30 Apr 2024 11:46:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PiPVix9N"
-Received: from mail-yw1-f180.google.com (mail-yw1-f180.google.com [209.85.128.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="pARSUFY2"
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32C3212CD90;
-	Tue, 30 Apr 2024 11:45:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CAB1712CD90;
+	Tue, 30 Apr 2024 11:46:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714477539; cv=none; b=eXyYl6whfNIPnLkmG3VjEHS1GRNAxEh1pZF2zKcDdFxYz7Bw4HVOSfJhiVcKvazp+IucetBVcUalvqi10xy7/vzxVoYdjNDgN4erVIidYP123PrxsiEAkC5Jjdk5RuDbVgrxTEIAEcUrZcEHjEVgKOD/nG53dljRhDbsOCRRHqc=
+	t=1714477581; cv=none; b=mjjhq82kq7lmt/f6TEwKqEsHakX/EqZJYxoUnFGnBkSL4xYwYtcdQjBy8DUDpEFaXxFPmepym1U89os9YsEtS4nPyCzfWgqLEd37OUAglyb6taaHP9G62b+IbcH5pZ8vpKUHp6PIB4JF79C30OTf2LHIiDR+UmDhanqUDoviDIw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714477539; c=relaxed/simple;
-	bh=LMWMwIrhoja/mjJ97z4DdQVv6xt1vL+14RxvDcfeu+U=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=R6CyYpeqUx+RLwb4MN9WlaMem9mtmy6H4mBPUBsSCYaMgm1W+B6iEcJmYxZonqB/6kqAj+mfkEVOlyK6xR9j8Q0Fkqo3EqM06R0yrs3poXwpUOb9s/V52ZlXqbL65YLIwKOc12vumtAm+PA79cp1iuJGusp47tQcpkMN6mg0ReA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PiPVix9N; arc=none smtp.client-ip=209.85.128.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f180.google.com with SMTP id 00721157ae682-6181d032bf9so52865407b3.3;
-        Tue, 30 Apr 2024 04:45:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714477537; x=1715082337; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=LMWMwIrhoja/mjJ97z4DdQVv6xt1vL+14RxvDcfeu+U=;
-        b=PiPVix9N1yb10opGXeYCroy7n8EgyaLrdYQeB0gjD0uLq4maw3uMzBkT2SfW6xiuI0
-         E1iDbeaaOZaNDN18RpITglH8fQtraPjjc5frwA1XO29QAGuxPg8iV/2dKkRXX2nSKo6Z
-         NZgbksvxUrSPVv1TNvlfMGUAoCqWqWUBKmJDQtNUMi4IYbpOWccbnZOZVyJh8e0dd4V8
-         b9ltfQLnrhl6h27IwRSOCN110VZYiynb3r8ZCKpv9xkkPk4OhjS8ty0mU7h1EXNpoGUZ
-         j5VSNSEApw7xYF3YqgIa5ZG/wdFdBXP2wqQWZzQj2Pfty0j1tbsgLHYTq8famibG9ikx
-         3NMQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714477537; x=1715082337;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=LMWMwIrhoja/mjJ97z4DdQVv6xt1vL+14RxvDcfeu+U=;
-        b=wPqJMUT/eZFvlZDFQSLY8kttlqGHtK+5l3Bz8O4Qpjyn7YQNeaoE+V30GWcjH9jlhI
-         t35LXoZO/oAzKQgBxJxXLW11iqppkltes1hbEUts/M+jcoZkig0gMs4Ftp6vR0ItAO0S
-         eWpD4SnM7dDENn+O/si7qJm/cjGtTKFcWFHPeB44rn12v2PRC3019DSUe0ey9BbHOh1d
-         7BK2hd4lBVHZtrxPxh4GXb8oj0j+nC9oVpgPygRlXkRT4d/RlA0f89DI+4P0lmyJ6QwW
-         GocN6exZ6JUn7m6//39hXwqX5PDGGkl3sFvT0uusPd+zL98YbA6zPRhIIZgGQG/bFPbp
-         vvoA==
-X-Forwarded-Encrypted: i=1; AJvYcCU8zKjoOoJLCNyvYOuhpbrFTycGOese8oMVZp/iZRkw8R2JR9Qg0k4ZLywok1h2/SZy78cFLQZi9DmW/3l4xvWWBh/AKjScKQw/H9GDDrxQRe3tqS92wv4UzZlzBGeukfSn6Xo9K5P87rU=
-X-Gm-Message-State: AOJu0YxkQ/ngkrVKk6ATdeNOOZW2Uf9SP18vAjjYDow6kANGoBNKQHe7
-	uAT7vUVDh5+ynhr5+OwOeYsmbB4FPVyTfMCTeC3KChIVHu/RWlnZ5rW3MUjfkm1+CKWaySdPbWe
-	KGab9abK5I0alwZMWMtfv4avXJNQ=
-X-Google-Smtp-Source: AGHT+IFWLTsceRYhi9/QmpyJz0woosjkTHL1KGvFF1YijYKO8GYKfCOxMxGlv6J7qjRlI6WEtNMdz4TuS1BN+EvgbfE=
-X-Received: by 2002:a05:6902:2304:b0:dcc:693e:b396 with SMTP id
- do4-20020a056902230400b00dcc693eb396mr14627529ybb.2.1714477537033; Tue, 30
- Apr 2024 04:45:37 -0700 (PDT)
+	s=arc-20240116; t=1714477581; c=relaxed/simple;
+	bh=fNYJN9v/aw6h3Dg5grO4fn4gIASAmBjbnxWMvirxUaY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=VKuhOmP3gm5lFSlZvG+EczLRdeaA/aHmfTdvifc+/TB3nlqP/I7I3TrU8YKoQO3b/wLz/vHe0FjLZJ0KO7dhJy/pU2xXKnj5lMIQlmcXa6seaUMqZPVNs6RyFQ3o1kUfL8XoEaHgm5lJNrLuF6ALJ7GvHj63j2YExVP7P4l9rUE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=pARSUFY2; arc=none smtp.client-ip=148.163.158.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353724.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 43UBbERo014914;
+	Tue, 30 Apr 2024 11:46:18 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=nOAEiljfgjz9j9RXSmVo3QnxjiAkMgDefh4MrN+YCBA=;
+ b=pARSUFY2r1HnHlXC1h4FwLp41lGEW2tolpgDyCW7/AxnmSlvq0sm8J9pwj/uEAsheal8
+ IYwNd+fOQUMi+tmcD4hkSKFSkRkVDmQJAknkjmzZRjnIN7fPRz284BCLzEjDZC0yNUjB
+ 8UN1z1ICZJSAltMFGQx4T8nf6LDy5PqEhvMjUqE6wZtqfMDg/deosL3EltF1HezZ4lwZ
+ 5/5nidjJDnwyB7R7LcpSeAoDynCryDRUM2x/o2EhXyfyhX4gQ1J9hxyX4awXmVgKBfNk
+ Xv0QsULP+YI4BtQrTIzd2C6Wg7bIPMYRJBG18Hx3LJkZpG4t++inOHweFh7F4akHFHA+ EQ== 
+Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xtyqkg1sg-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 30 Apr 2024 11:46:18 +0000
+Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 43U94IZA027556;
+	Tue, 30 Apr 2024 11:46:17 GMT
+Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
+	by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3xsc30cy1f-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 30 Apr 2024 11:46:17 +0000
+Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com [10.20.54.102])
+	by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 43UBkBcA50725184
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Tue, 30 Apr 2024 11:46:13 GMT
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id B5C8320040;
+	Tue, 30 Apr 2024 11:46:11 +0000 (GMT)
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 7D1C62004B;
+	Tue, 30 Apr 2024 11:46:11 +0000 (GMT)
+Received: from li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com (unknown [9.155.204.135])
+	by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+	Tue, 30 Apr 2024 11:46:11 +0000 (GMT)
+Date: Tue, 30 Apr 2024 13:46:10 +0200
+From: Alexander Gordeev <agordeev@linux.ibm.com>
+To: Claudio Imbrenda <imbrenda@linux.ibm.com>
+Cc: linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org,
+        hca@linux.ibm.com, gor@linux.ibm.com, svens@linux.ibm.com,
+        gerald.schaefer@linux.ibm.com, borntraeger@de.ibm.com
+Subject: Re: [PATCH v4 0/2] s390/pgtable: misc small improvements
+Message-ID: <ZjDaAgfmPFPuHnaF@li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com>
+References: <20240429143409.49892-1-imbrenda@linux.ibm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <271372d6-e665-4e7f-b088-dee5f4ab341a@oracle.com>
- <20240418160652.68df1a86@namcao> <87ttjywxv5.wl-tiwai@suse.de>
- <a7843657-c3f6-4d2e-8c36-5541d4c52956@gmx.de> <878r19voks.wl-tiwai@suse.de>
- <5febb249-1d4d-4ea7-b031-1df4d14620d2@oracle.com> <8734rhvlr2.wl-tiwai@suse.de>
- <CAMeQTsbEjUyOYDAF-kFwTcovLr+8gHQGa27jPkeeJqmLhwbTag@mail.gmail.com> <20240419173443.6c49706e@namcao>
-In-Reply-To: <20240419173443.6c49706e@namcao>
-From: Patrik Jakobsson <patrik.r.jakobsson@gmail.com>
-Date: Tue, 30 Apr 2024 13:45:25 +0200
-Message-ID: <CAMeQTsZJdiyLZvY07gup0ib4SvTQ83p36mLDMRv4C6BH5M69XA@mail.gmail.com>
-Subject: Re: [bug-report] task info hung problem in fb_deferred_io_work()
-To: Nam Cao <namcao@linutronix.de>
-Cc: Takashi Iwai <tiwai@suse.de>, Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>, 
-	Helge Deller <deller@gmx.de>, Thomas Zimmermann <tzimmermann@suse.de>, Daniel Vetter <daniel@ffwll.ch>, 
-	linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org, 
-	bigeasy@linutronix.de, LKML <linux-kernel@vger.kernel.org>, 
-	Vegard Nossum <vegard.nossum@oracle.com>, George Kennedy <george.kennedy@oracle.com>, 
-	Darren Kenny <darren.kenny@oracle.com>, chuansheng.liu@intel.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240429143409.49892-1-imbrenda@linux.ibm.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: aaJHfBlvIXgbh988kWOX7GsN7BsUvKFv
+X-Proofpoint-ORIG-GUID: aaJHfBlvIXgbh988kWOX7GsN7BsUvKFv
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
+ definitions=2024-04-30_04,2024-04-30_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 suspectscore=0
+ malwarescore=0 clxscore=1015 phishscore=0 mlxlogscore=612
+ priorityscore=1501 impostorscore=0 mlxscore=0 bulkscore=0
+ lowpriorityscore=0 spamscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2404010000 definitions=main-2404300084
 
-On Fri, Apr 19, 2024 at 5:34=E2=80=AFPM Nam Cao <namcao@linutronix.de> wrot=
-e:
->
-> On 2024-04-19 Patrik Jakobsson wrote:
-> > Neither cancel_delayed_work_sync() or flush_delayed_work() prevent new
-> > work from being scheduled after they return.
->
-> flush_delayed_work() is called during device closing. And because no
-> writes are performed after the device has been closed, no new work
-> should be queued after flush_delayed_work().
+On Mon, Apr 29, 2024 at 04:34:07PM +0200, Claudio Imbrenda wrote:
+> Claudio Imbrenda (2):
+>   s390/pgtable: switch read and write softbits for puds
+>   s390/pgtable: add missing hardware bits for puds, pmds
+> 
+>  arch/s390/include/asm/pgtable.h | 12 +++++++-----
+>  1 file changed, 7 insertions(+), 5 deletions(-)
 
-Yes, nothing should write after the device is closed but the events
-are asynchronous so in theory the order is not guaranteed. I also find
-it unlikely but I have no other theory at this point.
-
->
-> > But
-> > cancel_delayed_work_sync() at least makes sure the queue is empty so
-> > the problem becomes less apparent.
-> >
-> > Could this explain what we're seeing?
->
-> I suspect that cancel_delayed_work_sync() is only treating the symptoms
-> by preventing the deferred work from running. The real bug is "someone"
-> giving fb_deferred_io_work() invalid pages to work with. But that's
-> just a blind guess.
-
-Trying to figure out when the page goes away in relation to when the
-work is triggered might be a good place to start.
-
->
-> Best regards,
-> Nam
+Applied, thanks!
 
