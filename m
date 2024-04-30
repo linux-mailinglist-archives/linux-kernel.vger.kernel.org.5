@@ -1,39 +1,42 @@
-Return-Path: <linux-kernel+bounces-163761-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-163763-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 81DA88B6F86
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 12:21:16 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0D0C78B6F8D
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 12:22:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 39150280E71
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 10:21:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B89301F22DE7
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 10:22:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28BC913D240;
-	Tue, 30 Apr 2024 10:21:07 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1B94FC02;
-	Tue, 30 Apr 2024 10:21:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A03A13C66A;
+	Tue, 30 Apr 2024 10:22:45 +0000 (UTC)
+Received: from mx3.molgen.mpg.de (mx3.molgen.mpg.de [141.14.17.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B7F1FC02;
+	Tue, 30 Apr 2024 10:22:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=141.14.17.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714472466; cv=none; b=LNSR0Bb9CgGAElJhfK8JoV4SrPGk6VTAtzYLsA9hu37H62+2bnai69DPlVXB8djXcwOo/Z0opYpjoBEfO/wM7ocJsERf4SePaLtYK4x7n2qsvjx2Pv230sIrEX5Uja2if5uDVffY763jCe1v+ky5VMBAr5r71uz321NBnsw0Ul0=
+	t=1714472564; cv=none; b=a2Zjq45DQHqs7YGYq2//ThztsfWaZt2zinfN142EESbr1Aejsak5xEU/JWN5a3BJ5zbnzm5O8NCJoZ48+cvHrXZHE0Ul4X6BDGxZnBnyFbA68mqH8YCed1uxP7CPp73NdwM3gy9uO52/ukjxBFD/MDrjPPVao/DqTfut2JDxpKk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714472466; c=relaxed/simple;
-	bh=5SgGxFTDFfPD9ogt5nacJQS8JEFOELIWLGAoJWR92JQ=;
+	s=arc-20240116; t=1714472564; c=relaxed/simple;
+	bh=JwmfaDotknqHOgQbV2+J/8gJzqZLFs/flluY6kHJkv4=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Ws9GuEAvCJMxIA7sGNFPJpL/5y9xcDXQFg6y/t5HpPhq+oo4J0TZ/cWgUfYdv/FPMiHLuh+BQT8eujzBGGVlP72yh601CB+ML8EIdb63Bk4L0UnXmfjxepHfFQGrX02/+4yN68SIcnLhsLwKmgGFfh3dyucRvfeUkJfykh52ca8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4DC432F4;
-	Tue, 30 Apr 2024 03:21:23 -0700 (PDT)
-Received: from [10.57.1.41] (unknown [10.57.1.41])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id F27C13F73F;
-	Tue, 30 Apr 2024 03:20:50 -0700 (PDT)
-Message-ID: <20d44077-d0a8-470a-bf6f-82683db894cf@arm.com>
-Date: Tue, 30 Apr 2024 11:20:46 +0100
+	 In-Reply-To:Content-Type; b=Qg6BxctESneGqrmF8m80trn8nkwF0q9P4lmshddfEbHysau2WLXecpR4Kiq4SEqU5DF8f+o0Vbh2jwHxWX+hei3T7KVKGHFZ8okCeaS5f20Vm9pxvKGMz8fOTeWu5VdXM1xNLMPKoN3am0m09ufYQ6YTZOqc346ZJgsrbR9H+9c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=molgen.mpg.de; spf=pass smtp.mailfrom=molgen.mpg.de; arc=none smtp.client-ip=141.14.17.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=molgen.mpg.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=molgen.mpg.de
+Received: from [141.14.220.34] (g34.guest.molgen.mpg.de [141.14.220.34])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: pmenzel)
+	by mx.molgen.mpg.de (Postfix) with ESMTPSA id 8660F61E5FE36;
+	Tue, 30 Apr 2024 12:21:46 +0200 (CEST)
+Message-ID: <94b41f0d-a32b-4854-8528-91341a0a3bb8@molgen.mpg.de>
+Date: Tue, 30 Apr 2024 12:21:45 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -41,159 +44,79 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 6/7] iommu/dma: Centralise iommu_setup_dma_ops()
-To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc: Joerg Roedel <joro@8bytes.org>, Christoph Hellwig <hch@lst.de>,
- Vineet Gupta <vgupta@kernel.org>, Russell King <linux@armlinux.org.uk>,
- Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
- Huacai Chen <chenhuacai@kernel.org>, WANG Xuerui <kernel@xen0n.name>,
- Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
- Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt
- <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
- Lorenzo Pieralisi <lpieralisi@kernel.org>, Hanjun Guo
- <guohanjun@huawei.com>, Sudeep Holla <sudeep.holla@arm.com>,
- "K. Y. Srinivasan" <kys@microsoft.com>,
- Haiyang Zhang <haiyangz@microsoft.com>, Wei Liu <wei.liu@kernel.org>,
- Dexuan Cui <decui@microsoft.com>,
- Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
- David Woodhouse <dwmw2@infradead.org>, Lu Baolu <baolu.lu@linux.intel.com>,
- Niklas Schnelle <schnelle@linux.ibm.com>,
- Matthew Rosato <mjrosato@linux.ibm.com>,
- Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
- Jean-Philippe Brucker <jean-philippe@linaro.org>,
- Rob Herring <robh+dt@kernel.org>, Frank Rowand <frowand.list@gmail.com>,
- Marek Szyprowski <m.szyprowski@samsung.com>, Jason Gunthorpe <jgg@ziepe.ca>,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-acpi@vger.kernel.org, iommu@lists.linux.dev,
- devicetree@vger.kernel.org, Jason Gunthorpe <jgg@nvidia.com>
-References: <cover.1713523152.git.robin.murphy@arm.com>
- <bebea331c1d688b34d9862eefd5ede47503961b8.1713523152.git.robin.murphy@arm.com>
- <Zi_LV28TR-P-PzXi@eriador.lumag.spb.ru>
- <2662a5ba-3115-4fe5-9cec-bff71f703a82@arm.com>
- <CAA8EJprxLvYEP8+ggk8fw--kHaK+_QoYan4st2wWpPicHa6_+w@mail.gmail.com>
-From: Robin Murphy <robin.murphy@arm.com>
-Content-Language: en-GB
-In-Reply-To: <CAA8EJprxLvYEP8+ggk8fw--kHaK+_QoYan4st2wWpPicHa6_+w@mail.gmail.com>
+Subject: Re: [PATCH v7 0/2] modify Signed-off-by field
+To: Chia Li Hung <ppighouse@gmail.com>
+Cc: robh+dt@kernel.org, devicetree@vger.kernel.org, conor+dt@kernel.org,
+ linux-aspeed@lists.ozlabs.org, openbmc@lists.ozlabs.org,
+ linux-kernel@vger.kernel.org, Kelly Hung <Kelly_Hung@asus.com>,
+ joel@jms.id.au, krzysztof.kozlowski+dt@linaro.org, Allenyy_Hsu@asus.com,
+ linux-arm-kernel@lists.infradead.org
+References: <20240430045853.3894633-1-Kelly_Hung@asus.com>
+ <a21672d7-82dd-44a9-b301-94aa1537b75c@molgen.mpg.de>
+ <CAK=2Bxt=WK4AdktNZDN2iXjk3ga9WRqUm9JQHoNjRnrW8hVt0Q@mail.gmail.com>
+Content-Language: en-US
+From: Paul Menzel <pmenzel@molgen.mpg.de>
+In-Reply-To: <CAK=2Bxt=WK4AdktNZDN2iXjk3ga9WRqUm9JQHoNjRnrW8hVt0Q@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On 2024-04-30 1:41 am, Dmitry Baryshkov wrote:
-> On Tue, 30 Apr 2024 at 01:26, Robin Murphy <robin.murphy@arm.com> wrote:
->>
->> On 2024-04-29 5:31 pm, Dmitry Baryshkov wrote:
->>> On Fri, Apr 19, 2024 at 05:54:45PM +0100, Robin Murphy wrote:
->>>> It's somewhat hard to see, but arm64's arch_setup_dma_ops() should only
->>>> ever call iommu_setup_dma_ops() after a successful iommu_probe_device(),
->>>> which means there should be no harm in achieving the same order of
->>>> operations by running it off the back of iommu_probe_device() itself.
->>>> This then puts it in line with the x86 and s390 .probe_finalize bodges,
->>>> letting us pull it all into the main flow properly. As a bonus this lets
->>>> us fold in and de-scope the PCI workaround setup as well.
->>>>
->>>> At this point we can also then pull the call up inside the group mutex,
->>>> and avoid having to think about whether iommu_group_store_type() could
->>>> theoretically race and free the domain if iommu_setup_dma_ops() ran just
->>>> *before* iommu_device_use_default_domain() claims it... Furthermore we
->>>> replace one .probe_finalize call completely, since the only remaining
->>>> implementations are now one which only needs to run once for the initial
->>>> boot-time probe, and two which themselves render that path unreachable.
->>>>
->>>> This leaves us a big step closer to realistically being able to unpick
->>>> the variety of different things that iommu_setup_dma_ops() has been
->>>> muddling together, and further streamline iommu-dma into core API flows
->>>> in future.
->>>>
->>>> Reviewed-by: Lu Baolu <baolu.lu@linux.intel.com> # For Intel IOMMU
->>>> Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
->>>> Tested-by: Hanjun Guo <guohanjun@huawei.com>
->>>> Signed-off-by: Robin Murphy <robin.murphy@arm.com>
->>>> ---
->>>> v2: Shuffle around to make sure the iommu_group_do_probe_finalize() case
->>>>       is covered as well, with bonus side-effects as above.
->>>> v3: *Really* do that, remembering the other two probe_finalize sites too.
->>>> ---
->>>>    arch/arm64/mm/dma-mapping.c  |  2 --
->>>>    drivers/iommu/amd/iommu.c    |  8 --------
->>>>    drivers/iommu/dma-iommu.c    | 18 ++++++------------
->>>>    drivers/iommu/dma-iommu.h    | 14 ++++++--------
->>>>    drivers/iommu/intel/iommu.c  |  7 -------
->>>>    drivers/iommu/iommu.c        | 20 +++++++-------------
->>>>    drivers/iommu/s390-iommu.c   |  6 ------
->>>>    drivers/iommu/virtio-iommu.c | 10 ----------
->>>>    include/linux/iommu.h        |  7 -------
->>>>    9 files changed, 19 insertions(+), 73 deletions(-)
->>>
->>> This patch breaks UFS on Qualcomm SC8180X Primus platform:
->>>
->>>
->>> [    3.846856] arm-smmu 15000000.iommu: Unhandled context fault: fsr=0x402, iova=0x1032db3e0, fsynr=0x130000, cbfrsynra=0x300, cb=4
->>
->> Hmm, a context fault implies that the device did get attached to a DMA
->> domain, thus has successfully been through __iommu_probe_device(), yet
->> somehow still didn't get the right DMA ops (since that "IOVA" looks more
->> like a PA to me). Do you see the "Adding to IOMMU group..." message for
->> this device, and/or any other relevant messages or errors before this
->> point?
-> 
-> No, nothing relevant.
-> 
-> [    8.372395] ufshcd-qcom 1d84000.ufshc: Adding to iommu group 6
-> 
-> (please ignore the timestamp, it comes before ufshc being probed).
-> 
->> I'm guessing there's a fair chance probe deferral might be
->> involved as well. I'd like to understand what path(s) this ends up
->> taking through __iommu_probe_device() and of_dma_configure(), or at
->> least the number and order of probe attempts between the UFS and SMMU
->> drivers.
-> 
-> __iommu_probe_device() gets called twice and returns early because ops is NULL.
-> 
-> Then finally of_dma_configure_id() is called. The following branches are taken:
-> 
-> np == dev->of_node
-> of_dma_get_range() returned 0
-> bus_dma_limit and dma_range_map are set
-> __iommu_probe_device() is called, using the `!group->default_domain &&
-> !group_lis` case, then group->default_domain() is not NULL,
-> In the end, iommu_setup_dma_ops() is called.
-> 
-> Then the ufshc probe defers (most likely the PHY is not present or
-> some other device is not there yet).
+Dear Chia,
 
-Ah good, probe deferral. And indeed the half-formed hunch from last 
-night grew into a pretty definite idea by this morning... patch incoming.
 
-Thanks,
-Robin.
+Thank you for your reply. I am sorry, this causes so much trouble.
 
-> On the next (succeeding) try, of_dma_configure_id() is called again.
-> The call trace is more or less the same, except that
-> __iommu_probe_device() is not called
-> 
->> I'll stare at the code in the morning and see if I can spot any
->> overlooked ways in which what I think might be happening could happen,
->> but any more info to help narrow it down would be much appreciated.
->>
->> Thanks,
->> Robin.
->>
->>> [    3.846880] ufshcd-qcom 1d84000.ufshc: ufshcd_check_errors: saved_err 0x20000 saved_uic_err 0x0
->>> [    3.846929] host_regs: 00000000: 1587031f 00000000 00000300 00000000
->>> [    3.846935] host_regs: 00000010: 01000000 00010217 00000000 00000000
->>> [    3.846941] host_regs: 00000020: 00000000 00070ef5 00000000 00000000
->>> [    3.846946] host_regs: 00000030: 0000000f 00000001 00000000 00000000
->>> [    3.846951] host_regs: 00000040: 00000000 00000000 00000000 00000000
->>> [    3.846956] host_regs: 00000050: 032db000 00000001 00000000 00000000
->>> [    3.846962] host_regs: 00000060: 00000000 80000000 00000000 00000000
->>> [    3.846967] host_regs: 00000070: 032dd000 00000001 00000000 00000000
->>> [    3.846972] host_regs: 00000080: 00000000 00000000 00000000 00000000
->>> [    3.846977] host_regs: 00000090: 00000016 00000000 00000000 0000000c
->>> [    3.847074] ufshcd-qcom 1d84000.ufshc: ufshcd_err_handler started; HBA state eh_fatal; powered 1; shutting down 0; saved_err = 131072; saved_uic_err = 0; force_reset = 0
->>> [    4.406550] ufshcd-qcom 1d84000.ufshc: ufshcd_verify_dev_init: NOP OUT failed -11
->>> [    4.417953] ufshcd-qcom 1d84000.ufshc: ufshcd_async_scan failed: -11
+
+Am 30.04.24 um 12:04 schrieb Chia Li Hung:
+> Paul Menzel 於 2024年4月30日 週二 下午2:48寫道：
+
+>> Am 30.04.24 um 06:58 schrieb Kelly Hung:
+>>> For the warning message:
+>>> From: Kelly Hung '<ppighouse@gmail.com>' != 'Signed-off-by: Kelly Hung <Kelly_Hung@asus.com>'
 >>>
+>>> I replaced Kelly_Hung@asus.com with my private Gmail account.
+>>>
+>>> Due to a security issue with ASUS's mail server, I am unable to use
+>>> ASUS's mail system to send patches out from my build server.
+>>> So I executed git send-email using my private gmail account.
+>>
+>> To put light on ASUS’ upstream work, using your company address would be
+>> nice in my opinion. Do you have it configured everything in git
+>> (`~/.gitconfig`)?
+>>
+>>       git config --global user.name "Kelly Hung"
+>>       git config --global user.email Kelly_Hung@asus.com
+
+> Below is my git configuration.
+> [user]
+>          name = Kelly Hung
+>          email = Kelly_Hung@asus.com
+> [sendemail]
+>          smtpserver = smtp.gmail.com
+>          smtpEncryption = tls
+>          smtpUser = ppighouse@gmail.com
+>          smtpServerPort = 587
 > 
+> I made sure the "From" value after executing git format-patch was my ASUS
+> email address.
 > 
+> From: Kelly Hung <Kelly_Hung@asus.com>
+> Date: Thu, 29 Feb 2024 16:45:02 +0800
+> Subject: [PATCH v7 1/2] dt-bindings: arm: aspeed: add ASUS X4TF board
 > 
+> Since my smtp server is Gmail, when I run send-gmail it replaces my "From"
+> value with the Gmail account. I asked ASUS IT for assistance today and
+> tried to get an SMTP acount.
+
+*A thing you should know if you are using multiple email accounts with 
+`git send-email`* [1] says to use
+
+     git send-email --from ppighouse@gmail.com 000*.patch
+
+
+Kind regards,
+
+Paul
+
+
+[1]: https://sjp38.github.io/post/git_send_email_multiple_email_caution/
 
