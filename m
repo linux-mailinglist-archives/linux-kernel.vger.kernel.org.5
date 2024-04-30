@@ -1,110 +1,113 @@
-Return-Path: <linux-kernel+bounces-164297-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-164296-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 223E38B7BFB
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 17:41:45 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 829E38B7BF9
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 17:41:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D31182857F4
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 15:41:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 37B7A1F23065
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 15:41:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99FD8176FA3;
-	Tue, 30 Apr 2024 15:41:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 958ED172BD5;
+	Tue, 30 Apr 2024 15:40:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YX4MpSTm"
-Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com [209.85.208.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="VMh3nULY"
+Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [217.70.183.197])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5541D770F5;
-	Tue, 30 Apr 2024 15:41:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 91BF0770F5;
+	Tue, 30 Apr 2024 15:40:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.197
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714491663; cv=none; b=Xluunrp/E/DpeQA1O+SPCBU5Xh1lsEiIDj4o8tTChSyP8Ngl92QCIjMk+PzTsOcMXTCOfhGk50QXbC2kWZbW+di+337dhRhnrYGf3lntSYJi62gO6NJIwqf0wmZ+A7zpBZuH6BHZjhDTOBPeKig1WS13IjTWXJKP/kjRFsu+Veo=
+	t=1714491657; cv=none; b=VoAODF7EX3AK9dANg3177nulZfnEh1YTMkIpkGuolaInGhz3CoKSPW2CElQK/zqbptvcEZ2IBGBtdjSenwXnQpXjjiaKgLH+zPoTmuOOHUm7BZtEbRCrn4n7OPeCke8EyM9os229vyZqQLuacjsLxgQlf8yFrkBEFV4WBQbL23I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714491663; c=relaxed/simple;
-	bh=f6IqcFeBOCpWpa4vG7S+dRgb7PQm2Hc82dX1ztXa+5Y=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Z6XP3/yLXMEQSAw2Co8VjSKN18BYcqb6CnFjAeBRufcPKINySHtF6tX5sx9Gjv3gZJC6qoSgeciNyiEhEC9N9lnEgWES/ySbGrYf5Bf8p4aZtEDn6ix/QCmAkpAE9oupYQomoWswlV2QKgGcy4n4OzrgrbHKmYUtSCiJJFd6w3s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YX4MpSTm; arc=none smtp.client-ip=209.85.208.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f169.google.com with SMTP id 38308e7fff4ca-2e10b6e2bacso7408371fa.0;
-        Tue, 30 Apr 2024 08:41:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714491660; x=1715096460; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=HktqAitX/MFbl8Jl2t5m5ekVWv2NVSNp30OIaNycsOg=;
-        b=YX4MpSTmm/b3Up98/2cWLzaS4hN1qZ8tdHqTr6Sr9Ii/E7JlA2jWYCi5kvsOWbQS0F
-         LUvSiZgrGWuOpEF4VDzrjHjedlENPtxCUOE6QsTPr8ian2MG/yK3CPCXPsCcnH+9AlN5
-         dKwEMU/rVrKSc58V7zcYftF9MGJZMhikxCwBRkUfXDGUtxzCvKnKAFnN0ZJXxFAqu08e
-         J8t5NfAMszcRqS5hyXYMBjToEG3dGS7+q7v9eYsQNOF/vuWNtPLGhwTLTL20pLqmYNHc
-         bjEu7+azmmDRVFiDUHiYnGZyzQXwbdLqZsz8yeZDfyYhNKhIJlTmKk90SI1ZDNfSIb0o
-         a4cA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714491660; x=1715096460;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=HktqAitX/MFbl8Jl2t5m5ekVWv2NVSNp30OIaNycsOg=;
-        b=oOemjloDRRM8THokoAC+/GtT4fMhQ+A7Escz4Cr9MZ9Z1K2mgZccW+csQ2t3Phry2W
-         0oCdioaWpVqQJX8opj96HKJeF9ztZGmJfTfwQBV+wcftjj8HnQFrQBrzKyfQ0gt2ikTL
-         BqPrvCKi90jM1L0q3S3Ar1w1S7RahghzhZ4EerWyw1bmy0/OSLaMww/j8XZUWXA45PN2
-         bCDa2BpJik5oQ9nhGhfwZnqunCXa75V4lzk1nd/mSYqfq/87vwMUupHnxo5oOKhGMkG0
-         w4L9HIbh1XWquFuhtSmdc/CKdWCsop41qm4/Gk/klL3BEdlWv6zTlLgoann0yMm2Shck
-         sKEQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUxyy1852J9oPrygDB1OkEtos/4YBdRQre+Z9n7y9aUVfnuwKGoWiLMvavu/m9OflfRUtESf+/pAAHP6wgQtaO3nNRBpGCSeM33mAuTBeGSFe3DiP77YzmQXjEy6KoSaaTkKdVYiLtP/RviRw==
-X-Gm-Message-State: AOJu0Yy2yghjOMuytJ7YRQHMlLETlAOnZiLJwWJSRoaWyjbA4G4tlfNA
-	DZmPZ22JF/3/1DNUMKPZrQaKzRNwYGb5AZ++50b/muO40pDJNLrXwmn9mIf1U7ngcEMcla+TBIu
-	sRsOwvhenklyaKLm1dfhLf3IUJDg=
-X-Google-Smtp-Source: AGHT+IG8HZi5mm/vVlVqKzeYyGwgwHQuIG8Dud5BOqVzlJHHrAvxS6dc1LaLoIjZ8FytpPc1dV7Iv1vI9mO9znyrWMQ=
-X-Received: by 2002:a2e:b747:0:b0:2e0:4cbb:858a with SMTP id
- k7-20020a2eb747000000b002e04cbb858amr39154ljo.27.1714491660173; Tue, 30 Apr
- 2024 08:41:00 -0700 (PDT)
+	s=arc-20240116; t=1714491657; c=relaxed/simple;
+	bh=Bqw3IsZ8vcRPqDodfPPnFBRWgVK31l21uLdf4lwzVEM=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=j/Y6zyQ+mC9p6bbQ1rgnDjGPKrDpzJrD0nCDSouu1Yp8EUZhkfVKaQviGMXp/skd6tPmgIZo5hQd4PGZdcijHfGj45r1c2s4wEGd7ZzwWqCa6ZtCEM6B14FFn8VyARi3bzU6e3Mbu/SD1Muqxn5mDn3ucmuYwcM3DXrblM1DC0k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=VMh3nULY; arc=none smtp.client-ip=217.70.183.197
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 4733C1C0003;
+	Tue, 30 Apr 2024 15:40:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1714491647;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=G0CBebPXkOcJbQJyeGur7JrerjS7KJc+NjEpyOTbDoI=;
+	b=VMh3nULYKBzJIBVAFVTlMWkdIcZ+reJKsiZ0V0jPi72UTrWXlChhWgDXg3eE9SIA85Wl2j
+	VczEh72WUPIYeF0/qlHU2dA5NvL58G4x10XgWKFuBVBxgqnhvAx3fJAYfak1fX9mOVzqma
+	L7tkgp4biVVl6gyO5P1TGLI0XlALQkbEGUnoOlgZ75P4ycMfbBUnS/dXCjpkbfIylprdWs
+	Mma8zxDmSadEn9l2NsiYXyRcHBL04zgrkRe9hKDVtVCGPYKW5y4rQeCXDLq6S9+Yxc8jAY
+	V4mP/TKsCe04bwwjflLmyosk8vsxalY7bsE5QxkVnIQdgLYzGaiJZ7WmN8fb5Q==
+Date: Tue, 30 Apr 2024 17:40:44 +0200
+From: Herve Codina <herve.codina@bootlin.com>
+To: Andrew Lunn <andrew@lunn.ch>
+Cc: Thomas Gleixner <tglx@linutronix.de>, Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley
+ <conor+dt@kernel.org>, "David S. Miller" <davem@davemloft.net>, Eric
+ Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo
+ Abeni <pabeni@redhat.com>, Lee Jones <lee@kernel.org>, Arnd Bergmann
+ <arnd@arndb.de>, Horatiu Vultur <horatiu.vultur@microchip.com>,
+ UNGLinuxDriver@microchip.com, Heiner Kallweit <hkallweit1@gmail.com>,
+ Russell King <linux@armlinux.org.uk>, Saravana Kannan
+ <saravanak@google.com>, Bjorn Helgaas <bhelgaas@google.com>, Philipp Zabel
+ <p.zabel@pengutronix.de>, Lars Povlsen <lars.povlsen@microchip.com>, Steen
+ Hegelund <Steen.Hegelund@microchip.com>, Daniel Machon
+ <daniel.machon@microchip.com>, Alexandre Belloni
+ <alexandre.belloni@bootlin.com>, linux-kernel@vger.kernel.org,
+ devicetree@vger.kernel.org, netdev@vger.kernel.org,
+ linux-pci@vger.kernel.org, linux-arm-kernel@lists.infradead.org, Allan
+ Nielsen <allan.nielsen@microchip.com>, Luca Ceresoli
+ <luca.ceresoli@bootlin.com>, Thomas Petazzoni
+ <thomas.petazzoni@bootlin.com>
+Subject: Re: [PATCH 07/17] net: mdio: mscc-miim: Handle the switch reset
+Message-ID: <20240430174044.606c2ed4@bootlin.com>
+In-Reply-To: <74e40e5d-e71f-4909-811e-7e9fc1120360@lunn.ch>
+References: <20240430083730.134918-1-herve.codina@bootlin.com>
+	<20240430083730.134918-8-herve.codina@bootlin.com>
+	<74e40e5d-e71f-4909-811e-7e9fc1120360@lunn.ch>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-redhat-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240429190500.30979-1-ryncsn@gmail.com> <20240429190500.30979-6-ryncsn@gmail.com>
- <SA0PR21MB1898817BA920C2A45660DE65E41B2@SA0PR21MB1898.namprd21.prod.outlook.com>
-In-Reply-To: <SA0PR21MB1898817BA920C2A45660DE65E41B2@SA0PR21MB1898.namprd21.prod.outlook.com>
-From: Kairui Song <ryncsn@gmail.com>
-Date: Tue, 30 Apr 2024 23:40:43 +0800
-Message-ID: <CAMgjq7ADnn+uEL0jY676rk6+9cFWgrZxMCZ2m2qf1GM87Eav9Q@mail.gmail.com>
-Subject: Re: [EXTERNAL] [PATCH v3 05/12] cifs: drop usage of page_file_offset
-To: Steven French <Steven.French@microsoft.com>
-Cc: "linux-mm@kvack.org" <linux-mm@kvack.org>, Andrew Morton <akpm@linux-foundation.org>, 
-	"Huang, Ying" <ying.huang@intel.com>, Matthew Wilcox <willy@infradead.org>, Chris Li <chrisl@kernel.org>, 
-	Barry Song <v-songbaohua@oppo.com>, Ryan Roberts <ryan.roberts@arm.com>, Neil Brown <neilb@suse.de>, 
-	Minchan Kim <minchan@kernel.org>, Hugh Dickins <hughd@google.com>, 
-	David Hildenbrand <david@redhat.com>, Yosry Ahmed <yosryahmed@google.com>, 
-	"linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>, 
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Namjae Jeon <linkinjeon@kernel.org>, 
-	"Paulo Alcantara (SUSE)" <pc@manguebit.com>, Shyam Prasad <Shyam.Prasad@microsoft.com>, 
-	Bharath S M <bharathsm@microsoft.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-GND-Sasl: herve.codina@bootlin.com
 
-On Tue, Apr 30, 2024 at 4:19=E2=80=AFAM Steven French
-<Steven.French@microsoft.com> wrote:
->
-> Wouldn't this make it harder to fix the regression when swap file support=
- was temporarily removed from cifs.ko (due to the folio migration)?   I was=
- hoping to come back to fixing swapfile support for cifs.ko in 6.10-rc (whi=
-ch used to pass the various xfstests for this but code got removed with fol=
-ios/netfs changes).
->
+Hi Andrew,
 
-Hi Steven,
+On Tue, 30 Apr 2024 15:46:18 +0200
+Andrew Lunn <andrew@lunn.ch> wrote:
 
-I think this won't cause any trouble for that, the new swap_rw
-interface should have splitted the swap cache from fs side, which made
-the code struct cleaner, and I think that's the right path. NFS is
-using that already. With this interface, .read_folio (cifs_read_folio)
-should never be called for swap cache folios.
+> On Tue, Apr 30, 2024 at 10:37:16AM +0200, Herve Codina wrote:
+> > The mscc-miim device can be impacted by the switch reset, at least when
+> > this device is part of the LAN966x PCI device.  
+> 
+> Just to be sure i understand this correctly. The MDIO bus master can
+> be reset using the "switch" reset. So you are adding code to ensure
+> the "switch" reset is out of reset state, so the MDIO bus master
+> works.
+
+Exactly.
+
+> 
+> Given that this is a new property, maybe give it a better name to
+> indicate it resets both the switch and the MDIO bus master?
+> 
+
+Replied in the patch in the same series introducing the property
+  [PATCH 06/17] dt-bindings: net: mscc-miim: Add resets property
+
+Thanks for the feedback.
+Best regards,
+Hervé
 
