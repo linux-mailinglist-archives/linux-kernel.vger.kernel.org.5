@@ -1,192 +1,186 @@
-Return-Path: <linux-kernel+bounces-164703-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-164704-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E042D8B815B
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 22:25:11 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 93A828B815E
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 22:27:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1BE601C22B62
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 20:25:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 09AB31F239C7
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 20:27:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3DEEE1A0AEE;
-	Tue, 30 Apr 2024 20:25:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CDB9C1A0AF0;
+	Tue, 30 Apr 2024 20:26:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="m4o0H8CN"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dOpSz+E5"
+Received: from mail-qv1-f46.google.com (mail-qv1-f46.google.com [209.85.219.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A81C18412A;
-	Tue, 30 Apr 2024 20:24:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9949718412A;
+	Tue, 30 Apr 2024 20:26:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714508700; cv=none; b=QHzXOd42SisuQAPTpOA42NHt3y58SX9VE1Kh/RK53mrUb+PusvLx5D4HT/IbmTVtnC3DwHBrcNBcpKZzB9nrmeVR1pPfQLlU6YjGIbxOCroA+0lph8q6oZdpqIWICnq30T4Y/HjPcMBTAPUp/k2oaXjDkM1qYa5qZ70M1l1xhPU=
+	t=1714508819; cv=none; b=iiZzPlguf5vp5u/S1UVGYO6GHxRc5jUmx5xemPJERDlcICmNTR+d2Zqwe3X51N38cIg1OrrQrznTrtDktgGof5W2D0rvS87R+Vt1fqOmbPFd/ERNQBuFpZdjBZoNNyi2r8rvbjiIvfm54XEgdZOcaQCwJhWIOGJPJg0YIfeQO98=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714508700; c=relaxed/simple;
-	bh=YK0ojQVxvVKavdRF62uiNBOU2ZXdClhDIYj2p8To/K8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=eKPWfbYg77zikY6zZVYcqtF4KyAhxxsJhFZJq3Gn/ko2KkznEtIQXaJU9Pra3h8L09txvplQYc0P7BkGZpubQ5xHWlXKY9IuQy7e1a24A0Dd5zInsdzvnicJZB8V33AjOeEx4InFmol+//yq5ZDFK6YdGdWZSNRTVzcM1gq6Mt8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=m4o0H8CN; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9AF84C2BBFC;
-	Tue, 30 Apr 2024 20:24:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714508699;
-	bh=YK0ojQVxvVKavdRF62uiNBOU2ZXdClhDIYj2p8To/K8=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=m4o0H8CNPOm4vbL22XkO3NBODXBP2RQxKga431SeRHapVBS6EZf3LpvX51Oxhn5Mr
-	 +5YJ8XrTkgqKDigdBnOIjPsCi0snH2cr8XBTCyHrOjVs4YeIMFw7sjXmu+z0HEV3tK
-	 haV3pwJtRzTnr9+FoRS2Fhniuppwk8ygYVCIwSEUMja07zPXlTbCB84N0RpfSGyuHn
-	 xw4KULT2KjHcjVMTcYiheycAb8TU4fPOAlFMEBjXyfrjJyyK4V2s6Co9jXbrjHvV+p
-	 5p8VyLLO8dRyeCSR7nnsq7pAvG2mmwDiG/i/NkRcxZJXvBEIP9iMkeb2546N7O0vh4
-	 pa5PE8ivPLC+Q==
-Date: Tue, 30 Apr 2024 21:24:51 +0100
-From: Simon Horman <horms@kernel.org>
-To: Herve Codina <herve.codina@bootlin.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>, Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzk+dt@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Lee Jones <lee@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-	Horatiu Vultur <horatiu.vultur@microchip.com>,
-	UNGLinuxDriver@microchip.com, Andrew Lunn <andrew@lunn.ch>,
-	Heiner Kallweit <hkallweit1@gmail.com>,
-	Russell King <linux@armlinux.org.uk>,
-	Saravana Kannan <saravanak@google.com>,
-	Bjorn Helgaas <bhelgaas@google.com>,
-	Philipp Zabel <p.zabel@pengutronix.de>,
-	Lars Povlsen <lars.povlsen@microchip.com>,
-	Steen Hegelund <Steen.Hegelund@microchip.com>,
-	Daniel Machon <daniel.machon@microchip.com>,
-	Alexandre Belloni <alexandre.belloni@bootlin.com>,
-	linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-	netdev@vger.kernel.org, linux-pci@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	Allan Nielsen <allan.nielsen@microchip.com>,
-	Luca Ceresoli <luca.ceresoli@bootlin.com>,
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: Re: [PATCH 12/17] irqchip: Add support for LAN966x OIC
-Message-ID: <20240430202451.GF2575892@kernel.org>
-References: <20240430083730.134918-1-herve.codina@bootlin.com>
- <20240430083730.134918-13-herve.codina@bootlin.com>
+	s=arc-20240116; t=1714508819; c=relaxed/simple;
+	bh=E47vfWHhgdEa6VDSww86DfgZL2xl0Ve2ZRdE0ayf/uI=;
+	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
+	 Mime-Version:Content-Type; b=Y+Jee6/x30iBRf3mw748NtvsKJZo1k20zQn7cqnBaCwDFbc64b4gEWIYXJw2HQnoFgPiDD8/6GBrz5TCDARli2F4hVxC2DORu0BYaFt64YOFyzLSU6WJ5NrE2E/HeRmqcEvxP1CAekx6so/72m5sd3YJCFzvFsNJ6NxLm1mzvK4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dOpSz+E5; arc=none smtp.client-ip=209.85.219.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qv1-f46.google.com with SMTP id 6a1803df08f44-69b5ece41dfso25776326d6.2;
+        Tue, 30 Apr 2024 13:26:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1714508816; x=1715113616; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=E47vfWHhgdEa6VDSww86DfgZL2xl0Ve2ZRdE0ayf/uI=;
+        b=dOpSz+E51HvmqeLOwgnXEBW9XEOb8gutuM+CaM3P9T9NOWbfHvIq2l/H08svS8tVNX
+         X0oJjyEcmoFfwJPdHtHO2ZNtKBNC539rMTyMLI3rvoRRw49fq0vEnNTvYNLl6ErPAp5R
+         MYk8o2WMA7S/q1zejb1/zs1rTSKVQhnPPVODRS1Aaxk3BuWZbdwpGnZ+bexhKa3H3QHk
+         kH1a+F51b1cBOO1PVtPzLrBqtmQKYalzzOmmTPcoTf+n0qYTCAr1muhdPp1rKoJ4tMtM
+         qbpZUSLuUq32wvQW2ZBnGZ7gaqEfY4p+cE2ndha+mFsl33B80sGWdE7CN7bnuzB8JOVD
+         9g1A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714508816; x=1715113616;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=E47vfWHhgdEa6VDSww86DfgZL2xl0Ve2ZRdE0ayf/uI=;
+        b=jtgXstx2Vx9PdEakWD/qMnXaP7szHWTfJCGUq4OS7iGtAzFOM7uqYZhoUmXoqVkzFl
+         3Vz/L3d0O2b0NL+evurqJxJK01EHs1f/5QPM+0X4gYZAii7SrGWP29VllgSkZBVPozk2
+         erX1NlQJd38wsv85YkEU9BSByqlYZd3PjM/XbKSfEdVuUhGacTuxFW1Btk+V3I5egToU
+         acfpkXZBh5oEXqoj4WqGZJQZy0bgU8ns9HMRUvO8eKSiB4WoBi2NFyADnIDHgpwyXGpL
+         qCsv0OdLdjlPoDFO1sxjbBT7CisypMzgf1JTjv3OHv4GRpEoxUKky8oLs4lSKxiCdLOL
+         Ci9w==
+X-Forwarded-Encrypted: i=1; AJvYcCVS1Ic96gFtj+cV8EOzhpqTnSyuZpJUeO/+ok+MLak653m/kuZQuIz9T6xM8ndqgAWWC9g625g25V6tGHqm8IglXKUioLOZouKlksw6eq0lYJ+lWWDVjI+dlZl+kIJ8R6IzMDFmrz8CWfUV36uMNXAQqO3+qjyLm7Zq
+X-Gm-Message-State: AOJu0Ywjf6gmHogJxxkzxahItAdMenDzQwAqS3pdV8v3mKrKG29QwfKZ
+	3tOCnA/nSDOawM52Y8fRznJuOPG9d3SINA94tmff8xZHJ4UKjzqh
+X-Google-Smtp-Source: AGHT+IH5xPp90KMXlMcTQ6n4sKv4HMLPSgkmdoyvuageJ8UukZuwiF/Rzto7QPz/r7BeQYjF7sv9Rg==
+X-Received: by 2002:a05:6214:2628:b0:69b:5d39:f556 with SMTP id gv8-20020a056214262800b0069b5d39f556mr487369qvb.1.1714508816411;
+        Tue, 30 Apr 2024 13:26:56 -0700 (PDT)
+Received: from localhost (164.146.150.34.bc.googleusercontent.com. [34.150.146.164])
+        by smtp.gmail.com with ESMTPSA id l19-20020ad44453000000b006a0ef060a2esm28974qvt.53.2024.04.30.13.26.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 30 Apr 2024 13:26:41 -0700 (PDT)
+Date: Tue, 30 Apr 2024 16:26:33 -0400
+From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+To: "Abhishek Chauhan (ABC)" <quic_abchauha@quicinc.com>, 
+ Martin KaFai Lau <martin.lau@linux.dev>, 
+ Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Cc: "David S. Miller" <davem@davemloft.net>, 
+ Eric Dumazet <edumazet@google.com>, 
+ Jakub Kicinski <kuba@kernel.org>, 
+ Paolo Abeni <pabeni@redhat.com>, 
+ netdev@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, 
+ Andrew Halaney <ahalaney@redhat.com>, 
+ Martin KaFai Lau <martin.lau@kernel.org>, 
+ Daniel Borkmann <daniel@iogearbox.net>, 
+ bpf <bpf@vger.kernel.org>, 
+ kernel@quicinc.com
+Message-ID: <663153f92a297_33210f29423@willemb.c.googlers.com.notmuch>
+In-Reply-To: <6eb5b283-a9bd-4081-8bce-a60d72af430c@quicinc.com>
+References: <20240424222028.1080134-1-quic_abchauha@quicinc.com>
+ <20240424222028.1080134-3-quic_abchauha@quicinc.com>
+ <2b2c3eb1-df87-40fe-b871-b52812c8ecd0@linux.dev>
+ <e761e1de-0e11-4541-a4db-a1b793a60674@quicinc.com>
+ <379558fe-a6e2-444b-a6a7-ef233efa8311@linux.dev>
+ <6eb5b283-a9bd-4081-8bce-a60d72af430c@quicinc.com>
+Subject: Re: [RFC PATCH bpf-next v5 2/2] net: Add additional bit to support
+ clockid_t timestamp type
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240430083730.134918-13-herve.codina@bootlin.com>
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Apr 30, 2024 at 10:37:21AM +0200, Herve Codina wrote:
-> The Microchip LAN966x outband interrupt controller (OIC) maps the
-> internal interrupt sources of the LAN966x device to an external
-> interrupt.
-> When the LAN966x device is used as a PCI device, the external interrupt
-> is routed to the PCI interrupt.
-> 
-> Signed-off-by: Herve Codina <herve.codina@bootlin.com>
+Abhishek Chauhan (ABC) wrote:
+> =
 
-Hi Herve,
+> =
 
-> +static int lan966x_oic_probe(struct platform_device *pdev)
-> +{
-> +	struct device_node *node = pdev->dev.of_node;
-> +	struct lan966x_oic_data *lan966x_oic;
-> +	struct device *dev = &pdev->dev;
-> +	struct irq_chip_generic *gc;
-> +	int ret;
-> +	int i;
-> +
-> +	lan966x_oic = devm_kmalloc(dev, sizeof(*lan966x_oic), GFP_KERNEL);
-> +	if (!lan966x_oic)
-> +		return -ENOMEM;
-> +
-> +	lan966x_oic->regs = devm_platform_ioremap_resource(pdev, 0);
-> +	if (IS_ERR(lan966x_oic->regs))
-> +		return dev_err_probe(dev, PTR_ERR(lan966x_oic->regs),
-> +				     "failed to map resource\n");
-> +
-> +	lan966x_oic->domain = irq_domain_alloc_linear(of_node_to_fwnode(node),
-> +						      LAN966X_OIC_NR_IRQ,
-> +						      &irq_generic_chip_ops, NULL);
+> On 4/26/2024 4:50 PM, Martin KaFai Lau wrote:
+> > On 4/26/24 11:46 AM, Abhishek Chauhan (ABC) wrote:
+> >>>> diff --git a/net/ipv4/ip_output.c b/net/ipv4/ip_output.c
+> >>>> index 591226dcde26..f195b31d6e75 100644
+> >>>> --- a/net/ipv4/ip_output.c
+> >>>> +++ b/net/ipv4/ip_output.c
+> >>>> @@ -1457,7 +1457,7 @@ struct sk_buff *__ip_make_skb(struct sock *s=
+k,
+> >>>> =C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 skb->priority =3D (cor=
+k->tos !=3D -1) ? cork->priority: READ_ONCE(sk->sk_priority);
+> >>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 skb->mark =3D cork->mark;
+> >>>> -=C2=A0=C2=A0=C2=A0 skb->tstamp =3D cork->transmit_time;
+> >>>> +=C2=A0=C2=A0=C2=A0 skb_set_tstamp_type_frm_clkid(skb, cork->trans=
+mit_time, sk->sk_clockid);
+> >>> hmm... I think this will break for tcp. This sequence in particular=
+:
 
-nit: Please consider limiting lines to 80 columns wide in Networking code.
+Good catch, thanks!
 
-> +	if (!lan966x_oic->domain) {
-> +		dev_err(dev, "failed to create an IRQ domain\n");
-> +		return -EINVAL;
-> +	}
-> +
-> +	lan966x_oic->irq = platform_get_irq(pdev, 0);
-> +	if (lan966x_oic->irq < 0) {
-> +		dev_err_probe(dev, lan966x_oic->irq, "failed to get the IRQ\n");
-> +		goto err_domain_free;
+> >>>
+> >>> tcp_v4_timewait_ack()
+> >>> =C2=A0=C2=A0 tcp_v4_send_ack()
+> >>> =C2=A0=C2=A0=C2=A0=C2=A0 ip_send_unicast_reply()
+> >>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ip_push_pending_frames()
+> >>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ip_finish_skb()
+> >>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 __ip_m=
+ake_skb()
+> >>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0 /* sk_clockid is REAL but cork->transmit_time should be in mono */
+> >>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0 skb_set_tstamp_type_frm_clkid(skb, cork->transmit_time, sk->sk_clocki=
+d);;
+> >>>
+> >>> I think I hit it from time to time when running the test in this pa=
+tch set.
+> >>>
+> >> do you think i need to check for protocol type here . since tcp uses=
+ Mono and the rest according to the new design is based on
+> >> sk->sk_clockid
+> >> if (iph->protocol =3D=3D IPPROTO_TCP)
+> >> =C2=A0=C2=A0=C2=A0=C2=A0skb_set_tstamp_type_frm_clkid(skb, cork->tra=
+nsmit_time, CLOCK_MONOTONIC);
+> >> else
+> >> =C2=A0=C2=A0=C2=A0=C2=A0skb_set_tstamp_type_frm_clkid(skb, cork->tra=
+nsmit_time, sk->sk_clockid);
+> > =
 
-Hi,
+> > Looks ok. iph->protocol is from sk->sk_protocol. I would defer to Wil=
+lem input here.
+> > =
 
-This will result in the function returning ret.
-However, ret is uninitialised here.
+> > There is at least one more place that needs this protocol check, __ip=
+6_make_skb().
+> =
 
-Flagged by W=1 builds with clang-18, and Smatch.
+> Sounds good. I will wait for Willem to comment here. =
 
-> +	}
-> +
-> +	ret = irq_alloc_domain_generic_chips(lan966x_oic->domain, 32, 1, "lan966x-oic",
-> +					     handle_level_irq, 0, 0, 0);
-> +	if (ret) {
-> +		dev_err_probe(dev, ret, "failed to alloc irq domain gc\n");
-> +		goto err_domain_free;
-> +	}
-> +
-> +	/* Init chips */
-> +	BUILD_BUG_ON(DIV_ROUND_UP(LAN966X_OIC_NR_IRQ, 32) != ARRAY_SIZE(lan966x_oic_chip_regs));
-> +	for (i = 0; i < ARRAY_SIZE(lan966x_oic_chip_regs); i++) {
-> +		gc = irq_get_domain_generic_chip(lan966x_oic->domain, i * 32);
-> +		lan966x_oic_chip_init(lan966x_oic, gc, &lan966x_oic_chip_regs[i]);
-> +	}
-> +
-> +	irq_set_chained_handler_and_data(lan966x_oic->irq, lan966x_oic_irq_handler,
-> +					 lan966x_oic->domain);
-> +
-> +	irq_domain_publish(lan966x_oic->domain);
-> +	platform_set_drvdata(pdev, lan966x_oic);
-> +	return 0;
-> +
-> +err_domain_free:
-> +	irq_domain_free(lan966x_oic->domain);
-> +	return ret;
-> +}
-> +
-> +static void lan966x_oic_remove(struct platform_device *pdev)
-> +{
-> +	struct lan966x_oic_data *lan966x_oic = platform_get_drvdata(pdev);
-> +	struct irq_chip_generic *gc;
-> +	int i;
-> +
-> +	for (i = 0; i < ARRAY_SIZE(lan966x_oic_chip_regs); i++) {
-> +		gc = irq_get_domain_generic_chip(lan966x_oic->domain, i * 32);
-> +		lan966x_oic_chip_exit(gc);
-> +	}
-> +
-> +	irq_set_chained_handler_and_data(lan966x_oic->irq, NULL, NULL);
-> +
-> +	for (i = 0; i < LAN966X_OIC_NR_IRQ; i++)
-> +		irq_dispose_mapping(irq_find_mapping(lan966x_oic->domain, i));
-> +
-> +	irq_domain_unpublish(lan966x_oic->domain);
-> +
-> +	for (i = 0; i < ARRAY_SIZE(lan966x_oic_chip_regs); i++) {
-> +		gc = irq_get_domain_generic_chip(lan966x_oic->domain, i * 32);
-> +		irq_remove_generic_chip(gc, ~0, 0, 0);
-> +	}
-> +
-> +	kfree(lan966x_oic->domain->gc);
-> +	irq_domain_free(lan966x_oic->domain);
-> +}
 
-..
+This would be sk_is_tcp(sk).
+
+I think we want to avoid special casing if we can. Note the if.
+
+If TCP always uses monotonic, we could consider initializing
+sk_clockid to CLOCK_MONONOTIC in tcp_init_sock.
+
+I guess TCP logic currently entirely ignores sk_clockid. If we are to
+start using this, then setsocktop SO_TXTIME must explicitly fail or
+ignore for TCP sockets, or silently skip the write.
+
+All of that is more complexity. Than is maybe warranted for this one
+case. So no objections from me to special casing using sk_is_tcp(sk)
+either.
+
+
+
+
 
