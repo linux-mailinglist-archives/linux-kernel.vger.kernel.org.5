@@ -1,157 +1,120 @@
-Return-Path: <linux-kernel+bounces-164773-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-164774-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C47FD8B82AD
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 00:28:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id DA7028B82B0
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 00:33:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3BFB81F2409D
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 22:28:16 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 776B81F240FE
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 22:33:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D3721BF6F5;
-	Tue, 30 Apr 2024 22:28:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4F031B806;
+	Tue, 30 Apr 2024 22:33:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="Sbv0F32G"
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
+	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="Zv3w7/W0"
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F1A5129E72;
-	Tue, 30 Apr 2024 22:28:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.32.30.218
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37DE61FB4
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 22:33:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714516084; cv=none; b=MtwlwYNaTkaw4s1PmC3XEdjNUiAB2Ty4X9BkARNN/EQ4mluLNfDo2TWRYUhAbt0CHwStlmNOXLQUmqWlwh9QX2DjDUGYY0KE7TXYH43SmO3A+1qIcePmWqwil+JSKHR2+vFgWEPyb0+V31C4Xzlc3AEbMup/7bwfKgV5CA41MlM=
+	t=1714516412; cv=none; b=PKzcrIyYOWZVMaPn1EwcN7vznoC0qt8SL2+gyhILBaR3h0lc59yFTLp5PFTkqNG+oTKNDA6DjBhsuvPAcb210biNj4bnjV8RrbPxecPVkSciz6U/9PZkTCF7glZiLl51In900YaIU9nOFZVIwu34Tr+e+b6HiahQqbfX9wsHW1U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714516084; c=relaxed/simple;
-	bh=nCJ0j4T5hcnbSsOaAdtHnGckQLLph1fsGdcwW2w7Eh8=;
+	s=arc-20240116; t=1714516412; c=relaxed/simple;
+	bh=qVJzWg+P1aUqzTwhiutG7+knLlfh5JCpEUlUhqGtNbE=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=hRn5aufRPn/zFXNa6+RVqV4ItliGUMNluAdRVD4Seth5xuQhWV9jEqxVjW2gcv2MasHzhCzMWfuQ4a+BYNHr88gl+hQh+XiEXWHyfwVH3PoN3yhJYuFHisQ3oUyki0kgCQOPz6aMHorOwuUL1Puqd7c5iz5pWn1I0gw7XI2ByUs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk; spf=none smtp.mailfrom=armlinux.org.uk; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=Sbv0F32G; arc=none smtp.client-ip=78.32.30.218
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=Yo2VxZsGCYZGIZ1iS7RdDXRNSVG5Zc5WRZQlm2xWZTE=; b=Sbv0F32G1WJNqNmKwl+BjKKsjQ
-	taUGuGreIgQM9ex/bGom+ZIufrHq9cCJaxAesAVLWX6DGD1wGTkwDhgAmAoCWT6hA3ydUCtoBuJQH
-	f8dcr4IJ4crgFIuFqGHD+53AX8Dv851y/23Biae8UyIlQ2LI7Xup/FPxZpb/Fk8DS72UIqo+SZlUP
-	6rLCVSsNDYrFqJeOIv7y4FZumdk3EMzJK/kRiyTh7pmRhIVy7q8EhKpolwlAzyyIDZfJx7K/oTQs4
-	mSUw/kdbzh9CEmZou3JB7gYXwv56kT03R/2iQu09ICUUGoxOceImRJe2YCQzTbAH4A++ODwbT/jhC
-	wsyWSVYQ==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:58144)
-	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <linux@armlinux.org.uk>)
-	id 1s1vwn-0005Zf-0r;
-	Tue, 30 Apr 2024 23:27:37 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-	(envelope-from <linux@shell.armlinux.org.uk>)
-	id 1s1vwh-00027o-L9; Tue, 30 Apr 2024 23:27:31 +0100
-Date: Tue, 30 Apr 2024 23:27:31 +0100
-From: "Russell King (Oracle)" <linux@armlinux.org.uk>
-To: Daniel Golle <daniel@makrotopia.org>
-Cc: =?utf-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>,
-	Felix Fietkau <nbd@nbd.name>, Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzk+dt@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>, Simon Horman <horms@kernel.org>,
-	DENG Qingfang <dqfext@gmail.com>,
-	Sean Wang <sean.wang@mediatek.com>, Andrew Lunn <andrew@lunn.ch>,
-	Florian Fainelli <f.fainelli@gmail.com>,
-	Vladimir Oltean <olteanv@gmail.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Matthias Brugger <matthias.bgg@gmail.com>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-	Landen Chao <Landen.Chao@mediatek.com>, devicetree@vger.kernel.org,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-mediatek@lists.infradead.org
-Subject: Re: [PATCH net v2] net: dsa: mt7530: fix impossible MDIO address and
- issue warning
-Message-ID: <ZjFwU24kReNJHKdY@shell.armlinux.org.uk>
-References: <11f5f127d0350e72569c36f9060b6e642dfaddbb.1714514208.git.daniel@makrotopia.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=t0Qei038FGmDwgnTRjxcDEJqkhzWXcMtpDL44Usa3fQscV8xTFiZzJnlVDze31NfhsK33s8PLYMGlTijldouQQAYtXvIX0aKn9D365gATTEgiJo4Yxtob8HONu2zGyL9HAKHJRnRcL9QB9p9ThogCyCMvkQuzWEgTpHDKhW0OoI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=Zv3w7/W0; arc=none smtp.client-ip=65.109.113.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 202C540E01E8;
+	Tue, 30 Apr 2024 22:33:22 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+	header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id Lfpg0u3yzQ3G; Tue, 30 Apr 2024 22:33:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1714516399; bh=DlvATvaWxygVgSVb7uWjq/ccZzNWV0VAB/UNxxNHk3U=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Zv3w7/W0pMY64ilgG37lz2oezELHaq86PPyeHWJw3n9wA7oad25UbVnPcfCPnU+ok
+	 3dQRsUtD3gCdkkXBUUhHin8/EWbalP85DitVoG4GWMsphM7Y1eu42clmSyAjIyAM6W
+	 Objc6wIV5OlCkjBKP/utzBWIpFd90xcJYmGHLLRvr8Z5XjLayCtL5tgM+1RTmpg0Co
+	 MsRphpUPmv1b17K9uU4a7HXh27mJPWBsnbQUeHCB39/SWuOgLXXOA43IJ/VNHl0Fkk
+	 2TT7kYaSIQjy3UoUe6K1aatPH2IieJNmYYwHq3W1xORY+IOpvlPpPZ/je5he8Jg+1u
+	 otGd5aCs8QOD0S+rLjCpYtZZp8xvUd8NeBMP78UWFVcoy5seHImaeMCqLgU0+ZYtR9
+	 XRLcdJVWQwCqzf5MfbdNTOFhtTusS3yTDZTpoQyyQOpowmqNTqV87I5HjT/Oaxg3vu
+	 3CiTDJ3Wv5xd2JtE3gzPG+SEi4EE16nr5UEUG4uBHElvAiYyli7GozfeTclENXaR6g
+	 bWc/kWwzKJCr/PUIiJJyw2RsM+Ig6eWeAFW/i+VkSPWbKyhxHPkqMTmSAa8Revx9+4
+	 yNVqg3thgtrTix4K+Z9NAuSVskh5jt79/w1nZJERBlKZY66Z4CS6KaNI2hLv9PrURN
+	 byQa7wlfDyxsrYPJK7w42hEY=
+Received: from zn.tnic (pd953020b.dip0.t-ipconnect.de [217.83.2.11])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id CA8EB40E0187;
+	Tue, 30 Apr 2024 22:33:10 +0000 (UTC)
+Date: Wed, 1 May 2024 00:33:05 +0200
+From: Borislav Petkov <bp@alien8.de>
+To: Sean Christopherson <seanjc@google.com>
+Cc: kernel test robot <oliver.sang@intel.com>, oe-lkp@lists.linux.dev,
+	lkp@intel.com, linux-kernel@vger.kernel.org, x86@kernel.org,
+	Ingo Molnar <mingo@kernel.org>, Srikanth Aithal <sraithal@amd.com>
+Subject: Re: [tip:x86/alternatives] [x86/alternatives] ee8962082a:
+ WARNING:at_arch/x86/kernel/cpu/cpuid-deps.c:#do_clear_cpu_cap
+Message-ID: <20240430223305.GFZjFxoSha7S5BYbIu@fat_crate.local>
+References: <202404302233.f27f91b2-oliver.sang@intel.com>
+ <20240430172313.GCZjEpAfUECkEZ9S5L@fat_crate.local>
+ <ZjE7DkTBSbPlBN8k@google.com>
+ <20240430193211.GEZjFHO0ayDXtgvbE7@fat_crate.local>
+ <ZjFLpkgI3Zl4dsXs@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <11f5f127d0350e72569c36f9060b6e642dfaddbb.1714514208.git.daniel@makrotopia.org>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+In-Reply-To: <ZjFLpkgI3Zl4dsXs@google.com>
 
-On Tue, Apr 30, 2024 at 11:01:17PM +0100, Daniel Golle wrote:
-> +	/* Only MDIO bus address 7, 15, 23 and 31 are valid options */
-> +	if (~(mdiodev->addr & 0x7) & 0x7) {
+On Tue, Apr 30, 2024 at 12:51:02PM -0700, Sean Christopherson wrote:
+> But that would just mask the underlying problem, it wouldn't actually fix anything
+> other than making the WARN go away.  Unless I'm misreading the splat+code, the
+> issue isn't that init_ia32_feat_ctl() clears VMX late, it's that the BSP sees
+> VMX as fully enabled, but at least one AP sees VMX as disabled.
+> 
+> I don't see how the kernel can expect to function correctly with divergent feature
+> support across CPUs, i.e. the WARN is a _good_ thing in this case, because it
+> alerts the user that their system is messed up, e.g. has a bad BIOS or something.
 
-So the common thing about the three addresses you mention are that they
-all have the least significant three bits set. So I'd suggest to spell
-that out in the comment:
+Yes, and yes.
 
-	/* Only MDIO bus addresses 7, 15, 23, and 31 are valid options,
-	 * which all have the least significant three bits set. Check
-	 * for this.
-	 */
+There are two issues. Clearing feature flags after alternatives have
+been applied should not happen, and this particular issue with that box.
 
-The test here is also not obvious, so I would suggest:
+Lemme cook up something in the coming days for the former.
 
-	if ((mdiodev->addr & 7) != 7) {
+As to the box having misconfigured VMX settings, dmesg says:
 
-which is much easier to read and ties up with the above comment.
+[    0.055225][    T0] x86/cpu: VMX (outside TXT) disabled by BIOS
 
-> +		/* If the address in DT must be wrong, make a good guess about
-> +		 * the most likely intention, and issue a warning.
-> +		 */
-> +		int correct_addr = ((((mdiodev->addr - 7) & ~0x7) % 0x20) + 7) & 0x1f;
+which means this:
 
-Huh? Again, not obvious what this is doing. So, I threw this into a C
-program that wraps the thing in a for() loop from 0..31 to see what it
-produces.
+	(!tboot && !(msr & FEAT_CTL_VMX_ENABLED_OUTSIDE_SMX))) {
 
-addr range	result
-0-6		31
-7-14		7
-15-22		15
-23-30		23
-31		31
+so... I have no clue what needs to happen here. BIOS update...
 
-Is it really sane to be suggesting "31" for values 0-6 ?
-
-> +
-> +		dev_warn(&mdiodev->dev, FW_WARN
-> +			 "impossible switch MDIO address in device tree: %d, assuming %d\n",
-> +			 mdiodev->addr, correct_addr);
-> +		mdiodev->addr = correct_addr;
-
-Sorry, but no. You must not change the mdiodev address. The address
-member is used to index arrays in the MDIO bus, and changing it will
-end up corrupting those arrays.
-
-For example, when a MDIO device is registered:
-
-	mdiodev->bus->mdio_map[mdiodev->addr] = mdiodev;
-
-when it is unregistered:
-
-        if (mdiodev->bus->mdio_map[mdiodev->addr] != mdiodev)
-                return -EINVAL;
-
-will fail, and a dangling pointer will be left at the original
-address. Moreover, the reset control (if any) will not be put.
-
-If the MDIO device address is wrong, then you can either fail or
-maybe create a new mdio device with the correct address - but the
-latter may get quite icky from a coding point of view. You would
-have to tear down this other device when the original incorrect
-one is unbound from the driver.
+I hope we won't try to do some nasty fix for b0rked BIOSes again...
 
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
 
