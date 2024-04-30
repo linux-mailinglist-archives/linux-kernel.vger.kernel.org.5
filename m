@@ -1,99 +1,104 @@
-Return-Path: <linux-kernel+bounces-164509-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-164510-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A8BBD8B7E64
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 19:26:50 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C0F598B7E67
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 19:27:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4670F1F237C7
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 17:26:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8229F2835E0
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 17:27:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2A6117F39C;
-	Tue, 30 Apr 2024 17:26:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD7F01802A7;
+	Tue, 30 Apr 2024 17:26:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="HRLqXk8O"
-Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GKCf087I"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4FF6217BB20;
-	Tue, 30 Apr 2024 17:26:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.248
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16F2A17BB20;
+	Tue, 30 Apr 2024 17:26:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714498003; cv=none; b=iSySw6ZYMzQsFpIriIMHttYUp2nxh4+TsLIrLJPsP/inCplnjYaloV+9lOJnh65HdtNOB8FNGDYFYq/uAMTRSa9FkrRU/xAohZdE7NhBfwMd58jwB6n3AAj1qpG+kLr+761D9e9XNyjf980r7gGwVD2Uebv9HrXvieIzzwQ/sXE=
+	t=1714498016; cv=none; b=iuZ2Q60LSbVJHFiXWFAUc9P/J7LRgDvqy+eMgtdKwJXG8fkUnYVdwfrJnIgy1OGhfIUzF3HKsL1EiTdALcArj+Y0I5VWU01KuncutfgIVKw4spsilwRnZ6sZBVqxZokHAQaipSU5+PuEDBi+JfE+fDke1SKn8gH6fiBlnqB0p/E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714498003; c=relaxed/simple;
-	bh=luTFpMAZ43ODWsmBxcty292H+fEg7Lp6RwRcQH0YjJg=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:CC:References:
-	 In-Reply-To:Content-Type; b=PpGXpxTOlzdSOxvEg0AmSG6pG2qU1ujHm4AgY6bpcGXAmEUCPvteSXWqtd8Hry1v0/pUKxs2Q0YrEmyUPYa4YpZOsttFV/7wgckhjt8gHGjjjodI6Yyf0N4gC7ZtqGwGAW07diU8Ax3ukcripOb7mMtcbMwmL9MYrCP6g7aBXRA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=HRLqXk8O; arc=none smtp.client-ip=198.47.23.248
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-	by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 43UHQUHI087503;
-	Tue, 30 Apr 2024 12:26:30 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1714497990;
-	bh=pj7f3enURpirZBtOK07f0GSNPrxz945QCn4kmv7I0xw=;
-	h=Date:Subject:From:To:CC:References:In-Reply-To;
-	b=HRLqXk8OF+3CI27Ay7bYj4Vw2xDSJpbTUou/M3ngo33iXzxo9eDjE4Ke8xK748Dk2
-	 cIVtbggs0NXVGj2KVw342Oqut+MqmZCmjLf4D2BB292HC0QlLJH6tQHXT/OQ8xTRJx
-	 SvlmYB/WScyD4vtfnfMy2JhmeQg3Iba+bR3aJ6n0=
-Received: from DLEE102.ent.ti.com (dlee102.ent.ti.com [157.170.170.32])
-	by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 43UHQU08031885
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Tue, 30 Apr 2024 12:26:30 -0500
-Received: from DLEE105.ent.ti.com (157.170.170.35) by DLEE102.ent.ti.com
- (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 30
- Apr 2024 12:26:29 -0500
-Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DLEE105.ent.ti.com
- (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Tue, 30 Apr 2024 12:26:29 -0500
-Received: from [128.247.81.105] (judy-hp.dhcp.ti.com [128.247.81.105])
-	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 43UHQTgG059219;
-	Tue, 30 Apr 2024 12:26:29 -0500
-Message-ID: <fa07e1ad-8e86-4f19-878a-26a639b3a058@ti.com>
-Date: Tue, 30 Apr 2024 12:26:29 -0500
+	s=arc-20240116; t=1714498016; c=relaxed/simple;
+	bh=0KeV2u9ksY0YfA2yFgfKkgJQrLCCtz23h5HZRBAWiFI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=OtDllCa8fzfgZ4vgXi1+sUZ+vTDqx3Cu/ZuUSVRoQBLCbkfWMcLRJ2alcnxnyoxZZg0rJJezDeMIoHOGNpagJDf4ELdLA5BFDEQxK19EM+PSgAxzBeugDdpQ6tBLUlE0WHoz6MjLMWPXI7vjkq+OEocD/SmY876EiauTslXp5yw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GKCf087I; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 316FBC2BBFC;
+	Tue, 30 Apr 2024 17:26:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714498015;
+	bh=0KeV2u9ksY0YfA2yFgfKkgJQrLCCtz23h5HZRBAWiFI=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=GKCf087IOPhdKhN23Rh+4nYolxBmxLSO7gl4cTkAbF6IGcHWam/bcbmhNLA0+5hfG
+	 NefAyi4QAhJonrQ2T0uvSS/DlYCnplWB39GhCHO53EgsgQ0NYC1sXg3abQ1zUvVNcs
+	 r/5CFiGjbedNdrNPSNYdu6m6+ypoEZuI1adiGctzrgRXmlEEwbj5c6pqJ+PG1/apNU
+	 5LXjHQvUrx64k0PqjL/h9GDYReGsYZOrdMZD7n2E5GDIqxY4N/HalTeDmOGf4NGWXQ
+	 bhuZMNQP0cxZiOxT/nJ2sEjm8HcuCNshVJZmBpkiQLQRi6SCzJHBgcwS1ntMIyxLXW
+	 U4TKnxxq7IBeQ==
+Date: Tue, 30 Apr 2024 18:26:49 +0100
+From: Conor Dooley <conor@kernel.org>
+To: Alisa-Dariana Roman <alisadariana@gmail.com>
+Cc: michael.hennerich@analog.com, linux-iio@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	alexandru.tachici@analog.com, lars@metafoo.de, jic23@kernel.org,
+	robh@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org, lgirdwood@gmail.com, broonie@kernel.org,
+	andy@kernel.org, nuno.sa@analog.com, marcelo.schmitt@analog.com,
+	bigunclemax@gmail.com, dlechner@baylibre.com, okan.sahin@analog.com,
+	fr0st61te@gmail.com, alisa.roman@analog.com,
+	marcus.folkesson@gmail.com, schnelle@linux.ibm.com,
+	liambeguin@gmail.com
+Subject: Re: [PATCH v7 5/6] dt-bindings: iio: adc: ad7192: Add AD7194 support
+Message-ID: <20240430-sandfish-bring-16ce723b8612@spud>
+References: <20240430162946.589423-1-alisa.roman@analog.com>
+ <20240430162946.589423-6-alisa.roman@analog.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 0/5] MMC fixes for TI K3 platforms
-From: Judith Mendez <jm@ti.com>
-To: Rob Herring <robh@kernel.org>,
-        Krzysztof Kozlowski
-	<krzysztof.kozlowski+dt@linaro.org>,
-        "Nishanth, Menon" <nm@ti.com>
-CC: Conor Dooley <conor+dt@kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Bhavya Kapoor <b-kapoor@ti.com>, Dasnavis
- Sabiya <sabiya.d@ti.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>
-References: <20240423151732.3541894-1-jm@ti.com>
-Content-Language: en-US
-In-Reply-To: <20240423151732.3541894-1-jm@ti.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="QgM2jKZVHy6EjSwK"
+Content-Disposition: inline
+In-Reply-To: <20240430162946.589423-6-alisa.roman@analog.com>
 
-On 4/23/24 10:17 AM, Judith Mendez wrote:
-> This patch series includes MMC updates for various TI K3 platforms.
-> 
-> It includes support for enabling UHS/SDR104 bus modes.
-> 
-> For AM62ax, add missing UHS support.
-> 
-> For AM65x, fix ITAP delay and OTAP delay and clkbuf-sel properties
-> in SDHCI nodes.
 
-Please do not merge this series, will send a update v4.
+--QgM2jKZVHy6EjSwK
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-~ Judith
+On Tue, Apr 30, 2024 at 07:29:45PM +0300, Alisa-Dariana Roman wrote:
+> From: Alisa-Dariana Roman <alisadariana@gmail.com>
+> Signed-off-by: Alisa-Dariana Roman <alisa.roman@analog.com>
 
+btw, the whole series has a from != signoff email problem. My git
+send-email handles that for me without me having to do anything by
+inserting a From: header in the patches, like so:
+https://lore.kernel.org/all/20240424-tabby-plural-5f1d9fe44f47@spud/
+
+I am not sure what option you're missing to suggest, but it may be as
+setting the `--from` arg (or sendemail.from in your gitconfig).
+
+Thanks,
+Conor.
+
+
+--QgM2jKZVHy6EjSwK
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZjEp2AAKCRB4tDGHoIJi
+0kziAQDcAT7+brax7bXTdBP5X+1u8YLuwr8T//H8T5XVPYXs8wD/X5FEQlyk1Qg+
+BoUHQ4cGSH7Sp4iWyYrKn7r9j82Wkwk=
+=ue30
+-----END PGP SIGNATURE-----
+
+--QgM2jKZVHy6EjSwK--
 
