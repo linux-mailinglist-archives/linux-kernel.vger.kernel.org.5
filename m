@@ -1,134 +1,95 @@
-Return-Path: <linux-kernel+bounces-163991-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-163993-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 28BA98B76E3
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 15:22:28 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B6B918B76EA
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 15:23:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5A7C71C21EC8
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 13:22:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 72A8D280DB3
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 13:23:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 90521176FB8;
-	Tue, 30 Apr 2024 13:20:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE0A2171E61;
+	Tue, 30 Apr 2024 13:21:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="oENGpKbS"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qyzanMcW"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5FDA0172BD1;
-	Tue, 30 Apr 2024 13:20:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36D9117166C;
+	Tue, 30 Apr 2024 13:21:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714483238; cv=none; b=uFRUIj/GMnniqc38kKODktYjmWlBKF/kUAt3dR56bBxHaZD4QR7KH7E1mF1z+gIKR1bY4lay8w0b5rqCq+/DU918vxcf9mBU8uQP2ECl/3nQ3XhhHvGYoRwW4e9GMiaWyeQ8Vh3GWfG2YywR8PfX7sNoL7YFFds7WcsqHk0aZtw=
+	t=1714483297; cv=none; b=XckK2s864zjRej8zmlG4B1iQxEYpNvbf/+ppVdEpKK2XwQmYlCPbb1BndlPu4vgSVO7hEVD3QUvqWE16uVATXad7AUf+WhmmsDWtgorbHKGIZqL0AO9+ri7b+HcoU5SXMtAy9qvPnyVUBjtVbdV+pB8N+W4G5XQcNMtfzKP2DPw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714483238; c=relaxed/simple;
-	bh=QZpQRgobpHQl9Ix8vXok8CWGEIDsu/GsRRB0lJ2O/xQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=XeURUALkUaLN67yiaxg8ES7cnu8wfrhJ2VRva5YRPYUA2qVcsFJcXcmM14ubFXNkLTLyuPJKLbZq4xbneJbW6fXv0nxzBN3mj7koJmoYedKGAuk9cJ4Q5Kbkf2KIPiXhz7A/tk06jyHU5v1p/ZvolpDJsa+F9v2ZZo7sbTVNoSQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=oENGpKbS; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1714483235;
-	bh=QZpQRgobpHQl9Ix8vXok8CWGEIDsu/GsRRB0lJ2O/xQ=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=oENGpKbSgfqGHVSamLzVNMuPo//MNqVwwyi8QzRy0dgP45z6Wrp5FtKb3fCmQ3RPt
-	 qTIdesRXp+yDVYLTQEPtRNvkoIxPDdEaJerX0y07Lhm6AvCXQFkmf3v4h1w31Ab41n
-	 aYXNtOejMJHi4T4CwiuXzz0QIRN+U+EYEF3JoQy0/qT2NTRQwdcVoPBzTAgLaHOdAX
-	 2p1iKy4wLFoMHzUzrlIXoDurOdwKCDIOK+6xUYsQM42YjWHLL58mqftBtXfUnQbLQx
-	 Uh24JeiW2nAWvE7WukXpzT05nXHjUa1AwJCZaiZepw3c3Vz5D4IB8/lLRrRHCzZH/5
-	 OKoJcCGB1ib9A==
-Received: from apertis.home (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: jmassot)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 2A587378212B;
-	Tue, 30 Apr 2024 13:20:35 +0000 (UTC)
-From: Julien Massot <julien.massot@collabora.com>
-To: linux-media@vger.kernel.org,
-	sakari.ailus@iki.fi
-Cc: devicetree@vger.kernel.org,
-	kernel@collabora.com,
-	linux-kernel@vger.kernel.org,
-	mchehab@kernel.org,
-	robh+dt@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org,
-	conor+dt@kernel.org,
-	Julien Massot <julien.massot@collabora.com>
-Subject: [PATCH v7 5/5] drivers: media: max96717: stop the csi receiver before the source
-Date: Tue, 30 Apr 2024 15:19:31 +0200
-Message-ID: <20240430131931.166012-6-julien.massot@collabora.com>
-X-Mailer: git-send-email 2.44.0
-In-Reply-To: <20240430131931.166012-1-julien.massot@collabora.com>
-References: <20240430131931.166012-1-julien.massot@collabora.com>
+	s=arc-20240116; t=1714483297; c=relaxed/simple;
+	bh=AKOQrcJJa/PgvbmB77Ei3e3Xgp/1RKlFobDI2jRg6yo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=bysgEpELKCGP4p8vyo/CmWif4eLnrXXSE+tl2hcPRnmONYahId03pSbG9X68kttYZ1sZy0U62qTjff1x8CtVJxBxMJF0YHKNAMZ7aNYV5nzMmrdwEpKP0mXzfIzx9e2w3a8CxJu+e5uFrDbtFEqlRD+0U+QBnlBR+FhziB72VVM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qyzanMcW; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BC06EC2BBFC;
+	Tue, 30 Apr 2024 13:21:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714483296;
+	bh=AKOQrcJJa/PgvbmB77Ei3e3Xgp/1RKlFobDI2jRg6yo=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=qyzanMcW2Zm9XUgr42I5Z8b8OLIWBd2L66oIpnphw/6Nluus4g86N8cM1gDqAkjlq
+	 TqgBq7dJl2TIqNG8GSYb4rAHl38ExSRwEZIk3VclKSgbVRhWQH+H3UNfYs210gETdN
+	 ENoKl+tgTzIbTcdwWWOzvtPZ1r8bJNdJi7uPg0TEd3YLjYaxzh3Yws0TvvIIaREDLZ
+	 hl5lVLiUDtlbYTa3Hj7aGoHyvk3vQ/RN7xZL14eBBxXUtCZJOYBC7ZB5G3nMQOXo7X
+	 M3MR0Z3iqini8O36heR4U3aKWaxp1WTW/wPjL2Yeq2rwONvIocUAE7wJNgoXJyywRx
+	 dLIRke2GVGDvQ==
+Date: Tue, 30 Apr 2024 16:21:31 +0300
+From: Leon Romanovsky <leon@kernel.org>
+To: Jules Irenge <jbi.octave@gmail.com>
+Cc: jgg@ziepe.ca, wenglianfa@huawei.com, gustavoars@kernel.org,
+	lishifeng@sangfor.com.cn, linux-rdma@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] RDMA/core: Remove NULL check before dev_{put, hold}
+Message-ID: <20240430132131.GG100414@unreal>
+References: <Zi5QgLIt9sblrfYs@octinomon.home>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Zi5QgLIt9sblrfYs@octinomon.home>
 
-Stopping the CSI source before stopping the serializer
-CSI port may make the serializer not respond.
-Then all the next writes to the device will fail.
+On Sun, Apr 28, 2024 at 02:34:56PM +0100, Jules Irenge wrote:
+> Coccinelle reports a warning
+> 
+> WARNING: NULL check before dev_{put, hold} functions is not needed
 
-max96717 1-0040: Error writing reg 0x0308: -121
-max96717 1-0040: Error writing reg 0x0006: -121
+Please do it for whole drivers/infiniband/core in one patch, please.
 
-Fix that by stopping the CSI receiver first and then CSI source.
-
-Seen on max96717f revision 4.
-
-Signed-off-by: Julien Massot <julien.massot@collabora.com>
----
- drivers/media/i2c/max96717.c | 23 +++++++++++------------
- 1 file changed, 11 insertions(+), 12 deletions(-)
-
-diff --git a/drivers/media/i2c/max96717.c b/drivers/media/i2c/max96717.c
-index 1ea76f922bdb..499408837aef 100644
---- a/drivers/media/i2c/max96717.c
-+++ b/drivers/media/i2c/max96717.c
-@@ -384,24 +384,23 @@ static int max96717_disable_streams(struct v4l2_subdev *sd,
- {
- 	struct max96717_priv *priv = sd_to_max96717(sd);
- 	u64 sink_streams;
--	int ret;
-+
-+	/*
-+	 * Stop the CSI receiver first then the source,
-+	 * otherwise the device may become unresponsive
-+	 * while holding the I2C bus low.
-+	 */
-+	priv->enabled_source_streams &= ~streams_mask;
-+	if (!priv->enabled_source_streams)
-+		max96717_start_csi(priv, false);
- 
- 	sink_streams = v4l2_subdev_state_xlate_streams(state,
- 						       MAX96717_PAD_SOURCE,
- 						       MAX96717_PAD_SINK,
- 						       &streams_mask);
- 
--	ret = v4l2_subdev_disable_streams(priv->source_sd, priv->source_sd_pad,
--					  sink_streams);
--	if (ret)
--		return ret;
--
--	priv->enabled_source_streams &= ~streams_mask;
--
--	if (!priv->enabled_source_streams)
--		max96717_start_csi(priv, false);
--
--	return 0;
-+	return v4l2_subdev_disable_streams(priv->source_sd, priv->source_sd_pad,
-+					   sink_streams);
- }
- 
- static const struct v4l2_subdev_pad_ops max96717_pad_ops = {
--- 
-2.44.0
-
+> 
+> The reason is the call netdev_{put, hold} of dev_{put,hold} will check NULL
+> There is no need to check before using dev_{put, hold}
+> 
+> Signed-off-by: Jules Irenge <jbi.octave@gmail.com>
+> ---
+>  drivers/infiniband/core/device.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+> 
+> diff --git a/drivers/infiniband/core/device.c b/drivers/infiniband/core/device.c
+> index 07cb6c5ffda0..84be4bb9b625 100644
+> --- a/drivers/infiniband/core/device.c
+> +++ b/drivers/infiniband/core/device.c
+> @@ -2235,8 +2235,7 @@ struct net_device *ib_device_get_netdev(struct ib_device *ib_dev,
+>  		spin_lock(&pdata->netdev_lock);
+>  		res = rcu_dereference_protected(
+>  			pdata->netdev, lockdep_is_held(&pdata->netdev_lock));
+> -		if (res)
+> -			dev_hold(res);
+> +		dev_hold(res);
+>  		spin_unlock(&pdata->netdev_lock);
+>  	}
+>  
+> -- 
+> 2.43.2
+> 
 
