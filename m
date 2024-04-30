@@ -1,265 +1,662 @@
-Return-Path: <linux-kernel+bounces-163541-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-163540-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 888458B6CD7
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 10:33:25 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 535938B6CD5
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 10:33:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A9D04B2268B
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 08:33:22 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D417D1F23607
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 08:33:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 08DBD4207D;
-	Tue, 30 Apr 2024 08:33:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 02EBC41C89;
+	Tue, 30 Apr 2024 08:33:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="c7vHXTZa"
-Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
+	dkim=pass (1024-bit key) header.d=ffwll.ch header.i=@ffwll.ch header.b="hGpw00D5"
+Received: from mail-wr1-f52.google.com (mail-wr1-f52.google.com [209.85.221.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3AD153EA73
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 08:33:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F084D2F5
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 08:32:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714465992; cv=none; b=mQYaWp0HQoKbQUCKEWZLxQhvoUUHPdNFYiVixXkLXAD5jR+yN3xuA4DrRlN/xpQxbHbF/hz1vxOHqciPCP28ZA49gv/5BxRj5mXzKkMy1LV6AUeDgVJFjy8N4Q+zNkleUt+a+dHalzpIMPjT8BPchIeKJiQ/3txyoafr78Ktb+0=
+	t=1714465979; cv=none; b=OprFahaHRlB0fzey2RKx7OXVBtJ+DE0NY5eOd7PcCt7kvTrAVO4sMaatJ/HyF0qAn5OYMYrR5PmI5gM4DqScAdvv5vhiNMFqbFHt2oOp7PtViaSQOnd3eH4jBC6D9ALtYzd6B9r10qw63z1myQktqZru2bLHGql+5/YDsQKbJ48=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714465992; c=relaxed/simple;
-	bh=6KYcdaW5AJOuKrCAbQiANDQ3oufjExknfaTGdAiLQTc=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=POf8w/NNwNybsg0U0Fyd5AwxNHkeM0w8BpYNbtNcCJd+m6IkyCFmdgoIeOZbYlIXXOCHznGNcpDd58iN4i2VRMfbDBYGrbF4B1TCDZIumkeerf2qRF7xkysqbO4smXXGT8DyhUTITmMOB9xoObQBFvpnxGqElQqd04dv3/JgjbA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=c7vHXTZa; arc=none smtp.client-ip=209.85.218.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-a587831809eso641301666b.1
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 01:33:09 -0700 (PDT)
+	s=arc-20240116; t=1714465979; c=relaxed/simple;
+	bh=vDxvw14jYsefudEpZMNJXt4tWyyKctJgWrO19ItTmtY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=spcdOY7RKl6OWYx6IpSeE+On75/ek70X5/bmnVj4DtjjKWOdbLi6mLYSa34Tt3vlEApNRQ0NITnKCaEjLLWnYHhfTgZ6Cf/6Gq/qflDy4gCZyBTb6NtG9R9LQY6bvWYaaQp8pRejSV9AYE8+dw5rllROI47+XksWrANnKJJH4bw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ffwll.ch; spf=none smtp.mailfrom=ffwll.ch; dkim=pass (1024-bit key) header.d=ffwll.ch header.i=@ffwll.ch header.b=hGpw00D5; arc=none smtp.client-ip=209.85.221.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ffwll.ch
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ffwll.ch
+Received: by mail-wr1-f52.google.com with SMTP id ffacd0b85a97d-34a0cc29757so791440f8f.1
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 01:32:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1714465988; x=1715070788; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=cPkVFP7Lh42TFOUAbrSl+hJmc87Aue0/QUNIQ8XD5Q0=;
-        b=c7vHXTZarX9VW3hDPVf/5rvryI+zxhvz09DvZk7jFZ6k6WE4eKDCdAQGtLWuyzXyes
-         kGl9SxHdIS/lDtGP35tWHekQ2le/8sbNAB1OzmpKiA+Hc8p98yQUhN2exU+TAzNS12o0
-         cwUduZkz/KAv9hrZw5M/6j31lgwmLYz4gMF910lFvrqcIYauaxggDagREfHXX+QasNak
-         yswmjkPqSOV0nNV8mzX7CEeRc8wls1/0gek450I60zkGJwdJOx2jULxOIxmipAbWj5lp
-         Kg2YRpqHIYDuAIJcuitLWInJi7yO6IuKcpSxfmxg+yU8xTQxZPezBpfXM9nyexlNBWJQ
-         6GCg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714465988; x=1715070788;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=ffwll.ch; s=google; t=1714465976; x=1715070776; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references
+         :mail-followup-to:message-id:subject:cc:to:from:date:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=cPkVFP7Lh42TFOUAbrSl+hJmc87Aue0/QUNIQ8XD5Q0=;
-        b=XgrvtW+cADD3PaWDcLpJU5Boxk393PzPxb8DfbKTkDR2rTUDRVyXM0UiieWr0Nex3G
-         TJACh1efLa4QK42n+YNnpiZekDwMmu5nPpxZ8AEtndrd4zVBZ+M31+VXBfWsecEHAeBn
-         FjO/WNCCAX0P0lrH35ZNNAzm84iPbFr04GzN1qXuRlGH7qxn36HPeFSNF9GNM5WrL+Jl
-         vJGU54TWwu14mpRaj7/P7tIpUCxH6ZBeWAt+Z2h0AROwAdb/6LRU3SBwTis4wud8X6iz
-         XI9KWIxYBDXYqiQ2yJPm8jyBQ/X+5+j/1998LlnQDegblKy279+3D0KD/RjMqwDhp5EI
-         OKCA==
-X-Forwarded-Encrypted: i=1; AJvYcCVDEXFucA5VMsesANH9/LxB4VKihHhONH2a0o6olbzWGAMbPvRTRwoW0j/sUV+6ug7TC/YniK0JFr4Tpx6Z0bjWxueGSFiBWyZqE0n7
-X-Gm-Message-State: AOJu0YxHYGaaY2M3S1B9mUsi1fp19QtXRMpXusEMDsYpnAeRKF/OimX8
-	dPCFQTQMtZHxZCkZztOwez5zomGaXUICjxNbC3G5AlPYe6RlHaUgpDkPNjNeVD0SGmYrsYwjP2r
-	MpMuSfFmwT3B12vf44p3jPwPejTRCp32LDFur
-X-Google-Smtp-Source: AGHT+IEPhiQHehjJBW+klsUM22MQCZFXx0ThaEn6Qq/yxxtdIPTrErrC2XqydQUnCNSM8OgbWyEQjR+3aViK6Pq1OaI=
-X-Received: by 2002:a17:906:f20e:b0:a58:fabc:4a02 with SMTP id
- gt14-20020a170906f20e00b00a58fabc4a02mr4671803ejb.39.1714465988245; Tue, 30
- Apr 2024 01:33:08 -0700 (PDT)
+        bh=fhsN+4bmO+l1kKyJbA0YMs+ieT8yz4S2LaFS6+Yj0oU=;
+        b=hGpw00D5phru+YS3td+Gd1L3wPWjk1Nx4KzLtKfr/rAmEZIpwJnhf89aXsfuXq0Kor
+         xD9isW0kVTNX+Hy82QVjDoLc9+UYjynZhhnSm6lBTU3PH1JyuUGRwcAZWimr4vzLlUoG
+         8P8Cr0WyrqR2dXEvx6UNR4rrbwKOGHRtYMom8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714465976; x=1715070776;
+        h=in-reply-to:content-disposition:mime-version:references
+         :mail-followup-to:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=fhsN+4bmO+l1kKyJbA0YMs+ieT8yz4S2LaFS6+Yj0oU=;
+        b=VdOMBwQqGPKTRKBE/og2pydGUivq7l7MZpEL3IFuTJOdWygR4Xu0KhXpmw4RVMbWgw
+         1WxdD+EbDxC+HvQP2T33ErLtWi+G1ziMfBQz5mIAQDE0v9u7aa63oRRMTHLz4tRuVMuW
+         Tc1IL3/cSvUA9LRLP4s98kW2VlpVKbM7MKLEjHVcYs1lpl36U2CxCQzFVIB1dAPQ/UeA
+         wrKQ6MAZdbDSkuhABqisaWXWzR+VSlOjqe3qqNltgLQHM6GEktzdfL1sh1OTS8f4XO+U
+         Xp1sMAFJyuxdLD5UtTL2+vWFScmw8VfgtwIAfv7Tn2VimYtlp2EOqoVV0GuHnTPs4UaC
+         XPnA==
+X-Forwarded-Encrypted: i=1; AJvYcCXJYfDF8CFH8wWJJi/hQLGXoDx5dkTMCS5Cx9nuDBN6glLfk1X0pwT287WLPvCCgkxombWV6B9N33l5TY6dshOubtpxwlVFDr7pXtCT
+X-Gm-Message-State: AOJu0Yz3LXAngE5SMXMlBSPMixw0fdfHhH5wuPAY9sHjm+9pj2xwW7Zy
+	tz/kj/85PuStfXzt2cuaSygEZgM5ruiiy+GjTNKdCEpSadp6qE2FekfD0NWEY/g=
+X-Google-Smtp-Source: AGHT+IHVnsMBrK40/sJpe8Vq2ZQaDcQyhE2EImnhWzEdl1eAh3l92PIr9hGg6PIQImRNBXuFsEVBKA==
+X-Received: by 2002:a5d:42cb:0:b0:34d:8ccf:c9ce with SMTP id t11-20020a5d42cb000000b0034d8ccfc9cemr740457wrr.5.1714465975642;
+        Tue, 30 Apr 2024 01:32:55 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id cs7-20020a056000088700b00346cdf48262sm31679892wrb.2.2024.04.30.01.32.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 30 Apr 2024 01:32:55 -0700 (PDT)
+Date: Tue, 30 Apr 2024 10:32:53 +0200
+From: Daniel Vetter <daniel@ffwll.ch>
+To: Brandon Pollack <brpol@chromium.org>
+Cc: marius.vlad@collabora.com, mairacanal@riseup.net, jshargo@chromium.org,
+	hamohammed.sa@gmail.com, rodrigosiqueiramelo@gmail.com,
+	linux-doc@vger.kernel.org, hirono@chromium.org, corbet@lwn.net,
+	linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+	melissa.srw@gmail.com, mduggan@chromium.org, mripard@kernel.org,
+	tzimmermann@suse.de
+Subject: Re: [PATCH v6 5/7] drm/vkms: Support enabling ConfigFS devices
+Message-ID: <ZjCstbN0IDG0jBjI@phenom.ffwll.local>
+Mail-Followup-To: Brandon Pollack <brpol@chromium.org>,
+	marius.vlad@collabora.com, mairacanal@riseup.net,
+	jshargo@chromium.org, hamohammed.sa@gmail.com,
+	rodrigosiqueiramelo@gmail.com, linux-doc@vger.kernel.org,
+	hirono@chromium.org, corbet@lwn.net, linux-kernel@vger.kernel.org,
+	dri-devel@lists.freedesktop.org, melissa.srw@gmail.com,
+	mduggan@chromium.org, mripard@kernel.org, tzimmermann@suse.de
+References: <20230829053201.423261-1-brpol@chromium.org>
+ <20230829053201.423261-6-brpol@chromium.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <0000000000002ecbdb06174a1d9a@google.com>
-In-Reply-To: <0000000000002ecbdb06174a1d9a@google.com>
-From: Yosry Ahmed <yosryahmed@google.com>
-Date: Tue, 30 Apr 2024 01:32:30 -0700
-Message-ID: <CAJD7tkYrRAK7rjfyArbdq8=Y6CV-T_YbL+SvBEGU8_MV3opbqg@mail.gmail.com>
-Subject: Re: [syzbot] [mm?] KMSAN: uninit-value in zswap_rb_insert
-To: syzbot <syzbot+9c9d60f1b20b22ce218a@syzkaller.appspotmail.com>
-Cc: akpm@linux-foundation.org, chengming.zhou@linux.dev, hannes@cmpxchg.org, 
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org, nphamcs@gmail.com, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230829053201.423261-6-brpol@chromium.org>
+X-Operating-System: Linux phenom 6.6.15-amd64 
 
-On Mon, Apr 29, 2024 at 11:02=E2=80=AFPM syzbot
-<syzbot+9c9d60f1b20b22ce218a@syzkaller.appspotmail.com> wrote:
->
-> Hello,
->
-> syzbot found the following issue on:
->
-> HEAD commit:    e33c4963bf53 Merge tag 'nfsd-6.9-5' of git://git.kernel.o=
-r..
-> git tree:       upstream
-> console output: https://syzkaller.appspot.com/x/log.txt?x=3D123d5a0f18000=
-0
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=3D776c05250f36d=
-55c
-> dashboard link: https://syzkaller.appspot.com/bug?extid=3D9c9d60f1b20b22c=
-e218a
-> compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Deb=
-ian) 2.40
->
-> Unfortunately, I don't have any reproducer for this issue yet.
->
-> Downloadable assets:
-> disk image: https://storage.googleapis.com/syzbot-assets/a10175188ebb/dis=
-k-e33c4963.raw.xz
-> vmlinux: https://storage.googleapis.com/syzbot-assets/abe743417d16/vmlinu=
-x-e33c4963.xz
-> kernel image: https://storage.googleapis.com/syzbot-assets/fb10cccc9909/b=
-zImage-e33c4963.xz
->
-> IMPORTANT: if you fix the issue, please add the following tag to the comm=
-it:
-> Reported-by: syzbot+9c9d60f1b20b22ce218a@syzkaller.appspotmail.com
->
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D
-> BUG: KMSAN: uninit-value in zswap_rb_insert+0x1e9/0x330 mm/zswap.c:842
+On Tue, Aug 29, 2023 at 05:30:57AM +0000, Brandon Pollack wrote:
+> From: Jim Shargo <jshargo@chromium.org>
+> 
+> VKMS now supports creating and using virtual devices!
+> 
+> In addition to the enabling logic, this commit also prevents users from
+> adding new objects once a card is registered.
 
-I am not sure how this could happen. The report is complaining about
-the access in the loop condition AFAICT:
+I forgot one comment ... I tried to look around really hard, but I'm not
+seeing any code which prevents changes to immutable state once the device
+is created?
 
-while (*link) { /* here */
-.
-}
+Note that if we go with the design where you can only change enabled from
+0 to 1 once it really doesn't matter much whether we block changes
+afterwards, since they do not have any impact at all. But it would still
+be nice, since for connector hotplug support we must make sure that the
+encoders and all that stay around as-is.
 
-*link should start as root->rb_node (which should be NULL as it is
-static data), then be updated to point at a zswap_entry->rbnode as
-entries get added. *link should keep then be updated to values at
-zswap_entry->rbnode->{left/right}.
+Otoh there's no way to prevent dropping a config_item, so maybe we just
+have to life with the fact that configfs is a lot more mutable than the
+underlying drm objects. In that case I'd much prefer we switch over to the
+model where you can only enable a configfs device instance once, otherwise
+it's really confusing.
+-Sima
 
-Although entry->rbnode->{left/right} are not initialized when
-allocated by zswap_entry_cache_alloc() as the report mentions, they
-are initialized in zswap_rb_insert()->rb_link_node() when they are
-added to the tree.
-
-Also, this code is removed with the xarray conversion anyway.
-
->  zswap_rb_insert+0x1e9/0x330 mm/zswap.c:842
->  zswap_store+0x22f2/0x2ca0 mm/zswap.c:1591
->  swap_writepage+0x126/0x4c0 mm/page_io.c:198
->  pageout mm/vmscan.c:660 [inline]
->  shrink_folio_list+0x4a55/0x7910 mm/vmscan.c:1323
->  evict_folios+0x9d7f/0xcc20 mm/vmscan.c:4537
->  try_to_shrink_lruvec+0x160e/0x1a50 mm/vmscan.c:4733
->  shrink_one+0x66f/0xd40 mm/vmscan.c:4772
->  shrink_many mm/vmscan.c:4835 [inline]
->  lru_gen_shrink_node mm/vmscan.c:4935 [inline]
->  shrink_node+0x4856/0x55f0 mm/vmscan.c:5894
->  shrink_zones mm/vmscan.c:6152 [inline]
->  do_try_to_free_pages+0x820/0x2570 mm/vmscan.c:6214
->  try_to_free_pages+0xb7b/0x1820 mm/vmscan.c:6449
->  __perform_reclaim mm/page_alloc.c:3774 [inline]
->  __alloc_pages_direct_reclaim mm/page_alloc.c:3796 [inline]
->  __alloc_pages_slowpath+0x1035/0x31a0 mm/page_alloc.c:4202
->  __alloc_pages+0xacf/0xe70 mm/page_alloc.c:4588
->  alloc_pages_mpol+0x299/0x990 mm/mempolicy.c:2264
->  vma_alloc_folio+0x418/0x680 mm/mempolicy.c:2303
->  do_cow_fault mm/memory.c:4918 [inline]
->  do_fault mm/memory.c:5026 [inline]
->  do_pte_missing mm/memory.c:3880 [inline]
->  handle_pte_fault mm/memory.c:5300 [inline]
->  __handle_mm_fault mm/memory.c:5441 [inline]
->  handle_mm_fault+0x4f2f/0xce00 mm/memory.c:5606
->  do_user_addr_fault arch/x86/mm/fault.c:1413 [inline]
->  handle_page_fault arch/x86/mm/fault.c:1505 [inline]
->  exc_page_fault+0x2a0/0x730 arch/x86/mm/fault.c:1563
->  asm_exc_page_fault+0x2b/0x30 arch/x86/include/asm/idtentry.h:623
->  rep_stos_alternative+0x40/0x80 arch/x86/lib/clear_page_64.S:92
->  load_elf_binary+0x212e/0x4d30 fs/binfmt_elf.c:1132
->  search_binary_handler fs/exec.c:1778 [inline]
->  exec_binprm fs/exec.c:1820 [inline]
->  bprm_execve+0xc57/0x21c0 fs/exec.c:1872
->  do_execveat_common+0xceb/0xd70 fs/exec.c:1979
->  do_execve fs/exec.c:2053 [inline]
->  __do_sys_execve fs/exec.c:2129 [inline]
->  __se_sys_execve fs/exec.c:2124 [inline]
->  __x64_sys_execve+0xf4/0x130 fs/exec.c:2124
->  x64_sys_call+0x1612/0x3b50 arch/x86/include/generated/asm/syscalls_64.h:=
-60
->  do_syscall_x64 arch/x86/entry/common.c:52 [inline]
->  do_syscall_64+0xcf/0x1e0 arch/x86/entry/common.c:83
->  entry_SYSCALL_64_after_hwframe+0x77/0x7f
->
-> Uninit was created at:
->  __alloc_pages+0x9d6/0xe70 mm/page_alloc.c:4598
->  __alloc_pages_node include/linux/gfp.h:238 [inline]
->  alloc_pages_node include/linux/gfp.h:261 [inline]
->  alloc_slab_page mm/slub.c:2175 [inline]
->  allocate_slab mm/slub.c:2338 [inline]
->  new_slab+0x2de/0x1400 mm/slub.c:2391
->  ___slab_alloc+0x1184/0x33d0 mm/slub.c:3525
->  __slab_alloc mm/slub.c:3610 [inline]
->  __slab_alloc_node mm/slub.c:3663 [inline]
->  slab_alloc_node mm/slub.c:3835 [inline]
->  kmem_cache_alloc_node+0x6ea/0xc50 mm/slub.c:3888
->  zswap_entry_cache_alloc mm/zswap.c:874 [inline]
->  zswap_store+0xb26/0x2ca0 mm/zswap.c:1535
->  swap_writepage+0x126/0x4c0 mm/page_io.c:198
->  pageout mm/vmscan.c:660 [inline]
->  shrink_folio_list+0x4a55/0x7910 mm/vmscan.c:1323
->  evict_folios+0x9d7f/0xcc20 mm/vmscan.c:4537
->  try_to_shrink_lruvec+0x160e/0x1a50 mm/vmscan.c:4733
->  shrink_one+0x66f/0xd40 mm/vmscan.c:4772
->  shrink_many mm/vmscan.c:4835 [inline]
->  lru_gen_shrink_node mm/vmscan.c:4935 [inline]
->  shrink_node+0x4856/0x55f0 mm/vmscan.c:5894
->  shrink_zones mm/vmscan.c:6152 [inline]
->  do_try_to_free_pages+0x820/0x2570 mm/vmscan.c:6214
->  try_to_free_pages+0xb7b/0x1820 mm/vmscan.c:6449
->  __perform_reclaim mm/page_alloc.c:3774 [inline]
->  __alloc_pages_direct_reclaim mm/page_alloc.c:3796 [inline]
->  __alloc_pages_slowpath+0x1035/0x31a0 mm/page_alloc.c:4202
->  __alloc_pages+0xacf/0xe70 mm/page_alloc.c:4588
->  alloc_pages_mpol+0x299/0x990 mm/mempolicy.c:2264
->  alloc_pages+0x1bf/0x1e0 mm/mempolicy.c:2335
->  vm_area_alloc_pages mm/vmalloc.c:3561 [inline]
->  __vmalloc_area_node mm/vmalloc.c:3637 [inline]
->  __vmalloc_node_range+0x100a/0x28b0 mm/vmalloc.c:3818
->  vmalloc_user+0x90/0xb0 mm/vmalloc.c:3972
->  kcov_ioctl+0x5d/0x660 kernel/kcov.c:704
->  vfs_ioctl fs/ioctl.c:51 [inline]
->  __do_sys_ioctl fs/ioctl.c:904 [inline]
->  __se_sys_ioctl+0x261/0x450 fs/ioctl.c:890
->  __x64_sys_ioctl+0x96/0xe0 fs/ioctl.c:890
->  x64_sys_call+0x1883/0x3b50 arch/x86/include/generated/asm/syscalls_64.h:=
-17
->  do_syscall_x64 arch/x86/entry/common.c:52 [inline]
->  do_syscall_64+0xcf/0x1e0 arch/x86/entry/common.c:83
->  entry_SYSCALL_64_after_hwframe+0x77/0x7f
->
-> CPU: 0 PID: 5281 Comm: dhcpcd-run-hook Not tainted 6.9.0-rc5-syzkaller-00=
-053-ge33c4963bf53 #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS G=
-oogle 03/27/2024
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D
->
->
+> 
+> Signed-off-by: Jim Shargo <jshargo@chromium.org>
+> Signed-off-by: Brandon Pollack <brpol@chromium.org>
 > ---
-> This report is generated by a bot. It may contain errors.
-> See https://goo.gl/tpsmEJ for more information about syzbot.
-> syzbot engineers can be reached at syzkaller@googlegroups.com.
->
-> syzbot will keep track of this issue. See:
-> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
->
-> If the report is already addressed, let syzbot know by replying with:
-> #syz fix: exact-commit-title
->
-> If you want to overwrite report's subsystems, reply with:
-> #syz set subsystems: new-subsystem
-> (See the list of subsystem names on the web dashboard)
->
-> If the report is a duplicate of another one, reply with:
-> #syz dup: exact-subject-of-another-report
->
-> If you want to undo deduplication, reply with:
-> #syz undup
+>  drivers/gpu/drm/vkms/vkms_configfs.c |  37 ++--
+>  drivers/gpu/drm/vkms/vkms_crtc.c     |   4 +-
+>  drivers/gpu/drm/vkms/vkms_drv.c      |   1 +
+>  drivers/gpu/drm/vkms/vkms_drv.h      |   4 +-
+>  drivers/gpu/drm/vkms/vkms_output.c   | 282 +++++++++++++++++++++++----
+>  drivers/gpu/drm/vkms/vkms_plane.c    |  10 +-
+>  6 files changed, 282 insertions(+), 56 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/vkms/vkms_configfs.c b/drivers/gpu/drm/vkms/vkms_configfs.c
+> index dae2e85d83a1..bc35dcc47585 100644
+> --- a/drivers/gpu/drm/vkms/vkms_configfs.c
+> +++ b/drivers/gpu/drm/vkms/vkms_configfs.c
+> @@ -508,29 +508,40 @@ static ssize_t device_enabled_store(struct config_item *item, const char *buf,
+>  {
+>  	struct vkms_configfs *configfs = item_to_configfs(item);
+>  	struct vkms_device *device;
+> -	int value, ret;
+> +	int enabled, ret;
+>  
+> -	ret = kstrtoint(buf, 0, &value);
+> +	ret = kstrtoint(buf, 0, &enabled);
+>  	if (ret)
+>  		return ret;
+>  
+> -	if (value != 1)
+> -		return -EINVAL;
+> -
+> -	mutex_lock(&configfs->lock);
+> -
+> -	if (configfs->vkms_device) {
+> +	if (enabled == 0) {
+> +		mutex_lock(&configfs->lock);
+> +		if (configfs->vkms_device) {
+> +			vkms_remove_device(configfs->vkms_device);
+> +			configfs->vkms_device = NULL;
+> +		}
+>  		mutex_unlock(&configfs->lock);
+> +
+>  		return len;
+>  	}
+>  
+> -	device = vkms_add_device(configfs);
+> -	mutex_unlock(&configfs->lock);
+> +	if (enabled == 1) {
+> +		mutex_lock(&configfs->lock);
+> +		if (!configfs->vkms_device) {
+> +			device = vkms_add_device(configfs);
+> +			if (IS_ERR(device)) {
+> +				mutex_unlock(&configfs->lock);
+> +				return -PTR_ERR(device);
+> +			}
+> +
+> +			configfs->vkms_device = device;
+> +		}
+> +		mutex_unlock(&configfs->lock);
+>  
+> -	if (IS_ERR(device))
+> -		return -PTR_ERR(device);
+> +		return len;
+> +	}
+>  
+> -	return len;
+> +	return -EINVAL;
+>  }
+>  
+>  CONFIGFS_ATTR(device_, enabled);
+> diff --git a/drivers/gpu/drm/vkms/vkms_crtc.c b/drivers/gpu/drm/vkms/vkms_crtc.c
+> index 74bbd675464b..2aa1c5246b7e 100644
+> --- a/drivers/gpu/drm/vkms/vkms_crtc.c
+> +++ b/drivers/gpu/drm/vkms/vkms_crtc.c
+> @@ -279,7 +279,7 @@ static const struct drm_crtc_helper_funcs vkms_crtc_helper_funcs = {
+>  
+>  struct vkms_crtc *vkms_crtc_init(struct vkms_device *vkmsdev,
+>  				 struct drm_plane *primary,
+> -				 struct drm_plane *cursor)
+> +				 struct drm_plane *cursor, const char *name)
+>  {
+>  	struct drm_device *dev = &vkmsdev->drm;
+>  	struct vkms_crtc *vkms_crtc;
+> @@ -291,7 +291,7 @@ struct vkms_crtc *vkms_crtc_init(struct vkms_device *vkmsdev,
+>  	vkms_crtc = &vkmsdev->output.crtcs[vkmsdev->output.num_crtcs++];
+>  
+>  	ret = drmm_crtc_init_with_planes(dev, &vkms_crtc->base, primary, cursor,
+> -					 &vkms_crtc_funcs, NULL);
+> +					 &vkms_crtc_funcs, name);
+>  	if (ret) {
+>  		DRM_ERROR("Failed to init CRTC\n");
+>  		goto out_error;
+> diff --git a/drivers/gpu/drm/vkms/vkms_drv.c b/drivers/gpu/drm/vkms/vkms_drv.c
+> index 819e880a8cf7..6e7f20681890 100644
+> --- a/drivers/gpu/drm/vkms/vkms_drv.c
+> +++ b/drivers/gpu/drm/vkms/vkms_drv.c
+> @@ -275,6 +275,7 @@ struct vkms_device *vkms_add_device(struct vkms_configfs *configfs)
+>  			dev, &vkms_platform_driver.driver))) {
+>  		pdev = to_platform_device(dev);
+>  		max_id = max(max_id, pdev->id);
+> +		put_device(dev);
+>  	}
+>  
+>  	pdev = platform_device_register_data(NULL, DRIVER_NAME, max_id + 1,
+> diff --git a/drivers/gpu/drm/vkms/vkms_drv.h b/drivers/gpu/drm/vkms/vkms_drv.h
+> index 8cdd7949f661..2b9545ada9c2 100644
+> --- a/drivers/gpu/drm/vkms/vkms_drv.h
+> +++ b/drivers/gpu/drm/vkms/vkms_drv.h
+> @@ -250,13 +250,13 @@ void vkms_remove_device(struct vkms_device *vkms_device);
+>  /* CRTC */
+>  struct vkms_crtc *vkms_crtc_init(struct vkms_device *vkmsdev,
+>  				 struct drm_plane *primary,
+> -				 struct drm_plane *cursor);
+> +				 struct drm_plane *cursor, const char *name);
+>  
+>  int vkms_output_init(struct vkms_device *vkmsdev);
+>  int vkms_output_init_default(struct vkms_device *vkmsdev);
+>  
+>  struct vkms_plane *vkms_plane_init(struct vkms_device *vkmsdev,
+> -				   enum drm_plane_type type);
+> +				   enum drm_plane_type type, char* name, ...);
+>  
+>  /* CRC Support */
+>  const char *const *vkms_get_crc_sources(struct drm_crtc *crtc,
+> diff --git a/drivers/gpu/drm/vkms/vkms_output.c b/drivers/gpu/drm/vkms/vkms_output.c
+> index dc69959c5e1d..0ee1f3f4a305 100644
+> --- a/drivers/gpu/drm/vkms/vkms_output.c
+> +++ b/drivers/gpu/drm/vkms/vkms_output.c
+> @@ -2,8 +2,10 @@
+>  
+>  #include <drm/drm_atomic_helper.h>
+>  #include <drm/drm_connector.h>
+> +#include <drm/drm_crtc.h>
+>  #include <drm/drm_edid.h>
+>  #include <drm/drm_encoder.h>
+> +#include <drm/drm_plane.h>
+>  #include <drm/drm_probe_helper.h>
+>  #include <drm/drm_simple_kms_helper.h>
+>  
+> @@ -60,7 +62,8 @@ vkms_connector_init(struct vkms_device *vkms_device)
+>  	return connector;
+>  }
+>  
+> -static struct drm_encoder *vkms_encoder_init(struct vkms_device *vkms_device)
+> +static struct drm_encoder *vkms_encoder_init(struct vkms_device *vkms_device,
+> +					     char *name)
+>  {
+>  	struct drm_encoder *encoder;
+>  	int ret;
+> @@ -71,7 +74,7 @@ static struct drm_encoder *vkms_encoder_init(struct vkms_device *vkms_device)
+>  	encoder = &vkms_device->output
+>  			   .encoders[vkms_device->output.num_encoders++];
+>  	ret = drm_encoder_init(&vkms_device->drm, encoder, &vkms_encoder_funcs,
+> -			       DRM_MODE_ENCODER_VIRTUAL, NULL);
+> +			       DRM_MODE_ENCODER_VIRTUAL, name);
+>  	if (ret) {
+>  		memset(encoder, 0, sizeof(*encoder));
+>  		vkms_device->output.num_encoders -= 1;
+> @@ -82,7 +85,6 @@ static struct drm_encoder *vkms_encoder_init(struct vkms_device *vkms_device)
+>  
+>  int vkms_output_init_default(struct vkms_device *vkmsdev)
+>  {
+> -	struct vkms_output *output = &vkmsdev->output;
+>  	struct drm_device *dev = &vkmsdev->drm;
+>  	struct drm_connector *connector;
+>  	struct drm_encoder *encoder;
+> @@ -92,35 +94,34 @@ int vkms_output_init_default(struct vkms_device *vkmsdev)
+>  	int writeback;
+>  	unsigned int n;
+>  
+> -	primary = vkms_plane_init(vkmsdev, DRM_PLANE_TYPE_PRIMARY);
+> +	primary = vkms_plane_init(vkmsdev, DRM_PLANE_TYPE_PRIMARY,
+> +				  "default-primary-plane");
+>  	if (IS_ERR(primary))
+>  		return PTR_ERR(primary);
+>  
+>  	if (vkmsdev->config.overlay) {
+>  		for (n = 0; n < NUM_OVERLAY_PLANES; n++) {
+> -			struct vkms_plane *overlay = vkms_plane_init(
+> -				vkmsdev, DRM_PLANE_TYPE_OVERLAY);
+> -			if (IS_ERR(overlay)) {
+> -				ret = PTR_ERR(overlay);
+> -				goto err_planes;
+> -			}
+> +			struct vkms_plane *overlay =
+> +				vkms_plane_init(vkmsdev, DRM_PLANE_TYPE_OVERLAY,
+> +						"default-overlay-plane-%d", n);
+> +			if (IS_ERR(overlay))
+> +				return PTR_ERR(overlay);
+>  		}
+>  	}
+>  
+>  	if (vkmsdev->config.cursor) {
+> -		cursor = vkms_plane_init(vkmsdev, DRM_PLANE_TYPE_CURSOR);
+> -		if (IS_ERR(cursor)) {
+> -			ret = PTR_ERR(cursor);
+> -			goto err_planes;
+> -		}
+> +		cursor = vkms_plane_init(vkmsdev, DRM_PLANE_TYPE_CURSOR,
+> +					 "default-cursor-plane");
+> +		if (IS_ERR(cursor))
+> +			return PTR_ERR(cursor);
+>  	}
+>  
+>  	vkms_crtc = vkms_crtc_init(vkmsdev, &primary->base,
+> -				   cursor ? &cursor->base : NULL);
+> +				   cursor ? &cursor->base : NULL,
+> +				   "crtc-default");
+>  	if (IS_ERR(vkms_crtc)) {
+>  		DRM_ERROR("Failed to init crtc\n");
+> -		ret = PTR_ERR(vkms_crtc);
+> -		goto err_planes;
+> +		return PTR_ERR(vkms_crtc);
+>  	}
+>  
+>  	for (int i = 0; i < vkmsdev->output.num_planes; i++) {
+> @@ -131,22 +132,20 @@ int vkms_output_init_default(struct vkms_device *vkmsdev)
+>  	connector = vkms_connector_init(vkmsdev);
+>  	if (IS_ERR(connector)) {
+>  		DRM_ERROR("Failed to init connector\n");
+> -		ret = PTR_ERR(connector);
+> -		goto err_connector;
+> +		return PTR_ERR(connector);
+>  	}
+>  
+> -	encoder = vkms_encoder_init(vkmsdev);
+> +	encoder = vkms_encoder_init(vkmsdev, "encoder-default");
+>  	if (IS_ERR(encoder)) {
+>  		DRM_ERROR("Failed to init encoder\n");
+> -		ret = PTR_ERR(encoder);
+> -		goto err_encoder;
+> +		return PTR_ERR(encoder);
+>  	}
+>  	encoder->possible_crtcs |= drm_crtc_mask(&vkms_crtc->base);
+>  
+>  	ret = drm_connector_attach_encoder(connector, encoder);
+>  	if (ret) {
+>  		DRM_ERROR("Failed to attach connector to encoder\n");
+> -		goto err_attach;
+> +		return ret;
+>  	}
+>  
+>  	if (vkmsdev->config.writeback) {
+> @@ -158,26 +157,235 @@ int vkms_output_init_default(struct vkms_device *vkmsdev)
+>  	drm_mode_config_reset(dev);
+>  
+>  	return 0;
+> +}
+>  
+> -err_attach:
+> -	drm_encoder_cleanup(encoder);
+> -
+> -err_encoder:
+> -	drm_connector_cleanup(connector);
+> +static bool is_object_linked(struct vkms_config_links *links, unsigned long idx)
+> +{
+> +	return links->linked_object_bitmap & (1 << idx);
+> +}
+>  
+> -err_connector:
+> -	drm_crtc_cleanup(&vkms_crtc->base);
+> +/**
+> +* validate_vkms_configfs_no_dangling_objects - warn on unused objects in vkms
+> +* configfs.
+> +* @vkmsdev: vkms device
+> +*
+> +* This gives slightly more visible warning messaging to the user before the drm
+> +* system finds the configuration invalid and prints it's debug information.  In
+> +* this case the user may have accidentally not included some links, or the user
+> +* could be testing this faulty configuration.
+> +*/
+> +static void
+> +validate_vkms_configfs_no_dangling_objects(struct vkms_device *vkmsdev)
+> +{
+> +	struct vkms_configfs *configfs = vkmsdev->configfs;
+> +	struct config_item *item;
+> +
+> +	// 1. Planes
+> +	list_for_each_entry(item, &configfs->planes_group.cg_children,
+> +			    ci_entry) {
+> +		struct vkms_config_plane *config_plane =
+> +			item_to_config_plane(item);
+> +		if (config_plane->possible_crtcs.linked_object_bitmap == 0)
+> +			DRM_WARN(
+> +				"Vkms configfs created plane %s has no linked crtcs",
+> +				item->ci_name);
+> +	}
+>  
+> -err_planes:
+> -	for (int i = 0; i < output->num_planes; i++)
+> -		drm_plane_cleanup(&output->planes[i].base);
+> +	// 2. connectors
+> +	list_for_each_entry(item, &configfs->connectors_group.cg_children,
+> +			    ci_entry) {
+> +		struct vkms_config_connector *config_connector =
+> +			item_to_config_connector(item);
+> +		if (config_connector->possible_encoders.linked_object_bitmap ==
+> +		    0) {
+> +			DRM_WARN(
+> +				"Vkms configfs created connector %s has no linked encoders",
+> +				item->ci_name);
+> +		}
+> +	}
+>  
+> -	memset(output, 0, sizeof(*output));
+> +	// 3. encoders
+> +	list_for_each_entry(item, &configfs->encoders_group.cg_children,
+> +			    ci_entry) {
+> +		struct vkms_config_encoder *config_encoder =
+> +			item_to_config_encoder(item);
+> +		if (config_encoder->possible_crtcs.linked_object_bitmap == 0) {
+> +			DRM_WARN(
+> +				"Vkms configfs created encoder %s has no linked crtcs",
+> +				item->ci_name);
+> +		}
+> +	}
+>  
+> -	return ret;
+> +	// 4. crtcs only require a primary plane to function, this is checked during
+> +	// output initialization and returns an error.
+>  }
+>  
+>  int vkms_output_init(struct vkms_device *vkmsdev)
+>  {
+> -	return -EOPNOTSUPP;
+> +	struct drm_device *dev = &vkmsdev->drm;
+> +	struct vkms_configfs *configfs = vkmsdev->configfs;
+> +	struct vkms_output *output = &vkmsdev->output;
+> +	struct plane_map {
+> +		struct vkms_config_plane *config_plane;
+> +		struct vkms_plane *plane;
+> +	} plane_map[VKMS_MAX_PLANES] = { 0 };
+> +	struct encoder_map {
+> +		struct vkms_config_encoder *config_encoder;
+> +		struct drm_encoder *encoder;
+> +	} encoder_map[VKMS_MAX_OUTPUT_OBJECTS] = { 0 };
+> +	struct config_item *item;
+> +	int map_idx = 0;
+> +
+> +	// Ensure configfs has no unused objects, and warn if so.
+> +	validate_vkms_configfs_no_dangling_objects(vkmsdev);
+> +
+> +	list_for_each_entry(item, &configfs->planes_group.cg_children,
+> +			    ci_entry) {
+> +		struct vkms_config_plane *config_plane =
+> +			item_to_config_plane(item);
+> +		struct vkms_plane *plane = vkms_plane_init(
+> +			vkmsdev, config_plane->type, item->ci_name);
+> +
+> +		if (IS_ERR(plane)) {
+> +			DRM_ERROR("Unable to init plane from config: %s",
+> +				  item->ci_name);
+> +			return PTR_ERR(plane);
+> +		}
+> +
+> +		plane_map[map_idx].config_plane = config_plane;
+> +		plane_map[map_idx].plane = plane;
+> +		map_idx += 1;
+> +	}
+> +
+> +	map_idx = 0;
+> +	list_for_each_entry(item, &configfs->encoders_group.cg_children,
+> +			    ci_entry) {
+> +		struct vkms_config_encoder *config_encoder =
+> +			item_to_config_encoder(item);
+> +		struct drm_encoder *encoder =
+> +			vkms_encoder_init(vkmsdev, item->ci_name);
+> +
+> +		if (IS_ERR(encoder)) {
+> +			DRM_ERROR("Failed to init config encoder: %s",
+> +				  item->ci_name);
+> +			return PTR_ERR(encoder);
+> +		}
+> +		encoder_map[map_idx].config_encoder = config_encoder;
+> +		encoder_map[map_idx].encoder = encoder;
+> +		map_idx += 1;
+> +	}
+> +
+> +	list_for_each_entry(item, &configfs->connectors_group.cg_children,
+> +			    ci_entry) {
+> +		struct vkms_config_connector *config_connector =
+> +			item_to_config_connector(item);
+> +		struct drm_connector *connector = vkms_connector_init(vkmsdev);
+> +
+> +		if (IS_ERR(connector)) {
+> +			DRM_ERROR("Failed to init connector from config: %s",
+> +				  item->ci_name);
+> +			return PTR_ERR(connector);
+> +		}
+> +
+> +		for (int j = 0; j < output->num_encoders; j++) {
+> +			struct encoder_map *encoder = &encoder_map[j];
+> +
+> +			if (is_object_linked(
+> +				    &config_connector->possible_encoders,
+> +				    encoder->config_encoder
+> +					    ->encoder_config_idx)) {
+> +				drm_connector_attach_encoder(connector,
+> +							     encoder->encoder);
+> +			}
+> +		}
+> +	}
+> +
+> +	list_for_each_entry(item, &configfs->crtcs_group.cg_children,
+> +			    ci_entry) {
+> +		struct vkms_config_crtc *config_crtc =
+> +			item_to_config_crtc(item);
+> +		struct vkms_crtc *vkms_crtc;
+> +		struct drm_plane *primary = NULL, *cursor = NULL;
+> +
+> +		for (int j = 0; j < output->num_planes; j++) {
+> +			struct plane_map *plane_entry = &plane_map[j];
+> +			struct drm_plane *plane = &plane_entry->plane->base;
+> +
+> +			if (!is_object_linked(
+> +				    &plane_entry->config_plane->possible_crtcs,
+> +				    config_crtc->crtc_config_idx)) {
+> +				continue;
+> +			}
+> +
+> +			if (plane->type == DRM_PLANE_TYPE_PRIMARY) {
+> +				if (primary) {
+> +					DRM_WARN(
+> +						"Too many primary planes found for crtc %s.",
+> +						item->ci_name);
+> +					return -EINVAL;
+> +				}
+> +				primary = plane;
+> +			} else if (plane->type == DRM_PLANE_TYPE_CURSOR) {
+> +				if (cursor) {
+> +					DRM_WARN(
+> +						"Too many cursor planes found for crtc %s.",
+> +						item->ci_name);
+> +					return -EINVAL;
+> +				}
+> +				cursor = plane;
+> +			}
+> +		}
+> +
+> +		if (!primary) {
+> +			DRM_WARN("No primary plane configured for crtc %s",
+> +				 item->ci_name);
+> +			return -EINVAL;
+> +		}
+> +
+> +		vkms_crtc =
+> +			vkms_crtc_init(vkmsdev, primary, cursor, item->ci_name);
+> +		if (IS_ERR(vkms_crtc)) {
+> +			DRM_WARN("Unable to init crtc from config: %s",
+> +				 item->ci_name);
+> +			return PTR_ERR(vkms_crtc);
+> +		}
+> +
+> +		for (int j = 0; j < output->num_planes; j++) {
+> +			struct plane_map *plane_entry = &plane_map[j];
+> +
+> +			if (!plane_entry->plane)
+> +				break;
+> +
+> +			if (is_object_linked(
+> +				    &plane_entry->config_plane->possible_crtcs,
+> +				    config_crtc->crtc_config_idx)) {
+> +				plane_entry->plane->base.possible_crtcs |=
+> +					drm_crtc_mask(&vkms_crtc->base);
+> +			}
+> +		}
+> +
+> +		for (int j = 0; j < output->num_encoders; j++) {
+> +			struct encoder_map *encoder_entry = &encoder_map[j];
+> +
+> +			if (is_object_linked(&encoder_entry->config_encoder
+> +						      ->possible_crtcs,
+> +					     config_crtc->crtc_config_idx)) {
+> +				encoder_entry->encoder->possible_crtcs |=
+> +					drm_crtc_mask(&vkms_crtc->base);
+> +			}
+> +		}
+> +
+> +		if (vkmsdev->config.writeback) {
+> +			int ret = vkms_enable_writeback_connector(vkmsdev,
+> +								  vkms_crtc);
+> +			if (ret)
+> +				DRM_WARN(
+> +					"Failed to init writeback connector for config crtc: %s. Error code %d",
+> +					item->ci_name, ret);
+> +		}
+> +	}
+> +
+> +	drm_mode_config_reset(dev);
+> +
+> +	return 0;
+>  }
+> diff --git a/drivers/gpu/drm/vkms/vkms_plane.c b/drivers/gpu/drm/vkms/vkms_plane.c
+> index 950e6c930273..3198bf0dca73 100644
+> --- a/drivers/gpu/drm/vkms/vkms_plane.c
+> +++ b/drivers/gpu/drm/vkms/vkms_plane.c
+> @@ -1,6 +1,7 @@
+>  // SPDX-License-Identifier: GPL-2.0+
+>  
+>  #include <linux/iosys-map.h>
+> +#include <linux/stdarg.h>
+>  
+>  #include <drm/drm_atomic.h>
+>  #include <drm/drm_atomic_helper.h>
+> @@ -215,20 +216,25 @@ static const struct drm_plane_helper_funcs vkms_plane_helper_funcs = {
+>  };
+>  
+>  struct vkms_plane *vkms_plane_init(struct vkms_device *vkmsdev,
+> -				   enum drm_plane_type type)
+> +				   enum drm_plane_type type, char *name, ...)
+>  {
+>  	struct drm_device *dev = &vkmsdev->drm;
+>  	struct vkms_output *output = &vkmsdev->output;
+>  	struct vkms_plane *plane;
+> +	va_list va;
+>  	int ret;
+>  
+>  	if (output->num_planes >= VKMS_MAX_PLANES)
+>  		return ERR_PTR(-ENOMEM);
+>  
+>  	plane = &output->planes[output->num_planes++];
+> +
+> +	va_start(va, name);
+>  	ret = drm_universal_plane_init(dev, &plane->base, 0, &vkms_plane_funcs,
+>  				       vkms_formats, ARRAY_SIZE(vkms_formats),
+> -				       NULL, type, NULL);
+> +				       NULL, type, name, va);
+> +	va_end(va);
+> +
+>  	if (ret)
+>  		return ERR_PTR(ret);
+>  
+> -- 
+> 2.42.0.rc2.253.gd59a3bf2b4-goog
+> 
+
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
 
