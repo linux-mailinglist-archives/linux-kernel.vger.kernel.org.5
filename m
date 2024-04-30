@@ -1,144 +1,126 @@
-Return-Path: <linux-kernel+bounces-163910-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-163913-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4BD8E8B75A2
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 14:24:03 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0968E8B75AD
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 14:24:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 797011C21E12
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 12:24:02 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1EC36B22B58
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 12:24:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 90F3F13FD8D;
-	Tue, 30 Apr 2024 12:23:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E004140360;
+	Tue, 30 Apr 2024 12:24:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="d2Komikw"
-Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com [209.85.208.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="MAQ9GBoy"
+Received: from out-175.mta0.migadu.com (out-175.mta0.migadu.com [91.218.175.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3ECEC13D633;
-	Tue, 30 Apr 2024 12:23:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1663113FD8D
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 12:24:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714479836; cv=none; b=Io1E1i+1VNtJbAg+N+8P/Yq26MobyOI8MnIgx/dW6fFbyass4WdFCIzlggvpitUZ1EMVGyOiSV/ZqbmBN4YrXhGK6yvKweovbBW3UvIr/l5HqtW3asFlvculyKQrCgpyMuB2k+NqwxVmEw5dwQ8jqXjvaa0XA9AihJfQZCuK/Ko=
+	t=1714479876; cv=none; b=l/W45uLTtQS9CfSpxqpqhokjTh/LD6Gg19HodlrULXGJbKAKf8XUzu1sULHzTXNp10+KDcm0bug+i+1uMJ/EY1VpFbU56o4o2aCPhac/Simmrprm/IFSnjY9noDvEJYKuKGPenGM2iT0hMXfpg3cp1Nv9TPBqXx5cnB16BgsaVs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714479836; c=relaxed/simple;
-	bh=WWLv3CHIm9s7TAl+zioxwnWBii/PyN3HMDQfYT3g4Zc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Pxx2WNKM7EHOibs8+1ukAGTZWT0yoh5zD6qXAB6aQhP0KRooxWY04XAU4jOjGHUwTYKtkQRCSOAd3XajmEHoap+wGjDuFEnpTzsTFHJVQ9hH3pZNi0ciwWJc4qzD4oVDRVLiyskPQFDJINuyuBQJH2kbJRvFYzKIPEU2Pkbktsg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=d2Komikw; arc=none smtp.client-ip=209.85.208.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f169.google.com with SMTP id 38308e7fff4ca-2dd6c160eaaso68524471fa.1;
-        Tue, 30 Apr 2024 05:23:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714479833; x=1715084633; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=a3HAypglzqN6U0QsC7A4U1xuU1yi1lv7rpj/nALDr2w=;
-        b=d2Komikwmnz2m4qkDwihKKLLrLRq4RAzqBrGrI0VP3UUiXKyo7vyHqs78BinzA45k2
-         GNw/ACHP29q+1LgmpHSHYndN8VnEwqtuBTWiupnSiXAYonMD6qnShrFNvM6rBb4Rz4H5
-         QshDK2PnQLH8fsbPQKNY1v3sEbJW8CX1ZHhW5pnJOnTNh2MWvWZbs+6FBC8AM+oKnE+J
-         3ktNnzkuze+TqwBcX1pVmDt7PhTUNFsNU6AD7F8ertgD3mEJWQ2zOxzNGQspOEr1Lujq
-         Rdk+SerZla3U4s7thEICDSHThdbngshL1T1VFpdxjJFsIEoTzatMS9BjcHv+ZMSU32xG
-         q7hw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714479833; x=1715084633;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=a3HAypglzqN6U0QsC7A4U1xuU1yi1lv7rpj/nALDr2w=;
-        b=a2mKRNi45y0i3V8xZoykYbYoIxI3Ujq2E0DVkC0Aq1PXqGkqJmfaVH6t3zfjb17twg
-         I55Jk1ly40A0ONBnvGcK2ltUNh10gkomJ1Q2uW1ijDcmXYrx6HSQvm7FlFQhNCnfFgMi
-         P/3Cn45/Iq/F0FEKQk46kyzDDyRxirfOFRBB0RkMn7YKd6O62a3l+ORLJbMQmtBDOtdD
-         +LR5Vuu2kBKWyx65YD0u0QzGAy10ElvupRJsldQtl3Qsy6oKgXUosW9Lzw+CIHFtVMLj
-         9ugrkaW2x9QkgZVqZV/Ni916OBVVjD4F5teBUzDMbG2bwPtrQ6qU79wrvipuC6bY3jpb
-         awBQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUMdFUZKBrTZZqFpIA2+8aDzrjfc3VNV75UosHdTVhY8daVU9/EGNFqe/ketH6D0B3ZA4VNi8O7QGkrNINuCiYk77FjOJK6XYC3YWoLz1UxA8m6lw7dWiHZcph8NxJWIYcb8onECsU0
-X-Gm-Message-State: AOJu0Yxhf7JVvXzUDRrYDHY59a4MQgOvOdv/POZOE1Q4NW2YbLXYIQ94
-	y0I3om1cE3xw5cPOJf/rugh8p1zcrfhz+LszMHpuRVBwISyp03gu3gdmIA==
-X-Google-Smtp-Source: AGHT+IHEVfzlX0uNTD10J6KfMRRtL5PFFP9TO8mxGuF4fj5hAI1IdFduDv9u/aUE0QgVJkosFQjAig==
-X-Received: by 2002:a2e:8348:0:b0:2de:d4df:54b8 with SMTP id l8-20020a2e8348000000b002ded4df54b8mr10750866ljh.7.1714479833111;
-        Tue, 30 Apr 2024 05:23:53 -0700 (PDT)
-Received: from debian ([93.184.186.109])
-        by smtp.gmail.com with ESMTPSA id h13-20020a05600c314d00b0041ac4aafd3dsm26535780wmo.12.2024.04.30.05.23.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Apr 2024 05:23:52 -0700 (PDT)
-Date: Tue, 30 Apr 2024 14:23:50 +0200
-From: Dimitri Fedrau <dima.fedrau@gmail.com>
-To: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Cc: Jonathan Cameron <jic23@kernel.org>,
-	Lars-Peter Clausen <lars@metafoo.de>,
-	Andrew Hepp <andrew.hepp@ahepp.dev>,
-	Marcelo Schmitt <marcelo.schmitt1@gmail.com>,
-	linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/5] iio: temperature: mcp9600: Share scale by all
- channels
-Message-ID: <20240430122350.GB46332@debian>
-References: <20240430120535.46097-1-dima.fedrau@gmail.com>
- <20240430120535.46097-3-dima.fedrau@gmail.com>
- <20240430130934.00006d33@Huawei.com>
+	s=arc-20240116; t=1714479876; c=relaxed/simple;
+	bh=2bm1i0MQ3FR9Xk4H1b2IgOwC/li7E1JWYo7MM7WgaOo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=hwqTv8vMAnOeUDmGHzVT/+rhWPJrUFZelH0/NKP7CU2t3e+YKZ09R/FwkOKyTEGYRs4PyQoZQe0ssFLXUH1BKftJio8QwQH5OqDJc6B/lE4SJQR52UsRDKm1mF3Pk4bKQkq4USD12MVv9hKLC4AjbA0xGk/zjAPg8s09k4A8xA4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=MAQ9GBoy; arc=none smtp.client-ip=91.218.175.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <e85ba009-9150-4e50-918b-a86500dbc820@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1714479871;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=G1ytzCh4DK871MzJc5SzNhcnB9s/CPyVS2qgE0inj/o=;
+	b=MAQ9GBoy69q68FHEh+wSZq+JT7JQs/4lSj7VNLfvQuaZmJIp1s5NaWHotn4kf7cHLhqfW5
+	8twUjpDPSa9J5WCERMB77nomDcVelzyE5lVNR+YPy1FCLmXpqlQCs9F4tjqhGexiw9gtS/
+	DCBgtaHbK/jesohHwiHXPaTpkA1bZaY=
+Date: Tue, 30 Apr 2024 20:24:01 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240430130934.00006d33@Huawei.com>
+Subject: Re: [PATCH v3] slub: Fixes freepointer encoding for single free
+Content-Language: en-US
+To: Vlastimil Babka <vbabka@suse.cz>,
+ Nicolas Bouchinet <nicolas.bouchinet@clip-os.org>, linux-mm@kvack.org,
+ linux-kernel@vger.kernel.org
+Cc: Christoph Lameter <cl@linux.com>, Pekka Enberg <penberg@kernel.org>,
+ David Rientjes <rientjes@google.com>, Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Roman Gushchin <roman.gushchin@linux.dev>,
+ Hyeonggon Yoo <42.hyeyoo@gmail.com>
+References: <ZjDXY74yS6UyQPxv@archlinux>
+ <1a2e8da7-6969-43ac-9e65-2361c93d107f@suse.cz>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Chengming Zhou <chengming.zhou@linux.dev>
+In-Reply-To: <1a2e8da7-6969-43ac-9e65-2361c93d107f@suse.cz>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-Am Tue, Apr 30, 2024 at 01:09:34PM +0100 schrieb Jonathan Cameron:
-> On Tue, 30 Apr 2024 14:05:32 +0200
-> Dimitri Fedrau <dima.fedrau@gmail.com> wrote:
+On 2024/4/30 19:58, Vlastimil Babka wrote:
+> On 4/30/24 1:34 PM, Nicolas Bouchinet wrote:
+>> From: Nicolas Bouchinet <nicolas.bouchinet@ssi.gouv.fr>
+>>
+>> Commit 284f17ac13fe ("mm/slub: handle bulk and single object freeing
+>> separately") splits single and bulk object freeing in two functions
+>> slab_free() and slab_free_bulk() which leads slab_free() to call
+>> slab_free_hook() directly instead of slab_free_freelist_hook().
+>>
+>> If `init_on_free` is set, slab_free_hook() zeroes the object.
+>> Afterward, if `slub_debug=F` and `CONFIG_SLAB_FREELIST_HARDENED` are
+>> set, the do_slab_free() slowpath executes freelist consistency
+>> checks and try to decode a zeroed freepointer which leads to a
+>> "Freepointer corrupt" detection in check_object().
+>>
+>> During bulk free, slab_free_freelist_hook() isn't affected as it always
+>> sets it objects freepointer using set_freepointer() to maintain its
+>> reconstructed freelist after `init_on_free`.
+>>
+>> For single free, object's freepointer thus needs to be avoided when
+>> stored outside the object if `init_on_free` is set. The freepointer left
+>> as is, check_object() may later detect an invalid pointer value due to
+>> objects overflow.
+>>
+>> To reproduce, set `slub_debug=FU init_on_free=1 log_level=7` on the
+>> command line of a kernel build with `CONFIG_SLAB_FREELIST_HARDENED=y`.
+>>
+>> dmesg sample log:
+>> [   10.708715] =============================================================================
+>> [   10.710323] BUG kmalloc-rnd-05-32 (Tainted: G    B           T ): Freepointer corrupt
+>> [   10.712695] -----------------------------------------------------------------------------
+>> [   10.712695]
+>> [   10.712695] Slab 0xffffd8bdc400d580 objects=32 used=4 fp=0xffff9d9a80356f80 flags=0x200000000000a00(workingset|slab|node=0|zone=2)
+>> [   10.716698] Object 0xffff9d9a80356600 @offset=1536 fp=0x7ee4f480ce0ecd7c
+>> [   10.716698]
+>> [   10.716698] Bytes b4 ffff9d9a803565f0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+>> [   10.720703] Object   ffff9d9a80356600: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+>> [   10.720703] Object   ffff9d9a80356610: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+>> [   10.724696] Padding  ffff9d9a8035666c: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+>> [   10.724696] Padding  ffff9d9a8035667c: 00 00 00 00                                      ....
+>> [   10.724696] FIX kmalloc-rnd-05-32: Object at 0xffff9d9a80356600 not freed
+>>
+>> Co-developed-by: Chengming Zhou <chengming.zhou@linux.dev>
 > 
-> > Move bit IIO_CHAN_INFO_SCALE from info_mask_separate to
-> > info_mask_shared_by_all since temperature format is the same for all
-> > channels.
-> > 
-> > Signed-off-by: Dimitri Fedrau <dima.fedrau@gmail.com>
-> 
-> Whilst this shouldn't be a problem for well behaved userspace,
-> it is an ABI change so as a general rule we don't 'fix' cases like
-> this once they have been in a kernel release.
-> 
-> We may be break someone's hand crafted scripts :(
->
-Ok, will remove the patch from the series.
+> Chengming Zhou, could you provide your s-o-b please?
 
-Best regards,
-Dimitri Fedrau
+Of course.
+
+Signed-off-by: Chengming Zhou <chengming.zhou@linux.dev>
 
 > 
-> > ---
-> >  drivers/iio/temperature/mcp9600.c | 8 ++++----
-> >  1 file changed, 4 insertions(+), 4 deletions(-)
-> > 
-> > diff --git a/drivers/iio/temperature/mcp9600.c b/drivers/iio/temperature/mcp9600.c
-> > index e277edb4ae4b..74e0782fb073 100644
-> > --- a/drivers/iio/temperature/mcp9600.c
-> > +++ b/drivers/iio/temperature/mcp9600.c
-> > @@ -28,16 +28,16 @@ static const struct iio_chan_spec mcp9600_channels[] = {
-> >  		.address = MCP9600_HOT_JUNCTION,
-> >  		.channel2 = IIO_MOD_TEMP_OBJECT,
-> >  		.modified = 1,
-> > -		.info_mask_separate =
-> > -			BIT(IIO_CHAN_INFO_RAW) | BIT(IIO_CHAN_INFO_SCALE),
-> > +		.info_mask_separate = BIT(IIO_CHAN_INFO_RAW),
-> > +		.info_mask_shared_by_all = BIT(IIO_CHAN_INFO_SCALE),
-> >  	},
-> >  	{
-> >  		.type = IIO_TEMP,
-> >  		.address = MCP9600_COLD_JUNCTION,
-> >  		.channel2 = IIO_MOD_TEMP_AMBIENT,
-> >  		.modified = 1,
-> > -		.info_mask_separate =
-> > -			BIT(IIO_CHAN_INFO_RAW) | BIT(IIO_CHAN_INFO_SCALE),
-> > +		.info_mask_separate = BIT(IIO_CHAN_INFO_RAW),
-> > +		.info_mask_shared_by_all = BIT(IIO_CHAN_INFO_SCALE),
-> >  	},
-> >  };
-> >  
+>> Signed-off-by: Nicolas Bouchinet <nicolas.bouchinet@ssi.gouv.fr>
 > 
+> Added to slab/for-6.9-rc7/fixes, thanks!
+
+Thanks!
 
