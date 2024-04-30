@@ -1,194 +1,233 @@
-Return-Path: <linux-kernel+bounces-163351-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-163353-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5E1078B69BC
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 07:10:35 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BF4748B69BF
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 07:11:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CA0AB1F22B08
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 05:10:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E282E1C21E9F
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 05:11:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D57E17555;
-	Tue, 30 Apr 2024 05:10:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9BD6917C95;
+	Tue, 30 Apr 2024 05:10:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MkxC/Khp"
-Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com [209.85.167.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="JhcXc03K"
+Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D85A014AAD
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 05:10:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D8451798C;
+	Tue, 30 Apr 2024 05:10:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.141
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714453827; cv=none; b=a5PTyHM44BP1V5V5OEXhGp9uYveDwm93PXu0ZkTdVfGa9Omwq0x+HGigeAf2BR3HcnB+Ua+od+dChMhCqhlNXGLsYDIoBRKiwq7lDIIkUIfvuHEDby1wUeDU+DINw4138GOm/NwlF0IzCyArG+9muXyjHGXbvYMCUw+5GRUXU9s=
+	t=1714453853; cv=none; b=uBgxGzVmqFinXo69DfKTVBeKZKtaVBj++5sH5GWd1CZ4pNrB1g2MxWoon7cF1V+RRjZNDVld70DhRw7zUw4+OX1NLRvXh4sJZIuI/ktj5gWvlVYGBPCfpZC7hmZGh8ty75e/7o1MNpihexH8kwwUaFTb5YjNImH0dAMRogskfoA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714453827; c=relaxed/simple;
-	bh=SzgFI/v7Mph6bz64Ohfi7yL2xE/FtnoTbuqrAwoH0Ww=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=U34dwmf7Yz5mepS2Qqco22Vw+cUqSILa9mq2C/8lm1MDPxzKl3U7iNx3f2Q0BI6WM1yE+YF6htSw/TvfMP+CeCiANqnB0qS+554SZihJ7RnflfU7ydTxckBiYYNAi4Rt+D+nVBfcJPl0/3LEu6DZ/HxI4vXBl+YfjPYglDx+bzI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MkxC/Khp; arc=none smtp.client-ip=209.85.167.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f45.google.com with SMTP id 2adb3069b0e04-51967f75729so6215621e87.0
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 22:10:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714453824; x=1715058624; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Nm5KSte9EtNP2GBwmXuE8/J8iLTK3PcKydXJnqqMM4g=;
-        b=MkxC/KhpfMFWT4uW4IrHjP+iMcb0BZWYnvek7AM9hKYzmMSI87mWWYyZWsEBZFBfvN
-         ToVeITf6ZZW03E/3ZoVqBLWgzwkyaReELSIMmIn7Kr+2ZYCxhNNUMOfV8FGbce6Sn3Zz
-         9ToA/qdRMpf+9QRQX9KWvT49IYDH+AtPYt9lFgWgOOQOlPgrMMxkLP8MKBi/WxR7WzjF
-         JH9JpREE03yzdRHIriZtKBoaF5Rp5JajWUS7PxZTo3IrUSFymMpJMALyAjVan8VfW00G
-         ec3EXMu/jkU5XLFSPntM55ulCmo6TE0qrtlX0N6fruPvwPGZZ+wgepzXKJoEiUdydPA1
-         nWZw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714453824; x=1715058624;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Nm5KSte9EtNP2GBwmXuE8/J8iLTK3PcKydXJnqqMM4g=;
-        b=vOPXJxqSzDU+B/NmjjTOvLG1bKCyTcOx8NOxcaojx7ksn2bfIh+rtHf0wQKn5IE77Z
-         xCKtfemzoT/JReFpG4rtgZBiogczo3a2vz2Vd//lsdz/fA8jb5c+k+lFbvMDZUOnqFpr
-         g+nA3FvyLNdU+zkok+GQXIwhyIcl6aRzGFbpM/vPpyaaArF9xd/sNymbc5gXea4jUCTd
-         jax1d3AOkU+uothI70VP2qY7DxWYr/fLGkLli2MukWpd1JBHq9YyfIWwwvw5MHTybQCZ
-         ATe5XLvf6VhIMxh6P7mZyLR2xH7nmVz+gCjrsFXg5i4iQyn4zCp26NIJxgtMGTn8cHq/
-         ZpFA==
-X-Forwarded-Encrypted: i=1; AJvYcCW8laSuJPGRfKBOJphaqemDsav+loAvvztX9xK/ks33s26ND9GZ0rfNZmyHJ7ultAtxurOFRmZEHymE7uw5YGx/jlXKi9HkNpPviiu0
-X-Gm-Message-State: AOJu0YwpRzc33PEM3TmZkyyi10h1gDzWHiJnEh5Mx8uVjEZd73izgQ9d
-	Feue/c4tM0onbA9zybpT8gN0ziW2fBc5dY3TO6bVghINgASfGlwzeUi8WEpmoHDoWFSoW+PA267
-	EYqtMDWaszmdarlxHdp36DPzvXds=
-X-Google-Smtp-Source: AGHT+IFlfuijYlZUPjalT0bDu+MnlCDwx6EUmLuwJiu1cUJxg8OL495gJRHS9/N1pnZDUvSNoNy44ns4wxPnk4L5vS8=
-X-Received: by 2002:a05:6512:3294:b0:51b:567e:7ea4 with SMTP id
- p20-20020a056512329400b0051b567e7ea4mr998553lfe.26.1714453823614; Mon, 29 Apr
- 2024 22:10:23 -0700 (PDT)
+	s=arc-20240116; t=1714453853; c=relaxed/simple;
+	bh=d/b4zlbqpIEY9DLFq4hSauJ4swz+iTTcDpUDBrY2dIo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=qMPT2K+/VR4EyoA0v3hi+cium650zOoeeMSMUSIsfyQnzI5M3v3OFSUhMOug6SzEHPtDj9LxuKl0SL/PkAfBea5cIpNyf+kujnm2atQZK9BBD25rpAeUAkjz2oZea8A9iZwKkVgYVlBLx0pVbnoJY4P1nghk5fh+Vjbi0sUE9Qk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=JhcXc03K; arc=none smtp.client-ip=198.47.19.141
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+	by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 43U5Aafj037952;
+	Tue, 30 Apr 2024 00:10:36 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1714453836;
+	bh=tkSk8wJzJEVYrw0AlW1nQjgNmnwnpS8NgdvNoTuoYos=;
+	h=Date:Subject:To:CC:References:From:In-Reply-To;
+	b=JhcXc03KP1fF0I7PCNuZIJl0uIrnLxgXMxv1byRI2Pdviip2mRj41lfWsDYD87OlM
+	 CSDjh/c2ltRuIaZ1y3r1uyMIM9TDwUsyt4tfdxiW6E57lAfibT9jPQXy7gNfZiN+Vv
+	 ykJQofBqWwIz6li8Tb02CVEy0fr1Hn4Ta48XnQRo=
+Received: from DFLE107.ent.ti.com (dfle107.ent.ti.com [10.64.6.28])
+	by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 43U5AajI003539
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Tue, 30 Apr 2024 00:10:36 -0500
+Received: from DFLE115.ent.ti.com (10.64.6.36) by DFLE107.ent.ti.com
+ (10.64.6.28) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 30
+ Apr 2024 00:10:35 -0500
+Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE115.ent.ti.com
+ (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Tue, 30 Apr 2024 00:10:35 -0500
+Received: from [10.24.69.25] (danish-tpc.dhcp.ti.com [10.24.69.25])
+	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 43U5AUcF008960;
+	Tue, 30 Apr 2024 00:10:31 -0500
+Message-ID: <579faebd-1dd3-4665-b5d7-6939d9cc1ad4@ti.com>
+Date: Tue, 30 Apr 2024 10:40:29 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240430021753.385089-1-brookxu.cn@gmail.com> <8379e4a9-3114-4d35-9d1f-81ca61351b85@nvidia.com>
-In-Reply-To: <8379e4a9-3114-4d35-9d1f-81ca61351b85@nvidia.com>
-From: =?UTF-8?B?6K645pil5YWJ?= <brookxu.cn@gmail.com>
-Date: Tue, 30 Apr 2024 13:10:11 +0800
-Message-ID: <CADtkEechcseDatdzoPDrYBapvQ5iTKo3E-tsdiwj2B7euLLwnQ@mail.gmail.com>
-Subject: Re: [PATCH] nvme-fabrics: use reserved tag for reg read/write command
-To: Chaitanya Kulkarni <chaitanyak@nvidia.com>
-Cc: "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>, "hch@lst.de" <hch@lst.de>, 
-	"kbusch@kernel.org" <kbusch@kernel.org>, 
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "axboe@kernel.dk" <axboe@kernel.dk>, 
-	"sagi@grimberg.me" <sagi@grimberg.me>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next v2] net: ti: icssg_prueth: Add SW TX / RX
+ Coalescing based on hrtimers
+Content-Language: en-US
+To: Simon Horman <horms@kernel.org>
+CC: Dan Carpenter <dan.carpenter@linaro.org>,
+        Heiner Kallweit
+	<hkallweit1@gmail.com>, Andrew Lunn <andrew@lunn.ch>,
+        Jan Kiszka
+	<jan.kiszka@siemens.com>,
+        Diogo Ivo <diogo.ivo@siemens.com>, Paolo Abeni
+	<pabeni@redhat.com>,
+        Jakub Kicinski <kuba@kernel.org>, Eric Dumazet
+	<edumazet@google.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <srk@ti.com>,
+        Vignesh Raghavendra
+	<vigneshr@ti.com>, <r-gunasekaran@ti.com>,
+        Roger Quadros <rogerq@kernel.org>
+References: <20240429071501.547680-1-danishanwar@ti.com>
+ <20240429183034.GG516117@kernel.org>
+From: MD Danish Anwar <danishanwar@ti.com>
+In-Reply-To: <20240429183034.GG516117@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-Chaitanya Kulkarni <chaitanyak@nvidia.com> =E4=BA=8E2024=E5=B9=B44=E6=9C=88=
-30=E6=97=A5=E5=91=A8=E4=BA=8C 11:47=E5=86=99=E9=81=93=EF=BC=9A
->
-> On 4/29/2024 7:17 PM, brookxu.cn wrote:
-> > From: Chunguang Xu <chunguang.xu@shopee.com>
-> >
-> > In some scenarios, if too many commands are issued by nvme command in
-> > the same time by user tasks, this may exhaust all tags of admin_q. If
-> > a reset (nvme reset or IO timeout) occurs before these commands finish,
-> > reconnect routine may fail to update nvme regs due to insufficient tags=
-,
-> > which will cause kernel hang forever. In order to workaround this issue=
-,
-> > maybe we can let reg_read32()/reg_read64()/reg_write32() use reserved
-> > tags. This maybe safe for nvmf:
-> >
-> > 1. For the disable ctrl path,  we will not issue connect command
-> > 2. For the enable ctrl / fw activate path, since connect and reg_xx()
-> >     are called serially.
-> >
->
-> Given the complexity of the scenario described above, is it possible to
-> write a script for this scenario that will trigger this and submit to
-> blktest ? not that this is a blocker to get this patch reviewed, but
-> believe it is needed in long run, WDYT ?
 
-Thanks for you reply, I can easily reproduce it in my VMs by following step=
-s:
-STEP 1. In order to reduce the complexity of reproduction, I reduce
-NVME_AQ_MQ_TAG_DEPTH from 31 to 8
 
-STEP 2. Create a nvme device by NVMe over tcp, such as following command:
-nvme connect -t tcp -a 192.168.122.20 -s 4420 -n
-nqn.2014-08.org.nvmexpress.mytest
+On 30/04/24 12:00 am, Simon Horman wrote:
+> On Mon, Apr 29, 2024 at 12:45:01PM +0530, MD Danish Anwar wrote:
+>> Add SW IRQ coalescing based on hrtimers for RX and TX data path for ICSSG
+>> driver, which can be enabled by ethtool commands:
+>>
+>> - RX coalescing
+>>   ethtool -C eth1 rx-usecs 50
+>>
+>> - TX coalescing can be enabled per TX queue
+>>
+>>   - by default enables coalesing for TX0
+> 
+> nit: coalescing
+> 
+> Please consider running patches through ./checkpatch --codespell
+> 
+>>   ethtool -C eth1 tx-usecs 50
+>>   - configure TX0
+>>   ethtool -Q eth0 queue_mask 1 --coalesce tx-usecs 100
+>>   - configure TX1
+>>   ethtool -Q eth0 queue_mask 2 --coalesce tx-usecs 100
+>>   - configure TX0 and TX1
+>>   ethtool -Q eth0 queue_mask 3 --coalesce tx-usecs 100 --coalesce
+>> tx-usecs 100
+>>
+>> Minimum value for both rx-usecs and tx-usecs is 20us.
+>>
+>> Compared to gro_flush_timeout and napi_defer_hard_irqs this patch allows
+>> to enable IRQ coalescing for RX path separately.
+>>
+>> Benchmarking numbers:
+>>  ===============================================================
+>> | Method                  | Tput_TX | CPU_TX | Tput_RX | CPU_RX |
+>> | ==============================================================
+>> | Default Driver           943 Mbps    31%      517 Mbps  38%   |
+>> | IRQ Coalescing (Patch)   943 Mbps    28%      518 Mbps  25%   |
+>>  ===============================================================
+>>
+>> Signed-off-by: MD Danish Anwar <danishanwar@ti.com>
+>> ---
+>> Changes from v1 [1] to v2:
+>> *) Added Benchmarking numbers in the commit message as suggested by
+>>    Andrew Lunn <andrew@lunn.ch>. Full logs [2]
+>> *) Addressed comments given by Simon Horman <horms@kernel.org> in v1.
+> 
+> Sorry to be bothersome, but the W=1 problem isn't entirely fixed.
+> 
 
-STEP 3. Buind and run the c++ program issues nvme commands as followed:
-#include <sys/types.h>
-#include <signal.h>
-#include <unistd.h>
-#include <vector>
-#include <set>
-#include <stdlib.h>
-#include <sys/types.h>
-#include <sys/wait.h>
+I'll check with W=1 and fix the warnings. I'll repost it soon.
 
-const int concurrency =3D 64;
-std::set<pid_t> chlds;
+>>
+>> [1] https://lore.kernel.org/all/20240424091823.1814136-1-danishanwar@ti.com/
+>>
+>> [2] https://gist.githubusercontent.com/danish-ti/47855631be9f3635cee994693662a988/raw/94b4eb86b42fe243ab03186a88a314e0cb272fd0/gistfile1.txt
+> 
+> ...
+> 
+>> diff --git a/drivers/net/ethernet/ti/icssg/icssg_common.c b/drivers/net/ethernet/ti/icssg/icssg_common.c
+> 
+> ...
+> 
+>> @@ -190,19 +191,37 @@ int emac_tx_complete_packets(struct prueth_emac *emac, int chn,
+>>  	return num_tx;
+>>  }
+>>  
+>> +static enum hrtimer_restart emac_tx_timer_callback(struct hrtimer *timer)
+>> +{
+>> +	struct prueth_tx_chn *tx_chns =
+>> +			container_of(timer, struct prueth_tx_chn, tx_hrtimer);
+>> +
+>> +	enable_irq(tx_chns->irq);
+>> +	return HRTIMER_NORESTART;
+>> +}
+>> +
+>>  static int emac_napi_tx_poll(struct napi_struct *napi_tx, int budget)
+>>  {
+>>  	struct prueth_tx_chn *tx_chn = prueth_napi_to_tx_chn(napi_tx);
+>>  	struct prueth_emac *emac = tx_chn->emac;
+>> +	bool tdown = false;
+>>  	int num_tx_packets;
+>>  
+>> -	num_tx_packets = emac_tx_complete_packets(emac, tx_chn->id, budget);
+>> +	num_tx_packets = emac_tx_complete_packets(emac, tx_chn->id, budget,
+>> +						  &tdown);
+>>  
+>>  	if (num_tx_packets >= budget)
+>>  		return budget;
+>>  
+>> -	if (napi_complete_done(napi_tx, num_tx_packets))
+>> -		enable_irq(tx_chn->irq);
+>> +	if (napi_complete_done(napi_tx, num_tx_packets)) {
+>> +		if (unlikely(tx_chn->tx_pace_timeout_ns && !tdown)) {
+>> +			hrtimer_start(&tx_chn->tx_hrtimer,
+>> +				      ns_to_ktime(tx_chn->tx_pace_timeout_ns),
+>> +				      HRTIMER_MODE_REL_PINNED);
+>> +		} else {
+>> +			enable_irq(tx_chn->irq);
+>> +		}
+> 
+> This compiles with gcc-13 and clang-18 W=1
+> (although the inner {} are unnecessary).
+> 
+>> +	}
+>>  
+>>  	return num_tx_packets;
+>>  }
+> 
+> ...
+> 
+>> @@ -872,7 +894,13 @@ int emac_napi_rx_poll(struct napi_struct *napi_rx, int budget)
+>>  	}
+>>  
+>>  	if (num_rx < budget && napi_complete_done(napi_rx, num_rx))
+>> -		enable_irq(emac->rx_chns.irq[rx_flow]);
+>> +		if (unlikely(emac->rx_pace_timeout_ns)) {
+>> +			hrtimer_start(&emac->rx_hrtimer,
+>> +				      ns_to_ktime(emac->rx_pace_timeout_ns),
+>> +				      HRTIMER_MODE_REL_PINNED);
+>> +		} else {
+>> +			enable_irq(emac->rx_chns.irq[rx_flow]);
+>> +		}
+> 
+> But this does not; I think outer (but not inner) {} are needed.
+> 
+> FIIIW, I believe this doesn't show-up in the netdev automated testing
+> because this driver isn't built for x86 allmodconfig.
+> 
+>>  
+>>  	return num_rx;
+>>  }
+> 
+> ...
+> 
 
-int __exit =3D 0;
-void  sigint_proc(int signo)
-{
-        __exit =3D 1;
-}
-
-int main(int argc, char **argv)
-{
-        signal(SIGINT, sigint_proc);
-
-        for (auto i  =3D 0; i < concurrency; i++) {
-                auto pid =3D fork();
-                if (!pid) {
-                        while (true) {
-                                system("nvme list -o json 2>&1 > /dev/null"=
-);
-                        }
-                }
-
-                chlds.insert(pid);
-        }
-
-        while (!__exit) {
-                if (chlds.empty())
-                        break;
-
-                for (auto pid : chlds) {
-                        int wstatus, ret;
-                        ret =3D waitpid(pid, &wstatus, WNOWAIT);
-                        if (ret > 0) {
-                                chlds.erase(pid);
-                                break;
-                        }
-                }
-                usleep(1000);
-        }
-
-        // exit
-        for (auto pid : chlds)
-                kill(pid, SIGKILL);
-
-        return 0;
-}
-
-STEP 4. Open a new console, running the followed command:
-while [ true ]; do nvme reset /dev/nvme0; sleep `echo "$RANDOM%1" | bc`; do=
-ne
-
-We will reproduce this issue soon.
->
-> > So the reserved tags may still be enough while reg_xx() use reserved ta=
-gs.
-> >
-> > Signed-off-by: Chunguang Xu <chunguang.xu@shopee.com>
-> > ---
->
-> -ck
->
->
+-- 
+Thanks and Regards,
+Danish
 
