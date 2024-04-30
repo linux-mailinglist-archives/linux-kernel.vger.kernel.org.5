@@ -1,400 +1,180 @@
-Return-Path: <linux-kernel+bounces-164248-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-164250-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2E2F58B7B5B
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 17:22:41 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5D5368B7B62
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 17:25:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 948A51F22AEF
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 15:22:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 146DF1F22876
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 15:25:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D51C5143738;
-	Tue, 30 Apr 2024 15:22:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C39D7172BA8;
+	Tue, 30 Apr 2024 15:25:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=morinfr.org header.i=@morinfr.org header.b="1TI+xOV3"
-Received: from smtp2-g21.free.fr (smtp2-g21.free.fr [212.27.42.2])
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="RGVFTxp9"
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2060.outbound.protection.outlook.com [40.107.94.60])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D24ED143737;
-	Tue, 30 Apr 2024 15:22:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.27.42.2
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714490544; cv=none; b=eEfoYEUA9FdrljgAXE5IOYkAx4vb2nofV5Klu5K3X5OsiGNqMh1hsKSxbVu+As9oYPWKGXzPtuzP0NQJQqViBfqQeCbG+XksWE8LsXa8osKgtBFWFXB3BWAJwwuRUgL6ZZTZ1/s5BoWzvgsqEUimqtPnOhTVuCHDseqy8eVCUEI=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714490544; c=relaxed/simple;
-	bh=xfSIlhknITm7Nn1Vpn8PZ3WraOqM67xMgM/4IKfddrY=;
-	h=Date:From:To:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=u+9Sx/NfCEe9RZsOJiQotZHMHoi22wG/p5U+zchrUaZwvCrT1c/hMXeuzEnEocgLlJfV6WMlTDUA19cO4aiZFR7mHVp1knTm67qv5qQs5j6Z4vRUPqxGan59AbQPd0j/BLuGLrAxAskRWMVvjARm4aqdsvHVDZHbila1DAhu+yM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=morinfr.org; spf=pass smtp.mailfrom=morinfr.org; dkim=pass (1024-bit key) header.d=morinfr.org header.i=@morinfr.org header.b=1TI+xOV3; arc=none smtp.client-ip=212.27.42.2
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=morinfr.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=morinfr.org
-Received: from bender.morinfr.org (unknown [82.66.66.112])
-	by smtp2-g21.free.fr (Postfix) with ESMTPS id 1A9182003E0;
-	Tue, 30 Apr 2024 17:22:08 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=morinfr.org
-	; s=20170427; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
-	Subject:To:From:Date:Sender:Reply-To:Cc:Content-Transfer-Encoding:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-	List-Post:List-Owner:List-Archive;
-	bh=dQM45eMyF7RJffXkEfhsLwlqWnYeFBAu+epsoydTVNw=; b=1TI+xOV3wyhVryjw+IYpNflVED
-	DYfMjcZBFudXQQQ53imVpl7FvtNGAdIPhaghOPg+Ty8Ox8VTM0O3KQsTV9oWnxeVUhsOlzLy5/gBH
-	Ha8zDn/nXWvevmbsFeFnCEEKHRU/XsZ1IaRrFGIDCgJ8LwWB/aRP77d93czL+DW2iT2E=;
-Received: from guillaum by bender.morinfr.org with local (Exim 4.96)
-	(envelope-from <guillaume@morinfr.org>)
-	id 1s1pJ2-004apZ-1H;
-	Tue, 30 Apr 2024 17:22:08 +0200
-Date: Tue, 30 Apr 2024 17:22:08 +0200
-From: Guillaume Morin <guillaume@morinfr.org>
-To: David Hildenbrand <david@redhat.com>, oleg@redhat.com,
-	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-	muchun.song@linux.dev
-Subject: Re: [RFC][PATCH] uprobe: support for private hugetlb mappings
-Message-ID: <ZjEMoHkbloHVeJ0h@bender.morinfr.org>
-References: <22fcde31-16c4-42d0-ad99-568173ec4dd0@redhat.com>
- <ZibOQI9kwzE98n12@bender.morinfr.org>
- <8d5314ac-5afe-41d4-9d27-9512cd96d21c@redhat.com>
- <ZilvOi7ceSXmwkNq@bender.morinfr.org>
- <b1cf78f8-8480-4451-bbf8-78694ebd0438@redhat.com>
- <Zip0fEliGeL0qmID@bender.morinfr.org>
- <e84a82b8-b788-499c-be79-e6dcb64ac969@redhat.com>
- <Zirw0uINbP6GxFiK@bender.morinfr.org>
- <385d3516-95bb-4ff9-9d60-ac4e46104130@redhat.com>
- <ZiwGovSHiVCF7z6y@bender.morinfr.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 69A1814373D
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 15:25:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.94.60
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1714490701; cv=fail; b=LkzWyimZ6adg7+pSpnAhxmCS4v4nv/BmTiRdzbokR3FvCvE5hURS55njnMzpeYTUHJMjR0sC9T7W6RYxXqwfOk01zsbUNkuzRgLASKcGTCyPCjeV66hp6uCswxmDJUOnCQ4XtvxU2jBoRKwBmgq1Fafn+9iq8uv2rxzczT0IKL4=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1714490701; c=relaxed/simple;
+	bh=ZsAm/8qDULbCMZmUw2Nllf4avr0F/pSlm0kuMx5cJL4=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=cAFGeIdBT4rXq7eQKHkewAyp3AzJQEnFzIU3/u+gn3VGbBsrQ+l9u+ZsbHf2hBVbt6YiIqQ6lFxhimeNSjA+70XYrl32WHSNViRQDKoUksfHNRZcw9AIl68HSy6mgi8BkbI6QJdGK0wHrzKvtsasdfLz3TN0Dhfc1IuBRus+HQw=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=RGVFTxp9; arc=fail smtp.client-ip=40.107.94.60
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=DV1FtynjiEZiMiVH2e9RnKQwOIStOpWLiriEFhKRVNOFwI19kCtkVqZb8JVmsbKFj9b3MkN4GrEVt5/ztWZIrZ8Fsm6KcjiYoTm0MVGC1Jd+vmq5DFQNwpJTTGGZDCGb709HK6jFHEz2E78WXUvf9ZdsA6LQlJbdHXeDSSEbcP6guFeKD2H/1/l3JxgBR0nMjTO/TSqGLxxrqtorWTWmtBMfkhqGN5HLjTS+huxmpAA5P0RbcNRNoJwMxbkBVVy4qmnUHA9XCviCAR6XqQkU7lu8OpsY8WXE/VXyYfqDxR8CgEuHkMYjSIdq4726NpdeVE2k5CNRkBLZ4SVSAHA20g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=ZiHDPcEJ8jh9NMbc8mV90pNhBXHsG72zqWLbTqYBrfA=;
+ b=WgUv7R7mARXS5g+hQ0Dn1q6PUI0kTrm6ilhuy/imoKDIAqkmdat9g7G2E2+/5I5vn7ot+kMecxhJsg/4QselrztGN4mk/SUhzu20o0ubzFQI3nuHr7j/0Q40tjB0XrXlOAFIbCEZK2jhpCxCKjTf4qomXbXCEBBmdcHhkbq0EAOQS9qMDyUAwYQaNtpKap5RZAiZ6a5CQFt+PgTUhd2UdJkA6FUnJ5ly1ByYVhIzK5tQKEz94d0KVJyf47OtmCsJ7ChhzlZAxAOU2m2NvNCfK/3pP3+W8LRed87jfwQgum+E2fnhb1vV1EcLzlyzywr2McODXGmuNpcjnv6MN5RjKw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=amd.com;
+ dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
+ header.from=amd.com; dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ZiHDPcEJ8jh9NMbc8mV90pNhBXHsG72zqWLbTqYBrfA=;
+ b=RGVFTxp9mzRKgmHb0NyeWYaJi4idXM3dQ47UoL8j19FhgzqndGjtRbJTlKtQhiM3Pz9wxR+KV7iEnNgeVl9Z69tVetSWHUM1FvFz5/99SRqnrJ1Z27Ek42MvSIt+TH0KKvDkU6FQ+aoLO+D0yPprOFJhLPSlnJWkIFzzgLTXQp4=
+Received: from PH7PR13CA0005.namprd13.prod.outlook.com (2603:10b6:510:174::8)
+ by PH7PR12MB6881.namprd12.prod.outlook.com (2603:10b6:510:1b7::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7519.36; Tue, 30 Apr
+ 2024 15:24:57 +0000
+Received: from CY4PEPF0000E9CD.namprd03.prod.outlook.com
+ (2603:10b6:510:174:cafe::a7) by PH7PR13CA0005.outlook.office365.com
+ (2603:10b6:510:174::8) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7544.25 via Frontend
+ Transport; Tue, 30 Apr 2024 15:24:57 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ CY4PEPF0000E9CD.mail.protection.outlook.com (10.167.241.132) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.7544.18 via Frontend Transport; Tue, 30 Apr 2024 15:24:57 +0000
+Received: from purico-e93dhost.amd.com (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Tue, 30 Apr
+ 2024 10:24:56 -0500
+From: Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
+To: <linux-kernel@vger.kernel.org>, <iommu@lists.linux.dev>, <joro@8bytes.org>
+CC: <thomas.lendacky@amd.com>, <vasant.hegde@amd.com>, <michael.roth@amd.com>,
+	<jon.grimm@amd.com>, <rientjes@google.com>, Suravee Suthikulpanit
+	<suravee.suthikulpanit@amd.com>
+Subject: [PATCH 0/9] iommu/amd: Add AMD IOMMU emulation support for SEV-SNP guest kernel
+Date: Tue, 30 Apr 2024 15:24:21 +0000
+Message-ID: <20240430152430.4245-1-suravee.suthikulpanit@amd.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZiwGovSHiVCF7z6y@bender.morinfr.org>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CY4PEPF0000E9CD:EE_|PH7PR12MB6881:EE_
+X-MS-Office365-Filtering-Correlation-Id: 2a3890f3-76ed-47c5-92ac-08dc6929b1ac
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230031|1800799015|82310400014|36860700004|376005;
+X-Microsoft-Antispam-Message-Info:
+	=?us-ascii?Q?Ils9fupWgesJ7iQ80cWx69R3vJmV5Zs7wCkWQ1EYVt+AssFeiKzXar14DLkZ?=
+ =?us-ascii?Q?reAv/RCvk+F0kb302JjVC4N2CAntwx8fVvS7eqYjnHwVWCTBhkTG0dqTONZi?=
+ =?us-ascii?Q?NUukerCuRm9uAR1Z6RM8wxolUOV2Hi337zl5ZRGw0aTORCq1Bgdx6rJa9zio?=
+ =?us-ascii?Q?o1YJSf81NBlLQ203nzT87aO9YdpjrmTL+MTibt7eOCuRfnwFZxogq8ADdhtq?=
+ =?us-ascii?Q?Ba7+7gX+NcDTX1P4AadeottGbLYAQbI1rKTnnulJQLFkjQLJ6VS8SotTncfZ?=
+ =?us-ascii?Q?HekcTChhmaby82KC/aMCY4tTppin5wNom95L/SKpPiC/nJ4Kdz22ri4yyljJ?=
+ =?us-ascii?Q?vr458/ZSX7Lep4Q/0oq8xVZlQoygkkhJvUovdbzqXUQWrajTRZUo9VRi7z7R?=
+ =?us-ascii?Q?BpM4CYgGoaCgGTIBUyS6EKxw1M3UrF0wCJrZcH4T/RNRqcI4IOmYUyF49Gy+?=
+ =?us-ascii?Q?x3WJVhXgszpSpJV1hgJOOAdt6VERlBdVOKiY3XWnfhhnfex3a3qDpjQmrviZ?=
+ =?us-ascii?Q?HoVrcYQKJJYmBI+wzcvuLOw8PyMm4CN4u4BJhkDcBm4IkA4682Kv8r62GNM8?=
+ =?us-ascii?Q?P4P+n5CqJoRqfh2KFrzmYUjpWwMLBYdE1/VZsOSBkovszELyw8Iuc4ymoV6G?=
+ =?us-ascii?Q?0QriFol1MbyYIkmTwQ/y9o2L+qr7/Nk8YtsRrtBawDRki+BXeMOzyyfS9svN?=
+ =?us-ascii?Q?DfPmOAEIgkGenHJ05+HTnpbiEpNC2KpLwTyPZzQKDLd1mlcojrucuu090axS?=
+ =?us-ascii?Q?PMaJ/MTOU9+Cmy2e3hrjY3wkhfgWzk4S2JZg5EKXLPihrjK0E2VmtkKSPdK3?=
+ =?us-ascii?Q?hyZVQi9hydq9wWLgzQSzlNRp/32MKtC0jWbQj/ZHg6RGAO0eyVdVWGswND5P?=
+ =?us-ascii?Q?FXtf2jJ8yGaMfwMGH4L+FH2gGZfLY8ZRYQnAjhz2RMobDlD/ks5EL4GjJpB+?=
+ =?us-ascii?Q?rcDhW/oEpjwASae2OcyaEPb0u/ZDS0xd1uotDZnmfO7C2hDtO1rercPW8/4Q?=
+ =?us-ascii?Q?3y2sPcPUHm3RBen/iLseLoOQntaSeK4vsGLR2zSb86/RU8ZcTxxNaF9rfBp0?=
+ =?us-ascii?Q?TYmI3r4y+dhCBsj2S9dnpC3McgxVVlKXdCSNqgIBjFiC5Zin3uPHyyqPTJBn?=
+ =?us-ascii?Q?dz+SLyn/awhIjkDYsoIU/9Uot2mP0tEa1iviFNOu3uOTC8i6Ig98OztB+q9H?=
+ =?us-ascii?Q?9hmqHV4uaE1JEJ4el/zK8a9C/DQ74EHByTnll46NvZYdXoyWVOXJ89Biat1k?=
+ =?us-ascii?Q?XPReh5bMNNFLVTA8W4eZqA9JCgbLFzkuDTgJxZlfexCXw4SHGgARpdei8EB2?=
+ =?us-ascii?Q?NVRpgh9iYsHhsKWbCCHOsqhxSPZR9WqHkpzRU2vwn0wErqfRtbBcwNyFh3ru?=
+ =?us-ascii?Q?WQRoyT2waSjTDC+nOoc+FoH1LeNG?=
+X-Forefront-Antispam-Report:
+	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(1800799015)(82310400014)(36860700004)(376005);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Apr 2024 15:24:57.4282
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2a3890f3-76ed-47c5-92ac-08dc6929b1ac
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	CY4PEPF0000E9CD.namprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB6881
 
-On 26 Apr 21:55, Guillaume Morin wrote:
->
-> On 26 Apr  9:19, David Hildenbrand wrote:
-> > A couple of points:
-> > 
-> > a) Don't use page_mapcount(). Either folio_mapcount(), but likely you want
-> > to check PageAnonExclusive.
-> > 
-> > b) If you're not following the can_follow_write_pte/_pmd model, you are
-> > doing something wrong :)
-> > 
-> > c) The code was heavily changed in mm/mm-unstable. It was merged with t
-> > the common code.
-> > 
-> > Likely, in mm/mm-unstable, the existing can_follow_write_pte and
-> > can_follow_write_pmd checks will already cover what you want in most cases.
-> > 
-> > We'd need a can_follow_write_pud() to cover follow_huge_pud() and
-> > (unfortunately) something to handle follow_hugepd() as well similarly.
-> > 
-> > Copy-pasting what we do in can_follow_write_pte() and adjusting for
-> > different PTE types is the right thing to do. Maybe now it's time to factor
-> > out the common checks into a separate helper.
-> 
-> I tried to get the hugepd stuff right but this was the first I heard
-> about it :-) Afaict follow_huge_pmd and friends were already DTRT
+To boot a VM w/ x2APIC ID > 255, guest interrupt remapping emulation 
+is required. For SEV guest, this can be achieved using an emulated
+AMD IOMMU.
 
-I got it working on top of your uprobes-cow branch with the foll force
-patch sent friday. Still pretty lightly tested
+In order to support emulated AMD IOMMU in SEV guest, memory pages used
+by the guest IOMMU data structures must be in decrypted mode. Also GPAs
+for these pages must not have the memory encryption bit set.
 
-I went with using one write uprobe function with some additional
-branches. I went back and forth between that and making them 2 different
-functions.
+Testing:
+  - Booting Linux SEV guest w/ 512 vcpus w/ QEMU emulated amd-iommu with
+    qemu-system-x86_64 option: -device amd-iommu,intremap=on,xtsup=on
+    (emulated devices only for now).
 
-diff --git a/fs/hugetlbfs/inode.c b/fs/hugetlbfs/inode.c
-index 2f4e88552d3f..8a33e380f7ea 100644
---- a/fs/hugetlbfs/inode.c
-+++ b/fs/hugetlbfs/inode.c
-@@ -83,6 +83,10 @@ static const struct fs_parameter_spec hugetlb_fs_parameters[] = {
- 	{}
- };
- 
-+bool hugetlbfs_mapping(struct address_space *mapping) {
-+	return mapping->a_ops == &hugetlbfs_aops;
-+}
-+
- /*
-  * Mask used when checking the page offset value passed in via system
-  * calls.  This value will be converted to a loff_t which is signed.
-diff --git a/include/linux/hugetlb.h b/include/linux/hugetlb.h
-index 68244bb3637a..66fdcc0b5db2 100644
---- a/include/linux/hugetlb.h
-+++ b/include/linux/hugetlb.h
-@@ -511,6 +511,8 @@ struct hugetlbfs_sb_info {
- 	umode_t mode;
- };
- 
-+bool hugetlbfs_mapping(struct address_space *mapping);
-+
- static inline struct hugetlbfs_sb_info *HUGETLBFS_SB(struct super_block *sb)
- {
- 	return sb->s_fs_info;
-@@ -557,6 +559,8 @@ static inline struct hstate *hstate_inode(struct inode *i)
- {
- 	return NULL;
- }
-+
-+static inline bool hugetlbfs_mapping(struct address_space *mapping) { return false; }
- #endif /* !CONFIG_HUGETLBFS */
- 
- #ifdef HAVE_ARCH_HUGETLB_UNMAPPED_AREA
-diff --git a/kernel/events/uprobes.c b/kernel/events/uprobes.c
-index 4237a7477cca..e6e93a574c39 100644
---- a/kernel/events/uprobes.c
-+++ b/kernel/events/uprobes.c
-@@ -11,6 +11,7 @@
- 
- #include <linux/kernel.h>
- #include <linux/highmem.h>
-+#include <linux/hugetlb.h>
- #include <linux/pagemap.h>	/* read_mapping_page */
- #include <linux/slab.h>
- #include <linux/sched.h>
-@@ -120,7 +121,7 @@ struct xol_area {
-  */
- static bool valid_vma(struct vm_area_struct *vma, bool is_register)
- {
--	vm_flags_t flags = VM_HUGETLB | VM_MAYEXEC | VM_MAYSHARE;
-+	vm_flags_t flags = VM_MAYEXEC | VM_MAYSHARE;
- 
- 	if (is_register)
- 		flags |= VM_WRITE;
-@@ -163,21 +164,21 @@ bool __weak is_trap_insn(uprobe_opcode_t *insn)
- 	return is_swbp_insn(insn);
- }
- 
--static void copy_from_page(struct page *page, unsigned long vaddr, void *dst, int len)
-+static void copy_from_page(struct page *page, unsigned long vaddr, void *dst, int len, unsigned long page_mask)
- {
- 	void *kaddr = kmap_atomic(page);
--	memcpy(dst, kaddr + (vaddr & ~PAGE_MASK), len);
-+	memcpy(dst, kaddr + (vaddr & ~page_mask), len);
- 	kunmap_atomic(kaddr);
- }
- 
--static void copy_to_page(struct page *page, unsigned long vaddr, const void *src, int len)
-+static void copy_to_page(struct page *page, unsigned long vaddr, const void *src, int len, unsigned long page_mask)
- {
- 	void *kaddr = kmap_atomic(page);
--	memcpy(kaddr + (vaddr & ~PAGE_MASK), src, len);
-+	memcpy(kaddr + (vaddr & ~page_mask), src, len);
- 	kunmap_atomic(kaddr);
- }
- 
--static int verify_opcode(struct page *page, unsigned long vaddr, uprobe_opcode_t *new_opcode)
-+static int verify_opcode(struct page *page, unsigned long vaddr, uprobe_opcode_t *new_opcode, unsigned long page_mask)
- {
- 	uprobe_opcode_t old_opcode;
- 	bool is_swbp;
-@@ -191,7 +192,8 @@ static int verify_opcode(struct page *page, unsigned long vaddr, uprobe_opcode_t
- 	 * is a trap variant; uprobes always wins over any other (gdb)
- 	 * breakpoint.
- 	 */
--	copy_from_page(page, vaddr, &old_opcode, UPROBE_SWBP_INSN_SIZE);
-+	copy_from_page(page, vaddr, &old_opcode, UPROBE_SWBP_INSN_SIZE,
-+		       page_mask);
- 	is_swbp = is_swbp_insn(&old_opcode);
- 
- 	if (is_swbp_insn(new_opcode)) {
-@@ -376,8 +378,8 @@ struct uwo_data {
- 	uprobe_opcode_t opcode;
- };
- 
--static int __write_opcode_pte(pte_t *ptep, unsigned long vaddr,
--		unsigned long next, struct mm_walk *walk)
-+static int __write_opcode(pte_t *ptep, unsigned long vaddr,
-+			  unsigned long page_mask, struct mm_walk *walk)
- {
- 	struct uwo_data *data = walk->private;;
- 	const bool is_register = !!is_swbp_insn(&data->opcode);
-@@ -415,9 +417,12 @@ static int __write_opcode_pte(pte_t *ptep, unsigned long vaddr,
- 
- 	/* Unmap + flush the TLB, such that we can write atomically .*/
- 	flush_cache_page(vma, vaddr, pte_pfn(pte));
--	pte = ptep_clear_flush(vma, vaddr, ptep);
-+	if (folio_test_hugetlb(folio))
-+		pte = huge_ptep_clear_flush(vma, vaddr, ptep);
-+	else
-+		pte = ptep_clear_flush(vma, vaddr, ptep);
- 	copy_to_page(page, data->opcode_vaddr, &data->opcode,
--		     UPROBE_SWBP_INSN_SIZE);
-+		     UPROBE_SWBP_INSN_SIZE, page_mask);
- 
- 	/* When unregistering, we may only zap a PTE if uffd is disabled ... */
- 	if (is_register || userfaultfd_missing(vma))
-@@ -443,13 +448,18 @@ static int __write_opcode_pte(pte_t *ptep, unsigned long vaddr,
- 	if (!identical || folio_maybe_dma_pinned(folio))
- 		goto remap;
- 
--	/* Zap it and try to reclaim swap space. */
--	dec_mm_counter(mm, MM_ANONPAGES);
--	folio_remove_rmap_pte(folio, page, vma);
--	if (!folio_mapped(folio) && folio_test_swapcache(folio) &&
--	     folio_trylock(folio)) {
--		folio_free_swap(folio);
--		folio_unlock(folio);
-+	if (folio_test_hugetlb(folio)) {
-+		hugetlb_remove_rmap(folio);
-+		large = false;
-+	} else {
-+		/* Zap it and try to reclaim swap space. */
-+		dec_mm_counter(mm, MM_ANONPAGES);
-+		folio_remove_rmap_pte(folio, page, vma);
-+		if (!folio_mapped(folio) && folio_test_swapcache(folio) &&
-+		folio_trylock(folio)) {
-+			folio_free_swap(folio);
-+			folio_unlock(folio);
-+		}
- 	}
- 	folio_put(folio);
- 
-@@ -461,11 +471,29 @@ static int __write_opcode_pte(pte_t *ptep, unsigned long vaddr,
- 	 */
- 	smp_wmb();
- 	/* We modified the page. Make sure to mark the PTE dirty. */
--	set_pte_at(mm, vaddr, ptep, pte_mkdirty(pte));
-+	if (folio_test_hugetlb(folio))
-+		set_huge_pte_at(mm , vaddr, ptep, huge_pte_mkdirty(pte),
-+				(~page_mask) + 1);
-+	else
-+		set_pte_at(mm, vaddr, ptep, pte_mkdirty(pte));
- 	return UWO_DONE;
- }
- 
-+static int __write_opcode_hugetlb(pte_t *ptep, unsigned long hmask,
-+		unsigned long vaddr,
-+		unsigned long next, struct mm_walk *walk)
-+{
-+	return __write_opcode(ptep, vaddr, hmask, walk);
-+}
-+
-+static int __write_opcode_pte(pte_t *ptep, unsigned long vaddr,
-+		unsigned long next, struct mm_walk *walk)
-+{
-+	return __write_opcode(ptep, vaddr, PAGE_MASK, walk);
-+}
-+
- static const struct mm_walk_ops write_opcode_ops = {
-+	.hugetlb_entry		= __write_opcode_hugetlb,
- 	.pte_entry		= __write_opcode_pte,
- 	.walk_lock		= PGWALK_WRLOCK,
- };
-@@ -492,7 +520,7 @@ int uprobe_write_opcode(struct arch_uprobe *auprobe, struct vm_area_struct *vma,
- 		unsigned long opcode_vaddr, uprobe_opcode_t opcode)
- {
- 	struct uprobe *uprobe = container_of(auprobe, struct uprobe, arch);
--	const unsigned long vaddr = opcode_vaddr & PAGE_MASK;
-+	unsigned long vaddr = opcode_vaddr & PAGE_MASK;
- 	const bool is_register = !!is_swbp_insn(&opcode);
- 	struct uwo_data data = {
- 		.opcode = opcode,
-@@ -503,6 +531,7 @@ int uprobe_write_opcode(struct arch_uprobe *auprobe, struct vm_area_struct *vma,
- 	struct mmu_notifier_range range;
- 	int ret, ref_ctr_updated = 0;
- 	struct page *page;
-+	unsigned long page_size = PAGE_SIZE;
- 
- 	if (WARN_ON_ONCE(!is_cow_mapping(vma->vm_flags)))
- 		return -EINVAL;
-@@ -521,7 +550,14 @@ int uprobe_write_opcode(struct arch_uprobe *auprobe, struct vm_area_struct *vma,
- 	if (ret != 1)
- 		goto out;
- 
--	ret = verify_opcode(page, opcode_vaddr, &opcode);
-+
-+	if (is_vm_hugetlb_page(vma)) {
-+		struct hstate *h = hstate_vma(vma);
-+		page_size = huge_page_size(h);
-+		vaddr &= huge_page_mask(h);
-+		page = compound_head(page);
-+	}
-+	ret = verify_opcode(page, opcode_vaddr, &opcode, ~(page_size - 1));
- 	put_page(page);
- 	if (ret <= 0)
- 		goto out;
-@@ -541,12 +577,12 @@ int uprobe_write_opcode(struct arch_uprobe *auprobe, struct vm_area_struct *vma,
- 		 * be able to do it under PTL.
- 		 */
- 		mmu_notifier_range_init(&range, MMU_NOTIFY_CLEAR, 0, mm,
--					vaddr, vaddr + PAGE_SIZE);
-+					vaddr, vaddr + page_size);
- 		mmu_notifier_invalidate_range_start(&range);
- 	}
- 
- 	/* Walk the page tables and perform the actual magic. */
--	ret = walk_page_range_vma(vma, vaddr, vaddr + PAGE_SIZE,
-+	ret = walk_page_range_vma(vma, vaddr, vaddr + page_size,
- 				  &write_opcode_ops, &data);
- 
- 	if (!is_register)
-@@ -816,6 +852,7 @@ static int __copy_insn(struct address_space *mapping, struct file *filp,
- 			void *insn, int nbytes, loff_t offset)
- {
- 	struct page *page;
-+	unsigned long mask = PAGE_MASK;
- 	/*
- 	 * Ensure that the page that has the original instruction is populated
- 	 * and in page-cache. If ->read_folio == NULL it must be shmem_mapping(),
-@@ -823,12 +860,17 @@ static int __copy_insn(struct address_space *mapping, struct file *filp,
- 	 */
- 	if (mapping->a_ops->read_folio)
- 		page = read_mapping_page(mapping, offset >> PAGE_SHIFT, filp);
--	else
-+	else if (!is_file_hugepages(filp))
- 		page = shmem_read_mapping_page(mapping, offset >> PAGE_SHIFT);
-+	else {
-+		struct hstate *h = hstate_file(filp);
-+		mask = huge_page_mask(h);
-+		page = find_get_page(mapping, (offset & mask) >> PAGE_SHIFT);
-+	}
- 	if (IS_ERR(page))
- 		return PTR_ERR(page);
- 
--	copy_from_page(page, offset, insn, nbytes);
-+	copy_from_page(page, offset, insn, nbytes, mask);
- 	put_page(page);
- 
- 	return 0;
-@@ -1175,9 +1217,12 @@ static int __uprobe_register(struct inode *inode, loff_t offset,
- 	if (!uc->handler && !uc->ret_handler)
- 		return -EINVAL;
- 
--	/* copy_insn() uses read_mapping_page() or shmem_read_mapping_page() */
-+	/* copy_insn() uses read_mapping_page() or shmem/hugetlbfs specific
-+	 * logic
-+	 */
- 	if (!inode->i_mapping->a_ops->read_folio &&
--	    !shmem_mapping(inode->i_mapping))
-+	    !shmem_mapping(inode->i_mapping) &&
-+	    !hugetlbfs_mapping(inode->i_mapping))
- 		return -EIO;
- 	/* Racy, just to catch the obvious mistakes */
- 	if (offset > i_size_read(inode))
-@@ -1698,7 +1743,7 @@ void __weak arch_uprobe_copy_ixol(struct page *page, unsigned long vaddr,
- 				  void *src, unsigned long len)
- {
- 	/* Initialize the slot */
--	copy_to_page(page, vaddr, src, len);
-+	copy_to_page(page, vaddr, src, len, PAGE_MASK);
- 
- 	/*
- 	 * We probably need flush_icache_user_page() but it needs vma.
-@@ -2062,7 +2107,7 @@ static int is_trap_at_addr(struct mm_struct *mm, unsigned long vaddr)
- 	if (result < 0)
- 		return result;
- 
--	copy_from_page(page, vaddr, &opcode, UPROBE_SWBP_INSN_SIZE);
-+	copy_from_page(page, vaddr, &opcode, UPROBE_SWBP_INSN_SIZE, PAGE_MASK);
- 	put_page(page);
-  out:
- 	/* This needs to return true for any variant of the trap insn */
+GIT repos:
+* https://github.com/AMDESE/linux-iommu/tree/iommu_next_sev-iommu-v1 
+
+Thanks,
+Suravee
+
+Suravee Suthikulpanit (9):
+  iommu/amd: Introduce helper functions for managing IOMMU memory
+  iommu/amd: Convert Device Table pointer to use struct amd_iommu_mem
+  iommu/amd: Convert Command Buffer pointer to use struct amd_iommu_mem
+  iommu/amd: Convert Completion-Wait Semaphore pointer to use struct
+    amd_iommu_mem
+  iommu/amd: Convert Event Log pointer to use struct amd_iommu_mem
+  iommu/amd: Convert PPR Log pointer to use the struct amd_iommu_mem
+  iommu/amd: Remove iommu_alloc_4k_pages() helper function
+  iommu/amd: Decrypt interrupt remapping table for AMD IOMMU emulation
+    in SEV guest
+  iommu/amd: Set default domain to IDENTITY_DOMAIN when running in SEV
+    guest
+
+ drivers/iommu/amd/amd_iommu.h       |  31 +++++-
+ drivers/iommu/amd/amd_iommu_types.h |  28 ++++--
+ drivers/iommu/amd/init.c            | 144 +++++++++++++++-------------
+ drivers/iommu/amd/iommu.c           | 133 +++++++++++++++++++------
+ drivers/iommu/amd/ppr.c             |  22 +++--
+ 5 files changed, 246 insertions(+), 112 deletions(-)
 
 -- 
-Guillaume Morin <guillaume@morinfr.org>
+2.34.1
+
 
