@@ -1,109 +1,125 @@
-Return-Path: <linux-kernel+bounces-163920-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-163919-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0F0248B75DB
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 14:38:04 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id EC8438B75D8
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 14:37:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 18EBAB22BD5
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 12:38:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8A8971F22519
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 12:37:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B781171098;
-	Tue, 30 Apr 2024 12:37:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 307AF17108B;
+	Tue, 30 Apr 2024 12:37:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UdG6Whia"
-Received: from mail-ej1-f68.google.com (mail-ej1-f68.google.com [209.85.218.68])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WdjjzBZ3"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43899171062;
-	Tue, 30 Apr 2024 12:37:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.68
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F67F1CD3A;
+	Tue, 30 Apr 2024 12:37:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714480671; cv=none; b=JrkFjEpLRA5u/PsYCMCjSAigX/Qb4fqBmlhOfmVuQRtBhMgOvBUuzDKr42w4uouZOZ3GIM7mUnhpxJXOadMuR7dh5B1Y4jEneMSr6M0kGFQ1bN8ICW92VFlzvBseEYt4EhsYKNHde5h6XcglFNf611ktvL8UBM9MSV5iIDtw7wE=
+	t=1714480641; cv=none; b=XRSTIhXTQ4sisvZJP5jFN8Vm3V6a1JirIF5c15BlFSse62uDHiqcKQiptz2X1Ohq84UduK/Y7dUJivMXUCkp5+0U/t/ZqDI2NysUYQjp+Se6cd+Nk/cNd+LC6QSVy8Tt5A/niFYWAHepkF9Iq/KVHJ4Mxbl0TDPAR+MM1e66VO0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714480671; c=relaxed/simple;
-	bh=KmT8Ckyct/qkynI81wU2lhJ/4ljfYIDCJj1VpehlV/o=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=mNmviFV5kZUYlCOxTgqfcvj082wMkNQwmB5YzOdbeEDqLAMHvpGMNNtRs53JNDOzpfrb7LVzs3rSuJdISCfEQMAVmxwOSYY8OPyN2XkkSZx7yR8mhoL23BlEi2urgYdbf5cWJgAeDg8NXz7sZsjAHmZCEFsUKmbQsq5/Aj1DUh4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UdG6Whia; arc=none smtp.client-ip=209.85.218.68
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f68.google.com with SMTP id a640c23a62f3a-a58c89bda70so513215866b.3;
-        Tue, 30 Apr 2024 05:37:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714480668; x=1715085468; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=P0lacwrMCw3G9BvoUqJs9pKTPfNhYjsHB7mBDb6ejY0=;
-        b=UdG6Whia8+jOfjUyhZDf4SL5VTwiJpuI7ulugqZAdM+VSt2+e4tUpd+SjXFvUoEByf
-         3MqsiFMJVo/X5XeWH+EkFBz9ff9STFRVtdX4S0ETMhI6PUcvrFEMPv6P97FCD5+8Hc1K
-         ZUMARnP3Xy88Ay0kE1hYXSS2ZxDNQ7X2mbmTNqXnjmGfD2psdVaoWr++XRKv93XoHznB
-         Nj/JqcEmVvqFobeSnhWL31USLxUI6ufzHMHFw6QOGTpT4ENdxgVzmUch4iIFbNtKe9Ql
-         v/jn86aeZmmlbk55D01VoT38XB8BUsqU0ljpVZZV4+V1/DncCYpeH1Jtm5s3YdR2KKOZ
-         mHYg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714480668; x=1715085468;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=P0lacwrMCw3G9BvoUqJs9pKTPfNhYjsHB7mBDb6ejY0=;
-        b=SRanym9+sEiWrzAJcJpvX3L4RI31vywQhN3IaZ4XU9PtncXAoavZo61xATDrnRa220
-         8kMYrsqXb9FKQSBoqcPKcSkNg8V4+RrRUMeiv/Y7D/vDBWh55tTMmJyBhRkAEg/w6UxB
-         FvPTx6fljjR/mnU1QlsGKdAzLhdEfU0+RI4HLGq/jdAFbT4WgNatxxApRF1Me4WdHYMq
-         eBXed7i23ikvqu5XquK0LJUswJmpitgl7aHR88W+rfCKys6PqYwXfyarYnYAXguGf40s
-         jBOeZ/xv8T+FLksfRnAfj+8V0ayqdka7Quuo4cTUlki4+/AaKslT1cjLRetDH5Clmqyu
-         bJSA==
-X-Forwarded-Encrypted: i=1; AJvYcCXdwKvdvTm1QkbUTyVMPJ4RBeI0B0lVIxmydM5F02usVSiQ0FfmezQYOKznNqG+1nCgz0P14DsipWJN++P1TgCdvC+pQIINnoMG5uWKn3VLxTIIMjfunoF6WgTqUk9NeqMxFyKPXh/AdWtKbR/ch8gookedWhwiXWkGv6nbaAJsVAJf
-X-Gm-Message-State: AOJu0YwT08e7ePbbpWVuh1uPmc1iH+2rQAto3lnYAHxSkyCDxHkyOqRP
-	jLxlQWCMTsvoYA0XPwTcLRbPhZitRIk8K89VwhOfn2Nfiu75CSsdh9yqR9sHY+9fGwSOhQVChSQ
-	XtcR7e+dF5pn7papAXyLkyLD8H4o=
-X-Google-Smtp-Source: AGHT+IHghp1JXIma5F1yg2WTsiV1Yx6+FHtBsWNRdGB6/rn8D8Y1Gjdz9wQ+4BFPnXfrmIlDY9Pt31GxHD967UeroTc=
-X-Received: by 2002:a17:906:2c06:b0:a55:9195:362c with SMTP id
- e6-20020a1709062c0600b00a559195362cmr8698551ejh.49.1714480668203; Tue, 30 Apr
- 2024 05:37:48 -0700 (PDT)
+	s=arc-20240116; t=1714480641; c=relaxed/simple;
+	bh=FPqMx5f5x4wqvVTHLCGW9lKxGr2DBWjDBToiIp6l0BM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=UH1JRG7gn6A5MlnxXZ9LOHxPJNZgVCCoIdb7H5tkPFI2qjt1KqjCj43XS2L5Lym5b2kMuUO1uDHGnjhGe2jmaaB8M446yjdI2YRyD7/og669YBW73Z6tVt3ra5VesZI7TksmKIrGb2ILiyLYZ7agrDYgpxIyK6Z6Bn85cFqMOLA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WdjjzBZ3; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 78F89C2BBFC;
+	Tue, 30 Apr 2024 12:37:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714480640;
+	bh=FPqMx5f5x4wqvVTHLCGW9lKxGr2DBWjDBToiIp6l0BM=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=WdjjzBZ3K2zK0UKxydaWJFrBQR9CORpACDdDKYLcgpADpGBuG96OPWsWRVBM3G4nJ
+	 XZJTelMyIsNu5HSShlcf71Rlsko/PDS3wfFBjXnwfd0znOfSIYhC5g1sXNCHD8LrFZ
+	 6bWxSQSHd0xd230gi8JKa1XrqncBPtJEoL7BVhKTYH1L7B2V2yFEtBDgxoiTUSbPqc
+	 OFZs/TgRwsgMDIT1o2NtPwnqiA5qUWGptZMPF7ZRNBvrVEzbffHw/W84sp9KsKrERf
+	 QRgnTftlB7j5CG4IPtjx5wuZ8yfUW4JmTZF+7kUZQTVwo/34C8nZMpQe/qEddFxzv5
+	 /f/Gz94vtF4ZQ==
+Date: Tue, 30 Apr 2024 15:37:15 +0300
+From: Leon Romanovsky <leon@kernel.org>
+To: Long Li <longli@microsoft.com>
+Cc: Konstantin Taranov <kotaranov@linux.microsoft.com>,
+	Konstantin Taranov <kotaranov@microsoft.com>,
+	"sharmaajay@microsoft.com" <sharmaajay@microsoft.com>,
+	"jgg@ziepe.ca" <jgg@ziepe.ca>,
+	"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH rdma-next 6/6] RDMA/mana_ib: implement uapi for creation
+ of rnic cq
+Message-ID: <20240430123715.GD100414@unreal>
+References: <1713459125-14914-1-git-send-email-kotaranov@linux.microsoft.com>
+ <1713459125-14914-7-git-send-email-kotaranov@linux.microsoft.com>
+ <SJ1PR21MB345775858C05B9FE51C2BDF0CE112@SJ1PR21MB3457.namprd21.prod.outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240430-bpf-next-v3-0-27afe7f3b17c@kernel.org> <20240430-bpf-next-v3-1-27afe7f3b17c@kernel.org>
-In-Reply-To: <20240430-bpf-next-v3-1-27afe7f3b17c@kernel.org>
-From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Date: Tue, 30 Apr 2024 14:37:11 +0200
-Message-ID: <CAP01T773_6Qt43kxwbH0b7Q7XfcopzUQzWwjF13DGyYAvVo6pg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 1/3] bpf: do not walk twice the map on free
-To: Benjamin Tissoires <bentiss@kernel.org>
-Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, 
-	bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <SJ1PR21MB345775858C05B9FE51C2BDF0CE112@SJ1PR21MB3457.namprd21.prod.outlook.com>
 
-On Tue, 30 Apr 2024 at 12:43, Benjamin Tissoires <bentiss@kernel.org> wrote:
->
-> If someone stores both a timer and a workqueue in a map, on free we
-> would walk it twice.
-> Add a check in array_map_free_timers_wq and free the timers
-> and workqueues if they are present.
->
-> Fixes: 246331e3f1ea ("bpf: allow struct bpf_wq to be embedded in arraymaps and hashmaps")
-> Signed-off-by: Benjamin Tissoires <bentiss@kernel.org>
->
-> ---
->
-> no changes in v3
->
-> no changes in v2
-> ---
+On Tue, Apr 23, 2024 at 11:57:53PM +0000, Long Li wrote:
+> > Subject: [PATCH rdma-next 6/6] RDMA/mana_ib: implement uapi for creation
+> > of rnic cq
+> > 
+> > From: Konstantin Taranov <kotaranov@microsoft.com>
+> > 
+> > Enable users to create RNIC CQs.
+> > With the previous request size, an ethernet CQ is created.
+> > Use the cq_buf_size from the user to create an RNIC CQ and return its ID.
+> > 
+> > Signed-off-by: Konstantin Taranov <kotaranov@microsoft.com>
+> > ---
+> >  drivers/infiniband/hw/mana/cq.c | 56 ++++++++++++++++++++++++++++++---
+> >  include/uapi/rdma/mana-abi.h    |  7 +++++
+> >  2 files changed, 59 insertions(+), 4 deletions(-)
+> > 
+> > diff --git a/drivers/infiniband/hw/mana/cq.c
+> > b/drivers/infiniband/hw/mana/cq.c index 8323085..a62bda7 100644
+> > --- a/drivers/infiniband/hw/mana/cq.c
+> > +++ b/drivers/infiniband/hw/mana/cq.c
+> > @@ -9,17 +9,25 @@ int mana_ib_create_cq(struct ib_cq *ibcq, const struct
+> > ib_cq_init_attr *attr,
+> >  		      struct ib_udata *udata)
+> >  {
+> >  	struct mana_ib_cq *cq = container_of(ibcq, struct mana_ib_cq, ibcq);
+> > +	struct mana_ib_create_cq_resp resp = {};
+> > +	struct mana_ib_ucontext *mana_ucontext;
+> >  	struct ib_device *ibdev = ibcq->device;
+> >  	struct mana_ib_create_cq ucmd = {};
+> >  	struct mana_ib_dev *mdev;
+> > +	bool is_rnic_cq = true;
+> > +	u32 doorbell;
+> >  	int err;
+> > 
+> >  	mdev = container_of(ibdev, struct mana_ib_dev, ib_dev);
+> > 
+> > -	if (udata->inlen < sizeof(ucmd))
+> > +	cq->comp_vector = attr->comp_vector % ibdev->num_comp_vectors;
+> > +	cq->cq_handle = INVALID_MANA_HANDLE;
+> > +
+> > +	if (udata->inlen < offsetof(struct mana_ib_create_cq, cq_buf_size))
+> >  		return -EINVAL;
+> > 
+> > -	cq->comp_vector = attr->comp_vector % ibdev->num_comp_vectors;
+> > +	if (udata->inlen == offsetof(struct mana_ib_create_cq, cq_buf_size))
+> > +		is_rnic_cq = false;
+> 
+> I think it's okay with checking on offset in uapi message to decide if this is a newer/updated RNIC uverb.
+> 
+> But increasing MANA_IB_UVERBS_ABI_VERSION may make the code simpler. I have a feeling that you may need to increase it anyway, because a new uapi message "mana_ib_create_cq_resp" is introduced.
+> 
+> Jason or Leon may have a better idea on this.
 
-Acked-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+You should really try to avoid changing MANA_IB_UVERBS_ABI_VERSION as it
+usually means that backward compatibility will be broken after such change.
 
->  [...]
+Thanks
 
