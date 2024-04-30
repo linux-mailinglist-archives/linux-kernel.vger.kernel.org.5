@@ -1,173 +1,227 @@
-Return-Path: <linux-kernel+bounces-164328-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-164326-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id B0E988B7C62
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 17:57:27 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D0EAD8B7C57
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 17:56:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A3A43B2681C
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 15:57:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EFE651C22F6D
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 15:56:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F07BD17B4FF;
-	Tue, 30 Apr 2024 15:56:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E750A174EFA;
+	Tue, 30 Apr 2024 15:56:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="DWHvUhRk"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="oAQVv/yB"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.21])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87E96176FC0;
-	Tue, 30 Apr 2024 15:56:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D58A3770F2;
+	Tue, 30 Apr 2024 15:55:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.21
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714492568; cv=none; b=PDKKajD1swKzwZY0RKBQnA9fCDT44A+p0BxYC/exq1Dup/ckcRUKZrJcGgC4e9kiB6E27auhrfWHSWxd301iPLTwhyBQ/VZ9EupIRVG2bPFCUGvHNFXDaWvs5+ZEziP8WBTfAfxDFx3b0VXU6C7oJ9zm0ZmgM1TI5AfPH2P0MVs=
+	t=1714492560; cv=none; b=HrYtUwku9GjXoG5u/y2bq0Wzf11L+xpBUIRYiHIHTC2DvOZJZf9wEOE4ISeY56+hPHK11XGFg/QiaGnxCA+EvC7CxZFXfcMRFCrTV+QjOumzKRXRw/BK2+NnVtZmgQ08iFhC7FhO/58hlVGy+EV2NRTx/ErAmUL18aSE5AfiUww=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714492568; c=relaxed/simple;
-	bh=mZpt3dZM4BBIz/t1NRUqOGaGIzIhJTHB7CsKY0Va4pA=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References; b=jlA4N9Zx1/5HiCQMm5SoHeTz7x4h8Yv7l/wCZxmH6l2twE/SXvMTwb99Uz5HjBwNsz6BX5ce1uKXWg/DKWBrxpY59sh+RHXM75w4+QtXqvLFTkOrUNOJxtBmwZq9S+g6J7mPzq6t448pNLGAyGbquoGkxk2hV+8TNdarV5LK5NY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=qualcomm.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=DWHvUhRk; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qualcomm.com
-Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 43UFRTRg026998;
-	Tue, 30 Apr 2024 15:55:58 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	from:to:cc:subject:date:message-id:in-reply-to:references; s=
-	qcppdkim1; bh=YN8vQUMxmhQlcWxNxVZPsR0KZOt+VasnGzuMhnLqvXI=; b=DW
-	HvUhRkNRAp0yKX+fb69za5PL1KGx6lGFg4OEXoE/Ikq9vI+g3tUE9SrPW38yr30X
-	7j7I/0OaG/YRMI0Ulfrdo+CDnkdanEyP1kB7yjzMAsJMqwIioUSmiHI7evaGU3bx
-	OO177h5i2zQTJksUiAIAu17wFmO/E1yNrMfog1JG+OZaYIlcmN2kteIssvc88Ldj
-	3zxH+xxTRsrLdpeaZ9yvcrUuYOc5cPJjx3Zz6hIhSzcPNq428x+/UlnepxuEj5X5
-	MwTxkUhQLpGf5igVVDpdLqz/Wo1gHw31YPjESjkzmStGE3MFRSDP/BpC24VLm8sT
-	fN3rDEz2pRBJU5YnaIqQ==
-Received: from apblrppmta01.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xtm3ujurw-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 30 Apr 2024 15:55:58 +0000 (GMT)
-Received: from pps.filterd (APBLRPPMTA01.qualcomm.com [127.0.0.1])
-	by APBLRPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTP id 43UFtt0g032565;
-	Tue, 30 Apr 2024 15:55:55 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-	by APBLRPPMTA01.qualcomm.com (PPS) with ESMTP id 3xrtem1a82-1;
-	Tue, 30 Apr 2024 15:55:55 +0000
-Received: from APBLRPPMTA01.qualcomm.com (APBLRPPMTA01.qualcomm.com [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 43UFqTUJ029625;
-	Tue, 30 Apr 2024 15:55:55 GMT
-Received: from hu-sgudaval-hyd.qualcomm.com (hu-msarkar-hyd.qualcomm.com [10.213.111.194])
-	by APBLRPPMTA01.qualcomm.com (PPS) with ESMTP id 43UFtsU7032557;
-	Tue, 30 Apr 2024 15:55:55 +0000
-Received: by hu-sgudaval-hyd.qualcomm.com (Postfix, from userid 3891782)
-	id 33BDA3BD6; Tue, 30 Apr 2024 21:25:54 +0530 (+0530)
-From: Mrinmay Sarkar <quic_msarkar@quicinc.com>
-To: andersson@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, konrad.dybcio@linaro.org,
-        manivannan.sadhasivam@linaro.org
-Cc: quic_shazhuss@quicinc.com, quic_nitegupt@quicinc.com,
-        quic_ramkri@quicinc.com, quic_nayiluri@quicinc.com,
-        quic_krichai@quicinc.com, quic_vbadigan@quicinc.com,
-        quic_schintav@quicinc.com, Mrinmay Sarkar <quic_msarkar@quicinc.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
-        Rob Herring <robh@kernel.org>,
-        Krzysztof Kozlowski <krzk+dt@kernel.org>, linux-pci@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v11 3/3] arm64: dts: qcom: sa8775p: Add ep pcie0 controller node
-Date: Tue, 30 Apr 2024 21:25:39 +0530
-Message-Id: <1714492540-15419-4-git-send-email-quic_msarkar@quicinc.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1714492540-15419-1-git-send-email-quic_msarkar@quicinc.com>
-References: <1714492540-15419-1-git-send-email-quic_msarkar@quicinc.com>
-X-QCInternal: smtphost
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: mbGaF1h_8HkLzpSC7S_PzVpF1WHucuCv
-X-Proofpoint-GUID: mbGaF1h_8HkLzpSC7S_PzVpF1WHucuCv
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
- definitions=2024-04-30_08,2024-04-30_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- bulkscore=0 malwarescore=0 suspectscore=0 phishscore=0 spamscore=0
- priorityscore=1501 mlxlogscore=999 adultscore=0 mlxscore=0 clxscore=1015
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2404010003 definitions=main-2404300111
+	s=arc-20240116; t=1714492560; c=relaxed/simple;
+	bh=06vg5hqAWXs2ObK4lZQwv+TlSa8oT1+STphjUJYsuD4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=FBUEYejLEg//FP1uRzcOgPtuw1HTULQryzNAxNX7/x4+X8X3wLkgSwutURJE/6nM1eYhwMisK3ds7x+MluoBDLl3zy2xmyMkBeHE1kTy3k7DFe/N5j/l93nT9PGq49C6K2ihYV/j08vcsyLq44nATjndPQ8CpgsglMbijeYQjXI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=oAQVv/yB; arc=none smtp.client-ip=198.175.65.21
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1714492558; x=1746028558;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=06vg5hqAWXs2ObK4lZQwv+TlSa8oT1+STphjUJYsuD4=;
+  b=oAQVv/yBrExVONu+6gg5LZKg8OYbXkxXsxBAPeJYgZ17x+lMAlMrb78z
+   dPjebjQJkVCaJN+hitTQ/BcVrenpqZ7kBgIBC9XCa308z9EhgZyMhaZI8
+   sNFOjfw7drt1aeayZi/dMDQILuHmix2Y8zOX+dEJsnHA9k0HspRdIPPGk
+   bB5ZuKtmQvTAMEURPUuX6T4olGj6a8SP8G+PFM9PI1Fvo3K9q8cE5sAr9
+   LyGTQQPoskhOiETl6CmssCW7bfWZjaagn2IwJL+fDx6wy/Wfu9/8MIm/a
+   T6K6Ad+S2rjOIVLkDKzp4VY2tzLqZkwfTKjxyMwSWm3nsd0N8n47El5lS
+   w==;
+X-CSE-ConnectionGUID: gozQ3UhFR8mBLDr4UqMqQA==
+X-CSE-MsgGUID: GCs3ixI8RIeqC3CmjJZZiw==
+X-IronPort-AV: E=McAfee;i="6600,9927,11060"; a="10137553"
+X-IronPort-AV: E=Sophos;i="6.07,242,1708416000"; 
+   d="scan'208";a="10137553"
+Received: from fmviesa010.fm.intel.com ([10.60.135.150])
+  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Apr 2024 08:55:52 -0700
+X-CSE-ConnectionGUID: xC5bkiKpRT2AL/x9hRu/wg==
+X-CSE-MsgGUID: qZ26jGc4QVy3nOFE8y71rw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,242,1708416000"; 
+   d="scan'208";a="26589723"
+Received: from aschofie-mobl2.amr.corp.intel.com (HELO aschofie-mobl2) ([10.251.17.48])
+  by fmviesa010-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Apr 2024 08:55:52 -0700
+Date: Tue, 30 Apr 2024 08:55:49 -0700
+From: Alison Schofield <alison.schofield@intel.com>
+To: Robert Richter <rrichter@amd.com>
+Cc: "Rafael J. Wysocki" <rafael@kernel.org>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	Dan Williams <dan.j.williams@intel.com>, linux-acpi@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-cxl@vger.kernel.org,
+	Len Brown <lenb@kernel.org>
+Subject: Re: [PATCH v6 7/7] ACPI/NUMA: Print CXL Early Discovery Table (CEDT)
+Message-ID: <ZjEUhUZdcV4ZQCt6@aschofie-mobl2>
+References: <20240430092200.2335887-1-rrichter@amd.com>
+ <20240430092200.2335887-8-rrichter@amd.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240430092200.2335887-8-rrichter@amd.com>
 
-Add ep pcie dtsi node for pcie0 controller found on sa8775p platform.
-It supports gen4 and x2 link width. Limiting the speed to Gen3 due to
-stability issues.
+On Tue, Apr 30, 2024 at 11:22:00AM +0200, Robert Richter wrote:
+> The CEDT contains similar entries as the SRAT. For diagnostic reasons
+> print the CEDT same style as the SRAT.
 
-Signed-off-by: Mrinmay Sarkar <quic_msarkar@quicinc.com>
-Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
----
- arch/arm64/boot/dts/qcom/sa8775p.dtsi | 46 +++++++++++++++++++++++++++++++++++
- 1 file changed, 46 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/qcom/sa8775p.dtsi b/arch/arm64/boot/dts/qcom/sa8775p.dtsi
-index 31de7359..4084e77 100644
---- a/arch/arm64/boot/dts/qcom/sa8775p.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sa8775p.dtsi
-@@ -3689,6 +3689,52 @@
- 		};
- 	};
- 
-+	pcie0_ep: pcie-ep@1c00000 {
-+		compatible = "qcom,sa8775p-pcie-ep";
-+		reg = <0x0 0x01c00000 0x0 0x3000>,
-+		      <0x0 0x40000000 0x0 0xf20>,
-+		      <0x0 0x40000f20 0x0 0xa8>,
-+		      <0x0 0x40001000 0x0 0x4000>,
-+		      <0x0 0x40200000 0x0 0x100000>,
-+		      <0x0 0x01c03000 0x0 0x1000>,
-+		      <0x0 0x40005000 0x0 0x2000>;
-+		reg-names = "parf", "dbi", "elbi", "atu", "addr_space",
-+			    "mmio", "dma";
-+
-+		clocks = <&gcc GCC_PCIE_0_AUX_CLK>,
-+			<&gcc GCC_PCIE_0_CFG_AHB_CLK>,
-+			<&gcc GCC_PCIE_0_MSTR_AXI_CLK>,
-+			<&gcc GCC_PCIE_0_SLV_AXI_CLK>,
-+			<&gcc GCC_PCIE_0_SLV_Q2A_AXI_CLK>;
-+
-+		clock-names = "aux",
-+			      "cfg",
-+			      "bus_master",
-+			      "bus_slave",
-+			      "slave_q2a";
-+
-+		interrupts = <GIC_SPI 306 IRQ_TYPE_LEVEL_HIGH>,
-+			     <GIC_SPI 147 IRQ_TYPE_LEVEL_HIGH>,
-+			     <GIC_SPI 630 IRQ_TYPE_LEVEL_HIGH>;
-+
-+		interrupt-names = "global", "doorbell", "dma";
-+
-+		interconnects = <&pcie_anoc MASTER_PCIE_0 0 &mc_virt SLAVE_EBI1 0>,
-+				<&gem_noc MASTER_APPSS_PROC 0 &config_noc SLAVE_PCIE_0 0>;
-+		interconnect-names = "pcie-mem", "cpu-pcie";
-+
-+		iommus = <&pcie_smmu 0x0000 0x7f>;
-+		resets = <&gcc GCC_PCIE_0_BCR>;
-+		reset-names = "core";
-+		power-domains = <&gcc PCIE_0_GDSC>;
-+		phys = <&pcie0_phy>;
-+		phy-names = "pciephy";
-+		max-link-speed = <3>; /* FIXME: Limiting the Gen speed due to stability issues */
-+		num-lanes = <2>;
-+
-+		status = "disabled";
-+	};
-+
- 	pcie0_phy: phy@1c04000 {
- 		compatible = "qcom,sa8775p-qmp-gen4x2-pcie-phy";
- 		reg = <0x0 0x1c04000 0x0 0x2000>;
--- 
-2.7.4
+Reviewed-by: Alison Schofield <alison.schofield@intel.com>
 
+> 
+> Signed-off-by: Robert Richter <rrichter@amd.com>
+> ---
+>  drivers/acpi/numa/srat.c | 111 +++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 111 insertions(+)
+> 
+> diff --git a/drivers/acpi/numa/srat.c b/drivers/acpi/numa/srat.c
+> index 34ecf2dc912f..fa21d4d5fccf 100644
+> --- a/drivers/acpi/numa/srat.c
+> +++ b/drivers/acpi/numa/srat.c
+> @@ -320,6 +320,114 @@ acpi_parse_memory_affinity(union acpi_subtable_headers *header,
+>  	return 0;
+>  }
+>  
+> +static int __init
+> +__acpi_table_print_cedt_entry(union acpi_subtable_headers *__header,
+> +			      void *arg, const unsigned long table_end)
+> +{
+> +	struct acpi_cedt_header *header = (struct acpi_cedt_header *)__header;
+> +
+> +	switch (header->type) {
+> +	case ACPI_CEDT_TYPE_CHBS:
+> +		{
+> +			struct acpi_cedt_chbs *p =
+> +				(struct acpi_cedt_chbs *)header;
+> +
+> +			if (header->length < sizeof(struct acpi_cedt_chbs)) {
+> +				pr_warn("CEDT: unsupported CHBS entry: size %d\n",
+> +					 header->length);
+> +				break;
+> +			}
+> +
+> +			pr_debug("CEDT: CHBS (0x%llx length 0x%llx uid %lu) %s (%d)\n",
+> +				(unsigned long long)p->base,
+> +				(unsigned long long)p->length,
+> +				(unsigned long)p->uid,
+> +				(p->cxl_version == ACPI_CEDT_CHBS_VERSION_CXL11) ?
+> +				"cxl11" :
+> +				(p->cxl_version == ACPI_CEDT_CHBS_VERSION_CXL20) ?
+> +				"cxl20" :
+> +				"unsupported version",
+> +				p->cxl_version);
+> +		}
+> +		break;
+> +	case ACPI_CEDT_TYPE_CFMWS:
+> +		{
+> +			struct acpi_cedt_cfmws *p =
+> +				(struct acpi_cedt_cfmws *)header;
+> +			int eiw_to_ways[] = {1, 2, 4, 8, 16, 3, 6, 12};
+> +			int targets = -1;
+> +
+> +			if (header->length < sizeof(struct acpi_cedt_cfmws)) {
+> +				pr_warn("CEDT: unsupported CFMWS entry: size %d\n",
+> +					header->length);
+> +				break;
+> +			}
+> +
+> +			if (p->interleave_ways < ARRAY_SIZE(eiw_to_ways))
+> +				targets = eiw_to_ways[p->interleave_ways];
+> +			if (header->length < struct_size(
+> +					p, interleave_targets, targets))
+> +				targets = -1;
+> +
+> +			pr_debug("CEDT: CFMWS (0x%llx length 0x%llx) with %d target%s",
+> +				(unsigned long long)p->base_hpa,
+> +				(unsigned long long)p->window_size,
+> +				targets, targets > 1 ? "s" : "");
+> +			for (int i = 0; i < targets; i++)
+> +				pr_cont("%s%lu", i ? ", " : " (",
+> +					(unsigned long)p->interleave_targets[i]);
+> +			pr_cont("%s%s%s%s%s%s\n",
+> +				targets > 0 ? ")" : "",
+> +				(p->restrictions & ACPI_CEDT_CFMWS_RESTRICT_TYPE2) ?
+> +				" type2" : "",
+> +				(p->restrictions & ACPI_CEDT_CFMWS_RESTRICT_TYPE3) ?
+> +				" type3" : "",
+> +				(p->restrictions & ACPI_CEDT_CFMWS_RESTRICT_VOLATILE) ?
+> +				" volatile" : "",
+> +				(p->restrictions & ACPI_CEDT_CFMWS_RESTRICT_PMEM) ?
+> +				" pmem" : "",
+> +				(p->restrictions & ACPI_CEDT_CFMWS_RESTRICT_FIXED) ?
+> +				" fixed" : "");
+> +		}
+> +		break;
+> +	case ACPI_CEDT_TYPE_CXIMS:
+> +		{
+> +			struct acpi_cedt_cxims *p =
+> +				(struct acpi_cedt_cxims *)header;
+> +
+> +			if (header->length < sizeof(struct acpi_cedt_cxims)) {
+> +				pr_warn("CEDT: unsupported CXIMS entry: size %d\n",
+> +					header->length);
+> +				break;
+> +			}
+> +
+> +			pr_debug("CEDT: CXIMS (hbig %u nr_xormaps %u)\n",
+> +				(unsigned int)p->hbig,
+> +				(unsigned int)p->nr_xormaps);
+> +		}
+> +		break;
+> +	default:
+> +		pr_warn("CEDT: Found unsupported entry (type = 0x%x)\n",
+> +			header->type);
+> +		break;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static void __init acpi_table_print_cedt_entry(enum acpi_cedt_type id)
+> +{
+> +	acpi_table_parse_cedt(id, __acpi_table_print_cedt_entry, NULL);
+> +}
+> +
+> +static void __init acpi_table_print_cedt(void)
+> +{
+> +	/* Print only implemented CEDT types */
+> +	acpi_table_print_cedt_entry(ACPI_CEDT_TYPE_CHBS);
+> +	acpi_table_print_cedt_entry(ACPI_CEDT_TYPE_CFMWS);
+> +	acpi_table_print_cedt_entry(ACPI_CEDT_TYPE_CXIMS);
+> +}
+> +
+>  static int __init acpi_parse_cfmws(union acpi_subtable_headers *header,
+>  				   void *arg, const unsigned long table_end)
+>  {
+> @@ -518,6 +626,9 @@ int __init acpi_numa_init(void)
+>  	/* SLIT: System Locality Information Table */
+>  	acpi_table_parse(ACPI_SIG_SLIT, acpi_parse_slit);
+>  
+> +	/* CEDT: CXL Early Discovery Table */
+> +	acpi_table_print_cedt();
+> +
+>  	/*
+>  	 * CXL Fixed Memory Window Structures (CFMWS) must be parsed
+>  	 * after the SRAT. Create NUMA Nodes for CXL memory ranges that
+> -- 
+> 2.39.2
+> 
 
