@@ -1,261 +1,146 @@
-Return-Path: <linux-kernel+bounces-163544-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-163545-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5978B8B6CDB
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 10:35:12 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5B9FA8B6CDE
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 10:36:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 85A831C227E9
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 08:35:11 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 94950B215E3
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 08:36:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E05BD1272CB;
-	Tue, 30 Apr 2024 08:35:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F4CC1272D9;
+	Tue, 30 Apr 2024 08:36:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CPw0AchB"
-Received: from mail-vk1-f177.google.com (mail-vk1-f177.google.com [209.85.221.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="o/Y/Dij6"
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80466126F2C
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 08:35:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B98C17F5;
+	Tue, 30 Apr 2024 08:35:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.154.123
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714466105; cv=none; b=opdik43ETJN5k0Pyqgz/1v8V7HmIkJenK4YH5Zvw6mGVBbEquVQV1Mv1FYxT4OPk/Ck1HGgV+MsjtzhIAVJesYtVtLF2SlHtiPIHP/WrfAFPK59UsD9Pv69uSE+QJDby13lTYis6Ot8ER09zchgfB9BAFSLrb9pN43fdjtZsgjc=
+	t=1714466159; cv=none; b=K3dP4kg2xCbw063+eK7teU6flaiGX47yMo1DR6NddtDWMDxl19Kc84mK8QIaqNFw+UKhuugnLJdP9QhUurfU17xklyvtPW13nGZM01KNdgiMx/Ac+pLdk7ZtmuY6jxaVqvbWgEWKvpAhV60zOKS/F2jIsfYipLibwvCStiaSJKs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714466105; c=relaxed/simple;
-	bh=pkWHCeSzTqS/reracJ9WHv117rpDARyiLszso3HTepk=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=VnY+2Yl+jyLie/GTFWUOz8pcf4qQ0NDyqTVnou4J2+yPeD1I98+ebhZDAVUyismFZHzWnSBEmFi6nByi0gySG64IrVp/XGpVsvDdnQMn6DjqGU2W/jH988oYTxoiRQttljFJWjG5tJLHkPjtuoE6GvPVGJAL2TO0rnXXQEQmOgQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CPw0AchB; arc=none smtp.client-ip=209.85.221.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-vk1-f177.google.com with SMTP id 71dfb90a1353d-4dac88c79f2so1636013e0c.1
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 01:35:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714466102; x=1715070902; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=y/rBRcHoRXlAwLG+vwR0R7sg6LprDY9hP2qmcW7kBis=;
-        b=CPw0AchBqAGx2OMkGE5em4DxLSBPVzqp3IkFaLqAeawRB2s5KdELbBT6t+CtBvb/xq
-         F0+m5G2HHDikcdvjdV7ZLKd8mhRx1fwSMOc8orz4JmAYVYkAhozeqxdzl7+KescFjRNy
-         zHDIAfw//PHV5ZxZIVJXxv/djGZ81z/E3P51wqpVvIJaTLBN9yTjLf4bvqXItajeUO1h
-         O7Lb31OWwN/P2rNHp/Lh1kHkSQHzbJQjfjtV1cJIyUbLOl8He+BoBh/KL55gGclK1LHH
-         LFbssx5UGzAVgil97OtvBOkcQovJR3zmYBwyxJNh3MQsFEpe6FJZ3/0rDLmKaQ/UQ03U
-         m2kQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714466102; x=1715070902;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=y/rBRcHoRXlAwLG+vwR0R7sg6LprDY9hP2qmcW7kBis=;
-        b=by+4amOQ4V5xVdQqtFrXHoGFyStDiLbmzLnKS5Tgr4NJ0Q6WWt8BOHsmeguzqZiZ0i
-         GPp9aGZI3OkYvHCQfZnkHoeLMhdjH4KjKVVqzGd9WWlM10FC95X4Dhu1G4ayEicd00bn
-         98Ap0VJVwRKtTuMKfZuX4NjmXDA/BE0Ie9kViJslb70fpnDT7b6otHBX3nkhjWajlYSu
-         462TYygywK8L7lP5/CAuuGG77gIK7Wi7/o81MeAWjymhe0iKyPAVzyNKWMfwhsxU3aZ4
-         PBs5HNovUIKRHpIbugwzQZPEzMf2TFtJKBH0jx098uxIs0St6F69enmyUHT1Asw/HwEy
-         yWlg==
-X-Forwarded-Encrypted: i=1; AJvYcCXdUuLRJJe5PMl5jLoQOlUlE8dkmGSGvdtXbbduGO8mFTqz1Leeno0xBQ9mbbXwTNY3zwOpQIhynvKB27nO/aobUlKBPQidYyMrlsc1
-X-Gm-Message-State: AOJu0YwrO+OUUld3QjghJFI6xbHz4EDry5wd/Vu+9DVLKNd+Wafn/67k
-	+mWYjiBHy2UTKYnHVA7jRvPBjhvsg03Sr+qZwJj1Ip9COZYD7ViX3B29wdTJO59rTE6hwkzIeiu
-	jyoCm9/5pGGh9CMGgB+jET2XA6rI=
-X-Google-Smtp-Source: AGHT+IE2b+9xTm93X/NkRizSYwvw0aFz30OMiG5gNVvXz6AiphNeZtosWpjR+pMGckPIT2fWaAqlTbKNVg9CjZTjGbk=
-X-Received: by 2002:a05:6122:4689:b0:4d4:1cb7:f57a with SMTP id
- di9-20020a056122468900b004d41cb7f57amr14645965vkb.9.1714466102388; Tue, 30
- Apr 2024 01:35:02 -0700 (PDT)
+	s=arc-20240116; t=1714466159; c=relaxed/simple;
+	bh=UkUh+w+9HKgqtj0RQ8rDB4l/giBKlbL8suSDRZ8mUi8=;
+	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=BAJvRyrq/buzRNQI7rPSQq1CTSmYjCSyedFW2TwtxYtSPp7NDVTtIrZUFWvFWNud9UqDWizceTLg1h6z/wqtdFjkBQOXM2mASTfYW9Os07RpzRemjcYXq6jEI6Nc7zG1k8ym/5We0WJnmQgwZPf/Qi9g/XUHtfixtLwNIdcEGQo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=o/Y/Dij6; arc=none smtp.client-ip=68.232.154.123
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microchip.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1714466157; x=1746002157;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=UkUh+w+9HKgqtj0RQ8rDB4l/giBKlbL8suSDRZ8mUi8=;
+  b=o/Y/Dij6OGH3WR8fDSWpySe6yJcolgHivpPBSVyi79VB4Y/AO6JTmOvn
+   k7I4fuQedXE4EkDUTOXN+GSerSjF9a63mPz21B0/h7Avrjx0rMFGy/bwk
+   YeqT0x7Y347oj3GoUVq9N8ceaNn5tJuQpEoim2wHeUYLBc7PysZEViUPS
+   uEqKg4X+vnbt6xHywF6UeLhT2ez38+DlcFx9acVM0gpgPfD5PSFmqWclS
+   vT7goYq2WskOpEbWbK9KgPqE5kMmtLkPK1pO4H4jMpTsgyZciK1Xr5VGG
+   SIdDTOsL0SHZu2xzVJFCcF3kbFNZQ4ElobWeojNyJaIsCvDAu7y2dKc/f
+   w==;
+X-CSE-ConnectionGUID: 7ymLGdXlRHel0zLr79q6yg==
+X-CSE-MsgGUID: jVEWITJCTba7if8za9kRJw==
+X-IronPort-AV: E=Sophos;i="6.07,241,1708412400"; 
+   d="asc'?scan'208";a="23835974"
+X-Amp-Result: UNKNOWN
+X-Amp-Original-Verdict: FILE UNKNOWN
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa2.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 30 Apr 2024 01:35:51 -0700
+Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Tue, 30 Apr 2024 01:35:21 -0700
+Received: from wendy (10.10.85.11) by chn-vm-ex03.mchp-main.com (10.10.85.151)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35 via Frontend
+ Transport; Tue, 30 Apr 2024 01:35:19 -0700
+Date: Tue, 30 Apr 2024 09:35:02 +0100
+From: Conor Dooley <conor.dooley@microchip.com>
+To: Kelly Hung <ppighouse@gmail.com>
+CC: <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+	<conor+dt@kernel.org>, <joel@jms.id.au>, <andrew@codeconstruct.com.au>,
+	<devicetree@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+	<linux-aspeed@lists.ozlabs.org>, <linux-kernel@vger.kernel.org>,
+	<openbmc@lists.ozlabs.org>, <kelly_hung@asus.com>, <Allenyy_Hsu@asus.com>
+Subject: Re: [PATCH v7 1/2] dt-bindings: arm: aspeed: add ASUS X4TF board
+Message-ID: <20240430-spotty-generic-f34c53e2e50a@wendy>
+References: <20240430045853.3894633-1-Kelly_Hung@asus.com>
+ <20240430045853.3894633-2-Kelly_Hung@asus.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240429132308.38794-1-ioworker0@gmail.com> <20240429132308.38794-4-ioworker0@gmail.com>
-In-Reply-To: <20240429132308.38794-4-ioworker0@gmail.com>
-From: Barry Song <21cnbao@gmail.com>
-Date: Tue, 30 Apr 2024 20:34:51 +1200
-Message-ID: <CAGsJ_4yYDZfpmp6UTmZSZs74otu4wOKqJ3xfvzQ=pbmfsmmc=g@mail.gmail.com>
-Subject: Re: [PATCH v3 3/3] mm/vmscan: avoid split lazyfree THP during shrink_folio_list()
-To: Lance Yang <ioworker0@gmail.com>
-Cc: akpm@linux-foundation.org, willy@infradead.org, maskray@google.com, 
-	ziy@nvidia.com, ryan.roberts@arm.com, david@redhat.com, mhocko@suse.com, 
-	fengwei.yin@intel.com, zokeefe@google.com, shy828301@gmail.com, 
-	xiehuan09@gmail.com, libang.li@antgroup.com, wangkefeng.wang@huawei.com, 
-	songmuchun@bytedance.com, peterx@redhat.com, minchan@kernel.org, 
-	linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="vW1rHMiWjpv9z2U+"
+Content-Disposition: inline
+In-Reply-To: <20240430045853.3894633-2-Kelly_Hung@asus.com>
+
+--vW1rHMiWjpv9z2U+
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Apr 30, 2024 at 1:23=E2=80=AFAM Lance Yang <ioworker0@gmail.com> wr=
-ote:
->
-> When the user no longer requires the pages, they would use
-> madvise(MADV_FREE) to mark the pages as lazy free. Subsequently, they
-> typically would not re-write to that memory again.
->
-> During memory reclaim, if we detect that the large folio and its PMD are
-> both still marked as clean and there are no unexpected references
-> (such as GUP), so we can just discard the memory lazily, improving the
-> efficiency of memory reclamation in this case.
->
-> On an Intel i5 CPU, reclaiming 1GiB of lazyfree THPs using
-> mem_cgroup_force_empty() results in the following runtimes in seconds
-> (shorter is better):
->
-> --------------------------------------------
-> |     Old       |      New       |  Change  |
-> --------------------------------------------
-> |   0.683426    |    0.049197    |  -92.80% |
-> --------------------------------------------
->
-> Suggested-by: Zi Yan <ziy@nvidia.com>
-> Suggested-by: David Hildenbrand <david@redhat.com>
-> Signed-off-by: Lance Yang <ioworker0@gmail.com>
+On Tue, Apr 30, 2024 at 12:58:52PM +0800, Kelly Hung wrote:
+> Document the new compatibles used on ASUS X4TF.
+>=20
+> Signed-off-by: Kelly Hung <ppighouse@gmail.com>
+>=20
 > ---
->  include/linux/huge_mm.h |  2 ++
->  mm/huge_memory.c        | 75 +++++++++++++++++++++++++++++++++++++++++
->  mm/rmap.c               |  3 ++
->  3 files changed, 80 insertions(+)
->
-> diff --git a/include/linux/huge_mm.h b/include/linux/huge_mm.h
-> index 2daadfcc6776..fd330f72b4f3 100644
-> --- a/include/linux/huge_mm.h
-> +++ b/include/linux/huge_mm.h
-> @@ -38,6 +38,8 @@ int change_huge_pmd(struct mmu_gather *tlb, struct vm_a=
-rea_struct *vma,
->                     unsigned long cp_flags);
->  void split_huge_pmd_locked(struct vm_area_struct *vma, unsigned long add=
-ress,
->                            pmd_t *pmd, bool freeze, struct folio *folio);
-> +bool unmap_huge_pmd_locked(struct vm_area_struct *vma, unsigned long add=
-r,
-> +                          pmd_t *pmdp, struct folio *folio);
->
->  vm_fault_t vmf_insert_pfn_pmd(struct vm_fault *vmf, pfn_t pfn, bool writ=
-e);
->  vm_fault_t vmf_insert_pfn_pud(struct vm_fault *vmf, pfn_t pfn, bool writ=
-e);
-> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
-> index 145505a1dd05..d35d526ed48f 100644
-> --- a/mm/huge_memory.c
-> +++ b/mm/huge_memory.c
-> @@ -2690,6 +2690,81 @@ static void unmap_folio(struct folio *folio)
->         try_to_unmap_flush();
->  }
->
-> +static bool __discard_trans_pmd_locked(struct vm_area_struct *vma,
-> +                                      unsigned long addr, pmd_t *pmdp,
-> +                                      struct folio *folio)
-> +{
-> +       struct mm_struct *mm =3D vma->vm_mm;
-> +       int ref_count, map_count;
-> +       pmd_t orig_pmd =3D *pmdp;
-> +       struct mmu_gather tlb;
-> +       struct page *page;
-> +
-> +       if (pmd_dirty(orig_pmd) || folio_test_dirty(folio))
-> +               return false;
-> +       if (unlikely(!pmd_present(orig_pmd) || !pmd_trans_huge(orig_pmd))=
-)
-> +               return false;
-> +
-> +       page =3D pmd_page(orig_pmd);
-> +       if (unlikely(page_folio(page) !=3D folio))
-> +               return false;
-> +
-> +       tlb_gather_mmu(&tlb, mm);
-> +       orig_pmd =3D pmdp_huge_get_and_clear(mm, addr, pmdp);
-> +       tlb_remove_pmd_tlb_entry(&tlb, pmdp, addr);
-> +
-> +       /*
-> +        * Syncing against concurrent GUP-fast:
-> +        * - clear PMD; barrier; read refcount
-> +        * - inc refcount; barrier; read PMD
-> +        */
-> +       smp_mb();
-> +
-> +       ref_count =3D folio_ref_count(folio);
-> +       map_count =3D folio_mapcount(folio);
-> +
-> +       /*
-> +        * Order reads for folio refcount and dirty flag
-> +        * (see comments in __remove_mapping()).
-> +        */
-> +       smp_rmb();
-> +
-> +       /*
-> +        * If the PMD or folio is redirtied at this point, or if there ar=
-e
-> +        * unexpected references, we will give up to discard this folio
-> +        * and remap it.
-> +        *
-> +        * The only folio refs must be one from isolation plus the rmap(s=
-).
-> +        */
-> +       if (ref_count !=3D map_count + 1 || folio_test_dirty(folio) ||
-> +           pmd_dirty(orig_pmd)) {
-> +               set_pmd_at(mm, addr, pmdp, orig_pmd);
-> +               return false;
-> +       }
-> +
-> +       folio_remove_rmap_pmd(folio, page, vma);
-> +       zap_deposited_table(mm, pmdp);
-> +       add_mm_counter(mm, MM_ANONPAGES, -HPAGE_PMD_NR);
-> +       folio_put(folio);
-> +
-> +       return true;
-> +}
-> +
-> +bool unmap_huge_pmd_locked(struct vm_area_struct *vma, unsigned long add=
-r,
-> +                          pmd_t *pmdp, struct folio *folio)
-> +{
-> +       VM_WARN_ON_FOLIO(!folio_test_pmd_mappable(folio), folio);
-> +       VM_WARN_ON_FOLIO(!folio_test_locked(folio), folio);
-> +       VM_WARN_ON_ONCE(!IS_ALIGNED(addr, HPAGE_PMD_SIZE));
-> +
-> +#ifdef CONFIG_TRANSPARENT_HUGEPAGE
-> +       if (folio_test_anon(folio) && !folio_test_swapbacked(folio))
-> +               return __discard_trans_pmd_locked(vma, addr, pmdp, folio)=
-;
-> +#endif
+> V6 -> v7:
+> - Remove incorrect tags.
+> - Modify Signed-off-by field.
+> v5 -> v6:
+> - Add Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> - Add Reviewed-by: Rob Herring <robh@kernel.org>
+> - Add Reviewed-by: Zev Weiss <zweiss@equinix.com>
+> - Add Acked-by: Conor Dooley <conor.dooley@microchip.com>
 
-this is weird and huge_memory.c is only built with
-CONFIG_TRANSPARENT_HUGEPAGE =3D y;
+I did actually ack this, so dropping mine was not required:
+https://lore.kernel.org/all/20240229-rocket-fraction-76e85d9f4bfb@spud/
 
-mm/Makefile:
-obj-$(CONFIG_TRANSPARENT_HUGEPAGE) +=3D huge_memory.o khugepaged.o
+> V4 -> V5: Update all changelog from v1 to v5.
+> V3 -> V4: The new compatible is a BMC for a ASUS X4TF server which use
+> a ast2600-a3 chip, so correct string to asus,x4tf-bmc.
+> V2 -> V3: Add a label to indicate it is new compatible for bmc.
+> V1 -> V2: Remove blank in front of the string x4tf.
+> ---
+>  Documentation/devicetree/bindings/arm/aspeed/aspeed.yaml | 1 +
+>  1 file changed, 1 insertion(+)
+>=20
+> diff --git a/Documentation/devicetree/bindings/arm/aspeed/aspeed.yaml b/D=
+ocumentation/devicetree/bindings/arm/aspeed/aspeed.yaml
+> index 749ee54a3..0047eb4ab 100644
+> --- a/Documentation/devicetree/bindings/arm/aspeed/aspeed.yaml
+> +++ b/Documentation/devicetree/bindings/arm/aspeed/aspeed.yaml
+> @@ -74,6 +74,7 @@ properties:
+>                - ampere,mtmitchell-bmc
+>                - aspeed,ast2600-evb
+>                - aspeed,ast2600-evb-a1
+> +              - asus,x4tf-bmc
+>                - facebook,bletchley-bmc
+>                - facebook,cloudripper-bmc
+>                - facebook,elbert-bmc
+> --=20
+> 2.25.1
+>=20
 
-> +
-> +       return false;
-> +}
-> +
->  static void remap_page(struct folio *folio, unsigned long nr)
->  {
->         int i =3D 0;
-> diff --git a/mm/rmap.c b/mm/rmap.c
-> index e42f436c7ff3..ab37af4f47aa 100644
-> --- a/mm/rmap.c
-> +++ b/mm/rmap.c
-> @@ -1677,6 +1677,9 @@ static bool try_to_unmap_one(struct folio *folio, s=
-truct vm_area_struct *vma,
->                 }
->
->                 if (!pvmw.pte && (flags & TTU_SPLIT_HUGE_PMD)) {
-> +                       if (unmap_huge_pmd_locked(vma, range.start, pvmw.=
-pmd,
-> +                                                 folio))
-> +                               goto walk_done;
+--vW1rHMiWjpv9z2U+
+Content-Type: application/pgp-signature; name="signature.asc"
 
-this is making
-mm/rmap.c:1680: undefined reference to `unmap_huge_pmd_locked'
-mm/rmap.c:1687: undefined reference to `split_huge_pmd_locked'
+-----BEGIN PGP SIGNATURE-----
 
->                         /*
->                          * We temporarily have to drop the PTL and start =
-once
->                          * again from that now-PTE-mapped page table.
-> --
-> 2.33.1
->
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZjCtKQAKCRB4tDGHoIJi
+0i5AAP9qVLkKpEN9rrz34Szz04MkcJNQzs9JmnwGVYOJeL2kBwEAmSfZuCKsFjWk
+cLm/Ud2P6LCWU/IaEX8UoRgQZVq7UAo=
+=uHbO
+-----END PGP SIGNATURE-----
+
+--vW1rHMiWjpv9z2U+--
 
