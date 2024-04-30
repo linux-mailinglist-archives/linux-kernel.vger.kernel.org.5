@@ -1,265 +1,320 @@
-Return-Path: <linux-kernel+bounces-163316-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-163317-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6EFC88B6957
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 06:11:56 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id ACD3F8B695B
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 06:13:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8F7101C21E9B
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 04:11:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 625EE2843F1
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 04:13:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F3EC312E5D;
-	Tue, 30 Apr 2024 04:11:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="e718czRf"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E8FB912E6A;
+	Tue, 30 Apr 2024 04:13:26 +0000 (UTC)
+Received: from mail-lf1-f48.google.com (mail-lf1-f48.google.com [209.85.167.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7AF7101C5;
-	Tue, 30 Apr 2024 04:11:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.11
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714450306; cv=fail; b=st7KPW4mdL8pyo1gGpD004KI752r9D7vs0PhjJ31S8oNtBNuIHWILKKDPs/0ehy+IZandHZjST1Otg/kbyHdKihB68LxtJId4zEj5gEo9rc10HnZ0fmLVo7/G4gMrnneLmsL0hOJ1+H9eoe9FsSsxvsT1ZvBfD5TV1CQQwcJ74s=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714450306; c=relaxed/simple;
-	bh=1NQC+Ad2AkK+ot0PqGcrGzDCjxKvEmqk2RHJkikKbeQ=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=IqzkmdS/f3oQtAMcR2yypKYmfcdufjg4so4Hl7knkFxUkSvxRb1J4gC7PfMJEg0bdoPSARxHVMwO4bWLZ2h6FStBmNtzLqt/e8C1ngatYHjC1VI0h6zZvhKHT8/mOpuFQpwQWpwRzOG02vH4uIw4Zk8L93KUu3Xcv3oZBzm7Z0Q=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=e718czRf; arc=fail smtp.client-ip=192.198.163.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1714450305; x=1745986305;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=1NQC+Ad2AkK+ot0PqGcrGzDCjxKvEmqk2RHJkikKbeQ=;
-  b=e718czRfvW+a2lrNioOutteNdRNylugpSRUvhh0Gk4DAkgwtqrHVInwC
-   AYu3/4nhCTm5DqNZ1wcFi29JoYlNH3VzREpB0O3RP3pQQ+OU1vuer5Fvd
-   dnDa6dtZX0LEl4wyBGaYfsOvGwdTKLUa2We4w17TCr/b0HPkaGxGRwlnq
-   WCd2nHU60an/4byjCO117wZgYMwRKHayYXCsD7rmmyWUC842ZJcTm3A+n
-   AXqNvVXxj9+dn+zhbcZfbB9kWAZ+p8kGHXwVOvXhMGEk3tdyiYQxmWhNX
-   S671EcW7I2h/gmYL1QCGpJEN7yGirj45Tag4034w4tw5ENusiXiqWhPYV
-   A==;
-X-CSE-ConnectionGUID: Q4lJEFdLRsqdU6KTuU/9sg==
-X-CSE-MsgGUID: lPHD0iXhRJG0pFws55nDxA==
-X-IronPort-AV: E=McAfee;i="6600,9927,11059"; a="20754151"
-X-IronPort-AV: E=Sophos;i="6.07,241,1708416000"; 
-   d="scan'208";a="20754151"
-Received: from orviesa006.jf.intel.com ([10.64.159.146])
-  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Apr 2024 21:11:44 -0700
-X-CSE-ConnectionGUID: 7RodtkYzQiWVBMK4sILO9w==
-X-CSE-MsgGUID: TWvb5XIsQFecwdYC71jKuw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,241,1708416000"; 
-   d="scan'208";a="26728349"
-Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
-  by orviesa006.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 29 Apr 2024 21:11:44 -0700
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Mon, 29 Apr 2024 21:11:43 -0700
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Mon, 29 Apr 2024 21:11:43 -0700
-Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
- orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Mon, 29 Apr 2024 21:11:43 -0700
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.168)
- by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Mon, 29 Apr 2024 21:11:42 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=hKWQkRCcFGp8fqEseb+AqOTyu2iLd7JbKn9wwm7jsIRn/HFq1nOGUXR+7rmpb/NxUhvc5fl3tKgYlXsjZ8S3XGvDD0OoDgkHAM4gkDvqZWk/49ywGP4VVrGP6V/TZDR/6KhInUqguK4QBjEgAwoiAXED1ziqTC0oR8BgMUA83C1vmOJ9PMzT2Oi2oa7I7PFVOJsldib57l0Z094kHsqG4Yd349X3vuN7LB14WV8Kukw5grOW7h70QqBEJ/DqZTh11PdL5LboQSnjjEmLYbRLA/RBU72S6YVyfLe+aZROYyKS2IRWhh/xUJq+HMstOJgt8Z+INeMpZIbWvDRNo27z+Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=1NQC+Ad2AkK+ot0PqGcrGzDCjxKvEmqk2RHJkikKbeQ=;
- b=J2ilABRSt/AITBdllqR1r6/mPym5/qFQWSnb3IraRcmemGHd3V+ZxwQPYmJmdF/soHYE2VKA5PXL4TnaQg2eeaPXT3m2JpzVmTKvMD7oSOgS8JTfQPLCMn+u7c4sDIZwgLMfBKwFkMckMAm/TS8gPVQqJrDtPzOt7XZX2KUZNJsyzyJ0mGD6dRWUSow2AToShjJfM+NEX64rwH50qm65QBv06tdyNRKJWF6obQGRpErvuUOnhYR8KAtnk1rkkGak5hvovPMvKsnebFtKoD4tr0/cYyIYH6TTi6hUbh8QSln0Hs96jB2Y/muKJ/y9RPWuO7b2Q85UMELUeWvOQd/70A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from MW4PR11MB7125.namprd11.prod.outlook.com (2603:10b6:303:219::12)
- by PH7PR11MB7451.namprd11.prod.outlook.com (2603:10b6:510:27b::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7519.14; Tue, 30 Apr
- 2024 04:11:40 +0000
-Received: from MW4PR11MB7125.namprd11.prod.outlook.com
- ([fe80::ed72:f69c:be80:b034]) by MW4PR11MB7125.namprd11.prod.outlook.com
- ([fe80::ed72:f69c:be80:b034%4]) with mapi id 15.20.7519.031; Tue, 30 Apr 2024
- 04:11:39 +0000
-From: "Verma, Vishal L" <vishal.l.verma@intel.com>
-To: "Williams, Dan J" <dan.j.williams@intel.com>, "Jiang, Dave"
-	<dave.jiang@intel.com>, "Schofield, Alison" <alison.schofield@intel.com>,
-	"akpm@linux-foundation.org" <akpm@linux-foundation.org>
-CC: "linux-mm@kvack.org" <linux-mm@kvack.org>, "linux-cxl@vger.kernel.org"
-	<linux-cxl@vger.kernel.org>, "nvdimm@lists.linux.dev"
-	<nvdimm@lists.linux.dev>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 2/4] dax/bus.c: fix locking for unregister_dax_dev /
- unregister_dax_mapping paths
-Thread-Topic: [PATCH v2 2/4] dax/bus.c: fix locking for unregister_dax_dev /
- unregister_dax_mapping paths
-Thread-Index: AQHakEeWieoZVKHeP0OLyYS+sQIww7GAGe8AgAAuf4A=
-Date: Tue, 30 Apr 2024 04:11:39 +0000
-Message-ID: <d4047d21f0b88c5baee9140adb56e86afca24b3a.camel@intel.com>
-References: <20240416-vv-dax_abi_fixes-v2-0-d5f0c8ec162e@intel.com>
-	 <20240416-vv-dax_abi_fixes-v2-2-d5f0c8ec162e@intel.com>
-	 <6630487879c61_148729427@dwillia2-mobl3.amr.corp.intel.com.notmuch>
-In-Reply-To: <6630487879c61_148729427@dwillia2-mobl3.amr.corp.intel.com.notmuch>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-user-agent: Evolution 3.50.4 (3.50.4-1.fc39) 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: MW4PR11MB7125:EE_|PH7PR11MB7451:EE_
-x-ms-office365-filtering-correlation-id: 7241bc20-cd96-4bc1-a759-08dc68cba2d8
-x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;ARA:13230031|1800799015|376005|366007|38070700009;
-x-microsoft-antispam-message-info: =?utf-8?B?T0VTaTNkOFNneDFTa1JrRnYwM1BWY3dpTWtubmZhVHhtR0V4SEtFcmFvL2px?=
- =?utf-8?B?UEYvUEt5TDhjSWd6T2JLeC9UQkswQ3ZoLzdnM0pMRUF1TTNPOEc1NHJVTXJu?=
- =?utf-8?B?NVc4SStncnI1VUVtdGZjTVNITytZbjQ2YzJJVjduY0RzcmYzV2s0ZXVLU1RJ?=
- =?utf-8?B?ZlExbFVTNW1sSjNER2htOWpTbzNpNHJGZnllQStpYjhmZFIyNXNEZWl3NE9B?=
- =?utf-8?B?MG4vT00zdmVrK2RLVmxtSDZnUHRyN1pGZTR4cGtoMlV4ZWVJanhMUHZESDdJ?=
- =?utf-8?B?RWZVNlVLeEliM3VOUTd4QStJSjJQa3N6b1VTU1p0SWdEM3UrMEhXZHZHbHFp?=
- =?utf-8?B?eFBXNDNWMVpKc2MyYnkwalIva0lTcGo0OG1VRmM4Z2ZBWTZkZGtNUG5jaFM2?=
- =?utf-8?B?ZGZBNS9ERlRYRE5OYjRiR1U4UUVEbmU0aFNWVjc3OFBmZEdDWjNNNVVVa2dV?=
- =?utf-8?B?NUZYc1Y5WDFZaGdZMHdLZkE3S0xoWFhPVnlaUTNvcW44eGkzWXRJQzVvWDRM?=
- =?utf-8?B?ZTc2TXR0U3BLdWtlVUFWRFROTS9EY0pKY0NDMzRpTGEwWFhVeHJvU0RrRkZL?=
- =?utf-8?B?YllEbFd2b2RBWlZCVmNLeUo0R1daQmpqRXpZSlRMeERFaHZvalErL1cxV3pF?=
- =?utf-8?B?WnhSQndtYzJWWWFwNnpTRm1BTXNDc0wwcnVNK2Y5Zk1HcDRRTFBzaDhlaStr?=
- =?utf-8?B?TE1obnNsRzZ0Sml3cHBiZjZlS0dpcVVBNnRZQ3FxbHhsclAyUnhUOTd6d2k5?=
- =?utf-8?B?MzFUTkYyNVJxSlMzSkJGTU5uMi9mSHJIWFpNWGFrWkd1OGQzZXkzVzBWTk5l?=
- =?utf-8?B?RGtPYmxSdlF1RmVTcE01RzRNZlNYSDJsU0h5TDRtbTJ6RmJ0SGVHRThsT0RB?=
- =?utf-8?B?dWlUaVZWOWU2YTRKeXl1ZG11dERqVlFSelgrMzFEK0o4bTczYjNEYU9mL01k?=
- =?utf-8?B?ak5EYnZ3MTlaZkZMU1JIVzVwbHhYOWhOSnVwYk5hVUxyK2xMUHVwYnBadzMv?=
- =?utf-8?B?UWkyUWJ1cGY0d21hTEk5aGcvdlNKa0loc2d1ZjFHRThBb2kyUG1NTXpFWVRi?=
- =?utf-8?B?dmFQNnRrSmtlNlg1L2ViZ0JrZzdBTUc3dTh5T3VRbVVWYjRyb09maDFkY01C?=
- =?utf-8?B?M3IxMFk0VjduS0ZJTnY5RnBFT2VGTXZWb0dLTmJ2dTkxenJ2L0NUMDIvTzBa?=
- =?utf-8?B?a2F0NFdDUFR1MDRUYVNpaXZiNGtEVVBRZUVGTlJ1TnZoa1psejhXeG1tRmtG?=
- =?utf-8?B?ald3ZzdxV1Z2T0J1cmJvZkZDaGs1RjdCaDBDTnFXQmpKdFJ4QTdKMXUyZGlP?=
- =?utf-8?B?eEFKd3ZJZUJ5NmJSb2FZRTZaVVN6NWc0RkFCc3dZNzhhTTRNUnJ3cThUdjFl?=
- =?utf-8?B?M3lwTGwwbTRUT2VuaWVFRTFTY2UzQXFsdys1SVJDek9ibnh4QlNnWDZ5TXBn?=
- =?utf-8?B?ZlRqTk1rRFZTWXF1MW1lcktzcUxuM0xuZmlXWWhqeCtHZzFIaGpCbDRtVk1n?=
- =?utf-8?B?b2JCcW1hS1FqamF5WWNGSmtZaHBRQW9uVXVMWXBEa216VDZ4NzN4K255bDRK?=
- =?utf-8?B?TXBBZXRlT0MzN09HdFpTQ2o5c2FVdGUwY20rcUhwaDdKMHplSlkzZVc3VlVB?=
- =?utf-8?B?UlZyVlZ2QngyczZSdVAyd1JHT1F1QXpkd3pxZk1Wbk90VG1acGR6blQvb2lW?=
- =?utf-8?B?SFdyajVSRjg3eHhFbTNoMWNlM2pEVnJNdTNkbmtBcUY3TnRabk1WT2RvMGw4?=
- =?utf-8?B?UEJkY1RYQURzek42ZHhwbndvWkxDUVQ1Y0J4VTFGTGluVlFqamQrQldTa2xZ?=
- =?utf-8?B?akwyTmVNWmdiK2c0SlJ2UT09?=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW4PR11MB7125.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(376005)(366007)(38070700009);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?Wk5pdGVPcGxzWURqSmZoR3N2VW94RVhLdFAwRUZNSzQ2Y1NmNFN0MTFIbHdS?=
- =?utf-8?B?TjhCcXY1czZRbGlOSENOLzdvUWpLRk0yeDMvclRXSXRSQlN6WmxtL2Qza1ZJ?=
- =?utf-8?B?L1VuT2t5cVMrcmJjN0pwbjlzdnFISWdiSmhtUk1MdmVYaUl0N3JHcWczWXJD?=
- =?utf-8?B?bnZBZDk1MDNLRkk0TmhUQVR6Vjh4ODdjaDVTZHQrWFF6VEZCQWtWSm41UnRE?=
- =?utf-8?B?cUpzVnNBTWM4VWpTMlNKcVBOY3hjRFlzWmRtbCt1bFVXZU1LQjd2K1VFWjM4?=
- =?utf-8?B?cElVL0tpajAxaTk1azhLdHp6YlNqRDJINFRQUlRqalZhMUkyeVJ6NGlvbnQw?=
- =?utf-8?B?L2s5MW5qbTdFV0RBRXB6Wmd5bjJsVUF1b3JOVkgreTVoR3hYVWRUMzFabExX?=
- =?utf-8?B?b29Kenh4S2RkMUJRMnFZdW5rUi9NUUJJRlgrWnJCTTJxLzVJMWVGMkxwY25I?=
- =?utf-8?B?RTNmY2ZETVBZOVVXN3BUOXdINHROT25lNXBXWTA4R25CY0pLVytyckRBeHNV?=
- =?utf-8?B?M2lyanVYejRQdkprbmJuMFZjcUs0RzBzeEVHL1VJcXI1VHJoM3djL1h2WGZR?=
- =?utf-8?B?U2JGZUxhcXcrWUxNemUzbWZ2VHdod3RKRWZRL0Nua3piN1c1UXFGdWRhd3l6?=
- =?utf-8?B?RVFkcFZuWEVaOVNaemx4c1ZOL3pjYnZobzVKM1RiMHVBV2tScWp3RmdWaTA4?=
- =?utf-8?B?S0UvcTdiY0puYnNhNEk4SEZyVXFnbmRVU0IwSGNlZTdRRWNuazFzOFJGODBG?=
- =?utf-8?B?ZnBiY2tyNVhmd0NnbGxXMEhjdGM4VEZwaUh6aEoxbk0wQmViZjV6MTFPVk0w?=
- =?utf-8?B?aXBxM0xSR2x5Yk5xWm9MWmdWNUx4RXRETmFURjVadWxZOUlSL3RwWU1ZUHFZ?=
- =?utf-8?B?NVdBZVVsN0xRU3czOXV1YTQzZTBCK2taaUY2UHJSTjdPT21hdFdnYXhjTnRM?=
- =?utf-8?B?U0RqNFZCMjV2V2luTE1wMk0wNHFuRlBBUTFQcGt5TzlOeG1YUXBsbFZpeXZU?=
- =?utf-8?B?T1dDQnIrQWZ6S3g3am1TaCswU1QrMCszYTNJK0RKR3JZckxFSDcxMlJCOWFr?=
- =?utf-8?B?cUo3NUJxdEdueGE2cHBpa1JlVENLanpXV2NtdEdFWG5zdUFYVGpzckhkRFND?=
- =?utf-8?B?WnFub3VXMU43NjU2WFhPSDhiZVZ0RTFFK0REOHBSaVYzWGkzUG9wcHpvS0Ix?=
- =?utf-8?B?Y1AwTGEzL1Fad0pGZXdMQWl4ekF4Sm9zL1R6dGhQcmgzeUVzWWZhSTdMaTB0?=
- =?utf-8?B?enVocXUyOThaVXVvdTl2K3JMaklWaytqcmFDSEhrTEZYZVhaczY0U3IwcVlJ?=
- =?utf-8?B?SWZGM0RwUnhocGY4TjRMQWVBckZGcHNNZU9LZW5PT0dBV2U4UGtnZW4ySXZi?=
- =?utf-8?B?MjAzaURiejYzUk9RRlVpNytqY3R6SE9WM1JPV1RRVWp1L3M4dHk3aGxGcEhV?=
- =?utf-8?B?dVdmRlcwZUVFTVZ5UHZobWFsREloSXNXQUdNK2FBRVJTTDl0STN6VXFZK0U4?=
- =?utf-8?B?eTAvN21RcEtzcm5Zck1PVWo4ZW43cVlWdENlU0l0Y0lsaUNXY0xYN1oxamZt?=
- =?utf-8?B?aHMrUmFDMlFsSFZRN2JXMnVpMlFMVnpUTkJ0VnR2dWMyaUI3YTVoT1hLSEM1?=
- =?utf-8?B?TGpqMGUwQlRjS09iQ3l4bDJmN2VyTSsyNEtEYkd5QmoyTHZWeGRhSzVnMnNx?=
- =?utf-8?B?NVErdUhVaXpWbE5kV2cxNUNqSSt1YjZtRkRDWndOUUFLb0JqK3FFV3FCdUlM?=
- =?utf-8?B?NUM5WGdLTWF5dkhEYStIQUNaWEJxWThiL1BoZjEzRVRuRDlQejhGdjAzN2tR?=
- =?utf-8?B?VkVzRkhhVktYdHpqQjRrbnoya0lGSFVqZ0ZDMzkwZHFlQjREWWtyV0tiampB?=
- =?utf-8?B?REhlbklwWmpWZGNEZm4xc3cxcWxKOHpXOE55NGcvcXpwM0o0bSs2bFg4N0gz?=
- =?utf-8?B?VXZ1R1Nva09OU2tNZndRei95STdFRVBSUytoSGpNVnhUMmVTOEpPdkFER2li?=
- =?utf-8?B?RG1tK1ZDY2M4bDNEYzlXWmsrVkQ5LzZCaXRhNExiYVFvay9CamtpRDl6R1Er?=
- =?utf-8?B?TEMxM2dTMENGQXZIQ2JRRGRvelFwYjVqMXhyNlNWYUF1bWUvSllUYjhrRTcz?=
- =?utf-8?B?dkRTSEFXYlpmdFpqc3MwNEFiWDNrNjB2V1ZUeXJNeGJtblJMcWQzQlBTdUx5?=
- =?utf-8?B?QUE9PQ==?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <F2EB1B2B24180E4BBFB746C7C048BBDC@namprd11.prod.outlook.com>
-Content-Transfer-Encoding: base64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EEC2411187;
+	Tue, 30 Apr 2024 04:13:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.48
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1714450406; cv=none; b=ioYgqS9Q8V97o/pZS6P/9j3LH8ide59AcDjEc29XH97zg24B3/6Ez5fePo6zACr39ONNO7kgiPofTHcIXpDuRbQLJzXOFFixTAzqRor1TYzXKwmM8ni8cwD70eGuxQLxPX9tN4qJivf5ad3GcFOTnj8z5m0BARXjNFs5/wEsbqU=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1714450406; c=relaxed/simple;
+	bh=7DPPZOXDxPCk/qrC0pfVk6nR5rIqIkQn+inB+QgugBk=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ca4TA1fWAb9wSWJVEEX85leUBZdhOPPAUR98YjxpZodJuIofkyD7YepY9KKLEwH+8rpA9OllH+IT8WWx2GvAVD2CI/RZK+dg+TuQdO8rFhiWwlom4n/4v5dBaW3U6YcqkSbDSE7gQzDSAwNyutYFf3+xpXAC+Q0ZnkkaJpJdhCc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=sung-woo.kim; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.167.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=sung-woo.kim
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f48.google.com with SMTP id 2adb3069b0e04-5196c755e82so6390052e87.0;
+        Mon, 29 Apr 2024 21:13:23 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714450402; x=1715055202;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=TVULtxszzoElA5Sf7na3LylLLyWGjOEmaopCW13NXp8=;
+        b=aZnScXK9nNVhKJVKKL9p1kG80J6xJQ3T0CsfBUmTkhVQYgVvSWIpVqovvBelWnC8PK
+         nJiqaKgl2RGQHiDnqTwZnQgUqVYVka4U9e1KwFMPVQaJUWU1DfpH89ikdgw2MXXhJ5Vv
+         025TF4RPHga3VSMieYDZmPteRaRBZDWnNtCQ/z4v24saKTZzopgTGdBkV/GKob5RIHoW
+         jQk1sUGeIcTcBTQXFrppK7ahnDu3/8Yz/KICCCy3NU5OKBJSIFCfQbLFBDPvwG+Z4vyU
+         vCmmErrJWLkv4fMLUvVXtkNLj1uB8Rj/XC3vmTwKZ71QX9J7DkLh70ZrXzauBP+W4AiR
+         gF0Q==
+X-Forwarded-Encrypted: i=1; AJvYcCWpM0GOK8bDMj2u214h4Tr060TgRhYFs8F/pey2FF9KkDeqqTJgT1FMe+QdqmhBIUJ8RR8c56o9GMTgDQjlBkpIaRsWlSLmftkDw9u/N25iWjBbFyYF4sHGvkCzFgj+m8vaDXD5O5RD7sS2xxqY
+X-Gm-Message-State: AOJu0YwkvCP57BSm2V82xuPo77nN+4QbZiDgB5HiBzMT4s2Bu94VGTUB
+	O9Iu1DcK6LvJC86+L2CHrKBGmlrQVY/OXGtVX244C3471tkT58D2f75WNECA5aU=
+X-Google-Smtp-Source: AGHT+IECPyP20GFUeSwH3n8dW6P+5dCHwpaAM9iGBFWHHjKl1gJahnbVx37LHtf7PGIJXhNksHuMfw==
+X-Received: by 2002:a05:6512:20c8:b0:518:9d14:34c with SMTP id u8-20020a05651220c800b005189d14034cmr7349686lfr.12.1714450401638;
+        Mon, 29 Apr 2024 21:13:21 -0700 (PDT)
+Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com. [209.85.167.47])
+        by smtp.gmail.com with ESMTPSA id s24-20020a197718000000b0051c00cb891esm2118306lfc.151.2024.04.29.21.13.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 29 Apr 2024 21:13:21 -0700 (PDT)
+Received: by mail-lf1-f47.google.com with SMTP id 2adb3069b0e04-51abf1a9332so7104365e87.3;
+        Mon, 29 Apr 2024 21:13:21 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCVYB0GCnGAJl75EDtskgphZzYPhpMC4/Liok4y8G4FW1YQnNEm7rbJEbRMw2ax7uROyK9+lgz1/dHW0m6NW/b9Dy4pkcWI3vCYyMYmQ9yxQI1ClaMzeH/8nH1znHaZCU/T5V3+g+ByT1zIaRVNE
+X-Received: by 2002:a19:435c:0:b0:516:d002:47cb with SMTP id
+ m28-20020a19435c000000b00516d00247cbmr7011005lfj.43.1714450401036; Mon, 29
+ Apr 2024 21:13:21 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MW4PR11MB7125.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7241bc20-cd96-4bc1-a759-08dc68cba2d8
-X-MS-Exchange-CrossTenant-originalarrivaltime: 30 Apr 2024 04:11:39.8909
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 3lSqiZK/ZsKNpYKPZUB9oZFTd0HkRUe79rPnIjgPMOzjx1zUzjoK7YSV/v7dntF5f3EbBMycKePOO9kDGhM0myCm7XkxIc2z+o0uFAKet9M=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR11MB7451
-X-OriginatorOrg: intel.com
+References: <20240427174333.457156-1-iam@sung-woo.kim> <CABBYNZL4Fc2J6HtEJT9Rr6tzntGv3hc-LxM+5X+sN8V5Z0eVRg@mail.gmail.com>
+In-Reply-To: <CABBYNZL4Fc2J6HtEJT9Rr6tzntGv3hc-LxM+5X+sN8V5Z0eVRg@mail.gmail.com>
+From: Sungwoo Kim <iam@sung-woo.kim>
+Date: Tue, 30 Apr 2024 00:13:05 -0400
+X-Gmail-Original-Message-ID: <CAJNyHp+0itmZvOirtyhZ1eQ1aTm8Gb1GO+BH4nsxjZDAt7gw+w@mail.gmail.com>
+Message-ID: <CAJNyHp+0itmZvOirtyhZ1eQ1aTm8Gb1GO+BH4nsxjZDAt7gw+w@mail.gmail.com>
+Subject: Re: [PATCH v2] Bluetooth: L2CAP: Fix slab-use-after-free in l2cap_connect()
+To: Luiz Augusto von Dentz <luiz.dentz@gmail.com>
+Cc: daveti@purdue.edu, dan.carpenter@linaro.org, 
+	Marcel Holtmann <marcel@holtmann.org>, Johan Hedberg <johan.hedberg@gmail.com>, 
+	linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-T24gTW9uLCAyMDI0LTA0LTI5IGF0IDE4OjI1IC0wNzAwLCBEYW4gV2lsbGlhbXMgd3JvdGU6DQo+
-IFZpc2hhbCBWZXJtYSB3cm90ZToNCj4gPiBDb21taXQgYzA1YWU5ZDg1YjQ3ICgiZGF4L2J1cy5j
-OiByZXBsYWNlIGRyaXZlci1jb3JlIGxvY2sgdXNhZ2UgYnkgYSBsb2NhbCByd3NlbSIpDQo+ID4g
-d2FzIGEgYml0IG92ZXJ6ZWFsb3VzIGluIGVsaW1pbmF0aW5nIGRldmljZV9sb2NrKCkgdXNhZ2Us
-IGFuZCBlbmRlZCB1cA0KPiA+IHJlbW92aW5nIGEgY291cGxlIG9mIGxvY2sgYWNxdWlzaXRpb25z
-IHdoaWNoIHdlcmUgbmVlZGVkLCBhbmQgYXMgYQ0KPiA+IHJlc3VsdCwgZml4IHNvbWUgb2YgdGhl
-IGNvbmRpdGlvbmFsIGxvY2tpbmcgbWlzc3RlcHMgdGhhdCB0aGUgYWJvdmUNCj4gPiBjb21taXQg
-aW50cm9kdWNlZCBpbiB1bnJlZ2lzdGVyX2RheF9kZXYoKSBhbmQgdW5yZWdpc3Rlcl9kYXhfbWFw
-cGluZygpLg0KPiANCj4gSSB0aGluayBpdCBtYWtlcyBzZW5zZSB0byB0ZWxsIHRoZSBzdG9yeSBh
-IGJpdCBhYm91dCB3aHkgdGhlDQo+IGRlbGV0ZV9zdG9yZSgpIGNvbnZlcnNpb24gd2FzIHByb2Js
-ZW1hdGljLCBiZWNhdXNlIHRoZQ0KPiB1bnJlZ2lzdGVyX2Rldl9kYXgoKSBjaGFuZ2VzIHdlcmUg
-anVzdCBhIGtub2NrLW9uIGVmZmVjdCB0byBmaXhpbmcgdGhlDQo+IGRlbGV0ZV9zdG9yZSgpIGZs
-b3cuDQo+IA0KPiBTb21ldGhpbmcgbGlrZToNCj4gDQo+IC0tLQ0KPiBjb21taXQgYzA1YWU5ZDg1
-YjQ3ICgiZGF4L2J1cy5jOiByZXBsYWNlIGRyaXZlci1jb3JlIGxvY2sgdXNhZ2UgYnkgYSBsb2Nh
-bCByd3NlbSIpDQo+IGFpbWVkIHRvIHVuZG8gZGV2aWNlX2xvY2soKSBhYnVzZXMgZm9yIHByb3Rl
-Y3RpbmcgY2hhbmdlcyB0byBkYXgtZHJpdmVyDQo+IGludGVybmFsIGRhdGEtc3RydWN0dXJlcyBs
-aWtlIHRoZSBkYXhfcmVnaW9uIHJlc291cmNlIHRyZWUgdG8NCj4gZGV2aWNlLWRheC1pbnN0YW5j
-ZSByYW5nZSBzdHJ1Y3R1cmVzLiBIb3dldmVyLCB0aGUgZGV2aWNlX2xvY2soKSB3YXMgbGVnaXRh
-bWF0ZWx5DQo+IGVuZm9yY2luZyB0aGF0IGRldmljZXMgdG8gYmUgZGVsZXRlZCB3ZXJlIG5vdCBj
-dXJyZW50IGFjdGl2ZWx5IGF0dGFjaGVkDQo+IHRvIGFueSBkcml2ZXIgbm9yIGFzc2lnbmVkIGFu
-eSBjYXBhY2l0eSBmcm9tIHRoZSByZWdpb24uDQo+IC0tLQ0KPiANCj4gLi4ueW91IGNhbiBmaWxs
-IGluIGEgY291cGxlIG5vdGVzIGFib3V0IHRoZSBrbm9jay1vbiBmaXh1cHMgYWZ0ZXIgdGhhdA0K
-PiB3YXMgcmVzdG9yZWQuDQoNClNvdW5kcyBnb29kLCB1cGRhdGVkIQ0KDQo+IA0KPiA+IMKgDQo+
-ID4gQEAgLTU2MCwxNSArNTUxLDEyIEBAIHN0YXRpYyBzc2l6ZV90IGRlbGV0ZV9zdG9yZShzdHJ1
-Y3QgZGV2aWNlICpkZXYsIHN0cnVjdCBkZXZpY2VfYXR0cmlidXRlICphdHRyLA0KPiA+IMKgCWlm
-ICghdmljdGltKQ0KPiA+IMKgCQlyZXR1cm4gLUVOWElPOw0KPiA+IMKgDQo+ID4gLQlyYyA9IGRv
-d25fd3JpdGVfa2lsbGFibGUoJmRheF9yZWdpb25fcndzZW0pOw0KPiA+IC0JaWYgKHJjKQ0KPiA+
-IC0JCXJldHVybiByYzsNCj4gPiAtCXJjID0gZG93bl93cml0ZV9raWxsYWJsZSgmZGF4X2Rldl9y
-d3NlbSk7DQo+ID4gLQlpZiAocmMpIHsNCj4gPiAtCQl1cF93cml0ZSgmZGF4X3JlZ2lvbl9yd3Nl
-bSk7DQo+ID4gLQkJcmV0dXJuIHJjOw0KPiA+IC0JfQ0KPiA+ICsJZGV2aWNlX2xvY2soZGV2KTsN
-Cj4gPiArCWRldmljZV9sb2NrKHZpY3RpbSk7DQo+ID4gwqAJZGV2X2RheCA9IHRvX2Rldl9kYXgo
-dmljdGltKTsNCj4gPiArCXJjID0gZG93bl93cml0ZV9raWxsYWJsZSgmZGF4X2Rldl9yd3NlbSk7
-DQo+IA0KPiBUaGlzIGJlZ3MgdGhlIHF1ZXN0aW9uLCB3aHkgZG93bl93cml0ZV9raWxsYWJsZSgp
-LCBidXQgbm90DQo+IGRldmljZV9sb2NrX2ludGVycnVwdGlibGUoKT8NCg0KRG8geW91IG1lYW4g
-Y2hhbmdlIHRoZSBkZXZpY2VfbG9jaygpcyB0byBkZXZpY2VfbG9ja19pbnRlcnJ1cHRpYmxlKCkg
-aW4NCmFkZGl0aW9uIHRvIHRoZSB0YWtpbmcgdGhlIHJ3c2VtIChpLmUuIG5vdCBpbnN0ZWFkIG9m
-IHRoZSByd3NlbS4uKT8NCkkgZ3Vlc3MgSSBqdXN0IHJlc3RvcmVkIHdoYXQgd2FzIHRoZXJlIHBy
-ZXZpb3VzbHkgLSBidXQgdGhlDQppbnRlcnJ1cHRpYmxlIHZhcmlhbnQgbWFrZXMgc2Vuc2UsIEkg
-Y2FuIG1ha2UgdGhhdCBjaGFuZ2UuDQoNCj4gDQo+IEkgZG8gbm90IGV4cGVjdCBhbnkgb2YgdGhp
-cyBpcyBsb25nIHJ1bm5pbmcgc28gbGlrZWx5IGRvd25fd3JpdGUoKSBpcw0KPiBzdWZmaWNpZW50
-IGhlcmUsIGVzcGVjaWFsbHkgc2luY2UgdGhlIGhlYXZpZXN0IGxvY2tzIHRvIGFjcXVpcmUgYXJl
-DQo+IGFscmVhZHkgaGVsZCBieSB0aGUgdGltZSByd3NlbSBpcyBjb25zaWRlcmVkLg0KPiANCj4g
-T3RoZXIgdGhhbiB0aGF0IHRoaXMgbG9va3MgZ29vZCB0byBtZToNCj4gDQo+IFlvdSBjYW4gaW5j
-bHVkZSBteSBSZXZpZXdlZC1ieSBvbiB0aGUgbmV4dCBwb3N0aW5nLg0KDQpUaGFua3MgZm9yIHRo
-ZSByZXZpZXcgRGFuIQ0KDQo=
+Hi Luiz,
+
+On Mon, Apr 29, 2024 at 1:03=E2=80=AFPM Luiz Augusto von Dentz
+<luiz.dentz@gmail.com> wrote:
+>
+> Hi Kim,
+>
+> On Sat, Apr 27, 2024 at 1:44=E2=80=AFPM Sungwoo Kim <iam@sung-woo.kim> wr=
+ote:
+> >
+> > Add an hold and lock the channel at l2cap_connect() to avoid use after =
+free.
+> > Also make the l2cap_connect() return type void. Nothing is using the
+> > returned value but it is ugly to return a potentially freed pointer.
+> > Making i void will help with backports because earlier kernels did use
+> > the return value. Now the compile will break for kernels where this
+> > patch is not a complete fix.
+> >
+> > Thank you for your help, Dan.
+> >
+> > Call stack summary:
+> >
+> > [use]
+> > l2cap_bredr_sig_cmd
+> >   l2cap_connect
+> >   =E2=94=8C mutex_lock(&conn->chan_lock);
+> >   =E2=94=82 chan =3D pchan->ops->new_connection(pchan); <- alloc chan
+> >   =E2=94=82 __l2cap_chan_add(conn, chan);
+> >   =E2=94=82   l2cap_chan_hold(chan);
+> >   =E2=94=82   list_add(&chan->list, &conn->chan_l);   ... (1)
+> >   =E2=94=94 mutex_unlock(&conn->chan_lock);
+> >     chan->conf_state              ... (4) <- use after free
+> >
+> > [free]
+> > l2cap_conn_del
+> > =E2=94=8C mutex_lock(&conn->chan_lock);
+> > =E2=94=82 foreach chan in conn->chan_l:            ... (2)
+> > =E2=94=82   l2cap_chan_put(chan);
+> > =E2=94=82     l2cap_chan_destroy
+> > =E2=94=82       kfree(chan)               ... (3) <- chan freed
+> > =E2=94=94 mutex_unlock(&conn->chan_lock);
+>
+> Sounds like we didn't even respond so I do wonder why we are releasing
+> the conn->chan_lock.
+>
+> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> > BUG: KASAN: slab-use-after-free in instrument_atomic_read include/linux=
+/instrumented.h:68 [inline]
+> > BUG: KASAN: slab-use-after-free in _test_bit include/asm-generic/bitops=
+/instrumented-non-atomic.h:141 [inline]
+> > BUG: KASAN: slab-use-after-free in l2cap_connect+0xa67/0x11a0 net/bluet=
+ooth/l2cap_core.c:4260
+> > Read of size 8 at addr ffff88810bf040a0 by task kworker/u3:1/311
+> >
+> > CPU: 0 PID: 311 Comm: kworker/u3:1 Not tainted 6.8.0+ #61
+> > Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.15.0-1 04=
+/01/2014
+> > Workqueue: hci0 hci_rx_work
+> > Call Trace:
+> >  <TASK>
+> >  __dump_stack lib/dump_stack.c:88 [inline]
+> >  dump_stack_lvl+0x85/0xb0 lib/dump_stack.c:106
+> >  print_address_description mm/kasan/report.c:377 [inline]
+> >  print_report+0x18f/0x560 mm/kasan/report.c:488
+> >  kasan_report+0xd7/0x110 mm/kasan/report.c:601
+> >  kasan_check_range+0x262/0x2f0 mm/kasan/generic.c:189
+> >  __kasan_check_read+0x15/0x20 mm/kasan/shadow.c:31
+> >  instrument_atomic_read include/linux/instrumented.h:68 [inline]
+> >  _test_bit include/asm-generic/bitops/instrumented-non-atomic.h:141 [in=
+line]
+> >  l2cap_connect+0xa67/0x11a0 net/bluetooth/l2cap_core.c:4260
+> >  l2cap_bredr_sig_cmd+0x17fe/0x9a70
+> >  l2cap_sig_channel net/bluetooth/l2cap_core.c:6539 [inline]
+> >  l2cap_recv_frame+0x82e/0x86a0 net/bluetooth/l2cap_core.c:7818
+> >  l2cap_recv_acldata+0x379/0xbe0 net/bluetooth/l2cap_core.c:8536
+> >  hci_acldata_packet net/bluetooth/hci_core.c:3876 [inline]
+> >  hci_rx_work+0x64b/0xcb0 net/bluetooth/hci_core.c:4111
+> >  process_one_work kernel/workqueue.c:2633 [inline]
+> >  process_scheduled_works+0x6b9/0xdc0 kernel/workqueue.c:2706
+> >  worker_thread+0xb2b/0x13d0 kernel/workqueue.c:2787
+> >  kthread+0x2a9/0x340 kernel/kthread.c:388
+> >  ret_from_fork+0x5c/0x90 arch/x86/kernel/process.c:147
+> >  ret_from_fork_asm+0x1b/0x30 arch/x86/entry/entry_64.S:243
+> >  </TASK>
+> >
+> > Allocated by task 311:
+> >  kasan_save_stack mm/kasan/common.c:47 [inline]
+> >  kasan_save_track+0x30/0x70 mm/kasan/common.c:68
+> >  kasan_save_alloc_info+0x3c/0x50 mm/kasan/generic.c:575
+> >  poison_kmalloc_redzone mm/kasan/common.c:370 [inline]
+> >  __kasan_kmalloc+0xa2/0xc0 mm/kasan/common.c:387
+> >  kasan_kmalloc include/linux/kasan.h:211 [inline]
+> >  kmalloc_trace+0x1c9/0x390 mm/slub.c:4012
+> >  kmalloc include/linux/slab.h:590 [inline]
+> >  kzalloc include/linux/slab.h:711 [inline]
+> >  l2cap_chan_create+0x59/0xc80 net/bluetooth/l2cap_core.c:466
+> >  l2cap_sock_alloc net/bluetooth/l2cap_sock.c:1849 [inline]
+> >  l2cap_sock_new_connection_cb+0x14d/0x2a0 net/bluetooth/l2cap_sock.c:14=
+57
+> >  l2cap_connect+0x329/0x11a0 net/bluetooth/l2cap_core.c:4176
+> >  l2cap_bredr_sig_cmd+0x17fe/0x9a70
+> >  l2cap_sig_channel net/bluetooth/l2cap_core.c:6539 [inline]
+> >  l2cap_recv_frame+0x82e/0x86a0 net/bluetooth/l2cap_core.c:7818
+> >  l2cap_recv_acldata+0x379/0xbe0 net/bluetooth/l2cap_core.c:8536
+> >  hci_acldata_packet net/bluetooth/hci_core.c:3876 [inline]
+> >  hci_rx_work+0x64b/0xcb0 net/bluetooth/hci_core.c:4111
+> >  process_one_work kernel/workqueue.c:2633 [inline]
+> >  process_scheduled_works+0x6b9/0xdc0 kernel/workqueue.c:2706
+> >  worker_thread+0xb2b/0x13d0 kernel/workqueue.c:2787
+> >  kthread+0x2a9/0x340 kernel/kthread.c:388
+> >  ret_from_fork+0x5c/0x90 arch/x86/kernel/process.c:147
+> >  ret_from_fork_asm+0x1b/0x30 arch/x86/entry/entry_64.S:243
+> >
+> > Freed by task 66:
+> >  kasan_save_stack mm/kasan/common.c:47 [inline]
+> >  kasan_save_track+0x30/0x70 mm/kasan/common.c:68
+> >  kasan_save_free_info+0x44/0x50 mm/kasan/generic.c:589
+> >  poison_slab_object+0x11a/0x190 mm/kasan/common.c:240
+> >  __kasan_slab_free+0x3b/0x60 mm/kasan/common.c:256
+> >  kasan_slab_free include/linux/kasan.h:184 [inline]
+> >  slab_free_hook mm/slub.c:2121 [inline]
+> >  slab_free mm/slub.c:4299 [inline]
+> >  kfree+0x106/0x2e0 mm/slub.c:4409
+> >  l2cap_chan_destroy net/bluetooth/l2cap_core.c:509 [inline]
+> >  kref_put include/linux/kref.h:65 [inline]
+> >  l2cap_chan_put+0x1e7/0x2b0 net/bluetooth/l2cap_core.c:533
+> >  l2cap_conn_del+0x38e/0x5f0 net/bluetooth/l2cap_core.c:1929
+> >  l2cap_connect_cfm+0xc2/0x11e0 net/bluetooth/l2cap_core.c:8254
+> >  hci_connect_cfm include/net/bluetooth/hci_core.h:1986 [inline]
+> >  hci_conn_failed+0x202/0x370 net/bluetooth/hci_conn.c:1289
+> >  hci_abort_conn_sync+0x913/0xae0 net/bluetooth/hci_sync.c:5359
+> >  abort_conn_sync+0xda/0x110 net/bluetooth/hci_conn.c:2988
+> >  hci_cmd_sync_work+0x20d/0x3e0 net/bluetooth/hci_sync.c:306
+> >  process_one_work kernel/workqueue.c:2633 [inline]
+> >  process_scheduled_works+0x6b9/0xdc0 kernel/workqueue.c:2706
+> >  worker_thread+0xb2b/0x13d0 kernel/workqueue.c:2787
+> >  kthread+0x2a9/0x340 kernel/kthread.c:388
+> >  ret_from_fork+0x5c/0x90 arch/x86/kernel/process.c:147
+> >  ret_from_fork_asm+0x1b/0x30 arch/x86/entry/entry_64.S:243
+> >
+> > The buggy address belongs to the object at ffff88810bf04000
+> >  which belongs to the cache kmalloc-1k of size 1024
+> > The buggy address is located 160 bytes inside of
+> >  freed 1024-byte region [ffff88810bf04000, ffff88810bf04400)
+> >
+> > The buggy address belongs to the physical page:
+> > page:00000000567b7faa refcount:1 mapcount:0 mapping:0000000000000000 in=
+dex:0x0 pfn:0x10bf04
+> > head:00000000567b7faa order:2 entire_mapcount:0 nr_pages_mapped:0 pinco=
+unt:0
+> > anon flags: 0x17ffffc0000840(slab|head|node=3D0|zone=3D2|lastcpupid=3D0=
+x1fffff)
+> > page_type: 0xffffffff()
+> > raw: 0017ffffc0000840 ffff888100041dc0 0000000000000000 000000000000000=
+1
+> > raw: 0000000000000000 0000000080080008 00000001ffffffff 000000000000000=
+0
+> > page dumped because: kasan: bad access detected
+> >
+> > Memory state around the buggy address:
+> >  ffff88810bf03f80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+> >  ffff88810bf04000: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+> > >ffff88810bf04080: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+> >                                ^
+> >  ffff88810bf04100: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+> >  ffff88810bf04180: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> >
+> > Fixes: 73ffa904b782 ("Bluetooth: Move conf_{req,rsp} stuff to struct l2=
+cap_chan")
+> > Signed-off-by: Sungwoo Kim <iam@sung-woo.kim>
+> > ---
+> > V1 -> V2:
+> > Make l2cap_connect() return void.
+> > Fix a wrong stack trace attached.
+> >
+> >  net/bluetooth/l2cap_core.c | 10 ++++++++--
+> >  1 file changed, 8 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/net/bluetooth/l2cap_core.c b/net/bluetooth/l2cap_core.c
+> > index 84fc70862..e7c18267c 100644
+> > --- a/net/bluetooth/l2cap_core.c
+> > +++ b/net/bluetooth/l2cap_core.c
+> > @@ -3902,7 +3902,7 @@ static inline int l2cap_command_rej(struct l2cap_=
+conn *conn,
+> >         return 0;
+> >  }
+> >
+> > -static struct l2cap_chan *l2cap_connect(struct l2cap_conn *conn,
+> > +static void l2cap_connect(struct l2cap_conn *conn,
+> >                                         struct l2cap_cmd_hdr *cmd,
+> >                                         u8 *data, u8 rsp_code, u8 amp_i=
+d)
+> >  {
+> > @@ -3953,6 +3953,9 @@ static struct l2cap_chan *l2cap_connect(struct l2=
+cap_conn *conn,
+> >         if (!chan)
+> >                 goto response;
+> >
+> > +       l2cap_chan_hold(chan);
+> > +       l2cap_chan_lock(chan);
+> > +
+> >         /* For certain devices (ex: HID mouse), support for authenticat=
+ion,
+> >          * pairing and bonding is optional. For such devices, inorder t=
+o avoid
+> >          * the ACL alive for too long after L2CAP disconnection, reset =
+the ACL
+> > @@ -4041,7 +4044,10 @@ static struct l2cap_chan *l2cap_connect(struct l=
+2cap_conn *conn,
+> >                 chan->num_conf_req++;
+> >         }
+> >
+> > -       return chan;
+> > +       if (chan) {
+> > +               l2cap_chan_unlock(chan);
+> > +               l2cap_chan_put(chan);
+> > +       }
+> >  }
+> >
+> >  static int l2cap_connect_req(struct l2cap_conn *conn,
+> > --
+> > 2.34.1
+> >
+>
+> How about we do something like:
+>
+> https://gist.github.com/Vudentz/c0c09ca0eff64a32ca50b1a6eb41295d
+
+Looks awesome to me. I'll send a v3 patch soon.
+
+>
+> --
+> Luiz Augusto von Dentz
+>
 
