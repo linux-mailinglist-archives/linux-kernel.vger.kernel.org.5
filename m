@@ -1,137 +1,188 @@
-Return-Path: <linux-kernel+bounces-163320-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-163321-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 432F18B6964
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 06:21:25 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 262A88B696F
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 06:26:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F07521F22306
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 04:21:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D157E283CE8
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 04:26:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0872E13FEE;
-	Tue, 30 Apr 2024 04:21:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 239EE14A9D;
+	Tue, 30 Apr 2024 04:26:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="HLiXInXE"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.16])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="JosyabYK"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2A87101C5;
-	Tue, 30 Apr 2024 04:21:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2EBD12E47
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 04:26:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714450875; cv=none; b=opV8hmDywBWDIY+c1TRcBseNd9qZ6sw52hxxkjDTTxBeRw3+05SE65ILs0BzeugH+1+tXc/ddKmbedg1okkrndzD6uCoi6HkkglwctW/I8+dTslO2nGKpNPsmYKAIgQugnlWD3eeKeyHV7By3XpyVGYMta0jBZEmH8G/ABo1Ncg=
+	t=1714451185; cv=none; b=NJ3d9gY7FBpcamOHihEGPQZNDd5aG1+WhGryjoybDwhbGfMjGlj2oqcdl8m+vXbqMZNrjI94ytQkWEOrt04LTcLC/Nx336/2kKRABY6v1i9sgA+kMwllrJFO2+9mMTwv81AxWQNxY6vIl8ZOEvDJdoJ3sUgLKCJPJMFyjjhM30o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714450875; c=relaxed/simple;
-	bh=hU07u6vJ9l8n11SuyOXIdCwqdzqefxDRN0xbudc8VGU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=djVvk6Pt83juI5+taoX+O5Q1tap7aiWA+e3g27oC8AQVAc6DIu7FzGaruG9axB8plTN2qJ3xsfTc0/4H+Y2dvNnhQvPPY1voDEWBGRE0x0S2rAJC/ybYXna4QrEiVNGEPBjwzfb+9bdU8p+6wIFd8h6BgG0LpjgNurFlLrsl4Ig=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=HLiXInXE; arc=none smtp.client-ip=192.198.163.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1714450873; x=1745986873;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=hU07u6vJ9l8n11SuyOXIdCwqdzqefxDRN0xbudc8VGU=;
-  b=HLiXInXEfCRqQa1sPZoTn9JOmcJ9QsyPx8eHoW0bxzdb3qnX7T2tbuyz
-   gMM9LAkRBxEz4Z/eERQEx/OwHYdtSVe+tnPCC8U26tPUfAfvslSDIB9vJ
-   /xIK3ItZ7VvT1yeOe+3d6yz5bUNwoEMQlSZnc84lZ36KRs6Yv7ReodzbT
-   sGCU4u1AblTMLqEfDSMnz0dkqZI2Tp44PXrbtcqXGHiosDBJdBaqGHgEC
-   1b7836Uh2An5Fe5WZMEMsm7wPR2aKtP6zDzDv0pvI4byxoali9vtuidX6
-   aaQAfT5VRLz8h5E81H1ZswzgdpMs1zLULkxTyrNQeFQ068wKHRlck0Mt4
-   w==;
-X-CSE-ConnectionGUID: uqX/zhD/TRuOG7vhLEU6hg==
-X-CSE-MsgGUID: b4HJWcusQDq6yj1dbHIL1A==
-X-IronPort-AV: E=McAfee;i="6600,9927,11059"; a="10673500"
-X-IronPort-AV: E=Sophos;i="6.07,241,1708416000"; 
-   d="scan'208";a="10673500"
-Received: from orviesa002.jf.intel.com ([10.64.159.142])
-  by fmvoesa110.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Apr 2024 21:21:12 -0700
-X-CSE-ConnectionGUID: yokDMzv5RnmqzwEuUZaCLg==
-X-CSE-MsgGUID: X32MPSgDSf26GrmfvU/jqg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,241,1708416000"; 
-   d="scan'208";a="57197286"
-Received: from lkp-server01.sh.intel.com (HELO e434dd42e5a1) ([10.239.97.150])
-  by orviesa002.jf.intel.com with ESMTP; 29 Apr 2024 21:21:09 -0700
-Received: from kbuild by e434dd42e5a1 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1s1ezK-0007ia-2a;
-	Tue, 30 Apr 2024 04:21:06 +0000
-Date: Tue, 30 Apr 2024 12:20:27 +0800
-From: kernel test robot <lkp@intel.com>
-To: Florian Fainelli <florian.fainelli@broadcom.com>,
-	netdev@vger.kernel.org
-Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-	Florian Fainelli <florian.fainelli@broadcom.com>,
-	Andrew Lunn <andrew@lunn.ch>, Vladimir Oltean <olteanv@gmail.com>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Russell King <linux@armlinux.org.uk>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next v2 2/2] net: dsa: Remove adjust_link paths
-Message-ID: <202404301234.CUZfd15j-lkp@intel.com>
-References: <20240429165405.2298962-3-florian.fainelli@broadcom.com>
+	s=arc-20240116; t=1714451185; c=relaxed/simple;
+	bh=7/LvDV66mDIzCX8Ki3ehENh2BWy+/8sMXmXZYQ9n3Gw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=otdMrf+o1aszHMBOSPB2uIaFWjoEmCIXmBcXBU3WYYt4Alm1vEyI1+V5/DEfOD0ySmgbwBBha8iscxgAIWV4M2rq1ED3jPAjiv3GGhbDLW9J3jeIiBoOfugBMm+cH+BktwWPEWmZnUoq/mg2JTswedPmOBPec47Aa2yqIS0B9Ao=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=JosyabYK; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1714451183;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=/j3/XOns0oFgwfO5bxhGBltITHmRiIbor4kORGQYrjA=;
+	b=JosyabYKWBB7JgkSX2dxfOPiRlu4cT/CIIwIhFb1RWyLRccf9DM1RFBRVlkgmQblQuE5Fa
+	CM919Py2nIDzKstn9H/E8Ga1EZLsuiNjtk5U2r7MmGdLgkp8sy4mTHLbeyKKgvTxbXS4T3
+	oWwSfuqS1mQgOptV6vfBoQ7LRUmvFJk=
+Received: from mail-pg1-f200.google.com (mail-pg1-f200.google.com
+ [209.85.215.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-224-htm8gXbRP6qRgx9hAcnbAQ-1; Tue, 30 Apr 2024 00:26:19 -0400
+X-MC-Unique: htm8gXbRP6qRgx9hAcnbAQ-1
+Received: by mail-pg1-f200.google.com with SMTP id 41be03b00d2f7-604bad9b2e8so5691264a12.2
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 21:26:19 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714451178; x=1715055978;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=/j3/XOns0oFgwfO5bxhGBltITHmRiIbor4kORGQYrjA=;
+        b=sEI9D1x+6SBT5WNoq7vx/Kv32QTr/Vw3AEg4E0a1cmZLJ3hST8SYZDTJxjpduMJZBX
+         qUhHa83LTF+FX4EdKgaFjyCD4XRToM+DfwJ3t+zP9EnN2M3Xs+Vy/9g+nQYnejOc5/YL
+         EueSN+CQ8HDlKGhGPpcV3e+2X97DdvsGi+pGe7mEmFLpjOJZSPVSjYpaPTljgjoKh6fg
+         sqFBcE3SIB4eSjP01aZBEbZfFxnOETfKOl9ChM3bBtbNDB85ojlWyOTLwxg3aOJO+FAM
+         nMu9sQ54DZAUHD/ypIq4HsN81u7SrYhQ2X5+H4A8XBz1zLPhZz0Ah83PCNGrKHsF2HAi
+         PjsA==
+X-Forwarded-Encrypted: i=1; AJvYcCXv1KyPIBV8iwZzMTSF860wup4h5L7c9yxa3o3JwAZ5GcCUKG4O8R0oqvLAuqexxeDBlC1qkTLs10rieA3ZhWCk2EMTMRtPhOPMpmKp
+X-Gm-Message-State: AOJu0YwUYJG7hQwzV59dAtfNRKt5I98D17e9J4gcWKld1JZP8+ju6Ug6
+	QjyQUFdkgorVYGau8ckDDTUzJm1HZlc9Ew5nJwW7uYI3Cvone+ub8QjomXnAWoCIbkihGofhSdB
+	4OPZz1G4l4OIugGhdFS6gk+yiwh9w+1Z2E/38FdIFG+n+hPa0HGe0WeSv5vuhlA==
+X-Received: by 2002:a05:6a20:43ab:b0:1af:597f:ffa4 with SMTP id i43-20020a056a2043ab00b001af597fffa4mr1773941pzl.14.1714451178654;
+        Mon, 29 Apr 2024 21:26:18 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IH07U3E59OEv3uasYAdnnN9/WYRlSaTmrz5sCzeoOlurs0CWJYXB3V+LTa+nYaZB59wKOeCng==
+X-Received: by 2002:a05:6a20:43ab:b0:1af:597f:ffa4 with SMTP id i43-20020a056a2043ab00b001af597fffa4mr1773917pzl.14.1714451178308;
+        Mon, 29 Apr 2024 21:26:18 -0700 (PDT)
+Received: from [192.168.68.50] ([43.252.112.88])
+        by smtp.gmail.com with ESMTPSA id p2-20020a170902e74200b001e223b9eb25sm21272994plf.153.2024.04.29.21.26.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 29 Apr 2024 21:26:17 -0700 (PDT)
+Message-ID: <63f7c71a-fa01-4604-8fc6-9f52b5b31d6b@redhat.com>
+Date: Tue, 30 Apr 2024 14:26:06 +1000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240429165405.2298962-3-florian.fainelli@broadcom.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v8 05/16] ACPI: processor: Add acpi_get_processor_handle()
+ helper
+Content-Language: en-US
+To: Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+ Thomas Gleixner <tglx@linutronix.de>, Peter Zijlstra <peterz@infradead.org>,
+ linux-pm@vger.kernel.org, loongarch@lists.linux.dev,
+ linux-acpi@vger.kernel.org, linux-arch@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ kvmarm@lists.linux.dev, x86@kernel.org, Russell King
+ <linux@armlinux.org.uk>, "Rafael J . Wysocki" <rafael@kernel.org>,
+ Miguel Luis <miguel.luis@oracle.com>, James Morse <james.morse@arm.com>,
+ Salil Mehta <salil.mehta@huawei.com>,
+ Jean-Philippe Brucker <jean-philippe@linaro.org>,
+ Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
+ Marc Zyngier <maz@kernel.org>, Hanjun Guo <guohanjun@huawei.com>
+Cc: Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+ Dave Hansen <dave.hansen@linux.intel.com>, linuxarm@huawei.com,
+ justin.he@arm.com, jianyong.wu@arm.com,
+ Lorenzo Pieralisi <lpieralisi@kernel.org>,
+ Sudeep Holla <sudeep.holla@arm.com>
+References: <20240426135126.12802-1-Jonathan.Cameron@huawei.com>
+ <20240426135126.12802-6-Jonathan.Cameron@huawei.com>
+From: Gavin Shan <gshan@redhat.com>
+In-Reply-To: <20240426135126.12802-6-Jonathan.Cameron@huawei.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Hi Florian,
+On 4/26/24 23:51, Jonathan Cameron wrote:
+> If CONFIG_ACPI_PROCESSOR provide a helper to retrieve the
+> acpi_handle for a given CPU allowing access to methods
+> in DSDT.
+> 
+> Tested-by: Miguel Luis <miguel.luis@oracle.com>
+> Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+> 
+> ---
+> v8: Code simplification suggested by Rafael.
+>      Fixup ;; spotted by Gavin
+> ---
+>   drivers/acpi/acpi_processor.c | 11 +++++++++++
+>   include/linux/acpi.h          |  7 +++++++
+>   2 files changed, 18 insertions(+)
+> 
 
-kernel test robot noticed the following build errors:
+Reviewed-by: Gavin Shan <gshan@redhat.com>
 
-[auto build test ERROR on net-next/main]
+> diff --git a/drivers/acpi/acpi_processor.c b/drivers/acpi/acpi_processor.c
+> index 3b180e21f325..ecc2721fecae 100644
+> --- a/drivers/acpi/acpi_processor.c
+> +++ b/drivers/acpi/acpi_processor.c
+> @@ -35,6 +35,17 @@ EXPORT_PER_CPU_SYMBOL(processors);
+>   struct acpi_processor_errata errata __read_mostly;
+>   EXPORT_SYMBOL_GPL(errata);
+>   
+> +acpi_handle acpi_get_processor_handle(int cpu)
+> +{
+> +	struct acpi_processor *pr;
+> +
+> +	pr = per_cpu(processors, cpu);
+> +	if (pr)
+> +		return pr->handle;
+> +
+> +	return NULL;
+> +}
+> +
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Florian-Fainelli/net-dsa-Remove-fixed_link_update-member/20240430-005631
-base:   net-next/main
-patch link:    https://lore.kernel.org/r/20240429165405.2298962-3-florian.fainelli%40broadcom.com
-patch subject: [PATCH net-next v2 2/2] net: dsa: Remove adjust_link paths
-config: arm-defconfig (https://download.01.org/0day-ci/archive/20240430/202404301234.CUZfd15j-lkp@intel.com/config)
-compiler: clang version 14.0.6 (https://github.com/llvm/llvm-project.git f28c006a5895fc0e329fe15fead81e37457cb1d1)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240430/202404301234.CUZfd15j-lkp@intel.com/reproduce)
+Maybe it's worthy to have more check here, something like below.
+However, it's also fine without the extra check.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202404301234.CUZfd15j-lkp@intel.com/
+	if (cpu >= nr_cpu_ids || !cpu_possible(cpu))
+		return NULL;
 
-All errors (new ones prefixed by >>):
+>   static int acpi_processor_errata_piix4(struct pci_dev *dev)
+>   {
+>   	u8 value1 = 0;
+> diff --git a/include/linux/acpi.h b/include/linux/acpi.h
+> index 34829f2c517a..9844a3f9c4e5 100644
+> --- a/include/linux/acpi.h
+> +++ b/include/linux/acpi.h
+> @@ -309,6 +309,8 @@ int acpi_map_cpu(acpi_handle handle, phys_cpuid_t physid, u32 acpi_id,
+>   int acpi_unmap_cpu(int cpu);
+>   #endif /* CONFIG_ACPI_HOTPLUG_CPU */
+>   
+> +acpi_handle acpi_get_processor_handle(int cpu);
+> +
+>   #ifdef CONFIG_ACPI_HOTPLUG_IOAPIC
+>   int acpi_get_ioapic_id(acpi_handle handle, u32 gsi_base, u64 *phys_addr);
+>   #endif
+> @@ -1077,6 +1079,11 @@ static inline bool acpi_sleep_state_supported(u8 sleep_state)
+>   	return false;
+>   }
+>   
+> +static inline acpi_handle acpi_get_processor_handle(int cpu)
+> +{
+> +	return NULL;
+> +}
+> +
+>   #endif	/* !CONFIG_ACPI */
+>   
+>   extern void arch_post_acpi_subsys_init(void);
 
->> net/dsa/port.c:1603:3: error: use of undeclared identifier 'phydev'
-                   phydev = dp->user->phydev;
-                   ^
-   1 error generated.
+Thanks,
+Gavin
 
-
-vim +/phydev +1603 net/dsa/port.c
-
-dd805cf3e80e03 Russell King (Oracle  2023-05-25  1594) 
-8ae674964e67eb Florian Fainelli      2019-12-16  1595  static void dsa_port_phylink_mac_link_down(struct phylink_config *config,
-77373d49de22e8 Ioana Ciornei         2019-05-28  1596  					   unsigned int mode,
-77373d49de22e8 Ioana Ciornei         2019-05-28  1597  					   phy_interface_t interface)
-77373d49de22e8 Ioana Ciornei         2019-05-28  1598  {
-dd0c9855b41310 Russell King (Oracle  2024-04-10  1599) 	struct dsa_port *dp = dsa_phylink_to_port(config);
-77373d49de22e8 Ioana Ciornei         2019-05-28  1600  	struct dsa_switch *ds = dp->ds;
-77373d49de22e8 Ioana Ciornei         2019-05-28  1601  
-57d77986e74287 Vladimir Oltean       2021-10-20  1602  	if (dsa_port_is_user(dp))
-6ca80638b90cec Florian Fainelli      2023-10-23 @1603  		phydev = dp->user->phydev;
-0e27921816ad99 Ioana Ciornei         2019-05-28  1604  
-e9829e26ff2c61 Florian Fainelli      2024-04-29  1605  	if (!ds->ops->phylink_mac_link_down)
-77373d49de22e8 Ioana Ciornei         2019-05-28  1606  		return;
-77373d49de22e8 Ioana Ciornei         2019-05-28  1607  
-77373d49de22e8 Ioana Ciornei         2019-05-28  1608  	ds->ops->phylink_mac_link_down(ds, dp->index, mode, interface);
-77373d49de22e8 Ioana Ciornei         2019-05-28  1609  }
-77373d49de22e8 Ioana Ciornei         2019-05-28  1610  
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
 
