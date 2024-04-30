@@ -1,139 +1,120 @@
-Return-Path: <linux-kernel+bounces-163589-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-163592-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6706E8B6D5F
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 10:52:57 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8AAE28B6D6B
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 10:53:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7CB86B232BE
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 08:52:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 46976284B5F
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 08:53:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6AFE219DF74;
-	Tue, 30 Apr 2024 08:50:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D2F6127E30;
+	Tue, 30 Apr 2024 08:51:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="b7wnGmB2";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="b7wnGmB2"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="FecDbuGS"
+Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE2F912882C;
-	Tue, 30 Apr 2024 08:50:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CABD8127B45;
+	Tue, 30 Apr 2024 08:50:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.141
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714467017; cv=none; b=qkJjt+RQ1kFrb+L9jwkrUsa7TRQKcU2GrsZ1dXQHBZcCbU9IaDCtgP7QqSC0s10YP5Wsr1xiKaICE9+LNr4aRuPIr6jfyG+GcSPwKiSxSFkHAaMM5ZlqQiMPV5ViFNGrp9hTQfDp6SHjNV2KwT/ndWncmVhbgnqmx/Kw9oTabeY=
+	t=1714467061; cv=none; b=edFEwNmbuKZ9n1LJJF8qbv6LYMdAwmBoUbIarw2nBF9kGW4hL4Bvv3GgP2vzqFCBadgSEdswAiqs5AUSDNB9vD92ZNTsR12ChLh6G/RXb6qM+BKce0vuW4D7g0IFYL8HoaP4quqaIk348zlfor47qfQHhP4SljvAk6CrLKnLHRE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714467017; c=relaxed/simple;
-	bh=TJqxYEYHJvnMFSdcdCqGqHYKwQlZ/I3FWciJWjl/vqk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=euyXsnDZx3D3qNsh63NEza8j9yuBp78KMLS7j+Q0FwS8zSbJeBxtWW93rc26gg5CZhkzOIa+Iansu6yk1Vhp4ue/k16gT0o26s+Tfjyy5AIONNwmYACK8PCqEnLOxcoBi5YftD/OnKbnUBhnP1sQLrHmr06OYIqooX+IN5Kur5s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=b7wnGmB2; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=b7wnGmB2; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id A28431F7B3;
-	Tue, 30 Apr 2024 08:50:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1714467013; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=+yX/V0gmYAiZ8hWASvfR8uAFXA0zJcFjg9+aLM1w22I=;
-	b=b7wnGmB2Y4obNVPl145JoRA21bcv/CrkzWS5zbArEnuGRYMO0nOPbXRvYYEUf2i13XMtZE
-	aUdXGpHYVvH07CEJj8G6eXG9WGx4IXanfxtFqMAd/6c1kCf9fqwmq5Cp5LTkPH0xRMuwjb
-	iVH7LAH1RgM6RjXkRxDBFM+umDGQ0LY=
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1714467013; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=+yX/V0gmYAiZ8hWASvfR8uAFXA0zJcFjg9+aLM1w22I=;
-	b=b7wnGmB2Y4obNVPl145JoRA21bcv/CrkzWS5zbArEnuGRYMO0nOPbXRvYYEUf2i13XMtZE
-	aUdXGpHYVvH07CEJj8G6eXG9WGx4IXanfxtFqMAd/6c1kCf9fqwmq5Cp5LTkPH0xRMuwjb
-	iVH7LAH1RgM6RjXkRxDBFM+umDGQ0LY=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 960A2138A7;
-	Tue, 30 Apr 2024 08:50:13 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id XyF2JMWwMGY3UAAAD6G6ig
-	(envelope-from <mkoutny@suse.com>); Tue, 30 Apr 2024 08:50:13 +0000
-Date: Tue, 30 Apr 2024 10:50:12 +0200
-From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: cve@kernel.org, linux-kernel@vger.kernel.org, 
-	linux-cve-announce@vger.kernel.org, Breno =?utf-8?Q?Leit=C3=A3o?= <leitao@debian.org>, 
-	Tejun Heo <tj@kernel.org>
-Subject: Re: Re: CVE-2023-52630: blk-iocost: Fix an UBSAN shift-out-of-bounds
- warning
-Message-ID: <yjipzunmzaq3zg4xtsfvref2qwmkaqb4z4z4ak7rd3vpl7iqtf@tgyehozvqd2k>
-References: <2024040219-CVE-2023-52630-a529@gregkh>
- <7x4ufwbvk4wmhag66rstdpbm4f2iplyc2l66cl7i2wl5nfh2tm@uxc425y2kfno>
- <2024043053-campsite-refining-1c3c@gregkh>
+	s=arc-20240116; t=1714467061; c=relaxed/simple;
+	bh=IypIK3kBxWNpgYpv9gUQHPuPuf3nErj2l8FfJU/iaaw=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=qJoGYv7EfYmYE+V142TI1p8vMU/yX7hXdMCiGhDuEca2CFEphgk67qQwBJ1IgMftmpQcAHN2TmcJODB8S2BvyWNrTdfK5mip8E1dXXzOiQ88WZQBqYxz1uVihHaq1DcFjOBuzq7cPaddglW+OAU11yPC7PLuZT1BVd+fD7NLCeI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=FecDbuGS; arc=none smtp.client-ip=198.47.19.141
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+	by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 43U8ooKV100185;
+	Tue, 30 Apr 2024 03:50:50 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1714467050;
+	bh=vbAq38zwd5R+EsdOCXYpzBxmXWGqdKAmPOWIfsVG70U=;
+	h=From:To:CC:Subject:Date;
+	b=FecDbuGS/TgdNaDRfwanjqE/476CWxyDdW4PpFOS5Ozjd4iaSZEm/ct60AOqgT3XW
+	 TT2rJkI1F/ciuegZQg2aLY/JVg14qYb7/HBezhBFVwMJFrnY0jk5wXFeQ/SPj3FKcZ
+	 jC8H4mXacAZ9iJmUQBOKz/3c/1QGPdAXWTj0dgK0=
+Received: from DFLE103.ent.ti.com (dfle103.ent.ti.com [10.64.6.24])
+	by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 43U8ooQA064115
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Tue, 30 Apr 2024 03:50:50 -0500
+Received: from DFLE101.ent.ti.com (10.64.6.22) by DFLE103.ent.ti.com
+ (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 30
+ Apr 2024 03:50:50 -0500
+Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DFLE101.ent.ti.com
+ (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Tue, 30 Apr 2024 03:50:50 -0500
+Received: from localhost (chintan-thinkstation-p360-tower.dhcp.ti.com [172.24.227.220])
+	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 43U8on0d059618;
+	Tue, 30 Apr 2024 03:50:50 -0500
+From: Chintan Vankar <c-vankar@ti.com>
+To: Conor Dooley <conor+dt@kernel.org>,
+        Krzysztof Kozlowski
+	<krzk+dt@kernel.org>,
+        Rob Herring <robh@kernel.org>, Tero Kristo
+	<kristo@kernel.org>,
+        Vignesh Raghavendra <vigneshr@ti.com>, Nishanth Menon
+	<nm@ti.com>,
+        <s-vadapalli@ti.com>
+CC: <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        Chintan Vankar <c-vankar@ti.com>
+Subject: [PATCH v3] arm64: dts: ti: k3-am62x-sk-common: Add bootph-all property in phy_gmii_sel node
+Date: Tue, 30 Apr 2024 14:20:48 +0530
+Message-ID: <20240430085048.3143665-1-c-vankar@ti.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="ros5gdjg56iqqxgf"
-Content-Disposition: inline
-In-Reply-To: <2024043053-campsite-refining-1c3c@gregkh>
-X-Spam-Level: 
-X-Spamd-Result: default: False [-5.90 / 50.00];
-	BAYES_HAM(-3.00)[99.99%];
-	SIGNED_PGP(-2.00)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_RHS_NOT_FQDN(0.50)[];
-	MIME_GOOD(-0.20)[multipart/signed,text/plain];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	FROM_HAS_DN(0.00)[];
-	ARC_NA(0.00)[];
-	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	MIME_TRACE(0.00)[0:+,1:+,2:~];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	RCPT_COUNT_FIVE(0.00)[6]
-X-Spam-Score: -5.90
-X-Spam-Flag: NO
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
+Add missing bootph-all property for CPSW MAC's PHY node
+phy_gmii_sel.
 
---ros5gdjg56iqqxgf
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Signed-off-by: Chintan Vankar <c-vankar@ti.com>
+---
 
-On Tue, Apr 30, 2024 at 10:13:10AM +0200, Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
-> Makes sense, thanks for looking into this, and sorry for the delay.  Now
-> rejected.
+This patch is based on linux-next tagged next-20240430.
 
-Thanks!
+Link to v2:
+https://lore.kernel.org/r/20240429061600.2723904-1-c-vankar@ti.com/
 
-Michal
+Changes from v2 to v3:
+- Removed "bootph-all" property from "k3-am625-sk.dts" and added it
+  to "k3-am62x-sk-common.dtsi" since we need the same functionality
+  for "SK-AM62-LP" board.
 
---ros5gdjg56iqqxgf
-Content-Type: application/pgp-signature; name="signature.asc"
+ arch/arm64/boot/dts/ti/k3-am62x-sk-common.dtsi | 4 ++++
+ 1 file changed, 4 insertions(+)
 
------BEGIN PGP SIGNATURE-----
+diff --git a/arch/arm64/boot/dts/ti/k3-am62x-sk-common.dtsi b/arch/arm64/boot/dts/ti/k3-am62x-sk-common.dtsi
+index 3c45782ab2b7..96378b19c419 100644
+--- a/arch/arm64/boot/dts/ti/k3-am62x-sk-common.dtsi
++++ b/arch/arm64/boot/dts/ti/k3-am62x-sk-common.dtsi
+@@ -128,6 +128,10 @@ hdmi_connector_in: endpoint {
+ 	};
+ };
+ 
++&phy_gmii_sel {
++	bootph-all;
++};
++
+ &main_pmx0 {
+ 	/* First pad number is ALW package and second is AMC package */
+ 	main_uart0_pins_default: main-uart0-default-pins {
+-- 
+2.34.1
 
-iHUEABYKAB0WIQQpEWyjXuwGT2dDBqAGvrMr/1gcjgUCZjCwrgAKCRAGvrMr/1gc
-jj/WAQDDXJCSu4RiKGBXKe4DglhCpsRqLvy6016DzJTdk1IhSAD/SIUrAald989l
-utECqxq3rKDZTgATERrExbUG+bbhdgo=
-=I04Z
------END PGP SIGNATURE-----
-
---ros5gdjg56iqqxgf--
 
