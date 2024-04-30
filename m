@@ -1,59 +1,60 @@
-Return-Path: <linux-kernel+bounces-163685-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-163686-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7D2E38B6E50
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 11:29:04 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 581788B6E52
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 11:29:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EB9E11F253DD
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 09:29:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0EBA8283AC3
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 09:29:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F45B1BF6FB;
-	Tue, 30 Apr 2024 09:22:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 79C501CB327;
+	Tue, 30 Apr 2024 09:22:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="0EsqwiEx"
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2065.outbound.protection.outlook.com [40.107.220.65])
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="bavQ0b/r"
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2071.outbound.protection.outlook.com [40.107.92.71])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2BA51BF6C7;
-	Tue, 30 Apr 2024 09:22:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.220.65
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 01CA41CB31A;
+	Tue, 30 Apr 2024 09:22:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.92.71
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714468968; cv=fail; b=ZD24WgB8yjD1rfYnLA6xnImKCGZ2U1FhNox7WGp5Zmsi4P+OCUNE/IN6A3Xh9hQ/cG5Uqn41vTEH5L54O9Xw3MHdTFv4+N/Dtzac963C/qsDEZKGjHc5gtH7r6TKCsjqkxIG7WoNRnbxoBASXxW5lw4hSePjOVD6ZaapWDP2rc0=
+	t=1714468973; cv=fail; b=FQfvLYv8nFY6i35ymtbfhB69/urv9b2f0H3tK5aH/7ATqxuCJhh3zitP7Jn2LycP4qoUCTUwqOSSQdk49iYh3GiwnLoSyiJps0AiqA8u24+8oShNnK6O/gIwdBrq3UDZqIavzd7J090xV9OyEuWZ0p6IKrrca/iD35Rz2dHdPJs=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714468968; c=relaxed/simple;
-	bh=vYp95VMxzdzoj/DtrhF05Qgt5E0e6xXnhOR1Zpsoc+s=;
+	s=arc-20240116; t=1714468973; c=relaxed/simple;
+	bh=xu0ScFGHprQXGjeUjrlrMdsxsUwApZ59SWPq1CbOlj8=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=CTQ6RH0BpT38ld1u+7zxbHTSZcIExbcPod1O5aB+s2oGhMD5d/DHw0jxI+ZfbwnHTEbA5vJM6Y3CZ4yoF7Ed2dGUnP856X9E9VyPH4h7dLYLTMrLYyorDmcsZglEa8ef0nF3pVi37GzwzfzOrrID9qgWdSF4mf54JByhdY+Q8Q8=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=0EsqwiEx; arc=fail smtp.client-ip=40.107.220.65
+	 MIME-Version:Content-Type; b=rzWLl1KgeYi/g8l5h4otbS2a5EDJX5XkgT4Oa6qkzXqHHhdwyu1lUO+dx6/Oio50C8uCS+NvA+Z1M2pGhY5PF8ipC7K8gEaQ9TMSwVxRB6ZvkUuk6e8ptb5sE42QSW2/Knkyq8sjFynxoivaRoJigZAX2canukxCqErDgUsik/o=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=bavQ0b/r; arc=fail smtp.client-ip=40.107.92.71
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=RDdXSnuLwgVgT4Wp6NGuN7jDoVvaByLQ03q0JhOQ7STxMggv/g7PMM0CVhcXtsA3vNRa+sz/Bc5WFNyM6Ts+2hpA3CL6fX6hAObHrB6Yxeo3q1XTfCjySdKjzUM2AAAHxSdeXofmauyCXNJZDPeGiVFjzXZqDhLgVU/PH6Qf7zfzb5asW6MqqzgKXM8IehrXE/VNuOam1OC3WvCqgrfbSpS+fPRjUnCuv/k9ieflRPGig1Yg5tAs4UIHIMLU6jXTw46HQLaW5jXg4BZljkMoye48NYjYctIkf3ul71ZtY8kdIDwBVNiRltFLSlEq3Fwdd+bQrmGP56+UsrSQSwruqQ==
+ b=QKZUsnuvFjyoKzYTMx7HvEEKt7Kx16TqZY6QVgHCVtpJMcKL8QwOAD92vGYFaE3gelQ6o7FIXq9ZTsB4AYBsHTMdJZCqXr4bp2ricDmefIae0hBb81w60bO4DVQLWBpdKeyWJIWOCZvBGFTbcAH5WCM5Vs1k+J0VwledowQ6RdQJ2PvEYakZ1PQAOY+KQFNY9L90yr1N40DWBzymFdoM0wYo++PaQA6F33sRaybyPwY3pb/FKkm4IGlS1M63Mq82jtfPDBLNzRnNIpN1HLxm4kln+NnPdyw9boEflDU57/7SUIKTRHLhu5tj4Wcns9cB8yAWYBTX2SWuZ9xIJ+/l/A==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ZZxv3bUK3ryD91VcL4/Kx8BoqbMa03THTNbV5ekodRY=;
- b=mbmqqiTvm+Af8JTVQidNhkdxt3fNXkxbtlQj/i5y4ggG/43EBvIPVDrgk2/i0ICUdbGrIzTxK9xVEe3VVa8EJLNlmcIHaI666horRdgJN7VjFU8Dq7TYWajKsRgpbdmQ8+4TT0s8PawSqoeJex1cGjY9ZAfRm3iuWDPhS9G02PANsRZOD2ocXhKWKVSyP8tIAxzPjKg0okMr0cCKSASGB0we35pE0evZ8WJOalOe3UrZwqkjlnqRp/vul9XdLTBqEekR0wLuxFVPNX1iPLfKX0rOYFu0El5sqsZ+jBUgK00HQxCs3eTYjoF0qZbJKZpUmRzgxrEiCLKEm28bKlhGkg==
+ bh=auFNcIrPvH7HK9lxyY6YgTh7dndOSGd2/26TlLLxI9s=;
+ b=Z2XaFPssE6NJ6nAHFCl/A7O2vCrHGcfBUtaAGBFMKlM2+13TyhjUPZJlWo8pZ63IHSHzOa5hAzq3tcnKwcblZVTOmM+qc1BRmgGmxfmKDtzAiRnwEd09sGT1hcpdKYf/NXfeTcRDN+HHSnc1qtwN7MHbHuktM6xOof3MOX7846N3qG3q+CTdt8X/UgDg+1YiSVyVU0nPpGHpHhYN+n9E4Ief/zmJVkVHbckS85ukrU9lKyLzePz3sRJ7YwshgvaTe8eLFwiy/G85AZCAQvR0tCQauJ2GykVKAbXLHmzcKfsw6rzGBNgckqmKaTfuUAxFTnIOntxvM+csy2MFVkpUkw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
  165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
  (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
  dkim=none (message not signed); arc=none (0)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ZZxv3bUK3ryD91VcL4/Kx8BoqbMa03THTNbV5ekodRY=;
- b=0EsqwiExj+jOQxGW1696Aa/beMAomVerIyRFwJzbshhuD3KNYkQXIYEGnwhdnqsd+fa6w+H7pVPXDgYt6KkB8zsedH+KQH0sP4blMle1+9nJIpBxZetd+1TG2T3FuIQWFZh6FBqURfrAyNHqv3RAtbNupKxY5t50TbyG826BeG4=
-Received: from PH8PR02CA0009.namprd02.prod.outlook.com (2603:10b6:510:2d0::22)
- by DM4PR12MB6615.namprd12.prod.outlook.com (2603:10b6:8:8d::9) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7519.35; Tue, 30 Apr 2024 09:22:43 +0000
-Received: from CY4PEPF0000EDD4.namprd03.prod.outlook.com
- (2603:10b6:510:2d0:cafe::4b) by PH8PR02CA0009.outlook.office365.com
- (2603:10b6:510:2d0::22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7519.34 via Frontend
- Transport; Tue, 30 Apr 2024 09:22:43 +0000
+ bh=auFNcIrPvH7HK9lxyY6YgTh7dndOSGd2/26TlLLxI9s=;
+ b=bavQ0b/rBMV5p0/2f5j9eZYKpWwWV/IWIs8P4TxzIJPaJVO8VoaxjDwmVzUOulxIOB7CTaTkRPyOWHsR/n/Jqx3BGOpBFBWpnjnDr189+pEYZCjzAXH6R+PmPcRpLUVCdNnM24iWWlYaWdme4CTORH8b8hgR+cqh7r1bYRfAr+s=
+Received: from PH0PR07CA0111.namprd07.prod.outlook.com (2603:10b6:510:4::26)
+ by DM4PR12MB6616.namprd12.prod.outlook.com (2603:10b6:8:8e::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7519.35; Tue, 30 Apr
+ 2024 09:22:49 +0000
+Received: from CY4PEPF0000EDD0.namprd03.prod.outlook.com
+ (2603:10b6:510:4:cafe::e9) by PH0PR07CA0111.outlook.office365.com
+ (2603:10b6:510:4::26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7519.36 via Frontend
+ Transport; Tue, 30 Apr 2024 09:22:47 +0000
 X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
  smtp.mailfrom=amd.com; dkim=none (message not signed)
  header.d=none;dmarc=pass action=none header.from=amd.com;
@@ -61,13 +62,13 @@ Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
  165.204.84.17 as permitted sender) receiver=protection.outlook.com;
  client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
 Received: from SATLEXMB04.amd.com (165.204.84.17) by
- CY4PEPF0000EDD4.mail.protection.outlook.com (10.167.241.208) with Microsoft
+ CY4PEPF0000EDD0.mail.protection.outlook.com (10.167.241.204) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7544.18 via Frontend Transport; Tue, 30 Apr 2024 09:22:43 +0000
+ 15.20.7544.18 via Frontend Transport; Tue, 30 Apr 2024 09:22:47 +0000
 Received: from rric.localdomain (10.180.168.240) by SATLEXMB04.amd.com
  (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Tue, 30 Apr
- 2024 04:22:40 -0500
+ 2024 04:22:43 -0500
 From: Robert Richter <rrichter@amd.com>
 To: "Rafael J. Wysocki" <rafael@kernel.org>
 CC: Dave Hansen <dave.hansen@linux.intel.com>, Dan Williams
@@ -75,9 +76,9 @@ CC: Dave Hansen <dave.hansen@linux.intel.com>, Dan Williams
 	<linux-acpi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
 	<linux-cxl@vger.kernel.org>, Robert Richter <rrichter@amd.com>, Len Brown
 	<lenb@kernel.org>
-Subject: [PATCH v6 6/7] ACPI/NUMA: Add log messages for memory ranges found in CEDT
-Date: Tue, 30 Apr 2024 11:21:59 +0200
-Message-ID: <20240430092200.2335887-7-rrichter@amd.com>
+Subject: [PATCH v6 7/7] ACPI/NUMA: Print CXL Early Discovery Table (CEDT)
+Date: Tue, 30 Apr 2024 11:22:00 +0200
+Message-ID: <20240430092200.2335887-8-rrichter@amd.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240430092200.2335887-1-rrichter@amd.com>
 References: <20240430092200.2335887-1-rrichter@amd.com>
@@ -93,91 +94,188 @@ X-ClientProxiedBy: SATLEXMB04.amd.com (10.181.40.145) To SATLEXMB04.amd.com
  (10.181.40.145)
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CY4PEPF0000EDD4:EE_|DM4PR12MB6615:EE_
-X-MS-Office365-Filtering-Correlation-Id: 9f7d2274-a3a8-4284-c926-08dc68f71727
+X-MS-TrafficTypeDiagnostic: CY4PEPF0000EDD0:EE_|DM4PR12MB6616:EE_
+X-MS-Office365-Filtering-Correlation-Id: 3bddaab9-30b2-475d-ec35-08dc68f71954
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam:
 	BCL:0;ARA:13230031|1800799015|376005|82310400014|36860700004;
 X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?XOpRDEi6bTEaxkkOcO4G1GELz6LTox2v/h8HKDRh2lyT+Znh2+KbJWLOpwVr?=
- =?us-ascii?Q?xHc+s+z1n15o7Z9+rIi8n5JYwN11F4oWvrtAk00OTzyfZDOuw81mKLvm/0Cn?=
- =?us-ascii?Q?k9pjJsxmG/n3ZsFknm1MQAstfi2XUobljrZV8oR9mVejb3JPhijiWT/EOUOF?=
- =?us-ascii?Q?nETsZAsUZIEOzjknwNsfu+WDcWo4ksfarfGOTGCnIAimNy4Qf3mZLCFofMOW?=
- =?us-ascii?Q?83ZGCft89pZR9mwIlQ+XMq6fqKTEw8X3AgCh5JDfmv5GZHZ/jC7oC4tbB/H9?=
- =?us-ascii?Q?Sb19fbjUXfmsq0tKgcQTbDhCEbflE4Wz7tSB7oB4INfconnaFm7Yl0/B+CU8?=
- =?us-ascii?Q?Xzrokcpjcs8ULCoZLpBwPBhIDE9wn9tnu5qR1rNMzrbf/8Z0hCHci3eBSgV6?=
- =?us-ascii?Q?kvco1fJ/xqtiBhnWCcWfnzwbN8okoH34VAQ5UrmmD7KKmDq+HOgUpmXpsyom?=
- =?us-ascii?Q?ZgiHR9wkp131Wc2iWR+jg6YU94xVlXWMJhyiGpknBIJYlkN/GU1JPy+6BaNL?=
- =?us-ascii?Q?7i3McBPc3xQMhsVU9QMTCyhtF0tKlpiC1FS86ZpRNbhLmUEe6xiA3HAUiRNh?=
- =?us-ascii?Q?4+IQ30tN6U9Ajlo8y2C+bRjKvNI0JCDgX8136DHTzuoRJcq/HwTTS3GpvQyD?=
- =?us-ascii?Q?clL53JtFRv+vWZRWxCvdAsbtlojW2uY2tyqh6Ofxvuu2Fzhd/S7oD7UhDVxd?=
- =?us-ascii?Q?FjLM3E8CNzFvypNJsSgJaeVSI0a5AdSwI615Zy2efG7+e1IjgOY9hyWfM9GB?=
- =?us-ascii?Q?tbcc8il1zIPiJgwOG1GBCZa2FfUzC319azl4yaI/2doQbXwsc5INXJjqVzEb?=
- =?us-ascii?Q?bj5wF/UtQhaqvEfx1eyRJlstHb30W9LvhHAo8B5EAYEXEo/8ZYRXIF85ky4r?=
- =?us-ascii?Q?JqLAyaQaX04036A5IAbY3yYuhzaBjfouRe8atjYMk9L7qNKxQECA/Mj5DjSC?=
- =?us-ascii?Q?o/Md61lWOLKkJ0YDbfw/PBoe8hxk5fiuEyEVwaVTkfJ21K/oQtHVqHTDFBhY?=
- =?us-ascii?Q?zB71/4u2lqBzXA/sKEVJvChMOTsYdSxT2lknMk7pzONrIAq3dKzPARp6n1xI?=
- =?us-ascii?Q?79JMNE+OpwmctBfxsF7JwCHvf6Bk0FaIJiBf812sOdu19dP8I3Y8Ol1l/LSF?=
- =?us-ascii?Q?KkQTl1ESICq2XB7+C/1TY/WEOfk4nOlWAo8bvKjvrET8POGvx1wC/1Hd3BS7?=
- =?us-ascii?Q?ZPhyQL/SP+BVx0J5JaxZLR0u8LjGUJZAVOn2UrNJrWVXu8gnKI7a3NrfAhVe?=
- =?us-ascii?Q?rpvt15CFHCZmeBr8NKW0/TxMR7XA/i0NPM3W5cySZTfTqPPrXP2BdpIqfXxE?=
- =?us-ascii?Q?gv5HLvdxlbozlMm1+IbU1LX8vb/M6UWdofEbCpg5zlC65oGJLnXXC8ALipYP?=
- =?us-ascii?Q?rHIeuoPVUKYRG2LBsXK7DaRlF5nA?=
+	=?us-ascii?Q?g8sHDSGBUQMdnRpXV/xtc1i6Ljdro9c+6lpax08Pg2Cakavt3eXl0+tdxYK7?=
+ =?us-ascii?Q?y3YV5S5ObJlPDO9YWV6/UOttDJ0kEtGLzPOlPMzmE+ixwgc/GgpkmohKsWMh?=
+ =?us-ascii?Q?SbdIWv2i6oxfFibl2GdMMNlTvPkozsEWEXAfcqZeP1L/Yo7o+jeSrgsfINeU?=
+ =?us-ascii?Q?s+xknn8iSKF+lnVViKzrCV1CtMzBBYQOIDSNlIWIZVGZ1AcyGj5rIHCL+Pql?=
+ =?us-ascii?Q?GHe5ZZyPqHnpn/xYVxt/3TiNUyrAzBzO4zuvRQcX4QGxbxNtXhFTV6jc01gP?=
+ =?us-ascii?Q?2g8W9l4IR0AbFStWSc1to322hCtVz0PAMWHrics6kQxzWYUmTdC92PUppUmT?=
+ =?us-ascii?Q?faoM//kPoD41vL4uLaE/bknDmByZ84PqP1eCRlmdsrJ5C1AJ8KVNRDbJEskp?=
+ =?us-ascii?Q?oynyklmE4iCy+E1zvIEYjwSr2VvoR3ZvHyA7BlG7kS0v7XDHe7yu1h6wtWoH?=
+ =?us-ascii?Q?iSW9L3tXzGLXKCRVrC51/7bAkJPSvdClgjFL+Ff6svuTcW6A8rprhpZRHPyI?=
+ =?us-ascii?Q?aNiGK88b8SAWrikxHKu8+5O4sfeJkGdRzsiGwnG3jdm8k33V86pop0wFI1vB?=
+ =?us-ascii?Q?40VuoUNefvJE6vAx/yLEhT9sL6J1gmXdeXDt8WzyVd30VUVBtaoYrxZKSHtz?=
+ =?us-ascii?Q?Zj1NDCpT8zUZVFH1+2ePeSipxkF3ftmBR7SxYTo2i2q24c2xkqKcfXv2L03X?=
+ =?us-ascii?Q?GxfAECTBRV8KJW7Urr8Jq+eXOnVAgy4OiKlALGShAkYQJb+vrwmzRAVmzEbw?=
+ =?us-ascii?Q?ut7J0BwxdCVr3KyAHP3CFT4KRARDiEclaG9ZrMEnF1mtZ06Gk2blxjliG9tq?=
+ =?us-ascii?Q?Fh6NJZw9FCajYkkYuSG8Cnjf6FdXluz21kD0By0SC6YqJioznhnvFVFRW4r5?=
+ =?us-ascii?Q?IdIGOtuct4b+AmPKn70IW2QzNOqb83nqhwJ4Und6Lsb3RoG6bO3kQ2G8j3F+?=
+ =?us-ascii?Q?2kvLwuiC4X9ylRCkUAYiA0s69eJ3k8VuNYX9TEYwiA71Baw7RuV/JYjq4Hl4?=
+ =?us-ascii?Q?98a1Z41cABD9w8uQtsJG7C8/2BODljadjvoT+ZLV4DcjDD1etzJaosITNFqm?=
+ =?us-ascii?Q?N2dn0OSidvb9f7G2sW0ZnRztFgIjwvD9CiX6J5qv8d+8pZbHSGdjyabXxw3c?=
+ =?us-ascii?Q?Oo7/oFGLFZqSNpBZcaODTGY1o1VR5U39E3JiDCMknscLnV61za1GUc3OkTCz?=
+ =?us-ascii?Q?kRG5ikYJDpP4g/CyVCYP9LJm8U7lm002o7hZTWrpRQSmSv9mjYt4qfjfjRFI?=
+ =?us-ascii?Q?TuXt3yQacz6ArTTpm8vvqQdDI+74Yn44Elx9452saTztlfYCvpt2LyyQuAK8?=
+ =?us-ascii?Q?JHyePkJT4undm8TVCITKvhBJRh7nRWFmDaIiUkjk1rht7BXZJxNMhxQmbPF3?=
+ =?us-ascii?Q?3V0fEUE=3D?=
 X-Forefront-Antispam-Report:
 	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(1800799015)(376005)(82310400014)(36860700004);DIR:OUT;SFP:1101;
 X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Apr 2024 09:22:43.3368
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Apr 2024 09:22:47.0037
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9f7d2274-a3a8-4284-c926-08dc68f71727
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3bddaab9-30b2-475d-ec35-08dc68f71954
 X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
 X-MS-Exchange-CrossTenant-AuthSource:
-	CY4PEPF0000EDD4.namprd03.prod.outlook.com
+	CY4PEPF0000EDD0.namprd03.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB6615
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB6616
 
-Adding a pr_info() when successfully adding a CFMWS memory range.
+The CEDT contains similar entries as the SRAT. For diagnostic reasons
+print the CEDT same style as the SRAT.
 
-Suggested-by: Alison Schofield <alison.schofield@intel.com>
 Signed-off-by: Robert Richter <rrichter@amd.com>
 ---
- drivers/acpi/numa/srat.c | 11 ++++++++++-
- 1 file changed, 10 insertions(+), 1 deletion(-)
+ drivers/acpi/numa/srat.c | 111 +++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 111 insertions(+)
 
 diff --git a/drivers/acpi/numa/srat.c b/drivers/acpi/numa/srat.c
-index 76b39a6d3aef..34ecf2dc912f 100644
+index 34ecf2dc912f..fa21d4d5fccf 100644
 --- a/drivers/acpi/numa/srat.c
 +++ b/drivers/acpi/numa/srat.c
-@@ -339,8 +339,12 @@ static int __init acpi_parse_cfmws(union acpi_subtable_headers *header,
- 	 * window.
- 	 */
- 	modified = numa_fill_memblks(start, end);
--	if (modified != NUMA_NO_MEMBLK)
-+	if (modified != NUMA_NO_MEMBLK) {
-+		if (modified)
-+			pr_info("CEDT: memblk extended [mem %#010Lx-%#010Lx]\n",
-+				(unsigned long long) start, (unsigned long long) end - 1);
- 		return 0;
-+	}
- 
- 	/* No SRAT description. Create a new node. */
- 	node = acpi_map_pxm_to_node(*fake_pxm);
-@@ -355,8 +359,13 @@ static int __init acpi_parse_cfmws(union acpi_subtable_headers *header,
- 		pr_warn("ACPI NUMA: Failed to add memblk for CFMWS node %d [mem %#llx-%#llx]\n",
- 			node, start, end);
- 	}
-+
- 	node_set(node, numa_nodes_parsed);
- 
-+	pr_info("CEDT: Node %u PXM %u [mem %#010Lx-%#010Lx]\n",
-+		node, *fake_pxm,
-+		(unsigned long long) start, (unsigned long long) end - 1);
-+
- 	/* Set the next available fake_pxm value */
- 	(*fake_pxm)++;
+@@ -320,6 +320,114 @@ acpi_parse_memory_affinity(union acpi_subtable_headers *header,
  	return 0;
+ }
+ 
++static int __init
++__acpi_table_print_cedt_entry(union acpi_subtable_headers *__header,
++			      void *arg, const unsigned long table_end)
++{
++	struct acpi_cedt_header *header = (struct acpi_cedt_header *)__header;
++
++	switch (header->type) {
++	case ACPI_CEDT_TYPE_CHBS:
++		{
++			struct acpi_cedt_chbs *p =
++				(struct acpi_cedt_chbs *)header;
++
++			if (header->length < sizeof(struct acpi_cedt_chbs)) {
++				pr_warn("CEDT: unsupported CHBS entry: size %d\n",
++					 header->length);
++				break;
++			}
++
++			pr_debug("CEDT: CHBS (0x%llx length 0x%llx uid %lu) %s (%d)\n",
++				(unsigned long long)p->base,
++				(unsigned long long)p->length,
++				(unsigned long)p->uid,
++				(p->cxl_version == ACPI_CEDT_CHBS_VERSION_CXL11) ?
++				"cxl11" :
++				(p->cxl_version == ACPI_CEDT_CHBS_VERSION_CXL20) ?
++				"cxl20" :
++				"unsupported version",
++				p->cxl_version);
++		}
++		break;
++	case ACPI_CEDT_TYPE_CFMWS:
++		{
++			struct acpi_cedt_cfmws *p =
++				(struct acpi_cedt_cfmws *)header;
++			int eiw_to_ways[] = {1, 2, 4, 8, 16, 3, 6, 12};
++			int targets = -1;
++
++			if (header->length < sizeof(struct acpi_cedt_cfmws)) {
++				pr_warn("CEDT: unsupported CFMWS entry: size %d\n",
++					header->length);
++				break;
++			}
++
++			if (p->interleave_ways < ARRAY_SIZE(eiw_to_ways))
++				targets = eiw_to_ways[p->interleave_ways];
++			if (header->length < struct_size(
++					p, interleave_targets, targets))
++				targets = -1;
++
++			pr_debug("CEDT: CFMWS (0x%llx length 0x%llx) with %d target%s",
++				(unsigned long long)p->base_hpa,
++				(unsigned long long)p->window_size,
++				targets, targets > 1 ? "s" : "");
++			for (int i = 0; i < targets; i++)
++				pr_cont("%s%lu", i ? ", " : " (",
++					(unsigned long)p->interleave_targets[i]);
++			pr_cont("%s%s%s%s%s%s\n",
++				targets > 0 ? ")" : "",
++				(p->restrictions & ACPI_CEDT_CFMWS_RESTRICT_TYPE2) ?
++				" type2" : "",
++				(p->restrictions & ACPI_CEDT_CFMWS_RESTRICT_TYPE3) ?
++				" type3" : "",
++				(p->restrictions & ACPI_CEDT_CFMWS_RESTRICT_VOLATILE) ?
++				" volatile" : "",
++				(p->restrictions & ACPI_CEDT_CFMWS_RESTRICT_PMEM) ?
++				" pmem" : "",
++				(p->restrictions & ACPI_CEDT_CFMWS_RESTRICT_FIXED) ?
++				" fixed" : "");
++		}
++		break;
++	case ACPI_CEDT_TYPE_CXIMS:
++		{
++			struct acpi_cedt_cxims *p =
++				(struct acpi_cedt_cxims *)header;
++
++			if (header->length < sizeof(struct acpi_cedt_cxims)) {
++				pr_warn("CEDT: unsupported CXIMS entry: size %d\n",
++					header->length);
++				break;
++			}
++
++			pr_debug("CEDT: CXIMS (hbig %u nr_xormaps %u)\n",
++				(unsigned int)p->hbig,
++				(unsigned int)p->nr_xormaps);
++		}
++		break;
++	default:
++		pr_warn("CEDT: Found unsupported entry (type = 0x%x)\n",
++			header->type);
++		break;
++	}
++
++	return 0;
++}
++
++static void __init acpi_table_print_cedt_entry(enum acpi_cedt_type id)
++{
++	acpi_table_parse_cedt(id, __acpi_table_print_cedt_entry, NULL);
++}
++
++static void __init acpi_table_print_cedt(void)
++{
++	/* Print only implemented CEDT types */
++	acpi_table_print_cedt_entry(ACPI_CEDT_TYPE_CHBS);
++	acpi_table_print_cedt_entry(ACPI_CEDT_TYPE_CFMWS);
++	acpi_table_print_cedt_entry(ACPI_CEDT_TYPE_CXIMS);
++}
++
+ static int __init acpi_parse_cfmws(union acpi_subtable_headers *header,
+ 				   void *arg, const unsigned long table_end)
+ {
+@@ -518,6 +626,9 @@ int __init acpi_numa_init(void)
+ 	/* SLIT: System Locality Information Table */
+ 	acpi_table_parse(ACPI_SIG_SLIT, acpi_parse_slit);
+ 
++	/* CEDT: CXL Early Discovery Table */
++	acpi_table_print_cedt();
++
+ 	/*
+ 	 * CXL Fixed Memory Window Structures (CFMWS) must be parsed
+ 	 * after the SRAT. Create NUMA Nodes for CXL memory ranges that
 -- 
 2.39.2
 
