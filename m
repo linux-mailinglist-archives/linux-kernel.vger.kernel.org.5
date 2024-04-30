@@ -1,177 +1,161 @@
-Return-Path: <linux-kernel+bounces-164334-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-164335-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id AC6CE8B7C74
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 18:02:12 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 548D98B7C75
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 18:02:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 638641F24394
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 16:02:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 846001C229E2
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 16:02:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 74A6E17556A;
-	Tue, 30 Apr 2024 16:02:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D199178CFD;
+	Tue, 30 Apr 2024 16:02:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="m4As+Y9j"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.14])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Tsd8c9aP"
+Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3ABF3132C15;
-	Tue, 30 Apr 2024 16:02:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.14
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E603175541
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 16:02:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714492923; cv=none; b=QYwqPRNe/IQ4eOVHmK6ZBlD0a+lGf82iSlRb8T5ITtlO3pWvGbFwmvtfbKXCt/TRheZ5f/zZqzRSr2lK1eq9GxdzPqH9aPoRiGtBlOOuHLRwU/2AIARtfSfb/Chc0v7xyakHSYyWANWAMWjNafaCdPF6HdhOWJ4Q8bJq4jFZWx4=
+	t=1714492931; cv=none; b=CZRcwAn3hHdfVnb4q9vgBXQ/tNWDSZloI1OavuJwU5I+JdSzlvUlE0LGrJfx43jx4X3RCDQ1DQ4GoXSC8kakvD9XGnFsMVbzYNN4uZ5G/zUOvjAf/yRX2Pp0vkllnXAlFurFfZ42WrX8MKcpkXl6ZjNruovhli/D8vktmoAG4Ks=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714492923; c=relaxed/simple;
-	bh=Rvq8o5SOMZnV/X98JzqTV2YkrAzwlGrJT8jM3pq+kDE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=FwhL+9MGMJEYVsRlpGfYrGRiu9FgBjTmtdSrWstpVPvMtG3SXk4QXv5s2bLeORDf+O6glvIeJfwBS3tk+5/3W/mspt3NAJWhAPvXPx1+0UXOXSIUnNZLSF8Bcuuf0PDEK8Kmdrj2hX3PxvTXcAGG4bIzO7GR97rC8GIJebNEZb4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=m4As+Y9j; arc=none smtp.client-ip=192.198.163.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1714492922; x=1746028922;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=Rvq8o5SOMZnV/X98JzqTV2YkrAzwlGrJT8jM3pq+kDE=;
-  b=m4As+Y9j7WqAAcEvCkAhEx2Z7+8BjlPhGgURFSw1C2GfNs6QFQqdP7LS
-   LxR5aOwsUk+RP1w6MN3YkdZNAxEki4TC1FioJ4WbsxCZlaaCXTlvv0Jny
-   sa8azu2Yyq4OetTuiwS7SUqqyWMoCs3b4uZ6Z8JG3iG21uChdZIVHysnZ
-   V00vs7VdSH8NsiplKzWx8s+GuolDQ2SdbUt3t5jXgtvk6Z3SNKLZHXJrK
-   ruwvx7PTzTnZNRdtfYT6QFJo1UoqTs+/yZuYyHHqIWByJHE69n1vgnXUO
-   4Ap5qukrgm1ZSZRV7oQp/OP8zaWR2jlKePdlXqV2S8yQPypdr8gOixoD7
-   w==;
-X-CSE-ConnectionGUID: 3Wh8IGiLRfS/LhpMI+uQmA==
-X-CSE-MsgGUID: PSbmpVCLR2SOGHdDfSECCA==
-X-IronPort-AV: E=McAfee;i="6600,9927,11060"; a="10430370"
-X-IronPort-AV: E=Sophos;i="6.07,242,1708416000"; 
-   d="scan'208";a="10430370"
-Received: from orviesa005.jf.intel.com ([10.64.159.145])
-  by fmvoesa108.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Apr 2024 09:02:01 -0700
-X-CSE-ConnectionGUID: BdUsbocdSlergVihIA7U1g==
-X-CSE-MsgGUID: Vv/XCU1aSzS+vXM61pxZyA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,242,1708416000"; 
-   d="scan'208";a="31322317"
-Received: from aschofie-mobl2.amr.corp.intel.com (HELO aschofie-mobl2) ([10.251.17.48])
-  by orviesa005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Apr 2024 09:01:59 -0700
-Date: Tue, 30 Apr 2024 09:01:57 -0700
-From: Alison Schofield <alison.schofield@intel.com>
-To: Robert Richter <rrichter@amd.com>
-Cc: "Rafael J. Wysocki" <rafael@kernel.org>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	Dan Williams <dan.j.williams@intel.com>, linux-acpi@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-cxl@vger.kernel.org,
-	Len Brown <lenb@kernel.org>
-Subject: Re: [PATCH v6 2/7] ACPI/NUMA: Remove architecture dependent
- remainings
-Message-ID: <ZjEV9YFDMRl3j6h6@aschofie-mobl2>
-References: <20240430092200.2335887-1-rrichter@amd.com>
- <20240430092200.2335887-3-rrichter@amd.com>
+	s=arc-20240116; t=1714492931; c=relaxed/simple;
+	bh=t9C7Ye6tArU7Baw32FWLZftC1ohgE3SE8Qu1VszqBkA=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=Zg+hKqt+OsjwqQfQcok9ncwsYOUwqehFJkWwXSofrNeZzIz9CX8FRElvoLUcXo0ix+CP4eM9Jhvil6y1zXkg5AwKGBul99rTpENZYTkXj7Dx5prRCM+6CIAF3PKGYwOAxba+iCu5NuUkHxLK/+f8y+hxK+H+H4P0hgKqcFKURmk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Tsd8c9aP; arc=none smtp.client-ip=209.85.128.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-61c9e368833so9393437b3.3
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 09:02:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1714492929; x=1715097729; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Nnx8PEh4F0H2pwvd5VJa9QAeHpiBNkwiDpkDCA/9d28=;
+        b=Tsd8c9aPA3axGEFylUe+D4SNOxlu5bv7IyNh+ZARaAIkNNdyPKAI/l44JCm0R9wKHe
+         PUGVpGpwH4ojSF1Pn+HYodeD7HV4jTa7d47mDAL2ba+eCt752oQkxx8VeOndXpiqSOiU
+         VYiESNIqy69nO47Vh+SIXtEI4R/Ju4kukYSaXxkKPeK+Ehfb8fa+lknCP5WJk9QxiETn
+         Ph+bSGj2jGQ+btVKuZEgpWf3rcZb9oe1z7BWJEn7MCKdpGWGPwj9CCs4jpPlmRKcEqr3
+         zUwJv6GvP0JYmFV9Q5q3HUr08hAmNUv2tBWxkjSsgM8K4n7KOLiBqt1s1RV5QsgxYVnv
+         1IQA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714492929; x=1715097729;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=Nnx8PEh4F0H2pwvd5VJa9QAeHpiBNkwiDpkDCA/9d28=;
+        b=vYzkRcNwJ9zYPvtZcKFchfolDrnW+Qkw2Qz2n+yfhLaZPjh7uZ1qZpbJpeLX8QYbZc
+         BYQysGjmNR9UbmHX61k/hWKfvr9VTM5zMdXWNChbnGYiLgFIUexdNlNHxE9p3YHDxH2r
+         NwscD6PRhnP7+I509vqz99biHsVaeBeibKy7ntVVPaQS5HfBgvi2n932d4SEH0GV/914
+         8JPE3sM2kvUcpCjlgUhdU7LpUiqaWRw2w/KL2XcTRY3yHllEY7QSdRO4iH5N+cHHjdso
+         zHr4Y32zYzdSb49tl6p3mCEgPwJvrSk2zy6YRwxZOEWn3mBD5NqpRNGSJaFOfY1BQ95b
+         ThiA==
+X-Forwarded-Encrypted: i=1; AJvYcCVvojcHZujdTfiMU03WHK8OJmRNZ1EpBs25ley0v2aQqHrIbOx0kPU30NBbbyTfcg3YYQ3a8Ig89f4VUiEMJCLrXWFG4TQf+Hf9UUsy
+X-Gm-Message-State: AOJu0YxVl7JdAd3IVkeVC/KXO9pQ7t2JN97XwVlcY8QGW6IXZMr8loT9
+	/DUhsFfCFACA9XN8LJyheAAAJcrU4nGjKgJuzAMbxZj++2BIS541LfVy/NAnurMzUKKTY589/Ua
+	tpA==
+X-Google-Smtp-Source: AGHT+IHKEpOrUUpr879xfqxmU8uZlro4QxVZM2T9MnKEU6UhkgNuMfrZrPFPOzrx8/CedBlpCnSRt2fJQnQ=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a05:6902:1002:b0:dd9:1db5:8348 with SMTP id
+ w2-20020a056902100200b00dd91db58348mr4752342ybt.8.1714492928972; Tue, 30 Apr
+ 2024 09:02:08 -0700 (PDT)
+Date: Tue, 30 Apr 2024 09:02:07 -0700
+In-Reply-To: <38e124dcdbf5e0badedf3c0e52c72e5e9352c435.camel@infradead.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240430092200.2335887-3-rrichter@amd.com>
+Mime-Version: 1.0
+References: <20240206151950.31174-1-vkuznets@redhat.com> <171441840173.70995.3768949354008381229.b4-ty@google.com>
+ <38e124dcdbf5e0badedf3c0e52c72e5e9352c435.camel@infradead.org>
+Message-ID: <ZjEV_6SpS7MEN_Cx@google.com>
+Subject: Re: [PATCH v2] KVM: selftests: Compare wall time from xen shinfo
+ against KVM_GET_CLOCK
+From: Sean Christopherson <seanjc@google.com>
+To: David Woodhouse <dwmw2@infradead.org>
+Cc: kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>, 
+	Vitaly Kuznetsov <vkuznets@redhat.com>, Jan Richter <jarichte@redhat.com>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Apr 30, 2024 at 11:21:55AM +0200, Robert Richter wrote:
-> With the removal of the Itanium architecture [1] the last architecture
-> dependent functions:
-> 
->  acpi_numa_slit_init(), acpi_numa_memory_affinity_init()
-> 
-> were removed. Remove its remainings in the header files too and make
-> them static.
-> 
-> [1] commit cf8e8658100d ("arch: Remove Itanium (IA-64) architecture")
+On Mon, Apr 29, 2024, David Woodhouse wrote:
+> On Mon, 2024-04-29 at 13:45 -0700, Sean Christopherson wrote:
+> > On Tue, 06 Feb 2024 16:19:50 +0100, Vitaly Kuznetsov wrote:
+> > > xen_shinfo_test is observed to be flaky failing sporadically with
+> > > "VM time too old". With min_ts/max_ts debug print added:
+> > >=20
+> > > Wall clock (v 3269818) 1704906491.986255664
+> > > Time info 1: v 1282712 tsc 33530585736 time 14014430025 mul 358755222=
+3 shift 4294967295 flags 1
+> > > Time info 2: v 1282712 tsc 33530585736 time 14014430025 mul 358755222=
+3 shift 4294967295 flags 1
+> > > min_ts: 1704906491.986312153
+> > > max_ts: 1704906506.001006963
+> > > =3D=3D=3D=3D Test Assertion Failure =3D=3D=3D=3D
+> > > =C2=A0=C2=A0 x86_64/xen_shinfo_test.c:1003: cmp_timespec(&min_ts, &vm=
+_ts) <=3D 0
+> > > =C2=A0=C2=A0 pid=3D32724 tid=3D32724 errno=3D4 - Interrupted system c=
+all
+> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 1=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0 0x00000000004030ad: main at xen_shinfo_test.c:1003
+> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 2=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0 0x00007fca6b23feaf: ?? ??:0
+> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 3=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0 0x00007fca6b23ff5f: ?? ??:0
+> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 4=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0 0x0000000000405e04: _start at ??:?
+> > > =C2=A0=C2=A0 VM time too old
+> > >=20
+> > > [...]
+> >=20
+> > Applied to kvm-x86 selftests, thanks!
+> >=20
+> > [1/1] KVM: selftests: Compare wall time from xen shinfo against KVM_GET=
+_CLOCK
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 https://github.com/kvm-x86/linux/commit/=
+201142d16010
+>=20
+> Of course, this just highlights the fact that the very *definition* of
+> the wallclock time as exposed in the Xen shinfo and MSR_KVM_WALL_CLOCK
+> is entirely broken now.=20
+>=20
+> When the KVM clock was based on CLOCK_MONOTONIC, the delta between that
+> and wallclock time was constant (well, apart from leap seconds but KVM
+> has *always* been utterly hosed for that, so that's just par for the
+> course). So that made sense.
+>=20
+> But when we switched the KVM clock to CLOCK_MONOTONIC_RAW, trying to
+> express wallclock time in terms of the KVM clock became silly. They run
+> at different rates, so the value returned by kvm_get_wall_clock_epoch()
+> will be constantly changing.
+>=20
+> As I work through cleaning up the KVM clock mess, it occurred to me
+> that we should maybe *refresh* the wallclock time we report to the
+> guest. But I think it's just been hosed for so long that no guest could
+> ever trust it for anything but knowing roughly what year it is when
+> first booting, and it isn't worth fixing.
+>=20
+> What we *should* do is expose something new which exposes the NTP-
+> calibrated relationship between the arch counter (or TSC) and the real
+> time, being explicit about TAI and about live migration (a guest needs
+> to know when it's been migrated and should throw away any NTP
+> refinement that it's done for *itself*).
+>=20
+> I know we have the PTP paired reading thing, but that's *still* not
+> TAI, it makes guests do the work for themselves and doesn't give a
+> clean signal when live migration disrupts them.
 
-
-Reviewed-by: Alison Schofield <alison.schofield@intel.com>
-
-> 
-> Reviewed-by: Dan Williams <dan.j.williams@intel.com>
-> Signed-off-by: Robert Richter <rrichter@amd.com>
-> ---
->  drivers/acpi/numa/srat.c | 16 ++--------------
->  include/linux/acpi.h     |  5 -----
->  2 files changed, 2 insertions(+), 19 deletions(-)
-> 
-> diff --git a/drivers/acpi/numa/srat.c b/drivers/acpi/numa/srat.c
-> index 3b09fd39eeb4..e4d53e3660fd 100644
-> --- a/drivers/acpi/numa/srat.c
-> +++ b/drivers/acpi/numa/srat.c
-> @@ -213,13 +213,12 @@ __weak int __init numa_fill_memblks(u64 start, u64 end)
->  	return NUMA_NO_MEMBLK;
->  }
->  
-> -#if defined(CONFIG_X86) || defined(CONFIG_ARM64) || defined(CONFIG_LOONGARCH)
->  /*
->   * Callback for SLIT parsing.  pxm_to_node() returns NUMA_NO_NODE for
->   * I/O localities since SRAT does not list them.  I/O localities are
->   * not supported at this point.
->   */
-> -void __init acpi_numa_slit_init(struct acpi_table_slit *slit)
-> +static void __init acpi_numa_slit_init(struct acpi_table_slit *slit)
->  {
->  	int i, j;
->  
-> @@ -241,11 +240,7 @@ void __init acpi_numa_slit_init(struct acpi_table_slit *slit)
->  	}
->  }
->  
-> -/*
-> - * Default callback for parsing of the Proximity Domain <-> Memory
-> - * Area mappings
-> - */
-> -int __init
-> +static int __init
->  acpi_numa_memory_affinity_init(struct acpi_srat_mem_affinity *ma)
->  {
->  	u64 start, end;
-> @@ -345,13 +340,6 @@ static int __init acpi_parse_cfmws(union acpi_subtable_headers *header,
->  	(*fake_pxm)++;
->  	return 0;
->  }
-> -#else
-> -static int __init acpi_parse_cfmws(union acpi_subtable_headers *header,
-> -				   void *arg, const unsigned long table_end)
-> -{
-> -	return 0;
-> -}
-> -#endif /* defined(CONFIG_X86) || defined (CONFIG_ARM64) */
->  
->  static int __init acpi_parse_slit(struct acpi_table_header *table)
->  {
-> diff --git a/include/linux/acpi.h b/include/linux/acpi.h
-> index 34829f2c517a..2c227b61a452 100644
-> --- a/include/linux/acpi.h
-> +++ b/include/linux/acpi.h
-> @@ -242,9 +242,6 @@ static inline bool acpi_gicc_is_usable(struct acpi_madt_generic_interrupt *gicc)
->  	return gicc->flags & ACPI_MADT_ENABLED;
->  }
->  
-> -/* the following numa functions are architecture-dependent */
-> -void acpi_numa_slit_init (struct acpi_table_slit *slit);
-> -
->  #if defined(CONFIG_X86) || defined(CONFIG_LOONGARCH)
->  void acpi_numa_processor_affinity_init (struct acpi_srat_cpu_affinity *pa);
->  #else
-> @@ -267,8 +264,6 @@ static inline void
->  acpi_numa_gicc_affinity_init(struct acpi_srat_gicc_affinity *pa) { }
->  #endif
->  
-> -int acpi_numa_memory_affinity_init (struct acpi_srat_mem_affinity *ma);
-> -
->  #ifndef PHYS_CPUID_INVALID
->  typedef u32 phys_cpuid_t;
->  #define PHYS_CPUID_INVALID (phys_cpuid_t)(-1)
-> -- 
-> 2.39.2
-> 
+Is the above an objection to the selftest change, or just an aside?  Honest
+question, I have no preference either way; I just don't have my head wrappe=
+d
+around all of the clock stuff enough to have an informed opinion on what th=
+e
+right/best way forward is.
 
