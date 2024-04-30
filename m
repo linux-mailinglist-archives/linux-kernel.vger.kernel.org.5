@@ -1,91 +1,107 @@
-Return-Path: <linux-kernel+bounces-163436-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-163435-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 042A28B6ADC
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 08:49:40 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 952D08B6AD8
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 08:48:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9AA921F21AE8
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 06:49:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A57341C21596
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 06:48:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A29991BC56;
-	Tue, 30 Apr 2024 06:49:32 +0000 (UTC)
-Received: from mx3.molgen.mpg.de (mx3.molgen.mpg.de [141.14.17.11])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 137E0199D9;
+	Tue, 30 Apr 2024 06:48:32 +0000 (UTC)
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4ABFC14A9D;
-	Tue, 30 Apr 2024 06:49:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=141.14.17.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34A1117731
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 06:48:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714459772; cv=none; b=bKeSPbTs9ycZ2aQWIhVtC/JtXI3ElGn8tFNKzBVFiKdVmNWX2SoM/J4HuRCcmbte37BvJTO+1w34olNCcg/LBmFb80Flz6AonS5SpRxoKYi9CXjbnO8dnloAOcBtQjeit17IwUpQ3LfElCwJbuBJzWTFvL30kZk4kyszqR2/HAw=
+	t=1714459711; cv=none; b=j5co4c7jI2OBpLE6s6uD7WClZAXoy53DRctWFmDEOILw4kuCu2pGiKlALXEXFy2EwCxTaL0fYE4ZeHJIegeryobe4XL3Oz8nSGdQu0EoWIgvJsyWPufe9MfkYCLf1phaEcoVFpZwh/NQNvPtdvIcZPyvLOIC7JcvYIl3YDRPxkM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714459772; c=relaxed/simple;
-	bh=wfXSPUnLh1VzrudqUMgb6UelKl+cTNK1wPZwDGzcO6g=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Vq/lDBPR7p7dqwsC9FlTpnj7VhRpcpTLiUQKgb7S9bw6Edx2uzcdS0C9ZnshLza5qVWdCM9yZP771Eif8dK87Z3kiPv1oBpRbpFejnqPVB9sotc7K+bO9eBPKCffXWDpRQu16UcqdnwpKkZaVUax7x26AJcRdeXKWtgznAh2+aA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=molgen.mpg.de; spf=pass smtp.mailfrom=molgen.mpg.de; arc=none smtp.client-ip=141.14.17.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=molgen.mpg.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=molgen.mpg.de
-Received: from [141.14.12.201] (g201.RadioFreeInternet.molgen.mpg.de [141.14.12.201])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: pmenzel)
-	by mx.molgen.mpg.de (Postfix) with ESMTPSA id AF12B61E5FE01;
-	Tue, 30 Apr 2024 08:48:10 +0200 (CEST)
-Message-ID: <a21672d7-82dd-44a9-b301-94aa1537b75c@molgen.mpg.de>
-Date: Tue, 30 Apr 2024 08:48:09 +0200
+	s=arc-20240116; t=1714459711; c=relaxed/simple;
+	bh=QlWC6sF6a80KgWmsLCDwe8nl2naO+GsOgOEyO/ax9Rw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=KR2SuyiUwC7NV00FV5niKg6Bl3/tvqFKiXdw9grYxR0Pfnm8XxWHLJ4TZOvUugtgseLremEJrnkzOzCno20BuJMtO67k+oWiCUGmgWcfPxIH2faNfTdkChWjDZaJ+6FIzkyy1Dnyv+0wRGwQDqEY/xmhfD+VqvTtrAlj4ZbQ9wM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <ore@pengutronix.de>)
+	id 1s1hHt-0007c7-Bj; Tue, 30 Apr 2024 08:48:25 +0200
+Received: from [2a0a:edc0:2:b01:1d::c5] (helo=pty.whiteo.stw.pengutronix.de)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <ore@pengutronix.de>)
+	id 1s1hHr-00F7HM-Pl; Tue, 30 Apr 2024 08:48:23 +0200
+Received: from ore by pty.whiteo.stw.pengutronix.de with local (Exim 4.96)
+	(envelope-from <ore@pengutronix.de>)
+	id 1s1hHr-0047M1-2H;
+	Tue, 30 Apr 2024 08:48:23 +0200
+Date: Tue, 30 Apr 2024 08:48:23 +0200
+From: Oleksij Rempel <o.rempel@pengutronix.de>
+To: Mark Brown <broonie@kernel.org>
+Cc: Kory Maincent <kory.maincent@bootlin.com>,
+	Kyle Swenson <kyle.swenson@est.tech>,
+	Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org,
+	netdev@vger.kernel.org,
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Subject: Re: PoE complex usage of regulator API
+Message-ID: <ZjCUN5V516RSxgoq@pengutronix.de>
+References: <20240426124253.56fd0933@kmaincent-XPS-13-7390>
+ <Zi--4ko_vAtFSxyn@finisterre.sirena.org.uk>
+ <20240429192848.13c576b7@kmaincent-XPS-13-7390>
+ <ZjBWE5XEJjHjftsn@finisterre.sirena.org.uk>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v7 0/2] modify Signed-off-by field
-To: Kelly Hung <ppighouse@gmail.com>
-Cc: robh+dt@kernel.org, devicetree@vger.kernel.org, conor+dt@kernel.org,
- linux-aspeed@lists.ozlabs.org, openbmc@lists.ozlabs.org,
- linux-kernel@vger.kernel.org, Kelly Hung <Kelly_Hung@asus.com>,
- joel@jms.id.au, krzysztof.kozlowski+dt@linaro.org, Allenyy_Hsu@asus.com,
- linux-arm-kernel@lists.infradead.org
-References: <20240430045853.3894633-1-Kelly_Hung@asus.com>
-Content-Language: en-US
-From: Paul Menzel <pmenzel@molgen.mpg.de>
-In-Reply-To: <20240430045853.3894633-1-Kelly_Hung@asus.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <ZjBWE5XEJjHjftsn@finisterre.sirena.org.uk>
+X-Sent-From: Pengutronix Hildesheim
+X-URL: http://www.pengutronix.de/
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ore@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
-Dear Kelly,
-
-
-Am 30.04.24 um 06:58 schrieb Kelly Hung:
-> For the warning message:
-> From: Kelly Hung '<ppighouse@gmail.com>' != 'Signed-off-by: Kelly Hung <Kelly_Hung@asus.com>'
+On Tue, Apr 30, 2024 at 11:23:15AM +0900, Mark Brown wrote:
+> On Mon, Apr 29, 2024 at 07:28:48PM +0200, Kory Maincent wrote:
+> > Mark Brown <broonie@kernel.org> wrote:
+> > > On Fri, Apr 26, 2024 at 12:42:53PM +0200, Kory Maincent wrote:
 > 
-> I replaced Kelly_Hung@asus.com with my private Gmail account.
+> > That's right I was focusing on power where I could use already implemented
+> > voltage and current callbacks. Would you be interested to a new get_current()
+> > callback to know the current and allows regulator to deduce the consumed power
+> > or should it be specific to PSE subsystem.
 > 
-> Due to a security issue with ASUS's mail server, I am unable to use
-> ASUS's mail system to send patches out from my build server.
-> So I executed git send-email using my private gmail account.
+> That feels like it belongs in hwmon or possibly power rather than in the
+> regulator API but it does feel like it's generally useful rather than
+> PSE specific.
 
-To put light on ASUS’ upstream work, using your company address would be 
-nice in my opinion. Do you have it configured everything in git 
-(`~/.gitconfig`)?
+I would say, it depends on use case and abilities of HW. Power
+consumption may change rapidly, so it is all about sampling rate. For
+real time current measurement you wont to use iio framework. For most
+cases and simple diagnostic are more interesting max and probably min
+values which self cleared after last read.
 
-     git config --global user.name "Kelly Hung"
-     git config --global user.email Kelly_Hung@asus.com
+If HW provides only real time measurement, then the question is, how
+many samples are needed to provide some usable result.
 
-Then `git format-patch` and `git send-email` should put
-
-From: Kelly Hung <Kelly_Hung@asus.com>
-
-at the top of the message.
-
-
-Kind regards,
-
-Paul
+Regards,
+Oleksij
+-- 
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
 
