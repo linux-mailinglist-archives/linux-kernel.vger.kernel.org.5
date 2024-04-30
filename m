@@ -1,120 +1,248 @@
-Return-Path: <linux-kernel+bounces-163766-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-163768-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D2BB68B6F9A
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 12:24:22 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 066658B6FA1
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 12:26:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8A32B2825AE
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 10:24:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AF6CF282071
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 10:26:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB41814291F;
-	Tue, 30 Apr 2024 10:24:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E8F5129E6E;
+	Tue, 30 Apr 2024 10:26:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="TOjh1CgJ"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="YaXcaxov"
+Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com [209.85.208.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ACA081422B2
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 10:24:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8D4D13B2BC
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 10:26:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714472644; cv=none; b=gK5XV9dhkAAVxHf1la5eiTGfKsG6d1bw1/jJNx/ofRfGUcKpxq4G8NGye3VmZRsjRX2ys96X0edNFDw6fLw8XWVOXxa7IC582jfHHiwiuWNMExUnchXyVg7CBXHF+hHM37w9vdonl58ciRSgKkjsMqi04l+uyUWC/nFeqKN77qE=
+	t=1714472795; cv=none; b=F2iUF1+Chuj82cALN7p7/+W9f1Rh1llFge4sSZ/yyeap7rEuz0583qZ1lO/XmUxqI7iHhdfjvIWvK5rk7O5STqE88JcxCCaA6lqG49LkVVZgdvQKzgHSnXEQAVv1aNnT/abrTyrH18ba6NKr8xhJprx6owf2RaeGbKlLRQX6KHo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714472644; c=relaxed/simple;
-	bh=EWsnYTb8ObHYFQO3n5zSeiUbnlRAhkKyZ8gGTPZUel8=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=dCf2A4M3/HIzhzBqjz8DbMO2AOetXgC+dv4gkAQRxsezIEorEUyUzp1aY4F8SUNdw6CU/q4CGWQmj8iDspUfFFFzq5IAJDM+ALTMI4McOj05aOJWdWvR1BKiw1GDI6ikF0krz1zf7aDW9vFkphWQtsPBus87Z2DnxSnLusiShDY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=TOjh1CgJ; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1714472641;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=HoMvHQIf3kwWAn8n55awTvRVi3mblb1ik2ynYaQVwYI=;
-	b=TOjh1CgJkgv2i++8Gvx+FwUmQh1ZYGq6NSbc9IIF6pNthB2hLdkUCVDMY0cV347pueILbV
-	CRedCXX/blzRIbrF1e92acgm6EGCkoezte+rtHFReRaUaKDfJUVqwEKG1f2QwJ78jk/EN0
-	nkvdHI9DZMCTql4mIUEXY8rN9amqUS8=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-641-FSNlIGwHPt-t55hejlIApA-1; Tue, 30 Apr 2024 06:23:59 -0400
-X-MC-Unique: FSNlIGwHPt-t55hejlIApA-1
-Received: by mail-ed1-f70.google.com with SMTP id 4fb4d7f45d1cf-57061bffdd0so588876a12.2
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 03:23:59 -0700 (PDT)
+	s=arc-20240116; t=1714472795; c=relaxed/simple;
+	bh=Tx+zXl41UygFVaRh51l0QbdbnejH4NtOtfQ7nvL9xfM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=S6CjXNnFz5Zn59vpSznxi2RFuwvat+V4sxfNF8FzrLBAUDupwlTZO9o0MPbhZoFFQv63tNUMLBTiSJ46kOHhcWqB7C1BSDh9SyIyX6URIfqHf4CIml+vzRv5tlCsMQpgrYj6vdfX7VewMfOinaIU7DIm6YQrjT0lQCLymNG64VM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=YaXcaxov; arc=none smtp.client-ip=209.85.208.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-57225322312so7334959a12.1
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 03:26:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1714472792; x=1715077592; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=6KX84ePfZzFlwa4FRm7kcHRU+sZmx+bj41bqfQ4RTt4=;
+        b=YaXcaxov6H1JT2ALvIppMrKBW69NrEwfrpPnPsJ/8NLR67o75amfoU9SONVyb7o/+Q
+         32/XzGEpwOcN8fFjFLOsLmMzAasV/XSJJnQrqABcVO+SyqLL7znOLxpmD/FcSZUkPY1X
+         k2BeyMT7jB106PTlSDiVkZAuTVGAJTigzlUN9KV26HVy3sbmHK9f4UNehG5lwLPmx5Rz
+         VUaCnQaElliAAsNFgdnfYOxyfhM9PgeenU1g9mTsnx85SCo+3Z3jSrPOgHYu628PXSXo
+         A6IwKH45yPOjCWW82N43gVLI5ehuSdYMB+V8nLd9cX+uBHH1WwxBR/HvsqCqc1g9p8h+
+         9LtA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714472638; x=1715077438;
-        h=mime-version:user-agent:content-transfer-encoding:autocrypt
-         :references:in-reply-to:date:cc:to:from:subject:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=HoMvHQIf3kwWAn8n55awTvRVi3mblb1ik2ynYaQVwYI=;
-        b=fVSUuZ92ONczjPxpg3PlEYZqap+nco+kjasRigHuSD1UkGbZUIdeiuq/UHoCwBomHD
-         kckd8kyLYzJ3Hx8VJ4uLjLgRGqdeZXQhkA64vsB26sbR6gv//etwBi0ObNS3tUtXN3Jz
-         h41phRRbWnv/HEqtzbLLTmhpQXCZomh9GT8H/StHB5EbmDz1mZ/zs73Lx+i2twQod08/
-         LG5pufBK4KcGa776+JSxVREQLFaDfeEtNJixu7xxlQHA/u9ML/Qjqok6I0xslDtAlwvd
-         4hFSdOBmxuCz3FdiCNhirbEdY4OeHPwQT1DTE9C+puVI/MdPuSMEfYI8ZhCjG9fQW9LV
-         a3QQ==
-X-Forwarded-Encrypted: i=1; AJvYcCW3HKtqycCNCsIQXd7IiVIm+5+qqtIcj5nfBvo5eugY7Zd7FXqDN17zVkdkQIBUx//uP4TQLbJfb9mODgL667JQl2IFka9El25SGCon
-X-Gm-Message-State: AOJu0YwAKRNe7ns1fnHUoO/eGpTk00j5iT3gIFEyk59xM6FRR0jK1UQg
-	neAQtQgm7i4xi+SSCOKJrUjI+QAHKR1xmNZq7OPAen05INXIK6mBhhzFEjImahmVuPT1pDUlES3
-	0/7vRSO58ucGt3OUdEutbfoYA2Iyhbv0MyMBrpxqNZ7Omu6RGFDVmjj0DD96tfQ==
-X-Received: by 2002:a17:907:1b25:b0:a54:c11b:527c with SMTP id mp37-20020a1709071b2500b00a54c11b527cmr9262124ejc.4.1714472638615;
-        Tue, 30 Apr 2024 03:23:58 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFqEVOD4qONhRO6MC8+pXVZeUlLb0CwvISVU8ZpU0JbpVxfZ9I14QZU7Ht4cv328wNCvjQlKg==
-X-Received: by 2002:a17:907:1b25:b0:a54:c11b:527c with SMTP id mp37-20020a1709071b2500b00a54c11b527cmr9262110ejc.4.1714472638212;
-        Tue, 30 Apr 2024 03:23:58 -0700 (PDT)
-Received: from gerbillo.redhat.com ([2a0d:3341:b0ae:6a10::f71])
-        by smtp.gmail.com with ESMTPSA id y20-20020a170906471400b00a58db2429b5sm4501364ejq.111.2024.04.30.03.23.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Apr 2024 03:23:57 -0700 (PDT)
-Message-ID: <2c48e13a26c55abf8e2199cae3b8b19596a419ec.camel@redhat.com>
-Subject: Re: [PATCH v4 net-next v4 2/6] net: add support for segmenting TCP
- fraglist GSO packets
-From: Paolo Abeni <pabeni@redhat.com>
-To: Felix Fietkau <nbd@nbd.name>, netdev@vger.kernel.org, Eric Dumazet
- <edumazet@google.com>, "David S. Miller" <davem@davemloft.net>, David Ahern
- <dsahern@kernel.org>, Jakub Kicinski <kuba@kernel.org>
-Cc: willemdebruijn.kernel@gmail.com, linux-kernel@vger.kernel.org
-Date: Tue, 30 Apr 2024 12:23:56 +0200
-In-Reply-To: <20240427182305.24461-3-nbd@nbd.name>
-References: <20240427182305.24461-1-nbd@nbd.name>
-	 <20240427182305.24461-3-nbd@nbd.name>
-Autocrypt: addr=pabeni@redhat.com; prefer-encrypt=mutual; keydata=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
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.4 (3.50.4-1.fc39) 
+        d=1e100.net; s=20230601; t=1714472792; x=1715077592;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=6KX84ePfZzFlwa4FRm7kcHRU+sZmx+bj41bqfQ4RTt4=;
+        b=fPEvp14U2c8wofdEgDnidFvO9KlQvo9iMyAtlg3hJLoPaAELHkZZo5dUvIJzbJmPew
+         Sco1NXrtUyBax8FofrO7WAPvbPjxjZw5P81GGNxC65inixrImv5VONboYsil6yw6+XDn
+         12tXEDFb6p28PEdyvICrHrXzEuGGk7Jec8fFiBX2ZaKszGriZk5F7r6OId9iiOeIoK/c
+         cRK5dYmRzh7NHiCeKFtbkGayO/Zlb4IcvPOtwjwEiRQp1J/hvE8J6t9xJcjXGoH7l3oz
+         H/Bv/+EQjn7Y0jiFX3Mt7FF3Kuvjm8nT5GVAaCcU9y39c+sgNv+MX1mNrldpBV6HJ2Tv
+         Jh4w==
+X-Forwarded-Encrypted: i=1; AJvYcCWBjowTqQ0w/naglYuFX2P8faaxvrJF00iDa9kFR27dRbMlLJdDkFjjzUTmme/67wxO/WBoPJ05rR31lmeb/BF/2LlJuuojTznYAIJY
+X-Gm-Message-State: AOJu0YwuBZ9ZHkOu8fxhovQF0caUjnrp50UxoZZOkVwXeXv1PiBnNoC/
+	ZjdZ06AR4MPv3Q0GRkS1AIhnUu8Q+pKb9FxsE3WwcJAxg8vTa1+521EXtVlhzuE=
+X-Google-Smtp-Source: AGHT+IGz4X1P5MLr+GfqXOEtE44ttGoPTZTIZ1pp5+OWkfRJcTED2HBtfF0bxURBaOZi5n1TrBDZ/Q==
+X-Received: by 2002:a50:8e13:0:b0:572:7142:4594 with SMTP id 19-20020a508e13000000b0057271424594mr5879252edw.29.1714472792206;
+        Tue, 30 Apr 2024 03:26:32 -0700 (PDT)
+Received: from [192.168.114.15] (078088045141.garwolin.vectranet.pl. [78.88.45.141])
+        by smtp.gmail.com with ESMTPSA id i18-20020a50d752000000b00572336c900asm6934614edj.74.2024.04.30.03.26.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 30 Apr 2024 03:26:31 -0700 (PDT)
+Message-ID: <b01b34d1-aa55-47be-8069-7156dd5be978@linaro.org>
+Date: Tue, 30 Apr 2024 12:26:28 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 10/10] arm64: dts: qcom: Add AYN Odin 2
+To: wuxilin123@gmail.com, =?UTF-8?Q?Uwe_Kleine-K=C3=B6nig?=
+ <u.kleine-koenig@pengutronix.de>, Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley
+ <conor+dt@kernel.org>, Junhao Xie <bigfoot@classfun.cn>,
+ Neil Armstrong <neil.armstrong@linaro.org>,
+ Jessica Zhang <quic_jesszhan@quicinc.com>, Sam Ravnborg <sam@ravnborg.org>,
+ David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
+ Bjorn Andersson <andersson@kernel.org>,
+ Tengfei Fan <quic_tengfan@quicinc.com>,
+ Molly Sophia <mollysophia379@gmail.com>
+Cc: linux-pwm@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+ linux-arm-msm@vger.kernel.org
+References: <20240424-ayn-odin2-initial-v1-0-e0aa05c991fd@gmail.com>
+ <20240424-ayn-odin2-initial-v1-10-e0aa05c991fd@gmail.com>
+Content-Language: en-US
+From: Konrad Dybcio <konrad.dybcio@linaro.org>
+Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
+ 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
+ izWDgYvmBE8=
+In-Reply-To: <20240424-ayn-odin2-initial-v1-10-e0aa05c991fd@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Sat, 2024-04-27 at 20:22 +0200, Felix Fietkau wrote:
-> @@ -37,6 +101,9 @@ static struct sk_buff *tcp4_gso_segment(struct sk_buff=
- *skb,
->  	if (!pskb_may_pull(skb, sizeof(struct tcphdr)))
->  		return ERR_PTR(-EINVAL);
-> =20
-> +	if (skb_shinfo(skb)->gso_type & SKB_GSO_FRAGLIST)
-> +		return __tcp4_gso_segment_list(skb, features);
+On 24.04.2024 5:29 PM, Xilin Wu via B4 Relay wrote:
+> From: Xilin Wu <wuxilin123@gmail.com>
+> 
+> AYN Odin 2 is a gaming handheld based on QCS8550, which is derived
+> from SM8550 but without modem RF system.
+> 
+> This commit brings support for:
+> * Remoteprocs
+> * UFS storage
+> * SD Card
+> * Type-C with USB3 10Gbps and DisplayPort (4-lane requires a pending
+>   patch)
+> * PCIe0 (Wi-Fi requires the pending pwrseq series)
+> * Bluetooth
+> * Regulators
+> * Integrated fan with automatic speed control based on CPU temperature
+> * Power and volume keys
+> * M1, M2 buttons
+> * HDMI output up to 1080p 60hz
+> * four groups of RGB lights
+> * GPU
+> * Internal DSI display with touchscreen
+> 
+> Signed-off-by: Xilin Wu <wuxilin123@gmail.com>
+> ---
 
-I'm sorry for the incremental feedback, I almost forgot.
+[...]
 
-Possibly the above condition could deserve an unlikely() annotation?
-less relevant than for GRO case, but at least we have consistent
-handling of such flag.
+> +
+> +	backlight: backlight {
+> +		compatible = "pwm-backlight";
+> +		pwms = <&pmk8550_pwm 0 860000>;
+> +		brightness-levels = <1023 0>;
 
-Thanks!
+Huh? Is min/max swapped?
 
-Paolo
+> +		num-interpolated-steps = <1023>;
+> +		default-brightness-level = <600>;
+> +		power-supply = <&vph_pwr>;
+> +		enable-gpios = <&pmk8550_gpios 5 GPIO_ACTIVE_HIGH>;
+> +		pinctrl-names = "default";
+> +		pinctrl-0 = <&pwm_backlight_default>;
 
+property-n
+property-names
+
+[...]
+
+> +			cooling-maps {
+> +				map0 {
+> +					trip = <&cpuss0_active0>;
+> +					cooling-device = <&fan 0 1>;
+> +				};
+
+Please adda a newline between each subnode
+
+[...]
+
+> +		/* Setting regulator-allow-set-load here will crash the device */
+
+??
+
+> +		vreg_l17b_2p5: ldo17 {
+> +			regulator-name = "vreg_l17b_2p5";
+> +			regulator-min-microvolt = <2504000>;
+> +			regulator-max-microvolt = <2504000>;
+> +			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
+> +		};
+> +	};
+> +
+
+[...]
+
+> +
+> +		backlight = <&backlight>;
+> +		/* touchscreen and display panel share the same reset gpio! */
+> +		reset-gpios = <&tlmm 133 GPIO_ACTIVE_LOW>;
+
+Perhaps you would be interested in drm_panel_follower
+
+[...]
+
+> +
+> +&sdhc_2 {
+> +	cd-gpios = <&pm8550_gpios 12 GPIO_ACTIVE_LOW>;
+> +	pinctrl-names = "default", "sleep";
+> +	pinctrl-0 = <&sdc2_default &sdc2_card_det_n>;
+> +	pinctrl-1 = <&sdc2_sleep &sdc2_card_det_n>;
+> +	vmmc-supply = <&vreg_l9b_2p9>;
+> +	vqmmc-supply = <&vreg_l8b_1p8>;
+> +	bus-width = <4>;
+> +	no-sdio;
+> +	no-mmc;
+> +
+> +	/* SDR104 does seem to be working on this device*/
+> +	/delete-property/ sdhci-caps-mask;
+
+Eeeh.. I'm not sure about this. Maybe it still has some issues that
+don't manifest immediately.
+
+[...]
+
+> +&uart15 {
+> +	status = "okay";
+> +
+> +    /* Gamepad controlled by onboard MCU */
+
+As in, that MCU is connected to 8550 through this UART port?
+
+Konrad
 
