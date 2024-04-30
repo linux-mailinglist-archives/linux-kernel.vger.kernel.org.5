@@ -1,69 +1,71 @@
-Return-Path: <linux-kernel+bounces-163268-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-163269-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7FA0B8B6801
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 04:40:45 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D34048B6805
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 04:41:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 958AF1C21FD6
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 02:40:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8F1C3282CAB
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 02:41:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 03AD6DDA1;
-	Tue, 30 Apr 2024 02:40:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2CA83DDAA;
+	Tue, 30 Apr 2024 02:40:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ckAE7q91"
-Received: from mail-pg1-f177.google.com (mail-pg1-f177.google.com [209.85.215.177])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BlSu/XpJ"
+Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 009EA8BF0;
-	Tue, 30 Apr 2024 02:40:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B6E6101C4;
+	Tue, 30 Apr 2024 02:40:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714444836; cv=none; b=KPUm4dImDTgK1Nze7K8gF3C8CKxp/EUn0UWLyfduaNRPuD2vahNfdffRRovlkj6wIlVajd1rMurIWIsobIz3dCcVpByUcArdVMRYnv1A3/g91mffbio58TXOPKTzp33HJhlFZwkhWshGvVfzEDnMjj0P/8n6T7MToEJyhCSrsFg=
+	t=1714444854; cv=none; b=RXsJ+6RMle85DDujirfwz5tpYJj/ZuDiDLy6o7OVAxJDYkd2uHyuW5Xpws3CXPJzZr0Yy9zyBhINdB++aFMa1m9Qx7nNUEtBibpkV1QXnbrZzGC4mRNnZDAPr1Y4uyrZm2ohMSWi91c5BxqZv7duNZHDpD9TT6UgOUnqzgWAQpQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714444836; c=relaxed/simple;
-	bh=V+BIjUiYOCcEwN69Co+s6BOhtm9QYzyaY1P9x36j10g=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=CZiRi9Y1xhhIqaRU+SMglb8Ks177R9N7+Abs6bpreUrQ9c7gRnrf/M6srDh1HZPfqx5N40ymGwX2y8F8NHOrLZHk7xsEcZT/pxpY2BVuAmgUolBt5zKTjqMTsXvxBV1X+33rLsimJRST/wJqb+aFagAMyfUncgVqWPXe7T4rmhQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ckAE7q91; arc=none smtp.client-ip=209.85.215.177
+	s=arc-20240116; t=1714444854; c=relaxed/simple;
+	bh=ZNyRx0yUkCkWotFvtItmD9fZAAl5qWsRf94uXnLkRJc=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=mfV0SI3Mw7w3jVcYEOiHh423M88LvsfKC8ePNZSfT9B+Mm+YIJlGvlpsrTvLsQPPLvebgniKWoC9x+1Bhgt9GFGbD2iT8hEvOZrkOWyOxx6QPIY0w29YjATVQs3x+SxxihZUTsFmxAvbgOYU88hNjBw2E+Nt3Gy8hRPF8IJwK5I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BlSu/XpJ; arc=none smtp.client-ip=209.85.214.170
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f177.google.com with SMTP id 41be03b00d2f7-5ce07cf1e5dso3665319a12.2;
-        Mon, 29 Apr 2024 19:40:34 -0700 (PDT)
+Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-1e5715a9ebdso43076475ad.2;
+        Mon, 29 Apr 2024 19:40:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714444834; x=1715049634; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=sW8wTvn689x/3NF6m1acLAgYnG3AFU0fUmh1MuYjwa0=;
-        b=ckAE7q91IfzrN70d6LiK7org9WJGLKvjajs3CUkuJp2Cu9R9dvBzXfJpxQhkrBXEQg
-         +8vjvKaudu1CysIq9mQu9OfXzx7fCVnAi/ohh0YADMsn6d+OzPMhETN9kvGMM9hP6Kt6
-         dgoM4QgNrgA8+5sF4EdG21LvG4KWuhoIDVFAAXb7eTanybvVKkuHE8yRGfe6qZJbzOll
-         Oa6dPyUR0hWjiWum+BICU1b06BpBS73DY0xMOvu/fdC9iZNYdoI3BrLLg/kO0wwxMzzc
-         WrPvYoF29lMhsfbvfWTiJEwtaarXk6zvichhgiPjONis0N/+O54WlUNpuilS4qbjNdxp
-         eSJA==
+        d=gmail.com; s=20230601; t=1714444852; x=1715049652; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=8nmwy26EmAitH/BFdPVZTkin3CZniJ1hlTGeJE7IE+E=;
+        b=BlSu/XpJPN9Yi8ZhL85jcpiqBodkONpnpFPEleIfhpXOWZZlMZA5on80xPSs0lfrfs
+         r6h39WPbvn2gfX7XbUUgW0eOKeud55hvZ7pZg+/I5792rCBO/tA7Jl/2jrmnLf6SPcLU
+         neRbg2rmXYVJ15ayJxwDUNYXwkfJoaJD0EGsu3XHBxsy7801oDOEVhhoPDtxbLVoswbe
+         yPdeH/ZYAUu7WIvOKJtHh/DQ2cGK99TGEvKG+P2uxNr0o6ov405SOoSAGvaUfqdBdm5i
+         Uxdj+tnNv2yqTAECwJd1W93LtNEHvuhz1xpOUNA3pS4MHz01GqjfmJqq1fuS2lMyDmhQ
+         mDxw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714444834; x=1715049634;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=sW8wTvn689x/3NF6m1acLAgYnG3AFU0fUmh1MuYjwa0=;
-        b=goEsG2gUBQz55j2vMBGsmmzgxLo9zaNtYG0qZbAEbQ86HZdh9/x4uKprbMGnzfY5g/
-         QlKjLTlu0DN0JzySUQt1EnHpmbeJmwaglUJoOfnkvLsl5ZJw1WmnzEOB87548FceV1le
-         66MEmZ+HZHtLAz4pd0TIGIL5iDuzZ3YtDvPz3mWmaV9lhUnaDnnL0JH5nfWzZ//hQRc5
-         xawCUft/uVgKsYuTRcKA81+3PyLpn+XiWN8MHBfWpE1qHbbboOqDiStWeOc7BcWleFiF
-         M2Cfb8U3vM7lYwnA3GwVZ3zh4930iEMEImptfz1tM6rXi3MsF0CHahZnHEXDIl5XOCf5
-         t2Bg==
-X-Forwarded-Encrypted: i=1; AJvYcCU2EYI6QTxUAL4L/9nvaI37JeSvP9KXQMrDZM3SZz5jqHkctPeCUprnTvikjyDuYtDt/+EaDWUEGd3iPLqAQ8Xq/6iOIhJh75pQnMlqNp+Ls7c53i2q7LLX976K1lq4diNHHGCpzo4h2Q==
-X-Gm-Message-State: AOJu0YychkdOQQYaEtKaNTsti6Ujwi8gukUrKEznQm/fXr7sYAMizbmJ
-	WvaFGc4OEN3rRBbBr8wApVt2cvMTv6rblyKUrjF5V+9IYmYsfNw8STv1SEiH8SA=
-X-Google-Smtp-Source: AGHT+IGQ/U4aomSuAFTFW8a1DiWeeFc6BiBlthAINUNDuett4xlAUBHOZ+zlA9EnnefZijQ2Xnwbnw==
-X-Received: by 2002:a05:6a20:2a1e:b0:1a7:94ea:a9b4 with SMTP id e30-20020a056a202a1e00b001a794eaa9b4mr10919673pzh.32.1714444833844;
-        Mon, 29 Apr 2024 19:40:33 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1714444852; x=1715049652;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=8nmwy26EmAitH/BFdPVZTkin3CZniJ1hlTGeJE7IE+E=;
+        b=kQiOazhBZB3Ybo0n7K0kKyzX2s/mjlF1J15WgvDY4hUqgrB6XpjNqRZ3FV6hAZxMdF
+         xmhk9tRR90GWi4v3bffIIVLK6h0+lGP71DUGltkShXMVL5Y61R+zy01iNzWxEip5AYGP
+         PmYjgkwwWg4aFMDgXzNi1s8Vbiwliz+B9HSHi5COOMt616jUDyFlVrI/MWmuab1ac4YN
+         cED1CsbTBTfTOC5K7s2hp1fqY/m0B2VEFYR96pkaxjiSDcgLlNu4MSathQMwuM60ijxu
+         pwVHieuxSb967MzqrHrn6QhwT8WobMPmg7hiHn81tCIMLLMwwHSgjlH4kPoBWyRzMD2y
+         4UIQ==
+X-Forwarded-Encrypted: i=1; AJvYcCX/VG/jhsQkMuP7He9iT67+f7M+eYtLrI/MutAYDPJwF53Px/mF28j4DcQFuDaq6tUGF8IE7NvlES+dxnC8BOwbco2QVK1lGT2ZM3L/KG0wgJQAAKEGpEWuXpIvPh2UtskMaiOprwX7Bg==
+X-Gm-Message-State: AOJu0YwThHIKaPE/a3qlkOwYQDRn7RVKxZrukUpVqooMAbl1PPXEczpN
+	p2B0qgqLBzK1U7dWJLqN6W5BAG4jaTkJdKhXKgT7ZkBJSoEUy+a8lJxpwLPtetY=
+X-Google-Smtp-Source: AGHT+IEsmmNWKwQpbrpKs2CI4HNEKEDXMhVL2Qq1ROslbOo8hS7d1ywEZ35rRyYM/8dSQq44wEa60Q==
+X-Received: by 2002:a17:902:c412:b0:1e0:b62a:c0a2 with SMTP id k18-20020a170902c41200b001e0b62ac0a2mr10977884plk.51.1714444852140;
+        Mon, 29 Apr 2024 19:40:52 -0700 (PDT)
 Received: from toyko-2.5 ([45.32.55.39])
-        by smtp.gmail.com with ESMTPSA id x12-20020a170902ec8c00b001eac94472f6sm8400379plg.93.2024.04.29.19.40.18
+        by smtp.gmail.com with ESMTPSA id x12-20020a170902ec8c00b001eac94472f6sm8400379plg.93.2024.04.29.19.40.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Apr 2024 19:40:33 -0700 (PDT)
+        Mon, 29 Apr 2024 19:40:51 -0700 (PDT)
 From: Jianfeng Liu <liujianfeng1994@gmail.com>
 To: linux-media@vger.kernel.org,
 	linux-rockchip@lists.infradead.org,
@@ -82,11 +84,14 @@ Cc: ezequiel@vanguardiasur.com.ar,
 	sfr@canb.auug.org.au,
 	sigmaris@gmail.com,
 	nicolas@ndufresne.ca,
-	linkmauve@linkmauve.fr
-Subject: [PATCH v7 0/2] Add hantro g1 video decoder support for RK3588
-Date: Tue, 30 Apr 2024 10:40:00 +0800
-Message-Id: <20240430024002.708227-1-liujianfeng1994@gmail.com>
+	linkmauve@linkmauve.fr,
+	Conor Dooley <conor.dooley@microchip.com>
+Subject: [PATCH v7 1/2] dt-bindings: media: rockchip-vpu: Add rk3588 vpu121 compatible string
+Date: Tue, 30 Apr 2024 10:40:01 +0800
+Message-Id: <20240430024002.708227-2-liujianfeng1994@gmail.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20240430024002.708227-1-liujianfeng1994@gmail.com>
+References: <20240430024002.708227-1-liujianfeng1994@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -95,63 +100,42 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-This is the v7 version of this series adding hantro g1 video decoder
-support for RK3588.
+Add Hantro G1 VPU compatible string for RK3588.
+RK3588 has the same Hantro G1 ip as RK3568, which are both
+known as VDPU121 in TRM of RK3568 and RK3588.
 
-RK3588 has Hantro G1 video decoder known as VDPU121 in TRM of RK3588 which
-is capable to decode MPEG2/H.264/VP8 up to 1920x1088. This vpu ip is also
-found in RK3568.
+Note that this VPU also has a jpeg encoder, which is one part of
+the five VEPU121 jpeg encoders on RK3588. So this VPU121 shoud be
+the same as vpu@ff650000 on RK3399. But we don't use the compatible
+string rk3399-vpu because of two reasons:
+1, rk3399-vpu has disabled H264 decoding because RK3399 also has
+rkvdec to support 4K H264 decoding. And we need H264 decoding because
+rkvdec2 on rk3588 for H264 decoding is not supported now.
+2, There are five VEPU121 jpeg encoders, but the kernel driver can't
+do scheduling. So it's better to disable the VEPU121 jpeg encoder
+at the moment.
 
-Test results from fluster can be found from thread of v3[1].
+Signed-off-by: Jianfeng Liu <liujianfeng1994@gmail.com>
+Acked-by: Conor Dooley <conor.dooley@microchip.com>
+Reviewed-by: Sebastian Reichel <sebastian.reichel@collabora.com>
+---
+ Documentation/devicetree/bindings/media/rockchip-vpu.yaml | 3 +++
+ 1 file changed, 3 insertions(+)
 
-Changes in v7:
- - Change compatible string from vdpu121 to vpu121 to match the real
-   hardware
- - Change the devicetree node vdpu_mmu to vpu_mmu because this mmu is
-   also used by vepu121 jpeg encoder
- - Link to v6: https://lore.kernel.org/all/20240418111002.83015-1-liujianfeng1994@gmail.com/
+diff --git a/Documentation/devicetree/bindings/media/rockchip-vpu.yaml b/Documentation/devicetree/bindings/media/rockchip-vpu.yaml
+index c57e1f488..2710bb2fb 100644
+--- a/Documentation/devicetree/bindings/media/rockchip-vpu.yaml
++++ b/Documentation/devicetree/bindings/media/rockchip-vpu.yaml
+@@ -31,6 +31,9 @@ properties:
+       - items:
+           - const: rockchip,rk3228-vpu
+           - const: rockchip,rk3399-vpu
++      - items:
++          - const: rockchip,rk3588-vpu121
++          - const: rockchip,rk3568-vpu
 
-Changes in v6:
- - Apply dt-bindings first
- - Collect missing commit tags of old versions
- - Specify the base commit suggested by Diederik
- - Link to v5: https://lore.kernel.org/all/20240413064608.788561-1-liujianfeng1994@gmail.com/
-
-Changes in v5:
- - Add missing interrupt-names to devicetree node
- - Rebase devicetree patch based on next-20240412
- - Link to v4: https://lore.kernel.org/all/20240316071100.2419369-1-liujianfeng1994@gmail.com/
-
-Changes in v4:
- - Change compatible string to rockchip,rk3588-vdpu121
- - Link to v3: https://lore.kernel.org/all/20231231151112.3994194-1-liujianfeng1994@gmail.com/
-
-Changes in v3:
- - Drop code in hantro_drv.c because hantro g1 vpu in rk3588 is compatible
-with the one in rk3568, only adding devicetree node should work.
- - Change devicetree node name to video-codec@fdb50000 to match the reg
-address.
- - Add dt-bindings rockchip,rk3588-vpu compatible with rockchip,rk3568-vpu
- - Link to v2: https://lore.kernel.org/all/20231228131617.3411561-1-liujianfeng1994@gmail.com
-
-Changes in v2:
-- Fix alphabetical order in patch1 and patch3
-- Sort device tree node by bus-address
-- Drop rk3588_vpu_variant fron v1 because that is exactly the same as rk3568_vpu_variant
-- Link to v1: https://lore.kernel.org/all/20231227173911.3295410-1-liujianfeng1994@gmail.com
-
-[1]https://lore.kernel.org/all/20240118080602.9028-1-liujianfeng1994@gmail.com/
-
-Jianfeng Liu (2):
-  dt-bindings: media: rockchip-vpu: Add rk3588 vpu121 compatible string
-  arm64: dts: rockchip: Add Hantro G1 VPU support for RK3588
-
- .../bindings/media/rockchip-vpu.yaml          |  3 +++
- arch/arm64/boot/dts/rockchip/rk3588s.dtsi     | 21 +++++++++++++++++++
- 2 files changed, 24 insertions(+)
-
-
-base-commit: b0a2c79c6f3590b74742cbbc76687014d47972d8
+   reg:
+     maxItems: 1
 --
 2.34.1
 
