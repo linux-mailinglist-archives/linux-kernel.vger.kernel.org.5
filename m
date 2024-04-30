@@ -1,76 +1,70 @@
-Return-Path: <linux-kernel+bounces-164246-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-164232-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D82708B7B59
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 17:22:04 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id EB94C8B7AFD
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 17:07:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8DD1F1F22827
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 15:22:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A738F283E2C
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 15:07:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11909143737;
-	Tue, 30 Apr 2024 15:21:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C5FBD77118;
+	Tue, 30 Apr 2024 15:07:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=bursov.com header.i=vitaly@bursov.com header.b="I8Dq12qz"
-Received: from sender-of-o59.zoho.eu (sender11.zoho.eu [31.186.226.224])
+	dkim=pass (2048-bit key) header.d=mess.org header.i=@mess.org header.b="bvNQyhix";
+	dkim=pass (2048-bit key) header.d=mess.org header.i=@mess.org header.b="TVaBAxDq"
+Received: from gofer.mess.org (gofer.mess.org [88.97.38.141])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78A7914375B
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 15:21:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=31.186.226.224
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714490499; cv=pass; b=HM0Hfsjya5eyWyH51qJJSfxlWLcQjUru8f3giOAmSoM32ixv3bQzlFhYWZnwoK+3UH1/28Ym+hEjvq1kV7kKj89XL6er3cXe3kVdvMbE46N4KwsOlSXQPDe/d3kmt1Sn1yjTBJ3LrXOT58gdz8/h9FC5FRE1KJ2ClTDJBIPEU/8=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714490499; c=relaxed/simple;
-	bh=UNytWRjy0n4ufLE4F4bgxm6zk7gEYUpI72DLf8Lh5nI=;
-	h=From:To:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=Am04SKTtsITdR1IDyURVcW2GJ+8tLZ6Pd+q5RYyS5/zd7NWgYiFvMdKKR/WkOb8OEPPqb4/oo+S1jCvhjAF2N552Sk1+8nQ9r98ONpucCgBotCvhP+JMT/gLYKcUBcXJyOPoGrGiL0iUxEF6Qf/OiItEf2L7Ukg7AT5oLjFS8DA=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bursov.com; spf=pass smtp.mailfrom=bursov.com; dkim=pass (1024-bit key) header.d=bursov.com header.i=vitaly@bursov.com header.b=I8Dq12qz; arc=pass smtp.client-ip=31.186.226.224
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bursov.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bursov.com
-Delivered-To: vitaly@bursov.com
-ARC-Seal: i=1; a=rsa-sha256; t=1714489544; cv=none; 
-	d=zohomail.eu; s=zohoarc; 
-	b=GAR+MO0G1SSg6TNipsrxYMopQvHPfaXiH8qxyZXcu+MM2gBFJfpVXsEBOv7RYMHXK32yiIEFqoZF8lj6xrexHD2DI07xjz/kv6oRoqfanTffGDlIcXZKNl2PiCjFCM7peNUmS7z5eYxjrgziaAiAazJ0hF4WD1BVMO4fCQRQZdc=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.eu; s=zohoarc; 
-	t=1714489544; h=Content-Transfer-Encoding:Date:Date:From:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:Subject:To:To:Message-Id:Reply-To:Cc; 
-	bh=ztyWG1tL5SLCHcSqhDRsGp0b5KZvYGYaxjeAuQmObZI=; 
-	b=D6mMnF4JWji1XCjxMh0wKFs4hPXLFJSfRoZOnxHohMrfHPLroWXjIkV8Ip2ffOchYczlv1asKdo6BNRQHp/nenoh0DE0D0jWK2ea7RN4N9ehRtx/RQ0hK3f9RZhKM1kM1YbeX05RktWXdFYyYb3jGMSHh829seWrMxF/E2Jg274=
-ARC-Authentication-Results: i=1; mx.zohomail.eu;
-	dkim=pass  header.i=bursov.com;
-	spf=pass  smtp.mailfrom=vitaly@bursov.com;
-	dmarc=pass header.from=<vitaly@bursov.com>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1714489544;
-	s=zoho; d=bursov.com; i=vitaly@bursov.com;
-	h=From:From:To:To:Subject:Subject:Date:Date:Message-Id:Message-Id:In-Reply-To:References:MIME-Version:Content-Transfer-Encoding:Reply-To:Cc;
-	bh=ztyWG1tL5SLCHcSqhDRsGp0b5KZvYGYaxjeAuQmObZI=;
-	b=I8Dq12qzCvFFqZb5/acgvMW1eFFDEsAd1iMdYmymV+AJnHDSF2lQE7jprjud+EDb
-	sE4ezQ/msEkv4GoTZBkiro/1Y2LmS3qtuOxefgn6gjeWuH5HyGttspbUDrIgl33dzaZ
-	MzJPe1O/3JzjK7NFlK7FuU6EfB3Wy29PvKdSUw0c=
-Received: by mx.zoho.eu with SMTPS id 1714489542370188.36636328634086;
-	Tue, 30 Apr 2024 17:05:42 +0200 (CEST)
-From: Vitalii Bursov <vitaly@bursov.com>
-To: Ingo Molnar <mingo@redhat.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Juri Lelli <juri.lelli@redhat.com>,
-	Vincent Guittot <vincent.guittot@linaro.org>,
-	Dietmar Eggemann <dietmar.eggemann@arm.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Ben Segall <bsegall@google.com>,
-	Mel Gorman <mgorman@suse.de>,
-	Daniel Bristot de Oliveira <bristot@redhat.com>,
-	Valentin Schneider <vschneid@redhat.com>,
-	linux-kernel@vger.kernel.org,
-	Vitalii Bursov <vitaly@bursov.com>,
-	Shrikanth Hegde <sshegde@linux.ibm.com>
-Subject: [PATCH v4 3/3] docs: cgroup-v1: clarify that domain levels are system-specific
-Date: Tue, 30 Apr 2024 18:05:25 +0300
-Message-Id: <42b177a2e897cdf880caf9c2025f5b609e820334.1714488502.git.vitaly@bursov.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <cover.1714488502.git.vitaly@bursov.com>
-References: <cover.1714488502.git.vitaly@bursov.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E507152799;
+	Tue, 30 Apr 2024 15:07:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=88.97.38.141
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1714489644; cv=none; b=Xl/Qv1ofJV2IzCN/JrjRvSyu58tgfiHrjsaXg4lGYfYD1XuPUtax/q9RERRegXSaTNWxVzpOSsJa/BnrgM5K/DnwIWmkUivYZyJZi+J2laS8xT4Xm6Rqn0bw4MOl57NnBg+hKgpQdb7BKx5Y6ItJ84vzkMGic4DZEn+JsZUbqIk=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1714489644; c=relaxed/simple;
+	bh=P1Yb9UHx7qGFrtffHgDWXFAhgYxkjfHOuo9CX+hCpI4=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=IRkG2yisznq3Gz2NGaEfuAs8HoYfiB9wLdh5b4DuG9slMg4jN4BwCd6o7tF5tKgen0jXt5w8Kw7JqJV8LEcso7Sj/hBTahIy4duniwIOrM7UEkwtsOkKzcxADjwP68KckN8Ok36t4Fw1kKQbm3Nz5eUN8AgwqfPPWohXcWfJey8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mess.org; spf=pass smtp.mailfrom=mess.org; dkim=pass (2048-bit key) header.d=mess.org header.i=@mess.org header.b=bvNQyhix; dkim=pass (2048-bit key) header.d=mess.org header.i=@mess.org header.b=TVaBAxDq; arc=none smtp.client-ip=88.97.38.141
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mess.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mess.org
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mess.org; s=2020;
+	t=1714489595; bh=P1Yb9UHx7qGFrtffHgDWXFAhgYxkjfHOuo9CX+hCpI4=;
+	h=From:To:Cc:Subject:Date:From;
+	b=bvNQyhixOJxDveSCSESDcnJXpADudXP+EY3U3UiW+drSxGzfBtS4WR8+qzvQalPbN
+	 kRcoFsm/hGV0p4geuzGMHgmIM+Dhf/rTLHPqKzcS1TDbsdt1h+H8hjmjSlzBWAggAY
+	 9sj/A+F7p/jnix7XILY9Lu9wJnCPAOYUYJ9AJMAjLOlxrpPBjY06enfBReQ8DmFAjH
+	 lUvSrEfqtdE27cv70BtHWbaXZ04eAif1evWmRyhQpv792NcyTnq51a02BTxSNlVfT+
+	 NaWTy2zqSgWK2ZcYOnh2wkSVw6GBiiv6eFaFl2MnZBgKVWT4KCw4l5eMQAnozJbUE2
+	 A/cN7Meii3GFw==
+Received: by gofer.mess.org (Postfix, from userid 501)
+	id CB49C1000C2; Tue, 30 Apr 2024 16:06:35 +0100 (BST)
+X-Spam-Level: 
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mess.org; s=2020;
+	t=1714489594; bh=P1Yb9UHx7qGFrtffHgDWXFAhgYxkjfHOuo9CX+hCpI4=;
+	h=From:To:Cc:Subject:Date:From;
+	b=TVaBAxDqrqd1HfdhBISAYP1yj0KARVCrzP8aUHr/A1f5nFwVMpDnlzY7d3G/d7Atw
+	 i0Gy0pCi18M5VkxttJbCh7Dj8BMSLv2ulBFLzjZmDhreTRjAQDqkVQt0UWitc2pB+A
+	 S3z9leuhqjZ3DysXu7DqEyjj8epZJHsDbKrUfvYjEZSdyjbWZORljECXWZ6D6X/Yu+
+	 qMhDlhBw7AiVF/cLd0MHARO5PD/mQstzfYBS4Bcb/zUOR8+rXtpipJ05J8GX2fy6Fb
+	 N8ZC13RBU/o087Y7S/L4Brk+gOXFBNhf/tmV7oTFN6f4uSgRhzz/XZ0o5VYvGs51Jy
+	 PKVs4COS55+wQ==
+Received: from localhost.localdomain (bigcore.local [IPv6:2a02:8011:d000:212:bc3c:1b4a:a6fa:362f])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by gofer.mess.org (Postfix) with ESMTPSA id A3A1D10005B;
+	Tue, 30 Apr 2024 16:06:34 +0100 (BST)
+From: Sean Young <sean@mess.org>
+To: Mauro Carvalho Chehab <mchehab@kernel.org>
+Cc: linux-media@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v2] media: mceusb: No need for vendor/product ID in name
+Date: Tue, 30 Apr 2024 16:06:22 +0100
+Message-ID: <20240430150623.2910-1-sean@mess.org>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -78,44 +72,47 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-ZohoMailClient: External
 
-Add a clarification that domain levels are system-specific
-and where to check for system details.
+This is available in other places and doesn't belong in the name
+of the rc device.
 
-Signed-off-by: Vitalii Bursov <vitaly@bursov.com>
-Acked-by: Vincent Guittot <vincent.guittot@linaro.org>
-Reviewed-by: Valentin Schneider <vschneid@redhat.com>
+Signed-off-by: Sean Young <sean@mess.org>
 ---
- Documentation/admin-guide/cgroup-v1/cpusets.rst | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ drivers/media/rc/mceusb.c | 11 ++---------
+ 1 file changed, 2 insertions(+), 9 deletions(-)
 
-diff --git a/Documentation/admin-guide/cgroup-v1/cpusets.rst b/Documentation/admin-guide/cgroup-v1/cpusets.rst
-index 7d3415eea05d..f401af5e2f09 100644
---- a/Documentation/admin-guide/cgroup-v1/cpusets.rst
-+++ b/Documentation/admin-guide/cgroup-v1/cpusets.rst
-@@ -568,7 +568,7 @@ on the next tick.  For some applications in special situation, waiting
+diff --git a/drivers/media/rc/mceusb.c b/drivers/media/rc/mceusb.c
+index c76ba24c1f55..615f48898300 100644
+--- a/drivers/media/rc/mceusb.c
++++ b/drivers/media/rc/mceusb.c
+@@ -494,7 +494,6 @@ struct mceusb_dev {
+ 	u32 carrier;
+ 	unsigned char tx_mask;
  
- The 'cpuset.sched_relax_domain_level' file allows you to request changing
- this searching range as you like.  This file takes int value which
--indicates size of searching range in levels ideally as follows,
-+indicates size of searching range in levels approximately as follows,
- otherwise initial value -1 that indicates the cpuset has no request.
+-	char name[128];
+ 	char phys[64];
+ 	enum mceusb_model_type model;
  
- ====== ===========================================================
-@@ -581,6 +581,11 @@ otherwise initial value -1 that indicates the cpuset has no request.
-    5   search system wide [on NUMA system]
- ====== ===========================================================
+@@ -1591,16 +1590,10 @@ static struct rc_dev *mceusb_init_rc_dev(struct mceusb_dev *ir)
+ 		goto out;
+ 	}
  
-+Not all levels can be present and values can change depending on the
-+system architecture and kernel configuration. Check
-+/sys/kernel/debug/sched/domains/cpu*/domain*/ for system-specific
-+details.
-+
- The system default is architecture dependent.  The system default
- can be changed using the relax_domain_level= boot parameter.
+-	snprintf(ir->name, sizeof(ir->name), "%s (%04x:%04x)",
+-		 mceusb_model[ir->model].name ?
+-			mceusb_model[ir->model].name :
+-			"Media Center Ed. eHome Infrared Remote Transceiver",
+-		 le16_to_cpu(ir->usbdev->descriptor.idVendor),
+-		 le16_to_cpu(ir->usbdev->descriptor.idProduct));
+-
+ 	usb_make_path(ir->usbdev, ir->phys, sizeof(ir->phys));
  
+-	rc->device_name = ir->name;
++	rc->device_name = mceusb_model[ir->model].name ? :
++		"Media Center Ed. eHome Infrared Remote Transceiver";
+ 	rc->input_phys = ir->phys;
+ 	usb_to_input_id(ir->usbdev, &rc->input_id);
+ 	rc->dev.parent = dev;
 -- 
-2.20.1
+2.44.0
 
 
