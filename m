@@ -1,103 +1,121 @@
-Return-Path: <linux-kernel+bounces-163519-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-163521-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1ED5A8B6C78
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 10:06:02 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7DCE18B6C7F
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 10:07:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4FC9BB212FC
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 08:05:58 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AEECF1C222FA
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 08:07:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B12350287;
-	Tue, 30 Apr 2024 08:05:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HDYceixi"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC0C64596D;
+	Tue, 30 Apr 2024 08:07:17 +0000 (UTC)
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE5B745025;
-	Tue, 30 Apr 2024 08:05:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5427251C21
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 08:07:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714464350; cv=none; b=b9AO1dqyh0M+kwRByHvxSSS5R1wNjHj1Xi5rtv3t+zhDm5maBaXxFmEVixBD/4ynCn2VIxkdYbLlVi4thuYrgciwK06xwheqXuu+bzKYdK+D5EGxnEF6iC/pKlVLr4mteclxBhGZBsokRLc1JlkpZ6cZXVy1VV9jidcLo9DnqqM=
+	t=1714464437; cv=none; b=D1SX/MM9G/wQS7aDfo9jOmkC9Khj//Z/VTk+Kl0bfQpdYz//C/My4RAATkq+cEMPf/YTcS4SLhmDUxoZgmHAOGbYS8qE5C0nV5UCbbg3D32wQZCQ6epTnuZ8fmbA1iNsuBODoZ10xz84+9BnyueL9W7FAgfVxD7hqGescRj7UKo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714464350; c=relaxed/simple;
-	bh=fZlcYqSpR1qIHI7+FV0GRGg/1UW0j86/RtjUAe6cOus=;
+	s=arc-20240116; t=1714464437; c=relaxed/simple;
+	bh=GoMxzXO5ebIMyjF2fiATnKrXyv8nC1H9D+ggXt8GkRg=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=u/TdzAAfc9YIH484VzKcXrROaf8FgO9ESJIFP4n9YKZXLQlCo3uvWYkpYG7dfwg5X8qo73cLu6GzRsW8fAKq0txCKo16JLbUDuhBTo28zHG/jWtbaDMmKHjMu/TFpqhi5VT9D8SMHdh5zt311+d47IeJBjhbixu8ibeap5QGxjk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HDYceixi; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 56A45C2BBFC;
-	Tue, 30 Apr 2024 08:05:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714464349;
-	bh=fZlcYqSpR1qIHI7+FV0GRGg/1UW0j86/RtjUAe6cOus=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=HDYceixiVNKl2rZlwhH+0mqIn8qgRF2jmeFy+1zJQ7sdotsRnp+s5JhFXshq2e5iA
-	 xbtPfzzywFyv5jMJVyexbxxKraVb+Q+wegepRKFMjVzNBYw/iNl1I8jzLTQek0XBMm
-	 OFbuhgHbu+2VMeM45hOAaz9E7QMHzSt3h4y3RnIoKXTkTQ6usC8KuR3vHFJ1YzyRZt
-	 LRPfmAmv7duacOC3FgSLe3lE2o7xjjlUxRK0moKsBfvWQ3gJ8XwXjOFtrnVii/PnKU
-	 Gy+Zdwi78MrBzdahIqXCM/B/jQpN50TQLTdURBdlnXJ5paJLUukxR8JnOvoOSv0sFb
-	 k32C9ZN/PXWKw==
-Date: Tue, 30 Apr 2024 10:05:42 +0200
-From: Niklas Cassel <cassel@kernel.org>
-To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc: Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-	Kishon Vijay Abraham I <kishon@kernel.org>,
-	Jingoo Han <jingoohan1@gmail.com>,
-	Thierry Reding <thierry.reding@gmail.com>,
-	Jonathan Hunter <jonathanh@nvidia.com>, linux-pci@vger.kernel.org,
-	linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-	mhi@lists.linux.dev, linux-tegra@vger.kernel.org,
-	Bjorn Helgaas <helgaas@kernel.org>
-Subject: Re: [PATCH v4 04/10] PCI: qcom-ep: Drop 'Link is enabled' from the
- debug message for BME event
-Message-ID: <ZjCmVuc_-oCDQXIX@ryzen.lan>
-References: <20240430-pci-epf-rework-v4-0-22832d0d456f@linaro.org>
- <20240430-pci-epf-rework-v4-4-22832d0d456f@linaro.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=ocrpMi8MGS4YVppMPftrrLT33p1pS2JlIZ5X+5qEz7qf48KIZ1OrXSuebSAP3stLEsxvcV+tSCcfwoX2HB/t1TgQJAd9fS3U8Cm9wHIadnmjsJS9ICqkJwVYkD+TAKn2GdBpVMzILoyHGZVehU/owBc/f2ITZLry7zi1EoPYLKQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1s1iVq-0003Ve-AI; Tue, 30 Apr 2024 10:06:54 +0200
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1s1iVp-00F85P-5q; Tue, 30 Apr 2024 10:06:53 +0200
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.96)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1s1iVp-00BzUv-0H;
+	Tue, 30 Apr 2024 10:06:53 +0200
+Date: Tue, 30 Apr 2024 10:06:52 +0200
+From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To: Jingbao Qiu <qiujingbao.dlmu@gmail.com>
+Cc: robh@kernel.org, krzysztof.kozlowski+dt@linaro.org, 
+	conor+dt@kernel.org, inochiama@outlook.com, paul.walmsley@sifive.com, 
+	palmer@dabbelt.com, aou@eecs.berkeley.edu, linux-pwm@vger.kernel.org, 
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org
+Subject: Re: [PATCH v6 2/2] pwm: sophgo: add pwm support for Sophgo CV1800 SoC
+Message-ID: <vxolfkvbquiy2jllncjy3vbfl2jr26wkdvpxv65uz4dneln5jb@ozg6ejzgmj6f>
+References: <20240406063413.3334639-1-qiujingbao.dlmu@gmail.com>
+ <20240406063413.3334639-3-qiujingbao.dlmu@gmail.com>
+ <njsvev4dxjln2guw3lr5zwvytzvvmj7qcuduo2v56dhvuxujs4@eqm4cmh6ddva>
+ <CAJRtX8So3PifNFfsnq1BmP3+8kevhM6Fk6moMp=wFX4o8q89SQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="l6zw653cypgpdhtk"
 Content-Disposition: inline
-In-Reply-To: <20240430-pci-epf-rework-v4-4-22832d0d456f@linaro.org>
+In-Reply-To: <CAJRtX8So3PifNFfsnq1BmP3+8kevhM6Fk6moMp=wFX4o8q89SQ@mail.gmail.com>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
-On Tue, Apr 30, 2024 at 11:43:45AM +0530, Manivannan Sadhasivam wrote:
-> Bus Master Enable (BME) event that is generated by the Qcom PCIe EP
-> controller due to host setting the Bus Master Enable bit in the Command
-> register doesn't have anything to do with the PCIe link.
-> 
-> Hence, drop the bogus statement.
-> 
-> Suggested-by: Bjorn Helgaas <helgaas@kernel.org>
-> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> ---
->  drivers/pci/controller/dwc/pcie-qcom-ep.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/pci/controller/dwc/pcie-qcom-ep.c b/drivers/pci/controller/dwc/pcie-qcom-ep.c
-> index f6e925d434f6..dcac177b55fb 100644
-> --- a/drivers/pci/controller/dwc/pcie-qcom-ep.c
-> +++ b/drivers/pci/controller/dwc/pcie-qcom-ep.c
-> @@ -636,7 +636,7 @@ static irqreturn_t qcom_pcie_ep_global_irq_thread(int irq, void *data)
->  		pcie_ep->link_status = QCOM_PCIE_EP_LINK_DOWN;
->  		pci_epc_linkdown(pci->ep.epc);
->  	} else if (FIELD_GET(PARF_INT_ALL_BME, status)) {
-> -		dev_dbg(dev, "Received Bus Master Enable event. Link is enabled!\n");
-> +		dev_dbg(dev, "Received Bus Master Enable event\n");
->  		pcie_ep->link_status = QCOM_PCIE_EP_LINK_ENABLED;
->  		qcom_pcie_ep_icc_update(pcie_ep);
->  		pci_epc_bus_master_enable_notify(pci->ep.epc);
-> 
-> -- 
-> 2.25.1
-> 
 
-Reviewed-by: Niklas Cassel <cassel@kernel.org>
+--l6zw653cypgpdhtk
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+Hello Jingbao,
+
+On Tue, Apr 30, 2024 at 12:36:56PM +0800, Jingbao Qiu wrote:
+> On Mon, Apr 29, 2024 at 10:54=E2=80=AFPM Uwe Kleine-K=C3=B6nig
+> <u.kleine-koenig@pengutronix.de> wrote:
+> > On Sat, Apr 06, 2024 at 02:34:13PM +0800, Jingbao Qiu wrote:
+> > > + * Limitations:
+> > > + * - It output low when PWM channel disabled.
+> >
+> > Just to be sure: the output is low independant of the POLARITY register?
+>=20
+> When the value of the POLARITY register is 1, the PWM outputs a high leve=
+l.
+> When the value of the POLARITY register is 0, the PWM output is low.
+> Should I make this point here?
+
+So that's: The hardware emits the inactive level when disabled.
+
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=C3=B6nig         =
+   |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--l6zw653cypgpdhtk
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmYwppwACgkQj4D7WH0S
+/k407wf/XEqAv+lfE2x1df8bBAO98sRXO0K23AiMkSaqemGqt0dnc3Plae17H1Uz
+1U6g2M6M7JvkKCCdXcfkuekzcd9DF9f8OoQrQbyA0wkedI+rbxxci8JJIJFUvNjv
+MoSt86M2sI0hIxAB4jDy2GoTVcrheo9P9pPI6QbLhVz20YFbs2uF0xP1/oVETwMN
+DKghx1EVZOe4Xx32dXr35Cp1QuPpxFhvqvEnEO84bcU4Dk9jZmiHvf4hnl1yB/7O
+4ICrIDwj9xlLd4CWGYgSAqKU2J6YhAc9PXRHKxEtJqixKiRTV5HnqihGbTGKHNFp
+YbzbadVrS3rgPT3AU/gbpZDniis32Q==
+=B9+q
+-----END PGP SIGNATURE-----
+
+--l6zw653cypgpdhtk--
 
