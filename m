@@ -1,364 +1,276 @@
-Return-Path: <linux-kernel+bounces-163677-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-163679-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E478C8B6E3E
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 11:27:11 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id AB1108B6E42
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 11:27:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9BBA32841E8
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 09:27:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6178C283E5C
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 09:27:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BCC7B199E9B;
-	Tue, 30 Apr 2024 09:22:04 +0000 (UTC)
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B4AB129A72;
-	Tue, 30 Apr 2024 09:22:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=114.242.206.163
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714468924; cv=none; b=uZwQfIo2RbNLQW8Vp4Z9gkLopXRo1gxEMDpMdG3gpaCk5DYXcS5MZrUgruo/1GJkMES8mKwb3TewFWSuCWYsSk/XFxrNiXO5vnuk6vhf6BDHpDQA1j/7iqShn9MZ7jp2hbvt6RPCdKlUvCSpvmsr2YYDZro5UmdcuS1CADLzLE4=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714468924; c=relaxed/simple;
-	bh=iYhXku7HTLMjaeeyU6kofVpf2Jfk/V1AqLTcPtAZyd4=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=nHc2mwPHxYI1BmtHVKAirvEclGuUP/IG0haCxjTEoKz4FQg7PUmtYTANpPILl9O1IuThvN6xCrcnaqVJBAxC4zBo8a2Rs9bo7EJw43VzCFEg538IT9LB6kxb+NhacKTXB9g9ZwUrj71A3EbUjf7AWuDAoQT7nG4mF0NuRBXKRlQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn; spf=pass smtp.mailfrom=loongson.cn; arc=none smtp.client-ip=114.242.206.163
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=loongson.cn
-Received: from loongson.cn (unknown [10.20.42.173])
-	by gateway (Coremail) with SMTP id _____8BxV_A1uDBm_1oFAA--.18038S3;
-	Tue, 30 Apr 2024 17:21:57 +0800 (CST)
-Received: from [10.20.42.173] (unknown [10.20.42.173])
-	by localhost.localdomain (Coremail) with SMTP id AQAAf8DxsFUxuDBmcgILAA--.9409S3;
-	Tue, 30 Apr 2024 17:21:55 +0800 (CST)
-Subject: Re: [PATCH v2 2/2] LoongArch: Add steal time support in guest side
-To: Huacai Chen <chenhuacai@kernel.org>
-Cc: Tianrui Zhao <zhaotianrui@loongson.cn>, Juergen Gross <jgross@suse.com>,
- kvm@vger.kernel.org, loongarch@lists.linux.dev,
- linux-kernel@vger.kernel.org, x86@kernel.org, virtualization@lists.linux.dev
-References: <20240430014505.2102631-1-maobibo@loongson.cn>
- <20240430014505.2102631-3-maobibo@loongson.cn>
- <CAAhV-H4xN9rdBkSA4PJafr5MNqEiCbNHTgim_bj89YNaB4PFjw@mail.gmail.com>
-From: maobibo <maobibo@loongson.cn>
-Message-ID: <1e64a738-5197-8bd2-5977-9d95bdf61a2d@loongson.cn>
-Date: Tue, 30 Apr 2024 17:21:53 +0800
-User-Agent: Mozilla/5.0 (X11; Linux loongarch64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91E741A0AE3;
+	Tue, 30 Apr 2024 09:22:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="ZMgbyegc"
+Received: from NAM04-MW2-obe.outbound.protection.outlook.com (mail-mw2nam04on2051.outbound.protection.outlook.com [40.107.101.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A54701A0AE0;
+	Tue, 30 Apr 2024 09:22:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.101.51
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1714468953; cv=fail; b=nliXvBu/ZKNbHFNns2bp7ql6N5OPZ3iySd/hX9EmNes9y/E8IVrs1eaCp9vPn5arYzO0c6kAmRoV6iDCo4eYyw5B5a7wtqWjO9A1uyn1O8WGy+P369v8Jv0MOqLPM7h6gd2ixcV3LXDsKwH0zqiha32kH5y5oELs4KlgCzQKyV0=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1714468953; c=relaxed/simple;
+	bh=SIYEEElKuNiNg6p8LKxSLm/beuI9GIhsW32SbcLMK/k=;
+	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=drLspRc1tbjKztqNfpWuQ5vTyu56XkeAvtg88E+7vRmMWU69ltDglQL8eXGz7TUtD4RM6WlqXf1CSDHS9+yL6QbtMUx7bkGD1aZsebGFV1VIdGO5HwbkovVuFW4dBAU9AI32Ws3TLuwR8VJHg5YMgeTXnGHp+d6bLxgZavGAYCw=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=ZMgbyegc; arc=fail smtp.client-ip=40.107.101.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=XE341uuqXIOl+CGx91aXyRAolPCoCGIZi1p87vAFQnvEyTjYM3gXeMBEPewl9+HHp53BW8asytjAWiemNoGzQ+gRpD0/F7MMOv15npnuFNomj8331ryjdad9WKo/lNP0vJci1Rxcw6TmnLgqPO0GTNncGba6GhyRKJJ4MgEDFBj0QlHbPugdIl6chx+kxKXS8bWOLlrNbmNGMU9eZ7O1uvj0re9IzO7pOj0S6ODSFF5qlU1JR1Bg6q9/t1/yTZVN5EuA92KOJbWxrTV8lNY2ce+hMxGouSLmBnflfVJb69Qku1fLCYQN6Hdv48ItVyp8Lrj2PLc7e+SQpTb+uyFWDw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=wdhZDafrpMV2qpF3fVdIuPSmWqxpJHX2I2fP4tJiH9k=;
+ b=Mg2WL+5C4JIE7qh6PQOBN4P/L/FRTa06puca/ltp0SEm1cyCpJjtzCosbITImJuksuo0pJkLcVMr9EInN4DF/VeTYFWFIMy5ESio8pOOAnNomSdNrSrgShmGuDqNUSKmnF996CAp2Y59fp6isYi300A3QYCjSkVVYj5in+ww8+9R6XDHwc3YsXxWPA8jPCNKbgM4klK4pVxF3BmNNbmlyOXOG616w2TDnn44hIVPBfb+TZEGQ9YWajn3XkFtERtoXTQSpTehyaVXuMpYmtGuSVZu0vqHK/01Cz5j3+FrlO6UdGqx76utx9FI98pPaaE34GvE4QR4HIxSvWNZuffyXw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=wdhZDafrpMV2qpF3fVdIuPSmWqxpJHX2I2fP4tJiH9k=;
+ b=ZMgbyegcL9q5I6hz3sl3QNU5sgtGvyz0MlkAneS5B+UxjBFMYUrTVCu+QvipUMgLgs9JSkEXd1coBDM6H4386iFcrpuI3lxZVkKCyZO3YMzM7/ZeMwDNs4dw39omEPSLyH84dysFT89PrWhh7s7XraLolXwpygcmQISE5BMtZ4c=
+Received: from CY5PR17CA0030.namprd17.prod.outlook.com (2603:10b6:930:17::19)
+ by DM4PR12MB7624.namprd12.prod.outlook.com (2603:10b6:8:107::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7519.35; Tue, 30 Apr
+ 2024 09:22:28 +0000
+Received: from CY4PEPF0000EDD6.namprd03.prod.outlook.com
+ (2603:10b6:930:17:cafe::32) by CY5PR17CA0030.outlook.office365.com
+ (2603:10b6:930:17::19) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7519.36 via Frontend
+ Transport; Tue, 30 Apr 2024 09:22:28 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ CY4PEPF0000EDD6.mail.protection.outlook.com (10.167.241.210) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.7544.18 via Frontend Transport; Tue, 30 Apr 2024 09:22:28 +0000
+Received: from rric.localdomain (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Tue, 30 Apr
+ 2024 04:22:22 -0500
+From: Robert Richter <rrichter@amd.com>
+To: "Rafael J. Wysocki" <rafael@kernel.org>, Thomas Gleixner
+	<tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov
+	<bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, <x86@kernel.org>,
+	Andy Lutomirski <luto@kernel.org>, Peter Zijlstra <peterz@infradead.org>,
+	Alison Schofield <alison.schofield@intel.com>, Dan Williams
+	<dan.j.williams@intel.com>
+CC: <linux-acpi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<linux-cxl@vger.kernel.org>, Robert Richter <rrichter@amd.com>, Derick Marks
+	<derick.w.marks@intel.com>, "H. Peter Anvin" <hpa@zytor.com>, Len Brown
+	<lenb@kernel.org>
+Subject: [PATCH v6 1/7] x86/numa: Fix SRAT lookup of CFMWS ranges with numa_fill_memblks()
+Date: Tue, 30 Apr 2024 11:21:54 +0200
+Message-ID: <20240430092200.2335887-2-rrichter@amd.com>
+X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20240430092200.2335887-1-rrichter@amd.com>
+References: <20240430092200.2335887-1-rrichter@amd.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <CAAhV-H4xN9rdBkSA4PJafr5MNqEiCbNHTgim_bj89YNaB4PFjw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:AQAAf8DxsFUxuDBmcgILAA--.9409S3
-X-CM-SenderInfo: xpdruxter6z05rqj20fqof0/
-X-Coremail-Antispam: 1Uk129KBj93XoW3Wr4DAw4kKw48Ww45Zr15ZFc_yoW3Kr18pF
-	ZrCFs3KF48GF97ArsIqrWkWF1Yqrs7Gr12vFy2ka4fAFsFvr1xAr18WryY9Fyku397GF10
-	vFyrJrnI9a1Dt3gCm3ZEXasCq-sJn29KB7ZKAUJUUUU5529EdanIXcx71UUUUU7KY7ZEXa
-	sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
-	0xBIdaVrnRJUUUvIb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
-	IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
-	e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_JFI_Gr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
-	0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AK
-	xVW8Jr0_Cr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12xvs2x26I8E6xACxx
-	1l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1Y6r17McIj6I8E87Iv
-	67AKxVW8JVWxJwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lc7I2V7IY0VAS07
-	AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02
-	F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GF
-	ylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7Cj
-	xVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r
-	1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07jY
-	SoJUUUUU=
+Content-Type: text/plain
+X-ClientProxiedBy: SATLEXMB04.amd.com (10.181.40.145) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CY4PEPF0000EDD6:EE_|DM4PR12MB7624:EE_
+X-MS-Office365-Filtering-Correlation-Id: b170ef48-ec2a-4b45-2dea-08dc68f70e0f
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230031|7416005|376005|1800799015|82310400014|36860700004|921011;
+X-Microsoft-Antispam-Message-Info:
+	=?us-ascii?Q?o6txoVJG4P3FGDTLxo9WwzMy63YGCGL6TfQoI8mynxNG73+n60dw2q1Uq8la?=
+ =?us-ascii?Q?kCYcIwi8xErVXQqE6YdFrlw3Mb12oXzvi/bAGHsWeyjqk7kcdJd1LAXi7bas?=
+ =?us-ascii?Q?rMzSmaRSqJM9V7r0nZ0Nd98KDk11qBXhdkK2ISGN6l0c3G/jQRAlWCoDv/8F?=
+ =?us-ascii?Q?oU9JNcVySQiercFTFCitICe3+v8bjcbkT2UJLokHI7jL63eVVKTunlwBE1q3?=
+ =?us-ascii?Q?mJAXOLt0zaLD/vGNhaN7tlJlGEzfhIqJ1HNF1G8GWLkEc+zdiQBtv2KbiBEc?=
+ =?us-ascii?Q?ouLaPyMN6FbSmTn+KYgFRK0c0l5ALlQtoICOeHScwB74GUAqbCTZ1Efu7s01?=
+ =?us-ascii?Q?cvOzXyMGz1XHFw6K1AKOQN7yR54aHTvxmMuV5qqOJNp8cdAJ8LVdXCVfkE2y?=
+ =?us-ascii?Q?I4TtcKttYSmVRQEQZZReojBvDtjGlScrE5WnM/JsnnMMnJVUs8D9steHfGB/?=
+ =?us-ascii?Q?9m1wm9UPZUa6ZnQ4e9QlIzGU8gmSPNe+1Rt3GL9M8bSlK/q7YoZeP0s5tSnA?=
+ =?us-ascii?Q?6ZBFSzCyYtVwePiY/KM82OLjWA2PcmCIe8TKBWdSk7tF2P/fIPZaS1XhxERR?=
+ =?us-ascii?Q?SEvm3tvYi2ftbE/9m6WY9P8mGhxQjKUaZQM0QxZ8EOcx6cCuwdusq/Sd4ak0?=
+ =?us-ascii?Q?ZQiIa9pGZzg/fB3z9J6tWxAwXFmlIgMErPLHqPy+9Cj76DYJoAhHqVasJUrU?=
+ =?us-ascii?Q?GmQ/EKziHyoJKA7qymVmsYveiLQYOqQH+CtqpKbxePBvk4pUwniuqq3ggKxL?=
+ =?us-ascii?Q?ZqxyK3/FLnwRpSCOcJ4Ahwee11HE7Ii+2FTXlICU41ZDd4Ki1MaoibBgWbFY?=
+ =?us-ascii?Q?sObaA6HsLmVIqxDxRnTDwgM6i2czBNf67Pltb3+IB0dHmnaicl0V2H5wSfgG?=
+ =?us-ascii?Q?YYoc+aZQtDMzLtE/Cttl0sRHn4RUBcov4JUURsSCbw13x5rqYxnhtqxYotfo?=
+ =?us-ascii?Q?NAZyDWx+1E9m6tRTKJzK3DlTA95/bVv4CsH78WkOCckJQUeaar5gyj1OYl2v?=
+ =?us-ascii?Q?D58XJukEsLQj/9W7TXK36rwfH1Lk7sabecVuCt8kQU3CZupRgRadEQo1+qNd?=
+ =?us-ascii?Q?6g3HNn6WMc072/cae265B0AOc9weYAO+Seqh3qbQ+jdlpw0aNL+fSEQLixhA?=
+ =?us-ascii?Q?6yoGL8UVzT+wHIbJXSDaw9JJiQnHZtxY8rHjEgu9BxzO+d3vERlHPoRMcM4t?=
+ =?us-ascii?Q?l8B7CkZXEMfSpv50CQizTSiexR8Y4NJhk1kcdnHKd423C+gM2bSRrXmGs7/N?=
+ =?us-ascii?Q?zSPxCws5vIvAo+evFPwfoOqMsebu6P6nJF8VVHa7J/R8JjEx2vDJbulz+fhV?=
+ =?us-ascii?Q?BTj0xw5VgQgVIJgXIVnJMd27jTuHTStky1lqUK+2J3lcug=3D=3D?=
+X-Forefront-Antispam-Report:
+	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(7416005)(376005)(1800799015)(82310400014)(36860700004)(921011);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Apr 2024 09:22:28.0760
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: b170ef48-ec2a-4b45-2dea-08dc68f70e0f
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	CY4PEPF0000EDD6.namprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB7624
 
+For configurations that have the kconfig option NUMA_KEEP_MEMINFO
+disabled numa_fill_memblks() only returns with NUMA_NO_MEMBLK (-1).
+SRAT lookup fails then because an existing SRAT memory range cannot be
+found for a CFMWS address range. This causes the addition of a
+duplicate numa_memblk with a different node id and a subsequent page
+fault and kernel crash during boot.
 
+Fix this by making numa_fill_memblks() always available regardless of
+NUMA_KEEP_MEMINFO.
 
-On 2024/4/30 下午4:23, Huacai Chen wrote:
-> Hi, Bibo,
-> 
-> On Tue, Apr 30, 2024 at 9:45 AM Bibo Mao <maobibo@loongson.cn> wrote:
->>
->> Percpu struct kvm_steal_time is added here, its size is 64 bytes and
->> also defined as 64 bytes, so that the whole structure is in one physical
->> page.
->>
->> When vcpu is onlined, function pv_enable_steal_time() is called. This
->> function will pass guest physical address of struct kvm_steal_time and
->> tells hypervisor to enable steal time. When vcpu is offline, physical
->> address is set as 0 and tells hypervisor to disable steal time.
->>
->> Here is output of vmstat on guest when there is workload on both host
->> and guest. It includes steal time stat information.
->>
->> procs -----------memory---------- -----io---- -system-- ------cpu-----
->>   r  b   swpd   free  inact active   bi    bo   in   cs us sy id wa st
->> 15  1      0 7583616 184112  72208    20    0  162   52 31  6 43  0 20
->> 17  0      0 7583616 184704  72192    0     0 6318 6885  5 60  8  5 22
->> 16  0      0 7583616 185392  72144    0     0 1766 1081  0 49  0  1 50
->> 16  0      0 7583616 184816  72304    0     0 6300 6166  4 62 12  2 20
->> 18  0      0 7583632 184480  72240    0     0 2814 1754  2 58  4  1 35
->>
->> Signed-off-by: Bibo Mao <maobibo@loongson.cn>
->> ---
->>   arch/loongarch/Kconfig                |  11 +++
->>   arch/loongarch/include/asm/paravirt.h |   5 +
->>   arch/loongarch/kernel/paravirt.c      | 131 ++++++++++++++++++++++++++
->>   arch/loongarch/kernel/time.c          |   2 +
->>   4 files changed, 149 insertions(+)
->>
->> diff --git a/arch/loongarch/Kconfig b/arch/loongarch/Kconfig
->> index 0a1540a8853e..f3a03c33a052 100644
->> --- a/arch/loongarch/Kconfig
->> +++ b/arch/loongarch/Kconfig
->> @@ -592,6 +592,17 @@ config PARAVIRT
->>            over full virtualization.  However, when run without a hypervisor
->>            the kernel is theoretically slower and slightly larger.
->>
->> +config PARAVIRT_TIME_ACCOUNTING
->> +       bool "Paravirtual steal time accounting"
->> +       select PARAVIRT
->> +       help
->> +         Select this option to enable fine granularity task steal time
->> +         accounting. Time spent executing other tasks in parallel with
->> +         the current vCPU is discounted from the vCPU power. To account for
->> +         that, there can be a small performance impact.
->> +
->> +         If in doubt, say N here.
->> +
-> Can we use a hidden selection manner, which means:
-> 
-> config PARAVIRT_TIME_ACCOUNTING
->         def_bool PARAVIRT
-> 
-> Because I think we needn't give too many choices to users (and bring
-> much more effort to test).
-> 
-> PowerPC even hide all the PARAVIRT config options...
-> see arch/powerpc/platforms/pseries/Kconfig
+The fix also removes numa_fill_memblks() from sparsemem.h using
+__weak.
 
-I do not know neither :(  It is just used at beginning, maybe there is
-negative effect or potential issue, I just think that it can be selected 
-by user for easily debugging. After it is matured, hidden selection 
-manner can be used.
+From Dan:
 
-Regards
-Bibo Mao
-> 
-> Huacai
-> 
->>   config ARCH_SUPPORTS_KEXEC
->>          def_bool y
->>
->> diff --git a/arch/loongarch/include/asm/paravirt.h b/arch/loongarch/include/asm/paravirt.h
->> index 58f7b7b89f2c..fe27fb5e82b8 100644
->> --- a/arch/loongarch/include/asm/paravirt.h
->> +++ b/arch/loongarch/include/asm/paravirt.h
->> @@ -17,11 +17,16 @@ static inline u64 paravirt_steal_clock(int cpu)
->>   }
->>
->>   int pv_ipi_init(void);
->> +int __init pv_time_init(void);
->>   #else
->>   static inline int pv_ipi_init(void)
->>   {
->>          return 0;
->>   }
->>
->> +static inline int pv_time_init(void)
->> +{
->> +       return 0;
->> +}
->>   #endif // CONFIG_PARAVIRT
->>   #endif
->> diff --git a/arch/loongarch/kernel/paravirt.c b/arch/loongarch/kernel/paravirt.c
->> index 9044ed62045c..3f83afc7e2d2 100644
->> --- a/arch/loongarch/kernel/paravirt.c
->> +++ b/arch/loongarch/kernel/paravirt.c
->> @@ -5,10 +5,13 @@
->>   #include <linux/jump_label.h>
->>   #include <linux/kvm_para.h>
->>   #include <asm/paravirt.h>
->> +#include <linux/reboot.h>
->>   #include <linux/static_call.h>
->>
->>   struct static_key paravirt_steal_enabled;
->>   struct static_key paravirt_steal_rq_enabled;
->> +static DEFINE_PER_CPU(struct kvm_steal_time, steal_time) __aligned(64);
->> +static int has_steal_clock;
->>
->>   static u64 native_steal_clock(int cpu)
->>   {
->> @@ -17,6 +20,57 @@ static u64 native_steal_clock(int cpu)
->>
->>   DEFINE_STATIC_CALL(pv_steal_clock, native_steal_clock);
->>
->> +static bool steal_acc = true;
->> +static int __init parse_no_stealacc(char *arg)
->> +{
->> +       steal_acc = false;
->> +       return 0;
->> +}
->> +early_param("no-steal-acc", parse_no_stealacc);
->> +
->> +static u64 para_steal_clock(int cpu)
->> +{
->> +       u64 steal;
->> +       struct kvm_steal_time *src;
->> +       int version;
->> +
->> +       src = &per_cpu(steal_time, cpu);
->> +       do {
->> +
->> +               version = src->version;
->> +               /* Make sure that the version is read before the steal */
->> +               virt_rmb();
->> +               steal = src->steal;
->> +               /* Make sure that the steal is read before the next version */
->> +               virt_rmb();
->> +
->> +       } while ((version & 1) || (version != src->version));
->> +       return steal;
->> +}
->> +
->> +static int pv_enable_steal_time(void)
->> +{
->> +       int cpu = smp_processor_id();
->> +       struct kvm_steal_time *st;
->> +       unsigned long addr;
->> +
->> +       if (!has_steal_clock)
->> +               return -EPERM;
->> +
->> +       st = &per_cpu(steal_time, cpu);
->> +       addr = per_cpu_ptr_to_phys(st);
->> +
->> +       /* The whole structure kvm_steal_time should be one page */
->> +       if (PFN_DOWN(addr) != PFN_DOWN(addr + sizeof(*st))) {
->> +               pr_warn("Illegal PV steal time addr %lx\n", addr);
->> +               return -EFAULT;
->> +       }
->> +
->> +       addr |= KVM_STEAL_PHYS_VALID;
->> +       kvm_hypercall2(KVM_HCALL_FUNC_NOTIFY, KVM_FEATURE_STEAL_TIME, addr);
->> +       return 0;
->> +}
->> +
->>   #ifdef CONFIG_SMP
->>   static void pv_send_ipi_single(int cpu, unsigned int action)
->>   {
->> @@ -110,6 +164,32 @@ static void pv_init_ipi(void)
->>          if (r < 0)
->>                  panic("SWI0 IRQ request failed\n");
->>   }
->> +
->> +static void pv_disable_steal_time(void)
->> +{
->> +       if (has_steal_clock)
->> +               kvm_hypercall2(KVM_HCALL_FUNC_NOTIFY, KVM_FEATURE_STEAL_TIME, 0);
->> +}
->> +
->> +static int pv_time_cpu_online(unsigned int cpu)
->> +{
->> +       unsigned long flags;
->> +
->> +       local_irq_save(flags);
->> +       pv_enable_steal_time();
->> +       local_irq_restore(flags);
->> +       return 0;
->> +}
->> +
->> +static int pv_time_cpu_down_prepare(unsigned int cpu)
->> +{
->> +       unsigned long flags;
->> +
->> +       local_irq_save(flags);
->> +       pv_disable_steal_time();
->> +       local_irq_restore(flags);
->> +       return 0;
->> +}
->>   #endif
->>
->>   static bool kvm_para_available(void)
->> @@ -149,3 +229,54 @@ int __init pv_ipi_init(void)
->>
->>          return 1;
->>   }
->> +
->> +static void pv_cpu_reboot(void *unused)
->> +{
->> +       pv_disable_steal_time();
->> +}
->> +
->> +static int pv_reboot_notify(struct notifier_block *nb, unsigned long code,
->> +               void *unused)
->> +{
->> +       on_each_cpu(pv_cpu_reboot, NULL, 1);
->> +       return NOTIFY_DONE;
->> +}
->> +
->> +static struct notifier_block pv_reboot_nb = {
->> +       .notifier_call  = pv_reboot_notify,
->> +};
->> +
->> +int __init pv_time_init(void)
->> +{
->> +       int feature;
->> +
->> +       if (!cpu_has_hypervisor)
->> +               return 0;
->> +       if (!kvm_para_available())
->> +               return 0;
->> +
->> +       feature = read_cpucfg(CPUCFG_KVM_FEATURE);
->> +       if (!(feature & KVM_FEATURE_STEAL_TIME))
->> +               return 0;
->> +
->> +       has_steal_clock = 1;
->> +       if (pv_enable_steal_time()) {
->> +               has_steal_clock = 0;
->> +               return 0;
->> +       }
->> +
->> +       register_reboot_notifier(&pv_reboot_nb);
->> +       static_call_update(pv_steal_clock, para_steal_clock);
->> +       static_key_slow_inc(&paravirt_steal_enabled);
->> +       if (steal_acc)
->> +               static_key_slow_inc(&paravirt_steal_rq_enabled);
->> +
->> +#ifdef CONFIG_SMP
->> +       if (cpuhp_setup_state_nocalls(CPUHP_AP_ONLINE_DYN,
->> +                       "loongarch/pvi_time:online",
->> +                       pv_time_cpu_online, pv_time_cpu_down_prepare) < 0)
->> +               pr_err("Failed to install cpu hotplug callbacks\n");
->> +#endif
->> +       pr_info("Using stolen time PV\n");
->> +       return 0;
->> +}
->> diff --git a/arch/loongarch/kernel/time.c b/arch/loongarch/kernel/time.c
->> index fd5354f9be7c..46d7d40c87e3 100644
->> --- a/arch/loongarch/kernel/time.c
->> +++ b/arch/loongarch/kernel/time.c
->> @@ -15,6 +15,7 @@
->>
->>   #include <asm/cpu-features.h>
->>   #include <asm/loongarch.h>
->> +#include <asm/paravirt.h>
->>   #include <asm/time.h>
->>
->>   u64 cpu_clock_freq;
->> @@ -214,4 +215,5 @@ void __init time_init(void)
->>
->>          constant_clockevent_init();
->>          constant_clocksource_init();
->> +       pv_time_init();
->>   }
->> --
->> 2.39.3
->>
->>
+"""
+It just feels like numa_fill_memblks() has absolutely no business being
+defined in arch/x86/include/asm/sparsemem.h.
+
+The only use for numa_fill_memblks() is to arrange for NUMA nodes to be
+applied to memory ranges hot-onlined by the CXL driver.
+
+It belongs right next to numa_add_memblk(), and I suspect
+arch/x86/include/asm/sparsemem.h was only chosen to avoid figuring out
+what to do about the fact that linux/numa.h does not include asm/numa.h
+and that all implementations either provide numa_add_memblk() or select
+the generic implementation.
+
+So I would prefer that this do the proper fix and get
+numa_fill_memblks() completely out of the sparsemem.h path.
+
+Something like the following which boots for me.
+"""
+
+Note that the issue was initially introduced with [1]. But since
+phys_to_target_node() was originally used that returned the valid node
+0, an additional numa_memblk was not added. Though, the node id was
+wrong too, a message is seen then in the logs:
+
+ kernel/numa.c:  pr_info_once("Unknown target node for memory at 0x%llx, assuming node 0\n",
+
+[1] commit fd49f99c1809 ("ACPI: NUMA: Add a node and memblk for each
+    CFMWS not in SRAT")
+
+Suggested-by: Dan Williams <dan.j.williams@intel.com>
+Link: https://lore.kernel.org/all/66271b0072317_69102944c@dwillia2-xfh.jf.intel.com.notmuch/
+Fixes: 8f1004679987 ("ACPI/NUMA: Apply SRAT proximity domain to entire CFMWS window")
+Cc: Derick Marks <derick.w.marks@intel.com>
+Cc: Dan Williams <dan.j.williams@intel.com>
+Cc: Alison Schofield <alison.schofield@intel.com>
+Signed-off-by: Robert Richter <rrichter@amd.com>
+---
+Authorship can be changed to Dan's if he wants to but that needs his
+Signed-off-by.
+Signed-off-by: Robert Richter <rrichter@amd.com>
+---
+ arch/x86/include/asm/sparsemem.h | 2 --
+ arch/x86/mm/numa.c               | 4 ++--
+ drivers/acpi/numa/srat.c         | 5 +++++
+ include/linux/numa.h             | 7 +------
+ 4 files changed, 8 insertions(+), 10 deletions(-)
+
+diff --git a/arch/x86/include/asm/sparsemem.h b/arch/x86/include/asm/sparsemem.h
+index 1be13b2dfe8b..64df897c0ee3 100644
+--- a/arch/x86/include/asm/sparsemem.h
++++ b/arch/x86/include/asm/sparsemem.h
+@@ -37,8 +37,6 @@ extern int phys_to_target_node(phys_addr_t start);
+ #define phys_to_target_node phys_to_target_node
+ extern int memory_add_physaddr_to_nid(u64 start);
+ #define memory_add_physaddr_to_nid memory_add_physaddr_to_nid
+-extern int numa_fill_memblks(u64 start, u64 end);
+-#define numa_fill_memblks numa_fill_memblks
+ #endif
+ #endif /* __ASSEMBLY__ */
+ 
+diff --git a/arch/x86/mm/numa.c b/arch/x86/mm/numa.c
+index 65e9a6e391c0..ce84ba86e69e 100644
+--- a/arch/x86/mm/numa.c
++++ b/arch/x86/mm/numa.c
+@@ -929,6 +929,8 @@ int memory_add_physaddr_to_nid(u64 start)
+ }
+ EXPORT_SYMBOL_GPL(memory_add_physaddr_to_nid);
+ 
++#endif
++
+ static int __init cmp_memblk(const void *a, const void *b)
+ {
+ 	const struct numa_memblk *ma = *(const struct numa_memblk **)a;
+@@ -1001,5 +1003,3 @@ int __init numa_fill_memblks(u64 start, u64 end)
+ 	}
+ 	return 0;
+ }
+-
+-#endif
+diff --git a/drivers/acpi/numa/srat.c b/drivers/acpi/numa/srat.c
+index e45e64993c50..3b09fd39eeb4 100644
+--- a/drivers/acpi/numa/srat.c
++++ b/drivers/acpi/numa/srat.c
+@@ -208,6 +208,11 @@ int __init srat_disabled(void)
+ 	return acpi_numa < 0;
+ }
+ 
++__weak int __init numa_fill_memblks(u64 start, u64 end)
++{
++	return NUMA_NO_MEMBLK;
++}
++
+ #if defined(CONFIG_X86) || defined(CONFIG_ARM64) || defined(CONFIG_LOONGARCH)
+ /*
+  * Callback for SLIT parsing.  pxm_to_node() returns NUMA_NO_NODE for
+diff --git a/include/linux/numa.h b/include/linux/numa.h
+index 915033a75731..1d43371fafd2 100644
+--- a/include/linux/numa.h
++++ b/include/linux/numa.h
+@@ -36,12 +36,7 @@ int memory_add_physaddr_to_nid(u64 start);
+ int phys_to_target_node(u64 start);
+ #endif
+ 
+-#ifndef numa_fill_memblks
+-static inline int __init numa_fill_memblks(u64 start, u64 end)
+-{
+-	return NUMA_NO_MEMBLK;
+-}
+-#endif
++int numa_fill_memblks(u64 start, u64 end);
+ 
+ #else /* !CONFIG_NUMA */
+ static inline int numa_nearest_node(int node, unsigned int state)
+-- 
+2.39.2
 
 
