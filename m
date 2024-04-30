@@ -1,138 +1,158 @@
-Return-Path: <linux-kernel+bounces-163267-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-163268-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2CA2C8B67FF
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 04:35:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7FA0B8B6801
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 04:40:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2BD421C22326
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 02:35:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 958AF1C21FD6
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 02:40:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 60452D529;
-	Tue, 30 Apr 2024 02:35:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 03AD6DDA1;
+	Tue, 30 Apr 2024 02:40:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="YxnNJ87j"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ckAE7q91"
+Received: from mail-pg1-f177.google.com (mail-pg1-f177.google.com [209.85.215.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E6DF205E06;
-	Tue, 30 Apr 2024 02:35:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 009EA8BF0;
+	Tue, 30 Apr 2024 02:40:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714444507; cv=none; b=Tfjw0d1KJRrvG5xM5cnv+OaxjcmgnEmanLz+bpokuVPv9xeRJ1uoq37tlt3j0gt6AfMsRu5rI4H/fjViWMdOp25PXsCfCbaEYiAoRqzmPiGIhKbOH33xhXqM3kg41S8El+cfpuoCo4dQi4R3gFC1mI+z6vHKhKydPHPY2fNHZ60=
+	t=1714444836; cv=none; b=KPUm4dImDTgK1Nze7K8gF3C8CKxp/EUn0UWLyfduaNRPuD2vahNfdffRRovlkj6wIlVajd1rMurIWIsobIz3dCcVpByUcArdVMRYnv1A3/g91mffbio58TXOPKTzp33HJhlFZwkhWshGvVfzEDnMjj0P/8n6T7MToEJyhCSrsFg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714444507; c=relaxed/simple;
-	bh=mBW04Q10joVZ1ZQMyWnTefjJ26duJvYfVCzyImQtuCg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=kxQFfuo6djJ/UG5/d0NgwoDWF4/tRjVpHVSURnEpO309SyjwdmODGvUdBft/T1a2IYmucMnZ4gAgv0A8sQBSHA3OvYGyWyujkJtV7tq/2F7fEDj2hDkQvIm7ZyVM0saFYIOUepc9HEmeceknmyQTF4C+w+P/5u0YPwccGQf4moA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=YxnNJ87j; arc=none smtp.client-ip=198.175.65.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1714444506; x=1745980506;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=mBW04Q10joVZ1ZQMyWnTefjJ26duJvYfVCzyImQtuCg=;
-  b=YxnNJ87jCLffby67u8kJvWTzysyiu+QNz7BN0M6e0G8taFSixl9k3CUc
-   3EIf7idpfRMCFDQFb8bEAqxppAT1Lj7zOJmlxS6PtXIwedxUslgM7V4wC
-   qsZkLAnOaz3XxdQjw545z9oYLNH58RQsD8pFHnambdpm7AO/AVOeGDupz
-   Ma80h/aLjtRcijkanGjQ2E4oveFsPyZUeg0pPjio0ifgW4bLsyXmfRJ9o
-   yqYZcOBBrp8f7clOCUHH5B3G3EMIjMFW+P/ezGm1MxsOhR9vzcp/R3mYZ
-   qGvF/wMJ71PgSLWe2k1kfkxiZHvxZBjqH4VI2UKB3rBqikfstjkht9fhi
-   Q==;
-X-CSE-ConnectionGUID: dAEBi3WnSHqU39Gs1Zpdvg==
-X-CSE-MsgGUID: efvmGPrZT8Gpe8SKYZTkWg==
-X-IronPort-AV: E=McAfee;i="6600,9927,11059"; a="21279196"
-X-IronPort-AV: E=Sophos;i="6.07,241,1708416000"; 
-   d="scan'208";a="21279196"
-Received: from orviesa003.jf.intel.com ([10.64.159.143])
-  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Apr 2024 19:35:05 -0700
-X-CSE-ConnectionGUID: D0PpkDjPSAaWH09WHdchXg==
-X-CSE-MsgGUID: O77IF/3oRzKaWpgL7k7Ugg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,241,1708416000"; 
-   d="scan'208";a="31001051"
-Received: from lkp-server01.sh.intel.com (HELO e434dd42e5a1) ([10.239.97.150])
-  by orviesa003.jf.intel.com with ESMTP; 29 Apr 2024 19:35:01 -0700
-Received: from kbuild by e434dd42e5a1 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1s1dKd-0007dQ-1U;
-	Tue, 30 Apr 2024 02:34:59 +0000
-Date: Tue, 30 Apr 2024 10:33:58 +0800
-From: kernel test robot <lkp@intel.com>
-To: Florian Fainelli <florian.fainelli@broadcom.com>,
-	netdev@vger.kernel.org
-Cc: oe-kbuild-all@lists.linux.dev,
-	Florian Fainelli <florian.fainelli@broadcom.com>,
-	Andrew Lunn <andrew@lunn.ch>, Vladimir Oltean <olteanv@gmail.com>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Russell King <linux@armlinux.org.uk>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next v2 2/2] net: dsa: Remove adjust_link paths
-Message-ID: <202404301046.whP44a3U-lkp@intel.com>
-References: <20240429165405.2298962-3-florian.fainelli@broadcom.com>
+	s=arc-20240116; t=1714444836; c=relaxed/simple;
+	bh=V+BIjUiYOCcEwN69Co+s6BOhtm9QYzyaY1P9x36j10g=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=CZiRi9Y1xhhIqaRU+SMglb8Ks177R9N7+Abs6bpreUrQ9c7gRnrf/M6srDh1HZPfqx5N40ymGwX2y8F8NHOrLZHk7xsEcZT/pxpY2BVuAmgUolBt5zKTjqMTsXvxBV1X+33rLsimJRST/wJqb+aFagAMyfUncgVqWPXe7T4rmhQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ckAE7q91; arc=none smtp.client-ip=209.85.215.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f177.google.com with SMTP id 41be03b00d2f7-5ce07cf1e5dso3665319a12.2;
+        Mon, 29 Apr 2024 19:40:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1714444834; x=1715049634; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=sW8wTvn689x/3NF6m1acLAgYnG3AFU0fUmh1MuYjwa0=;
+        b=ckAE7q91IfzrN70d6LiK7org9WJGLKvjajs3CUkuJp2Cu9R9dvBzXfJpxQhkrBXEQg
+         +8vjvKaudu1CysIq9mQu9OfXzx7fCVnAi/ohh0YADMsn6d+OzPMhETN9kvGMM9hP6Kt6
+         dgoM4QgNrgA8+5sF4EdG21LvG4KWuhoIDVFAAXb7eTanybvVKkuHE8yRGfe6qZJbzOll
+         Oa6dPyUR0hWjiWum+BICU1b06BpBS73DY0xMOvu/fdC9iZNYdoI3BrLLg/kO0wwxMzzc
+         WrPvYoF29lMhsfbvfWTiJEwtaarXk6zvichhgiPjONis0N/+O54WlUNpuilS4qbjNdxp
+         eSJA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714444834; x=1715049634;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=sW8wTvn689x/3NF6m1acLAgYnG3AFU0fUmh1MuYjwa0=;
+        b=goEsG2gUBQz55j2vMBGsmmzgxLo9zaNtYG0qZbAEbQ86HZdh9/x4uKprbMGnzfY5g/
+         QlKjLTlu0DN0JzySUQt1EnHpmbeJmwaglUJoOfnkvLsl5ZJw1WmnzEOB87548FceV1le
+         66MEmZ+HZHtLAz4pd0TIGIL5iDuzZ3YtDvPz3mWmaV9lhUnaDnnL0JH5nfWzZ//hQRc5
+         xawCUft/uVgKsYuTRcKA81+3PyLpn+XiWN8MHBfWpE1qHbbboOqDiStWeOc7BcWleFiF
+         M2Cfb8U3vM7lYwnA3GwVZ3zh4930iEMEImptfz1tM6rXi3MsF0CHahZnHEXDIl5XOCf5
+         t2Bg==
+X-Forwarded-Encrypted: i=1; AJvYcCU2EYI6QTxUAL4L/9nvaI37JeSvP9KXQMrDZM3SZz5jqHkctPeCUprnTvikjyDuYtDt/+EaDWUEGd3iPLqAQ8Xq/6iOIhJh75pQnMlqNp+Ls7c53i2q7LLX976K1lq4diNHHGCpzo4h2Q==
+X-Gm-Message-State: AOJu0YychkdOQQYaEtKaNTsti6Ujwi8gukUrKEznQm/fXr7sYAMizbmJ
+	WvaFGc4OEN3rRBbBr8wApVt2cvMTv6rblyKUrjF5V+9IYmYsfNw8STv1SEiH8SA=
+X-Google-Smtp-Source: AGHT+IGQ/U4aomSuAFTFW8a1DiWeeFc6BiBlthAINUNDuett4xlAUBHOZ+zlA9EnnefZijQ2Xnwbnw==
+X-Received: by 2002:a05:6a20:2a1e:b0:1a7:94ea:a9b4 with SMTP id e30-20020a056a202a1e00b001a794eaa9b4mr10919673pzh.32.1714444833844;
+        Mon, 29 Apr 2024 19:40:33 -0700 (PDT)
+Received: from toyko-2.5 ([45.32.55.39])
+        by smtp.gmail.com with ESMTPSA id x12-20020a170902ec8c00b001eac94472f6sm8400379plg.93.2024.04.29.19.40.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Apr 2024 19:40:33 -0700 (PDT)
+From: Jianfeng Liu <liujianfeng1994@gmail.com>
+To: linux-media@vger.kernel.org,
+	linux-rockchip@lists.infradead.org,
+	devicetree@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Cc: ezequiel@vanguardiasur.com.ar,
+	p.zabel@pengutronix.de,
+	mchehab@kernel.org,
+	robh@kernel.org,
+	krzk+dt@kernel.org,
+	conor+dt@kernel.org,
+	heiko@sntech.de,
+	sebastian.reichel@collabora.com,
+	liujianfeng1994@gmail.com,
+	sfr@canb.auug.org.au,
+	sigmaris@gmail.com,
+	nicolas@ndufresne.ca,
+	linkmauve@linkmauve.fr
+Subject: [PATCH v7 0/2] Add hantro g1 video decoder support for RK3588
+Date: Tue, 30 Apr 2024 10:40:00 +0800
+Message-Id: <20240430024002.708227-1-liujianfeng1994@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240429165405.2298962-3-florian.fainelli@broadcom.com>
+Content-Transfer-Encoding: 8bit
 
-Hi Florian,
+This is the v7 version of this series adding hantro g1 video decoder
+support for RK3588.
 
-kernel test robot noticed the following build errors:
+RK3588 has Hantro G1 video decoder known as VDPU121 in TRM of RK3588 which
+is capable to decode MPEG2/H.264/VP8 up to 1920x1088. This vpu ip is also
+found in RK3568.
 
-[auto build test ERROR on net-next/main]
+Test results from fluster can be found from thread of v3[1].
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Florian-Fainelli/net-dsa-Remove-fixed_link_update-member/20240430-005631
-base:   net-next/main
-patch link:    https://lore.kernel.org/r/20240429165405.2298962-3-florian.fainelli%40broadcom.com
-patch subject: [PATCH net-next v2 2/2] net: dsa: Remove adjust_link paths
-config: m68k-allmodconfig (https://download.01.org/0day-ci/archive/20240430/202404301046.whP44a3U-lkp@intel.com/config)
-compiler: m68k-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240430/202404301046.whP44a3U-lkp@intel.com/reproduce)
+Changes in v7:
+ - Change compatible string from vdpu121 to vpu121 to match the real
+   hardware
+ - Change the devicetree node vdpu_mmu to vpu_mmu because this mmu is
+   also used by vepu121 jpeg encoder
+ - Link to v6: https://lore.kernel.org/all/20240418111002.83015-1-liujianfeng1994@gmail.com/
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202404301046.whP44a3U-lkp@intel.com/
+Changes in v6:
+ - Apply dt-bindings first
+ - Collect missing commit tags of old versions
+ - Specify the base commit suggested by Diederik
+ - Link to v5: https://lore.kernel.org/all/20240413064608.788561-1-liujianfeng1994@gmail.com/
 
-All errors (new ones prefixed by >>):
+Changes in v5:
+ - Add missing interrupt-names to devicetree node
+ - Rebase devicetree patch based on next-20240412
+ - Link to v4: https://lore.kernel.org/all/20240316071100.2419369-1-liujianfeng1994@gmail.com/
 
-   net/dsa/port.c: In function 'dsa_port_phylink_mac_link_down':
->> net/dsa/port.c:1603:17: error: 'phydev' undeclared (first use in this function)
-    1603 |                 phydev = dp->user->phydev;
-         |                 ^~~~~~
-   net/dsa/port.c:1603:17: note: each undeclared identifier is reported only once for each function it appears in
+Changes in v4:
+ - Change compatible string to rockchip,rk3588-vdpu121
+ - Link to v3: https://lore.kernel.org/all/20231231151112.3994194-1-liujianfeng1994@gmail.com/
+
+Changes in v3:
+ - Drop code in hantro_drv.c because hantro g1 vpu in rk3588 is compatible
+with the one in rk3568, only adding devicetree node should work.
+ - Change devicetree node name to video-codec@fdb50000 to match the reg
+address.
+ - Add dt-bindings rockchip,rk3588-vpu compatible with rockchip,rk3568-vpu
+ - Link to v2: https://lore.kernel.org/all/20231228131617.3411561-1-liujianfeng1994@gmail.com
+
+Changes in v2:
+- Fix alphabetical order in patch1 and patch3
+- Sort device tree node by bus-address
+- Drop rk3588_vpu_variant fron v1 because that is exactly the same as rk3568_vpu_variant
+- Link to v1: https://lore.kernel.org/all/20231227173911.3295410-1-liujianfeng1994@gmail.com
+
+[1]https://lore.kernel.org/all/20240118080602.9028-1-liujianfeng1994@gmail.com/
+
+Jianfeng Liu (2):
+  dt-bindings: media: rockchip-vpu: Add rk3588 vpu121 compatible string
+  arm64: dts: rockchip: Add Hantro G1 VPU support for RK3588
+
+ .../bindings/media/rockchip-vpu.yaml          |  3 +++
+ arch/arm64/boot/dts/rockchip/rk3588s.dtsi     | 21 +++++++++++++++++++
+ 2 files changed, 24 insertions(+)
 
 
-vim +/phydev +1603 net/dsa/port.c
+base-commit: b0a2c79c6f3590b74742cbbc76687014d47972d8
+--
+2.34.1
 
-dd805cf3e80e03 Russell King (Oracle  2023-05-25  1594) 
-8ae674964e67eb Florian Fainelli      2019-12-16  1595  static void dsa_port_phylink_mac_link_down(struct phylink_config *config,
-77373d49de22e8 Ioana Ciornei         2019-05-28  1596  					   unsigned int mode,
-77373d49de22e8 Ioana Ciornei         2019-05-28  1597  					   phy_interface_t interface)
-77373d49de22e8 Ioana Ciornei         2019-05-28  1598  {
-dd0c9855b41310 Russell King (Oracle  2024-04-10  1599) 	struct dsa_port *dp = dsa_phylink_to_port(config);
-77373d49de22e8 Ioana Ciornei         2019-05-28  1600  	struct dsa_switch *ds = dp->ds;
-77373d49de22e8 Ioana Ciornei         2019-05-28  1601  
-57d77986e74287 Vladimir Oltean       2021-10-20  1602  	if (dsa_port_is_user(dp))
-6ca80638b90cec Florian Fainelli      2023-10-23 @1603  		phydev = dp->user->phydev;
-0e27921816ad99 Ioana Ciornei         2019-05-28  1604  
-e9829e26ff2c61 Florian Fainelli      2024-04-29  1605  	if (!ds->ops->phylink_mac_link_down)
-77373d49de22e8 Ioana Ciornei         2019-05-28  1606  		return;
-77373d49de22e8 Ioana Ciornei         2019-05-28  1607  
-77373d49de22e8 Ioana Ciornei         2019-05-28  1608  	ds->ops->phylink_mac_link_down(ds, dp->index, mode, interface);
-77373d49de22e8 Ioana Ciornei         2019-05-28  1609  }
-77373d49de22e8 Ioana Ciornei         2019-05-28  1610  
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
 
