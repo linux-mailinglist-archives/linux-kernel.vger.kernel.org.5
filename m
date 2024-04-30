@@ -1,125 +1,245 @@
-Return-Path: <linux-kernel+bounces-164023-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-164024-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D0D308B7744
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 15:36:34 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1959E8B774D
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 15:37:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8570B1F2252C
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 13:36:34 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 24773B20838
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 13:37:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12F24171E75;
-	Tue, 30 Apr 2024 13:36:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 441BA171E60;
+	Tue, 30 Apr 2024 13:37:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="htKrw6Kf"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="T+sfuGgU"
+Received: from relay6-d.mail.gandi.net (relay6-d.mail.gandi.net [217.70.183.198])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 005F1171E71
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 13:36:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B9F112CDB5;
+	Tue, 30 Apr 2024 13:37:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.198
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714484173; cv=none; b=MppBgQitRSj9vvtAOHxmlwkpUAEN02AdgAfEDV2KSjikNbK78MVXKsasUgU50iYq9dsmQcxCzs3OIN6SenrmJ7wR0rn0S4Ma5A57u9Tr4it47ZujGHKws+8FSee2Ul5/7q9qV8S6yWraLYiAjV7leYZjKMFWh7qBYUmoLyEAHSU=
+	t=1714484229; cv=none; b=MWY8KvUrSKKgvZTjIcneijpt7mSE1QyJvBjDauUa3+NTOuQJmXSEamikVD7Nh33YIZ8Ts1zYQ4qIdwO6ZYcDXI5ABqxiIRrO64tSrWdwiurQYm/UadgVZXboDhKlJob62TRjS9c3WRLkWPZTxG2SpJM1d7VCUa+bMSL4CaK3PQw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714484173; c=relaxed/simple;
-	bh=BT6nfyV4uk8xm25Isa+tjRkP93nsj9rWL3ISJtY6I4E=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=cU9iFQGddbUxC3/ttxg2aibB+ZbK9rVg/J+v4vGLczZeMc24xg+3zsb6OsDwyzu9/TjYBNd3O3ury87zmMB7e6kd3UNyqMATZQWP2+biSg9qtLI08nxNRP+bPU+ojYFr0+BN1JD2g13isfdT9+driwRoU4tftL8DfGqqtH3V7RY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=htKrw6Kf; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1714484170;
+	s=arc-20240116; t=1714484229; c=relaxed/simple;
+	bh=5yFphC5yPc/T4pS2Pcf0KOygyeRSPkokyRTwwuSopyQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=tY5E1z2n7N+IzFy7hCBgJi1B/Dg0ayQl/ThjlFEXrxipiwEi13acBQc3zm8ZE3h1MUuctLnwinYCyUK0oLeQxPxPziEFF0Dko6IhrdnIGjyIry7ZaP466UT2xLiDdnklhtyh1wKpzVLj8OP4y9gdT/MHu8SBhGxuTuJoiUYNQpw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=T+sfuGgU; arc=none smtp.client-ip=217.70.183.198
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 124CBC0012;
+	Tue, 30 Apr 2024 13:36:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1714484219;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=X39GiTLDBKMPfoBDISZFmIycGpaQv/DxiE0jSscvhBo=;
-	b=htKrw6KftzhZqDpiBybpbWsF4ZiVbeQbUieHM6x57g7io6DDbsBG6Og//9/OEWqn1AKz+Y
-	IGTW1v6UJCf5sjTTMWQKu1+dDVJiyjxcBGmUluiLFjIdZ10xTjRgmcAl9XilyR2BoDK3af
-	3DTjeCg+JSbRQseoKDtp4n4543yAMUg=
-Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com
- [209.85.219.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-140-pzfCSVaINmuEwHVJ-KAbFw-1; Tue, 30 Apr 2024 09:36:09 -0400
-X-MC-Unique: pzfCSVaINmuEwHVJ-KAbFw-1
-Received: by mail-qv1-f70.google.com with SMTP id 6a1803df08f44-69b6e12ea63so22190086d6.1
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 06:36:09 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714484169; x=1715088969;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=X39GiTLDBKMPfoBDISZFmIycGpaQv/DxiE0jSscvhBo=;
-        b=qNYC7fQmwzN9/revIyYsvsm19Co8MVPniRt5pfb+FJp9QJxjoXVJ0ieI2Hjhd5giNK
-         A8ijWCn8AH2HaR/2RQJ3mXNHXclhp717Vt8N1g01c+TJ8R9choUDS6PbnjJZ3v6iZrLS
-         iFRjQT+WO9Sf0UUAOSU7R/cLKao0GF2J200D5H9Dqj0l5qSg1mwAYRR1+Y/2OS3WKsKU
-         Czq2xKsbj+8cyP/XFhDOaUkNqOtDtSS1jSR5uLqlyWsy04TsMv+cPdbQ8/UnMLxSd/hC
-         4xz9PNW2l3jEOG6Sc7EXRNpCPswTqcD4drJ9RHSynahh4IMKO1LtkuHojO5vSW/fe2oo
-         3Ayw==
-X-Gm-Message-State: AOJu0YwrEzFM3qX+B+snPFREFtILFqDUTVQL4QymO4YVpSzckCPpszf4
-	CN1QJ1A8paz2rSJVQEGRnK3KivSVFHF+RjhZ+TFhVSF+wjgpGYNlQCzuMrKQvH7OqrlP4I4pv38
-	bq6YD1kR0bNZi5Lp4TZ53NYPkqQNBvj7QssRcSD7PQcKc21XE3bSqld0CFDos9w==
-X-Received: by 2002:a05:6214:411b:b0:699:dfe:6015 with SMTP id kc27-20020a056214411b00b006990dfe6015mr14696152qvb.5.1714484168652;
-        Tue, 30 Apr 2024 06:36:08 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IESpSTho+aha4lI1SDbS2XZA+HSwgqi2ttcjxIWV9PibJjPOqo5Au0EYQEDH29ebG39tMI31Q==
-X-Received: by 2002:a05:6214:411b:b0:699:dfe:6015 with SMTP id kc27-20020a056214411b00b006990dfe6015mr14696112qvb.5.1714484167928;
-        Tue, 30 Apr 2024 06:36:07 -0700 (PDT)
-Received: from x1n (pool-99-254-121-117.cpe.net.cable.rogers.com. [99.254.121.117])
-        by smtp.gmail.com with ESMTPSA id z15-20020a0cf00f000000b0069942e76d99sm11384559qvk.48.2024.04.30.06.36.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Apr 2024 06:36:07 -0700 (PDT)
-Date: Tue, 30 Apr 2024 09:36:05 -0400
-From: Peter Xu <peterx@redhat.com>
-To: David Hildenbrand <david@redhat.com>
-Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-	linux-kselftest@vger.kernel.org,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Shuah Khan <shuah@kernel.org>
-Subject: Re: [PATCH v1] selftests: mm: gup_longterm: test unsharing logic
- when R/O pinning
-Message-ID: <ZjDzxcrP_tDxo-X6@x1n>
-References: <20240430131508.86924-1-david@redhat.com>
+	bh=gkM9d0xicBmnajscafdTXqIyu0TvtJ/Gq9ScB83e5TE=;
+	b=T+sfuGgU5KSE1xqFD4DqmpJcEqUDQLEqw80ye09yk02ttYXASrPoS7CY4ixjU205l+r48X
+	nuJHFs5/lTNcoWKdNiowEPUs8bSCcwB08eQ1HmHXATvgi/76W/JrmLnu3F/nVx3DtLAFFt
+	8dWs44KNLxdcvpvuJqSNjfizr8t7ovtI3DUbyFYE+GRCo23dyHA1aoHCbCUb1DD0f0yJFJ
+	vZcjQJt01t2DFxKX2narbYb6vSLMzL4dzbLNyoqJOkZ9IJPI+3bVl8unhPXGcgcMUvblsV
+	K7LuHYnmPQ3EBW3/e21Y46J624gYiHguO/Psw+ot1c6qZA876nSTd1DLkfnsbw==
+Date: Tue, 30 Apr 2024 15:36:55 +0200
+From: Maxime Chevallier <maxime.chevallier@bootlin.com>
+To: Heiner Kallweit <hkallweit1@gmail.com>
+Cc: davem@davemloft.net, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, thomas.petazzoni@bootlin.com, Andrew Lunn
+ <andrew@lunn.ch>, Jakub Kicinski <kuba@kernel.org>, Eric Dumazet
+ <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, Russell King
+ <linux@armlinux.org.uk>, linux-arm-kernel@lists.infradead.org, Christophe
+ Leroy <christophe.leroy@csgroup.eu>, Herve Codina
+ <herve.codina@bootlin.com>, Florian Fainelli <f.fainelli@gmail.com>,
+ Vladimir Oltean <vladimir.oltean@nxp.com>, =?UTF-8?B?S8O2cnk=?= Maincent
+ <kory.maincent@bootlin.com>, Jesse Brandeburg <jesse.brandeburg@intel.com>,
+ Marek =?UTF-8?B?QmVow7pu?= <kabel@kernel.org>, Piergiorgio Beruto
+ <piergiorgio.beruto@gmail.com>, Oleksij Rempel <o.rempel@pengutronix.de>,
+ =?UTF-8?B?Tmljb2zDsg==?= Veronese <nicveronese@gmail.com>, Simon Horman
+ <horms@kernel.org>, mwojtas@chromium.org, Nathan Chancellor
+ <nathan@kernel.org>, Antoine Tenart <atenart@kernel.org>
+Subject: Re: [PATCH net-next] net: phy: Don't conditionally compile the
+ phy_link_topology creation
+Message-ID: <20240430153655.2df7a54c@device-28.home>
+In-Reply-To: <20240430135734.503f51a2@device-28.home>
+References: <20240429131008.439231-1-maxime.chevallier@bootlin.com>
+	<1ed5b8cb-c79b-44b9-8dbe-f78d7505b3b4@gmail.com>
+	<20240430135734.503f51a2@device-28.home>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-redhat-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20240430131508.86924-1-david@redhat.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-GND-Sasl: maxime.chevallier@bootlin.com
 
-On Tue, Apr 30, 2024 at 03:15:08PM +0200, David Hildenbrand wrote:
-> In our FOLL_LONGTERM tests, we prefault the page tables for the GUP-fast
-> test cases to be able to find a PTE and exercise the "longterm pinning
-> allowed" logic on the GUP-fast path where possible.
-> 
-> For now, we always prefault the page tables writable, resulting in PTEs
-> that are writable.
-> 
-> Let's cover more cases to also test if our unsharing logic works as
-> expected (and is able to make progress when there is nothing to unshare)
-> by mprotect'ing the range R/O when R/O-pinning, so we don't get PTEs
-> that are writable.
-> 
-> This change would have found an issue introduced by commit a12083d721d7
-> ("mm/gup: handle hugepd for follow_page()"), whereby R/O pinning was not
-> able to make progress in all cases, because unsharing logic was not
-> provided with the VMA to decide at some point that long-term R/O pinning
-> a !anon page is fine.
-> 
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: Shuah Khan <shuah@kernel.org>
-> Cc: Peter Xu <peterx@redhat.com>
-> Signed-off-by: David Hildenbrand <david@redhat.com>
+On Tue, 30 Apr 2024 13:57:34 +0200
+Maxime Chevallier <maxime.chevallier@bootlin.com> wrote:
 
-Acked-by: Peter Xu <peterx@redhat.com>
+> Hello Heiner,
+> 
+> On Tue, 30 Apr 2024 10:17:31 +0200
+> Heiner Kallweit <hkallweit1@gmail.com> wrote:
+> 
+> > On 29.04.2024 15:10, Maxime Chevallier wrote:  
+> > > The core of the phy_link_topology isn't directly tied to phylib, and at
+> > > the moment it's initialized, phylib might not be loaded yet. Move the
+> > > initialization of the topology to the phy_link_topology_core header,
+> > > which contains the bare minimum so that we can initialize it at netdev
+> > > creation.
+> > >     
+> > 
+> > The change fixes the issue for me, but according to my personal taste
+> > the code isn't intuitive and still error-prone. Also there's no good
+> > reason to inline a function like phy_link_topo_create() and make it
+> > publicly available. Do you expect it to be ever used outside net core?
+> > In general it may make sense to add a config symbol for the topology
+> > extension, there seem to be very few, specialized use cases for it.  
+> 
+> I think I'm missing the point here then. Do you mean adding a Kconfig
+> option to explicitely turn phy_link_topology on ? or build it as a
+> dedicated kernel module ?
+> 
+> Or do you see something such as "if phylib is M or Y, then build the
+> topology stuff and make sure it's allocated when a netdev gets created
+> ?"
 
-Thanks,
+I've prototyped something that's cleaner and should fit what you
+described, which is to have a Kconfig option for phy_topology and
+have it autoselected by CONFIG_SFP (for now, the only case where we can
+have multiple PHYs on the link). When phy mux support is added (I'll
+followup with that once the topology is settled), we can also make is
+select the phy_topology config option. I'll send that patch when I'll
+have properly tested it, especially with all the different bits
+(phylib, sfp, drivers) being tested as modules or builtin.
 
--- 
-Peter Xu
+Thanks for the tips,
+
+Maxime
+
+> 
+> Thanks,
+> 
+> Maxime
+> 
+> >   
+> > > Signed-off-by: Maxime Chevallier <maxime.chevallier@bootlin.com>
+> > > Closes: https://lore.kernel.org/netdev/2e11b89d-100f-49e7-9c9a-834cc0b82f97@gmail.com/
+> > > Closes: https://lore.kernel.org/netdev/20240409201553.GA4124869@dev-arch.thelio-3990X/
+> > > ---
+> > >  drivers/net/phy/phy_link_topology.c    | 23 --------------------
+> > >  include/linux/phy_link_topology.h      |  5 -----
+> > >  include/linux/phy_link_topology_core.h | 30 +++++++++++++++++---------
+> > >  3 files changed, 20 insertions(+), 38 deletions(-)
+> > > 
+> > > diff --git a/drivers/net/phy/phy_link_topology.c b/drivers/net/phy/phy_link_topology.c
+> > > index 985941c5c558..960aedd73308 100644
+> > > --- a/drivers/net/phy/phy_link_topology.c
+> > > +++ b/drivers/net/phy/phy_link_topology.c
+> > > @@ -12,29 +12,6 @@
+> > >  #include <linux/rtnetlink.h>
+> > >  #include <linux/xarray.h>
+> > >  
+> > > -struct phy_link_topology *phy_link_topo_create(struct net_device *dev)
+> > > -{
+> > > -	struct phy_link_topology *topo;
+> > > -
+> > > -	topo = kzalloc(sizeof(*topo), GFP_KERNEL);
+> > > -	if (!topo)
+> > > -		return ERR_PTR(-ENOMEM);
+> > > -
+> > > -	xa_init_flags(&topo->phys, XA_FLAGS_ALLOC1);
+> > > -	topo->next_phy_index = 1;
+> > > -
+> > > -	return topo;
+> > > -}
+> > > -
+> > > -void phy_link_topo_destroy(struct phy_link_topology *topo)
+> > > -{
+> > > -	if (!topo)
+> > > -		return;
+> > > -
+> > > -	xa_destroy(&topo->phys);
+> > > -	kfree(topo);
+> > > -}
+> > > -
+> > >  int phy_link_topo_add_phy(struct phy_link_topology *topo,
+> > >  			  struct phy_device *phy,
+> > >  			  enum phy_upstream upt, void *upstream)
+> > > diff --git a/include/linux/phy_link_topology.h b/include/linux/phy_link_topology.h
+> > > index 6b79feb607e7..ad72d7881257 100644
+> > > --- a/include/linux/phy_link_topology.h
+> > > +++ b/include/linux/phy_link_topology.h
+> > > @@ -32,11 +32,6 @@ struct phy_device_node {
+> > >  	struct phy_device *phy;
+> > >  };
+> > >  
+> > > -struct phy_link_topology {
+> > > -	struct xarray phys;
+> > > -	u32 next_phy_index;
+> > > -};
+> > > -
+> > >  static inline struct phy_device *
+> > >  phy_link_topo_get_phy(struct phy_link_topology *topo, u32 phyindex)
+> > >  {
+> > > diff --git a/include/linux/phy_link_topology_core.h b/include/linux/phy_link_topology_core.h
+> > > index 0a6479055745..0116ec49cd1b 100644
+> > > --- a/include/linux/phy_link_topology_core.h
+> > > +++ b/include/linux/phy_link_topology_core.h
+> > > @@ -2,24 +2,34 @@
+> > >  #ifndef __PHY_LINK_TOPOLOGY_CORE_H
+> > >  #define __PHY_LINK_TOPOLOGY_CORE_H
+> > >  
+> > > -struct phy_link_topology;
+> > > +#include <linux/xarray.h>
+> > >  
+> > > -#if IS_REACHABLE(CONFIG_PHYLIB)
+> > > -
+> > > -struct phy_link_topology *phy_link_topo_create(struct net_device *dev);
+> > > -void phy_link_topo_destroy(struct phy_link_topology *topo);
+> > > -
+> > > -#else
+> > > +struct phy_link_topology {
+> > > +	struct xarray phys;
+> > > +	u32 next_phy_index;
+> > > +};
+> > >  
+> > >  static inline struct phy_link_topology *phy_link_topo_create(struct net_device *dev)
+> > >  {
+> > > -	return NULL;
+> > > +	struct phy_link_topology *topo;
+> > > +
+> > > +	topo = kzalloc(sizeof(*topo), GFP_KERNEL);
+> > > +	if (!topo)
+> > > +		return ERR_PTR(-ENOMEM);
+> > > +
+> > > +	xa_init_flags(&topo->phys, XA_FLAGS_ALLOC1);
+> > > +	topo->next_phy_index = 1;
+> > > +
+> > > +	return topo;
+> > >  }
+> > >  
+> > >  static inline void phy_link_topo_destroy(struct phy_link_topology *topo)
+> > >  {
+> > > -}
+> > > +	if (!topo)
+> > > +		return;
+> > >  
+> > > -#endif
+> > > +	xa_destroy(&topo->phys);
+> > > +	kfree(topo);
+> > > +}
+> > >  
+> > >  #endif /* __PHY_LINK_TOPOLOGY_CORE_H */    
+> >   
+> 
+> 
 
 
