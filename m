@@ -1,198 +1,313 @@
-Return-Path: <linux-kernel+bounces-164724-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-164725-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2D6648B81BA
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 23:02:42 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 244B88B81BD
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 23:03:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D78891F2434A
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 21:02:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 91BBC1F241A1
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 21:03:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA9AA1A38CE;
-	Tue, 30 Apr 2024 21:02:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF8221A0B14;
+	Tue, 30 Apr 2024 21:03:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="XZJq9Jij"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="PnqS2hH1"
+Received: from mail-lf1-f44.google.com (mail-lf1-f44.google.com [209.85.167.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 27F548F6E
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 21:02:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB6BA1A0B09
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 21:02:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714510950; cv=none; b=lfR0jt6v8YEUuj/gg8MM4BsLTWMmKNQZW/mDUrQtPAVtRUNH212h8jlSF3xwEMDX/BJBGiAUFQqb+UjeBdwGSiYPJ3WWlLbFnGHqjEa+AzHOH4fiUPM93TGggruEUlJycJtumKnG8NW2A4RxjWXexD6aKAgzd8CTJQGr3HPPcto=
+	t=1714510980; cv=none; b=SaKScYBbdUY002lHg3QHyc75WYv5RJWCO9yM3gnPqrfrEJxOLP6Eee/4yxBiOWdwdHlGU0WmXXvH1K9mXc4ADD8f0iSw5XT3J20pJmWDM9ka+rdRtYaP3ej6i7CtuA9Rj59uU+I8hz84OWQAltFzCO+cMa56NQuWxZpbuq0usKc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714510950; c=relaxed/simple;
-	bh=3IlPfAdOypj2yDjXEHZcjOeySFUVY2FLG7qTyvYeviw=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=DRuJ3Sir8fLSobft1vQXt1rL6CxHN1EWiVWepfwjTfasUurVu1pqryZqGDqsPwzopMeQwJOVupJ7i7wvcHlsL74lFIbmstHNOTb2sqHz7yrV2z2HRIyz0moRMsO+CDJ+GPO0Sn13wEGnhS7aHScKjEa5eJ3bgESyJAQfouiT7M4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=XZJq9Jij; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1714510948;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-	bh=GEXNjb7aeNcvCnxPKRJWZCd/nJbe22HDnX8o5WGN7ew=;
-	b=XZJq9Jija1ZcEwtbPnbJydjphpHT4v4VPtkJ2uzwjCGOtfKXJsx6cz7z9PGjq3nykjExle
-	a6pUjVysi/4671JG+CxkUEFnKA30i+8GQ+RVe3Ja91/dIsrBXKsQDN+ibIS468Pu2wiWI+
-	4fKVrxLSBlmkTmqqOoEGN8plLDzCX1U=
-Received: from mail-pf1-f197.google.com (mail-pf1-f197.google.com
- [209.85.210.197]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-664-P4pE7omEPxqM9fcg5pvpfw-1; Tue, 30 Apr 2024 17:02:26 -0400
-X-MC-Unique: P4pE7omEPxqM9fcg5pvpfw-1
-Received: by mail-pf1-f197.google.com with SMTP id d2e1a72fcca58-6ed4298be66so4326771b3a.0
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 14:02:25 -0700 (PDT)
+	s=arc-20240116; t=1714510980; c=relaxed/simple;
+	bh=kYoljvm9HyA2TzWWA1tW6mh9KGAvs5RQRq7dqiphG14=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=tnEhyZ6MHUrdEntGn5r2nJcOJiLtUZr7yWCizQMn7TpCD65NMvWq9d42dm70tztztLU6b3x9HICUsm2gNJZlOp3lBBi5XE6M8vU5wtI7pDdD9wb9advaejmehGad5qG97gTwNKYKE5jD+N+E4NpmMfW76LrzU/chI/G+Su8E8sQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=PnqS2hH1; arc=none smtp.client-ip=209.85.167.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
+Received: by mail-lf1-f44.google.com with SMTP id 2adb3069b0e04-5176f217b7bso10986840e87.0
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 14:02:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=broadcom.com; s=google; t=1714510977; x=1715115777; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=sqOYWg0qvtmgEcRaoKJRpjHeuHFOM+v1E9hFYdfrJUI=;
+        b=PnqS2hH1KSTreOoBSA9l32tu3pIwHcY9KMMjn1iIIrpMbBC1F5Rr8rhoGYuDmUQQps
+         kgjqK2N9D1WzsELfeHPuDHrhpqVLjGYeryNcR6a/W9zJBvg9zlk/rTjRzYSvCUvTT20R
+         Am5or9PJrHtL0vz4szB12Z2S3ee2oDNn7zyYE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714510944; x=1715115744;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=GEXNjb7aeNcvCnxPKRJWZCd/nJbe22HDnX8o5WGN7ew=;
-        b=WRY93sFS0lB73WqSeUj+1IcCxJumkKIMAJs1mW2HALsDKzjgCSmyur6vIBS/+xWVur
-         3vzx28GEuyQSvXnjbx1+bQ6LM/wQua0DP+6YiEd1VXmfBzmLTWXHws8OuOFt0EBbmixi
-         5OS9cfruYg61ujH31ZrXUHKENvzySt6saJ1oNvy5VcbxZrMC3dn16U7nhKa0ZizV9RPu
-         TCWywlducLZNQxDXSzaxl0i3G3LVbUOjluwE4Vds34KADjaCBQ7Ct/K1ZEpL4seBgEel
-         vJt3LtWol4so0L5w18zPeh3TaZo7Vdwi6/GiLnKvFVlEw/5W0KOgaNHyj+hyJ3NOiV++
-         bkwg==
-X-Gm-Message-State: AOJu0Yx8qsHU6y7ONId5lyBp5+O/nfZv6XpHiDpzK/NOkEK4ZrHGOPi6
-	pRYIOYOiHackRuUSErq3VnPr0Wu3/GlXt4tkr78tJSNt5yNCRRGmwyVzPGYIn9AZPIhRCfZDMHd
-	Q0w/TXW9ec5oEaneWeeO25V0Ndbe+1qOegZB1LQJlzGvF5QJzWUitzznEe32yFVpTOeGoYRPGkW
-	2nXsAmu0HQ6fqZTnmLKT5hSpGESo+mBBx9dnse6rmcauknhA==
-X-Received: by 2002:a05:6a20:9192:b0:1a7:6262:1dd1 with SMTP id v18-20020a056a20919200b001a762621dd1mr1261000pzd.51.1714510943826;
-        Tue, 30 Apr 2024 14:02:23 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHCRcUNpm+xZQh5a6xxgdrE7aGEQmRLABr6Gp4YxdclyZ03Q2COt1Nwd0VZF7JFkFyG2Zg9Cg==
-X-Received: by 2002:a05:6a20:9192:b0:1a7:6262:1dd1 with SMTP id v18-20020a056a20919200b001a762621dd1mr1260940pzd.51.1714510943135;
-        Tue, 30 Apr 2024 14:02:23 -0700 (PDT)
-Received: from x1gen2nano ([2600:1700:1ff0:d0e0::33])
-        by smtp.gmail.com with ESMTPSA id lo8-20020a056a003d0800b006ed4823671csm22223770pfb.15.2024.04.30.14.02.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Apr 2024 14:02:22 -0700 (PDT)
-Date: Tue, 30 Apr 2024 16:02:19 -0500
-From: Andrew Halaney <ahalaney@redhat.com>
-To: linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
-	linux-stm32@st-md-mailman.stormreply.com, netdev@vger.kernel.org
-Cc: alexandre.torgue@foss.st.com, joabreu@synopsys.com, 
-	davem@davemloft.net, edumazet@google.com, kuba@kernel.org, pabeni@redhat.com, 
-	mcoquelin.stm32@gmail.com, andrew@lunn.ch, hkallweit1@gmail.com, linux@armlinux.org.uk
-Subject: racing ndo_open()/phylink*connect() with phy_probe()
-Message-ID: <uz66kbjbxieof6vkliuwgpzhlrbcmeb2f5aeuourw2vqcoc4hv@2adpvba3zszx>
+        d=1e100.net; s=20230601; t=1714510977; x=1715115777;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=sqOYWg0qvtmgEcRaoKJRpjHeuHFOM+v1E9hFYdfrJUI=;
+        b=CBK6/ZLXtVfCHu8p6EnxdN6K/bvfpO3rFZGaGMeaj3qczV5Zs5Sy4CmveTnTKyYw5y
+         GdYkKxGBo8FtY2a3ut1+7N7LuG55WwcEFQia9gllvpLWsKHu8wiitezcxc4zvql5Nzf3
+         /HC/nxvtuEofk6bnDip4K8qAUDK42XLw+8tyWSlO+b8Wrl0DW/IxOQlZUlgk4L1hHLpv
+         m6i3+BtvWTEgRGrbyGV7HhL9PUwGKZKOx+im5cyGYQRUPlBV69wzmby/2HuM17bfoorl
+         +EP1mdmrFgMPu55WJnMLbDXA+01Pf8xJplrQy+k1zOkvdBkUDjJjsA3KGoEh/tPNVHDt
+         i7EA==
+X-Forwarded-Encrypted: i=1; AJvYcCXnTTGM2XpWOE4yKVJBtojMwehALGYX6Pmli+6V7a4aHy/CHWAtx4ZQ7aClL9/mskSByLJKY3ujw81TIiGKq/o5eokBdVQcmfayOlOk
+X-Gm-Message-State: AOJu0YzDH/qZirrBlGHzJ6CqJPJUzi6w4rimXZxVVTCeZh0WL0+uvyqY
+	6AYj5N26wPHK8u96t+eEqNRk/HSycT6K0qP92pBDHcNoILltOZLfPnaoJuSREeuYQ9LQIvJwdA7
+	aabX8SLwbOqOtpzGMDXlJWNSo9EqZoQJCC9tc
+X-Google-Smtp-Source: AGHT+IHgAqjb4vbL/YJXOWO2pnGsbq+kv86t6WEIRYuAsVkdfRhKM4xCHP0QDOcoWnOmRwqqtvqTi+cW+d72Q5NVEGU=
+X-Received: by 2002:ac2:4e94:0:b0:51c:d1ac:c450 with SMTP id
+ o20-20020ac24e94000000b0051cd1acc450mr510771lfr.10.1714510976926; Tue, 30 Apr
+ 2024 14:02:56 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+References: <20240403213902.26391-1-james.quinlan@broadcom.com>
+In-Reply-To: <20240403213902.26391-1-james.quinlan@broadcom.com>
+From: Jim Quinlan <james.quinlan@broadcom.com>
+Date: Tue, 30 Apr 2024 17:02:45 -0400
+Message-ID: <CA+-6iNynMc7-zZ0No0Y30of+uPiz0mSL9brV3R=UGJNC6ytoxg@mail.gmail.com>
+Subject: Re: [PATCH v9 0/4] PCI: brcmstb: Configure appropriate HW CLKREQ# mode
+To: linux-pci@vger.kernel.org, Nicolas Saenz Julienne <nsaenz@kernel.org>, 
+	Bjorn Helgaas <bhelgaas@google.com>, Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>, 
+	Cyril Brulebois <kibi@debian.org>, Phil Elwell <phil@raspberrypi.com>, 
+	bcm-kernel-feedback-list@broadcom.com, james.quinlan@broadcom.com
+Cc: Conor Dooley <conor+dt@kernel.org>, 
+	"open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" <devicetree@vger.kernel.org>, 
+	Florian Fainelli <florian.fainelli@broadcom.com>, Jim Quinlan <jim2101024@gmail.com>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>, 
+	"moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" <linux-arm-kernel@lists.infradead.org>, 
+	open list <linux-kernel@vger.kernel.org>, 
+	"moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" <linux-rpi-kernel@lists.infradead.org>, 
+	Lorenzo Pieralisi <lpieralisi@kernel.org>, Rob Herring <robh@kernel.org>
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
+	boundary="000000000000c3af54061756b198"
 
-Hi,
+--000000000000c3af54061756b198
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-I've been taking a look at the following error message:
+On Wed, Apr 3, 2024 at 5:39=E2=80=AFPM Jim Quinlan <james.quinlan@broadcom.=
+com> wrote:
+>
+> v9 -- v8 was setting an internal bus timeout to accomodate large L1 exit
+>       latencies.  After meeting the PCIe HW team it was revealed that the
+>       HW default timeout value was set low for the purposes of HW debuggi=
+ng
+>       convenience; for nominal operation it needs to be set to a higher
+>       value independent of this submission's purpose.  This is now a
+>       separate commit.
 
-    qcom-ethqos 23000000.ethernet end1: __stmmac_open: Cannot attach to PHY (error: -19)
+Bjorn,
 
-end1 is using a phy on the mdio bus of end0, not on its own bus. Something
-like this devicetree snippet highlights the relationship:
+Did you have some time to look at this?  Do you have any comments or questi=
+ons?
 
-    // end0
-    &ethernet0 {
-            phy-mode = "sgmii";
-            phy-handle = <&sgmii_phy0>;
+Regards,
+Jim Quinlan
+Broadcom STB/CM
+>
+>    -- With v8, Bjorne asked what was preventing a device from exceeding t=
+he
+>       time required for the above internal bus timeout.  The answer to th=
+is
+>       is for us to set the endpoints' max latency {no-,}snoop value to
+>       something below this internal timeout value.  If the endpoint
+>       respects this value as it should, it will not send an LTR request
+>       with a larger latency value and not put itself in a situation
+>       that requires more latency than is possible for the platform.
+>
+>       Typically, ACPI or FW sets these max latency values.  In most of ou=
+r
+>       systems we do not have this happening so it is up to the RC driver =
+to
+>       set these values in the endpoint devices.  If the endpoints already
+>       have non-zero values that are lower than what we are setting, we le=
+t
+>       them be, as it is possible ACPI or FW set them and knows something
+>       that we do not.
+>
+>    -- The "clkreq" commit has only been changed to remove the code that w=
+as
+>       setting the timeout value, as this code is now its own commit.
+>
+> v8 -- Un-advertise L1SS capability when in "no-l1ss" mode (Bjorn)
+>    -- Squashed last two commits of v7 (Bjorn)
+>    -- Fix DT binding description text wrapping (Bjorn)
+>    -- Fix incorrect Spec reference (Bjorn)
+>          s/PCIe Spec/PCIe Express Mini CEM 2.1 specification/
+>    -- Text substitutions (Bjorn)
+>          s/WRT/With respect to/
+>          s/Tclron/T_CLRon/
+>
+> v7 -- Manivannan Sadhasivam suggested (a) making the property look like a
+>       network phy-mode and (b) keeping the code simple (not counting clkr=
+eq
+>       signal appearances, un-advertising capabilites, etc).  This is
+>       what I have done.  The property is now "brcm,clkreq-mode" and
+>       the values may be one of "safe", "default", and "no-l1ss".  The
+>       default setting is to employ the most capable power savings mode.
+>
+> v6 -- No code has been changed.
+>    -- Changed commit subject and comment in "#PERST" commit (Bjorn, Cyril=
+)
+>    -- Changed sign-off and author email address for all commits.
+>       This was due to a change in Broadcom's upstreaming policy.
+>
+> v5 -- Remove DT property "brcm,completion-timeout-us" from
+>       "DT bindings" commit.  Although this error may be reported
+>       as a completion timeout, its cause was traced to an
+>       internal bus timeout which may occur even when there is
+>       no PCIe access being processed.  We set a timeout of four
+>       seconds only if we are operating in "L1SS CLKREQ#" mode.
+>    -- Correct CEM 2.0 reference provided by HW engineer,
+>       s/3.2.5.2.5/3.2.5.2.2/ (Bjorn)
+>    -- Add newline to dev_info() string (Stefan)
+>    -- Change variable rval to unsigned (Stefan)
+>    -- s/implementaion/implementation/ (Bjorn)
+>    -- s/superpowersave/powersupersave/ (Bjorn)
+>    -- Slightly modify message on "PERST#" commit.
+>    -- Rebase to torvalds master
+>
+> v4 -- New commit that asserts PERST# for 2711/RPi SOCs at PCIe RC
+>       driver probe() time.  This is done in Raspian Linux and its
+>       absence may be the cause of a failing test case.
+>    -- New commit that removes stale comment.
+>
+> v3 -- Rewrote commit msgs and comments refering panics if L1SS
+>       is enabled/disabled; the code snippet that unadvertises L1SS
+>       eliminates the panic scenario. (Bjorn)
+>    -- Add reference for "400ns of CLKREQ# assertion" blurb (Bjorn)
+>    -- Put binding names in DT commit Subject (Bjorn)
+>    -- Add a verb to a commit's subject line (Bjorn)
+>    -- s/accomodat(\w+)/accommodat$1/g (Bjorn)
+>    -- Rewrote commit msgs and comments refering panics if L1SS
+>       is enabled/disabled; the code snippet that unadvertises L1SS
+>       eliminates the panic scenario. (Bjorn)
+>
+> v2 -- Changed binding property 'brcm,completion-timeout-msec' to
+>       'brcm,completion-timeout-us'.  (StefanW for standard suffix).
+>    -- Warn when clamping timeout value, and include clamped
+>       region in message. Also add min and max in YAML. (StefanW)
+>    -- Qualify description of "brcm,completion-timeout-us" so that
+>       it refers to PCIe transactions. (StefanW)
+>    -- Remvove mention of Linux specifics in binding description. (StefanW=
+)
+>    -- s/clkreq#/CLKREQ#/g (Bjorn)
+>    -- Refactor completion-timeout-us code to compare max and min to
+>       value given by the property (as opposed to the computed value).
+>
+> v1 -- The current driver assumes the downstream devices can
+>       provide CLKREQ# for ASPM.  These commits accomodate devices
+>       w/ or w/o clkreq# and also handle L1SS-capable devices.
+>
+>    -- The Raspian Linux folks have already been using a PCIe RC
+>       property "brcm,enable-l1ss".  These commits use the same
+>       property, in a backward-compatible manner, and the implementaion
+>       adds more detail and also automatically identifies devices w/o
+>       a clkreq# signal, i.e. most devices plugged into an RPi CM4
+>       IO board.
+>
+> Jim Quinlan (4):
+>   dt-bindings: PCI: brcmstb: Add property "brcm,clkreq-mode"
+>   PCI: brcmstb: Set reasonable value for internal bus timeout
+>   PCI: brcmstb: Set downstream maximum {no-}snoop LTR values
+>   PCI: brcmstb: Configure HW CLKREQ# mode appropriate for downstream
+>     device
+>
+>  .../bindings/pci/brcm,stb-pcie.yaml           |  18 ++
+>  drivers/pci/controller/pcie-brcmstb.c         | 161 +++++++++++++++++-
+>  2 files changed, 170 insertions(+), 9 deletions(-)
+>
+>
+> base-commit: 9f8413c4a66f2fb776d3dc3c9ed20bf435eb305e
+> --
+> 2.17.1
+>
 
-            mdio {
-                    compatible = "snps,dwmac-mdio";
-                    sgmii_phy0: phy@8 {
-                            compatible = "ethernet-phy-id0141.0dd4";
-                            reg = <0x8>;
-                            device_type = "ethernet-phy";
-                    };
+--000000000000c3af54061756b198
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
 
-                    sgmii_phy1: phy@a {
-                            compatible = "ethernet-phy-id0141.0dd4";
-                            reg = <0xa>;
-                            device_type = "ethernet-phy";
-                    };
-            };
-    };
-
-    // end1
-    &ethernet1 {
-            phy-mode = "sgmii";
-            phy-handle = <&sgmii_phy1>;
-    };
-
-Basically, NetworkManager is setting both interfaces to up, and end1's
-phy doesn't seem to be ready when ndo_open() runs, returning
--ENODEV in phylink_fwnode_phy_connect() and bubbling that back up. This doesn't
-happen very often, but by shoving things into the initramfs or anything to
-speed up probe/ndo_open() it's easier to reproduce. Delaying probe()
-of end0 and then setting end1 up is another easy way to reproduce.
-
-My question after looking around for a while, is what is the expectation
-of userspace in this situation?
-
-NetworkManager retries 4 times right now (tunable via autoconnect-retries setting),
-and if you're lucky that's good enough. You could tell it to retry infinitely,
-that should get me out of my bind at least, but it's not an amazing solution.
-
-I'm used to dealing with deferral issues in probe() callbacks, but
-to me it seems that phylink and netdev sort of move the phy part of the problem
-till later (so you don't get the kernel retrying for you, etc, like you do
-with deferred probes) when you ndo_open(). I guess the logic there is that
-the phys could be hot pluggable, so with phylink we delay getting at them
-until ndo_open()? I also guess if the mac is going to create an mdio bus
-with phys off of it that also gets dicey as the phy could -EPROBE_DEFER
-when you're trying to probe the mac and confirm its phy is ready..
-
-Is retrying the correct solution here from userspace, or am I missing something?
-I thought the "does not support carrier detection" below might be my ticket out
-of this, but I can still reproduce it even after patching[0] to make that work.
-I guess NetworkManager still brings the device up, but doesn't "activate" the
-connection until the carrier detect stuff is done.
-
-[0] https://lore.kernel.org/netdev/20240429-stmmac-no-ethtool-begin-v1-1-04c629c1c142@redhat.com/
-
-Thanks,
-Andrew
-
-Some logs to illustrate the issue with a little more context (without
-the patch in [0], in the end that doesn't help):
-
-[    1.541839] fedora kernel: qcom-ethqos 23000000.ethernet end1: renamed from eth0
-[    1.545750] fedora NetworkManager[407]: <info>  [1709251201.1647] device (eth0): driver '(null)' does not support carrier detection.
-[    1.545826] fedora NetworkManager[407]: <info>  [1709251201.1657] device (eth0): driver 'unknown' does not support carrier detection.
-[    1.545854] fedora NetworkManager[407]: <info>  [1709251201.1660] manager: (eth0): new Ethernet device (/org/freedesktop/NetworkManager/Devices/2)
-[    1.545880] fedora NetworkManager[407]: <info>  [1709251201.1678] device (eth0): interface index 2 renamed iface from 'eth0' to 'end1'
-[    1.551721] fedora NetworkManager[407]: <info>  [1709251201.1794] device (end1): state change: unmanaged -> unavailable (reason 'managed', sys-iface-state: 'external')
-[    1.554944] fedora kernel: qcom-ethqos 23000000.ethernet end1: Register MEM_TYPE_PAGE_POOL RxQ-0
-[    1.555962] fedora kernel: qcom-ethqos 23000000.ethernet end1: Register MEM_TYPE_PAGE_POOL RxQ-1
-[    1.557711] fedora kernel: qcom-ethqos 23000000.ethernet end1: Register MEM_TYPE_PAGE_POOL RxQ-2
-[    1.558721] fedora kernel: qcom-ethqos 23000000.ethernet end1: Register MEM_TYPE_PAGE_POOL RxQ-3
-[    1.560297] fedora kernel: qcom-ethqos 23000000.ethernet end1: __stmmac_open: Cannot attach to PHY (error: -19)
-[    1.573664] fedora NetworkManager[407]: <info>  [1709251201.2013] device (end1): state change: unavailable -> disconnected (reason 'none', sys-iface-state: 'managed')
-[    1.574344] fedora NetworkManager[407]: <info>  [1709251201.2020] policy: auto-activating connection 'Wired Connection' (bfe920e8-6031-4129-bf5c-78198427076a)
-[    1.574733] fedora NetworkManager[407]: <info>  [1709251201.2024] device (end1): Activation: starting connection 'Wired Connection' (bfe920e8-6031-4129-bf5c-78198427076a)
-[    1.578589] fedora kernel: qcom-ethqos 23000000.ethernet end1: Register MEM_TYPE_PAGE_POOL RxQ-0
-[    1.579351] fedora kernel: qcom-ethqos 23000000.ethernet end1: Register MEM_TYPE_PAGE_POOL RxQ-1
-[    1.580102] fedora kernel: qcom-ethqos 23000000.ethernet end1: Register MEM_TYPE_PAGE_POOL RxQ-2
-[    1.578337] fedora NetworkManager[407]: <info>  [1709251201.2027] device (end1): state change: disconnected -> prepare (reason 'none', sys-iface-state: 'managed')
-[    1.578404] fedora NetworkManager[407]: <info>  [1709251201.2030] manager: NetworkManager state is now CONNECTING
-[    1.578431] fedora NetworkManager[407]: <info>  [1709251201.2033] device (end1): state change: prepare -> config (reason 'none', sys-iface-state: 'managed')
-[    1.580965] fedora kernel: qcom-ethqos 23000000.ethernet end1: Register MEM_TYPE_PAGE_POOL RxQ-3
-[    1.582390] fedora kernel: qcom-ethqos 23000000.ethernet end1: __stmmac_open: Cannot attach to PHY (error: -19)
-[    1.593993] fedora NetworkManager[407]: <info>  [1709251201.2217] device (end1): state change: config -> failed (reason 'config-failed', sys-iface-state: 'managed')
-[    1.648395] fedora NetworkManager[407]: <info>  [1709251201.2220] manager: NetworkManager state is now DISCONNECTED
-[    1.648634] fedora NetworkManager[407]: <warn>  [1709251201.2222] device (end1): Activation: failed for connection 'Wired Connection'
-[    1.648926] fedora NetworkManager[407]: <info>  [1709251201.2224] device (end1): state change: failed -> disconnected (reason 'none', sys-iface-state: 'managed')
-[    1.649179] fedora NetworkManager[407]: <info>  [1709251201.2233] manager: startup complete
-[    1.834016] fedora NetworkManager[407]: <info>  [1709251201.4617] device (eth0): driver '(null)' does not support carrier detection.
-[    1.836553] fedora NetworkManager[407]: <info>  [1709251201.4624] device (eth0): driver 'unknown' does not support carrier detection.
-[    1.836628] fedora NetworkManager[407]: <info>  [1709251201.4627] manager: (eth0): new Ethernet device (/org/freedesktop/NetworkManager/Devices/3)
-[    1.896859] fedora kernel: qcom-ethqos 23040000.ethernet end0: renamed from eth0
-[    1.902243] fedora NetworkManager[407]: <info>  [1709251201.5299] device (eth0): interface index 3 renamed iface from 'eth0' to 'end0'
-[    1.911400] fedora kernel: qcom-ethqos 23040000.ethernet end0: Register MEM_TYPE_PAGE_POOL RxQ-0
-[    1.909632] fedora NetworkManager[407]: <info>  [1709251201.5357] device (end0): state change: unmanaged -> unavailable (reason 'managed', sys-iface-state: 'external')
-
+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
+mOAplh6h3nMZUZxBguxG3g2p3iD4EgibUYneEzqOQafIQB/naf2uetKb8y9jKgWJxq2Y4y8Jqg2u
+uVIO1AyOJjWwqdgN+QhuIlat+qZd03P48Gim9ZPEMDUCAwEAAaOCAdswggHXMA4GA1UdDwEB/wQE
+AwIFoDCBowYIKwYBBQUHAQEEgZYwgZMwTgYIKwYBBQUHMAKGQmh0dHA6Ly9zZWN1cmUuZ2xvYmFs
+c2lnbi5jb20vY2FjZXJ0L2dzZ2NjcjNwZXJzb25hbHNpZ24yY2EyMDIwLmNydDBBBggrBgEFBQcw
+AYY1aHR0cDovL29jc3AuZ2xvYmFsc2lnbi5jb20vZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAw
+TQYDVR0gBEYwRDBCBgorBgEEAaAyASgKMDQwMgYIKwYBBQUHAgEWJmh0dHBzOi8vd3d3Lmdsb2Jh
+bHNpZ24uY29tL3JlcG9zaXRvcnkvMAkGA1UdEwQCMAAwSQYDVR0fBEIwQDA+oDygOoY4aHR0cDov
+L2NybC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29uYWxzaWduMmNhMjAyMC5jcmwwJQYDVR0R
+BB4wHIEaamFtZXMucXVpbmxhbkBicm9hZGNvbS5jb20wEwYDVR0lBAwwCgYIKwYBBQUHAwQwHwYD
+VR0jBBgwFoAUljPR5lgXWzR1ioFWZNW+SN6hj88wHQYDVR0OBBYEFGx/E27aeGBP2eJktrILxlhK
+z8f6MA0GCSqGSIb3DQEBCwUAA4IBAQBdQQukiELsPfse49X4QNy/UN43dPUw0I1asiQ8wye3nAuD
+b3GFmf3SZKlgxBTdWJoaNmmUFW2H3HWOoQBnTeedLtV9M2Tb9vOKMncQD1f9hvWZR6LnZpjBIlKe
++R+v6CLF07qYmBI6olvOY/Rsv9QpW9W8qZYk+2RkWHz/fR5N5YldKlJHP0NDT4Wjc5fEzV+mZC8A
+AlT80qiuCVv+IQP08ovEVSLPhUp8i1pwsHT9atbWOfXQjbq1B/ditFIbPzwmwJPuGUc7n7vpmtxB
+75sSFMj27j4JXl5W9vORgHR2YzuPBzfzDJU1ul0DIofSWVF6E1dx4tZohRED1Yl/T/ZGMYICbTCC
+AmkCAQEwazBbMQswCQYDVQQGEwJCRTEZMBcGA1UEChMQR2xvYmFsU2lnbiBudi1zYTExMC8GA1UE
+AxMoR2xvYmFsU2lnbiBHQ0MgUjMgUGVyc29uYWxTaWduIDIgQ0EgMjAyMAIMSO43VW7D5NP1X/KD
+MA0GCWCGSAFlAwQCAQUAoIHUMC8GCSqGSIb3DQEJBDEiBCBqrVlur7mK6pQaTPQ7Uaf3L6eM3pE9
+UV/lhX6GHR4iuDAYBgkqhkiG9w0BCQMxCwYJKoZIhvcNAQcBMBwGCSqGSIb3DQEJBTEPFw0yNDA0
+MzAyMTAyNTdaMGkGCSqGSIb3DQEJDzFcMFowCwYJYIZIAWUDBAEqMAsGCWCGSAFlAwQBFjALBglg
+hkgBZQMEAQIwCgYIKoZIhvcNAwcwCwYJKoZIhvcNAQEKMAsGCSqGSIb3DQEBBzALBglghkgBZQME
+AgEwDQYJKoZIhvcNAQEBBQAEggEAXLdOpomVsjiR0YJBvkScNCyVyPmsMjIM7OlYpn4FLnUJ6bXC
+uNryUYuuT4WEKWquE0ww3Jjhq4Z5+qh+fQ3lvbuGbVFuf92PP1j9KqArITBNBqdxb1U+wVj4Dbyv
+S/bqVi0HOpSMVVeZLTVw6u9ZfR27fD4KRP6VMgVWB3TuzEgME7aGzZvx0GW/TddEaa+GYebQ1n+z
+LlSHeDmJ4yCJHl+i/8BqwAcpJOsIr8pVD9QVvqOcjmrMHLbEcK5fwxJGMTYu1ldUKJIjEveZdjKV
+ytOXLgrD8PK/k/EID+aVEzPzrBQy55aldGtADEZW7n6SZK27IzDZlHO3PDgv0w1zkw==
+--000000000000c3af54061756b198--
 
