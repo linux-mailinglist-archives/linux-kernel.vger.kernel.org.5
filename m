@@ -1,139 +1,116 @@
-Return-Path: <linux-kernel+bounces-164623-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-164624-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 56B978B803F
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 21:01:32 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 535EF8B8043
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 21:03:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7EA65B21EFD
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 19:01:29 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0830D1F230DD
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 19:03:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D1CF19DF5E;
-	Tue, 30 Apr 2024 19:00:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 79D6C194C95;
+	Tue, 30 Apr 2024 19:03:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Saj7fmUk"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.16])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b="FqFvg2W7"
+Received: from smtp.smtpout.orange.fr (smtp-20.smtpout.orange.fr [80.12.242.20])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A388199E8F;
-	Tue, 30 Apr 2024 19:00:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A535D1BC59;
+	Tue, 30 Apr 2024 19:03:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.12.242.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714503658; cv=none; b=FHDtthbKThQUuqUIitBtxiIJuQioXa9XLpctdbYUyJSGtM1riCvDJRP09ZMzqoPzsFwwa9tOwVlYngN9b6muW57fp2GJTbSiGpV2kCH9AqmR3YihsFgV9/fbfZattXBfEiILWXK7HMywd0Z3FV4kXHbKZ3WESH3qPfSaXfjzvnA=
+	t=1714503804; cv=none; b=YuKUypEYMbtnWZ9hULOP+xrHLwBhDOX7pYdtN1DbGonB6wZ8nGRj4a0ujHnLuMf+KLQScXGkWdC2WBPXMC5WzqH+9oFbN9Klhhw92i17l8fmSKkQ/eiGWMmb884xACBtBpPt111wb1QR5HSjfaH7b9mud0bHHAtOy4HUV97xayw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714503658; c=relaxed/simple;
-	bh=6vpoXVf7eLhq/+mEugFcz1ms7uxrk4ZN8/G8lQEO6Zo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Zytv6exyxhAYk2a4rBDsIN8lbdCBrd67SyahyoFzsQXdF4GL4mqfeYRW4mWU4shArjzMjF8Rq/4LNwmkwmEEti+dUEOBaNCdHAwWR8v8Wj1zdCsxGVHZ+i8XHUGzt0j3xynpAmym2i0czRstFJCIj+zdbDZBUuJd+05xWet+U8A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Saj7fmUk; arc=none smtp.client-ip=192.198.163.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1714503657; x=1746039657;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=6vpoXVf7eLhq/+mEugFcz1ms7uxrk4ZN8/G8lQEO6Zo=;
-  b=Saj7fmUk8ublpLzHLZbQizDehq2/MyWfIQuOI1gwtWc7iW+hkc0l4rar
-   eIj0XcqjmII+l2RnLCBqgraJfNCmQNERIz1y+4/8kpNLmX4jdt3+Rt2TB
-   Pag/BuC/Q0YHISI1I6BARbMqaYniv3d3K1XjQgXGQaebC+q5yDCNS6TXd
-   3WiPk1xevY94JSJPStMAKYPZj6x/PvZ6qlJFQYCVf54W8iI90BaL20Irm
-   v9jnKIPROhEtDNtvkWGU9zjCROWJF+0q+Zk1RAtTJ4gL/MP+W6kvIsGCn
-   WA8mgHmP1O+K1I932nYUos7iuZOoXIrRm6ZGhs30U5mTlLx5EKC9B6plG
-   g==;
-X-CSE-ConnectionGUID: +55SzSd3QJmbnXcq2YUvQg==
-X-CSE-MsgGUID: Ee53Mr+yRSWtBaKqCVZbLg==
-X-IronPort-AV: E=McAfee;i="6600,9927,11060"; a="10768721"
-X-IronPort-AV: E=Sophos;i="6.07,243,1708416000"; 
-   d="scan'208";a="10768721"
-Received: from orviesa007.jf.intel.com ([10.64.159.147])
-  by fmvoesa110.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Apr 2024 12:00:56 -0700
-X-CSE-ConnectionGUID: I4auB1S+R+KhMPHolm3aSg==
-X-CSE-MsgGUID: Oj3iJeVxQxeG6oBJ649sFA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,243,1708416000"; 
-   d="scan'208";a="27052817"
-Received: from aschofie-mobl2.amr.corp.intel.com (HELO aschofie-mobl2) ([10.251.17.48])
-  by orviesa007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Apr 2024 12:00:56 -0700
-Date: Tue, 30 Apr 2024 12:00:53 -0700
-From: Alison Schofield <alison.schofield@intel.com>
-To: Dave Jiang <dave.jiang@intel.com>
-Cc: Ben Cheatham <Benjamin.Cheatham@amd.com>,
-	Dan Williams <dan.j.williams@intel.com>, linux-cxl@vger.kernel.org,
-	linux-acpi@vger.kernel.org, kernel-janitors@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Lukas Bulwahn <lukas.bulwahn@redhat.com>
-Subject: Re: [PATCH] MAINTAINERS: repair file entry in COMPUTE EXPRESS LINK
-Message-ID: <ZjE/5VW95v54Tv94@aschofie-mobl2>
-References: <20240411062443.47372-1-lukas.bulwahn@redhat.com>
- <ZhgPe5mDt2ocXovz@aschofie-mobl2>
+	s=arc-20240116; t=1714503804; c=relaxed/simple;
+	bh=A/3jgo7B0Ak18AEd05J73EHmxvmTkgnPJzFGXe2ZTuQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ij0h22QLUfAz8PJDEpNDFtCSAXIHP5DLnyg/IFcQ7Jx31YKjBtkIyMgcvu/R0NK3f96EgrjlnebAt4oL2Er+vdUIOploG8jbymSsOGRCL57hKTM8Nc3QVpe3rnNn6WT3kz8KXYVDv4h6Zf2eI3oFjoZj66VmyNye6WkBkXoppWg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wanadoo.fr; spf=pass smtp.mailfrom=wanadoo.fr; dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b=FqFvg2W7; arc=none smtp.client-ip=80.12.242.20
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wanadoo.fr
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wanadoo.fr
+Received: from localhost.localdomain ([86.243.17.157])
+	by smtp.orange.fr with ESMTPA
+	id 1skxsYnM1PWAk1skxsYEec; Tue, 30 Apr 2024 21:03:14 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
+	s=t20230301; t=1714503794;
+	bh=VEKXdsrN4FCUT2d2eWfWEpHgGeD3ZeJqsDSnHgARRQc=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version;
+	b=FqFvg2W7mwZwu3pd8aMBdiabZL+lLxGETx8aDFjgfSAYIVqZeJHGXaWc5IHQVTnP2
+	 9BNFKKRrxu+4nCH4x7IFk3lBu+89i3N4xdVVP0hWqGqGMclO5VUTOOZM5BNeyKeTI/
+	 ZI8Hkh57B0qnHXFLbgBctIaeTYxnQuQOHV7Cpwg2OP4IU+Ya1Nri8gY4Luai/nnydL
+	 Uhj0o4DfaBcEmH5Oy+FaQ08CALqKpbQF8uXCtbpc1xIvmua8aU7Irb5X3D5y96GV3J
+	 JEtgV6xojiG/ya/AJHoq1EQyU/ZYS/Qy94vaMh5z2sPJ/yOlmoylaqq46AHZat3XRW
+	 8UZ6OXjSVQ6dA==
+X-ME-Helo: localhost.localdomain
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Tue, 30 Apr 2024 21:03:14 +0200
+X-ME-IP: 86.243.17.157
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To: Pavel Machek <pavel@ucw.cz>,
+	Lee Jones <lee@kernel.org>,
+	Matthias Brugger <matthias.bgg@gmail.com>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	ChiaEn Wu <chiaen_wu@richtek.com>,
+	ChiYuan Huang <cy_huang@richtek.com>,
+	Jacek Anaszewski <jacek.anaszewski@gmail.com>,
+	Alice Chen <alice_chen@richtek.com>
+Cc: linux-kernel@vger.kernel.org,
+	kernel-janitors@vger.kernel.org,
+	Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+	linux-leds@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-mediatek@lists.infradead.org
+Subject: [PATCH v2] leds: mt6370: Remove an unused field in struct mt6370_priv
+Date: Tue, 30 Apr 2024 21:02:22 +0200
+Message-ID: <22704991f7acca6c2e687ff4bec7822087e1305a.1714503647.git.christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZhgPe5mDt2ocXovz@aschofie-mobl2>
+Content-Transfer-Encoding: 8bit
 
-On Thu, Apr 11, 2024 at 09:27:39AM -0700, Alison Schofield wrote:
-> On Thu, Apr 11, 2024 at 08:24:43AM +0200, Lukas Bulwahn wrote:
-> > Commit 12fb28ea6b1c ("EINJ: Add CXL error type support") adds the header
-> > file include/linux/einj-cxl.h, but then adds a file entry with cxl-einj.h
-> > (note the swapping of words) to the COMPUTE EXPRESS LINK (CXL) section.
-> > 
-> > Hence, ./scripts/get_maintainer.pl --self-test=patterns complains about a
-> > broken reference.
-> > 
-> > Repair the file entry in COMPUTE EXPRESS LINK (CXL).
-> 
-> How about stating the impact, something like:
-> 
-> get_maintainer.pl can only return commit_signer history for file
-> include/linux/einj-cxl.h because the entry in MAINTAINERS is wrong.
-> Correct the entry so that the full MAINTAINER list is returned.
+In "struct mt6370_priv", the 'reg_cfgs' field is unused.
 
-Hi Dave,
+Moreover the "struct reg_cfg" is defined nowhere. Neither in this file, nor
+in a global .h file, so it is completely pointless.
 
-Perhaps you can amend the commit log with this suggestion upon applying.
+So, remove it.
 
-With that done, you can add:
+Found with cppcheck, unusedStructMember.
 
-Reviewed-by: Alison Schofield <alison.schofield@intel.com>
+Fixes: 5c38376ef5b4 ("leds: rgb: mt6370: Add MediaTek MT6370 current sink type LED Indicator support")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+---
+Compile tested only.
 
-> 
-> It is interesting how you found it and I'm not suggesting deleting
-> that.
-> 
-> Thanks,
-> Alison
-> 
-> 
-> > 
-> > Signed-off-by: Lukas Bulwahn <lukas.bulwahn@redhat.com>
-> > ---
-> >  MAINTAINERS | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > diff --git a/MAINTAINERS b/MAINTAINERS
-> > index edf6176a5530..03204db05027 100644
-> > --- a/MAINTAINERS
-> > +++ b/MAINTAINERS
-> > @@ -5415,7 +5415,7 @@ M:	Dan Williams <dan.j.williams@intel.com>
-> >  L:	linux-cxl@vger.kernel.org
-> >  S:	Maintained
-> >  F:	drivers/cxl/
-> > -F:	include/linux/cxl-einj.h
-> > +F:	include/linux/einj-cxl.h
-> >  F:	include/linux/cxl-event.h
-> >  F:	include/uapi/linux/cxl_mem.h
-> >  F:	tools/testing/cxl/
-> > -- 
-> > 2.44.0
-> > 
-> > 
-> 
+Changes in v2:
+  - Tweak the commit message   [AngeloGioacchino Del Regno]
+  - Add a Fixes: tag   [AngeloGioacchino Del Regno]
+  - Add a R-b: tag
+
+v1: https://lore.kernel.org/all/e389be5e1012dc05fc2641123883ca3b0747525a.1714328839.git.christophe.jaillet@wanadoo.fr/
+---
+ drivers/leds/rgb/leds-mt6370-rgb.c | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/drivers/leds/rgb/leds-mt6370-rgb.c b/drivers/leds/rgb/leds-mt6370-rgb.c
+index 448d0da11848..359ef00498b4 100644
+--- a/drivers/leds/rgb/leds-mt6370-rgb.c
++++ b/drivers/leds/rgb/leds-mt6370-rgb.c
+@@ -149,7 +149,6 @@ struct mt6370_priv {
+ 	struct regmap_field *fields[F_MAX_FIELDS];
+ 	const struct reg_field *reg_fields;
+ 	const struct linear_range *ranges;
+-	struct reg_cfg *reg_cfgs;
+ 	const struct mt6370_pdata *pdata;
+ 	unsigned int leds_count;
+ 	unsigned int leds_active;
+-- 
+2.44.0
+
 
