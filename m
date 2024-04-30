@@ -1,122 +1,111 @@
-Return-Path: <linux-kernel+bounces-163763-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-163762-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0D0C78B6F8D
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 12:22:52 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id ADCE98B6F89
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 12:22:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B89301F22DE7
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 10:22:51 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E65B9B2101C
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 10:22:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A03A13C66A;
-	Tue, 30 Apr 2024 10:22:45 +0000 (UTC)
-Received: from mx3.molgen.mpg.de (mx3.molgen.mpg.de [141.14.17.11])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F1BC129E98;
+	Tue, 30 Apr 2024 10:22:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="kAfuh2d/"
+Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com [209.85.167.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B7F1FC02;
-	Tue, 30 Apr 2024 10:22:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=141.14.17.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3943FC02
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 10:21:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714472564; cv=none; b=a2Zjq45DQHqs7YGYq2//ThztsfWaZt2zinfN142EESbr1Aejsak5xEU/JWN5a3BJ5zbnzm5O8NCJoZ48+cvHrXZHE0Ul4X6BDGxZnBnyFbA68mqH8YCed1uxP7CPp73NdwM3gy9uO52/ukjxBFD/MDrjPPVao/DqTfut2JDxpKk=
+	t=1714472520; cv=none; b=MSCfdwCP6TkfEj1wjtrym9R5amP/ghirV7kfeUVxDOjdtsAzAzonNa+lTc1jJXPgt/sf6QGoNXXGePZqcPI4tiLt1xyMycEjFsRlITLlPIEh5NTzsOQb8JzLVm1hjlTvruM3yrMNPsghZ9QJHZm9UtT/szocroIpNLqE8Kqq+0Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714472564; c=relaxed/simple;
-	bh=JwmfaDotknqHOgQbV2+J/8gJzqZLFs/flluY6kHJkv4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Qg6BxctESneGqrmF8m80trn8nkwF0q9P4lmshddfEbHysau2WLXecpR4Kiq4SEqU5DF8f+o0Vbh2jwHxWX+hei3T7KVKGHFZ8okCeaS5f20Vm9pxvKGMz8fOTeWu5VdXM1xNLMPKoN3am0m09ufYQ6YTZOqc346ZJgsrbR9H+9c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=molgen.mpg.de; spf=pass smtp.mailfrom=molgen.mpg.de; arc=none smtp.client-ip=141.14.17.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=molgen.mpg.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=molgen.mpg.de
-Received: from [141.14.220.34] (g34.guest.molgen.mpg.de [141.14.220.34])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: pmenzel)
-	by mx.molgen.mpg.de (Postfix) with ESMTPSA id 8660F61E5FE36;
-	Tue, 30 Apr 2024 12:21:46 +0200 (CEST)
-Message-ID: <94b41f0d-a32b-4854-8528-91341a0a3bb8@molgen.mpg.de>
-Date: Tue, 30 Apr 2024 12:21:45 +0200
+	s=arc-20240116; t=1714472520; c=relaxed/simple;
+	bh=tgm30x71yKw/vDLwvaQ+wGBwr+GM8nm47x2MQCtOytY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ghrtU2+tXWE26P909GW7bRkBULhENqu2jX5e0BCpwoem0XCNzTlxnTq7N24aSGs951H0MZTpwWGGdZ772+ByI6PH0p80WJoJUjBN6DLVOmOaIGJ+87dkfV5Hmmw5KVNdbZAqNjGfRfMWToF9IGN0ccMhBD3/dG9nASqvgmymADM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=kAfuh2d/; arc=none smtp.client-ip=209.85.167.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lf1-f42.google.com with SMTP id 2adb3069b0e04-51acb95b892so6769589e87.2
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 03:21:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1714472517; x=1715077317; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=ZT01Ki3TawfQ3ig4lt1wnzEPfhDo0Jb/siTeqh9G5lE=;
+        b=kAfuh2d/LuGWtSjBKMtv8EXnbkjEl7grGbAm7/Yx5+pJr9TzEEHfcbH4P2SCk4vUKS
+         lPB7wTqILpeItpfefnBXCK7Cx8cR27D9QiLRX5qfqDVPBVFT0HetxW614pBrb6FT/9rG
+         lg9x6yMeiT8li6PA6OyoOrL8LGsePss6+u9ujKDJugfPlu8LPWQNS+oyGAMAkKny5vpm
+         WWKWEPvM7O1ULEVMWsoyRzhXQN5HEbU+0KA8nMSs16y8cucP/S/BdTsu8NzPCgnSQ7uB
+         +RbhNVRuzBlP3T3NpCFDgB6S94/jmFkDvTO2N/7x/uQ5IUR3gai6rlGO2rrUxKJfJAXR
+         985w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714472517; x=1715077317;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ZT01Ki3TawfQ3ig4lt1wnzEPfhDo0Jb/siTeqh9G5lE=;
+        b=tttg1eTlrgkvpStV5rysxnKVyZ4cCTW5V6HaQIj9psbU+nlBGWVAid6wjt5udhOUHb
+         0kIx95VsjH3pM6XSNOVt3om7xcY0JVSisMJfA9WG+pr1ouBI+MoYAui1MZuQG/di382Q
+         GxzZfxR7k3H8U3iU0KB3KzsOb0CnboPbey0xjhRlFyDyffgHeCvzKyah0nB5YoKfaIlC
+         TF5bd5BrF8UyeTLf7TaHwMNswLlVfio+27Q2Jy2b0mmvhOvRXMJZx5ewPT8SwlKfJXKx
+         XBqs7z/s3jjXQoepV9twCkDBcXAdJI2fmgQJaFbVVRdzg3A0dfenh8DKCUEU0bxoJ5bS
+         1qoA==
+X-Forwarded-Encrypted: i=1; AJvYcCVFSQBm/0o+9hfQwH7aA5swacOCt8/CtH5KUF/50Lt5D594wyV0sSCxa0/yT+tv6OWnKEnTOLx/3QhYT3Am7oOOBKb46jSesr+gMfIp
+X-Gm-Message-State: AOJu0YzNNcKbgnSG9OFuIjaKfAWrWfa3tcdf86QRAjE2rSaEVnIhBr/3
+	45lp51r54/uGZnax2CtybvSA2LV4QzeeVmWKLnw7dxKRsW7LQaXRTSbk51IJ1HM=
+X-Google-Smtp-Source: AGHT+IFcCOuX6QEEljjpvhMiSZt5CExqyrWGa7Y3OF0CEbw6Gv9K9DYV5uUKU5rAI7Mcf9Sx4WpE9A==
+X-Received: by 2002:ac2:48ab:0:b0:51a:f48d:7b31 with SMTP id u11-20020ac248ab000000b0051af48d7b31mr9463882lfg.13.1714472513855;
+        Tue, 30 Apr 2024 03:21:53 -0700 (PDT)
+Received: from eriador.lumag.spb.ru (dzdbxzyyyyyyyyyyyykxt-3.rev.dnainternet.fi. [2001:14ba:a0c3:3a00::227])
+        by smtp.gmail.com with ESMTPSA id e24-20020a196918000000b0051d913a3695sm845676lfc.182.2024.04.30.03.21.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 30 Apr 2024 03:21:53 -0700 (PDT)
+Date: Tue, 30 Apr 2024 13:21:52 +0300
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Neil Armstrong <neil.armstrong@linaro.org>, 
+	Randy Dunlap <rdunlap@infradead.org>, dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org, 
+	Jessica Zhang <quic_jesszhan@quicinc.com>, Sam Ravnborg <sam@ravnborg.org>, 
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, 
+	Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>, 
+	Daniel Vetter <daniel@ffwll.ch>
+Subject: Re: [PATCH v1 2/3] drm/panel: ili9341: Respect deferred probe
+Message-ID: <aaizdoc5ct4ktn3owbg4woexenao4h6kgn6chg5mjusm4aoy5i@ajwvvl2tzknt>
+References: <20240425142706.2440113-1-andriy.shevchenko@linux.intel.com>
+ <20240425142706.2440113-3-andriy.shevchenko@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v7 0/2] modify Signed-off-by field
-To: Chia Li Hung <ppighouse@gmail.com>
-Cc: robh+dt@kernel.org, devicetree@vger.kernel.org, conor+dt@kernel.org,
- linux-aspeed@lists.ozlabs.org, openbmc@lists.ozlabs.org,
- linux-kernel@vger.kernel.org, Kelly Hung <Kelly_Hung@asus.com>,
- joel@jms.id.au, krzysztof.kozlowski+dt@linaro.org, Allenyy_Hsu@asus.com,
- linux-arm-kernel@lists.infradead.org
-References: <20240430045853.3894633-1-Kelly_Hung@asus.com>
- <a21672d7-82dd-44a9-b301-94aa1537b75c@molgen.mpg.de>
- <CAK=2Bxt=WK4AdktNZDN2iXjk3ga9WRqUm9JQHoNjRnrW8hVt0Q@mail.gmail.com>
-Content-Language: en-US
-From: Paul Menzel <pmenzel@molgen.mpg.de>
-In-Reply-To: <CAK=2Bxt=WK4AdktNZDN2iXjk3ga9WRqUm9JQHoNjRnrW8hVt0Q@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240425142706.2440113-3-andriy.shevchenko@linux.intel.com>
 
-Dear Chia,
-
-
-Thank you for your reply. I am sorry, this causes so much trouble.
-
-
-Am 30.04.24 um 12:04 schrieb Chia Li Hung:
-> Paul Menzel 於 2024年4月30日 週二 下午2:48寫道：
-
->> Am 30.04.24 um 06:58 schrieb Kelly Hung:
->>> For the warning message:
->>> From: Kelly Hung '<ppighouse@gmail.com>' != 'Signed-off-by: Kelly Hung <Kelly_Hung@asus.com>'
->>>
->>> I replaced Kelly_Hung@asus.com with my private Gmail account.
->>>
->>> Due to a security issue with ASUS's mail server, I am unable to use
->>> ASUS's mail system to send patches out from my build server.
->>> So I executed git send-email using my private gmail account.
->>
->> To put light on ASUS’ upstream work, using your company address would be
->> nice in my opinion. Do you have it configured everything in git
->> (`~/.gitconfig`)?
->>
->>       git config --global user.name "Kelly Hung"
->>       git config --global user.email Kelly_Hung@asus.com
-
-> Below is my git configuration.
-> [user]
->          name = Kelly Hung
->          email = Kelly_Hung@asus.com
-> [sendemail]
->          smtpserver = smtp.gmail.com
->          smtpEncryption = tls
->          smtpUser = ppighouse@gmail.com
->          smtpServerPort = 587
+On Thu, Apr 25, 2024 at 05:26:18PM +0300, Andy Shevchenko wrote:
+> GPIO controller might not be available when driver is being probed.
+> There are plenty of reasons why, one of which is deferred probe.
 > 
-> I made sure the "From" value after executing git format-patch was my ASUS
-> email address.
+> Since GPIOs are optional, return any error code we got to the upper
+> layer, including deferred probe. With that in mind, use dev_err_probe()
+> in order to avoid spamming the logs.
 > 
-> From: Kelly Hung <Kelly_Hung@asus.com>
-> Date: Thu, 29 Feb 2024 16:45:02 +0800
-> Subject: [PATCH v7 1/2] dt-bindings: arm: aspeed: add ASUS X4TF board
-> 
-> Since my smtp server is Gmail, when I run send-gmail it replaces my "From"
-> value with the Gmail account. I asked ASUS IT for assistance today and
-> tried to get an SMTP acount.
+> Fixes: 5a04227326b0 ("drm/panel: Add ilitek ili9341 panel driver")
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> ---
+>  drivers/gpu/drm/panel/panel-ilitek-ili9341.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 
-*A thing you should know if you are using multiple email accounts with 
-`git send-email`* [1] says to use
-
-     git send-email --from ppighouse@gmail.com 000*.patch
+Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 
 
-Kind regards,
-
-Paul
-
-
-[1]: https://sjp38.github.io/post/git_send_email_multiple_email_caution/
+-- 
+With best wishes
+Dmitry
 
