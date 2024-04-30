@@ -1,94 +1,110 @@
-Return-Path: <linux-kernel+bounces-163370-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-163368-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B28498B6A00
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 07:40:32 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0F81B8B69FB
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 07:35:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 449041F220E2
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 05:40:32 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4E413B211C1
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 05:35:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E8F721772D;
-	Tue, 30 Apr 2024 05:40:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 997E417732;
+	Tue, 30 Apr 2024 05:35:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="SChbnixO"
-Received: from out162-62-57-49.mail.qq.com (out162-62-57-49.mail.qq.com [162.62.57.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="fgdPrb1f"
+Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB17BC14F
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 05:40:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=162.62.57.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA69417582
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 05:35:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714455626; cv=none; b=fa2rjtaiEbPLrqvl/jfERf/24xlMImH3RGpCdA3rmazeyuDaaVvtEVlg5f/xtd8wWRIvKn/eo1jFoHsKdJt+mEE56TVX+0/EB2y0uPuf3DSi+OYgk+n51HkQeLQlDPckyBbLvnit25dc0XZqzRVmCRd59EzWW27jsME3ivHEGzw=
+	t=1714455306; cv=none; b=sVZlj0zQpHyi2EKHtdBfVIkxbPKWpBLavjzi/AcqvhHLa5KTEkQD6E2ngwFc1qx4dH7Tx6q87dMkQTrL9aesp5y6ACzZTNHkEZ7DUcB0KZKl9QbxpSPUr2f4JXCnU83hAwfHFbgmulSVioN2ORH+ltU1FUWxLEs7SGi/N0MyqMI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714455626; c=relaxed/simple;
-	bh=o2mkoohmWSqXxEQKCsPzfVpPezIXDWDYgvj5CKYjwaM=;
-	h=Message-ID:From:To:Cc:Subject:Date:In-Reply-To:References:
-	 MIME-Version; b=Dwz6vmDuxdy6FSfScibBBhNthhypnahoYCzPHfJ19wDzlA3iLJFSm7kmHDyz8B1BTQu83l8wJoXqOJ43hQpfhNrMZ6gNVzNkjxjLH4pOFw4eMTK3FftBJZXHrnRLtfuP0Bqtd1BRLF6/DZUCBgmjhPg2eKOg+ZDMEYuGfSDg6lo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=SChbnixO; arc=none smtp.client-ip=162.62.57.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
-	t=1714455612; bh=cE2Z8F+T6CzTKmHgax54sOHcrGaYMhSaBGLMxBBiY+s=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=SChbnixObmb8XynVH9453ILUYgKvqEpeja+KfIQxkFTHeT187xoXHK6TRm8MH3IrM
-	 Rwsg2VZekgAEY7F+Y5ACo3In/7I/NunWibOupldDprZMN3pVdUUGj7mLHL2QbFNFx6
-	 q+WiEeTzs+yv8U8kBiIVY4jSjYzjF+wqJR1EO3BU=
-Received: from pek-lxu-l1.wrs.com ([111.198.228.153])
-	by newxmesmtplogicsvrszb9-1.qq.com (NewEsmtp) with SMTP
-	id 8820A65A; Tue, 30 Apr 2024 13:34:02 +0800
-X-QQ-mid: xmsmtpt1714455242tc59767xk
-Message-ID: <tencent_7437344BBA742F76EB67C63D0F362897D209@qq.com>
-X-QQ-XMAILINFO: OQhZ3T0tjf0ae1WvG5xAKJHC8YjbpJpaMz3BzFnLFo/y+C2ulx/8PKYcoYL+hv
-	 UBOO6f+HAp0Jwc8pJzI4OnzZhytTmYapkVaIz1n+gJTGj1/OkdCiTeSEy18InFotE1Rl9+yk4w/G
-	 53kM6CFmtsNZSFVf3O08X5jyg+eePeDTdtglQpnrz9JGOWsJbNWlOyZuUC58i4ifu+r3r3Azfxwk
-	 wpfHOE12f1rxJ6u7q2e7uzfbqqay8z2r/l63B9acJW+Q+5H86VtbTCyIQi0JpYCfIN1EAyAASVD5
-	 sTj9Vbp6qLfKyRVefT86qPZw26d9wHzvZYwDpkl7SIeATpIbYZcpmbDJlrq2jLdTPz9VeeV0ccsF
-	 ZdyeIcpUnRbdw4w1F0t4cVUW0nrMdEQr2V8PUsqGRKOG12f6zopbdhezqLKDiWeZt7k+QF+InNCQ
-	 4v0ytbgPvf62FlN6CT/TNpo1gu7lLNKzAndCG+Kl21L9TpMvC9RkCR1fC4K1uOLXI6q22TH0uawN
-	 hLbJwNkhKLoqoCSdnVNr35tOXi0zmEv9ogbb6U3JpXjKXxQRszpQTHT3ZrFBPw5Yq90ggFtA+tf+
-	 qZMlfS57R2eB2ISF0hyVLz/5OgP5u1mbFvDulJcSOZG3IezMCdSKADalKjBW2ZB3lNPOTVMv57LD
-	 ApVOWIw/QGmTNddTbbEfEdRj7beK066n1a3vnqZhpfhVAXQiUnlfkpJZYVPrC+AB7BGqtSnL8Kef
-	 A/KieRNOxOcbZ6HHHYOKS456C4s2rBKG9p4NR2/m9tM/PRkUuTTPf7RH43pfyGcgEAkWcbKGzOSO
-	 f8VwsaEIeJ8PaBJi40YezQkz4rJg0Pp77vJrvSaYWJ11wpISM8Is5KMY9UnNpzQ2i/9jsZGWA4PD
-	 q3ScgEpWF38SQOk3X+vILUn81EiEFwAFmXJ5q6rW+IyBWyXeM7UnHcbAcIex7fuj0s4PLq91Bn
-X-QQ-XMRINFO: OWPUhxQsoeAVDbp3OJHYyFg=
-From: Edward Adam Davis <eadavis@qq.com>
-To: syzbot+eaba5abe296837a640c0@syzkaller.appspotmail.com
-Cc: linux-kernel@vger.kernel.org,
-	syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] [ext4?] KMSAN: uninit-value in ext4_inlinedir_to_tree
-Date: Tue, 30 Apr 2024 13:34:02 +0800
-X-OQ-MSGID: <20240430053401.562396-2-eadavis@qq.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <000000000000440b0a06173e6ca8@google.com>
-References: <000000000000440b0a06173e6ca8@google.com>
+	s=arc-20240116; t=1714455306; c=relaxed/simple;
+	bh=0lANZJBk2q8qyeCEkyiuDs1ISrEWT6/wJvz29MPlTds=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=D0DOO2GG41Y46ecQ5BZyS6/OSzqMVL+muEYsgxjYiosbqgRl0MjEV9vozW9XN/+Zr5NAsvxYTOmNBJ+crbAifq2VvNWWYinyfV4QIKe44pA5WI/NG2H9HYlpJuD8xM/tPxZP5OHv2yBIlwEPvCLqzu62T+tk2rFUGQ3aPqbeYCw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=fgdPrb1f; arc=none smtp.client-ip=209.85.214.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-1e51398cc4eso47424315ad.2
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 22:35:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1714455305; x=1715060105; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=C86TkJMefuwLFYqPDfjsQaXZDgvqLvjIZeQbeqShpoI=;
+        b=fgdPrb1fqMg18QNi+Pibt7ddGBbLBeJTYIr+rtbLx4zjLo43ZPIOW8c9E5FGJW6+MP
+         1VxatqfLGnebt+stBICmPtKa355/tPMUFLb2jr/6oGDJshRknfbLwjWPuyrqvEXcGS3t
+         dJoSkL6kbLyXEokUdojkGlim1daRxm6Dyjo4w=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714455305; x=1715060105;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=C86TkJMefuwLFYqPDfjsQaXZDgvqLvjIZeQbeqShpoI=;
+        b=ZJ4dR57Z15cbpS2YHf+5cdSSfIfGRWjPTwQrb8+p8Mr/BcdpPrZ3c03elsS+AigKqF
+         I6JZi54bPiepzQEnSC6itpL7xA6qM58HLjosy3feunQrmesomB2Gnn0mja2Elq7NIP6l
+         mxW2J0Jg0/Ji4ihbLrlSTQFkEAKn+7QEygPKr6Re3FJUL9+5RCCXhZKqdl2ozxg7LOK3
+         PpzzqwQVQTSkizfQnEF9hfTYM9HF1gXB4UiBpocQsOz8l2Jt0LMtTLmsdpvuXthOuZp0
+         UEI+47ukK3j5mdXy0zUCEyw4jfu0LKRsCroFmJwBIXbkB2BygtwLYDK3gU99OHMv1sUM
+         IF5g==
+X-Forwarded-Encrypted: i=1; AJvYcCWBhLGq2g3PpjClLauDSaLJUnAPzs40PmGFFdTze/kS8OZEUEcMhdny5Fd00Jw4Aua3pCY0Ra8RvyBgafpbu9kj8x0ENtKiKjVup7AD
+X-Gm-Message-State: AOJu0YwDsCy/y0a+g2sAQxupO4tYOVJRYpMIN+j1Pfz++aQkMudhbyi0
+	uayeleKj3/S5dCdhMlyXpyGgTaV2TSbUx7yxDyOLHGPUSIpdpS0OF9x1duTtvg==
+X-Google-Smtp-Source: AGHT+IExYVGtME+b7bsTki80m/529C/WFpqN5LWnzvSEWxibnamEqrs4aXGKwGyaazB7ViSXdQpIYA==
+X-Received: by 2002:a17:903:41ca:b0:1eb:1240:1aea with SMTP id u10-20020a17090341ca00b001eb12401aeamr16493520ple.20.1714455305039;
+        Mon, 29 Apr 2024 22:35:05 -0700 (PDT)
+Received: from www.outflux.net ([198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id q4-20020a170902edc400b001e29c4b7bd2sm21410591plk.240.2024.04.29.22.35.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Apr 2024 22:35:04 -0700 (PDT)
+Date: Mon, 29 Apr 2024 22:35:03 -0700
+From: Kees Cook <keescook@chromium.org>
+To: Nathan Chancellor <nathan@kernel.org>
+Cc: "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>, Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+	"H. Peter Anvin" <hpa@zytor.com>,
+	Nick Desaulniers <ndesaulniers@google.com>,
+	Bill Wendling <morbo@google.com>,
+	Justin Stitt <justinstitt@google.com>,
+	linux-hardening@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, llvm@lists.linux.dev,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] hardening: Refresh KCFI options, add some more
+Message-ID: <202404292233.9A98A7C@keescook>
+References: <20240426222940.work.884-kees@kernel.org>
+ <20240429221650.GA3666021@dev-arch.thelio-3990X>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240429221650.GA3666021@dev-arch.thelio-3990X>
 
-please test uv in ext4_inlinedir_to_tree
+On Mon, Apr 29, 2024 at 03:16:50PM -0700, Nathan Chancellor wrote:
+> On Fri, Apr 26, 2024 at 03:29:44PM -0700, Kees Cook wrote:
+> [...]
+> > +# Enable Kernel Control Flow Integrity (currently Clang only).
+> > +CONFIG_CFI_CLANG=y
+> > +# CONFIG_CFI_PERMISSIVE is not set
+> 
+> Should this be a part of kernel/configs/hardening.config because RISC-V
+> supports it (and 32-bit ARM will soon too)?
 
-#syz test https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+Probably yes. I was worried it might be "noisy" for archs that don't
+support it, but frankly if someone is using "make hardening.config" they
+probably want to know about unsupported options. :)
 
-diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
-index 5e4f65c14dfb..3611952570a7 100644
---- a/fs/ext4/namei.c
-+++ b/fs/ext4/namei.c
-@@ -1182,7 +1182,7 @@ static int htree_dirblock_to_tree(struct file *dir_file,
- int ext4_htree_fill_tree(struct file *dir_file, __u32 start_hash,
- 			 __u32 start_minor_hash, __u32 *next_hash)
- {
--	struct dx_hash_info hinfo;
-+	struct dx_hash_info hinfo = {};
- 	struct ext4_dir_entry_2 *de;
- 	struct dx_frame frames[EXT4_HTREE_LEVEL], *frame;
- 	struct inode *dir;
-
+-- 
+Kees Cook
 
