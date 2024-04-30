@@ -1,177 +1,143 @@
-Return-Path: <linux-kernel+bounces-164172-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-164181-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3762E8B7A26
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 16:41:03 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5E6BA8B7A4C
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 16:43:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 66BAA1C22FDA
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 14:41:02 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7E4F91C2268C
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 14:43:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 47F601802BC;
-	Tue, 30 Apr 2024 14:33:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE171176FC3;
+	Tue, 30 Apr 2024 14:39:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="VVNxdNl4"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dIHK3kjW"
+Received: from mail-wr1-f45.google.com (mail-wr1-f45.google.com [209.85.221.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D04AE770F5;
-	Tue, 30 Apr 2024 14:33:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6FE8115278D;
+	Tue, 30 Apr 2024 14:39:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714487600; cv=none; b=jrUQ4kLAJYS1j6K99OxJNNxdkBgTGifJxxVP9z5clWh3pMcpK7sQWxIotMbDX3yU7g6ZwYty9GzzH08DQwtYjbpVq/izqOb4OLZ2oW02sxUEyUlGPtdIniElgloTg90TiN09/KnUp50S75NtQ7F0UA1P1Iv8im2vuj269rUlg+o=
+	t=1714487993; cv=none; b=i5ldPIQ6X0bSoEd5pJaUQ+RQ5mE7jYXtsN/SIwwR4zIpZxLImx0GD4KMDUZMU3teJNsE9L5BJ1qi8kILZQBMTrqC5yqM77IqRLeHkIJtkO/+t9lzHzyE2Iql75BSTcmxy1RQRjqckp3lLlOEoOBD/UfWM3abj8H3THVHqz3DA8o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714487600; c=relaxed/simple;
-	bh=ZbofnJTeGEkJkkARV3RauUlYPiv2yoCrwKvOpKsZ05E=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=p4gU7Lv3dlENVrO4ndDfHLzqdiFbv04XbN/hk6dtgRf9Qa9T3TTxcp4wb0lJE3umMrbwvBpLpnZus11i3ZMzm4+8XBoWEk2FrEhnISJTXfBinfVmxRhUpHwIyO4ujNkjrBYf8duRN+bmx2FZ+zvwL7HgbPAGkbPsL56GPDSPgfk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=VVNxdNl4; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1714487597;
-	bh=ZbofnJTeGEkJkkARV3RauUlYPiv2yoCrwKvOpKsZ05E=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=VVNxdNl4kQe39oj47b3+NyFvudFAZGW59n5BTUf1/DF2H3cviw3Tuiwcgc3kGQLpu
-	 4aT/K0hOh42Fg2vK9bcCSngPs4kAJL8Rf8S29deXyTtgtp8jAuUo9beJ/VY35hNiL+
-	 UphsRomofb7zdUW87scAWAWZDpisn7RdjkM5Afe/n9AWPRaqXWBSKfS2HeaDMGbNuY
-	 QOSu8VFIpqhhzZf5Nf/AvcUa0eCoadqJYoJ8LpUFqhBHTRZF4GWMnN//BT1op4PzCR
-	 gmhSVXEW+tJkp5f+PgTXDiJHlV4e0Un1PJJwlgcny3sFV1hNNGnVe6zvX3541yyvvA
-	 QCgYVUzPdJ1+A==
-Received: from mercury (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: sre)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 2844E378212D;
-	Tue, 30 Apr 2024 14:33:17 +0000 (UTC)
-Received: by mercury (Postfix, from userid 1000)
-	id BB1B7106074C; Tue, 30 Apr 2024 16:33:16 +0200 (CEST)
-Date: Tue, 30 Apr 2024 16:33:16 +0200
-From: Sebastian Reichel <sebastian.reichel@collabora.com>
-To: Herman van Hazendonk <github.com@herrie.org>
-Cc: linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Ben Wolsieffer <benwolsieffer@gmail.com>, Linus Walleij <linus.walleij@linaro.org>
-Subject: Re: [PATCH] power: supply: max8903: configure USUS as output
-Message-ID: <ujpdv6fahceaatniy3w4z23dy7q4r5swfqzi2mc4dlarcdavo4@x5fvm5oklohx>
-References: <20240417-max8903-v1-1-25d4dbf4ce9b@herrie.org>
+	s=arc-20240116; t=1714487993; c=relaxed/simple;
+	bh=KE2vEEEqA554ZgKHK7GBdCbKsPBwaTbJsb1ro1vix3U=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=RM5ixRkrRAI8ovBPXkxYKpmkoH8jFXq4+1yV3WhRhVA4EV1wupMr3upz2fu/2AZW/EzNaxe6xKzE9bvhk5gTcA1ZkcP9nAlL4PDuxOVv9E3nWAfi/iICycTCMDRjUJ0fftrdCKP0Zwz/lhJRaPuRnnRwRUETFIwfOLYJRFSt1dg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dIHK3kjW; arc=none smtp.client-ip=209.85.221.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f45.google.com with SMTP id ffacd0b85a97d-34db22374f3so133769f8f.2;
+        Tue, 30 Apr 2024 07:39:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1714487990; x=1715092790; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=w7DgcOTsA8UPpLRyL5kZXddV89o4d+7ihnZHszbkMxQ=;
+        b=dIHK3kjWUzeIegTZg7xGnGxYksMoFpGvtqkhJHXSqrcIEU5IhynkFFQ/2hMNHfwRku
+         EEGHvkNxnv6BLZWnBypc29CDnD4sLv442pabs5D7tHqP582o+0/XXd8UNealipkCM1gK
+         97PKzufWLIR3eg/1IxMSQAZ/fyjtgF2HTmJ9kOlqU+aEiFsC6N6Q4jwWat4AMD3kluON
+         kazCleQVgyB0Q2cJszSa88irCqkvrRUBKY7oBP+JQbf0biq/roRvSxWuZBtZKmmfXUTY
+         qdWG4kcNQssedijb3hGJ2rvyVokmNqlj71HWFJZ2eIn4KZc6hCtH/f0TDC5ZW6RrL+Hx
+         /Dbg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714487990; x=1715092790;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=w7DgcOTsA8UPpLRyL5kZXddV89o4d+7ihnZHszbkMxQ=;
+        b=uK2bU2k2yS+Gq21E7v84tyq0rmIKejj/sAM8Opk72axyhlq4pPNmnZb1dgQBRFXll5
+         gaE9+kP1HNwVHAKWOdzkadsk0Fp8CU25pPGYKINRsi5k9jxOszgamrb/p5vrlcxHtmaM
+         PsjvdaHWI6ig7i5M9AidZwwhF8grTZ1VUzmMnKGiNQKFNfFYqwI9dDt1mZt74vHyUfS/
+         6PAhhT+0rGNALkgeMlGiYTLZW3VRKvoZ+b1YShhS8hN8ahZpkCZJXue7GWWGTHusZhnb
+         90MYsFCYGPuaT2rs54sw8p4IWQV068YYGOyFfTTZjt9UQRsQRSKDKLfxRecT33wPiA4r
+         5LaQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXlbfiMe6VqVSlde0XNst+akRT5DuMz3c3rMB9Zg6F29+KfNiucyI2hnY1jLlMIjT4GK5ntFbYB3cmq99xxe8jL1iTdOBJsq1a0sLHJDPM9gn7h8TUkhM3orvI5j5VBUcpMiomF
+X-Gm-Message-State: AOJu0YzmE4KWclA2KQjrsm5uSG3qJRrhxvxInFbOaTLeu5PeVTpTIIlN
+	xYopkS+xihcVnE5kp8MnoY+hCcBvnBMWFb4jzpdi/pOWwr8N6nVR
+X-Google-Smtp-Source: AGHT+IF0C0BjeadRleyUQcECX5eMDfFIkYrLdszT3O+rpxFT/ctb2bA3C54cL3VV3sBe4vx+7qAkyQ==
+X-Received: by 2002:a05:6000:242:b0:34c:8b03:48b6 with SMTP id m2-20020a056000024200b0034c8b0348b6mr6209704wrz.23.1714487989431;
+        Tue, 30 Apr 2024 07:39:49 -0700 (PDT)
+Received: from localhost ([146.70.204.204])
+        by smtp.gmail.com with ESMTPSA id w5-20020a5d6805000000b0034c8b0354a6sm9593289wru.106.2024.04.30.07.39.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 30 Apr 2024 07:39:49 -0700 (PDT)
+From: Richard Gobert <richardbgobert@gmail.com>
+To: davem@davemloft.net,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	dsahern@kernel.org,
+	willemdebruijn.kernel@gmail.com,
+	alobakin@pm.me,
+	netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: Richard Gobert <richardbgobert@gmail.com>
+Subject: [PATCH net v4 0/2] net: gro: add flush/flush_id checks and fix wrong offset in udp
+Date: Tue, 30 Apr 2024 16:35:53 +0200
+Message-Id: <20240430143555.126083-1-richardbgobert@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="243jbcowuncudllz"
-Content-Disposition: inline
-In-Reply-To: <20240417-max8903-v1-1-25d4dbf4ce9b@herrie.org>
+Content-Transfer-Encoding: 8bit
 
+This series fixes a bug in the complete phase of UDP in GRO, in which
+socket lookup fails due to using network_header when parsing encapsulated
+packets. The fix is to add network_offset and inner_network_offset to
+napi_gro_cb and use these offsets for socket lookup.
 
---243jbcowuncudllz
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+In addition p->flush/flush_id should be checked in all UDP flows. The
+same logic from tcp_gro_receive is applied for all flows in
+udp_gro_receive_segment. This prevents packets with mismatching network
+headers (flush/flush_id turned on) from merging in UDP GRO.
 
-Hi,
+The original series includes a change to vxlan test which adds the local
+parameter to prevent similar future bugs. I plan to submit it separately to
+net-next.
 
-On Wed, Apr 17, 2024 at 03:35:00PM +0200, Herman van Hazendonk wrote:
-> The USUS pin was mistakenly configured as an input, when it should be an
-> output that specifies whether the USB power input is suspended. In additi=
-on
-> to fixing the pin mode, this patch also suspends the USB input when a DC
-> charger is connected, which should result in a slight reduction in USB
-> quiescent current.
->=20
-> Signed-off-by: Ben Wolsieffer <benwolsieffer@gmail.com>
-> Signed-off-by: Herman van Hazendonk <github.com@herrie.org>
-> ---
+This series is part of a previously submitted series to net-next:
+https://lore.kernel.org/all/20240408141720.98832-1-richardbgobert@gmail.com/
 
-Thanks for your patch. I think this should get
+v3 -> v4:
+ - Store network offsets, and use them only in udp_gro_complete flows
+ - Correct commit hash used in Fixes tag
+ - v3:
+ https://lore.kernel.org/netdev/20240424163045.123528-1-richardbgobert@gmail.com/
 
-Fixes: 50da8d04ee52 ("power: supply: max8903: Convert to GPIO descriptors")
+v2 -> v3:
+ - Add network_offsets and fix udp bug in a single commit to make backporting easier
+ - Write to inner_network_offset in {inet,ipv6}_gro_receive
+ - Use network_offsets union in tcp[46]_gro_complete as well
+ - v2:
+ https://lore.kernel.org/netdev/20240419153542.121087-1-richardbgobert@gmail.com/
 
-Also what's going on with the Signed-off-by? Did you forward the
-patch from Ben Wolsieffer (i.e. the author is wrong) or did you
-co-develop it (so there should be a "Co-developed-by: Ben Wolsieffer
-<benwolsieffer@gmail.com>" tag)?
+v1 -> v2:
+ - Use network_offsets instead of p_poff param as suggested by Willem
+ - Check flush before postpull, and for all UDP GRO flows
+ - v1:
+ https://lore.kernel.org/netdev/20240412152120.115067-1-richardbgobert@gmail.com/
 
->  drivers/power/supply/max8903_charger.c | 14 +++++++++++++-
->  1 file changed, 13 insertions(+), 1 deletion(-)
->=20
-> diff --git a/drivers/power/supply/max8903_charger.c b/drivers/power/suppl=
-y/max8903_charger.c
-> index e65d0141f260..15dc3a5239e2 100644
-> --- a/drivers/power/supply/max8903_charger.c
-> +++ b/drivers/power/supply/max8903_charger.c
-> @@ -102,6 +102,10 @@ static irqreturn_t max8903_dcin(int irq, void *_data)
->  	if (data->dcm)
->  		gpiod_set_value(data->dcm, ta_in);
-> =20
-> +	/* Set USB-Suspend 1:Suspended 0:Active */
-> +	if (data->usus)
-> +		gpiod_set_value(data->usus, ta_in);
-> +
->  	/* Charger Enable / Disable */
->  	if (data->cen) {
->  		int val;
-> @@ -310,7 +314,15 @@ static int max8903_setup_gpios(struct platform_devic=
-e *pdev)
->  				     "failed to get FLT GPIO");
->  	gpiod_set_consumer_name(data->flt, data->psy_desc.name);
-> =20
-> -	data->usus =3D devm_gpiod_get_optional(dev, "usus", GPIOD_IN);
-> +	/*
-> +	 * Suspend the USB input if the DC charger is connected.
-> +	 *
-> +	 * The USUS line should be marked GPIO_ACTIVE_HIGH in the
-> +	 * device tree. Driving it low will enable the USB charger
-> +	 * input.
+Richard Gobert (2):
+  net: gro: fix udp bad offset in socket lookup by adding {inner_}network_offset to napi_gro_cb
+  net: gro: add flush check in udp_gro_receive_segment
 
-I think the above 3 lines should be dropped. They added more
-confusion to me than actually helping and the information is
-already in the DT binding file.
+ include/net/gro.h      |  9 +++++++++
+ net/8021q/vlan_core.c  |  2 ++
+ net/core/gro.c         |  1 +
+ net/ipv4/af_inet.c     |  1 +
+ net/ipv4/udp.c         |  3 ++-
+ net/ipv4/udp_offload.c | 15 +++++++++++++--
+ net/ipv6/ip6_offload.c |  1 +
+ net/ipv6/udp.c         |  3 ++-
+ net/ipv6/udp_offload.c |  3 ++-
+ 9 files changed, 33 insertions(+), 5 deletions(-)
 
-Greetings,
+-- 
+2.36.1
 
--- Sebastian
-
-> +	 */
-> +	flags =3D ta_in ? GPIOD_OUT_HIGH : GPIOD_OUT_LOW;
-> +	data->usus =3D devm_gpiod_get_optional(dev, "usus", flags);
->  	if (IS_ERR(data->usus))
->  		return dev_err_probe(dev, PTR_ERR(data->usus),
->  				     "failed to get USUS GPIO");
->=20
-> ---
-> base-commit: 96fca68c4fbf77a8185eb10f7557e23352732ea2
-> change-id: 20240417-max8903-ace97d7d3407
->=20
-> Best regards,
-> --=20
-> Herman van Hazendonk <github.com@herrie.org>
->=20
-
---243jbcowuncudllz
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmYxASAACgkQ2O7X88g7
-+po8UxAAp2+KFGesRHzAkUVrYxiu1Exye2LwzJjQdFD69x3N1cchUiGVaebshxIU
-73MwfOssQndZMS/ice/Ed71XJTtb93EA7MtuHkQQ8MEelEoC5T4N0VER+S1q/Irb
-FXHteDS4WDm7pYd6Pf9XQW7eI/WrhqQ2vJMn9BjbQrh79J6XT9GdLCF5XrNgcDdL
-nGUZIlCtnE+xce8Q4vpPZ5t3LNqFrkJTMWBOGFZtl1hOaaPqHS3cuJ40mangaZ3u
-EGBL3yck5fJVFiUz8e1zibFrDow00j6zXI/7aU6c4sFGadTPea2QmCCPUO0gRMSt
-9vTruWzmidtXIIOckrhfcGAlNmN54NFPrl6wibmOdINJ/a/AMixZg3qi33TKHYp5
-xNYxc2KEbw9kELlqABBHVw7fdulS+YCVh+iC8iYmNH3SeoKKAStFlUhgog0Ba4JE
-ZaWkFxcnIBjmJoAkVZDEAJLigV0xaKDJfECal/EXqREBvtfmX9Y8FLJqXSBdLax2
-7QpvmzabW9CRqEGTTBUHinJT4LMuaNuDPdjOlYj0BCALs7is59dVxG4Nc2sCmWL6
-2lHWBssg/IOBFp8OqnOsjEe3aq2fBASE2urGreXFpRCMaBVV5vHXm4xLrUQZ9NF+
-ypqvN/8GcuGc7B7SnjFAXLeZTMFuNhrrU8/DOlF3g9qsDEd7iZg=
-=VF7a
------END PGP SIGNATURE-----
-
---243jbcowuncudllz--
 
