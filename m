@@ -1,108 +1,143 @@
-Return-Path: <linux-kernel+bounces-164739-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-164740-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A4CBD8B81E4
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 23:28:44 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 660C88B81E6
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 23:29:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D49341C21DBB
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 21:28:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 155B01F24986
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 21:29:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4788A1BED63;
-	Tue, 30 Apr 2024 21:28:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB5D21BED65;
+	Tue, 30 Apr 2024 21:29:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IdJljA4Y"
-Received: from mail-lf1-f50.google.com (mail-lf1-f50.google.com [209.85.167.50])
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="V61RWo3K"
+Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2318A199EB6;
-	Tue, 30 Apr 2024 21:28:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C49511A38F4
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 21:29:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714512517; cv=none; b=tyZ0z18VBDes9Asll4QhcnuySy9jmpwdB/GQP/oYd8KQdYqXSL3h2kLScgmFxEWOoXzu9BaH7FVsVa5zQ81j1pk4aZyTzouv8PUtauUneFUTMyNZs1ppiY8PA5ZY6VytHRkRPumciyw3f2lx1NSAABZ5aEqra+jSOT0cCUlkfPk=
+	t=1714512574; cv=none; b=Welktwr5dq0Hu7D+SOOE/veB1Rme48Qr1KOjmjS8CMYhizsG9hscsJ51u7Mg0ohn+ztu1Xjvj4uj9F6ugsj5P921zITGGR6fXh9DxyU/esN9tuLb/VJ1BgoBIxGwhQm5wrCsN3J+GRSkxaqqAV+eK2cLx3YS8O5bsCoStLsPyy4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714512517; c=relaxed/simple;
-	bh=spJ1X/XVz2l4YxRBB3S8D5s5rTkO52DHF/PDHeGLeOE=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=hWYOqDS63LWh60pkpKWjO90qyLwaK00yFGCQua0jyZUyDJvy6boUbAfFA0nJlgIs9Byaozu2tqIExv+X4BpX4fyMgXPEOubE7nO5dhVfIK57YvmnfLep95OQSNZnhvDSYUna0yyahT0S6a6l1Jiq21hPQZ5A4B+v7EcuZQ5PeiI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IdJljA4Y; arc=none smtp.client-ip=209.85.167.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f50.google.com with SMTP id 2adb3069b0e04-518a56cdc03so7067099e87.1;
-        Tue, 30 Apr 2024 14:28:35 -0700 (PDT)
+	s=arc-20240116; t=1714512574; c=relaxed/simple;
+	bh=6U9unJGTfc7UWu3ejff7Z+GgZ9ABtAxR/MMYNspzo1E=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=JntCJAzoePcBTti9wAmu1OJGPBrTXkigm3FLrtg25cs+KgM7FK5fGDZKL0gDedyi10mtUOntRqUrVlWZN/BUgKXtYCoptidFes8QkZA6LG888Q3ILHPvIkFIjbb0crqyVKoV8fGrS/mjFZVSTQbqTYYC9CAfBJJC1m6PGNN/1eA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=V61RWo3K; arc=none smtp.client-ip=209.85.214.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-1e51398cc4eso55228665ad.2
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 14:29:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714512514; x=1715117314; darn=vger.kernel.org;
+        d=chromium.org; s=google; t=1714512572; x=1715117372; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=eEAcAd46dLi8Su/AUSbpch/nv/FSmxZB9FP904cjCvs=;
-        b=IdJljA4Yar8DW8Pezl4XUapUK7o0aL2xP5y4lBjRGLCuMrqxsegcCfyq0XJsHqPLg6
-         y4MJTr3AVwIaB7fZbP+LB5AO28ERS8+12bu8MUVKRcPn8TZEAiR+IX59RB+BE4yNsQW0
-         vy1c2vAjIh65YFkuj8zwwesJXvsapRwIIZSvIvOM0sThFlIhEAkeMpZyokBbmOUwlv+2
-         Hr/tGRHdKl9w/acIsv7vN3JTuvcKPAr+ZMDMgBOa+lGcU1ELFQVklQYLP5+UaAbkFWfn
-         cO+JMmDFBCW6hcjNwJFR4Kda/yGbjFuGHTjCd9UufuFaAm0VqSrbDZLcqJteFO/c0d89
-         +l3g==
+        bh=PEjf4f0YZskVbYs/23zDtacUAhJaOjxP+1cZSas3wIY=;
+        b=V61RWo3KVc17E2cd58KASJ+tz5SI/fakcT/CsuWKtjb/W55mq/vic3FPuplvHzSbBp
+         ol0KXdoAraiTCU4yJnnWztroQNKcbRnp4ZB/++Y7zDtWdFACl6/OZn/S1C69J/Nd0SSO
+         aNVs4hQoLM9THQ/eLOKSWbLhgsNVsQofFd1s0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714512514; x=1715117314;
+        d=1e100.net; s=20230601; t=1714512572; x=1715117372;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=eEAcAd46dLi8Su/AUSbpch/nv/FSmxZB9FP904cjCvs=;
-        b=nchfML9MJ3APaYuTDP6ovLL6D9SU62KjCn7cQUJrumUFRlRW3fiXdufVQeFadjX79V
-         QUzn+vDPPx5Hun1PlghVb/byY3zKCb5oMUfcAYBb9lVAVyc8D3cF2OaydMtLaMpUuT2y
-         FjI4z2pfugv7ZWqQQrQwHqf/Oo3hSU5ZTgxCXi6DrkpTcS621S5l2d9hBm6DyBQ/HKjN
-         /6t0BKs21fSQfoTYTM4QE5NEeVtVmJU0Jt+oW+aSBwrjYFiIIeVxjq+yCHWA/jB7TqlJ
-         sL/HyqMlHLwQVpCWnq3FPmZuQD9yTfm5g+gpM0he7qPBcXuxOVYthlgbCC+3IEBSnZX8
-         MS/w==
-X-Forwarded-Encrypted: i=1; AJvYcCWk6MAFneyxdG3GutiU83xFNHk4AP8XSWAK73xuZ2KmhDlV+Pv2Wp/UgL3qI5WPnjIMA/Hqd3c57LMqeV8swjgTOGrqhNoZEjYkdnJ3k2Oa
-X-Gm-Message-State: AOJu0Yzc5wa1PZHvANBJe+nr64q1JOqA0Kw8FMlM10U4iXIJU12ErhGx
-	ysukyumH53UlOBCOTjwSOeE4XKuHsWiYBNKKSutv3gWTQ/7O5Q==
-X-Google-Smtp-Source: AGHT+IEunTzQGTWdUwtf2jZ+KujlH3D1v3ImsH6mG7rpwezhNpBLN3ERAfkycYI3S5NAoxMBETw3qA==
-X-Received: by 2002:a05:6512:3a89:b0:516:d692:5e0b with SMTP id q9-20020a0565123a8900b00516d6925e0bmr435192lfu.54.1714512512067;
-        Tue, 30 Apr 2024 14:28:32 -0700 (PDT)
-Received: from localhost.localdomain ([85.89.127.166])
-        by smtp.gmail.com with ESMTPSA id x33-20020a056512132100b00516ce6a6f23sm4581020lfu.271.2024.04.30.14.28.30
+        bh=PEjf4f0YZskVbYs/23zDtacUAhJaOjxP+1cZSas3wIY=;
+        b=ILquef25LblkTfeEk01xW61m1raQm9qlydfrAWHUCsDkkrYN5snmUYOOViq/OiVhBY
+         hr0zYtu1IIOzV1mvA2tIE3J1homm8Ucocl83QlgS2wW7Yb4wf49KYd4HVnRzt9tVxnFH
+         JAEuO0/BVJPabbrr0nMag3FzPG31urE6Dng9xczPj0AMoSWRbmtK1QbGyHQkGbvQsAHM
+         lc6l0NMkWDYR8m9080iWxH1kuOl0n4qGcX4RgXTIV36qLpdKeo3Nhw3FnRqxtQDYyMTu
+         Ebgm2jV7KfkCCOHrkIThy+xbSwi8JZ9E7UuIbpoNFV1BMvp/l0nLaeYA48GqoeFK/nRP
+         Icbw==
+X-Gm-Message-State: AOJu0Yw7tCweKxjwZUWBJHq8wCu3XDSIB1Y+U1BXyFzRyBMJ4q6fwNMQ
+	3s6QC0qhWLxS3LQAFXiHm/rnjVW1mjEAtIYMfj93btj6BNImVOFiUdpFdMdJYMHlBCsudfhacqc
+	=
+X-Google-Smtp-Source: AGHT+IHE3zAOxQdE5LzNdBkq8h+2IF29Scc8fzT8qdg0sTbbJ2ptRGBHW/FSU1Cuv496q9Ut2T8Hcg==
+X-Received: by 2002:a17:903:120b:b0:1e5:a025:12f9 with SMTP id l11-20020a170903120b00b001e5a02512f9mr873908plh.28.1714512571923;
+        Tue, 30 Apr 2024 14:29:31 -0700 (PDT)
+Received: from ballway1.c.googlers.com.com (97.173.125.34.bc.googleusercontent.com. [34.125.173.97])
+        by smtp.gmail.com with ESMTPSA id a8-20020a170902ecc800b001e944fc9248sm18684579plh.194.2024.04.30.14.29.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Apr 2024 14:28:31 -0700 (PDT)
-From: Shengyu Li <shengyu.li.evgeny@gmail.com>
-To: shuah@kernel.org
-Cc: linux-kernel@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	Shengyu Li <shengyu.li.evgeny@gmail.com>
-Subject: [PATCH] selftest/safesetid: Fix uncaught return value
-Date: Wed,  1 May 2024 05:28:13 +0800
-Message-Id: <20240430212813.11910-1-shengyu.li.evgeny@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Tue, 30 Apr 2024 14:29:31 -0700 (PDT)
+From: Allen Ballway <ballway@chromium.org>
+To: LKML <linux-kernel@vger.kernel.org>
+Cc: Brady Norander <bradynorander@gmail.com>,
+	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+	Jaroslav Kysela <perex@perex.cz>,
+	Allen Ballway <ballway@chromium.org>,
+	Takashi Iwai <tiwai@suse.com>,
+	Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+	=?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?= <amadeuszx.slawinski@linux.intel.com>,
+	Mark Brown <broonie@kernel.org>,
+	linux-sound@vger.kernel.org,
+	Mark Hasemeyer <markhas@chromium.org>,
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+	Cezary Rojewski <cezary.rojewski@intel.com>
+Subject: [PATCH] ALSA: hda: intel-dsp-config: Fix Azulle Access 4 quirk detection
+Date: Tue, 30 Apr 2024 21:28:42 +0000
+Message-ID: <20240430212838.1.I77b0636d5df17c275042fd66cfa028de8ad43532@changeid>
+X-Mailer: git-send-email 2.45.0.rc0.197.gbae5840b3b-goog
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-This patch captures the return value of the ./safesetid-test execution 
-by assigning it to the variable errcode. This change ensures that the 
-script properly handles the exit status of the safesetid-test.
+This device has an audio card which is quirked for force SOF use but the
+device does not support SOF so the card is not usable and audio can't
+play through the HDMI output.
 
-Signed-off-by: Shengyu Li <shengyu.li.evgeny@gmail.com>
+Add another quirk detection that matches the Azulle Access 4 in the DMI
+info.
+
+Signed-off-by: Allen Ballway <ballway@chromium.org>
 ---
- tools/testing/selftests/safesetid/safesetid-test.sh | 1 +
- 1 file changed, 1 insertion(+)
 
-diff --git a/tools/testing/selftests/safesetid/safesetid-test.sh b/tools/testing/selftests/safesetid/safesetid-test.sh
-index e4fdce675c54..0ebc6ddc4b6c 100755
---- a/tools/testing/selftests/safesetid/safesetid-test.sh
-+++ b/tools/testing/selftests/safesetid/safesetid-test.sh
-@@ -19,6 +19,7 @@ main_function()
- {
-   check_root
-   ./safesetid-test
-+  errcode=$?
- }
- 
- main_function
--- 
-2.25.1
+ sound/hda/intel-dsp-config.c | 18 +++++++++++++++++-
+ 1 file changed, 17 insertions(+), 1 deletion(-)
+
+diff --git a/sound/hda/intel-dsp-config.c b/sound/hda/intel-dsp-config.c
+index 6a384b922e4fa..cf4e25d031d56 100644
+--- a/sound/hda/intel-dsp-config.c
++++ b/sound/hda/intel-dsp-config.c
+@@ -142,7 +142,9 @@ static const struct config_entry config_table[] = {
+
+ /*
+  * Geminilake uses legacy HDAudio driver except for Google
+- * Chromebooks and devices based on the ES8336 codec
++ * Chromebooks and devices based on the ES8336 codec. The Azulle Access 4
++ * uses the same audio card but does not support ES8336 and should use
++ * the legacy HDAudio driver.
+  */
+ /* Geminilake */
+ #if IS_ENABLED(CONFIG_SND_SOC_SOF_GEMINILAKE)
+@@ -159,6 +161,20 @@ static const struct config_entry config_table[] = {
+ 			{}
+ 		}
+ 	},
++	{
++		.flags = 0,
++		.device = PCI_DEVICE_ID_INTEL_HDA_GML,
++		.dmi_table = (const struct dmi_system_id []) {
++			{
++				.ident = "Azulle Access 4",
++				.matches = {
++					DMI_EXACT_MATCH(DMI_SYS_VENDOR, "Azulle"),
++					DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "Access4"),
++				}
++			},
++		{}
++		}
++	},
+ 	{
+ 		.flags = FLAG_SOF,
+ 		.device = PCI_DEVICE_ID_INTEL_HDA_GML,
+--
+2.45.0.rc0.197.gbae5840b3b-goog
 
 
