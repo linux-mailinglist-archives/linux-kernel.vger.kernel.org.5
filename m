@@ -1,183 +1,144 @@
-Return-Path: <linux-kernel+bounces-163770-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-163772-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2F0AC8B6FA5
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 12:28:01 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id BE2508B6FAD
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 12:31:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 30B70B21412
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 10:27:58 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D3C8D1C221C3
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 10:31:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD8B813D2AA;
-	Tue, 30 Apr 2024 10:27:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB6A412BF32;
+	Tue, 30 Apr 2024 10:31:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=nbd.name header.i=@nbd.name header.b="eMII8GUm"
-Received: from nbd.name (nbd.name [46.4.11.11])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="dcr7CkTh"
+Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62A09129A7B;
-	Tue, 30 Apr 2024 10:27:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.4.11.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B1E726AEC
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 10:31:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714472868; cv=none; b=Lu/I7gYi6+A4zjhBovp9sdib8lljtseQ1esWXlkZqjBiwegV8sB1Sp41S5S/tLsqXvy9XMFG3MR+LeF6+SeKxD003qSMcsWvh8VaS/cRfyQM5GxM/pYLDD8ARmLNEaOwI41wvITe3VmGdFkZfkdeRMvxgAsJd4ypsqiSDlQMenw=
+	t=1714473071; cv=none; b=nrlaDAD1qIGVeeM9aPHno3QvBIKn7dZly6LzWMNGz3kAEo/g/LMhaxlM8yhlH9MhhcRgVd6DJauJ9FeJjqY2fAvWAvOjPemIRyk5Fz/A0tcNw0TELQbnEypSxqdh2qIqVG9ciRPkscMsXJEi/XUqIdJxOSz2/I1IbUL7PvNcn1s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714472868; c=relaxed/simple;
-	bh=qrAZSPLY9V2e06HjvA6dDash3QU5DWCWBNfcSaTwLlk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=j/4lqDFI5d5ZebB9j/CaDGUmXb7OHuBdwAIV5/k+dtmX9XaDVMQ/l4tGCWpURnIqWmIWrdpJcE67uh4CxYcYc5BMzSXJlSXOGuwMTibM4ExeNtPkpbT5rNbj5wg+Djv4h1lUTvEOM6ymZ8+wVs0OaLH51Ar0wwmSEwiOG/dXeDA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nbd.name; spf=none smtp.mailfrom=nbd.name; dkim=pass (1024-bit key) header.d=nbd.name header.i=@nbd.name header.b=eMII8GUm; arc=none smtp.client-ip=46.4.11.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nbd.name
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=nbd.name
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nbd.name;
-	s=20160729; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:
-	References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender:Reply-To:
-	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-	List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=m9GOdwLtpGgxawicx0NC7KEnv3fWXOtUkoh5EDjZVXU=; b=eMII8GUmErLDjMspTFvaSuFQ8F
-	lvhUXbYeHhp2ihgR5wtRfChJ9L4wEiZ3K2AAwDjDCztrpWzqad3Umva32I0nlpQbwxt4RL7QzK5Mb
-	aHug0jQawIytTEU+2cQWYmTOY1R792jBUe3mDEbDGlpuUnwCE0NlrKmVggK9ugjs0w/c=;
-Received: from p54ae9c93.dip0.t-ipconnect.de ([84.174.156.147] helo=nf.local)
-	by ds12 with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-	(Exim 4.96)
-	(envelope-from <nbd@nbd.name>)
-	id 1s1ki4-00AEZo-32;
-	Tue, 30 Apr 2024 12:27:41 +0200
-Message-ID: <9e686cb4-ed1f-4886-a0b7-328367e62757@nbd.name>
-Date: Tue, 30 Apr 2024 12:27:40 +0200
+	s=arc-20240116; t=1714473071; c=relaxed/simple;
+	bh=fq9kl7HC1onkFs25GDO0h+u78xvNx/nppVe2nqgDwLM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=qgq1qAfyJjV0F6E+AINigxSRG1H1GouJHyn9cbxXj7rLMkHEqh4G3LfKml7KXYPJg/vOrPbYg5IuqDJBsjjxrHFxqbuhDaVtYZti6QtPFJ4ftmIMXYoqQTGhBbyEbVhSBl8CWSV5PshX/btNEaSfuANu5rLHs5NjZsLYK+ROoLE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=dcr7CkTh; arc=none smtp.client-ip=209.85.208.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-5724736770cso8399a12.1
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 03:31:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1714473068; x=1715077868; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=DwW47iggG3BwAgDVmMpwtAGhvg781bYiNMy8bvB5pCk=;
+        b=dcr7CkThygEnLlq8604zgf5GwMdRlHdAhl1rsv64KJXN+Spi3Jw6ErxO3JADwPKn50
+         PFWUwyjiAbjXgkUDChzJGCBzqjIphKHpLRO0Dl0crirpO0tVHXuVsplL/H5GPfyEtBu1
+         xjNAr+NVjIDQ+n12MmuTxZ47VLhBSrWiA8RoRcY7iMfZXB0geWyExibTYWTXMf8/d1nc
+         mH+mwcA8jhcuFcl4DdxxtpGTxkJ/s+9GB/GJ9mHNXURnvrtVJSz+M+c21X6UNICArT+R
+         hLJiU07hxhX1l1/d81vbWxC4VU9gL5VsP5ATqxWw2d1KWgRcUCY9IC0v1LQNvbyZF2ac
+         wwCw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714473068; x=1715077868;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=DwW47iggG3BwAgDVmMpwtAGhvg781bYiNMy8bvB5pCk=;
+        b=i/BNPpfA8CU3zHwt7XwuDzHwo/7NCVNlUFMKTJJ5o9W4+/TMj9u/jNxaX1/xweex3d
+         iP42uHJ9BvPtDRS4ElnyNWEp40tiAv3Net1WzkgFhLfKqXqUmf3pjg0GG2AkdsNg0QpT
+         XzmxrBqC9hjv/NNf5OJuGozDn0a94TwbjEn8o8xV17BcXyRUr4XunSnTSUFt/N1I550V
+         +cc3fo33KsdNKego/qemoCIvLdaXRv3HshS4whx55iqjqHSMEPTZV+oJIgjb2/vbaqIr
+         OONkcx2DBGa4o9jSlAM6tZWkrB6cHTypla1uJc31i+GTyPQiUFfKyw9USARiK15iba14
+         Pv0A==
+X-Forwarded-Encrypted: i=1; AJvYcCXaAQT02PHHpniVxGUHkJJzHuxLmd3NQwwVpMoHOmmI5Pb1HlsprqsSlndxemo+yR9QBfmrI5woVVKHCyRekmMvJCddIVq5LBZY9ngQ
+X-Gm-Message-State: AOJu0YzJXrAA9uLkWmU0iQB4NMS7Rj6/ah2b2dpa1bbtNOIwAvJGt/57
+	EzzNjuFrLsrzGedbb6je/ybwzTdRaYjxzLKSa6f47dmi29pvsopB7p52HDZrJySY+hQDuI5L0Uf
+	LTcmZlOjhMkOARVYgt+kgGdwRkZcxTBLIFhPE
+X-Google-Smtp-Source: AGHT+IECkVB2ejmKLRzAYSu/bpt95HY9NGBzyzWpXw0MNO2BKj2tO+28C3FXFOwKzHJZrv12YBLZM3JWoyd5mni2jbE=
+X-Received: by 2002:a05:6402:174c:b0:572:7d63:d7ee with SMTP id
+ v12-20020a056402174c00b005727d63d7eemr153109edx.4.1714473067350; Tue, 30 Apr
+ 2024 03:31:07 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 net-next v4 2/6] net: add support for segmenting TCP
- fraglist GSO packets
-To: Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
- Eric Dumazet <edumazet@google.com>, "David S. Miller" <davem@davemloft.net>,
- David Ahern <dsahern@kernel.org>, Jakub Kicinski <kuba@kernel.org>
-Cc: willemdebruijn.kernel@gmail.com, linux-kernel@vger.kernel.org
-References: <20240427182305.24461-1-nbd@nbd.name>
- <20240427182305.24461-3-nbd@nbd.name>
- <a20a0f0479cedc7f2f6abaf26e46ca7642e70958.camel@redhat.com>
-Content-Language: en-US
-From: Felix Fietkau <nbd@nbd.name>
-Autocrypt: addr=nbd@nbd.name; keydata=
- xsDiBEah5CcRBADIY7pu4LIv3jBlyQ/2u87iIZGe6f0f8pyB4UjzfJNXhJb8JylYYRzIOSxh
- ExKsdLCnJqsG1PY1mqTtoG8sONpwsHr2oJ4itjcGHfn5NJSUGTbtbbxLro13tHkGFCoCr4Z5
- Pv+XRgiANSpYlIigiMbOkide6wbggQK32tC20QxUIwCg4k6dtV/4kwEeiOUfErq00TVqIiEE
- AKcUi4taOuh/PQWx/Ujjl/P1LfJXqLKRPa8PwD4j2yjoc9l+7LptSxJThL9KSu6gtXQjcoR2
- vCK0OeYJhgO4kYMI78h1TSaxmtImEAnjFPYJYVsxrhay92jisYc7z5R/76AaELfF6RCjjGeP
- wdalulG+erWju710Bif7E1yjYVWeA/9Wd1lsOmx6uwwYgNqoFtcAunDaMKi9xVQW18FsUusM
- TdRvTZLBpoUAy+MajAL+R73TwLq3LnKpIcCwftyQXK5pEDKq57OhxJVv1Q8XkA9Dn1SBOjNB
- l25vJDFAT9ntp9THeDD2fv15yk4EKpWhu4H00/YX8KkhFsrtUs69+vZQwc0cRmVsaXggRmll
- dGthdSA8bmJkQG5iZC5uYW1lPsJgBBMRAgAgBQJGoeQnAhsjBgsJCAcDAgQVAggDBBYCAwEC
- HgECF4AACgkQ130UHQKnbvXsvgCgjsAIIOsY7xZ8VcSm7NABpi91yTMAniMMmH7FRenEAYMa
- VrwYTIThkTlQzsFNBEah5FQQCACMIep/hTzgPZ9HbCTKm9xN4bZX0JjrqjFem1Nxf3MBM5vN
- CYGBn8F4sGIzPmLhl4xFeq3k5irVg/YvxSDbQN6NJv8o+tP6zsMeWX2JjtV0P4aDIN1pK2/w
- VxcicArw0VYdv2ZCarccFBgH2a6GjswqlCqVM3gNIMI8ikzenKcso8YErGGiKYeMEZLwHaxE
- Y7mTPuOTrWL8uWWRL5mVjhZEVvDez6em/OYvzBwbkhImrryF29e3Po2cfY2n7EKjjr3/141K
- DHBBdgXlPNfDwROnA5ugjjEBjwkwBQqPpDA7AYPvpHh5vLbZnVGu5CwG7NAsrb2isRmjYoqk
- wu++3117AAMFB/9S0Sj7qFFQcD4laADVsabTpNNpaV4wAgVTRHKV/kC9luItzwDnUcsZUPdQ
- f3MueRJ3jIHU0UmRBG3uQftqbZJj3ikhnfvyLmkCNe+/hXhPu9sGvXyi2D4vszICvc1KL4RD
- aLSrOsROx22eZ26KqcW4ny7+va2FnvjsZgI8h4sDmaLzKczVRIiLITiMpLFEU/VoSv0m1F4B
- FtRgoiyjFzigWG0MsTdAN6FJzGh4mWWGIlE7o5JraNhnTd+yTUIPtw3ym6l8P+gbvfoZida0
- TspgwBWLnXQvP5EDvlZnNaKa/3oBes6z0QdaSOwZCRA3QSLHBwtgUsrT6RxRSweLrcabwkkE
- GBECAAkFAkah5FQCGwwACgkQ130UHQKnbvW2GgCeMncXpbbWNT2AtoAYICrKyX5R3iMAoMhw
- cL98efvrjdstUfTCP2pfetyN
-In-Reply-To: <a20a0f0479cedc7f2f6abaf26e46ca7642e70958.camel@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20240429221706.1492418-1-naresh.kamboju@linaro.org> <CAKa-r6vJjeYqGZERRr=B4ykLf-efPRY3h=HU3y3QxazwZ_cMAg@mail.gmail.com>
+In-Reply-To: <CAKa-r6vJjeYqGZERRr=B4ykLf-efPRY3h=HU3y3QxazwZ_cMAg@mail.gmail.com>
+From: Eric Dumazet <edumazet@google.com>
+Date: Tue, 30 Apr 2024 12:30:56 +0200
+Message-ID: <CANn89iJ4go0oXSjRaxkdxsUFPCK8kcb8YPt+0d7isK9ZsFrpww@mail.gmail.com>
+Subject: Re: selftests: tc-testing: tdc.sh: WARNING: at kernel/locking/lockdep.c:1226
+ lockdep_register_key
+To: Davide Caratti <dcaratti@redhat.com>
+Cc: Naresh Kamboju <naresh.kamboju@linaro.org>, lkft-triage@lists.linaro.org, 
+	regressions@lists.linux.dev, linux-kernel@vger.kernel.org, 
+	netdev@vger.kernel.org, jhs@mojatatu.com, xiyou.wangcong@gmail.com, 
+	jiri@resnulli.us, cpaasch@apple.com, pabeni@redhat.com, xmu@redhat.com, 
+	maxim@isovalent.com, anders.roxell@linaro.org, dan.carpenter@linaro.org, 
+	arnd@arndb.de, Linux Kernel Functional Testing <lkft@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 30.04.24 12:19, Paolo Abeni wrote:
-> On Sat, 2024-04-27 at 20:22 +0200, Felix Fietkau wrote:
->> Preparation for adding TCP fraglist GRO support. It expects packets to be
->> combined in a similar way as UDP fraglist GSO packets.
->> For IPv4 packets, NAT is handled in the same way as UDP fraglist GSO.
->> 
->> Signed-off-by: Felix Fietkau <nbd@nbd.name>
->> ---
->>  net/ipv4/tcp_offload.c   | 67 ++++++++++++++++++++++++++++++++++++++++
->>  net/ipv6/tcpv6_offload.c | 58 ++++++++++++++++++++++++++++++++++
->>  2 files changed, 125 insertions(+)
->> 
->> diff --git a/net/ipv4/tcp_offload.c b/net/ipv4/tcp_offload.c
->> index fab0973f995b..affd4ed28cfe 100644
->> --- a/net/ipv4/tcp_offload.c
->> +++ b/net/ipv4/tcp_offload.c
->> @@ -28,6 +28,70 @@ static void tcp_gso_tstamp(struct sk_buff *skb, unsigned int ts_seq,
->>  	}
->>  }
->>  
->> +static void __tcpv4_gso_segment_csum(struct sk_buff *seg,
->> +				     __be32 *oldip, __be32 newip,
->> +				     __be16 *oldport, __be16 newport)
->> +{
->> +	struct tcphdr *th;
->> +	struct iphdr *iph;
->> +
->> +	if (*oldip == newip && *oldport == newport)
->> +		return;
->> +
->> +	th = tcp_hdr(seg);
->> +	iph = ip_hdr(seg);
->> +
->> +	inet_proto_csum_replace4(&th->check, seg, *oldip, newip, true);
->> +	inet_proto_csum_replace2(&th->check, seg, *oldport, newport, false);
->> +	*oldport = newport;
->> +
->> +	csum_replace4(&iph->check, *oldip, newip);
->> +	*oldip = newip;
->> +}
->> +
->> +static struct sk_buff *__tcpv4_gso_segment_list_csum(struct sk_buff *segs)
->> +{
->> +	const struct tcphdr *th;
->> +	const struct iphdr *iph;
->> +	struct sk_buff *seg;
->> +	struct tcphdr *th2;
->> +	struct iphdr *iph2;
->> +
->> +	seg = segs;
->> +	th = tcp_hdr(seg);
->> +	iph = ip_hdr(seg);
->> +	th2 = tcp_hdr(seg->next);
->> +	iph2 = ip_hdr(seg->next);
->> +
->> +	if (!(*(const u32 *)&th->source ^ *(const u32 *)&th2->source) &&
->> +	    iph->daddr == iph2->daddr && iph->saddr == iph2->saddr)
->> +		return segs;
->> +
->> +	while ((seg = seg->next)) {
->> +		th2 = tcp_hdr(seg);
->> +		iph2 = ip_hdr(seg);
->> +
->> +		__tcpv4_gso_segment_csum(seg,
->> +					 &iph2->saddr, iph->saddr,
->> +					 &th2->source, th->source);
->> +		__tcpv4_gso_segment_csum(seg,
->> +					 &iph2->daddr, iph->daddr,
->> +					 &th2->dest, th->dest);
->> +	}
->> +
->> +	return segs;
->> +}
-> 
-> AFAICS, all the above is really alike the UDP side, except for the
-> transport header zero csum.
-> 
-> What about renaming the udp version of this helpers as 'tcpudpv4_...',
-> move them in common code, add an explicit argument for
-> 'zerocsum_allowed' and reuse such helper for both tcp and udp?
-> 
-> The same for the ipv6 variant.
+On Tue, Apr 30, 2024 at 12:17=E2=80=AFPM Davide Caratti <dcaratti@redhat.co=
+m> wrote:
+>
+> hello,
+>
+> On Tue, Apr 30, 2024 at 12:17=E2=80=AFAM Naresh Kamboju
+> <naresh.kamboju@linaro.org> wrote:
+> >
+> > While running selftests: tc-testing: tdc.sh the following kernel warnin=
+gs,
+> > kernel Bug, kernel oops and kernel panic noticed with Linux next-202404=
+29
+> > tag kernel as per the available data.
+> >
+> > This build config is from kselftest merge config[1].
+> >
+> > Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+> >
+> > selftests: tc-testing: tdc.sh log and crash log
+>
+> the problem is created by [1]. I think that at least we need to guard
+> against failures to allocate sch->cpu_bstats and sch->cpu_qstats,
+> otherwise the dynamic key is registered but never unregistered (though
+> the key is freed  in the error path of of qdisc_alloc() ). But there
+> might be also something else; however, I can reproduce some similar
+> splat, will follow-up on the list.
+>
+> sorry for the noise,
+> --
+> davide
+>
+> [1] https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.git/c=
+ommit/?id=3Daf0cb3fa3f9ed258d14abab0152e28a0f9593084
+>
 
-Wouldn't that make it more convoluted when taking into account that the 
-checksum field offset is different for tcp vs udp?
-How would you handle that?
+I just had  5 or 6 syzbot reports about this issue.
 
-- Felix
+I tested the following fix.
+
+diff --git a/net/sched/sch_generic.c b/net/sched/sch_generic.c
+index 31dfd6c7405b01e22fe1b8c80944e2bed7d30ddc..d3f6006b563ccd8827b7af362ce=
+9dceaa78f8841
+100644
+--- a/net/sched/sch_generic.c
++++ b/net/sched/sch_generic.c
+@@ -982,6 +982,7 @@ struct Qdisc *qdisc_alloc(struct netdev_queue *dev_queu=
+e,
+
+        return sch;
+ errout1:
++       lockdep_unregister_key(&sch->root_lock_key);
+        kfree(sch);
+ errout:
+        return ERR_PTR(err);
 
