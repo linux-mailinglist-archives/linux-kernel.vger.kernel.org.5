@@ -1,245 +1,133 @@
-Return-Path: <linux-kernel+bounces-164024-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-164025-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1959E8B774D
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 15:37:23 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 840778B774F
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 15:37:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 24773B20838
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 13:37:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3A940287BB2
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 13:37:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 441BA171E60;
-	Tue, 30 Apr 2024 13:37:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB23F171E5E;
+	Tue, 30 Apr 2024 13:37:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="T+sfuGgU"
-Received: from relay6-d.mail.gandi.net (relay6-d.mail.gandi.net [217.70.183.198])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="C9EMHaxg"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B9F112CDB5;
-	Tue, 30 Apr 2024 13:37:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.198
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9E3316F859;
+	Tue, 30 Apr 2024 13:37:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714484229; cv=none; b=MWY8KvUrSKKgvZTjIcneijpt7mSE1QyJvBjDauUa3+NTOuQJmXSEamikVD7Nh33YIZ8Ts1zYQ4qIdwO6ZYcDXI5ABqxiIRrO64tSrWdwiurQYm/UadgVZXboDhKlJob62TRjS9c3WRLkWPZTxG2SpJM1d7VCUa+bMSL4CaK3PQw=
+	t=1714484245; cv=none; b=tkCV9g03QfEd8GvRJkzQwweXS3KRezU6VQW1Mmna6rzr7ZWCWx8U2KSiKBUUfac8Osz3eGJ/5z0zs1nrEBumZy9ZZ6mn3MhYObo1/SIf9GnUsOfOCxTjDB7CG8VXYIPLPMohb8sUrdqVo0LqEJa44Oik4PiADockgVQKexMWImY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714484229; c=relaxed/simple;
-	bh=5yFphC5yPc/T4pS2Pcf0KOygyeRSPkokyRTwwuSopyQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=tY5E1z2n7N+IzFy7hCBgJi1B/Dg0ayQl/ThjlFEXrxipiwEi13acBQc3zm8ZE3h1MUuctLnwinYCyUK0oLeQxPxPziEFF0Dko6IhrdnIGjyIry7ZaP466UT2xLiDdnklhtyh1wKpzVLj8OP4y9gdT/MHu8SBhGxuTuJoiUYNQpw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=T+sfuGgU; arc=none smtp.client-ip=217.70.183.198
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 124CBC0012;
-	Tue, 30 Apr 2024 13:36:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1714484219;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=gkM9d0xicBmnajscafdTXqIyu0TvtJ/Gq9ScB83e5TE=;
-	b=T+sfuGgU5KSE1xqFD4DqmpJcEqUDQLEqw80ye09yk02ttYXASrPoS7CY4ixjU205l+r48X
-	nuJHFs5/lTNcoWKdNiowEPUs8bSCcwB08eQ1HmHXATvgi/76W/JrmLnu3F/nVx3DtLAFFt
-	8dWs44KNLxdcvpvuJqSNjfizr8t7ovtI3DUbyFYE+GRCo23dyHA1aoHCbCUb1DD0f0yJFJ
-	vZcjQJt01t2DFxKX2narbYb6vSLMzL4dzbLNyoqJOkZ9IJPI+3bVl8unhPXGcgcMUvblsV
-	K7LuHYnmPQ3EBW3/e21Y46J624gYiHguO/Psw+ot1c6qZA876nSTd1DLkfnsbw==
-Date: Tue, 30 Apr 2024 15:36:55 +0200
-From: Maxime Chevallier <maxime.chevallier@bootlin.com>
-To: Heiner Kallweit <hkallweit1@gmail.com>
-Cc: davem@davemloft.net, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, thomas.petazzoni@bootlin.com, Andrew Lunn
- <andrew@lunn.ch>, Jakub Kicinski <kuba@kernel.org>, Eric Dumazet
- <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, Russell King
- <linux@armlinux.org.uk>, linux-arm-kernel@lists.infradead.org, Christophe
- Leroy <christophe.leroy@csgroup.eu>, Herve Codina
- <herve.codina@bootlin.com>, Florian Fainelli <f.fainelli@gmail.com>,
- Vladimir Oltean <vladimir.oltean@nxp.com>, =?UTF-8?B?S8O2cnk=?= Maincent
- <kory.maincent@bootlin.com>, Jesse Brandeburg <jesse.brandeburg@intel.com>,
- Marek =?UTF-8?B?QmVow7pu?= <kabel@kernel.org>, Piergiorgio Beruto
- <piergiorgio.beruto@gmail.com>, Oleksij Rempel <o.rempel@pengutronix.de>,
- =?UTF-8?B?Tmljb2zDsg==?= Veronese <nicveronese@gmail.com>, Simon Horman
- <horms@kernel.org>, mwojtas@chromium.org, Nathan Chancellor
- <nathan@kernel.org>, Antoine Tenart <atenart@kernel.org>
-Subject: Re: [PATCH net-next] net: phy: Don't conditionally compile the
- phy_link_topology creation
-Message-ID: <20240430153655.2df7a54c@device-28.home>
-In-Reply-To: <20240430135734.503f51a2@device-28.home>
-References: <20240429131008.439231-1-maxime.chevallier@bootlin.com>
-	<1ed5b8cb-c79b-44b9-8dbe-f78d7505b3b4@gmail.com>
-	<20240430135734.503f51a2@device-28.home>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-redhat-linux-gnu)
+	s=arc-20240116; t=1714484245; c=relaxed/simple;
+	bh=y5evCM8bH+FCtnusnsHECbkq6iUTlw3xWVjkltMpl3A=;
+	h=Content-Type:MIME-Version:Subject:From:In-Reply-To:References:To:
+	 Cc:Message-ID:Date; b=e8PRmQAiC+MahP+gxRC6hnvho7PopWM2E+dzh1stuSFPNew+rAvfKGy/3pnJ+SLMKwMa5zRH7TZTV71WVuPi3kz8Fmre5bx91UtvBNVTxG6KHMsZnK4knoofXYyS1CZpAYLD/MJMkNlISL+uYNNiob+5hk+FyGB1kpwlqRbujeI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=C9EMHaxg; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 92B8DC4AF18;
+	Tue, 30 Apr 2024 13:37:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714484244;
+	bh=y5evCM8bH+FCtnusnsHECbkq6iUTlw3xWVjkltMpl3A=;
+	h=Subject:From:In-Reply-To:References:To:Cc:Date:From;
+	b=C9EMHaxgK/1Sqyn2OLj3vbwWoou0zsYNsbMFw9Rw53B2N62qiGcxh03aW9mrusTMr
+	 Gjvqq0RcGvMsvK39H9eDlkNayson7heNTuZHa921A77j/lozmmf0zOYb0Zd27lyl1e
+	 9XCWuyLTcVWyILbzep9GWS+ntylkKcJerQRIPZ9CDvRgrcyFbqw1QvuIdMieSN7ToZ
+	 qZbZqoGJMHW9H0DOS2eczlgEOuqOZwYkfXKcfS8fwrim1DCqm0Y9DXk/IhwQ1WhCsk
+	 S6JPkp0tSFgDo1rtF6kOISWl6ItqH5PC31/JauV6Dr4371/cjF8hLmnaYvOXA2MZsN
+	 /BdaNliVIC3cg==
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-GND-Sasl: maxime.chevallier@bootlin.com
+Subject: Re: [PATCH v2] wifi: ar5523: enable proper endpoint verification
+From: Kalle Valo <kvalo@kernel.org>
+In-Reply-To: <20240408121425.29392-1-n.zhandarovich@fintech.ru>
+References: <20240408121425.29392-1-n.zhandarovich@fintech.ru>
+To: Nikita Zhandarovich <n.zhandarovich@fintech.ru>
+Cc: Nikita Zhandarovich <n.zhandarovich@fintech.ru>, Wu Yunchuan
+	<yunchuan@nfschina.com>, Johannes Berg <johannes.berg@intel.com>, "Breno
+ Leitao" <leitao@debian.org>, <linux-wireless@vger.kernel.org>,
+ <linux-kernel@vger.kernel.org>, <lvc-project@linuxtesting.org>,
+ <syzbot+1bc2c2afd44f820a669f@syzkaller.appspotmail.com>
+User-Agent: pwcli/0.1.1-git (https://github.com/kvalo/pwcli/) Python/3.11.2
+Message-ID: <171448424101.313333.6825523466600682181.kvalo@kernel.org>
+Date: Tue, 30 Apr 2024 13:37:22 +0000 (UTC)
 
-On Tue, 30 Apr 2024 13:57:34 +0200
-Maxime Chevallier <maxime.chevallier@bootlin.com> wrote:
+Nikita Zhandarovich <n.zhandarovich@fintech.ru> wrote:
 
-> Hello Heiner,
+> Syzkaller reports [1] hitting a warning about an endpoint in use
+> not having an expected type to it.
 > 
-> On Tue, 30 Apr 2024 10:17:31 +0200
-> Heiner Kallweit <hkallweit1@gmail.com> wrote:
+> Fix the issue by checking for the existence of all proper
+> endpoints with their according types intact.
 > 
-> > On 29.04.2024 15:10, Maxime Chevallier wrote:  
-> > > The core of the phy_link_topology isn't directly tied to phylib, and at
-> > > the moment it's initialized, phylib might not be loaded yet. Move the
-> > > initialization of the topology to the phy_link_topology_core header,
-> > > which contains the bare minimum so that we can initialize it at netdev
-> > > creation.
-> > >     
-> > 
-> > The change fixes the issue for me, but according to my personal taste
-> > the code isn't intuitive and still error-prone. Also there's no good
-> > reason to inline a function like phy_link_topo_create() and make it
-> > publicly available. Do you expect it to be ever used outside net core?
-> > In general it may make sense to add a config symbol for the topology
-> > extension, there seem to be very few, specialized use cases for it.  
+> Sadly, this patch has not been tested on real hardware.
 > 
-> I think I'm missing the point here then. Do you mean adding a Kconfig
-> option to explicitely turn phy_link_topology on ? or build it as a
-> dedicated kernel module ?
+> [1] Syzkaller report:
+> ------------[ cut here ]------------
+> usb 1-1: BOGUS urb xfer, pipe 3 != type 1
+> WARNING: CPU: 0 PID: 3643 at drivers/usb/core/urb.c:504 usb_submit_urb+0xed6/0x1880 drivers/usb/core/urb.c:504
+> ...
+> Call Trace:
+>  <TASK>
+>  ar5523_cmd+0x41b/0x780 drivers/net/wireless/ath/ar5523/ar5523.c:275
+>  ar5523_cmd_read drivers/net/wireless/ath/ar5523/ar5523.c:302 [inline]
+>  ar5523_host_available drivers/net/wireless/ath/ar5523/ar5523.c:1376 [inline]
+>  ar5523_probe+0x14b0/0x1d10 drivers/net/wireless/ath/ar5523/ar5523.c:1655
+>  usb_probe_interface+0x30f/0x7f0 drivers/usb/core/driver.c:396
+>  call_driver_probe drivers/base/dd.c:560 [inline]
+>  really_probe+0x249/0xb90 drivers/base/dd.c:639
+>  __driver_probe_device+0x1df/0x4d0 drivers/base/dd.c:778
+>  driver_probe_device+0x4c/0x1a0 drivers/base/dd.c:808
+>  __device_attach_driver+0x1d4/0x2e0 drivers/base/dd.c:936
+>  bus_for_each_drv+0x163/0x1e0 drivers/base/bus.c:427
+>  __device_attach+0x1e4/0x530 drivers/base/dd.c:1008
+>  bus_probe_device+0x1e8/0x2a0 drivers/base/bus.c:487
+>  device_add+0xbd9/0x1e90 drivers/base/core.c:3517
+>  usb_set_configuration+0x101d/0x1900 drivers/usb/core/message.c:2170
+>  usb_generic_driver_probe+0xbe/0x100 drivers/usb/core/generic.c:238
+>  usb_probe_device+0xd8/0x2c0 drivers/usb/core/driver.c:293
+>  call_driver_probe drivers/base/dd.c:560 [inline]
+>  really_probe+0x249/0xb90 drivers/base/dd.c:639
+>  __driver_probe_device+0x1df/0x4d0 drivers/base/dd.c:778
+>  driver_probe_device+0x4c/0x1a0 drivers/base/dd.c:808
+>  __device_attach_driver+0x1d4/0x2e0 drivers/base/dd.c:936
+>  bus_for_each_drv+0x163/0x1e0 drivers/base/bus.c:427
+>  __device_attach+0x1e4/0x530 drivers/base/dd.c:1008
+>  bus_probe_device+0x1e8/0x2a0 drivers/base/bus.c:487
+>  device_add+0xbd9/0x1e90 drivers/base/core.c:3517
+>  usb_new_device.cold+0x685/0x10ad drivers/usb/core/hub.c:2573
+>  hub_port_connect drivers/usb/core/hub.c:5353 [inline]
+>  hub_port_connect_change drivers/usb/core/hub.c:5497 [inline]
+>  port_event drivers/usb/core/hub.c:5653 [inline]
+>  hub_event+0x26cb/0x45d0 drivers/usb/core/hub.c:5735
+>  process_one_work+0x9bf/0x1710 kernel/workqueue.c:2289
+>  worker_thread+0x669/0x1090 kernel/workqueue.c:2436
+>  kthread+0x2e8/0x3a0 kernel/kthread.c:376
+>  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:306
+>  </TASK>
 > 
-> Or do you see something such as "if phylib is M or Y, then build the
-> topology stuff and make sure it's allocated when a netdev gets created
-> ?"
+> Reported-and-tested-by: syzbot+1bc2c2afd44f820a669f@syzkaller.appspotmail.com
+> Fixes: b7d572e1871d ("ar5523: Add new driver")
+> Signed-off-by: Nikita Zhandarovich <n.zhandarovich@fintech.ru>
+> Signed-off-by: Kalle Valo <quic_kvalo@quicinc.com>
 
-I've prototyped something that's cleaner and should fit what you
-described, which is to have a Kconfig option for phy_topology and
-have it autoselected by CONFIG_SFP (for now, the only case where we can
-have multiple PHYs on the link). When phy mux support is added (I'll
-followup with that once the topology is settled), we can also make is
-select the phy_topology config option. I'll send that patch when I'll
-have properly tested it, especially with all the different bits
-(phylib, sfp, drivers) being tested as modules or builtin.
+Patch applied to ath-next branch of ath.git, thanks.
 
-Thanks for the tips,
+e120b6388d7d wifi: ar5523: enable proper endpoint verification
 
-Maxime
+-- 
+https://patchwork.kernel.org/project/linux-wireless/patch/20240408121425.29392-1-n.zhandarovich@fintech.ru/
 
-> 
-> Thanks,
-> 
-> Maxime
-> 
-> >   
-> > > Signed-off-by: Maxime Chevallier <maxime.chevallier@bootlin.com>
-> > > Closes: https://lore.kernel.org/netdev/2e11b89d-100f-49e7-9c9a-834cc0b82f97@gmail.com/
-> > > Closes: https://lore.kernel.org/netdev/20240409201553.GA4124869@dev-arch.thelio-3990X/
-> > > ---
-> > >  drivers/net/phy/phy_link_topology.c    | 23 --------------------
-> > >  include/linux/phy_link_topology.h      |  5 -----
-> > >  include/linux/phy_link_topology_core.h | 30 +++++++++++++++++---------
-> > >  3 files changed, 20 insertions(+), 38 deletions(-)
-> > > 
-> > > diff --git a/drivers/net/phy/phy_link_topology.c b/drivers/net/phy/phy_link_topology.c
-> > > index 985941c5c558..960aedd73308 100644
-> > > --- a/drivers/net/phy/phy_link_topology.c
-> > > +++ b/drivers/net/phy/phy_link_topology.c
-> > > @@ -12,29 +12,6 @@
-> > >  #include <linux/rtnetlink.h>
-> > >  #include <linux/xarray.h>
-> > >  
-> > > -struct phy_link_topology *phy_link_topo_create(struct net_device *dev)
-> > > -{
-> > > -	struct phy_link_topology *topo;
-> > > -
-> > > -	topo = kzalloc(sizeof(*topo), GFP_KERNEL);
-> > > -	if (!topo)
-> > > -		return ERR_PTR(-ENOMEM);
-> > > -
-> > > -	xa_init_flags(&topo->phys, XA_FLAGS_ALLOC1);
-> > > -	topo->next_phy_index = 1;
-> > > -
-> > > -	return topo;
-> > > -}
-> > > -
-> > > -void phy_link_topo_destroy(struct phy_link_topology *topo)
-> > > -{
-> > > -	if (!topo)
-> > > -		return;
-> > > -
-> > > -	xa_destroy(&topo->phys);
-> > > -	kfree(topo);
-> > > -}
-> > > -
-> > >  int phy_link_topo_add_phy(struct phy_link_topology *topo,
-> > >  			  struct phy_device *phy,
-> > >  			  enum phy_upstream upt, void *upstream)
-> > > diff --git a/include/linux/phy_link_topology.h b/include/linux/phy_link_topology.h
-> > > index 6b79feb607e7..ad72d7881257 100644
-> > > --- a/include/linux/phy_link_topology.h
-> > > +++ b/include/linux/phy_link_topology.h
-> > > @@ -32,11 +32,6 @@ struct phy_device_node {
-> > >  	struct phy_device *phy;
-> > >  };
-> > >  
-> > > -struct phy_link_topology {
-> > > -	struct xarray phys;
-> > > -	u32 next_phy_index;
-> > > -};
-> > > -
-> > >  static inline struct phy_device *
-> > >  phy_link_topo_get_phy(struct phy_link_topology *topo, u32 phyindex)
-> > >  {
-> > > diff --git a/include/linux/phy_link_topology_core.h b/include/linux/phy_link_topology_core.h
-> > > index 0a6479055745..0116ec49cd1b 100644
-> > > --- a/include/linux/phy_link_topology_core.h
-> > > +++ b/include/linux/phy_link_topology_core.h
-> > > @@ -2,24 +2,34 @@
-> > >  #ifndef __PHY_LINK_TOPOLOGY_CORE_H
-> > >  #define __PHY_LINK_TOPOLOGY_CORE_H
-> > >  
-> > > -struct phy_link_topology;
-> > > +#include <linux/xarray.h>
-> > >  
-> > > -#if IS_REACHABLE(CONFIG_PHYLIB)
-> > > -
-> > > -struct phy_link_topology *phy_link_topo_create(struct net_device *dev);
-> > > -void phy_link_topo_destroy(struct phy_link_topology *topo);
-> > > -
-> > > -#else
-> > > +struct phy_link_topology {
-> > > +	struct xarray phys;
-> > > +	u32 next_phy_index;
-> > > +};
-> > >  
-> > >  static inline struct phy_link_topology *phy_link_topo_create(struct net_device *dev)
-> > >  {
-> > > -	return NULL;
-> > > +	struct phy_link_topology *topo;
-> > > +
-> > > +	topo = kzalloc(sizeof(*topo), GFP_KERNEL);
-> > > +	if (!topo)
-> > > +		return ERR_PTR(-ENOMEM);
-> > > +
-> > > +	xa_init_flags(&topo->phys, XA_FLAGS_ALLOC1);
-> > > +	topo->next_phy_index = 1;
-> > > +
-> > > +	return topo;
-> > >  }
-> > >  
-> > >  static inline void phy_link_topo_destroy(struct phy_link_topology *topo)
-> > >  {
-> > > -}
-> > > +	if (!topo)
-> > > +		return;
-> > >  
-> > > -#endif
-> > > +	xa_destroy(&topo->phys);
-> > > +	kfree(topo);
-> > > +}
-> > >  
-> > >  #endif /* __PHY_LINK_TOPOLOGY_CORE_H */    
-> >   
-> 
-> 
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
 
