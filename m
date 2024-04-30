@@ -1,125 +1,154 @@
-Return-Path: <linux-kernel+bounces-164366-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-164367-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 811AB8B7CCC
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 18:27:15 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 80CAC8B7CCE
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 18:27:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E58251F21BA0
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 16:27:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AEE3F1C232D4
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 16:27:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6FC2179954;
-	Tue, 30 Apr 2024 16:27:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0EF53177992;
+	Tue, 30 Apr 2024 16:27:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ndufresne-ca.20230601.gappssmtp.com header.i=@ndufresne-ca.20230601.gappssmtp.com header.b="16Axr43u"
-Received: from mail-qt1-f180.google.com (mail-qt1-f180.google.com [209.85.160.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="NgYLm3LA"
+Received: from out-184.mta1.migadu.com (out-184.mta1.migadu.com [95.215.58.184])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DDC73173350
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 16:27:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58007176FB2
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 16:27:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.184
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714494423; cv=none; b=DBrsvnXHCEkDZXfThLf/087oW6s3VfDoF9uT0+J2fEAkD6A/hsrB1oa7auDGsgBFzt3qdV9Vtvg2H+XfDXGNBIXPJJExpmLYxICYgNKaQJf2Y7J6yyN1Pgsd6z5B6UlhozdXMahb6WU9ZIopep6KdqbvqCqE8ewioE2qF6wBQg0=
+	t=1714494450; cv=none; b=W5kp4NpoOAtF48yMW6leccDgancXAp1/SSmVbQ8IIK760LCZmYrDirMScHijxi+seKN2H3lwCj6RYzQ8jwQc84vLS5OpK1rPER6z8Y+1jCnCESWD3ahFnGpYMpj+eqOS1NtuCVIDHZXhn6gLxNnaeuHXCulRimhHDhNTY1GLBps=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714494423; c=relaxed/simple;
-	bh=he8m3D8ERV3+ZM39Fi93bNF7eApo77thjOFwsQw02Jc=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=GlXXsXLUmFI0KMrQotjENSYUmBSbiqAnKKlWTV0Y1z4QKe0Lk7xv5/ycgI1WbJn4SnEgYKXJXcYOfGvaz5kWjTRRoWdGqJlB0SbEHjnyv2Zlo9t6Xkod7pVS4jxNe+aS4i2sjcZBSNfrWDeHidZDBR5ZGCkVv6SUMQJps01SD70=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ndufresne.ca; spf=none smtp.mailfrom=ndufresne.ca; dkim=pass (2048-bit key) header.d=ndufresne-ca.20230601.gappssmtp.com header.i=@ndufresne-ca.20230601.gappssmtp.com header.b=16Axr43u; arc=none smtp.client-ip=209.85.160.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ndufresne.ca
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ndufresne.ca
-Received: by mail-qt1-f180.google.com with SMTP id d75a77b69052e-43ade9223c0so10192961cf.2
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 09:27:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ndufresne-ca.20230601.gappssmtp.com; s=20230601; t=1714494421; x=1715099221; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:autocrypt
-         :references:in-reply-to:date:cc:to:from:subject:message-id:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=ZC7KljP54si9I/OvR7p1QytBPv8oCv3FFtdLpBVVIEM=;
-        b=16Axr43uV02MEX/z8YUk5KFhdk3HpMRW5WxcgKJE6GPHIhsUwc6D4ZLIfewbLLDV/O
-         SbQNupHZd47oX2VD9H2bdrgwW4Ys96mNsbmb3XAm65O+/riJW9C/p2ilgYZJCCURjnd7
-         0juX4UWBW7NCnZzUG2opJW4IPUY/RcoBiOF81uTpj+QLb3Oc5ZDU1eGUYctrjcaK2K+7
-         wHkIb3vG/b9V5YhmexaH8VpJSCwkQC8zRU3qyfYeZ/iQqhwfI9ssoRO0NHuI1BxZ6cvF
-         BF/zxruXcjizgRzZYzkcpZxOwdaPvML5Ywo9lYjP+64aTfWAp54dVcsB1bhkXxdlv9kg
-         oOcA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714494421; x=1715099221;
-        h=mime-version:user-agent:content-transfer-encoding:autocrypt
-         :references:in-reply-to:date:cc:to:from:subject:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ZC7KljP54si9I/OvR7p1QytBPv8oCv3FFtdLpBVVIEM=;
-        b=kLG/bEV4E0PGWLlD8wohDKAum5oROe7EJSwPKBs6lPl/JwnjLjUHduU1IAiKXMlHlT
-         BZQHBD0VTjtLx0tFGcovjqQlO9ycAvPi0Z9Eo3y4hb+Cn9KDFEg1jjA48D9G8ssn8Hvz
-         GVF5qYbjZhcyzPj4CyqIXERK7uAOxpW7QSSuLc+d1+MC4TCfohY8eDynAfo7732EQovr
-         IoEu12lPcAAR6gmxnIPLm0lpthZ6C/hE4O98/194nLs/4STCLdyBEyv0/aj9juMJHbW8
-         3vWnC32vhkCqdYpqLzSoGGi8+CT8oOPmKuj0i3xl+YB38+Z1wCai1RWoSsKW9cjYsZ1u
-         FExw==
-X-Forwarded-Encrypted: i=1; AJvYcCViWGDu+oN0kPxmt8ytsZo7K/9GFBpO5T3bZVEG2S1/42sLiE3hPrg/q0IIAOinzNbGTVJjdPal142pbpNj9BVzOR++69sP0EZ1sIOV
-X-Gm-Message-State: AOJu0Yy3qLgijdXsXqY0MoHO4o3tknTpM+FK/E0Z+Jr9Cp1bbQaKOfba
-	scRt6qDKZD5C0PU4egWRdl0xzYmYKS2f+FsMZ/YtlG232h5ojKG20bMHgQvJ1kY=
-X-Google-Smtp-Source: AGHT+IH4i4XqXX+ome3EmdELyywbvX6TD934yBgrF6DZ4ror/4GM3Vhte1p+vjOEJwXaTd3AlXGjSg==
-X-Received: by 2002:a05:622a:491:b0:43b:a44:f83c with SMTP id p17-20020a05622a049100b0043b0a44f83cmr5414263qtx.56.1714494420540;
-        Tue, 30 Apr 2024 09:27:00 -0700 (PDT)
-Received: from nicolas-tpx395.localdomain ([2606:6d00:17:6448::7a9])
-        by smtp.gmail.com with ESMTPSA id o15-20020ac8428f000000b0042f04e421d2sm11469789qtl.24.2024.04.30.09.26.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Apr 2024 09:27:00 -0700 (PDT)
-Message-ID: <1ce1bcf60d8540f867b800816acecfff610ee948.camel@ndufresne.ca>
-Subject: Re: [PATCH v7 1/2] dt-bindings: media: rockchip-vpu: Add rk3588
- vpu121 compatible string
-From: Nicolas Dufresne <nicolas@ndufresne.ca>
-To: Jianfeng Liu <liujianfeng1994@gmail.com>, linux-media@vger.kernel.org, 
-	linux-rockchip@lists.infradead.org, devicetree@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc: ezequiel@vanguardiasur.com.ar, p.zabel@pengutronix.de,
- mchehab@kernel.org,  robh@kernel.org, krzk+dt@kernel.org,
- conor+dt@kernel.org, heiko@sntech.de,  sebastian.reichel@collabora.com,
- sfr@canb.auug.org.au, sigmaris@gmail.com,  linkmauve@linkmauve.fr, Conor
- Dooley <conor.dooley@microchip.com>
-Date: Tue, 30 Apr 2024 12:26:58 -0400
-In-Reply-To: <59899cfa3d3245309ce6952ae1028dceae27b488.camel@ndufresne.ca>
-References: <20240430024002.708227-1-liujianfeng1994@gmail.com>
-	 <20240430024002.708227-2-liujianfeng1994@gmail.com>
-	 <59899cfa3d3245309ce6952ae1028dceae27b488.camel@ndufresne.ca>
-Autocrypt: addr=nicolas@ndufresne.ca; prefer-encrypt=mutual; keydata=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
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.4 (3.50.4-1.fc39) 
+	s=arc-20240116; t=1714494450; c=relaxed/simple;
+	bh=02xiOotCQo9PeSTWH1KfjlrWzbCSPMbVq74nspWqnWE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=UTAaJnwex6gmQps0H1eLYG8fTTJ6OZQpWVfx79HB05qyaUySQj2HHh95sbrIykVaOBxoq0N3VOtIEnby/YnCaVQ2I4t3IziVq+WgPswicS/p/74HHaTxeW9C5725/mhwQYniJ0X56r7e9YNzjYjbskcYQMIpl2LODI3v4JeeV9A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=NgYLm3LA; arc=none smtp.client-ip=95.215.58.184
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <9e69b129-7539-4403-a621-bf3775aab995@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1714494446;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=y1by8GsdMWKw134eR9hE/t6tHIy3cs78DewQoszO3sk=;
+	b=NgYLm3LAcH42Avb2+BlN2xBECpjXo94MHTwTsjds22RBQbTDuKha6faK48gFkG1GBSK3h7
+	LcG9CgJiGYAzvoCcErorWdQcl+u40Py2DPH8PJLzWC2DGp6LdJc0i7UcGLoS0P+aWl7gtr
+	gObeLzViBGsjKOutV7DC9PW1v4j7Psg=
+Date: Wed, 1 May 2024 00:27:14 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Subject: Re: [v1,1/3] drm/panel: ili9341: Correct use of device property APIs
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Neil Armstrong <neil.armstrong@linaro.org>,
+ Randy Dunlap <rdunlap@infradead.org>, dri-devel@lists.freedesktop.org,
+ linux-kernel@vger.kernel.org, Jessica Zhang <quic_jesszhan@quicinc.com>,
+ Sam Ravnborg <sam@ravnborg.org>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
+ David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>
+References: <20240425142706.2440113-2-andriy.shevchenko@linux.intel.com>
+ <c2d41916-0b6c-43b5-98eb-514eb0511f84@linux.dev>
+ <ce6a480d-80b3-46b0-a32d-26bc6480d02f@linux.dev>
+ <ZiqrLfezhns4UycR@smile.fi.intel.com>
+ <b5ffd984-4031-4a8a-adbc-75a1e1dfe765@linux.dev>
+ <ZjD8eoO3TmuCUj-a@smile.fi.intel.com>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Sui Jingfeng <sui.jingfeng@linux.dev>
+In-Reply-To: <ZjD8eoO3TmuCUj-a@smile.fi.intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-Sorry,
+
+On 2024/4/30 22:13, Andy Shevchenko wrote:
+> On Fri, Apr 26, 2024 at 05:13:43AM +0800, Sui Jingfeng wrote:
+>> On 2024/4/26 03:12, Andy Shevchenko wrote:
+>>> On Fri, Apr 26, 2024 at 02:53:22AM +0800, Sui Jingfeng wrote:
+>>>> On 2024/4/26 02:08, Sui Jingfeng wrote:
+> ...
+>
+>>> Are you speaking to yourself? I'm totally lost.
+>>>
+>>> Please, if you want to give a constructive feedback, try to understand
+>>> the topic from different aspects and then clearly express it.
+>> OK,
+>>
+>> The previous email analysis the non-DT cases exhaustively, this email intend to
+>> demonstrate the more frequently use case.
+>>
+>> That is, in the *DT('OF')* based systems,
+>> device_get_match_data() is completely equivalent to
+>> of_device_get_match_data().
+>> So the net results of applying this patch are "no gains and no lost".
+> This is not true.
+
+Yes, I'm true.
+
+I have mentionedin previous(earlier) paragraph  with "in the DT(OF) based systems" or similar words.
 
 
-[...]
-> > +          - const: rockchip,rk3568-vpu
->=20
-> Sorry to come that late, but I'm noticing a big mistake here. You said yo=
-u are
-> enabling VDPU121, the JPEG decoder. But we don't have a JPEG decoder driv=
-er
-> mainline, is there some patches missing ?
->=20
-> Nicolas
+> It's only part of the cases, i.e. DT. So, I assume you meant
+>
+>    "So the net results of applying this patch are "no gains and no lost" in DT case".
 
-Ignore this part, just didn't read carefully. This is about getting H264, V=
-P8
-and MPEG2 out of these extra cores of course. I still would like to know ho=
-w we
-will express the grouping of these four cores, so a driver can know they ar=
-e
-identical G1 cores and not bound to be time sliced with an H1 core like the
-fifth one? I want to see a plan that will work and will not cause headache =
-for
-future work on fully utilizing the HW resources.
 
-Nicolas
+Yeah,it is true that this patch are "no gains and no lost" in DT case.
+
+
+>> Things will become clear if we divide the whole problem into two cases(DT and non-DT)
+>> to discuss, that's it. That's all I can tell.
+> Not really.
+
+
+I'm very clear before our conversation, really!
+
+
+> non-DT cases can also be divided to "fwnode backed or not",
+
+For non fwnode backed case of non-DT cases, there is not decent way to acquire
+large set of device properties. And is out of the scope of "Correct use of
+device property APIs".
+
+
+> and
+> the former might be subdivided to "is it swnode backed or real fwnode one?"
+>
+Yeah,
+On non-DT cases, it can be subdivided to swnode backed case and ACPI fwnode backed case.
+
+  - For swnode backed case: the device_get_match_data() don't has a implemented backend.
+  - For ACPI fwnode backed case: the device_get_match_data() has a implemented backend.
+
+But the driver has *neither* software node support nor ACPI support, so that the rotation
+property can not get and ili9341_dpi_probe() will fails. So in total, this is not a 100%
+correct use of device property APIs.
+
+But I'm fine that if you want to leave(ignore) those less frequent use cases temporarily,
+there may have programmers want to post patches, to complete the missing in the future.
+
+
+So, there do have some gains on non-DT cases.
+
+  - As you make it be able to compiled on X86 with the drm-misc-defconfig.
+  - You cleanup the code up (at least patch 2 in this series is no obvious problem).
+  - You allow people to modprobe it, and maybe half right and half undefined.
+
+But you do helps moving something forward, so congratulations for the wake up.
+
+-- 
+Best regards,
+Sui
+
 
