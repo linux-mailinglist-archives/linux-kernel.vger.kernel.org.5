@@ -1,132 +1,122 @@
-Return-Path: <linux-kernel+bounces-164186-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-164187-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 94FCF8B7A66
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 16:45:13 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A1FB68B7A68
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 16:45:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C4C761C226AF
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 14:45:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 57C67286FEA
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 14:45:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E4DDA17B4E6;
-	Tue, 30 Apr 2024 14:41:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 80681152799;
+	Tue, 30 Apr 2024 14:42:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="GVfN5bDH"
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Md9DlZ6f"
+Received: from mail-oo1-f51.google.com (mail-oo1-f51.google.com [209.85.161.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 95BB9770F0;
-	Tue, 30 Apr 2024 14:41:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8200B3C482;
+	Tue, 30 Apr 2024 14:42:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714488064; cv=none; b=X9LS0/FZD1POZz4eqOvkDVBHFx3FM9lYDo6i2moLF8DfudxuR2x5kM8wEnpkCUkhQ3k4A9KMVUHPfVGCtOsQd3+zEWbbbz+6L3VvK8yXYIXzy12UuxmAasfEJe6nsnFmsjH38Pw8PCF7XBE4+WCVimSA951MFyugX1hPZuqsycI=
+	t=1714488165; cv=none; b=DgNnvw9aw9mlC3FKfA38TUO/EXzDIUMzVxgHvhWZ2uORVBoR/KMBT3jm9oPtpT7W/Jl4IaYwyuXuIVnGNCSJccgYTuRLH3RhZR4zRyepE0QRWD1d55dei9eqFp4oi3VvJhqrk4O8kYI2Zxv6Whp9aix4Th4jZRfFkfrRfIqOqdY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714488064; c=relaxed/simple;
-	bh=mF4D0bjwFYpqf3wf5iTDpehEqt73WSoAjWjD4DyHamk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=TyeLA9o1AObMr8yIb7z62i5ONPyvRuTQwh1JL5zzqIsCxhW88fjjlfFLe2+otzrap0imib8+9iaoUMs/8WOuv/EriiLG2/qQR2zbDsUfl5EzjYJdBVV8xQ3bSeOr2zk4OtwXxzsA1DwvMx4XqrRHIcuxJmSNjaZ+aedbFrp/49o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=GVfN5bDH; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353725.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 43UEdMBq005235;
-	Tue, 30 Apr 2024 14:40:51 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=pp1; bh=YwM+R5Y3CMJbTvogva1QfzG8leQfU778k06xwg/Mcwc=;
- b=GVfN5bDHVzxlH7qQ8GoMldAWpUGXDu9QFtzQT37hrJ/s13hreQDUokgjoIaCMqsXYUtk
- MSq8PkQ219gEjPc0cr2GW9qzRlf7oJc4QTzxHXBBjoS55K6k7ohamqhJ3HIiV/ZsvY+t
- K4ZCyITW3v7DoLqeJ5LLuYl+qz+zzMSDI4qcT+Io75bHZnI3+RFelbaMbZB7RVauG8/W
- H67InC2pGe++yoRCdKM1DEKQKCSE1YNanjEpy/LysALASXjWyuZbGwXTvXIG/oSUG4DW
- 7fAfGp1ZNKBRf7EttySjWvQQ09d6RNpmD6JcNhzivBnYyHDJBMrQDl//ouYCqEMDw8ss LA== 
-Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xu2k9005y-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 30 Apr 2024 14:40:50 +0000
-Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 43UDTXSh003210;
-	Tue, 30 Apr 2024 14:40:50 GMT
-Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
-	by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3xscppdghg-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 30 Apr 2024 14:40:50 +0000
-Received: from smtpav05.fra02v.mail.ibm.com (smtpav05.fra02v.mail.ibm.com [10.20.54.104])
-	by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 43UEekXj11272672
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 30 Apr 2024 14:40:48 GMT
-Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 23FF92006E;
-	Tue, 30 Apr 2024 14:40:46 +0000 (GMT)
-Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id E212420040;
-	Tue, 30 Apr 2024 14:40:45 +0000 (GMT)
-Received: from osiris (unknown [9.152.212.60])
-	by smtpav05.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-	Tue, 30 Apr 2024 14:40:45 +0000 (GMT)
-Date: Tue, 30 Apr 2024 16:40:44 +0200
-From: Heiko Carstens <hca@linux.ibm.com>
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: linux-s390@vger.kernel.org, open list <linux-kernel@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>, lkft-triage@lists.linaro.org,
-        Linux Regressions <regressions@lists.linux.dev>, imx@lists.linux.dev,
-        Abel Vesa <abelvesa@kernel.org>, Abel Vesa <abel.vesa@linaro.org>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>,
-        Shengjiu Wang <shengjiu.wang@nxp.com>, Shawn Guo <shawnguo@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Dan Carpenter <dan.carpenter@linaro.org>,
-        Anders Roxell <anders.roxell@linaro.org>, Peng Fan <peng.fan@nxp.com>
-Subject: Re: [PATCH] clk: imx: imx8mp: Add missing CONFIG_PM ifdefs
-Message-ID: <20240430144044.35561-A-hca@linux.ibm.com>
-References: <CA+G9fYuP7S+a89Ep5g5_Ad69EMwRkJ8nM+MMTzbEcP+6H2oMXQ@mail.gmail.com>
- <20240430141609.2244416-1-hca@linux.ibm.com>
- <99ef1ba3-155f-47e8-b1a4-e46cb056cbfd@app.fastmail.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <99ef1ba3-155f-47e8-b1a4-e46cb056cbfd@app.fastmail.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: cAhw_NzK7JsV_S9ipQmmkWxam1nOQf_L
-X-Proofpoint-GUID: cAhw_NzK7JsV_S9ipQmmkWxam1nOQf_L
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+	s=arc-20240116; t=1714488165; c=relaxed/simple;
+	bh=h8/Mbp6p56Npf/fPA4rJY97puUbrdQSR9GWsAJfrmSc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=kmv5z2pIZQbV1gnvf8M1snLPET5VuSwh/3F8y2nGwZ75ex7DIyEXaBBXorRCrw3v+KY1miFuEsKr2rkqb5jecmWXOO+hIDw9bdmoQI7dfSTe1RFEd+NTmNsnQRfMWoAx3XqFfK/dslmUG+P3XmF6TXsDaPZb4KhkTPzEueQsLvA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Md9DlZ6f; arc=none smtp.client-ip=209.85.161.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oo1-f51.google.com with SMTP id 006d021491bc7-5acdbfa6e95so1367577eaf.3;
+        Tue, 30 Apr 2024 07:42:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1714488163; x=1715092963; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Ga3LR4xPWZc/MiF0Ow7nqK5yfqhw78RS6dhFYPGNBmw=;
+        b=Md9DlZ6fDioEjZCy1WvEbZ0LsJ55Ib5VJSrCp2k+Ki88le8dVXNDQTFTt7HQhNpW9B
+         H02X+JeM4ISMSONd46UTguMbRG5RTKRVYnn+StU98iKGMAZQ75Cnw3EGZ50lIPDYPjlq
+         /vNJpLKLAJM41RrJefwwBQMAgcEyMlrSVZ2LKy/qUGWEbb5Z0jsCIF79tyGc9vhFSQaX
+         kASvdDOVWvCd9pivKPrSAUSSONl/X1XQxrmtlA5PavoB9PFrzyvR8k5Wi7lf40OlmfVm
+         5gS5G4whUnnOB2m1ho3y9Qa4hySyhFXw2UD9Q6Er4zzpCLIz+IYRJ7OebbtitTeMDKll
+         uSPg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714488163; x=1715092963;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Ga3LR4xPWZc/MiF0Ow7nqK5yfqhw78RS6dhFYPGNBmw=;
+        b=jCLFCjizCdWlsU6AUHIehbiQcO30EA1vXO7WwBEoWNUO/gBzYnCiVWQ0+nyvueMFlS
+         te5qmxSVFt64EkZyd77HogkbCCjqRQniIBVA6A+Ye5SHtK+jygNYxSHQTAByyseROoNZ
+         mJ8vegjWftW4DTq62TCg5DGG5rrC/by+0AfMuNa68gXX2pK2OSvO82EnLKazhoQIW9uc
+         CHbw5SAO3PCa9n2ukroXpcAiNTn8LSDkqdEYOt6AsIp/ixsyV3KN00j+lwzKtHcTEZ/k
+         +cx5uDLUxbLKbsyIQLcdXN5Bs2pf6p6xWNOvaiK4hNCNuSPCPAMB6c0YsEWSWNGrnHwH
+         U1VA==
+X-Forwarded-Encrypted: i=1; AJvYcCVINyy4x/SkB4wojismK+tUQw8sT9KejmqO3jdlODj9eIvMX34viZlZnNI30KzD8IyjnJFT4uT6NtBCrEerk0DvhocRDCm8EB1c+Hs=
+X-Gm-Message-State: AOJu0YzCtmTbQzoCDVV2V+7gYlijvTqD8CsUx+8nSBOUxUX1lTOTKh2b
+	AaCLjXheErYb5AdUMp2NQF25g0B70H96/gkf1YoacHzeqIuhMz2GAlzLp7/NjilF7IFP7GSOyPQ
+	piopXRkIjQi/qNejaQVf9Pl78OLYD4oBsJ3Rnxao9
+X-Google-Smtp-Source: AGHT+IED4pFtujpp/uBmJH/iT/20/N0UlzyDZ/+EznoMEnNAjS32v8MY8tGs9rC94Y1N1nK6dj/SmEIm9kr6BcdTZuQ=
+X-Received: by 2002:a05:6808:1a26:b0:3c8:4b12:107b with SMTP id
+ bk38-20020a0568081a2600b003c84b12107bmr16414645oib.2.1714488163160; Tue, 30
+ Apr 2024 07:42:43 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
- definitions=2024-04-30_08,2024-04-30_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 bulkscore=0
- priorityscore=1501 adultscore=0 lowpriorityscore=0 suspectscore=0
- mlxlogscore=999 impostorscore=0 spamscore=0 phishscore=0 malwarescore=0
- clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2404010000 definitions=main-2404300104
+References: <CABXGCsNmEtrN9DK-XmESaPm_1xpXm8A+juE+44Jf6AK5JE0+TQ@mail.gmail.com>
+ <874jcl7e83.wl-tiwai@suse.de> <CABXGCsMmRFW3EYJ3UvNd-LO7ZTOyoNqjc_3OAmaCDSL=LuxJqg@mail.gmail.com>
+ <87v851e2di.wl-tiwai@suse.de> <CABXGCsNMBRUaY-V8mhUQKdq+CQW5+eGUWL_YCJWXo0cgh9bGJQ@mail.gmail.com>
+ <87h6glt9zc.wl-tiwai@suse.de> <CABXGCsMcazRvmiN4XtiHQCE9=dB=M=VsRqB=v+RPmtuhBL29DA@mail.gmail.com>
+ <a6f4e20ea2a68f56a7d2c4d76280bca44d6bf421.camel@gmail.com>
+ <CABXGCsPdqfXeZUw1ocx8O3NdOEb+h4yQ77+zdNpcwP_4JrYXuQ@mail.gmail.com>
+ <CABXGCsMTbmU4CP8CHUqRVXWkGiErFtEVG4COy6RSRWsAuK_-CQ@mail.gmail.com>
+ <87pluedgx5.wl-tiwai@suse.de> <87jzkmdghh.wl-tiwai@suse.de>
+ <CABXGCsP-e5CjqCFztiym=zjQ=Z00uxYcQPFACEbTwjV=BHEdJQ@mail.gmail.com>
+ <87jzkfo0ty.wl-tiwai@suse.de> <CABXGCsMPLWm8xVZ3mk-e8FJht4FjdxEREov0DFKMooMD0BvRyw@mail.gmail.com>
+ <87r0enm4m0.wl-tiwai@suse.de>
+In-Reply-To: <87r0enm4m0.wl-tiwai@suse.de>
+From: Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>
+Date: Tue, 30 Apr 2024 19:42:32 +0500
+Message-ID: <CABXGCsOxkM+ohzudsTg=e5x=UATArAx0zCLnGHFwHHXs9Rz6VA@mail.gmail.com>
+Subject: Re: regression/bisected/6.9 commit 587d67fd929ad89801bcc429675bda90d53f6592
+ decrease 30% of gaming performance
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Linux List Kernel Mailing <linux-kernel@vger.kernel.org>, linux-sound@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Apr 30, 2024 at 04:30:37PM +0200, Arnd Bergmann wrote:
-> On Tue, Apr 30, 2024, at 16:16, Heiko Carstens wrote:
-> > Add missing CONFIG_PM ifdefs to fix this allmodconfig compile error:
-> >
-> > drivers/clk/imx/clk-imx8mp-audiomix.c:356:12: error:
-> > 'clk_imx8mp_audiomix_runtime_suspend' defined but not used
-> > [-Werror=unused-function]
-> >   356 | static int clk_imx8mp_audiomix_runtime_suspend(struct device *dev)
-> >       |            ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> > cc1: all warnings being treated as errors
-> >
-> > Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
-> > Closes: 
-> > https://lore.kernel.org/r/CA+G9fYuP7S+a89Ep5g5_Ad69EMwRkJ8nM+MMTzbEcP+6H2oMXQ@mail.gmail.com
-> > Fixes: 1496dd413b2e ("clk: imx: imx8mp: Add pm_runtime support for 
-> > power saving")
-> > Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
-> 
-> Thanks for your patch. I see the bug as well, but
-> I think a better fix is to replace the deprecated
-> SET_RUNTIME_PM_OPS() and SET_NOIRQ_SYSTEM_SLEEP_PM_OPS()
-> with the modern variants, RUNTIME_PM_OPS() and
-> RUNTIME_PM_OPS().
+On Tue, Apr 30, 2024 at 5:12=E2=80=AFPM Takashi Iwai <tiwai@suse.de> wrote:
+> Where and how...?  That important piece is missing in you info...
+> And, it's likely a false-positive detection by lockdep.
+>
+> When you disable lockdep, does it still show any performance down?
 
-Fine with me, I leave that up to the original author then.
+Of course without "lockdep" performance is even better than the commit
+587d67fd929a just reverted.
+- mainline kernel without changes with lockdep - 13244 [1]
+- mainline kernel with reverted 587d67fd929a with lockdep - 19218 [2]
+- mainline kernel without changes without lockdep - 22440 [3]
+
+I think I get what you're saying: after a false-positive detection,
+lockdep is partially disabled. Yes?
+How do I understand that lockdep has partially turned off?
+I would expect to see such a message in the kernel log " INFO: lockdep
+is turned off."
+But in my case this message didn't appear.
+In any case, sorry for wasting your time.
+
+[1] https://postimg.cc/G4NPHMyk
+[2] https://postimg.cc/1n0D7sYH
+[3] https://postimg.cc/nMYHWRcF
+
+--=20
+Best Regards,
+Mike Gavrilov.
 
