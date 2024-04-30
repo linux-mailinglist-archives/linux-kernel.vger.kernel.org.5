@@ -1,216 +1,234 @@
-Return-Path: <linux-kernel+bounces-164633-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-164635-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 962548B8069
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 21:19:47 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 46B3D8B8075
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 21:21:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 519A3283B86
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 19:19:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C89C11F23E1C
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 19:21:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB9D519DF41;
-	Tue, 30 Apr 2024 19:19:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 631EC199E84;
+	Tue, 30 Apr 2024 19:21:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="yhrCM4Yd"
-Received: from mail-lf1-f44.google.com (mail-lf1-f44.google.com [209.85.167.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FGivK6Xd"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD43A194C9E
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 19:19:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F34A180A85;
+	Tue, 30 Apr 2024 19:21:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714504776; cv=none; b=gwJdn3XpHDlx/YfZ+OhRUClMDdc8LQajzcXug8ApDvveHrq5HSWaSCJF55bH6eVuU1JfyRqP7ofBBtkIrrTpLtUkobSMTHOsbSxEg9HQ2jXH4jiwl6Tjq85oc0Go9g9Qyr47EvEiv/EF6VympOGpCMp4rltgjnk7UNcMI+QKc3s=
+	t=1714504875; cv=none; b=t439x8EfymXvVQvBOoUHJ0jz0w9ZdX7aTD8Nc5qt8ekMnd9AO4eMVC/WRaUsIVQq9cUgecqgcfn7ycME1QDRD7qratNUle96wBd/TLS7KO7osrUdFwhpEIr9ZVNpr4F0SzI/p7dHKhXwZwPL6wvp++9+1paUkCs9/v/OiJkXc+g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714504776; c=relaxed/simple;
-	bh=rXrYXwxz8utS37Zdd/NHXMvvYHT1Pko55fdXpz+a0f8=;
+	s=arc-20240116; t=1714504875; c=relaxed/simple;
+	bh=NwCpJ4/aGdZMBhntTpNF2is84X693tSgQ+YYuyWOaN4=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=UrRyi0YYgk8iOvQXKLl5ppv8ejwhxfgYZVjAkwvG4vTusSW8Xq2c7VSY5C2QktbGxxMOxYrimo6uV56ByNrdCjI0yxOLpi+3g1D09wbGZJolfiasNfyVhqeL6egf4b7hZ4OLfc1+GazbDaK3zs+Vo+0cyPXn7Dk+ZWNzkojF8vs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=yhrCM4Yd; arc=none smtp.client-ip=209.85.167.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-lf1-f44.google.com with SMTP id 2adb3069b0e04-51d20472133so4691161e87.3
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 12:19:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1714504773; x=1715109573; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=JBbLSd4KX1Ml6Kx/U9tspaOWXAez2c+6/7rMF07WiMA=;
-        b=yhrCM4YdS1mVSkC6dZlf25VsI6foSQBCk1DyesxJ/3Nf9GIMHy2gLaao5m1yno4E4y
-         LtG62zQbF9BTkR0aOMYlQm1EEMYIDUCq9PMx9uJmf3kKE2VKFDXgbV/etlhd83AV68Mw
-         q0LoGQlekuHwfa+7Hc6GI0DZ/Iir29gHWQ93YeFSVeB4ebbTLs1IPAMrizUw1zcYmLPc
-         dGrMy+HB86r/BLLws08RKvC1H2mXBtxc86+vZP7uOFNjHzPyfH/Yc46yDsB17PHHg3/8
-         cmY8hLG3CzLveY5qMgQT1zM60pq2ET0rzg8DrUA3vcerRTlTRWGeqNRVTZKVEPp06M3c
-         o+RQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714504773; x=1715109573;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=JBbLSd4KX1Ml6Kx/U9tspaOWXAez2c+6/7rMF07WiMA=;
-        b=aiNwCwEDwz+5y5X31p6EVPVADBNDUk0PjnhJBRWKzfELOg6do4MZjrnb8g8DVVU4Wj
-         QIpw3ys3RskKEhb/2J2PQvgKsJ7x8G/vzNDoF8uyCmM3He77C6v7pHd1Cp+iYmlLbNnm
-         wTYJqJEYk5i0RESu18vFRH6cXwyPPHGK8x96+KgKufXSFkjnwHoEklQmSHoVLRMrwNpn
-         RuIMbDEsrHn4pdAcLZIENHiS+iMBcTkDzlbiZEP9+XzAa6D56TPONUVtuBpHqfikYN9O
-         8+MV2Nb560a+2PFrmg0pdKo4k3IDWhRSnxwdSI3IMqI0EiL483ifD6HqUNQ2JVmqTua2
-         hcUA==
-X-Forwarded-Encrypted: i=1; AJvYcCVd3wkfDnFVL9TJo/0oPU64rkUMlzrpBRCjXIMwhrvnwgz1XvsPqDJJg4kxMVz3Prvq/KWngshf+1aNXh5Xfy1gG80yMoLeaPUoFr0u
-X-Gm-Message-State: AOJu0YwcZ1nmLl1Q2q+JK+rEOHhlP4jzoaG+HUxynjOQCyyD0KuaAZ6f
-	MdVXtc75FuoWQjgRXQ2biW62GODbscds6k+mDALHz6x2UOZuidJCiC/1ixtUldifdr+N0eTboDC
-	qeOMlVBTP4py3AY+HV8HmbQkttIL3gfV8L36q
-X-Google-Smtp-Source: AGHT+IEv1vAD5KmPx2DuK83e++oMbqGnWC2h94YZYICJhje+Ouaos+1vgy9d2n+Zn+VtRp04liNfK+AEGoM+Z6BbCWI=
-X-Received: by 2002:a05:6512:3492:b0:517:8ad8:c64 with SMTP id
- v18-20020a056512349200b005178ad80c64mr259130lfr.21.1714504772286; Tue, 30 Apr
- 2024 12:19:32 -0700 (PDT)
+	 To:Cc:Content-Type; b=SaRHe6G0EpFc3nfaLid0gEXxIqJd2NmA91jKrCGLluEsgbwYtu74kg4NVcbMchTn4QjssnAXZ588pZL2kYCZsf40Xj3X03xO3hZr7ZIpBx3SOdN7TDCaO/XvIYJxxhv8rBvZF9pBbu15f3xNYdMOkRDxhB5VU5z/ZTX2j1ExSao=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FGivK6Xd; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3528BC4AF19;
+	Tue, 30 Apr 2024 19:21:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714504875;
+	bh=NwCpJ4/aGdZMBhntTpNF2is84X693tSgQ+YYuyWOaN4=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=FGivK6XdMlE8GYQL9XYMPwVUArMvu1ZGE7XvPUSsLtq5SEaC6Fm8+ly6La5ICit2F
+	 3Nm62Sfe4F5uIupBOychwZIpUXRIORhiW0UmuOUjsonataTQy1cz2p7MRoW7C9Py2s
+	 K26e7OXc3FHXpn7W89ezL63lgPkUPTjb6HYr5YFrNfW2x1Sd4o8RnljytkWcfTTjeq
+	 7p4KZRhkpLqr+1+HDH26WGwCkhywKnowDxayb817fX9CBcZJgbDvghv7Y6vj0Wqst5
+	 5pw4Yu9CPHVpyagzXWMJ8ebnaMoDyQ7mjCx1t6zDkESE47vfjFmDfSairuKZgBEdgm
+	 xrh3bZH3OehgA==
+Received: by mail-oi1-f179.google.com with SMTP id 5614622812f47-3c73b33383aso543375b6e.3;
+        Tue, 30 Apr 2024 12:21:15 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCX5QWJuBQ19MgDgQROhaBl21AN1B7/mbvb9/BXGSS8H12xYI2NuDeLk36hqmhbX3yQWGJbHtND3uok1RuMQ5qyUk0Tcl0taBbkOciqDpDrPa/1lw72lLy1hF1yzixcmZNvwBRAegpFm5A==
+X-Gm-Message-State: AOJu0YxnFvsTCKTAns3fR+/L2iGRARSNDL2JFB5uHIY2wXPNzTNZS2Mu
+	E4aF/r6EovvGH4GmtXg+s+gd7NELt0XB1gip/Nt1qk8jHp1on8iRchKo1erMB9wpKPZaESQAJgl
+	wkLo/ey7JTVHm+S4VJB3C36dwjlk=
+X-Google-Smtp-Source: AGHT+IFj1FZy70S4ykIy+b2SrpBWlxIdXPP5QjFwuFLgwuOnQk3mWrQ7e+Wppfq3P/0JuOtNcJYrZswXSnHuEGZMa+M=
+X-Received: by 2002:a4a:654d:0:b0:5aa:241a:7f4b with SMTP id
+ z13-20020a4a654d000000b005aa241a7f4bmr397384oog.1.1714504874373; Tue, 30 Apr
+ 2024 12:21:14 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240403002053.2376017-1-almasrymina@google.com>
- <20240403002053.2376017-8-almasrymina@google.com> <8357256a-f0e9-4640-8fec-23341fc607db@davidwei.uk>
- <CAHS8izPeYryoLdCAQdGQU-wn7YVdtuofVKNvRFjFjhqTDsT7zA@mail.gmail.com>
- <aafbbf09-a33d-4e73-99c8-9ddab5910657@kernel.dk> <CAHS8izMKLYATo6g3xkj_thFo3whCfq6LSoex5s0m5XZd-U7SVQ@mail.gmail.com>
- <11f52113-7b67-4b45-ba1d-29b070050cec@kernel.dk>
-In-Reply-To: <11f52113-7b67-4b45-ba1d-29b070050cec@kernel.dk>
-From: Mina Almasry <almasrymina@google.com>
-Date: Tue, 30 Apr 2024 12:19:17 -0700
-Message-ID: <CAHS8izP3KtH_CHyQKE+=vrY-yREq5Bb_Kd+KLyJ4j-_AdjNk-Q@mail.gmail.com>
-Subject: Re: [RFC PATCH net-next v8 07/14] page_pool: devmem support
-To: Jens Axboe <axboe@kernel.dk>
-Cc: David Wei <dw@davidwei.uk>, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-doc@vger.kernel.org, linux-alpha@vger.kernel.org, 
-	linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, 
-	sparclinux@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
-	linux-arch@vger.kernel.org, bpf@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org, linux-media@vger.kernel.org, 
-	dri-devel@lists.freedesktop.org, "David S. Miller" <davem@davemloft.net>, 
-	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	Jonathan Corbet <corbet@lwn.net>, Richard Henderson <richard.henderson@linaro.org>, 
-	Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner <mattst88@gmail.com>, 
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
-	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>, Helge Deller <deller@gmx.de>, 
-	Andreas Larsson <andreas@gaisler.com>, Jesper Dangaard Brouer <hawk@kernel.org>, 
-	Ilias Apalodimas <ilias.apalodimas@linaro.org>, Steven Rostedt <rostedt@goodmis.org>, 
-	Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
-	Arnd Bergmann <arnd@arndb.de>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Steffen Klassert <steffen.klassert@secunet.com>, 
-	Herbert Xu <herbert@gondor.apana.org.au>, David Ahern <dsahern@kernel.org>, 
-	Willem de Bruijn <willemdebruijn.kernel@gmail.com>, Shuah Khan <shuah@kernel.org>, 
-	Sumit Semwal <sumit.semwal@linaro.org>, =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>, 
-	Amritha Nambiar <amritha.nambiar@intel.com>, 
-	Maciej Fijalkowski <maciej.fijalkowski@intel.com>, 
-	Alexander Mikhalitsyn <alexander@mihalicyn.com>, Kaiyuan Zhang <kaiyuanz@google.com>, 
-	Christian Brauner <brauner@kernel.org>, Simon Horman <horms@kernel.org>, 
-	David Howells <dhowells@redhat.com>, Florian Westphal <fw@strlen.de>, 
-	Yunsheng Lin <linyunsheng@huawei.com>, Kuniyuki Iwashima <kuniyu@amazon.com>, 
-	Arseniy Krasnov <avkrasnov@salutedevices.com>, 
-	Aleksander Lobakin <aleksander.lobakin@intel.com>, Michael Lass <bevan@bi-co.net>, 
-	Jiri Pirko <jiri@resnulli.us>, Sebastian Andrzej Siewior <bigeasy@linutronix.de>, 
-	Lorenzo Bianconi <lorenzo@kernel.org>, Richard Gobert <richardbgobert@gmail.com>, 
-	Sridhar Samudrala <sridhar.samudrala@intel.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>, 
-	Johannes Berg <johannes.berg@intel.com>, Abel Wu <wuyun.abel@bytedance.com>, 
-	Breno Leitao <leitao@debian.org>, Pavel Begunkov <asml.silence@gmail.com>, 
-	Jason Gunthorpe <jgg@ziepe.ca>, Shailend Chand <shailend@google.com>, 
-	Harshitha Ramamurthy <hramamurthy@google.com>, Shakeel Butt <shakeel.butt@linux.dev>, 
-	Jeroen de Borst <jeroendb@google.com>, Praveen Kaligineedi <pkaligineedi@google.com>, linux-mm@kvack.org, 
-	Matthew Wilcox <willy@infradead.org>
+References: <20240425093426.76130-1-tianruidong@linux.alibaba.com> <20240425093426.76130-2-tianruidong@linux.alibaba.com>
+In-Reply-To: <20240425093426.76130-2-tianruidong@linux.alibaba.com>
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Date: Tue, 30 Apr 2024 21:21:02 +0200
+X-Gmail-Original-Message-ID: <CAJZ5v0i8=oTCXhAMRAckaVrTqCfOPxyYucpEguMF0tH2orY3aA@mail.gmail.com>
+Message-ID: <CAJZ5v0i8=oTCXhAMRAckaVrTqCfOPxyYucpEguMF0tH2orY3aA@mail.gmail.com>
+Subject: Re: [PATCH v3 1/1] ACPICA: AEST: Add support for the AEST V2 table
+To: Ruidong Tian <tianruidong@linux.alibaba.com>
+Cc: robert.moore@intel.com, rafael.j.wysocki@intel.com, lenb@kernel.org, 
+	rafael@kernel.org, sudeep.holla@arm.com, linux-acpi@vger.kernel.org, 
+	acpica-devel@lists.linux.dev, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Apr 30, 2024 at 11:55=E2=80=AFAM Jens Axboe <axboe@kernel.dk> wrote=
-:
+On Thu, Apr 25, 2024 at 11:34=E2=80=AFAM Ruidong Tian
+<tianruidong@linux.alibaba.com> wrote:
 >
-> On 4/30/24 12:29 PM, Mina Almasry wrote:
-> > On Tue, Apr 30, 2024 at 6:46?AM Jens Axboe <axboe@kernel.dk> wrote:
-> >>
-> >> On 4/26/24 8:11 PM, Mina Almasry wrote:
-> >>> On Fri, Apr 26, 2024 at 5:18?PM David Wei <dw@davidwei.uk> wrote:
-> >>>>
-> >>>> On 2024-04-02 5:20 pm, Mina Almasry wrote:
-> >>>>> @@ -69,20 +106,26 @@ net_iov_binding(const struct net_iov *niov)
-> >>>>>   */
-> >>>>>  typedef unsigned long __bitwise netmem_ref;
-> >>>>>
-> >>>>> +static inline bool netmem_is_net_iov(const netmem_ref netmem)
-> >>>>> +{
-> >>>>> +#if defined(CONFIG_PAGE_POOL) && defined(CONFIG_DMA_SHARED_BUFFER)
-> >>>>
-> >>>> I am guessing you added this to try and speed up the fast path? It's
-> >>>> overly restrictive for us since we do not need dmabuf necessarily. I
-> >>>> spent a bit too much time wondering why things aren't working only t=
-o
-> >>>> find this :(
-> >>>
-> >>> My apologies, I'll try to put the changelog somewhere prominent, or
-> >>> notify you when I do something that I think breaks you.
-> >>>
-> >>> Yes, this is a by-product of a discussion with regards to the
-> >>> page_pool benchmark regressions due to adding devmem. There is some
-> >>> background on why this was added and the impact on the
-> >>> bench_page_pool_simple tests in the cover letter.
-> >>>
-> >>> For you, I imagine you want to change this to something like:
-> >>>
-> >>> #if defined(CONFIG_PAGE_POOL)
-> >>> #if defined(CONFIG_DMA_SHARED_BUFFER) || defined(CONFIG_IOURING)
-> >>>
-> >>> or something like that, right? Not sure if this is something I should
-> >>> do here or if something more appropriate to be in the patches you
-> >>> apply on top.
-> >>
-> >> In general, attempting to hide overhead behind config options is alway=
-s
-> >> a losing proposition. It merely serves to say "look, if these things
-> >> aren't enabled, the overhead isn't there", while distros blindly enabl=
-e
-> >> pretty much everything and then you're back where you started.
-> >>
-> >
-> > The history there is that this check adds 1 cycle regression to the
-> > page_pool fast path benchmark. The regression last I measured is 8->9
-> > cycles, so in % wise it's a quite significant 12.5% (more details in
-> > the cover letter[1]). I doubt I can do much better than that to be
-> > honest.
+> ACPICA commit ebb49799c78891cbe370f1264844664a3d8b6f35
 >
-> I'm all for cycle counting, and do it myself too, but is that even
-> measurable in anything that isn't a super targeted microbenchmark? Or
-> even in that?
+> AEST V2 was published[1], add V2 support based on AEST V1.
 >
+> [1]: https://developer.arm.com/documentation/den0085/latest/
+>
+> Link: https://github.com/acpica/acpica/commit/ebb4979
+> Signed-off-by: Ruidong Tian <tianruidong@linux.alibaba.com>
+> ---
+>  include/acpi/actbl2.h | 88 ++++++++++++++++++++++++++++++++++++++++---
+>  1 file changed, 82 insertions(+), 6 deletions(-)
+>
+> diff --git a/include/acpi/actbl2.h b/include/acpi/actbl2.h
+> index 007cfdfd5d29..ae747c89d92c 100644
+> --- a/include/acpi/actbl2.h
+> +++ b/include/acpi/actbl2.h
+> @@ -78,8 +78,8 @@
+>   *
+>   * AEST - Arm Error Source Table
+>   *
+> - * Conforms to: ACPI for the Armv8 RAS Extensions 1.1 Platform Design Do=
+cument
+> - * September 2020.
+> + * Conforms to: ACPI for the Armv8 RAS Extensions 1.1(Sep 2020) and
+> + * 2.0(May 2023) Platform Design Document.
+>   *
+>   ***********************************************************************=
+*******/
+>
+> @@ -109,7 +109,9 @@ struct acpi_aest_hdr {
+>  #define ACPI_AEST_SMMU_ERROR_NODE           2
+>  #define ACPI_AEST_VENDOR_ERROR_NODE         3
+>  #define ACPI_AEST_GIC_ERROR_NODE            4
+> -#define ACPI_AEST_NODE_TYPE_RESERVED        5  /* 5 and above are reserv=
+ed */
+> +#define ACPI_AEST_PCIE_ERROR_NODE           5
+> +#define ACPI_AEST_PROXY_ERROR_NODE          6
+> +#define ACPI_AEST_NODE_TYPE_RESERVED        7 /* 7 and above are reserve=
+d */
+>
+>  /*
+>   * AEST subtables (Error nodes)
+> @@ -188,6 +190,12 @@ typedef struct acpi_aest_vendor {
+>
+>  } acpi_aest_vendor;
+>
+> +struct acpi_aest_vendor_v2 {
+> +       char acpi_hid[8];
+> +       u32 acpi_uid;
+> +       u8 vendor_specific_data[16];
+> +};
+> +
+>  /* 4: Gic Error */
+>
+>  typedef struct acpi_aest_gic {
+> @@ -204,6 +212,18 @@ typedef struct acpi_aest_gic {
+>  #define ACPI_AEST_GIC_ITS                   3
+>  #define ACPI_AEST_GIC_RESERVED              4  /* 4 and above are reserv=
+ed */
+>
+> +/* 5: PCIe Error */
+> +
+> +struct acpi_aest_pcie {
+> +       u32 iort_node_reference;
+> +};
+> +
+> +/* 6: Proxy Error */
+> +
+> +struct acpi_aest_proxy {
+> +       u64 node_address;
+> +};
+> +
+>  /* Node Interface Structure */
+>
+>  typedef struct acpi_aest_node_interface {
+> @@ -219,11 +239,57 @@ typedef struct acpi_aest_node_interface {
+>
+>  } acpi_aest_node_interface;
+>
+> +/* Node Interface Structure V2 */
+> +
+> +struct acpi_aest_node_interface_header {
+> +       u8 type;
+> +       u8 group_format;
+> +       u8 reserved[2];
+> +       u32 flags;
+> +       u64 address;
+> +       u32 error_record_index;
+> +       u32 error_record_count;
+> +};
+> +
+> +#define ACPI_AEST_NODE_GROUP_FORMAT_4K          0
+> +#define ACPI_AEST_NODE_GROUP_FORMAT_16K         1
+> +#define ACPI_AEST_NODE_GROUP_FORMAT_64K         2
+> +
+> +struct acpi_aest_node_interface_common {
+> +       u32 error_node_device;
+> +       u32 processor_affinity;
+> +       u64 error_group_register_base;
+> +       u64 fault_inject_register_base;
+> +       u64 interrupt_config_register_base;
+> +};
+> +
+> +struct acpi_aest_node_interface_4k {
+> +       u64 error_record_implemented;
+> +       u64 error_status_reporting;
+> +       u64 addressing_mode;
+> +       struct acpi_aest_node_interface_common common;
+> +};
+> +
+> +struct acpi_aest_node_interface_16k {
+> +       u64 error_record_implemented[4];
+> +       u64 error_status_reporting[4];
+> +       u64 addressing_mode[4];
+> +       struct acpi_aest_node_interface_common common;
+> +};
+> +
+> +struct acpi_aest_node_interface_64k {
+> +       u64 error_record_implemented[14];
+> +       u64 error_status_reporting[14];
+> +       u64 addressing_mode[14];
+> +       struct acpi_aest_node_interface_common common;
+> +};
+> +
+>  /* Values for Type field above */
+>
+> -#define ACPI_AEST_NODE_SYSTEM_REGISTER      0
+> -#define ACPI_AEST_NODE_MEMORY_MAPPED        1
+> -#define ACPI_AEST_XFACE_RESERVED            2  /* 2 and above are reserv=
+ed */
+> +#define ACPI_AEST_NODE_SYSTEM_REGISTER                 0
+> +#define ACPI_AEST_NODE_MEMORY_MAPPED                   1
+> +#define ACPI_AEST_NODE_SINGLE_RECORD_MEMORY_MAPPED     2
+> +#define ACPI_AEST_XFACE_RESERVED                       3   /* 2 and abov=
+e are reserved */
+>
+>  /* Node Interrupt Structure */
+>
+> @@ -237,6 +303,16 @@ typedef struct acpi_aest_node_interrupt {
+>
+>  } acpi_aest_node_interrupt;
+>
+> +/* Node Interrupt Structure V2 */
+> +
+> +struct acpi_aest_node_interrupt_v2 {
+> +       u8 type;
+> +       u8 reserved[2];
+> +       u8 flags;
+> +       u32 gsiv;
+> +       u8 reserved1[4];
+> +};
+> +
+>  /* Values for Type field above */
+>
+>  #define ACPI_AEST_NODE_FAULT_HANDLING       0
+> --
 
-Not as far as I can tell, no. This was purely to improve the page_pool
-benchmark.
-
-> > There was a desire not to pay this overhead in setups that will likely
-> > not care about devmem, like embedded devices maybe, or setups without
-> > GPUs. Adding a CONFIG check here seemed like very low hanging fruit,
-> > but yes it just hides the overhead in some configs, not really removes
-> > it.
-> >
-> > There was a discussion about adding this entire netmem/devmem work
-> > under a new CONFIG. There was pushback particularly from Willem that
-> > at the end of the day what is enabled on most distros is what matters
-> > and we added code churn and CONFIG churn for little value.
-> >
-> > If there is significant pushback to the CONFIG check I can remove it.
-> > I don't feel like it's critical, it just mirco-optimizes some setups
-> > that doesn't really care about this work area.
->
-> That is true, but in practice it'll be enabled anyway. Seems like it's
-> not really worth it in this scenario.
->
-
-OK, no pushback from me. I'll remove the CONFIG check in the next iteration=
-.
-
---=20
-Thanks,
-Mina
+Applied as 6.10 material, thanks!
 
