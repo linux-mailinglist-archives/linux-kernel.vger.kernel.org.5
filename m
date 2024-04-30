@@ -1,121 +1,167 @@
-Return-Path: <linux-kernel+bounces-163616-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-163617-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 635EB8B6DB0
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 11:03:48 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id F3B328B6DB2
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 11:05:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 949B61C2248F
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 09:03:47 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7ED6D1F22C19
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 09:05:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55848127B64;
-	Tue, 30 Apr 2024 09:03:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB121127B68;
+	Tue, 30 Apr 2024 09:04:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="OoY7dubq"
-Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
+	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="QujuHNpB"
+Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2A293A29A
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 09:03:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 780713A29A
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 09:04:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714467822; cv=none; b=j7VtgA1PpDkcd4CqYKA8OkDKF7NazI+yppubY0VVi+/XhDW+OCwXnp1qpqQdssCKF4JXdRjKVkActfgP7WQVSYUYiQa7FzI5MA4NWT7yJ7KDfbg+f1/pxLjUaGfizYmc88P5ivoRoznlTOTAbhmD7s64C+pX7WOu6DAxEPp9PVw=
+	t=1714467895; cv=none; b=Y6QygxucS6F6Pik38SrcmfMNFkBCyOBfxbvC3b+TngmICAxpGesbjz8UtXbkt4aJ6UUlU1gDdGZEtuctn+XCG8HxFbD7K7eInKHRwTlBZOIPWVtoYM4Hb3YKr8bHeMV16l99gAaDPWzxjMMwqw19ixa5pxEyzOvz7a/C1MgLGwc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714467822; c=relaxed/simple;
-	bh=3RgL84FOPHnRoABg8ARjy4GFMRNu9jyw4ulWXT0PlBU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=PwWr3zIBaog0/zgL04MwbInrPjjkfQIv9cdMJcu8qD0e6EjRJ+HXft1apUi6O4uyb7PTpHA8V4UHAWHcp2GyiD9dyujp1K8llaokAWWEIpxYYOXxgbr5Vr2DgJ4Awe/QG+tK6fFfla/vBd+Zv6A05J9LeGOwhZWS1M1/lE/b00w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=OoY7dubq; arc=none smtp.client-ip=209.85.128.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-41b9dff6be8so27613095e9.3
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 02:03:40 -0700 (PDT)
+	s=arc-20240116; t=1714467895; c=relaxed/simple;
+	bh=o7L7kC+671KRwUuDU7TEX3kWMhyi/AbplEOEV2kdbLg=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=UOZzjUtGEE2591hEU2W9YSlGLsVnaEKcxK4bWDBDgm1YV92AFGgwivbfro2hetvWpZucY3kdNubrcTYgW8JSSbxl0VMJCbXTFv6rNesQ4mf2Nf3+94WOYVKa9yHeYP6eCay3aXUkMx+vWO5WsJsDlpEAoDOIWpSgj7smBKBvIfo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=QujuHNpB; arc=none smtp.client-ip=209.85.214.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
+Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-1ec4dd8525cso2161565ad.3
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 02:04:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1714467819; x=1715072619; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=oMdIUTb8z2zsRNFkxCts+jZrF/FgbKs7WeVds8L8Wu8=;
-        b=OoY7dubq0UX4u4opqxkbPWerdTccCfPy/oeUYyZ73bo2JyYo0YeATy01lWIkxB36qK
-         wpiWGfKZc3lp77L2Eg2Sy2OnLDKK7kGnhcWJGOMlkPBMy+uMMNREtcld9Gq8h8zWofRE
-         KsT7sCujSyC0nGnh3F9GD5WWTrXZmjMWsP+ePMe79kWuDcnB4eQiqzsrm3GV0bDnXUnE
-         xkZWafoEpGQqEMywg7ygAJSqpEE7aZw7PAbFK2IEbVgtMC+X6aOB8iTZsHEV0rlU13pB
-         O44DZYNwvcz1hAsAgqnIFTKe4e1CkS+RNqbUH86ZCfvihn01BxWBJ6GI66M8sIdm3gkp
-         UdZw==
+        d=broadcom.com; s=google; t=1714467893; x=1715072693; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=AiezQFrImeHjq4kKSLZkZSIcYVjSLXGfiOvcD86j6Ks=;
+        b=QujuHNpBF62qT6iApfCzPSPHY0UnyuUlTYeqK2ImxEIbflRi/dM8HA/9ow14lgs9Wt
+         Vo0Tf12HLhPn6H9bapmmRdKeD+kVdK+OMGVEFSqRbC1cCRELkKWCppnBJYJ4GsF0AuRQ
+         TOr8M0kRBfXXl9y58mvDOahNz/SuJRAzQ43XE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714467819; x=1715072619;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=oMdIUTb8z2zsRNFkxCts+jZrF/FgbKs7WeVds8L8Wu8=;
-        b=cg5pdRJvCDEgv82JGJgAH+QIlBZlrU242+V1Y3e+XZiGBReT7y/tgWNsWB3y7cegZ6
-         /F3FiwX4ahc7dpD75Hn62u37+U1pDkvlwqwsgFunHjuAAnTtAcHirr3A87owWgp8joiO
-         zESp8J9Gst3bY5GJaPfYJu0iUpqrAk5j0CRDi43sgBsNnE1l3djEFQXgK8rgRiFu7lTe
-         URn0ibGn38DcjljQ5zVdkBjDiwMUJzZCfnCodGFXnwpLu7tRy11Xm8CQL3TirXvKy+Hb
-         A6MKH5LCnzNZYTYfMyOXUnDRnXHTCo+QKbCP8fxubZ1zY6NLkT/rM5fLzxnw01o6tlqi
-         mwkg==
-X-Gm-Message-State: AOJu0YxTYKpzjc7KgWKQp3/EnhSUtj1+CgrAsyNJXNRXAhCCSlFMclza
-	1t4k9iQUpMPcU0Xh+CUg0UAAp47g8Gj9gYW+ZSllctpgitGYcJaDuBpvj4Rhbn2b7veYtqRK8mZ
-	1
-X-Google-Smtp-Source: AGHT+IGfypXDGFYGRXnM/tjLph5dq4eqWb8RRnGSUfZJuUuvwbWyZXVGb0eqv2BLQjaxwjUJjcfvPw==
-X-Received: by 2002:a05:600c:4f56:b0:419:f2a0:138e with SMTP id m22-20020a05600c4f5600b00419f2a0138emr9506014wmq.34.1714467819317;
-        Tue, 30 Apr 2024 02:03:39 -0700 (PDT)
-Received: from [192.168.1.195] ([5.133.47.210])
-        by smtp.googlemail.com with ESMTPSA id r10-20020a05600c458a00b0041bf512f85bsm10454652wmo.14.2024.04.30.02.03.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 30 Apr 2024 02:03:38 -0700 (PDT)
-Message-ID: <a987385c-d241-4527-acd5-31767c62317f@linaro.org>
-Date: Tue, 30 Apr 2024 10:03:38 +0100
+        d=1e100.net; s=20230601; t=1714467893; x=1715072693;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=AiezQFrImeHjq4kKSLZkZSIcYVjSLXGfiOvcD86j6Ks=;
+        b=A0grrjFmoIg29sgoYCIGz1RirEeqfOVTZ9uH+r5Ih45tTye4woz/UmVdpGBJ08pbI1
+         ymsHQ5fuWDhJGk4ydP/sUo3m3kfZgfmFnOSQglyZuhP0UAIthH7jIsScKlJ020mf6/+P
+         JSZzMH4flpknpwstKlusa+thQGgRq4uSo98iu60jbld+qZRBuQTWcRNxELNn0X1m1e11
+         b3R2d23UnOAWbjsNgYE8FD2RQ6471wnXbE1dPNLkzo9gjiKqB2fNlxRHv64jqB169c3J
+         R/Wn6Wnwwg+Y2gK33Arv9f1Y1sRDwXSX8yPwWC+qxeN8QVL6PGsHooA2V0CYzjY8UI9R
+         0fWw==
+X-Forwarded-Encrypted: i=1; AJvYcCXm8qOqzJ0u2gRuURkyRavmI4VCC9IeSLu1sabf4JI8hNXbsKG1De7z/jNceZHBwUf5vXjesFaJpqhbdnWcdViD2JeLdtwfcU4nN5dM
+X-Gm-Message-State: AOJu0YxOR9o1bNxE03EbN1x3dmuB89VGeQCr+WHRYmtBH9HdhCW4opEK
+	vAlnh/zKmWD1vzClJL9YuT2w4HBtLWBZm1kg02DwuKblp0CM1VK6IqVmK74QPA==
+X-Google-Smtp-Source: AGHT+IFKUVxq47GGttceDN19xDIOQhh0WXQmrnXBvYJ85DWXAgUXJ2fC7B0FJTKhsgRNVzorwj9BxQ==
+X-Received: by 2002:a17:902:e752:b0:1eb:7899:adaa with SMTP id p18-20020a170902e75200b001eb7899adaamr8629355plf.55.1714467892674;
+        Tue, 30 Apr 2024 02:04:52 -0700 (PDT)
+Received: from ankit-virtual-machine.eng.vmware.com ([66.170.99.1])
+        by smtp.gmail.com with ESMTPSA id u9-20020a170903124900b001e3f4f1a2aasm21822461plh.23.2024.04.30.02.04.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 30 Apr 2024 02:04:52 -0700 (PDT)
+From: Ankit Jain <ankit-aj.jain@broadcom.com>
+To: yury.norov@gmail.com,
+	linux@rasmusvillemoes.dk,
+	akpm@linux-foundation.org,
+	linux-kernel@vger.kernel.org
+Cc: juri.lelli@redhat.com,
+	pauld@redhat.com,
+	ajay.kaher@broadcom.com,
+	alexey.makhalov@broadcom.com,
+	vasavi.sirnapalli@broadcom.com,
+	Ankit Jain <ankit-aj.jain@broadcom.com>
+Subject: [PATCH] lib/cpumask: Boot option to disable tasks distribution within cpumask
+Date: Tue, 30 Apr 2024 14:34:31 +0530
+Message-Id: <20240430090431.1619622-1-ankit-aj.jain@broadcom.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 0/4] slimbus: patches for v6.10
-To: Greg KH <gregkh@linuxfoundation.org>
-Cc: linux-kernel@vger.kernel.org
-References: <20240430085007.33607-1-srinivas.kandagatla@linaro.org>
- <2024043013-foil-pucker-4c7b@gregkh>
-Content-Language: en-US
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-In-Reply-To: <2024043013-foil-pucker-4c7b@gregkh>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
+commit 46a87b3851f0 ("sched/core: Distribute tasks within affinity masks")
+and commit 14e292f8d453 ("sched,rt: Use cpumask_any*_distribute()")
+introduced the logic to distribute the tasks within cpumask upon initial
+wakeup. For Telco RAN deployments, isolcpus are a necessity to cater to
+the requirement of low latency applications. These isolcpus are generally
+tickless so that high priority SCHED_FIFO tasks can execute without any
+OS jitter. Since load balancing is disabled on isocpus, any task
+which gets placed on these CPUs can not be migrated on its own.
+For RT applications to execute on isolcpus, a guaranteed kubernetes pod
+with all isolcpus becomes the requirement and these RT applications are
+affine to execute on a specific isolcpu within the kubernetes pod.
+However, there may be some non-RT tasks which could also schedule in the
+same kubernetes pod without being affine to any specific CPU(inherits the
+pod cpuset affinity). With multiple spawning and running containers inside
+the pod, container runtime spawns several non-RT initializing tasks
+("runc init") inside the pod and due to above mentioned commits, these
+non-RT tasks may get placed on any isolcpus and may starve if it happens
+to wakeup on the same CPU as SCHED_FIFO task because RT throttling is also
+disabled in telco setup. Thus, RAN deployment fails and eventually leads
+to system hangs.
 
+With the introduction of kernel cmdline param 'sched_pick_firstcpu',
+there is an option provided for such usecases to disable the distribution
+of tasks within the cpumask logic and use the previous 'pick first cpu'
+approach for initial placement of tasks. Because many telco vendors
+configure the system in such a way that the first cpu within a cpuset
+of pod doesn't run any SCHED_FIFO or High priority tasks.
 
-On 30/04/2024 09:56, Greg KH wrote:
-> On Tue, Apr 30, 2024 at 09:50:03AM +0100, srinivas.kandagatla@linaro.org wrote:
->> From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
->>
->> Here are few patches in slimbus for 6.10 that includes
->> - fixing autoloading.
->> - coverting driver remove to return void
->> - some timeout fixes on wait operation.
->>
->> Please note that, I have also included a fix at the start of this series
->> rather than sending another email thread. I hope that is okay with you.
->>
->> Can you please queue them up for 6.10
-> 
-> Shouldn't the first commit go to 6.9?  If so, why include it here?
+Co-developed-by: Alexey Makhalov <alexey.makhalov@broadcom.com>
+Signed-off-by: Alexey Makhalov <alexey.makhalov@broadcom.com>
+Signed-off-by: Ankit Jain <ankit-aj.jain@broadcom.com>
+---
+ lib/cpumask.c | 24 ++++++++++++++++++++++++
+ 1 file changed, 24 insertions(+)
 
-Yes, first commit should go to 6.9, Do you want me to resend the series 
-without that patch or are you okay to pick it this time?
+diff --git a/lib/cpumask.c b/lib/cpumask.c
+index e77ee9d46f71..3dea87d5ec1f 100644
+--- a/lib/cpumask.c
++++ b/lib/cpumask.c
+@@ -154,6 +154,23 @@ unsigned int cpumask_local_spread(unsigned int i, int node)
+ }
+ EXPORT_SYMBOL(cpumask_local_spread);
+ 
++/*
++ * Task distribution within the cpumask feature disabled?
++ */
++static bool cpumask_pick_firstcpu __read_mostly;
++
++/*
++ * Disable Tasks distribution within the cpumask feature
++ */
++static int __init cpumask_pick_firstcpu_setup(char *str)
++{
++	cpumask_pick_firstcpu = 1;
++	pr_info("cpumask: Tasks distribution within cpumask is disabled.");
++	return 1;
++}
++
++__setup("sched_pick_firstcpu", cpumask_pick_firstcpu_setup);
++
+ static DEFINE_PER_CPU(int, distribute_cpu_mask_prev);
+ 
+ /**
+@@ -171,6 +188,13 @@ unsigned int cpumask_any_and_distribute(const struct cpumask *src1p,
+ {
+ 	unsigned int next, prev;
+ 
++	/*
++	 * Don't distribute, if tasks distribution
++	 * within cpumask feature is disabled
++	 */
++	if (cpumask_pick_firstcpu)
++		return cpumask_any_and(src1p, src2p);
++
+ 	/* NOTE: our first selection will skip 0. */
+ 	prev = __this_cpu_read(distribute_cpu_mask_prev);
+ 
+-- 
+2.23.1
 
-I sent the fix with this series because it was just one patch, and we 
-are almost near to rc7.
-
-
-thanks for your help.
-
--srini
-> 
-> thanks,
-> 
-> greg k-h
 
