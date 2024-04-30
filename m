@@ -1,236 +1,81 @@
-Return-Path: <linux-kernel+bounces-164020-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-164021-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id A6ED38B773D
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 15:34:42 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 39B398B773E
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 15:34:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BF602B241E8
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 13:34:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E9A01286D90
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 13:34:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F49A172BDF;
-	Tue, 30 Apr 2024 13:32:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 46F8617167F;
+	Tue, 30 Apr 2024 13:34:13 +0000 (UTC)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F28B17167A;
-	Tue, 30 Apr 2024 13:32:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D9E9512D776
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 13:34:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714483977; cv=none; b=rKdg9Fpucsx14uE8ns4WdEpph44uYQF+mh5V3FCmKdvENLjX1mfmwMxwc7ySXvKWZZZOIkjVzCafPpvd3NlthDZYHxXDmd9cELPLTvs9NkoeVcJuQR80vbtiROuretUCpZmfRsoKwF0yubUyn8bFN6WsYHt89CIuUBNHCgfXpyw=
+	t=1714484052; cv=none; b=FA3+WWM9ET+cUlZjdsHLCMSXDNMItsLKrJ+4pmUzyGw64cfVMynI0I17I8BtaNbnUcz0T68FPKo+RfqLYz5KdxN/VegvDxfHLPVFsnP7G/eqIsgbCuNCyvayj8mSubYiRZzIP5+T31PuEFPCdpN+4s6P3SVpk/55DnR1HoBbr7g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714483977; c=relaxed/simple;
-	bh=zhZKdf7+QHmsXg6+Mf83SxIaH1CGfxqSn5wfEF/J79Q=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=miAAuMCn3FbkXtvK7tJj4Z/B5bvOODZ6dLMIc/nBpZsiIQF7vfACHIqChajLG3Wdktk3VneGPa8Soc28Ar0s+K6a3lDyReO/rtWozQFkDzb7iWM4SIU7HbPmhi/JSsH4XToSR9baMBzgk46K6baF6FXvu0WgyWOBenhek/w5Yjg=
+	s=arc-20240116; t=1714484052; c=relaxed/simple;
+	bh=OsYliPdbKS2RCt5sTywXCV7rvL0tdlr+8mSnbVv/184=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Am74au0VXd7450EW+bez+kNIdXnAMb4kwS3AuvQpTuJ4Q3/ldvIQmJRN5nVMvrVmvK98w95uZHvoKfsPcRq1ZQBznSMZUWCOrE1DYK5F8tz9lF8diDodzEQGjsMj43X2WhgBQPNmvxer01XpU6nRsjxHBclXv5GLktZnpLzIihM=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4364A2F4;
-	Tue, 30 Apr 2024 06:33:21 -0700 (PDT)
-Received: from e127643.broadband (usa-sjc-mx-foss1.foss.arm.com [172.31.20.19])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 3F9C63F793;
-	Tue, 30 Apr 2024 06:32:52 -0700 (PDT)
-From: James Clark <james.clark@arm.com>
-To: linux-perf-users@vger.kernel.org,
-	coresight@lists.linaro.org
-Cc: James Clark <james.clark@arm.com>,
-	Suzuki K Poulose <suzuki.poulose@arm.com>,
-	Mike Leach <mike.leach@linaro.org>,
-	John Garry <john.g.garry@oracle.com>,
-	Will Deacon <will@kernel.org>,
-	Leo Yan <leo.yan@linux.dev>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Ingo Molnar <mingo@redhat.com>,
-	Arnaldo Carvalho de Melo <acme@kernel.org>,
-	Namhyung Kim <namhyung@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Ian Rogers <irogers@google.com>,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	"Liang, Kan" <kan.liang@linux.intel.com>,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] perf cs-etm: Improve version detection and error reporting
-Date: Tue, 30 Apr 2024 14:32:21 +0100
-Message-Id: <20240430133221.250811-1-james.clark@arm.com>
-X-Mailer: git-send-email 2.34.1
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B50552F4;
+	Tue, 30 Apr 2024 06:34:36 -0700 (PDT)
+Received: from [10.1.38.140] (XHFQ2J9959.cambridge.arm.com [10.1.38.140])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C3F393F793;
+	Tue, 30 Apr 2024 06:34:08 -0700 (PDT)
+Message-ID: <3a1669be-2cf4-486c-901a-3350cf7ffd25@arm.com>
+Date: Tue, 30 Apr 2024 14:34:07 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 1/3] arm64/mm: Refactor PMD_PRESENT_INVALID and
+ PTE_PROT_NONE bits
+Content-Language: en-GB
+To: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Will Deacon <will@kernel.org>, Joey Gouly <joey.gouly@arm.com>,
+ Ard Biesheuvel <ardb@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+ Anshuman Khandual <anshuman.khandual@arm.com>,
+ David Hildenbrand <david@redhat.com>, Peter Xu <peterx@redhat.com>,
+ Mike Rapoport <rppt@linux.ibm.com>, Shivansh Vij <shivanshvij@outlook.com>,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20240429140208.238056-1-ryan.roberts@arm.com>
+ <20240429140208.238056-2-ryan.roberts@arm.com> <Zi_IzrfIcqWxt7cE@arm.com>
+ <839d6975-ce12-4fc9-aa3b-8ec5787bf577@arm.com> <ZjDR0EIjLr9F2dWn@arm.com>
+ <8cf74e5f-e6a5-465e-83b4-205233c78005@arm.com> <ZjDyCg2LkFEXRS6k@arm.com>
+From: Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <ZjDyCg2LkFEXRS6k@arm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-When the config validation functions are warning about ETMv3, they do it
-based on "not ETMv4". If the drivers aren't all loaded or the hardware
-doesn't support Coresight it will appear as "not ETMv4" and then Perf
-will print the error message "... not supported in ETMv3 ..." which is
-wrong and confusing.
+On 30/04/2024 14:28, Catalin Marinas wrote:
+> On Tue, Apr 30, 2024 at 12:35:49PM +0100, Ryan Roberts wrote:
+>> There is still one problem I need to resolve; During this work I discovered that
+>> core-mm can call pmd_mkinvalid() for swap pmds. On arm64 this will turn the swap
+>> pmd into a present pmd, and BadThings can happen in GUP-fast (and any other
+>> lockless SW table walkers). My original fix modified core-mm to only call
+>> pmd_mkinvalid() for present pmds. But discussion over there has shown that arm64
+>> is the only arch that cannot handle this. So I've been convinced that it's
+>> probably more robust to make arm64 handle it gracefully and add tests to
+>> debug_vm_pgtable.c to check for this. Patch incoming shortly, but it will cause
+>> a conflict with this series. So I'll send a v2 of this once that fix is accepted.
+> 
+> Sounds fine. I can queue the arm64 pmd_mkinvalid() fix for 6.9 and you
+> can base this series on top. But I have a preference for this patchset
+> to sit in -next for a bit anyway, so it might be 6.11 material.
 
-cs_etm_is_etmv4() is also misnamed because it also returns true for
-ETE because ETE has a superset of the ETMv4 metadata files. Although
-this was always done in the correct order so it wasn't a bug.
-
-Improve all this by making a single get version function which also
-handles not present as a separate case. Change the ETMv3 error message
-to only print when ETMv3 is detected, and add a new error message for
-the not present case.
-
-Signed-off-by: James Clark <james.clark@arm.com>
----
- tools/perf/arch/arm/util/cs-etm.c | 64 +++++++++++++++++++++++--------
- 1 file changed, 48 insertions(+), 16 deletions(-)
-
-diff --git a/tools/perf/arch/arm/util/cs-etm.c b/tools/perf/arch/arm/util/cs-etm.c
-index 07be32d99805..2763c6758b91 100644
---- a/tools/perf/arch/arm/util/cs-etm.c
-+++ b/tools/perf/arch/arm/util/cs-etm.c
-@@ -66,9 +66,25 @@ static const char * const metadata_ete_ro[] = {
- 	[CS_ETE_TS_SOURCE]		= "ts_source",
- };
- 
--static bool cs_etm_is_etmv4(struct auxtrace_record *itr, int cpu);
-+enum cs_etm_version { CS_NOT_PRESENT, CS_ETMV3, CS_ETMV4, CS_ETE };
-+
-+static bool cs_etm_pmu_file_present(struct auxtrace_record *itr, int cpu,
-+				       const char *file);
- static bool cs_etm_is_ete(struct auxtrace_record *itr, int cpu);
- 
-+static enum cs_etm_version cs_etm_get_version(struct auxtrace_record *itr,
-+					      int cpu)
-+{
-+	if (cs_etm_is_ete(itr, cpu))
-+		return CS_ETE;
-+	else if (cs_etm_pmu_file_present(itr, cpu, metadata_etmv4_ro[CS_ETMV4_TRCIDR0]))
-+		return CS_ETMV4;
-+	else if (cs_etm_pmu_file_present(itr, cpu, metadata_etmv3_ro[CS_ETM_ETMCCER]))
-+		return CS_ETMV3;
-+
-+	return CS_NOT_PRESENT;
-+}
-+
- static int cs_etm_validate_context_id(struct auxtrace_record *itr,
- 				      struct evsel *evsel, int cpu)
- {
-@@ -87,7 +103,7 @@ static int cs_etm_validate_context_id(struct auxtrace_record *itr,
- 		return 0;
- 
- 	/* Not supported in etmv3 */
--	if (!cs_etm_is_etmv4(itr, cpu)) {
-+	if (cs_etm_get_version(itr, cpu) == CS_ETMV3) {
- 		pr_err("%s: contextid not supported in ETMv3, disable with %s/contextid=0/\n",
- 		       CORESIGHT_ETM_PMU_NAME, CORESIGHT_ETM_PMU_NAME);
- 		return -EINVAL;
-@@ -154,7 +170,7 @@ static int cs_etm_validate_timestamp(struct auxtrace_record *itr,
- 	      perf_pmu__format_bits(cs_etm_pmu, "timestamp")))
- 		return 0;
- 
--	if (!cs_etm_is_etmv4(itr, cpu)) {
-+	if (cs_etm_get_version(itr, cpu) == CS_ETMV3) {
- 		pr_err("%s: timestamp not supported in ETMv3, disable with %s/timestamp=0/\n",
- 		       CORESIGHT_ETM_PMU_NAME, CORESIGHT_ETM_PMU_NAME);
- 		return -EINVAL;
-@@ -218,6 +234,11 @@ static int cs_etm_validate_config(struct auxtrace_record *itr,
- 	}
- 
- 	perf_cpu_map__for_each_cpu_skip_any(cpu, idx, intersect_cpus) {
-+		if (cs_etm_get_version(itr, cpu.cpu) == CS_NOT_PRESENT) {
-+			pr_err("%s: Not found on CPU %d. Check hardware and firmware support and that all Coresight drivers are loaded\n",
-+			       CORESIGHT_ETM_PMU_NAME, cpu.cpu);
-+			return -EINVAL;
-+		}
- 		err = cs_etm_validate_context_id(itr, evsel, cpu.cpu);
- 		if (err)
- 			break;
-@@ -548,13 +569,13 @@ cs_etm_info_priv_size(struct auxtrace_record *itr __maybe_unused,
- 		/* Event can be "any" CPU so count all online CPUs. */
- 		intersect_cpus = perf_cpu_map__new_online_cpus();
- 	}
-+	/* Count number of each type of ETM. Don't count if that CPU has CS_NOT_PRESENT. */
- 	perf_cpu_map__for_each_cpu_skip_any(cpu, idx, intersect_cpus) {
--		if (cs_etm_is_ete(itr, cpu.cpu))
--			ete++;
--		else if (cs_etm_is_etmv4(itr, cpu.cpu))
--			etmv4++;
--		else
--			etmv3++;
-+		enum cs_etm_version v = cs_etm_get_version(itr, cpu.cpu);
-+
-+		ete   += v == CS_ETE;
-+		etmv4 += v == CS_ETMV4;
-+		etmv3 += v == CS_ETMV3;
- 	}
- 	perf_cpu_map__put(intersect_cpus);
- 
-@@ -564,7 +585,8 @@ cs_etm_info_priv_size(struct auxtrace_record *itr __maybe_unused,
- 	       (etmv3 * CS_ETMV3_PRIV_SIZE));
- }
- 
--static bool cs_etm_is_etmv4(struct auxtrace_record *itr, int cpu)
-+static bool cs_etm_pmu_file_present(struct auxtrace_record *itr, int cpu,
-+				       const char *file)
- {
- 	bool ret = false;
- 	char path[PATH_MAX];
-@@ -574,9 +596,7 @@ static bool cs_etm_is_etmv4(struct auxtrace_record *itr, int cpu)
- 			container_of(itr, struct cs_etm_recording, itr);
- 	struct perf_pmu *cs_etm_pmu = ptr->cs_etm_pmu;
- 
--	/* Take any of the RO files for ETMv4 and see if it present */
--	snprintf(path, PATH_MAX, "cpu%d/%s",
--		 cpu, metadata_etmv4_ro[CS_ETMV4_TRCIDR0]);
-+	snprintf(path, PATH_MAX, "cpu%d/%s", cpu, file);
- 	scan = perf_pmu__scan_file(cs_etm_pmu, path, "%x", &val);
- 
- 	/* The file was read successfully, we have a winner */
-@@ -735,21 +755,26 @@ static void cs_etm_get_metadata(int cpu, u32 *offset,
- 	struct perf_pmu *cs_etm_pmu = ptr->cs_etm_pmu;
- 
- 	/* first see what kind of tracer this cpu is affined to */
--	if (cs_etm_is_ete(itr, cpu)) {
-+	switch (cs_etm_get_version(itr, cpu)) {
-+	case CS_ETE:
- 		magic = __perf_cs_ete_magic;
- 		cs_etm_save_ete_header(&info->priv[*offset], itr, cpu);
- 
- 		/* How much space was used */
- 		increment = CS_ETE_PRIV_MAX;
- 		nr_trc_params = CS_ETE_PRIV_MAX - CS_ETM_COMMON_BLK_MAX_V1;
--	} else if (cs_etm_is_etmv4(itr, cpu)) {
-+		break;
-+
-+	case CS_ETMV4:
- 		magic = __perf_cs_etmv4_magic;
- 		cs_etm_save_etmv4_header(&info->priv[*offset], itr, cpu);
- 
- 		/* How much space was used */
- 		increment = CS_ETMV4_PRIV_MAX;
- 		nr_trc_params = CS_ETMV4_PRIV_MAX - CS_ETMV4_TRCCONFIGR;
--	} else {
-+		break;
-+
-+	case CS_ETMV3:
- 		magic = __perf_cs_etmv3_magic;
- 		/* Get configuration register */
- 		info->priv[*offset + CS_ETM_ETMCR] = cs_etm_get_config(itr);
-@@ -767,6 +792,13 @@ static void cs_etm_get_metadata(int cpu, u32 *offset,
- 		/* How much space was used */
- 		increment = CS_ETM_PRIV_MAX;
- 		nr_trc_params = CS_ETM_PRIV_MAX - CS_ETM_ETMCR;
-+		break;
-+
-+	default:
-+	case CS_NOT_PRESENT:
-+		/* Unreachable, CPUs already validated in cs_etm_validate_config() */
-+		assert(true);
-+		return;
- 	}
- 
- 	/* Build generic header portion */
--- 
-2.34.1
+Yeah that works for me. I just sent the pmd_mkinvalid() fix.
 
 
