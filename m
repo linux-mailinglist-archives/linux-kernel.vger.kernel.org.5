@@ -1,81 +1,82 @@
-Return-Path: <linux-kernel+bounces-163542-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-163543-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 093498B6CD9
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 10:34:26 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 915778B6CDA
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 10:34:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B2FA31F23CE3
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 08:34:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A565E1C227BC
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 08:34:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C4131272D5;
-	Tue, 30 Apr 2024 08:34:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 210411272CA;
+	Tue, 30 Apr 2024 08:34:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="3e+SwDFP"
-Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="xrlTfZDE"
+Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com [209.85.208.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E362917F5
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 08:34:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DFEE317F5
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 08:34:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714466058; cv=none; b=Rou0XA7dnQ3V4kjLHcMRWl7C5UhhnpSEUbUrh4QsoCNLgm08A7KyGpeegbDeaZpJcxz9JgjYnpdUBZYf/K4+PdjhVdMgxBsFlKRLoG56KBeRH/hkk4IQvROU7lVhs+4povQTL4XNOuU1dpVTtHltruJrC2/9p249tnlXyT4v2Xk=
+	t=1714466089; cv=none; b=LsDPaCSJXP8aPNMsdEMEGE4ONl6phlfBRAR7+jPLBm/L3ZXuZJa9jtbRawGb/8oMnmwKt52gjlFleQcqc8NsEtsxU3qM6W8DvIPmnM3ICbM5PMqxycbrkn4kLqaL8pd0gdZnW15X8Ix1VEOutMShiTTOmDkjI4aAYpj7JJaYUog=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714466058; c=relaxed/simple;
-	bh=xzoVJH1FpRrzRN0oXwjSzzG4835DVXEqL0lWmcwYJ7Y=;
+	s=arc-20240116; t=1714466089; c=relaxed/simple;
+	bh=jPYNUDHO8z8R/AW867spSODiXpt3EDt4BNKxe4R+5dc=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=YjPeSrb8L34aA94TmRgNOvhjX4gDIQNsUvdxyAuucuFtn7UM2HuVxAAGjIPlUpHLXXEv1X9Fr1blMiZSY8ZrhraKbi9MR+8rELmVKBIeRBwioRlpk/GJgRvQCVfjrArTsWKdpCfUJf8+hf8plA82pyphjcL3Z6sxcXX3m/bDy+g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=3e+SwDFP; arc=none smtp.client-ip=209.85.218.46
+	 To:Cc:Content-Type; b=hIUUoWyLLzFn2gosD63kY07eNgPrJfZlYcnMlpGIat57t1H6KmSoOILfjCirnDsL4XC2uDRzQGRtjraDa3S1HNUBNq3d9MK5Ar3eaQJ4TInNdlpetksexsy3UabjSVjsZhwzDD++NSenuok7ZZ0lTRMcwMQHW7GwcK2LRd3GeFg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=xrlTfZDE; arc=none smtp.client-ip=209.85.208.42
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-a556d22fa93so585359966b.3
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 01:34:16 -0700 (PDT)
+Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-571bddddbc2so6378995a12.1
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 01:34:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1714466055; x=1715070855; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1714466086; x=1715070886; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=O0Bw3WTLhwtlI5geCip/Ov6+YteZf+RUVzuWO9sZyQM=;
-        b=3e+SwDFP3vSXETlgCsALhOXnP9sktvp4xXMdVQojJixx4Jd2nRk4B3ntVZRCG1lcj/
-         XL2UZZyDBcGvq27esWSBF0S6LJ0CtBinMRxvTKxA6I6iL99crNLx6jb0IIaN+uXP9Xxe
-         BaDXnp32NyI4xJ3qFf0Y+IIb41i7zTDynMuycpDK3/HQfMGY5RBmslvneowwXN7OL17s
-         BVdH/KO0z6OgJy6zgobnh9UIxXInCN6uP911nsw6dRP+KjjxZ90/qsCh/3KOj+sZT+cl
-         x2ImGC8rJufB1aLlB8zpDATH8Zd+XzcngpjQD4JIsif8YjHxhLQDqdBTJW9MyWxo1E2g
-         0faw==
+        bh=aBu8BqMTHMfO28FxxomfhI3ilqxqETOIjPW5gQNZKVM=;
+        b=xrlTfZDEnzFIUxUZhOgeyPCLpPYYVfLnfxFJoROsGtd1Tt+s2n113jToHIu5l1Jr+o
+         EVCRQryBrsHaAnunxqbEP8tOfnghfDMlbknMPpZLK6m9fZsCbS3+2DeFpvePw4nuTFpF
+         yA0UGGB7QOUfkImt/xUBJ8UtEnM977HGPnDUMgaMBN8zhN4556SRZ9I83DfTLjBCBngL
+         8pJuWTLqoW4BwgX0TzSES9RF3IjdEDF44+lGo8XZYGh52IFSj8fO2Xs22rurXkdBGcHP
+         03D/foSBv94QKl8ehx3K/0xf8ZVcwCmL6jQCct+eyBjxN1Y3enUjxyoOOtDEFnskWi+I
+         a/xQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714466055; x=1715070855;
+        d=1e100.net; s=20230601; t=1714466086; x=1715070886;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=O0Bw3WTLhwtlI5geCip/Ov6+YteZf+RUVzuWO9sZyQM=;
-        b=C8YxPz2id38k75XfU4uyop4LgzAUY7mdMZpvnmzQ8SGqlZPlyc4NVzBTuoObrvlJQD
-         JUJHELfoyrCiBsl6ypFBt2zRptXLLc7MWd4kOLcXPSvoRsqv49ibHO0kc6svfBZL0Eyq
-         MJDWrpw8W62v6Aa7qttrRE1gTkFCuUX8Msou4cK/q5ouS/mxKDpSrMd/zxpg9uNwyduQ
-         e6ak6hUNu1Kka0H6WreaXlAlgBArx+tFot2XuHaK+zrlAXgah6ztqfubCGTa8/n+EJEm
-         LJ9ygFu4Ryr2eNL44ndHjhV6i9mbdy/4neX4qwcAWd/AeT4yumF9RgWHFfrFmw7X9Ez9
-         tAfQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXlpkSV0/Z/HY6vTPwVfVFE9FFIxqbTS+TsFc+Z/d1zS1vXccIyfNsYQi4gF67x4SpAQrIwysH6lJEPWaRGmYzAk9YGTbpPJaH1tnoG
-X-Gm-Message-State: AOJu0YzwA2SKay/aV5do+NoatGZs1NMPuJbVfZAZmglHlbzn404sF8px
-	d6L1VT+ENPf6CyoSvHyCyOHGnLTXr/FOA8RxrNXMC9V4BDs+IKDO6pVuuCPZ/fQkpa3YJShRsQy
-	MbuBUYp0YfC8EgLTUQCdj5SnBEnFzqDEG1VoP
-X-Google-Smtp-Source: AGHT+IGAxVVIvvhqlm9vE9iS3fPdPoQOYaPlzqepEmPc8+xUV7771I2xf8JSwUkJ3VO7dv85sBec9NEA4tsy96VB3BI=
-X-Received: by 2002:a17:906:3e53:b0:a58:a721:3a61 with SMTP id
- t19-20020a1709063e5300b00a58a7213a61mr1393176eji.3.1714466054919; Tue, 30 Apr
- 2024 01:34:14 -0700 (PDT)
+        bh=aBu8BqMTHMfO28FxxomfhI3ilqxqETOIjPW5gQNZKVM=;
+        b=W7un3QhRSkVM715Dt6d61/VppyW/5R/ySzvv7TEGYnWM+VJwQh7p0X1Nh0/G6BXdjH
+         lLp3ip1xbfjXShNtowVFzmF5HIQIVwHYpRvwa0+cTea1NHLyEjB1CU0aMXSIa/VdSCV1
+         x9n2RhBBWi6Pgk2dgcpFneU1IbKixpJkZoKtf2ge3welfQLkUZbyYATf+JShYoacyY4A
+         9aTjCSIrM6OP5+RWvSiAh5KtYIVRLqlmhts4oZ7iNutLo+lNsBcvPFe0GroJlFeFDFKB
+         EQeBfyB6cGsU6Cotl1DCl1mer/NWg+OVuffau3CXRq6RzJsBJ64t73LO/N+YcTaIKwbn
+         d9SQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXTbXRO4CKWxvgD6K9zYvNH8GOvR5w8ddQXr74nOK8by9S2hGiNPETwvfRinosTi/BfcBH8TalTtXr5pH4sdX56kksayUUw5ySTn7P+
+X-Gm-Message-State: AOJu0YyFE05rTW8up7TzYRkBZYzfKwRDSVRIr/0cdEQx+qw6jfiyagXA
+	rNzZDAutVBYe5HqkQQ4bcgn2SJZsxAyyemssZZ14KJxkfQVxn6XHzWfshr7+TunnlxJLIQ3nlyJ
+	A9oGRjf/Y3BxwR0Lr8Hyol0z4N7RC4vLkwYB9
+X-Google-Smtp-Source: AGHT+IG9FviPkvXS5CMDFsIMeJxQdptXNvUHM9jcQby2d5RwfDkT3fUJ6oWeWv1yGvKqNb+hyZ/tP8fW9+HefgCbVAU=
+X-Received: by 2002:a17:906:e2c5:b0:a55:2e77:c718 with SMTP id
+ gr5-20020a170906e2c500b00a552e77c718mr8516330ejb.54.1714466086036; Tue, 30
+ Apr 2024 01:34:46 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240430060612.2171650-1-shakeel.butt@linux.dev> <20240430060612.2171650-2-shakeel.butt@linux.dev>
-In-Reply-To: <20240430060612.2171650-2-shakeel.butt@linux.dev>
+References: <20240430060612.2171650-1-shakeel.butt@linux.dev> <20240430060612.2171650-4-shakeel.butt@linux.dev>
+In-Reply-To: <20240430060612.2171650-4-shakeel.butt@linux.dev>
 From: Yosry Ahmed <yosryahmed@google.com>
-Date: Tue, 30 Apr 2024 01:33:38 -0700
-Message-ID: <CAJD7tkYZZZ2raUyJKkLWVYvwb0G7Zi5Xz1t=BT7ih9wpyrThbw@mail.gmail.com>
-Subject: Re: [PATCH v3 1/8] memcg: reduce memory size of mem_cgroup_events_index
+Date: Tue, 30 Apr 2024 01:34:10 -0700
+Message-ID: <CAJD7tkb0cOwgvet4MV8pAzP+R4ptHoWgFoMsdoYw_0qrcWv1=Q@mail.gmail.com>
+Subject: Re: [PATCH v3 3/8] mm: memcg: account memory used for memcg vmstats
+ and lruvec stats
 To: Shakeel Butt <shakeel.butt@linux.dev>
 Cc: Andrew Morton <akpm@linux-foundation.org>, Johannes Weiner <hannes@cmpxchg.org>, 
 	Michal Hocko <mhocko@kernel.org>, Roman Gushchin <roman.gushchin@linux.dev>, 
@@ -87,53 +88,50 @@ Content-Transfer-Encoding: quoted-printable
 On Mon, Apr 29, 2024 at 11:06=E2=80=AFPM Shakeel Butt <shakeel.butt@linux.d=
 ev> wrote:
 >
-> mem_cgroup_events_index is a translation table to get the right index of
-> the memcg relevant entry for the general vm_event_item. At the moment,
-> it is defined as integer array. However on a typical system the max
-> entry of vm_event_item (NR_VM_EVENT_ITEMS) is 113, so we don't need to
-> use int as storage type of the array. For now just use int8_t as type
-> and add a BUILD_BUG_ON() and will switch to short once NR_VM_EVENT_ITEMS
-> touches 127.
+> From: Roman Gushchin <roman.gushchin@linux.dev>
 >
-> Another benefit of this change is that the translation table fits in 2
-> cachelines while previously it would require 8 cachelines (assuming 64
-> bytes cachesline).
+> The percpu memory used by memcg's memory statistics is already accounted.
+> For consistency, let's enable accounting for vmstats and lruvec stats
+> as well.
 >
+> Signed-off-by: Roman Gushchin <roman.gushchin@linux.dev>
 > Signed-off-by: Shakeel Butt <shakeel.butt@linux.dev>
-> Reviewed-by: Roman Gushchin <roman.gushchin@linux.dev>
 
 Reviewed-by: Yosry Ahmed <yosryahmed@google.com>
 
 > ---
-> Changes since v2:
-> - Used S8_MAX instead of 127
-> - Update commit message based on Yosry's feedback.
->
->  mm/memcontrol.c | 6 ++++--
->  1 file changed, 4 insertions(+), 2 deletions(-)
+>  mm/memcontrol.c | 7 ++++---
+>  1 file changed, 4 insertions(+), 3 deletions(-)
 >
 > diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index 602ad5faad4d..c146187cda9c 100644
+> index 7126459ec56a..434cff91b65e 100644
 > --- a/mm/memcontrol.c
 > +++ b/mm/memcontrol.c
-> @@ -607,11 +607,13 @@ static const unsigned int memcg_vm_event_stat[] =3D=
- {
->  };
+> @@ -5545,8 +5545,8 @@ static int alloc_mem_cgroup_per_node_info(struct me=
+m_cgroup *memcg, int node)
+>         if (!pn)
+>                 return 1;
 >
->  #define NR_MEMCG_EVENTS ARRAY_SIZE(memcg_vm_event_stat)
-> -static int mem_cgroup_events_index[NR_VM_EVENT_ITEMS] __read_mostly;
-> +static int8_t mem_cgroup_events_index[NR_VM_EVENT_ITEMS] __read_mostly;
+> -       pn->lruvec_stats =3D kzalloc_node(sizeof(struct lruvec_stats), GF=
+P_KERNEL,
+> -                                       node);
+> +       pn->lruvec_stats =3D kzalloc_node(sizeof(struct lruvec_stats),
+> +                                       GFP_KERNEL_ACCOUNT, node);
+>         if (!pn->lruvec_stats)
+>                 goto fail;
 >
->  static void init_memcg_events(void)
->  {
-> -       int i;
-> +       int8_t i;
-> +
-> +       BUILD_BUG_ON(NR_VM_EVENT_ITEMS >=3D S8_MAX);
+> @@ -5617,7 +5617,8 @@ static struct mem_cgroup *mem_cgroup_alloc(struct m=
+em_cgroup *parent)
+>                 goto fail;
+>         }
 >
->         for (i =3D 0; i < NR_MEMCG_EVENTS; ++i)
->                 mem_cgroup_events_index[memcg_vm_event_stat[i]] =3D i + 1=
-;
+> -       memcg->vmstats =3D kzalloc(sizeof(struct memcg_vmstats), GFP_KERN=
+EL);
+> +       memcg->vmstats =3D kzalloc(sizeof(struct memcg_vmstats),
+> +                                GFP_KERNEL_ACCOUNT);
+>         if (!memcg->vmstats)
+>                 goto fail;
+>
 > --
 > 2.43.0
 >
