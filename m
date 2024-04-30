@@ -1,126 +1,110 @@
-Return-Path: <linux-kernel+bounces-163756-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-163757-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 016908B6F73
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 12:18:22 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D41318B6F74
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 12:18:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 81B092848BD
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 10:18:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 747C71F24416
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 10:18:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 316AD1422A6;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61E0114264A;
 	Tue, 30 Apr 2024 10:17:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Ujiw2/sQ"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="vzh69BIF"
+Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C577213D2B3
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9648113D257
 	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 10:17:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714472278; cv=none; b=n2zSJHxASu48zZrj/ffUu1OS1F0Y6P5EjP1GKjpleP7Ec+9YqfcGGgutvry/NGef69PpWayJIM2r47RuBbFIhImAN7sj6AZN3aHELmb1mx+X+eg5/YlXreBa8nU272c+ULcVtte0x8F3npnYQ2iI9XIY5JemkKEdRD+R1OBxRpg=
+	t=1714472278; cv=none; b=QeQKrbTjN69/HY121P8VMPsdCA+GAglay89MwzGeYKhfGpu083Gy0S4e4DdAF+SMTv/aZwggvJbbOSkjNXcsc9WSelMKXvv7KBzk0BBprZpEQed89E5/XKQmoosNaklJ40IjtAlb3Yn1n6VRhY0Z7M7uee1qwKjiAM84xHUgCkE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1714472278; c=relaxed/simple;
-	bh=DxCBfW2ZX60itdmD+i2ZLg8FWHGDeeOaWCry5xKcra0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=rES6PwPwQiO9g7LNL3bpHnB9Yxx9UHLBTn4rHJV4OAHbZt9J53Kgq0LbqsLel4mVTiAuTjTrIBUlitOVdd9JN7G77okVxRQwk8IxX8KAvbMmQpYL7HoqgfXEl5L5xiym6odiaEBj6faDG+71tlz0cJymbfEEbh0zBKOy40wW9z4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Ujiw2/sQ; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1714472275;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=2WgfcDzbL6BdRnbQ/LMHjtoVFL3IiamXBZRn2Dk0E7Y=;
-	b=Ujiw2/sQhjh+EbZy4TR39jWD5+NwqeMdhfkKbOa/OrMp4zhhhQh/EddZ3JFxyOkWX4R2YA
-	bBkHOTwXnxoqpOxEvzWWBIvNm0BBHZQrYWUSlKJ1Iligbp9udvhNhbTzbkb4XAMoKBkpRl
-	MzuBKqxJ3Jv8Vb05vKShetFOdo3ArYU=
-Received: from mail-pj1-f70.google.com (mail-pj1-f70.google.com
- [209.85.216.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-55-jcYydcosNPO3wtcrLuFzvA-1; Tue, 30 Apr 2024 06:17:53 -0400
-X-MC-Unique: jcYydcosNPO3wtcrLuFzvA-1
-Received: by mail-pj1-f70.google.com with SMTP id 98e67ed59e1d1-2ae8013ac66so6797354a91.3
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 03:17:53 -0700 (PDT)
+	bh=8qqAdZ/ysBDQ0bBLx+wuMxmUlHkojWR9VO8wGD10d9k=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=XZefQT9PXUSzVJlZnnvJaKfOvjc0tvJzVk5byNXRKNVJQEfB57S1EdNCtN6/QVzNfvGWFKMyhSGr7t4+51i3JZ1Z8xliUPIWsd9exuL+U9P94yeorsQLb8q+RQd8RRnA1ntPtBbCKDDlBMenurP7K0zxFiPsKY7pn5VsO7n+MAw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=vzh69BIF; arc=none smtp.client-ip=209.85.128.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
+Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-41ba1ba55e9so29994995e9.3
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 03:17:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1714472275; x=1715077075; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=61QGK6EE+JvUrOTegIXYCGltaVd3HNOf6mVtdZdFzzs=;
+        b=vzh69BIFdd/j4CN1/ETUEwelY3PxTcrw45lGUa2P6BXqW/zk1vLiBq9v9R9xVYc6Gb
+         6yCni/YKg58gbJ76HaFVA0s0Cu0lNXOW8NtfuW2Vnd/YaizkZyM5MKGf8m34fSBk08i0
+         +OGzRmKRsJxOPapEkeSf8G/cmgdaFCX9ML3PK447z8oKu31sPPRyXGKxpcOOFYWwvgaU
+         QDJF6AxNYca/5JHbyb4RzJ7PmeBgDTrX18RGsybPhCAxm+Yi/3jnl9dJlCuzXy7I4Qcp
+         MNKXfrE+w1bDdPX8s62iWmNV6DdYZHfdB9+h44+EPVJlchQ33ZgNq39R8Ty4rVKQ81Vk
+         T8Lg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714472273; x=1715077073;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=2WgfcDzbL6BdRnbQ/LMHjtoVFL3IiamXBZRn2Dk0E7Y=;
-        b=TB+vxYw9tMR8pPZCDD0kMQ6FWoe65ZX8UGy/n2Ov1v3FkDoi49LitJcc5ng6QphF5M
-         QKcQYR1NJk3UhlIANQhtemfgMjCPtWtvnYSPOjHwrHwTmJxJDjztB5Dct76bNaX4YsWC
-         snnlZ70Nn515fPtRClxZdUcJMXAfZCABIlNk+5sTWgcGjDG8cfFQ6aawOq8MDawGE1LX
-         iqj6M07rFyuClJ9G4XB9OIwz3+2D39DXpOE+MIAok4s45LG2zo6yFI8u32em62uKn8nc
-         wdS9U9dYUDYk9xQ2ml45GcXSQnV31ncdDrk2Aq5gvYuDBhB0RiGlrZY52G9F3qnlJUe4
-         +7tg==
-X-Forwarded-Encrypted: i=1; AJvYcCWNIstxV3G/jspktInDXDmTGAx4zaUHgRbdN42MZ0VKnA0ke+fQX4W430p8wRURxXYFNq5ArRdH4bMTzcvNzSUvwDeRMm4Oc3jsCuT5
-X-Gm-Message-State: AOJu0Ywsc5RLF0+V5AxNOyBKbtEtyPzUwO7/alfLmJTJOLEFhuQy99Zl
-	8U6XaRx+hzkkCQS/MLbG7cxnxN1/NLLwySOoxgEOZrIx2mekX+RN+h+770rkIKjxKqwKjzuvZtb
-	aeX3TKBpQjhZZH91K0rjbxsYd4YzZNLsM5X1S1qrcyDBQtLxH7SHnqnv0abbLeX/TElxuTIlwL5
-	6JQFRoQI9nx7BxNWOgxt+/dyMkv59VOpDUFBm5
-X-Received: by 2002:a17:90b:3d86:b0:2af:4f4e:79a7 with SMTP id pq6-20020a17090b3d8600b002af4f4e79a7mr12470161pjb.30.1714472272807;
-        Tue, 30 Apr 2024 03:17:52 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFWSpkNXoLaxHPhUhC5NZ72tcHc7cFhFDuXAR7cTPWqMf81MdK6/Q7OPe/FNtSys3J7tuhnJJXuDUF4sBjb72Q=
-X-Received: by 2002:a17:90b:3d86:b0:2af:4f4e:79a7 with SMTP id
- pq6-20020a17090b3d8600b002af4f4e79a7mr12470138pjb.30.1714472272243; Tue, 30
- Apr 2024 03:17:52 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1714472275; x=1715077075;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=61QGK6EE+JvUrOTegIXYCGltaVd3HNOf6mVtdZdFzzs=;
+        b=Nt7WfzwgXD4eFQGLmZUmrpa6AkHPV6zjOcYes806H4EvKPhw1TuwSiexFMtVyNsFRW
+         0cGtiyLxRbP/wBJVKcS9CUq6sc4CVfMLE/TBt9tqZSHm7Gx7Xw7NBMEmujXW7EmTStO2
+         jXGbm6yfjf/C7HJCS4y5wRR8hoPM7IJQdyh9jeB0uEvBG1Rt4n+w+PH9egMBgqqZ/qtu
+         vGiI6NGl4IF0oRDqyTrnGVrIVeCGkj2NxS18UUOB0K/JRo67FwxwHW9rvfBFyp9PdV87
+         E532J70u21kTvhrEHWJ5D4BrFDnrIzVMaLQZPUeyqptxi6tgPlYfOFtEM1vdjslP2phf
+         294w==
+X-Forwarded-Encrypted: i=1; AJvYcCVg66uHYsXjgEblaTLzwUbrvbKLCJRk8aVcuS+qBwj0xnzzZXPzMUttTA6Of0RdQEviN33Wnh5kaFXOSjJsqMQXBWvFOqNhMo0KsBz5
+X-Gm-Message-State: AOJu0YwQaNNFI4LQgtHwZ3TNoSqCsmErY5GHPwN4ROlm4CAlBFbLv4Xk
+	qZeP5oyjpaK/Ym5OZI3pqm4CMEGt7ZOtYB7iH7t8LqCn5UzQ4xNiFevK4eLAfK0=
+X-Google-Smtp-Source: AGHT+IGicD8LgUlYM1L8jAIzwk7lp2yQ2IjySmGuztg67KCqJ6vLOq0P1wNOuCpEesOPQpne2u8iGQ==
+X-Received: by 2002:a05:600c:1e28:b0:418:3eb7:e8c6 with SMTP id ay40-20020a05600c1e2800b004183eb7e8c6mr1897308wmb.5.1714472274834;
+        Tue, 30 Apr 2024 03:17:54 -0700 (PDT)
+Received: from [192.168.1.172] ([93.5.22.158])
+        by smtp.gmail.com with ESMTPSA id i17-20020adfe491000000b0034cc9dcccbdsm7046219wrm.113.2024.04.30.03.17.53
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 30 Apr 2024 03:17:54 -0700 (PDT)
+Message-ID: <1fc23530-89ba-4e36-9e9a-a1289f56a9bc@baylibre.com>
+Date: Tue, 30 Apr 2024 12:17:52 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240429221706.1492418-1-naresh.kamboju@linaro.org>
-In-Reply-To: <20240429221706.1492418-1-naresh.kamboju@linaro.org>
-From: Davide Caratti <dcaratti@redhat.com>
-Date: Tue, 30 Apr 2024 12:17:41 +0200
-Message-ID: <CAKa-r6vJjeYqGZERRr=B4ykLf-efPRY3h=HU3y3QxazwZ_cMAg@mail.gmail.com>
-Subject: Re: selftests: tc-testing: tdc.sh: WARNING: at kernel/locking/lockdep.c:1226
- lockdep_register_key
-To: Naresh Kamboju <naresh.kamboju@linaro.org>
-Cc: lkft-triage@lists.linaro.org, regressions@lists.linux.dev, 
-	linux-kernel@vger.kernel.org, netdev@vger.kernel.org, jhs@mojatatu.com, 
-	xiyou.wangcong@gmail.com, jiri@resnulli.us, cpaasch@apple.com, 
-	pabeni@redhat.com, xmu@redhat.com, maxim@isovalent.com, edumazet@google.com, 
-	anders.roxell@linaro.org, dan.carpenter@linaro.org, arnd@arndb.de, 
-	Linux Kernel Functional Testing <lkft@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 0/3] drm/mediatek: Add support for OF graphs
+To: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+ chunkuang.hu@kernel.org
+Cc: robh@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+ p.zabel@pengutronix.de, airlied@gmail.com, daniel@ffwll.ch,
+ maarten.lankhorst@linux.intel.com, mripard@kernel.org, tzimmermann@suse.de,
+ matthias.bgg@gmail.com, shawn.sung@mediatek.com, yu-chang.lee@mediatek.com,
+ ck.hu@mediatek.com, jitao.shi@mediatek.com, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+ linux-mediatek@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+ wenst@chromium.org, kernel@collabora.com
+References: <20240409120211.321153-1-angelogioacchino.delregno@collabora.com>
+Content-Language: en-US
+From: Alexandre Mergnat <amergnat@baylibre.com>
+In-Reply-To: <20240409120211.321153-1-angelogioacchino.delregno@collabora.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-hello,
+Hi Angelo,
 
-On Tue, Apr 30, 2024 at 12:17=E2=80=AFAM Naresh Kamboju
-<naresh.kamboju@linaro.org> wrote:
->
-> While running selftests: tc-testing: tdc.sh the following kernel warnings=
-,
-> kernel Bug, kernel oops and kernel panic noticed with Linux next-20240429
-> tag kernel as per the available data.
->
-> This build config is from kselftest merge config[1].
->
-> Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
->
-> selftests: tc-testing: tdc.sh log and crash log
+On 09/04/2024 14:02, AngeloGioacchino Del Regno wrote:
+> This series was tested on MT8195 Cherry Tomato and on MT8395 Radxa
+> NIO-12L with both hardcoded paths, OF graph support and partially
+> hardcoded paths (meaning main display through OF graph and external
+> display hardcoded, because of OVL_ADAPTOR).
 
-the problem is created by [1]. I think that at least we need to guard
-against failures to allocate sch->cpu_bstats and sch->cpu_qstats,
-otherwise the dynamic key is registered but never unregistered (though
-the key is freed  in the error path of of qdisc_alloc() ). But there
-might be also something else; however, I can reproduce some similar
-splat, will follow-up on the list.
+Is that make sense for you to add the DTS changes of these boards into this serie ?
+I asked because, IMHO, that could help to understand the serie.
 
-sorry for the noise,
---=20
-davide
-
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.git/com=
-mit/?id=3Daf0cb3fa3f9ed258d14abab0152e28a0f9593084
-
+-- 
+Regards,
+Alexandre
 
