@@ -1,175 +1,179 @@
-Return-Path: <linux-kernel+bounces-163960-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-163958-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 74EC98B7699
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 15:07:55 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id B9F5F8B7694
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 15:07:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 30833283062
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 13:07:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 455761F22B0F
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 13:07:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C60FC171E71;
-	Tue, 30 Apr 2024 13:07:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19EE5171650;
+	Tue, 30 Apr 2024 13:07:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XQ6gN2Um"
-Received: from mail-pf1-f173.google.com (mail-pf1-f173.google.com [209.85.210.173])
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="tFjYY3ik";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="9oZ4487R";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="tFjYY3ik";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="9oZ4487R"
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99511171E40;
-	Tue, 30 Apr 2024 13:07:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CAC9712CD8F
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 13:07:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714482448; cv=none; b=tLrVKpWqjxgyOEIeNawMqDFJfoSSWPCHo+9Br2IVDIRyZFxL337KeaoMBew6vjMRRCi+9Vg0LGbrlnw5Ob3/48FZ6qpsFOdHU+VKcB7yuWblPNSzhaf1fu3ink2A7f/lJqyG7kh+L/yq18vZXL/45jvX8gGvRNb1N14jChHKVr4=
+	t=1714482436; cv=none; b=I6X0B3z7HVnL8TjnLN26BnlAIxCv4dBMo2CwOZiIGeTfZglVj6F0BA4ctrv+RFrG8H/5Jewd9wBylzVbQu8h2+YPk7tG2/QpNV/aKr1QeG8w6KIFJjBSFv95Z78CAyPeBfjPGLTh7ultGIzE6eaOBo68Wr8GhVlWrUMq0GgdAOo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714482448; c=relaxed/simple;
-	bh=nfbj6lQg4QIj6KrahuDN2fQ6/mkpe1Kohjlw6rM97eQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=AyvtCnNUEDs7+zOJDKBM6ZGHa+CLEpZVWgmHHleIHRzH0vm9lCDVG53iDFeCH99aL2vE09LLIzeHBiued7ajBahadpWUzJYznlway94tgHxZuAe4K5DheddeCFmRn+Oif9ODP4NBGXD5DLVzHezP/ra/OHX41uLHmIvpzb2wtNE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XQ6gN2Um; arc=none smtp.client-ip=209.85.210.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f173.google.com with SMTP id d2e1a72fcca58-6ecee1f325bso5015772b3a.2;
-        Tue, 30 Apr 2024 06:07:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714482446; x=1715087246; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=jWMKvvPXKohVNDvWimNhPf5Ya38IldwOhHFHwAj6j0Y=;
-        b=XQ6gN2UmCsFWN1cTb00GmjPbm28pXQDg+92X1rLaTIJXbqEqc60D/MP92xPomuYzaw
-         VDkzm48ViHyy0cJDc613rW+UOGcmfzqrGEePYbFQN145z2QL2Y9E3xJUusLz/XOQ4B/5
-         GiJXSeBi5Ktbz5vCoMsG2bMCdpJ5Rh8r9Mq6g8E2C253Flu029nnJCtpLaskSuD4pu0q
-         NdAqDzyiAll3kvt57kWg5Wy7V8HJGLTBjOU7xWloLDqb3kolUQ3tGsF8UxU4zWC/nCml
-         EDfDKCe3AimbQzaluJ2JyOU6ARVoBVH+uoBEBqe8vplk/T1S+gLUQbO/ezg48eo04lL5
-         MsDQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714482446; x=1715087246;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=jWMKvvPXKohVNDvWimNhPf5Ya38IldwOhHFHwAj6j0Y=;
-        b=tUml0yRhsrXgDU9ugOgfPcUI7ptLVEnuLQMa0PTq50GMePzKy/mzKGP/JuZqAPlJM0
-         CIu1eWbuKicPxjnG4ZvqGI5A/uU1x+ZqigiLbuXgZHSO1TZLbtP6+NR6HfgWjEvqhtFe
-         Xgnqi4fh+dXDWYpRaDSmrK+CNg2dl1xkNP0hnVvqKQCP34PqWGo25XJgOdw1x4ZFs1Yb
-         RvNMaF4D1nG+IwCEgvPIa4Q4bCyZ6SxcWL9ULgJSw3XhdUEpN3keg6MyFgJzH4g7SB0b
-         fub70DDCZ45MxaatABtyAQPgPaXrZlB3hT+4PyI/+YPu3Nnhq5xekbwjKx88rnn5rqpM
-         QLsw==
-X-Forwarded-Encrypted: i=1; AJvYcCWQDT5zl5CvJSoZGlUBsNaIoxrzp4i57EiiFItxGtkryxtp7YR/JcaofBNH++15M4MbJ8eIFk26wSzJi/FZOkfdA+KS0uK7QFR21F3E
-X-Gm-Message-State: AOJu0YyQI2BbAwgyTttW2fLvfR9Uj7lInH/pqCMwjNfx68ZJTj64e+na
-	SrD/USP84t8lIxNZ3TQbwXXbsEakd9FAusptu+JIBEooYelKika6
-X-Google-Smtp-Source: AGHT+IFQW51Ku/ImGoPSs950+adhzT+886b6tUADgTZUL5ML8mna9RSoy4lwYuNJKPGd9ASJAC3mlg==
-X-Received: by 2002:a05:6a20:970f:b0:1a7:99c5:802 with SMTP id hr15-20020a056a20970f00b001a799c50802mr15143359pzc.37.1714482445868;
-        Tue, 30 Apr 2024 06:07:25 -0700 (PDT)
-Received: from ?IPV6:2402:e280:214c:86:ebd1:1da6:4efd:79de? ([2402:e280:214c:86:ebd1:1da6:4efd:79de])
-        by smtp.gmail.com with ESMTPSA id p10-20020a056a000b4a00b006e5597994c8sm21025457pfo.5.2024.04.30.06.07.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 30 Apr 2024 06:07:25 -0700 (PDT)
-Message-ID: <f86b0c15-8fc4-4ed7-984a-3ab90c66a3eb@gmail.com>
-Date: Tue, 30 Apr 2024 18:37:20 +0530
+	s=arc-20240116; t=1714482436; c=relaxed/simple;
+	bh=r7FRtwI8zRzPvvCl2KCVkCnQ1HmMBmLozjO1kH0+tzY=;
+	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=f8GqW3XjI/V1YSYjHACQZpr3JlkU/z54Ejz79P+XlLoY71rm4uAI8lk4HHEMsC8kd/IxxAViPlcvfF3KcUHvoMCu6C2iI3YZpZEF3OQKK9NbsSLl5R+nG1WGMBkR5RNL9Fd/zS6Bv29dpjVEKpA2/yF9Iuh6AfSxzJQw6J1fz+U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=tFjYY3ik; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=9oZ4487R; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=tFjYY3ik; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=9oZ4487R; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 8A9E43405D;
+	Tue, 30 Apr 2024 13:07:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1714482432; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=nz8N0tF3ZAzNA0MyZhuy8ig+mc3JPzOBiuWey73KYMw=;
+	b=tFjYY3ik4DFWQ/rDjFDfkvcMtsG4+pt+FYsUquNUtBTyk/nfg4rYO7AMonqWsMTz+sQa6O
+	09b5Iju0hbTbO8Bi0jUneQqg9lDJWEYO9hc/B3/N30qRsAcdWhqwlzsv43fYEwLxYb/Oj8
+	Wx+evBumRboEZGb5S1mNhrC9ihQsrLY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1714482432;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=nz8N0tF3ZAzNA0MyZhuy8ig+mc3JPzOBiuWey73KYMw=;
+	b=9oZ4487RN1jyid4pLMdhXnk/Z496UXr5WcvJeB9l6tDr5ZO0Vgg7swsLQ7auJrYl7xmYSA
+	QrRnIFrvX5yEX1Ag==
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=tFjYY3ik;
+	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=9oZ4487R
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1714482432; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=nz8N0tF3ZAzNA0MyZhuy8ig+mc3JPzOBiuWey73KYMw=;
+	b=tFjYY3ik4DFWQ/rDjFDfkvcMtsG4+pt+FYsUquNUtBTyk/nfg4rYO7AMonqWsMTz+sQa6O
+	09b5Iju0hbTbO8Bi0jUneQqg9lDJWEYO9hc/B3/N30qRsAcdWhqwlzsv43fYEwLxYb/Oj8
+	Wx+evBumRboEZGb5S1mNhrC9ihQsrLY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1714482432;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=nz8N0tF3ZAzNA0MyZhuy8ig+mc3JPzOBiuWey73KYMw=;
+	b=9oZ4487RN1jyid4pLMdhXnk/Z496UXr5WcvJeB9l6tDr5ZO0Vgg7swsLQ7auJrYl7xmYSA
+	QrRnIFrvX5yEX1Ag==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 562B9136A8;
+	Tue, 30 Apr 2024 13:07:12 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id j+FuFADtMGY7LAAAD6G6ig
+	(envelope-from <tiwai@suse.de>); Tue, 30 Apr 2024 13:07:12 +0000
+Date: Tue, 30 Apr 2024 15:07:24 +0200
+Message-ID: <87ikzzm22b.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Baojun Xu <baojun.xu@ti.com>
+Cc: <robh+dt@kernel.org>,
+	<andriy.shevchenko@linux.intel.com>,
+	<lgirdwood@gmail.com>,
+	<perex@perex.cz>,
+	<pierre-louis.bossart@linux.intel.com>,
+	<kevin-lu@ti.com>,
+	<shenghao-ding@ti.com>,
+	<navada@ti.com>,
+	<13916275206@139.com>,
+	<v-po@ti.com>,
+	<niranjan.hy@ti.com>,
+	<alsa-devel@alsa-project.org>,
+	<linux-kernel@vger.kernel.org>,
+	<liam.r.girdwood@intel.com>,
+	<yung-chuan.liao@linux.intel.com>,
+	<broonie@kernel.org>,
+	<soyer@irl.hu>
+Subject: Re: [PATCH v4 2/3] ALSA: hda/tas2781: Tas2781 hda driver for SPI
+In-Reply-To: <20240430072544.1877-3-baojun.xu@ti.com>
+References: <20240430072544.1877-1-baojun.xu@ti.com>
+	<20240430072544.1877-3-baojun.xu@ti.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH linux-next] media:cdns-csi2tx: replace of_node_put() with
- __free
-To: Christophe JAILLET <christophe.jaillet@wanadoo.fr>, mripard@kernel.org,
- mchehab@kernel.org
-Cc: linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
- skhan@linuxfoundation.org, javier.carrasco.cruz@gmail.com,
- Julia Lawall <julia.lawall@inria.fr>
-References: <20240429171543.13032-1-prosunofficial@gmail.com>
- <6df5d715-3e31-40a5-9db3-2c3b9f12efac@wanadoo.fr>
-Content-Language: en-US
-From: R Sundar <prosunofficial@gmail.com>
-In-Reply-To: <6df5d715-3e31-40a5-9db3-2c3b9f12efac@wanadoo.fr>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Flag: NO
+X-Spam-Score: -1.87
+X-Rspamd-Action: no action
+X-Rspamd-Queue-Id: 8A9E43405D
+X-Spam-Level: 
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-1.87 / 50.00];
+	BAYES_HAM(-2.86)[99.39%];
+	SUSPICIOUS_RECIPS(1.50)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_CONTAINS_FROM(1.00)[];
+	R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	MIME_TRACE(0.00)[0:+];
+	ARC_NA(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[18];
+	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	FREEMAIL_ENVRCPT(0.00)[139.com,gmail.com];
+	FREEMAIL_CC(0.00)[kernel.org,linux.intel.com,gmail.com,perex.cz,ti.com,139.com,alsa-project.org,vger.kernel.org,intel.com,irl.hu];
+	RCVD_COUNT_TWO(0.00)[2];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	TO_DN_SOME(0.00)[];
+	DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TAGGED_RCPT(0.00)[dt];
+	RCVD_TLS_ALL(0.00)[];
+	DKIM_TRACE(0.00)[suse.de:+];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[ti.com:email,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns]
 
-On 30/04/24 00:10, Christophe JAILLET wrote:
-> Le 29/04/2024 à 19:15, R Sundar a écrit :
->> Use the new cleanup magic to replace of_node_put() with
->> __free(device_node) marking to auto release when they get out of scope.
->>
->> Suggested-by: Julia Lawall <julia.lawall@inria.fr>
->> Signed-off-by: R Sundar <prosunofficial@gmail.com>
->> ---
->>   drivers/media/platform/cadence/cdns-csi2tx.c | 19 +++++++------------
->>   1 file changed, 7 insertions(+), 12 deletions(-)
->>
->> diff --git a/drivers/media/platform/cadence/cdns-csi2tx.c 
->> b/drivers/media/platform/cadence/cdns-csi2tx.c
->> index 3d98f91f1bee..88aed2f299fd 100644
->> --- a/drivers/media/platform/cadence/cdns-csi2tx.c
->> +++ b/drivers/media/platform/cadence/cdns-csi2tx.c
->> @@ -496,48 +496,43 @@ static int csi2tx_get_resources(struct 
->> csi2tx_priv *csi2tx,
->>   static int csi2tx_check_lanes(struct csi2tx_priv *csi2tx)
->>   {
->>       struct v4l2_fwnode_endpoint v4l2_ep = { .bus_type = 0 };
->> -    struct device_node *ep;
->>       int ret, i;
->> -
->> -    ep = of_graph_get_endpoint_by_regs(csi2tx->dev->of_node, 0, 0);
->> +    struct device_node *ep __free(device_node) =
->> +        of_graph_get_endpoint_by_regs(csi2tx->dev->of_node, 0, 0);
->> +
->>       if (!ep)
->>           return -EINVAL;
->>       ret = v4l2_fwnode_endpoint_parse(of_fwnode_handle(ep), &v4l2_ep);
->>       if (ret) {
->>           dev_err(csi2tx->dev, "Could not parse v4l2 endpoint\n");
->> -        goto out;
->> +        return ret;
->>       }
->>       if (v4l2_ep.bus_type != V4L2_MBUS_CSI2_DPHY) {
->>           dev_err(csi2tx->dev, "Unsupported media bus type: 0x%x\n",
->>               v4l2_ep.bus_type);
->> -        ret = -EINVAL;
->> -        goto out;
->> +        return -EINVAL;
->>       }
->>       csi2tx->num_lanes = v4l2_ep.bus.mipi_csi2.num_data_lanes;
->>       if (csi2tx->num_lanes > csi2tx->max_lanes) {
->>           dev_err(csi2tx->dev,
->>               "Current configuration uses more lanes than supported\n");
->> -        ret = -EINVAL;
->> -        goto out;
->> +        return -EINVAL;
->>       }
->>       for (i = 0; i < csi2tx->num_lanes; i++) {
->>           if (v4l2_ep.bus.mipi_csi2.data_lanes[i] < 1) {
->>               dev_err(csi2tx->dev, "Invalid lane[%d] number: %u\n",
->>                   i, v4l2_ep.bus.mipi_csi2.data_lanes[i]);
->> -            ret = -EINVAL;
->> -            goto out;
->> +            return -EINVAL;
->>           }
->>       }
->>       memcpy(csi2tx->lanes, v4l2_ep.bus.mipi_csi2.data_lanes,
->>              sizeof(csi2tx->lanes));
->> -out:
->> -    of_node_put(ep);
->>       return ret;
+On Tue, 30 Apr 2024 09:25:43 +0200,
+Baojun Xu wrote:
 > 
-> Hi,
+> Main source code for tas2781 hda driver for SPI.
 > 
-> Nit: return 0; ?
-> 
-> CJ
-> 
->>   }
-> 
-Hi,
+> Signed-off-by: Baojun Xu <baojun.xu@ti.com>
 
-In success case, ret variable value also will be zero, else for non-zero 
-ret value it will return from v4l2_fwnode_endpoint_parse()'s error case 
-handling block.
+That's far little description than wished.  You can copy the contents
+of your cover letter to here, for example, for more detailed
+information.
 
-Thanks,
-Sundar
+Second, and most: this patch breaks again the build.
+You added the code calling functions that aren't defined yet
+(appearing in the patch 3).
+
+Also, some functions seem defined but not really used, e.g.
+tasdevice_spi_calbin_remove(), and some are not needed to be global
+functions.
+
+
+thanks,
+
+Takashi
 
