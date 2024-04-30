@@ -1,142 +1,143 @@
-Return-Path: <linux-kernel+bounces-164183-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-164177-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3FDD98B7A54
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 16:44:21 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8472B8B7A3B
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 16:42:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EB1421F23B88
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 14:44:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A2F951C207BF
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 14:42:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 970FE17B51D;
-	Tue, 30 Apr 2024 14:40:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F04E143729;
+	Tue, 30 Apr 2024 14:36:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="c0dYtZZ3"
-Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="X/eSqWpf"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 51D1817A931;
-	Tue, 30 Apr 2024 14:40:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47530152781;
+	Tue, 30 Apr 2024 14:36:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714488020; cv=none; b=tJcfIe3iT+aezY27pOtpTzCGci718c0RKY8AUh4SwmYDl42A6AaR0VeLGT5GzesEUj4whGlke43sc+m0YE1RCKaSihClFC309ZZBgiBxab7p6hjdaLx/lwxAB+NhuiresSQNKa9zJVwN9OPpuMfSqyPehaT1ReG8MKfZSrI/0jo=
+	t=1714487792; cv=none; b=s7gPY42fBnqSxw2xq0Dk8o9zeEDxiGjP7slEcSzYGXWNrXVLMqEztPe6MaOi2MWudOlN+ER4UtdEnlItmhSEdhMbaQpwDtV6VCZV9YNWEA7r8XUQsRBHzUMyoqHiPo3iHv/ynDeiaNuMJcvhA6bT2jCKmlhd8aYYeIGXvG2aBBs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714488020; c=relaxed/simple;
-	bh=LX/cja2FJFFGw7iFNRlpntXAi8MvhPRZ3BEfjetYX9k=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=kKBifYl31h1zIAasX1rbAtyojLg5C0l8e1qrW9rr1pnRNFWCar+3IQO/rQim1MzPavxl7QrPlKZdZ+Wyfdz0vUxmGrFrzjn4hXThruLbmUAvCa6EZr9f2JTFxvKlqwJG/vWbasFhmQnuZ5qQ6eMTWU1bIhogQOQEK+2H6o2swOQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=c0dYtZZ3; arc=none smtp.client-ip=209.85.128.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-41b4ff362a8so53215755e9.0;
-        Tue, 30 Apr 2024 07:40:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714488017; x=1715092817; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=iZxd/DI5QdY6rGwP24LbbxuJiqEuZoi+ZsrSMuiWkrQ=;
-        b=c0dYtZZ3BgHiPETbdpKFPEL7FjK5j58ieJ75CDDM1lcJCtgx3f9J8PCMSqrDGRqIl1
-         mAm9LVP7QCWrC2JOiFPEuhQrPnnqNR249W9Tu5UPF+7rrAGwaDazoidsUInagmJpwgTv
-         +gXHORk8gqBD6NoBGWDRAICkjzP1z9ZTraqjALID+4yaGk16KyHSepNEF5AtXvIgapeB
-         yMdz+IUZJfuBnImOYOfDmenlwxxqbFcSKgvW8RSartAijkT8NwMtiHeXywxaSEL5z9oV
-         +KDY23FSgR80TbDUAotPqskjGHLnGVebu+MEJpDg0uJgfr5o7F7T80BzQTzjKfZInUHj
-         PEDg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714488017; x=1715092817;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=iZxd/DI5QdY6rGwP24LbbxuJiqEuZoi+ZsrSMuiWkrQ=;
-        b=vOV9SeVVU8AZVJJQt/uVYnRUxh5q/bCl2yMUG2RNY+OnqpEviMEXu8HkLy41Q3PYAY
-         Gpl5bAUajiAVE/Sf1O0jxccPLyP/VIfd2Rqkrm3mjPhk89TshpGV3m4gu7jefBV7gcZR
-         T1dBF03SW5i2cpfKwdnaPMxlXsgItPTXfXzvEfgUbK9CBjq/4/YGZ7LVq/mRih4PTwG4
-         RHdQOcjAY4gG4+gpZ7szgxLVWBN/qUvATBkIirHN3jD6E01pXtz0T+uY/om70F0P31L7
-         FH42I3OLyjYE6RTVS5ffDcVGXa0VlSvZOJRUiS1QB9yF4jNQP0HBCNOoTfOK7+35CzQ8
-         fL8g==
-X-Forwarded-Encrypted: i=1; AJvYcCWYl7muIuyDnuerJB9PYnWNsZ27ZSOGE8CgHGzYLGrkZAk0rolK1ARftvo+9Pq7qFUbYhnwN+ln2ETki8TYpE9Yn+gMOx2YP6pe9YUzfioC0D0hKbNojDKSykOSKKrPjcPGmksE
-X-Gm-Message-State: AOJu0Yw8NxooLfQ2Ph7brPAQ/cZUhoZ859LDxJYRxmxL+9lJXgJ0yBEX
-	lXadDeyIgSUPfc/h0g9R4+SU2ywB8eYTvE8Vse7S8zl+mS8G+Drw
-X-Google-Smtp-Source: AGHT+IElt5ZeAiVH8HZctTdg1/Kk5OH+JkzF1XzccUyF4Lt231Cmm5evb/2WFVt18/J13+oAtC4k3Q==
-X-Received: by 2002:a05:600c:198c:b0:415:540e:74e3 with SMTP id t12-20020a05600c198c00b00415540e74e3mr12217850wmq.40.1714488017142;
-        Tue, 30 Apr 2024 07:40:17 -0700 (PDT)
-Received: from localhost ([146.70.204.204])
-        by smtp.gmail.com with ESMTPSA id h9-20020a5d4309000000b0034c78001f6asm10353790wrq.109.2024.04.30.07.40.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Apr 2024 07:40:16 -0700 (PDT)
-From: Richard Gobert <richardbgobert@gmail.com>
-To: davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	dsahern@kernel.org,
-	willemdebruijn.kernel@gmail.com,
-	alobakin@pm.me,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: Richard Gobert <richardbgobert@gmail.com>
-Subject: [PATCH net v4 2/2] net: gro: add flush check in udp_gro_receive_segment
-Date: Tue, 30 Apr 2024 16:35:55 +0200
-Message-Id: <20240430143555.126083-3-richardbgobert@gmail.com>
-In-Reply-To: <20240430143555.126083-1-richardbgobert@gmail.com>
-References: <20240430143555.126083-1-richardbgobert@gmail.com>
+	s=arc-20240116; t=1714487792; c=relaxed/simple;
+	bh=LKWI+SQd65kLKzL21w3huE0fLR5bApj1l+Rwvsz6QrI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=IYISrOsgMFjisyVrYJlg4l8X2ULEvnjSOMEvaXapGjN8F9gNOomNAhX63dULhIpozjeZrDcWjIRE/1HlgNxvp5SNhc9eGD5wsQd0ChKDGywZMwl+iAwvJXWOlAuaq6dj4LQkvDQe4wxB/5EFuQgY0Xz8vnJ6Z4GaMywwiNhcowQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=X/eSqWpf; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C10BAC2BBFC;
+	Tue, 30 Apr 2024 14:36:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714487790;
+	bh=LKWI+SQd65kLKzL21w3huE0fLR5bApj1l+Rwvsz6QrI=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=X/eSqWpfYx1YXb8Ql6syPez0TlFs75FQat7U+JvLQlpfPaC4jGzEyU67eSHiV4T/1
+	 iF+1HqPG/rSTRjePgxheyyN9wffE5mFk+p4xTpGTdS4I8ydOhTXdG50yu8hdZzMYP+
+	 8jBjrdipF5pt2sE0JsVdwId+QpRMy75fi+d6en0st1O3Y/yTMlD1k2PIqiEgZK9EeQ
+	 fh0PHrBoB+PrEjDKGgxIUtyG58/XltX8YBioj/uhF+ePEyMJ6Cd4rcd3LkEg5mOy1m
+	 5SCjzq0l1r/6wZCRa3fX+Tuo2BPfX8S7zjzQTIGO0ho3TQQ7yOQ8Kv3jHvsb81ZPyw
+	 X5GZwjIheJWMg==
+Received: from johan by xi.lan with local (Exim 4.97.1)
+	(envelope-from <johan@kernel.org>)
+	id 1s1oat-000000000iZ-1cVz;
+	Tue, 30 Apr 2024 16:36:32 +0200
+Date: Tue, 30 Apr 2024 16:36:31 +0200
+From: Johan Hovold <johan@kernel.org>
+To: Luiz Augusto von Dentz <luiz.dentz@gmail.com>
+Cc: Janaki Ramaiah Thota <quic_janathot@quicinc.com>,
+	Doug Anderson <dianders@chromium.org>,
+	Johan Hovold <johan+linaro@kernel.org>,
+	Marcel Holtmann <marcel@holtmann.org>,
+	linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
+	stable@vger.kernel.org, quic_mohamull@quicinc.com,
+	quic_hbandi@quicinc.com, quic_anubhavg@quicinc.com
+Subject: Re: [PATCH] Bluetooth: qca: generalise device address check
+Message-ID: <ZjEB75qDjoOb9F_3@hovoldconsulting.com>
+References: <CAD=FV=V-pG9+5fLonNvydmjS=ziUFUHAyF8T7YTkEHiO405aSA@mail.gmail.com>
+ <ZizKmtcUIYAMpvOQ@hovoldconsulting.com>
+ <dbba45d2-f955-4d3a-aeab-26b0900d5823@quicinc.com>
+ <Zi-ohCWv58d2h5VM@hovoldconsulting.com>
+ <CABBYNZJyqrNKebwPPPqjOAdrkpBJ0fqHyD2iVtypeQKCDcL+AQ@mail.gmail.com>
+ <CABBYNZJyRR9FA7TYN4+aWMtG9FPUBWMvCtMNUfvaEzxVcYOt-g@mail.gmail.com>
+ <ZjCYu2pc8376rjXk@hovoldconsulting.com>
+ <9eebd77b-c070-4260-a979-9b97f14eb5b1@quicinc.com>
+ <ZjDtDRCHT3z-3nHh@hovoldconsulting.com>
+ <CABBYNZLCw08oo+RRWkBYAdBLhFK5+pQi59dz-f+P1QusfYoAAw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <CABBYNZLCw08oo+RRWkBYAdBLhFK5+pQi59dz-f+P1QusfYoAAw@mail.gmail.com>
 
-GRO-GSO path is supposed to be transparent and as such L3 flush checks are
-relevant to all UDP flows merging in GRO. This patch uses the same logic
-and code from tcp_gro_receive, terminating merge if flush is non zero.
+On Tue, Apr 30, 2024 at 10:04:05AM -0400, Luiz Augusto von Dentz wrote:
+> On Tue, Apr 30, 2024 at 9:07 AM Johan Hovold <johan@kernel.org> wrote:
+> > On Tue, Apr 30, 2024 at 06:22:26PM +0530, Janaki Ramaiah Thota wrote:
 
-Fixes: e20cf8d3f1f7 ("udp: implement GRO for plain UDP sockets.")
-Signed-off-by: Richard Gobert <richardbgobert@gmail.com>
----
- net/ipv4/udp_offload.c | 12 +++++++++++-
- 1 file changed, 11 insertions(+), 1 deletion(-)
+> > > NVM Tag 2: bd address is default BD address (other than 0), should be
+> > > configured as valid address and as its not unique address and it will
+> > > be same for all devices so mark it is configured but still allow
+> > > user-space to change the address.
+> >
+> > But here we disagree. A non-unique address is not a valid one as it will
+> > cause collisions if you have more than one such controller.
+> >
+> > I understand that this may be convenient/good enough for developers in
+> > some cases, but this can hurt end users that do not realise why things
+> > break.
+> >
+> > And a developer can always configure an address manually or patch the
+> > driver as needed for internal use.
+> >
+> > Are there any other reasons that makes you want to keep the option to
+> > configure the device address through NVM files? I'm assuming you're not
+> > relying on patching NVM files to provision device-specific addresses
+> > after installation on target?
+> 
+> Exactly, a duplicated address is not a valid public/identity address.
+> 
+> Regarding them already been in use, we will need to have it fixed one
+> way or the other, so it is better to change whatever it comer within
+> the firmware file to 00:00:00:00:00:00 and have it setup a proper
+> address after that rather than have a table that detect the use of
+> duplicated addresses since the result would be the same since
+> userspace stores pairing/devices based on adapter addresses they will
+> be lost and the user will need to pair its peripherals again, so my
+> recommendation is that this is done via firmware update rather than
+> introducing a table containing duplicate addresses.
 
-diff --git a/net/ipv4/udp_offload.c b/net/ipv4/udp_offload.c
-index fd29d21d579c..8721fe5beca2 100644
---- a/net/ipv4/udp_offload.c
-+++ b/net/ipv4/udp_offload.c
-@@ -471,6 +471,7 @@ static struct sk_buff *udp_gro_receive_segment(struct list_head *head,
- 	struct sk_buff *p;
- 	unsigned int ulen;
- 	int ret = 0;
-+	int flush;
- 
- 	/* requires non zero csum, for symmetry with GSO */
- 	if (!uh->check) {
-@@ -504,13 +505,22 @@ static struct sk_buff *udp_gro_receive_segment(struct list_head *head,
- 			return p;
- 		}
- 
-+		flush = NAPI_GRO_CB(p)->flush;
-+
-+		if (NAPI_GRO_CB(p)->flush_id != 1 ||
-+		    NAPI_GRO_CB(p)->count != 1 ||
-+		    !NAPI_GRO_CB(p)->is_atomic)
-+			flush |= NAPI_GRO_CB(p)->flush_id;
-+		else
-+			NAPI_GRO_CB(p)->is_atomic = false;
-+
- 		/* Terminate the flow on len mismatch or if it grow "too much".
- 		 * Under small packet flood GRO count could elsewhere grow a lot
- 		 * leading to excessive truesize values.
- 		 * On len mismatch merge the first packet shorter than gso_size,
- 		 * otherwise complete the GRO packet.
- 		 */
--		if (ulen > ntohs(uh2->len)) {
-+		if (ulen > ntohs(uh2->len) || flush) {
- 			pp = p;
- 		} else {
- 			if (NAPI_GRO_CB(skb)->is_flist) {
--- 
-2.36.1
+I'm not sure I fully understand you here. I agree that we should avoid
+the table if we can, but as you noted below this is what the patch in
+this thread does.
 
+And the firmware comes from Qualcomm which pushes it directly to
+linux-firmware so we can't control what they decide to put in these
+files.
+
+Perhaps the driver can clear the BD_ADDR tag instead of reading it back,
+but yes, the end result would be the same in case the firmware can
+handle that. May be better to just read out the address as this patch
+does to be sure.
+
+> That said it seems the patch in this thread actually reads the address
+> with use of EDL_TAG_ID_BD_ADDR and then proceed to check if that is
+> what the controller returns as address, while that is better than
+> having a table I think there is still a risk that the duplicated
+> address gets used on older kernels if that is not updated in the
+> firmware directly, anyway perhaps we shall be doing both so we capture
+> both cases where duplicated addresses are used or when BDADDR_ANY is.
+
+Not sure we need to care too much about older kernels here. The patches
+are currently marked for backport to 6.5 and that could serve as a
+cut-off point, but I guess there is nothing preventing us from
+backporting this to all stable trees if you prefer that.
+
+Johan
 
