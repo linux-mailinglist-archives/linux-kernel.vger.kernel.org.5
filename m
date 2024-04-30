@@ -1,167 +1,124 @@
-Return-Path: <linux-kernel+bounces-164777-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-164778-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 004638B82C1
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 00:48:00 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id AC69C8B82C4
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 00:50:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2A2F61C21987
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 22:48:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5ACBA1F22CDD
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 22:50:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0EAFE524D4;
-	Tue, 30 Apr 2024 22:47:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="X/p/LN6m"
-Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE3EF12BEBB;
+	Tue, 30 Apr 2024 22:50:11 +0000 (UTC)
+Received: from mail115-95.sinamail.sina.com.cn (mail115-95.sinamail.sina.com.cn [218.30.115.95])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7DC917C6A;
-	Tue, 30 Apr 2024 22:47:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7EDFA17C6A
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 22:50:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=218.30.115.95
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714517271; cv=none; b=N8FxRduzBqQ3n8asAhabK8prOEHEij6QB/7EKvQEkzacWBMCf2m8ySEQxIscIp/drRuCShsnougKWgfz2IQxa7xx02temvFjg56VGVp0zt3L17gjza7v2JtJrlNOsTeUXzzrZZmEgfcN99jx3wYihUUDEcS3HU8P0xv3AXI/1sQ=
+	t=1714517411; cv=none; b=CdaVWKSksWq/pbTVhpeQSLkwE16/GMiXR9ICNtPztutRVAl/od77YU90ujsKyd8OA1A1sW9OfDsJ/Pte0LxnV7lt5kFcwkHDDM/LqjMiPRQAJKHgM6ObUM/gIZ292jhJ27yVNdjidCKD1Lrp+cNCvIvYXFibRAFGuVEnZxYTrXw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714517271; c=relaxed/simple;
-	bh=Xf1USnpa+XulFv5ihPzHQ7DFNr0IQIkYHoRSqyKtXYo=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=vBz4xcTFwvSUtSYKqziSbWimyeZudZY1EKN4P91SbcTrxbqQO0aNcRqWOb+J8FhXxx6OWQmdHXNOqMI4EfwnxpkNMkVnv7EVVYq8ZRV5xT4rE6wPu8aVisEeMKzmYCrXptDilFcLsWUnKSkUkxoBfQ12JYIXMnZjwe0aKxB+DD8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=X/p/LN6m; arc=none smtp.client-ip=209.85.128.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-41b79451153so35799805e9.2;
-        Tue, 30 Apr 2024 15:47:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714517268; x=1715122068; darn=vger.kernel.org;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=LwLXBBE4pvLhRvTjhhSvb5mOa3D+9/x3yL6AwSTANHc=;
-        b=X/p/LN6msEzhBM7eKgizuWYgWolOBMyvKW5wEb4rny2n4aQt/Qt64DexP8WYPNeao3
-         aKtIfz/kBDsqS5majpCH4jaPRFnNz6RwPQQy3C6tUw9spHKWcyaDmxVJPjKdsQmZP0Ef
-         fRiuN93C2Vy/QxB9gikowdR1O30pG1T4ynA2PvEgL00NPBqSt7fKgjO1hqne5EeRPxtz
-         BgrgBJ9o3TUe+KhzKjP4yRpe/o406zW9pvCvsEIHr/x7chCg5rA+IHY3OASGoz0ptm76
-         Du2/odjPmx2FU8YKcE6j8D4DtRtTn93DhWFStXa9mmHajb6TS7gzav/Xjj4+GpBp1qY5
-         dPvw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714517268; x=1715122068;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=LwLXBBE4pvLhRvTjhhSvb5mOa3D+9/x3yL6AwSTANHc=;
-        b=ERqAJrThUx/39+ra3JAGq0SiWEnQWYthOZW4cfz863BVIte4y3OeqkJ2jxdNeUXFww
-         mrWqL1R2N4xyd8ZX2hAnyz/F78Yz3FpMIVVpQd3rGJga3FN1xjLUVREQImpAGDTj4gnQ
-         tLrz1mdyH+EbphO1bgnyCIxXTFco3DZMEqxuL5VCSl2jJJ7ip1cM9TJHsmQX+a5kvTI1
-         f28VSq7zJh69r0JFmGjVnX3yOTC8Tfr2HH4AM7JfO3j06ORMRPkyQii3Vx5u0G1UDWY/
-         tTBQpaQLkO+F6AtcW9KapS3yNyjuTcOlnvMzhoCBdpaVKjGH52sqmwDyoRNbBsvBJnqG
-         CGgA==
-X-Forwarded-Encrypted: i=1; AJvYcCWUJ/F9zZ9TnFLDvyl/+kAVAjvU1DbPcT4J3cb/JkQEOVfVuFuyhbltPpqvKXMN/863T/OFHwnMlrqhzbjGdIFmwUeGPcdYNQ1FWlI1PvOy7CKntZtJq6zSipjMnM52IR05pKvdXfS2DQ==
-X-Gm-Message-State: AOJu0YyRYOzVEr7YYXKOz5LoXtpcrxht8n8h+nJjD1VcL2bg3auLuCZq
-	PrpFOiyoRscZ/a/FnzTADnMBQvkYQ/ZMtJPbEab7/DilqdcVypJoj13vsK8=
-X-Google-Smtp-Source: AGHT+IFZ+EG9xO7FSqVB3P83XoF9qwG2Z/VBZa5s6o5fCwnCylbFvB7KIjK23V4zkJhv722/Bn81Fg==
-X-Received: by 2002:a05:600c:3ca6:b0:41b:cb18:e24b with SMTP id bg38-20020a05600c3ca600b0041bcb18e24bmr571533wmb.9.1714517267718;
-        Tue, 30 Apr 2024 15:47:47 -0700 (PDT)
-Received: from octinomon.home (182.179.147.147.dyn.plus.net. [147.147.179.182])
-        by smtp.gmail.com with ESMTPSA id f19-20020a05600c4e9300b0041bab13cd60sm297610wmq.3.2024.04.30.15.47.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Apr 2024 15:47:47 -0700 (PDT)
-Date: Tue, 30 Apr 2024 23:47:45 +0100
-From: Jules Irenge <jbi.octave@gmail.com>
-To: leon@kernel.org
-Cc: jgg@ziepe.ca, wenglianfa@huawei.com, linux-rdma@vger.kernel.org,
-	linux-kernel@vger.kernel.org, lishifeng@sangfor.com.cn,
-	gustavoars@kernel.org
-Subject: [PATCH v2] RDMA/core: Remove NULL check before dev_{put, hold}
-Message-ID: <ZjF1Eedxwhn4JSkz@octinomon.home>
+	s=arc-20240116; t=1714517411; c=relaxed/simple;
+	bh=XEE2PEy3b5fcX0gLmxayUkBOW/4SKFDooMAEXPZlcsM=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=ewoC+eKChfW++l4KWk5bfbWW9dBN/K3rRf+0sF9WiQDvJ/lsIC4SeZKk1cVGUB6d5VzNzjrBnfsYlE2G2JAn4gE1bc8BwtQ1F9SASlLe0ornMuC/8GkT1IvjOsODZHxAUAQET4sFtDaMi3JqIKW9wCh+Zi+dO7kwVrjKQ3YOdVc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sina.com; spf=pass smtp.mailfrom=sina.com; arc=none smtp.client-ip=218.30.115.95
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sina.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sina.com
+X-SMAIL-HELO: localhost.localdomain
+Received: from unknown (HELO localhost.localdomain)([116.24.11.115])
+	by sina.com (172.16.235.24) with ESMTP
+	id 6631759800002F6E; Tue, 1 May 2024 06:50:02 +0800 (CST)
+X-Sender: hdanton@sina.com
+X-Auth-ID: hdanton@sina.com
+Authentication-Results: sina.com;
+	 spf=none smtp.mailfrom=hdanton@sina.com;
+	 dkim=none header.i=none;
+	 dmarc=none action=none header.from=hdanton@sina.com
+X-SMAIL-MID: 23084445089376
+X-SMAIL-UIID: 793AE464C04D4BCDA5E14DF8F1C4EC61-20240501-065002-1
+From: Hillf Danton <hdanton@sina.com>
+To: syzbot <syzbot+98edc2df894917b3431f@syzkaller.appspotmail.com>
+Cc: linux-kernel@vger.kernel.org,
+	syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] [net?] [virt?] [kvm?] KASAN: slab-use-after-free Read in vhost_task_fn
+Date: Wed,  1 May 2024 06:50:05 +0800
+Message-Id: <20240430225005.4368-1-hdanton@sina.com>
+In-Reply-To: <000000000000a9613006174c1c4c@google.com>
+References: 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 
-Coccinelle reports a warning
+On Tue, 30 Apr 2024 01:25:26 -0700
+> syzbot found the following issue on:
+> 
+> HEAD commit:    bb7a2467e6be Add linux-next specific files for 20240426
+> git tree:       linux-next
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16c30028980000
 
-WARNING: NULL check before dev_{put, hold} functions is not needed
+#syz test https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git  bb7a2467e6be
 
-The reason is the call netdev_{put, hold} of dev_{put,hold} will check NULL
-There is no need to check before using dev_{put, hold}
-
-Signed-off-by: Jules Irenge <jbi.octave@gmail.com>
----
-Changes in v2:
-  - Merge two previous patches into one as directed 
-
- drivers/infiniband/core/device.c        | 10 +++-------
- drivers/infiniband/core/lag.c           |  3 +--
- drivers/infiniband/core/roce_gid_mgmt.c |  3 +--
- 3 files changed, 5 insertions(+), 11 deletions(-)
-
-diff --git a/drivers/infiniband/core/device.c b/drivers/infiniband/core/device.c
-index 07cb6c5ffda0..55aa7aa32d4a 100644
---- a/drivers/infiniband/core/device.c
-+++ b/drivers/infiniband/core/device.c
-@@ -2174,8 +2174,7 @@ int ib_device_set_netdev(struct ib_device *ib_dev, struct net_device *ndev,
- 	spin_unlock_irqrestore(&pdata->netdev_lock, flags);
- 
- 	add_ndev_hash(pdata);
--	if (old_ndev)
--		__dev_put(old_ndev);
-+	__dev_put(old_ndev);
- 
- 	return 0;
+--- x/kernel/vhost_task.c
++++ y/kernel/vhost_task.c
+@@ -100,6 +100,8 @@ void vhost_task_stop(struct vhost_task *
+ 	 * freeing it below.
+ 	 */
+ 	wait_for_completion(&vtsk->exited);
++	mutex_lock(&vtsk->exit_mutex);
++	mutex_unlock(&vtsk->exit_mutex);
+ 	kfree(vtsk);
  }
-@@ -2235,8 +2234,7 @@ struct net_device *ib_device_get_netdev(struct ib_device *ib_dev,
- 		spin_lock(&pdata->netdev_lock);
- 		res = rcu_dereference_protected(
- 			pdata->netdev, lockdep_is_held(&pdata->netdev_lock));
--		if (res)
--			dev_hold(res);
-+		dev_hold(res);
- 		spin_unlock(&pdata->netdev_lock);
+ EXPORT_SYMBOL_GPL(vhost_task_stop);
+--- a/kernel/softirq.c
++++ b/kernel/softirq.c
+@@ -508,7 +508,7 @@ static inline bool lockdep_softirq_start(void) { return false; }
+ static inline void lockdep_softirq_end(bool in_hardirq) { }
+ #endif
+ 
+-asmlinkage __visible void __softirq_entry __do_softirq(void)
++static void handle_softirqs(bool ksirqd)
+ {
+ 	unsigned long end = jiffies + MAX_SOFTIRQ_TIME;
+ 	unsigned long old_flags = current->flags;
+@@ -563,8 +563,7 @@ restart:
+ 		pending >>= softirq_bit;
  	}
  
-@@ -2311,9 +2309,7 @@ void ib_enum_roce_netdev(struct ib_device *ib_dev,
+-	if (!IS_ENABLED(CONFIG_PREEMPT_RT) &&
+-	    __this_cpu_read(ksoftirqd) == current)
++	if (!IS_ENABLED(CONFIG_PREEMPT_RT) && ksirqd)
+ 		rcu_softirq_qs();
  
- 			if (filter(ib_dev, port, idev, filter_cookie))
- 				cb(ib_dev, port, idev, cookie);
--
--			if (idev)
--				dev_put(idev);
-+			dev_put(idev);
- 		}
+ 	local_irq_disable();
+@@ -584,6 +583,11 @@ restart:
+ 	current_restore_flags(old_flags, PF_MEMALLOC);
  }
  
-diff --git a/drivers/infiniband/core/lag.c b/drivers/infiniband/core/lag.c
-index eca6e37c72ba..8fd80adfe833 100644
---- a/drivers/infiniband/core/lag.c
-+++ b/drivers/infiniband/core/lag.c
-@@ -93,8 +93,7 @@ static struct net_device *rdma_get_xmit_slave_udp(struct ib_device *device,
- 	slave = netdev_get_xmit_slave(master, skb,
- 				      !!(device->lag_flags &
- 					 RDMA_LAG_FLAGS_HASH_ALL_SLAVES));
--	if (slave)
--		dev_hold(slave);
-+	dev_hold(slave);
- 	rcu_read_unlock();
- 	kfree_skb(skb);
- 	return slave;
-diff --git a/drivers/infiniband/core/roce_gid_mgmt.c b/drivers/infiniband/core/roce_gid_mgmt.c
-index e958c43dd28f..d5131b3ba8ab 100644
---- a/drivers/infiniband/core/roce_gid_mgmt.c
-+++ b/drivers/infiniband/core/roce_gid_mgmt.c
-@@ -601,8 +601,7 @@ static void del_netdev_default_ips_join(struct ib_device *ib_dev, u32 port,
- 
- 	rcu_read_lock();
- 	master_ndev = netdev_master_upper_dev_get_rcu(rdma_ndev);
--	if (master_ndev)
--		dev_hold(master_ndev);
-+	dev_hold(master_ndev);
- 	rcu_read_unlock();
- 
- 	if (master_ndev) {
--- 
-2.43.2
++asmlinkage __visible void __softirq_entry __do_softirq(void)
++{
++	handle_softirqs(false);
++}
++
+ /**
+  * irq_enter_rcu - Enter an interrupt context with RCU watching
+  */
+@@ -921,7 +925,7 @@ static void run_ksoftirqd(unsigned int cpu)
+ 		 * We can safely run softirq on inline stack, as we are not deep
+ 		 * in the task stack here.
+ 		 */
+-		__do_softirq();
++		handle_softirqs(true);
+ 		ksoftirqd_run_end();
+ 		cond_resched();
+ 		return;
 
+--
 
