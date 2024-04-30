@@ -1,294 +1,162 @@
-Return-Path: <linux-kernel+bounces-164585-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-164586-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 76C618B7FA8
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 20:26:58 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 87D7F8B7FAE
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 20:28:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 94C7F1C2325D
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 18:26:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3E464282AB4
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 18:28:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 298E91836EC;
-	Tue, 30 Apr 2024 18:26:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 41BEB184119;
+	Tue, 30 Apr 2024 18:28:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="l/1ARkfa"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.18])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KQ4lXNZJ"
+Received: from mail-yb1-f169.google.com (mail-yb1-f169.google.com [209.85.219.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BAFE180A65;
-	Tue, 30 Apr 2024 18:26:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E5DF1802DC;
+	Tue, 30 Apr 2024 18:28:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714501609; cv=none; b=T+n1a1GVvu0klJ356eMduInehHbiy7CgZ9KEFguoUxXdWqj4osJY+HXLWNRsSbQuG3JI0X0QOFYc2c+4EQUVfGWhl5zLPCzzmM3fjuwGXLFOMQ65i5i1UT34VR7cUg3nIeawQsh0/fzy7hC2IxAZrUTMo5HZrr3erJscd1gsjUQ=
+	t=1714501705; cv=none; b=Lispi0Pysn6HKbyneGinUxHD+fh7Nufjk4HKrJibjIJhYIkIotE77gRR9KB7c4dvKoF7SE14AnaRfkzbyHESVo5o1O78by2H2zwXUpHhut7pG+bH1HCBM8H7Gw7VtBHUWzWHOEuBF7Kwp3rK1pvQXTaxIJMEv5HWU32x+9Si7N4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714501609; c=relaxed/simple;
-	bh=q6GSO0vShRvzB0fJQFwWUZC3SEy36XnWlE2lgKvUMOI=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=l3hNg67ds1MhrMlWGjrYwhTFSb6HKESUS2ZTSeRtwqu9ZXi16GMGMwREEmrLPJqqb8Q46P6muQJIBHfZA5YZWI/pbYJ4eY1DlBdjT7sJFatQZSllJ7mGrN8bmcA2KzRNSqoHkySHj8WDuscqeH5xLw38GHmCLP9uXWA9UMmo6J8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=l/1ARkfa; arc=none smtp.client-ip=198.175.65.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1714501607; x=1746037607;
-  h=message-id:subject:from:reply-to:to:cc:date:in-reply-to:
-   references:content-transfer-encoding:mime-version;
-  bh=q6GSO0vShRvzB0fJQFwWUZC3SEy36XnWlE2lgKvUMOI=;
-  b=l/1ARkfac6Jt67bP/5TYe//BdQsoj29tBtjsjTLkudS704PHp5/T4sDo
-   UFlm+4DB0JDniMucV1BHJpJ5I58QQz1oyEncxi8OwXdcdhEqN3Zzu6gEL
-   i+P9LibGVrcpeLiyuofCxDvRgtEsPqzxaFKsP0VrMJQFIuDD+0pWliydd
-   rcPC9+5lBSU1DctCa2YucUgbk8KlSA8JIclQG8xG2+KliL10+kk8YTGzQ
-   AVbRXI6O0xd+71+/Camn7wkXLCc43XpJDL33xpJajvJED/4JxMD8ix75/
-   2Acrg1MFscd1IGT5YXzM/kfnmohV7tSTVBguWMNJDWrP3BaNteEX8ExUx
-   A==;
-X-CSE-ConnectionGUID: 9jL/dwm9TvKohmSwhEdZVg==
-X-CSE-MsgGUID: lcJ6d/eOSQiNp9ErExh5wQ==
-X-IronPort-AV: E=McAfee;i="6600,9927,11060"; a="10399388"
-X-IronPort-AV: E=Sophos;i="6.07,242,1708416000"; 
-   d="scan'208";a="10399388"
-Received: from orviesa009.jf.intel.com ([10.64.159.149])
-  by orvoesa110.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Apr 2024 11:26:46 -0700
-X-CSE-ConnectionGUID: CB56jFGiQqaNSbfdW3guLA==
-X-CSE-MsgGUID: BxU+BYfJTQ6TWewJCU8Ecw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,242,1708416000"; 
-   d="scan'208";a="26556260"
-Received: from jdwelch-mobl.amr.corp.intel.com ([10.209.113.84])
-  by orviesa009-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Apr 2024 11:26:47 -0700
-Message-ID: <af74b8d4f1f7072ffebc8a7f5cf392140da73dc7.camel@linux.intel.com>
-Subject: Re: [PATCH v5 4/4] PCI/ASPM: Fix L1.2 parameters when enable link
- state
-From: "David E. Box" <david.e.box@linux.intel.com>
-Reply-To: david.e.box@linux.intel.com
-To: Jian-Hong Pan <jhp@endlessos.org>
-Cc: Bjorn Helgaas <helgaas@kernel.org>, Johan Hovold <johan@kernel.org>, 
- Ilpo =?ISO-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
- Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>,
- Mika Westerberg <mika.westerberg@linux.intel.com>, Damien Le Moal
- <dlemoal@kernel.org>,  Nirmal Patel <nirmal.patel@linux.intel.com>,
- Jonathan Derrick <jonathan.derrick@linux.dev>,  linux-pci@vger.kernel.org,
+	s=arc-20240116; t=1714501705; c=relaxed/simple;
+	bh=AW17A+h4KjvpbbCYIE+0urWRTSmhSmb5SsQRXmHqFgs=;
+	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
+	 Mime-Version:Content-Type; b=juMINHhuSr/BLvqQi9Q3ttdHLPjWm6+fbu5NHkt7noTj03rzgqm2JZxhPYVezaixEpFQO0t1kO0lOP4oHBlQ+6tADjGFfJgOKEMKnh+ZF1Ckw1CoGQkQUmlRq/pRtrCmvvAyxdYnKJyS3DGziWiinfxJ4CeoDn0Y5PLYbXTF3eo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KQ4lXNZJ; arc=none smtp.client-ip=209.85.219.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yb1-f169.google.com with SMTP id 3f1490d57ef6-de603e3072dso2347998276.1;
+        Tue, 30 Apr 2024 11:28:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1714501703; x=1715106503; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ukSR01B6XHaydvig1H25OOfxP0s6MMwbPOuSEjlNNCA=;
+        b=KQ4lXNZJS8lJ16ZqCGsE9DzHfpDx1wWVJopBOPqqPYh52f6z8JVjLT3bfBEmO44m5n
+         PxKF8QiLiqTsvDBqGEfl2S09aR5jOSvHsXI2q3v2q15k/Ca0NHJGF+Oygf+fWoY7+ERp
+         b9Uv1E6d4Ll/EHXGtBG2WDBMrqZq9oC7ZYIY8knhEI19LsWqhnyoNMmAz56y3mU8nscr
+         N3GsI/IlBt+lPKVBTZYi56GPEFw7yyUOPBH36887D1Eh0UUI7Ft7jLHlcNXNVgUPbf2k
+         N/Xmg2Bmg/A+G+I/SivpaXLMAcq+HyjvnztUHBvYAU7ez/0d/WQPVfFAYjDX+HLv4gmb
+         mG2g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714501703; x=1715106503;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=ukSR01B6XHaydvig1H25OOfxP0s6MMwbPOuSEjlNNCA=;
+        b=D85BRcKzVm1YyiH9zeTDHyd7RzMtJu+2acMHi48sqtMjV+QgaLBsDT+jfJfMnR1ZoI
+         2GqOqSPpDSJWy9X9eDrT6pIJfrfJdRLhIRWxtalvwTXL+HmfvVjBm8gXAnNntKzuM2WP
+         wJ1Oz7Vobzn5B8+TcMJpntT/1yOa3E70J6tV747L6CY1yVodq3DDtFeWTG6MvfK/zoom
+         4M0wFh8Wsu51EylxleUvhByCm0n7ui4WcSEqe4ql4JtxpQVUVX/nPxUj7ceLJtq0aZZ1
+         uJxoufAMtAwR6dF594U+t6+A+k0lSRBXeaWkqCFjjQSYpX0TpQrSZtNDGtv3rRoTgGgH
+         ewOQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWhkCw10y2gNfuWmU6/GVgcgfhRJnFYGqGEli6q7yk/rIiTZQiSIX8qdyOE3urim/zUuagz1codYPUDTCiQnzIN8tUaFbizDmTUFtterGDk/hqnummYH0ERhLs3R6drAmuzS86D
+X-Gm-Message-State: AOJu0YzGhx+QPIvqhqIFa6dfMv+CF5W0VqEZ9VqPiv9pXe5mxIC90syO
+	JbL+I/9gquz95Q4UST9UIRzXhHGRtuC1xpybG5B0/Silel7Plo9t
+X-Google-Smtp-Source: AGHT+IHHMEbX5CZv/m4nrho41MGfMQd8+d+S5+JBoLFiRfhk0pgwasJycIaKPC1MZpGWeiAd0QZ9QA==
+X-Received: by 2002:a25:8389:0:b0:de6:723:3035 with SMTP id t9-20020a258389000000b00de607233035mr447063ybk.13.1714501702852;
+        Tue, 30 Apr 2024 11:28:22 -0700 (PDT)
+Received: from localhost (164.146.150.34.bc.googleusercontent.com. [34.150.146.164])
+        by smtp.gmail.com with ESMTPSA id l6-20020ac87246000000b004369f4d31f2sm11643158qtp.50.2024.04.30.11.28.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 30 Apr 2024 11:28:22 -0700 (PDT)
+Date: Tue, 30 Apr 2024 14:28:22 -0400
+From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+To: Richard Gobert <richardbgobert@gmail.com>, 
+ davem@davemloft.net, 
+ edumazet@google.com, 
+ kuba@kernel.org, 
+ pabeni@redhat.com, 
+ dsahern@kernel.org, 
+ willemdebruijn.kernel@gmail.com, 
+ alobakin@pm.me, 
+ netdev@vger.kernel.org, 
  linux-kernel@vger.kernel.org
-Date: Tue, 30 Apr 2024 11:26:46 -0700
-In-Reply-To: <CAPpJ_ecOah=gYfYJVX-TypRiK8+oons3rKOVOATb4epm6sGZaw@mail.gmail.com>
-References: <20240424110223.21799-2-jhp@endlessos.org>
-	 <f111371300624b6f94f0746dbae66bd49f405eea.camel@linux.intel.com>
-	 <CAPpJ_ecOah=gYfYJVX-TypRiK8+oons3rKOVOATb4epm6sGZaw@mail.gmail.com>
-Organization: David E. Box
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4-0ubuntu2 
+Cc: Richard Gobert <richardbgobert@gmail.com>
+Message-ID: <663138462a32e_32e7ba29458@willemb.c.googlers.com.notmuch>
+In-Reply-To: <20240430143555.126083-2-richardbgobert@gmail.com>
+References: <20240430143555.126083-1-richardbgobert@gmail.com>
+ <20240430143555.126083-2-richardbgobert@gmail.com>
+Subject: Re: [PATCH net v4 1/2] net: gro: fix udp bad offset in socket lookup
+ by adding {inner_}network_offset to napi_gro_cb
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 
-On Tue, 2024-04-30 at 15:46 +0800, Jian-Hong Pan wrote:
-> David E. Box <david.e.box@linux.intel.com> =E6=96=BC 2024=E5=B9=B44=E6=9C=
-=8827=E6=97=A5 =E9=80=B1=E5=85=AD =E4=B8=8A=E5=8D=888:03=E5=AF=AB=E9=81=93=
-=EF=BC=9A
-> >=20
-> > Hi Jian-Hong,
-> >=20
-> > On Wed, 2024-04-24 at 19:02 +0800, Jian-Hong Pan wrote:
-> > > Currently, when enable link's L1.2 features with
-> > > __pci_enable_link_state(),
-> > > it configs the link directly without ensuring related L1.2 parameters=
-,
-> > > such
-> > > as T_POWER_ON, Common_Mode_Restore_Time, and LTR_L1.2_THRESHOLD have =
-been
-> > > programmed.
-> > >=20
-> > > This leads the link's L1.2 between PCIe Root Port and child device ge=
-ts
-> > > wrong configs when a caller tries to enabled it.
-> > >=20
-> > > Here is a failed example on ASUS B1400CEAE with enabled VMD:
-> > >=20
-> > > 10000:e0:06.0 PCI bridge: Intel Corporation 11th Gen Core Processor P=
-CIe
-> > > Controller (rev 01) (prog-if 00 [Normal decode])
-> > > =C2=A0=C2=A0=C2=A0 ...
-> > > =C2=A0=C2=A0=C2=A0 Capabilities: [200 v1] L1 PM Substates
-> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 L1SubCap: PCI-PM_L1.2+ PCI=
--PM_L1.1+ ASPM_L1.2+ ASPM_L1.1+
-> > > L1_PM_Substates+
-> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 PortCommonModeRestoreTime=3D45us PortTPow=
-erOnTime=3D50us
-> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 L1SubCtl1: PCI-PM_L1.2- PC=
-I-PM_L1.1- ASPM_L1.2+ ASPM_L1.1-
-> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 T_CommonMode=3D45us LTR1.2_Threshol=
-d=3D101376ns
-> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 L1SubCtl2: T_PwrOn=3D50us
-> > >=20
-> > > 10000:e1:00.0 Non-Volatile memory controller: Sandisk Corp WD Blue SN=
-550
-> > > NVMe
-> > > SSD (rev 01) (prog-if 02 [NVM Express])
-> > > =C2=A0=C2=A0=C2=A0 ...
-> > > =C2=A0=C2=A0=C2=A0 Capabilities: [900 v1] L1 PM Substates
-> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 L1SubCap: PCI-PM_L1.2+ PCI=
--PM_L1.1- ASPM_L1.2+ ASPM_L1.1-
-> > > L1_PM_Substates+
-> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 PortCommonModeRestoreTime=3D32us PortTPow=
-erOnTime=3D10us
-> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 L1SubCtl1: PCI-PM_L1.2- PC=
-I-PM_L1.1- ASPM_L1.2+ ASPM_L1.1-
-> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 T_CommonMode=3D0us LTR1.2_Threshold=
-=3D0ns
-> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 L1SubCtl2: T_PwrOn=3D10us
-> > >=20
-> > > According to "PCIe r6.0, sec 5.5.4", before enabling ASPM L1.2 on the=
- PCIe
-> > > Root Port and the child NVMe, they should be programmed with the same
-> > > LTR1.2_Threshold value. However, they have different values in this c=
-ase.
-> > >=20
-> > > Invoke aspm_calc_l12_info() to program the L1.2 parameters properly b=
-efore
-> > > enable L1.2 bits of L1 PM Substates Control Register in
-> > > __pci_enable_link_state().
-> > >=20
-> > > Link: https://bugzilla.kernel.org/show_bug.cgi?id=3D218394
-> > > Signed-off-by: Jian-Hong Pan <jhp@endlessos.org>
-> > > ---
-> > > v2:
-> > > - Prepare the PCIe LTR parameters before enable L1 Substates
-> > >=20
-> > > v3:
-> > > - Only enable supported features for the L1 Substates part
-> > >=20
-> > > v4:
-> > > - Focus on fixing L1.2 parameters, instead of re-initializing whole L=
-1SS
-> > >=20
-> > > v5:
-> > > - Fix typo and commit message
-> > > - Split introducing aspm_get_l1ss_cap() to "PCI/ASPM: Introduce
-> > > =C2=A0 aspm_get_l1ss_cap()"
-> > >=20
-> > > =C2=A0drivers/pci/pcie/aspm.c | 12 ++++++++++++
-> > > =C2=A01 file changed, 12 insertions(+)
-> > >=20
-> > > diff --git a/drivers/pci/pcie/aspm.c b/drivers/pci/pcie/aspm.c
-> > > index c55ac11faa73..553327dee991 100644
-> > > --- a/drivers/pci/pcie/aspm.c
-> > > +++ b/drivers/pci/pcie/aspm.c
-> > > @@ -1402,6 +1402,8 @@ EXPORT_SYMBOL(pci_disable_link_state);
-> > > =C2=A0static int __pci_enable_link_state(struct pci_dev *pdev, int st=
-ate, bool
-> > > locked)
-> > > =C2=A0{
-> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct pcie_link_state *li=
-nk =3D pcie_aspm_get_link(pdev);
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct pci_dev *child =3D link-=
->downstream, *parent =3D link->pdev;
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 u32 parent_l1ss_cap, child_l1ss=
-_cap;
-> > >=20
-> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (!link)
-> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0 return -EINVAL;
-> > > @@ -1433,6 +1435,16 @@ static int __pci_enable_link_state(struct pci_=
-dev
-> > > *pdev, int state, bool locked)
-> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0 link->aspm_default |=3D ASPM_STATE_L1_1_PCIPM |
-> > > ASPM_STATE_L1;
-> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (state & PCIE_LINK_STAT=
-E_L1_2_PCIPM)
-> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0 link->aspm_default |=3D ASPM_STATE_L1_2_PCIPM |
-> > > ASPM_STATE_L1;
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /*
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * Ensure L1.2 parameters:=
- Common_Mode_Restore_Times, T_POWER_ON
-> > > and
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * LTR_L1.2_THRESHOLD are =
-programmed properly before enable bits
-> > > for
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * L1.2, per PCIe r6.0, se=
-c 5.5.4.
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 */
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (state & link->aspm_capable =
-& ASPM_STATE_L1_2_MASK) {
-> >=20
-> > This is still mixing PCIE_LINK_STATE flags with ASPM_STATE flags.
->=20
-> Thanks for your review, but I notice some description in PCIe spec,
-> 5.5.4 L1 PM Substates Configuration:
-> "Prior to setting either or both of the enable bits for L1.2, the
-> values for TPOWER_ON, Common_Mode_Restore_Time, and, if the ASPM L1.2
-> Enable bit is to be Set, the LTR_L1.2_THRESHOLD (both Value and Scale
-> fields) must be programmed." =3D> I think this includes both "ASPM L1.2
-> Enable" and "PCI-PM L1.2 Enable" bits.
+Richard Gobert wrote:
+> Commits a602456 ("udp: Add GRO functions to UDP socket") and 57c67ff ("udp:
+> additional GRO support") introduce incorrect usage of {ip,ipv6}_hdr in the
+> complete phase of gro. The functions always return skb->network_header,
+> which in the case of encapsulated packets at the gro complete phase, is
+> always set to the innermost L3 of the packet. That means that calling
+> {ip,ipv6}_hdr for skbs which completed the GRO receive phase (both in
+> gro_list and *_gro_complete) when parsing an encapsulated packet's _outer_
+> L3/L4 may return an unexpected value.
+> 
+> This incorrect usage leads to a bug in GRO's UDP socket lookup.
+> udp{4,6}_lib_lookup_skb functions use ip_hdr/ipv6_hdr respectively. These
+> *_hdr functions return network_header which will point to the innermost L3,
+> resulting in the wrong offset being used in __udp{4,6}_lib_lookup with
+> encapsulated packets.
+> 
+> This patch adds network_offset and inner_network_offset to napi_gro_cb, and
+> makes sure both are set correctly.
+> 
+> To fix the issue, network_offsets union is used inside napi_gro_cb, in
+> which both the outer and the inner network offsets are saved.
+> 
+> Reproduction example:
+> 
+> Endpoint configuration example (fou + local address bind)
+> 
+>     # ip fou add port 6666 ipproto 4
+>     # ip link add name tun1 type ipip remote 2.2.2.1 local 2.2.2.2 encap fou encap-dport 5555 encap-sport 6666 mode ipip
+>     # ip link set tun1 up
+>     # ip a add 1.1.1.2/24 dev tun1
+> 
+> Netperf TCP_STREAM result on net-next before patch is applied:
+> 
+> net-next main, GRO enabled:
+>     $ netperf -H 1.1.1.2 -t TCP_STREAM -l 5
+>     Recv   Send    Send
+>     Socket Socket  Message  Elapsed
+>     Size   Size    Size     Time     Throughput
+>     bytes  bytes   bytes    secs.    10^6bits/sec
+> 
+>     131072  16384  16384    5.28        2.37
+> 
+> net-next main, GRO disabled:
+>     $ netperf -H 1.1.1.2 -t TCP_STREAM -l 5
+>     Recv   Send    Send
+>     Socket Socket  Message  Elapsed
+>     Size   Size    Size     Time     Throughput
+>     bytes  bytes   bytes    secs.    10^6bits/sec
+> 
+>     131072  16384  16384    5.01     2745.06
+> 
+> patch applied, GRO enabled:
+>     $ netperf -H 1.1.1.2 -t TCP_STREAM -l 5
+>     Recv   Send    Send
+>     Socket Socket  Message  Elapsed
+>     Size   Size    Size     Time     Throughput
+>     bytes  bytes   bytes    secs.    10^6bits/sec
+> 
+>     131072  16384  16384    5.01     2877.38
+> 
+> Fixes: 57c67ff4bd92 ("udp: additional GRO support")
+> Signed-off-by: Richard Gobert <richardbgobert@gmail.com>
 
-That's fine. While the spec clearly calls out the ASPM L1.2 Enable bit here=
-, I
-see no harm in including PCI-PM L1.2 in that check. This is what the code
-already does in aspm_l1ss_init().
-
-The issue is the mixed used of two different types of flags that don't have=
- the
-same meaning. 'state' contains PCIE_LINK_STATE flags which are part of the
-caller API to the pci_<enabled/disable>_link_state() functions. The ASPM_ST=
-ATE
-flags are used internally to aspm.c to track all states and their meaningfu=
-l
-combinations such as ASPM_STATE_L1_2_MASK which includes ASPM L1.2 and PCI-=
-PM
-L1.2. You should not do bit operations between them.
-
-Also, you should not require that the timings be calculated only if L1_2 is
-enabled. You should calculate the timings as long as it's capable. This is =
-also
-what aspm_l1ss_init() does.
-
-The confusion might be over the fact that you are having
-__pci_enable_link_state() call aspm_calc_l12_info(). This should have been
-handled during initialization of the link in aspm_l1ss_init() and I'm not s=
-ure
-why it didn't. Maybe it's because, for VMD, ASPM default state would have
-started out all disabled and this somehow led to aspm_l1ss_init() not getti=
-ng
-called. But looking through the code I don't see it. It would be great if y=
-ou
-can confirm why they weren't calculated before.
-
-David
-
->=20
-> Jain-Hong Pan
->=20
-> > 'state' should not even matter.
-> > The timings should always be calculated and programmed as long
-> > as L1_2 is capable. That way the timings are ready even if L1_2 isn't b=
-eing
-> > enabled now (in case the user enables it later).
-> >=20
-> > David
-> >=20
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0 parent_l1ss_cap =3D aspm_get_l1ss_cap(parent);
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0 child_l1ss_cap =3D aspm_get_l1ss_cap(child);
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0 aspm_calc_l12_info(link, parent_l1ss_cap, child_l1ss_cap=
-);
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
-> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 pcie_config_aspm_link(link=
-, policy_to_aspm_state(link));
-> > >=20
-> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 link->clkpm_default =3D (s=
-tate & PCIE_LINK_STATE_CLKPM) ? 1 : 0;
-> >=20
-
+Reviewed-by: Willem de Bruijn <willemb@google.com>
 
