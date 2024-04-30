@@ -1,68 +1,68 @@
-Return-Path: <linux-kernel+bounces-164812-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-164813-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B39CD8B833A
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 01:52:58 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5A9618B833F
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 01:53:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 700F0281BE5
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 23:52:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 847E51C20951
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 23:53:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 652BD1C8FCA;
-	Tue, 30 Apr 2024 23:51:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F16C81C9EB0;
+	Tue, 30 Apr 2024 23:51:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="ODSADp1e"
-Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="ckLL+yi9"
+Received: from mail-pl1-f201.google.com (mail-pl1-f201.google.com [209.85.214.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 523F51C8FA7
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 23:51:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 125711C9EAC
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 23:51:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714521085; cv=none; b=T+zCYaHPjxr0qN4DwTUlVN30ec4m7ZIapXSHP9D8HLv6Z51TnIVZd//5z0wrfZLPPHidCKPxSslZC57gPwEl1CaVq9ezH+v2fbPj92ZNIXEXBTLRzy/dFWjZZPf11+G9jrR66oTWOyM0Zq7E2soDdbTrhtRpAuHQR7jF4oDorVg=
+	t=1714521090; cv=none; b=nKUcQAhy0kcMXlmKPjiqEceFM1qIvN6vZxwHuMSBSq4aKLf9n4uhJ6dhpPDzttcIQDdsEgT7dsI+Q9803EStDEABhx0QGH3aNatC6TYaHPBhzgZEINNzmWQLcYckIuQWHQjYIbVSlJhJ58fLtILHDe4AyovvbL9ofYUcZiMXwIo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714521085; c=relaxed/simple;
-	bh=sTlQvY8lGvZPuHB/3EseuBYDvbUHarzxjj1L20e4VZQ=;
+	s=arc-20240116; t=1714521090; c=relaxed/simple;
+	bh=4sLsMn+75D63ePKL84qIUrZuVTfpP4Y9iFVCYDx6ZoM=;
 	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=DciUGJ665gDO/3pjujq6vGZ8SNEh5d0YSehR7fQvCsfmedLL1Z50iRL+LMQWEecwR4swwej39QbpUhHTXMIwHJ45gPe2Kp4m8Msys9WgWjJ9BqE0XFE+DF2bLQCqVZRN9eqUIAT+JgAehjGSiDVuLBye9GvvC1HR58giaBzCDiE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--edliaw.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=ODSADp1e; arc=none smtp.client-ip=209.85.219.202
+	 To:Cc:Content-Type; b=u/1PMIiaxB8AD7vijY3KOxnUR73fIvD5e55+iyg9FlHuNH7VNm5omybdOv31FJWkRK+jbD3Bry3FySX5vZ2tzQbb6nX6J8mO21FNe6dGFIu6Qw6HzSbA6kJv78tdEIJtkQVEMGUWli+2u+7Am4O5yP2/CpCANEJxEPZ5vjaPSuw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--edliaw.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=ckLL+yi9; arc=none smtp.client-ip=209.85.214.201
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--edliaw.bounces.google.com
-Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-de5a8638579so8485402276.1
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 16:51:24 -0700 (PDT)
+Received: by mail-pl1-f201.google.com with SMTP id d9443c01a7336-1e278ebfea1so71871025ad.0
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 16:51:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1714521083; x=1715125883; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1714521088; x=1715125888; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=sTlQvY8lGvZPuHB/3EseuBYDvbUHarzxjj1L20e4VZQ=;
-        b=ODSADp1eQFRbLl7nhYE49t5GM9KuSLfgYomKkoF9iWuHEzWau6DhGOjqNHOUpQZGM2
-         NWtqQgb54VX1JOivCc/iUQhtdarwuM/7QtIihGsvxBhlf/4hrMAmcL9gsw2R8BFol3cy
-         2h/lsq6jdaQL3XSHKvpbWXNB5vYpnRqXR61wDBDDRBZfEpDEIrXkVxXDFcA5z0aJnANY
-         4CmmN+eo1ilWwWzJKNdUsoC+D6ORCV3/dMVilJOc3QJCpfze0Rd6n7X8tjbBsfug9x64
-         OPDdDKB/6P8jGdO1kglkHg+mnRDnpJ9bSHdFxznGnqosvzFr34w4OQGU3MxPW18oyqQd
-         LzAg==
+        bh=4sLsMn+75D63ePKL84qIUrZuVTfpP4Y9iFVCYDx6ZoM=;
+        b=ckLL+yi9rIZvpky/0YOzu/iCUml5oJ095EDOY2GFeVA3ZS/B0Yvy9ljyyKagzlZu/E
+         zWfMYHDP8isZ5t8eRVrUer+buWyO15PpcvkfxvJxXdFAdyDu7tzqqT7J8gzCU8E360BP
+         XGQQTPdxpzxQEAn9s+M0sm0gBkYbxgM9EEinCSZh508V3n7ftLZ9Zi9dxDPAAfa/gImy
+         WiMHpdJaIm6kBBTwUrPO7e/zKlN2WmJtP+OZK4P/NXZFxcxCTn445CPIsdAKUm4m+H/Z
+         ODyPltbvq8jlm7LIoXgefy3g1Top6wefCrXBM9zSf0qAhVXRhRkYjB6ZSwbOZF/d0l1J
+         Wlkg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714521083; x=1715125883;
+        d=1e100.net; s=20230601; t=1714521088; x=1715125888;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=sTlQvY8lGvZPuHB/3EseuBYDvbUHarzxjj1L20e4VZQ=;
-        b=tOPIOtqOdSdVqLVgUZthvMC/3VvesFbFF5kuqhbCLuCzvA5MMPpSJJIeYT033mKYb6
-         nL1fb+r42jQrYinhla/5YSnWwKKz8+4VNv21HN288CSTYObv5HiwMBQokWP04OxEVYCz
-         skPol3P5ijfnJ3tqD4RQFG3dlYh5acp82aEbV8mh4l7FjuM44YKKGZLS3JND/vq+I7IS
-         9sMbFUSMZbYiyzkBhsQXWAqSLCfIcrzpAgvxWcfsQjAlEFFKCVr1Aq9tGhWpnx3IM+tP
-         phfvCtSN5tCnGbB4SigKcvT/ghbnxFZUdcKb8aPkSPfpe0tQ6KtGd79eckrkCERu9tDD
-         Zh9g==
-X-Gm-Message-State: AOJu0YzmWmpCKFgEZz7BBvhb/AbJOHyMF24gCFHR6zSVd++jti8WkhgO
-	MpKNWVRTCVwKgaSE7ZmzxIK+NOMlCi2HkSYtjI4nsWOoF8cS9KU4Wv/vwS2zyikLlhKUL+3E52T
-	LeA==
-X-Google-Smtp-Source: AGHT+IHawjnD3ivyqCv4ps9nkMuRCo5h/TV1o9YMssrnDwBNMjv0tpGZfKkbqtk/WfPC4jw/0Gs09BBrmvI=
+        bh=4sLsMn+75D63ePKL84qIUrZuVTfpP4Y9iFVCYDx6ZoM=;
+        b=Hya3WMUuktlX5/bo9tX+HeizR/YH96K1FgYrOte1x7MgGk8aWtOuUVDeFKFpEx/3Jt
+         LpbyTf28gqH/zbsOXPbxxTjYeLtC1cw53JuV0ygzvKXhy7DP8Q6AWkfveNz9xG7Q8GrD
+         oxnsWKuvN88Ks4HAFpXpyVZRksKUGVwBI6mWl43aBFsIU6kDI+9+GQRLSvyaXhi95HOV
+         zSwXYlygvq8yJvviX9GZlhYISp03FFFp5Wonw55ZEQSdbif8480il9ojrkR213Jx/nQu
+         nFSdBCV1GET6x0IR89x9tdQPs1LEOk9Ll7kV9yD8ga7eJuf7gEeO971BbzE4wedOPTlB
+         VckQ==
+X-Gm-Message-State: AOJu0YznkWsABUQqG/i3ds/sGSLeaJYcoDpecmjkR/6rbgpg8FkOFyFR
+	nAnLR13jbNIpTOlY7ma+jEu3uqOypfM+x9bK5kPCQzyIAA+L/DwZGnGtBPC93f7jYo44rCrkYMc
+	/PQ==
+X-Google-Smtp-Source: AGHT+IFtSHl2ws+41HKA57TwcS7ukKljLv0iJvc43sJuHvghYmCWKqHkqlRowkQ3pfhszR/h4a+oHj0mSuE=
 X-Received: from edliaw.c.googlers.com ([fda3:e722:ac3:cc00:24:72f4:c0a8:305d])
- (user=edliaw job=sendgmr) by 2002:a05:6902:2b8c:b0:dd9:1b94:edb5 with SMTP id
- fj12-20020a0569022b8c00b00dd91b94edb5mr161630ybb.10.1714521083148; Tue, 30
- Apr 2024 16:51:23 -0700 (PDT)
-Date: Tue, 30 Apr 2024 23:50:11 +0000
+ (user=edliaw job=sendgmr) by 2002:a17:902:dacc:b0:1dd:cc3f:6510 with SMTP id
+ q12-20020a170902dacc00b001ddcc3f6510mr6327plx.3.1714521088265; Tue, 30 Apr
+ 2024 16:51:28 -0700 (PDT)
+Date: Tue, 30 Apr 2024 23:50:12 +0000
 In-Reply-To: <20240430235057.1351993-1-edliaw@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -72,8 +72,8 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20240430235057.1351993-1-edliaw@google.com>
 X-Mailer: git-send-email 2.45.0.rc0.197.gbae5840b3b-goog
-Message-ID: <20240430235057.1351993-3-edliaw@google.com>
-Subject: [PATCH v1 02/10] selftests/alsa: Compile with -D_GNU_SOURCE
+Message-ID: <20240430235057.1351993-4-edliaw@google.com>
+Subject: [PATCH v1 03/10] selftests/hid: Compile with -D_GNU_SOURCE
 From: Edward Liaw <edliaw@google.com>
 To: shuah@kernel.org, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, 
 	Takashi Iwai <tiwai@suse.com>, Jiri Kosina <jikos@kernel.org>, 
@@ -99,21 +99,22 @@ _GNU_SOURCE to either be defined prior to including headers or with the
 Fixes: 809216233555 ("selftests/harness: remove use of LINE_MAX")
 Signed-off-by: Edward Liaw <edliaw@google.com>
 ---
- tools/testing/selftests/alsa/Makefile | 1 +
- 1 file changed, 1 insertion(+)
+ tools/testing/selftests/hid/Makefile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/tools/testing/selftests/alsa/Makefile b/tools/testing/selftests/alsa/Makefile
-index 5af9ba8a4645..3a0fae2bea39 100644
---- a/tools/testing/selftests/alsa/Makefile
-+++ b/tools/testing/selftests/alsa/Makefile
-@@ -6,6 +6,7 @@ LDLIBS += $(shell pkg-config --libs alsa)
- ifeq ($(LDLIBS),)
- LDLIBS += -lasound
- endif
-+CFLAGS += -D_GNU_SOURCE
- CFLAGS += -L$(OUTPUT) -Wl,-rpath=./
+diff --git a/tools/testing/selftests/hid/Makefile b/tools/testing/selftests/hid/Makefile
+index 2b5ea18bde38..33170d23315b 100644
+--- a/tools/testing/selftests/hid/Makefile
++++ b/tools/testing/selftests/hid/Makefile
+@@ -21,7 +21,7 @@ CXX ?= $(CROSS_COMPILE)g++
 
- LDLIBS+=-lpthread
+ HOSTPKG_CONFIG := pkg-config
+
+-CFLAGS += -g -O0 -rdynamic -Wall -Werror -I$(OUTPUT)
++CFLAGS += -g -O0 -rdynamic -Wall -Werror -D_GNU_SOURCE -I$(OUTPUT)
+ CFLAGS += -I$(OUTPUT)/tools/include
+
+ LDLIBS += -lelf -lz -lrt -lpthread
 --
 2.45.0.rc0.197.gbae5840b3b-goog
 
