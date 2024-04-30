@@ -1,109 +1,99 @@
-Return-Path: <linux-kernel+bounces-164508-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-164509-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9B7018B7E60
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 19:25:43 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A8BBD8B7E64
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 19:26:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DB103B2109B
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 17:25:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4670F1F237C7
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 17:26:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A51D817F396;
-	Tue, 30 Apr 2024 17:25:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2A6117F39C;
+	Tue, 30 Apr 2024 17:26:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZW2zi9aw"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="HRLqXk8O"
+Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EACEE17BB20;
-	Tue, 30 Apr 2024 17:25:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4FF6217BB20;
+	Tue, 30 Apr 2024 17:26:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.248
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714497933; cv=none; b=Pgh+Jhz/X20HHpYciTwVDnruHW8xtm/6TqkiX/VVt0wA9fPYQtJwm08/z5rXfRYuvNDaKis8Q0vCsYLlCZ6kROXJIsqEl3sIEdf9xRWpXseA/hgfPsatx8xJaY9H8MuVwOotrkmW5gHUHTkmfEcuIyUqgt2pFUBp0YkFMj4axl0=
+	t=1714498003; cv=none; b=iSySw6ZYMzQsFpIriIMHttYUp2nxh4+TsLIrLJPsP/inCplnjYaloV+9lOJnh65HdtNOB8FNGDYFYq/uAMTRSa9FkrRU/xAohZdE7NhBfwMd58jwB6n3AAj1qpG+kLr+761D9e9XNyjf980r7gGwVD2Uebv9HrXvieIzzwQ/sXE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714497933; c=relaxed/simple;
-	bh=IX6Uu6LbP/xYgPUGwU4+kdor5cBr2FpREH4Pqv5Bpt8=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=U/RkSZLhgvDmBs8eqBt5u4OYMXMr8Wbvl6cDQky6zKEpOLSLJfTlVvHjU441ZJj5HYCXaNNXhOwACWIHqniR1zpWdqeM+BC6KWRCP42OE5o3DrV96M2TcY/3qe+Q/ETI4hWLBOZsFjRRI9bEh6eUlcaxKPpguxrZQa+ZvtYBq2A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZW2zi9aw; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 304B4C2BBFC;
-	Tue, 30 Apr 2024 17:25:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714497932;
-	bh=IX6Uu6LbP/xYgPUGwU4+kdor5cBr2FpREH4Pqv5Bpt8=;
-	h=From:To:Cc:Subject:Date:From;
-	b=ZW2zi9aw/QFN/U+x4XF2jMEe6uLT0E4Fk03Ot4pNgUejZgr2BsmK5bbp+jD7dGeJ0
-	 qwb4yKTp2sXK5FHSe5iMzhKyDQSAW9kP9Zu+rqUNW3FQPh080dT8abyYoYzWHhHa2E
-	 loBnWXU6yUmGXrpTWvYuY94JrGBoa6SIAwkFuxf86HQ1F8s+58rsmaLopt4j0VPGcH
-	 2A/TVosB6SSIuDB+SYEYcz1c3xXDJla3Ne53yXtNpQDDS0RHJfhaDFBsPrzuwhEeW3
-	 GMAFw9zn6LdZjjv6g/MNnUUEGr5de7tD4ypT7pGMHrI7eaVKv0FtMoqwZWWyvF6FKX
-	 6q2uhnzckCxlw==
-From: "Rob Herring (Arm)" <robh@kernel.org>
-To: Lee Jones <lee@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Joel Stanley <joel@jms.id.au>,
-	Andrew Jeffery <andrew@codeconstruct.com.au>
-Cc: devicetree@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-aspeed@lists.ozlabs.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] dt-bindings: mfd: aspeed: Drop 'oneOf' for pinctrl node
-Date: Tue, 30 Apr 2024 12:25:19 -0500
-Message-ID: <20240430172520.535179-1-robh@kernel.org>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1714498003; c=relaxed/simple;
+	bh=luTFpMAZ43ODWsmBxcty292H+fEg7Lp6RwRcQH0YjJg=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:CC:References:
+	 In-Reply-To:Content-Type; b=PpGXpxTOlzdSOxvEg0AmSG6pG2qU1ujHm4AgY6bpcGXAmEUCPvteSXWqtd8Hry1v0/pUKxs2Q0YrEmyUPYa4YpZOsttFV/7wgckhjt8gHGjjjodI6Yyf0N4gC7ZtqGwGAW07diU8Ax3ukcripOb7mMtcbMwmL9MYrCP6g7aBXRA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=HRLqXk8O; arc=none smtp.client-ip=198.47.23.248
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+	by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 43UHQUHI087503;
+	Tue, 30 Apr 2024 12:26:30 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1714497990;
+	bh=pj7f3enURpirZBtOK07f0GSNPrxz945QCn4kmv7I0xw=;
+	h=Date:Subject:From:To:CC:References:In-Reply-To;
+	b=HRLqXk8OF+3CI27Ay7bYj4Vw2xDSJpbTUou/M3ngo33iXzxo9eDjE4Ke8xK748Dk2
+	 cIVtbggs0NXVGj2KVw342Oqut+MqmZCmjLf4D2BB292HC0QlLJH6tQHXT/OQ8xTRJx
+	 SvlmYB/WScyD4vtfnfMy2JhmeQg3Iba+bR3aJ6n0=
+Received: from DLEE102.ent.ti.com (dlee102.ent.ti.com [157.170.170.32])
+	by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 43UHQU08031885
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Tue, 30 Apr 2024 12:26:30 -0500
+Received: from DLEE105.ent.ti.com (157.170.170.35) by DLEE102.ent.ti.com
+ (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 30
+ Apr 2024 12:26:29 -0500
+Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DLEE105.ent.ti.com
+ (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Tue, 30 Apr 2024 12:26:29 -0500
+Received: from [128.247.81.105] (judy-hp.dhcp.ti.com [128.247.81.105])
+	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 43UHQTgG059219;
+	Tue, 30 Apr 2024 12:26:29 -0500
+Message-ID: <fa07e1ad-8e86-4f19-878a-26a639b3a058@ti.com>
+Date: Tue, 30 Apr 2024 12:26:29 -0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 0/5] MMC fixes for TI K3 platforms
+From: Judith Mendez <jm@ti.com>
+To: Rob Herring <robh@kernel.org>,
+        Krzysztof Kozlowski
+	<krzysztof.kozlowski+dt@linaro.org>,
+        "Nishanth, Menon" <nm@ti.com>
+CC: Conor Dooley <conor+dt@kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Bhavya Kapoor <b-kapoor@ti.com>, Dasnavis
+ Sabiya <sabiya.d@ti.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>
+References: <20240423151732.3541894-1-jm@ti.com>
+Content-Language: en-US
+In-Reply-To: <20240423151732.3541894-1-jm@ti.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-The use of 'oneOf' to include 1 of 3 possible child node schemas results
-in error messages containing the actual error message(s) for the correct
-SoC buried in the tons of error messages from the 2 schemas that don't
-apply. It also causes the pinctrl schema to be applied twice as it will
-be applied when the compatible matches.
+On 4/23/24 10:17 AM, Judith Mendez wrote:
+> This patch series includes MMC updates for various TI K3 platforms.
+> 
+> It includes support for enabling UHS/SDR104 bus modes.
+> 
+> For AM62ax, add missing UHS support.
+> 
+> For AM65x, fix ITAP delay and OTAP delay and clkbuf-sel properties
+> in SDHCI nodes.
 
-All that's really needed in the parent schema is to ensure one of the
-possible compatible strings is present in the pinctrl node so that its
-schema will be applied separately.
+Please do not merge this series, will send a update v4.
 
-Signed-off-by: Rob Herring (Arm) <robh@kernel.org>
----
- .../bindings/mfd/aspeed,ast2x00-scu.yaml         | 16 ++++++++++++----
- 1 file changed, 12 insertions(+), 4 deletions(-)
-
-diff --git a/Documentation/devicetree/bindings/mfd/aspeed,ast2x00-scu.yaml b/Documentation/devicetree/bindings/mfd/aspeed,ast2x00-scu.yaml
-index 1689b986f441..86ee69c0f45b 100644
---- a/Documentation/devicetree/bindings/mfd/aspeed,ast2x00-scu.yaml
-+++ b/Documentation/devicetree/bindings/mfd/aspeed,ast2x00-scu.yaml
-@@ -47,10 +47,18 @@ patternProperties:
-     type: object
- 
-   '^pinctrl(@[0-9a-f]+)?$':
--    oneOf:
--      - $ref: /schemas/pinctrl/aspeed,ast2400-pinctrl.yaml
--      - $ref: /schemas/pinctrl/aspeed,ast2500-pinctrl.yaml
--      - $ref: /schemas/pinctrl/aspeed,ast2600-pinctrl.yaml
-+    type: object
-+    additionalProperties: true
-+    properties:
-+      compatible:
-+        contains:
-+          enum:
-+            - aspeed,ast2400-pinctrl
-+            - aspeed,ast2500-pinctrl
-+            - aspeed,ast2600-pinctrl
-+
-+    required:
-+      - compatible
- 
-   '^interrupt-controller@[0-9a-f]+$':
-     description: See Documentation/devicetree/bindings/interrupt-controller/aspeed,ast2xxx-scu-ic.txt
--- 
-2.43.0
+~ Judith
 
 
