@@ -1,208 +1,189 @@
-Return-Path: <linux-kernel+bounces-163408-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-163397-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6DBED8B6A6B
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 08:17:00 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 865A48B6A3E
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 08:14:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 716BAB2219D
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 06:16:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AAA1A1C215E0
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 06:14:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0501018021;
-	Tue, 30 Apr 2024 06:16:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3388C17C98;
+	Tue, 30 Apr 2024 06:13:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=163.com header.i=@163.com header.b="Mk/i/Cpo"
-Received: from m15.mail.163.com (m15.mail.163.com [45.254.50.220])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D29E6FB1
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 06:16:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.254.50.220
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="VSvyBCYF"
+Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE0A0179BE
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 06:13:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714457780; cv=none; b=tu9bunWNS+aQTct6nERaOw6TUevtb05Vv5PKFSfrRPgULpa92DyNEpL69D3QWcJs21tO8xA8G9+oFUot53sgaGDadaa7SyplQEuwhNL0t3te0Bne8Rc/P9CT2harAwID8hDz/wIX2ouqzQYboNMh3JOtJICrRDB1D++x8Sk6Q3Q=
+	t=1714457636; cv=none; b=VmSfTdQ7GgMhT67XM2heq+hjid3i21dw1dLkfwffWlTMPrPomNr0S9x91SX9dLEdpP1I+w/dS782hUcv4EtPAjv32eTHCMZ+FqUNBx+y0IdyqzIATB4gAV060HEWo9qG8jNr1sHT3h9Ml5thbSnvG4sT0dcpBo2AFB1kTdvVUI0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714457780; c=relaxed/simple;
-	bh=ERTc2l5kU1GMYxtzdHJN1SeKinqluPnbKrRIhtd5mSo=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=tVWeHp+Sg5F2oPOIBjZrV7u1tb+3vi/J6E9j2AUTXBnAty5fRgds3b6Qq/JSCB+uylJtOPGvgCdYECSkZsVUlcOCOEop7etmlScjY10TkiFDXBJPCAPOyTeorGMqcNctcRkUZH76Rqp9kz1DihR8AsxuA8HUtd57chMFoGX65yg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=Mk/i/Cpo; arc=none smtp.client-ip=45.254.50.220
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-	s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=OykVS
-	bzCv4+d4dPQLDypPadwOtIhxe1BrterZQ+EVfc=; b=Mk/i/CporQhNjM1Pb4Fxn
-	JzDrNc4n/H6i6Uz/6EZ+8yQgmt26tYyrfSqBhYGHAu/ubD170GE/f2+fQ2XzKy8k
-	+t995s0ICyjIoM/UQJktZ4tYUBOt7rgYAcT5UU020DHxF6e+CgfTL2v5iQ8GwkiH
-	TGxBUVX71rndtgrfXtIBus=
-Received: from localhost.localdomain (unknown [111.35.187.227])
-	by gzga-smtp-mta-g0-3 (Coremail) with SMTP id _____wD3v3dtjDBmw0B8Cw--.43676S4;
-	Tue, 30 Apr 2024 14:15:18 +0800 (CST)
-From: David Wang <00107082@163.com>
-To: dreaming.about.electric.sheep@gmail.com,
-	airlied@redhat.com,
-	kraxel@redhat.com,
-	maarten.lankhorst@linux.intel.com,
-	mripard@kernel.org,
-	tzimmermann@suse.de,
-	airlied@gmail.com,
-	daniel@ffwll.ch
-Cc: virtualization@lists.linux.dev,
-	spice-devel@lists.freedesktop.org,
-	dri-devel@lists.freedesktop.org,
-	linux-kernel@vger.kernel.org,
-	regressions@lists.linux.dev,
-	David Wang <00107082@163.com>
-Subject: [Regression] 6.9.0: WARNING: workqueue: WQ_MEM_RECLAIM ttm:ttm_bo_delayed_delete [ttm] is flushing !WQ_MEM_RECLAIM events:qxl_gc_work [qxl]
-Date: Tue, 30 Apr 2024 14:13:37 +0800
-Message-Id: <20240430061337.764633-1-00107082@163.com>
-X-Mailer: git-send-email 2.39.2
+	s=arc-20240116; t=1714457636; c=relaxed/simple;
+	bh=CGUrm1vDZYlEmiR1ifXVGyQ3SZsQMUvdsEPtlsZS1l8=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=qyIEC9F92Nh1ttR5OrKHHzaakZvookxbqlLUYkU8MsAq4OFejZ6gfG259ZlIagJtPGrKhXNRvr3QGdarv6mngduCcUOxkajw9I/1OPQUXZblAKeJ4moIVDKLjIYlWQLX+YsQKBGsvR6WrNozNTpwfbp3Z9a+EhzbhTSqOTR0k2A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=VSvyBCYF; arc=none smtp.client-ip=209.85.214.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-1ec4b2400b6so1131545ad.3
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 23:13:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1714457634; x=1715062434; darn=vger.kernel.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=9c0gOO/h5yOIgS2nJawt/26LeQyQw+uGFdthgcrbcG0=;
+        b=VSvyBCYFXqiiYMR9xROKxB92WRjr39X71j4pkM4gn6kyuvOHOa/8+rPqBN1jl6uzzg
+         8q6kVw1vd+QfTbsqIiPahQ/M0rhhL+YggOeZwKg7U752/a8WzfjCQC1CYgCsliRVClVa
+         dwUlVR17akHPEvGrDP1bqi5x+x0lc9PCn8TCkAAMldCyOTBg+oeP+GR9bp4yJJjN5YDX
+         tvpCu/3MPM/YTviVt+9zDPGDSQ4t/7C2426C2tib6r1Z037oyqR0myH7usW32n7vwCBp
+         3wPok+q+sTu/LnDqWSdjk+2k0ymF3GVkmaRBEjvY6f+K1TgJN0GhTvmgGSuqWJHZtRc7
+         2R2A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714457634; x=1715062434;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=9c0gOO/h5yOIgS2nJawt/26LeQyQw+uGFdthgcrbcG0=;
+        b=DgblocZXt/cCFnEpQiIJr+miwsTJnKabLNrv6hdjxHXiCIrPW9BeFqJMOlWHasD01/
+         4ivtAv+2WJFvrTmqR2uPYh8wzpACeji66prBwgZhq10gIcqIgLBbFWX3O0IQOutw/fLo
+         JSU7qGL7l5GwIDugEFf9fZdviYDZMG47zJAqwYPKK3UEemIV3UiX2WDcoN0pd1+XeCG+
+         NRshM4GfkNRKs1eI3TvFoMswPayOvhuqary7MK6fY94KWWpboHdhafvDfl11ExHOz/x+
+         OLqt+KD7W71V2ITFqyQ6y0Y0v+3WqTxjyA72VSP91k47htCNZRe0h+U1MWwCuMYcMbIb
+         5gGg==
+X-Forwarded-Encrypted: i=1; AJvYcCX0UogSn/dzDAj1gkPvG8cKnw/4L4hg6CJP4C5tMyLGUdDJPKeCoxtl2EtHoW5vSbyBwox649F8bRsUFdVOb6vbA6vb62EeplQnMfyE
+X-Gm-Message-State: AOJu0YwTB8tEjEtsBmx7mYzulRhgRFJrnUEx8PjZk7tm4QyF55eOoVpz
+	xH/pSYvj4iBn59WCjTj060Divdm0OuhrW4f7AsAdE17Lrfe7fdeO78Dm7+9CJA==
+X-Google-Smtp-Source: AGHT+IGsARJlgHvDgvWmcjNwPLv+5uq/YQgAXjNfbVxLivFGGrUWgxqVUbJhiAqfSDLDKk6CEVMb3Q==
+X-Received: by 2002:a17:902:7204:b0:1e0:11a4:30e0 with SMTP id ba4-20020a170902720400b001e011a430e0mr13693003plb.19.1714457633953;
+        Mon, 29 Apr 2024 23:13:53 -0700 (PDT)
+Received: from [127.0.1.1] ([220.158.156.15])
+        by smtp.gmail.com with ESMTPSA id bi2-20020a170902bf0200b001e27ad5199csm21393298plb.281.2024.04.29.23.13.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Apr 2024 23:13:53 -0700 (PDT)
+From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Subject: [PATCH v4 00/10] PCI: endpoint: Make host reboot handling more
+ robust
+Date: Tue, 30 Apr 2024 11:43:41 +0530
+Message-Id: <20240430-pci-epf-rework-v4-0-22832d0d456f@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-CM-TRANSID:_____wD3v3dtjDBmw0B8Cw--.43676S4
-X-Coremail-Antispam: 1Uf129KBjvJXoW3JrWkWF4kWry3AFWrKw13CFg_yoWxuF1Dpr
-	yYyF109FWrJw1qya1kJr1Fyws2qFsF9FWUZFyfGr10k3W5XF1rJa13Ga43KrWUCr9rJFW7
-	Awnrta4YyFnrAaDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x0JUUhL8UUUUU=
-X-CM-SenderInfo: qqqrilqqysqiywtou0bp/1tbiMw7PqmXAk7vy7wABsJ
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIABWMMGYC/3XMQQrCMBCF4auUrI1k0pgSV95DXLTNtB2UpkwkK
+ qV3N+1GRFy+B98/i4hMGMWxmAVjokhhzMPsCtEO9dijJJ+30EobVYKRU0sSp04yPgJfZW3RHhp
+ QZV05kdHE2NFzC54veQ8U74FfWz/B+v5NJZBKWigN2ha8cXC60Vhz2AfuxdpK+uONgh+vs3eV8
+ g061Tjnv/yyLG/9c8ER7QAAAA==
+To: Lorenzo Pieralisi <lpieralisi@kernel.org>, 
+ =?utf-8?q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>, 
+ Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>, 
+ Kishon Vijay Abraham I <kishon@kernel.org>, 
+ Jingoo Han <jingoohan1@gmail.com>, 
+ Thierry Reding <thierry.reding@gmail.com>, 
+ Jonathan Hunter <jonathanh@nvidia.com>
+Cc: linux-pci@vger.kernel.org, linux-arm-msm@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, mhi@lists.linux.dev, 
+ linux-tegra@vger.kernel.org, Niklas Cassel <cassel@kernel.org>, 
+ Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>, 
+ Damien Le Moal <dlemoal@kernel.org>, Bjorn Helgaas <helgaas@kernel.org>
+X-Mailer: b4 0.12.4
+X-Developer-Signature: v=1; a=openpgp-sha256; l=3403;
+ i=manivannan.sadhasivam@linaro.org; h=from:subject:message-id;
+ bh=CGUrm1vDZYlEmiR1ifXVGyQ3SZsQMUvdsEPtlsZS1l8=;
+ b=owGbwMvMwMUYOl/w2b+J574ynlZLYkgz6JFSqy7Q1Lt6/6XMf74m34r5t54fYXkVojbbqGWpq
+ qesdaRrJ6MxCwMjF4OsmCJL+lJnrUaP0zeWRKhPhxnEygQyhYGLUwAmwm7C/k/P68wCDj4/s39f
+ FkgmblgmV87KcPKI7wJf4ZaTWnHbck8rn2s0KvWTf/fGW2PeLt5dCVIhKgUMPQYLa7wkKviWhL9
+ inlL9d3ah5RfBnICKVcu+xysYq9qs/7Nx3k/zI7/F1X9YG07xj2a+4vIqa7n7r/9S58WC3GLuxU
+ d2Tvy1s8FE6a11jYdn84GCNc/Kj+1ceonTcY9/1bVL2pETPU4/3b9A71JyiMuzgjZPD5G5/rtV2
+ W9M8ryXetKpM/ThMUadc175yqdY8h7a865c0Sro2P31XO96d13hGyfmMW4ufsTmGWHnUilimzZp
+ 8XHeC3c3BTf+WuKxuDSIM+ZTUYq2j5eNgK+2y+XZk2oMAQ==
+X-Developer-Key: i=manivannan.sadhasivam@linaro.org; a=openpgp;
+ fpr=C668AEC3C3188E4C611465E7488550E901166008
 
-Hi,
-I got following kernel WARNING when the my 2-core KVM(6.9.0-rc6) is under h=
-igh cpu load.
+Hello,
 
-	[Mon Apr 29 21:36:04 2024] ------------[ cut here ]------------
-	[Mon Apr 29 21:36:04 2024] workqueue: WQ_MEM_RECLAIM ttm:ttm_bo_delayed_de=
-lete [ttm] is flushing !WQ_MEM_RECLAIM events:qxl_gc_work [qxl]
-	[Mon Apr 29 21:36:04 2024] WARNING: CPU: 1 PID: 792 at kernel/workqueue.c:=
-3728 check_flush_dependency+0xfd/0x120
-	[Mon Apr 29 21:36:04 2024] Modules linked in: xt_conntrack(E) nft_chain_na=
-t(E) xt_MASQUERADE(E) nf_nat(E) nf_conntrack_netlink(E) xfrm_user(E) xfrm_a=
-lgo(E) xt_addrtype(E) nft_compat(E) nf_tables(E) br_netfilter(E) bridge(E) =
-stp(E) llc(E) ip_set(E) nfnetlink(E) ip_vs_sh(E) ip_vs_wrr(E) ip_vs_rr(E) i=
-p_vs(E) nf_conntrack(E) nf_defrag_ipv6(E) nf_defrag_ipv4(E) intel_rapl_msr(=
-E) intel_rapl_common(E) crct10dif_pclmul(E) ghash_clmulni_intel(E) snd_hda_=
-codec_generic(E) snd_hda_intel(E) snd_intel_dspcfg(E) sha512_ssse3(E) snd_h=
-da_codec(E) sha512_generic(E) sha256_ssse3(E) overlay(E) sha1_ssse3(E) snd_=
-hda_core(E) snd_hwdep(E) aesni_intel(E) snd_pcm(E) crypto_simd(E) pcspkr(E)=
- cryptd(E) joydev(E) qxl(E) snd_timer(E) drm_ttm_helper(E) ttm(E) evdev(E) =
-snd(E) iTCO_wdt(E) serio_raw(E) sg(E) virtio_balloon(E) virtio_console(E) i=
-TCO_vendor_support(E) soundcore(E) qemu_fw_cfg(E) drm_kms_helper(E) button(=
-E) binfmt_misc(E) fuse(E) drm(E) configfs(E) virtio_rng(E) rng_core(E) ip_t=
-ables(E) x_tables(E) autofs4(E) ext4(E) crc16(E) mbcache(E) jbd2(E)
-	[Mon Apr 29 21:36:04 2024]  hid_generic(E) usbhid(E) hid(E) sr_mod(E) cdro=
-m(E) ahci(E) libahci(E) virtio_net(E) net_failover(E) failover(E) virtio_bl=
-k(E) libata(E) xhci_pci(E) crc32_pclmul(E) crc32c_intel(E) scsi_mod(E) scsi=
-_common(E) lpc_ich(E) i2c_i801(E) xhci_hcd(E) psmouse(E) i2c_smbus(E) virti=
-o_pci(E) usbcore(E) virtio_pci_legacy_dev(E) virtio_pci_modern_dev(E) usb_c=
-ommon(E) virtio(E) mfd_core(E) virtio_ring(E)
-	[Mon Apr 29 21:36:04 2024] CPU: 1 PID: 792 Comm: kworker/u13:4 Tainted: G =
-           E      6.9.0-rc6-linan-5 #197
-	[Mon Apr 29 21:36:04 2024] Hardware name: QEMU Standard PC (Q35 + ICH9, 20=
-09), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
-	[Mon Apr 29 21:36:04 2024] Workqueue: ttm ttm_bo_delayed_delete [ttm]
-	[Mon Apr 29 21:36:04 2024] RIP: 0010:check_flush_dependency+0xfd/0x120
-	[Mon Apr 29 21:36:04 2024] Code: 8b 45 18 48 8d b2 c0 00 00 00 49 89 e8 48=
- 8d 8b c0 00 00 00 48 c7 c7 68 30 a4 a7 c6 05 9b 12 6e 01 01 48 89 c2 e8 53=
- b9 fd ff <0f> 0b e9 1e ff ff ff 80 3d 86 12 6e 01 00 75 93 e9 4a ff ff ff =
-66
-	[Mon Apr 29 21:36:04 2024] RSP: 0018:ffff9d31805abce8 EFLAGS: 00010086
-	[Mon Apr 29 21:36:04 2024] RAX: 0000000000000000 RBX: ffff8c8c4004ee00 RCX=
-: 0000000000000000
-	[Mon Apr 29 21:36:04 2024] RDX: 0000000000000003 RSI: 0000000000000027 RDI=
-: 00000000ffffffff
-	[Mon Apr 29 21:36:04 2024] RBP: ffffffffc0b53570 R08: 0000000000000000 R09=
-: 0000000000000003
-	[Mon Apr 29 21:36:04 2024] R10: ffff9d31805abb80 R11: ffffffffa7cc1108 R12=
-: ffff8c8c42eb8000
-	[Mon Apr 29 21:36:04 2024] R13: ffff8c8c48077900 R14: ffff8c8cbbd30b80 R15=
-: 0000000000000001
-	[Mon Apr 29 21:36:04 2024] FS:  0000000000000000(0000) GS:ffff8c8cbbd00000=
-(0000) knlGS:0000000000000000
-	[Mon Apr 29 21:36:04 2024] CS:  0010 DS: 0000 ES: 0000 CR0: 00000000800500=
-33
-	[Mon Apr 29 21:36:04 2024] CR2: 00007ffd38bb3ff8 CR3: 000000010217a000 CR4=
-: 0000000000350ef0
-	[Mon Apr 29 21:36:04 2024] Call Trace:
-	[Mon Apr 29 21:36:04 2024]  <TASK>
-	[Mon Apr 29 21:36:04 2024]  ? __warn+0x7c/0x120
-	[Mon Apr 29 21:36:04 2024]  ? check_flush_dependency+0xfd/0x120
-	[Mon Apr 29 21:36:04 2024]  ? report_bug+0x18d/0x1c0
-	[Mon Apr 29 21:36:04 2024]  ? srso_return_thunk+0x5/0x5f
-	[Mon Apr 29 21:36:04 2024]  ? handle_bug+0x3c/0x80
-	[Mon Apr 29 21:36:04 2024]  ? exc_invalid_op+0x13/0x60
-	[Mon Apr 29 21:36:04 2024]  ? asm_exc_invalid_op+0x16/0x20
-	[Mon Apr 29 21:36:04 2024]  ? __pfx_qxl_gc_work+0x10/0x10 [qxl]
-	[Mon Apr 29 21:36:04 2024]  ? check_flush_dependency+0xfd/0x120
-	[Mon Apr 29 21:36:04 2024]  ? check_flush_dependency+0xfd/0x120
-	[Mon Apr 29 21:36:04 2024]  __flush_work.isra.0+0xc0/0x270
-	[Mon Apr 29 21:36:04 2024]  ? srso_return_thunk+0x5/0x5f
-	[Mon Apr 29 21:36:04 2024]  ? srso_return_thunk+0x5/0x5f
-	[Mon Apr 29 21:36:04 2024]  ? __queue_work.part.0+0x18b/0x3d0
-	[Mon Apr 29 21:36:04 2024]  ? srso_return_thunk+0x5/0x5f
-	[Mon Apr 29 21:36:04 2024]  qxl_queue_garbage_collect+0x7f/0x90 [qxl]
-	[Mon Apr 29 21:36:04 2024]  qxl_fence_wait+0x9c/0x180 [qxl]
-	[Mon Apr 29 21:36:04 2024]  dma_fence_wait_timeout+0x61/0x130
-	[Mon Apr 29 21:36:04 2024]  dma_resv_wait_timeout+0x6d/0xd0
-	[Mon Apr 29 21:36:04 2024]  ttm_bo_delayed_delete+0x26/0x80 [ttm]
-	[Mon Apr 29 21:36:04 2024]  process_one_work+0x18c/0x3b0
-	[Mon Apr 29 21:36:04 2024]  worker_thread+0x273/0x390
-	[Mon Apr 29 21:36:04 2024]  ? __pfx_worker_thread+0x10/0x10
-	[Mon Apr 29 21:36:04 2024]  kthread+0xdd/0x110
-	[Mon Apr 29 21:36:04 2024]  ? __pfx_kthread+0x10/0x10
-	[Mon Apr 29 21:36:04 2024]  ret_from_fork+0x30/0x50
-	[Mon Apr 29 21:36:04 2024]  ? __pfx_kthread+0x10/0x10
-	[Mon Apr 29 21:36:04 2024]  ret_from_fork_asm+0x1a/0x30
-	[Mon Apr 29 21:36:04 2024]  </TASK>
-	[Mon Apr 29 21:36:04 2024] ---[ end trace 0000000000000000 ]---
+This is the follow up series of [1], to improve the handling of host reboot in
+the endpoint subsystem. This involves refining the PERST# and Link Down event
+handling in both the controller and function drivers.
 
-I find that the exact warning message mentioned in
- https://lore.kernel.org/lkml/20240404181448.1643-1-dreaming.about.electric=
-sheep@gmail.com/T/#m8c2ecc83ebba8717b1290ec28d4dc15f2fa595d5
-And confirmed that the warning is caused by 07ed11afb68d94eadd4ffc082b97c23=
-31307c5ea and reverting it can fix.
+Testing
+=======
 
+This series is tested on Qcom SM8450 based development board with both MHI_EPF
+and EPF_TEST function drivers. And also by Niklas on Rockchip platform.
 
-It seems that under heavy load, qxl_queue_garbage_collect would be called w=
-ithin
-a WQ_MEM_RECLAIM worker, and flush qxl_gc_work which is a
-!WQ_MEM_RECLAIM worker. This will trigger the kernel WARNING by
-check_flush_dependency.
+Dependency
+==========
 
-And I tried following changes, setting flush flag to false.
-The warning is gone, but I am not sure whether there is any other side-effe=
-ct,
-especially the issue mentioned in=20
-https://lore.kernel.org/lkml/20240404181448.1643-2-dreaming.about.electric.=
-sheep@gmail.com/T/#m988ffad2000c794dcfdab7e60b03db93d8726391
+This series depends on [1] and [2] which are currently in pci/next.
 
-Signed-off-by: David Wang <00107082@163.com>
+- Mani
+
+[1] https://lore.kernel.org/linux-pci/20240314-pci-dbi-rework-v10-0-14a45c5a938e@linaro.org/
+[2] https://lore.kernel.org/linux-pci/20240320113157.322695-1-cassel@kernel.org/
+
+Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 ---
- drivers/gpu/drm/qxl/qxl_release.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/qxl/qxl_release.c b/drivers/gpu/drm/qxl/qxl_re=
-lease.c
-index 9febc8b73f09..f372085c5aad 100644
---- a/drivers/gpu/drm/qxl/qxl_release.c
-+++ b/drivers/gpu/drm/qxl/qxl_release.c
-@@ -76,7 +76,7 @@ static long qxl_fence_wait(struct dma_fence *fence, bool =
-intr,
- 	qxl_io_notify_oom(qdev);
-=20
- 	for (count =3D 0; count < 11; count++) {
--		if (!qxl_queue_garbage_collect(qdev, true))
-+		if (!qxl_queue_garbage_collect(qdev, false))
- 			break;
-=20
- 		if (dma_fence_is_signaled(fence))
---=20
-2.39.2
+Changes in v4:
+- Reworded the pci_epc_bme_notify() Kdoc (Bjorn)
+- Added a patch to drop 'Link is enabled' for BME event (Bjorn)
+- Collected tags from Niklas
+- Rebased on top of pci/next
 
+Changes in v3:
+- Dropped the patch that split epc_events into two
+- Added a patch to rename BME to Bus Master Enable
+- Added back the comment for REBAR
+- Switched to cancel_delayed_work_sync() for Link Down event
+- Rebased on top of pci/next
+- Dropped the tested-by tag from Niklas as I'd like to get this series tested
+  one more time due to changes
+- Link to v2: https://lore.kernel.org/r/20240401-pci-epf-rework-v2-0-970dbe90b99d@linaro.org
 
+Changes in v2:
+- Dropped the {start/stop}_link rework patches
+- Incorporated comments from Niklas
+- Collected review tags
+- Rebased on top of v6.9-rc1 and https://lore.kernel.org/linux-pci/20240320113157.322695-1-cassel@kernel.org/
+- Link to v1: https://lore.kernel.org/r/20240314-pci-epf-rework-v1-0-6134e6c1d491@linaro.org
 
-David
+---
+Manivannan Sadhasivam (10):
+      PCI: qcom-ep: Disable resources unconditionally during PERST# assert
+      PCI: endpoint: Rename core_init() callback in 'struct pci_epc_event_ops' to epc_init()
+      PCI: endpoint: Rename BME to Bus Master Enable
+      PCI: qcom-ep: Drop 'Link is enabled' from the debug message for BME event
+      PCI: endpoint: pci-epf-test: Refactor pci_epf_test_unbind() function
+      PCI: endpoint: pci-epf-{mhi/test}: Move DMA initialization to EPC init callback
+      PCI: endpoint: Introduce 'epc_deinit' event and notify the EPF drivers
+      PCI: dwc: ep: Add a generic dw_pcie_ep_linkdown() API to handle Link Down event
+      PCI: qcom-ep: Use the generic dw_pcie_ep_linkdown() API to handle Link Down event
+      PCI: endpoint: pci-epf-test: Handle Link Down event
+
+ drivers/pci/controller/dwc/pcie-designware-ep.c | 104 ++++++++++++++++--------
+ drivers/pci/controller/dwc/pcie-designware.h    |   5 ++
+ drivers/pci/controller/dwc/pcie-qcom-ep.c       |  13 +--
+ drivers/pci/controller/dwc/pcie-tegra194.c      |   1 +
+ drivers/pci/endpoint/functions/pci-epf-mhi.c    |  47 +++++++----
+ drivers/pci/endpoint/functions/pci-epf-test.c   |  95 ++++++++++++++++------
+ drivers/pci/endpoint/pci-epc-core.c             |  60 ++++++++++----
+ include/linux/pci-epc.h                         |   3 +-
+ include/linux/pci-epf.h                         |  10 ++-
+ 9 files changed, 231 insertions(+), 107 deletions(-)
+---
+base-commit: b4d6d92902f50a577021f2cc08ac680b10658aca
+change-id: 20240314-pci-epf-rework-a6e65b103a79
+
+Best regards,
+-- 
+Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 
 
