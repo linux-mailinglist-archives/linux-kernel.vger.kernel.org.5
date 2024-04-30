@@ -1,187 +1,255 @@
-Return-Path: <linux-kernel+bounces-163792-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-163793-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 447728B708F
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 12:47:05 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4395C8B70A1
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 12:47:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EFAED286CC5
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 10:47:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A48961F22988
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 10:47:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AFB2112C48F;
-	Tue, 30 Apr 2024 10:46:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C03F12C805;
+	Tue, 30 Apr 2024 10:47:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="qvSHSzNl"
-Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mGvXxDPs"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 20BA512C547
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 10:46:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 613C81292C8;
+	Tue, 30 Apr 2024 10:47:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714474017; cv=none; b=PhwsyZf8PR0FetrFU9DnSKkQK/Oj3NcZ/zu3lNHdMplryXRZdYRS/UYonrsNQmZw4GGlQDKyKvh/pOcreCBQoF8Mvso1WLxUI8l5erJLbEZPc9NafBC2aOxI3LB9KHAm+fQ+M1PFMeC1b3wHI9ji70m8rGdTuYNYKZQdmjqXOl8=
+	t=1714474067; cv=none; b=K6oUQHbDGsEU3GZpCXttlKRGXljevGdUK9BNNxvYoD7L8rKYTCDi0V75yN4fHvoJRWp6mYv60PtlutntAcalyTyalW4thld2ww+ieLtGkKztJh9xsrVNhDGqjIqaYhcjeDENSxyxxdZ3pmdWzd+OxwTa+LKHeXZqSGdT6Wpaq78=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714474017; c=relaxed/simple;
-	bh=B8tH4tHOKg8ilZvr+0aytqIZjWrAXy+IX+xPonUHaYs=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=HrjWa/mqEAdYGqU7EbCXDtemmXARCnemi3vx+2H1Qz20ksffSHAdwpo6yqwAuKjTh3W/QOgyhm2I0I2SZOYgKqcVj2BigKHs3YMGS7ejWbPQgtoB5AvX8Ef6Jnea3+mPLwqlccKMUG8X995S4o5wHz0r0E5ow1j/liqPfxuPfKQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=qvSHSzNl; arc=none smtp.client-ip=209.85.208.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-57258c90899so6890550a12.1
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 03:46:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1714474014; x=1715078814; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=IZYTIT0ZxYvFVL0Ba4inDvmHjA+bwSS4lh+A5ZZwfbg=;
-        b=qvSHSzNl8NVoagC+OlLY58nXDxoa//hSBKYC2aGwzwkHjJvvCaZTAtSvrZ9bOpQMlp
-         XrCVq1zcA+cui64ugUY4uO7uEbtqOGUmJzX/IZu+njUwD5y3vEItGkYfIhQ9TzQfpZ7z
-         EDN20mdh/lMsPAecfUSXuXFMTdzkmt28+UVogExGKaxdYiOPmpudqi/fjnczZokOEDSR
-         DQ1pjgkNVT2DOGqYZeTuw0PmFweTJz75oThYMgrWeULTodvTzjfDGCqT7Cr41f2+crOR
-         fafo0ytqlXRSiNT+v52bcRWdBx3zbd0M9kBFNXMNmRd3krOWlj+IDOIKCp/lHuJ+oSFY
-         a/AQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714474014; x=1715078814;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=IZYTIT0ZxYvFVL0Ba4inDvmHjA+bwSS4lh+A5ZZwfbg=;
-        b=RWnMT1qUnIfc+h0ezgJhFmiQXbrD9gwDUqJXB0atlqBfHZA54l7+skjVNPqjEZmyBu
-         PBIpplb+g7MmHSYVIZayexaWYLeKj5Zf4LZDhZW9rCTR4e05+AdN7nm8mETWuxHM7DuA
-         kgaUUWxABilO5erMoCuerWa+zap954DnzFuRVVpx54+Z4RNsa0XQnEuiSAx+f1yrVVMD
-         DVi4DwDsUaqVy6CtM2sI7Ok1XO8X8dCa7Jr2XfL5Sm0COk4g4o5eVBli92fv14cLYHZ7
-         yh3d4+IIGi+AQGBEtyy+CHx27c/tG7Orf2kQ5LWTrU8VLk3yML8MXuluPannWDYR1U/t
-         L6uw==
-X-Forwarded-Encrypted: i=1; AJvYcCU+93gemwJxg3as9tsBRg+QdXEZu00Ez/07bttzitVyTAzF/exujjeEnzGSkDMyzIDUrfLdjvecypyz9PrXJ8UheHpw4qoqqTqFchGD
-X-Gm-Message-State: AOJu0YwMW/KCFf8LLP2vTETMW9owUPBaqEfRt10HvZGZpKne5k7Os/mk
-	9z6V/7z6k744eqoR/DmznvgwgNFwyH2Suy8anD6io3HQqLGgd4WNPYvdUcAMBT4=
-X-Google-Smtp-Source: AGHT+IGHREn1JaANpEdDeLUVzNKKpT7XKa7oQeDihO/eWTk3yelFKyiSXlfuL8ed/Gcdg+lvCMbQaA==
-X-Received: by 2002:a50:cccc:0:b0:570:5e98:64b7 with SMTP id b12-20020a50cccc000000b005705e9864b7mr2284381edj.17.1714474014354;
-        Tue, 30 Apr 2024 03:46:54 -0700 (PDT)
-Received: from [192.168.114.15] (078088045141.garwolin.vectranet.pl. [78.88.45.141])
-        by smtp.gmail.com with ESMTPSA id fe12-20020a056402390c00b0057297f5935dsm465618edb.57.2024.04.30.03.46.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 30 Apr 2024 03:46:54 -0700 (PDT)
-Message-ID: <11bd7146-30cd-4b71-b2ca-d76875763731@linaro.org>
-Date: Tue, 30 Apr 2024 12:46:52 +0200
+	s=arc-20240116; t=1714474067; c=relaxed/simple;
+	bh=WZUKSeKyIPsk8d6ycvulrut5Qa11GliUpPCP6FFms4U=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=nxuKy+mS2heE7LEnOQIlArUQJjCkqjREETQR/MFzEeJo8oBQNUPgAW2j/y0oKjXuF+9tFEapJzeWVZSGZZb2BLut2/2P9KlmOKTSkGd6UKtEIMAgKr+ptwgpEOaIoY+qgu6rOirMgfpFdoVklC1FJPhZcxeKtk7+m/G/t2C0JQg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mGvXxDPs; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 39A9BC4AF5F;
+	Tue, 30 Apr 2024 10:47:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714474067;
+	bh=WZUKSeKyIPsk8d6ycvulrut5Qa11GliUpPCP6FFms4U=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=mGvXxDPseshKWHrhk/EJeXU0vbKAkmpT4jipiadYfEt06SESJdnr7pN1XwuX2XKAP
+	 QolD4+xZe394t1sKP3d/WuOd5qF+EUSIiZGg1zknqEDshwq0iyiHBI/YMyMynWgdAx
+	 u5OJjMyNBwLAdgfIfRdCKfzy8oXNku/V63JuL/TL3MNqi6qdXxA3rpJL5BLqu1Emv6
+	 vMK+E8j7Yf1PYaIr87oBrL3G7KvHXuyQAJbZBOJ2Rfz7D/f569l7zZIKPWxPhA1p9a
+	 yrmrpXF3CyD39HRjByGsK1lXLjGt1BvVcQjVZB0LJtPW2PYj56DewQ5lHUyjyGYKGM
+	 havP8C0Hc0PNQ==
+Received: by mail-ot1-f43.google.com with SMTP id 46e09a7af769-6ea0a6856d7so804394a34.1;
+        Tue, 30 Apr 2024 03:47:47 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCUU62zyOzw/kiGVC6iSrqHCLfqb3vHRv2XbjcjM6Rc01TXYFZ24XBiu7V4cmJ1ldVlEoDC08pQlpWK5+Tl8VDrqKWyyjAX2++hs/2sn7RwRRBkOWTiyhg48TWYzR5lwIupz6IsDQciF6RR11QO+Q1DLhQvAOBNqtV7/6fQJ4j996OTI5tvyI07uL92xodlnWtb7j79ezYq+bBPN64ozWg==
+X-Gm-Message-State: AOJu0Yyzkj/KMMLroO2YLMa/cBeKISxvpUZtGk4xXFLOGgBGq/2f7AyG
+	gIL1VWhKIAPzwUTN+c50dQNDHA7dndJDGh1DC0aabvwoHWZaQ8DIQyXY0VsQXB9hnaJ+PZTOS0Q
+	GSAFM7zeekn5RdHgDSyBtHfbLjps=
+X-Google-Smtp-Source: AGHT+IHNKT5Ik0nUI8b5ABIxeB3JmGV787CqCPuIjHLaEaioVmWruFOWAVvzVNYd9L9saMxym0xKD6S5YvIRDnvFpfI=
+X-Received: by 2002:a4a:9287:0:b0:5af:be60:ccdc with SMTP id
+ i7-20020a4a9287000000b005afbe60ccdcmr3602815ooh.0.1714474066271; Tue, 30 Apr
+ 2024 03:47:46 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] clk: qcom: gcc-sm8450: set OPS_PARENT_ENABLE on
- gcc_sdcc2_apps_clk_src
-To: Stephen Boyd <sboyd@kernel.org>, Bjorn Andersson <andersson@kernel.org>,
- Michael Turquette <mturquette@baylibre.com>, Vinod Koul <vkoul@kernel.org>
-Cc: Marijn Suijten <marijn.suijten@somainline.org>,
- linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
- linux-kernel@vger.kernel.org, Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-References: <20240427-topic-8450sdc2-v1-1-631cbb59e0e5@linaro.org>
- <2337ba58adb3fb127710bead9b8665a9.sboyd@kernel.org>
-Content-Language: en-US
-From: Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <2337ba58adb3fb127710bead9b8665a9.sboyd@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20240426135126.12802-1-Jonathan.Cameron@huawei.com>
+ <20240426135126.12802-5-Jonathan.Cameron@huawei.com> <80a2e07f-ecb2-48af-b2be-646f17e0e63e@redhat.com>
+ <20240430102838.00006e04@Huawei.com> <20240430111341.00003dba@huawei.com>
+ <CAJZ5v0i5jpJswD7KV5RPm_HvzB+B=Rt3gY0s_Z3fn5wbJz0ebw@mail.gmail.com> <20240430114534.0000600e@huawei.com>
+In-Reply-To: <20240430114534.0000600e@huawei.com>
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Date: Tue, 30 Apr 2024 12:47:34 +0200
+X-Gmail-Original-Message-ID: <CAJZ5v0hsJBmphEg8gjehtmtzt0Q=Rox1B_qBFrxp15nHvb6o5A@mail.gmail.com>
+Message-ID: <CAJZ5v0hsJBmphEg8gjehtmtzt0Q=Rox1B_qBFrxp15nHvb6o5A@mail.gmail.com>
+Subject: Re: [PATCH v8 04/16] ACPI: processor: Move checks and availability of
+ acpi_processor earlier
+To: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Cc: "Rafael J. Wysocki" <rafael@kernel.org>, Gavin Shan <gshan@redhat.com>, 
+	Thomas Gleixner <tglx@linutronix.de>, Peter Zijlstra <peterz@infradead.org>, linux-pm@vger.kernel.org, 
+	loongarch@lists.linux.dev, linux-acpi@vger.kernel.org, 
+	linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev, x86@kernel.org, 
+	Russell King <linux@armlinux.org.uk>, Miguel Luis <miguel.luis@oracle.com>, 
+	James Morse <james.morse@arm.com>, Salil Mehta <salil.mehta@huawei.com>, 
+	Jean-Philippe Brucker <jean-philippe@linaro.org>, Catalin Marinas <catalin.marinas@arm.com>, 
+	Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>, Hanjun Guo <guohanjun@huawei.com>, 
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
+	Dave Hansen <dave.hansen@linux.intel.com>, linuxarm@huawei.com, justin.he@arm.com, 
+	jianyong.wu@arm.com, Lorenzo Pieralisi <lpieralisi@kernel.org>, 
+	Sudeep Holla <sudeep.holla@arm.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 30.04.2024 2:21 AM, Stephen Boyd wrote:
-> Quoting Konrad Dybcio (2024-04-27 05:01:07)
->> Similar to how it works on other SoCs, the top frequency of the SDHCI2
->> core clock is generated by a separate PLL (peculiar design choice) that
->> is not guaranteed to be enabled (why does the clock framework not handle
->> this by default?).
->>
->> Add the CLK_OPS_PARENT_ENABLE flag to make sure we're not muxing the
->> RCG input to a dormant source.
-> 
-> The RCG2 hardware hasn't required the parent to be enabled for clk
-> operations besides for the glitch-free source switch. What scenario is
-> happening here that's requiring this flag? Is the RCG forcibly enabled
-> perhaps because the bootloader has left the root enable bit set
-> (CMD_ROOT_EN)? Or are we changing the parent while the clk framework
-> thinks the clk is off when it is actually on?
-> 
-> TL;DR: This is papering over a bigger bug.
+On Tue, Apr 30, 2024 at 12:45=E2=80=AFPM Jonathan Cameron
+<Jonathan.Cameron@huawei.com> wrote:
+>
+> On Tue, 30 Apr 2024 12:17:38 +0200
+> "Rafael J. Wysocki" <rafael@kernel.org> wrote:
+>
+> > On Tue, Apr 30, 2024 at 12:13=E2=80=AFPM Jonathan Cameron
+> > <Jonathan.Cameron@huawei.com> wrote:
+> > >
+> > > On Tue, 30 Apr 2024 10:28:38 +0100
+> > > Jonathan Cameron <Jonathan.Cameron@Huawei.com> wrote:
+> > >
+> > > > On Tue, 30 Apr 2024 14:17:24 +1000
+> > > > Gavin Shan <gshan@redhat.com> wrote:
+> > > >
+> > > > > On 4/26/24 23:51, Jonathan Cameron wrote:
+> > > > > > Make the per_cpu(processors, cpu) entries available earlier so =
+that
+> > > > > > they are available in arch_register_cpu() as ARM64 will need ac=
+cess
+> > > > > > to the acpi_handle to distinguish between acpi_processor_add()
+> > > > > > and earlier registration attempts (which will fail as _STA cann=
+ot
+> > > > > > be checked).
+> > > > > >
+> > > > > > Reorder the remove flow to clear this per_cpu() after
+> > > > > > arch_unregister_cpu() has completed, allowing it to be used in
+> > > > > > there as well.
+> > > > > >
+> > > > > > Note that on x86 for the CPU hotplug case, the pr->id prior to
+> > > > > > acpi_map_cpu() may be invalid. Thus the per_cpu() structures
+> > > > > > must be initialized after that call or after checking the ID
+> > > > > > is valid (not hotplug path).
+> > > > > >
+> > > > > > Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+> > > > > >
+> > > > > > ---
+> > > > > > v8: On buggy bios detection when setting per_cpu structures
+> > > > > >      do not carry on.
+> > > > > >      Fix up the clearing of per cpu structures to remove unwant=
+ed
+> > > > > >      side effects and ensure an error code isn't use to referen=
+ce them.
+> > > > > > ---
+> > > > > >   drivers/acpi/acpi_processor.c | 79 +++++++++++++++++++++-----=
+---------
+> > > > > >   1 file changed, 48 insertions(+), 31 deletions(-)
+> > > > > >
+> > > > > > diff --git a/drivers/acpi/acpi_processor.c b/drivers/acpi/acpi_=
+processor.c
+> > > > > > index ba0a6f0ac841..3b180e21f325 100644
+> > > > > > --- a/drivers/acpi/acpi_processor.c
+> > > > > > +++ b/drivers/acpi/acpi_processor.c
+> > > > > > @@ -183,8 +183,38 @@ static void __init acpi_pcc_cpufreq_init(v=
+oid) {}
+> > > > > >   #endif /* CONFIG_X86 */
+> > > > > >
+> > > > > >   /* Initialization */
+> > > > > > +static DEFINE_PER_CPU(void *, processor_device_array);
+> > > > > > +
+> > > > > > +static bool acpi_processor_set_per_cpu(struct acpi_processor *=
+pr,
+> > > > > > +                                struct acpi_device *device)
+> > > > > > +{
+> > > > > > + BUG_ON(pr->id >=3D nr_cpu_ids);
+> > > > >
+> > > > > One blank line after BUG_ON() if we need to follow original imple=
+mentation.
+> > > >
+> > > > Sure unintentional - I'll put that back.
+> > > >
+> > > > >
+> > > > > > + /*
+> > > > > > +  * Buggy BIOS check.
+> > > > > > +  * ACPI id of processors can be reported wrongly by the BIOS.
+> > > > > > +  * Don't trust it blindly
+> > > > > > +  */
+> > > > > > + if (per_cpu(processor_device_array, pr->id) !=3D NULL &&
+> > > > > > +     per_cpu(processor_device_array, pr->id) !=3D device) {
+> > > > > > +         dev_warn(&device->dev,
+> > > > > > +                  "BIOS reported wrong ACPI id %d for the proc=
+essor\n",
+> > > > > > +                  pr->id);
+> > > > > > +         /* Give up, but do not abort the namespace scan. */
+> > > > >
+> > > > > It depends on how the return value is handled by the caller if th=
+e namespace
+> > > > > is continued to be scanned. The caller can be acpi_processor_hota=
+dd_init()
+> > > > > and acpi_processor_get_info() after this patch is applied. So I t=
+hink this
+> > > > > specific comment need to be moved to the caller.
+> > > >
+> > > > Good point. This gets messy and was an unintended change.
+> > > >
+> > > > Previously the options were:
+> > > > 1) acpi_processor_get_info() failed for other reasons - this code w=
+as never called.
+> > > > 2) acpi_processor_get_info() succeeded without acpi_processor_hotad=
+d_init (non hotplug)
+> > > >    this code then ran and would paper over the problem doing a bunc=
+h of cleanup under err.
+> > > > 3) acpi_processor_get_info() succeeded with acpi_processor_hotadd_i=
+nit called.
+> > > >    This code then ran and would paper over the problem doing a bunc=
+h of cleanup under err.
+> > > >
+> > > > We should maintain that or argue cleanly against it.
+> > > >
+> > > > This isn't helped the the fact I have no idea which cases we care a=
+bout for that bios
+> > > > bug handling.  Do any of those bios's ever do hotplug?  Guess we ha=
+ve to try and maintain
+> > > > whatever protection this was offering.
+> > > >
+> > > > Also, the original code leaks data in some paths and I have limited=
+ idea
+> > > > of whether it is intentional or not. So to tidy the issue up that y=
+ou've identified
+> > > > I'll need to try and make that code consistent first.
+> > > >
+> > > > I suspect the only way to do that is going to be to duplicate the a=
+llocations we
+> > > > 'want' to leak to deal with the bios bug detection.
+> > > >
+> > > > For example acpi_processor_get_info() failing leaks pr and pr->thro=
+ttling.shared_cpu_map
+> > > > before this series. After this series we need pr to leak because it=
+'s used for the detection
+> > > > via processor_device_array.
+> > > >
+> > > > I'll work through this but it's going to be tricky to tell if we ge=
+t right.
+> > > > Step 1 will be closing the existing leaks and then we will have som=
+ething
+> > > > consistent to build on.
+> > > >
+> > > I 'think' that fixing the original leaks makes this all much more str=
+aight forward.
+> > > That return 0 for acpi_processor_get_info() never made sense as far a=
+s I can tell.
+> > > The pr isn't used after this point.
+> > >
+> > > What about something along lines of.
+> > >
+> > > diff --git a/drivers/acpi/acpi_processor.c b/drivers/acpi/acpi_proces=
+sor.c
+> > > index 161c95c9d60a..97cff4492304 100644
+> > > --- a/drivers/acpi/acpi_processor.c
+> > > +++ b/drivers/acpi/acpi_processor.c
+> > > @@ -392,8 +392,10 @@ static int acpi_processor_add(struct acpi_device=
+ *device,
+> > >         device->driver_data =3D pr;
+> > >
+> > >         result =3D acpi_processor_get_info(device);
+> > > -       if (result) /* Processor is not physically present or unavail=
+able */
+> > > -               return 0;
+> > > +       if (result) { /* Processor is not physically present or unava=
+ilable */
+> > > +               result =3D 0;
+> >
+> > As per my previous message (just sent) this should be an error code,
+> > as returning 0 from acpi_processor_add() is generally problematic.
+> Ok. I'll switch to that, but as a separate precusor patch. Independent of
+> the memory leak fixes.
 
-Definitely.
-
-
-Take a look at:
-
-static const struct freq_tbl ftbl_gcc_sdcc2_apps_clk_src[] = {
-	F(400000, P_BI_TCXO, 12, 1, 4),
-	F(25000000, P_GCC_GPLL0_OUT_EVEN, 12, 0, 0),
-	F(50000000, P_GCC_GPLL0_OUT_EVEN, 6, 0, 0),
-	F(100000000, P_GCC_GPLL0_OUT_EVEN, 3, 0, 0),
-	F(202000000, P_GCC_GPLL9_OUT_MAIN, 4, 0, 0),
-	{ }
-};
-
-XO and GPLL0 are more or less always on, but GPLL9 is described to only
-be used for this specific clock for this specific frequency (perhaps it
-feeds something else on the soc but that's besides the point).
-
-Then, the parent input is changed during set_rate, but GPLL9 seems to
-never be enabled:
-
-
-@@ -3272,6 +3274,8 @@ static int gcc_sm8450_probe(struct platform_device *pdev)
-        if (IS_ERR(regmap))
-                return PTR_ERR(regmap);
- 
-+       pr_err("GPLL9 is %s at boot\n", trion_pll_is_enabled(&gcc_gpll9, regmap) ? "enabled" : "disabled");
-+
-        ret = qcom_cc_register_rcg_dfs(regmap, gcc_dfs_clocks,
-                                       ARRAY_SIZE(gcc_dfs_clocks));
-        if (ret)
-
-
-(+ cruft to make this callable) results in a:
-
-[    1.637318] GPLL9 is disabled at boot
-
-
-Konrad
+Sure, thank you!
 
