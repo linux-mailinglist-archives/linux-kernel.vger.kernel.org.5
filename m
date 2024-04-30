@@ -1,107 +1,125 @@
-Return-Path: <linux-kernel+bounces-164371-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-164366-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2C1178B7CDA
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 18:29:17 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 811AB8B7CCC
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 18:27:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DC77C282CDA
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 16:29:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E58251F21BA0
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 16:27:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CAA21179659;
-	Tue, 30 Apr 2024 16:29:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6FC2179954;
+	Tue, 30 Apr 2024 16:27:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="XPpR772T"
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=ndufresne-ca.20230601.gappssmtp.com header.i=@ndufresne-ca.20230601.gappssmtp.com header.b="16Axr43u"
+Received: from mail-qt1-f180.google.com (mail-qt1-f180.google.com [209.85.160.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC262173322
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 16:29:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DDC73173350
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 16:27:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714494550; cv=none; b=ZYj8M7Xj9I4eX3unRmJExQly8eXLmbQoJcyL28ha1DYKQvECjrM+aTJ2/xlKx1aNjIX9MYjxkPtybqVcw6M7XPkiejzV6cCvVi2QE0qsi9T3C0SoZCcTL/E7i59Ui5v9OGnH2Bi8JoustQG1hF5LDp7Hzve6oo3gR7kpQnwo/Pw=
+	t=1714494423; cv=none; b=DBrsvnXHCEkDZXfThLf/087oW6s3VfDoF9uT0+J2fEAkD6A/hsrB1oa7auDGsgBFzt3qdV9Vtvg2H+XfDXGNBIXPJJExpmLYxICYgNKaQJf2Y7J6yyN1Pgsd6z5B6UlhozdXMahb6WU9ZIopep6KdqbvqCqE8ewioE2qF6wBQg0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714494550; c=relaxed/simple;
-	bh=kkvw51P6Za/qRoyOm34SqO6Jg6cob+X5xRe+y/3jnK0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=WJLw7+L+yCXYX8wpiwwisXxBr+GfEwj/vhYEPkxb4cJ/qy+zP+Y9fO7shk4WGmjXmQuKAqP32MGWxNjlxj4/bcAGR0nOoc4a37LENmDBroLkR859vvwnxvnJyzPVNot6ozTWlvQh3Sp1U/PYWgOiRcIKhFoVAWZU+3k0rGYcCCA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=XPpR772T; arc=none smtp.client-ip=18.9.28.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
-Received: from cwcc.thunk.org (pool-108-26-156-33.bstnma.fios.verizon.net [108.26.156.33])
-	(authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 43UGQXgJ020744
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 30 Apr 2024 12:26:34 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-	t=1714494396; bh=goM805EIaf7WdDPZb5HYoEDPI6lMIJGS/qiTjPMlJ4k=;
-	h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
-	b=XPpR772TTYa+XubwFcYgQTJGqPnocH8jOsOUU6PbJtTFCeafVZVTs3c5HsWPB/WVV
-	 t9aeDlLLf6eS6D5fG9jABT9OhATloQkxO2W4BaEJWNSg6Nsk8w4uctAslsQDRHFbNW
-	 ad6HFsLXwIhoqeQXsPW7+q2CNuFZVdCSxZApkcqeMQqjfQoSE/npXoHmCnfdBudlsu
-	 IU6D4XWXFki+ynyqxEyUZ8axvsEo9L8prRWKzUj4kxH0m9qhPwd0Q64SczYfX9QdWD
-	 kNAiiaVNoTqDjyYBNFlrN4IT6sZJo6F7fSe4GFTMN8ktK80aoNKZzdT5jmSNSgyr0h
-	 JpAzC+tMmP86w==
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-	id E1EA515C02D7; Tue, 30 Apr 2024 12:26:32 -0400 (EDT)
-Date: Tue, 30 Apr 2024 12:26:32 -0400
-From: "Theodore Ts'o" <tytso@mit.edu>
-To: Aaron Toponce <aaron.toponce@gmail.com>
-Cc: Eric Biggers <ebiggers@kernel.org>, "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>, linux-kernel@vger.kernel.org,
-        linux-crypto@vger.kernel.org
-Subject: Re: [PATCH] random: add chacha8_block and swtich the rng to it
-Message-ID: <20240430162632.GA1924352@mit.edu>
-References: <20240429134942.2873253-1-aaron.toponce@gmail.com>
- <20240430031105.GA10165@sol.localdomain>
- <ZjB2ZjkebZyC7FZp@hercules>
+	s=arc-20240116; t=1714494423; c=relaxed/simple;
+	bh=he8m3D8ERV3+ZM39Fi93bNF7eApo77thjOFwsQw02Jc=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=GlXXsXLUmFI0KMrQotjENSYUmBSbiqAnKKlWTV0Y1z4QKe0Lk7xv5/ycgI1WbJn4SnEgYKXJXcYOfGvaz5kWjTRRoWdGqJlB0SbEHjnyv2Zlo9t6Xkod7pVS4jxNe+aS4i2sjcZBSNfrWDeHidZDBR5ZGCkVv6SUMQJps01SD70=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ndufresne.ca; spf=none smtp.mailfrom=ndufresne.ca; dkim=pass (2048-bit key) header.d=ndufresne-ca.20230601.gappssmtp.com header.i=@ndufresne-ca.20230601.gappssmtp.com header.b=16Axr43u; arc=none smtp.client-ip=209.85.160.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ndufresne.ca
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ndufresne.ca
+Received: by mail-qt1-f180.google.com with SMTP id d75a77b69052e-43ade9223c0so10192961cf.2
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 09:27:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ndufresne-ca.20230601.gappssmtp.com; s=20230601; t=1714494421; x=1715099221; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=ZC7KljP54si9I/OvR7p1QytBPv8oCv3FFtdLpBVVIEM=;
+        b=16Axr43uV02MEX/z8YUk5KFhdk3HpMRW5WxcgKJE6GPHIhsUwc6D4ZLIfewbLLDV/O
+         SbQNupHZd47oX2VD9H2bdrgwW4Ys96mNsbmb3XAm65O+/riJW9C/p2ilgYZJCCURjnd7
+         0juX4UWBW7NCnZzUG2opJW4IPUY/RcoBiOF81uTpj+QLb3Oc5ZDU1eGUYctrjcaK2K+7
+         wHkIb3vG/b9V5YhmexaH8VpJSCwkQC8zRU3qyfYeZ/iQqhwfI9ssoRO0NHuI1BxZ6cvF
+         BF/zxruXcjizgRzZYzkcpZxOwdaPvML5Ywo9lYjP+64aTfWAp54dVcsB1bhkXxdlv9kg
+         oOcA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714494421; x=1715099221;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ZC7KljP54si9I/OvR7p1QytBPv8oCv3FFtdLpBVVIEM=;
+        b=kLG/bEV4E0PGWLlD8wohDKAum5oROe7EJSwPKBs6lPl/JwnjLjUHduU1IAiKXMlHlT
+         BZQHBD0VTjtLx0tFGcovjqQlO9ycAvPi0Z9Eo3y4hb+Cn9KDFEg1jjA48D9G8ssn8Hvz
+         GVF5qYbjZhcyzPj4CyqIXERK7uAOxpW7QSSuLc+d1+MC4TCfohY8eDynAfo7732EQovr
+         IoEu12lPcAAR6gmxnIPLm0lpthZ6C/hE4O98/194nLs/4STCLdyBEyv0/aj9juMJHbW8
+         3vWnC32vhkCqdYpqLzSoGGi8+CT8oOPmKuj0i3xl+YB38+Z1wCai1RWoSsKW9cjYsZ1u
+         FExw==
+X-Forwarded-Encrypted: i=1; AJvYcCViWGDu+oN0kPxmt8ytsZo7K/9GFBpO5T3bZVEG2S1/42sLiE3hPrg/q0IIAOinzNbGTVJjdPal142pbpNj9BVzOR++69sP0EZ1sIOV
+X-Gm-Message-State: AOJu0Yy3qLgijdXsXqY0MoHO4o3tknTpM+FK/E0Z+Jr9Cp1bbQaKOfba
+	scRt6qDKZD5C0PU4egWRdl0xzYmYKS2f+FsMZ/YtlG232h5ojKG20bMHgQvJ1kY=
+X-Google-Smtp-Source: AGHT+IH4i4XqXX+ome3EmdELyywbvX6TD934yBgrF6DZ4ror/4GM3Vhte1p+vjOEJwXaTd3AlXGjSg==
+X-Received: by 2002:a05:622a:491:b0:43b:a44:f83c with SMTP id p17-20020a05622a049100b0043b0a44f83cmr5414263qtx.56.1714494420540;
+        Tue, 30 Apr 2024 09:27:00 -0700 (PDT)
+Received: from nicolas-tpx395.localdomain ([2606:6d00:17:6448::7a9])
+        by smtp.gmail.com with ESMTPSA id o15-20020ac8428f000000b0042f04e421d2sm11469789qtl.24.2024.04.30.09.26.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 30 Apr 2024 09:27:00 -0700 (PDT)
+Message-ID: <1ce1bcf60d8540f867b800816acecfff610ee948.camel@ndufresne.ca>
+Subject: Re: [PATCH v7 1/2] dt-bindings: media: rockchip-vpu: Add rk3588
+ vpu121 compatible string
+From: Nicolas Dufresne <nicolas@ndufresne.ca>
+To: Jianfeng Liu <liujianfeng1994@gmail.com>, linux-media@vger.kernel.org, 
+	linux-rockchip@lists.infradead.org, devicetree@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc: ezequiel@vanguardiasur.com.ar, p.zabel@pengutronix.de,
+ mchehab@kernel.org,  robh@kernel.org, krzk+dt@kernel.org,
+ conor+dt@kernel.org, heiko@sntech.de,  sebastian.reichel@collabora.com,
+ sfr@canb.auug.org.au, sigmaris@gmail.com,  linkmauve@linkmauve.fr, Conor
+ Dooley <conor.dooley@microchip.com>
+Date: Tue, 30 Apr 2024 12:26:58 -0400
+In-Reply-To: <59899cfa3d3245309ce6952ae1028dceae27b488.camel@ndufresne.ca>
+References: <20240430024002.708227-1-liujianfeng1994@gmail.com>
+	 <20240430024002.708227-2-liujianfeng1994@gmail.com>
+	 <59899cfa3d3245309ce6952ae1028dceae27b488.camel@ndufresne.ca>
+Autocrypt: addr=nicolas@ndufresne.ca; prefer-encrypt=mutual; keydata=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
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.4 (3.50.4-1.fc39) 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZjB2ZjkebZyC7FZp@hercules>
 
-On Mon, Apr 29, 2024 at 10:41:10PM -0600, Aaron Toponce wrote:
-> > Note also that currently the Linux RNG is using a portable C
-> > implementation of ChaCha20.  If there is actually a desire to
-> > accelerate large reads (which again, aren't the main use case of
-> > the Linux RNG), it would be possible to use a SIMD implementation
-> > of ChaCha20, which already exists in the kernel.  That would speed
-> > up ChaCha20 by roughly 2-5x depending on the CPU.
-> 
-> If ChaCha8 makes us uncomfortable, even though defensible, ChaCha12
-> is a good compromise. As you mentioned, Google implemented ChaCha12
-> in Adiantum. It offers a 1.67x speedup over ChaCha20 while still
-> providing 5 additional rounds of security over the best known
-> attack.
+Sorry,
 
-I'm not sure I see the point of trying to accelerate the Linux RNG.
-Sure, doing "dd if=/dev/urandom" is *fun*, but what's the real world
-use case where this actually matters?  The kernel RNG is meant for key
-generation, where a much larger safety margin is a good thing, and
-where absolute performance is generally not a big deal.
 
-After all, with key generation generally you are also performing some
-kind of assymetric key crypto as part of the IKE or TLS setup, and the
-time to generate the session key is in the noise.  And if you are
-trying to wipe a disk, using something like shred(1) is really the
-right tool.
+[...]
+> > +          - const: rockchip,rk3568-vpu
+>=20
+> Sorry to come that late, but I'm noticing a big mistake here. You said yo=
+u are
+> enabling VDPU121, the JPEG decoder. But we don't have a JPEG decoder driv=
+er
+> mainline, is there some patches missing ?
+>=20
+> Nicolas
 
-Ultimately this boils down to a risk/benefit tradeoff.  I judge the
-risk that you are a shill sent by a nation-state security agency ala
-Jia Tan of xz infamy, trying to weaken Linux's RNG to be very low; but
-what's the benefit?  If the risk is low, but the benefit is also low,
-maybe it's not worth it?
+Ignore this part, just didn't read carefully. This is about getting H264, V=
+P8
+and MPEG2 out of these extra cores of course. I still would like to know ho=
+w we
+will express the grouping of these four cores, so a driver can know they ar=
+e
+identical G1 cores and not bound to be time sliced with an H1 core like the
+fifth one? I want to see a plan that will work and will not cause headache =
+for
+future work on fully utilizing the HW resources.
 
-Cheers,
-
-					- Ted
+Nicolas
 
