@@ -1,144 +1,222 @@
-Return-Path: <linux-kernel+bounces-163257-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-163258-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B64088B67D2
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 04:10:49 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6F15D8B67D6
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 04:14:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 56D9E1F2282A
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 02:10:49 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8D9EAB22852
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 02:14:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11EF0BE5D;
-	Tue, 30 Apr 2024 02:10:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70C43C152;
+	Tue, 30 Apr 2024 02:13:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="pz0xd5nm"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eIuuspMI"
+Received: from mail-ed1-f45.google.com (mail-ed1-f45.google.com [209.85.208.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 108838BE0;
-	Tue, 30 Apr 2024 02:10:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ECE0B8C07
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 02:13:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714443041; cv=none; b=DiQS+U8ER584UnkzEy3x4iyPy+p833DhliWUT4HoSiWHaOMyc6zN5ebbjQmDcPsYBL3J1rPyvOlCiOPtr04A4VXzg6JfzZ/e+xevbglkDOQZM+zkQawOcAgj4BR9yv2+vYwYm8A+VV87/APg39+lsBUxXTj/SFcQHVQOHYiVL60=
+	t=1714443234; cv=none; b=nrNyVe+sciqqzPuqCY32UJ0YfKMK8P2qgjcYbWZ0J30UIgXtAjIvi0jHXvtBsqbzE28e6w8xwlKzn2sLGCocTgl4yudgxdkwUD3Rt7S1MY4U6/DqNavDdjk1hOWHjo0E60+E6Vqfc+bxuZWbhHyblTVrvdCWwV92ba+PGmF4gX8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714443041; c=relaxed/simple;
-	bh=dvVt9mbg5Q83WZTxwUjAQKXP4dhJpQF20wwvz/KIFAU=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=qCibO5/dOovQNd3m+bT9/6GgpqpkeCdueio3Uu+GfocEKm6F0S0uEl40coi771xg09gjJOsBNuO8RLYfRh4J/OubQeSijZSd/s6kxH5VeZBBh9/2APWgwLWPk3Vr6qWmzIVjC+DtCrplAigcl1ngi3nMJ5daHACP1FGppY+6I6g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=pz0xd5nm; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 43U212PZ014147;
-	Tue, 30 Apr 2024 02:10:33 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	date:from:to:cc:subject:message-id:references:mime-version
-	:content-type:in-reply-to; s=qcppdkim1; bh=AXHgkuMeUpBVRyhQ1R+VL
-	aiFPquzwwH6d+cvmTbZBbc=; b=pz0xd5nmBLFTDi9AkswiutbQDBi6/FwkXxXtF
-	taIr1YQFRJWs3eH/ocNv0I2+m8O3o6DlqMDxTzjIXu0tOus6yF5Vz763rxXK/bDQ
-	cQ9fmPJGHkVWw6EVzPf06sPELIRxXSuIoOBNaAPNPmYjg9yubnsbXkgN6ZlhzdsK
-	lFuk2AnFtJmFijQeZaLjJ6AjfCzY9y2Rd2HKfLc4Vj1F8nnv9IaEF9Usxm4TGL+V
-	e6cjYI9GyesZUyMtFe2FjcvjrVgpfHpMTsLql4Evx1GSR7oQGMkMt8pgXT695AAf
-	/PyB1/uFUzoFhSQYqVWxEXwsqhRMejS72lauOaLuq8APIetXw==
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xtaf2m2xh-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 30 Apr 2024 02:10:32 +0000 (GMT)
-Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-	by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 43U2AWaU026156
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 30 Apr 2024 02:10:32 GMT
-Received: from hu-bjorande-lv.qualcomm.com (10.49.16.6) by
- nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.9; Mon, 29 Apr 2024 19:10:31 -0700
-Date: Mon, 29 Apr 2024 19:10:30 -0700
-From: Bjorn Andersson <quic_bjorande@quicinc.com>
-To: Wolfram Sang <wsa+renesas@sang-engineering.com>
-CC: <linux-i2c@vger.kernel.org>, Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Andi Shyti <andi.shyti@kernel.org>, <linux-arm-msm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 12/15] i2c: qcom-geni: use 'time_left' variable with
- wait_for_completion_timeout()
-Message-ID: <ZjBTFo1Jm23gkWvf@hu-bjorande-lv.qualcomm.com>
-References: <20240427203611.3750-1-wsa+renesas@sang-engineering.com>
- <20240427203611.3750-13-wsa+renesas@sang-engineering.com>
+	s=arc-20240116; t=1714443234; c=relaxed/simple;
+	bh=z5UFqnrkRJzrIthf/1ZlgFduKbwTcOmGQ3ZVTiOu7Sg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=sp7MGVFPV0U4Wi/RmLMicnuWe9o18qdlT+S2oZZjocATqxShdB/zCDzORWB43JSc0Sdj4FKFod36w+g6ALrZ263uH1Pz5AVM/irMCwya2LrfX6xnJolrN/bS6dkS1X+6vc+IOihWMp/2f8OE2gjqxDS3ONo1te2R4wkIl5qgXwM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=eIuuspMI; arc=none smtp.client-ip=209.85.208.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-56e1bbdb362so5541527a12.1
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 19:13:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1714443231; x=1715048031; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=xWExLD5ARGmSPYsKb1Jv6jWFNXY7UPECUkAyh7Qq9Hc=;
+        b=eIuuspMICUOo0XI46tFlTF90lHHokyoX+YnuA4YBqkDOGBgEp/XSJvi9GtXj1Ojq9F
+         W5YO8ABdB8Lzaa/3U0ewrrydHQWvhxPIWDP1nu6iNQDuR0Bp8zN45/GANdZXJLB2eB+F
+         MGnAQwsanSHQLFOLQ5TjHUCy3IqhoKyRwBNfb6ROiJmEBc982SNQXR0Tk6xHaBluWaCr
+         N9JREL+cKZW9mcZ8VdUP4VuXK41cewnol3t1toOGwgSHLA8hXFcAEgW70FhiY3d8YJaV
+         IAfW5f90zxy6lV7tQF1/NdO2/z4RmNQzG44Q/IXtVV0smXDC9R/9hLmZVvaA3q5sALAX
+         URng==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714443231; x=1715048031;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=xWExLD5ARGmSPYsKb1Jv6jWFNXY7UPECUkAyh7Qq9Hc=;
+        b=JabzpLPGnpZ4+ZeYfFBX8prlFCt9rhzlldfsD2l6wq2+kdSmcrkq6HNeWWLD/OND2i
+         3KH+hleSjp2Ty+bRAasMjY4MxDeN3u/a0NmlYyax1lJO2qL9UMV5ZL4dCggAWUR10OFA
+         fKxShhqC6sGHZuiPVSJ5RzWCNx6bGj2wQWBJCGkLUiutGPSMPI2b4CtCIAPwPApX/azQ
+         rxGxroFNpwKv13Lew9dFPLhFr2SsHZmRqkHS18ia1rLGoYgI/sRv3WbXRdqsFK3ZR71C
+         yQ+6uB4ox9Ky6pSwh9UpxEGZ5SNP9D97sqTxhFgM5jUMcrjs1lDRhsoavkYeAyqRPw9X
+         tzig==
+X-Forwarded-Encrypted: i=1; AJvYcCVesfyi0CTitSZ+b6K9IR9zkZeEVvLPCpwGwMrMkbjOErbKNOdtzeUt052tyM6LX4MHuo7Jn1DlWi4WCBRCNogmPyaMjc4/4QooBdiL
+X-Gm-Message-State: AOJu0YztR8pg8oR9FNxOwrTJIMGB/H9ZjezyfT5tJVu+zu1Ds5FcDKSC
+	J+dhiR4c18SSGRMjuztyEH4KrnAwl2AWNsvU/GOpwnbrrdZAUdnZqcsdqJTjB6vtWrg5ML8uxNX
+	Ef/LRF7sFRigQgJ/lvNHURoa5iAs=
+X-Google-Smtp-Source: AGHT+IHQOOpa1TEXXVWdv/lx6hpGrJhugscR6HJwDLIOVRu212k+yL7MTatAbLul1X6stK3NsU/kxP5q6qZGI6CB300=
+X-Received: by 2002:a50:9f61:0:b0:572:6aaf:e0d1 with SMTP id
+ b88-20020a509f61000000b005726aafe0d1mr8522623edf.14.1714443231067; Mon, 29
+ Apr 2024 19:13:51 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20240427203611.3750-13-wsa+renesas@sang-engineering.com>
-X-ClientProxiedBy: nalasex01b.na.qualcomm.com (10.47.209.197) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: dGr2oXP3QIeFPEBxurCEMtbCT_E8oMHk
-X-Proofpoint-GUID: dGr2oXP3QIeFPEBxurCEMtbCT_E8oMHk
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
- definitions=2024-04-29_22,2024-04-29_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- phishscore=0 spamscore=0 malwarescore=0 suspectscore=0 mlxscore=0
- clxscore=1011 adultscore=0 impostorscore=0 bulkscore=0 priorityscore=1501
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2404010003 definitions=main-2404300015
+References: <20240429132308.38794-3-ioworker0@gmail.com> <20240429202040.187453-1-sj@kernel.org>
+ <CAK1f24=y3S_=ABUtzet9d2gftnb2j107Y-t+J8KzYR5ttcMgpg@mail.gmail.com>
+In-Reply-To: <CAK1f24=y3S_=ABUtzet9d2gftnb2j107Y-t+J8KzYR5ttcMgpg@mail.gmail.com>
+From: Lance Yang <ioworker0@gmail.com>
+Date: Tue, 30 Apr 2024 10:13:39 +0800
+Message-ID: <CAK1f24mf3oq7_V5Mk9NaRvgmsOTPRT5JvS7OJqz_oE7S0vRkBQ@mail.gmail.com>
+Subject: Re: [PATCH v3 2/3] mm/rmap: integrate PMD-mapped folio splitting into
+ pagewalk loop
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: SeongJae Park <sj@kernel.org>, willy@infradead.org, maskray@google.com, ziy@nvidia.com, 
+	ryan.roberts@arm.com, david@redhat.com, 21cnbao@gmail.com, mhocko@suse.com, 
+	fengwei.yin@intel.com, zokeefe@google.com, shy828301@gmail.com, 
+	xiehuan09@gmail.com, libang.li@antgroup.com, wangkefeng.wang@huawei.com, 
+	songmuchun@bytedance.com, peterx@redhat.com, minchan@kernel.org, 
+	linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Sat, Apr 27, 2024 at 10:36:04PM +0200, Wolfram Sang wrote:
-> There is a confusing pattern in the kernel to use a variable named 'timeout' to
-> store the result of wait_for_completion_timeout() causing patterns like:
-> 
-> 	timeout = wait_for_completion_timeout(...)
-> 	if (!timeout) return -ETIMEDOUT;
-> 
-> with all kinds of permutations. Use 'time_left' as a variable to make the code
-> self explaining.
-> 
-> Fix to the proper variable type 'unsigned long' while here.
-> 
-> Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+On Tue, Apr 30, 2024 at 10:03=E2=80=AFAM Lance Yang <ioworker0@gmail.com> w=
+rote:
+>
+> Hey SJ,
+>
+> Thanks a lot for reporting!
+>
+> On Tue, Apr 30, 2024 at 4:20=E2=80=AFAM SeongJae Park <sj@kernel.org> wro=
+te:
+> >
+> > Hi Lance,
+> >
+> > On Mon, 29 Apr 2024 21:23:07 +0800 Lance Yang <ioworker0@gmail.com> wro=
+te:
+> >
+> > > In preparation for supporting try_to_unmap_one() to unmap PMD-mapped
+> > > folios, start the pagewalk first, then call split_huge_pmd_address()
+> > > to split the folio.
+> > >
+> > > Suggested-by: David Hildenbrand <david@redhat.com>
+> > > Signed-off-by: Lance Yang <ioworker0@gmail.com>
+> > > ---
+> > >  include/linux/huge_mm.h |  2 ++
+> > >  mm/huge_memory.c        | 42 +++++++++++++++++++++------------------=
+--
+> > >  mm/rmap.c               | 26 +++++++++++++++++++------
+> > >  3 files changed, 44 insertions(+), 26 deletions(-)
+> > >
+> > [...]
+> > > diff --git a/mm/rmap.c b/mm/rmap.c
+> > > index 7e2575d669a9..e42f436c7ff3 100644
+> > > --- a/mm/rmap.c
+> > > +++ b/mm/rmap.c
+> > > @@ -1636,9 +1636,6 @@ static bool try_to_unmap_one(struct folio *foli=
+o, struct vm_area_struct *vma,
+> > >       if (flags & TTU_SYNC)
+> > >               pvmw.flags =3D PVMW_SYNC;
+> > >
+> > > -     if (flags & TTU_SPLIT_HUGE_PMD)
+> > > -             split_huge_pmd_address(vma, address, false, folio);
+> > > -
+> > >       /*
+> > >        * For THP, we have to assume the worse case ie pmd for invalid=
+ation.
+> > >        * For hugetlb, it could be much worse if we need to do pud
+> > > @@ -1650,6 +1647,10 @@ static bool try_to_unmap_one(struct folio *fol=
+io, struct vm_area_struct *vma,
+> > >       range.end =3D vma_address_end(&pvmw);
+> > >       mmu_notifier_range_init(&range, MMU_NOTIFY_CLEAR, 0, vma->vm_mm=
+,
+> > >                               address, range.end);
+> > > +     if (flags & TTU_SPLIT_HUGE_PMD) {
+> > > +             range.start =3D address & HPAGE_PMD_MASK;
+> > > +             range.end =3D (address & HPAGE_PMD_MASK) + HPAGE_PMD_SI=
+ZE;
+> > > +     }
+> >
+> > I found the latest mm-unstable fails one[1] of my build configuration
+> > with below error message.  And 'git bisect' points this patch.
+>
+> Thanks for taking time to 'git bisect' and identify this bug!
+>
+> >
+> >       CC      mm/rmap.o
+> >     In file included from <command-line>:
+> >     .../linux/mm/rmap.c: In function 'try_to_unmap_one':
+> >     .../linux/include/linux/compiler_types.h:460:38: error: call to '__=
+compiletime_assert_455' declared with attribute error: BUILD_BUG failed
+> >       460 |  _compiletime_assert(condition, msg, __compiletime_assert_,=
+ __COUNTER__)
+> >           |                                      ^
+> >     .../linux/include/linux/compiler_types.h:441:4: note: in definition=
+ of macro '__compiletime_assert'
+> >       441 |    prefix ## suffix();    \
+> >           |    ^~~~~~
+> >     .../linux/include/linux/compiler_types.h:460:2: note: in expansion =
+of macro '_compiletime_assert'
+> >       460 |  _compiletime_assert(condition, msg, __compiletime_assert_,=
+ __COUNTER__)
+> >           |  ^~~~~~~~~~~~~~~~~~~
+> >     .../linux/include/linux/build_bug.h:39:37: note: in expansion of ma=
+cro 'compiletime_assert'
+> >        39 | #define BUILD_BUG_ON_MSG(cond, msg) compiletime_assert(!(co=
+nd), msg)
+> >           |                                     ^~~~~~~~~~~~~~~~~~
+> >     .../linux/include/linux/build_bug.h:59:21: note: in expansion of ma=
+cro 'BUILD_BUG_ON_MSG'
+> >        59 | #define BUILD_BUG() BUILD_BUG_ON_MSG(1, "BUILD_BUG failed")
+> >           |                     ^~~~~~~~~~~~~~~~
+> >     .../linux/include/linux/huge_mm.h:97:28: note: in expansion of macr=
+o 'BUILD_BUG'
+> >        97 | #define HPAGE_PMD_SHIFT ({ BUILD_BUG(); 0; })
+> >           |                            ^~~~~~~~~
+> >     .../linux/include/linux/huge_mm.h:104:34: note: in expansion of mac=
+ro 'HPAGE_PMD_SHIFT'
+> >       104 | #define HPAGE_PMD_SIZE ((1UL) << HPAGE_PMD_SHIFT)
+> >           |                                  ^~~~~~~~~~~~~~~
+> >     .../linux/include/linux/huge_mm.h:103:27: note: in expansion of mac=
+ro 'HPAGE_PMD_SIZE'
+> >       103 | #define HPAGE_PMD_MASK (~(HPAGE_PMD_SIZE - 1))
+> >           |                           ^~~~~~~~~~~~~~
+> >     .../linux/mm/rmap.c:1651:27: note: in expansion of macro 'HPAGE_PMD=
+_MASK'
+> >      1651 |   range.start =3D address & HPAGE_PMD_MASK;
+> >           |                           ^~~~~~~~~~~~~~
+> >
+> > I haven't looked into the code yet, but seems this code need to handle
+> > CONFIG_PGTABLE_HAS_HUGE_LEAVES undefined case?  May I ask your opinion?
+> >
+> > [1] https://github.com/awslabs/damon-tests/blob/next/corr/tests/build_a=
+rm64.sh
+>
+> I'll fix this bug and rebuild using the config you've provided above.
 
-Reviewed-by: Bjorn Andersson <quic_bjorande@quicinc.com>
+Hey Andrew,
 
-Regards,
-Bjorn
+Could you please temporarily drop this series from the mm tree?
+I'll fix this bug in the next version.
 
-> ---
->  drivers/i2c/busses/i2c-qcom-geni.c | 7 ++++---
->  1 file changed, 4 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/i2c/busses/i2c-qcom-geni.c b/drivers/i2c/busses/i2c-qcom-geni.c
-> index 090b4846ed62..0a8b95ce35f7 100644
-> --- a/drivers/i2c/busses/i2c-qcom-geni.c
-> +++ b/drivers/i2c/busses/i2c-qcom-geni.c
-> @@ -586,7 +586,8 @@ static int geni_i2c_gpi_xfer(struct geni_i2c_dev *gi2c, struct i2c_msg msgs[], i
->  {
->  	struct dma_slave_config config = {};
->  	struct gpi_i2c_config peripheral = {};
-> -	int i, ret = 0, timeout;
-> +	int i, ret = 0;
-> +	unsigned long time_left;
->  	dma_addr_t tx_addr, rx_addr;
->  	void *tx_buf = NULL, *rx_buf = NULL;
->  	const struct geni_i2c_clk_fld *itr = gi2c->clk_fld;
-> @@ -629,8 +630,8 @@ static int geni_i2c_gpi_xfer(struct geni_i2c_dev *gi2c, struct i2c_msg msgs[], i
->  
->  		dma_async_issue_pending(gi2c->tx_c);
->  
-> -		timeout = wait_for_completion_timeout(&gi2c->done, XFER_TIMEOUT);
-> -		if (!timeout)
-> +		time_left = wait_for_completion_timeout(&gi2c->done, XFER_TIMEOUT);
-> +		if (!time_left)
->  			gi2c->err = -ETIMEDOUT;
->  
->  		if (gi2c->err) {
-> -- 
-> 2.43.0
-> 
+Thanks,
+Lance
+
+>
+> Thanks again for reporting!
+> Lance
+>
+> >
+> >
+> > Thanks,
+> > SJ
+> > [...]
 
