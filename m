@@ -1,200 +1,159 @@
-Return-Path: <linux-kernel+bounces-164771-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-164772-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4C6628B82A7
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 00:25:27 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 378428B82A9
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 00:25:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B8F0A1F219C0
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 22:25:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 55DDC1C20D1D
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 22:25:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E863A1BF6F7;
-	Tue, 30 Apr 2024 22:25:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9347D1BF6EC;
+	Tue, 30 Apr 2024 22:25:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="EQEFIXc8";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="UOaCImBv"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="O4vXFDCP"
+Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com [209.85.208.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7AE6C1BF6DE;
-	Tue, 30 Apr 2024 22:25:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 329701BF6DA;
+	Tue, 30 Apr 2024 22:25:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714515908; cv=none; b=aCYLueAMe4YlolZ4qgdMnJmtuTxSj0RP9fQKCJBWkZTdqKGLXzXSuxZ55B2sb9EILsplYbHJqRsCh85U4ziaGfPEbqIfpD10v+9wYDpRNYc0oRb36wK00MVxgk+OWKbEiBwLtQjT70iZWk5AvyjZs2B0WR0gvt+LjxMX87E6Wps=
+	t=1714515928; cv=none; b=EZH3UfrXuOdXMk6a9aldepyrFnNAH+uAKygKmwe60YxztbfRRVNmpUztYSHfEbfBtELxQIqTVWd8yByK6uHalSnGip6QfeGJq8nFkh8ZwyyGKtzxXdEP3pNPoUHfiMfzL7tTFWDf+mjVrp0rljx2GV+cuau2+VBaJt0jSjJFsyg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714515908; c=relaxed/simple;
-	bh=Tdxlrja/E556yM8G8Moo4I9ZA6Lih+TFa36AHyR449o=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=ZM8AioNJwz0LRELoeyE8Foyd1lC59DMNqsXb9KcoHJ0EDicYdjguc/zuDDApm12Q1wyrDDN9Y7gTDxiZVxWbNW08D4+BGJENDFiVWB9by0GMmQgARW72szxgb6VzToqi+bGmB+bowmorYy/vnn+Nq9lmbDr+N2LVw1pYXYxgyNI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=EQEFIXc8; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=UOaCImBv; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-From: Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1714515904;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=1TS/HO0mqmfdycdlpODJrQqB9T6VoVjE4nOwjJ+wi5o=;
-	b=EQEFIXc8+ljJg4VFarlQSTuWQLtlMexz56Vjrdd2LJBUjc0/7QLF8+UtlZxvkiOhtx1a7C
-	CDeX82g08YWVQp1dmER5ocK4rP+xxaM3RS3O/4xFDCWYmEx75+PGT2SPWaaa2ZO0HYEseO
-	rsbMNyz3Nl/A5HtPvRLJx9qDrYuS5MRHVRJSDHuRezkM0m7tgjNJV1204PddkuCjFx8/aV
-	k/4Hf0tUvLzKash7Myf2umsWxMiNiA9ye+kLyXEMjJ0WE/JbnkkfdKsopGqHlGdP6GWGFr
-	HMmRfxow+8VIR8Qs5y6djKgLj6ZTkllW+MKc4iAwoKHHhbadlYbfb64LVXSyKQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1714515904;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=1TS/HO0mqmfdycdlpODJrQqB9T6VoVjE4nOwjJ+wi5o=;
-	b=UOaCImBvI/YdTXd5F4mwktZqa/1l0OwKJQOr8PcCxdmaHROTFISROrDyl2xObEtax9G1kf
-	v8zD8fQna57EgwCQ==
-To: Andreas Hindborg <nmi@metaspace.dk>
-Cc: Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>,
- Wedson Almeida Filho <wedsonaf@gmail.com>, Anna-Maria Behnsen
- <anna-maria@linutronix.de>, Frederic Weisbecker <frederic@kernel.org>,
- Andreas Hindborg <a.hindborg@samsung.com>, Boqun Feng
- <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, =?utf-8?Q?Bj=C3=B6rn?=
- Roy Baron
- <bjorn3_gh@protonmail.com>, Benno Lossin <benno.lossin@proton.me>, Alice
- Ryhl <aliceryhl@google.com>, rust-for-linux@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] rust: hrtimer: introduce hrtimer support
-In-Reply-To: <87le4uk936.fsf@metaspace.dk>
-References: <20240425094634.262674-1-nmi@metaspace.dk> <87r0emss0j.ffs@tglx>
- <87le4uk936.fsf@metaspace.dk>
-Date: Wed, 01 May 2024 00:25:01 +0200
-Message-ID: <87ikzysd36.ffs@tglx>
+	s=arc-20240116; t=1714515928; c=relaxed/simple;
+	bh=8wQbS0HtW1G12/bULIPofH/wDAspjZ0J1k+14mAxGV0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=UHkVN62bxCJcGMrSy44rbcJXxcazFVYKWfPu3b8AN5SXeioHe5d4m0CQfxeXIb2KlJa0r9VA1nE8sq7kULigX9tep7/KHaudJF5xXjAOAQxYu0vNcxsO8evzSN7uVzVrYu1D+IzXSNuEJij57FmlR0yTLruf3cogSa91AUQhTJg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=O4vXFDCP; arc=none smtp.client-ip=209.85.208.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-572a092dd2dso1354024a12.3;
+        Tue, 30 Apr 2024 15:25:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1714515925; x=1715120725; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=bU8XHrXVaApssJUbb0fzQFt/80f/mSNrWGhMGvNJPA0=;
+        b=O4vXFDCPQjsFhi301aejKJ7jYd9QV6YUDHrGbTChePv50opdSIwUzSZV5RDI/IEzJw
+         A6qGtKDLnQjvkCCaaCZ1ohlkFXeQqPwj0nh7aMfge0/YZM1N2f0skiWYdqXGbqj1OH0i
+         YZbnrL6UgMQIbdI/rrsEPb5VACs6gFJyiWtOeJtx7CMlpWlPg/k8/Ul+uigj0X8tTHhE
+         flDmO7s9dJF1i37JgDKTyZoaDl7KenJ4MTzjyH0BA/2ZylpcuWGeTaCIR6ZjUNNOnEwN
+         NYubkJChCdxffOxDc4xKOuGyxIvNSLhw9wiXGDVcC3JiHjOm5HvWy4oH/4GHLOsAaSL3
+         hGwA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714515925; x=1715120725;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=bU8XHrXVaApssJUbb0fzQFt/80f/mSNrWGhMGvNJPA0=;
+        b=ORhCBhytOLYDsmzodexwlmXhKH+vyZfQcV0mHXKcnT9ZlbUxHTMG+SwHhyo7ivjEDn
+         OK5WF3cSxPOYc8wsBncQuesHQTHnOMH4WWBZ5b+6PwRZNxDa1dhptrOSpRdjwGWrAmFs
+         Cq8gADjQp1z3awLPQbzNXVfZEJ9nQh75koL5ywijDRoCCosIm7ep/Ch4gCL9fXILuIYz
+         DmY8GTge4WdVLmeG04Sk5RGmMYmsqSQm1FdSh96im6bvxXyNLb0UHfFKnA0LWuBWD53S
+         LAMvzWf2TG6vcozf1aQ3vPEIPO3uAuRVL5vsMjy9RU/zCTMHOhJdxZJhLKPxL7wTUT3u
+         RGjg==
+X-Forwarded-Encrypted: i=1; AJvYcCUJVGaApomNRb2iHOOnI2guhGyBaR2zaCnWJT7m94yIPjd1/T5dfddZwxgngrtnvHW62C0/yxAwrdo1JPZL9bb3Kdze23VZOaH68wWq
+X-Gm-Message-State: AOJu0YwiwzYDySkzf81XLdRvKMfkM/dOGdsJf+6dEQK1ok5SerSGmhy6
+	N5tBxM404eZkQeI7IabHd1603ya1g2AvS/MqEY9qn1ecoHH8k63sLAidOPpjffByfgrOyOkm5Tu
+	8OFd+VLR0dlEzOByMzKl5k/L6roPqQw==
+X-Google-Smtp-Source: AGHT+IGU/W3NCpBWrMPDbOKQS6pp8kuC6a1q5Xw516sclT6WansCdO5hJ1jI8ns2L0JTPkymc3mPIKuqAvK4JwrSkB8=
+X-Received: by 2002:a50:951c:0:b0:56e:2294:e2e6 with SMTP id
+ u28-20020a50951c000000b0056e2294e2e6mr673539eda.26.1714515925299; Tue, 30 Apr
+ 2024 15:25:25 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <ZjAWMQCJdrxZkvkB@google.com> <CAKf6xpvzrCHAsbokGu_+7P0H=n4T=dsRN81msJjW6yVMcEZi6g@mail.gmail.com>
+In-Reply-To: <CAKf6xpvzrCHAsbokGu_+7P0H=n4T=dsRN81msJjW6yVMcEZi6g@mail.gmail.com>
+From: Jason Andryuk <jandryuk@gmail.com>
+Date: Tue, 30 Apr 2024 18:25:13 -0400
+Message-ID: <CAKf6xpsiLbZN=v2G052kuwPLNxmmbt4uoZAM21Zr+RtH0YD8kA@mail.gmail.com>
+Subject: Re: [PATCH v2] Input: try trimming too long modalias strings
+To: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc: linux-input@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>, 
+	Benjamin Tissoires <benjamin.tissoires@redhat.com>, Peter Hutterer <peter.hutterer@who-t.net>, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Andreas!
-
-On Tue, Apr 30 2024 at 20:18, Andreas Hindborg wrote:
-> Thomas Gleixner <tglx@linutronix.de> writes:
->> On Thu, Apr 25 2024 at 11:46, Andreas Hindborg wrote:
->>> +// SAFETY: A `Timer` can be moved to other threads and used from there.
->>> +unsafe impl<T> Send for Timer<T> {}
->>> +
->>> +// SAFETY: Timer operations are locked on C side, so it is safe to operate on a
->>> +// timer from multiple threads
->>
->> Kinda. Using an hrtimer from different threads needs some thought in the
->> implementation as obviously ordering matters:
->>
->>      T1                              T2
->>      hrtimer_start()                 hrtimer_cancel()
->>
->> So depending on whether T1 gets the internal lock first or T2 the
->> outcome is different. If T1 gets it first the timer is canceled by
->> T2. If T2 gets it first the timer ends up armed.
+On Mon, Apr 29, 2024 at 9:04=E2=80=AFPM Jason Andryuk <jandryuk@gmail.com> =
+wrote:
 >
-> That is all fine. What is meant here is that we will not get UB in the
-> `hrtimer` subsystem when racing these operations. As far as I can tell
-> from the C source, the operations are atomic, even though their
-> interleaving will not be deterministic.
-
-That's correct. All operations happen with the associated base lock held.
-
->>> +unsafe impl<T> Sync for Timer<T> {}
->>> +
->>> +impl<T: TimerCallback> Timer<T> {
->>> +    /// Return an initializer for a new timer instance.
->>> +    pub fn new() -> impl PinInit<Self> {
->>> +        crate::pin_init!( Self {
->>> +            timer <- Opaque::ffi_init(move |place: *mut bindings::hrtimer| {
->>> +                // SAFETY: By design of `pin_init!`, `place` is a pointer live
->>> +                // allocation. hrtimer_init will initialize `place` and does not
->>> +                // require `place` to be initialized prior to the call.
->>> +                unsafe {
->>> +                    bindings::hrtimer_init(
->>> +                        place,
->>> +                        bindings::CLOCK_MONOTONIC as i32,
->>> +                        bindings::hrtimer_mode_HRTIMER_MODE_REL,
->>
->> This is odd. The initializer really should take a clock ID and a mode
->> argument. Otherwise you end up implementing a gazillion of different
->> timers.
+> On Mon, Apr 29, 2024 at 5:50=E2=80=AFPM Dmitry Torokhov
+> <dmitry.torokhov@gmail.com> wrote:
+> >
+> > If an input device declares too many capability bits then modalias
+> > string for such device may become too long and not fit into uevent
+> > buffer, resulting in failure of sending said uevent. This, in turn,
+> > may prevent userspace from recognizing existence of such devices.
+> >
+> > This is typically not a concern for real hardware devices as they have
+> > limited number of keys, but happen with synthetic devices such as
+> > ones created by xen-kbdfront driver, which creates devices as being
+> > capable of delivering all possible keys, since it doesn't know what
+> > keys the backend may produce.
+> >
+> > To deal with such devices input core will attempt to trim key data,
+> > in the hope that the rest of modalias string will fit in the given
+> > buffer. When trimming key data it will indicate that it is not
+> > complete by placing "+," sign, resulting in conversions like this:
+> >
+> > old: k71,72,73,74,78,7A,7B,7C,7D,8E,9E,A4,AD,E0,E1,E4,F8,174,
+> > new: k71,72,73,74,78,7A,7B,7C,+,
+> >
+> > This should allow existing udev rules continue to work with existing
+> > devices, and will also allow writing more complex rules that would
+> > recognize trimmed modalias and check input device characteristics by
+> > other means (for example by parsing KEY=3D data in uevent or parsing
+> > input device sysfs attributes).
+> >
+> > Note that the driver core may try adding more uevent environment
+> > variables once input core is done adding its own, so when forming
+> > modalias we can not use the entire available buffer, so we reduce
+> > it by somewhat an arbitrary amount (96 bytes).
+> >
+> > Reported-by: Jason Andryuk <jandryuk@gmail.com>
+> > Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 >
-> I implemented the minimum set of features to satisfy the requirements
-> for the Rust null block driver. It is my understanding that most
-> maintainers of existing infrastructure prefers to have a user for the
-> implemented features, before wanting to merge them.
+> Tested-by: Jason Andryuk <jandryuk@gmail.com>
 >
-> I can try to extend the abstractions to cover a more complete `hrtimer`
-> API. Or we can work on this subset and try to get that ready to merge,
-> and then expand scope later.
+> I don't have the gdm setup available to test, but loginctl looks good
+> showing the Xen Virtual Keyboard assigned to a seat:
+> # loginctl seat-status seat0
+> seat0
+>          Devices:
+>                   =E2=94=9C=E2=94=80/sys/devices/LNXSYSTM:00/LNXPWRBN:00/=
+input/input0
+>                   =E2=94=82 input:input0 "Power Button"
+>                   =E2=94=9C=E2=94=80/sys/devices/LNXSYSTM:00/LNXSLPBN:00/=
+input/input1
+>                   =E2=94=82 input:input1 "Sleep Button"
+>                   =E2=94=9C=E2=94=80/sys/devices/platform/i8042/serio0/in=
+put/input2
+>                   =E2=94=82 input:input2 "AT Translated Set 2 keyboard"
+>                   =E2=94=9C=E2=94=80/sys/devices/platform/i8042/serio1/in=
+put/input4
+>                   =E2=94=82 input:input4 "ImExPS/2 Generic Explorer Mouse=
+"
+>                   =E2=94=9C=E2=94=80/sys/devices/virtual/input/input5
+>                   =E2=94=82 input:input5 "Xen Virtual Keyboard"
+>                   =E2=94=82 =E2=94=94=E2=94=80/sys/devices/virtual/input/=
+input5/event4
+>                   =E2=94=82   input:event4
+>                   =E2=94=94=E2=94=80/sys/devices/virtual/input/input6
+>                     input:input6 "Xen Virtual Pointer"
 
-Wouldn't expanding scope later require to change already existing call sites?
-
->>> +                    );
->>> +                }
->>> +
->>> +                // SAFETY: `place` is pointing to a live allocation, so the deref
->>> +                // is safe. The `function` field might not be initialized, but
->>> +                // `addr_of_mut` does not create a reference to the field.
->>> +                let function: *mut Option<_> = unsafe { core::ptr::addr_of_mut!((*place).function) };
->>> +
->>> +                // SAFETY: `function` points to a valid allocation.
->>> +                unsafe { core::ptr::write(function, Some(T::Receiver::run)) };
->>
->> We probably should introduce hrtimer_setup(timer, clockid, mode, function)
->> to avoid this construct. That would allow to cleanup existing C code too.
->
-> Do you want me to cook up a C patch for that, or would you prefer to do
-> that yourself?
-
-Please create that patch yourself and convert at least one C location to
-this new interface in a separate patch. THe remaining C cleanup can go
-from there and mostly be scripted with coccinelle.
-
->>> +/// [`Box<T>`]: Box
->>> +/// [`Arc<T>`]: Arc
->>> +/// [`ARef<T>`]: crate::types::ARef
->>> +pub trait RawTimer: Sync {
->>> +    /// Schedule the timer after `expires` time units
->>> +    fn schedule(self, expires: u64);
->>
->> Don't we have some time related rust types in the kernel by now?
->
-> There are patches on the list, but I think they are not applied to any
-> tree yet? I did not want to depend on those patches before they are
-> staged somewhere. Would you prefer this patch on top of the Rust `ktime`
-> patches?
-
-The initial set is queued in
-
-   git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git timers/core
-
-for 6.10. Boqun has some updates on top IIRC. Your stuff should go
-through that branch too.
-
->>> +        // SAFETY: This `Arc` comes from a call to `Arc::into_raw()`
->>> +        let receiver = unsafe { Arc::from_raw(data_ptr) };
->>> +
->>> +        T::run(receiver);
->>> +
->>> +        bindings::hrtimer_restart_HRTIMER_NORESTART
->>
->> One of the common use cases of hrtimers is to create periodic schedules
->> where the timer callback advances the expiry value and returns
->> HRTIMER_RESTART. It might be not required for your initial use case at
->> hand, but you'll need that in the long run IMO.
->
-> If you are OK with taking that feature without a user, I will gladly add
-> it.
-
-I'm fine with taking a more complete API which does not require to
-change usage sites later on.
+What do you think about Cc: stable@vger.kernel.org?  I'd like to get
+the Xen Keyboard working as widely as possible, so I'd like it
+backported if possible.
 
 Thanks,
-
-        tglx
+Jason
 
