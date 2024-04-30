@@ -1,133 +1,77 @@
-Return-Path: <linux-kernel+bounces-163312-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-163313-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 26E898B693A
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 05:50:22 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4BE708B694A
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 06:04:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C12AC1F22AE4
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 03:50:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7DB771C219FA
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 04:04:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6D0B1401E;
-	Tue, 30 Apr 2024 03:50:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15397125BA;
+	Tue, 30 Apr 2024 04:04:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="lWob3ub1"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.21])
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="ygYcon6u"
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A516D111A2
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 03:50:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B84D2101C5;
+	Tue, 30 Apr 2024 04:04:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714449004; cv=none; b=Tm6Op1du8IbMkCPdpaF9KwxK4Y0awiPQkWq1suam3+FKQcipSwxpLd+ppY/Ek78MqWgiXU0mJNen3RA017J5IVMg5PrukcvhrVvZHtvdrrnjVNDsoOzZIifa5pIQefNGsdfxdHbElV9hGaCVmExlTosug1b7PoEK1eF2N1VW43Q=
+	t=1714449854; cv=none; b=S1or4uFZt6B6Nb6txl3Z2mmyPHqdYYJK5FdDDFvQ+iKmC0ggyBVNwOP/pcd0htqCce/BnsRHWjLWfJQBuW3hEo65QDFapjwLYtBZlYVXat7Y/u1+MK6MWSctQV+6o1g760E/J58gviRieni2oY/aXlAeAQt7Nk77UwhCybJBzdo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714449004; c=relaxed/simple;
-	bh=lbQXn7D7ScIp1g+K/hG2vtwI2GfvPeSRqLJWXHjYsYg=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=UgiWB61f3buUXbxOq1VSrgDg1NDzxY2AGeBlXeHTbBWAds9qytshG0o/O6u9Eorl7FHpiLeVvl8oH12WYgzQ62knD6w8mMkJQGXKNhSuUyBS15yXh1rNHgoy/HSGlpROquvIbWobufOiJgtwBSud19yEi5VgyoFM476LCrK/2J4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=lWob3ub1; arc=none smtp.client-ip=198.175.65.21
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1714449003; x=1745985003;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=lbQXn7D7ScIp1g+K/hG2vtwI2GfvPeSRqLJWXHjYsYg=;
-  b=lWob3ub1r8uaYei5mL7tUf5SwQJcgT9kjc+bl/egxP6uyevSd0087gSY
-   GAE4PzG14EnO7qCpajPThUqEYjzR9esF/l6kgY972xTwR8lRJoTG9HUs6
-   7U/mMPp4MWwoPSrPEFh8IeHqEEEJI/dk9STmT0Be3zQ7JPGSlM8g0ptUo
-   DVW647U3ho+nk5epfC2skVX1TIOTJjUFdvEHZl6pjKPjcj0u+FbePEio4
-   8F8N/xiD42Oge/b61yeRCGGzRdEMbfAf599h3mMeHhtgNzJycG/YrYg2h
-   AJFxiTvviYrnG4nquXTpfU95s4LeEnZo+BkqiJf7mDPWyXwLL30OemzYV
-   g==;
-X-CSE-ConnectionGUID: sTY3cswuQ36e9WI9YkTvrA==
-X-CSE-MsgGUID: YgCjI8XDS3qsEc1XXiMdNQ==
-X-IronPort-AV: E=McAfee;i="6600,9927,11059"; a="10059048"
-X-IronPort-AV: E=Sophos;i="6.07,241,1708416000"; 
-   d="scan'208";a="10059048"
-Received: from orviesa010.jf.intel.com ([10.64.159.150])
-  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Apr 2024 20:50:03 -0700
-X-CSE-ConnectionGUID: 8t7DsIjZSHWbSshFW7Ic3Q==
-X-CSE-MsgGUID: sB4mA3UgRRSnAYna6GuBEg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,241,1708416000"; 
-   d="scan'208";a="26184564"
-Received: from unknown (HELO dmi-pnp-i7.sh.intel.com) ([10.239.159.155])
-  by orviesa010.jf.intel.com with ESMTP; 29 Apr 2024 20:50:00 -0700
-From: Dapeng Mi <dapeng1.mi@linux.intel.com>
-To: Peter Zijlstra <peterz@infradead.org>,
-	Ingo Molnar <mingo@redhat.com>,
-	Arnaldo Carvalho de Melo <acme@kernel.org>,
-	Namhyung Kim <namhyung@kernel.org>,
-	Ian Rogers <irogers@google.com>,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-	Kan Liang <kan.liang@linux.intel.com>
-Cc: linux-kernel@vger.kernel.org,
-	Dapeng Mi <dapeng1.mi@intel.com>,
-	Dapeng Mi <dapeng1.mi@linux.intel.com>
-Subject: [PATCH 2/2] perf/x86: Typos and invalid indents fix
-Date: Tue, 30 Apr 2024 11:56:53 +0800
-Message-Id: <20240430035653.19457-2-dapeng1.mi@linux.intel.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240430035653.19457-1-dapeng1.mi@linux.intel.com>
-References: <20240430035653.19457-1-dapeng1.mi@linux.intel.com>
+	s=arc-20240116; t=1714449854; c=relaxed/simple;
+	bh=xquYkdl9fpC+Wtb+uNSGETdm8v6yEqPydZ0+Pzg3qgo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Tq1VohRHK0EFAEEzJkt8rddurMzzSZ6zYd9rTUEKJ0iouCCkaUEF73I9Uc5PPkfbmjsf5RCpwW2Nbt68CWl/9t1/WZQeSuANwEauV4pCfM/BDpFGkTQ6VJIJDGTAlzGL6tVEivwqeRNjlpVoFlKc7apx41dgui3gA/1JGmqq5Pk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=ygYcon6u; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=Cc+/1xCquATq7FO6eqR8t3cu5To1zwP4PfeaYzwibME=; b=ygYcon6u+jC+Jl55WVeEYJm703
+	J1rriCyFT2G+/Pn2LZnU9UoMC8vwxFmABUJz74+YLijBxCsgIdBi8j+gAq867BDTjKUsIIuJU8245
+	TaDr1fqX9HlBLkUt91nrh73ciReXhJ1AnCQJNPlPOqTWfF4D6+rhceGAheF0JIaqhzwiBAXo6wtRK
+	2WB+fea1l1SgR4qQDrQUpJo5kcNmAiTlmapV+gNuSWn+HCW0RUp6juUrWOnTntDm22Au2KNHCJfi5
+	4QBULQfXtIeXXe8BkRWjKXdJWCDh87FBDqgQVmIdQRUMNCjNw/3aSFyGnvfJ/cJAMe1QPP9ISQK18
+	jOWXwLWg==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1s1eiw-00000004zYR-48Wf;
+	Tue, 30 Apr 2024 04:04:10 +0000
+Date: Mon, 29 Apr 2024 21:04:10 -0700
+From: Christoph Hellwig <hch@infradead.org>
+To: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Cc: chandan.babu@oracle.com, djwong@kernel.org, linux-xfs@vger.kernel.org,
+	linux-kernel@vger.kernel.org, Abaci Robot <abaci@linux.alibaba.com>
+Subject: Re: [PATCH 1/2] xfs: Remove duplicate xfs_da_format.h header
+Message-ID: <ZjBtuvRX4vncJGMs@infradead.org>
+References: <20240430034728.86811-1-jiapeng.chong@linux.alibaba.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240430034728.86811-1-jiapeng.chong@linux.alibaba.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 
-Fix several typos and invalid indents.
+On Tue, Apr 30, 2024 at 11:47:27AM +0800, Jiapeng Chong wrote:
+> ./fs/xfs/libxfs/xfs_trans_resv.c: xfs_da_format.h is included more than once.
+> 
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Closes: https://bugzilla.openanolis.cn/show_bug.cgi?id=8931
 
-Signed-off-by: Dapeng Mi <dapeng1.mi@linux.intel.com>
----
- arch/x86/events/intel/core.c      | 2 +-
- arch/x86/include/asm/perf_event.h | 6 +++---
- 2 files changed, 4 insertions(+), 4 deletions(-)
+I don't think we do Closes for random bugzilla, never mind for trivial
+cleanups.
 
-diff --git a/arch/x86/events/intel/core.c b/arch/x86/events/intel/core.c
-index 768d1414897f..88c48cd0b625 100644
---- a/arch/x86/events/intel/core.c
-+++ b/arch/x86/events/intel/core.c
-@@ -3697,7 +3697,7 @@ static void intel_put_event_constraints(struct cpu_hw_events *cpuc,
- 	intel_put_shared_regs_event_constraints(cpuc, event);
- 
- 	/*
--	 * is PMU has exclusive counter restrictions, then
-+	 * If PMU has exclusive counter restrictions, then
- 	 * all events are subject to and must call the
- 	 * put_excl_constraints() routine
- 	 */
-diff --git a/arch/x86/include/asm/perf_event.h b/arch/x86/include/asm/perf_event.h
-index 3736b8a46c04..9f35ba5216b3 100644
---- a/arch/x86/include/asm/perf_event.h
-+++ b/arch/x86/include/asm/perf_event.h
-@@ -399,15 +399,15 @@ static inline bool is_topdown_idx(int idx)
-  *
-  * With this fake counter assigned, the guest LBR event user (such as KVM),
-  * can program the LBR registers on its own, and we don't actually do anything
-- * with then in the host context.
-+ * with them in the host context.
-  */
--#define INTEL_PMC_IDX_FIXED_VLBR	(GLOBAL_STATUS_LBRS_FROZEN_BIT)
-+#define INTEL_PMC_IDX_FIXED_VLBR		(GLOBAL_STATUS_LBRS_FROZEN_BIT)
- 
- /*
-  * Pseudo-encoding the guest LBR event as event=0x00,umask=0x1b,
-  * since it would claim bit 58 which is effectively Fixed26.
-  */
--#define INTEL_FIXED_VLBR_EVENT	0x1b00
-+#define INTEL_FIXED_VLBR_EVENT			0x1b00
- 
- /*
-  * Adaptive PEBS v4
--- 
-2.40.1
+The changes itself looks fine, though:
 
+Reviewed-by: Christoph Hellwig <hch@lst.de>
 
