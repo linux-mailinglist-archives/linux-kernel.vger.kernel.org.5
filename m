@@ -1,196 +1,237 @@
-Return-Path: <linux-kernel+bounces-163939-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-163940-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id BFCBD8B7656
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 14:54:04 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 965C38B7658
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 14:54:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4CFF21F221D8
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 12:54:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 51B5928236D
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 12:54:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D5A3617106E;
-	Tue, 30 Apr 2024 12:53:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B3BC017107A;
+	Tue, 30 Apr 2024 12:54:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ff6AQhOQ"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="G144KZ0m"
+Received: from wfhigh5-smtp.messagingengine.com (wfhigh5-smtp.messagingengine.com [64.147.123.156])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6ACB017107A
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 12:53:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DDAEA17166D;
+	Tue, 30 Apr 2024 12:54:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.156
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714481637; cv=none; b=DfdzoFPTBnzGbhWjdrLm15eo82ToBznjepsatWBlFrlRycMRBagkyYdyREWtom6re3X/NDffnCB1R3twzwj3JsnND/ZVHH1wTZLUPUKNE4poGB6HvQUzRmsR9e3xirGChqYuqqqekdA8a3P0UDh83s7HZHsXRZh8bTZhi6vuNO4=
+	t=1714481642; cv=none; b=TSVpLFydhGwS/exO79Jkk6+5FZDgA7cP5IlhDy6NY/aAVFndymFnL1FNFhQ7sqDvc4QWlq2+8+7AwG2XFHV1OxX259t8XUttsp/o89HoxiCy2iSJh1Z9tC0CTfc6rcUo26bY7rVfd4YU/bW7ieHXV7WIn/PFiiBS/vFNWMcMy8E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714481637; c=relaxed/simple;
-	bh=h4O3ZkO/6Uci+AbMl7CR6TzeSBammz9dch1JOX09bms=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=KkV1vIe4b3RxFLSoyJ62HntNeZyp9xYg1lk0g11wA9lcIjQzT1RkzP5gzQUujlPDbZRysHYgw9RaDGvcD2L0VjNei9xzlTAJbiT2D+NwKsb3KESkOkkqy4Bahgjg1gswEzU/zsk5r3MGJaGJimsDc/ZLgzvH0DUB/QVG3QKW1jA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=ff6AQhOQ; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1714481635;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=wTdBk861x2pP4lHOMRD8lFseOl4nVM4W1GX2dY9R83Y=;
-	b=ff6AQhOQ6swxhLJnApXsMYvrUO/Or4T2YVVYI/1PMJGJKzWH5w0mMxcMYS1mj4NW3HFPSV
-	6rGX374HNbrnkCyhRHeMrU6JmHhrMj4KtB9vbOdtMk47UbBmN4P0soTFKE3Bb3zeAaNRZB
-	rF5+02iydm/casiwB/Mr1/J29mOXc88=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-130-zLqD0ygCNRSAOphbnFvt8w-1; Tue, 30 Apr 2024 08:53:50 -0400
-X-MC-Unique: zLqD0ygCNRSAOphbnFvt8w-1
-Received: by mail-wr1-f69.google.com with SMTP id ffacd0b85a97d-34d9deebf38so230771f8f.1
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 05:53:50 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714481629; x=1715086429;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :content-language:from:references:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=wTdBk861x2pP4lHOMRD8lFseOl4nVM4W1GX2dY9R83Y=;
-        b=c29uklRaop7ZG1AJahYbsfZNI79IgFlrc42KPbH2ydOBoQ6APhgUuFv8IIcBkGFlwc
-         d84bWfl1Z17noUDv8IGdSduukALfANyMS9HYHDX823V/ke+psCcye0N7GVneDehXtOVX
-         /8gQNFsnhylv3pgFSTwIXOJzzcvYDLqGMkY+h1IBI22N6DVX03AltEeXyR/irIj7v1rS
-         7kluqhwafkj8d7A3Hj6fJq+C5Su76jUVcem8Kl7F1iFoQeFK221v0y3BRWR8G5f9h0e0
-         xtWZPvvKKzIRPLtfNCl3mcxj6GO4w2m6W2sglZXmWWaxVYA+hVIsREwoc713wuEaL/L5
-         TlIg==
-X-Forwarded-Encrypted: i=1; AJvYcCXRDWho1hsIrN2JrdxNbMPemDP+sZaB9dinK1q5u249vcHNwxsr0gv/X6/CqEf+qZLFZPrwzk7nQp9t7hOYBQDYcivgps+b0IqKUlrM
-X-Gm-Message-State: AOJu0Yyn7mcKS2xLof8MlJVDho/sdtN7sWVZk/F0Wufl4Xs37rrAiCNs
-	es6CbOrkIZ8vv/0qQZ2Se6O8SCwjwiu/zFWOVthlA7kKSryjdVuzVLht8oQQN8Z1AN13WKgLLwQ
-	KuEXZWQi4HxSAwPgCaxbWdlVKQBJuhTKWdiT1496clK49T7f0JIGtSpRaTPn7Hg==
-X-Received: by 2002:a5d:4112:0:b0:34a:4445:22d1 with SMTP id l18-20020a5d4112000000b0034a444522d1mr10526815wrp.63.1714481629735;
-        Tue, 30 Apr 2024 05:53:49 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEggDbukbiqDvAMKTOqhxZyrmHRM/JuOvl85t53ro1ZTAWFcsGBPlWbWDJtwS7I/1iw/hteZw==
-X-Received: by 2002:a5d:4112:0:b0:34a:4445:22d1 with SMTP id l18-20020a5d4112000000b0034a444522d1mr10526806wrp.63.1714481629340;
-        Tue, 30 Apr 2024 05:53:49 -0700 (PDT)
-Received: from ?IPV6:2a09:80c0:192:0:5dac:bf3d:c41:c3e7? ([2a09:80c0:192:0:5dac:bf3d:c41:c3e7])
-        by smtp.gmail.com with ESMTPSA id d23-20020adfa357000000b0034cceee9051sm7222877wrb.105.2024.04.30.05.53.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 30 Apr 2024 05:53:49 -0700 (PDT)
-Message-ID: <24688466-6815-4aac-a8b9-4373a534727f@redhat.com>
-Date: Tue, 30 Apr 2024 14:53:48 +0200
+	s=arc-20240116; t=1714481642; c=relaxed/simple;
+	bh=tL5/BubzDVOb76sV+8vjo94/1Qxodc//cf3CLYrDm5s=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=dqTiLnn+66vTkjpEMzW19Wj3ngJ8KbqYGqoOTyLDakrurW81iLvHnFRci3eoA7OywlNONp0b/XcqsdVyrREGqNfC7n6Pi6pktTanuSI2Sb/UFRf19L53YIGYYnyVxfcnqMucDS5GS3k9ySu4Ag52Q3tSGydtICRh+jhGG/MJ10g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=idosch.org; spf=none smtp.mailfrom=idosch.org; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=G144KZ0m; arc=none smtp.client-ip=64.147.123.156
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=idosch.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=idosch.org
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+	by mailfhigh.west.internal (Postfix) with ESMTP id 7399C1800106;
+	Tue, 30 Apr 2024 08:53:59 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute5.internal (MEProxy); Tue, 30 Apr 2024 08:54:00 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm3; t=1714481639; x=1714568039; bh=UMb/27eflIg4KhNXXlLDv0qw5Lk3
+	FPbHkU73m7tOrYs=; b=G144KZ0mZIy5BaS0yCuPlQpNBHfnWHv8VvCTiyr13P5E
+	AP2p7lFDDTfFj82cTePPp9ll4zz3Dnyogye6gMQxqylk8WmVp74J/xEE7Y6vYpB7
+	8qCR0Vfr6bQgfuPvuqcpuRqTLK7iM91Ypg+FJEDop8T1lCVzMHwcK8e0ZyT95zkC
+	A36vQ5iMWh+L8gPA2MA9HWOjevtzgaHMmk5ZyrR385t7G2EJN6N+xCUltsEfRrXF
+	rr1ZakrbYJCYResvBvpYtSQmfFksgEivYnvmVWCNBvDAvzuuMIndE34EhjNV+W66
+	8WYb/1EWCxXbNu4MlkJq731JUGFh3X+yOMg2sYSULg==
+X-ME-Sender: <xms:5ukwZtKWJR7z3HxMVqa_aON8RsJQFCuPyOD7KrxNhf6zQmcb1b5U2g>
+    <xme:5ukwZpL_DwnWBboNNroDiFOCpv1DxNpGbCDr5Id2h4b-uNVtjP3jvT-C23-N1I3Tu
+    9QTwrDlISvYecM>
+X-ME-Received: <xmr:5ukwZltVZWkEJoVaHmJc4fQTQhMUoz93bICBvfITy1dj5ZL9G1XtZvfJV87->
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrvddufedgheeiucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepkfguohcu
+    ufgthhhimhhmvghluceoihguohhstghhsehiughoshgthhdrohhrgheqnecuggftrfgrth
+    htvghrnhepveekteevgeehheeuffeikeeuuddvueehkedvjeefjeeuveejffejveeivdeu
+    tedtnecuffhomhgrihhnpehgihhthhhusgdrtghomhdpkhgvrhhnvghlrdhorhhgnecuve
+    hluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepihguohhstghh
+    sehiughoshgthhdrohhrgh
+X-ME-Proxy: <xmx:5ukwZuaFnMm1zwe2vdcycsH2fGxiEu02zBC24HNESa_B2iwcSNE_YA>
+    <xmx:5ukwZkZrPZiKkn5UPU3AIkHptU_WeJjZFDG598CrLMJLTXZHl-Mdcg>
+    <xmx:5ukwZiAt9hnBnrMzIqFQ-36ju0V1uUtXtOHEclThDZaZ8CPrXdLmrw>
+    <xmx:5ukwZiaIeQa49qW0V3s4xKghF4wpMzt3yY7WEYzbIOPZz356nM1j7Q>
+    <xmx:5-kwZuDH8TTjQ_guntoqZQ-CyQ4fGDD3yWvRTebU75InyjqEGdLWzQJ7>
+Feedback-ID: i494840e7:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 30 Apr 2024 08:53:58 -0400 (EDT)
+Date: Tue, 30 Apr 2024 15:53:51 +0300
+From: Ido Schimmel <idosch@idosch.org>
+To: Adrian Moreno <amorenoz@redhat.com>
+Cc: netdev@vger.kernel.org, aconole@redhat.com, echaudro@redhat.com,
+	horms@kernel.org, i.maximets@ovn.org,
+	Yotam Gigi <yotam.gi@gmail.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next 4/8] net: psample: add tracepoint
+Message-ID: <ZjDp3wneirwcC_ij@shredder>
+References: <20240424135109.3524355-1-amorenoz@redhat.com>
+ <20240424135109.3524355-5-amorenoz@redhat.com>
+ <ZioDvluh7ymBI8qF@shredder>
+ <542ed8dd-2d9c-4e4f-81dc-e2a9bdaac3b0@redhat.com>
+ <Zip1zKzG5aF1ceom@shredder>
+ <96bd71d6-2978-435f-99f8-c31097487cac@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/4] mm/ksm: rename mm_slot members to ksm_slot for better
- readability.
-To: alexs@kernel.org, Andrew Morton <akpm@linux-foundation.org>,
- linux-mm@kvack.org, linux-kernel@vger.kernel.org, willy@infradead.org,
- izik.eidus@ravellosystems.com
-References: <20240428100619.3332036-1-alexs@kernel.org>
-From: David Hildenbrand <david@redhat.com>
-Content-Language: en-US
-Autocrypt: addr=david@redhat.com; keydata=
- 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
- WNyWQQ==
-Organization: Red Hat
-In-Reply-To: <20240428100619.3332036-1-alexs@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <96bd71d6-2978-435f-99f8-c31097487cac@redhat.com>
 
-On 28.04.24 12:06, alexs@kernel.org wrote:
-> From: "Alex Shi (tencent)" <alexs@kernel.org>
+On Mon, Apr 29, 2024 at 07:33:59AM +0200, Adrian Moreno wrote:
 > 
-> mm_slot is a struct of mm, and ksm_mm_slot is named the same again in
-> ksm_scan struct. Furthermore, the ksm_mm_slot pointer is named as
-> mm_slot again in functions, beside with 'struct mm_slot' variable.
-> That makes code readability pretty worse.
 > 
-> struct ksm_mm_slot {
->          struct mm_slot slot;
-> 	...
-> };
+> On 4/25/24 17:25, Ido Schimmel wrote:
+> > On Thu, Apr 25, 2024 at 10:06:20AM +0200, Adrian Moreno wrote:
+> > > 
+> > > 
+> > > On 4/25/24 09:18, Ido Schimmel wrote:
+> > > > On Wed, Apr 24, 2024 at 03:50:51PM +0200, Adrian Moreno wrote:
+> > > > > Currently there are no widely-available tools to dump the metadata and
+> > > > > group information when a packet is sampled, making it difficult to
+> > > > > troubleshoot related issues.
+> > > > > 
+> > > > > This makes psample use the event tracing framework to log the sampling
+> > > > > of a packet so that it's easier to quickly identify the source
+> > > > > (i.e: group) and context (i.e: metadata) of a packet being sampled.
+> > > > > 
+> > > > > This patch creates some checkpatch splats, but the style of the
+> > > > > tracepoint definition mimics that of other modules so it seems
+> > > > > acceptable.
+> > > > 
+> > > > I don't see a good reason to add this tracepoint (which we won't be able
+> > > > to remove) when you can easily do that with bpftrace which by now should
+> > > > be widely available:
+> > > > 
+> > > > #!/usr/bin/bpftrace
+> > > > 
+> > > > kfunc:psample_sample_packet
+> > > > {
+> > > >           $ts_us = nsecs() / 1000;
+> > > >           $secs = $ts_us / 1000000;
+> > > >           $us = $ts_us % 1000000;
+> > > >           $group = args.group;
+> > > >           $skb = args.skb;
+> > > >           $md = args.md;
+> > > > 
+> > > >           printf("%-16s %-6d %6llu.%6llu group_num = %u refcount=%u seq=%u skbaddr=%p len=%u data_len=%u sample_rate=%u in_ifindex=%d out_ifindex=%d user_cookie=%rx\n",
+> > > >                  comm, pid, $secs, $us, $group->group_num, $group->refcount, $group->seq,
+> > > >                  $skb, $skb->len, $skb->data_len, args.sample_rate,
+> > > >                  $md->in_ifindex, $md->out_ifindex,
+> > > >                  buf($md->user_cookie, $md->user_cookie_len));
+> > > > }
+> > > > 
+> > > > Example output:
+> > > > 
+> > > > mausezahn        984      3299.200626 group_num = 1 refcount=1 seq=13775 skbaddr=0xffffa21143fd4000 len=42 data_len=0 sample_rate=10 in_ifindex=0 out_ifindex=20 user_cookie=
+> > > > \xde\xad\xbe\xef
+> > > > mausezahn        984      3299.281424 group_num = 1 refcount=1 seq=13776 skbaddr=0xffffa21143fd4000 len=42 data_len=0 sample_rate=10 in_ifindex=0 out_ifindex=20 user_cookie=
+> > > > \xde\xad\xbe\xef
+> > > > 
+> > > > Note that it prints the cookie itself unlike the tracepoint which only
+> > > > prints the hashed pointer.
+> > > > 
+> > > 
+> > > I agree that bpftrace can do the work relying on kfuncs/kprobes. But I guess
+> > > that also true for many other tracepoints out there, right?
+> > 
+> > Maybe, but this particular tracepoint is not buried deep inside some
+> > complex function with manipulated data being passed as arguments.
+> > Instead, this tracepoint is placed at the very beginning of the function
+> > and takes the function arguments as its own arguments. The tracepoint
+> > can be easily replaced with fentry/kprobes like I've shown with the
+> > example above.
+> > 
+> > > For development and labs bpftrace is perfectly fine, but using kfuncs and
+> > > requiring recompilation is harder in production systems compared with using
+> > > smaller CO-RE tools.
+> > 
+> > I used bpftrace because it is very easy to write, but I could have done
+> > the same with libbpf. I have a bunch of such tools that I wrote over the
+> > years that I compiled once on my laptop and which I copy to various
+> > machines where I need them.
+> > 
 > 
-> struct ksm_scan {
->          struct ksm_mm_slot *mm_slot;
-> 	...
-> };
+> My worry is that if tools are built around a particular kprobe/kfunc they
+> will break if the function name or its arguments change, where as a
+> tracepoint give them a bit more stability across kernel versions. This
+> breakage might not be a huge problem for bpftrace since the user can change
+> the script at runtime, but libbpf programs will need recompilation or some
+> kind of version-detection mechanism.
 > 
-> int __ksm_enter(struct mm_struct *mm)
-> {
->          struct ksm_mm_slot *mm_slot;
->          struct mm_slot *slot;
-> 	...
+> Given the observability-oriented nature of psample I can very much see tools
+> like this being built (I myself plan to write one for OVS repo) and my
+> concern is having their stability depend on a function name or arguments not
+> changing across versions.
+
+There are a lot of tools in BCC that are using kprobes/fentry so
+experience shows that it is possible to build observability tools on top
+of these interfaces. My preference would be to avoid preemptively adding
+a new tracepoint.
+
 > 
-> So let's rename the mm_slot member to ksm_slot in ksm_scan, and ksm_slot
-> for ksm_mm_slot* type variables in functions to reduce this confusing.
 > 
->   struct ksm_scan {
-> -       struct ksm_mm_slot *mm_slot;
-> +       struct ksm_mm_slot *ksm_slot;
+> > > If OVS starts using psample heavily and users need to troubleshoot or merely
+> > > observe packets as they are sampled in a more efficient way, they are likely
+> > > to use ebpf for that. I think making it a bit easier (as in, providing a
+> > > sligthly more stable tracepoint) is worth considering.
+> > 
+> > I'm not saying that it's not worth considering, I'm simply saying that
+> > it should be done after gathering operational experience with existing
+> > mechanisms. It's possible you will conclude that this tracepoint is not
+> > actually needed.
+> > 
+> > Also, there are some disadvantages in using tracepoints compared to
+> > fentry:
+> > 
+> > https://github.com/Mellanox/mlxsw/commit/e996fd583eff1c43aacb9c79e55f5add12402d7d
+> > https://lore.kernel.org/all/CAEf4BzbhvD_f=y3SDAiFqNvuErcnXt4fErMRSfanjYQg5=7GJg@mail.gmail.com/#t
+> > 
+> > Not saying that's the case here, but worth considering / being aware.
+> > 
+> > > Can you please expand on your concerns about the tracepoint? It's on the
+> > > main internal function of the module so, even though the function name or
+> > > its arguments might change, it doesn't seem probable that it'll disappear
+> > > altogether. Why else would we want to remove the tracepoint?
+> > 
+> > It's not really concerns, but dissatisfaction. It's my impression (might
+> > be wrong) that this series commits to adding new interfaces without
+> > first seriously evaluating existing ones. This is true for this patch
+> > and patch #2 that adds a new netlink command instead of using
+> > SO_ATTACH_FILTER like existing applications are doing to achieve the
+> > same goal.
+> > 
+> > I guess some will disagree, but wanted to voice my opinion nonetheless.
+> > 
 > 
-> Signed-off-by: Alex Shi (tencent) <alexs@kernel.org>
-> Cc: David Hildenbrand <david@redhat.com>
+> That's a fair point and I appreciate the feedback.
+> 
+> For patch #2, I can concede that it's just making applications slightly
+> simpler without providing any further stability guarantees. I'm OK removing
+> it.
+> 
+> And, I fail to convince you of the usefulness of the tracepoint, I can
+> remove it as well.
 
-[...]
-
->   	}
->   	spin_unlock(&ksm_mmlist_lock);
->   
->   	if (easy_to_free) {
-> -		mm_slot_free(mm_slot_cache, mm_slot);
-> +		mm_slot_free(mm_slot_cache, ksm_slot);
-
-And at this point I am not sure this is the right decision. You made 
-that line more confusing.
-
-Quite some churn for little (no?) benefit.
-
-
--- 
-Cheers,
-
-David / dhildenb
-
+Great, thank you. To be clear, my goal is not to make your life more
+difficult, but simply to avoid merging changes that cannot be undone
+when their goal can be achieved using existing interfaces.
 
