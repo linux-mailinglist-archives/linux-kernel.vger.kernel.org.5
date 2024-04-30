@@ -1,176 +1,196 @@
-Return-Path: <linux-kernel+bounces-163483-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-163485-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 67B3C8B6BED
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 09:35:06 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F2EA98B6BF3
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 09:35:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D526E1F21989
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 07:35:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 22A911C20296
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 07:35:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC4D845026;
-	Tue, 30 Apr 2024 07:34:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 86FBA205E2E;
+	Tue, 30 Apr 2024 07:35:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="ZswrpLQ+";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="JVxkGGSI";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="ZswrpLQ+";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="JVxkGGSI"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="L7J0PFyB"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A084338DFC;
-	Tue, 30 Apr 2024 07:34:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 95C6C3AC2B;
+	Tue, 30 Apr 2024 07:35:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714462474; cv=none; b=MkpNJAg0w/uK86HKolLowmQQyXznlhrSVOlgEzbUMQ5arO0+F0Oz0TVsuwVFVw5E8I1th0gEo6fISeAiN9nauXH8sYJ9N0Z3ZhbA3bv6h8AVf2ej20Z0og4bCevdxSpoRIxW+FosjRgM/dG+6Jz3GmZu7j0vMOcy+TolfuQqB2I=
+	t=1714462509; cv=none; b=BrdXOvTKnewoZ3YT8bt7qGBQK71zusJRgdaT9AcDDQKN/lqBgfs3cOp6B5opGbMEsWYjwa9vmkPf3jRzTiqlCghHD5H2M5YTneKAZrxd7CnhwF9Gkd/PhhlHOMvVvkg+IG4r2wiE6/GFewJRBBcBtZ7rFdbLF0MiPCnhnBIhR14=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714462474; c=relaxed/simple;
-	bh=9BdL5rz1siwVikdm61Qcl+hhIn7YQCw3RRQ5IFAXeD4=;
-	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=MyChhcAx0e1YHWpNdDMMX+uU/S2yLxJl7cPIFqjr6EOQ25n9ssOSukLItkavmQvPNR5a9QkLGPXrxM0YiNRmvlrexPYXqWL4uwbvCdxjI5LLyn2qtg/vW5ciFyAxJCekrmPd4yhoJkKiIvykMTPV9ypzZObx8TgeWlcrNVPCsOI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=ZswrpLQ+; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=JVxkGGSI; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=ZswrpLQ+; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=JVxkGGSI; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id CA30C1F7C6;
-	Tue, 30 Apr 2024 07:34:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1714462470; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=71/GVDgdlfEFcv6CwQsH1RgBK1dMGCf8k3QOq5VUuuA=;
-	b=ZswrpLQ+ieWPRt1Eok+gO8PidsBh1j9m32vFqBj0b+9U1Y9tyf0FotzPgxdEfZbyk5lh9Z
-	CislQ5L3mWZd5ZIr1yGIRX5aUlWY+9Dx6PdeVYJVnE4zeTUW0lA/m/3cEzBcwCD042x64m
-	KXMV0J3u7xgRlT91U9W016pMe2MtmT0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1714462470;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=71/GVDgdlfEFcv6CwQsH1RgBK1dMGCf8k3QOq5VUuuA=;
-	b=JVxkGGSI4nJShR/JrRSMO3a3J7TH71N+5Jf8K1arv4T62Vrz8V4GHn/+sEGvFADa25JNeR
-	tnfmHp9juR+cGmBQ==
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=ZswrpLQ+;
-	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=JVxkGGSI
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1714462470; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=71/GVDgdlfEFcv6CwQsH1RgBK1dMGCf8k3QOq5VUuuA=;
-	b=ZswrpLQ+ieWPRt1Eok+gO8PidsBh1j9m32vFqBj0b+9U1Y9tyf0FotzPgxdEfZbyk5lh9Z
-	CislQ5L3mWZd5ZIr1yGIRX5aUlWY+9Dx6PdeVYJVnE4zeTUW0lA/m/3cEzBcwCD042x64m
-	KXMV0J3u7xgRlT91U9W016pMe2MtmT0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1714462470;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=71/GVDgdlfEFcv6CwQsH1RgBK1dMGCf8k3QOq5VUuuA=;
-	b=JVxkGGSI4nJShR/JrRSMO3a3J7TH71N+5Jf8K1arv4T62Vrz8V4GHn/+sEGvFADa25JNeR
-	tnfmHp9juR+cGmBQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 6A64D133A7;
-	Tue, 30 Apr 2024 07:34:30 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 4i4kGAafMGbyNQAAD6G6ig
-	(envelope-from <tiwai@suse.de>); Tue, 30 Apr 2024 07:34:30 +0000
-Date: Tue, 30 Apr 2024 09:34:42 +0200
-Message-ID: <87cyq7nw19.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Manuel Barrio Linares <mbarriolinares@gmail.com>
-Cc: Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>,
-	Geraldo Nascimento <geraldogabriel@gmail.com>,
-	dengxiang <dengxiang@nfschina.com>,
-	Jussi Laako <jussi@sonarnerd.net>,
-	Christos Skevis <xristos.thes@gmail.com>,
-	Alexander Tsoy <alexander@tsoy.me>,
-	Jeremie Knuesel <knuesel@gmail.com>,
-	WhaleChang <whalechang@google.com>,
-	Sean Young <sean@mess.org>,
-	linux-sound@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] ALSA: usb-audio: Add sampling rates support for Mbox3
-In-Reply-To: <20240429193522.10380-1-mbarriolinares@gmail.com>
-References: <87il00pdsz.wl-tiwai@suse.de>
-	<20240429193522.10380-1-mbarriolinares@gmail.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+	s=arc-20240116; t=1714462509; c=relaxed/simple;
+	bh=eL+Ia3NO3S1rbXyCocCNbARCF1TD21Bkxt4AjnrqoTI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=lyfyDdQBNEWqSljDyQNgfxM2zk7CHxk6+i9vsb+cDGxP57VQE5P1O53yKY7y98bJvU/Nu78e5PL6WQs02pyDLf0JP4DaGJHdb9V+2UQo8wYul/pANrnEZo7GmrHl/GUasGI7ubACcIuPDLjhVdQh8eHUYNgh88mFdOU7OTvPaIM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=L7J0PFyB; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 24FD6C2BBFC;
+	Tue, 30 Apr 2024 07:35:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714462509;
+	bh=eL+Ia3NO3S1rbXyCocCNbARCF1TD21Bkxt4AjnrqoTI=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=L7J0PFyBwVGayQDrAxTV0fpcArAsWw6UCFPH3Ay2QUUJX41bEA4oV2EfkKvvaguH8
+	 u1ma9o0JF2a4Z8QJ+/NcFWhp1OF3lqjLGKCwDO/+jbbUtehc3s6+uMk9jkDJUjhVxG
+	 K4JSXObuihbfP7BWCyr2sENAHck1XyJ+ZVU9sp7jdVVlphcG0PcwQCsv3WvjHWO95g
+	 Rtl362FM6e6ekRRRGhwkU1WivKeF9avhahv6K/ATnG+tvFxpKLcK3BxhvglndOXRnj
+	 iWvvnL1lEKqUAKdwo+O/ia4gs0VShuDcWmc6NG9/Pk12Gc/1lB5DuXAI6o3oKIy00V
+	 WcEEneur0dODg==
+Message-ID: <bbf12675-e0f5-4150-96d1-097eb7abd81a@kernel.org>
+Date: Tue, 30 Apr 2024 09:35:03 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-Spam-Flag: NO
-X-Spam-Score: -3.98
-X-Rspamd-Action: no action
-X-Rspamd-Queue-Id: CA30C1F7C6
-X-Spam-Level: 
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-3.98 / 50.00];
-	BAYES_HAM(-2.97)[99.88%];
-	DWL_DNSWL_MED(-2.00)[suse.de:dkim];
-	SUSPICIOUS_RECIPS(1.50)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_CONTAINS_FROM(1.00)[];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	ARC_NA(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	RCPT_COUNT_TWELVE(0.00)[13];
-	FREEMAIL_TO(0.00)[gmail.com];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	FREEMAIL_CC(0.00)[perex.cz,suse.com,gmail.com,nfschina.com,sonarnerd.net,tsoy.me,google.com,mess.org,vger.kernel.org];
-	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	RCVD_COUNT_TWO(0.00)[2];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	TO_DN_SOME(0.00)[];
-	DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TAGGED_RCPT(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	DKIM_TRACE(0.00)[suse.de:+];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns]
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 10/17] dt-bindings: i2c: i2c-fsi: Convert to
+ json-schema
+To: Eddie James <eajames@linux.ibm.com>, linux-aspeed@lists.ozlabs.org
+Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-fsi@lists.ozlabs.org, linux-spi@vger.kernel.org,
+ linux-i2c@vger.kernel.org, lakshmiy@us.ibm.com, robh@kernel.org,
+ krzk+dt@kernel.org, conor+dt@kernel.org, joel@jms.id.au,
+ andrew@codeconstruct.com.au, andi.shyti@kernel.org
+References: <20240429210131.373487-1-eajames@linux.ibm.com>
+ <20240429210131.373487-11-eajames@linux.ibm.com>
+From: Krzysztof Kozlowski <krzk@kernel.org>
+Content-Language: en-US
+Autocrypt: addr=krzk@kernel.org; keydata=
+ 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 fv0=
+In-Reply-To: <20240429210131.373487-11-eajames@linux.ibm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Mon, 29 Apr 2024 21:35:00 +0200,
-Manuel Barrio Linares wrote:
+On 29/04/2024 23:01, Eddie James wrote:
+> Convert to json-schema for the FSI-attached I2C controller.
 > 
-> +	set_rate = le32_to_cpu(buff4);
-> +	if (new_rate != set_rate)
-
-Those two lines cause sparse warnings, unfortunately.
-You can't assign int to __le32 type directly, and you can't compare
-between those types directly, either.
-
-That said, it should be rather like
-
-	if (new_rate != le32_to_cpu(buff4))
-		dev_warn(...);
+> Signed-off-by: Eddie James <eajames@linux.ibm.com>
+> ---
+> Changes since v3:
+>  - Update MAINTAINERS
+>  - Change commit message to match similar commits
+> 
+>  .../devicetree/bindings/i2c/i2c-fsi.txt       | 40 -------------
+>  .../devicetree/bindings/i2c/ibm,i2c-fsi.yaml  | 58 +++++++++++++++++++
 
 
-You can check the sparse warning by yourself by passing C=1 argument
-to make, too.
+Please split independent patches to separate patchsets, so they can be
+reviewed and picked up by respective maintainers.
+
+I don't see any dependency here. Neither in 1st patch.
 
 
-thanks,
+>  MAINTAINERS                                   |  2 +-
+>  3 files changed, 59 insertions(+), 41 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/i2c/i2c-fsi.txt
+>  create mode 100644 Documentation/devicetree/bindings/i2c/ibm,i2c-fsi.yaml
+> 
 
-Takashi
+..
+
+> diff --git a/Documentation/devicetree/bindings/i2c/ibm,i2c-fsi.yaml b/Documentation/devicetree/bindings/i2c/ibm,i2c-fsi.yaml
+> new file mode 100644
+> index 000000000000..8ff5585a3aa5
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/i2c/ibm,i2c-fsi.yaml
+> @@ -0,0 +1,58 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/i2c/ibm,i2c-fsi.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: IBM FSI-attached I2C controller
+> +
+> +maintainers:
+> +  - Eddie James <eajames@linux.ibm.com>
+> +
+> +description:
+> +  This I2C controller is an FSI CFAM engine, providing access to a number of
+> +  I2C busses. Therefore this node will always be a child of an FSI CFAM node.
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - ibm,i2c-fsi
+> +
+> +  reg:
+> +    items:
+> +      - description: FSI slave address
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +
+> +allOf:
+> +  - $ref: /schemas/i2c/i2c-controller.yaml#
+> +
+> +unevaluatedProperties: false
+> +
+> +examples:
+> +  - |
+> +    i2c@1800 {
+> +        compatible = "ibm,i2c-fsi";
+> +        reg = <0x1800 0x400>;
+> +        #address-cells = <1>;
+> +        #size-cells = <0>;
+> +
+> +        i2c-bus@0 {
+> +            reg = <0>;
+> +            #address-cells = <1>;
+> +            #size-cells = <0>;
+
+This does not look right. Why do you have multiple i2c-bus children? I
+do not think i2c-controller.yaml schema allows this.
+
+Best regards,
+Krzysztof
+
 
