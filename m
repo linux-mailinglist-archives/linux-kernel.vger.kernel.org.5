@@ -1,225 +1,266 @@
-Return-Path: <linux-kernel+bounces-163951-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-163950-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 85C658B767B
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 14:58:42 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 850008B767A
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 14:58:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 375532858C6
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 12:58:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F25601F21D51
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 12:58:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6DAB217166C;
-	Tue, 30 Apr 2024 12:58:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9AA98171661;
+	Tue, 30 Apr 2024 12:58:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="YbndkicK"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="jvNP0/Nn";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="royZH4Cy";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="wIVQZ+UG";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="gy0UNDTG"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 131AD171652
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 12:58:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00B3C171652
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 12:58:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714481897; cv=none; b=R1ynCONaWMfqSnSaBiq6vW1Hom7tfzeUG9wqbx6/68pKbwbhGA/SyzZvRTDVpo/IarOuriqLSt2xfF+Hry6JgDA/ZxVvDU0Gi9lrvB/uaKpb56xreSqYflW5cd2gSeF9uvZGCTN2aqVQ5dk2CUX4co7HFnDqt/m7MgNSJk6jTe8=
+	t=1714481882; cv=none; b=eXtNn0aaDXjeqpIIYL8qxPHH7C+OeRpOvXRn16efxYklzNgtbUeFoGesUBzPJEkRMBvLIUAQ4fYAEy+qhWoF7doEqYa8S+LpLCj7Vfyt+pDWPFS/0Cr6q1AoKfqKd7GQPeLo/d3LYApIvFvbMrRi7fbBpQRsg4m9deBIfJWDt4w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714481897; c=relaxed/simple;
-	bh=TJqaDzihuTWgBwSo4ixP6WKzw7tctamNrd8uWkkpmpA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Pf6Bu58IGACQAOEfY3Sb8PKEkbgJIFIz8JelTHe9puyBbp7982E6RG6JI9ZZsgPyOBpkAU7QaZDgIfyzjI4nFsybUDZmm7kPH98YZ5RhydWt7oQ62RZzvCnX/52sYMn78ST5Qv4oEosEtnPvPmBuzMC3JyjP1ElqnRps8jE4KBQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=YbndkicK; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1714481895;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=sMlSiivPngygAXsGmWFYCAttFZtDHo2Hh2LSzNU3tu8=;
-	b=YbndkicKbUnkUAcLbYG6nlapFpZ9SQcqd7/aJtzxs8o0iCD9Umb8YX/gPjI3PEkJHQRjOD
-	FepMaQgVzfXkFO2z6ObOivbA3vvcCiYB21YdkYvNXXozWZ36Te/Z6ONdPAyn+y4c06XZad
-	n0wlMiCx8YZYfNY/guEpiXDj8HUZY9g=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-370-sHGpZ15YNqyHEWC684Em2g-1; Tue, 30 Apr 2024 08:58:13 -0400
-X-MC-Unique: sHGpZ15YNqyHEWC684Em2g-1
-Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-41c095d5b07so11859245e9.2
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 05:58:12 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714481892; x=1715086692;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :content-language:from:references:cc:to:subject:user-agent
-         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=sMlSiivPngygAXsGmWFYCAttFZtDHo2Hh2LSzNU3tu8=;
-        b=SONVqDeekJxX/1q0UefbZvprDXP9X3UghAipYfa3QgS/7tICW7WUbkvrA0QpEroquL
-         tpHp5MtwSlgkXa8Csq1GPeDmzj3Gaxj6Tk8nE0vTHbNmedVo/jEDWAri1LYknc8kZ7ge
-         5IMqYV93APBgiMpNR553ZUdd6m0dh7l0gUrBFEjhCEtVXToHzXJF3TS7V4PuGfTIZyti
-         SqvU6cKyU2t4YpC7Y1E2ie2N65RJbC1dF07W8UcrdpDrzl+Vu44siJViR/iYFq8qQUzO
-         Y0A33bOkeS8qqJJv1xi3Ika+DZjuqzWGfj8Ix+cU+zFDEB7lhOVrmG2Gm38Pgmw3WQTv
-         jXzw==
-X-Forwarded-Encrypted: i=1; AJvYcCWU2l6qzrKw6DP0g3pZ6WAmCUUGUfVUj2M7hsSpYxy8P/C/EIPmkUrRRUr20c7Vk+JTqgcyAHUBlQ9FOZrJKAjW3xhilDM6OmlaybJz
-X-Gm-Message-State: AOJu0YxfeQlzAtFOaWI2dHJSOli7OZC5f8b7PWIof378RaEOSvI6CvTQ
-	HEN8nlnX1grFvlIlETY5Ne+jErRmkUBRehYZHhj/Mk5Z5gE3QsFYKAOtZu0Ne4YEYJhmjMM9QG+
-	Jd/9q3IdU/8/UdIss4m6Hq89eO59viCfBI+L4o0PPbjbKY2CSrJNUE5Z4oUcWKg==
-X-Received: by 2002:a05:600c:a41:b0:418:fe93:22d0 with SMTP id c1-20020a05600c0a4100b00418fe9322d0mr2168649wmq.11.1714481891965;
-        Tue, 30 Apr 2024 05:58:11 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHlwxmyQG3Kwmbh8H2AdOIQKEeHu18uqUM+DDps6WRiIDxm895ZF9+vKfroPoBSdHvL0pLliA==
-X-Received: by 2002:a05:600c:a41:b0:418:fe93:22d0 with SMTP id c1-20020a05600c0a4100b00418fe9322d0mr2168626wmq.11.1714481891472;
-        Tue, 30 Apr 2024 05:58:11 -0700 (PDT)
-Received: from ?IPV6:2a09:80c0:192:0:5dac:bf3d:c41:c3e7? ([2a09:80c0:192:0:5dac:bf3d:c41:c3e7])
-        by smtp.gmail.com with ESMTPSA id ay39-20020a05600c1e2700b0041b61504565sm18848689wmb.28.2024.04.30.05.58.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 30 Apr 2024 05:58:11 -0700 (PDT)
-Message-ID: <09487373-385b-4c3c-a938-0f88c3a95389@redhat.com>
+	s=arc-20240116; t=1714481882; c=relaxed/simple;
+	bh=/pU4Dib1WddZsF8ZFDt6j+ppcDi/xkpE/RQql4gGQyM=;
+	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=sdnG8khniHPn91Lt3tUg9wfPOYWf0M1G2wpcpV0HPkwbqoV05ca8aIvGfMdSyblhvK0JmQ0Pka4WNRDehyXNceLKlcMzmEp+0C3/4Pje63NeRTSzRa6h3fL90tmI1puyS1vBx7kWzyB2spWUdpYIU+BY44zIJ5e2Ci9fDEFdMUI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=jvNP0/Nn; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=royZH4Cy; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=wIVQZ+UG; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=gy0UNDTG; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id ED5C11F7D2;
+	Tue, 30 Apr 2024 12:57:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1714481879; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=28VGKmz8/G47Zscm7EVEjbZPA1AicPxrlrxWvx0shZA=;
+	b=jvNP0/NnBiSa4qhTnN25wHJ1Xdg6+Z9TtVSX6OQdxSi6mb0pyRYoLEsKZ3ZGwI7YxU1jSH
+	6HhMQxI3O9Q5g6NBsrdWLYd81NliaR0ez8oFDHML5Z+ZM+GUxGdsTXNbkRsBSZ2aw1lnPX
+	xVGpyeY2kS5pYF/mwYdy7ryMn9j3XMk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1714481879;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=28VGKmz8/G47Zscm7EVEjbZPA1AicPxrlrxWvx0shZA=;
+	b=royZH4CyjV1vbwNc6U9uT59fWX0THAQRM10bKmxZi3GC3oxSY3+7xIdaeRTMQ1wND6lEHk
+	c3/mqIT0AWqhSvBw==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1714481878; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=28VGKmz8/G47Zscm7EVEjbZPA1AicPxrlrxWvx0shZA=;
+	b=wIVQZ+UGElsUEtcRhegciyUl7y3HfUA9JZynBmMgGBF0XBnAkCklEQcDdOBSgdbztMekOP
+	jRrYVfmHQ9qhzffDGnv88g1+czULLtiJnwscqK2FQQu+R/StuVdlSIGCqnc33oDTlJvSnd
+	jFxPz/2HM5yXa1GfN0w4wQO+JKzSwGc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1714481878;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=28VGKmz8/G47Zscm7EVEjbZPA1AicPxrlrxWvx0shZA=;
+	b=gy0UNDTGR7KuO7MzcNkbvFWqEYWK5YuSPvd672UKGrbOU9hJ+64ZnkpxVBvahuIxswMJtC
+	vAUIytv5/a788tDA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id B6203136A8;
+	Tue, 30 Apr 2024 12:57:58 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id jgboK9bqMGbrKAAAD6G6ig
+	(envelope-from <tiwai@suse.de>); Tue, 30 Apr 2024 12:57:58 +0000
 Date: Tue, 30 Apr 2024 14:58:10 +0200
+Message-ID: <87jzkfm2hp.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Baojun Xu <baojun.xu@ti.com>
+Cc: <robh+dt@kernel.org>,
+	<andriy.shevchenko@linux.intel.com>,
+	<lgirdwood@gmail.com>,
+	<perex@perex.cz>,
+	<pierre-louis.bossart@linux.intel.com>,
+	<kevin-lu@ti.com>,
+	<shenghao-ding@ti.com>,
+	<navada@ti.com>,
+	<13916275206@139.com>,
+	<v-po@ti.com>,
+	<niranjan.hy@ti.com>,
+	<alsa-devel@alsa-project.org>,
+	<linux-kernel@vger.kernel.org>,
+	<liam.r.girdwood@intel.com>,
+	<yung-chuan.liao@linux.intel.com>,
+	<broonie@kernel.org>,
+	<soyer@irl.hu>
+Subject: Re: [PATCH v4 1/3] ALSA: hda/tas2781: Add tas2781 hda driver based on SPI
+In-Reply-To: <20240430072544.1877-2-baojun.xu@ti.com>
+References: <20240430072544.1877-1-baojun.xu@ti.com>
+	<20240430072544.1877-2-baojun.xu@ti.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/3] arm64/mm: Refactor PMD_PRESENT_INVALID and
- PTE_PROT_NONE bits
-To: Ryan Roberts <ryan.roberts@arm.com>,
- Catalin Marinas <catalin.marinas@arm.com>
-Cc: Will Deacon <will@kernel.org>, Joey Gouly <joey.gouly@arm.com>,
- Ard Biesheuvel <ardb@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
- Anshuman Khandual <anshuman.khandual@arm.com>, Peter Xu <peterx@redhat.com>,
- Mike Rapoport <rppt@linux.ibm.com>, Shivansh Vij <shivanshvij@outlook.com>,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20240429140208.238056-1-ryan.roberts@arm.com>
- <20240429140208.238056-2-ryan.roberts@arm.com> <Zi_IzrfIcqWxt7cE@arm.com>
- <839d6975-ce12-4fc9-aa3b-8ec5787bf577@arm.com> <ZjDR0EIjLr9F2dWn@arm.com>
- <29fd6909-73d2-4b7e-99ef-0101cde1ba8a@redhat.com>
- <e842963b-e682-4923-a1cc-c8b2abd6afee@arm.com>
-From: David Hildenbrand <david@redhat.com>
-Content-Language: en-US
-Autocrypt: addr=david@redhat.com; keydata=
- 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
- WNyWQQ==
-Organization: Red Hat
-In-Reply-To: <e842963b-e682-4923-a1cc-c8b2abd6afee@arm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Level: 
+X-Spamd-Result: default: False [-1.80 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	SUSPICIOUS_RECIPS(1.50)[];
+	MID_CONTAINS_FROM(1.00)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	TAGGED_RCPT(0.00)[dt];
+	RCPT_COUNT_TWELVE(0.00)[18];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	ARC_NA(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	FREEMAIL_ENVRCPT(0.00)[139.com,gmail.com];
+	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	FROM_HAS_DN(0.00)[];
+	FREEMAIL_CC(0.00)[kernel.org,linux.intel.com,gmail.com,perex.cz,ti.com,139.com,alsa-project.org,vger.kernel.org,intel.com,irl.hu];
+	TO_DN_SOME(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns]
+X-Spam-Score: -1.80
+X-Spam-Flag: NO
 
-On 30.04.24 14:53, Ryan Roberts wrote:
-> On 30/04/2024 12:37, David Hildenbrand wrote:
->> On 30.04.24 13:11, Catalin Marinas wrote:
->>> On Mon, Apr 29, 2024 at 06:15:45PM +0100, Ryan Roberts wrote:
->>>> On 29/04/2024 17:20, Catalin Marinas wrote:
->>>>> On Mon, Apr 29, 2024 at 03:02:05PM +0100, Ryan Roberts wrote:
->>>>>> diff --git a/arch/arm64/include/asm/pgtable-prot.h
->>>>>> b/arch/arm64/include/asm/pgtable-prot.h
->>>>>> index dd9ee67d1d87..de62e6881154 100644
->>>>>> --- a/arch/arm64/include/asm/pgtable-prot.h
->>>>>> +++ b/arch/arm64/include/asm/pgtable-prot.h
->>>>>> @@ -18,14 +18,7 @@
->>>>>>    #define PTE_DIRTY        (_AT(pteval_t, 1) << 55)
->>>>>>    #define PTE_SPECIAL        (_AT(pteval_t, 1) << 56)
->>>>>>    #define PTE_DEVMAP        (_AT(pteval_t, 1) << 57)
->>>>>> -#define PTE_PROT_NONE        (_AT(pteval_t, 1) << 58) /* only when
->>>>>> !PTE_VALID */
->>>>>> -
->>>>>> -/*
->>>>>> - * This bit indicates that the entry is present i.e. pmd_page()
->>>>>> - * still points to a valid huge page in memory even if the pmd
->>>>>> - * has been invalidated.
->>>>>> - */
->>>>>> -#define PMD_PRESENT_INVALID    (_AT(pteval_t, 1) << 59) /* only when
->>>>>> !PMD_SECT_VALID */
->>>>>> +#define PTE_INVALID        (_AT(pteval_t, 1) << 59) /* only when
->>>>>> !PTE_VALID */
->>>>>
->>>>> Nitpick - I prefer the PTE_PRESENT_INVALID name as it makes it clearer
->>>>> it's a present pte. We already have PTE_VALID, calling it PTE_INVALID
->>>>> looks like a negation only.
->>>>
->>>> Meh, for me the pte can only be valid or invalid if it is present. So it's
->>>> implicit. And if you have PTE_PRESENT_INVALID you should also have
->>>> PTE_PRESENT_VALID.
->>>>
->>>> We also have pte_mkinvalid(), which is core-mm-defined. In your scheme, surely
->>>> it should be pte_mkpresent_invalid()?
->>>>
->>>> But you're the boss, I'll change this to PTE_PRESENT_INVALID. :-(
->>>
->>> TBH, I don't have a strong opinion but best to avoid the bikeshedding.
->>> I'll leave the decision to you ;). It would match the pmd_mkinvalid()
->>> core code. But if you drop 'present' make sure you add a comment above
->>> that it's meant for present ptes.
->>
->> FWIW, I was confused by
->>
->> present = valid | invalid
+On Tue, 30 Apr 2024 09:25:42 +0200,
+Baojun Xu wrote:
 > 
-> OK fair enough.
+> Integrate tas2781 hda spi driver configs for HP (Varcolac).
+> Every tas2781 SPI node was added by serial-multi-instantie.c as a SPI device.
+> The code support Realtek as the primary codec.
 > 
->>
->> Something like
->>
->> present = present_valid | present_invalid
+> Signed-off-by: Baojun Xu <baojun.xu@ti.com>
 > 
-> I don't want to change pte_valid() to pte_present_valid(); that would also be a
-> fair bit of churn.
-
-Yes.
-
+> ---
+> v4:
+>  - Add old hardware id "TIAS2781" for compatible with old production
+>  - Add 2 devices in struct smi_node tas2781_hda, to compatible with 4 AMPs
+> v3:
+>  - Move HID up to above /* Non-conforming _HID ... */ in scan.c,
+>    for avoid misunderstanding.
+>  - Move HID up to above /* Non-conforming _HID ... */ in
+>    serial-multi-instantiate.c, for avoid misunderstanding.
+>  - Change objs to y for snd-hda-scodec-tas2781-spi- in Makefile.
+> ---
+>  drivers/acpi/scan.c                             |  2 ++
+>  drivers/platform/x86/serial-multi-instantiate.c | 13 +++++++++++++
+>  sound/pci/hda/Kconfig                           | 14 ++++++++++++++
+>  sound/pci/hda/Makefile                          |  2 ++
+>  sound/pci/hda/patch_realtek.c                   | 13 +++++++++++++
+>  5 files changed, 44 insertions(+)
 > 
-> I'll take Catalin's suggestion and make this PTE_PRESENT_INVALID and
-> pte_present_invalid(). And obviously leave pmd_mkinvalid() as it is.
-> (Conversation in the other thread has concluded that it's ok to invalidate a
-> non-present pmd afterall).
+> diff --git a/drivers/acpi/scan.c b/drivers/acpi/scan.c
+> index d1464324de95..51af181ccf62 100644
+> --- a/drivers/acpi/scan.c
+> +++ b/drivers/acpi/scan.c
+> @@ -1765,6 +1765,8 @@ static bool acpi_device_enumeration_by_parent(struct acpi_device *device)
+>  		{"CSC3557", },
+>  		{"INT33FE", },
+>  		{"INT3515", },
+> +		{"TXNW2781", },
+> +		{"TIAS2781", },
+>  		/* Non-conforming _HID for Cirrus Logic already released */
+>  		{"CLSA0100", },
+>  		{"CLSA0101", },
+> diff --git a/drivers/platform/x86/serial-multi-instantiate.c b/drivers/platform/x86/serial-multi-instantiate.c
+> index 97b9c6392230..d1c766f17b26 100644
+> --- a/drivers/platform/x86/serial-multi-instantiate.c
+> +++ b/drivers/platform/x86/serial-multi-instantiate.c
+> @@ -368,6 +368,17 @@ static const struct smi_node cs35l57_hda = {
+>  	.bus_type = SMI_AUTO_DETECT,
+>  };
+>  
+> +static const struct smi_node tas2781_hda = {
+> +	.instances = {
+> +		{ "tas2781-hda", IRQ_RESOURCE_AUTO, 0 },
+> +		{ "tas2781-hda", IRQ_RESOURCE_AUTO, 0 },
+> +		{ "tas2781-hda", IRQ_RESOURCE_AUTO, 0 },
+> +		{ "tas2781-hda", IRQ_RESOURCE_AUTO, 0 },
+> +		{}
+> +	},
+> +	.bus_type = SMI_AUTO_DETECT,
+> +};
+> +
+>  /*
+>   * Note new device-ids must also be added to ignore_serial_bus_ids in
+>   * drivers/acpi/scan.c: acpi_device_enumeration_by_parent().
+> @@ -380,6 +391,8 @@ static const struct acpi_device_id smi_acpi_ids[] = {
+>  	{ "CSC3556", (unsigned long)&cs35l56_hda },
+>  	{ "CSC3557", (unsigned long)&cs35l57_hda },
+>  	{ "INT3515", (unsigned long)&int3515_data },
+> +	{ "TXNW2781", (unsigned long)&tas2781_hda },
+> +	{ "TIAS2781", (unsigned long)&tas2781_hda },
+>  	/* Non-conforming _HID for Cirrus Logic already released */
+>  	{ "CLSA0100", (unsigned long)&cs35l41_hda },
+>  	{ "CLSA0101", (unsigned long)&cs35l41_hda },
+> diff --git a/sound/pci/hda/Kconfig b/sound/pci/hda/Kconfig
+> index f806636242ee..15f0e66b77e5 100644
+> --- a/sound/pci/hda/Kconfig
+> +++ b/sound/pci/hda/Kconfig
+> @@ -202,6 +202,20 @@ config SND_HDA_SCODEC_TAS2781_I2C
+>  comment "Set to Y if you want auto-loading the side codec driver"
+>  	depends on SND_HDA=y && SND_HDA_SCODEC_TAS2781_I2C=m
+>  
+> +config SND_HDA_SCODEC_TAS2781_SPI
+> +	tristate "Build TAS2781 HD-audio side codec support for SPI Bus"
+> +	depends on SPI_MASTER
+> +	depends on ACPI
+> +	depends on EFI
+> +	depends on SND_SOC
+> +	select CRC32_SARWATE
+> +	help
+> +	  Say Y or M here to include TAS2781 SPI HD-audio side codec support
+> +	  in snd-hda-intel driver, such as ALC287.
+> +
+> +comment "Set to Y if you want auto-loading the side codec driver"
+> +	depends on SND_HDA=y && SND_HDA_SCODEC_TAS2781_SPI=m
+> +
+>  config SND_HDA_CODEC_REALTEK
+>  	tristate "Build Realtek HD-audio codec support"
+>  	select SND_HDA_GENERIC
+> diff --git a/sound/pci/hda/Makefile b/sound/pci/hda/Makefile
+> index 13e04e1f65de..2d5d4d841d87 100644
+> --- a/sound/pci/hda/Makefile
+> +++ b/sound/pci/hda/Makefile
+> @@ -39,6 +39,7 @@ snd-hda-scodec-cs35l56-spi-objs :=	cs35l56_hda_spi.o
+>  snd-hda-cs-dsp-ctls-objs :=		hda_cs_dsp_ctl.o
+>  snd-hda-scodec-component-objs :=	hda_component.o
+>  snd-hda-scodec-tas2781-i2c-objs :=	tas2781_hda_i2c.o
+> +snd-hda-scodec-tas2781-spi-y :=	tas2781_hda_spi.o tas2781_spi_fwlib.o
 
-Works for me.
+A nitpicking: better to align with other lines (i.e. with *-objs
+instead of *-y).
 
--- 
-Cheers,
+The main problem here is, though, that this commit will break the
+build, because you introduced a Kconfig that can be enabled, while the
+corresponding code for snd-hda-scodec-tas2781-spi isn't present yet.
+This is bad for the git-bisection.
 
-David / dhildenb
+You'd need to reorganize better how the code is added piece-by-piece.
 
+
+thanks,
+
+Takashi
 
