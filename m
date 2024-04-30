@@ -1,109 +1,212 @@
-Return-Path: <linux-kernel+bounces-163368-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-163369-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0F81B8B69FB
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 07:35:17 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B340F8B69FE
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 07:37:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4E413B211C1
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 05:35:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 723E4282A0D
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 05:37:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 997E417732;
-	Tue, 30 Apr 2024 05:35:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51F08179A7;
+	Tue, 30 Apr 2024 05:36:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="fgdPrb1f"
-Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="kUvPO+dy"
+Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA69417582
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 05:35:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25CAC1754B
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 05:36:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714455306; cv=none; b=sVZlj0zQpHyi2EKHtdBfVIkxbPKWpBLavjzi/AcqvhHLa5KTEkQD6E2ngwFc1qx4dH7Tx6q87dMkQTrL9aesp5y6ACzZTNHkEZ7DUcB0KZKl9QbxpSPUr2f4JXCnU83hAwfHFbgmulSVioN2ORH+ltU1FUWxLEs7SGi/N0MyqMI=
+	t=1714455411; cv=none; b=Qp4wUhcMYdXZi5TIXUihkccehK2D/ZqtK7Sr4nL1GZFll5Xl7zwcnW9UmlodLAZIvgssmdDHDVVnWMxnURIX6tb9qGGCI/VX0uo5iYyDrYEB2ygzPDbgg5rmODF8OPocXnVCz+b7L+8fhwiVj37wJ+AwnMmjLbn/+U6gf1WpUX8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714455306; c=relaxed/simple;
-	bh=0lANZJBk2q8qyeCEkyiuDs1ISrEWT6/wJvz29MPlTds=;
+	s=arc-20240116; t=1714455411; c=relaxed/simple;
+	bh=ic45Ly5iOqM2hN40D+e1MnLz2cah/7zHv0WBtywKiU8=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=D0DOO2GG41Y46ecQ5BZyS6/OSzqMVL+muEYsgxjYiosbqgRl0MjEV9vozW9XN/+Zr5NAsvxYTOmNBJ+crbAifq2VvNWWYinyfV4QIKe44pA5WI/NG2H9HYlpJuD8xM/tPxZP5OHv2yBIlwEPvCLqzu62T+tk2rFUGQ3aPqbeYCw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=fgdPrb1f; arc=none smtp.client-ip=209.85.214.177
+	 Content-Type:Content-Disposition:In-Reply-To; b=FNg6cPZ8Qp35AeZOA/eU+eQ2lmHqNaJJGL4eIzM+4druCQS9IF4K1Te3AXw5BBzYRIv7NUQhFlVLPzG4wNmorypgbIUwWpIa+ovUc5kE5GN1bxV+bqHxNn9TYlNjZyY5G+aNsqXF11HOnDF3+vO4hJvMnF8rlvczUadhL+OSxZI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=kUvPO+dy; arc=none smtp.client-ip=209.85.214.174
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-1e51398cc4eso47424315ad.2
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 22:35:05 -0700 (PDT)
+Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-1e40042c13eso35892295ad.2
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 22:36:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1714455305; x=1715060105; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=C86TkJMefuwLFYqPDfjsQaXZDgvqLvjIZeQbeqShpoI=;
-        b=fgdPrb1fqMg18QNi+Pibt7ddGBbLBeJTYIr+rtbLx4zjLo43ZPIOW8c9E5FGJW6+MP
-         1VxatqfLGnebt+stBICmPtKa355/tPMUFLb2jr/6oGDJshRknfbLwjWPuyrqvEXcGS3t
-         dJoSkL6kbLyXEokUdojkGlim1daRxm6Dyjo4w=
+        d=chromium.org; s=google; t=1714455409; x=1715060209; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=tfcUvly+FIvb0j4uFmsdXOeKUl+PlbA1SIU5IPSmRRs=;
+        b=kUvPO+dyIdUtHDCRCw+bSVBv2FNq1I4DEqiMAbE7LqxbvlX9XhLkoU/x11Z0H5eM0g
+         09LOmvnCr/JFaspzk7Y/Czo/QXMif/fwLWt88ODWVO5c84y9i50lPDZI7toB5OQVGf3+
+         jelFypwwof1N5v3dgB4teLsKIyc6LqXyH+uFg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714455305; x=1715060105;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=C86TkJMefuwLFYqPDfjsQaXZDgvqLvjIZeQbeqShpoI=;
-        b=ZJ4dR57Z15cbpS2YHf+5cdSSfIfGRWjPTwQrb8+p8Mr/BcdpPrZ3c03elsS+AigKqF
-         I6JZi54bPiepzQEnSC6itpL7xA6qM58HLjosy3feunQrmesomB2Gnn0mja2Elq7NIP6l
-         mxW2J0Jg0/Ji4ihbLrlSTQFkEAKn+7QEygPKr6Re3FJUL9+5RCCXhZKqdl2ozxg7LOK3
-         PpzzqwQVQTSkizfQnEF9hfTYM9HF1gXB4UiBpocQsOz8l2Jt0LMtTLmsdpvuXthOuZp0
-         UEI+47ukK3j5mdXy0zUCEyw4jfu0LKRsCroFmJwBIXbkB2BygtwLYDK3gU99OHMv1sUM
-         IF5g==
-X-Forwarded-Encrypted: i=1; AJvYcCWBhLGq2g3PpjClLauDSaLJUnAPzs40PmGFFdTze/kS8OZEUEcMhdny5Fd00Jw4Aua3pCY0Ra8RvyBgafpbu9kj8x0ENtKiKjVup7AD
-X-Gm-Message-State: AOJu0YwDsCy/y0a+g2sAQxupO4tYOVJRYpMIN+j1Pfz++aQkMudhbyi0
-	uayeleKj3/S5dCdhMlyXpyGgTaV2TSbUx7yxDyOLHGPUSIpdpS0OF9x1duTtvg==
-X-Google-Smtp-Source: AGHT+IExYVGtME+b7bsTki80m/529C/WFpqN5LWnzvSEWxibnamEqrs4aXGKwGyaazB7ViSXdQpIYA==
-X-Received: by 2002:a17:903:41ca:b0:1eb:1240:1aea with SMTP id u10-20020a17090341ca00b001eb12401aeamr16493520ple.20.1714455305039;
-        Mon, 29 Apr 2024 22:35:05 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1714455409; x=1715060209;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=tfcUvly+FIvb0j4uFmsdXOeKUl+PlbA1SIU5IPSmRRs=;
+        b=YKZ6Tu23/ldvnnoWktpFltjesprhiKvGH/UUklh2rYaj5ABVYfu0s+qQ9SeU0XIG9N
+         Q3H7g5TPiHlS+ih6bmTAZBWOv6jZPSPmir0Wg7yvgeGRC2l42Tx/2t4FGIuTcuvXzzOG
+         a7yI9BugZIsAS6cHk5mh3pp747L8+HWCu1apbqI8n3ixFDi814PEBn2Jo2c6zDV520ia
+         UVFVQ9Lmkc9h8+9JjuuIWL7I6A3Mi6hzk/j9gg0WY9UL2dViFh0VrYWci44lDvpjUSFA
+         okozXvKhGUUaJ8B5tda8TYPmp1MEKzJ4qT8EXT47mp1cjigHol9zEjve6OXVmz90/YEW
+         PqxQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUh5w3pI3FCI3t1bujKtnD0E/czQ+MlOO1OQTC0Zg2ogAuhJqkd0WO8WTHqmhRyzgTOweS/dtG5IFk9QCIMzbwc/vGZmSooiJ234oVg
+X-Gm-Message-State: AOJu0YwC0HZSsCOyWjCXTVFfCVaVIgu0ztOXsgYkh5Vy1ObzOS1SUNPM
+	KKKhrB+h1c93F/Y7/5q8ZMCWWWcDQYjuVfL7NpaxY85UG5CmwrkD97e8ERFBQg==
+X-Google-Smtp-Source: AGHT+IEI1xCl5MgJCRf5jfTPqNjC35t8O+Ee/g+Asor/wizBcjvlYPWp+LqGt/RJxxnu3iJri6Tn1w==
+X-Received: by 2002:a17:903:487:b0:1dc:a605:5435 with SMTP id jj7-20020a170903048700b001dca6055435mr12028201plb.31.1714455409417;
+        Mon, 29 Apr 2024 22:36:49 -0700 (PDT)
 Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id q4-20020a170902edc400b001e29c4b7bd2sm21410591plk.240.2024.04.29.22.35.04
+        by smtp.gmail.com with ESMTPSA id n1-20020a170902d2c100b001e2a7e90321sm21334480plc.224.2024.04.29.22.36.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Apr 2024 22:35:04 -0700 (PDT)
-Date: Mon, 29 Apr 2024 22:35:03 -0700
+        Mon, 29 Apr 2024 22:36:48 -0700 (PDT)
+Date: Mon, 29 Apr 2024 22:36:48 -0700
 From: Kees Cook <keescook@chromium.org>
-To: Nathan Chancellor <nathan@kernel.org>
-Cc: "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>, Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-	"H. Peter Anvin" <hpa@zytor.com>,
-	Nick Desaulniers <ndesaulniers@google.com>,
-	Bill Wendling <morbo@google.com>,
-	Justin Stitt <justinstitt@google.com>,
-	linux-hardening@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, llvm@lists.linux.dev,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] hardening: Refresh KCFI options, add some more
-Message-ID: <202404292233.9A98A7C@keescook>
-References: <20240426222940.work.884-kees@kernel.org>
- <20240429221650.GA3666021@dev-arch.thelio-3990X>
+To: Allen <allen.lkml@gmail.com>
+Cc: Allen Pais <apais@linux.microsoft.com>, linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+	viro@zeniv.linux.org.uk, brauner@kernel.org, jack@suse.cz,
+	ebiederm@xmission.com, mcgrof@kernel.org, j.granados@samsung.com
+Subject: Re: [RFC PATCH] fs/coredump: Enable dynamic configuration of max
+ file note size
+Message-ID: <202404292236.568F42D3C@keescook>
+References: <20240429172128.4246-1-apais@linux.microsoft.com>
+ <202404291245.18281A6D@keescook>
+ <CAOMdWS+k63T9TQ=Zvev-+Q3Zw-wuEUv_f63=YiTx0nK1J9Jfwg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240429221650.GA3666021@dev-arch.thelio-3990X>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAOMdWS+k63T9TQ=Zvev-+Q3Zw-wuEUv_f63=YiTx0nK1J9Jfwg@mail.gmail.com>
 
-On Mon, Apr 29, 2024 at 03:16:50PM -0700, Nathan Chancellor wrote:
-> On Fri, Apr 26, 2024 at 03:29:44PM -0700, Kees Cook wrote:
-> [...]
-> > +# Enable Kernel Control Flow Integrity (currently Clang only).
-> > +CONFIG_CFI_CLANG=y
-> > +# CONFIG_CFI_PERMISSIVE is not set
+On Mon, Apr 29, 2024 at 03:35:01PM -0700, Allen wrote:
+> On Mon, Apr 29, 2024 at 12:49 PM Kees Cook <keescook@chromium.org> wrote:
+> >
+> > On Mon, Apr 29, 2024 at 05:21:28PM +0000, Allen Pais wrote:
+> > > Introduce the capability to dynamically configure the maximum file
+> > > note size for ELF core dumps via sysctl. This enhancement removes
+> > > the previous static limit of 4MB, allowing system administrators to
+> > > adjust the size based on system-specific requirements or constraints.
+> >
+> > Under what conditions is this actually needed?
 > 
-> Should this be a part of kernel/configs/hardening.config because RISC-V
-> supports it (and 32-bit ARM will soon too)?
+>  I addressed this in the email I sent out before this.
+> 
+> >
+> > > [...]
+> > > diff --git a/kernel/sysctl.c b/kernel/sysctl.c
+> > > index 81cc974913bb..80cdc37f2fa2 100644
+> > > --- a/kernel/sysctl.c
+> > > +++ b/kernel/sysctl.c
+> > > @@ -63,6 +63,7 @@
+> > >  #include <linux/mount.h>
+> > >  #include <linux/userfaultfd_k.h>
+> > >  #include <linux/pid.h>
+> > > +#include <linux/coredump.h>
+> > >
+> > >  #include "../lib/kstrtox.h"
+> > >
+> > > @@ -1623,6 +1624,13 @@ static struct ctl_table kern_table[] = {
+> > >               .mode           = 0644,
+> > >               .proc_handler   = proc_dointvec,
+> > >       },
+> > > +     {
+> > > +             .procname       = "max_file_note_size",
+> > > +             .data           = &max_file_note_size,
+> > > +             .maxlen         = sizeof(unsigned int),
+> > > +             .mode           = 0644,
+> > > +             .proc_handler   = proc_dointvec,
+> > > +     },
+> >
+> > Please don't add new sysctls to kernel/sysctl.c. Put this in fs/coredump.c
+> > instead, and name it "core_file_note_size_max". (A "max" suffix is more
+> > common than prefixes, and I'd like it clarified that it relates to the
+> > coredumper with the "core" prefix that match the other coredump sysctls.
+> >
+> > -Kees
+> 
+> Makes sense. Let me know if the below looks fine,
+> 
+> diff --git a/fs/binfmt_elf.c b/fs/binfmt_elf.c
+> index 5397b552fbeb..6aebd062b92b 100644
+> --- a/fs/binfmt_elf.c
+> +++ b/fs/binfmt_elf.c
+> @@ -1564,7 +1564,6 @@ static void fill_siginfo_note(struct memelfnote
+> *note, user_siginfo_t *csigdata,
+>         fill_note(note, "CORE", NT_SIGINFO, sizeof(*csigdata), csigdata);
+>  }
+> 
+> -#define MAX_FILE_NOTE_SIZE (4*1024*1024)
+>  /*
+>   * Format of NT_FILE note:
+>   *
+> @@ -1592,7 +1591,7 @@ static int fill_files_note(struct memelfnote
+> *note, struct coredump_params *cprm
+> 
+>         names_ofs = (2 + 3 * count) * sizeof(data[0]);
+>   alloc:
+> -       if (size >= MAX_FILE_NOTE_SIZE) /* paranoia check */
+> +       if (size >= core_file_note_size_max) /* paranoia check */
+>                 return -EINVAL;
+>         size = round_up(size, PAGE_SIZE);
+>         /*
+> diff --git a/fs/coredump.c b/fs/coredump.c
+> index be6403b4b14b..2108eb93acb9 100644
+> --- a/fs/coredump.c
+> +++ b/fs/coredump.c
+> @@ -56,10 +56,13 @@
+>  static bool dump_vma_snapshot(struct coredump_params *cprm);
+>  static void free_vma_snapshot(struct coredump_params *cprm);
+> 
+> +#define MAX_FILE_NOTE_SIZE (4*1024*1024)
+> +
+>  static int core_uses_pid;
+>  static unsigned int core_pipe_limit;
+>  static char core_pattern[CORENAME_MAX_SIZE] = "core";
+>  static int core_name_size = CORENAME_MAX_SIZE;
+> +unsigned int core_file_note_size_max = MAX_FILE_NOTE_SIZE;
+> 
+>  struct core_name {
+>         char *corename;
+> @@ -1020,6 +1023,13 @@ static struct ctl_table coredump_sysctls[] = {
+>                 .mode           = 0644,
+>                 .proc_handler   = proc_dointvec,
+>         },
+> +       {
+> +               .procname       = "core_file_note_size_max",
+> +               .data           = &core_file_note_size_max,
+> +               .maxlen         = sizeof(unsigned int),
+> +               .mode           = 0644,
+> +               .proc_handler   = proc_douintvec,
+> +       },
+>  };
+> 
+>  static int __init init_fs_coredump_sysctls(void)
+> diff --git a/include/linux/coredump.h b/include/linux/coredump.h
+> index d3eba4360150..14c057643e7f 100644
+> --- a/include/linux/coredump.h
+> +++ b/include/linux/coredump.h
+> @@ -46,6 +46,7 @@ static inline void do_coredump(const
+> kernel_siginfo_t *siginfo) {}
+>  #endif
+> 
+>  #if defined(CONFIG_COREDUMP) && defined(CONFIG_SYSCTL)
+> +extern unsigned int core_file_note_size_max;
+>  extern void validate_coredump_safety(void);
+>  #else
+>  static inline void validate_coredump_safety(void) {}
 
-Probably yes. I was worried it might be "noisy" for archs that don't
-support it, but frankly if someone is using "make hardening.config" they
-probably want to know about unsupported options. :)
+Yes; thank you! I like this naming (and sysctl location) now. :)
+
+-Kees
 
 -- 
 Kees Cook
