@@ -1,101 +1,193 @@
-Return-Path: <linux-kernel+bounces-164207-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-164209-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E17588B7AAC
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 16:56:57 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 221F18B7AB8
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 16:58:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1BDDB1C22E8C
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 14:56:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CD5EC281974
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 14:58:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E79517710D;
-	Tue, 30 Apr 2024 14:56:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D0C977112;
+	Tue, 30 Apr 2024 14:58:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="g0SMqvqg"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="AgnTlBcf"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 33678152798;
-	Tue, 30 Apr 2024 14:56:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F3BBD770E0
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 14:58:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714489009; cv=none; b=eMGG93a+TZtvDK6NrNKgL//mBrkNFew+sALcZHxhXY4nAaW1EBsoF3zRHjb0e+WV4Wxtj3i0T0UloReR/kgnxfTvcuSY+Sdq/9xYkNYQk7jAkQLGfYW/Cz9+IRLrm+Ur73iZyouGPpEi13KYe3LM0dWA35vssAl5S2+uKfoucpE=
+	t=1714489130; cv=none; b=km167y3PeSmy3HsojG/n+NACwh+P7RSW3LwfmmuuRkvdP/TzXsll6z0tgQM1lMV5qqgUR6jDz/icZSdAtoVFaz7gBE1k8L2w+sFz7taDAhSzw97Bg66yZhzCOznL65fuYa9GLT6bKMI6x/Wvq7G7Gc4PcGhC49pylquscKDL3e8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714489009; c=relaxed/simple;
-	bh=TjXlwvXIGxgY7FadCv6wm6DhT0gofgknxCj4A+6vdXQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Vl83rVpK9c/KKakHLOJYydOYv7GmJyTvRZ0DiPkqQy8uDRDAxcP04snD4758K2I6PNcktFFODI/c+mZy5J6s3YxiIkwQ7FFIGYWqGGu6LHXV7VvS7crGKsOIk9MA4hTw6s2J0PJ2pSlGAPcV6ELT7bAP7hNPaRg02OtNFPzTzLE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=g0SMqvqg; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C3761C4AF1B;
-	Tue, 30 Apr 2024 14:56:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714489009;
-	bh=TjXlwvXIGxgY7FadCv6wm6DhT0gofgknxCj4A+6vdXQ=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=g0SMqvqgU1WU5wiygjLar9m1vuDPUR9BYpi0KNcaC0nloEmd6qc+jM+Jp9uCZIIey
-	 djKjd5rpFCmi+ocyvIueE33j3i7+NL0AKdoPZaBPh3HpO4IJ5yYXPcNk4ImglHbljh
-	 LPwFP2qY9fOuK3ZOAv/polEQANeDAlE03Hqatt9XSEKPH4W9PaUxyXng8pyQcAXp5v
-	 orKHqV89qe0IkrwoRobewPGwhA50Ehfrcl7Y1VHNtJNJP8fA2O0EEauN8m+HEBbTXW
-	 ximwoePlNsfEnA6T3SYw13VsltN7blQ88UeTRAgUycJGEc5R3sis61XkJmnwTcpxkg
-	 XSSVgZ1up0zqQ==
-Date: Tue, 30 Apr 2024 23:56:46 +0900
-From: Mark Brown <broonie@kernel.org>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>, linux-sound@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ASoC: use inline function for type safety in
- snd_soc_substream_to_rtd()
-Message-ID: <ZjEGrnlQfFeDyLUc@finisterre.sirena.org.uk>
-References: <20240430140938.328088-1-krzysztof.kozlowski@linaro.org>
+	s=arc-20240116; t=1714489130; c=relaxed/simple;
+	bh=JBVAR+sLuGoJYKowBGO4Ad8l5eFBbZOvpATG0wKcI6E=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=R0KCVzS/QES7FN/JpF+9toG80nl1MUwb3qqdTIfqEKG7ppduqlOltE14nQq2R2Yy7X5jpT7mdpUdbelUk0jtSYF9+1ZkCkXyF/XjgO+f6a8k9+SWnFfOHfjO9mey0L5MiMtzFKqYXnVNkRlYxvHr6hfVs4B9J1z1QRAPVWjoW/8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=AgnTlBcf; arc=none smtp.client-ip=198.175.65.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1714489129; x=1746025129;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=JBVAR+sLuGoJYKowBGO4Ad8l5eFBbZOvpATG0wKcI6E=;
+  b=AgnTlBcfMuXkBffoZZ2x1j4biXiVEGaFviQ9EfpVgoBRnFx2biuNfogW
+   UJin8f5tv3OOKHn8933eUYjQRZEDg8jUMVtSunBX2srHKR1xLlDidLwJu
+   T3LOPrEHTZdlVuuuFtiIpKKa96PlXICTaJKFf+gHp4wAzd/iHo5X5l5Tt
+   SK3IohkSJb8zSp6uNotIYa0aJ5Ib9r7nmLSYVmxhuofK/prHO6CoH5sNY
+   PS39maQuFqkTi4JQS0KVJII9Bodj2I95hLCChtApJc/TraYHPgAeEVATn
+   y8fHrC64tsB9kCidJhDg21oSbgGiVxmBbQBLR/vyX9frnEmwiK1pBmTl0
+   g==;
+X-CSE-ConnectionGUID: VWPoaYx7TrS6Xp+0DNPDsw==
+X-CSE-MsgGUID: nehywbi3QlimQBLcAPvFkg==
+X-IronPort-AV: E=McAfee;i="6600,9927,11060"; a="10059815"
+X-IronPort-AV: E=Sophos;i="6.07,242,1708416000"; 
+   d="scan'208";a="10059815"
+Received: from orviesa004.jf.intel.com ([10.64.159.144])
+  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Apr 2024 07:58:49 -0700
+X-CSE-ConnectionGUID: UXIgDc36RUabnKJBXrtVMQ==
+X-CSE-MsgGUID: bU6XimoEQIyW+ufqsKOryg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,242,1708416000"; 
+   d="scan'208";a="31282110"
+Received: from unknown (HELO allen-box.sh.intel.com) ([10.239.159.127])
+  by orviesa004.jf.intel.com with ESMTP; 30 Apr 2024 07:58:45 -0700
+From: Lu Baolu <baolu.lu@linux.intel.com>
+To: Jason Gunthorpe <jgg@ziepe.ca>,
+	Kevin Tian <kevin.tian@intel.com>,
+	Joerg Roedel <joro@8bytes.org>,
+	Will Deacon <will@kernel.org>,
+	Robin Murphy <robin.murphy@arm.com>,
+	Jean-Philippe Brucker <jean-philippe@linaro.org>,
+	Nicolin Chen <nicolinc@nvidia.com>,
+	Yi Liu <yi.l.liu@intel.com>,
+	Jacob Pan <jacob.jun.pan@linux.intel.com>,
+	Joel Granados <j.granados@samsung.com>
+Cc: iommu@lists.linux.dev,
+	virtualization@lists.linux-foundation.org,
+	linux-kernel@vger.kernel.org,
+	Lu Baolu <baolu.lu@linux.intel.com>
+Subject: [PATCH v5 0/9] IOMMUFD: Deliver IO page faults to user space
+Date: Tue, 30 Apr 2024 22:57:01 +0800
+Message-Id: <20240430145710.68112-1-baolu.lu@linux.intel.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="8pV+PWcSobNbNF3R"
-Content-Disposition: inline
-In-Reply-To: <20240430140938.328088-1-krzysztof.kozlowski@linaro.org>
-X-Cookie: lisp, v.:
+Content-Transfer-Encoding: 8bit
 
+This series implements the functionality of delivering IO page faults to
+user space through the IOMMUFD framework. One feasible use case is the
+nested translation. Nested translation is a hardware feature that
+supports two-stage translation tables for IOMMU. The second-stage
+translation table is managed by the host VMM, while the first-stage
+translation table is owned by user space. This allows user space to
+control the IOMMU mappings for its devices.
 
---8pV+PWcSobNbNF3R
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+When an IO page fault occurs on the first-stage translation table, the
+IOMMU hardware can deliver the page fault to user space through the
+IOMMUFD framework. User space can then handle the page fault and respond
+to the device top-down through the IOMMUFD. This allows user space to
+implement its own IO page fault handling policies.
 
-On Tue, Apr 30, 2024 at 04:09:38PM +0200, Krzysztof Kozlowski wrote:
+User space application that is capable of handling IO page faults should
+allocate a fault object, and bind the fault object to any domain that it
+is willing to handle the fault generatd for them. On a successful return
+of fault object allocation, the user can retrieve and respond to page
+faults by reading or writing to the file descriptor (FD) returned.
 
-> -#define snd_soc_substream_to_rtd(substream) \
-> -	(struct snd_soc_pcm_runtime *)snd_pcm_substream_chip(substream)
-> +
-> +static inline struct snd_soc_pcm_runtime *
-> +snd_soc_substream_to_rtd(const struct snd_pcm_substream *substream)
-> +{
-> +	return substream->private_data;
-> +}
+The iommu selftest framework has been updated to test the IO page fault
+delivery and response functionality.
 
-This is not an obvious direct substitution, we've skipped the
-snd_pcm_subsystem_chip() (which is also a macro, but that just suggests
-it could do with it's own cleanup) and the commit log didn't mention it.
+The series and related patches are available on GitHub:
+https://github.com/LuBaolu/intel-iommu/commits/iommufd-io-pgfault-delivery-v5
 
---8pV+PWcSobNbNF3R
-Content-Type: application/pgp-signature; name="signature.asc"
+Change log:
+v5:
+ - Removed attach handle reference count from the core. Drivers will now
+   synchronize their use of handles and domain attach/detach.
+ - Automatically responds to all outstanding faults in hwpt detach or
+   replace paths.
+ - Supports getting a domain-type specific attach handle.
+ - Reorganized the series by changing the patch order.
+ - Miscellaneous cleanup.
 
------BEGIN PGP SIGNATURE-----
+v4: https://lore.kernel.org/linux-iommu/20240403011519.78512-1-baolu.lu@linux.intel.com/
+ - Add the iommu domain attachment handle to replace the iopf-specific
+   domain attachment interfaces introduced in the previous v3.
+ - Replace the iommu_sva with iommu domain attachment handle.
+ - Refine some fields in the fault and response message encoding
+   according to feedback collected during v3 review period.
+ - Refine and fix some problems in the fault FD implementation.
+ - Miscellaneous cleanup.
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmYxBq4ACgkQJNaLcl1U
-h9Ca7gf/T8ZFoUJmdU+447+36hbeeKvmRjKe/W64VoRyOxKcdgIc4vr9a3P+jkFO
-XDOo4DRaC4ODF3piEsAJpT1SiNUxBIOzTD3+t7uv4O0QRQ90SxTPVQLb4dxIRqiP
-3QCsgePEYGspRHxlUJkMwPuq/i6bdjX6KiT2jX9MVmLAEfYLzfrc4cjlZtrtmjPS
-Nzikju+66l21nQXBFToT4npXQxS9balCz9ruOM+iwSwcKC2trEyYJVnjK1tS6Uhd
-6j8JdCPmItOu4ERgVSmBQCuKzjKtJyj1ie7k8alpPzBjbXM5my6/W9uWr81GOhaz
-Vq6V0tNBMk2Nose52DHSpiVUIjAPqg==
-=pItM
------END PGP SIGNATURE-----
+v3: https://lore.kernel.org/linux-iommu/20240122073903.24406-1-baolu.lu@linux.intel.com/
+ - Add iopf domain attach/detach/replace interfaces to manage the
+   reference counters of hwpt and device, ensuring that both can only be
+   destroyed after all outstanding IOPFs have been responded to. 
+ - Relocate the fault handling file descriptor from hwpt to a fault
+   object to enable a single fault handling object to be utilized
+   across multiple domains.
+ - Miscellaneous cleanup and performance improvements.
 
---8pV+PWcSobNbNF3R--
+v2: https://lore.kernel.org/linux-iommu/20231026024930.382898-1-baolu.lu@linux.intel.com/
+ - Move all iommu refactoring patches into a sparated series and discuss
+   it in a different thread. The latest patch series [v6] is available at
+   https://lore.kernel.org/linux-iommu/20230928042734.16134-1-baolu.lu@linux.intel.com/
+ - We discussed the timeout of the pending page fault messages. We
+   agreed that we shouldn't apply any timeout policy for the page fault
+   handling in user space.
+   https://lore.kernel.org/linux-iommu/20230616113232.GA84678@myrica/
+ - Jason suggested that we adopt a simple file descriptor interface for
+   reading and responding to I/O page requests, so that user space
+   applications can improve performance using io_uring.
+   https://lore.kernel.org/linux-iommu/ZJWjD1ajeem6pK3I@ziepe.ca/
+
+v1: https://lore.kernel.org/linux-iommu/20230530053724.232765-1-baolu.lu@linux.intel.com/
+
+Lu Baolu (9):
+  iommu: Introduce domain attachment handle
+  iommu: Replace sva_iommu with iommu_attach_handle
+  iommu: Add attachment handle to struct iopf_group
+  iommufd: Add fault and response message definitions
+  iommufd: Add iommufd fault object
+  iommufd: Fault-capable hwpt attach/detach/replace
+  iommufd: Associate fault object with iommufd_hw_pgtable
+  iommufd/selftest: Add IOPF support for mock device
+  iommufd/selftest: Add coverage for IOPF test
+
+ include/linux/iommu.h                         |  32 +-
+ include/linux/uacce.h                         |   2 +-
+ drivers/dma/idxd/idxd.h                       |   2 +-
+ drivers/iommu/iommu-priv.h                    |  17 +
+ drivers/iommu/iommufd/iommufd_private.h       |  43 ++
+ drivers/iommu/iommufd/iommufd_test.h          |   8 +
+ include/uapi/linux/iommufd.h                  | 122 ++++++
+ tools/testing/selftests/iommu/iommufd_utils.h |  84 +++-
+ drivers/dma/idxd/cdev.c                       |   4 +-
+ drivers/iommu/io-pgfault.c                    |  34 +-
+ drivers/iommu/iommu-sva.c                     |  43 +-
+ drivers/iommu/iommu.c                         | 156 +++++++-
+ drivers/iommu/iommufd/device.c                |  16 +-
+ drivers/iommu/iommufd/fault.c                 | 373 ++++++++++++++++++
+ drivers/iommu/iommufd/hw_pagetable.c          |  35 +-
+ drivers/iommu/iommufd/main.c                  |   8 +-
+ drivers/iommu/iommufd/selftest.c              |  63 +++
+ drivers/misc/uacce/uacce.c                    |   2 +-
+ tools/testing/selftests/iommu/iommufd.c       |  18 +
+ .../selftests/iommu/iommufd_fail_nth.c        |   2 +-
+ drivers/iommu/iommufd/Makefile                |   1 +
+ 21 files changed, 959 insertions(+), 106 deletions(-)
+ create mode 100644 drivers/iommu/iommufd/fault.c
+
+-- 
+2.34.1
+
 
