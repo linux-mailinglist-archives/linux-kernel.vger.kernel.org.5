@@ -1,156 +1,142 @@
-Return-Path: <linux-kernel+bounces-163198-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-163199-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B132A8B6715
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 02:58:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 93D048B6718
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 03:00:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 48E001F2249E
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 00:58:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2DEDC1F22377
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 01:00:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 56B4F1FA4;
-	Tue, 30 Apr 2024 00:58:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F30923BF;
+	Tue, 30 Apr 2024 00:59:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fIAGANNa"
-Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bTF3O4aZ"
+Received: from mail-ed1-f45.google.com (mail-ed1-f45.google.com [209.85.208.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 524DA10E4;
-	Tue, 30 Apr 2024 00:58:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F266E10F7;
+	Tue, 30 Apr 2024 00:59:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714438704; cv=none; b=vE8Jhda7hHIul1CVtlsDxgyly/NdmUV0gNfYfbRv5TVC4sUiC06PMecfUWM2Gf7tVs9fvXoPKvBXmG69tClbW8+6D/HTe7oX7MiK9KOurDAY8vdnGU3kGvzfugEZ5BtZMnlJB8/KZBWY0hJHouA+8ZokZFCesb4TPHe7OJppt4M=
+	t=1714438796; cv=none; b=F3Kw6l1dCyTob1J4p6MaUxjVrqQ0Wy3wUiw7jeFVCsnQhEWFrNq0Qqk0HdK2Tub8WF10uursvP9QVdN69GMTQ1XzC+MoM6BWHDDtDDGKdz/oPsKGQQ6AGhJoRkRrYeP3r3fY4G2iUxpXZAi0CFBGamKw8zE8gjTKqEhhm1of6xQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714438704; c=relaxed/simple;
-	bh=i47KtvxJFjDe4TzW1eCvlwmDjtNPR2v4Ibdk+Llcacg=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Hh5PQtaLay3P2dItS41BsYc7Kut6R7GrJsA6OhzW7nnPmkhLzuR35eXyHakMkjE3s9/JZkKRhmrdtPHPZQI7ibvUDr+hWvx0XWaQXGHJH1GA0baWMGl+u0t+smnLYnVApMa9iv6xL+bpRQlcms5HC+WlWVMH+dulLd6Bm7gOCWw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fIAGANNa; arc=none smtp.client-ip=209.85.210.182
+	s=arc-20240116; t=1714438796; c=relaxed/simple;
+	bh=rZ5Fgvfjroac2GiLwSMgIhQ7CG5p1B8aQRKKwWjaFBg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=uXwKwEJax0lPvpauxjq6TLfRzadAC0YObctwX7mdgSbAx424TNjg5y3IEbsMgfuCNDwppqd7fHtGq+cvb9IddVWiDa0UjlrV9iHgq+F6bL8URh9woPlL7vXs1RIV5nZ6VIuVSAucgucWlhcFVTugcaF34RR006YWUbONV9G+18w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bTF3O4aZ; arc=none smtp.client-ip=209.85.208.45
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f182.google.com with SMTP id d2e1a72fcca58-6f4081574d6so1321678b3a.2;
-        Mon, 29 Apr 2024 17:58:23 -0700 (PDT)
+Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-56e6acb39d4so6153574a12.1;
+        Mon, 29 Apr 2024 17:59:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714438702; x=1715043502; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=+KVrLL2iRxP+kuBnYvUqcBYVbkuD5EKt0KkMRbO2uxM=;
-        b=fIAGANNawzjs0wvzHmq8QYe89b65SbuhuBc7CH7GG8oXBG75pK9VWj0okfYPR3jVLD
-         RKEAZRrsGHnHrHHOL57iqXkMgYvxTyF2F5KrEceW1uyb7Eo9XlfX5Yq4mMQ9UIXirgZX
-         TQmFZZXkSALCLlt+GoDnz0RVUCtwow1KlRUgPNmCR+cHiCUl5JGR/qwEeJEquLl2bKVL
-         b+kQG3U7+klgPm+PVOUkGPwJDz+OOgIhgPcG3nViiUGdIgVAJXMsIFWNNgzKizXLj5VZ
-         zlPsQdHFjpJLk3Bv2TYJWMytQeLr0GSaZvSUMh2T193nRhzZADFmX9VSSPQ2D+kif8St
-         gCzA==
+        d=gmail.com; s=20230601; t=1714438793; x=1715043593; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=0AW/wYh4RsDtCMHIZdU80eftqWkVY8DHoSo6I6qnwxU=;
+        b=bTF3O4aZB3hqJRffY2sP+enM8lKdpvRk/DxiX6EDcBF6tPyr9fKailVSFW7LRlbdrl
+         xZ90mJYvNAMJekb/hcGcRJ9k9Bybs5mk5XuiWpiss0LwBfpOIJ2oNjR0ItBTpeQGCLBN
+         CGmbq9vRkIbSk+ZTGD+nmbuUnJbQpDQEspY5Y5l03LZpIXCFzpgfSBVshrsBfPIK9EKm
+         PDfu5fL+8K1imQ5NA9bMWddruKj3Y4T25tSIY81jvg6Gl3EfPBG4Rf/+FEBprjf9Hcjm
+         ILcjzzoOAVwh+4Th1BK7tkYD9mFIwAnq2+4LyD+XUxdi1m2kVwgTGyDFB/E0tkvaQ7fP
+         +ZIw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714438702; x=1715043502;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=+KVrLL2iRxP+kuBnYvUqcBYVbkuD5EKt0KkMRbO2uxM=;
-        b=r+D4hp8qCk22ObxgYGPPQpKN2SkIsXrZuSjsVFx2cv78NIO+EI/etMyTEgd8K9fwcH
-         O6DPsYXNWSfeJvEnktOs5J3DYkX0zMhxb5uD4RJ1ylw6PnSQK5Rsf22k4/3s6aB4VosS
-         IzjCixkbYZhDr5uuBGbR6EpDB2Ai+pwEWrmMf0XxTgTxQVuGlJlN9TVC/VLpaw5yFByv
-         BlQSRwnE5R4+nYExE3B3MicyMgOqUDb/xcFF8/jC6lqciEiG+ymIOQS567XWxkJaOjvC
-         L/FzhTEYA+Ei/ZLdjjm7qedko0kthk3LN3HhDeM+CkrtSlVj5wDrRtOv/3p8QMEYaLtn
-         UT6w==
-X-Forwarded-Encrypted: i=1; AJvYcCXkkvPYBySiN+r9sjIlFXu+JuwUfFWNkmaBC/RtIb8TOARA2+Jj85PfjS5jbpDDUK0tuVFPmRFqb1vvP5Y7YQMqcgZ6
-X-Gm-Message-State: AOJu0YyTvI8t0yBTob0EKXkvrH42Ute/8uhGzSCncnQxtONoD7zh8T/K
-	1ZhjVswZXVViz8+B3MBYoKWzAvFATU5R7iAO+x+P/qrlSastQCf+R4zH2SaWVndCPFSjfMd+EjM
-	RiQNxHFFTlc358F9H8HeVbkA7/i4=
-X-Google-Smtp-Source: AGHT+IEsLZ8cV23eNmHkz0ueGZLIByKmmCQHvXDXgKq9YJ9jqgEC9g1+bHSnDweL2lrWxQbFCS0tlOmfGWUsHGVETu4=
-X-Received: by 2002:a05:6a21:993:b0:1ad:9394:2d30 with SMTP id
- li19-20020a056a21099300b001ad93942d30mr10914814pzb.37.1714438702568; Mon, 29
- Apr 2024 17:58:22 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1714438793; x=1715043593;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=0AW/wYh4RsDtCMHIZdU80eftqWkVY8DHoSo6I6qnwxU=;
+        b=nSz73cYVxYg24pf7L9U3sIoTDETtvMFaglPf+EbBmo5/nG+3Pnm4/kMI6ZD5bOYLQI
+         BopxBOl+wmhGxkCiTi0GU+XRzbSj9sxH+FNdFdMQP9tpFQF+dDd8Mae7PlexXPsoq1kG
+         iMJVT1/RqVup6f+aa0VMdHp0GibFVWRXBjS4Vaa7Ekv064F/9NbA9bGWrwr3NAPVww5s
+         MM4iTXNXJUwgC5k5Lo0cqNvp3KR+lJLQm9uA994tYyifXn8gdUIlIwwdOz6+bI6Vnoou
+         VOMwuQN4/zY+tvd7un8rsyoUkYPaEt2wob9Nea+0oUiOf2pNyzm9qCTS8dve3Amoaj/y
+         1+Lw==
+X-Forwarded-Encrypted: i=1; AJvYcCXP1qe6EGq9VfnaiDHomSovFXPwZ4/3HTlGTAzoS8KUkBR7hDTuJKd8IwrafYs1yCp18R4wUTmnhHnfT1oi9rtBAWd8x2QjGNwYMLVIUXxRpuVVLWNJqDjrM+uPwpbmtIqAF+oO
+X-Gm-Message-State: AOJu0YxvxJYLeKykgt9SXJan24b97pzYpd95f5sgfJ+R6oVKQ/6VUOW4
+	zHAdg27YIbNHkqTxNdgOd9FYp8xiqo4DsKNE8CgJFWvAhM26vfCK
+X-Google-Smtp-Source: AGHT+IHdNhQ1o7yqt5336ceWzkBhi+68iQi+cVplWUMRflPGIyCHcqMyO6RMKJHvbgODYQmgqdAYrA==
+X-Received: by 2002:a50:d593:0:b0:572:2264:76ec with SMTP id v19-20020a50d593000000b00572226476ecmr8068209edi.2.1714438792982;
+        Mon, 29 Apr 2024 17:59:52 -0700 (PDT)
+Received: from skbuf ([2a02:2f04:d70a:9c00::b2c])
+        by smtp.gmail.com with ESMTPSA id ef9-20020a05640228c900b00571bde3b0a4sm13261791edb.34.2024.04.29.17.59.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Apr 2024 17:59:52 -0700 (PDT)
+Date: Tue, 30 Apr 2024 03:59:49 +0300
+From: Vladimir Oltean <olteanv@gmail.com>
+To: Joseph Huang <joseph.huang.2024@gmail.com>
+Cc: Joseph Huang <Joseph.Huang@garmin.com>, netdev@vger.kernel.org,
+	Andrew Lunn <andrew@lunn.ch>,
+	Florian Fainelli <f.fainelli@gmail.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Roopa Prabhu <roopa@nvidia.com>,
+	Nikolay Aleksandrov <razor@blackwall.org>,
+	Linus =?utf-8?Q?L=C3=BCssing?= <linus.luessing@c0d3.blue>,
+	linux-kernel@vger.kernel.org, bridge@lists.linux.dev
+Subject: Re: [PATCH RFC net-next 07/10] net: dsa: mv88e6xxx: Track bridge mdb
+ objects
+Message-ID: <20240430005949.44lcegwhmcetpddm@skbuf>
+References: <20240402001137.2980589-1-Joseph.Huang@garmin.com>
+ <20240402001137.2980589-8-Joseph.Huang@garmin.com>
+ <20240402122343.a7o5narxsctrkaoo@skbuf>
+ <b5f79571-b4a8-4f21-8dc8-e1aa11056a5d@gmail.com>
+ <20240405110745.si4gc567jt5gwpbr@skbuf>
+ <c4f5c444-832c-4376-845f-7c28e88e4436@gmail.com>
+ <d36e2b82-0353-4c9c-aa89-22383c3bda2b@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240427005626.1365935-1-zhouzhouyi@gmail.com> <059d36ce-6453-42be-a31e-895abd35d590@paulmck-laptop>
-In-Reply-To: <059d36ce-6453-42be-a31e-895abd35d590@paulmck-laptop>
-From: Zhouyi Zhou <zhouzhouyi@gmail.com>
-Date: Tue, 30 Apr 2024 08:58:11 +0800
-Message-ID: <CAABZP2y1Ge-B26BNRcCsga2h7RTdkF0jBZpUCZNcpNAusDGi4Q@mail.gmail.com>
-Subject: Re: [PATCH] x86/rcutorture move CONFIG_HYPERVISOR_GUEST to kvm-test-1-run.sh
-To: paulmck@kernel.org
-Cc: linux-kernel@vger.kernel.org, frederic@kernel.org, boqun.feng@gmail.com, 
-	joel@joelfernandes.org, neeraj.upadhyay@amd.com, qiang.zhang1211@gmail.com, 
-	rcu@vger.kernel.org, lance@osuosl.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d36e2b82-0353-4c9c-aa89-22383c3bda2b@gmail.com>
 
-On Tue, Apr 30, 2024 at 7:22=E2=80=AFAM Paul E. McKenney <paulmck@kernel.or=
-g> wrote:
->
-> On Sat, Apr 27, 2024 at 12:56:26AM +0000, Zhouyi Zhou wrote:
-> > CONFIG_HYPERVISOR_GUEST is a x86 specific kernel option, move to
-> > kvm-test-1-run.sh to avoid ConfigFragment.diags in non-x86 platforms.
-> >
-> > Tested in both PPC VM of Open Source lab of Oregon State University and
-> > local x86_64 server.
-> >
-> > Fixes: a6fda6dab93c ("rcutorture: Tweak kvm options")
-> > Signed-off-by: Zhouyi Zhou <zhouzhouyi@gmail.com>
->
-> I like this general approach, but why not have something like a
-> CFCOMMON.arch for the various "arch"s that need it?
->
-> Better yet, I bet that there is already something somewhere in the
-> Linux kernel source tree that knows what hypervisor Kconfig options
-> each architecture needs.  If so, it would be most excellent to reuse
-> that information instead of maintaining it separately in RCU.
-Thank Paul for your great guidance and valuable advice!
+On Mon, Apr 29, 2024 at 06:07:25PM -0400, Joseph Huang wrote:
+> Something like this (some layers omitted for brevity)?
+> 
+>                                       +br_iterator
+>                                       |  for each mdb
+>                                       |    _br_switchdev_mdb_notify
+> rtnl_lock                             |      without F_DEFER flag
+>  |                                    |      |
+>  +switchdev_port_attr_set_deferred    |      +switchdev_port_obj_notify
+>    |                                  |        |
+>    +dsa_port_mrouter                  |        +dsa_user_port_obj_a/d
+>      |                                |          |
+>      +mv88e6xxx_port_mrouter----------+          +mv88e6xxx_port_obj_a/d
+>                                         |
+>  +--------------------------------------+
+>  |
+> rtnl_unlock
 
-I will do a thorough research on the above approaches.
+At a _very_ superficial glance, I don't think you are properly
+accounting for the fact that even with rtnl_lock() held, there are still
+SWITCHDEV_OBJ_ID_PORT_MDB events which may be pending on the switchdev
+chain. Without a switchdev_deferred_process() flush call, you won't be
+getting rid of them, so when you rtnl_unlock(), they will still run.
 
-Thanks again ;-)
-Zhouyi
->
->                                                         Thanx, Paul
->
-> > ---
-> >  tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh | 4 ++++
-> >  tools/testing/selftests/rcutorture/configs/rcu/CFcommon  | 1 -
-> >  2 files changed, 4 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh b=
-/tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh
-> > index b33cd8753689..75774bc70be7 100755
-> > --- a/tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh
-> > +++ b/tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh
-> > @@ -68,6 +68,10 @@ config_override_param "--gdb options" KcList "$TORTU=
-RE_KCONFIG_GDB_ARG"
-> >  config_override_param "--kasan options" KcList "$TORTURE_KCONFIG_KASAN=
-_ARG"
-> >  config_override_param "--kcsan options" KcList "$TORTURE_KCONFIG_KCSAN=
-_ARG"
-> >  config_override_param "--kconfig argument" KcList "$TORTURE_KCONFIG_AR=
-G"
-> > +if uname -a | grep -q x86
-> > +then
-> > +     config_override_param "x86 specific option" KcList "CONFIG_HYPERV=
-ISOR_GUEST=3Dy"
-> > +fi
-> >  cp $T/KcList $resdir/ConfigFragment
-> >
-> >  base_resdir=3D`echo $resdir | sed -e 's/\.[0-9]\+$//'`
-> > diff --git a/tools/testing/selftests/rcutorture/configs/rcu/CFcommon b/=
-tools/testing/selftests/rcutorture/configs/rcu/CFcommon
-> > index 0e92d85313aa..cf0387ae5358 100644
-> > --- a/tools/testing/selftests/rcutorture/configs/rcu/CFcommon
-> > +++ b/tools/testing/selftests/rcutorture/configs/rcu/CFcommon
-> > @@ -1,6 +1,5 @@
-> >  CONFIG_RCU_TORTURE_TEST=3Dy
-> >  CONFIG_PRINTK_TIME=3Dy
-> > -CONFIG_HYPERVISOR_GUEST=3Dy
-> >  CONFIG_PARAVIRT=3Dy
-> >  CONFIG_KVM_GUEST=3Dy
-> >  CONFIG_KCSAN_ASSUME_PLAIN_WRITES_ATOMIC=3Dn
-> > --
-> > 2.34.1
-> >
+Even worse, holding rtnl_lock() will not stop the bridge multicast layer
+from modifying its br->mdb_list; only br->multicast_lock will.
+
+So you may be better off also acquiring br->multicast_lock, and
+notifying the MDB entries to the switchdev chain _with_the F_DEFER flag.
+
+> Note that on the system I tested, each register read/write takes about 100us
+> to complete. For 100's of mdb groups, this would mean that we will be
+> holding rtnl lock for 10's of ms. I don't know if it's considered too long.
+
+Not sure how this is going to be any better if the iteration over MDB
+entries is done 100% in the driver, though - since its hook,
+dsa_port_mrouter(), runs entirely under rtnl_lock().
+
+Anyway, with the SWITCHDEV_F_DEFER flag, maybe the mdb object
+notifications can be made to run by switchdev only a few at a time, to
+give the network stack time to do other things as well.
 
