@@ -1,186 +1,224 @@
-Return-Path: <linux-kernel+bounces-163956-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-163955-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E5ADA8B768D
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 15:04:07 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 818398B768C
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 15:03:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 852221F2291D
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 13:04:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A4FDE1C20EDC
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 13:03:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76D66171658;
-	Tue, 30 Apr 2024 13:03:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2C36171658;
+	Tue, 30 Apr 2024 13:03:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="juNMt5sm"
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+	dkim=pass (1024-bit key) header.d=hugovil.com header.i=@hugovil.com header.b="tkuzoWZI"
+Received: from mail.hugovil.com (mail.hugovil.com [162.243.120.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE7CE17164A
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 13:03:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 01F8242AA5;
+	Tue, 30 Apr 2024 13:03:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=162.243.120.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714482233; cv=none; b=UUrJ8Tyi3e7zuoF863TQWAkk8xQZ2WgomXbTSrr8cF98LHfg3I0TEHcudpnH7n22gYYqOyzusGJnjseSX/Vp1RN4zqoxYmoomH8ISd8Q4KXJ25JMilOzzlHB+obcH/Qqbw/1VTy8TX9DkB9yJ5UY8mL4QA34crdYyjaWvjtnw94=
+	t=1714482225; cv=none; b=FGbQW/MtdfcOU9+iYV0hYCigHhYq8kSPZ3n9TQ+2dA8XwkiWzX0C8TDA6qlWOgcBB7zr9vFvmgMnxz+xseu3p2o/RBmMPQZa1kfllL2q8IQmgN4M7r387dtKK0Jcs2rNPc8Lc+WtTsiiOOAI9veE6APlvlBTvwan7OHbm6Yac5I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714482233; c=relaxed/simple;
-	bh=0DgoqzOughMpMCnHD73e64SXh2Mbhdm326Iu2jw37y4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=pYZMuQH2xeVzN6xSUzds4tTgApKjcDAfrgFoSV2G2jvSKKSurJZLTRopSfVL1FGql0SifsGOm+sZD3/WB6NnC8VoWpk0tjoSH85cGr0SZ2wtljMUKjQSE4Gn76o8+KgOud1W7EkNid6XzSTz9Op7jEpumwg/B9N9C82+E/Exzl4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=juNMt5sm; arc=none smtp.client-ip=65.109.113.108
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 8E19840E00B2;
-	Tue, 30 Apr 2024 13:03:48 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-	header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id 4pOHEVBUvPZw; Tue, 30 Apr 2024 13:03:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1714482224; bh=yH6Cwq5/6RGkXtt5HQxlFR8k88T6Ia2YT89+Wjt1MZE=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=juNMt5sml1hzAQw8ms2D04JBZUNnRjMdVKJ8nvf2Z0jYIs50oI2ezS4569ejqpPT7
-	 J3PDH5Ml4s4Utu+2BhLRka0NKCurSbPKHWPcklEssmWhuiXTcR/DXdKqAWQe3rko1o
-	 MLaEgIdd06Pqyt9CVBv3WrHPBzgnVvy8NLzlcIorNXOuyqMFOMWGS3YHCaEUEdDSvr
-	 l9UZK4wH5Vg9p9s4liriyMZ2wNtczIq8hSeNoTmket0pNKiQEkAT9Yb7D/osJnF9mB
-	 yxIWpgTKpCVNLSSk9j3RMZeHx7SBM/lNQD9yWHr6e+yjk4piyJHJD47jB7vcMsFq8D
-	 LhVNjBdOTGboN8l7nZi+DziNaF921K0LsanmK3XpzWFtWTI3a8S8BPf9kiFLse6oY9
-	 ioqmSAQMvaZQwbJrxdf1UZ/hl9M7vY0xDj6pScAygVRA7JUJhOdys+KGKn9BgUpCNG
-	 x8x3+r7zF50fPMKJ5GLRnVeT6LKos0PkChpiuLNxUw5fOI9OUY4zmDwYKzx7YGAX5G
-	 NFbuSKxS+3N6oACe+Js9/PkTwZ+A8Go0w9OAa93debmZDYvuw8n3RpcQP6HNoGBTHb
-	 CmUTw2K0MvgCnI04isvWw/cNjukt+2KZT4noNKeNID09Ycus/JPSN4wPhc+oiwmVIU
-	 YC3lblHRoDgiwrqxN0qAN2wk=
-Received: from zn.tnic (pd953020b.dip0.t-ipconnect.de [217.83.2.11])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 51C6D40E016B;
-	Tue, 30 Apr 2024 13:03:24 +0000 (UTC)
-Date: Tue, 30 Apr 2024 15:03:23 +0200
-From: Borislav Petkov <bp@alien8.de>
-To: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-	"Rafael J. Wysocki" <rafael@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>,
-	Elena Reshetova <elena.reshetova@intel.com>,
-	Jun Nakajima <jun.nakajima@intel.com>,
-	Rick Edgecombe <rick.p.edgecombe@intel.com>,
-	Tom Lendacky <thomas.lendacky@amd.com>,
-	"Kalra, Ashish" <ashish.kalra@amd.com>,
-	Sean Christopherson <seanjc@google.com>,
-	"Huang, Kai" <kai.huang@intel.com>, Baoquan He <bhe@redhat.com>,
-	kexec@lists.infradead.org, linux-coco@lists.linux.dev,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCHv10 05/18] x86/kexec: Keep CR4.MCE set during kexec for
- TDX guest
-Message-ID: <20240430130323.GAZjDsG00Xdhv5mv8W@fat_crate.local>
-References: <20240409113010.465412-1-kirill.shutemov@linux.intel.com>
- <20240409113010.465412-6-kirill.shutemov@linux.intel.com>
+	s=arc-20240116; t=1714482225; c=relaxed/simple;
+	bh=t9lIC5lX/qJ52x4Z/b7MoUypbNqa69SfxpVrBUPmDuk=;
+	h=Date:From:To:Cc:Message-Id:In-Reply-To:References:Mime-Version:
+	 Content-Type:Subject; b=Z5YTZOpVwqytT1Mjy8upPulmXb9gdbgO6ZJbHlJ2BCkrPULqgjOcJgKLkpm28Vb7yDk+YLhixccZ7elJK0gMmFikqL2SeJqgRaXICj4WsKxm8paKCqOxNA0X8mRsAC3QRl3YyobtIUOwK9jrI/3CLxjR22ybNv3GdIHJOOg9e20=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=hugovil.com; spf=pass smtp.mailfrom=hugovil.com; dkim=pass (1024-bit key) header.d=hugovil.com header.i=@hugovil.com header.b=tkuzoWZI; arc=none smtp.client-ip=162.243.120.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=hugovil.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hugovil.com
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hugovil.com
+	; s=x; h=Subject:Content-Transfer-Encoding:Mime-Version:Message-Id:Cc:To:From
+	:Date:subject:date:message-id:reply-to;
+	bh=EnngSO3iBdBLENfBDSJPT5nGlya4oHKjjR8tHo8Z+LM=; b=tkuzoWZIV+Anja+BKYloZnWhR6
+	69pNBLu2xSGqR9qYqvElWWtBXXekgUiCxJupqgt1nCBtmjbEbNw64I0A1cylR43vAkKY0umxCfuSS
+	6K5CuhkmOYgNoacn27C5WBJzrYxYrNGWGUdpeJEw1gLfxPf3g9S3mpD/Q0HZS+Oh3oWs=;
+Received: from modemcable168.174-80-70.mc.videotron.ca ([70.80.174.168]:45896 helo=pettiford)
+	by mail.hugovil.com with esmtpa (Exim 4.92)
+	(envelope-from <hugo@hugovil.com>)
+	id 1s1n8w-00039n-13; Tue, 30 Apr 2024 09:03:34 -0400
+Date: Tue, 30 Apr 2024 09:03:33 -0400
+From: Hugo Villeneuve <hugo@hugovil.com>
+To: Hugo Villeneuve <hugo@hugovil.com>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>, gregkh@linuxfoundation.org,
+ jirislaby@kernel.org, peterz@infradead.org, mingo@kernel.org,
+ linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
+ andy.shevchenko@gmail.com, Hugo Villeneuve <hvilleneuve@dimonoff.com>
+Message-Id: <20240430090333.5c5f029553cabcdf699310cb@hugovil.com>
+In-Reply-To: <20240423091410.28cb286b212789250b1485dd@hugovil.com>
+References: <20240409154253.3043822-1-hugo@hugovil.com>
+	<20240409154253.3043822-4-hugo@hugovil.com>
+	<CAMuHMdVq=rf-6o485KiA+zcwJPHMe5STKUtSWtFPs2nmvshu-A@mail.gmail.com>
+	<20240423091410.28cb286b212789250b1485dd@hugovil.com>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20240409113010.465412-6-kirill.shutemov@linux.intel.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 70.80.174.168
+X-SA-Exim-Mail-From: hugo@hugovil.com
+X-Spam-Level: 
+X-Spam-Report: 
+	* -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+	* -1.1 NICE_REPLY_A Looks like a legit reply (A)
+Subject: Re: [PATCH v4 3/5] serial: sc16is7xx: split into core and I2C/SPI
+ parts (core)
+X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
+X-SA-Exim-Scanned: Yes (on mail.hugovil.com)
 
-On Tue, Apr 09, 2024 at 02:29:57PM +0300, Kirill A. Shutemov wrote:
-> +1:
-> +	testq	$X86_CR4_MCE, %r13
-> +	jz	1f
-> +	ALTERNATIVE "", __stringify(orl $X86_CR4_MCE, %eax), X86_FEATURE_TDX_GUEST
->  1:
+On Tue, 23 Apr 2024 09:14:10 -0400
+Hugo Villeneuve <hugo@hugovil.com> wrote:
 
-Please add the below patch to your set. Those same-number labels are
-just abominable.
+> On Tue, 23 Apr 2024 12:01:23 +0200
+> Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> 
+> > Hi Hugo,
+> > 
+> > On Tue, Apr 9, 2024 at 5:48 PM Hugo Villeneuve <hugo@hugovil.com> wrote:
+> > > From: Hugo Villeneuve <hvilleneuve@dimonoff.com>
+> > >
+> > > Split the common code from sc16is7xx driver and move the I2C and SPI bus
+> > > parts into interface-specific source files.
+> > >
+> > > sc16is7xx becomes the core functions which can support multiple bus
+> > > interfaces like I2C and SPI.
+> > >
+> > > No functional changes intended.
+> > >
+> > > Also simplify and improve Kconfig entries.
+> > >   - Capitalize SPI keyword for consistency
+> > >   - Display list of supported ICs each on a separate line (and aligned) to
+> > >     facilitate locating a specific IC model
+> > >   - Add Manufacturer name at start of description string
+> > >   - Add UART keyword to description string
+> > >
+> > > Suggested-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+> > > Signed-off-by: Hugo Villeneuve <hvilleneuve@dimonoff.com>
+> > 
+> > Thanks for your patch, which is now commit d49216438139bca0
+> > ("serial: sc16is7xx: split into core and I2C/SPI parts (core)")
+> > in tty-next (next-20240415 and later).
+> > 
+> > > --- a/drivers/tty/serial/Kconfig
+> > > +++ b/drivers/tty/serial/Kconfig
+> > > @@ -1021,41 +1021,30 @@ config SERIAL_SCCNXP_CONSOLE
+> > >           Support for console on SCCNXP serial ports.
+> > >
+> > >  config SERIAL_SC16IS7XX_CORE
+> > > -       tristate
+> > > -
+> > > -config SERIAL_SC16IS7XX
+> > > -       tristate "SC16IS7xx serial support"
+> > > +       tristate "NXP SC16IS7xx UART support"
+> > 
+> > Hence this replaces SERIAL_SC16IS7XX_CORE by SERIAL_SC16IS7XX,
+> > so arch/mips/configs/cu1??0-neo_defconfig needs to updated.
+> 
+> Hi Geert,
+> yes you are right, sorry I missed that.
+> 
+> > 
+> > >         select SERIAL_CORE
+> > > -       depends on (SPI_MASTER && !I2C) || I2C
+> > > +       select SERIAL_SC16IS7XX_SPI if SPI_MASTER
+> > > +       select SERIAL_SC16IS7XX_I2C if I2C
+> > 
+> > So if SPI_MASTER or I2C is enabled, the corresponding SERIAL_SC16IS7XX_*
+> > subdriver can no longer be disabled?  According to
+> > https://lore.kernel.org/all/20240403123501.8ef5c99f65a40ca2c10f635a@hugovil.com/
+> > you did want to support that?
+> 
+> Just to clarify, SPI subdriver will be disabled if
+> SPI_MASTER is disabled, even if I2C is enabled, and vice versa.
+> 
+> It was not my original intention, V1 of the patch offered the
+> possibility to enable/disable each subdriver individually, but Andy
+> pointed out that was maybe not the standard/usual/recommended way of
+> defining it, and to look into what other subsystems were doing,
+> especially iio. After some research, I settled on this approach as a
+> compromise.
 
-Thx.
+Hi Andy and Geert,
+if you are ok with what I explained, I will send a patch.
 
----
-From: "Borislav Petkov (AMD)" <bp@alien8.de>
-Date: Tue, 30 Apr 2024 15:00:16 +0200
-Subject: [PATCH] x86/relocate_kernel: Use named labels for less confusion
+Hugo.
 
-That identity_mapped() function was loving that "1" label to the point
-of completely confusing its readers.
 
-Use named labels in each place for clarity.
+> 
+> 
+> Hugo.
+> 
+> > 
+> > >         help
+> > > -         This selects support for SC16IS7xx serial ports.
+> > > -         Supported ICs are SC16IS740, SC16IS741, SC16IS750, SC16IS752,
+> > > -         SC16IS760 and SC16IS762. Select supported buses using options below.
+> > > +         Core driver for NXP SC16IS7xx UARTs.
+> > > +         Supported ICs are:
+> > > +
+> > > +           SC16IS740
+> > > +           SC16IS741
+> > > +           SC16IS750
+> > > +           SC16IS752
+> > > +           SC16IS760
+> > > +           SC16IS762
+> > > +
+> > > +         The driver supports both I2C and SPI interfaces.
+> > >
+> > >  config SERIAL_SC16IS7XX_I2C
+> > > -       bool "SC16IS7xx for I2C interface"
+> > > -       depends on SERIAL_SC16IS7XX
+> > > -       depends on I2C
+> > > -       select SERIAL_SC16IS7XX_CORE if SERIAL_SC16IS7XX
+> > > -       select REGMAP_I2C if I2C
+> > > -       default y
+> > > -       help
+> > > -         Enable SC16IS7xx driver on I2C bus,
+> > > -         If required say y, and say n to i2c if not required,
+> > > -         Enabled by default to support oldconfig.
+> > > -         You must select at least one bus for the driver to be built.
+> > > +       tristate
+> > > +       select REGMAP_I2C
+> > >
+> > >  config SERIAL_SC16IS7XX_SPI
+> > > -       bool "SC16IS7xx for spi interface"
+> > > -       depends on SERIAL_SC16IS7XX
+> > > -       depends on SPI_MASTER
+> > > -       select SERIAL_SC16IS7XX_CORE if SERIAL_SC16IS7XX
+> > > -       select REGMAP_SPI if SPI_MASTER
+> > > -       help
+> > > -         Enable SC16IS7xx driver on SPI bus,
+> > > -         If required say y, and say n to spi if not required,
+> > > -         This is additional support to existing driver.
+> > > -         You must select at least one bus for the driver to be built.
+> > > +       tristate
+> > > +       select REGMAP_SPI
+> > >
+> > >  config SERIAL_TIMBERDALE
+> > >         tristate "Support for timberdale UART"
+> > 
+> > Gr{oetje,eeting}s,
+> > 
+> >                         Geert
+> > 
+> > -- 
+> > Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+> > 
+> > In personal conversations with technical people, I call myself a hacker. But
+> > when I'm talking to journalists I just say "programmer" or something like that.
+> >                                 -- Linus Torvalds
+> > 
+> 
+> 
 
-No functional changes.
 
-Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
----
- arch/x86/kernel/relocate_kernel_64.S | 18 ++++++++++--------
- 1 file changed, 10 insertions(+), 8 deletions(-)
-
-diff --git a/arch/x86/kernel/relocate_kernel_64.S b/arch/x86/kernel/relocate_kernel_64.S
-index 8e2037d78a1f..0077c9e562a7 100644
---- a/arch/x86/kernel/relocate_kernel_64.S
-+++ b/arch/x86/kernel/relocate_kernel_64.S
-@@ -152,13 +152,15 @@ SYM_CODE_START_LOCAL_NOALIGN(identity_mapped)
- 	 */
- 	movl	$X86_CR4_PAE, %eax
- 	testq	$X86_CR4_LA57, %r13
--	jz	1f
-+	jz	no_la57
- 	orl	$X86_CR4_LA57, %eax
--1:
-+no_la57:
-+
- 	testq	$X86_CR4_MCE, %r13
--	jz	1f
-+	jz	mca_off
- 	ALTERNATIVE "", __stringify(orl $X86_CR4_MCE, %eax), X86_FEATURE_TDX_GUEST
--1:
-+mca_off:
-+
- 	movq	%rax, %cr4
- 
- 	jmp 1f
-@@ -173,9 +175,9 @@ SYM_CODE_START_LOCAL_NOALIGN(identity_mapped)
- 	 * used by kexec. Flush the caches before copying the kernel.
- 	 */
- 	testq	%r12, %r12
--	jz 1f
-+	jz sme_off
- 	wbinvd
--1:
-+sme_off:
- 
- 	movq	%rcx, %r11
- 	call	swap_pages
-@@ -195,7 +197,7 @@ SYM_CODE_START_LOCAL_NOALIGN(identity_mapped)
- 	 */
- 
- 	testq	%r11, %r11
--	jnz 1f
-+	jnz relocate
- 	xorl	%eax, %eax
- 	xorl	%ebx, %ebx
- 	xorl    %ecx, %ecx
-@@ -216,7 +218,7 @@ SYM_CODE_START_LOCAL_NOALIGN(identity_mapped)
- 	ret
- 	int3
- 
--1:
-+relocate:
- 	popq	%rdx
- 	leaq	PAGE_SIZE(%r10), %rsp
- 	ANNOTATE_RETPOLINE_SAFE
 -- 
-2.43.0
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Hugo Villeneuve
 
