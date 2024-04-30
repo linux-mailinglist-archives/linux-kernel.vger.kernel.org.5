@@ -1,124 +1,200 @@
-Return-Path: <linux-kernel+bounces-164770-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-164771-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7D4A28B82A3
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 00:25:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4C6628B82A7
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 00:25:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1C89A1F227B9
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 22:25:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B8F0A1F219C0
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 22:25:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D7D01BF6E3;
-	Tue, 30 Apr 2024 22:24:55 +0000 (UTC)
-Received: from mail-lj1-f182.google.com (mail-lj1-f182.google.com [209.85.208.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E863A1BF6F7;
+	Tue, 30 Apr 2024 22:25:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="EQEFIXc8";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="UOaCImBv"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9EA131BED74;
-	Tue, 30 Apr 2024 22:24:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7AE6C1BF6DE;
+	Tue, 30 Apr 2024 22:25:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714515894; cv=none; b=Lw2iYXTCfh1Lso/ZMuJb+zMgeJB+qqYHyqzf7kMscZRHtl6xQ25x7sODUpPX/6z2PZuV9bdA0BPT+A1jCZh8DVa2aLhrNUdBcaXIwkyV2LDDwY3wGZD3zJ/9Xb+hOb9AlF7dZxuDWGfMz9AmIpALnifcXOfBMIGwl5xv5Y/JUxs=
+	t=1714515908; cv=none; b=aCYLueAMe4YlolZ4qgdMnJmtuTxSj0RP9fQKCJBWkZTdqKGLXzXSuxZ55B2sb9EILsplYbHJqRsCh85U4ziaGfPEbqIfpD10v+9wYDpRNYc0oRb36wK00MVxgk+OWKbEiBwLtQjT70iZWk5AvyjZs2B0WR0gvt+LjxMX87E6Wps=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714515894; c=relaxed/simple;
-	bh=17NkYFO9dywn/blIM0Gpoy5e7x7EYKqNqeOoLXKiO7Q=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=geezfcFI/Wj+75dwg2ssaorv6vUTwiOr1HozOz3PZBMAJc1jNI6ZkSEK5XLiL3gjBwWg+ls+VEmoQoD4dWCjo1p6AzubW9RS7eQZjZasBPTDTlC9+Ang7kz2s4sjIUvLZlUD+933fesRiG8p8UVXNaW3Z2/tM2rJ6HGtEwiL9gM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=sung-woo.kim; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.208.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=sung-woo.kim
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f182.google.com with SMTP id 38308e7fff4ca-2db101c11beso73349081fa.0;
-        Tue, 30 Apr 2024 15:24:52 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714515890; x=1715120690;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ECpIuyv+gzN+0Jumi8ixAEg//MH7TPT3J6p+EMrCEyY=;
-        b=TAS14O78Lx1Kio/qtaG3OLBmeObd0qO79cvk++7xzCNdgWHGXKtz2jKxuZy/gQhkzU
-         BMT//ZpzODP+MAqrf4yrxdA8dfYrwnuxnTj+w7Iw8N7/hmDEsdBHFPlLGy+93EryJCQu
-         8EQdtZozpNXDVADhEOTMvObd33Nf6aZJ9AvBu9x+Lt/X6m3uhXEggyDYZJ0//HPOZYET
-         o/Mg2EmEXQPeXRkJvoS7O0MAVJxtXktpGBy1+GOKPyeAYCLBsEZzsS6vwHaeGdXiDaGH
-         OYjNVqwX+Q0i6D8B+3EntPfAjQt/OxCb3zv4bUDCREh5cT6KXkH5yRfVqVb4+MbGUpFF
-         z5yQ==
-X-Forwarded-Encrypted: i=1; AJvYcCV3/cmGaEaFifLgxgATtSf3M7s049luyIJAtlYW4v7InH+7vs4kjQQuMYn6NhSFH5FAilHytVtcg1+5Efr3n05CpZyVnd9wkHW4OEFKAmD8DnRRg95ZftzXSOxuDxf5B0bjeRXxjG+BVQ==
-X-Gm-Message-State: AOJu0YxCrZ4FQ/g9o/cFFBF6q9h+8JZ+gkYaJCWJMoK9lNF1YWmbN5oV
-	4Q5S/8ZC0imBG5fxiKBk5Vr/2OTGKweXb8rpdZhaaIsLJ2mJeZNT1FLFWNJMqV0=
-X-Google-Smtp-Source: AGHT+IFkDqWis1cth1ly84iFSo11IVWjc4Yk7t+fpJ5KyD5XPZCLyZbXH2DoWlIIg3mBIwhf/dustg==
-X-Received: by 2002:a05:651c:1992:b0:2d4:9201:d505 with SMTP id bx18-20020a05651c199200b002d49201d505mr615301ljb.51.1714515890303;
-        Tue, 30 Apr 2024 15:24:50 -0700 (PDT)
-Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com. [209.85.167.45])
-        by smtp.gmail.com with ESMTPSA id f28-20020a2eb5bc000000b002e0e78240a4sm365162ljn.77.2024.04.30.15.24.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 30 Apr 2024 15:24:49 -0700 (PDT)
-Received: by mail-lf1-f45.google.com with SMTP id 2adb3069b0e04-518931f8d23so6465425e87.3;
-        Tue, 30 Apr 2024 15:24:49 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCVRs5xWcYFKTtjNkCZKop6XbkeTv9uZt5xZfN19KGWvgwEK2keNBBrE9pLKZgmFR4eNqhfaBZvJqsewJo6wBk9Qt++Y6nmHV+n7VSxkBV1F+G5ykMEHfm38trWPgFkNGJqGLm4RC6CzUg==
-X-Received: by 2002:ac2:5632:0:b0:51d:68fb:5d73 with SMTP id
- b18-20020ac25632000000b0051d68fb5d73mr498752lff.8.1714515889769; Tue, 30 Apr
- 2024 15:24:49 -0700 (PDT)
+	s=arc-20240116; t=1714515908; c=relaxed/simple;
+	bh=Tdxlrja/E556yM8G8Moo4I9ZA6Lih+TFa36AHyR449o=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=ZM8AioNJwz0LRELoeyE8Foyd1lC59DMNqsXb9KcoHJ0EDicYdjguc/zuDDApm12Q1wyrDDN9Y7gTDxiZVxWbNW08D4+BGJENDFiVWB9by0GMmQgARW72szxgb6VzToqi+bGmB+bowmorYy/vnn+Nq9lmbDr+N2LVw1pYXYxgyNI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=EQEFIXc8; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=UOaCImBv; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+From: Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1714515904;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=1TS/HO0mqmfdycdlpODJrQqB9T6VoVjE4nOwjJ+wi5o=;
+	b=EQEFIXc8+ljJg4VFarlQSTuWQLtlMexz56Vjrdd2LJBUjc0/7QLF8+UtlZxvkiOhtx1a7C
+	CDeX82g08YWVQp1dmER5ocK4rP+xxaM3RS3O/4xFDCWYmEx75+PGT2SPWaaa2ZO0HYEseO
+	rsbMNyz3Nl/A5HtPvRLJx9qDrYuS5MRHVRJSDHuRezkM0m7tgjNJV1204PddkuCjFx8/aV
+	k/4Hf0tUvLzKash7Myf2umsWxMiNiA9ye+kLyXEMjJ0WE/JbnkkfdKsopGqHlGdP6GWGFr
+	HMmRfxow+8VIR8Qs5y6djKgLj6ZTkllW+MKc4iAwoKHHhbadlYbfb64LVXSyKQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1714515904;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=1TS/HO0mqmfdycdlpODJrQqB9T6VoVjE4nOwjJ+wi5o=;
+	b=UOaCImBvI/YdTXd5F4mwktZqa/1l0OwKJQOr8PcCxdmaHROTFISROrDyl2xObEtax9G1kf
+	v8zD8fQna57EgwCQ==
+To: Andreas Hindborg <nmi@metaspace.dk>
+Cc: Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>,
+ Wedson Almeida Filho <wedsonaf@gmail.com>, Anna-Maria Behnsen
+ <anna-maria@linutronix.de>, Frederic Weisbecker <frederic@kernel.org>,
+ Andreas Hindborg <a.hindborg@samsung.com>, Boqun Feng
+ <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, =?utf-8?Q?Bj=C3=B6rn?=
+ Roy Baron
+ <bjorn3_gh@protonmail.com>, Benno Lossin <benno.lossin@proton.me>, Alice
+ Ryhl <aliceryhl@google.com>, rust-for-linux@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] rust: hrtimer: introduce hrtimer support
+In-Reply-To: <87le4uk936.fsf@metaspace.dk>
+References: <20240425094634.262674-1-nmi@metaspace.dk> <87r0emss0j.ffs@tglx>
+ <87le4uk936.fsf@metaspace.dk>
+Date: Wed, 01 May 2024 00:25:01 +0200
+Message-ID: <87ikzysd36.ffs@tglx>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240501075038.2d07189b@canb.auug.org.au>
-In-Reply-To: <20240501075038.2d07189b@canb.auug.org.au>
-From: Sungwoo Kim <iam@sung-woo.kim>
-Date: Tue, 30 Apr 2024 18:24:35 -0400
-X-Gmail-Original-Message-ID: <CAJNyHp+-Hb29VE2-DLb1Vo51rwhJrYmN9J5_mxocFUf8Y72Vww@mail.gmail.com>
-Message-ID: <CAJNyHp+-Hb29VE2-DLb1Vo51rwhJrYmN9J5_mxocFUf8Y72Vww@mail.gmail.com>
-Subject: Re: linux-next: Fixes tag needs some work in the bluetooth tree
-To: Luiz Augusto von Dentz <luiz.dentz@gmail.com>
-Cc: Marcel Holtmann <marcel@holtmann.org>, Johan Hedberg <johan.hedberg@gmail.com>, 
-	Luiz Augusto von Dentz <luiz.von.dentz@intel.com>, 
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, 
-	Linux Next Mailing List <linux-next@vger.kernel.org>, sfr@canb.auug.org.au
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
 
-Hi, sorry for the wrong fixed tag.
+Andreas!
 
-On Tue, Apr 30, 2024 at 5:50=E2=80=AFPM Stephen Rothwell <sfr@canb.auug.org=
-au> wrote:
+On Tue, Apr 30 2024 at 20:18, Andreas Hindborg wrote:
+> Thomas Gleixner <tglx@linutronix.de> writes:
+>> On Thu, Apr 25 2024 at 11:46, Andreas Hindborg wrote:
+>>> +// SAFETY: A `Timer` can be moved to other threads and used from there.
+>>> +unsafe impl<T> Send for Timer<T> {}
+>>> +
+>>> +// SAFETY: Timer operations are locked on C side, so it is safe to operate on a
+>>> +// timer from multiple threads
+>>
+>> Kinda. Using an hrtimer from different threads needs some thought in the
+>> implementation as obviously ordering matters:
+>>
+>>      T1                              T2
+>>      hrtimer_start()                 hrtimer_cancel()
+>>
+>> So depending on whether T1 gets the internal lock first or T2 the
+>> outcome is different. If T1 gets it first the timer is canceled by
+>> T2. If T2 gets it first the timer ends up armed.
 >
-> Hi all,
->
-> In commit
->
->   91708e8a4376 ("Bluetooth: msft: fix slab-use-after-free in msft_do_clos=
-e()")
->
-> Fixes tag
->
->   Fixes: 9e14606d8f38 ("Bluetooth: disable advertisement filters during s=
-uspend")
->
-> has these problem(s):
->
->   - Subject does not match target commit subject
->     Just use
->         git log -1 --format=3D'Fixes: %h ("%s")'
->
-> Maybe you meant
->
-> Fixes: bf6a4e30ffbd ("Bluetooth: disable advertisement filters during sus=
-pend")
->
-> or
->
-> Fixes: 9e14606d8f38 ("Bluetooth: msft: Extended monitor tracking by addre=
-ss filter")
+> That is all fine. What is meant here is that we will not get UB in the
+> `hrtimer` subsystem when racing these operations. As far as I can tell
+> from the C source, the operations are atomic, even though their
+> interleaving will not be deterministic.
 
-The correct tag is:
+That's correct. All operations happen with the associated base lock held.
 
-Fixes: 5031ffcc79b8 ("Bluetooth: Keep MSFT ext info throughout a
-hci_dev's life cycle")
+>>> +unsafe impl<T> Sync for Timer<T> {}
+>>> +
+>>> +impl<T: TimerCallback> Timer<T> {
+>>> +    /// Return an initializer for a new timer instance.
+>>> +    pub fn new() -> impl PinInit<Self> {
+>>> +        crate::pin_init!( Self {
+>>> +            timer <- Opaque::ffi_init(move |place: *mut bindings::hrtimer| {
+>>> +                // SAFETY: By design of `pin_init!`, `place` is a pointer live
+>>> +                // allocation. hrtimer_init will initialize `place` and does not
+>>> +                // require `place` to be initialized prior to the call.
+>>> +                unsafe {
+>>> +                    bindings::hrtimer_init(
+>>> +                        place,
+>>> +                        bindings::CLOCK_MONOTONIC as i32,
+>>> +                        bindings::hrtimer_mode_HRTIMER_MODE_REL,
+>>
+>> This is odd. The initializer really should take a clock ID and a mode
+>> argument. Otherwise you end up implementing a gazillion of different
+>> timers.
+>
+> I implemented the minimum set of features to satisfy the requirements
+> for the Rust null block driver. It is my understanding that most
+> maintainers of existing infrastructure prefers to have a user for the
+> implemented features, before wanting to merge them.
+>
+> I can try to extend the abstractions to cover a more complete `hrtimer`
+> API. Or we can work on this subset and try to get that ready to merge,
+> and then expand scope later.
 
-Would you like me to send a new patch to fix this?
+Wouldn't expanding scope later require to change already existing call sites?
+
+>>> +                    );
+>>> +                }
+>>> +
+>>> +                // SAFETY: `place` is pointing to a live allocation, so the deref
+>>> +                // is safe. The `function` field might not be initialized, but
+>>> +                // `addr_of_mut` does not create a reference to the field.
+>>> +                let function: *mut Option<_> = unsafe { core::ptr::addr_of_mut!((*place).function) };
+>>> +
+>>> +                // SAFETY: `function` points to a valid allocation.
+>>> +                unsafe { core::ptr::write(function, Some(T::Receiver::run)) };
+>>
+>> We probably should introduce hrtimer_setup(timer, clockid, mode, function)
+>> to avoid this construct. That would allow to cleanup existing C code too.
+>
+> Do you want me to cook up a C patch for that, or would you prefer to do
+> that yourself?
+
+Please create that patch yourself and convert at least one C location to
+this new interface in a separate patch. THe remaining C cleanup can go
+from there and mostly be scripted with coccinelle.
+
+>>> +/// [`Box<T>`]: Box
+>>> +/// [`Arc<T>`]: Arc
+>>> +/// [`ARef<T>`]: crate::types::ARef
+>>> +pub trait RawTimer: Sync {
+>>> +    /// Schedule the timer after `expires` time units
+>>> +    fn schedule(self, expires: u64);
+>>
+>> Don't we have some time related rust types in the kernel by now?
+>
+> There are patches on the list, but I think they are not applied to any
+> tree yet? I did not want to depend on those patches before they are
+> staged somewhere. Would you prefer this patch on top of the Rust `ktime`
+> patches?
+
+The initial set is queued in
+
+   git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git timers/core
+
+for 6.10. Boqun has some updates on top IIRC. Your stuff should go
+through that branch too.
+
+>>> +        // SAFETY: This `Arc` comes from a call to `Arc::into_raw()`
+>>> +        let receiver = unsafe { Arc::from_raw(data_ptr) };
+>>> +
+>>> +        T::run(receiver);
+>>> +
+>>> +        bindings::hrtimer_restart_HRTIMER_NORESTART
+>>
+>> One of the common use cases of hrtimers is to create periodic schedules
+>> where the timer callback advances the expiry value and returns
+>> HRTIMER_RESTART. It might be not required for your initial use case at
+>> hand, but you'll need that in the long run IMO.
+>
+> If you are OK with taking that feature without a user, I will gladly add
+> it.
+
+I'm fine with taking a more complete API which does not require to
+change usage sites later on.
 
 Thanks,
-Sungwoo.
+
+        tglx
 
