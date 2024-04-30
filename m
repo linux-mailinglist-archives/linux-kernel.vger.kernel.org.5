@@ -1,118 +1,128 @@
-Return-Path: <linux-kernel+bounces-164342-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-164341-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8BBAF8B7C8E
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 18:14:40 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 525D68B7C8C
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 18:14:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4789F283F45
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 16:14:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 073FC1F2206A
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 16:14:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC927176FB2;
-	Tue, 30 Apr 2024 16:14:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 803DB176FA1;
+	Tue, 30 Apr 2024 16:14:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=motorola.com header.i=@motorola.com header.b="UNpWYu4Q"
-Received: from mx0b-00823401.pphosted.com (mx0b-00823401.pphosted.com [148.163.152.46])
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="fwIL/r1A";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="ZY9IU17A"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CAA14176FA1;
-	Tue, 30 Apr 2024 16:14:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.152.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F541175560
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 16:14:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714493673; cv=none; b=QIpYZ3t2pjMyvupxyoBQQL5QUY/J/rmfe16ogIl37YxC4xFUKE3/rnYghvsqVNS61m3+T9x8x3RaBHTeeuH5nWlJR0Ci+qkum6+CIj3+EfceoJmtEF4jtB2KKSh6ALN41wwdor76IJbVTkH+ymeyRS896Y5J241U4JGFd7Dp+P4=
+	t=1714493644; cv=none; b=hJwezKqdKbrO1lCLO3H1BGCtNGTUV8oUlaIWOfLPGgbUfOdp4y0Uq9BlZY/ml+KbcUjkUfIVH2fccOmfmvblkUDS/GD2303fh/EoMVb6t7Dy0joclefGD7gNAIYestaIiCcFmVzwyApGgb+6MfdCXP30NbFs0HQDz8bGJL8gFR0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714493673; c=relaxed/simple;
-	bh=jDRp8ZKc/ZI1h5C/iego2Wm5Y1Gpx7UAFijBltFFKrU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=MByyt9yYabsWDosRGQtOcSxpkaJxvqs5KRmL64iWkCNYt6FLkAFzLGzFiHT02LIrl3WcJP1d+KEctCBDRqIDFag8y6XxenKiUgsuNvfNE7Fg3xXPEmO3kBdu7OaRQJpFaSmg5Fache9BSd05gyca7McmOd4OEH+dGMlTBqFCBF0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=motorola.com; spf=pass smtp.mailfrom=motorola.com; dkim=pass (2048-bit key) header.d=motorola.com header.i=@motorola.com header.b=UNpWYu4Q; arc=none smtp.client-ip=148.163.152.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=motorola.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=motorola.com
-Received: from pps.filterd (m0355089.ppops.net [127.0.0.1])
-	by mx0b-00823401.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 43U9WwMa008922;
-	Tue, 30 Apr 2024 16:13:59 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=motorola.com; h=
-	date:from:to:cc:subject:message-id:references:mime-version
-	:content-type:in-reply-to; s=DKIM202306; bh=ZdSmt5zDcC89PDnHHr/a
-	KSAriMvIJvGcEbgYXmtQydc=; b=UNpWYu4QnWd5olOAPBicmnEue67SUVLkf0ka
-	hej0B9Lznq7inaCpw5pfRUbofR2BWXhYyg2QedyqvVXQkVpwaTaO1h3RkfA2BfXu
-	+QNm9IT71yq+i3cpgluvvK9ADvbt8v1ilBSv9pvlL3Pyg9GNm0d4avZPpI66vVDV
-	UJ/njm5gdvSKvRH+2kPvRYBEmiYntIYtw95xtt7TmYPKCGAZQI3tfTQ+SoUijpDg
-	js8vJOUZAY+hkh7Oq/iu6q7dOkuOTMiQk7y9oxc+FkSIbZCUAZhLlw91lZWZ/pbF
-	sBdABbaTaollpL2YbS4Z2pMRa3sSY8xeMnExwlsD8EvblqdEFg==
-Received: from va32lpfpp03.lenovo.com ([104.232.228.23])
-	by mx0b-00823401.pphosted.com (PPS) with ESMTPS id 3xtqvf9ftp-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 30 Apr 2024 16:13:59 +0000 (GMT)
-Received: from ilclmmrp02.lenovo.com (ilclmmrp02.mot.com [100.65.83.26])
-	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by va32lpfpp03.lenovo.com (Postfix) with ESMTPS id 4VTQHV5Msyz51Q9x;
-	Tue, 30 Apr 2024 16:13:58 +0000 (UTC)
-Received: from ilclasset02 (ilclasset02.mot.com [100.64.49.13])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: mbland)
-	by ilclmmrp02.lenovo.com (Postfix) with ESMTPSA id 4VTQHV3n4Wz3p6jp;
-	Tue, 30 Apr 2024 16:13:58 +0000 (UTC)
-Date: Tue, 30 Apr 2024 11:13:57 -0500
-From: Maxwell Bland <mbland@motorola.com>
-To: linux-mm@kvack.org
-Cc: Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Ard Biesheuvel <ardb@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Maxwell Bland <mbland@motorola.com>,
-        Alexandre Ghiti <alexghiti@rivosinc.com>,
-        linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] ptdump: add intermediate directory support
-Message-ID: <36faail77z762b6tnldswwe4yxbedx3gwi4n5reldwbkovb5kb@m5gz4a3yqxav>
-References: <fik5ys53dbkpkl22o4s7sw7cxi6dqjcpm2f3kno5tyms73jm5y@buo4jsktsnrt>
+	s=arc-20240116; t=1714493644; c=relaxed/simple;
+	bh=dPB5zK9sUqob7ONr7G14dO/AgkbaD3ijO6EnAMAwfdQ=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=cZXb/nblKbQtqFxRDpC+sgIqNd99sOUYtJcTgIMFrx0WfzLyUkp6GGwrbOHk6GqB0GX1fterO3T91Wh83UK0JKzbBpQHE/fYR7qEGtum88b2te3FI4TcUsou1l2r+L/97RbQZQGuEIowkrqnnSaRI1nYhqMLDLoPDTw6hkQx/Mo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=fwIL/r1A; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=ZY9IU17A; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+From: Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1714493641;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=bIuSOLfe5ENoYZ0SjFIuAk7cE658IewkHw8ZxtoyQ3k=;
+	b=fwIL/r1AP/mv/1jDCMWQS3c0pUCdABWFVFCqjv0Pg+NL7g5fLbitsC5dpYKbs4Y4irF0GR
+	JbYOnoCZhSHR5cjmMFWeuSisCKmxSTTxG2pRV/dve0XS/0543ZgIgMt8naauTaNfXWe5H+
+	wLRAQ9CQTvAyejmyd/JDmeQMhp69RsldMLpm1q5wZIrmgpBUon9myNwo5qHgKhKCZFzEeU
+	z29FNHFk27fKkW1EzrH4zl/8njilaqp8XOffEWUqZwXjS1R0cDiMp6/OJXyxW89zJMy0JY
+	/QKtDGfNgTwZbppXeh/vDW8NKpAe0p1z8XHDOWClCJkP0Z+K5Y3OmGw7/HZUIw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1714493641;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=bIuSOLfe5ENoYZ0SjFIuAk7cE658IewkHw8ZxtoyQ3k=;
+	b=ZY9IU17AG2BjVOALYrsbKD470mM4bBYO0IezuukNaJ7YYePLyD68y7aaRY5MXkixJyngs9
+	iuHUgjA+YruhqBBw==
+To: Juergen Gross <jgross@suse.com>, linux-kernel@vger.kernel.org,
+ x86@kernel.org
+Cc: Juergen Gross <jgross@suse.com>, Ingo Molnar <mingo@redhat.com>,
+ Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
+ "H. Peter Anvin" <hpa@zytor.com>
+Subject: Re: [PATCH 1/2] x86/cpu: fix BSP detection when running as Xen PV
+ guest
+In-Reply-To: <20240405123434.24822-2-jgross@suse.com>
+References: <20240405123434.24822-1-jgross@suse.com>
+ <20240405123434.24822-2-jgross@suse.com>
+Date: Tue, 30 Apr 2024 18:13:58 +0200
+Message-ID: <87ttjisu9l.ffs@tglx>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <fik5ys53dbkpkl22o4s7sw7cxi6dqjcpm2f3kno5tyms73jm5y@buo4jsktsnrt>
-X-Proofpoint-GUID: ordh2vEURrLkI_4r9779MV_wQqbPnjan
-X-Proofpoint-ORIG-GUID: ordh2vEURrLkI_4r9779MV_wQqbPnjan
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
- definitions=2024-04-30_09,2024-04-30_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- spamscore=0 adultscore=0 mlxscore=0 impostorscore=0 phishscore=0
- suspectscore=0 clxscore=1015 mlxlogscore=974 lowpriorityscore=0
- bulkscore=0 malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2404010003 definitions=main-2404300115
+Content-Type: text/plain
 
-On Tue, Apr 30, 2024 at 11:05:01AM GMT, Maxwell Bland wrote:
-> v3:
->   - Added tabulation to delineate entries
->   - Fixed formatting issues with mailer and rebased to mm/linus
-> 
-> v2:
->   - Rebased onto linux-next/akpm (the incorrect branch)
+On Fri, Apr 05 2024 at 14:34, Juergen Gross wrote:
+> When booting as a Xen PV guest the boot processor isn't detected
+> correctly and the following message is shown:
+>
+>   CPU topo: Boot CPU APIC ID not the first enumerated APIC ID: 0 > 1
+>
+> Additionally this results in one CPU being ignored.
+>
+> Fix that by calling the BSP detection logic when registering the boot
+> CPU's APIC, too.
+>
+> Fixes: 5c5682b9f87a ("x86/cpu: Detect real BSP on crash kernels")
+> Signed-off-by: Juergen Gross <jgross@suse.com>
+> ---
+>  arch/x86/kernel/cpu/topology.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/arch/x86/kernel/cpu/topology.c b/arch/x86/kernel/cpu/topology.c
+> index aaca8d235dc2..23c3db5e6396 100644
+> --- a/arch/x86/kernel/cpu/topology.c
+> +++ b/arch/x86/kernel/cpu/topology.c
+> @@ -255,7 +255,7 @@ void __init topology_register_boot_apic(u32 apic_id)
+>  	WARN_ON_ONCE(topo_info.boot_cpu_apic_id != BAD_APICID);
+>  
+>  	topo_info.boot_cpu_apic_id = apic_id;
+> -	topo_register_apic(apic_id, CPU_ACPIID_INVALID, true);
+> +	topology_register_apic(apic_id, CPU_ACPIID_INVALID, true);
 
-Note that I am referring to
-20240423121820.874441838-1-mbland@motorola.com
-as the v1/v2 here.
+No. This does not fix anything at all. It just papers over the
+underlying problem.
 
-The v1/v2 mailer malformatting will hopefully never happen again. I have
-tested mailing this patch to myself and have confirmed it cleanly merges
-to mm/linus. I ended up needing to compile mutt from scratch. ):
+Thanks,
 
-Also, I made these changes in order to compliment testing
-20240220203256.31153-1-mbland@motorola.com
-and
-20240423095843.446565600-1-mbland@motorola.com
-and figured they might be useful to include/merge before attempting to
-merge the above more impactful changes.
+        tglx
+---
+diff --git a/arch/x86/xen/smp_pv.c b/arch/x86/xen/smp_pv.c
+index 27d1a5b7f571..ac41d83b38d3 100644
+--- a/arch/x86/xen/smp_pv.c
++++ b/arch/x86/xen/smp_pv.c
+@@ -154,9 +154,9 @@ static void __init xen_pv_smp_config(void)
+ 	u32 apicid = 0;
+ 	int i;
+ 
+-	topology_register_boot_apic(apicid++);
++	topology_register_boot_apic(apicid);
+ 
+-	for (i = 1; i < nr_cpu_ids; i++)
++	for (i = 0; i < nr_cpu_ids; i++)
+ 		topology_register_apic(apicid++, CPU_ACPIID_INVALID, true);
+ 
+ 	/* Pretend to be a proper enumerated system */
+
+        
+
 
