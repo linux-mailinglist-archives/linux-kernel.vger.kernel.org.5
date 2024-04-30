@@ -1,147 +1,170 @@
-Return-Path: <linux-kernel+bounces-163513-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-163514-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C3A308B6C59
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 10:00:36 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9BE6D8B6C5D
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 10:00:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8000A283F23
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 08:00:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5181F1F221AA
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 08:00:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2DF0975810;
-	Tue, 30 Apr 2024 08:00:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8FC404502C;
+	Tue, 30 Apr 2024 08:00:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Y/SFkQGx"
-Received: from mail-pg1-f182.google.com (mail-pg1-f182.google.com [209.85.215.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="iL6LMZpP"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 300E23FE51;
-	Tue, 30 Apr 2024 08:00:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B2684085A;
+	Tue, 30 Apr 2024 08:00:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714464013; cv=none; b=KSUaVzNOXJIZ+mlPtEyPIwrKywi4vCKvC1i2BN2Pg36BpOhv2z6/rHGxPxh+zQrfZ6k/dFdRu/6nKaQQ0BVmhMDE4A9+JuUJI33c7S1su40+M0IgXOujS/ga/kmCUwb/bBj61hyUBQJZZ0/DsgzjYy+jpZ6te+0gf2Ik2bVjDZs=
+	t=1714464043; cv=none; b=m3ht3kXIiPpFgXrN04DG3G1l0xdtKF95ldjP70HdxOkNGQHP6x/BOKC5PjHYbIYQSh8zY1mphEaLZlOsfgkpLGHhMNPvYqZUltRAb+DjF9b2ZQ8GYSavI4uzIBCbQ+zQQ/WmwoF8CJvwNmptOKbW/wQvRAEbxg4A6HvnCD22fUk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714464013; c=relaxed/simple;
-	bh=Xr3ka3wR8U78ItCs1qwBo9x2xAzK1TP584262NiYwaA=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=CGzcoLzEBUCMZvZezVOJRpoArMU7rQtQTmpev8AMvHulGfsVeF69UMTnkuCKk/z7hW+V6KGDKkxXc3tpdIaxr4Wyn1/L01fSQQ6i1r30rkdEDe1KBHB5/O7Jdna1Aa1CQweFeGdvMnfxLjd8NDpRej+C7D4PhP/rnIY/VaZ6LFA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Y/SFkQGx; arc=none smtp.client-ip=209.85.215.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f182.google.com with SMTP id 41be03b00d2f7-5f807d941c4so4191974a12.0;
-        Tue, 30 Apr 2024 01:00:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714464011; x=1715068811; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=T9ApYN3kJSKRtnVhiFwLFlEQiT5pNLKKbrHISKk7OtE=;
-        b=Y/SFkQGx2nZNXEflVwmqOs/hcAxN7OcBxzqj4Wr9ZdzmtyW8cJW4m9UBhkFMubihkX
-         nNwv0Vm0tIEXY0nR88NtGjQ0XQKmBa/1TNgHEzhdnaMOJ8j0oCjbWk9JELZBUHylQh1b
-         M6gfloLHiKypYgKdSB6QnBQVbLBoapi0ZU5iefaoMMw9+ko+H72EnsRl+ZIcZcBEdNt8
-         ROi4LsH+4de6yB2gDp15XpiFRsBLdIzyQl8wUNJ5tamnQO47Y2Q4ZKH/HsaY+rP/Ya22
-         YZ4Xbcul8mSFQuuK+cVJeLd+C2iEpU3UkXyxmPlGiOVQPtqtlw4HZvQtuNSOiEc4a9v6
-         teVg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714464011; x=1715068811;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=T9ApYN3kJSKRtnVhiFwLFlEQiT5pNLKKbrHISKk7OtE=;
-        b=d+l+2xy24/CXDZNlRWsU/WnqrErb6oWBXI/4/Qo12vpAqMKPutM3VTmV0tupeK+67v
-         xDG84wIqYon82WNAWt71Jd7mPO+wegL2uDY03ggbLz8W9zXraUt1E5IC5LrD5Ckltczt
-         HfDPP7FwAvqUDDPwmalLRQpcxsOrlFTjInv5g+LR+lFxvGLxY09zzjhk6qaMVFPdlfBv
-         5CdIviutTPtUX5D+pZeuWZYYijlxsm4PdcVnHPG3AUpEk4N0hC6j+LYFxbIEHMODaZHZ
-         4KWFWGIh6XA7PfWGTcZ0EFB91q5jxXiPJMsO7OO4sliHC5RfnBUdkfQK8MED8+qOhmtD
-         bfoQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXXXRKZ41xAjHDyDV2PNvnF+freJfMH2r07/RpdQS81VfVjPU4t9IayCxxB8IdM4Ff+RFjDIae2tDPay++hjGgvmWiW7Z/O8gQaDs43
-X-Gm-Message-State: AOJu0Yydroh85kZ0wXThxK5mzxC67+1UOQ0O7AscpQRXkixQVNDWvzkm
-	ryMhKK3i3Smv+Sf+G9grxFk/gHd0j7E9Sp/Af3mP9uu8k7QWMXhB
-X-Google-Smtp-Source: AGHT+IFV5yuJ2HwljC2oOPm7t0XepjMJZE84IAleZVTlOo9Eq7IfA8Ud84drzVBPTf3T+96GpgncrA==
-X-Received: by 2002:a05:6a20:1047:b0:1a3:c43c:9ccd with SMTP id gt7-20020a056a20104700b001a3c43c9ccdmr13905075pzc.42.1714464011272;
-        Tue, 30 Apr 2024 01:00:11 -0700 (PDT)
-Received: from carrot.. (i223-218-155-26.s42.a014.ap.plala.or.jp. [223.218.155.26])
-        by smtp.gmail.com with ESMTPSA id i6-20020aa787c6000000b006e6b52eb59asm20461760pfo.126.2024.04.30.01.00.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Apr 2024 01:00:09 -0700 (PDT)
-From: Ryusuke Konishi <konishi.ryusuke@gmail.com>
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: linux-nilfs@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Bart Van Assche <bvanassche@acm.org>,
-	Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH -mm 2/2] nilfs2: make superblock data array index computation sparse friendly
-Date: Tue, 30 Apr 2024 17:00:19 +0900
-Message-Id: <20240430080019.4242-3-konishi.ryusuke@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240430080019.4242-1-konishi.ryusuke@gmail.com>
-References: <20240430080019.4242-1-konishi.ryusuke@gmail.com>
+	s=arc-20240116; t=1714464043; c=relaxed/simple;
+	bh=Sdu/C7hyTUr/WF/VK529ijLrles5NiZWSgYvV8Hn1+s=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=mpA6HYxw/e/B1kLy7m0K149SbMzPOE5UDg3NXVU0SvP0Wf0Szi7cYO1UCgUayvVBLMHkSI5Rh1BbLyllmrYtGDCQzELpIYPqkdTuQGSHz1vwVBb7KsAe4jZogQIgyY2SIRjS/UnmvR5uC0NHYNoy61Ktt8T7uLC+hk/CNK5v4Z4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=iL6LMZpP; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1714464040;
+	bh=Sdu/C7hyTUr/WF/VK529ijLrles5NiZWSgYvV8Hn1+s=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=iL6LMZpPcspw/gXwxn6LU00o6c98eIlLAM6zdawslNrS8719ouaDwu6pj2GI5s0PB
+	 oUD5MLcvN4n5nlhEsc0qfh0t0tdeu8cwc8rQ1dBpmVUxBDBhYP/uuYvxH0GF4P0zLu
+	 I7p03DA/ZSVDtX6UZHKzWVCy9F5rB1iS7+VBbhcOhGzE+vKcNuKG3UojuixEGMJKur
+	 RCS5J7K7BDzbjS8KuGSzpzEM0hv6MshUCWrf100SpMr0kx6EgdDkS4trNBMgllhC+B
+	 lQvrfThjWnUYeH353fcSx2cBjsWobwDZRcCRs8uzvwn666rSpvQU9DbVmFu9861YqG
+	 O4apTxbJX6W6g==
+Received: from [100.95.196.182] (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: andrzej.p)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id CA69D3782039;
+	Tue, 30 Apr 2024 08:00:39 +0000 (UTC)
+Message-ID: <0c0e2d02-b719-4f8b-afca-c839bb77f287@collabora.com>
+Date: Tue, 30 Apr 2024 10:00:39 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 3/3] media: amphion: Remove lock in s_ctrl callback
+To: ming qian <ming.qian@oss.nxp.com>, Ming Qian <ming.qian@nxp.com>,
+ mchehab@kernel.org, hverkuil-cisco@xs4all.nl
+Cc: shawnguo@kernel.org, robh+dt@kernel.org, s.hauer@pengutronix.de,
+ kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
+ xiahong.bao@nxp.com, eagle.zhou@nxp.com, tao.jiang_2@nxp.com,
+ imx@lists.linux.dev, linux-media@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+References: <20240425065011.105915-1-ming.qian@nxp.com>
+ <20240425065011.105915-3-ming.qian@nxp.com>
+ <8c39b3c3-8146-4418-8835-6dbfe38a85ec@collabora.com>
+ <be54f273-7bba-4db0-bc52-5ddbb3982d84@oss.nxp.com>
+Content-Language: en-US
+From: Andrzej Pietrasiewicz <andrzej.p@collabora.com>
+In-Reply-To: <be54f273-7bba-4db0-bc52-5ddbb3982d84@oss.nxp.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
-Upon running sparse, "warning: dubious: x & !y" is output at an array
-index calculation within nilfs_load_super_block().
+Hi Ming,
 
-The calculation is not wrong, but to eliminate the sparse warning,
-replace it with an equivalent calculation.
+W dniu 30.04.2024 o 04:32, ming qian pisze:
+> Hi Andrzej,
+> 
+>> Hi Ming Qian,
+>>
+>> W dniu 25.04.2024 o 08:50, Ming Qian pisze:
+>>> There is no need to add lock in s_ctrl callback, it has been
+>>> synchronized by the ctrl_handler's lock, otherwise it may led to
+>>> deadlock if driver call v4l2_ctrl_s_ctrl().
+>>>
+>>> Signed-off-by: Ming Qian <ming.qian@nxp.com>
+>>> ---
+>>>   drivers/media/platform/amphion/vdec.c | 2 --
+>>>   drivers/media/platform/amphion/venc.c | 2 --
+>>>   2 files changed, 4 deletions(-)
+>>>
+>>> diff --git a/drivers/media/platform/amphion/vdec.c 
+>>> b/drivers/media/platform/amphion/vdec.c
+>>> index a57f9f4f3b87..6a38a0fa0e2d 100644
+>>> --- a/drivers/media/platform/amphion/vdec.c
+>>> +++ b/drivers/media/platform/amphion/vdec.c
+>>> @@ -195,7 +195,6 @@ static int vdec_op_s_ctrl(struct v4l2_ctrl *ctrl)
+>>>       struct vdec_t *vdec = inst->priv;
+>>>       int ret = 0;
+>>> -    vpu_inst_lock(inst);
+>>
+>> I assume that PATCH v2 2/3 might cause the said deadlock to happen?
+>> If so, maybe it would make more sense to make the current patch preceed
+>>   PATCH v2 2/3? Otherwise the kernel at PATCH v2 2/3 introduces a potential
+>> deadlock.
+>>
+>> Regards,
+>>
+>> Andrzej
+>>
+> 
+> I actually discovered this problem when I was preparing the v2 2/3 patch.
+> 
+> But in the v2 2/3 patch, it tried to add a read-only ctrl, then I just
+> unset the s_ctrl callback for the new added ctrl, the potential deadlock
+> is caused by call the s_ctrl back in a locked environment, so after unset
+> the s_ctrl callback, the 2/3 patch won't trigger the deadlock even if
+> this patch is missing.
+> 
+> In order to avoid encountering similar problems in the future, that
+> driver may set or get some ctrl, I added this patch.
 
-Also, add a comment to make it easier to understand what the unintuitive
-array index calculation is doing and whether it's correct.
+Do I understand you correctly that patch 2/3 is written in such a way that
+it does not introduce a deadlock, and you add patch 3/3 only to prevent future
+problems? If so, it seems to me that patch 3/3 could/should be separate from
+this series, as it does not quite match "Add average qp control".
 
-Signed-off-by: Ryusuke Konishi <konishi.ryusuke@gmail.com>
-Fixes: e339ad31f599 ("nilfs2: introduce secondary super block")
----
- fs/nilfs2/the_nilfs.c | 20 ++++++++++++++++++--
- 1 file changed, 18 insertions(+), 2 deletions(-)
+Regards,
 
-diff --git a/fs/nilfs2/the_nilfs.c b/fs/nilfs2/the_nilfs.c
-index db322068678f..f41d7b6d432c 100644
---- a/fs/nilfs2/the_nilfs.c
-+++ b/fs/nilfs2/the_nilfs.c
-@@ -592,7 +592,7 @@ static int nilfs_load_super_block(struct the_nilfs *nilfs,
- 	struct nilfs_super_block **sbp = nilfs->ns_sbp;
- 	struct buffer_head **sbh = nilfs->ns_sbh;
- 	u64 sb2off, devsize = bdev_nr_bytes(nilfs->ns_bdev);
--	int valid[2], swp = 0;
-+	int valid[2], swp = 0, older;
- 
- 	if (devsize < NILFS_SEG_MIN_BLOCKS * NILFS_MIN_BLOCK_SIZE + 4096) {
- 		nilfs_err(sb, "device size too small");
-@@ -648,9 +648,25 @@ static int nilfs_load_super_block(struct the_nilfs *nilfs,
- 	if (swp)
- 		nilfs_swap_super_block(nilfs);
- 
-+	/*
-+	 * Calculate the array index of the older superblock data.
-+	 * If one has been dropped, set index 0 pointing to the remaining one,
-+	 * otherwise set index 1 pointing to the old one (including if both
-+	 * are the same).
-+	 *
-+	 *  Divided case             valid[0]  valid[1]  swp  ->  older
-+	 *  -------------------------------------------------------------
-+	 *  Both SBs are invalid        0         0       N/A (Error)
-+	 *  SB1 is invalid              0         1       1         0
-+	 *  SB2 is invalid              1         0       0         0
-+	 *  SB2 is newer                1         1       1         0
-+	 *  SB2 is older or the same    1         1       0         1
-+	 */
-+	older = valid[1] ^ swp;
-+
- 	nilfs->ns_sbwcount = 0;
- 	nilfs->ns_sbwtime = le64_to_cpu(sbp[0]->s_wtime);
--	nilfs->ns_prot_seq = le64_to_cpu(sbp[valid[1] & !swp]->s_last_seq);
-+	nilfs->ns_prot_seq = le64_to_cpu(sbp[older]->s_last_seq);
- 	*sbpp = sbp[0];
- 	return 0;
- }
--- 
-2.34.1
+Andrzej
+
+> 
+> Best regards,
+> Ming
+> 
+>>>       switch (ctrl->id) {
+>>>       case V4L2_CID_MPEG_VIDEO_DEC_DISPLAY_DELAY_ENABLE:
+>>>           vdec->params.display_delay_enable = ctrl->val;
+>>> @@ -207,7 +206,6 @@ static int vdec_op_s_ctrl(struct v4l2_ctrl *ctrl)
+>>>           ret = -EINVAL;
+>>>           break;
+>>>       }
+>>> -    vpu_inst_unlock(inst);
+>>>       return ret;
+>>>   }
+>>> diff --git a/drivers/media/platform/amphion/venc.c 
+>>> b/drivers/media/platform/amphion/venc.c
+>>> index cdfaba9d107b..351b4edc8742 100644
+>>> --- a/drivers/media/platform/amphion/venc.c
+>>> +++ b/drivers/media/platform/amphion/venc.c
+>>> @@ -518,7 +518,6 @@ static int venc_op_s_ctrl(struct v4l2_ctrl *ctrl)
+>>>       struct venc_t *venc = inst->priv;
+>>>       int ret = 0;
+>>> -    vpu_inst_lock(inst);
+>>>       switch (ctrl->id) {
+>>>       case V4L2_CID_MPEG_VIDEO_H264_PROFILE:
+>>>           venc->params.profile = ctrl->val;
+>>> @@ -579,7 +578,6 @@ static int venc_op_s_ctrl(struct v4l2_ctrl *ctrl)
+>>>           ret = -EINVAL;
+>>>           break;
+>>>       }
+>>> -    vpu_inst_unlock(inst);
+>>>       return ret;
+>>>   }
+>>
 
 
