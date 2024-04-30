@@ -1,145 +1,115 @@
-Return-Path: <linux-kernel+bounces-164702-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-164701-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F2B0C8B8154
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 22:18:52 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id BC7D98B814F
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 22:16:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 153C9B24F4C
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 20:18:50 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E8C95B24FC0
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 20:16:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44E4219DF5F;
-	Tue, 30 Apr 2024 20:18:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C9DC19DF41;
+	Tue, 30 Apr 2024 20:15:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="hFPIqtD4"
-Received: from mail-oo1-f43.google.com (mail-oo1-f43.google.com [209.85.161.43])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="0yO7spW2"
+Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93354180A82
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 20:18:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4CB23199E9A
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 20:15:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714508323; cv=none; b=nr0Drec671rcXDSCCnmxz18xDqHdn1TM6/26QUqFTEaaYUhjHQWktpuiVCTg5/U/VmSZwmsTjYqyhln5rBFk7hpyN1qJUwHiyD5TVTmD0o6QaC4qQf3C7ss5+GNvXIjRx//Z86/nYQkAVjRorh1w6aeoIl/zQ/GUr5pmmHQD6+Q=
+	t=1714508156; cv=none; b=e7tabut4reD1RyJjD0Ht9fCfHhOwr2/rtuug/x/h/KD67xBJ4jlPXROndwtCjBGMsCYMQxmm4KPx0jw0gy5c6eP5r99l+RdGFJNGCq+lIHdDpjQQycaFzOGgB0kJPZpcFN7Yerl5OWWw1+Ja36XoTDOPVrdBLXs6RkWvn0PvvXI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714508323; c=relaxed/simple;
-	bh=xeKJVe5IVeE08nq0bVzZyqiSZ71yZJUwZwFcGTeFYJc=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=bMLrC5HxKhjjc0hQ9Ywv0lfTD0ibGEWpRkdmtAry86CHsgbnwwiQiv2ZTWF/ksoH00FWCsjfNOFrzRpuNMBwbUpgrwCrlgVUH39FCcl2dDaDmXzVt2Od1rz5NeWjdoKK+DPYbZPbbOMMVy1TiZFkuckljwJIVf/S3WR0MQ7NTm4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=hFPIqtD4; arc=none smtp.client-ip=209.85.161.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
-Received: by mail-oo1-f43.google.com with SMTP id 006d021491bc7-5aa20adda1dso3951677eaf.1
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 13:18:39 -0700 (PDT)
+	s=arc-20240116; t=1714508156; c=relaxed/simple;
+	bh=OwbGPKZtQBf7I9utiwQOUr+V8JX1YYG1+WgFJUHa/cY=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=cCfQdU3j/372sIvcsyVhr/6deVjnoPbzs8AS4jgaEqlsB0JO8u+Y2TIqkBwCQ6dzO7nk0XCoMzJnxtZYtNTqfBT3MEG1o3iVanZhRYGNRe8ASNdo6xN0GTtksJ1c334WUi8iHEDdZ63ClSem0qKm63y8N3wqPdIT6Rx6Un5jDP0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--jwylder.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=0yO7spW2; arc=none smtp.client-ip=209.85.128.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--jwylder.bounces.google.com
+Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-61be3f082b0so32393137b3.1
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 13:15:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1714508318; x=1715113118; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=ORXndqCPX8oa0pC4YFIUBrFDkk+D8OkxD6HO3nH6Gu8=;
-        b=hFPIqtD4idiSjibDDj3EBtEhH6adEpoWR7UHWorfH9PeLfM8Jr6zAVh/CkNisEIO38
-         5mlXqSLnM+YzwsAbeVFMTfidVEXwr7wJoWOQqQHCJfF7CH4xDaNHzDf/I11Js89h1F5I
-         u449vu+NbAhIYmIqy5XEP+UlA9S/ijI/9KsdlL1Hxn8bnuVU1NktlPUhpx8rELnin3YN
-         ZrOpVwsl0VvlrR8Cu+3HvFLTn7sjR0DLOjKOr/oHJIF/MXBQb3BzGLTnDoCHLw3xPpyQ
-         LP1972QxmtGiFcKVGG0YAwag/Txx/BnOkEpsPu/DXsvL5lDQFrkOTC1CIFt/eTMWlbVr
-         SU0A==
+        d=google.com; s=20230601; t=1714508154; x=1715112954; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=+AlJqrV9OSoAlHxX48NUGvUshr8O8Ok/JwpO6+5NnYU=;
+        b=0yO7spW2m3KEb7ZURz3BI1n4IJlneRYZfP+6PS1tTO9O1fV4+3S3yUhZBXU0wu0DaG
+         Sa8q7kYfyjleWOiTHh7zv+sTeHmlkoaR7n3ti6hbUlv15FXaWbY7uJxzLktGoNRwhQdm
+         ayj2QceCzQJwnfVN5coRNTV4RfPwiDePOqya5kLUdlcPtBT1UgtvL/K0B2vGOdYO6Fox
+         LgO24sb4WYmOvLAZ6CxLGr2CDlrhrDnm7D3rFpEMG9ltosszsYRBlF9F37zgJg99b5H6
+         1O6If4vGeAqdfiWggDPNRyG19XA/vFLrRXhsnr8FZJBPPYvuzWIL2ucjuo1RJj0imtTa
+         6uPQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714508318; x=1715113118;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ORXndqCPX8oa0pC4YFIUBrFDkk+D8OkxD6HO3nH6Gu8=;
-        b=JVmXTOS3h5zJfz7G7LbCWYo3UaDhvzz/6lLt5V1boduDuBFS+5etkegtBkxENRSGMg
-         km02l8MMefVFhOTYYVASWE44aQCviEQGUcL4KOX48Fxgf8bGuJDksggUwI4yVnbq/egV
-         DIr4RO+A/T88sEC0FZbNXWSq3gphk41eV6BI0nJVwZwlutidjQu7FFwZrdh8fbwhF41V
-         KHpbsEYyBN+y75nfi8MMUZ/3cjwRFWu1nbKBKo47HQMKQzHoRaXremWBMhy+3/VgixW1
-         d902flfR9vjuzrmoHxCchmasBhwYxNk2fTmoB+2DAmsCo2H3MckBTt7Wvgfn+4PcBsMB
-         n55Q==
-X-Forwarded-Encrypted: i=1; AJvYcCVzuvEP6YWYjpa7vlBnpV2avWewJZLAYLWTGzG5erYtnMYr2BeVxCaMT9pILdDVX29qssb7gkQzYNhDpF/t7sSfJAQmHVnszxg2zG0I
-X-Gm-Message-State: AOJu0YxPsIL2qTJ5x0TuKBv9BNTF039W99ZYK9XmTUIWkM2dXL3OXdid
-	MdSNbEa+sVHYV6IsA+3Mc5oN1XepBi5vb4G6Erea5aqDxuoKXQgqTa8IsM0LKzZXGSiz0O1aEIV
-	J
-X-Google-Smtp-Source: AGHT+IHnpIMnCkU79BvHJFAhHMmjnXsYZiVzIXv64GM+/siQ3GG9rzdppgmGi4XjvI1oQhg16oE3Rg==
-X-Received: by 2002:a4a:1701:0:b0:5aa:4d23:9114 with SMTP id 1-20020a4a1701000000b005aa4d239114mr500982ooe.3.1714508318653;
-        Tue, 30 Apr 2024 13:18:38 -0700 (PDT)
-Received: from freyr.lechnology.com (ip98-183-112-25.ok.ok.cox.net. [98.183.112.25])
-        by smtp.gmail.com with ESMTPSA id k13-20020a4ab08d000000b005a5554a076esm5522851oon.10.2024.04.30.13.17.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Apr 2024 13:18:09 -0700 (PDT)
-From: David Lechner <dlechner@baylibre.com>
-To: Mark Brown <broonie@kernel.org>
-Cc: David Lechner <dlechner@baylibre.com>,
-	linux-spi@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] spi: use spi_valid_{tx,rx}buf() in stats function
-Date: Tue, 30 Apr 2024 15:15:27 -0500
-Message-ID: <20240430201530.2138095-3-dlechner@baylibre.com>
-X-Mailer: git-send-email 2.43.2
+        d=1e100.net; s=20230601; t=1714508154; x=1715112954;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=+AlJqrV9OSoAlHxX48NUGvUshr8O8Ok/JwpO6+5NnYU=;
+        b=OBeknasBPHc9LqmzGaHzQKKrLCBZOlCbS2r6Ico40RRAStXGzr9rjbzKj0qQPudioM
+         YpN4LnUCH9itdwH/rjt9bMCstVrwLTU6vhfMXGpWTuHGwh43EF1V2epAYBCnn3OEHxml
+         udegNoPNWVE5C2oTzh/bWvmqcq8j57to5oos7y65m4RiXSnna8tLZyGfWJLxrvFbolzK
+         RjIbHRKRLlTCpokweWX2iSSVjkA2otRMYTFQg2vw+f++E3KilRQxqzUSzXMwW9BGx1Tu
+         jtbzEaS3m4vwb13VXUvzOn9gcM9yMydGOuws4L1b3mBemoqWXvvcO9Fk6nBzZ/8TkqqZ
+         4g2g==
+X-Forwarded-Encrypted: i=1; AJvYcCVGqunn2xXBsI4qa7Q8Gy2xsUtJr5JDYiY1g+bwDJRjkaIzd+3NSWED6fm3b8rX6eo73j+2mEOQp5tTtPGuFjfgX6pEf4nNQ/0iPEdr
+X-Gm-Message-State: AOJu0Yypn33Vuwg8ex7Y5DSYqQMlT+kFWLcA1k2lc/XcKrL5OdtGRymq
+	ZmdfUmsxiFkIRTX4RhskzSnFzO+JStB2J26AornJZpZjn7v8qtzDL+ORy7pk3qoibGntRhSWgaG
+	reYGYxQ==
+X-Google-Smtp-Source: AGHT+IGmWX6ZuaW9weTWZHpDcyiMGwO6Kewygb0NViAArEjqUb1wlNzYaDMnOjiBjjtwwWqcB3AkhfVJK76A
+X-Received: from tetrad.chi.corp.google.com ([2620:15c:2:a:311c:f9a:fca0:fdec])
+ (user=jwylder job=sendgmr) by 2002:a25:d34f:0:b0:de5:bc2f:72bb with SMTP id
+ e76-20020a25d34f000000b00de5bc2f72bbmr75836ybf.12.1714508154202; Tue, 30 Apr
+ 2024 13:15:54 -0700 (PDT)
+Date: Tue, 30 Apr 2024 15:15:33 -0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.45.0.rc1.225.g2a3ae87e7f-goog
+Message-ID: <20240430201534.1842106-1-jwylder@google.com>
+Subject: [PATCH] regmap-i2c: Subtract reg size from max_write
+From: Jim Wylder <jwylder@google.com>
+To: Mark Brown <broonie@kernel.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+	"Rafael J. Wysocki" <rafael@kernel.org>
+Cc: Jim Wylder <jwylder@google.com>, kernel-team@android.com, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-There are macros spi_valid_txbuf() and spi_valid_rxbuf() for determining
-if an xfer actually intended to send or receive data.
+Currently, when an adapter defines a max_write_len quirk,
+the data will be chunked into data sizes equal to the
+max_write_len quirk value.  But the payload will be increased by
+the size of the register address before transmission.  The
+resulting value always ends up larger than the limit set
+by the quirk.
 
-These checks were hard-coded in spi_statistics_add_transfer_stats(). We
-can make use of the macros instead to make the code more readable and
-more robust against potential future changes in case the definition of
-what valid means changes.
+Avoid this error by setting regmap's max_write to the quirk's
+max_write_len minus the number of bytes for the register.  This
+allows the chunking to work correctly for this limited case
+without impacting other use-cases.
 
-The macro takes the spi_message as an argument, so we need to change
-spi_statistics_add_transfer_stats() to take the spi_message as an
-argument instead of the controller.
-
-Signed-off-by: David Lechner <dlechner@baylibre.com>
+Signed-off-by: Jim Wylder <jwylder@google.com>
 ---
- drivers/spi/spi.c | 12 +++++-------
- 1 file changed, 5 insertions(+), 7 deletions(-)
+ drivers/base/regmap/regmap-i2c.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/spi/spi.c b/drivers/spi/spi.c
-index 34fca94b2b5b..a500a4137a78 100644
---- a/drivers/spi/spi.c
-+++ b/drivers/spi/spi.c
-@@ -312,7 +312,7 @@ static const struct attribute_group *spi_master_groups[] = {
+diff --git a/drivers/base/regmap/regmap-i2c.c b/drivers/base/regmap/regmap-i2c.c
+index 3ec611dc0c09..3b1e78e845bf 100644
+--- a/drivers/base/regmap/regmap-i2c.c
++++ b/drivers/base/regmap/regmap-i2c.c
+@@ -350,7 +350,7 @@ static const struct regmap_bus *regmap_get_i2c_bus(struct i2c_client *i2c,
  
- static void spi_statistics_add_transfer_stats(struct spi_statistics __percpu *pcpu_stats,
- 					      struct spi_transfer *xfer,
--					      struct spi_controller *ctlr)
-+					      struct spi_message *msg)
- {
- 	int l2len = min(fls(xfer->len), SPI_STATISTICS_HISTO_SIZE) - 1;
- 	struct spi_statistics *stats;
-@@ -328,11 +328,9 @@ static void spi_statistics_add_transfer_stats(struct spi_statistics __percpu *pc
- 	u64_stats_inc(&stats->transfer_bytes_histo[l2len]);
+ 		if (quirks->max_write_len &&
+ 		    (bus->max_raw_write == 0 || bus->max_raw_write > quirks->max_write_len))
+-			max_write = quirks->max_write_len;
++			max_write = quirks->max_write_len - config->reg_bits / BITS_PER_BYTE;
  
- 	u64_stats_add(&stats->bytes, xfer->len);
--	if ((xfer->tx_buf) &&
--	    (xfer->tx_buf != ctlr->dummy_tx))
-+	if (spi_valid_txbuf(msg, xfer))
- 		u64_stats_add(&stats->bytes_tx, xfer->len);
--	if ((xfer->rx_buf) &&
--	    (xfer->rx_buf != ctlr->dummy_rx))
-+	if (spi_valid_rxbuf(msg, xfer))
- 		u64_stats_add(&stats->bytes_rx, xfer->len);
- 
- 	u64_stats_update_end(&stats->syncp);
-@@ -1618,8 +1616,8 @@ static int spi_transfer_one_message(struct spi_controller *ctlr,
- 	list_for_each_entry(xfer, &msg->transfers, transfer_list) {
- 		trace_spi_transfer_start(msg, xfer);
- 
--		spi_statistics_add_transfer_stats(statm, xfer, ctlr);
--		spi_statistics_add_transfer_stats(stats, xfer, ctlr);
-+		spi_statistics_add_transfer_stats(statm, xfer, msg);
-+		spi_statistics_add_transfer_stats(stats, xfer, msg);
- 
- 		if (!ctlr->ptp_sts_supported) {
- 			xfer->ptp_sts_word_pre = 0;
-
-base-commit: cecfc48904cfd3d518bd4dad13c70291e6741076
+ 		if (max_read || max_write) {
+ 			ret_bus = kmemdup(bus, sizeof(*bus), GFP_KERNEL);
 -- 
-2.43.2
+2.45.0.rc0.197.gbae5840b3b-goog
 
 
