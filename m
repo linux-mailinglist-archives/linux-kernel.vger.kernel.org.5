@@ -1,225 +1,164 @@
-Return-Path: <linux-kernel+bounces-164091-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-164092-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B80688B78E0
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 16:18:16 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6C4548B78E3
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 16:18:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 478ED1F2280E
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 14:18:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 864121C226CE
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 14:18:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 66626179950;
-	Tue, 30 Apr 2024 14:04:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 482FB17BB20;
+	Tue, 30 Apr 2024 14:04:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cornelisnetworks.com header.i=@cornelisnetworks.com header.b="Ge0A9qgc"
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2133.outbound.protection.outlook.com [40.107.223.133])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JUphrbgv"
+Received: from mail-lj1-f179.google.com (mail-lj1-f179.google.com [209.85.208.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E685770FC;
-	Tue, 30 Apr 2024 14:04:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.223.133
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714485848; cv=fail; b=JxKX5lkKpbStsCq2RID29Ek1ov+z8lXipsX4QpU5X0ZeBD8UN3Y5g8hTTptd7WF8o1rBd6pJT5Cm/w/C3wVw6hiEFgsv0CXDDGO4RKNozPoKLwDz1uCYnUpCH3Tqt+XzsTau5lNQWHDhj7xwecgjx3pIMJAZr2WW65/ii0Zl+4Y=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714485848; c=relaxed/simple;
-	bh=fIcWZlRxibWRzxLzTaC86G6c/ahynQJa8ZoTsIl33aA=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=SfniFF9JtvCHFdkDSTKa28E301pjW2J5xrKYWrVQAptwEy1EFfXkFOW9HBztI61Fdo34WKRM5PbkorOp5mZvBxcg7wrgVyZrrpttaMkpY/JhpkZ46I9zS9Hmbmp2jw6bzyRYOqrvRJ8+dIJxtZ2Ou1efqrKIw9HVl5e4OFc+NAQ=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=cornelisnetworks.com; spf=pass smtp.mailfrom=cornelisnetworks.com; dkim=pass (2048-bit key) header.d=cornelisnetworks.com header.i=@cornelisnetworks.com header.b=Ge0A9qgc; arc=fail smtp.client-ip=40.107.223.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=cornelisnetworks.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cornelisnetworks.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ghyoRLgjirGTKp3h5mqRjNXE7JpLqakEOAe11rPCXlWOKC1dzryeFrQ/hPgbPH1y0pf9S/Qgn7q+RydtsKxrPuh1xK09Tk5sERVaS9pjWmtllbDfPbU4HZSSXRbHqqOS2alk+qAwJXydYWMYHbMwTbaLi2RbgsnPlyV+H5pDVNrVyLKSjFnvJVuA8jW3ZKcVlGfrv8Nt+i1V3U/9yMavgL8yhcvWFilQUCUKjVROddanqW7TlF0XoLOjPYrKjMgIKUOja7Mu/egOYyU0CkZ6iB1HX1W7jE17M+t/2xmcuy9qBuLk6K5s2pX9n02hQIaf/lbgFuW+ORCJOhRG0+uz/w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=V/qY1o98m2EjVAwwfR2cE4KdpPQF+9/337uH2kCqggc=;
- b=maS0G8rq3EGrZfvz23KzueKpniAYZmjzN4Z6tU2BdDvBtxolJ4ixylP0b50L8y6eip/RAWZnrjcc8Kl4flpNoaCff/B0Hv7mk8EXS7nEXMh8ROJzIFf0hr1tu3O8hVOsK/gBzpL0a+ZDBUPq4QmtIkvrTywkyF5DAnaxTZTW6L+22YBo+R4FVhQP/NEgK33eDvnTUEw1bOVcYuaFCu/cDgvgGy9Bf+FeN24SQ+5dmqNIPtEcqrliSSmQWlnhzqdnJ9LBrQ7hbIYy5OdmTfJrreQet035bIVTW+i/wjqbHiMrnHF4B99wPGNi29j3BdcGrt/8HjsPa1ujmS5fVIjf3g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=cornelisnetworks.com; dmarc=pass action=none
- header.from=cornelisnetworks.com; dkim=pass header.d=cornelisnetworks.com;
- arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cornelisnetworks.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=V/qY1o98m2EjVAwwfR2cE4KdpPQF+9/337uH2kCqggc=;
- b=Ge0A9qgcQaW5WQB1lMlAN/vUsYusZGJD43Hwqp2PDdUvQ3hESEBHAo3FNPBrB6m+CsRCVXLIRmDCJVBenqq0Y9uDUDf2HKyx2a/KLALlYVcthqXvV+QUgvVBv6Le2Giwmd1VayfU7YWlfFN2+fogBwea5ew/St2ouLLRAYlM74OPue360ALh+1LFOhCtk5ocss0HDjyS1YZGwBBsY4Zso6BG6ZwcuCJ07riby0PSpGDYzO0aMtYY3B0tw19Lxpv32o7b4q/paNbinE3qonEGBm2ZBkzwBz7MR48rHVukGitUYL1uiiuPKhK7u8p08EYlD8DmaRqeWFzaP37bCxcLmw==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=cornelisnetworks.com;
-Received: from SJ0PR01MB6158.prod.exchangelabs.com (2603:10b6:a03:2a0::15) by
- LV2PR01MB7815.prod.exchangelabs.com (2603:10b6:408:14f::22) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7519.36; Tue, 30 Apr 2024 14:03:52 +0000
-Received: from SJ0PR01MB6158.prod.exchangelabs.com
- ([fe80::4946:4176:3c9b:fe38]) by SJ0PR01MB6158.prod.exchangelabs.com
- ([fe80::4946:4176:3c9b:fe38%4]) with mapi id 15.20.7519.031; Tue, 30 Apr 2024
- 14:03:52 +0000
-Message-ID: <49973089-1e5e-48a2-9616-09cf8b8d5a7f@cornelisnetworks.com>
-Date: Tue, 30 Apr 2024 10:03:49 -0400
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next] IB/hfi1: allocate dummy net_device dynamically
-To: Leon Romanovsky <leon@kernel.org>, Breno Leitao <leitao@debian.org>,
- kuba@kernel.org
-Cc: Jason Gunthorpe <jgg@ziepe.ca>,
- "open list:HFI1 DRIVER" <linux-rdma@vger.kernel.org>,
- open list <linux-kernel@vger.kernel.org>,
- linux-netdev <netdev@vger.kernel.org>
-References: <20240426085606.1801741-1-leitao@debian.org>
- <20240430125047.GE100414@unreal>
-Content-Language: en-US
-From: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
-In-Reply-To: <20240430125047.GE100414@unreal>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: BL1P221CA0006.NAMP221.PROD.OUTLOOK.COM
- (2603:10b6:208:2c5::22) To SJ0PR01MB6158.prod.exchangelabs.com
- (2603:10b6:a03:2a0::15)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E0BF4770FC;
+	Tue, 30 Apr 2024 14:04:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.179
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1714485861; cv=none; b=uC6m/akKqyzT7LiIUAr7HOTIJuhl8gLA5UPv59T90Fgyu4K1aLxU2aR1KU+TlSyb13sC5PONjeVycSH3gVlBmYgYlMjfpv6fSEJvZifZb0ppY425I/XahldBCJeiVY49sTgBgHweDz8qHCPB9N2NNLNFV3v2dOw7vB3uakTyFsg=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1714485861; c=relaxed/simple;
+	bh=56t2+Ew9OfwDvnVrXTcXYDJr1lI7iCCB7vtMImxlk7Q=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ZVb+3+rGArWNePd69zyjV3YXUVxVEiMo+wRblhaau7mTKYOnddO8SxLUJ/luWAPTyUcQKIpaRs72oUJge1zT4l2Ez+fq9cvTvhNGDYgx3qOJPTOrPA2h/aJIzKzrMhCO1TNIj9ecII5ozgQt+6a7LWTGZbczV5yrkXtj8BabPPo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JUphrbgv; arc=none smtp.client-ip=209.85.208.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f179.google.com with SMTP id 38308e7fff4ca-2dac77cdf43so73026661fa.2;
+        Tue, 30 Apr 2024 07:04:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1714485858; x=1715090658; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=56t2+Ew9OfwDvnVrXTcXYDJr1lI7iCCB7vtMImxlk7Q=;
+        b=JUphrbgvJRj5yewENT5dVWLb8yiNevloKM5oluyrkQlD8C/LL+BApZ6m3cJjXkeEDt
+         cIDY+xHh0hVwJaYJdY6iu2kICwdxA4+utXhEHJk2MXeeE+g28ulgpn4yg7moSa5rE//v
+         t058xI++wPK3wwdDIQVM2ZO1fEzHeizA4iIp6MbB7cifyr2Lzp8SPLTvTF7FHvLgKqO4
+         V84j8IA4ejYWxu6cY86Xe60q/6VC/e/ITY2ApR6+fUZQaHQePAPSdMjKilH5tTIF0fWz
+         +o863Y/Hm0uh7cDsSgecTHXN9NspVieF4GdzzfmhFcKDU2hALQgyNsrC3B5bT65MA7Vp
+         ic3w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714485858; x=1715090658;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=56t2+Ew9OfwDvnVrXTcXYDJr1lI7iCCB7vtMImxlk7Q=;
+        b=pe5xaFngcoOIkGtryGeyiCGa3I0PhpYgPgLuhgu2pvhRVUSlUVtqcdrbUdYyCvDBtT
+         gsAP09jl/zxPXpMnXw+J9RMN3z0DCt4RGABTpmODvyU77eWjvcmUVsPlZq8JREyL7C9p
+         kIddZeJ/iwo+GXuIoe5F2xPeL4+SGevdh/DS0O7NOpMDayAuWNYBH0d6ZrWboAkYb7sy
+         zMNaIOIrwS8j+NsZ5T6ZuDpzqb3uYe3ac0YQoMNrmiJfsTjOzOCrJ/quPIps+KdcmPWm
+         017I5Q7gO/xTiGD5csDk06c3NuWWmrS4nYkdxqfLuJAzb28gJ7JR5xR4MC8BlwRE1Rll
+         y/+Q==
+X-Forwarded-Encrypted: i=1; AJvYcCUqjgtfIarEKxn7qdGc5HTHbZguXrbCPEU72WuMipxOlwsl66GTsyq3u7BPaGQWfCP6lH7l4VaZqAXzLNEA8dU4Oqk2Yrg4ORZXgGz3IiDYS96vSobY1LZo5Dkb5rjUrUgYP9RneHQ/qQkczLb/wHFx2+oYHiQ6oY7k0xi/+DK8K56B/bDr
+X-Gm-Message-State: AOJu0Yyawp3BjYt4uvoFWGKFaG/naHSFRbs6l6zAX9BTBuLWKsQXSb7R
+	D85O2LXtyyoQXlG+0Ak2s9mKn3kU/hX2V8YumjKTs9Lks0igCu9zlGhDIgijg1c7GC0WxW3Ba/W
+	ZzCUt3jlyW7zo6etqeIIfgkS/Hk8=
+X-Google-Smtp-Source: AGHT+IGI+0eGY8xQlwtd+je04QG3F2m7nCFOP050A/s/nGK4Rsol3C96yicHc7QyGe5D1cbzoT+YGnYnsrGJzE09imI=
+X-Received: by 2002:a05:651c:11d1:b0:2e0:dc93:52ef with SMTP id
+ z17-20020a05651c11d100b002e0dc9352efmr1906390ljo.26.1714485857803; Tue, 30
+ Apr 2024 07:04:17 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SJ0PR01MB6158:EE_|LV2PR01MB7815:EE_
-X-MS-Office365-Filtering-Correlation-Id: c8242273-d4b3-410a-d1c5-08dc691e5da0
-X-MS-Exchange-AtpMessageProperties: SA
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230031|366007|52116005|376005|1800799015|38350700005;
-X-Microsoft-Antispam-Message-Info:
-	=?utf-8?B?WXkyWHZ4TGxScVR4aU1ibnZOR0VDODd0TTlJSlFuOW9mT3h6VkxrSHlyM3kr?=
- =?utf-8?B?RnNnbWVGVkgvbjcvTmRFSXFMNGI5cmNBMWxwR1ptaUxYeUYrM3ZxV1hCMGhL?=
- =?utf-8?B?Y3QzaHY5ejNjNXY1eUhOWkxFSXhwcFNQcnhlb2IyQ3FyZzZkU3NJdG4rRG03?=
- =?utf-8?B?ZmpNUndEeTU1UnVncmRrRUhWQkVOVFdBWjVlV2pNODZvMjdpSXFXeE40WjFZ?=
- =?utf-8?B?cXJ6QVZKVFBEUzdzUm9QQTc2aEEyRUlCVnNLSlZBWkVDNks3VFdpL21iaXVN?=
- =?utf-8?B?QmJwTEJXeU5oSFJnSzJlZkNZYVNTclBUcC80cmdNYU5EQ2lBU1NpV045ZHFs?=
- =?utf-8?B?aURRRGQ3Qkd3NzN3UFdWZ2U3QS9TR29rTFIrVFgvZFZRY2xrUXlJME1DNSs3?=
- =?utf-8?B?OUJFTGFEbjdaTUtDT3BGVTE4dlpUTTJ2TFZmNDlGcHlhdG83VWR4WkxFWWZj?=
- =?utf-8?B?RVBwc0ttdGZKUEI2WVhkdFpmbzhLUzE5T3ZDMkxpeE5HRWp4SGl6SFFpZUNJ?=
- =?utf-8?B?TVJkYzZIemhvNnFHY0NJcWxhLzBQdDltOStERjEzM1FMUmNOUERVUjMxUmtL?=
- =?utf-8?B?bWVpcURpMXVyR2x3NWxmNFNvODd1TlhHQkFNdHAvN2lQOHEzTUVMUFlLcmhQ?=
- =?utf-8?B?aEQ5U3dCUGVsUjl4bGtvTFpvNHI5WEZ5Y2h1Y0J2RFM3aHdkVVJxRmpleUtU?=
- =?utf-8?B?bldhVzNaN0dwdDRkOWlWVGd0U2plVUxPdkNUTnhwZjQyRWVFaURNampxVjMr?=
- =?utf-8?B?NDJ6WXBheE92aUZpN0JCR0pKZUozREJtRUExN2pESFdqZGtMS0FRN1JHRHBY?=
- =?utf-8?B?RDcyK01wRWtRUFBZVTNqRXdRbjRyN3dVTUo1Zjl6RUgzSlpvdFJDSjByMnFC?=
- =?utf-8?B?Z0hlZ0VJdkpINTJkWVpzUjVlWE5xZ3RFTFBYT3BycFJyL2I5V1k1RXFqZU1N?=
- =?utf-8?B?QVl0MWhpb1Y3anJTRVJ2Ly92Sk8ybkJ3RHlWNVFZeC9aTXhLZzIyNkd2OEo0?=
- =?utf-8?B?SGFSU0xjdG5ZOExvOG1zbHZ0L0Y0RTRBbTNmQU5WcmlzRmlVVmM1RGR0RlFW?=
- =?utf-8?B?QTlxbjVSOGFsMTRYeE9YcmtxZTMrcGVjbi92cXY5anlGRWxFUDBqMW9EQmh2?=
- =?utf-8?B?K0xGaVQ3SlJoWVgwbVdxckZ6VVRpT3BLTzZ0cDFOVVAvV2lXRUVSQkVORnJt?=
- =?utf-8?B?dTlYdGNNZGZVb1FRV3NmQ1NtSkJBd05udE01L1JkRC9KcTlzRjBmL2ZXNUla?=
- =?utf-8?B?WFo4eTNwdmE4MVBlcXlrVjhFOXdsb2l0VDJsWGNuNmlERVhXR3lZYUhZM2pt?=
- =?utf-8?B?NWdPOVFuY0sxLzBzdU9jMUNTdFJhd1FaVENaZ0Z3RnNOVG9kcVVPeVBVR2J5?=
- =?utf-8?B?dERINmU4eGlIa2I4NmhHNkFXSm1kYUQvWk5TcGNzTDJBaG9QWlRHYUlrUk13?=
- =?utf-8?B?citwRGJwZ0VmL2FnYlkwUnNVN3pCZUNBcWN5ZGlUb3pkQVVrellnOS9acnIx?=
- =?utf-8?B?RURxYVFoQ2JtRlkyYVpwUDk0QTh1L0lXVjcvWkxOVURYRWlEbGhNL0p2WGFn?=
- =?utf-8?B?VU1paDFsb0JkOU1ZYWQvMWV1TEFZTzdsN3BJV2dPemdsdUlxNm5YSTFYdzRh?=
- =?utf-8?B?UUhBMWExS0hTb0RLZUNFRnA4UjlUQXMxazN1bERWT3U2aUc0bVpxeDFqM25m?=
- =?utf-8?B?SngvRzFNcjk3SWpCWGdFSE9EL1NyeGhEMzNPTnFzZ2JkT1YrcGtoQnJRPT0=?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR01MB6158.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(52116005)(376005)(1800799015)(38350700005);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?RFFVbXkwN3BaNTRXck9Pem5PajNoYkhOWjcxM1BWWHJmU1Mvc3ZFV09naGdC?=
- =?utf-8?B?TzloejlLbldXYkJBVFZGZTRIZXhWaEdidzRzbGIxY1pCUmhHSkdiblFROWF5?=
- =?utf-8?B?UXFrTVBuT1BDQkt3SXFvSGMxRXBMWlRrTjdxZVNUZFlLZWFpQkJJa2NoNVZn?=
- =?utf-8?B?a0dEbjJ2QTZJYjhINE9VMzY0dGFZcDJIZjJ4bEl6VDJiQ0laN3BvR0NOT2Vk?=
- =?utf-8?B?Y0JQL1lrMFA4T05kZFRKalhESGl6aTQrK05zbXN0ZG1nS1RLazd1QzR0L1BR?=
- =?utf-8?B?M0ZXMjFFMEVsT2pBdkVJMWR1dVprMnlVVjFjNHpaeDFGS2t2Uk1TZ2NISU5z?=
- =?utf-8?B?Rmlzd3B6TG5SRnVSSHI2OUsxM3FsYkI1VGVuMGxUbjRnODZnbFhpRWJjZG1q?=
- =?utf-8?B?bXZwV0R0ZERmZFA2bW53OXNvMEc2clpRUE85TmU4UkRpTThrZE5KNnBSaGxZ?=
- =?utf-8?B?Njg0RTRkWUxEV0hhbVZyaW1nOXVoekFTT1ZOb2dITzJ1MUwzWjBsMWtTQlN2?=
- =?utf-8?B?Y3ZUVEl1cEp4SmxtbEk2MjIwcEllVzZ5cFhTK3ZteXROLzFlUloyeDBTd2Vo?=
- =?utf-8?B?cGVid21PcXhtTjZES2pLeTBmbVVGQ2Z3U1FUVjJRZ0NremJJUTBWandjd1FX?=
- =?utf-8?B?ZGx4R2dNSkhvUmZyNHVsUkoyaFJtdGIwVzdLZE9RVG9raWdlR1I0d0dIaTdk?=
- =?utf-8?B?dlFWUzlxejhLSkhNT2EwdXBkbzRJZ1YwZzdNTnh0Qms5Z05DOHozYy9rb1lP?=
- =?utf-8?B?MHAwTnJTYXkxcEhhZE9DZnZLMWlOZ3BBN2pnQ3Vlb1RVc0JQUXFTUjNLb2JU?=
- =?utf-8?B?MFVjTGZteTJ2dnBVR2RqVHc5d3VleVNmYjJzb21CSEh4M0tkTWdmWWt2anR2?=
- =?utf-8?B?c0VZSHUzSVIyZ1RYU0U1NnhHNjUvcXNPLzdNL3R6OTJZTzBiazFtQnlNUVFF?=
- =?utf-8?B?WnZ4UzVrU3hmc3QyVUJ1MC93NHUxVUo3SHUwcVVzam5sK0JXNFFiRTF4OXBp?=
- =?utf-8?B?K1I2Y3FkZEZiUkw2WE04ZnptNTFTMFUrU3JqVU1DbU0raERXRzNEVk45UWFN?=
- =?utf-8?B?NE55bEJCRWtNSGt2aytvNFl2SDdkc1JBTGhSTTRFSGNiK01pYlpjWFBraC8v?=
- =?utf-8?B?R2N6V1VteW9KMitEU0k3VVV5T3A2QVFNVmtjMGF1eXF3L3Z2ejh1UTZqb3l2?=
- =?utf-8?B?YVgzTVhwSVZpTmI5RGFNOXhsc041TTNDZ25zRVNNdHJiRG1qQU9YZEdrWHli?=
- =?utf-8?B?ajBEalhpYUxyUnNheXhwOHlmR2txZTNYSVMrbXVVZWhadlJGMEZlTGR4ZUxz?=
- =?utf-8?B?REhnb0dYc1ZLWStrSGlqMVZwYWNqQmN2WFZlNXlZN05zUVhycFBiNXdIdDBI?=
- =?utf-8?B?cnJhM0E5V0txSU9kY0RXbFVzZGJPM2Q4RVZhRnJjUEszbkdMc0FzZ1NYSDM2?=
- =?utf-8?B?cHU2ZzN6UmV3WjQ5UWtEc1ZYTUVUdW41dmFSeU90RFlxODJnNGlPamJ1cHRv?=
- =?utf-8?B?L3VuYklhOFNNOXVYK21DNnd6MnJ3Z3dqbHNFVHBNMGJ3SUsrdkp2bVYyMWt5?=
- =?utf-8?B?NXFBZG5lNnZVbkZsOE56dlFoL2E1SDdXMnpQaG96cnAxTHA2RU5GdUlrSUpw?=
- =?utf-8?B?a3hVYlFFdWlYM1BnY3p4ZFplMzZ1Wm1oZU5aVXVlYXpuR01tSjhSTWdWeGVN?=
- =?utf-8?B?UEdWbzA3VGduUWZhWkNaNnNJN2ZDalpsL2dITTZ2U3V3S0Z5TVQzZm03Wjd6?=
- =?utf-8?B?QWFUejE0aFNFNUVaMStuQlA2cnN0QnZXTHhhTFJxYkVmVitQeUhaMytrYVRa?=
- =?utf-8?B?SS94cFU4TzhMNTRnY1pMVFNXRSswZEVtL1RvbUhaN0l5OUNVbVp4a29zem5a?=
- =?utf-8?B?eXZoTUU3YmtpeDRZdFpieEpaeHltT2dFSHVTTUppUHFTNk1PQW43ZTRZKy9X?=
- =?utf-8?B?UG9UTkJmRlhBOGwrYUxxQTRrTnFLbmU4dHRlTkdkcG5ZN0FMUVZqVHhhbmho?=
- =?utf-8?B?TnI4R0RXYWQvOWdGRCsybXJRSWV4QWFSdExBTzBPWEFJenpZREtnN0ljZ3F3?=
- =?utf-8?B?bXFsaC9tVnplVjJLK0NjYWxXVmxQTkwvSHB6UXArbXRNd3NnOVJ6M3dUUWts?=
- =?utf-8?B?Q1Z0OXRZbWdhMlBxK3M3QzI1K2NjcHVkSnM3S2ZYOGYvK012NUNoL0FXdnZ6?=
- =?utf-8?Q?BjPGQ3/3lsJnTIkuad+c5Zc=3D?=
-X-OriginatorOrg: cornelisnetworks.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c8242273-d4b3-410a-d1c5-08dc691e5da0
-X-MS-Exchange-CrossTenant-AuthSource: SJ0PR01MB6158.prod.exchangelabs.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Apr 2024 14:03:52.2273
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4dbdb7da-74ee-4b45-8747-ef5ce5ebe68a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 6p0LdBC8oq2vmoqGsnanD8z2vwAmHfj0ZSuPheVp+eLVpfC22M8zeQ2/AVt46zUAzonDQnpu7QB81zrGM6PdIKAGDetb69t6TEBDTJJr8IMHV1SFMFhQzGkoL7dckM9r
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV2PR01MB7815
+References: <20240426155801.25277-1-johan+linaro@kernel.org>
+ <CAD=FV=V-pG9+5fLonNvydmjS=ziUFUHAyF8T7YTkEHiO405aSA@mail.gmail.com>
+ <ZizKmtcUIYAMpvOQ@hovoldconsulting.com> <dbba45d2-f955-4d3a-aeab-26b0900d5823@quicinc.com>
+ <Zi-ohCWv58d2h5VM@hovoldconsulting.com> <CABBYNZJyqrNKebwPPPqjOAdrkpBJ0fqHyD2iVtypeQKCDcL+AQ@mail.gmail.com>
+ <CABBYNZJyRR9FA7TYN4+aWMtG9FPUBWMvCtMNUfvaEzxVcYOt-g@mail.gmail.com>
+ <ZjCYu2pc8376rjXk@hovoldconsulting.com> <9eebd77b-c070-4260-a979-9b97f14eb5b1@quicinc.com>
+ <ZjDtDRCHT3z-3nHh@hovoldconsulting.com>
+In-Reply-To: <ZjDtDRCHT3z-3nHh@hovoldconsulting.com>
+From: Luiz Augusto von Dentz <luiz.dentz@gmail.com>
+Date: Tue, 30 Apr 2024 10:04:05 -0400
+Message-ID: <CABBYNZLCw08oo+RRWkBYAdBLhFK5+pQi59dz-f+P1QusfYoAAw@mail.gmail.com>
+Subject: Re: [PATCH] Bluetooth: qca: generalise device address check
+To: Johan Hovold <johan@kernel.org>
+Cc: Janaki Ramaiah Thota <quic_janathot@quicinc.com>, Doug Anderson <dianders@chromium.org>, 
+	Johan Hovold <johan+linaro@kernel.org>, Marcel Holtmann <marcel@holtmann.org>, 
+	linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	stable@vger.kernel.org, quic_mohamull@quicinc.com, quic_hbandi@quicinc.com, 
+	quic_anubhavg@quicinc.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 4/30/24 8:50 AM, Leon Romanovsky wrote:
-> On Fri, Apr 26, 2024 at 01:56:05AM -0700, Breno Leitao wrote:
->> Embedding net_device into structures prohibits the usage of flexible
->> arrays in the net_device structure. For more details, see the discussion
->> at [1].
->>
->> Un-embed the net_device from struct hfi1_netdev_rx by converting it
->> into a pointer. Then use the leverage alloc_netdev() to allocate the
->> net_device object at hfi1_alloc_rx().
->>
->> [1] https://lore.kernel.org/all/20240229225910.79e224cf@kernel.org/
->>
->> Acked-by: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
->> Signed-off-by: Breno Leitao <leitao@debian.org>
->> ---
->> Changelog
->>
->> v5:
->> 	* Basically replaced the old alloc_netdev() by the new helper
->> 	  alloc_netdev_dummy().
->> v4:
->> 	* Fix the changelog format
->> v3:
->> 	* Re-worded the comment, by removing the first paragraph.
->> v2:
->> 	* Free struct hfi1_netdev_rx allocation if alloc_netdev() fails
->> 	* Pass zero as the private size for alloc_netdev().
->> 	* Remove wrong reference for iwl in the comments
->> ---
->>
->>  drivers/infiniband/hw/hfi1/netdev.h    | 2 +-
->>  drivers/infiniband/hw/hfi1/netdev_rx.c | 9 +++++++--
->>  2 files changed, 8 insertions(+), 3 deletions(-)
-> 
-> Dennis,
-> 
-> Do you plan to send anything to rdma-next which can potentially create
-> conflicts with netdev in this cycle?
-> 
-> If not, it will be safe to apply this patch directly to net-next.
-> 
-> Thanks
+Hi Johan,
 
-Nothing right now. Should be safe to sent to net-next.
+On Tue, Apr 30, 2024 at 9:07=E2=80=AFAM Johan Hovold <johan@kernel.org> wro=
+te:
+>
+> On Tue, Apr 30, 2024 at 06:22:26PM +0530, Janaki Ramaiah Thota wrote:
+> > On 4/30/2024 12:37 PM, Johan Hovold wrote:
+> > > On Mon, Apr 29, 2024 at 01:31:53PM -0400, Luiz Augusto von Dentz wrot=
+e:
+>
+> > >> Anyway the fact that firmware loading itself is programming a
+> > >> potentially duplicated address already seems wrong enough to me,
+> > >> either it shall leave it as 00... or set a valid address otherwise w=
+e
+> > >> always risk missing yet another duplicate address being introduced a=
+nd
+> > >> then used over the air causing all sorts of problems for users.
+> > >>
+> > >> So to be clear, QCA firmware shall never attempt to flash anything
+> > >> other than 00:00:00:00:00:00 if you don't have a valid and unique
+> > >> identity address, so we can get rid of this table altogether.
+> > >
+> >
+> > Yes agree with this point.
+> > BD address should be treated as invalid if it is 00:00:00:00:00:00.
+>
+> We all agree on that.
+>
+> > NVM Tag 2: bd address is default BD address (other than 0), should be
+> > configured as valid address and as its not unique address and it will
+> > be same for all devices so mark it is configured but still allow
+> > user-space to change the address.
+>
+> But here we disagree. A non-unique address is not a valid one as it will
+> cause collisions if you have more than one such controller.
+>
+> I understand that this may be convenient/good enough for developers in
+> some cases, but this can hurt end users that do not realise why things
+> break.
+>
+> And a developer can always configure an address manually or patch the
+> driver as needed for internal use.
+>
+> Are there any other reasons that makes you want to keep the option to
+> configure the device address through NVM files? I'm assuming you're not
+> relying on patching NVM files to provision device-specific addresses
+> after installation on target?
 
-FYI, since I talked about it publicly at the OFA Workshop recently. We will be
-starting the upstream of support for our new HW, soon.
+Exactly, a duplicated address is not a valid public/identity address.
 
--Denny
+Regarding them already been in use, we will need to have it fixed one
+way or the other, so it is better to change whatever it comer within
+the firmware file to 00:00:00:00:00:00 and have it setup a proper
+address after that rather than have a table that detect the use of
+duplicated addresses since the result would be the same since
+userspace stores pairing/devices based on adapter addresses they will
+be lost and the user will need to pair its peripherals again, so my
+recommendation is that this is done via firmware update rather than
+introducing a table containing duplicate addresses.
+
+That said it seems the patch in this thread actually reads the address
+with use of EDL_TAG_ID_BD_ADDR and then proceed to check if that is
+what the controller returns as address, while that is better than
+having a table I think there is still a risk that the duplicated
+address gets used on older kernels if that is not updated in the
+firmware directly, anyway perhaps we shall be doing both so we capture
+both cases where duplicated addresses are used or when BDADDR_ANY is.
+
+--=20
+Luiz Augusto von Dentz
 
