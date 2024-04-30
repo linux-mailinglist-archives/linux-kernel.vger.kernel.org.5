@@ -1,35 +1,52 @@
-Return-Path: <linux-kernel+bounces-163769-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-163770-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 25DDD8B6FA3
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 12:27:05 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2F0AC8B6FA5
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 12:28:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2D904B21B35
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 10:27:02 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 30B70B21412
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 10:27:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA7911428F0;
-	Tue, 30 Apr 2024 10:26:44 +0000 (UTC)
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD8B813D2AA;
+	Tue, 30 Apr 2024 10:27:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=nbd.name header.i=@nbd.name header.b="eMII8GUm"
+Received: from nbd.name (nbd.name [46.4.11.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 44326129A7B;
-	Tue, 30 Apr 2024 10:26:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62A09129A7B;
+	Tue, 30 Apr 2024 10:27:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.4.11.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714472804; cv=none; b=j7kcgLD5SCCmAOGWiWeytX/GPeY/pLgM9sWbYEVnnN4P/QSjRvWKkY6M2p5Fuvu94aNqU8pOhuWqDnzyPV159P31Ty/TNbLEuJIW1koz0H8lBDDPEOd9mGvODTPDNRlR3OANLwm9KK+6U6n+nksHoh0vLWTdGjlFtCBjilBdaro=
+	t=1714472868; cv=none; b=Lu/I7gYi6+A4zjhBovp9sdib8lljtseQ1esWXlkZqjBiwegV8sB1Sp41S5S/tLsqXvy9XMFG3MR+LeF6+SeKxD003qSMcsWvh8VaS/cRfyQM5GxM/pYLDD8ARmLNEaOwI41wvITe3VmGdFkZfkdeRMvxgAsJd4ypsqiSDlQMenw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714472804; c=relaxed/simple;
-	bh=5WdwNIE7HLL/qISxGEUMCkBTFd6EYA6XDuF8DRHGN8Q=;
+	s=arc-20240116; t=1714472868; c=relaxed/simple;
+	bh=qrAZSPLY9V2e06HjvA6dDash3QU5DWCWBNfcSaTwLlk=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=atwDHCLiFMZopkFhv0FFh+6JZOAP9wWlt+RxwdLwxP0r0/F4z8Z7v1iu3i26csDdTP44yP0FxD8gRr+AX+C0k9WO7NWfcwI8m52i7KrRhjKkgJKWS9OkjjGJV8rElo8rD/hqCYDRJtlvKTO1TeDZKoFYQo6OFUGqoK6JC364/0I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6984FC2BBFC;
-	Tue, 30 Apr 2024 10:26:42 +0000 (UTC)
-Message-ID: <ace1b749-9a4d-4c68-b5a7-530e0d3ff504@xs4all.nl>
-Date: Tue, 30 Apr 2024 12:26:40 +0200
+	 In-Reply-To:Content-Type; b=j/4lqDFI5d5ZebB9j/CaDGUmXb7OHuBdwAIV5/k+dtmX9XaDVMQ/l4tGCWpURnIqWmIWrdpJcE67uh4CxYcYc5BMzSXJlSXOGuwMTibM4ExeNtPkpbT5rNbj5wg+Djv4h1lUTvEOM6ymZ8+wVs0OaLH51Ar0wwmSEwiOG/dXeDA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nbd.name; spf=none smtp.mailfrom=nbd.name; dkim=pass (1024-bit key) header.d=nbd.name header.i=@nbd.name header.b=eMII8GUm; arc=none smtp.client-ip=46.4.11.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nbd.name
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=nbd.name
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nbd.name;
+	s=20160729; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:
+	References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender:Reply-To:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+	List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=m9GOdwLtpGgxawicx0NC7KEnv3fWXOtUkoh5EDjZVXU=; b=eMII8GUmErLDjMspTFvaSuFQ8F
+	lvhUXbYeHhp2ihgR5wtRfChJ9L4wEiZ3K2AAwDjDCztrpWzqad3Umva32I0nlpQbwxt4RL7QzK5Mb
+	aHug0jQawIytTEU+2cQWYmTOY1R792jBUe3mDEbDGlpuUnwCE0NlrKmVggK9ugjs0w/c=;
+Received: from p54ae9c93.dip0.t-ipconnect.de ([84.174.156.147] helo=nf.local)
+	by ds12 with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+	(Exim 4.96)
+	(envelope-from <nbd@nbd.name>)
+	id 1s1ki4-00AEZo-32;
+	Tue, 30 Apr 2024 12:27:41 +0200
+Message-ID: <9e686cb4-ed1f-4886-a0b7-328367e62757@nbd.name>
+Date: Tue, 30 Apr 2024 12:27:40 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -37,147 +54,130 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [Linux Kernel Bugs] KASAN: slab-use-after-free Read in
- cec_queue_msg_fh and 4 other crashes in the cec device (`cec_ioctl`)
-Content-Language: en-US, nl
-To: "Yang, Chenyuan" <cy54@illinois.edu>,
- "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Cc: "jani.nikula@intel.com" <jani.nikula@intel.com>,
- "syzkaller@googlegroups.com" <syzkaller@googlegroups.com>,
- "mchehab@kernel.org" <mchehab@kernel.org>, "Zhao, Zijie"
- <zijie4@illinois.edu>, "Zhang, Lingming" <lingming@illinois.edu>
-References: <PH7PR11MB57688E64ADE4FE82E658D86DA09EA@PH7PR11MB5768.namprd11.prod.outlook.com>
- <f985d664-d907-48ed-9b3d-dc956c178b88@xs4all.nl>
- <526380BE-57AC-493D-A7B0-B8F0ECC0FE0A@illinois.edu>
- <f1855145-9562-4bef-800f-43bcacff6fc8@xs4all.nl>
- <2e5f1e92-7fad-4a74-b375-1e194ff08ce6@xs4all.nl>
- <F8D4A291-8CFB-4A25-B296-3CA07B56F459@illinois.edu>
- <49a68c10-9549-4fd8-b929-d4c7a9c8debf@xs4all.nl>
- <PH7PR11MB5768B0BC3C042A6EA4EC1EF0A0542@PH7PR11MB5768.namprd11.prod.outlook.com>
- <7E36CBBD-F2AD-4D98-8D4E-F52E62C3E812@illinois.edu>
- <f196c736-dbfe-4ca0-995b-1720bf530edf@xs4all.nl>
- <C84ADEF3-5553-41AF-B127-85D5630CC8A1@illinois.edu>
- <9e76f971-b2d7-424a-bf21-c6cf5cd4a3f3@xs4all.nl>
- <CA3D308A-ED29-440C-A6C5-C5450CDA2C84@illinois.edu>
-From: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-In-Reply-To: <CA3D308A-ED29-440C-A6C5-C5450CDA2C84@illinois.edu>
-Content-Type: text/plain; charset=UTF-8
+Subject: Re: [PATCH v4 net-next v4 2/6] net: add support for segmenting TCP
+ fraglist GSO packets
+To: Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
+ Eric Dumazet <edumazet@google.com>, "David S. Miller" <davem@davemloft.net>,
+ David Ahern <dsahern@kernel.org>, Jakub Kicinski <kuba@kernel.org>
+Cc: willemdebruijn.kernel@gmail.com, linux-kernel@vger.kernel.org
+References: <20240427182305.24461-1-nbd@nbd.name>
+ <20240427182305.24461-3-nbd@nbd.name>
+ <a20a0f0479cedc7f2f6abaf26e46ca7642e70958.camel@redhat.com>
+Content-Language: en-US
+From: Felix Fietkau <nbd@nbd.name>
+Autocrypt: addr=nbd@nbd.name; keydata=
+ xsDiBEah5CcRBADIY7pu4LIv3jBlyQ/2u87iIZGe6f0f8pyB4UjzfJNXhJb8JylYYRzIOSxh
+ ExKsdLCnJqsG1PY1mqTtoG8sONpwsHr2oJ4itjcGHfn5NJSUGTbtbbxLro13tHkGFCoCr4Z5
+ Pv+XRgiANSpYlIigiMbOkide6wbggQK32tC20QxUIwCg4k6dtV/4kwEeiOUfErq00TVqIiEE
+ AKcUi4taOuh/PQWx/Ujjl/P1LfJXqLKRPa8PwD4j2yjoc9l+7LptSxJThL9KSu6gtXQjcoR2
+ vCK0OeYJhgO4kYMI78h1TSaxmtImEAnjFPYJYVsxrhay92jisYc7z5R/76AaELfF6RCjjGeP
+ wdalulG+erWju710Bif7E1yjYVWeA/9Wd1lsOmx6uwwYgNqoFtcAunDaMKi9xVQW18FsUusM
+ TdRvTZLBpoUAy+MajAL+R73TwLq3LnKpIcCwftyQXK5pEDKq57OhxJVv1Q8XkA9Dn1SBOjNB
+ l25vJDFAT9ntp9THeDD2fv15yk4EKpWhu4H00/YX8KkhFsrtUs69+vZQwc0cRmVsaXggRmll
+ dGthdSA8bmJkQG5iZC5uYW1lPsJgBBMRAgAgBQJGoeQnAhsjBgsJCAcDAgQVAggDBBYCAwEC
+ HgECF4AACgkQ130UHQKnbvXsvgCgjsAIIOsY7xZ8VcSm7NABpi91yTMAniMMmH7FRenEAYMa
+ VrwYTIThkTlQzsFNBEah5FQQCACMIep/hTzgPZ9HbCTKm9xN4bZX0JjrqjFem1Nxf3MBM5vN
+ CYGBn8F4sGIzPmLhl4xFeq3k5irVg/YvxSDbQN6NJv8o+tP6zsMeWX2JjtV0P4aDIN1pK2/w
+ VxcicArw0VYdv2ZCarccFBgH2a6GjswqlCqVM3gNIMI8ikzenKcso8YErGGiKYeMEZLwHaxE
+ Y7mTPuOTrWL8uWWRL5mVjhZEVvDez6em/OYvzBwbkhImrryF29e3Po2cfY2n7EKjjr3/141K
+ DHBBdgXlPNfDwROnA5ugjjEBjwkwBQqPpDA7AYPvpHh5vLbZnVGu5CwG7NAsrb2isRmjYoqk
+ wu++3117AAMFB/9S0Sj7qFFQcD4laADVsabTpNNpaV4wAgVTRHKV/kC9luItzwDnUcsZUPdQ
+ f3MueRJ3jIHU0UmRBG3uQftqbZJj3ikhnfvyLmkCNe+/hXhPu9sGvXyi2D4vszICvc1KL4RD
+ aLSrOsROx22eZ26KqcW4ny7+va2FnvjsZgI8h4sDmaLzKczVRIiLITiMpLFEU/VoSv0m1F4B
+ FtRgoiyjFzigWG0MsTdAN6FJzGh4mWWGIlE7o5JraNhnTd+yTUIPtw3ym6l8P+gbvfoZida0
+ TspgwBWLnXQvP5EDvlZnNaKa/3oBes6z0QdaSOwZCRA3QSLHBwtgUsrT6RxRSweLrcabwkkE
+ GBECAAkFAkah5FQCGwwACgkQ130UHQKnbvW2GgCeMncXpbbWNT2AtoAYICrKyX5R3iMAoMhw
+ cL98efvrjdstUfTCP2pfetyN
+In-Reply-To: <a20a0f0479cedc7f2f6abaf26e46ca7642e70958.camel@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
-Hi Chenyuan,
-
-On 29/04/2024 17:42, Yang, Chenyuan wrote:
-> Hi Hans,
+On 30.04.24 12:19, Paolo Abeni wrote:
+> On Sat, 2024-04-27 at 20:22 +0200, Felix Fietkau wrote:
+>> Preparation for adding TCP fraglist GRO support. It expects packets to be
+>> combined in a similar way as UDP fraglist GSO packets.
+>> For IPv4 packets, NAT is handled in the same way as UDP fraglist GSO.
+>> 
+>> Signed-off-by: Felix Fietkau <nbd@nbd.name>
+>> ---
+>>  net/ipv4/tcp_offload.c   | 67 ++++++++++++++++++++++++++++++++++++++++
+>>  net/ipv6/tcpv6_offload.c | 58 ++++++++++++++++++++++++++++++++++
+>>  2 files changed, 125 insertions(+)
+>> 
+>> diff --git a/net/ipv4/tcp_offload.c b/net/ipv4/tcp_offload.c
+>> index fab0973f995b..affd4ed28cfe 100644
+>> --- a/net/ipv4/tcp_offload.c
+>> +++ b/net/ipv4/tcp_offload.c
+>> @@ -28,6 +28,70 @@ static void tcp_gso_tstamp(struct sk_buff *skb, unsigned int ts_seq,
+>>  	}
+>>  }
+>>  
+>> +static void __tcpv4_gso_segment_csum(struct sk_buff *seg,
+>> +				     __be32 *oldip, __be32 newip,
+>> +				     __be16 *oldport, __be16 newport)
+>> +{
+>> +	struct tcphdr *th;
+>> +	struct iphdr *iph;
+>> +
+>> +	if (*oldip == newip && *oldport == newport)
+>> +		return;
+>> +
+>> +	th = tcp_hdr(seg);
+>> +	iph = ip_hdr(seg);
+>> +
+>> +	inet_proto_csum_replace4(&th->check, seg, *oldip, newip, true);
+>> +	inet_proto_csum_replace2(&th->check, seg, *oldport, newport, false);
+>> +	*oldport = newport;
+>> +
+>> +	csum_replace4(&iph->check, *oldip, newip);
+>> +	*oldip = newip;
+>> +}
+>> +
+>> +static struct sk_buff *__tcpv4_gso_segment_list_csum(struct sk_buff *segs)
+>> +{
+>> +	const struct tcphdr *th;
+>> +	const struct iphdr *iph;
+>> +	struct sk_buff *seg;
+>> +	struct tcphdr *th2;
+>> +	struct iphdr *iph2;
+>> +
+>> +	seg = segs;
+>> +	th = tcp_hdr(seg);
+>> +	iph = ip_hdr(seg);
+>> +	th2 = tcp_hdr(seg->next);
+>> +	iph2 = ip_hdr(seg->next);
+>> +
+>> +	if (!(*(const u32 *)&th->source ^ *(const u32 *)&th2->source) &&
+>> +	    iph->daddr == iph2->daddr && iph->saddr == iph2->saddr)
+>> +		return segs;
+>> +
+>> +	while ((seg = seg->next)) {
+>> +		th2 = tcp_hdr(seg);
+>> +		iph2 = ip_hdr(seg);
+>> +
+>> +		__tcpv4_gso_segment_csum(seg,
+>> +					 &iph2->saddr, iph->saddr,
+>> +					 &th2->source, th->source);
+>> +		__tcpv4_gso_segment_csum(seg,
+>> +					 &iph2->daddr, iph->daddr,
+>> +					 &th2->dest, th->dest);
+>> +	}
+>> +
+>> +	return segs;
+>> +}
 > 
-> Here is my QEMU booting command:
+> AFAICS, all the above is really alike the UDP side, except for the
+> transport header zero csum.
 > 
-> ```
-> qemu-system-x86_64 \
-> 	-m 2G \
-> 	-smp 2 \
-> 	-kernel linux/arch/x86/boot/bzImage \
-> 	-append "console=ttyS0 root=/dev/sda earlyprintk=serial net.ifnames=0" \
-> 	-drive file=image/bullseye-qemu.img,format=raw \
-> 	-net user,host=10.0.2.10,hostfwd=tcp:127.0.0.1:10021-:22 \
-> 	-net nic,model=e1000 \
-> 	-enable-kvm \
-> 	-nographic \
-> 	-pidfile vm.pi
-> ```
+> What about renaming the udp version of this helpers as 'tcpudpv4_...',
+> move them in common code, add an explicit argument for
+> 'zerocsum_allowed' and reuse such helper for both tcp and udp?
 > 
-> Plus, here is the config of vivid from my linux kernel building config:
-> 
-> ```
-> CONFIG_VIDEO_VIVID=y
-> CONFIG_VIDEO_VIVID_CEC=y
-> CONFIG_VIDEO_VIVID_MAX_DEVS=64
-> 
-> CONFIG_CMDLINE="... vivid.n_devs=16 vivid.multiplanar=1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2 ..."
-> 
-> # Here is the full
-> CONFIG_CMDLINE="earlyprintk=serial net.ifnames=0 sysctl.kernel.hung_task_all_cpu_backtrace=1 ima_policy=tcb nf-conntrack-ftp.ports=20000 nf-conntrack-tftp.ports=20000 nf-conntrack-sip.ports=20000 nf-conntrack-irc.ports=20000 nf-conntrack-sane.ports=20000 binder.debug_mask=0 rcupdate.rcu_expedited=1 rcupdate.rcu_cpu_stall_cputime=1 no_hash_pointers page_owner=on sysctl.vm.nr_hugepages=4 sysctl.vm.nr_overcommit_hugepages=4 secretmem.enable=1 sysctl.max_rcu_stall_to_panic=1 msr.allow_writes=off coredump_filter=0xffff root=/dev/sda console=ttyS0 vsyscall=native numa=fake=2 kvm-intel.nested=1 spec_store_bypass_disable=prctl nopcid vivid.n_devs=16 vivid.multiplanar=1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2 netrom.nr_ndevs=16 rose.rose_ndevs=16 smp.csd_lock_timeout=100000 watchdog_thresh=55 workqueue.watchdog_thresh=140 sysctl.net.core.netdev_unregister_timeout_secs=140 dummy_hcd.num=8 kmsan.panic=1"
-> ```
-> 
-> Plus, I attached the current patch (git diff > patch).
-> 
-> Let me know if you need any further information.
+> The same for the ipv6 variant.
 
-Ah, that was helpful. I also discovered that I had to run the reproducer as root,
-that helped too :-)
+Wouldn't that make it more convoluted when taking into account that the 
+checksum field offset is different for tcp vs udp?
+How would you handle that?
 
-Please add this patch on top of the diff you already have and try again.
-
-The reproducer kills each forked process after 5 seconds from what I can
-tell. That causes a driver wait call to return -ERESTARTSYS, and that corner
-case was not handled correctly. It caused the harmless but confusing
-"transmit timed out" message.
-
-Regards,
-
-	Hans
-
----------------------------------------------------------------------
-[PATCH] cec: core: avoid confusing "transmit timed out" message
-
-If, when waiting for a transmit to finish, the wait is interrupted,
-then you might get a "transmit timed out" message, even though the
-transmit was interrupted and did not actually time out.
-
-Set transmit_in_progress_aborted to true if the
-wait_for_completion_killable() call was interrupted and ensure
-that the transmit is properly marked as ABORTED.
-
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
----
- drivers/media/cec/core/cec-adap.c | 15 ++++++++++++++-
- 1 file changed, 14 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/media/cec/core/cec-adap.c b/drivers/media/cec/core/cec-adap.c
-index a493cbce24567..da09834990b87 100644
---- a/drivers/media/cec/core/cec-adap.c
-+++ b/drivers/media/cec/core/cec-adap.c
-@@ -490,6 +490,15 @@ int cec_thread_func(void *_adap)
- 			goto unlock;
- 		}
-
-+		if (adap->transmit_in_progress &&
-+		    adap->transmit_in_progress_aborted) {
-+			if (adap->transmitting)
-+				cec_data_cancel(adap->transmitting,
-+						CEC_TX_STATUS_ABORTED, 0);
-+			adap->transmit_in_progress = false;
-+			adap->transmit_in_progress_aborted = false;
-+			goto unlock;
-+		}
- 		if (adap->transmit_in_progress && timeout) {
- 			/*
- 			 * If we timeout, then log that. Normally this does
-@@ -771,6 +780,7 @@ int cec_transmit_msg_fh(struct cec_adapter *adap, struct cec_msg *msg,
- {
- 	struct cec_data *data;
- 	bool is_raw = msg_is_raw(msg);
-+	int err;
-
- 	if (adap->devnode.unregistered)
- 		return -ENODEV;
-@@ -935,10 +945,13 @@ int cec_transmit_msg_fh(struct cec_adapter *adap, struct cec_msg *msg,
- 	 * Release the lock and wait, retake the lock afterwards.
- 	 */
- 	mutex_unlock(&adap->lock);
--	wait_for_completion_killable(&data->c);
-+	err = wait_for_completion_killable(&data->c);
- 	cancel_delayed_work_sync(&data->work);
- 	mutex_lock(&adap->lock);
-
-+	if (err)
-+		adap->transmit_in_progress_aborted = true;
-+
- 	/* Cancel the transmit if it was interrupted */
- 	if (!data->completed) {
- 		if (data->msg.tx_status & CEC_TX_STATUS_OK)
--- 
-2.43.0
-
-
+- Felix
 
