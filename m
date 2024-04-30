@@ -1,429 +1,211 @@
-Return-Path: <linux-kernel+bounces-163539-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-163538-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3CD0C8B6CCD
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 10:28:02 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8EE0A8B6CCA
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 10:27:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E735628452B
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 08:28:00 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 137A4283E42
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 08:27:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D7E71524D4;
-	Tue, 30 Apr 2024 08:27:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 381EA128830;
+	Tue, 30 Apr 2024 08:27:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ffwll.ch header.i=@ffwll.ch header.b="TlYh8MCE"
-Received: from mail-wr1-f48.google.com (mail-wr1-f48.google.com [209.85.221.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="X3QC69mm"
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10olkn2017.outbound.protection.outlook.com [40.92.40.17])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A86B64E1C9
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 08:27:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.48
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714465668; cv=none; b=BdRWHQ4XhNapBt+kStS8cm50YGnrz0nIe3J9NiNma8D6OL0rWUrnK9yom+8zcjyAOlUfE7pkYSnBCWjDogd7pJpbzwQ130DmknGKrrfAxEzfBjyK7QkVyTJiyX+7eEb55XeLy3a3LHYaPR89EtRuGBZfltoCidpkocB1j1dwbkI=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714465668; c=relaxed/simple;
-	bh=dFVSlKYakpFaxMQvaB97JEOvn2CtzUpcqfagv68ZZXU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=iX7edvLGd5zGRRev/C6AMd/PHvV7Og6mPrgyuvQzIC8B2Z36S3kzhRk/OONbOww71DqIUmXRg7DUBMfuJ9F/L0QFrvzSsb+pzd3xsOpFPg9qPKD1PoSclx1YQCz5+N/uDClGLAQ+TJ68DVLchYpWeVnqWR4R92Z7lb/bNaczlaY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ffwll.ch; spf=none smtp.mailfrom=ffwll.ch; dkim=pass (1024-bit key) header.d=ffwll.ch header.i=@ffwll.ch header.b=TlYh8MCE; arc=none smtp.client-ip=209.85.221.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ffwll.ch
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ffwll.ch
-Received: by mail-wr1-f48.google.com with SMTP id ffacd0b85a97d-346407b8c9aso1173361f8f.0
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 01:27:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google; t=1714465664; x=1715070464; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references
-         :mail-followup-to:message-id:subject:cc:to:from:date:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=QtN6I/MrZsMh+QWZjvEHDZGUZNYY+VAe2iTynwNvttw=;
-        b=TlYh8MCEpqe530m/V/WD5MrLnfHrTmzk5FGp1ECcDgI6yc/xzMmORB6bRzmxIfTjoA
-         8Xt/c78Fk3bvzagpm47ofQ91Hj+W4eNvSEye5vDeqQy7jkqiudMwAdA8B9MWzC1+yatM
-         7jdC0muCFNe7YK8OaGmIYwMkX4C0mO0S54M3E=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714465664; x=1715070464;
-        h=in-reply-to:content-disposition:mime-version:references
-         :mail-followup-to:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=QtN6I/MrZsMh+QWZjvEHDZGUZNYY+VAe2iTynwNvttw=;
-        b=bSPsOAfOVI+KWaxpVatvQRwPDYcgIERYiHxKRXPaUqZsr8y7juskd2b9mnbSsffrdH
-         UmlmyfpueGx4L4kO2dku7xW9odEAV+mZuijk7goUduqI9nah4eqgqVe7vmHVrwwms3tJ
-         uyrxtQCsdhEdHuOTq9l2+l6cnErsYbXM5Vcd89WNUT4opUgf+2XJEeh1eMQQ/ZXVGEe0
-         rMRpzkrsjBz7xD10Ivk11Mdf964hTP5qbaVl1P026M3A/iCbjCyHkKv8QtaiAfNh2/rv
-         7mT+rYMyzO4X1iekM0ROirkM8mLC02CmLUcLWnaA+dGhv4BBmIvVU90mumukEKTW66bp
-         L8jg==
-X-Forwarded-Encrypted: i=1; AJvYcCWx2kiMiDcBPHPiQ3o6CX4oftIZ5yKwt+d6PZpuZK688VHNV6Qb43nHdse5rgHrToN/1KtOnl7wbIxB9OiwpvSl8BWARHvp7ExgXGdJ
-X-Gm-Message-State: AOJu0YzDQknrCbXzOyZyLevwmO4hTHfQYmVPzy0o5r5r1FGSTFvGjWd6
-	IQxRVl3EU+GbMnM1TEUFjWwLU4Q3AN9eeRJAL1nV203QGYlHMzWKG8viFbEW9eI=
-X-Google-Smtp-Source: AGHT+IHs7cYblukbyZbSslQ8/O/ZkVp0cDxSQ7bb6390JIb5JGmBs1IYANfhgq83FyicefsxwyNe8Q==
-X-Received: by 2002:a05:600c:4f05:b0:419:f241:6336 with SMTP id l5-20020a05600c4f0500b00419f2416336mr9058364wmq.1.1714465663958;
-        Tue, 30 Apr 2024 01:27:43 -0700 (PDT)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id p3-20020a5d6383000000b00341b451a31asm31373126wru.36.2024.04.30.01.27.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Apr 2024 01:27:42 -0700 (PDT)
-Date: Tue, 30 Apr 2024 10:27:40 +0200
-From: Daniel Vetter <daniel@ffwll.ch>
-To: Brandon Pollack <brpol@chromium.org>
-Cc: marius.vlad@collabora.com, mairacanal@riseup.net, jshargo@chromium.org,
-	hamohammed.sa@gmail.com, rodrigosiqueiramelo@gmail.com,
-	linux-doc@vger.kernel.org, hirono@chromium.org, corbet@lwn.net,
-	linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-	melissa.srw@gmail.com, mduggan@chromium.org, mripard@kernel.org,
-	tzimmermann@suse.de
-Subject: Re: [PATCH v6 7/7] drm/vkms Add hotplug support via configfs to VKMS.
-Message-ID: <ZjCrfAELoSV3d4BH@phenom.ffwll.local>
-Mail-Followup-To: Brandon Pollack <brpol@chromium.org>,
-	marius.vlad@collabora.com, mairacanal@riseup.net,
-	jshargo@chromium.org, hamohammed.sa@gmail.com,
-	rodrigosiqueiramelo@gmail.com, linux-doc@vger.kernel.org,
-	hirono@chromium.org, corbet@lwn.net, linux-kernel@vger.kernel.org,
-	dri-devel@lists.freedesktop.org, melissa.srw@gmail.com,
-	mduggan@chromium.org, mripard@kernel.org, tzimmermann@suse.de
-References: <20230829053201.423261-1-brpol@chromium.org>
- <20230829053201.423261-8-brpol@chromium.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 906167E58F;
+	Tue, 30 Apr 2024 08:27:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.40.17
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1714465645; cv=fail; b=aGH9srRwNge0T2CGN49Wlgsqu4d9R6C11igE6pvNnr54zGYgYVpk9F42EQN/EPwow3DRMTF3tQHDL8uHoot2ZeUA16MLRh6jWNxVxYxR7aKZc9fdP5Jgz3qXAnvh0x/euJkaq21gALdqvpAJjIaQ1NX7vl59Jg2YwNdptfm5YRo=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1714465645; c=relaxed/simple;
+	bh=SRjCzd+sFVb+g6YEaxNLFIxpM+I/1lRtbgtfkbA+ROc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=rHhKQtA95UhPMArKqVyJViCH8vHkx3V907BrJ4+RRIH9Po5Wppjje68VGLW/0dqVyPGC5yN5fZmR3JSnGst0WfV6o5pJp5Tjv9HkOccyT9e5gIM9h/XAA5dMb6XKMN58UuSvPwFzhbhnxLem9+WKZeTKkK/o2tVGTVlSrzVYcrc=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=X3QC69mm; arc=fail smtp.client-ip=40.92.40.17
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Ebk4CU5OvfuTdRPYX4pNilpCKhh1p3Yj+ap8SIPh5eScubFEaJWTNGJzWWy7egL97JrKEAvFuME7BHpaRpsxELQzk9GxdjoNBWKKiANPPG7lofdszUQalaXWfnuuD9bulXGORf/bVAmRGyULUQMNYIXkdGfj3N5i+i6DIvuneyXzTqAac0hDcYTOzIO8b/HODe8Q61H9HwgjIL2Xun7t5QxYBUje5iYEsPTrMbhLrFIoYozlYawcT/VNh4dRRiKtXGMOqTQeuo9LxBFABzQSlUyveo0dMw6SqzmknXAL/LFnivZG7tqK+DXsN2WHD13mFAXl0dyWvrqkvUkY/GIX5g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=jRargXPFGNgl7+HOrI2kiaQqFVGWbMb2E6uqYzaCTHA=;
+ b=dlRik9V4LjgIvhU1iK8Peh4lXIi+HhYb39n/AsYM1vvT/DYhBspM2c4xTlQ3CmD4ghro9KMi+F9W/UVqvOlPjVY92uv2gfy80t1A94FnL/0Cj6NqgqJfi/IEokW85g3Ug7kbcDQLO7uewtBDjDhWnOZpckhrucLLkoTbA0B+U32aoawK3lxkmkzCWtEzI2C1B4XZ0JAJdlL/utGmtDBttFZAfiqICoxArD31Dh99DuotGQw/Gg/XACZwjufHJC9TQ6ontGAKC9Tii7fiCHytSaFvu6uucfG0w4SXTHP45lOU5TIjE1oyNaNFEAcKZI0Yn7aG1wTS9U11/0rpYm85+A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=jRargXPFGNgl7+HOrI2kiaQqFVGWbMb2E6uqYzaCTHA=;
+ b=X3QC69mmQbA66YfI3P2xIHgbvcDSWwUDLqOpiZbzAiwT/t5EqQjIyDud+zCVWOWwLGnYxNnCnwBSFvpb8sNPfIHIZqobMbvTeogtk9Z0Hj2poJSdQ+FYBCIVM6nhofKIAK81QSsC4XeQNfc4t1cObXVZYGfzIS6Ju2I5+sdI9iwIDQhpqjB+wQu+0wvsxZxWlUCbFf5B3OToR1BMh4OLcvoUW2154xO6EvUJqYiDcwu7RD7I5g6BDXU9PjQz7oIqGLVGFaxLJY7MDJOoSWfvH5AJCimWKp3yQVSSCDZHCcnCYdxRVBsK7dM1qHUt8UPgbjGNaAdHNuP8PxRsrhiTag==
+Received: from IA1PR20MB4953.namprd20.prod.outlook.com (2603:10b6:208:3af::19)
+ by MN0PR20MB7367.namprd20.prod.outlook.com (2603:10b6:208:4cb::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7519.35; Tue, 30 Apr
+ 2024 08:27:21 +0000
+Received: from IA1PR20MB4953.namprd20.prod.outlook.com
+ ([fe80::182f:841b:6e76:b819]) by IA1PR20MB4953.namprd20.prod.outlook.com
+ ([fe80::182f:841b:6e76:b819%2]) with mapi id 15.20.7519.031; Tue, 30 Apr 2024
+ 08:27:21 +0000
+Date: Tue, 30 Apr 2024 16:27:48 +0800
+From: Inochi Amaoto <inochiama@outlook.com>
+To: Krzysztof Kozlowski <krzk@kernel.org>, 
+	Inochi Amaoto <inochiama@outlook.com>, Jean Delvare <jdelvare@suse.com>, 
+	Guenter Roeck <linux@roeck-us.net>, Rob Herring <robh@kernel.org>, 
+	Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Chen Wang <unicorn_wang@outlook.com>, Paul Walmsley <paul.walmsley@sifive.com>, 
+	Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>
+Cc: linux-hwmon@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org
+Subject: Re: [PATCH v3 1/2] dt-bindings: hwmon: Add Sophgo SG2042 external
+ hardware monitor support
+Message-ID:
+ <IA1PR20MB4953F13D16B99FC04EB2AD30BB1A2@IA1PR20MB4953.namprd20.prod.outlook.com>
+References: <IA1PR20MB4953D1C509CC7F23620CCA01BB1B2@IA1PR20MB4953.namprd20.prod.outlook.com>
+ <IA1PR20MB4953EF54DBF6D5681C27014BBB1B2@IA1PR20MB4953.namprd20.prod.outlook.com>
+ <97886e14-f07f-4175-8e8d-2d70c2daa907@kernel.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <97886e14-f07f-4175-8e8d-2d70c2daa907@kernel.org>
+X-TMN: [3viKnHrMKAg5OhgmhPqM+9pHCm7swcwECXfhsBngu9s=]
+X-ClientProxiedBy: SGBP274CA0020.SGPP274.PROD.OUTLOOK.COM (2603:1096:4:b0::32)
+ To IA1PR20MB4953.namprd20.prod.outlook.com (2603:10b6:208:3af::19)
+X-Microsoft-Original-Message-ID:
+ <c5an6lflwhridboemxdq5mq3gosaqdbjczorbkyeloq5vulzfz@prcm3gex3nzf>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230829053201.423261-8-brpol@chromium.org>
-X-Operating-System: Linux phenom 6.6.15-amd64 
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: IA1PR20MB4953:EE_|MN0PR20MB7367:EE_
+X-MS-Office365-Filtering-Correlation-Id: 16434118-d337-42dd-e508-08dc68ef5ac8
+X-Microsoft-Antispam:
+	BCL:0;ARA:14566002|461199019|1602099003|3412199016|440099019|1710799017;
+X-Microsoft-Antispam-Message-Info:
+	fjC0taqLhqttUkXaQZnfBhv0QMVPN8k/VKFYc646TXBqIEyBSUcjAllqUyfTbqzGwNLMWy6SdszgVGnuyEsw4g5V5JtXhWlAC5emk7P/oWDnWL6IsHm2vTuSxXvUmn68RS5WZRW+NulFE4zkxLx8J2YgQPWTQZZRVuo9U8CNCNmRjdWyBNDWl02OR5IS/E2v973hVUgFd4X+cChlSLBA6Gc1l0Ageq0uU5faNE3BW+Ou9CFeGWZ+LuDqxhyntinL5EiDbtf4k9UG9j8uYkGWcRKhNCDidRnapyi2+9TyTsu4y7sIGxfs0l46W39SsRN4fDC8mF9W+50gW3EBFxNsuTWdtENYK+Fcxpj97Y+thhaaB3fWq0eX+CYJsTwsVuHjmNKCpYERYxCr9Udl7fDO9dXzZeYVycaKKmPBUMIsFFhkrnsn2Xv7xR23l+HUkFcLMMgC2oi1hJ3iEDwTHBPZWE/FBaxvZUhzuY1qpwpXu/GEyB4i8t7MlGY5Sei3AlZO5ObmXgj/XhPUgip6DwlT1opz/CsboypSFvO+59VxSakrW5Vg9cA8b3IyJe+N0zQf8RhC86zNpkqrHDsg4qWYm/1+XvNrK9cE3PvqalMIZuY1uXi3t8lUsDnEAtUedNGESDrO8GbvOqbDEw3nDWoMsL1cxOh8rBzPxz/4VW8zAxA608q/r/fKTJeh00mTOrMQ
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?UNZ2Xai7HSDd9sbuhw5i8u6e3knNneBuyywP3jDCVNFrj2sqh4EwT8EXJNGa?=
+ =?us-ascii?Q?89jSW/gRwu+B7eOS/q2wEXIpeyytGYL/sOmrHR9vJMku9O4x5KIaz8uvbSQ1?=
+ =?us-ascii?Q?ATvitCNQgLLeXzWD6PSuGrd1bj89k6coF5YKVwXVWPrKT8BcmYEd54cavwyJ?=
+ =?us-ascii?Q?ufgAwRThZHP4oKIUczIwACH0ScWnr34QeBxHbjI2Su8c/1nQ0FbCiMuZBKKo?=
+ =?us-ascii?Q?Jnb54pc6XQ00yHQSvbYTcTWWaFKSENGYXexw3BP3Vv0git6gfmU4xQtpXG0t?=
+ =?us-ascii?Q?Z4Ekf1b+fZiJ4jffovDUITYwbXogOtiL7jjowN6ka0D8Z8OEKVQ+Xw9twGUQ?=
+ =?us-ascii?Q?BcUmoe/oxwb7bHgvp2uTqHGcjBQvPkCIc7Hwq+7/os9H2LVRHub2LUKsy4sB?=
+ =?us-ascii?Q?WyDqVqdVCwKg3rFJCqIFZQ7OWCSWvB/KpdFND/eYhsK0pqA0lRPOSIPnwOnt?=
+ =?us-ascii?Q?m8qtdYbShxQMSATAUT+qbVfHboOpMTav5E1Svy6f+kApgF/WKl6yuqh7E9Ou?=
+ =?us-ascii?Q?iVDeZdtUhjCOX0ZfhTFbvnkjDEQ1nxV+OsElDV4XXSVxqf9Q75+brdyzUx+Z?=
+ =?us-ascii?Q?cM0s0PLOz5izNOxnXFmx7fC68uc16hi8kCb/eKzieKHcKRtOZPGflbyNNCIU?=
+ =?us-ascii?Q?iRC5snVlDz5x9YCZ0KahRK/FnxRCtGAx9DW+iAtXa1E6cIuUpT1R7U0xw8/I?=
+ =?us-ascii?Q?IaDKMOuY0E9jgeVqmACKT7J+7/cWD/Cf77/SYLmWxELh4wbWrqYM410C1D4O?=
+ =?us-ascii?Q?GW0BzmLX4ndzm1xakzYFpDbBHUGbIpmCyrRrMQ6nw7bO9vytL8j9gRRBe6hT?=
+ =?us-ascii?Q?tRP2sCx51yq6pbmAtSa8RAl15+/5+7AihdONIKsionRRB7v4DRF9yt1xyKaK?=
+ =?us-ascii?Q?eutgB7ffjU/rM5QbX9UvdUiK22K3XUB1iwpd2Pj//1jF1TK5KtwW7MNBaWvy?=
+ =?us-ascii?Q?gizJ8wHQK5ls8OwL5PIUQ+qZolAaTtEF28ikZhdm0SOCsrvyk3lAvWNIROdR?=
+ =?us-ascii?Q?hXHXS//2Y6KSHONFfv1clw8nNXzqNz0InHZcoyHX1Bijbs/W7KG+bWhQCISv?=
+ =?us-ascii?Q?Rx1h/uOrKIY74Xidohv3zp/DS9KEz7sIlKLUlrE+HFwxrTJOImEc31MrgN9r?=
+ =?us-ascii?Q?kB+yXCzmYH3Ja69KwOux9nHwjIUCkUnpmnp241BgyYk0numM1lgSFQAJ/2so?=
+ =?us-ascii?Q?oKc+qgwP5m+GHXOGqi7K80Wk/eRGvr62eoPsl9VxDd+SCYF+465+pjcWtw0J?=
+ =?us-ascii?Q?+V4KxvXdL9NTLFNlXeTJ?=
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 16434118-d337-42dd-e508-08dc68ef5ac8
+X-MS-Exchange-CrossTenant-AuthSource: IA1PR20MB4953.namprd20.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Apr 2024 08:27:21.1275
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
+	00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN0PR20MB7367
 
-On Tue, Aug 29, 2023 at 05:30:59AM +0000, Brandon Pollack wrote:
-> This change adds the ability to read or write a "1" or a "0" to the
-> newly added "connected" attribute of a connector in the vkms entry in
-> configfs.
+On Tue, Apr 30, 2024 at 09:47:16AM GMT, Krzysztof Kozlowski wrote:
+> On 29/04/2024 14:03, Inochi Amaoto wrote:
+> > Due to the design, Sophgo SG2042 use an external MCU to provide
+> > hardware information, thermal information and reset control.
+> > 
+> > Add bindings for this monitor device.
+> > 
+> > Signed-off-by: Inochi Amaoto <inochiama@outlook.com>
+> > ---
+> >  .../hwmon/sophgo,sg2042-hwmon-mcu.yaml        | 40 +++++++++++++++++++
+> >  1 file changed, 40 insertions(+)
+> >  create mode 100644 Documentation/devicetree/bindings/hwmon/sophgo,sg2042-hwmon-mcu.yaml
+> > 
+> > diff --git a/Documentation/devicetree/bindings/hwmon/sophgo,sg2042-hwmon-mcu.yaml b/Documentation/devicetree/bindings/hwmon/sophgo,sg2042-hwmon-mcu.yaml
+> > new file mode 100644
+> > index 000000000000..64a8403aaab8
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/hwmon/sophgo,sg2042-hwmon-mcu.yaml
+> > @@ -0,0 +1,40 @@
+> > +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
+> > +%YAML 1.2
+> > +---
+> > +$id: http://devicetree.org/schemas/hwmon/sophgo,sg2042-hwmon-mcu.yaml#
+> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > +
+> > +title: Sophgo SG2042 onboard MCU support
+> > +
+> > +maintainers:
+> > +  - Inochi Amaoto <inochiama@outlook.com>
+> > +
+> > +properties:
+> > +  compatible:
+> > +    const: sophgo,sg2042-hwmon-mcu
+> > +
+> > +  reg:
+> > +    maxItems: 1
+> > +
+> > +  "#thermal-sensor-cells":
+> > +    const: 1
 > 
-> A write will trigger a call to drm_kms_helper_hotplug_event, causing a
-> hotplug uevent.
-> 
-> With this we can write virtualized multidisplay tests that involve
-> hotplugging displays (eg recompositing windows when a monitor is turned
-> off).
-> 
-> Signed-off-by: Brandon Pollack <brpol@chromium.org>
-> ---
->  Documentation/gpu/vkms.rst           |  2 +-
->  drivers/gpu/drm/vkms/vkms_configfs.c | 68 ++++++++++++++++++++++++++--
->  drivers/gpu/drm/vkms/vkms_drv.h      | 11 +++++
->  drivers/gpu/drm/vkms/vkms_output.c   | 47 ++++++++++++++++++-
->  4 files changed, 123 insertions(+), 5 deletions(-)
-> 
-> diff --git a/Documentation/gpu/vkms.rst b/Documentation/gpu/vkms.rst
-> index c3875bf66dba..7f715097539c 100644
-> --- a/Documentation/gpu/vkms.rst
-> +++ b/Documentation/gpu/vkms.rst
-> @@ -145,7 +145,7 @@ We want to be able to manipulate vkms instances without having to reload the
->  module. Such configuration can be added as extensions to vkms's ConfigFS
->  support. Use-cases:
->  
-> -- Hotplug/hotremove connectors on the fly (to be able to test DP MST handling
-> +- Hotremove connectors on the fly (to be able to test DP MST handling
->    of compositors).
->  
->  - Change output configuration: Plug/unplug screens, change EDID, allow changing
-> diff --git a/drivers/gpu/drm/vkms/vkms_configfs.c b/drivers/gpu/drm/vkms/vkms_configfs.c
-> index bc35dcc47585..d231e28101ae 100644
-> --- a/drivers/gpu/drm/vkms/vkms_configfs.c
-> +++ b/drivers/gpu/drm/vkms/vkms_configfs.c
-> @@ -1,5 +1,6 @@
->  // SPDX-License-Identifier: GPL-2.0+
->  
-> +#include "drm/drm_probe_helper.h"
->  #include <linux/configfs.h>
->  #include <linux/mutex.h>
->  #include <linux/platform_device.h>
-> @@ -40,6 +41,7 @@
->   *   `-- vkms
->   *       `-- test
->   *           |-- connectors
-> + *                `-- connected
->   *           |-- crtcs
->   *           |-- encoders
->   *           |-- planes
-> @@ -89,6 +91,14 @@
->   *
->   *   echo 1 > /config/vkms/test/enabled
->   *
-> + * By default no display is "connected" so to connect a connector you'll also
-> + * have to write 1 to a connectors "connected" attribute::
-> + *
-> + *   echo 1 > /config/vkms/test/connectors/connector/connected
-
-I think it'd be really good if we allow all connector status values,
-including unknown. It's not very common, which is why most compositors
-utterly fail at handling it in a reasonable way.
-
-> + *
-> + * One can verify that this is worked using the `modetest` utility or the
-> + * equivalent for your platform.
-> + *
->   * When you're done with the virtual device, you can clean up the device like
->   * so::
->   *
-> @@ -236,7 +246,58 @@ static void add_possible_encoders(struct config_group *parent,
->  
->  /*  Connector item, e.g. /config/vkms/device/connectors/ID */
->  
-> +static ssize_t connector_connected_show(struct config_item *item, char *buf)
-> +{
-> +	struct vkms_config_connector *connector =
-> +		item_to_config_connector(item);
-> +	struct vkms_configfs *configfs = connector_item_to_configfs(item);
-> +	bool connected = false;
-> +
-> +	mutex_lock(&configfs->lock);
-> +	connected = connector->connected;
-> +	mutex_unlock(&configfs->lock);
-> +
-> +	return sprintf(buf, "%d\n", connected);
-> +}
-> +
-> +static ssize_t connector_connected_store(struct config_item *item,
-> +					 const char *buf, size_t len)
-> +{
-> +	struct vkms_config_connector *connector =
-> +		item_to_config_connector(item);
-> +	struct vkms_configfs *configfs = connector_item_to_configfs(item);
-> +	int val, ret;
-> +
-> +	ret = kstrtouint(buf, 10, &val);
-> +	if (ret)
-> +		return ret;
-> +
-> +	if (val != 1 && val != 0)
-> +		return -EINVAL;
-> +
-> +	mutex_lock(&configfs->lock);
-> +	connector->connected = val;
-> +	if (!connector->connector) {
-> +		pr_info("VKMS Device %s is not yet enabled, connector will be enabled on start",
-> +			configfs->device_group.cg_item.ci_name);
-> +	}
-> +	mutex_unlock(&configfs->lock);
-> +
-> +	if (connector->connector)
-> +		drm_kms_helper_hotplug_event(connector->connector->dev);
-
-Ok a few lifetime bugs here:
-
-- Calling drm_kms_helper_hotplug_event after you unluck means all the drm
-  stuff might have disappeared meanwhile. Oops.
-
-- It is worse, because switching to configfs_subsystem.su_mutex will not
-  prevent the race, because the vkms_device can disappear independently
-  (by manually unbinding the driver in sysfs) at least with the real
-  platform driver approach. This is another reason why I'm not sure having
-  a real platform driver with probe/remove hooks is a good idea.
-
-- Furthermore the drm_connector might also disappear.
-
-I think the way to properly fix this is:
-
-- configfs needs to hold a reference of it's on to the drm_device in
-  vkms_device.
-
-- it needs to call a vkms function to update the connector hotplug status
-  with only the configfs obj idx.  That function then needs to find the
-  right drm_connector using the drm_connector_iter functions (which will
-  sort out any lifetime/locking issues) until is has the right one, and
-  then update the connector status.
-
-No matter what, we cannot have a backpointer from any drm object to
-configfs, that doesn't work correctly.
--Sima
-
-> +
-> +	return len;
-> +}
-> +
-> +CONFIGFS_ATTR(connector_, connected);
-> +
-> +static struct configfs_attribute *connector_attrs[] = {
-> +	&connector_attr_connected,
-> +	NULL,
-> +};
-> +
->  static struct config_item_type connector_type = {
-> +	.ct_attrs = connector_attrs,
->  	.ct_owner = THIS_MODULE,
->  };
->  
-> @@ -264,7 +325,7 @@ static ssize_t plane_type_show(struct config_item *item, char *buf)
->  	plane_type = plane->type;
->  	mutex_unlock(&configfs->lock);
->  
-> -	return sprintf(buf, "%u", plane_type);
-> +	return sprintf(buf, "%u\n", plane_type);
->  }
->  
->  static ssize_t plane_type_store(struct config_item *item, const char *buf,
-> @@ -319,6 +380,7 @@ static struct config_group *connectors_group_make(struct config_group *group,
->  				    &connector_type);
->  	add_possible_encoders(&connector->config_group,
->  			      &connector->possible_encoders.group);
-> +	connector->connected = false;
->  
->  	return &connector->config_group;
->  }
-> @@ -500,7 +562,7 @@ static ssize_t device_enabled_show(struct config_item *item, char *buf)
->  	is_enabled = configfs->vkms_device != NULL;
->  	mutex_unlock(&configfs->lock);
->  
-> -	return sprintf(buf, "%d", is_enabled);
-> +	return sprintf(buf, "%d\n", is_enabled);
->  }
->  
->  static ssize_t device_enabled_store(struct config_item *item, const char *buf,
-> @@ -557,7 +619,7 @@ static ssize_t device_id_show(struct config_item *item, char *buf)
->  
->  	mutex_unlock(&configfs->lock);
->  
-> -	return sprintf(buf, "%d", id);
-> +	return sprintf(buf, "%d\n", id);
->  }
->  
->  CONFIGFS_ATTR_RO(device_, id);
-> diff --git a/drivers/gpu/drm/vkms/vkms_drv.h b/drivers/gpu/drm/vkms/vkms_drv.h
-> index 2b9545ada9c2..5336281f397e 100644
-> --- a/drivers/gpu/drm/vkms/vkms_drv.h
-> +++ b/drivers/gpu/drm/vkms/vkms_drv.h
-> @@ -3,6 +3,7 @@
->  #ifndef _VKMS_DRV_H_
->  #define _VKMS_DRV_H_
->  
-> +#include "drm/drm_connector.h"
->  #include <linux/configfs.h>
->  #include <linux/hrtimer.h>
->  
-> @@ -147,7 +148,9 @@ struct vkms_config_links {
->  
->  struct vkms_config_connector {
->  	struct config_group config_group;
-> +	struct drm_connector *connector;
->  	struct vkms_config_links possible_encoders;
-> +	bool connected;
->  };
->  
->  struct vkms_config_crtc {
-> @@ -220,6 +223,10 @@ struct vkms_device {
->  #define item_to_configfs(item) \
->  	container_of(to_config_group(item), struct vkms_configfs, device_group)
->  
-> +#define connector_item_to_configfs(item)                                     \
-> +	container_of(to_config_group(item->ci_parent), struct vkms_configfs, \
-> +		     connectors_group)
-> +
->  #define item_to_config_connector(item)                                    \
->  	container_of(to_config_group(item), struct vkms_config_connector, \
->  		     config_group)
-> @@ -279,4 +286,8 @@ int vkms_enable_writeback_connector(struct vkms_device *vkmsdev,
->  int vkms_init_configfs(void);
->  void vkms_unregister_configfs(void);
->  
-> +/* Connector hotplugging */
-> +enum drm_connector_status vkms_connector_detect(struct drm_connector *connector,
-> +						bool force);
-> +
->  #endif /* _VKMS_DRV_H_ */
-> diff --git a/drivers/gpu/drm/vkms/vkms_output.c b/drivers/gpu/drm/vkms/vkms_output.c
-> index 0ee1f3f4a305..1a1cd0202c5f 100644
-> --- a/drivers/gpu/drm/vkms/vkms_output.c
-> +++ b/drivers/gpu/drm/vkms/vkms_output.c
-> @@ -1,5 +1,6 @@
->  // SPDX-License-Identifier: GPL-2.0+
->  
-> +#include <drm/drm_print.h>
->  #include <drm/drm_atomic_helper.h>
->  #include <drm/drm_connector.h>
->  #include <drm/drm_crtc.h>
-> @@ -8,10 +9,12 @@
->  #include <drm/drm_plane.h>
->  #include <drm/drm_probe_helper.h>
->  #include <drm/drm_simple_kms_helper.h>
-> +#include <linux/printk.h>
->  
->  #include "vkms_drv.h"
->  
->  static const struct drm_connector_funcs vkms_connector_funcs = {
-> +	.detect = vkms_connector_detect,
->  	.fill_modes = drm_helper_probe_single_connector_modes,
->  	.destroy = drm_connector_cleanup,
->  	.reset = drm_atomic_helper_connector_reset,
-> @@ -19,6 +22,48 @@ static const struct drm_connector_funcs vkms_connector_funcs = {
->  	.atomic_destroy_state = drm_atomic_helper_connector_destroy_state,
->  };
->  
-> +static const struct vkms_config_connector *
-> +find_config_for_connector(struct drm_connector *connector)
-> +{
-> +	struct vkms_device *vkms = drm_device_to_vkms_device(connector->dev);
-> +	struct vkms_configfs *configfs = vkms->configfs;
-> +	struct config_item *item;
-> +
-> +	if (!configfs) {
-> +		pr_info("Default connector has no configfs entry");
-> +		return NULL;
-> +	}
-> +
-> +	list_for_each_entry(item, &configfs->connectors_group.cg_children,
-> +			    ci_entry) {
-> +		struct vkms_config_connector *config_connector =
-> +			item_to_config_connector(item);
-> +		if (config_connector->connector == connector)
-> +			return config_connector;
-> +	}
-> +
-> +	pr_warn("Could not find config to match connector %s, but configfs was initialized",
-> +		connector->name);
-> +
-> +	return NULL;
-> +}
-> +
-> +enum drm_connector_status vkms_connector_detect(struct drm_connector *connector,
-> +						bool force)
-> +{
-> +	enum drm_connector_status status = connector_status_connected;
-> +	const struct vkms_config_connector *config_connector =
-> +		find_config_for_connector(connector);
-> +
-> +	if (!config_connector)
-> +		return connector_status_connected;
-> +
-> +	if (!config_connector->connected)
-> +		status = connector_status_disconnected;
-> +
-> +	return status;
-> +}
-> +
->  static const struct drm_encoder_funcs vkms_encoder_funcs = {
->  	.destroy = drm_encoder_cleanup,
->  };
-> @@ -280,12 +325,12 @@ int vkms_output_init(struct vkms_device *vkmsdev)
->  		struct vkms_config_connector *config_connector =
->  			item_to_config_connector(item);
->  		struct drm_connector *connector = vkms_connector_init(vkmsdev);
-> -
->  		if (IS_ERR(connector)) {
->  			DRM_ERROR("Failed to init connector from config: %s",
->  				  item->ci_name);
->  			return PTR_ERR(connector);
->  		}
-> +		config_connector->connector = connector;
->  
->  		for (int j = 0; j < output->num_encoders; j++) {
->  			struct encoder_map *encoder = &encoder_map[j];
-> -- 
-> 2.42.0.rc2.253.gd59a3bf2b4-goog
+> This looks like thermal sensor, so you miss ref to thermal-sensor.yaml
+> in top-level. Just like other sensors.
 > 
 
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+Thanks.
+
+> > +
+> > +required:
+> > +  - compatible
+> > +  - reg
+> > +  - "#thermal-sensor-cells"
+> > +
+> > +additionalProperties: false
+> > +
+> > +examples:
+> > +  - |
+> > +    i2c {
+> > +        #address-cells = <1>;
+> > +        #size-cells = <0>;
+> > +
+> > +        syscon@17 {
+> 
+> Are you sure this is syscon? 
+
+My fault, I forgot to change the node type after moving.
+I will replace this type with suitable one.
+
+> Title says mcu, compatible says hwmon...
+
+SG2042 use an external MCU to provide hwmon info (on the
+motherboard, not in the SoC).
+This is why I say this is MCU, and compatible says hwmon.
+
+> 
+> 
+> Best regards,
+> Krzysztof
+> 
+
+
 
