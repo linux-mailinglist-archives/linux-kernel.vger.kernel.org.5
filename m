@@ -1,425 +1,183 @@
-Return-Path: <linux-kernel+bounces-163773-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-163774-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 158918B6FB0
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 12:31:40 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id AF0E88B6FB1
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 12:31:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 46583B2159B
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 10:31:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1FC021F249A4
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 10:31:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D14D912BF15;
-	Tue, 30 Apr 2024 10:31:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D816C12C522;
+	Tue, 30 Apr 2024 10:31:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="R8G3jEEt"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="gKYgjWjE"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C48726AEC;
-	Tue, 30 Apr 2024 10:31:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7341B12C49C
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 10:31:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714473076; cv=none; b=E7rq+8Tg0Ed75bHDtkDX0P0RCt2KUlXBoTkD5YaJSSql2PewflZmsrw42pkn8YhWQCO9XEETa+SsfDsNKVt1/3NxZWiWphnUOjwj4lbs0kKAXLL5Wl10aAYOsWsXDoM7ydvamgh1X4D0lPIFKVSYw83sJg1wdlpNAJGrmxGVv0Y=
+	t=1714473083; cv=none; b=Q1xX9AT/9BzuNBIjfjWb1r5B2RHhdMFpt0iKXi+R/Igeu7V6YrTohFdGfZd4kG08aDf7FII0SHFAjcOSruXpoDjQtJaWwUvyMI6bvZ6H9GID7tqU7ZE7HeMCrRbiLap8MKxzC01qNcna3fDx+zrdUE/tbIpQXwVk6BoN5EfkVx8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714473076; c=relaxed/simple;
-	bh=KwVEuTrPd6AukUgjfiufP5JtvmDvFkpccV+xOCHaQkQ=;
-	h=From:Date:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=QbtcQIkO9ac0RKWn37rzSaGNmDif4qo16FhR6B/lvnGPSNWwvE6XzM3up2BUDMKW49mrVmvk2cy7WNaXsj8dwAhTqF6KaTT7x+P7vMq39xKTQhuMVSOlxpi52QAqoxiuzEvlA/M7ztSysxR3OMajEQZOPuKBuf6C2ZoY1hb/3FQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=R8G3jEEt; arc=none smtp.client-ip=198.175.65.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1714473075; x=1746009075;
-  h=from:date:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=KwVEuTrPd6AukUgjfiufP5JtvmDvFkpccV+xOCHaQkQ=;
-  b=R8G3jEEti/wdSHkA3OIjHGw5/7xYRbKORkWRKpuaaUYc3ECpWC3iZqVX
-   L55Etjey3N+FQhoe3cnOM2wsR7KV2XQVA66KtbRjuQNXrMUTfD7zOIjEV
-   vME5RoaE2wB/A9cc/Q7Ry2OgMNQrP0+z3oAKmYuFpfaM6IE3hriCh7NjF
-   ALLKyHHyFg04XLyR9KyIQmrx6m10e9ufloFf97Dm4tQxsbApZm6A8v16c
-   BwYAg/UdEaQ8xmnqC21bc67TytcbMhAem7TKLhJ2rxT5KJ06exS4eBdCO
-   uqhqJFRVFa9wg789cIlvN5rOPoPm24czxw/F69WLXZbfOXgarP3qoB2nn
-   w==;
-X-CSE-ConnectionGUID: PedwDPF8SxGitcv8jvTFWA==
-X-CSE-MsgGUID: 1/LoexzMRIyU6zk3PmURVQ==
-X-IronPort-AV: E=McAfee;i="6600,9927,11059"; a="21321904"
-X-IronPort-AV: E=Sophos;i="6.07,241,1708416000"; 
-   d="scan'208";a="21321904"
-Received: from orviesa003.jf.intel.com ([10.64.159.143])
-  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Apr 2024 03:31:14 -0700
-X-CSE-ConnectionGUID: T/OkrYOPQJaDPHr9C+YLMA==
-X-CSE-MsgGUID: nzBltv7XTWSsCMHIr0rdjQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,241,1708416000"; 
-   d="scan'208";a="31136877"
-Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.245.247.49])
-  by ORVIESA003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Apr 2024 03:31:11 -0700
-From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Date: Tue, 30 Apr 2024 13:31:04 +0300 (EEST)
-To: Lyndon Sanche <lsanche@lyndeno.ca>
-cc: mario.limonciello@amd.com, pali@kernel.org, W_Armin@gmx.de, 
-    srinivas.pandruvada@linux.intel.com, Matthew Garrett <mjg59@srcf.ucam.org>, 
-    Hans de Goede <hdegoede@redhat.com>, platform-driver-x86@vger.kernel.org, 
-    LKML <linux-kernel@vger.kernel.org>, Dell.Client.Kernel@dell.com
-Subject: Re: [PATCH v3] platform/x86: dell-laptop: Implement
- platform_profile
-In-Reply-To: <20240429164844.7544-2-lsanche@lyndeno.ca>
-Message-ID: <6075bdd1-324c-ced7-4424-826b50767afc@linux.intel.com>
-References: <20240425172758.67831-1-lsanche@lyndeno.ca> <20240429164844.7544-2-lsanche@lyndeno.ca>
+	s=arc-20240116; t=1714473083; c=relaxed/simple;
+	bh=ljw03fQaJwNAPt45c5cOrae5aDZjWuANUhBxMaIT5qk=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=pTdPWvGIjZx3BpkorpZpijihIamm7WZan72dRsAC80I7/kQw7T5dER4ZEJzEiM86v7oOsGxP4MgII5aqpEF/OiYp9U/P9JC1llLTx+wO8DCkdXRaSYrxNHm6RJiD4kGeEMNaW53kQWXhghpivXk7p5S8s2DYs9f/jkyMJdj5OGY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=gKYgjWjE; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1714473080;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=h2GbztPPgBy7pklRNmyoZeFa1LsX3EFvPdCRgPdDry8=;
+	b=gKYgjWjEVolPg3ghgeeB/3MzmgTYdJd7PRAMFL8CD6ihxhngktcBDb/YiveH+is11cU8me
+	B/MehcSZKOUKLsrm90e4bprH8l0Iw/zu+pab89hXpo/MZs8a8RWSnkEnE0UgfWP2mzWfI7
+	3mzK1+iF9BrG6WWU7f1B1sIF1Zwol1s=
+Received: from mail-lj1-f198.google.com (mail-lj1-f198.google.com
+ [209.85.208.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-644-rkn53f70NzivQinvzzdPBw-1; Tue, 30 Apr 2024 06:31:18 -0400
+X-MC-Unique: rkn53f70NzivQinvzzdPBw-1
+Received: by mail-lj1-f198.google.com with SMTP id 38308e7fff4ca-2dac626d43cso3507961fa.2
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 03:31:18 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714473077; x=1715077877;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=h2GbztPPgBy7pklRNmyoZeFa1LsX3EFvPdCRgPdDry8=;
+        b=aufmepbzvjRLUcOI3y8NZ9LmakoNS6Vh35am0+DdcIwb8n/KzJbrrrqt/f1VscY2Tw
+         3AX86DUqmzc9OYoINiB+qswFEjexEcxm63TsK4M8HwHizgDpFmnL1O67Xx7xiEkUDctc
+         iqv8QilT06aUc+YO9LQQctY7r5gbnBmvRu0IXwMJFYf3G6Im/kNTqT4buQ5x/esD3w7J
+         8cxXfK7peE6g2k4o6p1gwjRMK1LiW6cXLDS/4THVX2vjGZ45W+hIIH4LtQGgYH/NYSGu
+         03bZvqTNBDEz98K+e1lGoxvc5J7UbgHqzn+FJSDUN6E3F6M3ikK5E40r7EKx14U/rVTm
+         rLNw==
+X-Forwarded-Encrypted: i=1; AJvYcCVz56fenyE2AC4noUhDvFVWNvHvt0XoqTjRNUN50xDa8mLWbIUEcB7CS5dLm2tBrE42FobEOVBVT1rWb5mwdGZA9F0nEHfatHYdiwrt
+X-Gm-Message-State: AOJu0YzKOdzp+Z7ZuI/BYg9CaxhU9dfKV03lOnY6pPX/XkDJoME/y0SF
+	mGYoP2b8S4TXzPK6xk3c2Ft4E/ALQ60VZtAQyp+3FKYKPoqb6kSQd5dVZT1vyi25I4ytrSg2XlP
+	jpV4LOcsLEIi6mrkiHGB2BLwO1ay7MfNRWztVNzcs6UnmpaLK82eSYrnMZFqfSQ==
+X-Received: by 2002:ac2:5bcc:0:b0:513:ec32:aa89 with SMTP id u12-20020ac25bcc000000b00513ec32aa89mr8408521lfn.2.1714473077305;
+        Tue, 30 Apr 2024 03:31:17 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHfQ70OmJ/4CmNxPT8RzTiwhHubkmQJuSfnaDv4b3DeotVbrrkQCx1omoN9O0uu5HhW9woNxg==
+X-Received: by 2002:ac2:5bcc:0:b0:513:ec32:aa89 with SMTP id u12-20020ac25bcc000000b00513ec32aa89mr8408502lfn.2.1714473076862;
+        Tue, 30 Apr 2024 03:31:16 -0700 (PDT)
+Received: from gerbillo.redhat.com ([2a0d:3341:b0ae:6a10::f71])
+        by smtp.gmail.com with ESMTPSA id l2-20020a5d5602000000b0034d117df264sm4798470wrv.114.2024.04.30.03.31.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 30 Apr 2024 03:31:16 -0700 (PDT)
+Message-ID: <18dee53b6ae7cd75196141e4c5d8984bc0f3296f.camel@redhat.com>
+Subject: Re: [PATCH v4 net-next v4 6/6] net: add heuristic for enabling TCP
+ fraglist GRO
+From: Paolo Abeni <pabeni@redhat.com>
+To: Felix Fietkau <nbd@nbd.name>, netdev@vger.kernel.org, Eric Dumazet
+ <edumazet@google.com>, "David S. Miller" <davem@davemloft.net>, David Ahern
+ <dsahern@kernel.org>, Jakub Kicinski <kuba@kernel.org>
+Cc: willemdebruijn.kernel@gmail.com, linux-kernel@vger.kernel.org
+Date: Tue, 30 Apr 2024 12:31:14 +0200
+In-Reply-To: <e3a3a499-11b3-4906-b0f1-b94e70825ca9@nbd.name>
+References: <20240427182305.24461-1-nbd@nbd.name>
+	 <20240427182305.24461-7-nbd@nbd.name>
+	 <e590ba4608c9810d3d75fefdcbba9f2a02c23a0f.camel@redhat.com>
+	 <e3a3a499-11b3-4906-b0f1-b94e70825ca9@nbd.name>
+Autocrypt: addr=pabeni@redhat.com; prefer-encrypt=mutual; keydata=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
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.4 (3.50.4-1.fc39) 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
 
-On Mon, 29 Apr 2024, Lyndon Sanche wrote:
+On Tue, 2024-04-30 at 12:23 +0200, Felix Fietkau wrote:
+> On 30.04.24 12:12, Paolo Abeni wrote:
+> > On Sat, 2024-04-27 at 20:23 +0200, Felix Fietkau wrote:
+> > > When forwarding TCP after GRO, software segmentation is very expensiv=
+e,
+> > > especially when the checksum needs to be recalculated.
+> > > One case where that's currently unavoidable is when routing packets o=
+ver
+> > > PPPoE. Performance improves significantly when using fraglist GRO
+> > > implemented in the same way as for UDP.
+> > >=20
+> > > When NETIF_F_GRO_FRAGLIST is enabled, perform a lookup for an establi=
+shed
+> > > socket in the same netns as the receiving device. While this may not
+> > > cover all relevant use cases in multi-netns configurations, it should=
+ be
+> > > good enough for most configurations that need this.
+> > >=20
+> > > Here's a measurement of running 2 TCP streams through a MediaTek MT76=
+22
+> > > device (2-core Cortex-A53), which runs NAT with flow offload enabled =
+from
+> > > one ethernet port to PPPoE on another ethernet port + cake qdisc set =
+to
+> > > 1Gbps.
+> > >=20
+> > > rx-gro-list off: 630 Mbit/s, CPU 35% idle
+> > > rx-gro-list on:  770 Mbit/s, CPU 40% idle
+> > >=20
+> > > Signe-off-by: Felix Fietkau <nbd@nbd.name>
+> > > ---
+> > >  net/ipv4/tcp_offload.c   | 32 ++++++++++++++++++++++++++++++++
+> > >  net/ipv6/tcpv6_offload.c | 35 +++++++++++++++++++++++++++++++++++
+> > >  2 files changed, 67 insertions(+)
+> > >=20
+> > > diff --git a/net/ipv4/tcp_offload.c b/net/ipv4/tcp_offload.c
+> > > index 87ae9808e260..3e9b8c6f9c8c 100644
+> > > --- a/net/ipv4/tcp_offload.c
+> > > +++ b/net/ipv4/tcp_offload.c
+> > > @@ -407,6 +407,36 @@ void tcp_gro_complete(struct sk_buff *skb)
+> > >  }
+> > >  EXPORT_SYMBOL(tcp_gro_complete);
+> > > =20
+> > > +static void tcp4_check_fraglist_gro(struct list_head *head, struct s=
+k_buff *skb,
+> > > +				    struct tcphdr *th)
+> > > +{
+> > > +	const struct iphdr *iph;
+> > > +	struct sk_buff *p;
+> > > +	struct sock *sk;
+> > > +	struct net *net;
+> > > +	int iif, sdif;
+> > > +
+> > > +	if (!(skb->dev->features & NETIF_F_GRO_FRAGLIST))
+> >=20
+> > Should we add an 'unlikely()' here to pair with unlikely(is_flist) in
+> > *gro_receive / *gro_complete?
+> Not sure if unlikely() will make any difference here. I think it makes=
+=20
+> more sense in the other places than here.
 
-> Some Dell laptops support configuration of preset fan modes through
-> smbios tables.
-> 
-> If the platform supports these fan modes, set up platform_profile to
-> change these modes. If not supported, skip enabling platform_profile.
-> 
-> Signed-off-by: Lyndon Sanche <lsanche@lyndeno.ca>
-> ---
-> v3:
->  - Convert smbios-thermal-ctl docs to multiline comment and wrap
->  - Change thermal_mode_bits enum to directly be BIT() values
->   - Convert related code to use this
->  - Use FIELD_GET/PREP and GENNMASK for getting/setting thermal modes
->   - Correct offset for getting current ACC mode, setting offset
-> 		unchanged
->  - Check if thermal_handler is allocated before freeing and
-> 	 unregistering platform_profile
-> v2:
->  - Wrap smbios-thermal-ctl comment
->  - Return proper error code when invalid state returned
->  - Simplify platform_profile_get returns
->  - Propogate ENOMEM error
-> ---
->  drivers/platform/x86/dell/dell-laptop.c | 232 ++++++++++++++++++++++++
->  drivers/platform/x86/dell/dell-smbios.h |   1 +
->  2 files changed, 233 insertions(+)
-> 
-> diff --git a/drivers/platform/x86/dell/dell-laptop.c b/drivers/platform/x86/dell/dell-laptop.c
-> index 42f7de2b4522..fa58e7751d06 100644
-> --- a/drivers/platform/x86/dell/dell-laptop.c
-> +++ b/drivers/platform/x86/dell/dell-laptop.c
-> @@ -27,6 +27,8 @@
->  #include <linux/i8042.h>
->  #include <linux/debugfs.h>
->  #include <linux/seq_file.h>
-> +#include <linux/platform_profile.h>
-> +#include <linux/bitfield.h>
->  #include <acpi/video.h>
->  #include "dell-rbtn.h"
->  #include "dell-smbios.h"
-> @@ -95,6 +97,7 @@ static struct backlight_device *dell_backlight_device;
->  static struct rfkill *wifi_rfkill;
->  static struct rfkill *bluetooth_rfkill;
->  static struct rfkill *wwan_rfkill;
-> +static struct platform_profile_handler *thermal_handler;
->  static bool force_rfkill;
->  static bool micmute_led_registered;
->  static bool mute_led_registered;
-> @@ -2199,6 +2202,227 @@ static int mute_led_set(struct led_classdev *led_cdev,
->  	return 0;
->  }
->  
-> +/* Derived from smbios-thermal-ctl
-> + *
-> + * cbClass 17
-> + * cbSelect 19
-> + * User Selectable Thermal Tables(USTT)
-> + * cbArg1 determines the function to be performed
-> + * cbArg1 0x0 = Get Thermal Information
-> + *  cbRES1         Standard return codes (0, -1, -2)
-> + *  cbRES2, byte 0  Bitmap of supported thermal modes. A mode is supported if
-> + *                  its bit is set to 1
-> + *     Bit 0 Balanced
-> + *     Bit 1 Cool Bottom
-> + *     Bit 2 Quiet
-> + *     Bit 3 Performance
-> + *  cbRES2, byte 1 Bitmap of supported Active Acoustic Controller (AAC) modes.
-> + *                 Each mode corresponds to the supported thermal modes in
-> + *                  byte 0. A mode is supported if its bit is set to 1.
-> + *     Bit 0 AAC (Balanced)
-> + *     Bit 1 AAC (Cool Bottom
-> + *     Bit 2 AAC (Quiet)
-> + *     Bit 3 AAC (Performance)
-> + *  cbRes3, byte 0 Current Thermal Mode
-> + *     Bit 0 Balanced
-> + *     Bit 1 Cool Bottom
-> + *     Bit 2 Quiet
-> + *     Bit 3 Performanc
-> + *  cbRes3, byte 1  AAC Configuration type
-> + *          0       Global (AAC enable/disable applies to all supported USTT modes)
-> + *          1       USTT mode specific
-> + *  cbRes3, byte 2  Current Active Acoustic Controller (AAC) Mode
-> + *     If AAC Configuration Type is Global,
-> + *          0       AAC mode disabled
-> + *          1       AAC mode enabled
-> + *     If AAC Configuration Type is USTT mode specific (multiple bits may be set),
-> + *          Bit 0 AAC (Balanced)
-> + *          Bit 1 AAC (Cool Bottom
-> + *          Bit 2 AAC (Quiet)
-> + *          Bit 3 AAC (Performance)
-> + *  cbRes3, byte 3  Current Fan Failure Mode
-> + *     Bit 0 Minimal Fan Failure (at least one fan has failed, one fan working)
-> + *     Bit 1 Catastrophic Fan Failure (all fans have failed)
-> + *  cbArg1 0x1   (Set Thermal Information), both desired thermal mode and
-> + *               desired AAC mode shall be applied
-> + *  cbArg2, byte 0  Desired Thermal Mode to set
-> + *                  (only one bit may be set for this parameter)
-> + *     Bit 0 Balanced
-> + *     Bit 1 Cool Bottom
-> + *     Bit 2 Quiet
-> + *     Bit 3 Performance
-> + *  cbArg2, byte 1  Desired Active Acoustic Controller (AAC) Mode to set
-> + *     If AAC Configuration Type is Global,
-> + *         0  AAC mode disabled
-> + *         1  AAC mode enabled
-> + *
-> + *     If AAC Configuration Type is USTT mode specific
-> + *     (multiple bits may be set for this parameter),
-> + *         Bit 0 AAC (Balanced)
-> + *         Bit 1 AAC (Cool Bottom
-> + *         Bit 2 AAC (Quiet)
-> + *         Bit 3 AAC (Performance)
-> + */
-> +
-> +#define DELL_ACC_GET_FIELD GENMASK(19, 16)
-> +#define DELL_ACC_SET_FIELD GENMASK(11, 8)
-> +#define DELL_THERMAL_SUPPORTED GENMASK(3, 0)
+Why? AFAICS this will be called for every packet on the wire, exactly
+as the code getting this annotation in patch 3/6.
 
-Please align these with tabs.
+> > Should this test be moved into the caller, to avoid an unconditional
+> > function call in the ipv6 code?
+>=20
+> The function is already called from tcp4_gro_receive, which is only=20
+> called by IPv4 code. Also, since it's a static function called in only=
+=20
+> one place, it gets inlined by the compiler (at least in my builds).
+> Not sure what unconditional function call you're referring to.
 
-> +enum thermal_mode_bits {
-> +	DELL_BALANCED = BIT(0),
-> +	DELL_COOL_BOTTOM = BIT(1),
-> +	DELL_QUIET = BIT(2),
-> +	DELL_PERFORMANCE = BIT(3),
+Right you are. I just got fooled by my hope to reuse the same function
+for ipv4 and v6. Please just ignore this last part.
 
-You need #include <linux/bits.h> for BIT().
+Cheers,
 
-> +};
-> +
-> +static int thermal_get_mode(void)
-> +{
-> +	struct calling_interface_buffer buffer;
-> +	int state;
-> +	int ret;
-> +
-> +	dell_fill_request(&buffer, 0x0, 0, 0, 0);
-> +	ret = dell_send_request(&buffer, CLASS_INFO, SELECT_THERMAL_MANAGEMENT);
-> +	if (ret)
-> +		return ret;
-> +	state = buffer.output[2];
-> +	if (state & DELL_BALANCED)
-> +		return DELL_BALANCED;
-> +	else if (state & DELL_COOL_BOTTOM)
-> +		return DELL_COOL_BOTTOM;
-> +	else if (state & DELL_QUIET)
-> +		return DELL_QUIET;
-> +	else if (state & DELL_PERFORMANCE)
-> +		return DELL_PERFORMANCE;
-> +	else
-> +		return -ENXIO;
-> +}
-> +
-> +static int thermal_get_supported_modes(int *supported_bits)
-> +{
-> +	struct calling_interface_buffer buffer;
-> +	int ret;
-> +
-> +	dell_fill_request(&buffer, 0x0, 0, 0, 0);
-> +	ret = dell_send_request(&buffer, CLASS_INFO, SELECT_THERMAL_MANAGEMENT);
-> +	if (ret)
-> +		return ret;
-> +	*supported_bits = FIELD_GET(DELL_THERMAL_SUPPORTED, buffer.output[1]);
-> +	return 0;
-> +}
-> +
-> +static int thermal_get_acc_mode(int *acc_mode)
-> +{
-> +	struct calling_interface_buffer buffer;
-> +	int ret;
-> +
-> +	dell_fill_request(&buffer, 0x0, 0, 0, 0);
-> +	ret = dell_send_request(&buffer, CLASS_INFO, SELECT_THERMAL_MANAGEMENT);
-> +	if (ret)
-> +		return ret;
-> +	*acc_mode = FIELD_GET(DELL_ACC_GET_FIELD, buffer.output[3]);
-> +	return 0;
-> +}
-> +
-> +static int thermal_set_mode(enum thermal_mode_bits state)
-> +{
-> +	struct calling_interface_buffer buffer;
-> +	int ret;
-> +	int acc_mode;
-> +
-> +	ret = thermal_get_acc_mode(&acc_mode);
-> +	if (ret)
-> +		return ret;
-> +
-> +	dell_fill_request(&buffer, 0x1, FIELD_PREP(DELL_ACC_SET_FIELD, acc_mode) | state, 0, 0);
-> +	ret = dell_send_request(&buffer, CLASS_INFO, SELECT_THERMAL_MANAGEMENT);
-> +	return ret;
-> +}
-> +
-> +static int thermal_platform_profile_set(struct platform_profile_handler *pprof,
-> +					enum platform_profile_option profile)
-> +{
-> +	switch (profile) {
-> +	case PLATFORM_PROFILE_BALANCED:
-> +		return thermal_set_mode(DELL_BALANCED);
-> +	case PLATFORM_PROFILE_PERFORMANCE:
-> +		return thermal_set_mode(DELL_PERFORMANCE);
-> +	case PLATFORM_PROFILE_QUIET:
-> +		return thermal_set_mode(DELL_QUIET);
-> +	case PLATFORM_PROFILE_COOL:
-> +		return thermal_set_mode(DELL_COOL_BOTTOM);
-> +	default:
-> +		return -EOPNOTSUPP;
-> +	}
-> +}
-> +
-> +static int thermal_platform_profile_get(struct platform_profile_handler *pprof,
-> +					enum platform_profile_option *profile)
-> +{
-> +	int ret = thermal_get_mode();
-> +
-> +	if (ret < 0)
+Paolo
 
-I think I already mentioned about this, change to:
-
-	int ret;
-
-	ret = thermal_get_mode();
-	if (ret < 0)
-
-> +		return ret;
-> +
-> +	switch (ret) {
-> +	case DELL_BALANCED:
-> +		*profile = PLATFORM_PROFILE_BALANCED;
-> +		break;
-> +	case DELL_PERFORMANCE:
-> +		*profile = PLATFORM_PROFILE_PERFORMANCE;
-> +		break;
-> +	case DELL_COOL_BOTTOM:
-> +		*profile = PLATFORM_PROFILE_COOL;
-> +		break;
-> +	case DELL_QUIET:
-> +		*profile = PLATFORM_PROFILE_QUIET;
-> +		break;
-> +	default:
-> +		return -EINVAL;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +int thermal_init(void)
-> +{
-> +	int ret;
-> +	int supported_modes;
-> +
-> +	ret = thermal_get_supported_modes(&supported_modes);
-> +	if (ret || !supported_modes)
-> +		return 0;
-
-I think you should propagate the error code differently from nothing 
-supported:
-
-	if (ret < 0)
-		return ret;
-	if (!supported_modes)
-		return 0;
-
--- 
- i.
-
-> +
-> +	thermal_handler = kzalloc(sizeof(*thermal_handler), GFP_KERNEL);
-> +	if (!thermal_handler)
-> +		return -ENOMEM;
-> +	thermal_handler->profile_get = thermal_platform_profile_get;
-> +	thermal_handler->profile_set = thermal_platform_profile_set;
-> +
-> +	if (supported_modes & DELL_QUIET)
-> +		set_bit(PLATFORM_PROFILE_QUIET, thermal_handler->choices);
-> +	if (supported_modes & DELL_COOL_BOTTOM)
-> +		set_bit(PLATFORM_PROFILE_COOL, thermal_handler->choices);
-> +	if (supported_modes & DELL_BALANCED)
-> +		set_bit(PLATFORM_PROFILE_BALANCED, thermal_handler->choices);
-> +	if (supported_modes & DELL_PERFORMANCE)
-> +		set_bit(PLATFORM_PROFILE_PERFORMANCE, thermal_handler->choices);
-> +
-> +	// Clean up but do not fail
-> +	if (platform_profile_register(thermal_handler))
-> +		kfree(thermal_handler);
-> +
-> +	return 0;
-> +}
-> +
-> +void thermal_cleanup(void)
-> +{
-> +	if (thermal_handler) {
-> +		platform_profile_remove();
-> +		kfree(thermal_handler);
-> +	}
-> +}
-> +
->  static struct led_classdev mute_led_cdev = {
->  	.name = "platform::mute",
->  	.max_brightness = 1,
-> @@ -2238,6 +2462,11 @@ static int __init dell_init(void)
->  		goto fail_rfkill;
->  	}
->  
-> +	// Do not fail module if thermal modes not supported, just skip
-> +	ret = thermal_init();
-> +	if (ret)
-> +		goto fail_thermal;
-> +
->  	if (quirks && quirks->touchpad_led)
->  		touchpad_led_init(&platform_device->dev);
->  
-> @@ -2317,6 +2546,8 @@ static int __init dell_init(void)
->  		led_classdev_unregister(&mute_led_cdev);
->  fail_led:
->  	dell_cleanup_rfkill();
-> +fail_thermal:
-> +	thermal_cleanup();
->  fail_rfkill:
->  	platform_device_del(platform_device);
->  fail_platform_device2:
-> @@ -2344,6 +2575,7 @@ static void __exit dell_exit(void)
->  		platform_device_unregister(platform_device);
->  		platform_driver_unregister(&platform_driver);
->  	}
-> +	thermal_cleanup();
->  }
->  
->  /* dell-rbtn.c driver export functions which will not work correctly (and could
-> diff --git a/drivers/platform/x86/dell/dell-smbios.h b/drivers/platform/x86/dell/dell-smbios.h
-> index eb341bf000c6..585d042f1779 100644
-> --- a/drivers/platform/x86/dell/dell-smbios.h
-> +++ b/drivers/platform/x86/dell/dell-smbios.h
-> @@ -19,6 +19,7 @@
->  /* Classes and selects used only in kernel drivers */
->  #define CLASS_KBD_BACKLIGHT 4
->  #define SELECT_KBD_BACKLIGHT 11
-> +#define SELECT_THERMAL_MANAGEMENT 19
->  
->  /* Tokens used in kernel drivers, any of these
->   * should be filtered from userspace access
-> 
 
