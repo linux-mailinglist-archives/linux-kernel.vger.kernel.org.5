@@ -1,112 +1,213 @@
-Return-Path: <linux-kernel+bounces-164677-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-164679-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 683118B80F7
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 22:00:30 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B4F308B8100
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 22:02:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 64EC81C22CE8
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 20:00:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6ADD92889C4
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 20:02:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C70201A0AF1;
-	Tue, 30 Apr 2024 20:00:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 73B10199EA0;
+	Tue, 30 Apr 2024 20:02:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="FF0FHltS"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="TXd7azpa"
+Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6D43174EF1;
-	Tue, 30 Apr 2024 20:00:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED730199E9B
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 20:02:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714507213; cv=none; b=uihn9/NTt7kqRKo9iErQHr2k1anN7VkPZ83jiQ1q+GeZcNyTgYorhmoRcKl8czblpOyLQUPOGjXcNrC57f7FYeLKM7ZIWdcE+Gdv/MDpPuM/bgbyRLSraxp9jkIyT7pr6Tlj07Qni7DZUUI1GwQpN61kizCMQgRfncus7OUNNO0=
+	t=1714507360; cv=none; b=ZDTUXDsmuFswxkDCJgDAA/sKTQ79AT5nBwxHP/sVAK0EDEVjXgcEcnzz1NAFyB4M88W7ngRhe+nVZuGIUhoZmqRz+MloysZl/ROyPYVs3IY/vxw098/ror1g7X9uJlGTn08LfuF+EGbL51a+JDhrymTzvj5Zfnm+9CEUMsAVepA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714507213; c=relaxed/simple;
-	bh=a0yrZPZEKYcyVZidoYzVQcM4ReLKOBzaNowogk7EJ0w=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=GmHWbyZ46K2snMuqRFIf5ihVJmzGmx7154NT10DrnrxMdsRdfB3GArxVU3wm9NyGuOgmYagPB+uGocROGvT2u0qarnoqq13paykp4suPNtnjWdG+8lPLldL7jtHpjBaUkur5c6sVghCtC23PwTGZJc1OGkRrsUMgAJm3Gg+hDPw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=FF0FHltS; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 43UIxZUE023766;
-	Tue, 30 Apr 2024 20:00:01 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=a0yrZPZEKYcyVZidoYzVQcM4ReLKOBzaNowogk7EJ0w=; b=FF
-	0FHltStIiKnAUGo+dClS3AUKZaSiR4AWJpgcbFPp2Rtj6z5QtNEdsENYu1PKqhhB
-	q95qMawFAGF0mEe5Sf8h+aRFVs4/guTdV82AqvTu2O5LLa5/KnMnRIzJr6+tjw7o
-	dwGo6IiD87EzXGGJTI823W26hs6tHsSfZkUXNIvT52c1WyO7fteOU2m6cY0YTYck
-	KOVQnU1+4swEvjssU9iUH4Piqx1+keXevo2NdmmswarnWXbnSv9ctu6DV48SC+rv
-	o0JWmafwazkRQT6h1nHfOb4QrOnlLjjdzlflgsiDXJSyAxTKOQheJU/FsZjyB0H6
-	r6Ec2Iq7LQup17xHYI7A==
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xu6cug3av-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 30 Apr 2024 20:00:00 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 43UJxxj8003281
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 30 Apr 2024 19:59:59 GMT
-Received: from [10.110.13.147] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Tue, 30 Apr
- 2024 12:59:58 -0700
-Message-ID: <9983345a-d590-4a78-94ca-6d96832860b1@quicinc.com>
-Date: Tue, 30 Apr 2024 12:59:57 -0700
+	s=arc-20240116; t=1714507360; c=relaxed/simple;
+	bh=TDXxFegYkw4+4OrumwbrZ+/KjG8pndncc4mQ5lrFXqk=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=c2cbZ7IjkLfjSVQSh4YcD3yhptKMtYkL5XS6SeXEeB37V7v7msuqXoF/qB9BMk7CKsdA0v7Vcck1uwCmfY2+OSdqUSa7/+oK35cRrOdHwK4nIgJq/uoT+s3EWJq4RErWMjfr4KzjpaSbRM0xL2lfneTkv4ghD9BpKT9+9ojIbb4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=TXd7azpa; arc=none smtp.client-ip=209.85.214.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
+Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-1e8bbcbc2b7so55453585ad.0
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 13:02:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1714507358; x=1715112158; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=4LJjm/pyF2zhjcSW6gvyrQ1WLiqOQO+GuJphiWriDpw=;
+        b=TXd7azpaS+ZEZQSLCnSN8lbDFb1h/1vuZVdsjzxT9QjvuIW5HkcGuxFYr27pdzyQJw
+         oUn5MWxd8CrPtZjOQbvw7y3vZZehxTzabIxnnN+h8OXqVxfzUaKJ7Sv+gAiINf0EHn8V
+         tTLONiX2m+BLSwObeqjzTu0pUF37bi6ezNFXCAOTAPFT5+V7aG2h8ElXc04BgyuQM4gP
+         BcENZyW2zRZm3rBMAf4KEi6i5R1rbaKieDv0l9O+2A0l7q5dT9O3kr1oCO6SJwrFBjtR
+         vMQsKErW7HHRJoPoQ8b5h2QeIQ8+Q+I2aF5JeaslSdXK9c9WCgCRIT2RbxM0Sb0bEYNw
+         hFaQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714507358; x=1715112158;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=4LJjm/pyF2zhjcSW6gvyrQ1WLiqOQO+GuJphiWriDpw=;
+        b=VIp6/rUYUAt/GnMaC4zp32LqG5Uzxxx5fFxefFHlBQFOYJdqJ4idPTEQ9QcMRU22y7
+         1qimHFN94xCvSeueGBEMLudFQwwpp+20QdF2nWBzAJs12pIpKD1kGEyrLaPEJbwk2QHZ
+         HS0imyqzTzshwhlBc9vT5fbc/XZHLiIMnsfDGhRgvVy41YM23spCVZJUKSd2aQAMH1Cu
+         Iv3r/L5AZ4KFEXT5ixrkdWSfHSpatOzQ72pHaNTXGQYJD5PXsrIQwLIPemE0t85YOyLg
+         wXrAYp3d5VZ13Nx/nZ42OFD/jmH6SPa0NaQXOOWaMw4EfD7bEUTA4A733XZWPEa59WIx
+         1P9w==
+X-Forwarded-Encrypted: i=1; AJvYcCXTJeHx2Mq0fCvHYfvs58grFh8LlwruGNXtCQSSBcjvas8ZHmT+VdI5vTbTBiLqqBxbhtS8GprKG2fNVxP4XdTmkBAEkXCbrGDHr57R
+X-Gm-Message-State: AOJu0YwAqECHkb9qjPC6q18LQ9ioLmcDAc6Bs6n5nCXsaMqt/Nk7gzyi
+	P5hcdH9NwLulN1PAvCKp9CBy/hNYeq78X50MAKE/C3BfbknHekVFPyZkBqcULiY=
+X-Google-Smtp-Source: AGHT+IGJcxkSCDzhcED+yMnX8Jj7+cRN1MgU3WMk1uF7uem/IatFkUZ3shWdYdvdr5tHyr9TaD2REw==
+X-Received: by 2002:a17:902:da8e:b0:1eb:e5c0:6459 with SMTP id j14-20020a170902da8e00b001ebe5c06459mr534811plx.8.1714507358141;
+        Tue, 30 Apr 2024 13:02:38 -0700 (PDT)
+Received: from tjeznach.ba.rivosinc.com ([64.71.180.162])
+        by smtp.gmail.com with ESMTPSA id w19-20020a1709027b9300b001e435fa2521sm22809820pll.249.2024.04.30.13.02.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 30 Apr 2024 13:02:37 -0700 (PDT)
+From: Tomasz Jeznach <tjeznach@rivosinc.com>
+To: Joerg Roedel <joro@8bytes.org>,
+	Will Deacon <will@kernel.org>,
+	Robin Murphy <robin.murphy@arm.com>,
+	Paul Walmsley <paul.walmsley@sifive.com>
+Cc: Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	Anup Patel <apatel@ventanamicro.com>,
+	Sunil V L <sunilvl@ventanamicro.com>,
+	Nick Kossifidis <mick@ics.forth.gr>,
+	Sebastien Boeuf <seb@rivosinc.com>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	devicetree@vger.kernel.org,
+	iommu@lists.linux.dev,
+	linux-riscv@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	linux@rivosinc.com,
+	Tomasz Jeznach <tjeznach@rivosinc.com>
+Subject: [PATCH v3 0/7] Linux RISC-V IOMMU Support
+Date: Tue, 30 Apr 2024 13:01:50 -0700
+Message-Id: <cover.1714494653.git.tjeznach@rivosinc.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] wifi: nl80211: Avoid address calculations via out of
- bounds array indexing
-Content-Language: en-US
-To: Johannes Berg <johannes@sipsolutions.net>,
-        Kees Cook
-	<keescook@chromium.org>
-CC: Nathan Chancellor <nathan@kernel.org>,
-        "David S. Miller"
-	<davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>, Jakub Kicinski
-	<kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, <linux-wireless@vger.kernel.org>,
-        <netdev@vger.kernel.org>,
-        "Gustavo A. R.
- Silva" <gustavoars@kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-hardening@vger.kernel.org>
-References: <20240424220057.work.819-kees@kernel.org>
- <e2f20484fb1f4607d099d2184c1d74c6a39febc1.camel@sipsolutions.net>
-From: Jeff Johnson <quic_jjohnson@quicinc.com>
-In-Reply-To: <e2f20484fb1f4607d099d2184c1d74c6a39febc1.camel@sipsolutions.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: ZzcwzMuN5h_Vyv7lYwzGm3icX5xEMFDp
-X-Proofpoint-GUID: ZzcwzMuN5h_Vyv7lYwzGm3icX5xEMFDp
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
- definitions=2024-04-30_12,2024-04-30_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
- suspectscore=0 adultscore=0 bulkscore=0 mlxlogscore=430 mlxscore=0
- priorityscore=1501 spamscore=0 malwarescore=0 lowpriorityscore=0
- clxscore=1011 phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2404010003 definitions=main-2404300143
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On 4/30/2024 3:01 AM, Johannes Berg wrote:
-> This really doesn't even seem right, shouldn't do pointer arithmetic on
-> void pointers.
+This patch series introduces support for RISC-V IOMMU architected
+hardware into the Linux kernel.
 
-FWIW I argued this in the past in another context and Linus gave his opinion:
+The RISC-V IOMMU specification, which this series is based on, is
+ratified and available at GitHub/riscv-non-isa [1].
 
-https://lore.kernel.org/all/CAHk-=whFKYMrF6euVvziW+drw7-yi1pYdf=uccnzJ8k09DoTXA@mail.gmail.com/
+At a high level, the RISC-V IOMMU specification defines:
+
+1) Data structures:
+  - Device-context: Associates devices with address spaces and holds
+    per-device parameters for address translations.
+  - Process-contexts: Associates different virtual address spaces based
+    on device-provided process identification numbers.
+  - MSI page table configuration used to direct an MSI to a guest
+    interrupt file in an IMSIC.
+2) In-memory queue interface:
+  - Command-queue for issuing commands to the IOMMU.
+  - Fault/event queue for reporting faults and events.
+  - Page-request queue for reporting "Page Request" messages received
+    from PCIe devices.
+  - Message-signaled and wire-signaled interrupt mechanisms.
+3) Memory-mapped programming interface:
+  - Mandatory and optional register layout and description.
+  - Software guidelines for device initialization and capabilities discovery.
+
+
+This series introduces RISC-V IOMMU hardware initialization and complete
+single-stage translation with paging domain support.
+
+The patches are organized as follows:
+
+Patch 1: Introduces minimal required device tree bindings for the driver.
+Patch 2: Defines RISC-V IOMMU data structures, hardware programming interface
+         registers layout, and minimal initialization code for enabling global
+         pass-through for all connected masters.
+Patch 3: Implements the device driver for PCIe implementation of RISC-V IOMMU
+         architected hardware.
+Patch 4: Introduces IOMMU interfaces to the kernel subsystem.
+Patch 5: Implements device directory management with discovery sequences for
+         I/O mapped or in-memory device directory table location, hardware
+         capabilities discovery, and device to domain attach implementation.
+Patch 6: Implements command and fault queue, and introduces directory cache
+         invalidation sequences.
+Patch 7: Implements paging domain, with page table using the same format as the
+         CPU’s MMU. This patch series enables only 4K mappings; complete support
+         for large page mappings will be introduced in follow-up patch series.
+
+Follow-up patch series, providing large page support and updated walk cache
+management based on the revised specification, and complete ATS/PRI/SVA support,
+will be posted to GitHub [2].
+
+Changes from v2:
+- rebase on top of v6.9-rc6 and applied series for iommu-next:
+  IOMMU memory observability, v6 [3]
+  iommu, dma-mapping: Simplify arch_setup_dma_ops(), v4 [4]
+- dt-bindings: compatible string
+- Kconfig: optional built-in driver; removed module info
+- kdump support added, interrupts and binding fixes, pcim_*
+- use iommu allocation accounting wrappers
+- use new dma-mapping setup, removed probe_finalize
+- release domain added, memory allocations moved to domain alloc
+- updated domain attach flow, fixes for domain to device bond locking
+- fixed alignment check, fixed non-leaf page release
+- driver warnings cleaned up
+
+
+Best regards,
+ Tomasz Jeznach
+
+[1] link: https://github.com/riscv-non-isa/riscv-iommu
+[2] link: https://github.com/tjeznach/linux
+[3] link: https://lore.kernel.org/linux-iommu/20240413002522.1101315-1-pasha.tatashin@soleen.com/
+[4] link: https://lore.kernel.org/linux-iommu/cover.1713523152.git.robin.murphy@arm.com/
+v2 link:  https://lore.kernel.org/linux-iommu/cover.1713456597.git.tjeznach@rivosinc.com/
+v1 link:  https://lore.kernel.org/linux-iommu/cover.1689792825.git.tjeznach@rivosinc.com/
+
+Tomasz Jeznach (7):
+  dt-bindings: iommu: riscv: Add bindings for RISC-V IOMMU
+  iommu/riscv: Add RISC-V IOMMU platform device driver
+  iommu/riscv: Add RISC-V IOMMU PCIe device driver
+  iommu/riscv: Enable IOMMU registration and device probe.
+  iommu/riscv: Device directory management.
+  iommu/riscv: Command and fault queue support
+  iommu/riscv: Paging domain support
+
+ .../bindings/iommu/riscv,iommu.yaml           |  150 ++
+ MAINTAINERS                                   |    8 +
+ drivers/iommu/Kconfig                         |    1 +
+ drivers/iommu/Makefile                        |    2 +-
+ drivers/iommu/riscv/Kconfig                   |   20 +
+ drivers/iommu/riscv/Makefile                  |    3 +
+ drivers/iommu/riscv/iommu-bits.h              |  782 +++++++++
+ drivers/iommu/riscv/iommu-pci.c               |  119 ++
+ drivers/iommu/riscv/iommu-platform.c          |   92 +
+ drivers/iommu/riscv/iommu.c                   | 1549 +++++++++++++++++
+ drivers/iommu/riscv/iommu.h                   |   88 +
+ 11 files changed, 2813 insertions(+), 1 deletion(-)
+ create mode 100644 Documentation/devicetree/bindings/iommu/riscv,iommu.yaml
+ create mode 100644 drivers/iommu/riscv/Kconfig
+ create mode 100644 drivers/iommu/riscv/Makefile
+ create mode 100644 drivers/iommu/riscv/iommu-bits.h
+ create mode 100644 drivers/iommu/riscv/iommu-pci.c
+ create mode 100644 drivers/iommu/riscv/iommu-platform.c
+ create mode 100644 drivers/iommu/riscv/iommu.c
+ create mode 100644 drivers/iommu/riscv/iommu.h
+
+
+base-commit: e67572cd2204894179d89bd7b984072f19313b03
+message-id: 20240413002522.1101315-1-pasha.tatashin@soleen.com
+message-id: cover.1713523152.git.robin.murphy@arm.com
+-- 
+2.34.1
 
 
