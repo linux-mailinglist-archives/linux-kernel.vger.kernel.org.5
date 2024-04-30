@@ -1,71 +1,72 @@
-Return-Path: <linux-kernel+bounces-163499-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-163500-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6B0E88B6C2A
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 09:51:39 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 786DC8B6C2D
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 09:51:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8F04D1C220B0
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 07:51:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 256B71F21923
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 07:51:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 095E13FE52;
-	Tue, 30 Apr 2024 07:51:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BEC1946551;
+	Tue, 30 Apr 2024 07:51:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="YnGcqBPQ"
-Received: from mail-qt1-f173.google.com (mail-qt1-f173.google.com [209.85.160.173])
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="Cz1p0bF0"
+Received: from mail-qt1-f178.google.com (mail-qt1-f178.google.com [209.85.160.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC2803EA83
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 07:51:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 305F43F9E0
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 07:51:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714463493; cv=none; b=JZ+phtvpgSS8MQzPdpPdAcncerH3cc8Vzk0wW0RU4ys+kv1J2zN9dWeXo3e7653+hGcv2/is5sH0aiIVB+wS3mjVuQtLaGbAs5H9LqL6mBUQhq9WNPYVW+UAbpEP6QkWgJF0V/SHTvvQZL75lfpR45V07vsFF7Z1b7VjvVof5o8=
+	t=1714463495; cv=none; b=V2Z9iGjYL6cxBe623fpTe2LJ/6QpCl1TKlGslH/BuC8uLGBH4j4t6wXh7lcG/PM+VKbMr/HwY88UDvmJGcj96OI65qyRykXa2OABuhWBRqTRrlyjxgOwtm6EAxdQvjh3r/w3/HTOw43aWaWfOyI7CF6Sw37wvqipt2iKSRHkhGU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714463493; c=relaxed/simple;
-	bh=HZeobOuRJfmb/+xBUYIK1ybuEld0tGBVBD2NIR/ZHq4=;
-	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=GMtYX7A9KkOCQQKbOBrwpoM/Qx+pMWCfydHCI1PtN+NxpLWOVALQCDxfZktgmvHmG1NNgVSE61gS1Be83miqh+bGmop7cZqBqBUgjb7fUKXqWA3wskFoNsue22W833sa5vm8VmAjeycToV+tC4Eqg1wkmAfvxyau7tOPr4uXY28=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=YnGcqBPQ; arc=none smtp.client-ip=209.85.160.173
+	s=arc-20240116; t=1714463495; c=relaxed/simple;
+	bh=0jzk6sPYQEC59SApxornkivyRflmoI1pFn43nf2gouQ=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=FSRfbqlKkYAFv9p1FjxzAaOLDQDgpFCckDC3cD80oLjAcdlJF+8w5yhSBCSMFYZOJzQoYPLHANwFLBhj/kI5wCBv7vl8x5Qvd/oYzysk7M8VHdSnSLKbp02CSORoxucKR2yUshig+ewF6NJc1ST1egYErkpDohiVnx8RhlYHrJo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=Cz1p0bF0; arc=none smtp.client-ip=209.85.160.178
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-qt1-f173.google.com with SMTP id d75a77b69052e-436ee76c3b8so42463511cf.1
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 00:51:31 -0700 (PDT)
+Received: by mail-qt1-f178.google.com with SMTP id d75a77b69052e-436ee76c3b8so42463571cf.1
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 00:51:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1714463491; x=1715068291; darn=vger.kernel.org;
-        h=cc:to:content-transfer-encoding:mime-version:message-id:date
-         :subject:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=+Av9Ebx1j4vPRRB4vZ4jqNgLNeyuiwbH2PH8z4rELaY=;
-        b=YnGcqBPQ7k5RGiu1BWicl3KT7cdmcWTJdDdL7LGBB8FzOZppKLAbZM+hbDvyg8OY9s
-         o1cZgaqC1yWBrhvIVJ2xTzcrWNJg7hQyGjL1i7GBw9iDa3IM9vW0CTd3Sy9muqcj0to5
-         pSlnGqEqR0nlxdhLdpi8ZWE9pY43wNpnImc3c=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714463491; x=1715068291;
-        h=cc:to:content-transfer-encoding:mime-version:message-id:date
-         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=chromium.org; s=google; t=1714463492; x=1715068292; darn=vger.kernel.org;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=+Av9Ebx1j4vPRRB4vZ4jqNgLNeyuiwbH2PH8z4rELaY=;
-        b=WQzDcfOe8c0BUAd1OtnUHj3HwGYm1XqOEHZ3EJaAIi1+kMvFtyyD7nxplifcoda7IV
-         sYOxlTdYRyrTtk8Jbc2SJa70k58EJBLSemuAhueu33B4LyKId0bHwAXbC8SXU+Ng3XOP
-         vifmT4ldtvXMmPGysr285yN93+Uq+rRL+Uzc2gi5O4/lnAKTIaugq9HNk93PFMNWTkju
-         Gf5jxCHfvPlobzyOPTw7W88qDmnd1FXh3u3yHyxZHi7GCmwbaKgjCyaRnIYWqKRJl0m0
-         a7a1GR7axiBg2Oq2tqBSVp6ZuQUCQ+c5vXc0o5uEjAEwwzV5QH5EU1mgRz43VWSPrTQL
-         5PjQ==
-X-Forwarded-Encrypted: i=1; AJvYcCULsHd99iGAXcSKAZTNEjHWYB8Kj6SSQlI1WGDZTitUEn8mXXzMYll6IkFLUjPA/gyVysYg5f97xF0qRBmrJnpsCQ/kKKk+iHhe8DBY
-X-Gm-Message-State: AOJu0YxBWxUdCYuikeHZPPzXgpozpudTyFx9EwKuV7SkWsh2rzJzSJq4
-	fpW8T8udho56Qd68LiLMpW0y+38FlaVJAMkwy/CVBOMAo6cjOQMZDzUmaMx4Cg==
-X-Google-Smtp-Source: AGHT+IEyG5YcY6j7jfDsETTOEF8AdovY39d93OJj2uCRcI6sLWzCh70qxqFuRIJJQAYauJh1BEq+Lw==
-X-Received: by 2002:a05:622a:20d:b0:43a:ecf9:c179 with SMTP id b13-20020a05622a020d00b0043aecf9c179mr6487425qtx.52.1714463490874;
-        Tue, 30 Apr 2024 00:51:30 -0700 (PDT)
+        bh=R57CjkbkLkl8A/VUwKtkzF9x/otNALa5HeVqDryNHrA=;
+        b=Cz1p0bF0cZvCsMjrTIPFVt1HLmBH2HIu0+NPp5S5+5XMPA6hq/jvHGd2sbCx3WW4Cw
+         WayJuW+VPXpMjYTkZ8IckXhTb11K5TmkYfrZWHGhGHVrJ751HsA//31qXDOXEoijddfz
+         fti++wGjM8MPX4Ysf9zMhlXke1d+6Mr1Urp7s=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714463492; x=1715068292;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=R57CjkbkLkl8A/VUwKtkzF9x/otNALa5HeVqDryNHrA=;
+        b=E3anGzaXMNfhjivBMgJcNJxtj8382uD7+MOlSpmpjcMQgSDeyzYyX9q4RQyt8WHW/h
+         blQ6BfuriKD55tbOd8c5Cr6DvrTd8ct/lLHJFZAd/kWbWOmXNLMxMt+jjcI/evGOeEAi
+         dcRmc3R4YbyTVDz6Tu24PH0mEg6Nk0c+jZAZVSoB2/r67ix7i3327kjBoZASukRAgoSr
+         xKcQj4qcmNRalhtiZxAsQ24Y8jWJ91m5CuV08PVUUAHlk0lN4vhePski1FCeD1AL1rFd
+         W9EeGni0iVc/NYMzt4gSkoz7BocY8jfkflEUQ/OlnbbQoKyAnKSkgp+jBIH03Vf5RYYs
+         6Qcw==
+X-Forwarded-Encrypted: i=1; AJvYcCUYWlAi5G5qzxnbdE0a0XtznzexxoKRyci6Yv4CoWuihFITQHRcNU6L7FHxtx+LwcuFlH5SgLm//EiZAxgpEPhSpatwDM/w/7PnyCVA
+X-Gm-Message-State: AOJu0YzbEliNXCoOnVRi4EQ/hinLRcS/ZYohhwPkO7xmh1urlnvGdOHX
+	nLs873cWbCHG6LSDYYhhvsyoPIPgUFqLvUzpkXSUjnR2rxK0OsEP973QS+VONg==
+X-Google-Smtp-Source: AGHT+IFox+JJPaIDfnbJPXdvKCOIVMCsX59wRzBpWnMawbJcnJD3u85NhlKUJm+Q/1EmXzvmqcrFDg==
+X-Received: by 2002:a05:622a:1b86:b0:43b:dd6:82c0 with SMTP id bp6-20020a05622a1b8600b0043b0dd682c0mr3500422qtb.33.1714463492092;
+        Tue, 30 Apr 2024 00:51:32 -0700 (PDT)
 Received: from denia.c.googlers.com (114.152.245.35.bc.googleusercontent.com. [35.245.152.114])
-        by smtp.gmail.com with ESMTPSA id z11-20020a05622a124b00b00437b4048972sm10634547qtx.18.2024.04.30.00.51.29
+        by smtp.gmail.com with ESMTPSA id z11-20020a05622a124b00b00437b4048972sm10634547qtx.18.2024.04.30.00.51.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Apr 2024 00:51:30 -0700 (PDT)
+        Tue, 30 Apr 2024 00:51:31 -0700 (PDT)
 From: Ricardo Ribalda <ribalda@chromium.org>
-Subject: [PATCH 0/3] media: bcm2835-unicam: Improve error handling during
- probe
-Date: Tue, 30 Apr 2024 07:51:25 +0000
-Message-Id: <20240430-fix-broad-v1-0-cf3b81bf97ff@chromium.org>
+Date: Tue, 30 Apr 2024 07:51:26 +0000
+Subject: [PATCH 1/3] media: bcm2835-unicam: Fix error handling for
+ platform_get_irq
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -74,9 +75,9 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-B4-Tracking: v=1; b=H4sIAP2iMGYC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
- vPSU3UzU4B8JSMDIxMDE2MD3bTMCt2kovzEFF0TS4PUJMNEY0tzUxMloPqColSgJNis6NjaWgD
- t7SS2WwAAAA==
+Message-Id: <20240430-fix-broad-v1-1-cf3b81bf97ff@chromium.org>
+References: <20240430-fix-broad-v1-0-cf3b81bf97ff@chromium.org>
+In-Reply-To: <20240430-fix-broad-v1-0-cf3b81bf97ff@chromium.org>
 To: Mauro Carvalho Chehab <mchehab@kernel.org>, 
  Florian Fainelli <florian.fainelli@broadcom.com>, 
  Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>, 
@@ -86,25 +87,35 @@ Cc: linux-media@vger.kernel.org, linux-rpi-kernel@lists.infradead.org,
  Hans Verkuil <hverkuil@xs4all.nl>, Ricardo Ribalda <ribalda@chromium.org>
 X-Mailer: b4 0.12.4
 
-Improve the error handling of the irq errors. I am not sure why the
-retcode was replaced always with -EINVAL, so I have added that fix as a
-follow-up patch.
+platform_get_irq() cannot return the value 0.
+
+If it returns -EPROBE_DEFER, we need to populate the error code upwards
+to retry probing once the irq handler is ready.
 
 Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
 ---
-Ricardo Ribalda (3):
-      media: bcm2835-unicam: Fix error handling for platform_get_irq
-      media: bcm2835-unicam: Do not print error when irq not found
-      media: bcm2835-unicam: Do not replace IRQ retcode during probe
+ drivers/media/platform/broadcom/bcm2835-unicam.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
- drivers/media/platform/broadcom/bcm2835-unicam.c | 6 +-----
- 1 file changed, 1 insertion(+), 5 deletions(-)
----
-base-commit: 1c73d0b29d04bf4082e7beb6a508895e118ee30d
-change-id: 20240430-fix-broad-490eb1a39754
+diff --git a/drivers/media/platform/broadcom/bcm2835-unicam.c b/drivers/media/platform/broadcom/bcm2835-unicam.c
+index bd2bbb53070e..2a3a27ac70ba 100644
+--- a/drivers/media/platform/broadcom/bcm2835-unicam.c
++++ b/drivers/media/platform/broadcom/bcm2835-unicam.c
+@@ -2660,9 +2660,10 @@ static int unicam_probe(struct platform_device *pdev)
+ 	}
+ 
+ 	ret = platform_get_irq(pdev, 0);
+-	if (ret <= 0) {
++	if (ret < 0) {
+ 		dev_err(&pdev->dev, "No IRQ resource\n");
+-		ret = -EINVAL;
++		if (ret != -EPROBE_DEFER)
++			ret = -EINVAL;
+ 		goto err_unicam_put;
+ 	}
+ 
 
-Best regards,
 -- 
-Ricardo Ribalda <ribalda@chromium.org>
+2.44.0.769.g3c40516874-goog
 
 
