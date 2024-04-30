@@ -1,175 +1,143 @@
-Return-Path: <linux-kernel+bounces-163695-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-163696-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D96BA8B6E6A
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 11:34:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9DBD48B6E6D
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 11:34:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 08C0E1C222C4
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 09:34:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C10451C20EEC
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 09:34:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E60812838C;
-	Tue, 30 Apr 2024 09:34:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 263B112839B;
+	Tue, 30 Apr 2024 09:34:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="X8BV29ku"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="fuKfgBAf"
+Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6A80127E31
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 09:34:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B9CAB128363
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 09:34:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714469665; cv=none; b=Gi4dHpLKLuCtLjgpH/bGm6IvoB1yIvrCfr/zyto1KB0Iif65mKLEd244orkxdni2PuscZFtSk+Hq/UQPEKmW35NtkGzHXsG6KUwYS0sudzilHBnG81oXEG51f1LW6Anz9SvxDkeRcIDBwbaR+RSlqqrjTRCWoa9TTpBGnld6vrs=
+	t=1714469680; cv=none; b=Zk2Y8CYMwW2mO2pONYsFyhSYZRY1SEnlQdjCitJOnjB+8cOcoayGaV18af+1s6ngcODw/lTeXHLa7JDqQWiU3ObBe6mrtNhJ6t6eM0CkkPUbR+R0CYxcwh9o0pd2oCQMzZ83C+ajsdkHWffAG/1FUkMpdRGCM7MTrzZxPyce23w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714469665; c=relaxed/simple;
-	bh=ZQ+5EBT3mj87pKCkYKSCQLIajeZNkK+o45gfK4zC40s=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=W7SGiCkrrAuXQhWbOYfxko7A2n8xG8LURRq8lA8gq+uIxB3NpyYeqeE4n5gVhTCMjvFzVrMALSrcEu1o0+xX2k6nfjRLDy0H36QNtSoc8tExu/roIe39WcpK7zQAGhcyh1mcT1MuXxuKLZyKpxU45eWik+8FnBDmsgjjbLAxFAE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=X8BV29ku; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E3372C2BBFC;
-	Tue, 30 Apr 2024 09:34:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714469664;
-	bh=ZQ+5EBT3mj87pKCkYKSCQLIajeZNkK+o45gfK4zC40s=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=X8BV29kukDQZWXtcWrEzUZWXlCpnyCaJTASDOXXE4kSHbQgrRA3PZ6DTK9ANvr0WZ
-	 JUImxvQfYdAmC1BDuMEUvxNDQvRt6/Yn/I9AAXGJKTQeQTwjC1pF2yF1avh0eNFYCq
-	 +Xakb7p4ZgQuFpekbMkC7d5apGoSFApKS8L/8/xwwPEakJDl/sbm/2oEh36tKY9BaN
-	 6a+Sff3srIT+hXbxRSrBIEYf3ySc471pOCWDnO5NwJR5Yaq3UIKsTmfBVfnlT5Qcvs
-	 60Puz4IiICO7ZU22p4jD0PyS+R08TfQrwR/TZGj5kCnvAEHQD37HUxAWP32EgItkDU
-	 KQZwwcViwK1Eg==
-Date: Tue, 30 Apr 2024 11:34:21 +0200
-From: Maxime Ripard <mripard@kernel.org>
-To: Sui Jingfeng <sui.jingfeng@linux.dev>
-Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>, 
-	Neil Armstrong <neil.armstrong@linaro.org>, Randy Dunlap <rdunlap@infradead.org>, 
-	dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org, 
-	Jessica Zhang <quic_jesszhan@quicinc.com>, Sam Ravnborg <sam@ravnborg.org>, 
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Thomas Zimmermann <tzimmermann@suse.de>, 
-	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>
-Subject: Re: [v1,1/3] drm/panel: ili9341: Correct use of device property APIs
-Message-ID: <20240430-unnatural-steel-spaniel-dbacef@houat>
-References: <20240425142706.2440113-2-andriy.shevchenko@linux.intel.com>
- <c2d41916-0b6c-43b5-98eb-514eb0511f84@linux.dev>
- <ZiqqiAztCaiAgI8e@smile.fi.intel.com>
- <2599705c-0a64-4742-b1d7-330e9fde6e7a@linux.dev>
- <20240426-married-augmented-mantis-ff7edd@penduick>
- <509b3822-dcf6-45eb-9516-ba8ff2cc4382@linux.dev>
- <20240429-bouncy-attentive-vole-9964f1@houat>
- <795bec5d-c7ba-4fc2-9be9-78c4063743d9@linux.dev>
+	s=arc-20240116; t=1714469680; c=relaxed/simple;
+	bh=k9NWBESpvLG5vWGkgDECyGlUm6v7jCcZsE1y+XKUUCs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Gsjhl9SUSdJSrpMYcwrZnu/dSK84ljX6Bn0btF60vlQ6NeAp/e0/TrOWatSTZAXQo9qwxMbyRV6bNfRfVcsLPANbwNOmX5YjZ5Zb/amgH6obM10ijy7kqNqo9TmBJa4DwK0mmtB4CDcCAx4/fAkId5U9Rof7GePeUdLZ+9gSpws=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=fuKfgBAf; arc=none smtp.client-ip=209.85.208.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-5709cb80b03so5512719a12.2
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 02:34:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1714469677; x=1715074477; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=xpI5WAoKM9x04SKzVc9sX1ORhdeI2ZrvsKIYhkvbqIo=;
+        b=fuKfgBAfaKQaF/p+fvnGIU/0vLX4APoJVGhPFi3iPdehG+op+bOiSruEejjiqyePT/
+         IVVe7uB328aGrwiJC+aXzZBoKQQnxaTtUj1nGvh7IShSTaVOh7EU2dACZIb1BRjEPU7y
+         +KU1rIR5RkMiXUTzTgBafRf3XTd3bmYUJQxsN/WNlolUjk5oc5OKjv5dx13gNvzJoRos
+         7CdVWcGRKHX6ofpEEU+dUObBSEZ7exT4svP86a5V4a6Kf6ADzshV+SpZjF1y5MllawNc
+         FMphnMhNcrNW5ujypuL+Xp9MUtXf/prT5sylMSUarQx/MRiRwYxgHRGiTlyDPpbqfhbn
+         Mzug==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714469677; x=1715074477;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=xpI5WAoKM9x04SKzVc9sX1ORhdeI2ZrvsKIYhkvbqIo=;
+        b=ViUqQf3Epx1RrVEnwQDX4t7+sCZNm2ocUmgpEoavHBQsyTwVqD8ct+Ae3RD7k23+0g
+         iGNxBnWFloNcs0zT2ucr9JUKjyQs6JGlTPML+l7E1ptCRtQVpYSrKSPikXNqECAqIymm
+         34myjZ0591fxnmACeHYgkoz3EBywEXZbQhp44qQjPkDK8yGhwZz6OSSXdWVWVujVHuUh
+         oIq6fwgAW4uwtTEFOCw3T/YObi+PnzsEA2pwyDdLo1kVmahSyRIXTOTC30dcAX06CVke
+         TGPaPyt5dLwboKcpIk8o7VCIIWtgXkG/z74fTcEQIXRKrBppRI0imwtOj5+lGKtxPGiZ
+         REog==
+X-Forwarded-Encrypted: i=1; AJvYcCUOF8aUpXZCZPwmpc0WMSwopSDPhq/no8qIVPAG9HM89V+YThvP/wAr6MgEUo8e7XcJvsKdCLM9h9mN2JBGeKkm0vTYu2vTZDLuaX+i
+X-Gm-Message-State: AOJu0YzXJJqTiRC2CYtxGkH3LCd7Sdw/RyU+JXioW9RvUDbzM/4wi2VB
+	LFTJtvIHCbN8z45wujlQDFe7xULJ98p8L1Ns0NOU2BjUtv2asdROqHWhBEMwsYlzRIVBx8ZXeh3
+	9mQQ=
+X-Google-Smtp-Source: AGHT+IF1hRM0MWJpCdc02GqdalwkS9joDUtSdv8iCT6RCkzWaJB273u6HmJra4KNhwmTA9fs7r7nRw==
+X-Received: by 2002:a50:ab0d:0:b0:570:1ea8:cd1c with SMTP id s13-20020a50ab0d000000b005701ea8cd1cmr1510922edc.35.1714469676955;
+        Tue, 30 Apr 2024 02:34:36 -0700 (PDT)
+Received: from [192.168.114.15] (078088045141.garwolin.vectranet.pl. [78.88.45.141])
+        by smtp.gmail.com with ESMTPSA id r19-20020aa7cb93000000b00572031756a8sm10071242edt.16.2024.04.30.02.34.35
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 30 Apr 2024 02:34:36 -0700 (PDT)
+Message-ID: <a35c0e9f-9f1f-44ea-8248-cc632c6db291@linaro.org>
+Date: Tue, 30 Apr 2024 11:34:34 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha384;
-	protocol="application/pgp-signature"; boundary="7xe3vdsj4lehxjob"
-Content-Disposition: inline
-In-Reply-To: <795bec5d-c7ba-4fc2-9be9-78c4063743d9@linux.dev>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 11/12] arm64: dts: qcom: delete wrong usb-role-switch
+ properties
+To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+ Bjorn Andersson <andersson@kernel.org>, Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>
+Cc: linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240429-usb-link-dtsi-v1-0-87c341b55cdf@linaro.org>
+ <20240429-usb-link-dtsi-v1-11-87c341b55cdf@linaro.org>
+Content-Language: en-US
+From: Konrad Dybcio <konrad.dybcio@linaro.org>
+Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
+ 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
+ izWDgYvmBE8=
+In-Reply-To: <20240429-usb-link-dtsi-v1-11-87c341b55cdf@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
+On 29.04.2024 2:43 PM, Dmitry Baryshkov wrote:
+> The usb-role-switch property doesn't make sense for the USB hosts which
+> are fixed to either host or peripheral USB data mode. Delete
+> usb-role-switch property being present in SoC dtsi.
+> 
+> Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+> ---
 
---7xe3vdsj4lehxjob
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I'm more than sure all of these devices are physically capapable of
+doing both modes, but the infra to switch modes / provide VBUS as
+host was / is not hooked up or present yet
 
-On Tue, Apr 30, 2024 at 12:54:39AM +0800, Sui Jingfeng wrote:
-> On 2024/4/29 19:55, Maxime Ripard wrote:
-> > On Sat, Apr 27, 2024 at 01:57:46PM +0800, Sui Jingfeng wrote:
-> > > On 2024/4/26 14:23, Maxime Ripard wrote:
-> > > > On Fri, Apr 26, 2024 at 04:43:18AM +0800, Sui Jingfeng wrote:
-> > > > > On 2024/4/26 03:10, Andy Shevchenko wrote:
-> > > > > > On Fri, Apr 26, 2024 at 02:08:16AM +0800, Sui Jingfeng wrote:
-> > > > > > > On 2024/4/25 22:26, Andy Shevchenko wrote:
-> > > > > > > > It seems driver missed the point of proper use of device pr=
-operty APIs.
-> > > > > > > > Correct this by updating headers and calls respectively.
-> > > > > > > You are using the 'seems' here exactly saying that you are no=
-t 100% sure.
-> > > > > > >=20
-> > > > > > > Please allow me to tell you the truth: This patch again has Z=
-ERO effect.
-> > > > > > > It fix nothing. And this patch is has the risks to be wrong.
-> > > > > > Huh?! Really, stop commenting the stuff you do not understand.
-> > > > > I'm actually a professional display drivers developer at the down=
-stream
-> > > > > in the past, despite my contribution to upstream is less. But I b=
-elieve
-> > > > > that all panel driver developers know what I'm talking about. So =
-please
-> > > > > have take a look at my replies.
-> > > > Most of the interactions you had in this series has been uncalled f=
-or.
-> > > > You might be against a patch, but there's no need to go to such len=
-gth.
-> > > >=20
-> > > > As far as I'm concerned, this patch is fine to me in itself, and I =
-don't
-> > > > see anything that would prevent us from merging it.
-> > > No one is preventing you, as long as don't misunderstanding what other
-> > > people's technical replies intentionally. I'm just a usual and normal
-> > > contributor, I hope the world will better than yesterday.
-> > You should seriously consider your tone when replying then.
-> >=20
-> > > Saying such thing to me may not proper, I guess you may want to talk
-> > > to peoples who has the push rights
-> > I think you misunderstood me. My point was that your several rants were
-> > uncalled for and aren't the kind of things we're doing here.
-> >=20
-> > I know very well how to get a patch merged, thanks.
-> >=20
-> > > just make sure it isn't a insult to the professionalism of drm bridge
-> > > community itself though.
-> > I'm not sure why you're bringing the bridge community or its
-> > professionalism. It's a panel, not a bridge, and I never doubted the
-> > professionalism of anyone.
->=20
->=20
-> I means that the code itself could be adopted, as newer and younger
-> programmer (like Andy) need to be encouraged to contribute.
-
-Andy has thousands of commits in Linux. He's *very* far from being a new
-contributor.
-
-> I express no obvious objections, just hints him that something else
-> probably should also be taken into consideration as well.
-
-That might be what you wanted to express, but you definitely didn't
-express it that way.
-
-> On the other hand, we probably should allow other people participate
-> in discussion so that it is sufficient discussed and ensure that it
-> won't be reverted by someone in the future for some reasons. Backing
-> to out case happens here, we may need to move things forward. Therefore,
-> it definitely deserve to have a try. It is not a big deal even though
-> it gets reverted someday.
->=20
-> In the end, I don't mind if you think there is nothing that could
-> prevent you from merge it, but I still suggest you have a glance at
-> peoples siting at the Cc list. I'm busy now and I have a lot of other
-> tasks to do, and may not be able to reply you emails on time. So it up
-> to you and other maintainers to decide.
-> Thank you.
-
-So far, you're the only one who reviewed those patches. I'm not sure
-what you're talking about here.
-
-Maxime
-
---7xe3vdsj4lehxjob
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iJUEABMJAB0WIQTkHFbLp4ejekA/qfgnX84Zoj2+dgUCZjC7HQAKCRAnX84Zoj2+
-dlygAYDwpB9QdIcoX03Jn0U+0+k2hI2zTYADwgCF/5Nq+3QJYG8Hv+eeS5oLwvo/
-GKpraScBf1F8i5+AIgGYdsSFbXEqh0o4eQkpyqA5q+DrXOSDkwT33YGsyZlrjEgC
-gzymFvTlQw==
-=/21b
------END PGP SIGNATURE-----
-
---7xe3vdsj4lehxjob--
+Konrad
 
