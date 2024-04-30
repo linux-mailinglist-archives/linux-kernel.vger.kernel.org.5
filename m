@@ -1,256 +1,446 @@
-Return-Path: <linux-kernel+bounces-163895-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-163896-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0F3AD8B7568
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 14:07:23 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5EF498B756A
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 14:07:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2AE66B20AB4
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 12:07:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1398C28535F
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 12:07:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD7FC14D446;
-	Tue, 30 Apr 2024 12:06:07 +0000 (UTC)
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EDE4014038E;
+	Tue, 30 Apr 2024 12:07:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="AoXsyqUy"
+Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C4A8145FEA;
-	Tue, 30 Apr 2024 12:06:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.187
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B941813D618;
+	Tue, 30 Apr 2024 12:07:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.142
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714478767; cv=none; b=L6MQtfjuRmmh0DCuzMYpz1a6pWzzpdM4UaliaA8Vj/OjV7owBYZyc49UA3R9y5L4SbJ44syNOv8hbdLfGrIeqASZ+/Xq2F9Tqq7KnHrc5Yi3TTQAiiHR8l+HY4UdsXnzCebHgbtOVgh6ZbmwakBxqnbJOtVxazrRQVihC6dUN4o=
+	t=1714478822; cv=none; b=eTV/DwsddQf7l0d3xr8W0dlQmxw5WOw/AhqRYnDDLiIzmiJqFNL4tVel6+iMMsmZq2izANjVEke+TwGcIRF+uRS3xJTBnP8Rmiq4wkhC3xFgr0tz0RMljicjDSeiii5DvIFqKBn1kd6dMfLFCZxAHMNIeNQCtzpPstSgpUwGm6I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714478767; c=relaxed/simple;
-	bh=rd5lbS+IalayXX6x4yeF3tUq8etrw3SCMH7NlmYfv20=;
-	h=Subject:To:CC:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=BB1XwfAErG35J+OUQQMAnkYKeUpZVVosU7H3RUwkghgonU7aiJQST/0KMouTfFpinkHaSItDjxIllF3AFpLUt6dVPP6qb0uSrslVHnZGMm061kVljD7z82tJAoEOMEp1YeBcx9rke3B+Ir79DJnb5vmM9i73FWoEiLkhzbllTqQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.187
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.174])
-	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4VTJjj6MKHzvRBm;
-	Tue, 30 Apr 2024 20:02:49 +0800 (CST)
-Received: from dggpemm500005.china.huawei.com (unknown [7.185.36.74])
-	by mail.maildlp.com (Postfix) with ESMTPS id 805DB140485;
-	Tue, 30 Apr 2024 20:05:59 +0800 (CST)
-Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.com
- (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Tue, 30 Apr
- 2024 20:05:59 +0800
-Subject: Re: [PATCH net-next v2 09/15] mm: page_frag: reuse MSB of 'size'
- field for pfmemalloc
-To: Alexander Duyck <alexander.duyck@gmail.com>
-CC: <davem@davemloft.net>, <kuba@kernel.org>, <pabeni@redhat.com>,
-	<netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>, Andrew Morton
-	<akpm@linux-foundation.org>, <linux-mm@kvack.org>
-References: <20240415131941.51153-1-linyunsheng@huawei.com>
- <20240415131941.51153-10-linyunsheng@huawei.com>
- <37d012438d4850c3d7090e784e09088d02a2780c.camel@gmail.com>
- <8b7361c2-6f45-72e8-5aca-92e8a41a7e5e@huawei.com>
- <17066b6a4f941eea3ef567767450b311096da22b.camel@gmail.com>
- <c45fdd75-44be-82a6-8e47-42bbc5ee4795@huawei.com>
- <efd21f1d-8c67-b060-5ad2-0d500fac2ba6@huawei.com>
- <CAKgT0UfQWEkaWM_mfk=FhCErTL_ZS3RL6x3iMzPdEP3FD+9zZQ@mail.gmail.com>
-From: Yunsheng Lin <linyunsheng@huawei.com>
-Message-ID: <ceb36a97-31b5-62df-a216-8598210bbba8@huawei.com>
-Date: Tue, 30 Apr 2024 20:05:58 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.2.0
+	s=arc-20240116; t=1714478822; c=relaxed/simple;
+	bh=ElzSrTKOj6zwtSbpZR2Y47gK3jz3hIX2JxW3yJpVA3Y=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=MrR8lIMMlOGtIZwyBc58micDKd4sLyqTRwBRd71xvyr/p1Naz3oEPpVE7ghC6iFjbbdrpkhNyzRf9P0ncYwQXI9Uf1LjYTiV50JMAChmR0eB3WGAPTHYxzXylBOgXlK68FONH13yp0owrPP9DsRPsGzh6Jhaj05upMb0RWeKXNw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=AoXsyqUy; arc=none smtp.client-ip=198.47.19.142
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+	by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 43UC6c2S019884;
+	Tue, 30 Apr 2024 07:06:38 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1714478798;
+	bh=tcUCvNxzuyXMP7T6wVE8YtL/6igb/ha5hCDb+AUyyKQ=;
+	h=From:To:CC:Subject:Date;
+	b=AoXsyqUymYdSpWu16DC54hITwlfo6UjAOxsrf9HyXGq7LTVbVucJxU3bC4BBfHjxo
+	 1pC1W6+o5TcIH5MKHEznAvrfEy7JH91KppACGFJ19pdHVkb5r5ElETe3jQ7zkA2YXT
+	 RGTG5MhyzAFHVQGILH7dy6Kr5b4kLvFaA7gq3gLU=
+Received: from DLEE115.ent.ti.com (dlee115.ent.ti.com [157.170.170.26])
+	by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 43UC6cPt082146
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Tue, 30 Apr 2024 07:06:38 -0500
+Received: from DLEE114.ent.ti.com (157.170.170.25) by DLEE115.ent.ti.com
+ (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 30
+ Apr 2024 07:06:37 -0500
+Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DLEE114.ent.ti.com
+ (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Tue, 30 Apr 2024 07:06:37 -0500
+Received: from lelv0854.itg.ti.com (lelv0854.itg.ti.com [10.181.64.140])
+	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 43UC6bhf043702;
+	Tue, 30 Apr 2024 07:06:37 -0500
+Received: from localhost (danish-tpc.dhcp.ti.com [10.24.69.25])
+	by lelv0854.itg.ti.com (8.14.7/8.14.7) with ESMTP id 43UC6a7C024808;
+	Tue, 30 Apr 2024 07:06:36 -0500
+From: MD Danish Anwar <danishanwar@ti.com>
+To: Dan Carpenter <dan.carpenter@linaro.org>,
+        Heiner Kallweit
+	<hkallweit1@gmail.com>, Andrew Lunn <andrew@lunn.ch>,
+        Jan Kiszka
+	<jan.kiszka@siemens.com>,
+        Diogo Ivo <diogo.ivo@siemens.com>, Paolo Abeni
+	<pabeni@redhat.com>,
+        Jakub Kicinski <kuba@kernel.org>, Eric Dumazet
+	<edumazet@google.com>,
+        "David S. Miller" <davem@davemloft.net>
+CC: <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <srk@ti.com>,
+        Vignesh Raghavendra
+	<vigneshr@ti.com>, <r-gunasekaran@ti.com>,
+        Roger Quadros <rogerq@kernel.org>, Simon Horman <horms@kernel.org>,
+        MD Danish Anwar <danishanwar@ti.com>
+Subject: [PATCH net-next v3] net: ti: icssg_prueth: Add SW TX / RX Coalescing based on hrtimers
+Date: Tue, 30 Apr 2024 17:36:34 +0530
+Message-ID: <20240430120634.1558998-1-danishanwar@ti.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <CAKgT0UfQWEkaWM_mfk=FhCErTL_ZS3RL6x3iMzPdEP3FD+9zZQ@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggpemm500005.china.huawei.com (7.185.36.74)
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-On 2024/4/29 22:49, Alexander Duyck wrote:
+Add SW IRQ coalescing based on hrtimers for RX and TX data path for ICSSG
+driver, which can be enabled by ethtool commands:
 
-..
+- RX coalescing
+  ethtool -C eth1 rx-usecs 50
 
->>>
->>
->> After considering a few different layouts for 'struct page_frag_cache',
->> it seems the below is more optimized:
->>
->> struct page_frag_cache {
->>         /* page address & pfmemalloc & order */
->>         void *va;
-> 
-> I see. So basically just pack the much smaller bitfields in here.
-> 
->>
->> #if (PAGE_SIZE < PAGE_FRAG_CACHE_MAX_SIZE) && (BITS_PER_LONG <= 32)
->>         u16 pagecnt_bias;
->>         u16 size;
->> #else
->>         u32 pagecnt_bias;
->>         u32 size;
->> #endif
->> }
->>
->> The lower bits of 'va' is or'ed with the page order & pfmemalloc instead
->> of offset or pagecnt_bias, so that we don't have to add more checking
->> for handling the problem of not having enough space for offset or
->> pagecnt_bias for PAGE_SIZE < PAGE_FRAG_CACHE_MAX_SIZE and 32 bits system.
->> And page address & pfmemalloc & order is unchanged for the same page
->> in the same 'page_frag_cache' instance, it makes sense to fit them
->> together.
->>
->> Also, it seems it is better to replace 'offset' with 'size', which indicates
->> the remaining size for the cache in a 'page_frag_cache' instance, and we
->> might be able to do a single 'size >= fragsz' checking for the case of cache
->> being enough, which should be the fast path if we ensure size is zoro when
->> 'va' == NULL.
-> 
-> I'm not sure the rename to size is called for as it is going to be
-> confusing. Maybe something like "remaining"?
+- TX coalescing can be enabled per TX queue
 
-Yes, using 'size' for that is a bit confusing.
-Beside the above 'remaining', by googling, it seems we may have below
-options too:
-'residual','unused', 'surplus'
+  - by default enables coalescing for TX0
+  ethtool -C eth1 tx-usecs 50
+  - configure TX0
+  ethtool -Q eth0 queue_mask 1 --coalesce tx-usecs 100
+  - configure TX1
+  ethtool -Q eth0 queue_mask 2 --coalesce tx-usecs 100
+  - configure TX0 and TX1
+  ethtool -Q eth0 queue_mask 3 --coalesce tx-usecs 100 --coalesce
+tx-usecs 100
 
-> 
->> Something like below:
->>
->> #define PAGE_FRAG_CACHE_ORDER_MASK      GENMASK(1, 0)
->> #define PAGE_FRAG_CACHE_PFMEMALLOC_BIT  BIT(2)
-> 
-> The only downside is that it is ossifying things so that we can only
+Minimum value for both rx-usecs and tx-usecs is 20us.
 
-There is 12 bits that is always useful, we can always extend ORDER_MASK
-to more bits if lager order number is needed.
+Compared to gro_flush_timeout and napi_defer_hard_irqs this patch allows
+to enable IRQ coalescing for RX path separately.
 
-> ever do order 3 as the maximum cache size. It might be better to do a
-> full 8 bytes as on x86 it would just mean accessing the low end of a
-> 16b register. Then you can have pfmemalloc at bit 8.
+Benchmarking numbers:
+ ===============================================================
+| Method                  | Tput_TX | CPU_TX | Tput_RX | CPU_RX |
+| ==============================================================
+| Default Driver           943 Mbps    31%      517 Mbps  38%   |
+| IRQ Coalescing (Patch)   943 Mbps    28%      518 Mbps  25%   |
+ ===============================================================
 
-I am not sure I understand the above as it seems we may have below option:
-1. Use somthing like the above ORDER_MASK and PFMEMALLOC_BIT.
-2. Use bitfield as something like below:
+Signed-off-by: MD Danish Anwar <danishanwar@ti.com>
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+---
+Changes from v2 [2] to v3:
+*) Collected RB tag from Andrew Lunn <andrew@lunn.ch>
+*) Fixed warning caused by {} missing for outer if conditions in
+   emac_napi_tx_poll() and emac_napi_rx_poll() APIs.
+*) Fixed spelling mistake.
 
-unsigned long va:20;---or 52 for 64bit system
-unsigned long pfmemalloc:1
-unsigned long order:11;
+Changes from v1 [1] to v2:
+*) Added Benchmarking numbers in the commit message as suggested by
+   Andrew Lunn <andrew@lunn.ch>. Full logs [3]
+*) Addressed comments given by Simon Horman <horms@kernel.org> in v1.
 
-Or is there a better idea in your mind?
+[1] https://lore.kernel.org/all/20240424091823.1814136-1-danishanwar@ti.com/
+[2] https://lore.kernel.org/all/20240429071501.547680-1-danishanwar@ti.com/
+[3] https://gist.githubusercontent.com/danish-ti/47855631be9f3635cee994693662a988/raw/94b4eb86b42fe243ab03186a88a314e0cb272fd0/gistfile1.txt
 
-> 
->> struct page_frag_cache {
->>         /* page address & pfmemalloc & order */
->>         void *va;
->>
-> 
-> When you start combining things like this we normally would convert va
-> to an unsigned long.
+ drivers/net/ethernet/ti/icssg/icssg_common.c  | 41 ++++++--
+ drivers/net/ethernet/ti/icssg/icssg_ethtool.c | 93 +++++++++++++++++++
+ drivers/net/ethernet/ti/icssg/icssg_prueth.c  | 18 +++-
+ drivers/net/ethernet/ti/icssg/icssg_prueth.h  | 11 ++-
+ 4 files changed, 155 insertions(+), 8 deletions(-)
 
-Ack.
+diff --git a/drivers/net/ethernet/ti/icssg/icssg_common.c b/drivers/net/ethernet/ti/icssg/icssg_common.c
+index 284f97876054..088ab8076db4 100644
+--- a/drivers/net/ethernet/ti/icssg/icssg_common.c
++++ b/drivers/net/ethernet/ti/icssg/icssg_common.c
+@@ -122,7 +122,7 @@ void prueth_xmit_free(struct prueth_tx_chn *tx_chn,
+ }
+ 
+ int emac_tx_complete_packets(struct prueth_emac *emac, int chn,
+-			     int budget)
++			     int budget, bool *tdown)
+ {
+ 	struct net_device *ndev = emac->ndev;
+ 	struct cppi5_host_desc_t *desc_tx;
+@@ -145,6 +145,7 @@ int emac_tx_complete_packets(struct prueth_emac *emac, int chn,
+ 		if (cppi5_desc_is_tdcm(desc_dma)) {
+ 			if (atomic_dec_and_test(&emac->tdown_cnt))
+ 				complete(&emac->tdown_complete);
++			*tdown = true;
+ 			break;
+ 		}
+ 
+@@ -190,19 +191,37 @@ int emac_tx_complete_packets(struct prueth_emac *emac, int chn,
+ 	return num_tx;
+ }
+ 
++static enum hrtimer_restart emac_tx_timer_callback(struct hrtimer *timer)
++{
++	struct prueth_tx_chn *tx_chns =
++			container_of(timer, struct prueth_tx_chn, tx_hrtimer);
++
++	enable_irq(tx_chns->irq);
++	return HRTIMER_NORESTART;
++}
++
+ static int emac_napi_tx_poll(struct napi_struct *napi_tx, int budget)
+ {
+ 	struct prueth_tx_chn *tx_chn = prueth_napi_to_tx_chn(napi_tx);
+ 	struct prueth_emac *emac = tx_chn->emac;
++	bool tdown = false;
+ 	int num_tx_packets;
+ 
+-	num_tx_packets = emac_tx_complete_packets(emac, tx_chn->id, budget);
++	num_tx_packets = emac_tx_complete_packets(emac, tx_chn->id, budget,
++						  &tdown);
+ 
+ 	if (num_tx_packets >= budget)
+ 		return budget;
+ 
+-	if (napi_complete_done(napi_tx, num_tx_packets))
+-		enable_irq(tx_chn->irq);
++	if (napi_complete_done(napi_tx, num_tx_packets)) {
++		if (unlikely(tx_chn->tx_pace_timeout_ns && !tdown)) {
++			hrtimer_start(&tx_chn->tx_hrtimer,
++				      ns_to_ktime(tx_chn->tx_pace_timeout_ns),
++				      HRTIMER_MODE_REL_PINNED);
++		} else {
++			enable_irq(tx_chn->irq);
++		}
++	}
+ 
+ 	return num_tx_packets;
+ }
+@@ -226,6 +245,9 @@ int prueth_ndev_add_tx_napi(struct prueth_emac *emac)
+ 		struct prueth_tx_chn *tx_chn = &emac->tx_chns[i];
+ 
+ 		netif_napi_add_tx(emac->ndev, &tx_chn->napi_tx, emac_napi_tx_poll);
++		hrtimer_init(&tx_chn->tx_hrtimer, CLOCK_MONOTONIC,
++			     HRTIMER_MODE_REL_PINNED);
++		tx_chn->tx_hrtimer.function = &emac_tx_timer_callback;
+ 		ret = request_irq(tx_chn->irq, prueth_tx_irq,
+ 				  IRQF_TRIGGER_HIGH, tx_chn->name,
+ 				  tx_chn);
+@@ -871,8 +893,15 @@ int emac_napi_rx_poll(struct napi_struct *napi_rx, int budget)
+ 			break;
+ 	}
+ 
+-	if (num_rx < budget && napi_complete_done(napi_rx, num_rx))
+-		enable_irq(emac->rx_chns.irq[rx_flow]);
++	if (num_rx < budget && napi_complete_done(napi_rx, num_rx)) {
++		if (unlikely(emac->rx_pace_timeout_ns)) {
++			hrtimer_start(&emac->rx_hrtimer,
++				      ns_to_ktime(emac->rx_pace_timeout_ns),
++				      HRTIMER_MODE_REL_PINNED);
++		} else {
++			enable_irq(emac->rx_chns.irq[rx_flow]);
++		}
++	}
+ 
+ 	return num_rx;
+ }
+diff --git a/drivers/net/ethernet/ti/icssg/icssg_ethtool.c b/drivers/net/ethernet/ti/icssg/icssg_ethtool.c
+index ca20325d4d3e..c8d0f45cc5b1 100644
+--- a/drivers/net/ethernet/ti/icssg/icssg_ethtool.c
++++ b/drivers/net/ethernet/ti/icssg/icssg_ethtool.c
+@@ -201,6 +201,93 @@ static void emac_get_rmon_stats(struct net_device *ndev,
+ 	rmon_stats->hist_tx[4] = emac_get_stat_by_name(emac, "tx_bucket5_frames");
+ }
+ 
++static int emac_get_coalesce(struct net_device *ndev,
++			     struct ethtool_coalesce *coal,
++			     struct kernel_ethtool_coalesce *kernel_coal,
++			     struct netlink_ext_ack *extack)
++{
++	struct prueth_emac *emac = netdev_priv(ndev);
++	struct prueth_tx_chn *tx_chn;
++
++	tx_chn = &emac->tx_chns[0];
++
++	coal->rx_coalesce_usecs = emac->rx_pace_timeout_ns / 1000;
++	coal->tx_coalesce_usecs = tx_chn->tx_pace_timeout_ns / 1000;
++
++	return 0;
++}
++
++static int emac_get_per_queue_coalesce(struct net_device *ndev, u32 queue,
++				       struct ethtool_coalesce *coal)
++{
++	struct prueth_emac *emac = netdev_priv(ndev);
++	struct prueth_tx_chn *tx_chn;
++
++	if (queue >= PRUETH_MAX_TX_QUEUES)
++		return -EINVAL;
++
++	tx_chn = &emac->tx_chns[queue];
++
++	coal->tx_coalesce_usecs = tx_chn->tx_pace_timeout_ns / 1000;
++
++	return 0;
++}
++
++static int emac_set_coalesce(struct net_device *ndev,
++			     struct ethtool_coalesce *coal,
++			     struct kernel_ethtool_coalesce *kernel_coal,
++			     struct netlink_ext_ack *extack)
++{
++	struct prueth_emac *emac = netdev_priv(ndev);
++	struct prueth *prueth = emac->prueth;
++	struct prueth_tx_chn *tx_chn;
++
++	tx_chn = &emac->tx_chns[0];
++
++	if (coal->rx_coalesce_usecs &&
++	    coal->rx_coalesce_usecs < ICSSG_MIN_COALESCE_USECS) {
++		dev_info(prueth->dev, "defaulting to min value of %dus for rx-usecs\n",
++			 ICSSG_MIN_COALESCE_USECS);
++		coal->rx_coalesce_usecs = ICSSG_MIN_COALESCE_USECS;
++	}
++
++	if (coal->tx_coalesce_usecs &&
++	    coal->tx_coalesce_usecs < ICSSG_MIN_COALESCE_USECS) {
++		dev_info(prueth->dev, "defaulting to min value of %dus for tx-usecs\n",
++			 ICSSG_MIN_COALESCE_USECS);
++		coal->tx_coalesce_usecs = ICSSG_MIN_COALESCE_USECS;
++	}
++
++	emac->rx_pace_timeout_ns = coal->rx_coalesce_usecs * 1000;
++	tx_chn->tx_pace_timeout_ns = coal->tx_coalesce_usecs * 1000;
++
++	return 0;
++}
++
++static int emac_set_per_queue_coalesce(struct net_device *ndev, u32 queue,
++				       struct ethtool_coalesce *coal)
++{
++	struct prueth_emac *emac = netdev_priv(ndev);
++	struct prueth *prueth = emac->prueth;
++	struct prueth_tx_chn *tx_chn;
++
++	if (queue >= PRUETH_MAX_TX_QUEUES)
++		return -EINVAL;
++
++	tx_chn = &emac->tx_chns[queue];
++
++	if (coal->tx_coalesce_usecs &&
++	    coal->tx_coalesce_usecs < ICSSG_MIN_COALESCE_USECS) {
++		dev_info(prueth->dev, "defaulting to min value of %dus for tx-usecs for tx-%u\n",
++			 ICSSG_MIN_COALESCE_USECS, queue);
++		coal->tx_coalesce_usecs = ICSSG_MIN_COALESCE_USECS;
++	}
++
++	tx_chn->tx_pace_timeout_ns = coal->tx_coalesce_usecs * 1000;
++
++	return 0;
++}
++
+ const struct ethtool_ops icssg_ethtool_ops = {
+ 	.get_drvinfo = emac_get_drvinfo,
+ 	.get_msglevel = emac_get_msglevel,
+@@ -209,6 +296,12 @@ const struct ethtool_ops icssg_ethtool_ops = {
+ 	.get_ethtool_stats = emac_get_ethtool_stats,
+ 	.get_strings = emac_get_strings,
+ 	.get_ts_info = emac_get_ts_info,
++	.supported_coalesce_params = ETHTOOL_COALESCE_RX_USECS |
++				     ETHTOOL_COALESCE_TX_USECS,
++	.get_coalesce = emac_get_coalesce,
++	.set_coalesce = emac_set_coalesce,
++	.get_per_queue_coalesce = emac_get_per_queue_coalesce,
++	.set_per_queue_coalesce = emac_set_per_queue_coalesce,
+ 	.get_channels = emac_get_channels,
+ 	.set_channels = emac_set_channels,
+ 	.get_link_ksettings = emac_get_link_ksettings,
+diff --git a/drivers/net/ethernet/ti/icssg/icssg_prueth.c b/drivers/net/ethernet/ti/icssg/icssg_prueth.c
+index 186b0365c2e5..7c9e9518f555 100644
+--- a/drivers/net/ethernet/ti/icssg/icssg_prueth.c
++++ b/drivers/net/ethernet/ti/icssg/icssg_prueth.c
+@@ -243,6 +243,16 @@ static void emac_adjust_link(struct net_device *ndev)
+ 	}
+ }
+ 
++static enum hrtimer_restart emac_rx_timer_callback(struct hrtimer *timer)
++{
++	struct prueth_emac *emac =
++			container_of(timer, struct prueth_emac, rx_hrtimer);
++	int rx_flow = PRUETH_RX_FLOW_DATA;
++
++	enable_irq(emac->rx_chns.irq[rx_flow]);
++	return HRTIMER_NORESTART;
++}
++
+ static int emac_phy_connect(struct prueth_emac *emac)
+ {
+ 	struct prueth *prueth = emac->prueth;
+@@ -582,8 +592,10 @@ static int emac_ndo_stop(struct net_device *ndev)
+ 		netdev_err(ndev, "tx teardown timeout\n");
+ 
+ 	prueth_reset_tx_chan(emac, emac->tx_ch_num, true);
+-	for (i = 0; i < emac->tx_ch_num; i++)
++	for (i = 0; i < emac->tx_ch_num; i++) {
+ 		napi_disable(&emac->tx_chns[i].napi_tx);
++		hrtimer_cancel(&emac->tx_chns[i].tx_hrtimer);
++	}
+ 
+ 	max_rx_flows = PRUETH_MAX_RX_FLOWS;
+ 	k3_udma_glue_tdown_rx_chn(emac->rx_chns.rx_chn, true);
+@@ -591,6 +603,7 @@ static int emac_ndo_stop(struct net_device *ndev)
+ 	prueth_reset_rx_chan(&emac->rx_chns, max_rx_flows, true);
+ 
+ 	napi_disable(&emac->napi_rx);
++	hrtimer_cancel(&emac->rx_hrtimer);
+ 
+ 	cancel_work_sync(&emac->rx_mode_work);
+ 
+@@ -801,6 +814,9 @@ static int prueth_netdev_init(struct prueth *prueth,
+ 	ndev->features = ndev->hw_features;
+ 
+ 	netif_napi_add(ndev, &emac->napi_rx, emac_napi_rx_poll);
++	hrtimer_init(&emac->rx_hrtimer, CLOCK_MONOTONIC,
++		     HRTIMER_MODE_REL_PINNED);
++	emac->rx_hrtimer.function = &emac_rx_timer_callback;
+ 	prueth->emac[mac] = emac;
+ 
+ 	return 0;
+diff --git a/drivers/net/ethernet/ti/icssg/icssg_prueth.h b/drivers/net/ethernet/ti/icssg/icssg_prueth.h
+index 82e38ef5635b..a78c5eb75fb8 100644
+--- a/drivers/net/ethernet/ti/icssg/icssg_prueth.h
++++ b/drivers/net/ethernet/ti/icssg/icssg_prueth.h
+@@ -108,6 +108,8 @@ struct prueth_tx_chn {
+ 	u32 descs_num;
+ 	unsigned int irq;
+ 	char name[32];
++	struct hrtimer tx_hrtimer;
++	unsigned long tx_pace_timeout_ns;
+ };
+ 
+ struct prueth_rx_chn {
+@@ -127,6 +129,9 @@ struct prueth_rx_chn {
+ 
+ #define PRUETH_MAX_TX_TS_REQUESTS	50 /* Max simultaneous TX_TS requests */
+ 
++/* Minimum coalesce time in usecs for both Tx and Rx */
++#define ICSSG_MIN_COALESCE_USECS 20
++
+ /* data for each emac port */
+ struct prueth_emac {
+ 	bool is_sr1;
+@@ -183,6 +188,10 @@ struct prueth_emac {
+ 
+ 	struct delayed_work stats_work;
+ 	u64 stats[ICSSG_NUM_STATS];
++
++	/* RX IRQ Coalescing Related */
++	struct hrtimer rx_hrtimer;
++	unsigned long rx_pace_timeout_ns;
+ };
+ 
+ /**
+@@ -320,7 +329,7 @@ void prueth_ndev_del_tx_napi(struct prueth_emac *emac, int num);
+ void prueth_xmit_free(struct prueth_tx_chn *tx_chn,
+ 		      struct cppi5_host_desc_t *desc);
+ int emac_tx_complete_packets(struct prueth_emac *emac, int chn,
+-			     int budget);
++			     int budget, bool *tdown);
+ int prueth_ndev_add_tx_napi(struct prueth_emac *emac);
+ int prueth_init_tx_chns(struct prueth_emac *emac);
+ int prueth_init_rx_chns(struct prueth_emac *emac,
 
-> 
->> #if (PAGE_SIZE < PAGE_FRAG_CACHE_MAX_SIZE) && (BITS_PER_LONG <= 32)
->>         u16 pagecnt_bias;
->>         u16 size;
->> #else
->>         u32 pagecnt_bias;
->>         u32 size;
->> #endif
->> };
->>
->>
->> static void *__page_frag_cache_refill(struct page_frag_cache *nc,
->>                                       unsigned int fragsz, gfp_t gfp_mask,
->>                                       unsigned int align_mask)
->> {
->>         gfp_t gfp = gfp_mask;
->>         struct page *page;
->>         void *va;
->>
->> #if (PAGE_SIZE < PAGE_FRAG_CACHE_MAX_SIZE)
->>         /* Ensure free_unref_page() can be used to free the page fragment */
->>         BUILD_BUG_ON(PAGE_FRAG_CACHE_MAX_ORDER > PAGE_ALLOC_COSTLY_ORDER);
->>
->>         gfp_mask = (gfp_mask & ~__GFP_DIRECT_RECLAIM) |  __GFP_COMP |
->>                    __GFP_NOWARN | __GFP_NORETRY | __GFP_NOMEMALLOC;
->>         page = alloc_pages_node(NUMA_NO_NODE, gfp_mask,
->>                                 PAGE_FRAG_CACHE_MAX_ORDER);
->>         if (likely(page)) {
->>                 nc->size = PAGE_FRAG_CACHE_MAX_SIZE - fragsz;
-> 
-> I wouldn't pass fragsz here. Ideally we keep this from having to get
-> pulled directly into the allocator and can instead treat this as a
-> pristine page. We can do the subtraction further down in the actual
-> frag alloc call.
+base-commit: 9f02bb6d7a229058ffaba4f6dd78e0f7b06b799c
+-- 
+2.34.1
 
-Yes for the maintanability point of view.
-But for performance point of view, doesn't it make sense to do the
-subtraction here, as doing the subtraction in the actual frag alloc
-call may involve more load/store operation to do the subtraction?
-
-> 
->>                 va = page_address(page);
->>                 nc->va = (void *)((unsigned long)va |
->>                                   PAGE_FRAG_CACHE_MAX_ORDER |
->>                                   (page_is_pfmemalloc(page) ?
->>                                    PAGE_FRAG_CACHE_PFMEMALLOC_BIT : 0));
->>                 page_ref_add(page, PAGE_FRAG_CACHE_MAX_SIZE);
->>                 nc->pagecnt_bias = PAGE_FRAG_CACHE_MAX_SIZE;
->>                 return va;
->>         }
->> #endif
->>         page = alloc_pages_node(NUMA_NO_NODE, gfp, 0);
->>         if (likely(page)) {
->>                 nc->size = PAGE_SIZE - fragsz;
->>                 va = page_address(page);
->>                 nc->va = (void *)((unsigned long)va |
->>                                   (page_is_pfmemalloc(page) ?
->>                                    PAGE_FRAG_CACHE_PFMEMALLOC_BIT : 0));
->>                 page_ref_add(page, PAGE_FRAG_CACHE_MAX_SIZE);
->>                 nc->pagecnt_bias = PAGE_FRAG_CACHE_MAX_SIZE;
->>                 return va;
->>         }
->>
->>         nc->va = NULL;
->>         nc->size = 0;
->>         return NULL;
->> }
->>
->> void *__page_frag_alloc_va_align(struct page_frag_cache *nc,
->>                                  unsigned int fragsz, gfp_t gfp_mask,
->>                                  unsigned int align_mask)
->> {
->> #if (PAGE_SIZE < PAGE_FRAG_CACHE_MAX_SIZE)
->>         unsigned long page_order;
->> #endif
->>         unsigned long page_size;
->>         unsigned long size;
->>         struct page *page;
->>         void *va;
->>
->>         size = nc->size & align_mask;
->>         va = nc->va;
->> #if (PAGE_SIZE < PAGE_FRAG_CACHE_MAX_SIZE)
->>         page_order = (unsigned long)va & PAGE_FRAG_CACHE_ORDER_MASK;
->>         page_size = PAGE_SIZE << page_order;
->> #else
->>         page_size = PAGE_SIZE;
->> #endif
-> 
-> So I notice you got rid of the loops within the function. One of the
-> reasons for structuring it the way it was is to enable better code
-> caching. By unfolding the loops you are increasing the number of
-> instructions that have to be fetched and processed in order to
-> allocate the buffers.
-
-I am not sure I understand what does 'the loops' means here, as there
-is not 'while' or 'for' here. I suppose you are referring to the 'goto'
-here?
-
-> 
 
