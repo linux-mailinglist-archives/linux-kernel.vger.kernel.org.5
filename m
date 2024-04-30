@@ -1,178 +1,146 @@
-Return-Path: <linux-kernel+bounces-163515-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-163516-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2168F8B6C60
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 10:01:08 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 227528B6C66
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 10:02:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CBD48283E02
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 08:01:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B7A5E1F23128
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 08:02:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1887941775;
-	Tue, 30 Apr 2024 08:01:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CDB024652F;
+	Tue, 30 Apr 2024 08:02:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="N2DTlniL"
-Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com [209.85.167.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="Wci2KBcs"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80C324085A
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 08:00:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7FA5B405F2;
+	Tue, 30 Apr 2024 08:02:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714464061; cv=none; b=R+eHv5DPbqnWWG+BAL4gXHu9dQnqWTKWvYubqa4zcVnMAU7cPdEUcmBang4NQNjoBSdOQLSVv9h2AshKkumSBp/bcdt++lZC3nRRuAWE9t09yg7yVf1DIBS+jS/NRd/+8zbOMgI0WfQKlQu3LXukXebwTnorh4U+DW/lmy/GNbQ=
+	t=1714464143; cv=none; b=TS/BRL83nWDXZ3misLstPqMCHBMIl5bn3g53Rz2LXiuDLxg4Ctx5FgnMcpXc66xXcVvqBMo9I5tCdIWRH/dAt/seMJcljmrx+g7R5DB1Ps3ktD8rTApiV3CemQcweCwiwv8tPur4r0GcDnEYP+tEb/JpyjLbGR2xfGix+wJmn0A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714464061; c=relaxed/simple;
-	bh=dPf4UEqQCw2LaZ1eeiZsJ6PiGpuZaLeZZkNPI+mQXUo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=XxF/L1GJ3qKsO8AXBZNpAz1u4cb+b14gkb3oo2MkwbLglBv0djBz0TDzt8Kc+MHkcQKSvRzfQA/TNT3EP+MiY5j6o+rEt7Zfv2DTRaHTZlE1/3SZnWeEj1KMXCz0WvJVFvfAd4ZQCxPwJo+hozugdD/bxi8D72aRv4Gj1TyGI7s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=N2DTlniL; arc=none smtp.client-ip=209.85.167.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f45.google.com with SMTP id 2adb3069b0e04-51967f75763so6221156e87.2
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 01:00:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1714464058; x=1715068858; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
-         :from:references:cc:to:subject:user-agent:mime-version:date
-         :message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=Rl/4sYkUY2PAAIjugPUNoG61Eymx4LWnwcn+JNq28QQ=;
-        b=N2DTlniLrJ8oQcd41+5aK5ED144ztX4Y7ubfWXU8Y9+viQdgopLPLqwFuOvt9yL3Hu
-         kKcy3F3sK6YGw37ktfhRgySdhpNde8TiCqA0ymX2n01f9F8VTiQd+jqAn0EWppDnPJ9u
-         kwhLo/TfeGdDCHLSfzbqMRrqd2qHGE/UJxzxI+PgHniBII/Yk0NXySf1LAV/+S7RbCia
-         gLMIm7cEb8qUSoYY8fEiBJYz8Pu6b4c8tKKt3OhxXIIsasiCpyXko9rmn1hwumO2enZZ
-         dI0D7IsJmNV/VUj7FM2+FNUKInD/uB6MP97aPH/TOtQv7zsjc3Zz+mFUzW/ZT8EG9gUB
-         55sQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714464058; x=1715068858;
-        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
-         :from:references:cc:to:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Rl/4sYkUY2PAAIjugPUNoG61Eymx4LWnwcn+JNq28QQ=;
-        b=PTBRiO9HDM9+u6hE+wAGh74nkgJXT9SDA0V2PuYf8HpyAP0VYWH1AaYEM3jcgYCU6e
-         ohYTeYcBCGw1Qgj8z8j9N2x7xfinDAFoXZWHRdT2Mp1FP5V7YRfOKS1IXApGTdLPWpSU
-         0zKzMwh6Bgcv5wnv8mwYrGAu72bVHPAbs8dEaEqHQdhzXHR8IZtigjHYRiCH6jAFIuyu
-         iZmpDJ54RgkzbPs5vnLWS6fu5WO1D8zi3mQuixEyM3Ux+I2tLF8qgYxX/o0Ms437xwVh
-         sQtLRXET+ao/pkjG5rpx6NclCiOi+qrD4GYqwqosI6yP6mZM5dIZWzzCXlpSWJGQzsql
-         hkHA==
-X-Forwarded-Encrypted: i=1; AJvYcCUfoxAnMOcuVh/cj6sjPXdzh9AJSkaBR8lNyTm6Vr5Nx4sMo5egT5+feIL4m/09fEDiPyUunKlGFcbfS0JlrGC5iPOWYjI0zCk1hfun
-X-Gm-Message-State: AOJu0YxW+B8nSyh/GAGalSk8wxdsXsXK1pbuR5LuvVqiRtCWytrUU9hR
-	JZkJMxmhu32s5cBeHJrjYpAo/6JvIAuDtl4R5YsfhvKY1a/EgtgV4pkJhmHyawY=
-X-Google-Smtp-Source: AGHT+IHUNmed0l6wwAy40uJ3RW4/qBxqxBAs5tWbO8jcSaVCNn2pSO4jliO2sfooQY5m3+A7q2U+qQ==
-X-Received: by 2002:a05:6512:1328:b0:51c:8b45:c9fb with SMTP id x40-20020a056512132800b0051c8b45c9fbmr9768612lfu.69.1714464057560;
-        Tue, 30 Apr 2024 01:00:57 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.223.16])
-        by smtp.gmail.com with ESMTPSA id g2-20020a170906348200b00a51da296f66sm14746948ejb.41.2024.04.30.01.00.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 30 Apr 2024 01:00:56 -0700 (PDT)
-Message-ID: <2dc18bdd-0c82-47a2-b87d-b69028f3b251@linaro.org>
-Date: Tue, 30 Apr 2024 10:00:54 +0200
+	s=arc-20240116; t=1714464143; c=relaxed/simple;
+	bh=yVJdK01yhCnUukA30JdDhN5ZSKoRK85R+ezjnS2GijM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=lSKnzHzOYFnnCllhcrl8M7Y9GT0WGUkGu2fSjKoQlbxtSZQyyiUxDZ1WThwPDz+xdveFqIxbpvv5N1aZMuzqAOLBSQnIRurJMCTxGHjgULfaX6T+3+ka1tbK/yHSOdC0E9Prcc/l2lCssNX6DfsBDmfRaRhrqjUmHouo/UfiNMQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=Wci2KBcs; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 43U3tGxi028667;
+	Tue, 30 Apr 2024 08:01:37 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=GbwTd6BSjMG9RMTPFLFiWPip1PAsE7tlTno/hl5oWyc=; b=Wc
+	i2KBcsfht+cUMJKoqoB3EdqTZh6AduhAAH+HsCPqs5ajqiGHVRVpTEMkvclbRipM
+	x09kwYuCYoH0le70E6aLmknVp5fvTLvFgXtNFPZ7aa4bQrrorhiMQw9KgUCzufqf
+	/EJ8beUBFumjECZNGB2kWcGPZnldJjPpLVvoWcK6MT/nFRW5rdE1uqgn247NZ/L1
+	/u2qvAjm7wAuttXX1UlLjv+qlDlV0Jo33cRjEnus+jxbxZPVk7mhXxvzdb+h0JJe
+	4GzVe105ObdfaMfYAP4Pae6Jke554uusHFVOJniLhL7lroaRMam1HCO3uihVsAAs
+	nsXnUdkHSu52Hwz5c95Q==
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xtqkr8vc6-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 30 Apr 2024 08:01:36 +0000 (GMT)
+Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
+	by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 43U81Z3I021417
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 30 Apr 2024 08:01:35 GMT
+Received: from [10.110.61.50] (10.80.80.8) by nalasex01b.na.qualcomm.com
+ (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Tue, 30 Apr
+ 2024 01:01:34 -0700
+Message-ID: <9707364c-9743-83e2-2fc6-86c76322a1da@quicinc.com>
+Date: Tue, 30 Apr 2024 01:01:29 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [EXTERNAL] Re: [PATCH v3 4/5] spi: cadence: Allow to read basic
- xSPI configuration from ACPI
-To: Witold Sadowski <wsadowski@marvell.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
-Cc: "broonie@kernel.org" <broonie@kernel.org>,
- "robh@kernel.org" <robh@kernel.org>,
- "krzysztof.kozlowski+dt@linaro.org" <krzysztof.kozlowski+dt@linaro.org>,
- "conor+dt@kernel.org" <conor+dt@kernel.org>,
- "pthombar@cadence.com" <pthombar@cadence.com>,
- Piyush Malgujar <pmalgujar@marvell.com>
-References: <20240329194849.25554-1-wsadowski@marvell.com>
- <20240418011353.1764672-1-wsadowski@marvell.com>
- <20240418011353.1764672-5-wsadowski@marvell.com>
- <16a4a58c-cae6-4b62-859b-3661c052468a@linaro.org>
- <CO6PR18MB40989F97F92C9A37C6BA896DB01B2@CO6PR18MB4098.namprd18.prod.outlook.com>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v20 22/41] ASoC: usb: Add PCM format check API for USB
+ backend
+To: =?UTF-8?Q?Amadeusz_S=c5=82awi=c5=84ski?=
+	<amadeuszx.slawinski@linux.intel.com>,
+        <srinivas.kandagatla@linaro.org>, <mathias.nyman@intel.com>,
+        <perex@perex.cz>, <conor+dt@kernel.org>, <corbet@lwn.net>,
+        <lgirdwood@gmail.com>, <andersson@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <gregkh@linuxfoundation.org>,
+        <Thinh.Nguyen@synopsys.com>, <broonie@kernel.org>,
+        <bgoswami@quicinc.com>, <tiwai@suse.com>, <robh@kernel.org>,
+        <konrad.dybcio@linaro.org>
+CC: <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-sound@vger.kernel.org>, <linux-usb@vger.kernel.org>,
+        <linux-arm-msm@vger.kernel.org>, <linux-doc@vger.kernel.org>,
+        <alsa-devel@alsa-project.org>
+References: <20240425215125.29761-1-quic_wcheng@quicinc.com>
+ <20240425215125.29761-23-quic_wcheng@quicinc.com>
+ <3d70c19f-bab8-4e50-9551-de406a0e0314@linux.intel.com>
 Content-Language: en-US
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <CO6PR18MB40989F97F92C9A37C6BA896DB01B2@CO6PR18MB4098.namprd18.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+From: Wesley Cheng <quic_wcheng@quicinc.com>
+In-Reply-To: <3d70c19f-bab8-4e50-9551-de406a0e0314@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01b.na.qualcomm.com (10.47.209.197)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: btr3Xp9rudx4won1D-9fWNtZMOuVnQ-Y
+X-Proofpoint-ORIG-GUID: btr3Xp9rudx4won1D-9fWNtZMOuVnQ-Y
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
+ definitions=2024-04-30_04,2024-04-29_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 bulkscore=0
+ suspectscore=0 priorityscore=1501 mlxlogscore=874 malwarescore=0
+ phishscore=0 mlxscore=0 clxscore=1015 lowpriorityscore=0 adultscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2404010003 definitions=main-2404300057
 
-On 29/04/2024 16:30, Witold Sadowski wrote:
->>>
->>> +#ifdef CONFIG_ACPI
->>> +static const struct acpi_device_id cdns_xspi_acpi_match[] = {
->>> +	{
->>> +		.id = "cdns,xspi-nor",
->>> +		.driver_data = (kernel_ulong_t) &cdns_driver_data,
->>> +	},
->>> +	{
->>> +		.id = "mrvl,xspi-nor",
->>> +		.driver_data = (kernel_ulong_t) &mrvl_driver_data,
+Hi Amadeusz,
+
+On 4/26/2024 6:25 AM, Amadeusz Sławiński wrote:
+> On 4/25/2024 11:51 PM, Wesley Cheng wrote:
+>> Introduce a helper to check if a particular PCM format is supported by 
+>> the
+>> USB audio device connected.  If the USB audio device does not have an
+>> audio profile which can support the requested format, then notify the USB
+>> backend.
 >>
->> UEFI provides compatibles for ACPI? I think that's first such format in
->> the kernel.
+>> Signed-off-by: Wesley Cheng <quic_wcheng@quicinc.com>
+>> ---
 > 
-> Yes, that code is not doing what was expected.
-> Current usage scenario in ACPI mode is:
-> xSPI block with HID PRP0001, and additional compatible package set to
-> correct compatible string
-> With that approach only issue(in ACPI mode) is with matching device
-> with data field from of_device_id. It looks like there are functions
-> to match that when DTB is used, but in ACPI mode it fails.
-> I believe solution is to traverse dev->driver->of_match_table manually
-> To match device name with correct compatible data structure.
-> That will be included in next patchset.
+> (...)
+> 
+>> +/**
+>> + * snd_soc_usb_find_format() - Check if audio format is supported
+>> + * @card_idx: USB sound chip array index
+>> + * @params: PCM parameters
+>> + * @direction: capture or playback
+>> + *
+>> + * Ensure that a requested audio profile from the ASoC side is able 
+>> to be
+>> + * supported by the USB device.
+>> + *
+>> + * Return 0 on success, negative on error.
+>> + *
+>> + */
+>> +int snd_soc_usb_find_format(int card_idx, struct snd_pcm_hw_params 
+>> *params,
+>> +            int direction)
+> 
+> Perhaps name function similar to its snd_usb equivalent, so 
+> snd_soc_usb_find_supported_format?
+> 
 
-PRP0001 should be handled by regular of_device_id table, of course
-assuming your kernel has build-in CONFIG_OF.
+Will do.
 
-Best regards,
-Krzysztof
-
+Thanks
+Wesley Cheng
 
