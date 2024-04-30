@@ -1,79 +1,83 @@
-Return-Path: <linux-kernel+bounces-163511-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-163512-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C1B798B6C55
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 10:00:13 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E6E908B6C57
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 10:00:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7B7FD283E6B
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 08:00:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1BC151C22026
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 08:00:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 595FA40BE1;
-	Tue, 30 Apr 2024 08:00:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F22BE14AB7;
+	Tue, 30 Apr 2024 08:00:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="et9RM925"
-Received: from mail-pf1-f170.google.com (mail-pf1-f170.google.com [209.85.210.170])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HC599OAc"
+Received: from mail-pf1-f180.google.com (mail-pf1-f180.google.com [209.85.210.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E0A214AB7;
-	Tue, 30 Apr 2024 08:00:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E531141740;
+	Tue, 30 Apr 2024 08:00:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714464007; cv=none; b=PkRh/h5eT9oFE4yZUadUNLhbfVuWKDuhgDH4iQQ4mFzBvmUc0Ud4jwoj4h+Nmx9D1YPge7ZmKJ+2/k5ORWRzxoso/hSF9zo067jFdOqbwe/Kc6D8jlyWWITO3OdL0Wpk/oyz4B3v5aF7WKvS2b1JKZGVuit3yfJbBY1bJfdaYuE=
+	t=1714464010; cv=none; b=vASSM4b1K0Qe+6WV2NhvzyiCsz4vliNkl6QMnDWaci+K06qG4GEWHH0B4lRBu7WwTGjUGJgEZNVNZvsW40TSQRUvZUsQCXJcocGZZ74yJCN2vUa9mU15yhQ+JEkch2uaM5WpWGomUtfiwdsfMG41caFIXG/IXPqszoVvuVFbFCg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714464007; c=relaxed/simple;
-	bh=cbv4NS4KXT7eORtWz16x5PzzhyBf8SDUbInHnzGm9AY=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=eV2w4mGpDnmbnmU6JyINioAC++bGRbjT3VGo+aiEh2spYXN9rMtV+mKURSUck+mnxBINjLPg4Sm2tScrubBF+HBQG+1UA/V43ZhavvYQev9EEZ0tpF3/pOJi+E0CcCh8AaSPPQScHF1UfJawyImu0ZtT7p0oi4f1Jh/OCs3M3dY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=et9RM925; arc=none smtp.client-ip=209.85.210.170
+	s=arc-20240116; t=1714464010; c=relaxed/simple;
+	bh=HuZwhZM5yck4T5u11BK3BtPUCDX+Xupo0EFAfsebFTc=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=h+1N1A5B1QzoacUkJQHnWyjbukYFg7l4yk95o1nyTWpPhS7SxSI/X+3liJBHTQSBDd1gpEWaJ+3Q44Pd2eQZGn4ih9fezFv20pVI+e4jlt3aUCFQUWsDb79iUpy/o2sfXUGVDj70wF8qbTgF/1CtmppjC5oO7oCa2UDCgprWddI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HC599OAc; arc=none smtp.client-ip=209.85.210.180
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f170.google.com with SMTP id d2e1a72fcca58-6ece8991654so4986848b3a.3;
-        Tue, 30 Apr 2024 01:00:06 -0700 (PDT)
+Received: by mail-pf1-f180.google.com with SMTP id d2e1a72fcca58-6ece8991654so4986883b3a.3;
+        Tue, 30 Apr 2024 01:00:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714464006; x=1715068806; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=bvF3FS0YfGe0QCPcpSCTuhnUbnY/t6nhJEzEAYq2d3k=;
-        b=et9RM925O06qhqJK4rBsGhi5SY/ysdVu/UmhSu0IBPtfAAhsXxWK5X9eE0hLD7gNTP
-         QNViRX7cBftfLPd2Xcnm0R+RWjB54qvMOVVZPG/6+6ykU6FIcf7tJIJ0iEWHldL/R7G9
-         1yeF/7EeDpaHabUSWl7m6bPkM+uLnxb97t2f4qFKS2mWshqJh4fnw5VnZeY5Awn26MHm
-         nFsRjGnx+2Fhgtwb4ELIHbkDlFcyhhVjYQlhNvntax5peUt9jUzDps5bfwN80eEzU4Qf
-         HWJrF3sVUT5FKjBcarSq++Vk9+MTGOuGl3v3p9CxK7+f42FwIkFZ9Iart6oZE1bAe2hY
-         jN7Q==
+        d=gmail.com; s=20230601; t=1714464008; x=1715068808; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=cSQZSsatdTLv5L0P1VDLHMa52bOa1G8TehUtWhtaoWc=;
+        b=HC599OAciwPEavKCNqR/uizwh+IKGwjzzd8mNvwgxcqi11+Zgi2ZCKlXhZWLkOBe25
+         Z2fHijs//5Um4rMTTnykjv6GhYEh7bx6Om4QOU3pHDKXmzRABJK2DgJJEFn9Sb7JdtVW
+         TasTAKjx+HfbVdMP6p+2E8FhmqoJfU5ba+9ZcTxba/o3ElRC33QkfaB5IdGdoSq1taD/
+         CtrjNCOEql1nhhaKgAJO41dOD9asdo63ovutIXnGpl4ngyjVpKUNX93o2OyU42PXLa6M
+         XGMX1MmN+uFH4evbQPyeiusn7hBOnCgZziT5NPy5ayYGtVqXtlNTSwMfdXbuesgxiAlr
+         TZwQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714464006; x=1715068806;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=bvF3FS0YfGe0QCPcpSCTuhnUbnY/t6nhJEzEAYq2d3k=;
-        b=rOmFBKV3nlF8MFHW2IJV2gwwqs3zzmM/o8pfBHCn+0b0cnM3n11TcNrFQAof/q9UHf
-         q7KZjcFkfbn2Q7tsKPQhB1Qz8/ZmGYAoTXJvDP9s/kBxCW+VQ35XMaUiI0fH982dJB40
-         W2+7py1vt4ebvqZdu+7en9bSsASUd0vX5gfAPB++9LwnyJC6KxgxM0tzOb4lfazQpMAW
-         nMYtIyvZu7NZLeL3+TWofnxC9mKY7eEy1J38Nu8fLqgfFw1YmkQdRjVXcV9XgC23aPAm
-         8QsCYjgODYlYn3ztOHgK/G0cZdIM8nwKCMlvW5XdUsyQsED/VhaqSKA8DmVWqzWZa0Cm
-         Uy7g==
-X-Forwarded-Encrypted: i=1; AJvYcCV74Gm7LzMIOx9PwJhCWPXGF4M7hGyRf1GEB19H3V+Ri+MV9Gd5X6v6nlrWu6HlFh/cJcvpf6tGUMcifw/1bW/vwUC9vV6JA7VwnFqi
-X-Gm-Message-State: AOJu0YxlOFYh201DQfop5jr4cGiZx+K31uReqQ82iPOqHJaHdeFN0MkX
-	kHdjMKI7yjmVDjQg02LWA54s6WpobkqYiT0tJ7ZuhWmEThEoZiPP
-X-Google-Smtp-Source: AGHT+IEzdxa4RZSXofRzB5Re3WDIdU3OsKaRAj+4PDa6K9IGGTyG2qZeHXUfP49cAbA3Dykoae7leg==
-X-Received: by 2002:a05:6a20:9147:b0:1aa:2285:2cd0 with SMTP id x7-20020a056a20914700b001aa22852cd0mr19350286pzc.23.1714464005042;
-        Tue, 30 Apr 2024 01:00:05 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1714464008; x=1715068808;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=cSQZSsatdTLv5L0P1VDLHMa52bOa1G8TehUtWhtaoWc=;
+        b=SIBFma7O2YIkKDXmZefieHpeQvLrXF7lTHV0lvVKngwHSmptXhBOK/wVWpOkunEna8
+         f9L/ZZd7Y8mZ3AYagoMKszC14s8U3i+YmvtQpad9kTCmBGJS/FkWlHn/6AZqfojB0MyZ
+         AFcJVUKnH8wDcGYEqqgxGL5uEc2ZtzRCagfbynJDJ2DRS6xN8T+TsEb2lqBe8GoQaMBW
+         SeE/NTORMp47V1pnHHS1g8uIvqdy7LooQmvpMHscQN1KXq2to5ykgOQoEG6lT8hVP26n
+         SGqVox/n1gcgcDc4VloiF6YEk9ghdY4NxvnjcuJv54YI8s+MZ5WmTOyGVtpgJTR6ST4l
+         YkAg==
+X-Forwarded-Encrypted: i=1; AJvYcCX+Hv34ZupjOqzJGgItavhxS1DEVwLi9n35aWIL3aN2Lbj9K23T9tgTFTBw4z8ZZDPFg2VyHlLZzFz/zs/A6kMyJf7ENb5zBtNEENlu
+X-Gm-Message-State: AOJu0Yw2GqzjZPhjgjpGhGtyBoTp5hzh206awhjxb8AS8QC6f0wmeSIo
+	CNa1XiiuVc8qwhlqEZnJEXY/tIMQgNosoVEJynvVbVFcWXIQpx0P3jEwIRjH
+X-Google-Smtp-Source: AGHT+IEu91iFYfQ/76dpY1Q+cGboqNolZWfeWfK92CE+ySmHLuw9mbzdvgafA7I4ZZdDrqorSxvzhA==
+X-Received: by 2002:a05:6a00:1810:b0:6eb:3c2d:76e0 with SMTP id y16-20020a056a00181000b006eb3c2d76e0mr19521858pfa.11.1714464008051;
+        Tue, 30 Apr 2024 01:00:08 -0700 (PDT)
 Received: from carrot.. (i223-218-155-26.s42.a014.ap.plala.or.jp. [223.218.155.26])
-        by smtp.gmail.com with ESMTPSA id i6-20020aa787c6000000b006e6b52eb59asm20461760pfo.126.2024.04.30.01.00.02
+        by smtp.gmail.com with ESMTPSA id i6-20020aa787c6000000b006e6b52eb59asm20461760pfo.126.2024.04.30.01.00.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Apr 2024 01:00:03 -0700 (PDT)
+        Tue, 30 Apr 2024 01:00:06 -0700 (PDT)
 From: Ryusuke Konishi <konishi.ryusuke@gmail.com>
 To: Andrew Morton <akpm@linux-foundation.org>
 Cc: linux-nilfs@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	Bart Van Assche <bvanassche@acm.org>,
 	Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH -mm 0/2] nilfs2: reduce build warnings with "make C=1"
-Date: Tue, 30 Apr 2024 17:00:17 +0900
-Message-Id: <20240430080019.4242-1-konishi.ryusuke@gmail.com>
+Subject: [PATCH -mm 1/2] nilfs2: use integer type instead of enum req_op for event tracing header
+Date: Tue, 30 Apr 2024 17:00:18 +0900
+Message-Id: <20240430080019.4242-2-konishi.ryusuke@gmail.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20240430080019.4242-1-konishi.ryusuke@gmail.com>
+References: <20240430080019.4242-1-konishi.ryusuke@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -82,28 +86,73 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Hi Andrew,
+The sparse check with "make C=1" outputs warnings regarding references
+to the header file "include/trace/events/nilfs2.h" for event tracing:
 
-Please add these to the queue for the next merge window.
+ fs/nilfs2/segment.c: note: in included file (through
+   include/trace/trace_events.h, include/trace/define_trace.h,
+   include/trace/events/nilfs2.h):
+ ./include/trace/events/nilfs2.h:191:1: warning: cast to restricted
+   blk_opf_t
+ ./include/trace/events/nilfs2.h:191:1: warning: restricted blk_opf_t
+   degrades to integer
+ ./include/trace/events/nilfs2.h:191:1: warning: restricted blk_opf_t
+   degrades to integer
 
-These two are cleanups that eliminate the warnings output by sparse
-(not including common one related to refcount_dec_and_lock).
-Neither is a bugfix.
+Fix this issue by reverting the type of the parameter related to the
+bio operation mode in the event tracing definition from "enum req_op"
+to "int".
 
-Thanks,
-Ryusuke Konishi
+In order to prevent sparse warnings on the caller side (where
+trace_nilfs2_mdt_submit_block() is used), also add a typecast to an
+argument passed to the tracepoint.
 
+Signed-off-by: Ryusuke Konishi <konishi.ryusuke@gmail.com>
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/oe-kbuild-all/202401092241.I4mm9OWl-lkp@intel.com/
+Fixes: ed4512590bd5 ("fs/nilfs2: Use the enum req_op and blk_opf_t types")
+Cc: Bart Van Assche <bvanassche@acm.org>
+Cc: Jens Axboe <axboe@kernel.dk>
+---
+ fs/nilfs2/mdt.c               | 2 +-
+ include/trace/events/nilfs2.h | 4 ++--
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
-Ryusuke Konishi (2):
-  nilfs2: use integer type instead of enum req_op for event tracing
-    header
-  nilfs2: make superblock data array index computation sparse friendly
-
- fs/nilfs2/mdt.c               |  2 +-
- fs/nilfs2/the_nilfs.c         | 20 ++++++++++++++++++--
- include/trace/events/nilfs2.h |  4 ++--
- 3 files changed, 21 insertions(+), 5 deletions(-)
-
+diff --git a/fs/nilfs2/mdt.c b/fs/nilfs2/mdt.c
+index 4f792a0ad0f0..323eb8442e0a 100644
+--- a/fs/nilfs2/mdt.c
++++ b/fs/nilfs2/mdt.c
+@@ -152,7 +152,7 @@ nilfs_mdt_submit_block(struct inode *inode, unsigned long blkoff, blk_opf_t opf,
+ 	ret = 0;
+ 
+ 	trace_nilfs2_mdt_submit_block(inode, inode->i_ino, blkoff,
+-				      opf & REQ_OP_MASK);
++				      (__force int)(opf & REQ_OP_MASK));
+  out:
+ 	get_bh(bh);
+ 	*out_bh = bh;
+diff --git a/include/trace/events/nilfs2.h b/include/trace/events/nilfs2.h
+index 8efc6236f57c..84ee31fc04cc 100644
+--- a/include/trace/events/nilfs2.h
++++ b/include/trace/events/nilfs2.h
+@@ -192,7 +192,7 @@ TRACE_EVENT(nilfs2_mdt_submit_block,
+ 	    TP_PROTO(struct inode *inode,
+ 		     unsigned long ino,
+ 		     unsigned long blkoff,
+-		     enum req_op mode),
++		     int mode),
+ 
+ 	    TP_ARGS(inode, ino, blkoff, mode),
+ 
+@@ -200,7 +200,7 @@ TRACE_EVENT(nilfs2_mdt_submit_block,
+ 		    __field(struct inode *, inode)
+ 		    __field(unsigned long, ino)
+ 		    __field(unsigned long, blkoff)
+-		    __field(enum req_op, mode)
++		    __field(int, mode)
+ 	    ),
+ 
+ 	    TP_fast_assign(
 -- 
 2.34.1
 
