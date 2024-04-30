@@ -1,150 +1,124 @@
-Return-Path: <linux-kernel+bounces-164294-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-164295-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id B95D98B7BF1
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 17:40:56 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 039208B7BF5
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 17:41:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8EC93B210DB
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 15:40:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B899628541E
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 15:41:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5CA54172BA8;
-	Tue, 30 Apr 2024 15:40:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C716174EC7;
+	Tue, 30 Apr 2024 15:40:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="Asu18Cpb"
-Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net [217.70.183.201])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="bO8Fv/JI"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6BBDA770F2;
-	Tue, 30 Apr 2024 15:40:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5EC06172BBF;
+	Tue, 30 Apr 2024 15:40:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714491639; cv=none; b=XiG/smNoEsPZhMXbQTrPcsU1l+YgO+njy8KA/uGioWIF6vCUcaIYJoIaRL9EnlSb1/U+n0oB3AbqgVw9iOMjTDEWmmGLLBgcaMSJquwv/JkIAVY69ie1KW2ntt50TfXbZL6R9BzIL5beSxZg5lON9m1vcmtyqNUv3qE2DOKR/Xg=
+	t=1714491641; cv=none; b=Y7EqC30nOE6OiACCZRAhYORX3GdJ9qalkVcJs8q5SbGg2ANHTEEAqaKrHnwIM95ETNSI4W/fmPbGuQL5NuGKWrntPnqcYkAjtibaeGlL8LfmQKcoIE6Hin3+Fh/vGEsKfcGDScufJ5u3LJ0WX+yufhm61kpZVPXtiFYi7LusGlQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714491639; c=relaxed/simple;
-	bh=3YMP6pSgBBioceZpWJJBMi0WiZgs2qMWAZjRqieBRIk=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=VEfDCz78md7DoBYtkrBk5dAgVV8UhDcj25UxAULurhlQ6sZ6/QVO0yg2Gh7X8LjYp4SgwNRVh2YzwFv7jB1XYaYfDVvpqYfv8ZLL4AiSJJa5YCnDcNrwpk6w80XT13NrtAafn4B5PpSwE2GVCrtsIVbjr/m8HoIwklNXuomM+BY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=Asu18Cpb; arc=none smtp.client-ip=217.70.183.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id C3CD71BF207;
-	Tue, 30 Apr 2024 15:40:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1714491629;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=o+cbSiCWqxupPEH7bg78CMjuOeT84VG73wF/YcMcoBg=;
-	b=Asu18CpbZFU7KZq8qT6sXy2TVSu2PEKElKdAxkrvGU3+Z/X9VRq3ii8G/8YyictrIDuCTh
-	rlTz5HRbXlhZPOLHfVNMEksHnkfieaypj8/AVwsMiLK/BmeUsNsfXIq3vqYsGEYchIt1qD
-	kwf5Xe8qWczC40Ddi/DM1Y+MVw0Yu8VQBPxeoDamtNuhTkHXE9LQTjUSPcZL/Nt6+KFt2B
-	avZf/aImihbeaH8tv20TcLrpTthuxQrrvI9JuUm/BOZReJ4bTW1mQj38LWUDCSIHvZr6F3
-	UXgL+HJGWG1b5kPauMm+s/BvrMiEPwVrx2HGSWaEsExoHbCsMDET/JPmX/Ty7A==
-Date: Tue, 30 Apr 2024 17:40:23 +0200
-From: Herve Codina <herve.codina@bootlin.com>
-To: Andrew Lunn <andrew@lunn.ch>
-Cc: Thomas Gleixner <tglx@linutronix.de>, Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley
- <conor+dt@kernel.org>, "David S. Miller" <davem@davemloft.net>, Eric
- Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo
- Abeni <pabeni@redhat.com>, Lee Jones <lee@kernel.org>, Arnd Bergmann
- <arnd@arndb.de>, Horatiu Vultur <horatiu.vultur@microchip.com>,
- UNGLinuxDriver@microchip.com, Heiner Kallweit <hkallweit1@gmail.com>,
- Russell King <linux@armlinux.org.uk>, Saravana Kannan
- <saravanak@google.com>, Bjorn Helgaas <bhelgaas@google.com>, Philipp Zabel
- <p.zabel@pengutronix.de>, Lars Povlsen <lars.povlsen@microchip.com>, Steen
- Hegelund <Steen.Hegelund@microchip.com>, Daniel Machon
- <daniel.machon@microchip.com>, Alexandre Belloni
- <alexandre.belloni@bootlin.com>, linux-kernel@vger.kernel.org,
- devicetree@vger.kernel.org, netdev@vger.kernel.org,
- linux-pci@vger.kernel.org, linux-arm-kernel@lists.infradead.org, Allan
- Nielsen <allan.nielsen@microchip.com>, Luca Ceresoli
- <luca.ceresoli@bootlin.com>, Thomas Petazzoni
- <thomas.petazzoni@bootlin.com>
-Subject: Re: [PATCH 06/17] dt-bindings: net: mscc-miim: Add resets property
-Message-ID: <20240430174023.4d15a8a4@bootlin.com>
-In-Reply-To: <5d899584-38ed-4eee-9ba5-befdedbc5734@lunn.ch>
-References: <20240430083730.134918-1-herve.codina@bootlin.com>
-	<20240430083730.134918-7-herve.codina@bootlin.com>
-	<5d899584-38ed-4eee-9ba5-befdedbc5734@lunn.ch>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-redhat-linux-gnu)
+	s=arc-20240116; t=1714491641; c=relaxed/simple;
+	bh=AhXim/Cc8ypQWAXX8GYwTtPeMzV9LcwnwpaCMgnFYdE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=VhOX9wBx00BvzaQSvjqinrBUQbYAgjEuBTBqmvJcBGBTtUilEoga2x1V32lt23aDBkjaJjxz6Dba66hMaZcDm9aNqxiBeJb8FxpGK2Nbx6uTuZj2diQhQD/rRe8jrBIIPN6E6S1lnbgjpkEVL/1/0HFPwZn3T/Gn+b1R1GjEPII=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=bO8Fv/JI; arc=none smtp.client-ip=198.175.65.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1714491640; x=1746027640;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=AhXim/Cc8ypQWAXX8GYwTtPeMzV9LcwnwpaCMgnFYdE=;
+  b=bO8Fv/JIFcuxv8bWze/OgdH7y7nG2i7laLu4a3xgsaGcizkmGQ08F7FN
+   sXgCsKGgLGHgQsWAiLBOY6XOkVS7zux5Tcfa8LeqILYqjshtWvJa1FKRs
+   jOd6Zd1bXeM19x3p6Q/GocjlAYQxTvLnrufaqBn8erm46zgJQddRaLxGS
+   +J/dO8E4QHIh1Tf6g8PoVbrCVO9MGhYMOdu8Rit7AATAvYF4kTeuNzxxI
+   6gv9PfwsM5PLRBhssarIDEpupUWdH2NAUZbK55InWMYV/SiZWHY6c1x4o
+   Xn84GuM6IeXAcVmkPibJJswh1o9NEDLG04gpekUc5iI7CpLIirZeJSsny
+   g==;
+X-CSE-ConnectionGUID: 53cGs2IzSJa7biN3ITYL2w==
+X-CSE-MsgGUID: w9Uqr4dsTOGKe9hFnXGabw==
+X-IronPort-AV: E=McAfee;i="6600,9927,11060"; a="10066457"
+X-IronPort-AV: E=Sophos;i="6.07,242,1708416000"; 
+   d="scan'208";a="10066457"
+Received: from orviesa004.jf.intel.com ([10.64.159.144])
+  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Apr 2024 08:40:40 -0700
+X-CSE-ConnectionGUID: zUTsGXBoR22YHQ6INz1/Zw==
+X-CSE-MsgGUID: f3OF7Y3dTSOPjEERKsuEtQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,242,1708416000"; 
+   d="scan'208";a="31297597"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by orviesa004.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Apr 2024 08:40:36 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1s1par-00000002iBe-0CR9;
+	Tue, 30 Apr 2024 18:40:33 +0300
+Date: Tue, 30 Apr 2024 18:40:32 +0300
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Petar Stoykov <pd.pstoykov@gmail.com>
+Cc: linux-iio@vger.kernel.org, Jonathan Cameron <jic23@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Lars-Peter Clausen <lars@metafoo.de>,
+	Rob Herring <robh+dt@kernel.org>,
+	Angel Iglesias <ang.iglesiasg@gmail.com>,
+	Conor Dooley <conor+dt@kernel.org>, linux-kernel@vger.kernel.org,
+	devicetree@vger.kernel.org
+Subject: Re: [PATCH v2 2/3] iio: pressure: Add driver for Sensirion SDP500
+Message-ID: <ZjEQ8LBxftcr0Z0t@smile.fi.intel.com>
+References: <CADFWO8EQUkGcbE=RXjxXbub2tZge9+ss=gB-Q6wngFAvwFygRg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-GND-Sasl: herve.codina@bootlin.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CADFWO8EQUkGcbE=RXjxXbub2tZge9+ss=gB-Q6wngFAvwFygRg@mail.gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-Hi Andrew,
-
-On Tue, 30 Apr 2024 15:55:58 +0200
-Andrew Lunn <andrew@lunn.ch> wrote:
-
-> On Tue, Apr 30, 2024 at 10:37:15AM +0200, Herve Codina wrote:
-> > Add the (optional) resets property.
-> > The mscc-miim device is impacted by the switch reset especially when the
-> > mscc-miim device is used as part of the LAN966x PCI device.
-> > 
-> > Signed-off-by: Herve Codina <herve.codina@bootlin.com>
-> > ---
-> >  Documentation/devicetree/bindings/net/mscc,miim.yaml | 8 ++++++++
-> >  1 file changed, 8 insertions(+)
-> > 
-> > diff --git a/Documentation/devicetree/bindings/net/mscc,miim.yaml b/Documentation/devicetree/bindings/net/mscc,miim.yaml
-> > index 5b292e7c9e46..a8c92cec85a6 100644
-> > --- a/Documentation/devicetree/bindings/net/mscc,miim.yaml
-> > +++ b/Documentation/devicetree/bindings/net/mscc,miim.yaml
-> > @@ -38,6 +38,14 @@ properties:
-> >  
-> >    clock-frequency: true
-> >  
-> > +  resets:
-> > +    items:
-> > +      - description: Reset controller used for switch core reset (soft reset)  
+On Tue, Apr 30, 2024 at 05:27:24PM +0200, Petar Stoykov wrote:
+> From 6ae7537517f551540121ca6fb3b99080b7580410 Mon Sep 17 00:00:00 2001
+> From: Petar Stoykov <pd.pstoykov@gmail.com>
+> Date: Mon, 15 Jan 2024 12:21:26 +0100
+> Subject: [PATCH 2/3] iio: pressure: Add driver for Sensirion SDP500
 > 
-> A follow up to the comment on the next patch. I think it should be
-> made clear in the patch and the binding, the aim is to reset the MDIO
-> bus master, not the switch. It just happens that the MDIO bus master
-> is within the domain of the switch core, and so the switch core reset
-> also resets the MDIO bus master.
+> Sensirion SDP500 is a digital differential pressure sensor. The sensor is
+> accessed over I2C.
 
-Exactly.
+Any Datasheet: tag can be added?
 
-> 
-> Architecturally, this is important. I would not expect the MDIO driver
-> to be resetting the switch, the switch driver should be doing
-> that. But we have seen some odd Qualcomm patches where the MDIO driver
-> has been doing things outside the scope of MDIO, playing with resets
-> and clocks which are not directly related to the MDIO bus master. I
-> want to avoid any confusion here, especially when Qualcomm tries
-> again, and maybe points at this code.
-> 
+..
 
-Sure.
+> +config SDP500
+> +    tristate "Sensirion SDP500 differential pressure sensor I2C driver"
+> +    depends on I2C
+> +    help
+> +      Say Y here to build support for Sensirion SDP500 differential pressure
+> +      sensor I2C driver.
+> +      To compile this driver as a module, choose M here: the core module
+> +      will be called sdp500.
 
-We have the same construction with the pinctrl driver used in the LAN966x
-  Documentation/devicetree/bindings/pinctrl/mscc,ocelot-pinctrl.yaml
+You patch is broken. Fix the way how you send patches.
 
-The reset name is 'switch' in the pinctrl binding.
-I can use the same description here as the one present in the pinctrl binding:
-  description: Optional shared switch reset.
-and keep 'switch' as reset name here (consistent with pinctrl reset name).
+..
 
-What do you think about that ?
+> +static int sdp500_start_measurement(struct sdp500_data *data, const
+> struct iio_dev *indio_dev)
 
-Best regards,
-Hervé
+Here is more visible.
 
 -- 
-Hervé Codina, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+With Best Regards,
+Andy Shevchenko
+
+
 
