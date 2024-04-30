@@ -1,151 +1,338 @@
-Return-Path: <linux-kernel+bounces-163357-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-163358-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id BE3348B69C7
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 07:15:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 130AB8B69CC
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 07:16:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4BF6E1F22D2F
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 05:15:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 978E51F22FEB
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 05:16:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3CA3E175A6;
-	Tue, 30 Apr 2024 05:15:35 +0000 (UTC)
-Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4E9E17742;
+	Tue, 30 Apr 2024 05:16:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Bgs/qdnq"
+Received: from mail-pg1-f175.google.com (mail-pg1-f175.google.com [209.85.215.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3315A199D9;
-	Tue, 30 Apr 2024 05:15:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 655EA1757A
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 05:16:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714454134; cv=none; b=A8rUA5I97ccCnyqPRp6HAnuRLA3UljQKelgRhjv0R753rmaFCgHrBrtLWb5Zh4JFbyTNwtj1zLGQ84Wcvuv/dmUqJ69v93vc2Dt6QzveFdf9IqU7RqqeT8nAFzrhyd+xuVrT+Rr1zaSnBzqZ2kLLg/ZYsutEc+z0t/S2999X5/w=
+	t=1714454177; cv=none; b=JZAzYsWdANgSoPoZ5YWWWf/PMGcN41WYSH7saVmLRKy+JXnsqJPszb3SIXhL+wK+ecjKBxVM1GsdGnb9bGz8A2XMYuItNAWIlSPi6Xr+a8hfdMHa6FVEJddFgzMeH2xGffLsEcxTnioPqtsYlSfJQ585T+HiGzO7O+vtIa7kgM0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714454134; c=relaxed/simple;
-	bh=K/Trbl5Hys+WHbMtuQ3ZdMwcnFERxG2HBEWXhzrFVOQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=hkEP3zbKvI4mYmn6NMphtunxgergW58Ix6qnAgPCChkwXCENs1OVJqc/UzFoutztwfrgiVKMvB5MqDXB8+8YKCzqu+ToXd6laIo+aZguwlrQOe1EOtg99yhJk9hY7DLlg5Kf6LUtOiPFWa/CMTc4WpRGul/+MGKYDL9D7j0WE0w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.208.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-5726ccca4c8so3270883a12.3;
-        Mon, 29 Apr 2024 22:15:32 -0700 (PDT)
+	s=arc-20240116; t=1714454177; c=relaxed/simple;
+	bh=bCkBpn/Vh2Kt4bDBmzkaG2zkzavinVKs6L0yROp2qXA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=eOdt7XL9U5SW+5VzHjbaCIQ6N8+CScBJiiwjnt9YyzbohI4O/QLNdWhxGETNiXR5s1VYSR69oZlD/msFKVjsEM+BDt32rP78s2wTVxnu0dQ1U03PRmBkg5MvJbGaF75f3l/LteiSxty2gtcwW1sHTCixKgP1Yzbk6eSmi5Pc2fQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Bgs/qdnq; arc=none smtp.client-ip=209.85.215.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-pg1-f175.google.com with SMTP id 41be03b00d2f7-5ff57410ebbso3894370a12.1
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 22:16:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1714454175; x=1715058975; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=5ynejgaDnZjcmZfXmFDrndip2YGb6tAWR1lBuHbKqsw=;
+        b=Bgs/qdnqo1JPjMPFVaYb8SDLsUD1IPMBgvrdXNo2rtywzl8a65v2BU306dihwxEDPC
+         cC6er0Eaw1XPyz+0J3+wSAXNREcLdnFCMyGSRsUsIE3KYmPykJgQLk4GxbO60SlN4Vvk
+         QroWRn3U66+zAR/hEmXlomRjqSvZ1mAbaSGCgPXhp2kNTJAOqvvQe/8L0SKMtbY+h8vo
+         wV+cW3HKNebE60TRGt3jmv9rwr4imOM7Kjyy9HsSJYZVXXQOiU/i97zQ8flCLHumv+Lh
+         IHoWNGyobrzoIrtOj/iHIKXsWG7ZIduMi6N6I/3F7mDYmKZf+j9vSwQZEMh4HnjTJnk7
+         gvjQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714454131; x=1715058931;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=aoR7iLYPrGYLCsHQuPiM+/n3J7qjHQUGOA9mseIQEqs=;
-        b=cdclYVzRy7NSAva2NWsI9PB8hgXWj55tqaJxZ8Mj+4Iv+tj+lOX/1md7/X8JNzS15a
-         mA/2WcQr5Cf5OGsCeT45UhyCVXJmxA8pe+THQuzpV5i7Ne8vovyoruRMC4vtAQ1qA4pp
-         J1ObARZwu012ecxyaZx3BI//Nb/ZmdhXy7Ew75akU7x5eQMbcVcUez70hwG1N0QhZ8VA
-         V41Yo8QjIpgzFibA7fpeqv+O6q+R1QYt9XF66n79ymADMHiGqXS3Gv0FLSBZmxxHwYz0
-         Zs9HY3UoUfp8G/Ypz06BYnTYpD2REnD7N1uYhf7cskhF/5eXFOpZCawPqV4qcFUUUwVt
-         UOOQ==
-X-Forwarded-Encrypted: i=1; AJvYcCV1AqGDr50I2VyaPjPKAhou54AsJMGj0Ve7gNHxwHBCPtrTr6YGVnjoRaZuNmDfogcVGouFbZC9PfAQgyxIq6upSEmLLD3DN13vH8C/PxCUWVO2lwb4aRhORy/lAVtaDWab6NaY
-X-Gm-Message-State: AOJu0YzyeRl+aCorHdCJi349uwDBJ8bZ14r8sJIbuipaeIR231WwdhMX
-	SsGWkLNL1CPGr/r/T6V8WsH3o/lnPoKzDTr75ojPMaL+3g4eecjy
-X-Google-Smtp-Source: AGHT+IEaDlYEmS6Iv6psRELi1epqO2BGnZZCKdjWcXOvoMTJ+x8riL/Ylim/jhsvnJ6xQRD49p35/A==
-X-Received: by 2002:a50:bb6f:0:b0:56d:b687:5a45 with SMTP id y102-20020a50bb6f000000b0056db6875a45mr9111555ede.1.1714454131234;
-        Mon, 29 Apr 2024 22:15:31 -0700 (PDT)
-Received: from ?IPV6:2a0b:e7c0:0:107::aaaa:69? ([2a0b:e7c0:0:107::aaaa:69])
-        by smtp.gmail.com with ESMTPSA id g1-20020a056402428100b00571bbaa1c45sm13795878edc.1.2024.04.29.22.15.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 29 Apr 2024 22:15:30 -0700 (PDT)
-Message-ID: <4ce6cf96-685d-4792-b2fd-949c07eff707@kernel.org>
-Date: Tue, 30 Apr 2024 07:15:29 +0200
+        d=1e100.net; s=20230601; t=1714454175; x=1715058975;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=5ynejgaDnZjcmZfXmFDrndip2YGb6tAWR1lBuHbKqsw=;
+        b=azBsMZwi3F0MyiT2lBunqLUFhKPdamTBDqcyswGf9sukHrc4SaJP2YbQtMqC/w4FDA
+         59XrgC41nNI63h3eAjcRB50tNzwCXhgVbZJW6XFZX589t4pEuAIW4X0yRFUGh25B1TIO
+         1s/JYcQeqPMB7zlaLLeonrvdcvfEZz0LZlDNBUtYY9aXA8XzKvEYJf68KPar3M3gYRfF
+         ssjcFMexwTiSEy9tyVsAUMsC+nd1rA+phKwYF0jXsQorMIQmUwZhYWdh4EfrcSuW57zV
+         jxRsB9ApD7UUg3Uar42w51DNpir/nOS5nPkiWAfRqS//YP1Oj6qpEO6iIMSb+nXPhuI5
+         vTNA==
+X-Forwarded-Encrypted: i=1; AJvYcCXjmojHc8m295XLWA5uV0mVh6Oo1BV9/16jqeag9FIr+VelmOYJSd07yyVTWyIsVHBdqzpTMbWERO524h01Oxp27YBOA2+24Gq5aBoW
+X-Gm-Message-State: AOJu0Yy4FprWRAytbqyst8ZsTF2yevNg+GZkfgIvzclqwRBgpBj+JYzg
+	RqgwIRFhOg73rxRa9rppQo6Y3+jKuV1Itb+EN91oLHtoEh1IhzbtfivCl3YveA==
+X-Google-Smtp-Source: AGHT+IGeASrZZdOKkLRwqMeew25lnfW2E16O02bRTclJxxqzXXmg/MPOAdDxiUpkYBPU/+iJ5ms0XA==
+X-Received: by 2002:a05:6a20:12cf:b0:1a9:6cdd:6907 with SMTP id v15-20020a056a2012cf00b001a96cdd6907mr14733071pzg.29.1714454174430;
+        Mon, 29 Apr 2024 22:16:14 -0700 (PDT)
+Received: from thinkpad ([220.158.156.15])
+        by smtp.gmail.com with ESMTPSA id e5-20020a170902cf4500b001e2c1ce5bb0sm21409980plg.83.2024.04.29.22.16.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Apr 2024 22:16:14 -0700 (PDT)
+Date: Tue, 30 Apr 2024 10:46:04 +0530
+From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Frank Li <Frank.Li@nxp.com>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kwilczynski@kernel.org>,
+	Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>,
+	linux-omap@vger.kernel.org, linux-pci@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	imx@lists.linux.dev, linux-amlogic@lists.infradead.org,
+	linux-arm-msm@vger.kernel.org, linux-tegra@vger.kernel.org,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Siddharth Vadapalli <s-vadapalli@ti.com>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+	Richard Zhu <hongxing.zhu@nxp.com>,
+	Lucas Stach <l.stach@pengutronix.de>,
+	Shawn Guo <shawnguo@kernel.org>,
+	Sascha Hauer <s.hauer@pengutronix.de>,
+	Pengutronix Kernel Team <kernel@pengutronix.de>,
+	Fabio Estevam <festevam@gmail.com>, Yue Wang <yue.wang@Amlogic.com>,
+	Neil Armstrong <neil.armstrong@linaro.org>,
+	Kevin Hilman <khilman@baylibre.com>,
+	Jerome Brunet <jbrunet@baylibre.com>,
+	Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+	Xiaowei Song <songxiaowei@hisilicon.com>,
+	Binghui Wang <wangbinghui@hisilicon.com>,
+	Thierry Reding <thierry.reding@gmail.com>,
+	Jonathan Hunter <jonathanh@nvidia.com>,
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+	Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>
+Subject: Re: [PATCH v3 5/5] PCI: kirin: Convert to agnostic GPIO API
+Message-ID: <20240430051604.GA3301@thinkpad>
+References: <20240429102510.2665280-1-andriy.shevchenko@linux.intel.com>
+ <20240429102510.2665280-6-andriy.shevchenko@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] x86/purgatory: Switch to the position-independent small
- code model
-To: Michael Matz <matz@suse.de>, Borislav Petkov <bp@alien8.de>
-Cc: Ard Biesheuvel <ardb+git@google.com>, linux-kernel@vger.kernel.org,
- x86@kernel.org, Ard Biesheuvel <ardb@kernel.org>,
- Nathan Chancellor <nathan@kernel.org>,
- Nick Desaulniers <ndesaulniers@google.com>, Bill Wendling
- <morbo@google.com>, Justin Stitt <justinstitt@google.com>,
- Song Liu <song@kernel.org>, Ricardo Ribalda <ribalda@kernel.org>,
- Fangrui Song <maskray@google.com>, Arthur Eubanks <aeubanks@google.com>,
- stable@vger.kernel.org
-References: <20240418201705.3673200-2-ardb+git@google.com>
- <3f23b551-4815-4a06-9217-ff5beeb80df2@kernel.org>
- <20240420131717.GAZiPAXY9EAYnHajaw@fat_crate.local>
- <836c267f-a028-acce-8b19-180162a5febc@suse.de>
-Content-Language: en-US
-From: Jiri Slaby <jirislaby@kernel.org>
-Autocrypt: addr=jirislaby@kernel.org; keydata=
- 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
-In-Reply-To: <836c267f-a028-acce-8b19-180162a5febc@suse.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240429102510.2665280-6-andriy.shevchenko@linux.intel.com>
 
-Hi,
-
-On 29. 04. 24, 14:05, Michael Matz wrote:
-> On Sat, 20 Apr 2024, Borislav Petkov wrote:
+On Mon, Apr 29, 2024 at 01:23:22PM +0300, Andy Shevchenko wrote:
+> The of_gpio.h is going to be removed. In preparation of that convert
+> the driver to the agnostic API.
 > 
->> Interesting. I thought gcc doesn't have problems here yet and was
->> talking to Matz on Thu about it and it seems he's forgotten about his
->> statement too that "you should simply stop using -mcmodel=large.  Noone
->> should use it." :-)
+> Reviewed-by: Rob Herring <robh@kernel.org>
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+
+Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+
+- Mani
+
+> ---
+>  drivers/pci/controller/dwc/pcie-kirin.c | 105 ++++++++----------------
+>  1 file changed, 35 insertions(+), 70 deletions(-)
 > 
-> It may be so ingrained in my brain that I'm not _always_ saying it when
-> talking about the large code model over a beer.  And indeed I know of no
-> particular problems with it vis GCC,
+> diff --git a/drivers/pci/controller/dwc/pcie-kirin.c b/drivers/pci/controller/dwc/pcie-kirin.c
+> index d5523f302102..d1f54f188e71 100644
+> --- a/drivers/pci/controller/dwc/pcie-kirin.c
+> +++ b/drivers/pci/controller/dwc/pcie-kirin.c
+> @@ -12,12 +12,10 @@
+>  #include <linux/compiler.h>
+>  #include <linux/delay.h>
+>  #include <linux/err.h>
+> -#include <linux/gpio.h>
+>  #include <linux/gpio/consumer.h>
+>  #include <linux/interrupt.h>
+>  #include <linux/mfd/syscon.h>
+>  #include <linux/of.h>
+> -#include <linux/of_gpio.h>
+>  #include <linux/of_pci.h>
+>  #include <linux/phy/phy.h>
+>  #include <linux/pci.h>
+> @@ -78,16 +76,16 @@ struct kirin_pcie {
+>  	void		*phy_priv;	/* only for PCIE_KIRIN_INTERNAL_PHY */
+>  
+>  	/* DWC PERST# */
+> -	int		gpio_id_dwc_perst;
+> +	struct gpio_desc *id_dwc_perst_gpio;
+>  
+>  	/* Per-slot PERST# */
+>  	int		num_slots;
+> -	int		gpio_id_reset[MAX_PCI_SLOTS];
+> +	struct gpio_desc *id_reset_gpio[MAX_PCI_SLOTS];
+>  	const char	*reset_names[MAX_PCI_SLOTS];
+>  
+>  	/* Per-slot clkreq */
+>  	int		n_gpio_clkreq;
+> -	int		gpio_id_clkreq[MAX_PCI_SLOTS];
+> +	struct gpio_desc *id_clkreq_gpio[MAX_PCI_SLOTS];
+>  	const char	*clkreq_names[MAX_PCI_SLOTS];
+>  };
+>  
+> @@ -381,15 +379,20 @@ static int kirin_pcie_get_gpio_enable(struct kirin_pcie *pcie,
+>  	pcie->n_gpio_clkreq = ret;
+>  
+>  	for (i = 0; i < pcie->n_gpio_clkreq; i++) {
+> -		pcie->gpio_id_clkreq[i] = of_get_named_gpio(dev->of_node,
+> -						    "hisilicon,clken-gpios", i);
+> -		if (pcie->gpio_id_clkreq[i] < 0)
+> -			return pcie->gpio_id_clkreq[i];
+> +		pcie->id_clkreq_gpio[i] = devm_gpiod_get_index(dev,
+> +							"hisilicon,clken", i,
+> +							GPIOD_OUT_LOW);
+> +		if (IS_ERR(pcie->id_clkreq_gpio[i]))
+> +			return dev_err_probe(dev, PTR_ERR(pcie->id_clkreq_gpio[i]),
+> +					     "unable to get a valid clken gpio\n");
+>  
+>  		pcie->clkreq_names[i] = devm_kasprintf(dev, GFP_KERNEL,
+>  						       "pcie_clkreq_%d", i);
+>  		if (!pcie->clkreq_names[i])
+>  			return -ENOMEM;
+> +
+> +		gpiod_set_consumer_name(pcie->id_clkreq_gpio[i],
+> +					pcie->clkreq_names[i]);
+>  	}
+>  
+>  	return 0;
+> @@ -407,10 +410,16 @@ static int kirin_pcie_parse_port(struct kirin_pcie *pcie,
+>  		for_each_available_child_of_node(parent, child) {
+>  			i = pcie->num_slots;
+>  
+> -			pcie->gpio_id_reset[i] = of_get_named_gpio(child,
+> -							"reset-gpios", 0);
+> -			if (pcie->gpio_id_reset[i] < 0)
+> -				continue;
+> +			pcie->id_reset_gpio[i] = devm_fwnode_gpiod_get_index(dev,
+> +							 of_fwnode_handle(child),
+> +							 "reset", 0, GPIOD_OUT_LOW,
+> +							 NULL);
+> +			if (IS_ERR(pcie->id_reset_gpio[i])) {
+> +				if (PTR_ERR(pcie->id_reset_gpio[i]) == -ENOENT)
+> +					continue;
+> +				return dev_err_probe(dev, PTR_ERR(pcie->id_reset_gpio[i]),
+> +						     "unable to get a valid reset gpio\n");
+> +			}
+>  
+>  			pcie->num_slots++;
+>  			if (pcie->num_slots > MAX_PCI_SLOTS) {
+> @@ -434,6 +443,9 @@ static int kirin_pcie_parse_port(struct kirin_pcie *pcie,
+>  				ret = -ENOMEM;
+>  				goto put_node;
+>  			}
+> +
+> +			gpiod_set_consumer_name(pcie->id_reset_gpio[i],
+> +						pcie->reset_names[i]);
+>  		}
+>  	}
+>  
+> @@ -463,14 +475,11 @@ static long kirin_pcie_get_resource(struct kirin_pcie *kirin_pcie,
+>  		return PTR_ERR(kirin_pcie->apb);
+>  
+>  	/* pcie internal PERST# gpio */
+> -	kirin_pcie->gpio_id_dwc_perst = of_get_named_gpio(dev->of_node,
+> -							  "reset-gpios", 0);
+> -	if (kirin_pcie->gpio_id_dwc_perst == -EPROBE_DEFER) {
+> -		return -EPROBE_DEFER;
+> -	} else if (!gpio_is_valid(kirin_pcie->gpio_id_dwc_perst)) {
+> -		dev_err(dev, "unable to get a valid gpio pin\n");
+> -		return -ENODEV;
+> -	}
+> +	kirin_pcie->id_dwc_perst_gpio = devm_gpiod_get(dev, "reset", GPIOD_OUT_LOW);
+> +	if (IS_ERR(kirin_pcie->id_dwc_perst_gpio))
+> +		return dev_err_probe(dev, PTR_ERR(kirin_pcie->id_dwc_perst_gpio),
+> +				     "unable to get a valid gpio pin\n");
+> +	gpiod_set_consumer_name(kirin_pcie->id_dwc_perst_gpio, "pcie_perst_bridge");
+>  
+>  	ret = kirin_pcie_get_gpio_enable(kirin_pcie, pdev);
+>  	if (ret)
+> @@ -553,7 +562,7 @@ static int kirin_pcie_add_bus(struct pci_bus *bus)
+>  
+>  	/* Send PERST# to each slot */
+>  	for (i = 0; i < kirin_pcie->num_slots; i++) {
+> -		ret = gpio_direction_output(kirin_pcie->gpio_id_reset[i], 1);
+> +		ret = gpiod_direction_output_raw(kirin_pcie->id_reset_gpio[i], 1);
+>  		if (ret) {
+>  			dev_err(pci->dev, "PERST# %s error: %d\n",
+>  				kirin_pcie->reset_names[i], ret);
+> @@ -623,44 +632,6 @@ static int kirin_pcie_host_init(struct dw_pcie_rp *pp)
+>  	return 0;
+>  }
+>  
+> -static int kirin_pcie_gpio_request(struct kirin_pcie *kirin_pcie,
+> -				   struct device *dev)
+> -{
+> -	int ret, i;
+> -
+> -	for (i = 0; i < kirin_pcie->num_slots; i++) {
+> -		if (!gpio_is_valid(kirin_pcie->gpio_id_reset[i])) {
+> -			dev_err(dev, "unable to get a valid %s gpio\n",
+> -				kirin_pcie->reset_names[i]);
+> -			return -ENODEV;
+> -		}
+> -
+> -		ret = devm_gpio_request(dev, kirin_pcie->gpio_id_reset[i],
+> -					kirin_pcie->reset_names[i]);
+> -		if (ret)
+> -			return ret;
+> -	}
+> -
+> -	for (i = 0; i < kirin_pcie->n_gpio_clkreq; i++) {
+> -		if (!gpio_is_valid(kirin_pcie->gpio_id_clkreq[i])) {
+> -			dev_err(dev, "unable to get a valid %s gpio\n",
+> -				kirin_pcie->clkreq_names[i]);
+> -			return -ENODEV;
+> -		}
+> -
+> -		ret = devm_gpio_request(dev, kirin_pcie->gpio_id_clkreq[i],
+> -					kirin_pcie->clkreq_names[i]);
+> -		if (ret)
+> -			return ret;
+> -
+> -		ret = gpio_direction_output(kirin_pcie->gpio_id_clkreq[i], 0);
+> -		if (ret)
+> -			return ret;
+> -	}
+> -
+> -	return 0;
+> -}
+> -
+>  static const struct dw_pcie_ops kirin_dw_pcie_ops = {
+>  	.read_dbi = kirin_pcie_read_dbi,
+>  	.write_dbi = kirin_pcie_write_dbi,
+> @@ -680,7 +651,7 @@ static int kirin_pcie_power_off(struct kirin_pcie *kirin_pcie)
+>  		return hi3660_pcie_phy_power_off(kirin_pcie);
+>  
+>  	for (i = 0; i < kirin_pcie->n_gpio_clkreq; i++)
+> -		gpio_direction_output(kirin_pcie->gpio_id_clkreq[i], 1);
+> +		gpiod_direction_output_raw(kirin_pcie->id_clkreq_gpio[i], 1);
+>  
+>  	phy_power_off(kirin_pcie->phy);
+>  	phy_exit(kirin_pcie->phy);
+> @@ -707,10 +678,6 @@ static int kirin_pcie_power_on(struct platform_device *pdev,
+>  		if (IS_ERR(kirin_pcie->phy))
+>  			return PTR_ERR(kirin_pcie->phy);
+>  
+> -		ret = kirin_pcie_gpio_request(kirin_pcie, dev);
+> -		if (ret)
+> -			return ret;
+> -
+>  		ret = phy_init(kirin_pcie->phy);
+>  		if (ret)
+>  			goto err;
+> @@ -723,11 +690,9 @@ static int kirin_pcie_power_on(struct platform_device *pdev,
+>  	/* perst assert Endpoint */
+>  	usleep_range(REF_2_PERST_MIN, REF_2_PERST_MAX);
+>  
+> -	if (!gpio_request(kirin_pcie->gpio_id_dwc_perst, "pcie_perst_bridge")) {
+> -		ret = gpio_direction_output(kirin_pcie->gpio_id_dwc_perst, 1);
+> -		if (ret)
+> -			goto err;
+> -	}
+> +	ret = gpiod_direction_output_raw(kirin_pcie->id_dwc_perst_gpio, 1);
+> +	if (ret)
+> +		goto err;
+>  
+>  	usleep_range(PERST_2_ACCESS_MIN, PERST_2_ACCESS_MAX);
+>  
+> -- 
+> 2.43.0.rc1.1336.g36b5255a03ac
+> 
 
-Of course you do :). That bsc#1211853 I linked earlier. I.e. gcc-13 + 
--fstrict-flex-arrays=3 + -mcmodel=large + some asm() expecting __FILE__ 
-to be constant (not true with the large model).
-
-regards,
 -- 
-js
-suse labs
-
+மணிவண்ணன் சதாசிவம்
 
