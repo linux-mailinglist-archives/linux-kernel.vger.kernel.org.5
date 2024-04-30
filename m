@@ -1,272 +1,177 @@
-Return-Path: <linux-kernel+bounces-164169-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-164172-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3654B8B7A1D
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 16:40:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3762E8B7A26
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 16:41:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 556A51C22E70
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 14:40:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 66BAA1C22FDA
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 14:41:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13D2917F362;
-	Tue, 30 Apr 2024 14:32:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 47F601802BC;
+	Tue, 30 Apr 2024 14:33:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="IddfvIau"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="VVNxdNl4"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2783117F3
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 14:32:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D04AE770F5;
+	Tue, 30 Apr 2024 14:33:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714487566; cv=none; b=IDQt+Chu/ubdY7jCK+H9xJgNOKJyUHbBgTkn/sAYgmd61IF9I5goMkg5AeqBiczK2JHnjz6HCryoZ0NzwT1xvJMBcD4MWlw4/xammmM9nvvBI0hi/U/dusVw+bMaZRB0Nz++i0yM6DrAOVayWg+QAamR2FTmDK79zELMIDFn4cA=
+	t=1714487600; cv=none; b=jrUQ4kLAJYS1j6K99OxJNNxdkBgTGifJxxVP9z5clWh3pMcpK7sQWxIotMbDX3yU7g6ZwYty9GzzH08DQwtYjbpVq/izqOb4OLZ2oW02sxUEyUlGPtdIniElgloTg90TiN09/KnUp50S75NtQ7F0UA1P1Iv8im2vuj269rUlg+o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714487566; c=relaxed/simple;
-	bh=n6SnZJULFItjuGLEhkqEpmc3jEp8vlsv3OQPTQoqn2s=;
+	s=arc-20240116; t=1714487600; c=relaxed/simple;
+	bh=ZbofnJTeGEkJkkARV3RauUlYPiv2yoCrwKvOpKsZ05E=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=XGOCrlH82mAdI4pCKriMuC+EAS5MdH9PHnQP6MCWKg+jmHVAb4CeGuxzEOZ89TANW2vS+mrldF0UU9v6EWlGHWdcD8+0+jABJExB2k23DoDUCgLp1Mf5Jvhv532kmSI9xTG9e02SfttoxEwdkf2g3+BusYYesM9DZK7Gn/85lG8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=IddfvIau; arc=none smtp.client-ip=192.198.163.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1714487564; x=1746023564;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=n6SnZJULFItjuGLEhkqEpmc3jEp8vlsv3OQPTQoqn2s=;
-  b=IddfvIaultbKP0uOG0Hj2rGs76BTNW7ymZZ+6exOOqPvFlSHfxAEgU74
-   6duoDHDOpY27T7MH5rmYh5UGvYW+OS2bEiayvFrw0Z9+lAfIWuwPV+Qpa
-   KJAbUKadPSNvbOol4SAkIv5NIYcJnO+SBv8QEe+3acxTZN1qr7UCFYt3l
-   IK3XC1P3Z7WFgLBj19HAMybHgqAPz2gD05xvBUzUBkm9bvmVj82A5GVXt
-   tn5uhFwZokDVvXsQ8nKDZcmPVk0le0PJZJTC3wKmPdDkoaiSrRWmY/cHn
-   vKr3PT2fWaRqYc3GdmoUxpzWwzjPstQtKkqtl0cXyuRB/qhSCIgNj5gnT
-   A==;
-X-CSE-ConnectionGUID: q4CalZngQGaO26iC4U5Oaw==
-X-CSE-MsgGUID: lhFhm001TlKymbq8/E8Nmw==
-X-IronPort-AV: E=McAfee;i="6600,9927,11060"; a="35582411"
-X-IronPort-AV: E=Sophos;i="6.07,242,1708416000"; 
-   d="scan'208";a="35582411"
-Received: from fmviesa006.fm.intel.com ([10.60.135.146])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Apr 2024 07:32:43 -0700
-X-CSE-ConnectionGUID: W1vp+tf8TpqYQ2KRWTXqIQ==
-X-CSE-MsgGUID: ygYZu9RDSYCCCzXJL4BMHQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,242,1708416000"; 
-   d="scan'208";a="26565796"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmviesa006.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Apr 2024 07:32:40 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1s1oX7-00000002gzV-26Yp;
-	Tue, 30 Apr 2024 17:32:37 +0300
-Date: Tue, 30 Apr 2024 17:32:37 +0300
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Sui Jingfeng <sui.jingfeng@linux.dev>
-Cc: Neil Armstrong <neil.armstrong@linaro.org>,
-	Randy Dunlap <rdunlap@infradead.org>,
-	dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-	Jessica Zhang <quic_jesszhan@quicinc.com>,
-	Sam Ravnborg <sam@ravnborg.org>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>
-Subject: Re: [v1,1/3] drm/panel: ili9341: Correct use of device property APIs
-Message-ID: <ZjEBBRK7eoY4I0Gg@smile.fi.intel.com>
-References: <20240425142706.2440113-2-andriy.shevchenko@linux.intel.com>
- <c2d41916-0b6c-43b5-98eb-514eb0511f84@linux.dev>
- <ZiqqiAztCaiAgI8e@smile.fi.intel.com>
- <2599705c-0a64-4742-b1d7-330e9fde6e7a@linux.dev>
+	 Content-Type:Content-Disposition:In-Reply-To; b=p4gU7Lv3dlENVrO4ndDfHLzqdiFbv04XbN/hk6dtgRf9Qa9T3TTxcp4wb0lJE3umMrbwvBpLpnZus11i3ZMzm4+8XBoWEk2FrEhnISJTXfBinfVmxRhUpHwIyO4ujNkjrBYf8duRN+bmx2FZ+zvwL7HgbPAGkbPsL56GPDSPgfk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=VVNxdNl4; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1714487597;
+	bh=ZbofnJTeGEkJkkARV3RauUlYPiv2yoCrwKvOpKsZ05E=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=VVNxdNl4kQe39oj47b3+NyFvudFAZGW59n5BTUf1/DF2H3cviw3Tuiwcgc3kGQLpu
+	 4aT/K0hOh42Fg2vK9bcCSngPs4kAJL8Rf8S29deXyTtgtp8jAuUo9beJ/VY35hNiL+
+	 UphsRomofb7zdUW87scAWAWZDpisn7RdjkM5Afe/n9AWPRaqXWBSKfS2HeaDMGbNuY
+	 QOSu8VFIpqhhzZf5Nf/AvcUa0eCoadqJYoJ8LpUFqhBHTRZF4GWMnN//BT1op4PzCR
+	 gmhSVXEW+tJkp5f+PgTXDiJHlV4e0Un1PJJwlgcny3sFV1hNNGnVe6zvX3541yyvvA
+	 QCgYVUzPdJ1+A==
+Received: from mercury (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: sre)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 2844E378212D;
+	Tue, 30 Apr 2024 14:33:17 +0000 (UTC)
+Received: by mercury (Postfix, from userid 1000)
+	id BB1B7106074C; Tue, 30 Apr 2024 16:33:16 +0200 (CEST)
+Date: Tue, 30 Apr 2024 16:33:16 +0200
+From: Sebastian Reichel <sebastian.reichel@collabora.com>
+To: Herman van Hazendonk <github.com@herrie.org>
+Cc: linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Ben Wolsieffer <benwolsieffer@gmail.com>, Linus Walleij <linus.walleij@linaro.org>
+Subject: Re: [PATCH] power: supply: max8903: configure USUS as output
+Message-ID: <ujpdv6fahceaatniy3w4z23dy7q4r5swfqzi2mc4dlarcdavo4@x5fvm5oklohx>
+References: <20240417-max8903-v1-1-25d4dbf4ce9b@herrie.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="243jbcowuncudllz"
+Content-Disposition: inline
+In-Reply-To: <20240417-max8903-v1-1-25d4dbf4ce9b@herrie.org>
+
+
+--243jbcowuncudllz
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <2599705c-0a64-4742-b1d7-330e9fde6e7a@linux.dev>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Apr 26, 2024 at 04:43:18AM +0800, Sui Jingfeng wrote:
-> On 2024/4/26 03:10, Andy Shevchenko wrote:
-> > On Fri, Apr 26, 2024 at 02:08:16AM +0800, Sui Jingfeng wrote:
-> > > On 2024/4/25 22:26, Andy Shevchenko wrote:
-> > > > It seems driver missed the point of proper use of device property APIs.
-> > > > Correct this by updating headers and calls respectively.
-> > > You are using the 'seems' here exactly saying that you are not 100% sure.
+Hi,
 
-To add here, "seems" is used to show that I have no knowledge on what was
-the idea behind this implementation by the original author. Plus my knowledge
-in the firmware node / device property APIs and use cases in Linux kernel.
+On Wed, Apr 17, 2024 at 03:35:00PM +0200, Herman van Hazendonk wrote:
+> The USUS pin was mistakenly configured as an input, when it should be an
+> output that specifies whether the USB power input is suspended. In additi=
+on
+> to fixing the pin mode, this patch also suspends the USB input when a DC
+> charger is connected, which should result in a slight reduction in USB
+> quiescent current.
+>=20
+> Signed-off-by: Ben Wolsieffer <benwolsieffer@gmail.com>
+> Signed-off-by: Herman van Hazendonk <github.com@herrie.org>
+> ---
 
-> > > Please allow me to tell you the truth: This patch again has ZERO effect.
-> > > It fix nothing. And this patch is has the risks to be wrong.
-> > Huh?! Really, stop commenting the stuff you do not understand.
-> 
-> I'm actually a professional display drivers developer at the downstream
-> in the past, despite my contribution to upstream is less. But I believe
-> that all panel driver developers know what I'm talking about. So please
-> have take a look at my replies.
+Thanks for your patch. I think this should get
 
-Okay.
+Fixes: 50da8d04ee52 ("power: supply: max8903: Convert to GPIO descriptors")
 
-> > > Simple because the "ili9341_probe() ---> ili9341_dbi_prob()" code path
-> > > is DT dependent.
-> > > 
-> > > First of all, the devm_of_find_backlight() is called in ili9341_dbi_probe()
-> > > under *non-DT* environment, devm_of_find_backlight() is just a just a
-> > > no-op and will return NULL. NULL is not an error code, so ili9341_dbi_probe()
-> > > won't rage quit. But the several side effect is that the backlight will
-> > > NOT works at all.
-> > Is it a problem?
-> 
-> Yes, it is.
-> 
-> The core problem is that the driver you are modifying has *implicit* *dependency* on DT.
-> The implicit dependency is due to the calling of devm_of_find_backlight(). This function
-> is a no-op under non-DT systems.
+Also what's going on with the Signed-off-by? Did you forward the
+patch from Ben Wolsieffer (i.e. the author is wrong) or did you
+co-develop it (so there should be a "Co-developed-by: Ben Wolsieffer
+<benwolsieffer@gmail.com>" tag)?
 
-Okay.
+>  drivers/power/supply/max8903_charger.c | 14 +++++++++++++-
+>  1 file changed, 13 insertions(+), 1 deletion(-)
+>=20
+> diff --git a/drivers/power/supply/max8903_charger.c b/drivers/power/suppl=
+y/max8903_charger.c
+> index e65d0141f260..15dc3a5239e2 100644
+> --- a/drivers/power/supply/max8903_charger.c
+> +++ b/drivers/power/supply/max8903_charger.c
+> @@ -102,6 +102,10 @@ static irqreturn_t max8903_dcin(int irq, void *_data)
+>  	if (data->dcm)
+>  		gpiod_set_value(data->dcm, ta_in);
+> =20
+> +	/* Set USB-Suspend 1:Suspended 0:Active */
+> +	if (data->usus)
+> +		gpiod_set_value(data->usus, ta_in);
+> +
+>  	/* Charger Enable / Disable */
+>  	if (data->cen) {
+>  		int val;
+> @@ -310,7 +314,15 @@ static int max8903_setup_gpios(struct platform_devic=
+e *pdev)
+>  				     "failed to get FLT GPIO");
+>  	gpiod_set_consumer_name(data->flt, data->psy_desc.name);
+> =20
+> -	data->usus =3D devm_gpiod_get_optional(dev, "usus", GPIOD_IN);
+> +	/*
+> +	 * Suspend the USB input if the DC charger is connected.
+> +	 *
+> +	 * The USUS line should be marked GPIO_ACTIVE_HIGH in the
+> +	 * device tree. Driving it low will enable the USB charger
+> +	 * input.
 
-> Therefore, before the devm_of_find_backlight() and
-> the device_get_match_data() function can truly DT independent.
+I think the above 3 lines should be dropped. They added more
+confusion to me than actually helping and the information is
+already in the DT binding file.
 
-True for the first part, not true for the second.
+Greetings,
 
-> Removing the "OF" dependency just let the tigers run out from the jail.
-> 
-> It is not really meant to targeting at you, but I thinks, all of drm_panel drivers
-> that has the devm_of_find_backlight() invoked will suffer such concerns.
-> In short, the reason is that the *implicit* *dependency* populates and
-> the undefined behavior gets triggered.
+-- Sebastian
 
-Still no problem statement. My hardware works nicely on non-DT environment.
-(And since it's Arduino-based one, I assume it will work on DT environments
- the very same way.)
+> +	 */
+> +	flags =3D ta_in ? GPIOD_OUT_HIGH : GPIOD_OUT_LOW;
+> +	data->usus =3D devm_gpiod_get_optional(dev, "usus", flags);
+>  	if (IS_ERR(data->usus))
+>  		return dev_err_probe(dev, PTR_ERR(data->usus),
+>  				     "failed to get USUS GPIO");
+>=20
+> ---
+> base-commit: 96fca68c4fbf77a8185eb10f7557e23352732ea2
+> change-id: 20240417-max8903-ace97d7d3407
+>=20
+> Best regards,
+> --=20
+> Herman van Hazendonk <github.com@herrie.org>
+>=20
 
-> I'm sure you know that device_get_match_data() is same with of_device_get_match_data()
-> for DT based systems. For non DT based systems, device_get_match_data() is just *undefined*
-> Note that ACPI is not in the scope of the discussion here, as all of the drm bridges and
-> panels driver under drivers/gpu/drm/ hasn't the ACPI support yet.
+--243jbcowuncudllz
+Content-Type: application/pgp-signature; name="signature.asc"
 
-This patch shows exactly how to bring back the ACPI support to one of them
-(as it's done for tinyDRM cases).
+-----BEGIN PGP SIGNATURE-----
 
-> Therefore, at present,
-> it safe to say that device_get_match_data() is *undefined* under no-DT environment.
+iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmYxASAACgkQ2O7X88g7
++po8UxAAp2+KFGesRHzAkUVrYxiu1Exye2LwzJjQdFD69x3N1cchUiGVaebshxIU
+73MwfOssQndZMS/ice/Ed71XJTtb93EA7MtuHkQQ8MEelEoC5T4N0VER+S1q/Irb
+FXHteDS4WDm7pYd6Pf9XQW7eI/WrhqQ2vJMn9BjbQrh79J6XT9GdLCF5XrNgcDdL
+nGUZIlCtnE+xce8Q4vpPZ5t3LNqFrkJTMWBOGFZtl1hOaaPqHS3cuJ40mangaZ3u
+EGBL3yck5fJVFiUz8e1zibFrDow00j6zXI/7aU6c4sFGadTPea2QmCCPUO0gRMSt
+9vTruWzmidtXIIOckrhfcGAlNmN54NFPrl6wibmOdINJ/a/AMixZg3qi33TKHYp5
+xNYxc2KEbw9kELlqABBHVw7fdulS+YCVh+iC8iYmNH3SeoKKAStFlUhgog0Ba4JE
+ZaWkFxcnIBjmJoAkVZDEAJLigV0xaKDJfECal/EXqREBvtfmX9Y8FLJqXSBdLax2
+7QpvmzabW9CRqEGTTBUHinJT4LMuaNuDPdjOlYj0BCALs7is59dVxG4Nc2sCmWL6
+2lHWBssg/IOBFp8OqnOsjEe3aq2fBASE2urGreXFpRCMaBVV5vHXm4xLrUQZ9NF+
+ypqvN/8GcuGc7B7SnjFAXLeZTMFuNhrrU8/DOlF3g9qsDEd7iZg=
+=VF7a
+-----END PGP SIGNATURE-----
 
-This is not true.
-
-> Removing the "OF" dependency hints to us that it allows the driver to be probed as a
-> pure SPI device under non DT systems. When device_get_match_data() is called, it returns
-> NULL to us now. As a result, the drm driver being modified will tears down.
-> 
-> See bellow code snippet extracted frompanel-ilitek-ili9341.c:
-> 
-> 
-> ```
-> 	ili->conf = of_device_get_match_data(dev);
-> 	if (!ili->conf) {
-> 		dev_err(dev, "missing device configuration\n");
-> 		return -ENODEV;
-> 	}
-> ```
-> 
-> > > It is actually considered as fatal bug for *panels* if the backlight of
-> > > it is not light up, at least the brightness of *won't* be able to adjust.
-> > > What's worse, if there is no sane platform setup code at the firmware
-> > > or boot loader stage to set a proper initial state. The screen is complete
-> > > dark. Even though the itself panel is refreshing framebuffers, it can not
-> > > be seen by human's eye. Simple because of no backlight.
-> > Can you imagine that I may have different hardware that considered
-> > this is non-fatal error?
-> > 
-> Yes, I can imagine.
-> 
-> I believe you have the hardware which make you patch correct to run
-> in 99.9% of all cases. But as long as there one bug happened, you patch
-> are going to be blamed.
-> 
-> Because its your patch that open the door, both from the perceptive of
-> practice and from the perceptive of the concept (static analysis).
-> 
-> > > Second, the ili9341_dbi_probe() requires additional device properties to
-> > > be able to works very well on the rotation screen case. See the calling
-> > > of "device_property_read_u32(dev, "rotation", &rotation)" in
-> > > ili9341_dbi_probe() function.
-> > Yes, exactly, and how does it object the purpose of this patch?
-> 
-> Because under *non-DT* environment, your commit message do not give a
-> valid description, how does the additional device property can be acquired
-> is not demonstrated.
-> 
-> And it is exactly your patch open the non-DT code path (way or possibility).
-> It isn't has such risks before your patch is applied. In other words,
-> previously, the driver has the 'OF' dependency as the guard, all of the
-> potential risk(or problem) are suppressed. It is a extremely safe policy,
-> and it is also a extremely perfect defend.
-> 
-> And suddenly, you patch release the dangerous tiger from the cage.
-> So I think you can imagine...
-
-No, I can't, sorry. I don't see how dangerous will be the use of DRM panel
-in a wrong configuration. The same can very well happen on improperly working
-hardware (backlight part) or simply when somebody didn't correctly set a DT
-or manually use it when it should not be. But again I see *no* problem
-statement, only some worries.
-
-And on top of that I made tinyDRM drivers to be accessible on ACPI platforms
-and so far I have none complains about the tigers that left the cage.
-
-> > > Combine with those two factors, it is actually can conclude that the
-> > > panel-ilitek-ili9394 driver has the *implicit* dependency on 'OF'.
-> > > Removing the 'OF' dependency from its Kconfig just trigger the
-> > > leakage of such risks.
-> > What?!
-> > 
-> Posting a patch is actually doing the defensive works, such a saying
-> may not sound fair for you, but this is just the hash cruel reality.
-> Sorry for saying that. :(
-
-So, the summary of your message is that:
-- there's no understanding how ACPI (or any other non-DT fwnode based
-  environment) can utilise the driver
-- there's a worry about some problems which can't be stated clearly
-- there's a neglecting of the previous successful cases specific for DRM
-  (tinyDRM drivers)
-
-As a result of the false input, the non-constructive conclusion was given.
-
-And note, I converted dozens if not hundredth of drivers that used to be
-OF-only and haven't heart any negative feedback before this case. Maybe
-we (reviewers of my patches and maintainers who applied them and end users)
-miss a BIG DEAL here? Please, elaborate how dropping OF dependency can be
-dangerous as a free walking tiger.
-
-> > > My software node related patches can help to reduce part of the potential
-> > > risks, but it still need some extra work. And it is not landed yet.
-
-> > Your patch has nothing to do with this series.
-
-I am not going to repeat the above.
-
-> With my patch applied, this is way to meet the gap under non-DT systems.
-> Users of this driver could managed to attach(complete) absent properties
-> to the SPI device with software node properties. Register the swnode
-> properties group into the system prior the panel driver is probed. There
-> may need some quirk. But at the least there has a way to go.  When there
-> has a way to go, things become self-consistent. Viewed from both the
-> practice of viewpoint and the concept of viewpoint.
-> 
-> And the dangerous tiger will steer its way to the direction of "ACPI
-> support is missing". But both of will be safe then.
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+--243jbcowuncudllz--
 
