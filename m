@@ -1,178 +1,115 @@
-Return-Path: <linux-kernel+bounces-164716-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-164717-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BE3808B819D
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 22:40:54 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4F3DF8B819F
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 22:41:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B36C5B2352F
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 20:40:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7E6DD1C23431
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 20:41:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18D9D1A38C1;
-	Tue, 30 Apr 2024 20:40:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15E761A38C3;
+	Tue, 30 Apr 2024 20:40:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="MU9s7/Kh"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="QYgYGkiH"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6337179B2;
-	Tue, 30 Apr 2024 20:40:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A47CB19DF5F
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 20:40:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714509638; cv=none; b=t8RWKFHx8lt68z7JO3Yhv8SmyfxXbQvwvonhcD0bbf5HGcnUEwzZY0HVZ1AMys11buaInXhYB1a+HpwxT06/TcA33V1g/SrM/j8EuC6t1w510eujbjss49PeqfYbAAbMp8uCeYkfPHBplEcxrCG+NM7u4d1oCAVcE6oIVUzwunc=
+	t=1714509654; cv=none; b=iCQF3lm+pAzpDxIieN0j4O298DGG2JnkNDk3HMO2yVOKKJsRuSGggob7IpfozywfVzOAUACV7yI0g8O8wxX7sDBueH1xgb60H+JmMc6nU0SwnzFf2M/nuEny4kbwszKezVjC7J/W5VmUsyUg9nUGM6WeSJs5WkNLKjHzxurZgpY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714509638; c=relaxed/simple;
-	bh=3nK5Ui9sg2OmqItymdG/qfwcqJTvCHuMV2+tRbOOeBs=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=g76aN2qAg/U3QqXBrE3MoJ9co+6C5FICCQItsHwB6CVI9HZDTZOTft9evhEHTtFT45wT52oMb2ewUZNRPQVIR6PV9XHxw2OK5iJ4occvJ7QAcmdzTBkxDCNjYY3flfqcz0kt/sYTrvHzsU2yeqoDtnUPSz7ZV/PgI9e95sxVcAU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=MU9s7/Kh; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 43UKLEST003698;
-	Tue, 30 Apr 2024 20:40:16 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=mPJzl3A5Kcs7nbYIEug5FKpc7bZlBVlFz0whBlYR54M=; b=MU
-	9s7/Khv9y/FDEyseO9V4RnANK7JqXX7hjHtQzQA6e+1oyNzhxuYwz1Qja5D678sB
-	I6fEtjLMXYRtTv5Gi9PY0ZZlydkyCVAewIXWTCzQWt1FrxV7tDNKFs9xcxSu2egf
-	AZMqijoMI/QDWYjodX7qCDKgUrF+BDH3c7lUi1mOn/SOSIPqloJIoFuKJRd0P5g2
-	HkOSIBXQ6/NDO+FqoGXsanL8BPG3VepkAYscj0vPNSxOXbYASHLwAVKtnwfjTqF9
-	0FRADEH9QxCUrs2jF0MUoua0rvG+c2LOsSzze5uDC88P3D1D1tjGk5U7foGl+ojA
-	Yxw5fuhN/+209+XBRwhw==
-Received: from nasanppmta03.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xttw3j5m1-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 30 Apr 2024 20:40:16 +0000 (GMT)
-Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
-	by NASANPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 43UKeEZS015877
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 30 Apr 2024 20:40:14 GMT
-Received: from [10.46.19.239] (10.80.80.8) by nasanex01a.na.qualcomm.com
- (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Tue, 30 Apr
- 2024 13:40:11 -0700
-Message-ID: <30c91655-a1ba-44da-900b-f2a70ed9f961@quicinc.com>
-Date: Tue, 30 Apr 2024 13:40:10 -0700
+	s=arc-20240116; t=1714509654; c=relaxed/simple;
+	bh=w+6KTqRYqH4g82XjjMnM1W0nz4LoVWr/B/W1NuzYark=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=hZXnsw/rwojiRnMmPpmqa1l327M6kmiI9RDSV//+Jj9NucjfLtZFe9o3myLiQwDWshjN3WYWFX9eHfIUvEbQeuK0iYYTheDTp8BVvQ8jRJr9iWTWusHSWVoAj3LhcbTqINx/Ps6jkn1YZGS7LExrE7uWP2/JhnbSESh6AX4Khg8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=QYgYGkiH; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1714509651;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=NgrzgAgGo8i+xwDb/b3m3FxSOTPzpaahtRRF4Q7L0yk=;
+	b=QYgYGkiHsRiJixcdlZ7RqSNalxXWFLJzRDlam8RzcixD2Pen3gTp1EWGBSdC+FZKfzjMEd
+	FIuGVzsKXd81z0HZ5hPcOu9ZdwJmeb+r3j+W1eX+k2xIeHnSus5atzIS/bAYNG8pdyh433
+	wAsF5Md7aQfEil88Ei9860HHzkNhFOk=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-446-Wx_lFYOlMO2wvDeYEn4muA-1; Tue,
+ 30 Apr 2024 16:40:47 -0400
+X-MC-Unique: Wx_lFYOlMO2wvDeYEn4muA-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 6E3E8380673C;
+	Tue, 30 Apr 2024 20:40:47 +0000 (UTC)
+Received: from t14s.fritz.box (unknown [10.39.192.75])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id AA563C01595;
+	Tue, 30 Apr 2024 20:40:45 +0000 (UTC)
+From: David Hildenbrand <david@redhat.com>
+To: linux-kernel@vger.kernel.org
+Cc: linux-mm@kvack.org,
+	David Hildenbrand <david@redhat.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Vincent Donnefort <vdonnefort@google.com>,
+	Dan Williams <dan.j.williams@intel.com>
+Subject: [PATCH v1 0/2] mm/memory: cleanly support zeropage in vm_insert_page*(), vm_map_pages*() and vmf_insert_mixed()
+Date: Tue, 30 Apr 2024 22:40:42 +0200
+Message-ID: <20240430204044.52755-1-david@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH bpf-next v5 2/2] net: Add additional bit to support
- clockid_t timestamp type
-Content-Language: en-US
-To: Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        Martin KaFai Lau
-	<martin.lau@linux.dev>
-CC: "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet
-	<edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni
-	<pabeni@redhat.com>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, Andrew Halaney <ahalaney@redhat.com>,
-        "Martin
- KaFai Lau" <martin.lau@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, bpf <bpf@vger.kernel.org>,
-        <kernel@quicinc.com>
-References: <20240424222028.1080134-1-quic_abchauha@quicinc.com>
- <20240424222028.1080134-3-quic_abchauha@quicinc.com>
- <2b2c3eb1-df87-40fe-b871-b52812c8ecd0@linux.dev>
- <e761e1de-0e11-4541-a4db-a1b793a60674@quicinc.com>
- <379558fe-a6e2-444b-a6a7-ef233efa8311@linux.dev>
- <6eb5b283-a9bd-4081-8bce-a60d72af430c@quicinc.com>
- <663153f92a297_33210f29423@willemb.c.googlers.com.notmuch>
-From: "Abhishek Chauhan (ABC)" <quic_abchauha@quicinc.com>
-In-Reply-To: <663153f92a297_33210f29423@willemb.c.googlers.com.notmuch>
-Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nasanex01a.na.qualcomm.com (10.52.223.231)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: SYWLA4lxIeFd4K85nYS1coeXpLRNOhYm
-X-Proofpoint-ORIG-GUID: SYWLA4lxIeFd4K85nYS1coeXpLRNOhYm
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
- definitions=2024-04-30_12,2024-04-30_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 adultscore=0
- lowpriorityscore=0 clxscore=1015 phishscore=0 impostorscore=0 bulkscore=0
- priorityscore=1501 mlxscore=0 malwarescore=0 suspectscore=0
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2404010003 definitions=main-2404300148
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.8
 
+There is interest in mapping zeropages via vm_insert_pages() [1] into
+MAP_SHARED mappings.
 
+For now, we only get zeropages in MAP_SHARED mappings via
+vmf_insert_mixed() from FSDAX code, and I think it's a bit shaky in some
+cases because we refcount the zeropage when mapping it but not necessarily
+always when unmapping it ... and we should actually never refcount it.
 
-On 4/30/2024 1:26 PM, Willem de Bruijn wrote:
-> Abhishek Chauhan (ABC) wrote:
->>
->>
->> On 4/26/2024 4:50 PM, Martin KaFai Lau wrote:
->>> On 4/26/24 11:46 AM, Abhishek Chauhan (ABC) wrote:
->>>>>> diff --git a/net/ipv4/ip_output.c b/net/ipv4/ip_output.c
->>>>>> index 591226dcde26..f195b31d6e75 100644
->>>>>> --- a/net/ipv4/ip_output.c
->>>>>> +++ b/net/ipv4/ip_output.c
->>>>>> @@ -1457,7 +1457,7 @@ struct sk_buff *__ip_make_skb(struct sock *sk,
->>>>>>          skb->priority = (cork->tos != -1) ? cork->priority: READ_ONCE(sk->sk_priority);
->>>>>>        skb->mark = cork->mark;
->>>>>> -    skb->tstamp = cork->transmit_time;
->>>>>> +    skb_set_tstamp_type_frm_clkid(skb, cork->transmit_time, sk->sk_clockid);
->>>>> hmm... I think this will break for tcp. This sequence in particular:
-> 
-> Good catch, thanks!
-> 
->>>>>
->>>>> tcp_v4_timewait_ack()
->>>>>    tcp_v4_send_ack()
->>>>>      ip_send_unicast_reply()
->>>>>        ip_push_pending_frames()
->>>>>          ip_finish_skb()
->>>>>            __ip_make_skb()
->>>>>              /* sk_clockid is REAL but cork->transmit_time should be in mono */
->>>>>              skb_set_tstamp_type_frm_clkid(skb, cork->transmit_time, sk->sk_clockid);;
->>>>>
->>>>> I think I hit it from time to time when running the test in this patch set.
->>>>>
->>>> do you think i need to check for protocol type here . since tcp uses Mono and the rest according to the new design is based on
->>>> sk->sk_clockid
->>>> if (iph->protocol == IPPROTO_TCP)
->>>>     skb_set_tstamp_type_frm_clkid(skb, cork->transmit_time, CLOCK_MONOTONIC);
->>>> else
->>>>     skb_set_tstamp_type_frm_clkid(skb, cork->transmit_time, sk->sk_clockid);
->>>
->>> Looks ok. iph->protocol is from sk->sk_protocol. I would defer to Willem input here.
->>>
->>> There is at least one more place that needs this protocol check, __ip6_make_skb().
->>
->> Sounds good. I will wait for Willem to comment here. 
-> 
-> This would be sk_is_tcp(sk).
-> 
-> I think we want to avoid special casing if we can. Note the if.
-> 
-> If TCP always uses monotonic, we could consider initializing
-> sk_clockid to CLOCK_MONONOTIC in tcp_init_sock.
-> 
-> I guess TCP logic currently entirely ignores sk_clockid. If we are to
-> start using this, then setsocktop SO_TXTIME must explicitly fail or
-> ignore for TCP sockets, or silently skip the write.
-> 
-> All of that is more complexity. Than is maybe warranted for this one
-> case. So no objections from me to special casing using sk_is_tcp(sk)
-> either.
-> 
->
+It's all a bit tricky, especially how zeropages in MAP_SHARED mappings
+interact with GUP (FOLL_LONGTERM), mprotect(), write-faults and s390x
+forbidding the shared zeropage (rewrite on its way upstream [2]).
 
-Thanks Willem and Martin for all the support and reviews. 
-I will take care of this in the next RFC patch
-- adding the sk_is_tcp check and setting tstamp_type to mono for tcp
+This series tries to take the careful approach of only allowing the
+zeropage where it is likely safe to use (which should cover the existing
+FSDAX use case and [1]), preventing that it could accidentially get mapped
+writable during a write fault, mprotect() etc, and preventing issues
+with FOLL_LONGTERM in the future with other users.
 
-> 
-> 
+Only very lightly tested ... because I yet have to even get fsdax running
+(I guess, file system on emulated DIMM in a VM? Hmmm :) ).
+
+[1] https://lkml.kernel.org/r/20240430111354.637356-1-vdonnefort@google.com
+[2] https://lkml.kernel.org/r/20240411161441.910170-1-david@redhat.com
+
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Vincent Donnefort <vdonnefort@google.com>
+Cc: Dan Williams <dan.j.williams@intel.com>
+
+David Hildenbrand (2):
+  mm/memory: cleanly support zeropage in vm_insert_page*(),
+    vm_map_pages*() and vmf_insert_mixed()
+  mm/rmap: sanity check that zeropages are not passed to RMAP
+
+ include/linux/rmap.h |  3 ++
+ mm/memory.c          | 92 ++++++++++++++++++++++++++++++++++----------
+ mm/mprotect.c        |  2 +
+ 3 files changed, 76 insertions(+), 21 deletions(-)
+
+-- 
+2.44.0
+
 
