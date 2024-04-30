@@ -1,167 +1,141 @@
-Return-Path: <linux-kernel+bounces-164581-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-164582-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8BCAE8B7FA2
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 20:21:58 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 888F08B7FA3
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 20:22:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B7D8C1C236E6
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 18:21:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 284B91F216C2
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 18:22:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 432EF1836EE;
-	Tue, 30 Apr 2024 18:21:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83A7E1836ED;
+	Tue, 30 Apr 2024 18:22:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uoKFBS0o"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=metaspace-dk.20230601.gappssmtp.com header.i=@metaspace-dk.20230601.gappssmtp.com header.b="jVdcxRlL"
+Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 81B71180A92;
-	Tue, 30 Apr 2024 18:21:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 647B2180A65
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 18:22:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714501308; cv=none; b=r7c9RjhalFkgUXUbCSY0lGz2DYggp6p3GpMEK798vv/xWhu2TACtxCe+KSynDKlU6024ClnJkILrWIMZLS+mh9rSn2JeHGKmvnOOkD/zPdj16pjdWcSKnIxkM62wWV2T+9qguj1D2Q6RBRsCV5R4Hwb0nKcL2YzKOosCDy4WG9c=
+	t=1714501355; cv=none; b=HQTTvhH5nRMl9BGveML6BSXYd+K3tVz9R1N/recFq+OP663k0w+rSd+d30vXnhmHfWkXat63fwa94NmXe7Ig9yFy0yBPt/BmETidRMZ2oQCDwvOT5jZH3mDryg8rxoPkI3w1DhIiIWZ0vX3LqUVG4y+5mthWDiWTnvYBZvpsd6E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714501308; c=relaxed/simple;
-	bh=e8R5pNN2IsLACAwBDVyNGSn3zTMo3zNZ2dNsVU58FAY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=EAcdDQO3/Qs+TmZC7bXbHXt9LVViMtGkijQO8IiHRU8sn0+AEn0RDtzBnzhjAPpPzkjEkwfgDLOe6LKAHBKUQlzfA41FR3hnX5co3MMdn2if3wHKjLwLLs85rvirexGZVn5AnUAm/6NgQQ26Z0LyTF2YdAexuhZE9UzAf/zs7Qs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uoKFBS0o; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6C8DEC2BBFC;
-	Tue, 30 Apr 2024 18:21:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714501308;
-	bh=e8R5pNN2IsLACAwBDVyNGSn3zTMo3zNZ2dNsVU58FAY=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=uoKFBS0oWnJcn5AdrjfuWyIkjg2MAAkA4VXWGlkuJpeO3isRw7tzGSQCr8k0jK/s/
-	 j51yGThqNL/UTuSjLfQuERbZIA6/RR462aK9UR49PvH14iimEeBtauE97B+Rn144tA
-	 EAiYurlFqXopiuoOtIr/WqoIvx6xgAlvAwyXQMZ2KQ28kmbdzS+VpG+/c8D16SA84U
-	 Phw2RgTDYvjJWtggVTwYSUYuxKUtKuhAez8zUnAGm04qEp1b2tbX8zNIhvFkprsKnP
-	 I6ZydNCTiPdlowBbxVR8j0AXv5ugZVa2/YciVsAusdd5mKFFpEbFm/y0TZt//24ZDs
-	 1tNh0FQNdrhDQ==
-Date: Tue, 30 Apr 2024 19:21:42 +0100
-From: Simon Horman <horms@kernel.org>
-To: MD Danish Anwar <danishanwar@ti.com>
-Cc: Dan Carpenter <dan.carpenter@linaro.org>,
-	Heiner Kallweit <hkallweit1@gmail.com>,
-	Andrew Lunn <andrew@lunn.ch>, Jan Kiszka <jan.kiszka@siemens.com>,
-	Diogo Ivo <diogo.ivo@siemens.com>, Paolo Abeni <pabeni@redhat.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Eric Dumazet <edumazet@google.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, srk@ti.com,
-	Vignesh Raghavendra <vigneshr@ti.com>, r-gunasekaran@ti.com,
-	Roger Quadros <rogerq@kernel.org>
-Subject: Re: [PATCH net-next v2] net: ti: icssg_prueth: Add SW TX / RX
- Coalescing based on hrtimers
-Message-ID: <20240430182142.GC2575892@kernel.org>
-References: <20240429071501.547680-1-danishanwar@ti.com>
- <20240429183034.GG516117@kernel.org>
- <5b7cf22a-ca91-4975-bd26-c76a16781ad7@ti.com>
+	s=arc-20240116; t=1714501355; c=relaxed/simple;
+	bh=Tys9Vqu4Np9NrR4Q24ohGiMMf8UxyZr7+N9SeUjltmg=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=nt10hzo5U6/QUGnNR/7KudUF91NcAgQ43BvrcGYMy4bubP5yksHPoDBD4+FPLhb8r4/7L8NJp7oP2E1kqlX8nD45dkcACV4/iE9m+6rJnBJpmFM4fafyi+0aoSwzzIl0C2xjKXwpzdaatd/51upMLKtemYOzDcJWvXH59OXMaVA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=metaspace.dk; spf=none smtp.mailfrom=metaspace.dk; dkim=pass (2048-bit key) header.d=metaspace-dk.20230601.gappssmtp.com header.i=@metaspace-dk.20230601.gappssmtp.com header.b=jVdcxRlL; arc=none smtp.client-ip=209.85.218.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=metaspace.dk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=metaspace.dk
+Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-a58eb9a42d9so454280866b.0
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 11:22:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=metaspace-dk.20230601.gappssmtp.com; s=20230601; t=1714501352; x=1715106152; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:user-agent
+         :references:in-reply-to:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Eim2qM9dw2NaPc5K3CL5p94YEvS81xT9DDWzSJ6rzVw=;
+        b=jVdcxRlL5j4m5yjl+WkqXscbtYgVttxc/4JvOHNJSKoCALCp8m5WMRqqDyNQCmsAA4
+         WChmteAaj0mZVrJnCchQERr0n1ieqhyYmztRykfsQJ8lMjLyD4kBUjPTGhhmdCk0MMJ1
+         ZqXLxputKkkwMaIlMws1NdafEq2PMpSbXYuqGSfNedb895+iaPrvIzXcuN/4LibEUcjx
+         Cx1fTACsnSES/HawFo/TwxuJ7jG6+oACt62OwtYWj8bJN47HBesy6pQd1AASEl63CHSf
+         rvj4vjVYZYyRwtANKrfZU7hdxVUMZfbaL5vgQ7EKZZAWENl/MEvXAhZAre7eiM0F7qtW
+         +C4A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714501352; x=1715106152;
+        h=content-transfer-encoding:mime-version:message-id:date:user-agent
+         :references:in-reply-to:subject:cc:to:from:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=Eim2qM9dw2NaPc5K3CL5p94YEvS81xT9DDWzSJ6rzVw=;
+        b=pfMutV5NgYz9UE3Reu987H0GvLhqZJirt2XJ0j51kJTGGzgq/kqLV/jFkK8G6O9ax+
+         wZfCgtGbcQFjRpEQo026DBUKZQmI1oFLtxv1pGdNSYQEmsU3RivSJ8xoJXFVFMAm8Bvb
+         MpV7CWSKrgeoFvTf+r8f0s+pI0s+Wh8N/4B+XgVm4BYHfCMgz0g90ObHXszkUOhKurw3
+         Gz1048nO253piecU5IA0XAyHQ29dZ/lNSD6UmJk8ctRmPXbzNQvVbApOjhTCmCBDqljE
+         gNfWYVbCVoYz9mCf+Y4xBNKNbCzQ1wx67FofRWV7lz47TMi6NYqsXqojNUoOlm5QWPHL
+         J1yg==
+X-Forwarded-Encrypted: i=1; AJvYcCWmFtRz4HrOV7igbmGllGnqskadg7ElPuSbmnFhSyJdoncXcrqrbKmt1m8re/mJ9Vocj4e8ThtEx8qCI7Ec4onllj6xCwJ7GLVORMhv
+X-Gm-Message-State: AOJu0Yx3Cb/4zgeDN97HINKMNr/GAWro4w9y7XqI21YZSsCnfxKJhp4k
+	aYUavTwouv6uqQNh18KLcqTxghf2IZNxCHUV2UMUglCORegwtg96i7qwMLETA8o=
+X-Google-Smtp-Source: AGHT+IE5aiBScuaQ19uargUpEfy39/b85ALLx+hF4lmyoM77hZpnbkfe7n/+rxmBeqSK1orOCqLUdw==
+X-Received: by 2002:a17:906:c791:b0:a55:b592:7e0a with SMTP id cw17-20020a170906c79100b00a55b5927e0amr377859ejb.48.1714501352560;
+        Tue, 30 Apr 2024 11:22:32 -0700 (PDT)
+Received: from localhost ([79.142.230.34])
+        by smtp.gmail.com with ESMTPSA id j11-20020a170906474b00b00a58eeb329d8sm3949305ejs.44.2024.04.30.11.22.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 30 Apr 2024 11:22:32 -0700 (PDT)
+From: Andreas Hindborg <nmi@metaspace.dk>
+To: Boqun Feng <boqun.feng@gmail.com>
+Cc: Benno Lossin <benno.lossin@proton.me>,  Miguel Ojeda <ojeda@kernel.org>,
+  Alex Gaynor <alex.gaynor@gmail.com>,  Wedson Almeida Filho
+ <wedsonaf@gmail.com>,  Anna-Maria Behnsen <anna-maria@linutronix.de>,
+  Frederic Weisbecker <frederic@kernel.org>,  Thomas Gleixner
+ <tglx@linutronix.de>,  Andreas Hindborg <a.hindborg@samsung.com>,  Gary
+ Guo <gary@garyguo.net>,  =?utf-8?Q?Bj=C3=B6rn?= Roy Baron
+ <bjorn3_gh@protonmail.com>,
+  Alice Ryhl <aliceryhl@google.com>,  rust-for-linux@vger.kernel.org,
+  linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] rust: hrtimer: introduce hrtimer support
+In-Reply-To: <ZjELgVzzX4oru0gi@Boquns-Mac-mini.home> (Boqun Feng's message of
+	"Tue, 30 Apr 2024 08:17:21 -0700")
+References: <20240425094634.262674-1-nmi@metaspace.dk>
+	<a7a560c7-fb8c-4adf-9f46-2e272f24b335@proton.me>
+	<87v844lbhm.fsf@metaspace.dk> <Zi_Zb1lBOBBUFJFV@boqun-archlinux>
+	<87plu7jahd.fsf@metaspace.dk> <ZjELgVzzX4oru0gi@Boquns-Mac-mini.home>
+User-Agent: mu4e 1.12.4; emacs 29.3
+Date: Tue, 30 Apr 2024 20:22:25 +0200
+Message-ID: <87h6fik8wu.fsf@metaspace.dk>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5b7cf22a-ca91-4975-bd26-c76a16781ad7@ti.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Apr 30, 2024 at 03:12:58PM +0530, MD Danish Anwar wrote:
-> Simon,
-> 
-> On 30/04/24 12:00 am, Simon Horman wrote:
-> > On Mon, Apr 29, 2024 at 12:45:01PM +0530, MD Danish Anwar wrote:
-> >> Add SW IRQ coalescing based on hrtimers for RX and TX data path for ICSSG
-> >> driver, which can be enabled by ethtool commands:
-> >>
-> >> - RX coalescing
-> >>   ethtool -C eth1 rx-usecs 50
-> >>
-> >> - TX coalescing can be enabled per TX queue
-> >>
-> >>   - by default enables coalesing for TX0
-> > 
-> > nit: coalescing
-> > 
-> > Please consider running patches through ./checkpatch --codespell
-> > 
-> >>   ethtool -C eth1 tx-usecs 50
-> >>   - configure TX0
-> >>   ethtool -Q eth0 queue_mask 1 --coalesce tx-usecs 100
-> >>   - configure TX1
-> >>   ethtool -Q eth0 queue_mask 2 --coalesce tx-usecs 100
-> >>   - configure TX0 and TX1
-> >>   ethtool -Q eth0 queue_mask 3 --coalesce tx-usecs 100 --coalesce
-> >> tx-usecs 100
-> >>
-> >> Minimum value for both rx-usecs and tx-usecs is 20us.
-> >>
-> >> Compared to gro_flush_timeout and napi_defer_hard_irqs this patch allows
-> >> to enable IRQ coalescing for RX path separately.
-> >>
-> >> Benchmarking numbers:
-> >>  ===============================================================
-> >> | Method                  | Tput_TX | CPU_TX | Tput_RX | CPU_RX |
-> >> | ==============================================================
-> >> | Default Driver           943 Mbps    31%      517 Mbps  38%   |
-> >> | IRQ Coalescing (Patch)   943 Mbps    28%      518 Mbps  25%   |
-> >>  ===============================================================
-> >>
-> >> Signed-off-by: MD Danish Anwar <danishanwar@ti.com>
-> >> ---
-> 
-> [ ... ]
-> >>  	if (num_tx_packets >= budget)
-> >>  		return budget;
-> >>  
-> >> -	if (napi_complete_done(napi_tx, num_tx_packets))
-> >> -		enable_irq(tx_chn->irq);
-> >> +	if (napi_complete_done(napi_tx, num_tx_packets)) {
-> >> +		if (unlikely(tx_chn->tx_pace_timeout_ns && !tdown)) {
-> >> +			hrtimer_start(&tx_chn->tx_hrtimer,
-> >> +				      ns_to_ktime(tx_chn->tx_pace_timeout_ns),
-> >> +				      HRTIMER_MODE_REL_PINNED);
-> >> +		} else {
-> >> +			enable_irq(tx_chn->irq);
-> >> +		}
-> > 
-> > This compiles with gcc-13 and clang-18 W=1
-> > (although the inner {} are unnecessary).
-> > 
-> >> +	}
-> >>  
-> >>  	return num_tx_packets;
-> >>  }
-> > 
-> > ...
-> > 
-> >> @@ -872,7 +894,13 @@ int emac_napi_rx_poll(struct napi_struct *napi_rx, int budget)
-> >>  	}
-> >>  
-> >>  	if (num_rx < budget && napi_complete_done(napi_rx, num_rx))
-> >> -		enable_irq(emac->rx_chns.irq[rx_flow]);
-> >> +		if (unlikely(emac->rx_pace_timeout_ns)) {
-> >> +			hrtimer_start(&emac->rx_hrtimer,
-> >> +				      ns_to_ktime(emac->rx_pace_timeout_ns),
-> >> +				      HRTIMER_MODE_REL_PINNED);
-> >> +		} else {
-> >> +			enable_irq(emac->rx_chns.irq[rx_flow]);
-> >> +		}
-> > 
-> > But this does not; I think outer (but not inner) {} are needed.
-> > 
-> 
-> For both of these if checks, by having {} for outer if I am not seeing
-> the warnings anymore. The braces don't seem to be neccessary for inner if.
-> 
-> For both of these ifs I'll keep both inner and outer ifs in braces as
-> this will help readablity as Dan pointed out.
-> 
-> I will post v3 with this change.
+Boqun Feng <boqun.feng@gmail.com> writes:
 
-Thanks, sounds good to me.
+> On Tue, Apr 30, 2024 at 02:33:50PM +0200, Andreas Hindborg wrote:
+> [...]
+>> >
+>> > Could you see if you can replace this with a `SpinLock<bool>` +
+>> > `CondVar`? We shouldn't use Rust atomic in kernel now. I know it's
+>> > unfortunate that LKMM atomics are still work in process, but in real
+>> > world, you won't do busy waiting for a timer to fire, so a
+>> > `CondVar::wait` is better for example purpose.
+>>=20
+>> Since this is only using the atomic from Rust code, it should be fine
+>> right? There is no mixing of memory models on this memory location.
+>>=20
+>
+> It's better compared to mixing accesses on a same location, but it's
+> still not allowed (for now, at least) to avoid mixing memory models on
+> ordering guarantees, for example:
+>
+> (assume all memory location is initialized as 0)
+>
+> 	CPU 0				CPU 1
+> 	-----				-----
+> 	x.store(1, RELAXED); // Rust native atomic
+> 	smp_store_release(&y, 1); // LKMM atomic
+> 					let r0 =3D smp_load_acquire(&y);
+> 					let r1 =3D x.load(RELAXED);
+>
+> The smp_store_release() and smp_load_acquire() pairs per LKMM, and
+> provide certain rel-acq ordering. But to make it (r0 =3D=3D 1 && r1 =3D=
+=3D 0),
+> C11 memory model needs to understand this sort of orderings, but
+> currently there is no such thing as an "external ordering" to C11 memory
+> model.
+>
+> I admit this is much of a theorical concern for code reasoning, in real
+> world, it must "just work", but "if you want to have fun, start with
+> one" ;-)
+
+Alright, I will change it to a `CondVar` or a `SpinLock` =F0=9F=91=8D
+
+BR Andreas
 
