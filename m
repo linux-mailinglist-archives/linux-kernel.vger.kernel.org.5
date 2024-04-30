@@ -1,262 +1,167 @@
-Return-Path: <linux-kernel+bounces-164173-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-164161-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id AEFCE8B7A28
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 16:41:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id CB39C8B7A09
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 16:38:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 252671F26B1A
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 14:41:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6CEAE1F2615F
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 14:38:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EAA811BF6CE;
-	Tue, 30 Apr 2024 14:33:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25D8717920C;
+	Tue, 30 Apr 2024 14:31:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="l45UlqAo"
-Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="ELnbSRWD"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8862D1802D9;
-	Tue, 30 Apr 2024 14:33:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CEF45179658;
+	Tue, 30 Apr 2024 14:31:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714487603; cv=none; b=VXd07novNTYHM96yACLaHFaKWOxRnrD7ToEh+YF0P8/i9sn6LSLYa/Zz90JAUq+0ZrFVngnsxMySYQinUqDnUe6HEHGyWlrIJXMnisSq/5BDwWbnzgVh5p2Z6TcMzpiRRYnKxehNDEKagrUaQT+ZsN6UZtWskMqhCun65uw/UCg=
+	t=1714487486; cv=none; b=AXVoRy7kwzA8DHU7wC3qPFbUPq/A5UpnrWqLIhquLPDfc0W7spP+Y82Dy56b8wcTNkQ40G6xIZY68NYHrjlLzWTAoPTGeP8/SLFDyp+pjnrM2AfDqcmbSQL7fLlQwcilfLVlMWGKg6ws6z32/mp7eYGqi/zeV8uv6Pnr33BH5Qc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714487603; c=relaxed/simple;
-	bh=3zemZ+ENMGoPGIEwTuWopoyGRq1SxyxEFPSLySd79K4=;
-	h=From:To:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=SbB5mAkosfnMwrMghvTZnkL84Uf4sZPiVaRlNpTcmbjSQygd3W8Og22XF0KMf61JkWy11mBh3dqKCJ387UUnovKGgnTBtARDpcj+HwPIGDlZVUdVHJsrP6Yh5awGH7qh8iEDZX6C/9s3lslYZHdN6aMkbiPU2Dt/Lau8UPO/+Dw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=l45UlqAo; arc=none smtp.client-ip=209.85.214.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-1eb24e3a2d9so35123755ad.1;
-        Tue, 30 Apr 2024 07:33:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714487601; x=1715092401; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=n9+uw12LzVsx3wU8adlXBHs43wHbzfmBsLnbaFarO2I=;
-        b=l45UlqAoIwoLUaQ6CY4K214s22tn0YR3Rpv73kqX+g1//lCVJ0X53Aqnsq13fabxN2
-         gWADgXGPOMQt8RwLkN7kQFRosn6LQoiCsoFP0jhAd/8afb4IRoDa1wkOiin7GzVB0UVO
-         mEWcXnzNZjtnUWId3Z4BJRxp6HjwtCWyX10sbiUwAWcH3H1u/Nh6dYMTGYQvrxjASKOW
-         Fc3H9ng9y5IiMvgJLsRqke3Mgf5SHYA5hxrGwwcdvyPCckJw0X8u93IoZGqNgXLP7K5H
-         pDEpudPwmhEPEU7JGBCP76hbnP4miQqA+MQ+FCtNdTnGro8Fq20CenqHxrwhZ3GrDYxE
-         MCpg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714487601; x=1715092401;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=n9+uw12LzVsx3wU8adlXBHs43wHbzfmBsLnbaFarO2I=;
-        b=Tm1xkBDm6+D8w22asHTwsV4j7n4sso8xsDpPsGZVKGc4knJ73ZrCA92gBfFPsMgbrn
-         sey5KUpIyvRKtE0egdTZM8LIHvXEpP/7mBqdFHxlNw7fLR38TqpxmUWUMzwJDhw7IVCc
-         GrjLmimAk0J0gxyCxwSvh6SwNTx5MtKlm4N1iTWIueD/WGGBmkl6cHUzNWwC7u0RvLn9
-         COCRnoMkp6yq870OWdlG7JvJASknjm8EBY8ACYBrrItlx49UPinp9tetkOZMEf5coOYA
-         SLK/W3k+Pkt3vvmjNMwUV1bUC8cKYQeu0aRl/IUVEN2DZ+Bqvv+LgWgtqS0dGyZI+afh
-         Ty7Q==
-X-Forwarded-Encrypted: i=1; AJvYcCUVP/svCUJuk8smxV/Ghtb/Y424MT9dz85/7OFQiGCTLrAdUBZ0HmznhQMByCpYvQbO3tmgdZ1HGCUzodlvAW4PnLNO2I7nrmu7BdPC9UFsYs7DfrWPzSikxTE4yi32Lq797ojcxc8JaXLRIBM=
-X-Gm-Message-State: AOJu0Yz1j5Afzm1KDpgUcAW1y+gXbpkoGXaB0id2lw3gFyvcyVIxbAH1
-	/I7GV3R7EA04Gq3a0qoMWl69PyJJu+ni+U5kouLLJ8/tM1y6zsI7
-X-Google-Smtp-Source: AGHT+IH4UdZbzfvSJo3QJfZt+JphuB4AEFpA9cZMcuqalJRWHwyT3Ed+65xfdEtezZjfDmHJFi8NrA==
-X-Received: by 2002:a17:902:e806:b0:1e2:81c1:b35e with SMTP id u6-20020a170902e80600b001e281c1b35emr17906114plg.54.1714487600758;
-        Tue, 30 Apr 2024 07:33:20 -0700 (PDT)
-Received: from peter-bmc.dhcpserver.bu9bmc.local (1-34-21-66.hinet-ip.hinet.net. [1.34.21.66])
-        by smtp.gmail.com with ESMTPSA id m1-20020a170902db0100b001e47972a2casm1682431plx.96.2024.04.30.07.33.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Apr 2024 07:33:20 -0700 (PDT)
-From: Peter Yin <peteryin.openbmc@gmail.com>
-To: patrick@stwcx.xyz,
-	Wim Van Sebroeck <wim@linux-watchdog.org>,
-	Guenter Roeck <linux@roeck-us.net>,
-	Joel Stanley <joel@jms.id.au>,
-	Andrew Jeffery <andrew@codeconstruct.com.au>,
-	Eddie James <eajames@linux.vnet.ibm.com>,
-	linux-watchdog@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-aspeed@lists.ozlabs.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v9 1/1] watchdog: aspeed: Revise handling of bootstatus
-Date: Tue, 30 Apr 2024 22:31:14 +0800
-Message-Id: <20240430143114.1323686-2-peteryin.openbmc@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20240430143114.1323686-1-peteryin.openbmc@gmail.com>
-References: <20240430143114.1323686-1-peteryin.openbmc@gmail.com>
+	s=arc-20240116; t=1714487486; c=relaxed/simple;
+	bh=08lyesCEKaOnB28Fw3u34HvaM0G+lf8uBMq021leP4Q=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=f4Zw1loZpRCfclJZGwbTQ7Rp9bGiaE78kcngClB+IgxHfEmloe42O/Goldspn6OEiyw/DLbC4ooADVQnXZmnyG0gVHb78o5rGoWWM9cX3uYYEpSRO3LkC0E6RowD7ztPlYsvjTkdqb0rpLSxUYqIY6HXw/0PmhqaH/NgwaE8JYs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=ELnbSRWD; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1714487483;
+	bh=08lyesCEKaOnB28Fw3u34HvaM0G+lf8uBMq021leP4Q=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=ELnbSRWDFqn73oBgEYJ+2HofrbwUEL9fiAUKRFjRAhKTmp3jClMgXjfJwIdeXB18v
+	 6jGMkYTgqmRdFNQeGIT1Kb9snc5sFNOIKqP8LRBMFbmnMUNPCJZb8oC3zdq+QEYYE0
+	 oycM7kEzyi90lVMaa7xAoloKsGH42Yj5WSHTYNpDJj073sqN0bumZx8wJGwjooWAo7
+	 3opI+K5o0ADfK1nx3H8c2MU/fz39cqLsOXK3c6swPE5KFGxQtj0I0yclS7DK3r6ZtM
+	 BF+cv+R7BDQzjOM4Z1R0xLV0JZIN48A48JxAcp8DJlyUp3NlHSps7YfWzym7K1Gpcz
+	 9HQVphiC870/A==
+Received: from [100.95.196.25] (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: koike)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 7720437820AB;
+	Tue, 30 Apr 2024 14:31:17 +0000 (UTC)
+Message-ID: <90a0b4ba-52e3-446e-8de1-ca67e0c71a53@collabora.com>
+Date: Tue, 30 Apr 2024 11:31:16 -0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 3/5] drm/ci: build virtual GPU driver as module
+To: Vignesh Raman <vignesh.raman@collabora.com>,
+ dri-devel@lists.freedesktop.org
+Cc: daniels@collabora.com, airlied@gmail.com, daniel@ffwll.ch,
+ robdclark@gmail.com, david.heidelberg@collabora.com,
+ guilherme.gallo@collabora.com, sergi.blanch.torne@collabora.com,
+ dmitry.baryshkov@linaro.org, mcanal@igalia.com,
+ linux-mediatek@lists.infradead.org, linux-amlogic@lists.infradead.org,
+ linux-rockchip@lists.infradead.org, amd-gfx@lists.freedesktop.org,
+ linux-arm-msm@vger.kernel.org, intel-gfx@lists.freedesktop.org,
+ virtualization@lists.linux-foundation.org, linux-kernel@vger.kernel.org
+References: <20240430091121.508099-1-vignesh.raman@collabora.com>
+ <20240430091121.508099-4-vignesh.raman@collabora.com>
+Content-Language: en-US
+From: Helen Koike <helen.koike@collabora.com>
+In-Reply-To: <20240430091121.508099-4-vignesh.raman@collabora.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Regarding the AST2600 specification, the WDTn Timeout Status Register
-(WDT10) has bit 1 reserved. Bit 1 of the status register indicates
-on ast2500 if the boot was from the second boot source.
-It does not indicate that the most recent reset was triggered by
-the watchdog. The code should just be changed to set WDIOF_CARDRESET
-if bit 0 of the status register is set. However, this bit can be clear when
-watchdog register 0x0c bit1(Reset System after timeout) is enabled.
-Thereforce include SCU register to veriy WDIOF_EXTERN1 and WDIOF_CARDRESET
-in ast2600 SCU74 or ast2400/ast2500 SCU3C.
 
-Fixes: 49d4d277ca54 ("aspeed: watchdog: Set bootstatus during probe")
-Signed-off-by: Peter Yin <peteryin.openbmc@gmail.com>
----
- drivers/watchdog/aspeed_wdt.c | 90 +++++++++++++++++++++++++++++++----
- 1 file changed, 82 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/watchdog/aspeed_wdt.c b/drivers/watchdog/aspeed_wdt.c
-index b4773a6aaf8c..556493763793 100644
---- a/drivers/watchdog/aspeed_wdt.c
-+++ b/drivers/watchdog/aspeed_wdt.c
-@@ -11,10 +11,12 @@
- #include <linux/io.h>
- #include <linux/kernel.h>
- #include <linux/kstrtox.h>
-+#include <linux/mfd/syscon.h>
- #include <linux/module.h>
- #include <linux/of.h>
- #include <linux/of_irq.h>
- #include <linux/platform_device.h>
-+#include <linux/regmap.h>
- #include <linux/watchdog.h>
- 
- static bool nowayout = WATCHDOG_NOWAYOUT;
-@@ -22,10 +24,38 @@ module_param(nowayout, bool, 0);
- MODULE_PARM_DESC(nowayout, "Watchdog cannot be stopped once started (default="
- 				__MODULE_STRING(WATCHDOG_NOWAYOUT) ")");
- 
-+/* AST SCU Register for System Reset Event Log Register Set
-+ * ast2600 is scu074 ast2400/2500 is scu03c
-+ */
-+#define AST_SCU_SYS_RESET_POWERON_MASK	BIT(0)
-+#define AST_SCU_SYS_RESET_EXTERN_FLAG	BIT(1)
-+
-+#define AST2400_SYSTEM_RESET_STATUS	0x3C
-+#define   AST2400_WATCHDOG_RESET_MASK	BIT(1)
-+#define   AST2400_RESET_FLAG_CLEAR	GENMASK(2, 0)
-+
-+#define   AST2500_WATCHDOG_RESET_MASK	GENMASK(4, 2)
-+#define   AST2500_RESET_FLAG_CLEAR	(AST2500_WATCHDOG_RESET_MASK | \
-+					 AST_SCU_SYS_RESET_POWERON_MASK | \
-+					 AST_SCU_SYS_RESET_EXTERN_FLAG)
-+
-+#define AST2600_SYSTEM_RESET_STATUS	0x74
-+#define   AST2600_WATCHDOG_RESET_MASK   GENMASK(31, 16)
-+#define   AST2600_RESET_FLAG_CLEAR	(AST2600_WATCHDOG_RESET_MASK | \
-+					 AST_SCU_SYS_RESET_POWERON_MASK | \
-+					 AST_SCU_SYS_RESET_EXTERN_FLAG)
-+
- struct aspeed_wdt_config {
- 	u32 ext_pulse_width_mask;
- 	u32 irq_shift;
- 	u32 irq_mask;
-+	struct {
-+		const char *compatible;
-+		u32 reset_status_reg;
-+		u32 watchdog_reset_mask;
-+		u32 extern_reset_mask;
-+		u32 reset_flag_clear;
-+	} scu;
- };
- 
- struct aspeed_wdt {
-@@ -39,18 +69,39 @@ static const struct aspeed_wdt_config ast2400_config = {
- 	.ext_pulse_width_mask = 0xff,
- 	.irq_shift = 0,
- 	.irq_mask = 0,
-+	.scu = {
-+		.compatible = "aspeed,ast2400-scu",
-+		.reset_status_reg = AST2400_SYSTEM_RESET_STATUS,
-+		.watchdog_reset_mask = AST2400_WATCHDOG_RESET_MASK,
-+		.extern_reset_mask = 0,
-+		.reset_flag_clear = AST2400_RESET_FLAG_CLEAR,
-+	}
- };
- 
- static const struct aspeed_wdt_config ast2500_config = {
- 	.ext_pulse_width_mask = 0xfffff,
- 	.irq_shift = 12,
- 	.irq_mask = GENMASK(31, 12),
-+	.scu = {
-+		.compatible = "aspeed,ast2500-scu",
-+		.reset_status_reg = AST2400_SYSTEM_RESET_STATUS,
-+		.watchdog_reset_mask = AST2500_WATCHDOG_RESET_MASK,
-+		.extern_reset_mask = AST_SCU_SYS_RESET_EXTERN_FLAG,
-+		.reset_flag_clear = AST2500_RESET_FLAG_CLEAR,
-+	}
- };
- 
- static const struct aspeed_wdt_config ast2600_config = {
- 	.ext_pulse_width_mask = 0xfffff,
- 	.irq_shift = 0,
- 	.irq_mask = GENMASK(31, 10),
-+	.scu = {
-+		.compatible = "aspeed,ast2600-scu",
-+		.reset_status_reg = AST2600_SYSTEM_RESET_STATUS,
-+		.watchdog_reset_mask = AST2600_WATCHDOG_RESET_MASK,
-+		.extern_reset_mask = AST_SCU_SYS_RESET_EXTERN_FLAG,
-+		.reset_flag_clear = AST2600_RESET_FLAG_CLEAR,
-+	}
- };
- 
- static const struct of_device_id aspeed_wdt_of_table[] = {
-@@ -310,6 +361,7 @@ static int aspeed_wdt_probe(struct platform_device *pdev)
- 	const struct of_device_id *ofdid;
- 	struct aspeed_wdt *wdt;
- 	struct device_node *np;
-+	struct regmap *scu;
- 	const char *reset_type;
- 	u32 duration;
- 	u32 status;
-@@ -458,14 +510,36 @@ static int aspeed_wdt_probe(struct platform_device *pdev)
- 		writel(duration - 1, wdt->base + WDT_RESET_WIDTH);
- 	}
- 
--	status = readl(wdt->base + WDT_TIMEOUT_STATUS);
--	if (status & WDT_TIMEOUT_STATUS_BOOT_SECONDARY) {
--		wdt->wdd.bootstatus = WDIOF_CARDRESET;
--
--		if (of_device_is_compatible(np, "aspeed,ast2400-wdt") ||
--		    of_device_is_compatible(np, "aspeed,ast2500-wdt"))
--			wdt->wdd.groups = bswitch_groups;
--	}
-+	/*
-+	 * Power on reset is set when triggered by AC or SRSRST.
-+	 * Thereforce, we clear flag to ensure
-+	 * next boot cause is a real watchdog case.
-+	 * We use the external reset flag to determine
-+	 * if it is an external reset or card reset.
-+	 * However, The ast2400 watchdog flag is cleared by an external reset,
-+	 * so it only supports WDIOF_CARDRESET.
-+	 */
-+	scu = syscon_regmap_lookup_by_compatible(wdt->cfg->scu.compatible);
-+	if (IS_ERR(scu))
-+		return PTR_ERR(scu);
-+
-+	ret = regmap_read(scu, wdt->cfg->scu.reset_status_reg, &status);
-+	if (ret)
-+		return ret;
-+
-+	if (!(status & AST_SCU_SYS_RESET_POWERON_MASK) &&
-+	      status & wdt->cfg->scu.watchdog_reset_mask)
-+		wdt->wdd.bootstatus = (status & wdt->cfg->scu.extern_reset_mask)
-+					 ? WDIOF_EXTERN1 : WDIOF_CARDRESET;
-+
-+	status = wdt->cfg->scu.reset_flag_clear;
-+	ret = regmap_write(scu, wdt->cfg->scu.reset_status_reg, status);
-+	if (ret)
-+		return ret;
-+
-+	if (of_device_is_compatible(np, "aspeed,ast2400-wdt") ||
-+	    of_device_is_compatible(np, "aspeed,ast2500-wdt"))
-+		wdt->wdd.groups = bswitch_groups;
- 
- 	dev_set_drvdata(dev, wdt);
- 
--- 
-2.25.1
+On 30/04/2024 06:11, Vignesh Raman wrote:
+> With latest IGT, the tests tries to load the module and it
+> fails. So build the virtual GPU driver for virtio as module.
+> 
+> Signed-off-by: Vignesh Raman <vignesh.raman@collabora.com>
 
+Acked-by: Helen Koike <helen.koike@collabora.com>
+
+> ---
+>   drivers/gpu/drm/ci/build.sh       | 1 -
+>   drivers/gpu/drm/ci/igt_runner.sh  | 6 +++---
+>   drivers/gpu/drm/ci/image-tags.yml | 4 ++--
+>   drivers/gpu/drm/ci/test.yml       | 1 +
+>   drivers/gpu/drm/ci/x86_64.config  | 2 +-
+>   5 files changed, 7 insertions(+), 7 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/ci/build.sh b/drivers/gpu/drm/ci/build.sh
+> index 8a3baa003904..95493df9cdc2 100644
+> --- a/drivers/gpu/drm/ci/build.sh
+> +++ b/drivers/gpu/drm/ci/build.sh
+> @@ -156,7 +156,6 @@ fi
+>   
+>   mkdir -p artifacts/install/lib
+>   mv install/* artifacts/install/.
+> -rm -rf artifacts/install/modules
+>   ln -s common artifacts/install/ci-common
+>   cp .config artifacts/${CI_JOB_NAME}_config
+>   
+> diff --git a/drivers/gpu/drm/ci/igt_runner.sh b/drivers/gpu/drm/ci/igt_runner.sh
+> index 20026612a9bd..55532f79fbdc 100755
+> --- a/drivers/gpu/drm/ci/igt_runner.sh
+> +++ b/drivers/gpu/drm/ci/igt_runner.sh
+> @@ -30,10 +30,10 @@ case "$DRIVER_NAME" in
+>               export IGT_FORCE_DRIVER="panfrost"
+>           fi
+>           ;;
+> -    amdgpu)
+> +    amdgpu|virtio_gpu)
+>           # Cannot use HWCI_KERNEL_MODULES as at that point we don't have the module in /lib
+> -        mv /install/modules/lib/modules/* /lib/modules/.
+> -        modprobe amdgpu
+> +        mv /install/modules/lib/modules/* /lib/modules/. || true
+> +        modprobe --first-time $DRIVER_NAME
+>           ;;
+>   esac
+>   
+> diff --git a/drivers/gpu/drm/ci/image-tags.yml b/drivers/gpu/drm/ci/image-tags.yml
+> index d8f72b82c938..fd1cb6061166 100644
+> --- a/drivers/gpu/drm/ci/image-tags.yml
+> +++ b/drivers/gpu/drm/ci/image-tags.yml
+> @@ -4,9 +4,9 @@ variables:
+>      DEBIAN_BASE_TAG: "${CONTAINER_TAG}"
+>   
+>      DEBIAN_X86_64_BUILD_IMAGE_PATH: "debian/x86_64_build"
+> -   DEBIAN_BUILD_TAG: "2023-10-08-config"
+> +   DEBIAN_BUILD_TAG: "2024-04-22-virtio"
+>   
+> -   KERNEL_ROOTFS_TAG: "2023-10-06-amd"
+> +   KERNEL_ROOTFS_TAG: "2024-04-22-virtio"
+>      PKG_REPO_REV: "3cc12a2a"
+>   
+>      DEBIAN_X86_64_TEST_BASE_IMAGE: "debian/x86_64_test-base"
+> diff --git a/drivers/gpu/drm/ci/test.yml b/drivers/gpu/drm/ci/test.yml
+> index 612c9ede3507..864ac3809d84 100644
+> --- a/drivers/gpu/drm/ci/test.yml
+> +++ b/drivers/gpu/drm/ci/test.yml
+> @@ -350,6 +350,7 @@ virtio_gpu:none:
+>     script:
+>       - ln -sf $CI_PROJECT_DIR/install /install
+>       - mv install/bzImage /lava-files/bzImage
+> +    - mkdir -p /lib/modules
+>       - mkdir -p $CI_PROJECT_DIR/results
+>       - ln -sf $CI_PROJECT_DIR/results /results
+>       - install/crosvm-runner.sh install/igt_runner.sh
+> diff --git a/drivers/gpu/drm/ci/x86_64.config b/drivers/gpu/drm/ci/x86_64.config
+> index 1cbd49a5b23a..78479f063e8e 100644
+> --- a/drivers/gpu/drm/ci/x86_64.config
+> +++ b/drivers/gpu/drm/ci/x86_64.config
+> @@ -91,7 +91,7 @@ CONFIG_KVM=y
+>   CONFIG_KVM_GUEST=y
+>   CONFIG_VIRT_DRIVERS=y
+>   CONFIG_VIRTIO_FS=y
+> -CONFIG_DRM_VIRTIO_GPU=y
+> +CONFIG_DRM_VIRTIO_GPU=m
+>   CONFIG_SERIAL_8250_CONSOLE=y
+>   CONFIG_VIRTIO_NET=y
+>   CONFIG_VIRTIO_CONSOLE=y
 
