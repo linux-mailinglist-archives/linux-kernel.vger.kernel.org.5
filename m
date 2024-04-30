@@ -1,152 +1,110 @@
-Return-Path: <linux-kernel+bounces-163366-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-163367-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0C05D8B69F1
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 07:31:44 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 95FA28B69F4
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 07:31:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A0E031F230B1
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 05:31:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C7F731C21F7C
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 05:31:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B5FE1758C;
-	Tue, 30 Apr 2024 05:31:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99B551802E;
+	Tue, 30 Apr 2024 05:31:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="VGqmjBER"
-Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 638385256
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 05:31:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="rZr/iCae"
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9FA2B5256;
+	Tue, 30 Apr 2024 05:31:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714455094; cv=none; b=Fp6n10mQQLS/vblQ1e1QJtRqLWNCH7vh/T/oCCXWqxE3NPcnSA3HRK7jGKL/zDD5+jbVS+N8tLIlXOoeuhfnodX0VmzYXH7kjOx+XZjCbn2x7hzMZv5zIBs0Y6AKFxukJ37HoOugDQ0Mwhy/xMUgeKKSUbtOmH+8Ya/Sws/dUTs=
+	t=1714455100; cv=none; b=t06z4NGFEplWk3YnuhXdqP1cFEW0C3YG7HZi3yHflcogJYoIgVE/qsDLWHFKwv+XfKV3uIySAt6SKzlkwrmV+3hRgUGzqLrX2ZV82KPdK+8HTtMEyuCAI1fsp8EoYwIsONVaZ8UJ7dmSPUKaRzpPc68ALrWO5v37civBmgo8LeU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714455094; c=relaxed/simple;
-	bh=qizGv4q2/Fbfp1Vgltwn3jrxKqTwsXYZYMFjavraeFw=;
+	s=arc-20240116; t=1714455100; c=relaxed/simple;
+	bh=Q8V+3JOr+a1s8/qzOBuGdcCPedYadHh3WFecyLKH3wI=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=QOl1fWZsGHwmvEESzVQCcEHFnyBaaqEzGt5y2bzf4tLiKup33YAObzWpv9EYDKqdDt8fBsVu898mmNzSDQnfbDGe8WGsMGY3yOkkUc5y2zXfPGhrNZTMAcO6gx9xoDBsy+0AyJ/kV3na5zjF80Gw2nfm+5/XpqqLVr0Gg80z5t8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=VGqmjBER; arc=none smtp.client-ip=209.85.214.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-1e8fce77bb2so40626605ad.0
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 22:31:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1714455092; x=1715059892; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=VfHOB8SXAPuzmllcKSu0Zlo52yjCYkknhySEalAGkw4=;
-        b=VGqmjBERlQU75bf/gEVtlTHZ3h0PBm349PuewppT189+OJoAv0D4YmHk84OT/XDP0R
-         iuIgqoXdImczn0SSUWOrhDI9BMjCJMafw89AQNY4cW3mOGko2Eh6MfiUh4fNYSimkzH6
-         JslnDcX4WBYWcQPQrLoCVQC2zy/0pi8kLtpB+8rKbJ7z4YcbJTf5ajm6tdrAMYxXMxFg
-         kXTb6bPrgtchslLMUeL0bX0Yj1zNpoUPOt0tVIbiQQDgYc8KFbc7wAcH4w6/Xcv5FjBX
-         DL6QwKmhw2GMsLuVEdpzoIgk0KCjUVz09Sk/EWtDQVYJoVceuwwWDb6XGUV4VEHCUpMH
-         WWpA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714455092; x=1715059892;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=VfHOB8SXAPuzmllcKSu0Zlo52yjCYkknhySEalAGkw4=;
-        b=IJD69lYdXOMsNDfENbtHu/DQSENZAE3NoLYEFDKIOnpor/bb7ajgdct1VKRruDXm/3
-         ojk717cgxV1jUvExiIMrAsFk5JN5iWC/w7q9jqBtE3+Dk1E8DMtRRJGBCgRfIz6QWycu
-         8vWPJ4VEhG2EYzA8rbMBvs+II6QNoLh/vCzfMFMAOQMsHjIHkkpuJ6BEvutROzIl5haR
-         la8974p1B84wqx7Rxlascl+zMrnkjFYELMfEhGOIN+qhdSrYQ3zUXiplR+SSSDNFohD1
-         /P7l7R6OrgvBEZQ/+wCNOliQFpeXZNKg2rMgf09pc88QGiqSqx7cvlkYV+1eNgwkASgX
-         Jgag==
-X-Forwarded-Encrypted: i=1; AJvYcCXKdsh2v+Jwgp1YU3v0e43X5BstcFjL/PeomM6ZN2hK1T7wi6Xh2PBy+6T5B6paS41GukLAiYPsW073CF7ev8Qlib6XYOcxde6o5RCx
-X-Gm-Message-State: AOJu0YzUmGnY7rq50mHLUFcOzZhK0aDKJX31uiAo6px/NizRE9GVlAxn
-	otUOm1SVOPCxlV+x1Tf7ZTmBMaIqZJhOHs6Kmxj2tqwGItllPlEianFwozIjTA==
-X-Google-Smtp-Source: AGHT+IErHY0aeCgYx3Eg8BZQUT5i4gOzQfyzK5nVz/+A9MaPVNIq3EbBBlsUSZlkwJMHRrYmAEOGtg==
-X-Received: by 2002:a17:902:ba98:b0:1e3:f6dd:b04b with SMTP id k24-20020a170902ba9800b001e3f6ddb04bmr1503995pls.26.1714455091596;
-        Mon, 29 Apr 2024 22:31:31 -0700 (PDT)
-Received: from thinkpad ([220.158.156.15])
-        by smtp.gmail.com with ESMTPSA id i3-20020a170902c94300b001ebd72d55c0sm2925454pla.18.2024.04.29.22.31.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Apr 2024 22:31:31 -0700 (PDT)
-Date: Tue, 30 Apr 2024 11:01:27 +0530
-From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To: "Rob Herring (Arm)" <robh@kernel.org>
-Cc: Bjorn Andersson <andersson@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	 Content-Type:Content-Disposition:In-Reply-To; b=Jj+kXERdPZuRfU5X3l45ZHUGWtylU5ESHNREfjn6R1JC4xiy5N9I1uqeTWDIrzGKhb5KEf4kgnKER0rIKTBmoRlvkrVNyh/t9SCPU+DK7u1cmWSvrzv217m9PsMFh0EsWtX7PgvEX1gdlXvlbSxRhFzWTb5XTTHl7ssCUA6Rtds=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=rZr/iCae; arc=none smtp.client-ip=13.77.154.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+Received: by linux.microsoft.com (Postfix, from userid 1134)
+	id E1ACD210FBCF; Mon, 29 Apr 2024 22:31:38 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com E1ACD210FBCF
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1714455098;
+	bh=KzxTstJtvUd8l5rN/2EuPcSEUQvGKdejTaLmiq9IXsE=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=rZr/iCaeB86PuU863wNDmHMaF42RuhfpgFeX8DMHrg7zO2gvIwKI2vqnOu9agG7rP
+	 Ah6600TxzkAhIbI2+muTf0bZgZV9WAeWghc+cHKUnaI12PkBud4l+PrvpsMM5FfRNu
+	 ois5YgS1cu1CY/1DmTiMVgwyQofPJslwJAZUXBmA=
+Date: Mon, 29 Apr 2024 22:31:38 -0700
+From: Shradha Gupta <shradhagupta@linux.microsoft.com>
+To: Jiri Pirko <jiri@resnulli.us>
+Cc: "David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
 	Bjorn Helgaas <bhelgaas@google.com>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, linux-arm-msm@vger.kernel.org,
-	linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] dt-bindings: PCI: qcom,pcie-sm8350: Drop redundant
- 'oneOf' sub-schema
-Message-ID: <20240430053127.GF3301@thinkpad>
-References: <20240417200431.3173953-1-robh@kernel.org>
+	Jonathan Corbet <corbet@lwn.net>,
+	Randy Dunlap <rdunlap@infradead.org>,
+	Johannes Berg <johannes.berg@intel.com>,
+	Breno Leitao <leitao@debian.org>, linux-kernel@vger.kernel.org,
+	netdev@vger.kernel.org, "K. Y. Srinivasan" <kys@microsoft.com>,
+	Haiyang Zhang <haiyangz@microsoft.com>,
+	Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
+	Long Li <longli@microsoft.com>,
+	Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>,
+	Konstantin Taranov <kotaranov@microsoft.com>,
+	Yury Norov <yury.norov@gmail.com>, linux-hyperv@vger.kernel.org,
+	shradhagupta@microsoft.com
+Subject: Re: [PATCH net-next v2 0/2] Add sysfs attributes for MANA
+Message-ID: <20240430053138.GA6429@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+References: <1713954774-29953-1-git-send-email-shradhagupta@linux.microsoft.com>
+ <ZikbpoXWmcQrBP3V@nanopsycho>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240417200431.3173953-1-robh@kernel.org>
+In-Reply-To: <ZikbpoXWmcQrBP3V@nanopsycho>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 
-On Wed, Apr 17, 2024 at 03:04:30PM -0500, Rob Herring (Arm) wrote:
-> The first entry in the 'oneOf' schema doesn't work because the top
-> level schema requires exactly 8 interrupt entries. The 2nd entry is just
-> redundant with the top level. Since 1 entry appears to have been a
-> mistake, let's just drop the entire 'oneOf' rather than reworking the
-> top-level to allow 1 entry.
+On Wed, Apr 24, 2024 at 04:48:06PM +0200, Jiri Pirko wrote:
+> Wed, Apr 24, 2024 at 12:32:54PM CEST, shradhagupta@linux.microsoft.com wrote:
+> >These patches include adding sysfs attributes for improving
+> >debuggability on MANA devices.
+> >
+> >The first patch consists on max_mtu, min_mtu attributes that are
+> >implemented generically for all devices
+> >
+> >The second patch has mana specific attributes max_num_msix and num_ports
 > 
-> Signed-off-by: Rob Herring (Arm) <robh@kernel.org>
-
-Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-
-- Mani
-
-> ---
->  .../bindings/pci/qcom,pcie-sm8350.yaml        | 22 -------------------
->  1 file changed, 22 deletions(-)
+> 1) you implement only max, min is never implemented, no point
+> introducing it.
+Sure. I had added it for the sake of completeness.
+> 2) having driver implement sysfs entry feels *very wrong*, don't do that
+> 3) why DEVLINK_PARAM_GENERIC_ID_MSIX_VEC_PER_PF_MAX
+>    and DEVLINK_PARAM_GENERIC_ID_MSIX_VEC_PER_PF_MIN
+>    Are not what you want?
+Thanks for pointing this out. We are still evaluating if this devlink param
+could be used for our usecase where we only need a read-only msix value for VF.
+We keep the thread updated.
 > 
-> diff --git a/Documentation/devicetree/bindings/pci/qcom,pcie-sm8350.yaml b/Documentation/devicetree/bindings/pci/qcom,pcie-sm8350.yaml
-> index 9eb6e457b07f..2a4cc41fc710 100644
-> --- a/Documentation/devicetree/bindings/pci/qcom,pcie-sm8350.yaml
-> +++ b/Documentation/devicetree/bindings/pci/qcom,pcie-sm8350.yaml
-> @@ -71,28 +71,6 @@ properties:
->      items:
->        - const: pci
->  
-> -oneOf:
-> -  - properties:
-> -      interrupts:
-> -        maxItems: 1
-> -      interrupt-names:
-> -        items:
-> -          - const: msi
-> -
-> -  - properties:
-> -      interrupts:
-> -        minItems: 8
-> -      interrupt-names:
-> -        items:
-> -          - const: msi0
-> -          - const: msi1
-> -          - const: msi2
-> -          - const: msi3
-> -          - const: msi4
-> -          - const: msi5
-> -          - const: msi6
-> -          - const: msi7
-> -
->  allOf:
->    - $ref: qcom,pcie-common.yaml#
->  
-> -- 
-> 2.43.0
-> 
-
--- 
-மணிவண்ணன் சதாசிவம்
+> >
+> >Shradha Gupta (2):
+> >  net: Add sysfs atttributes for max_mtu min_mtu
+> >  net: mana: Add new device attributes for mana
+> >
+> > Documentation/ABI/testing/sysfs-class-net     | 16 ++++++++++
+> > .../net/ethernet/microsoft/mana/gdma_main.c   | 32 +++++++++++++++++++
+> > net/core/net-sysfs.c                          |  4 +++
+> > 3 files changed, 52 insertions(+)
+> >
+> >-- 
+> >2.34.1
+> >
+> >
 
