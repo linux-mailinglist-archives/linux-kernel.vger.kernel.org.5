@@ -1,80 +1,79 @@
-Return-Path: <linux-kernel+bounces-163587-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-163588-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 452EF8B6D5A
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 10:52:34 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 321CB8B6D5B
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 10:52:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 65428B22EEF
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 08:52:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C7BEC1F24094
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 08:52:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 415FE211C;
-	Tue, 30 Apr 2024 08:50:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B74219DF4F;
+	Tue, 30 Apr 2024 08:50:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="kkxaOIpz"
-Received: from mail-wr1-f51.google.com (mail-wr1-f51.google.com [209.85.221.51])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Z14H+Gug"
+Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DFE0F128366
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 08:50:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10921128382
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 08:50:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714467015; cv=none; b=bfvenfTypc/Hq5hT6koo97Z6d3aCZ2i7e1SBRcaz9grsCqes7gbs8li9+gaukrJpBC66GahcWxNr03g06+9XeJ7klim0+eiSTwstk/gmqf44DNViP50N89nidXUoaSMD1mG7n2V2M4aBNbruqgfU8sf8mwZ8VnfniKn022afZz0=
+	t=1714467016; cv=none; b=EmVD8WbgvNoVjcm2s1MShMePWzQxODy2QYJuc1XrwyGVABAMnTILMcQGkYC0Fs6FvMcBWb6ctgyIRqmoHDIUxrLh9Z7pS7OtT2oZ2Pi2BapgdfcaI1FOLTYsneA/lDNKbQD5i4v29MHPIcLVHajO8TA98pyXZm5R1cwpucFKJtY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714467015; c=relaxed/simple;
-	bh=7OkAqKieBSDhAhQDX4AtdgKVwzo06pSREmFyHqNCt8w=;
+	s=arc-20240116; t=1714467016; c=relaxed/simple;
+	bh=kbui8HAPtLFHoAihV2ljcEUIS+VOYj9eDPfH+oMl4OE=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=FK93mjKvt60FtTQhtzVGjJOXa7R0j4kqygu/MDAvowRNOuXyaO8VL/RbYoHAJWJLb/NkLU5yM6vaywwrMch3UuDVZ28BWub7hbwxRc8jQL9BdtwiK9Bvmu9BUohGITzJefFsJiwzBHxSxf7z9b+6o6okXJRrp5/lcXPqmrXqcaE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=kkxaOIpz; arc=none smtp.client-ip=209.85.221.51
+	 MIME-Version; b=FKwHx2ztDtKzpbwPzuiHgV8Bn38DI7jCTuxW/9URtF/nmXfFB1CWxRg+rWQceyllGUfQdSPdsXsPmot6umWQxLikYtbb45fFKTpp7p2ktpjKE8vqb91Z28EIOpFJNNc+sAZ2BdQSb9HPzv5jbKG544iOO4Kb0bXJ7pg4ZN+eUWU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Z14H+Gug; arc=none smtp.client-ip=209.85.128.43
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wr1-f51.google.com with SMTP id ffacd0b85a97d-34da35cd01cso88874f8f.2
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 01:50:13 -0700 (PDT)
+Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-41b2119da94so43506205e9.0
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 01:50:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1714467012; x=1715071812; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1714467013; x=1715071813; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=/JIXMZ+tmEG/2vj3SvYBH4bXcI4VlX9A3+yAB/lRDd4=;
-        b=kkxaOIpzm9zXiCGjEXlBpxoQ5aSMhOLGIAUPTHc2N98i5oUnJRKAK/clHU4CGjsqQW
-         NvvoYOXQlXc3G5OWMi0g8FUXfWpSEnO+E13jwUTfjIpODYl7n5pqaPEn/fHsboQQAv6I
-         8oaUt3eE9hxbgugdQ8pnzOOBBlEtobfWGtDIg5fLp1kvi7AhaH/k3gpim+kZ3BJPbosL
-         vLkKJIgvm8pk5O4c8Rr2CKUF3/fQDGzpI5f80peLw5+VL7mnNe4Jh6buDWV3htPYYIhC
-         MxipxldVdSeuTeNuS8ru/T2i9Xl0Q+I4EwCoP/WB3B8lSf1AUYaFUB2N7IpJJK5HBmX8
-         RdOw==
+        bh=Y6uTqfKoynlVxjI21T7uYyBdXiDNj2CtWTfpf3yueTA=;
+        b=Z14H+Gug3SjA8O9bSVcw8qU1ZiGMAN5z5t/7onkBGb1uIla89qRmxKFURXXI63pg7q
+         3DJ/l0DgzVf77Pa+35LJAUV/AEkzdHhDCeIGT0xeBsjdp0mue4sfvyJF//K8/Tmdlz3H
+         Y88MvoPPGjawtCzMzhi61aKKGfJo1KT/Wayb+DaA8YS20aT3ywvmkTYc6ZHGxKBFlBLs
+         CnPv020iyR3EJ5R+qd3aoXy1BE8dXZbOwJAB8TFUx5RQI94wYhbJfIR52BaVAipChAQ/
+         ih0O95dCxjihAj8DY9qXUQsbaV8VE3bTLPgBEUP4pUhGWvDO3saTO/HDWLvM1PcUQXS2
+         l4hQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714467012; x=1715071812;
+        d=1e100.net; s=20230601; t=1714467013; x=1715071813;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=/JIXMZ+tmEG/2vj3SvYBH4bXcI4VlX9A3+yAB/lRDd4=;
-        b=fOsSH8YrqObl6U72YCVjhKDiyCBtrOgB+gOejogEZuhRDDWs4jJ5MgrMld36Rva5C2
-         HU/VGfRp+P76XyN2m+iE/JtvZCySG3CoDnIj5walnL8y80ujgcOPGbt9gtFPJo4RgNcH
-         mbORAI/X0sWEderrPiVxez07jJ6B0FHPD76FW5kQNv83hmt7kpwYd2vpHZ2RYQ6OEyqS
-         RpwyrDj819C37/Di6cnR2BNsnnihCVk9EqAqFXVGdYZBlweGZHzoYWfkmDQSJqvcNTKS
-         bRjnCsmBhmhe5yeX5vab8xHnB5ltbnv5Kj9N/FgKhmQ/8aswDw3gBvAjpmB0xPy9uZAG
-         665Q==
-X-Gm-Message-State: AOJu0YyyKV5uP/YwnpJai7gWHvUpKo9oFrqVBm5FZwiGDejTGaMZX/U5
-	ZYuR18m5MYH0rmKkxbk8ZMuK2mIV7gplOS3UUS+7LWGa5GvBHwJjXQI4wbH8lyY=
-X-Google-Smtp-Source: AGHT+IEZyZMQEkt7Qnf6sUaatu/d9B49PDHIW6yC+nBl9iPDLV0sIdkIE5KjQhJdhA9ZaivYbrSF5w==
-X-Received: by 2002:adf:ffc3:0:b0:343:5cca:f7c7 with SMTP id x3-20020adfffc3000000b003435ccaf7c7mr11647674wrs.41.1714467012373;
-        Tue, 30 Apr 2024 01:50:12 -0700 (PDT)
+        bh=Y6uTqfKoynlVxjI21T7uYyBdXiDNj2CtWTfpf3yueTA=;
+        b=JbJSAQ1800slHBsnw9MahtioHdbtuTXQW84xoMd4AIfNnvazXG4QUgpUBEuJBq+vb8
+         sWlGLDyL+WPGccp4t1B79IxaF3R9AMhqdxkUapzKxE9qkr+KH54DMpqO/ASJtHbKcwRU
+         OmNwE/7gYZ9J9pWxs4/CJkn7aKhBj9TPLmA9SwdJ4DaGY6bpXKrIWPSGU3RGutiaqPs5
+         lS+qSYOFvciJkMEMhuIuk0jun3qkQso6U3Yx8Dwwh+js5NEy2wzT5NsVyiCp2c+gOIwI
+         /HA98GopRyw6Eb5vV7fk57sRM6zCdJdmzC2Okq7OJOofz2a74t/WR0eJ8gEIlWLDKWQN
+         QTRg==
+X-Gm-Message-State: AOJu0Yy7xQcjJnsyKQlJu3CCuXCr9Oc/D58R8FCIFl0PaBkxbsIZBMF6
+	1FQD6KqPYtnTLcKIwK0Scz4OWA1Vh7XyFTlLCZkEitK4vfaukIYkxldzO309QbU=
+X-Google-Smtp-Source: AGHT+IFqvFfPU/bksTwoGs921EUcdtwmr8d6biVghNHbSXvEpY0oGctoOJ95eP/lNSsikiT2jb+whg==
+X-Received: by 2002:a05:600c:a05:b0:41b:e406:5ae6 with SMTP id z5-20020a05600c0a0500b0041be4065ae6mr1722711wmp.9.1714467013510;
+        Tue, 30 Apr 2024 01:50:13 -0700 (PDT)
 Received: from localhost.localdomain ([5.133.47.210])
-        by smtp.gmail.com with ESMTPSA id p18-20020a05600c1d9200b0041bab13cd60sm14590670wms.3.2024.04.30.01.50.11
+        by smtp.gmail.com with ESMTPSA id p18-20020a05600c1d9200b0041bab13cd60sm14590670wms.3.2024.04.30.01.50.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Apr 2024 01:50:11 -0700 (PDT)
+        Tue, 30 Apr 2024 01:50:12 -0700 (PDT)
 From: srinivas.kandagatla@linaro.org
 To: gregkh@linuxfoundation.org
 Cc: linux-kernel@vger.kernel.org,
 	Viken Dadhaniya <quic_vdadhani@quicinc.com>,
-	stable@vger.kernel.org,
 	Konrad Dybcio <konrad.dybcio@linaro.org>,
 	Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [PATCH 1/4] slimbus: qcom-ngd-ctrl: Add timeout for wait operation
-Date: Tue, 30 Apr 2024 09:50:04 +0100
-Message-Id: <20240430085007.33607-2-srinivas.kandagatla@linaro.org>
+Subject: [PATCH 2/4] slimbus: qcom-ngd-ctrl: Reduce auto suspend delay
+Date: Tue, 30 Apr 2024 09:50:05 +0100
+Message-Id: <20240430085007.33607-3-srinivas.kandagatla@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20240430085007.33607-1-srinivas.kandagatla@linaro.org>
 References: <20240430085007.33607-1-srinivas.kandagatla@linaro.org>
@@ -84,46 +83,47 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1428; i=srinivas.kandagatla@linaro.org; h=from:subject; bh=nY3vC2NApvFywCNrd7bStLnbD2rZAm4vIaxy7vAQZe8=; b=owEBbQGS/pANAwAKAXqh/VnHNFU3AcsmYgBmMLC8SxSURhzONPVff35OPZek/+kuuoZAp69aR UmySsZApu6JATMEAAEKAB0WIQQi509axvzi9vce3Y16of1ZxzRVNwUCZjCwvAAKCRB6of1ZxzRV N3RVB/9+LfpdRucIlrq+JZtSTP2TjtKCnPXhPTQvLFsf3NK/9EU2mHVWKv4y+aBN83eoy2Ssg8Y /gkIlo6I4uxvVlXWnyJEfyZr3eJ2o3uFTOnWSjc/CzKJQBSfLhXfUjfuD+cMoSCpzgWE6O04Kw3 F6gQBP3lLrVVGXZpTGrTjsjOhJzxXXZElDJHI1W0wPkGTSPvLGiK4kIN0y5xOF1gEnYdIoxA6cr QTNRW6faVhXmscMIHC8UNEE1fRYlArKhkYFfHTt4L66oo03rWTKpKBPz/n0vcm9GjuxXjBoYtII BHMdCAnEZbnDpfHJcJSqhZHIRQHU2+QLuuiniI8hJMhJ0Syk
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1312; i=srinivas.kandagatla@linaro.org; h=from:subject; bh=RFguBTYvrqxK+fOEwZrYRQmoHKkXcXeO9yaMOm+ScGw=; b=owEBbQGS/pANAwAKAXqh/VnHNFU3AcsmYgBmMLC8DiccHI2mEf0fLCFWeIjJ/nOeJGEyIe6SJ 3Hw8oYeu+GJATMEAAEKAB0WIQQi509axvzi9vce3Y16of1ZxzRVNwUCZjCwvAAKCRB6of1ZxzRV N2iuB/9cHmUeup36IAovs9Qp0L4Ij8VpokiFeHpRielS9+SokQp0aHgHaEuFlvt1AaVdrW6D9Gt p0mH8A4yKPhwe0lWyaqqACVIj8hNOtyYrwx+09Xvc8zdDqzonb60NB2MNpop62vaZp8K6ZgZDvW AG3qMKgbfzCconj9PnXUqfGyD4vY/GmBRMO/wYWFha18GJWyluBmhzLkeowm3CJbpGyBhNR9bHZ YGJ4Lp2OtQg84sJe4GXQxS39aGdF2q08+H8XkQ4nLfR5UaWa/B7GHghoeR/NVPxQ88WGiSBwR+/ shf9WFhwHKlcky79l87Gr38eP4sxsp/HG+xP5LL3Rst4L4Kl
 X-Developer-Key: i=srinivas.kandagatla@linaro.org; a=openpgp; fpr=ED6472765AB36EC43B3EF97AD77E3FC0562560D6
 Content-Transfer-Encoding: 8bit
 
 From: Viken Dadhaniya <quic_vdadhani@quicinc.com>
 
-In current driver qcom_slim_ngd_up_worker() indefinitely
-waiting for ctrl->qmi_up completion object. This is
-resulting in workqueue lockup on Kthread.
+Currently we have auto suspend delay of 1s which is
+very high and it takes long time to driver for runtime
+suspend after use case is done.
 
-Added wait_for_completion_interruptible_timeout to
-allow the thread to wait for specific timeout period and
-bail out instead waiting infinitely.
+Hence to optimize runtime PM ops, reduce auto suspend
+delay to 100ms.
 
-Fixes: a899d324863a ("slimbus: qcom-ngd-ctrl: add Sub System Restart support")
-Cc: stable@vger.kernel.org
-Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 Signed-off-by: Viken Dadhaniya <quic_vdadhani@quicinc.com>
+Acked-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- drivers/slimbus/qcom-ngd-ctrl.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ drivers/slimbus/qcom-ngd-ctrl.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
 diff --git a/drivers/slimbus/qcom-ngd-ctrl.c b/drivers/slimbus/qcom-ngd-ctrl.c
-index efeba8275a66..a09a26bf4988 100644
+index a09a26bf4988..ce28ac35b2b6 100644
 --- a/drivers/slimbus/qcom-ngd-ctrl.c
 +++ b/drivers/slimbus/qcom-ngd-ctrl.c
-@@ -1451,7 +1451,11 @@ static void qcom_slim_ngd_up_worker(struct work_struct *work)
- 	ctrl = container_of(work, struct qcom_slim_ngd_ctrl, ngd_up_work);
+@@ -81,7 +81,6 @@
+ #define SLIM_USR_MC_DISCONNECT_PORT	0x2E
+ #define SLIM_USR_MC_REPEAT_CHANGE_VALUE	0x0
  
- 	/* Make sure qmi service is up before continuing */
--	wait_for_completion_interruptible(&ctrl->qmi_up);
-+	if (!wait_for_completion_interruptible_timeout(&ctrl->qmi_up,
-+						       msecs_to_jiffies(MSEC_PER_SEC))) {
-+		dev_err(ctrl->dev, "QMI wait timeout\n");
-+		return;
-+	}
+-#define QCOM_SLIM_NGD_AUTOSUSPEND	MSEC_PER_SEC
+ #define SLIM_RX_MSGQ_TIMEOUT_VAL	0x10000
  
- 	mutex_lock(&ctrl->ssr_lock);
- 	qcom_slim_ngd_enable(ctrl, true);
+ #define SLIM_LA_MGR	0xFF
+@@ -1575,7 +1574,7 @@ static int qcom_slim_ngd_probe(struct platform_device *pdev)
+ 
+ 	platform_set_drvdata(pdev, ctrl);
+ 	pm_runtime_use_autosuspend(dev);
+-	pm_runtime_set_autosuspend_delay(dev, QCOM_SLIM_NGD_AUTOSUSPEND);
++	pm_runtime_set_autosuspend_delay(dev, 100);
+ 	pm_runtime_set_suspended(dev);
+ 	pm_runtime_enable(dev);
+ 	pm_runtime_get_noresume(dev);
 -- 
 2.25.1
 
