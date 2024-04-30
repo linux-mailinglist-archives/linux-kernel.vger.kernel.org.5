@@ -1,284 +1,199 @@
-Return-Path: <linux-kernel+bounces-164373-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-164374-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A1A028B7CDE
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 18:30:04 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 755338B7CE1
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 18:30:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 23A261F21543
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 16:30:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 91BBF1C232FF
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 16:30:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A550F17A934;
-	Tue, 30 Apr 2024 16:29:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DFD8117B51C;
+	Tue, 30 Apr 2024 16:30:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iTtPhhGV"
-Received: from mail-pj1-f52.google.com (mail-pj1-f52.google.com [209.85.216.52])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VJlZ6dXp"
+Received: from mail-wm1-f52.google.com (mail-wm1-f52.google.com [209.85.128.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F4F1175554;
-	Tue, 30 Apr 2024 16:29:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A53B17B4F5;
+	Tue, 30 Apr 2024 16:29:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714494594; cv=none; b=EJxTUj0LJzWCoxdgh4zCsDSZEINHJ13iI+o6YPA93bz0Ptuy8HFpxqjawDWKHxdyvzQy0Cgg3TWT4TC+HGt+6uYo6JONIzLG6RM6AtMKomLtmf3aamaZp5l2wDWX1E49No5bcOh8rj/GGnFpbGeWmgTvKrIFuoSiDpbP0bCG70I=
+	t=1714494600; cv=none; b=R9dEsjLRoFDeJ/w6LhmSQc4OQ701NR3JK+NcrcCKyAbp/eBYBAyeqvZaRTYqOupExfHSjP/EYkUJ7GErlfOnp3NP1BIxoXyJlCZAJUfQPhNbEcKuG3NIwroZaIGXpgzlwiXZb2nY00zQnb2cUtIqZH1/gFr3cofFu3ZvXzobzLA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714494594; c=relaxed/simple;
-	bh=nz+VaBU6RtPqdW451GEPI/aHEIuxOlomtq0gZmOR5zM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=uo5gUCdvQVHqwBUMiKWxAEE0AAkRVcwkAQOHR7HSCR/4kQWccVVfKlXsby7iMYqpI0A+MzwrnLJ2/QeOUfvnQanrmDXiWO8fy6iO0mh2h1W0z8b8G+W08KemI9WYMkY5lSqhgUsr0SCXklVy5ytHXfvhf2iB6J/gp60cJ7q3kKI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iTtPhhGV; arc=none smtp.client-ip=209.85.216.52
+	s=arc-20240116; t=1714494600; c=relaxed/simple;
+	bh=uFNfjZwNfsMbmzivDYpvkjkobl1t9QD8f//b+VnosG4=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=d2diEpo3XgJVQ2/U0jhVYjoqiWaOC2Sj89DmL4LBoOptBi58C4Xh/NdHcfNXQyeNvQ/ppYLkm42jaxyJbVk47QPfPhpmN3MyiO/b5LnxqViolf6bBfxm4I1hSNYlsChdTI4S/YBRmQ3u11iBZkoh4Ye5vaDpYJ71T0agBCtFv9w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VJlZ6dXp; arc=none smtp.client-ip=209.85.128.52
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f52.google.com with SMTP id 98e67ed59e1d1-2a4b457769eso4920673a91.2;
-        Tue, 30 Apr 2024 09:29:53 -0700 (PDT)
+Received: by mail-wm1-f52.google.com with SMTP id 5b1f17b1804b1-41ba1ba55ffso25411375e9.1;
+        Tue, 30 Apr 2024 09:29:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714494592; x=1715099392; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=K9EaAPDvr92t3gXHQnvo1ngk0g+MSCmUHMmnShhgOnA=;
-        b=iTtPhhGV5fWEl7e+QKrwb/zJfHsEkjuZbAE9A+L6jVrKkpyZQfbWiykbg6bTabMaOv
-         zmvj8gZ2UXwZ/L3jESx1UGiF52Zv37uq9rj5TW+8VxgKBt6lUbxfPNpfack5Xpm+DjtO
-         ITP06sS/zbsQJhuMMSkHRogSoqTWxaMe7tIyE/C0v7X0/NJd+WoD+K06N82VXr8j6q9R
-         CbjEmx1bgJExO6QzenLrhQCJxTvONuPB8HYTghfVyw0ZEZ0a3S++v/LhzNxNQR0yKmKY
-         veA9RgfQX6AI+CbJ5BoR4p6TfLuhBZUFeGzqzuB+fLnWn6rPjgNH/G0nKO2BMcKSGyNM
-         tjdg==
+        d=gmail.com; s=20230601; t=1714494597; x=1715099397; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=qe410Y7Pw3RLVaHlgFyU3e1PRJtNfNOnZTPvy+S7FYM=;
+        b=VJlZ6dXpz8v7RFPUey1UPAbECo+Cvb8n0sT3bKOq90OqP8CSxoGfF0PdQXLvLd4Md8
+         8B6AX1U75jPfY+UeW60+Ry0fQ5Jblt986yehh5r72KRl2YN3tpFCgwgtsQ8LOplNLZyi
+         qoVAIa2o/5MWJ6fQ4s6/6hsWbQvuMe0nfFdDRV2I8GRnRLZuCh49M5eMQafCmBkrx/E4
+         wQ2SP54Le73ofeU7vF2onqTnQJO1dEBmzd7UtJODT5oPn9OrfDHDi/uRFNEHRFLXZS/a
+         jTrLxb9uMW/a2CUHpf4010aDXiSaxGmF1H4zEwHW2Jg64xx4+xeM0ittTK1+1P6Z9cLn
+         PmJw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714494592; x=1715099392;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=K9EaAPDvr92t3gXHQnvo1ngk0g+MSCmUHMmnShhgOnA=;
-        b=Kvkoh0uld4DeJaqEhtj9sbrogVOlYqvJQ0tDbnFYOnBd1zSkoiXJ4jtZbF489/ExXo
-         PXS/oPY2JbBA+QO+kaBISR3+MT1uP9kYhaYeQHlTVMXyM7r4pyAZiheqnt5V/2bexw0i
-         4NsO1dhE6SutQgtSPaKaoE424XN5sJR7dS2lFs/n1k4ZfIUbSVd0ynJq5Qddt1+BBvPt
-         oeUtvsfdDx1qRL4NuuKXRFwMtfRI3g4/BI805FKAs9j1/UZlFVtciq6kWMwX1SHR+KeE
-         7R+eRghinisSLd7vqydDl5EJAlMH2lz+c3FY+NkfN91sLNxJ9I5gzWfkmpbXYlGhpBCK
-         vp4w==
-X-Forwarded-Encrypted: i=1; AJvYcCWlfmnY0vLMcgMT+yXLwPRDrW+xBIZAcBWk15XUq7jUCm+swuLiXnNB/sxSOOuXXp5TQJCuJ7R5LnVgyYLP+oOBOk5KfM21tjLMOvsCJ5EO/EdOS/IfOMQPnLk1GrDR0Yyfyh1fdLfsLiIMMmI3rmSdcSIqSfq/kcFrmzit7wTPgrOytcny
-X-Gm-Message-State: AOJu0YyJHMA/b71fWFV2rQ34AclWZqL+O3wqguWodsCaQ+1SnswhL5Iy
-	warAXXRonPBiacLcoFbGJE/QeVmCTfd53Wl3qbo5plU0eeH6rYhTKAbFncZrfFB5catSqY8jIj7
-	l6scmodYtq1HgODTk4Tg3qtadLUXpqqm/
-X-Google-Smtp-Source: AGHT+IG86XdZ6k/BeO+ngAp+nqWg9VwdFEyoOuJNHEuvGMjdevq6xJDE40lZ4lICPs2AgNN+c8w8m/aWm10nDV5tsbM=
-X-Received: by 2002:a17:90b:19d0:b0:2af:ff3:e14a with SMTP id
- nm16-20020a17090b19d000b002af0ff3e14amr2988226pjb.16.1714494592488; Tue, 30
- Apr 2024 09:29:52 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1714494597; x=1715099397;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=qe410Y7Pw3RLVaHlgFyU3e1PRJtNfNOnZTPvy+S7FYM=;
+        b=XfD+phgmAegHcbHHXaB+xHM6SzbDNyhlrbZ20KGulwwe+JYZVcgp2HVh72RvmINrQK
+         3PKULS6PcCKnTAasUegFvy6POIC2FY0TH4Xk3FDjETBuJBPLWrMsiKwl6wH9+lLP4IkW
+         cUd6BkwzjUAB+yRYB1kQWIwIaMAqJrmL4ylCinZGBlAYJpAQOm9NxgVsHHJG4NAWanNa
+         CG/Lsk0hPKPA7Auf5llGttCYtMdHp9iQSz4sxle+dUOQOIvgGSt/gkm6AbP8wn9s6l+M
+         PXBvqjZbvxhdPCq/HKDI07f9VJfazyBIG4igFzgpPmc1zQesQywP1Ao7N9wdL9M34Qqo
+         6ftw==
+X-Forwarded-Encrypted: i=1; AJvYcCWUXDvVjz619aNYaYqD2kECC9LF2J2L1fUKmnRlUB4XjRISuisKo3r1orbm2pV/dFC0dBW7AuqIvP0fW3v4L0X6b0XHLQT6lJWaHSMLCivcjB5fb9u/Btyqe6I0/gPPLb21QJWj2+tfKs+tYAc5B3m5JDCrZXiS6eYiUZInT0y4k8Hvpg==
+X-Gm-Message-State: AOJu0Yx0t03nFS7vPWhUP0FJhXf3tLYJEOWcXvhIh8EZN/osymg3b7wv
+	72fdMpuPexdiUHIpWw0zBCgxmQTsXCid1z887+HJvedoocHIFiUb
+X-Google-Smtp-Source: AGHT+IF+1JSopzVdrR085zsb7AjrHP/1qo8VJhUCEuReCpMNFh9Co95SKbsN4Yd9Wxpe8oRj3cy5mg==
+X-Received: by 2002:a05:600c:4f91:b0:418:5ef3:4a04 with SMTP id n17-20020a05600c4f9100b004185ef34a04mr335696wmq.18.1714494596312;
+        Tue, 30 Apr 2024 09:29:56 -0700 (PDT)
+Received: from spiri.. ([2a02:2f08:a105:8300:da4d:6b2c:f166:22e6])
+        by smtp.gmail.com with ESMTPSA id h15-20020a05600c350f00b00418d68df226sm46505396wmq.0.2024.04.30.09.29.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 30 Apr 2024 09:29:56 -0700 (PDT)
+From: Alisa-Dariana Roman <alisadariana@gmail.com>
+X-Google-Original-From: Alisa-Dariana Roman <alisa.roman@analog.com>
+To: michael.hennerich@analog.com,
+	linux-iio@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: alexandru.tachici@analog.com,
+	lars@metafoo.de,
+	Michael.Hennerich@analog.com,
+	jic23@kernel.org,
+	robh@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org,
+	lgirdwood@gmail.com,
+	broonie@kernel.org,
+	andy@kernel.org,
+	nuno.sa@analog.com,
+	marcelo.schmitt@analog.com,
+	bigunclemax@gmail.com,
+	dlechner@baylibre.com,
+	okan.sahin@analog.com,
+	fr0st61te@gmail.com,
+	alisa.roman@analog.com,
+	marcus.folkesson@gmail.com,
+	schnelle@linux.ibm.com,
+	liambeguin@gmail.com
+Subject: [PATCH v7 0/6] iio: adc: ad7192: Add AD7194 support
+Date: Tue, 30 Apr 2024 19:29:40 +0300
+Message-Id: <20240430162946.589423-1-alisa.roman@analog.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <171318533841.254850.15841395205784342850.stgit@devnote2>
- <CAEf4BzYMToveELxsOJ9dXz3H-9omhxRLKgGK-ppYvmK8pgDsfA@mail.gmail.com>
- <20240429225119.410833c12d9f6fbcce0a58db@kernel.org> <CAEf4BzZDqD4fyLpoq9r2M0HnES7aO7YW=ZNH-k8uPJWd_VbAJg@mail.gmail.com>
- <20240430223217.fd375d57d130a4207be18e94@kernel.org>
-In-Reply-To: <20240430223217.fd375d57d130a4207be18e94@kernel.org>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Tue, 30 Apr 2024 09:29:40 -0700
-Message-ID: <CAEf4BzZQLPL7419W1=yNw6gzB4gquiXfeANbUKbUL8bK+5if=w@mail.gmail.com>
-Subject: Re: [PATCH v9 00/36] tracing: fprobe: function_graph: Multi-function
- graph and fprobe on fgraph
-To: Masami Hiramatsu <mhiramat@kernel.org>
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Steven Rostedt <rostedt@goodmis.org>, 
-	Florent Revest <revest@chromium.org>, linux-trace-kernel@vger.kernel.org, 
-	LKML <linux-kernel@vger.kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
-	bpf <bpf@vger.kernel.org>, Sven Schnelle <svens@linux.ibm.com>, 
-	Alexei Starovoitov <ast@kernel.org>, Jiri Olsa <jolsa@kernel.org>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Alan Maguire <alan.maguire@oracle.com>, Mark Rutland <mark.rutland@arm.com>, 
-	Peter Zijlstra <peterz@infradead.org>, Thomas Gleixner <tglx@linutronix.de>, Guo Ren <guoren@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Tue, Apr 30, 2024 at 6:32=E2=80=AFAM Masami Hiramatsu <mhiramat@kernel.o=
-rg> wrote:
->
-> On Mon, 29 Apr 2024 13:25:04 -0700
-> Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
->
-> > On Mon, Apr 29, 2024 at 6:51=E2=80=AFAM Masami Hiramatsu <mhiramat@kern=
-el.org> wrote:
-> > >
-> > > Hi Andrii,
-> > >
-> > > On Thu, 25 Apr 2024 13:31:53 -0700
-> > > Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
-> > >
-> > > > Hey Masami,
-> > > >
-> > > > I can't really review most of that code as I'm completely unfamilia=
-r
-> > > > with all those inner workings of fprobe/ftrace/function_graph. I le=
-ft
-> > > > a few comments where there were somewhat more obvious BPF-related
-> > > > pieces.
-> > > >
-> > > > But I also did run our BPF benchmarks on probes/for-next as a basel=
-ine
-> > > > and then with your series applied on top. Just to see if there are =
-any
-> > > > regressions. I think it will be a useful data point for you.
-> > >
-> > > Thanks for testing!
-> > >
-> > > >
-> > > > You should be already familiar with the bench tool we have in BPF
-> > > > selftests (I used it on some other patches for your tree).
-> > >
-> > > What patches we need?
-> > >
-> >
-> > You mean for this `bench` tool? They are part of BPF selftests (under
-> > tools/testing/selftests/bpf), you can build them by running:
-> >
-> > $ make RELEASE=3D1 -j$(nproc) bench
-> >
-> > After that you'll get a self-container `bench` binary, which has all
-> > the self-contained benchmarks.
-> >
-> > You might also find a small script (benchs/run_bench_trigger.sh inside
-> > BPF selftests directory) helpful, it collects final summary of the
-> > benchmark run and optionally accepts a specific set of benchmarks. So
-> > you can use it like this:
-> >
-> > $ benchs/run_bench_trigger.sh kprobe kprobe-multi
-> > kprobe         :   18.731 =C2=B1 0.639M/s
-> > kprobe-multi   :   23.938 =C2=B1 0.612M/s
-> >
-> > By default it will run a wider set of benchmarks (no uprobes, but a
-> > bunch of extra fentry/fexit tests and stuff like this).
->
-> origin:
-> # benchs/run_bench_trigger.sh
-> kretprobe :    1.329 =C2=B1 0.007M/s
-> kretprobe-multi:    1.341 =C2=B1 0.004M/s
-> # benchs/run_bench_trigger.sh
-> kretprobe :    1.288 =C2=B1 0.014M/s
-> kretprobe-multi:    1.365 =C2=B1 0.002M/s
-> # benchs/run_bench_trigger.sh
-> kretprobe :    1.329 =C2=B1 0.002M/s
-> kretprobe-multi:    1.331 =C2=B1 0.011M/s
-> # benchs/run_bench_trigger.sh
-> kretprobe :    1.311 =C2=B1 0.003M/s
-> kretprobe-multi:    1.318 =C2=B1 0.002M/s s
->
-> patched:
->
-> # benchs/run_bench_trigger.sh
-> kretprobe :    1.274 =C2=B1 0.003M/s
-> kretprobe-multi:    1.397 =C2=B1 0.002M/s
-> # benchs/run_bench_trigger.sh
-> kretprobe :    1.307 =C2=B1 0.002M/s
-> kretprobe-multi:    1.406 =C2=B1 0.004M/s
-> # benchs/run_bench_trigger.sh
-> kretprobe :    1.279 =C2=B1 0.004M/s
-> kretprobe-multi:    1.330 =C2=B1 0.014M/s
-> # benchs/run_bench_trigger.sh
-> kretprobe :    1.256 =C2=B1 0.010M/s
-> kretprobe-multi:    1.412 =C2=B1 0.003M/s
->
-> Hmm, in my case, it seems smaller differences (~3%?).
-> I attached perf report results for those, but I don't see large differenc=
-e.
+Dear maintainers,
 
-I ran my benchmarks on bare metal machine (and quite powerful at that,
-you can see my numbers are almost 10x of yours), with mitigations
-disabled, no retpolines, etc. If you have any of those mitigations it
-might result in smaller differences, probably. If you are running
-inside QEMU/VM, the results might differ significantly as well.
+Thank you all for the feedback!
 
->
-> > > >
-> > > > BASELINE
-> > > > =3D=3D=3D=3D=3D=3D=3D=3D
-> > > > kprobe         :   24.634 =C2=B1 0.205M/s
-> > > > kprobe-multi   :   28.898 =C2=B1 0.531M/s
-> > > > kretprobe      :   10.478 =C2=B1 0.015M/s
-> > > > kretprobe-multi:   11.012 =C2=B1 0.063M/s
-> > > >
-> > > > THIS PATCH SET ON TOP
-> > > > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> > > > kprobe         :   25.144 =C2=B1 0.027M/s (+2%)
-> > > > kprobe-multi   :   28.909 =C2=B1 0.074M/s
-> > > > kretprobe      :    9.482 =C2=B1 0.008M/s (-9.5%)
-> > > > kretprobe-multi:   13.688 =C2=B1 0.027M/s (+24%)
-> > >
-> > > This looks good. Kretprobe should also use kretprobe-multi (fprobe)
-> > > eventually because it should be a single callback version of
-> > > kretprobe-multi.
->
-> I ran another benchmark (prctl loop, attached), the origin kernel result =
-is here;
->
-> # sh ./benchmark.sh
-> count =3D 10000000, took 6.748133 sec
->
-> And the patched kernel result;
->
-> # sh ./benchmark.sh
-> count =3D 10000000, took 6.644095 sec
->
-> I confirmed that the parf result has no big difference.
->
-> Thank you,
->
->
-> > >
-> > > >
-> > > > These numbers are pretty stable and look to be more or less represe=
-ntative.
-> > > >
-> > > > As you can see, kprobes got a bit faster, kprobe-multi seems to be
-> > > > about the same, though.
-> > > >
-> > > > Then (I suppose they are "legacy") kretprobes got quite noticeably
-> > > > slower, almost by 10%. Not sure why, but looks real after re-runnin=
-g
-> > > > benchmarks a bunch of times and getting stable results.
-> > >
-> > > Hmm, kretprobe on x86 should use ftrace + rethook even with my series=
-.
-> > > So nothing should be changed. Maybe cache access pattern has been
-> > > changed?
-> > > I'll check it with tracefs (to remove the effect from bpf related cha=
-nges)
-> > >
-> > > >
-> > > > On the other hand, multi-kretprobes got significantly faster (+24%!=
-).
-> > > > Again, I don't know if it is expected or not, but it's a nice
-> > > > improvement.
-> > >
-> > > Thanks!
-> > >
-> > > >
-> > > > If you have any idea why kretprobes would get so much slower, it wo=
-uld
-> > > > be nice to look into that and see if you can mitigate the regressio=
-n
-> > > > somehow. Thanks!
-> > >
-> > > OK, let me check it.
-> > >
-> > > Thank you!
-> > >
-> > > >
-> > > >
-> > > > >  51 files changed, 2325 insertions(+), 882 deletions(-)
-> > > > >  create mode 100644 tools/testing/selftests/ftrace/test.d/dyneven=
-t/add_remove_fprobe_repeat.tc
-> > > > >
-> > > > > --
-> > > > > Masami Hiramatsu (Google) <mhiramat@kernel.org>
-> > > > >
-> > >
-> > >
-> > > --
-> > > Masami Hiramatsu (Google) <mhiramat@kernel.org>
->
->
-> --
-> Masami Hiramatsu (Google) <mhiramat@kernel.org>
+I am submitting the upgraded series of patches for the ad7192 driver.
+
+Please consider applying in order.
+
+Thank you!
+
+v6 -> v7
+  - patch1: move mutex lock and unlock to protect whole switch statement
+  - patch3: use NANO from units.h
+  - patch3: add comment
+  - patch3: use dev_err_probe
+  - patch4: new patch to add single-channel property
+  - patch5: modify maximum number of channels to include single-ended channels
+  - patch5: add single-channel property to bindings for single-ended channels
+  - patch5: modify example to include single-channel property
+  - patch5: modify channel pattern to "^channel@[0-9a-f]+$"
+  - patch5: modify required properties for channel node
+  - patch6: add function to validate ain channel
+  - patch6: remove function to parse one channel
+  - patch6: single-ended channels are now also configured in the devicetree
+  - patch6: modified some names to reflect the changes
+
+v5 -> v6
+  - protect ad7192_update_filter_freq_avail with lock
+  - better bindings description for AINCOM
+  - the pseudo-differential channels are no longer configured as differential
+    when aincom supply is not present in devicetree, in this case the offset for
+    the channels is set to 0
+  - because of the above change, there is no longer a need for multiple channel
+    options
+  - correct channels regex in bindings
+  - no need to move chip_info anymore
+  - change names to ad7194_parse_channel/s
+  - add else statement to highlight parse_channels effect
+
+v4 -> v5
+  - add aincom supply as discussed previously
+    https://lore.kernel.org/all/CAMknhBF5mAsN1c-194Qwa5oKmqKzef2khXnqA1cSdKpWHKWp0w@mail.gmail.com/#t
+  - ad7194 differential channels are now dynamically configured in the
+    devicetree
+
+v3 -> v4
+  - drop device properties patch, changes already applied to tree
+  - change bindings and driver such that for AD7194 there are 16
+    differential channels, by default set to AINx - AINCOM, which can be
+    configured in devicetree however the user likes
+  - corrected mistake regarding positive and negative channel macros:
+    subtract 1 from the number corresponding to AIN input
+
+v2 -> v3
+  - add precursor patch to simply functions to only pass
+    ad7192_state
+  - add patch to replace custom attribute
+  - bindings patch: correct use of allOf and some minor changes to
+    the ad7194 example
+  - add ad7194 patch:
+    - use "ad7192 and similar"
+    - ad7194 no longer needs attribute group
+    - use callback function in chip_info to parse channels
+    - move struct ad7192_chip_info
+    - change position of parse functions
+  - drop clock bindings patch
+
+v1 -> v2
+  - new commit with missing documentation for properties
+  - add constraint for channels in binding
+  - correct pattern for channels
+  - correct commit message by adding "()" to functions
+  - use in_range
+  - use preferred structure in Kconfig
+
+Kind regards,
+
+Alisa-Dariana Roman (6):
+  iio: adc: ad7192: Use standard attribute
+  dt-bindings: iio: adc: ad7192: Add aincom supply
+  iio: adc: ad7192: Add aincom supply
+  dt-bindings: iio: adc: Add single-channel property
+  dt-bindings: iio: adc: ad7192: Add AD7194 support
+  iio: adc: ad7192: Add AD7194 support
+
+ .../devicetree/bindings/iio/adc/adc.yaml      |   8 +
+ .../bindings/iio/adc/adi,ad7192.yaml          |  95 +++++++
+ drivers/iio/adc/Kconfig                       |  11 +-
+ drivers/iio/adc/ad7192.c                      | 245 ++++++++++++++----
+ 4 files changed, 309 insertions(+), 50 deletions(-)
+
+-- 
+2.34.1
+
 
