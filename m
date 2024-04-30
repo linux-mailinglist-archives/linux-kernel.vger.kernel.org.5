@@ -1,131 +1,194 @@
-Return-Path: <linux-kernel+bounces-163478-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-163479-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BA4248B6BCC
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 09:33:05 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 64A008B6BCA
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 09:32:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C15C71C21F23
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 07:33:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 91CBD1C21E5F
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 07:32:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 719AD57302;
-	Tue, 30 Apr 2024 07:30:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6EB4283CB1;
+	Tue, 30 Apr 2024 07:31:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="AGYCS9k1"
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="gZj4YxjG";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="8AdA6xDH"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3F8A3B185;
-	Tue, 30 Apr 2024 07:30:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D48AC45027;
+	Tue, 30 Apr 2024 07:31:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714462247; cv=none; b=KpnQU1Z2fvvOrBaXVO8fqYnm8Kem5IoOjRBpeWYcu0jbT3jv1pM7U5l/3tIk5qWe1zASXJE9sIXtvUwyEvGnmQzcSiB6c+tSWKHpYGjh7aSwdAAXxL7X8q/g51kTRksYQgbTnqLyIgJXjKoY5tWlC4NBAneimXVHAvLL3TOl3JE=
+	t=1714462279; cv=none; b=dUte2nLvNVMkJQonUOq4Z/nh3wzqA7QWfEIvQtEjP/ssaDp2YUjCchnayc9TxXKmWOVb8/rsSkvh1irfpyzbrZTJOI174hfYOUh/5QCcuEzQX+aVfmjPuvpp9b5AMKHnaSkk2ue9QSVPM57twvW25iXp/glccflYF2G4ZHhfa7k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714462247; c=relaxed/simple;
-	bh=uPdJ5zLRePWJFYniZ56mSpMXsJZnGk5J/HnqfyeKTN4=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=oAJgmqax8tbUiaSgkWjl1gj1+59mNqHODi3iBl3YdTQ9Q19BgF2KoQIFyP0zbfeVfXgDgKna+LZkFqKnajIwFSvYpOJOXWUte7xqLtR91RR1KV277HQQIKdMDchKC79FQa/AVBGONXLfmOSQLXGVeuzaqsdPVyDmsX5Wl1JP2k4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=AGYCS9k1; arc=none smtp.client-ip=150.107.74.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-	s=201702; t=1714462243;
-	bh=YV02u5QwV20mBAAMzjI0KxnXRUSnPsS3js26fPhuJPw=;
-	h=Date:From:To:Cc:Subject:From;
-	b=AGYCS9k1EP7H05s/ThHnmc3QRAlizmshTYSOIK3OfiJC35tT9no8SuJ1db2mWqvcM
-	 M84xH4yIo2HCUepeTXdQPcMlTG1BopYwV6NVfpB4QWBV+OOIvuvxaHJnJ3745V2cLF
-	 08oY22/Z6xauDLtafAccF1eQ3z1Df2u9ZWIU/f494xluh4cr/uf7r1aOpNIJEGhw04
-	 wA//5gDBPr98cB9YdincvxgHGNPC7r7svJVpNOtBtbvOO/fMlHzj9vsPccA4bOC8cq
-	 Nx6nMaTWVFijLq6s8P+zYuKPj/WcMqUhmDZJwLOmvzdggMyc8E5slLrgPQXjgqcJUu
-	 OWsLigBObI1+g==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4VTBgl0GTqz4x1N;
-	Tue, 30 Apr 2024 17:30:43 +1000 (AEST)
-Date: Tue, 30 Apr 2024 17:30:42 +1000
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-To: Joel Stanley <joel@jms.id.au>
-Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux Next
- Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: Signed-off-by missing for commit in the aspeed tree
-Message-ID: <20240430173042.09beb33b@canb.auug.org.au>
+	s=arc-20240116; t=1714462279; c=relaxed/simple;
+	bh=heoyc4aobx9qT1MKfpsIMMQmkYLGiDQHLCVrfmGWIN0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=A43bvO13/IUgj6E9H4nKz2WMtaTSFq9S/VADFrAQroHS8vX7mVSvalEJUGoPV8KGNKSzoea0UA9vU2FIH2K5EnJmsTwQTGwg3Y0CW8jD+tI4DpdxInvdrn9hrt1z4kXrfY9CNyP1bQro1VAftfW/r3Zpmqfo9TA/6MFPZy/orN4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=gZj4YxjG; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=8AdA6xDH; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+Date: Tue, 30 Apr 2024 09:31:07 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1714462275;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=DqrYzQE/eh5FY4RgzTW10+8t5SwsCC9zr0+QvqJHjrc=;
+	b=gZj4YxjG906AKACZuGLWmHr5AMq85uWqbLLVO7IobnuUbSLwcu+Ja6ppeFHLMasAnVIg7D
+	RV/Hyn3blm+ooOu7eTVMrwnNq8Kejn5d9fceqS6uhC2RMTfZCFjX67nm4vTY47TLf4OOvY
+	VmWXIk6Bbp7pKw3TH9Ind5RYBx2YLK69fYTXZqhVNdoW60WJjCx54pno+VtfWUa0GE8a44
+	Dh4dmkmzbwdXh96opJ9qVU0xra/rYoqmwmXgM3dg2PQDUxd4aDCaOAgT5d8C7TUYp/371r
+	X8zLAQAehJX7TQC3+0Bj9IetHM5Fy9hH6NIIS07dsNCpSlr8CLE2kTwkAJe45g==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1714462275;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=DqrYzQE/eh5FY4RgzTW10+8t5SwsCC9zr0+QvqJHjrc=;
+	b=8AdA6xDHGkSuRiD6v8behqV1g2AbTjtevYIkGQ44lTzvNa3hHHgrj18SkOJt4ZoW9u8BJR
+	tAsH9vf3SHlsL8CQ==
+From: Nam Cao <namcao@linutronix.de>
+To: Joel Granados <j.granados@samsung.com>
+Cc: Mike Rapoport <rppt@kernel.org>, Andreas Dilger <adilger@dilger.ca>,
+	=?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>,
+	linux-riscv@lists.infradead.org,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	"ndesaulniers @ google . com" <ndesaulniers@google.com>,
+	Luis Chamberlain <mcgrof@kernel.org>,
+	Ingo Molnar <mingo@kernel.org>,
+	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	Tejun Heo <tj@kernel.org>,
+	Krister Johansen <kjlx@templeofstupid.com>,
+	Changbin Du <changbin.du@huawei.com>, Arnd Bergmann <arnd@arndb.de>,
+	Geert Uytterhoeven <geert+renesas@glider.be>,
+	linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Subject: Re: [PATCH] init: fix allocated page overlapping with PTR_ERR
+Message-ID: <20240430073056.bEG4-yk8@linutronix.de>
+References: <20240418102943.180510-1-namcao@linutronix.de>
+ <CGME20240429125236eucas1p24219f2d332e0267794a2f87dea9f39c4@eucas1p2.samsung.com>
+ <20240429125230.s5pbeye24iw5aurz@joelS2.panther.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/w_ZqG8u7mIbU1rRIfJ0hXfq";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240429125230.s5pbeye24iw5aurz@joelS2.panther.com>
 
---Sig_/w_ZqG8u7mIbU1rRIfJ0hXfq
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Mon, Apr 29, 2024 at 02:52:30PM +0200, Joel Granados wrote:
+> On Thu, Apr 18, 2024 at 12:29:43PM +0200, Nam Cao wrote:
+> > There is nothing preventing kernel memory allocators from allocating a
+> > page that overlaps with PTR_ERR(), except for architecture-specific
+> > code that setup memblock.
+> > 
+> > It was discovered that RISCV architecture doesn't setup memblock
+> > corectly, leading to a page overlapping with PTR_ERR() being allocated,
+> > and subsequently crashing the kernel (link in Close: )
+> > 
+> > The reported crash has nothing to do with PTR_ERR(): the last page
+> > (at address 0xfffff000) being allocated leads to an unexpected
+> > arithmetic overflow in ext4; but still, this page shouldn't be
+> > allocated in the first place.
+> > 
+> > Because PTR_ERR() is an architecture-independent thing, we shouldn't
+> > ask every single architecture to set this up. There may be other
+> > architectures beside RISCV that have the same problem.
+> > 
+> > Fix this one and for all by reserving the physical memory page that
+> > may be mapped to the last virtual memory page as part of low memory.
+> > 
+> > Unfortunately, this means if there is actual memory at this reserved
+> > location, that memory will become inaccessible. However, if this page
+> > is not reserved, it can only be accessed as high memory, so this
+> > doesn't matter if high memory is not supported. Even if high memory is
+> > supported, it is still only one page.
+> > 
+> > Closes: https://lore.kernel.org/linux-riscv/878r1ibpdn.fsf@all.your.base.are.belong.to.us
+> > Signed-off-by: Nam Cao <namcao@linutronix.de>
+> > Cc: <stable@vger.kernel.org> # all versions
+> > ---
+> >  init/main.c | 1 +
+> >  1 file changed, 1 insertion(+)
+> > 
+> > diff --git a/init/main.c b/init/main.c
+> > index 881f6230ee59..f8d2793c4641 100644
+> > --- a/init/main.c
+> > +++ b/init/main.c
+> > @@ -900,6 +900,7 @@ void start_kernel(void)
+> >  	page_address_init();
+> >  	pr_notice("%s", linux_banner);
+> >  	early_security_init();
+> > +	memblock_reserve(__pa(-PAGE_SIZE), PAGE_SIZE); /* reserve last page for ERR_PTR */
+> >  	setup_arch(&command_line);
+> >  	setup_boot_config();
+> >  	setup_command_line(command_line);
+> > -- 
+> > 2.39.2
+> > 
+> 
+> I received a similar(ish) report recently
+> https://lore.kernel.org/oe-kbuild-all/202404211031.J6l2AfJk-lkp@intel.com/
+> regarding RISC-V in init/mail.c. Here is the meat of the report in case
+> you want to avoid going to the actual link:
 
-Hi all,
+This issue doesn't look like it has anything to do with this patch: this
+patch is about overlapping of dynamically allocated memory, while I think
+the issue is about overlapping sections during linking (maybe something
+wrong with riscv linker script?)
 
-Commits
+Also, FWIW, this patch is not going to be in mainline because of a
+regression.
 
-  7ad71c3ab70c ("ARM: dts: aspeed: Remove Facebook Cloudripper dts")
-  822918de8113 ("ARM: dts: aspeed: drop unused ref_voltage ADC property")
-  1c59d3bb17bd ("ARM: dts: aspeed: harma: correct Mellanox multi-host prope=
-rty")
-  b1438072a1b8 ("ARM: dts: aspeed: yosemitev2: correct Mellanox multi-host =
-property")
-  7a18def88f5c ("ARM: dts: aspeed: yosemite4: correct Mellanox multi-host p=
-roperty")
-  6868ea774af9 ("ARM: dts: aspeed: greatlakes: correct Mellanox multi-host =
-property")
-  c6216502844a ("ARM: dts: aspeed: Modify I2C bus configuration")
-  820b26245c01 ("ARM: dts: aspeed: Disable unused ADC channels for Asrock X=
-570D4U BMC")
-  c3cbae95b768 ("ARM: dts: aspeed: Modify GPIO table for Asrock X570D4U BMC=
-")
-  b082ef171796 ("ARM: dts: aspeed: yosemite4: set bus13 frequency to 100k")
-  05d841927ca4 ("ARM: dts: Aspeed: Bonnell: Fix NVMe LED labels")
-  c9afc6de3235 ("ARM: dts: aspeed: yosemite4: Enable ipmb device for OCP de=
-bug card")
-  60f246d9a779 ("ARM: dts: aspeed: ahe50dc: Update lm25066 regulator name")
-  2fa83625243b ("ARM: dts: aspeed: Add vendor prefixes to lm25066 compat st=
-rings")
-  066abbcbe068 ("ARM: dts: aspeed: asrock: Use MAC address from FRU EEPROM")
-  f7576de02d66 ("ARM: dts: aspeed: Harma: Modify GPIO line name")
-  65976d4bf07a ("ARM: dts: aspeed: Harma: Add retimer device")
-  f06b561729cb ("ARM: dts: aspeed: Harma: Revise node name")
-  0cd34ddc24ea ("ARM: dts: aspeed: Harma: Add ltc4286 device")
-  ef24783564e5 ("ARM: dts: aspeed: Harma: Add NIC Fru device")
-  e27a45b54b8e ("ARM: dts: aspeed: Harma: Revise max31790 address")
-  6d06fe68aea5 ("ARM: dts: aspeed: Harma: Add PDB temperature")
-  3a353bce1b6f ("ARM: dts: aspeed: Harma: Add spi-gpio")
-  dc086e298c12 ("ARM: dts: aspeed: Harma: Add cpu power good line name")
-  bf3e7f0c2242 ("ARM: dts: aspeed: Harma: Remove Vuart")
-  94b3ac0eaee6 ("ARM: dts: aspeed: Harma: mapping ttyS2 to UART4.")
-  1690f5b8008c ("ARM: dts: aspeed: Harma: Revise SGPIO line name.")
+Nonetheless, I will have a look at this later.
 
-are missing a Signed-off-by from their committer.
+Best regards,
+Nam
 
---=20
-Cheers,
-Stephen Rothwell
+> "
+> ...
+>    riscv64-linux-ld: section .data LMA [000000000099b000,0000000001424de7] overlaps section .text LMA [0000000000104040,000000000213c543]
+>    riscv64-linux-ld: section .data..percpu LMA [00000000024e2000,00000000026b46e7] overlaps section .rodata LMA [000000000213c580,000000000292d0dd]
+>    riscv64-linux-ld: section .rodata VMA [ffffffff8213c580,ffffffff8292d0dd] overlaps section .data VMA [ffffffff82000000,ffffffff82a89de7]
+>    init/main.o: in function `rdinit_setup':
+> >> init/main.c:613:(.init.text+0x358): relocation truncated to fit: R_RISCV_GPREL_I against symbol `__setup_start' defined in .init.rodata section in .tmp_vmlinux.kallsyms1
+>    net/ipv4/ipconfig.o: in function `ic_dhcp_init_options':
+>    net/ipv4/ipconfig.c:682:(.init.text+0x9b4): relocation truncated to fit: R_RISCV_GPREL_I against `ic_bootp_cookie'
+>    net/sunrpc/auth_gss/gss_krb5_mech.o: in function `gss_krb5_prepare_enctype_priority_list':
+> >> net/sunrpc/auth_gss/gss_krb5_mech.c:213:(.text.gss_krb5_prepare_enctype_priority_list+0x9c): relocation truncated to fit: R_RISCV_GPREL_I against `gss_krb5_enctypes.0'
+>    lib/maple_tree.o: in function `mas_leaf_max_gap':
+> >> lib/maple_tree.c:1512:(.text.mas_leaf_max_gap+0x2b8): relocation truncated to fit: R_RISCV_GPREL_I against `mt_pivots'
+>    lib/maple_tree.o: in function `ma_dead_node':
+> >> lib/maple_tree.c:560:(.text.mas_data_end+0x110): relocation truncated to fit: R_RISCV_GPREL_I against `mt_pivots'
+>    lib/maple_tree.o: in function `mas_extend_spanning_null':
+> >> lib/maple_tree.c:3662:(.text.mas_extend_spanning_null+0x69c): relocation truncated to fit: R_RISCV_GPREL_I against `mt_pivots'
+>    lib/maple_tree.o: in function `mas_mab_cp':
+> >> lib/maple_tree.c:1943:(.text.mas_mab_cp+0x248): relocation truncated to fit: R_RISCV_GPREL_I against `mt_pivots'
+>    lib/maple_tree.o: in function `mab_mas_cp':
+> >> lib/maple_tree.c:2000:(.text.mab_mas_cp+0x15c): relocation truncated to fit: R_RISCV_GPREL_I against `mt_pivots'
+>    lib/maple_tree.o: in function `mas_reuse_node':
+> >> lib/maple_tree.c:3416:(.text.mas_reuse_node+0x17c): relocation truncated to fit: R_RISCV_GPREL_I against `mt_slots'
+>    lib/maple_tree.o: in function `mt_free_walk':
+> >> lib/maple_tree.c:5238:(.text.mt_free_walk+0x15c): relocation truncated to fit: R_RISCV_GPREL_I against `mt_slots'
+>    lib/maple_tree.o: in function `mtree_lookup_walk':
+>    lib/maple_tree.c:3700:(.text.mtree_lookup_walk+0x94): additional relocation overflows omitted from the output
+> ...
+> 
+> "
+> 
+> Could the fix that you have posted here be related to that report?
+> Comments are greatly appreciated.
+> 
+> Best
+> --
+> 
+> Joel Granados
 
---Sig_/w_ZqG8u7mIbU1rRIfJ0hXfq
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmYwniIACgkQAVBC80lX
-0GzWcAf/V3HQUPK6MF7V1fEI9ya32YTwUMjt8JV02pe47XKmUdKKyAGkeRSUtyJZ
-hO7FjVfrWU7xvZ1ORRLCX2Ods5/32IsLmDQUhUsrzO5dqUyh0/lqrdaLULTtHecY
-Xp6zGhmw10Tp1rhkNAICuHBFc09BPWkhi/NIqZuYZcbB7qTO+6IIFigyEDbL1+cz
-sMVByFCoCzKxR6l9xszIjQngzFmuec/povY7kRN9ubS/n1ZXoZWmyTzKo69uiRLc
-EqUV4lDklsHLFC8jIITEOSGnyf1gR+Z/y7DEcuUMbKwRu++GLssWULI5bLx99WYp
-LH0/kvVv04XPVrGGgh2McCAzVBE07A==
-=FVs7
------END PGP SIGNATURE-----
-
---Sig_/w_ZqG8u7mIbU1rRIfJ0hXfq--
 
