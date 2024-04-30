@@ -1,127 +1,89 @@
-Return-Path: <linux-kernel+bounces-163502-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-163503-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5F68D8B6C31
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 09:52:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6BEB38B6C34
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 09:52:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E6248283650
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 07:52:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 260252836A6
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 07:52:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9CC9D82C8E;
-	Tue, 30 Apr 2024 07:51:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2FFBC41740;
+	Tue, 30 Apr 2024 07:51:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="NTk6PAD8"
-Received: from mail-qt1-f169.google.com (mail-qt1-f169.google.com [209.85.160.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="Fpxq5981"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7ECBD45BE8
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 07:51:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 658E73FB87;
+	Tue, 30 Apr 2024 07:51:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714463496; cv=none; b=ogvuvlfimFz59QJNE/lvqhvWbXewPrKx48YrRupCI7J8bW4ReQISr6vZxRjA8zIyfs4D9U5NskVPmPR4mNZC5P7yvfKkvPi/rGQiKIDvlLpje9HDOnO2WnLf2S4k4U8axHL9hPIxcbobgCZgiGEeBb4skXJ2jyVNVj2M1zEXNlw=
+	t=1714463517; cv=none; b=WCE1dlsY+vUbW8LQVP/cZJvcYmjBjhZO5AGE+NdE/T9ahHDuuE4KLdWpOZfaUNTG/Srw1amZQywuJ2HTxktP6K4E6e/v+JzImssuO2X/qXTFT2SrQd5svcRWobRF4opGpx/c5UrHtu1WRMYTm2gqSN4VXW5d5RNns02WTB0YA2c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714463496; c=relaxed/simple;
-	bh=tZr2bao3WLdMwTCauupdLvKoK/nOZz2ObARGCJxQaCc=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=YBeQQWGl+/4dYdebrwkEDCLB569s7zFhAKw7kLICyP/TwtFNrlKFxVsbDMZyVJvX/2TTnNKqzc2zjwNsq/HQezPQQOEkplPUcl6nHC78rJiaTK0rpn9hAVHrLZE9R9krXPD5vWShblsB8nS1Q/se3osjhMoBMfcng5dhARaMpjM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=NTk6PAD8; arc=none smtp.client-ip=209.85.160.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-qt1-f169.google.com with SMTP id d75a77b69052e-43716ff5494so57188971cf.0
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 00:51:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1714463494; x=1715068294; darn=vger.kernel.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=4cXQjmuyZkvWHadrmTQe5KOC06n35bYtQrARXW4y+Vw=;
-        b=NTk6PAD8bP1NbEspcS8TzdIrpDY5MbqefDtzOarY0OyA/HZR/vBHcqtomVk30wi1mj
-         RHAasUNfPH/wYJOksReH/wO/HDnLei2f5FI6YlPakKhllVHnRtkGWw49GQqgiONVZ53l
-         lYDrXgI6G9VWf7UENAGm29bCDZPcpYOxogMq0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714463494; x=1715068294;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=4cXQjmuyZkvWHadrmTQe5KOC06n35bYtQrARXW4y+Vw=;
-        b=G8YxmYVrQCGVnKYPM+30Xzjy+wIhJ1QtXikDM5EwGtOC7OrJvGualAdayUDrIvg7UP
-         AVcVhWp8DGcOdMew1if1BdwVruUUcijaoc2gDEWnGFuZ3/NidgCOwW/0YBO+ho9xi54y
-         QDa1tISIqZpnlKvGKY3esbk2CM3AB5r7IWHvv5TaZeO3fLwr5zuBPj/Jfd02JtHCU9W/
-         dWz9eoes1uysHkrZA8OIURXHWydhAdmvW4x6a/3SVJN1DFqZ9gK0Fl95T/5SsfUCR7kB
-         U0qbfii1lbq55Jox2EfFzdvGgkNXO0BfxNkaJfGaj640sp0VoIIsxVt17BtLdJVCORLX
-         ngrA==
-X-Forwarded-Encrypted: i=1; AJvYcCWGGPuZyYP52ou8+iZ24aJ8VaSjOjMkf5dQFthXPqnRJLoF9+HwBZ4n+vlvRv/jaAVbRjALk+BO2FpM1P6ibULcnrrW5AI9uwNut5Fp
-X-Gm-Message-State: AOJu0YzjqojtLwsLA8zB56Boe6fA0SFcaT4yNPvNFy+pjPldQEakkHs2
-	bm8DH3RaUFfaeCPP8Bp94rIJZMe0ogixwD3qAZ2wTbC5lBxAwHUSz01YVb7Skg==
-X-Google-Smtp-Source: AGHT+IHJbt+AhqT6dvcQLRTeZ4YlJCvCSrE+7BncIk5ueTVJMqXmIFfvv1LVEly8aKIAOwJjytQtBA==
-X-Received: by 2002:a05:622a:1895:b0:43a:c90b:34e5 with SMTP id v21-20020a05622a189500b0043ac90b34e5mr3440108qtc.34.1714463494446;
-        Tue, 30 Apr 2024 00:51:34 -0700 (PDT)
-Received: from denia.c.googlers.com (114.152.245.35.bc.googleusercontent.com. [35.245.152.114])
-        by smtp.gmail.com with ESMTPSA id z11-20020a05622a124b00b00437b4048972sm10634547qtx.18.2024.04.30.00.51.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Apr 2024 00:51:33 -0700 (PDT)
-From: Ricardo Ribalda <ribalda@chromium.org>
-Date: Tue, 30 Apr 2024 07:51:28 +0000
-Subject: [PATCH 3/3] media: bcm2835-unicam: Do not replace IRQ retcode
- during probe
+	s=arc-20240116; t=1714463517; c=relaxed/simple;
+	bh=v0WF6wRNl0/o4ZfZUcYLksd3B2wnn2d8J5cCYz5LJiU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=E0yfobmPJrPvNS9UZY/4maXr/3fWSYeiRnh8J0W4mQatslPtjLJ8oSiY/AGqB+6qIHE48KaGTT+Rj8KwsKdGjHDkEVosyYGgjenmuvSFHwNtgR+CTD45ro6Hu8B1zEfMQIdSYYGrqIUgQq4vbvjI4PwymP/oCJkhsJJEY/Ve5ew=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=Fpxq5981; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C6293C4AF17;
+	Tue, 30 Apr 2024 07:51:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1714463517;
+	bh=v0WF6wRNl0/o4ZfZUcYLksd3B2wnn2d8J5cCYz5LJiU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Fpxq5981i/tonHvgQuediTxuWMIbKvv5Ne3dxmiMm0+57NaqNaLrzxSit2KNKqwQt
+	 1sB2Gfq/k7rpxsTFiB/Yk2rqVvlJ7iYVvTD7vxCOApgJYPbfXjwTi04locT3zBEFeP
+	 U0FR3AVlJXYsMXTfYA0uKhbiYucrmOlhbIN9qnFg=
+Date: Tue, 30 Apr 2024 09:51:54 +0200
+From: Greg KH <gregkh@linuxfoundation.org>
+To: Edward Liaw <edliaw@google.com>
+Cc: stable@vger.kernel.org, Shuah Khan <shuah@kernel.org>,
+	kernel-team@android.com, Mark Brown <broonie@kernel.org>,
+	Kees Cook <keescook@chromium.org>,
+	Shuah Khan <skhan@linuxfoundation.org>,
+	linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 6.6.y] kselftest: Add a ksft_perror() helper
+Message-ID: <2024043037-debate-capsize-e44c@gregkh>
+References: <20240430010628.430427-1-edliaw@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240430-fix-broad-v1-3-cf3b81bf97ff@chromium.org>
-References: <20240430-fix-broad-v1-0-cf3b81bf97ff@chromium.org>
-In-Reply-To: <20240430-fix-broad-v1-0-cf3b81bf97ff@chromium.org>
-To: Mauro Carvalho Chehab <mchehab@kernel.org>, 
- Florian Fainelli <florian.fainelli@broadcom.com>, 
- Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>, 
- Ray Jui <rjui@broadcom.com>, Scott Branden <sbranden@broadcom.com>
-Cc: linux-media@vger.kernel.org, linux-rpi-kernel@lists.infradead.org, 
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, 
- Hans Verkuil <hverkuil@xs4all.nl>, Ricardo Ribalda <ribalda@chromium.org>
-X-Mailer: b4 0.12.4
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240430010628.430427-1-edliaw@google.com>
 
-Use the error code generated by platform_get_irq() and
-devm_request_irq() as the error code of probe().
+On Tue, Apr 30, 2024 at 01:06:27AM +0000, Edward Liaw wrote:
+> From: Mark Brown <broonie@kernel.org>
+> 
+> [ Upstream commit 907f33028871fa7c9a3db1efd467b78ef82cce20 ]
+> 
+> The standard library perror() function provides a convenient way to print
+> an error message based on the current errno but this doesn't play nicely
+> with KTAP output. Provide a helper which does an equivalent thing in a KTAP
+> compatible format.
+> 
+> nolibc doesn't have a strerror() and adding the table of strings required
+> doesn't seem like a good fit for what it's trying to do so when we're using
+> that only print the errno.
+> 
+> Signed-off-by: Mark Brown <broonie@kernel.org>
+> Reviewed-by: Kees Cook <keescook@chromium.org>
+> Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
+> Stable-dep-of: 071af0c9e582 ("selftests: timers: Convert posix_timers test to generate KTAP output")
+> Signed-off-by: Edward Liaw <edliaw@google.com>
+> ---
+>  tools/testing/selftests/kselftest.h | 14 ++++++++++++++
+>  1 file changed, 14 insertions(+)
 
-It will give a more accurate reason of why it failed.
+This commit is already in 6.6.29, why submit it again?
 
-Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
----
- drivers/media/platform/broadcom/bcm2835-unicam.c | 6 +-----
- 1 file changed, 1 insertion(+), 5 deletions(-)
+confused,
 
-diff --git a/drivers/media/platform/broadcom/bcm2835-unicam.c b/drivers/media/platform/broadcom/bcm2835-unicam.c
-index b2b23d24da19..0b2729bf4a36 100644
---- a/drivers/media/platform/broadcom/bcm2835-unicam.c
-+++ b/drivers/media/platform/broadcom/bcm2835-unicam.c
-@@ -2660,17 +2660,13 @@ static int unicam_probe(struct platform_device *pdev)
- 	}
- 
- 	ret = platform_get_irq(pdev, 0);
--	if (ret < 0) {
--		if (ret != -EPROBE_DEFER)
--			ret = -EINVAL;
-+	if (ret < 0)
- 		goto err_unicam_put;
--	}
- 
- 	ret = devm_request_irq(&pdev->dev, ret, unicam_isr, 0,
- 			       "unicam_capture0", unicam);
- 	if (ret) {
- 		dev_err(&pdev->dev, "Unable to request interrupt\n");
--		ret = -EINVAL;
- 		goto err_unicam_put;
- 	}
- 
-
--- 
-2.44.0.769.g3c40516874-goog
-
+greg k-h
 
