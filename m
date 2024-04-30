@@ -1,183 +1,150 @@
-Return-Path: <linux-kernel+bounces-163774-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-163775-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id AF0E88B6FB1
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 12:31:51 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 478DB8B6FBA
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 12:32:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1FC021F249A4
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 10:31:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EBBAF1F24E59
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 10:32:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D816C12C522;
-	Tue, 30 Apr 2024 10:31:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E12012C46A;
+	Tue, 30 Apr 2024 10:32:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="gKYgjWjE"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="KkrtKEQM"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7341B12C49C
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 10:31:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 094CD12B176;
+	Tue, 30 Apr 2024 10:32:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714473083; cv=none; b=Q1xX9AT/9BzuNBIjfjWb1r5B2RHhdMFpt0iKXi+R/Igeu7V6YrTohFdGfZd4kG08aDf7FII0SHFAjcOSruXpoDjQtJaWwUvyMI6bvZ6H9GID7tqU7ZE7HeMCrRbiLap8MKxzC01qNcna3fDx+zrdUE/tbIpQXwVk6BoN5EfkVx8=
+	t=1714473160; cv=none; b=DxDkvhs9aPSc1A1mosNr1H0iDvxZX1Bc4cUMLnaSWp7BvFv9CzfgDODnlpAawuSpmFq4u1r72K/E6w9/n35sXzpe1HYZrHi4evjjkvmf5fL4MwL8O6Bfz+P5iv+YDge7Kds5rVSGXHET+fIW8+ienrGCjHjzGMIyIffhZ5FIuTs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714473083; c=relaxed/simple;
-	bh=ljw03fQaJwNAPt45c5cOrae5aDZjWuANUhBxMaIT5qk=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=pTdPWvGIjZx3BpkorpZpijihIamm7WZan72dRsAC80I7/kQw7T5dER4ZEJzEiM86v7oOsGxP4MgII5aqpEF/OiYp9U/P9JC1llLTx+wO8DCkdXRaSYrxNHm6RJiD4kGeEMNaW53kQWXhghpivXk7p5S8s2DYs9f/jkyMJdj5OGY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=gKYgjWjE; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1714473080;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=h2GbztPPgBy7pklRNmyoZeFa1LsX3EFvPdCRgPdDry8=;
-	b=gKYgjWjEVolPg3ghgeeB/3MzmgTYdJd7PRAMFL8CD6ihxhngktcBDb/YiveH+is11cU8me
-	B/MehcSZKOUKLsrm90e4bprH8l0Iw/zu+pab89hXpo/MZs8a8RWSnkEnE0UgfWP2mzWfI7
-	3mzK1+iF9BrG6WWU7f1B1sIF1Zwol1s=
-Received: from mail-lj1-f198.google.com (mail-lj1-f198.google.com
- [209.85.208.198]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-644-rkn53f70NzivQinvzzdPBw-1; Tue, 30 Apr 2024 06:31:18 -0400
-X-MC-Unique: rkn53f70NzivQinvzzdPBw-1
-Received: by mail-lj1-f198.google.com with SMTP id 38308e7fff4ca-2dac626d43cso3507961fa.2
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 03:31:18 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714473077; x=1715077877;
-        h=mime-version:user-agent:content-transfer-encoding:autocrypt
-         :references:in-reply-to:date:cc:to:from:subject:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=h2GbztPPgBy7pklRNmyoZeFa1LsX3EFvPdCRgPdDry8=;
-        b=aufmepbzvjRLUcOI3y8NZ9LmakoNS6Vh35am0+DdcIwb8n/KzJbrrrqt/f1VscY2Tw
-         3AX86DUqmzc9OYoINiB+qswFEjexEcxm63TsK4M8HwHizgDpFmnL1O67Xx7xiEkUDctc
-         iqv8QilT06aUc+YO9LQQctY7r5gbnBmvRu0IXwMJFYf3G6Im/kNTqT4buQ5x/esD3w7J
-         8cxXfK7peE6g2k4o6p1gwjRMK1LiW6cXLDS/4THVX2vjGZ45W+hIIH4LtQGgYH/NYSGu
-         03bZvqTNBDEz98K+e1lGoxvc5J7UbgHqzn+FJSDUN6E3F6M3ikK5E40r7EKx14U/rVTm
-         rLNw==
-X-Forwarded-Encrypted: i=1; AJvYcCVz56fenyE2AC4noUhDvFVWNvHvt0XoqTjRNUN50xDa8mLWbIUEcB7CS5dLm2tBrE42FobEOVBVT1rWb5mwdGZA9F0nEHfatHYdiwrt
-X-Gm-Message-State: AOJu0YzKOdzp+Z7ZuI/BYg9CaxhU9dfKV03lOnY6pPX/XkDJoME/y0SF
-	mGYoP2b8S4TXzPK6xk3c2Ft4E/ALQ60VZtAQyp+3FKYKPoqb6kSQd5dVZT1vyi25I4ytrSg2XlP
-	jpV4LOcsLEIi6mrkiHGB2BLwO1ay7MfNRWztVNzcs6UnmpaLK82eSYrnMZFqfSQ==
-X-Received: by 2002:ac2:5bcc:0:b0:513:ec32:aa89 with SMTP id u12-20020ac25bcc000000b00513ec32aa89mr8408521lfn.2.1714473077305;
-        Tue, 30 Apr 2024 03:31:17 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHfQ70OmJ/4CmNxPT8RzTiwhHubkmQJuSfnaDv4b3DeotVbrrkQCx1omoN9O0uu5HhW9woNxg==
-X-Received: by 2002:ac2:5bcc:0:b0:513:ec32:aa89 with SMTP id u12-20020ac25bcc000000b00513ec32aa89mr8408502lfn.2.1714473076862;
-        Tue, 30 Apr 2024 03:31:16 -0700 (PDT)
-Received: from gerbillo.redhat.com ([2a0d:3341:b0ae:6a10::f71])
-        by smtp.gmail.com with ESMTPSA id l2-20020a5d5602000000b0034d117df264sm4798470wrv.114.2024.04.30.03.31.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Apr 2024 03:31:16 -0700 (PDT)
-Message-ID: <18dee53b6ae7cd75196141e4c5d8984bc0f3296f.camel@redhat.com>
-Subject: Re: [PATCH v4 net-next v4 6/6] net: add heuristic for enabling TCP
- fraglist GRO
-From: Paolo Abeni <pabeni@redhat.com>
-To: Felix Fietkau <nbd@nbd.name>, netdev@vger.kernel.org, Eric Dumazet
- <edumazet@google.com>, "David S. Miller" <davem@davemloft.net>, David Ahern
- <dsahern@kernel.org>, Jakub Kicinski <kuba@kernel.org>
-Cc: willemdebruijn.kernel@gmail.com, linux-kernel@vger.kernel.org
-Date: Tue, 30 Apr 2024 12:31:14 +0200
-In-Reply-To: <e3a3a499-11b3-4906-b0f1-b94e70825ca9@nbd.name>
-References: <20240427182305.24461-1-nbd@nbd.name>
-	 <20240427182305.24461-7-nbd@nbd.name>
-	 <e590ba4608c9810d3d75fefdcbba9f2a02c23a0f.camel@redhat.com>
-	 <e3a3a499-11b3-4906-b0f1-b94e70825ca9@nbd.name>
-Autocrypt: addr=pabeni@redhat.com; prefer-encrypt=mutual; keydata=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
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.4 (3.50.4-1.fc39) 
+	s=arc-20240116; t=1714473160; c=relaxed/simple;
+	bh=TOsha8tZbWHodSCSOeDar0KTCBzSwyaa+6PzT/MvwQE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=nxr6SfAu+mfa3l/ROVDa//27C+T1AzxYBoPvh6bp4pxqSwy75g3CWVFn9J/8a4QvSyRMhPC8VxIY2GZLycvyRo1lIZkxtxH0wrL7pr4mJnti4zyyfomsSfJk3vccUgjtS96iaSycZng4kiv0CMBKtOmKAgvHnHNAxtsw8SZ8WKI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=KkrtKEQM; arc=none smtp.client-ip=198.175.65.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1714473159; x=1746009159;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=TOsha8tZbWHodSCSOeDar0KTCBzSwyaa+6PzT/MvwQE=;
+  b=KkrtKEQM7aw9WChLEVUlqEk8OM4xe67hy1kHVFmDuNcvDWMh4PqsCFUd
+   gPH/3oVgw5YE27ph0Y6iHQwIcHnJXE15zLU4q5AOxXskaWZpeFGu98FKs
+   IrGpZe2b2Ha2AKsUDlQvczn/V49f/ITOrRH2546j6IIu42KVmMnuJD9nM
+   bQQvnv0Xt0UVTN94cuEMJefBKw427oHWwP3wqf1bqF+3qQ1rc0erN9VgZ
+   IeWkdp2+O5h4Qz25fBxzYIoPaAXU+ZxBTU4Kbzulwo4rE32Db26dhElfi
+   b6Lt77PANMv5u+OwYdy+zUJ2m1DnKDvHxGbvinOfN9ruv8Hr8Bd2HKn1R
+   w==;
+X-CSE-ConnectionGUID: c4QrvQc3S2uMoFTUBwsMeA==
+X-CSE-MsgGUID: 1r9pW8hsT1KY8T2PJVWFpA==
+X-IronPort-AV: E=McAfee;i="6600,9927,11059"; a="13954780"
+X-IronPort-AV: E=Sophos;i="6.07,241,1708416000"; 
+   d="scan'208";a="13954780"
+Received: from orviesa008.jf.intel.com ([10.64.159.148])
+  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Apr 2024 03:32:39 -0700
+X-CSE-ConnectionGUID: awcwGRgfS4qieBRaGoUYIQ==
+X-CSE-MsgGUID: /22euhvsR3qjzsVbZojErg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,241,1708416000"; 
+   d="scan'208";a="27031455"
+Received: from lkp-server01.sh.intel.com (HELO e434dd42e5a1) ([10.239.97.150])
+  by orviesa008.jf.intel.com with ESMTP; 30 Apr 2024 03:32:34 -0700
+Received: from kbuild by e434dd42e5a1 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1s1kml-00082F-2h;
+	Tue, 30 Apr 2024 10:32:31 +0000
+Date: Tue, 30 Apr 2024 18:31:40 +0800
+From: kernel test robot <lkp@intel.com>
+To: Jingbao Qiu <qiujingbao.dlmu@gmail.com>, broonie@kernel.org,
+	robh@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org, unicorn_wang@outlook.com,
+	inochiama@outlook.com, paul.walmsley@sifive.com, palmer@dabbelt.com,
+	aou@eecs.berkeley.edu
+Cc: oe-kbuild-all@lists.linux.dev, dlan@gentoo.org,
+	linux-spi@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
+	Jingbao Qiu <qiujingbao.dlmu@gmail.com>
+Subject: Re: [PATCH v1 2/2] spi: add support for sophgo spi-nor controller
+Message-ID: <202404301801.fGGuCYoT-lkp@intel.com>
+References: <20240427075426.662671-3-qiujingbao.dlmu@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240427075426.662671-3-qiujingbao.dlmu@gmail.com>
 
-On Tue, 2024-04-30 at 12:23 +0200, Felix Fietkau wrote:
-> On 30.04.24 12:12, Paolo Abeni wrote:
-> > On Sat, 2024-04-27 at 20:23 +0200, Felix Fietkau wrote:
-> > > When forwarding TCP after GRO, software segmentation is very expensiv=
-e,
-> > > especially when the checksum needs to be recalculated.
-> > > One case where that's currently unavoidable is when routing packets o=
-ver
-> > > PPPoE. Performance improves significantly when using fraglist GRO
-> > > implemented in the same way as for UDP.
-> > >=20
-> > > When NETIF_F_GRO_FRAGLIST is enabled, perform a lookup for an establi=
-shed
-> > > socket in the same netns as the receiving device. While this may not
-> > > cover all relevant use cases in multi-netns configurations, it should=
- be
-> > > good enough for most configurations that need this.
-> > >=20
-> > > Here's a measurement of running 2 TCP streams through a MediaTek MT76=
-22
-> > > device (2-core Cortex-A53), which runs NAT with flow offload enabled =
-from
-> > > one ethernet port to PPPoE on another ethernet port + cake qdisc set =
-to
-> > > 1Gbps.
-> > >=20
-> > > rx-gro-list off: 630 Mbit/s, CPU 35% idle
-> > > rx-gro-list on:  770 Mbit/s, CPU 40% idle
-> > >=20
-> > > Signe-off-by: Felix Fietkau <nbd@nbd.name>
-> > > ---
-> > >  net/ipv4/tcp_offload.c   | 32 ++++++++++++++++++++++++++++++++
-> > >  net/ipv6/tcpv6_offload.c | 35 +++++++++++++++++++++++++++++++++++
-> > >  2 files changed, 67 insertions(+)
-> > >=20
-> > > diff --git a/net/ipv4/tcp_offload.c b/net/ipv4/tcp_offload.c
-> > > index 87ae9808e260..3e9b8c6f9c8c 100644
-> > > --- a/net/ipv4/tcp_offload.c
-> > > +++ b/net/ipv4/tcp_offload.c
-> > > @@ -407,6 +407,36 @@ void tcp_gro_complete(struct sk_buff *skb)
-> > >  }
-> > >  EXPORT_SYMBOL(tcp_gro_complete);
-> > > =20
-> > > +static void tcp4_check_fraglist_gro(struct list_head *head, struct s=
-k_buff *skb,
-> > > +				    struct tcphdr *th)
-> > > +{
-> > > +	const struct iphdr *iph;
-> > > +	struct sk_buff *p;
-> > > +	struct sock *sk;
-> > > +	struct net *net;
-> > > +	int iif, sdif;
-> > > +
-> > > +	if (!(skb->dev->features & NETIF_F_GRO_FRAGLIST))
-> >=20
-> > Should we add an 'unlikely()' here to pair with unlikely(is_flist) in
-> > *gro_receive / *gro_complete?
-> Not sure if unlikely() will make any difference here. I think it makes=
-=20
-> more sense in the other places than here.
+Hi Jingbao,
 
-Why? AFAICS this will be called for every packet on the wire, exactly
-as the code getting this annotation in patch 3/6.
+kernel test robot noticed the following build warnings:
 
-> > Should this test be moved into the caller, to avoid an unconditional
-> > function call in the ipv6 code?
->=20
-> The function is already called from tcp4_gro_receive, which is only=20
-> called by IPv4 code. Also, since it's a static function called in only=
-=20
-> one place, it gets inlined by the compiler (at least in my builds).
-> Not sure what unconditional function call you're referring to.
+[auto build test WARNING on 4cece764965020c22cff7665b18a012006359095]
 
-Right you are. I just got fooled by my hope to reuse the same function
-for ipv4 and v6. Please just ignore this last part.
+url:    https://github.com/intel-lab-lkp/linux/commits/Jingbao-Qiu/dt-bindings-mtd-add-sophgo-spi-nor-controller/20240427-155533
+base:   4cece764965020c22cff7665b18a012006359095
+patch link:    https://lore.kernel.org/r/20240427075426.662671-3-qiujingbao.dlmu%40gmail.com
+patch subject: [PATCH v1 2/2] spi: add support for sophgo spi-nor controller
+config: powerpc-randconfig-r111-20240430 (https://download.01.org/0day-ci/archive/20240430/202404301801.fGGuCYoT-lkp@intel.com/config)
+compiler: clang version 15.0.7 (https://github.com/llvm/llvm-project.git 8dfdcc7b7bf66834a761bd8de445840ef68e4d1a)
+reproduce: (https://download.01.org/0day-ci/archive/20240430/202404301801.fGGuCYoT-lkp@intel.com/reproduce)
 
-Cheers,
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202404301801.fGGuCYoT-lkp@intel.com/
 
-Paolo
+sparse warnings: (new ones prefixed by >>)
+>> drivers/spi/spi-sophgo-cv1800.c:259:22: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned int [usertype] addr @@     got restricted __be32 [usertype] @@
+   drivers/spi/spi-sophgo-cv1800.c:259:22: sparse:     expected unsigned int [usertype] addr
+   drivers/spi/spi-sophgo-cv1800.c:259:22: sparse:     got restricted __be32 [usertype]
 
+vim +259 drivers/spi/spi-sophgo-cv1800.c
+
+   244	
+   245	static int sophgo_nor_port_trans(struct sophgo_nor *spif,
+   246					 const struct spi_mem_op *op)
+   247	{
+   248		const uint8_t *dout = NULL;
+   249		uint8_t *din = NULL;
+   250		uint32_t addr;
+   251	
+   252		sophgo_nor_config_port(spif, 1);
+   253	
+   254		if (op->cmd.nbytes)
+   255			sophgo_nor_xfer(spif, (uint8_t *)&op->cmd.opcode, NULL,
+   256					op->cmd.nbytes, op->cmd.buswidth);
+   257	
+   258		if (op->addr.nbytes) {
+ > 259			addr = cpu_to_be32(op->addr.val);
+   260			sophgo_nor_xfer(spif, (uint8_t *)&addr, NULL, op->addr.nbytes,
+   261					op->addr.buswidth);
+   262		}
+   263	
+   264		if (op->data.dir == SPI_MEM_DATA_IN)
+   265			din = op->data.buf.in;
+   266		else if (op->data.dir == SPI_MEM_DATA_OUT)
+   267			dout = op->data.buf.out;
+   268	
+   269		sophgo_nor_xfer(spif, dout, din, op->data.nbytes, op->data.buswidth);
+   270	
+   271		sophgo_nor_config_port(spif, 0);
+   272	
+   273		return 0;
+   274	}
+   275	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
