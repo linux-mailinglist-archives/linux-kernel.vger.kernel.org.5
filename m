@@ -1,313 +1,121 @@
-Return-Path: <linux-kernel+bounces-164725-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-164726-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 244B88B81BD
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 23:03:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2852C8B81C0
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 23:05:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 91BBC1F241A1
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 21:03:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A3B541F2486F
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 21:05:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF8221A0B14;
-	Tue, 30 Apr 2024 21:03:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E65931A38D3;
+	Tue, 30 Apr 2024 21:05:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="PnqS2hH1"
-Received: from mail-lf1-f44.google.com (mail-lf1-f44.google.com [209.85.167.44])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="k5P+VeDa"
+Received: from mail-pj1-f41.google.com (mail-pj1-f41.google.com [209.85.216.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB6BA1A0B09
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 21:02:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC72C179B2;
+	Tue, 30 Apr 2024 21:05:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714510980; cv=none; b=SaKScYBbdUY002lHg3QHyc75WYv5RJWCO9yM3gnPqrfrEJxOLP6Eee/4yxBiOWdwdHlGU0WmXXvH1K9mXc4ADD8f0iSw5XT3J20pJmWDM9ka+rdRtYaP3ej6i7CtuA9Rj59uU+I8hz84OWQAltFzCO+cMa56NQuWxZpbuq0usKc=
+	t=1714511105; cv=none; b=jNHj4HRV6JL2wDvONXvHnsB+KYIVLNFPrlVDnvQ2IhLbzNFRqKjPriorYCJm8spyRG/69BKUFktl+zdEkpR1L5PI4RzSMgsBec+lQ1j8h/7Z3dj8nIGLilndmI0cQ6cI+jPSv3HW/IS/IM2fjeiA1qdevQzgiFCASi+T8dEc8us=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714510980; c=relaxed/simple;
-	bh=kYoljvm9HyA2TzWWA1tW6mh9KGAvs5RQRq7dqiphG14=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=tnEhyZ6MHUrdEntGn5r2nJcOJiLtUZr7yWCizQMn7TpCD65NMvWq9d42dm70tztztLU6b3x9HICUsm2gNJZlOp3lBBi5XE6M8vU5wtI7pDdD9wb9advaejmehGad5qG97gTwNKYKE5jD+N+E4NpmMfW76LrzU/chI/G+Su8E8sQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=PnqS2hH1; arc=none smtp.client-ip=209.85.167.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
-Received: by mail-lf1-f44.google.com with SMTP id 2adb3069b0e04-5176f217b7bso10986840e87.0
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 14:02:58 -0700 (PDT)
+	s=arc-20240116; t=1714511105; c=relaxed/simple;
+	bh=F/rohq7qOnPPqVGaFInXQM5IP4eoAokppwhdkbE6i1M=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=YT6+xvq/gs0iVSdnY6itXjVqL1ev7BB6z+Zzu8rxHHsH4OGadHyVq9hKt9amWC5t+AKZOIwPRGKOcUP/75rRC5BuD1sMW3xSLsoo00+wWCTNpa+qilkeHNphBI86AxN/L4e4B3aLeBWDYjaN8uz55c9PpRylABVjLBFjaBiu9iA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=k5P+VeDa; arc=none smtp.client-ip=209.85.216.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f41.google.com with SMTP id 98e67ed59e1d1-2b2769f017aso1068324a91.3;
+        Tue, 30 Apr 2024 14:05:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1714510977; x=1715115777; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=sqOYWg0qvtmgEcRaoKJRpjHeuHFOM+v1E9hFYdfrJUI=;
-        b=PnqS2hH1KSTreOoBSA9l32tu3pIwHcY9KMMjn1iIIrpMbBC1F5Rr8rhoGYuDmUQQps
-         kgjqK2N9D1WzsELfeHPuDHrhpqVLjGYeryNcR6a/W9zJBvg9zlk/rTjRzYSvCUvTT20R
-         Am5or9PJrHtL0vz4szB12Z2S3ee2oDNn7zyYE=
+        d=gmail.com; s=20230601; t=1714511103; x=1715115903; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=m4iHfZMligVtaN3PJeTsVRrBoDkEzMS8Sae0cv4zl38=;
+        b=k5P+VeDaaxfpeqoAcIxKn2QGf+HcaP9ATRiIHSlAOR4fQakk6pfikmlFTyQDXJOC1S
+         5eIJRGa0WhA1Q5vprmw7wTHgkZ2z7Fq6ZsaorGZvBwEGZAXn4ijY6QsNmDmi+FGOXdMU
+         ZAA7qxVrq9NnqWLHGa29pHrVjNXcq5G9oMGId/C7L99nyTq6dUPpwd9+iltkhMAiucrv
+         saz9b+bHNWXL/QygfIh/1CUaJvQQPnaxTw1pm7Zs6YaPUlk2ZjMHsk5p+6/YTa+HbAes
+         I0FdeFkLZ3a+h6xUAo8k6Pgi+S2PUjem9H6CjPZ29+Fq+/YqtUvM7kIlQPHp6Cp0BHRd
+         K3gQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714510977; x=1715115777;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=sqOYWg0qvtmgEcRaoKJRpjHeuHFOM+v1E9hFYdfrJUI=;
-        b=CBK6/ZLXtVfCHu8p6EnxdN6K/bvfpO3rFZGaGMeaj3qczV5Zs5Sy4CmveTnTKyYw5y
-         GdYkKxGBo8FtY2a3ut1+7N7LuG55WwcEFQia9gllvpLWsKHu8wiitezcxc4zvql5Nzf3
-         /HC/nxvtuEofk6bnDip4K8qAUDK42XLw+8tyWSlO+b8Wrl0DW/IxOQlZUlgk4L1hHLpv
-         m6i3+BtvWTEgRGrbyGV7HhL9PUwGKZKOx+im5cyGYQRUPlBV69wzmby/2HuM17bfoorl
-         +EP1mdmrFgMPu55WJnMLbDXA+01Pf8xJplrQy+k1zOkvdBkUDjJjsA3KGoEh/tPNVHDt
-         i7EA==
-X-Forwarded-Encrypted: i=1; AJvYcCXnTTGM2XpWOE4yKVJBtojMwehALGYX6Pmli+6V7a4aHy/CHWAtx4ZQ7aClL9/mskSByLJKY3ujw81TIiGKq/o5eokBdVQcmfayOlOk
-X-Gm-Message-State: AOJu0YzDH/qZirrBlGHzJ6CqJPJUzi6w4rimXZxVVTCeZh0WL0+uvyqY
-	6AYj5N26wPHK8u96t+eEqNRk/HSycT6K0qP92pBDHcNoILltOZLfPnaoJuSREeuYQ9LQIvJwdA7
-	aabX8SLwbOqOtpzGMDXlJWNSo9EqZoQJCC9tc
-X-Google-Smtp-Source: AGHT+IHgAqjb4vbL/YJXOWO2pnGsbq+kv86t6WEIRYuAsVkdfRhKM4xCHP0QDOcoWnOmRwqqtvqTi+cW+d72Q5NVEGU=
-X-Received: by 2002:ac2:4e94:0:b0:51c:d1ac:c450 with SMTP id
- o20-20020ac24e94000000b0051cd1acc450mr510771lfr.10.1714510976926; Tue, 30 Apr
- 2024 14:02:56 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1714511103; x=1715115903;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=m4iHfZMligVtaN3PJeTsVRrBoDkEzMS8Sae0cv4zl38=;
+        b=POpSdBcPxZ0CSUNNEZlHUVKA9pWkszbdUJkdtuvx5CZrqC4ncaAFcrXPOSVDzQye3I
+         4noa5fv8eAE1fI1K2SQMXO33zdeMxab+CwaYzmqwdygLYS1OLwCDK2lmPXsMbhy1/qp3
+         lxa+Y/yBru8ePMLeprJ0lu58XrGTuhtKBooHlG+Dera1LLzEoE/ZYUWqv7QcSLFgaz3a
+         /aU6JaJsubq+60z6kgo3sl0GzhC+Jiok/xCjTSrTrBkmu5ermVb/xERV+7X0fCYubc2U
+         EW7wojERyUv1aJ7vEySh+Zsq14F7g/Z2E5JuO8DVSE8/05vVvuvwGqR6AuT5defYA500
+         hfzg==
+X-Forwarded-Encrypted: i=1; AJvYcCVNUmDuFVVgG5i+2iyXNuH8vdH7pFqh6pm6/+GbTgccqOu023YbQMsxyV2PDFRzOqhsVlOfT2P4UiCQ827R/plQ5jj9jzeOEL9rCLb4VOVeuotv4yNXDJS77wXMDSjCvzyyG6XegNvjyywPdWwLa+/C5g55C3DmnAnmdejoSdeftJGyZ+Iy9tUC1d8=
+X-Gm-Message-State: AOJu0YwVqm7PC8THz9SDZtLjecKCJKFqs/KdwSsxw/dvO5qWF9DY9Xgj
+	i7xU+5y5ntgCcYxX3UhrbkZEctijc8z7vABdL4oeH7IisbHgmDk7irtcbw==
+X-Google-Smtp-Source: AGHT+IHCNGsoBLeJ3fU8TFjhexfzHWOIYrM1UjKlIVT9yaZbnjjWa024wKqsRJmgw5t6qW1JejjlUg==
+X-Received: by 2002:a17:90a:1fc8:b0:2a5:2f48:1eba with SMTP id z8-20020a17090a1fc800b002a52f481ebamr619471pjz.13.1714511103054;
+        Tue, 30 Apr 2024 14:05:03 -0700 (PDT)
+Received: from google.com ([2620:15c:9d:2:68d:41e7:d081:607d])
+        by smtp.gmail.com with ESMTPSA id sn7-20020a17090b2e8700b002a610ef880bsm36286pjb.6.2024.04.30.14.05.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 30 Apr 2024 14:05:02 -0700 (PDT)
+Date: Tue, 30 Apr 2024 14:04:59 -0700
+From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To: Erick Archer <erick.archer@outlook.com>
+Cc: Kees Cook <keescook@chromium.org>,
+	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
+	linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-hardening@vger.kernel.org
+Subject: Re: [PATCH] Input: ff-core - prefer struct_size over open coded
+ arithmetic
+Message-ID: <ZjFc--tMio1wmBpf@google.com>
+References: <AS8PR02MB72371E646714BAE2E51A6A378B152@AS8PR02MB7237.eurprd02.prod.outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240403213902.26391-1-james.quinlan@broadcom.com>
-In-Reply-To: <20240403213902.26391-1-james.quinlan@broadcom.com>
-From: Jim Quinlan <james.quinlan@broadcom.com>
-Date: Tue, 30 Apr 2024 17:02:45 -0400
-Message-ID: <CA+-6iNynMc7-zZ0No0Y30of+uPiz0mSL9brV3R=UGJNC6ytoxg@mail.gmail.com>
-Subject: Re: [PATCH v9 0/4] PCI: brcmstb: Configure appropriate HW CLKREQ# mode
-To: linux-pci@vger.kernel.org, Nicolas Saenz Julienne <nsaenz@kernel.org>, 
-	Bjorn Helgaas <bhelgaas@google.com>, Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>, 
-	Cyril Brulebois <kibi@debian.org>, Phil Elwell <phil@raspberrypi.com>, 
-	bcm-kernel-feedback-list@broadcom.com, james.quinlan@broadcom.com
-Cc: Conor Dooley <conor+dt@kernel.org>, 
-	"open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" <devicetree@vger.kernel.org>, 
-	Florian Fainelli <florian.fainelli@broadcom.com>, Jim Quinlan <jim2101024@gmail.com>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>, 
-	"moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" <linux-arm-kernel@lists.infradead.org>, 
-	open list <linux-kernel@vger.kernel.org>, 
-	"moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" <linux-rpi-kernel@lists.infradead.org>, 
-	Lorenzo Pieralisi <lpieralisi@kernel.org>, Rob Herring <robh@kernel.org>
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-	boundary="000000000000c3af54061756b198"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <AS8PR02MB72371E646714BAE2E51A6A378B152@AS8PR02MB7237.eurprd02.prod.outlook.com>
 
---000000000000c3af54061756b198
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+On Sat, Apr 27, 2024 at 05:05:56PM +0200, Erick Archer wrote:
+> This is an effort to get rid of all multiplications from allocation
+> functions in order to prevent integer overflows [1][2].
+> 
+> As the "ff" variable is a pointer to "struct ff_device" and this
+> structure ends in a flexible array:
+> 
+> struct ff_device {
+> 	[...]
+> 	struct file *effect_owners[] __counted_by(max_effects);
+> };
+> 
+> the preferred way in the kernel is to use the struct_size() helper to
+> do the arithmetic instead of the calculation "size + count * size" in
+> the kzalloc() function.
+> 
+> The struct_size() helper returns SIZE_MAX on overflow. So, refactor
+> the comparison to take advantage of this.
+> 
+> This way, the code is more readable and safer.
+> 
+> This code was detected with the help of Coccinelle, and audited and
+> modified manually.
+> 
+> Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#open-coded-arithmetic-in-allocator-arguments [1]
+> Link: https://github.com/KSPP/linux/issues/160 [2]
+> Signed-off-by: Erick Archer <erick.archer@outlook.com>
 
-On Wed, Apr 3, 2024 at 5:39=E2=80=AFPM Jim Quinlan <james.quinlan@broadcom.=
-com> wrote:
->
-> v9 -- v8 was setting an internal bus timeout to accomodate large L1 exit
->       latencies.  After meeting the PCIe HW team it was revealed that the
->       HW default timeout value was set low for the purposes of HW debuggi=
-ng
->       convenience; for nominal operation it needs to be set to a higher
->       value independent of this submission's purpose.  This is now a
->       separate commit.
+Applied, thank you.
 
-Bjorn,
-
-Did you have some time to look at this?  Do you have any comments or questi=
-ons?
-
-Regards,
-Jim Quinlan
-Broadcom STB/CM
->
->    -- With v8, Bjorne asked what was preventing a device from exceeding t=
-he
->       time required for the above internal bus timeout.  The answer to th=
-is
->       is for us to set the endpoints' max latency {no-,}snoop value to
->       something below this internal timeout value.  If the endpoint
->       respects this value as it should, it will not send an LTR request
->       with a larger latency value and not put itself in a situation
->       that requires more latency than is possible for the platform.
->
->       Typically, ACPI or FW sets these max latency values.  In most of ou=
-r
->       systems we do not have this happening so it is up to the RC driver =
-to
->       set these values in the endpoint devices.  If the endpoints already
->       have non-zero values that are lower than what we are setting, we le=
-t
->       them be, as it is possible ACPI or FW set them and knows something
->       that we do not.
->
->    -- The "clkreq" commit has only been changed to remove the code that w=
-as
->       setting the timeout value, as this code is now its own commit.
->
-> v8 -- Un-advertise L1SS capability when in "no-l1ss" mode (Bjorn)
->    -- Squashed last two commits of v7 (Bjorn)
->    -- Fix DT binding description text wrapping (Bjorn)
->    -- Fix incorrect Spec reference (Bjorn)
->          s/PCIe Spec/PCIe Express Mini CEM 2.1 specification/
->    -- Text substitutions (Bjorn)
->          s/WRT/With respect to/
->          s/Tclron/T_CLRon/
->
-> v7 -- Manivannan Sadhasivam suggested (a) making the property look like a
->       network phy-mode and (b) keeping the code simple (not counting clkr=
-eq
->       signal appearances, un-advertising capabilites, etc).  This is
->       what I have done.  The property is now "brcm,clkreq-mode" and
->       the values may be one of "safe", "default", and "no-l1ss".  The
->       default setting is to employ the most capable power savings mode.
->
-> v6 -- No code has been changed.
->    -- Changed commit subject and comment in "#PERST" commit (Bjorn, Cyril=
-)
->    -- Changed sign-off and author email address for all commits.
->       This was due to a change in Broadcom's upstreaming policy.
->
-> v5 -- Remove DT property "brcm,completion-timeout-us" from
->       "DT bindings" commit.  Although this error may be reported
->       as a completion timeout, its cause was traced to an
->       internal bus timeout which may occur even when there is
->       no PCIe access being processed.  We set a timeout of four
->       seconds only if we are operating in "L1SS CLKREQ#" mode.
->    -- Correct CEM 2.0 reference provided by HW engineer,
->       s/3.2.5.2.5/3.2.5.2.2/ (Bjorn)
->    -- Add newline to dev_info() string (Stefan)
->    -- Change variable rval to unsigned (Stefan)
->    -- s/implementaion/implementation/ (Bjorn)
->    -- s/superpowersave/powersupersave/ (Bjorn)
->    -- Slightly modify message on "PERST#" commit.
->    -- Rebase to torvalds master
->
-> v4 -- New commit that asserts PERST# for 2711/RPi SOCs at PCIe RC
->       driver probe() time.  This is done in Raspian Linux and its
->       absence may be the cause of a failing test case.
->    -- New commit that removes stale comment.
->
-> v3 -- Rewrote commit msgs and comments refering panics if L1SS
->       is enabled/disabled; the code snippet that unadvertises L1SS
->       eliminates the panic scenario. (Bjorn)
->    -- Add reference for "400ns of CLKREQ# assertion" blurb (Bjorn)
->    -- Put binding names in DT commit Subject (Bjorn)
->    -- Add a verb to a commit's subject line (Bjorn)
->    -- s/accomodat(\w+)/accommodat$1/g (Bjorn)
->    -- Rewrote commit msgs and comments refering panics if L1SS
->       is enabled/disabled; the code snippet that unadvertises L1SS
->       eliminates the panic scenario. (Bjorn)
->
-> v2 -- Changed binding property 'brcm,completion-timeout-msec' to
->       'brcm,completion-timeout-us'.  (StefanW for standard suffix).
->    -- Warn when clamping timeout value, and include clamped
->       region in message. Also add min and max in YAML. (StefanW)
->    -- Qualify description of "brcm,completion-timeout-us" so that
->       it refers to PCIe transactions. (StefanW)
->    -- Remvove mention of Linux specifics in binding description. (StefanW=
-)
->    -- s/clkreq#/CLKREQ#/g (Bjorn)
->    -- Refactor completion-timeout-us code to compare max and min to
->       value given by the property (as opposed to the computed value).
->
-> v1 -- The current driver assumes the downstream devices can
->       provide CLKREQ# for ASPM.  These commits accomodate devices
->       w/ or w/o clkreq# and also handle L1SS-capable devices.
->
->    -- The Raspian Linux folks have already been using a PCIe RC
->       property "brcm,enable-l1ss".  These commits use the same
->       property, in a backward-compatible manner, and the implementaion
->       adds more detail and also automatically identifies devices w/o
->       a clkreq# signal, i.e. most devices plugged into an RPi CM4
->       IO board.
->
-> Jim Quinlan (4):
->   dt-bindings: PCI: brcmstb: Add property "brcm,clkreq-mode"
->   PCI: brcmstb: Set reasonable value for internal bus timeout
->   PCI: brcmstb: Set downstream maximum {no-}snoop LTR values
->   PCI: brcmstb: Configure HW CLKREQ# mode appropriate for downstream
->     device
->
->  .../bindings/pci/brcm,stb-pcie.yaml           |  18 ++
->  drivers/pci/controller/pcie-brcmstb.c         | 161 +++++++++++++++++-
->  2 files changed, 170 insertions(+), 9 deletions(-)
->
->
-> base-commit: 9f8413c4a66f2fb776d3dc3c9ed20bf435eb305e
-> --
-> 2.17.1
->
-
---000000000000c3af54061756b198
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
-
-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
-mOAplh6h3nMZUZxBguxG3g2p3iD4EgibUYneEzqOQafIQB/naf2uetKb8y9jKgWJxq2Y4y8Jqg2u
-uVIO1AyOJjWwqdgN+QhuIlat+qZd03P48Gim9ZPEMDUCAwEAAaOCAdswggHXMA4GA1UdDwEB/wQE
-AwIFoDCBowYIKwYBBQUHAQEEgZYwgZMwTgYIKwYBBQUHMAKGQmh0dHA6Ly9zZWN1cmUuZ2xvYmFs
-c2lnbi5jb20vY2FjZXJ0L2dzZ2NjcjNwZXJzb25hbHNpZ24yY2EyMDIwLmNydDBBBggrBgEFBQcw
-AYY1aHR0cDovL29jc3AuZ2xvYmFsc2lnbi5jb20vZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAw
-TQYDVR0gBEYwRDBCBgorBgEEAaAyASgKMDQwMgYIKwYBBQUHAgEWJmh0dHBzOi8vd3d3Lmdsb2Jh
-bHNpZ24uY29tL3JlcG9zaXRvcnkvMAkGA1UdEwQCMAAwSQYDVR0fBEIwQDA+oDygOoY4aHR0cDov
-L2NybC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29uYWxzaWduMmNhMjAyMC5jcmwwJQYDVR0R
-BB4wHIEaamFtZXMucXVpbmxhbkBicm9hZGNvbS5jb20wEwYDVR0lBAwwCgYIKwYBBQUHAwQwHwYD
-VR0jBBgwFoAUljPR5lgXWzR1ioFWZNW+SN6hj88wHQYDVR0OBBYEFGx/E27aeGBP2eJktrILxlhK
-z8f6MA0GCSqGSIb3DQEBCwUAA4IBAQBdQQukiELsPfse49X4QNy/UN43dPUw0I1asiQ8wye3nAuD
-b3GFmf3SZKlgxBTdWJoaNmmUFW2H3HWOoQBnTeedLtV9M2Tb9vOKMncQD1f9hvWZR6LnZpjBIlKe
-+R+v6CLF07qYmBI6olvOY/Rsv9QpW9W8qZYk+2RkWHz/fR5N5YldKlJHP0NDT4Wjc5fEzV+mZC8A
-AlT80qiuCVv+IQP08ovEVSLPhUp8i1pwsHT9atbWOfXQjbq1B/ditFIbPzwmwJPuGUc7n7vpmtxB
-75sSFMj27j4JXl5W9vORgHR2YzuPBzfzDJU1ul0DIofSWVF6E1dx4tZohRED1Yl/T/ZGMYICbTCC
-AmkCAQEwazBbMQswCQYDVQQGEwJCRTEZMBcGA1UEChMQR2xvYmFsU2lnbiBudi1zYTExMC8GA1UE
-AxMoR2xvYmFsU2lnbiBHQ0MgUjMgUGVyc29uYWxTaWduIDIgQ0EgMjAyMAIMSO43VW7D5NP1X/KD
-MA0GCWCGSAFlAwQCAQUAoIHUMC8GCSqGSIb3DQEJBDEiBCBqrVlur7mK6pQaTPQ7Uaf3L6eM3pE9
-UV/lhX6GHR4iuDAYBgkqhkiG9w0BCQMxCwYJKoZIhvcNAQcBMBwGCSqGSIb3DQEJBTEPFw0yNDA0
-MzAyMTAyNTdaMGkGCSqGSIb3DQEJDzFcMFowCwYJYIZIAWUDBAEqMAsGCWCGSAFlAwQBFjALBglg
-hkgBZQMEAQIwCgYIKoZIhvcNAwcwCwYJKoZIhvcNAQEKMAsGCSqGSIb3DQEBBzALBglghkgBZQME
-AgEwDQYJKoZIhvcNAQEBBQAEggEAXLdOpomVsjiR0YJBvkScNCyVyPmsMjIM7OlYpn4FLnUJ6bXC
-uNryUYuuT4WEKWquE0ww3Jjhq4Z5+qh+fQ3lvbuGbVFuf92PP1j9KqArITBNBqdxb1U+wVj4Dbyv
-S/bqVi0HOpSMVVeZLTVw6u9ZfR27fD4KRP6VMgVWB3TuzEgME7aGzZvx0GW/TddEaa+GYebQ1n+z
-LlSHeDmJ4yCJHl+i/8BqwAcpJOsIr8pVD9QVvqOcjmrMHLbEcK5fwxJGMTYu1ldUKJIjEveZdjKV
-ytOXLgrD8PK/k/EID+aVEzPzrBQy55aldGtADEZW7n6SZK27IzDZlHO3PDgv0w1zkw==
---000000000000c3af54061756b198--
+-- 
+Dmitry
 
