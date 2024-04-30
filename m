@@ -1,85 +1,118 @@
-Return-Path: <linux-kernel+bounces-163632-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-163633-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 256028B6DFC
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 11:15:28 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9605B8B6E01
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 11:17:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D35F428127C
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 09:15:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C72FA1C21EF8
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 09:17:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A587512836D;
-	Tue, 30 Apr 2024 09:15:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B6FA127E3F;
+	Tue, 30 Apr 2024 09:17:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="QezeMGZb"
-Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="zbhIC8EV"
+Received: from mail-lf1-f50.google.com (mail-lf1-f50.google.com [209.85.167.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7FCD127B68;
-	Tue, 30 Apr 2024 09:15:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.92.199
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5903B127B66
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 09:17:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714468520; cv=none; b=KkXPciJILt7US24TFu7aQ0+ypOcywrkwOKSqpfOiVn+sPdAhaD9UQ02xwvYxfdYSyBz4R8561A1DoTGZcZa3LoKedK02lFOtEKhYxO3bJ6QOdg65wbPAgoI3H5/hgVL5/AjdZgEZVTQC+wQ3hvcjopP988GM9PH96cNsr0URJoY=
+	t=1714468629; cv=none; b=INeTzndewkE/aPYsgzctZRncM8XOf/S5jtUB4Ter5mO5QGL2vYhOfcfCcZBOMGSUaEaeUl99oSyTI1FWXklx/ehfcKd/6xaOfsFvpEIVshNtMj8Gv6Q0+nghqbXdaxpNttloN3U2lWiAEzCxUT96KGvc5wC/00X/hGQ9HgYnq+w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714468520; c=relaxed/simple;
-	bh=A5/HDxwcKe1CPVTAY+cgDukpdoaBFZ/fMspZPwQu9PA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=FBZ1DLx3W9wag4CJlNOIqzbIGoz6/hLFSXX0Oscsse+SJ/wSbahaNNJ7mv+jghissMx10XIvOg9BefSGURHBKkQGEvzSOxy1lMIf/EBs/Tn7KgLQN1Ki6ORbNb93aIcJQe4Cv7Dbvzy/neKu7qvHmxmbpBl0Lbad7TjyepjVVCg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=QezeMGZb; arc=none smtp.client-ip=90.155.92.199
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=A5/HDxwcKe1CPVTAY+cgDukpdoaBFZ/fMspZPwQu9PA=; b=QezeMGZbL/2NWH6nP0/grm30hL
-	jMekjRq2qFRUCFMRCVKslzxjAbg9qKxnPhvTx49CL9iwrEZkwp43xFyQ0hHRqjVecoKP32EYhnlYA
-	F7dLnahlYnkHPvtIlVuNduOC/6DiIs0YE0BNWfCwjHkGa3Iepoi9C6AD95I5r4h1/DGRvLsrycMOj
-	XhG0q9cRd0XBlsKJ/npaieP0mBo/2iId1P1fa5DvQPM2vivUKoCsHcxz4syC9vcHK4oPuzkLS4zf0
-	Se759pCqFVTnwp1pXJJWiexcYhQ4XC/Lfhh/wVX2XZtGeCfqZ5RPr4C6k/6Bbbi7gZfurl8CVIIxS
-	ne8E90VA==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-	by desiato.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1s1jZo-0000000Gsl8-2RdT;
-	Tue, 30 Apr 2024 09:15:07 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-	id 3F7AD300684; Tue, 30 Apr 2024 11:15:04 +0200 (CEST)
-Date: Tue, 30 Apr 2024 11:15:04 +0200
-From: Peter Zijlstra <peterz@infradead.org>
-To: Erick Archer <erick.archer@outlook.com>
-Cc: Ingo Molnar <mingo@redhat.com>,
-	Arnaldo Carvalho de Melo <acme@kernel.org>,
-	Namhyung Kim <namhyung@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-	Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	"Liang, Kan" <kan.liang@linux.intel.com>,
-	Kees Cook <keescook@chromium.org>,
-	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
-	Justin Stitt <justinstitt@google.com>,
-	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-hardening@vger.kernel.org
-Subject: Re: [PATCH] perf/ring_buffer: Prefer struct_size over open coded
- arithmetic
-Message-ID: <20240430091504.GC40213@noisy.programming.kicks-ass.net>
-References: <AS8PR02MB72372AB065EA8340D960CCC48B1B2@AS8PR02MB7237.eurprd02.prod.outlook.com>
+	s=arc-20240116; t=1714468629; c=relaxed/simple;
+	bh=s0yx1qau/+zk4mee9o4EH1POhJvehPsTVJGZPyUGpw4=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=lz3tnlORgwx2dCV+dYn7VWr4TLVDq2ym+ZiGJ3ofsdPJLGxW56r1ZJwZnDNcFFAJPLgGil7/kW/dRnIyy7BGr2u13I7yJCXWaygLMwqpYBZYAC5SQOjXk0XaudCf4V8iY8bJEtES1xiEP+8SlrgJLyAXY782tAWkp3v9uwLchwo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=zbhIC8EV; arc=none smtp.client-ip=209.85.167.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lf1-f50.google.com with SMTP id 2adb3069b0e04-51bae805c56so6306150e87.0
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 02:17:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1714468626; x=1715073426; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=PawZZp+34eJqjAmEpUy1c9FrLXAHXmDkiFpfpAXaMIo=;
+        b=zbhIC8EVGRFlDV/uNlFBjtQlWEGP6z8VYwu16RZ1DncsiJiUh5NStz45n2YBD6l3Tk
+         5NaGPAGk4eVKwkUSKDKS0BPV3PdisR4Ku8SoGnVENfQlzSuIaFv+P8wkwv1efULnVPQv
+         3SYlwaPEvLC1EhW5B2bpOCym/LtMbupApaj2bF11k8DyVeh+elMt5V0Nqa8yM5LNCQ7p
+         Jd+HD5SK07D31kjmAX/bohrPVKb+HT2UJN6Qk/JOVyAOTWI9en+GCspslbOWSVho4UCb
+         NVPFmO+tMP59g7u8Sd04W4i+ugUJj5RtkoOxBmur506jC1wPicxcMoKmmaM+p3VGMH0+
+         MVsw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714468626; x=1715073426;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=PawZZp+34eJqjAmEpUy1c9FrLXAHXmDkiFpfpAXaMIo=;
+        b=jQOkT3quy8Oke2pT6u9Z7Hw2KuX89Umf3fp7wZsV2jmlAtGSl0jx9Ke6/3LRtRlxCN
+         53wN/Ph14CWWKRnT7xBbUuUBopiy6/mODKhM1FqoFQPjuWTxL3p7d0UeE4jSoTKK+i3j
+         Bqdk3fsPa/QkSOoqEW5c0JP4zFYTOVQIeX3V6cRICBdhP9Cwkrafjk3D5XJe1pEia9+0
+         Aznl/e6LcuKbSb0c0697wJZKjhLqbFi9TOEvqZbvy1HDetVfDkof9iZXR9FXfVsNHvBX
+         SCYhbjXY/BegLQnhq2VgxNWGHvmG72/FyfXcIRHq7wu5yVVSNAbwGTVYTrU8hjl8c0ip
+         qqEw==
+X-Gm-Message-State: AOJu0YyvRV1yNMlqNvLkS4/nf1UyakYyF8UE4o2JMu/ObHN5t+ssaBJD
+	uOf0YhpoJzq8GYfCYS2aPO1PJ8akD4jZDAT6e/3/OrKgDPuAJCq/MZyZtgU2y7KHTQH5VsyXm2u
+	Y
+X-Google-Smtp-Source: AGHT+IGRLriwH+LxvVdfGjZ/nHvBOGCGsePdPc9XBzWYOKAD/QKTKJ/OWLKfCdj/aPfaWxVAteuLQQ==
+X-Received: by 2002:ac2:4c2f:0:b0:519:63c1:6f2b with SMTP id u15-20020ac24c2f000000b0051963c16f2bmr6494956lfq.54.1714468626562;
+        Tue, 30 Apr 2024 02:17:06 -0700 (PDT)
+Received: from localhost.localdomain ([5.133.47.210])
+        by smtp.gmail.com with ESMTPSA id l6-20020a5d4106000000b0034d8b0b5329sm935513wrp.87.2024.04.30.02.17.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 30 Apr 2024 02:17:06 -0700 (PDT)
+From: srinivas.kandagatla@linaro.org
+To: gregkh@linuxfoundation.org
+Cc: linux-kernel@vger.kernel.org,
+	Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: [RESEND PATCH 0/3] slimbus: patches for v6.10
+Date: Tue, 30 Apr 2024 10:16:54 +0100
+Message-Id: <20240430091657.35428-1-srinivas.kandagatla@linaro.org>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <AS8PR02MB72372AB065EA8340D960CCC48B1B2@AS8PR02MB7237.eurprd02.prod.outlook.com>
+X-Developer-Signature: v=1; a=openpgp-sha256; l=708; i=srinivas.kandagatla@linaro.org; h=from:subject; bh=F70IAvLlsF0cycL+15KW5orMR4z2gLUiWLKstukUj7E=; b=owEBbQGS/pANAwAKAXqh/VnHNFU3AcsmYgBmMLcFDvKZazWg4lJFDZP2N/mwMetj3BH4UottB Dl9auLoNliJATMEAAEKAB0WIQQi509axvzi9vce3Y16of1ZxzRVNwUCZjC3BQAKCRB6of1ZxzRV NxddB/4/7KIfYgg98hYDi8Atk4k8lNS65YbkR/xJnd5o1v513w72KnuYV93JusqzJ5lt7nUWAtf iGI+dZ821TC7iBDE7JjbR0aPKwlJ6it4w+az9GPHdpSQ3ZPSG6SlyHPqpUJGMHlUMQhf1nhgP2B bLPdCvyjUzy/4a4st4Bz/3mOfQFTDjK0OCdJDOIPOH2ytnZTFJq9s4zqmFTMwepp0R/K3y7wRJg /UgOHccngSC2SUVLw5vJik1ENX4CsPWzrwZJdAfwAPDZAZJW25i5lQSs/pl97cVWZZX9eDAlsj4 HhNYFfEaDAls6c9KVWu/+IR4Mj07lhu5BB450sCVeOlLpvpN
+X-Developer-Key: i=srinivas.kandagatla@linaro.org; a=openpgp; fpr=ED6472765AB36EC43B3EF97AD77E3FC0562560D6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Mon, Apr 29, 2024 at 07:40:58PM +0200, Erick Archer wrote:
-> This is an effort to get rid of all multiplications from allocation
-> functions in order to prevent integer overflows [1][2].
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 
-So personally I detest struct_size() because I can never remember wtf it
-does, whereas the code it replaces is simple and straight forward :/
+Here are few patches in slimbus for 6.10 that includes
+- fixing autoloading.
+- coverting driver remove to return void
+- reduce suspend delay
+
+Can you please queue them up for 6.10
+
+Thanks,
+Srini
+
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Krzysztof Kozlowski (1):
+  slimbus: qcom-ctrl: fix module autoloading
+
+Uwe Kleine-König (1):
+  slimbus: Convert to platform remove callback returning void
+
+Viken Dadhaniya (1):
+  slimbus: qcom-ngd-ctrl: Reduce auto suspend delay
+
+ drivers/slimbus/qcom-ctrl.c     |  6 +++---
+ drivers/slimbus/qcom-ngd-ctrl.c | 14 +++++---------
+ 2 files changed, 8 insertions(+), 12 deletions(-)
+
+-- 
+2.25.1
+
 
