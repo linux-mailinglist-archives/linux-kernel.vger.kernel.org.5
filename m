@@ -1,191 +1,214 @@
-Return-Path: <linux-kernel+bounces-164094-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-164096-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 021F08B78EA
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 16:19:09 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C478F8B78F1
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 16:19:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AC32B280C32
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 14:19:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7B3AF280E6B
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 14:19:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2549E174EC2;
-	Tue, 30 Apr 2024 14:06:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 321BD174ED0;
+	Tue, 30 Apr 2024 14:09:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="KHe12cSA"
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2052.outbound.protection.outlook.com [40.107.220.52])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="OwZ9aAxP"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0D80172BB5;
-	Tue, 30 Apr 2024 14:06:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.220.52
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714485968; cv=fail; b=YujMV0Q+YohrshCqDZNxGd2uaibzyG/KcJgX+NEhICvTkrN7pRKSq1zN9XxLj7hkf7tz3FVfGPOgAAQsJdhF5Y2xvv9XLtiSmm3jqlu+EXYp5qf4v3GncJozjx0i6Wjoez/0iZtPr58vZMPdujw1AyGKAUZfooKYd7q52ozeLHw=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714485968; c=relaxed/simple;
-	bh=Fc6VKYeOYLXOTWVl0ZlnwvuvG2hOXy+RPNzfxV/Kdmc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=GjvgLj4dS+SqCNTbxVqZ2NpaDslBd2z1YKm823KyQvTVkzc+E0IJka3b7a1ssh17LVVuW4Tk5R/4T/XOdezBTJxCSH4AZl4ONgnRYaqrc0MgmlpH+no6xeFsPZipPGvibtWReKRH737kRvHWkZEmJEH261RquLSnbNtTMeyOkNw=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=KHe12cSA; arc=fail smtp.client-ip=40.107.220.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=VWOUAG0oo9xPbQvVjhPio1MDlIbqi9yOU+ExwEG0yQkh8D+jm48Ub2vba+X+mtlD4BznyxEoVR5yCFW5U60BRBqDXsxFoTdBq7RKIxwLx76uQEN/w9Sp6td08cjAFahSM/wz9De689xe9TanQtde+Sy77JtJIfUTDasRt+UDKtdnNrP9+XlNV+jfmnvml2D0AtcNm1ovS1OPpT985qlGcE2uRMFVwGnErTfe2e51+zkft3TbEGXwqcr9TgE2Iud9SLoIz/gD1IUg9ybrE+4MZ4Id+0VYz5C+yHnp0y0NuC4pNIAsTZr2/30Ekv3U7S5/HyMreUUP5GOmuDAKa/U6OA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Xv7+alfGmC0L3lFcIc83KYYoR2JcfcX7O1Gra8tjvrs=;
- b=D0EaePuFItIpL1mgg0QTCD3rccTPZYpFJ/aLUv26K3q2tQC/kin+GuLhZSqN4xLg6L1sKMjHFh6TAEwq1ecQLAZzm1nUgD1XYEoL59//2YnV9V5uuaiCclke4IDomukBv+gyRdQaJZuEApaZ7ZHi5eIAS8WS8jWI4bnYoPM51CpEFzyRCiaSNREwLOpUeGeYvctIdrUAmShM0mp9eyb90ALOjxWI+/40gVgbQaEvXYUpqtL/kbRT4jqNTK1KFnGSTBlQEq159yg3Kw/zvbWGKJRmws+krrh9TxHZDfECLq3x2IsdcV5CrYvFA9tm9y/LZNX8n2l0s/+ODHd/cAuCLA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Xv7+alfGmC0L3lFcIc83KYYoR2JcfcX7O1Gra8tjvrs=;
- b=KHe12cSAtVE1u+70JJj9/rEJKi9ZIN61j/npVhI59JEDi6TsHMdWwwmrnEm7FjsVls0pDDWdt4V6yWX1rjchshfVbbUPBMNQ0y0CXHol9XyeDffi7QY56DjYRyvUJTM374IetVzvm5A7lVFX9deZKEoZXigIfcOq5vELPtoKbyBW9idBfm4YIv7msmZ4hoEtufHKelKmCPOb1Q1nZO34k/tDC0bLfXda5EHzmkl3QpnRxxsPii5yoz3bb9jzHRZffO8BmQcK1fEmfsZx7tAUHr95/aeAqaAKaA4v0JjVDAg/eAVJLMt/rLGnX2gihilJiS8YRdo2/hOGhYi/xmnrYw==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from DM6PR12MB3849.namprd12.prod.outlook.com (2603:10b6:5:1c7::26)
- by MW4PR12MB7165.namprd12.prod.outlook.com (2603:10b6:303:21b::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7519.35; Tue, 30 Apr
- 2024 14:06:02 +0000
-Received: from DM6PR12MB3849.namprd12.prod.outlook.com
- ([fe80::c296:774b:a5fc:965e]) by DM6PR12MB3849.namprd12.prod.outlook.com
- ([fe80::c296:774b:a5fc:965e%3]) with mapi id 15.20.7519.031; Tue, 30 Apr 2024
- 14:06:02 +0000
-Date: Tue, 30 Apr 2024 11:06:00 -0300
-From: Jason Gunthorpe <jgg@nvidia.com>
-To: Nicolin Chen <nicolinc@nvidia.com>
-Cc: will@kernel.org, robin.murphy@arm.com, joro@8bytes.org,
-	thierry.reding@gmail.com, vdumpa@nvidia.com, jonathanh@nvidia.com,
-	linux-kernel@vger.kernel.org, iommu@lists.linux.dev,
-	linux-arm-kernel@lists.infradead.org, linux-tegra@vger.kernel.org
-Subject: Re: [PATCH v6 4/6] iommu/arm-smmu-v3: Make __arm_smmu_cmdq_skip_err
- reusable
-Message-ID: <20240430140600.GP941030@nvidia.com>
-References: <cover.1714451595.git.nicolinc@nvidia.com>
- <25150aec77edf5590bca81f4a418ef1ee7b21952.1714451595.git.nicolinc@nvidia.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <25150aec77edf5590bca81f4a418ef1ee7b21952.1714451595.git.nicolinc@nvidia.com>
-X-ClientProxiedBy: SN4PR0501CA0008.namprd05.prod.outlook.com
- (2603:10b6:803:40::21) To DM6PR12MB3849.namprd12.prod.outlook.com
- (2603:10b6:5:1c7::26)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D7A1E172BCD
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 14:09:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1714486183; cv=none; b=GQbdhcyqlLbHzSUdQkfH4xTKnMVuuklYsJD+RYsHUO+5EWGOLe9bybIsUJ0IouTgMHiQ8BxJPQ1Pfp/1XqfEUZYE9UmvRckT1ipSjM/T01BxW4Eo8taVvaj4O08D2vtV4SeYX9wnW+EWA/fvrr0Oz0I3SPwq7tlZx1ncV3kNTTY=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1714486183; c=relaxed/simple;
+	bh=guoF0n/Qyq6Ccmc0F12UjfRg0OG4jG9MfLIKz13ZjmA=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=h5ozB0bd4NfHJJQWLqoY9o+hss3dzLoBTqvNfrnlveHwi03/3eFcMfO/jmM1qVWFoWIKj+gXOPl9h2+7IirBxJB78R2iRbm8YiLw9Uy1vp5aB/DHY1NmdrEOVuikZ59hHC65lT8AH7cCnb7yi2L3y0wDfaAigkkgMgdSuoVdsRA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=OwZ9aAxP; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1714486181;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=BYP2XCJxxgqZUPz16sTT5S0sSKcpMAuqrY3IjVA78x0=;
+	b=OwZ9aAxPz9qc+I4nYqXHLRLnpX4ifMUGFVVLcpUK5WeNZiU3yR7AZRGx2+VtHGVprSY5DI
+	t4PYW+M4upAr/K68tFho1EffdCBAB8Y017yq4bk4FRQ56FAdzAPAY1+IN/Jt+2qncm1ayw
+	5debPoxC3VBZrEwKnoDJAzJMN7lXcQg=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-595-zaVGD3DWM_CRUTCpAQQ7WA-1; Tue, 30 Apr 2024 10:09:35 -0400
+X-MC-Unique: zaVGD3DWM_CRUTCpAQQ7WA-1
+Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 0C40F188CB26;
+	Tue, 30 Apr 2024 14:09:34 +0000 (UTC)
+Received: from warthog.procyon.org.com (unknown [10.42.28.22])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id 64D39492BC7;
+	Tue, 30 Apr 2024 14:09:32 +0000 (UTC)
+From: David Howells <dhowells@redhat.com>
+To: Steve French <smfrench@gmail.com>
+Cc: David Howells <dhowells@redhat.com>,
+	Jeff Layton <jlayton@kernel.org>,
+	Matthew Wilcox <willy@infradead.org>,
+	Paulo Alcantara <pc@manguebit.com>,
+	Shyam Prasad N <sprasad@microsoft.com>,
+	Tom Talpey <tom@talpey.com>,
+	Christian Brauner <christian@brauner.io>,
+	netfs@lists.linux.dev,
+	linux-cifs@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org,
+	linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v7 00/16] netfs, cifs: Delegate high-level I/O to netfslib
+Date: Tue, 30 Apr 2024 15:09:12 +0100
+Message-ID: <20240430140930.262762-1-dhowells@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM6PR12MB3849:EE_|MW4PR12MB7165:EE_
-X-MS-Office365-Filtering-Correlation-Id: 1068d6fb-cc19-4b13-ea4e-08dc691eaaff
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230031|1800799015|376005|366007;
-X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?2IgN1BIs/dI+b/lWVKfq0m9HfPE9LmbHvLCXQRClmOAdKpmSfmz6JkYXNwW/?=
- =?us-ascii?Q?4r2048sNJ7Px/76/ZrbyOSNhbvND2X8ZygsVpaeBmb/dZZ1F+CT8rQCcrP+F?=
- =?us-ascii?Q?2mp1vtZWA2ToKScLnjvauODiMTIazDzlYnf6hzxysFzWaxV6T4v8U397vHbH?=
- =?us-ascii?Q?isRnNjUJyMTq91dMgPk1lWjIksn4+v6PeaNYlZsN1XaaisofQdrPJFH9mJD/?=
- =?us-ascii?Q?cYHG283mdIXocqSp3ioqDPhlPdCBzfrmd8HQMKsYvU3P0pkpQclwTqogoHtG?=
- =?us-ascii?Q?BW/kPjsiyN13e71viT75UAXiSqghI8sk6NXzO8PpEu3z+lS8Gan4giQQwpIJ?=
- =?us-ascii?Q?TpG44CcfGveusKHXyFUVZvK/RQulCSyRf8F/g2bFu4sd2mUxiyDPqEnJiDWB?=
- =?us-ascii?Q?0YICgwP2iliRZlaW7rQOREE6t66VM+XvSh1zUGcBE3OUCCd65cozqCotvcN1?=
- =?us-ascii?Q?mevz56WUAV/ClXhLz4tx0Uv3E7Lwh+VHjiTLo8KPh1b2uowKjFNTb7vTvG+x?=
- =?us-ascii?Q?XwV4LE775ERbrd/PmyoOXCWi/doxqjkljOHs2W2273REhNJpLnTK3XYGRmyw?=
- =?us-ascii?Q?ZOv/0H5wQwxkiKIMxmZRw65h6bFDV0k5rqpuBOxXCVupRs8qOr6iPQRfHo/J?=
- =?us-ascii?Q?biWEwdaAyxYHxoUPykMEdJwT4xt/BPhN2lDEd7zT2tDL7q3yw/I2rCh4tCHi?=
- =?us-ascii?Q?oF6s94Ykx0DFVl1jYTJTBpvTzLwj3j+DgJo/PaWo6S/11MOk4dM05lCZEmju?=
- =?us-ascii?Q?7FVm6OGZWgBDbPH0cVS+e8CfrFC8xAJEUZPlA4eKtp+3hHpG1m8xn9MY740s?=
- =?us-ascii?Q?p9MbG2QLXkKit/XLdV18W0sTut3EONO/LU5AVL/C1LIcwH7/gy0rhzTodddd?=
- =?us-ascii?Q?mZyUZU6tmtLAZwNLSaBWTiz0gHXsIz4gLASjI/ZHDueJA0HNnztQopGhC8qb?=
- =?us-ascii?Q?Sd7lzrOw/4wwYj1FmFrF6Wz+68xrIsuPG4q7Ps4cWS8syOCVyVXy3cZfqXJW?=
- =?us-ascii?Q?p7rIyNKo2pJm9F1D+2YVtkrrgu2ipWGgQyzp3fIjwyhVwUUaawMRankK3DxR?=
- =?us-ascii?Q?1Mxs+uDDrRL2SMd75kuSQb/fJ7zaGm5kM4XT4rs4eYve1y1ugEw27wEYN0UE?=
- =?us-ascii?Q?s1voblsXurs7BvQlQDWv1h7BYPQtqPWnAcOeWvduMiadFV0La0pUMLd4PSBf?=
- =?us-ascii?Q?r/IieYUzxSlm6MJy7pvkHM7Zs33C4lKjDMdxEnfxNjea4+GrkSQCgsY5aCQB?=
- =?us-ascii?Q?y4caOh9X3msXETAu11+SebVcuhPrDpqiEoTAghgAmQ=3D=3D?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3849.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(376005)(366007);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?Ot/r774E8O6OQtcO74+Z1BIAAX3gTcYw7rOjKIkqhaV5sHzwzaoPIowhAc2E?=
- =?us-ascii?Q?sbkpxiz9eFdmLY9IYYENOQFiClxKkmXZBnZ0oJ4cr2hse1lQp+fjtdyCmyo0?=
- =?us-ascii?Q?me7brtZKw2Xz1y0d7IlcKeA0OICEFVXgucx5z2myhn9p5YeYL6ruUUQACn4O?=
- =?us-ascii?Q?3xTojfI+penGC6ib6FbDACg0ntuup5JcXjLRJHLH9lMXnf43oIfY7tgNyc2t?=
- =?us-ascii?Q?W/FPODtCAv4ufIwWaNE0beWJc7mQUoFiG7jb2Mfzsme8vLgS+L8ZCaczAP7+?=
- =?us-ascii?Q?YZqHzaVjWwjBBQcBWbkcr8D87u+x1vMSTPvdyQagKz//BJO8JQtUD92WfINB?=
- =?us-ascii?Q?3vVSgop0thlX46feKcsSm0si9JpRbCaqB6S7ckL+2tRfsLuLcQnMwBo/MXNW?=
- =?us-ascii?Q?JWpY/0XA+x+nEKxvSXUOKBprKMuSe5p7KHxiHK+UGBUbbnwL4QzWSHlXV86o?=
- =?us-ascii?Q?Cuc3a0hx5qD6FpG9eq1bmTfYr65o3anpcvZXNZv7zrRdHyfJ7vcLIqFzn/vV?=
- =?us-ascii?Q?SbOc/W8p5qZyRJROQUSFfqWyjQ/88Oa6O9U9B4ywI/VkPt3habcvMjJujMg+?=
- =?us-ascii?Q?qEHyWnqPC9rOQpknNxif1QqLK3CblIBQFFh5OtNdyXDVhFbm9QlNTgwQI5xQ?=
- =?us-ascii?Q?13AIYLyDwineoT5wM+XVhz36yH0OOzbs6j3VNMjRAavtU5I1hGqFacUu8z/s?=
- =?us-ascii?Q?DOtlTnX0ydj7dyWwLIz5efkm2ffiU42/9NOUwzFjzkYHkHUBbjIt0lJo94wR?=
- =?us-ascii?Q?d9a1Zhpu6Xpf9arxpvmyylWmj9uFO+lblDP9hnR7MCKWzlszpCJ4dvjIC3Ls?=
- =?us-ascii?Q?orTfw1RrRfxcOvkb7BZRrNd09C8SL4xUA2/Hkpaxr+Dk2ObBSEnYbtOdfL0L?=
- =?us-ascii?Q?mwi/wRC1Dk7xOytu+A4daC8OW5Td+k9/MFoF5BclLGHgllfR+O3n340/l9lI?=
- =?us-ascii?Q?vGhE2zrxluzOySHrsE31JQM/dXvZOJGbQ2vQt/Y+pCi9b29pnr3Ffn3I4qnz?=
- =?us-ascii?Q?nl8awNPX8v731eisLYYKdVAqtnLpaZmaeVzjrglPSaJDa59Bg2L7mP40dXpO?=
- =?us-ascii?Q?79pll/4cHZJylHruCgdln/QNvFBIOFxglHxeYt+TC/b8qJM8kyQGOazySdAk?=
- =?us-ascii?Q?iyP+pRcmPIcJxbkehAO2Tl5VF4dJPTAa425g8mS8vJSDhzPdXrrfMELPylgl?=
- =?us-ascii?Q?RHM6iMg4ahFdQaHxt04TMRLdeWe/IHxsXmtJ6HlHaSkR6IkBfX3PL4MuUUVW?=
- =?us-ascii?Q?4DLAqWYage0J5abaHvxSF7RmytnSjttAuuN7KDfABNHR8qMZlreQvkNzzrfd?=
- =?us-ascii?Q?nsHOfK4VPA6YgWDhgGwUuwHrDVq83bguMJm20wlWCpxWaZUuBXI6B5rVFOjr?=
- =?us-ascii?Q?v8ZuIiIH8YwVhLn1Wk9VsU0xIz0q5rqQxL/izI9hRhHFz0OrywcqBb8KcYwh?=
- =?us-ascii?Q?o/aAYIazqx4RwBu1b5pr16IRzdaQvBNufYzL710BnXtu3WtvxFpAfZz/ta5j?=
- =?us-ascii?Q?LP/E2ktQZF9rw2Pgl/vgELecIBEtImyJOkjTdrk7sMQ+LO/vqsXcwkcOlCEK?=
- =?us-ascii?Q?kjIsq98Y+eJgJ7QutLIfjfeAau55/lb4r2UIaYK3?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1068d6fb-cc19-4b13-ea4e-08dc691eaaff
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3849.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Apr 2024 14:06:01.9990
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: nr6L7Z/2aqCyGn39CpIdgTIeAKfTjoMKLGRG7NFC4YPjNejxk7cmP16ldxG+oiSH
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR12MB7165
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.10
 
-On Mon, Apr 29, 2024 at 09:43:47PM -0700, Nicolin Chen wrote:
-> Allow __arm_smmu_cmdq_skip_err function to be reused by NVIDIA Tegra241
-> CMDQV unit since it will use the same data structure for q. And include
-> the CMDQ_QUIRK_SYNC_CS_NONE_ONLY quirk when inserting a CMD_SYNC.
-> 
-> Signed-off-by: Nicolin Chen <nicolinc@nvidia.com>
-> ---
->  drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c | 7 +++++--
->  drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h | 2 ++
->  2 files changed, 7 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-> index 538850059bdd..5111859347d5 100644
-> --- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-> +++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-> @@ -379,8 +379,8 @@ static void arm_smmu_cmdq_build_sync_cmd(u64 *cmd, struct arm_smmu_device *smmu,
->  	arm_smmu_cmdq_build_cmd(cmd, &ent);
->  }
->  
-> -static void __arm_smmu_cmdq_skip_err(struct arm_smmu_device *smmu,
-> -				     struct arm_smmu_queue *q)
-> +void __arm_smmu_cmdq_skip_err(struct arm_smmu_device *smmu,
-> +			      struct arm_smmu_queue *q)
->  {
->  	static const char * const cerror_str[] = {
->  		[CMDQ_ERR_CERROR_NONE_IDX]	= "No error",
-> @@ -428,6 +428,9 @@ static void __arm_smmu_cmdq_skip_err(struct arm_smmu_device *smmu,
->  	for (i = 0; i < ARRAY_SIZE(cmd); ++i)
->  		dev_err(smmu->dev, "\t0x%016llx\n", (unsigned long long)cmd[i]);
->  
-> +	if (q->quirks & CMDQ_QUIRK_SYNC_CS_NONE_ONLY)
-> +		cmd_sync.sync.cs_none = true;
+Hi Steve,
 
-This hunk should be in "iommu/arm-smmu-v3: Add CS_NONE quirk" ?
+Here are patches to convert cifs to use the netfslib library.  I've tested
+them with and without a cache.  There appears to be a signifcant
+performance improvement in buffered writeback (around 50% throughput rate
+with fio tests).
 
-Jason
+The patches remove around 2000 lines from CIFS.
+
+Notes:
+
+ (1) CIFS is made to use unbuffered I/O for unbuffered caching modes and
+     write-through caching for cache=strict.
+
+ (2) Various cifs fallocate() function implementations have issues that
+     aren't easily fixed without enhanced protocol support.
+
+ (3) It should be possible to turn on multipage folio support in CIFS now.
+
+ (4) The then-unused CIFS code is removed in three patches, not one, to
+     avoid the git patch generator from producing confusing patches in
+     which it thinks code is being moved around rather than just being
+     removed.
+
+The patches can be found here also:
+
+	https://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-fs.git/log/?h=cifs-netfs
+
+Changes
+=======
+ver #7)
+ - Rebased on -rc6 to absorb some fixes that have gone upstream, including
+   a fix for a leak of the fscache volume cookie.
+ - Added a patch to turn on multipage folio support in cifs.
+
+ver #6)
+ - The netfslib write helpers got rewritten and, consequently, some changes
+   were made here.
+ - Rearranged the patch order a little to put the smaller changes first.
+ - Use a different way to invalidate that doesn't use ->launder_folio().
+ - Attempt to open the handle on the server READ+WRITE, even if the user
+   asks for O_WRONLY, if the mount was with "-o fsc" so that we can fill in
+   the gaps in partial folio writes; if we can't fall back to WRITE-only
+   and disable caching.
+ - Fixed the cookie key to match the key used by iget5_locked() to avoid
+   "Duplicate cookie" errors.
+ - Made add_credits_and_wake_if() clear the number of returned credits,
+   allowing it to be called multiple times in cleanup/error handling.
+ - Made ->async_writev() not return an error directly, but always set it on
+   the subreq.
+ - Fixed error handling from writethrough writing.
+
+ver #5)
+ - Rebased to -rc3 plus SteveF's for-next branch as netfslib is now
+   upstream, as are a couple of patches from this series.
+ - Replace the ->replay bool Shyam added with a flag on the netfs
+   subrequest.  This is tested by the code, but not currently set (see
+   above).
+
+ver #4)
+ - Slimmed down the branch:
+   - Split the cifs-related patches off to a separate branch (cifs-netfs)
+   - Deferred the content-encryption to the in-progress ceph changes.
+   - Deferred the use-PG_writeback rather than PG_fscache patch
+ - Rebased on a later linux-next with afs-rotation patches.
+
+ver #3)
+ - Moved the fscache module into netfslib to avoid export cycles.
+ - Fixed a bunch of bugs.
+ - Got CIFS to pass as much of xfstests as possible.
+ - Added a patch to make 9P use all the helpers.
+ - Added a patch to stop using PG_fscache, but rather dirty pages on
+   reading and have writepages write to the cache.
+
+ver #2)
+ - Folded the addition of NETFS_RREQ_NONBLOCK/BLOCKED into first patch that
+   uses them.
+ - Folded addition of rsize member into first user.
+ - Don't set rsize in ceph (yet) and set it in kafs to 256KiB.  cifs sets
+   it dynamically.
+ - Moved direct_bv next to direct_bv_count in struct netfs_io_request and
+   labelled it with a __counted_by().
+ - Passed flags into netfs_xa_store_and_mark() rather than two bools.
+ - Removed netfs_set_up_buffer() as it wasn't used.
+
+David
+
+Link: https://lore.kernel.org/r/20231213152350.431591-1-dhowells@redhat.com/ [1]
+Link: https://lore.kernel.org/r/20231013160423.2218093-1-dhowells@redhat.com/ # v1
+Link: https://lore.kernel.org/r/20231117211544.1740466-1-dhowells@redhat.com/ # v2
+Link: https://lore.kernel.org/r/20231207212206.1379128-1-dhowells@redhat.com/ # v3
+Link: https://lore.kernel.org/r/20231213154139.432922-1-dhowells@redhat.com/ # v4
+Link: https://lore.kernel.org/r/20240205225726.3104808-1-dhowells@redhat.com/ # v5
+
+David Howells (16):
+  cifs: Use alternative invalidation to using launder_folio
+  cifs: Replace cifs_readdata with a wrapper around netfs_io_subrequest
+  cifs: Replace cifs_writedata with a wrapper around netfs_io_subrequest
+  cifs: Use more fields from netfs_io_subrequest
+  cifs: Make wait_mtu_credits take size_t args
+  cifs: Replace the writedata replay bool with a netfs sreq flag
+  cifs: Move cifs_loose_read_iter() and cifs_file_write_iter() to file.c
+  cifs: Set zero_point in the copy_file_range() and remap_file_range()
+  cifs: Add mempools for cifs_io_request and cifs_io_subrequest structs
+  cifs: Make add_credits_and_wake_if() clear deducted credits
+  cifs: Implement netfslib hooks
+  cifs: Cut over to using netfslib
+  cifs: Remove some code that's no longer used, part 1
+  cifs: Remove some code that's no longer used, part 2
+  cifs: Remove some code that's no longer used, part 3
+  cifs: Enable large folio support
+
+ fs/netfs/buffered_write.c    |    6 +
+ fs/netfs/io.c                |    7 +-
+ fs/smb/client/Kconfig        |    1 +
+ fs/smb/client/cifsfs.c       |  124 +-
+ fs/smb/client/cifsfs.h       |   11 +-
+ fs/smb/client/cifsglob.h     |   65 +-
+ fs/smb/client/cifsproto.h    |   12 +-
+ fs/smb/client/cifssmb.c      |  120 +-
+ fs/smb/client/file.c         | 2898 ++++++----------------------------
+ fs/smb/client/fscache.c      |  109 --
+ fs/smb/client/fscache.h      |   54 -
+ fs/smb/client/inode.c        |   45 +-
+ fs/smb/client/smb2ops.c      |   10 +-
+ fs/smb/client/smb2pdu.c      |  186 ++-
+ fs/smb/client/smb2proto.h    |    5 +-
+ fs/smb/client/trace.h        |  144 +-
+ fs/smb/client/transport.c    |   17 +-
+ include/linux/netfs.h        |    1 +
+ include/trace/events/netfs.h |    1 +
+ 19 files changed, 886 insertions(+), 2930 deletions(-)
+
 
