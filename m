@@ -1,108 +1,164 @@
-Return-Path: <linux-kernel+bounces-164502-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-164506-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4A6EB8B7E55
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 19:21:18 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 10F998B7E5D
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 19:24:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DB3631F22F12
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 17:21:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B9CB91F23558
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 17:24:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2C3417BB19;
-	Tue, 30 Apr 2024 17:21:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82D5C181323;
+	Tue, 30 Apr 2024 17:24:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BZCBhL1B"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=inria.fr header.i=@inria.fr header.b="CSoyvMe5"
+Received: from mail3-relais-sop.national.inria.fr (mail3-relais-sop.national.inria.fr [192.134.164.104])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F047017B4F7;
-	Tue, 30 Apr 2024 17:21:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9FF1717F385;
+	Tue, 30 Apr 2024 17:24:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.134.164.104
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714497668; cv=none; b=Dci5bDPFTjdgJV8odzoBTuZTpfjlOkCLcC6OWj6o5Sopva9YQTxvIhsbB1FZfuih3sG0eFgawFQSd5n/8ioeW2OaP7ygcQgmKVaAnvcZBxgj2yWTHZ82k1jZcwVB9hxxwdbFVhi0UOtquNnA4ResWEhc43c3zDIj2NsRke/8J9E=
+	t=1714497862; cv=none; b=UqA60kMxGMLZ0IL7v0rtyYjNQHZfgIO5nz14NkXR/fokFUypt7cwSi7Ly8jTAHBJPQrFHGhr5Cs1i0aNOJgauibeuZtSA9qYENZu3eBx8wlk0cGuZa75dBplFDSaPFdLdmiFDwzU4ISUfG8ikefJgM4MS/mM++U5+Ez/eDsEuEo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714497668; c=relaxed/simple;
-	bh=WBWYFzFqdOvu2TvD7AsjXQVL81Xq44GKfndV58CUBao=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=HevySdJsdoUAIR+uYzHJ67p2P3cKHEVTZExkt3rHwTWPLNH+8jQx0nJPz9WyBFoSr6zXLk9g1weFRYh318fvypFVnzhPBbXtaOSJFEvLTluWBOLX4ANR84d56LOpOLzZTjrT57Pf3RXAgZglXtRu+ntLvnjZaK2+O6uuaI6iRKk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BZCBhL1B; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 20069C2BBFC;
-	Tue, 30 Apr 2024 17:21:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714497667;
-	bh=WBWYFzFqdOvu2TvD7AsjXQVL81Xq44GKfndV58CUBao=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=BZCBhL1BOXlLkZMjKALy9Z1yO3OyOEdBSHpe7McR1ZS0BsorzFKd/hPzHbn4etIgY
-	 +5plPMYLvBXSlg5pH3/V0wsm3OOo9tmG/12pA/TuWAwoGwakPqvr94J8T7xMxzYAf1
-	 F9WfbF1RNilMwQ9ipk5waknJ0eSAq19vfeGQvi5ONt8j1fSfEdqxi/uunslUAwZ/dM
-	 mBNnDsAG2phbLX3ucmPeAS+FLJ7u7ggTO73iiIFP58btQII5mQEJYXVQtbdPqUEMYP
-	 6IDJlgUygWHT0K4xstK8koiL+ZEkX8bWeuSiJcXYkpFwk9s79sNBZbBfM9ubckGQQ+
-	 HQoqSCqo8PooA==
-Date: Tue, 30 Apr 2024 18:21:01 +0100
-From: Conor Dooley <conor@kernel.org>
-To: Alisa-Dariana Roman <alisadariana@gmail.com>
-Cc: michael.hennerich@analog.com, linux-iio@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	alexandru.tachici@analog.com, lars@metafoo.de, jic23@kernel.org,
-	robh@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-	conor+dt@kernel.org, lgirdwood@gmail.com, broonie@kernel.org,
-	andy@kernel.org, nuno.sa@analog.com, marcelo.schmitt@analog.com,
-	bigunclemax@gmail.com, dlechner@baylibre.com, okan.sahin@analog.com,
-	fr0st61te@gmail.com, alisa.roman@analog.com,
-	marcus.folkesson@gmail.com, schnelle@linux.ibm.com,
-	liambeguin@gmail.com
-Subject: Re: [PATCH v7 5/6] dt-bindings: iio: adc: ad7192: Add AD7194 support
-Message-ID: <20240430-winnings-wrongness-32328ccfe3b5@spud>
-References: <20240430162946.589423-1-alisa.roman@analog.com>
- <20240430162946.589423-6-alisa.roman@analog.com>
+	s=arc-20240116; t=1714497862; c=relaxed/simple;
+	bh=wyni/P2zqYEIwz4b2jPFOn7K/o20R+rMhqEI4gvwYGQ=;
+	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=d19M+lG+DqN1/Eutlq46JzgRgVPsHuLov1r3uyq/ietPdJW16Rrnlp6bqGD4L9LsUgwQ68U5UWG/O0MEIbs305pwaP1cMsiwFLZXP9DKPrGttK70AOYoEOlIjvFtBdu+KlIkjcBt9hvMUlb90KV9lZb2+9aqLHpkPsAXLIJWTG0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=inria.fr; spf=pass smtp.mailfrom=inria.fr; dkim=pass (1024-bit key) header.d=inria.fr header.i=@inria.fr header.b=CSoyvMe5; arc=none smtp.client-ip=192.134.164.104
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=inria.fr
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=inria.fr
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=inria.fr; s=dc;
+  h=date:from:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=Z+7S7yss0Z/3HfrJHfsoOEnXPR0d6itI8idhdLjGVt8=;
+  b=CSoyvMe5xwRTMoiNMuI683b7Jk5rHr0SbfmYxPKCgJLai1z/UPqyMfsm
+   kNOpdONPLwTO+QNaP116cerg0SZxKUsJOad+FL87HaJdh8c1GeV1W2fzc
+   o0ZvYDgwl+IsXKIUDWLsjocO/xaqULgHUxKbneo06ZRlnM+DKXdKpUcqB
+   E=;
+Authentication-Results: mail3-relais-sop.national.inria.fr; dkim=none (message not signed) header.i=none; spf=SoftFail smtp.mailfrom=julia.lawall@inria.fr; dmarc=fail (p=none dis=none) d=inria.fr
+X-IronPort-AV: E=Sophos;i="6.07,242,1708383600"; 
+   d="scan'208";a="86109162"
+Received: from 12-176-169-194.cust.keyyo.net (HELO hadrien) ([194.169.176.12])
+  by mail3-relais-sop.national.inria.fr with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Apr 2024 19:23:08 +0200
+Date: Tue, 30 Apr 2024 19:23:07 +0200 (CEST)
+From: Julia Lawall <julia.lawall@inria.fr>
+To: R Sundar <prosunofficial@gmail.com>
+cc: Christophe JAILLET <christophe.jaillet@wanadoo.fr>, mripard@kernel.org, 
+    mchehab@kernel.org, linux-media@vger.kernel.org, 
+    linux-kernel@vger.kernel.org, skhan@linuxfoundation.org, 
+    javier.carrasco.cruz@gmail.com
+Subject: Re: [PATCH linux-next] media:cdns-csi2tx: replace of_node_put() with
+ __free
+In-Reply-To: <f86b0c15-8fc4-4ed7-984a-3ab90c66a3eb@gmail.com>
+Message-ID: <76b3d25-2ba3-2f9f-3ed6-61a63983a225@inria.fr>
+References: <20240429171543.13032-1-prosunofficial@gmail.com> <6df5d715-3e31-40a5-9db3-2c3b9f12efac@wanadoo.fr> <f86b0c15-8fc4-4ed7-984a-3ab90c66a3eb@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="/OFAIs/FPFUuexLI"
-Content-Disposition: inline
-In-Reply-To: <20240430162946.589423-6-alisa.roman@analog.com>
+Content-Type: multipart/mixed; boundary="8323329-728899255-1714497787=:3106"
+
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
+
+--8323329-728899255-1714497787=:3106
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 
 
---/OFAIs/FPFUuexLI
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
 
-On Tue, Apr 30, 2024 at 07:29:45PM +0300, Alisa-Dariana Roman wrote:
-> +      diff-channels:
-> +        description:
-> +          Both inputs can be connected to pins AIN1 to AIN16 by choosing the
-> +          appropriate value from 1 to 16.
-> +        items:
-> +          minimum: 1
-> +          maximum: 16
-> +
-> +      single-channel:
-> +        description:
-> +          Positive input can be connected to pins AIN1 to AIN16 by choosing the
-> +          appropriate value from 1 to 16. Negative input is connected to AINCOM.
-> +        items:
-> +          minimum: 1
-> +          maximum: 16
+On Tue, 30 Apr 2024, R Sundar wrote:
 
-Up to 16 differential channels and 16 single-ended channels, but only 16
-pins? Would the number of differential channels not max out at 8?
+> On 30/04/24 00:10, Christophe JAILLET wrote:
+> > Le 29/04/2024 à 19:15, R Sundar a écrit :
+> > > Use the new cleanup magic to replace of_node_put() with
+> > > __free(device_node) marking to auto release when they get out of scope.
+> > >
+> > > Suggested-by: Julia Lawall <julia.lawall@inria.fr>
+> > > Signed-off-by: R Sundar <prosunofficial@gmail.com>
+> > > ---
+> > >   drivers/media/platform/cadence/cdns-csi2tx.c | 19 +++++++------------
+> > >   1 file changed, 7 insertions(+), 12 deletions(-)
+> > >
+> > > diff --git a/drivers/media/platform/cadence/cdns-csi2tx.c
+> > > b/drivers/media/platform/cadence/cdns-csi2tx.c
+> > > index 3d98f91f1bee..88aed2f299fd 100644
+> > > --- a/drivers/media/platform/cadence/cdns-csi2tx.c
+> > > +++ b/drivers/media/platform/cadence/cdns-csi2tx.c
+> > > @@ -496,48 +496,43 @@ static int csi2tx_get_resources(struct csi2tx_priv
+> > > *csi2tx,
+> > >   static int csi2tx_check_lanes(struct csi2tx_priv *csi2tx)
+> > >   {
+> > >       struct v4l2_fwnode_endpoint v4l2_ep = { .bus_type = 0 };
+> > > -    struct device_node *ep;
+> > >       int ret, i;
+> > > -
+> > > -    ep = of_graph_get_endpoint_by_regs(csi2tx->dev->of_node, 0, 0);
+> > > +    struct device_node *ep __free(device_node) =
+> > > +        of_graph_get_endpoint_by_regs(csi2tx->dev->of_node, 0, 0);
+> > > +
+> > >       if (!ep)
+> > >           return -EINVAL;
+> > >       ret = v4l2_fwnode_endpoint_parse(of_fwnode_handle(ep), &v4l2_ep);
+> > >       if (ret) {
+> > >           dev_err(csi2tx->dev, "Could not parse v4l2 endpoint\n");
+> > > -        goto out;
+> > > +        return ret;
+> > >       }
+> > >       if (v4l2_ep.bus_type != V4L2_MBUS_CSI2_DPHY) {
+> > >           dev_err(csi2tx->dev, "Unsupported media bus type: 0x%x\n",
+> > >               v4l2_ep.bus_type);
+> > > -        ret = -EINVAL;
+> > > -        goto out;
+> > > +        return -EINVAL;
+> > >       }
+> > >       csi2tx->num_lanes = v4l2_ep.bus.mipi_csi2.num_data_lanes;
+> > >       if (csi2tx->num_lanes > csi2tx->max_lanes) {
+> > >           dev_err(csi2tx->dev,
+> > >               "Current configuration uses more lanes than supported\n");
+> > > -        ret = -EINVAL;
+> > > -        goto out;
+> > > +        return -EINVAL;
+> > >       }
+> > >       for (i = 0; i < csi2tx->num_lanes; i++) {
+> > >           if (v4l2_ep.bus.mipi_csi2.data_lanes[i] < 1) {
+> > >               dev_err(csi2tx->dev, "Invalid lane[%d] number: %u\n",
+> > >                   i, v4l2_ep.bus.mipi_csi2.data_lanes[i]);
+> > > -            ret = -EINVAL;
+> > > -            goto out;
+> > > +            return -EINVAL;
+> > >           }
+> > >       }
+> > >       memcpy(csi2tx->lanes, v4l2_ep.bus.mipi_csi2.data_lanes,
+> > >              sizeof(csi2tx->lanes));
+> > > -out:
+> > > -    of_node_put(ep);
+> > >       return ret;
+> >
+> > Hi,
+> >
+> > Nit: return 0; ?
+> >
+> > CJ
+> >
+> > >   }
+> >
+> Hi,
+>
+> In success case, ret variable value also will be zero, else for non-zero ret
+> value it will return from v4l2_fwnode_endpoint_parse()'s error case handling
+> block.
 
---/OFAIs/FPFUuexLI
-Content-Type: application/pgp-signature; name="signature.asc"
+Indeed, but it seems that the return ret at the end of the function always
+returns 0?  If that is the case, return 0 would be better, as one can see
+that that code is only reached in the success case.
 
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZjEofAAKCRB4tDGHoIJi
-0qLmAP0QGbVIcmLkp0VD56j2KCS9uFbCschdqFg8hKbeNQZEBgD/ce4phSgV8r90
-d/yEM5OLPAtXnNIJd1nwpvkn3yIwiAI=
-=xXA6
------END PGP SIGNATURE-----
-
---/OFAIs/FPFUuexLI--
+julia
+--8323329-728899255-1714497787=:3106--
 
