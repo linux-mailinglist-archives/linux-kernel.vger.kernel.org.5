@@ -1,60 +1,60 @@
-Return-Path: <linux-kernel+bounces-164257-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-164258-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 05FCA8B7B6A
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 17:26:52 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8AE628B7B6C
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 17:27:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AA56428554A
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 15:26:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0024F1F21AD5
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 15:27:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44ACA179965;
-	Tue, 30 Apr 2024 15:25:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B688B17A939;
+	Tue, 30 Apr 2024 15:25:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="eC1lgvtn"
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2071.outbound.protection.outlook.com [40.107.220.71])
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="FikIoDMP"
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2086.outbound.protection.outlook.com [40.107.92.86])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31717176FCF
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 15:25:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.220.71
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BB86179658
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 15:25:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.92.86
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714490712; cv=fail; b=Xb084tbANC9bsU8HzCx2WY8PbWbQpyzFsvUM4Ss2jfgtjJ8J5KVh/59Bsw47J6WoNOr//O9BW1bt8fO/D8WENDseKTWm9fA6gYuGISR57M+nw8EeksE72dlN6K1XCaR/F4ILz0vzuRrIr4exJ1g5kUjQKt0vDykpaSeEsPKqFCM=
+	t=1714490714; cv=fail; b=sbVPl2uqlHQhj5Ryhylw41ZwRZ0jNTxbtPdSeloPE4hCBq9bu0fkDsIJhfDW+UT1sRZWFGbi1wGCGBpDPZpIy/jfo2yy7PWiLWzTImVGxB/lxTOU76rzukNdJO75ngOpTxrZRmblKvE0eIcmt2gGtcD5bCfysxPOTd8+3YIl87U=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714490712; c=relaxed/simple;
-	bh=3ueA/qx8foO3edffgwwwv62GoMXRH5BIKNhVoPtJD3Y=;
+	s=arc-20240116; t=1714490714; c=relaxed/simple;
+	bh=0bubdy+MVU2CNC8VagX9qz1NBjG61bwTDFHtFFafWgM=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Gdki/nBEOvNagC2VMJlAAPsRYshDXicyN/TH6e5Bm6KuoOZIKzUmi7N2DxF8E+62YX3NIdVwmEvGhhlwTV9dnnogLVqoYiPoc16bj70ENQ+9tLY8kOIVaHXSYIGX7uHgOGSrXrp3C9k5S3mmkcv+pnCUr0ojc5tVa/4MJ/99Hp4=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=eC1lgvtn; arc=fail smtp.client-ip=40.107.220.71
+	 MIME-Version:Content-Type; b=KBUJJ5XOjLCGUD1a1miipjyu4E42f26AYkFFsfxtkYIf2zX5dKPe/KmPwp+zvyIEn5sVxUe3/hH2Rnu/BI6GfQPUAIoZWIcyYuMSUWOgV4yJcQabmSNATdgNkJbAzBP1GPMxMgNUynP7jy7N7jEDdDFeS4DSyLOT4pAScS80dso=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=FikIoDMP; arc=fail smtp.client-ip=40.107.92.86
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=CMM3Z5jBh/0xZJ3Bh0ldLB+L0gxeNLgB9xmCyXunmmwpvvcmCX9BWAW7IjkWNtbazzEjq4CEP7kUj2j5XtmCNyXV4QdA8Ss1AF52HSqZ/+49Z5cMQvFoAO2gmbk5DMS4yxmEpq82e9NKhSzj/65qZiWM5MA4upSDm379BdtIgFlvBrMQrIuo7Fp5pm4pvwdxLxukVA5N7L35QYy8YWpG7eg3adLF232yHryscZrZRR2m5nknVjbQEh4i9rRn/UFMjyPII1Kibj0WQaKieRfaL256nS3khf8lscgC/J5kqCn4XGOqtQxcDb6f3Bsi44tkY1TdXlwXgAGH9+OETeyy+w==
+ b=bowMARiP5EdToy0hOzUd5vmo6QMaDVmDSaqF8EzdBsjYNreEM+7rWSzWlzL9RBvNuXxy/Hd8kjwKWj9tzw3QFnsEZvSWKvXywsUX20cHpMnYWHR7coCiKHiXFA2VKQxWKlmLxZDUGpcGLI7g94S03WVsUXRngvNUrG6CiKptx6kH9lNK7G1yis/EKuFX62+WqIvBrWArrpMmAZZXq1PrtkAzKWyF7A9CZKJetzx1p8RMCjgoSGmpVThh394yKYYqHn5KFh4weHFyHezV9JWfFFAYOvLQfaZN2nOk5f/K04vNx/slkgzQTaMOSvCUfdxU4M9s3HGF43jHT14bvOlFRg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=6twXRZcSuSyGe+wMus6aFOt+RerzkaZOxRywtzHOGaE=;
- b=PaM4TZDglWEgyk+ath/EpS5kIigzdc39yq4TbKZnA1jWBSt1sYi9//FjNPUp2gziOIH9Zo+9iXcD0VCeD/gKNYBOP7DfHNyJ5RVbCQYQpHuHYjqL4VIWAA0MKF/2mQcNbrl1KFwDk98eQyu6mGGVT8A8iQbN2nonZ4RZ9OI42j1PgU25mZs9XRHLdgwzsg+8USDGrqz+COX70ma9xoj7KD5zAx9gF79QojlQ+LGanPy1Sw3yqt/gI5tDYIkCyLSInzRkEv66XR9N/hyZj7R34wT98ioIrFIDLMTfbIz6YjuybYvz9Ew3PD0bdB0mYb00yj0mjznzSMXOOVgaQbGnMA==
+ bh=rm4UelSvyXTzPHBOHHntRN19L15qryX6MH7sY+V/Oh8=;
+ b=VKa1XaLv+Ob1+P29mKFzHUJ2LFYACm7TcH5CVRpcOntULWlP5oDde80AmUfvroz6uZyMFQ9JrJu28Oevpp3ZGMfLJnrqnI8eu76q+P1Nl4H4NAPYt7WcnCKRIIqj4dLvzKMyntZ4HqD22B8XvJfHuScORj3/W4+vhMg6sCnoiOGuBq9AnHwJOdS7qgUsGn/ssqsaHxEptdCY0rnvJMcArSxH8/i+o1mNSPg8pgkYcIUYob/GJA+OpdecnIPLonFwtMvd+qrTObJQWwr/i4Z+I+u55l7s83ufjNrtPzaeFn+XuyVH/bzE5JRFE24LadGJ6KuWDAc96YSTiOuvX4lF5w==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
  165.204.84.17) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=amd.com;
  dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
  header.from=amd.com; dkim=none (message not signed); arc=none (0)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=6twXRZcSuSyGe+wMus6aFOt+RerzkaZOxRywtzHOGaE=;
- b=eC1lgvtnZP/0nNJOwKzLmMGrt14+ppNKH6HysMiCCoCNTbTpgluXEin5ZRPviYGzy5ALlbTu0hB4R4sKLTvhUShQzXZZ73JlHbob2/IypK8Xq1KaISsmVs8cHPx1lSF16470YwWxZLa+dVfdPU9qBJNqt7F7/EV9TvW71jdcOYA=
-Received: from PH7PR13CA0024.namprd13.prod.outlook.com (2603:10b6:510:174::10)
- by CH0PR12MB8506.namprd12.prod.outlook.com (2603:10b6:610:18a::6) with
+ bh=rm4UelSvyXTzPHBOHHntRN19L15qryX6MH7sY+V/Oh8=;
+ b=FikIoDMPzAdCSWZnXt5hf9jzmVYqAgQ/mMSjF41kDrMblNfNFor2pt7XkAz3ht8hUsL2+x79W0/IpPJDBgj2Swe4xqC18omYb6j9+qr4wAlaAFFrgCzyH2W3y3gAPOW/xrcLJFc33axXVjangCaGbsXiIfI2PyvPKk3mlIpoYec=
+Received: from PH7PR13CA0005.namprd13.prod.outlook.com (2603:10b6:510:174::8)
+ by DS0PR12MB6440.namprd12.prod.outlook.com (2603:10b6:8:c8::18) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7519.36; Tue, 30 Apr
- 2024 15:25:07 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7519.34; Tue, 30 Apr
+ 2024 15:25:08 +0000
 Received: from CY4PEPF0000E9CD.namprd03.prod.outlook.com
- (2603:10b6:510:174:cafe::a1) by PH7PR13CA0024.outlook.office365.com
- (2603:10b6:510:174::10) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7544.22 via Frontend
- Transport; Tue, 30 Apr 2024 15:25:07 +0000
+ (2603:10b6:510:174:cafe::cf) by PH7PR13CA0005.outlook.office365.com
+ (2603:10b6:510:174::8) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7544.25 via Frontend
+ Transport; Tue, 30 Apr 2024 15:25:08 +0000
 X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
  smtp.mailfrom=amd.com; dkim=none (message not signed)
  header.d=none;dmarc=pass action=none header.from=amd.com;
@@ -64,7 +64,7 @@ Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
 Received: from SATLEXMB04.amd.com (165.204.84.17) by
  CY4PEPF0000E9CD.mail.protection.outlook.com (10.167.241.132) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7544.18 via Frontend Transport; Tue, 30 Apr 2024 15:25:07 +0000
+ 15.20.7544.18 via Frontend Transport; Tue, 30 Apr 2024 15:25:08 +0000
 Received: from purico-e93dhost.amd.com (10.180.168.240) by SATLEXMB04.amd.com
  (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Tue, 30 Apr
@@ -74,9 +74,9 @@ To: <linux-kernel@vger.kernel.org>, <iommu@lists.linux.dev>, <joro@8bytes.org>
 CC: <thomas.lendacky@amd.com>, <vasant.hegde@amd.com>, <michael.roth@amd.com>,
 	<jon.grimm@amd.com>, <rientjes@google.com>, Suravee Suthikulpanit
 	<suravee.suthikulpanit@amd.com>
-Subject: [PATCH 8/9] iommu/amd: Decrypt interrupt remapping table for AMD IOMMU emulation in SEV guest
-Date: Tue, 30 Apr 2024 15:24:29 +0000
-Message-ID: <20240430152430.4245-9-suravee.suthikulpanit@amd.com>
+Subject: [PATCH 9/9] iommu/amd: Set default domain to IDENTITY_DOMAIN when running in SEV guest
+Date: Tue, 30 Apr 2024 15:24:30 +0000
+Message-ID: <20240430152430.4245-10-suravee.suthikulpanit@amd.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240430152430.4245-1-suravee.suthikulpanit@amd.com>
 References: <20240430152430.4245-1-suravee.suthikulpanit@amd.com>
@@ -92,306 +92,112 @@ X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
  (10.181.40.145)
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CY4PEPF0000E9CD:EE_|CH0PR12MB8506:EE_
-X-MS-Office365-Filtering-Correlation-Id: 953df129-0d08-46e5-397b-08dc6929b7a7
+X-MS-TrafficTypeDiagnostic: CY4PEPF0000E9CD:EE_|DS0PR12MB6440:EE_
+X-MS-Office365-Filtering-Correlation-Id: 14e2d0e1-7794-4a88-9621-08dc6929b825
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam:
 	BCL:0;ARA:13230031|82310400014|1800799015|376005|36860700004;
 X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?IErd6a9zRWkvFpqH4/YeQ2DQuVzvEF2RIsRSUPQ5Pzgc0tWpJVMNylt1PUtg?=
- =?us-ascii?Q?jOLRL58wSmVYGstR0cE6nBh6nWrEqKwU2cl4zVLc5R/Di+NpG+8c1fUwmaar?=
- =?us-ascii?Q?l5A9WRbC6V4xwx7RZuXp6PeNGskRF40fp31V63jH4j/k/0lDLJLWrJi5kGJl?=
- =?us-ascii?Q?R9KtutMBWvZ5yxUnahILZm33uG28AxTrxLPSMDq2O6Jlczi8dc7+eWtZbLtr?=
- =?us-ascii?Q?SDuXMWg72dNCCAj+/l0d5MDYfK5p/e9wI9jnABu3Vb5IdnndUEd5URttrM/E?=
- =?us-ascii?Q?bmBrfDIEMxwC87EzgdHDk+we6pIBPOl9DKjQMtDDwA3fKUxiIw4ApsTvkAvM?=
- =?us-ascii?Q?Wtj0e3eroBEeU7f8tlN50fw3Jb0rIcKBhiIYkeP64eZ7Pmg0VEVHG935m+yR?=
- =?us-ascii?Q?ygjyQXK8GIWBGLv9midQsXGOLcpUw4FPIszr33iUzxkV/NRr6AejfgVFynpM?=
- =?us-ascii?Q?RLr3qUq6oGJPV/DDXRL9LEn5X+BiLdFmVZamMvYY4pAwScBHH1RPQHIUXI1w?=
- =?us-ascii?Q?tWqO5ohObaGoURW8e3nxucxAoBPYE/DwDHpKls1h/sxdhegvBcyTKg3uG/U/?=
- =?us-ascii?Q?+0TqPd6nbgbb1IsKfI/9xaAQZpdVxKlYw2gwOrJlKezOO9h2hWBc7y6/IfUy?=
- =?us-ascii?Q?YDzbcvIPT0EiIYenZicNAsq0IxFn0bzZzkmbik4kB7WjhgEEfTxwOyeafAke?=
- =?us-ascii?Q?B3zKd1xdJ+fGVmSvcRJ17q+ltwEb4TbSykv9+v2o3zBEJQiAyCuEcjGlxpna?=
- =?us-ascii?Q?BhrGn43vU5thR1VzS+KNDz7+X9C0DlOeFGmak+2C6Yn8R1qfdI0ggS+c6cHb?=
- =?us-ascii?Q?/jOihMSxwiXXWEo9/jbStmnchkHZ/clXNoJ7bMtzLdR4RTzxiO8AtC/EQLhr?=
- =?us-ascii?Q?zwrGCMjvNHLmfiG48fsgqToM7xINwziTKSvHjISCeE0TP7yg/+hWBjNDlWYa?=
- =?us-ascii?Q?/rRcweKph52F3n3u7JsgEy3kcSqubqf0SZwSprV2Ldkxf7OcedSIgNFWAENa?=
- =?us-ascii?Q?vDLouhd7KYjcO+gqqnp/Vm4fqoW5LiL76NCnu2LnTl0rZ/yP75LuFEtfvsxc?=
- =?us-ascii?Q?a0mFn1IHxjr9/R2x4BsKJk0j+H4QJZkyiX3hWf1u4jzfwZrEoPivn2DQ/l17?=
- =?us-ascii?Q?xRF5wYgOxqj7jJaE/M86L70bOSpN6K1l627NpZSKtaAcKz8+ysQX2vlOVor3?=
- =?us-ascii?Q?HsqNShomb67gNW/o+MVwR0zMQ+2D1L6Sn/jSsKDPyhCyOi5k2rP1Q45nHUvO?=
- =?us-ascii?Q?JJ/Kl98g8wGhmg7oMQrII9/0prKhkKRCNxYrlUiPDvSyFILf3VwhNDdVCW7b?=
- =?us-ascii?Q?fwYM+/XQvpFe/a7g9HWlYNsn7ZCdJsVSER8X/4bK8mNCjoSQgvRH+8+9l2/v?=
- =?us-ascii?Q?gErPUn1XAihUYrQuTHW1kBRNfqaw?=
+	=?us-ascii?Q?MEJ1Q20drMNdL9jNLJGnjjiBw3BVaVBC4nUT4r3yrsbMu62Pdso6xR5BUpXe?=
+ =?us-ascii?Q?es5V7jCfVLaCacpC4qEq+F3/PDjH8OujMIqiNMV+cJWM4367nnQPzLuAZNL1?=
+ =?us-ascii?Q?OHDW7F7RR7aHnQaFL1TLc72BItf41pnLZiEWlA1bRKtFGC206LvOf1s8YAuH?=
+ =?us-ascii?Q?4s+lXvG82RxH70NSIDPrOspd4UKT+YL7cG3+0c0MdSU68X25evQHIZWCXiAS?=
+ =?us-ascii?Q?i8yK9FU7LofaOoEcWGUxb+gE1RqQqCchIp8lrgHsot8LLq4yBbBPwlZ2R6zP?=
+ =?us-ascii?Q?TnzYniefvPUBhInTSPItiOGTpQOAAaSTaqGa0hCOdXSiyqas5HlFs2X6rRQa?=
+ =?us-ascii?Q?Zg0dAg2FAKZj6mzta+LI44s7+i0oqxttS1nnao5ko530bTDoN8Sm69hCOiza?=
+ =?us-ascii?Q?iON+KjtxE9qHfXK5v+jiy+0+DxrWL+8vEMAuXp7CQT3DbaH2z9I7WTiZwEVH?=
+ =?us-ascii?Q?gchdnx1jSQF5lH1MCuVssT9ca+6oPYFLDN9BNHQ1OoBaNhldc4AiGr5dbfXO?=
+ =?us-ascii?Q?nVM34ZFI+zSf4ejZBiM1AEOCQumlu7kH5m2+pyLLJ11Yb50fwlJjc62xdqXz?=
+ =?us-ascii?Q?5v3E4plLUeGuWP28QajP7EMjQsRElkg4oW8liLQPjeCwIo45ZF3U4YWZofsL?=
+ =?us-ascii?Q?k/+LmWtjJLci5bJMQfYYK6khsLcMUD8hS17YPbrzd9uRgrDDP3opMHpe9tWL?=
+ =?us-ascii?Q?Yn9qgTBmUL80eRkpNnjokiE4Pl3Wg7AHVUcX6ZcckO94zVFpSE2oURDEihCn?=
+ =?us-ascii?Q?Wszn8UhgYM0PeJOyFdmTZp8sRQX9AyOMq6MNLQ9v6rsO7jtPTluOLmYkVQCH?=
+ =?us-ascii?Q?UTjbifwPCIj0nFmOaMSgtFb0A2Acb/B7dbT4k2r8zzr5KU82iIf6+/AGJLBL?=
+ =?us-ascii?Q?jhOzYgcPWRViEw6YkpcVw9MtmO8AXzfvJFACpZjcFxqlI8zRR6Kd5LDoj6eM?=
+ =?us-ascii?Q?Nge/A9+LbmPPnWAK7ScCbuJWkyBze7e1FRuQAw9v//22LsMcJpPBf1rRPyht?=
+ =?us-ascii?Q?PA7xPidUeuJ1YSYCyaNRBDdA7kKIJ5oiNh0WBT6xqwy+2l+hVTNgy5bGSuPn?=
+ =?us-ascii?Q?Wuivsz/YOSMQBRGMQShXLmvJlgpcsTZ4rpdaCZ406JCcZgSuRVCMGu3ZSXBc?=
+ =?us-ascii?Q?sopwfhswnWwNYt/iAXHhsUhv8APAb9GI5W1i0PTNzSRKETDT2ugUIcHGFF8R?=
+ =?us-ascii?Q?tAaJmjWnmlQtuLsyyWzUOYhBSKpfJlFcfDKvaDl3agW4UizaOY9mZ1HmXbfL?=
+ =?us-ascii?Q?m6RkIlInqfYh4Uvoqaw/3ZT889nw8dQA9CWJtNMlml1c/XYOaHIDNzyE9xwi?=
+ =?us-ascii?Q?iLv/sgTt1yNUk73SL6JJQX798WcaIfOAH2cpq/JXhTNyU1rKzQP0B0xCgGeg?=
+ =?us-ascii?Q?ZdsU0VOraHS7K4NtR0ETcjrpzaOS?=
 X-Forefront-Antispam-Report:
 	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(82310400014)(1800799015)(376005)(36860700004);DIR:OUT;SFP:1101;
 X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Apr 2024 15:25:07.4595
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Apr 2024 15:25:08.2720
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 953df129-0d08-46e5-397b-08dc6929b7a7
+X-MS-Exchange-CrossTenant-Network-Message-Id: 14e2d0e1-7794-4a88-9621-08dc6929b825
 X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
 X-MS-Exchange-CrossTenant-AuthSource:
 	CY4PEPF0000E9CD.namprd03.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH0PR12MB8506
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR12MB6440
 
-The interrupt remapping table must be decrypted so that the VMM can access
-the memory to emulate interrupt remapping. However, the amd iommu driver
-currently allocate the table with kmem_cache mainly to enforce 128-byte
-memory alignment as specified in the AMD IOMMU spec.
-
-For SEV guest, memory encryption is done on a page basis. The driver must
-be modified to allocate the table using page-aligned memory, which still
-satisfies the original 128-byte alignment.
-
-In addition, the table is setup per-device, which can be allocated with
-NUMA-aware page to help reduce IRTE access latency.
+Since SEV guest depends on the unencrypted swiotlb bounce buffer
+to support DMA, the guest AMD IOMMU driver must be force to setup to
+pass-through mode.
 
 Suggested-by: Thomas Lendacky <thomas.lendacky@amd.com>
 Signed-off-by: Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
 ---
- drivers/iommu/amd/amd_iommu_types.h |  3 +-
- drivers/iommu/amd/init.c            | 31 +++++++-----------
- drivers/iommu/amd/iommu.c           | 50 ++++++++++++++++-------------
- 3 files changed, 41 insertions(+), 43 deletions(-)
+ drivers/iommu/amd/init.c  | 15 +++++++++++++++
+ drivers/iommu/amd/iommu.c |  6 ++++++
+ 2 files changed, 21 insertions(+)
 
-diff --git a/drivers/iommu/amd/amd_iommu_types.h b/drivers/iommu/amd/amd_iommu_types.h
-index 8ced34cac1db..980fbb9bae39 100644
---- a/drivers/iommu/amd/amd_iommu_types.h
-+++ b/drivers/iommu/amd/amd_iommu_types.h
-@@ -309,7 +309,6 @@
-  * AMD IOMMU hardware only support 512 IRTEs despite
-  * the architectural limitation of 2048 entries.
-  */
--#define DTE_INTTAB_ALIGNMENT    128
- #define DTE_INTTABLEN_VALUE     9ULL
- #define DTE_INTTABLEN           (DTE_INTTABLEN_VALUE << 1)
- #define DTE_INTTABLEN_MASK      (0xfULL << 1)
-@@ -497,7 +496,7 @@ struct amd_iommu_mem {
- struct irq_remap_table {
- 	raw_spinlock_t lock;
- 	unsigned min_index;
--	u32 *table;
-+	struct amd_iommu_mem mem;
- };
- 
- /* Interrupt remapping feature used? */
 diff --git a/drivers/iommu/amd/init.c b/drivers/iommu/amd/init.c
-index 1b74a31b4337..b3ff89952c7f 100644
+index b3ff89952c7f..1dccf030f674 100644
 --- a/drivers/iommu/amd/init.c
 +++ b/drivers/iommu/amd/init.c
-@@ -697,6 +697,17 @@ static inline int __init alloc_irq_lookup_table(struct amd_iommu_pci_seg *pci_se
- 
- static inline void free_irq_lookup_table(struct amd_iommu_pci_seg *pci_seg)
- {
-+	int i;
-+	struct irq_remap_table *table;
-+
-+	for (i = 0 ; i <= pci_seg->last_bdf; ++i) {
-+		table = pci_seg->irq_lookup_table[i];
-+		if (table) {
-+			amd_iommu_free_mem(&table->mem);
-+			kfree(table);
-+		}
-+	}
-+
- 	kmemleak_free(pci_seg->irq_lookup_table);
- 	iommu_free_pages(pci_seg->irq_lookup_table,
- 			 get_order(pci_seg->rlookup_table_size));
-@@ -2923,9 +2934,6 @@ static struct syscore_ops amd_iommu_syscore_ops = {
- 
- static void __init free_iommu_resources(void)
- {
--	kmem_cache_destroy(amd_iommu_irq_cache);
--	amd_iommu_irq_cache = NULL;
--
- 	free_iommu_all();
- 	free_pci_segments();
- }
-@@ -3026,7 +3034,7 @@ static void __init ivinfo_init(void *ivrs)
- static int __init early_amd_iommu_init(void)
- {
- 	struct acpi_table_header *ivrs_base;
--	int remap_cache_sz, ret;
-+	int ret;
- 	acpi_status status;
- 
- 	if (!amd_iommu_detected)
-@@ -3090,21 +3098,6 @@ static int __init early_amd_iommu_init(void)
- 
- 	if (amd_iommu_irq_remap) {
- 		struct amd_iommu_pci_seg *pci_seg;
--		/*
--		 * Interrupt remapping enabled, create kmem_cache for the
--		 * remapping tables.
--		 */
--		ret = -ENOMEM;
--		if (!AMD_IOMMU_GUEST_IR_GA(amd_iommu_guest_ir))
--			remap_cache_sz = MAX_IRQS_PER_TABLE * sizeof(u32);
--		else
--			remap_cache_sz = MAX_IRQS_PER_TABLE * (sizeof(u64) * 2);
--		amd_iommu_irq_cache = kmem_cache_create("irq_remap_cache",
--							remap_cache_sz,
--							DTE_INTTAB_ALIGNMENT,
--							0, NULL);
--		if (!amd_iommu_irq_cache)
--			goto out;
- 
- 		for_each_pci_segment(pci_seg) {
- 			if (alloc_irq_lookup_table(pci_seg))
-diff --git a/drivers/iommu/amd/iommu.c b/drivers/iommu/amd/iommu.c
-index 4f95c726e139..f98a10b7925b 100644
---- a/drivers/iommu/amd/iommu.c
-+++ b/drivers/iommu/amd/iommu.c
-@@ -73,8 +73,6 @@ struct iommu_cmd {
- 	u32 data[4];
- };
- 
--struct kmem_cache *amd_iommu_irq_cache;
--
- static void detach_device(struct device *dev);
- 
- static void set_dte_entry(struct amd_iommu *iommu,
-@@ -2998,7 +2996,7 @@ static void set_dte_irq_entry(struct amd_iommu *iommu, u16 devid,
- 
- 	dte	= dev_table[devid].data[2];
- 	dte	&= ~DTE_IRQ_PHYS_ADDR_MASK;
--	dte	|= iommu_virt_to_phys(table->table);
-+	dte	|= amd_iommu_mem_to_phys(&table->mem);
- 	dte	|= DTE_IRQ_REMAP_INTCTL;
- 	dte	|= DTE_INTTABLEN;
- 	dte	|= DTE_IRQ_REMAP_ENABLE;
-@@ -3024,27 +3022,35 @@ static struct irq_remap_table *get_irq_table(struct amd_iommu *iommu, u16 devid)
- 	return table;
+@@ -3179,6 +3179,20 @@ static bool __init detect_ivrs(void)
+ 	return true;
  }
  
--static struct irq_remap_table *__alloc_irq_table(void)
-+static size_t get_irq_table_size(void)
++static void iommu_sev_guest_enable(void)
 +{
-+	if (!AMD_IOMMU_GUEST_IR_GA(amd_iommu_guest_ir))
-+		return (MAX_IRQS_PER_TABLE * sizeof(u32));
-+	else
-+		return (MAX_IRQS_PER_TABLE * (sizeof(u64) * 2));
++	/*
++	 * Force IOMMU default domain to pass-through for
++	 * SEV guest since we cannot support DMA-remapping.
++	 * Note: This check must be done after IOMMU_ENABLED state.
++	 */
++	if (!cc_platform_has(CC_ATTR_GUEST_MEM_ENCRYPT))
++		return;
++
++	pr_info("Force pass-through for SEV guest\n");
++	iommu_set_default_passthrough(false);
 +}
 +
-+static struct irq_remap_table *__alloc_irq_table(struct amd_iommu *iommu)
+ static void iommu_snp_enable(void)
  {
-+	struct amd_iommu_mem *mem;
- 	struct irq_remap_table *table;
-+	int order = get_order(get_irq_table_size());
-+	int nid = (iommu && iommu->dev) ? dev_to_node(&iommu->dev->dev) : NUMA_NO_NODE;
- 
- 	table = kzalloc(sizeof(*table), GFP_KERNEL);
- 	if (!table)
- 		return NULL;
- 
--	table->table = kmem_cache_alloc(amd_iommu_irq_cache, GFP_KERNEL);
--	if (!table->table) {
-+	mem = &table->mem;
-+	mem->modes = ALLOC_MODE_GUEST_MEM_DECRYPT;
-+	mem->order = order;
-+	mem->buf = amd_iommu_get_zeroed_mem_node(nid, GFP_KERNEL, mem);
-+	if (!mem->buf) {
- 		kfree(table);
- 		return NULL;
+ #ifdef CONFIG_KVM_AMD_SEV
+@@ -3247,6 +3261,7 @@ static int __init state_next(void)
+ 		break;
+ 	case IOMMU_ENABLED:
+ 		register_syscore_ops(&amd_iommu_syscore_ops);
++		iommu_sev_guest_enable();
+ 		iommu_snp_enable();
+ 		ret = amd_iommu_init_pci();
+ 		init_state = ret ? IOMMU_INIT_ERROR : IOMMU_PCI_INIT;
+diff --git a/drivers/iommu/amd/iommu.c b/drivers/iommu/amd/iommu.c
+index f98a10b7925b..c985d23c8528 100644
+--- a/drivers/iommu/amd/iommu.c
++++ b/drivers/iommu/amd/iommu.c
+@@ -2876,6 +2876,12 @@ static int amd_iommu_def_domain_type(struct device *dev)
+ 		return IOMMU_DOMAIN_IDENTITY;
  	}
- 	raw_spin_lock_init(&table->lock);
  
--	if (!AMD_IOMMU_GUEST_IR_GA(amd_iommu_guest_ir))
--		memset(table->table, 0,
--		       MAX_IRQS_PER_TABLE * sizeof(u32));
--	else
--		memset(table->table, 0,
--		       (MAX_IRQS_PER_TABLE * (sizeof(u64) * 2)));
- 	return table;
++	/*
++	 * Force identity map for SEV guest.
++	 */
++	if (cc_platform_has(CC_ATTR_GUEST_MEM_ENCRYPT))
++		return IOMMU_DOMAIN_IDENTITY;
++
+ 	return 0;
  }
  
-@@ -3101,7 +3107,7 @@ static struct irq_remap_table *alloc_irq_table(struct amd_iommu *iommu,
- 	spin_unlock_irqrestore(&iommu_table_lock, flags);
- 
- 	/* Nothing there yet, allocate new irq remapping table */
--	new_table = __alloc_irq_table();
-+	new_table = __alloc_irq_table(iommu);
- 	if (!new_table)
- 		return NULL;
- 
-@@ -3136,7 +3142,7 @@ static struct irq_remap_table *alloc_irq_table(struct amd_iommu *iommu,
- 	spin_unlock_irqrestore(&iommu_table_lock, flags);
- 
- 	if (new_table) {
--		kmem_cache_free(amd_iommu_irq_cache, new_table->table);
-+		amd_iommu_free_mem(&new_table->mem);
- 		kfree(new_table);
- 	}
- 	return table;
-@@ -3202,7 +3208,7 @@ static int __modify_irte_ga(struct amd_iommu *iommu, u16 devid, int index,
- 
- 	raw_spin_lock_irqsave(&table->lock, flags);
- 
--	entry = (struct irte_ga *)table->table;
-+	entry = (struct irte_ga *)table->mem.buf;
- 	entry = &entry[index];
- 
- 	/*
-@@ -3244,7 +3250,7 @@ static int modify_irte(struct amd_iommu *iommu,
- 		return -ENOMEM;
- 
- 	raw_spin_lock_irqsave(&table->lock, flags);
--	table->table[index] = irte->val;
-+	((u32 *)table->mem.buf)[index] = irte->val;
- 	raw_spin_unlock_irqrestore(&table->lock, flags);
- 
- 	iommu_flush_irt_and_complete(iommu, devid);
-@@ -3358,12 +3364,12 @@ static void irte_ga_set_affinity(struct amd_iommu *iommu, void *entry, u16 devid
- #define IRTE_ALLOCATED (~1U)
- static void irte_set_allocated(struct irq_remap_table *table, int index)
- {
--	table->table[index] = IRTE_ALLOCATED;
-+	((u32 *)table->mem.buf)[index] = IRTE_ALLOCATED;
- }
- 
- static void irte_ga_set_allocated(struct irq_remap_table *table, int index)
- {
--	struct irte_ga *ptr = (struct irte_ga *)table->table;
-+	struct irte_ga *ptr = (struct irte_ga *)table->mem.buf;
- 	struct irte_ga *irte = &ptr[index];
- 
- 	memset(&irte->lo.val, 0, sizeof(u64));
-@@ -3373,7 +3379,7 @@ static void irte_ga_set_allocated(struct irq_remap_table *table, int index)
- 
- static bool irte_is_allocated(struct irq_remap_table *table, int index)
- {
--	union irte *ptr = (union irte *)table->table;
-+	union irte *ptr = (union irte *)table->mem.buf;
- 	union irte *irte = &ptr[index];
- 
- 	return irte->val != 0;
-@@ -3381,7 +3387,7 @@ static bool irte_is_allocated(struct irq_remap_table *table, int index)
- 
- static bool irte_ga_is_allocated(struct irq_remap_table *table, int index)
- {
--	struct irte_ga *ptr = (struct irte_ga *)table->table;
-+	struct irte_ga *ptr = (struct irte_ga *)table->mem.buf;
- 	struct irte_ga *irte = &ptr[index];
- 
- 	return irte->hi.fields.vector != 0;
-@@ -3389,12 +3395,12 @@ static bool irte_ga_is_allocated(struct irq_remap_table *table, int index)
- 
- static void irte_clear_allocated(struct irq_remap_table *table, int index)
- {
--	table->table[index] = 0;
-+	((u32 *)table->mem.buf)[index] = 0;
- }
- 
- static void irte_ga_clear_allocated(struct irq_remap_table *table, int index)
- {
--	struct irte_ga *ptr = (struct irte_ga *)table->table;
-+	struct irte_ga *ptr = (struct irte_ga *)table->mem.buf;
- 	struct irte_ga *irte = &ptr[index];
- 
- 	memset(&irte->lo.val, 0, sizeof(u64));
 -- 
 2.34.1
 
