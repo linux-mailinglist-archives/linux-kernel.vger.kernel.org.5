@@ -1,60 +1,60 @@
-Return-Path: <linux-kernel+bounces-163420-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-163421-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2A1078B6A9F
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 08:43:09 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5C65B8B6AA4
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 08:43:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D5663281914
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 06:43:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7FCCF1C2142B
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 06:43:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 308E31A291;
-	Tue, 30 Apr 2024 06:42:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4FE201BC20;
+	Tue, 30 Apr 2024 06:42:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="lnMXHsyj"
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="YcPLycht"
 Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0FD382556F;
-	Tue, 30 Apr 2024 06:42:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26318383A9;
+	Tue, 30 Apr 2024 06:42:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714459366; cv=none; b=sO8Hr6O7RBt5uiJRBPQ0ThLVS9Ni96ppgcb0o9KzbIYcHNWpBsbVSZ19CAzPIPj4r+QMo9fELFnY3Rv9CytYUbns1FiUMvaz3DfqxVKzlJ8uQSdyq5YxZJhgt+mcm3RmH09nRAcDK7e+vALsLRbhz2IVUgtdKV++VqlI1pUg+SE=
+	t=1714459370; cv=none; b=mHElPYQm9WsLL8P0FSrPL1WIkDI+i3cg87pqiOepah01bm57VNFCIDxti0JkeonC6mduAXM6sjKF8XjYd+q8DqvndCLM0x9IZUBtx3BhlES5Sl1KEyBiQSxRq6RIwucJOYwSTNm/F7cU1p0eh9I5PBRWu+ziqDqHWVyuwT5F+l4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714459366; c=relaxed/simple;
-	bh=9MysDbisVLLLmWRpjBI1h5YqDXwpadmEz+fgY337vpI=;
-	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=ElwvVQbOcaPf2HvMCXlnhrKIC8RPNMLnFkfVISFBbM86DkAFnYecpDY7rhFqxsTyPZL5as+1/kPA5rWaeuRPGog5OWVypNeAWy7WG/u8luqqO2vARYg2GXoRiRkkUoo07qyop6ASFp/WPzVN7irtM8SSbmLrXQMCA5cxsWOnqQE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=lnMXHsyj; arc=none smtp.client-ip=205.220.168.131
+	s=arc-20240116; t=1714459370; c=relaxed/simple;
+	bh=XybQroQeN0eE0ix6Fobx9yRCRTYv0AlPiSYjTSL+kRQ=;
+	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=UZojAkpKU8JtGu7JnSqPtsal1J4QaFM7piD0AjZCjvClUxjYizrJNFDFnj9A+3NnCcthKrH0K8eXaAefozSmcG13pE+8rVMBBgl4ZtBRLl4wCALiPhwY6lTzRy5SQt8QZnclyvp8Xc+vmq1vnON5DcMB77NfQkNcP887pe0x6vA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=YcPLycht; arc=none smtp.client-ip=205.220.168.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 43U4THXm000426;
-	Tue, 30 Apr 2024 06:42:40 GMT
+Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 43U0hhdb007036;
+	Tue, 30 Apr 2024 06:42:45 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	from:to:subject:date:message-id:in-reply-to:references
+	from:to:cc:subject:date:message-id:in-reply-to:references
 	:mime-version:content-transfer-encoding:content-type; s=
-	qcppdkim1; bh=mTYqvHM0p4lP1xX3WJfDTxYMxZt7GW2xHcpqr6M4Htw=; b=ln
-	MXHsyjn5IhB3jA+4aaOuZdjFj9prdiu0yvD2KYM7jg53UTA3M4EJohBYJ4wXCg1k
-	7KfD8EvnS45ch3PegyJ39ch5HQ00P+xp0m7xmE1yrN8PWnDUXncYNBEcbCW+s1p6
-	TvjBPkP7Exj/BeDWvkDcnrPOecGJ/7IxAEYGcx557WxvNDB9E9YznRqLyfNI5X3z
-	JJcEa0Js5trje3Z9uNqANC+bTy8nspfydPqW1VQ0pB4xiF5U3BO3h3NlEsiry1cM
-	z1o7Jky3fAz86DpPOToMs7tx1mOqbaMZGHmAj5BczBXm2P6/sSj2+EhuexjmcHM7
-	Gw+Cv90Dt3FNhGRCk5hA==
+	qcppdkim1; bh=j3aKCbUUtIHqgfAK33ULbLltXkIe6zWBqBxxLnT1NAo=; b=Yc
+	PLychtxe3Lnij4Lzw6+uSX8d1i4Sc0kTJp/FUtYhoPwz2Fq7krFtxlLUjrQx17Vv
+	g+qezqZ+H6vs1qkbIALZ6QsB7DqVSn6jhDHPaGMMFWacfBrvZIw+KZboglvmUYnY
+	e+/IBCE37l7ZjDOgbrifOSHVLbb7hBpEskAZUJFXo2rKEtEGFyyRwP5fu7m5liHG
+	5JWFp+ZHZNeBBjWl5eES+jhBAhM8yROnmf85xMG7Ss8yZZij6BQKl7GwAAaVthNb
+	WHNfmXBX6NuLRiUdwWh4GvDZu9WyFkjX1ZO4y/q/nxfWOGJAtJD/cKQOra1WVXyl
+	0zwlLQrhoTIeyM4kQa3w==
 Received: from nasanppmta01.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xtsnm8ayj-1
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xtbv8c81h-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 30 Apr 2024 06:42:39 +0000 (GMT)
+	Tue, 30 Apr 2024 06:42:45 +0000 (GMT)
 Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
-	by NASANPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 43U6gc7t023311
+	by NASANPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 43U6gipn023815
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 30 Apr 2024 06:42:38 GMT
+	Tue, 30 Apr 2024 06:42:44 GMT
 Received: from hu-varada-blr.qualcomm.com (10.80.80.8) by
  nasanex01b.na.qualcomm.com (10.46.141.250) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.9; Mon, 29 Apr 2024 23:42:33 -0700
+ 15.2.1544.9; Mon, 29 Apr 2024 23:42:38 -0700
 From: Varadarajan Narayanan <quic_varada@quicinc.com>
 To: <andersson@kernel.org>, <mturquette@baylibre.com>, <sboyd@kernel.org>,
         <robh@kernel.org>, <krzk+dt@kernel.org>, <conor+dt@kernel.org>,
@@ -64,9 +64,10 @@ To: <andersson@kernel.org>, <mturquette@baylibre.com>, <sboyd@kernel.org>,
         <linux-clk@vger.kernel.org>, <devicetree@vger.kernel.org>,
         <linux-kernel@vger.kernel.org>, <linux-pm@vger.kernel.org>,
         <bryan.odonoghue@linaro.org>
-Subject: [PATCH v11 1/6] interconnect: icc-clk: Specify master/slave ids
-Date: Tue, 30 Apr 2024 12:12:09 +0530
-Message-ID: <20240430064214.2030013-2-quic_varada@quicinc.com>
+CC: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: [PATCH v11 2/6] dt-bindings: interconnect: Add Qualcomm IPQ9574 support
+Date: Tue, 30 Apr 2024 12:12:10 +0530
+Message-ID: <20240430064214.2030013-3-quic_varada@quicinc.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240430064214.2030013-1-quic_varada@quicinc.com>
 References: <20240430064214.2030013-1-quic_varada@quicinc.com>
@@ -82,96 +83,129 @@ X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
  nasanex01b.na.qualcomm.com (10.46.141.250)
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: 6Z780spFIPwOVf28EFtAbEHrOYD4H7S7
-X-Proofpoint-ORIG-GUID: 6Z780spFIPwOVf28EFtAbEHrOYD4H7S7
+X-Proofpoint-ORIG-GUID: OYBstOhUj2-8jLJlj1Rr0kQQ8eYRue9r
+X-Proofpoint-GUID: OYBstOhUj2-8jLJlj1Rr0kQQ8eYRue9r
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
  definitions=2024-04-30_03,2024-04-29_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 mlxscore=0
- suspectscore=0 malwarescore=0 spamscore=0 lowpriorityscore=0
- impostorscore=0 adultscore=0 mlxlogscore=999 phishscore=0 bulkscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 mlxlogscore=999
+ mlxscore=0 impostorscore=0 malwarescore=0 spamscore=0 bulkscore=0
+ priorityscore=1501 lowpriorityscore=0 phishscore=0 adultscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.19.0-2404010003 definitions=main-2404300047
 
-Presently, icc-clk driver autogenerates the master and slave ids.
-However, devices with multiple nodes on the interconnect could
-have other constraints and may not match with the auto generated
-node ids.
+Add interconnect-cells to clock provider so that it can be
+used as icc provider.
 
-Hence, modify the driver to use the master/slave ids provided by
-the caller instead of auto generating.
-
-Also, update clk-cbf-8996 accordingly.
+Add master/slave ids for Qualcomm IPQ9574 Network-On-Chip
+interfaces. This will be used by the gcc-ipq9574 driver
+that will for providing interconnect services using the
+icc-clk framework.
 
 Acked-by: Georgi Djakov <djakov@kernel.org>
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Signed-off-by: Varadarajan Narayanan <quic_varada@quicinc.com>
 ---
-v9: squash cbf-msm8996 change into this
-v8: Per review feedback, set master/slave ids explicitly. Dont autogenerate 
-    https://lore.kernel.org/linux-arm-msm/f1b0d280-6986-4055-a611-2caceb15867d@linaro.org/
----
- drivers/clk/qcom/clk-cbf-8996.c  | 7 ++++++-
- drivers/interconnect/icc-clk.c   | 6 +++---
- include/linux/interconnect-clk.h | 2 ++
- 3 files changed, 11 insertions(+), 4 deletions(-)
+v8:
+Remove ICC_xxx macros
+Fix macro defines to be consistent with other bindings
+v7:
+Fix macro names to be consistent with other bindings
+v6:
+Removed Reviewed-by: Krzysztof Kozlowski
+Redefine the bindings such that driver and DT can share them
 
-diff --git a/drivers/clk/qcom/clk-cbf-8996.c b/drivers/clk/qcom/clk-cbf-8996.c
-index fe24b4abeab4..a077d4403967 100644
---- a/drivers/clk/qcom/clk-cbf-8996.c
-+++ b/drivers/clk/qcom/clk-cbf-8996.c
-@@ -237,7 +237,12 @@ static int qcom_msm8996_cbf_icc_register(struct platform_device *pdev, struct cl
- 	struct device *dev = &pdev->dev;
- 	struct clk *clk = devm_clk_hw_get_clk(dev, cbf_hw, "cbf");
- 	const struct icc_clk_data data[] = {
--		{ .clk = clk, .name = "cbf", },
-+		{
-+			.clk = clk,
-+			.name = "cbf",
-+			.master_id = MASTER_CBF_M4M,
-+			.slave_id = SLAVE_CBF_M4M,
-+		},
- 	};
- 	struct icc_provider *provider;
+v3:
+Squash Documentation/ and include/ changes into same patch
+
+qcom,ipq9574.h
+	Move 'first id' to clock driver
+
+---
+ .../bindings/clock/qcom,ipq9574-gcc.yaml      |  3 +
+ .../dt-bindings/interconnect/qcom,ipq9574.h   | 59 +++++++++++++++++++
+ 2 files changed, 62 insertions(+)
+ create mode 100644 include/dt-bindings/interconnect/qcom,ipq9574.h
+
+diff --git a/Documentation/devicetree/bindings/clock/qcom,ipq9574-gcc.yaml b/Documentation/devicetree/bindings/clock/qcom,ipq9574-gcc.yaml
+index 944a0ea79cd6..824781cbdf34 100644
+--- a/Documentation/devicetree/bindings/clock/qcom,ipq9574-gcc.yaml
++++ b/Documentation/devicetree/bindings/clock/qcom,ipq9574-gcc.yaml
+@@ -33,6 +33,9 @@ properties:
+       - description: PCIE30 PHY3 pipe clock source
+       - description: USB3 PHY pipe clock source
  
-diff --git a/drivers/interconnect/icc-clk.c b/drivers/interconnect/icc-clk.c
-index d787f2ea36d9..2be193fd7d8f 100644
---- a/drivers/interconnect/icc-clk.c
-+++ b/drivers/interconnect/icc-clk.c
-@@ -108,7 +108,7 @@ struct icc_provider *icc_clk_register(struct device *dev,
- 	for (i = 0, j = 0; i < num_clocks; i++) {
- 		qp->clocks[i].clk = data[i].clk;
- 
--		node = icc_node_create(first_id + j);
-+		node = icc_node_create(first_id + data[i].master_id);
- 		if (IS_ERR(node)) {
- 			ret = PTR_ERR(node);
- 			goto err;
-@@ -118,10 +118,10 @@ struct icc_provider *icc_clk_register(struct device *dev,
- 		node->data = &qp->clocks[i];
- 		icc_node_add(node, provider);
- 		/* link to the next node, slave */
--		icc_link_create(node, first_id + j + 1);
-+		icc_link_create(node, first_id + data[i].slave_id);
- 		onecell->nodes[j++] = node;
- 
--		node = icc_node_create(first_id + j);
-+		node = icc_node_create(first_id + data[i].slave_id);
- 		if (IS_ERR(node)) {
- 			ret = PTR_ERR(node);
- 			goto err;
-diff --git a/include/linux/interconnect-clk.h b/include/linux/interconnect-clk.h
-index 0cd80112bea5..170898faaacb 100644
---- a/include/linux/interconnect-clk.h
-+++ b/include/linux/interconnect-clk.h
-@@ -11,6 +11,8 @@ struct device;
- struct icc_clk_data {
- 	struct clk *clk;
- 	const char *name;
-+	unsigned int master_id;
-+	unsigned int slave_id;
- };
- 
- struct icc_provider *icc_clk_register(struct device *dev,
++  '#interconnect-cells':
++    const: 1
++
+ required:
+   - compatible
+   - clocks
+diff --git a/include/dt-bindings/interconnect/qcom,ipq9574.h b/include/dt-bindings/interconnect/qcom,ipq9574.h
+new file mode 100644
+index 000000000000..42019335c7dd
+--- /dev/null
++++ b/include/dt-bindings/interconnect/qcom,ipq9574.h
+@@ -0,0 +1,59 @@
++/* SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause) */
++#ifndef INTERCONNECT_QCOM_IPQ9574_H
++#define INTERCONNECT_QCOM_IPQ9574_H
++
++#define MASTER_ANOC_PCIE0		0
++#define SLAVE_ANOC_PCIE0		1
++#define MASTER_SNOC_PCIE0		2
++#define SLAVE_SNOC_PCIE0		3
++#define MASTER_ANOC_PCIE1		4
++#define SLAVE_ANOC_PCIE1		5
++#define MASTER_SNOC_PCIE1		6
++#define SLAVE_SNOC_PCIE1		7
++#define MASTER_ANOC_PCIE2		8
++#define SLAVE_ANOC_PCIE2		9
++#define MASTER_SNOC_PCIE2		10
++#define SLAVE_SNOC_PCIE2		11
++#define MASTER_ANOC_PCIE3		12
++#define SLAVE_ANOC_PCIE3		13
++#define MASTER_SNOC_PCIE3		14
++#define SLAVE_SNOC_PCIE3		15
++#define MASTER_USB			16
++#define SLAVE_USB			17
++#define MASTER_USB_AXI			18
++#define SLAVE_USB_AXI			19
++#define MASTER_NSSNOC_NSSCC		20
++#define SLAVE_NSSNOC_NSSCC		21
++#define MASTER_NSSNOC_SNOC_0		22
++#define SLAVE_NSSNOC_SNOC_0		23
++#define MASTER_NSSNOC_SNOC_1		24
++#define SLAVE_NSSNOC_SNOC_1		25
++#define MASTER_NSSNOC_PCNOC_1		26
++#define SLAVE_NSSNOC_PCNOC_1		27
++#define MASTER_NSSNOC_QOSGEN_REF	28
++#define SLAVE_NSSNOC_QOSGEN_REF		29
++#define MASTER_NSSNOC_TIMEOUT_REF	30
++#define SLAVE_NSSNOC_TIMEOUT_REF	31
++#define MASTER_NSSNOC_XO_DCD		32
++#define SLAVE_NSSNOC_XO_DCD		33
++#define MASTER_NSSNOC_ATB		34
++#define SLAVE_NSSNOC_ATB		35
++#define MASTER_MEM_NOC_NSSNOC		36
++#define SLAVE_MEM_NOC_NSSNOC		37
++#define MASTER_NSSNOC_MEMNOC		38
++#define SLAVE_NSSNOC_MEMNOC		39
++#define MASTER_NSSNOC_MEM_NOC_1		40
++#define SLAVE_NSSNOC_MEM_NOC_1		41
++
++#define MASTER_NSSNOC_PPE		0
++#define SLAVE_NSSNOC_PPE		1
++#define MASTER_NSSNOC_PPE_CFG		2
++#define SLAVE_NSSNOC_PPE_CFG		3
++#define MASTER_NSSNOC_NSS_CSR		4
++#define SLAVE_NSSNOC_NSS_CSR		5
++#define MASTER_NSSNOC_IMEM_QSB		6
++#define SLAVE_NSSNOC_IMEM_QSB		7
++#define MASTER_NSSNOC_IMEM_AHB		8
++#define SLAVE_NSSNOC_IMEM_AHB		9
++
++#endif /* INTERCONNECT_QCOM_IPQ9574_H */
 -- 
 2.34.1
 
