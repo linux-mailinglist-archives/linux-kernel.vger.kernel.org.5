@@ -1,161 +1,141 @@
-Return-Path: <linux-kernel+bounces-164335-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-164336-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 548D98B7C75
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 18:02:27 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C87058B7C78
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 18:02:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 846001C229E2
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 16:02:26 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 689DB1F2142B
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 16:02:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D199178CFD;
-	Tue, 30 Apr 2024 16:02:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2AD8A176FDB;
+	Tue, 30 Apr 2024 16:02:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Tsd8c9aP"
-Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=rjwysocki.net header.i=@rjwysocki.net header.b="PvvJNeoq"
+Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E603175541
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 16:02:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 82361176FB2;
+	Tue, 30 Apr 2024 16:02:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=79.96.170.134
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714492931; cv=none; b=CZRcwAn3hHdfVnb4q9vgBXQ/tNWDSZloI1OavuJwU5I+JdSzlvUlE0LGrJfx43jx4X3RCDQ1DQ4GoXSC8kakvD9XGnFsMVbzYNN4uZ5G/zUOvjAf/yRX2Pp0vkllnXAlFurFfZ42WrX8MKcpkXl6ZjNruovhli/D8vktmoAG4Ks=
+	t=1714492945; cv=none; b=LYQOOfdmvJQ8MORYf7aRkZriGxy/j1vfoXahCOBWg7uFDJ28D4TK/7zAFbj1ennJDZx2Boe61AJVfabCPIvB9zSQrlblLUqK5HmoWliI5rxc+B0OFNeDHzkPn/gwiYXXTlICilQVTwEzbOYw8MEO8W/9guGPp0ebBsFvWtSmgYk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714492931; c=relaxed/simple;
-	bh=t9C7Ye6tArU7Baw32FWLZftC1ohgE3SE8Qu1VszqBkA=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=Zg+hKqt+OsjwqQfQcok9ncwsYOUwqehFJkWwXSofrNeZzIz9CX8FRElvoLUcXo0ix+CP4eM9Jhvil6y1zXkg5AwKGBul99rTpENZYTkXj7Dx5prRCM+6CIAF3PKGYwOAxba+iCu5NuUkHxLK/+f8y+hxK+H+H4P0hgKqcFKURmk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Tsd8c9aP; arc=none smtp.client-ip=209.85.128.202
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-61c9e368833so9393437b3.3
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 09:02:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1714492929; x=1715097729; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Nnx8PEh4F0H2pwvd5VJa9QAeHpiBNkwiDpkDCA/9d28=;
-        b=Tsd8c9aPA3axGEFylUe+D4SNOxlu5bv7IyNh+ZARaAIkNNdyPKAI/l44JCm0R9wKHe
-         PUGVpGpwH4ojSF1Pn+HYodeD7HV4jTa7d47mDAL2ba+eCt752oQkxx8VeOndXpiqSOiU
-         VYiESNIqy69nO47Vh+SIXtEI4R/Ju4kukYSaXxkKPeK+Ehfb8fa+lknCP5WJk9QxiETn
-         Ph+bSGj2jGQ+btVKuZEgpWf3rcZb9oe1z7BWJEn7MCKdpGWGPwj9CCs4jpPlmRKcEqr3
-         zUwJv6GvP0JYmFV9Q5q3HUr08hAmNUv2tBWxkjSsgM8K4n7KOLiBqt1s1RV5QsgxYVnv
-         1IQA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714492929; x=1715097729;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=Nnx8PEh4F0H2pwvd5VJa9QAeHpiBNkwiDpkDCA/9d28=;
-        b=vYzkRcNwJ9zYPvtZcKFchfolDrnW+Qkw2Qz2n+yfhLaZPjh7uZ1qZpbJpeLX8QYbZc
-         BYQysGjmNR9UbmHX61k/hWKfvr9VTM5zMdXWNChbnGYiLgFIUexdNlNHxE9p3YHDxH2r
-         NwscD6PRhnP7+I509vqz99biHsVaeBeibKy7ntVVPaQS5HfBgvi2n932d4SEH0GV/914
-         8JPE3sM2kvUcpCjlgUhdU7LpUiqaWRw2w/KL2XcTRY3yHllEY7QSdRO4iH5N+cHHjdso
-         zHr4Y32zYzdSb49tl6p3mCEgPwJvrSk2zy6YRwxZOEWn3mBD5NqpRNGSJaFOfY1BQ95b
-         ThiA==
-X-Forwarded-Encrypted: i=1; AJvYcCVvojcHZujdTfiMU03WHK8OJmRNZ1EpBs25ley0v2aQqHrIbOx0kPU30NBbbyTfcg3YYQ3a8Ig89f4VUiEMJCLrXWFG4TQf+Hf9UUsy
-X-Gm-Message-State: AOJu0YxVl7JdAd3IVkeVC/KXO9pQ7t2JN97XwVlcY8QGW6IXZMr8loT9
-	/DUhsFfCFACA9XN8LJyheAAAJcrU4nGjKgJuzAMbxZj++2BIS541LfVy/NAnurMzUKKTY589/Ua
-	tpA==
-X-Google-Smtp-Source: AGHT+IHKEpOrUUpr879xfqxmU8uZlro4QxVZM2T9MnKEU6UhkgNuMfrZrPFPOzrx8/CedBlpCnSRt2fJQnQ=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:6902:1002:b0:dd9:1db5:8348 with SMTP id
- w2-20020a056902100200b00dd91db58348mr4752342ybt.8.1714492928972; Tue, 30 Apr
- 2024 09:02:08 -0700 (PDT)
-Date: Tue, 30 Apr 2024 09:02:07 -0700
-In-Reply-To: <38e124dcdbf5e0badedf3c0e52c72e5e9352c435.camel@infradead.org>
+	s=arc-20240116; t=1714492945; c=relaxed/simple;
+	bh=1XpWqYY6FpW+nYEyvngkH/20vtybIC+9kZBc7rpJxEQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=eDXpUdpInxnF8cMRvlryoI5fsEczQ5sMjIZ7Ioyt8bpg9TAVrx3Ph2jvqnKOnO25vBkULXRgwtlYmdJeuUCM0/SlTZ91UtOuA3IkN6lljGHyvDGbDcK37NalsyNs+MPxGgt/520zWLnQWlg+s9f/gxiRu5pMuwMAOimB2ycC0f4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rjwysocki.net; spf=pass smtp.mailfrom=rjwysocki.net; dkim=fail (2048-bit key) header.d=rjwysocki.net header.i=@rjwysocki.net header.b=PvvJNeoq reason="signature verification failed"; arc=none smtp.client-ip=79.96.170.134
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rjwysocki.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rjwysocki.net
+Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
+ by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 6.0.0)
+ id 5ee6a7844c993097; Tue, 30 Apr 2024 18:02:21 +0200
+Received: from kreacher.localnet (unknown [195.136.19.94])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by cloudserver094114.home.pl (Postfix) with ESMTPSA id 0C26D66E643;
+	Tue, 30 Apr 2024 18:02:21 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rjwysocki.net;
+	s=dkim; t=1714492941;
+	bh=1XpWqYY6FpW+nYEyvngkH/20vtybIC+9kZBc7rpJxEQ=;
+	h=From:To:Cc:Subject:Date;
+	b=PvvJNeoqYzENUZZBlwJRp3Cfq4aS+BRbWjHBDUy5YY4y9RrtqIZa0z+yNDSEhlRTj
+	 d7I8TD6HdT1YWcstC8wrNPWmOkMQSrh7/NYT/ZwDxsGvAjzR+MTxz0P2wolkz898g5
+	 zDS2KV+vBTVbss87RlEgE90Q+jfMTKI4NVV8POA7c9g0wtNpoRYZdob1UJSILVEuUg
+	 zS49eOK7OzVIiTxMylPM+wp6wU93ILEqIcvvC1Zl1IYX3wXvvOxh42AF7HOsFe9877
+	 vkzvUMoY67EIh5FtDHc2RqXGttCWiasihhR9ADDXlseX1nVuoeRPkFByaNgVuHk4PT
+	 On7dgcmqT4xdw==
+From: "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To: Linux ACPI <linux-acpi@vger.kernel.org>
+Cc: LKML <linux-kernel@vger.kernel.org>, Salil Mehta <salil.mehta@huawei.com>,
+ Jonathan Cameron <jonathan.cameron@huawei.com>,
+ Zhang Rui <rui.zhang@intel.com>
+Subject:
+ [PATCH v2] ACPI: scan: Avoid enumerating devices with clearly invalid _STA
+ values
+Date: Tue, 30 Apr 2024 18:02:20 +0200
+Message-ID: <12427278.O9o76ZdvQC@kreacher>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240206151950.31174-1-vkuznets@redhat.com> <171441840173.70995.3768949354008381229.b4-ty@google.com>
- <38e124dcdbf5e0badedf3c0e52c72e5e9352c435.camel@infradead.org>
-Message-ID: <ZjEV_6SpS7MEN_Cx@google.com>
-Subject: Re: [PATCH v2] KVM: selftests: Compare wall time from xen shinfo
- against KVM_GET_CLOCK
-From: Sean Christopherson <seanjc@google.com>
-To: David Woodhouse <dwmw2@infradead.org>
-Cc: kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>, 
-	Vitaly Kuznetsov <vkuznets@redhat.com>, Jan Richter <jarichte@redhat.com>, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="UTF-8"
+X-CLIENT-IP: 195.136.19.94
+X-CLIENT-HOSTNAME: 195.136.19.94
+X-VADE-SPAMSTATE: clean
+X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvledrvddufedgleefucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecujffqoffgrffnpdggtffipffknecuuegrihhlohhuthemucduhedtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvfevufffkfgggfgtsehtufertddttdejnecuhfhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqnecuggftrfgrthhtvghrnhepueeugffhuddtueeiledukeeileffieetudfhuedtfeejgefhveeigeegleettedvnecuffhomhgrihhnpehuvghfihdrohhrghdpkhgvrhhnvghlrdhorhhgnecukfhppeduleehrddufeeirdduledrleegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepudelhedrudefiedrudelrdelgedphhgvlhhopehkrhgvrggthhgvrhdrlhhotggrlhhnvghtpdhmrghilhhfrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqedpnhgspghrtghpthhtohephedprhgtphhtthhopehlihhnuhigqdgrtghpihesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehsrghlihhlrdhmvghhthgrsehhuhgrfigvihdrtghomhdprhgtphhtthhopehjohhnrght
+ hhgrnhdrtggrmhgvrhhonheshhhurgifvghirdgtohhmpdhrtghpthhtoheprhhuihdriihhrghnghesihhnthgvlhdrtghomh
+X-DCC--Metrics: v370.home.net.pl 1024; Body=5 Fuz1=5 Fuz2=5
 
-On Mon, Apr 29, 2024, David Woodhouse wrote:
-> On Mon, 2024-04-29 at 13:45 -0700, Sean Christopherson wrote:
-> > On Tue, 06 Feb 2024 16:19:50 +0100, Vitaly Kuznetsov wrote:
-> > > xen_shinfo_test is observed to be flaky failing sporadically with
-> > > "VM time too old". With min_ts/max_ts debug print added:
-> > >=20
-> > > Wall clock (v 3269818) 1704906491.986255664
-> > > Time info 1: v 1282712 tsc 33530585736 time 14014430025 mul 358755222=
-3 shift 4294967295 flags 1
-> > > Time info 2: v 1282712 tsc 33530585736 time 14014430025 mul 358755222=
-3 shift 4294967295 flags 1
-> > > min_ts: 1704906491.986312153
-> > > max_ts: 1704906506.001006963
-> > > =3D=3D=3D=3D Test Assertion Failure =3D=3D=3D=3D
-> > > =C2=A0=C2=A0 x86_64/xen_shinfo_test.c:1003: cmp_timespec(&min_ts, &vm=
-_ts) <=3D 0
-> > > =C2=A0=C2=A0 pid=3D32724 tid=3D32724 errno=3D4 - Interrupted system c=
-all
-> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 1=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0 0x00000000004030ad: main at xen_shinfo_test.c:1003
-> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 2=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0 0x00007fca6b23feaf: ?? ??:0
-> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 3=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0 0x00007fca6b23ff5f: ?? ??:0
-> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 4=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0 0x0000000000405e04: _start at ??:?
-> > > =C2=A0=C2=A0 VM time too old
-> > >=20
-> > > [...]
-> >=20
-> > Applied to kvm-x86 selftests, thanks!
-> >=20
-> > [1/1] KVM: selftests: Compare wall time from xen shinfo against KVM_GET=
-_CLOCK
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 https://github.com/kvm-x86/linux/commit/=
-201142d16010
->=20
-> Of course, this just highlights the fact that the very *definition* of
-> the wallclock time as exposed in the Xen shinfo and MSR_KVM_WALL_CLOCK
-> is entirely broken now.=20
->=20
-> When the KVM clock was based on CLOCK_MONOTONIC, the delta between that
-> and wallclock time was constant (well, apart from leap seconds but KVM
-> has *always* been utterly hosed for that, so that's just par for the
-> course). So that made sense.
->=20
-> But when we switched the KVM clock to CLOCK_MONOTONIC_RAW, trying to
-> express wallclock time in terms of the KVM clock became silly. They run
-> at different rates, so the value returned by kvm_get_wall_clock_epoch()
-> will be constantly changing.
->=20
-> As I work through cleaning up the KVM clock mess, it occurred to me
-> that we should maybe *refresh* the wallclock time we report to the
-> guest. But I think it's just been hosed for so long that no guest could
-> ever trust it for anything but knowing roughly what year it is when
-> first booting, and it isn't worth fixing.
->=20
-> What we *should* do is expose something new which exposes the NTP-
-> calibrated relationship between the arch counter (or TSC) and the real
-> time, being explicit about TAI and about live migration (a guest needs
-> to know when it's been migrated and should throw away any NTP
-> refinement that it's done for *itself*).
->=20
-> I know we have the PTP paired reading thing, but that's *still* not
-> TAI, it makes guests do the work for themselves and doesn't give a
-> clean signal when live migration disrupts them.
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-Is the above an objection to the selftest change, or just an aside?  Honest
-question, I have no preference either way; I just don't have my head wrappe=
-d
-around all of the clock stuff enough to have an informed opinion on what th=
-e
-right/best way forward is.
+The return value of _STA with the "present" bit unset and the "enabled"
+bit set is clearly invalid as per the ACPI specification, Section 6.3.7
+"_STA (Device Status)", so make the ACPI device enumeration code
+disregard devices with such _STA return values.
+
+Also, because this implies that status.enabled will only be set if
+status.present is set too, acpi_device_is_enabled() can be modified
+to simply return the value of the former.
+
+Link: https://uefi.org/specs/ACPI/6.5/06_Device_Configuration.html#sta-device-status
+Link: https://lore.kernel.org/linux-acpi/88179311a503493099028c12ca37d430@huawei.com/
+Suggested-by: Salil Mehta <salil.mehta@huawei.com>
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+---
+
+v1 -> v2:
+   * Fix a confusing comment.
+   * Add R-by from Jonathan (thank you!)
+
+---
+ drivers/acpi/bus.c  |   11 +++++++++++
+ drivers/acpi/scan.c |    2 +-
+ 2 files changed, 12 insertions(+), 1 deletion(-)
+
+Index: linux-pm/drivers/acpi/bus.c
+===================================================================
+--- linux-pm.orig/drivers/acpi/bus.c
++++ linux-pm/drivers/acpi/bus.c
+@@ -112,6 +112,17 @@ int acpi_bus_get_status(struct acpi_devi
+ 	if (ACPI_FAILURE(status))
+ 		return -ENODEV;
+ 
++	if (!device->status.present && device->status.enabled) {
++		pr_info(FW_BUG "Device [%s] status [%08x]: not present and enabled\n",
++			device->pnp.bus_id, (u32)sta);
++		device->status.enabled = 0;
++		/*
++		 * The status is clearly invalid, so clear the functional bit as
++		 * well to avoid attempting to use the device.
++		 */
++		device->status.functional = 0;
++	}
++
+ 	acpi_set_device_status(device, sta);
+ 
+ 	if (device->status.functional && !device->status.present) {
+Index: linux-pm/drivers/acpi/scan.c
+===================================================================
+--- linux-pm.orig/drivers/acpi/scan.c
++++ linux-pm/drivers/acpi/scan.c
+@@ -1962,7 +1962,7 @@ bool acpi_device_is_present(const struct
+ 
+ bool acpi_device_is_enabled(const struct acpi_device *adev)
+ {
+-	return adev->status.present && adev->status.enabled;
++	return adev->status.enabled;
+ }
+ 
+ static bool acpi_scan_handler_matching(struct acpi_scan_handler *handler,
+
+
+
 
