@@ -1,158 +1,124 @@
-Return-Path: <linux-kernel+bounces-164769-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-164770-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id DC0B18B829F
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 00:11:10 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7D4A28B82A3
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 00:25:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6CC202848D0
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 22:11:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1C89A1F227B9
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 22:25:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB6091BF6CF;
-	Tue, 30 Apr 2024 22:11:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="cFFlQNpw"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.20])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D7D01BF6E3;
+	Tue, 30 Apr 2024 22:24:55 +0000 (UTC)
+Received: from mail-lj1-f182.google.com (mail-lj1-f182.google.com [209.85.208.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 811B31802D8;
-	Tue, 30 Apr 2024 22:11:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9EA131BED74;
+	Tue, 30 Apr 2024 22:24:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714515064; cv=none; b=C0FGs5VwCKygba4ojJdDJYhhr2KpGptdhFQmDa9hrWFPjE3kYg3drinhnHm+0wRmNMpBgFjJ40Aa7gW/8vzOENJzou/EU2Vm0Lokhc0hKqlbgaWkLhLIxDmg0rkDY2nazYVy50wC18xH9AagDs0ud2Q6cYjKDWixuzSnDl5ncXA=
+	t=1714515894; cv=none; b=Lw2iYXTCfh1Lso/ZMuJb+zMgeJB+qqYHyqzf7kMscZRHtl6xQ25x7sODUpPX/6z2PZuV9bdA0BPT+A1jCZh8DVa2aLhrNUdBcaXIwkyV2LDDwY3wGZD3zJ/9Xb+hOb9AlF7dZxuDWGfMz9AmIpALnifcXOfBMIGwl5xv5Y/JUxs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714515064; c=relaxed/simple;
-	bh=q/H6nqXJsWNoKU9TwbxDMKCb3eBjRvO7RNFWS3ZQZho=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=gqUdcxDpjqboNeOa46+DaAiUToeW6rXWciFp7b+SHMzjcNsYLr33R/ysyraYrJZ0hRMCUQP6jKc3jc+z5/lmenhEZTo0QIncHvM6ci67cy7VtKS4DWBuht/oNnaER1wlsZMy8locMjYZunccqtOxDiiBGv8/mCoeGE2B5/b9ftg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=cFFlQNpw; arc=none smtp.client-ip=198.175.65.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1714515063; x=1746051063;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=q/H6nqXJsWNoKU9TwbxDMKCb3eBjRvO7RNFWS3ZQZho=;
-  b=cFFlQNpwDPbrvRKMu1i00ESZVVOaJTZhuuL7QxiPjc8x3ZrR/9aUl30D
-   fiXXBHUaFTWDGRTD+A0cqJPYarBHGWaj66x3DrNRQZRRT1TYdouAHXtpr
-   9sRCuZXfHW+yduBMwAYmoN2iprTSZ8gKDyFdXHq2cFTeSw4X5SqfZ+3Se
-   HjLBdrLLv6UCZb0KjyNbkvgsl3s+rzN0JEOWSLGWDWMo1U/vIW3Aj2xj6
-   e7RqzO2CosmN7D3h+M/4QwqSusN+YvKypSNLKzmgb+3iivLyKsWWoR2I1
-   YQpnGG7VXtsDadbUJdpCBYNBAeUhx5Z2IEieI7DSobdzeDCSWjZpk0heU
-   g==;
-X-CSE-ConnectionGUID: Yotv3XfZRtyOIPKCcbt4LQ==
-X-CSE-MsgGUID: 4IG1l+zpR/isXSzCGSJ2+w==
-X-IronPort-AV: E=McAfee;i="6600,9927,11060"; a="10077471"
-X-IronPort-AV: E=Sophos;i="6.07,243,1708416000"; 
-   d="scan'208";a="10077471"
-Received: from orviesa009.jf.intel.com ([10.64.159.149])
-  by orvoesa112.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Apr 2024 15:11:03 -0700
-X-CSE-ConnectionGUID: 7NIs8La3SrWCF1+5d08o/g==
-X-CSE-MsgGUID: 2QK4/CVVS8qD+l43BSNN3w==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,243,1708416000"; 
-   d="scan'208";a="26631480"
-Received: from spandruv-desk.jf.intel.com ([10.54.75.19])
-  by orviesa009.jf.intel.com with ESMTP; 30 Apr 2024 15:11:02 -0700
-From: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-To: hdegoede@redhat.com,
-	ilpo.jarvinen@linux.intel.com,
-	andriy.shevchenko@linux.intel.com
-Cc: platform-driver-x86@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-	Zhang Rui <rui.zhang@intel.com>
-Subject: [PATCH] platform/x86: ISST: Support SST-BF and SST-TF per level
-Date: Tue, 30 Apr 2024 15:10:52 -0700
-Message-ID: <20240430221052.15825-1-srinivas.pandruvada@linux.intel.com>
-X-Mailer: git-send-email 2.44.0
+	s=arc-20240116; t=1714515894; c=relaxed/simple;
+	bh=17NkYFO9dywn/blIM0Gpoy5e7x7EYKqNqeOoLXKiO7Q=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=geezfcFI/Wj+75dwg2ssaorv6vUTwiOr1HozOz3PZBMAJc1jNI6ZkSEK5XLiL3gjBwWg+ls+VEmoQoD4dWCjo1p6AzubW9RS7eQZjZasBPTDTlC9+Ang7kz2s4sjIUvLZlUD+933fesRiG8p8UVXNaW3Z2/tM2rJ6HGtEwiL9gM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=sung-woo.kim; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.208.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=sung-woo.kim
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f182.google.com with SMTP id 38308e7fff4ca-2db101c11beso73349081fa.0;
+        Tue, 30 Apr 2024 15:24:52 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714515890; x=1715120690;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ECpIuyv+gzN+0Jumi8ixAEg//MH7TPT3J6p+EMrCEyY=;
+        b=TAS14O78Lx1Kio/qtaG3OLBmeObd0qO79cvk++7xzCNdgWHGXKtz2jKxuZy/gQhkzU
+         BMT//ZpzODP+MAqrf4yrxdA8dfYrwnuxnTj+w7Iw8N7/hmDEsdBHFPlLGy+93EryJCQu
+         8EQdtZozpNXDVADhEOTMvObd33Nf6aZJ9AvBu9x+Lt/X6m3uhXEggyDYZJ0//HPOZYET
+         o/Mg2EmEXQPeXRkJvoS7O0MAVJxtXktpGBy1+GOKPyeAYCLBsEZzsS6vwHaeGdXiDaGH
+         OYjNVqwX+Q0i6D8B+3EntPfAjQt/OxCb3zv4bUDCREh5cT6KXkH5yRfVqVb4+MbGUpFF
+         z5yQ==
+X-Forwarded-Encrypted: i=1; AJvYcCV3/cmGaEaFifLgxgATtSf3M7s049luyIJAtlYW4v7InH+7vs4kjQQuMYn6NhSFH5FAilHytVtcg1+5Efr3n05CpZyVnd9wkHW4OEFKAmD8DnRRg95ZftzXSOxuDxf5B0bjeRXxjG+BVQ==
+X-Gm-Message-State: AOJu0YxCrZ4FQ/g9o/cFFBF6q9h+8JZ+gkYaJCWJMoK9lNF1YWmbN5oV
+	4Q5S/8ZC0imBG5fxiKBk5Vr/2OTGKweXb8rpdZhaaIsLJ2mJeZNT1FLFWNJMqV0=
+X-Google-Smtp-Source: AGHT+IFkDqWis1cth1ly84iFSo11IVWjc4Yk7t+fpJ5KyD5XPZCLyZbXH2DoWlIIg3mBIwhf/dustg==
+X-Received: by 2002:a05:651c:1992:b0:2d4:9201:d505 with SMTP id bx18-20020a05651c199200b002d49201d505mr615301ljb.51.1714515890303;
+        Tue, 30 Apr 2024 15:24:50 -0700 (PDT)
+Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com. [209.85.167.45])
+        by smtp.gmail.com with ESMTPSA id f28-20020a2eb5bc000000b002e0e78240a4sm365162ljn.77.2024.04.30.15.24.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 30 Apr 2024 15:24:49 -0700 (PDT)
+Received: by mail-lf1-f45.google.com with SMTP id 2adb3069b0e04-518931f8d23so6465425e87.3;
+        Tue, 30 Apr 2024 15:24:49 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCVRs5xWcYFKTtjNkCZKop6XbkeTv9uZt5xZfN19KGWvgwEK2keNBBrE9pLKZgmFR4eNqhfaBZvJqsewJo6wBk9Qt++Y6nmHV+n7VSxkBV1F+G5ykMEHfm38trWPgFkNGJqGLm4RC6CzUg==
+X-Received: by 2002:ac2:5632:0:b0:51d:68fb:5d73 with SMTP id
+ b18-20020ac25632000000b0051d68fb5d73mr498752lff.8.1714515889769; Tue, 30 Apr
+ 2024 15:24:49 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240501075038.2d07189b@canb.auug.org.au>
+In-Reply-To: <20240501075038.2d07189b@canb.auug.org.au>
+From: Sungwoo Kim <iam@sung-woo.kim>
+Date: Tue, 30 Apr 2024 18:24:35 -0400
+X-Gmail-Original-Message-ID: <CAJNyHp+-Hb29VE2-DLb1Vo51rwhJrYmN9J5_mxocFUf8Y72Vww@mail.gmail.com>
+Message-ID: <CAJNyHp+-Hb29VE2-DLb1Vo51rwhJrYmN9J5_mxocFUf8Y72Vww@mail.gmail.com>
+Subject: Re: linux-next: Fixes tag needs some work in the bluetooth tree
+To: Luiz Augusto von Dentz <luiz.dentz@gmail.com>
+Cc: Marcel Holtmann <marcel@holtmann.org>, Johan Hedberg <johan.hedberg@gmail.com>, 
+	Luiz Augusto von Dentz <luiz.von.dentz@intel.com>, 
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, 
+	Linux Next Mailing List <linux-next@vger.kernel.org>, sfr@canb.auug.org.au
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-SST SST-BF and SST-TF can be enabled/disabled per SST-PP level. So return
-a mask of all levels, where the feature is supported, instead of just for
-level 0.
+Hi, sorry for the wrong fixed tag.
 
-Since the return value returns all levels mask, not just level 0, update
-API version.
+On Tue, Apr 30, 2024 at 5:50=E2=80=AFPM Stephen Rothwell <sfr@canb.auug.org=
+au> wrote:
+>
+> Hi all,
+>
+> In commit
+>
+>   91708e8a4376 ("Bluetooth: msft: fix slab-use-after-free in msft_do_clos=
+e()")
+>
+> Fixes tag
+>
+>   Fixes: 9e14606d8f38 ("Bluetooth: disable advertisement filters during s=
+uspend")
+>
+> has these problem(s):
+>
+>   - Subject does not match target commit subject
+>     Just use
+>         git log -1 --format=3D'Fixes: %h ("%s")'
+>
+> Maybe you meant
+>
+> Fixes: bf6a4e30ffbd ("Bluetooth: disable advertisement filters during sus=
+pend")
+>
+> or
+>
+> Fixes: 9e14606d8f38 ("Bluetooth: msft: Extended monitor tracking by addre=
+ss filter")
 
-Signed-off-by: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-Reviewed-by: Zhang Rui <rui.zhang@intel.com>
----
- .../intel/speed_select_if/isst_tpmi_core.c    | 38 +++++++++++++++----
- 1 file changed, 31 insertions(+), 7 deletions(-)
+The correct tag is:
 
-diff --git a/drivers/platform/x86/intel/speed_select_if/isst_tpmi_core.c b/drivers/platform/x86/intel/speed_select_if/isst_tpmi_core.c
-index 6bcbb97b0101..7bac7841ff0a 100644
---- a/drivers/platform/x86/intel/speed_select_if/isst_tpmi_core.c
-+++ b/drivers/platform/x86/intel/speed_select_if/isst_tpmi_core.c
-@@ -847,6 +847,8 @@ static int isst_if_get_perf_level(void __user *argp)
- {
- 	struct isst_perf_level_info perf_level;
- 	struct tpmi_per_power_domain_info *power_domain_info;
-+	unsigned long level_mask;
-+	u8 level, support;
- 
- 	if (copy_from_user(&perf_level, argp, sizeof(perf_level)))
- 		return -EFAULT;
-@@ -866,12 +868,34 @@ static int isst_if_get_perf_level(void __user *argp)
- 		      SST_PP_FEATURE_STATE_START, SST_PP_FEATURE_STATE_WIDTH, SST_MUL_FACTOR_NONE)
- 	perf_level.enabled = !!(power_domain_info->sst_header.cap_mask & BIT(1));
- 
--	_read_bf_level_info("bf_support", perf_level.sst_bf_support, 0, 0,
--			    SST_BF_FEATURE_SUPPORTED_START, SST_BF_FEATURE_SUPPORTED_WIDTH,
--			    SST_MUL_FACTOR_NONE);
--	_read_tf_level_info("tf_support", perf_level.sst_tf_support, 0, 0,
--			    SST_TF_FEATURE_SUPPORTED_START, SST_TF_FEATURE_SUPPORTED_WIDTH,
--			    SST_MUL_FACTOR_NONE);
-+	level_mask = perf_level.level_mask;
-+	perf_level.sst_bf_support = 0;
-+	for_each_set_bit(level, &level_mask, BITS_PER_BYTE) {
-+		/*
-+		 * Read BF support for a level. Read output is updated
-+		 * to "support" variable by the below macro.
-+		 */
-+		_read_bf_level_info("bf_support", support, level, 0, SST_BF_FEATURE_SUPPORTED_START,
-+				    SST_BF_FEATURE_SUPPORTED_WIDTH, SST_MUL_FACTOR_NONE);
-+
-+		/* If supported set the bit for the level */
-+		if (support)
-+			perf_level.sst_bf_support |= BIT(level);
-+	}
-+
-+	perf_level.sst_tf_support = 0;
-+	for_each_set_bit(level, &level_mask, BITS_PER_BYTE) {
-+		/*
-+		 * Read TF support for a level. Read output is updated
-+		 * to "support" variable by the below macro.
-+		 */
-+		_read_tf_level_info("tf_support", support, level, 0, SST_TF_FEATURE_SUPPORTED_START,
-+				    SST_TF_FEATURE_SUPPORTED_WIDTH, SST_MUL_FACTOR_NONE);
-+
-+		/* If supported set the bit for the level */
-+		if (support)
-+			perf_level.sst_tf_support |= BIT(level);
-+	}
- 
- 	if (copy_to_user(argp, &perf_level, sizeof(perf_level)))
- 		return -EFAULT;
-@@ -1648,7 +1672,7 @@ void tpmi_sst_dev_resume(struct auxiliary_device *auxdev)
- }
- EXPORT_SYMBOL_NS_GPL(tpmi_sst_dev_resume, INTEL_TPMI_SST);
- 
--#define ISST_TPMI_API_VERSION	0x02
-+#define ISST_TPMI_API_VERSION	0x03
- 
- int tpmi_sst_init(void)
- {
--- 
-2.44.0
+Fixes: 5031ffcc79b8 ("Bluetooth: Keep MSFT ext info throughout a
+hci_dev's life cycle")
 
+Would you like me to send a new patch to fix this?
+
+Thanks,
+Sungwoo.
 
