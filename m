@@ -1,138 +1,261 @@
-Return-Path: <linux-kernel+bounces-163543-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-163544-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 915778B6CDA
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 10:34:55 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5978B8B6CDB
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 10:35:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A565E1C227BC
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 08:34:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 85A831C227E9
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 08:35:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 210411272CA;
-	Tue, 30 Apr 2024 08:34:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E05BD1272CB;
+	Tue, 30 Apr 2024 08:35:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="xrlTfZDE"
-Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com [209.85.208.42])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CPw0AchB"
+Received: from mail-vk1-f177.google.com (mail-vk1-f177.google.com [209.85.221.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DFEE317F5
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 08:34:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80466126F2C
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 08:35:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714466089; cv=none; b=LsDPaCSJXP8aPNMsdEMEGE4ONl6phlfBRAR7+jPLBm/L3ZXuZJa9jtbRawGb/8oMnmwKt52gjlFleQcqc8NsEtsxU3qM6W8DvIPmnM3ICbM5PMqxycbrkn4kLqaL8pd0gdZnW15X8Ix1VEOutMShiTTOmDkjI4aAYpj7JJaYUog=
+	t=1714466105; cv=none; b=opdik43ETJN5k0Pyqgz/1v8V7HmIkJenK4YH5Zvw6mGVBbEquVQV1Mv1FYxT4OPk/Ck1HGgV+MsjtzhIAVJesYtVtLF2SlHtiPIHP/WrfAFPK59UsD9Pv69uSE+QJDby13lTYis6Ot8ER09zchgfB9BAFSLrb9pN43fdjtZsgjc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714466089; c=relaxed/simple;
-	bh=jPYNUDHO8z8R/AW867spSODiXpt3EDt4BNKxe4R+5dc=;
+	s=arc-20240116; t=1714466105; c=relaxed/simple;
+	bh=pkWHCeSzTqS/reracJ9WHv117rpDARyiLszso3HTepk=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=hIUUoWyLLzFn2gosD63kY07eNgPrJfZlYcnMlpGIat57t1H6KmSoOILfjCirnDsL4XC2uDRzQGRtjraDa3S1HNUBNq3d9MK5Ar3eaQJ4TInNdlpetksexsy3UabjSVjsZhwzDD++NSenuok7ZZ0lTRMcwMQHW7GwcK2LRd3GeFg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=xrlTfZDE; arc=none smtp.client-ip=209.85.208.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-571bddddbc2so6378995a12.1
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 01:34:47 -0700 (PDT)
+	 To:Cc:Content-Type; b=VnY+2Yl+jyLie/GTFWUOz8pcf4qQ0NDyqTVnou4J2+yPeD1I98+ebhZDAVUyismFZHzWnSBEmFi6nByi0gySG64IrVp/XGpVsvDdnQMn6DjqGU2W/jH988oYTxoiRQttljFJWjG5tJLHkPjtuoE6GvPVGJAL2TO0rnXXQEQmOgQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CPw0AchB; arc=none smtp.client-ip=209.85.221.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-vk1-f177.google.com with SMTP id 71dfb90a1353d-4dac88c79f2so1636013e0c.1
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 01:35:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1714466086; x=1715070886; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1714466102; x=1715070902; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=aBu8BqMTHMfO28FxxomfhI3ilqxqETOIjPW5gQNZKVM=;
-        b=xrlTfZDEnzFIUxUZhOgeyPCLpPYYVfLnfxFJoROsGtd1Tt+s2n113jToHIu5l1Jr+o
-         EVCRQryBrsHaAnunxqbEP8tOfnghfDMlbknMPpZLK6m9fZsCbS3+2DeFpvePw4nuTFpF
-         yA0UGGB7QOUfkImt/xUBJ8UtEnM977HGPnDUMgaMBN8zhN4556SRZ9I83DfTLjBCBngL
-         8pJuWTLqoW4BwgX0TzSES9RF3IjdEDF44+lGo8XZYGh52IFSj8fO2Xs22rurXkdBGcHP
-         03D/foSBv94QKl8ehx3K/0xf8ZVcwCmL6jQCct+eyBjxN1Y3enUjxyoOOtDEFnskWi+I
-         a/xQ==
+        bh=y/rBRcHoRXlAwLG+vwR0R7sg6LprDY9hP2qmcW7kBis=;
+        b=CPw0AchBqAGx2OMkGE5em4DxLSBPVzqp3IkFaLqAeawRB2s5KdELbBT6t+CtBvb/xq
+         F0+m5G2HHDikcdvjdV7ZLKd8mhRx1fwSMOc8orz4JmAYVYkAhozeqxdzl7+KescFjRNy
+         zHDIAfw//PHV5ZxZIVJXxv/djGZ81z/E3P51wqpVvIJaTLBN9yTjLf4bvqXItajeUO1h
+         O7Lb31OWwN/P2rNHp/Lh1kHkSQHzbJQjfjtV1cJIyUbLOl8He+BoBh/KL55gGclK1LHH
+         LFbssx5UGzAVgil97OtvBOkcQovJR3zmYBwyxJNh3MQsFEpe6FJZ3/0rDLmKaQ/UQ03U
+         m2kQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714466086; x=1715070886;
+        d=1e100.net; s=20230601; t=1714466102; x=1715070902;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=aBu8BqMTHMfO28FxxomfhI3ilqxqETOIjPW5gQNZKVM=;
-        b=W7un3QhRSkVM715Dt6d61/VppyW/5R/ySzvv7TEGYnWM+VJwQh7p0X1Nh0/G6BXdjH
-         lLp3ip1xbfjXShNtowVFzmF5HIQIVwHYpRvwa0+cTea1NHLyEjB1CU0aMXSIa/VdSCV1
-         x9n2RhBBWi6Pgk2dgcpFneU1IbKixpJkZoKtf2ge3welfQLkUZbyYATf+JShYoacyY4A
-         9aTjCSIrM6OP5+RWvSiAh5KtYIVRLqlmhts4oZ7iNutLo+lNsBcvPFe0GroJlFeFDFKB
-         EQeBfyB6cGsU6Cotl1DCl1mer/NWg+OVuffau3CXRq6RzJsBJ64t73LO/N+YcTaIKwbn
-         d9SQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXTbXRO4CKWxvgD6K9zYvNH8GOvR5w8ddQXr74nOK8by9S2hGiNPETwvfRinosTi/BfcBH8TalTtXr5pH4sdX56kksayUUw5ySTn7P+
-X-Gm-Message-State: AOJu0YyFE05rTW8up7TzYRkBZYzfKwRDSVRIr/0cdEQx+qw6jfiyagXA
-	rNzZDAutVBYe5HqkQQ4bcgn2SJZsxAyyemssZZ14KJxkfQVxn6XHzWfshr7+TunnlxJLIQ3nlyJ
-	A9oGRjf/Y3BxwR0Lr8Hyol0z4N7RC4vLkwYB9
-X-Google-Smtp-Source: AGHT+IG9FviPkvXS5CMDFsIMeJxQdptXNvUHM9jcQby2d5RwfDkT3fUJ6oWeWv1yGvKqNb+hyZ/tP8fW9+HefgCbVAU=
-X-Received: by 2002:a17:906:e2c5:b0:a55:2e77:c718 with SMTP id
- gr5-20020a170906e2c500b00a552e77c718mr8516330ejb.54.1714466086036; Tue, 30
- Apr 2024 01:34:46 -0700 (PDT)
+        bh=y/rBRcHoRXlAwLG+vwR0R7sg6LprDY9hP2qmcW7kBis=;
+        b=by+4amOQ4V5xVdQqtFrXHoGFyStDiLbmzLnKS5Tgr4NJ0Q6WWt8BOHsmeguzqZiZ0i
+         GPp9aGZI3OkYvHCQfZnkHoeLMhdjH4KjKVVqzGd9WWlM10FC95X4Dhu1G4ayEicd00bn
+         98Ap0VJVwRKtTuMKfZuX4NjmXDA/BE0Ie9kViJslb70fpnDT7b6otHBX3nkhjWajlYSu
+         462TYygywK8L7lP5/CAuuGG77gIK7Wi7/o81MeAWjymhe0iKyPAVzyNKWMfwhsxU3aZ4
+         PBs5HNovUIKRHpIbugwzQZPEzMf2TFtJKBH0jx098uxIs0St6F69enmyUHT1Asw/HwEy
+         yWlg==
+X-Forwarded-Encrypted: i=1; AJvYcCXdUuLRJJe5PMl5jLoQOlUlE8dkmGSGvdtXbbduGO8mFTqz1Leeno0xBQ9mbbXwTNY3zwOpQIhynvKB27nO/aobUlKBPQidYyMrlsc1
+X-Gm-Message-State: AOJu0YwrO+OUUld3QjghJFI6xbHz4EDry5wd/Vu+9DVLKNd+Wafn/67k
+	+mWYjiBHy2UTKYnHVA7jRvPBjhvsg03Sr+qZwJj1Ip9COZYD7ViX3B29wdTJO59rTE6hwkzIeiu
+	jyoCm9/5pGGh9CMGgB+jET2XA6rI=
+X-Google-Smtp-Source: AGHT+IE2b+9xTm93X/NkRizSYwvw0aFz30OMiG5gNVvXz6AiphNeZtosWpjR+pMGckPIT2fWaAqlTbKNVg9CjZTjGbk=
+X-Received: by 2002:a05:6122:4689:b0:4d4:1cb7:f57a with SMTP id
+ di9-20020a056122468900b004d41cb7f57amr14645965vkb.9.1714466102388; Tue, 30
+ Apr 2024 01:35:02 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240430060612.2171650-1-shakeel.butt@linux.dev> <20240430060612.2171650-4-shakeel.butt@linux.dev>
-In-Reply-To: <20240430060612.2171650-4-shakeel.butt@linux.dev>
-From: Yosry Ahmed <yosryahmed@google.com>
-Date: Tue, 30 Apr 2024 01:34:10 -0700
-Message-ID: <CAJD7tkb0cOwgvet4MV8pAzP+R4ptHoWgFoMsdoYw_0qrcWv1=Q@mail.gmail.com>
-Subject: Re: [PATCH v3 3/8] mm: memcg: account memory used for memcg vmstats
- and lruvec stats
-To: Shakeel Butt <shakeel.butt@linux.dev>
-Cc: Andrew Morton <akpm@linux-foundation.org>, Johannes Weiner <hannes@cmpxchg.org>, 
-	Michal Hocko <mhocko@kernel.org>, Roman Gushchin <roman.gushchin@linux.dev>, 
-	Muchun Song <muchun.song@linux.dev>, "T . J . Mercier" <tjmercier@google.com>, kernel-team@meta.com, 
+References: <20240429132308.38794-1-ioworker0@gmail.com> <20240429132308.38794-4-ioworker0@gmail.com>
+In-Reply-To: <20240429132308.38794-4-ioworker0@gmail.com>
+From: Barry Song <21cnbao@gmail.com>
+Date: Tue, 30 Apr 2024 20:34:51 +1200
+Message-ID: <CAGsJ_4yYDZfpmp6UTmZSZs74otu4wOKqJ3xfvzQ=pbmfsmmc=g@mail.gmail.com>
+Subject: Re: [PATCH v3 3/3] mm/vmscan: avoid split lazyfree THP during shrink_folio_list()
+To: Lance Yang <ioworker0@gmail.com>
+Cc: akpm@linux-foundation.org, willy@infradead.org, maskray@google.com, 
+	ziy@nvidia.com, ryan.roberts@arm.com, david@redhat.com, mhocko@suse.com, 
+	fengwei.yin@intel.com, zokeefe@google.com, shy828301@gmail.com, 
+	xiehuan09@gmail.com, libang.li@antgroup.com, wangkefeng.wang@huawei.com, 
+	songmuchun@bytedance.com, peterx@redhat.com, minchan@kernel.org, 
 	linux-mm@kvack.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Apr 29, 2024 at 11:06=E2=80=AFPM Shakeel Butt <shakeel.butt@linux.d=
-ev> wrote:
+On Tue, Apr 30, 2024 at 1:23=E2=80=AFAM Lance Yang <ioworker0@gmail.com> wr=
+ote:
 >
-> From: Roman Gushchin <roman.gushchin@linux.dev>
+> When the user no longer requires the pages, they would use
+> madvise(MADV_FREE) to mark the pages as lazy free. Subsequently, they
+> typically would not re-write to that memory again.
 >
-> The percpu memory used by memcg's memory statistics is already accounted.
-> For consistency, let's enable accounting for vmstats and lruvec stats
-> as well.
+> During memory reclaim, if we detect that the large folio and its PMD are
+> both still marked as clean and there are no unexpected references
+> (such as GUP), so we can just discard the memory lazily, improving the
+> efficiency of memory reclamation in this case.
 >
-> Signed-off-by: Roman Gushchin <roman.gushchin@linux.dev>
-> Signed-off-by: Shakeel Butt <shakeel.butt@linux.dev>
-
-Reviewed-by: Yosry Ahmed <yosryahmed@google.com>
-
+> On an Intel i5 CPU, reclaiming 1GiB of lazyfree THPs using
+> mem_cgroup_force_empty() results in the following runtimes in seconds
+> (shorter is better):
+>
+> --------------------------------------------
+> |     Old       |      New       |  Change  |
+> --------------------------------------------
+> |   0.683426    |    0.049197    |  -92.80% |
+> --------------------------------------------
+>
+> Suggested-by: Zi Yan <ziy@nvidia.com>
+> Suggested-by: David Hildenbrand <david@redhat.com>
+> Signed-off-by: Lance Yang <ioworker0@gmail.com>
 > ---
->  mm/memcontrol.c | 7 ++++---
->  1 file changed, 4 insertions(+), 3 deletions(-)
+>  include/linux/huge_mm.h |  2 ++
+>  mm/huge_memory.c        | 75 +++++++++++++++++++++++++++++++++++++++++
+>  mm/rmap.c               |  3 ++
+>  3 files changed, 80 insertions(+)
 >
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index 7126459ec56a..434cff91b65e 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -5545,8 +5545,8 @@ static int alloc_mem_cgroup_per_node_info(struct me=
-m_cgroup *memcg, int node)
->         if (!pn)
->                 return 1;
+> diff --git a/include/linux/huge_mm.h b/include/linux/huge_mm.h
+> index 2daadfcc6776..fd330f72b4f3 100644
+> --- a/include/linux/huge_mm.h
+> +++ b/include/linux/huge_mm.h
+> @@ -38,6 +38,8 @@ int change_huge_pmd(struct mmu_gather *tlb, struct vm_a=
+rea_struct *vma,
+>                     unsigned long cp_flags);
+>  void split_huge_pmd_locked(struct vm_area_struct *vma, unsigned long add=
+ress,
+>                            pmd_t *pmd, bool freeze, struct folio *folio);
+> +bool unmap_huge_pmd_locked(struct vm_area_struct *vma, unsigned long add=
+r,
+> +                          pmd_t *pmdp, struct folio *folio);
 >
-> -       pn->lruvec_stats =3D kzalloc_node(sizeof(struct lruvec_stats), GF=
-P_KERNEL,
-> -                                       node);
-> +       pn->lruvec_stats =3D kzalloc_node(sizeof(struct lruvec_stats),
-> +                                       GFP_KERNEL_ACCOUNT, node);
->         if (!pn->lruvec_stats)
->                 goto fail;
+>  vm_fault_t vmf_insert_pfn_pmd(struct vm_fault *vmf, pfn_t pfn, bool writ=
+e);
+>  vm_fault_t vmf_insert_pfn_pud(struct vm_fault *vmf, pfn_t pfn, bool writ=
+e);
+> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+> index 145505a1dd05..d35d526ed48f 100644
+> --- a/mm/huge_memory.c
+> +++ b/mm/huge_memory.c
+> @@ -2690,6 +2690,81 @@ static void unmap_folio(struct folio *folio)
+>         try_to_unmap_flush();
+>  }
 >
-> @@ -5617,7 +5617,8 @@ static struct mem_cgroup *mem_cgroup_alloc(struct m=
-em_cgroup *parent)
->                 goto fail;
->         }
+> +static bool __discard_trans_pmd_locked(struct vm_area_struct *vma,
+> +                                      unsigned long addr, pmd_t *pmdp,
+> +                                      struct folio *folio)
+> +{
+> +       struct mm_struct *mm =3D vma->vm_mm;
+> +       int ref_count, map_count;
+> +       pmd_t orig_pmd =3D *pmdp;
+> +       struct mmu_gather tlb;
+> +       struct page *page;
+> +
+> +       if (pmd_dirty(orig_pmd) || folio_test_dirty(folio))
+> +               return false;
+> +       if (unlikely(!pmd_present(orig_pmd) || !pmd_trans_huge(orig_pmd))=
+)
+> +               return false;
+> +
+> +       page =3D pmd_page(orig_pmd);
+> +       if (unlikely(page_folio(page) !=3D folio))
+> +               return false;
+> +
+> +       tlb_gather_mmu(&tlb, mm);
+> +       orig_pmd =3D pmdp_huge_get_and_clear(mm, addr, pmdp);
+> +       tlb_remove_pmd_tlb_entry(&tlb, pmdp, addr);
+> +
+> +       /*
+> +        * Syncing against concurrent GUP-fast:
+> +        * - clear PMD; barrier; read refcount
+> +        * - inc refcount; barrier; read PMD
+> +        */
+> +       smp_mb();
+> +
+> +       ref_count =3D folio_ref_count(folio);
+> +       map_count =3D folio_mapcount(folio);
+> +
+> +       /*
+> +        * Order reads for folio refcount and dirty flag
+> +        * (see comments in __remove_mapping()).
+> +        */
+> +       smp_rmb();
+> +
+> +       /*
+> +        * If the PMD or folio is redirtied at this point, or if there ar=
+e
+> +        * unexpected references, we will give up to discard this folio
+> +        * and remap it.
+> +        *
+> +        * The only folio refs must be one from isolation plus the rmap(s=
+).
+> +        */
+> +       if (ref_count !=3D map_count + 1 || folio_test_dirty(folio) ||
+> +           pmd_dirty(orig_pmd)) {
+> +               set_pmd_at(mm, addr, pmdp, orig_pmd);
+> +               return false;
+> +       }
+> +
+> +       folio_remove_rmap_pmd(folio, page, vma);
+> +       zap_deposited_table(mm, pmdp);
+> +       add_mm_counter(mm, MM_ANONPAGES, -HPAGE_PMD_NR);
+> +       folio_put(folio);
+> +
+> +       return true;
+> +}
+> +
+> +bool unmap_huge_pmd_locked(struct vm_area_struct *vma, unsigned long add=
+r,
+> +                          pmd_t *pmdp, struct folio *folio)
+> +{
+> +       VM_WARN_ON_FOLIO(!folio_test_pmd_mappable(folio), folio);
+> +       VM_WARN_ON_FOLIO(!folio_test_locked(folio), folio);
+> +       VM_WARN_ON_ONCE(!IS_ALIGNED(addr, HPAGE_PMD_SIZE));
+> +
+> +#ifdef CONFIG_TRANSPARENT_HUGEPAGE
+> +       if (folio_test_anon(folio) && !folio_test_swapbacked(folio))
+> +               return __discard_trans_pmd_locked(vma, addr, pmdp, folio)=
+;
+> +#endif
+
+this is weird and huge_memory.c is only built with
+CONFIG_TRANSPARENT_HUGEPAGE =3D y;
+
+mm/Makefile:
+obj-$(CONFIG_TRANSPARENT_HUGEPAGE) +=3D huge_memory.o khugepaged.o
+
+> +
+> +       return false;
+> +}
+> +
+>  static void remap_page(struct folio *folio, unsigned long nr)
+>  {
+>         int i =3D 0;
+> diff --git a/mm/rmap.c b/mm/rmap.c
+> index e42f436c7ff3..ab37af4f47aa 100644
+> --- a/mm/rmap.c
+> +++ b/mm/rmap.c
+> @@ -1677,6 +1677,9 @@ static bool try_to_unmap_one(struct folio *folio, s=
+truct vm_area_struct *vma,
+>                 }
 >
-> -       memcg->vmstats =3D kzalloc(sizeof(struct memcg_vmstats), GFP_KERN=
-EL);
-> +       memcg->vmstats =3D kzalloc(sizeof(struct memcg_vmstats),
-> +                                GFP_KERNEL_ACCOUNT);
->         if (!memcg->vmstats)
->                 goto fail;
->
+>                 if (!pvmw.pte && (flags & TTU_SPLIT_HUGE_PMD)) {
+> +                       if (unmap_huge_pmd_locked(vma, range.start, pvmw.=
+pmd,
+> +                                                 folio))
+> +                               goto walk_done;
+
+this is making
+mm/rmap.c:1680: undefined reference to `unmap_huge_pmd_locked'
+mm/rmap.c:1687: undefined reference to `split_huge_pmd_locked'
+
+>                         /*
+>                          * We temporarily have to drop the PTL and start =
+once
+>                          * again from that now-PTE-mapped page table.
 > --
-> 2.43.0
+> 2.33.1
 >
 
