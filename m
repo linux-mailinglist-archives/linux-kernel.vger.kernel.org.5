@@ -1,115 +1,195 @@
-Return-Path: <linux-kernel+bounces-163415-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-163413-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D86928B6A89
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 08:36:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 36F988B6A83
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 08:31:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F3129B22000
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 06:36:23 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 17F48B21610
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 06:31:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5DC011BC4B;
-	Tue, 30 Apr 2024 06:36:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 24B4018EB8;
+	Tue, 30 Apr 2024 06:31:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=126.com header.i=@126.com header.b="RloY/ktF"
-Received: from m16.mail.126.com (m16.mail.126.com [117.135.210.7])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E8C31BC20;
-	Tue, 30 Apr 2024 06:36:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=117.135.210.7
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="JW19BNTd"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5DD6205E25;
+	Tue, 30 Apr 2024 06:31:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714458965; cv=none; b=Uw/gSXz83RoD4pA7YeGQ8PG/16eVfpgsymWI5wnM67Dmg4YsrTXIBBrvC6cFpWzgoJEAthwMu+3f/ZuFkb/gOUPh1O4vxl08F/oAD89YjjLCDV1z7KgNDD2CL+evqdNjx+qbGT+BYwWP1IXjduaq4em0HBZpF/nV097/b7Fk31s=
+	t=1714458703; cv=none; b=bMP8hmWv4FdZAiBTs4XiARLP6O3tclp2OvvWkxKS7Y9GuXEC6bR897xZ1HBJHn0r4A+3YYPVL4d4/6fSqi8SgbMqBkQUE4nIK5FrvWTl9Q01XW3VBGKXYrPwHVqTeEx3xGvEVOAmV7Xyofjy9klH6H0I1geT+aQelhMyll4mwY4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714458965; c=relaxed/simple;
-	bh=Gav9+Cjhnmkix5FQP2ud808jTbzw43/8kkvvuWAru+M=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=HfDDmogc+v/3uiGwrbwB/6Gameqlw+hWcn/P66axBg7Xa4SN+gaCtvofWoHA12uLMWbB07QCrH3/uzFld7zgZUYJC9a3dzlfp6zVo2ou98Ksvxqmc36IZZ3HhTNIHSGtvxDqxtpLlNr9N8ILiRlqlCEFphmHyFr0wIQS+dhuP6c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=126.com; spf=pass smtp.mailfrom=126.com; dkim=pass (1024-bit key) header.d=126.com header.i=@126.com header.b=RloY/ktF; arc=none smtp.client-ip=117.135.210.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=126.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=126.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
-	s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=S7ndM
-	zdP6DC2yjcOrDpG44MP9uua2MEkLKgvWTwIPHg=; b=RloY/ktFm7OIKTD73nEnD
-	eFQPA+RuPSTRUBAz6D2USuQ+duHUL+zPlT6qam+ek81oq6IPIH9oBMXfUW/vWpOs
-	O6HqTM2MyJZjQqqufXSq/rivCOkhZFKz9SOrFN4s3g4Oo3G7rSqFbJa4BunlxNIV
-	nSz9Q1QITsDXOjkqmCPbMQ=
-Received: from localhost.localdomain (unknown [116.128.244.171])
-	by gzga-smtp-mta-g1-4 (Coremail) with SMTP id _____wDHL8ZMkDBmdPVMBg--.9774S4;
-	Tue, 30 Apr 2024 14:32:14 +0800 (CST)
-From: Genjian <zhanggenjian@126.com>
-To: gregkh@linuxfoundation.org
-Cc: akpm@linux-foundation.org,
-	allen.lkml@gmail.com,
-	broonie@kernel.org,
-	christophe.jaillet@wanadoo.fr,
-	conor@kernel.org,
-	f.fainelli@gmail.com,
-	jonathanh@nvidia.com,
-	linux-kernel@vger.kernel.org,
-	linux@roeck-us.net,
-	lkft-triage@lists.linaro.org,
-	maco@android.com,
-	patches@kernelci.org,
-	patches@lists.linux.dev,
-	pavel@denx.de,
-	rwarsow@gmx.de,
-	sean.anderson@linux.dev,
-	shuah@kernel.org,
-	srw@sladewatkins.net,
-	stable@vger.kernel.org,
-	sudipm.mukherjee@gmail.com,
-	tglx@linutronix.de,
-	torvalds@linux-foundation.org,
-	zhanggenjian@kylinos.cn
-Subject: Re: [PATCH 4.19 000/175] 4.19.312-rc1 review
-Date: Tue, 30 Apr 2024 14:30:10 +0800
-Message-Id: <20240430063010.801037-1-zhanggenjian@126.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <2024041358-unhelpful-grub-d4a9@gregkh>
-References: <2024041358-unhelpful-grub-d4a9@gregkh>
+	s=arc-20240116; t=1714458703; c=relaxed/simple;
+	bh=7JutYdlyKjRm/d6CPhcXCZiskF7ZHRoD4M0QLTajHCA=;
+	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ugy0yDI3a0VBb6xrFI8CXTxFAR9KPdrUPadmMQ0hRWiSgHDzmbf/pYXDY6McKuhY4CWIGmn0M9ANvOIQZYMhdsvQA7ckNKrlQMvcopYjcHChJUM4z5lXn1HePhA9OdoBLXt/xc9xx/acrQDwdD0EzfMtTt+I2KofDUgAUL6GTMY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=JW19BNTd; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 43U4RaBk019841;
+	Tue, 30 Apr 2024 06:31:26 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	date:from:to:cc:subject:message-id:references:mime-version
+	:content-type:in-reply-to; s=qcppdkim1; bh=/EDHGHEVWUCmdxp3Bjyh7
+	Wce+g5mQmyF9Sk2EZ1/ZSE=; b=JW19BNTdgmH04Jj119dRFlpPitsdisGC8g4iD
+	cdj7l26qhA9cvTNh1ZeQNuwlrBJD4bgiw6RnB09pNs5PxIPlsKoROng4rE13UrPW
+	DGkFkxlZtVXLgHvNaQRloS/wLMlt5Dd9G7WracQKSE7kcgelGJBaQ+iQOZt+PVxr
+	Mj5F0LBtXpjdB3IxnCwZMH9HsqHMkdbHbdlC8qxyTCHCwRA57fsIrkuhhWqi9Sj/
+	yImsDK6EUFl6FK844wer1ev/p/OJ2g+ZL8bt8ku827neEfK6Au2LJNNp9lxKP92W
+	xGxK3VmvlhuotxnIQpuefuXrlhBa6c2Wmqnhf5TWQhrQXPGiQ==
+Received: from nasanppmta05.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xtd8kkmjy-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 30 Apr 2024 06:31:26 +0000 (GMT)
+Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
+	by NASANPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 43U6VP4x008281
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 30 Apr 2024 06:31:25 GMT
+Received: from hu-varada-blr.qualcomm.com (10.80.80.8) by
+ nasanex01b.na.qualcomm.com (10.46.141.250) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.9; Mon, 29 Apr 2024 23:31:18 -0700
+Date: Tue, 30 Apr 2024 12:01:15 +0530
+From: Varadarajan Narayanan <quic_varada@quicinc.com>
+To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+CC: Alex G. <mr.nuke.me@gmail.com>, Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Lorenzo Pieralisi
+	<lpieralisi@kernel.org>,
+        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?=
+	<kw@linux.com>,
+        Rob Herring <robh@kernel.org>, Bjorn Helgaas
+	<bhelgaas@google.com>,
+        Krzysztof Kozlowski <krzk+dt@kernel.org>,
+        Conor Dooley
+	<conor+dt@kernel.org>, Vinod Koul <vkoul@kernel.org>,
+        Kishon Vijay Abraham I
+	<kishon@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen
+ Boyd <sboyd@kernel.org>,
+        Manivannan Sadhasivam
+	<manivannan.sadhasivam@linaro.org>,
+        <linux-arm-msm@vger.kernel.org>, <linux-pci@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-phy@lists.infradead.org>, <linux-clk@vger.kernel.org>
+Subject: Re: [PATCH v3 6/7] phy: qcom-qmp-pcie: add support for ipq9574
+ gen3x2 PHY
+Message-ID: <ZjCQM24T2XIJ6GAR@hu-varada-blr.qualcomm.com>
+References: <20240415182052.374494-1-mr.nuke.me@gmail.com>
+ <20240415182052.374494-7-mr.nuke.me@gmail.com>
+ <CAA8EJpqY1aDZMaeqBULEOD26UeGYbLd8RsA16jZw7zXJ7_oGPQ@mail.gmail.com>
+ <6726fa2b-f5fe-10fb-6aab-f76d61f0b3cd@gmail.com>
+ <4a7b1e1d-ac68-4857-8925-f90c9e123fd1@gmail.com>
+ <CAA8EJppGW=qyk2P6Z_S=dp0njsCjqZaXjw8qU4MY1HOZR-N=4A@mail.gmail.com>
+ <Zi88Hdx6UgBo/gti@hu-varada-blr.qualcomm.com>
+ <CAA8EJpq+Bbws8yH5Xq7rHyA+-=DaCcfEcgUa5RUt2+LWQW0kKg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:_____wDHL8ZMkDBmdPVMBg--.9774S4
-X-Coremail-Antispam: 1Uf129KBjvdXoW7JFykXrW7JryUuw4Dtr45GFg_yoWfCrX_Wa
-	40kanxK3yUJryDuF43Kws3XrsrKF4kJrW3Krn5XF4fJry8JFyDWrZ3Awn3Zw13urWfAr9I
-	ya4rJFW8Kr4a9jkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-	9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IUUD3kJUUUUU==
-X-CM-SenderInfo: x2kd0wxjhqyxldq6ij2wof0z/1tbi5hPQfmVLZfKArAAAsO
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <CAA8EJpq+Bbws8yH5Xq7rHyA+-=DaCcfEcgUa5RUt2+LWQW0kKg@mail.gmail.com>
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nasanex01b.na.qualcomm.com (10.46.141.250)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: Kz9y3fLxciuZSj0DW7v68K0H1YjdIf0m
+X-Proofpoint-ORIG-GUID: Kz9y3fLxciuZSj0DW7v68K0H1YjdIf0m
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
+ definitions=2024-04-30_02,2024-04-29_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 bulkscore=0
+ adultscore=0 spamscore=0 mlxscore=0 phishscore=0 suspectscore=0
+ priorityscore=1501 impostorscore=0 lowpriorityscore=0 clxscore=1015
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2404010003 definitions=main-2404300046
 
-> On Fri, Apr 12, 2024 at 09:46:46PM +0200, Pavel Machek wrote:
-> > Hi!
-> > 
-> > > This is the start of the stable review cycle for the 4.19.312 release.
-> > > There are 175 patches in this series, all will be posted as a response
-> > > to this one.  If anyone has any issues with these being applied, please
-> > > let me know.
-> > 
-> > > Martijn Coenen <maco@android.com>
-> > >     loop: Remove sector_t truncation checks
-> > 
-> > AFAICT, in 4.19, sector_t is not guaranteed to be u64, see
-> > include/linux/types.h. So we can't take this.
-> 
-> It's more helpful if you cc: the people on the commit that you are
-> asking about, so that they can explain why they asked for it, or did the
-> backport.
-> 
-> Genjian, any thoughts about this one?
-> 
-> thanks,
-> 
-> greg k-h
+On Mon, Apr 29, 2024 at 01:55:32PM +0300, Dmitry Baryshkov wrote:
+> On Mon, 29 Apr 2024 at 09:20, Varadarajan Narayanan
+> <quic_varada@quicinc.com> wrote:
+> >
+> > On Wed, Apr 17, 2024 at 12:50:49AM +0300, Dmitry Baryshkov wrote:
+> > > On Wed, 17 Apr 2024 at 00:25, Alex G. <mr.nuke.me@gmail.com> wrote:
+> > > >
+> > > > Hi Dmitry,
+> > > >
+> > > > On 4/15/24 16:25, mr.nuke.me@gmail.com wrote:
+> > > > >
+> > > > >
+> > > > > On 4/15/24 15:10, Dmitry Baryshkov wrote:
+> > > > >> On Mon, 15 Apr 2024 at 21:23, Alexandru Gagniuc <mr.nuke.me@gmail.com>
+> > > > >> wrote:
+> > > > >>>
+> > > > >>> Add support for the gen3x2 PCIe PHY on IPQ9574, ported form downstream
+> > > > >>> 5.4 kernel. Only the serdes and pcs_misc tables are new, the others
+> > > > >>> being reused from IPQ8074 and IPQ6018 PHYs.
+> > > > >>>
+> > > > >>> Signed-off-by: Alexandru Gagniuc <mr.nuke.me@gmail.com>
+> > > > >>> ---
+> > > > >>>   drivers/phy/qualcomm/phy-qcom-qmp-pcie.c      | 136 +++++++++++++++++-
+> > > > >>>   .../phy/qualcomm/phy-qcom-qmp-pcs-pcie-v5.h   |  14 ++
+> > > > >>>   2 files changed, 149 insertions(+), 1 deletion(-)
+> > > > >>>
+> > > > >>
+> > > > >> [skipped]
+> > > > >>
+> > > > >>> @@ -2448,7 +2542,7 @@ static inline void qphy_clrbits(void __iomem
+> > > > >>> *base, u32 offset, u32 val)
+> > > > >>>
+> > > > >>>   /* list of clocks required by phy */
+> > > > >>>   static const char * const qmp_pciephy_clk_l[] = {
+> > > > >>> -       "aux", "cfg_ahb", "ref", "refgen", "rchng", "phy_aux",
+> > > > >>> +       "aux", "cfg_ahb", "ref", "refgen", "rchng", "phy_aux",
+> > > > >>> "anoc", "snoc"
+> > > > >>
+> > > > >> Are the NoC clocks really necessary to drive the PHY? I think they are
+> > > > >> usually connected to the controllers, not the PHYs.
+> > > > >
+> > > > > The system will hang if these clocks are not enabled. They are also
+> > > > > attached to the PHY in the QCA 5.4 downstream kernel.
+> > >
+> > > Interesting.
+> > > I see that Varadarajan is converting these clocks into interconnects.
+> > > Maybe it's better to wait for those patches to land and use
+> > > interconnects instead. I think it would better suit the
+> > > infrastructure.
+> > >
+> > > Varadarajan, could you please comment, are these interconnects
+> > > connected to the PHY too or just to the PCIe controller?
+> >
+> > Sorry for the late response. Missed this e-mail.
+> >
+> > These 2 clks are related to AXI port clk on Aggnoc/SNOC, not
+> > directly connected to PCIE wrapper, but it should be enabled to
+> > generate pcie traffic.
+>
+> So, are they required for the PHY or are they required for the PCIe
+> controller only?
 
-This one was aimed at resolving merge conflicts with subsequent patches and had no other reason. Indeed, this patch is not suitable for 4.19. I'm sorry for the omission.
+These 2 clks are required for PCIe controller only.
+PCIE controller need these clks to send/receive axi pkts.
 
-thanks,
+Thanks
+Varada
 
-Genjian
-
+> > > > They are named "anoc_lane", and "snoc_lane" in the downstream kernel.
+> > > > Would you like me to use these names instead?
+> > >
+> > > I'm fine either way.
+> > >
+>
+>
+>
+> --
+> With best wishes
+> Dmitry
 
