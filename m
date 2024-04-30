@@ -1,243 +1,224 @@
-Return-Path: <linux-kernel+bounces-164780-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-164781-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8DA6C8B82C8
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 00:51:27 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 300498B82CA
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 00:51:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 44D96281C90
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 22:51:26 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 375EAB23129
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 22:51:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A2F01BF6F4;
-	Tue, 30 Apr 2024 22:51:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="blsYEsVs"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.16])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC01E129E72;
+	Tue, 30 Apr 2024 22:51:29 +0000 (UTC)
+Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6591B2C853
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 22:51:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C2E92C853
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 22:51:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.71
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714517465; cv=none; b=BDBepemm95FSKhp/fIu/nDe2KvoNwjZTFIR6Zl9Lt/vPnO5wtCw+7JfQtjoY6Xf6KZOehUk7hAxiNla7t/Jz13DrRrWha7UoR4tPE5W7OnM/SzIeWA+XtlciBTRo6WeQ4Y7hgwb/9vg+Opqn6/ShRNJlTL9jXpQjA3Hf/jBBG0w=
+	t=1714517489; cv=none; b=sMBUw06MdRVh0+276k243R35MhiaKPZjFvyEu9am72Hot/xeasLmIX4LNfsKo0WzA/f2aI8iFKpkv1m6eeF3JGY9Bmf+bsfUObAC/WhHZvX6/o2XJr6ucwbcYuyZryHtFl0WmumoJGnkyvELWZcVHAjn3aNh8yYqbYtupTuik+c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714517465; c=relaxed/simple;
-	bh=WI6e855Kc92SAi9gqKtnj+EkJ3KnHR+2fh4AgnRu2iY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=mHgasdatG6v4keGFl/d8hbCPUqsE8gFj8maJJxm284+lvMMm6c/RpZ16Ne6tyr+3ASCoEHe645pAebR7UP5K0LnRYLbSK5FwqSEqA6/PsWyuRVrdGV+vEFFJTTNBHL6LsullFmOOIdqyGQxSAojoHBUWhQeSvZGadYcC2zH+BPg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=blsYEsVs; arc=none smtp.client-ip=192.198.163.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1714517463; x=1746053463;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=WI6e855Kc92SAi9gqKtnj+EkJ3KnHR+2fh4AgnRu2iY=;
-  b=blsYEsVss/UtVfk4IJSpqnIIF4PqVTQTxf6b9u3uV63DFdSGuGvApzL2
-   yEWQsjeSkJJ98GEAu9YvSFUvI0mW37bMbM1WsACpZ7w7YUKT3V7pzYW4e
-   Y/fGu/LNtjwUNI3YpQzqmJ6NvsVlxCJ7tGdDoH9SwAYIHCCJgWQy8X6bP
-   d3js5BJf9qe3yhbkmeAUsRPxlqbvzokMkEgv40U6QmK1MfdTyaCs3rXZY
-   UClUp4NFKpqM63EaIvQpWVagjbRj5W1ca4H+jmIctvMgNYTEJIlLJc6H4
-   tyTpuUfcgmvFP74D3TbWcWOq47n1AepYofFymWcV711OcqbYTZgS+9QHt
-   Q==;
-X-CSE-ConnectionGUID: 2gD99mi8SSWz4OLB75V51Q==
-X-CSE-MsgGUID: eujphjAxSPKZxyNiUEcS0A==
-X-IronPort-AV: E=McAfee;i="6600,9927,11060"; a="10790883"
-X-IronPort-AV: E=Sophos;i="6.07,243,1708416000"; 
-   d="scan'208";a="10790883"
-Received: from orviesa001.jf.intel.com ([10.64.159.141])
-  by fmvoesa110.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Apr 2024 15:51:02 -0700
-X-CSE-ConnectionGUID: FZkSokSlRC6f+NGqNm3JLw==
-X-CSE-MsgGUID: qu5447TjTguXRIksIdWSjw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,243,1708416000"; 
-   d="scan'208";a="64102738"
-Received: from lkp-server01.sh.intel.com (HELO e434dd42e5a1) ([10.239.97.150])
-  by orviesa001.jf.intel.com with ESMTP; 30 Apr 2024 15:50:59 -0700
-Received: from kbuild by e434dd42e5a1 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1s1wJM-0008fJ-0R;
-	Tue, 30 Apr 2024 22:50:56 +0000
-Date: Wed, 1 May 2024 06:50:26 +0800
-From: kernel test robot <lkp@intel.com>
-To: Weishi Li <liweishi@kylinos.cn>
-Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev, airlied@redhat.com,
-	daniel@ffwll.ch, dri-devel@lists.freedesktop.org,
-	gurchetansingh@chromium.org, kraxel@redhat.com,
-	linux-kernel@vger.kernel.org, maarten.lankhorst@linux.intel.com,
-	mripard@kernel.org, olvaffe@gmail.com, tzimmermann@suse.de,
-	virtualization@lists.linux.dev
-Subject: Re: [PATCH] [PATCH RESEND] drm/virtio: fix memory leak of vbuf
-Message-ID: <202405010653.utlwekew-lkp@intel.com>
-References: <20240429030541.56702-1-liweishi@kylinos.cn>
+	s=arc-20240116; t=1714517489; c=relaxed/simple;
+	bh=jPBi+DQqltj60QKM7e11ciHdznjGTQILnrk5KJF4avM=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=HWEOEcq6wBSEzosUyWrrJLcBevDrLhM07FUMKNV12RvKPzzVnNrJfYEHDVAeySb8pd5N0I1jo6x+/rOJu2Areb54573rmjrSyI6HfIZ3wTaCmmSM9Q+S7Ie2MZD/xuhWNhFVCvV82nhKHKTY1tMuRoz3KY4Q3ODfDFLA8FjLpcc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.71
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f71.google.com with SMTP id ca18e2360f4ac-7ddf08e17e4so29087039f.0
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 15:51:27 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714517486; x=1715122286;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=QRyMGl5Jg+EmwxIWysTsUoERMtLJpa15UDk5t7wEH1Q=;
+        b=ZOrzvbFfWgsIz5j8CueDamy2zoh+dOf9QkIt5t9mDLIMV3FqceamaJtM8JkmwgADIH
+         eq4wXhbcWg1Q36CwvJLbB0FDb2aZo6Ta8uEQzjNcu+I59BMqOTtonlb+uudd+HmvxbVJ
+         3pDKgX3+dSdzBb/1Vit4LgHmN4gnKad1DnuvYUFnitip9V8q1u0ZjdmC6EErDFlBPi/Z
+         y+nv3toA9EbYYZxAbh9cPwJPMOQ8p7z0iHXYq7DGi3QUG3R8Y7XO+AtWWYWoyupRAMAP
+         //Xrii4YBzYn8eXaMpAeDztIO69sKrk8dcpU+ZTOQywDgq6X++dwlZOaIL8ZnfxnJAqC
+         HKtQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXXDfB+Uwi6klPSBbCqWLrVEXBrgzz32rgFAU6TJDDOaqmhg4FO7KBWlRCp6ahzERZtPRrIRpYbaKtVW3/NyHuot5kWOZm3xX3jpP1U
+X-Gm-Message-State: AOJu0YyYiu1QxUJ9swRFYpdv5nUiySupv86sXaRJLa5cusrgroYMDEWz
+	KB0UPlIkYjcEf7ZtO8zDIzVjNXZEYbxoNc7CvJ5sbebJH6RhXYV0XIqST/7yQ6mIasfbwDdCojv
+	2PdZhYCTuz16w+foS8NdAL+j9d87ddiTA2gqp20uh3usQfSCuimp/4p8=
+X-Google-Smtp-Source: AGHT+IEpYuEu+2b1O9O/tLZSj4yTnlykLrzWn2L2W1VPXgrmlaFSvz563scKgQUITyQk/ZlasdbHPjNWir2kmnzqcd+Ydqf4liHc
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240429030541.56702-1-liweishi@kylinos.cn>
+X-Received: by 2002:a5d:850e:0:b0:7d6:f9f:42d0 with SMTP id
+ q14-20020a5d850e000000b007d60f9f42d0mr73972ion.0.1714517486609; Tue, 30 Apr
+ 2024 15:51:26 -0700 (PDT)
+Date: Tue, 30 Apr 2024 15:51:26 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000c033180617583519@google.com>
+Subject: [syzbot] [bluetooth?] possible deadlock in hci_dev_close
+From: syzbot <syzbot+27678574afc8747c97f3@syzkaller.appspotmail.com>
+To: johan.hedberg@gmail.com, linux-bluetooth@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, luiz.dentz@gmail.com, marcel@holtmann.org, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-Hi Weishi,
+Hello,
 
-kernel test robot noticed the following build errors:
+syzbot found the following issue on:
 
-[auto build test ERROR on drm-misc/drm-misc-next]
-[also build test ERROR on drm/drm-next drm-exynos/exynos-drm-next drm-intel/for-linux-next drm-intel/for-linux-next-fixes drm-tip/drm-tip linus/master v6.9-rc6 next-20240430]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+HEAD commit:    bb7a2467e6be Add linux-next specific files for 20240426
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=17d7d27f180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=5c6a0288262dd108
+dashboard link: https://syzkaller.appspot.com/bug?extid=27678574afc8747c97f3
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Weishi-Li/drm-virtio-fix-memory-leak-of-vbuf/20240430-132447
-base:   git://anongit.freedesktop.org/drm/drm-misc drm-misc-next
-patch link:    https://lore.kernel.org/r/20240429030541.56702-1-liweishi%40kylinos.cn
-patch subject: [PATCH] [PATCH RESEND] drm/virtio: fix memory leak of vbuf
-config: hexagon-randconfig-001-20240501 (https://download.01.org/0day-ci/archive/20240501/202405010653.utlwekew-lkp@intel.com/config)
-compiler: clang version 15.0.7 (https://github.com/llvm/llvm-project.git 8dfdcc7b7bf66834a761bd8de445840ef68e4d1a)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240501/202405010653.utlwekew-lkp@intel.com/reproduce)
+Unfortunately, I don't have any reproducer for this issue yet.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202405010653.utlwekew-lkp@intel.com/
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/5175af7dda64/disk-bb7a2467.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/70db0462e868/vmlinux-bb7a2467.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/3217fb825698/bzImage-bb7a2467.xz
 
-All errors (new ones prefixed by >>):
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+27678574afc8747c97f3@syzkaller.appspotmail.com
 
-   In file included from drivers/gpu/drm/virtio/virtgpu_vq.c:29:
-   In file included from include/linux/dma-mapping.h:11:
-   In file included from include/linux/scatterlist.h:9:
-   In file included from arch/hexagon/include/asm/io.h:328:
-   include/asm-generic/io.h:547:31: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-           val = __raw_readb(PCI_IOBASE + addr);
-                             ~~~~~~~~~~ ^
-   include/asm-generic/io.h:560:61: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-           val = __le16_to_cpu((__le16 __force)__raw_readw(PCI_IOBASE + addr));
-                                                           ~~~~~~~~~~ ^
-   include/uapi/linux/byteorder/little_endian.h:37:51: note: expanded from macro '__le16_to_cpu'
-   #define __le16_to_cpu(x) ((__force __u16)(__le16)(x))
-                                                     ^
-   In file included from drivers/gpu/drm/virtio/virtgpu_vq.c:29:
-   In file included from include/linux/dma-mapping.h:11:
-   In file included from include/linux/scatterlist.h:9:
-   In file included from arch/hexagon/include/asm/io.h:328:
-   include/asm-generic/io.h:573:61: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-           val = __le32_to_cpu((__le32 __force)__raw_readl(PCI_IOBASE + addr));
-                                                           ~~~~~~~~~~ ^
-   include/uapi/linux/byteorder/little_endian.h:35:51: note: expanded from macro '__le32_to_cpu'
-   #define __le32_to_cpu(x) ((__force __u32)(__le32)(x))
-                                                     ^
-   In file included from drivers/gpu/drm/virtio/virtgpu_vq.c:29:
-   In file included from include/linux/dma-mapping.h:11:
-   In file included from include/linux/scatterlist.h:9:
-   In file included from arch/hexagon/include/asm/io.h:328:
-   include/asm-generic/io.h:584:33: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-           __raw_writeb(value, PCI_IOBASE + addr);
-                               ~~~~~~~~~~ ^
-   include/asm-generic/io.h:594:59: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-           __raw_writew((u16 __force)cpu_to_le16(value), PCI_IOBASE + addr);
-                                                         ~~~~~~~~~~ ^
-   include/asm-generic/io.h:604:59: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-           __raw_writel((u32 __force)cpu_to_le32(value), PCI_IOBASE + addr);
-                                                         ~~~~~~~~~~ ^
-   drivers/gpu/drm/virtio/virtgpu_vq.c:474:2: error: expected expression
-           else if (ret < 0) {
-           ^
->> drivers/gpu/drm/virtio/virtgpu_vq.c:503:1: error: function definition is not allowed here
-   {
-   ^
-   drivers/gpu/drm/virtio/virtgpu_vq.c:523:1: error: function definition is not allowed here
-   {
-   ^
-   drivers/gpu/drm/virtio/virtgpu_vq.c:534:1: error: function definition is not allowed here
-   {
-   ^
-   drivers/gpu/drm/virtio/virtgpu_vq.c:556:1: error: function definition is not allowed here
-   {
-   ^
-   drivers/gpu/drm/virtio/virtgpu_vq.c:580:1: error: function definition is not allowed here
-   {
-   ^
-   drivers/gpu/drm/virtio/virtgpu_vq.c:604:1: error: function definition is not allowed here
-   {
-   ^
-   drivers/gpu/drm/virtio/virtgpu_vq.c:635:1: error: function definition is not allowed here
-   {
-   ^
-   drivers/gpu/drm/virtio/virtgpu_vq.c:654:1: error: function definition is not allowed here
-   {
-   ^
-   drivers/gpu/drm/virtio/virtgpu_vq.c:683:1: error: function definition is not allowed here
-   {
-   ^
-   drivers/gpu/drm/virtio/virtgpu_vq.c:704:1: error: function definition is not allowed here
-   {
-   ^
-   drivers/gpu/drm/virtio/virtgpu_vq.c:729:1: error: function definition is not allowed here
-   {
-   ^
-   drivers/gpu/drm/virtio/virtgpu_vq.c:741:1: error: function definition is not allowed here
-   {
-   ^
-   drivers/gpu/drm/virtio/virtgpu_vq.c:767:1: error: function definition is not allowed here
-   {
-   ^
-   drivers/gpu/drm/virtio/virtgpu_vq.c:790:1: error: function definition is not allowed here
-   {
-   ^
-   drivers/gpu/drm/virtio/virtgpu_vq.c:815:1: error: function definition is not allowed here
-   {
-   ^
-   drivers/gpu/drm/virtio/virtgpu_vq.c:889:1: error: function definition is not allowed here
-   {
-   ^
-   drivers/gpu/drm/virtio/virtgpu_vq.c:919:1: error: function definition is not allowed here
-   {
-   ^
-   drivers/gpu/drm/virtio/virtgpu_vq.c:936:1: error: function definition is not allowed here
-   {
-   ^
-   fatal error: too many errors emitted, stopping now [-ferror-limit=]
-   6 warnings and 20 errors generated.
+======================================================
+WARNING: possible circular locking dependency detected
+6.9.0-rc5-next-20240426-syzkaller #0 Not tainted
+------------------------------------------------------
+syz-executor.4/20238 is trying to acquire lock:
+ffff888068f348d0 ((work_completion)(&hdev->cmd_sync_work)){+.+.}-{0:0}, at: rcu_lock_acquire include/linux/rcupdate.h:329 [inline]
+ffff888068f348d0 ((work_completion)(&hdev->cmd_sync_work)){+.+.}-{0:0}, at: rcu_read_lock include/linux/rcupdate.h:841 [inline]
+ffff888068f348d0 ((work_completion)(&hdev->cmd_sync_work)){+.+.}-{0:0}, at: start_flush_work kernel/workqueue.c:4113 [inline]
+ffff888068f348d0 ((work_completion)(&hdev->cmd_sync_work)){+.+.}-{0:0}, at: __flush_work+0xe6/0xd00 kernel/workqueue.c:4172
+
+but task is already holding lock:
+ffff888068f35060 (&hdev->req_lock){+.+.}-{3:3}, at: hci_dev_do_close net/bluetooth/hci_core.c:559 [inline]
+ffff888068f35060 (&hdev->req_lock){+.+.}-{3:3}, at: hci_dev_close+0x10a/0x210 net/bluetooth/hci_core.c:586
+
+which lock already depends on the new lock.
 
 
-vim +503 drivers/gpu/drm/virtio/virtgpu_vq.c
+the existing dependency chain (in reverse order) is:
 
-dc5698e80cf724 Dave Airlie      2013-09-09  492  
-dc5698e80cf724 Dave Airlie      2013-09-09  493  /* just create gem objects for userspace and long lived objects,
-5d883850dc23a5 Rodrigo Siqueira 2018-02-22  494   * just use dma_alloced pages for the queue objects?
-5d883850dc23a5 Rodrigo Siqueira 2018-02-22  495   */
-dc5698e80cf724 Dave Airlie      2013-09-09  496  
-dc5698e80cf724 Dave Airlie      2013-09-09  497  /* create a basic resource */
-dc5698e80cf724 Dave Airlie      2013-09-09  498  void virtio_gpu_cmd_create_resource(struct virtio_gpu_device *vgdev,
-23c897d72ca806 Gerd Hoffmann    2018-10-19  499  				    struct virtio_gpu_object *bo,
-530b28426a94b8 Gerd Hoffmann    2019-03-18  500  				    struct virtio_gpu_object_params *params,
-e2324300f427ff Gerd Hoffmann    2019-08-29  501  				    struct virtio_gpu_object_array *objs,
-530b28426a94b8 Gerd Hoffmann    2019-03-18  502  				    struct virtio_gpu_fence *fence)
-dc5698e80cf724 Dave Airlie      2013-09-09 @503  {
-dc5698e80cf724 Dave Airlie      2013-09-09  504  	struct virtio_gpu_resource_create_2d *cmd_p;
-dc5698e80cf724 Dave Airlie      2013-09-09  505  	struct virtio_gpu_vbuffer *vbuf;
-dc5698e80cf724 Dave Airlie      2013-09-09  506  
-dc5698e80cf724 Dave Airlie      2013-09-09  507  	cmd_p = virtio_gpu_alloc_cmd(vgdev, &vbuf, sizeof(*cmd_p));
-dc5698e80cf724 Dave Airlie      2013-09-09  508  	memset(cmd_p, 0, sizeof(*cmd_p));
-e2324300f427ff Gerd Hoffmann    2019-08-29  509  	vbuf->objs = objs;
-dc5698e80cf724 Dave Airlie      2013-09-09  510  
-dc5698e80cf724 Dave Airlie      2013-09-09  511  	cmd_p->hdr.type = cpu_to_le32(VIRTIO_GPU_CMD_RESOURCE_CREATE_2D);
-724cfdfd667a28 Gerd Hoffmann    2018-10-19  512  	cmd_p->resource_id = cpu_to_le32(bo->hw_res_handle);
-f9659329f222a6 Gerd Hoffmann    2019-03-18  513  	cmd_p->format = cpu_to_le32(params->format);
-f9659329f222a6 Gerd Hoffmann    2019-03-18  514  	cmd_p->width = cpu_to_le32(params->width);
-f9659329f222a6 Gerd Hoffmann    2019-03-18  515  	cmd_p->height = cpu_to_le32(params->height);
-dc5698e80cf724 Dave Airlie      2013-09-09  516  
-e19d341174b679 Chia-I Wu        2020-02-05  517  	virtio_gpu_queue_fenced_ctrl_buffer(vgdev, vbuf, fence);
-23c897d72ca806 Gerd Hoffmann    2018-10-19  518  	bo->created = true;
-dc5698e80cf724 Dave Airlie      2013-09-09  519  }
-dc5698e80cf724 Dave Airlie      2013-09-09  520  
+-> #1 (&hdev->req_lock){+.+.}-{3:3}:
+       lock_acquire+0x1ed/0x550 kernel/locking/lockdep.c:5754
+       __mutex_lock_common kernel/locking/mutex.c:608 [inline]
+       __mutex_lock+0x136/0xd70 kernel/locking/mutex.c:752
+       hci_cmd_sync_work+0x1ec/0x400 net/bluetooth/hci_sync.c:309
+       process_one_work kernel/workqueue.c:3222 [inline]
+       process_scheduled_works+0xa2c/0x1830 kernel/workqueue.c:3303
+       worker_thread+0x86d/0xd70 kernel/workqueue.c:3384
+       kthread+0x2f0/0x390 kernel/kthread.c:389
+       ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:147
+       ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+-> #0 ((work_completion)(&hdev->cmd_sync_work)){+.+.}-{0:0}:
+       check_prev_add kernel/locking/lockdep.c:3134 [inline]
+       check_prevs_add kernel/locking/lockdep.c:3253 [inline]
+       validate_chain+0x18cb/0x58e0 kernel/locking/lockdep.c:3869
+       __lock_acquire+0x1346/0x1fd0 kernel/locking/lockdep.c:5137
+       lock_acquire+0x1ed/0x550 kernel/locking/lockdep.c:5754
+       touch_work_lockdep_map kernel/workqueue.c:3885 [inline]
+       start_flush_work kernel/workqueue.c:4139 [inline]
+       __flush_work+0x73c/0xd00 kernel/workqueue.c:4172
+       __cancel_work_sync+0xbc/0x110 kernel/workqueue.c:4322
+       hci_cmd_sync_clear+0x30/0x220 net/bluetooth/hci_sync.c:588
+       hci_dev_close_sync+0xbae/0x1060 net/bluetooth/hci_sync.c:5188
+       hci_dev_do_close net/bluetooth/hci_core.c:561 [inline]
+       hci_dev_close+0x112/0x210 net/bluetooth/hci_core.c:586
+       sock_do_ioctl+0x158/0x460 net/socket.c:1222
+       sock_ioctl+0x629/0x8e0 net/socket.c:1341
+       vfs_ioctl fs/ioctl.c:51 [inline]
+       __do_sys_ioctl fs/ioctl.c:907 [inline]
+       __se_sys_ioctl+0xfc/0x170 fs/ioctl.c:893
+       do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+       do_syscall_64+0xf5/0x240 arch/x86/entry/common.c:83
+       entry_SYSCALL_64_after_hwframe+0x77/0x7f
+
+other info that might help us debug this:
+
+ Possible unsafe locking scenario:
+
+       CPU0                    CPU1
+       ----                    ----
+  lock(&hdev->req_lock);
+                               lock((work_completion)(&hdev->cmd_sync_work));
+                               lock(&hdev->req_lock);
+  lock((work_completion)(&hdev->cmd_sync_work));
+
+ *** DEADLOCK ***
+
+2 locks held by syz-executor.4/20238:
+ #0: ffff888068f35060 (&hdev->req_lock){+.+.}-{3:3}, at: hci_dev_do_close net/bluetooth/hci_core.c:559 [inline]
+ #0: ffff888068f35060 (&hdev->req_lock){+.+.}-{3:3}, at: hci_dev_close+0x10a/0x210 net/bluetooth/hci_core.c:586
+ #1: ffffffff8e333ba0 (rcu_read_lock){....}-{1:2}, at: rcu_lock_acquire include/linux/rcupdate.h:329 [inline]
+ #1: ffffffff8e333ba0 (rcu_read_lock){....}-{1:2}, at: rcu_read_lock include/linux/rcupdate.h:841 [inline]
+ #1: ffffffff8e333ba0 (rcu_read_lock){....}-{1:2}, at: start_flush_work kernel/workqueue.c:4113 [inline]
+ #1: ffffffff8e333ba0 (rcu_read_lock){....}-{1:2}, at: __flush_work+0xe6/0xd00 kernel/workqueue.c:4172
+
+stack backtrace:
+CPU: 0 PID: 20238 Comm: syz-executor.4 Not tainted 6.9.0-rc5-next-20240426-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0x241/0x360 lib/dump_stack.c:114
+ check_noncircular+0x36a/0x4a0 kernel/locking/lockdep.c:2187
+ check_prev_add kernel/locking/lockdep.c:3134 [inline]
+ check_prevs_add kernel/locking/lockdep.c:3253 [inline]
+ validate_chain+0x18cb/0x58e0 kernel/locking/lockdep.c:3869
+ __lock_acquire+0x1346/0x1fd0 kernel/locking/lockdep.c:5137
+ lock_acquire+0x1ed/0x550 kernel/locking/lockdep.c:5754
+ touch_work_lockdep_map kernel/workqueue.c:3885 [inline]
+ start_flush_work kernel/workqueue.c:4139 [inline]
+ __flush_work+0x73c/0xd00 kernel/workqueue.c:4172
+ __cancel_work_sync+0xbc/0x110 kernel/workqueue.c:4322
+ hci_cmd_sync_clear+0x30/0x220 net/bluetooth/hci_sync.c:588
+ hci_dev_close_sync+0xbae/0x1060 net/bluetooth/hci_sync.c:5188
+ hci_dev_do_close net/bluetooth/hci_core.c:561 [inline]
+ hci_dev_close+0x112/0x210 net/bluetooth/hci_core.c:586
+ sock_do_ioctl+0x158/0x460 net/socket.c:1222
+ sock_ioctl+0x629/0x8e0 net/socket.c:1341
+ vfs_ioctl fs/ioctl.c:51 [inline]
+ __do_sys_ioctl fs/ioctl.c:907 [inline]
+ __se_sys_ioctl+0xfc/0x170 fs/ioctl.c:893
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0xf5/0x240 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+RIP: 0033:0x7f978a87dea9
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 20 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f978b6ad0c8 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+RAX: ffffffffffffffda RBX: 00007f978a9abf80 RCX: 00007f978a87dea9
+RDX: 0000000000000000 RSI: 00000000400448ca RDI: 000000000000000a
+RBP: 00007f978a8ca4a4 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 000000000000000b R14: 00007f978a9abf80 R15: 00007fff06c0ef28
+ </TASK>
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
