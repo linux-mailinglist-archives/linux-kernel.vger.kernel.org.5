@@ -1,118 +1,139 @@
-Return-Path: <linux-kernel+bounces-163591-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-163589-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7AB7B8B6D66
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 10:53:25 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6706E8B6D5F
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 10:52:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9E72C1C21E10
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 08:53:24 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7CB86B232BE
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 08:52:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 042CD1A0B1D;
-	Tue, 30 Apr 2024 08:50:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6AFE219DF74;
+	Tue, 30 Apr 2024 08:50:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Mj5PgLDk"
-Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="b7wnGmB2";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="b7wnGmB2"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA99B1A0AE3
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 08:50:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE2F912882C;
+	Tue, 30 Apr 2024 08:50:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714467020; cv=none; b=o07waup+BZXySZHHIowIFuTn3KJ+rHgvc+Ekjp3+18pIcjjVWrrnS+bSBBubHqtOhIKoBSluAqH3OSrLrYwd3exq0BJ54R52YAwBtfv/u2offwvxndaNgOwX30n53yn/a5wjO5ftkaP1rsygK1/ZHiRekxoSSUAblFxSlqUz32Q=
+	t=1714467017; cv=none; b=qkJjt+RQ1kFrb+L9jwkrUsa7TRQKcU2GrsZ1dXQHBZcCbU9IaDCtgP7QqSC0s10YP5Wsr1xiKaICE9+LNr4aRuPIr6jfyG+GcSPwKiSxSFkHAaMM5ZlqQiMPV5ViFNGrp9hTQfDp6SHjNV2KwT/ndWncmVhbgnqmx/Kw9oTabeY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714467020; c=relaxed/simple;
-	bh=xSuqn+fAdV6ZfMgT5I3ml+oWj/Uip126qL5y7BtCzmw=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=P16hF/0ypEha2KDFc0sZxcpsV0RPPzkKZyjBbVpk8kYpHrYmygpsH+XB5OobxNudC/3/hkua2DVTiyUHJGKWy2dXtoobb79Y0xw/5w+0TKDhPyhU0ImdHgW7Wuv8Q2oE5w6hln4zf6DCD3jOG618CKcfYZunAanr6/XXzgSgAko=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Mj5PgLDk; arc=none smtp.client-ip=209.85.128.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-41a1d2a7b81so36540475e9.0
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 01:50:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1714467017; x=1715071817; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=cY0Co+9vIEATAbwt7lUoR8X2/jsfO0OxFg8e/tDXAxs=;
-        b=Mj5PgLDkn8osWr1x2iDaRgIm1SUgTG1fcL+iM9cSCOf9aTUB7FCZehqFyeWqhj5EYZ
-         RL1RA+B/FylFvkJQLQZbvYTJEQSTSKm9yWqzC8qQrMPv6RSFY8L4XnzjYpdadWftHVED
-         0GgSewqt7jv3K7VTSAY/IVlqtWfeHfycL7PZLMC/uvlZHc2A7zR8O4PADVsD4T9z1fr/
-         AWox4x/51xmFIZZ2QpzPggk2y7eLyHHZcyJlUszGi6aT7+DeCCF7DpjNVsURDaH/7Ltb
-         PqKtGEiaCfoW7wLVO1HZyKM7C1naXbVfJMaoGOEQMDzY8lzVJEQkrUAUw6SDL5ZzHlX0
-         5blg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714467017; x=1715071817;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=cY0Co+9vIEATAbwt7lUoR8X2/jsfO0OxFg8e/tDXAxs=;
-        b=XUkEcyHU4ZpT615f4VVvXxgXRBZzr5qlAB6CiFvKAAJL0D5SKBZcCUX834q3INi6CT
-         QY5ffhwmunIs3O/nFus/Tvtbb8uSsByfV77v72ERIVH1OSYgPgG0Dbo9G0QmWeCF3K8Z
-         SZBMvanXYsoh5pTwQr66IBSRgFnNck0BI8VLjmYJsIAOc8fADQtaQwiPOd7dzPQNLD/0
-         4AQ7xBT2SdP6PIRDssS65OEwb0jO8iXiuaIAYQYFVSD+HDHx5xcDMbil5uaCFFpkmNbl
-         4J56I8MNot+fgQ7Dqbnhotc7/hpPgyGxHQf2dDBdEYMB2DEE3KY7o676TO6bPV6+J2pc
-         FMJg==
-X-Gm-Message-State: AOJu0Yzy0VaA1eS04S2iLN+sH1ZvFkEa/Mhyow+XUN8EJdiogDF5WcGw
-	lyvewePXumaM8ZzWCCNwIOaTtn8LoTWI+l4PcwH5/RWcRHiWLSDB5yyjbzQ1zzk=
-X-Google-Smtp-Source: AGHT+IGKbGw07S8JaIkgh3KpzXnLH3iJWm2R30gQelbBwPaRgdvxyr5hacnP2l6kyNW17TKlw8V5rA==
-X-Received: by 2002:a05:600c:4fc3:b0:418:3ea8:46c0 with SMTP id o3-20020a05600c4fc300b004183ea846c0mr1760114wmq.13.1714467017040;
-        Tue, 30 Apr 2024 01:50:17 -0700 (PDT)
-Received: from localhost.localdomain ([5.133.47.210])
-        by smtp.gmail.com with ESMTPSA id p18-20020a05600c1d9200b0041bab13cd60sm14590670wms.3.2024.04.30.01.50.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Apr 2024 01:50:15 -0700 (PDT)
-From: srinivas.kandagatla@linaro.org
-To: gregkh@linuxfoundation.org
-Cc: linux-kernel@vger.kernel.org,
-	Krzysztof Kozlowski <krzk@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [PATCH 4/4] slimbus: qcom-ctrl: fix module autoloading
-Date: Tue, 30 Apr 2024 09:50:07 +0100
-Message-Id: <20240430085007.33607-5-srinivas.kandagatla@linaro.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20240430085007.33607-1-srinivas.kandagatla@linaro.org>
-References: <20240430085007.33607-1-srinivas.kandagatla@linaro.org>
+	s=arc-20240116; t=1714467017; c=relaxed/simple;
+	bh=TJqxYEYHJvnMFSdcdCqGqHYKwQlZ/I3FWciJWjl/vqk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=euyXsnDZx3D3qNsh63NEza8j9yuBp78KMLS7j+Q0FwS8zSbJeBxtWW93rc26gg5CZhkzOIa+Iansu6yk1Vhp4ue/k16gT0o26s+Tfjyy5AIONNwmYACK8PCqEnLOxcoBi5YftD/OnKbnUBhnP1sQLrHmr06OYIqooX+IN5Kur5s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=b7wnGmB2; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=b7wnGmB2; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id A28431F7B3;
+	Tue, 30 Apr 2024 08:50:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1714467013; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=+yX/V0gmYAiZ8hWASvfR8uAFXA0zJcFjg9+aLM1w22I=;
+	b=b7wnGmB2Y4obNVPl145JoRA21bcv/CrkzWS5zbArEnuGRYMO0nOPbXRvYYEUf2i13XMtZE
+	aUdXGpHYVvH07CEJj8G6eXG9WGx4IXanfxtFqMAd/6c1kCf9fqwmq5Cp5LTkPH0xRMuwjb
+	iVH7LAH1RgM6RjXkRxDBFM+umDGQ0LY=
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1714467013; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=+yX/V0gmYAiZ8hWASvfR8uAFXA0zJcFjg9+aLM1w22I=;
+	b=b7wnGmB2Y4obNVPl145JoRA21bcv/CrkzWS5zbArEnuGRYMO0nOPbXRvYYEUf2i13XMtZE
+	aUdXGpHYVvH07CEJj8G6eXG9WGx4IXanfxtFqMAd/6c1kCf9fqwmq5Cp5LTkPH0xRMuwjb
+	iVH7LAH1RgM6RjXkRxDBFM+umDGQ0LY=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 960A2138A7;
+	Tue, 30 Apr 2024 08:50:13 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id XyF2JMWwMGY3UAAAD6G6ig
+	(envelope-from <mkoutny@suse.com>); Tue, 30 Apr 2024 08:50:13 +0000
+Date: Tue, 30 Apr 2024 10:50:12 +0200
+From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: cve@kernel.org, linux-kernel@vger.kernel.org, 
+	linux-cve-announce@vger.kernel.org, Breno =?utf-8?Q?Leit=C3=A3o?= <leitao@debian.org>, 
+	Tejun Heo <tj@kernel.org>
+Subject: Re: Re: CVE-2023-52630: blk-iocost: Fix an UBSAN shift-out-of-bounds
+ warning
+Message-ID: <yjipzunmzaq3zg4xtsfvref2qwmkaqb4z4z4ak7rd3vpl7iqtf@tgyehozvqd2k>
+References: <2024040219-CVE-2023-52630-a529@gregkh>
+ <7x4ufwbvk4wmhag66rstdpbm4f2iplyc2l66cl7i2wl5nfh2tm@uxc425y2kfno>
+ <2024043053-campsite-refining-1c3c@gregkh>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=919; i=srinivas.kandagatla@linaro.org; h=from:subject; bh=rG20qCv5FBNA7GgvWtsI9lSWTsdEuNYA3h/4sPzdDys=; b=owEBbQGS/pANAwAKAXqh/VnHNFU3AcsmYgBmMLC8GVsIUw7kTQm0StdqyL/DNqMufxbkLPrZy 5JzCpuJed2JATMEAAEKAB0WIQQi509axvzi9vce3Y16of1ZxzRVNwUCZjCwvAAKCRB6of1ZxzRV NwYhB/907Guw0Fn6cOkc0FVEtR6XSRM6D+PdGe4SRP2VXh45aEHaSqxQyo9QkPEakn3IySDLr7e UYd1o3D3FIxaO28YVPs8muZ8bBbiMecMSx7pAEI2CQiAxNQVUNEsxf7gHUfW/GXnjamNySrm9+Q DWDaLHd22+igjvzJcXlMQThQCAW08kIJEzLiC9l7/hDQoc7/mhTHkdpGuCqIK42YmbEf6Bk6VCn DLMSrlDLGmPlRFAzWOLBXJ+0DjZi3F+wbuaMrZXKc5bmCfSwKEc6KseaQanrYxigw5WnGtH7cWC sk5XmyfihhLEYry5tgqlrL3Eb3cxy142bN5SCTVRwRA0DWjX
-X-Developer-Key: i=srinivas.kandagatla@linaro.org; a=openpgp; fpr=ED6472765AB36EC43B3EF97AD77E3FC0562560D6
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="ros5gdjg56iqqxgf"
+Content-Disposition: inline
+In-Reply-To: <2024043053-campsite-refining-1c3c@gregkh>
+X-Spam-Level: 
+X-Spamd-Result: default: False [-5.90 / 50.00];
+	BAYES_HAM(-3.00)[99.99%];
+	SIGNED_PGP(-2.00)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_RHS_NOT_FQDN(0.50)[];
+	MIME_GOOD(-0.20)[multipart/signed,text/plain];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	FROM_HAS_DN(0.00)[];
+	ARC_NA(0.00)[];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	MIME_TRACE(0.00)[0:+,1:+,2:~];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	TO_DN_SOME(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RCPT_COUNT_FIVE(0.00)[6]
+X-Spam-Score: -5.90
+X-Spam-Flag: NO
 
-From: Krzysztof Kozlowski <krzk@kernel.org>
 
-Add MODULE_DEVICE_TABLE(), so the module could be properly autoloaded
-based on the alias from of_device_id table.  Pin controllers are
-considered core components, so usually they are built-in, however these
+--ros5gdjg56iqqxgf
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
----
- drivers/slimbus/qcom-ctrl.c | 1 +
- 1 file changed, 1 insertion(+)
+On Tue, Apr 30, 2024 at 10:13:10AM +0200, Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
+> Makes sense, thanks for looking into this, and sorry for the delay.  Now
+> rejected.
 
-diff --git a/drivers/slimbus/qcom-ctrl.c b/drivers/slimbus/qcom-ctrl.c
-index 7d632fad1300..0274bc285b60 100644
---- a/drivers/slimbus/qcom-ctrl.c
-+++ b/drivers/slimbus/qcom-ctrl.c
-@@ -717,6 +717,7 @@ static const struct of_device_id qcom_slim_dt_match[] = {
- 	{ .compatible = "qcom,slim", },
- 	{}
- };
-+MODULE_DEVICE_TABLE(of, qcom_slim_dt_match);
- 
- static struct platform_driver qcom_slim_driver = {
- 	.probe = qcom_slim_probe,
--- 
-2.25.1
+Thanks!
 
+Michal
+
+--ros5gdjg56iqqxgf
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQQpEWyjXuwGT2dDBqAGvrMr/1gcjgUCZjCwrgAKCRAGvrMr/1gc
+jj/WAQDDXJCSu4RiKGBXKe4DglhCpsRqLvy6016DzJTdk1IhSAD/SIUrAald989l
+utECqxq3rKDZTgATERrExbUG+bbhdgo=
+=I04Z
+-----END PGP SIGNATURE-----
+
+--ros5gdjg56iqqxgf--
 
