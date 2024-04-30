@@ -1,445 +1,213 @@
-Return-Path: <linux-kernel+bounces-163752-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-163753-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 93A8F8B6F59
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 12:14:06 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B319B8B6F5E
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 12:15:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A856BB21C6D
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 10:14:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 22B051F24409
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 10:15:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4DBFD13D240;
-	Tue, 30 Apr 2024 10:13:50 +0000 (UTC)
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9FA1D129E66;
+	Tue, 30 Apr 2024 10:15:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="dix4eoYc"
+Received: from mail-lf1-f54.google.com (mail-lf1-f54.google.com [209.85.167.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C85881292C8;
-	Tue, 30 Apr 2024 10:13:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E36AF128385
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 10:15:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714472029; cv=none; b=BVKR1yRpK66vujLPYxM8NoWknnBeC6ZSq20536/BEVwLc0lHxaOMBUIBfQesTw/FoXr0ja5yQ5e+D3eiWVFldZlL17YOrqjQDjp7E9qGiXLi4K93z6+ehuARSIsbfVrwBfEXvt7LdaNjdlR978HlGmBzXlmvNw420pon7YI3OaA=
+	t=1714472113; cv=none; b=B101gy9JO0R4RT4T0J1RDGXks3e3S/068rMjNbRaAxZDwdjJIqVftHfkLLnpibpIYyPWr9RxN1vZvx70aEUALfCLfzUOptDZ2//BZT5ibd4wEWFYhlMkN1wTU1giMiJx4LK7u5p0+R8oG9sXifsZafYZvruWNx45R1Irsd1Y4Zk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714472029; c=relaxed/simple;
-	bh=8Q3KwJw9iAGPWlpEXUyAcLqM31zXGX0/uOM/fgsWjQI=;
-	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=tircBGQgZE6EVw40rzcPLrZTYFoikyVO6OQJDhaivubd+k9TASaBX02D8IIup2xM6FiiNWMXjONsIITIlZxzvY5E/RNn3FAcjKwT3mSVALb/FOa+Uqmfd2/LrlS5xvVf5ltjNoZabHlAuQh4bT/dFl0Lo+T/IuiHAgkG3MbGtrE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.18.186.31])
-	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4VTGDk63xBz6F996;
-	Tue, 30 Apr 2024 18:11:02 +0800 (CST)
-Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
-	by mail.maildlp.com (Postfix) with ESMTPS id 16C3A140A70;
-	Tue, 30 Apr 2024 18:13:43 +0800 (CST)
-Received: from localhost (10.122.247.231) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Tue, 30 Apr
- 2024 11:13:42 +0100
-Date: Tue, 30 Apr 2024 11:13:41 +0100
-From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-To: Gavin Shan <gshan@redhat.com>
-CC: Thomas Gleixner <tglx@linutronix.de>, Peter Zijlstra
-	<peterz@infradead.org>, <linux-pm@vger.kernel.org>,
-	<loongarch@lists.linux.dev>, <linux-acpi@vger.kernel.org>,
-	<linux-arch@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<linux-arm-kernel@lists.infradead.org>, <kvmarm@lists.linux.dev>,
-	<x86@kernel.org>, Russell King <linux@armlinux.org.uk>, "Rafael J . Wysocki"
-	<rafael@kernel.org>, Miguel Luis <miguel.luis@oracle.com>, "James Morse"
-	<james.morse@arm.com>, Salil Mehta <salil.mehta@huawei.com>, Jean-Philippe
- Brucker <jean-philippe@linaro.org>, Catalin Marinas
-	<catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, Marc Zyngier
-	<maz@kernel.org>, Hanjun Guo <guohanjun@huawei.com>, Ingo Molnar
-	<mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Dave Hansen
-	<dave.hansen@linux.intel.com>, <linuxarm@huawei.com>, <justin.he@arm.com>,
-	<jianyong.wu@arm.com>, Lorenzo Pieralisi <lpieralisi@kernel.org>, "Sudeep
- Holla" <sudeep.holla@arm.com>
-Subject: Re: [PATCH v8 04/16] ACPI: processor: Move checks and availability
- of acpi_processor earlier
-Message-ID: <20240430111341.00003dba@huawei.com>
-In-Reply-To: <20240430102838.00006e04@Huawei.com>
-References: <20240426135126.12802-1-Jonathan.Cameron@huawei.com>
-	<20240426135126.12802-5-Jonathan.Cameron@huawei.com>
-	<80a2e07f-ecb2-48af-b2be-646f17e0e63e@redhat.com>
-	<20240430102838.00006e04@Huawei.com>
-Organization: Huawei Technologies R&D (UK) Ltd.
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.29; x86_64-w64-mingw32)
+	s=arc-20240116; t=1714472113; c=relaxed/simple;
+	bh=EA/n+63aRQ+LX6Bo2tyrIJSDq4Fz8cHbko3pkS/8djE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=GjuKhFURXCwDD7rNq3YUA0j7RPwLX7qs8PWJB1TohU7ISsqF/U30yPn1BW76YIh19rlyrr1V4PO7zIjVjg4u7d6j1/oJPfM5SRFD56mgBGyBt5/IDlqRbLG05+lyic7EbHxlG30DG27xZxi9YfbbLz2fEGWEd/69QYLFi/DO8aE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=dix4eoYc; arc=none smtp.client-ip=209.85.167.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lf1-f54.google.com with SMTP id 2adb3069b0e04-51ca95db667so5120752e87.0
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 03:15:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1714472110; x=1715076910; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=dIx1dFfAcpeKO8TErHh7vGY1lorqPiA5UlnTCSzH2HY=;
+        b=dix4eoYceTuyNB0FmVZtNw7MZVkMVzEfZpqPiZRw2VFI2A51tbeMYdjtIMWE+YzxP6
+         e3Pkz6nv+bXy6MHWO+xqRe1K9soCMDfFfpsIze/WJqkLReQC/ViULkDh/DBvid5OMEUQ
+         Njw9X7jgXgkns75gBlkiS7PgUt1Y+0BWPF5hkbbD59VOcp4U+4Fuc2FcZoH+yDkDv46g
+         pKBNUP3SVpPKx+7/qTbYJM0st3JKTkYu2l+UdMiU/V86A6E6pt1BJDHulUTAwkwdCnEe
+         ZDkvIomw9LHc5b9l1mMrkdnz2EN3IEAz7GEkJkNUAZUrgdKDCj1xZVmS8HhuRMpRPTOr
+         noew==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714472110; x=1715076910;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=dIx1dFfAcpeKO8TErHh7vGY1lorqPiA5UlnTCSzH2HY=;
+        b=EqxrLNmXwiaWXUprxQESC6XWFFrgH1Kx+KHoNlxX/HHu90tfpoDKcANdQzRhw+B2ka
+         B3wghwbOtv54Tj7zWYySe/6XSUG9lRBkZfn2D3ZQfxQvI/BXMfvTE//9TMCM3IiJN3Zh
+         YeGka7b0gWNvSrhwk2MZ9W2ZBz0rgdbXP0NjhS8BqUgOQ5EYAAeR05pZQU5Q3lRMnl7X
+         GfSlt11W6LVjKwfB3sI+m+TH0AiVohMhk4mFLn17dXcx+E27o4+kGoH7CEREp7un3cxT
+         Yz/aa4g5KKmm8WPzceu6pMBxKytZz3X4rHu5tn69XZVKbhTpFf/cAWP9GkRYVQb5tuOp
+         wANg==
+X-Forwarded-Encrypted: i=1; AJvYcCWvyB9XqRfNBOdkIsD5DyT81W2UBf1BLO0gzeqXeQI0xYLQ/U6paDEMY4CG4EcqrPdHbi9wp/q5wKE8/ezTq3pwpz6fn6hJ5+N8F0Zc
+X-Gm-Message-State: AOJu0YygU3xRP4XS8K7h77lV9MnGC7f2Q3C4ICIYT/9fIWW8POz1BFKp
+	JzJ2L2fZnd84VfetYTtqssnx0D4rp5mcBonnHAP4iKdBNdAg08eXGlNZAOl7XR8=
+X-Google-Smtp-Source: AGHT+IEeZGVbkW3UvagFGYDQZ5bMmN4VdL24N9F8cduZig7xQbulffwe9LBCfuUp6MPaqlZqlp0YPw==
+X-Received: by 2002:ac2:4945:0:b0:516:cf23:588 with SMTP id o5-20020ac24945000000b00516cf230588mr10156881lfi.27.1714472109993;
+        Tue, 30 Apr 2024 03:15:09 -0700 (PDT)
+Received: from eriador.lumag.spb.ru (dzdbxzyyyyyyyyyyyykxt-3.rev.dnainternet.fi. [2001:14ba:a0c3:3a00::227])
+        by smtp.gmail.com with ESMTPSA id g29-20020a0565123b9d00b0051d807addd7sm884156lfv.60.2024.04.30.03.15.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 30 Apr 2024 03:15:09 -0700 (PDT)
+Date: Tue, 30 Apr 2024 13:15:08 +0300
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+To: Vignesh Raman <vignesh.raman@collabora.com>
+Cc: dri-devel@lists.freedesktop.org, daniels@collabora.com, 
+	helen.koike@collabora.com, airlied@gmail.com, daniel@ffwll.ch, robdclark@gmail.com, 
+	david.heidelberg@collabora.com, guilherme.gallo@collabora.com, sergi.blanch.torne@collabora.com, 
+	mcanal@igalia.com, linux-mediatek@lists.infradead.org, 
+	linux-amlogic@lists.infradead.org, linux-rockchip@lists.infradead.org, 
+	amd-gfx@lists.freedesktop.org, linux-arm-msm@vger.kernel.org, intel-gfx@lists.freedesktop.org, 
+	virtualization@lists.linux-foundation.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 5/5] drm/ci: update xfails for the new testlist
+Message-ID: <hon4klkoaouuxhtvm3qb3qstsrdcibihksyrmvxkt3taijl6wb@ubitr6namryw>
+References: <20240430091121.508099-1-vignesh.raman@collabora.com>
+ <20240430091121.508099-6-vignesh.raman@collabora.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: lhrpeml500004.china.huawei.com (7.191.163.9) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240430091121.508099-6-vignesh.raman@collabora.com>
 
-On Tue, 30 Apr 2024 10:28:38 +0100
-Jonathan Cameron <Jonathan.Cameron@Huawei.com> wrote:
-
-> On Tue, 30 Apr 2024 14:17:24 +1000
-> Gavin Shan <gshan@redhat.com> wrote:
+On Tue, Apr 30, 2024 at 02:41:21PM +0530, Vignesh Raman wrote:
+> Now the testlist is used from IGT build, so update
+> xfails with the new testlist.
 > 
-> > On 4/26/24 23:51, Jonathan Cameron wrote:  
-> > > Make the per_cpu(processors, cpu) entries available earlier so that
-> > > they are available in arch_register_cpu() as ARM64 will need access
-> > > to the acpi_handle to distinguish between acpi_processor_add()
-> > > and earlier registration attempts (which will fail as _STA cannot
-> > > be checked).
-> > > 
-> > > Reorder the remove flow to clear this per_cpu() after
-> > > arch_unregister_cpu() has completed, allowing it to be used in
-> > > there as well.
-> > > 
-> > > Note that on x86 for the CPU hotplug case, the pr->id prior to
-> > > acpi_map_cpu() may be invalid. Thus the per_cpu() structures
-> > > must be initialized after that call or after checking the ID
-> > > is valid (not hotplug path).
-> > > 
-> > > Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-> > > 
-> > > ---
-> > > v8: On buggy bios detection when setting per_cpu structures
-> > >      do not carry on.
-> > >      Fix up the clearing of per cpu structures to remove unwanted
-> > >      side effects and ensure an error code isn't use to reference them.
-> > > ---
-> > >   drivers/acpi/acpi_processor.c | 79 +++++++++++++++++++++--------------
-> > >   1 file changed, 48 insertions(+), 31 deletions(-)
-> > > 
-> > > diff --git a/drivers/acpi/acpi_processor.c b/drivers/acpi/acpi_processor.c
-> > > index ba0a6f0ac841..3b180e21f325 100644
-> > > --- a/drivers/acpi/acpi_processor.c
-> > > +++ b/drivers/acpi/acpi_processor.c
-> > > @@ -183,8 +183,38 @@ static void __init acpi_pcc_cpufreq_init(void) {}
-> > >   #endif /* CONFIG_X86 */
-> > >   
-> > >   /* Initialization */
-> > > +static DEFINE_PER_CPU(void *, processor_device_array);
-> > > +
-> > > +static bool acpi_processor_set_per_cpu(struct acpi_processor *pr,
-> > > +				       struct acpi_device *device)
-> > > +{
-> > > +	BUG_ON(pr->id >= nr_cpu_ids);    
-> > 
-> > One blank line after BUG_ON() if we need to follow original implementation.  
-> 
-> Sure unintentional - I'll put that back.
-> 
-> >   
-> > > +	/*
-> > > +	 * Buggy BIOS check.
-> > > +	 * ACPI id of processors can be reported wrongly by the BIOS.
-> > > +	 * Don't trust it blindly
-> > > +	 */
-> > > +	if (per_cpu(processor_device_array, pr->id) != NULL &&
-> > > +	    per_cpu(processor_device_array, pr->id) != device) {
-> > > +		dev_warn(&device->dev,
-> > > +			 "BIOS reported wrong ACPI id %d for the processor\n",
-> > > +			 pr->id);
-> > > +		/* Give up, but do not abort the namespace scan. */    
-> > 
-> > It depends on how the return value is handled by the caller if the namespace
-> > is continued to be scanned. The caller can be acpi_processor_hotadd_init()
-> > and acpi_processor_get_info() after this patch is applied. So I think this
-> > specific comment need to be moved to the caller.  
-> 
-> Good point. This gets messy and was an unintended change.
-> 
-> Previously the options were:
-> 1) acpi_processor_get_info() failed for other reasons - this code was never called.
-> 2) acpi_processor_get_info() succeeded without acpi_processor_hotadd_init (non hotplug)
->    this code then ran and would paper over the problem doing a bunch of cleanup under err.
-> 3) acpi_processor_get_info() succeeded with acpi_processor_hotadd_init called.
->    This code then ran and would paper over the problem doing a bunch of cleanup under err.
-> 
-> We should maintain that or argue cleanly against it.
-> 
-> This isn't helped the the fact I have no idea which cases we care about for that bios
-> bug handling.  Do any of those bios's ever do hotplug?  Guess we have to try and maintain
-> whatever protection this was offering.
-> 
-> Also, the original code leaks data in some paths and I have limited idea
-> of whether it is intentional or not. So to tidy the issue up that you've identified
-> I'll need to try and make that code consistent first.
-> 
-> I suspect the only way to do that is going to be to duplicate the allocations we
-> 'want' to leak to deal with the bios bug detection.
-> 
-> For example acpi_processor_get_info() failing leaks pr and pr->throttling.shared_cpu_map
-> before this series. After this series we need pr to leak because it's used for the detection
-> via processor_device_array.
-> 
-> I'll work through this but it's going to be tricky to tell if we get right.
-> Step 1 will be closing the existing leaks and then we will have something
-> consistent to build on.
-> 
-I 'think' that fixing the original leaks makes this all much more straight forward.
-That return 0 for acpi_processor_get_info() never made sense as far as I can tell.
-The pr isn't used after this point.
-
-What about something along lines of.
-
-diff --git a/drivers/acpi/acpi_processor.c b/drivers/acpi/acpi_processor.c
-index 161c95c9d60a..97cff4492304 100644
---- a/drivers/acpi/acpi_processor.c
-+++ b/drivers/acpi/acpi_processor.c
-@@ -392,8 +392,10 @@ static int acpi_processor_add(struct acpi_device *device,
-        device->driver_data = pr;
-
-        result = acpi_processor_get_info(device);
--       if (result) /* Processor is not physically present or unavailable */
--               return 0;
-+       if (result) { /* Processor is not physically present or unavailable */
-+               result = 0;
-+               goto err_free_throttling_mask;
-+       }
-
-        BUG_ON(pr->id >= nr_cpu_ids);
-
-@@ -408,7 +410,7 @@ static int acpi_processor_add(struct acpi_device *device,
-                        "BIOS reported wrong ACPI id %d for the processor\n",
-                        pr->id);
-                /* Give up, but do not abort the namespace scan. */
--               goto err;
-+               goto err_clear_driver_data;
-        }
-        /*
-         * processor_device_array is not cleared on errors to allow buggy BIOS
-@@ -420,12 +422,12 @@ static int acpi_processor_add(struct acpi_device *device,
-        dev = get_cpu_device(pr->id);
-        if (!dev) {
-                result = -ENODEV;
--               goto err;
-+               goto err_clear_per_cpu;
-        }
-
-        result = acpi_bind_one(dev, device);
-        if (result)
--               goto err;
-+               goto err_clear_per_cpu;
-
-        pr->dev = dev;
-
-@@ -436,10 +438,12 @@ static int acpi_processor_add(struct acpi_device *device,
-        dev_err(dev, "Processor driver could not be attached\n");
-        acpi_unbind_one(dev);
-
-- err:
--       free_cpumask_var(pr->throttling.shared_cpu_map);
--       device->driver_data = NULL;
-+ err_clear_per_cpu:
-        per_cpu(processors, pr->id) = NULL;
-+ err_clear_driver_data:
-+       device->driver_data = NULL;
-+ err_free_throttling_mask:
-+       free_cpumask_var(pr->throttling.shared_cpu_map);
-  err_free_pr:
-        kfree(pr);
-        return result;
-
-Then the diff on this patch is simply:
-
-diff --git a/drivers/acpi/acpi_processor.c b/drivers/acpi/acpi_processor.c
-index 3c49eae1e943..3b75f5aeb7ab 100644
---- a/drivers/acpi/acpi_processor.c
-+++ b/drivers/acpi/acpi_processor.c
-@@ -200,7 +200,6 @@ static bool acpi_processor_set_per_cpu(struct acpi_processor *pr,
-                dev_warn(&device->dev,
-                         "BIOS reported wrong ACPI id %d for the processor\n",
-                         pr->id);
--               /* Give up, but do not abort the namespace scan. */
-                return false;
-        }
-        /*
-@@ -230,13 +229,14 @@ static int acpi_processor_hotadd_init(struct acpi_processor *pr,
-                goto out;
-
-        if (!acpi_processor_set_per_cpu(pr, device)) {
-+               ret = -EINVAL;
-                acpi_unmap_cpu(pr->id);
-                goto out;
-        }
-
-        ret = arch_register_cpu(pr->id);
-        if (ret) {
--               /* Leave the processor device array in place to detect buggy bios */
-+x              /* Leave the processor device array in place to detect buggy bios */
-                per_cpu(processors, pr->id) = NULL;
-                acpi_unmap_cpu(pr->id);
-                goto out;
-@@ -262,7 +262,7 @@ static inline int acpi_processor_hotadd_init(struct acpi_processor *pr,
- }
- #endif /* CONFIG_ACPI_HOTPLUG_CPU */
-
--static int acpi_processor_get_info(struct acpi_device *device)
-+static int acpi_processor_get_info(struct acpi_device *device, bool bios_bug)
- {
-        union acpi_object object = { 0 };
-        struct acpi_buffer buffer = { sizeof(union acpi_object), &object };
-@@ -361,7 +361,7 @@ static int acpi_processor_get_info(struct acpi_device *device)
-                        return ret;
-        } else {
-                if (!acpi_processor_set_per_cpu(pr, device))
--                       return 0;
-+                       return -EINVAL;
-        }
-
-        /*
-> > 
-> > Besides, it seems acpi_processor_set_per_cpu() isn't properly called and
-> > memory leakage can happen. More details are given below.
-> >   
-> > > +		return false;
-> > > +	}
-> > > +	/*
-> > > +	 * processor_device_array is not cleared on errors to allow buggy BIOS
-> > > +	 * checks.
-> > > +	 */
-> > > +	per_cpu(processor_device_array, pr->id) = device;
-> > > +	per_cpu(processors, pr->id) = pr;
-> > > +
-> > > +	return true;
-> > > +}
-> > > +
-> > >   #ifdef CONFIG_ACPI_HOTPLUG_CPU
-> > > -static int acpi_processor_hotadd_init(struct acpi_processor *pr)
-> > > +static int acpi_processor_hotadd_init(struct acpi_processor *pr,
-> > > +				      struct acpi_device *device)
-> > >   {
-> > >   	int ret;
-> > >   
-> > > @@ -198,8 +228,15 @@ static int acpi_processor_hotadd_init(struct acpi_processor *pr)
-> > >   	if (ret)
-> > >   		goto out;
-> > >   
-> > > +	if (!acpi_processor_set_per_cpu(pr, device)) {
-> > > +		acpi_unmap_cpu(pr->id);
-> > > +		goto out;
-> > > +	}
-> > > +    
-> > 
-> > With the 'goto out', zero is returned from acpi_processor_hotadd_init() to acpi_processor_get_info().
-
-Indeed a bug :(
-
-> > The zero return value is carried from acpi_map_cpu() in acpi_processor_hotadd_init(). If I'm correct,
-> > we need return errno from acpi_processor_get_info() to acpi_processor_add() so that cleanup can be
-> > done. For example, the cleanup corresponding to the 'err' tag can be done in acpi_processor_add().
-> > Otherwise, we will have memory leakage.
-
-The confusion here was that previously acpi_processor_add() was missing error cleanup for
-acpi_processor_get_info().  With that in place I think it's all much simpler.
-
-Thanks for your eagle eyes!
-
-Jonathan
-
-
-> >   
-> > >   	ret = arch_register_cpu(pr->id);
-> > >   	if (ret) {
-> > > +		/* Leave the processor device array in place to detect buggy bios */
-> > > +		per_cpu(processors, pr->id) = NULL;
-> > >   		acpi_unmap_cpu(pr->id);
-> > >   		goto out;
-> > >   	}
-> > > @@ -217,7 +254,8 @@ static int acpi_processor_hotadd_init(struct acpi_processor *pr)
-> > >   	return ret;
-> > >   }
-> > >   #else
-> > > -static inline int acpi_processor_hotadd_init(struct acpi_processor *pr)
-> > > +static inline int acpi_processor_hotadd_init(struct acpi_processor *pr,
-> > > +					     struct acpi_device *device)
-> > >   {
-> > >   	return -ENODEV;
-> > >   }
-> > > @@ -316,10 +354,13 @@ static int acpi_processor_get_info(struct acpi_device *device)
-> > >   	 *  because cpuid <-> apicid mapping is persistent now.
-> > >   	 */
-> > >   	if (invalid_logical_cpuid(pr->id) || !cpu_present(pr->id)) {
-> > > -		int ret = acpi_processor_hotadd_init(pr);
-> > > +		int ret = acpi_processor_hotadd_init(pr, device);
-> > >   
-> > >   		if (ret)
-> > >   			return ret;
-> > > +	} else {
-> > > +		if (!acpi_processor_set_per_cpu(pr, device))
-> > > +			return 0;
-> > >   	}
-> > >       
-> > 
-> > For non-hotplug case, we still need pass the error to acpi_processor_add() so that
-> > cleanup corresponding 'err' tag can be done. Otherwise, we will have memory leakage.
-> >   
-> > >   	/*
-> > > @@ -365,8 +406,6 @@ static int acpi_processor_get_info(struct acpi_device *device)
-> > >    * (cpu_data(cpu)) values, like CPU feature flags, family, model, etc.
-> > >    * Such things have to be put in and set up by the processor driver's .probe().
-> > >    */
-> > > -static DEFINE_PER_CPU(void *, processor_device_array);
-> > > -
-> > >   static int acpi_processor_add(struct acpi_device *device,
-> > >   					const struct acpi_device_id *id)
-> > >   {
-> > > @@ -395,28 +434,6 @@ static int acpi_processor_add(struct acpi_device *device,
-> > >   	if (result) /* Processor is not physically present or unavailable */
-> > >   		return 0;
-> > >   
-> > > -	BUG_ON(pr->id >= nr_cpu_ids);
-> > > -
-> > > -	/*
-> > > -	 * Buggy BIOS check.
-> > > -	 * ACPI id of processors can be reported wrongly by the BIOS.
-> > > -	 * Don't trust it blindly
-> > > -	 */
-> > > -	if (per_cpu(processor_device_array, pr->id) != NULL &&
-> > > -	    per_cpu(processor_device_array, pr->id) != device) {
-> > > -		dev_warn(&device->dev,
-> > > -			"BIOS reported wrong ACPI id %d for the processor\n",
-> > > -			pr->id);
-> > > -		/* Give up, but do not abort the namespace scan. */
-> > > -		goto err;
-> > > -	}
-> > > -	/*
-> > > -	 * processor_device_array is not cleared on errors to allow buggy BIOS
-> > > -	 * checks.
-> > > -	 */
-> > > -	per_cpu(processor_device_array, pr->id) = device;
-> > > -	per_cpu(processors, pr->id) = pr;
-> > > -
-> > >   	dev = get_cpu_device(pr->id);
-> > >   	if (!dev) {
-> > >   		result = -ENODEV;
-> > > @@ -469,10 +486,6 @@ static void acpi_processor_remove(struct acpi_device *device)
-> > >   	device_release_driver(pr->dev);
-> > >   	acpi_unbind_one(pr->dev);
-> > >   
-> > > -	/* Clean up. */
-> > > -	per_cpu(processor_device_array, pr->id) = NULL;
-> > > -	per_cpu(processors, pr->id) = NULL;
-> > > -
-> > >   	cpu_maps_update_begin();
-> > >   	cpus_write_lock();
-> > >   
-> > > @@ -480,6 +493,10 @@ static void acpi_processor_remove(struct acpi_device *device)
-> > >   	arch_unregister_cpu(pr->id);
-> > >   	acpi_unmap_cpu(pr->id);
-> > >   
-> > > +	/* Clean up. */
-> > > +	per_cpu(processor_device_array, pr->id) = NULL;
-> > > +	per_cpu(processors, pr->id) = NULL;
-> > > +
-> > >   	cpus_write_unlock();
-> > >   	cpu_maps_update_done();
-> > >       
-> > 
-> > Thanks,
-> > Gavin
-> >   
+> Signed-off-by: Vignesh Raman <vignesh.raman@collabora.com>
+> ---
+>  .../gpu/drm/ci/xfails/amdgpu-stoney-fails.txt | 47 +++++++----
+>  .../drm/ci/xfails/amdgpu-stoney-flakes.txt    |  8 +-
+>  .../gpu/drm/ci/xfails/amdgpu-stoney-skips.txt | 15 ++++
+>  drivers/gpu/drm/ci/xfails/i915-amly-fails.txt | 22 ++++-
+>  .../gpu/drm/ci/xfails/i915-amly-flakes.txt    |  8 ++
+>  drivers/gpu/drm/ci/xfails/i915-amly-skips.txt |  8 ++
+>  drivers/gpu/drm/ci/xfails/i915-apl-fails.txt  | 45 +++++-----
+>  drivers/gpu/drm/ci/xfails/i915-apl-flakes.txt |  5 ++
+>  drivers/gpu/drm/ci/xfails/i915-apl-skips.txt  | 12 +++
+>  drivers/gpu/drm/ci/xfails/i915-cml-fails.txt  | 26 +++++-
+>  drivers/gpu/drm/ci/xfails/i915-cml-flakes.txt |  6 ++
+>  drivers/gpu/drm/ci/xfails/i915-cml-skips.txt  |  8 ++
+>  drivers/gpu/drm/ci/xfails/i915-glk-fails.txt  | 28 +++++--
+>  drivers/gpu/drm/ci/xfails/i915-glk-skips.txt  | 12 +++
+>  drivers/gpu/drm/ci/xfails/i915-kbl-fails.txt  | 39 ++++-----
+>  drivers/gpu/drm/ci/xfails/i915-kbl-flakes.txt | 10 ++-
+>  drivers/gpu/drm/ci/xfails/i915-kbl-skips.txt  | 21 +++++
+>  drivers/gpu/drm/ci/xfails/i915-tgl-fails.txt  | 75 +++++++++--------
+>  drivers/gpu/drm/ci/xfails/i915-tgl-skips.txt  | 13 +++
+>  drivers/gpu/drm/ci/xfails/i915-whl-fails.txt  | 46 +++++------
+>  drivers/gpu/drm/ci/xfails/i915-whl-skips.txt  |  8 ++
+>  .../drm/ci/xfails/mediatek-mt8173-fails.txt   | 47 +++--------
+>  .../drm/ci/xfails/mediatek-mt8183-fails.txt   | 17 +---
+>  .../drm/ci/xfails/mediatek-mt8183-flakes.txt  |  5 ++
+>  .../gpu/drm/ci/xfails/meson-g12b-fails.txt    | 20 +----
+>  .../gpu/drm/ci/xfails/meson-g12b-flakes.txt   |  5 ++
+>  .../gpu/drm/ci/xfails/msm-apq8016-fails.txt   | 26 ++----
+>  .../gpu/drm/ci/xfails/msm-apq8016-flakes.txt  |  5 ++
+>  .../gpu/drm/ci/xfails/msm-apq8096-fails.txt   |  5 +-
+>  .../gpu/drm/ci/xfails/msm-apq8096-flakes.txt  |  5 ++
+>  .../gpu/drm/ci/xfails/msm-apq8096-skips.txt   | 67 +++++++++++++++
+>  .../msm-sc7180-trogdor-kingoftown-fails.txt   | 34 ++++----
+>  .../msm-sc7180-trogdor-kingoftown-flakes.txt  |  5 ++
+>  ...sm-sc7180-trogdor-lazor-limozeen-fails.txt | 34 ++++----
+>  ...m-sc7180-trogdor-lazor-limozeen-flakes.txt |  5 ++
+>  .../gpu/drm/ci/xfails/msm-sdm845-fails.txt    | 75 ++++-------------
+>  .../gpu/drm/ci/xfails/msm-sdm845-flakes.txt   | 26 ++----
+>  .../drm/ci/xfails/rockchip-rk3288-fails.txt   | 54 ------------
+>  .../drm/ci/xfails/rockchip-rk3399-fails.txt   | 80 ++----------------
+>  .../drm/ci/xfails/rockchip-rk3399-flakes.txt  |  7 --
+>  .../drm/ci/xfails/virtio_gpu-none-fails.txt   | 82 +++++++++++++------
+>  .../drm/ci/xfails/virtio_gpu-none-skips.txt   |  3 +
+>  42 files changed, 574 insertions(+), 495 deletions(-)
+>  create mode 100644 drivers/gpu/drm/ci/xfails/i915-amly-flakes.txt
+>  create mode 100644 drivers/gpu/drm/ci/xfails/i915-apl-flakes.txt
+>  create mode 100644 drivers/gpu/drm/ci/xfails/i915-cml-flakes.txt
+>  create mode 100644 drivers/gpu/drm/ci/xfails/mediatek-mt8183-flakes.txt
+>  create mode 100644 drivers/gpu/drm/ci/xfails/meson-g12b-flakes.txt
+>  create mode 100644 drivers/gpu/drm/ci/xfails/msm-apq8016-flakes.txt
+>  create mode 100644 drivers/gpu/drm/ci/xfails/msm-apq8096-flakes.txt
+>  create mode 100644 drivers/gpu/drm/ci/xfails/msm-sc7180-trogdor-kingoftown-flakes.txt
+>  create mode 100644 drivers/gpu/drm/ci/xfails/msm-sc7180-trogdor-lazor-limozeen-flakes.txt
+>  delete mode 100644 drivers/gpu/drm/ci/xfails/rockchip-rk3288-fails.txt
+>  delete mode 100644 drivers/gpu/drm/ci/xfails/rockchip-rk3399-flakes.txt
 > 
 
+[skipped]
+
+> diff --git a/drivers/gpu/drm/ci/xfails/msm-apq8016-fails.txt b/drivers/gpu/drm/ci/xfails/msm-apq8016-fails.txt
+> index 44a5c62dedad..96e9faf0e607 100644
+> --- a/drivers/gpu/drm/ci/xfails/msm-apq8016-fails.txt
+> +++ b/drivers/gpu/drm/ci/xfails/msm-apq8016-fails.txt
+> @@ -1,19 +1,9 @@
+> +core_setmaster_vs_auth,Fail
+> +device_reset,Fail
+> +dumb_buffer,Fail
+
+This doesn't look correct, core tests should be passing.
+
+>  kms_3d,Fail
+> -kms_addfb_basic@addfb25-bad-modifier,Fail
+> -kms_cursor_legacy@all-pipes-forked-bo,Fail
+> -kms_cursor_legacy@all-pipes-forked-move,Fail
+> -kms_cursor_legacy@all-pipes-single-bo,Fail
+> -kms_cursor_legacy@all-pipes-single-move,Fail
+> -kms_cursor_legacy@all-pipes-torture-bo,Fail
+> -kms_cursor_legacy@all-pipes-torture-move,Fail
+> -kms_cursor_legacy@pipe-A-forked-bo,Fail
+> -kms_cursor_legacy@pipe-A-forked-move,Fail
+> -kms_cursor_legacy@pipe-A-single-bo,Fail
+> -kms_cursor_legacy@pipe-A-single-move,Fail
+> -kms_cursor_legacy@pipe-A-torture-bo,Fail
+> -kms_cursor_legacy@pipe-A-torture-move,Fail
+> -kms_force_connector_basic@force-edid,Fail
+> -kms_hdmi_inject@inject-4k,Fail
+> -kms_selftest@drm_format,Timeout
+> -kms_selftest@drm_format_helper,Timeout
+
+Fine, kms_cursor_legacy tests were migrated to -flakes. But what
+happened with the rest of the failures?
+
+> -msm_mapping@ring,Fail
+> +kms_force_connector_basic,Fail
+> +kms_lease,Fail
+> +msm_mapping,Fail
+> +msm_submit,Fail
+> +tools_test,Fail
+> diff --git a/drivers/gpu/drm/ci/xfails/msm-apq8016-flakes.txt b/drivers/gpu/drm/ci/xfails/msm-apq8016-flakes.txt
+> new file mode 100644
+> index 000000000000..3cc361b3d3b3
+> --- /dev/null
+> +++ b/drivers/gpu/drm/ci/xfails/msm-apq8016-flakes.txt
+> @@ -0,0 +1,5 @@
+> +# Board Name: apq8016-sbc-usb-host
+> +# Bug Report: TBD
+> +# IGT Version: 1.28-gd2af13d9f
+> +# Linux Version: 6.9.0-rc4
+> +kms_cursor_legacy
+
+It looks like one of the scripts has lost subtest granularity. It should
+be fixed before the patchset can be merged.
+
+-- 
+With best wishes
+Dmitry
 
