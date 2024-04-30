@@ -1,72 +1,101 @@
-Return-Path: <linux-kernel+bounces-164206-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-164207-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CCE3E8B7AAB
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 16:56:02 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E17588B7AAC
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 16:56:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E5DEFB24835
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 14:55:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1BDDB1C22E8C
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 14:56:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8FA6814373B;
-	Tue, 30 Apr 2024 14:55:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E79517710D;
+	Tue, 30 Apr 2024 14:56:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KnRYaDqu"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="g0SMqvqg"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D334B770F0;
-	Tue, 30 Apr 2024 14:55:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 33678152798;
+	Tue, 30 Apr 2024 14:56:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714488935; cv=none; b=Hutin9EBq+15js2UpNBySCq6wpvkyG2GC5PGDz0WZbBz9sgsF6YQumZvrWP6vibnyLtBNRcjTG2XkoQa56eBuzTOC2jUJ7ilvMn09Au0qobb5QEhJ2F3/gnnHG9Op+HTDXpb+p0wPvLPlton6VELNZAcWw9sexmGokB6OWrEpFc=
+	t=1714489009; cv=none; b=eMGG93a+TZtvDK6NrNKgL//mBrkNFew+sALcZHxhXY4nAaW1EBsoF3zRHjb0e+WV4Wxtj3i0T0UloReR/kgnxfTvcuSY+Sdq/9xYkNYQk7jAkQLGfYW/Cz9+IRLrm+Ur73iZyouGPpEi13KYe3LM0dWA35vssAl5S2+uKfoucpE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714488935; c=relaxed/simple;
-	bh=LbxazFNKPGjXRCPe1IyWjuxFW/SlZaB4365pwSAW8+8=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=faLYB2BcRqSQjod/46zjeSXoPxz4sK20pfVTL6x88sVTXyP70gext+mrFPkQka7A0Mob+x2xB3OpIlD4LrtW0VhyoUVfNoeBjfie6faBm/0byx17CUp4tkboCtLcfSgDuTbkFvz9yaTaRjNM/fvKYPW79YqSJy/KvOMo8pCjCA8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KnRYaDqu; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 12DF5C2BBFC;
-	Tue, 30 Apr 2024 14:55:35 +0000 (UTC)
+	s=arc-20240116; t=1714489009; c=relaxed/simple;
+	bh=TjXlwvXIGxgY7FadCv6wm6DhT0gofgknxCj4A+6vdXQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Vl83rVpK9c/KKakHLOJYydOYv7GmJyTvRZ0DiPkqQy8uDRDAxcP04snD4758K2I6PNcktFFODI/c+mZy5J6s3YxiIkwQ7FFIGYWqGGu6LHXV7VvS7crGKsOIk9MA4hTw6s2J0PJ2pSlGAPcV6ELT7bAP7hNPaRg02OtNFPzTzLE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=g0SMqvqg; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C3761C4AF1B;
+	Tue, 30 Apr 2024 14:56:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714488935;
-	bh=LbxazFNKPGjXRCPe1IyWjuxFW/SlZaB4365pwSAW8+8=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=KnRYaDquIH5vCbfYChkYJBhK1EZaWADduXl6Fg7XQLgeRQDK/cJmD1VqaKVJTbcMM
-	 oQ34qgZNxYt9INylKudmTRmO41ojDM46nhRptIl0tgp/AwPF5gwdqNZz7tHKSyE1Ig
-	 ylhaTfVaDJylpvr9VHdoWRHGeqX0f1Hjq+bQlJsQ6YsRISjex84gFr2+sigBQaJWbz
-	 jEQ21N90yRRqtdoNd2ouQ1FYldOwaZXTOrGPVm6C9r1HzShWy/kmvb6ZZXpurNvQtR
-	 82J+xC2wnR9rELh7cX8DzzhiIctjmKj6XqtRAj5f2KQbHxlLVpoGkZqBbFqqgvnTA7
-	 c/1fUGisE/KEg==
-Date: Tue, 30 Apr 2024 07:55:34 -0700
-From: Jakub Kicinski <kuba@kernel.org>
-To: Breno Leitao <leitao@debian.org>
-Cc: Leon Romanovsky <leon@kernel.org>, Dennis Dalessandro
- <dennis.dalessandro@cornelisnetworks.com>, Jason Gunthorpe <jgg@ziepe.ca>,
- "open list:HFI1 DRIVER" <linux-rdma@vger.kernel.org>, open list
- <linux-kernel@vger.kernel.org>, linux-netdev <netdev@vger.kernel.org>
-Subject: Re: [PATCH net-next] IB/hfi1: allocate dummy net_device dynamically
-Message-ID: <20240430075534.435a686e@kernel.org>
-In-Reply-To: <20240430141039.GH100414@unreal>
-References: <20240426085606.1801741-1-leitao@debian.org>
-	<20240430125047.GE100414@unreal>
-	<49973089-1e5e-48a2-9616-09cf8b8d5a7f@cornelisnetworks.com>
-	<20240430141039.GH100414@unreal>
+	s=k20201202; t=1714489009;
+	bh=TjXlwvXIGxgY7FadCv6wm6DhT0gofgknxCj4A+6vdXQ=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=g0SMqvqgU1WU5wiygjLar9m1vuDPUR9BYpi0KNcaC0nloEmd6qc+jM+Jp9uCZIIey
+	 djKjd5rpFCmi+ocyvIueE33j3i7+NL0AKdoPZaBPh3HpO4IJ5yYXPcNk4ImglHbljh
+	 LPwFP2qY9fOuK3ZOAv/polEQANeDAlE03Hqatt9XSEKPH4W9PaUxyXng8pyQcAXp5v
+	 orKHqV89qe0IkrwoRobewPGwhA50Ehfrcl7Y1VHNtJNJP8fA2O0EEauN8m+HEBbTXW
+	 ximwoePlNsfEnA6T3SYw13VsltN7blQ88UeTRAgUycJGEc5R3sis61XkJmnwTcpxkg
+	 XSSVgZ1up0zqQ==
+Date: Tue, 30 Apr 2024 23:56:46 +0900
+From: Mark Brown <broonie@kernel.org>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>,
+	Takashi Iwai <tiwai@suse.com>, linux-sound@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ASoC: use inline function for type safety in
+ snd_soc_substream_to_rtd()
+Message-ID: <ZjEGrnlQfFeDyLUc@finisterre.sirena.org.uk>
+References: <20240430140938.328088-1-krzysztof.kozlowski@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="8pV+PWcSobNbNF3R"
+Content-Disposition: inline
+In-Reply-To: <20240430140938.328088-1-krzysztof.kozlowski@linaro.org>
+X-Cookie: lisp, v.:
 
-On Tue, 30 Apr 2024 17:10:39 +0300 Leon Romanovsky wrote:
-> > Nothing right now. Should be safe to sent to net-next.  
-> 
-> Jakub, can you please take this patch?
 
-We'll need a repost, it wasn't CCed to netdev.
+--8pV+PWcSobNbNF3R
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Tue, Apr 30, 2024 at 04:09:38PM +0200, Krzysztof Kozlowski wrote:
+
+> -#define snd_soc_substream_to_rtd(substream) \
+> -	(struct snd_soc_pcm_runtime *)snd_pcm_substream_chip(substream)
+> +
+> +static inline struct snd_soc_pcm_runtime *
+> +snd_soc_substream_to_rtd(const struct snd_pcm_substream *substream)
+> +{
+> +	return substream->private_data;
+> +}
+
+This is not an obvious direct substitution, we've skipped the
+snd_pcm_subsystem_chip() (which is also a macro, but that just suggests
+it could do with it's own cleanup) and the commit log didn't mention it.
+
+--8pV+PWcSobNbNF3R
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmYxBq4ACgkQJNaLcl1U
+h9Ca7gf/T8ZFoUJmdU+447+36hbeeKvmRjKe/W64VoRyOxKcdgIc4vr9a3P+jkFO
+XDOo4DRaC4ODF3piEsAJpT1SiNUxBIOzTD3+t7uv4O0QRQ90SxTPVQLb4dxIRqiP
+3QCsgePEYGspRHxlUJkMwPuq/i6bdjX6KiT2jX9MVmLAEfYLzfrc4cjlZtrtmjPS
+Nzikju+66l21nQXBFToT4npXQxS9balCz9ruOM+iwSwcKC2trEyYJVnjK1tS6Uhd
+6j8JdCPmItOu4ERgVSmBQCuKzjKtJyj1ie7k8alpPzBjbXM5my6/W9uWr81GOhaz
+Vq6V0tNBMk2Nose52DHSpiVUIjAPqg==
+=pItM
+-----END PGP SIGNATURE-----
+
+--8pV+PWcSobNbNF3R--
 
