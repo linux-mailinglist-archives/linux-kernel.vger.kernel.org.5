@@ -1,203 +1,159 @@
-Return-Path: <linux-kernel+bounces-163599-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-163600-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DBD4A8B6D82
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 10:55:44 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 20FB68B6D83
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 10:55:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 91B6F28907A
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 08:55:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 526F51C225B0
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 08:55:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BBF5199EAD;
-	Tue, 30 Apr 2024 08:53:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DBC8219DF51;
+	Tue, 30 Apr 2024 08:53:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Tky1BCLf"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (2048-bit key) header.d=clip-os.org header.i=@clip-os.org header.b="goOYACRG"
+Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [217.70.183.197])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7CBF4194C9E
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 08:52:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 91EC6199EA0
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 08:52:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.197
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714467179; cv=none; b=k90ljwCafBDW1YDlsJkw+vZrP45ixVrZhAfUVenkK/yVz0z6fJ1Y0YA3BsCWn5GSZBs2sSxjXRfcFndLdiyOnNTzz0GC8G8iU386axNpBlhPq6AiLjuw+mcGl34cvw+e7DM1tCu/e6Es9fgJJizRW3BFo4usdfjTlq5FnA9ybxA=
+	t=1714467181; cv=none; b=Skf629MKGSLBnva1nm7JjbQHB41DfRC6OLT6oE7WyI71rnMN/vxwp7CvM6C6H5OpwahnnwtVSDM3PTVaRV7JKedmGfJj8IJROTwtl6S1I2tSa6/4JZrpREB1vhLU/0YzV/pvbliUsiifzSR4AUepFsP/S/rRAtkHPu2DM2ID3SI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714467179; c=relaxed/simple;
-	bh=FMYtqdX7LBrGeycIwufcBfemDYQ/h2L76qvKvdaCp+M=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=ne/n741bHvwPnSQPE7Gmr7jaW3JRP9gruYapFaCoTQz1nFGcDi4XLEkJpB55HfXEk8PKmawBScEzswt490DnGF2nc1w0KjhAGl3iPClETGCBWj10YK0pOIw3ntr4C+gxt86lEmETlzhoQ2ILlAm9JCYm2PL1TceD9e6ReBHS2XU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Tky1BCLf; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1714467175;
+	s=arc-20240116; t=1714467181; c=relaxed/simple;
+	bh=g/NYaYHIx0Khsr7fDxNzZiYNm+NgJsDfbc+RU4Udv90=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=hGhe/A0POREa6rsWB8ufDr3Q+47sGS9MbHe6Xhc65WZisqW1gn58jwtFx0vWz6BxWKEY1pQH81ZB/1L34bdsHR+D1fwXvr1oohX+HhnuzFxPLoF46bUfaAkHZGCOW9KfkjsfUeDmOV8aNZMmrnTLZWCK7dE8C1/S7j4mHr5HqMc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=clip-os.org; spf=pass smtp.mailfrom=clip-os.org; dkim=pass (2048-bit key) header.d=clip-os.org header.i=@clip-os.org header.b=goOYACRG; arc=none smtp.client-ip=217.70.183.197
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=clip-os.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=clip-os.org
+Received: by mail.gandi.net (Postfix) with ESMTPSA id A162C1C000B;
+	Tue, 30 Apr 2024 08:52:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=clip-os.org; s=gm1;
+	t=1714467176;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=4RGAMSRvGmFBURPdPPDKTgQXlqXHnKZVqOJq0Gtgi5s=;
-	b=Tky1BCLfQwpaGd5ib9Sak//zp2JnFOswX6VfWCcKUxPvWNJg4ySsqw5Ly0xZDww+cG1HxU
-	qSIUfhUa6Meb7KQguio7eHYnCNtNYR9RGdnvFHo42oaWTsQipje7WQ8yQ7RYwW+uczMDaO
-	zwVTW6rgpz5Zl3PVpGH+iJD6s2pNYwk=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-563-lGP9-0rkM3uu9K3Hb14gZQ-1; Tue, 30 Apr 2024 04:52:53 -0400
-X-MC-Unique: lGP9-0rkM3uu9K3Hb14gZQ-1
-Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-419e3f83aeeso28102265e9.1
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 01:52:53 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714467172; x=1715071972;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
-         :content-language:references:to:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=4RGAMSRvGmFBURPdPPDKTgQXlqXHnKZVqOJq0Gtgi5s=;
-        b=C1rKB4IGkgsehIOOrv4ElbwwrDAmOKKuxMZ6dAaXqOcsdVJe/e+5fr/IQ9ap2oKpI+
-         akCzZ1c26d7+RjyeyuDmcl509N4gPs451gYV67SNzlIesN3JMmONiDJCTkYYqwM6vBb/
-         Yvkw7MN0rc5iNrnGIK040d3PFkIzSl40TaYQe4Z3KRXUfBslROjCjcgWVQasifaa5+yj
-         Uxwzp+tn7ZayE+8Um0b7OCZWTphXpzUaIY8PH1kiw/rWUAJ6Lom5Y24fjMatDGQw7KXa
-         v7R4jJ283g77hBX0r4XGZ/VrTGNEBAtiAu4EN5CFKXNdNWakepfdnAJujROD7AN9exOL
-         eUGw==
-X-Forwarded-Encrypted: i=1; AJvYcCUWd3yJqpSdnSF1J6ODqPtnoHKxFYRG5rCsL+Y+pWa3J0wN3ZUB04+z9ZWEFfN7GhF8sFN+DtdgV3hJoHTKcJcUFTxiU0Qfc7k6oPqK
-X-Gm-Message-State: AOJu0YyaO5KBaLfaEnl+c2vVCJbydDVZdEcJUDT9LWfhIZZ8U5ZUkau1
-	4FpP8NFbLLgIHf4u8ozYaiumA0rUTuJrQE281W4a7FxgZQyWyfEwmH3PZRnxBTUM5p/N/JrIcQ6
-	xNbhisMJh6KBoLWjVnE++wI0lCEkXxaU9mCdeiVK4fo8V4sfI++CjE7M6pmA3Mw==
-X-Received: by 2002:a05:600c:154b:b0:416:9b7f:7098 with SMTP id f11-20020a05600c154b00b004169b7f7098mr10267759wmg.24.1714467172343;
-        Tue, 30 Apr 2024 01:52:52 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEaK0DC9JY5CABrF0rmDmhJGegKoXKpgkcqasi4Ije0f/QAtIFvXUi/TqPAi4fh0cnhKDT/kQ==
-X-Received: by 2002:a05:600c:154b:b0:416:9b7f:7098 with SMTP id f11-20020a05600c154b00b004169b7f7098mr10267738wmg.24.1714467171892;
-        Tue, 30 Apr 2024 01:52:51 -0700 (PDT)
-Received: from ?IPV6:2a09:80c0:192:0:5dac:bf3d:c41:c3e7? ([2a09:80c0:192:0:5dac:bf3d:c41:c3e7])
-        by smtp.gmail.com with ESMTPSA id a18-20020adffad2000000b0034c9b7d406dsm8372883wrs.75.2024.04.30.01.52.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 30 Apr 2024 01:52:51 -0700 (PDT)
-Message-ID: <c911ab92-1bec-4e5d-9bc8-5a6044f4948b@redhat.com>
-Date: Tue, 30 Apr 2024 10:52:50 +0200
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+	bh=qkps59hvkVp6rMx8vJsbQ8PnYFAMlqf/nMFnhk1Nt+k=;
+	b=goOYACRG2rE3wyyILMJ2ekMgFNwGMULcPGn05Fy3NCLO+MS3MP5IpxZwN+QT3JFNx+gLv5
+	tW1QoamnbDOIb3xTCjmayZmQwlzhbmkolKJAlWdjSAkeVVXDZunyyMsgSW/M5Sy2XTTCXt
+	selVHev8dABkm+fLUCJiSulglv0t/qyv9AFeSJdfseo07cBnPEhNzYZYE9AVCRl02CxBm6
+	S1znt+ZFMImhHLLp/OEh4CXu82UHZrWci6Zh9fGUApYPaEFpb8cSq6qVsy7AMNYHuKqz28
+	DsibqbMtMiay1pJmneum+VKqWiA3GsDzmr2SBx/Ky3ZrET/lLISKtbaJ0u6Ouw==
+Date: Tue, 30 Apr 2024 10:52:53 +0200
+From: Nicolas Bouchinet <nicolas.bouchinet@clip-os.org>
+To: linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Cc: Chengming Zhou <chengming.zhou@linux.dev>,
+	Christoph Lameter <cl@linux.com>, Pekka Enberg <penberg@kernel.org>,
+	David Rientjes <rientjes@google.com>,
+	Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Vlastimil Babka <vbabka@suse.cz>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Hyeonggon Yoo <42.hyeyoo@gmail.com>
+Subject: [PATCH v2] slub: Fixes freepointer encoding for single free
+Message-ID: <ZjCxZfD1d36zfq-R@archlinux>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/1] hv_balloon: Enable hot-add for memblock sizes > 128
- Mbytes
-To: Michael Kelley <mhklinux@outlook.com>,
- "haiyangz@microsoft.com" <haiyangz@microsoft.com>,
- "wei.liu@kernel.org" <wei.liu@kernel.org>,
- "decui@microsoft.com" <decui@microsoft.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>
-References: <20240311181238.1241-1-mhklinux@outlook.com>
- <30d66f75-60c8-4ebf-8451-839806400dd4@redhat.com>
- <SN6PR02MB41571838C410EB52F328A461D4162@SN6PR02MB4157.namprd02.prod.outlook.com>
- <SN6PR02MB4157D5BB1C140D229875AB50D41B2@SN6PR02MB4157.namprd02.prod.outlook.com>
-Content-Language: en-US
-From: David Hildenbrand <david@redhat.com>
-Autocrypt: addr=david@redhat.com; keydata=
- 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
- WNyWQQ==
-Organization: Red Hat
-In-Reply-To: <SN6PR02MB4157D5BB1C140D229875AB50D41B2@SN6PR02MB4157.namprd02.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-GND-Sasl: nicolas.bouchinet@clip-os.org
 
-On 29.04.24 17:30, Michael Kelley wrote:
-> From: Michael Kelley <mhklinux@outlook.com> Sent: Friday, April 26, 2024 9:36 AM
->>>> @@ -505,8 +505,9 @@ enum hv_dm_state {
->>>>
->>>>    static __u8 recv_buffer[HV_HYP_PAGE_SIZE];
->>>>    static __u8 balloon_up_send_buffer[HV_HYP_PAGE_SIZE];
->>>> +static unsigned long ha_chunk_pgs;
->>>
->>> Why not stick to PAGES_IN_2M and call this
->>>
->>> ha_pages_in_chunk? Much easier to get than "pgs".
->>
->> OK.  I was trying to keep the new identifier short so that
->> mechanically substituting it for HA_CHUNK didn't blow up
->> the line length.
->>
->>>
->>> Apart from that looks good. Some helper macros to convert size to chunks
->>> etc. might make the code even more readable.
->>
->> I'll look at this.  Might help the line length problem too.
->>
-> 
-> I didn't see any particular complexity in converting size to chunks. But
-> this slightly opaque sequence is repeated in three places:
-> 
-> 	new_inc = (residual / HA_CHUNK) * HA_CHUNK;
-> 	if (residual % HA_CHUNK)
-> 		new_inc += HA_CHUNK;
-> 
-> If HA_CHUNK (or the new memblock size based variable) is a
-> power of 2, then these can become:
-> 
-> 	new_inc = ALIGN(residual, HA_CHUNK);
-> 
-> which is a lot better.  I'll make that change, and a couple of other
-> changes where things are open coded that could be existing
-> kernel macros.
+From: Nicolas Bouchinet <nicolas.bouchinet@ssi.gouv.fr>
 
-Cool! Make sure to CC me on v2.
+Commit 284f17ac13fe ("mm/slub: handle bulk and single object freeing
+separately") splits single and bulk object freeing in two functions
+slab_free() and slab_free_bulk() which leads slab_free() to call
+slab_free_hook() directly instead of slab_free_freelist_hook().
 
-> 
-> Question:  Is memblock size guaranteed to be a power of 2?  It looks
-> to be so in the x86 code, but I can't tell on s390 and ppc.  For safety,
-> I'll add a check in the Hyper-V balloon driver init code, as the
-> communication with Hyper-V expects a power of 2.
+If `init_on_free` is set, slab_free_hook() zeroes the object.
+Afterward, if `slub_debug=F` and `CONFIG_SLAB_FREELIST_HARDENED` are
+set, the do_slab_free() slowpath executes freelist consistency
+checks and try to decode a zeroed freepointer which leads to a
+"Freepointer corrupt" detection in check_object().
 
-Yes, in memory_dev_init() we make sure that the size is a power of 2, 
-and if it is not, we would panic().
+Object's freepointer thus needs to be avoided when stored outside the
+object if init_on_free is set.
 
+To reproduce, set `slub_debug=FU init_on_free=1 log_level=7` on the
+command line of a kernel build with `CONFIG_SLAB_FREELIST_HARDENED=y`.
+
+dmesg sample log:
+[   10.708715] =============================================================================
+[   10.710323] BUG kmalloc-rnd-05-32 (Tainted: G    B           T ): Freepointer corrupt
+[   10.712695] -----------------------------------------------------------------------------
+[   10.712695]
+[   10.712695] Slab 0xffffd8bdc400d580 objects=32 used=4 fp=0xffff9d9a80356f80 flags=0x200000000000a00(workingset|slab|node=0|zone=2)
+[   10.716698] Object 0xffff9d9a80356600 @offset=1536 fp=0x7ee4f480ce0ecd7c
+[   10.716698]
+[   10.716698] Bytes b4 ffff9d9a803565f0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+[   10.720703] Object   ffff9d9a80356600: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+[   10.720703] Object   ffff9d9a80356610: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+[   10.724696] Padding  ffff9d9a8035666c: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+[   10.724696] Padding  ffff9d9a8035667c: 00 00 00 00                                      ....
+[   10.724696] FIX kmalloc-rnd-05-32: Object at 0xffff9d9a80356600 not freed
+
+Co-authored-by: Chengming Zhou <chengming.zhou@linux.dev>
+Signed-off-by: Nicolas Bouchinet <nicolas.bouchinet@ssi.gouv.fr>
+---
+Changes since v1:
+https://lore.kernel.org/all/Zij_fGjRS_rK-65r@archlinux/
+
+* Jump above out of object freepointer if init_on_free is set
+instead of initializing it with set_freepointer() as suggested
+by Vlastimil Babka.
+
+* Adapt maybe_wipe_obj_freeptr() to avoid wiping out of object
+on alloc freepointer as suggested by Chengming Zhou.
+
+* Reword commit message.
+---
+ mm/slub.c | 11 ++++++++---
+ 1 file changed, 8 insertions(+), 3 deletions(-)
+
+diff --git a/mm/slub.c b/mm/slub.c
+index 3aa12b9b323d..173c340ec1d3 100644
+--- a/mm/slub.c
++++ b/mm/slub.c
+@@ -2102,15 +2102,20 @@ bool slab_free_hook(struct kmem_cache *s, void *x, bool init)
+ 	 *
+ 	 * The initialization memset's clear the object and the metadata,
+ 	 * but don't touch the SLAB redzone.
++	 *
++	 * The object's freepointer is also avoided if stored outside the
++	 * object.
+ 	 */
+ 	if (unlikely(init)) {
+ 		int rsize;
++		unsigned int inuse;
+ 
++		inuse = get_info_end(s);
+ 		if (!kasan_has_integrated_init())
+ 			memset(kasan_reset_tag(x), 0, s->object_size);
+ 		rsize = (s->flags & SLAB_RED_ZONE) ? s->red_left_pad : 0;
+-		memset((char *)kasan_reset_tag(x) + s->inuse, 0,
+-		       s->size - s->inuse - rsize);
++		memset((char *)kasan_reset_tag(x) + inuse, 0,
++			s->size - inuse - rsize);
+ 	}
+ 	/* KASAN might put x into memory quarantine, delaying its reuse. */
+ 	return !kasan_slab_free(s, x, init);
+@@ -3789,7 +3794,7 @@ static void *__slab_alloc_node(struct kmem_cache *s,
+ static __always_inline void maybe_wipe_obj_freeptr(struct kmem_cache *s,
+ 						   void *obj)
+ {
+-	if (unlikely(slab_want_init_on_free(s)) && obj)
++	if (unlikely(slab_want_init_on_free(s)) && obj && !freeptr_outside_object(s))
+ 		memset((void *)((char *)kasan_reset_tag(obj) + s->offset),
+ 			0, sizeof(void *));
+ }
 -- 
-Cheers,
-
-David / dhildenb
+2.44.0
 
 
