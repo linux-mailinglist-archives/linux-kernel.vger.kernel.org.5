@@ -1,138 +1,154 @@
-Return-Path: <linux-kernel+bounces-163202-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-163204-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id ACE3B8B6720
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 03:04:46 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CACC98B6724
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 03:05:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E09DDB2175F
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 01:04:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CF4FB1C221E8
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 01:05:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 23EC1211C;
-	Tue, 30 Apr 2024 01:04:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DCD7F2F28;
+	Tue, 30 Apr 2024 01:05:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="bKnrwO8p"
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="rIGb2SwZ"
+Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 713D817F5;
-	Tue, 30 Apr 2024 01:04:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 878AE1C33
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 01:05:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714439076; cv=none; b=AOoctnPGOVXdSuZz1+XvyGDDD3hzknELgCziYfvqqRa7wJfM7fSqRkVL9cg1bbCco/CZQJR14MpbHD8ZeVyd6UDA809gK1EAy1uqNZe9RsArjKB+fqQ6N+buqCjTcYzG56O+8ZExmsc9cfcaHD6G8O30FQCqtUMsIYdstdacDjw=
+	t=1714439144; cv=none; b=Dl+YwSQtQf6sVazO49WgYVhnLrmlwGnuFNP3WCThf2SUeMkPlW55Z0eLyAzxIc/TpEkmcdbb6hkCBH1VeekQo49EZ+nWv+/NbmU5Gf/CN47mAWxO6ySHfyN9mNXcmykAsUnqAJM0nd/K6g3Ysn+zL2VyCIVgi5NLOkkxqB0sC9o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714439076; c=relaxed/simple;
-	bh=xIka4GzwqbHzymnQRdsDvesNVFW44WrLeBBhpVkSn3s=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=lGRVGCzWV3xFtFc5Qmz5JTUKJAnsiK+mFJGV/31GOx0JchZ/DfPtIJEo+w6C0lvcWfy/1jNLCYFv/zHaUY9Qpz3pSO8l1bofaJDbFRpREEUDbsbJb1M/do3sLd7Igxsu0Gg7YPJIntrwYhfGItXvbKLdBkzePQqRYSxAoVVi5Is=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=bKnrwO8p; arc=none smtp.client-ip=150.107.74.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-	s=201702; t=1714439069;
-	bh=G7JNY7J45OW8/zvJc3N+xIcvrFtkJvZusWpiHZbZsAI=;
-	h=Date:From:To:Cc:Subject:From;
-	b=bKnrwO8pyps74QJo62T2ITg78nmAAUniIV6AV5bFJzbQGn8H39hEJh8DJ5Chv+mTm
-	 KmR1SeqdkJAhrF8oKiGKHOnfi5kVBJi0QSYQLNe1BLVpLCp60WAdiULXBzaK3psDQE
-	 FuXz2paM1sT/aI9ClV4PG2UPkKiqQ6hsflulSNDhKAQOWKkKXK6z9gYAus98j2uKXb
-	 9VJu37T0ZGtP/bnj36vmvGwHjXPzBpwYOeFNQRu0oYk8DuaZy25i3h/pDI1PZHJlBY
-	 GRG7Z+WpHg0qTpl3imLbsv3PJntcwSdHUgBRNqtdpwXEd2s4Nhz0Mm1WaeZpAOUlNR
-	 hDNJeZKaZZT3Q==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4VT2646T9hz4wyq;
-	Tue, 30 Apr 2024 11:04:28 +1000 (AEST)
-Date: Tue, 30 Apr 2024 11:04:28 +1000
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-To: Alexandre Torgue <alexandre.torgue@st.com>
-Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux Next
- Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: duplicate patches in the stm32 tree
-Message-ID: <20240430110428.30432b2f@canb.auug.org.au>
+	s=arc-20240116; t=1714439144; c=relaxed/simple;
+	bh=TK5MtPXbmMywsCNK4eaJvcbQwX7I5488OjtThsv2tq8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=uIFqRDtIhAsuGgTNcygRkmcmUTImLitVg1E71lO/+lnw4L2AidydsFCtiWNys4tvpBoRqCrBvnmM92YWnDHGuZ8SH96enI/VWvj5O3DL+9awxwq/3au2I5UrqoIWDoOSf1ldDaaNJNHBGpTz7RGbbACF1gFl/Ato3vaZHNjaOB4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=rIGb2SwZ; arc=none smtp.client-ip=209.85.208.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-5724736770cso3220a12.1
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 18:05:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1714439141; x=1715043941; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=iaputj2Z1W/10vL4BFBUxMxYDeoWPqOOi+AGsgxCP8A=;
+        b=rIGb2SwZdN7Z6v8EfXQefKicqrqWr0TUXLHLLSTZpEhWV9O6YvdhwTzB+o5ckJGxG2
+         ZGcFMJPQSrf5FtzNqpYvehIwI0R/qMWXBhDmy3ZDGA+m4DKZZfv5mA2WvxZPLGhJCMmI
+         kOdJ3mcDr+pcdZoHMuui6Wb8wyBR34L7KhoGUh6NugWgBvyWtV+k6fugQQmsd+cg5Aaa
+         VxTnBL6EJAUaxOdnCfYmXREGg5Nk3NaQyHdMOiz3EROLmtFUyghCCpQGphY3YZNbohEo
+         095ofikSZLAk2lniyAPdEBl20ExNLq4izGuqMWFuiJWmndnHfPG5W9K4tdvwU+pVE17E
+         WawQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714439141; x=1715043941;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=iaputj2Z1W/10vL4BFBUxMxYDeoWPqOOi+AGsgxCP8A=;
+        b=LRtQxhymMZ3jTM7Jt5dy4vYGpdCF9a+TgAGurqdxALPmQs/jprol9uY+0cmBh+jrgu
+         n8INK0x8rt2rgJ7qDJhTV4GbUh5fERUYqe0U/YO1SPCPFrPysFKF0egKZGRQCCERt3mX
+         OryxLnWIJNvF3LFEALbbXRBRDWWk2TiUltlCfCOcGbldyG7jXsTk0S0dSSmvtJlopsoj
+         I7KAWrMryZMAUwSm0pCDqtR8AQgDkaHxw0W3bcvxBEZcow4rY/mSUcm2v2PCd4Np/CD4
+         929hRyi+LdsqgD3CXGmoMgCCLb5+9MgRBrg8mlc0u1EYMYm0HbdEWryNpd8qBG+zwtkH
+         V48w==
+X-Forwarded-Encrypted: i=1; AJvYcCVELhJsaPB/3bDG/rpYjEue8fsOgwje+nJNidgw2NdtkgdhsiTvmROLGRGCEvWwyVK9UKYujI4hmRczrfvoZ17FtmIsvHE/x5Eh6Hq3
+X-Gm-Message-State: AOJu0YxoWGLjKc+hJD5RMZ5rL40t40TgW81UeX/KUyJz5OFKB4OM9Kd1
+	tHad6vr3jEf/NSz4tIdbzaTtwjDdHVf0CoOj7gqZkALDrkDWIneS6ar+oinTa0hvOJXpwlkfRx7
+	TzvDD8DhDBOOl3d28cqKUJOLUrRoO8UPMHTFz
+X-Google-Smtp-Source: AGHT+IG7LNX5veX8mreZLpnWG+Z3Cfj8RR3WtQABkQDJ65b4W0+sr62DOWgadzsbFuhb69tkll6WhyZyUSWm9YxG7Ew=
+X-Received: by 2002:a05:6402:70b:b0:572:4e7c:90d9 with SMTP id
+ w11-20020a056402070b00b005724e7c90d9mr44036edx.5.1714439140728; Mon, 29 Apr
+ 2024 18:05:40 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/Vc9nAuzvxGBtK8ilfzaP1ly";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-
---Sig_/Vc9nAuzvxGBtK8ilfzaP1ly
-Content-Type: text/plain; charset=US-ASCII
+References: <20240430004909.425336-1-edliaw@google.com>
+In-Reply-To: <20240430004909.425336-1-edliaw@google.com>
+From: Edward Liaw <edliaw@google.com>
+Date: Mon, 29 Apr 2024 18:05:14 -0700
+Message-ID: <CAG4es9VDsiWdhAHuBkS-+GkQeW+m5DeJC0mdDLEmOh1PDfQBdw@mail.gmail.com>
+Subject: Re: [PATCH] kselftest: Add a ksft_perror() helper
+To: stable@vger.kernel.org, Shuah Khan <shuah@kernel.org>
+Cc: kernel-team@android.com, Mark Brown <broonie@kernel.org>, 
+	Kees Cook <keescook@chromium.org>, Shuah Khan <skhan@linuxfoundation.org>, 
+	linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-Hi all,
+Sorry, will resend this; I forgot to prefix that it was intended for
+the 6.6.y branch.
 
-The following commits are also in the arm-soc tree as different
-commits (but the same patches):
-
-  0087ca056c73 ("arm64: dts: st: add all 8 i2c nodes on stm32mp251")
-  2886ab7437de ("arm64: dts: st: add rcc support for STM32MP25")
-  385ca8e3841f ("arm64: dts: st: add spi3 / spi8 properties on stm32mp257f-=
-ev1"
-)
-  3e7d579c9fca ("ARM: dts: stm32: add ETZPC as a system bus for STM32MP15x =
-boar
-ds")
-  4ef09379d765 ("arm64: dts: st: add i2c2 / i2c8 properties on stm32mp257f-=
-ev1"
-)
-  5e6b388d7bcb ("ARM: dts: stm32: move can3 node from stm32f746 to stm32f76=
-9")
-  7442597f90ba ("arm64: dts: st: add i2c2/i2c8 pins for stm32mp25")
-  7c12d95564a2 ("ARM: dts: stm32: add LTDC pinctrl on STM32MP13x SoC family=
-")
-  7c3d4f99a920 ("ARM: dts: stm32: put ETZPC as an access controller for STM=
-32MP
-15x boards")
-  808691f7389d ("media: dt-bindings: add access-controllers to STM32MP25 vi=
-deo=20
-codecs")
-  881bccce217e ("ARM: dts: stm32: add LTDC support for STM32MP13x SoC famil=
-y")
-  8fe31699b83d ("bus: stm32_firewall: fix off by one in stm32_firewall_get_=
-firewall()")
-  9e716b41a2b5 ("arm64: dts: st: add RIFSC as an access controller for STM3=
-2MP25x boards")
-  a012bd75abf6 ("ARM: dts: stm32: enable display support on stm32mp135f-dk =
-board")
-  aee0ce48516c ("arm64: dts: st: add spi3/spi8 pins for stm32mp25")
-  be62e9c0c3fc ("bus: etzpc: introduce ETZPC firewall controller driver")
-  c7f2f2c0ace8 ("ARM: dts: stm32: add heartbeat led for stm32mp157c-ed1")
-  cab43766e000 ("ARM: dts: stm32: add ETZPC as a system bus for STM32MP13x =
-boards")
-  d3740a9fd78c ("dt-bindings: display: simple: allow panel-common propertie=
-s")
-  dccdbccb7045 ("arm64: dts: st: correct masks for GIC PPI interrupts on st=
-m32mp25")
-  de9b447d5678 ("ARM: dts: stm32: put ETZPC as an access controller for STM=
-32MP13x boards")
-  ede58756bbe5 ("arm64: dts: st: add all 8 spi nodes on stm32mp251")
-  f798f7079233 ("ARM: dts: stm32: add PWR regulators support on stm32mp131")
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/Vc9nAuzvxGBtK8ilfzaP1ly
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmYwQ5wACgkQAVBC80lX
-0Gzuhgf+Ok/MdBCbmqHI/uXjho52A/7Hk5K5/XmjI6gumq3A5neK4WZjq9p9+CME
-E5ux3yA6J34nRu0IOrFuKuDc4+bkaaGoXVgIuzKhEXO8s1I0KJfe4J8QPB2O8x1/
-jx6scGf+4BKdNMLgsS89ofhfCd8ewfjxsMiU5QYyqrUwaLJP+uqqFGP/dAt+cfFd
-+Jgk1wKDcQSCvc3x06hp2auioK+kyAi7orBI0fBJbk2b4vQr6RBGfhgyUCB2A4Tq
-ypqrToPJVnEUtrasZI2XqcyLP1j7++bhpqYHLWu/VpTzcC9hMSm4u2ghjmblyFU/
-1fxgPcCa5Wd9oT8CmFdPEFArnd+LgA==
-=n/fk
------END PGP SIGNATURE-----
-
---Sig_/Vc9nAuzvxGBtK8ilfzaP1ly--
+On Mon, Apr 29, 2024 at 5:49=E2=80=AFPM Edward Liaw <edliaw@google.com> wro=
+te:
+>
+> From: Mark Brown <broonie@kernel.org>
+>
+> [ Upstream commit 907f33028871fa7c9a3db1efd467b78ef82cce20 ]
+>
+> The standard library perror() function provides a convenient way to print
+> an error message based on the current errno but this doesn't play nicely
+> with KTAP output. Provide a helper which does an equivalent thing in a KT=
+AP
+> compatible format.
+>
+> nolibc doesn't have a strerror() and adding the table of strings required
+> doesn't seem like a good fit for what it's trying to do so when we're usi=
+ng
+> that only print the errno.
+>
+> Signed-off-by: Mark Brown <broonie@kernel.org>
+> Reviewed-by: Kees Cook <keescook@chromium.org>
+> Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
+> Stable-dep-of: 071af0c9e582 ("selftests: timers: Convert posix_timers tes=
+t to generate KTAP output")
+> Signed-off-by: Edward Liaw <edliaw@google.com>
+> ---
+>  tools/testing/selftests/kselftest.h | 14 ++++++++++++++
+>  1 file changed, 14 insertions(+)
+>
+> diff --git a/tools/testing/selftests/kselftest.h b/tools/testing/selftest=
+s/kselftest.h
+> index e8eecbc83a60..ad7b97e16f37 100644
+> --- a/tools/testing/selftests/kselftest.h
+> +++ b/tools/testing/selftests/kselftest.h
+> @@ -48,6 +48,7 @@
+>  #include <stdlib.h>
+>  #include <unistd.h>
+>  #include <stdarg.h>
+> +#include <string.h>
+>  #include <stdio.h>
+>  #include <sys/utsname.h>
+>  #endif
+> @@ -156,6 +157,19 @@ static inline void ksft_print_msg(const char *msg, .=
+.)
+>         va_end(args);
+>  }
+>
+> +static inline void ksft_perror(const char *msg)
+> +{
+> +#ifndef NOLIBC
+> +       ksft_print_msg("%s: %s (%d)\n", msg, strerror(errno), errno);
+> +#else
+> +       /*
+> +        * nolibc doesn't provide strerror() and it seems
+> +        * inappropriate to add one, just print the errno.
+> +        */
+> +       ksft_print_msg("%s: %d)\n", msg, errno);
+> +#endif
+> +}
+> +
+>  static inline void ksft_test_result_pass(const char *msg, ...)
+>  {
+>         int saved_errno =3D errno;
+> --
+> 2.44.0.769.g3c40516874-goog
+>
 
