@@ -1,125 +1,104 @@
-Return-Path: <linux-kernel+bounces-163919-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-163921-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id EC8438B75D8
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 14:37:30 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 796BD8B75DE
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 14:38:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8A8971F22519
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 12:37:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2E7AC1F22666
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 12:38:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 307AF17108B;
-	Tue, 30 Apr 2024 12:37:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E6B8171099;
+	Tue, 30 Apr 2024 12:38:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WdjjzBZ3"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="msr+qTsQ"
+Received: from mail-ej1-f65.google.com (mail-ej1-f65.google.com [209.85.218.65])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F67F1CD3A;
-	Tue, 30 Apr 2024 12:37:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5C6212D214;
+	Tue, 30 Apr 2024 12:38:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.65
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714480641; cv=none; b=XRSTIhXTQ4sisvZJP5jFN8Vm3V6a1JirIF5c15BlFSse62uDHiqcKQiptz2X1Ohq84UduK/Y7dUJivMXUCkp5+0U/t/ZqDI2NysUYQjp+Se6cd+Nk/cNd+LC6QSVy8Tt5A/niFYWAHepkF9Iq/KVHJ4Mxbl0TDPAR+MM1e66VO0=
+	t=1714480692; cv=none; b=ayQF/uWzX75K8h2KFDvfuZlafOJdBVI12J9CF70TdwZB84m6VbucB9RrMG/kXYJaQcbtMCuASK1Llv/3G7X37knRzakQ6/8l65eRaUN5zkSTiBTnGaBDHKH2UZyr9dhceZ4LbTk3XzGAk5IZ0UYdebtPpl3u9ZzBoM69mLDFLYg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714480641; c=relaxed/simple;
-	bh=FPqMx5f5x4wqvVTHLCGW9lKxGr2DBWjDBToiIp6l0BM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=UH1JRG7gn6A5MlnxXZ9LOHxPJNZgVCCoIdb7H5tkPFI2qjt1KqjCj43XS2L5Lym5b2kMuUO1uDHGnjhGe2jmaaB8M446yjdI2YRyD7/og669YBW73Z6tVt3ra5VesZI7TksmKIrGb2ILiyLYZ7agrDYgpxIyK6Z6Bn85cFqMOLA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WdjjzBZ3; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 78F89C2BBFC;
-	Tue, 30 Apr 2024 12:37:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714480640;
-	bh=FPqMx5f5x4wqvVTHLCGW9lKxGr2DBWjDBToiIp6l0BM=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=WdjjzBZ3K2zK0UKxydaWJFrBQR9CORpACDdDKYLcgpADpGBuG96OPWsWRVBM3G4nJ
-	 XZJTelMyIsNu5HSShlcf71Rlsko/PDS3wfFBjXnwfd0znOfSIYhC5g1sXNCHD8LrFZ
-	 6bWxSQSHd0xd230gi8JKa1XrqncBPtJEoL7BVhKTYH1L7B2V2yFEtBDgxoiTUSbPqc
-	 OFZs/TgRwsgMDIT1o2NtPwnqiA5qUWGptZMPF7ZRNBvrVEzbffHw/W84sp9KsKrERf
-	 QRgnTftlB7j5CG4IPtjx5wuZ8yfUW4JmTZF+7kUZQTVwo/34C8nZMpQe/qEddFxzv5
-	 /f/Gz94vtF4ZQ==
-Date: Tue, 30 Apr 2024 15:37:15 +0300
-From: Leon Romanovsky <leon@kernel.org>
-To: Long Li <longli@microsoft.com>
-Cc: Konstantin Taranov <kotaranov@linux.microsoft.com>,
-	Konstantin Taranov <kotaranov@microsoft.com>,
-	"sharmaajay@microsoft.com" <sharmaajay@microsoft.com>,
-	"jgg@ziepe.ca" <jgg@ziepe.ca>,
-	"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH rdma-next 6/6] RDMA/mana_ib: implement uapi for creation
- of rnic cq
-Message-ID: <20240430123715.GD100414@unreal>
-References: <1713459125-14914-1-git-send-email-kotaranov@linux.microsoft.com>
- <1713459125-14914-7-git-send-email-kotaranov@linux.microsoft.com>
- <SJ1PR21MB345775858C05B9FE51C2BDF0CE112@SJ1PR21MB3457.namprd21.prod.outlook.com>
+	s=arc-20240116; t=1714480692; c=relaxed/simple;
+	bh=UxkGHkyOV2QivS5ID0u+KA+og8PhR5pbstf9U27sdBk=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=lxRQP8Er34s61Qf7/HbmVlZ/ThF/R2XDLTgcchVh8nfxSV8v872/aEY8M/q0UfFIbktG1YsRzWKtgAWnECn0CSsLULXNkOXKpAsr1pHKigC/Iw2SdKJbdIgEILBVVnBMgp3KFKLdNvf6snxGltJYjraaHBQEsPgy5ybrgun47Us=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=msr+qTsQ; arc=none smtp.client-ip=209.85.218.65
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f65.google.com with SMTP id a640c23a62f3a-a55bf737cecso667462966b.0;
+        Tue, 30 Apr 2024 05:38:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1714480689; x=1715085489; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=UxkGHkyOV2QivS5ID0u+KA+og8PhR5pbstf9U27sdBk=;
+        b=msr+qTsQbSq2YbUnRrG3UixUxW0BILDkm5/M0fzbPXNcpnoz1RxWIdy5v2MjcemIap
+         EsoB1DIiIa2IfQvw5Yejwg2RdtqC/kU4VQ2HFOm2mmnwPd4mUP9s+KMDJx1uOvG/6WHH
+         P8ECnVlxjRq11BQAg7EgJJ39JOk7I+JnTHOXjfLBzHsVEF/DKBtvsLodQEyLN6kvPR+D
+         ZZZm9GKoBjnsb2ROAAiHweknYJ7Ff+wcWxyzPnjLLFpa7Qy0o8XK75k6/hBrY7BavWgn
+         Xa+WN1so4W4UTcl558L1QY0BvxjX/1ayG2c9es7JhfH64yiToNiuvi41YBihapxLq1bf
+         k3dw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714480689; x=1715085489;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=UxkGHkyOV2QivS5ID0u+KA+og8PhR5pbstf9U27sdBk=;
+        b=xJB4mYyGVTqRkjCZjSNA6GZL/Bxu7HAolYiMK1WHGgF3YRuUn44Rh+zx5lBbTNHbQw
+         XH+V6ebnYtiBnjMCVRVOqIbeuBAAzOloDE+6XJVERBe4OMcqSu/Ixk4gfGF4MZhKpNg4
+         SVoou4GrsMC++YjrPAKQxKt28ZEnnHRdOlUx5NcsHIpFTKkgV5v/j0Pw3Sv0nVi3lHfj
+         rwxhEGKmKV45q54EaVbwu+6XuRo49rcZ0VKka5JUQNZ5Nm6INnAYgxSpgOLmyPuvnfXi
+         VbKrodXanYUSbJpWo/W+EybMGeQg0kU+vuHTYJeDbhiJ1dzzpQ5VqquAQ0ixwBhgViL6
+         t4Pg==
+X-Forwarded-Encrypted: i=1; AJvYcCWKacGA7AkoLIsiiHtrYyAaVFQ4l2E0deLvpvzNzc97e5p9iRZn/bfjSWonaK3tieUNx8UArszJjojqJxtL1BteBMX2lepg6QaA/cveVyuStdYx+8Z2kGidJMbT8LBmffMX2RaoByTO+kLnmSN+/E8ABVMjO/3uW6QUC5xxdtFoznQ6
+X-Gm-Message-State: AOJu0Yw3Vnugf20/wF71mXqWAlR9+id9GAcUxqFG2MPHMjgLYGp+13Yk
+	4Ce4CT/EchvwlYFygmocGcflB4p2LTFigATz8pBgDXpTCNCJo85fSeefi9VCZj6Jcn2iYa3GOiJ
+	TEIJJ8Tbb1ROW4LrHuiQ6ZrN055E=
+X-Google-Smtp-Source: AGHT+IH27RdWC5FSjhJY1OjL9ydhwSJgYHblvsxBFlka0WMmUZVYC+Xsw4NlWhQFVJQq1AKM2GpwEwM3xszNOJjFhnU=
+X-Received: by 2002:a17:906:f292:b0:a55:90c8:774f with SMTP id
+ gu18-20020a170906f29200b00a5590c8774fmr9271117ejb.16.1714480689062; Tue, 30
+ Apr 2024 05:38:09 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <SJ1PR21MB345775858C05B9FE51C2BDF0CE112@SJ1PR21MB3457.namprd21.prod.outlook.com>
+References: <20240430-bpf-next-v3-0-27afe7f3b17c@kernel.org> <20240430-bpf-next-v3-3-27afe7f3b17c@kernel.org>
+In-Reply-To: <20240430-bpf-next-v3-3-27afe7f3b17c@kernel.org>
+From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Date: Tue, 30 Apr 2024 14:37:32 +0200
+Message-ID: <CAP01T74gBChGdVWXKWro_vJ_B5jwEtstUMx41U+y+wbXy8VBXg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 3/3] selftests/bpf: drop an unused local variable
+To: Benjamin Tissoires <bentiss@kernel.org>
+Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, 
+	bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On Tue, Apr 23, 2024 at 11:57:53PM +0000, Long Li wrote:
-> > Subject: [PATCH rdma-next 6/6] RDMA/mana_ib: implement uapi for creation
-> > of rnic cq
-> > 
-> > From: Konstantin Taranov <kotaranov@microsoft.com>
-> > 
-> > Enable users to create RNIC CQs.
-> > With the previous request size, an ethernet CQ is created.
-> > Use the cq_buf_size from the user to create an RNIC CQ and return its ID.
-> > 
-> > Signed-off-by: Konstantin Taranov <kotaranov@microsoft.com>
-> > ---
-> >  drivers/infiniband/hw/mana/cq.c | 56 ++++++++++++++++++++++++++++++---
-> >  include/uapi/rdma/mana-abi.h    |  7 +++++
-> >  2 files changed, 59 insertions(+), 4 deletions(-)
-> > 
-> > diff --git a/drivers/infiniband/hw/mana/cq.c
-> > b/drivers/infiniband/hw/mana/cq.c index 8323085..a62bda7 100644
-> > --- a/drivers/infiniband/hw/mana/cq.c
-> > +++ b/drivers/infiniband/hw/mana/cq.c
-> > @@ -9,17 +9,25 @@ int mana_ib_create_cq(struct ib_cq *ibcq, const struct
-> > ib_cq_init_attr *attr,
-> >  		      struct ib_udata *udata)
-> >  {
-> >  	struct mana_ib_cq *cq = container_of(ibcq, struct mana_ib_cq, ibcq);
-> > +	struct mana_ib_create_cq_resp resp = {};
-> > +	struct mana_ib_ucontext *mana_ucontext;
-> >  	struct ib_device *ibdev = ibcq->device;
-> >  	struct mana_ib_create_cq ucmd = {};
-> >  	struct mana_ib_dev *mdev;
-> > +	bool is_rnic_cq = true;
-> > +	u32 doorbell;
-> >  	int err;
-> > 
-> >  	mdev = container_of(ibdev, struct mana_ib_dev, ib_dev);
-> > 
-> > -	if (udata->inlen < sizeof(ucmd))
-> > +	cq->comp_vector = attr->comp_vector % ibdev->num_comp_vectors;
-> > +	cq->cq_handle = INVALID_MANA_HANDLE;
-> > +
-> > +	if (udata->inlen < offsetof(struct mana_ib_create_cq, cq_buf_size))
-> >  		return -EINVAL;
-> > 
-> > -	cq->comp_vector = attr->comp_vector % ibdev->num_comp_vectors;
-> > +	if (udata->inlen == offsetof(struct mana_ib_create_cq, cq_buf_size))
-> > +		is_rnic_cq = false;
-> 
-> I think it's okay with checking on offset in uapi message to decide if this is a newer/updated RNIC uverb.
-> 
-> But increasing MANA_IB_UVERBS_ABI_VERSION may make the code simpler. I have a feeling that you may need to increase it anyway, because a new uapi message "mana_ib_create_cq_resp" is introduced.
-> 
-> Jason or Leon may have a better idea on this.
+On Tue, 30 Apr 2024 at 12:44, Benjamin Tissoires <bentiss@kernel.org> wrote:
+>
+> Some copy/paste leftover, this is never used
+>
+> Fixes: e3d9eac99afd ("selftests/bpf: wq: add bpf_wq_init() checks")
+> Signed-off-by: Benjamin Tissoires <bentiss@kernel.org>
+>
+> ---
+>
+> no changes in v3
+>
+> no changes in v2
+> ---
 
-You should really try to avoid changing MANA_IB_UVERBS_ABI_VERSION as it
-usually means that backward compatibility will be broken after such change.
-
-Thanks
+Acked-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 
