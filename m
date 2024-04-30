@@ -1,162 +1,192 @@
-Return-Path: <linux-kernel+bounces-164689-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-164690-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 640488B8116
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 22:05:18 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 90DBF8B811B
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 22:06:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 040241F2570B
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 20:05:18 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 939EDB20F2B
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 20:06:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DEF7019DF7A;
-	Tue, 30 Apr 2024 20:04:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9530F199EBC;
+	Tue, 30 Apr 2024 20:06:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=hugovil.com header.i=@hugovil.com header.b="YRghvhWW"
-Received: from mail.hugovil.com (mail.hugovil.com [162.243.120.170])
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="HnOQoY1z"
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F1E217B514;
-	Tue, 30 Apr 2024 20:04:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=162.243.120.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C62D1182C3;
+	Tue, 30 Apr 2024 20:06:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714507488; cv=none; b=DnEZEpAkhbyT6fQUAy2xUm2Z+RwCTO2hilGaCP4T9XRNwNAJBKPUDip58Cf+vsWQHwqoTyMbSwDds53uuEBishqXqO3WcZti5z3Z1KiZFfHyHeGJ2TPQO782e+1+zlAu6yFkfpccfImhqIf7A2H6NIQo8T5vHmmlqAEhrvwwnUI=
+	t=1714507577; cv=none; b=GhXyZx79c/IaJkHMiw+pEOTrIT5MA6wnh4iaOnKpsulq+nCz0shV3Uz19KweMD+FX6bGsVu6R6KlP8/KFoVqm/YKvj/iFQXINWb0JUg9SqDnK/JbvbR5xidEBfwRZ0vd763ctgiCvV4FMnxn5f1OuoQhBGTsWZQ9anvNF8RFtvA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714507488; c=relaxed/simple;
-	bh=CRudngwwFqEb5JkD9tyr3v9H3uVKI58dqmSAZwNlhLA=;
-	h=From:To:Cc:Date:Message-Id:MIME-Version:Subject; b=rVb/UVeps+LibZe49Obevjuw0D9Qpfz+9RgTtk1YyFDaycWvTW2pP6cIFrG9rkWsM2JiqJldaKPl6REe60dX4DGZygEn1elYgV7AXsNtSb5vAGs4MhHVEgRsKE2rLS4Vxu5sPt8Kj3gH9COGOXPjs8QKojy2cDyRbAfq1R+gwfY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=hugovil.com; spf=pass smtp.mailfrom=hugovil.com; dkim=pass (1024-bit key) header.d=hugovil.com header.i=@hugovil.com header.b=YRghvhWW; arc=none smtp.client-ip=162.243.120.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=hugovil.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hugovil.com
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hugovil.com
-	; s=x; h=Subject:Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Cc:To
-	:From:subject:date:message-id:reply-to;
-	bh=EpMG0aEBxpsvqvhiJSjNm3u60yLj5lLNLQykLwZWCdM=; b=YRghvhWWNz/Z8+sY5K2sqgOodF
-	OItBrAWOjBTOExlNIlmi/nDITvP8Eq8Q1DzAmbtvjXOo9PTBLEMaPlYWhKeU386vGXaCCFk9tFXvB
-	JXwNWR2g+TpxEpV0uheYUXPRkvqvPQtAHKI7VUqGln+5V5ClMbchYykqrcSR8WwXE3RM=;
-Received: from modemcable168.174-80-70.mc.videotron.ca ([70.80.174.168]:57260 helo=pettiford.lan)
-	by mail.hugovil.com with esmtpa (Exim 4.92)
-	(envelope-from <hugo@hugovil.com>)
-	id 1s1tiN-0007JJ-AS; Tue, 30 Apr 2024 16:04:35 -0400
-From: Hugo Villeneuve <hugo@hugovil.com>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Jiri Slaby <jirislaby@kernel.org>,
-	Jon Ringle <jringle@gridpoint.com>
-Cc: hugo@hugovil.com,
-	Hugo Villeneuve <hvilleneuve@dimonoff.com>,
-	stable@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-serial@vger.kernel.org
-Date: Tue, 30 Apr 2024 16:04:30 -0400
-Message-Id: <20240430200431.4102923-1-hugo@hugovil.com>
-X-Mailer: git-send-email 2.39.2
+	s=arc-20240116; t=1714507577; c=relaxed/simple;
+	bh=A7BOdkySCQP3tK0NnU1uM7efqP1VZlr0/XFqOeijUMQ=;
+	h=Subject:From:To:Cc:Date:Message-ID:Content-Type:MIME-Version; b=d2M20DY9crAq9kiJGby46aGGJIySExe1AppwR+f8lusuBY09a6fb/MkzfPway5TQ4SQ86ZNU/QdtgatnOZw+pttAj+mtB3j02bAhXQW+ZJBH882UflQ0vL36t/ZAcw1rye2BlnsJqv00sIMw7OfdmJbFr+DxH6+2j7WxrAmN9Rw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=HnOQoY1z; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0360083.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 43UJlvUD010165;
+	Tue, 30 Apr 2024 20:05:47 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : from : to : cc
+ : date : message-id : content-type : content-transfer-encoding :
+ mime-version; s=pp1; bh=sDilXrIvkPQzU9RlqIFce8fCDaquSVcfFfsmkfJyoDk=;
+ b=HnOQoY1zOI35oFO83Ye0H2bHcVF4hmkPuAPsmMPwBMxq3yGCXkk9zGtKDvUfzvjpmyH5
+ yvzF1mDNW1xWy/uezQbp7cabV4fHREL9DwRaKrQP+2VJ4k8Y+akJhR7EmfPGF4qmfEg9
+ URZ5KNeHd7LW+RbIaEsJNbFsdZ34rSybfTIMRLrdK2ypDK9cISFNqDR0gDkfpIrGGOLG
+ fJMdBw1rsN/9Mwn+ROxiNov/PNni3Em2jLj5/7bhy27kPU0wau1RNve7M9TGF7waePMU
+ bnF2Ske6ieyevafmXIXKXHoeVXkw6JqWi0oLaUk60X2aTJayNu6WQW9UhNBxijVctk5J hA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xu73s01tx-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 30 Apr 2024 20:05:47 +0000
+Received: from m0360083.ppops.net (m0360083.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 43UK5kgx009010;
+	Tue, 30 Apr 2024 20:05:46 GMT
+Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xu73s01ts-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 30 Apr 2024 20:05:46 +0000
+Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 43UH49DS003184;
+	Tue, 30 Apr 2024 20:05:45 GMT
+Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
+	by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3xscppexxc-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 30 Apr 2024 20:05:45 +0000
+Received: from smtpav06.fra02v.mail.ibm.com (smtpav06.fra02v.mail.ibm.com [10.20.54.105])
+	by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 43UK5dBH15204848
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Tue, 30 Apr 2024 20:05:41 GMT
+Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 4969220049;
+	Tue, 30 Apr 2024 20:05:39 +0000 (GMT)
+Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id E5C2B2004B;
+	Tue, 30 Apr 2024 20:05:35 +0000 (GMT)
+Received: from ltcd48-lp2.aus.stglabs.ibm.com (unknown [9.3.101.175])
+	by smtpav06.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Tue, 30 Apr 2024 20:05:35 +0000 (GMT)
+Subject: [RFC PATCH v2 0/6] powerpc: pSeries: vfio: iommu: Re-enable support
+ for SPAPR TCE VFIO
+From: Shivaprasad G Bhat <sbhat@linux.ibm.com>
+To: mpe@ellerman.id.au, tpearson@raptorengineering.com,
+        alex.williamson@redhat.com, linuxppc-dev@lists.ozlabs.org, aik@amd.com
+Cc: npiggin@gmail.com, christophe.leroy@csgroup.eu, aneesh.kumar@kernel.org,
+        naveen.n.rao@linux.ibm.com, gbatra@linux.vnet.ibm.com,
+        brking@linux.vnet.ibm.com, sbhat@linux.ibm.com, aik@ozlabs.ru,
+        jgg@ziepe.ca, ruscur@russell.cc, robh@kernel.org,
+        linux-kernel@vger.kernel.org, joel@jms.id.au, kvm@vger.kernel.org,
+        msuchanek@suse.de, oohall@gmail.com, mahesh@linux.ibm.com,
+        jroedel@suse.de, vaibhav@linux.ibm.com, svaidy@linux.ibm.com
+Date: Tue, 30 Apr 2024 15:05:34 -0500
+Message-ID: <171450753489.10851.3056035705169121613.stgit@linux.ibm.com>
+User-Agent: StGit/1.5
+Content-Type: text/plain; charset="utf-8"
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: 1hEs32qjXcLh_6kuIbHPlDBZhmxdfyiC
+X-Proofpoint-GUID: 0ZlVqQRxDY2uE26kp8FRvMBnhxpWxmLj
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 70.80.174.168
-X-SA-Exim-Mail-From: hugo@hugovil.com
-X-Spam-Level: 
-X-Spam-Report: 
-	* -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-Subject: [PATCH v2] serial: sc16is7xx: fix bug in sc16is7xx_set_baud() when using prescaler
-X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
-X-SA-Exim-Scanned: Yes (on mail.hugovil.com)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
+ definitions=2024-04-30_12,2024-04-30_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ adultscore=0 mlxscore=0 malwarescore=0 suspectscore=0 bulkscore=0
+ lowpriorityscore=0 impostorscore=0 phishscore=0 spamscore=0 clxscore=1011
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2404010000 definitions=main-2404300143
 
-From: Hugo Villeneuve <hvilleneuve@dimonoff.com>
+RFC v1 was posted here [1]. As I was testing more and fixing the
+issues, I realized its clean to have the table_group_ops implemented
+the way it is done on PowerNV and stop 'borrowing' the DMA windows
+for pSeries.
 
-When using a high speed clock with a low baud rate, the 4x prescaler is
-automatically selected if required. In that case, sc16is7xx_set_baud()
-properly configures the chip registers, but returns an incorrect baud
-rate by not taking into account the prescaler value. This incorrect baud
-rate is then fed to uart_update_timeout().
+This patch-set implements the iommu table_group_ops for pSeries for
+VFIO SPAPR TCE sub-driver thereby enabling the VFIO support on POWER
+pSeries machines.
 
-For example, with an input clock of 80MHz, and a selected baud rate of 50,
-sc16is7xx_set_baud() will return 200 instead of 50.
+So, this patchset is a re-write and not close to the V1 except
+for few changes.
 
-Fix this by first changing the prescaler variable to hold the selected
-prescaler value instead of the MCR bitfield. Then properly take into
-account the selected prescaler value in the return value computation.
+Structure of the patchset:
+-------------------------
+The first and fifth patches just code movements.
 
-Also add better documentation about the divisor value computation.
+Second patch takes care of collecting the TCE and DDW information
+for the vfio_iommu_spapr_tce_ddw_info during probe.
 
-Fixes: dfeae619d781 ("serial: sc16is7xx")
-Cc: stable@vger.kernel.org
-Signed-off-by: Hugo Villeneuve <hvilleneuve@dimonoff.com>
+Third patch fixes the convention of using table[1] for VFs on
+pSeries when used by the host driver.
+
+Fourth patch fixes the VFIO to call TCE clear before unset window.
+
+The last patch has the API implementations, please find the
+details on its commit description.
+
+Testing:
+-------
+Tested with nested guest for NVME card, Mellanox multi-function
+card by attaching them to nested kvm guest running on a pSeries
+lpar.
+Also vfio-test [2] by Alex Willamson, was forked and updated to
+add support for pSeries guest and used to test these patches[3].
+
+Limitations/Known Issues:
+------------------------
+* The DMA window restrictions with SRIOV VF scenarios of having
+maximum 1 dma window is taken care in the current patches itself.
+However, the necessary changes required in
+vfio_iommu_spapr_tce_ddw_info to expose the default window being
+a 64-bit one and the qemu changes handle the same will be taken
+care in next versions.
+* KVM guest boot throws warning at remap_pfn_range_notrack(), on
+the host, I will post the fix along in the next versions.
+* The DLPAR hotplugged device has no FDT entry until next reboot,
+default dma window property has to be preserved differently for
+this case.
+
+References:
+----------
+[1] https://lore.kernel.org/linuxppc-dev/171026724548.8367.8321359354119254395.stgit@linux.ibm.com/
+[2] https://github.com/awilliam/tests
+[3] https://github.com/nnmwebmin/vfio-ppc-tests/tree/vfio-ppc-ex
 
 ---
+Changelog:
+v1: https://lore.kernel.org/linuxppc-dev/171026724548.8367.8321359354119254395.stgit@linux.ibm.com/
+ - Rewrite as to stop borrowing the DMA windows and implemented
+ the table_group_ops for pSeries.
+ - Cover letter and Patch 6 has more details as this was a rewrite.
 
-Changes for V2:
-- Change prescaler type to "unsigned int" (Jiri S.)
+Shivaprasad G Bhat (6):
+      powerpc/iommu: Move pSeries specific functions to pseries/iommu.c
+      powerpc/pseries/iommu: Fix the VFIO_IOMMU_SPAPR_TCE_GET_INFO ioctl output
+      powerpc/pseries/iommu: Use the iommu table[0] for IOV VF's DDW
+      vfio/spapr: Always clear TCEs before unsetting the window
+      powerpc/iommu: Move dev_has_iommu_table() to iommu.c
+      powerpc/iommu: Implement the iommu_table_group_ops for pSeries
 
----
- drivers/tty/serial/sc16is7xx.c | 23 ++++++++++++++++++-----
- 1 file changed, 18 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/tty/serial/sc16is7xx.c b/drivers/tty/serial/sc16is7xx.c
-index 03cf30e20b75..bf0065d1c8e9 100644
---- a/drivers/tty/serial/sc16is7xx.c
-+++ b/drivers/tty/serial/sc16is7xx.c
-@@ -555,16 +555,28 @@ static bool sc16is7xx_regmap_noinc(struct device *dev, unsigned int reg)
- 	return reg == SC16IS7XX_RHR_REG;
- }
- 
-+/*
-+ * Configure programmable baud rate generator (divisor) according to the
-+ * desired baud rate.
-+ *
-+ * From the datasheet, the divisor is computed according to:
-+ *
-+ *              XTAL1 input frequency
-+ *             -----------------------
-+ *                    prescaler
-+ * divisor = ---------------------------
-+ *            baud-rate x sampling-rate
-+ */
- static int sc16is7xx_set_baud(struct uart_port *port, int baud)
- {
- 	struct sc16is7xx_one *one = to_sc16is7xx_one(port, port);
- 	u8 lcr;
--	u8 prescaler = 0;
-+	unsigned int prescaler = 1;
- 	unsigned long clk = port->uartclk, div = clk / 16 / baud;
- 
- 	if (div >= BIT(16)) {
--		prescaler = SC16IS7XX_MCR_CLKSEL_BIT;
--		div /= 4;
-+		prescaler = 4;
-+		div /= prescaler;
- 	}
- 
- 	/* Enable enhanced features */
-@@ -574,9 +586,10 @@ static int sc16is7xx_set_baud(struct uart_port *port, int baud)
- 			      SC16IS7XX_EFR_ENABLE_BIT);
- 	sc16is7xx_efr_unlock(port);
- 
-+	/* If bit MCR_CLKSEL is set, the divide by 4 prescaler is activated. */
- 	sc16is7xx_port_update(port, SC16IS7XX_MCR_REG,
- 			      SC16IS7XX_MCR_CLKSEL_BIT,
--			      prescaler);
-+			      prescaler == 1 ? 0 : SC16IS7XX_MCR_CLKSEL_BIT);
- 
- 	/* Backup LCR and access special register set (DLL/DLH) */
- 	lcr = sc16is7xx_port_read(port, SC16IS7XX_LCR_REG);
-@@ -592,7 +605,7 @@ static int sc16is7xx_set_baud(struct uart_port *port, int baud)
- 	/* Restore LCR and access to general register set */
- 	sc16is7xx_port_write(port, SC16IS7XX_LCR_REG, lcr);
- 
--	return DIV_ROUND_CLOSEST(clk / 16, div);
-+	return DIV_ROUND_CLOSEST((clk / prescaler) / 16, div);
- }
- 
- static void sc16is7xx_handle_rx(struct uart_port *port, unsigned int rxlen,
+ arch/powerpc/include/asm/iommu.h          |   9 +-
+ arch/powerpc/kernel/eeh.c                 |  16 -
+ arch/powerpc/kernel/iommu.c               | 170 +----
+ arch/powerpc/platforms/powernv/pci-ioda.c |   6 +-
+ arch/powerpc/platforms/pseries/iommu.c    | 720 +++++++++++++++++++++-
+ drivers/vfio/vfio_iommu_spapr_tce.c       |  13 +-
+ 6 files changed, 729 insertions(+), 205 deletions(-)
 
-base-commit: 660a708098569a66a47d0abdad998e29e1259de6
--- 
-2.39.2
+--
+Signature
 
 
