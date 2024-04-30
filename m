@@ -1,138 +1,87 @@
-Return-Path: <linux-kernel+bounces-163179-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-163180-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id F36D28B66D3
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 02:18:02 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B21D98B66D6
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 02:21:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 932741F21E48
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 00:18:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1A2182811FB
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 00:21:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9AC0D64D;
-	Tue, 30 Apr 2024 00:17:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="GYBFM52m"
-Received: from mail-il1-f174.google.com (mail-il1-f174.google.com [209.85.166.174])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D9DC063D;
+	Tue, 30 Apr 2024 00:21:05 +0000 (UTC)
+Received: from mail-io1-f70.google.com (mail-io1-f70.google.com [209.85.166.70])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1278F161
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 00:17:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D98D161
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 00:21:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.70
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714436274; cv=none; b=Lij2sqn++HjzFQRPDHUs+4SKPnF7Md/ms1/YR17LS0Wspzxz/Mwlb2EBVMBISPY5BcudYoAO/TeZGpdTrOiwwzjf72MBVqihyYF78g3ma/wWwCYrOju/1Bj0hlZotap5Xl5Bf2TH9bQLGTrDtawc2aJ0LWJRfbADs8mpr9xc9bg=
+	t=1714436465; cv=none; b=pbx8WsAXdCFNDQsLaQw0feOe6Io0KlLWmM93I5QEvfW/gpz3VFClUy/4L7j6Cxk/5g4JxpmKRa4crO9IltaO5N2luK7WL8DZPPq8w6h+i94vTVFI+par9tuJZvspvl2XTDdSp1xiyG3OZOOvGXRusZAU9gxW3+Ned1gIW82IIx0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714436274; c=relaxed/simple;
-	bh=zcQMVubjuiX7aI5h+1mB/JKiS+LzDcsoiUn13gUVidY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Q1Ga2T5YXV8qKFSn8IqEsW39TfDboFsf+yrDZ85/oIWQ96daznXyq5+DvS7gs1olblDuOiFIteJyOu/VSVqs3rRwBAft8F1yCrSjsCPwVQpyIhdLcTOkCAZDcBjeTWRlhIolJtyE8VKeOdtCTMMAFvQQDfjQQuaanzIfnSkQ+OQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=GYBFM52m; arc=none smtp.client-ip=209.85.166.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-il1-f174.google.com with SMTP id e9e14a558f8ab-36c14e5d54cso20024755ab.1
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 17:17:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1714436272; x=1715041072; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Wwskn8wHob0aiuWt7oahW5gvmqR22bCIIQzL1vy/1Vk=;
-        b=GYBFM52mYo4rUUhrbqS72PIED0GdN96iqGCW5qV0jQnzygTu0HoHRU7Oe+vwvshR4m
-         EKO5HRvAqB/i6lMdQCoE0ygVYOCW+MXgiL7KA/SwPiOKYPPbqLq+8HTjPS6hzwJ87p9l
-         j+YmjA6DG3T3OeF2UN1nVhqUzAsiQgyHUCnO1V9zdxjP2BQr9RV9Lf95E/U5y4FAbRZz
-         C6kNpv38xs+FDteyqvJger+FB12Txei3DDkRU3ZT1Rf4I/kYlZNBNS1ay7UP6fjqfRn5
-         48fpt9p2nK1Nnky35V5FkahTvfsqYsx04hEfpks5R9q5LRvJDcT9FC7JCr1zKQ+S87cJ
-         SwCg==
+	s=arc-20240116; t=1714436465; c=relaxed/simple;
+	bh=hkFCJrzVk+OYhAHIi6ndtN8RtrkgxEbcgdhbaM78VfE=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=dq7Cf0Zb/HjHXgPuToM+A2nEYZjHdOZoy9yWO+iuGcC0so+IQA2UJvnQ723AJlV4kX6ABCfRXNkzukakcPpDv0tsLcS04Qw2MNQ/chIrkPZXifiYe3sf0nq5SdiUbB9BL0Awp5++uxmM8v+YpvQJW2OQxoN97Tyh4oquXKq+scQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.70
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f70.google.com with SMTP id ca18e2360f4ac-7dd8cd201d6so568872939f.0
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 17:21:03 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714436272; x=1715041072;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Wwskn8wHob0aiuWt7oahW5gvmqR22bCIIQzL1vy/1Vk=;
-        b=YPJ8P2vkF63YhF9B81Qm3nd7Ff0dPqFeCQfIZ1Gn+9RfwBBXlcFhpwkqf7OtfXmSfz
-         qWJSn/GpG4gApmqsgjYIZIFxZgokt7W8YZK+yw2AE4JC5sM0zfnOqnF014KCoK+LW1zS
-         anJQVMeRgTR7kyofzL6qPG1hHGHbnF5Zj1q9IRlNQKKYmEENKVXySlyzN7FdmpZYqoOI
-         UfzmEDtX2saVCjAwV5m1adnn7wOccrbH0eH8GXINOM1chzYy48V2oIJleiUE0sGiLAq0
-         PhDoPmMrpghL4W12qNQ5JlAMO4lhU2F0EFrBb+I8lMeiv2qnSqSN/KvXf0ENGUJK5bOj
-         Hijw==
-X-Gm-Message-State: AOJu0Yx9Lugunzc2oPVNPQzGfdt2O+dEgiXOCMAT0AKiAzx/Tn1HGmyo
-	DK39ESsIFEPhAYIFwRqalKX5NeCp21vRUVMkGSNh8vjOzhTcL43dG1w8UXfEL+yQDd8a/x4nX3V
-	meQ==
-X-Google-Smtp-Source: AGHT+IH9ZpHbIbR+PH37031tfohQuWl2RhYefdfEjAqVtOPnbjU6itGtSPkwvvkahLjNm79OM9oG9g==
-X-Received: by 2002:a05:6e02:1aa3:b0:36c:442f:9590 with SMTP id l3-20020a056e021aa300b0036c442f9590mr1155822ilv.13.1714436272103;
-        Mon, 29 Apr 2024 17:17:52 -0700 (PDT)
-Received: from google.com (195.121.66.34.bc.googleusercontent.com. [34.66.121.195])
-        by smtp.gmail.com with ESMTPSA id bv7-20020a056638448700b004874ea2e03csm2369644jab.124.2024.04.29.17.17.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Apr 2024 17:17:51 -0700 (PDT)
-Date: Tue, 30 Apr 2024 00:17:46 +0000
-From: Justin Stitt <justinstitt@google.com>
-To: Edward Liaw <edliaw@google.com>
-Cc: linux-kernel@vger.kernel.org, Shuah Khan <shuah@kernel.org>, 
-	Nathan Chancellor <nathan@kernel.org>, Nick Desaulniers <ndesaulniers@google.com>, 
-	Bill Wendling <morbo@google.com>, "H. Peter Anvin" <hpa@linux.intel.com>, 
-	Andy Lutomirski <luto@mit.edu>, linux-kselftest@vger.kernel.org, kernel-team@android.com, 
-	llvm@lists.linux.dev
-Subject: Re: [PATCH] selftests/vDSO: Fix assignment in condition without
- parentheses
-Message-ID: <mwrlqn2ddkepz6ayksk562uloq3ksejf3vu4i5xaoz2xnj6cl6@mwuquhhp3lwj>
-References: <20240429203441.143607-1-edliaw@google.com>
+        d=1e100.net; s=20230601; t=1714436463; x=1715041263;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=wb+9hSlrRGtQn5Ej1oDKacUkmAM//6I/dZ8+ohpavzo=;
+        b=pQRJzOqciPZK1fl9DI5DkiohHxx5v82jQ6f3EHR/WGYMMmrsxqXYP02VEs2Rge/fOm
+         f3xH//8mqyO/Ye0u5jDKimROYdjiaF5DZiLYynj36b6ck0v8DMU12x8Wo4pDw7t/ZcNs
+         aoE4dWAsS3XAeUoKl2eKBKXKrjnyQF4vBAgLd/mf2EXKHmYQXCAoB3HnE0SUeB1VKhES
+         uMH/Y6gKGYxpXvSCWrt+jE5gtoXbzakGsTv0mI8Y6QqqamcgFuDbGrScj+YC/bVyoB2L
+         HJQMauNNpPVqpGMdf29b94AYSdTAi66OWBDXHSdkJ/pyKJzPPtvBmytIQWtdXU3XYsdi
+         /TGw==
+X-Forwarded-Encrypted: i=1; AJvYcCU5cWy5cYY/9MUxTRO2T73KKIBX/W9EU39XSFRUJqtFrw4KE2ZCyz6uKeBDxO5hnwV/7agCFcbiPon9WdHdICR2f18hUJHv6mb8tVel
+X-Gm-Message-State: AOJu0YyajNLrX2aRk7myVmo+xgqsUJBLvkb/b1L3yktQ/6FGJG4PIq4V
+	yjnAqJQIiDFr23V3oDLk2F4ZVDNWognFOGN4GL1v8/VJvlw5bBvADkQX8UtK4s50jcEmFyRORL1
+	eR768On/LBDgAWLV8Kb0OYoUcKee8O/v/ddxDTBUZh88mU9G4PhEED80=
+X-Google-Smtp-Source: AGHT+IHv/oycYTpSOMO/jQqHqd5OaQue2bZh+UiUopeV4JpeMEqDGIsLpN+zxtraig+TL/8gC1mTuPqfi6AHvQRaAqPIUOZ+u3RK
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240429203441.143607-1-edliaw@google.com>
+X-Received: by 2002:a05:6e02:20ed:b0:36b:fbab:9f14 with SMTP id
+ q13-20020a056e0220ed00b0036bfbab9f14mr438460ilv.1.1714436463441; Mon, 29 Apr
+ 2024 17:21:03 -0700 (PDT)
+Date: Mon, 29 Apr 2024 17:21:03 -0700
+In-Reply-To: <20240429233540.4243-1-hdanton@sina.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000064c7a50617455865@google.com>
+Subject: Re: [syzbot] [sound?] INFO: rcu detected stall in snd_timer_user_release
+ (3)
+From: syzbot <syzbot+43120c2af6ca2938cc38@syzkaller.appspotmail.com>
+To: hdanton@sina.com, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com, tiwai@suse.com
+Content-Type: text/plain; charset="UTF-8"
 
-On Mon, Apr 29, 2024 at 08:34:36PM +0000, Edward Liaw wrote:
-> Fixes clang compiler warnings by adding parentheses:
-> 
-> parse_vdso.c:65:9: warning: using the result of an assignment as a condition without parentheses [-Wparentheses]
->                 if (g = h & 0xf0000000)
->                     ~~^~~~~~~~~~~~~~~~
-> parse_vdso.c:65:9: note: place parentheses around the assignment to silence this warning
->                 if (g = h & 0xf0000000)
->                       ^
->                     (                 )
-> parse_vdso.c:65:9: note: use '==' to turn this assignment into an equality comparison
->                 if (g = h & 0xf0000000)
->                       ^
->                       ==
-> 
-> Fixes: 98eedc3a9dbf ("Document the vDSO and add a reference parser")
-> Signed-off-by: Edward Liaw <edliaw@google.com>
+Hello,
 
-For readability's sake, I tend to prefer just taking the assignment out
-of the if statement:
+syzbot has tested the proposed patch and the reproducer did not trigger any issue:
 
-g = h & 0xf0000000;
-then testing it:
-if (g) ...
+Reported-and-tested-by: syzbot+43120c2af6ca2938cc38@syzkaller.appspotmail.com
 
-but as it stands it's fine and the warning goes away.
+Tested on:
 
-Reviewed-by: Justin Stitt <justinstitt@google.com>
-> ---
->  tools/testing/selftests/vDSO/parse_vdso.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/tools/testing/selftests/vDSO/parse_vdso.c b/tools/testing/selftests/vDSO/parse_vdso.c
-> index 413f75620a35..b9cf771006da 100644
-> --- a/tools/testing/selftests/vDSO/parse_vdso.c
-> +++ b/tools/testing/selftests/vDSO/parse_vdso.c
-> @@ -62,7 +62,7 @@ static unsigned long elf_hash(const unsigned char *name)
->  	while (*name)
->  	{
->  		h = (h << 4) + *name++;
-> -		if (g = h & 0xf0000000)
-> +		if ((g = h & 0xf0000000))
->  			h ^= g >> 24;
->  		h &= ~g;
->  	}
-> -- 
-> 2.44.0.769.g3c40516874-goog
-> 
+commit:         e88c4cfc Merge tag 'for-6.9-rc5-tag' of git://git.kern..
+git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+console output: https://syzkaller.appspot.com/x/log.txt?x=10a0ca40980000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=98d5a8e00ed1044a
+dashboard link: https://syzkaller.appspot.com/bug?extid=43120c2af6ca2938cc38
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=11eaa58b180000
+
+Note: testing is done by a robot and is best-effort only.
 
