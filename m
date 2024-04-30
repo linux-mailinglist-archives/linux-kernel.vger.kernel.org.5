@@ -1,224 +1,190 @@
-Return-Path: <linux-kernel+bounces-164523-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-164524-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 36ADE8B7EB7
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 19:36:49 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B67418B7EB8
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 19:37:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 54B621C22745
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 17:36:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BC1421C221D2
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 17:37:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8841B1802B8;
-	Tue, 30 Apr 2024 17:36:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 08CF11802CE;
+	Tue, 30 Apr 2024 17:37:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MAQNwedx"
-Received: from mail-yb1-f177.google.com (mail-yb1-f177.google.com [209.85.219.177])
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="ftHtMFai"
+Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 41399176FBE
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 17:36:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D7F7B1802B5
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 17:37:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714498602; cv=none; b=BFtwbJtlVnakHUkexsbkeZWje4SwUqe0gwPjHndJX3foVPNNpfG0dw14xmX/iywnC9YVempCdlVYW2SiXLLg/Pk06bbU+VisnOKogtROTB4OYUxZ1Z1P4vKkIReuI4sk1iEDufxEKrIA+T8CrOGVpDLPzQpihl16E4zvU8IZmnM=
+	t=1714498627; cv=none; b=U0IkUd3OZryiX+YelVcoQ8FOXHRhLSimL6wf7HPHnJzL1SpCu7bPsK7qEWDcUSAv5ZkB3ioMoBw8jtl1Vi0s9nZD7UhaFbiPCv91P/dRnTEOKZPfGEhVcQOPzJocgF/evOnZnlDkvGxKQku5E6uHefxaDydbJpbeOfGxOrOkWfw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714498602; c=relaxed/simple;
-	bh=xFtSPxUGw71BhdpCbB5jr4yrprGHJkBPo4PeEhElfSo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=pltEgvsgK95Gi9TRLDKn4bNkhgodsJF7HyTEQKW+pwb8x0jbUTBjeYJaRlOEkRULYRV3pCjQFZekNSQO4CdMwqX7fJDTBknYsI+x+txJAD1PbfNFv8zRzVoT+3kHns2wWg78TEkwX1TV9MNU8s+dtQ4EapN0cSjcTxGy31FfWTk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MAQNwedx; arc=none smtp.client-ip=209.85.219.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yb1-f177.google.com with SMTP id 3f1490d57ef6-de60380c04aso2379532276.2
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 10:36:40 -0700 (PDT)
+	s=arc-20240116; t=1714498627; c=relaxed/simple;
+	bh=HwleHbMmvyClSw2hkCjqzzitfJIFUgKSvCPPJPbOXUI=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=JyDJ1GjaPhYo+wZf8EuhuZR+80mLy+G3BkPP/LJOLPTvhYtX4+lSmdUHivVtmUDsrWWMciASXa3JOWSNG9Q0+r5YzvQt54l/RgS4tIRGhuYA8Cl4+QEF0t5pNUjq/qNYfaaUIxaZBncCQM/eZsARaW4svSWS4rPO4/zWQpR+FWU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=ftHtMFai; arc=none smtp.client-ip=209.85.214.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-1eab16dcfd8so51869985ad.0
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 10:37:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714498600; x=1715103400; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=oxBeIwOcZKLL8JOVHDchIL8pEo8i2juAaZDJd2xhcwQ=;
-        b=MAQNwedxoOiedgO7hqHWBkEHPMepLrktR2u9p7ksY1PxQb0iC5VdRniOf71VYDBjYn
-         mpdbao3otqPw+lKHFn9t/ht53btCslapKM2bLmPluTxIDPUfpyh3u1DKtGxhRcJJW/nl
-         4FtfGLpZ5zJvUG1tVx2/I0ecTAbtAP2jEtm0ZM6zfKOc8SSKri2KqtCjxtE4B3zLizJH
-         rvCGDlAndzfiaelC09rT3WhVbyMS2YaANPdKdS9xTeNg4pnoIzbb0Qa3qqmZIm2W3zLv
-         cBvqXs2oJnfLWgL5V3hcx5MJKuUWd/rvtQt3k8poOw4rasoAewpulIqT17zCMy2ULbQx
-         8EtA==
+        d=chromium.org; s=google; t=1714498624; x=1715103424; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=H7TCEkmJU5v9XbqMkMv7vhbRAU+5JxBsl8E5GjM9uj8=;
+        b=ftHtMFaipxj1hya2+OVkgdkd2QSO3ryMoAfBnkywgVaRrfaqGZL08O474COmBBxSWC
+         mbqrsACYOo7wb81W8kMSBXyqih1lnGo7UHAR+hJhXVyxTqTtf7E1v9xNUwlMG+XHeYY0
+         b7Udlsl8Wzmvg8yzMJs/DckhvgShi1agj9Iw4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714498600; x=1715103400;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=oxBeIwOcZKLL8JOVHDchIL8pEo8i2juAaZDJd2xhcwQ=;
-        b=O/6bUgRHnl+W02J15jn/GawRz4nmJBK5SOEux1OystpxiYRO1/vDo/4BnAEiU7kB0i
-         dtRydI4mbjFNotye2GFhXPl0Ic2VFyTIJTbxqu4HnGhvWT+2ly6h/2L6hWzohzK/nkb7
-         OlxsOdRVv7e7tsgj3RHjKbRSgTZDN/uU5jMF1NOEgVPlhguMuWVKFh4U83ekJsKGPCc0
-         9O91H1NbwaSBQOZgw1RIcrJstv8c0AUJAguH64307zt+pknQIPEC3lNcwCci79PegP1F
-         /ktfE5WUXMts6r9FA1hquh6feGfjDdhn/ciRKzaBSgeEkM+PqvgB3LmWp7/ggupfpUoe
-         guXg==
-X-Forwarded-Encrypted: i=1; AJvYcCXgoMWTbQR6oEs5vHnxn/D4t82IANK4zF/7E3ZK2tal6CIqsbP60Cq0aiZLmkaEwXBllnPoiVUMOGEy85Pa05Eb0gsvC0764WYcCds1
-X-Gm-Message-State: AOJu0YxclNp/iyAG1RXBwwH9LB2XlymQ5G0oA55ZaErwrT4R71y6sHK5
-	iUaT6fzkrmzsBA3i0O5T3yggkqcJfZsLlHSr3EFza37DVfEoLqvu
-X-Google-Smtp-Source: AGHT+IFdLlgVSHPImCdrSXAGylwVxQtS1e09FxMyULFCPryK+Fwz3ny2rn59lc2hJMWhZMY5Iw/Hlg==
-X-Received: by 2002:a25:7446:0:b0:de4:6c1f:8275 with SMTP id p67-20020a257446000000b00de46c1f8275mr327293ybc.29.1714498599970;
-        Tue, 30 Apr 2024 10:36:39 -0700 (PDT)
-Received: from localhost ([69.73.66.55])
-        by smtp.gmail.com with ESMTPSA id y9-20020a2586c9000000b00dc9c5991ecdsm6061092ybm.50.2024.04.30.10.36.39
+        d=1e100.net; s=20230601; t=1714498624; x=1715103424;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=H7TCEkmJU5v9XbqMkMv7vhbRAU+5JxBsl8E5GjM9uj8=;
+        b=Q/0ZT1MJR/08DPXCcMWIiZlyLmI1TJW+oMA8WJBFCSsezR6uCxBJcKNLoCzcntbp2j
+         rGhjl8orflPkcA5gB9BKoBgDdrmBv5ChWQsgQcGwVu4j81jUXvodycPibNXeiWhn7m2H
+         PxOwqSV9knJmd2TjNJee3Gty5IYGi1jP7fPYzHdXja3NJl0J9RZsVIig+CcbyvOIYhrB
+         zsFtxbnZIXv2gTkvfyUcN8du0A8W23R0dqtoPwhjmmUfBoigaRXgqskXRWwT0wbjHayD
+         kfYPmDzrwkrI+1FajdtEKmx9unnsZj7unrfXXourunzMhoEAxXzj2/pg3nEwol9hhs4L
+         pFrg==
+X-Forwarded-Encrypted: i=1; AJvYcCUVnwMevuquzkJ1vCwPXcxvzEIbtCggMgW+xzr9Yi2Te6Kxb+TCDmj19jmQEJ3f/hRQZ0YHd4Dmeg/41GWkfzZbu9gIX88nbyUbi5WS
+X-Gm-Message-State: AOJu0YwTljSdCyMNRUvX/R1Hos3mGpzs0bQWvgGxjZwdtydTIYDNiqBW
+	hsD+EBmDm/UQ4RqqNf78l7fIoBc5lCxRYdzOPvlhsTmzdhtNn5zwPHIf7q/41g==
+X-Google-Smtp-Source: AGHT+IEgJyBdK8IaFbZBEcXMW5JQxffHszntW2uwXu4E0cAx4+VHUvWNNAEX/51rVj/TOrVaFr9SYA==
+X-Received: by 2002:a17:902:eac4:b0:1ec:76a6:ea9 with SMTP id p4-20020a170902eac400b001ec76a60ea9mr98049pld.26.1714498624229;
+        Tue, 30 Apr 2024 10:37:04 -0700 (PDT)
+Received: from www.outflux.net ([198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id i12-20020a17090320cc00b001eab1258197sm10400741plb.144.2024.04.30.10.37.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Apr 2024 10:36:39 -0700 (PDT)
-Date: Tue, 30 Apr 2024 10:36:38 -0700
-From: Yury Norov <yury.norov@gmail.com>
-To: Kuan-Wei Chiu <visitorckw@gmail.com>
-Cc: akpm@linux-foundation.org, linux@rasmusvillemoes.dk,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/2] bitops: Optimize fns() for improved performance
-Message-ID: <ZjEsJu3L/pfDcl09@yury-ThinkPad>
-References: <20240430054912.124237-1-visitorckw@gmail.com>
- <20240430054912.124237-3-visitorckw@gmail.com>
+        Tue, 30 Apr 2024 10:37:03 -0700 (PDT)
+From: Kees Cook <keescook@chromium.org>
+To: Nathan Chancellor <nathan@kernel.org>
+Cc: Kees Cook <keescook@chromium.org>,
+	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>,
+	Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	"H. Peter Anvin" <hpa@zytor.com>,
+	Nick Desaulniers <ndesaulniers@google.com>,
+	Bill Wendling <morbo@google.com>,
+	Justin Stitt <justinstitt@google.com>,
+	linux-kernel@vger.kernel.org,
+	x86@kernel.org,
+	linux-hardening@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	llvm@lists.linux.dev
+Subject: [PATCH v2] hardening: Enable KCFI and some other options
+Date: Tue, 30 Apr 2024 10:37:00 -0700
+Message-Id: <20240430173657.it.699-kees@kernel.org>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240430054912.124237-3-visitorckw@gmail.com>
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2768; i=keescook@chromium.org;
+ h=from:subject:message-id; bh=HwleHbMmvyClSw2hkCjqzzitfJIFUgKSvCPPJPbOXUI=;
+ b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBmMSw8JAuEaLHzrMs+I0z2zE2/9ONfTrWuUhxfB
+ nUIns+oImyJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZjEsPAAKCRCJcvTf3G3A
+ JhTEEACOGEhRbFkij9Hg8wOi94RhI/kWW1frkUHlY6k9hvRUHCG4HdzS1hJHcBlfpZuXkJ8j3ub
+ qAINSRxOpsnxez1sFGK5iy91hNbeRGXyJ5znmwbewZssGCdDyRs99mhcp2+zJJgcOGltMW5q44d
+ C1e3GA22dEyNX7IKQneeJpm5SaZbKusp72+3dNQcpkQOc4stcvPbT+b28JZdM+gnuryWpkgwhuS
+ ozeSggCI0N6FD0P0HXnFp0tQKEDDINxCW0wIyg07WLruf+R5CRt5jLkZFPN46KcygR5668GeDzS
+ ToWYc44Tk88mmSaxTKzPN0afz12vfTuPkrf1+Z6QjOagPIWLEvWW0JtqXVjiw3Tc9qphdzOah/k
+ /SQY3iG3kgMJ7y8oh4dPMutI5Ustzk8Vj0rmka0bFaM78u+LC9Ha5grFnsvD17eh9mLFPtn8K75
+ YJi9wR7tyyCpnFjSUr/5231n8Y9Q9u+K2TalZMppSa1E2QaDg6giY4ZK3LKPsbDCfPkjyggWTR4
+ kHXXHnz9MGksi/hKRITQ/Aq3qpVYyKOBChuMppK9xOqjLZRs/gosEDqtYVjN3nsbGcxnKyOgE+L
+ wLHf2ApifK8pF64VYy9at8D0ixOjL8IoywKA39+LMBkzyfENJD+IN+4MRqcigX77oUDCIuuYgtI
+ ySSnPDH nd/DoKkA==
+X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
+Content-Transfer-Encoding: 8bit
 
-On Tue, Apr 30, 2024 at 01:49:12PM +0800, Kuan-Wei Chiu wrote:
-> The current fns() repeatedly uses __ffs() to find the index of the
-> least significant bit and then clears the corresponding bit using
-> __clear_bit(). The method for clearing the least significant bit can be
-> optimized by using word &= word - 1 instead.
-> 
-> Typically, the execution time of one __ffs() plus one __clear_bit() is
-> longer than that of a bitwise AND operation and a subtraction. To
-> improve performance, the loop for clearing the least significant bit
-> has been replaced with word &= word - 1, followed by a single __ffs()
-> operation to obtain the answer. This change reduces the number of
-> __ffs() iterations from n to just one, enhancing overall performance.
-> 
-> This change speeds up the find_nth_bit() in the find_bit benchmark by
-> approximately ~1.26 times:
+Add some stuff that got missed along the way:
 
-26% sounds better.
+- CONFIG_UNWIND_PATCH_PAC_INTO_SCS=y so SCS vs PAC is hardware
+  selectable.
 
-> Before:
-> find_nth_bit:                  4254313 ns,  16525 iterations
-> 
-> After:
-> find_nth_bit:                  3362863 ns,  16501 iterations
-> 
-> The following microbenchmark data, conducted on my x86-64 machine,
-> shows the execution time (in microseconds) required for 1000000 test
-> data generated by get_random_u64() and executed by fns() under
-> different values of n:
-> 
-> +-----+---------------+---------------+
-> |  n  |   time_old    |   time_new    |
-> +-----+---------------+---------------+
-> |  0  |     29194     |     25878     |
-> |  1  |     25510     |     25497     |
-> |  2  |     27836     |     25721     |
-> |  3  |     30140     |     25673     |
-> |  4  |     32569     |     25426     |
-> |  5  |     34792     |     25690     |
-> |  6  |     37117     |     25651     |
-> |  7  |     39742     |     25383     |
-> |  8  |     42360     |     25657     |
-> |  9  |     44672     |     25897     |
-> | 10  |     47237     |     25819     |
-> | 11  |     49884     |     26530     |
-> | 12  |     51864     |     26647     |
-> | 13  |     54265     |     28915     |
-> | 14  |     56440     |     28373     |
-> | 15  |     58839     |     28616     |
-> | 16  |     62383     |     29128     |
-> | 17  |     64257     |     30041     |
-> | 18  |     66805     |     29773     |
-> | 19  |     69368     |     33203     |
-> | 20  |     72942     |     33688     |
-> | 21  |     77006     |     34518     |
-> | 22  |     80926     |     34298     |
-> | 23  |     85723     |     35586     |
-> | 24  |     90324     |     36376     |
-> | 25  |     95992     |     37465     |
-> | 26  |    101101     |     37599     |
-> | 27  |    106520     |     37466     |
-> | 28  |    113287     |     38163     |
-> | 29  |    120552     |     38810     |
-> | 30  |    128040     |     39373     |
-> | 31  |    135624     |     40500     |
-> | 32  |    142580     |     40343     |
-> | 33  |    148915     |     40460     |
-> | 34  |    154005     |     41294     |
-> | 35  |    157996     |     41730     |
-> | 36  |    160806     |     41523     |
-> | 37  |    162975     |     42088     |
-> | 38  |    163426     |     41530     |
-> | 39  |    164872     |     41789     |
-> | 40  |    164477     |     42505     |
-> | 41  |    164758     |     41879     |
-> | 42  |    164182     |     41415     |
-> | 43  |    164842     |     42119     |
-> | 44  |    164881     |     42297     |
-> | 45  |    164870     |     42145     |
-> | 46  |    164673     |     42066     |
-> | 47  |    164616     |     42051     |
-> | 48  |    165055     |     41902     |
-> | 49  |    164847     |     41862     |
-> | 50  |    165171     |     41960     |
-> | 51  |    164851     |     42089     |
-> | 52  |    164763     |     41717     |
-> | 53  |    164635     |     42154     |
-> | 54  |    164757     |     41983     |
-> | 55  |    165095     |     41419     |
-> | 56  |    164641     |     42381     |
-> | 57  |    164601     |     41654     |
-> | 58  |    164864     |     41834     |
-> | 59  |    164594     |     41920     |
-> | 60  |    165207     |     42020     |
-> | 61  |    165056     |     41185     |
-> | 62  |    165160     |     41722     |
-> | 63  |    164923     |     41702     |
-> | 64  |    164777     |     41880     |
-> +-----+---------------+---------------+
+- CONFIG_X86_KERNEL_IBT=y while a default, just be sure.
 
-Please, just a total gross in the commit message.
+- CONFIG_CFI_CLANG=y globally. (And disable FINEIBT since
+  it isn't as secure as straight KCFI.)
+
+- CONFIG_PAGE_TABLE_CHECK=y for userspace mapping sanity.
+
+Reviewed-by: Nathan Chancellor <nathan@kernel.org>
+Signed-off-by: Kees Cook <keescook@chromium.org>
+---
+ v2: move CONFIG_CFI_CLANG=y to global config
+ v1: https://lore.kernel.org/all/20240426222940.work.884-kees@kernel.org/
+---
+ arch/arm64/configs/hardening.config | 1 +
+ arch/x86/configs/hardening.config   | 6 ++++++
+ kernel/configs/hardening.config     | 8 ++++++++
+ 3 files changed, 15 insertions(+)
+
+diff --git a/arch/arm64/configs/hardening.config b/arch/arm64/configs/hardening.config
+index b0e795208998..24179722927e 100644
+--- a/arch/arm64/configs/hardening.config
++++ b/arch/arm64/configs/hardening.config
+@@ -5,6 +5,7 @@ CONFIG_ARM64_SW_TTBR0_PAN=y
  
-> Signed-off-by: Kuan-Wei Chiu <visitorckw@gmail.com>
-> ---
-> 
-> Changes in v2:
-> - Change the loop in fns() by counting down from n to 0.
-> - Add find_bit benchmark result for find_nth_bit in commit message.
-> 
->  include/linux/bitops.h | 12 +++---------
->  1 file changed, 3 insertions(+), 9 deletions(-)
-> 
-> diff --git a/include/linux/bitops.h b/include/linux/bitops.h
-> index 2ba557e067fe..57ecef354f47 100644
-> --- a/include/linux/bitops.h
-> +++ b/include/linux/bitops.h
-> @@ -254,16 +254,10 @@ static inline unsigned long __ffs64(u64 word)
->   */
->  static inline unsigned long fns(unsigned long word, unsigned int n)
->  {
-> -	unsigned int bit;
-> +	while (word && n--)
-> +		word &= word - 1;
->  
-> -	while (word) {
-> -		bit = __ffs(word);
-> -		if (n-- == 0)
-> -			return bit;
-> -		__clear_bit(bit, &word);
-> -	}
-> -
-> -	return BITS_PER_LONG;
-> +	return word ? __ffs(word) : BITS_PER_LONG;
->  }
->  
->  /**
-> -- 
-> 2.34.1
+ # Software Shadow Stack or PAC
+ CONFIG_SHADOW_CALL_STACK=y
++CONFIG_UNWIND_PATCH_PAC_INTO_SCS=y
+ 
+ # Pointer authentication (ARMv8.3 and later). If hardware actually supports
+ # it, one can turn off CONFIG_STACKPROTECTOR_STRONG with this enabled.
+diff --git a/arch/x86/configs/hardening.config b/arch/x86/configs/hardening.config
+index 7b497f3b7bc3..bf3d31618e12 100644
+--- a/arch/x86/configs/hardening.config
++++ b/arch/x86/configs/hardening.config
+@@ -10,5 +10,11 @@ CONFIG_INTEL_IOMMU_DEFAULT_ON=y
+ CONFIG_INTEL_IOMMU_SVM=y
+ CONFIG_AMD_IOMMU=y
+ 
++# Enforce CET Indirect Branch Tracking in the kernel.
++CONFIG_X86_KERNEL_IBT=y
++
+ # Enable CET Shadow Stack for userspace.
+ CONFIG_X86_USER_SHADOW_STACK=y
++
++# When CONFIG_CFI_CLANG is enabled, disable weaker FINEIBT landing pads.
++# CONFIG_FINEIBT is not set
+diff --git a/kernel/configs/hardening.config b/kernel/configs/hardening.config
+index 7a5bbfc024b7..47e6564129c3 100644
+--- a/kernel/configs/hardening.config
++++ b/kernel/configs/hardening.config
+@@ -23,6 +23,10 @@ CONFIG_SLAB_FREELIST_HARDENED=y
+ CONFIG_SHUFFLE_PAGE_ALLOCATOR=y
+ CONFIG_RANDOM_KMALLOC_CACHES=y
+ 
++# Sanity check userspace page table mappings.
++CONFIG_PAGE_TABLE_CHECK=y
++CONFIG_PAGE_TABLE_CHECK_ENFORCED=y
++
+ # Randomize kernel stack offset on syscall entry.
+ CONFIG_RANDOMIZE_KSTACK_OFFSET_DEFAULT=y
+ 
+@@ -81,6 +85,10 @@ CONFIG_SECCOMP_FILTER=y
+ # Provides some protections against SYN flooding.
+ CONFIG_SYN_COOKIES=y
+ 
++# Enable Kernel Control Flow Integrity (currently Clang only).
++CONFIG_CFI_CLANG=y
++# CONFIG_CFI_PERMISSIVE is not set
++
+ # Attack surface reduction: do not autoload TTY line disciplines.
+ # CONFIG_LDISC_AUTOLOAD is not set
+ 
+-- 
+2.34.1
+
 
