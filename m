@@ -1,176 +1,240 @@
-Return-Path: <linux-kernel+bounces-164368-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-164372-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id EAB1E8B7CD1
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 18:28:13 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id EDA158B7CDC
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 18:29:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 73C6A1F22DE0
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 16:28:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1A2861C232E5
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 16:29:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C0D3A17A93B;
-	Tue, 30 Apr 2024 16:28:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gt8ykIfW"
-Received: from mail-yw1-f195.google.com (mail-yw1-f195.google.com [209.85.128.195])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 940AD177992;
-	Tue, 30 Apr 2024 16:27:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.195
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 440B2179658;
+	Tue, 30 Apr 2024 16:29:23 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 14271175554
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 16:29:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714494480; cv=none; b=HwvN+10NuOPCCu12XB4qWVv4avEqcdpqZZW9oNYgr8eh52xqTvU2bdbtkFGp5Jc1Dt3oT5DKWiBX1n7kDv8Fyxtki4QL00wky5iIsHZK4Jm8InTsMWHRwh/UTUUpoS80Al6KMhLRvyzpqKABIQpQQ+WK+YGhdCAZXDlfBri1gVE=
+	t=1714494562; cv=none; b=kHnbHxm5pqEydfzWeWkju1GAs7+984IwdpnPcBgU8KHgoh4+Bsp2d3COeaK8k/ptY/3R6ytWjzJRnnmhZ8lWA6VRuU1xPFvtxC1Wac3POAIhtO4vm9kgZQ6K5tbN8aTxxlZn3YwGiKm78a27QtY072SHqEQOx01TGZgBCDCwgxE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714494480; c=relaxed/simple;
-	bh=rJDlPb4ASLQZZzLVdH8uAuINKNXrJtAZBRgiHy9ePlI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=RMBzNNI7cmrO93NDPoKrCEUeaBlBmdGdC5QKoqwgE74O0skYtvbGuMoM/glUARAsLyGWu4UOFX1L3qkYPPIa00ire4joWPXQqzqS4i/zwy5uU4UG5UbItGyAqWQ2/xIQPuJOQdm+Rl51S63PV3jOIQ9/24JLdm3U/HK7HbdGXX0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gt8ykIfW; arc=none smtp.client-ip=209.85.128.195
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f195.google.com with SMTP id 00721157ae682-61bed5ce32fso8464247b3.2;
-        Tue, 30 Apr 2024 09:27:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714494477; x=1715099277; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=WyUpI+bsqZm6dktATA64nmoLL6nMTXAlQcvkjd29RmE=;
-        b=gt8ykIfWzfk8jHpBleZJyEwSkvIG9E7PP3XyFVdbC+HbcEU1gizzteJfhI89Rh437A
-         UyB9Z9Ym4PZUFOAamyqCxFcxRFKA1cALIzR7LOaCrzy2/roRf8X6/3/Ooro++zLIltSC
-         8LDpN8WcuEJO16iz/AN6zLAMzk6dXaO2IccYZag5toUDpcsq0tEeRH55FhnEu0mDOPad
-         S9HbjXh9YTd+gKSIHhTZFDxwXUiP7gJtpp8a0QEWG2ihhq5vbCOsJz4zavpmRRwVgaBP
-         swKegLeBEsbotg8v5MKlj39mveXph9mz0pLwLIhzWCl3EEh6g3mhnamfL/GGGhQU/qIh
-         GCmQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714494477; x=1715099277;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=WyUpI+bsqZm6dktATA64nmoLL6nMTXAlQcvkjd29RmE=;
-        b=j9yPnk3sZH/qS51IFmcMWQyBQhH/8WOGTS1xKQcMFtrqx9PvFvlb+N5NaiNsV8rnk/
-         91+vrNk06hTZ7XWVOHBt+045kTFHBBDe0k6YePVZ87qtvtH6OGpeEurHFPAuFQnXKn6K
-         Y1mvziMcp93mQ9FdPTIQyJ/I9SWohJW7aldUPGWudZ/leBYztGIBi0my9MycCcr7wkH4
-         DBY8BiuWagotcg0t6Xn9pgxc2jXid5hISrK2HkcYPP+8nN68gO8XEBbbThYLxLNCm3du
-         Gl2/ncKEtONSLjmHvotZieHGV0hLEwq04KVqqYSYwZ+QpLWROeP3j9BfxVYXlTR7YMkQ
-         OF/g==
-X-Forwarded-Encrypted: i=1; AJvYcCXd4+zswQMFvHwvmMyrS4TCj/AxZvQO8BNCe8CRg7q6OdrmROBznbBS8X1kQMpnTUe6MRQDTFBhS6rhOVFgSWJ3aFed5cUiPpaXud53zGOVZIoHOgQNf72/2FWcGgXyUosw4cuN
-X-Gm-Message-State: AOJu0YwdJb5qjZCE1MQHdyYeuoZP/3tulIJXSbI4ev9/m2hKCQrIVKYb
-	Z/GX29JRiF9vPQYy2xPciIa/cT9TCCXnS2jxbmOYSyG2oXChC6c3
-X-Google-Smtp-Source: AGHT+IGADJ9TPHQXgX8QG0yNVqQqugF1S2ZYflRqjNxJMWbb6ZPENPYsOth6IjtWdpdVyNs/gg2k4A==
-X-Received: by 2002:a05:690c:b9b:b0:61a:e50c:1940 with SMTP id ck27-20020a05690c0b9b00b0061ae50c1940mr87426ywb.7.1714494477383;
-        Tue, 30 Apr 2024 09:27:57 -0700 (PDT)
-Received: from [10.102.6.66] ([208.97.243.82])
-        by smtp.gmail.com with ESMTPSA id n129-20020a817287000000b0061bed877011sm235745ywc.68.2024.04.30.09.27.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 30 Apr 2024 09:27:56 -0700 (PDT)
-Message-ID: <f5ca9b38-3729-49a1-b221-fcc3aecba5d6@gmail.com>
-Date: Tue, 30 Apr 2024 12:27:56 -0400
+	s=arc-20240116; t=1714494562; c=relaxed/simple;
+	bh=saCJC4MD1Pr3RCul0Mf+n36UWUbhxdK+RgHta8snZMo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Q7d2q9Mv7FSDvK8T9Sbx1EgNVORu1JEPnpBCz59HvOgGGTSgNnNOqRLjt53KmnSgiSEzNMeJyS/+duEMcLjJvgzXsezL+BIl0OHTDhJSga8Bk/XHfXJAP2J6pkjQMGQyBaKNMVs96hQJHAUszxAouIYX+ai1/4eqbHtaeSYQ09s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 900D42F4;
+	Tue, 30 Apr 2024 09:29:46 -0700 (PDT)
+Received: from e133380.arm.com (e133380.arm.com [10.1.197.52])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 55F963F73F;
+	Tue, 30 Apr 2024 09:29:17 -0700 (PDT)
+Date: Tue, 30 Apr 2024 17:29:14 +0100
+From: Dave Martin <Dave.Martin@arm.com>
+To: Peter Newman <peternewman@google.com>
+Cc: x86@kernel.org, linux-kernel@vger.kernel.org,
+	James Morse <james.morse@arm.com>,
+	Fenghua Yu <fenghua.yu@intel.com>,
+	Reinette Chatre <reinette.chatre@intel.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+	H Peter Anvin <hpa@zytor.com>, Babu Moger <Babu.Moger@amd.com>,
+	shameerali.kolothum.thodi@huawei.com,
+	D Scott Phillips OS <scott@os.amperecomputing.com>,
+	carl@os.amperecomputing.com, lcherian@marvell.com,
+	bobo.shaobowang@huawei.com,
+	"Shaopeng Tan (Fujitsu)" <tan.shaopeng@fujitsu.com>,
+	baolin.wang@linux.alibaba.com, Jamie Iles <quic_jiles@quicinc.com>,
+	Xin Hao <xhao@linux.alibaba.com>, dfustini@baylibre.com,
+	amitsinght@marvell.com, David Hildenbrand <david@redhat.com>,
+	Rex Nie <rex.nie@jaguarmicro.com>
+Subject: Re: [PATCH v2 00/35] x86/resctrl: Move the resctrl filesystem code
+ to /fs/resctrl
+Message-ID: <ZjEcWvgJ6MG/36ji@e133380.arm.com>
+References: <20240426150537.8094-1-Dave.Martin@arm.com>
+ <CALPaoCg=Gt6X1wJ+HZLva+eWotDjjKdug9aAiK=gL39gH2FBTQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RFC net-next 07/10] net: dsa: mv88e6xxx: Track bridge mdb
- objects
-To: Vladimir Oltean <olteanv@gmail.com>
-Cc: Joseph Huang <Joseph.Huang@garmin.com>, netdev@vger.kernel.org,
- Andrew Lunn <andrew@lunn.ch>, Florian Fainelli <f.fainelli@gmail.com>,
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- Roopa Prabhu <roopa@nvidia.com>, Nikolay Aleksandrov <razor@blackwall.org>,
- =?UTF-8?Q?Linus_L=C3=BCssing?= <linus.luessing@c0d3.blue>,
- linux-kernel@vger.kernel.org, bridge@lists.linux.dev
-References: <20240402001137.2980589-1-Joseph.Huang@garmin.com>
- <20240402001137.2980589-8-Joseph.Huang@garmin.com>
- <20240402122343.a7o5narxsctrkaoo@skbuf>
- <b5f79571-b4a8-4f21-8dc8-e1aa11056a5d@gmail.com>
- <20240405110745.si4gc567jt5gwpbr@skbuf>
- <c4f5c444-832c-4376-845f-7c28e88e4436@gmail.com>
- <d36e2b82-0353-4c9c-aa89-22383c3bda2b@gmail.com>
- <20240430005949.44lcegwhmcetpddm@skbuf>
-Content-Language: en-US
-From: Joseph Huang <joseph.huang.2024@gmail.com>
-In-Reply-To: <20240430005949.44lcegwhmcetpddm@skbuf>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CALPaoCg=Gt6X1wJ+HZLva+eWotDjjKdug9aAiK=gL39gH2FBTQ@mail.gmail.com>
 
-On 4/29/2024 8:59 PM, Vladimir Oltean wrote:
-> On Mon, Apr 29, 2024 at 06:07:25PM -0400, Joseph Huang wrote:
->> Something like this (some layers omitted for brevity)?
->>
->>                                        +br_iterator
->>                                        |  for each mdb
->>                                        |    _br_switchdev_mdb_notify
->> rtnl_lock                             |      without F_DEFER flag
->>   |                                    |      |
->>   +switchdev_port_attr_set_deferred    |      +switchdev_port_obj_notify
->>     |                                  |        |
->>     +dsa_port_mrouter                  |        +dsa_user_port_obj_a/d
->>       |                                |          |
->>       +mv88e6xxx_port_mrouter----------+          +mv88e6xxx_port_obj_a/d
->>                                          |
->>   +--------------------------------------+
->>   |
->> rtnl_unlock
+Hi Peter,
+
+On Mon, Apr 29, 2024 at 04:34:34PM -0700, Peter Newman wrote:
+> Hi Dave (and James),
 > 
-> At a _very_ superficial glance, I don't think you are properly
-> accounting for the fact that even with rtnl_lock() held, there are still
-> SWITCHDEV_OBJ_ID_PORT_MDB events which may be pending on the switchdev
-> chain. Without a switchdev_deferred_process() flush call, you won't be
-> getting rid of them, so when you rtnl_unlock(), they will still run.
+> On Fri, Apr 26, 2024 at 8:05 AM Dave Martin <Dave.Martin@arm.com> wrote:
+> >
+> > Hi all,
+> >
+> > This is a respin of the resctrl refactoring series described below,
+> > addressing review feedback.  Many thanks to those to responded with
+> > feedback on the v1 series [2].
+> >
+> > See Notes and FYIs in the individual patches for details on the changes
+> > and outstanding issues.
+> >
+> >
+> > This series has not been rebased since the v1 posting, and remains
+> > based on the following upstream commit:
+> >
+> > commit 23956900041d968f9ad0f30db6dede4daccd7aa9
+> > Merge tag 'v6.9-rc-smb3-server-fixes' of git://git.samba.org/ksmbd
+> >
+> > The actual code changes against v1 are few in number and rather spread
+> > around.  For reviewer convenience, a diff against v1 is appended to
+> > this cover letter.
+> >
+> > Due to the limited code changes, this series has *not* received any
+> > additional runtime testing over than done for v1 (other than build
+> > bisect testing).
+> >
+> > Cheers
+> > ---Dave
+> >
+> >
+> > [2] v1 series:
+> > [PATCH v1 00/31] x86/resctrl: Move the resctrl filesystem code to /fs/resctrl
+> > https://lore.kernel.org/all/20240321165106.31602-1-james.morse@arm.com/
+> >
+> > --8<-- Original blurb
+> >
+> > This is the final series that allows other architectures to implement resctrl.
+> > The last patch just moves the code, and its a bit of a monster. I don't expect
+> > that to get merged as part of this series - we should wait for it to make
+> > less impact on other series. It's included here to show what gets moved, and
+> > that structures/function-prototypes have the right visibility.
+> >
+> > Otherwise this series renames functions and moves code around. With the
+> > exception of invalid configurations for the configurable-events, there should
+> > be no changes in behaviour caused by this series.
+> >
+> > The driving pattern is to make things like struct rdtgroup private to resctrl.
+> > Features like pseudo-lock aren't going to work on arm64, the ability to disable
+> > it at compile time is added.
+> >
+> > After this, I can start posting the MPAM driver to make use of resctrl on arm64.
+> > (What's MPAM? See the cover letter of the first series. [1])
+> >
+> > This series is based on Linus' commit 23956900041d and can be retrieved from:
+> > https://git.kernel.org/pub/scm/linux/kernel/git/morse/linux.git
+> > mpam/move_to_fs/v1
+> >
+> > Sorry for the mid-merge window base, I'm away for a few weeks - this should
+> > rebase trivially onto rc1.
+> >
+> > As ever - bugs welcome,
+> > Thanks,
+> >
+> > James
+> >
+> > [1] https://lore.kernel.org/lkml/20201030161120.227225-1-james.morse@arm.com/
+> >
+> > -->8--
+> >
+> >
+> > Dave Martin (4):
+> >   x86/resctrl: Squelch whitespace anomalies in resctrl core code
+> >   x86/resctrl: Prefer alloc(sizeof(*foo)) idiom in rdt_init_fs_context()
+> >   x86/resctrl: Relax some asm #includes
+> >   [SQUASHME] x86/resctrl: Move the resctrl filesystem code to
+> >     /fs/resctrl
+> >
+> > James Morse (31):
+> >   x86/resctrl: Fix allocation of cleanest CLOSID on platforms with no
+> >     monitors
+> >   x86/resctrl: Add a helper to avoid reaching into the arch code
+> >     resource list
+> >   x86/resctrl: Move ctrlval string parsing policy away from the arch
+> >     code
+> >   x86/resctrl: Add helper for setting CPU default properties
+> >   x86/resctrl: Remove rdtgroup from update_cpu_closid_rmid()
+> >   x86/resctrl: Export resctrl fs's init function
+> >   x86/resctrl: Wrap resctrl_arch_find_domain() around rdt_find_domain()
+> >   x86/resctrl: Move resctrl types to a separate header
+> >   x86/resctrl: Add a resctrl helper to reset all the resources
+> >   x86/resctrl: Move monitor init work to a resctrl init call
+> >   x86/resctrl: Move monitor exit work to a resctrl exit call
+> >   x86/resctrl: Move max_{name,data}_width into resctrl code
+> >   x86/resctrl: Stop using the for_each_*_rdt_resource() walkers
+> >   x86/resctrl: Export the is_mbm_*_enabled() helpers to asm/resctrl.h
+> >   x86/resctrl: Add resctrl_arch_is_evt_configurable() to abstract BMEC
+> >   x86/resctrl: Change mon_event_config_{read,write}() to be arch helpers
+> >   x86/resctrl: Move mbm_cfg_mask to struct rdt_resource
+> >   x86/resctrl: Allow resctrl_arch_mon_event_config_write() to return an
+> >     error
+> >   x86/resctrl: Add resctrl_arch_ prefix to pseudo lock functions
+> >   x86/resctrl: Allow an architecture to disable pseudo lock
+> >   x86/resctrl: Make prefetch_disable_bits belong to the arch code
+> >   x86/resctrl: Make resctrl_arch_pseudo_lock_fn() take a plr
+> >   x86/resctrl: Move thread_throttle_mode_init() to be managed by resctrl
+> >   x86/resctrl: Move get_config_index() to a header
+> >   x86/resctrl: Claim get_domain_from_cpu() for resctrl
+> >   x86/resctrl: Describe resctrl's bitmap size assumptions
+> >   x86/resctrl: Rename resctrl_sched_in() to begin with "resctrl_arch_"
+> >   x86/resctrl: Drop __init/__exit on assorted symbols
+> >   fs/resctrl: Add boiler plate for external resctrl code
+> >   x86/resctrl: Move the filesystem bits to headers visible to fs/resctrl
+> >   x86/resctrl: Move the resctrl filesystem code to /fs/resctrl
+> >
+> >  MAINTAINERS                               |    2 +
+> >  arch/Kconfig                              |    8 +
+> >  arch/x86/Kconfig                          |    5 +-
+> >  arch/x86/include/asm/resctrl.h            |   45 +-
+> >  arch/x86/kernel/cpu/resctrl/Makefile      |    5 +-
+> >  arch/x86/kernel/cpu/resctrl/core.c        |  119 +-
+> >  arch/x86/kernel/cpu/resctrl/ctrlmondata.c |  506 +--
+> >  arch/x86/kernel/cpu/resctrl/internal.h    |  436 +--
+> >  arch/x86/kernel/cpu/resctrl/monitor.c     |  813 +---
+> >  arch/x86/kernel/cpu/resctrl/pseudo_lock.c | 1130 +-----
+> >  arch/x86/kernel/cpu/resctrl/rdtgroup.c    | 4205 +--------------------
+> >  arch/x86/kernel/process_32.c              |    2 +-
+> >  arch/x86/kernel/process_64.c              |    2 +-
+> >  fs/Kconfig                                |    1 +
+> >  fs/Makefile                               |    1 +
+> >  fs/resctrl/Kconfig                        |   36 +
+> >  fs/resctrl/Makefile                       |    3 +
+> >  fs/resctrl/ctrlmondata.c                  |  527 +++
+> >  fs/resctrl/internal.h                     |  338 ++
+> >  fs/resctrl/monitor.c                      |  843 +++++
+> >  fs/resctrl/pseudo_lock.c                  | 1122 ++++++
+> >  fs/resctrl/rdtgroup.c                     | 4013 ++++++++++++++++++++
+> >  include/linux/resctrl.h                   |  157 +-
+> >  include/linux/resctrl_types.h             |   98 +
+> >  24 files changed, 7402 insertions(+), 7015 deletions(-)
+> >  create mode 100644 fs/resctrl/Kconfig
+> >  create mode 100644 fs/resctrl/Makefile
+> >  create mode 100644 fs/resctrl/ctrlmondata.c
+> >  create mode 100644 fs/resctrl/internal.h
+> >  create mode 100644 fs/resctrl/monitor.c
+> >  create mode 100644 fs/resctrl/pseudo_lock.c
+> >  create mode 100644 fs/resctrl/rdtgroup.c
+> >  create mode 100644 include/linux/resctrl_types.h
 > 
-> Even worse, holding rtnl_lock() will not stop the bridge multicast layer
-> from modifying its br->mdb_list; only br->multicast_lock will.
+> I was able to build a kernel with the changes and ran through our
+> internal suite of functional tests on the following implementations:
 > 
-> So you may be better off also acquiring br->multicast_lock, and
-> notifying the MDB entries to the switchdev chain _with_the F_DEFER flag.
-
-Like this?
-
-                                       +br_iterator(dsa_cb)
-                                       |  lock br->multicask_lock
-                                       |  for each mdb
-                                       |    br_switchdev_mdb_notify
-rtnl_lock                             |      |
-  |                                    |      +switchdev_port_obj_._defer
-  +switchdev_port_attr_set_deferred    |  unlock br->multicast_lock
-    |                                  |
-    +dsa_port_mrouter                  |
-      |                                |
-      +mv88e6xxx_port_mrouter----------+
-                                         |
-  +--------------------------------------+
-  |
-rtnl_unlock
-
-(potential task change)
-
-rtnl_lock
-  |
-  +switchdev_deferred_process
-  | flush all queued dfitems in queuing order
-  |
-rtnl_unlock
-
-I'm not that familiar with the bridge code, but is there any concern 
-with potential deadlock here (bewteen rtnl_lock and br->multicast_lock)?
-
+> - AMD EPYC 7B12 64-Core Processor
+> - Intel(R) Xeon(R) Platinum 8581C
 > 
->> Note that on the system I tested, each register read/write takes about 100us
->> to complete. For 100's of mdb groups, this would mean that we will be
->> holding rtnl lock for 10's of ms. I don't know if it's considered too long.
+> and the results looked good.
 > 
-> Not sure how this is going to be any better if the iteration over MDB
-> entries is done 100% in the driver, though - since its hook,
-> dsa_port_mrouter(), runs entirely under rtnl_lock(). >
-> Anyway, with the SWITCHDEV_F_DEFER flag, maybe the mdb object
-> notifications can be made to run by switchdev only a few at a time, to
-> give the network stack time to do other things as well.
+> Tested-by: Peter Newman <peternewman@google.com>
+> 
+> Thanks!
+> 
 
+Great, thanks for the testing!
 
+Cheers
+---Dave
 
