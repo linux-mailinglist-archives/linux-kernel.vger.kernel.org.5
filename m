@@ -1,193 +1,139 @@
-Return-Path: <linux-kernel+bounces-164695-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-164694-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E357C8B8129
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 22:07:55 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A21BD8B8128
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 22:07:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0F2FE1C25A8E
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 20:07:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D0B931C2599D
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 20:07:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 896AA1A38F4;
-	Tue, 30 Apr 2024 20:07:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF7181A0B0E;
+	Tue, 30 Apr 2024 20:07:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="RdxBPSWT"
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="jAq66FZ4"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2EE6B199EA1;
-	Tue, 30 Apr 2024 20:07:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9642C199EA1
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 20:06:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714507631; cv=none; b=VO2FVNWIabLAkRNXvHy7rqsHN4tyLobIGl3Elqh30zzMglp5MZ6aA4z8WOEVfREM91rkym+eVILiv2HYqN3zjRhEp9A4VWZvgFJCjAfEe3l6SD+uLCFOnX5twdeeSY7A3Nsh+5wMks/t59KNOc1Ceqzu7Su9uTNIUlCvmgosiCQ=
+	t=1714507621; cv=none; b=KrhI1obGZqcpiRK0aRtVW52HnmLzq7+GK3dYhw3fcYkruEr1RZ52PLPt5kk6dqa8A5Tdo5k3c4mLoHS/xH12VNiv9nUD2Ayh2z59xSJ/ElQKUaWEhE5g+khL8iqcv9QZsTPqZWXTR7i+LcmlKE2FMWD8U4c7fTO0fL0h43kUE4U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714507631; c=relaxed/simple;
-	bh=xGULEwv/blIbYux+OCcl4aI00VXn/8RrY5tJ2plnBeY=;
-	h=Subject:From:To:Cc:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=VDpzHjvZnvMhlkSJjmeUoNvpSJ8U6d+ISsGCWo1ERbXDK1Y+utNaFRcmFrMxGBvJkhZPICaO6A1b7r00OAP9iTEW477pDaq4pUHGQuRhtZVg1EBQu1AEbkycnYFogH/4Hi5O21kgInsqj8/eeIciRrWI5/EawjV4VnqlUSvzGKw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=RdxBPSWT; arc=none smtp.client-ip=148.163.156.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 43UK2XpQ007507;
-	Tue, 30 Apr 2024 20:06:54 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : from : to : cc
- : date : message-id : in-reply-to : references : mime-version :
- content-type : content-transfer-encoding; s=pp1;
- bh=Taq1ZO/iSE0JjUDIEg6XKqVv4GvsjOtU0Oo8ZhnxC8Y=;
- b=RdxBPSWTTWu0GzyDCl1fAP0C6i1ycL46W9XXxnUPO4/HyDc+/XsNvflMaXGHRZSpILQl
- sp6GY1TluOTKK7QaEKAeHTgSpUW+W61VaFO/f37e0d81y1D5YuZtAWBqmLK6eb122lWo
- djgwAXuMhHgOO/WrP4tUy+RqbyyQDu8Q7xYX94jlyzSOqE3zQCkpRB+pp8jT0d73joiw
- iiXQc5yCB47QQibygAQKt3Dt6mpSqKkZo7gIOPWXBFRGvPdYjk2N6ryyivC/pNmvOl8p
- Cp2PES4/bHNU04ZkQ2cQI9HflumzVHtqtChg+PQahz9Uvlf2IMTkAouM/CHyqcMTTPZL Aw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xu7aw80ek-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 30 Apr 2024 20:06:53 +0000
-Received: from m0353729.ppops.net (m0353729.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 43UK6qpQ013797;
-	Tue, 30 Apr 2024 20:06:53 GMT
-Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xu7aw80eg-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 30 Apr 2024 20:06:52 +0000
-Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 43UItCsl001461;
-	Tue, 30 Apr 2024 20:06:51 GMT
-Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
-	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3xsbpty7dd-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 30 Apr 2024 20:06:51 +0000
-Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com [10.20.54.102])
-	by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 43UK6kpq16318796
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 30 Apr 2024 20:06:48 GMT
-Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 6E68220043;
-	Tue, 30 Apr 2024 20:06:46 +0000 (GMT)
-Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id EAD8320040;
-	Tue, 30 Apr 2024 20:06:42 +0000 (GMT)
-Received: from ltcd48-lp2.aus.stglabs.ibm.com (unknown [9.3.101.175])
-	by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTP;
-	Tue, 30 Apr 2024 20:06:42 +0000 (GMT)
-Subject: [RFC PATCH v2 5/6] powerpc/iommu: Move dev_has_iommu_table() to
- iommu.c
-From: Shivaprasad G Bhat <sbhat@linux.ibm.com>
-To: mpe@ellerman.id.au, tpearson@raptorengineering.com,
-        alex.williamson@redhat.com, linuxppc-dev@lists.ozlabs.org, aik@amd.com
-Cc: npiggin@gmail.com, christophe.leroy@csgroup.eu, aneesh.kumar@kernel.org,
-        naveen.n.rao@linux.ibm.com, gbatra@linux.vnet.ibm.com,
-        brking@linux.vnet.ibm.com, sbhat@linux.ibm.com, aik@ozlabs.ru,
-        jgg@ziepe.ca, ruscur@russell.cc, robh@kernel.org,
-        linux-kernel@vger.kernel.org, joel@jms.id.au, kvm@vger.kernel.org,
-        msuchanek@suse.de, oohall@gmail.com, mahesh@linux.ibm.com,
-        jroedel@suse.de, vaibhav@linux.ibm.com, svaidy@linux.ibm.com
-Date: Tue, 30 Apr 2024 15:06:42 -0500
-Message-ID: <171450759893.10851.5001066111916146610.stgit@linux.ibm.com>
-In-Reply-To: <171450753489.10851.3056035705169121613.stgit@linux.ibm.com>
-References: <171450753489.10851.3056035705169121613.stgit@linux.ibm.com>
-User-Agent: StGit/1.5
+	s=arc-20240116; t=1714507621; c=relaxed/simple;
+	bh=ug3YfKik7AumLDou9Srebnw6+kedHrFJPLCWgOx1frE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=TlvFix0TmZfOva+frBZwIJvogA/5GvHL6Dr7PaawFqt0HkoS/eSODPW0w41SQz0vxCjpILHr1zU0JNMKcuQA3BpOjOS0p4jflCb7bPEdp+26e4O1inss1iFq/M13pS/8QbqGRsYXx5OQJZh3eGKApu2Gr4nHU4nFW1kO4huGvM4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=jAq66FZ4; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1714507618;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=dxTrrQAHX5LIHD8+8RfIAMS1TPkS1k3rljcnnnsPEVE=;
+	b=jAq66FZ4tlALHbPQhE/ZoM181Z5KaVwK5JqgoZvkc3hXGqI4AHAyPfmyWrljrNgyE/Xm5M
+	DH+Zv8/7YFinrf1L8i8nTQH9B1/Pa88b7oXud1+56AOGkf5dnmgj0GJE9GnYbq9A0sPE/0
+	gJfYmC3yw7JsWET72Yh01Ne4dOOk4Vc=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-122-gNReqLd6OsSRkY_4UvXOAw-1; Tue, 30 Apr 2024 16:06:57 -0400
+X-MC-Unique: gNReqLd6OsSRkY_4UvXOAw-1
+Received: by mail-ed1-f72.google.com with SMTP id 4fb4d7f45d1cf-5723fc9eda3so3596404a12.1
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 13:06:56 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714507615; x=1715112415;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=dxTrrQAHX5LIHD8+8RfIAMS1TPkS1k3rljcnnnsPEVE=;
+        b=UrKSOU1Brre/MbyiztA8k9sRLs8nWcfmZYggHiMFXabcsqK+7wBE44oHU4wgH8AFLs
+         v9CF/vbhbl5Wx7wghHHDIsPUmLKf3tHP00LcHzoBFW8rVHv0Yo0ro/besz8XuyqYlt1C
+         PgEASVYx8uYeFoVKtnGH6/3l5b5qUPlz8HQQRLV1WkB6ctGEMOMhTu/gm29PmczcW2DE
+         OKJePfuiKjlduThm6g5CszGnOnytrT95RDtx+P79lFt1wCphW1eQJiGDnWUTnp50ifX/
+         a5eQYfgTt7BixBp7Jp4ClZnqPsyDkwjg9Ga7pmj2j82ZEzjcfu5U/N7B/DwKRhWatExt
+         aJ3g==
+X-Forwarded-Encrypted: i=1; AJvYcCVFIX563LDOkueIGk/xWOx2xegW745WBCo/y8Ou2xP3ecrzimvwJq4DnBxuIOgUESirlHU/1baDqrImPJnAkMWXKYYSrGQAhDdEBGNI
+X-Gm-Message-State: AOJu0YzPPmp2pW48O8FviKqloGBe8HsEKveaIvXZK/+Z2PCO3YtrshGE
+	BICVaqiDrdyA1bqYT288lmHIavtVZAa8c+z5dKztUCVLv4dyUaySs5L+QfkIkZb0SMbyv9jY8Gk
+	1CfkQ2U9a0gweKnl2aN8jYOtzCik581Ht87IH3kyVTuCHl7vEdarcT1wQoFKfoQ==
+X-Received: by 2002:a17:906:2a44:b0:a58:ee10:ad05 with SMTP id k4-20020a1709062a4400b00a58ee10ad05mr484895eje.69.1714507615500;
+        Tue, 30 Apr 2024 13:06:55 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IF7ocL9+DqttG8t6q0QKC2cVrRfgcVUPqW7FLSaNzemeZLoe4wornulVDynqTC9/Zrj4O1LwA==
+X-Received: by 2002:a17:906:2a44:b0:a58:ee10:ad05 with SMTP id k4-20020a1709062a4400b00a58ee10ad05mr484881eje.69.1714507614890;
+        Tue, 30 Apr 2024 13:06:54 -0700 (PDT)
+Received: from redhat.com ([2.55.56.94])
+        by smtp.gmail.com with ESMTPSA id s8-20020a170906500800b00a4e24d259edsm15356306ejj.167.2024.04.30.13.06.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 30 Apr 2024 13:06:54 -0700 (PDT)
+Date: Tue, 30 Apr 2024 16:06:50 -0400
+From: "Michael S. Tsirkin" <mst@redhat.com>
+To: Darius Rad <darius@bluespec.com>
+Cc: Jason Wang <jasowang@redhat.com>,
+	Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	virtualization@lists.linux.dev, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] virtio_net: Warn if insufficient queue length for
+ transmitting
+Message-ID: <20240430121730-mutt-send-email-mst@kernel.org>
+References: <ZjFH7Xb5gyTtOpWd@localhost.localdomain>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: RoMVJVrhsKWDLPL4xuf0_X_36FK2NBZS
-X-Proofpoint-GUID: o04C_gBA-Lo2NGUzKL0dFsYlIf6nZ9Nr
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
- definitions=2024-04-30_12,2024-04-30_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 phishscore=0
- spamscore=0 impostorscore=0 mlxscore=0 bulkscore=0 malwarescore=0
- priorityscore=1501 mlxlogscore=999 suspectscore=0 adultscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2404010000 definitions=main-2404300144
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZjFH7Xb5gyTtOpWd@localhost.localdomain>
 
-Move function dev_has_iommu_table() to powerpc/kernel/iommu.c
-as it is going to be used by machine specific iommu code as
-well in subsequent patches.
+On Tue, Apr 30, 2024 at 03:35:09PM -0400, Darius Rad wrote:
+> The transmit queue is stopped when the number of free queue entries is less
+> than 2+MAX_SKB_FRAGS, in start_xmit().  If the queue length (QUEUE_NUM_MAX)
+> is less than then this, transmission will immediately trigger a netdev
+> watchdog timeout.  Report this condition earlier and more directly.
+> 
+> Signed-off-by: Darius Rad <darius@bluespec.com>
+> ---
+>  drivers/net/virtio_net.c | 3 +++
+>  1 file changed, 3 insertions(+)
+> 
+> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+> index 115c3c5414f2..72ee8473b61c 100644
+> --- a/drivers/net/virtio_net.c
+> +++ b/drivers/net/virtio_net.c
+> @@ -4917,6 +4917,9 @@ static int virtnet_probe(struct virtio_device *vdev)
+>  			set_bit(guest_offloads[i], &vi->guest_offloads);
+>  	vi->guest_offloads_capable = vi->guest_offloads;
+>  
+> +	if (virtqueue_get_vring_size(vi->sq->vq) < 2 + MAX_SKB_FRAGS)
+> +		netdev_warn_once(dev, "not enough queue entries, expect xmit timeout\n");
+> +
 
-Signed-off-by: Shivaprasad G Bhat <sbhat@linux.ibm.com>
----
- arch/powerpc/include/asm/iommu.h |    1 +
- arch/powerpc/kernel/eeh.c        |   16 ----------------
- arch/powerpc/kernel/iommu.c      |   17 +++++++++++++++++
- 3 files changed, 18 insertions(+), 16 deletions(-)
+How about actually fixing it though? E.g. by linearizing...
 
-diff --git a/arch/powerpc/include/asm/iommu.h b/arch/powerpc/include/asm/iommu.h
-index 744cc5fc22d3..784809e34abe 100644
---- a/arch/powerpc/include/asm/iommu.h
-+++ b/arch/powerpc/include/asm/iommu.h
-@@ -220,6 +220,7 @@ extern long iommu_tce_xchg_no_kill(struct mm_struct *mm,
- 		enum dma_data_direction *direction);
- extern void iommu_tce_kill(struct iommu_table *tbl,
- 		unsigned long entry, unsigned long pages);
-+int dev_has_iommu_table(struct device *dev, void *data);
- 
- #else
- static inline void iommu_register_group(struct iommu_table_group *table_group,
-diff --git a/arch/powerpc/kernel/eeh.c b/arch/powerpc/kernel/eeh.c
-index ab316e155ea9..37bfbef929b5 100644
---- a/arch/powerpc/kernel/eeh.c
-+++ b/arch/powerpc/kernel/eeh.c
-@@ -1264,22 +1264,6 @@ EXPORT_SYMBOL(eeh_dev_release);
- 
- #ifdef CONFIG_IOMMU_API
- 
--static int dev_has_iommu_table(struct device *dev, void *data)
--{
--	struct pci_dev *pdev = to_pci_dev(dev);
--	struct pci_dev **ppdev = data;
--
--	if (!dev)
--		return 0;
--
--	if (device_iommu_mapped(dev)) {
--		*ppdev = pdev;
--		return 1;
--	}
--
--	return 0;
--}
--
- /**
-  * eeh_iommu_group_to_pe - Convert IOMMU group to EEH PE
-  * @group: IOMMU group
-diff --git a/arch/powerpc/kernel/iommu.c b/arch/powerpc/kernel/iommu.c
-index bc4584e73061..31dc663be0cc 100644
---- a/arch/powerpc/kernel/iommu.c
-+++ b/arch/powerpc/kernel/iommu.c
-@@ -987,6 +987,23 @@ unsigned long iommu_direction_to_tce_perm(enum dma_data_direction dir)
- EXPORT_SYMBOL_GPL(iommu_direction_to_tce_perm);
- 
- #ifdef CONFIG_IOMMU_API
-+
-+int dev_has_iommu_table(struct device *dev, void *data)
-+{
-+	struct pci_dev *pdev = to_pci_dev(dev);
-+	struct pci_dev **ppdev = data;
-+
-+	if (!dev)
-+		return 0;
-+
-+	if (device_iommu_mapped(dev)) {
-+		*ppdev = pdev;
-+		return 1;
-+	}
-+
-+	return 0;
-+}
-+
- /*
-  * SPAPR TCE API
-  */
+It also bothers me that there's practically
+/proc/sys/net/core/max_skb_frags
+and if that's low then things could actually work.
 
+Finally, while originally it was just 17 typically, now it's
+configurable. So it's possible that you change the config to make big
+tcp work better and device stops working while it worked fine
+previously.
+
+
+>  	pr_debug("virtnet: registered device %s with %d RX and TX vq's\n",
+>  		 dev->name, max_queue_pairs);
+>  
+> -- 
+> 2.39.2
 
 
