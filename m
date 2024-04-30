@@ -1,68 +1,71 @@
-Return-Path: <linux-kernel+bounces-164171-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-164173-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6772F8B7A25
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 16:41:01 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id AEFCE8B7A28
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 16:41:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1142928227F
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 14:41:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 252671F26B1A
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 14:41:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B2D017B4EC;
-	Tue, 30 Apr 2024 14:33:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EAA811BF6CE;
+	Tue, 30 Apr 2024 14:33:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lpYjzEUz"
-Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="l45UlqAo"
+Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E6DDD770EB;
-	Tue, 30 Apr 2024 14:33:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8862D1802D9;
+	Tue, 30 Apr 2024 14:33:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714487600; cv=none; b=EF6o8O2kkvLSh1JXAfySwvdzv3+JqsYAGywGJ7/6DGREr3cvb8ooDQt0sPYCAt6hk9QlAqWufsZonAjtXNDMuHM5JiFO7k2OhXY9V2lqWS8c+0jNExNXeMgcxYRFxcTihqzicDmTtfduuikCRVy1uCvT5LMN3/1pElvZHK1Htak=
+	t=1714487603; cv=none; b=VXd07novNTYHM96yACLaHFaKWOxRnrD7ToEh+YF0P8/i9sn6LSLYa/Zz90JAUq+0ZrFVngnsxMySYQinUqDnUe6HEHGyWlrIJXMnisSq/5BDwWbnzgVh5p2Z6TcMzpiRRYnKxehNDEKagrUaQT+ZsN6UZtWskMqhCun65uw/UCg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714487600; c=relaxed/simple;
-	bh=hHDKALZBtDaK1XJGZDjr7mtvwr3Wa562sY8T8hfckD8=;
-	h=From:To:Subject:Date:Message-Id:MIME-Version; b=byc+2SDkcVJa5ztPl+4OwpADm9Yes9FPU9Geb12g17h4xp7QtHo7YwDPlgziPFfAmXNjQOJ2cjQs4BYw+lDV42GZSbKsxu5ppedoMWDVU5FHyBVQsUIXdzNorVpaZkVavix9CZ5hiVNVZYUp8xiB0ymHvKjQny4b/QQwKH2XIWQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lpYjzEUz; arc=none smtp.client-ip=209.85.214.176
+	s=arc-20240116; t=1714487603; c=relaxed/simple;
+	bh=3zemZ+ENMGoPGIEwTuWopoyGRq1SxyxEFPSLySd79K4=;
+	h=From:To:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=SbB5mAkosfnMwrMghvTZnkL84Uf4sZPiVaRlNpTcmbjSQygd3W8Og22XF0KMf61JkWy11mBh3dqKCJ387UUnovKGgnTBtARDpcj+HwPIGDlZVUdVHJsrP6Yh5awGH7qh8iEDZX6C/9s3lslYZHdN6aMkbiPU2Dt/Lau8UPO/+Dw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=l45UlqAo; arc=none smtp.client-ip=209.85.214.175
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-1eab16c8d83so46018285ad.3;
-        Tue, 30 Apr 2024 07:33:18 -0700 (PDT)
+Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-1eb24e3a2d9so35123755ad.1;
+        Tue, 30 Apr 2024 07:33:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714487598; x=1715092398; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:to
-         :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=bbWyXy7tzUTKU9Yx8i3878cyT6cwUmzUpkwL6XCiHGA=;
-        b=lpYjzEUzHBSh7KiTmalCi6XVh9n+SaNrSm0lDnK9FYQw8r2UXK5A3IEYV0OwkiLjor
-         6vVQVHi1ZCCGyuMy0uQF+/ENdlEW+Oc/grhNSRzctKo9X1M0T6foWjLlMlqSnRVG5w6N
-         tLgCw/EzlooiKwczqV6URwUujHjgmx9Bmoo3fouo/QpQN6mJPGNIHc3au1Nh2QA0kjAe
-         TckN/b48scT6i+hhEalYPJkSeS8wtwkz+/sGuF5lBMKtVvhRiH9sF+QmG9I1+0dfT8wm
-         A7xhASAdnppGHwvTUasC3G2Pv4KBsZmabF+p190IoxxV0q1CGlXnrbbxryLb+qi507fn
-         PE+w==
+        d=gmail.com; s=20230601; t=1714487601; x=1715092401; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=n9+uw12LzVsx3wU8adlXBHs43wHbzfmBsLnbaFarO2I=;
+        b=l45UlqAoIwoLUaQ6CY4K214s22tn0YR3Rpv73kqX+g1//lCVJ0X53Aqnsq13fabxN2
+         gWADgXGPOMQt8RwLkN7kQFRosn6LQoiCsoFP0jhAd/8afb4IRoDa1wkOiin7GzVB0UVO
+         mEWcXnzNZjtnUWId3Z4BJRxp6HjwtCWyX10sbiUwAWcH3H1u/Nh6dYMTGYQvrxjASKOW
+         Fc3H9ng9y5IiMvgJLsRqke3Mgf5SHYA5hxrGwwcdvyPCckJw0X8u93IoZGqNgXLP7K5H
+         pDEpudPwmhEPEU7JGBCP76hbnP4miQqA+MQ+FCtNdTnGro8Fq20CenqHxrwhZ3GrDYxE
+         MCpg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714487598; x=1715092398;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=bbWyXy7tzUTKU9Yx8i3878cyT6cwUmzUpkwL6XCiHGA=;
-        b=QIMVpLjB7yuidbu8Fsd+GRV8gmPC4f50NorAlKFm6LrMf+/FhYmLV8x+Vni2rndaaq
-         gv+YYcMmCbsMP8+sfGtJy3CO/m83GaN2+vKGr+mGQgUYcBF218jiZdfCz8uFLMsubs22
-         CK/PFfhN+RquVnC4arEXGAf2ndw7FOqva1j7r2HB6s/g7opgciDRE4TCA9xpe1E1pwUQ
-         oFybDsyYNum/N8Xu56oKTTmCrRjn6HyAE1Y2+bL2YGaKQVNpn0jy0FcedjgglSKRkWhf
-         /r65RaD2Jv/BI7tnNMTZOn07wKNELjDZSZPovdX1ZgVySH+XPKb4asQusD8uHYc4IPcP
-         0sow==
-X-Forwarded-Encrypted: i=1; AJvYcCVx9xC3Rl7ke/ZENB9wiyzWzkcPBPXzvP5kBDVdj0Vk58Jdepjami8LblupeRsZY1+J9g+r2E8J6zjtZ4DIDDboAmdxrWeFMVsc/734s6sszVdtCvq1KDFVs2PmnF1lCs7mB6HXiMIG5XAtpII=
-X-Gm-Message-State: AOJu0YyEMjNenOakZ4t0Kmpyfrj7SsmTY4NNzHdvlawHfibqOze7L9pG
-	J0q3QsIY+MgbfX0Q63tjmgJrfObPE8y4D3rPopiRCWZokNWONGE1
-X-Google-Smtp-Source: AGHT+IF50zEbOnAs+x7qO5H4ytE8qglKw79WJLKnIPd4tguVAA/lYC9ixRtuKAvGTVIN3+mdp7kasQ==
-X-Received: by 2002:a17:902:d648:b0:1e7:89af:f267 with SMTP id y8-20020a170902d64800b001e789aff267mr12052976plh.37.1714487598039;
-        Tue, 30 Apr 2024 07:33:18 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1714487601; x=1715092401;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=n9+uw12LzVsx3wU8adlXBHs43wHbzfmBsLnbaFarO2I=;
+        b=Tm1xkBDm6+D8w22asHTwsV4j7n4sso8xsDpPsGZVKGc4knJ73ZrCA92gBfFPsMgbrn
+         sey5KUpIyvRKtE0egdTZM8LIHvXEpP/7mBqdFHxlNw7fLR38TqpxmUWUMzwJDhw7IVCc
+         GrjLmimAk0J0gxyCxwSvh6SwNTx5MtKlm4N1iTWIueD/WGGBmkl6cHUzNWwC7u0RvLn9
+         COCRnoMkp6yq870OWdlG7JvJASknjm8EBY8ACYBrrItlx49UPinp9tetkOZMEf5coOYA
+         SLK/W3k+Pkt3vvmjNMwUV1bUC8cKYQeu0aRl/IUVEN2DZ+Bqvv+LgWgtqS0dGyZI+afh
+         Ty7Q==
+X-Forwarded-Encrypted: i=1; AJvYcCUVP/svCUJuk8smxV/Ghtb/Y424MT9dz85/7OFQiGCTLrAdUBZ0HmznhQMByCpYvQbO3tmgdZ1HGCUzodlvAW4PnLNO2I7nrmu7BdPC9UFsYs7DfrWPzSikxTE4yi32Lq797ojcxc8JaXLRIBM=
+X-Gm-Message-State: AOJu0Yz1j5Afzm1KDpgUcAW1y+gXbpkoGXaB0id2lw3gFyvcyVIxbAH1
+	/I7GV3R7EA04Gq3a0qoMWl69PyJJu+ni+U5kouLLJ8/tM1y6zsI7
+X-Google-Smtp-Source: AGHT+IH4UdZbzfvSJo3QJfZt+JphuB4AEFpA9cZMcuqalJRWHwyT3Ed+65xfdEtezZjfDmHJFi8NrA==
+X-Received: by 2002:a17:902:e806:b0:1e2:81c1:b35e with SMTP id u6-20020a170902e80600b001e281c1b35emr17906114plg.54.1714487600758;
+        Tue, 30 Apr 2024 07:33:20 -0700 (PDT)
 Received: from peter-bmc.dhcpserver.bu9bmc.local (1-34-21-66.hinet-ip.hinet.net. [1.34.21.66])
-        by smtp.gmail.com with ESMTPSA id m1-20020a170902db0100b001e47972a2casm1682431plx.96.2024.04.30.07.33.15
+        by smtp.gmail.com with ESMTPSA id m1-20020a170902db0100b001e47972a2casm1682431plx.96.2024.04.30.07.33.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Apr 2024 07:33:17 -0700 (PDT)
+        Tue, 30 Apr 2024 07:33:20 -0700 (PDT)
 From: Peter Yin <peteryin.openbmc@gmail.com>
 To: patrick@stwcx.xyz,
 	Wim Van Sebroeck <wim@linux-watchdog.org>,
@@ -74,10 +77,12 @@ To: patrick@stwcx.xyz,
 	linux-arm-kernel@lists.infradead.org,
 	linux-aspeed@lists.ozlabs.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH v9 0/1] watchdog: aspeed: Revise handling of bootstatus
-Date: Tue, 30 Apr 2024 22:31:13 +0800
-Message-Id: <20240430143114.1323686-1-peteryin.openbmc@gmail.com>
+Subject: [PATCH v9 1/1] watchdog: aspeed: Revise handling of bootstatus
+Date: Tue, 30 Apr 2024 22:31:14 +0800
+Message-Id: <20240430143114.1323686-2-peteryin.openbmc@gmail.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20240430143114.1323686-1-peteryin.openbmc@gmail.com>
+References: <20240430143114.1323686-1-peteryin.openbmc@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -96,44 +101,161 @@ watchdog register 0x0c bit1(Reset System after timeout) is enabled.
 Thereforce include SCU register to veriy WDIOF_EXTERN1 and WDIOF_CARDRESET
 in ast2600 SCU74 or ast2400/ast2500 SCU3C.
 
-Change Log:
-
-v8 -> v9
-   - Rename and restructure the SCU.
-
-v7 -> v8
-   - Simplify the code.
-
-v6 -> v7
-   - To use syscon_regmap_lookup_by_compatibleys to get scu base
-   - Power on reset is set when triggered by AC or SRSRST.
-     Thereforce, we clear flag to ensure next boot cause is a real watchdog case.
-     We use the external reset flag to determine
-     if it is an external reset or card reset.
-
-v5 -> v6
-  - Fixed missing WDT_TIMEOUT_STATUS_EVENT.
-
-v4 -> v5
-  - Revert indentation.
-
-v3 -> v4
-  - Add error handling for syscon_regmap_lookup_by_phandle and
-  regmap_read.
-
-v2 -> v3
-  - Fixed WDIOF_CARDRESET status bit check and added support
-  for WDIOF_EXTERN1 on ast2500 and ast2600.
-
-v1 -> v2
-  - Add comment and support WDIOF_CARDRESET in ast2600
-
-v1
-  - Patch 0001 - Add WDIOF_EXTERN1 bootstatus
+Fixes: 49d4d277ca54 ("aspeed: watchdog: Set bootstatus during probe")
+Signed-off-by: Peter Yin <peteryin.openbmc@gmail.com>
 ---
  drivers/watchdog/aspeed_wdt.c | 90 +++++++++++++++++++++++++++++++----
  1 file changed, 82 insertions(+), 8 deletions(-)
 
+diff --git a/drivers/watchdog/aspeed_wdt.c b/drivers/watchdog/aspeed_wdt.c
+index b4773a6aaf8c..556493763793 100644
+--- a/drivers/watchdog/aspeed_wdt.c
++++ b/drivers/watchdog/aspeed_wdt.c
+@@ -11,10 +11,12 @@
+ #include <linux/io.h>
+ #include <linux/kernel.h>
+ #include <linux/kstrtox.h>
++#include <linux/mfd/syscon.h>
+ #include <linux/module.h>
+ #include <linux/of.h>
+ #include <linux/of_irq.h>
+ #include <linux/platform_device.h>
++#include <linux/regmap.h>
+ #include <linux/watchdog.h>
+ 
+ static bool nowayout = WATCHDOG_NOWAYOUT;
+@@ -22,10 +24,38 @@ module_param(nowayout, bool, 0);
+ MODULE_PARM_DESC(nowayout, "Watchdog cannot be stopped once started (default="
+ 				__MODULE_STRING(WATCHDOG_NOWAYOUT) ")");
+ 
++/* AST SCU Register for System Reset Event Log Register Set
++ * ast2600 is scu074 ast2400/2500 is scu03c
++ */
++#define AST_SCU_SYS_RESET_POWERON_MASK	BIT(0)
++#define AST_SCU_SYS_RESET_EXTERN_FLAG	BIT(1)
++
++#define AST2400_SYSTEM_RESET_STATUS	0x3C
++#define   AST2400_WATCHDOG_RESET_MASK	BIT(1)
++#define   AST2400_RESET_FLAG_CLEAR	GENMASK(2, 0)
++
++#define   AST2500_WATCHDOG_RESET_MASK	GENMASK(4, 2)
++#define   AST2500_RESET_FLAG_CLEAR	(AST2500_WATCHDOG_RESET_MASK | \
++					 AST_SCU_SYS_RESET_POWERON_MASK | \
++					 AST_SCU_SYS_RESET_EXTERN_FLAG)
++
++#define AST2600_SYSTEM_RESET_STATUS	0x74
++#define   AST2600_WATCHDOG_RESET_MASK   GENMASK(31, 16)
++#define   AST2600_RESET_FLAG_CLEAR	(AST2600_WATCHDOG_RESET_MASK | \
++					 AST_SCU_SYS_RESET_POWERON_MASK | \
++					 AST_SCU_SYS_RESET_EXTERN_FLAG)
++
+ struct aspeed_wdt_config {
+ 	u32 ext_pulse_width_mask;
+ 	u32 irq_shift;
+ 	u32 irq_mask;
++	struct {
++		const char *compatible;
++		u32 reset_status_reg;
++		u32 watchdog_reset_mask;
++		u32 extern_reset_mask;
++		u32 reset_flag_clear;
++	} scu;
+ };
+ 
+ struct aspeed_wdt {
+@@ -39,18 +69,39 @@ static const struct aspeed_wdt_config ast2400_config = {
+ 	.ext_pulse_width_mask = 0xff,
+ 	.irq_shift = 0,
+ 	.irq_mask = 0,
++	.scu = {
++		.compatible = "aspeed,ast2400-scu",
++		.reset_status_reg = AST2400_SYSTEM_RESET_STATUS,
++		.watchdog_reset_mask = AST2400_WATCHDOG_RESET_MASK,
++		.extern_reset_mask = 0,
++		.reset_flag_clear = AST2400_RESET_FLAG_CLEAR,
++	}
+ };
+ 
+ static const struct aspeed_wdt_config ast2500_config = {
+ 	.ext_pulse_width_mask = 0xfffff,
+ 	.irq_shift = 12,
+ 	.irq_mask = GENMASK(31, 12),
++	.scu = {
++		.compatible = "aspeed,ast2500-scu",
++		.reset_status_reg = AST2400_SYSTEM_RESET_STATUS,
++		.watchdog_reset_mask = AST2500_WATCHDOG_RESET_MASK,
++		.extern_reset_mask = AST_SCU_SYS_RESET_EXTERN_FLAG,
++		.reset_flag_clear = AST2500_RESET_FLAG_CLEAR,
++	}
+ };
+ 
+ static const struct aspeed_wdt_config ast2600_config = {
+ 	.ext_pulse_width_mask = 0xfffff,
+ 	.irq_shift = 0,
+ 	.irq_mask = GENMASK(31, 10),
++	.scu = {
++		.compatible = "aspeed,ast2600-scu",
++		.reset_status_reg = AST2600_SYSTEM_RESET_STATUS,
++		.watchdog_reset_mask = AST2600_WATCHDOG_RESET_MASK,
++		.extern_reset_mask = AST_SCU_SYS_RESET_EXTERN_FLAG,
++		.reset_flag_clear = AST2600_RESET_FLAG_CLEAR,
++	}
+ };
+ 
+ static const struct of_device_id aspeed_wdt_of_table[] = {
+@@ -310,6 +361,7 @@ static int aspeed_wdt_probe(struct platform_device *pdev)
+ 	const struct of_device_id *ofdid;
+ 	struct aspeed_wdt *wdt;
+ 	struct device_node *np;
++	struct regmap *scu;
+ 	const char *reset_type;
+ 	u32 duration;
+ 	u32 status;
+@@ -458,14 +510,36 @@ static int aspeed_wdt_probe(struct platform_device *pdev)
+ 		writel(duration - 1, wdt->base + WDT_RESET_WIDTH);
+ 	}
+ 
+-	status = readl(wdt->base + WDT_TIMEOUT_STATUS);
+-	if (status & WDT_TIMEOUT_STATUS_BOOT_SECONDARY) {
+-		wdt->wdd.bootstatus = WDIOF_CARDRESET;
+-
+-		if (of_device_is_compatible(np, "aspeed,ast2400-wdt") ||
+-		    of_device_is_compatible(np, "aspeed,ast2500-wdt"))
+-			wdt->wdd.groups = bswitch_groups;
+-	}
++	/*
++	 * Power on reset is set when triggered by AC or SRSRST.
++	 * Thereforce, we clear flag to ensure
++	 * next boot cause is a real watchdog case.
++	 * We use the external reset flag to determine
++	 * if it is an external reset or card reset.
++	 * However, The ast2400 watchdog flag is cleared by an external reset,
++	 * so it only supports WDIOF_CARDRESET.
++	 */
++	scu = syscon_regmap_lookup_by_compatible(wdt->cfg->scu.compatible);
++	if (IS_ERR(scu))
++		return PTR_ERR(scu);
++
++	ret = regmap_read(scu, wdt->cfg->scu.reset_status_reg, &status);
++	if (ret)
++		return ret;
++
++	if (!(status & AST_SCU_SYS_RESET_POWERON_MASK) &&
++	      status & wdt->cfg->scu.watchdog_reset_mask)
++		wdt->wdd.bootstatus = (status & wdt->cfg->scu.extern_reset_mask)
++					 ? WDIOF_EXTERN1 : WDIOF_CARDRESET;
++
++	status = wdt->cfg->scu.reset_flag_clear;
++	ret = regmap_write(scu, wdt->cfg->scu.reset_status_reg, status);
++	if (ret)
++		return ret;
++
++	if (of_device_is_compatible(np, "aspeed,ast2400-wdt") ||
++	    of_device_is_compatible(np, "aspeed,ast2500-wdt"))
++		wdt->wdd.groups = bswitch_groups;
+ 
+ 	dev_set_drvdata(dev, wdt);
+ 
 -- 
 2.25.1
 
