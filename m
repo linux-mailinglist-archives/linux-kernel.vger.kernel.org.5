@@ -1,60 +1,60 @@
-Return-Path: <linux-kernel+bounces-164148-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-164149-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1E7B98B79DE
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 16:35:03 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 82D768B79E0
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 16:35:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1A8D5B25B78
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 14:35:00 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3F3E628934B
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 14:35:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 79222176FB4;
-	Tue, 30 Apr 2024 14:30:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 80E7D180A99;
+	Tue, 30 Apr 2024 14:30:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="NGi2Dk7E"
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="ftLxwIR3"
 Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BAC5B152782;
-	Tue, 30 Apr 2024 14:30:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C0D8152797;
+	Tue, 30 Apr 2024 14:30:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714487438; cv=none; b=mX01H2hjOcVfpdo6HilXCJt/rowl6BUpoCwrZnHyuu9RsOAWRL1reRveiM5njvZ9YOQPFe63VHI6mT16YBlPFvdOkLqNvR5lebTbOK3cRfU0eDd2NcUpfcknGmOPcPqgijBIP0Tpv+LlVb7jmAJWvbPCrR1FxmEaDI6pjKW3/90=
+	t=1714487439; cv=none; b=WENa1qnK5WYM1bCUC9K6noKTGBKCgVqKot+brvZRHis2OAPm4BiAzqmmwzKC1zBfppwFVwEzSHPUDYQ+4yLOTX+iEt6DwM2pd2qnah1Oeg3eqm21j/+aOAtT/3IYJ3Kjwu83WsJwI1p57WXdYIsGJiLdF4DcesXxzUSQVEzIYdM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714487438; c=relaxed/simple;
-	bh=OqQSiVxO3HHYjrY+m/uSpBgsc4eDZkKVD/Wh+0XPBlU=;
+	s=arc-20240116; t=1714487439; c=relaxed/simple;
+	bh=507ao6veJvos8djQ/vkxSB93Ylf4TIG2MPrbWPIoPeg=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=dBD8YoJtBxS1lI9V3JTGEfA3S01xvnpbxkJdgktC2p5I4qf0KEAYkfx3cEp3JiE/Wt8CnfnXcRaNs8++G+Pj6d7XUtzOeIaRqTEOcbh+LjF3P5Ns8Fqw1MHpELaW/i1+g/FsUA+eAujAhZ113cjFkL8Aiqx51MCqvmHcw+c/Bzw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=NGi2Dk7E; arc=none smtp.client-ip=205.220.168.131
+	 MIME-Version:Content-Type; b=NIx76JtmYGHr1tE5EaBFYQlaHD3RPJgBoHGUcyN4wOOJ3i1xN4eipafLG8b+kkMswIa+aexnXbmxKfCcTxGT5kf7JGumW047UdrzCnnvqv5qI4/Fe9HCzruDE7T2yhj//NgvsVJ6i0kxax4IJTvbxkxxxCMXQdm9sc13Ea17p6w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=ftLxwIR3; arc=none smtp.client-ip=205.220.168.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 43U37fLm013470;
-	Tue, 30 Apr 2024 14:30:29 GMT
+Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 43UDm6CO024573;
+	Tue, 30 Apr 2024 14:30:34 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
 	from:to:cc:subject:date:message-id:in-reply-to:references
 	:mime-version:content-transfer-encoding:content-type; s=
-	qcppdkim1; bh=0oUE2xkR1suGk9gLtMS1UZqz6bXTRiFytMT+ynxDOy8=; b=NG
-	i2Dk7ECPkXOx/BY6ZbJ+Migbo3PIH+0zaSKpEA9lTbsz2W8sHHPcpQ7rXF2lJrh1
-	n7L7YQFIE+KGt/zoqfelYE6CRJTBSrowsQLJ7pMC3tMwd80DsaOBqKb7tmFpRl1v
-	4y+GBam7o4LRHWTDXS+d6AVC0CHjgcCluPSdm84he/yil/pEEXpf9u6JVFpav/qJ
-	sx3oSjvrN4ezWDZ2VLdf0EyQ8GiSRGOO6veFzLy1nKpzJA9nuzv8N07qvfUHAXEb
-	9H97DR5Kg9QqbefAdPFqKlj7xJBG9B8ggTJoxFCcu1lZNuLe7olVpCAKRJKgfaRX
-	ZBAwp0ogFWyiJ89THzjw==
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xtrep1n2w-1
+	qcppdkim1; bh=NQg0UhSk2EZ0C6RKEJX8xxVV5b+m49TUFbA2iV97yq4=; b=ft
+	LxwIR3fCazztuWaEUZucoj0U8ssR4OTl+nq+9PwIziFFn/cOWvApjjwNGu3USL0G
+	59SU8xQvp6eG7pX1aXJUh1mZ3SB5/1XTFF12V8t22w4XD+xEx/l1bGhGLlb3Sm+H
+	K/yQqkPglPrwpbZLYUwHsZ1nIcFrKmW1eqwXuT4hdSVHAbo575u+qmXNM/+Inz8p
+	WIolr2p+/yi5ef6LJEaN2fQpp/esGeY3WItPmMT0vaP70X10TzO+OLMieP7gSGKD
+	UUkfk/VRo74nazlLxUPYX8bYIiRdiz3+pJF7jkiIznMBCjpNMm4Ky7N/acRCrkmG
+	VhMXq2Ezz7jH7ba6RNTw==
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xtvf7h1da-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 30 Apr 2024 14:30:29 +0000 (GMT)
+	Tue, 30 Apr 2024 14:30:34 +0000 (GMT)
 Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 43UEUSHH030862
+	by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 43UEUXeJ024338
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 30 Apr 2024 14:30:28 GMT
+	Tue, 30 Apr 2024 14:30:33 GMT
 Received: from hu-jkona-hyd.qualcomm.com (10.80.80.8) by
  nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.9; Tue, 30 Apr 2024 07:30:22 -0700
+ 15.2.1544.9; Tue, 30 Apr 2024 07:30:28 -0700
 From: Jagadeesh Kona <quic_jkona@quicinc.com>
 To: Bjorn Andersson <andersson@kernel.org>,
         Michael Turquette
@@ -77,10 +77,12 @@ CC: Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
  Priya Kakitapalli" <quic_skakitap@quicinc.com>,
         Ajit Pandey
 	<quic_ajipan@quicinc.com>,
-        Imran Shaik <quic_imrashai@quicinc.com>
-Subject: [PATCH V3 2/8] dt-bindings: clock: qcom: Add SM8650 video clock controller
-Date: Tue, 30 Apr 2024 19:57:51 +0530
-Message-ID: <20240430142757.16872-3-quic_jkona@quicinc.com>
+        Imran Shaik <quic_imrashai@quicinc.com>,
+        "Dmitry
+ Baryshkov" <dmitry.baryshkov@linaro.org>
+Subject: [PATCH V3 3/8] clk: qcom: videocc-sm8550: Add support for videocc XO clk ares
+Date: Tue, 30 Apr 2024 19:57:52 +0530
+Message-ID: <20240430142757.16872-4-quic_jkona@quicinc.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240430142757.16872-1-quic_jkona@quicinc.com>
 References: <20240430142757.16872-1-quic_jkona@quicinc.com>
@@ -96,86 +98,49 @@ X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
  nalasex01a.na.qualcomm.com (10.47.209.196)
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: dMChtsJJ-zWpN3yAjY4I-2Ng8OUfUVj9
-X-Proofpoint-ORIG-GUID: dMChtsJJ-zWpN3yAjY4I-2Ng8OUfUVj9
+X-Proofpoint-GUID: GB1ckkfAUYMPR-G461qCFop5mRbmJ4t-
+X-Proofpoint-ORIG-GUID: GB1ckkfAUYMPR-G461qCFop5mRbmJ4t-
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
  definitions=2024-04-30_08,2024-04-30_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 adultscore=0
- spamscore=0 suspectscore=0 mlxlogscore=999 mlxscore=0 phishscore=0
- clxscore=1015 malwarescore=0 bulkscore=0 lowpriorityscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
+ impostorscore=0 lowpriorityscore=0 mlxlogscore=999 priorityscore=1501
+ phishscore=0 mlxscore=0 adultscore=0 bulkscore=0 clxscore=1011
+ suspectscore=0 spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.19.0-2404010003 definitions=main-2404300103
 
-SM8650 video clock controller has most clocks same as SM8450,
-but it also has few additional clocks and resets. Add device tree
-bindings for the video clock controller on Qualcomm SM8650 platform
-by defining these additional clocks and resets on top of SM8450.
+Add support for videocc XO clk ares for consumer drivers to be
+able to request this reset.
 
+Fixes: f53153a37969 ("clk: qcom: videocc-sm8550: Add video clock controller driver for SM8550")
 Signed-off-by: Jagadeesh Kona <quic_jkona@quicinc.com>
+Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 ---
- .../bindings/clock/qcom,sm8450-videocc.yaml   |  6 ++++-
- .../dt-bindings/clock/qcom,sm8650-videocc.h   | 23 +++++++++++++++++++
- 2 files changed, 28 insertions(+), 1 deletion(-)
- create mode 100644 include/dt-bindings/clock/qcom,sm8650-videocc.h
+ drivers/clk/qcom/videocc-sm8550.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/clock/qcom,sm8450-videocc.yaml b/Documentation/devicetree/bindings/clock/qcom,sm8450-videocc.yaml
-index 78a1bb5be878..922e95c61778 100644
---- a/Documentation/devicetree/bindings/clock/qcom,sm8450-videocc.yaml
-+++ b/Documentation/devicetree/bindings/clock/qcom,sm8450-videocc.yaml
-@@ -8,18 +8,22 @@ title: Qualcomm Video Clock & Reset Controller on SM8450
+diff --git a/drivers/clk/qcom/videocc-sm8550.c b/drivers/clk/qcom/videocc-sm8550.c
+index d73f747d2474..25133cf5a2b8 100644
+--- a/drivers/clk/qcom/videocc-sm8550.c
++++ b/drivers/clk/qcom/videocc-sm8550.c
+@@ -10,7 +10,7 @@
+ #include <linux/pm_runtime.h>
+ #include <linux/regmap.h>
  
- maintainers:
-   - Taniya Das <quic_tdas@quicinc.com>
-+  - Jagadeesh Kona <quic_jkona@quicinc.com>
+-#include <dt-bindings/clock/qcom,sm8450-videocc.h>
++#include <dt-bindings/clock/qcom,sm8650-videocc.h>
  
- description: |
-   Qualcomm video clock control module provides the clocks, resets and power
-   domains on SM8450.
+ #include "clk-alpha-pll.h"
+ #include "clk-branch.h"
+@@ -380,6 +380,7 @@ static const struct qcom_reset_map video_cc_sm8550_resets[] = {
+ 	[CVP_VIDEO_CC_MVS1C_BCR] = { 0x8074 },
+ 	[VIDEO_CC_MVS0C_CLK_ARES] = { .reg = 0x8064, .bit = 2, .udelay = 1000 },
+ 	[VIDEO_CC_MVS1C_CLK_ARES] = { .reg = 0x8090, .bit = 2, .udelay = 1000 },
++	[VIDEO_CC_XO_CLK_ARES] = { .reg = 0x8124, .bit = 2, .udelay = 100 },
+ };
  
--  See also:: include/dt-bindings/clock/qcom,sm8450-videocc.h
-+  See also::
-+    include/dt-bindings/clock/qcom,sm8450-videocc.h
-+    include/dt-bindings/clock/qcom,sm8650-videocc.h
- 
- properties:
-   compatible:
-     enum:
-       - qcom,sm8450-videocc
-       - qcom,sm8550-videocc
-+      - qcom,sm8650-videocc
- 
-   reg:
-     maxItems: 1
-diff --git a/include/dt-bindings/clock/qcom,sm8650-videocc.h b/include/dt-bindings/clock/qcom,sm8650-videocc.h
-new file mode 100644
-index 000000000000..4e3c2d87280f
---- /dev/null
-+++ b/include/dt-bindings/clock/qcom,sm8650-videocc.h
-@@ -0,0 +1,23 @@
-+/* SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause) */
-+/*
-+ * Copyright (c) 2024, Qualcomm Innovation Center, Inc. All rights reserved.
-+ */
-+
-+#ifndef _DT_BINDINGS_CLK_QCOM_VIDEO_CC_SM8650_H
-+#define _DT_BINDINGS_CLK_QCOM_VIDEO_CC_SM8650_H
-+
-+#include "qcom,sm8450-videocc.h"
-+
-+/* SM8650 introduces below new clocks and resets compared to SM8450 */
-+
-+/* VIDEO_CC clocks */
-+#define VIDEO_CC_MVS0_SHIFT_CLK					12
-+#define VIDEO_CC_MVS0C_SHIFT_CLK				13
-+#define VIDEO_CC_MVS1_SHIFT_CLK					14
-+#define VIDEO_CC_MVS1C_SHIFT_CLK				15
-+#define VIDEO_CC_XO_CLK_SRC					16
-+
-+/* VIDEO_CC resets */
-+#define VIDEO_CC_XO_CLK_ARES					7
-+
-+#endif
+ static const struct regmap_config video_cc_sm8550_regmap_config = {
 -- 
 2.43.0
 
