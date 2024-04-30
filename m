@@ -1,188 +1,132 @@
-Return-Path: <linux-kernel+bounces-164262-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-164261-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id DCDD68B7B85
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 17:28:44 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 40C408B7B7D
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 17:28:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8E447285576
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 15:28:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D5DC21F22002
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 15:28:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 60825177992;
-	Tue, 30 Apr 2024 15:27:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 14332F9D6;
+	Tue, 30 Apr 2024 15:27:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Ex6G+WZF"
-Received: from mail-lj1-f170.google.com (mail-lj1-f170.google.com [209.85.208.170])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="knaUVQlZ"
+Received: from mail-il1-f194.google.com (mail-il1-f194.google.com [209.85.166.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D45FD174EF8;
-	Tue, 30 Apr 2024 15:27:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E6473143747;
+	Tue, 30 Apr 2024 15:27:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714490854; cv=none; b=fxX3M6CVKLLldDo1KAFTFdYldFYsd0pWsLSiLfFPI/joulS3j2lTkUq6Lo/DNv1BoKqS5r5CGtFWUZY5SgazoXgzvUjGMyMa/YbLqvT5QkgivaHK2V4H6h6lqnL48qqRsUBgvNnsZYKCefeSE1ZR3hwvirCuvm5QivhwDeFS4XU=
+	t=1714490851; cv=none; b=BTNdNag4jmoQEpt9M5DQK/xSDDlal5tbFqpq4PmEQBXEtJyakA2/NdW1kD6icT4memRB5WQWmW4MEkARtgtYFgxfDc1bqQefHtR0DJietqW8o47ZPlmkyMHF6gBiOzshIO3HDbhCxg00mLCoreJGQbYZqEBpNZBRg0gg86lhwjw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714490854; c=relaxed/simple;
-	bh=G2aFg75Ul9Crtdd2fDfTN6nEZKobxn6q24Vr/7Ka/YE=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=p0tpx96OGhFFeIh/Uccu3f5io8wCXjAbFf+vjqPvx6Hq21wMfvnFEiVWxkXNDpAzm6d3bIwOtQ9iPT0u/dysaVP2oNBUMXrg+c8wbsb/GuT1WA9/6+1YoVAMU883ekbXDEfXWJURzigt+RKlRatwAnfXPDEQxx38WOCDcEt+bNM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Ex6G+WZF; arc=none smtp.client-ip=209.85.208.170
+	s=arc-20240116; t=1714490851; c=relaxed/simple;
+	bh=Ss7g34ijX2BvxAvxl1n7pOtIXySDgZt+SZtJaMRV9dA=;
+	h=MIME-Version:From:Date:Message-ID:Subject:To:Cc:Content-Type; b=g5VBI6w3DBPNrlI+winTARw1yfznNq1LPKVNeEyWSv6/CSzim48zNAL/SpJBWEFFYVr3K3KN/3ByMh5vtAdno9saBTVfQvC7Q0eAVEs/Pja0CsSeCwcTJn6py/6SRj74kR5+R1h9f7FbaFku67Gv8b/kpUb4j2PFKxBYzK41FvU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=knaUVQlZ; arc=none smtp.client-ip=209.85.166.194
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f170.google.com with SMTP id 38308e7fff4ca-2dd615b6c44so63352821fa.0;
-        Tue, 30 Apr 2024 08:27:32 -0700 (PDT)
+Received: by mail-il1-f194.google.com with SMTP id e9e14a558f8ab-36c50653eb6so9839435ab.3;
+        Tue, 30 Apr 2024 08:27:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714490851; x=1715095651; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=+1HgWwLjoipLTcuV2mY+tWY78vZZqlbVL58B4f0iiu4=;
-        b=Ex6G+WZFfD8IybSvygSSSBp5gAiM9pb1wbNNfy+wtSjGXtMX5x/QWOUW2nKL4bhmTV
-         fPHF4rWf7L00B/n7V2CfwqsDeeha0Y6tH9F64PYq5nl5D1VKBy7NT31S3P1AADtGKkcv
-         87xU3eQrBDg/WN7qoHVcweXth09RIc34U7P6a6GzeMGhUJw9dMcnXM109z1d30m0MdUm
-         czxdFPjiAqoCPicn34xCoVyb4lnF7AUK+f0U5zH57GWpRBhIclRXyisKF67qwfHNT0z3
-         PIA8GDYofdyBx7PVxkLFuQlwieQv0tLnSX+6sTo1URZx9Ur5i1yILqIPoyX1kRtPCNeK
-         fRiQ==
+        d=gmail.com; s=20230601; t=1714490849; x=1715095649; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=HxYlb1r/6wE+G6eenoHFs2Veuqgy7yacwzWU3bvU/Ic=;
+        b=knaUVQlZWTR93IRm1hQoVKwC4oMzodSPojD/df6cw4pFDNouwPWBl1WhEEX78YsO+e
+         bpPCn3dCp3Tl2ZBEfvj5Hob3/Y6nMPmX8KekHA0h8v3l8VQa2O9NDUcByLgarOrnvZQo
+         H7cBkbq71IhLZyDYAEFoY+XfkmLdhVBsSe0RKfX5sRNVrL620jnlOF2jm5POmxB9QWtz
+         t2Pj9jgWxEil287wIAeyqMVGVXvI/LXV+2e6vBbbsCQOUB92L4zGTTP5nkYCzr69qqWM
+         65Mx/rUGRCG5DxAGdOL7+h9HdmQqZAruPrr+0kHYpfoWTBh8CXyhIBiplWbdOtwyIpxQ
+         QvuQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714490851; x=1715095651;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=+1HgWwLjoipLTcuV2mY+tWY78vZZqlbVL58B4f0iiu4=;
-        b=u6OUZOAIZY1G5QsQuycYWZ2RTnbgihl3i6b3WcG2SHdLPenHZUc0ccqLRXrs47E6aP
-         XztgDgY03wq2BDqcBPRYAIQI7jO+FCGFFFPHV+Q28irTMECHtwZqfNlE9bflHm+eP95Z
-         /wb3RozJr2NkNWCXklsMFJQ5aNuf/OD5eY3AL/hCqnluPLz770X2GGpO/nwwaoKuvU2C
-         8c1sbFm1CjvoreQ3fC3Prn1xXy0nD8+GYlPz2gHodjUVOBgGjNhc7xzUgcnjzKoQ86u3
-         GjvsMqzG/+SEbEdB6zjOMrh8EgvQmYMz2BAqMpyd0ldW3VscHl8Z68TrX+KPzO74H8ft
-         ptuQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWxdrcM8KjaGBRagSvt7Hh5UPK3AqGd3i0c9UzJIeVKgeMF9ie1ggzlPSPstu/1W+KU0Im5QhhrfmCY6E96PTOGQ36Yzabqs/qa57ecFvG5v+c6McOw+RMyVvzI7Xeb0kgu+yqZ7L3kwgXEZ2iMqIwSmiBny/XW4kZcXNwxPfnaRbc1pCMOCeCD
-X-Gm-Message-State: AOJu0YzvRV1XAbhSxT7cwe0lvMRM4kZwSeP+SBCm9OC7f2K1KQrD9zYR
-	8deQ72ToA5T3OOAwO/GLwSiUqr5IWWDERXlbkk4gQlBLJ65e8iHhG1L4NAANaSbAhvJNwDeQCkg
-	7UEoQrDm85FxX+rhjJpcVkbxVzC0=
-X-Google-Smtp-Source: AGHT+IH7pdZicu4uh/ZkHr0Ti6TFgkBfJ9pqAtcJFUfLakRoyEY+RT0Y2F0U8MhrSCG7VjRQg5cnZkXUG29elM5wPDA=
-X-Received: by 2002:a2e:9f09:0:b0:2de:48ef:c3ce with SMTP id
- u9-20020a2e9f09000000b002de48efc3cemr23422ljk.49.1714490850543; Tue, 30 Apr
- 2024 08:27:30 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1714490849; x=1715095649;
+        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=HxYlb1r/6wE+G6eenoHFs2Veuqgy7yacwzWU3bvU/Ic=;
+        b=lqnvsHPkt/WdS8NDCcXN+YbwPa8GKmFn9EPn+UNVTleb0drY2RMDdT9RG0vUrAg+g/
+         UFl5QHh2Os9rV4MEvA3xf31WPzZLjMyQ4QORcsTXwhq0kXGj7ob5HcJNJOTQ0nAKb+sZ
+         uQxh7lhksiffW3N1aMlfMYsszRGEKDkSQfh68WbedaK2IgpB+zFzHH2gnOHlo5uf1n5C
+         EbbF5fgHdpRLOhpf8p9KIIs9gDC1NsOa/qb+79qH7WTBnaQwS8ux3qu44tgtWeQEfqtr
+         KkABUv5EphRU3ZFCyJN63d6QBdk8O6FfT7wiQU1lkksGEKTIEhDDL3/QWUsv8NxJ5ZLx
+         NJ0Q==
+X-Forwarded-Encrypted: i=1; AJvYcCVIRC4H7VIXVBA3PkaovEY+TrNmmfk5rBlgL1KPpuRUhd6qIyu+kovEoaqM8RYK+WuEcjJvP/7QxV6KOv1KDavo07nVnJmcsXmueUFelQ8NBleq7xQOO5d56c9HCtdKC1Ue6BxRUklYtQ==
+X-Gm-Message-State: AOJu0YxTpsT3wOze1surcAL3hmgT3nEzJVROxORQV/MhIIVRlURyps0w
+	BN06vux+mRCYqPSmqaDRQAnJEKCc510BbPcyVG7fl/gugEPQzLfy1Vgao8M/zRi2VHWkyl/hlIe
+	ZZqY6YrYr5IQIlydrCiqZPJJqw87Ciet0fA0=
+X-Google-Smtp-Source: AGHT+IFyu8rsZYSJfyPGIb3N+4eo+tU/9t1+q4IauQha8NwkL2oy3iMHzAHpxLs7B7pl1JrNllUUlohxBgGp29NbiA8=
+X-Received: by 2002:a05:6e02:12e8:b0:36c:4688:85b0 with SMTP id
+ l8-20020a056e0212e800b0036c468885b0mr63734iln.5.1714490848910; Tue, 30 Apr
+ 2024 08:27:28 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240429190500.30979-1-ryncsn@gmail.com> <20240429190500.30979-3-ryncsn@gmail.com>
- <Zi_xeKUSD6C8TNYK@casper.infradead.org> <CAMgjq7D5zwksHxh5c00U82BCsLxYj-_GevZZtAM8xNZO7p-RQQ@mail.gmail.com>
- <CAKFNMomdPzaF4AL5qHCZovtgdefd3V35D_qFDPoMeXyWCZtzUg@mail.gmail.com>
- <Zi_3OxP6xKjBWBLO@casper.infradead.org> <CAKFNMokDR7oQxDH8WeUeJKm6GLDo54AnByYXxdAWHjiFeGWEwA@mail.gmail.com>
-In-Reply-To: <CAKFNMokDR7oQxDH8WeUeJKm6GLDo54AnByYXxdAWHjiFeGWEwA@mail.gmail.com>
-From: Kairui Song <ryncsn@gmail.com>
-Date: Tue, 30 Apr 2024 23:27:13 +0800
-Message-ID: <CAMgjq7D0HwiD-v_HCQWkGNoK2hWzL-B-1u0zRAp9xR6p+HfiUQ@mail.gmail.com>
-Subject: Re: [PATCH v3 02/12] nilfs2: drop usage of page_index
-To: Ryusuke Konishi <konishi.ryusuke@gmail.com>
-Cc: Matthew Wilcox <willy@infradead.org>, linux-mm@kvack.org, 
-	Andrew Morton <akpm@linux-foundation.org>, "Huang, Ying" <ying.huang@intel.com>, 
-	Chris Li <chrisl@kernel.org>, Barry Song <v-songbaohua@oppo.com>, 
-	Ryan Roberts <ryan.roberts@arm.com>, Neil Brown <neilb@suse.de>, Minchan Kim <minchan@kernel.org>, 
-	Hugh Dickins <hughd@google.com>, David Hildenbrand <david@redhat.com>, Yosry Ahmed <yosryahmed@google.com>, 
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-nilfs@vger.kernel.org
+From: Petar Stoykov <pd.pstoykov@gmail.com>
+Date: Tue, 30 Apr 2024 17:27:17 +0200
+Message-ID: <CADFWO8EZWkXeAMcURgGGEmzVjiSxFTVAbKpsb2Qmv66EZiTc+A@mail.gmail.com>
+Subject: [PATCH v2 0/3] Add support for Sensirion SDP500
+To: linux-iio@vger.kernel.org
+Cc: Jonathan Cameron <jic23@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Lars-Peter Clausen <lars@metafoo.de>, 
+	Rob Herring <robh+dt@kernel.org>, Andy Shevchenko <andriy.shevchenko@linux.intel.com>, 
+	Angel Iglesias <ang.iglesiasg@gmail.com>, Conor Dooley <conor+dt@kernel.org>, 
+	linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Tue, Apr 30, 2024 at 4:01=E2=80=AFAM Ryusuke Konishi
-<konishi.ryusuke@gmail.com> wrote:
->
-> On Tue, Apr 30, 2024 at 4:38=E2=80=AFAM Matthew Wilcox wrote:
-> >
-> > On Tue, Apr 30, 2024 at 04:28:41AM +0900, Ryusuke Konishi wrote:
-> > > On Tue, Apr 30, 2024 at 4:22=E2=80=AFAM Kairui Song <ryncsn@gmail.com=
-> wrote:
-> > > >
-> > > > On Tue, Apr 30, 2024 at 3:14=E2=80=AFAM Matthew Wilcox <willy@infra=
-dead.org> wrote:
-> > > > >
-> > > > > On Tue, Apr 30, 2024 at 03:04:50AM +0800, Kairui Song wrote:
-> > > > > > From: Kairui Song <kasong@tencent.com>
-> > > > > >
-> > > > > > page_index is only for mixed usage of page cache and swap cache=
-, for
-> > > > > > pure page cache usage, the caller can just use page->index inst=
-ead.
-> > > > > >
-> > > > > > It can't be a swap cache page here (being part of buffer head),
-> > > > > > so just drop it, also convert it to use folio.
-> > > > > >
-> > > > > > Signed-off-by: Kairui Song <kasong@tencent.com>
-> > > > > > Cc: Ryusuke Konishi <konishi.ryusuke@gmail.com>
-> > > > > > Cc: linux-nilfs@vger.kernel.org
-> > > > > > ---
-> > > > > >  fs/nilfs2/bmap.c | 5 ++---
-> > > > > >  1 file changed, 2 insertions(+), 3 deletions(-)
-> > > > > >
-> > > > > > diff --git a/fs/nilfs2/bmap.c b/fs/nilfs2/bmap.c
-> > > > > > index 383f0afa2cea..f4e5df0cd720 100644
-> > > > > > --- a/fs/nilfs2/bmap.c
-> > > > > > +++ b/fs/nilfs2/bmap.c
-> > > > > > @@ -453,9 +453,8 @@ __u64 nilfs_bmap_data_get_key(const struct =
-nilfs_bmap *bmap,
-> > > > > >       struct buffer_head *pbh;
-> > > > > >       __u64 key;
-> > > > > >
-> > > > > > -     key =3D page_index(bh->b_page) << (PAGE_SHIFT -
-> > > > > > -                                      bmap->b_inode->i_blkbits=
-);
-> > > > > > -     for (pbh =3D page_buffers(bh->b_page); pbh !=3D bh; pbh =
-=3D pbh->b_this_page)
-> > > > > > +     key =3D bh->b_folio->index << (PAGE_SHIFT - bmap->b_inode=
-->i_blkbits);
-> > > > > > +     for (pbh =3D folio_buffers(bh->b_folio); pbh !=3D bh; pbh=
- =3D pbh->b_this_page)
-> > > > > >               key++;
-> > > > > >
-> > > > > >       return key;
-> > > > >
-> > > > > Why isn't this entire function simply:
-> > > > >
-> > > > >         return bh->b_blocknr;
-> > > > >
-> > > >
-> > > > Nice idea, I didn't plan for extra clean up and test for fs code, b=
-ut
-> > > > this might be OK to have, will check it.
-> > >
-> > > Wait a minute.
-> > >
-> > > This function returns a key that corresponds to the cache offset of
-> > > the data block, not the disk block number.
-> > >
-> > > Why is returning to bh->b_blocknr an alternative ?
-> > > Am I missing something?
-> >
-> > Sorry, I forgot how b_blocknr was used.  What I meant was:
-> >
-> >         u64 key =3D bh->b_folio->index << (PAGE_SHIFT - bmap->b_inode->=
-i_blkbits);
-> >
-> >         return key + bh_offset(bh) >> bmap->b_inode->i_blkbits;
-> >
-> > The point is to get rid of the loop.  We could simplify this (and make
-> > it ready for bs>PS) by doing:
-> >
-> >         loff_t pos =3D folio_pos(bh->b_folio) + bh_offset(bh);
-> >         return pos >> bmap->b_inode->i_blkbits;
->
-> I see, I understand the idea that it would be better to eliminate the loo=
-p.
->
-> The above conversion looks fine.
-> What are you going to do, Kairui ?
+From c4437fd0ea296c4c964b1fb924144ae24a2ce443 Mon Sep 17 00:00:00 2001
+From: Petar Stoykov <pd.pstoykov@gmail.com>
+Date: Mon, 29 Apr 2024 16:41:30 +0200
+Subject: [PATCH 0/3] Add support for Sensirion SDP500
 
-Hi, I'd like to remove the loop as Matthew suggested, that will make
-the code cleaner.
-I'm not very familiar with this part so I'll check related code first
-for double check, won't take long though.
+This patch series introduces support for Sensirion SDP500 in the IIO
+subsystem. The series is split into three patches:
 
-> Thanks,
-> Ryusuke Konishi
+1. The first patch adds the device tree bindings.
+2. The second patch implements the device driver.
+3. The third patch updates the MAINTAINERS file.
+
+The driver is relatively simple. It provides a way to read the measured
+differential pressure directly in Pa, as the device has a fixed scale
+factor of 1/60. When an applications wants to read the pressure value,
+3 bytes are read from the device, 2 are data and 1 is CRC8. If the crc
+check passes, the calculated pressure value is returned in Pa units.
+
+The initialization of the device just starts the measurement process.
+
+We have been using this device and driver in a product development for
+almost a year now. There the pressure is read every 25ms and is used in a
+control loop. We have not even seen crc errors. We are using the
+"linux-imx" repository and not the mainline one but I see no risky kernel
+functions in use so it should be fine here too.
+
+All feedback is appreciated! Thank you for taking the time to review this.
+
+v1->v2:
+Many fixes suggested by Jonathan Cameron and Krzysztof Kozlowsk.
+Mainly code style and re-using existing functions instead of custom ones.
+The fixes are both in dt-bindings and iio: pressure.
+
+Petar Stoykov (3):
+  dt-bindings: iio: pressure: Add Sensirion SDP500
+  iio: pressure: Add driver for Sensirion SDP500
+  MAINTAINERS: Add Sensirion SDP500
+
+ .../iio/pressure/sensirion,sdp500.yaml        |  39 +++++
+ MAINTAINERS                                   |   6 +
+ drivers/iio/pressure/Kconfig                  |   9 ++
+ drivers/iio/pressure/Makefile                 |   1 +
+ drivers/iio/pressure/sdp500.c                 | 144 ++++++++++++++++++
+ 5 files changed, 199 insertions(+)
+ create mode 100644
+Documentation/devicetree/bindings/iio/pressure/sensirion,sdp500.yaml
+ create mode 100644 drivers/iio/pressure/sdp500.c
+
+-- 
+2.30.2
 
