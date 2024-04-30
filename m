@@ -1,471 +1,207 @@
-Return-Path: <linux-kernel+bounces-163222-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-163223-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7E6F88B675E
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 03:23:53 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id CA6418B6760
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 03:24:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DC9141F22D1A
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 01:23:52 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3FA381F22CD4
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 01:24:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC5B11FBA;
-	Tue, 30 Apr 2024 01:23:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF550525D;
+	Tue, 30 Apr 2024 01:24:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=jms.id.au header.i=@jms.id.au header.b="WW2m5ioI"
-Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com [209.85.218.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="El1bG2yX"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.17])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F4D68F44;
-	Tue, 30 Apr 2024 01:23:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.41
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714440224; cv=none; b=OwEG0Mm1c6Wcm+K3sXizXLF/Gdj5Fcl8gkHdvnFxuE3MP8u/+dFLtNw5WkAFhVWJss2e8iTj85xW6frRvxM85u88KVKEC6HcMo3Bnsb/czIU0i7+bMsEE0aw+1sX7527crSkz+7N1CnaePJVYN1kkpZYP4dI24H2UX88nFG4FKU=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714440224; c=relaxed/simple;
-	bh=TnZwfsZx2ucZBjN6mOTryW5KGCua9reu3XD0pu2IX3A=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=NTtb5QqcXwBFAMRxdJiAaK3oTPoYp5Rk4JEvkkhorMq2PRwVqtBuSCaBZagAl/ofUVXfUzPTzvyugFyCYqqATitYUuGsQm89oC4JJsd+BemxoLIlaqLEotorDcV9kalsO0+G1MZdp0dkCo3F6E5ttCQVc/GXGUhIe+pizExQub4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=jms.id.au; spf=pass smtp.mailfrom=gmail.com; dkim=pass (1024-bit key) header.d=jms.id.au header.i=@jms.id.au header.b=WW2m5ioI; arc=none smtp.client-ip=209.85.218.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=jms.id.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-a58e7628aeaso326223866b.2;
-        Mon, 29 Apr 2024 18:23:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=jms.id.au; s=google; t=1714440220; x=1715045020; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=3PdUb9LjsVDNf6ovn3H4/jD8perb1PvcBrJUScqHFek=;
-        b=WW2m5ioIwpsrh6dTDjwG0p2FL+qSR0gOogIHuPvBD9LlhneBYUl4UjNWMVQXVwUfmK
-         XqNuyaX14XfynPG/BBCphHXdrALMe6YxxiDcYj/xMKA/DNUs7U52P8yiiGZFxLfa70Kt
-         fY9WT3KEzOKjapdgh7/79KBFkl3714+jGEBAI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714440220; x=1715045020;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=3PdUb9LjsVDNf6ovn3H4/jD8perb1PvcBrJUScqHFek=;
-        b=des0yxjF8DrbCuNRbijLl6fV/gECuNTL12pBAt4bOhGra1DJ0mpFm71uswTaXm4rXd
-         6wMjy+5GbIp82Jy4Ye50McRE2S5qAcIe6alnATl8J55uEhQ4vo2PcJ19Fh2Mcd9C3As+
-         al3VJ01Ne/aZZ8JHByuQ1rzknkb1w+NBpJMaHXnKgKYr8OY+QFOPiUqLD5Fsd7mAotCN
-         LHU6UptB46aZ8rLucg+gkfNpwMovCSn3cEJfAK29/LZa/3hmRRqaMQhuA7OoSw+1wR3p
-         l4weH9n7WGQX87qK5vc5JKySFftFe7qNcqNMsDYlu+ahN0Q4KpICJ+THD6mJPmEWWW3S
-         99/g==
-X-Forwarded-Encrypted: i=1; AJvYcCXxvuTwTCTYqd0mKK5gHqW9peT4f5jypzG8AboYLlJo8YVQSeY0Hj44Fd4pCxRZ3CKpm4hQm/51BrFXN3GfIRlDTdofhoKf9foqpMNbE8y3+ST2x8/FMdZ8jDbE31OzSSlQVee2k9PaNQ==
-X-Gm-Message-State: AOJu0YyxMVyce9T7BU31bxjbxIKgi+9gBwKGqXCmeByc2ZYNbljwbGkz
-	h68tFVixhI/HJweP4ox+6UzOX01LFKdcaosesEiX3hQhGbv4UetYHeUwxzUzIt35XhWVfbqBueH
-	890U1emTMkKyyT9WOn0I4RS7QJgw=
-X-Google-Smtp-Source: AGHT+IH+Qt6x0XBqvPo49cOG5DAB814mezQlfPIfh6JhFotcxpTW9zgUYTi/wkn70wZ+OUPSs/C86VoaRTOZlu+yYwI=
-X-Received: by 2002:a17:906:46c3:b0:a58:a312:d2f1 with SMTP id
- k3-20020a17090646c300b00a58a312d2f1mr789224ejs.13.1714440220010; Mon, 29 Apr
- 2024 18:23:40 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EEC581C33;
+	Tue, 30 Apr 2024 01:24:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.17
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1714440244; cv=fail; b=jmaZ1lDxtvfafOErhuEFxIkQnS6GgZjtk0RGZyRV1L3VumO7SPQe4/5zdIpxtUpbTjdjNgOdFl5yvhFDoqQpIKWx6sOq0DP7XohWWTykguqa0XPRdHAQiwzMVIBhHegFWubR0xJhrf8f7FQXvGefUg7iUMDcKPOO6imB+C4dlmY=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1714440244; c=relaxed/simple;
+	bh=okZnQo+c+wHFKUkmmQ5vXAnUBeG9b4SoEe5PFBmrW9c=;
+	h=Date:From:To:CC:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=L2OfKz+Lk6IZxe9o3k7/li4jx3PwE5h7xOb+hZIJv8vG3Fo+QVUjXSgqyz41AfYPjvW8Ur1XqKsK7tFmUx4BLGSPKtB5b8QsuQAZV4qSHGg0A+1B2kv7tcBgwXygGcryNwCEl7jPAgBlWrhiFyInCaDriqxKrOGDQRsrPh7nx74=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=El1bG2yX; arc=fail smtp.client-ip=192.198.163.17
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1714440242; x=1745976242;
+  h=date:from:to:cc:subject:message-id:references:
+   in-reply-to:mime-version;
+  bh=okZnQo+c+wHFKUkmmQ5vXAnUBeG9b4SoEe5PFBmrW9c=;
+  b=El1bG2yX/SseRuy9qpzCk5bqd8GIUiAf6iuKs0s2JT2S1RRl+Hxerj03
+   cpkXR1qFxRD60jEaB4dX0lTJDEbNX69qyQ1kX9i2iairNAP5cvD/DX+vQ
+   f4lb7qjJltBO31FJfSiShXNpbXvEXkCz3pAYhRmbZKMLTGtFFr2rGlZxK
+   xBzOqiC8CtYdvm1MVOziR7BPNfGBBoCXj61b6ga54+QZd8EDmQMsMitaX
+   UK+Ff08HqFR3Z1RM9rtu+fGW7FBuNYeuMHlxNiU6ffVgUckjSJ4pqZYI8
+   sxrbJJwgHMVc2UuRCQ/5BCUsFyC5e+QRZZROkn5yYevj7eq+Xwi8pHXGX
+   w==;
+X-CSE-ConnectionGUID: CHCH79W/RJuHokTTrNf7Vw==
+X-CSE-MsgGUID: nBicA/jnRzibm1M0sal0xQ==
+X-IronPort-AV: E=McAfee;i="6600,9927,11059"; a="10002227"
+X-IronPort-AV: E=Sophos;i="6.07,241,1708416000"; 
+   d="scan'208";a="10002227"
+Received: from fmviesa005.fm.intel.com ([10.60.135.145])
+  by fmvoesa111.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Apr 2024 18:24:01 -0700
+X-CSE-ConnectionGUID: nMkGle3yTLKVXNP62q49Pw==
+X-CSE-MsgGUID: oCH6pVAcQG6UMlUn0MH0Bg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,241,1708416000"; 
+   d="scan'208";a="30762609"
+Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
+  by fmviesa005.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 29 Apr 2024 18:24:01 -0700
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Mon, 29 Apr 2024 18:24:00 -0700
+Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
+ orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Mon, 29 Apr 2024 18:24:00 -0700
+Received: from NAM04-MW2-obe.outbound.protection.outlook.com (104.47.73.169)
+ by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Mon, 29 Apr 2024 18:24:00 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=et0M/FRR9pEnmUb5cJh7lsngQiywDNK4Sb4L/1dLTLA6BVFuOTrdXkZh4ziVlUD3KaSBPcdE6UQ2eTz9UeMvZTQSt5wHhRFlbAbMBqI7fIAYpPRT6Ge9rRce/MSEmDJX5GNYLYCECgePY5ISOCXJS/+ri2vZhPKjvHgpmaCoav+BdNR4qElQnF5kGFHtkESjd9i3UZ8An5id+f67BG0YXWH2jFm1WUrQMlyrsqZS/i/bCMXajdoAm1+pox7p34m05u1ZzS1lnfRgV8Hs9/a4iTW88kKHcOs1qphuAUaYWIMvLiB2YxHkOaAGgiLs8/IsEYYzBS/rSvF5zeERNY+cNQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=awogkJb6JTo/ZZoQbp/XIo+++I6hS20jm/UtmM2GpF4=;
+ b=OLEUhuBLciclwSLh9oJ9o3wpHtoYA6nVxvnaOsp67pevO1hS2SHcGvMOIEQPhkt3F94rg+o2fhqP7X+vL9Gnrt9Xr8bKt8QnT9fslQL36LPvEZwcZMvcF5fJIvYTry5HwyVd2buYUpiSMqDMBX3QfZ6Q8am04Tqosy6LX/e/533cufsYUd8D18Ji6KL/WOu0LTAMRLKKVFKA7NMFVU8hllqBZ4G58wTKZa7ZAJviMbz+Sip/K4K3kRkx9mlInMVBO3hB1g+eYP/fXyQDONCfA7CeZmIVgWvfizMz+UwPjEsG+X2eqqFLpzv7TRtocjrJjEai5c9JryaeZsN4hBRb2A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from PH8PR11MB8107.namprd11.prod.outlook.com (2603:10b6:510:256::6)
+ by DM4PR11MB7351.namprd11.prod.outlook.com (2603:10b6:8:104::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7519.35; Tue, 30 Apr
+ 2024 01:23:54 +0000
+Received: from PH8PR11MB8107.namprd11.prod.outlook.com
+ ([fe80::6b05:74cf:a304:ecd8]) by PH8PR11MB8107.namprd11.prod.outlook.com
+ ([fe80::6b05:74cf:a304:ecd8%5]) with mapi id 15.20.7519.031; Tue, 30 Apr 2024
+ 01:23:54 +0000
+Date: Mon, 29 Apr 2024 18:23:51 -0700
+From: Dan Williams <dan.j.williams@intel.com>
+To: Vishal Verma <vishal.l.verma@intel.com>, Dan Williams
+	<dan.j.williams@intel.com>, Dave Jiang <dave.jiang@intel.com>, "Alison
+ Schofield" <alison.schofield@intel.com>, Andrew Morton
+	<akpm@linux-foundation.org>
+CC: <linux-mm@kvack.org>, <nvdimm@lists.linux.dev>,
+	<linux-cxl@vger.kernel.org>, <linux-kernel@vger.kernel.org>, Vishal Verma
+	<vishal.l.verma@intel.com>
+Subject: Re: [PATCH v2 1/4] dax/bus.c: replace WARN_ON_ONCE() with lockdep
+ asserts
+Message-ID: <66304827d2095_14872943c@dwillia2-mobl3.amr.corp.intel.com.notmuch>
+References: <20240416-vv-dax_abi_fixes-v2-0-d5f0c8ec162e@intel.com>
+ <20240416-vv-dax_abi_fixes-v2-1-d5f0c8ec162e@intel.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20240416-vv-dax_abi_fixes-v2-1-d5f0c8ec162e@intel.com>
+X-ClientProxiedBy: MW4PR03CA0085.namprd03.prod.outlook.com
+ (2603:10b6:303:b6::30) To PH8PR11MB8107.namprd11.prod.outlook.com
+ (2603:10b6:510:256::6)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231120121954.19926-4-zev@bewilderbeest.net> <20231120121954.19926-6-zev@bewilderbeest.net>
-In-Reply-To: <20231120121954.19926-6-zev@bewilderbeest.net>
-From: Joel Stanley <joel@jms.id.au>
-Date: Tue, 30 Apr 2024 10:53:27 +0930
-Message-ID: <CACPK8Xf6vRKJZHuovMXd2h=nnuKW4m5mcRrfZaTsY987Ai6huQ@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] ARM: dts: aspeed: Add ASRock SPC621D8HM3 BMC
-To: Zev Weiss <zev@bewilderbeest.net>, Andrew Jeffery <andrew@codeconstruct.com.au>
-Cc: Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
-	linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org, 
-	openbmc@lists.ozlabs.org
-Content-Type: text/plain; charset="UTF-8"
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH8PR11MB8107:EE_|DM4PR11MB7351:EE_
+X-MS-Office365-Filtering-Correlation-Id: bb352971-4e8f-4150-55d2-08dc68b43323
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230031|1800799015|366007|376005;
+X-Microsoft-Antispam-Message-Info: =?us-ascii?Q?RoYcEL96eIC7wSZ8L35jQQyQCUCYx5kYH5IAmLEZ9LTanpaJ76RLpaesLK4S?=
+ =?us-ascii?Q?R9d24wC6YDEV0ip4o8MHYrxruMeuKLRq1Uhu1CkdjdMbd0LANJUOKtcAhP7k?=
+ =?us-ascii?Q?BJ9Ynj5G4V1aSCJUoCEvhQyz17CiQ9B7B/7V9td4MK7yOZrwqWyw+ASlrqdL?=
+ =?us-ascii?Q?eo1ATX1wsHEMHI/C7qfXeIqumyQBXbEJYiUVKK7NyGmL0RR+O3SmvPK2Q5Me?=
+ =?us-ascii?Q?R8UHHPyHEXmY0cqfiStEaNaTDEB/Kb4VGO98v4caK9+Gwk10ygmilSHe0Iog?=
+ =?us-ascii?Q?+s17AGXDQovV17ub7SUGoo+zN4rOG4giDqdrFVW13nn9XJaAgRsil7eiUcgw?=
+ =?us-ascii?Q?VsEyRZnO3bNRmlzTneHd3b9ed0DlbWmfz722PzuKJ5ZUjJDbGvmz+nR4REv4?=
+ =?us-ascii?Q?Zd1yM31fAXXlMPD90rPY4zmrQqpc268GZzgEuHrERj1WuHUPAA7b+cxK4VPg?=
+ =?us-ascii?Q?CoiZiUWGtGJO3Y+SjVUWqMddxd0/it0sl1hp7sMMA0Ow+VzkDkd8xM3b+Zug?=
+ =?us-ascii?Q?XbiD85Yooki0h4EjtdIe+862EXSlCdPdyhK7yXxJO+/XH6Qan6kU9Rh75TX/?=
+ =?us-ascii?Q?M2RvVYXU6oazLmJ3dEglNTmGzrpHlAb2EqUXiH1WKD5CQvIE+bccEusZjGNN?=
+ =?us-ascii?Q?83Jtye+EHmRutpUwP2H2vL2eRNvvqDYi6FGeQj4xuO9YKQrKYi08VKDqZ2Ij?=
+ =?us-ascii?Q?/NdahQAJU10/kSOIDPKSw9zgWYx5VZsTnhCNAcyeK/RXTW7ueV0NAaNjb2oE?=
+ =?us-ascii?Q?VlX7gwwJG5FaSB6U8mDe19MjhugvB8Ud0XU7GorULROsryY6ImeMH4UATJ9I?=
+ =?us-ascii?Q?atZUegpXW/vvGRyDvAxAyJtWE6rAR3YNB4puDDDsdVnGM0ubayRwKHxLbk5f?=
+ =?us-ascii?Q?V8qMufWY98n/K15qqVhgZqEd7IDAFNdUdX3WwMvflHzEWjA611JTSl1xYOYU?=
+ =?us-ascii?Q?z9qUegUh351EXnLFlO91m9nYk34h46rZnT3G2+GghGqrBJgb+B8e99vuJyOd?=
+ =?us-ascii?Q?N2UhFoFycwfPVI5PIcXIWS8toW/3N6oqbGJRiJvIkVv8QrkqJJXtjGmhUnaZ?=
+ =?us-ascii?Q?exnSzpWzOAUVLHZkG8jSA+eekK310bElzp74NNQCorpqgipGQq2e4zPgD6ux?=
+ =?us-ascii?Q?Z3UQHMMLxzqNshD32PeS3IpTbaDZk4RmM5Mh7Q08ED1f071Xmj1G8J4f93d9?=
+ =?us-ascii?Q?4cUcdANWssFcy9yQZdCzBvCVZApLhz2RZ7L3z75OSG/7B1oqXdN6+q8Lfps?=
+ =?us-ascii?Q?=3D?=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH8PR11MB8107.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(366007)(376005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?jySzYJdCBGNTCUMzEQ0plU3pdEXSwIoLs2Ze3bEEdPbaKpHGY9eBseZhAsKk?=
+ =?us-ascii?Q?HCSqNbstwLQwkV0RO6Iuz41lZYkkPyWNw0yHTHKhkrCUVVK+xTuW4E/Aow/2?=
+ =?us-ascii?Q?y+gS4vKvk5+2xXWNbCKDWRiEYdZveit0pRfGqOpxA9ogGAqrsq2k/keRaYWD?=
+ =?us-ascii?Q?0AByDZGKR12ADoQhpvyV0/7XMFKqRg8GKS28pE2g/yaomhto8AqU4T7gi1fN?=
+ =?us-ascii?Q?1Of7o0auUf80D/3lco5XzWZjSmEigcQiEIweKd5Sh6RoMr4vUoew4SsbnRJ1?=
+ =?us-ascii?Q?uRnQiNx0lTH2LxeTNRpNddDqbBj9QIwbH5ji0G5/nJFRme2Eg8zBPJOmUrYF?=
+ =?us-ascii?Q?YXVIN70Lq2YyC6Lqf6QsibYhveVWb9c/WY4FdgtTzn/kDaLfKgpuDb/7VMPg?=
+ =?us-ascii?Q?+DMM94ZSMiYagQxnIoKaXTk7Gvf/tePdT0fV4yHIHidOw6XF9gc+6/u9ray5?=
+ =?us-ascii?Q?RjwD6onKHDwmQCRsabLGg/I4onO3UkOFH/E79b5AheEgcEvyTz/cmcXbxHG8?=
+ =?us-ascii?Q?HoKqZQD7As22T/SgjlA/Ty1bV2USEFU7XXMLUDQbTBjkys4v88I8dsmafGNT?=
+ =?us-ascii?Q?IKlNSrD2hC3QfICzKDWipjMa1A/yN9txebq011mtgFEd+ysavG5jsAlTrtLL?=
+ =?us-ascii?Q?VPr2uaqZolCkM+d1zUPI6ZcD4CHMmDLBAcE5eM/lKXg12ipeGli/KUtTPFKa?=
+ =?us-ascii?Q?RjPfpkQD/NiRBVwYP7a/NF7Q3MrMlYWc3tj/oghXjshJDwVH6VHlORVurtC9?=
+ =?us-ascii?Q?+zl5OAWxRudXObPs+fslmEbf6/NTWVC1fj586ZudMuqhgzFUmyh4tHv9Nend?=
+ =?us-ascii?Q?xlLnxDl6fpf9fyX+0A1txJp+iqdMJ7R8EkBku9H7wyLeA4MJJAybU1VEHDbB?=
+ =?us-ascii?Q?r9S4LmAhmBHGePXGhi1Ft+xuiuZ3dUP9doUVnSxj5zAVNvI2i/S5b/lVhYSH?=
+ =?us-ascii?Q?+kLTrLv8i7qmh9A3d8L3o3IGtCGjwj3bW5WNW6JwOH0V63Z5A6a2vNlPwhOP?=
+ =?us-ascii?Q?KEjouu5TzD+7TigyVCviwkWfcFlyjovUu6QB37dqQs4DSJBL1LBQP05fWzmr?=
+ =?us-ascii?Q?tXSKePB8hl3tPa2iiaoLW31athJoH5DWCL4OzGXfSTdN6vDnVLbbwdiJGxVU?=
+ =?us-ascii?Q?XwIwJ+qopvNzYldU3aNgs8mm90Xqgx+NLSXQpCjMqx9GNsRUthwQzWi2+stS?=
+ =?us-ascii?Q?QyaADWzq5JtbvlV5xYWsdN8wCHwRWUBfJWnrl2H+GjaBWP7Fvp/QxcqmKmuN?=
+ =?us-ascii?Q?IQikiRfyFHnJ/Bk0XXy9pDQJH7rbUNLtsOy+zTbLi9+U49vh3Hasr9LXaobZ?=
+ =?us-ascii?Q?cDvbUOyZM5+yry7sH4i57MnAprhsyfeIDtNSIQATJ0lkH3E7AmNEHRNvFHFL?=
+ =?us-ascii?Q?pykgNRTPn7sWVfPT85m0woDvx+gyHbFsXdjHHR4feqP46NvzT5coxa2YVb75?=
+ =?us-ascii?Q?KLjR34cerfudTjFLm1pwLeu2I4FZOYBTYTJkA2Zl448W1jyaRxAR46LD/iAf?=
+ =?us-ascii?Q?Yj/Uxt6nocA0I6r0EX5pYZlrPc/c3PYklKrKbJvZajrmHotCIMHR3rSK8QGU?=
+ =?us-ascii?Q?Dpgoro6vOzDWGEHL5xF8k4yyF8uffdmJY2fORNCXMsIZX3HQlXRqItTHMag+?=
+ =?us-ascii?Q?eg=3D=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: bb352971-4e8f-4150-55d2-08dc68b43323
+X-MS-Exchange-CrossTenant-AuthSource: PH8PR11MB8107.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Apr 2024 01:23:54.2203
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 2i/3hqKpMsCnPXeoAdBTFErYzLZfbDeHc5G/SgKQO4W3B9SDYEmoyOtPDaQ8JSFTYTOnNetzWP5yhRtWn1OD05eHHHN2PfZS9plVAUlp3iE=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR11MB7351
+X-OriginatorOrg: intel.com
 
-Hi Zev,
-
-On Mon, 20 Nov 2023 at 22:50, Zev Weiss <zev@bewilderbeest.net> wrote:
->
-> This is a Xeon board broadly similar (aside from CPU vendor) to the
-> already-support romed8hm3 (half-width, single-socket, ast2500).  It
-> doesn't require anything terribly special for OpenBMC support, so this
-> device-tree should provide everything necessary for basic
-> functionality with it.
-
-We've had these in the aspeed tree for a while, but as I was on leave
-there was no pull request. I'm just putting one together now and
-noticed some unusual looking device tree compatibles:
-
-WARNING: DT compatible string "renesas,isl69269" appears un-documented
--- check ./Documentation/devicetree/bindings/
-#220: FILE: arch/arm/boot/dts/aspeed/aspeed-bmc-asrock-e3c256d4i.dts:181:
-+        compatible = "renesas,isl69269", "isl69269";
-
-WARNING: DT compatible string "isl69269" appears un-documented --
-check ./Documentation/devicetree/bindings/
-#220: FILE: arch/arm/boot/dts/aspeed/aspeed-bmc-asrock-e3c256d4i.dts:181:
-+        compatible = "renesas,isl69269", "isl69269";
-
-WARNING: DT compatible string "st,24c128" appears un-documented --
-check ./Documentation/devicetree/bindings/
-#230: FILE: arch/arm/boot/dts/aspeed/aspeed-bmc-asrock-e3c256d4i.dts:191:
-+        compatible = "st,24c128", "atmel,24c128";
-
-
-Can you update the patch to be checkpatch clean when applied to v6.9?
-
-Cheers,
-
-Joel
->
-> Signed-off-by: Zev Weiss <zev@bewilderbeest.net>
+Vishal Verma wrote:
+> In [1], Dan points out that all of the WARN_ON_ONCE() usage in the
+> referenced patch should be replaced with lockdep_assert_held, or
+> lockdep_held_assert_write(). Replace these as appropriate.
+> 
+> Link: https://lore.kernel.org/r/65f0b5ef41817_aa222941a@dwillia2-mobl3.amr.corp.intel.com.notmuch [1]
+> Fixes: c05ae9d85b47 ("dax/bus.c: replace driver-core lock usage by a local rwsem")
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Reported-by: Dan Williams <dan.j.williams@intel.com>
+> Signed-off-by: Vishal Verma <vishal.l.verma@intel.com>
 > ---
->  arch/arm/boot/dts/aspeed/Makefile             |   1 +
->  .../aspeed/aspeed-bmc-asrock-spc621d8hm3.dts  | 324 ++++++++++++++++++
->  2 files changed, 325 insertions(+)
->  create mode 100644 arch/arm/boot/dts/aspeed/aspeed-bmc-asrock-spc621d8hm3.dts
->
-> diff --git a/arch/arm/boot/dts/aspeed/Makefile b/arch/arm/boot/dts/aspeed/Makefile
-> index d3ac20e316d0..2df0a2e88df7 100644
-> --- a/arch/arm/boot/dts/aspeed/Makefile
-> +++ b/arch/arm/boot/dts/aspeed/Makefile
-> @@ -10,6 +10,7 @@ dtb-$(CONFIG_ARCH_ASPEED) += \
->         aspeed-bmc-arm-stardragon4800-rep2.dtb \
->         aspeed-bmc-asrock-e3c246d4i.dtb \
->         aspeed-bmc-asrock-romed8hm3.dtb \
-> +       aspeed-bmc-asrock-spc621d8hm3.dtb \
->         aspeed-bmc-bytedance-g220a.dtb \
->         aspeed-bmc-delta-ahe50dc.dtb \
->         aspeed-bmc-facebook-bletchley.dtb \
-> diff --git a/arch/arm/boot/dts/aspeed/aspeed-bmc-asrock-spc621d8hm3.dts b/arch/arm/boot/dts/aspeed/aspeed-bmc-asrock-spc621d8hm3.dts
-> new file mode 100644
-> index 000000000000..555485871e7a
-> --- /dev/null
-> +++ b/arch/arm/boot/dts/aspeed/aspeed-bmc-asrock-spc621d8hm3.dts
-> @@ -0,0 +1,324 @@
-> +// SPDX-License-Identifier: GPL-2.0+
-> +/dts-v1/;
-> +
-> +#include "aspeed-g5.dtsi"
-> +#include <dt-bindings/gpio/aspeed-gpio.h>
-> +#include <dt-bindings/i2c/i2c.h>
-> +#include <dt-bindings/interrupt-controller/irq.h>
-> +#include <dt-bindings/leds/common.h>
-> +
-> +/{
-> +       model = "ASRock SPC621D8HM3 BMC";
-> +       compatible = "asrock,spc621d8hm3-bmc", "aspeed,ast2500";
-> +
-> +       aliases {
-> +               serial4 = &uart5;
-> +
-> +               i2c20 = &i2c1mux0ch0;
-> +               i2c21 = &i2c1mux0ch1;
-> +       };
-> +
-> +       chosen {
-> +               stdout-path = &uart5;
-> +       };
-> +
-> +       memory@80000000 {
-> +               reg = <0x80000000 0x20000000>;
-> +       };
-> +
-> +       leds {
-> +               compatible = "gpio-leds";
-> +
-> +               /* BMC heartbeat */
-> +               led-0 {
-> +                       gpios = <&gpio ASPEED_GPIO(H, 6) GPIO_ACTIVE_LOW>;
-> +                       function = LED_FUNCTION_HEARTBEAT;
-> +                       color = <LED_COLOR_ID_GREEN>;
-> +                       linux,default-trigger = "timer";
-> +               };
-> +
-> +               /* system fault */
-> +               led-1 {
-> +                       gpios = <&gpio ASPEED_GPIO(Z, 2) GPIO_ACTIVE_LOW>;
-> +                       function = LED_FUNCTION_FAULT;
-> +                       color = <LED_COLOR_ID_RED>;
-> +                       panic-indicator;
-> +               };
-> +       };
-> +
-> +       iio-hwmon {
-> +               compatible = "iio-hwmon";
-> +               io-channels = <&adc 0>, <&adc 1>, <&adc 2>, <&adc 3>,
-> +                       <&adc 4>, <&adc 5>, <&adc 6>, <&adc 7>,
-> +                       <&adc 8>, <&adc 9>, <&adc 10>, <&adc 11>,
-> +                       <&adc 12>, <&adc 13>, <&adc 14>, <&adc 15>;
-> +       };
-> +};
-> +
-> +&fmc {
-> +       status = "okay";
-> +       flash@0 {
-> +               status = "okay";
-> +               m25p,fast-read;
-> +               label = "bmc";
-> +               spi-max-frequency = <50000000>; /* 50 MHz */
-> +#include "openbmc-flash-layout-64.dtsi"
-> +       };
-> +};
-> +
-> +&uart5 {
-> +       status = "okay";
-> +};
-> +
-> +&vuart {
-> +       status = "okay";
-> +       aspeed,lpc-io-reg = <0x2f8>;
-> +       aspeed,lpc-interrupts = <3 IRQ_TYPE_LEVEL_HIGH>;
-> +};
-> +
-> +&mac0 {
-> +       status = "okay";
-> +
-> +       pinctrl-names = "default";
-> +       pinctrl-0 = <&pinctrl_rgmii1_default &pinctrl_mdio1_default>;
-> +
-> +       nvmem-cells = <&eth0_macaddress>;
-> +       nvmem-cell-names = "mac-address";
-> +};
-> +
-> +&i2c0 {
-> +       status = "okay";
-> +};
-> +
-> +&i2c1 {
-> +       status = "okay";
-> +
-> +       /* hardware monitor/thermal sensor */
-> +       temperature-sensor@29 {
-> +               compatible = "nuvoton,nct7802";
-> +               reg = <0x29>;
-> +       };
-> +
-> +       /* motherboard temp sensor (TMP1, near BMC) */
-> +       temperature-sensor@4c {
-> +               compatible = "nuvoton,w83773g";
-> +               reg = <0x4c>;
-> +       };
-> +
-> +       /* motherboard FRU eeprom */
-> +       eeprom@50 {
-> +               compatible = "st,24c128", "atmel,24c128";
-> +               reg = <0x50>;
-> +               pagesize = <16>;
-> +               #address-cells = <1>;
-> +               #size-cells = <1>;
-> +
-> +               eth0_macaddress: macaddress@3f80 {
-> +                       reg = <0x3f80 6>;
-> +               };
-> +       };
-> +
-> +       /* M.2 slot smbus mux */
-> +       i2c-mux@71 {
-> +               compatible = "nxp,pca9545";
-> +               reg = <0x71>;
-> +               #address-cells = <1>;
-> +               #size-cells = <0>;
-> +
-> +               i2c1mux0ch0: i2c@0 {
-> +                       #address-cells = <1>;
-> +                       #size-cells = <0>;
-> +                       reg = <0>;
-> +               };
-> +
-> +               i2c1mux0ch1: i2c@1 {
-> +                       #address-cells = <1>;
-> +                       #size-cells = <0>;
-> +                       reg = <1>;
-> +               };
-> +       };
-> +};
-> +
-> +&i2c2 {
-> +       status = "okay";
-> +};
-> +
-> +&i2c3 {
-> +       status = "okay";
-> +};
-> +
-> +&i2c4 {
-> +       status = "okay";
-> +};
-> +
-> +&i2c5 {
-> +       status = "okay";
-> +};
-> +
-> +&i2c6 {
-> +       status = "okay";
-> +};
-> +
-> +&i2c7 {
-> +       status = "okay";
-> +};
-> +
-> +&i2c8 {
-> +       status = "okay";
-> +};
-> +
-> +&i2c9 {
-> +       status = "okay";
-> +};
-> +
-> +&i2c10 {
-> +       status = "okay";
-> +};
-> +
-> +&i2c11 {
-> +       status = "okay";
-> +};
-> +
-> +&i2c12 {
-> +       status = "okay";
-> +};
-> +
-> +&i2c13 {
-> +       status = "okay";
-> +};
-> +
-> +&video {
-> +       status = "okay";
-> +};
-> +
-> +&vhub {
-> +       status = "okay";
-> +};
-> +
-> +&lpc_ctrl {
-> +       status = "okay";
-> +};
-> +
-> +&lpc_snoop {
-> +       status = "okay";
-> +       snoop-ports = <0x80>;
-> +};
-> +
-> +&kcs3 {
-> +       status = "okay";
-> +       aspeed,lpc-io-reg = <0xca2>;
-> +};
-> +
-> +&peci0 {
-> +       status = "okay";
-> +};
-> +
-> +&pwm_tacho {
-> +       status = "okay";
-> +       pinctrl-names = "default";
-> +       pinctrl-0 = <&pinctrl_pwm0_default
-> +               &pinctrl_pwm2_default
-> +               &pinctrl_pwm3_default
-> +               &pinctrl_pwm4_default>;
-> +
-> +       fan@0 {
-> +               reg = <0x00>;
-> +               aspeed,fan-tach-ch = /bits/ 8 <0x00>;
-> +       };
-> +
-> +       fan@2 {
-> +               reg = <0x02>;
-> +               aspeed,fan-tach-ch = /bits/ 8 <0x02>;
-> +       };
-> +
-> +       fan@3 {
-> +               reg = <0x03>;
-> +               aspeed,fan-tach-ch = /bits/ 8 <0x03>;
-> +       };
-> +
-> +       fan@4 {
-> +               reg = <0x04>;
-> +               aspeed,fan-tach-ch = /bits/ 8 <0x04>;
-> +       };
-> +};
-> +
-> +&gpio {
-> +       status = "okay";
-> +       gpio-line-names =
-> +               /*  A */ "LOCATORLED_STATUS_N", "LOCATORBTN_N",
-> +                       "BMC_READY_N", "FM_SPD_DDRCPU_LVLSHFT_EN",
-> +                       "", "", "", "",
-> +               /*  B */ "NODE_ID_1", "NODE_ID_2", "PSU_FAN_FAIL_N", "",
-> +                       "", "", "", "GPIO_RST",
-> +               /*  C */ "", "", "", "", "", "", "", "",
-> +               /*  D */ "FP_PWR_BTN_MUX_N", "FM_BMC_PWRBTN_OUT_N",
-> +                       "FP_RST_BTN_N", "RST_BMC_RSTBTN_OUT_N",
-> +                       "NMI_BTN_N", "BMC_NMI",
-> +                       "", "",
-> +               /*  E */ "", "", "", "FM_ME_RCVR_N", "", "", "", "",
-> +               /*  F */ "BMC_SMB_SEL_N", "FM_CPU2_DISABLE_COD_N",
-> +                       "FM_REMOTE_DEBUG_BMC_EN", "FM_CPU_ERR0_LVT3_EN",
-> +                       "FM_CPU_ERR1_LVT3_EN", "FM_CPU_ERR2_LVT3_EN",
-> +                       "FM_MEM_THERM_EVENT_CPU1_LVT3_N", "FM_MEM_THERM_EVENT_CPU2_LVT3_N",
-> +               /*  G */ "HWM_BAT_EN", "", "BMC_PHYRST_N", "FM_BIOS_SPI_BMC_CTRL",
-> +                       "BMC_ALERT1_N", "BMC_ALERT2_N", "BMC_ALERT3_N", "IRQ_SML0_ALERT_N",
-> +               /*  H */ "BMC_SMB_PRESENT_1_N", "FM_PCH_CORE_VID_0", "FM_PCH_CORE_VID_1", "",
-> +                       "FM_MFG_MODE", "BMC_RTCRST", "BMC_HB_LED_N", "BMC_CASEOPEN",
-> +               /*  I */ "IRQ_PVDDQ_ABCD_CPU1_VRHOT_LVC3_N", "IRQ_PVDDQ_ABCD_CPU2_VRHOT_LVC3_N",
-> +                       "IRQ_PVDDQ_EFGH_CPU1_VRHOT_LVC3_N", "IRQ_PVDDQ_EFGH_CPU2_VRHOT_LVC3_N",
-> +                       "", "", "", "",
-> +               /*  J */ "", "", "", "", "", "", "", "",
-> +               /*  K */ "", "", "", "", "", "", "", "",
-> +               /*  L */ "", "", "", "", "", "", "", "",
-> +               /*  M */ "FM_PVCCIN_CPU1_PWR_IN_ALERT_N", "FM_PVCCIN_CPU2_PWR_IN_ALERT_N",
-> +                       "IRQ_PVCCIN_CPU1_VRHOT_LVC3_N", "IRQ_PVCCIN_CPU2_VRHOT_LVC3_N",
-> +                       "FM_CPU1_PROCHOT_BMC_LVC3_N", "",
-> +                       "FM_CPU1_MEMHOT_OUT_N", "FM_CPU2_MEMHOT_OUT_N",
-> +               /*  N */ "", "", "", "", "", "", "", "",
-> +               /*  O */ "", "", "", "", "", "", "", "",
-> +               /*  P */ "", "", "", "", "", "", "", "",
-> +               /*  Q */ "", "", "", "", "", "", "RST_GLB_RST_WARN_N", "PCIE_WAKE_N",
-> +               /*  R */ "", "", "FM_BMC_SUSACK_N", "FM_BMC_EUP_LOT6_N",
-> +                       "", "FM_BMC_PCH_SCI_LPC_N", "", "",
-> +               /*  S */ "FM_DBP_PRESENT_N", "FM_CPU2_SKTOCC_LCT3_N",
-> +                       "FM_CPU1_FIVR_FAULT_LVT3", "FM_CPU2_FIVR_FAULT_LVT3",
-> +                        "", "", "", "",
-> +               /*  T */ "", "", "", "", "", "", "", "",
-> +               /*  U */ "", "", "", "", "", "", "", "",
-> +               /*  V */ "", "", "", "", "", "", "", "",
-> +               /*  W */ "", "", "", "", "", "", "", "",
-> +               /*  X */ "", "", "", "", "", "", "", "",
-> +               /*  Y */ "FM_SLPS3_N", "FM_SLPS4_N", "", "FM_BMC_ONCTL_N_PLD",
-> +                       "", "", "", "",
-> +               /*  Z */ "FM_CPU_MSMI_CATERR_LVT3_N", "", "SYSTEM_FAULT_LED_N", "BMC_THROTTLE_N",
-> +                       "", "", "", "",
-> +               /* AA */ "FM_CPU1_THERMTRIP_LATCH_LVT3_N", "FM_CPU2_THERMTRIP_LATCH_LVT3_N",
-> +                       "FM_BIOS_POST_COMPLT_N", "DBP_BMC_SYSPWROK",
-> +                       "", "IRQ_SML0_ALERT_MUX_N",
-> +                       "IRQ_SMI_ACTIVE_N", "IRQ_NMI_EVENT_N",
-> +               /* AB */ "FM_PCH_BMC_THERMTRIP_N", "PWRGD_SYS_PWROK",
-> +                       "ME_OVERRIDE", "IRQ_BMC_PCH_SMI_LPC_N",
-> +                       "", "", "", "",
-> +               /* AC */ "", "", "", "", "", "", "", "";
-> +};
-> +
-> +&adc {
-> +       status = "okay";
-> +       pinctrl-names = "default";
-> +       pinctrl-0 = <&pinctrl_adc0_default /* 3VSB */
-> +               &pinctrl_adc1_default      /* 5VSB */
-> +               &pinctrl_adc2_default      /* CPU1 */
-> +               &pinctrl_adc3_default      /* NC */
-> +               &pinctrl_adc4_default      /* VCCMABCD */
-> +               &pinctrl_adc5_default      /* VCCMEFGH */
-> +               &pinctrl_adc6_default      /* NC */
-> +               &pinctrl_adc7_default      /* NC */
-> +               &pinctrl_adc8_default      /* PVNN_PCH */
-> +               &pinctrl_adc9_default      /* 1P05PCH */
-> +               &pinctrl_adc10_default     /* 1P8PCH */
-> +               &pinctrl_adc11_default     /* BAT */
-> +               &pinctrl_adc12_default     /* 3V */
-> +               &pinctrl_adc13_default     /* 5V */
-> +               &pinctrl_adc14_default     /* 12V */
-> +               &pinctrl_adc15_default>;   /* GND */
-> +};
-> --
-> 2.42.0
->
+>  drivers/dax/bus.c | 16 ++++++++--------
+>  1 file changed, 8 insertions(+), 8 deletions(-)
+
+Looks good,
+
+Reviewed-by: Dan Williams <dan.j.williams@intel.com>
 
