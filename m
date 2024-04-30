@@ -1,127 +1,118 @@
-Return-Path: <linux-kernel+bounces-164732-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-164733-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9ADAD8B81D1
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 23:16:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2EFE48B81D7
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 23:22:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C5AF71C21B89
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 21:16:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 580091C21E9B
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 21:22:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5EA101A38F0;
-	Tue, 30 Apr 2024 21:15:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE8B61A38F4;
+	Tue, 30 Apr 2024 21:22:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="EXTR2xva"
-Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="S1fzzgaG"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7575512C819
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 21:15:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2CCA3179B2;
+	Tue, 30 Apr 2024 21:22:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714511756; cv=none; b=WWvDJgPSNWpMoFa8mlW9igfY5m7ER7zfF6ox07xniWeC6Wjwj0KU2Oo62cEYKtb3t8Z0Hmsgj9NGlEmDWkYAO9ZAS8np8qGbI5V5yVZ7RGfGZCUpsy0tR/px7univ0nyflO8hHjS7ErdsXMdype6TOgfNptLFGkiiwFuctyUrrU=
+	t=1714512123; cv=none; b=ozjZNBGSEfqGtK0fF0YgrwaShxGOYVbXHP/78j6vumk99MNJbhS1Bm3MH4sw8x+idwEyiIevoV+P9nDvA36bPU/SQELT3dnBR+SQ+JghL/CgSwsWqUKswKfzok6D3triS7xKM/X8xI5u1OfcpYtMwAbrA3ZFZNQHeTjznXPi974=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714511756; c=relaxed/simple;
-	bh=XQKlbJsQcaAkcPsjQz8sjCihNDTs2E45cJWg1QLYlE0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=vFioCtf+Y+eTY7YMeQkeJ+DBv7XysqKkEHfAUz7hQYcswAw+2267OcWSgkkCUoo1jdDl4iXjQxzWpLTDym53RsEjzZtgNYDHVecYj3t8oPOWMDzT9SBCiboHDGJNJf9BW4gisQ02B19X7DjvuKcGPsChVryZeV42i7XVG38UL+8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=EXTR2xva; arc=none smtp.client-ip=209.85.214.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-1eab16c8d83so50256295ad.3
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 14:15:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1714511755; x=1715116555; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=ybsFpX0X7CRfB780REANsMjNyYm7Y9wsUjgmwPZjU6k=;
-        b=EXTR2xvaXynfQqWNm7DVyLsKMXpR8la8gDIIvWpMFBAVGnpc0XEkTAwVA1f9+LOSLp
-         xqnNrx+qoWPh2j/Ts6L7obxPN7rg7HmABG0pcA+8rBN15R83VCCDp4/LvWBlYdtMlP+a
-         hSYritZqmSUXd1RNDjj0dsXxgWKT2HULYzfro=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714511755; x=1715116555;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ybsFpX0X7CRfB780REANsMjNyYm7Y9wsUjgmwPZjU6k=;
-        b=w9sgpdne3DhYUoewD5ZXNMMvFbmdqwL8mJeGzy11BYuxkoeyUcQ/UgK+ZenDYkJzTQ
-         l2te8ADe2Xi0DYRXKezpYUiockuEUIHeTxcEI59Qw86OCE9ZF6CrcPWoLqxGnzonf2pJ
-         YEWGmFoJsBhcpOb56uDVMW7e0fv297o4cAxOnZy124agdJXiU9636gq0IkJ1LoO8IULr
-         nnN90Jhif1KmoZoFuqA7tWAd1zQXwvESoiosWY7PlqCEqFqqdzzauRt4aBxsT0oNVcCB
-         MHg3IwUX0dVdSlv0FaZ55V2In7pJw62n0j9ZnJFMDvv4E09T8khukW8/mbaZ+xJlOht7
-         P3Lw==
-X-Forwarded-Encrypted: i=1; AJvYcCXkByO7cUmhSUCd6VGiDfkjnx2mdS0019aZiWG7UCiDckeAX9iKaMzvBMEa3OorD1X2oyW+jo9Xxf/ewuS3irdQiebVtQwwNyUtnZTA
-X-Gm-Message-State: AOJu0Yxjf7pGii4+oO2DMMu8Ucd2XB9iOBw/PMVO0fbAA1r8pcTB/qOb
-	pTI+bOJz0Kgm+agdKjvLPt1Ireyu1uLThoBzgjAMd+3CprqyHo/KxyfVLoJfxQ==
-X-Google-Smtp-Source: AGHT+IH65fhAB52q5SRM6fEv53OUPrvdI7HGuP4UMAsLKQOmSK4SnZFW69AZXJZQZh3NFJXh2vI83Q==
-X-Received: by 2002:a17:902:82c9:b0:1ea:42d1:1421 with SMTP id u9-20020a17090282c900b001ea42d11421mr548705plz.68.1714511754804;
-        Tue, 30 Apr 2024 14:15:54 -0700 (PDT)
-Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id w19-20020a1709027b9300b001e435fa2521sm22879566pll.249.2024.04.30.14.15.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Apr 2024 14:15:54 -0700 (PDT)
-Date: Tue, 30 Apr 2024 14:15:53 -0700
-From: Kees Cook <keescook@chromium.org>
-To: Peter Zijlstra <peterz@infradead.org>
-Cc: "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>, Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-	"H. Peter Anvin" <hpa@zytor.com>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Nick Desaulniers <ndesaulniers@google.com>,
-	Bill Wendling <morbo@google.com>,
-	Justin Stitt <justinstitt@google.com>,
-	linux-hardening@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, llvm@lists.linux.dev,
+	s=arc-20240116; t=1714512123; c=relaxed/simple;
+	bh=SA4lSmJZlpSQQBaz8MKF3TBO91TlafTkr2Codb//v3g=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=XTu99RjvKzrna1z9iT84y2KbO2PCnGtYW8DPxQt7wEWvlHmGBbhBr+DO02LwpdDTyHf5hQSy28vm4e14/TgvB9iUBa0vxn5BcOARzlyNQxoizf6SOsPgjXZoUu+OBitAnBOAiCwdIyfoh1pejmKYNAJdkm6+fuT/mPeF53xfB7U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=S1fzzgaG; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6AB05C2BBFC;
+	Tue, 30 Apr 2024 21:22:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714512122;
+	bh=SA4lSmJZlpSQQBaz8MKF3TBO91TlafTkr2Codb//v3g=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=S1fzzgaGOrgBkdnkUVqvvKluWHwt/VQQrJoCcOf0iI/xjQpzGA80ZhNA4QxC95E/0
+	 VcNmpNK84bumleutblj8i+7bR81PqsbjQrujk2UZb1QTq+L1qDgHkyOtS+qcnQFsFs
+	 msrqqEL2x5xvrCPlZVTTWjGhTxuk+QnPBQYXEhTXFwfKq4SM76QEHRIHSyPJRb07x0
+	 zRSS4bYMNWhBU1yuUH5QqDMyhmEsVpGo7642wJADZoTChcyx3rVwH5yQ+aVsH8ZQAi
+	 xDbB97wZwJfieEPW/ykl+2P7qYONvF0Uui3OEnOyHu5kb3IgZJ/cfDhmaWyUTJcEmS
+	 cObp6xHJM5b/g==
+From: Conor Dooley <conor@kernel.org>
+To: Conor Dooley <conor@kernel.org>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	Emil Renner Berthing <kernel@esmil.dk>,
+	Jisheng Zhang <jszhang@kernel.org>
+Cc: Conor Dooley <conor.dooley@microchip.com>,
+	linux-riscv@lists.infradead.org,
+	devicetree@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] hardening: Refresh KCFI options, add some more
-Message-ID: <202404301409.D3BC98D5@keescook>
-References: <20240426222940.work.884-kees@kernel.org>
- <20240430092140.GE40213@noisy.programming.kicks-ass.net>
- <202404301037.9E34D4811@keescook>
+Subject: Re: [PATCH v4 0/8] riscv: dts: starfive: add Milkv Mars board device tree
+Date: Tue, 30 Apr 2024 22:20:22 +0100
+Message-ID: <20240430-jailbird-stallion-590c4959ce32@spud>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240429001317.432-1-jszhang@kernel.org>
+References: <20240429001317.432-1-jszhang@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202404301037.9E34D4811@keescook>
+Content-Type: text/plain; charset="utf-8"
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1525; i=conor.dooley@microchip.com; h=from:subject:message-id; bh=zZkBCon8/K1UdknQ9fZSRya8iFPQEnHbO+SPf4TXRI0=; b=owGbwMvMwCFWscWwfUFT0iXG02pJDGmGCVPzcxibteWtZWYZ7bvU/+dgwkP5+wmqkVsu3lmjo bNt34mqjlIWBjEOBlkxRZbE230tUuv/uOxw7nkLM4eVCWQIAxenAEyEV5Phn4Hi/DqZV+eYPLp5 OoMdDnz7dO/PSbel5m13gllW7Ph1ZQLD/8yQ3Gezn55x/cYU8K13xWL2r1M/PpU82uq/0Pfc3Kq oVywA
+X-Developer-Key: i=conor.dooley@microchip.com; a=openpgp; fpr=F9ECA03CF54F12CD01F1655722E2C55B37CF380C
+Content-Transfer-Encoding: 8bit
 
-On Tue, Apr 30, 2024 at 10:48:36AM -0700, Kees Cook wrote:
-> On Tue, Apr 30, 2024 at 11:21:40AM +0200, Peter Zijlstra wrote:
-> > On Fri, Apr 26, 2024 at 03:29:44PM -0700, Kees Cook wrote:
-> > 
-> > > - CONFIG_CFI_CLANG=y for x86 and arm64. (And disable FINEIBT since
-> > >   it isn't as secure as straight KCFI.)
-> > 
-> > Oi ?
+From: Conor Dooley <conor.dooley@microchip.com>
+
+On Mon, 29 Apr 2024 08:13:09 +0800, Jisheng Zhang wrote:
+> The Milkv Mars is a development board based on the Starfive JH7110 SoC.
+> The board features:
 > 
-> Same objection I always had[1]: moving the check into the destination
-> means attacks with control over executable memory contents can just omit
-> the check.
+> - JH7110 SoC
+> - 1/2/4/8 GiB LPDDR4 DRAM
+> - AXP15060 PMIC
+> - 40 pin GPIO header
+> - 3x USB 3.0 host port
+> - 1x USB 2.0 host port
+> - 1x M.2 E-Key
+> - 1x eMMC slot
+> - 1x MicroSD slot
+> - 1x QSPI Flash
+> - 1x 1Gbps Ethernet port
+> - 1x HDMI port
+> - 1x 2-lane DSI and 1x 4-lane DSI
+> - 1x 2-lane CSI
 > 
-> But now that I went to go look I see 0c3e806ec0f9 ("x86/cfi: Add boot
-> time hash randomization") is only enabled under FINEIBT... seems better
-> if that were always enabled...
+> [...]
 
-And FINEIBT actually can't be disabled... :|
+Applied to riscv-dt-for-next, thanks! I fixed up the nits of Emil's in
+the merge commit.
 
-And as it turns out CFI_CLANG doesn't work at all on v6.9...
+[1/8] riscv: dts: starfive: add 'cpus' label to jh7110 and jh7100 soc dtsi
+      https://git.kernel.org/conor/c/5e7922abddd4
+[2/8] dt-bindings: riscv: starfive: add Milkv Mars board
+      https://git.kernel.org/conor/c/4c536aa462f1
+[3/8] riscv: dts: starfive: visionfive 2: update sound and codec dt node name
+      https://git.kernel.org/conor/c/b9a1481f259c
+[4/8] riscv: dts: starfive: visionfive 2: use cpus label for timebase freq
+      https://git.kernel.org/conor/c/ffddddf4aa8d
+[5/8] riscv: dts: starfive: visionfive 2: add tf cd-gpios
+      https://git.kernel.org/conor/c/0ffce9d49abd
+[6/8] riscv: dts: starfive: visionfive 2: add "disable-wp" for tfcard
+      https://git.kernel.org/conor/c/07da6ddf510b
+[7/8] riscv: dts: starfive: introduce a common board dtsi for jh7110 based boards
+      https://git.kernel.org/conor/c/ac9a37e2d6b6
+[8/8] riscv: dts: starfive: add Milkv Mars board device tree
+      https://git.kernel.org/conor/c/9276badd9d03
 
-[    0.587220] no CFI hash found at: __call_sites+0x339a8/0x34450 ffffffffac20cef8 00 00 00 00 00
-[    0.588226] WARNING: CPU: 0 PID: 0 at arch/x86/kernel/alternative.c:1182 __apply_fineibt+0x7a9/0x820
-..
-[    0.619220] SMP alternatives: Something went horribly wrong trying to rewrite the CFI implementation.
-*hang*
-
-
-
--- 
-Kees Cook
+Thanks,
+Conor.
 
