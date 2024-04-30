@@ -1,150 +1,114 @@
-Return-Path: <linux-kernel+bounces-163775-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-163776-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 478DB8B6FBA
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 12:32:47 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 815208B6FBD
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 12:34:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EBBAF1F24E59
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 10:32:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3C6A9284D0E
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 10:34:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E12012C46A;
-	Tue, 30 Apr 2024 10:32:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54A0012C46D;
+	Tue, 30 Apr 2024 10:34:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="KkrtKEQM"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="r36se5dJ"
+Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com [209.85.208.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 094CD12B176;
-	Tue, 30 Apr 2024 10:32:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 222DD12BF17
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 10:34:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714473160; cv=none; b=DxDkvhs9aPSc1A1mosNr1H0iDvxZX1Bc4cUMLnaSWp7BvFv9CzfgDODnlpAawuSpmFq4u1r72K/E6w9/n35sXzpe1HYZrHi4evjjkvmf5fL4MwL8O6Bfz+P5iv+YDge7Kds5rVSGXHET+fIW8+ienrGCjHjzGMIyIffhZ5FIuTs=
+	t=1714473242; cv=none; b=sEARfFl10ZTZASYAKaFxA9EadtRTGbCrP+lQaeOvSAwfKuK7fWClGSpu6How0s2V/tynfFG3XnJx6MUh1M03BTROFPCqDCveOLGBlTuS0iYq8SLepHWbS76VMpS3kSypix19f/D7iU9ueInL+JaeL7DDwKl/NneOrD9KruHf/24=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714473160; c=relaxed/simple;
-	bh=TOsha8tZbWHodSCSOeDar0KTCBzSwyaa+6PzT/MvwQE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=nxr6SfAu+mfa3l/ROVDa//27C+T1AzxYBoPvh6bp4pxqSwy75g3CWVFn9J/8a4QvSyRMhPC8VxIY2GZLycvyRo1lIZkxtxH0wrL7pr4mJnti4zyyfomsSfJk3vccUgjtS96iaSycZng4kiv0CMBKtOmKAgvHnHNAxtsw8SZ8WKI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=KkrtKEQM; arc=none smtp.client-ip=198.175.65.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1714473159; x=1746009159;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=TOsha8tZbWHodSCSOeDar0KTCBzSwyaa+6PzT/MvwQE=;
-  b=KkrtKEQM7aw9WChLEVUlqEk8OM4xe67hy1kHVFmDuNcvDWMh4PqsCFUd
-   gPH/3oVgw5YE27ph0Y6iHQwIcHnJXE15zLU4q5AOxXskaWZpeFGu98FKs
-   IrGpZe2b2Ha2AKsUDlQvczn/V49f/ITOrRH2546j6IIu42KVmMnuJD9nM
-   bQQvnv0Xt0UVTN94cuEMJefBKw427oHWwP3wqf1bqF+3qQ1rc0erN9VgZ
-   IeWkdp2+O5h4Qz25fBxzYIoPaAXU+ZxBTU4Kbzulwo4rE32Db26dhElfi
-   b6Lt77PANMv5u+OwYdy+zUJ2m1DnKDvHxGbvinOfN9ruv8Hr8Bd2HKn1R
-   w==;
-X-CSE-ConnectionGUID: c4QrvQc3S2uMoFTUBwsMeA==
-X-CSE-MsgGUID: 1r9pW8hsT1KY8T2PJVWFpA==
-X-IronPort-AV: E=McAfee;i="6600,9927,11059"; a="13954780"
-X-IronPort-AV: E=Sophos;i="6.07,241,1708416000"; 
-   d="scan'208";a="13954780"
-Received: from orviesa008.jf.intel.com ([10.64.159.148])
-  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Apr 2024 03:32:39 -0700
-X-CSE-ConnectionGUID: awcwGRgfS4qieBRaGoUYIQ==
-X-CSE-MsgGUID: /22euhvsR3qjzsVbZojErg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,241,1708416000"; 
-   d="scan'208";a="27031455"
-Received: from lkp-server01.sh.intel.com (HELO e434dd42e5a1) ([10.239.97.150])
-  by orviesa008.jf.intel.com with ESMTP; 30 Apr 2024 03:32:34 -0700
-Received: from kbuild by e434dd42e5a1 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1s1kml-00082F-2h;
-	Tue, 30 Apr 2024 10:32:31 +0000
-Date: Tue, 30 Apr 2024 18:31:40 +0800
-From: kernel test robot <lkp@intel.com>
-To: Jingbao Qiu <qiujingbao.dlmu@gmail.com>, broonie@kernel.org,
-	robh@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-	conor+dt@kernel.org, unicorn_wang@outlook.com,
-	inochiama@outlook.com, paul.walmsley@sifive.com, palmer@dabbelt.com,
-	aou@eecs.berkeley.edu
-Cc: oe-kbuild-all@lists.linux.dev, dlan@gentoo.org,
-	linux-spi@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
-	Jingbao Qiu <qiujingbao.dlmu@gmail.com>
-Subject: Re: [PATCH v1 2/2] spi: add support for sophgo spi-nor controller
-Message-ID: <202404301801.fGGuCYoT-lkp@intel.com>
-References: <20240427075426.662671-3-qiujingbao.dlmu@gmail.com>
+	s=arc-20240116; t=1714473242; c=relaxed/simple;
+	bh=uFm8Qgi91vGI3dt8K6sPdGExsyb2lsag5x2vqkD5m0o=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=n1lHHOGhQfbpdEMAZqYmwdU4aHSt9t7FpdIkZ3V6x/noTGduJ1KR9czHPR919cKzgCTHXxwFHLWwSYZeBinPag2NQUDnsLeBxZ3swSZN6fudrnYA9YY3UrI6soQMop64S72mJaqB3vQKT/mnJiYyR1N85h7ifcAngSLsDHvQ3yg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=r36se5dJ; arc=none smtp.client-ip=209.85.208.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-5724736770cso8435a12.1
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 03:34:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1714473239; x=1715078039; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=LMlLVgBu7y+Z1UA7TogJJjdkdi56Sm40tXjGRA7ggLo=;
+        b=r36se5dJQCKGcfsiBB0KPc2qk55NDdx4AomEXEz65ZfuiGL7KOqwsyGy4d0l7bpWHZ
+         KMF/XxGGXsq2Sp23VFet/2II3wMcf2+aW2wDlQDoxNES2itHGeaHmpu4UyRZnlOfs/hr
+         b9UW2W3Slatz9A+Tg0m4xxieq3k+dDgYjwcgxN60OmVOm9aH2ohbkATvhHR7qLGYdhsZ
+         BXTM5/gmahUf1BQb0mwK8hpGjmFC68ZZ0R+BqAzEoICQoO3c2TgaT6c5Tyt80tNgAojB
+         w8qad0Ip9OLmBGitCify/6AIO1lNYptdp4+gjACkXIFgPxHAzk7yzIDd+r2M1Z4iuAp1
+         //dQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714473239; x=1715078039;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=LMlLVgBu7y+Z1UA7TogJJjdkdi56Sm40tXjGRA7ggLo=;
+        b=EsUqYwhZjumEL8bpwqBYMwN8EFolJgVNQ9QbL0SUEY4Ub+l/ZX6A/ugCVwIZewChRr
+         Dva5+ScM5r0m6IwFd6flNUPcQkV9bZuWfimXwqsB0UM41otgREtjK/qJQcjROYKMSgCA
+         xjNDtpOcb1LcnaSqugGBLDDKV4D1Yki8GFKpb4nXuR0+yTzZANrs6yISh+AWTeJmc1SX
+         /fkAWwnxo3pXdyzQznHxgXBoesx0E038TjrvSaHFV+jcPsZHO4Ugp0MjyKAQAf44wkMN
+         nCCFGZwtyXgDJF5TV/5KK8d3E6xyI3MJjgXs6oo+YtYqyhxPqdxCtezwzM12hU9bSZzq
+         2N3w==
+X-Forwarded-Encrypted: i=1; AJvYcCVJs6/BsHpb1PklJ+6hUsKQGB6jstmQQd3bdV7D+KfBaHLyLTCqhOs8KxiKcp3f1b/WMje6l5Ss6Az2qbAS8QfQA0ooxFH7jMFd+4AS
+X-Gm-Message-State: AOJu0YwjLaVm0KeVVRXXsLs0Pl/9OqtlbPSNBpJZYgzX6s8NekH13J6b
+	Wkf0tEhy2RxnsdRY4S6c28InS4pHwbMuDUND2KsXQ8atHL/ct7mxqm/2FoJJedYNafNv+ldUzTv
+	iRVXVs50AOWKfN2n/G3l+1b6yGZtnLBgyVtBi
+X-Google-Smtp-Source: AGHT+IEGoRSj77pAj1+8/T/SwwEZLP17Tgv8sozjKtTH7NkK88VClopgrecRadcPE+UqROtC1ej8ioxHLFgLfyHUHms=
+X-Received: by 2002:a05:6402:1cb9:b0:572:a1b1:1f99 with SMTP id
+ cz25-20020a0564021cb900b00572a1b11f99mr12520edb.1.1714473239040; Tue, 30 Apr
+ 2024 03:33:59 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240427075426.662671-3-qiujingbao.dlmu@gmail.com>
+References: <20240427182305.24461-1-nbd@nbd.name> <20240427182305.24461-7-nbd@nbd.name>
+In-Reply-To: <20240427182305.24461-7-nbd@nbd.name>
+From: Eric Dumazet <edumazet@google.com>
+Date: Tue, 30 Apr 2024 12:33:47 +0200
+Message-ID: <CANn89iKPrTktMF8EGV=o34ePe1vWcKHhBs71E0vOaymkhLy6dA@mail.gmail.com>
+Subject: Re: [PATCH v4 net-next v4 6/6] net: add heuristic for enabling TCP
+ fraglist GRO
+To: Felix Fietkau <nbd@nbd.name>
+Cc: netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, 
+	David Ahern <dsahern@kernel.org>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	willemdebruijn.kernel@gmail.com, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Jingbao,
+On Sat, Apr 27, 2024 at 8:23=E2=80=AFPM Felix Fietkau <nbd@nbd.name> wrote:
+>
+> When forwarding TCP after GRO, software segmentation is very expensive,
+> especially when the checksum needs to be recalculated.
+> One case where that's currently unavoidable is when routing packets over
+> PPPoE. Performance improves significantly when using fraglist GRO
+> implemented in the same way as for UDP.
+>
+> When NETIF_F_GRO_FRAGLIST is enabled, perform a lookup for an established
+> socket in the same netns as the receiving device. While this may not
+> cover all relevant use cases in multi-netns configurations, it should be
+> good enough for most configurations that need this.
+>
+> Here's a measurement of running 2 TCP streams through a MediaTek MT7622
+> device (2-core Cortex-A53), which runs NAT with flow offload enabled from
+> one ethernet port to PPPoE on another ethernet port + cake qdisc set to
+> 1Gbps.
+>
+> rx-gro-list off: 630 Mbit/s, CPU 35% idle
+> rx-gro-list on:  770 Mbit/s, CPU 40% idle
+>
+> Signe-off-by: Felix Fietkau <nbd@nbd.name>
 
-kernel test robot noticed the following build warnings:
 
-[auto build test WARNING on 4cece764965020c22cff7665b18a012006359095]
+Reviewed-by: Eric Dumazet <edumazet@google.com>
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Jingbao-Qiu/dt-bindings-mtd-add-sophgo-spi-nor-controller/20240427-155533
-base:   4cece764965020c22cff7665b18a012006359095
-patch link:    https://lore.kernel.org/r/20240427075426.662671-3-qiujingbao.dlmu%40gmail.com
-patch subject: [PATCH v1 2/2] spi: add support for sophgo spi-nor controller
-config: powerpc-randconfig-r111-20240430 (https://download.01.org/0day-ci/archive/20240430/202404301801.fGGuCYoT-lkp@intel.com/config)
-compiler: clang version 15.0.7 (https://github.com/llvm/llvm-project.git 8dfdcc7b7bf66834a761bd8de445840ef68e4d1a)
-reproduce: (https://download.01.org/0day-ci/archive/20240430/202404301801.fGGuCYoT-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202404301801.fGGuCYoT-lkp@intel.com/
-
-sparse warnings: (new ones prefixed by >>)
->> drivers/spi/spi-sophgo-cv1800.c:259:22: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned int [usertype] addr @@     got restricted __be32 [usertype] @@
-   drivers/spi/spi-sophgo-cv1800.c:259:22: sparse:     expected unsigned int [usertype] addr
-   drivers/spi/spi-sophgo-cv1800.c:259:22: sparse:     got restricted __be32 [usertype]
-
-vim +259 drivers/spi/spi-sophgo-cv1800.c
-
-   244	
-   245	static int sophgo_nor_port_trans(struct sophgo_nor *spif,
-   246					 const struct spi_mem_op *op)
-   247	{
-   248		const uint8_t *dout = NULL;
-   249		uint8_t *din = NULL;
-   250		uint32_t addr;
-   251	
-   252		sophgo_nor_config_port(spif, 1);
-   253	
-   254		if (op->cmd.nbytes)
-   255			sophgo_nor_xfer(spif, (uint8_t *)&op->cmd.opcode, NULL,
-   256					op->cmd.nbytes, op->cmd.buswidth);
-   257	
-   258		if (op->addr.nbytes) {
- > 259			addr = cpu_to_be32(op->addr.val);
-   260			sophgo_nor_xfer(spif, (uint8_t *)&addr, NULL, op->addr.nbytes,
-   261					op->addr.buswidth);
-   262		}
-   263	
-   264		if (op->data.dir == SPI_MEM_DATA_IN)
-   265			din = op->data.buf.in;
-   266		else if (op->data.dir == SPI_MEM_DATA_OUT)
-   267			dout = op->data.buf.out;
-   268	
-   269		sophgo_nor_xfer(spif, dout, din, op->data.nbytes, op->data.buswidth);
-   270	
-   271		sophgo_nor_config_port(spif, 0);
-   272	
-   273		return 0;
-   274	}
-   275	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Thanks
 
