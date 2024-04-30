@@ -1,179 +1,256 @@
-Return-Path: <linux-kernel+bounces-164606-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-164608-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C96018B7FF1
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 20:43:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2C2578B7FFD
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 20:44:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 430941F22E74
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 18:43:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9A4FC1F21117
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 18:44:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9E2619DF77;
-	Tue, 30 Apr 2024 18:42:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 72597190668;
+	Tue, 30 Apr 2024 18:43:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="OvFFPtWL"
-Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="xecZi7dk"
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2057.outbound.protection.outlook.com [40.107.220.57])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B933B18044
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 18:42:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.202
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714502522; cv=none; b=Aua38bUp0rmaU47ZjopfzmMBvfKATWD+cTtZq6zjXTNwGFYl/hZwXRkjWvmz4iOmu4tVbNPwTYAmrqGDYm5JncnesjsRNxnpZu0qFEj5IhNR+9WV4L0mJt22WgXC2A/kmF6013+vDr4LiRlPs5gy7ag4IFj+efYxdbJnu8EXF0Y=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714502522; c=relaxed/simple;
-	bh=wyd9uhmPN0GABF2K+vg3UiPa+g+PXig9NS7EoS1eKow=;
-	h=Date:Message-Id:Mime-Version:Subject:From:To:Content-Type; b=tVp96IA1IIGULFa50RlkNQREZApd2cjIva1e8ECPsP7kucQZ21HR8gsqFq8IrgO5Bo60u5Plf1xcBu7mEKcRf5+gHKcuvT0jTzwNBer5aUPR/Q9bS41Bud7pz4Q8wZE2HER97Fwq92XrmdxolJAYlxfZ6Wh4u+EIohq+evefl2o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=OvFFPtWL; arc=none smtp.client-ip=209.85.128.202
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com
-Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-61be3f082b0so30772627b3.1
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 11:42:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1714502519; x=1715107319; darn=vger.kernel.org;
-        h=to:from:subject:mime-version:message-id:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=raUnGt98IcYzcfkEya4Nx4nEpZUQqXvCKciWuyHjTBM=;
-        b=OvFFPtWLLLK8TOvX8IWsU/Uk/8SkiIsPQTpo2FVTXT8p48feeWN4/LIYQOQPe3T6nM
-         mW0+wzwL+AC8lRtBNGM3MogMNAupMKgnsR0ou6DZh40rPoHJzV5bNxo4kA9Fp6SHzyTH
-         RU8yqtSEvSTEE8ovL8kuAIP5zgyNcmuN5mRHPXsVKbaf3BGKZdWwSkmUoRVa8So+ikoQ
-         6lIuckel2GAoq5V+kGORp6sneAwiYn/2SdLK3P7gmKwXs99obP24XAmOAAp2ss1ONT2a
-         iHE2NPFxZPmNJh/WNv/ADomSh6AShhGrxeVRG11Xs7GlmeRNUqUtV5ZGgrInCJCm19Bs
-         zjiQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714502519; x=1715107319;
-        h=to:from:subject:mime-version:message-id:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=raUnGt98IcYzcfkEya4Nx4nEpZUQqXvCKciWuyHjTBM=;
-        b=K+BIZX04ICBGe4P0+4UScdeNXeR3aykmexHFNakYKRbvO46afB9cp79I3QnrVW0OmK
-         3LfPlmddktgK6zzkP5GN20sQcXusarJdif+MNmvxzyS9ORcqU6kWezbDOoWf4Y+6qb/d
-         wFAYR1rgP/a/voM19H8xblctWRS7blmtrJXX+v7VoEXzpiVJZgRRCQOni7fMqWHe9TyE
-         jTOz00Rf27ekgD5AtzUuz8Guw6EU4IYTg2Qln5bR1AFnPltzc+Xl16SgTRCAEirMpznP
-         G0c0klXa4pMNYIkuvJU9xh68ivcLOh4JzEjsKSi1+xlWLVMRPjvSMev3ulT4TYt814FC
-         70iQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUlNJKd1Tc0z6yLm/TWm/l8BtRj5jEuDhRTLyG7DNWGIXsMyVZsyi1hxWo+yTB361hfuGsCwaZZTRRQCFEuA1mIofteD8NQmQQS6oqY
-X-Gm-Message-State: AOJu0Yz2aZJlSW1zK3kKw+/qM0YLwLqnVn1YBwNgXQlpocXcTJO/JUML
-	jqpWqpHnRbuMYQ032gWckC3P18fdlW16MkyxEhqi/k9k5RRldKDV+sejk2I+94pw97jGJpyXDk8
-	LvMWTww==
-X-Google-Smtp-Source: AGHT+IGTHT1sP7YaICYZuU4uWraHOYbZ2SgQw3ZkdDcqS4JSOBXL4Aj/lcZG9jZLqrosuWmv/kV9SKW3KO6u
-X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:273c:4116:6850:f9d3])
- (user=irogers job=sendgmr) by 2002:a81:9206:0:b0:61b:3b02:6901 with SMTP id
- j6-20020a819206000000b0061b3b026901mr76250ywg.9.1714502519644; Tue, 30 Apr
- 2024 11:41:59 -0700 (PDT)
-Date: Tue, 30 Apr 2024 11:41:56 -0700
-Message-Id: <20240430184156.1824083-1-irogers@google.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 936AA181323;
+	Tue, 30 Apr 2024 18:43:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.220.57
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1714502634; cv=fail; b=csAVDbl++7O79TFqLDAmav+SLWv1+KO1YC94ac/WclwXCUZkWQmPu9vxYRXD6xvAxQYTxh3vZWRdkfY06pD9yzcQ7LRvpes34qbbYmuQlTB8tfk6Gcm9CLyb78iF2wCjbCrUIOhWYdcoIj6p8EB+etwsH9ixCD/GX4pf9r/00Ys=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1714502634; c=relaxed/simple;
+	bh=LHfSIr02hAZ+waNnG+G6QAadL6ene1pIwXmN8P99uJY=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=j8xZhHe30rccxY6kLWkqdpafmPGS0Q9do5/+sh314K8sCzpOUM/4Jn4s3JfU4HnQZbXA15DVxUQVicgmMos4ZkjhAZt+DdC9+2MFQG7uQoztBvmmB1tgippZgGLy874lud6e8aOPlAUE8hn2fIIwQDk8GJnn2IAcgBclt5lAgkQ=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=xecZi7dk; arc=fail smtp.client-ip=40.107.220.57
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=gv9Es2xgJ1LgRBQ69VMBAAItlWGZ50AtfT/2Ry9DxLT3cRIjWFMnhojahqrjOifCt+EtU9f3uQQFbjWTUSjTseRb175zj2XfBJjrxwqTjWseN13DMZj+/kx57z07gF9NavjC0N0wtM8F8ShwQfJo74QJDC2n0+ul/+JzMoa3Qbc7fdlrDx59Wb0eB2cDCc9ENJ0+ropVmbGzE5p8ergpcKYNIT6H4jIplXm6hyg8xRrPa7S/VeQty5Kw0XUrFP+efpV8mHGZtYdT2FjOrzIrGojYSohR7FiscOhysxktk55+zaoNc3B3Qi6ntePfF3iGO+9qI9hPQwdtrkvvnTnO9Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=TPOYEOlfDD0RmvXb5Gj6PWeJh4MJiJc8xJ5IDdgw5Ss=;
+ b=n2NPr5ygKtPztMlJUEl7n8Yc6xcBgngwHcmHWDS0mF/u1uc43ehhdCDPau4YkTH+j996WOyRLhBz6JmBjJ0R7Mr33DIhm/rlJp8S5UlyjWhugncMBAZvcQ7hhabdi/l0+6FZUjp5cJAxMquQug7+G2kvRm4B+xGtc8FEDuNqmolITeJ27stQaXeKVhjgs/akFfhaT/kYNrT8M4emCi3hO7FGNKDee3h88rLdf5zAgof0GmxlRsP0kcehsGFqelVo2WlkQcx3xCL0EaIVRSXIOS4SjOw/5oIhPq4JXg3VU5Z2LPypuFw9FwTMjmvjNCD9IH7d9sdcoo0EiIKwaPuVtA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=TPOYEOlfDD0RmvXb5Gj6PWeJh4MJiJc8xJ5IDdgw5Ss=;
+ b=xecZi7dkiD6q9i3XaK5+ku4wGl9NFs5azy41iQpUo1gAvxHmbzKJPwm6qmuFZUrJoY4XIStgmDH8KoBWI1/ahGfI2/JUhru6OF0mfYhKFwQKlRyK5sXGjyQRRQZ9T83E+hrNIAP6Ih0SVIcN/8vI2Ss9nUT7e47B7ilQDKzZSLc=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from CO6PR12MB5427.namprd12.prod.outlook.com (2603:10b6:5:358::13)
+ by BL3PR12MB6619.namprd12.prod.outlook.com (2603:10b6:208:38e::5) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7519.34; Tue, 30 Apr
+ 2024 18:43:48 +0000
+Received: from CO6PR12MB5427.namprd12.prod.outlook.com
+ ([fe80::1c2f:5c82:2d9c:6062]) by CO6PR12MB5427.namprd12.prod.outlook.com
+ ([fe80::1c2f:5c82:2d9c:6062%5]) with mapi id 15.20.7519.035; Tue, 30 Apr 2024
+ 18:43:48 +0000
+Message-ID: <be5adbf9-1277-4753-9b8a-efadeb5b019e@amd.com>
+Date: Tue, 30 Apr 2024 14:43:44 -0400
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH][next] drm/amd/display: Fix spelling various spelling
+ mistakes
+To: Colin Ian King <colin.i.king@gmail.com>, Leo Li <sunpeng.li@amd.com>,
+ Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
+ =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+ Xinhui.Pan@amd.com, David Airlie <airlied@gmail.com>,
+ Daniel Vetter <daniel@ffwll.ch>, amd-gfx@lists.freedesktop.org,
+ dri-devel@lists.freedesktop.org
+Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240424162809.3948457-1-colin.i.king@gmail.com>
+Content-Language: en-US
+From: Harry Wentland <harry.wentland@amd.com>
+In-Reply-To: <20240424162809.3948457-1-colin.i.king@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: YQBPR01CA0040.CANPRD01.PROD.OUTLOOK.COM
+ (2603:10b6:c01:2::12) To CO6PR12MB5427.namprd12.prod.outlook.com
+ (2603:10b6:5:358::13)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.45.0.rc0.197.gbae5840b3b-goog
-Subject: [PATCH v1] perf lock: More strdup argument freeing
-From: Ian Rogers <irogers@google.com>
-To: zhaimingbing <zhaimingbing@cmss.chinamobile.com>, 
-	Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
-	Mark Rutland <mark.rutland@arm.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Ian Rogers <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>, 
-	Kan Liang <kan.liang@linux.intel.com>, linux-perf-users@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CO6PR12MB5427:EE_|BL3PR12MB6619:EE_
+X-MS-Office365-Filtering-Correlation-Id: 769084dc-3b2d-4b65-b6f6-08dc69457923
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230031|376005|366007|1800799015;
+X-Microsoft-Antispam-Message-Info:
+	=?utf-8?B?ZUh1bURtUVFSbEhMWU4zQjFtcDZoQTcrQ2VRbm9VTGJyLzZtcjRtMlp6QTB4?=
+ =?utf-8?B?T3N6cVVqd1QyYzRwUmxaaDRHMEdLUVRkZTZ4eWdzVmdwZzR6Umlzb0dDbGYw?=
+ =?utf-8?B?ei9sRzd6bWc1QmZqandlZE9EMS8xb2xQNlpoaTROajAvWnpSNnZxdm1jbC9t?=
+ =?utf-8?B?UkdMUVJSdXI0N2RhL3FBNHZ0RGUvQWNLU3d1NUpnSktFVEhqYWFRMkwrb3B1?=
+ =?utf-8?B?VENyaHhlNEQ1R3hmQkJxdXlRL1cxU2Fkck9OMGdIRmZOcHZTOFdxRWVlUitn?=
+ =?utf-8?B?WGZheVlIT1JiaTFXOHdoRVYyQUJSa0w5ZVBENi9uNDdaSlNJOGNPYXc4L0xL?=
+ =?utf-8?B?ZStyMXNmTytlTWpvWUcwbHFZazNJek40a0dJT1Z6YmtXb0VVTDcwR0R2UXJP?=
+ =?utf-8?B?VmVjR1BRSmtOMGhOeEphZ0t0eVVPdUdzWVZIdVk0Ni9YRFlLTFUrV0pIdkxU?=
+ =?utf-8?B?STc5SThaYWdEbG9kZmRoM3c4YVRXeGcvR1l0NVAwZ3dCTUtwclhDN3dnSUdT?=
+ =?utf-8?B?U2VnelhQUm4rL044YUJVQ0ZSa09FSWJNUUdkTk0wSk0rVHZYcjZ4QzVSR0Rt?=
+ =?utf-8?B?TG85cDUzMTI1bGhMQjlKSlNNRFJRUHQ0Y2FBVG90OXgxd2FIVDNIUHU0VFUr?=
+ =?utf-8?B?bUh2ZnE1Mlc3OXpORXAvZVp3Z1lGYzl6eWxTVWZDUlhlYjVUNG8rYkNqN2FW?=
+ =?utf-8?B?NXc5bG0raFNmRjJJUGIwcDVJUHlOOWQvdklQTHdnRW13b2g3RkZZUVBOZDRX?=
+ =?utf-8?B?TzJZSm40MVpNbXh6c3VwOWNMTTlJVTVkVDA0V1dZQVd5a0Z0OXVzaFhtWEQv?=
+ =?utf-8?B?SElhOC9JUHZWVWN3R1EzQVFEVUpvbGtWTU4wdUVHQ2xMTURXZ2dSMzVpNlVT?=
+ =?utf-8?B?eGtPNjVRUlJHbUczQ2NpZkJzZEZqZUdvNnFPMXFkTnM1bW9OenZyWmMzYjlR?=
+ =?utf-8?B?YnFQT0VmODhsYWkwanJWSldDczJNRS90VjIwRXBnWUJ1TjJyNDBZeHZwVlgz?=
+ =?utf-8?B?SkVVNDFndC8xayt1V1pBNVl5bnlNbTFydUtzZHRYMTNuVXZ2UVhmN3hRMmNX?=
+ =?utf-8?B?enFWZkplV2hmQ3Y5Y0k1VU5COFZyR0Uwd0JQRkc0YjZ5aTc3Z2RXQTAvUFhK?=
+ =?utf-8?B?aXRORUJrcFZaS1MzTDN5eXF6bm1mV1dZNjVXRDdPMjgvVWlFQ2FxYlNmdldH?=
+ =?utf-8?B?T3ljY2JlU1h2ZDlNSEcxY3NXalZZN3lOM2pjOTUwcnM1Y3FiTnBWZzJuQ1Rs?=
+ =?utf-8?B?ZTMwNDljNFo5d2t5R0M5b1RSaWNiUXVSL21uaEs1cDM4RXJ1eWJUaDlKOFB6?=
+ =?utf-8?B?d0FwMEl6UExBbnNacHFjM3d6WTgvOGpPbnBHOEJESDFwd0UzQ1RvOWVIc2pI?=
+ =?utf-8?B?Zm5WUG8wS1hDTFN1ZVVqQ0VoUmY4KzVrQ1hDdVpFQjZvYXhuQ1RnNytDaFgz?=
+ =?utf-8?B?VWVqVTBWZW8rWjdoWHVkMUhmT1Y4SEFnQmZXSXpFQkpzSFZ5RDEwVnVVS2Nm?=
+ =?utf-8?B?Q3R5d3ZYL2FadEM2cEFaQ2JNMWhwQXFLYlN0QVB5VTNVcmRXelV0MHI3cWNF?=
+ =?utf-8?B?Q0lDNk54anYxMnZhVWFnc3g2b0JDTGhzbEM3UStVaGQ0eVZQVDdRQXEvRDB5?=
+ =?utf-8?B?cXZSQnE0eEhNR2JtbTZ5dWF1bGZJd25ZYUNHK0U0S1FHQ2xmdkF2RDl1cU1D?=
+ =?utf-8?B?SGhhMXpENEdsUzJYRnh4SmkwM2JQTnZvcTBJckw2Tlgwcm5WaSs3cWtBPT0=?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO6PR12MB5427.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(366007)(1800799015);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?c0pKQ0t2blNGVHgyemhHZWpBTE11bVRqSkNCODJySWNoT1EvbHRQWnpDQzJ0?=
+ =?utf-8?B?eGUwMFFlaFBLQ3hnRGVXRVhiL0NBRkFTR1AzNUFKa29kTHZkbC8zWlNTV0Fv?=
+ =?utf-8?B?YzJpVlRJbWlqVEY0NGtvVXBZeEpqZ2FQWU5LTW90cy9sTzRYK1p4RzRrY0h4?=
+ =?utf-8?B?YjJmMCtzM1hEZ3VVa1JuNkQ4TnM5dHlxSkM2WGVsWXBGTUpnZWdjaU1LbUZW?=
+ =?utf-8?B?YUhGOEJNSE1uendETTRwUlBQemo1L1VJcVo0Zm9mR3ZBeVd1VmxuL3FYT3RB?=
+ =?utf-8?B?UktVc0Q0bzJwbWlTMjhQcFBCbGxWNTFLQWE1ZTVMZ3l2UFN5M2o1dTBsa0RE?=
+ =?utf-8?B?RE9qdkNJdEpRR3ZJaHRkQXZPVVJpUmRwK3BYeGlHQlZVbmRIMEpyR3c4ZTVn?=
+ =?utf-8?B?QnFMVlRkNVJIWTlwSW1odkdXaTA4QU03aFk1TGc2WVN2Zjd5aGpxUjdlRnQv?=
+ =?utf-8?B?MDFldWg1Z3BxWE51VGExelpaSzJYQjA0cEdLMTBjRGM3M2pGdjRsS20wNlBP?=
+ =?utf-8?B?SWtFOHZ6aktZZjNlMmgxZzF6VkhFUkJqYlBuQ1E1aXFjbkR4YzVrL0NvaWRw?=
+ =?utf-8?B?QTFvcWJ1d245RENmdkxqbUlzdlhia3RsVUk2c3BVdGVhdGxjQnlScHBQN2lz?=
+ =?utf-8?B?TEM0Vkk1QkJ6L2ViQnVvOEczL1hDbUNWMFNHU3lCVmtSeEFUM2c0bnR5VmdC?=
+ =?utf-8?B?cTVYSUdGUW42TnlVOWdsUEN3OEV2UTNoeVVMMUFYOUxPd1FrU2lMeUZxa0Ex?=
+ =?utf-8?B?eGREWVV4c0dob2g4ZWM0eVZLcmVKRk81NzlHcU54aFF4OCtBa3RFL1VZRFNn?=
+ =?utf-8?B?SXRiQnA1RkVIMEMzTS95VEluVzdnejNMelV3em5EYUs4YWFqd3Z6RExHengz?=
+ =?utf-8?B?bTFHM0s5VENUUW8rV2k1ZlpkcEYwOVlZZkxMWHpmNnd4WHRkaGNKb2ZaS2d3?=
+ =?utf-8?B?KzFsRFVlWkhuZ3lla1U1Zk8ybm1NTmpteHRiWVhZbXRZUUFCSWdzcUp3Z0wv?=
+ =?utf-8?B?alcxd1gyUllHY01DYzFhaTB1dEVFQzNEL3hPQjgxZVlGNi9OR3dUbTA3dS9E?=
+ =?utf-8?B?bjR3a2I3ZFY0bGpKemEvMnZMTUpOWEo2QkxwVTU5TEdHS1pLU2VHaFc1eldz?=
+ =?utf-8?B?aGJpRzRhb2lvK1NJb09ObzFDa1I3KytrVHA3TVFETTVoRDlac0tsdlQ3ZENu?=
+ =?utf-8?B?a2VlOVpuSlBWc2dsaXhTam9VM2M1NlFIbHJVRjAwVnowZllyUmpyeEtIVmll?=
+ =?utf-8?B?d3lXM3lOT2JhazNsTGdXSlM1TTlQRlpCN2xkdWdOTkNYRE5raDNyYitEdXor?=
+ =?utf-8?B?dUF3eS9VN2pDRHN5OExLeS91dTdiRmVZOXhURmliRExkRkVLckltZXpmMDRJ?=
+ =?utf-8?B?WXR3SlhBWlVTZ3dHUXYvWGx2T0hwYVNuWmIvaVhnSXFzdE5wamtjOG5JNmhw?=
+ =?utf-8?B?eGh0aU1ZUzBncXI2dkk1WWxreU5jLzB0MEVRSW1maFVpYkxJYUllTUp3Uis0?=
+ =?utf-8?B?RU8yOWpOVGNaa1M5TFBTNTFwTzFoaytVbFoySHBDQjZqS2w4V05HNmRYU2tZ?=
+ =?utf-8?B?TUdBMXdNdDFLbUtsTzY4YUg5V2hEdlRGRnRmNGo1dmp6Wk5PM0xtalBocFYy?=
+ =?utf-8?B?QVZZZnVZWVZFbU9GVDRBMlEyUWVpbmtpMVNvdlhIUzhoVUN4MDNxdTVmMVRp?=
+ =?utf-8?B?RERsK1ZjSzc0dW1rYXpBNTlTQ2hVSXhLYjhHdW1XYVp5OUNoblJxV1I0YlBY?=
+ =?utf-8?B?S3QzcDd2SE5UeXhPLzhUbkdGVnI0WFVqRXVhbVpCOVhvbmxRU3NwMlloUDhm?=
+ =?utf-8?B?MGJ4b09ON3RmY2FqenJCMXhsUHVGRnNrY212MXdMUWRYcUhDelZHSGNmcXFM?=
+ =?utf-8?B?djVtZXhraE41MzNOS1VOamZrUDVTZmZncHJkaE1GMzJkb2NuNGFkd0F4Rnpm?=
+ =?utf-8?B?dS9JSjBqNVVGUVEveDdTSHRCalB5VWI5ejRLN2Z1QmZWSkwrWktDUS8vMytQ?=
+ =?utf-8?B?aUcySDVCNXQwb0Nnejh2NUVRM1JOS3plL1ZZa2E1RHptR0R2MUxWY0RBRFM2?=
+ =?utf-8?B?cVJaaFZFelNBVFdUanpNWGtLSzZHK0pubS92bFpsa3FuOHVhYTUxT1JzZnpX?=
+ =?utf-8?Q?ME7dAxg0+xGlwdBnslQ0uWcx6?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 769084dc-3b2d-4b65-b6f6-08dc69457923
+X-MS-Exchange-CrossTenant-AuthSource: CO6PR12MB5427.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Apr 2024 18:43:48.7368
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: pr/KARK8iaWLRt/bqFqt7dDZiBRWg82ywma8Rg2Xlfrk5IKEQDT8TKOg7/N9D3hJvrXSPpLcZKRGdoumds85dQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL3PR12MB6619
 
-Leak sanitizer complains about the strdup-ed arguments not being
-freed. rec_argv is reordered and duplicates inserted, meaning making
-all its contents strdup-ed and freeing them all leads to double frees
-or leaks. Add an extra array to track strup-ed arguments and free
-them. This makes address sanitier running `perf test` "kernel lock
-contention analysis test" memory leak free.
 
-Signed-off-by: Ian Rogers <irogers@google.com>
----
- tools/perf/builtin-lock.c | 44 +++++++++++++++++++++++----------------
- 1 file changed, 26 insertions(+), 18 deletions(-)
 
-diff --git a/tools/perf/builtin-lock.c b/tools/perf/builtin-lock.c
-index 230461280e45..26c059397cdf 100644
---- a/tools/perf/builtin-lock.c
-+++ b/tools/perf/builtin-lock.c
-@@ -2230,10 +2230,11 @@ static int __cmd_record(int argc, const char **argv)
- 	const char *callgraph_args[] = {
- 		"--call-graph", "fp," __stringify(CONTENTION_STACK_DEPTH),
- 	};
--	unsigned int rec_argc, i, j, ret;
-+	unsigned int rec_argc, i, j, dups = 0, ret;
- 	unsigned int nr_tracepoints;
- 	unsigned int nr_callgraph_args = 0;
- 	const char **rec_argv;
-+	char **to_free;
- 	bool has_lock_stat = true;
- 
- 	for (i = 0; i < ARRAY_SIZE(lock_tracepoints); i++) {
-@@ -2270,28 +2271,25 @@ static int __cmd_record(int argc, const char **argv)
- 	/* factor of 2 is for -e in front of each tracepoint */
- 	rec_argc += 2 * nr_tracepoints;
- 
--	rec_argv = calloc(rec_argc + 1, sizeof(char *));
-+	rec_argv = calloc(rec_argc + 1, sizeof(*rec_argv));
- 	if (!rec_argv)
- 		return -ENOMEM;
- 
--	for (i = 0; i < ARRAY_SIZE(record_args); i++)
--		rec_argv[i] = strdup(record_args[i]);
--
--	for (j = 0; j < nr_tracepoints; j++) {
--		const char *ev_name;
-+	to_free = calloc(rec_argc, sizeof(*to_free));
-+	if (!to_free)
-+		return -ENOMEM;
- 
--		if (has_lock_stat)
--			ev_name = strdup(lock_tracepoints[j].name);
--		else
--			ev_name = strdup(contention_tracepoints[j].name);
--
--		if (!ev_name) {
--			free(rec_argv);
--			return -ENOMEM;
--		}
- 
-+	for (i = 0; i < ARRAY_SIZE(record_args);) {
-+		to_free[dups] = strdup(record_args[i]);
-+		rec_argv[i++] = to_free[dups++];
-+	}
-+	for (j = 0; j < nr_tracepoints; j++) {
-+		to_free[dups] = strdup(has_lock_stat
-+				       ? lock_tracepoints[j].name
-+				       : contention_tracepoints[j].name);
- 		rec_argv[i++] = "-e";
--		rec_argv[i++] = ev_name;
-+		rec_argv[i++] = to_free[dups++];
- 	}
- 
- 	for (j = 0; j < nr_callgraph_args; j++, i++)
-@@ -2302,7 +2300,17 @@ static int __cmd_record(int argc, const char **argv)
- 
- 	BUG_ON(i != rec_argc);
- 
--	ret = cmd_record(i, rec_argv);
-+	for (i = 0; i < dups; i++) {
-+		if (to_free[i] == NULL) {
-+			ret = -ENOMEM;
-+			goto out;
-+		}
-+	}
-+	ret = cmd_record(rec_argc, rec_argv);
-+out:
-+	for (i = 0; i < dups; i++)
-+		zfree(&to_free[i]);
-+	free(to_free);
- 	free(rec_argv);
- 	return ret;
- }
--- 
-2.45.0.rc0.197.gbae5840b3b-goog
+On 2024-04-24 12:28, Colin Ian King wrote:
+> There are various spelling mistakes in dml2_printf messages, fix them.
+> 
+
+Thanks.
+
+Reviewed-by: Harry Wentland <harry.wentland@amd.com>
+
+In the process of merging it into amd-staging-drm-next.
+
+Harry
+
+> Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
+> ---
+>  .../dc/dml2/dml21/src/dml2_core/dml2_core_dcn4_calcs.c      | 6 +++---
+>  .../display/dc/dml2/dml21/src/dml2_core/dml2_core_shared.c  | 6 +++---
+>  2 files changed, 6 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/amd/display/dc/dml2/dml21/src/dml2_core/dml2_core_dcn4_calcs.c b/drivers/gpu/drm/amd/display/dc/dml2/dml21/src/dml2_core/dml2_core_dcn4_calcs.c
+> index 846b0ae48596..2dea5965d02f 100644
+> --- a/drivers/gpu/drm/amd/display/dc/dml2/dml21/src/dml2_core/dml2_core_dcn4_calcs.c
+> +++ b/drivers/gpu/drm/amd/display/dc/dml2/dml21/src/dml2_core/dml2_core_dcn4_calcs.c
+> @@ -5566,7 +5566,7 @@ static bool CalculatePrefetchSchedule(struct dml2_core_internal_scratch *scratch
+>  		dml2_printf("DML: Tvm: %fus - time to fetch vm\n", s->TimeForFetchingVM);
+>  		dml2_printf("DML: Tr0: %fus - time to fetch first row of data pagetables\n", s->TimeForFetchingRowInVBlank);
+>  		dml2_printf("DML: Tsw: %fus = time to fetch enough pixel data and cursor data to feed the scalers init position and detile\n", (double)s->LinesToRequestPrefetchPixelData * s->LineTime);
+> -		dml2_printf("DML: To: %fus - time for propogation from scaler to optc\n", (*p->DSTYAfterScaler + ((double)(*p->DSTXAfterScaler) / (double)p->myPipe->HTotal)) * s->LineTime);
+> +		dml2_printf("DML: To: %fus - time for propagation from scaler to optc\n", (*p->DSTYAfterScaler + ((double)(*p->DSTXAfterScaler) / (double)p->myPipe->HTotal)) * s->LineTime);
+>  		dml2_printf("DML: Tvstartup - TSetup - Tcalc - TWait - Tpre - To > 0\n");
+>  		dml2_printf("DML: Tslack(pre): %fus - time left over in schedule\n", p->VStartup * s->LineTime - s->TimeForFetchingVM - 2 * s->TimeForFetchingRowInVBlank - (*p->DSTYAfterScaler + ((double)(*p->DSTXAfterScaler) / (double)p->myPipe->HTotal)) * s->LineTime - p->TWait - p->TCalc - *p->TSetup);
+>  		dml2_printf("DML: row_bytes = dpte_row_bytes (per_pipe) = PixelPTEBytesPerRow = : %u\n", p->PixelPTEBytesPerRow);
+> @@ -7825,7 +7825,7 @@ static bool dml_core_mode_support(struct dml2_core_calcs_mode_support_ex *in_out
+>  	dml2_printf("DML::%s: mode_lib->ms.FabricClock = %f\n", __func__, mode_lib->ms.FabricClock);
+>  	dml2_printf("DML::%s: mode_lib->ms.uclk_freq_mhz = %f\n", __func__, mode_lib->ms.uclk_freq_mhz);
+>  	dml2_printf("DML::%s: max_urgent_latency_us = %f\n", __func__, mode_lib->ms.support.max_urgent_latency_us);
+> -	dml2_printf("DML::%s: urgent latency tolarance = %f\n", __func__, ((mode_lib->ip.rob_buffer_size_kbytes - mode_lib->ip.pixel_chunk_size_kbytes) * 1024 / (mode_lib->ms.DCFCLK * mode_lib->soc.return_bus_width_bytes)));
+> +	dml2_printf("DML::%s: urgent latency tolerance = %f\n", __func__, ((mode_lib->ip.rob_buffer_size_kbytes - mode_lib->ip.pixel_chunk_size_kbytes) * 1024 / (mode_lib->ms.DCFCLK * mode_lib->soc.return_bus_width_bytes)));
+>  	dml2_printf("DML::%s: ROBSupport = %u\n", __func__, mode_lib->ms.support.ROBSupport);
+>  #endif
+>  
+> @@ -10603,7 +10603,7 @@ static bool dml_core_mode_programming(struct dml2_core_calcs_mode_programming_ex
+>  				if (display_cfg->plane_descriptors[k].immediate_flip && mode_lib->mp.ImmediateFlipSupportedForPipe[k] == false) {
+>  					mode_lib->mp.ImmediateFlipSupported = false;
+>  #ifdef __DML_VBA_DEBUG__
+> -					dml2_printf("DML::%s: Pipe %0d not supporing iflip!\n", __func__, k);
+> +					dml2_printf("DML::%s: Pipe %0d not supporting iflip!\n", __func__, k);
+>  #endif
+>  				}
+>  			}
+> diff --git a/drivers/gpu/drm/amd/display/dc/dml2/dml21/src/dml2_core/dml2_core_shared.c b/drivers/gpu/drm/amd/display/dc/dml2/dml21/src/dml2_core/dml2_core_shared.c
+> index 0ef77a89d984..d1d4fe062d4e 100644
+> --- a/drivers/gpu/drm/amd/display/dc/dml2/dml21/src/dml2_core/dml2_core_shared.c
+> +++ b/drivers/gpu/drm/amd/display/dc/dml2/dml21/src/dml2_core/dml2_core_shared.c
+> @@ -2023,7 +2023,7 @@ bool dml2_core_shared_mode_support(struct dml2_core_calcs_mode_support_ex *in_ou
+>  	dml2_printf("DML::%s: mode_lib->ms.FabricClock = %f\n", __func__, mode_lib->ms.FabricClock);
+>  	dml2_printf("DML::%s: mode_lib->ms.uclk_freq_mhz = %f\n", __func__, mode_lib->ms.uclk_freq_mhz);
+>  	dml2_printf("DML::%s: max_urgent_latency_us = %f\n", __func__, mode_lib->ms.support.max_urgent_latency_us);
+> -	dml2_printf("DML::%s: urgent latency tolarance = %f\n", __func__, ((mode_lib->ip.rob_buffer_size_kbytes - mode_lib->ip.pixel_chunk_size_kbytes) * 1024 / (mode_lib->ms.DCFCLK * mode_lib->soc.return_bus_width_bytes)));
+> +	dml2_printf("DML::%s: urgent latency tolerance = %f\n", __func__, ((mode_lib->ip.rob_buffer_size_kbytes - mode_lib->ip.pixel_chunk_size_kbytes) * 1024 / (mode_lib->ms.DCFCLK * mode_lib->soc.return_bus_width_bytes)));
+>  	dml2_printf("DML::%s: ROBSupport = %u\n", __func__, mode_lib->ms.support.ROBSupport);
+>  #endif
+>  
+> @@ -8174,7 +8174,7 @@ static bool CalculatePrefetchSchedule(struct dml2_core_internal_scratch *scratch
+>  		dml2_printf("DML: Tvm: %fus - time to fetch vm\n", s->TimeForFetchingVM);
+>  		dml2_printf("DML: Tr0: %fus - time to fetch first row of data pagetables\n", s->TimeForFetchingRowInVBlank);
+>  		dml2_printf("DML: Tsw: %fus = time to fetch enough pixel data and cursor data to feed the scalers init position and detile\n", (double)s->LinesToRequestPrefetchPixelData * s->LineTime);
+> -		dml2_printf("DML: To: %fus - time for propogation from scaler to optc\n", (*p->DSTYAfterScaler + ((double)(*p->DSTXAfterScaler) / (double)p->myPipe->HTotal)) * s->LineTime);
+> +		dml2_printf("DML: To: %fus - time for propagation from scaler to optc\n", (*p->DSTYAfterScaler + ((double)(*p->DSTXAfterScaler) / (double)p->myPipe->HTotal)) * s->LineTime);
+>  		dml2_printf("DML: Tvstartup - TSetup - Tcalc - TWait - Tpre - To > 0\n");
+>  		dml2_printf("DML: Tslack(pre): %fus - time left over in schedule\n", p->VStartup * s->LineTime - s->TimeForFetchingVM - 2 * s->TimeForFetchingRowInVBlank - (*p->DSTYAfterScaler + ((double)(*p->DSTXAfterScaler) / (double)p->myPipe->HTotal)) * s->LineTime - p->TWait - p->TCalc - *p->TSetup);
+>  		dml2_printf("DML: row_bytes = dpte_row_bytes (per_pipe) = PixelPTEBytesPerRow = : %u\n", p->PixelPTEBytesPerRow);
+> @@ -10994,7 +10994,7 @@ bool dml2_core_shared_mode_programming(struct dml2_core_calcs_mode_programming_e
+>  				if (display_cfg->plane_descriptors[k].immediate_flip && mode_lib->mp.ImmediateFlipSupportedForPipe[k] == false) {
+>  					mode_lib->mp.ImmediateFlipSupported = false;
+>  #ifdef __DML_VBA_DEBUG__
+> -					dml2_printf("DML::%s: Pipe %0d not supporing iflip!\n", __func__, k);
+> +					dml2_printf("DML::%s: Pipe %0d not supporting iflip!\n", __func__, k);
+>  #endif
+>  				}
+>  			}
 
 
