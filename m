@@ -1,215 +1,220 @@
-Return-Path: <linux-kernel+bounces-163738-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-163771-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B1F478B6F03
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 12:03:17 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6288F8B6FA7
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 12:28:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 68755283473
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 10:03:16 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DAC551F23423
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 10:28:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E70E8129A6B;
-	Tue, 30 Apr 2024 10:03:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="S9LKk/4Q"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 413C413D299;
+	Tue, 30 Apr 2024 10:28:21 +0000 (UTC)
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 178FD22618;
-	Tue, 30 Apr 2024 10:03:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2502913D240
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 10:28:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714471386; cv=none; b=Bs0X0X5u9X+JSdHCqIKr+zdmpYhzfTpT0GW5UlpYq3ZMUuaZ8T+FUNz/YUdtCSljVAWDLOw4lygVA9vbK4O2ShuQ/Q/hfA5eW/Bg8OuP/jrUlj0wvneeCiJTIoiXXnD/V7fFiNj4eO+0yQSLtmauH2pkxnRobFwjW/pfziwSYx0=
+	t=1714472900; cv=none; b=s+KiXUleTxc+WL5vpOZENROvBd1g0Y5YXtjv8WbcCxyJUxn28bWg+QqsEy07MMMIniJqWZa4W17lfgUVVWw4j/idoE7pHB4MiBadhJZudI0/GH4TSTFDNzaK1eIdNMIB2oImUozTumVLiQFk5+vFAoEuNN5dExjOzsiR90xYwlY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714471386; c=relaxed/simple;
-	bh=/SRik2rorGSK8PYXkeWdVKUDcHGjQcY0rc2GwpwuuW8=;
+	s=arc-20240116; t=1714472900; c=relaxed/simple;
+	bh=17TzqhMYzGeft7fLUsMzLJTT61KYGgxRAOmEk0hDiTs=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=akwQ0DwANaemxEKOihDZiBMFSwkMjY2X9YcZtEFGQeD2s6s0WtKcAUq+atwBs3+NZsRWG/S5fpyGLFpKhjgiM0cfIDQPtu2R2QUq9MaO8w2/FVFxRjhp4O05yWQOWO5lMthKRpMFpb5IMpfgTYP9aeobNx9beeDuwVrQH1Q/Xp8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=S9LKk/4Q; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B78E5C2BBFC;
-	Tue, 30 Apr 2024 10:03:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714471385;
-	bh=/SRik2rorGSK8PYXkeWdVKUDcHGjQcY0rc2GwpwuuW8=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=S9LKk/4QVt5iPGdjKAEci8RD3tJP0WL0BKEtFlxcF9bSi+0i9GQ+FKKPD0UZWKpja
-	 y4+9x5SvVkLBYXUQQZGAtgRCdWc6pmKAE04Vo5T9WP9JBARwGHsXNwV4CEt9omMFmS
-	 hTbdbTK8L5AG7vN0s0+vYywHJMupyJMCoyqQLkDzdTLS0yNlJAiYAxsTBgCeZ2sXgg
-	 RYTvYQNv8XZiXog0gljpdqpVH3WpPRklknQTfjtjjY5biKXeF09cGPppOvjrSO2p9I
-	 buabG5BNLFDwmkQQshugrrjsQfRvjx+UoaQ1qreLeAWQ4ZnakfR4WKZLgt6bCV1o1R
-	 qe+dWb/lvaUKg==
-Date: Tue, 30 Apr 2024 12:02:59 +0200
-From: Benjamin Tissoires <bentiss@kernel.org>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Daniel Borkmann <daniel@iogearbox.net>, 
-	Alexei Starovoitov <ast@kernel.org>, John Fastabend <john.fastabend@gmail.com>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
-	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] bpf: verifier: allow arrays of progs to be used in
- sleepable context
-Message-ID: <mhkzkf4e23uvljtmwizwcxyuyat2tmfxn33xb4t7waafgmsa66@mcrzpj3b6ssx>
-References: <20240422-sleepable_array_progs-v1-1-7c46ccbaa6e2@kernel.org>
- <7344022a-6f59-7cbf-ee45-6b7d59114be6@iogearbox.net>
- <un4jw2ef45vu3vwojpjca3wezso7fdp5gih7np73f4pmsmhmaj@csm3ix2ygd5i>
- <35nbgxc7hqyef3iobfvhbftxtbxb3dfz574gbba4kwvbo6os4v@sya7ul5i6mmd>
- <CAADnVQJaG8kDaJr5LV29ces+gVpgARLAWiUvE9Ee5huuiW5X=Q@mail.gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=htMkJ6XvMTg1+Tqe/Ib13m5HCsHpQbzhrPzxfgpkjSCPxrOELpw3kx68Ts9KVxNOor7/NbGY8bjXmgCrsQGPger3+LuNYUuvIG1Tfo1fcQanMNsKfQFHWTmBzlsN62RUt32tBsYM18LBXxr6FZGp+gkUTKDaL3swsEao4fytdCY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <mkl@pengutronix.de>)
+	id 1s1kiT-00011g-Lh; Tue, 30 Apr 2024 12:28:05 +0200
+Received: from [2a0a:edc0:0:b01:1d::7b] (helo=bjornoya.blackshift.org)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <mkl@pengutronix.de>)
+	id 1s1kiS-00F92s-3T; Tue, 30 Apr 2024 12:28:04 +0200
+Received: from pengutronix.de (unknown [172.20.34.65])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(Client did not present a certificate)
+	(Authenticated sender: mkl-all@blackshift.org)
+	by smtp.blackshift.org (Postfix) with ESMTPSA id 0D24D2C4A51;
+	Tue, 30 Apr 2024 09:10:59 +0000 (UTC)
+Date: Tue, 30 Apr 2024 11:10:58 +0200
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: Vitor Soares <ivitro@gmail.com>
+Cc: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>, 
+	Thomas Kopp <thomas.kopp@microchip.com>, Wolfgang Grandegger <wg@grandegger.com>, 
+	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	Vitor Soares <vitor.soares@toradex.com>, linux-can@vger.kernel.org, netdev@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Subject: Re: [PATCH v3] can: mcp251xfd: fix infinite loop when xmit fails
+Message-ID: <20240430-curassow-of-improbable-poetry-1611f8-mkl@pengutronix.de>
+References: <20240311121143.306403-1-ivitro@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="kyt4gwwqp74cbnux"
+Content-Disposition: inline
+In-Reply-To: <20240311121143.306403-1-ivitro@gmail.com>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+
+
+--kyt4gwwqp74cbnux
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAADnVQJaG8kDaJr5LV29ces+gVpgARLAWiUvE9Ee5huuiW5X=Q@mail.gmail.com>
+Content-Transfer-Encoding: quoted-printable
 
-On Apr 24 2024, Alexei Starovoitov wrote:
-> On Wed, Apr 24, 2024 at 7:17 AM Benjamin Tissoires <bentiss@kernel.org> wrote:
-> >
-> > On Apr 22 2024, Benjamin Tissoires wrote:
-> > > On Apr 22 2024, Daniel Borkmann wrote:
-> > > > On 4/22/24 9:16 AM, Benjamin Tissoires wrote:
-> > > > > Arrays of progs are underlying using regular arrays, but they can only
-> > > > > be updated from a syscall.
-> > > > > Therefore, they should be safe to use while in a sleepable context.
-> > > > >
-> > > > > This is required to be able to call bpf_tail_call() from a sleepable
-> > > > > tracing bpf program.
-> > > > >
-> > > > > Signed-off-by: Benjamin Tissoires <bentiss@kernel.org>
-> > > > > ---
-> > > > > Hi,
-> > > > >
-> > > > > a small patch to allow to have:
-> > > > >
-> > > > > ```
-> > > > > SEC("fmod_ret.s/__hid_bpf_tail_call_sleepable")
-> > > > > int BPF_PROG(hid_tail_call_sleepable, struct hid_bpf_ctx *hctx)
-> > > > > {
-> > > > >   bpf_tail_call(ctx, &hid_jmp_table, hctx->index);
-> > > > >
-> > > > >   return 0;
-> > > > > }
-> > > > > ```
-> > > > >
-> > > > > This should allow me to add bpf hooks to functions that communicate with
-> > > > > the hardware.
-> > > >
-> > > > Could you also add selftests to it? In particular, I'm thinking that this is not
-> > > > sufficient given also bpf_prog_map_compatible() needs to be extended to check on
-> > > > prog->sleepable. For example we would need to disallow calling sleepable programs
-> > > > in that map from non-sleepable context.
-> > >
-> > > Just to be sure, if I have to change bpf_prog_map_compatible(), that
-> > > means that a prog array map can only have sleepable or non-sleepable
-> > > programs, but not both at the same time?
-> > >
-> > > FWIW, indeed, I just tested and the BPF verifier/core is happy with this
-> > > patch only if the bpf_tail_call is issued from a non-sleepable context
-> > > (and crashes as expected).
-> > >
-> > > But that seems to be a different issue TBH: I can store a sleepable BPF
-> > > program in a prog array and run it from a non sleepable context. I don't
-> > > need the patch at all as bpf_tail_call() is normally declared. I assume
-> > > your suggestion to change bpf_prog_map_compatible() will fix that part.
-> > >
-> > > I'll digg some more tomorrow.
-> > >
-> >
-> > Quick update:
-> > forcing the prog array to only contain sleepable programs or not seems
-> > to do the trick, but I'm down a rabbit hole as when I return from my
-> > trampoline, I get an invalid page fault, trying to execute NX-protected
-> > page.
-> >
-> > I'll report if it's because of HID-BPF or if there are more work to be
-> > doing for bpf_tail_call (which I suspect).
-> 
-> bpf_tail_call is an old mechanism.
-> Instead of making it work for sleepable (which is ok to do)
-> have you considered using "freplace" logic to "add bpf hooks to functions" ?
-> You can have a global noinline function and replace it at run-time
-> with another bpf program.
-> Like:
-> __attribute__ ((noinline))
-> int get_constant(long val)
-> {
->         return val - 122;
-> }
-> 
-> in progs/test_pkt_access.c
-> 
-> is replaced with progs/freplace_get_constant.c
-> 
-> With freplace you can pass normal arguments, do the call and get
-> return value, while with bpf_tail_call it's ctx only and no return.
+On 11.03.2024 12:11:43, Vitor Soares wrote:
+> From: Vitor Soares <vitor.soares@toradex.com>
+>=20
+> When the mcp251xfd_start_xmit() function fails, the driver stops
+> processing messages, and the interrupt routine does not return,
+> running indefinitely even after killing the running application.
+>=20
+> Error messages:
+> [  441.298819] mcp251xfd spi2.0 can0: ERROR in mcp251xfd_start_xmit: -16
+> [  441.306498] mcp251xfd spi2.0 can0: Transmit Event FIFO buffer not empt=
+y. (seq=3D0x000017c7, tef_tail=3D0x000017cf, tef_head=3D0x000017d0, tx_head=
+=3D0x000017d3).
+> ... and repeat forever.
+>=20
+> The issue can be triggered when multiple devices share the same
+> SPI interface. And there is concurrent access to the bus.
+>=20
+> The problem occurs because tx_ring->head increments even if
+> mcp251xfd_start_xmit() fails. Consequently, the driver skips one
+> TX package while still expecting a response in
+> mcp251xfd_handle_tefif_one().
+>=20
+> This patch resolves the issue by decreasing tx_ring->head if
+> mcp251xfd_start_xmit() fails. With the fix, if we trigger the issue and
+> the err =3D -EBUSY, the driver returns NETDEV_TX_BUSY. The network stack
+> retries to transmit the message.
+> Otherwise, it prints an error and discards the message.
+>=20
+> Fixes: 55e5b97f003e ("can: mcp25xxfd: add driver for Microchip MCP25xxFD =
+SPI CAN")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Vitor Soares <vitor.soares@toradex.com>
+> ---
+>=20
+> V2->V3:
+>   - Add tx_dropped stats.
+>   - netdev_sent_queue() only if can_put_echo_skb() succeed.
+>=20
+> V1->V2:
+>   - Return NETDEV_TX_BUSY if mcp251xfd_tx_obj_write() =3D=3D -EBUSY.
+>   - Rework the commit message to address the change above.
+>   - Change can_put_echo_skb() to be called after mcp251xfd_tx_obj_write()=
+ succeed.
+>     Otherwise, we get Kernel NULL pointer dereference error.
+>=20
+>  drivers/net/can/spi/mcp251xfd/mcp251xfd-tx.c | 34 ++++++++++++--------
+>  1 file changed, 21 insertions(+), 13 deletions(-)
+>=20
+> diff --git a/drivers/net/can/spi/mcp251xfd/mcp251xfd-tx.c b/drivers/net/c=
+an/spi/mcp251xfd/mcp251xfd-tx.c
+> index 160528d3cc26..146c44e47c60 100644
+> --- a/drivers/net/can/spi/mcp251xfd/mcp251xfd-tx.c
+> +++ b/drivers/net/can/spi/mcp251xfd/mcp251xfd-tx.c
+> @@ -166,6 +166,7 @@ netdev_tx_t mcp251xfd_start_xmit(struct sk_buff *skb,
+>  				 struct net_device *ndev)
+>  {
+>  	struct mcp251xfd_priv *priv =3D netdev_priv(ndev);
+> +	struct net_device_stats *stats =3D &ndev->stats;
+>  	struct mcp251xfd_tx_ring *tx_ring =3D priv->tx;
+>  	struct mcp251xfd_tx_obj *tx_obj;
+>  	unsigned int frame_len;
+> @@ -181,25 +182,32 @@ netdev_tx_t mcp251xfd_start_xmit(struct sk_buff *sk=
+b,
+>  	tx_obj =3D mcp251xfd_get_tx_obj_next(tx_ring);
+>  	mcp251xfd_tx_obj_from_skb(priv, tx_obj, skb, tx_ring->head);
+> =20
+> -	/* Stop queue if we occupy the complete TX FIFO */
+>  	tx_head =3D mcp251xfd_get_tx_head(tx_ring);
+> -	tx_ring->head++;
+> -	if (mcp251xfd_get_tx_free(tx_ring) =3D=3D 0)
+> -		netif_stop_queue(ndev);
+> -
+>  	frame_len =3D can_skb_get_frame_len(skb);
+> -	err =3D can_put_echo_skb(skb, ndev, tx_head, frame_len);
+> -	if (!err)
+> -		netdev_sent_queue(priv->ndev, frame_len);
+> +
+> +	tx_ring->head++;
+> =20
+>  	err =3D mcp251xfd_tx_obj_write(priv, tx_obj);
+> -	if (err)
+> -		goto out_err;
+> +	if (err) {
+> +		tx_ring->head--;
+> =20
+> -	return NETDEV_TX_OK;
+> +		if (err =3D=3D -EBUSY)
+> +			return NETDEV_TX_BUSY;
+> =20
+> - out_err:
+> -	netdev_err(priv->ndev, "ERROR in %s: %d\n", __func__, err);
+> +		stats->tx_dropped++;
+> +
+> +		if (net_ratelimit())
+> +			netdev_err(priv->ndev,
+> +				   "ERROR in %s: %d\n", __func__, err);
+> +	} else {
+> +		err =3D can_put_echo_skb(skb, ndev, tx_head, frame_len);
+> +		if (!err)
+> +			netdev_sent_queue(priv->ndev, frame_len);
+> +
+> +		/* Stop queue if we occupy the complete TX FIFO */
+> +		if (mcp251xfd_get_tx_free(tx_ring) =3D=3D 0)
+> +			netif_stop_queue(ndev);
+> +	}
 
-This is interesting. Thanks!
+Once you have sent the TX objects to the chip, it can trigger a TX
+complete IRQ. This is not very likely as the SPI sends asynchronously
+and the xmit handler cannot sleep.
 
-However, I'm not sure that this would fit for my use case.
+This means you have to call can_put_echo_skb() and stop the queue if
+needed, _before_ you call mcp251xfd_tx_obj_write(). In case of an error,
+you have to roll-back these.
 
-Basically, what I am doing is storing a list of bpf program I want to
-run on a particular device for a given function.
+regards,
+Marc
 
-Right now, what I am doing is (in simplified pseudo code):
-- in a bpf program, the user calls hid_bpf_attach_prog(hid_device, program_fd)
-  where program fd is a tracing program on a never executed function
-  but this allows to know the type of program to run
-- the kernel stores that program into a dedicated prog array bpf_map
-  pre-loaded at boot time
-- when a event comes in, the kernel walks through the list of attached
-  programs, calls __hid_bpf_tail_call() and there is a tracing program
-  attached to it that just do the bpf_tail_call.
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde          |
+Embedded Linux                   | https://www.pengutronix.de |
+Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
 
-This works and is simple enough from the user point of view, but is
-rather inefficient and clunky from the kernel point of view IMO.
+--kyt4gwwqp74cbnux
+Content-Type: application/pgp-signature; name="signature.asc"
 
-The freplace mechnism would definitely work if I had a tracing-like
-function to call, where I need to run the program any time the function
-gets called. But given that I want per-device filtering, I'm not sure
-how I could make this work. But given that I need to enable or not the
-bpf_program, I'm not sure how I could make it work from the kernel point
-of view.
+-----BEGIN PGP SIGNATURE-----
 
-I tried using a simple bpf_prog_run() (which is exactly what I need in
-the end) but I couldn't really convince the bpf verifier that the
-provided context is a struct hid_bpf_ctx kernel pointer, and it felt not
-quite right.
+iQEzBAABCgAdFiEEUEC6huC2BN0pvD5fKDiiPnotvG8FAmYwtZMACgkQKDiiPnot
+vG8c8Af7B+kXfKdty6H3EChYBzrzZZFfPSb4H/y7hspY16T0JGasHn4yiY5AzDxf
+QlaTBrx2ritE5JLosJD4TRs/5yUw52Dd3fJCEXp50VP5ziT6t332RCSHMrHfT2aF
+aq5xU0srFHnfMgpiHgYidmfG/EIQXBAxGUlYFqnry7Q/JklyjOtYdrcyUQWaJ5R0
+CgqkjzYeaQ1vOu2C0pNXblx54xiu0cGsTio9/Zmn4rNrB/u3PvdMwVNYJan3uhIH
+HDOvKO/dvPkjfymriQutKSeUfLcnoiaFp44hglhfeKDnLDbQNFs7yIhzaKXUc9g3
+UScv9TaxR3r/0LHab+IThgsRIgTmZQ==
+=6kq0
+-----END PGP SIGNATURE-----
 
-So after seeing how the bpf_wq worked internally, and how simple it is
-now to call a bpf program from the kernel as a simple function call, I
-played around with allowing kfunc to declare async callback functions.
-
-I have a working prototype (probably not fully functional for all of the
-cases), but I would like to know if you think it would be interesting to
-have 3 new suffixes:
-- "__async" for declaring an static bpf program that can be stored in
-  the kernel and which would be non sleepable
-- "__s_async" same as before, but for sleepable operations
-- "__aux" (or "__prog_aux") for that extra parameter to
-  bpf_wq_set_callback_impl() which contains the struct bpf_prog*.
-
-(I still don't have the __aux yet FWIW)
-
-The way I'm doing it is looking at the btf information to fetch the
-signature of the parameters of the callback, this way we can declare any
-callback without having to teach the verifier of is arguments (5 max).
-
-Is this something you would be comfortable with or is there a simpler
-mechanism already in place to call the bpf programs from the kernel
-without the ctx limitations?
-
-I can also easily switch the bpf_wq specific cases in the verifier with
-those suffixes. There are still one or two wq specifics I haven't
-implemented through __s_async, but that would still makes things more
-generic.
-
-Cheers,
-Benjamin
+--kyt4gwwqp74cbnux--
 
