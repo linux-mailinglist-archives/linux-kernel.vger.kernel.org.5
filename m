@@ -1,138 +1,156 @@
-Return-Path: <linux-kernel+bounces-163715-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-163716-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 08BFD8B6EA4
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 11:40:05 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B24048B6EA9
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 11:40:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0DBE3B24758
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 09:40:02 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E3E381C22CCC
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 09:40:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 14E82129E7F;
-	Tue, 30 Apr 2024 09:37:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9BF8C129E92;
+	Tue, 30 Apr 2024 09:39:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b="Y47kbsDL"
-Received: from mail-ed1-f44.google.com (mail-ed1-f44.google.com [209.85.208.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="0rfc9VNm"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9FFDD128363
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 09:37:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D91D5129A68
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 09:39:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714469852; cv=none; b=GY7IgXrfflzPptXmhe4ebxISIS2817E3VqjKVrVJQlasQ1T300ODpSzNVrahbbTrT9SNnBPkulUWn67klB4mVVu1RPirgRgxmmM11gialnYQCke9g5WKAHA69tAw9KW5Cyn/ak+lmQ2gaCG0BvR85zhnUqQipJ1534EwGZTOW2o=
+	t=1714469948; cv=none; b=OIkjQI25Gwae3ycXDDCdP/1ZR4oePWn19v8wi/JG7vzVbzRU2f4piaS4YcIUurP9bMGnSZpKx3fdxfCe3eAbi+evwIYhIKTIVZnlgkDkzaJQ9hris9SlDJEgVKbflj9sjDUD1KqU5q35nHCvKyAHEiLmftyBvBaPGKOKfbIrMio=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714469852; c=relaxed/simple;
-	bh=uhKdkmK31MXKrfFbEk2DLsbTDwgGQVf30ZHxv26DDAM=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Bkb5S5jEy0ku8+3MZPKgbX1LEx4KgGv8lEkUhh16ROgiG+yzmup14qt2d4VYtYalpmjgkNFInkDosv02mGEPjcGAlWY05DfiRs1FDfsrvI/QBwWId93drdttPoa5/N0GTLs0Yuq4EY5f0yVP11uUz2S180faOdMtgTTKVuaPWOs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev; spf=pass smtp.mailfrom=tuxon.dev; dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b=Y47kbsDL; arc=none smtp.client-ip=209.85.208.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tuxon.dev
-Received: by mail-ed1-f44.google.com with SMTP id 4fb4d7f45d1cf-56e47843cc7so5434032a12.0
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 02:37:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=tuxon.dev; s=google; t=1714469848; x=1715074648; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=3StYaHb+jugcbYETWpU1s1DMvudTBsQ5hJ3Pe6RKnEM=;
-        b=Y47kbsDLY60xGN0JqDz/swP/KZyZbEv3Eu7eweo7KQTjPYRybZ44zPeoIuFdQ1t0C8
-         7ixcexpVZSUixS/4grmk0EA433PAV1+cPBgKppdR3yYtfoKrZx6C35JnP/mbuvzP6+tV
-         /eia6X5zAdAc3Z06XgYiyC0gLOVZsrT6d6L6zafI08pvJQKOU7MCIpum3uDz5xvEn/QT
-         oGklWH9dFRZcDkE4bxhXtI1uRpHctVc+gAojjt3fPcG2tvCINQy/cnKWYwGcksY96HGh
-         6psM9TT2EYSqIfjej8HkjTteYTMLODuDD4XkmL0blClAj6tUobXRkWLnSuT5XoCNURmI
-         O6uQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714469848; x=1715074648;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=3StYaHb+jugcbYETWpU1s1DMvudTBsQ5hJ3Pe6RKnEM=;
-        b=arTq0b6Ifw2LJ0ttjhp9ZCOu6uLOsrtA9wKTL1gpo/lJbdC/fOIvWPo/YSFKWO5bIL
-         64AmOd3j/TfLusg1RIe6y5MQTRQtSeZ/IA0lfTz8kPn0ITwZsiRUwDPEEpAx8eTA/ZFi
-         JjP4+Tpku1VJ256dsw+Q00o8egm+RWwP2Nv/ONIoa2HXxD06eJKJaQMGlGOVxtfWb3h5
-         bcVYim7n7YO4O9iZx9BS+eI6sdlTPam5XcfROCaYRVmmNYnroDfvXNZRGqwWC9y1cOt+
-         doGzgyKWC92giLa9uTTZ0w+dl5sD/Jc1Fe8WhYtHC/P/SjJutuLX+Kl1suKU1lyCY6B8
-         utCg==
-X-Forwarded-Encrypted: i=1; AJvYcCWrRrEiGMK8vnHWtwfoix8M7mKWEDkl3SxqNm4On6A8cjwocsRmILLFe4e1l8MYYoAFVFs/IelL4+dk6NVWkwSBVuTOAnXyHIj3F4HG
-X-Gm-Message-State: AOJu0Yz2pyl04krAVoi5xY5eH2eTEntPMeOw0C0EADEcvhItQT0hWP07
-	BLWNPK2N9JbZotPWur6+MXA5NXP7vrUov2LItNsV8HR7I4kKPUrn05e4UU+sKjcZszyh1jTqzqj
-	U4yc=
-X-Google-Smtp-Source: AGHT+IF791IVTgQYCkDZyT5QfKzOiH/FUM1qkzc17ar1STLr7dQzsY+zNJl2I4gZet00wmrxDzyerQ==
-X-Received: by 2002:a50:a456:0:b0:571:d380:95fd with SMTP id v22-20020a50a456000000b00571d38095fdmr1506622edb.28.1714469847790;
-        Tue, 30 Apr 2024 02:37:27 -0700 (PDT)
-Received: from claudiu-X670E-Pro-RS.. ([82.78.167.53])
-        by smtp.gmail.com with ESMTPSA id cq6-20020a056402220600b005723fe809f0sm5490448edb.80.2024.04.30.02.37.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Apr 2024 02:37:27 -0700 (PDT)
-From: Claudiu <claudiu.beznea@tuxon.dev>
-X-Google-Original-From: Claudiu <claudiu.beznea.uj@bp.renesas.com>
-To: wsa+renesas@sang-engineering.com,
-	ulf.hansson@linaro.org
-Cc: linux-mmc@vger.kernel.org,
-	linux-renesas-soc@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	claudiu.beznea@tuxon.dev,
-	Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>,
-	Hien Huynh <hien.huynh.px@renesas.com>
-Subject: [PATCH v3] mmc: renesas_sdhi: Set the SDBUF after reset
-Date: Tue, 30 Apr 2024 12:37:24 +0300
-Message-Id: <20240430093724.2692232-1-claudiu.beznea.uj@bp.renesas.com>
-X-Mailer: git-send-email 2.39.2
+	s=arc-20240116; t=1714469948; c=relaxed/simple;
+	bh=MCa5KWw0+OQ7gCxKdfi5S+q/EA68/H4Hfou7pC7eiwg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ViYrPQ6d+jiA7Y8k0yqDv1AY0qdogijSTwAvN7vJgooo+mGG971nqdKHuTVoate51KGpvyqQS6WKec1bATm66Y5wUzYtF7zdgGSx6dTN52sKJgLkkDO2aLjPYQxlPr2NXePInwjXNFbD7O9aEUjO6wOiJpo93AiMkLStM5r9j5c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=0rfc9VNm; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1714469944;
+	bh=MCa5KWw0+OQ7gCxKdfi5S+q/EA68/H4Hfou7pC7eiwg=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=0rfc9VNmT2Y4LfZiO6mXxHVQyE5U5EZGea1auI8yDl1oi/FxBU5aO6Cs2ZpFiKp5e
+	 RsANRBRyLlfpYYrv1pc70yjuqIC2D5RrRZ5rtrQ9BVDVzco0U5BKqzkgYoaghr47QG
+	 wLITZRen8Q+LA107fqUb3qhAe/kCUA7xJF/nRl1L2rJ3rI2v7zxJlDaPOqzrj0bEGt
+	 yi3RLaYznZ5RkdrhHpfAjeetOIYUQSr+iKN56ZZpRF7vgAjHFavp3dFVPx/6aTfjPy
+	 NgyqViqfpIgzAaHJ6dfySRm0L+OtOejANmGFoPp8ZOg7A90dIKxaDMZZqfzXfZOd5/
+	 bsIU6RUMx25sQ==
+Received: from [100.113.186.2] (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: kholk11)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 37B34378143B;
+	Tue, 30 Apr 2024 09:39:03 +0000 (UTC)
+Message-ID: <2b46b3c0-f4ad-48e1-964b-128d29bafa9c@collabora.com>
+Date: Tue, 30 Apr 2024 11:39:02 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] mailbox: mtk-cmdq: Fix sleeping function called from
+ invalid context
+To: "Jason-JH.Lin" <jason-jh.lin@mediatek.com>,
+ Jassi Brar <jassisinghbrar@gmail.com>,
+ Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+ Matthias Brugger <matthias.bgg@gmail.com>
+Cc: Jason-ch Chen <jason-ch.chen@mediatek.com>,
+ Singo Chang <singo.chang@mediatek.com>, Nancy Lin <nancy.lin@mediatek.com>,
+ Shawn Sung <shawn.sung@mediatek.com>, linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org,
+ Project_Global_Chrome_Upstream_Group@mediatek.com
+References: <20240430083934.26980-1-jason-jh.lin@mediatek.com>
+From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Content-Language: en-US
+In-Reply-To: <20240430083934.26980-1-jason-jh.lin@mediatek.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+Il 30/04/24 10:39, Jason-JH.Lin ha scritto:
+> When we run kernel with lockdebug option, we will get the BUG below:
+> [  106.692124] BUG: sleeping function called from invalid context at drivers/base/power/runtime.c:1164
+> [  106.692190] in_atomic(): 1, irqs_disabled(): 128, non_block: 0, pid: 3616, name: kworker/u17:3
+> [  106.692226] preempt_count: 1, expected: 0
+> [  106.692254] RCU nest depth: 0, expected: 0
+> [  106.692282] INFO: lockdep is turned off.
+> [  106.692306] irq event stamp: 0
+> [  106.692331] hardirqs last  enabled at (0): [<0000000000000000>] 0x0
+> [  106.692376] hardirqs last disabled at (0): [<ffffffee15d37fa0>] copy_process+0xc90/0x2ac0
+> [  106.692429] softirqs last  enabled at (0): [<ffffffee15d37fc4>] copy_process+0xcb4/0x2ac0
+> [  106.692473] softirqs last disabled at (0): [<0000000000000000>] 0x0
+> [  106.692513] CPU: 1 PID: 3616 Comm: kworker/u17:3 Not tainted 6.1.87-lockdep-14133-g26e933aca785 #1 6839942e1cf34914b0a366137843dd2366f52aa9
+> [  106.692556] Hardware name: Google Ciri sku0/unprovisioned board (DT)
+> [  106.692586] Workqueue: imgsys_runner imgsys_runner_func
+> [  106.692638] Call trace:
+> [  106.692662]  dump_backtrace+0x100/0x120
+> [  106.692702]  show_stack+0x20/0x2c
+> [  106.692737]  dump_stack_lvl+0x84/0xb4
+> [  106.692775]  dump_stack+0x18/0x48
+> [  106.692809]  __might_resched+0x354/0x4c0
+> [  106.692847]  __might_sleep+0x98/0xe4
+> [  106.692883]  __pm_runtime_resume+0x70/0x124
+> [  106.692921]  cmdq_mbox_send_data+0xe4/0xb1c
+> [  106.692964]  msg_submit+0x194/0x2dc
+> [  106.693003]  mbox_send_message+0x190/0x330
+> [  106.693043]  imgsys_cmdq_sendtask+0x1618/0x2224
+> [  106.693082]  imgsys_runner_func+0xac/0x11c
+> [  106.693118]  process_one_work+0x638/0xf84
+> [  106.693158]  worker_thread+0x808/0xcd0
+> [  106.693196]  kthread+0x24c/0x324
+> [  106.693231]  ret_from_fork+0x10/0x20
+> 
+> We found that there is a spin_lock_irqsave protection in msg_submit()
+> of mailbox.c.
+> So when cmdq driver calls pm_runtime_get_sync() in cmdq_mbox_send_data(),
+> it will get this BUG report.
+> 
+> Add pm_runtime_irq_safe() to let pm_runtime callbacks is safe in atomic
+> context with interrupts disabled.
+> 
 
-For development purpose, renesas_sdhi_probe() could be called w/
-dma_ops = NULL to force the usage of PIO mode. In this case the
-renesas_sdhi_enable_dma() will not be called before transferring data.
+I see. The problem with this is that pm_runtime_irq_safe() will raise the refcount
+of the parent device "forever", which isn't the best and partially defeats what we
+are trying to do here (keeping stuff off unless really needed).
 
-If renesas_sdhi_enable_dma() is not called, renesas_sdhi_clk_enable()
-call from renesas_sdhi_probe() will configure SDBUF by calling the
-renesas_sdhi_sdbuf_width() function, but then SDBUF will be reset in
-tmio_mmc_host_probe() when calling tmio_mmc_reset() though host->reset().
-If SDBUF is zero the data transfer will not work in PIO mode for RZ/G3S.
+At this point I wonder if it'd be just better to really fix this instead of working
+around the problem.
 
-To fix this call again the renesas_sdhi_sdbuf_width(host, 16) in
-renesas_sdhi_reset(). The call of renesas_sdhi_sdbuf_width() was not
-removed from renesas_sdhi_clk_enable() as the host->reset() is optional.
+I'd say that one of the options would be to perform a change to msg_submit() so
+that it will take into account that a .send_data() callback might be using RPM
+functions.
 
-Co-developed-by: Hien Huynh <hien.huynh.px@renesas.com>
-Signed-off-by: Hien Huynh <hien.huynh.px@renesas.com>
-Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
----
+Ideas? :-)
 
-Changes in v3:
-- shortened the comment introduced in renesas_sdhi_reset()
+Cheers,
+Angelo
 
-Changes in v2:
-- fixed typos in commit description
-- limit the comment lines to 80 chars
+> Fixes: 8afe816b0c99 ("mailbox: mtk-cmdq-mailbox: Implement Runtime PM with autosuspend")
+> Signed-off-by: Jason-JH.Lin <jason-jh.lin@mediatek.com>
+> ---
+>   drivers/mailbox/mtk-cmdq-mailbox.c | 1 +
+>   1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/mailbox/mtk-cmdq-mailbox.c b/drivers/mailbox/mtk-cmdq-mailbox.c
+> index ead2200f39ba..3b4f19633c83 100644
+> --- a/drivers/mailbox/mtk-cmdq-mailbox.c
+> +++ b/drivers/mailbox/mtk-cmdq-mailbox.c
+> @@ -694,6 +694,7 @@ static int cmdq_probe(struct platform_device *pdev)
+>   
+>   	pm_runtime_set_autosuspend_delay(dev, CMDQ_MBOX_AUTOSUSPEND_DELAY_MS);
+>   	pm_runtime_use_autosuspend(dev);
+> +	pm_runtime_irq_safe(dev);
+>   
+>   	return 0;
+>   }
 
- drivers/mmc/host/renesas_sdhi_core.c | 3 +++
- 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/mmc/host/renesas_sdhi_core.c b/drivers/mmc/host/renesas_sdhi_core.c
-index f84f60139bcf..d9503f9f6e96 100644
---- a/drivers/mmc/host/renesas_sdhi_core.c
-+++ b/drivers/mmc/host/renesas_sdhi_core.c
-@@ -589,6 +589,9 @@ static void renesas_sdhi_reset(struct tmio_mmc_host *host, bool preserve)
- 			sd_ctrl_write16(host, CTL_RESET_SD, 0x0001);
- 			priv->needs_adjust_hs400 = false;
- 			renesas_sdhi_set_clock(host, host->clk_cache);
-+
-+			/* Ensure default value for this driver. */
-+			renesas_sdhi_sdbuf_width(host, 16);
- 		} else if (priv->scc_ctl) {
- 			renesas_sdhi_scc_reset(host, priv);
- 		}
--- 
-2.39.2
 
 
