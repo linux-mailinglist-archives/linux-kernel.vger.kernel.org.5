@@ -1,69 +1,53 @@
-Return-Path: <linux-kernel+bounces-163522-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-163523-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F13028B6C83
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 10:10:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id BC7B28B6C85
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 10:11:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2BD941C221C6
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 08:10:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E815B1C222E7
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 08:11:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F31A47F42;
-	Tue, 30 Apr 2024 08:10:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3DEEF47F42;
+	Tue, 30 Apr 2024 08:11:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Fbwyl+aH"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="Ny2YddjI"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7ADE040BF5
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 08:10:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A33140BEE;
+	Tue, 30 Apr 2024 08:11:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714464644; cv=none; b=Ug1SCX6/JLlSY0SCP/PTpuY1Ph1JJjSuRAnpIRVGxJmeCPnXX95ZvoOYxyLU9x5cJtIbdJY0jQ9mypyrP0axdf3/mL4CeuWwYJY1zNTGVrwnACUwAHtQpXFK36oG4frDEGJVfVOyX1uGDizh/9lOsGkSmhYf4OpSFP7Z5J7oxEE=
+	t=1714464697; cv=none; b=fom4Qw7CNv0iKZM6dcrR/BbvFTzAO5omMCRWzV8DJCCxn/rQ0h1odBlFGRvTmX/sJS7fY5gCmnoGaFqv+bQjAmRw6VFy26CMw6PG5arX5OZGwUrIzlMC92lWuuaMESK39EH5YZ1q7fBczo3yBu3FLnWtW7UQBugOG+pMwEntCnU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714464644; c=relaxed/simple;
-	bh=38D/E0QynX5t/3/hbHIk50M6Sl+epAu87XCK1LhciKY=;
+	s=arc-20240116; t=1714464697; c=relaxed/simple;
+	bh=Okuepw31SRehXeoqshjfC4InPzrJlMsj8crjxsmEs+k=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=E8YHrb5RYy7aZpOBcZFY5Sihoh9YEIVMG/soGKEg4wi1I6J2wA6EPH1SxcUe73mwgA9yoK+ST4OezyM1rkMvgmd4lj/pluV55lQEFUdVxv68X+K8U77rDbpBMqMTd1TFTLjOqTzGL+pejlEM1/brOfUJWb/V+nZHw3j/CpWljQQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Fbwyl+aH; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1714464641;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=SGk41959AnFc6RykN6nKaUpg5RkxwVWglWv+3boUFro=;
-	b=Fbwyl+aHAU02Bjy73ggIcbj38vx091HBtrLxJTyX3B/BaJdhn9+WGbIITC9Bu2UMndgkrC
-	aAGzNg8pxKTPyGmxsGejBVJFIkawlx24wnFBMGUMevdjTdDaot8yNvjOOsf7kZY7PxCG3A
-	LPntYyS9kB95xMDZHmWVJD/LERmwTWI=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-590-v7N2sKfFPZOeRadi5U3lhg-1; Tue, 30 Apr 2024 04:10:38 -0400
-X-MC-Unique: v7N2sKfFPZOeRadi5U3lhg-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id C7C73834FBF;
-	Tue, 30 Apr 2024 08:10:37 +0000 (UTC)
-Received: from sirius.home.kraxel.org (unknown [10.39.192.134])
-	by smtp.corp.redhat.com (Postfix) with ESMTPS id 8588F200AFA2;
-	Tue, 30 Apr 2024 08:10:36 +0000 (UTC)
-Received: by sirius.home.kraxel.org (Postfix, from userid 1000)
-	id 9F81E180099B; Tue, 30 Apr 2024 10:10:35 +0200 (CEST)
-Date: Tue, 30 Apr 2024 10:10:35 +0200
-From: Gerd Hoffmann <kraxel@redhat.com>
-To: Guenter Roeck <linux@roeck-us.net>
-Cc: Alan Stern <stern@rowland.harvard.edu>, 
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	David Laight <David.Laight@aculab.com>
-Subject: Re: [PATCH v3] usb: ohci: Prevent missed ohci interrupts
-Message-ID: <723ahlmaul2l2mpqfdykufwz5lyyvhhehbpx5ya6eopquq6mro@qo6h2wnbqm36>
-References: <20240429154010.1507366-1-linux@roeck-us.net>
+	 Content-Type:Content-Disposition:In-Reply-To; b=aA9tQE8BE/emAYOrNLovFLUJ8HDdEKzMx5V7MtSm+rqqN/KzxftEbbTdGytUpqsWj0orZCLrb1eSL04U9UtOZ88bgKaGJxzJtqyBx4Tk9W4X+XA8FoYhcYjr8wM0HuvQ24XOXkCnk9dWnnH8y4DrSYg6kFuTj/gQOt6UgRy9C14=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=Ny2YddjI; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 86651C2BBFC;
+	Tue, 30 Apr 2024 08:11:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1714464697;
+	bh=Okuepw31SRehXeoqshjfC4InPzrJlMsj8crjxsmEs+k=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Ny2YddjIXd62EgONouXUw4MIpgq1mcR4Ny2Gcwe6ACTc+CdV0UXIy/YQCIIYl47Vc
+	 UkQZoe0UGviKS6I/fiNMlR9e+zWbI6Va9a+ig1QuIAQgsZzcpNQGGCsroAtZYZ7Spv
+	 zoWTvbkxlPFJxh4l9BIbK80yv3YxIwAHjrS4aFH8=
+Date: Tue, 30 Apr 2024 10:11:34 +0200
+From: Greg KH <gregkh@linuxfoundation.org>
+To: Juergen Gross <jgross@suse.com>
+Cc: cve@kernel.org, linux-cve-announce@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	"xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
+	"Xen.org security team" <security@xen.org>
+Subject: Re: CVE-2024-26908: x86/xen: Add some null pointer checking to smp.c
+Message-ID: <2024043015-pauper-aching-a3d4@gregkh>
+References: <2024041747-CVE-2024-26908-4690@gregkh>
+ <f73bb0fe-9ba6-46de-8732-bd372438068e@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -72,37 +56,22 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240429154010.1507366-1-linux@roeck-us.net>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.4
+In-Reply-To: <f73bb0fe-9ba6-46de-8732-bd372438068e@suse.com>
 
-On Mon, Apr 29, 2024 at 08:40:10AM GMT, Guenter Roeck wrote:
-> Testing ohci functionality with qemu's pci-ohci emulation often results
-> in ohci interface stalls, resulting in hung task timeouts.
+On Mon, Apr 29, 2024 at 01:53:44PM +0200, Juergen Gross wrote:
+> Hi,
 > 
-> The problem is caused by lost interrupts between the emulation and the
-> Linux kernel code. Additional interrupts raised while the ohci interrupt
-> handler in Linux is running and before the handler clears the interrupt
-> status are not handled. The fix for a similar problem in ehci suggests
-> that the problem is likely caused by edge-triggered MSI interrupts. See
-> commit 0b60557230ad ("usb: ehci: Prevent missed ehci interrupts with
-> edge-triggered MSI") for details.
+> I'd like to dispute CVE-2024-26908: the issue fixed by upstream commit
+> 3693bb4465e6e32a204a5b86d3ec7e6b9f7e67c2 can in no way be triggered by
+> an unprivileged user or by a remote attack of the system, as it requires
+> hotplug of (virtual) cpus to the running system. This can be done only by
+> either a host admin or by an admin of the guest which might suffer the
+> out-of-memory situation.
 > 
-> Ensure that the ohci interrupt code handles all pending interrupts before
-> returning to solve the problem.
-> 
-> Cc: Gerd Hoffmann <kraxel@redhat.com>
-> Cc: David Laight <David.Laight@aculab.com>
-> Cc: stable@vger.kernel.org
-> Fixes: 306c54d0edb6 ("usb: hcd: Try MSI interrupts on PCI devices")
-> Signed-off-by: Guenter Roeck <linux@roeck-us.net>
-> ---
-> v3: Check if any interrupts are pending before reading intrenable
->     Add 'Cc: stable@vger.kernel.org'
-> v2: Only repeat if the interface is still active
+> Please revoke this CVE.
 
-Reviewed-by: Gerd Hoffmann <kraxel@redhat.com>
+Sorry for the delay, thanks for looking into this and letting us know.
+It's now rejected.
 
-take care,
-  Gerd
-
+greg k-h
 
