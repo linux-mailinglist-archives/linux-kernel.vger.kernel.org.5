@@ -1,78 +1,185 @@
-Return-Path: <linux-kernel+bounces-164003-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-164009-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 065328B770B
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 15:29:50 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 694858B7713
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 15:30:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 384491C22156
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 13:29:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8C7A81C22198
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 13:30:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 23AE3174EC0;
-	Tue, 30 Apr 2024 13:28:49 +0000 (UTC)
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B1467176FCF;
+	Tue, 30 Apr 2024 13:28:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="fQ7RFjMG";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="HTxoox62"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B77D172BBF
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 13:28:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 95B4B172795;
+	Tue, 30 Apr 2024 13:28:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714483727; cv=none; b=aQAu31OAQKrgB+ihdNJv0yu4EU01Um6F9yBUpIxrdiqdgZKdWzteCSKmdES3ZEfmZ4TBZGe4qafBNQkq4F7xif1jQ08iKhzChYhGET/Ye8UUi7XgAVJYaDukjjo6ZL9LK0qsPqZJQmp4nHAjz5Gv2X91mXUC+KlQLLrTIusxVcA=
+	t=1714483729; cv=none; b=q9v3obrmlai84AJBQUqkGbKtRFgEngAGi5II2bpUWdhTkOMVieN8kqIHqBYHWYdZrdaSXYfyagpeRjXSBFraFV/N3PFZOX4nHjvoBocvblCEeZC+ydUvOJ8H/C8OVVY15+O5X2Fv+4lSbM9HOJUNAN5Y1s2yYxmx0yd+ykahMTA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714483727; c=relaxed/simple;
-	bh=fqVHp1k5t31Za+YyqmDbWnlbLfQ3U1zUqBIll69kroI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=patK0klC92fX5HW5aCWsR26O9GC0gOQLg2ux2H0JCWmhgC6FEngiBq1uFgielZVFvK4m7557jdAhclRKCNBzcX40VPltd3RAyERxempVWI9lojZzCX6fBJemq7XqPQ8XAzs2RiYK0tghx9y3K42VNc8gceMsXaoS+WJiZ50IMfE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 70386C4AF1C;
-	Tue, 30 Apr 2024 13:28:44 +0000 (UTC)
-Date: Tue, 30 Apr 2024 14:28:42 +0100
-From: Catalin Marinas <catalin.marinas@arm.com>
-To: Ryan Roberts <ryan.roberts@arm.com>
-Cc: Will Deacon <will@kernel.org>, Joey Gouly <joey.gouly@arm.com>,
-	Ard Biesheuvel <ardb@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Anshuman Khandual <anshuman.khandual@arm.com>,
-	David Hildenbrand <david@redhat.com>, Peter Xu <peterx@redhat.com>,
-	Mike Rapoport <rppt@linux.ibm.com>,
-	Shivansh Vij <shivanshvij@outlook.com>,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/3] arm64/mm: Refactor PMD_PRESENT_INVALID and
- PTE_PROT_NONE bits
-Message-ID: <ZjDyCg2LkFEXRS6k@arm.com>
-References: <20240429140208.238056-1-ryan.roberts@arm.com>
- <20240429140208.238056-2-ryan.roberts@arm.com>
- <Zi_IzrfIcqWxt7cE@arm.com>
- <839d6975-ce12-4fc9-aa3b-8ec5787bf577@arm.com>
- <ZjDR0EIjLr9F2dWn@arm.com>
- <8cf74e5f-e6a5-465e-83b4-205233c78005@arm.com>
+	s=arc-20240116; t=1714483729; c=relaxed/simple;
+	bh=gvi0unxcUxzyyNfvv7dDkZ4sv2qB/pjm9h8Rdr9zBdI=;
+	h=Date:From:To:Subject:Cc:In-Reply-To:References:MIME-Version:
+	 Message-ID:Content-Type; b=tz6XfqLh/MnlcspODXjr87Ps05s2lCStt/Poz6t5cLqXekh8UsU9eRmp96M/zcYAS58Yj7C2uz6zz5RyBX29qqP7U97nk0tn9MM/hIVvJvTF35GNXB465HRokOyWK0ZJVfzEcmuH7FGu7+9MD5ArxF/cSjPqGJt4AVA3FvZHNTQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=fQ7RFjMG; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=HTxoox62; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+Date: Tue, 30 Apr 2024 13:28:42 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1714483722;
+	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=3my01OLyRquY/EnxEaTm9O9NtTmb/Af+BiVmn/8C+uE=;
+	b=fQ7RFjMGnx95J9wNYoLAQB+eaZ75hCAdWFKv3AQWzMfcnQL8nNl0voYEpTMLfLPLbMDG/z
+	EszOOEkKX9+sZHQZG08hEMBzQ77OCE8ikJqNl6DsAZCW7qBtwsWWrWxBP0eEozB7ZZGjub
+	VzB1czBK/B2z6TRiNXn+HBpN9JEDSHiOkk/s5hlhCEDgbntk/NBjvkSZ1v991NyqBQNHjv
+	34e8LA8sMpgON1qey0495RegmrMt3xpxrtRsO4CkAfVpzUq5mL4wSCBJrS7WpfTgN5hkaY
+	IBg0on/VmOvKcF3lwmwUg3F4G2x6vrG3lxhr+bR/KWl5oJ77BU0/O+Cu4V6Xgw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1714483722;
+	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=3my01OLyRquY/EnxEaTm9O9NtTmb/Af+BiVmn/8C+uE=;
+	b=HTxoox621zsZMvQ49QIxcf5Ne3b2rAQKoKCfVzUzyCOs/Vm5UOncdz7bqc1j3FIsE2QGKI
+	vmOdKSpgxY6GoZBw==
+From: "tip-bot2 for Jacob Pan" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To: linux-tip-commits@vger.kernel.org
+Subject:
+ [tip: x86/irq] x86/irq: Remove bitfields in posted interrupt descriptor
+Cc: Sean Christopherson <seanjc@google.com>,
+ Thomas Gleixner <tglx@linutronix.de>,
+ Jacob Pan <jacob.jun.pan@linux.intel.com>, x86@kernel.org,
+ linux-kernel@vger.kernel.org
+In-Reply-To: <20240423174114.526704-4-jacob.jun.pan@linux.intel.com>
+References: <20240423174114.526704-4-jacob.jun.pan@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <8cf74e5f-e6a5-465e-83b4-205233c78005@arm.com>
+Message-ID: <171448372251.10875.230386187944725418.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe:
+ Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Precedence: bulk
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 
-On Tue, Apr 30, 2024 at 12:35:49PM +0100, Ryan Roberts wrote:
-> There is still one problem I need to resolve; During this work I discovered that
-> core-mm can call pmd_mkinvalid() for swap pmds. On arm64 this will turn the swap
-> pmd into a present pmd, and BadThings can happen in GUP-fast (and any other
-> lockless SW table walkers). My original fix modified core-mm to only call
-> pmd_mkinvalid() for present pmds. But discussion over there has shown that arm64
-> is the only arch that cannot handle this. So I've been convinced that it's
-> probably more robust to make arm64 handle it gracefully and add tests to
-> debug_vm_pgtable.c to check for this. Patch incoming shortly, but it will cause
-> a conflict with this series. So I'll send a v2 of this once that fix is accepted.
+The following commit has been merged into the x86/irq branch of tip:
 
-Sounds fine. I can queue the arm64 pmd_mkinvalid() fix for 6.9 and you
-can base this series on top. But I have a preference for this patchset
-to sit in -next for a bit anyway, so it might be 6.11 material.
+Commit-ID:     2254808b53d92c9fe7b645b2f43acc55f22cdce6
+Gitweb:        https://git.kernel.org/tip/2254808b53d92c9fe7b645b2f43acc55f22cdce6
+Author:        Jacob Pan <jacob.jun.pan@linux.intel.com>
+AuthorDate:    Tue, 23 Apr 2024 10:41:05 -07:00
+Committer:     Thomas Gleixner <tglx@linutronix.de>
+CommitterDate: Tue, 30 Apr 2024 00:54:42 +02:00
 
--- 
-Catalin
+x86/irq: Remove bitfields in posted interrupt descriptor
+
+Mixture of bitfields and types is weird and really not intuitive, remove
+bitfields and use typed data exclusively. Bitfields often result in
+inferior machine code.
+
+Suggested-by: Sean Christopherson <seanjc@google.com>
+Suggested-by: Thomas Gleixner <tglx@linutronix.de>
+Signed-off-by: Jacob Pan <jacob.jun.pan@linux.intel.com>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Link: https://lore.kernel.org/r/20240423174114.526704-4-jacob.jun.pan@linux.intel.com
+Link: https://lore.kernel.org/all/20240404101735.402feec8@jacob-builder/T/#mf66e34a82a48f4d8e2926b5581eff59a122de53a
+---
+ arch/x86/include/asm/posted_intr.h | 21 ++++++++++++---------
+ arch/x86/kvm/vmx/posted_intr.c     |  4 ++--
+ arch/x86/kvm/vmx/vmx.c             |  2 +-
+ 3 files changed, 15 insertions(+), 12 deletions(-)
+
+diff --git a/arch/x86/include/asm/posted_intr.h b/arch/x86/include/asm/posted_intr.h
+index acf237b..20e3189 100644
+--- a/arch/x86/include/asm/posted_intr.h
++++ b/arch/x86/include/asm/posted_intr.h
+@@ -15,17 +15,9 @@ struct pi_desc {
+ 	};
+ 	union {
+ 		struct {
+-				/* bit 256 - Outstanding Notification */
+-			u16	on	: 1,
+-				/* bit 257 - Suppress Notification */
+-				sn	: 1,
+-				/* bit 271:258 - Reserved */
+-				rsvd_1	: 14;
+-				/* bit 279:272 - Notification Vector */
++			u16	notifications; /* Suppress and outstanding bits */
+ 			u8	nv;
+-				/* bit 287:280 - Reserved */
+ 			u8	rsvd_2;
+-				/* bit 319:288 - Notification Destination */
+ 			u32	ndst;
+ 		};
+ 		u64 control;
+@@ -88,4 +80,15 @@ static inline bool pi_test_sn(struct pi_desc *pi_desc)
+ 	return test_bit(POSTED_INTR_SN, (unsigned long *)&pi_desc->control);
+ }
+ 
++/* Non-atomic helpers */
++static inline void __pi_set_sn(struct pi_desc *pi_desc)
++{
++	pi_desc->notifications |= BIT(POSTED_INTR_SN);
++}
++
++static inline void __pi_clear_sn(struct pi_desc *pi_desc)
++{
++	pi_desc->notifications &= ~BIT(POSTED_INTR_SN);
++}
++
+ #endif /* _X86_POSTED_INTR_H */
+diff --git a/arch/x86/kvm/vmx/posted_intr.c b/arch/x86/kvm/vmx/posted_intr.c
+index af66231..ec08fa3 100644
+--- a/arch/x86/kvm/vmx/posted_intr.c
++++ b/arch/x86/kvm/vmx/posted_intr.c
+@@ -107,7 +107,7 @@ void vmx_vcpu_pi_load(struct kvm_vcpu *vcpu, int cpu)
+ 		 * handle task migration (@cpu != vcpu->cpu).
+ 		 */
+ 		new.ndst = dest;
+-		new.sn = 0;
++		__pi_clear_sn(&new);
+ 
+ 		/*
+ 		 * Restore the notification vector; in the blocking case, the
+@@ -157,7 +157,7 @@ static void pi_enable_wakeup_handler(struct kvm_vcpu *vcpu)
+ 		      &per_cpu(wakeup_vcpus_on_cpu, vcpu->cpu));
+ 	raw_spin_unlock(&per_cpu(wakeup_vcpus_on_cpu_lock, vcpu->cpu));
+ 
+-	WARN(pi_desc->sn, "PI descriptor SN field set before blocking");
++	WARN(pi_test_sn(pi_desc), "PI descriptor SN field set before blocking");
+ 
+ 	old.control = READ_ONCE(pi_desc->control);
+ 	do {
+diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+index 273d264..becefaf 100644
+--- a/arch/x86/kvm/vmx/vmx.c
++++ b/arch/x86/kvm/vmx/vmx.c
+@@ -4845,7 +4845,7 @@ static void __vmx_vcpu_reset(struct kvm_vcpu *vcpu)
+ 	 * or POSTED_INTR_WAKEUP_VECTOR.
+ 	 */
+ 	vmx->pi_desc.nv = POSTED_INTR_VECTOR;
+-	vmx->pi_desc.sn = 1;
++	__pi_set_sn(&vmx->pi_desc);
+ }
+ 
+ static void vmx_vcpu_reset(struct kvm_vcpu *vcpu, bool init_event)
 
