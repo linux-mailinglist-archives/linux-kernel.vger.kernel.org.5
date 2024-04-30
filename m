@@ -1,159 +1,445 @@
-Return-Path: <linux-kernel+bounces-163750-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-163752-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 61AA68B6F53
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 12:13:15 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 93A8F8B6F59
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 12:14:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1976F281E07
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 10:13:14 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A856BB21C6D
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 10:14:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B31E129E7E;
-	Tue, 30 Apr 2024 10:13:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="JMoe7coj"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4DBFD13D240;
+	Tue, 30 Apr 2024 10:13:50 +0000 (UTC)
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 28A0B1292C8
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 10:13:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C85881292C8;
+	Tue, 30 Apr 2024 10:13:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714471984; cv=none; b=JC2eNcUxfWdnXAgM6+MdA4Bl1kyHH+BFr9KOZlGaJzecV5hHCHocNrZGXT4xx8iIbEAQ8HH6Fz3ctTyINGj2K/bsV0dDHZ/C5dvVyNWe6o04j6CbOmjtsFe9EXQZEGT3xCcGNxyGP3wXDJBBOof0bvbcsTYlY/en/z4ufhdRvns=
+	t=1714472029; cv=none; b=BVKR1yRpK66vujLPYxM8NoWknnBeC6ZSq20536/BEVwLc0lHxaOMBUIBfQesTw/FoXr0ja5yQ5e+D3eiWVFldZlL17YOrqjQDjp7E9qGiXLi4K93z6+ehuARSIsbfVrwBfEXvt7LdaNjdlR978HlGmBzXlmvNw420pon7YI3OaA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714471984; c=relaxed/simple;
-	bh=c3oCz/hNloXup2zcmbrJly+6BVi1NnWIUKqEaHhRJcs=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=mcFr7ukjlTQGhTKFQr/YA0NirTRIwWy6rfUF6/WHsH2fLR+JHkg/cBuDKelexPTmsvneiux2MlwqXV62K2kQVcmr5uWSni/PA1W3V4ePCk3SM+3K2mbaUFva/bS8Cd8b6xWcOlKyUHONnxVczIK7vMNvZsatuQ3lPrOLzfbAMb4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=JMoe7coj; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1714471982;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=2GzIAX1apMfrJy1ajxehnLgS+pyXtcpMXuXBJ+ivWZ0=;
-	b=JMoe7cojMLTmUO6dLt6fVSciSvWfv1qiOgpxg10F6gmsw1ZcWpFa6iXj7ZjSkImSfbARIb
-	NaJa341kL3KNrMlIYRYGiNvdAsBfHtLyUQ19w48Y556fScj5oE5qaKyGr+dnbysdi/YP/E
-	sHD8ilojUsy9lXXB2OYD1XEzpWpyD4A=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-1-Cj9_SKMJMWiljMuuWhr-0Q-1; Tue, 30 Apr 2024 06:13:00 -0400
-X-MC-Unique: Cj9_SKMJMWiljMuuWhr-0Q-1
-Received: by mail-wr1-f69.google.com with SMTP id ffacd0b85a97d-34d92c4cdd9so37094f8f.0
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 03:12:59 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714471978; x=1715076778;
-        h=mime-version:user-agent:content-transfer-encoding:autocrypt
-         :references:in-reply-to:date:cc:to:from:subject:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=2GzIAX1apMfrJy1ajxehnLgS+pyXtcpMXuXBJ+ivWZ0=;
-        b=wbeIVQuhsm6fuEf6POwGEn7Uw5MXBbb8M/eFtzFDZrvRgknRfnJrfi25Slq+8z+lPK
-         IEeaFFEmO6+/qmCS482V+qlkWLp09/9w9gidB/31wPVW4o/EsjGKu+SGEsD2oEUEgO8B
-         OSjWfIVHameS8eH740OVkGmGEZdeIuCNE/U13n/GNG/pcZi9BqLox0RgfzEKhzogl+2K
-         CdQJPPpKv+JjX2TNonttOtuG6uhKFMTXTl7axGB7GAKvmqlQ/22BKF0H9cPQ9+Qea6py
-         mzTf92WtteV5id5tGgyLHrcvA6PDhpUEgUvZD1Svy1yv/VqJEXRJwtOgKs4Eq/MujvOV
-         fBEw==
-X-Forwarded-Encrypted: i=1; AJvYcCVdJyq45WA3uLVQNsLLs2rfQ5fCE909ih0cp0gYu9HvxwFFtopuvh3sY4f+nYBsq8YdwypZ9rSqeVjSt6t7YkHfGiGoycTk7O4qlX9L
-X-Gm-Message-State: AOJu0YwKzb4EhX0o2M8JhbpMCC27Ujf+UX9lwNlKwIMzQHDh7LPV7SBh
-	FFblIlVwjUeDGU6IjEjvDZfEw1a0oCuzBUT569osKIL9dsf4O++3P/ZPd0m3YmTyHcuCVJR0++1
-	9K3bLrJNCvAgjQvT7kCcnToHL9so+ZbBWMZdGmV9Z5Vgk/Ry7l5DJNY0kj3f8BQ==
-X-Received: by 2002:a05:600c:1e25:b0:41b:fdf9:98b5 with SMTP id ay37-20020a05600c1e2500b0041bfdf998b5mr5887056wmb.4.1714471978609;
-        Tue, 30 Apr 2024 03:12:58 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IE2JkyLdQO1ckGUp9sZHpLi8RtlsiXIzuC2cLAFTWukApXZN7bGlBrfA4y8T0dRGJD4ZoRGtA==
-X-Received: by 2002:a05:600c:1e25:b0:41b:fdf9:98b5 with SMTP id ay37-20020a05600c1e2500b0041bfdf998b5mr5887035wmb.4.1714471978116;
-        Tue, 30 Apr 2024 03:12:58 -0700 (PDT)
-Received: from gerbillo.redhat.com ([2a0d:3341:b0ae:6a10::f71])
-        by smtp.gmail.com with ESMTPSA id l23-20020a05600c1d1700b00418f99170f2sm42438481wms.32.2024.04.30.03.12.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Apr 2024 03:12:57 -0700 (PDT)
-Message-ID: <e590ba4608c9810d3d75fefdcbba9f2a02c23a0f.camel@redhat.com>
-Subject: Re: [PATCH v4 net-next v4 6/6] net: add heuristic for enabling TCP
- fraglist GRO
-From: Paolo Abeni <pabeni@redhat.com>
-To: Felix Fietkau <nbd@nbd.name>, netdev@vger.kernel.org, Eric Dumazet
- <edumazet@google.com>, "David S. Miller" <davem@davemloft.net>, David Ahern
- <dsahern@kernel.org>, Jakub Kicinski <kuba@kernel.org>
-Cc: willemdebruijn.kernel@gmail.com, linux-kernel@vger.kernel.org
-Date: Tue, 30 Apr 2024 12:12:56 +0200
-In-Reply-To: <20240427182305.24461-7-nbd@nbd.name>
-References: <20240427182305.24461-1-nbd@nbd.name>
-	 <20240427182305.24461-7-nbd@nbd.name>
-Autocrypt: addr=pabeni@redhat.com; prefer-encrypt=mutual; keydata=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
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.4 (3.50.4-1.fc39) 
+	s=arc-20240116; t=1714472029; c=relaxed/simple;
+	bh=8Q3KwJw9iAGPWlpEXUyAcLqM31zXGX0/uOM/fgsWjQI=;
+	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=tircBGQgZE6EVw40rzcPLrZTYFoikyVO6OQJDhaivubd+k9TASaBX02D8IIup2xM6FiiNWMXjONsIITIlZxzvY5E/RNn3FAcjKwT3mSVALb/FOa+Uqmfd2/LrlS5xvVf5ltjNoZabHlAuQh4bT/dFl0Lo+T/IuiHAgkG3MbGtrE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.18.186.31])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4VTGDk63xBz6F996;
+	Tue, 30 Apr 2024 18:11:02 +0800 (CST)
+Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
+	by mail.maildlp.com (Postfix) with ESMTPS id 16C3A140A70;
+	Tue, 30 Apr 2024 18:13:43 +0800 (CST)
+Received: from localhost (10.122.247.231) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Tue, 30 Apr
+ 2024 11:13:42 +0100
+Date: Tue, 30 Apr 2024 11:13:41 +0100
+From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+To: Gavin Shan <gshan@redhat.com>
+CC: Thomas Gleixner <tglx@linutronix.de>, Peter Zijlstra
+	<peterz@infradead.org>, <linux-pm@vger.kernel.org>,
+	<loongarch@lists.linux.dev>, <linux-acpi@vger.kernel.org>,
+	<linux-arch@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<linux-arm-kernel@lists.infradead.org>, <kvmarm@lists.linux.dev>,
+	<x86@kernel.org>, Russell King <linux@armlinux.org.uk>, "Rafael J . Wysocki"
+	<rafael@kernel.org>, Miguel Luis <miguel.luis@oracle.com>, "James Morse"
+	<james.morse@arm.com>, Salil Mehta <salil.mehta@huawei.com>, Jean-Philippe
+ Brucker <jean-philippe@linaro.org>, Catalin Marinas
+	<catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, Marc Zyngier
+	<maz@kernel.org>, Hanjun Guo <guohanjun@huawei.com>, Ingo Molnar
+	<mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Dave Hansen
+	<dave.hansen@linux.intel.com>, <linuxarm@huawei.com>, <justin.he@arm.com>,
+	<jianyong.wu@arm.com>, Lorenzo Pieralisi <lpieralisi@kernel.org>, "Sudeep
+ Holla" <sudeep.holla@arm.com>
+Subject: Re: [PATCH v8 04/16] ACPI: processor: Move checks and availability
+ of acpi_processor earlier
+Message-ID: <20240430111341.00003dba@huawei.com>
+In-Reply-To: <20240430102838.00006e04@Huawei.com>
+References: <20240426135126.12802-1-Jonathan.Cameron@huawei.com>
+	<20240426135126.12802-5-Jonathan.Cameron@huawei.com>
+	<80a2e07f-ecb2-48af-b2be-646f17e0e63e@redhat.com>
+	<20240430102838.00006e04@Huawei.com>
+Organization: Huawei Technologies R&D (UK) Ltd.
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.29; x86_64-w64-mingw32)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: lhrpeml500004.china.huawei.com (7.191.163.9) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
 
-On Sat, 2024-04-27 at 20:23 +0200, Felix Fietkau wrote:
-> When forwarding TCP after GRO, software segmentation is very expensive,
-> especially when the checksum needs to be recalculated.
-> One case where that's currently unavoidable is when routing packets over
-> PPPoE. Performance improves significantly when using fraglist GRO
-> implemented in the same way as for UDP.
->=20
-> When NETIF_F_GRO_FRAGLIST is enabled, perform a lookup for an established
-> socket in the same netns as the receiving device. While this may not
-> cover all relevant use cases in multi-netns configurations, it should be
-> good enough for most configurations that need this.
->=20
-> Here's a measurement of running 2 TCP streams through a MediaTek MT7622
-> device (2-core Cortex-A53), which runs NAT with flow offload enabled from
-> one ethernet port to PPPoE on another ethernet port + cake qdisc set to
-> 1Gbps.
->=20
-> rx-gro-list off: 630 Mbit/s, CPU 35% idle
-> rx-gro-list on:  770 Mbit/s, CPU 40% idle
->=20
-> Signe-off-by: Felix Fietkau <nbd@nbd.name>
-> ---
->  net/ipv4/tcp_offload.c   | 32 ++++++++++++++++++++++++++++++++
->  net/ipv6/tcpv6_offload.c | 35 +++++++++++++++++++++++++++++++++++
->  2 files changed, 67 insertions(+)
->=20
-> diff --git a/net/ipv4/tcp_offload.c b/net/ipv4/tcp_offload.c
-> index 87ae9808e260..3e9b8c6f9c8c 100644
-> --- a/net/ipv4/tcp_offload.c
-> +++ b/net/ipv4/tcp_offload.c
-> @@ -407,6 +407,36 @@ void tcp_gro_complete(struct sk_buff *skb)
->  }
->  EXPORT_SYMBOL(tcp_gro_complete);
-> =20
-> +static void tcp4_check_fraglist_gro(struct list_head *head, struct sk_bu=
-ff *skb,
-> +				    struct tcphdr *th)
-> +{
-> +	const struct iphdr *iph;
-> +	struct sk_buff *p;
-> +	struct sock *sk;
-> +	struct net *net;
-> +	int iif, sdif;
-> +
-> +	if (!(skb->dev->features & NETIF_F_GRO_FRAGLIST))
+On Tue, 30 Apr 2024 10:28:38 +0100
+Jonathan Cameron <Jonathan.Cameron@Huawei.com> wrote:
 
-Should we add an 'unlikely()' here to pair with unlikely(is_flist) in
-*gro_receive / *gro_complete?
+> On Tue, 30 Apr 2024 14:17:24 +1000
+> Gavin Shan <gshan@redhat.com> wrote:
+> 
+> > On 4/26/24 23:51, Jonathan Cameron wrote:  
+> > > Make the per_cpu(processors, cpu) entries available earlier so that
+> > > they are available in arch_register_cpu() as ARM64 will need access
+> > > to the acpi_handle to distinguish between acpi_processor_add()
+> > > and earlier registration attempts (which will fail as _STA cannot
+> > > be checked).
+> > > 
+> > > Reorder the remove flow to clear this per_cpu() after
+> > > arch_unregister_cpu() has completed, allowing it to be used in
+> > > there as well.
+> > > 
+> > > Note that on x86 for the CPU hotplug case, the pr->id prior to
+> > > acpi_map_cpu() may be invalid. Thus the per_cpu() structures
+> > > must be initialized after that call or after checking the ID
+> > > is valid (not hotplug path).
+> > > 
+> > > Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+> > > 
+> > > ---
+> > > v8: On buggy bios detection when setting per_cpu structures
+> > >      do not carry on.
+> > >      Fix up the clearing of per cpu structures to remove unwanted
+> > >      side effects and ensure an error code isn't use to reference them.
+> > > ---
+> > >   drivers/acpi/acpi_processor.c | 79 +++++++++++++++++++++--------------
+> > >   1 file changed, 48 insertions(+), 31 deletions(-)
+> > > 
+> > > diff --git a/drivers/acpi/acpi_processor.c b/drivers/acpi/acpi_processor.c
+> > > index ba0a6f0ac841..3b180e21f325 100644
+> > > --- a/drivers/acpi/acpi_processor.c
+> > > +++ b/drivers/acpi/acpi_processor.c
+> > > @@ -183,8 +183,38 @@ static void __init acpi_pcc_cpufreq_init(void) {}
+> > >   #endif /* CONFIG_X86 */
+> > >   
+> > >   /* Initialization */
+> > > +static DEFINE_PER_CPU(void *, processor_device_array);
+> > > +
+> > > +static bool acpi_processor_set_per_cpu(struct acpi_processor *pr,
+> > > +				       struct acpi_device *device)
+> > > +{
+> > > +	BUG_ON(pr->id >= nr_cpu_ids);    
+> > 
+> > One blank line after BUG_ON() if we need to follow original implementation.  
+> 
+> Sure unintentional - I'll put that back.
+> 
+> >   
+> > > +	/*
+> > > +	 * Buggy BIOS check.
+> > > +	 * ACPI id of processors can be reported wrongly by the BIOS.
+> > > +	 * Don't trust it blindly
+> > > +	 */
+> > > +	if (per_cpu(processor_device_array, pr->id) != NULL &&
+> > > +	    per_cpu(processor_device_array, pr->id) != device) {
+> > > +		dev_warn(&device->dev,
+> > > +			 "BIOS reported wrong ACPI id %d for the processor\n",
+> > > +			 pr->id);
+> > > +		/* Give up, but do not abort the namespace scan. */    
+> > 
+> > It depends on how the return value is handled by the caller if the namespace
+> > is continued to be scanned. The caller can be acpi_processor_hotadd_init()
+> > and acpi_processor_get_info() after this patch is applied. So I think this
+> > specific comment need to be moved to the caller.  
+> 
+> Good point. This gets messy and was an unintended change.
+> 
+> Previously the options were:
+> 1) acpi_processor_get_info() failed for other reasons - this code was never called.
+> 2) acpi_processor_get_info() succeeded without acpi_processor_hotadd_init (non hotplug)
+>    this code then ran and would paper over the problem doing a bunch of cleanup under err.
+> 3) acpi_processor_get_info() succeeded with acpi_processor_hotadd_init called.
+>    This code then ran and would paper over the problem doing a bunch of cleanup under err.
+> 
+> We should maintain that or argue cleanly against it.
+> 
+> This isn't helped the the fact I have no idea which cases we care about for that bios
+> bug handling.  Do any of those bios's ever do hotplug?  Guess we have to try and maintain
+> whatever protection this was offering.
+> 
+> Also, the original code leaks data in some paths and I have limited idea
+> of whether it is intentional or not. So to tidy the issue up that you've identified
+> I'll need to try and make that code consistent first.
+> 
+> I suspect the only way to do that is going to be to duplicate the allocations we
+> 'want' to leak to deal with the bios bug detection.
+> 
+> For example acpi_processor_get_info() failing leaks pr and pr->throttling.shared_cpu_map
+> before this series. After this series we need pr to leak because it's used for the detection
+> via processor_device_array.
+> 
+> I'll work through this but it's going to be tricky to tell if we get right.
+> Step 1 will be closing the existing leaks and then we will have something
+> consistent to build on.
+> 
+I 'think' that fixing the original leaks makes this all much more straight forward.
+That return 0 for acpi_processor_get_info() never made sense as far as I can tell.
+The pr isn't used after this point.
 
-Should this test be moved into the caller, to avoid an unconditional
-function call in the ipv6 code?
+What about something along lines of.
 
-(Also waiting for explicit ack from Eric)
+diff --git a/drivers/acpi/acpi_processor.c b/drivers/acpi/acpi_processor.c
+index 161c95c9d60a..97cff4492304 100644
+--- a/drivers/acpi/acpi_processor.c
++++ b/drivers/acpi/acpi_processor.c
+@@ -392,8 +392,10 @@ static int acpi_processor_add(struct acpi_device *device,
+        device->driver_data = pr;
 
-Thank,
+        result = acpi_processor_get_info(device);
+-       if (result) /* Processor is not physically present or unavailable */
+-               return 0;
++       if (result) { /* Processor is not physically present or unavailable */
++               result = 0;
++               goto err_free_throttling_mask;
++       }
 
-Paolo
+        BUG_ON(pr->id >= nr_cpu_ids);
+
+@@ -408,7 +410,7 @@ static int acpi_processor_add(struct acpi_device *device,
+                        "BIOS reported wrong ACPI id %d for the processor\n",
+                        pr->id);
+                /* Give up, but do not abort the namespace scan. */
+-               goto err;
++               goto err_clear_driver_data;
+        }
+        /*
+         * processor_device_array is not cleared on errors to allow buggy BIOS
+@@ -420,12 +422,12 @@ static int acpi_processor_add(struct acpi_device *device,
+        dev = get_cpu_device(pr->id);
+        if (!dev) {
+                result = -ENODEV;
+-               goto err;
++               goto err_clear_per_cpu;
+        }
+
+        result = acpi_bind_one(dev, device);
+        if (result)
+-               goto err;
++               goto err_clear_per_cpu;
+
+        pr->dev = dev;
+
+@@ -436,10 +438,12 @@ static int acpi_processor_add(struct acpi_device *device,
+        dev_err(dev, "Processor driver could not be attached\n");
+        acpi_unbind_one(dev);
+
+- err:
+-       free_cpumask_var(pr->throttling.shared_cpu_map);
+-       device->driver_data = NULL;
++ err_clear_per_cpu:
+        per_cpu(processors, pr->id) = NULL;
++ err_clear_driver_data:
++       device->driver_data = NULL;
++ err_free_throttling_mask:
++       free_cpumask_var(pr->throttling.shared_cpu_map);
+  err_free_pr:
+        kfree(pr);
+        return result;
+
+Then the diff on this patch is simply:
+
+diff --git a/drivers/acpi/acpi_processor.c b/drivers/acpi/acpi_processor.c
+index 3c49eae1e943..3b75f5aeb7ab 100644
+--- a/drivers/acpi/acpi_processor.c
++++ b/drivers/acpi/acpi_processor.c
+@@ -200,7 +200,6 @@ static bool acpi_processor_set_per_cpu(struct acpi_processor *pr,
+                dev_warn(&device->dev,
+                         "BIOS reported wrong ACPI id %d for the processor\n",
+                         pr->id);
+-               /* Give up, but do not abort the namespace scan. */
+                return false;
+        }
+        /*
+@@ -230,13 +229,14 @@ static int acpi_processor_hotadd_init(struct acpi_processor *pr,
+                goto out;
+
+        if (!acpi_processor_set_per_cpu(pr, device)) {
++               ret = -EINVAL;
+                acpi_unmap_cpu(pr->id);
+                goto out;
+        }
+
+        ret = arch_register_cpu(pr->id);
+        if (ret) {
+-               /* Leave the processor device array in place to detect buggy bios */
++x              /* Leave the processor device array in place to detect buggy bios */
+                per_cpu(processors, pr->id) = NULL;
+                acpi_unmap_cpu(pr->id);
+                goto out;
+@@ -262,7 +262,7 @@ static inline int acpi_processor_hotadd_init(struct acpi_processor *pr,
+ }
+ #endif /* CONFIG_ACPI_HOTPLUG_CPU */
+
+-static int acpi_processor_get_info(struct acpi_device *device)
++static int acpi_processor_get_info(struct acpi_device *device, bool bios_bug)
+ {
+        union acpi_object object = { 0 };
+        struct acpi_buffer buffer = { sizeof(union acpi_object), &object };
+@@ -361,7 +361,7 @@ static int acpi_processor_get_info(struct acpi_device *device)
+                        return ret;
+        } else {
+                if (!acpi_processor_set_per_cpu(pr, device))
+-                       return 0;
++                       return -EINVAL;
+        }
+
+        /*
+> > 
+> > Besides, it seems acpi_processor_set_per_cpu() isn't properly called and
+> > memory leakage can happen. More details are given below.
+> >   
+> > > +		return false;
+> > > +	}
+> > > +	/*
+> > > +	 * processor_device_array is not cleared on errors to allow buggy BIOS
+> > > +	 * checks.
+> > > +	 */
+> > > +	per_cpu(processor_device_array, pr->id) = device;
+> > > +	per_cpu(processors, pr->id) = pr;
+> > > +
+> > > +	return true;
+> > > +}
+> > > +
+> > >   #ifdef CONFIG_ACPI_HOTPLUG_CPU
+> > > -static int acpi_processor_hotadd_init(struct acpi_processor *pr)
+> > > +static int acpi_processor_hotadd_init(struct acpi_processor *pr,
+> > > +				      struct acpi_device *device)
+> > >   {
+> > >   	int ret;
+> > >   
+> > > @@ -198,8 +228,15 @@ static int acpi_processor_hotadd_init(struct acpi_processor *pr)
+> > >   	if (ret)
+> > >   		goto out;
+> > >   
+> > > +	if (!acpi_processor_set_per_cpu(pr, device)) {
+> > > +		acpi_unmap_cpu(pr->id);
+> > > +		goto out;
+> > > +	}
+> > > +    
+> > 
+> > With the 'goto out', zero is returned from acpi_processor_hotadd_init() to acpi_processor_get_info().
+
+Indeed a bug :(
+
+> > The zero return value is carried from acpi_map_cpu() in acpi_processor_hotadd_init(). If I'm correct,
+> > we need return errno from acpi_processor_get_info() to acpi_processor_add() so that cleanup can be
+> > done. For example, the cleanup corresponding to the 'err' tag can be done in acpi_processor_add().
+> > Otherwise, we will have memory leakage.
+
+The confusion here was that previously acpi_processor_add() was missing error cleanup for
+acpi_processor_get_info().  With that in place I think it's all much simpler.
+
+Thanks for your eagle eyes!
+
+Jonathan
+
+
+> >   
+> > >   	ret = arch_register_cpu(pr->id);
+> > >   	if (ret) {
+> > > +		/* Leave the processor device array in place to detect buggy bios */
+> > > +		per_cpu(processors, pr->id) = NULL;
+> > >   		acpi_unmap_cpu(pr->id);
+> > >   		goto out;
+> > >   	}
+> > > @@ -217,7 +254,8 @@ static int acpi_processor_hotadd_init(struct acpi_processor *pr)
+> > >   	return ret;
+> > >   }
+> > >   #else
+> > > -static inline int acpi_processor_hotadd_init(struct acpi_processor *pr)
+> > > +static inline int acpi_processor_hotadd_init(struct acpi_processor *pr,
+> > > +					     struct acpi_device *device)
+> > >   {
+> > >   	return -ENODEV;
+> > >   }
+> > > @@ -316,10 +354,13 @@ static int acpi_processor_get_info(struct acpi_device *device)
+> > >   	 *  because cpuid <-> apicid mapping is persistent now.
+> > >   	 */
+> > >   	if (invalid_logical_cpuid(pr->id) || !cpu_present(pr->id)) {
+> > > -		int ret = acpi_processor_hotadd_init(pr);
+> > > +		int ret = acpi_processor_hotadd_init(pr, device);
+> > >   
+> > >   		if (ret)
+> > >   			return ret;
+> > > +	} else {
+> > > +		if (!acpi_processor_set_per_cpu(pr, device))
+> > > +			return 0;
+> > >   	}
+> > >       
+> > 
+> > For non-hotplug case, we still need pass the error to acpi_processor_add() so that
+> > cleanup corresponding 'err' tag can be done. Otherwise, we will have memory leakage.
+> >   
+> > >   	/*
+> > > @@ -365,8 +406,6 @@ static int acpi_processor_get_info(struct acpi_device *device)
+> > >    * (cpu_data(cpu)) values, like CPU feature flags, family, model, etc.
+> > >    * Such things have to be put in and set up by the processor driver's .probe().
+> > >    */
+> > > -static DEFINE_PER_CPU(void *, processor_device_array);
+> > > -
+> > >   static int acpi_processor_add(struct acpi_device *device,
+> > >   					const struct acpi_device_id *id)
+> > >   {
+> > > @@ -395,28 +434,6 @@ static int acpi_processor_add(struct acpi_device *device,
+> > >   	if (result) /* Processor is not physically present or unavailable */
+> > >   		return 0;
+> > >   
+> > > -	BUG_ON(pr->id >= nr_cpu_ids);
+> > > -
+> > > -	/*
+> > > -	 * Buggy BIOS check.
+> > > -	 * ACPI id of processors can be reported wrongly by the BIOS.
+> > > -	 * Don't trust it blindly
+> > > -	 */
+> > > -	if (per_cpu(processor_device_array, pr->id) != NULL &&
+> > > -	    per_cpu(processor_device_array, pr->id) != device) {
+> > > -		dev_warn(&device->dev,
+> > > -			"BIOS reported wrong ACPI id %d for the processor\n",
+> > > -			pr->id);
+> > > -		/* Give up, but do not abort the namespace scan. */
+> > > -		goto err;
+> > > -	}
+> > > -	/*
+> > > -	 * processor_device_array is not cleared on errors to allow buggy BIOS
+> > > -	 * checks.
+> > > -	 */
+> > > -	per_cpu(processor_device_array, pr->id) = device;
+> > > -	per_cpu(processors, pr->id) = pr;
+> > > -
+> > >   	dev = get_cpu_device(pr->id);
+> > >   	if (!dev) {
+> > >   		result = -ENODEV;
+> > > @@ -469,10 +486,6 @@ static void acpi_processor_remove(struct acpi_device *device)
+> > >   	device_release_driver(pr->dev);
+> > >   	acpi_unbind_one(pr->dev);
+> > >   
+> > > -	/* Clean up. */
+> > > -	per_cpu(processor_device_array, pr->id) = NULL;
+> > > -	per_cpu(processors, pr->id) = NULL;
+> > > -
+> > >   	cpu_maps_update_begin();
+> > >   	cpus_write_lock();
+> > >   
+> > > @@ -480,6 +493,10 @@ static void acpi_processor_remove(struct acpi_device *device)
+> > >   	arch_unregister_cpu(pr->id);
+> > >   	acpi_unmap_cpu(pr->id);
+> > >   
+> > > +	/* Clean up. */
+> > > +	per_cpu(processor_device_array, pr->id) = NULL;
+> > > +	per_cpu(processors, pr->id) = NULL;
+> > > +
+> > >   	cpus_write_unlock();
+> > >   	cpu_maps_update_done();
+> > >       
+> > 
+> > Thanks,
+> > Gavin
+> >   
+> 
 
 
