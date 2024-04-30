@@ -1,136 +1,68 @@
-Return-Path: <linux-kernel+bounces-163250-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-163251-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A38C88B67A8
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 03:46:32 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 387BB8B67B4
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 03:51:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C43FBB22199
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 01:46:29 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 80D44B215C0
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 01:51:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26AAB525D;
-	Tue, 30 Apr 2024 01:46:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="gYdMRRJk"
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5FCA717F5;
-	Tue, 30 Apr 2024 01:46:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25C5F8F6D;
+	Tue, 30 Apr 2024 01:51:24 +0000 (UTC)
+Received: from netrider.rowland.org (netrider.rowland.org [192.131.102.5])
+	by smtp.subspace.kernel.org (Postfix) with SMTP id D26E15C96
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 01:51:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.131.102.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714441583; cv=none; b=J9JNwIIcRB3Uk8lHsVz/hiYePkr/gqXiUJocURXFvCzCgmOVGHnxkB3pFbxjQuOG0jt41c5Goq5CESXDaBmGMlt58fRFgeohYDSUGRxMFWXZp+Ge5Ic6PRyTTMn2y0ZRfkHe0sPQcU307Y6oaUnIAywVYcd7p0+fXRzL+tWE8aY=
+	t=1714441883; cv=none; b=mfPBWskjYt4j9+U8LWcz2ffM5+01LN4cmN7/0vqwaH2y40N3YLGswM5/y+piaKvtPIeNdMy+PdhDjzhMnSUFFY4Vnc2eHRcjon661pg5oCYGkK00aJ1QIfVDDoyuYkZfFdA6Pno0qq2EjkvqcKsHHVixUPG2lW4dn6IT0wYURxc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714441583; c=relaxed/simple;
-	bh=f/XBlC+boAOS1gDGEGOBzm3DPT9aqczRyWdZDoucV1U=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=fuH9i6EETELUHXvxOY0NNK8TiRpe6PkHnjk8VAWTxlrcPlILWqsIyX+oNF9gL4j1CDAK7ewzurYmb+TQzmOHrNOOoz7rli8WzolD/pdKb1BEpPSqa9AB9zlUB/pRgNjd1X6cmMprD220hKwyZg+V6iSXSq602wab3sCWlQ5xVlc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=gYdMRRJk; arc=none smtp.client-ip=150.107.74.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-	s=201702; t=1714441578;
-	bh=fV/cOYzT6LmLxkiPuYWOK3irW1uzWS5hYhP4cXqbGao=;
-	h=Date:From:To:Cc:Subject:From;
-	b=gYdMRRJkaA25k++r01A6sA/yWZgWGhBPx7s7gxjEmeDXL20h9vxcnLzyEOeD2/5TT
-	 j3sqgTWWgCt6q1giuG96ijNIv1kafVCJbDLYPUIJXD5WnI+uCVb7SCn5mj/5GFDq+v
-	 rbVhiE/InPneA2qpN2BAetrI/g/dabWP0fk9mDIX6aNwD7q48gOIHDAyu3F9xVaqIm
-	 qmXwEnL9FvhSV1jBTBeXCD1ZA89EKs6/ai4NLm71bl6mfV1awe0gv8DDQ7LOmyvVM2
-	 ZFqCXN3sHr37pJ1IivYrw1jVGNgV9oJTdNLL1yyT1wmavALdYR+7io3On5ZWHRrgv4
-	 zpVHMsv0+vo3Q==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4VT32L1kLHz4x1R;
-	Tue, 30 Apr 2024 11:46:16 +1000 (AEST)
-Date: Tue, 30 Apr 2024 11:46:13 +1000
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-To: Jean Delvare <jdelvare@suse.de>
-Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux Next
- Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build warning after merge of the dmi tree
-Message-ID: <20240430114613.0cef65fc@canb.auug.org.au>
+	s=arc-20240116; t=1714441883; c=relaxed/simple;
+	bh=1dZFllmSUYIU5Tu60QYWUdcFtWjeeWfLdtbeuvwZiCQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=MTgSUaoyxHpmV5tiMC5Dc1oBsXWeIVkjFP0XaxwPqinkDqdlxNxRVDf4MoxqCBBUPzpflkLpwKlcF0Tt8xV1qkiJDJx+1regztbAeFHVdksff0YMItrSOOPLp+lAp+vYDEAEssFI6utjZsffZymHYHaaFWQxpKyZGapND4hUIgM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=rowland.harvard.edu; spf=pass smtp.mailfrom=netrider.rowland.org; arc=none smtp.client-ip=192.131.102.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=rowland.harvard.edu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netrider.rowland.org
+Received: (qmail 640741 invoked by uid 1000); 29 Apr 2024 21:51:20 -0400
+Date: Mon, 29 Apr 2024 21:51:20 -0400
+From: Alan Stern <stern@rowland.harvard.edu>
+To: Michael Grzeschik <m.grzeschik@pengutronix.de>
+Cc: Eric Van Hensbergen <ericvh@kernel.org>,
+  Latchesar Ionkov <lucho@ionkov.net>,
+  Dominique Martinet <asmadeus@codewreck.org>,
+  Christian Schoenebeck <linux_oss@crudebyte.com>,
+  Jonathan Corbet <corbet@lwn.net>,
+  Greg Kroah-Hartman <gregkh@linuxfoundation.org>, v9fs@lists.linux.dev,
+  linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+  linux-usb@vger.kernel.org, kernel@pengutronix.de
+Subject: Re: [PATCH v4 1/3] usb: gadget: function: move u_f.h to
+ include/linux/usb/
+Message-ID: <1fb801bf-3bef-4f95-8036-fc8634679141@rowland.harvard.edu>
+References: <20240116-ml-topic-u9p-v4-0-722ed28b0ade@pengutronix.de>
+ <20240116-ml-topic-u9p-v4-1-722ed28b0ade@pengutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/o+=qb0K4XMlUtRh4lKU4i5E";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240116-ml-topic-u9p-v4-1-722ed28b0ade@pengutronix.de>
 
---Sig_/o+=qb0K4XMlUtRh4lKU4i5E
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Tue, Apr 30, 2024 at 01:33:26AM +0200, Michael Grzeschik wrote:
+> We move the u_f.h header to include/linux/usb to be
+> able to compile function drivers outside of the
+> drivers/usb/gadget/function directory.
+> 
+> Signed-off-by: Michael Grzeschik <m.grzeschik@pengutronix.de>
 
-Hi all,
+Given that you're moving a private header file to a public location,
+don't you think it should now have a name that's more meaningful to
+general kernel developers than "u_f.h"?
 
-After merging the dmi tree, today's linux-next build (arm
-multi_v7_defconfig) produced this warning:
-
-In file included from include/asm-generic/bug.h:22,
-                 from arch/arm/include/asm/bug.h:60,
-                 from include/linux/bug.h:5,
-                 from include/linux/thread_info.h:13,
-                 from include/asm-generic/preempt.h:5,
-                 from ./arch/arm/include/generated/asm/preempt.h:1,
-                 from include/linux/preempt.h:79,
-                 from include/linux/spinlock.h:56,
-                 from include/linux/mmzone.h:8,
-                 from include/linux/gfp.h:7,
-                 from include/linux/umh.h:4,
-                 from include/linux/kmod.h:9,
-                 from include/linux/module.h:17,
-                 from drivers/firmware/dmi_scan.c:5:
-drivers/firmware/dmi_scan.c: In function 'dmi_decode_table':
-include/linux/kern_levels.h:5:25: warning: format '%ld' expects argument of=
- type 'long int', but argument 2 has type 'int' [-Wformat=3D]
-    5 | #define KERN_SOH        "\001"          /* ASCII Start Of Header */
-      |                         ^~~~~~
-include/linux/printk.h:429:25: note: in definition of macro 'printk_index_w=
-rap'
-  429 |                 _p_func(_fmt, ##__VA_ARGS__);                      =
-     \
-      |                         ^~~~
-include/linux/printk.h:510:9: note: in expansion of macro 'printk'
-  510 |         printk(KERN_WARNING pr_fmt(fmt), ##__VA_ARGS__)
-      |         ^~~~~~
-include/linux/kern_levels.h:12:25: note: in expansion of macro 'KERN_SOH'
-   12 | #define KERN_WARNING    KERN_SOH "4"    /* warning conditions */
-      |                         ^~~~~~~~
-include/linux/printk.h:510:16: note: in expansion of macro 'KERN_WARNING'
-  510 |         printk(KERN_WARNING pr_fmt(fmt), ##__VA_ARGS__)
-      |                ^~~~~~~~~~~~
-drivers/firmware/dmi_scan.c:109:25: note: in expansion of macro 'pr_warn'
-  109 |                         pr_warn(FW_BUG
-      |                         ^~~~~~~
-
-Introduced by commit
-
-  868577e6bfe1 ("firmware: dmi: Stop decoding on broken entry")
-
-Include printk.h?
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/o+=qb0K4XMlUtRh4lKU4i5E
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmYwTWUACgkQAVBC80lX
-0GyvWQf/S6SHEsGTXftvQFWz756B7Eqj1dVwdsf9EioubZEKshdvUEvenDhWcWRT
-e9Wfe0MG2YcSNScDjIHWAr3Rf63AWIuakIzDn6N7mSWFWoOkqwaXySbCyqquc3Ih
-gnHDmHXgR6HxRe0OetQHFwuANtBOuO0XcmOhDMixRTSzbQW16m2pICvIGzzdXzud
-0NAHjOEh2bHE/i9qERS6gNzsCpv1zoVb2vVB6Yl+cD6hSvOHHuri00tqCjmYRFF4
-wO3C/vnZI3a1CuWczI6tgWXINZbbKLFBX+GGeI9hV6xK8AornFBfskgZz/O6olzl
-BraSutiwpoLHY0LppRTk1917++Bh6g==
-=at/o
------END PGP SIGNATURE-----
-
---Sig_/o+=qb0K4XMlUtRh4lKU4i5E--
+Alan Stern
 
