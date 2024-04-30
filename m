@@ -1,74 +1,55 @@
-Return-Path: <linux-kernel+bounces-163280-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-163281-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6122E8B6823
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 05:04:59 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2DB618B682B
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 05:11:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 178B31F221A6
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 03:04:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DED61282A97
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 03:11:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F208101C5;
-	Tue, 30 Apr 2024 03:04:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E878BF4EB;
+	Tue, 30 Apr 2024 03:11:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="mkGoDDhD"
-Received: from mail-oi1-f171.google.com (mail-oi1-f171.google.com [209.85.167.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Re6D8+PL"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3847DF58
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 03:04:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E06ADDA6;
+	Tue, 30 Apr 2024 03:11:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714446294; cv=none; b=amZ57lvYmzDJMxpGdzQfo8vpJB4fUzoTmtEEDf/PqV5/9bNZLv2I8MrB9OR86H5eQ7FHDaegoyfd7GtuqqPuB8BCmf924va6BrQ+XHCBrTcbacmSTXMO6fyacwq/fHj05PhdnuRYnkIRiBkAs8MFQbS6dg7vTQ9ojQU7LT9fON0=
+	t=1714446668; cv=none; b=PKsxUIerL//b2LCDWb32S3Z2EF2gdBxcpoyO/UMqn2RBhPbxP42HDQxlZ10V3PEDGwtgg51LPgQKtFnNZMp7OXSDQ0G8dotQPNfNgNVqmMCVl9FabcuGC9exDzSP2ggjqWzpAX9wsOSJ3vMYRzndpdlQPZq2DqHnMGOd9C0G7zE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714446294; c=relaxed/simple;
-	bh=S3dcFG9nl2arKz/OB2xphR0OKK1uAoMU8ChtHy95lPU=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=addD7Oh3M/FriyAxgFyjqt38CYpVfZJ7UrD32W+Np0N0dXJEjhmScIG/5iXHXAcI1QNKLuWTuuL2K/Z+/eLmnTa8//cbM0jdNMR05UlFck2bV2v72t10Plg5UuoJJCEI3Ouc7yZsUk1Mm9UEvAeFh5oKfDBj2hlHTrXpQoEBAuc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=mkGoDDhD; arc=none smtp.client-ip=209.85.167.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-oi1-f171.google.com with SMTP id 5614622812f47-3c74ff209f6so3445881b6e.0
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 20:04:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1714446292; x=1715051092; darn=vger.kernel.org;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=8GmvV6P1saiYDGx6aEXWiDKEEjYyVwYItU/oo2t7qo8=;
-        b=mkGoDDhDbcMXpOtD/awIvRX4i+T7K/WTxQ0BZp0TQ+JNGgYl+1gbIM/hrM4st3dhQ8
-         SkFJRwxtRDWd2A4VTjLpBk8p7fGivV0yd9DbKMyHgDeD3zQ1JwDx4wA4a88thHVT1u+O
-         AQ1G33mQsFMpbMyzADAjCqmtZSscC4wNcEw94=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714446292; x=1715051092;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=8GmvV6P1saiYDGx6aEXWiDKEEjYyVwYItU/oo2t7qo8=;
-        b=QZNfBJ6Hrj+vdLPBATLOchxwcny62GFYUj1YVD2EJ3CnSp93kJ++C48EU2HAr+UN9w
-         /7aQWLKm+F6Mpu4HLP9+6xNSYLcRsZu4Oz3t1WxxNGjwYP9BLixM+rA7TOnm8aHs0FR5
-         8bE6lAHRxrNAJ/0jMdxQhSgZT9zW6JftM/9hSGUWy4ZnKFQc8PKufXPyEphtKPdEfDKd
-         Q/gmsoHN61zu91wOHqZiXFA3mVr+kHv2eJq01u/KSh0DF5sHGxp87NWF8GDpYAU265O0
-         zR/jfznv0QJKNJ3ry+z+uxFly6vcH3aG4HAEaHd8knkenPwxMMo+UfdVlySxKZRMT5H6
-         JFbA==
-X-Forwarded-Encrypted: i=1; AJvYcCUg9+i0BPnv1zoaSSnCCfsNNGP8XJfYVRjZIau6bpNSJczl6SQOtn3GqniFqqwjnxIN1C2nE4RbhrzocZhHxTu5Xog5yHqWJCLLjJW9
-X-Gm-Message-State: AOJu0YyBHjPs38+GlPI/8nGOCxF9eE5SsIaVKolDa95ahfZzmOtju8Pk
-	nRc6pccyf0BRK58alYpev6K9b1CCysqcx3PdHls/Z+ytTk7r5rsjuK2JfNu2OLpo2Rkv/M5lucY
-	=
-X-Google-Smtp-Source: AGHT+IHoOv2bed294ADi560bgBmZKT/Ayee8+LWb6/uFb3ODkPyPBkr3pKvDObUtk22A6sGzJHMfUA==
-X-Received: by 2002:a05:6808:4c8:b0:3c7:3af6:1cb5 with SMTP id a8-20020a05680804c800b003c73af61cb5mr13307260oie.46.1714446292049;
-        Mon, 29 Apr 2024 20:04:52 -0700 (PDT)
-Received: from google.com ([2401:fa00:8f:203:e55f:86cd:c9e1:6daf])
-        by smtp.gmail.com with ESMTPSA id g7-20020a632007000000b005e83b64021fsm19850926pgg.25.2024.04.29.20.04.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Apr 2024 20:04:51 -0700 (PDT)
-Date: Tue, 30 Apr 2024 12:04:47 +0900
-From: Sergey Senozhatsky <senozhatsky@chromium.org>
-To: Herbert Xu <herbert@gondor.apana.org.au>,
-	"David S. Miller" <davem@davemloft.net>
-Cc: linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [RFC] crypto: passing configuration parameters to comp algos
-Message-ID: <20240430030447.GE14947@google.com>
+	s=arc-20240116; t=1714446668; c=relaxed/simple;
+	bh=yT3MMoBO2F4LiKz7W0TmFqgNagQSndlMM+rjLP8IxtU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=iM4TfvnRfPsjzxQ9Ylvyl1fITdiPK078jw+gykSXGAzWl/vYQiRMXlv1eUKI/AV+rpY6DZuQYaoNF4qfrJqyVPUyCFlAOAmXEGMau0/aFZOnhc4rH3A/XiziwbzUq44Tfr6IO/9IpxYahXe+ISJc83XCvwjwhZSz3RmebyWEpq4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Re6D8+PL; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 71E8DC116B1;
+	Tue, 30 Apr 2024 03:11:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714446667;
+	bh=yT3MMoBO2F4LiKz7W0TmFqgNagQSndlMM+rjLP8IxtU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Re6D8+PL3acp6LaiFk05Wz2mtAprPWxzLIsCu5lX90BsYBFgsg1TRYT/mXb3VsFzo
+	 NTpdjcYS6qjf6nITOR9b5XIq5D35rDuGd1GrAvug9YzPDhsLSW0elLpDVVAjaUE293
+	 uSCcDgqwGOYB0Nb9uEPoowC9XbfPZSWzc6/FnWgftSGPqYTutguJCblXqT3y7Z6vh7
+	 XfX5hR4/fgMIIIxvIYZdtrNSUwo3Plv2BhG0lW/mo5gm5AuQzoWWlJ4iVAEh9qBb60
+	 rg/SGR14PbEeRsfJGy7/h2xCeo1pS2CxXZ1pI+b9qjIIMNliLKC47/PU+8SEtLaGbl
+	 g79v8l51MyZ+w==
+Date: Mon, 29 Apr 2024 20:11:05 -0700
+From: Eric Biggers <ebiggers@kernel.org>
+To: Aaron Toponce <aaron.toponce@gmail.com>
+Cc: Theodore Ts'o <tytso@mit.edu>, "Jason A. Donenfeld" <Jason@zx2c4.com>,
+	Herbert Xu <herbert@gondor.apana.org.au>,
+	"David S. Miller" <davem@davemloft.net>,
+	linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org
+Subject: Re: [PATCH] random: add chacha8_block and swtich the rng to it
+Message-ID: <20240430031105.GA10165@sol.localdomain>
+References: <20240429134942.2873253-1-aaron.toponce@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -77,21 +58,34 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <20240429134942.2873253-1-aaron.toponce@gmail.com>
 
-Hi,
+On Mon, Apr 29, 2024 at 07:48:49AM -0600, Aaron Toponce wrote:
+> According to Jean-Philippe Aumasson in his paper "Too Much Crypto" [1]:
+> 
+> > "The best result on ChaCha is a key recovery attack on the 7-round version
+> > with 2^237.7 time complexity using output data from 2^96 instances of ChaCha,
+> > that is, 2^105 bytes of data."
+> 
+> He then proposes that ChaCha use 8 rounds instead of 20, providing a 2.5x
+> speed-up. As such, this patch adds chacha8_block and chacha12_block and switches
+> the RNG from ChaCha20 to ChaCha8 to take advantage of that efficiency without
+> sacrificing security.
+> 
 
-	We'd like to be able to pass algorithm-specific parameters to
-comp backends. As of this moment, crypto usees hard-coded default
-values and does not permit any run-time algorithm configuration,
-which in some cases simply disables the most interesting functionality.
-E.g. zstd can be configured to use a pre-trained (in the user-space)
-compression dictionary, which significantly changes algorithms
-characteristics. Another, obvious and trivial example, is algorithms
-compression level.
+I don't think there is consensus on ChaCha8 being recommended.  Adiantum uses
+ChaCha12, but even that received some pushback.
 
-The problem is that we need to pass params to cra_init() function,
-because for some algorithms that's the only place where configuration
-can take place (e.g. zstd). Changing cra_init() to accept additional
-`struct crypto_comp_params` looks to be a little intrusive so before
-I write any patches I'd like to hear your thoughts.
+The Linux RNG is also usually used only for small amounts of data, and its
+security (and the perception of its security) is extremely important.
+
+So just staying with ChaCha20 seems appropriate.
+
+Note also that currently the Linux RNG is using a portable C implementation of
+ChaCha20.  If there is actually a desire to accelerate large reads (which again,
+aren't the main use case of the Linux RNG), it would be possible to use a SIMD
+implementation of ChaCha20, which already exists in the kernel.  That would
+speed up ChaCha20 by roughly 2-5x depending on the CPU.
+
+- Eric
 
