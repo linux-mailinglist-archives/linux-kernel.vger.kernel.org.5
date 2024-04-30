@@ -1,151 +1,138 @@
-Return-Path: <linux-kernel+bounces-163203-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-163202-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id BFCD58B6722
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 03:04:53 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id ACE3B8B6720
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 03:04:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BBC8E1F23C1A
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 01:04:52 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E09DDB2175F
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 01:04:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 961F46FB0;
-	Tue, 30 Apr 2024 01:04:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 23EC1211C;
+	Tue, 30 Apr 2024 01:04:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kMJfN3+J"
-Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="bKnrwO8p"
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 408CB1FBA;
-	Tue, 30 Apr 2024 01:04:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 713D817F5;
+	Tue, 30 Apr 2024 01:04:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714439078; cv=none; b=NttFJoev4rSE0b+91Ry2K4W6Tz1xQ42GDVov7TGph/ZB7cOap8N2rpTrfQxXQEAYPrXLjLBT+akqihoxQljGQkWj2++E7cbSDTbgE8kqCiarpOCXxwgD4m0pibudmEyNKadNUDI4L/Xu5k2w8s0eLPgePueWVUErHbg697I7m1o=
+	t=1714439076; cv=none; b=AOoctnPGOVXdSuZz1+XvyGDDD3hzknELgCziYfvqqRa7wJfM7fSqRkVL9cg1bbCco/CZQJR14MpbHD8ZeVyd6UDA809gK1EAy1uqNZe9RsArjKB+fqQ6N+buqCjTcYzG56O+8ZExmsc9cfcaHD6G8O30FQCqtUMsIYdstdacDjw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714439078; c=relaxed/simple;
-	bh=PfIZ2OzMF7H5BdktCnUKZd+MnhBoRHx3h3/g+0pDVmw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=PYYE0RCskJSEL+1NoR7DpmNL87PM84/VlZ5PyMsq9fBMrPtWn2E+tqCRKTRZN1YHnSa7VUMwN+yyGb6mWmmn4AXPSVBMmLxKdRIr7lza7w6I9mbhM/ZgVabzP2s6r+keVXQIMvOtaSiL4O87OlTT3kQ8Ifdrl2ewjF4pMn6W150=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kMJfN3+J; arc=none smtp.client-ip=209.85.208.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-5726716a006so3819093a12.2;
-        Mon, 29 Apr 2024 18:04:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714439075; x=1715043875; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=HmlXHYTP1JU1chg3YaCZTEhfqyjw0+XCv0tIk9SD3Mg=;
-        b=kMJfN3+JVJ3HvHeUx5tK00p1FTS2Uv9RpTDzgz+GcWDkR+Sew+9NY7ryukSpFxFzMe
-         ydp1Y0cQOxWKBhphtadlu0Xuzz5k95iCF4GFUHVl4IrldfXoy5CNbMcUcD7iQDkgU3NX
-         tUP/zMWWI5xccmov19mdHVzjiNokry29YykE6ESeyiVS/UfRswdWMG65H77ns6lCiEAP
-         LzFaaBGCW29KWarwPz+UpbQT65R8Wxv0wWoIjRoOJN7u2D4cbylbQoJ4dFkMc53TpS7m
-         /q39YAJiooMkkLITTLfkbTXBr8MqRUqWpXhGe98VXCyVz0pwrYBa9XUo3JpexGKAh5IN
-         CloQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714439075; x=1715043875;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=HmlXHYTP1JU1chg3YaCZTEhfqyjw0+XCv0tIk9SD3Mg=;
-        b=Si3ztAIDNjFAKjTe/oB568F8IzJn9U0JQ7HBcjrXDxgtXlc98hL7QmbS9F65xN5ZjT
-         CxOgoa5oAe91P0W6Tjxo5YGngq7Q5OEjlpjKycdEhpCOJ74vdDX+7PnYggGXCl0+M5FF
-         sFb//NDUbYQ8/iTaGXhybGY8rwKAd8kyaB0+rmr73bETH0mCdlpH84eRmUubxsrGGzTd
-         8EaMl31ZRy124n66B1i5v9xFaLVzHyk1luWdwAHs+nJ4Oqw3+bssi6nouBMx2ykDJnFC
-         rivw84RHKOZSTULHRu6AphjBOgZV8I1TnnFN3Ii651UFlzmajcThQDrEmx9fCXNFaTjy
-         kKzg==
-X-Forwarded-Encrypted: i=1; AJvYcCWxTXGFvgCWRHhhUsiySi+1A9NQguBWu1Q6LbGNonWPWMctjyqQ/ujEfG0nghptr4kov2cyI7TRQunneeVrFfFEgZRfprHD8hbU4faI
-X-Gm-Message-State: AOJu0Yw9fPEVrF3bdPNoh/XT4ai2BdTcl86wVAEbY01kYZ4Ghlp/amOB
-	QWBPByZSjI0iRxb7W6e5IR12XKDiziDx9ClbYwKaCe0kmEgH6z7wi1M22mJPXkrS5BVrxV7xtP/
-	QOxI9bDUT1IT5A0vCJeQZK5Lkqfc=
-X-Google-Smtp-Source: AGHT+IGrM7nX4xycFTF6rLoZ9A5f96CoTvHTE2HEqPMJ05yvBCkg7o9L/Cb8ibqoN8mRlt/tvkeBzd09DEOm2VGWjzQ=
-X-Received: by 2002:a50:bb26:0:b0:572:7089:7f78 with SMTP id
- y35-20020a50bb26000000b0057270897f78mr5396986ede.34.1714439075311; Mon, 29
- Apr 2024 18:04:35 -0700 (PDT)
+	s=arc-20240116; t=1714439076; c=relaxed/simple;
+	bh=xIka4GzwqbHzymnQRdsDvesNVFW44WrLeBBhpVkSn3s=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=lGRVGCzWV3xFtFc5Qmz5JTUKJAnsiK+mFJGV/31GOx0JchZ/DfPtIJEo+w6C0lvcWfy/1jNLCYFv/zHaUY9Qpz3pSO8l1bofaJDbFRpREEUDbsbJb1M/do3sLd7Igxsu0Gg7YPJIntrwYhfGItXvbKLdBkzePQqRYSxAoVVi5Is=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=bKnrwO8p; arc=none smtp.client-ip=150.107.74.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+	s=201702; t=1714439069;
+	bh=G7JNY7J45OW8/zvJc3N+xIcvrFtkJvZusWpiHZbZsAI=;
+	h=Date:From:To:Cc:Subject:From;
+	b=bKnrwO8pyps74QJo62T2ITg78nmAAUniIV6AV5bFJzbQGn8H39hEJh8DJ5Chv+mTm
+	 KmR1SeqdkJAhrF8oKiGKHOnfi5kVBJi0QSYQLNe1BLVpLCp60WAdiULXBzaK3psDQE
+	 FuXz2paM1sT/aI9ClV4PG2UPkKiqQ6hsflulSNDhKAQOWKkKXK6z9gYAus98j2uKXb
+	 9VJu37T0ZGtP/bnj36vmvGwHjXPzBpwYOeFNQRu0oYk8DuaZy25i3h/pDI1PZHJlBY
+	 GRG7Z+WpHg0qTpl3imLbsv3PJntcwSdHUgBRNqtdpwXEd2s4Nhz0Mm1WaeZpAOUlNR
+	 hDNJeZKaZZT3Q==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4VT2646T9hz4wyq;
+	Tue, 30 Apr 2024 11:04:28 +1000 (AEST)
+Date: Tue, 30 Apr 2024 11:04:28 +1000
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+To: Alexandre Torgue <alexandre.torgue@st.com>
+Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux Next
+ Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: duplicate patches in the stm32 tree
+Message-ID: <20240430110428.30432b2f@canb.auug.org.au>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <ZjAWMQCJdrxZkvkB@google.com>
-In-Reply-To: <ZjAWMQCJdrxZkvkB@google.com>
-From: Jason Andryuk <jandryuk@gmail.com>
-Date: Mon, 29 Apr 2024 21:04:23 -0400
-Message-ID: <CAKf6xpvzrCHAsbokGu_+7P0H=n4T=dsRN81msJjW6yVMcEZi6g@mail.gmail.com>
-Subject: Re: [PATCH v2] Input: try trimming too long modalias strings
-To: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc: linux-input@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>, 
-	Benjamin Tissoires <benjamin.tissoires@redhat.com>, Peter Hutterer <peter.hutterer@who-t.net>, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="Sig_/Vc9nAuzvxGBtK8ilfzaP1ly";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+
+--Sig_/Vc9nAuzvxGBtK8ilfzaP1ly
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Apr 29, 2024 at 5:50=E2=80=AFPM Dmitry Torokhov
-<dmitry.torokhov@gmail.com> wrote:
->
-> If an input device declares too many capability bits then modalias
-> string for such device may become too long and not fit into uevent
-> buffer, resulting in failure of sending said uevent. This, in turn,
-> may prevent userspace from recognizing existence of such devices.
->
-> This is typically not a concern for real hardware devices as they have
-> limited number of keys, but happen with synthetic devices such as
-> ones created by xen-kbdfront driver, which creates devices as being
-> capable of delivering all possible keys, since it doesn't know what
-> keys the backend may produce.
->
-> To deal with such devices input core will attempt to trim key data,
-> in the hope that the rest of modalias string will fit in the given
-> buffer. When trimming key data it will indicate that it is not
-> complete by placing "+," sign, resulting in conversions like this:
->
-> old: k71,72,73,74,78,7A,7B,7C,7D,8E,9E,A4,AD,E0,E1,E4,F8,174,
-> new: k71,72,73,74,78,7A,7B,7C,+,
->
-> This should allow existing udev rules continue to work with existing
-> devices, and will also allow writing more complex rules that would
-> recognize trimmed modalias and check input device characteristics by
-> other means (for example by parsing KEY=3D data in uevent or parsing
-> input device sysfs attributes).
->
-> Note that the driver core may try adding more uevent environment
-> variables once input core is done adding its own, so when forming
-> modalias we can not use the entire available buffer, so we reduce
-> it by somewhat an arbitrary amount (96 bytes).
->
-> Reported-by: Jason Andryuk <jandryuk@gmail.com>
-> Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Hi all,
 
-Tested-by: Jason Andryuk <jandryuk@gmail.com>
+The following commits are also in the arm-soc tree as different
+commits (but the same patches):
 
-I don't have the gdm setup available to test, but loginctl looks good
-showing the Xen Virtual Keyboard assigned to a seat:
-# loginctl seat-status seat0
-seat0
-         Devices:
-                  =E2=94=9C=E2=94=80/sys/devices/LNXSYSTM:00/LNXPWRBN:00/in=
-put/input0
-                  =E2=94=82 input:input0 "Power Button"
-                  =E2=94=9C=E2=94=80/sys/devices/LNXSYSTM:00/LNXSLPBN:00/in=
-put/input1
-                  =E2=94=82 input:input1 "Sleep Button"
-                  =E2=94=9C=E2=94=80/sys/devices/platform/i8042/serio0/inpu=
-t/input2
-                  =E2=94=82 input:input2 "AT Translated Set 2 keyboard"
-                  =E2=94=9C=E2=94=80/sys/devices/platform/i8042/serio1/inpu=
-t/input4
-                  =E2=94=82 input:input4 "ImExPS/2 Generic Explorer Mouse"
-                  =E2=94=9C=E2=94=80/sys/devices/virtual/input/input5
-                  =E2=94=82 input:input5 "Xen Virtual Keyboard"
-                  =E2=94=82 =E2=94=94=E2=94=80/sys/devices/virtual/input/in=
-put5/event4
-                  =E2=94=82   input:event4
-                  =E2=94=94=E2=94=80/sys/devices/virtual/input/input6
-                    input:input6 "Xen Virtual Pointer"
+  0087ca056c73 ("arm64: dts: st: add all 8 i2c nodes on stm32mp251")
+  2886ab7437de ("arm64: dts: st: add rcc support for STM32MP25")
+  385ca8e3841f ("arm64: dts: st: add spi3 / spi8 properties on stm32mp257f-=
+ev1"
+)
+  3e7d579c9fca ("ARM: dts: stm32: add ETZPC as a system bus for STM32MP15x =
+boar
+ds")
+  4ef09379d765 ("arm64: dts: st: add i2c2 / i2c8 properties on stm32mp257f-=
+ev1"
+)
+  5e6b388d7bcb ("ARM: dts: stm32: move can3 node from stm32f746 to stm32f76=
+9")
+  7442597f90ba ("arm64: dts: st: add i2c2/i2c8 pins for stm32mp25")
+  7c12d95564a2 ("ARM: dts: stm32: add LTDC pinctrl on STM32MP13x SoC family=
+")
+  7c3d4f99a920 ("ARM: dts: stm32: put ETZPC as an access controller for STM=
+32MP
+15x boards")
+  808691f7389d ("media: dt-bindings: add access-controllers to STM32MP25 vi=
+deo=20
+codecs")
+  881bccce217e ("ARM: dts: stm32: add LTDC support for STM32MP13x SoC famil=
+y")
+  8fe31699b83d ("bus: stm32_firewall: fix off by one in stm32_firewall_get_=
+firewall()")
+  9e716b41a2b5 ("arm64: dts: st: add RIFSC as an access controller for STM3=
+2MP25x boards")
+  a012bd75abf6 ("ARM: dts: stm32: enable display support on stm32mp135f-dk =
+board")
+  aee0ce48516c ("arm64: dts: st: add spi3/spi8 pins for stm32mp25")
+  be62e9c0c3fc ("bus: etzpc: introduce ETZPC firewall controller driver")
+  c7f2f2c0ace8 ("ARM: dts: stm32: add heartbeat led for stm32mp157c-ed1")
+  cab43766e000 ("ARM: dts: stm32: add ETZPC as a system bus for STM32MP13x =
+boards")
+  d3740a9fd78c ("dt-bindings: display: simple: allow panel-common propertie=
+s")
+  dccdbccb7045 ("arm64: dts: st: correct masks for GIC PPI interrupts on st=
+m32mp25")
+  de9b447d5678 ("ARM: dts: stm32: put ETZPC as an access controller for STM=
+32MP13x boards")
+  ede58756bbe5 ("arm64: dts: st: add all 8 spi nodes on stm32mp251")
+  f798f7079233 ("ARM: dts: stm32: add PWR regulators support on stm32mp131")
 
-Thanks,
-Jason
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/Vc9nAuzvxGBtK8ilfzaP1ly
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmYwQ5wACgkQAVBC80lX
+0Gzuhgf+Ok/MdBCbmqHI/uXjho52A/7Hk5K5/XmjI6gumq3A5neK4WZjq9p9+CME
+E5ux3yA6J34nRu0IOrFuKuDc4+bkaaGoXVgIuzKhEXO8s1I0KJfe4J8QPB2O8x1/
+jx6scGf+4BKdNMLgsS89ofhfCd8ewfjxsMiU5QYyqrUwaLJP+uqqFGP/dAt+cfFd
++Jgk1wKDcQSCvc3x06hp2auioK+kyAi7orBI0fBJbk2b4vQr6RBGfhgyUCB2A4Tq
+ypqrToPJVnEUtrasZI2XqcyLP1j7++bhpqYHLWu/VpTzcC9hMSm4u2ghjmblyFU/
+1fxgPcCa5Wd9oT8CmFdPEFArnd+LgA==
+=n/fk
+-----END PGP SIGNATURE-----
+
+--Sig_/Vc9nAuzvxGBtK8ilfzaP1ly--
 
