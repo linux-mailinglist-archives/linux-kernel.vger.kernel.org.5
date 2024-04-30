@@ -1,220 +1,123 @@
-Return-Path: <linux-kernel+bounces-163383-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-163384-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 75C388B6A27
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 08:03:07 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 104E18B6A2A
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 08:03:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2C44928216F
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 06:03:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 423BD1C22169
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 06:03:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D1C018E0E;
-	Tue, 30 Apr 2024 06:02:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8CDD817BBE;
+	Tue, 30 Apr 2024 06:03:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZzSf6suE"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="eZNsf7Sy"
+Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com [209.85.208.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4DF3A1865A
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 06:02:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 738E717732
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 06:03:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714456973; cv=none; b=pRNHa3gSE3nPm/gH7L3BIf5M+MQmkE6XFoO4IlyPvhXl1cawiBcNpiL5eKfHwhU0Mw3nCXLf5aToUQcX5V/Fx3VcIJ+Pk98sN9tXm3KRApR92jLD1WP2Y3FcUJL6jST6TZMj27Mcfysh6luV5012xsmdHJYSbtspgM6HYxEuXJ8=
+	t=1714456994; cv=none; b=kAaZ6LmJeujFTPL9E6xCHSqKCPGHe05gJfumnKUuK3lp6HXJT4GvI/dR1RksdYtql808iBUfi0qXLv5PvKcExNKixkiMXr8KizdLjMunMDXNRe9c0AjLbcFRUwG+w/4i3PceBY5ThIyYiRjvgAxIrPtH+BTk3ZRyDo6jKQqPEPc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714456973; c=relaxed/simple;
-	bh=sNwgjAA5n6vIbiyq0PGOZo2Y0hPkG0cNpvgy5eJdU1U=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=uR/bvuWR4xw0PtMBP84MPpycss70h3ZhBw3VMQAA2TVQ/YX2ZlUgjWlqbrz8HcCuf8QSqeIusO6fgmtX14RNmzNObwxU1cx3Xqgrd4KUIFzKUVp16nEBDdu30C9FotVG7yZ67bo2rVxyiv2A18LWYlUrII47KUt6hFgdj3aQhGc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZzSf6suE; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1549AC4AF19;
-	Tue, 30 Apr 2024 06:02:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714456972;
-	bh=sNwgjAA5n6vIbiyq0PGOZo2Y0hPkG0cNpvgy5eJdU1U=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=ZzSf6suEDWr2C4HwFO9PMdj3LczIsCGszUBsrThRhMGdNyf+ioN6u3dkFIWcMzpfc
-	 vU7JO4It86mNidziVqSeFD+0EkLFZu37yYgKdDPJVM9ex5S78uqo1W7hPksXx4nank
-	 Rn1gH8IRBWjHoM68f2yWEcbbAoa4srPDwFGECOyNunazPWtrCflBFTR0p70j5RaeDd
-	 3AvqnNiHJME7loxQhgmoKwPBvgWQWJvrwjti/p7yJOPYTEa4ax0NmD7YAU1iUhGaae
-	 UVNCx28SLGh43zbe1xPXaTGvfCZ5gIzyTOMvUFuArQjOvYXqPTZtcqdE45KJYux8XM
-	 qtPKmoaxgHo+Q==
-From: Song Liu <song@kernel.org>
-To: linux-kernel@vger.kernel.org
-Cc: kernel-team@meta.com,
-	Song Liu <song@kernel.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Peter Zijlstra <peterz@infradead.org>
-Subject: [PATCH v5 2/2] watchdog: Allow nmi watchdog to use raw perf event
-Date: Mon, 29 Apr 2024 23:02:36 -0700
-Message-ID: <20240430060236.1878002-2-song@kernel.org>
+	s=arc-20240116; t=1714456994; c=relaxed/simple;
+	bh=wtyxCJh3Ttb/JDN5D3EE4COwC3BdfekHMXHWvpmaJO0=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=KI/W8RrGZHsPYgvuwAXMHHQFhT5oPzeQYnZ96xXucuQGrYGWhBTfW/Iscx8yyBX/Tpm0IXkLVeDmKtAu5MiI7b/0xCGeyafemW3iDPF5G9FK0Moituo0Cb/GfGZYdPlnQUX3Jenj+XtHUivRIFMmGStDTZC8sL15jXhEztDpS1A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=eZNsf7Sy; arc=none smtp.client-ip=209.85.208.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-56e69888a36so5497141a12.3
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 23:03:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1714456991; x=1715061791; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=3f+ijQyeya70KJofDglQNOZzfNHaShj1cgKGVLxvefs=;
+        b=eZNsf7Sy3+QpkZE+rWrrU+yaVGKDGSJTrDLVyqufMvJ0WVe8bPmIWlhj9VPHE9arbe
+         RkAgdq8P5wJRriU8Sgwyb9WQs5LhZUN+qTo5GZeqiR/+r7KIvby5DysR5fG89w/plAzg
+         7ccS9teBB5P8feoB8BDmoYbhAtlPpklC0xa4YDahpq6QI7F/4OZvXJhr2yWUnotypkDg
+         gUty+QuzA/iYRqCN6JfyQ+mcy9Ne9Ljf48LxpvRVt/FlHZmCOMaU8MjVNZzxqFRP6c8R
+         TyoK8HI0lRGfY5wJX64qkPy1pCv7SyNTmOiy7g2SjnUl4ceZYdgNglCShMBhrpadBCnx
+         E0rQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714456991; x=1715061791;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=3f+ijQyeya70KJofDglQNOZzfNHaShj1cgKGVLxvefs=;
+        b=fE2B3tvDDglMrkx7KWAk5/p1o9fP2MYNkqlb0l4cylPxx/aGY6CMMvZtc6gHlz0EOR
+         gtHVFkimgE8dd56EaARAX4YGRMn9OgkmkQ6HZ/DZFQT9VY4r/KuG3HFEDievXWzuVDPP
+         JpA6y7r5LFO1wuvd+5iG8aeIzuWiRxRRudfNSZYfwxH3PRu3EVdZrb9gWI+4pxcfndXE
+         CJoiOCmMq0xrMjzlzzprxpSdKoaw9+f3zt8Bked9qH4NXuQLYj4vMUfTd8mNRVqUzz/A
+         ylQ7lFSFUMPyRxQ7iOA4WE0F5Ji9XVwhPG/5VfJOgVeMyz7ohxZYH79wNTIoTj+KiD+b
+         uNQg==
+X-Forwarded-Encrypted: i=1; AJvYcCUs4CHZalAExRRCFC7yFFU15p0jUeXKqU5zogHXG9VipNAumoe3W0iXVlZm6NA0SdbZBS1gBLZaGYJY2xFxXNF/B3KxVGFp8vrRkSij
+X-Gm-Message-State: AOJu0Yy92RU32W0PAgX8w9wTvhs6XVXXvo2cyfdXNJcG1Tjc/4Tle13x
+	+70VAKbZLtHSqcyp7BuuEOLoT+b1eWz5ny3SLnjqcRQVn+rEgJkmhgQgAafXbno=
+X-Google-Smtp-Source: AGHT+IHsxQu1c/Z0Mn3dDIrV8VWK+y6QBHxho/ga7aS2nKLQZkv6W1lrMPoJJP6b4oCO5JKOaJkTsw==
+X-Received: by 2002:a50:d497:0:b0:572:9c4c:2503 with SMTP id s23-20020a50d497000000b005729c4c2503mr227076edi.38.1714456988740;
+        Mon, 29 Apr 2024 23:03:08 -0700 (PDT)
+Received: from krzk-bin.. ([178.197.223.16])
+        by smtp.gmail.com with ESMTPSA id ca4-20020aa7cd64000000b0057279d452cbsm2744580edb.83.2024.04.29.23.03.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Apr 2024 23:03:08 -0700 (PDT)
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+To: Krzysztof Kozlowski <krzk@kernel.org>,
+	Sylwester Nawrocki <s.nawrocki@samsung.com>,
+	Alim Akhtar <alim.akhtar@samsung.com>,
+	Linus Walleij <linus.walleij@linaro.org>,
+	=?UTF-8?q?Andr=C3=A9=20Draszik?= <andre.draszik@linaro.org>,
+	linux-arm-kernel@lists.infradead.org,
+	linux-samsung-soc@vger.kernel.org,
+	linux-gpio@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+	kernel test robot <lkp@intel.com>
+Subject: [PATCH] pinctrl: samsung: drop redundant drvdata assignment
+Date: Tue, 30 Apr 2024 08:03:04 +0200
+Message-ID: <20240430060304.12332-1-krzysztof.kozlowski@linaro.org>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240430060236.1878002-1-song@kernel.org>
-References: <20240430060236.1878002-1-song@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-NMI watchdog permanently consumes one hardware counters per CPU on the
-system. For systems that use many hardware counters, this causes more
-aggressive time multiplexing of perf events.
+Fix W=1 warning:
 
-OTOH, some CPUs (mostly Intel) support "ref-cycles" event, which is rarely
-used. Add kernel cmdline arg nmi_watchdog=rNNN to configure the watchdog
-to use raw event. For example, on Intel CPUs, we can use "r300" to
-configure the watchdog to use ref-cycles event.
+  drivers/pinctrl/samsung/pinctrl-samsung.c: In function ‘samsung_gpio_set_direction’:
+  drivers/pinctrl/samsung/pinctrl-samsung.c:633:42: warning: variable ‘drvdata’ set but not used [-Wunused-but-set-variable]
 
-If the raw event does not work, fall back to use "cycles".
-
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Signed-off-by: Song Liu <song@kernel.org>
-
+Fixes: f9c744747973 ("pinctrl: samsung: support a bus clock")
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/oe-kbuild-all/202404300825.6lxLwvUY-lkp@intel.com/
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 ---
-Changes in v5:
-Change the design so that we can configure the watchdog with any raw
-event.
-Add fall back mechanism that use "cycles" if the raw event doesn't work.
+ drivers/pinctrl/samsung/pinctrl-samsung.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-v4: https://lore.kernel.org/lkml/20230518002555.1114189-1-song@kernel.org/
-
-Changes in v4:
-Fix compile error for !CONFIG_HARDLOCKUP_DETECTOR_PERF. (kernel test bot)
-
-Changes in v3:
-
-Pivot the design to use kernel arg nmi_watchdog=ref-cycles (Peter)
----
- .../admin-guide/kernel-parameters.txt         |  5 ++-
- include/linux/nmi.h                           |  2 +
- kernel/watchdog.c                             |  2 +
- kernel/watchdog_perf.c                        | 44 +++++++++++++++++++
- 4 files changed, 51 insertions(+), 2 deletions(-)
-
-diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index 213d0719e2b7..7445738f45b3 100644
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -3776,10 +3776,12 @@
- 			Format: [state][,regs][,debounce][,die]
+diff --git a/drivers/pinctrl/samsung/pinctrl-samsung.c b/drivers/pinctrl/samsung/pinctrl-samsung.c
+index f4607b8493ff..623df65a5d6f 100644
+--- a/drivers/pinctrl/samsung/pinctrl-samsung.c
++++ b/drivers/pinctrl/samsung/pinctrl-samsung.c
+@@ -630,11 +630,9 @@ static int samsung_gpio_set_direction(struct gpio_chip *gc,
+ 	struct samsung_pin_bank *bank;
+ 	void __iomem *reg;
+ 	u32 data, mask, shift;
+-	struct samsung_pinctrl_drv_data *drvdata;
  
- 	nmi_watchdog=	[KNL,BUGS=X86] Debugging features for SMP kernels
--			Format: [panic,][nopanic,][num]
-+			Format: [panic,][nopanic,][rNNN,][num]
- 			Valid num: 0 or 1
- 			0 - turn hardlockup detector in nmi_watchdog off
- 			1 - turn hardlockup detector in nmi_watchdog on
-+			rNNN - configure the watchdog with raw perf event 0xNNN
-+
- 			When panic is specified, panic when an NMI watchdog
- 			timeout occurs (or 'nopanic' to not panic on an NMI
- 			watchdog, if CONFIG_BOOTPARAM_HARDLOCKUP_PANIC is set)
-@@ -7467,4 +7469,3 @@
- 				memory, and other data can't be written using
- 				xmon commands.
- 			off	xmon is disabled.
--
-diff --git a/include/linux/nmi.h b/include/linux/nmi.h
-index f53438eae815..a8dfb38c9bb6 100644
---- a/include/linux/nmi.h
-+++ b/include/linux/nmi.h
-@@ -105,10 +105,12 @@ void watchdog_hardlockup_check(unsigned int cpu, struct pt_regs *regs);
- extern void hardlockup_detector_perf_stop(void);
- extern void hardlockup_detector_perf_restart(void);
- extern void hardlockup_detector_perf_cleanup(void);
-+extern void hardlockup_config_perf_event(const char *str);
- #else
- static inline void hardlockup_detector_perf_stop(void) { }
- static inline void hardlockup_detector_perf_restart(void) { }
- static inline void hardlockup_detector_perf_cleanup(void) { }
-+static inline void hardlockup_config_perf_event(const char *str) { }
- #endif
+ 	bank = gpiochip_get_data(gc);
+ 	type = bank->type;
+-	drvdata = bank->drvdata;
  
- void watchdog_hardlockup_stop(void);
-diff --git a/kernel/watchdog.c b/kernel/watchdog.c
-index 7f54484de16f..ab0129b15f25 100644
---- a/kernel/watchdog.c
-+++ b/kernel/watchdog.c
-@@ -80,6 +80,8 @@ static int __init hardlockup_panic_setup(char *str)
- 		watchdog_hardlockup_user_enabled = 0;
- 	else if (!strncmp(str, "1", 1))
- 		watchdog_hardlockup_user_enabled = 1;
-+	else if (!strncmp(str, "r", 1))
-+		hardlockup_config_perf_event(str + 1);
- 	while (*(str++)) {
- 		if (*str == ',') {
- 			str++;
-diff --git a/kernel/watchdog_perf.c b/kernel/watchdog_perf.c
-index 8ea00c4a24b2..fff032b47c55 100644
---- a/kernel/watchdog_perf.c
-+++ b/kernel/watchdog_perf.c
-@@ -90,6 +90,14 @@ static struct perf_event_attr wd_hw_attr = {
- 	.disabled	= 1,
- };
- 
-+static struct perf_event_attr fallback_wd_hw_attr = {
-+	.type		= PERF_TYPE_HARDWARE,
-+	.config		= PERF_COUNT_HW_CPU_CYCLES,
-+	.size		= sizeof(struct perf_event_attr),
-+	.pinned		= 1,
-+	.disabled	= 1,
-+};
-+
- /* Callback function for perf event subsystem */
- static void watchdog_overflow_callback(struct perf_event *event,
- 				       struct perf_sample_data *data,
-@@ -122,6 +130,13 @@ static int hardlockup_detector_event_create(void)
- 	/* Try to register using hardware perf events */
- 	evt = perf_event_create_kernel_counter(wd_attr, cpu, NULL,
- 					       watchdog_overflow_callback, NULL);
-+	if (IS_ERR(evt)) {
-+		wd_attr = &fallback_wd_hw_attr;
-+		wd_attr->sample_period = hw_nmi_get_sample_period(watchdog_thresh);
-+		evt = perf_event_create_kernel_counter(wd_attr, cpu, NULL,
-+						       watchdog_overflow_callback, NULL);
-+	}
-+
- 	if (IS_ERR(evt)) {
- 		pr_debug("Perf event create on CPU %d failed with %ld\n", cpu,
- 			 PTR_ERR(evt));
-@@ -259,3 +274,32 @@ int __init watchdog_hardlockup_probe(void)
- 	}
- 	return ret;
- }
-+
-+/**
-+ * hardlockup_config_perf_event - Overwrite config of wd_hw_attr.
-+ */
-+void __init hardlockup_config_perf_event(const char *str)
-+{
-+	u64 config;
-+	char buf[24];
-+	char *comma = strchr(str, ',');
-+
-+	if (!comma) {
-+		if (kstrtoull(str, 16, &config))
-+			return;
-+	} else {
-+		unsigned int len = comma - str;
-+
-+		if (len >= sizeof(buf))
-+			return;
-+
-+		if (strscpy(buf, str, sizeof(buf)) < 0)
-+			return;
-+		buf[len] = 0;
-+		if (kstrtoull(buf, 16, &config))
-+			return;
-+	}
-+
-+	wd_hw_attr.type = PERF_TYPE_RAW;
-+	wd_hw_attr.config = config;
-+}
+ 	reg = bank->pctl_base + bank->pctl_offset
+ 			+ type->reg_offset[PINCFG_TYPE_FUNC];
 -- 
 2.43.0
 
