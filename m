@@ -1,255 +1,169 @@
-Return-Path: <linux-kernel+bounces-163793-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-163794-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4395C8B70A1
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 12:47:57 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A6B2C8B70C4
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 12:49:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A48961F22988
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 10:47:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 33B1F1F2232E
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 10:49:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C03F12C805;
-	Tue, 30 Apr 2024 10:47:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mGvXxDPs"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8703012B176;
+	Tue, 30 Apr 2024 10:49:34 +0000 (UTC)
+Received: from mail-io1-f69.google.com (mail-io1-f69.google.com [209.85.166.69])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 613C81292C8;
-	Tue, 30 Apr 2024 10:47:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9512812C47A
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 10:49:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.69
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714474067; cv=none; b=K6oUQHbDGsEU3GZpCXttlKRGXljevGdUK9BNNxvYoD7L8rKYTCDi0V75yN4fHvoJRWp6mYv60PtlutntAcalyTyalW4thld2ww+ieLtGkKztJh9xsrVNhDGqjIqaYhcjeDENSxyxxdZ3pmdWzd+OxwTa+LKHeXZqSGdT6Wpaq78=
+	t=1714474174; cv=none; b=aY4fhEd/byn1FgBl4w15oW2ZiwKwFRRLCbQ90iXhV7PGz5Uu21Nc9kf3Ze0URhi5kFCtgLE+kl+MxXyI0oYjxmFvELNjuHhih3v5+HSdyV1k5Ms2YKOWk6L2+1sSU6fe90yXjk+R96uewH9k0d5/6RiUW9DBsgUfovZA5iU8s5s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714474067; c=relaxed/simple;
-	bh=WZUKSeKyIPsk8d6ycvulrut5Qa11GliUpPCP6FFms4U=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=nxuKy+mS2heE7LEnOQIlArUQJjCkqjREETQR/MFzEeJo8oBQNUPgAW2j/y0oKjXuF+9tFEapJzeWVZSGZZb2BLut2/2P9KlmOKTSkGd6UKtEIMAgKr+ptwgpEOaIoY+qgu6rOirMgfpFdoVklC1FJPhZcxeKtk7+m/G/t2C0JQg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mGvXxDPs; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 39A9BC4AF5F;
-	Tue, 30 Apr 2024 10:47:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714474067;
-	bh=WZUKSeKyIPsk8d6ycvulrut5Qa11GliUpPCP6FFms4U=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=mGvXxDPseshKWHrhk/EJeXU0vbKAkmpT4jipiadYfEt06SESJdnr7pN1XwuX2XKAP
-	 QolD4+xZe394t1sKP3d/WuOd5qF+EUSIiZGg1zknqEDshwq0iyiHBI/YMyMynWgdAx
-	 u5OJjMyNBwLAdgfIfRdCKfzy8oXNku/V63JuL/TL3MNqi6qdXxA3rpJL5BLqu1Emv6
-	 vMK+E8j7Yf1PYaIr87oBrL3G7KvHXuyQAJbZBOJ2Rfz7D/f569l7zZIKPWxPhA1p9a
-	 yrmrpXF3CyD39HRjByGsK1lXLjGt1BvVcQjVZB0LJtPW2PYj56DewQ5lHUyjyGYKGM
-	 havP8C0Hc0PNQ==
-Received: by mail-ot1-f43.google.com with SMTP id 46e09a7af769-6ea0a6856d7so804394a34.1;
-        Tue, 30 Apr 2024 03:47:47 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCUU62zyOzw/kiGVC6iSrqHCLfqb3vHRv2XbjcjM6Rc01TXYFZ24XBiu7V4cmJ1ldVlEoDC08pQlpWK5+Tl8VDrqKWyyjAX2++hs/2sn7RwRRBkOWTiyhg48TWYzR5lwIupz6IsDQciF6RR11QO+Q1DLhQvAOBNqtV7/6fQJ4j996OTI5tvyI07uL92xodlnWtb7j79ezYq+bBPN64ozWg==
-X-Gm-Message-State: AOJu0Yyzkj/KMMLroO2YLMa/cBeKISxvpUZtGk4xXFLOGgBGq/2f7AyG
-	gIL1VWhKIAPzwUTN+c50dQNDHA7dndJDGh1DC0aabvwoHWZaQ8DIQyXY0VsQXB9hnaJ+PZTOS0Q
-	GSAFM7zeekn5RdHgDSyBtHfbLjps=
-X-Google-Smtp-Source: AGHT+IHNKT5Ik0nUI8b5ABIxeB3JmGV787CqCPuIjHLaEaioVmWruFOWAVvzVNYd9L9saMxym0xKD6S5YvIRDnvFpfI=
-X-Received: by 2002:a4a:9287:0:b0:5af:be60:ccdc with SMTP id
- i7-20020a4a9287000000b005afbe60ccdcmr3602815ooh.0.1714474066271; Tue, 30 Apr
- 2024 03:47:46 -0700 (PDT)
+	s=arc-20240116; t=1714474174; c=relaxed/simple;
+	bh=rg7Ir/JwmVTjrliKbX84vWYg+XqEFJCSeIOZ8yghe/0=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=UEmV0X2tlxFET1K456ZFWXe46/pbMrAoN8ZOAEMey5dvK14/g1B2TwBrRfcjPjnmrAwFFjdNxVEYTpOnEkzFhkWtlnBVIlzbfIYhPqF6NH7lCPSG1v/+k+SZjcXfdM6Z4WaCvrsudyKenprIO0kmT76WjTqaJPI/Iib6/PHmcD8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.69
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f69.google.com with SMTP id ca18e2360f4ac-7ddf08e17e4so453236539f.0
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 03:49:32 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714474172; x=1715078972;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=L5kpd8aa6Rw6Tv6ELMLEFAJfgughcDa8xDxAee/jbg0=;
+        b=IGvTt/azujNGZTSzBB/GsySbttf+khCq9GVRVyrhwp9wBiouEcjguGuak2eV5zEJrH
+         uJcxP8FTVfUVd9E1vqnFcWquxtAJUFNpBMyqVtNg6rugAm5fQ8SuoyEKXnXyFELa9Nft
+         TkTqlf9diB7GLDFyRCZiesj8wp0WyRdCEt0VFjK0hR6SJ1BFETWtLpUigEkpZqgjmeuj
+         K5sFepbVciQd68CsWUttLpD3xv5zKZcKdLXF2s8aUk3IqtlfiNgKRebf0SAQ/3U3ePGE
+         QHwDnujCVfeDrNGdnhJuOIVvfcvI1PGVpmeIokMikfe1xomb/QYyxMZyizHKj40pdXoV
+         C7Jw==
+X-Forwarded-Encrypted: i=1; AJvYcCVplOuCHsBpT6CSPTwI93wh9R8+rilbWwazdViLhb1aHUeiRhTepI1Mg436eQ6FTJvjIZxcMSGhNhWRfbmLA+J0vjZq90M8DCep1+Uo
+X-Gm-Message-State: AOJu0YzcYfEuq1UdpLOnJmDrLvVrInGqekn98u3OAo1v0qA6BBWsdXlZ
+	lw0Oba6bz1iPVqtU1/ftcfSou8uZc/Wu09W0xuRh/fg/ccmcH1PKDcvj1ShBP4E4jIEiqRK6rP0
+	HkEErtGaF+QviVfOuXGCusuvDYgFj2+Uar2FvHh/42rCCM1/isOnK7YQ=
+X-Google-Smtp-Source: AGHT+IEanKNOfl9IZZvqvNS0s274g8HAyqp36SXPNlICm0pE2TEOTyW9lHiolcRIMxHXUHPsL3VEVXY7N89APsr7tbNvJZhGu56D
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240426135126.12802-1-Jonathan.Cameron@huawei.com>
- <20240426135126.12802-5-Jonathan.Cameron@huawei.com> <80a2e07f-ecb2-48af-b2be-646f17e0e63e@redhat.com>
- <20240430102838.00006e04@Huawei.com> <20240430111341.00003dba@huawei.com>
- <CAJZ5v0i5jpJswD7KV5RPm_HvzB+B=Rt3gY0s_Z3fn5wbJz0ebw@mail.gmail.com> <20240430114534.0000600e@huawei.com>
-In-Reply-To: <20240430114534.0000600e@huawei.com>
-From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Tue, 30 Apr 2024 12:47:34 +0200
-X-Gmail-Original-Message-ID: <CAJZ5v0hsJBmphEg8gjehtmtzt0Q=Rox1B_qBFrxp15nHvb6o5A@mail.gmail.com>
-Message-ID: <CAJZ5v0hsJBmphEg8gjehtmtzt0Q=Rox1B_qBFrxp15nHvb6o5A@mail.gmail.com>
-Subject: Re: [PATCH v8 04/16] ACPI: processor: Move checks and availability of
- acpi_processor earlier
-To: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Cc: "Rafael J. Wysocki" <rafael@kernel.org>, Gavin Shan <gshan@redhat.com>, 
-	Thomas Gleixner <tglx@linutronix.de>, Peter Zijlstra <peterz@infradead.org>, linux-pm@vger.kernel.org, 
-	loongarch@lists.linux.dev, linux-acpi@vger.kernel.org, 
-	linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev, x86@kernel.org, 
-	Russell King <linux@armlinux.org.uk>, Miguel Luis <miguel.luis@oracle.com>, 
-	James Morse <james.morse@arm.com>, Salil Mehta <salil.mehta@huawei.com>, 
-	Jean-Philippe Brucker <jean-philippe@linaro.org>, Catalin Marinas <catalin.marinas@arm.com>, 
-	Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>, Hanjun Guo <guohanjun@huawei.com>, 
-	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
-	Dave Hansen <dave.hansen@linux.intel.com>, linuxarm@huawei.com, justin.he@arm.com, 
-	jianyong.wu@arm.com, Lorenzo Pieralisi <lpieralisi@kernel.org>, 
-	Sudeep Holla <sudeep.holla@arm.com>
+X-Received: by 2002:a05:6602:6422:b0:7d9:b860:3e54 with SMTP id
+ gn34-20020a056602642200b007d9b8603e54mr55948iob.2.1714474171892; Tue, 30 Apr
+ 2024 03:49:31 -0700 (PDT)
+Date: Tue, 30 Apr 2024 03:49:31 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000fe324606174e1f9e@google.com>
+Subject: [syzbot] [perf?] WARNING: suspicious RCU usage in get_callchain_entry
+From: syzbot <syzbot+72a43cdb78469f7fbad1@syzkaller.appspotmail.com>
+To: acme@kernel.org, adrian.hunter@intel.com, 
+	alexander.shishkin@linux.intel.com, irogers@google.com, jolsa@kernel.org, 
+	linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org, 
+	mark.rutland@arm.com, mingo@redhat.com, namhyung@kernel.org, 
+	peterz@infradead.org, syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Tue, Apr 30, 2024 at 12:45=E2=80=AFPM Jonathan Cameron
-<Jonathan.Cameron@huawei.com> wrote:
->
-> On Tue, 30 Apr 2024 12:17:38 +0200
-> "Rafael J. Wysocki" <rafael@kernel.org> wrote:
->
-> > On Tue, Apr 30, 2024 at 12:13=E2=80=AFPM Jonathan Cameron
-> > <Jonathan.Cameron@huawei.com> wrote:
-> > >
-> > > On Tue, 30 Apr 2024 10:28:38 +0100
-> > > Jonathan Cameron <Jonathan.Cameron@Huawei.com> wrote:
-> > >
-> > > > On Tue, 30 Apr 2024 14:17:24 +1000
-> > > > Gavin Shan <gshan@redhat.com> wrote:
-> > > >
-> > > > > On 4/26/24 23:51, Jonathan Cameron wrote:
-> > > > > > Make the per_cpu(processors, cpu) entries available earlier so =
-that
-> > > > > > they are available in arch_register_cpu() as ARM64 will need ac=
-cess
-> > > > > > to the acpi_handle to distinguish between acpi_processor_add()
-> > > > > > and earlier registration attempts (which will fail as _STA cann=
-ot
-> > > > > > be checked).
-> > > > > >
-> > > > > > Reorder the remove flow to clear this per_cpu() after
-> > > > > > arch_unregister_cpu() has completed, allowing it to be used in
-> > > > > > there as well.
-> > > > > >
-> > > > > > Note that on x86 for the CPU hotplug case, the pr->id prior to
-> > > > > > acpi_map_cpu() may be invalid. Thus the per_cpu() structures
-> > > > > > must be initialized after that call or after checking the ID
-> > > > > > is valid (not hotplug path).
-> > > > > >
-> > > > > > Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-> > > > > >
-> > > > > > ---
-> > > > > > v8: On buggy bios detection when setting per_cpu structures
-> > > > > >      do not carry on.
-> > > > > >      Fix up the clearing of per cpu structures to remove unwant=
-ed
-> > > > > >      side effects and ensure an error code isn't use to referen=
-ce them.
-> > > > > > ---
-> > > > > >   drivers/acpi/acpi_processor.c | 79 +++++++++++++++++++++-----=
----------
-> > > > > >   1 file changed, 48 insertions(+), 31 deletions(-)
-> > > > > >
-> > > > > > diff --git a/drivers/acpi/acpi_processor.c b/drivers/acpi/acpi_=
-processor.c
-> > > > > > index ba0a6f0ac841..3b180e21f325 100644
-> > > > > > --- a/drivers/acpi/acpi_processor.c
-> > > > > > +++ b/drivers/acpi/acpi_processor.c
-> > > > > > @@ -183,8 +183,38 @@ static void __init acpi_pcc_cpufreq_init(v=
-oid) {}
-> > > > > >   #endif /* CONFIG_X86 */
-> > > > > >
-> > > > > >   /* Initialization */
-> > > > > > +static DEFINE_PER_CPU(void *, processor_device_array);
-> > > > > > +
-> > > > > > +static bool acpi_processor_set_per_cpu(struct acpi_processor *=
-pr,
-> > > > > > +                                struct acpi_device *device)
-> > > > > > +{
-> > > > > > + BUG_ON(pr->id >=3D nr_cpu_ids);
-> > > > >
-> > > > > One blank line after BUG_ON() if we need to follow original imple=
-mentation.
-> > > >
-> > > > Sure unintentional - I'll put that back.
-> > > >
-> > > > >
-> > > > > > + /*
-> > > > > > +  * Buggy BIOS check.
-> > > > > > +  * ACPI id of processors can be reported wrongly by the BIOS.
-> > > > > > +  * Don't trust it blindly
-> > > > > > +  */
-> > > > > > + if (per_cpu(processor_device_array, pr->id) !=3D NULL &&
-> > > > > > +     per_cpu(processor_device_array, pr->id) !=3D device) {
-> > > > > > +         dev_warn(&device->dev,
-> > > > > > +                  "BIOS reported wrong ACPI id %d for the proc=
-essor\n",
-> > > > > > +                  pr->id);
-> > > > > > +         /* Give up, but do not abort the namespace scan. */
-> > > > >
-> > > > > It depends on how the return value is handled by the caller if th=
-e namespace
-> > > > > is continued to be scanned. The caller can be acpi_processor_hota=
-dd_init()
-> > > > > and acpi_processor_get_info() after this patch is applied. So I t=
-hink this
-> > > > > specific comment need to be moved to the caller.
-> > > >
-> > > > Good point. This gets messy and was an unintended change.
-> > > >
-> > > > Previously the options were:
-> > > > 1) acpi_processor_get_info() failed for other reasons - this code w=
-as never called.
-> > > > 2) acpi_processor_get_info() succeeded without acpi_processor_hotad=
-d_init (non hotplug)
-> > > >    this code then ran and would paper over the problem doing a bunc=
-h of cleanup under err.
-> > > > 3) acpi_processor_get_info() succeeded with acpi_processor_hotadd_i=
-nit called.
-> > > >    This code then ran and would paper over the problem doing a bunc=
-h of cleanup under err.
-> > > >
-> > > > We should maintain that or argue cleanly against it.
-> > > >
-> > > > This isn't helped the the fact I have no idea which cases we care a=
-bout for that bios
-> > > > bug handling.  Do any of those bios's ever do hotplug?  Guess we ha=
-ve to try and maintain
-> > > > whatever protection this was offering.
-> > > >
-> > > > Also, the original code leaks data in some paths and I have limited=
- idea
-> > > > of whether it is intentional or not. So to tidy the issue up that y=
-ou've identified
-> > > > I'll need to try and make that code consistent first.
-> > > >
-> > > > I suspect the only way to do that is going to be to duplicate the a=
-llocations we
-> > > > 'want' to leak to deal with the bios bug detection.
-> > > >
-> > > > For example acpi_processor_get_info() failing leaks pr and pr->thro=
-ttling.shared_cpu_map
-> > > > before this series. After this series we need pr to leak because it=
-'s used for the detection
-> > > > via processor_device_array.
-> > > >
-> > > > I'll work through this but it's going to be tricky to tell if we ge=
-t right.
-> > > > Step 1 will be closing the existing leaks and then we will have som=
-ething
-> > > > consistent to build on.
-> > > >
-> > > I 'think' that fixing the original leaks makes this all much more str=
-aight forward.
-> > > That return 0 for acpi_processor_get_info() never made sense as far a=
-s I can tell.
-> > > The pr isn't used after this point.
-> > >
-> > > What about something along lines of.
-> > >
-> > > diff --git a/drivers/acpi/acpi_processor.c b/drivers/acpi/acpi_proces=
-sor.c
-> > > index 161c95c9d60a..97cff4492304 100644
-> > > --- a/drivers/acpi/acpi_processor.c
-> > > +++ b/drivers/acpi/acpi_processor.c
-> > > @@ -392,8 +392,10 @@ static int acpi_processor_add(struct acpi_device=
- *device,
-> > >         device->driver_data =3D pr;
-> > >
-> > >         result =3D acpi_processor_get_info(device);
-> > > -       if (result) /* Processor is not physically present or unavail=
-able */
-> > > -               return 0;
-> > > +       if (result) { /* Processor is not physically present or unava=
-ilable */
-> > > +               result =3D 0;
-> >
-> > As per my previous message (just sent) this should be an error code,
-> > as returning 0 from acpi_processor_add() is generally problematic.
-> Ok. I'll switch to that, but as a separate precusor patch. Independent of
-> the memory leak fixes.
+Hello,
 
-Sure, thank you!
+syzbot found the following issue on:
+
+HEAD commit:    c942a0cd3603 Merge tag 'for_linus' of git://git.kernel.org..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=12ef0aef180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=545d4b3e07d6ccbc
+dashboard link: https://syzkaller.appspot.com/bug?extid=72a43cdb78469f7fbad1
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11c4d490980000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=138bf96b180000
+
+Downloadable assets:
+disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/7bc7510fe41f/non_bootable_disk-c942a0cd.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/02773b27b0d3/vmlinux-c942a0cd.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/669bed7ebf5d/bzImage-c942a0cd.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+72a43cdb78469f7fbad1@syzkaller.appspotmail.com
+
+=============================
+WARNING: suspicious RCU usage
+6.9.0-rc5-syzkaller-00159-gc942a0cd3603 #0 Not tainted
+-----------------------------
+kernel/events/callchain.c:161 suspicious rcu_dereference_check() usage!
+
+other info that might help us debug this:
+
+
+rcu_scheduler_active = 2, debug_locks = 1
+1 lock held by syz-executor305/5180:
+ #0: ffffffff8d7b04c0 (rcu_read_lock_trace){....}-{0:0}, at: rcu_lock_acquire include/linux/rcupdate.h:329 [inline]
+ #0: ffffffff8d7b04c0 (rcu_read_lock_trace){....}-{0:0}, at: rcu_read_lock_trace include/linux/rcupdate_trace.h:57 [inline]
+ #0: ffffffff8d7b04c0 (rcu_read_lock_trace){....}-{0:0}, at: bpf_prog_test_run_syscall+0x345/0x770 net/bpf/test_run.c:1508
+
+stack backtrace:
+CPU: 3 PID: 5180 Comm: syz-executor305 Not tainted 6.9.0-rc5-syzkaller-00159-gc942a0cd3603 #0
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0x16c/0x1f0 lib/dump_stack.c:114
+ lockdep_rcu_suspicious+0x20b/0x3b0 kernel/locking/lockdep.c:6712
+ get_callchain_entry+0x274/0x3f0 kernel/events/callchain.c:161
+ get_perf_callchain+0xdc/0x5a0 kernel/events/callchain.c:187
+ __bpf_get_stack+0x4d9/0x700 kernel/bpf/stackmap.c:435
+ ____bpf_get_stack_raw_tp kernel/trace/bpf_trace.c:1985 [inline]
+ bpf_get_stack_raw_tp+0x124/0x160 kernel/trace/bpf_trace.c:1975
+ ___bpf_prog_run+0x3e51/0xabd0 kernel/bpf/core.c:1997
+ __bpf_prog_run32+0xc1/0x100 kernel/bpf/core.c:2236
+ bpf_dispatcher_nop_func include/linux/bpf.h:1234 [inline]
+ __bpf_prog_run include/linux/filter.h:657 [inline]
+ bpf_prog_run include/linux/filter.h:664 [inline]
+ bpf_prog_run_pin_on_cpu include/linux/filter.h:681 [inline]
+ bpf_prog_test_run_syscall+0x3ae/0x770 net/bpf/test_run.c:1509
+ bpf_prog_test_run kernel/bpf/syscall.c:4269 [inline]
+ __sys_bpf+0xd56/0x4b40 kernel/bpf/syscall.c:5678
+ __do_sys_bpf kernel/bpf/syscall.c:5767 [inline]
+ __se_sys_bpf kernel/bpf/syscall.c:5765 [inline]
+ __x64_sys_bpf+0x78/0xc0 kernel/bpf/syscall.c:5765
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0xcf/0x260 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+RIP: 0033:0x7f54610dc669
+Code: 48 83 c4 28 c3 e8 37 17 00 00 0f 1f 80 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fff4b9fae08 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
+RAX: ffffffffffffffda RBX: 00007fff4b9fafd8 RCX: 00007f54610dc669
+RDX: 000000000000000c RSI: 00000000200004c0 RDI: 000000000000000a
+RBP: 00007f546114f610 R08: 00007fff4b9fafd8 R09: 00007fff4b9fafd8
+R10: 00007fff4b9fafd8 R11: 0000000000000246 R12: 0000000000000001
+R13: 00007fff4b9fafc8 R14: 0000000000000001 R15: 0000000000000001
+ </TASK>
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
