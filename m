@@ -1,81 +1,208 @@
-Return-Path: <linux-kernel+bounces-163396-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-163408-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9890A8B6A3A
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 08:13:29 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6DBED8B6A6B
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 08:17:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 394BB1F235BA
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 06:13:29 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 716BAB2219D
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 06:16:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C49F17C6A;
-	Tue, 30 Apr 2024 06:13:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0501018021;
+	Tue, 30 Apr 2024 06:16:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OY0sdQqE"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 552636FB1;
-	Tue, 30 Apr 2024 06:13:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=163.com header.i=@163.com header.b="Mk/i/Cpo"
+Received: from m15.mail.163.com (m15.mail.163.com [45.254.50.220])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D29E6FB1
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 06:16:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.254.50.220
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714457601; cv=none; b=KYwh6KoEPTlqfyxOjZeY+VF9tQt/uhtG7VcvczKfybwz3S9TZlS45JPXqFz+nWaFNQ0sHLTz3IOdNdmzZoLHAgjTduv4lEn1UbB5cbBDpwQ7b6o5NrGYB+ablyWRCKLTLnFYouZZOv3BEg03fM6vZ+ZFH1/AlEPulqkR3fLw84Y=
+	t=1714457780; cv=none; b=tu9bunWNS+aQTct6nERaOw6TUevtb05Vv5PKFSfrRPgULpa92DyNEpL69D3QWcJs21tO8xA8G9+oFUot53sgaGDadaa7SyplQEuwhNL0t3te0Bne8Rc/P9CT2harAwID8hDz/wIX2ouqzQYboNMh3JOtJICrRDB1D++x8Sk6Q3Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714457601; c=relaxed/simple;
-	bh=FrbMKvLmmocxoDwXlo9MJD+1DyQ+ycNVGCMxXLYrj1g=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Va1cOMIDmy98Gwuv1Y4NuD6PEH8sQVGX8R/rFrxQ4gmPXt7Yq/WB7vEJH3jwzX1z6P59AKuUq2XlUY3Nk/nYG8lDJtwGkkStL3lMUFsXvAncL4VQjXdjEzZJlnhl+DEsIuFkH4Iksovr8gjmHtfHJoUXAGbKhhcAHv+3s84+ybU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OY0sdQqE; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E0541C2BBFC;
-	Tue, 30 Apr 2024 06:13:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714457601;
-	bh=FrbMKvLmmocxoDwXlo9MJD+1DyQ+ycNVGCMxXLYrj1g=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=OY0sdQqEOmuuV+QWB3LrjvJ+fR+CM2ym5txNOIxFRVRx+XCV+obUOcT4yPlx6fVGg
-	 30xsbD84qdAN6NHQGBJc9Gn3GEc2vXT1W78AT9BC5/6NOQAOJ2/5k5MEwMerfwPkol
-	 vKjSUaAVMvhjgHhBBDFNvssHPjAwAKm55WJBB4LNXBV1sVLB84bFgf1SHE937agjwy
-	 NHcOaGR9WjtoObPo74/I8yW8QMB4wuIvj8nxl7vxDzAlRxKuUMVOkv7mq/1pmAZxd8
-	 b0g8uiK929hs0QEufFkGejIeJYuaWJcpf1Kbx54GFiv907HyxfbaUXANg+wMGGOnv9
-	 av358IOdvKwQw==
-Received: from johan by xi.lan with local (Exim 4.97.1)
-	(envelope-from <johan@kernel.org>)
-	id 1s1gjx-000000007OM-0wla;
-	Tue, 30 Apr 2024 08:13:21 +0200
-Date: Tue, 30 Apr 2024 08:13:21 +0200
-From: Johan Hovold <johan@kernel.org>
-To: Krishna Kurapati <quic_kriskura@quicinc.com>
-Cc: Krzysztof Kozlowski <krzk+dt@kernel.org>, Rob Herring <robh@kernel.org>,
-	Bjorn Andersson <andersson@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, linux-kernel@vger.kernel.org,
-	linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-	quic_ppratap@quicinc.com, quic_jackp@quicinc.com
-Subject: Re: [PATCH v16 1/2] arm64: dts: qcom: sc8280xp: Add USB DWC3
- Multiport controller
-Message-ID: <ZjCMAY8HYb18IAzl@hovoldconsulting.com>
-References: <20240429162048.2133512-1-quic_kriskura@quicinc.com>
- <20240429162048.2133512-2-quic_kriskura@quicinc.com>
+	s=arc-20240116; t=1714457780; c=relaxed/simple;
+	bh=ERTc2l5kU1GMYxtzdHJN1SeKinqluPnbKrRIhtd5mSo=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=tVWeHp+Sg5F2oPOIBjZrV7u1tb+3vi/J6E9j2AUTXBnAty5fRgds3b6Qq/JSCB+uylJtOPGvgCdYECSkZsVUlcOCOEop7etmlScjY10TkiFDXBJPCAPOyTeorGMqcNctcRkUZH76Rqp9kz1DihR8AsxuA8HUtd57chMFoGX65yg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=Mk/i/Cpo; arc=none smtp.client-ip=45.254.50.220
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+	s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=OykVS
+	bzCv4+d4dPQLDypPadwOtIhxe1BrterZQ+EVfc=; b=Mk/i/CporQhNjM1Pb4Fxn
+	JzDrNc4n/H6i6Uz/6EZ+8yQgmt26tYyrfSqBhYGHAu/ubD170GE/f2+fQ2XzKy8k
+	+t995s0ICyjIoM/UQJktZ4tYUBOt7rgYAcT5UU020DHxF6e+CgfTL2v5iQ8GwkiH
+	TGxBUVX71rndtgrfXtIBus=
+Received: from localhost.localdomain (unknown [111.35.187.227])
+	by gzga-smtp-mta-g0-3 (Coremail) with SMTP id _____wD3v3dtjDBmw0B8Cw--.43676S4;
+	Tue, 30 Apr 2024 14:15:18 +0800 (CST)
+From: David Wang <00107082@163.com>
+To: dreaming.about.electric.sheep@gmail.com,
+	airlied@redhat.com,
+	kraxel@redhat.com,
+	maarten.lankhorst@linux.intel.com,
+	mripard@kernel.org,
+	tzimmermann@suse.de,
+	airlied@gmail.com,
+	daniel@ffwll.ch
+Cc: virtualization@lists.linux.dev,
+	spice-devel@lists.freedesktop.org,
+	dri-devel@lists.freedesktop.org,
+	linux-kernel@vger.kernel.org,
+	regressions@lists.linux.dev,
+	David Wang <00107082@163.com>
+Subject: [Regression] 6.9.0: WARNING: workqueue: WQ_MEM_RECLAIM ttm:ttm_bo_delayed_delete [ttm] is flushing !WQ_MEM_RECLAIM events:qxl_gc_work [qxl]
+Date: Tue, 30 Apr 2024 14:13:37 +0800
+Message-Id: <20240430061337.764633-1-00107082@163.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240429162048.2133512-2-quic_kriskura@quicinc.com>
+Content-Transfer-Encoding: quoted-printable
+X-CM-TRANSID:_____wD3v3dtjDBmw0B8Cw--.43676S4
+X-Coremail-Antispam: 1Uf129KBjvJXoW3JrWkWF4kWry3AFWrKw13CFg_yoWxuF1Dpr
+	yYyF109FWrJw1qya1kJr1Fyws2qFsF9FWUZFyfGr10k3W5XF1rJa13Ga43KrWUCr9rJFW7
+	Awnrta4YyFnrAaDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x0JUUhL8UUUUU=
+X-CM-SenderInfo: qqqrilqqysqiywtou0bp/1tbiMw7PqmXAk7vy7wABsJ
 
-On Mon, Apr 29, 2024 at 09:50:47PM +0530, Krishna Kurapati wrote:
-> Add USB and DWC3 node for tertiary port of SC8280 along with
-> Multiport interrupts and PHYs.
-> 
-> Signed-off-by: Krishna Kurapati <quic_kriskura@quicinc.com>
+Hi,
+I got following kernel WARNING when the my 2-core KVM(6.9.0-rc6) is under h=
+igh cpu load.
 
-All looks good now.
+	[Mon Apr 29 21:36:04 2024] ------------[ cut here ]------------
+	[Mon Apr 29 21:36:04 2024] workqueue: WQ_MEM_RECLAIM ttm:ttm_bo_delayed_de=
+lete [ttm] is flushing !WQ_MEM_RECLAIM events:qxl_gc_work [qxl]
+	[Mon Apr 29 21:36:04 2024] WARNING: CPU: 1 PID: 792 at kernel/workqueue.c:=
+3728 check_flush_dependency+0xfd/0x120
+	[Mon Apr 29 21:36:04 2024] Modules linked in: xt_conntrack(E) nft_chain_na=
+t(E) xt_MASQUERADE(E) nf_nat(E) nf_conntrack_netlink(E) xfrm_user(E) xfrm_a=
+lgo(E) xt_addrtype(E) nft_compat(E) nf_tables(E) br_netfilter(E) bridge(E) =
+stp(E) llc(E) ip_set(E) nfnetlink(E) ip_vs_sh(E) ip_vs_wrr(E) ip_vs_rr(E) i=
+p_vs(E) nf_conntrack(E) nf_defrag_ipv6(E) nf_defrag_ipv4(E) intel_rapl_msr(=
+E) intel_rapl_common(E) crct10dif_pclmul(E) ghash_clmulni_intel(E) snd_hda_=
+codec_generic(E) snd_hda_intel(E) snd_intel_dspcfg(E) sha512_ssse3(E) snd_h=
+da_codec(E) sha512_generic(E) sha256_ssse3(E) overlay(E) sha1_ssse3(E) snd_=
+hda_core(E) snd_hwdep(E) aesni_intel(E) snd_pcm(E) crypto_simd(E) pcspkr(E)=
+ cryptd(E) joydev(E) qxl(E) snd_timer(E) drm_ttm_helper(E) ttm(E) evdev(E) =
+snd(E) iTCO_wdt(E) serio_raw(E) sg(E) virtio_balloon(E) virtio_console(E) i=
+TCO_vendor_support(E) soundcore(E) qemu_fw_cfg(E) drm_kms_helper(E) button(=
+E) binfmt_misc(E) fuse(E) drm(E) configfs(E) virtio_rng(E) rng_core(E) ip_t=
+ables(E) x_tables(E) autofs4(E) ext4(E) crc16(E) mbcache(E) jbd2(E)
+	[Mon Apr 29 21:36:04 2024]  hid_generic(E) usbhid(E) hid(E) sr_mod(E) cdro=
+m(E) ahci(E) libahci(E) virtio_net(E) net_failover(E) failover(E) virtio_bl=
+k(E) libata(E) xhci_pci(E) crc32_pclmul(E) crc32c_intel(E) scsi_mod(E) scsi=
+_common(E) lpc_ich(E) i2c_i801(E) xhci_hcd(E) psmouse(E) i2c_smbus(E) virti=
+o_pci(E) usbcore(E) virtio_pci_legacy_dev(E) virtio_pci_modern_dev(E) usb_c=
+ommon(E) virtio(E) mfd_core(E) virtio_ring(E)
+	[Mon Apr 29 21:36:04 2024] CPU: 1 PID: 792 Comm: kworker/u13:4 Tainted: G =
+           E      6.9.0-rc6-linan-5 #197
+	[Mon Apr 29 21:36:04 2024] Hardware name: QEMU Standard PC (Q35 + ICH9, 20=
+09), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
+	[Mon Apr 29 21:36:04 2024] Workqueue: ttm ttm_bo_delayed_delete [ttm]
+	[Mon Apr 29 21:36:04 2024] RIP: 0010:check_flush_dependency+0xfd/0x120
+	[Mon Apr 29 21:36:04 2024] Code: 8b 45 18 48 8d b2 c0 00 00 00 49 89 e8 48=
+ 8d 8b c0 00 00 00 48 c7 c7 68 30 a4 a7 c6 05 9b 12 6e 01 01 48 89 c2 e8 53=
+ b9 fd ff <0f> 0b e9 1e ff ff ff 80 3d 86 12 6e 01 00 75 93 e9 4a ff ff ff =
+66
+	[Mon Apr 29 21:36:04 2024] RSP: 0018:ffff9d31805abce8 EFLAGS: 00010086
+	[Mon Apr 29 21:36:04 2024] RAX: 0000000000000000 RBX: ffff8c8c4004ee00 RCX=
+: 0000000000000000
+	[Mon Apr 29 21:36:04 2024] RDX: 0000000000000003 RSI: 0000000000000027 RDI=
+: 00000000ffffffff
+	[Mon Apr 29 21:36:04 2024] RBP: ffffffffc0b53570 R08: 0000000000000000 R09=
+: 0000000000000003
+	[Mon Apr 29 21:36:04 2024] R10: ffff9d31805abb80 R11: ffffffffa7cc1108 R12=
+: ffff8c8c42eb8000
+	[Mon Apr 29 21:36:04 2024] R13: ffff8c8c48077900 R14: ffff8c8cbbd30b80 R15=
+: 0000000000000001
+	[Mon Apr 29 21:36:04 2024] FS:  0000000000000000(0000) GS:ffff8c8cbbd00000=
+(0000) knlGS:0000000000000000
+	[Mon Apr 29 21:36:04 2024] CS:  0010 DS: 0000 ES: 0000 CR0: 00000000800500=
+33
+	[Mon Apr 29 21:36:04 2024] CR2: 00007ffd38bb3ff8 CR3: 000000010217a000 CR4=
+: 0000000000350ef0
+	[Mon Apr 29 21:36:04 2024] Call Trace:
+	[Mon Apr 29 21:36:04 2024]  <TASK>
+	[Mon Apr 29 21:36:04 2024]  ? __warn+0x7c/0x120
+	[Mon Apr 29 21:36:04 2024]  ? check_flush_dependency+0xfd/0x120
+	[Mon Apr 29 21:36:04 2024]  ? report_bug+0x18d/0x1c0
+	[Mon Apr 29 21:36:04 2024]  ? srso_return_thunk+0x5/0x5f
+	[Mon Apr 29 21:36:04 2024]  ? handle_bug+0x3c/0x80
+	[Mon Apr 29 21:36:04 2024]  ? exc_invalid_op+0x13/0x60
+	[Mon Apr 29 21:36:04 2024]  ? asm_exc_invalid_op+0x16/0x20
+	[Mon Apr 29 21:36:04 2024]  ? __pfx_qxl_gc_work+0x10/0x10 [qxl]
+	[Mon Apr 29 21:36:04 2024]  ? check_flush_dependency+0xfd/0x120
+	[Mon Apr 29 21:36:04 2024]  ? check_flush_dependency+0xfd/0x120
+	[Mon Apr 29 21:36:04 2024]  __flush_work.isra.0+0xc0/0x270
+	[Mon Apr 29 21:36:04 2024]  ? srso_return_thunk+0x5/0x5f
+	[Mon Apr 29 21:36:04 2024]  ? srso_return_thunk+0x5/0x5f
+	[Mon Apr 29 21:36:04 2024]  ? __queue_work.part.0+0x18b/0x3d0
+	[Mon Apr 29 21:36:04 2024]  ? srso_return_thunk+0x5/0x5f
+	[Mon Apr 29 21:36:04 2024]  qxl_queue_garbage_collect+0x7f/0x90 [qxl]
+	[Mon Apr 29 21:36:04 2024]  qxl_fence_wait+0x9c/0x180 [qxl]
+	[Mon Apr 29 21:36:04 2024]  dma_fence_wait_timeout+0x61/0x130
+	[Mon Apr 29 21:36:04 2024]  dma_resv_wait_timeout+0x6d/0xd0
+	[Mon Apr 29 21:36:04 2024]  ttm_bo_delayed_delete+0x26/0x80 [ttm]
+	[Mon Apr 29 21:36:04 2024]  process_one_work+0x18c/0x3b0
+	[Mon Apr 29 21:36:04 2024]  worker_thread+0x273/0x390
+	[Mon Apr 29 21:36:04 2024]  ? __pfx_worker_thread+0x10/0x10
+	[Mon Apr 29 21:36:04 2024]  kthread+0xdd/0x110
+	[Mon Apr 29 21:36:04 2024]  ? __pfx_kthread+0x10/0x10
+	[Mon Apr 29 21:36:04 2024]  ret_from_fork+0x30/0x50
+	[Mon Apr 29 21:36:04 2024]  ? __pfx_kthread+0x10/0x10
+	[Mon Apr 29 21:36:04 2024]  ret_from_fork_asm+0x1a/0x30
+	[Mon Apr 29 21:36:04 2024]  </TASK>
+	[Mon Apr 29 21:36:04 2024] ---[ end trace 0000000000000000 ]---
 
-Reviewed-by: Johan Hovold <johan+linaro@kernel.org>
-Tested-by: Johan Hovold <johan+linaro@kernel.org>
+I find that the exact warning message mentioned in
+ https://lore.kernel.org/lkml/20240404181448.1643-1-dreaming.about.electric=
+sheep@gmail.com/T/#m8c2ecc83ebba8717b1290ec28d4dc15f2fa595d5
+And confirmed that the warning is caused by 07ed11afb68d94eadd4ffc082b97c23=
+31307c5ea and reverting it can fix.
+
+
+It seems that under heavy load, qxl_queue_garbage_collect would be called w=
+ithin
+a WQ_MEM_RECLAIM worker, and flush qxl_gc_work which is a
+!WQ_MEM_RECLAIM worker. This will trigger the kernel WARNING by
+check_flush_dependency.
+
+And I tried following changes, setting flush flag to false.
+The warning is gone, but I am not sure whether there is any other side-effe=
+ct,
+especially the issue mentioned in=20
+https://lore.kernel.org/lkml/20240404181448.1643-2-dreaming.about.electric.=
+sheep@gmail.com/T/#m988ffad2000c794dcfdab7e60b03db93d8726391
+
+Signed-off-by: David Wang <00107082@163.com>
+---
+ drivers/gpu/drm/qxl/qxl_release.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/gpu/drm/qxl/qxl_release.c b/drivers/gpu/drm/qxl/qxl_re=
+lease.c
+index 9febc8b73f09..f372085c5aad 100644
+--- a/drivers/gpu/drm/qxl/qxl_release.c
++++ b/drivers/gpu/drm/qxl/qxl_release.c
+@@ -76,7 +76,7 @@ static long qxl_fence_wait(struct dma_fence *fence, bool =
+intr,
+ 	qxl_io_notify_oom(qdev);
+=20
+ 	for (count =3D 0; count < 11; count++) {
+-		if (!qxl_queue_garbage_collect(qdev, true))
++		if (!qxl_queue_garbage_collect(qdev, false))
+ 			break;
+=20
+ 		if (dma_fence_is_signaled(fence))
+--=20
+2.39.2
+
+
+
+David
+
 
