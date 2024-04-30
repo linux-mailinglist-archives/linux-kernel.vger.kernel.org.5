@@ -1,108 +1,165 @@
-Return-Path: <linux-kernel+bounces-164452-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-164428-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 885F38B7DDA
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 18:55:20 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id ED9B88B7D8F
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 18:50:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6F03B1C23988
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 16:55:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A8C28287612
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 16:50:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 476D517BB0C;
-	Tue, 30 Apr 2024 16:51:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE25C17BB15;
+	Tue, 30 Apr 2024 16:50:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="IdcW81JA"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.19])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GYw/+70G"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B71E1C0DCF
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 16:51:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.19
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1602D3E478;
+	Tue, 30 Apr 2024 16:50:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714495907; cv=none; b=FQkPcLBiDlXDTnEslfP6RHYaEPO1rD2bNHPQcSyAbI0bobktB5gqRVtUDj7IEt4GxWgR8zBpBCd5TYBz+vIEXQCBF4B0sYp3zu33vfEZ+NmZkGOoF2+P4f+YMx+kV2Vpv51jXodLYbAUTPO0Cl2vXu/98sW8l6IXwwnwFDbYc1w=
+	t=1714495838; cv=none; b=O+jDpQ3ZdoSZrmQDOnz/mkGDjCCOLH/XZPHfN4fzd/OuGtVphadR53/dwme8idrp6PaH3JZrszEiPCo+r2dQey/4Z/WT6uMgpmSaGIK/nrV9oONtLpXlRYYji8Tlx9b0XheHlyc2yrmcqLe6bmiTnFRDYAujB62RrOR90qrRyN4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714495907; c=relaxed/simple;
-	bh=DjW81tHfP000Qq9cwTltickR0vyQ37yeIrDTrxUYdMQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=A7zcYFliOfudYuQvHpLR+q06EffyDaQGeuaECsVPwBdNq2QKb/5/c6QX01fs059tUSDeh0rB+9BtveOkOwopQFzwRX7v0iNQetuWYOHHGEXs90Ha63DiV8zHhzIfnj4aDmQKOSyOyMQ32lnM5H3PY7MT1NODsQjsWS8A4mZ52qs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=IdcW81JA; arc=none smtp.client-ip=198.175.65.19
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1714495905; x=1746031905;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=DjW81tHfP000Qq9cwTltickR0vyQ37yeIrDTrxUYdMQ=;
-  b=IdcW81JAQgyqYV1M7OPdTVnINzXh/FGrth3vfXjn3toBgG/NMfgS4OSB
-   2B8Q3bM1TFrlRxf4yGcZ98XiQzO3Z2aezoCKs3AZfJm1OzfOvgB3dj23l
-   4puB8M8yZcAlumRLz9yKg6bH6obEj4EGNWdkh5ie76pe/3x1wh52mkZyY
-   8vR45c2jgKZS74rOr+pF/9Csk4AAKCrLiDhOrdy6a2AmlCPxidoKTkzPD
-   TTAI+NGdhjyzvnkCQN/izVFcZfihhHXeLcFgnHClRLepw2taDFRHgQ1IP
-   78fXQuBSqWZKlif7FRAfr9jeQyHvH163Z21QKd8St8xLyGhnCDCQv9WOU
-   A==;
-X-CSE-ConnectionGUID: 59JYaP2NR+qtb8bA1XF7Sw==
-X-CSE-MsgGUID: bXAiufWySCam7UdttC4jDA==
-X-IronPort-AV: E=McAfee;i="6600,9927,11060"; a="10075686"
-X-IronPort-AV: E=Sophos;i="6.07,242,1708416000"; 
-   d="scan'208";a="10075686"
-Received: from fmviesa007.fm.intel.com ([10.60.135.147])
-  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Apr 2024 09:51:21 -0700
-X-CSE-ConnectionGUID: VNOcgkTeShOfHc02yxWK2A==
-X-CSE-MsgGUID: /17gissDQeike9vi2lazcw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,242,1708416000"; 
-   d="scan'208";a="26515454"
-Received: from agluck-desk3.sc.intel.com ([172.25.222.105])
-  by fmviesa007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Apr 2024 09:51:17 -0700
-From: Tony Luck <tony.luck@intel.com>
-To: Borislav Petkov <bp@alien8.de>
-Cc: x86@kernel.org,
-	linux-kernel@vger.kernel.org,
-	patches@lists.linux.dev,
-	Tony Luck <tony.luck@intel.com>,
-	Hans de Goede <hdegoede@redhat.com>
-Subject: [PATCH v5 19/47] platform/x86: intel: telemetry: Switch to new Intel CPU model defines
-Date: Tue, 30 Apr 2024 09:50:32 -0700
-Message-ID: <20240430165100.73491-19-tony.luck@intel.com>
-X-Mailer: git-send-email 2.44.0
-In-Reply-To: <20240430165100.73491-1-tony.luck@intel.com>
-References: <20240430164913.73473-1-tony.luck@intel.com>
- <20240430165100.73491-1-tony.luck@intel.com>
+	s=arc-20240116; t=1714495838; c=relaxed/simple;
+	bh=+8BHDhVWwVu3GS/P6257Ar2vN5PR5hR2kbbOEXpfh2U=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Thb/Bc3PKN5aZ1YwRkOXHC0H7xVZpTMH38qc8oAZ2I1avwmUB1Li0OQsA6zdt375UcbKNQRnj6fEBMzxLztJ+WXQnxQWNYSg33QSbtG/arTU/MMSTIK45DGC/MJ3Bz97Ymsy810WhpD25BMdBnjdzEkEguL2uJLVqEtcF+IKsXc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GYw/+70G; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 614C8C4AF19;
+	Tue, 30 Apr 2024 16:50:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714495837;
+	bh=+8BHDhVWwVu3GS/P6257Ar2vN5PR5hR2kbbOEXpfh2U=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=GYw/+70GS/6au2WPmHmgN6Thwkz1jyh5nzE0aVBcHp5R8AGFkbDg/60lLzUON2yOr
+	 0AA7m/Ip0KSjiWokQcRrwufFC2GQiOyYI8peFJVct9i286zTth0Mx3Mj9cO6cYNz0y
+	 SsnJgtdb2oTF9hYObwXKidRNrvCby7x/CqBtrcDEy0JuLqL9XefxqiWRls+HVTudYd
+	 NCwaGXjTbF6CqXi0o++rYtH2vq+E4Q9L+3ZmetFrQsombmGf0Xw/J6tp2J7MTyt9MT
+	 dDdtGCrNSnpPOZ789+Ya2cdSdmR+c4ngEMCL9aSMWZq0RbZWWCB0a/0/avw3rGCUUt
+	 q+Zq1rc0nel8A==
+Date: Tue, 30 Apr 2024 17:50:33 +0100
+From: Conor Dooley <conor@kernel.org>
+To: Petar Stoykov <pd.pstoykov@gmail.com>
+Cc: linux-iio@vger.kernel.org, Jonathan Cameron <jic23@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Lars-Peter Clausen <lars@metafoo.de>,
+	Rob Herring <robh+dt@kernel.org>,
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+	Angel Iglesias <ang.iglesiasg@gmail.com>,
+	Conor Dooley <conor+dt@kernel.org>, linux-kernel@vger.kernel.org,
+	devicetree@vger.kernel.org
+Subject: Re: [PATCH v2 1/3] dt-bindings: iio: pressure: Add Sensirion SDP500
+Message-ID: <20240430-unnamable-wrench-16c9ad780df1@spud>
+References: <CADFWO8GC6RP6A7H-Cq5UZHfBY3VJZTCqssdZet61hH031euhwQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="7vbJGUJ6hTxURdMU"
+Content-Disposition: inline
+In-Reply-To: <CADFWO8GC6RP6A7H-Cq5UZHfBY3VJZTCqssdZet61hH031euhwQ@mail.gmail.com>
 
-New CPU #defines encode vendor and family as well as model.
 
-Signed-off-by: Tony Luck <tony.luck@intel.com>
-Acked-by: Hans de Goede <hdegoede@redhat.com>
----
- drivers/platform/x86/intel/telemetry/pltdrv.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+--7vbJGUJ6hTxURdMU
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/drivers/platform/x86/intel/telemetry/pltdrv.c b/drivers/platform/x86/intel/telemetry/pltdrv.c
-index 06311d0e9451..767a0bc6c7ad 100644
---- a/drivers/platform/x86/intel/telemetry/pltdrv.c
-+++ b/drivers/platform/x86/intel/telemetry/pltdrv.c
-@@ -177,8 +177,8 @@ static struct telemetry_plt_config telem_glk_config = {
- };
- 
- static const struct x86_cpu_id telemetry_cpu_ids[] = {
--	X86_MATCH_INTEL_FAM6_MODEL(ATOM_GOLDMONT,	&telem_apl_config),
--	X86_MATCH_INTEL_FAM6_MODEL(ATOM_GOLDMONT_PLUS,	&telem_glk_config),
-+	X86_MATCH_VFM(INTEL_ATOM_GOLDMONT,	&telem_apl_config),
-+	X86_MATCH_VFM(INTEL_ATOM_GOLDMONT_PLUS,	&telem_glk_config),
- 	{}
- };
- 
--- 
-2.44.0
+On Tue, Apr 30, 2024 at 05:27:20PM +0200, Petar Stoykov wrote:
+> From 60f5cc7f65b07124f19428a713c3bc33b9e4a7a7 Mon Sep 17 00:00:00 2001
+> From: Petar Stoykov <pd.pstoykov@gmail.com>
+> Date: Mon, 15 Jan 2024 14:29:25 +0100
+> Subject: [PATCH 1/3] dt-bindings: iio: pressure: Add Sensirion SDP500
+>=20
+> Sensirion SDP500 is a digital differential pressure sensor. It provides
+> a digital I2C output. Add devicetree bindings requiring the compatible
+> string and I2C slave address (reg).
+>=20
+> Signed-off-by: Petar Stoykov <pd.pstoykov@gmail.com>
+> ---
+>  .../iio/pressure/sensirion,sdp500.yaml        | 39 +++++++++++++++++++
+>  1 file changed, 39 insertions(+)
+>  create mode 100644
+> Documentation/devicetree/bindings/iio/pressure/sensirion,sdp500.yaml
+>=20
+> diff --git a/Documentation/devicetree/bindings/iio/pressure/sensirion,sdp=
+500.yaml
+> b/Documentation/devicetree/bindings/iio/pressure/sensirion,sdp500.yaml
+> new file mode 100644
+> index 000000000000..3cdf17df7d52
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/iio/pressure/sensirion,sdp500.yaml
+> @@ -0,0 +1,39 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/iio/pressure/sdp500.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: sdp500/sdp510 pressure sensor with I2C bus interface
+> +
+> +maintainers:
+> +  - Petar Stoykov <pd.pstoykov@gmail.com>
+> +
+> +description: |
+> +  Pressure sensor from Sensirion with I2C bus interface.
+> +  There is no software difference between sdp500 and sdp510.
 
+I see no mention of the sdp510 elsewhere in this patch though..
+If you're trying to add support for both, then add a compatible for the
+sdp510 that falls back to the sdp500.
+
+> +
+> +properties:
+> +  compatible:
+> +    const: sensirion,sdp500
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +
+> +additionalProperties: false
+
+Other than the fact that a fallback compatible might be required here,
+this looks like a candidate for trivial-devices.yaml.
+
+Cheers,
+Conor.
+
+> +
+> +examples:
+> +  - |
+> +    i2c {
+> +      #address-cells =3D <1>;
+> +      #size-cells =3D <0>;
+> +      pressure@40 {
+> +        compatible =3D "sensirion,sdp500";
+> +        reg =3D <0x40>;
+> +        vdd-supply =3D <&foo>;
+> +      };
+> +    };
+> --=20
+> 2.30.2
+
+--7vbJGUJ6hTxURdMU
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZjEhWQAKCRB4tDGHoIJi
+0iePAQCM8ZdEYabBqAZ3/N0J6SbfM2u1yiUsZg8ucnxWo5QYVAD/V4T5PyyBpItg
+Cao4KMUjPMkbCG/iloziUb8n6okN8w4=
+=tRMX
+-----END PGP SIGNATURE-----
+
+--7vbJGUJ6hTxURdMU--
 
