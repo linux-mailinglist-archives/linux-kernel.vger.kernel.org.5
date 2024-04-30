@@ -1,60 +1,60 @@
-Return-Path: <linux-kernel+bounces-164433-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-164429-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1655A8B7DAC
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 18:52:05 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id EECC38B7DA5
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 18:51:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CAAE0288296
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 16:52:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A435B1F256A9
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 16:51:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 39E72180A65;
-	Tue, 30 Apr 2024 16:51:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A10717B4EB;
+	Tue, 30 Apr 2024 16:51:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ln+SKqrk"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="NUiyby7j"
 Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1687F17B505
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 16:51:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 790763E478
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 16:51:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714495895; cv=none; b=SBUSdCt4wCES8rxDmpkVjce4Br/E+6MUcCsDDQDV2ftYSrb11W9Wf2KkHoZrJPahjm9DfsTiGT54GgS3uikRyr6LNKBGXRdT/ryQVVPv3h74+rLUki1WjYShMGFIDNhFiGbZ6eV/K99k/uzV+a1PxHXMya4HsyKBLneDYw5Sd+s=
+	t=1714495892; cv=none; b=kwJCN344Kd6/9syYlErOa4n1E4OcPizQwp5+A5xVn+mjhtWap2R1T1AxoiwuWy0UALIALtVd3P2gvcCusxYYodXLDeR4DjNNkmU7ZUEOGzPnj/lRHFsfLGpebWeNiZmv4zRyRP6W0mXT6MFqp6HLGqKReAzfEhu7BGJMFrjoNN8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714495895; c=relaxed/simple;
-	bh=jo++POGDkJ0iaXLFXLmreRUhlhBEdY5sKB13LHFpdWE=;
+	s=arc-20240116; t=1714495892; c=relaxed/simple;
+	bh=87KOavhDhX411TrRX1K9/1DFXE3gMTK1YvOMoRFJCZ4=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=eZok5wh888tgEGQuXwITC4SwA0/Zoy7vOeRDsck11ndQAmRaau4/U2HqMBtFieIItKtEGhVpyG9xIx4Dn9y4Xo12kw33SW1YipivWGlFNoSJvFwsxZy+k79Eqf9vYY28otM+cPt1+qTHtp2W2Xs1wzd5FjDRkgyws0urOoYxnfo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ln+SKqrk; arc=none smtp.client-ip=198.175.65.19
+	 MIME-Version; b=GcEz+FbpgibfIVKrLgxHsRbF5oqNujo3GYdszr2MSzOZJrx14XmFRZUAIpiWfI8bNB8DzqVSwRuTpvIV1m8FWiEt/VO76p6Mme3m37Za6ehMs0SgoDd3nIVeuZ2GbMgJrYQawzE99CL0Ukk3cmGAt9mRhaCtgaqTrh4LJoDs/5A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=NUiyby7j; arc=none smtp.client-ip=198.175.65.19
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1714495894; x=1746031894;
+  t=1714495892; x=1746031892;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=jo++POGDkJ0iaXLFXLmreRUhlhBEdY5sKB13LHFpdWE=;
-  b=ln+SKqrkVIoOG++USVkOOun7MBY516WahOBDu0S7J33KwIKf1SZIVhgs
-   1RkqWjCeuWGd44f6OrExAEzP/OoT2yHvYUDmZxN2HoS2TIwnRlzOAQp6C
-   ppqGera4vgmRUiAKPRAVVmCT9Dwq9+yvfkTtlD87X34yO2Nmc+xOnpxdl
-   Iib46Owvymh8GDIPYeHBPLx9Q6hD6R8v+j6lE43hAxESyrB3ewHHrHbg+
-   uBbStWv6i/sSeXMdCIyybRfBiQ90hFs3+HtaeGnMnlPBgk3fQ9fyuOO1V
-   NkjsfsI/tXEFIEc0tm4Z3hEY7HJATlb85i2kIdZGwQ+b5KkJYCFEzPZwf
-   g==;
-X-CSE-ConnectionGUID: GHROf7FHSAO1seX5Rc8jww==
-X-CSE-MsgGUID: Ujqbon1VSImuA7Ssddp+Yw==
-X-IronPort-AV: E=McAfee;i="6600,9927,11060"; a="10075604"
+  bh=87KOavhDhX411TrRX1K9/1DFXE3gMTK1YvOMoRFJCZ4=;
+  b=NUiyby7j/xl7tN419P9vv8D8q+m7CzJRQuojPMzaUxv1g3lSgHc5xEod
+   /RGGDsrp7tX617QlxMkShhFkHnUYstrwUwrLbiFqoolS6S2hIG4BD7D+X
+   ULktBoAvrYn0J6v9O5ueRJKtieP38JSvppeol9YSwIeMCbdt6RgGMC5AG
+   MRxw1QAZDdaZx+r0EaZiK6LvrAoF3/DILduTofdrWZTiFhkxK4IchoV9G
+   QrOErhId5xbY50EJjnEpLWmcULzveeQxQ4oFhqvmhH3MDtRLDPzObgAnZ
+   X2gvQEjAn0bWRH8x95EYNfVVcaidKIyKvvxXqdMZx2WKuYKT7+I5zErC1
+   w==;
+X-CSE-ConnectionGUID: o32xdttyQl6e6zt7G+3YMQ==
+X-CSE-MsgGUID: 9FHXravxT7WPxXTVYVqcPw==
+X-IronPort-AV: E=McAfee;i="6600,9927,11060"; a="10075590"
 X-IronPort-AV: E=Sophos;i="6.07,242,1708416000"; 
-   d="scan'208";a="10075604"
+   d="scan'208";a="10075590"
 Received: from fmviesa007.fm.intel.com ([10.60.135.147])
   by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Apr 2024 09:51:20 -0700
-X-CSE-ConnectionGUID: bFd93eraSY+BgwNbeuNM5w==
-X-CSE-MsgGUID: J4b7pbRsTfiOVnW5F48FJg==
+X-CSE-ConnectionGUID: 8zRbP+gSQNa1oAhpk7SJSw==
+X-CSE-MsgGUID: OToypoliSbeVGWSk7C+7NA==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.07,242,1708416000"; 
-   d="scan'208";a="26515410"
+   d="scan'208";a="26515411"
 Received: from agluck-desk3.sc.intel.com ([172.25.222.105])
   by fmviesa007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Apr 2024 09:51:11 -0700
 From: Tony Luck <tony.luck@intel.com>
@@ -63,12 +63,11 @@ Cc: x86@kernel.org,
 	linux-kernel@vger.kernel.org,
 	patches@lists.linux.dev,
 	Tony Luck <tony.luck@intel.com>,
-	Jithu Joseph <jithu.joseph@intel.com>,
-	Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>,
+	Andy Shevchenko <andy@kernel.org>,
 	Hans de Goede <hdegoede@redhat.com>
-Subject: [PATCH v5 02/47] platform/x86/intel/ifs: Switch to new Intel CPU model defines
-Date: Tue, 30 Apr 2024 09:50:15 -0700
-Message-ID: <20240430165100.73491-2-tony.luck@intel.com>
+Subject: [PATCH v5 03/47] media: atomisp: Switch to new Intel CPU model defines
+Date: Tue, 30 Apr 2024 09:50:16 -0700
+Message-ID: <20240430165100.73491-3-tony.luck@intel.com>
 X-Mailer: git-send-email 2.44.0
 In-Reply-To: <20240430165100.73491-1-tony.luck@intel.com>
 References: <20240430164913.73473-1-tony.luck@intel.com>
@@ -84,41 +83,58 @@ Content-Transfer-Encoding: 8bit
 New CPU #defines encode vendor and family as well as model.
 
 Signed-off-by: Tony Luck <tony.luck@intel.com>
-Reviewed-by: Jithu Joseph <jithu.joseph@intel.com>
-Reviewed-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+Reviewed-by: Andy Shevchenko <andy@kernel.org>
 Acked-by: Hans de Goede <hdegoede@redhat.com>
 ---
- drivers/platform/x86/intel/ifs/core.c | 15 +++++++--------
- 1 file changed, 7 insertions(+), 8 deletions(-)
+ .../atomisp/include/linux/atomisp_platform.h  | 27 ++++++++-----------
+ 1 file changed, 11 insertions(+), 16 deletions(-)
 
-diff --git a/drivers/platform/x86/intel/ifs/core.c b/drivers/platform/x86/intel/ifs/core.c
-index 7b11198d85a1..33412a584836 100644
---- a/drivers/platform/x86/intel/ifs/core.c
-+++ b/drivers/platform/x86/intel/ifs/core.c
-@@ -11,16 +11,15 @@
+diff --git a/drivers/staging/media/atomisp/include/linux/atomisp_platform.h b/drivers/staging/media/atomisp/include/linux/atomisp_platform.h
+index 487ef5846c24..70bab3d1bc2f 100644
+--- a/drivers/staging/media/atomisp/include/linux/atomisp_platform.h
++++ b/drivers/staging/media/atomisp/include/linux/atomisp_platform.h
+@@ -18,7 +18,7 @@
+ #ifndef ATOMISP_PLATFORM_H_
+ #define ATOMISP_PLATFORM_H_
  
- #include "ifs.h"
+-#include <asm/intel-family.h>
++#include <asm/cpu_device_id.h>
+ #include <asm/processor.h>
  
--#define X86_MATCH(model, array_gen)				\
--	X86_MATCH_VENDOR_FAM_MODEL_FEATURE(INTEL, 6,	\
--		INTEL_FAM6_##model, X86_FEATURE_CORE_CAPABILITIES, array_gen)
-+#define X86_MATCH(vfm, array_gen)				\
-+	X86_MATCH_VFM_FEATURE(vfm, X86_FEATURE_CORE_CAPABILITIES, array_gen)
+ #include <linux/i2c.h>
+@@ -217,22 +217,17 @@ void atomisp_unregister_subdev(struct v4l2_subdev *subdev);
+ int v4l2_get_acpi_sensor_info(struct device *dev, char **module_id_str);
  
- static const struct x86_cpu_id ifs_cpu_ids[] __initconst = {
--	X86_MATCH(SAPPHIRERAPIDS_X, ARRAY_GEN0),
--	X86_MATCH(EMERALDRAPIDS_X, ARRAY_GEN0),
--	X86_MATCH(GRANITERAPIDS_X, ARRAY_GEN0),
--	X86_MATCH(GRANITERAPIDS_D, ARRAY_GEN0),
--	X86_MATCH(ATOM_CRESTMONT_X, ARRAY_GEN1),
-+	X86_MATCH(INTEL_SAPPHIRERAPIDS_X, ARRAY_GEN0),
-+	X86_MATCH(INTEL_EMERALDRAPIDS_X, ARRAY_GEN0),
-+	X86_MATCH(INTEL_GRANITERAPIDS_X, ARRAY_GEN0),
-+	X86_MATCH(INTEL_GRANITERAPIDS_D, ARRAY_GEN0),
-+	X86_MATCH(INTEL_ATOM_CRESTMONT_X, ARRAY_GEN1),
- 	{}
- };
- MODULE_DEVICE_TABLE(x86cpu, ifs_cpu_ids);
+ /* API from old platform_camera.h, new CPUID implementation */
+-#define __IS_SOC(x) (boot_cpu_data.x86_vendor == X86_VENDOR_INTEL && \
+-		     boot_cpu_data.x86 == 6 &&                       \
+-		     boot_cpu_data.x86_model == (x))
+-#define __IS_SOCS(x,y) (boot_cpu_data.x86_vendor == X86_VENDOR_INTEL && \
+-		        boot_cpu_data.x86 == 6 &&                       \
+-		        (boot_cpu_data.x86_model == (x) || \
+-		         boot_cpu_data.x86_model == (y)))
+-
+-#define IS_MFLD	__IS_SOC(INTEL_FAM6_ATOM_SALTWELL_MID)
+-#define IS_BYT	__IS_SOC(INTEL_FAM6_ATOM_SILVERMONT)
+-#define IS_CHT	__IS_SOC(INTEL_FAM6_ATOM_AIRMONT)
+-#define IS_MRFD	__IS_SOC(INTEL_FAM6_ATOM_SILVERMONT_MID)
+-#define IS_MOFD	__IS_SOC(INTEL_FAM6_ATOM_AIRMONT_MID)
++#define __IS_SOC(x) (boot_cpu_data.x86_vfm == x)
++#define __IS_SOCS(x, y) (boot_cpu_data.x86_vfm == x || boot_cpu_data.x86_vfm == y)
++
++#define IS_MFLD	__IS_SOC(INTEL_ATOM_SALTWELL_MID)
++#define IS_BYT	__IS_SOC(INTEL_ATOM_SILVERMONT)
++#define IS_CHT	__IS_SOC(INTEL_ATOM_AIRMONT)
++#define IS_MRFD	__IS_SOC(INTEL_ATOM_SILVERMONT_MID)
++#define IS_MOFD	__IS_SOC(INTEL_ATOM_AIRMONT_MID)
+ 
+ /* Both CHT and MOFD come with ISP2401 */
+-#define IS_ISP2401 __IS_SOCS(INTEL_FAM6_ATOM_AIRMONT, \
+-			     INTEL_FAM6_ATOM_AIRMONT_MID)
++#define IS_ISP2401 __IS_SOCS(INTEL_ATOM_AIRMONT, \
++			     INTEL_ATOM_AIRMONT_MID)
+ 
+ #endif /* ATOMISP_PLATFORM_H_ */
 -- 
 2.44.0
 
