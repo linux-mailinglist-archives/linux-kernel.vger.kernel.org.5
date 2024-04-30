@@ -1,162 +1,197 @@
-Return-Path: <linux-kernel+bounces-164586-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-164587-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 87D7F8B7FAE
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 20:28:35 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D554F8B7FB8
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 20:30:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3E464282AB4
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 18:28:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 64B981F250E1
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 18:30:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 41BEB184119;
-	Tue, 30 Apr 2024 18:28:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7ABFB19066F;
+	Tue, 30 Apr 2024 18:29:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KQ4lXNZJ"
-Received: from mail-yb1-f169.google.com (mail-yb1-f169.google.com [209.85.219.169])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="uQNkA40U"
+Received: from mail-lj1-f173.google.com (mail-lj1-f173.google.com [209.85.208.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E5DF1802DC;
-	Tue, 30 Apr 2024 18:28:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA0351836EB
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 18:29:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714501705; cv=none; b=Lispi0Pysn6HKbyneGinUxHD+fh7Nufjk4HKrJibjIJhYIkIotE77gRR9KB7c4dvKoF7SE14AnaRfkzbyHESVo5o1O78by2H2zwXUpHhut7pG+bH1HCBM8H7Gw7VtBHUWzWHOEuBF7Kwp3rK1pvQXTaxIJMEv5HWU32x+9Si7N4=
+	t=1714501790; cv=none; b=YGCbBgp0Mki2Rrzly9uNcM8QtIXBSmTuw2P++0q4kiAhh/KD1c6qtLkvZBfiOLC5vezr55zlnhLveNH85FvcWrRONYkTCjoLcdhpeNU40gpIBOhgy+5YOmIXH6iv56TwUIkEah8spi6rvPJ3EU4G4m7zpg5dVWjv9+Qk1kpr2+M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714501705; c=relaxed/simple;
-	bh=AW17A+h4KjvpbbCYIE+0urWRTSmhSmb5SsQRXmHqFgs=;
-	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
-	 Mime-Version:Content-Type; b=juMINHhuSr/BLvqQi9Q3ttdHLPjWm6+fbu5NHkt7noTj03rzgqm2JZxhPYVezaixEpFQO0t1kO0lOP4oHBlQ+6tADjGFfJgOKEMKnh+ZF1Ckw1CoGQkQUmlRq/pRtrCmvvAyxdYnKJyS3DGziWiinfxJ4CeoDn0Y5PLYbXTF3eo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KQ4lXNZJ; arc=none smtp.client-ip=209.85.219.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yb1-f169.google.com with SMTP id 3f1490d57ef6-de603e3072dso2347998276.1;
-        Tue, 30 Apr 2024 11:28:23 -0700 (PDT)
+	s=arc-20240116; t=1714501790; c=relaxed/simple;
+	bh=4qmsTK6gsAp5ggmO11EIahCqaDERkMqdREmKHL1EhBY=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=u3TC2kH/FgHIkyTS6tPnT6LkSA2LyYP6w+sYULYmXTaZBaDEsaDqObN8+2Qsm5r2LncsIBnVmm62LA1uxPQGCkzMqFXAP0AqyA5K4CrXUYCDja/gmAjZiCmZAZmZM28sPRsccI2lokiVeHue3PKa6t/dILGTMcKJfldW4dWu538=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=uQNkA40U; arc=none smtp.client-ip=209.85.208.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-lj1-f173.google.com with SMTP id 38308e7fff4ca-2e0a34b2899so28019771fa.3
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 11:29:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714501703; x=1715106503; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
+        d=google.com; s=20230601; t=1714501787; x=1715106587; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=ukSR01B6XHaydvig1H25OOfxP0s6MMwbPOuSEjlNNCA=;
-        b=KQ4lXNZJS8lJ16ZqCGsE9DzHfpDx1wWVJopBOPqqPYh52f6z8JVjLT3bfBEmO44m5n
-         PxKF8QiLiqTsvDBqGEfl2S09aR5jOSvHsXI2q3v2q15k/Ca0NHJGF+Oygf+fWoY7+ERp
-         b9Uv1E6d4Ll/EHXGtBG2WDBMrqZq9oC7ZYIY8knhEI19LsWqhnyoNMmAz56y3mU8nscr
-         N3GsI/IlBt+lPKVBTZYi56GPEFw7yyUOPBH36887D1Eh0UUI7Ft7jLHlcNXNVgUPbf2k
-         N/Xmg2Bmg/A+G+I/SivpaXLMAcq+HyjvnztUHBvYAU7ez/0d/WQPVfFAYjDX+HLv4gmb
-         mG2g==
+        bh=l1aj9TYKSBdPXW7U/K10knZmptyDbqlwkvpIjAvkFLw=;
+        b=uQNkA40Uv+64tJUyAefZWORZ0K+RgW2c5ariOT3Gye0uRCur7O5X3Gn1e9MlnwaC9k
+         4N46pXEsc/htnCzwsrewkLoXD8Q3cY594QxvtatRbs9utARfDfdHirspzubeicVw3HJF
+         VmjCOS4j5A7gGC+Hzd9FAnU2Ss2siq4jDjvH1im3GGteLySjS1ETNS9ArCOz8RSL/DJd
+         EtIqpVID8YdfV/7uYqER445NWCiJSpgp0GdcGsj7mO0EvcdG784607wO0IguFyXP4Dka
+         7ISIY488W0EqU4Y/slwRbM8bFJ2Y9BcM6zXG5JxUFTqdiGoK76x4u2p6/61HUi1Q2fAl
+         Z6iw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714501703; x=1715106503;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=ukSR01B6XHaydvig1H25OOfxP0s6MMwbPOuSEjlNNCA=;
-        b=D85BRcKzVm1YyiH9zeTDHyd7RzMtJu+2acMHi48sqtMjV+QgaLBsDT+jfJfMnR1ZoI
-         2GqOqSPpDSJWy9X9eDrT6pIJfrfJdRLhIRWxtalvwTXL+HmfvVjBm8gXAnNntKzuM2WP
-         wJ1Oz7Vobzn5B8+TcMJpntT/1yOa3E70J6tV747L6CY1yVodq3DDtFeWTG6MvfK/zoom
-         4M0wFh8Wsu51EylxleUvhByCm0n7ui4WcSEqe4ql4JtxpQVUVX/nPxUj7ceLJtq0aZZ1
-         uJxoufAMtAwR6dF594U+t6+A+k0lSRBXeaWkqCFjjQSYpX0TpQrSZtNDGtv3rRoTgGgH
-         ewOQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWhkCw10y2gNfuWmU6/GVgcgfhRJnFYGqGEli6q7yk/rIiTZQiSIX8qdyOE3urim/zUuagz1codYPUDTCiQnzIN8tUaFbizDmTUFtterGDk/hqnummYH0ERhLs3R6drAmuzS86D
-X-Gm-Message-State: AOJu0YzGhx+QPIvqhqIFa6dfMv+CF5W0VqEZ9VqPiv9pXe5mxIC90syO
-	JbL+I/9gquz95Q4UST9UIRzXhHGRtuC1xpybG5B0/Silel7Plo9t
-X-Google-Smtp-Source: AGHT+IHHMEbX5CZv/m4nrho41MGfMQd8+d+S5+JBoLFiRfhk0pgwasJycIaKPC1MZpGWeiAd0QZ9QA==
-X-Received: by 2002:a25:8389:0:b0:de6:723:3035 with SMTP id t9-20020a258389000000b00de607233035mr447063ybk.13.1714501702852;
-        Tue, 30 Apr 2024 11:28:22 -0700 (PDT)
-Received: from localhost (164.146.150.34.bc.googleusercontent.com. [34.150.146.164])
-        by smtp.gmail.com with ESMTPSA id l6-20020ac87246000000b004369f4d31f2sm11643158qtp.50.2024.04.30.11.28.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Apr 2024 11:28:22 -0700 (PDT)
-Date: Tue, 30 Apr 2024 14:28:22 -0400
-From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-To: Richard Gobert <richardbgobert@gmail.com>, 
- davem@davemloft.net, 
- edumazet@google.com, 
- kuba@kernel.org, 
- pabeni@redhat.com, 
- dsahern@kernel.org, 
- willemdebruijn.kernel@gmail.com, 
- alobakin@pm.me, 
- netdev@vger.kernel.org, 
- linux-kernel@vger.kernel.org
-Cc: Richard Gobert <richardbgobert@gmail.com>
-Message-ID: <663138462a32e_32e7ba29458@willemb.c.googlers.com.notmuch>
-In-Reply-To: <20240430143555.126083-2-richardbgobert@gmail.com>
-References: <20240430143555.126083-1-richardbgobert@gmail.com>
- <20240430143555.126083-2-richardbgobert@gmail.com>
-Subject: Re: [PATCH net v4 1/2] net: gro: fix udp bad offset in socket lookup
- by adding {inner_}network_offset to napi_gro_cb
+        d=1e100.net; s=20230601; t=1714501787; x=1715106587;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=l1aj9TYKSBdPXW7U/K10knZmptyDbqlwkvpIjAvkFLw=;
+        b=EsITqs7MfkdFXc/u3plW7slzvJfu2i435ECqK+EcVSdpFVxxbRnDc15WJzTewP8Y/h
+         muMtnXhHFbybJyhsJLHCR4lzvEyPDnaWbmvqL+wclyFBGCXVzzVMCwBh+KsaaddUbVjz
+         aE7gCa8RNkwo8e9XsqQO+cipLRFjzvUqHN8auqgv81xB6JyX88XckEvFfakH88JBa3Tt
+         Kr0loe9QNeGGPc1pAmQ4i26v+OVh4AiNJaDbNhDcwNaEuVSQh8CxaVHrQuY9ewyWTWvS
+         s1lov8oE84oyn4PUD6Yql50kbiqBnW9EubBd1UUTY1vvyEidTaNGbQy3qvRrQFmNyQZh
+         26ig==
+X-Forwarded-Encrypted: i=1; AJvYcCUoNIjoLUsf09u4+68XD5+Sb2hLI+ncYANcveF3UhRnskMG77Hc9RZco2Q15MGVN2w2E1EdJ8eAvxsqqdXqswxTPGv0g+3rDxZBGMfc
+X-Gm-Message-State: AOJu0YzVoLp9tOS+PzUCplly7umqXmOz0ZdR7VICyqKjb+djwrg/pE/r
+	aqWnyfb4U2vnMea3Cb8nuiP4L49Edk1MsE6eGDEJ2qwqkunGw3C++QZTqw1Wvd086dOuBNn7vz9
+	A5RI0Nb8K8lFYvbTy6jX/wwSizKhhTvFtraDG
+X-Google-Smtp-Source: AGHT+IH0gaB2E/IC4/ciB9fJSDhMnVEQNygzcW8LVJwvG8xEFCDgTF/mhBRXlaBuFxJh5ugqGtCSIbfkywn/lGfB5fQ=
+X-Received: by 2002:a19:ca1b:0:b0:51c:d05b:6b8d with SMTP id
+ a27-20020a19ca1b000000b0051cd05b6b8dmr194410lfg.23.1714501786252; Tue, 30 Apr
+ 2024 11:29:46 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+References: <20240403002053.2376017-1-almasrymina@google.com>
+ <20240403002053.2376017-8-almasrymina@google.com> <8357256a-f0e9-4640-8fec-23341fc607db@davidwei.uk>
+ <CAHS8izPeYryoLdCAQdGQU-wn7YVdtuofVKNvRFjFjhqTDsT7zA@mail.gmail.com> <aafbbf09-a33d-4e73-99c8-9ddab5910657@kernel.dk>
+In-Reply-To: <aafbbf09-a33d-4e73-99c8-9ddab5910657@kernel.dk>
+From: Mina Almasry <almasrymina@google.com>
+Date: Tue, 30 Apr 2024 11:29:31 -0700
+Message-ID: <CAHS8izMKLYATo6g3xkj_thFo3whCfq6LSoex5s0m5XZd-U7SVQ@mail.gmail.com>
+Subject: Re: [RFC PATCH net-next v8 07/14] page_pool: devmem support
+To: Jens Axboe <axboe@kernel.dk>
+Cc: David Wei <dw@davidwei.uk>, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-doc@vger.kernel.org, linux-alpha@vger.kernel.org, 
+	linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, 
+	sparclinux@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
+	linux-arch@vger.kernel.org, bpf@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org, linux-media@vger.kernel.org, 
+	dri-devel@lists.freedesktop.org, "David S. Miller" <davem@davemloft.net>, 
+	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	Jonathan Corbet <corbet@lwn.net>, Richard Henderson <richard.henderson@linaro.org>, 
+	Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner <mattst88@gmail.com>, 
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
+	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>, Helge Deller <deller@gmx.de>, 
+	Andreas Larsson <andreas@gaisler.com>, Jesper Dangaard Brouer <hawk@kernel.org>, 
+	Ilias Apalodimas <ilias.apalodimas@linaro.org>, Steven Rostedt <rostedt@goodmis.org>, 
+	Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
+	Arnd Bergmann <arnd@arndb.de>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Steffen Klassert <steffen.klassert@secunet.com>, 
+	Herbert Xu <herbert@gondor.apana.org.au>, David Ahern <dsahern@kernel.org>, 
+	Willem de Bruijn <willemdebruijn.kernel@gmail.com>, Shuah Khan <shuah@kernel.org>, 
+	Sumit Semwal <sumit.semwal@linaro.org>, =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>, 
+	Amritha Nambiar <amritha.nambiar@intel.com>, 
+	Maciej Fijalkowski <maciej.fijalkowski@intel.com>, 
+	Alexander Mikhalitsyn <alexander@mihalicyn.com>, Kaiyuan Zhang <kaiyuanz@google.com>, 
+	Christian Brauner <brauner@kernel.org>, Simon Horman <horms@kernel.org>, 
+	David Howells <dhowells@redhat.com>, Florian Westphal <fw@strlen.de>, 
+	Yunsheng Lin <linyunsheng@huawei.com>, Kuniyuki Iwashima <kuniyu@amazon.com>, 
+	Arseniy Krasnov <avkrasnov@salutedevices.com>, 
+	Aleksander Lobakin <aleksander.lobakin@intel.com>, Michael Lass <bevan@bi-co.net>, 
+	Jiri Pirko <jiri@resnulli.us>, Sebastian Andrzej Siewior <bigeasy@linutronix.de>, 
+	Lorenzo Bianconi <lorenzo@kernel.org>, Richard Gobert <richardbgobert@gmail.com>, 
+	Sridhar Samudrala <sridhar.samudrala@intel.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>, 
+	Johannes Berg <johannes.berg@intel.com>, Abel Wu <wuyun.abel@bytedance.com>, 
+	Breno Leitao <leitao@debian.org>, Pavel Begunkov <asml.silence@gmail.com>, 
+	Jason Gunthorpe <jgg@ziepe.ca>, Shailend Chand <shailend@google.com>, 
+	Harshitha Ramamurthy <hramamurthy@google.com>, Shakeel Butt <shakeel.butt@linux.dev>, 
+	Jeroen de Borst <jeroendb@google.com>, Praveen Kaligineedi <pkaligineedi@google.com>, linux-mm@kvack.org, 
+	Matthew Wilcox <willy@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Richard Gobert wrote:
-> Commits a602456 ("udp: Add GRO functions to UDP socket") and 57c67ff ("udp:
-> additional GRO support") introduce incorrect usage of {ip,ipv6}_hdr in the
-> complete phase of gro. The functions always return skb->network_header,
-> which in the case of encapsulated packets at the gro complete phase, is
-> always set to the innermost L3 of the packet. That means that calling
-> {ip,ipv6}_hdr for skbs which completed the GRO receive phase (both in
-> gro_list and *_gro_complete) when parsing an encapsulated packet's _outer_
-> L3/L4 may return an unexpected value.
-> 
-> This incorrect usage leads to a bug in GRO's UDP socket lookup.
-> udp{4,6}_lib_lookup_skb functions use ip_hdr/ipv6_hdr respectively. These
-> *_hdr functions return network_header which will point to the innermost L3,
-> resulting in the wrong offset being used in __udp{4,6}_lib_lookup with
-> encapsulated packets.
-> 
-> This patch adds network_offset and inner_network_offset to napi_gro_cb, and
-> makes sure both are set correctly.
-> 
-> To fix the issue, network_offsets union is used inside napi_gro_cb, in
-> which both the outer and the inner network offsets are saved.
-> 
-> Reproduction example:
-> 
-> Endpoint configuration example (fou + local address bind)
-> 
->     # ip fou add port 6666 ipproto 4
->     # ip link add name tun1 type ipip remote 2.2.2.1 local 2.2.2.2 encap fou encap-dport 5555 encap-sport 6666 mode ipip
->     # ip link set tun1 up
->     # ip a add 1.1.1.2/24 dev tun1
-> 
-> Netperf TCP_STREAM result on net-next before patch is applied:
-> 
-> net-next main, GRO enabled:
->     $ netperf -H 1.1.1.2 -t TCP_STREAM -l 5
->     Recv   Send    Send
->     Socket Socket  Message  Elapsed
->     Size   Size    Size     Time     Throughput
->     bytes  bytes   bytes    secs.    10^6bits/sec
-> 
->     131072  16384  16384    5.28        2.37
-> 
-> net-next main, GRO disabled:
->     $ netperf -H 1.1.1.2 -t TCP_STREAM -l 5
->     Recv   Send    Send
->     Socket Socket  Message  Elapsed
->     Size   Size    Size     Time     Throughput
->     bytes  bytes   bytes    secs.    10^6bits/sec
-> 
->     131072  16384  16384    5.01     2745.06
-> 
-> patch applied, GRO enabled:
->     $ netperf -H 1.1.1.2 -t TCP_STREAM -l 5
->     Recv   Send    Send
->     Socket Socket  Message  Elapsed
->     Size   Size    Size     Time     Throughput
->     bytes  bytes   bytes    secs.    10^6bits/sec
-> 
->     131072  16384  16384    5.01     2877.38
-> 
-> Fixes: 57c67ff4bd92 ("udp: additional GRO support")
-> Signed-off-by: Richard Gobert <richardbgobert@gmail.com>
+On Tue, Apr 30, 2024 at 6:46=E2=80=AFAM Jens Axboe <axboe@kernel.dk> wrote:
+>
+> On 4/26/24 8:11 PM, Mina Almasry wrote:
+> > On Fri, Apr 26, 2024 at 5:18?PM David Wei <dw@davidwei.uk> wrote:
+> >>
+> >> On 2024-04-02 5:20 pm, Mina Almasry wrote:
+> >>> @@ -69,20 +106,26 @@ net_iov_binding(const struct net_iov *niov)
+> >>>   */
+> >>>  typedef unsigned long __bitwise netmem_ref;
+> >>>
+> >>> +static inline bool netmem_is_net_iov(const netmem_ref netmem)
+> >>> +{
+> >>> +#if defined(CONFIG_PAGE_POOL) && defined(CONFIG_DMA_SHARED_BUFFER)
+> >>
+> >> I am guessing you added this to try and speed up the fast path? It's
+> >> overly restrictive for us since we do not need dmabuf necessarily. I
+> >> spent a bit too much time wondering why things aren't working only to
+> >> find this :(
+> >
+> > My apologies, I'll try to put the changelog somewhere prominent, or
+> > notify you when I do something that I think breaks you.
+> >
+> > Yes, this is a by-product of a discussion with regards to the
+> > page_pool benchmark regressions due to adding devmem. There is some
+> > background on why this was added and the impact on the
+> > bench_page_pool_simple tests in the cover letter.
+> >
+> > For you, I imagine you want to change this to something like:
+> >
+> > #if defined(CONFIG_PAGE_POOL)
+> > #if defined(CONFIG_DMA_SHARED_BUFFER) || defined(CONFIG_IOURING)
+> >
+> > or something like that, right? Not sure if this is something I should
+> > do here or if something more appropriate to be in the patches you
+> > apply on top.
+>
+> In general, attempting to hide overhead behind config options is always
+> a losing proposition. It merely serves to say "look, if these things
+> aren't enabled, the overhead isn't there", while distros blindly enable
+> pretty much everything and then you're back where you started.
+>
 
-Reviewed-by: Willem de Bruijn <willemb@google.com>
+The history there is that this check adds 1 cycle regression to the
+page_pool fast path benchmark. The regression last I measured is 8->9
+cycles, so in % wise it's a quite significant 12.5% (more details in
+the cover letter[1]). I doubt I can do much better than that to be
+honest.
+
+There was a desire not to pay this overhead in setups that will likely
+not care about devmem, like embedded devices maybe, or setups without
+GPUs. Adding a CONFIG check here seemed like very low hanging fruit,
+but yes it just hides the overhead in some configs, not really removes
+it.
+
+There was a discussion about adding this entire netmem/devmem work
+under a new CONFIG. There was pushback particularly from Willem that
+at the end of the day what is enabled on most distros is what matters
+and we added code churn and CONFIG churn for little value.
+
+If there is significant pushback to the CONFIG check I can remove it.
+I don't feel like it's critical, it just mirco-optimizes some setups
+that doesn't really care about this work area.
+
+[1] https://lore.kernel.org/netdev/20240403002053.2376017-1-almasrymina@goo=
+gle.com/
+
+
+
+--=20
+Thanks,
+Mina
 
