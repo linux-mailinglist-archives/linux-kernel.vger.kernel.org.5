@@ -1,147 +1,142 @@
-Return-Path: <linux-kernel+bounces-164189-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-164183-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8CD5C8B7A6E
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 16:46:22 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3FDD98B7A54
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 16:44:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 488F628723C
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 14:46:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EB1421F23B88
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 14:44:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3EA7E14375C;
-	Tue, 30 Apr 2024 14:44:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 970FE17B51D;
+	Tue, 30 Apr 2024 14:40:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="RPtX7lVO"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.14])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="c0dYtZZ3"
+Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77EFA1527A8;
-	Tue, 30 Apr 2024 14:44:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.14
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 51D1817A931;
+	Tue, 30 Apr 2024 14:40:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714488259; cv=none; b=LxI3ei0CH1JwEgnQ0ULKCbLrQDCdUi7/KhySd0k3A+3vnZjoafuUxhkV+jpGxlMT1lUgQljNpAoE20vbQnJ9luBrQOvctBV92vFo5EZgXnwjN0CkYRM8Kn1/IPktEoG2WNHJ6V8UMpwYX8dd2sF72mhD/npBL+3apmyjuDFMPPE=
+	t=1714488020; cv=none; b=tJcfIe3iT+aezY27pOtpTzCGci718c0RKY8AUh4SwmYDl42A6AaR0VeLGT5GzesEUj4whGlke43sc+m0YE1RCKaSihClFC309ZZBgiBxab7p6hjdaLx/lwxAB+NhuiresSQNKa9zJVwN9OPpuMfSqyPehaT1ReG8MKfZSrI/0jo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714488259; c=relaxed/simple;
-	bh=ITJBFO8fU5qCoPRWLyqfUK06OptlD/pVjoJj4mvvjlc=;
+	s=arc-20240116; t=1714488020; c=relaxed/simple;
+	bh=LX/cja2FJFFGw7iFNRlpntXAi8MvhPRZ3BEfjetYX9k=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=diazgDPK5TDL8oQoq1cZ/rQoz1S/RYbgI4CR/+JmnL5/9GhoFJajRGt9Dt/xdrs7XJyCdFal2jFz/FGgbBZKfHXDrA1u/9ZAGjh1+Sjq/vmiCjUtlcSMw1keEz1lVxtAJNNkBHGLo0jsZZPr2Fa7WTZFyuENDhBYlw1/ksCAC0M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=RPtX7lVO; arc=none smtp.client-ip=192.198.163.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1714488258; x=1746024258;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=ITJBFO8fU5qCoPRWLyqfUK06OptlD/pVjoJj4mvvjlc=;
-  b=RPtX7lVOuIkDhJRi3CV5kiBn9svtvK0JefRJimC6nmif7bu7wvGAUX1h
-   4rjm8et5B2aZuEcJ2ZY/o5onnOWoklDFVsaDZY1wPHiF55gbawH968YH6
-   Pi+xFIiIx2uvtWerahBEP5bjpW1S3EVEhtK01mL8+bRdSft/r7qv8D5ey
-   ru3b0l6hFasIVqQy0AHDEezzFwgggRDTpSg6RkKgQTerMA2rrmn9rjnJa
-   aRHqwrsYKsC1P8zxvBfBk1L2ep2mpZ0I9A2Wyg10pz0x1OfXQojNRLDKW
-   ve9EofxtQwKYIegogKHQOi+u1rLi8jciFu32krQKy8m4CiGtxW/vRIvcB
-   g==;
-X-CSE-ConnectionGUID: cjlnOjnjT0mtOc5rUmuVAg==
-X-CSE-MsgGUID: eWjQD2fyQICMVGs8n8lkCw==
-X-IronPort-AV: E=McAfee;i="6600,9927,11060"; a="10420084"
-X-IronPort-AV: E=Sophos;i="6.07,242,1708416000"; 
-   d="scan'208";a="10420084"
-Received: from fmviesa008.fm.intel.com ([10.60.135.148])
-  by fmvoesa108.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Apr 2024 07:44:17 -0700
-X-CSE-ConnectionGUID: CgbXh7TnQSaFTyUXC+T2Nw==
-X-CSE-MsgGUID: /9seFNKQR1uxdDrqYlKm/Q==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,242,1708416000"; 
-   d="scan'208";a="26491447"
-Received: from mehlow-prequal01.jf.intel.com ([10.54.102.156])
-  by fmviesa008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Apr 2024 07:44:16 -0700
-From: Dmitrii Kuvaiskii <dmitrii.kuvaiskii@intel.com>
-To: jarkko@kernel.org
-Cc: dave.hansen@linux.intel.com,
-	dmitrii.kuvaiskii@intel.com,
-	haitao.huang@linux.intel.com,
-	kai.huang@intel.com,
-	kailun.qin@intel.com,
-	linux-kernel@vger.kernel.org,
-	linux-sgx@vger.kernel.org,
-	mona.vij@intel.com,
-	reinette.chatre@intel.com
-Subject: Re: [PATCH 0/2] x86/sgx: Fix two data races in EAUG/EREMOVE flows
-Date: Tue, 30 Apr 2024 07:35:55 -0700
-Message-Id: <20240430143555.893316-1-dmitrii.kuvaiskii@intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <D0WMNTCRUN00.TQHC8O6X6WI2@kernel.org>
-References: <D0WMNTCRUN00.TQHC8O6X6WI2@kernel.org>
+	 MIME-Version; b=kKBifYl31h1zIAasX1rbAtyojLg5C0l8e1qrW9rr1pnRNFWCar+3IQO/rQim1MzPavxl7QrPlKZdZ+Wyfdz0vUxmGrFrzjn4hXThruLbmUAvCa6EZr9f2JTFxvKlqwJG/vWbasFhmQnuZ5qQ6eMTWU1bIhogQOQEK+2H6o2swOQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=c0dYtZZ3; arc=none smtp.client-ip=209.85.128.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-41b4ff362a8so53215755e9.0;
+        Tue, 30 Apr 2024 07:40:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1714488017; x=1715092817; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=iZxd/DI5QdY6rGwP24LbbxuJiqEuZoi+ZsrSMuiWkrQ=;
+        b=c0dYtZZ3BgHiPETbdpKFPEL7FjK5j58ieJ75CDDM1lcJCtgx3f9J8PCMSqrDGRqIl1
+         mAm9LVP7QCWrC2JOiFPEuhQrPnnqNR249W9Tu5UPF+7rrAGwaDazoidsUInagmJpwgTv
+         +gXHORk8gqBD6NoBGWDRAICkjzP1z9ZTraqjALID+4yaGk16KyHSepNEF5AtXvIgapeB
+         yMdz+IUZJfuBnImOYOfDmenlwxxqbFcSKgvW8RSartAijkT8NwMtiHeXywxaSEL5z9oV
+         +KDY23FSgR80TbDUAotPqskjGHLnGVebu+MEJpDg0uJgfr5o7F7T80BzQTzjKfZInUHj
+         PEDg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714488017; x=1715092817;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=iZxd/DI5QdY6rGwP24LbbxuJiqEuZoi+ZsrSMuiWkrQ=;
+        b=vOV9SeVVU8AZVJJQt/uVYnRUxh5q/bCl2yMUG2RNY+OnqpEviMEXu8HkLy41Q3PYAY
+         Gpl5bAUajiAVE/Sf1O0jxccPLyP/VIfd2Rqkrm3mjPhk89TshpGV3m4gu7jefBV7gcZR
+         T1dBF03SW5i2cpfKwdnaPMxlXsgItPTXfXzvEfgUbK9CBjq/4/YGZ7LVq/mRih4PTwG4
+         RHdQOcjAY4gG4+gpZ7szgxLVWBN/qUvATBkIirHN3jD6E01pXtz0T+uY/om70F0P31L7
+         FH42I3OLyjYE6RTVS5ffDcVGXa0VlSvZOJRUiS1QB9yF4jNQP0HBCNOoTfOK7+35CzQ8
+         fL8g==
+X-Forwarded-Encrypted: i=1; AJvYcCWYl7muIuyDnuerJB9PYnWNsZ27ZSOGE8CgHGzYLGrkZAk0rolK1ARftvo+9Pq7qFUbYhnwN+ln2ETki8TYpE9Yn+gMOx2YP6pe9YUzfioC0D0hKbNojDKSykOSKKrPjcPGmksE
+X-Gm-Message-State: AOJu0Yw8NxooLfQ2Ph7brPAQ/cZUhoZ859LDxJYRxmxL+9lJXgJ0yBEX
+	lXadDeyIgSUPfc/h0g9R4+SU2ywB8eYTvE8Vse7S8zl+mS8G+Drw
+X-Google-Smtp-Source: AGHT+IElt5ZeAiVH8HZctTdg1/Kk5OH+JkzF1XzccUyF4Lt231Cmm5evb/2WFVt18/J13+oAtC4k3Q==
+X-Received: by 2002:a05:600c:198c:b0:415:540e:74e3 with SMTP id t12-20020a05600c198c00b00415540e74e3mr12217850wmq.40.1714488017142;
+        Tue, 30 Apr 2024 07:40:17 -0700 (PDT)
+Received: from localhost ([146.70.204.204])
+        by smtp.gmail.com with ESMTPSA id h9-20020a5d4309000000b0034c78001f6asm10353790wrq.109.2024.04.30.07.40.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 30 Apr 2024 07:40:16 -0700 (PDT)
+From: Richard Gobert <richardbgobert@gmail.com>
+To: davem@davemloft.net,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	dsahern@kernel.org,
+	willemdebruijn.kernel@gmail.com,
+	alobakin@pm.me,
+	netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: Richard Gobert <richardbgobert@gmail.com>
+Subject: [PATCH net v4 2/2] net: gro: add flush check in udp_gro_receive_segment
+Date: Tue, 30 Apr 2024 16:35:55 +0200
+Message-Id: <20240430143555.126083-3-richardbgobert@gmail.com>
+In-Reply-To: <20240430143555.126083-1-richardbgobert@gmail.com>
+References: <20240430143555.126083-1-richardbgobert@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Organization: Intel Deutschland GmbH - Registered Address: Am Campeon 10, 85579 Neubiberg, Germany
 Content-Transfer-Encoding: 8bit
 
-On Mon, Apr 29, 2024 at 04:06:39PM +0300, Jarkko Sakkinen wrote:
-> On Mon Apr 29, 2024 at 1:43 PM EEST, Dmitrii Kuvaiskii wrote:
-> > SGX runtimes such as Gramine may implement EDMM-based lazy allocation of
-> > enclave pages and may support MADV_DONTNEED semantics [1]. The former
-> > implies #PF-based page allocation, and the latter implies the usage of
-> > SGX_IOC_ENCLAVE_REMOVE_PAGES ioctl.
-> >
-> > A trivial program like below (run under Gramine and with EDMM enabled)
-> > stresses these two flows in the SGX driver and hangs:
-> >
-> > /* repeatedly touch different enclave pages at random and mix with
-> >  * `madvise(MADV_DONTNEED)` to stress EAUG/EREMOVE flows */
-> > static void* thread_func(void* arg) {
-> >     size_t num_pages = 0xA000 / page_size;
-> >     for (int i = 0; i < 5000; i++) {
-> >         size_t page = get_random_ulong() % num_pages;
-> >         char data = READ_ONCE(((char*)arg)[page * page_size]);
-> >
-> >         page = get_random_ulong() % num_pages;
-> >         madvise(arg + page * page_size, page_size, MADV_DONTNEED);
-> >     }
-> > }
-> >
-> > addr = mmap(NULL, 0xA000, PROT_READ | PROT_WRITE, MAP_ANONYMOUS, -1, 0);
-> > pthread_t threads[16];
-> > for (int i = 0; i < 16; i++)
-> >     pthread_create(&threads[i], NULL, thread_func, addr);
-> 
-> I'm not convinced that kernel is the problem here but it could be also
-> how Gramine is implemented.
-> 
-> So maybe you could make a better case of that. The example looks a bit
-> artificial to me.
+GRO-GSO path is supposed to be transparent and as such L3 flush checks are
+relevant to all UDP flows merging in GRO. This patch uses the same logic
+and code from tcp_gro_receive, terminating merge if flush is non zero.
 
-I believe that these are the bugs in the kernel (in the SGX driver). I
-provided more detailed descriptions of the races and ensuing bugs in the
-other two replies, please check them.
+Fixes: e20cf8d3f1f7 ("udp: implement GRO for plain UDP sockets.")
+Signed-off-by: Richard Gobert <richardbgobert@gmail.com>
+---
+ net/ipv4/udp_offload.c | 12 +++++++++++-
+ 1 file changed, 11 insertions(+), 1 deletion(-)
 
-The example is a stress test written to debug very infrequent hangs of
-real-world applications that are run with Gramine, EDMM, and two
-optimizations (lazy allocation and MADV_DONTNEED semantics). We observed
-hangs of Node.js, PyTorch, R, iperf, Blender, Nginx. To root cause these
-hangs, we wrote this artificial stress test. This test succeeds on vanilla
-Linux, so ideally it should also pass on Gramine.
+diff --git a/net/ipv4/udp_offload.c b/net/ipv4/udp_offload.c
+index fd29d21d579c..8721fe5beca2 100644
+--- a/net/ipv4/udp_offload.c
++++ b/net/ipv4/udp_offload.c
+@@ -471,6 +471,7 @@ static struct sk_buff *udp_gro_receive_segment(struct list_head *head,
+ 	struct sk_buff *p;
+ 	unsigned int ulen;
+ 	int ret = 0;
++	int flush;
+ 
+ 	/* requires non zero csum, for symmetry with GSO */
+ 	if (!uh->check) {
+@@ -504,13 +505,22 @@ static struct sk_buff *udp_gro_receive_segment(struct list_head *head,
+ 			return p;
+ 		}
+ 
++		flush = NAPI_GRO_CB(p)->flush;
++
++		if (NAPI_GRO_CB(p)->flush_id != 1 ||
++		    NAPI_GRO_CB(p)->count != 1 ||
++		    !NAPI_GRO_CB(p)->is_atomic)
++			flush |= NAPI_GRO_CB(p)->flush_id;
++		else
++			NAPI_GRO_CB(p)->is_atomic = false;
++
+ 		/* Terminate the flow on len mismatch or if it grow "too much".
+ 		 * Under small packet flood GRO count could elsewhere grow a lot
+ 		 * leading to excessive truesize values.
+ 		 * On len mismatch merge the first packet shorter than gso_size,
+ 		 * otherwise complete the GRO packet.
+ 		 */
+-		if (ulen > ntohs(uh2->len)) {
++		if (ulen > ntohs(uh2->len) || flush) {
+ 			pp = p;
+ 		} else {
+ 			if (NAPI_GRO_CB(skb)->is_flist) {
+-- 
+2.36.1
 
-Please also note that the optimizations of lazy allocation and
-MADV_DONTNEED provide significant performance improvement for some
-workloads that run on Gramine. For example, a Java workload with a 16GB
-enclave size has approx. 57x improvement in total runtime. Thus, we
-consider it important to permit these optimizations in Gramine, which IIUC
-requires bug fixes in the SGX driver.
-
-You can find more info at
-https://github.com/gramineproject/gramine/pull/1513.
-
-Which parts do you consider artificial, and how could I modify the stress
-test?
-
---
-Dmitrii Kuvaiskii
 
