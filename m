@@ -1,104 +1,108 @@
-Return-Path: <linux-kernel+bounces-164738-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-164739-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D2BE08B81E2
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 23:27:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id A4CBD8B81E4
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 23:28:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E3C8F1C21D28
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 21:27:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D49341C21DBB
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 21:28:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F36D1BED8E;
-	Tue, 30 Apr 2024 21:26:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4788A1BED63;
+	Tue, 30 Apr 2024 21:28:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fvOmal7l"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IdJljA4Y"
+Received: from mail-lf1-f50.google.com (mail-lf1-f50.google.com [209.85.167.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC1441BED7D;
-	Tue, 30 Apr 2024 21:26:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2318A199EB6;
+	Tue, 30 Apr 2024 21:28:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714512415; cv=none; b=hilFu+jQHggagAV77/pgl+vPU35c81BdtcMmd9QC6EQUdj4YcYNESpGK/myM5cPGZ7ThjfKgpr+iGrpVetByToIHYf4iJqV4qKdi+vHxoodb/4cbvGN/CXg1MrJBHn39SQAzxRZ0Y1OgHyPaDqJE/6YReW4qErLas7FhaUFTvEc=
+	t=1714512517; cv=none; b=tyZ0z18VBDes9Asll4QhcnuySy9jmpwdB/GQP/oYd8KQdYqXSL3h2kLScgmFxEWOoXzu9BaH7FVsVa5zQ81j1pk4aZyTzouv8PUtauUneFUTMyNZs1ppiY8PA5ZY6VytHRkRPumciyw3f2lx1NSAABZ5aEqra+jSOT0cCUlkfPk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714512415; c=relaxed/simple;
-	bh=GftF5dObvo3DzQZhK73nALUS/OoRTVHwkjrSlkRcFbo=;
-	h=Message-ID:Content-Type:MIME-Version:In-Reply-To:References:
-	 Subject:From:Cc:To:Date; b=cv+16YLt0mg/vrk6mPDIUSa6/QWIo0LR9qYBngPd5Wv9JM0bymKV8edfXIO6V7cAOy4cl1+CMWEGdKABGbdfaZFQHs1sgVaVT6mWGs3Sm23JBG+nQQ98AIkNUuZi8ibEIZtyU0Mmo1qIjYzb1T7iJ9ObOVtVcw25sk2j11AhkYY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fvOmal7l; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 40CB6C2BBFC;
-	Tue, 30 Apr 2024 21:26:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714512415;
-	bh=GftF5dObvo3DzQZhK73nALUS/OoRTVHwkjrSlkRcFbo=;
-	h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-	b=fvOmal7lzsUj+2CqlwMvZ4sxr0DkAnclbUMAl9ZB4KkCGN4mpb4quKap3elDYGBFX
-	 DwU+EYqit3s+kT+5liiPJkNwIjgMeLjrNzybqib341eXKzupLwXuHAJ4okVtK5QVQW
-	 jLLzyvHvXMjXPfRAwMN203crGbLAoQ3FNtzVRCArk+BaNKa0ws/JK3jTaNmDKwVMTr
-	 BdyNOxZC/z8Zf8f0ScZnrImhu8jbfEV365wI1AF1TtitJJ8P/qZwk8ueyqSAgiSlr8
-	 Bg/9JSjm/+MTTolErbY0BbgVLwQvoYoB7QOKz/FudeDnz3ypJEHAC7z2H9qCCBpWYN
-	 cg/T9p1mjIiXg==
-Message-ID: <6ba2967c6c9d24e3f1c9b76496176010.sboyd@kernel.org>
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1714512517; c=relaxed/simple;
+	bh=spJ1X/XVz2l4YxRBB3S8D5s5rTkO52DHF/PDHeGLeOE=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=hWYOqDS63LWh60pkpKWjO90qyLwaK00yFGCQua0jyZUyDJvy6boUbAfFA0nJlgIs9Byaozu2tqIExv+X4BpX4fyMgXPEOubE7nO5dhVfIK57YvmnfLep95OQSNZnhvDSYUna0yyahT0S6a6l1Jiq21hPQZ5A4B+v7EcuZQ5PeiI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IdJljA4Y; arc=none smtp.client-ip=209.85.167.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f50.google.com with SMTP id 2adb3069b0e04-518a56cdc03so7067099e87.1;
+        Tue, 30 Apr 2024 14:28:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1714512514; x=1715117314; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=eEAcAd46dLi8Su/AUSbpch/nv/FSmxZB9FP904cjCvs=;
+        b=IdJljA4Yar8DW8Pezl4XUapUK7o0aL2xP5y4lBjRGLCuMrqxsegcCfyq0XJsHqPLg6
+         y4MJTr3AVwIaB7fZbP+LB5AO28ERS8+12bu8MUVKRcPn8TZEAiR+IX59RB+BE4yNsQW0
+         vy1c2vAjIh65YFkuj8zwwesJXvsapRwIIZSvIvOM0sThFlIhEAkeMpZyokBbmOUwlv+2
+         Hr/tGRHdKl9w/acIsv7vN3JTuvcKPAr+ZMDMgBOa+lGcU1ELFQVklQYLP5+UaAbkFWfn
+         cO+JMmDFBCW6hcjNwJFR4Kda/yGbjFuGHTjCd9UufuFaAm0VqSrbDZLcqJteFO/c0d89
+         +l3g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714512514; x=1715117314;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=eEAcAd46dLi8Su/AUSbpch/nv/FSmxZB9FP904cjCvs=;
+        b=nchfML9MJ3APaYuTDP6ovLL6D9SU62KjCn7cQUJrumUFRlRW3fiXdufVQeFadjX79V
+         QUzn+vDPPx5Hun1PlghVb/byY3zKCb5oMUfcAYBb9lVAVyc8D3cF2OaydMtLaMpUuT2y
+         FjI4z2pfugv7ZWqQQrQwHqf/Oo3hSU5ZTgxCXi6DrkpTcS621S5l2d9hBm6DyBQ/HKjN
+         /6t0BKs21fSQfoTYTM4QE5NEeVtVmJU0Jt+oW+aSBwrjYFiIIeVxjq+yCHWA/jB7TqlJ
+         sL/HyqMlHLwQVpCWnq3FPmZuQD9yTfm5g+gpM0he7qPBcXuxOVYthlgbCC+3IEBSnZX8
+         MS/w==
+X-Forwarded-Encrypted: i=1; AJvYcCWk6MAFneyxdG3GutiU83xFNHk4AP8XSWAK73xuZ2KmhDlV+Pv2Wp/UgL3qI5WPnjIMA/Hqd3c57LMqeV8swjgTOGrqhNoZEjYkdnJ3k2Oa
+X-Gm-Message-State: AOJu0Yzc5wa1PZHvANBJe+nr64q1JOqA0Kw8FMlM10U4iXIJU12ErhGx
+	ysukyumH53UlOBCOTjwSOeE4XKuHsWiYBNKKSutv3gWTQ/7O5Q==
+X-Google-Smtp-Source: AGHT+IEunTzQGTWdUwtf2jZ+KujlH3D1v3ImsH6mG7rpwezhNpBLN3ERAfkycYI3S5NAoxMBETw3qA==
+X-Received: by 2002:a05:6512:3a89:b0:516:d692:5e0b with SMTP id q9-20020a0565123a8900b00516d6925e0bmr435192lfu.54.1714512512067;
+        Tue, 30 Apr 2024 14:28:32 -0700 (PDT)
+Received: from localhost.localdomain ([85.89.127.166])
+        by smtp.gmail.com with ESMTPSA id x33-20020a056512132100b00516ce6a6f23sm4581020lfu.271.2024.04.30.14.28.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 30 Apr 2024 14:28:31 -0700 (PDT)
+From: Shengyu Li <shengyu.li.evgeny@gmail.com>
+To: shuah@kernel.org
+Cc: linux-kernel@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	Shengyu Li <shengyu.li.evgeny@gmail.com>
+Subject: [PATCH] selftest/safesetid: Fix uncaught return value
+Date: Wed,  1 May 2024 05:28:13 +0800
+Message-Id: <20240430212813.11910-1-shengyu.li.evgeny@gmail.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <11bd7146-30cd-4b71-b2ca-d76875763731@linaro.org>
-References: <20240427-topic-8450sdc2-v1-1-631cbb59e0e5@linaro.org> <2337ba58adb3fb127710bead9b8665a9.sboyd@kernel.org> <11bd7146-30cd-4b71-b2ca-d76875763731@linaro.org>
-Subject: Re: [PATCH] clk: qcom: gcc-sm8450: set OPS_PARENT_ENABLE on gcc_sdcc2_apps_clk_src
-From: Stephen Boyd <sboyd@kernel.org>
-Cc: Marijn Suijten <marijn.suijten@somainline.org>, linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org, Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-To: Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, Michael Turquette <mturquette@baylibre.com>, Vinod Koul <vkoul@kernel.org>
-Date: Tue, 30 Apr 2024 14:26:53 -0700
-User-Agent: alot/0.10
+Content-Transfer-Encoding: 8bit
 
-Quoting Konrad Dybcio (2024-04-30 03:46:52)
-> On 30.04.2024 2:21 AM, Stephen Boyd wrote:
-> > Quoting Konrad Dybcio (2024-04-27 05:01:07)
-> >> Similar to how it works on other SoCs, the top frequency of the SDHCI2
-> >> core clock is generated by a separate PLL (peculiar design choice) that
-> >> is not guaranteed to be enabled (why does the clock framework not hand=
-le
-> >> this by default?).
-> >>
-> >> Add the CLK_OPS_PARENT_ENABLE flag to make sure we're not muxing the
-> >> RCG input to a dormant source.
-> >=20
-> > The RCG2 hardware hasn't required the parent to be enabled for clk
-> > operations besides for the glitch-free source switch. What scenario is
-> > happening here that's requiring this flag? Is the RCG forcibly enabled
-> > perhaps because the bootloader has left the root enable bit set
-> > (CMD_ROOT_EN)? Or are we changing the parent while the clk framework
-> > thinks the clk is off when it is actually on?
-> >=20
-> > TL;DR: This is papering over a bigger bug.
->=20
-> Definitely.
->=20
->=20
-> Take a look at:
->=20
-> static const struct freq_tbl ftbl_gcc_sdcc2_apps_clk_src[] =3D {
->         F(400000, P_BI_TCXO, 12, 1, 4),
->         F(25000000, P_GCC_GPLL0_OUT_EVEN, 12, 0, 0),
->         F(50000000, P_GCC_GPLL0_OUT_EVEN, 6, 0, 0),
->         F(100000000, P_GCC_GPLL0_OUT_EVEN, 3, 0, 0),
->         F(202000000, P_GCC_GPLL9_OUT_MAIN, 4, 0, 0),
->         { }
-> };
->=20
-> XO and GPLL0 are more or less always on, but GPLL9 is described to only
-> be used for this specific clock for this specific frequency (perhaps it
-> feeds something else on the soc but that's besides the point).
->=20
-> Then, the parent input is changed during set_rate, but GPLL9 seems to
-> never be enabled:
+This patch captures the return value of the ./safesetid-test execution 
+by assigning it to the variable errcode. This change ensures that the 
+script properly handles the exit status of the safesetid-test.
 
-Is the sdcc2 RCG enabled during the set_rate?
+Signed-off-by: Shengyu Li <shengyu.li.evgeny@gmail.com>
+---
+ tools/testing/selftests/safesetid/safesetid-test.sh | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/tools/testing/selftests/safesetid/safesetid-test.sh b/tools/testing/selftests/safesetid/safesetid-test.sh
+index e4fdce675c54..0ebc6ddc4b6c 100755
+--- a/tools/testing/selftests/safesetid/safesetid-test.sh
++++ b/tools/testing/selftests/safesetid/safesetid-test.sh
+@@ -19,6 +19,7 @@ main_function()
+ {
+   check_root
+   ./safesetid-test
++  errcode=$?
+ }
+ 
+ main_function
+-- 
+2.25.1
+
 
