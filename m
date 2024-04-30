@@ -1,180 +1,209 @@
-Return-Path: <linux-kernel+bounces-163904-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-163905-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 83E298B7589
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 14:15:54 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3D2A08B758E
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 14:16:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A585DB20E7C
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 12:15:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5F3291C21E13
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 12:16:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5443D13DB90;
-	Tue, 30 Apr 2024 12:15:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="XxqfuUbq"
-Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com [209.85.208.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8455F140384;
+	Tue, 30 Apr 2024 12:16:06 +0000 (UTC)
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B525B13D2A6
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 12:15:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38E1A168A9;
+	Tue, 30 Apr 2024 12:16:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714479341; cv=none; b=IvEUmtGsJCBrY9dDy25++2n9z0asTOJrXmGPMr/fJJEW/E22eWdtZHiwZi8ytQI98mhFOkgO4sFAoWu46GAH22ouk4kvsoHGG9eofuUrSFTWY8iSRPJfccd0UGigY0DGyjSCr+AB8UPJBIYypiaTgTFUJNdUg3zzk32k+0E2zK0=
+	t=1714479366; cv=none; b=adqrGyIN1D54owhvTp+TJKIrsCe7kGKiCyNN336z61Z2l8BWCCtVkV2Ex6sSG7NoZkEgwMVW2n7l0EB+DcFwHgfdZ6bggsEJqKQb2gXE2hKxV5it0VLxIEUPjaXn5UNGPK3x1cwl3YOYOgb23WGBPM/fU3a2kz6sNfRBCDxPI40=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714479341; c=relaxed/simple;
-	bh=HYgAGgg95uxY3rUpbJokNIWTJqd/TL6F2P1lkeA1tug=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Azmr3t220VGWL9XicndI2H5ZGm7VmPvpgmPoMK4V4CBx7wLPtLU1ot3J/glUPozCI8bNXHpQFHipvloTOHF2155PL2cX96sHw1/U6MjuMSefsEk5oKf4nidorRDi2RuBYTCefb4fQRAuikY8ELzxZ3XcLNe3Qw50ah9rlmGzc8M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=XxqfuUbq; arc=none smtp.client-ip=209.85.208.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-572a092dd2dso486792a12.3
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 05:15:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1714479338; x=1715084138; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=HcZRGGRQNN6JFN01bYHR/sF88Y20eFPOUJv7CvIs2yU=;
-        b=XxqfuUbqq/j80iJfswyAxueWhRfRSUDusRwtjfhLNAib+KxSqBvhOmKedENKHejdVZ
-         SMTmbHIpd9vVYsoe93m8XWpEkVXhSrWueDJ5GZXGQytwdIMlEMV5WXel1ktUKbvRdQT3
-         8rtC+/22G7OWydukc88+WVA13Y0d+Mq59suSltZtvln++MCoiPmvNPTmiSpY+NShQz35
-         DnCC9FiEI8915xSUekvq+Bhv5S2siWVSv8IQ2c8kt10IKD3TZUAoKRFIUx+c2GY0hoY8
-         NG9dEiHm537T8xsh9xfrdJNhY6U/l/zGciZYH6i7uYoujHzUPeEGIuSWOtmAUrVuytQk
-         KkNQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714479338; x=1715084138;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=HcZRGGRQNN6JFN01bYHR/sF88Y20eFPOUJv7CvIs2yU=;
-        b=NGaZiF+WRxbzI4V0S8MbA0YYpeWjyzh8BGAyiGkAijnKMX5AV5H3pQ7HuEC8p5UvKg
-         4mf4OjLjafA6UQkylKXLhlHI5hf0ZzRBVOwZ2xun6LWr7yoPWAxogzVhpqKjSszw8cSj
-         bbknKvF1hjgLfWlellc8TvVp2rvSk0lqeOOuMfasoK13DyQtyHMPAg0EJhztLkzq76Ma
-         G6vPSID6jqtOYADt3/pvSCMSsBKmnYBH+EIEqOMKQCIoz6bHrLt9Ns/xdFdtQRxwGNlC
-         5vToIHAQzO3z9vV7o5Ov6lIFHEEahPHM4wYgSdpkagWThdr8yZLFK6YPefLDYo4Ms9GI
-         9tQg==
-X-Forwarded-Encrypted: i=1; AJvYcCUPrfaVJIOWhEuU4U8212rZCGG8a4++yeE+ZtlXF5KcSk7YQpipxAaDkm24ZjVqfHevTUrnRWgRWdC4ZiO3EB4NahLDNKqnaaewXUSd
-X-Gm-Message-State: AOJu0Ywm4FAPK8LOj7vLxw9AotJRHfCAIA1hlrTFNsSXEdlI7ymFMvBf
-	fx6JrqRNEA3maazun9P/KbL3chTETnZhq6trZ1qKcW7MxFcGI9mEaLaVOXdP4AM=
-X-Google-Smtp-Source: AGHT+IHYivGwREaww/1+g3Qx78tYtFlcfzl/pCUZp8c8sEZma9Vm5ZHTkpWY5HF/p/o1P5FOeqXHqg==
-X-Received: by 2002:a50:d65a:0:b0:566:4aa9:7143 with SMTP id c26-20020a50d65a000000b005664aa97143mr2163344edj.14.1714479338031;
-        Tue, 30 Apr 2024 05:15:38 -0700 (PDT)
-Received: from [192.168.114.15] (078088045141.garwolin.vectranet.pl. [78.88.45.141])
-        by smtp.gmail.com with ESMTPSA id i32-20020a0564020f2000b005723bcad44bsm6231057eda.41.2024.04.30.05.15.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 30 Apr 2024 05:15:37 -0700 (PDT)
-Message-ID: <5a595993-04a2-4055-b8ba-806fdd266812@linaro.org>
-Date: Tue, 30 Apr 2024 14:15:34 +0200
+	s=arc-20240116; t=1714479366; c=relaxed/simple;
+	bh=gBZiN4Mf0s2xCDPpRXTW0QpBKbKBVv/CmKr2e8bRBss=;
+	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=uNOCrawEdJodA1xwmATxPOqxOP0+BGekqzexft7dW5Lxps0bI9mtXCjDDv89TWQvhY9zwddEGUjlxcVJ8q3o6ZvpnLWdRjic5OzCH/DN7DmOqUn5bJWuofg1n1c/GD5kgbIfgv5Mb+Ql38jtFh9Z+wJJX0DeC0VnC8Sl0o/WSIM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.18.186.231])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4VTJxs1TQYz6J73T;
+	Tue, 30 Apr 2024 20:13:21 +0800 (CST)
+Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
+	by mail.maildlp.com (Postfix) with ESMTPS id B3F04140B54;
+	Tue, 30 Apr 2024 20:16:01 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Tue, 30 Apr
+ 2024 13:16:00 +0100
+Date: Tue, 30 Apr 2024 13:15:59 +0100
+From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To: Marc Zyngier <maz@kernel.org>, <linuxarm@huawei.com>,
+	<linuxarm@huawei.com>
+CC: Thomas Gleixner <tglx@linutronix.de>, Peter Zijlstra
+	<peterz@infradead.org>, <linux-pm@vger.kernel.org>,
+	<loongarch@lists.linux.dev>, <linux-acpi@vger.kernel.org>,
+	<linux-arch@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<linux-arm-kernel@lists.infradead.org>, <kvmarm@lists.linux.dev>,
+	<x86@kernel.org>, Russell King <linux@armlinux.org.uk>, "Rafael J . Wysocki"
+	<rafael@kernel.org>, Miguel Luis <miguel.luis@oracle.com>, "James Morse"
+	<james.morse@arm.com>, Salil Mehta <salil.mehta@huawei.com>, Jean-Philippe
+ Brucker <jean-philippe@linaro.org>, Catalin Marinas
+	<catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, Hanjun Guo
+	<guohanjun@huawei.com>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov
+	<bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
+	<justin.he@arm.com>, <jianyong.wu@arm.com>, Lorenzo Pieralisi
+	<lpieralisi@kernel.org>, Sudeep Holla <sudeep.holla@arm.com>
+Subject: Re: [PATCH v8 11/16] irqchip/gic-v3: Add support for ACPI's
+ disabled but 'online capable' CPUs
+Message-ID: <20240430131540.00000930@huawei.com>
+In-Reply-To: <20240429101938.000027b2@huawei.com>
+References: <20240426135126.12802-1-Jonathan.Cameron@huawei.com>
+	<20240426135126.12802-12-Jonathan.Cameron@huawei.com>
+	<87il04t7j2.wl-maz@kernel.org>
+	<20240426192858.000033d9@huawei.com>
+	<87frv5u3p8.wl-maz@kernel.org>
+	<20240429101938.000027b2@huawei.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v6 4/5] sched: Rename arch_update_thermal_pressure into
- arch_update_hw_pressure
-To: Vincent Guittot <vincent.guittot@linaro.org>
-Cc: linux@armlinux.org.uk, catalin.marinas@arm.com, will@kernel.org,
- sudeep.holla@arm.com, rafael@kernel.org, viresh.kumar@linaro.org,
- agross@kernel.org, andersson@kernel.org, mingo@redhat.com,
- peterz@infradead.org, juri.lelli@redhat.com, dietmar.eggemann@arm.com,
- rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
- bristot@redhat.com, vschneid@redhat.com, lukasz.luba@arm.com,
- rui.zhang@intel.com, mhiramat@kernel.org, daniel.lezcano@linaro.org,
- amit.kachhap@gmail.com, corbet@lwn.net, gregkh@linuxfoundation.org,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- linux-pm@vger.kernel.org, linux-arm-msm@vger.kernel.org,
- linux-trace-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
- Qais Yousef <qyousef@layalina.io>,
- Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-References: <20240326091616.3696851-1-vincent.guittot@linaro.org>
- <20240326091616.3696851-5-vincent.guittot@linaro.org>
- <95760e2b-ec38-4f04-8f86-e4f935d24a83@linaro.org>
- <CAKfTPtDhVfpvO46YWmMnVhJmiKUbNJt7d2cvmyXfPJ4g1YZkXg@mail.gmail.com>
-Content-Language: en-US
-From: Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <CAKfTPtDhVfpvO46YWmMnVhJmiKUbNJt7d2cvmyXfPJ4g1YZkXg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset="US-ASCII"
 Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: lhrpeml500006.china.huawei.com (7.191.161.198) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
 
-On 30.04.2024 2:00 PM, Vincent Guittot wrote:
-> H Konrad,
+On Mon, 29 Apr 2024 10:21:31 +0100
+Jonathan Cameron <Jonathan.Cameron@Huawei.com> wrote:
+
+> On Sun, 28 Apr 2024 12:28:03 +0100
+> Marc Zyngier <maz@kernel.org> wrote:
 > 
-> On Tue, 30 Apr 2024 at 13:23, Konrad Dybcio <konrad.dybcio@linaro.org> wrote:
->>
->> On 26.03.2024 10:16 AM, Vincent Guittot wrote:
->>> Now that cpufreq provides a pressure value to the scheduler, rename
->>> arch_update_thermal_pressure into HW pressure to reflect that it returns
->>> a pressure applied by HW (i.e. with a high frequency change) and not
->>> always related to thermal mitigation but also generated by max current
->>> limitation as an example. Such high frequency signal needs filtering to be
->>> smoothed and provide an value that reflects the average available capacity
->>> into the scheduler time scale.
->>>
->>> Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
->>> Reviewed-by: Qais Yousef <qyousef@layalina.io>
->>> Reviewed-by: Lukasz Luba <lukasz.luba@arm.com>
->>> Tested-by: Lukasz Luba <lukasz.luba@arm.com>
->>> ---
->>
->> Hi, I'm not quite sure how, but this commit specifically breaks booting
->> on Qualcomm platforms with EAS..
+> > On Fri, 26 Apr 2024 19:28:58 +0100,
+> > Jonathan Cameron <Jonathan.Cameron@Huawei.com> wrote:  
+> > > 
+> > > 
+> > > I'll not send a formal v9 until early next week, so here is the current state
+> > > if you have time to take another look before then.    
+> > 
+> > Don't bother resending this on my account -- you only sent it on
+> > Friday and there hasn't been much response to it yet. There is still a
+> > problem (see below), but looks otherwise OK.
+> > 
+> > [...]
+> >   
+> > > @@ -2363,11 +2381,25 @@ gic_acpi_parse_madt_gicc(union acpi_subtable_headers *header,
+> > >  				(struct acpi_madt_generic_interrupt *)header;
+> > >  	u32 reg = readl_relaxed(acpi_data.dist_base + GICD_PIDR2) & GIC_PIDR2_ARCH_MASK;
+> > >  	u32 size = reg == GIC_PIDR2_ARCH_GICv4 ? SZ_64K * 4 : SZ_64K * 2;
+> > > +	int cpu = get_cpu_for_acpi_id(gicc->uid);    
+> > 
+> > I already commented that get_cpu_for_acpi_id() can...  
 > 
-> This is the fix:
-> https://lore.kernel.org/lkml/20240425073709.379016-1-vincent.guittot@linaro.org/
+> Indeed sorry - I blame Friday syndrome for me failing to address that.
+> 
+> >   
+> > >  	void __iomem *redist_base;
+> > >  
+> > > -	if (!acpi_gicc_is_usable(gicc))
+> > > +	/* Neither enabled or online capable means it doesn't exist, skip it */
+> > > +	if (!(gicc->flags & (ACPI_MADT_ENABLED | ACPI_MADT_GICC_ONLINE_CAPABLE)))
+> > >  		return 0;
+> > >  
+> > > +	/*
+> > > +	 * Capable but disabled CPUs can be brought online later. What about
+> > > +	 * the redistributor? ACPI doesn't want to say!
+> > > +	 * Virtual hotplug systems can use the MADT's "always-on" GICR entries.
+> > > +	 * Otherwise, prevent such CPUs from being brought online.
+> > > +	 */
+> > > +	if (!(gicc->flags & ACPI_MADT_ENABLED)) {
+> > > +		pr_warn("CPU %u's redistributor is inaccessible: this CPU can't be brought online\n", cpu);
+> > > +		cpumask_set_cpu(cpu, &broken_rdists);    
+> > 
+> > ... return -EINVAL, and then be passed to cpumask_set_cpu(), with
+> > interesting effects. It shouldn't happen, but I trust anything that
+> > comes from firmware tables as much as I trust a campaigning
+> > politician's promises. This should really result in the RD being
+> > considered unusable, but without affecting any CPU (there is no valid
+> > CPU the first place).
+> > 
+> > Another question is what get_cpu_for acpi_id() returns for a disabled
+> > CPU. A valid CPU number? Or -EINVAL?  
+> It's a match function that works by iterating over 0 to nr_cpu_ids and
+> 
+> if (uid == get_acpi_id_for_cpu(cpu))
+> 
+> So the question become does get_acpi_id_for_cpu() return a valid CPU
+> number for a disabled CPU.
+> 
+> That uses acpi_cpu_get_madt_gicc(cpu)->uid so this all gets a bit circular.
+> That looks it up via cpu_madt_gicc[cpu] which after the proposed updated
+> patch is set if enabled or online capable.  There are however a few other
+> error checks in acpi_map_gic_cpu_interface() that could lead to it
+> not being set (MPIDR validity checks). I suspect all of these end up being
+> fatal elsewhere which is why this hasn't blown up before.
+> 
+> If any of those cases are possible we could get a null pointer
+> dereference.
+> 
+> Easy to harden this case via the following (which will leave us with
+> -EINVAL.  There are other call sites that might trip over this.
+> I'm inclined to harden them as a separate issue though so as not
+> to get in the way of this patch set.
+> 
+> 
+> diff --git a/arch/arm64/include/asm/acpi.h b/arch/arm64/include/asm/acpi.h
+> index bc9a6656fc0c..a407f9cd549e 100644
+> --- a/arch/arm64/include/asm/acpi.h
+> +++ b/arch/arm64/include/asm/acpi.h
+> @@ -124,7 +124,8 @@ static inline int get_cpu_for_acpi_id(u32 uid)
+>         int cpu;
+> 
+>         for (cpu = 0; cpu < nr_cpu_ids; cpu++)
+> -               if (uid == get_acpi_id_for_cpu(cpu))
+> +               if (acpi_cpu_get_madt_gicc(cpu) &&
+> +                   uid == get_acpi_id_for_cpu(cpu))
+>                         return cpu;
+> 
+>         return -EINVAL;
+> 
+> I'll spin an additional patch to make that change after testing I haven't
+> messed it up.
+> 
+> At the call site in gic_acpi_parse_madt_gicc() I'm not sure we can do better
+> than just skipping setting broken_rdists. I'll also pull the declaration of
+> that cpu variable down into this condition so it's more obvious we only
+> care about it in this error path.
 
-Yep, works now!
+Just for the record, for my deliberately broken test case it seems that it returns
+a valid CPU ID anyway. That's what I'd expect given acpi_parse_and_init_cpus()
+doesn't check if the gicc entrees are enabled or not.
+
+Jonathan
 
 > 
->>
->> https://pastebin.com/raw/1Uh7u81x
+> Jonathan
 > 
-> Which platform is it ?
-> I tested it on dragonboard rb3 and it booted and run tests  even w/o the fix
+> 
+> 
+> 
+> 
+> > 
+> > Thanks,
+> > 
+> > 	M.
+> >   
+> 
+> 
+> _______________________________________________
+> linux-arm-kernel mailing list
+> linux-arm-kernel@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
 
-As the log suggests, SM8550 QRD
-
-Thanks for your prompt response!
-
-Konrad
 
