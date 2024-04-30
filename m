@@ -1,213 +1,99 @@
-Return-Path: <linux-kernel+bounces-163369-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-163380-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B340F8B69FE
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 07:37:01 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 24C2A8B6A24
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 08:02:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 723E4282A0D
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 05:37:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 56C5E1C21962
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 06:02:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51F08179A7;
-	Tue, 30 Apr 2024 05:36:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2D6A17BB4;
+	Tue, 30 Apr 2024 06:02:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="kUvPO+dy"
-Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=folker-schwesinger.de header.i=@folker-schwesinger.de header.b="RFzzKtqE"
+Received: from www522.your-server.de (www522.your-server.de [195.201.215.122])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25CAC1754B
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 05:36:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CBF9818E0E;
+	Tue, 30 Apr 2024 06:02:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.201.215.122
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714455411; cv=none; b=Qp4wUhcMYdXZi5TIXUihkccehK2D/ZqtK7Sr4nL1GZFll5Xl7zwcnW9UmlodLAZIvgssmdDHDVVnWMxnURIX6tb9qGGCI/VX0uo5iYyDrYEB2ygzPDbgg5rmODF8OPocXnVCz+b7L+8fhwiVj37wJ+AwnMmjLbn/+U6gf1WpUX8=
+	t=1714456945; cv=none; b=eNggfnS6YpHV0c9+4f2zY0gL7G6f57/dZqkqgQD79NoLDM6Q/UwvPlLUgYbO31wlnhaMZUY8YfV7sXlOJdSS9RKMaMu5xLmZ3SRIp1LbDRycSJ8R7s/pVtKtPT/dTWhx93d+hN5Cmr0p8hVjjJdD2zPH46dIxrOOdsCMS8wR7qg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714455411; c=relaxed/simple;
-	bh=ic45Ly5iOqM2hN40D+e1MnLz2cah/7zHv0WBtywKiU8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=FNg6cPZ8Qp35AeZOA/eU+eQ2lmHqNaJJGL4eIzM+4druCQS9IF4K1Te3AXw5BBzYRIv7NUQhFlVLPzG4wNmorypgbIUwWpIa+ovUc5kE5GN1bxV+bqHxNn9TYlNjZyY5G+aNsqXF11HOnDF3+vO4hJvMnF8rlvczUadhL+OSxZI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=kUvPO+dy; arc=none smtp.client-ip=209.85.214.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-1e40042c13eso35892295ad.2
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 22:36:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1714455409; x=1715060209; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=tfcUvly+FIvb0j4uFmsdXOeKUl+PlbA1SIU5IPSmRRs=;
-        b=kUvPO+dyIdUtHDCRCw+bSVBv2FNq1I4DEqiMAbE7LqxbvlX9XhLkoU/x11Z0H5eM0g
-         09LOmvnCr/JFaspzk7Y/Czo/QXMif/fwLWt88ODWVO5c84y9i50lPDZI7toB5OQVGf3+
-         jelFypwwof1N5v3dgB4teLsKIyc6LqXyH+uFg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714455409; x=1715060209;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=tfcUvly+FIvb0j4uFmsdXOeKUl+PlbA1SIU5IPSmRRs=;
-        b=YKZ6Tu23/ldvnnoWktpFltjesprhiKvGH/UUklh2rYaj5ABVYfu0s+qQ9SeU0XIG9N
-         Q3H7g5TPiHlS+ih6bmTAZBWOv6jZPSPmir0Wg7yvgeGRC2l42Tx/2t4FGIuTcuvXzzOG
-         a7yI9BugZIsAS6cHk5mh3pp747L8+HWCu1apbqI8n3ixFDi814PEBn2Jo2c6zDV520ia
-         UVFVQ9Lmkc9h8+9JjuuIWL7I6A3Mi6hzk/j9gg0WY9UL2dViFh0VrYWci44lDvpjUSFA
-         okozXvKhGUUaJ8B5tda8TYPmp1MEKzJ4qT8EXT47mp1cjigHol9zEjve6OXVmz90/YEW
-         PqxQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUh5w3pI3FCI3t1bujKtnD0E/czQ+MlOO1OQTC0Zg2ogAuhJqkd0WO8WTHqmhRyzgTOweS/dtG5IFk9QCIMzbwc/vGZmSooiJ234oVg
-X-Gm-Message-State: AOJu0YwC0HZSsCOyWjCXTVFfCVaVIgu0ztOXsgYkh5Vy1ObzOS1SUNPM
-	KKKhrB+h1c93F/Y7/5q8ZMCWWWcDQYjuVfL7NpaxY85UG5CmwrkD97e8ERFBQg==
-X-Google-Smtp-Source: AGHT+IEI1xCl5MgJCRf5jfTPqNjC35t8O+Ee/g+Asor/wizBcjvlYPWp+LqGt/RJxxnu3iJri6Tn1w==
-X-Received: by 2002:a17:903:487:b0:1dc:a605:5435 with SMTP id jj7-20020a170903048700b001dca6055435mr12028201plb.31.1714455409417;
-        Mon, 29 Apr 2024 22:36:49 -0700 (PDT)
-Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id n1-20020a170902d2c100b001e2a7e90321sm21334480plc.224.2024.04.29.22.36.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Apr 2024 22:36:48 -0700 (PDT)
-Date: Mon, 29 Apr 2024 22:36:48 -0700
-From: Kees Cook <keescook@chromium.org>
-To: Allen <allen.lkml@gmail.com>
-Cc: Allen Pais <apais@linux.microsoft.com>, linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-	viro@zeniv.linux.org.uk, brauner@kernel.org, jack@suse.cz,
-	ebiederm@xmission.com, mcgrof@kernel.org, j.granados@samsung.com
-Subject: Re: [RFC PATCH] fs/coredump: Enable dynamic configuration of max
- file note size
-Message-ID: <202404292236.568F42D3C@keescook>
-References: <20240429172128.4246-1-apais@linux.microsoft.com>
- <202404291245.18281A6D@keescook>
- <CAOMdWS+k63T9TQ=Zvev-+Q3Zw-wuEUv_f63=YiTx0nK1J9Jfwg@mail.gmail.com>
+	s=arc-20240116; t=1714456945; c=relaxed/simple;
+	bh=c+jOECq5iNHGoPllZKnFae0KEe4r8vbzMvsoppCbQtM=;
+	h=Mime-Version:Content-Type:Date:Message-Id:Subject:Cc:From:To:
+	 References:In-Reply-To; b=nHfwdrUbG2KRYkpLWzXrXcPjBUTqmECuYTPkIBZGg3UIoDXZkz4vhxADAndwL4xMVRzIGGHZMkJSt2lHprSKNC5miavyh2p0miKFRvaWfmyviuNcTC2ni4TpBMT/TKvmL8HFOGQwcTsMs7VrPBn8nVterrPsan4wJWv4lCuufx8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=folker-schwesinger.de; spf=pass smtp.mailfrom=folker-schwesinger.de; dkim=pass (2048-bit key) header.d=folker-schwesinger.de header.i=@folker-schwesinger.de header.b=RFzzKtqE; arc=none smtp.client-ip=195.201.215.122
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=folker-schwesinger.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=folker-schwesinger.de
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=folker-schwesinger.de; s=default2212; h=In-Reply-To:References:To:From:Cc:
+	Subject:Message-Id:Date:Content-Type:Content-Transfer-Encoding:Mime-Version:
+	Sender:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
+	bh=YW2t+Uyy5JF6+HVc5XVOdFTIDcJXXBz01l/hz5M5h+E=; b=RFzzKtqEIfkcbwU9s3vkm6rEkn
+	z9kFRqXkyZlhK7yRyTDnWqG7sDyTDpsbL9QD81sD537u7yBvW7W4PDPFUDTtcWtLvA10vqahiOeXg
+	UgafH36gq7N+sHSKNrQg4LMLMvhzOnOIHGzsAUDnTJEchrXtr0V50INDzB6osSVpZ6pL6ZZbWG12d
+	qIxcnm6xb7Vc2ia0P7zZCJIJjMoSAlxekpO5bEL9PVaeNQuon1PbBPmQ+52b0ybFfi7wc5C8oPJh4
+	qqQR6dt0+s3xhuGvPRdKy1kcfxOHgif1oX0kLR/LSmIStTSLVUppdvtQb006goD1dMKjn99UO3/FB
+	UKnk4a5A==;
+Received: from sslproxy05.your-server.de ([78.46.172.2])
+	by www522.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <dev@folker-schwesinger.de>)
+	id 1s1gGQ-000KCY-FG; Tue, 30 Apr 2024 07:42:50 +0200
+Received: from [185.213.155.203] (helo=localhost)
+	by sslproxy05.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <dev@folker-schwesinger.de>)
+	id 1s1gGP-000Opj-2L;
+	Tue, 30 Apr 2024 07:42:49 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAOMdWS+k63T9TQ=Zvev-+Q3Zw-wuEUv_f63=YiTx0nK1J9Jfwg@mail.gmail.com>
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date: Tue, 30 Apr 2024 05:42:49 +0000
+Message-Id: <D0X7UJELGST3.2IL1AFDJ89N07@folker-schwesinger.de>
+Subject: Re: [PATCH v2 2/2] arm64: dts: rockchip: Add Radxa ROCK 3C
+Cc: "Conor Dooley" <conor+dt@kernel.org>, "Krzysztof Kozlowski"
+ <krzk+dt@kernel.org>, "Rob Herring" <robh@kernel.org>,
+ <linux-arm-kernel@lists.infradead.org>,
+ <linux-rockchip@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+ <devicetree@vger.kernel.org>
+From: "Folker Schwesinger" <dev@folker-schwesinger.de>
+To: "Chukun Pan" <amadeus@jmu.edu.cn>, "Heiko Stuebner" <heiko@sntech.de>
+X-Mailer: aerc 0.17.0-118-g0a1af14fd916
+References: <20240428123618.72170-1-amadeus@jmu.edu.cn>
+ <20240428123618.72170-3-amadeus@jmu.edu.cn>
+In-Reply-To: <20240428123618.72170-3-amadeus@jmu.edu.cn>
+X-Authenticated-Sender: dev@folker-schwesinger.de
+X-Virus-Scanned: Clear (ClamAV 0.103.10/27260/Mon Apr 29 10:23:47 2024)
 
-On Mon, Apr 29, 2024 at 03:35:01PM -0700, Allen wrote:
-> On Mon, Apr 29, 2024 at 12:49 PM Kees Cook <keescook@chromium.org> wrote:
-> >
-> > On Mon, Apr 29, 2024 at 05:21:28PM +0000, Allen Pais wrote:
-> > > Introduce the capability to dynamically configure the maximum file
-> > > note size for ELF core dumps via sysctl. This enhancement removes
-> > > the previous static limit of 4MB, allowing system administrators to
-> > > adjust the size based on system-specific requirements or constraints.
-> >
-> > Under what conditions is this actually needed?
-> 
->  I addressed this in the email I sent out before this.
-> 
-> >
-> > > [...]
-> > > diff --git a/kernel/sysctl.c b/kernel/sysctl.c
-> > > index 81cc974913bb..80cdc37f2fa2 100644
-> > > --- a/kernel/sysctl.c
-> > > +++ b/kernel/sysctl.c
-> > > @@ -63,6 +63,7 @@
-> > >  #include <linux/mount.h>
-> > >  #include <linux/userfaultfd_k.h>
-> > >  #include <linux/pid.h>
-> > > +#include <linux/coredump.h>
-> > >
-> > >  #include "../lib/kstrtox.h"
-> > >
-> > > @@ -1623,6 +1624,13 @@ static struct ctl_table kern_table[] = {
-> > >               .mode           = 0644,
-> > >               .proc_handler   = proc_dointvec,
-> > >       },
-> > > +     {
-> > > +             .procname       = "max_file_note_size",
-> > > +             .data           = &max_file_note_size,
-> > > +             .maxlen         = sizeof(unsigned int),
-> > > +             .mode           = 0644,
-> > > +             .proc_handler   = proc_dointvec,
-> > > +     },
-> >
-> > Please don't add new sysctls to kernel/sysctl.c. Put this in fs/coredump.c
-> > instead, and name it "core_file_note_size_max". (A "max" suffix is more
-> > common than prefixes, and I'd like it clarified that it relates to the
-> > coredumper with the "core" prefix that match the other coredump sysctls.
-> >
-> > -Kees
-> 
-> Makes sense. Let me know if the below looks fine,
-> 
-> diff --git a/fs/binfmt_elf.c b/fs/binfmt_elf.c
-> index 5397b552fbeb..6aebd062b92b 100644
-> --- a/fs/binfmt_elf.c
-> +++ b/fs/binfmt_elf.c
-> @@ -1564,7 +1564,6 @@ static void fill_siginfo_note(struct memelfnote
-> *note, user_siginfo_t *csigdata,
->         fill_note(note, "CORE", NT_SIGINFO, sizeof(*csigdata), csigdata);
->  }
-> 
-> -#define MAX_FILE_NOTE_SIZE (4*1024*1024)
->  /*
->   * Format of NT_FILE note:
->   *
-> @@ -1592,7 +1591,7 @@ static int fill_files_note(struct memelfnote
-> *note, struct coredump_params *cprm
-> 
->         names_ofs = (2 + 3 * count) * sizeof(data[0]);
->   alloc:
-> -       if (size >= MAX_FILE_NOTE_SIZE) /* paranoia check */
-> +       if (size >= core_file_note_size_max) /* paranoia check */
->                 return -EINVAL;
->         size = round_up(size, PAGE_SIZE);
->         /*
-> diff --git a/fs/coredump.c b/fs/coredump.c
-> index be6403b4b14b..2108eb93acb9 100644
-> --- a/fs/coredump.c
-> +++ b/fs/coredump.c
-> @@ -56,10 +56,13 @@
->  static bool dump_vma_snapshot(struct coredump_params *cprm);
->  static void free_vma_snapshot(struct coredump_params *cprm);
-> 
-> +#define MAX_FILE_NOTE_SIZE (4*1024*1024)
-> +
->  static int core_uses_pid;
->  static unsigned int core_pipe_limit;
->  static char core_pattern[CORENAME_MAX_SIZE] = "core";
->  static int core_name_size = CORENAME_MAX_SIZE;
-> +unsigned int core_file_note_size_max = MAX_FILE_NOTE_SIZE;
-> 
->  struct core_name {
->         char *corename;
-> @@ -1020,6 +1023,13 @@ static struct ctl_table coredump_sysctls[] = {
->                 .mode           = 0644,
->                 .proc_handler   = proc_dointvec,
->         },
-> +       {
-> +               .procname       = "core_file_note_size_max",
-> +               .data           = &core_file_note_size_max,
-> +               .maxlen         = sizeof(unsigned int),
-> +               .mode           = 0644,
-> +               .proc_handler   = proc_douintvec,
-> +       },
->  };
-> 
->  static int __init init_fs_coredump_sysctls(void)
-> diff --git a/include/linux/coredump.h b/include/linux/coredump.h
-> index d3eba4360150..14c057643e7f 100644
-> --- a/include/linux/coredump.h
-> +++ b/include/linux/coredump.h
-> @@ -46,6 +46,7 @@ static inline void do_coredump(const
-> kernel_siginfo_t *siginfo) {}
->  #endif
-> 
->  #if defined(CONFIG_COREDUMP) && defined(CONFIG_SYSCTL)
-> +extern unsigned int core_file_note_size_max;
->  extern void validate_coredump_safety(void);
->  #else
->  static inline void validate_coredump_safety(void) {}
+On Sun Apr 28, 2024 at 2:36 PM CEST, Chukun Pan wrote:
+> [...]
+> +&sdhci {
+> +	bus-width =3D <8>;
+> +	max-frequency =3D <200000000>;
+> +	mmc-hs200-1_8v;
 
-Yes; thank you! I like this naming (and sysctl location) now. :)
+Out of curiosity, does this board also support HS400? From a very brief
+look this board seems quite similar to Rock 4 series boards, that do
+support HS400.
 
--Kees
+> +	non-removable;
+> +	pinctrl-names =3D "default";
+> +	pinctrl-0 =3D <&emmc_bus8 &emmc_clk &emmc_cmd &emmc_datastrobe>;
+> +	vmmc-supply =3D <&vcc_3v3>;
+> +	vqmmc-supply =3D <&vcc_1v8>;
+> +	status =3D "okay";
+> +};
 
--- 
-Kees Cook
 
