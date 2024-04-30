@@ -1,110 +1,94 @@
-Return-Path: <linux-kernel+bounces-163367-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-163370-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 95FA28B69F4
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 07:31:58 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B28498B6A00
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 07:40:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C7F731C21F7C
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 05:31:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 449041F220E2
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 05:40:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99B551802E;
-	Tue, 30 Apr 2024 05:31:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E8F721772D;
+	Tue, 30 Apr 2024 05:40:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="rZr/iCae"
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9FA2B5256;
-	Tue, 30 Apr 2024 05:31:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
+	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="SChbnixO"
+Received: from out162-62-57-49.mail.qq.com (out162-62-57-49.mail.qq.com [162.62.57.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB17BC14F
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 05:40:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=162.62.57.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714455100; cv=none; b=t06z4NGFEplWk3YnuhXdqP1cFEW0C3YG7HZi3yHflcogJYoIgVE/qsDLWHFKwv+XfKV3uIySAt6SKzlkwrmV+3hRgUGzqLrX2ZV82KPdK+8HTtMEyuCAI1fsp8EoYwIsONVaZ8UJ7dmSPUKaRzpPc68ALrWO5v37civBmgo8LeU=
+	t=1714455626; cv=none; b=fa2rjtaiEbPLrqvl/jfERf/24xlMImH3RGpCdA3rmazeyuDaaVvtEVlg5f/xtd8wWRIvKn/eo1jFoHsKdJt+mEE56TVX+0/EB2y0uPuf3DSi+OYgk+n51HkQeLQlDPckyBbLvnit25dc0XZqzRVmCRd59EzWW27jsME3ivHEGzw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714455100; c=relaxed/simple;
-	bh=Q8V+3JOr+a1s8/qzOBuGdcCPedYadHh3WFecyLKH3wI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Jj+kXERdPZuRfU5X3l45ZHUGWtylU5ESHNREfjn6R1JC4xiy5N9I1uqeTWDIrzGKhb5KEf4kgnKER0rIKTBmoRlvkrVNyh/t9SCPU+DK7u1cmWSvrzv217m9PsMFh0EsWtX7PgvEX1gdlXvlbSxRhFzWTb5XTTHl7ssCUA6Rtds=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=rZr/iCae; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: by linux.microsoft.com (Postfix, from userid 1134)
-	id E1ACD210FBCF; Mon, 29 Apr 2024 22:31:38 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com E1ACD210FBCF
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1714455098;
-	bh=KzxTstJtvUd8l5rN/2EuPcSEUQvGKdejTaLmiq9IXsE=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=rZr/iCaeB86PuU863wNDmHMaF42RuhfpgFeX8DMHrg7zO2gvIwKI2vqnOu9agG7rP
-	 Ah6600TxzkAhIbI2+muTf0bZgZV9WAeWghc+cHKUnaI12PkBud4l+PrvpsMM5FfRNu
-	 ois5YgS1cu1CY/1DmTiMVgwyQofPJslwJAZUXBmA=
-Date: Mon, 29 Apr 2024 22:31:38 -0700
-From: Shradha Gupta <shradhagupta@linux.microsoft.com>
-To: Jiri Pirko <jiri@resnulli.us>
-Cc: "David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Bjorn Helgaas <bhelgaas@google.com>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Randy Dunlap <rdunlap@infradead.org>,
-	Johannes Berg <johannes.berg@intel.com>,
-	Breno Leitao <leitao@debian.org>, linux-kernel@vger.kernel.org,
-	netdev@vger.kernel.org, "K. Y. Srinivasan" <kys@microsoft.com>,
-	Haiyang Zhang <haiyangz@microsoft.com>,
-	Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
-	Long Li <longli@microsoft.com>,
-	Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>,
-	Konstantin Taranov <kotaranov@microsoft.com>,
-	Yury Norov <yury.norov@gmail.com>, linux-hyperv@vger.kernel.org,
-	shradhagupta@microsoft.com
-Subject: Re: [PATCH net-next v2 0/2] Add sysfs attributes for MANA
-Message-ID: <20240430053138.GA6429@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
-References: <1713954774-29953-1-git-send-email-shradhagupta@linux.microsoft.com>
- <ZikbpoXWmcQrBP3V@nanopsycho>
+	s=arc-20240116; t=1714455626; c=relaxed/simple;
+	bh=o2mkoohmWSqXxEQKCsPzfVpPezIXDWDYgvj5CKYjwaM=;
+	h=Message-ID:From:To:Cc:Subject:Date:In-Reply-To:References:
+	 MIME-Version; b=Dwz6vmDuxdy6FSfScibBBhNthhypnahoYCzPHfJ19wDzlA3iLJFSm7kmHDyz8B1BTQu83l8wJoXqOJ43hQpfhNrMZ6gNVzNkjxjLH4pOFw4eMTK3FftBJZXHrnRLtfuP0Bqtd1BRLF6/DZUCBgmjhPg2eKOg+ZDMEYuGfSDg6lo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=SChbnixO; arc=none smtp.client-ip=162.62.57.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
+	t=1714455612; bh=cE2Z8F+T6CzTKmHgax54sOHcrGaYMhSaBGLMxBBiY+s=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=SChbnixObmb8XynVH9453ILUYgKvqEpeja+KfIQxkFTHeT187xoXHK6TRm8MH3IrM
+	 Rwsg2VZekgAEY7F+Y5ACo3In/7I/NunWibOupldDprZMN3pVdUUGj7mLHL2QbFNFx6
+	 q+WiEeTzs+yv8U8kBiIVY4jSjYzjF+wqJR1EO3BU=
+Received: from pek-lxu-l1.wrs.com ([111.198.228.153])
+	by newxmesmtplogicsvrszb9-1.qq.com (NewEsmtp) with SMTP
+	id 8820A65A; Tue, 30 Apr 2024 13:34:02 +0800
+X-QQ-mid: xmsmtpt1714455242tc59767xk
+Message-ID: <tencent_7437344BBA742F76EB67C63D0F362897D209@qq.com>
+X-QQ-XMAILINFO: OQhZ3T0tjf0ae1WvG5xAKJHC8YjbpJpaMz3BzFnLFo/y+C2ulx/8PKYcoYL+hv
+	 UBOO6f+HAp0Jwc8pJzI4OnzZhytTmYapkVaIz1n+gJTGj1/OkdCiTeSEy18InFotE1Rl9+yk4w/G
+	 53kM6CFmtsNZSFVf3O08X5jyg+eePeDTdtglQpnrz9JGOWsJbNWlOyZuUC58i4ifu+r3r3Azfxwk
+	 wpfHOE12f1rxJ6u7q2e7uzfbqqay8z2r/l63B9acJW+Q+5H86VtbTCyIQi0JpYCfIN1EAyAASVD5
+	 sTj9Vbp6qLfKyRVefT86qPZw26d9wHzvZYwDpkl7SIeATpIbYZcpmbDJlrq2jLdTPz9VeeV0ccsF
+	 ZdyeIcpUnRbdw4w1F0t4cVUW0nrMdEQr2V8PUsqGRKOG12f6zopbdhezqLKDiWeZt7k+QF+InNCQ
+	 4v0ytbgPvf62FlN6CT/TNpo1gu7lLNKzAndCG+Kl21L9TpMvC9RkCR1fC4K1uOLXI6q22TH0uawN
+	 hLbJwNkhKLoqoCSdnVNr35tOXi0zmEv9ogbb6U3JpXjKXxQRszpQTHT3ZrFBPw5Yq90ggFtA+tf+
+	 qZMlfS57R2eB2ISF0hyVLz/5OgP5u1mbFvDulJcSOZG3IezMCdSKADalKjBW2ZB3lNPOTVMv57LD
+	 ApVOWIw/QGmTNddTbbEfEdRj7beK066n1a3vnqZhpfhVAXQiUnlfkpJZYVPrC+AB7BGqtSnL8Kef
+	 A/KieRNOxOcbZ6HHHYOKS456C4s2rBKG9p4NR2/m9tM/PRkUuTTPf7RH43pfyGcgEAkWcbKGzOSO
+	 f8VwsaEIeJ8PaBJi40YezQkz4rJg0Pp77vJrvSaYWJ11wpISM8Is5KMY9UnNpzQ2i/9jsZGWA4PD
+	 q3ScgEpWF38SQOk3X+vILUn81EiEFwAFmXJ5q6rW+IyBWyXeM7UnHcbAcIex7fuj0s4PLq91Bn
+X-QQ-XMRINFO: OWPUhxQsoeAVDbp3OJHYyFg=
+From: Edward Adam Davis <eadavis@qq.com>
+To: syzbot+eaba5abe296837a640c0@syzkaller.appspotmail.com
+Cc: linux-kernel@vger.kernel.org,
+	syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] [ext4?] KMSAN: uninit-value in ext4_inlinedir_to_tree
+Date: Tue, 30 Apr 2024 13:34:02 +0800
+X-OQ-MSGID: <20240430053401.562396-2-eadavis@qq.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <000000000000440b0a06173e6ca8@google.com>
+References: <000000000000440b0a06173e6ca8@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZikbpoXWmcQrBP3V@nanopsycho>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+Content-Transfer-Encoding: 8bit
 
-On Wed, Apr 24, 2024 at 04:48:06PM +0200, Jiri Pirko wrote:
-> Wed, Apr 24, 2024 at 12:32:54PM CEST, shradhagupta@linux.microsoft.com wrote:
-> >These patches include adding sysfs attributes for improving
-> >debuggability on MANA devices.
-> >
-> >The first patch consists on max_mtu, min_mtu attributes that are
-> >implemented generically for all devices
-> >
-> >The second patch has mana specific attributes max_num_msix and num_ports
-> 
-> 1) you implement only max, min is never implemented, no point
-> introducing it.
-Sure. I had added it for the sake of completeness.
-> 2) having driver implement sysfs entry feels *very wrong*, don't do that
-> 3) why DEVLINK_PARAM_GENERIC_ID_MSIX_VEC_PER_PF_MAX
->    and DEVLINK_PARAM_GENERIC_ID_MSIX_VEC_PER_PF_MIN
->    Are not what you want?
-Thanks for pointing this out. We are still evaluating if this devlink param
-could be used for our usecase where we only need a read-only msix value for VF.
-We keep the thread updated.
-> 
-> >
-> >Shradha Gupta (2):
-> >  net: Add sysfs atttributes for max_mtu min_mtu
-> >  net: mana: Add new device attributes for mana
-> >
-> > Documentation/ABI/testing/sysfs-class-net     | 16 ++++++++++
-> > .../net/ethernet/microsoft/mana/gdma_main.c   | 32 +++++++++++++++++++
-> > net/core/net-sysfs.c                          |  4 +++
-> > 3 files changed, 52 insertions(+)
-> >
-> >-- 
-> >2.34.1
-> >
-> >
+please test uv in ext4_inlinedir_to_tree
+
+#syz test https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+
+diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
+index 5e4f65c14dfb..3611952570a7 100644
+--- a/fs/ext4/namei.c
++++ b/fs/ext4/namei.c
+@@ -1182,7 +1182,7 @@ static int htree_dirblock_to_tree(struct file *dir_file,
+ int ext4_htree_fill_tree(struct file *dir_file, __u32 start_hash,
+ 			 __u32 start_minor_hash, __u32 *next_hash)
+ {
+-	struct dx_hash_info hinfo;
++	struct dx_hash_info hinfo = {};
+ 	struct ext4_dir_entry_2 *de;
+ 	struct dx_frame frames[EXT4_HTREE_LEVEL], *frame;
+ 	struct inode *dir;
+
 
