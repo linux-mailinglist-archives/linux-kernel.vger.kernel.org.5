@@ -1,211 +1,265 @@
-Return-Path: <linux-kernel+bounces-163538-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-163541-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8EE0A8B6CCA
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 10:27:48 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 888458B6CD7
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 10:33:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 137A4283E42
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 08:27:47 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A9D04B2268B
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 08:33:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 381EA128830;
-	Tue, 30 Apr 2024 08:27:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 08DBD4207D;
+	Tue, 30 Apr 2024 08:33:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="X3QC69mm"
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10olkn2017.outbound.protection.outlook.com [40.92.40.17])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="c7vHXTZa"
+Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 906167E58F;
-	Tue, 30 Apr 2024 08:27:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.40.17
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714465645; cv=fail; b=aGH9srRwNge0T2CGN49Wlgsqu4d9R6C11igE6pvNnr54zGYgYVpk9F42EQN/EPwow3DRMTF3tQHDL8uHoot2ZeUA16MLRh6jWNxVxYxR7aKZc9fdP5Jgz3qXAnvh0x/euJkaq21gALdqvpAJjIaQ1NX7vl59Jg2YwNdptfm5YRo=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714465645; c=relaxed/simple;
-	bh=SRjCzd+sFVb+g6YEaxNLFIxpM+I/1lRtbgtfkbA+ROc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=rHhKQtA95UhPMArKqVyJViCH8vHkx3V907BrJ4+RRIH9Po5Wppjje68VGLW/0dqVyPGC5yN5fZmR3JSnGst0WfV6o5pJp5Tjv9HkOccyT9e5gIM9h/XAA5dMb6XKMN58UuSvPwFzhbhnxLem9+WKZeTKkK/o2tVGTVlSrzVYcrc=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=X3QC69mm; arc=fail smtp.client-ip=40.92.40.17
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Ebk4CU5OvfuTdRPYX4pNilpCKhh1p3Yj+ap8SIPh5eScubFEaJWTNGJzWWy7egL97JrKEAvFuME7BHpaRpsxELQzk9GxdjoNBWKKiANPPG7lofdszUQalaXWfnuuD9bulXGORf/bVAmRGyULUQMNYIXkdGfj3N5i+i6DIvuneyXzTqAac0hDcYTOzIO8b/HODe8Q61H9HwgjIL2Xun7t5QxYBUje5iYEsPTrMbhLrFIoYozlYawcT/VNh4dRRiKtXGMOqTQeuo9LxBFABzQSlUyveo0dMw6SqzmknXAL/LFnivZG7tqK+DXsN2WHD13mFAXl0dyWvrqkvUkY/GIX5g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=jRargXPFGNgl7+HOrI2kiaQqFVGWbMb2E6uqYzaCTHA=;
- b=dlRik9V4LjgIvhU1iK8Peh4lXIi+HhYb39n/AsYM1vvT/DYhBspM2c4xTlQ3CmD4ghro9KMi+F9W/UVqvOlPjVY92uv2gfy80t1A94FnL/0Cj6NqgqJfi/IEokW85g3Ug7kbcDQLO7uewtBDjDhWnOZpckhrucLLkoTbA0B+U32aoawK3lxkmkzCWtEzI2C1B4XZ0JAJdlL/utGmtDBttFZAfiqICoxArD31Dh99DuotGQw/Gg/XACZwjufHJC9TQ6ontGAKC9Tii7fiCHytSaFvu6uucfG0w4SXTHP45lOU5TIjE1oyNaNFEAcKZI0Yn7aG1wTS9U11/0rpYm85+A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=jRargXPFGNgl7+HOrI2kiaQqFVGWbMb2E6uqYzaCTHA=;
- b=X3QC69mmQbA66YfI3P2xIHgbvcDSWwUDLqOpiZbzAiwT/t5EqQjIyDud+zCVWOWwLGnYxNnCnwBSFvpb8sNPfIHIZqobMbvTeogtk9Z0Hj2poJSdQ+FYBCIVM6nhofKIAK81QSsC4XeQNfc4t1cObXVZYGfzIS6Ju2I5+sdI9iwIDQhpqjB+wQu+0wvsxZxWlUCbFf5B3OToR1BMh4OLcvoUW2154xO6EvUJqYiDcwu7RD7I5g6BDXU9PjQz7oIqGLVGFaxLJY7MDJOoSWfvH5AJCimWKp3yQVSSCDZHCcnCYdxRVBsK7dM1qHUt8UPgbjGNaAdHNuP8PxRsrhiTag==
-Received: from IA1PR20MB4953.namprd20.prod.outlook.com (2603:10b6:208:3af::19)
- by MN0PR20MB7367.namprd20.prod.outlook.com (2603:10b6:208:4cb::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7519.35; Tue, 30 Apr
- 2024 08:27:21 +0000
-Received: from IA1PR20MB4953.namprd20.prod.outlook.com
- ([fe80::182f:841b:6e76:b819]) by IA1PR20MB4953.namprd20.prod.outlook.com
- ([fe80::182f:841b:6e76:b819%2]) with mapi id 15.20.7519.031; Tue, 30 Apr 2024
- 08:27:21 +0000
-Date: Tue, 30 Apr 2024 16:27:48 +0800
-From: Inochi Amaoto <inochiama@outlook.com>
-To: Krzysztof Kozlowski <krzk@kernel.org>, 
-	Inochi Amaoto <inochiama@outlook.com>, Jean Delvare <jdelvare@suse.com>, 
-	Guenter Roeck <linux@roeck-us.net>, Rob Herring <robh@kernel.org>, 
-	Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Chen Wang <unicorn_wang@outlook.com>, Paul Walmsley <paul.walmsley@sifive.com>, 
-	Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>
-Cc: linux-hwmon@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org
-Subject: Re: [PATCH v3 1/2] dt-bindings: hwmon: Add Sophgo SG2042 external
- hardware monitor support
-Message-ID:
- <IA1PR20MB4953F13D16B99FC04EB2AD30BB1A2@IA1PR20MB4953.namprd20.prod.outlook.com>
-References: <IA1PR20MB4953D1C509CC7F23620CCA01BB1B2@IA1PR20MB4953.namprd20.prod.outlook.com>
- <IA1PR20MB4953EF54DBF6D5681C27014BBB1B2@IA1PR20MB4953.namprd20.prod.outlook.com>
- <97886e14-f07f-4175-8e8d-2d70c2daa907@kernel.org>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <97886e14-f07f-4175-8e8d-2d70c2daa907@kernel.org>
-X-TMN: [3viKnHrMKAg5OhgmhPqM+9pHCm7swcwECXfhsBngu9s=]
-X-ClientProxiedBy: SGBP274CA0020.SGPP274.PROD.OUTLOOK.COM (2603:1096:4:b0::32)
- To IA1PR20MB4953.namprd20.prod.outlook.com (2603:10b6:208:3af::19)
-X-Microsoft-Original-Message-ID:
- <c5an6lflwhridboemxdq5mq3gosaqdbjczorbkyeloq5vulzfz@prcm3gex3nzf>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3AD153EA73
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 08:33:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.44
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1714465992; cv=none; b=mQYaWp0HQoKbQUCKEWZLxQhvoUUHPdNFYiVixXkLXAD5jR+yN3xuA4DrRlN/xpQxbHbF/hz1vxOHqciPCP28ZA49gv/5BxRj5mXzKkMy1LV6AUeDgVJFjy8N4Q+zNkleUt+a+dHalzpIMPjT8BPchIeKJiQ/3txyoafr78Ktb+0=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1714465992; c=relaxed/simple;
+	bh=6KYcdaW5AJOuKrCAbQiANDQ3oufjExknfaTGdAiLQTc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=POf8w/NNwNybsg0U0Fyd5AwxNHkeM0w8BpYNbtNcCJd+m6IkyCFmdgoIeOZbYlIXXOCHznGNcpDd58iN4i2VRMfbDBYGrbF4B1TCDZIumkeerf2qRF7xkysqbO4smXXGT8DyhUTITmMOB9xoObQBFvpnxGqElQqd04dv3/JgjbA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=c7vHXTZa; arc=none smtp.client-ip=209.85.218.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-a587831809eso641301666b.1
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 01:33:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1714465988; x=1715070788; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=cPkVFP7Lh42TFOUAbrSl+hJmc87Aue0/QUNIQ8XD5Q0=;
+        b=c7vHXTZarX9VW3hDPVf/5rvryI+zxhvz09DvZk7jFZ6k6WE4eKDCdAQGtLWuyzXyes
+         kGl9SxHdIS/lDtGP35tWHekQ2le/8sbNAB1OzmpKiA+Hc8p98yQUhN2exU+TAzNS12o0
+         cwUduZkz/KAv9hrZw5M/6j31lgwmLYz4gMF910lFvrqcIYauaxggDagREfHXX+QasNak
+         yswmjkPqSOV0nNV8mzX7CEeRc8wls1/0gek450I60zkGJwdJOx2jULxOIxmipAbWj5lp
+         Kg2YRpqHIYDuAIJcuitLWInJi7yO6IuKcpSxfmxg+yU8xTQxZPezBpfXM9nyexlNBWJQ
+         6GCg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714465988; x=1715070788;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=cPkVFP7Lh42TFOUAbrSl+hJmc87Aue0/QUNIQ8XD5Q0=;
+        b=XgrvtW+cADD3PaWDcLpJU5Boxk393PzPxb8DfbKTkDR2rTUDRVyXM0UiieWr0Nex3G
+         TJACh1efLa4QK42n+YNnpiZekDwMmu5nPpxZ8AEtndrd4zVBZ+M31+VXBfWsecEHAeBn
+         FjO/WNCCAX0P0lrH35ZNNAzm84iPbFr04GzN1qXuRlGH7qxn36HPeFSNF9GNM5WrL+Jl
+         vJGU54TWwu14mpRaj7/P7tIpUCxH6ZBeWAt+Z2h0AROwAdb/6LRU3SBwTis4wud8X6iz
+         XI9KWIxYBDXYqiQ2yJPm8jyBQ/X+5+j/1998LlnQDegblKy279+3D0KD/RjMqwDhp5EI
+         OKCA==
+X-Forwarded-Encrypted: i=1; AJvYcCVDEXFucA5VMsesANH9/LxB4VKihHhONH2a0o6olbzWGAMbPvRTRwoW0j/sUV+6ug7TC/YniK0JFr4Tpx6Z0bjWxueGSFiBWyZqE0n7
+X-Gm-Message-State: AOJu0YxHYGaaY2M3S1B9mUsi1fp19QtXRMpXusEMDsYpnAeRKF/OimX8
+	dPCFQTQMtZHxZCkZztOwez5zomGaXUICjxNbC3G5AlPYe6RlHaUgpDkPNjNeVD0SGmYrsYwjP2r
+	MpMuSfFmwT3B12vf44p3jPwPejTRCp32LDFur
+X-Google-Smtp-Source: AGHT+IEPhiQHehjJBW+klsUM22MQCZFXx0ThaEn6Qq/yxxtdIPTrErrC2XqydQUnCNSM8OgbWyEQjR+3aViK6Pq1OaI=
+X-Received: by 2002:a17:906:f20e:b0:a58:fabc:4a02 with SMTP id
+ gt14-20020a170906f20e00b00a58fabc4a02mr4671803ejb.39.1714465988245; Tue, 30
+ Apr 2024 01:33:08 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: IA1PR20MB4953:EE_|MN0PR20MB7367:EE_
-X-MS-Office365-Filtering-Correlation-Id: 16434118-d337-42dd-e508-08dc68ef5ac8
-X-Microsoft-Antispam:
-	BCL:0;ARA:14566002|461199019|1602099003|3412199016|440099019|1710799017;
-X-Microsoft-Antispam-Message-Info:
-	fjC0taqLhqttUkXaQZnfBhv0QMVPN8k/VKFYc646TXBqIEyBSUcjAllqUyfTbqzGwNLMWy6SdszgVGnuyEsw4g5V5JtXhWlAC5emk7P/oWDnWL6IsHm2vTuSxXvUmn68RS5WZRW+NulFE4zkxLx8J2YgQPWTQZZRVuo9U8CNCNmRjdWyBNDWl02OR5IS/E2v973hVUgFd4X+cChlSLBA6Gc1l0Ageq0uU5faNE3BW+Ou9CFeGWZ+LuDqxhyntinL5EiDbtf4k9UG9j8uYkGWcRKhNCDidRnapyi2+9TyTsu4y7sIGxfs0l46W39SsRN4fDC8mF9W+50gW3EBFxNsuTWdtENYK+Fcxpj97Y+thhaaB3fWq0eX+CYJsTwsVuHjmNKCpYERYxCr9Udl7fDO9dXzZeYVycaKKmPBUMIsFFhkrnsn2Xv7xR23l+HUkFcLMMgC2oi1hJ3iEDwTHBPZWE/FBaxvZUhzuY1qpwpXu/GEyB4i8t7MlGY5Sei3AlZO5ObmXgj/XhPUgip6DwlT1opz/CsboypSFvO+59VxSakrW5Vg9cA8b3IyJe+N0zQf8RhC86zNpkqrHDsg4qWYm/1+XvNrK9cE3PvqalMIZuY1uXi3t8lUsDnEAtUedNGESDrO8GbvOqbDEw3nDWoMsL1cxOh8rBzPxz/4VW8zAxA608q/r/fKTJeh00mTOrMQ
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?UNZ2Xai7HSDd9sbuhw5i8u6e3knNneBuyywP3jDCVNFrj2sqh4EwT8EXJNGa?=
- =?us-ascii?Q?89jSW/gRwu+B7eOS/q2wEXIpeyytGYL/sOmrHR9vJMku9O4x5KIaz8uvbSQ1?=
- =?us-ascii?Q?ATvitCNQgLLeXzWD6PSuGrd1bj89k6coF5YKVwXVWPrKT8BcmYEd54cavwyJ?=
- =?us-ascii?Q?ufgAwRThZHP4oKIUczIwACH0ScWnr34QeBxHbjI2Su8c/1nQ0FbCiMuZBKKo?=
- =?us-ascii?Q?Jnb54pc6XQ00yHQSvbYTcTWWaFKSENGYXexw3BP3Vv0git6gfmU4xQtpXG0t?=
- =?us-ascii?Q?Z4Ekf1b+fZiJ4jffovDUITYwbXogOtiL7jjowN6ka0D8Z8OEKVQ+Xw9twGUQ?=
- =?us-ascii?Q?BcUmoe/oxwb7bHgvp2uTqHGcjBQvPkCIc7Hwq+7/os9H2LVRHub2LUKsy4sB?=
- =?us-ascii?Q?WyDqVqdVCwKg3rFJCqIFZQ7OWCSWvB/KpdFND/eYhsK0pqA0lRPOSIPnwOnt?=
- =?us-ascii?Q?m8qtdYbShxQMSATAUT+qbVfHboOpMTav5E1Svy6f+kApgF/WKl6yuqh7E9Ou?=
- =?us-ascii?Q?iVDeZdtUhjCOX0ZfhTFbvnkjDEQ1nxV+OsElDV4XXSVxqf9Q75+brdyzUx+Z?=
- =?us-ascii?Q?cM0s0PLOz5izNOxnXFmx7fC68uc16hi8kCb/eKzieKHcKRtOZPGflbyNNCIU?=
- =?us-ascii?Q?iRC5snVlDz5x9YCZ0KahRK/FnxRCtGAx9DW+iAtXa1E6cIuUpT1R7U0xw8/I?=
- =?us-ascii?Q?IaDKMOuY0E9jgeVqmACKT7J+7/cWD/Cf77/SYLmWxELh4wbWrqYM410C1D4O?=
- =?us-ascii?Q?GW0BzmLX4ndzm1xakzYFpDbBHUGbIpmCyrRrMQ6nw7bO9vytL8j9gRRBe6hT?=
- =?us-ascii?Q?tRP2sCx51yq6pbmAtSa8RAl15+/5+7AihdONIKsionRRB7v4DRF9yt1xyKaK?=
- =?us-ascii?Q?eutgB7ffjU/rM5QbX9UvdUiK22K3XUB1iwpd2Pj//1jF1TK5KtwW7MNBaWvy?=
- =?us-ascii?Q?gizJ8wHQK5ls8OwL5PIUQ+qZolAaTtEF28ikZhdm0SOCsrvyk3lAvWNIROdR?=
- =?us-ascii?Q?hXHXS//2Y6KSHONFfv1clw8nNXzqNz0InHZcoyHX1Bijbs/W7KG+bWhQCISv?=
- =?us-ascii?Q?Rx1h/uOrKIY74Xidohv3zp/DS9KEz7sIlKLUlrE+HFwxrTJOImEc31MrgN9r?=
- =?us-ascii?Q?kB+yXCzmYH3Ja69KwOux9nHwjIUCkUnpmnp241BgyYk0numM1lgSFQAJ/2so?=
- =?us-ascii?Q?oKc+qgwP5m+GHXOGqi7K80Wk/eRGvr62eoPsl9VxDd+SCYF+465+pjcWtw0J?=
- =?us-ascii?Q?+V4KxvXdL9NTLFNlXeTJ?=
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 16434118-d337-42dd-e508-08dc68ef5ac8
-X-MS-Exchange-CrossTenant-AuthSource: IA1PR20MB4953.namprd20.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Apr 2024 08:27:21.1275
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
-	00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN0PR20MB7367
+References: <0000000000002ecbdb06174a1d9a@google.com>
+In-Reply-To: <0000000000002ecbdb06174a1d9a@google.com>
+From: Yosry Ahmed <yosryahmed@google.com>
+Date: Tue, 30 Apr 2024 01:32:30 -0700
+Message-ID: <CAJD7tkYrRAK7rjfyArbdq8=Y6CV-T_YbL+SvBEGU8_MV3opbqg@mail.gmail.com>
+Subject: Re: [syzbot] [mm?] KMSAN: uninit-value in zswap_rb_insert
+To: syzbot <syzbot+9c9d60f1b20b22ce218a@syzkaller.appspotmail.com>
+Cc: akpm@linux-foundation.org, chengming.zhou@linux.dev, hannes@cmpxchg.org, 
+	linux-kernel@vger.kernel.org, linux-mm@kvack.org, nphamcs@gmail.com, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Apr 30, 2024 at 09:47:16AM GMT, Krzysztof Kozlowski wrote:
-> On 29/04/2024 14:03, Inochi Amaoto wrote:
-> > Due to the design, Sophgo SG2042 use an external MCU to provide
-> > hardware information, thermal information and reset control.
-> > 
-> > Add bindings for this monitor device.
-> > 
-> > Signed-off-by: Inochi Amaoto <inochiama@outlook.com>
-> > ---
-> >  .../hwmon/sophgo,sg2042-hwmon-mcu.yaml        | 40 +++++++++++++++++++
-> >  1 file changed, 40 insertions(+)
-> >  create mode 100644 Documentation/devicetree/bindings/hwmon/sophgo,sg2042-hwmon-mcu.yaml
-> > 
-> > diff --git a/Documentation/devicetree/bindings/hwmon/sophgo,sg2042-hwmon-mcu.yaml b/Documentation/devicetree/bindings/hwmon/sophgo,sg2042-hwmon-mcu.yaml
-> > new file mode 100644
-> > index 000000000000..64a8403aaab8
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/hwmon/sophgo,sg2042-hwmon-mcu.yaml
-> > @@ -0,0 +1,40 @@
-> > +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-> > +%YAML 1.2
-> > +---
-> > +$id: http://devicetree.org/schemas/hwmon/sophgo,sg2042-hwmon-mcu.yaml#
-> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > +
-> > +title: Sophgo SG2042 onboard MCU support
-> > +
-> > +maintainers:
-> > +  - Inochi Amaoto <inochiama@outlook.com>
-> > +
-> > +properties:
-> > +  compatible:
-> > +    const: sophgo,sg2042-hwmon-mcu
-> > +
-> > +  reg:
-> > +    maxItems: 1
-> > +
-> > +  "#thermal-sensor-cells":
-> > +    const: 1
-> 
-> This looks like thermal sensor, so you miss ref to thermal-sensor.yaml
-> in top-level. Just like other sensors.
-> 
+On Mon, Apr 29, 2024 at 11:02=E2=80=AFPM syzbot
+<syzbot+9c9d60f1b20b22ce218a@syzkaller.appspotmail.com> wrote:
+>
+> Hello,
+>
+> syzbot found the following issue on:
+>
+> HEAD commit:    e33c4963bf53 Merge tag 'nfsd-6.9-5' of git://git.kernel.o=
+r..
+> git tree:       upstream
+> console output: https://syzkaller.appspot.com/x/log.txt?x=3D123d5a0f18000=
+0
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=3D776c05250f36d=
+55c
+> dashboard link: https://syzkaller.appspot.com/bug?extid=3D9c9d60f1b20b22c=
+e218a
+> compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Deb=
+ian) 2.40
+>
+> Unfortunately, I don't have any reproducer for this issue yet.
+>
+> Downloadable assets:
+> disk image: https://storage.googleapis.com/syzbot-assets/a10175188ebb/dis=
+k-e33c4963.raw.xz
+> vmlinux: https://storage.googleapis.com/syzbot-assets/abe743417d16/vmlinu=
+x-e33c4963.xz
+> kernel image: https://storage.googleapis.com/syzbot-assets/fb10cccc9909/b=
+zImage-e33c4963.xz
+>
+> IMPORTANT: if you fix the issue, please add the following tag to the comm=
+it:
+> Reported-by: syzbot+9c9d60f1b20b22ce218a@syzkaller.appspotmail.com
+>
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D
+> BUG: KMSAN: uninit-value in zswap_rb_insert+0x1e9/0x330 mm/zswap.c:842
 
-Thanks.
+I am not sure how this could happen. The report is complaining about
+the access in the loop condition AFAICT:
 
-> > +
-> > +required:
-> > +  - compatible
-> > +  - reg
-> > +  - "#thermal-sensor-cells"
-> > +
-> > +additionalProperties: false
-> > +
-> > +examples:
-> > +  - |
-> > +    i2c {
-> > +        #address-cells = <1>;
-> > +        #size-cells = <0>;
-> > +
-> > +        syscon@17 {
-> 
-> Are you sure this is syscon? 
+while (*link) { /* here */
+.
+}
 
-My fault, I forgot to change the node type after moving.
-I will replace this type with suitable one.
+*link should start as root->rb_node (which should be NULL as it is
+static data), then be updated to point at a zswap_entry->rbnode as
+entries get added. *link should keep then be updated to values at
+zswap_entry->rbnode->{left/right}.
 
-> Title says mcu, compatible says hwmon...
+Although entry->rbnode->{left/right} are not initialized when
+allocated by zswap_entry_cache_alloc() as the report mentions, they
+are initialized in zswap_rb_insert()->rb_link_node() when they are
+added to the tree.
 
-SG2042 use an external MCU to provide hwmon info (on the
-motherboard, not in the SoC).
-This is why I say this is MCU, and compatible says hwmon.
+Also, this code is removed with the xarray conversion anyway.
 
-> 
-> 
-> Best regards,
-> Krzysztof
-> 
-
-
+>  zswap_rb_insert+0x1e9/0x330 mm/zswap.c:842
+>  zswap_store+0x22f2/0x2ca0 mm/zswap.c:1591
+>  swap_writepage+0x126/0x4c0 mm/page_io.c:198
+>  pageout mm/vmscan.c:660 [inline]
+>  shrink_folio_list+0x4a55/0x7910 mm/vmscan.c:1323
+>  evict_folios+0x9d7f/0xcc20 mm/vmscan.c:4537
+>  try_to_shrink_lruvec+0x160e/0x1a50 mm/vmscan.c:4733
+>  shrink_one+0x66f/0xd40 mm/vmscan.c:4772
+>  shrink_many mm/vmscan.c:4835 [inline]
+>  lru_gen_shrink_node mm/vmscan.c:4935 [inline]
+>  shrink_node+0x4856/0x55f0 mm/vmscan.c:5894
+>  shrink_zones mm/vmscan.c:6152 [inline]
+>  do_try_to_free_pages+0x820/0x2570 mm/vmscan.c:6214
+>  try_to_free_pages+0xb7b/0x1820 mm/vmscan.c:6449
+>  __perform_reclaim mm/page_alloc.c:3774 [inline]
+>  __alloc_pages_direct_reclaim mm/page_alloc.c:3796 [inline]
+>  __alloc_pages_slowpath+0x1035/0x31a0 mm/page_alloc.c:4202
+>  __alloc_pages+0xacf/0xe70 mm/page_alloc.c:4588
+>  alloc_pages_mpol+0x299/0x990 mm/mempolicy.c:2264
+>  vma_alloc_folio+0x418/0x680 mm/mempolicy.c:2303
+>  do_cow_fault mm/memory.c:4918 [inline]
+>  do_fault mm/memory.c:5026 [inline]
+>  do_pte_missing mm/memory.c:3880 [inline]
+>  handle_pte_fault mm/memory.c:5300 [inline]
+>  __handle_mm_fault mm/memory.c:5441 [inline]
+>  handle_mm_fault+0x4f2f/0xce00 mm/memory.c:5606
+>  do_user_addr_fault arch/x86/mm/fault.c:1413 [inline]
+>  handle_page_fault arch/x86/mm/fault.c:1505 [inline]
+>  exc_page_fault+0x2a0/0x730 arch/x86/mm/fault.c:1563
+>  asm_exc_page_fault+0x2b/0x30 arch/x86/include/asm/idtentry.h:623
+>  rep_stos_alternative+0x40/0x80 arch/x86/lib/clear_page_64.S:92
+>  load_elf_binary+0x212e/0x4d30 fs/binfmt_elf.c:1132
+>  search_binary_handler fs/exec.c:1778 [inline]
+>  exec_binprm fs/exec.c:1820 [inline]
+>  bprm_execve+0xc57/0x21c0 fs/exec.c:1872
+>  do_execveat_common+0xceb/0xd70 fs/exec.c:1979
+>  do_execve fs/exec.c:2053 [inline]
+>  __do_sys_execve fs/exec.c:2129 [inline]
+>  __se_sys_execve fs/exec.c:2124 [inline]
+>  __x64_sys_execve+0xf4/0x130 fs/exec.c:2124
+>  x64_sys_call+0x1612/0x3b50 arch/x86/include/generated/asm/syscalls_64.h:=
+60
+>  do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+>  do_syscall_64+0xcf/0x1e0 arch/x86/entry/common.c:83
+>  entry_SYSCALL_64_after_hwframe+0x77/0x7f
+>
+> Uninit was created at:
+>  __alloc_pages+0x9d6/0xe70 mm/page_alloc.c:4598
+>  __alloc_pages_node include/linux/gfp.h:238 [inline]
+>  alloc_pages_node include/linux/gfp.h:261 [inline]
+>  alloc_slab_page mm/slub.c:2175 [inline]
+>  allocate_slab mm/slub.c:2338 [inline]
+>  new_slab+0x2de/0x1400 mm/slub.c:2391
+>  ___slab_alloc+0x1184/0x33d0 mm/slub.c:3525
+>  __slab_alloc mm/slub.c:3610 [inline]
+>  __slab_alloc_node mm/slub.c:3663 [inline]
+>  slab_alloc_node mm/slub.c:3835 [inline]
+>  kmem_cache_alloc_node+0x6ea/0xc50 mm/slub.c:3888
+>  zswap_entry_cache_alloc mm/zswap.c:874 [inline]
+>  zswap_store+0xb26/0x2ca0 mm/zswap.c:1535
+>  swap_writepage+0x126/0x4c0 mm/page_io.c:198
+>  pageout mm/vmscan.c:660 [inline]
+>  shrink_folio_list+0x4a55/0x7910 mm/vmscan.c:1323
+>  evict_folios+0x9d7f/0xcc20 mm/vmscan.c:4537
+>  try_to_shrink_lruvec+0x160e/0x1a50 mm/vmscan.c:4733
+>  shrink_one+0x66f/0xd40 mm/vmscan.c:4772
+>  shrink_many mm/vmscan.c:4835 [inline]
+>  lru_gen_shrink_node mm/vmscan.c:4935 [inline]
+>  shrink_node+0x4856/0x55f0 mm/vmscan.c:5894
+>  shrink_zones mm/vmscan.c:6152 [inline]
+>  do_try_to_free_pages+0x820/0x2570 mm/vmscan.c:6214
+>  try_to_free_pages+0xb7b/0x1820 mm/vmscan.c:6449
+>  __perform_reclaim mm/page_alloc.c:3774 [inline]
+>  __alloc_pages_direct_reclaim mm/page_alloc.c:3796 [inline]
+>  __alloc_pages_slowpath+0x1035/0x31a0 mm/page_alloc.c:4202
+>  __alloc_pages+0xacf/0xe70 mm/page_alloc.c:4588
+>  alloc_pages_mpol+0x299/0x990 mm/mempolicy.c:2264
+>  alloc_pages+0x1bf/0x1e0 mm/mempolicy.c:2335
+>  vm_area_alloc_pages mm/vmalloc.c:3561 [inline]
+>  __vmalloc_area_node mm/vmalloc.c:3637 [inline]
+>  __vmalloc_node_range+0x100a/0x28b0 mm/vmalloc.c:3818
+>  vmalloc_user+0x90/0xb0 mm/vmalloc.c:3972
+>  kcov_ioctl+0x5d/0x660 kernel/kcov.c:704
+>  vfs_ioctl fs/ioctl.c:51 [inline]
+>  __do_sys_ioctl fs/ioctl.c:904 [inline]
+>  __se_sys_ioctl+0x261/0x450 fs/ioctl.c:890
+>  __x64_sys_ioctl+0x96/0xe0 fs/ioctl.c:890
+>  x64_sys_call+0x1883/0x3b50 arch/x86/include/generated/asm/syscalls_64.h:=
+17
+>  do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+>  do_syscall_64+0xcf/0x1e0 arch/x86/entry/common.c:83
+>  entry_SYSCALL_64_after_hwframe+0x77/0x7f
+>
+> CPU: 0 PID: 5281 Comm: dhcpcd-run-hook Not tainted 6.9.0-rc5-syzkaller-00=
+053-ge33c4963bf53 #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS G=
+oogle 03/27/2024
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D
+>
+>
+> ---
+> This report is generated by a bot. It may contain errors.
+> See https://goo.gl/tpsmEJ for more information about syzbot.
+> syzbot engineers can be reached at syzkaller@googlegroups.com.
+>
+> syzbot will keep track of this issue. See:
+> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+>
+> If the report is already addressed, let syzbot know by replying with:
+> #syz fix: exact-commit-title
+>
+> If you want to overwrite report's subsystems, reply with:
+> #syz set subsystems: new-subsystem
+> (See the list of subsystem names on the web dashboard)
+>
+> If the report is a duplicate of another one, reply with:
+> #syz dup: exact-subject-of-another-report
+>
+> If you want to undo deduplication, reply with:
+> #syz undup
 
