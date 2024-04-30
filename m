@@ -1,78 +1,82 @@
-Return-Path: <linux-kernel+bounces-164642-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-164643-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9D4B58B808D
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 21:32:19 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id EB1FB8B8090
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 21:32:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 95A61B22B0E
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 19:32:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B0A29284B01
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 19:32:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 06A41199EA6;
-	Tue, 30 Apr 2024 19:32:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A48FD19DF7D;
+	Tue, 30 Apr 2024 19:32:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="pVbL//pF"
-Received: from mail-pj1-f73.google.com (mail-pj1-f73.google.com [209.85.216.73])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="jIoxzCWw"
+Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3283199E80
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 19:32:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.73
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0FEA5199E8D
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 19:32:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714505523; cv=none; b=CFpK+wGUUn5ouKTWk9+1zFfde/vK3f3NCm7VK68Ev4z+dQej/tTY4S5kS4lTyCz9Pyl6w7SmsIADoeKIEmXE2t577Ku5QUB0f6MwucmVHTjUEg9uI23BV2A1b6kbxWiN/qt71lNCPraBKam+/acEZpIkcucy3RsxA5CMCufdg3s=
+	t=1714505524; cv=none; b=ISPCrTKlniPKpIYowpqwpGaaaQffvZqnWGXcWL8hNqOz5jkFgIeApG3+Qp2b1rn9gGbjzgG214W5qkqK6bGz2WF2ZXwZbY2B6+4PQK9Z9tTxlazBPjNGxY4dNr83GW/o9W++o/m2djwdAqWH6XQAajkCJk87uWMYYy0QFF+gAys=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714505523; c=relaxed/simple;
-	bh=ZyEi6X5pCM2tp1slqyp4M7rxWVN5czCX48iQBtE7Jeo=;
-	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=n74tuezQBzo7CCxgVKcnTjTmjtcdAbBlS6O7zfUY3T1RAA9O5SDUBWW2fFkFZ+eNYp1kU/3FfcaiKEJPNxT37vjKBfURUvBGNf2tYOPS26y3LbxGbHOpRq4r0fcwfhIQDC9ybeyynV06rwdHVYqxEJJsolVwNbMgRvaT4/e4Le8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=pVbL//pF; arc=none smtp.client-ip=209.85.216.73
+	s=arc-20240116; t=1714505524; c=relaxed/simple;
+	bh=W+u+y7MWVg0P4qdPzROh25II2YFSK5VTz5XTnAkY0hA=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=S8WI6eKcug+XR1TrG7taJwkAQB+Zr2P8Y1PVLqbJTBc0MDpvoUiFfjBukYJLlhNOvdXosOa/c3U/bi41rVMKBuB2MMOPHdOtqEl8aOW4vpjNyW1OAqv0CJ5omzDAaS/Vsm+BsHCp85BJ8sNjXmwLQODLJ2NwcOpBXXtsueJpa0k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=jIoxzCWw; arc=none smtp.client-ip=209.85.128.201
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-pj1-f73.google.com with SMTP id 98e67ed59e1d1-2ae63694954so6919986a91.3
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 12:32:00 -0700 (PDT)
+Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-61be3f082b0so31674027b3.1
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 12:32:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1714505520; x=1715110320; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:reply-to:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=z8cKIw53BRkz+z0+cac0VztUPzZ2bkNPe6LEvW4OcBU=;
-        b=pVbL//pFn986soxarrKWGavPTzgb+nNosoRNSY7l4l+G7TXLTTPIsqVy8S3fRMOrGx
-         kA2WtNhsSfmZ8NcJzpm58DPU4GvSzS5zOWDpMS1TXtzBDUKj6FnNzV4y8GIseweI3tc0
-         mRilImRhOjk+WS3GLE2oARsGeH2N+K+ydBVllC/04KBn8mo7ItfLZDDNV+4gTNZTXzIF
-         i5unsMQpZ7x15jTxb16NJohmtPwvwBbUKRRn9tO4eQA+EUQbUZiXKKkW2d0md3MwuaDn
-         7JAJbATuYkYYWeLAWcESPrNuFQi+T4uS9aUddK0FrbVNayrWHJI/GKqZHg0LGOYZMhXq
-         xcGw==
+        d=google.com; s=20230601; t=1714505522; x=1715110322; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:reply-to:from:to:cc:subject:date:message-id:reply-to;
+        bh=/9fRzl3CD0k/SyefV+PuVpGeG7yuKpTeGf5FXkOJQxc=;
+        b=jIoxzCWwcWUb3+1GhOFOaYUvvT11RADNXMQ/hLNuzYBL0j/Zq+lCkU0/k4B7l2+6vx
+         wBS13BW/IIB6vrNtvN9wXQaVxrdgSiAQZ/w4yl/dGlBx352pluQYkBtat5zZ+AXyMiwU
+         V/HW9b11Xy9WsVacdDhqI7kPLPqcs3wBMTb5KV98JTade7eQXlzg8EmPKcpbe2pTljBa
+         OUy3dj1Jj769GLA9R7bGwPQTJqfZZlz1wn2KemTzu0gQ7G2s27LO8j61HObD/y6S4kmm
+         pAm/BFudGWZEKipQNJbTRufyESyZ97WGz4b5/hl40egd44eg+pVq388LldT3+LXCt4vY
+         CBIg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714505520; x=1715110320;
-        h=cc:to:from:subject:message-id:mime-version:date:reply-to
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=z8cKIw53BRkz+z0+cac0VztUPzZ2bkNPe6LEvW4OcBU=;
-        b=lLMSD40544Gf7C3SgrPetlIzhs/WNpsFELUf7rNS+XP+nvr4kFY5dbyh5fNi4+x3O6
-         AlpwbcUVIqfobobff1IUX2E65fcMo8vJxuKIJnHR1KVJk/j+b1hs0V5Gd+wJnB23OOjl
-         55tMPW4ihrQP8RLBos4PsKH63RxYSpGH1Qyxh/d3LuD36c10gzEXpU3EzwI8GwL3OL2z
-         lkKUXrpIe9GdY9IBNYaWryThhL3X9fic1Dmd/y4YwS05DhvJ+dvJDQHTW/VwQ7aivhK2
-         5KIa06JXSo9pcUp+T36+l8PaLEGY87HZTF0oDhNcXwfaCWhz1nXgOLneLCHiDLOOiApG
-         +r9Q==
-X-Forwarded-Encrypted: i=1; AJvYcCV4OfzHI//HmhVnqzI7xGHkUUMO/he7dxANElESQNA+/SkSnejfemOO6YvVnObzWn/VbCcyePoCwMP8Ry3iq1+3QtpmpUP86h1Rrefr
-X-Gm-Message-State: AOJu0YzAEvcjU3F3uzgpjzm8U8G3qclvu+ieidwppGPDYugijWV7xFgc
-	zmVnfWyaUrXgNZDbsevlua2cbdI565LDPlSLlzh7+ZaudYuxSoMY+15NnXg3rwkKJ0ZdFXsm1Sf
-	6dg==
-X-Google-Smtp-Source: AGHT+IH3JUNqnUxIpxTDCx/ljNN0s2y6mLqDYiJH9gncvZUrZrTQ/cL7Kjz1TcqYgEZ6lTuIQ7azs+1F9y4=
+        d=1e100.net; s=20230601; t=1714505522; x=1715110322;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:reply-to:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=/9fRzl3CD0k/SyefV+PuVpGeG7yuKpTeGf5FXkOJQxc=;
+        b=SjjBEeVFLyi1z5Y9NRCKv8yQj3zXFDAw9ndwAUNkVhbkthE9gmDxp9MM4Ygj5HGykR
+         0cJKbCSpC+RRexQfprLed0VqiskUfx4qhw8opz/E4lmOgczI7MHBW3L9JxNBZ+UOvB5Z
+         NhAfDnd91RI+5seAH6K+62DvrymtxjbdtXt/noxsXu24qGjmckELiCpm8/Sg+lPjA+YK
+         yyD/ehA+1m4eIhfASPu8H1VrdC+ZywqOut8c2A/WDKECk4Z+ZW0aI1jHUjym+B7+agdS
+         qfMWgdqx3q244guHhK33RX+E8XmZNAlfJSKSZzBAheUxdFWU2llz1d0pjxdiSEdZEMjD
+         F1GA==
+X-Forwarded-Encrypted: i=1; AJvYcCVTAmNaKHZwLdOPOAY7aFE4eMz2SjOFcUhAS0W2IVrco/r9fWbbEQrgZP8v4j31csgHky/B16aJYeYzAe+zJmXXMby/01Nb/Xds3Kg1
+X-Gm-Message-State: AOJu0YyOicJ9ZDpQt6hrfZmWOoi865If/nGI2ETOQMtgW37qy7XxeXSv
+	xsfJ/y9TlWO68gM6XQG2la4ocfG3XnyBQORHMhhiWnRq+0xcxxGL5DsQ1zh0FAiEKLWsbv4YmEr
+	zoQ==
+X-Google-Smtp-Source: AGHT+IHAdk2rf8sKJrz0YzlhWlhSiHEVj5XA1lMxBkIc6CQI4jsKBeWM7e1dBIV2qjtpd3vjCDa8fgs5KY0=
 X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a17:90a:e504:b0:2a2:ff01:dd7c with SMTP id
- t4-20020a17090ae50400b002a2ff01dd7cmr1190pjy.8.1714505520000; Tue, 30 Apr
- 2024 12:32:00 -0700 (PDT)
+ (user=seanjc job=sendgmr) by 2002:a25:2d16:0:b0:de1:d49:7ff6 with SMTP id
+ t22-20020a252d16000000b00de10d497ff6mr66932ybt.7.1714505521993; Tue, 30 Apr
+ 2024 12:32:01 -0700 (PDT)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date: Tue, 30 Apr 2024 12:31:53 -0700
+Date: Tue, 30 Apr 2024 12:31:54 -0700
+In-Reply-To: <20240430193157.419425-1-seanjc@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
+References: <20240430193157.419425-1-seanjc@google.com>
 X-Mailer: git-send-email 2.45.0.rc0.197.gbae5840b3b-goog
-Message-ID: <20240430193157.419425-1-seanjc@google.com>
-Subject: [PATCH 0/4] KVM: Fold kvm_arch_sched_in() into kvm_arch_vcpu_load()
+Message-ID: <20240430193157.419425-2-seanjc@google.com>
+Subject: [PATCH 1/4] KVM: Plumb in a @sched_in flag to kvm_arch_vcpu_load()
 From: Sean Christopherson <seanjc@google.com>
 To: Marc Zyngier <maz@kernel.org>, Oliver Upton <oliver.upton@linux.dev>, 
 	Tianrui Zhao <zhaotianrui@loongson.cn>, Bibo Mao <maobibo@loongson.cn>, 
@@ -88,64 +92,202 @@ Cc: linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
 	linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 
-Drop kvm_arch_sched_in() and instead pass a @sched_in boolean to
-kvm_arch_vcpu_load().
+Add a @sched_in flag to kvm_arch_vcpu_load() to note that the vCPU is
+being (re)loaded by kvm_sched_in(), i.e. after the vCPU was previously
+scheduled out.  KVM x86 currently uses a dedicated kvm_arch_sched_in()
+hook, but that's unnecessarily brittle as the behavior of the arch hook
+heavily depends on the arbitrary order of the two arch calls.
 
-While fiddling with an idea for optimizing state management on AMD CPUs,
-I wanted to skip re-saving certain host state when a vCPU is scheduled back
-in, as the state (theoretically) shouldn't change for the task while it's
-scheduled out.  Actually doing that was annoying and unnecessarily brittle
-due to having a separate API for the kvm_sched_in() case (the state save
-needed to be in kvm_arch_vcpu_load() for the common path).
+A separate hook also makes it unnecessarily difficult to do something
+unique when re-loading vCPU during kvm_sched_in(), e.g. to optimize vCPU
+loading if KVM knows that some CPU state couldn't have changed while the
+vCPU was scheduled out.
 
-E.g. I could have set a "temporary"-ish flag somewhere in kvm_vcpu, but (a)
-that's gross and (b) it would rely on the arbitrary ordering between
-sched_in() and vcpu_load() staying the same.
+Signed-off-by: Sean Christopherson <seanjc@google.com>
+---
+ arch/arm64/kvm/arm.c            | 2 +-
+ arch/arm64/kvm/emulate-nested.c | 4 ++--
+ arch/arm64/kvm/reset.c          | 2 +-
+ arch/loongarch/kvm/vcpu.c       | 2 +-
+ arch/mips/kvm/mmu.c             | 2 +-
+ arch/powerpc/kvm/powerpc.c      | 2 +-
+ arch/riscv/kvm/vcpu.c           | 4 ++--
+ arch/s390/kvm/kvm-s390.c        | 2 +-
+ arch/x86/kvm/x86.c              | 2 +-
+ include/linux/kvm_host.h        | 2 +-
+ virt/kvm/kvm_main.c             | 4 ++--
+ 11 files changed, 14 insertions(+), 14 deletions(-)
 
-The only real downside I see is that arm64 and riscv end up having to pass
-"false" for their direct usage of kvm_arch_vcpu_load(), and passing boolean
-literals isn't ideal.  But that can be solved by adding an inner helper that
-omits the @sched_in param (I almost added a patch to do that, but I couldn't
-convince myself it was necessary).
-
-The other motivation for this is to avoid yet another arch hook, and more
-arbitrary ordering, if there's a future need to hook kvm_sched_out() (we've
-come close on the x86 side several times).
-
-Sean Christopherson (4):
-  KVM: Plumb in a @sched_in flag to kvm_arch_vcpu_load()
-  KVM: VMX: Move PLE grow/shrink helpers above vmx_vcpu_load()
-  KVM: x86: Fold kvm_arch_sched_in() into kvm_arch_vcpu_load()
-  KVM: Delete the now unused kvm_arch_sched_in()
-
- arch/arm64/include/asm/kvm_host.h     |  1 -
- arch/arm64/kvm/arm.c                  |  2 +-
- arch/arm64/kvm/emulate-nested.c       |  4 +-
- arch/arm64/kvm/reset.c                |  2 +-
- arch/loongarch/include/asm/kvm_host.h |  1 -
- arch/loongarch/kvm/vcpu.c             |  2 +-
- arch/mips/include/asm/kvm_host.h      |  1 -
- arch/mips/kvm/mmu.c                   |  2 +-
- arch/powerpc/include/asm/kvm_host.h   |  1 -
- arch/powerpc/kvm/powerpc.c            |  2 +-
- arch/riscv/include/asm/kvm_host.h     |  1 -
- arch/riscv/kvm/vcpu.c                 |  4 +-
- arch/s390/include/asm/kvm_host.h      |  1 -
- arch/s390/kvm/kvm-s390.c              |  2 +-
- arch/x86/include/asm/kvm-x86-ops.h    |  1 -
- arch/x86/include/asm/kvm_host.h       |  4 +-
- arch/x86/kvm/pmu.c                    |  6 +--
- arch/x86/kvm/svm/svm.c                | 13 ++---
- arch/x86/kvm/vmx/main.c               |  2 -
- arch/x86/kvm/vmx/vmx.c                | 75 +++++++++++++--------------
- arch/x86/kvm/vmx/x86_ops.h            |  3 +-
- arch/x86/kvm/x86.c                    | 26 +++++-----
- include/linux/kvm_host.h              |  4 +-
- virt/kvm/kvm_main.c                   |  5 +-
- 24 files changed, 70 insertions(+), 95 deletions(-)
-
-
-base-commit: a96cb3bf390eebfead5fc7a2092f8452a7997d1b
+diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
+index c4a0a35e02c7..30ea103bfacb 100644
+--- a/arch/arm64/kvm/arm.c
++++ b/arch/arm64/kvm/arm.c
+@@ -428,7 +428,7 @@ void kvm_arch_vcpu_unblocking(struct kvm_vcpu *vcpu)
+ 
+ }
+ 
+-void kvm_arch_vcpu_load(struct kvm_vcpu *vcpu, int cpu)
++void kvm_arch_vcpu_load(struct kvm_vcpu *vcpu, int cpu, bool sched_in)
+ {
+ 	struct kvm_s2_mmu *mmu;
+ 	int *last_ran;
+diff --git a/arch/arm64/kvm/emulate-nested.c b/arch/arm64/kvm/emulate-nested.c
+index 4697ba41b3a9..ad5458c47e5e 100644
+--- a/arch/arm64/kvm/emulate-nested.c
++++ b/arch/arm64/kvm/emulate-nested.c
+@@ -2193,7 +2193,7 @@ void kvm_emulate_nested_eret(struct kvm_vcpu *vcpu)
+ 	*vcpu_pc(vcpu) = elr;
+ 	*vcpu_cpsr(vcpu) = spsr;
+ 
+-	kvm_arch_vcpu_load(vcpu, smp_processor_id());
++	kvm_arch_vcpu_load(vcpu, smp_processor_id(), false);
+ 	preempt_enable();
+ }
+ 
+@@ -2274,7 +2274,7 @@ static int kvm_inject_nested(struct kvm_vcpu *vcpu, u64 esr_el2,
+ 	 */
+ 	__kvm_adjust_pc(vcpu);
+ 
+-	kvm_arch_vcpu_load(vcpu, smp_processor_id());
++	kvm_arch_vcpu_load(vcpu, smp_processor_id(), false);
+ 	preempt_enable();
+ 
+ 	return 1;
+diff --git a/arch/arm64/kvm/reset.c b/arch/arm64/kvm/reset.c
+index 68d1d05672bd..654cf09c81e9 100644
+--- a/arch/arm64/kvm/reset.c
++++ b/arch/arm64/kvm/reset.c
+@@ -262,7 +262,7 @@ void kvm_reset_vcpu(struct kvm_vcpu *vcpu)
+ 	kvm_timer_vcpu_reset(vcpu);
+ 
+ 	if (loaded)
+-		kvm_arch_vcpu_load(vcpu, smp_processor_id());
++		kvm_arch_vcpu_load(vcpu, smp_processor_id(), false);
+ 	preempt_enable();
+ }
+ 
+diff --git a/arch/loongarch/kvm/vcpu.c b/arch/loongarch/kvm/vcpu.c
+index 3a8779065f73..61d549c4f8d1 100644
+--- a/arch/loongarch/kvm/vcpu.c
++++ b/arch/loongarch/kvm/vcpu.c
+@@ -1050,7 +1050,7 @@ static int _kvm_vcpu_load(struct kvm_vcpu *vcpu, int cpu)
+ 	return 0;
+ }
+ 
+-void kvm_arch_vcpu_load(struct kvm_vcpu *vcpu, int cpu)
++void kvm_arch_vcpu_load(struct kvm_vcpu *vcpu, int cpu, bool sched_in)
+ {
+ 	unsigned long flags;
+ 
+diff --git a/arch/mips/kvm/mmu.c b/arch/mips/kvm/mmu.c
+index c17157e700c0..6797799f3f32 100644
+--- a/arch/mips/kvm/mmu.c
++++ b/arch/mips/kvm/mmu.c
+@@ -682,7 +682,7 @@ static void kvm_mips_migrate_count(struct kvm_vcpu *vcpu)
+ }
+ 
+ /* Restore ASID once we are scheduled back after preemption */
+-void kvm_arch_vcpu_load(struct kvm_vcpu *vcpu, int cpu)
++void kvm_arch_vcpu_load(struct kvm_vcpu *vcpu, int cpu, bool sched_in)
+ {
+ 	unsigned long flags;
+ 
+diff --git a/arch/powerpc/kvm/powerpc.c b/arch/powerpc/kvm/powerpc.c
+index d32abe7fe6ab..8de620716875 100644
+--- a/arch/powerpc/kvm/powerpc.c
++++ b/arch/powerpc/kvm/powerpc.c
+@@ -826,7 +826,7 @@ int kvm_cpu_has_pending_timer(struct kvm_vcpu *vcpu)
+ 	return kvmppc_core_pending_dec(vcpu);
+ }
+ 
+-void kvm_arch_vcpu_load(struct kvm_vcpu *vcpu, int cpu)
++void kvm_arch_vcpu_load(struct kvm_vcpu *vcpu, int cpu, bool sched_in)
+ {
+ #ifdef CONFIG_BOOKE
+ 	/*
+diff --git a/arch/riscv/kvm/vcpu.c b/arch/riscv/kvm/vcpu.c
+index b5ca9f2e98ac..a7b7f172fa61 100644
+--- a/arch/riscv/kvm/vcpu.c
++++ b/arch/riscv/kvm/vcpu.c
+@@ -87,7 +87,7 @@ static void kvm_riscv_reset_vcpu(struct kvm_vcpu *vcpu)
+ 
+ 	/* Reset the guest CSRs for hotplug usecase */
+ 	if (loaded)
+-		kvm_arch_vcpu_load(vcpu, smp_processor_id());
++		kvm_arch_vcpu_load(vcpu, smp_processor_id(), false);
+ 	put_cpu();
+ }
+ 
+@@ -507,7 +507,7 @@ static void kvm_riscv_vcpu_setup_config(struct kvm_vcpu *vcpu)
+ 	}
+ }
+ 
+-void kvm_arch_vcpu_load(struct kvm_vcpu *vcpu, int cpu)
++void kvm_arch_vcpu_load(struct kvm_vcpu *vcpu, int cpu, bool sched_in)
+ {
+ 	struct kvm_vcpu_csr *csr = &vcpu->arch.guest_csr;
+ 	struct kvm_vcpu_config *cfg = &vcpu->arch.cfg;
+diff --git a/arch/s390/kvm/kvm-s390.c b/arch/s390/kvm/kvm-s390.c
+index 5147b943a864..9f04dc312641 100644
+--- a/arch/s390/kvm/kvm-s390.c
++++ b/arch/s390/kvm/kvm-s390.c
+@@ -3713,7 +3713,7 @@ __u64 kvm_s390_get_cpu_timer(struct kvm_vcpu *vcpu)
+ 	return value;
+ }
+ 
+-void kvm_arch_vcpu_load(struct kvm_vcpu *vcpu, int cpu)
++void kvm_arch_vcpu_load(struct kvm_vcpu *vcpu, int cpu, bool shed_in)
+ {
+ 
+ 	gmap_enable(vcpu->arch.enabled_gmap);
+diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+index 2d2619d3eee4..925cadb18b55 100644
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -5003,7 +5003,7 @@ static bool need_emulate_wbinvd(struct kvm_vcpu *vcpu)
+ 	return kvm_arch_has_noncoherent_dma(vcpu->kvm);
+ }
+ 
+-void kvm_arch_vcpu_load(struct kvm_vcpu *vcpu, int cpu)
++void kvm_arch_vcpu_load(struct kvm_vcpu *vcpu, int cpu, bool sched_in)
+ {
+ 	/* Address WBINVD may be executed by guest */
+ 	if (need_emulate_wbinvd(vcpu)) {
+diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
+index afbc99264ffa..2f5e35eb7eab 100644
+--- a/include/linux/kvm_host.h
++++ b/include/linux/kvm_host.h
+@@ -1498,7 +1498,7 @@ int kvm_arch_vcpu_ioctl_run(struct kvm_vcpu *vcpu);
+ 
+ void kvm_arch_sched_in(struct kvm_vcpu *vcpu, int cpu);
+ 
+-void kvm_arch_vcpu_load(struct kvm_vcpu *vcpu, int cpu);
++void kvm_arch_vcpu_load(struct kvm_vcpu *vcpu, int cpu, bool sched_in);
+ void kvm_arch_vcpu_put(struct kvm_vcpu *vcpu);
+ int kvm_arch_vcpu_precreate(struct kvm *kvm, unsigned int id);
+ int kvm_arch_vcpu_create(struct kvm_vcpu *vcpu);
+diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+index 658581d4ad68..4a4b29a9bace 100644
+--- a/virt/kvm/kvm_main.c
++++ b/virt/kvm/kvm_main.c
+@@ -211,7 +211,7 @@ void vcpu_load(struct kvm_vcpu *vcpu)
+ 
+ 	__this_cpu_write(kvm_running_vcpu, vcpu);
+ 	preempt_notifier_register(&vcpu->preempt_notifier);
+-	kvm_arch_vcpu_load(vcpu, cpu);
++	kvm_arch_vcpu_load(vcpu, cpu, false);
+ 	put_cpu();
+ }
+ EXPORT_SYMBOL_GPL(vcpu_load);
+@@ -6279,7 +6279,7 @@ static void kvm_sched_in(struct preempt_notifier *pn, int cpu)
+ 
+ 	__this_cpu_write(kvm_running_vcpu, vcpu);
+ 	kvm_arch_sched_in(vcpu, cpu);
+-	kvm_arch_vcpu_load(vcpu, cpu);
++	kvm_arch_vcpu_load(vcpu, cpu, true);
+ }
+ 
+ static void kvm_sched_out(struct preempt_notifier *pn,
 -- 
 2.45.0.rc0.197.gbae5840b3b-goog
 
