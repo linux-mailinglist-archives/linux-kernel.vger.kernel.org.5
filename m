@@ -1,156 +1,125 @@
-Return-Path: <linux-kernel+bounces-163949-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-163952-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 64C6F8B7679
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 14:58:16 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4F4FA8B767C
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 14:58:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9EEE8282243
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 12:58:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0B0BE285AEB
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 12:58:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9897F172BAC;
-	Tue, 30 Apr 2024 12:57:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B19F171E72;
+	Tue, 30 Apr 2024 12:58:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="Rw92ooLQ"
-Received: from mail-pj1-f47.google.com (mail-pj1-f47.google.com [209.85.216.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="k0hz+6Yi"
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8CBB217166F
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 12:57:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6397D171669
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 12:58:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714481845; cv=none; b=Odabdlx1NI7yzoKPdlJa5oAVbQXszDyH2spY4Z6RsvXBluZitGVu1JakR8+7tusdsCgSSOHsElo4S7Dnk3rLpNbGmPCkSqfdps6Ndn80ddvl2oVOBzk0EI/m1336Cp3m930wlEnvfJ9qNHNaQfbqIbiJakVNn+/JbH34bPdX1xM=
+	t=1714481898; cv=none; b=NlZsJZZMAsJ+uQ6968uRAiL+Hzg+A7TPWn5CjQ1Mzt2sE6kIVRRp6VpL1FH+9mTRiEBzFR6pIEm9bJdK8BREGBHGEb4OIpLkbug7mLcGiv/mdWgFNKvW0B4UzHbxNXEp8x94apyTQT3d6I2mjOeja8TXS28W+3gVVhAMcz/driM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714481845; c=relaxed/simple;
-	bh=6QT0q2O5P7yUDN49ZBaxXbsmzFoWw+mrdy57yktGL+c=;
+	s=arc-20240116; t=1714481898; c=relaxed/simple;
+	bh=6u+FWsINnrfSGtCwyNnQlvbx5yJBBCmbil7RE1EkMdo=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ozimGxuEwenLa8VeFxJYUHAUIeaQQYiVDZrtO0O0igD4Xvtux6MC6kY6DW1bKZUHGZfj2vIHMG85rd6yJivgrooLVxBMoLA0azJed8xnaCRD8O2ZBlE05GHy5hpYIhGsDxKQf3LxBko4UQnThwHCvH3qCzRt8D/C59NbFbp3j00=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=Rw92ooLQ; arc=none smtp.client-ip=209.85.216.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
-Received: by mail-pj1-f47.google.com with SMTP id 98e67ed59e1d1-2b27eec1eb1so510097a91.0
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 05:57:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1714481843; x=1715086643; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=5uLT2hc2nyqyVJ8rbCN78QLwond+XzmKAS1fxzjXQbI=;
-        b=Rw92ooLQioQENzl7PwwfVO4eEzyem5+Qyj7SKzanUTPqXnDhqPVJU3sbqAlgCHJAhf
-         c0pjUwNB75mmNPUI6Ue7SfMRuiXnKf79wB6uwTetqaaBpmJFCgnf2jY/YsWmU/15tes0
-         ZKToB4V2+qtBkBbfrJNFJdd1PgvfCOMq1Mjrqz/XgsmI3FDGe5Z/um8fVP5a0RGjF53T
-         q5g9YVZ/fO0fVOlJpdYv/QdyEug2De9XVX7dCnU4FUG24MCXbWOVkvKBflKiN/bDkX3J
-         0UqEAkS2b84/wIhXzQQwCrBWPtWNNcPk95RCUAdaXFQoQ3PPmezt9N+PyEyI9IHlyiwt
-         5HCg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714481843; x=1715086643;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=5uLT2hc2nyqyVJ8rbCN78QLwond+XzmKAS1fxzjXQbI=;
-        b=XolTZDtvAcodhgiPrV4b6wWFoQ34vFVsKiVEiS5OjjDPp/hZDpsVEXdeXH57+rrjLr
-         HIztAnucMGYQDCejSd72hY6ENfBakSZKt3mAD87CIkJpo9EZyLP3f+F+HAOyG1rEpiX6
-         Af8qBbtXlWnDaQ5Si0wFQzBGjfx+XyLx/kKRslJfMxAwZxJSc3uZuHkYTqmRF2MDV0GJ
-         vkbQma/bHtAzZHnHtn5cyHZVjBMDdLjV189BLzBjldrIHYzT3MWO6+VUiuUusPAFxUQ0
-         dbwo/g6p6sopihFZAn4tBi5epQrDGfFGX2j8bSajQIo6/QwbmzrKZCqV3Fr1w8jWS1Xb
-         IfWw==
-X-Forwarded-Encrypted: i=1; AJvYcCUBtmuNL9jhttR6ixt1WsMPwAcNKas57aiO6Joi0NAznmuN2pjbZGzJY3D39QJMl+cuQrWMoRHTqDN7TA8wlPdAVg1AKML7bQ+WXbTN
-X-Gm-Message-State: AOJu0YyNJYjM35x245imeAPQXlI8YlepUCXj3nCeB57OCd7lO7PTPKX2
-	sDA74xhIpD+uasMuPkVpL5UK1e/Gt92azyNuCWjZBFtGKwCWd9Q7OgItBHKmQeo=
-X-Google-Smtp-Source: AGHT+IEj+uWnR47Gzrthf1B7PKB4MKEOP/aomUlBZht7YwI1FpOC6x4BCa+6YhpjM40KQjA9TFAHzQ==
-X-Received: by 2002:a17:90a:9318:b0:2a5:4105:186c with SMTP id p24-20020a17090a931800b002a54105186cmr13296149pjo.9.1714481842724;
-        Tue, 30 Apr 2024 05:57:22 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-68-80-239.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.80.239])
-        by smtp.gmail.com with ESMTPSA id nv5-20020a17090b1b4500b002a2f055e52csm22551280pjb.34.2024.04.30.05.57.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Apr 2024 05:57:22 -0700 (PDT)
-Received: from jgg by wakko with local (Exim 4.95)
-	(envelope-from <jgg@ziepe.ca>)
-	id 1s1n2u-0072aA-Gm;
-	Tue, 30 Apr 2024 09:57:20 -0300
-Date: Tue, 30 Apr 2024 09:57:20 -0300
-From: Jason Gunthorpe <jgg@ziepe.ca>
-To: Leon Romanovsky <leon@kernel.org>
-Cc: Long Li <longli@microsoft.com>,
-	Konstantin Taranov <kotaranov@linux.microsoft.com>,
-	Konstantin Taranov <kotaranov@microsoft.com>,
-	"sharmaajay@microsoft.com" <sharmaajay@microsoft.com>,
-	"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH rdma-next 6/6] RDMA/mana_ib: implement uapi for creation
- of rnic cq
-Message-ID: <20240430125720.GT231144@ziepe.ca>
-References: <1713459125-14914-1-git-send-email-kotaranov@linux.microsoft.com>
- <1713459125-14914-7-git-send-email-kotaranov@linux.microsoft.com>
- <SJ1PR21MB345775858C05B9FE51C2BDF0CE112@SJ1PR21MB3457.namprd21.prod.outlook.com>
- <20240430123715.GD100414@unreal>
+	 Content-Type:Content-Disposition:In-Reply-To; b=R6jTyxc06e6AMDdc3yAbpebAU1+FRFmcs+VCbnbmR6ItZ5aSdxVLJizE0oebqpjL+KEB7lUOjWJnZ3dZK1wqBHR42sErHme0wgjItGsBmcCqo9d6gNMhfUzjBejsHFIcpGZkhnhIIxIco/biIX7IJcFW16vCwcLNuhbfcTO9ym8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=k0hz+6Yi; arc=none smtp.client-ip=65.109.113.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id BD00D40E00B2;
+	Tue, 30 Apr 2024 12:58:13 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+	header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id ZV3pt-UnzM2i; Tue, 30 Apr 2024 12:58:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1714481890; bh=JIpGJ222f6DlJRq4eDp7EoEORpRjHOTnZ9jXZzNPKUg=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=k0hz+6YiJrTAJEVtCM44lX+k6fS0nhtBTM7sNoVHfqYqDltk9uRgnk05/peANK4Xw
+	 DY34QJaWudiQm121U/c2t8W9sEFjrtGuAllZvb9yd6NnZOvydLsGezVRgEZ8WKtd0J
+	 AlUwp1g0Vpq9x5deLTXx8qHmrAyEMVQQki1fARM4o3YIuhF4f5RTgZBmkk/h7utIgs
+	 ERZvpCAJpzbElAae/y10YkkGASFA94BjvJO2TbYLWwKOtCtsWy3CnZe/uian3x3y63
+	 /rLaLb4RnEs0KNL9O/1vJWSbEETl3egE9GeE6s1cncuMM8FAk+Q/8S1b+9fKt8gabi
+	 iPQoSYgmOWupQU8E2vUFZTj6ztwyzt6qcC58Gp6nkowShdJRbvLwEGNt+qgufoxC2V
+	 BSJ34iFpEpqUkQ5PJf/nCNAVbzs++JNLutcdMVAiA7Mw5wg9P9T4e62l/5sr/nQ7rJ
+	 ucRyNe40IPf7uvX55ZYNdyn8DAYJeau5s/qCxKUsc+f0N25+8lPKxZ/vnRWTbd22yQ
+	 VdzC5qJ2io5JiDh8EQUR2OORscxfnjDuiQzyRdm4abg8tl/ULDMf5o13YZnYRwBifr
+	 22oeZvMnpDmhujKIXyfkN+AXuWCT77avEaGABW3EQqG1WbUIKnCZjlU+nAdu+UqTML
+	 sFmaxBKupr32m8kBpVxTKI88=
+Received: from zn.tnic (pd953020b.dip0.t-ipconnect.de [217.83.2.11])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 5CE0740E016B;
+	Tue, 30 Apr 2024 12:57:50 +0000 (UTC)
+Date: Tue, 30 Apr 2024 14:57:44 +0200
+From: Borislav Petkov <bp@alien8.de>
+To: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+Cc: Sean Christopherson <seanjc@google.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>,
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+	"Rafael J. Wysocki" <rafael@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>,
+	Elena Reshetova <elena.reshetova@intel.com>,
+	Jun Nakajima <jun.nakajima@intel.com>,
+	Rick Edgecombe <rick.p.edgecombe@intel.com>,
+	Tom Lendacky <thomas.lendacky@amd.com>,
+	Ashish Kalra <ashish.kalra@amd.com>,
+	Kai Huang <kai.huang@intel.com>, Baoquan He <bhe@redhat.com>,
+	kexec@lists.infradead.org, linux-coco@lists.linux.dev,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCHv10 05/18] x86/kexec: Keep CR4.MCE set during kexec for
+ TDX guest
+Message-ID: <20240430125744.GQZjDqyM3k_peEw-bc@fat_crate.local>
+References: <20240409113010.465412-1-kirill.shutemov@linux.intel.com>
+ <20240409113010.465412-6-kirill.shutemov@linux.intel.com>
+ <ZhVPIDDLkjOB96fI@google.com>
+ <3q6jv3g4tezybmd667mqxio7ty22akxv7okrznmzx3tju2u4qo@2alzjkbgm2lh>
+ <20240428171111.GKZi6DLy_ZwuZsZdFq@fat_crate.local>
+ <e35yxpa2xdynm7focg6k4u2bjzojn24bmeaszh2jz52e4szc5f@6mgtrdnkewhe>
+ <20240429144454.GHZi-yZkD0boKk5N17@fat_crate.local>
+ <yh7wbdce5o35l4nkrkml3jp7tyzvzxwnfji2vmvnvaczsl6gdr@6qnwpw7g76a3>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240430123715.GD100414@unreal>
+In-Reply-To: <yh7wbdce5o35l4nkrkml3jp7tyzvzxwnfji2vmvnvaczsl6gdr@6qnwpw7g76a3>
 
-On Tue, Apr 30, 2024 at 03:37:15PM +0300, Leon Romanovsky wrote:
-> On Tue, Apr 23, 2024 at 11:57:53PM +0000, Long Li wrote:
-> > > Subject: [PATCH rdma-next 6/6] RDMA/mana_ib: implement uapi for creation
-> > > of rnic cq
-> > > 
-> > > From: Konstantin Taranov <kotaranov@microsoft.com>
-> > > 
-> > > Enable users to create RNIC CQs.
-> > > With the previous request size, an ethernet CQ is created.
-> > > Use the cq_buf_size from the user to create an RNIC CQ and return its ID.
-> > > 
-> > > Signed-off-by: Konstantin Taranov <kotaranov@microsoft.com>
-> > > ---
-> > >  drivers/infiniband/hw/mana/cq.c | 56 ++++++++++++++++++++++++++++++---
-> > >  include/uapi/rdma/mana-abi.h    |  7 +++++
-> > >  2 files changed, 59 insertions(+), 4 deletions(-)
-> > > 
-> > > diff --git a/drivers/infiniband/hw/mana/cq.c
-> > > b/drivers/infiniband/hw/mana/cq.c index 8323085..a62bda7 100644
-> > > --- a/drivers/infiniband/hw/mana/cq.c
-> > > +++ b/drivers/infiniband/hw/mana/cq.c
-> > > @@ -9,17 +9,25 @@ int mana_ib_create_cq(struct ib_cq *ibcq, const struct
-> > > ib_cq_init_attr *attr,
-> > >  		      struct ib_udata *udata)
-> > >  {
-> > >  	struct mana_ib_cq *cq = container_of(ibcq, struct mana_ib_cq, ibcq);
-> > > +	struct mana_ib_create_cq_resp resp = {};
-> > > +	struct mana_ib_ucontext *mana_ucontext;
-> > >  	struct ib_device *ibdev = ibcq->device;
-> > >  	struct mana_ib_create_cq ucmd = {};
-> > >  	struct mana_ib_dev *mdev;
-> > > +	bool is_rnic_cq = true;
-> > > +	u32 doorbell;
-> > >  	int err;
-> > > 
-> > >  	mdev = container_of(ibdev, struct mana_ib_dev, ib_dev);
-> > > 
-> > > -	if (udata->inlen < sizeof(ucmd))
-> > > +	cq->comp_vector = attr->comp_vector % ibdev->num_comp_vectors;
-> > > +	cq->cq_handle = INVALID_MANA_HANDLE;
-> > > +
-> > > +	if (udata->inlen < offsetof(struct mana_ib_create_cq, cq_buf_size))
-> > >  		return -EINVAL;
-> > > 
-> > > -	cq->comp_vector = attr->comp_vector % ibdev->num_comp_vectors;
-> > > +	if (udata->inlen == offsetof(struct mana_ib_create_cq, cq_buf_size))
-> > > +		is_rnic_cq = false;
-> > 
-> > I think it's okay with checking on offset in uapi message to decide if this is a newer/updated RNIC uverb.
+On Mon, Apr 29, 2024 at 06:16:54PM +0300, Kirill A. Shutemov wrote:
+> Yes, that's what happens in current upstream.
 
-Yes, this is the expected method
+Let's rewrite that commit message then:
 
-> You should really try to avoid changing MANA_IB_UVERBS_ABI_VERSION as it
-> usually means that backward compatibility will be broken after such change.
+"TDX guests run with MCA enabled (CR4.MCE=1b) from the very start. If
+that bit is cleared during CR4 register reprogramming during boot or
+kexec flows, a #VE exception will be raised which the guest kernel
+cannot handle that early.
 
-Yes, please don't do that.
+Therefore, make sure the CR4.MCE setting is preserved over kexec too and
+avoid raising any #VEs."
 
-Jason
+without that bit about TDX guests might be allowed to clear CR4.MCE
+which is only confusing and unnecessary.
+
+Thx.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
 
