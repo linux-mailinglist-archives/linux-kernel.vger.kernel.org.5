@@ -1,124 +1,109 @@
-Return-Path: <linux-kernel+bounces-164519-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-164520-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id CCE508B7E94
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 19:31:29 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6D14E8B7E9C
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 19:31:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 090431C223B5
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 17:31:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 974151C2254D
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 17:31:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2DD0F1802BE;
-	Tue, 30 Apr 2024 17:31:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB312180A8D;
+	Tue, 30 Apr 2024 17:31:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="GiO893wX"
-Received: from mail-yb1-f182.google.com (mail-yb1-f182.google.com [209.85.219.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="M0clFbDh"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1873817BB20
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 17:31:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B8181802C3;
+	Tue, 30 Apr 2024 17:31:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714498282; cv=none; b=Xa4ki2B5Yc3uS4/6uGxz6+i3igKdzJLC2YnRQrUbMlOHFU7J8k4FPzBC6rCuRftUxkQc/8EMfGLTCDC0nEugvL+ChZdoBqsFpIgr/qjZyhNZR8txUjW8N+f0cNk//wTw8EiGpN7UCupCptpc1sGd/Mz0mAirU6XXFVqXwa3cN7o=
+	t=1714498306; cv=none; b=Ouhj8ycXPRhSHwNiprEuYfCclMCwV9bq53VycMvujb4R1V0edPzaH5EESthWSow4MHMMAlKj+55aUGPo9h4Czu7Bj24bWE8nGsfiJ1WDLytv8YGjhRa7ZhAZtW3wbe/OGgVaMbtidMyY+zHG+vUL+zFL+ieqBMPcYSy6pLKYZOs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714498282; c=relaxed/simple;
-	bh=qQKyT5QD+ByzejxspNegdQ7GnL9z6+nOWConQ9wVkS4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=TJURlq7hUW1h0/6A/8WVUl2WHMl0j44ymCkkpdiapwCnIvP6tI1GVEVPl4ds38gvQP4NiStWl6Q5yPlkqUn8pPk5kwY4bqbyB9KVLxf8MQz9tzH0Rlbd4u9MhgKoYuOUSf70mAm1zpkmm6CFs2Eh2B/dOS3V9nHcsL7/ZITorgA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=GiO893wX; arc=none smtp.client-ip=209.85.219.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-yb1-f182.google.com with SMTP id 3f1490d57ef6-de59daab3f3so5453989276.3
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 10:31:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1714498280; x=1715103080; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=6JwxAddIORoDjZb7vE3h0utwtl3KaibdVVn/7aWOhkk=;
-        b=GiO893wXFnZeq7XEKFst5y+s6IyFaAvp909oBOutSzj4XleDibFBzEp7AAFa4bWX77
-         l46NC3cK8tQqlElG3LeWGaRfSi+Bh93YtNC1GP9v1mTpda8o/SqvF8cy0s7CFej8r7TX
-         KmpDLibm9jg/fI0B76LxYX0xS2QWH8EoeWMb/TTTfPQaSId7+RGHf5dvrrvaukj3PL0k
-         7ZFuUuU6F6jIasHo6P+PbRE0dFUU06p/dV4h4jjI/Crg7lTKHR8Vu8aVvhRvdRajMsuT
-         Ph5qumVCxrCF2K8kvBsuwk/if/dxbAvrkA40URjVhdEXL5A139NQDpbhlx41NLt7ODCa
-         M/rQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714498280; x=1715103080;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=6JwxAddIORoDjZb7vE3h0utwtl3KaibdVVn/7aWOhkk=;
-        b=QlwZnpLSGc3Btkcl3BGEoR5dy4gs0xah6udMtH7/XYdFanAL4uLOrEJJfG7+oPDGQB
-         C86VGB8F/Mi3wlL/C44vlEjeQxBJoOeDOxe3JAZbYa94GRbtvHNM8TlCSsdkQtWMUsm6
-         1XjThP+rmBHPRrSLeiKxl382sKRTW+4/qBFKEPVEC292Xwgtu62a7qWK5FRYbok5ZG6i
-         gM8IMMGuQN2peaWXCdnY05aBxx8GTD7Ne/DUn3C8vbUCryz7FYDb67IuJw1lyT5H3Mi3
-         dn1fN11evFIrmPUyfqrk7UmchUrlULdbYjSwCFWqoZkObTjXbIsKbmF+TF2BAJQAuQh0
-         ghHg==
-X-Forwarded-Encrypted: i=1; AJvYcCWFzC7Z9gr2cf7EuaRA8F5AX1gWwsGYnpU9LkV2SwWB1ESuusONSV5MqT2eri2tR9fCx3jhMOdXDHTQVJu79cmts4mYL42XoaJ6I+vB
-X-Gm-Message-State: AOJu0YwzGCwJ75o6Kve8kcBeYdrCLA9TkNXTYZKnkJW+MnRbwpOarN2I
-	Dzuu2Q1Opb2Kp3/z7SXYO4tkHcG+KuVY2lm5nhH8ZoP6hdLOYcxhIUOdhA3YLsva/R3nRXzjtKh
-	dx22ipNT5n3oSU5XH0YKEBseKiNgObaPbt3Zp
-X-Google-Smtp-Source: AGHT+IH2ACVPK5qhzjkvkzWZ+/A/LHh7HwsvSaGNnO5heFlYlzrgW2SD/J0T7ULwesjC0XZnvnmzP0ce7Okt0fZZF+I=
-X-Received: by 2002:a05:6902:2491:b0:de6:d7f:2a37 with SMTP id
- ds17-20020a056902249100b00de60d7f2a37mr262373ybb.6.1714498279865; Tue, 30 Apr
- 2024 10:31:19 -0700 (PDT)
+	s=arc-20240116; t=1714498306; c=relaxed/simple;
+	bh=OZfdAv9Kd4pWfqB6VspdLN4BDbD4/2bmL+06pd8HlHM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=JdMg0mi9Q9Z4c/1uJ4PGIeqhWJmQxFw8YLknK/SR8hsL5lvDVxVbZm21aQiwyyEUyftsCUdRHVJA2BRM986gqEMVcxqBocWZnHAYpU6vKjJicoMjGd68VmLLcfpVnOIkhDgfDK61rzPdQ5jvS/paub1DELH7mDtZBP0hPf1C3fY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=M0clFbDh; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 64A0CC2BBFC;
+	Tue, 30 Apr 2024 17:31:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714498305;
+	bh=OZfdAv9Kd4pWfqB6VspdLN4BDbD4/2bmL+06pd8HlHM=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=M0clFbDha9R8iPiHDUgsn1ZVjkjm/cOV7b83d3UsD49XrAzNh57sVUpxiUTbDHH/b
+	 AiOryLLbKn10xcrSpBZEb3nmVKOVGpsAZ3B1r2Z4KgdobxAqQ/6eStc+GcuJm5g/kf
+	 qiajgLH5smRzG84WGTv4zWA9sqrTR47r9qvzgOndkOGiSR+X7grtOV687F4CAc3PF8
+	 kzLYKtIwljZh6iwtQOIiAxOYdiqlDuJ5M3ZA/6ysLXewYsbreyGSknjRjvgsS0SShU
+	 KZFUvzezZpmR8GMGHt50ZroWvXxHQW8ONzWNA5Nlr4tWDnk3cif12tNUsMCllmrxtD
+	 y7Im4/I4uo0uQ==
+Date: Tue, 30 Apr 2024 18:31:40 +0100
+From: Lee Jones <lee@kernel.org>
+To: Greg KH <gregkh@linuxfoundation.org>
+Cc: Edward Liaw <edliaw@google.com>, stable@vger.kernel.org,
+	Shuah Khan <shuah@kernel.org>, kernel-team@android.com,
+	Mark Brown <broonie@kernel.org>, Kees Cook <keescook@chromium.org>,
+	Shuah Khan <skhan@linuxfoundation.org>,
+	linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 6.6.y] kselftest: Add a ksft_perror() helper
+Message-ID: <20240430173140.GA840359@google.com>
+References: <20240430010628.430427-1-edliaw@google.com>
+ <2024043037-debate-capsize-e44c@gregkh>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240430060612.2171650-1-shakeel.butt@linux.dev> <20240430060612.2171650-6-shakeel.butt@linux.dev>
-In-Reply-To: <20240430060612.2171650-6-shakeel.butt@linux.dev>
-From: "T.J. Mercier" <tjmercier@google.com>
-Date: Tue, 30 Apr 2024 10:31:07 -0700
-Message-ID: <CABdmKX2wN1+jftf6FbZUvN+wqA6_hVMRk8Va8TDoExjU1r2q9g@mail.gmail.com>
-Subject: Re: [PATCH v3 5/8] memcg: cleanup __mod_memcg_lruvec_state
-To: Shakeel Butt <shakeel.butt@linux.dev>
-Cc: Andrew Morton <akpm@linux-foundation.org>, Johannes Weiner <hannes@cmpxchg.org>, 
-	Michal Hocko <mhocko@kernel.org>, Roman Gushchin <roman.gushchin@linux.dev>, 
-	Muchun Song <muchun.song@linux.dev>, Yosry Ahmed <yosryahmed@google.com>, kernel-team@meta.com, 
-	linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <2024043037-debate-capsize-e44c@gregkh>
 
-On Mon, Apr 29, 2024 at 11:06=E2=80=AFPM Shakeel Butt <shakeel.butt@linux.d=
-ev> wrote:
->
-> There are no memcg specific stats for NR_SHMEM_PMDMAPPED and
-> NR_FILE_PMDMAPPED. Let's remove them.
->
-> Signed-off-by: Shakeel Butt <shakeel.butt@linux.dev>
-> Reviewed-by: Yosry Ahmed <yosryahmed@google.com>
-> Reviewed-by: Roman Gushchin <roman.gushchin@linux.dev>
+On Tue, 30 Apr 2024, Greg KH wrote:
 
-Reviewed-by: T.J. Mercier <tjmercier@google.com>
+> On Tue, Apr 30, 2024 at 01:06:27AM +0000, Edward Liaw wrote:
+> > From: Mark Brown <broonie@kernel.org>
+> > 
+> > [ Upstream commit 907f33028871fa7c9a3db1efd467b78ef82cce20 ]
+> > 
+> > The standard library perror() function provides a convenient way to print
+> > an error message based on the current errno but this doesn't play nicely
+> > with KTAP output. Provide a helper which does an equivalent thing in a KTAP
+> > compatible format.
+> > 
+> > nolibc doesn't have a strerror() and adding the table of strings required
+> > doesn't seem like a good fit for what it's trying to do so when we're using
+> > that only print the errno.
+> > 
+> > Signed-off-by: Mark Brown <broonie@kernel.org>
+> > Reviewed-by: Kees Cook <keescook@chromium.org>
+> > Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
+> > Stable-dep-of: 071af0c9e582 ("selftests: timers: Convert posix_timers test to generate KTAP output")
+> > Signed-off-by: Edward Liaw <edliaw@google.com>
+> > ---
+> >  tools/testing/selftests/kselftest.h | 14 ++++++++++++++
+> >  1 file changed, 14 insertions(+)
+> 
+> This commit is already in 6.6.29, why submit it again?
 
+I don't see this in v6.6.29.
 
-> ---
-> Changes since v2:
-> - N/A
->
->  mm/memcontrol.c | 2 --
->  1 file changed, 2 deletions(-)
->
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index f424c5b2ba9b..df94abc0088f 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -1008,8 +1008,6 @@ static void __mod_memcg_lruvec_state(struct lruvec =
-*lruvec,
->                 case NR_ANON_MAPPED:
->                 case NR_FILE_MAPPED:
->                 case NR_ANON_THPS:
-> -               case NR_SHMEM_PMDMAPPED:
-> -               case NR_FILE_PMDMAPPED:
->                         if (WARN_ON_ONCE(!in_task()))
->                                 pr_warn("stat item index: %d\n", idx);
->                         break;
-> --
-> 2.43.0
->
+The function that it adds is called, but doesn't exist however:
+
+stable/linux-6.6.y:tools/testing/selftests/timers/posix_timers.c:               ksft_perror("Can't call gettimeofday()");
+stable/linux-6.6.y:tools/testing/selftests/timers/posix_timers.c:               ksft_perror("Can't set timer");
+stable/linux-6.6.y:tools/testing/selftests/timers/posix_timers.c:               ksft_perror("Can't call gettimeofday()");
+stable/linux-6.6.y:tools/testing/selftests/timers/posix_timers.c:               ksft_perror("Can't create timer");
+stable/linux-6.6.y:tools/testing/selftests/timers/posix_timers.c:               ksft_perror("Can't call gettimeofday()");
+stable/linux-6.6.y:tools/testing/selftests/timers/posix_timers.c:               ksft_perror("Can't set timer");
+stable/linux-6.6.y:tools/testing/selftests/timers/posix_timers.c:               ksft_perror("Can't call gettimeofday()");
+
+We should probably have this added to linux-6.6.y.
+
+-- 
+Lee Jones [李琼斯]
 
