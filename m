@@ -1,71 +1,72 @@
-Return-Path: <linux-kernel+bounces-163942-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-163943-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DD3A18B7661
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 14:56:05 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id BF8278B7662
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 14:56:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F33561C22BA1
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 12:56:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E32101C22A90
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 12:56:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62205171E4B;
-	Tue, 30 Apr 2024 12:55:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7837B172769;
+	Tue, 30 Apr 2024 12:55:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="S4CF5NqS"
-Received: from mail-ot1-f46.google.com (mail-ot1-f46.google.com [209.85.210.46])
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="L4d5hDGW"
+Received: from mail-qk1-f171.google.com (mail-qk1-f171.google.com [209.85.222.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6BD0D17164A
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 12:55:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 63452171E4D
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 12:55:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714481748; cv=none; b=uokG/WtGM+yqOzEb9zqCjxk3ZroMJjXfjtPtK9l0vGtXzWxpG6fePY5CPP/t0nzGRpXBOGWRG7T84Qe47hYONhlX6kvE6045qejg9e0MJGpE8vvI3NT3D5BzNA4nnbhZYK39AYRou0peBobXRv9lr4U/VksfT+B2R6qAAaHQG64=
+	t=1714481750; cv=none; b=r1fvioOJdeVB38SEPCH2e/nwjY0DagFCO+VQdBIFzXTjWUOhhKAT3HVHd5zkfQThLtv1kV4qY30FtdnGysxNElvRwU52q6etF8v+qQgg+RaYgGRz/awSLF+xD1gW8vA1U6hhwkcHdomHhWKGedZHsrxo2hoKEbmApMQDLCAiyTI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714481748; c=relaxed/simple;
-	bh=oYyX5A2u0qlsJz3Khs22Q9EKJnbR1seZtA56i5V7sUo=;
+	s=arc-20240116; t=1714481750; c=relaxed/simple;
+	bh=fECPpxQCPx5VlV9ywdoFmxEqDVmv+UQlkwXRIu9kjcE=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=s5f0g6HzXcY71C2DWgQB+uhoNe17l+L2b/whY6hZ4Dm13vP7pMR9ACPpPqO8NAFSpDcmV2P7oiwvoyD5hMjEuyVC6oHaqKK5UwIyOpFqkItynGzN5pfoshCU8mv13NDGhLlQWqg1Jy3sOsLfY0RkN5DxgvFqspDW2CB5gpDjlFc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=S4CF5NqS; arc=none smtp.client-ip=209.85.210.46
+	 In-Reply-To:To:Cc; b=a4c1Qwu6nYrpi1vU2SsKgXo/SdO69DRPBpbGv11KheNddOE7dSfcsmWG+hTzP73IwqMnObQ1JzSOY8HRV5Jz6sNZ8Qh9nKeS+6rhZ8d80poI8LaVDouACrI9bFxziIZhKDPntzxXMZfMjkySmfiQis+ZC5TBvlxhElIxi4zwH9o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=L4d5hDGW; arc=none smtp.client-ip=209.85.222.171
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-ot1-f46.google.com with SMTP id 46e09a7af769-6ee2fb4ec57so1191663a34.3
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 05:55:47 -0700 (PDT)
+Received: by mail-qk1-f171.google.com with SMTP id af79cd13be357-78f056f928eso431096285a.0
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 05:55:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1714481746; x=1715086546; darn=vger.kernel.org;
+        d=chromium.org; s=google; t=1714481748; x=1715086548; darn=vger.kernel.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=cjV8GfCP2WHHQ01Aqc8mQQXzl2eD7DwGYj59FGy18+c=;
-        b=S4CF5NqSV/7sgOb3QnBMrMwTsDvF2yVdSw75bDWzsB7HH/rCZpRYZROh2fl3msiXyh
-         vr0teOHwY0GR+uCv2QaZ6kTgSRL9p2Ya7yMzlJvPJBNgUJISeAMlhFk5wlFllXp9ZEHY
-         1UQpbe0SRJoTRkYZHcq54R+0JNI+rYZdFpduM=
+        bh=/vGWU+yuHMlxGeQ2v0UxRXrwFtugXz7htO5Olbld0OY=;
+        b=L4d5hDGW//a5z9Kf2K6U9z3nrC2F3PyPIABO8Vzv74hD9mWGnL44Da4hx30Y6K5/mG
+         U2257tYst1pSmvXL7DY7P7vBIwMimm9UDhr3Iy2P1q6WsyxvcwbXzfiYys0MxJiRMO0M
+         aMB9A/iD3cH5WB25FYrNRqi0Kd+xmw3o+i9kI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714481746; x=1715086546;
+        d=1e100.net; s=20230601; t=1714481748; x=1715086548;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=cjV8GfCP2WHHQ01Aqc8mQQXzl2eD7DwGYj59FGy18+c=;
-        b=YbH1RkUdD3KBTpiAMvLad9KvvEaG8nwxB/48bi6r8mbIpS/n3FO6pMsPhqxNsLCWjq
-         KgQsibHsLt4vKbVlu2EBsDQSS2bQQ8kpKx3b0zam8fqGFWvsettlc3zWaQ+YDHvgW2aF
-         XwFZ8+zEBU0o7hKUE0Zbhc60nrwZ8258b1X20kSt5bNyzLruq2uTtOMfvufkKM0+S4vp
-         AjpPen3WNcuiobyT8DbvoUoNQ77lcEj8l+m4EoK4v4HZOXgcFQ4s+7FRsp1fFk+r9G0J
-         nDBOcUaTn9YhbIOXQ1q6uq2z58mYYJ3Ml9s2pjWiwLphuXSEnH0Z3PAQBgw30oCD1lZh
-         hVBg==
-X-Forwarded-Encrypted: i=1; AJvYcCVijL537HUroLLAF6wMmaNMU4VzUFfX901gfCJM71s14PWLcgfG31R4/gMrf0O6cH9fPwdFK+cBgj45/4M5Pf9lMTGQ4CZWGk7dOzHy
-X-Gm-Message-State: AOJu0Yybj5BJ4yUtNEEG/cS/gzFLxGiEBnXheTzYSzEIarqytu06NPeh
-	lJNJDW7TWqYMIGPNjpMFoZQ6NSDAbzQzn2lzjrhfGkqt5rSriQ/L3HLJJN25rw==
-X-Google-Smtp-Source: AGHT+IEgUWZ5sviYRGNJaeAywK807QZ4gEbNChyUYkiHWKS+u2I4svAfqrFMNl4wY8mlmeEBL/dfjQ==
-X-Received: by 2002:a9d:7dd5:0:b0:6eb:e0a2:bbb4 with SMTP id k21-20020a9d7dd5000000b006ebe0a2bbb4mr2938580otn.16.1714481746548;
-        Tue, 30 Apr 2024 05:55:46 -0700 (PDT)
+        bh=/vGWU+yuHMlxGeQ2v0UxRXrwFtugXz7htO5Olbld0OY=;
+        b=lL/h63G1x6A3v8UmN/8NAVoF1RI1MfpmOupSBwm5qxA0YT4AWCkKzb6cBe/xCav02j
+         OSGC8jRdclbBXN8Il/Likek1mxOXxVa2bsu0C1s0vPFmc88L8Z0tIClxBjAPeCQKc41f
+         IvkRywKdBdKNnlwW/SU55thUv9CKFnUBpcQZazPYbm+H8qlcJczyrXTkbnAZumFIeRHA
+         R172E08tiUH5mIuzN9Ck6Tn7S0OJHDhQ3x69mNXkgQOKwcZ5lW+h+RanSKd/elTeij0/
+         jZ+v2w2ZaSunQ+y1zSdl+hQT3BI1Fk2MlNY49jE59uFvDtOwLcgoRS0zJZKCtonte57+
+         TW2g==
+X-Forwarded-Encrypted: i=1; AJvYcCWLUyWZqN78MJkg57nBqHzpN633PvgJOdILygRBGUsonVLYWftEZZt26Ej8PrmsIBKZtR7R596csxHID8BO6NQ2HtwIt74UvifVdhux
+X-Gm-Message-State: AOJu0Yzwd+5K5plONLQzhE1fwMG+l9FqFwbJIZ2GxnJnDKM/0fP/6qJB
+	TxrODHTi7x94c6kn1AcXkckFHOqcq3ZOiC6S1t5Bq7Dnbh8Tbdpp608Ssksgvg==
+X-Google-Smtp-Source: AGHT+IHmc9EduiMj1OpTnvSkXwddOA0ZCHmY0W5Zlq6AnSEMhPm3qZQyuicCrl7kaS0cmeF1jbBCsg==
+X-Received: by 2002:a05:620a:57d7:b0:78d:68fa:6e41 with SMTP id wl23-20020a05620a57d700b0078d68fa6e41mr15004216qkn.64.1714481748273;
+        Tue, 30 Apr 2024 05:55:48 -0700 (PDT)
 Received: from denia.c.googlers.com (114.152.245.35.bc.googleusercontent.com. [35.245.152.114])
-        by smtp.gmail.com with ESMTPSA id o16-20020a05620a111000b00790f90ffc32sm1553667qkk.22.2024.04.30.05.55.45
+        by smtp.gmail.com with ESMTPSA id o16-20020a05620a111000b00790f90ffc32sm1553667qkk.22.2024.04.30.05.55.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Apr 2024 05:55:45 -0700 (PDT)
+        Tue, 30 Apr 2024 05:55:47 -0700 (PDT)
 From: Ricardo Ribalda <ribalda@chromium.org>
-Date: Tue, 30 Apr 2024 12:55:33 +0000
-Subject: [PATCH 1/4] media: bcm2835-unicam: Fix build with !PM
+Date: Tue, 30 Apr 2024 12:55:34 +0000
+Subject: [PATCH 2/4] media: intel/ipu6: Switch to RUNTIME_PM_OPS() and
+ SYSTEM_SLEEP_PM_OPS
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -74,7 +75,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Message-Id: <20240430-fix-ipu6-v1-1-9b31fbbce6e4@chromium.org>
+Message-Id: <20240430-fix-ipu6-v1-2-9b31fbbce6e4@chromium.org>
 References: <20240430-fix-ipu6-v1-0-9b31fbbce6e4@chromium.org>
 In-Reply-To: <20240430-fix-ipu6-v1-0-9b31fbbce6e4@chromium.org>
 To: Mauro Carvalho Chehab <mchehab@kernel.org>, 
@@ -88,30 +89,44 @@ Cc: linux-media@vger.kernel.org, linux-rpi-kernel@lists.infradead.org,
  Hans Verkuil <hverkuil@xs4all.nl>, Ricardo Ribalda <ribalda@chromium.org>
 X-Mailer: b4 0.12.4
 
-The driver can only match the device vide the DT table, so the table
-should always be used, of_match_ptr does not make sense here.
+Replace the old helpers with its modern alternative.
+Now we do not need to set '__maybe_unused' annotations when we are not
+enabling the PM configurations.
 
 Fixes:
-drivers/media/platform/broadcom/bcm2835-unicam.c:2724:34: warning: ‘unicam_of_match’ defined but not used [-Wunused-const-variable=]
+drivers/media/pci/intel/ipu6/ipu6.c:841:12: warning: ‘ipu6_runtime_resume’ defined but not used [-Wunused-function]
+drivers/media/pci/intel/ipu6/ipu6.c:806:12: warning: ‘ipu6_resume’ defined but not used [-Wunused-function]
+drivers/media/pci/intel/ipu6/ipu6.c:801:12: warning: ‘ipu6_suspend’ defined but not used [-Wunused-function]
 
 Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
 ---
- drivers/media/platform/broadcom/bcm2835-unicam.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/media/pci/intel/ipu6/ipu6.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/media/platform/broadcom/bcm2835-unicam.c b/drivers/media/platform/broadcom/bcm2835-unicam.c
-index bd2bbb53070e..c590e26fe2cf 100644
---- a/drivers/media/platform/broadcom/bcm2835-unicam.c
-+++ b/drivers/media/platform/broadcom/bcm2835-unicam.c
-@@ -2733,7 +2733,7 @@ static struct platform_driver unicam_driver = {
- 	.driver = {
- 		.name	= UNICAM_MODULE_NAME,
- 		.pm	= pm_ptr(&unicam_pm_ops),
--		.of_match_table = of_match_ptr(unicam_of_match),
-+		.of_match_table = unicam_of_match,
- 	},
+diff --git a/drivers/media/pci/intel/ipu6/ipu6.c b/drivers/media/pci/intel/ipu6/ipu6.c
+index 4b1f69d14d71..ff5ca0c52781 100644
+--- a/drivers/media/pci/intel/ipu6/ipu6.c
++++ b/drivers/media/pci/intel/ipu6/ipu6.c
+@@ -803,7 +803,7 @@ static int ipu6_suspend(struct device *dev)
+ 	return 0;
+ }
+ 
+-static int ipu6_resume(struct device *dev)
++static int __maybe_unused ipu6_resume(struct device *dev)
+ {
+ 	struct pci_dev *pdev = to_pci_dev(dev);
+ 	struct ipu6_device *isp = pci_get_drvdata(pdev);
+@@ -860,8 +860,8 @@ static int ipu6_runtime_resume(struct device *dev)
+ }
+ 
+ static const struct dev_pm_ops ipu6_pm_ops = {
+-	SET_SYSTEM_SLEEP_PM_OPS(&ipu6_suspend, &ipu6_resume)
+-	SET_RUNTIME_PM_OPS(&ipu6_suspend, &ipu6_runtime_resume, NULL)
++	SYSTEM_SLEEP_PM_OPS(&ipu6_suspend, &ipu6_resume)
++	RUNTIME_PM_OPS(&ipu6_suspend, &ipu6_runtime_resume, NULL)
  };
  
+ MODULE_DEVICE_TABLE(pci, ipu6_pci_tbl);
 
 -- 
 2.44.0.769.g3c40516874-goog
