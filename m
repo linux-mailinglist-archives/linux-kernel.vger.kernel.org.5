@@ -1,141 +1,84 @@
-Return-Path: <linux-kernel+bounces-163675-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-163676-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 526168B6E38
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 11:26:41 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4BC398B6E39
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 11:26:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E74811F24165
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 09:26:40 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 71B63B220E8
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 09:26:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3DAEA181CE9;
-	Tue, 30 Apr 2024 09:20:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C94C9128379;
+	Tue, 30 Apr 2024 09:21:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GA2HWGh+"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="DzD4eUtc"
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 754AC12839B;
-	Tue, 30 Apr 2024 09:20:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D47D0127B68;
+	Tue, 30 Apr 2024 09:21:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714468826; cv=none; b=oO9pi3PDBn7Dnir+/0mlZg0XQerbetXbW8yyr+5v6jjkItNETRGbCSnDqYpPg/4Vy9wd4XbcGqzujyr9H3zVHwBwUTTpJbnnMHQASgyE2wEeqza0OysHfS2e1QR91JILv0MhkbWul4k0nNEOlSaRG0AVRBfNN28DqFY9A9Y45Q8=
+	t=1714468906; cv=none; b=WYdKxHnbmVWtA5HphW/pGQwXF36az++V/rmjkhnOqUsUeh2aUr21uX1FagXMnD7tF/7T0mqzGK3Pf0WxaughC9e4/Pk9neVpomW8/4BIMi4L8t84Z2TUFTVv2BpJudE6j4YbwBdmaCxu4AUlXAc/h4oodXAI7Afk6mjGqtsQROc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714468826; c=relaxed/simple;
-	bh=Xbu2y6CEnMuOqaTTlEJrCaL9AxiPE5mbU/3qPzomh4w=;
+	s=arc-20240116; t=1714468906; c=relaxed/simple;
+	bh=TdZNueaaPKLCguGskYeGbsKIkL8BHJVTSoWgSzU9fJI=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=PJtr8JTyFx5MxuRfIXzISBJjPfxjwXuWhyL9feEl5aqq7W8HQLmzapyk2eSVUDtTZvLHkAHASvqrNR0EP4OoXmdXbVuxsUxO8qqfkH7L9m6HbBQodDNnTqZGWdeFnEyo3UXSm4J2XyE70NM5MmsKvGEQbryf4gIHK9nBogvDrVg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GA2HWGh+; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5C2EBC2BBFC;
-	Tue, 30 Apr 2024 09:20:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714468825;
-	bh=Xbu2y6CEnMuOqaTTlEJrCaL9AxiPE5mbU/3qPzomh4w=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=GA2HWGh+kXj9f0fz7r0sqxRweuRry/BPPh9hJXNUcZ7XWT4svfHvN0eTdsDl/6xce
-	 nBhUMHvPX2geNdXPclSt5Eicmy7MO2LNua3z+yPv+K9udAIli7CQK3ECWy4jZHYuLl
-	 p2AlHBDf/QGAn1JYh/yrK/q1YUXecScaX563AB64zeiW5nWj14KUwLWTY2w63KssbZ
-	 Sef5paV+hFTLQAUV/QrYUtei6/WqPO/0VhaX/vU3AdJ8xkEVUejFFqbe0QpLeT8197
-	 KWCTaRVVkVp69jgEz4088N9i+2PZSU+2l8FpRO1cAQgOM2DEW2oUePaiAa8D1PWQ8j
-	 dTG2ZVWtShOQQ==
-Date: Tue, 30 Apr 2024 11:20:19 +0200
-From: Benjamin Tissoires <bentiss@kernel.org>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, 
-	bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
-	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>
-Subject: Re: [PATCH 2/3] bpf: do not walk twice the hash map on free
-Message-ID: <uaf4x2aczwt3fphtnxly4vvvnzcuq6wyhtawcoh6j3sjsf2f2w@6mmc3d5cwqev>
-References: <20240425-bpf-next-v1-0-1d8330e6c643@kernel.org>
- <20240425-bpf-next-v1-2-1d8330e6c643@kernel.org>
- <CAADnVQK_7byWSkjVbmUFYLNA1+ER4xWz3dCE=K6ZCWLW=YMCBA@mail.gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=l3st94ESGZE1jAdpawcvEaoY3ufMgw5RhIgBBhwx/7wNx9HLup4aFKE0d4DqiYA2zqhjE1dXHaaJui0wRGOyn+EjShAlgXTHhrKMTxM91UyoSIQK9m9gV1ReKszfP8o2HRHS+oUASevOtknGD62mz0LeHx6urtuFzLwnk6E9mKo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=DzD4eUtc; arc=none smtp.client-ip=90.155.50.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=bHkTSQnGuEaomY/gWdm3ngyCLQOoVPGkYgrv4PBOIGs=; b=DzD4eUtcf8dJCc0qMaoSFOZzI2
+	9fKRjdp2FjnOVJYF70fF+0yOb5bx6/Aee66eQcrH8aJo3ykyg4XA7lIDg4Cr100P48sv3zckiG7/o
+	4LajJN1NX9hTsvzyyJPQLkg4kCLMGjxRk3f1ks4mpm2tRlECRkGnWjXAjN/BstK30FJejr0G1phAC
+	2osHNcyYnNEgHogICgVFOqb1qXicXSgvDpswTImy9O/GV9oCkeBWfb7MMR5BFk4oSkMBOFF/J0M7W
+	ZKSDmvLCwJxVfbmrJ00mzF6YJxfbxv7fXXc983QOIxCtO/jZAIH0bV3eeXo82JEj7sJ7fqEc8cDqN
+	sUojJiBw==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+	by casper.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1s1jgC-0000000EUWI-2fQc;
+	Tue, 30 Apr 2024 09:21:40 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+	id 4F726300684; Tue, 30 Apr 2024 11:21:40 +0200 (CEST)
+Date: Tue, 30 Apr 2024 11:21:40 +0200
+From: Peter Zijlstra <peterz@infradead.org>
+To: Kees Cook <keescook@chromium.org>
+Cc: "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>, Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+	"H. Peter Anvin" <hpa@zytor.com>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Nick Desaulniers <ndesaulniers@google.com>,
+	Bill Wendling <morbo@google.com>,
+	Justin Stitt <justinstitt@google.com>,
+	linux-hardening@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, llvm@lists.linux.dev,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] hardening: Refresh KCFI options, add some more
+Message-ID: <20240430092140.GE40213@noisy.programming.kicks-ass.net>
+References: <20240426222940.work.884-kees@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAADnVQK_7byWSkjVbmUFYLNA1+ER4xWz3dCE=K6ZCWLW=YMCBA@mail.gmail.com>
+In-Reply-To: <20240426222940.work.884-kees@kernel.org>
 
-On Apr 25 2024, Alexei Starovoitov wrote:
-> On Thu, Apr 25, 2024 at 6:59 AM Benjamin Tissoires <bentiss@kernel.org> wrote:
-> >
-> > If someone stores both a timer and a workqueue in a hash map, on free, we
-> > would walk it twice.
-> > Add a check in htab_free_malloced_timers_or_wq and free the timers
-> > and workqueues if they are present.
-> >
-> > Fixes: 246331e3f1ea ("bpf: allow struct bpf_wq to be embedded in arraymaps and hashmaps")
-> > Signed-off-by: Benjamin Tissoires <bentiss@kernel.org>
-> > ---
-> >  kernel/bpf/hashtab.c | 16 +++++-----------
-> >  1 file changed, 5 insertions(+), 11 deletions(-)
-> >
-> > diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
-> > index 0179183c543a..20162ae741e9 100644
-> > --- a/kernel/bpf/hashtab.c
-> > +++ b/kernel/bpf/hashtab.c
-> > @@ -1515,7 +1515,7 @@ static void delete_all_elements(struct bpf_htab *htab)
-> >         migrate_enable();
-> >  }
-> >
-> > -static void htab_free_malloced_timers_or_wq(struct bpf_htab *htab, bool is_timer)
-> > +static void htab_free_malloced_timers_or_wq(struct bpf_htab *htab)
-> >  {
-> >         int i;
-> >
-> > @@ -1527,10 +1527,10 @@ static void htab_free_malloced_timers_or_wq(struct bpf_htab *htab, bool is_timer
-> >
-> >                 hlist_nulls_for_each_entry(l, n, head, hash_node) {
-> >                         /* We only free timer on uref dropping to zero */
-> > -                       if (is_timer)
-> > +                       if (btf_record_has_field(htab->map.record, BPF_TIMER))
-> >                                 bpf_obj_free_timer(htab->map.record,
-> >                                                    l->key + round_up(htab->map.key_size, 8));
-> > -                       else
-> > +                       if (btf_record_has_field(htab->map.record, BPF_WORKQUEUE))
-> >                                 bpf_obj_free_workqueue(htab->map.record,
-> >                                                        l->key + round_up(htab->map.key_size, 8));
-> >                 }
-> > @@ -1544,18 +1544,12 @@ static void htab_map_free_timers_and_wq(struct bpf_map *map)
-> >         struct bpf_htab *htab = container_of(map, struct bpf_htab, map);
-> >
-> >         /* We only free timer and workqueue on uref dropping to zero */
-> > -       if (btf_record_has_field(htab->map.record, BPF_TIMER)) {
-> > +       if (btf_record_has_field(htab->map.record, BPF_TIMER | BPF_WORKQUEUE)) {
-> >                 if (!htab_is_prealloc(htab))
-> > -                       htab_free_malloced_timers_or_wq(htab, true);
-> > +                       htab_free_malloced_timers_or_wq(htab);
-> >                 else
-> >                         htab_free_prealloced_timers(htab);
-> >         }
-> > -       if (btf_record_has_field(htab->map.record, BPF_WORKQUEUE)) {
-> > -               if (!htab_is_prealloc(htab))
-> > -                       htab_free_malloced_timers_or_wq(htab, false);
-> > -               else
-> > -                       htab_free_prealloced_wq(htab);
-> 
-> This looks wrong.
-> htab_free_prealloced_wq() is now unused as compiler says:
-> ../kernel/bpf/hashtab.c:243:13: warning: ‘htab_free_prealloced_wq’
-> defined but not used [-Wunused-function]
->   243 | static void htab_free_prealloced_wq(struct bpf_htab *htab)
->       |             ^~~~~~~~~~~~~~~~~~~~~~~
-> 
-> and prealloced maps with wq leak wq-s.
+On Fri, Apr 26, 2024 at 03:29:44PM -0700, Kees Cook wrote:
 
-oops, you are right. Sending a v2 right away (sorry for the delay).
+> - CONFIG_CFI_CLANG=y for x86 and arm64. (And disable FINEIBT since
+>   it isn't as secure as straight KCFI.)
 
-Cheers,
-Benjamin
+Oi ?
 
