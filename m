@@ -1,144 +1,140 @@
-Return-Path: <linux-kernel+bounces-164604-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-164605-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 870AB8B7FEE
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 20:42:31 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 01DE28B7FEF
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 20:42:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 432862821C1
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 18:42:30 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 407ABB23D6E
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 18:42:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 137F5194C9E;
-	Tue, 30 Apr 2024 18:40:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 64CF6199EA0;
+	Tue, 30 Apr 2024 18:40:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="3IszCfMW"
-Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="aJiZ6DwC"
+Received: from mail-pg1-f181.google.com (mail-pg1-f181.google.com [209.85.215.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE2FB23C9
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 18:40:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1EE6A190667
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 18:40:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714502418; cv=none; b=EsFOB24V7nBxHi4A1UsuKCfwe8h/Ff1gp7Alt7dci/tYe2UBYOZ68Awhi8sMukKdgGRZUbQfreEuQv/WRi7JJIQOMEnhFtXaidtbztdU5ndR7cMb1P1XO95neormFyMgCL2N0tSsS/pDKiwpbVVG5bE+X0Vc5YPbXrTgRFS3bng=
+	t=1714502451; cv=none; b=h5ZpMUVDA5iD3IvkaiHN1VQoZ7YYvBAgdaEGnt5M9BMqpGjAyJ021UGE2U9yLWl4XoCrpsXQKR6lAoT7idhytWrPFrMlBPWC1fRoWBaraj33d+WLIxfo58Wp6CZwOBTaxYNKaj7A533ECZQwhT76wb5EpdlN3PdShoWUaw1tD3I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714502418; c=relaxed/simple;
-	bh=zwdY51+eyb+8RRA4oiPRHzVQ9fntHo3HpChfKzculaA=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=W578uzNkiglZFjr0hSn07UevqBStAFEnvOXIVzOXoVDLaFi1O488VzqwRE/n2Nq2ogQ2dcpqQP2FSLKaNzdtqGEuD2ZtR29nBYqnZxSWMxnPuYZ4moGZxUUD/J9gkFwRlY7788YejO8M4vk0ugw6hW+YfjlDISV8cRihFsXTZ04=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=3IszCfMW; arc=none smtp.client-ip=209.85.128.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-61be621bd84so26067477b3.1
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 11:40:16 -0700 (PDT)
+	s=arc-20240116; t=1714502451; c=relaxed/simple;
+	bh=Ffbg7WoTC8IzhJQ1hvnDnhKn4Y9a4Jx99g8Jfv72qhk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=SbgNTYAZqDnaBrBFQv7zxXypklDKepIycIugno5Kq/mzCDIgXVJ7L/wQ6/D0dpaWYrUItY26+0HgtrCS03CuLcTfQwt/cy1j/hY5lKHpIdVnG68IGgFGBS+Fu5KgwLYKuXXof1ygvBMjEAorHfoors0uTCK/igitPf9LjwG/HnQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=aJiZ6DwC; arc=none smtp.client-ip=209.85.215.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f181.google.com with SMTP id 41be03b00d2f7-5e8470c1cb7so4112120a12.2
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 11:40:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1714502416; x=1715107216; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=3ran6BSBf09MzqnINtwYjR/epuBWKMosWFWWwnZMLsk=;
-        b=3IszCfMWuHpfl2TCYFblHpopwI/6AzR2lNDbl7RBM0g0w4p3DvlcfXI+InQ4WXc8z6
-         dSbh0qCbjS2zzbVaqDyiV5RBBxRzNKQxT4eHqW5j5XhHvvbAWF94kFaVqMKcKv9JINZ7
-         PBIWkphMSReRa9KXkzKwZhf8tWakhxrWhYCfNYeMq3MzL1kTb9TJ6tmH71/A2sDYb23L
-         z68OFpiUs8ynRStrG7bY2RhU0S0cpdIvazueBxh+A6b5bL5tJQb/2laubpxscRoKS34g
-         pwaGAdhb2UjfJ/bEIL25bJLQcGJtTpWKr4pMnTTgQyBQuBMmAydSPjreD3RWIMJWiKON
-         0e5w==
+        d=gmail.com; s=20230601; t=1714502449; x=1715107249; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=t2suPCR+cMhZMHV/oEQ4BEenfWnmM4twKxp8OHpzJwg=;
+        b=aJiZ6DwC1YYTs5yMrEU/GlwsPdttbgAdJ/3LTCiLHmpCZ+3DrgHaxPdYnZ25g8eHLD
+         8joGBeVv/AYlnYXDCGFHMXWeQj4j3lcpCSerPaWeeTjYzprD0WTm+Ov/QzvShPWMV/wS
+         YhwnI4zVg+Dl569jrraMg914tK6V7smIO3mIyxSF8s98jwSx1u5hGCd28BTeXmI1ZRpB
+         xLcZMcsjjGJTWwqMhsSeolxd5Nmqh6Trelq9pPHokooJmu2rZOLUMJDZJ/RCvazCjfZF
+         A6B8pE/TyJauuRKcXLGaF1KaTK3lpHO7iDo+425K+vle10U7o/hRVj+JIPqc4gxAoAmp
+         GaWA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714502416; x=1715107216;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=3ran6BSBf09MzqnINtwYjR/epuBWKMosWFWWwnZMLsk=;
-        b=LRJRiI5hSC/ZEw37ZUuaDc1SS1Xk5QRmjgKwF2L/U1/LIg0WghUqYlLYQW4lj1ipJ7
-         oQSK27FMg6mImeGoj/9XBMQ3ypeqWsM1MRYoB8/veFzfmWxUXjtURHdME96Wlb1urfyn
-         3tNq4Jo6uBBXWgXcOaMf7pf65k61TwktqrK68htZ8LEs25TVmrYmNTNtdNlhWA4MWD5F
-         JaXgkTnwL1bRecCM6y7ktcURecVrRnQ07fWg9P6exSuNDBs2uLWP/dX/7Bqp/FParYPo
-         95uGouF6aHjlFpT2MbAUo9OK8D6+O0r8tUpFvypsBSJKEweCAuPDegq8v70RBtYkaSyx
-         2guQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVZvI+X9E/VAgJ/dESLCKD9gxX32Ye7QNbylNxkQyaeawYgW69iMYsoBMBJg9vuxrPTqn5vWZiD8b/rrKfV+x0BrAzYJ/Ia94PE0Ehw
-X-Gm-Message-State: AOJu0Yw5gudFZ0Fgxdr4HOj8cfxrhTh4FJzfYX9byrdHCcpFPOTV0bqz
-	YVf9Z6KKB+lHYvicIK4tyRgVfGB/UZ3fBqTWW3Q9wpV7QXpqJCbrebRzdbn7LB8HopDXzKjq+Je
-	DHA==
-X-Google-Smtp-Source: AGHT+IHDMGb76IEBrmNmBvu2VXm6rEScC5BIxc3g7aclhYoQxKwJJCEpVgx6IU8zWjm4RsMseEcSuFoXKEM=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a25:abd2:0:b0:de5:1ea2:fc75 with SMTP id
- v76-20020a25abd2000000b00de51ea2fc75mr42895ybi.7.1714502415792; Tue, 30 Apr
- 2024 11:40:15 -0700 (PDT)
-Date: Tue, 30 Apr 2024 11:40:14 -0700
-In-Reply-To: <20240430172313.GCZjEpAfUECkEZ9S5L@fat_crate.local>
+        d=1e100.net; s=20230601; t=1714502449; x=1715107249;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=t2suPCR+cMhZMHV/oEQ4BEenfWnmM4twKxp8OHpzJwg=;
+        b=abVn/V5t0m5sEyNopFvMBhjb4VqUNCgLp9qiR3eX3BDBxSo5kHIJeFUSIro12ovNLy
+         5lUDcw3j83n7p8acVyMZ+WifQY6kZGexEGHIdoS9JrtY5aRcJC20sBYm5hWPHKzORBcA
+         EFhIJMqNq/dByVNyqTxrN0RFPa7NbIZHp6xKB+M5nfJpHri0IgdbnMJmz6mghOs6wA7/
+         heUty4GMGbADYZD+82CRiwR/DWe8c8jUKrDzh1inp6k8cTKEhcpY4z2jtKudhG3x9FB5
+         L8Hfz9VquJ20F3Gyzko2veoqC/dZ/UnZLbgXyA/9fq49usqW0XEEsEroFL/7/EouE0/C
+         I+OA==
+X-Gm-Message-State: AOJu0YxFOLk5IRJbAphyagOm4VcnIrXYD0ZCksbJpVkvJchwarRNJ//8
+	Iz4Ro1tFJmAKZ0k6UbR9xNP/GBR5GFBxuJN3tYEdlTWoJED1cl9LUq2BXg==
+X-Google-Smtp-Source: AGHT+IECvwrpw/vjqVJ8bNQHU8PrBxLJl0loVDO6R1DSXeU9jawmL9CwzbZAw+QVvk9xuu4ZY2U0ag==
+X-Received: by 2002:a17:90a:c590:b0:2af:3ff7:4a81 with SMTP id l16-20020a17090ac59000b002af3ff74a81mr296907pjt.31.1714502449166;
+        Tue, 30 Apr 2024 11:40:49 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id qb13-20020a17090b280d00b002b1581a0fccsm5043895pjb.44.2024.04.30.11.40.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 30 Apr 2024 11:40:47 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date: Tue, 30 Apr 2024 11:40:46 -0700
+From: Guenter Roeck <linux@roeck-us.net>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: Linux 6.9-rc6
+Message-ID: <a432941d-8c78-41d4-89bc-71c8cdc0da2e@roeck-us.net>
+References: <CAHk-=witYatGg+jW1kVu2Moq6yF2JNFe3wn7G0sMNhE=H=9voA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <202404302233.f27f91b2-oliver.sang@intel.com> <20240430172313.GCZjEpAfUECkEZ9S5L@fat_crate.local>
-Message-ID: <ZjE7DkTBSbPlBN8k@google.com>
-Subject: Re: [tip:x86/alternatives] [x86/alternatives] ee8962082a: WARNING:at_arch/x86/kernel/cpu/cpuid-deps.c:#do_clear_cpu_cap
-From: Sean Christopherson <seanjc@google.com>
-To: Borislav Petkov <bp@alien8.de>
-Cc: kernel test robot <oliver.sang@intel.com>, oe-lkp@lists.linux.dev, lkp@intel.com, 
-	linux-kernel@vger.kernel.org, x86@kernel.org, Ingo Molnar <mingo@kernel.org>, 
-	Srikanth Aithal <sraithal@amd.com>
-Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=witYatGg+jW1kVu2Moq6yF2JNFe3wn7G0sMNhE=H=9voA@mail.gmail.com>
 
-On Tue, Apr 30, 2024, Borislav Petkov wrote:
-> + Sean.
-> > [ 0.055225][ T0] ? __warn (kernel/panic.c:694) 
-> > [ 0.055225][ T0] ? do_clear_cpu_cap (arch/x86/kernel/cpu/cpuid-deps.c:118 (discriminator 1)) 
-> > [ 0.055225][ T0] ? report_bug (lib/bug.c:180 lib/bug.c:219) 
-> > [ 0.055225][ T0] ? handle_bug (arch/x86/kernel/traps.c:239 (discriminator 1)) 
-> > [ 0.055225][ T0] ? exc_invalid_op (arch/x86/kernel/traps.c:260 (discriminator 1)) 
-> > [ 0.055225][ T0] ? asm_exc_invalid_op (arch/x86/include/asm/idtentry.h:621) 
-> > [ 0.055225][ T0] ? do_clear_cpu_cap (arch/x86/kernel/cpu/cpuid-deps.c:118 (discriminator 1)) 
-> > [ 0.055225][ T0] ? __pfx_do_clear_cpu_cap (arch/x86/kernel/cpu/cpuid-deps.c:109) 
-> > [ 0.055225][ T0] init_ia32_feat_ctl (arch/x86/kernel/cpu/feat_ctl.c:181)
+On Sun, Apr 28, 2024 at 01:58:54PM -0700, Linus Torvalds wrote:
+> Things continue to look pretty normal, and nothing here really stands
+> out. The biggest single change that stands out in the diffstat is
+> literally a documentation update, everything else looks pretty small
+> and spread out.
 > 
-> Yap, works as designed:
-
-..
-
-> won't work as expected because the patching has already happened.
+> We have the usual driver updates (mainly networking and gpu but some
+> updates elsewhere), some filesystem updates (mainly smb, bcachefs,
+> nfsd reverts, and some ntfs compat updates), and misc other fixes all
+> over - wifi fixes, arm dts fixlets, yadda yadda.
 > 
-> And I'm not sure even the dynamic testing *cpu_has() does will always
-> work as we do this dance in get_cpu_cap() with forced flags.
+> Nothing looks particularly big or bad. Shortlog appended for details,
+> please do keep testing,
 > 
-> So, I'm thinking init_ia32_feat_ctl() should run in early_init_intel()
-> which is before alternatives.
-> 
-> And looking at init_ia32_feat_ctl(), all it does is set and clear
-> a bunch of bits so I think it should be ok.
 
-Hmm, I don't think the problem is that init_ia32_feat_ctl() is called too late.
-It too is called from the BSP prior to alternative_instructions():
+Build results:
+	total: 158 pass: 157 fail: 1
+Failed builds:
+	xtensa:allmodconfig
+Qemu test results:
+	total: 537 pass: 537 fail: 0
+Unit test results:
+	pass: 213087 fail: 63
+Failed unit tests:
+	sh:rts7751r2dplus_defconfig:checksum
+	sheb:rts7751r2dplus_defconfig:checksum
+	i386:pc:test_next_pointer
+	i386:pc:slub_test
+	x86_64:q35:test_next_pointer
+	x86_64:q35:slub_test
 
-  arch_cpu_finalize_init()
-  |
-  -> identify_boot_cpu()
-     |
-     -> identify_cpu()
-        |
-        -> .c_init() => init_intel()
+Fixes to address the problems seen in my tests are:
 
-Ah, and the WARN even specifically checks for the case where there's divergence
-from the boot CPU:
+  da7bf52309b2 usb: ohci: Prevent missed ohci interrupts
+  6314201f467f mm/slub, kunit: Use inverted data to corrupt kmem cache
+  db4ade1cccf9 m68k: fix spinlock race in kernel thread creation
+  9ea544ad0f56 net: dev_addr_lists: move locking out of init/exit in kunit
+x c2ea0ff8714f ext4: implement filesystem specific alloc_inode in unit test
+  7692d5469f1f Revert "sh: Handle calling csum_partial with misaligned data"
+x 2a1de3ca9cb6 xtensa: remove redundant flush_dcache_page and ARCH_IMPLEMENTS_FLUSH_DCACHE_PAGE macros
 
-	if (boot_cpu_has(feature))
-		WARN_ON(alternatives_patched);
+The patches are in the 'fixes' branch of
+git://git.kernel.org/pub/scm/linux/kernel/git/groeck/linux-staging.git
+in case anyone is interested in details. Note that the SHAs may change
+since the branch is rebased on a regular basis.
 
-So I think this is a "real" warning about a misconfigured system, where VMX is
-fully configured in MSR_IA32_FEAT_CTL on the boot CPU, but is disabled on a
-secondary CPU.
+Only patches marked with 'x' are regressions introduced in this release
+cycle. The other patches fix long-standing issues. Some of the unit tests
+fixed with the above patches are not included in the test results; for
+example, running ext4 unit tests without the fix results in memory
+corruptions. The m68k and usb patches fix spurious problems.
 
-FWIW, KVM will play nice with such a setup, as KVM specifically checks that VMX
-is fully enabled all CPUs, but I would still consider this a misconfigured system.
-
-> > [ 0.055225][ T0] init_intel (arch/x86/include/asm/msr.h:146 arch/x86/include/asm/msr.h:300 arch/x86/kernel/cpu/intel.c:583 arch/x86/kernel/cpu/intel.c:687) 
-> > [ 0.055225][ T0] identify_cpu (arch/x86/kernel/cpu/common.c:1824) 
-> > [ 0.055225][ T0] identify_secondary_cpu (arch/x86/kernel/cpu/common.c:1949) 
-> > [ 0.055225][ T0] smp_store_cpu_info (arch/x86/kernel/smpboot.c:333) 
-> > [ 0.055225][ T0] start_secondary (arch/x86/kernel/smpboot.c:197 arch/x86/kernel/smpboot.c:281) 
-> > [ 0.055225][ T0] ? __pfx_start_secondary (arch/x86/kernel/smpboot.c:231) 
-> > [ 0.055225][ T0] common_startup_64 (arch/x86/kernel/head_64.S:421) 
-> > [    0.055225][    T0]  </TASK>
-> > [    0.055225][    T0] ---[ end trace 0000000000000000 ]---
+Thanks,
+Guenter
 
