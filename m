@@ -1,112 +1,92 @@
-Return-Path: <linux-kernel+bounces-164035-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-164036-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0E4BD8B7774
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 15:45:45 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5DFA08B7778
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 15:46:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3FFBC1C223E0
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 13:45:44 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F049A1F22C8B
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 13:46:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C2DF171E73;
-	Tue, 30 Apr 2024 13:45:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F832172BA8;
+	Tue, 30 Apr 2024 13:45:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Qn2eUTG+"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.17])
+	dkim=pass (2048-bit key) header.d=gmx.de header.i=rwarsow@gmx.de header.b="arbxL/P/"
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62287171E4D
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 13:45:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.17
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E0069171E64;
+	Tue, 30 Apr 2024 13:45:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714484738; cv=none; b=ngqbowy6R0WYJ1cLZf2x1QIse5Ev9+07l30JM4E+bL/B3s0d7q3ff2yzXWdDykPmPF7YHts0dNxCFc0qmWIoI8tHBU4AmWETEFLs+T/PjgPTxBM2pPuH9APru2BJrSLxP0MfN9SlclFw9LZxs1zamnlOWnhm9ed1OSW26EdBH7I=
+	t=1714484751; cv=none; b=MBEkNcdPtyr6pd5zHvKubrntIcSI9K8iZp7vELb836kPA4NlcLCESGYAs8eWIzyA9/5eb6vr1nNsO5KS5bMQMfTYuHjULJVQdzSRL74SDTH+k7R0V+Z8H2AxxTT7xNZ2Z1yGPBLjKBV8QUXdun+w5gESynv0f9cx4PIneFWrK+Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714484738; c=relaxed/simple;
-	bh=LE1sqgYmaqkjrr/mtuHnyNHvplOITrygz2qQHL+C+T4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=qX6i3okq9kg871LBBagopZYhKnzAw3aNYRIxvNNHnCvoeyAP84jLAnzXxRQvHHnmmz/JpmgnQFlxv03QZEwboLFpsfV4SQDPhVMmuFOLU7aCJxhHCYlEHf1PoINuwIEWXNNMzlJQ/WCN0DFPM+t2qZdGrO/x5vS+cjUT0nipoGA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Qn2eUTG+; arc=none smtp.client-ip=198.175.65.17
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1714484737; x=1746020737;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=LE1sqgYmaqkjrr/mtuHnyNHvplOITrygz2qQHL+C+T4=;
-  b=Qn2eUTG+eCqhmWo20QRk30BdlmpXHlEVHz6ma6mKESBNAk2oZMUY7+8h
-   wrlzFK72+dCycljemaOiDcWCL607eFdYwHgFbR2ZYBy3FpShbtYWBbr7M
-   kw1CIj7/DfHS1iuJlSvtQzbn5mAufMOKiEqGLurmeb/7XOgnX7BtAu9TO
-   zxty79DPDm35MWdOpvcjWpAPljxhuH7wHDNtx3y3xkkzfPzzcuDPH09Ks
-   Bx9OxP1dUf0OMkM7zN4qN58aNX/WMifRZ7sCy9FFK2ta1vQlAu3wVZ1PQ
-   cbMERlvlwpPbLRdqHbaut69FQIaJwwCPoDfF14SyW/xzUqVFU/QHeKPdA
-   A==;
-X-CSE-ConnectionGUID: y+IvXVZkSvui8rV21TW2Vg==
-X-CSE-MsgGUID: 63r+CTJWSvydy1ogpd2/dg==
-X-IronPort-AV: E=McAfee;i="6600,9927,11060"; a="10313261"
-X-IronPort-AV: E=Sophos;i="6.07,242,1708416000"; 
-   d="scan'208";a="10313261"
-Received: from orviesa001.jf.intel.com ([10.64.159.141])
-  by orvoesa109.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Apr 2024 06:45:37 -0700
-X-CSE-ConnectionGUID: 1etnQxgPSYi82DvgybKGUw==
-X-CSE-MsgGUID: ZIwCsDaxQN2rgsGx2ATvpw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,242,1708416000"; 
-   d="scan'208";a="63954693"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orviesa001.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Apr 2024 06:45:32 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1s1nnU-00000002g31-3uty;
-	Tue, 30 Apr 2024 16:45:28 +0300
-Date: Tue, 30 Apr 2024 16:45:28 +0300
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Baojun Xu <baojun.xu@ti.com>, robh+dt@kernel.org, lgirdwood@gmail.com,
-	perex@perex.cz, pierre-louis.bossart@linux.intel.com,
-	kevin-lu@ti.com, shenghao-ding@ti.com, navada@ti.com,
-	13916275206@139.com, v-po@ti.com, niranjan.hy@ti.com,
-	alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-	liam.r.girdwood@intel.com, yung-chuan.liao@linux.intel.com,
-	broonie@kernel.org, soyer@irl.hu
-Subject: Re: [PATCH v4 1/3] ALSA: hda/tas2781: Add tas2781 hda driver based
- on SPI
-Message-ID: <ZjD1-NSC3X_7JcQg@smile.fi.intel.com>
-References: <20240430072544.1877-1-baojun.xu@ti.com>
- <20240430072544.1877-2-baojun.xu@ti.com>
- <87jzkfm2hp.wl-tiwai@suse.de>
+	s=arc-20240116; t=1714484751; c=relaxed/simple;
+	bh=dmMdDLN3YgL1qMEqV22WwccWKGPvTDnUyQtKaq9KA84=;
+	h=Message-ID:Date:MIME-Version:From:To:Cc:Subject:Content-Type; b=YnC2q0VSWjldo77hvDOVOyCeqQ9a8MG1IMXdyyD+XbJUtSXC0imf41p5kkWUqvnLKWZID0PJzWAkgf8cYj3D8PIwv/UMoLQRiVANHW7yOxwwZVrMeHJcv76y1qj/Io2yAQIFylJ3+JcVQFThiLzfu83AkO275EbLgPAFDbLUmQ4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de; spf=pass smtp.mailfrom=gmx.de; dkim=pass (2048-bit key) header.d=gmx.de header.i=rwarsow@gmx.de header.b=arbxL/P/; arc=none smtp.client-ip=212.227.17.20
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.de;
+	s=s31663417; t=1714484746; x=1715089546; i=rwarsow@gmx.de;
+	bh=dmMdDLN3YgL1qMEqV22WwccWKGPvTDnUyQtKaq9KA84=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:From:To:Cc:
+	 Subject:Content-Type:Content-Transfer-Encoding:cc:
+	 content-transfer-encoding:content-type:date:from:message-id:
+	 mime-version:reply-to:subject:to;
+	b=arbxL/P/2LBPMK9Os6x415aawKvW/PzE/MEO6yckZGzKQOXEJMzLXP1aRGfXbc/M
+	 YgUmhQ00tZI3yrAT7bj6/IIQ6EirpzFQK/TSar25nWM/86QwiCwvSdxYDsLbEb0Up
+	 tuMpQ9qGecJs6quRBUA5kEpSTUgoJv5x3zMomOCDYu/iZCUU8P/TapHkjpqL7dFNW
+	 XsiKfTgUjtz5PbEolRBSUM8e+K7fcqT53NSdgEayuTpd6begMhGecE77wEmHkW28Y
+	 GuNWiBG+K1Y67O73arO6kAbrn7dLpl/NFNkki23nFZthNZj4W9qWaCogMhbHYfFh4
+	 ozXAC9qEL9kPoyMh1w==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [192.168.100.20] ([46.142.35.82]) by mail.gmx.net (mrgmx104
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MtOGU-1swFGu0R1a-00tBhZ; Tue, 30
+ Apr 2024 15:45:46 +0200
+Message-ID: <e143067b-edad-4562-9b7b-95be662a8f63@gmx.de>
+Date: Tue, 30 Apr 2024 15:45:45 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87jzkfm2hp.wl-tiwai@suse.de>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+User-Agent: Mozilla Thunderbird
+From: Ronald Warsow <rwarsow@gmx.de>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Content-Language: de-DE, en-US
+Subject: Re: [PATCH 6.8 000/228] 6.8.9-rc1 review
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Provags-ID: V03:K1:FzGFpDCPsCJ7rsn2KuuaXLTqV3AFo5mq7pDQT2mCmfhyTSnZEej
+ 4q3UgHxkUCuROSA9U3c2OW47H00L8nVjj18YNZ2dKC3Bc2pzx5twbfIgVg/pZ6K8BbVJnnd
+ /Sdq4yEIZxGozTch7PH6tLZZHyORjvujCu1vFJnkMSuErH/Rx4ZAtGNbdVnzCBZiXWh3ZJr
+ AlNnkSB4+oqaox2W4ER0w==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:LdHmpgobswk=;/u6wFfrl/vupy6pV+tD10zDawh9
+ zoO4ZOK9zP2Xw4lbAZt72desnQI5wSZHTm4E54ksqBJaMGNzlPsKYVk17G0WWzRDQrkzqztuP
+ xERB55ChXGetX8GiddKZoxEZgM7UJxenUoXRgeE+H6gbatl4v5giO4JnTWzw5OSPgyIljoBhl
+ yiuLFplGy3w3/qp5XIYa1mCOk/3dvqmhySrHL9DhP/41W8njh7SQd9/aDSIV84Sq9xcM28VZc
+ DXBYGtG5P4m7xCffbVC1UkZ7aS0VAfh8aAsnmq/fp2Dd96QgP/C8PUXTWkxWJ1aXOCxkaC9vv
+ AIzRwL7i00ly9f0iFv0bDNCvt61fNFU9O/65NHqv0B8BaElhOK9Tirl21loIFcFKyMgh02kPk
+ 1bH7f9wm4gRbp/k67vEgQ4VZ1dSohrESC9iBmim6s+APlSM0mCu4mw8F9rg1bqFHcOBRfImf0
+ UiiVodqFduQa/grPMpLDB8tucPqKhKqTQ5JxNRzH4xGQ2egA1xxLFk67pq0Im5XToDNGoThhc
+ e+3MpFAckQbJB8WnGOG2mdHfhL/+6F8GEU7qy6M0pr8E2yuMeTxPTMUPHaava0laoVwutLIVi
+ +/F9gEbTpZfghiZjLi0lg3g8Aso1gXNUJ5F4VaxoaeM2pogVH/5tCKa6YwJ+xRSNL2AGw+FGG
+ r8j4QJ8Dq7U1I36SAGHpY1dL2dHoBVP5HAGKtLvoTt7WgJgtN3BKZ/OhZDLCE4Wvuve6ORaot
+ HELAaZPg2466q8N1zpVbuqyvwVLOEhMGl3uFKCV+xwE3yWurCk2zpAugF9YtwHo31zvxBQvN+
+ IUN4pcL6vVAFExdJkxgoki1+y7H/G6HczvI76gZ7ZSfbY=
 
-On Tue, Apr 30, 2024 at 02:58:10PM +0200, Takashi Iwai wrote:
-> On Tue, 30 Apr 2024 09:25:42 +0200, Baojun Xu wrote:
+Hi Greg
 
-..
+*no* regressions here on x86_64 (RKL, Intel 11th Gen. CPU)
 
-> >  snd-hda-cs-dsp-ctls-objs :=		hda_cs_dsp_ctl.o
-> >  snd-hda-scodec-component-objs :=	hda_component.o
-> >  snd-hda-scodec-tas2781-i2c-objs :=	tas2781_hda_i2c.o
-> > +snd-hda-scodec-tas2781-spi-y :=	tas2781_hda_spi.o tas2781_spi_fwlib.o
-> 
-> A nitpicking: better to align with other lines (i.e. with *-objs
-> instead of *-y).
+Thanks
 
-I object this. The better approach is to have a precursor patch that switches
-to y over objs (the latter is for user space code / tools).
-
--- 
-With Best Regards,
-Andy Shevchenko
-
+Tested-by: Ronald Warsow <rwarsow@gmx.de>
 
 
