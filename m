@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-164281-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-164282-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1099F8B7BA4
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 17:33:10 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1267B8B7BA5
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 17:33:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 313C71C23F2D
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 15:33:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 96DBB1F256FC
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 15:33:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F8A91802C8;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE6521802D4;
 	Tue, 30 Apr 2024 15:30:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ionos.com header.i=@ionos.com header.b="c8QYsGFj"
-Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com [209.85.208.52])
+	dkim=pass (2048-bit key) header.d=ionos.com header.i=@ionos.com header.b="RJXscFaT"
+Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com [209.85.218.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 044AE17B507
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 15:29:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A77717BB10
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 15:30:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714491002; cv=none; b=r2XKAb3IBX5gXYB/3sOLv1nNKtpkzYJSgjsAx/HqpbVFhCjpC4ZrTHWnb/qNRMNu5626ftV4R7im/A8Scqtx9xZtYVRetMGqW8PIY/WGkoxL/xeeinF0zuxGbaeGf44+o4KyO3zon+8pp4Y6gAvfJuuYWLwwVAyhZlt2HHbVImY=
+	t=1714491002; cv=none; b=b7+sMI3bHN/5nSCOZsApAjc+eSJp7JK0pKXTJ9ea9nXaV3mwH7wS6tAwOneFHncWInU6WLtoaztlK08mWXRrbopOraSsIW6CFE/9xnVS8Sh9VPQ33MJkm4NFYHlwv4Ldqk2bbl4QtOtjH53cjNykOkKIMrWls2xwKuWovRsrKA4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1714491002; c=relaxed/simple;
-	bh=a61V/JLL5yE4mlKafM5/E3jZonbk+ucnYZr1bkoNmRg=;
+	bh=R0gNH4FY3l8frbO+OI9zC6V4Pw3DwcSG874MuJyzJls=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=UDBqRNnwPlxNY5Q+iPMojLZ7bfjfN16JTrbqpTFFA9xTYqhZP1TZ4IbmZMDsP936GEax0H0GyrsBe8KUriB1VXY6pnwH7YOWMSYKuMnBUXb+lV2O6JeAbarI0o4//Yep6+VvoR7WRCidNCbX6Xi1RsxfgLTp64PI0wAmJCimkdo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ionos.com; spf=pass smtp.mailfrom=ionos.com; dkim=pass (2048-bit key) header.d=ionos.com header.i=@ionos.com header.b=c8QYsGFj; arc=none smtp.client-ip=209.85.208.52
+	 MIME-Version; b=kLjhSEhpNzl9fA0f/DVIZabmjDf6Q2MFLOsAAGgsfSuzyvXlO7gzZ2b+KurAp9OedLQWUuOzrvsKyzWkujOVUWsGK7dRXZNEozVqELsg+S/VvIUzT/V3j3PLGJ9+tMDlHuiuqhnf5tMAYgAEcCH7hlPpMslTEE6YtIZIpHO+LdE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ionos.com; spf=pass smtp.mailfrom=ionos.com; dkim=pass (2048-bit key) header.d=ionos.com header.i=@ionos.com header.b=RJXscFaT; arc=none smtp.client-ip=209.85.218.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ionos.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ionos.com
-Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-56e78970853so11321023a12.0
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 08:29:59 -0700 (PDT)
+Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-a58989cd1f8so750876866b.1
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 08:30:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ionos.com; s=google; t=1714490998; x=1715095798; darn=vger.kernel.org;
+        d=ionos.com; s=google; t=1714490999; x=1715095799; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=zmTw1fgf4V6Kt/hU40fj2rViCghREVZa56h5T5XnfTE=;
-        b=c8QYsGFjLh0Yr6mZhPyCkjdCJ0S2gsG4XJeip6CkwJqOgdaeqvzST5C47FivRM8Geg
-         VbXbMyTYdScIlBGYGf7Fh3TX+bLeU1Xh7PyPVK9xr+vpyp5/QeEtF7P63gHfSe4FP/Rm
-         bseKSi6hBmspTuAel8218U+xnP8SQuHvbFqXrIl2F5iQaEwPvNw4hE7fdXE3o4d/VOkS
-         v37Eq0bU2vNZ/ALTcu4mqtOy7dnTm3Pb6gAxJitdT5Puo01nSwvhhOV81aoZzakqQiHt
-         nd2zY2mrLY180Y1CcG6fWMH/1z3GP7zsj7tRvUdRST/mXV5XExhu+PBt2ita88BMhuwM
-         ZKkQ==
+        bh=ABURn/IPwvg3QaF1L8Bp+WsdBt1sVzfYO2Rbl7rbJjA=;
+        b=RJXscFaT5jLrc4Gkm1pNfloijN2gqzpFKpGRAyqBKPzNOzyLIbrRvNHxU5tna6SSSH
+         NriO0HPpwlg3gPu8vSp5v+74FYPksS7GUpjFKpmD7FSG/Z7fYw8EAIyY1S9MXOJqJrk8
+         Dq8WGCcQimSJGGVxdnZKg3CP/UrvhphEyxEtxUaQ+EZoGTxLSH+cdUhKpxsI5AakQMp2
+         UDVjd4LPM4l1awdbH5rHtcK7YjUj2R8hI/6cmfhU3zCrovU/8+QjeMc0OpWCrclHY08B
+         ecQAi6mQxx+eG21flKf4MM/yl48zu9BRwXFeRpl6C9ITbB84wQ0HVao/06Pp0coI8Gn9
+         FQJA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714490998; x=1715095798;
+        d=1e100.net; s=20230601; t=1714490999; x=1715095799;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=zmTw1fgf4V6Kt/hU40fj2rViCghREVZa56h5T5XnfTE=;
-        b=D0CS7o+F0FVG7WD8QORhpEcfOuaVt5SHi4shJnPIExVpztUxY8eJXnCD7sUJk/gU1n
-         zE/4a4OHVZ8n83PTf0PpiKEo0l1nmZzk8544L5gm+PVXGmBPvgaIgtyOb8i52NTwoYo6
-         KUEpzZ6qK1GwAcBg6DmCz9br7eM4YR2ZJzEd3owQUdjtK4MzLww9BXJP3CC2UiGUwq9E
-         f7A6jl1DsYJlJm8g2qVVJhKkfbsp08yBTaGNnAqrp/ibAwQSUmwgtX445fTPSTX/wICy
-         9rFgce9rmonKt3S1nN7eeguE6pe6GGpknOkT18nNGKNALLzE5tU862kcYN2Rkd9BS6xE
-         Ic2Q==
-X-Forwarded-Encrypted: i=1; AJvYcCVF1nM/b+Rrwrv7+pqSWdGNUNtDAn+HMpUSjNMZmMx2qvYYY3LHz/7uN6p2EK4fQAbRQh5cSpZROVM2kYttb7LQCe6njS7YpDuXs4a0
-X-Gm-Message-State: AOJu0YzRHIRL1iDIycm0WP5wOr3632NB6j6xYuk1f9W4W49dSdFkrVmX
-	mi1dtLs+twwOp+csKWa9qqL5qI3QpD4L52qX+GNLT/oyGjwqruurY8pKQxU42Ts=
-X-Google-Smtp-Source: AGHT+IFD66p0xJw0Q/JpPxUfYiq2Gl0hHWlUSUDJyAX2bmA9f0IipRbf65AqBkjk79FfuWXnDQdU3A==
-X-Received: by 2002:a17:906:c791:b0:a58:eac2:a54f with SMTP id cw17-20020a170906c79100b00a58eac2a54fmr99871ejb.18.1714490998231;
+        bh=ABURn/IPwvg3QaF1L8Bp+WsdBt1sVzfYO2Rbl7rbJjA=;
+        b=S0qimmqtoMs+A82ixp7ZLIughzxVqHbWWYJxIr3+fRH/T6DZwEbS6mGSJR4+iyBfnC
+         NP225q/q65f06S/w30mEXYiVkwmeaevcQNUS5SIDD2Zr2Q7WtyrP27qOZY10AwcHpgWu
+         jk936ERb+4BiwBYkk0+tV2CDb4x4+EnWCPw2FX/uqVaYzIiRX5j3ECb74DjJXGPoaH6F
+         wMGIZy0978oWFtkyJ4GtavFKB660UMDzA3u+HyA49gBa39aC5jObuP1FlUFKzo+wxOWv
+         GtWkViTZhCVsGlYWtiJT5QPVTHIqHzVGsf2tFRDpUL4aS6HzH2BBwjY2Ra5BHvPr00WO
+         9fxg==
+X-Forwarded-Encrypted: i=1; AJvYcCUrU3ZZNhfp7dAJXfAGZs9z3NL15ITTlEXBjgOaNQIyzM9+olALE3UoZNlulwAG1BVG5upkroWLGXfGQslDrA3RkyrooIRIIWkMD4b8
+X-Gm-Message-State: AOJu0YyoCsXWSNO4tLPUrz/T68kO6FDZYTLxy4xhQ81E+bFH/w34JKw+
+	gynFH49Grpi9+flOIH9FpTEuCmilGnyBPWtUfPWIyqRF62mFyy1E9gMhpRxHcis=
+X-Google-Smtp-Source: AGHT+IEEPk94Z5otGXu5AVv4jv/eA3k6lhp9Jv+Ax1/QpcdsQCefXoecEzyhsr379ksLAWsEww8rYw==
+X-Received: by 2002:a17:906:3810:b0:a55:41fd:a013 with SMTP id v16-20020a170906381000b00a5541fda013mr54422ejc.23.1714490998935;
         Tue, 30 Apr 2024 08:29:58 -0700 (PDT)
 Received: from raven.intern.cm-ag (p200300dc6f06e100023064fffe740809.dip0.t-ipconnect.de. [2003:dc:6f06:e100:230:64ff:fe74:809])
-        by smtp.gmail.com with ESMTPSA id a10-20020a1709066d4a00b00a52567ca1b6sm15278137ejt.94.2024.04.30.08.29.57
+        by smtp.gmail.com with ESMTPSA id a10-20020a1709066d4a00b00a52567ca1b6sm15278137ejt.94.2024.04.30.08.29.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Apr 2024 08:29:57 -0700 (PDT)
+        Tue, 30 Apr 2024 08:29:58 -0700 (PDT)
 From: Max Kellermann <max.kellermann@ionos.com>
 To: akpm@linux-foundation.org,
 	linux-mm@kvack.org,
@@ -74,9 +74,9 @@ Cc: willy@infradead.org,
 	sfr@canb.auug.org,
 	david@redhat.com.au,
 	Max Kellermann <max.kellermann@ionos.com>
-Subject: [PATCH v5 14/15] linux/mm.h: move high_memory to mm/high_memory.h
-Date: Tue, 30 Apr 2024 17:29:30 +0200
-Message-Id: <20240430152931.1137975-15-max.kellermann@ionos.com>
+Subject: [PATCH v5 15/15] include: reduce dependencies on linux/mm.h
+Date: Tue, 30 Apr 2024 17:29:31 +0200
+Message-Id: <20240430152931.1137975-16-max.kellermann@ionos.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240430152931.1137975-1-max.kellermann@ionos.com>
 References: <20240430152931.1137975-1-max.kellermann@ionos.com>
@@ -88,233 +88,189 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-This variable is used by lots of arch/*/include/asm/ headers, but
-these do not (and should not) include the huge linux/mm.h header.
-Let's move this "extern" variable to a separate header and include
-this one in arch/.
+Replace <linux/mm.h> with the smaller pieces that were just splitted
+out.  This affects a few headers that are included by many, e.g. bio.h
+and highmem.h, which now no longer depend on the fat <linux/mm.h>
+header.
+
+For this, several missing includes need to be added because they are
+no longer indirectly included, e.g. <linux/fs.h>.
 
 Signed-off-by: Max Kellermann <max.kellermann@ionos.com>
 ---
- arch/arm/include/asm/memory.h                | 4 ++++
- arch/arm/include/asm/pgtable.h               | 2 ++
- arch/csky/include/asm/page.h                 | 1 +
- arch/hexagon/include/asm/mem-layout.h        | 4 ++++
- arch/m68k/include/asm/page_mm.h              | 1 +
- arch/m68k/include/asm/pgtable_mm.h           | 1 +
- arch/parisc/include/asm/floppy.h             | 1 +
- arch/powerpc/include/asm/book3s/32/pgtable.h | 4 ++++
- arch/powerpc/include/asm/nohash/32/pgtable.h | 1 +
- arch/powerpc/include/asm/page.h              | 1 +
- arch/x86/include/asm/floppy.h                | 1 +
- arch/x86/include/asm/pgtable_32_areas.h      | 4 ++++
- drivers/mtd/nand/onenand/onenand_samsung.c   | 1 +
- include/linux/mm.h                           | 2 +-
- include/linux/mm/high_memory.h               | 7 +++++++
- 15 files changed, 34 insertions(+), 1 deletion(-)
- create mode 100644 include/linux/mm/high_memory.h
+ include/linux/bio.h              | 2 ++
+ include/linux/bpfptr.h           | 1 -
+ include/linux/dma-mapping.h      | 1 +
+ include/linux/highmem-internal.h | 2 ++
+ include/linux/highmem.h          | 4 +++-
+ include/linux/net.h              | 2 +-
+ include/linux/oom.h              | 2 +-
+ include/linux/pagemap.h          | 2 +-
+ include/linux/scatterlist.h      | 2 +-
+ include/linux/skbuff.h           | 4 ++++
+ include/linux/vmstat.h           | 3 ++-
+ lib/scatterlist.c                | 1 +
+ 12 files changed, 19 insertions(+), 7 deletions(-)
 
-diff --git a/arch/arm/include/asm/memory.h b/arch/arm/include/asm/memory.h
-index ef2aa79ece5a..a67afb213e2e 100644
---- a/arch/arm/include/asm/memory.h
-+++ b/arch/arm/include/asm/memory.h
-@@ -387,6 +387,10 @@ static inline unsigned long __virt_to_idmap(unsigned long x)
-  */
- #define ARCH_PFN_OFFSET		PHYS_PFN_OFFSET
+diff --git a/include/linux/bio.h b/include/linux/bio.h
+index 9b8a369f44bc..9b9b8b40f1e7 100644
+--- a/include/linux/bio.h
++++ b/include/linux/bio.h
+@@ -5,7 +5,9 @@
+ #ifndef __LINUX_BIO_H
+ #define __LINUX_BIO_H
  
-+#ifndef __ASSEMBLY__
-+#include <linux/mm/high_memory.h>
-+#endif
-+
- #define virt_to_page(kaddr)	pfn_to_page(virt_to_pfn(kaddr))
- #define virt_addr_valid(kaddr)	(((unsigned long)(kaddr) >= PAGE_OFFSET && (unsigned long)(kaddr) < (unsigned long)high_memory) \
- 					&& pfn_valid(virt_to_pfn(kaddr)))
-diff --git a/arch/arm/include/asm/pgtable.h b/arch/arm/include/asm/pgtable.h
-index be91e376df79..eb80f6a65619 100644
---- a/arch/arm/include/asm/pgtable.h
-+++ b/arch/arm/include/asm/pgtable.h
-@@ -11,6 +11,8 @@
- #include <asm/proc-fns.h>
++#include <linux/fs.h> // for struct kiocb, IOCB_NOWAIT
+ #include <linux/mempool.h>
++#include <linux/mm/folio_next.h>
+ /* struct bio, bio_vec and BIO_* flags are defined in blk_types.h */
+ #include <linux/blk_types.h>
+ #include <linux/uio.h>
+diff --git a/include/linux/bpfptr.h b/include/linux/bpfptr.h
+index 1af241525a17..19967a0e510c 100644
+--- a/include/linux/bpfptr.h
++++ b/include/linux/bpfptr.h
+@@ -3,7 +3,6 @@
+ #ifndef _LINUX_BPFPTR_H
+ #define _LINUX_BPFPTR_H
  
- #ifndef __ASSEMBLY__
-+#include <linux/mm/high_memory.h>
-+
- /*
-  * ZERO_PAGE is a global shared page that is always zero: used
-  * for zero-mapped memory areas etc..
-diff --git a/arch/csky/include/asm/page.h b/arch/csky/include/asm/page.h
-index 0ca6c408c07f..17ccc91c3cd6 100644
---- a/arch/csky/include/asm/page.h
-+++ b/arch/csky/include/asm/page.h
-@@ -32,6 +32,7 @@
+-#include <linux/mm.h>
+ #include <linux/sockptr.h>
  
- #ifndef __ASSEMBLY__
- 
-+#include <linux/mm/high_memory.h>
- #include <linux/pfn.h>
- 
- #define virt_addr_valid(kaddr)  ((void *)(kaddr) >= (void *)PAGE_OFFSET && \
-diff --git a/arch/hexagon/include/asm/mem-layout.h b/arch/hexagon/include/asm/mem-layout.h
-index e2f99413fe56..a09116c50043 100644
---- a/arch/hexagon/include/asm/mem-layout.h
-+++ b/arch/hexagon/include/asm/mem-layout.h
-@@ -10,6 +10,10 @@
- 
- #include <linux/const.h>
- 
-+#ifndef __ASSEMBLY__
-+#include <linux/mm/high_memory.h>
-+#endif
-+
- /*
-  * Have to do this for ginormous numbers, else they get printed as
-  * negative numbers, which the linker no likey when you try to
-diff --git a/arch/m68k/include/asm/page_mm.h b/arch/m68k/include/asm/page_mm.h
-index e0ae4d5fc985..f958655d1931 100644
---- a/arch/m68k/include/asm/page_mm.h
-+++ b/arch/m68k/include/asm/page_mm.h
-@@ -5,6 +5,7 @@
- #ifndef __ASSEMBLY__
- 
- #include <linux/compiler.h>
-+#include <linux/mm/high_memory.h>
- #include <asm/module.h>
- 
- /*
-diff --git a/arch/m68k/include/asm/pgtable_mm.h b/arch/m68k/include/asm/pgtable_mm.h
-index dbdf1c2b2f66..ec593656bdc5 100644
---- a/arch/m68k/include/asm/pgtable_mm.h
-+++ b/arch/m68k/include/asm/pgtable_mm.h
-@@ -13,6 +13,7 @@
- 
- #ifndef __ASSEMBLY__
- #include <asm/processor.h>
-+#include <linux/mm/high_memory.h>
- #include <linux/sched.h>
- #include <linux/threads.h>
- 
-diff --git a/arch/parisc/include/asm/floppy.h b/arch/parisc/include/asm/floppy.h
-index b318a7df52f6..98ed37c5dc59 100644
---- a/arch/parisc/include/asm/floppy.h
-+++ b/arch/parisc/include/asm/floppy.h
-@@ -8,6 +8,7 @@
- #ifndef __ASM_PARISC_FLOPPY_H
- #define __ASM_PARISC_FLOPPY_H
- 
-+#include <linux/mm/high_memory.h>
- #include <linux/vmalloc.h>
- 
- 
-diff --git a/arch/powerpc/include/asm/book3s/32/pgtable.h b/arch/powerpc/include/asm/book3s/32/pgtable.h
-index 52971ee30717..03e0a32e1c2c 100644
---- a/arch/powerpc/include/asm/book3s/32/pgtable.h
-+++ b/arch/powerpc/include/asm/book3s/32/pgtable.h
-@@ -4,6 +4,10 @@
- 
- #include <asm-generic/pgtable-nopmd.h>
- 
-+#ifndef __ASSEMBLY__
-+#include <linux/mm/high_memory.h>
-+#endif
-+
- /*
-  * The "classic" 32-bit implementation of the PowerPC MMU uses a hash
-  * table containing PTEs, together with a set of 16 segment registers,
-diff --git a/arch/powerpc/include/asm/nohash/32/pgtable.h b/arch/powerpc/include/asm/nohash/32/pgtable.h
-index 9164a9e41b02..8a9f5b546e4a 100644
---- a/arch/powerpc/include/asm/nohash/32/pgtable.h
-+++ b/arch/powerpc/include/asm/nohash/32/pgtable.h
-@@ -5,6 +5,7 @@
- #include <asm-generic/pgtable-nopmd.h>
- 
- #ifndef __ASSEMBLY__
-+#include <linux/mm/high_memory.h>
- #include <linux/sched.h>
- #include <linux/threads.h>
- #include <asm/mmu.h>			/* For sub-arch specific PPC_PIN_SIZE */
-diff --git a/arch/powerpc/include/asm/page.h b/arch/powerpc/include/asm/page.h
-index e411e5a70ea3..9ae87fc2c648 100644
---- a/arch/powerpc/include/asm/page.h
-+++ b/arch/powerpc/include/asm/page.h
-@@ -7,6 +7,7 @@
-  */
- 
- #ifndef __ASSEMBLY__
-+#include <linux/mm/high_memory.h>
- #include <linux/types.h>
- #include <linux/kernel.h>
+ typedef sockptr_t bpfptr_t;
+diff --git a/include/linux/dma-mapping.h b/include/linux/dma-mapping.h
+index 4a658de44ee9..37d5591039c7 100644
+--- a/include/linux/dma-mapping.h
++++ b/include/linux/dma-mapping.h
+@@ -11,6 +11,7 @@
+ #include <linux/scatterlist.h>
  #include <linux/bug.h>
-diff --git a/arch/x86/include/asm/floppy.h b/arch/x86/include/asm/floppy.h
-index 6ec3fc969ad5..7756e984f146 100644
---- a/arch/x86/include/asm/floppy.h
-+++ b/arch/x86/include/asm/floppy.h
-@@ -10,6 +10,7 @@
- #ifndef _ASM_X86_FLOPPY_H
- #define _ASM_X86_FLOPPY_H
+ #include <linux/mem_encrypt.h>
++#include <linux/mm/vmalloc_addr.h>
  
-+#include <linux/mm/high_memory.h>
- #include <linux/vmalloc.h>
+ /**
+  * List of possible attributes associated with a DMA mapping. The semantics
+diff --git a/include/linux/highmem-internal.h b/include/linux/highmem-internal.h
+index a3028e400a9c..a479e6b7c54c 100644
+--- a/include/linux/highmem-internal.h
++++ b/include/linux/highmem-internal.h
+@@ -2,6 +2,8 @@
+ #ifndef _LINUX_HIGHMEM_INTERNAL_H
+ #define _LINUX_HIGHMEM_INTERNAL_H
  
- /*
-diff --git a/arch/x86/include/asm/pgtable_32_areas.h b/arch/x86/include/asm/pgtable_32_areas.h
-index b6355416a15a..b339137b4f4e 100644
---- a/arch/x86/include/asm/pgtable_32_areas.h
-+++ b/arch/x86/include/asm/pgtable_32_areas.h
-@@ -3,6 +3,10 @@
- 
- #include <asm/cpu_entry_area.h>
- 
-+#ifndef __ASSEMBLY__
-+#include <linux/mm/high_memory.h>
-+#endif
++#include <linux/mm/page_address.h>
 +
  /*
-  * Just any arbitrary offset to the start of the vmalloc VM area: the
-  * current 8MB value just means that there will be a 8MB "hole" after the
-diff --git a/drivers/mtd/nand/onenand/onenand_samsung.c b/drivers/mtd/nand/onenand/onenand_samsung.c
-index fd6890a03d55..7c3cc270386d 100644
---- a/drivers/mtd/nand/onenand/onenand_samsung.c
-+++ b/drivers/mtd/nand/onenand/onenand_samsung.c
-@@ -15,6 +15,7 @@
- #include <linux/platform_device.h>
- #include <linux/sched.h>
- #include <linux/slab.h>
-+#include <linux/mm/high_memory.h>
- #include <linux/mtd/mtd.h>
- #include <linux/mtd/onenand.h>
- #include <linux/mtd/partitions.h>
-diff --git a/include/linux/mm.h b/include/linux/mm.h
-index 5681fd5dbbbe..db6cc1e0900b 100644
---- a/include/linux/mm.h
-+++ b/include/linux/mm.h
-@@ -6,6 +6,7 @@
- #include <linux/mm/folio_size.h>
- #include <linux/mm/folio_usage.h>
- #include <linux/mm/folio_zone.h>
-+#include <linux/mm/high_memory.h>
- #include <linux/mm/page_address.h>
- #include <linux/mm/page_section.h>
- #include <linux/mm/pfmemalloc.h>
-@@ -83,7 +84,6 @@ static inline void totalram_pages_add(long count)
- 	atomic_long_add(count, &_totalram_pages);
- }
+  * Outside of CONFIG_HIGHMEM to support X86 32bit iomap_atomic() cruft.
+  */
+diff --git a/include/linux/highmem.h b/include/linux/highmem.h
+index 00341b56d291..10a165a913ad 100644
+--- a/include/linux/highmem.h
++++ b/include/linux/highmem.h
+@@ -7,7 +7,9 @@
+ #include <linux/bug.h>
+ #include <linux/cacheflush.h>
+ #include <linux/kmsan.h>
+-#include <linux/mm.h>
++#include <linux/mm/folio_size.h> // for page_size()
++#include <linux/mm/folio_usage.h> // for folio_put()
++#include <linux/mm/page_address.h>
+ #include <linux/uaccess.h>
+ #include <linux/hardirq.h>
  
--extern void * high_memory;
- extern int page_cluster;
- extern const int page_cluster_max;
+diff --git a/include/linux/net.h b/include/linux/net.h
+index 15df6d5f27a7..7c04b3124366 100644
+--- a/include/linux/net.h
++++ b/include/linux/net.h
+@@ -21,7 +21,7 @@
+ #include <linux/rcupdate.h>
+ #include <linux/once.h>
+ #include <linux/fs.h>
+-#include <linux/mm.h>
++#include <linux/page_ref.h> // for page_count()
+ #include <linux/sockptr.h>
  
-diff --git a/include/linux/mm/high_memory.h b/include/linux/mm/high_memory.h
-new file mode 100644
-index 000000000000..e504aafd0d48
---- /dev/null
-+++ b/include/linux/mm/high_memory.h
-@@ -0,0 +1,7 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef _LINUX_MM_HIGH_MEMORY_H
-+#define _LINUX_MM_HIGH_MEMORY_H
-+
-+extern void * high_memory;
-+
-+#endif /* _LINUX_MM_HIGH_MEMORY_H */
+ #include <uapi/linux/net.h>
+diff --git a/include/linux/oom.h b/include/linux/oom.h
+index 7d0c9c48a0c5..518426e092d0 100644
+--- a/include/linux/oom.h
++++ b/include/linux/oom.h
+@@ -8,7 +8,7 @@
+ #include <linux/nodemask.h>
+ #include <uapi/linux/oom.h>
+ #include <linux/sched/coredump.h> /* MMF_* */
+-#include <linux/mm.h> /* VM_FAULT* */
++#include <linux/mm_types.h> /* VM_FAULT* */
+ 
+ struct zonelist;
+ struct notifier_block;
+diff --git a/include/linux/pagemap.h b/include/linux/pagemap.h
+index 850d32057939..70a99d7ebe10 100644
+--- a/include/linux/pagemap.h
++++ b/include/linux/pagemap.h
+@@ -5,7 +5,7 @@
+ /*
+  * Copyright 1995 Linus Torvalds
+  */
+-#include <linux/mm.h>
++#include <linux/mm_types.h>
+ #include <linux/fs.h>
+ #include <linux/list.h>
+ #include <linux/highmem.h>
+diff --git a/include/linux/scatterlist.h b/include/linux/scatterlist.h
+index 0516e64dc03e..9221bba82b23 100644
+--- a/include/linux/scatterlist.h
++++ b/include/linux/scatterlist.h
+@@ -5,7 +5,7 @@
+ #include <linux/string.h>
+ #include <linux/types.h>
+ #include <linux/bug.h>
+-#include <linux/mm.h>
++#include <linux/mm/page_address.h>
+ #include <asm/io.h>
+ 
+ #ifdef CONFIG_UML
+diff --git a/include/linux/skbuff.h b/include/linux/skbuff.h
+index c43d6afebd50..4c8fe40fe1eb 100644
+--- a/include/linux/skbuff.h
++++ b/include/linux/skbuff.h
+@@ -16,6 +16,10 @@
+ #include <linux/bug.h>
+ #include <linux/bvec.h>
+ #include <linux/cache.h>
++#include <linux/gfp.h> // for alloc_pages_node()
++#include <linux/mm/folio_usage.h> // for get_page(), put_page()
++#include <linux/mm/folio_zone.h> // for page_to_nid()
++#include <linux/mm/pfmemalloc.h> // for page_is_pfmemalloc()
+ #include <linux/rbtree.h>
+ #include <linux/socket.h>
+ #include <linux/refcount.h>
+diff --git a/include/linux/vmstat.h b/include/linux/vmstat.h
+index 86bdcfe319ae..2cd9c921d516 100644
+--- a/include/linux/vmstat.h
++++ b/include/linux/vmstat.h
+@@ -4,7 +4,8 @@
+ 
+ #include <linux/types.h>
+ #include <linux/percpu.h>
+-#include <linux/mm.h> // for folio_zone(), folio_nr_pages()
++#include <linux/mm/folio_size.h> // for folio_nr_pages()
++#include <linux/mm/folio_zone.h> // for folio_zone()
+ #include <linux/mmzone.h>
+ #include <linux/vm_event_item.h>
+ #include <linux/atomic.h>
+diff --git a/lib/scatterlist.c b/lib/scatterlist.c
+index 7bc2220fea80..775bad99fcd9 100644
+--- a/lib/scatterlist.c
++++ b/lib/scatterlist.c
+@@ -9,6 +9,7 @@
+ #include <linux/scatterlist.h>
+ #include <linux/highmem.h>
+ #include <linux/kmemleak.h>
++#include <linux/mm.h>
+ #include <linux/bvec.h>
+ #include <linux/uio.h>
+ 
 -- 
 2.39.2
 
