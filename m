@@ -1,322 +1,131 @@
-Return-Path: <linux-kernel+bounces-164284-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-164285-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 98A518B7BD7
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 17:37:16 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 448008B7BB4
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 17:34:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DCFD0B294E8
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 15:34:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F40862885C7
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 15:34:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CBB651CFB6;
-	Tue, 30 Apr 2024 15:32:54 +0000 (UTC)
-Received: from hi1smtp01.de.adit-jv.com (smtp1.de.adit-jv.com [93.241.18.167])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07E29175551;
+	Tue, 30 Apr 2024 15:33:01 +0000 (UTC)
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 04F25BE49;
-	Tue, 30 Apr 2024 15:32:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=93.241.18.167
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06070BE49;
+	Tue, 30 Apr 2024 15:32:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714491174; cv=none; b=VDr7QkJzv0LtgsrDhAOn+qV5cYZrVoyBzUrBLdkRGfWW5kRjGoc5V9rPfuCfuPFCAdUtm+ZNLTDjrFkBzYsz9/nKL+q8epHhMOjBXBlXaasfA9aq8uR+OnS4ksvY6QI4jaTtU0pqiTwYCpShgNqiVaJgD0/R7VgbNDNgpdsH1/Q=
+	t=1714491180; cv=none; b=J3asETyyHkmyGr4dLde1I3G7JOZF91tqUKG+LIMayz14fhaF1rv5bUCssLYJOJLvnkNO3pm4hx3A8LvTdf1lUH+nP661sZDbrgnSa5FkMudEagfzeys3gTJ6sg5wRdqqk2D0sSSkI5GKQ+4EGK5X4UNbTTdWa/O+w7YbCjPc8WA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714491174; c=relaxed/simple;
-	bh=BXq4IiRdv5CjXBAP5Z694gpULhqb3OM4GV35nudmfmo=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=iugw6l14vXjUy2QA+HJVJ4iM2+HtlFPnrjeuUH91RZDOR6G9lJt9KfhOT28Ca0I2DNE0PKU48Sbrg9dyWH/dElzBjeRWVngeIKh14yw2negyyDaHDFkVwPPFEOtsq9mJchX/qi2peOSfGkUAt03JXGXqWVtmey/Vpcap8C2f5F4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=de.adit-jv.com; spf=pass smtp.mailfrom=de.adit-jv.com; arc=none smtp.client-ip=93.241.18.167
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=de.adit-jv.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=de.adit-jv.com
-Received: from hi2exch02.adit-jv.com (hi2exch02.adit-jv.com [10.72.92.28])
-	by hi1smtp01.de.adit-jv.com (Postfix) with ESMTP id 06815520150;
-	Tue, 30 Apr 2024 17:32:48 +0200 (CEST)
-Received: from vmlxhi-118.adit-jv.com (10.72.93.77) by hi2exch02.adit-jv.com
- (10.72.92.28) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.37; Tue, 30 Apr
- 2024 17:32:47 +0200
-Date: Tue, 30 Apr 2024 17:32:43 +0200
-From: Hardik Gajjar <hgajjar@de.adit-jv.com>
-To: Ferry Toth <fntoth@gmail.com>
-CC: Hardik Gajjar <hgajjar@de.adit-jv.com>, Andy Shevchenko
-	<andriy.shevchenko@intel.com>, <gregkh@linuxfoundation.org>,
-	<s.hauer@pengutronix.de>, <jonathanh@nvidia.com>,
-	<linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<quic_linyyuan@quicinc.com>, <paul@crapouillou.net>,
-	<quic_eserrao@quicinc.com>, <erosca@de.adit-jv.com>
-Subject: Re: [PATCH v4] usb: gadget: u_ether: Replace netif_stop_queue with
- netif_device_detach
-Message-ID: <20240430153243.GA129136@vmlxhi-118.adit-jv.com>
-References: <20240405113855.GA121923@vmlxhi-118.adit-jv.com>
- <321e908e-0d10-4e36-8dc4-6997c73fe2eb@gmail.com>
- <ZhbOZsp-XHemVhQz@smile.fi.intel.com>
- <20240411142637.GA110162@vmlxhi-118.adit-jv.com>
- <ZhgSPCq6sVejRjbj@smile.fi.intel.com>
- <be8904bd-71ea-4ae1-b0bc-9170461fd0d9@gmail.com>
- <Zh6BsK8F3gCzGJfE@smile.fi.intel.com>
- <20240417151342.GA56989@vmlxhi-118.adit-jv.com>
- <d94f37cf-8140-4f89-aa67-53f9291faff3@gmail.com>
- <5dae4b62-24d4-4942-934a-38c548a2fdbc@gmail.com>
+	s=arc-20240116; t=1714491180; c=relaxed/simple;
+	bh=UvCzRb6ahj4TK7FpRLDSQ3JR28xP0+x1n4eaXr2C6zU=;
+	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=RCV7rUhPgon84gE3TN9HYcMw20pd/vc2lp9EB/lkRK9Orm1htLwunwJPrRL+LI1bM3G9NIujo2blkTEb6w+GKCmjwa5m9sNPx2RfqGsjAk/1OPtJslvzUWqTkhjvS2C87bplxIlC7fkCLd6OdmEQpxXLparSrKt6Bu8G246P/Ys=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.18.186.31])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4VTPK20bssz6J6Yb;
+	Tue, 30 Apr 2024 23:30:14 +0800 (CST)
+Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
+	by mail.maildlp.com (Postfix) with ESMTPS id 0E7981400DC;
+	Tue, 30 Apr 2024 23:32:55 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Tue, 30 Apr
+ 2024 16:32:54 +0100
+Date: Tue, 30 Apr 2024 16:32:53 +0100
+From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To: Robert Richter <rrichter@amd.com>
+CC: "Rafael J. Wysocki" <rafael@kernel.org>, Dave Hansen
+	<dave.hansen@linux.intel.com>, Dan Williams <dan.j.williams@intel.com>,
+	Alison Schofield <alison.schofield@intel.com>, <linux-acpi@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <linux-cxl@vger.kernel.org>, Len Brown
+	<lenb@kernel.org>
+Subject: Re: [PATCH v6 6/7] ACPI/NUMA: Add log messages for memory ranges
+ found in CEDT
+Message-ID: <20240430163253.00006c6e@Huawei.com>
+In-Reply-To: <20240430092200.2335887-7-rrichter@amd.com>
+References: <20240430092200.2335887-1-rrichter@amd.com>
+	<20240430092200.2335887-7-rrichter@amd.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <5dae4b62-24d4-4942-934a-38c548a2fdbc@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-ClientProxiedBy: hi2exch02.adit-jv.com (10.72.92.28) To
- hi2exch02.adit-jv.com (10.72.92.28)
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: lhrpeml500006.china.huawei.com (7.191.161.198) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
 
-On Sun, Apr 28, 2024 at 11:07:36PM +0200, Ferry Toth wrote:
-> Hi,
-> 
-> Op 25-04-2024 om 23:27 schreef Ferry Toth:
-> > Hi,
-> > 
-> > Op 17-04-2024 om 17:13 schreef Hardik Gajjar:
-> > > On Tue, Apr 16, 2024 at 04:48:32PM +0300, Andy Shevchenko wrote:
-> > > > On Thu, Apr 11, 2024 at 10:52:36PM +0200, Ferry Toth wrote:
-> > > > > Op 11-04-2024 om 18:39 schreef Andy Shevchenko:
-> > > > > > On Thu, Apr 11, 2024 at 04:26:37PM +0200, Hardik Gajjar wrote:
-> > > > > > > On Wed, Apr 10, 2024 at 08:37:42PM +0300, Andy Shevchenko wrote:
-> > > > > > > > On Sun, Apr 07, 2024 at 10:51:51PM +0200, Ferry Toth wrote:
-> > > > > > > > > Op 05-04-2024 om 13:38 schreef Hardik Gajjar:
-> > > > 
-> > > > ...
-> > > > 
-> > > > > > > > > Exactly. And this didn't happen before the 2 patches.
-> > > > > > > > > 
-> > > > > > > > > To be precise: /sys/class/net/usb0 is not
-> > > > > > > > > removed and it is a link, the link
-> > > > > > > > > target /sys/devices/pci0000:00/0000:00:11.0/dwc3.0.auto/gadget.0/net/usb0
-> > > > > > > > > no
-> > > > > > > > > longer exists
-> > > > > > > So, it means that the /sys/class/net/usb0 is
-> > > > > > > present, but the symlink is
-> > > > > > > broken. In that case, the dwc3 driver should
-> > > > > > > recreate the device, and the
-> > > > > > > symlink should become active again
-> > > > > 
-> > > > > Yes, on first enabling gadget (when device mode is activated):
-> > > > > 
-> > > > > root@yuna:~# ls
-> > > > > /sys/devices/pci0000:00/0000:00:11.0/dwc3.0.auto/gadget.0/
-> > > > > driver  net  power  sound  subsystem  suspended  uevent
-> > > > > 
-> > > > > Then switching to host mode:
-> > > > > 
-> > > > > root@yuna:~# ls
-> > > > > /sys/devices/pci0000:00/0000:00:11.0/dwc3.0.auto/gadget.0/
-> > > > > ls: cannot access
-> > > > > '/sys/devices/pci0000:00/0000:00:11.0/dwc3.0.auto/gadget.0/':
-> > > > > No such file
-> > > > > or directory
-> > > > > 
-> > > > > Then back to device mode:
-> > > > > 
-> > > > > root@yuna:~# ls
-> > > > > /sys/devices/pci0000:00/0000:00:11.0/dwc3.0.auto/gadget.0/
-> > > > > driver  power  sound  subsystem  suspended  uevent
-> > > > > 
-> > > > > net is missing. But, network functions:
-> > > > > 
-> > > > > root@yuna:~# ping 10.42.0.1
-> > > > > PING 10.42.0.1 (10.42.0.1): 56 data bytes
-> > > > > 
-> > > > > Mass storage device is created and removed each time as expected.
-> > > > 
-> > > > So, what's the conclusion? Shall we move towards revert of those
-> > > > two changes?
-> > > 
-> > > 
-> > > As promised, I have the tested the this patch with the dwc3 gadget.
-> > > I could not reproduce
-> > > the issue.
-> > > 
-> > > I can see the usb0 exist all the time and accessible regardless of
-> > > the role switching of the USB mode (peripheral <-> host)
-> > > 
-> > > Following are the logs:
-> > > //Host to device
-> > > 
-> > > console:/sys/bus/platform/devices/a800000.ssusb # echo "peripheral"
-> > > > mode
-> > > console:/sys/bus/platform/devices/a800000.ssusb # ls
-> > > a800000.dwc3/gadget/net/
-> > > usb0
-> > > 
-> > > //device to host
-> > > console:/sys/bus/platform/devices/a800000.ssusb # echo "host" > mode
-> > > console:/sys/bus/platform/devices/a800000.ssusb # ls
-> > > a800000.dwc3/gadget/net/
-> > > usb0
-> > 
-> > That is weird. When I switch to host mode (using the physical switch),
-> > the whole gadget directory is removed (now testing 6.9.0-rc5)
-> > 
-> > Switching back to device mode, that gadget directory is recreated. And
-> > gadget/sound as well, but not gadget/net.
-> > 
-> > > s a800000.dwc3/gadget/net/usb0                                               
-> > > <
-> > > addr_assign_type    duplex             phys_port_name
-> > > addr_len            flags              phys_switch_id
-> > > address             gro_flush_timeout  power
-> > > broadcast           ifalias            proto_down
-> > > carrier             ifindex            queues
-> > > carrier_changes     iflink             speed
-> > > carrier_down_count  link_mode          statistics
-> > > carrier_up_count    mtu                subsystem
-> > > dev_id              name_assign_type   tx_queue_len
-> > > dev_port            netdev_group       type
-> > > device              operstate          uevent
-> > > dormant             phys_port_id       waiting_for_supplier
-> > > console:/sys/bus/platform/devices/a800000.ssusb # ifconfig -a usb0
-> > > usb0      Link encap:Ethernet  HWaddr 3a:8b:63:97:1a:9a
-> > >            BROADCAST MULTICAST  MTU:1500  Metric:1
-> > >            RX packets:0 errors:0 dropped:0 overruns:0 frame:0
-> > >            TX packets:0 errors:0 dropped:0 overruns:0 carrier:0
-> > >            collisions:0 txqueuelen:1000
-> > >            RX bytes:0 TX bytes:0
-> > > 
-> > > console:/sys/bus/platform/devices/a800000.ssusb #
-> > > 
-> > > I strongly advise against reverting the patch solely based on the
-> > > observed issue of removing the /sys/class/net/usb0 directory while
-> > > the usb0 interface remains available.
-> > 
-> > There's more to it. I also mentioned that switching the role or
-> > unplugging the cable leaves the usb0 connection.
-> > 
-> > I have while in host mode:
-> > root@yuna:~# ifconfig -a usb0
-> > usb0: flags=-28605<UP,BROADCAST,RUNNING,MULTICAST,DYNAMIC>  mtu 1500
-> >          inet 10.42.0.221  netmask 255.255.255.0  broadcast 10.42.0.255
-> >          inet6 fe80::a8bb:ccff:fedd:eef1  prefixlen 64  scopeid 0x20<link>
-> > 
-> > 
-> > You don't see that because you didn't create a connection at all.
-> > 
-> > > Instead, I recommend enabling FTRACE to trace the functions involved
-> > > and identify which faulty call is responsible for removing usb0.
-> > 
-> > Switching from device -> host -> device:
-> > 
-> > root@yuna:~# trace-cmd record -p function_graph -l *gether_*
-> >    plugin 'function_graph'
-> > Hit Ctrl^C to stop recording
-> > ^CCPU0 data recorded at offset=0x1c8000
-> >      188 bytes in size (4096 uncompressed)
-> > CPU1 data recorded at offset=0x1c9000
-> >      0 bytes in size (0 uncompressed)
-> > root@yuna:~# trace-cmd report
-> > cpus=2
-> >       irq/68-dwc3-725   [000]   514.575337: funcgraph_entry:      #
-> > 2079.480 us |  gether_disconnect();
-> >       irq/68-dwc3-946   [000]   524.263731: funcgraph_entry:      +
-> > 11.640 us  |  gether_disconnect();
-> >       irq/68-dwc3-946   [000]   524.263743: funcgraph_entry:      !
-> > 116.520 us |  gether_connect();
-> >       irq/68-dwc3-946   [000]   524.268029: funcgraph_entry:      #
-> > 2057.260 us |  gether_disconnect();
-> >       irq/68-dwc3-946   [000]   524.270089: funcgraph_entry:      !
-> > 109.000 us |  gether_connect();
-> 
-> I tried to get a more useful trace:
-> root@yuna:/sys/kernel/tracing# echo 'gether_*' > set_ftrace_filter
-> root@yuna:/sys/kernel/tracing# echo 'eem_*' >> set_ftrace_filter
-> root@yuna:/sys/kernel/tracing# echo function > current_tracer
-> root@yuna:/sys/kernel/tracing# echo 'reset_config' >> set_ftrace_filter
-> -> switch to host mode then back to device
-> root@yuna:/sys/kernel/tracing# cat trace
-> # tracer: function
-> #
-> # entries-in-buffer/entries-written: 53/53   #P:2
-> #
-> #                                _-----=> irqs-off/BH-disabled
-> #                               / _----=> need-resched
-> #                              | / _---=> hardirq/softirq
-> #                              || / _--=> preempt-depth
-> #                              ||| / _-=> migrate-disable
-> #                              |||| /     delay
-> #           TASK-PID     CPU#  |||||  TIMESTAMP  FUNCTION
-> #              | |         |   |||||     |         |
->      irq/68-dwc3-523     [000] D..3.   133.990254: reset_config
-> <-__composite_disconnect
->      irq/68-dwc3-523     [000] D..3.   133.992274: eem_disable
-> <-reset_config
->      irq/68-dwc3-523     [000] D..3.   133.992276: gether_disconnect
-> <-reset_config
->      kworker/1:3-443     [001] ...1.   134.022453: eem_unbind
-> <-purge_configs_funcs
-> 
-> -> to device mode
-> 
->      kworker/1:3-443     [001] ...1.   148.630773: eem_bind
-> <-usb_add_function
->      irq/68-dwc3-734     [000] D..3.   149.155209: eem_set_alt
-> <-composite_setup
->      irq/68-dwc3-734     [000] D..3.   149.155215: gether_disconnect
-> <-eem_set_alt
->      irq/68-dwc3-734     [000] D..3.   149.155220: gether_connect
-> <-eem_set_alt
->      irq/68-dwc3-734     [000] D..3.   149.157287: eem_set_alt
-> <-composite_setup
->      irq/68-dwc3-734     [000] D..3.   149.157292: gether_disconnect
-> <-eem_set_alt
->      irq/68-dwc3-734     [000] D..3.   149.159338: gether_connect
-> <-eem_set_alt
->      irq/68-dwc3-734     [000] D..2.   149.239625: eem_unwrap <-rx_complete
-> ...
-> 
-> I don't know where to look exactly. Any hints?
+On Tue, 30 Apr 2024 11:21:59 +0200
+Robert Richter <rrichter@amd.com> wrote:
 
-do you see anything related to gether_cleanup() after eem_unbind() ?
-If not then, you may try to enable tracing of TCP/IP stack and network side to check who deleting the sysfs entry
-
-Hardik
-
-
+> Adding a pr_info() when successfully adding a CFMWS memory range.
 > 
-> > 
-> > > According to current kernel architecture of u_ether driver, only
-> > > gether_cleanup should remove the usb0 interface along with its
-> > > kobject and sysfs interface.
-> > > I suggest sharing the analysis here to understand why this practice
-> > > is not followed in your use case or driver ?
-> > 
-> > Yes, I'll try to trace where that happens.
-> > 
-> > Nevertheless, the disappearance of the net/usb0 directory seems
-> > harmless? But the usb: net device remaining after disconnect or role
-> > switch is not good, as the route remains.
-> > 
-> > May be they are 2 separate problems. Could you try to reproduce what
-> > happens if you make eem connection and then unplug?
-> > 
-> > > I am curious why the driver was developed without adhering to the
-> > > kernel's gadget architecture.
+> Suggested-by: Alison Schofield <alison.schofield@intel.com>
+> Signed-off-by: Robert Richter <rrichter@amd.com>
+
+Hmm. I'm a bit doubtful this will work for other architectures
+as arm64 at least has two sets of memblocks and the holes probably
+want to go in memblock.reserved rather than in memblock.memory.
+I think we would want to reflect where the extra memblks was added.
+
+However. I'm not 100% sure on what that ends up like as I've not
+written an appropriate numa_fill_memblks() yet, so I guess for
+now it's fine here, and maybe it will get pushed into the arch
+specific code when a second architecture implements numa_fill_memblks()
+if some architectures want to return more detailed info.
+
+So, I've argued myself around to
+Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+
+Jonathan
+
+p.s. Unrelated whitespace change but I guess can cope with that...
+
+> ---
+>  drivers/acpi/numa/srat.c | 11 ++++++++++-
+>  1 file changed, 10 insertions(+), 1 deletion(-)
 > 
-> I don't know what you mean here. Which driver do you mean?
-> 
-> > > > 
-> > > > > > > I have the dwc3 IP base usb controller, Let me check
-> > > > > > > with this patch and
-> > > > > > > share result here.  May be we need some fix in dwc3
-> > > > > Would have been nice if someone could test on other
-> > > > > controller as well. But
-> > > > > another instance of dwc3 is also very welcome.
-> > > > > > It's quite possible, please test on your side.
-> > > > > > We are happy to test any fixes if you come up with.
-> > > > 
-> > > > -- 
-> > > > With Best Regards,
-> > > > Andy Shevchenko
-> > > > 
-> > > > 
-> > 
+> diff --git a/drivers/acpi/numa/srat.c b/drivers/acpi/numa/srat.c
+> index 76b39a6d3aef..34ecf2dc912f 100644
+> --- a/drivers/acpi/numa/srat.c
+> +++ b/drivers/acpi/numa/srat.c
+> @@ -339,8 +339,12 @@ static int __init acpi_parse_cfmws(union acpi_subtable_headers *header,
+>  	 * window.
+>  	 */
+>  	modified = numa_fill_memblks(start, end);
+> -	if (modified != NUMA_NO_MEMBLK)
+> +	if (modified != NUMA_NO_MEMBLK) {
+> +		if (modified)
+> +			pr_info("CEDT: memblk extended [mem %#010Lx-%#010Lx]\n",
+> +				(unsigned long long) start, (unsigned long long) end - 1);
+>  		return 0;
+> +	}
+>  
+>  	/* No SRAT description. Create a new node. */
+>  	node = acpi_map_pxm_to_node(*fake_pxm);
+> @@ -355,8 +359,13 @@ static int __init acpi_parse_cfmws(union acpi_subtable_headers *header,
+>  		pr_warn("ACPI NUMA: Failed to add memblk for CFMWS node %d [mem %#llx-%#llx]\n",
+>  			node, start, end);
+>  	}
+> +
+>  	node_set(node, numa_nodes_parsed);
+>  
+> +	pr_info("CEDT: Node %u PXM %u [mem %#010Lx-%#010Lx]\n",
+> +		node, *fake_pxm,
+> +		(unsigned long long) start, (unsigned long long) end - 1);
+> +
+>  	/* Set the next available fake_pxm value */
+>  	(*fake_pxm)++;
+>  	return 0;
+
 
