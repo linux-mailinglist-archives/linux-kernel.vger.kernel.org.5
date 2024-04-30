@@ -1,182 +1,188 @@
-Return-Path: <linux-kernel+bounces-164230-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-164231-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E98D68B7AF6
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 17:05:20 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id B43748B7AFB
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 17:06:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5D4EC1F2276E
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 15:05:20 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8B562B26CC8
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 15:05:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 921EC129E9F;
-	Tue, 30 Apr 2024 15:05:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 697BF77110;
+	Tue, 30 Apr 2024 15:05:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CvyMEXnq"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GFEOmLD0"
+Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com [209.85.167.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2269152799
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 15:04:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10EFA1EB46;
+	Tue, 30 Apr 2024 15:05:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714489499; cv=none; b=pvjdnv0VMGzcMI5r2Po6SmZne9iZDmFnnSDHllbCseQ8/SwevoXFbGmZAFwdlNSrAxaBuVu4SI2qPVtUiSRn4nUVL/xCzHnTtXmoY/3SgHPGEt1KkELhOdPrdZqzvltTzm49jJ3C9/VnRL6BGrFbeegoRLKqV0ArHO203HmT1hM=
+	t=1714489531; cv=none; b=NqHUFvBD0WmPDnh3PgtjnzW8NXPBJoj1iaMQitN2YS5GcyoSnymLXA6lMwbRSvUl5pDmGVVTQnWhxZbEkh6o6heYhnBgJ3XGj1l/1wqsHWBMyfR6EMwXJwuOLOYH+s1C915lkzIJpvJGQwYM0A0AMMnTjpQ+vfQRlQhLXxab/04=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714489499; c=relaxed/simple;
-	bh=IXTsCs1+m3zuge8TFFA6Qz3AAaG9om+XGkqrVy5RyR4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=lJBtCEdJsMJ6nhCDFAS2XV3HoO2H6cuQnIImvTpT3fWRy+wQ+7Bnmu7A0OKtiCo9nU0+8+5H9jOteCe9jYQ9mSOGoSUJK9BsBZk8MAModlgxHN6xndCHSceldPBILlr0yuVctvBSL11wH3LICuj0JO7mhe5W0pYZrS3MchZoGGY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CvyMEXnq; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 10E17C2BBFC;
-	Tue, 30 Apr 2024 15:04:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714489499;
-	bh=IXTsCs1+m3zuge8TFFA6Qz3AAaG9om+XGkqrVy5RyR4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=CvyMEXnqDqtCtE4JAotOogiNGJOT76uOaNEyO1een2JsRk2efFHrUMD3QzcxXFyd2
-	 HNaX+ktCAMWHjQpEKBeKlYc9JG9MVMP8rYUcEv+0gklcJ6pu+kgafdKy8cOVF+PY+g
-	 +7idnIowqvJEvF1OymcSimiXU5QTwR3D5ICbRn9l6BgfYtgwDWIXMC39U570Gy63Yt
-	 kR7AgE9xFrV7HuY3wddsSlhFNMQcKOofGj9rKVCOH7GypLyPXGuWwWA0N9eAx3eQJC
-	 TJAtw/XmG0O2tarWeI+pmkVm41904lS1Bw6wwTmZE8Ouuqm75Qhqm+yldMnJE5onGe
-	 pdIHHBepjfASg==
-Date: Tue, 30 Apr 2024 16:04:53 +0100
-From: Will Deacon <will@kernel.org>
-To: Ryan Roberts <ryan.roberts@arm.com>
-Cc: Catalin Marinas <catalin.marinas@arm.com>,
-	Joey Gouly <joey.gouly@arm.com>, Ard Biesheuvel <ardb@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Anshuman Khandual <anshuman.khandual@arm.com>,
-	David Hildenbrand <david@redhat.com>, Peter Xu <peterx@redhat.com>,
-	Mike Rapoport <rppt@linux.ibm.com>,
-	Shivansh Vij <shivanshvij@outlook.com>,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/3] arm64/mm: Refactor PMD_PRESENT_INVALID and
- PTE_PROT_NONE bits
-Message-ID: <20240430150453.GA14187@willie-the-truck>
-References: <20240429140208.238056-1-ryan.roberts@arm.com>
- <20240429140208.238056-2-ryan.roberts@arm.com>
- <20240430133037.GA13848@willie-the-truck>
- <96fc0d1a-0c5f-4ca3-ad99-a64346990536@arm.com>
+	s=arc-20240116; t=1714489531; c=relaxed/simple;
+	bh=sCt+UxI6TBfl++E09vA5VsETPBmweRbT9e1f9cXJ1PY=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=nfc5NtxH8HTvCrgNoWGubBJmk+V9+1OOuhsRvpL7+KIqPLOT3bMNoUC6ywqmyrplGbB8wDRL5W2Xg2Bb4FsE8WNfhJWBJpOvvDwkoZDiMH6KlbE5aK+FmjhbAe03U9K5hzPuNpFD6/DvabsYUxX4lSFqZdT34BypqPRVgOI1lZ8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GFEOmLD0; arc=none smtp.client-ip=209.85.167.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f47.google.com with SMTP id 2adb3069b0e04-51ab4ee9df8so7380468e87.1;
+        Tue, 30 Apr 2024 08:05:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1714489528; x=1715094328; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=L9/NJrpLsDgUKZ/eCQi2fHZjMr6fY5Jto/wmaPqbXGY=;
+        b=GFEOmLD0E7Jj8rq/PFaH2hT7WBC1GPGcj/kvIBhxdT/77teSnKettF/IGnSiqRY0mH
+         0YAecGyZiwzPJmdbv4wMu296kaDZHz9D8PdU7hDmYnaengjtdbE6LlYnN6ew/A10LHeJ
+         kg4NqTyCznzBFtViGEZk8wE5KLpVboZWEBzk++OKIATsRKHgsFXaIdctAtsv0Vwxgx8s
+         a06e8I92PLKVAPV3XrO2PJxjkNCg7RmcgWJLAB1Mb8hHip7k/VqqgodlhDRNapSkDA5g
+         oMMTgEe5wwhImmmukD1OgGceWDLNqRl2SllrXlaERTgvhygvQ/rBRct5ix51TjtPSOjI
+         nQsg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714489528; x=1715094328;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=L9/NJrpLsDgUKZ/eCQi2fHZjMr6fY5Jto/wmaPqbXGY=;
+        b=m7TY3jHehwDCMvWhuu3H3XM7/x3lbfaS5/o02GgPsJkqG5o138IJ+eyI0ySwwdNiH7
+         ikd0YhK9+p9CV6F0bICkbcb7c9EWoScai2tzjxfKTsBjqDah9yc6Xx1FUKsxcpaWx84p
+         1Cmj5wN1/7qbFiDwwp0u5J2fwYrJdP2mpV2TkQtSlpbOnZHfZgdVYfSXJnsMYu8VsMmk
+         fv9OAQmWpdOBBm1re/jZlh7g/Gw1RFr+x3gIMVSEwVGH1QkK3URT3Kd1hINVF+piFzBi
+         ccbCSUuqxuHIDoQlr4TtKNCo9RJ+kOjvPjzk632s8lu842mDdwFTVZA9rGaqQ6D8Hxlh
+         riLw==
+X-Forwarded-Encrypted: i=1; AJvYcCWQ/GrzgMzthz/y4pyj7ES9hPY0EXF3TZCPSHysEkDEENWMGXuV2dRByPDX9bFpyNT5Pb/MOSRawhzFXbZgh6wtBQ5kTRrjhBHcSwXYVkml
+X-Gm-Message-State: AOJu0YyLLhd/BrB5eMGKlrm/X9or32tVxwmfON5efaSe9De/EY578Hp7
+	X3l+SbxYQq1sxbups82f2qaj5VzRw49bKdoV3XWJMdhmuxtksw==
+X-Google-Smtp-Source: AGHT+IH/OjrEvEtGCEtdKjMQgds5qVp8wVj3v4WWkPEuMpB+GcbTYq4DDv4WxL9wTC6IqWj27esR4Q==
+X-Received: by 2002:a05:6512:b96:b0:51d:497e:83d6 with SMTP id b22-20020a0565120b9600b0051d497e83d6mr7055010lfv.20.1714489527700;
+        Tue, 30 Apr 2024 08:05:27 -0700 (PDT)
+Received: from localhost.localdomain ([85.89.127.166])
+        by smtp.gmail.com with ESMTPSA id q15-20020ac246ef000000b00518ee8c7c1fsm4511533lfo.176.2024.04.30.08.05.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 30 Apr 2024 08:05:27 -0700 (PDT)
+From: Shengyu Li <shengyu.li.evgeny@gmail.com>
+To: shuah@kernel.org
+Cc: linux-kernel@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	Shengyu Li <shengyu.li.evgeny@gmail.com>
+Subject: [PATCH] selftest/tty: Use harness framework in tty
+Date: Tue, 30 Apr 2024 23:05:08 +0800
+Message-Id: <20240430150508.82467-1-shengyu.li.evgeny@gmail.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <96fc0d1a-0c5f-4ca3-ad99-a64346990536@arm.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 
-On Tue, Apr 30, 2024 at 03:02:21PM +0100, Ryan Roberts wrote:
-> On 30/04/2024 14:30, Will Deacon wrote:
-> > On Mon, Apr 29, 2024 at 03:02:05PM +0100, Ryan Roberts wrote:
-> >> diff --git a/arch/arm64/include/asm/pgtable-prot.h b/arch/arm64/include/asm/pgtable-prot.h
-> >> index dd9ee67d1d87..de62e6881154 100644
-> >> --- a/arch/arm64/include/asm/pgtable-prot.h
-> >> +++ b/arch/arm64/include/asm/pgtable-prot.h
-> >> @@ -18,14 +18,7 @@
-> >>  #define PTE_DIRTY		(_AT(pteval_t, 1) << 55)
-> >>  #define PTE_SPECIAL		(_AT(pteval_t, 1) << 56)
-> >>  #define PTE_DEVMAP		(_AT(pteval_t, 1) << 57)
-> >> -#define PTE_PROT_NONE		(_AT(pteval_t, 1) << 58) /* only when !PTE_VALID */
-> >> -
-> >> -/*
-> >> - * This bit indicates that the entry is present i.e. pmd_page()
-> >> - * still points to a valid huge page in memory even if the pmd
-> >> - * has been invalidated.
-> >> - */
-> >> -#define PMD_PRESENT_INVALID	(_AT(pteval_t, 1) << 59) /* only when !PMD_SECT_VALID */
-> >> +#define PTE_INVALID		(_AT(pteval_t, 1) << 59) /* only when !PTE_VALID */
-> > 
-> > So this now overlaps with AttrIndx[3] if FEAT_AIE is implemented. Although
-> > this shouldn't matter on the face of things because it's only used for
-> > invalid entries, we originally moved the PROT_NONE bit from 2 to 57 back
-> > in 3676f9ef5481 ("arm64: Move PTE_PROT_NONE higher up") because it was
-> > possible to change the memory type for PROT_NONE mappings via some
-> > drivers.
-> 
-> I'm not sure I follow your argument.
-> 
->  1. We don't support FEAT_AIE (currently) so AttrIndx[3] is always going to be 0
-> for valid ptes. Drivers are only calling our helpers (e.g.
-> pgprot_writecombine(), right?) and those only know how to set AttrIndx[2:0].
+Similarly, this one is based on automated tools and a very 
+small percentage of manual modifications to automatically refactor 
+the version that uses kselftest_harness.h, which is logically clearer.
 
-Sure, but we might want to use it in future and chucking that out for the
-sake of uffd doesn't seem like an obviously worthwhile trade-off to me.
+Signed-off-by: Shengyu Li <shengyu.li.evgeny@gmail.com>
+---
+ .../testing/selftests/tty/tty_tstamp_update.c | 48 ++++++-------------
+ 1 file changed, 14 insertions(+), 34 deletions(-)
 
->  2. PMD_PRESENT_INVALID was already occupying bit 59. So wouldn't the same shape
-> of concern apply there too for PMDs that have been invalidated, where the driver
-> then comes along and changes the memory type? (Perhaps because
-> PMD_PRESENT_INVALID is only set while the PTL is held this can't happen).
+diff --git a/tools/testing/selftests/tty/tty_tstamp_update.c b/tools/testing/selftests/tty/tty_tstamp_update.c
+index 9e1a40f5db17..cdaa6a15ee65 100644
+--- a/tools/testing/selftests/tty/tty_tstamp_update.c
++++ b/tools/testing/selftests/tty/tty_tstamp_update.c
+@@ -9,7 +9,7 @@
+ #include <unistd.h>
+ #include <linux/limits.h>
+ 
+-#include "../kselftest.h"
++#include "../kselftest_harness.h"
+ 
+ #define MIN_TTY_PATH_LEN 8
+ 
+@@ -42,65 +42,45 @@ static int write_dev_tty(void)
+ 	return r;
+ }
+ 
+-int main(int argc, char **argv)
++TEST(tty_tstamp_update)
+ {
+-	int r;
+ 	char tty[PATH_MAX] = {};
+ 	struct stat st1, st2;
+-	int result = KSFT_FAIL;
+ 
+-	ksft_print_header();
+-	ksft_set_plan(1);
+-
+-	r = readlink("/proc/self/fd/0", tty, PATH_MAX);
+-	if (r < 0) {
++	ASSERT_GE(readlink("/proc/self/fd/0", tty, PATH_MAX), 0) {
+ 		ksft_print_msg("readlink on /proc/self/fd/0 failed: %m\n");
+-		goto out;
+ 	}
+ 
+ 	if (!tty_valid(tty)) {
+-		ksft_print_msg("invalid tty path '%s'\n", tty);
+-		result = KSFT_SKIP;
+-		goto out;
+-
++		ksft_print_msg("SKIP: invalid tty path '%s'\n", tty);
++		exit(KSFT_SKIP);
+ 	}
+ 
+-	r = stat(tty, &st1);
+-	if (r < 0) {
++	ASSERT_GE(stat(tty, &st1), 0) {
+ 		ksft_print_msg("stat failed on tty path '%s': %m\n", tty);
+-		goto out;
+ 	}
+ 
+ 	/* We need to wait at least 8 seconds in order to observe timestamp change */
+ 	/* https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=fbf47635315ab308c9b58a1ea0906e711a9228de */
+ 	sleep(10);
+ 
+-	r = write_dev_tty();
+-	if (r < 0) {
+-		ksft_print_msg("failed to write to /dev/tty: %s\n",
+-			       strerror(-r));
+-		goto out;
++	ASSERT_GE(write_dev_tty(), 0) {
++		ksft_perror("failed to write to /dev/tty");
+ 	}
+ 
+-	r = stat(tty, &st2);
+-	if (r < 0) {
++	ASSERT_GE(stat(tty, &st2), 0) {
+ 		ksft_print_msg("stat failed on tty path '%s': %m\n", tty);
+-		goto out;
+ 	}
+ 
+ 	/* We wrote to the terminal so timestamps should have been updated */
+-	if (st1.st_atim.tv_sec == st2.st_atim.tv_sec &&
+-	    st1.st_mtim.tv_sec == st2.st_mtim.tv_sec) {
++	ASSERT_NE(st1.st_atim.tv_sec, st2.st_atim.tv_sec) {
++		ksft_print_msg("tty timestamps not updated\n");
++	}
++	ASSERT_NE(st1.st_mtim.tv_sec, st2.st_mtim.tv_sec) {
+ 		ksft_print_msg("tty timestamps not updated\n");
+-		goto out;
+ 	}
+ 
+ 	ksft_print_msg(
+ 		"timestamps of terminal '%s' updated after write to /dev/tty\n", tty);
+-	result = KSFT_PASS;
+-
+-out:
+-	ksft_test_result_report(result, "tty_tstamp_update\n");
+-
+-	ksft_finished();
+ }
++TEST_HARNESS_MAIN
+-- 
+2.25.1
 
-I was mainly thinking of the PROT_NONE case, to be honest with you. I
-struggle to envisage how a driver could sensibly mess with the memory
-type for anonymous mappings, let alone huge pages! But perhaps I just
-lack imagination :)
-
->  3. I had this same vague concern about confusion due to overlapping bit 59,
-> which is why in the next patch, I'm moving it to the NS bit.
-> 
-> Experience tells me that when I'm arguing confidently with someone who is much
-> more expert than me, then I'm using wrong... so what have I missed? :)
-> 
-> > 
-> > Moving the field to the NS bit (as you do later in the series) resolves
-> > this, but the architecture currently says that the NS bit is RES0. How
-> > can we guarantee that it won't be repurposed by hardware in future?
-> 
-> Well it remains free for use in valid entries of course.
-
-I think that's what I'm actually questioning! RES0 doesn't mean that
-tomorrow's whizz-bang CPU extension isn't allowed to use it, but that's
-a guarantee that we need if we're going to use it for our own purposes.
-
-> So I guess you are asking how to guarantee we won't also need to be able
-> to modify it on the fly for PROT_NONE entries? I don't have a definite
-> answer, but I've been working on the assumption that the architecture
-> introducing a feature that is only needed in states where NS is not needed
-> is unlikely (so using that bit for the feature is also unlikely). And then
-> needing to manipulate that feature dyanically for PROT_NONE mappings is
-> even less likely.
-
-The architects are quite good at inventing unlikely features :) SVE
-blowing the sigcontext comes to mind. I think we should seek
-clarification that the NS bit won't be allocated in the future if we are
-going to use it for our own stuff.
-
-> If all else fails we could move it to nG (bit 11) to free up bit 5. But that
-> requires a bit more fiddling with the swap pte format.
-
-Oh, cunning, I hadn't thought of that. I think that's probably a better
-approach if the NS bit isn't guaranteed to be left alone by the
-architecture.
-
-> >> @@ -469,7 +477,7 @@ static inline pte_t pte_swp_clear_exclusive(pte_t pte)
-> >>   */
-> >>  static inline int pte_protnone(pte_t pte)
-> >>  {
-> >> -	return (pte_val(pte) & (PTE_VALID | PTE_PROT_NONE)) == PTE_PROT_NONE;
-> >> +	return pte_invalid(pte) && !pte_user(pte) && !pte_user_exec(pte);
-> >>  }
-> > 
-> > Why do we need to check pte_user_*() here? Isn't PROT_NONE the only case
-> > in which a pte will have PTE_INVALID set?
-> 
-> I guess for *ptes* this is technically correct. But I was trying to make the
-> format generic and reusable for *pmds* too. (pmd_protnone() wraps
-> pte_protnone()). For pmds, PTE_INVALID also represents invalid-but-present PMDs
-> (i.e. pmds on which pmd_mkinvalid() has been called).
-> 
-> The intention is that PTE_INVALID indicates "present but not valid in HW". And
-> (!pte_user(pte) && !pte_user_exec(pte)) indicates the PROT_NONE permission.
-
-Ok, but it does mean the compiler can't emit a nice TBNZ instruction for
-the pte macro. Can you either seperate out the pmd/pte versions of the
-macro or just add a comment along the lines of what you said above, please?
-
-Cheers,
-
-Will
 
