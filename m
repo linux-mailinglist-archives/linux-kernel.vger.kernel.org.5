@@ -1,70 +1,122 @@
-Return-Path: <linux-kernel+bounces-164260-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-164265-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D26BF8B7B79
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 17:27:58 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A7CCD8B7B8A
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 17:29:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8D7AE284EB9
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 15:27:57 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C7E0EB2748F
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 15:29:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B6B2140E26;
-	Tue, 30 Apr 2024 15:27:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 252B417B4F2;
+	Tue, 30 Apr 2024 15:27:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mossMODi"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lXPQ4YgI"
+Received: from mail-lj1-f173.google.com (mail-lj1-f173.google.com [209.85.208.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 69A70171E75;
-	Tue, 30 Apr 2024 15:27:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B1AB317A922;
+	Tue, 30 Apr 2024 15:27:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714490839; cv=none; b=pBPRDHyJhs3Y/ne/XXCUhI7ztVg/JF3Aps4wGjfzkqdlARVJePuoyBM2I3/DkcASeOP7mM6Sv055JizGcVUlwaTm4Ja6Pco6xAECDKV0lavZUO2CqBan43Ng6cKPZUbHCg0hcEU6VY/UHNetJoAobE334cwkx2DwcpQyioqFD4M=
+	t=1714490860; cv=none; b=g5lKkfNQqMGCweU9vzmbeQY2Y7+g4Y7CaNbY0Uij8imF6RT46cXJGNXxsNy/VIHILD8AIhXDFIqf4X3tbScNImtGKBohA0nIfB/FD5LCUxTYZ/vNU+xJCeT+shYOyZ3Awg8HU7flWEQEGkuJYpR3C+Rc55QBLwNfNy/Tel6cwoM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714490839; c=relaxed/simple;
-	bh=CkP4kGQkUb9bwINA+s2FGC4MkUQIgOZ+AbJw8o/rX64=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Ue8F4q0ODpnnwQsTWF+//IS44Szva908m6V3RRgQKg6AvnVJKhBgAuXtiRdh4fJX1qVuhrTiSk4NWJF3fKAkL278U1s/prJnBhXmj58EvhlCj7TtM+NuvCu9IH1nAeSiouZd0t0GhaKsC+D6zlH8+QZsN5vsdVgST0Tg81nlxmI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mossMODi; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7CB7BC2BBFC;
-	Tue, 30 Apr 2024 15:27:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714490839;
-	bh=CkP4kGQkUb9bwINA+s2FGC4MkUQIgOZ+AbJw8o/rX64=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=mossMODiKr/2Om6tkOVagDUv4i1kljFeDt/qXxBNxfWo0SeBgESu5dRHsagblsPFI
-	 p5mld7EY+JKLy4ORKCBX/ghKwNJL5/F4/iJGtwmmcD61Mr2ccjmyPbIstv1f4uQ2UO
-	 z0gYHiOed5MukvURJnyLznjyyk1Z8gDnZ00Z0Vp3V8DEOTvl12pE2MpUxkOpYm25SY
-	 MiNtUPURc4SQoQc7vpzrrvHiKnZ+hpJ1epRMhnVvr9WSSrLh8THKPJmMSeTsg+S0EH
-	 vbzxwDXvIUXaX2Czk5+yEtG2RjzYOHl3pNMHqKMQ7hqwaOdHGA5SLYPXpMcs9/MEh/
-	 61uK4pKxwlnGw==
-Date: Tue, 30 Apr 2024 08:27:17 -0700
-From: Jakub Kicinski <kuba@kernel.org>
-To: jtornosm@redhat.com
-Cc: Isaac Ganoung <inventor500@vivaldi.net>, davem@davemloft.net,
- edumazet@google.com, jarkko.palviainen@gmail.com,
- linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
- netdev@vger.kernel.org, pabeni@redhat.com, stable@vger.kernel.org, Vadim
- Fedorenko <vadim.fedorenko@linux.dev>
-Subject: Re: [PATCH v2] net: usb: ax88179_178a: avoid writing the mac
- address before first reading
-Message-ID: <20240430082717.65f26140@kernel.org>
-In-Reply-To: <hzhomd7d7uc4dcnpvd6ki6v2f6camzm5ufqp2syqudrvzzfxi4@ykcirhonbqql>
-References: <hzhomd7d7uc4dcnpvd6ki6v2f6camzm5ufqp2syqudrvzzfxi4@ykcirhonbqql>
+	s=arc-20240116; t=1714490860; c=relaxed/simple;
+	bh=0lUvNEoZzpGwwKad5l5LPVFc4Ky2PspYcmcv3+a9bsE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=aFziMq3EDii7kjWQ7IGujj5UJGh39jAO1h23A5oai2LYxCkA0PCjHVmK0iHLNxiJKsQjc0jRNeKTIplmH3EkkCeMxxFyvl5v7jcmsitX3DKtURZR+X3kczPe2tUZDx00UArabsK3BIzS5blnuVgTf5+B/2O78Usw97Zk8JeymIs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lXPQ4YgI; arc=none smtp.client-ip=209.85.208.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f173.google.com with SMTP id 38308e7fff4ca-2de232989aaso70456161fa.1;
+        Tue, 30 Apr 2024 08:27:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1714490856; x=1715095656; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=0Z0uYLrmo+RQNsrVNRCYQ80LU2B7TKkW9AZwBgm7Igg=;
+        b=lXPQ4YgIlY+RiusRDhjLdRIxNxCARE9tIYAr/Mz+HjQoZdAlV7TMIYHLuJtA93fB1J
+         j6TqqsEfVMAmxhmiocwi3jeLTP6AmTIia1NIsLdVnJtNSYdkbIkUROy8dZ9wfruE1jOl
+         AHwK6E9Rpo6nelwi+Yr2PE4aU/7b1gCyNa3ojKuP1OaQzFeBWMVGZKRqg/hhXC3dtuGK
+         Rlz/MYzm+ca72OQzmEd6JRQgFsle5FX0qYjzWSgYDvMzizlsnL8GsUMABSpxF2TB+EG1
+         6fdsxMTmHtWbJkEjCpk4TjyuEBqQ12ukp+M9PB2SKnWrOBKJ2X+ax3cC+35RrFOy3spc
+         Ihuw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714490856; x=1715095656;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=0Z0uYLrmo+RQNsrVNRCYQ80LU2B7TKkW9AZwBgm7Igg=;
+        b=YYnZLtZrStxd5FWAdPZkgjslUVsJfQSmldpFRIa7lRVz+bndN7YuVszZBT8GMqs6sb
+         o9sW+b0RfxoZxVCQOfQwU4PnGEY2XlEliVBlgWHXRC67Bo225Mxwc8Dt+1AMvz8pVG6G
+         3aq9pLlmqIetkXoR+O0GmCRhYbK7DY/gGl7LXQWrQsFNYwXQBuc0MVmO4NANLrzDU9Ne
+         g2Z9X+yLrcOOnIMXFyHG61D+XAeDGzN2K8Hyq+iPpzpiap8SC7QBwH+MCdyVosm1qM41
+         N/3lxNHc12o5L9LGcEt4hwCarK+7+v4dHOX7xs9VMAGSsKkAlgZNNT1hHIpVdfuVUTp2
+         ypaQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWZw7X/SIbuKGZMHRrDOwQMwlk+NBcS0zzDHzBX4fprMDKN3KStMd6lrwFDqQSoCIOf3ZIf+VW16976yVvKTAXOshSYpz6YuEyfNiw+ETV+3YJmLv9dGemtOBIAphvp6+HOkngkY35z4UlnkA==
+X-Gm-Message-State: AOJu0Yx2bBmpkC6My1ySjPht1AhFGdGKUobvXdM9pOqV08w85U3pAys1
+	j6LsclkdsE9OW2swooiiS1wjeXTxeWp7hW04zUJnYGlpQ8Q77IYt736WlfhYdMhD1x9TMUDek5B
+	qZ8onPZTgA9oo2+9h7iZjHLWo3bA=
+X-Google-Smtp-Source: AGHT+IErQbSLUt/YpGlibFWHxAfNy9szYPfD5nGHlN8PsQLyIxU3N9pbgQdETZm+8xNM3hOh66/YaVRbgQ3WbhEuXkk=
+X-Received: by 2002:a2e:9a89:0:b0:2df:6cb8:c911 with SMTP id
+ p9-20020a2e9a89000000b002df6cb8c911mr41484lji.24.1714490856431; Tue, 30 Apr
+ 2024 08:27:36 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20240429190500.30979-1-ryncsn@gmail.com> <8734r3muvb.fsf@yhuang6-desk2.ccr.corp.intel.com>
+In-Reply-To: <8734r3muvb.fsf@yhuang6-desk2.ccr.corp.intel.com>
+From: Kairui Song <ryncsn@gmail.com>
+Date: Tue, 30 Apr 2024 23:27:18 +0800
+Message-ID: <CAMgjq7AbsvWnpoEFtXixgMN-qqcG_tsGbH7qOizjw-E7f9_HTg@mail.gmail.com>
+Subject: Re: [PATCH v3 00/12] mm/swap: clean up and optimize swap cache index
+To: "Huang, Ying" <ying.huang@intel.com>
+Cc: linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>, 
+	Matthew Wilcox <willy@infradead.org>, Chris Li <chrisl@kernel.org>, 
+	Barry Song <v-songbaohua@oppo.com>, Ryan Roberts <ryan.roberts@arm.com>, Neil Brown <neilb@suse.de>, 
+	Minchan Kim <minchan@kernel.org>, Hugh Dickins <hughd@google.com>, 
+	David Hildenbrand <david@redhat.com>, Yosry Ahmed <yosryahmed@google.com>, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, 29 Apr 2024 18:16:05 -0500 Isaac Ganoung wrote:
-> uname -a output: Linux hostname 6.8.8-arch1-1 #1 SMP PREEMPT_DYNAMIC Sun, 28 Apr 2024 18:53:26 +0000 x86_64 GNU/Linux
-> This is Arch Linux's kernel. The patches applied are here: <https://github.com/archlinux/linux/releases/tag/v6.8.8-arch1>
+On Tue, Apr 30, 2024 at 10:47=E2=80=AFAM Huang, Ying <ying.huang@intel.com>=
+ wrote:
+>
+> Kairui Song <ryncsn@gmail.com> writes:
+>
+> > From: Kairui Song <kasong@tencent.com>
+> >
+> > This is based on latest mm-unstable. Patch 1/12 might not be needed if
+> > f2fs converted .readahead to use folio, I included it for easier test
+> > and review.
+> >
+> > Currently we use one swap_address_space for every 64M chunk to reduce l=
+ock
+> > contention, this is like having a set of smaller swap files inside one
+> > big swap file.
+>
+> I would rather to say,
+>
+> "
+> this is like having a set of smaller files inside a swap device.
+> "
+>
+> To avoid possible confusing in this series.  I suggest to avoid to say
+> "swap file".  Instead, we can use "swap device".
 
-v6.8.8 has 56f78615b already. We need another patch, Jose?
+Good suggestion, will update this part.
+
+
+> [snip]
+>
+> --
+> Best Regards,
+> Huang, Ying
 
