@@ -1,60 +1,60 @@
-Return-Path: <linux-kernel+bounces-163361-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-163362-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D82308B69DD
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 07:23:07 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8D6A88B69E0
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 07:25:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8FAC8281A82
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 05:23:06 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9C8CBB20FF8
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 05:25:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A40A7175BD;
-	Tue, 30 Apr 2024 05:22:59 +0000 (UTC)
-Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BCB7E175BD;
+	Tue, 30 Apr 2024 05:24:57 +0000 (UTC)
+Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com [209.85.208.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70C9E5256;
-	Tue, 30 Apr 2024 05:22:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A095F5256;
+	Tue, 30 Apr 2024 05:24:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714454579; cv=none; b=SAAXeF4wX9kHa9GEvOv02PQ57CC6ltYuluzLp/yArdXircUQJxbAYFld22ryJYOoq4nvpR2VhTIcLZ7APJD1HK07rhSVJKyhuztc5t9jLvtvN6gE8fCc90/KMJHxHc1exxsOaH5UvmVoLZVev6JLqLm75Zn7PYE62SjHCMTgO80=
+	t=1714454697; cv=none; b=Dhfd8+BYpV7afHta9kSj5kSg2+mwciJ3Mz6yaQpC0qrmnbkFcl0AjrNx/05XntQ14ewFA/Ye5gTvGV3RkyA43v3zw51U5rf7gy3C3rrZy2IH/VgiuokKptlHY9Vzlzso9Z5qyQw52MfPmbs0nbG6jwIMImdYXYmMLRKIbuoyEKc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714454579; c=relaxed/simple;
-	bh=Kz8gaoGkFIuxrMaQK6fWNTWX0CdyB9VvlppbwWz6Y2s=;
+	s=arc-20240116; t=1714454697; c=relaxed/simple;
+	bh=Q/+tRiuXGN+EdbNSNGuhQr+t4BZW3Yq+oUqUaGly2cI=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=DvDhJC58z8HOJMI9SAcb1MwbEHlLDDjfRhORhIgWy7XbV8DLadM2iuN9QvbanPEIZ67dEroYW5Y8ky43TECrQQ2lwwCPIGwX6Pn00fIN5tQGIMQAV1OFHVF0yZCcLnQykR6JqpeDNMKN0GyVvkZogF8YbqFUpaNRFl7e+uKm1k0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.208.50
+	 In-Reply-To:Content-Type; b=Nuff5UEzn4iseYc0MgPQVhqYq59tykVPst8DvJzTdYR18AVEgCF18yd/Ff8yah0nk42je4YQoZ+RKnF0Arx6t7zqIF6Hl40VqDAWy60JHcANTK0Gp6EtXznEqmD4Po06uWT95Oojp27jUm79QCcw+9SF/HeF+hXeuEIq0+KCukc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.208.42
 Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-56e47843cc7so5195151a12.0;
-        Mon, 29 Apr 2024 22:22:57 -0700 (PDT)
+Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-57230faeb81so3115720a12.0;
+        Mon, 29 Apr 2024 22:24:55 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714454576; x=1715059376;
+        d=1e100.net; s=20230601; t=1714454694; x=1715059494;
         h=content-transfer-encoding:in-reply-to:autocrypt:from
          :content-language:references:cc:to:subject:user-agent:mime-version
          :date:message-id:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=D5xXiqJPcQvnAdhsKYWwY5ng2w3w/qDQxjxYllnlVz8=;
-        b=GCCP3s/VbGgp9l8EWVK21nmIMDq4UCD5xrU1Ueo8+AtB00PwD1XbZTxvDI3gerUcfH
-         WCpR9ieIhhkK2fOM21aYSAGWX8njbQQRJWt+hn+B1OYIswJtlLOv45vgYg7d+2B8BbPt
-         iRO2/3Vziktwx/kR1Sr6hKAFJad2ZUZM23IaEIDV/LCmXxSV9JPfVnLJZ65zIgm6oq0X
-         vLnwbjyiHfFBljXTDUvOch51O2TK6JUuLXhQp1A+g+tFJltonKdIUjXrcHIgtXqYxke0
-         OJIH1Itq80Nja30bpYPxxEJxC9rovfb3R3ygTKJxizjmyiY1tnBFZxz6hCBRkCSyQ6il
-         PJTw==
-X-Forwarded-Encrypted: i=1; AJvYcCXVfp/XqsI8ulzlA+BywW6bOi3olTz35IfAW9qQ1DWGut++27Ao1QrozPKTy7S8U/dAbHi0LKyb2mPVkQKXYN+d8/0/AdAX6vXBZZovfEzDiJ4hhX/TvebnptKxwl7mAq9HxQa6bY94+skZ1lC18xroKdevAI2G5GwlDP9dzyGyO9SX
-X-Gm-Message-State: AOJu0YwCbPuMNdVAZPw4tQE21wfqs8Sl4tXNzBtNBNRyiegnsxG+oBg8
-	wRwxBX6YgNKojooX04OPbaA28s26z4gbzIQAQU+BAVFb0svXPGa6
-X-Google-Smtp-Source: AGHT+IEfECgT5zX5BqcJpLqgjqzM0jA2MNPef0kmlgJwM9HWop66uHyT3nLossOXgbPT+PnC7sG1qg==
-X-Received: by 2002:a17:906:7110:b0:a52:225a:2ebe with SMTP id x16-20020a170906711000b00a52225a2ebemr977474ejj.71.1714454575512;
-        Mon, 29 Apr 2024 22:22:55 -0700 (PDT)
+        bh=4yqirq+IhVG3Z/zsDGojXFevoBRau6B6rbnsmBlZgt0=;
+        b=w56GUUotB8BaVZy4mZ+p+b4GWuPXmB3A0FND/G5vXllWSliznbgbO+04wfRqC3+Ghx
+         TVxiK3sNB0tTqJhk9nz6zajSV8XidDhVgJGl0w0Szz14mbVj5kEV1jzc5soDPbhMs24a
+         QGlbeHQTnPWUegDUPC1hjO1ddgmOfyEtPprtOHtSdWYH9K31dqGzkbCYK2L6CbR1Pz4m
+         fuFinr2TPa2oJ8IxOCaFnpypEhMJak8bT/rDjwVSi9wWrPArV3KibPDPU0jrqTAQEZyi
+         8fitubQfxtO+j8DSQ7rgtUT6cFajBTiBXTRGehLMaNy3X1716HC/V19zjz4hlMvl41mI
+         3Xyw==
+X-Forwarded-Encrypted: i=1; AJvYcCU/48SJh6+TLnpeAyPMJ0etcWpJoR/kN35otUkbecxrMdFlZAYfacyT+p6m9/7OGTUsK8Dhkz/zpjtEpMuqNhN3ETkYIstdXZ10RYOSudFJIR9u15brqVz0j2GKWiz2ywzdnBMor70nYT7QkZB8DcAbTYuKauPIrfQjqn11hWh9I0I7
+X-Gm-Message-State: AOJu0YybBdxEiy/dWPYUSelAnkPuGRo8Jz4GOZPXz7opiGgZYG55CwZ3
+	YAYdYsE2DLdF99Vf0yGCLPCEc2LvM9u3sUfiJX0aT8l2Q9mupg3J
+X-Google-Smtp-Source: AGHT+IFIfQqyWXBK5ybhqL/zWTVvHjI/gredNQj5xv0j8YvW7clXeZWLO5YOWpSnXZicTPFqviVlbw==
+X-Received: by 2002:a50:954b:0:b0:56e:10d3:85e3 with SMTP id v11-20020a50954b000000b0056e10d385e3mr10743116eda.13.1714454693472;
+        Mon, 29 Apr 2024 22:24:53 -0700 (PDT)
 Received: from ?IPV6:2a0b:e7c0:0:107::aaaa:69? ([2a0b:e7c0:0:107::aaaa:69])
-        by smtp.gmail.com with ESMTPSA id ak1-20020a170906888100b00a5906b4e417sm1572741ejc.98.2024.04.29.22.22.54
+        by smtp.gmail.com with ESMTPSA id t20-20020a056402021400b005728a272753sm995540edv.67.2024.04.29.22.24.52
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 29 Apr 2024 22:22:55 -0700 (PDT)
-Message-ID: <af116cb5-41d8-4a33-97ba-0c7cc821add1@kernel.org>
-Date: Tue, 30 Apr 2024 07:22:54 +0200
+        Mon, 29 Apr 2024 22:24:53 -0700 (PDT)
+Message-ID: <bf313102-e949-41d9-89f3-bff06a43d647@kernel.org>
+Date: Tue, 30 Apr 2024 07:24:52 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -64,14 +64,17 @@ MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
 Subject: Re: [PATCH] serial: sc16is7xx: fix bug in sc16is7xx_set_baud() when
  using prescaler
-To: Hugo Villeneuve <hugo@hugovil.com>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Jon Ringle <jringle@gridpoint.com>, ria.freelander@gmail.com,
- Hugo Villeneuve <hvilleneuve@dimonoff.com>, stable@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org
+To: David Laight <David.Laight@ACULAB.COM>, Hugo Villeneuve
+ <hugo@hugovil.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Jon Ringle <jringle@gridpoint.com>
+Cc: "ria.freelander@gmail.com" <ria.freelander@gmail.com>,
+ Hugo Villeneuve <hvilleneuve@dimonoff.com>,
+ "stable@vger.kernel.org" <stable@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-serial@vger.kernel.org" <linux-serial@vger.kernel.org>
 References: <20240426135937.3810959-1-hugo@hugovil.com>
  <17d2cc58-cf68-430d-9248-25abe4c5b0f0@kernel.org>
- <20240429094717.de45ad35814e3c618e08c36b@hugovil.com>
+ <6ea689ace38d47f285efe026772efcae@AcuMS.aculab.com>
 Content-Language: en-US
 From: Jiri Slaby <jirislaby@kernel.org>
 Autocrypt: addr=jirislaby@kernel.org; keydata=
@@ -116,76 +119,47 @@ Autocrypt: addr=jirislaby@kernel.org; keydata=
  f/bIWIr0cqQmqQ33FgRhrG1+Xml6UXyJ2jExmlO8JljuOGeXYh6ZkIEyzqzffzBLXZCujlYQ
  DFXpyMNVJ2ZwPmX2mWEoYuaBU0JN7wM+/zWgOf2zRwhEuD3A2cO2PxoiIfyUEfB9SSmffaK/
  S4xXoB6wvGENZ85Hg37C7WDNdaAt6Xh2uQIly5grkgvWppkNy4ZHxE+jeNsU7tg=
-In-Reply-To: <20240429094717.de45ad35814e3c618e08c36b@hugovil.com>
+In-Reply-To: <6ea689ace38d47f285efe026772efcae@AcuMS.aculab.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On 29. 04. 24, 15:47, Hugo Villeneuve wrote:
-> On Mon, 29 Apr 2024 08:39:22 +0200
-> Jiri Slaby <jirislaby@kernel.org> wrote:
-> 
->> On 26. 04. 24, 15:59, Hugo Villeneuve wrote:
->>> From: Hugo Villeneuve <hvilleneuve@dimonoff.com>
->>>
->>> When using a high speed clock with a low baud rate, the 4x prescaler is
->>> automatically selected if required. In that case, sc16is7xx_set_baud()
->>> properly configures the chip registers, but returns an incorrect baud
->>> rate by not taking into account the prescaler value. This incorrect baud
->>> rate is then fed to uart_update_timeout().
->>>
->>> For example, with an input clock of 80MHz, and a selected baud rate of 50,
->>> sc16is7xx_set_baud() will return 200 instead of 50.
->>>
->>> Fix this by first changing the prescaler variable to hold the selected
->>> prescaler value instead of the MCR bitfield. Then properly take into
->>> account the selected prescaler value in the return value computation.
->>>
->>> Also add better documentation about the divisor value computation.
->>>
->>> Fixes: dfeae619d781 ("serial: sc16is7xx")
->>> Cc: stable@vger.kernel.org
->>> Signed-off-by: Hugo Villeneuve <hvilleneuve@dimonoff.com>
->>> ---
->>>    drivers/tty/serial/sc16is7xx.c | 23 ++++++++++++++++++-----
->>>    1 file changed, 18 insertions(+), 5 deletions(-)
->>>
->>> diff --git a/drivers/tty/serial/sc16is7xx.c b/drivers/tty/serial/sc16is7xx.c
->>> index 03cf30e20b75..dcd6c5615401 100644
->>> --- a/drivers/tty/serial/sc16is7xx.c
->>> +++ b/drivers/tty/serial/sc16is7xx.c
->>> @@ -555,16 +555,28 @@ static bool sc16is7xx_regmap_noinc(struct device *dev, unsigned int reg)
->>>    	return reg == SC16IS7XX_RHR_REG;
->>>    }
->>>    
->>> +/*
->>> + * Configure programmable baud rate generator (divisor) according to the
->>> + * desired baud rate.
->>> + *
->>> + * From the datasheet, the divisor is computed according to:
->>> + *
->>> + *              XTAL1 input frequency
->>> + *             -----------------------
->>> + *                    prescaler
->>> + * divisor = ---------------------------
->>> + *            baud-rate x sampling-rate
->>> + */
->>>    static int sc16is7xx_set_baud(struct uart_port *port, int baud)
->>>    {
->>>    	struct sc16is7xx_one *one = to_sc16is7xx_one(port, port);
->>>    	u8 lcr;
+On 29. 04. 24, 11:14, David Laight wrote:
+> From: Jiri Slaby
+>> Sent: 29 April 2024 07:39
+> ...
 >>> -	u8 prescaler = 0;
 >>> +	int prescaler = 1;
 >>
 >> Ugh, why do you move to signed arithmetics?
 > 
-> Hi Jiri,
-> before this patch, the variable prescaler was used to store an 8 bit
-> bitfield. Now the variable meaning is changed to be used as the
-> prescaler value, which can be 1 or 4 in this case. Leaving
-> it as u8 would still be ok, or making it "unsigned int" maybe?
+> Any arithmetic would always have been signed.
+> u8 is promoted to 'signed int' before being used for pretty much anything.
 
-Both :). What you prefer -- uint matches more IMO, given it's now a 
-value and not a register...
+Sorry, what?
+
+C99 §6.3.8.1 states:
+
+If both operands have the same type, then no further conversion is needed.
+
+Otherwise, if both operands have signed integer types or both have 
+unsigned integer types, the operand with the type of lesser integer 
+conversion rank is converted to the type of the operand with greater rank.
+
+=====
+
+I.e. u8 is converted according to that to ulong in this case. So 
+unsigned arithmetic happens.
+
+> 'unsigned int prescaler' might have changed arithmetic to be unsigned.
+
+The same as u8.
+
+> OTOH you probably don't want a u8 - that might require the compiler
+> mask an arithmetic result to 8 bits.
+
+Pardon? Not at all.
+
+Am I missing something?
 
 thanks,
 -- 
