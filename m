@@ -1,77 +1,82 @@
-Return-Path: <linux-kernel+bounces-164029-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-164030-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2E24D8B775C
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 15:40:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6C8618B775E
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 15:41:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6A843B22423
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 13:40:50 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8E96FB20F86
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 13:41:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52710172763;
-	Tue, 30 Apr 2024 13:40:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B3F98171E54;
+	Tue, 30 Apr 2024 13:41:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="KV0j+Kvh"
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="CxlVORiS"
+Received: from mail-oo1-f47.google.com (mail-oo1-f47.google.com [209.85.161.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3821F85956;
-	Tue, 30 Apr 2024 13:40:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E8D01F171
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 13:41:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714484439; cv=none; b=UQMUCaV6APhhFazoJYeiFBd3rwotNI9E07EiRPmFAuD1odCheIQ/4PAikrW2284rncOgLLOiBWNDTEgFfJRLRMxe77B6d0dlxNDpjXTrCLP5JzNluqUZqR3UibAcFNSdOdUNJSJkuBhCuPFx8iVkzDbyKCNJYcBnA1PNyy/blVU=
+	t=1714484477; cv=none; b=lKmBWDAQN30k1EzihrDOwYw6xSR+3wLIALGuDE1DQeNNd5Ygw5HB1Em1AgX4OrY9hnNOFi8Tp/5ZFmEXAO3eRz53OHyP1cZ3RoP2DNv97+JB245+XPrABV0EcIV8svmIxS8GDnmLLbSaghhu0/K20C5lFN3/d21UtrN9r+rcGVc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714484439; c=relaxed/simple;
-	bh=ZTYH03z4YSkkewuHlkyQiJdNerzGEwiVi62NucA1JRs=;
+	s=arc-20240116; t=1714484477; c=relaxed/simple;
+	bh=F1qt8VVpzCRzm8FHEJTQ7+DA8vuSysbZAqcXhPKDx5o=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=PdtgKB6Cg7+SFiCObHS9sChU3rmYbv5JUNG7tevBZ4YPdc2bgrlyRsNVqEYXNzZe69JVr5Qs9rPKT3F74vDieNfe1jHrJyN96a2ChPjo07ZEuM7hv4toTavF59mPE3XBxHwY4AjpHbTmtEwHPYBqsbr7j0F6tli+a/CHTJplQsQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=KV0j+Kvh; arc=none smtp.client-ip=156.67.10.101
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-	bh=mkRUaVu7YuLLbPG/sEIdKbsrNJjXmv2kqwxQ10HArmo=; b=KV0j+KvhT099ZYRt0grZJXeYui
-	+izqQo/8eCvLo1wM/5GXYbkF3pgdoBmjzpQNaBHXGWVoWCj9sRl9uMPuVrL8BmhTZ4jTavfGnnDfr
-	SsOB0cwpE3xcfnSRde77OLZStLtE7VPssEhuEm4HMZ4+t29yXXn32HWwsbuajZiqxAok=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-	(envelope-from <andrew@lunn.ch>)
-	id 1s1niS-00ELH5-3S; Tue, 30 Apr 2024 15:40:16 +0200
-Date: Tue, 30 Apr 2024 15:40:16 +0200
-From: Andrew Lunn <andrew@lunn.ch>
-To: Herve Codina <herve.codina@bootlin.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>, Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzk+dt@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Lee Jones <lee@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-	Horatiu Vultur <horatiu.vultur@microchip.com>,
-	UNGLinuxDriver@microchip.com,
-	Heiner Kallweit <hkallweit1@gmail.com>,
-	Russell King <linux@armlinux.org.uk>,
-	Saravana Kannan <saravanak@google.com>,
-	Bjorn Helgaas <bhelgaas@google.com>,
-	Philipp Zabel <p.zabel@pengutronix.de>,
-	Lars Povlsen <lars.povlsen@microchip.com>,
-	Steen Hegelund <Steen.Hegelund@microchip.com>,
-	Daniel Machon <daniel.machon@microchip.com>,
-	Alexandre Belloni <alexandre.belloni@bootlin.com>,
-	linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-	netdev@vger.kernel.org, linux-pci@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	Allan Nielsen <allan.nielsen@microchip.com>,
-	Luca Ceresoli <luca.ceresoli@bootlin.com>,
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: Re: [PATCH 00/17] Add support for the LAN966x PCI device using a DT
- overlay
-Message-ID: <4571846d-2001-4bbf-b311-d0b42844143d@lunn.ch>
-References: <20240430083730.134918-1-herve.codina@bootlin.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=fLJOsZD+9lm7sW24OWz2RJqR9bogc06es6JaE28AWfnewp7ClA7Vv4si/EZWGKevQjas+AgrdoUb/ifj54fvCttlUJFBVA6GcczZ06nSsxrfxMwafV1PiuFK9+NODhjqhRinKcfGLR7FK2jIKh+Skjd0y0CL2jyDTAYXv5nsZFU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=CxlVORiS; arc=none smtp.client-ip=209.85.161.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
+Received: by mail-oo1-f47.google.com with SMTP id 006d021491bc7-5acf5c1a2f5so3757290eaf.0
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 06:41:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google; t=1714484474; x=1715089274; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Dzw9A3IXUr1HMpouSEVNHEKHoRky87JvxE7doN13XH4=;
+        b=CxlVORiSz8Ft+XhknC5X7p8hpv95R1hsLSjC2Z7cgeB39Jg9Az+wAdgRgN8sXMuZ8A
+         QnUwjKbSE44px15olS+y8Hk7BNVKJS/EDEFonQA1pFbFnQ6GFUNx2mxi2iDlA0Ntn2+C
+         IdV9sLgmp8ex1V69i/eu8EznerLW7BGFqeusmNTkyB9QJfCPDq0xheSAvk4QEhQEwfAP
+         pvenH7QkCbYV/fwdiKXfFvSsQCR0jYSj6+dKhjqWHS//Nzg6UZM+RlK3WbUUIxiT5y/G
+         GP2k8VKC9UffkWuV3HFbDmrVi2CgHYBk8fo5LDOgeiA3j+09q98iCxFHDeBJIWL4bNUP
+         GLjA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714484474; x=1715089274;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Dzw9A3IXUr1HMpouSEVNHEKHoRky87JvxE7doN13XH4=;
+        b=NMoMiZ380uXZSUbLQKDqOIrUTuNawHtDF9wdNch+k7u2JsKtlm45vQBPsqpj5nD9Fs
+         9qB1qGbyhqkBRxO6wSwL+QKWCsadYISXQLl5zYfuDJBlHGs9NVKDGZj8Uei5zueoDsjQ
+         Bb9Aal22Jszr1h5prc3XBehAVd2KjljIm0uB0X8jSZcTnYyR/RHVWZGClplIWKjxn7y7
+         HcCXisSoSyhLuVwchqNPsltmZbhbnV5GnXyYEWsB9fV1KC/in9wkK1uh180MdSW7zE0h
+         T54DBctu3OuGRFv7J+2YAKyDNfQygY+Kq5R5p1lUgE3PtdfhlTb/7A/sfu7uTGNm9TqH
+         3afw==
+X-Forwarded-Encrypted: i=1; AJvYcCV3upAonDaahOW363Ml6qhLkn2wbM05H39FltA4dwx8A/KPvPuTZLiK8nSRQUDbOzDQgXV5qQpFrEvEmjjmWRCa+sfuI51F/XG1BoD8
+X-Gm-Message-State: AOJu0YykSEBpwQDBTyTkNYjAqzhQOXKJPgIdnLuWjIyKsI8/Xuc9XlwY
+	qBfHFZL47cEDKJc952XscArrZTJpWib29ZEIfUxKgh5cmU0OftNCGbYxneGkPFg=
+X-Google-Smtp-Source: AGHT+IErvqN1PfglDscv/jolNjD1aPMMQBUx3pTu9Z5oQ/rvoiryaovZZiP9EN0L/oH7dvTP46YYxQ==
+X-Received: by 2002:a4a:bd0a:0:b0:5af:bf76:e3d with SMTP id n10-20020a4abd0a000000b005afbf760e3dmr3781473oop.2.1714484474715;
+        Tue, 30 Apr 2024 06:41:14 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-142-68-80-239.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.80.239])
+        by smtp.gmail.com with ESMTPSA id ch14-20020a0568200a0e00b005afafa10ed7sm766053oob.33.2024.04.30.06.41.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 30 Apr 2024 06:41:14 -0700 (PDT)
+Received: from jgg by wakko with local (Exim 4.95)
+	(envelope-from <jgg@ziepe.ca>)
+	id 1s1njN-007E4h-2V;
+	Tue, 30 Apr 2024 10:41:13 -0300
+Date: Tue, 30 Apr 2024 10:41:13 -0300
+From: Jason Gunthorpe <jgg@ziepe.ca>
+To: Junxian Huang <huangjunxian6@hisilicon.com>
+Cc: leon@kernel.org, linux-rdma@vger.kernel.org, linuxarm@huawei.com,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH for-next] RDMA/hns: Support flexible WQE buffer page size
+Message-ID: <20240430134113.GU231144@ziepe.ca>
+References: <20240430092845.4058786-1-huangjunxian6@hisilicon.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -80,23 +85,32 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240430083730.134918-1-herve.codina@bootlin.com>
+In-Reply-To: <20240430092845.4058786-1-huangjunxian6@hisilicon.com>
 
-On Tue, Apr 30, 2024 at 10:37:09AM +0200, Herve Codina wrote:
-> Hi,
+On Tue, Apr 30, 2024 at 05:28:45PM +0800, Junxian Huang wrote:
+> From: Chengchang Tang <tangchengchang@huawei.com>
 > 
-> This series adds support for the LAN966x chip when used as a PCI
-> device.
+> Currently, driver fixedly allocates 4K pages for userspace WQE buffer
+> and results in HW reading WQE with a granularity of 4K even in a 64K
+> system. HW has to switch pages every 4K, leading to a loss of performance.
 
-> This patch series for now adds a Device Tree overlay that describes an
-> initial subset of the devices available over PCI in the LAN996x, and
-> follow-up patch series will add support for more once this initial
-> support has landed.
+> In order to improve performance, add support for userspace to allocate
+> flexible WQE buffer page size between 4K to system PAGESIZE.
+> @@ -90,7 +90,8 @@ struct hns_roce_ib_create_qp {
+>  	__u8    log_sq_bb_count;
+>  	__u8    log_sq_stride;
+>  	__u8    sq_no_prefetch;
+> -	__u8    reserved[5];
+> +	__u8    pageshift;
+> +	__u8    reserved[4];
 
-What host systems have you tested with? Are they all native DT, or
-have you tested on an ACPI system? I'm just wondering how well DT
-overlay works if i were to plug a LAN966x device into something like
-an x86 ComExpress board?
+It doesn't make any sense to pass in a pageshift from userspace.
 
-	Andrew
+Kernel should detect whatever underlying physical contiguity userspace
+has been able to create and configure the hardware optimally. The umem
+already has all the tools to do this trivially.
+
+Why would you need to specify anything?
+
+Jason
 
