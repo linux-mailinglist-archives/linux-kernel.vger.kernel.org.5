@@ -1,112 +1,111 @@
-Return-Path: <linux-kernel+bounces-163302-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-163286-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E1C558B68D1
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 05:33:09 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 652598B6867
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 05:22:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9E55A2814BB
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 03:33:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 96D881C219CE
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 03:22:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6E7B14286;
-	Tue, 30 Apr 2024 03:32:07 +0000 (UTC)
-Received: from relay.hostedemail.com (smtprelay0011.hostedemail.com [216.40.44.11])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4483210A35;
+	Tue, 30 Apr 2024 03:22:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sSkKNiCX"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC8A8101C4;
-	Tue, 30 Apr 2024 03:32:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 851A81094E;
+	Tue, 30 Apr 2024 03:22:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714447927; cv=none; b=TB4uosCfiTTUtBWucCLb4fQkXXRzvzExtNEpGaQBNo6zU0sdX6Gm9xQjiSiWygZqEAUYQcQSYmRrMEjMMKMgKcAsaX593TdpKE6vlGDd0vs3EWEDA0C8Tk+vNFXCNr36nDT+lEoI/V2Qn4rQCtcKXxf5KDmOOpz3gXhm6nZXVUA=
+	t=1714447359; cv=none; b=f9gkeK4rmFwQqX0QniidS/dfoxj7zYziF9dCjiGswBYjTAX8gXZV7xB2/x+8N0/6vvPqwfIbCYXPxRP7h68zrsTCGON8xMOIfSZJPv/HCodB5IjZzvn30lyxCSmIzGKIUL48Jn1epK4I75aDvZL/5qekcwfuJ6Gdg9G04RzQMHM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714447927; c=relaxed/simple;
-	bh=yFxV8IAL/FhTPWHJslqDdQyTJdimCkoRX51HT2h/SaE=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=FjLZMFAEvHr23gv8ArdghudiyPczvonUx4J5W9WaV98LH8f/8jUtQldBOLBJD7hoJH8IINOdgxJnJ9PPLiTX7zROBd1RstWVBNIw4+uHvKMsz8AQ/gF3OQcZxLi1Rza1KwsiqioofXKr9OhofQ8LglKRPlold90VELNpfIxota8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=perches.com; spf=pass smtp.mailfrom=perches.com; arc=none smtp.client-ip=216.40.44.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=perches.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=perches.com
-Received: from omf08.hostedemail.com (a10.router.float.18 [10.200.18.1])
-	by unirelay07.hostedemail.com (Postfix) with ESMTP id A572B160447;
-	Tue, 30 Apr 2024 03:21:53 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf08.hostedemail.com (Postfix) with ESMTPA id 0D09320025;
-	Tue, 30 Apr 2024 03:21:50 +0000 (UTC)
-Message-ID: <aacd7c3a5ad5bb4df71ec5dd107ef12b6ebf4079.camel@perches.com>
-Subject: Re: [PATCH v6] checkpatch: add check for snprintf to scnprintf
-From: Joe Perches <joe@perches.com>
-To: Kees Cook <keescook@chromium.org>, Justin Stitt <justinstitt@google.com>
-Cc: Andy Whitcroft <apw@canonical.com>, Dwaipayan Ray
- <dwaipayanray1@gmail.com>,  Lukas Bulwahn <lukas.bulwahn@gmail.com>,
- linux-kernel@vger.kernel.org, Lee Jones <lee@kernel.org>, 
- linux-hardening@vger.kernel.org, Finn Thain <fthain@linux-m68k.org>
-Date: Mon, 29 Apr 2024 20:21:49 -0700
-In-Reply-To: <202404291249.078D924@keescook>
-References: <20240429-snprintf-checkpatch-v6-1-354c62c88290@google.com>
-	 <202404291249.078D924@keescook>
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+	s=arc-20240116; t=1714447359; c=relaxed/simple;
+	bh=/KpxBWy5mcEbkG7pQG0EPzcysWGUzPXDj0gBvqYdums=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=TFaH6jjxIGKmFb2SeoIxsnJoJ2sWcAIKH/wbv77MtLukM64jllim8rWP/Fr3X7FsTkRLH9VJ4JDrHBxnab8iVEdn60K1zzgRWTcV/bywr3cy9WdRJb2oWIsGPpttJcgQf9Yr+hbOwwwB9DMvXrbTeRmxgJOg6DkAyvs5eSEWGo4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sSkKNiCX; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8CD91C116B1;
+	Tue, 30 Apr 2024 03:22:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714447359;
+	bh=/KpxBWy5mcEbkG7pQG0EPzcysWGUzPXDj0gBvqYdums=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=sSkKNiCXpCcc/7pJ8gWMm5YCd3auiyTbpRyptUCMgG9FzN5zkVbZipqaxbdF3hPpx
+	 Geb61osFpYAPFdZvAxNGqTo5mLEMYXsyGz9fJGTOQKB4dNXfiAX3WjwYmz8tnaFfdD
+	 PbLFmVrwVAth+rr/5SZExtgs9UjWdtgAEGGxBbbeqdyHbLTA6xT2G6T1WL21orpZnE
+	 KzuJ9S8IryK8WpoCwKQH39ME1RvEXSwUt+981BiNi0hf4zixOLWsbwp9cB7tNZ7PJM
+	 XZLyDW94V+cfABtIkA1burVDaEciei33GzNeWzjSShKkOHpSXM8fzG7k/IDuKX3glu
+	 uTZzRAVgqnlFw==
+Date: Mon, 29 Apr 2024 20:22:37 -0700
+From: Jakub Kicinski <kuba@kernel.org>
+To: Danielle Ratson <danieller@nvidia.com>
+Cc: <netdev@vger.kernel.org>, <davem@davemloft.net>, <edumazet@google.com>,
+ <pabeni@redhat.com>, <corbet@lwn.net>, <linux@armlinux.org.uk>,
+ <sdf@google.com>, <kory.maincent@bootlin.com>,
+ <maxime.chevallier@bootlin.com>, <vladimir.oltean@nxp.com>,
+ <przemyslaw.kitszel@intel.com>, <ahmed.zaki@intel.com>,
+ <richardcochran@gmail.com>, <shayagr@amazon.com>,
+ <paul.greenwalt@intel.com>, <jiri@resnulli.us>,
+ <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+ <mlxsw@nvidia.com>, <petrm@nvidia.com>, <idosch@nvidia.com>
+Subject: Re: [PATCH net-next v5 09/10] ethtool: Add ability to flash
+ transceiver modules' firmware
+Message-ID: <20240429202237.6bbd2cb3@kernel.org>
+In-Reply-To: <20240424133023.4150624-10-danieller@nvidia.com>
+References: <20240424133023.4150624-1-danieller@nvidia.com>
+	<20240424133023.4150624-10-danieller@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Rspamd-Queue-Id: 0D09320025
-X-Rspamd-Server: rspamout08
-X-Stat-Signature: g4rtr57ict5i64t7bifcqsccwbpei8by
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX1/11DngRJQirq2hq9jlQZ0nlQjZJQ0C1o8=
-X-HE-Tag: 1714447310-562688
-X-HE-Meta: U2FsdGVkX19VkOaOkTZywdAdJmmPdqSae8cbGjpk4uNn3d20yEfKvhS5J1o91bK7gYO6EY6HnhIqW/ZDtisg4IhGhOfiaJFkywBivrkbrygz5gwAPqx7ksErpiIAAYxbLebjzAaCphQdnYaCjpyr3xYHXqEh5avOrlLccsYN7KP/+2wT+xFatkYcUpPhZFYTHk2dCBgCJHtvs5sI4FKqVKup/zj3mJnaamWCvBWCdOWPZo8OAVLKLDPFf8UUdiHp4eCaQiSWBJc/6rzVGX7yT+SoNd2fSVaDFxrE3qJ1CUKHPYZpmJEfkGLHFund3fVXNFUOgWCYYE1FFXQd31aLWloy9x4ENKmY4btEORRz1X40ojL7CNSR6QpOdzQMl5BovDitnRcXbhKWuXu7ILjyonK86NFh30LzvYp8TOPpVlWtXynTGdNXiXj6F+D+bBi/iljj2FqQAEi/C/ZdY52W9g==
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Mon, 2024-04-29 at 12:49 -0700, Kees Cook wrote:
-> On Mon, Apr 29, 2024 at 06:39:28PM +0000, Justin Stitt wrote:
-> > I am going to quote Lee Jones who has been doing some snprintf ->
-> > scnprintf refactorings:
-> >=20
-> > "There is a general misunderstanding amongst engineers that
-> > {v}snprintf() returns the length of the data *actually* encoded into th=
-e
-> > destination array.  However, as per the C99 standard {v}snprintf()
-> > really returns the length of the data that *would have been* written if
-> > there were enough space for it.  This misunderstanding has led to
-> > buffer-overruns in the past.  It's generally considered safer to use th=
-e
-> > {v}scnprintf() variants in their place (or even sprintf() in simple
-> > cases).  So let's do that."
-> >=20
-> > To help prevent new instances of snprintf() from popping up, let's add =
-a
-> > check to checkpatch.pl.
-> >=20
-> > Suggested-by: Finn Thain <fthain@linux-m68k.org>
-> > Signed-off-by: Justin Stitt <justinstitt@google.com>
->=20
-> Thanks!
->=20
-> Reviewed-by: Kees Cook <keescook@chromium.org>
->=20
+On Wed, 24 Apr 2024 16:30:22 +0300 Danielle Ratson wrote:
+> +static int
+> +module_flash_fw_schedule(struct net_device *dev, const char *file_name,
+> +			 struct ethtool_module_fw_flash_params *params,
+> +			 struct netlink_ext_ack *extack)
+> +{
+> +	struct ethtool_module_fw_flash *module_fw;
+> +	int err;
+> +
+> +	err = __module_flash_fw_schedule(dev, extack);
+> +	if (err < 0)
+> +		return err;
 
-$ git grep -P '\b((v|)snprintf)\s*\(' | wc -l
-7745
-$ git grep -P '(?:return\s+|=3D\s*)\b((v|)snprintf)\s*\(' | wc -l
-1626
+Basic dev validation should probably be called directly from
+ethnl_act_module_fw_flash() rather than two functions down.
 
-Given there are ~5000 uses of these that don't care
-whether or not it's snprintf or scnprintf, I think this
-is not great.
+> +	module_fw = kzalloc(sizeof(*module_fw), GFP_KERNEL);
+> +	if (!module_fw)
+> +		return -ENOMEM;
+> +
+> +	module_fw->params = *params;
+> +	err = request_firmware_direct(&module_fw->fw, file_name, &dev->dev);
+> +	if (err) {
+> +		NL_SET_ERR_MSG(extack,
+> +			       "Failed to request module firmware image");
+> +		goto err_request_firmware;
 
-I'd much rather make sure the return value of the call
-is used before suggesting an alternative.
+Please name the labels after the actions they perform.
 
-$ git grep  -P '\b((v|)snprintf)\s*\(.*PAGE_SIZE' | wc -l
-515
+> +	}
+> +
+> +	err = module_flash_fw_work_init(module_fw, dev, extack);
+> +	if (err < 0) {
+> +		NL_SET_ERR_MSG(extack,
+> +			       "Flashing module firmware is not supported by this device");
 
-And about 1/3 of these snprintf calls are for sysfs style
-output that ideally would be converted to sysfs_emit or
-sysfs_emit_at instead.
+This overwrites the more accurate extack msg already set by
+module_flash_fw_work_init()
 
+> +		goto err_work_init;
+> +	}
 
