@@ -1,160 +1,198 @@
-Return-Path: <linux-kernel+bounces-163739-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-163740-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A75828B6F06
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 12:04:40 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 626EE8B6F0F
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 12:05:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 315AC1F236A3
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 10:04:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 94C751C22819
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 10:05:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 74779129A72;
-	Tue, 30 Apr 2024 10:04:30 +0000 (UTC)
-Received: from mail-il1-f198.google.com (mail-il1-f198.google.com [209.85.166.198])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D2CC129A83;
+	Tue, 30 Apr 2024 10:05:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="a/vVu+Cs"
+Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com [209.85.167.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8EC781292C8
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 10:04:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.198
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B663E1292D8
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 10:05:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714471470; cv=none; b=Ur5dbl1MInUPnDyfx8L1vc2PNVZdf7Z90TUG3OPOMCunZlHV1VA99YSh/YTnVFjPTDoqZQp4pylSkzwoGDX48ncxQA4HzYztXCrP5ofkkteK55nBKTFJTJXPAZh4gAjMHgO2bRHiJmDFylNeOIb2ul/nm1TGWo+MvNgsoW+dVzM=
+	t=1714471539; cv=none; b=f8dHjWgaiQpXKXrvsjFqS5RHsqvrQd1rDgMcTGDHa/jxPsgU5OiMpoEP8fyO+gpqv+7pflpHXpvxKw+q1IBN0RAIeMdRpivlYlqBy7PuKj7CVf6IDVGMvTiv+rPxSF4j++gbL3S2ArkaJ79j/yYmQpUQ4o/7lBrTi3/AwMvO/sw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714471470; c=relaxed/simple;
-	bh=+1aJrhYQX0AnWwGuptyHgoz4jT9gYXZA7TcVw917ZoU=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=SgbS8tRJuCpdBtRM10SHy3BmCRpEGO5XxOWVGxl1Cnl48jUP1D0Lv4EC2E0T9qny6kFK8eq1yf2dd04sCCMi1Ww9+5rkzMOAOsd7WFnotm861Zd/jtD0IbQ32NXpatDgilPWQer4tvFpWK+Kf7BJxy0dMl7x7/Zma13O5przCAM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.198
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f198.google.com with SMTP id e9e14a558f8ab-36b3157ffb1so61283745ab.1
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 03:04:28 -0700 (PDT)
+	s=arc-20240116; t=1714471539; c=relaxed/simple;
+	bh=yjnf9AHRZqMRj34Tm4uXwc28cPM6Ap6BSJeHaNIbUF0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Jsjr/GcNsRxp6Cv03X+hRUwYzFNtJNn/+q/ZtQMjKJfNdkm7z5P4LESTNKI9fFGiiHRJDXFvERaPMimP+KkzhsZydkM6u8Oa21kWU0icTaMbx9GJNvo70INlxqamepj/GhansbZ9ytDT9bGWrA0TvyAjbS0EjewndkmGwPJnAGc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=a/vVu+Cs; arc=none smtp.client-ip=209.85.167.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lf1-f42.google.com with SMTP id 2adb3069b0e04-51c077cfc09so6434242e87.2
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 03:05:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1714471536; x=1715076336; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=0c2r4ftfYh1i1ily+9Iyry9v4Wnv2g5Jvj7DDy6gfK4=;
+        b=a/vVu+Cs50feEULZioEi+k+nDxq02qErhxZqTgON5eMER9w942bejdaUHXsCveG8ie
+         O5bVgldlx+lOIQNZQxcUhTWbkVNpxcMdmKZC095ssw2WRwqWV8X0DaNVudL1dUUwqdp3
+         r2EAsjKIQJrM2ZXQRUH41e9sffrtlzG9H4XpFQdmFpFWj9f9wrbVbe6HZNAU9bfPC6pJ
+         6Rz++k2oPsfT7RU6WQznZnuMyBMAv0ZJN2h43gQV7XoITu+8QYY3cHf2LgCssKrnpcSy
+         9y7TBFvFvkih5MOSAuhQfZ591VnpQSR1QcDnN1HYy6Et0SgiCth7ZlYZzOihkQB/OFYy
+         J7eA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714471468; x=1715076268;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=WUCPXypqaDI7RZVA4dxNhXYP7Sd0MesVoRSUyJp0RhA=;
-        b=OZpfgg9FPMVw4h50PKTlfVIZGQkpJ2golygzSTzal+bG+ArmPFi6QckXEa6EkP53J/
-         1YvO0QcPqMNL4VcMM1G37B0vjta7w3jQ+F8REemH9XYB31Plphj4jb0qI54v/ZEIEWyt
-         JGCw5TQl0q9YMnK6jzuJvN8mQb1Y8HmcVwVZRA2EP3ix3fh+IPS06CWeJZJcAKi+vKH9
-         7ZgVrEmi+YuXX2oY+6RxCYlHyBXMldGyjbqQG2YabUEMee66QI3sk7vn8aYdh8DFrH8w
-         sEmwrkB5xqEtELonsWx+Xw76BURkcs7jwGGz8bVM/S6bB9fn9B8a3c+qjMzsJ9ugLtIs
-         UDFA==
-X-Forwarded-Encrypted: i=1; AJvYcCV5p79HEnrxnVgxyvgIkBA3ajH3qegcysqiXw1yC7M++/wtdi8rSkLX63FMBmdfamoxEDVWX9dDmEVAgnp98N4t+8h66KC05dmvuzXd
-X-Gm-Message-State: AOJu0YxEx5hX5QF14EhEXDvBzZJFgJMAjch5yyYAd6McbxxwzlosvaWn
-	2lc1ROzGGeDbcvNNEdd5n8Y83YrlgfjYNwADwOS7lbP4O+jK8bonTuXO8mGnRVjaIGxd51WULxe
-	ST8K1tyAAsqLABM/LTPQ455ynTFFFIHDuyijGlRv9MXTNBagBxoeoAFk=
-X-Google-Smtp-Source: AGHT+IEo04hPMGUrxInQkQx/yfDEgwz6h0WPyzDNg0oyZM5zMoVchRHknLBbO2rLRAo281Gmc6VQ8z3oGoSlRvV/50dMH0ujfhwm
+        d=1e100.net; s=20230601; t=1714471536; x=1715076336;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=0c2r4ftfYh1i1ily+9Iyry9v4Wnv2g5Jvj7DDy6gfK4=;
+        b=qq8EdjACqIg2g9NgHVs3ugEADKBpVot+2lh3QwrvufwOFn4e64ow4cbknTLQQOcsSq
+         9lNV9hJkSmPk+U6sYteazLc8XsIf6UKbtXBpR6HwtSio/EpNT5UXzxMFR/zMtF/nwHX5
+         Os5RCjJXAUc5xPemi6mR94wC5jeo4WIMLmOj/j8dFcfRwNQj0RffZ8hJs7leD4xIacve
+         u658A5oF1m3OW8g2Zfx2MsYdzWWeRELMicyckX0oNjVtIQYi4aC6lO1STNkq64nQP7iV
+         ihzDzE3Tms8E3qegXjPQ5nxE6x+/OBl8uYQUueWgFx21caasVe4I3FkKSqwxCKm/bvvW
+         H9TA==
+X-Forwarded-Encrypted: i=1; AJvYcCWPpg0H8LQGmovkqY5l01XGkgenxxPXzbmTT0p7+e33fBntMd2PCmu8G37bQCpwbJv9Y7ckSQjtBo7EgCU16WwragCZjPO1b60HKc7X
+X-Gm-Message-State: AOJu0YxRwIKx0Nl9ul4NAWlr6+5BrwubVVD+7ilJcoRiENh8WQ8osCvU
+	po3tc20knr6DRKnNf0GjQEMACgWL9PnZJj/xvED0fBTiYJZKN6//V56347rkvw8=
+X-Google-Smtp-Source: AGHT+IGwoRnxtInvigRnSf3xrL3fTWc2gzyovUQB8J5oNTSn7LjfiqRATlNm+qPBQg6sV5IYrs/Wlg==
+X-Received: by 2002:ac2:5586:0:b0:51c:cfae:afd0 with SMTP id v6-20020ac25586000000b0051ccfaeafd0mr7262972lfg.21.1714471535866;
+        Tue, 30 Apr 2024 03:05:35 -0700 (PDT)
+Received: from [192.168.114.15] (078088045141.garwolin.vectranet.pl. [78.88.45.141])
+        by smtp.gmail.com with ESMTPSA id bv19-20020a170906b1d300b00a58eabf6082sm3724816ejb.199.2024.04.30.03.05.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 30 Apr 2024 03:05:35 -0700 (PDT)
+Message-ID: <27f4f3dd-9375-40cf-8c8f-1c4edf66e31b@linaro.org>
+Date: Tue, 30 Apr 2024 12:05:29 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:450b:b0:487:4ad0:def3 with SMTP id
- bs11-20020a056638450b00b004874ad0def3mr531033jab.0.1714471467806; Tue, 30 Apr
- 2024 03:04:27 -0700 (PDT)
-Date: Tue, 30 Apr 2024 03:04:27 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000d103ce06174d7ec3@google.com>
-Subject: [syzbot] [f2fs?] kernel BUG in f2fs_write_inline_data
-From: syzbot <syzbot+848062ba19c8782ca5c8@syzkaller.appspotmail.com>
-To: chao@kernel.org, jaegeuk@kernel.org, 
-	linux-f2fs-devel@lists.sourceforge.net, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v9 6/6] arm64: dts: qcom: ipq9574: Add icc provider
+ ability to gcc
+To: Varadarajan Narayanan <quic_varada@quicinc.com>
+Cc: andersson@kernel.org, mturquette@baylibre.com, sboyd@kernel.org,
+ robh@kernel.org, krzk+dt@kernel.org, conor+dt@kernel.org, djakov@kernel.org,
+ dmitry.baryshkov@linaro.org, quic_anusha@quicinc.com,
+ linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-pm@vger.kernel.org
+References: <20240418092305.2337429-1-quic_varada@quicinc.com>
+ <20240418092305.2337429-7-quic_varada@quicinc.com>
+ <a7194edd-a2c8-46fc-bea1-f26b0960e535@linaro.org>
+ <Ziov6bWBXYXJ4Zp8@hu-varada-blr.qualcomm.com>
+Content-Language: en-US
+From: Konrad Dybcio <konrad.dybcio@linaro.org>
+Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
+ 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
+ izWDgYvmBE8=
+In-Reply-To: <Ziov6bWBXYXJ4Zp8@hu-varada-blr.qualcomm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Hello,
+On 25.04.2024 12:26 PM, Varadarajan Narayanan wrote:
+> On Tue, Apr 23, 2024 at 02:58:41PM +0200, Konrad Dybcio wrote:
+>>
+>>
+>> On 4/18/24 11:23, Varadarajan Narayanan wrote:
+>>> IPQ SoCs dont involve RPM in managing NoC related clocks and
+>>> there is no NoC scaling. Linux itself handles these clocks.
+>>> However, these should not be exposed as just clocks and align
+>>> with other Qualcomm SoCs that handle these clocks from a
+>>> interconnect provider.
+>>>
+>>> Hence include icc provider capability to the gcc node so that
+>>> peripherals can use the interconnect facility to enable these
+>>> clocks.
+>>>
+>>> Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+>>> Signed-off-by: Varadarajan Narayanan <quic_varada@quicinc.com>
+>>> ---
+>>
+>> If this is all you do to enable interconnect (which is not the case,
+>> as this patch only satisfies the bindings checker, the meaningful
+>> change happens in the previous patch) and nothing explodes, this is
+>> an apparent sign of your driver doing nothing.
+> 
+> It appears to do nothing because, we are just enabling the clock
+> provider to also act as interconnect provider. Only when the
+> consumers are enabled with interconnect usage, this will create
+> paths and turn on the relevant NOC clocks.
 
-syzbot found the following issue on:
+No, with sync_state it actually does "something" (sets the interconnect
+path bandwidths to zero). And *this* patch does nothing functionally,
+it only makes the dt checker happy.
 
-HEAD commit:    9e4bc4bcae01 Merge tag 'nfs-for-6.9-2' of git://git.linux-..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=10937af8980000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=3714fc09f933e505
-dashboard link: https://syzkaller.appspot.com/bug?extid=848062ba19c8782ca5c8
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+> 
+> This interconnect will be used by the PCIe and NSS blocks. When
+> those patches were posted earlier, they were put on hold until
+> interconnect driver is available.
+> 
+> Once this patch gets in, PCIe for example will make use of icc.
+> Please refer to https://lore.kernel.org/linux-arm-msm/20230519090219.15925-5-quic_devipriy@quicinc.com/.
+> 
+> The 'pcieX' nodes will include the following entries.
+> 
+> 	interconnects = <&gcc MASTER_ANOC_PCIE0 &gcc SLAVE_ANOC_PCIE0>,
+> 			<&gcc MASTER_SNOC_PCIE0 &gcc SLAVE_SNOC_PCIE0>;
+> 	interconnect-names = "pcie-mem", "cpu-pcie";
 
-Unfortunately, I don't have any reproducer for this issue yet.
+Okay. What about USB that's already enabled? And BIMC/MEMNOC?
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/b98a742ff5ed/disk-9e4bc4bc.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/207a8191df7c/vmlinux-9e4bc4bc.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/7dd86c3ad0ba/bzImage-9e4bc4bc.xz
+> 
+>> The expected reaction to "enabling interconnect" without defining the
+>> required paths for your hardware would be a crash-on-sync_state, as all
+>> unused (from Linux's POV) resources ought to be shut down.
+>>
+>> Because you lack sync_state, the interconnects silently retain the state
+>> that they were left in (which is not deterministic), and that's precisely
+>> what we want to avoid.
+> 
+> I tried to set 'sync_state' to icc_sync_state to be invoked and
+> didn't see any crash.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+848062ba19c8782ca5c8@syzkaller.appspotmail.com
+Have you confirmed that the registers are actually written to, and with
+correct values?
 
-------------[ cut here ]------------
-kernel BUG at fs/f2fs/inline.c:258!
-invalid opcode: 0000 [#1] PREEMPT SMP KASAN NOPTI
-CPU: 1 PID: 34 Comm: kworker/u8:2 Not tainted 6.9.0-rc6-syzkaller-00012-g9e4bc4bcae01 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
-Workqueue: writeback wb_workfn (flush-7:2)
-RIP: 0010:f2fs_write_inline_data+0x781/0x790 fs/f2fs/inline.c:258
-Code: ff ff 89 d9 80 e1 07 80 c1 03 38 c1 0f 8c e3 fc ff ff 48 89 df e8 6f a5 0b fe e9 d6 fc ff ff e8 25 33 91 07 e8 f0 05 a7 fd 90 <0f> 0b e8 e8 05 a7 fd 90 0f 0b 0f 1f 44 00 00 90 90 90 90 90 90 90
-RSP: 0018:ffffc90000aa68e0 EFLAGS: 00010293
-RAX: ffffffff83ef09c0 RBX: 0000000000000001 RCX: ffff888017ebbc00
-RDX: 0000000000000000 RSI: 0000000000000001 RDI: 0000000000000000
-RBP: ffffc90000aa6a10 R08: ffffffff83ef0485 R09: 1ffff1100c270ef5
-R10: dffffc0000000000 R11: ffffed100c270ef6 R12: ffffc90000aa6968
-R13: 1ffff1100c270ef5 R14: ffffc90000aa6960 R15: ffffc90000aa6970
-FS:  0000000000000000(0000) GS:ffff8880b9500000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007fc5425ff000 CR3: 000000000e134000 CR4: 0000000000350ef0
-Call Trace:
- <TASK>
- f2fs_write_single_data_page+0xb65/0x1d60 fs/f2fs/data.c:2834
- f2fs_write_cache_pages fs/f2fs/data.c:3133 [inline]
- __f2fs_write_data_pages fs/f2fs/data.c:3288 [inline]
- f2fs_write_data_pages+0x1efe/0x3a90 fs/f2fs/data.c:3315
- do_writepages+0x35b/0x870 mm/page-writeback.c:2612
- __writeback_single_inode+0x165/0x10b0 fs/fs-writeback.c:1650
- writeback_sb_inodes+0x905/0x1260 fs/fs-writeback.c:1941
- wb_writeback+0x457/0xce0 fs/fs-writeback.c:2117
- wb_do_writeback fs/fs-writeback.c:2264 [inline]
- wb_workfn+0x410/0x1090 fs/fs-writeback.c:2304
- process_one_work kernel/workqueue.c:3254 [inline]
- process_scheduled_works+0xa12/0x17c0 kernel/workqueue.c:3335
- worker_thread+0x86d/0xd70 kernel/workqueue.c:3416
- kthread+0x2f2/0x390 kernel/kthread.c:388
- ret_from_fork+0x4d/0x80 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
- </TASK>
-Modules linked in:
----[ end trace 0000000000000000 ]---
-RIP: 0010:f2fs_write_inline_data+0x781/0x790 fs/f2fs/inline.c:258
-Code: ff ff 89 d9 80 e1 07 80 c1 03 38 c1 0f 8c e3 fc ff ff 48 89 df e8 6f a5 0b fe e9 d6 fc ff ff e8 25 33 91 07 e8 f0 05 a7 fd 90 <0f> 0b e8 e8 05 a7 fd 90 0f 0b 0f 1f 44 00 00 90 90 90 90 90 90 90
-RSP: 0018:ffffc90000aa68e0 EFLAGS: 00010293
-RAX: ffffffff83ef09c0 RBX: 0000000000000001 RCX: ffff888017ebbc00
-RDX: 0000000000000000 RSI: 0000000000000001 RDI: 0000000000000000
-RBP: ffffc90000aa6a10 R08: ffffffff83ef0485 R09: 1ffff1100c270ef5
-R10: dffffc0000000000 R11: ffffed100c270ef6 R12: ffffc90000aa6968
-R13: 1ffff1100c270ef5 R14: ffffc90000aa6960 R15: ffffc90000aa6970
-FS:  0000000000000000(0000) GS:ffff8880b9500000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000001b2e628000 CR3: 0000000049462000 CR4: 0000000000350ef0
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+Konrad
 
