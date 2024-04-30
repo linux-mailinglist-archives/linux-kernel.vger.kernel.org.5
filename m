@@ -1,124 +1,141 @@
-Return-Path: <linux-kernel+bounces-164567-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-164568-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A14D98B7F65
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 20:05:06 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 483768B7F6D
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 20:06:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5D03B285240
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 18:05:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 045372853BC
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 18:06:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 865FD181BB4;
-	Tue, 30 Apr 2024 18:04:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5DE0B181CFF;
+	Tue, 30 Apr 2024 18:06:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NSJtY/Qv"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Qv+kOX9G"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C27D9175560;
-	Tue, 30 Apr 2024 18:04:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B991181B89
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 18:06:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714500298; cv=none; b=TQgoNaYQEy7aauWLDOmA5D8yqLLWTLteU418XsALvN3k9/6WW1Nhcf2SjCV3SIJfZLoKoaYfVxOeFOEBj9viQtprnq7qI0olrniXr7QvU1GEV2pmTtP2slgcEdd5MLMm5pTS0HSown/+nRc9BfhdDLNxrJZY7JSZXin05WzqmjQ=
+	t=1714500404; cv=none; b=CY7IUjYEvrFfyRltmoJ9fFRssQFfnnWzaNwVjU5D3LZD0Bp1w9aiF5lJc7Pc9R0KxZaPShKgdUqpVrZzBgW+8non8183dHOL/KjBJH16bLXy0yQXeAAxomwqwnKE7FNpUS4oK1xFLKsD/GZCbGCMYJ4ttRMJiqTSa1OtdOCvoHY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714500298; c=relaxed/simple;
-	bh=jz73RuQd4HFNSDYi2UqJP9KQ4zUfUOQNSb6BLXUEHwg=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=imantSBPUTaRX0TAW7OeBq3ResXgmOq099sT99pzRrHOfo7Mypf1B5UeUZoWPmP1SfaAciX6GdYyzhE98ec7BIjt/Qi9hUrmL1QC+INZK+qBDun5yzuLqBJjCN83Nujp5iGiPfouRzXDmoolGAVXZTk+0oWvLS7YaZexVedUDQ0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NSJtY/Qv; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2E61CC2BBFC;
-	Tue, 30 Apr 2024 18:04:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714500298;
-	bh=jz73RuQd4HFNSDYi2UqJP9KQ4zUfUOQNSb6BLXUEHwg=;
-	h=From:To:Cc:Subject:Date:From;
-	b=NSJtY/QvQALgQFXBeHV7rY3KeJCSZ9+AonDpJ2HFpC29toNWlNk+gqsdtxpbebs00
-	 q3tEDlPd8Wts/wDUW1S7Zy/khgJb7aNcLlPi7tsr6T6KpiSNHlH1dLXL/Yxpl+6QDs
-	 DmtzORqjy4aN7H49O4GyESjB+3L1I5V7TjMC0kndfCtJ1hwUoiybMzwmvULoK5DQPK
-	 QRzbvfyWnhTIZj0PZE48fbcmc/iUyLporwdTSIn3FObt5Ne9pLnWop5hMRdl0v/p8X
-	 O6qy8SU4UCRMqKdQqNt3yvcVobX3wdRIlqMuadCVdTA1bKuHu0bIduhrGV19tj81+w
-	 f+hm4i6Pf0utQ==
-From: "Rob Herring (Arm)" <robh@kernel.org>
-To: Michael Turquette <mturquette@baylibre.com>,
-	Stephen Boyd <sboyd@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>
-Cc: linux-clk@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v2] dt-bindings: clock: fixed: Define a preferred node name
-Date: Tue, 30 Apr 2024 13:04:14 -0500
-Message-ID: <20240430180415.657067-1-robh@kernel.org>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1714500404; c=relaxed/simple;
+	bh=qJioFQM6gatzhNfw88pAwDEH8AUYC7rqX3dJnAvMfM0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=PwIMzJB3v/jLimEusQ22sTav3jm+7LDPWM8/cgK8usXqf1gk/bjlvct9tH/cbZBKENqwi24U/y57m9++Sdgz9yGfkcXU/K1fhFf9lIQh7GiOZ/+IjtO7hgwSiC1mYAVVo5se14CP4EFpgLrjBv64hhj/cqkkI24z1dSzKcsmjiE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Qv+kOX9G; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1714500402;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=F5zx7cpE5g24SyrILpVbFuVBHG+ow92d4f3RUXTPOCU=;
+	b=Qv+kOX9G/hX1VU0NvIFhavWeqMZRKyJto7tJy74t39zBiLpiL2ArPnvBmAzax6MkhYlm5V
+	TEwxPEbFifiIEvRSF6AmGDfmveMvnjTKKn0t6vuxPYS3r53eogjWRRGarOpN/7RS3svr7c
+	z4U6HfKuAmK4DBvkAbySq5/Ri4Rv/UY=
+Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
+ [209.85.218.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-438-ZFYe7GJZNiC1d5HQ8_0DFg-1; Tue, 30 Apr 2024 14:06:40 -0400
+X-MC-Unique: ZFYe7GJZNiC1d5HQ8_0DFg-1
+Received: by mail-ej1-f70.google.com with SMTP id a640c23a62f3a-a5872678bd2so333328266b.3
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 11:06:40 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714500399; x=1715105199;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=F5zx7cpE5g24SyrILpVbFuVBHG+ow92d4f3RUXTPOCU=;
+        b=haWwir4NfLNjrUlMgP5xBh4KPmfYgYmesbEvaWHkz07TCyo+5qVIpifJlZPUPavV3s
+         HhG9Z/O0w3qtw1lNceNPJCdwJqVJDIBJWh6WE4Smzhmomu3mu0ki/XCe3spplkWm7nyf
+         +IGWCZReSgHTg/SQMTB96N7VNHzFEGwA40zuIcI88iP0I1yj0qKqi+pqy0IWnZc1gpAM
+         ZwgxzIZyjj53V5nDYyAqjulQGG5iIPCF9DxPYIKOLvGr05fNqAC+nG0CFPb0dZ9vJENk
+         oyznJroA0h+B1trpkiOjyliUSxN0vI1B+FNOaIHwNskUqS3j7n2s73l+SF1RYR8ESASU
+         cA5A==
+X-Forwarded-Encrypted: i=1; AJvYcCUVEJDMYHe0CKonDZjy+bpUi7FA4V8UYjEBbN/efIC4c9+tFwfCOivw8+66Gh11ByhUu+ufWh1D5SFXFS/++urOb+uPnSUnx/guqjGj
+X-Gm-Message-State: AOJu0YzmMZgIGPnD5wCdqt8Cgl7PRHcBLwDCflyXaEv/JaSL1RKqawoi
+	USmJ71HqRckGc6G4U4RSxG77bvShVG0r7VtY0S48tinYkQ3keOp6xUoS/uj8w78BqB/Jmv7PQgX
+	JI7pGeLQzEzOIec5Ldnbmk2CEWnjse+44Y2xBlRYph6fAiJH9DzNK9SlgIPbSdA==
+X-Received: by 2002:a17:906:dffa:b0:a58:bd8e:f24 with SMTP id lc26-20020a170906dffa00b00a58bd8e0f24mr301828ejc.39.1714500399311;
+        Tue, 30 Apr 2024 11:06:39 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEAMU+eVyJELNlfDZqGybmwpL1icWgq7FgiEnNy2tDXnkcVLH1RcMMycitIzluk5myVZUO69Q==
+X-Received: by 2002:a17:906:dffa:b0:a58:bd8e:f24 with SMTP id lc26-20020a170906dffa00b00a58bd8e0f24mr301804ejc.39.1714500398788;
+        Tue, 30 Apr 2024 11:06:38 -0700 (PDT)
+Received: from redhat.com ([2.55.56.94])
+        by smtp.gmail.com with ESMTPSA id cd19-20020a170906b35300b00a4673706b4dsm15347234ejb.78.2024.04.30.11.06.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 30 Apr 2024 11:06:38 -0700 (PDT)
+Date: Tue, 30 Apr 2024 14:06:33 -0400
+From: "Michael S. Tsirkin" <mst@redhat.com>
+To: Mike Christie <michael.christie@oracle.com>
+Cc: Edward Adam Davis <eadavis@qq.com>,
+	syzbot+98edc2df894917b3431f@syzkaller.appspotmail.com,
+	jasowang@redhat.com, kvm@vger.kernel.org,
+	linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+	syzkaller-bugs@googlegroups.com, virtualization@lists.linux.dev
+Subject: Re: [PATCH next] vhost_task: after freeing vhost_task it should not
+ be accessed in vhost_task_fn
+Message-ID: <20240430140613-mutt-send-email-mst@kernel.org>
+References: <000000000000a9613006174c1c4c@google.com>
+ <tencent_4271296B83A6E4413776576946DAB374E305@qq.com>
+ <b959b82a-510f-45c0-9e06-acf526c2f4a1@oracle.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b959b82a-510f-45c0-9e06-acf526c2f4a1@oracle.com>
 
-Define "clock-<freq>" as the preferred node name for fixed-clock and
-fixed-factor-clock where <freq> is the output frequency of the clock.
-There isn't much of an existing pattern for names of these nodes. The
-most frequent patterns are a prefix or suffix of "clk", but there's a
-bunch that don't follow any sort of pattern. We could use
-"clock-controller-.*", but these nodes aren't really a controller in any
-way. So let's at least align with part of that and use 'clock-'.
+On Tue, Apr 30, 2024 at 11:23:04AM -0500, Mike Christie wrote:
+> On 4/30/24 8:05 AM, Edward Adam Davis wrote:
+> >  static int vhost_task_fn(void *data)
+> >  {
+> >  	struct vhost_task *vtsk = data;
+> > @@ -51,7 +51,7 @@ static int vhost_task_fn(void *data)
+> >  			schedule();
+> >  	}
+> >  
+> > -	mutex_lock(&vtsk->exit_mutex);
+> > +	mutex_lock(&exit_mutex);
+> >  	/*
+> >  	 * If a vhost_task_stop and SIGKILL race, we can ignore the SIGKILL.
+> >  	 * When the vhost layer has called vhost_task_stop it's already stopped
+> > @@ -62,7 +62,7 @@ static int vhost_task_fn(void *data)
+> >  		vtsk->handle_sigkill(vtsk->data);
+> >  	}
+> >  	complete(&vtsk->exited);
+> > -	mutex_unlock(&vtsk->exit_mutex);
+> > +	mutex_unlock(&exit_mutex);
+> >  
+> 
+> Edward, thanks for the patch. I think though I just needed to swap the
+> order of the calls above.
+> 
+> Instead of:
+> 
+> complete(&vtsk->exited);
+> mutex_unlock(&vtsk->exit_mutex);
+> 
+> it should have been:
+> 
+> mutex_unlock(&vtsk->exit_mutex);
+> complete(&vtsk->exited);
+> 
+> If my analysis is correct, then Michael do you want me to resubmit a
+> patch on top of your vhost branch or resubmit the entire patchset?
 
-For now this only serves as documentation as the schema still allows
-anything to avoid lots of additional warnings for something low priority
-to fix. Once a "no deprecated" mode is added to the tools, warnings can
-be enabled selectively.
+Resubmit all please.
 
-Signed-off-by: Rob Herring (Arm) <robh@kernel.org>
----
- Documentation/devicetree/bindings/clock/fixed-clock.yaml | 9 +++++++++
- .../devicetree/bindings/clock/fixed-factor-clock.yaml    | 9 +++++++++
- 2 files changed, 18 insertions(+)
-
-diff --git a/Documentation/devicetree/bindings/clock/fixed-clock.yaml b/Documentation/devicetree/bindings/clock/fixed-clock.yaml
-index b0a4fb8256e2..90fb10660684 100644
---- a/Documentation/devicetree/bindings/clock/fixed-clock.yaml
-+++ b/Documentation/devicetree/bindings/clock/fixed-clock.yaml
-@@ -11,6 +11,15 @@ maintainers:
-   - Stephen Boyd <sboyd@kernel.org>
- 
- properties:
-+  $nodename:
-+    anyOf:
-+      - description:
-+          Preferred name is 'clock-<freq>' with <freq> being the output
-+          frequency as defined in the 'clock-frequency' property.
-+        pattern: "^clock-([0-9]+|[a-z0-9-]+)$"
-+      - description: Any name allowed
-+        deprecated: true
-+
-   compatible:
-     const: fixed-clock
- 
-diff --git a/Documentation/devicetree/bindings/clock/fixed-factor-clock.yaml b/Documentation/devicetree/bindings/clock/fixed-factor-clock.yaml
-index 8f71ab300470..4afdb1c98f5f 100644
---- a/Documentation/devicetree/bindings/clock/fixed-factor-clock.yaml
-+++ b/Documentation/devicetree/bindings/clock/fixed-factor-clock.yaml
-@@ -11,6 +11,15 @@ maintainers:
-   - Stephen Boyd <sboyd@kernel.org>
- 
- properties:
-+  $nodename:
-+    anyOf:
-+      - description:
-+          If the frequency is fixed, the preferred name is 'clock-<freq>' with
-+          <freq> being the output frequency.
-+        pattern: "^clock-([0-9]+|[0-9a-z-]+)$"
-+      - description: Any name allowed
-+        deprecated: true
-+
-   compatible:
-     enum:
-       - fixed-factor-clock
 -- 
-2.43.0
+MST
 
 
