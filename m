@@ -1,46 +1,46 @@
-Return-Path: <linux-kernel+bounces-163386-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-163387-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2363E8B6A2C
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 08:06:39 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 934E58B6A2D
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 08:06:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D31EB281CA9
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 06:06:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 843371C219A6
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 06:06:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 051EF182BD;
-	Tue, 30 Apr 2024 06:06:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 41EAC1B806;
+	Tue, 30 Apr 2024 06:06:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="gWysJ5rJ"
-Received: from out-186.mta0.migadu.com (out-186.mta0.migadu.com [91.218.175.186])
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="je6PYpsu"
+Received: from out-181.mta0.migadu.com (out-181.mta0.migadu.com [91.218.175.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B16CD1798C
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 06:06:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.186
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D05518B1B
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 06:06:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714457188; cv=none; b=OtByzQGaPfngq7/eY/6rPf8t/bjTy83V2X7V+ByAxBcstBPyEYyu6rhrTPwAPZjCysxptQ9eNMWHbPQTSOo3N+JyqF5KGoYaNRmF/+pClLL2+pLS58RS2Rma8KPwCBx1aQ6+toh/BIZotrGYq5wEVlGw/RAAiKGi/hZkq+YcMCY=
+	t=1714457191; cv=none; b=E6VYoYJynELwcIq7oj4+tYpZ1xqVx9CleNxqI7PXArZWZ2sI196LY6KB88LYCDrWCEJa21rD2DY8FTYOnIy3adlGd/tHlurg2WC9I1BVyskGy8z/9UI486fOt6U5PrTYDhdyH1fVfst4nKHKLM+Bs6gGUkG28u9rbF9gDZjHD1Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714457188; c=relaxed/simple;
-	bh=3dy6hl1zCDi+m0I7sZGZ37h4N9d3LYVwPdHpe6OAbjg=;
+	s=arc-20240116; t=1714457191; c=relaxed/simple;
+	bh=5vGSlyy+Ek43QGGOneK8CV180s7IvsRn2TQjmFvCs94=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=NWmrSydrcoONk1nHVZXgxL29sFeM423M46ZLsPdlnBD6Jq5QsaotwvrRerwUAQI9geAmPw2KyUW9QfK6b0SHkpzHanURpTCrOmuK0V3BqmkALgT9Srvi8OweSTEpBTyvSgJTSIAfZomaI2xEYEWzPvn29sG9ntYmXly9wLBnRN4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=gWysJ5rJ; arc=none smtp.client-ip=91.218.175.186
+	 MIME-Version; b=ruvkEUBOobfp3eHqWJoSjtZmZqMIq+y35QMB9dKIMOookrGb9wVOmxyD31mDN0Ld49QzNl9TXCFClXeIn/FjlcqmxPd2vbbHlSrbDWwN7hvrxs2FVZ1Y6j53x3kAx6lqN5/+S7PJLFgooxXKVbTViWdXXe5IbXcRvoY368gPJTk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=je6PYpsu; arc=none smtp.client-ip=91.218.175.181
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1714457184;
+	t=1714457187;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=Wvw793twJ1F4/KqGjGhIdLueYM54shZE8VvQWV77fqg=;
-	b=gWysJ5rJLgTNd7+7sPEXX3lDa/aX41N7fiFaoVJoqBw2GLQoTmpvYSXD+j56elG71KufDu
-	5H3chniFPjB0Kb5+t8HX4JvT1HtVlVG8HX9EX65NGXLDJ1eBuARlgTh71roMJCtj96Mtw2
-	+qgkfyNgcm3UlGBUDOM5HOeHYGXdz14=
+	bh=TJurZ26Ei0Ypt+z9OF2t2IjIht8hsBt7wgbBwSaQpf8=;
+	b=je6PYpsuWMMT4ClDbZOM+FDe6Wa7t5KPl7NGfnZGypdcykVsLQ7bzMC/DUlhoH4PbjhXOw
+	kSljsOgicb7sCAwL0LnTAbu6ZwNNVnO66ZdtMa3H8yCDKLM4rtyAKijVBa7NOETK6dJIAT
+	WERHD4+A0LUkC53y/Rl7J/LAm+rUWzM=
 From: Shakeel Butt <shakeel.butt@linux.dev>
 To: Andrew Morton <akpm@linux-foundation.org>,
 	Johannes Weiner <hannes@cmpxchg.org>,
@@ -52,9 +52,9 @@ To: Andrew Morton <akpm@linux-foundation.org>,
 Cc: kernel-team@meta.com,
 	linux-mm@kvack.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH v3 1/8] memcg: reduce memory size of mem_cgroup_events_index
-Date: Mon, 29 Apr 2024 23:06:05 -0700
-Message-ID: <20240430060612.2171650-2-shakeel.butt@linux.dev>
+Subject: [PATCH v3 2/8] memcg: dynamically allocate lruvec_stats
+Date: Mon, 29 Apr 2024 23:06:06 -0700
+Message-ID: <20240430060612.2171650-3-shakeel.butt@linux.dev>
 In-Reply-To: <20240430060612.2171650-1-shakeel.butt@linux.dev>
 References: <20240430060612.2171650-1-shakeel.butt@linux.dev>
 Precedence: bulk
@@ -66,48 +66,261 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
-mem_cgroup_events_index is a translation table to get the right index of
-the memcg relevant entry for the general vm_event_item. At the moment,
-it is defined as integer array. However on a typical system the max
-entry of vm_event_item (NR_VM_EVENT_ITEMS) is 113, so we don't need to
-use int as storage type of the array. For now just use int8_t as type
-and add a BUILD_BUG_ON() and will switch to short once NR_VM_EVENT_ITEMS
-touches 127.
-
-Another benefit of this change is that the translation table fits in 2
-cachelines while previously it would require 8 cachelines (assuming 64
-bytes cachesline).
+To decouple the dependency of lruvec_stats on NR_VM_NODE_STAT_ITEMS, we
+need to dynamically allocate lruvec_stats in the mem_cgroup_per_node
+structure. Also move the definition of lruvec_stats_percpu and
+lruvec_stats and related functions to the memcontrol.c to facilitate
+later patches. No functional changes in the patch.
 
 Signed-off-by: Shakeel Butt <shakeel.butt@linux.dev>
-Reviewed-by: Roman Gushchin <roman.gushchin@linux.dev>
+Reviewed-by: Yosry Ahmed <yosryahmed@google.com>
 ---
+
 Changes since v2:
-- Used S8_MAX instead of 127
-- Update commit message based on Yosry's feedback.
+- N/A
 
- mm/memcontrol.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ include/linux/memcontrol.h | 62 +++------------------------
+ mm/memcontrol.c            | 87 ++++++++++++++++++++++++++++++++------
+ 2 files changed, 81 insertions(+), 68 deletions(-)
 
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 602ad5faad4d..c146187cda9c 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -607,11 +607,13 @@ static const unsigned int memcg_vm_event_stat[] = {
+diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+index 9aba0d0462ca..ab8a6e884375 100644
+--- a/include/linux/memcontrol.h
++++ b/include/linux/memcontrol.h
+@@ -83,6 +83,8 @@ enum mem_cgroup_events_target {
+ 
+ struct memcg_vmstats_percpu;
+ struct memcg_vmstats;
++struct lruvec_stats_percpu;
++struct lruvec_stats;
+ 
+ struct mem_cgroup_reclaim_iter {
+ 	struct mem_cgroup *position;
+@@ -90,25 +92,6 @@ struct mem_cgroup_reclaim_iter {
+ 	unsigned int generation;
  };
  
- #define NR_MEMCG_EVENTS ARRAY_SIZE(memcg_vm_event_stat)
--static int mem_cgroup_events_index[NR_VM_EVENT_ITEMS] __read_mostly;
-+static int8_t mem_cgroup_events_index[NR_VM_EVENT_ITEMS] __read_mostly;
+-struct lruvec_stats_percpu {
+-	/* Local (CPU and cgroup) state */
+-	long state[NR_VM_NODE_STAT_ITEMS];
+-
+-	/* Delta calculation for lockless upward propagation */
+-	long state_prev[NR_VM_NODE_STAT_ITEMS];
+-};
+-
+-struct lruvec_stats {
+-	/* Aggregated (CPU and subtree) state */
+-	long state[NR_VM_NODE_STAT_ITEMS];
+-
+-	/* Non-hierarchical (CPU aggregated) state */
+-	long state_local[NR_VM_NODE_STAT_ITEMS];
+-
+-	/* Pending child counts during tree propagation */
+-	long state_pending[NR_VM_NODE_STAT_ITEMS];
+-};
+-
+ /*
+  * per-node information in memory controller.
+  */
+@@ -116,7 +99,7 @@ struct mem_cgroup_per_node {
+ 	struct lruvec		lruvec;
  
- static void init_memcg_events(void)
- {
--	int i;
-+	int8_t i;
+ 	struct lruvec_stats_percpu __percpu	*lruvec_stats_percpu;
+-	struct lruvec_stats			lruvec_stats;
++	struct lruvec_stats			*lruvec_stats;
+ 
+ 	unsigned long		lru_zone_size[MAX_NR_ZONES][NR_LRU_LISTS];
+ 
+@@ -1037,42 +1020,9 @@ static inline void mod_memcg_page_state(struct page *page,
+ }
+ 
+ unsigned long memcg_page_state(struct mem_cgroup *memcg, int idx);
+-
+-static inline unsigned long lruvec_page_state(struct lruvec *lruvec,
+-					      enum node_stat_item idx)
+-{
+-	struct mem_cgroup_per_node *pn;
+-	long x;
+-
+-	if (mem_cgroup_disabled())
+-		return node_page_state(lruvec_pgdat(lruvec), idx);
+-
+-	pn = container_of(lruvec, struct mem_cgroup_per_node, lruvec);
+-	x = READ_ONCE(pn->lruvec_stats.state[idx]);
+-#ifdef CONFIG_SMP
+-	if (x < 0)
+-		x = 0;
+-#endif
+-	return x;
+-}
+-
+-static inline unsigned long lruvec_page_state_local(struct lruvec *lruvec,
+-						    enum node_stat_item idx)
+-{
+-	struct mem_cgroup_per_node *pn;
+-	long x = 0;
+-
+-	if (mem_cgroup_disabled())
+-		return node_page_state(lruvec_pgdat(lruvec), idx);
+-
+-	pn = container_of(lruvec, struct mem_cgroup_per_node, lruvec);
+-	x = READ_ONCE(pn->lruvec_stats.state_local[idx]);
+-#ifdef CONFIG_SMP
+-	if (x < 0)
+-		x = 0;
+-#endif
+-	return x;
+-}
++unsigned long lruvec_page_state(struct lruvec *lruvec, enum node_stat_item idx);
++unsigned long lruvec_page_state_local(struct lruvec *lruvec,
++				      enum node_stat_item idx);
+ 
+ void mem_cgroup_flush_stats(struct mem_cgroup *memcg);
+ void mem_cgroup_flush_stats_ratelimited(struct mem_cgroup *memcg);
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index c146187cda9c..7126459ec56a 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -576,6 +576,60 @@ mem_cgroup_largest_soft_limit_node(struct mem_cgroup_tree_per_node *mctz)
+ 	return mz;
+ }
+ 
++struct lruvec_stats_percpu {
++	/* Local (CPU and cgroup) state */
++	long state[NR_VM_NODE_STAT_ITEMS];
 +
-+	BUILD_BUG_ON(NR_VM_EVENT_ITEMS >= S8_MAX);
++	/* Delta calculation for lockless upward propagation */
++	long state_prev[NR_VM_NODE_STAT_ITEMS];
++};
++
++struct lruvec_stats {
++	/* Aggregated (CPU and subtree) state */
++	long state[NR_VM_NODE_STAT_ITEMS];
++
++	/* Non-hierarchical (CPU aggregated) state */
++	long state_local[NR_VM_NODE_STAT_ITEMS];
++
++	/* Pending child counts during tree propagation */
++	long state_pending[NR_VM_NODE_STAT_ITEMS];
++};
++
++unsigned long lruvec_page_state(struct lruvec *lruvec, enum node_stat_item idx)
++{
++	struct mem_cgroup_per_node *pn;
++	long x;
++
++	if (mem_cgroup_disabled())
++		return node_page_state(lruvec_pgdat(lruvec), idx);
++
++	pn = container_of(lruvec, struct mem_cgroup_per_node, lruvec);
++	x = READ_ONCE(pn->lruvec_stats->state[idx]);
++#ifdef CONFIG_SMP
++	if (x < 0)
++		x = 0;
++#endif
++	return x;
++}
++
++unsigned long lruvec_page_state_local(struct lruvec *lruvec,
++				      enum node_stat_item idx)
++{
++	struct mem_cgroup_per_node *pn;
++	long x = 0;
++
++	if (mem_cgroup_disabled())
++		return node_page_state(lruvec_pgdat(lruvec), idx);
++
++	pn = container_of(lruvec, struct mem_cgroup_per_node, lruvec);
++	x = READ_ONCE(pn->lruvec_stats->state_local[idx]);
++#ifdef CONFIG_SMP
++	if (x < 0)
++		x = 0;
++#endif
++	return x;
++}
++
+ /* Subset of vm_event_item to report for memcg event stats */
+ static const unsigned int memcg_vm_event_stat[] = {
+ 	PGPGIN,
+@@ -5491,18 +5545,25 @@ static int alloc_mem_cgroup_per_node_info(struct mem_cgroup *memcg, int node)
+ 	if (!pn)
+ 		return 1;
  
- 	for (i = 0; i < NR_MEMCG_EVENTS; ++i)
- 		mem_cgroup_events_index[memcg_vm_event_stat[i]] = i + 1;
++	pn->lruvec_stats = kzalloc_node(sizeof(struct lruvec_stats), GFP_KERNEL,
++					node);
++	if (!pn->lruvec_stats)
++		goto fail;
++
+ 	pn->lruvec_stats_percpu = alloc_percpu_gfp(struct lruvec_stats_percpu,
+ 						   GFP_KERNEL_ACCOUNT);
+-	if (!pn->lruvec_stats_percpu) {
+-		kfree(pn);
+-		return 1;
+-	}
++	if (!pn->lruvec_stats_percpu)
++		goto fail;
+ 
+ 	lruvec_init(&pn->lruvec);
+ 	pn->memcg = memcg;
+ 
+ 	memcg->nodeinfo[node] = pn;
+ 	return 0;
++fail:
++	kfree(pn->lruvec_stats);
++	kfree(pn);
++	return 1;
+ }
+ 
+ static void free_mem_cgroup_per_node_info(struct mem_cgroup *memcg, int node)
+@@ -5513,6 +5574,7 @@ static void free_mem_cgroup_per_node_info(struct mem_cgroup *memcg, int node)
+ 		return;
+ 
+ 	free_percpu(pn->lruvec_stats_percpu);
++	kfree(pn->lruvec_stats);
+ 	kfree(pn);
+ }
+ 
+@@ -5865,18 +5927,19 @@ static void mem_cgroup_css_rstat_flush(struct cgroup_subsys_state *css, int cpu)
+ 
+ 	for_each_node_state(nid, N_MEMORY) {
+ 		struct mem_cgroup_per_node *pn = memcg->nodeinfo[nid];
+-		struct mem_cgroup_per_node *ppn = NULL;
++		struct lruvec_stats *lstats = pn->lruvec_stats;
++		struct lruvec_stats *plstats = NULL;
+ 		struct lruvec_stats_percpu *lstatc;
+ 
+ 		if (parent)
+-			ppn = parent->nodeinfo[nid];
++			plstats = parent->nodeinfo[nid]->lruvec_stats;
+ 
+ 		lstatc = per_cpu_ptr(pn->lruvec_stats_percpu, cpu);
+ 
+ 		for (i = 0; i < NR_VM_NODE_STAT_ITEMS; i++) {
+-			delta = pn->lruvec_stats.state_pending[i];
++			delta = lstats->state_pending[i];
+ 			if (delta)
+-				pn->lruvec_stats.state_pending[i] = 0;
++				lstats->state_pending[i] = 0;
+ 
+ 			delta_cpu = 0;
+ 			v = READ_ONCE(lstatc->state[i]);
+@@ -5887,12 +5950,12 @@ static void mem_cgroup_css_rstat_flush(struct cgroup_subsys_state *css, int cpu)
+ 			}
+ 
+ 			if (delta_cpu)
+-				pn->lruvec_stats.state_local[i] += delta_cpu;
++				lstats->state_local[i] += delta_cpu;
+ 
+ 			if (delta) {
+-				pn->lruvec_stats.state[i] += delta;
+-				if (ppn)
+-					ppn->lruvec_stats.state_pending[i] += delta;
++				lstats->state[i] += delta;
++				if (plstats)
++					plstats->state_pending[i] += delta;
+ 			}
+ 		}
+ 	}
 -- 
 2.43.0
 
