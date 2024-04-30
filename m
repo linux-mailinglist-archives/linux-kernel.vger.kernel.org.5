@@ -1,78 +1,86 @@
-Return-Path: <linux-kernel+bounces-163660-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-163653-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A822E8B6E22
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 11:23:22 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2D2B38B6E1A
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 11:21:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 63960284124
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 09:23:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D830C284722
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 09:21:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A10C01C2302;
-	Tue, 30 Apr 2024 09:19:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 874411A38D7;
+	Tue, 30 Apr 2024 09:18:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="UFnUfh6P"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gt6Xx7Zd"
+Received: from mail-lj1-f178.google.com (mail-lj1-f178.google.com [209.85.208.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8863C1C2304
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 09:18:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A90C19DF53
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 09:18:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714468740; cv=none; b=j1/1DKbjn+JPcLcpt/x4ASOHJ40GlCkVBuh2+MyTSj0x7JS/WX4ukjk5rJ2uAO3qJWCfIBY6zQuBqVJt+SV5RmVyTEaBZmiRuGmV5nR4j9ASjgVPkVkPgJYNC743lba3+8SV63hBWjfXM+Aj7mj2ahqWE4+Yg34Q8Nxj9lowJvM=
+	t=1714468731; cv=none; b=qZq4wavJAUEmcVeFCTr+Yx5J4Ikq8C8jmvq3HKggVNxm1CbarRoWPesmkCdu0i1jRVoBJ5SHQoUqgzswp6cyKbW31aFVurKYXmXJ0I5ShrhU6UIZaY84nlguPes4np3nZYAu4G9prHaG+b7RXeWy/pHAwUQ7ibEBI3MFWOxx3MI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714468740; c=relaxed/simple;
-	bh=DYnXJHD9kJ9V1r0+3XVdouBDhuhgaU3D2u8eA1TSSOI=;
+	s=arc-20240116; t=1714468731; c=relaxed/simple;
+	bh=vtOoDYl1aOUNmIEBJBr5nX9rVdVflOoQ11HE29qUj9A=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=uToBjEYuHeQlLnIrTGvSsfTkCWEI1ooZ/Hk5f9gTwzhQgLx2Q+CZ7p6uPNE2HR6+ksV5sKb6gQ7uWxRoRFJiJP9i+lrNA04voF7mUBUokEUv3MM6zO1po1SbuEUnZ3OO9xMuQoahdxn91ODA4KcUyH76I1+TfidIYlY8E1e3ecg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=UFnUfh6P; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1714468738;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=7iJ+HhpR5xS1NIdRXohsDpAsZ+ySrJwbYzJ1VO+vaqM=;
-	b=UFnUfh6PHGTeNolyCdDGnku477ldgC2mYG+qXkSpetBJYYRExv5uwCObK5MUf2nYndOlWs
-	/rXXtBzZ31Ub8gdNVhgMa/bmc/4FpMCCZBpR4ewN43EF11UU/eHk4xgFiI6Y33SZ0cPmIP
-	JM37ZlRuIXZrmdiRW0soBlzDqA66T/s=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-557-xATXoSjZMLeETUBX2KF7LA-1; Tue,
- 30 Apr 2024 05:18:55 -0400
-X-MC-Unique: xATXoSjZMLeETUBX2KF7LA-1
-Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 346FB1C0AF42;
-	Tue, 30 Apr 2024 09:18:54 +0000 (UTC)
-Received: from vschneid-thinkpadt14sgen2i.remote.csb (unknown [10.39.193.247])
-	by smtp.corp.redhat.com (Postfix) with ESMTPS id 69271492BC7;
-	Tue, 30 Apr 2024 09:18:51 +0000 (UTC)
-From: Valentin Schneider <vschneid@redhat.com>
-To: rcu@vger.kernel.org,
+	 MIME-Version; b=VgdQmtWDUNTwNmsbq8+2Qm56/qT/xpYqogl4q4rKIet8eKAdLCkwg3BVBVT7gok242YAuKuMQllzZlfwoBtP1SMV5pGiP05Yl1tY92S+Vl8e5FPDf6RqHSZkJjuMeRjWHHxy4uhsdfJQeVUsVE5QSeIL69OT1i70l6qYczmk0bI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gt6Xx7Zd; arc=none smtp.client-ip=209.85.208.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f178.google.com with SMTP id 38308e7fff4ca-2e0a0cc5e83so19042071fa.1
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 02:18:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1714468728; x=1715073528; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=FLIOsVy4cce4j8541l0tytwI1rGz4XmyB8qtCnnEfYc=;
+        b=gt6Xx7Zd/3+mcC6pnPPVwuF/w2zMVdase0cUTmO2E9viJjRp3kLa/S44FZFVpSZ2/V
+         qOPCZpP7HEz6r67wpWhMFsb+dndgxr69WXbWd56Frl8ZXWUYa4pZG7EqL9iyiJ1tE2fG
+         c3PCN/2w4I12RjMVA81rIuivRHsT3nSkGODbI5qPy+A4oSGHOL5Kl1ygP+nwTSzhon2g
+         kWy/p83WkfSQrVSXbrI7Ex0v5GOY6QPSDugWnX8HGfUQcAnS2V0yEcog6/Tzzbb35ABK
+         J6A+djmfwiDtIJozZ5WgXvqbE7x6mU9RXXikM8QiOKn8APv291p1x41ogBp0jtqwAO+e
+         XIJA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714468728; x=1715073528;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=FLIOsVy4cce4j8541l0tytwI1rGz4XmyB8qtCnnEfYc=;
+        b=WXzF9qWPQiv+j9xI/kdepQ9ZBQwN6TGwMYvjHqcschOS+UyhMohjETWQnhu7EATDwq
+         x1y48+Wcy/C45wIlLlIL90FZR8ip999BdjM664nxnmm6KuZvzPqEJmS8tW5n+PFFd+ov
+         ZGysnuWwyfmlcb9dnDWBSq/8hyEdYFbZ1prM8l7GzR+fUh5g1GmPj6G0yF9pWFTGRfSe
+         W8+CiY4289rcoaPYlFi2VC5US6eKtm6tVqdxRxJnLa/EJ7M9O7Di0cFRoLEzFBTmT603
+         W/NqlEXxSeCZOQbXSmphFqf98e9DJQVn5/4ymwQvJC+Dn8rqejhHcrF4Fl2hcoqfxKVe
+         I8pw==
+X-Forwarded-Encrypted: i=1; AJvYcCXUGK3eNmIZ61+/ZX9wj8J0yc3ms0HM/ccAnJANaVT79XMrsLr3F5pBgH0TgYcocpRGZURPFcqRswL4VUtDOiSuYyOd2MDfB3+35BvP
+X-Gm-Message-State: AOJu0YwKq6DaxuIquCvrOfPpHiza01Z7X+JYFbk4Gajz8j+jmAykaeUN
+	7TxHDmTQOalyNBlX6/u7/pJpwUmx5ZzzSacE0yAH4ur2OUE1sgQ5
+X-Google-Smtp-Source: AGHT+IGq0JHGGV4suFQNlXHMRJPOzpZeLkPxwJ5JnVkNeqV8AWgt6T/IxjGn9ytnQwfA7zfFZSyTWg==
+X-Received: by 2002:a2e:be8d:0:b0:2e0:eb96:7b53 with SMTP id a13-20020a2ebe8d000000b002e0eb967b53mr1314561ljr.44.1714468727617;
+        Tue, 30 Apr 2024 02:18:47 -0700 (PDT)
+Received: from fedora.iskraemeco.si ([193.77.86.250])
+        by smtp.gmail.com with ESMTPSA id h3-20020a05600c314300b0041abdaf8c6asm26324458wmo.13.2024.04.30.02.18.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 30 Apr 2024 02:18:47 -0700 (PDT)
+From: Uros Bizjak <ubizjak@gmail.com>
+To: x86@kernel.org,
 	linux-kernel@vger.kernel.org
-Cc: Frederic Weisbecker <frederic@kernel.org>,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang1211@gmail.com>
-Subject: [PATCH v2 17/27] rcu: Rename rcu_dynticks_in_eqs() into rcu_watching_in_eqs()
-Date: Tue, 30 Apr 2024 11:17:21 +0200
-Message-ID: <20240430091740.1826862-18-vschneid@redhat.com>
-In-Reply-To: <20240430091740.1826862-1-vschneid@redhat.com>
-References: <20240430091740.1826862-1-vschneid@redhat.com>
+Cc: Uros Bizjak <ubizjak@gmail.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@kernel.org>,
+	Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	"H. Peter Anvin" <hpa@zytor.com>
+Subject: [PATCH -tip 3/5] x86/percpu: Unify percpu read-write accessors
+Date: Tue, 30 Apr 2024 11:17:22 +0200
+Message-ID: <20240430091833.196482-3-ubizjak@gmail.com>
+X-Mailer: git-send-email 2.44.0
+In-Reply-To: <20240430091833.196482-1-ubizjak@gmail.com>
+References: <20240430091833.196482-1-ubizjak@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -80,79 +88,146 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.10
 
-The context_tracking.state RCU_DYNTICKS subvariable has been renamed to
-RCU_WATCHING, reflect that change in the related helpers.
+Redefine percpu_from_op() and percpu_to_op() as __raw_cpu_read()
+and __raw_cpu_write().  Unify __raw_cpu_{read,write}() macros
+between configs w/ and w/o USE_X86_SEG_SUPPORT in order to
+unify {raw,this}_cpu{read_write}_N() accessors between configs.
 
-Signed-off-by: Valentin Schneider <vschneid@redhat.com>
+No functional change intended.
+
+Signed-off-by: Uros Bizjak <ubizjak@gmail.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Ingo Molnar <mingo@kernel.org>
+Cc: Borislav Petkov <bp@alien8.de>
+Cc: Dave Hansen <dave.hansen@linux.intel.com>
+Cc: "H. Peter Anvin" <hpa@zytor.com>
 ---
- kernel/rcu/tree.c       | 8 ++++----
- kernel/rcu/tree_exp.h   | 2 +-
- kernel/rcu/tree_stall.h | 2 +-
- 3 files changed, 6 insertions(+), 6 deletions(-)
+ arch/x86/include/asm/percpu.h | 72 ++++++++++++-----------------------
+ 1 file changed, 25 insertions(+), 47 deletions(-)
 
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 857c2565efeac..d772755ccd564 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -308,9 +308,9 @@ static int rcu_watching_snap(int cpu)
+diff --git a/arch/x86/include/asm/percpu.h b/arch/x86/include/asm/percpu.h
+index 08113a2e5377..f360ac5fccde 100644
+--- a/arch/x86/include/asm/percpu.h
++++ b/arch/x86/include/asm/percpu.h
+@@ -146,28 +146,28 @@
  
- /*
-  * Return true if the snapshot returned from rcu_watching_snap()
-- * indicates that RCU is in an extended quiescent state.
-+ * indicates that RCU in an extended quiescent state (not watching).
+ #ifdef CONFIG_USE_X86_SEG_SUPPORT
+ 
+-#define __raw_cpu_read(qual, pcp)					\
++#define __raw_cpu_read(size, qual, pcp)					\
+ ({									\
+ 	*(qual __my_cpu_type(pcp) *)__my_cpu_ptr(&(pcp));		\
+ })
+ 
+-#define __raw_cpu_write(qual, pcp, val)					\
++#define __raw_cpu_write(size, qual, pcp, val)				\
+ do {									\
+ 	*(qual __my_cpu_type(pcp) *)__my_cpu_ptr(&(pcp)) = (val);	\
+ } while (0)
+ 
+ #else /* CONFIG_USE_X86_SEG_SUPPORT */
+ 
+-#define percpu_from_op(size, qual, op, _var)				\
++#define __raw_cpu_read(size, qual, _var)				\
+ ({									\
+ 	__pcpu_type_##size pfo_val__;					\
+-	asm qual (__pcpu_op2_##size(op, __percpu_arg([var]), "%[val]")	\
++	asm qual (__pcpu_op2_##size("mov", __percpu_arg([var]), "%[val]") \
+ 	    : [val] __pcpu_reg_##size("=", pfo_val__)			\
+ 	    : [var] "m" (__my_cpu_var(_var)));				\
+ 	(typeof(_var))(unsigned long) pfo_val__;			\
+ })
+ 
+-#define percpu_to_op(size, qual, op, _var, _val)			\
++#define __raw_cpu_write(size, qual, _var, _val)				\
+ do {									\
+ 	__pcpu_type_##size pto_val__ = __pcpu_cast_##size(_val);	\
+ 	if (0) {		                                        \
+@@ -175,7 +175,7 @@ do {									\
+ 		pto_tmp__ = (_val);					\
+ 		(void)pto_tmp__;					\
+ 	}								\
+-	asm qual(__pcpu_op2_##size(op, "%[val]", __percpu_arg([var]))	\
++	asm qual(__pcpu_op2_##size("mov", "%[val]", __percpu_arg([var])) \
+ 	    : [var] "+m" (__my_cpu_var(_var))				\
+ 	    : [val] __pcpu_reg_imm_##size(pto_val__));			\
+ } while (0)
+@@ -448,54 +448,32 @@ do {									\
   */
--static bool rcu_dynticks_in_eqs(int snap)
-+static bool rcu_watching_in_eqs(int snap)
- {
- 	return !(snap & CT_RCU_WATCHING);
- }
-@@ -771,7 +771,7 @@ static void rcu_gpnum_ovf(struct rcu_node *rnp, struct rcu_data *rdp)
- static int dyntick_save_progress_counter(struct rcu_data *rdp)
- {
- 	rdp->dynticks_snap = rcu_watching_snap(rdp->cpu);
--	if (rcu_dynticks_in_eqs(rdp->dynticks_snap)) {
-+	if (rcu_watching_in_eqs(rdp->dynticks_snap)) {
- 		trace_rcu_fqs(rcu_state.name, rdp->gp_seq, rdp->cpu, TPS("dti"));
- 		rcu_gpnum_ovf(rdp->mynode, rdp);
- 		return 1;
-@@ -4798,7 +4798,7 @@ rcu_boot_init_percpu_data(int cpu)
- 	rdp->grpmask = leaf_node_cpu_bit(rdp->mynode, cpu);
- 	INIT_WORK(&rdp->strict_work, strict_work_handler);
- 	WARN_ON_ONCE(ct->nesting != 1);
--	WARN_ON_ONCE(rcu_dynticks_in_eqs(rcu_watching_snap(cpu)));
-+	WARN_ON_ONCE(rcu_watching_in_eqs(rcu_watching_snap(cpu)));
- 	rdp->barrier_seq_snap = rcu_state.barrier_sequence;
- 	rdp->rcu_ofl_gp_seq = rcu_state.gp_seq;
- 	rdp->rcu_ofl_gp_state = RCU_GP_CLEANED;
-diff --git a/kernel/rcu/tree_exp.h b/kernel/rcu/tree_exp.h
-index 50ec57304c1b7..68dea1427c8bd 100644
---- a/kernel/rcu/tree_exp.h
-+++ b/kernel/rcu/tree_exp.h
-@@ -358,7 +358,7 @@ static void __sync_rcu_exp_select_node_cpus(struct rcu_exp_work *rewp)
- 			mask_ofl_test |= mask;
- 		} else {
- 			snap = rcu_watching_snap(cpu);
--			if (rcu_dynticks_in_eqs(snap))
-+			if (rcu_watching_in_eqs(snap))
- 				mask_ofl_test |= mask;
- 			else
- 				rdp->exp_dynticks_snap = snap;
-diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
-index 4fa23f9fc207f..589f1be8ff921 100644
---- a/kernel/rcu/tree_stall.h
-+++ b/kernel/rcu/tree_stall.h
-@@ -501,7 +501,7 @@ static void print_cpu_stall_info(int cpu)
- 	}
- 	delta = rcu_seq_ctr(rdp->mynode->gp_seq - rdp->rcu_iw_gp_seq);
- 	falsepositive = rcu_is_gp_kthread_starving(NULL) &&
--			rcu_dynticks_in_eqs(rcu_watching_snap(cpu));
-+			rcu_watching_in_eqs(rcu_watching_snap(cpu));
- 	rcuc_starved = rcu_is_rcuc_kthread_starving(rdp, &j);
- 	if (rcuc_starved)
- 		// Print signed value, as negative values indicate a probable bug.
+ #define this_cpu_read_stable(pcp)	__pcpu_size_call_return(this_cpu_read_stable_, pcp)
+ 
+-#ifdef CONFIG_USE_X86_SEG_SUPPORT
+-#define raw_cpu_read_1(pcp)		__raw_cpu_read(, pcp)
+-#define raw_cpu_read_2(pcp)		__raw_cpu_read(, pcp)
+-#define raw_cpu_read_4(pcp)		__raw_cpu_read(, pcp)
+-#define raw_cpu_write_1(pcp, val)	__raw_cpu_write(, pcp, val)
+-#define raw_cpu_write_2(pcp, val)	__raw_cpu_write(, pcp, val)
+-#define raw_cpu_write_4(pcp, val)	__raw_cpu_write(, pcp, val)
+-
+-#define this_cpu_read_1(pcp)		__raw_cpu_read(volatile, pcp)
+-#define this_cpu_read_2(pcp)		__raw_cpu_read(volatile, pcp)
+-#define this_cpu_read_4(pcp)		__raw_cpu_read(volatile, pcp)
+-#define this_cpu_write_1(pcp, val)	__raw_cpu_write(volatile, pcp, val)
+-#define this_cpu_write_2(pcp, val)	__raw_cpu_write(volatile, pcp, val)
+-#define this_cpu_write_4(pcp, val)	__raw_cpu_write(volatile, pcp, val)
++#define raw_cpu_read_1(pcp)		__raw_cpu_read(1, , pcp)
++#define raw_cpu_read_2(pcp)		__raw_cpu_read(2, , pcp)
++#define raw_cpu_read_4(pcp)		__raw_cpu_read(4, , pcp)
++#define raw_cpu_write_1(pcp, val)	__raw_cpu_write(1, , pcp, val)
++#define raw_cpu_write_2(pcp, val)	__raw_cpu_write(2, , pcp, val)
++#define raw_cpu_write_4(pcp, val)	__raw_cpu_write(4, , pcp, val)
++
++#define this_cpu_read_1(pcp)		__raw_cpu_read(1, volatile, pcp)
++#define this_cpu_read_2(pcp)		__raw_cpu_read(2, volatile, pcp)
++#define this_cpu_read_4(pcp)		__raw_cpu_read(4, volatile, pcp)
++#define this_cpu_write_1(pcp, val)	__raw_cpu_write(1, volatile, pcp, val)
++#define this_cpu_write_2(pcp, val)	__raw_cpu_write(2, volatile, pcp, val)
++#define this_cpu_write_4(pcp, val)	__raw_cpu_write(4, volatile, pcp, val)
+ 
+ #ifdef CONFIG_X86_64
+-#define raw_cpu_read_8(pcp)		__raw_cpu_read(, pcp)
+-#define raw_cpu_write_8(pcp, val)	__raw_cpu_write(, pcp, val)
++#define raw_cpu_read_8(pcp)		__raw_cpu_read(8, , pcp)
++#define raw_cpu_write_8(pcp, val)	__raw_cpu_write(8, , pcp, val)
+ 
+-#define this_cpu_read_8(pcp)		__raw_cpu_read(volatile, pcp)
+-#define this_cpu_write_8(pcp, val)	__raw_cpu_write(volatile, pcp, val)
++#define this_cpu_read_8(pcp)		__raw_cpu_read(8, volatile, pcp)
++#define this_cpu_write_8(pcp, val)	__raw_cpu_write(8, volatile, pcp, val)
+ #endif
+ 
+-#define this_cpu_read_const(pcp)	__raw_cpu_read(, pcp)
++#ifdef CONFIG_USE_X86_SEG_SUPPORT
++#define this_cpu_read_const(pcp)	__raw_cpu_read(, , pcp)
+ #else /* CONFIG_USE_X86_SEG_SUPPORT */
+ 
+-#define raw_cpu_read_1(pcp)		percpu_from_op(1, , "mov", pcp)
+-#define raw_cpu_read_2(pcp)		percpu_from_op(2, , "mov", pcp)
+-#define raw_cpu_read_4(pcp)		percpu_from_op(4, , "mov", pcp)
+-#define raw_cpu_write_1(pcp, val)	percpu_to_op(1, , "mov", (pcp), val)
+-#define raw_cpu_write_2(pcp, val)	percpu_to_op(2, , "mov", (pcp), val)
+-#define raw_cpu_write_4(pcp, val)	percpu_to_op(4, , "mov", (pcp), val)
+-
+-#define this_cpu_read_1(pcp)		percpu_from_op(1, volatile, "mov", pcp)
+-#define this_cpu_read_2(pcp)		percpu_from_op(2, volatile, "mov", pcp)
+-#define this_cpu_read_4(pcp)		percpu_from_op(4, volatile, "mov", pcp)
+-#define this_cpu_write_1(pcp, val)	percpu_to_op(1, volatile, "mov", (pcp), val)
+-#define this_cpu_write_2(pcp, val)	percpu_to_op(2, volatile, "mov", (pcp), val)
+-#define this_cpu_write_4(pcp, val)	percpu_to_op(4, volatile, "mov", (pcp), val)
+-
+-#ifdef CONFIG_X86_64
+-#define raw_cpu_read_8(pcp)		percpu_from_op(8, , "mov", pcp)
+-#define raw_cpu_write_8(pcp, val)	percpu_to_op(8, , "mov", (pcp), val)
+-
+-#define this_cpu_read_8(pcp)		percpu_from_op(8, volatile, "mov", pcp)
+-#define this_cpu_write_8(pcp, val)	percpu_to_op(8, volatile, "mov", (pcp), val)
+-#endif
+-
+ /*
+  * The generic per-cpu infrastrucutre is not suitable for
+  * reading const-qualified variables.
 -- 
-2.43.0
+2.44.0
 
 
