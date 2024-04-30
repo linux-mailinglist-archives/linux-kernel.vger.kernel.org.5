@@ -1,234 +1,185 @@
-Return-Path: <linux-kernel+bounces-164635-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-164637-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 46B3D8B8075
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 21:21:25 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id DBB3C8B807D
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 21:25:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C89C11F23E1C
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 19:21:24 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A0226B2243F
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 19:25:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 631EC199E84;
-	Tue, 30 Apr 2024 19:21:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 08456199E84;
+	Tue, 30 Apr 2024 19:25:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FGivK6Xd"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="HV1wMxQk"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F34A180A85;
-	Tue, 30 Apr 2024 19:21:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF45E7710B
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 19:25:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714504875; cv=none; b=t439x8EfymXvVQvBOoUHJ0jz0w9ZdX7aTD8Nc5qt8ekMnd9AO4eMVC/WRaUsIVQq9cUgecqgcfn7ycME1QDRD7qratNUle96wBd/TLS7KO7osrUdFwhpEIr9ZVNpr4F0SzI/p7dHKhXwZwPL6wvp++9+1paUkCs9/v/OiJkXc+g=
+	t=1714505139; cv=none; b=NXH32bYd+axXnFjDZXKHVrpnr+gMKmZeRN9wcqKxJeD/HIfAAbKvoBFyTIBQ7U9Psh0mVBtu3vTo+kFEynvkNdDkvi0Sj8V283m0aTmqEVAzFSAfqXt9iihzfxyGvp1iJjJXpYyzjFkGqS6RG96WzAbfEiZh0rFQ9L3YldH2tu8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714504875; c=relaxed/simple;
-	bh=NwCpJ4/aGdZMBhntTpNF2is84X693tSgQ+YYuyWOaN4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=SaRHe6G0EpFc3nfaLid0gEXxIqJd2NmA91jKrCGLluEsgbwYtu74kg4NVcbMchTn4QjssnAXZ588pZL2kYCZsf40Xj3X03xO3hZr7ZIpBx3SOdN7TDCaO/XvIYJxxhv8rBvZF9pBbu15f3xNYdMOkRDxhB5VU5z/ZTX2j1ExSao=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FGivK6Xd; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3528BC4AF19;
-	Tue, 30 Apr 2024 19:21:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714504875;
-	bh=NwCpJ4/aGdZMBhntTpNF2is84X693tSgQ+YYuyWOaN4=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=FGivK6XdMlE8GYQL9XYMPwVUArMvu1ZGE7XvPUSsLtq5SEaC6Fm8+ly6La5ICit2F
-	 3Nm62Sfe4F5uIupBOychwZIpUXRIORhiW0UmuOUjsonataTQy1cz2p7MRoW7C9Py2s
-	 K26e7OXc3FHXpn7W89ezL63lgPkUPTjb6HYr5YFrNfW2x1Sd4o8RnljytkWcfTTjeq
-	 7p4KZRhkpLqr+1+HDH26WGwCkhywKnowDxayb817fX9CBcZJgbDvghv7Y6vj0Wqst5
-	 5pw4Yu9CPHVpyagzXWMJ8ebnaMoDyQ7mjCx1t6zDkESE47vfjFmDfSairuKZgBEdgm
-	 xrh3bZH3OehgA==
-Received: by mail-oi1-f179.google.com with SMTP id 5614622812f47-3c73b33383aso543375b6e.3;
-        Tue, 30 Apr 2024 12:21:15 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCX5QWJuBQ19MgDgQROhaBl21AN1B7/mbvb9/BXGSS8H12xYI2NuDeLk36hqmhbX3yQWGJbHtND3uok1RuMQ5qyUk0Tcl0taBbkOciqDpDrPa/1lw72lLy1hF1yzixcmZNvwBRAegpFm5A==
-X-Gm-Message-State: AOJu0YxnFvsTCKTAns3fR+/L2iGRARSNDL2JFB5uHIY2wXPNzTNZS2Mu
-	E4aF/r6EovvGH4GmtXg+s+gd7NELt0XB1gip/Nt1qk8jHp1on8iRchKo1erMB9wpKPZaESQAJgl
-	wkLo/ey7JTVHm+S4VJB3C36dwjlk=
-X-Google-Smtp-Source: AGHT+IFj1FZy70S4ykIy+b2SrpBWlxIdXPP5QjFwuFLgwuOnQk3mWrQ7e+Wppfq3P/0JuOtNcJYrZswXSnHuEGZMa+M=
-X-Received: by 2002:a4a:654d:0:b0:5aa:241a:7f4b with SMTP id
- z13-20020a4a654d000000b005aa241a7f4bmr397384oog.1.1714504874373; Tue, 30 Apr
- 2024 12:21:14 -0700 (PDT)
+	s=arc-20240116; t=1714505139; c=relaxed/simple;
+	bh=zmMxgervacDaHsVq7PofJWwKs+AoLNVMNCFfOexepAQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=h46FcoyobVE5KJKkC2uUTtfuugaiIbv2muVbNh+gekk/TnZ4ohyyZ3G+hjza9PEJAnO3RsEjZYsZD62UjK8qR3wqgzf/2yugUoJvdAL7osULMsxvpBn+0/FXmCblQjdjIhEJTnc5aX7ikEaQv+t6JZAfFEm50M8sZ1Zx6VlovF8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=HV1wMxQk; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1714505136;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=Sml+apiELoPNP3CvzMuGtYw372bsozMO9mfooXuYDlk=;
+	b=HV1wMxQkoMwMsbknI59XvgRNIC6Qv9Z48ENrbbxDQmD2QFXxfDQDyi2uEF6ro19YTNE7sF
+	0XuxGJN5cA4ybhSfw0RCL7M0j4Cg4Cm4E8DKvXUKZ4aJs3XoJJ6S9gPQdB7POnGOeVsnh9
+	W7x2Ixt4S5MI+mC/CJ/Mj/DdiFBrIwQ=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-209-qCBr_l8HN0-bXjRotkcyBg-1; Tue, 30 Apr 2024 15:25:35 -0400
+X-MC-Unique: qCBr_l8HN0-bXjRotkcyBg-1
+Received: by mail-wr1-f70.google.com with SMTP id ffacd0b85a97d-34dc7b83209so55573f8f.2
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 12:25:34 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714505134; x=1715109934;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :content-language:from:references:cc:to:subject:user-agent
+         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=Sml+apiELoPNP3CvzMuGtYw372bsozMO9mfooXuYDlk=;
+        b=Q/8sRd7zgg7db1xcWo0p6b0X3sv8flGy5dhfcMKlOTAMifR0cIJ2xvmXqmM26yO8bh
+         VocRHo2uXXwy6X8xs02bmQ5k/PkoFXgBUlR2PyA2eBVCcMuRnSyJOLDlaVkcw2FQm/HF
+         WpeImE7oJohHTJe9gJPWdR1nQy4wfJeVvL9ef/TgD698Ke8hFSwOUekW2tW8YmuxwK2l
+         qvZkl6NwujKwhufYPvk7WWUipmbdolS55aqeQkAlRb4G5zwMX2aqd/qHRfCe0c48s4Sc
+         GorJp/YZ13dy6Td0x8dKoIxsvWglheE2oK8wCbPy82mB6grX9tOSnONqcu+Wr3SC1/30
+         T/Fw==
+X-Forwarded-Encrypted: i=1; AJvYcCUfbbUjOPDeG1ACmSS1IrsQwTePJF+w+bWcX+9rU5+eHk95ACg6jVEhmvM9B9apOy20xoA3xY0iyGdvjPNxDrJda2BO4tWagSF3F5wn
+X-Gm-Message-State: AOJu0Yzmj4kHQth9e/u7l2lX5Zkffdb4K/lxoIaU+6g5sUIHw+/t+kL0
+	/fBIGkF7ia6etNdMN43g/yEWsuAbej5kr6npiMDZIZ7YWOD+RHUAh6ZXyorPGZhJoP3Q9uVlvOe
+	JSHPI5Na06pUII47/DHAEo0neDFxYHKm3bEj3j2haxbfrLAWwPfnlTAxThcvPcg==
+X-Received: by 2002:adf:ec4e:0:b0:34a:3f3d:bb14 with SMTP id w14-20020adfec4e000000b0034a3f3dbb14mr372792wrn.27.1714505133913;
+        Tue, 30 Apr 2024 12:25:33 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IG4uhEiExqEYYZxn/B7q0uI5d5m/WLmdfFl1SLcz2mLWdf0JRp3urAf+J6ZV+dZOqctYlmLZQ==
+X-Received: by 2002:adf:ec4e:0:b0:34a:3f3d:bb14 with SMTP id w14-20020adfec4e000000b0034a3f3dbb14mr372783wrn.27.1714505133499;
+        Tue, 30 Apr 2024 12:25:33 -0700 (PDT)
+Received: from ?IPV6:2003:cb:c707:3d00:d57f:b4c9:850e:d0b8? (p200300cbc7073d00d57fb4c9850ed0b8.dip0.t-ipconnect.de. [2003:cb:c707:3d00:d57f:b4c9:850e:d0b8])
+        by smtp.gmail.com with ESMTPSA id bl2-20020adfe242000000b0034c71090653sm11135935wrb.57.2024.04.30.12.25.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 30 Apr 2024 12:25:33 -0700 (PDT)
+Message-ID: <8a7b9e65-b073-4132-9680-efc2b3af6af0@redhat.com>
+Date: Tue, 30 Apr 2024 21:25:32 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240425093426.76130-1-tianruidong@linux.alibaba.com> <20240425093426.76130-2-tianruidong@linux.alibaba.com>
-In-Reply-To: <20240425093426.76130-2-tianruidong@linux.alibaba.com>
-From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Tue, 30 Apr 2024 21:21:02 +0200
-X-Gmail-Original-Message-ID: <CAJZ5v0i8=oTCXhAMRAckaVrTqCfOPxyYucpEguMF0tH2orY3aA@mail.gmail.com>
-Message-ID: <CAJZ5v0i8=oTCXhAMRAckaVrTqCfOPxyYucpEguMF0tH2orY3aA@mail.gmail.com>
-Subject: Re: [PATCH v3 1/1] ACPICA: AEST: Add support for the AEST V2 table
-To: Ruidong Tian <tianruidong@linux.alibaba.com>
-Cc: robert.moore@intel.com, rafael.j.wysocki@intel.com, lenb@kernel.org, 
-	rafael@kernel.org, sudeep.holla@arm.com, linux-acpi@vger.kernel.org, 
-	acpica-devel@lists.linux.dev, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC][PATCH] uprobe: support for private hugetlb mappings
+To: Guillaume Morin <guillaume@morinfr.org>
+Cc: oleg@redhat.com, linux-kernel@vger.kernel.org,
+ linux-trace-kernel@vger.kernel.org, muchun.song@linux.dev
+References: <ZiaoZlGc_8ZV3736@bender.morinfr.org>
+ <22fcde31-16c4-42d0-ad99-568173ec4dd0@redhat.com>
+ <ZibOQI9kwzE98n12@bender.morinfr.org>
+ <8d5314ac-5afe-41d4-9d27-9512cd96d21c@redhat.com>
+ <ZilvOi7ceSXmwkNq@bender.morinfr.org>
+ <b1cf78f8-8480-4451-bbf8-78694ebd0438@redhat.com>
+ <Zip0fEliGeL0qmID@bender.morinfr.org>
+ <e84a82b8-b788-499c-be79-e6dcb64ac969@redhat.com>
+ <Zirw0uINbP6GxFiK@bender.morinfr.org>
+ <385d3516-95bb-4ff9-9d60-ac4e46104130@redhat.com>
+ <ZiwGovSHiVCF7z6y@bender.morinfr.org>
+From: David Hildenbrand <david@redhat.com>
+Content-Language: en-US
+Autocrypt: addr=david@redhat.com; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat
+In-Reply-To: <ZiwGovSHiVCF7z6y@bender.morinfr.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Thu, Apr 25, 2024 at 11:34=E2=80=AFAM Ruidong Tian
-<tianruidong@linux.alibaba.com> wrote:
->
-> ACPICA commit ebb49799c78891cbe370f1264844664a3d8b6f35
->
-> AEST V2 was published[1], add V2 support based on AEST V1.
->
-> [1]: https://developer.arm.com/documentation/den0085/latest/
->
-> Link: https://github.com/acpica/acpica/commit/ebb4979
-> Signed-off-by: Ruidong Tian <tianruidong@linux.alibaba.com>
-> ---
->  include/acpi/actbl2.h | 88 ++++++++++++++++++++++++++++++++++++++++---
->  1 file changed, 82 insertions(+), 6 deletions(-)
->
-> diff --git a/include/acpi/actbl2.h b/include/acpi/actbl2.h
-> index 007cfdfd5d29..ae747c89d92c 100644
-> --- a/include/acpi/actbl2.h
-> +++ b/include/acpi/actbl2.h
-> @@ -78,8 +78,8 @@
->   *
->   * AEST - Arm Error Source Table
->   *
-> - * Conforms to: ACPI for the Armv8 RAS Extensions 1.1 Platform Design Do=
-cument
-> - * September 2020.
-> + * Conforms to: ACPI for the Armv8 RAS Extensions 1.1(Sep 2020) and
-> + * 2.0(May 2023) Platform Design Document.
->   *
->   ***********************************************************************=
-*******/
->
-> @@ -109,7 +109,9 @@ struct acpi_aest_hdr {
->  #define ACPI_AEST_SMMU_ERROR_NODE           2
->  #define ACPI_AEST_VENDOR_ERROR_NODE         3
->  #define ACPI_AEST_GIC_ERROR_NODE            4
-> -#define ACPI_AEST_NODE_TYPE_RESERVED        5  /* 5 and above are reserv=
-ed */
-> +#define ACPI_AEST_PCIE_ERROR_NODE           5
-> +#define ACPI_AEST_PROXY_ERROR_NODE          6
-> +#define ACPI_AEST_NODE_TYPE_RESERVED        7 /* 7 and above are reserve=
-d */
->
->  /*
->   * AEST subtables (Error nodes)
-> @@ -188,6 +190,12 @@ typedef struct acpi_aest_vendor {
->
->  } acpi_aest_vendor;
->
-> +struct acpi_aest_vendor_v2 {
-> +       char acpi_hid[8];
-> +       u32 acpi_uid;
-> +       u8 vendor_specific_data[16];
-> +};
-> +
->  /* 4: Gic Error */
->
->  typedef struct acpi_aest_gic {
-> @@ -204,6 +212,18 @@ typedef struct acpi_aest_gic {
->  #define ACPI_AEST_GIC_ITS                   3
->  #define ACPI_AEST_GIC_RESERVED              4  /* 4 and above are reserv=
-ed */
->
-> +/* 5: PCIe Error */
-> +
-> +struct acpi_aest_pcie {
-> +       u32 iort_node_reference;
-> +};
-> +
-> +/* 6: Proxy Error */
-> +
-> +struct acpi_aest_proxy {
-> +       u64 node_address;
-> +};
-> +
->  /* Node Interface Structure */
->
->  typedef struct acpi_aest_node_interface {
-> @@ -219,11 +239,57 @@ typedef struct acpi_aest_node_interface {
->
->  } acpi_aest_node_interface;
->
-> +/* Node Interface Structure V2 */
-> +
-> +struct acpi_aest_node_interface_header {
-> +       u8 type;
-> +       u8 group_format;
-> +       u8 reserved[2];
-> +       u32 flags;
-> +       u64 address;
-> +       u32 error_record_index;
-> +       u32 error_record_count;
-> +};
-> +
-> +#define ACPI_AEST_NODE_GROUP_FORMAT_4K          0
-> +#define ACPI_AEST_NODE_GROUP_FORMAT_16K         1
-> +#define ACPI_AEST_NODE_GROUP_FORMAT_64K         2
-> +
-> +struct acpi_aest_node_interface_common {
-> +       u32 error_node_device;
-> +       u32 processor_affinity;
-> +       u64 error_group_register_base;
-> +       u64 fault_inject_register_base;
-> +       u64 interrupt_config_register_base;
-> +};
-> +
-> +struct acpi_aest_node_interface_4k {
-> +       u64 error_record_implemented;
-> +       u64 error_status_reporting;
-> +       u64 addressing_mode;
-> +       struct acpi_aest_node_interface_common common;
-> +};
-> +
-> +struct acpi_aest_node_interface_16k {
-> +       u64 error_record_implemented[4];
-> +       u64 error_status_reporting[4];
-> +       u64 addressing_mode[4];
-> +       struct acpi_aest_node_interface_common common;
-> +};
-> +
-> +struct acpi_aest_node_interface_64k {
-> +       u64 error_record_implemented[14];
-> +       u64 error_status_reporting[14];
-> +       u64 addressing_mode[14];
-> +       struct acpi_aest_node_interface_common common;
-> +};
-> +
->  /* Values for Type field above */
->
-> -#define ACPI_AEST_NODE_SYSTEM_REGISTER      0
-> -#define ACPI_AEST_NODE_MEMORY_MAPPED        1
-> -#define ACPI_AEST_XFACE_RESERVED            2  /* 2 and above are reserv=
-ed */
-> +#define ACPI_AEST_NODE_SYSTEM_REGISTER                 0
-> +#define ACPI_AEST_NODE_MEMORY_MAPPED                   1
-> +#define ACPI_AEST_NODE_SINGLE_RECORD_MEMORY_MAPPED     2
-> +#define ACPI_AEST_XFACE_RESERVED                       3   /* 2 and abov=
-e are reserved */
->
->  /* Node Interrupt Structure */
->
-> @@ -237,6 +303,16 @@ typedef struct acpi_aest_node_interrupt {
->
->  } acpi_aest_node_interrupt;
->
-> +/* Node Interrupt Structure V2 */
-> +
-> +struct acpi_aest_node_interrupt_v2 {
-> +       u8 type;
-> +       u8 reserved[2];
-> +       u8 flags;
-> +       u32 gsiv;
-> +       u8 reserved1[4];
-> +};
-> +
->  /* Values for Type field above */
->
->  #define ACPI_AEST_NODE_FAULT_HANDLING       0
-> --
+On 26.04.24 21:55, Guillaume Morin wrote:
+> On 26 Apr  9:19, David Hildenbrand wrote:
+>> A couple of points:
+>>
+>> a) Don't use page_mapcount(). Either folio_mapcount(), but likely you want
+>> to check PageAnonExclusive.
+>>
+>> b) If you're not following the can_follow_write_pte/_pmd model, you are
+>> doing something wrong :)
+>>
+>> c) The code was heavily changed in mm/mm-unstable. It was merged with t
+>> the common code.
+>>
+>> Likely, in mm/mm-unstable, the existing can_follow_write_pte and
+>> can_follow_write_pmd checks will already cover what you want in most cases.
+>>
+>> We'd need a can_follow_write_pud() to cover follow_huge_pud() and
+>> (unfortunately) something to handle follow_hugepd() as well similarly.
+>>
+>> Copy-pasting what we do in can_follow_write_pte() and adjusting for
+>> different PTE types is the right thing to do. Maybe now it's time to factor
+>> out the common checks into a separate helper.
+> 
+> I tried to get the hugepd stuff right but this was the first I heard
+> about it :-) Afaict follow_huge_pmd and friends were already DTRT
 
-Applied as 6.10 material, thanks!
+I'll have to have a closer look at some details (the hugepd writability 
+check looks a bit odd), but it's mostly what I would have expected!
+
+-- 
+Cheers,
+
+David / dhildenb
+
 
