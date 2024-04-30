@@ -1,224 +1,108 @@
-Return-Path: <linux-kernel+bounces-163462-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-163463-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1E90B8B6B65
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 09:26:47 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8328B8B6B97
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 09:27:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9CB611F22A93
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 07:26:46 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8CD90B21AEE
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 07:27:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8BB3631A8F;
-	Tue, 30 Apr 2024 07:26:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD9883AC2B;
+	Tue, 30 Apr 2024 07:27:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="h4abnvZ+"
-Received: from mail-lj1-f178.google.com (mail-lj1-f178.google.com [209.85.208.178])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="s1MT00pc"
+Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 642E1374E3
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 07:26:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D3EB38396
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 07:27:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714461991; cv=none; b=bsO0ZDM5RUBuWez2Vkn7DJsX6DP1lNpwBAfU9231bf5m8QYbwHLLUuHNO68CaVSgniReTCfwJkN4TLcquVBve/S9YfohUpHe3g0OL+5HeiDzsia1vwHaFJ+SYhSK87FjRE76m0yvjBWcrkGiBraM/W8gahlUVgADm6xTd1qTLVk=
+	t=1714462063; cv=none; b=Ewq73NadZlY/r6pZCbRd18QU1s/KVBePLaBTSRjv30KZNHCsi9P5y2ePpHCjZfsdxcnDDgDsqts4XPChl8MITL42Nni0NKFm1csr+/zh19qDec0FveD6dQ22Z7PEXlqnszGgKwLFNZU3LFhrs91Hd7l7uB3BI7/Jh/VdB/AsKng=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714461991; c=relaxed/simple;
-	bh=uebO/s6LVxhG0opGGRAkrg4m1oP1SCiyjdL2AO+Foz0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=jIJZQ7RtauA1zuCQdnC8r2YG0XMxhSdxyBgSoy7W95Cddo26KeQ1KEYJ5hUTFFOQDg+8lg6wtxesFLQndrkPmZH/EQ4vagjjHrW8pHl4NouSrCWo7xl1bW46+X++W3v0EWTOifsz1aQW77Zq5t+c+YIw9wCv6cq7Sx4tPlnH+XM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=h4abnvZ+; arc=none smtp.client-ip=209.85.208.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
-Received: by mail-lj1-f178.google.com with SMTP id 38308e7fff4ca-2db239711ebso13031421fa.1
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 00:26:29 -0700 (PDT)
+	s=arc-20240116; t=1714462063; c=relaxed/simple;
+	bh=M/hzeBG6OaWFku1EhbZX7s3qNTyz1PRn42pLoTcmWto=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=RyobcFTF0TSFcnkVjgRyoAQspCX8KH6XfSAC5X/wfsQjUPAgDcW6sNNTYlMsM/OiCHsDpdkE/K59nkdJqAXyHfFBXRcPPbhGlwNAJWTCEP4V92DJDFZoMwcBOSlR7q7DyakHvtuhHVpVDg5stTPxfrCkKfQXU1EMqFvCvoOpbLg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=s1MT00pc; arc=none smtp.client-ip=209.85.128.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-41b794510cdso33735235e9.2
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 00:27:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1714461987; x=1715066787; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=WvyI3HdmRjoW+CLhdf/TdUb0HyFLPhU7rZbG7Bu9wO4=;
-        b=h4abnvZ+UUUPUnNEAfn90fnbQ2jU1Sh26JF+QCyw2vxc4+gdfjUuTu06iUDBjBls4J
-         T+CASH33Vcc5t10yBvPN9X7HJrWeQaGdbr1V39fT/NssMr9wfxp0lTsHGdDiU6MkEqSX
-         WHb/Eo4hn5zZoR87hzMRyWWvxhaHG8EhUSy5OaTG9dk5fg+Z3w3kz4yvMp8mSEEFAbaD
-         2O2fqTISYo7tfenKIPubJh+bOq/DAfUs87h2MItFR/kphebbJtnGVoKSLcZBC0SH5YEj
-         P3cJje/DlRZMGiqoM7GKZJSRi9nBXy7cz/W6R4VN1xdStEGuR5tUN1QYpUn8zjol7Oeg
-         f0Jg==
+        d=linaro.org; s=google; t=1714462060; x=1715066860; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=M/hzeBG6OaWFku1EhbZX7s3qNTyz1PRn42pLoTcmWto=;
+        b=s1MT00pcoO+R7Nh739Qy/1BS9/63srFTbpyrg6LS9cNS01v184tbOlOYoSHYSw8efP
+         7trOc1aJhQu34eUEhvv8z/ihYcBEBIuE6iTftT1q5KaShTTnYc0o0jvprkIFemnJmQ51
+         pintOQivJd1ZZ+n3xq/tyX9/Sm9cdMU+hXSBN/6nwH+0lRgDiBK5sW1m/VbzGvu79tPj
+         vNa1e5tazlw4B61L+ardquVeETIGxHx278JICFnsaj60V0WgsBKXZAwgvF5choMfxcgd
+         wowJKQIZJDjMsBYvgKKMBhovajrGOktNXy9eF0LGgH3Vm19gJj1A/d6yJyMGeW6QGnbd
+         1/qg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714461987; x=1715066787;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=WvyI3HdmRjoW+CLhdf/TdUb0HyFLPhU7rZbG7Bu9wO4=;
-        b=bSEJXcXUP2MQLnDEjWUFtZ89veFWqmIuz5q66lcRtEDRTNWM1iGdB+rBMadcZXMw2n
-         SKbw/m9/p53AbwxOFIhgDCdJeDtPQUcrSiXSruKDAD+GpyU8oiA1SFYtVZ1YoTuL8VM+
-         29jaqOBGUj9jgTxKkxzePTmc8ihBuro2Hic5spyAwRw3uahyrcXe+HZr4hTwi2RFbJuo
-         zKL05Lgyb2XkObGKUoPntxH95NyhYNXbAZwBGqmQmCfcHJuXT5Nm7tG+MH3hJ4v+rIpH
-         nEMreocHP12hO/ZveUgAE78ernPO7v873PlfzQcVThzN2nYsJLqbs3oJKNTYFl/47T1R
-         4MXA==
-X-Forwarded-Encrypted: i=1; AJvYcCU0Ni5ZUSEJBNm0Ua6fx+dJNqUIwQ+OPcW8xa234qaQS9eiVVbbbIvgds/mA5aygf/glhM2wq/uJM1XLTJ6N8+d70aOeaIYiYeZuvKT
-X-Gm-Message-State: AOJu0YzoVLjTWAD/HC+MQYLk0c23UOH72E7SGuKNJPb0HZ2lvbZtePnz
-	vvcZ8pXfUD+ZiV3YeZg/mJD0UmCVPxz5qbJGG8BJbNlRm/R2tfEhqXMwVoE7Ef0=
-X-Google-Smtp-Source: AGHT+IF2/6JmkhuEesT0rXrPHpRH7kD8BY37pMN1aCWhBwhe5bjgiO3RpG2IZ9ZZSdnOrjhKRv7i/A==
-X-Received: by 2002:a2e:9254:0:b0:2dd:374d:724e with SMTP id v20-20020a2e9254000000b002dd374d724emr7481828ljg.1.1714461987258;
-        Tue, 30 Apr 2024 00:26:27 -0700 (PDT)
-Received: from ?IPV6:2a01:e0a:999:a3a0:c21b:67fd:90ab:9053? ([2a01:e0a:999:a3a0:c21b:67fd:90ab:9053])
-        by smtp.gmail.com with ESMTPSA id r7-20020a05600c35c700b0041bff91ea43sm9651380wmq.37.2024.04.30.00.26.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 30 Apr 2024 00:26:26 -0700 (PDT)
-Message-ID: <99d3eabc-0289-4ace-90a8-ad02dbffd6d2@rivosinc.com>
-Date: Tue, 30 Apr 2024 09:26:24 +0200
+        d=1e100.net; s=20230601; t=1714462060; x=1715066860;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=M/hzeBG6OaWFku1EhbZX7s3qNTyz1PRn42pLoTcmWto=;
+        b=Yt7qMB25EtdbME1vCoMUV42weO9pX5g6FF9DoQP45SfcSkntZWwHsinIEeClXMUowf
+         57q8m4aWj4PFG0n+kCfyeXQyVtrV0qurOpCcI3OlSCKbwfOzVk7/pMbi5twfu6TlUdoW
+         8Aby8yX0j8dHCQPeeSsWbwTcrYxVeiL63Q23e4zYIRL4EIf4Z5BbNg/tqd6OIvy2rovj
+         tDkjuhvNJOzccmycWr9JzDoCe64gTGRocJPqIuTSgNPIlN6oinjppt1f8p3Fs8+dXpsn
+         SRdcShux8bcY2+t/DnhRHW7Ny8KzVrhXIlSS1fYrEBhEWjO5Sh4uErcKKenAoAVcp+xh
+         Rygg==
+X-Forwarded-Encrypted: i=1; AJvYcCX20k2aLPyjAZmRYSIgXOkG6x4tul+jjCSoPIXx2JnDe/hrGQ3iHzoo1XaUmdqzBQWO3tGT7N+tqGziW1Y7Qlfy4/nVB0FibauzChCP
+X-Gm-Message-State: AOJu0YwVq8e69A5zIXrXG7CJlNtARkEacsyMrpVpknDYqLdU611vJ3E0
+	LMuYY5ueEenrQ7BHbLn3vG5tP0gWIdnwLrw8HtPKjWitkw+sJp9/MwN/jPou0MI=
+X-Google-Smtp-Source: AGHT+IFIu1343enMW9iVavH8FHdSsBD2PkgGl/FjmA/oRCmHYmy2D2AwHMnE6E9debZFQIezWJDQ9w==
+X-Received: by 2002:a05:600c:3b23:b0:41b:edf4:4077 with SMTP id m35-20020a05600c3b2300b0041bedf44077mr1218130wms.36.1714462060021;
+        Tue, 30 Apr 2024 00:27:40 -0700 (PDT)
+Received: from [10.1.1.109] ([80.111.64.44])
+        by smtp.gmail.com with ESMTPSA id n7-20020a05600c500700b0041bc412899fsm12666330wmr.42.2024.04.30.00.27.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 30 Apr 2024 00:27:39 -0700 (PDT)
+Message-ID: <5da47eb853c0acbb6111d6d885cddb475e857236.camel@linaro.org>
+Subject: Re: [PATCH] pinctrl: samsung: drop redundant drvdata assignment
+From: =?ISO-8859-1?Q?Andr=E9?= Draszik <andre.draszik@linaro.org>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, Krzysztof
+ Kozlowski <krzk@kernel.org>, Sylwester Nawrocki <s.nawrocki@samsung.com>,
+ Alim Akhtar <alim.akhtar@samsung.com>, Linus Walleij
+ <linus.walleij@linaro.org>,  linux-arm-kernel@lists.infradead.org,
+ linux-samsung-soc@vger.kernel.org,  linux-gpio@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Cc: kernel test robot <lkp@intel.com>
+Date: Tue, 30 Apr 2024 08:27:37 +0100
+In-Reply-To: <20240430060304.12332-1-krzysztof.kozlowski@linaro.org>
+References: <20240430060304.12332-1-krzysztof.kozlowski@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.3-1 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH 1/7] riscv: kvm: add support for FWFT SBI extension
-To: Deepak Gupta <debug@rivosinc.com>
-Cc: Conor Dooley <conor@kernel.org>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt
- <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
- Anup Patel <anup@brainfault.org>, Atish Patra <atishp@atishpatra.org>,
- linux-riscv@lists.infradead.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
- kvm-riscv@lists.infradead.org, Ved Shanbhogue <ved@rivosinc.com>
-References: <20240418142701.1493091-1-cleger@rivosinc.com>
- <20240418142701.1493091-2-cleger@rivosinc.com>
- <Ziw8c0X0K3mXjJWK@debug.ba.rivosinc.com>
-Content-Language: en-US
-From: =?UTF-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <cleger@rivosinc.com>
-In-Reply-To: <Ziw8c0X0K3mXjJWK@debug.ba.rivosinc.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
 
+On Tue, 2024-04-30 at 08:03 +0200, Krzysztof Kozlowski wrote:
+> Fix W=3D1 warning:
+>=20
+> =C2=A0 drivers/pinctrl/samsung/pinctrl-samsung.c: In function =E2=80=98sa=
+msung_gpio_set_direction=E2=80=99:
+> =C2=A0 drivers/pinctrl/samsung/pinctrl-samsung.c:633:42: warning: variabl=
+e =E2=80=98drvdata=E2=80=99 set but not used [-Wunused-but-set-variable]
+>=20
+> Fixes: f9c744747973 ("pinctrl: samsung: support a bus clock")
+> Reported-by: kernel test robot <lkp@intel.com>
+> Closes: https://lore.kernel.org/oe-kbuild-all/202404300825.6lxLwvUY-lkp@i=
+ntel.com/
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
+Reviewed-by: Andr=C3=A9 Draszik <andre.draszik@linaro.org>
 
-On 27/04/2024 01:44, Deepak Gupta wrote:
-> On Thu, Apr 18, 2024 at 04:26:40PM +0200, Clément Léger wrote:
->> Add support for FWFT extension in KVM
->>
->> Signed-off-by: Clément Léger <cleger@rivosinc.com>
->> ---
->> arch/riscv/include/asm/kvm_host.h          |   5 +
->> arch/riscv/include/asm/kvm_vcpu_sbi.h      |   1 +
->> arch/riscv/include/asm/kvm_vcpu_sbi_fwft.h |  37 ++++++
->> arch/riscv/include/uapi/asm/kvm.h          |   1 +
->> arch/riscv/kvm/Makefile                    |   1 +
->> arch/riscv/kvm/vcpu.c                      |   5 +
->> arch/riscv/kvm/vcpu_sbi.c                  |   4 +
->> arch/riscv/kvm/vcpu_sbi_fwft.c             | 136 +++++++++++++++++++++
->> 8 files changed, 190 insertions(+)
->> create mode 100644 arch/riscv/include/asm/kvm_vcpu_sbi_fwft.h
->> create mode 100644 arch/riscv/kvm/vcpu_sbi_fwft.c
->>
->> diff --git a/arch/riscv/include/asm/kvm_host.h
->> b/arch/riscv/include/asm/kvm_host.h
->> index 484d04a92fa6..be60aaa07f57 100644
->> --- a/arch/riscv/include/asm/kvm_host.h
->> +++ b/arch/riscv/include/asm/kvm_host.h
->> @@ -19,6 +19,7 @@
->> #include <asm/kvm_vcpu_fp.h>
->> #include <asm/kvm_vcpu_insn.h>
->> #include <asm/kvm_vcpu_sbi.h>
->> +#include <asm/kvm_vcpu_sbi_fwft.h>
->> #include <asm/kvm_vcpu_timer.h>
->> #include <asm/kvm_vcpu_pmu.h>
->>
->> @@ -169,6 +170,7 @@ struct kvm_vcpu_csr {
->> struct kvm_vcpu_config {
->>     u64 henvcfg;
->>     u64 hstateen0;
->> +    u64 hedeleg;
->> };
->>
->> struct kvm_vcpu_smstateen_csr {
->> @@ -261,6 +263,9 @@ struct kvm_vcpu_arch {
->>     /* Performance monitoring context */
->>     struct kvm_pmu pmu_context;
->>
->> +    /* Firmware feature SBI extension context */
->> +    struct kvm_sbi_fwft fwft_context;
->> +
->>     /* 'static' configurations which are set only once */
->>     struct kvm_vcpu_config cfg;
->>
->> diff --git a/arch/riscv/include/asm/kvm_vcpu_sbi.h
->> b/arch/riscv/include/asm/kvm_vcpu_sbi.h
->> index b96705258cf9..3a33bbacc233 100644
->> --- a/arch/riscv/include/asm/kvm_vcpu_sbi.h
->> +++ b/arch/riscv/include/asm/kvm_vcpu_sbi.h
->> @@ -86,6 +86,7 @@ extern const struct kvm_vcpu_sbi_extension
->> vcpu_sbi_ext_srst;
->> extern const struct kvm_vcpu_sbi_extension vcpu_sbi_ext_hsm;
->> extern const struct kvm_vcpu_sbi_extension vcpu_sbi_ext_dbcn;
->> extern const struct kvm_vcpu_sbi_extension vcpu_sbi_ext_sta;
->> +extern const struct kvm_vcpu_sbi_extension vcpu_sbi_ext_fwft;
->> extern const struct kvm_vcpu_sbi_extension vcpu_sbi_ext_experimental;
->> extern const struct kvm_vcpu_sbi_extension vcpu_sbi_ext_vendor;
->>
->> diff --git a/arch/riscv/include/asm/kvm_vcpu_sbi_fwft.h
->> b/arch/riscv/include/asm/kvm_vcpu_sbi_fwft.h
->> new file mode 100644
->> index 000000000000..7dc1b80c7e6c
->> --- /dev/null
->> +++ b/arch/riscv/include/asm/kvm_vcpu_sbi_fwft.h
->> @@ -0,0 +1,37 @@
->> +/* SPDX-License-Identifier: GPL-2.0-only */
->> +/*
->> + * Copyright (c) 2023 Rivos Inc
->> + *
->> + * Authors:
->> + *     Atish Patra <atishp@rivosinc.com>
-> 
-> nit: probably need to fix Copyright year and Authors here :-)
-> Same in all new files being introduced.
-> 
->> + */
->> +
->> +#ifndef __KVM_VCPU_RISCV_FWFT_H
->> +#define __KVM_VCPU_RISCV_FWFT_H
->> +
->> +#include <asm/sbi.h>
->> +
->> +#define KVM_SBI_FWFT_FEATURE_COUNT    1
->> +
->> +static int kvm_sbi_fwft_set(struct kvm_vcpu *vcpu,
->> +                enum sbi_fwft_feature_t feature,
->> +                unsigned long value, unsigned long flags)
->> +{
->> +    struct kvm_sbi_fwft_config *conf = kvm_sbi_fwft_get_config(vcpu,
->> +                                   feature);
->> +    if (!conf)
->> +        return SBI_ERR_DENIED;
-> 
-> Curious,
-> Why denied and not something like NOT_SUPPORTED NOT_AVAILABLE here?
-
-Hey Deepak,
-
-So indeed, the return value is not totally correct since the spec states
-that we return  EDENIED if feature is reserved or is platform-specific
-and unimplemented. But in that case it dos not distinguish between
-defined features and reserved one. I'll add a check for that.
-
-Thanks,
-
-Clément
-
-> 
->> +
->> +    if ((flags & ~SBI_FWFT_SET_FLAG_LOCK) != 0)
->> +        return SBI_ERR_INVALID_PARAM;
->> +
->> +    if (conf->flags & SBI_FWFT_SET_FLAG_LOCK)
->> +        return SBI_ERR_DENIED;
->> +
->> +    conf->flags = flags;
->> +
->> +    return conf->feature->set(vcpu, conf, value);
->> +}
->> +
 
