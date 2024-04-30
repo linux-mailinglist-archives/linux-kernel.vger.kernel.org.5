@@ -1,105 +1,120 @@
-Return-Path: <linux-kernel+bounces-163275-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-163276-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6E74B8B6813
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 04:53:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id D4C118B6816
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 04:53:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 98B0DB221D2
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 02:53:30 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 14430B22D60
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 02:53:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD5F9DDC1;
-	Tue, 30 Apr 2024 02:53:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3BBC510A36;
+	Tue, 30 Apr 2024 02:53:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="s2Ve/dkz"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ielezc6m"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0165D2EE;
-	Tue, 30 Apr 2024 02:53:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7635310799;
+	Tue, 30 Apr 2024 02:53:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714445601; cv=none; b=Nc3k2plgG6ypbMdM+eFjV6nOM7VfO2H4H0PWQhYRRec3hi2MdsWM+C475nsRkB8OkHZTk/SaW94J5KXcQrKRpP8SBzBeHrSQyETb+xnjwd1cSNcnjZGaDgZMP4nHVwCB36qbU89ksW0pDzq+8dULoSBaj5xNXIVHpwzhX3c5qn0=
+	t=1714445606; cv=none; b=I5UnhZJ3f39hJF4s4OjtYQOM0pPfHSjoDg2u+ZSv5yWGah0eAwYqBjq3G4cL7TcXDFLFw8DodkY5s9oiAGkLjOGjmCQMne7Yud4CseJjRatN47jA5/LCrBaED8MaKje+A4T4xRFSON3hbbCjFAz7wEXoFHTGRvn/LzZhdrjCySk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714445601; c=relaxed/simple;
-	bh=ZbwdDaroTdo1GXJdazAaqQwp1j9mDh2nFYYMy1dOxZY=;
+	s=arc-20240116; t=1714445606; c=relaxed/simple;
+	bh=LkqUxMJI3hQBY2Q9vRftthMS6Eg5NaoMzQyUOIwrhYI=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=jdb/GUvAMg33ZGXb2zeJcGgKaRVDPe0c0RBiCgIAdttu2OcRgausJtDg8gmNqQ0RQNa/HXG2Evp1U3EkxSuOvIMy/RPSoXAPcX8GbTdIkQtdy21D8Y2V9GrzKLejgolOriIjhmATA1n7DN+NOYkXbGaT9pY3O/ko7sOuvRrjJvU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=s2Ve/dkz; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 13B59C116B1;
-	Tue, 30 Apr 2024 02:53:19 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=BBd/+81q3pHz6FfsYvaM6/BhKDd2VyoB+88zepAYNWFtQlSmQuyr/+LDsIBybe51abT/P2WQrb2KV7UlwYJ0Hztq6Gpt0UODttlWYrELDXNQ/idLZc0sdpaxdeAOf/HGyjpeAudYxBLVys7UQMUsbRv7tb+E45LDZiTOkuK8bG0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ielezc6m; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 128CDC116B1;
+	Tue, 30 Apr 2024 02:53:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714445600;
-	bh=ZbwdDaroTdo1GXJdazAaqQwp1j9mDh2nFYYMy1dOxZY=;
+	s=k20201202; t=1714445606;
+	bh=LkqUxMJI3hQBY2Q9vRftthMS6Eg5NaoMzQyUOIwrhYI=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=s2Ve/dkzHaZytY/7ZZi+2NJbXD1Qee6O59sRdhbrzt3zuAQ+AESp1ngA4+yvM1aA9
-	 zJ/0FjGDr5IgGfo3qXJ6C42rZMKYl5UTpaJPpXxuO7iOfZoFP+oiqRJ0AHu/RmjizF
-	 mqJSg8omO2zIPo4DLIUU9Qt7M1OFeJEaNfDN4GXlivAtNdfWE24mHue9oFm8IGhFJi
-	 ZQIj167hQfOdkVlaVLxpF73ZapXS1kDtU3OX2FJ2mUQ5Tzrr3U3ASTkB90bgtIrXRt
-	 FFIusSV0zUHIGy2dY7saGMrnzF+tRivpjkX9bDFTZC+niSqw70vRhn6kJbbzXbMPd2
-	 Y8jlW/fpZapAw==
-Date: Tue, 30 Apr 2024 11:53:17 +0900
-From: Mark Brown <broonie@kernel.org>
-To: "zoie.lin" <zoie.lin@mediatek.com>
-Cc: Bartosz Golaszewski <brgl@bgdev.pl>, Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzk+dt@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Matthias Brugger <matthias.bgg@gmail.com>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-	linux-i2c@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-mediatek@lists.infradead.org,
-	Project_Global_Chrome_Upstream_Group@mediatek.com
-Subject: Re: [PATCH 1/3] misc: eeprom: at24: add optional dovdd-supply
-Message-ID: <ZjBdHdVUW9Q67nAC@finisterre.sirena.org.uk>
-References: <20240426102949.23057-1-zoie.lin@mediatek.com>
- <20240426102949.23057-2-zoie.lin@mediatek.com>
+	b=Ielezc6mRJ+qBvuNkvcqe56A4U1h0nqbkw5Z6EAmADbrzdaIMyCBaFTu3N4OrrIsD
+	 Jy4a7cHO/mF184X1ZNfoL6gjA0ooDStmGv+hOEcq5TvitFawC/CNYXpDS6N+eWaLTi
+	 n5qbSB8trmbMeb4k3k5AKL4IZ1enSNv/bFfdbbJZAGzN2AhM3zy3rPcHmtS9rGDq1J
+	 SHb2ci8vtBgFm39lCmrdxprFFlURlEZEvTjl1jo9kcuYNaxcoKl6C/lzSThK3aWtC5
+	 ZsCkHWWlAXnJZ6sJUWpW12qrFLs+LK0nkubpMaIgryZxXGZmrLQvNrVp3pMrmRglcG
+	 ZdGVMCutN0JEw==
+Date: Mon, 29 Apr 2024 21:53:22 -0500
+From: Bjorn Andersson <andersson@kernel.org>
+To: Neil Armstrong <neil.armstrong@linaro.org>
+Cc: Konrad Dybcio <konrad.dybcio@linaro.org>, 
+	Vinod Koul <vkoul@kernel.org>, Kishon Vijay Abraham I <kishon@kernel.org>, 
+	Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+	Conor Dooley <conor+dt@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>, 
+	linux-arm-msm@vger.kernel.org, linux-phy@lists.infradead.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Subject: Re: [PATCH v4 1/3] arm64: dts: qcom: sm8450: remove
+ pcie-1-phy-aux-clk and add pcie1_phy pcie1_phy_aux_clk
+Message-ID: <ugqukizt7eclhtgogizrzbxjie4s6x746voajn2ivxhtwid3tu@pzezgwy3jcsj>
+References: <20240422-topic-sm8x50-upstream-pcie-1-phy-aux-clk-v4-0-868b15a17a45@linaro.org>
+ <20240422-topic-sm8x50-upstream-pcie-1-phy-aux-clk-v4-1-868b15a17a45@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="ZIh+FzWuFnJR7Nbu"
-Content-Disposition: inline
-In-Reply-To: <20240426102949.23057-2-zoie.lin@mediatek.com>
-X-Cookie: lisp, v.:
-
-
---ZIh+FzWuFnJR7Nbu
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20240422-topic-sm8x50-upstream-pcie-1-phy-aux-clk-v4-1-868b15a17a45@linaro.org>
 
-On Fri, Apr 26, 2024 at 06:29:47PM +0800, zoie.lin wrote:
-> From: Zoie Lin <zoie.lin@mediatek.com>
->=20
-> Incorporate support for the dovdd regulator, which supplies an
-> additional power source to the EEPROM.
+On Mon, Apr 22, 2024 at 06:16:18PM GMT, Neil Armstrong wrote:
+> Remove the dummy pcie-1-phy-aux-clk clock and replace with the pcie1_phy
+> provided QMP_PCIE_PHY_AUX_CLK.
+> 
 
-It would be helpful if you could supply some additional information
-about what this supply is, why we can't tell if it's supposed to be
-there or not and so on.
+This looks applicable to the other two patches, but I don't see the
+pcie-1-phy-aux-clk being removed in this patch.
 
---ZIh+FzWuFnJR7Nbu
-Content-Type: application/pgp-signature; name="signature.asc"
+Furthermore, the cover letter does not make it into the git history,
+which results in rather lacking documentation on the reasoning for the
+change.
 
------BEGIN PGP SIGNATURE-----
+Can you please update the three commit messages?
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmYwXRcACgkQJNaLcl1U
-h9BeJgf+KQ2qScakBicm2lPxwrL7sUMR4q3n03ty2aFii2oaAjfWmx3n7bfbHQB3
-rMAz8iACiz36eaQsR0IYeuKcsSXCjgp8QQhqXU5nj3+8cvAn7G2gSYn9+EODx3Mr
-n3ZCoDJxzcnuwpjuEKHuo7tFlD+kPRwmuc3z8TEowNosa5KpMUna/qvTk0z4ETIP
-AERQFdjEyZVDV7EXjPAMBLt24M33PKPljlE0E/8jpOHCYsWg4zaWXae3zyvCOFoy
-vD3NFlQ4eb+ITlUkRuaYwmFAAsvjiOwyM31/CeeIA3any2ybfk6S0e2yB8sGzQe7
-HuMkGpgeXsfHaA3g0KANZ3jndjKC4A==
-=Oyc6
------END PGP SIGNATURE-----
+Regards,
+Bjorn
 
---ZIh+FzWuFnJR7Nbu--
+> Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+> Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
+> ---
+>  arch/arm64/boot/dts/qcom/sm8450.dtsi | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
+> 
+> diff --git a/arch/arm64/boot/dts/qcom/sm8450.dtsi b/arch/arm64/boot/dts/qcom/sm8450.dtsi
+> index 616461fcbab9..71797f337d19 100644
+> --- a/arch/arm64/boot/dts/qcom/sm8450.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sm8450.dtsi
+> @@ -754,8 +754,8 @@ gcc: clock-controller@100000 {
+>  			clocks = <&rpmhcc RPMH_CXO_CLK>,
+>  				 <&sleep_clk>,
+>  				 <&pcie0_phy>,
+> -				 <&pcie1_phy>,
+> -				 <0>,
+> +				 <&pcie1_phy QMP_PCIE_PIPE_CLK>,
+> +				 <&pcie1_phy QMP_PCIE_PHY_AUX_CLK>,
+>  				 <&ufs_mem_phy 0>,
+>  				 <&ufs_mem_phy 1>,
+>  				 <&ufs_mem_phy 2>,
+> @@ -2000,8 +2000,8 @@ pcie1_phy: phy@1c0e000 {
+>  				      "rchng",
+>  				      "pipe";
+>  
+> -			clock-output-names = "pcie_1_pipe_clk";
+> -			#clock-cells = <0>;
+> +			clock-output-names = "pcie_1_pipe_clk", "pcie_1_phy_aux_clk";
+> +			#clock-cells = <1>;
+>  
+>  			#phy-cells = <0>;
+>  
+> 
+> -- 
+> 2.34.1
+> 
 
