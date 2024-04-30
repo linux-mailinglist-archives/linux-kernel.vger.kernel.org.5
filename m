@@ -1,233 +1,104 @@
-Return-Path: <linux-kernel+bounces-164549-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-164550-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E04BC8B7F30
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 19:46:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4BCCC8B7F33
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 19:48:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0862C1C232E3
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 17:46:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7BE831C227AD
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 17:48:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3720F180A93;
-	Tue, 30 Apr 2024 17:46:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0416C180A93;
+	Tue, 30 Apr 2024 17:48:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="zEpKEwI2"
-Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="aNOhx/Da"
+Received: from mail-lf1-f44.google.com (mail-lf1-f44.google.com [209.85.167.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7EA7217BB16
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 17:46:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5CA61802DA;
+	Tue, 30 Apr 2024 17:48:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714499211; cv=none; b=PHlx74Gxy2sTYW3tAvov/XvySD6KwVYW10dcyiAjyPP8Jb2ifTKigntln3M8YF5Wo/v9OO8GiidzRNlBAiiYkdb9B0qybAiH1ttLw9EYVpO5I9zCBNry6VyMGlNenqmcIipkRxixN9w42eZOY/r1Rw0gNK9bXiW2MhCyvBqHMrA=
+	t=1714499284; cv=none; b=tobsWvpcMAqRlxpM3opMyZMqA0tAQ7wq7aezX9rkW6WlyxY2/AlsEXPCnfRjDNPYw0LucNAkk76tNu2MEHA9D4EN6HC05AH9hcVkLGlXHfDgbNMwwqTYA5ss7KkwKFV8/ZIFWpy9saZzdzW9FWUjb90rRHMxtHgAvsv8/6MvCpI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714499211; c=relaxed/simple;
-	bh=W6ac2L3mZw4udeI+hS8Q578eVio2S4J4DCWerOSFsdo=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=JguiRH9eAI5yGJ0qbMDYBoa39uQgakT78f0Iwy7vZoJb3CkhwD5pStyCm6BvIDj1p8kcLb9v1DSsayCdKyg6KiGAcIxTcecMR5UMypt25UkGhYAjfEZ9GnHnpy3bn30DjtIkeqpKNgOi/DNQsMGhFBGda3qYikS4fn2FLXnRc/0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=zEpKEwI2; arc=none smtp.client-ip=209.85.214.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-1ec182ab287so14435ad.1
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 10:46:48 -0700 (PDT)
+	s=arc-20240116; t=1714499284; c=relaxed/simple;
+	bh=hguz9e/uXlmV27IbGTzkIbjpFTvfznvOvHxVvt66hJI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=jm9xPUaezlDho1hdrYhqM7UJPd2/o2fKWSSAE67FThjhZ1qjbUw6+DoZW+y6T5HtwxHxS2gmRnwfGjzLHWrTku+BEcDnhySx2Bcou7X5ByMS3FxXnyzIBEWmEDzPOVX2l8kD4OIf4c9nXpFwc7eCUNp+iz5XIbd1/FOIM44IybA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=aNOhx/Da; arc=none smtp.client-ip=209.85.167.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f44.google.com with SMTP id 2adb3069b0e04-516d4d80d00so7621844e87.0;
+        Tue, 30 Apr 2024 10:48:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1714499208; x=1715104008; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1714499281; x=1715104081; darn=vger.kernel.org;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=xpKTfqnj3CRiS2xW53PmZnJhP8tb/+iKK2ylukjJ2nA=;
-        b=zEpKEwI2smD7gPPOnK+tKrCCnl/4RghSoWR3OFCfWC3IbvARhRSHh571bYPoXH80zQ
-         ocwcaAm+yAUtTjPbt+yCyGGkwV1T4Hc6AO07gJLw++RF4cMOzTMVGlm7M8Q8AvPZFQKo
-         2zCx01PHb4use5jQj1yPmM0BSL6uwdsSYYR9ToK9TWUfgXnr3O8NsdtclMjlzhLBjxGi
-         7Rdguk4ztbux3VHot+2t2jQj7uAROHuug6SoY0g609wa5c+4cmKv631vjl464n30A4KL
-         LOkLemGjL+5iFeE9IC1xAzZORZjyIzISSMz6DhgzLqC3xdX+743W6Q0U/E0r6Lbmxxkr
-         jZHw==
+        bh=pjanLQAoH5caJfTTxRxXaXQWVwYkN7FUId8LqRmIVpc=;
+        b=aNOhx/DavZB6CaB7pIwVImORiSjBL/8JJo/hiSex3ViIFFtNUZaptvV4ULshAHG6gV
+         cEYwbyL0IMsHa51rhx9AufJhNi+JAfxCSylSf63yO7uzEcDophDFg8T50QF4yt+sqNbX
+         pHjQ+bRsP7GtUXKVfTGYhCBgX+j0d6VwTqZPslaDgEMYUYN5R4jsmHLaVpPI5vskZtc8
+         GDnjQX7I44rvVU/OUgN63CWIr1s5PyKmp67R21A5d+PwTs8H5Bugw44w/frHVrzb6NKJ
+         NTBb8gdfwA2PjOopcaGwUlrGWMuGdV+ulnsHFxbXbQ+/NUwg1+M1LfREvq0Pf0BKyqQN
+         mSbA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714499208; x=1715104008;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1714499281; x=1715104081;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=xpKTfqnj3CRiS2xW53PmZnJhP8tb/+iKK2ylukjJ2nA=;
-        b=s1VWHGowwtDn3v4+PWD0XUDMOogPCbTh8A7EwOYHbCDtNiqIpp6mjiqZF7rPRnfNWR
-         I+Qp1zQrWTwTIAJyB3MtW2iRsKxzcGGrVbFFyxb8k8I21n9AvLjoaSXhYspERNRb9sin
-         ku9/Ag7zBMAUH0vGw2d9FCnflSpNHHaPNqRHlIHHFPKFWDYM/dLkPITs3uK7Pu2KmRMh
-         SsXQkdH1VLY6ALMk47I48nbDD+UH4lfBHIULc3EzmrqEjuujTQZGxVmI+6Gu3/iIeEa9
-         q5KsC8tK0O1l70D/2fL2FMj9konCYLFt5RGIP70SlpM9vTwaUNioK8Pku8xlIr3SI3qg
-         PNgw==
-X-Forwarded-Encrypted: i=1; AJvYcCUlfwoEWuNq82CdH8xfRnSgoZZTHmnIuPw2l0M6N/j03YBH20kZkwD7174tUoFDoeIaKsDJj6Q3saUa9lu6WNoib1HvEpjU65oIVeVr
-X-Gm-Message-State: AOJu0YyC2vfR5oLFhrie5spV8oH5G1thtMjFFX92jttcZCrVrXiFKbgs
-	WuXjVmAPnIpchoBH6W7j76eDiDBX+3ORhMBD7O3/aMwM6To7SbAYwg2BPj0b8vvn/h88ByXyibN
-	5npU8Yc2CfU5zziqWrfY1x5E3V8HU8SnfrIk7
-X-Google-Smtp-Source: AGHT+IFbyctZTE3ocM/KnKMqXJyAPzaowBmvVYTZB+Fm5ndNLyaw/qpXsJEGqTfrvOfbceanRdPBjgs69jnBlceSW7k=
-X-Received: by 2002:a17:902:f642:b0:1eb:7899:ada9 with SMTP id
- m2-20020a170902f64200b001eb7899ada9mr4738plg.26.1714499207555; Tue, 30 Apr
- 2024 10:46:47 -0700 (PDT)
+        bh=pjanLQAoH5caJfTTxRxXaXQWVwYkN7FUId8LqRmIVpc=;
+        b=NpL3SDG2Z18uFatIaxAcvw+HXShNvaM1wxtouYxmk1vG+nAGqoK36CLuHRblC/n10+
+         /LXLV3c2MB3d3lgkPXnHi9ghHRJzcXMb1RRKDggEB++LgGDjv3+LXJYG6Rpa4tb3174D
+         9ZBgdUSvj1Chjg2EEHTJKTKxV1wlHu1EcewmgF/IomrKv59MqK6DVplIRMJKclvWQA1w
+         DZ8528+G3V16OJ4pDuobVhIToJjLEDgIRNIdEgCqghUwWwSsFzFRkuKnRlXXk2t+mi5T
+         8fmTtyXqs2aGQ1+OejnYiAA5kBX8HTTvmnvbk5d5pjWDCCdevmwour3i/mh/Cl1fFCBi
+         QhGw==
+X-Forwarded-Encrypted: i=1; AJvYcCVflpsMjgUbNP5QyUwxh+rNjdlEe67Mh6tj2i8a4oKgsZWEMuSXBQkrXGjJEcSrrUkbbSfhnMri8X3bQlDRP5oD6iOAcWaO4UGLsv+gg0wJ
+X-Gm-Message-State: AOJu0Yxt4RqHiO8i82FQWwTT484W3jp/j4O3Ez1B77ttGNoac7jolmXf
+	3PovQOdJHoRt/cPfuvHFxYtsbcePN7C/lFkT//B73dl0PaCZSY9e
+X-Google-Smtp-Source: AGHT+IGdwXEMTB9ffl1/wAiKMLRD/khw6JQdBSwbAizdtmTf8a/vsN6L1Pwzuw6LjJpITj85iC99Yg==
+X-Received: by 2002:ac2:4ec8:0:b0:519:4f54:1ad4 with SMTP id p8-20020ac24ec8000000b005194f541ad4mr123491lfr.27.1714499280390;
+        Tue, 30 Apr 2024 10:48:00 -0700 (PDT)
+Received: from grain.localdomain ([5.18.255.97])
+        by smtp.gmail.com with ESMTPSA id er25-20020a05651248d900b0051d416e8437sm1200382lfb.68.2024.04.30.10.47.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 30 Apr 2024 10:48:00 -0700 (PDT)
+Received: by grain.localdomain (Postfix, from userid 1000)
+	id DFB775A018C; Tue, 30 Apr 2024 20:47:58 +0300 (MSK)
+Date: Tue, 30 Apr 2024 20:47:58 +0300
+From: Cyrill Gorcunov <gorcunov@gmail.com>
+To: Edward Liaw <edliaw@google.com>
+Cc: linux-kernel@vger.kernel.org, Shuah Khan <shuah@kernel.org>,
+	"Eric W. Biederman" <ebiederm@xmission.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	linux-kselftest@vger.kernel.org, kernel-team@android.com
+Subject: Re: [PATCH] selftests/kcmp: Remove unused open mode
+Message-ID: <ZjEuzoUMX1S19QGb@grain>
+References: <20240429234610.191144-1-edliaw@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240314063000.2139877-1-yangjihong@bytedance.com> <CAP-5=fV--O=QB8To+cbR=C06JzPqBFLFYTc1oh9gJZwBQ3BE=w@mail.gmail.com>
-In-Reply-To: <CAP-5=fV--O=QB8To+cbR=C06JzPqBFLFYTc1oh9gJZwBQ3BE=w@mail.gmail.com>
-From: Ian Rogers <irogers@google.com>
-Date: Tue, 30 Apr 2024 10:46:32 -0700
-Message-ID: <CAP-5=fXJAu8OO_Gaw45Hx3uq6N8VQBNFhqcUy3Zm2vKT-TDSOQ@mail.gmail.com>
-Subject: Re: [PATCH] perf build: Add LIBTRACEEVENT_DIR build option
-To: Yang Jihong <yangjihong@bytedance.com>, 
-	Linux Trace Devel <linux-trace-devel@vger.kernel.org>
-Cc: peterz@infradead.org, mingo@redhat.com, acme@kernel.org, 
-	namhyung@kernel.org, mark.rutland@arm.com, alexander.shishkin@linux.intel.com, 
-	jolsa@kernel.org, adrian.hunter@intel.com, linux-perf-users@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240429234610.191144-1-edliaw@google.com>
+User-Agent: Mutt/2.2.12 (2023-09-09)
 
-On Sat, Mar 23, 2024 at 12:07=E2=80=AFPM Ian Rogers <irogers@google.com> wr=
-ote:
->
-> On Wed, Mar 13, 2024 at 11:30=E2=80=AFPM Yang Jihong <yangjihong@bytedanc=
-e.com> wrote:
-> >
-> > Currently, when libtraceevent is not linked,
-> > perf does not support tracepoint:
-> >
-> >   # ./perf record -e sched:sched_switch -a sleep 10
-> >   event syntax error: 'sched:sched_switch'
-> >                        \___ unsupported tracepoint
-> >
-> >   libtraceevent is necessary for tracepoint support
-> >   Run 'perf list' for a list of valid events
-> >
-> >    Usage: perf record [<options>] [<command>]
-> >       or: perf record [<options>] -- <command> [<options>]
-> >
-> >       -e, --event <event>   event selector. use 'perf list' to list ava=
-ilable events
-> >
-> > For cross-compilation scenario, library may not be installed in the def=
-ault
-> > system path. Based on the above requirements, add LIBTRACEEVENT_DIR bui=
-ld
-> > option to support specifying path of libtraceevent.
-> >
-> > Example:
-> >
-> >   1. Cross compile libtraceevent
-> >   # cd /opt/libtraceevent
-> >   # CROSS_COMPILE=3Daarch64-linux-gnu- make
-> >
-> >   2. Cross compile perf
-> >   # cd tool/perf
-> >   # make VF=3D1 ARCH=3Darm64 CROSS_COMPILE=3Daarch64-linux-gnu- NO_LIBE=
-LF=3D1 LDFLAGS=3D--static LIBTRACEEVENT_DIR=3D/opt/libtraceevent
-> >   <SNIP>
-> >   Auto-detecting system features:
-> >   <SNIP>
-> >   ...                       LIBTRACEEVENT_DIR: /opt/libtraceevent
-> >
-> > Signed-off-by: Yang Jihong <yangjihong@bytedance.com>
->
-> This all looks good to me, thanks!
->
-> Reviewed-by: Ian Rogers <irogers@google.com>
->
-> > ---
-> >  tools/perf/Makefile.config | 20 ++++++++++++++++----
-> >  1 file changed, 16 insertions(+), 4 deletions(-)
-> >
-> > diff --git a/tools/perf/Makefile.config b/tools/perf/Makefile.config
-> > index 1fe8df97fe88..7783479de691 100644
-> > --- a/tools/perf/Makefile.config
-> > +++ b/tools/perf/Makefile.config
-> > @@ -182,6 +182,16 @@ endif
-> >  FEATURE_CHECK_CFLAGS-libzstd :=3D $(LIBZSTD_CFLAGS)
-> >  FEATURE_CHECK_LDFLAGS-libzstd :=3D $(LIBZSTD_LDFLAGS)
-> >
-> > +# for linking with debug library, run like:
-> > +# make DEBUG=3D1 LIBTRACEEVENT_DIR=3D/opt/libtraceevent/
-> > +TRACEEVENTLIBS :=3D -ltraceevent
-> > +ifdef LIBTRACEEVENT_DIR
-> > +  LIBTRACEEVENT_CFLAGS  :=3D -I$(LIBTRACEEVENT_DIR)/include
-> > +  LIBTRACEEVENT_LDFLAGS :=3D -L$(LIBTRACEEVENT_DIR)/lib
-> > +endif
+On Mon, Apr 29, 2024 at 11:46:09PM +0000, Edward Liaw wrote:
+> Android bionic warns that open modes are ignored if O_CREAT or O_TMPFILE
+> aren't specified.  The permissions for the file are set above:
+> 
+> 	fd1 = open(kpath, O_RDWR | O_CREAT | O_TRUNC, 0644);
+> 
+> Fixes: d97b46a64674 ("syscalls, x86: add __NR_kcmp syscall")
+> Signed-off-by: Edward Liaw <edliaw@google.com>
 
-I'm finding to test a libtraceevent asan build on a system that has
-libtraceevent installed, I need to carry this change:
-```
-diff --git a/tools/perf/Makefile.config b/tools/perf/Makefile.config
-index 7f1e016a9253..b356520d8291 100644
---- a/tools/perf/Makefile.config
-+++ b/tools/perf/Makefile.config
-@@ -187,7 +187,7 @@ FEATURE_CHECK_LDFLAGS-libzstd :=3D $(LIBZSTD_LDFLAGS)
-TRACEEVENTLIBS :=3D -ltraceevent
-ifdef LIBTRACEEVENT_DIR
-  LIBTRACEEVENT_CFLAGS  :=3D -I$(LIBTRACEEVENT_DIR)/include
--  LIBTRACEEVENT_LDFLAGS :=3D -L$(LIBTRACEEVENT_DIR)/lib
-+  LIBTRACEEVENT_LDFLAGS :=3D -Wl,-rpath,$(LIBTRACEEVENT_DIR)/lib64
-endif
-FEATURE_CHECK_CFLAGS-libtraceevent :=3D $(LIBTRACEEVENT_CFLAGS)
-FEATURE_CHECK_LDFLAGS-libtraceevent :=3D $(LIBTRACEEVENT_LDFLAGS)
-$(TRACEEVENTLIBS)
-```
+Thanks!
 
-I'm not sure how to make this something that'll work well with cross
-compilation, etc.
-
-Thanks,
-Ian
-
-> > +FEATURE_CHECK_CFLAGS-libtraceevent :=3D $(LIBTRACEEVENT_CFLAGS)
-> > +FEATURE_CHECK_LDFLAGS-libtraceevent :=3D $(LIBTRACEEVENT_LDFLAGS) $(TR=
-ACEEVENTLIBS)
-> > +
-> >  FEATURE_CHECK_CFLAGS-bpf =3D -I. -I$(srctree)/tools/include -I$(srctre=
-e)/tools/arch/$(SRCARCH)/include/uapi -I$(srctree)/tools/include/uapi
-> >  # include ARCH specific config
-> >  -include $(src-perf)/arch/$(SRCARCH)/Makefile
-> > @@ -1165,9 +1175,10 @@ endif
-> >  ifneq ($(NO_LIBTRACEEVENT),1)
-> >    $(call feature_check,libtraceevent)
-> >    ifeq ($(feature-libtraceevent), 1)
-> > -    CFLAGS +=3D -DHAVE_LIBTRACEEVENT
-> > -    EXTLIBS +=3D -ltraceevent
-> > -    LIBTRACEEVENT_VERSION :=3D $(shell $(PKG_CONFIG) --modversion libt=
-raceevent)
-> > +    CFLAGS +=3D -DHAVE_LIBTRACEEVENT $(LIBTRACEEVENT_CFLAGS)
-> > +    LDFLAGS +=3D $(LIBTRACEEVENT_LDFLAGS)
-> > +    EXTLIBS +=3D ${TRACEEVENTLIBS}
-> > +    LIBTRACEEVENT_VERSION :=3D $(shell PKG_CONFIG_PATH=3D$(LIBTRACEEVE=
-NT_DIR) $(PKG_CONFIG) --modversion libtraceevent)
-> >      LIBTRACEEVENT_VERSION_1 :=3D $(word 1, $(subst ., ,$(LIBTRACEEVENT=
-_VERSION)))
-> >      LIBTRACEEVENT_VERSION_2 :=3D $(word 2, $(subst ., ,$(LIBTRACEEVENT=
-_VERSION)))
-> >      LIBTRACEEVENT_VERSION_3 :=3D $(word 3, $(subst ., ,$(LIBTRACEEVENT=
-_VERSION)))
-> > @@ -1175,7 +1186,7 @@ ifneq ($(NO_LIBTRACEEVENT),1)
-> >      CFLAGS +=3D -DLIBTRACEEVENT_VERSION=3D$(LIBTRACEEVENT_VERSION_CPP)
-> >      $(call detected,CONFIG_LIBTRACEEVENT)
-> >    else
-> > -    $(error ERROR: libtraceevent is missing. Please install libtraceev=
-ent-dev/libtraceevent-devel or build with NO_LIBTRACEEVENT=3D1)
-> > +    $(error ERROR: libtraceevent is missing. Please install libtraceev=
-ent-dev/libtraceevent-devel and/or set LIBTRACEEVENT_DIR or build with NO_L=
-IBTRACEEVENT=3D1)
-> >    endif
-> >
-> >    $(call feature_check,libtracefs)
-> > @@ -1301,6 +1312,7 @@ ifeq ($(VF),1)
-> >    $(call print_var,LIBUNWIND_DIR)
-> >    $(call print_var,LIBDW_DIR)
-> >    $(call print_var,JDIR)
-> > +  $(call print_var,LIBTRACEEVENT_DIR)
-> >
-> >    ifeq ($(dwarf-post-unwind),1)
-> >      $(call feature_print_text,"DWARF post unwind library", $(dwarf-pos=
-t-unwind-text)) $(info $(MSG))
-> > --
-> > 2.25.1
-> >
+Reviewed-by: Cyrill Gorcunov <gorcunov@gmail.com>
 
