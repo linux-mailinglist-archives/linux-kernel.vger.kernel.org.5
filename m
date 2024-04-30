@@ -1,152 +1,131 @@
-Return-Path: <linux-kernel+bounces-163936-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-163938-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D099B8B7651
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 14:53:09 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 64B478B7655
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 14:53:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 005551C223A5
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 12:53:09 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A79F2B23189
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 12:53:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0AEF317164B;
-	Tue, 30 Apr 2024 12:52:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=denx.de header.i=@denx.de header.b="RyuLuTwz"
-Received: from phobos.denx.de (phobos.denx.de [85.214.62.61])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7654C17109E;
-	Tue, 30 Apr 2024 12:52:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=85.214.62.61
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3106317106E;
+	Tue, 30 Apr 2024 12:53:38 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 50577171099
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 12:53:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714481575; cv=none; b=TQbgTWmboFAmSvWq94XTvokpVs+Y133TOTSt1IOt4P763xn13Owb6R/pQL+6rCZO6boqhpRxod2oE2EMVyDx+6gMs6amNDvsq4kwbGVQOjWCY1cQfOXfprzlyIr5553uiOdo75ZYntU9JuO03SyIrVDV1LJ8V722DATYFOXl/MA=
+	t=1714481617; cv=none; b=WeDewyNNArdLyrW6DgJxpypmpF0g2htxHOIs2dAKNaYqk+292zuNSEtXcMfbSVxYWUu/SJGpyEv6tR/FQMTEM6lVLghKUoe1MNYnw3WYhE5ssuQGeSZSvlJJxBFf+m4dVU6h/RGEZ7nFSVlmkF4qSmNH1Z9ILFyqhzt0WZMCfdY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714481575; c=relaxed/simple;
-	bh=2E419P6fMJlzYdQ2LO4hCVUmJ5LcUx40GsPAGK5Pq4A=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=PkU5o253Nu6vFKX/Y/fIN9RFeRjwpjPrWFDSNxhdTkkZaqd+n4xoRPtLcbXG2kJWjaVMTdSZFQRvC+p7/BD1aWpKVe+Nb+nT7/qB/KHcR4d/4AM7QymrXk7ptETJu8NMetlEX7miWS3dP7vNqXJlQckpvDPfCIXQZ0SmQki/KRY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=denx.de; spf=pass smtp.mailfrom=denx.de; dkim=pass (2048-bit key) header.d=denx.de header.i=@denx.de header.b=RyuLuTwz; arc=none smtp.client-ip=85.214.62.61
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=denx.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=denx.de
-Received: from wsk (85-222-111-42.dynamic.chello.pl [85.222.111.42])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-	(No client certificate requested)
-	(Authenticated sender: lukma@denx.de)
-	by phobos.denx.de (Postfix) with ESMTPSA id A92EE889D3;
-	Tue, 30 Apr 2024 14:52:44 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
-	s=phobos-20191101; t=1714481566;
-	bh=k1FoftdU31Qu+LEcIxZCVB74GjfGfCp4axxIDaVrqAM=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=RyuLuTwzQYZ5Lwb3RJq4v9rAExaJgGybH8JhDGt69Z8JLyNE2fh1nsg4hDYolHdAu
-	 SsSbX/07Vo1aSz1t9xr9H0/sYXGF1975/MdfFBHzQgAhziXXgBBoslSurgmsdMVa9H
-	 9GqomdfYmxNGIK+7mhcuNw3MIrSB/gAT6oDY6SExCyB3ArJAJI00kx9wqFFaAjjZLw
-	 W8rzV0iFe2ofQfMqo4dyzEczUwq8kHjF71dn7ZtddRUwy93hmbYk1BNv9PZqaCAf20
-	 Sm7cWlzCVhEUhBr5p8Na9whQCQ8IwtLVE6fv4Jl+D7HEZjhqAFVDpyLEfuCUqv+9Z9
-	 TMgdVc5qQaDPA==
-Date: Tue, 30 Apr 2024 14:52:43 +0200
-From: Lukasz Majewski <lukma@denx.de>
-To: Jakub Kicinski <kuba@kernel.org>
-Cc: netdev@vger.kernel.org, Paolo Abeni <pabeni@redhat.com>, Casper
- Andersson <casper.casan@gmail.com>, Andrew Lunn <andrew@lunn.ch>, Eric
- Dumazet <edumazet@google.com>, Vladimir Oltean <olteanv@gmail.com>, "David
- S. Miller" <davem@davemloft.net>, Oleksij Rempel <o.rempel@pengutronix.de>,
- Tristram.Ha@microchip.com, Sebastian Andrzej Siewior
- <bigeasy@linutronix.de>, Ravi Gunasekaran <r-gunasekaran@ti.com>, Simon
- Horman <horms@kernel.org>, Nikita Zhandarovich <n.zhandarovich@fintech.ru>,
- Murali Karicheri <m-karicheri2@ti.com>, Jiri Pirko <jiri@resnulli.us>, Dan
- Carpenter <dan.carpenter@linaro.org>, Ziyang Xuan
- <william.xuanziyang@huawei.com>, Shigeru Yoshida <syoshida@redhat.com>,
- "Ricardo B. Marliere" <ricardo@marliere.net>, linux-kernel@vger.kernel.org
-Subject: Re: [net-next PATCH] hsr: Simplify code for announcing HSR nodes
- timer setup
-Message-ID: <20240430145243.34b82105@wsk>
-In-Reply-To: <20240429104026.0fe3de0f@kernel.org>
-References: <20240425153958.2326772-1-lukma@denx.de>
-	<20240426173317.2f6228a0@kernel.org>
-	<20240429120904.2ab5248c@wsk>
-	<20240429104026.0fe3de0f@kernel.org>
-Organization: denx.de
-X-Mailer: Claws Mail 3.19.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1714481617; c=relaxed/simple;
+	bh=KUAYMhvovsY69EuC837OWjSCKrwjtcfZZJDSNCJrkjs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=sQasvdUxjd5m0KBgmDq6aD/2AZFtCLvTmN/1Ib4Kus9UjNYhkhaXwUFIj2oQjpj7rb/uc9tp/1pIvhFcDa3uBlNRjR/KfYf+CsVaTiZy2hzB08YNA2lXuTX3VAtQVT7kbvgkwj8NM5PMomuNMEZJQGDDQhJKaK0San2NZ+0lm2o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id DD7CF2F4;
+	Tue, 30 Apr 2024 05:54:01 -0700 (PDT)
+Received: from [10.1.38.140] (XHFQ2J9959.cambridge.arm.com [10.1.38.140])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E44CF3F793;
+	Tue, 30 Apr 2024 05:53:33 -0700 (PDT)
+Message-ID: <e842963b-e682-4923-a1cc-c8b2abd6afee@arm.com>
+Date: Tue, 30 Apr 2024 13:53:32 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/Bw.S4.DcI2Q_96DL9tIqW/s";
- protocol="application/pgp-signature"; micalg=pgp-sha512
-X-Virus-Scanned: clamav-milter 0.103.8 at phobos.denx.de
-X-Virus-Status: Clean
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 1/3] arm64/mm: Refactor PMD_PRESENT_INVALID and
+ PTE_PROT_NONE bits
+Content-Language: en-GB
+To: David Hildenbrand <david@redhat.com>,
+ Catalin Marinas <catalin.marinas@arm.com>
+Cc: Will Deacon <will@kernel.org>, Joey Gouly <joey.gouly@arm.com>,
+ Ard Biesheuvel <ardb@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+ Anshuman Khandual <anshuman.khandual@arm.com>, Peter Xu <peterx@redhat.com>,
+ Mike Rapoport <rppt@linux.ibm.com>, Shivansh Vij <shivanshvij@outlook.com>,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20240429140208.238056-1-ryan.roberts@arm.com>
+ <20240429140208.238056-2-ryan.roberts@arm.com> <Zi_IzrfIcqWxt7cE@arm.com>
+ <839d6975-ce12-4fc9-aa3b-8ec5787bf577@arm.com> <ZjDR0EIjLr9F2dWn@arm.com>
+ <29fd6909-73d2-4b7e-99ef-0101cde1ba8a@redhat.com>
+From: Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <29fd6909-73d2-4b7e-99ef-0101cde1ba8a@redhat.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
---Sig_/Bw.S4.DcI2Q_96DL9tIqW/s
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On 30/04/2024 12:37, David Hildenbrand wrote:
+> On 30.04.24 13:11, Catalin Marinas wrote:
+>> On Mon, Apr 29, 2024 at 06:15:45PM +0100, Ryan Roberts wrote:
+>>> On 29/04/2024 17:20, Catalin Marinas wrote:
+>>>> On Mon, Apr 29, 2024 at 03:02:05PM +0100, Ryan Roberts wrote:
+>>>>> diff --git a/arch/arm64/include/asm/pgtable-prot.h
+>>>>> b/arch/arm64/include/asm/pgtable-prot.h
+>>>>> index dd9ee67d1d87..de62e6881154 100644
+>>>>> --- a/arch/arm64/include/asm/pgtable-prot.h
+>>>>> +++ b/arch/arm64/include/asm/pgtable-prot.h
+>>>>> @@ -18,14 +18,7 @@
+>>>>>   #define PTE_DIRTY        (_AT(pteval_t, 1) << 55)
+>>>>>   #define PTE_SPECIAL        (_AT(pteval_t, 1) << 56)
+>>>>>   #define PTE_DEVMAP        (_AT(pteval_t, 1) << 57)
+>>>>> -#define PTE_PROT_NONE        (_AT(pteval_t, 1) << 58) /* only when
+>>>>> !PTE_VALID */
+>>>>> -
+>>>>> -/*
+>>>>> - * This bit indicates that the entry is present i.e. pmd_page()
+>>>>> - * still points to a valid huge page in memory even if the pmd
+>>>>> - * has been invalidated.
+>>>>> - */
+>>>>> -#define PMD_PRESENT_INVALID    (_AT(pteval_t, 1) << 59) /* only when
+>>>>> !PMD_SECT_VALID */
+>>>>> +#define PTE_INVALID        (_AT(pteval_t, 1) << 59) /* only when
+>>>>> !PTE_VALID */
+>>>>
+>>>> Nitpick - I prefer the PTE_PRESENT_INVALID name as it makes it clearer
+>>>> it's a present pte. We already have PTE_VALID, calling it PTE_INVALID
+>>>> looks like a negation only.
+>>>
+>>> Meh, for me the pte can only be valid or invalid if it is present. So it's
+>>> implicit. And if you have PTE_PRESENT_INVALID you should also have
+>>> PTE_PRESENT_VALID.
+>>>
+>>> We also have pte_mkinvalid(), which is core-mm-defined. In your scheme, surely
+>>> it should be pte_mkpresent_invalid()?
+>>>
+>>> But you're the boss, I'll change this to PTE_PRESENT_INVALID. :-(
+>>
+>> TBH, I don't have a strong opinion but best to avoid the bikeshedding.
+>> I'll leave the decision to you ;). It would match the pmd_mkinvalid()
+>> core code. But if you drop 'present' make sure you add a comment above
+>> that it's meant for present ptes.
+> 
+> FWIW, I was confused by
+> 
+> present = valid | invalid
 
-Hi Jakub,
+OK fair enough.
 
-> On Mon, 29 Apr 2024 12:09:04 +0200 Lukasz Majewski wrote:
-> > > if the
-> > > timer is already running we'll mess with the spacing of the
-> > > frames, no?   =20
-> >=20
-> > When NETDEV_CHANGE is trigger for reason different than carrier (or
-> > port state) change and the netif_oper_up() returns true, the period
-> > for HSR supervisory frames (i.e. HSR_ANNOUNCE_INTEVAL) would be
-> > violated.
-> >=20
-> > What are here the potential threads? =20
->=20
-> Practically speaking I'm not sure if anyone uses any of the weird
-> IFF_* flags, but they are defined in uAPI (enum net_device_flags) and
-> I don't see much validation so presumably it's possible to flip them.
+> 
+> Something like
+> 
+> present = present_valid | present_invalid
 
-Ok, I see.
+I don't want to change pte_valid() to pte_present_valid(); that would also be a
+fair bit of churn.
 
-Then - what would you recommend instead? The approach with manual
-checking the previous state has described drawbacks.
+I'll take Catalin's suggestion and make this PTE_PRESENT_INVALID and
+pte_present_invalid(). And obviously leave pmd_mkinvalid() as it is.
+(Conversation in the other thread has concluded that it's ok to invalidate a
+non-present pmd afterall).
 
-I've poked around kernel sources and it looks like the netif_oper_up()
-is used in conjunction with netif_running():
+> 
+> would be more obvious at least to me ;)
+> 
 
-netif_running(dev) && netif_oper_up(dev)
-
-so, IMHO the netif_running(dev) shall be added to the condition.
-
-
-In the uapi/include/linux/if.h there are serveral IF_OPER_* flags
-defined. It looks to me that only for the IF_OPER_UP the HSR interface
-shall send announcement supervisory frames. With other conditions it
-shall be turned off.
-
-
-Best regards,
-
-Lukasz Majewski
-
---
-
-DENX Software Engineering GmbH,      Managing Director: Erika Unter
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-Phone: (+49)-8142-66989-59 Fax: (+49)-8142-66989-80 Email: lukma@denx.de
-
---Sig_/Bw.S4.DcI2Q_96DL9tIqW/s
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCgAdFiEEgAyFJ+N6uu6+XupJAR8vZIA0zr0FAmYw6ZsACgkQAR8vZIA0
-zr1vyQf/b9dD0cGGRR2fJR7RDNo7Ul0teNxdptDZ1BEmoUzA+9rqc7FbAks5fMpd
-Yryrt5Lf18eUOgKRDXI8p393k61794K4TH6gSHklkI9InLA0pNhkCNufbE79VHhZ
-ErviOn4c46V0J7OTlb3dDlmm0/Isg74a0wVboHKgBSvHnHaNlaClxeG3v70i3bBn
-aQIVcmCQ3mYRbSY+/A/uOCryp27Ii53Llonk5FY3lLNFX3kwHCZdN9SbgC0OY1wJ
-ggPSqcN1lcTuJkwDhdd03K2N6FSMCA8fRRBkj5ei4e4VWEbq/GyRDddS5HV/urox
-6q/anTEaL7Haft6BGSgnn8yoB262bA==
-=LiR9
------END PGP SIGNATURE-----
-
---Sig_/Bw.S4.DcI2Q_96DL9tIqW/s--
 
