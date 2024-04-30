@@ -1,164 +1,186 @@
-Return-Path: <linux-kernel+bounces-163954-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-163956-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id F07B28B7687
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 15:00:12 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E5ADA8B768D
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 15:04:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A67591F224D5
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 13:00:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 852221F2291D
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 13:04:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 98335171664;
-	Tue, 30 Apr 2024 13:00:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76D66171658;
+	Tue, 30 Apr 2024 13:03:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=hugovil.com header.i=@hugovil.com header.b="d65giP2e"
-Received: from mail.hugovil.com (mail.hugovil.com [162.243.120.170])
+	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="juNMt5sm"
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C15C217106E;
-	Tue, 30 Apr 2024 13:00:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=162.243.120.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE7CE17164A
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 13:03:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714482003; cv=none; b=TAKNOgjaEERYmmhhDwurqsd9xJj7pd+3U30kl0VZq50eC4v1e/TMtCW7UGFOYEbr+Brr0j45D5vtlbM5TQKSr6zE3AeZJ7XfKiMSsTJSePmSrcU4pSIA2UDfbN1fXmvt0oIti2NN5EAP/pX94kQmbPFJADhAiTVOT0qgU9arbIo=
+	t=1714482233; cv=none; b=UUrJ8Tyi3e7zuoF863TQWAkk8xQZ2WgomXbTSrr8cF98LHfg3I0TEHcudpnH7n22gYYqOyzusGJnjseSX/Vp1RN4zqoxYmoomH8ISd8Q4KXJ25JMilOzzlHB+obcH/Qqbw/1VTy8TX9DkB9yJ5UY8mL4QA34crdYyjaWvjtnw94=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714482003; c=relaxed/simple;
-	bh=UMZaNGe7QnAugACQXwrO9a+rEKCYn71GJR5PuFqiQdg=;
-	h=Date:From:To:Cc:Message-Id:In-Reply-To:References:Mime-Version:
-	 Content-Type:Subject; b=BK9MuBseGKb/1DN+VxWE34p6x6icJIRf/xpjMLjaozlItFG2zUm6zETJuwRhl+mPwk5U722LzCJ0xXnqwooRRkAVq25g28GKQNFn5jYHFEFMkbyvp75dvd+JlHyYKtDnnYd4jtJeOuZ4uks1cJZLOPD6WeQP6lY4Jco6Bsc5y/E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=hugovil.com; spf=pass smtp.mailfrom=hugovil.com; dkim=pass (1024-bit key) header.d=hugovil.com header.i=@hugovil.com header.b=d65giP2e; arc=none smtp.client-ip=162.243.120.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=hugovil.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hugovil.com
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hugovil.com
-	; s=x; h=Subject:Content-Transfer-Encoding:Mime-Version:Message-Id:Cc:To:From
-	:Date:subject:date:message-id:reply-to;
-	bh=M/QoApjdCuoD3z41eYPaP9f9N+N5yYGGcDa+/3o9sWU=; b=d65giP2esg8toD56CmvT0uTjbv
-	m36EyH9rtwY/ivUSbLbcLqQC5qKri6fJNKOix9G3HkHgHxFsSkYaTcDa+KNKSGKcNLW+d078SAAP0
-	5btBeS9yQ6r8pLX+TdzRGKDu+zdSi7u+CcOrA+c+0vETqX6UKPUMjjiHLsyz9+CSh4Fo=;
-Received: from modemcable168.174-80-70.mc.videotron.ca ([70.80.174.168]:54324 helo=pettiford)
-	by mail.hugovil.com with esmtpa (Exim 4.92)
-	(envelope-from <hugo@hugovil.com>)
-	id 1s1n5P-00038o-6Y; Tue, 30 Apr 2024 08:59:55 -0400
-Date: Tue, 30 Apr 2024 08:59:54 -0400
-From: Hugo Villeneuve <hugo@hugovil.com>
-To: Jiri Slaby <jirislaby@kernel.org>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Jon Ringle
- <jringle@gridpoint.com>, ria.freelander@gmail.com, Hugo Villeneuve
- <hvilleneuve@dimonoff.com>, stable@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org
-Message-Id: <20240430085954.1ac828e0d2c64cccdf47bdfc@hugovil.com>
-In-Reply-To: <af116cb5-41d8-4a33-97ba-0c7cc821add1@kernel.org>
-References: <20240426135937.3810959-1-hugo@hugovil.com>
-	<17d2cc58-cf68-430d-9248-25abe4c5b0f0@kernel.org>
-	<20240429094717.de45ad35814e3c618e08c36b@hugovil.com>
-	<af116cb5-41d8-4a33-97ba-0c7cc821add1@kernel.org>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1714482233; c=relaxed/simple;
+	bh=0DgoqzOughMpMCnHD73e64SXh2Mbhdm326Iu2jw37y4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=pYZMuQH2xeVzN6xSUzds4tTgApKjcDAfrgFoSV2G2jvSKKSurJZLTRopSfVL1FGql0SifsGOm+sZD3/WB6NnC8VoWpk0tjoSH85cGr0SZ2wtljMUKjQSE4Gn76o8+KgOud1W7EkNid6XzSTz9Op7jEpumwg/B9N9C82+E/Exzl4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=juNMt5sm; arc=none smtp.client-ip=65.109.113.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 8E19840E00B2;
+	Tue, 30 Apr 2024 13:03:48 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+	header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id 4pOHEVBUvPZw; Tue, 30 Apr 2024 13:03:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1714482224; bh=yH6Cwq5/6RGkXtt5HQxlFR8k88T6Ia2YT89+Wjt1MZE=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=juNMt5sml1hzAQw8ms2D04JBZUNnRjMdVKJ8nvf2Z0jYIs50oI2ezS4569ejqpPT7
+	 J3PDH5Ml4s4Utu+2BhLRka0NKCurSbPKHWPcklEssmWhuiXTcR/DXdKqAWQe3rko1o
+	 MLaEgIdd06Pqyt9CVBv3WrHPBzgnVvy8NLzlcIorNXOuyqMFOMWGS3YHCaEUEdDSvr
+	 l9UZK4wH5Vg9p9s4liriyMZ2wNtczIq8hSeNoTmket0pNKiQEkAT9Yb7D/osJnF9mB
+	 yxIWpgTKpCVNLSSk9j3RMZeHx7SBM/lNQD9yWHr6e+yjk4piyJHJD47jB7vcMsFq8D
+	 LhVNjBdOTGboN8l7nZi+DziNaF921K0LsanmK3XpzWFtWTI3a8S8BPf9kiFLse6oY9
+	 ioqmSAQMvaZQwbJrxdf1UZ/hl9M7vY0xDj6pScAygVRA7JUJhOdys+KGKn9BgUpCNG
+	 x8x3+r7zF50fPMKJ5GLRnVeT6LKos0PkChpiuLNxUw5fOI9OUY4zmDwYKzx7YGAX5G
+	 NFbuSKxS+3N6oACe+Js9/PkTwZ+A8Go0w9OAa93debmZDYvuw8n3RpcQP6HNoGBTHb
+	 CmUTw2K0MvgCnI04isvWw/cNjukt+2KZT4noNKeNID09Ycus/JPSN4wPhc+oiwmVIU
+	 YC3lblHRoDgiwrqxN0qAN2wk=
+Received: from zn.tnic (pd953020b.dip0.t-ipconnect.de [217.83.2.11])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 51C6D40E016B;
+	Tue, 30 Apr 2024 13:03:24 +0000 (UTC)
+Date: Tue, 30 Apr 2024 15:03:23 +0200
+From: Borislav Petkov <bp@alien8.de>
+To: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+	"Rafael J. Wysocki" <rafael@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>,
+	Elena Reshetova <elena.reshetova@intel.com>,
+	Jun Nakajima <jun.nakajima@intel.com>,
+	Rick Edgecombe <rick.p.edgecombe@intel.com>,
+	Tom Lendacky <thomas.lendacky@amd.com>,
+	"Kalra, Ashish" <ashish.kalra@amd.com>,
+	Sean Christopherson <seanjc@google.com>,
+	"Huang, Kai" <kai.huang@intel.com>, Baoquan He <bhe@redhat.com>,
+	kexec@lists.infradead.org, linux-coco@lists.linux.dev,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCHv10 05/18] x86/kexec: Keep CR4.MCE set during kexec for
+ TDX guest
+Message-ID: <20240430130323.GAZjDsG00Xdhv5mv8W@fat_crate.local>
+References: <20240409113010.465412-1-kirill.shutemov@linux.intel.com>
+ <20240409113010.465412-6-kirill.shutemov@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 70.80.174.168
-X-SA-Exim-Mail-From: hugo@hugovil.com
-X-Spam-Level: 
-X-Spam-Report: 
-	* -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-	* -1.1 NICE_REPLY_A Looks like a legit reply (A)
-Subject: Re: [PATCH] serial: sc16is7xx: fix bug in sc16is7xx_set_baud() when
- using prescaler
-X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
-X-SA-Exim-Scanned: Yes (on mail.hugovil.com)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20240409113010.465412-6-kirill.shutemov@linux.intel.com>
 
-On Tue, 30 Apr 2024 07:22:54 +0200
-Jiri Slaby <jirislaby@kernel.org> wrote:
+On Tue, Apr 09, 2024 at 02:29:57PM +0300, Kirill A. Shutemov wrote:
+> +1:
+> +	testq	$X86_CR4_MCE, %r13
+> +	jz	1f
+> +	ALTERNATIVE "", __stringify(orl $X86_CR4_MCE, %eax), X86_FEATURE_TDX_GUEST
+>  1:
 
-> On 29. 04. 24, 15:47, Hugo Villeneuve wrote:
-> > On Mon, 29 Apr 2024 08:39:22 +0200
-> > Jiri Slaby <jirislaby@kernel.org> wrote:
-> > 
-> >> On 26. 04. 24, 15:59, Hugo Villeneuve wrote:
-> >>> From: Hugo Villeneuve <hvilleneuve@dimonoff.com>
-> >>>
-> >>> When using a high speed clock with a low baud rate, the 4x prescaler is
-> >>> automatically selected if required. In that case, sc16is7xx_set_baud()
-> >>> properly configures the chip registers, but returns an incorrect baud
-> >>> rate by not taking into account the prescaler value. This incorrect baud
-> >>> rate is then fed to uart_update_timeout().
-> >>>
-> >>> For example, with an input clock of 80MHz, and a selected baud rate of 50,
-> >>> sc16is7xx_set_baud() will return 200 instead of 50.
-> >>>
-> >>> Fix this by first changing the prescaler variable to hold the selected
-> >>> prescaler value instead of the MCR bitfield. Then properly take into
-> >>> account the selected prescaler value in the return value computation.
-> >>>
-> >>> Also add better documentation about the divisor value computation.
-> >>>
-> >>> Fixes: dfeae619d781 ("serial: sc16is7xx")
-> >>> Cc: stable@vger.kernel.org
-> >>> Signed-off-by: Hugo Villeneuve <hvilleneuve@dimonoff.com>
-> >>> ---
-> >>>    drivers/tty/serial/sc16is7xx.c | 23 ++++++++++++++++++-----
-> >>>    1 file changed, 18 insertions(+), 5 deletions(-)
-> >>>
-> >>> diff --git a/drivers/tty/serial/sc16is7xx.c b/drivers/tty/serial/sc16is7xx.c
-> >>> index 03cf30e20b75..dcd6c5615401 100644
-> >>> --- a/drivers/tty/serial/sc16is7xx.c
-> >>> +++ b/drivers/tty/serial/sc16is7xx.c
-> >>> @@ -555,16 +555,28 @@ static bool sc16is7xx_regmap_noinc(struct device *dev, unsigned int reg)
-> >>>    	return reg == SC16IS7XX_RHR_REG;
-> >>>    }
-> >>>    
-> >>> +/*
-> >>> + * Configure programmable baud rate generator (divisor) according to the
-> >>> + * desired baud rate.
-> >>> + *
-> >>> + * From the datasheet, the divisor is computed according to:
-> >>> + *
-> >>> + *              XTAL1 input frequency
-> >>> + *             -----------------------
-> >>> + *                    prescaler
-> >>> + * divisor = ---------------------------
-> >>> + *            baud-rate x sampling-rate
-> >>> + */
-> >>>    static int sc16is7xx_set_baud(struct uart_port *port, int baud)
-> >>>    {
-> >>>    	struct sc16is7xx_one *one = to_sc16is7xx_one(port, port);
-> >>>    	u8 lcr;
-> >>> -	u8 prescaler = 0;
-> >>> +	int prescaler = 1;
-> >>
-> >> Ugh, why do you move to signed arithmetics?
-> > 
-> > Hi Jiri,
-> > before this patch, the variable prescaler was used to store an 8 bit
-> > bitfield. Now the variable meaning is changed to be used as the
-> > prescaler value, which can be 1 or 4 in this case. Leaving
-> > it as u8 would still be ok, or making it "unsigned int" maybe?
-> 
-> Both :). What you prefer -- uint matches more IMO, given it's now a 
-> value and not a register...
+Please add the below patch to your set. Those same-number labels are
+just abominable.
 
-Hi Jiri,
-I will go with uint.
+Thx.
 
-Thank you,
-Hugo.
+---
+From: "Borislav Petkov (AMD)" <bp@alien8.de>
+Date: Tue, 30 Apr 2024 15:00:16 +0200
+Subject: [PATCH] x86/relocate_kernel: Use named labels for less confusion
 
+That identity_mapped() function was loving that "1" label to the point
+of completely confusing its readers.
 
-> 
-> thanks,
-> -- 
-> js
-> suse labs
-> 
-> 
+Use named labels in each place for clarity.
 
+No functional changes.
+
+Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
+---
+ arch/x86/kernel/relocate_kernel_64.S | 18 ++++++++++--------
+ 1 file changed, 10 insertions(+), 8 deletions(-)
+
+diff --git a/arch/x86/kernel/relocate_kernel_64.S b/arch/x86/kernel/relocate_kernel_64.S
+index 8e2037d78a1f..0077c9e562a7 100644
+--- a/arch/x86/kernel/relocate_kernel_64.S
++++ b/arch/x86/kernel/relocate_kernel_64.S
+@@ -152,13 +152,15 @@ SYM_CODE_START_LOCAL_NOALIGN(identity_mapped)
+ 	 */
+ 	movl	$X86_CR4_PAE, %eax
+ 	testq	$X86_CR4_LA57, %r13
+-	jz	1f
++	jz	no_la57
+ 	orl	$X86_CR4_LA57, %eax
+-1:
++no_la57:
++
+ 	testq	$X86_CR4_MCE, %r13
+-	jz	1f
++	jz	mca_off
+ 	ALTERNATIVE "", __stringify(orl $X86_CR4_MCE, %eax), X86_FEATURE_TDX_GUEST
+-1:
++mca_off:
++
+ 	movq	%rax, %cr4
+ 
+ 	jmp 1f
+@@ -173,9 +175,9 @@ SYM_CODE_START_LOCAL_NOALIGN(identity_mapped)
+ 	 * used by kexec. Flush the caches before copying the kernel.
+ 	 */
+ 	testq	%r12, %r12
+-	jz 1f
++	jz sme_off
+ 	wbinvd
+-1:
++sme_off:
+ 
+ 	movq	%rcx, %r11
+ 	call	swap_pages
+@@ -195,7 +197,7 @@ SYM_CODE_START_LOCAL_NOALIGN(identity_mapped)
+ 	 */
+ 
+ 	testq	%r11, %r11
+-	jnz 1f
++	jnz relocate
+ 	xorl	%eax, %eax
+ 	xorl	%ebx, %ebx
+ 	xorl    %ecx, %ecx
+@@ -216,7 +218,7 @@ SYM_CODE_START_LOCAL_NOALIGN(identity_mapped)
+ 	ret
+ 	int3
+ 
+-1:
++relocate:
+ 	popq	%rdx
+ 	leaq	PAGE_SIZE(%r10), %rsp
+ 	ANNOTATE_RETPOLINE_SAFE
+-- 
+2.43.0
 
 -- 
-Hugo Villeneuve
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
 
