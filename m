@@ -1,103 +1,186 @@
-Return-Path: <linux-kernel+bounces-164331-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-164332-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E82B38B7C6C
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 18:01:19 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id BFA708B7C6F
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 18:01:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 232FB1C22C04
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 16:01:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7AAE6280D5D
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 16:01:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC25C17556A;
-	Tue, 30 Apr 2024 16:01:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A9F1F179675;
+	Tue, 30 Apr 2024 16:01:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="MNBPjjjC"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="SqDKC0U2"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.17])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1517173344
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 16:01:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C084A174EF1;
+	Tue, 30 Apr 2024 16:01:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.17
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714492869; cv=none; b=gWGam8un6JowYsFcl/8x6yIcvXXbMF7bKYBUW6O7n/7SfYnmU18+8R1FSXSDWFVuELbAZaipn4ClW1LoK5gF5ZysUaE7mI9cgh6p0hVIyNEyOJtgafrfk++EHJA+i3iHC4vZcMdOLt1vNR9Uzm63J6HHCl1ly+xLb5G4ud3pyiY=
+	t=1714492877; cv=none; b=eN0Q9QEj2yyK+bp9COp2YifiHwj7WiLrNqZWiSR20JbwLtKyavxxWSX83NMCtTlxS89LqohbcECac0F2FHsrYhaFq7z3eC7Hns7av8w7f6mSTtUQrxbAT2bFGepS6gCzesVZDCiEtvV2oXRcCrgaQOt96tWCI8nodZ5X136Wcu4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714492869; c=relaxed/simple;
-	bh=uaQtm99TTwvcVB6dE70G+TricRvh3YWN7Mj9VbhFVoM=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=dkoKDokeijP2NKa7P3Pk+fzxWnKRV84SwTFmCNN/qLVyP9j/XiKBaO1bWWQCxjI+06Qb0XeQk+iKu6/SqlgdHslZEICIodNeNtZRxMHOPQ3H/ZfkSgllyuFWWa2Nxsgcd0TAiu4DQ+HaEVA/Y0Pj4zXvC1kXvFMHwerxLdnJZcU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=MNBPjjjC; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1714492866;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=uaQtm99TTwvcVB6dE70G+TricRvh3YWN7Mj9VbhFVoM=;
-	b=MNBPjjjCURNmbcVqrobS4wSKwj29nv/WM/CuMqz7iM+pY9h/eWgldpcTDHo9DSdJ/zL74w
-	mDui6PXeynds3oNFvZRc53eTPt6nXP+NSjy0hZFXAiPyIVDRuoofp1sym6TtERVyPiOa+u
-	L0ESnB8/ZqtXQDy0VzKjZu2lwOCdJ5o=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-483-yGeb0ux_NhCEedhVE30P2A-1; Tue, 30 Apr 2024 12:01:04 -0400
-X-MC-Unique: yGeb0ux_NhCEedhVE30P2A-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 25EC480E95D;
-	Tue, 30 Apr 2024 16:01:03 +0000 (UTC)
-Received: from fedora.redhat.com (unknown [10.39.193.71])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 119B620128EF;
-	Tue, 30 Apr 2024 16:00:58 +0000 (UTC)
-From: Jose Ignacio Tornos Martinez <jtornosm@redhat.com>
-To: kuba@kernel.org
-Cc: davem@davemloft.net,
-	edumazet@google.com,
-	inventor500@vivaldi.net,
-	jarkko.palviainen@gmail.com,
-	jtornosm@redhat.com,
-	linux-kernel@vger.kernel.org,
-	linux-usb@vger.kernel.org,
-	netdev@vger.kernel.org,
-	pabeni@redhat.com,
-	stable@vger.kernel.org,
-	vadim.fedorenko@linux.dev
-Subject: Re: [PATCH v2] net: usb: ax88179_178a: avoid writing the mac address before first reading
-Date: Tue, 30 Apr 2024 18:00:56 +0200
-Message-ID: <20240430160057.557295-1-jtornosm@redhat.com>
-In-Reply-To: <20240430082717.65f26140@kernel.org>
-References: <20240430082717.65f26140@kernel.org>
+	s=arc-20240116; t=1714492877; c=relaxed/simple;
+	bh=MutPWEGS5St0LFaWSGKhvbLM0WV+4s3ZN5wZOEiDUdk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=J4G0VkHT1cCY/19BbZQ6JsWmJan6I7bNAJe/OAVq6SWhm4rz//XHFlSMN0tW6Q2V/dffZ/6yP8ZK9hrsYePXlhFgBhHLFN4qVp2SNbeicJhfVgmAOn8lx4O3iqNc1FyjUTFzeUo+icNy0/Xjye9Uf1yEUqiRmFcEQS3AL6gcqag=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=SqDKC0U2; arc=none smtp.client-ip=198.175.65.17
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1714492875; x=1746028875;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=MutPWEGS5St0LFaWSGKhvbLM0WV+4s3ZN5wZOEiDUdk=;
+  b=SqDKC0U2x1YBOLnXwErBiU2M3XxcFe9hNe0KAEbCV3cDAa7OyMvCj/dk
+   luSrg34bYK30ujI8q/++tbheH098NZs52joB+Cumqd8Os4tPocS6T2N3S
+   7UAf4eXl39wQhVSULYMog1K3shOpIvQbze9PbPFSI6UgW9MV8SnsFUczG
+   qWXNfs+JgZxilTQV5rco1T4kCmdMXgZNR1Wuk7KtFoDw/IMNmaYYHDoKa
+   yoWuRUE9Pw3ACC2zD+vTRNgOv+wCNC3c03UPkEr8j6XHEwsoHEBfFiFHg
+   jyx+PeYLjzxIhyveU4V8CpLsLPup8PEgVO0dTKWiZjdnhWX/gF+g57rPm
+   g==;
+X-CSE-ConnectionGUID: HaOnrDFgTA22XXB52TqgQw==
+X-CSE-MsgGUID: FlK6r3ANRlytnggcEpfucg==
+X-IronPort-AV: E=McAfee;i="6600,9927,11060"; a="10333418"
+X-IronPort-AV: E=Sophos;i="6.07,242,1708416000"; 
+   d="scan'208";a="10333418"
+Received: from fmviesa010.fm.intel.com ([10.60.135.150])
+  by orvoesa109.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Apr 2024 09:01:14 -0700
+X-CSE-ConnectionGUID: 7HSioYnhS8iEBf9AwNJcPg==
+X-CSE-MsgGUID: tzJqgvM5Rza2peDtpizCaQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,242,1708416000"; 
+   d="scan'208";a="26593048"
+Received: from aschofie-mobl2.amr.corp.intel.com (HELO aschofie-mobl2) ([10.251.17.48])
+  by fmviesa010-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Apr 2024 09:01:08 -0700
+Date: Tue, 30 Apr 2024 09:01:06 -0700
+From: Alison Schofield <alison.schofield@intel.com>
+To: Robert Richter <rrichter@amd.com>
+Cc: "Rafael J. Wysocki" <rafael@kernel.org>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	Dan Williams <dan.j.williams@intel.com>, linux-acpi@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-cxl@vger.kernel.org,
+	kernel test robot <oliver.sang@intel.com>,
+	Len Brown <lenb@kernel.org>
+Subject: Re: [PATCH v6 4/7] ACPI/NUMA: Squash
+ acpi_numa_memory_affinity_init() into acpi_parse_memory_affinity()
+Message-ID: <ZjEVwrTO87OHXCZ5@aschofie-mobl2>
+References: <20240430092200.2335887-1-rrichter@amd.com>
+ <20240430092200.2335887-5-rrichter@amd.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.4
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240430092200.2335887-5-rrichter@amd.com>
 
-> v6.8.8 has 56f78615b already. We need another patch, Jose?
+On Tue, Apr 30, 2024 at 11:21:57AM +0200, Robert Richter wrote:
+> After removing architectural code the helper function
+> acpi_numa_memory_affinity_init() is no longer needed. Squash it into
+> acpi_parse_memory_affinity(). No functional changes intended.
+> 
+> While at it, fixing checkpatch complaints in code moved.
+>
 
-Hello Jakub,
+Reviewed-by: Alison Schofield <alison.schofield@intel.com>
 
-I will try to analyze it during the next week (I will be out until then).
-
-In the meantime, in order to get more information about the possible
-regression:
-
-Isaac,
-Which version was it working in?
-Do you know if it was working before d2689b6a86b9 ("net: usb: ax88179_178a:
-avoid two consecutive device resets")?
-
-
-Best regards
-José Ignacio
-
+> Reported-by: kernel test robot <oliver.sang@intel.com>
+> Closes: https://lore.kernel.org/oe-lkp/202403220943.96dde419-oliver.sang@intel.com
+> Reviewed-by: Dan Williams <dan.j.williams@intel.com>
+> Signed-off-by: Robert Richter <rrichter@amd.com>
+> ---
+>  drivers/acpi/numa/srat.c | 40 +++++++++++++++++-----------------------
+>  1 file changed, 17 insertions(+), 23 deletions(-)
+> 
+> diff --git a/drivers/acpi/numa/srat.c b/drivers/acpi/numa/srat.c
+> index 430ddcfb8312..e3f26e71637a 100644
+> --- a/drivers/acpi/numa/srat.c
+> +++ b/drivers/acpi/numa/srat.c
+> @@ -248,22 +248,30 @@ static int __init acpi_parse_slit(struct acpi_table_header *table)
+>  	return 0;
+>  }
+>  
+> +static int parsed_numa_memblks __initdata;
+> +
+>  static int __init
+> -acpi_numa_memory_affinity_init(struct acpi_srat_mem_affinity *ma)
+> +acpi_parse_memory_affinity(union acpi_subtable_headers *header,
+> +			   const unsigned long table_end)
+>  {
+> +	struct acpi_srat_mem_affinity *ma;
+>  	u64 start, end;
+>  	u32 hotpluggable;
+>  	int node, pxm;
+>  
+> +	ma = (struct acpi_srat_mem_affinity *)header;
+> +
+> +	acpi_table_print_srat_entry(&header->common);
+> +
+>  	if (srat_disabled())
+> -		goto out_err;
+> +		return 0;
+>  	if (ma->header.length < sizeof(struct acpi_srat_mem_affinity)) {
+>  		pr_err("SRAT: Unexpected header length: %d\n",
+>  		       ma->header.length);
+>  		goto out_err_bad_srat;
+>  	}
+>  	if ((ma->flags & ACPI_SRAT_MEM_ENABLED) == 0)
+> -		goto out_err;
+> +		return 0;
+>  	hotpluggable = IS_ENABLED(CONFIG_MEMORY_HOTPLUG) &&
+>  		(ma->flags & ACPI_SRAT_MEM_HOT_PLUGGABLE);
+>  
+> @@ -301,11 +309,15 @@ acpi_numa_memory_affinity_init(struct acpi_srat_mem_affinity *ma)
+>  
+>  	max_possible_pfn = max(max_possible_pfn, PFN_UP(end - 1));
+>  
+> +	parsed_numa_memblks++;
+> +
+>  	return 0;
+> +
+>  out_err_bad_srat:
+> +	/* Just disable SRAT, but do not fail and ignore errors. */
+>  	bad_srat();
+> -out_err:
+> -	return -EINVAL;
+> +
+> +	return 0;
+>  }
+>  
+>  static int __init acpi_parse_cfmws(union acpi_subtable_headers *header,
+> @@ -438,24 +450,6 @@ acpi_parse_gi_affinity(union acpi_subtable_headers *header,
+>  }
+>  #endif /* defined(CONFIG_X86) || defined (CONFIG_ARM64) */
+>  
+> -static int __initdata parsed_numa_memblks;
+> -
+> -static int __init
+> -acpi_parse_memory_affinity(union acpi_subtable_headers * header,
+> -			   const unsigned long end)
+> -{
+> -	struct acpi_srat_mem_affinity *memory_affinity;
+> -
+> -	memory_affinity = (struct acpi_srat_mem_affinity *)header;
+> -
+> -	acpi_table_print_srat_entry(&header->common);
+> -
+> -	/* let architecture-dependent part to do it */
+> -	if (!acpi_numa_memory_affinity_init(memory_affinity))
+> -		parsed_numa_memblks++;
+> -	return 0;
+> -}
+> -
+>  static int __init acpi_parse_srat(struct acpi_table_header *table)
+>  {
+>  	struct acpi_table_srat *srat = (struct acpi_table_srat *)table;
+> -- 
+> 2.39.2
+> 
 
