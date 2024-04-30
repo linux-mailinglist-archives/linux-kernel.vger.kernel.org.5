@@ -1,85 +1,179 @@
-Return-Path: <linux-kernel+bounces-164696-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-164697-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 947CC8B812D
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 22:09:15 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1B9538B812F
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 22:09:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A8421B20E75
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 20:09:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C9F9928429B
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 20:09:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B428199E9A;
-	Tue, 30 Apr 2024 20:09:06 +0000 (UTC)
-Received: from mail-io1-f69.google.com (mail-io1-f69.google.com [209.85.166.69])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 730D5199EA6;
+	Tue, 30 Apr 2024 20:09:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=tesarici.cz header.i=@tesarici.cz header.b="SkBYcRS+"
+Received: from bee.tesarici.cz (bee.tesarici.cz [37.205.15.56])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6374A17B514
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 20:09:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.69
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EBA243308A;
+	Tue, 30 Apr 2024 20:09:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=37.205.15.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714507745; cv=none; b=eEoVFQboBLtOR39Y2PNK+NaRGhurMGCXFeXrSGFicLQN/mcjX1S78N/oksuvoBLiGVQ/261jH4aVHQUTA8/N+M5blNUICAQdriWisjIJWdJx4RrnTp5zQ1HAO1mksDUXsPQEZB1ZyobAO0pAaDswEnsk5bOYntR5fViQI1SMMqs=
+	t=1714507770; cv=none; b=M+rpZ4V37nAEKTQZEkjeSp0L5vxhx+oz1N3Gah3PPqaEXuTf9MTypKEWnTXtTCmCIClo2K0vEIHbL5ANb/Myha11eatA5w34INGzuqcLjJghYbBsT+PEuOyp7XMKZy3fA8f/gAuMIzjRY8NnyJxhyywkFQMyZtFXrGjwyK3D98E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714507745; c=relaxed/simple;
-	bh=7UvtNB02k6VTmwy5zAsBPwBiLYmwGXAcoZOvRIL45Ek=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=hUi5F3gVJRKi+lrjp67rA/d1gqn7BtvT+gk3Wkx1JtNpvdP+wEy0+7YuNgVyjbZO1qclAFLB7HO4ghSfBRkCSDNdkXeMSStcT7Ft3RFFF4krBzHT8KbPyZLSYcHEJx0/3nPUxDyIUQkMqXUUFlizEnaBESgrT2RLREoLuKvj//4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.69
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f69.google.com with SMTP id ca18e2360f4ac-7dec39bc0a4so332887539f.1
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 13:09:04 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714507743; x=1715112543;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=hY+v1AeEGfcOU76EUj+7NzLLLvKL0QKSQM+12WivBBk=;
-        b=YTiEkSvzQUxkI0qJ9KKkyDBKpndmseSdHLWoC57z0zXFCUZbndznHz8oRSbErowLko
-         g0ppHGIF9nBAflFMzlZkOe+B9Pp7sXQjEFZIABBgnbYKImHNEoiXTBuh95vMyEWMU98M
-         EyIuQ/SHbYaEfoscOcrHcjb5aFPad6sZuFdEOwnHBHOhs3tBIXLy1AdsltMB7EF0/M1m
-         ivH04ZhGNyIA0nIess7NnipYasyTYUdurmrNo9qJAU3M78PiGZGql020TCN0Xn+HpGMf
-         4g+xGykspjtqHalt0Pj6/dSUGBDFLdeK6H0vgwFYoEfNBU0lEnnkSzwB+dVvKJQxWWit
-         doLg==
-X-Gm-Message-State: AOJu0YwS1M/tYNLGiQt84TqF0WcYY38m4C7TOpPuNl9rtAvZ5I6aNsGU
-	lJzRL3E3vHormHz4D5Vy87tbS8+pUrQybBsz/y7vkWyi3iEbT7UpjE86yLvhwMmV9ps80TDIObs
-	PYKAdGAypD/AGKrE5W6Gzg5CXSOaIs1dnoYcfdSO5j910kluwEPcCapM=
-X-Google-Smtp-Source: AGHT+IEyF/4c/X1TtP9pPc5k2BsdF9vbmoLzQAN9NFguF2EbDjfL679JseeUwcT6Z903Fw5ugEVphxy1gbIe7ejYwS9/X7m0XkAb
+	s=arc-20240116; t=1714507770; c=relaxed/simple;
+	bh=+W073mdtgIFOzLF3pLZOnqWa4SW4FX7ciIxPNHIMnjQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=ujFekWfdeyddk2a7S6a7fjy9zTUyYCNeni1bFomisMpRog8AAC5OdVpeFl8fqvwCiI9qgm1D7SxfhbyYjEeTHvKq1Ka8GM2N6l541Kpao+vJuSedL7eZIfliclvuZYqxp094wPyDTpCqMY9ewIAsFRGRUqrVpVjHuPIcZjGwi/A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=tesarici.cz; spf=pass smtp.mailfrom=tesarici.cz; dkim=pass (2048-bit key) header.d=tesarici.cz header.i=@tesarici.cz header.b=SkBYcRS+; arc=none smtp.client-ip=37.205.15.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=tesarici.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tesarici.cz
+Received: from meshulam.tesarici.cz (dynamic-2a00-1028-83b8-1e7a-4427-cc85-6706-c595.ipv6.o2.cz [IPv6:2a00:1028:83b8:1e7a:4427:cc85:6706:c595])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by bee.tesarici.cz (Postfix) with ESMTPSA id 2B35B1B33AB;
+	Tue, 30 Apr 2024 22:09:25 +0200 (CEST)
+Authentication-Results: mail.tesarici.cz; dmarc=fail (p=quarantine dis=none) header.from=tesarici.cz
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tesarici.cz; s=mail;
+	t=1714507765; bh=9hVpNf0UpME2ZAq2VVrOWX05zjm2iYyBWxgQpaSqhEE=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=SkBYcRS+1DgzItYu4znKOQOwyrc0mqUDVbLVI5/da2r4YcYoqFL2jY0tNX/XsifwQ
+	 pQo2swe5T4NzzIX4WvCuOmGx2SxBkFY3T/1/N5hKNoh7z7Rz9RK0VLUdHTOjOtrgc2
+	 jrcEThrVOWriPcwS7+eM7weKDs6dobPEuUI/lZrV15/LSo4p7FDvYBVx8ETBuqKQgV
+	 d4ntvnWsjczfUiEbqqknTdYxwh+JQIU/SdHYIwt4OTEFuYeqB9fPhrDpqkMMX4Q/+i
+	 u/ZRIUAG3u5OxFASbqiWpGtuQNEKfazFHC86gvBHWstoyK2bvxBUfR8nhGxTOoGj31
+	 8HZ139QUNghkw==
+Date: Tue, 30 Apr 2024 22:09:24 +0200
+From: Petr =?UTF-8?B?VGVzYcWZw61r?= <petr@tesarici.cz>
+To: Michael Kelley <mhklinux@outlook.com>
+Cc: "mhkelley58@gmail.com" <mhkelley58@gmail.com>, "robin.murphy@arm.com"
+ <robin.murphy@arm.com>, "joro@8bytes.org" <joro@8bytes.org>,
+ "will@kernel.org" <will@kernel.org>, "hch@lst.de" <hch@lst.de>,
+ "m.szyprowski@samsung.com" <m.szyprowski@samsung.com>, "corbet@lwn.net"
+ <corbet@lwn.net>, "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+ "roberto.sassu@huaweicloud.com" <roberto.sassu@huaweicloud.com>
+Subject: Re: [PATCH v3 1/1] Documentation/core-api: Add swiotlb
+ documentation
+Message-ID: <20240430220924.3d0446f7@meshulam.tesarici.cz>
+In-Reply-To: <SN6PR02MB41579F43DD1ACB401EEC9E7AD41A2@SN6PR02MB4157.namprd02.prod.outlook.com>
+References: <20240429151337.1069470-1-mhklinux@outlook.com>
+	<20240430132413.69797af1@mordecai>
+	<SN6PR02MB41579F43DD1ACB401EEC9E7AD41A2@SN6PR02MB4157.namprd02.prod.outlook.com>
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-suse-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:9316:b0:487:c135:f929 with SMTP id
- kw22-20020a056638931600b00487c135f929mr11165jab.5.1714507743435; Tue, 30 Apr
- 2024 13:09:03 -0700 (PDT)
-Date: Tue, 30 Apr 2024 13:09:03 -0700
-In-Reply-To: <CABtBSaZ-Qqb0ZB7CC1JMuO2pkT6YmRvibhb67x=QkOQMCdq8ow@mail.gmail.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000032c00061755f178@google.com>
-Subject: Re: [syzbot] [ext4?] KMSAN: uninit-value in ext4_inlinedir_to_tree
-From: syzbot <syzbot+eaba5abe296837a640c0@syzkaller.appspotmail.com>
-To: linux-kernel@vger.kernel.org, shenxiaxi26@gmail.com, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-Hello,
+On Tue, 30 Apr 2024 15:48:42 +0000
+Michael Kelley <mhklinux@outlook.com> wrote:
 
-syzbot has tested the proposed patch and the reproducer did not trigger any issue:
+> From: Petr Tesa=C5=99=C3=ADk <petr@tesarici.cz> Sent: Tuesday, April 30, =
+2024 4:24 AM
+> > >
+> > > +Usage Scenarios
+> > > +---------------
+> > > +swiotlb was originally created to handle DMA for devices with addres=
+sing
+> > > +limitations. As physical memory sizes grew beyond 4 GiB, some device=
+s could
+> > > +only provide 32-bit DMA addresses. By allocating bounce buffer memor=
+y below
+> > > +the 4 GiB line, these devices with addressing limitations could stil=
+l work and
+> > > +do DMA. =20
+> >=20
+> > IIRC the origins are even older and bounce buffers were used to
+> > overcome the design flaws inherited all the way from the original IBM
+> > PC. These computers used an Intel 8237 for DMA. This chip has a 16-bit
+> > address register, but even the early 8088 CPUs had a 20-bit bus. So IBM
+> > added a separate 74LS670 4-by-4 register file chip to provide the high 4
+> > bits for each of the 4 DMA channels. As a side note, these bits were not
+> > updated when the 8237 address register was incrementing from 0xffff, so
+> > DMA would overflow at every 64K address boundary. PC AT then replaced
+> > these 4 bits with an 8-bit DMA "page" register to match the 24-bit
+> > address bus of an 80286. This design was not changed for 32-bit CPUs
+> > (i.e. 80386).
+> >=20
+> > In short, bounce buffers were not introduced because of 64-bit CPUs.
+> > They were already needed on 386 systems.
+> >=20
+> > OTOH this part of the history need not be mentioned in the
+> > documentation (unless you WANT it). =20
+>=20
+> I knew there was some even earlier history, but I didn't know the
+> details. :-(  I'll add some qualifying wording about there being multiple
+> DMA addressing limitations during the history of the x86 PCs, with
+> the 32-bit addressing as a more recent example.  But I won't try to
+> cover the details of what you describe.
 
-Reported-and-tested-by: syzbot+eaba5abe296837a640c0@syzkaller.appspotmail.com
+Yes, this sounds like a good level of detail.
 
-Tested on:
+> > > +
+> > > +More recently, Confidential Computing (CoCo) VMs have the guest VM's=
+ memory
+> > > +encrypted by default, and the memory is not accessible by the host h=
+ypervisor
+> > > +and VMM. For the host to do I/O on behalf of the guest, the I/O must=
+ be
+> > > +directed to guest memory that is unencrypted. CoCo VMs set a kernel-=
+wide option
+> > > +to force all DMA I/O to use bounce buffers, and the bounce buffer me=
+mory is set
+> > > +up as unencrypted. The host does DMA I/O to/from the bounce buffer m=
+emory, and
+> > > +the Linux kernel DMA layer does "sync" operations to cause the CPU t=
+o copy the
+> > > +data to/from the original target memory buffer. The CPU copying brid=
+ges between
+> > > +the unencrypted and the encrypted memory. This use of bounce buffers=
+ allows
+> > > +existing device drivers to "just work" in a CoCo VM, with no modific=
+ations
+> > > +needed to handle the memory encryption complexity. =20
+> >=20
+> > This part might be misleading. It sounds as if SWIOTLB would not be
+> > needed if drivers were smarter. =20
+>=20
+> I'm not sure I understand the point you are making. It is possible for a
+> driver to do its own manual bounce buffering to handle encrypted memory.
+> For example, in adding support for CoCo VMs, we encountered such a
+> driver/device with complex DMA and memory requirements that already
+> did some manual bounce buffering. When used in a CoCo VM, driver
+> modifications were needed to handle encrypted memory, but that was
+> the preferred approach because of the pre-existing manual bounce
+> buffering. In that case, indeed swiotlb was not needed by that driver/dev=
+ice.
+> But in the general case, we don't want to require driver modifications for
+> CoCo VMs. swiotlb bounce buffering makes it all work in the exactly the
+> situation you describe where the buffer memory could have originated
+> in a variety of places.
+>=20
+> Could you clarify your point?  Or perhaps suggest alternate wording
+> that would help avoid any confusion?
 
-commit:         50dffbf7 Merge tag 'for-v6.9-rc' of git://git.kernel.o..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=1489a58b180000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=bbf567496022057b
-dashboard link: https://syzkaller.appspot.com/bug?extid=eaba5abe296837a640c0
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=11ac32f8980000
+Ah, I wasn't aware that some drivers implement their own bounce
+buffers. I can't say I'm really happy about it, because such drivers
+must inevitably deal with all the complexities like IOMMU, decrypting,
+etc. But you're right - bounce buffers can be implemented by individual
+drivers.
 
-Note: testing is done by a robot and is best-effort only.
+I have now read the sentence again, and the problematic wording is
+"existing device drivers". I know it's not the same as "legacy device
+drivers", but it still leaves some doubt whether "future device drivers"
+should make use of SWIOTLB. So either remove "existing" or be more
+explicit and say "existing and future device drivers". Then it sounds
+fine to me.
+
+HTH
+Petr T
 
