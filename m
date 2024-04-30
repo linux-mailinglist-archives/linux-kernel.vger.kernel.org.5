@@ -1,244 +1,165 @@
-Return-Path: <linux-kernel+bounces-164646-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-164647-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 877C98B809A
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 21:33:37 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 522198B809C
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 21:33:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A61581C230F8
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 19:33:36 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 78C06B22DC2
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 19:33:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 31B3A1BED9A;
-	Tue, 30 Apr 2024 19:32:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 154DB19DF48;
+	Tue, 30 Apr 2024 19:32:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="MsPRclbO"
-Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="k3oI2cPL"
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6DCD1BED6D
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 19:32:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 23177199E8C
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 19:32:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714505532; cv=none; b=WBHNUsqpvvtdxUBU1318O4giHZI1O/DPIpSw/PMfNlQj4WhDpYZ5MQGYjrDDz0LgpuKs6UCxsgSuIelmW3eZRZccuq4X6P4CYfUfbKprFPOZ9sr+dANILx/HGfRf6wWav6i9HC/jwyI5YGFg3dlLNRn+lZrfnaOtVGzMdOEd4Uo=
+	t=1714505555; cv=none; b=WwYjc+Vqhpb6lxf5JqgX1PFo3RDbsrXYX4PQKlXRVOCYdlib4JT7xsSEkBo4lM+GvmkDA0I9VSfEF+xymxQplnxi7N2fUOvln+QqoyyxEaB4dkzmoA7sKqoIL56eRZ1jxM6u6Ec9NakOLNciiGq+eANcCSZLKyu0YN/o7n/hZfU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714505532; c=relaxed/simple;
-	bh=9MhcqD3oLMqfUjo9TWK3GGfH4maBAFWA/FNunEEvlt0=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=pcr+vXhdmpr967tf+1WmXz3iVuxwbkx2vcTJ2JTvDHu+Oj3zlBRLsfFXLCNMl5uJxsqVSxhM2BEVq9OHpDWv3ZWI0crYhDRlsTCrVa/xF+a73/n9qcf+kJ4o2w6t5CqTVWn8SdJXyYT6pbFDuw5j3Mfa8QzIwS+qTr8hh2LG4s0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=MsPRclbO; arc=none smtp.client-ip=209.85.128.202
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-61bd64c9eadso44534057b3.3
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 12:32:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1714505529; x=1715110329; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:reply-to:from:to:cc:subject:date:message-id:reply-to;
-        bh=zlyEud5d/bhoGiNpMEEmnNOfWYjdDQf4ZBXlBrFZHdU=;
-        b=MsPRclbOMMYK0Lbgrn14Uwt9UJd03dzLxDN6GDcbHIJY79k6Qajw4KY1t5Gj12ioKY
-         tK1/P25DwUWrA6eu3S2p2kaGq/JMKd02vpeGM8IxxxuKFX3FO6Br+07LSdbtU1oPlkLP
-         UJkAnpCe/uzmphUvQTC4LDdgC8Y3I3PLYfC9i/27sh/dpJXRHo9VuqRVNH9rMtib9OhV
-         VXCsku3QBHMsUQ2hiaqoZd85fIZIPR5hMwRvZf7uYhcgrMuzNWiHuf2tdsIS6UoZQfxA
-         LWq0xE0hf5oYe/9DQ7gcHh3m0P039KpPwqrgfNJBzJ6uFzJac3wOxB3hlc0LVEXwm+ee
-         kLZw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714505529; x=1715110329;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:reply-to:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=zlyEud5d/bhoGiNpMEEmnNOfWYjdDQf4ZBXlBrFZHdU=;
-        b=dJF4+9MKjbH7OfwrYMgzJdnlw8hqUW1XJivFCwSmp4Ypi6kTByNE8XsMniPpJWMV1/
-         BOl602IHGOIP2DYiOI5cIAPC49jU28+3uVdZ8k6vaJUuP6CYrih3aCc83s2NjPeqt+rn
-         /rlv6/OekKis8BsTlw+xosu8GFiTaIwYHS4rbx19ZEYM3RqRmC8eWjrEoZr8oXAPnpZF
-         kr7I3qHVGj52xTl1jz8FvEp0OkiQUmXb9uvxlbnOT2N0ORcPSX+C6KpYxrxK+6G78B53
-         iCAEjtUFW3nla2pI3WZeXJsFi3oNNyJ5sfvTUN/YgJdFrsi+/SgIVhbFB4cjBLzi81Lu
-         PU9g==
-X-Forwarded-Encrypted: i=1; AJvYcCVdolmDuvf16YKgxE7ht72kXnj4rTXm2SQUjknJmMviP5283CVeBOmD0dV8eqCuOSYC/lNJhkpJm7xDM7XRWAImEmxrfEzRZD2YxHb8
-X-Gm-Message-State: AOJu0YzWmIBTReVCUXFNlFIzQ2+KKfiaNLQaJdiBaJA+D+UKgmh2uYkh
-	iwgkB41JF8SdBQTDuLEIaTpy6X0GHmuxl/vgT/i5vgCFQn1OTeTgG4YksSv1osb5OStgY6QL5+m
-	SKg==
-X-Google-Smtp-Source: AGHT+IG4cB2+idKWRATGCb6OVW7YEX4JltpUlzKwSOtT4qBlUznDsr14mRRca16T5tdKvIRNLf2VCRL2BMM=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a0d:d2c5:0:b0:61d:3304:c25e with SMTP id
- u188-20020a0dd2c5000000b0061d3304c25emr134509ywd.7.1714505528716; Tue, 30 Apr
- 2024 12:32:08 -0700 (PDT)
-Reply-To: Sean Christopherson <seanjc@google.com>
-Date: Tue, 30 Apr 2024 12:31:57 -0700
-In-Reply-To: <20240430193157.419425-1-seanjc@google.com>
+	s=arc-20240116; t=1714505555; c=relaxed/simple;
+	bh=UJLqytGp3OTRG9/cYcksPJrkSyquPpBl8bgFG7LfZl4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=o8t3C5aQWr/z1IerPRiq9ZlOtBwpyxUWXr8oixaD1M7Ut+NUaF37Izy+iGHRfCH5Bhq14/fEoH3IJInyeX+zr0elEOYVw8ClSxiChpYvRkI7lTiLHdiCn5zy4qmqdM/Ce17ofVUwNTr+VuV2NNKM2gVxfZREzIweZDiw+9RDHmg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=k3oI2cPL; arc=none smtp.client-ip=65.109.113.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 14FBD40E01E8;
+	Tue, 30 Apr 2024 19:32:29 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+	header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id R3gHbPJ8A3ZS; Tue, 30 Apr 2024 19:32:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1714505545; bh=JU4aymvuSrbmUI4cPP+NTtovpZW0bUCvqaMeZt65ydQ=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=k3oI2cPL2O1cWG7otQLgxt9lPmV5wHqYOVqcHnWgsQeav64rH5zrxnH+Ib+oa+II4
+	 7B6ZJ1ljpigb/nD1gv/WlxWhb2WeZJ/Y/e1IhUOeV12UzMJ7uIQylvjmIcPnZQ5UrF
+	 SZhzWmbdwc6F/V2w90RJOz3o4r/QsHHbM3zNL23AOzDXdv3J0OXjpCoYhMRoIWrnL2
+	 1psbJQS88A/KjG+GCOuVuOol/D1VGlLgUqIaUdlEt2h2//hQ26NFclHQT12w9vdJgE
+	 bw0qlUocwkLNjy99orlBq37x9+1DdvRwqdCBy0zVyHIChjbhbyFsTv3BDxaLjtTYO3
+	 wz10vjnRu67DNtE9WVBlQ6q3/VMO4dW2pwT9F1TXuhNg8XLBabvA8p7g5IhHhbMUHO
+	 zDCn5I3HjMvWnovNdpOm8m/Qw2bSVMFSq0koALpV9eG+0lAjA8oWLi/TLT2irRs8Qg
+	 gF4uhIsvEhRe4WO3KTI+na1+w+HrPa0q9LxU9dXroUDqKZRWB36SNTJRY/u0g/wbHv
+	 2LdgtVLImyz5BKPgmQnAK7Ryzhfvvxe6AmfRyvQWxP8bwqyAsP762X5DcA6F8DYZRQ
+	 o3XRDglCLVToUgFMF+h0N/dKhRcfkAYk6G/IRA8RRwWVQ7WziDIOVhuDhpohgu1h8D
+	 AxPFOjWtoWDc8lFQb6Eyv9RM=
+Received: from zn.tnic (pd953020b.dip0.t-ipconnect.de [217.83.2.11])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id BA19340E01A1;
+	Tue, 30 Apr 2024 19:32:17 +0000 (UTC)
+Date: Tue, 30 Apr 2024 21:32:11 +0200
+From: Borislav Petkov <bp@alien8.de>
+To: Sean Christopherson <seanjc@google.com>
+Cc: kernel test robot <oliver.sang@intel.com>, oe-lkp@lists.linux.dev,
+	lkp@intel.com, linux-kernel@vger.kernel.org, x86@kernel.org,
+	Ingo Molnar <mingo@kernel.org>, Srikanth Aithal <sraithal@amd.com>
+Subject: Re: [tip:x86/alternatives] [x86/alternatives] ee8962082a:
+ WARNING:at_arch/x86/kernel/cpu/cpuid-deps.c:#do_clear_cpu_cap
+Message-ID: <20240430193211.GEZjFHO0ayDXtgvbE7@fat_crate.local>
+References: <202404302233.f27f91b2-oliver.sang@intel.com>
+ <20240430172313.GCZjEpAfUECkEZ9S5L@fat_crate.local>
+ <ZjE7DkTBSbPlBN8k@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240430193157.419425-1-seanjc@google.com>
-X-Mailer: git-send-email 2.45.0.rc0.197.gbae5840b3b-goog
-Message-ID: <20240430193157.419425-5-seanjc@google.com>
-Subject: [PATCH 4/4] KVM: Delete the now unused kvm_arch_sched_in()
-From: Sean Christopherson <seanjc@google.com>
-To: Marc Zyngier <maz@kernel.org>, Oliver Upton <oliver.upton@linux.dev>, 
-	Tianrui Zhao <zhaotianrui@loongson.cn>, Bibo Mao <maobibo@loongson.cn>, 
-	Huacai Chen <chenhuacai@kernel.org>, Michael Ellerman <mpe@ellerman.id.au>, 
-	Anup Patel <anup@brainfault.org>, Paul Walmsley <paul.walmsley@sifive.com>, 
-	Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, 
-	Christian Borntraeger <borntraeger@linux.ibm.com>, Janosch Frank <frankja@linux.ibm.com>, 
-	Claudio Imbrenda <imbrenda@linux.ibm.com>, Sean Christopherson <seanjc@google.com>, 
-	Paolo Bonzini <pbonzini@redhat.com>
-Cc: linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev, 
-	kvm@vger.kernel.org, loongarch@lists.linux.dev, linux-mips@vger.kernel.org, 
-	linuxppc-dev@lists.ozlabs.org, kvm-riscv@lists.infradead.org, 
-	linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <ZjE7DkTBSbPlBN8k@google.com>
 
-Delete kvm_arch_sched_in() now that all implementations are nops.
+On Tue, Apr 30, 2024 at 11:40:14AM -0700, Sean Christopherson wrote:
+> Hmm, I don't think the problem is that init_ia32_feat_ctl() is called too late.
+> It too is called from the BSP prior to alternative_instructions():
+> 
+>   arch_cpu_finalize_init()
+>   |
+>   -> identify_boot_cpu()
+>      |
+>      -> identify_cpu()
+>         |
+>         -> .c_init() => init_intel()
 
-Signed-off-by: Sean Christopherson <seanjc@google.com>
+Yeah, but look at the his stacktrace:
+
+[ 0.055225][ T0] init_intel (arch/x86/include/asm/msr.h:146 arch/x86/include/asm/msr.h:300 arch/x86/kernel/cpu/intel.c:583
++arch/x86/kernel/cpu/intel.c:687)
+[ 0.055225][ T0] identify_cpu (arch/x86/kernel/cpu/common.c:1824)
+[ 0.055225][ T0] identify_secondary_cpu (arch/x86/kernel/cpu/common.c:1949)
+[ 0.055225][ T0] smp_store_cpu_info (arch/x86/kernel/smpboot.c:333)
+
+That's after alternatives.
+
+> Ah, and the WARN even specifically checks for the case where there's divergence
+> from the boot CPU:
+> 
+> 	if (boot_cpu_has(feature))
+> 		WARN_ON(alternatives_patched);
+
+Funny you should mention that - I have this check in
+setup_force_cpu_cap() too which works on boot_cpu_data *BUT*, actually,
+the test in do_clear_cpu_cap() should be:
+
+        if (c && cpu_has(c, feature))
+                WARN_ON(alternatives_patched);
+
+because setting a feature flag in *any* CPU's cap field is wrong after
+alternatives because as explained earlier.
+
+I know, our feature flags handling is a major mess.
+
+> So I think this is a "real" warning about a misconfigured system, where VMX is
+> fully configured in MSR_IA32_FEAT_CTL on the boot CPU, but is disabled on a
+> secondary CPU.
+
+And that's yet another issue. And it already warns about it:
+
+[    0.835741][    T1] smpboot: x86: Booting SMP configuration:
+[    0.836040][    T1] .... node  #0, CPUs:        #1  #2  #3  #4  #5  #6  #7  #8  #9 #10 #11 #12 #13 #14 #15 #16 #17
+[    0.055225][    T0] masked ExtINT on CPU#1
+[    0.055225][    T0] x86/cpu: VMX (outside TXT) disabled by BIOS
+^^^^^^^^^^^^^^^^^^^^
+
+Oliver, does the second warning go away if you do this?
+
 ---
- arch/arm64/include/asm/kvm_host.h     | 1 -
- arch/loongarch/include/asm/kvm_host.h | 1 -
- arch/mips/include/asm/kvm_host.h      | 1 -
- arch/powerpc/include/asm/kvm_host.h   | 1 -
- arch/riscv/include/asm/kvm_host.h     | 1 -
- arch/s390/include/asm/kvm_host.h      | 1 -
- arch/x86/kvm/pmu.c                    | 6 +++---
- arch/x86/kvm/x86.c                    | 5 -----
- include/linux/kvm_host.h              | 2 --
- virt/kvm/kvm_main.c                   | 1 -
- 10 files changed, 3 insertions(+), 17 deletions(-)
+diff --git a/arch/x86/kernel/cpu/cpuid-deps.c b/arch/x86/kernel/cpu/cpuid-deps.c
+index 5dd427c6feb2..93fa2afc0c67 100644
+--- a/arch/x86/kernel/cpu/cpuid-deps.c
++++ b/arch/x86/kernel/cpu/cpuid-deps.c
+@@ -114,7 +114,7 @@ static void do_clear_cpu_cap(struct cpuinfo_x86 *c, unsigned int feature)
+ 	if (WARN_ON(feature >= MAX_FEATURE_BITS))
+ 		return;
+ 
+-	if (boot_cpu_has(feature))
++	if (c && cpu_has(c, feature))
+ 		WARN_ON(alternatives_patched);
+ 
+ 	clear_feature(c, feature);
 
-diff --git a/arch/arm64/include/asm/kvm_host.h b/arch/arm64/include/asm/kvm_host.h
-index 9e8a496fb284..a12d3bb0b590 100644
---- a/arch/arm64/include/asm/kvm_host.h
-+++ b/arch/arm64/include/asm/kvm_host.h
-@@ -1180,7 +1180,6 @@ static inline bool kvm_system_needs_idmapped_vectors(void)
- }
- 
- static inline void kvm_arch_sync_events(struct kvm *kvm) {}
--static inline void kvm_arch_sched_in(struct kvm_vcpu *vcpu, int cpu) {}
- 
- void kvm_arm_init_debug(void);
- void kvm_arm_vcpu_init_debug(struct kvm_vcpu *vcpu);
-diff --git a/arch/loongarch/include/asm/kvm_host.h b/arch/loongarch/include/asm/kvm_host.h
-index 69305441f40d..64ca60a3ce24 100644
---- a/arch/loongarch/include/asm/kvm_host.h
-+++ b/arch/loongarch/include/asm/kvm_host.h
-@@ -228,7 +228,6 @@ static inline bool kvm_is_ifetch_fault(struct kvm_vcpu_arch *arch)
- static inline void kvm_arch_hardware_unsetup(void) {}
- static inline void kvm_arch_sync_events(struct kvm *kvm) {}
- static inline void kvm_arch_memslots_updated(struct kvm *kvm, u64 gen) {}
--static inline void kvm_arch_sched_in(struct kvm_vcpu *vcpu, int cpu) {}
- static inline void kvm_arch_vcpu_blocking(struct kvm_vcpu *vcpu) {}
- static inline void kvm_arch_vcpu_unblocking(struct kvm_vcpu *vcpu) {}
- static inline void kvm_arch_vcpu_block_finish(struct kvm_vcpu *vcpu) {}
-diff --git a/arch/mips/include/asm/kvm_host.h b/arch/mips/include/asm/kvm_host.h
-index 179f320cc231..6743a57c1ab4 100644
---- a/arch/mips/include/asm/kvm_host.h
-+++ b/arch/mips/include/asm/kvm_host.h
-@@ -890,7 +890,6 @@ static inline void kvm_arch_sync_events(struct kvm *kvm) {}
- static inline void kvm_arch_free_memslot(struct kvm *kvm,
- 					 struct kvm_memory_slot *slot) {}
- static inline void kvm_arch_memslots_updated(struct kvm *kvm, u64 gen) {}
--static inline void kvm_arch_sched_in(struct kvm_vcpu *vcpu, int cpu) {}
- static inline void kvm_arch_vcpu_blocking(struct kvm_vcpu *vcpu) {}
- static inline void kvm_arch_vcpu_unblocking(struct kvm_vcpu *vcpu) {}
- 
-diff --git a/arch/powerpc/include/asm/kvm_host.h b/arch/powerpc/include/asm/kvm_host.h
-index 8abac532146e..c4fb6a27fb92 100644
---- a/arch/powerpc/include/asm/kvm_host.h
-+++ b/arch/powerpc/include/asm/kvm_host.h
-@@ -897,7 +897,6 @@ struct kvm_vcpu_arch {
- static inline void kvm_arch_sync_events(struct kvm *kvm) {}
- static inline void kvm_arch_memslots_updated(struct kvm *kvm, u64 gen) {}
- static inline void kvm_arch_flush_shadow_all(struct kvm *kvm) {}
--static inline void kvm_arch_sched_in(struct kvm_vcpu *vcpu, int cpu) {}
- static inline void kvm_arch_vcpu_blocking(struct kvm_vcpu *vcpu) {}
- static inline void kvm_arch_vcpu_unblocking(struct kvm_vcpu *vcpu) {}
- 
-diff --git a/arch/riscv/include/asm/kvm_host.h b/arch/riscv/include/asm/kvm_host.h
-index 484d04a92fa6..6cd7a576ef14 100644
---- a/arch/riscv/include/asm/kvm_host.h
-+++ b/arch/riscv/include/asm/kvm_host.h
-@@ -272,7 +272,6 @@ struct kvm_vcpu_arch {
- };
- 
- static inline void kvm_arch_sync_events(struct kvm *kvm) {}
--static inline void kvm_arch_sched_in(struct kvm_vcpu *vcpu, int cpu) {}
- 
- #define KVM_RISCV_GSTAGE_TLB_MIN_ORDER		12
- 
-diff --git a/arch/s390/include/asm/kvm_host.h b/arch/s390/include/asm/kvm_host.h
-index 95990461888f..e9fcaf4607a6 100644
---- a/arch/s390/include/asm/kvm_host.h
-+++ b/arch/s390/include/asm/kvm_host.h
-@@ -1045,7 +1045,6 @@ extern int kvm_s390_gisc_register(struct kvm *kvm, u32 gisc);
- extern int kvm_s390_gisc_unregister(struct kvm *kvm, u32 gisc);
- 
- static inline void kvm_arch_sync_events(struct kvm *kvm) {}
--static inline void kvm_arch_sched_in(struct kvm_vcpu *vcpu, int cpu) {}
- static inline void kvm_arch_free_memslot(struct kvm *kvm,
- 					 struct kvm_memory_slot *slot) {}
- static inline void kvm_arch_memslots_updated(struct kvm *kvm, u64 gen) {}
-diff --git a/arch/x86/kvm/pmu.c b/arch/x86/kvm/pmu.c
-index c397b28e3d1b..75346a588e13 100644
---- a/arch/x86/kvm/pmu.c
-+++ b/arch/x86/kvm/pmu.c
-@@ -521,9 +521,9 @@ void kvm_pmu_handle_event(struct kvm_vcpu *vcpu)
- 	}
- 
- 	/*
--	 * Unused perf_events are only released if the corresponding MSRs
--	 * weren't accessed during the last vCPU time slice. kvm_arch_sched_in
--	 * triggers KVM_REQ_PMU if cleanup is needed.
-+	 * Release unused perf_events if the corresponding guest MSRs weren't
-+	 * accessed during the last vCPU time slice (need_cleanup is set when
-+	 * the vCPU is scheduled back in).
- 	 */
- 	if (unlikely(pmu->need_cleanup))
- 		kvm_pmu_cleanup(vcpu);
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index 9b0a21f2e56e..17d6ce0d4fa6 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -12577,11 +12577,6 @@ bool kvm_vcpu_is_bsp(struct kvm_vcpu *vcpu)
- 	return (vcpu->arch.apic_base & MSR_IA32_APICBASE_BSP) != 0;
- }
- 
--void kvm_arch_sched_in(struct kvm_vcpu *vcpu, int cpu)
--{
--
--}
--
- void kvm_arch_free_vm(struct kvm *kvm)
- {
- #if IS_ENABLED(CONFIG_HYPERV)
-diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
-index 2f5e35eb7eab..85b6dd7927fe 100644
---- a/include/linux/kvm_host.h
-+++ b/include/linux/kvm_host.h
-@@ -1496,8 +1496,6 @@ int kvm_arch_vcpu_ioctl_set_guest_debug(struct kvm_vcpu *vcpu,
- 					struct kvm_guest_debug *dbg);
- int kvm_arch_vcpu_ioctl_run(struct kvm_vcpu *vcpu);
- 
--void kvm_arch_sched_in(struct kvm_vcpu *vcpu, int cpu);
--
- void kvm_arch_vcpu_load(struct kvm_vcpu *vcpu, int cpu, bool sched_in);
- void kvm_arch_vcpu_put(struct kvm_vcpu *vcpu);
- int kvm_arch_vcpu_precreate(struct kvm *kvm, unsigned int id);
-diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-index 4a4b29a9bace..b154b22a3b84 100644
---- a/virt/kvm/kvm_main.c
-+++ b/virt/kvm/kvm_main.c
-@@ -6278,7 +6278,6 @@ static void kvm_sched_in(struct preempt_notifier *pn, int cpu)
- 	WRITE_ONCE(vcpu->ready, false);
- 
- 	__this_cpu_write(kvm_running_vcpu, vcpu);
--	kvm_arch_sched_in(vcpu, cpu);
- 	kvm_arch_vcpu_load(vcpu, cpu, true);
- }
- 
+--
+
+my guess would be no and that init_ia32_feat_ctl() really needs to go
+before alternatives have been patched because it clears flags.
+
+Thx.
+
 -- 
-2.45.0.rc0.197.gbae5840b3b-goog
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
 
