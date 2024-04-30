@@ -1,282 +1,313 @@
-Return-Path: <linux-kernel+bounces-164620-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-164622-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E38648B8035
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 20:59:08 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id CBC598B803C
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 21:01:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9B966284C0F
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 18:59:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EC7961C22482
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 19:01:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 506A5194C77;
-	Tue, 30 Apr 2024 18:59:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 08FCC194C96;
+	Tue, 30 Apr 2024 19:00:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="OJbjC1Vj"
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2075.outbound.protection.outlook.com [40.107.244.75])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BMMaJJZK"
+Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8214917BB1E;
-	Tue, 30 Apr 2024 18:59:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.244.75
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714503544; cv=fail; b=C/sWdBMyMnidtS+J9NydZVGZZjN3JYS4MgcP2VRtEBUo3BG6xQtX1N2Z2s2KNwBCYyuGgPt/05bnDQZiKoYpag3a0hIIQEl2JVZi/KXOv17MVBTa3Vc+6TFTNEUmqVzDy4pP0Nyog1n35hWgYpjMtxNPIMO72bOwgkTAJhjjLes=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714503544; c=relaxed/simple;
-	bh=N/yfGO9fGm9Z2bf1doGNWD8rDkI83fskKPINOGXbEwg=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=tPRPiVO5ggzDwlRin7PHRLVvLMGAoxUWlPEttQpB1h5F56WRAiOtuSh69DCNqiJZQn62LGFo+t7SthRUvTJ95bp1ZUWApZqYVVcXDuGjq2Dq3RjHaOB38PtRTZwAeemmznM64BrZ36yXr9k50/U5ySYIVSYEa9Vnz+LO4H5qu3s=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=OJbjC1Vj; arc=fail smtp.client-ip=40.107.244.75
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=gwL9sd6HpsXqLUSWX3QPJChMEDbyUZg4gCFlip73BRMEHKxVUHmahGgIYnmvKdVAsD4bSqhVubwu3bB7YR77ZjO+qV51p7f98ySwN0zRaOC68Zl+79FN17ah1pVogy2scfi4aWiuteWVWAAJoqU1Hhgo0ah8zwxDsxY9tWsqg1Tvv2Lh/kiCjkKES+D2l2zbv9S1HvwvG0rnyRvRvaEP6R4wuN6ivT86/4DeAIPb6YiRXNpEKvCTzhJ3e1/NXoFhwfUszVX1PlbEMgSXMzch6hoiC5iT1Wjx9TfLi0kvtdrXOdbZ1Uu5LOqzXtb/cA25GHyzZTrpn5Px36fYTXgrjg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=M2vIGrngMlHz4Y7lX4nOfuSs7om1dy9RmHVpVFxRG+k=;
- b=C4/2EtMWpAj1qCctxYmtY4ejD0UAEvfey9yKiKH2fVM6akd2lvUwGia5cG9dZTiDGCwS5Kr9bJX622C4gOl4SCzyVVyI8U0eJc/YNqs8uuYJUub9Zd9EOwlAfN2LbGalGnLeCj3pzAJO3lIOncAWwoNmSwPU7rgJKmrfzePfCt9NpIDMK8RdVG09LviRe4cg5tBW7s5ML22/f3y0TOCWz+Trc9No7Tsz7SBD2YeaNh/8sXxlSCfnKVA75IDHmzEfYgrPNysAPjd1PunGaKyf6t3kvjG9mUFDrE1vgsJ/YGsEFq/gXra0NcwT7fZILYxKdjOImG5jWNma9YQSvFioJw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.118.232) smtp.rcpttodomain=kernel.org smtp.mailfrom=nvidia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=M2vIGrngMlHz4Y7lX4nOfuSs7om1dy9RmHVpVFxRG+k=;
- b=OJbjC1VjXouSUtTh2rQE56qyRT+lOSgkJe6QAuqsJmpOK9NjdrOcU9oTfCNiVG/vmRuEUcaXVXMURhRE5IOFzoXAJSoGiGkx4H1N8sw3Unz8FV4iNC4E+RbZp1fkX0ZPbSgbLwFk/1qkDFFMUbIk++c9k/QO3U37U1//xyjqw2XYTBYGTrDLO8XRnT84fJA8nTIDG1d4LIBI+gxm5pGUIYR1K2isUAI3Ntcb1sQx1yDYtOUNOSkvaTyg00GSAx472joX9ysjGlWL7HMqtmqOhOXWzGTDYypz8DS9qoR3/rOThWAAAMI9tKBlLGdl4pg7WqzZOvQ93rq/k5CxzCx/+g==
-Received: from DS7PR03CA0079.namprd03.prod.outlook.com (2603:10b6:5:3bb::24)
- by MN6PR12MB8566.namprd12.prod.outlook.com (2603:10b6:208:47c::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7519.36; Tue, 30 Apr
- 2024 18:58:56 +0000
-Received: from DS1PEPF0001709C.namprd05.prod.outlook.com
- (2603:10b6:5:3bb:cafe::6b) by DS7PR03CA0079.outlook.office365.com
- (2603:10b6:5:3bb::24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7472.34 via Frontend
- Transport; Tue, 30 Apr 2024 18:58:56 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.118.232)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.118.232 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.118.232; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.118.232) by
- DS1PEPF0001709C.mail.protection.outlook.com (10.167.18.106) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7544.18 via Frontend Transport; Tue, 30 Apr 2024 18:58:55 +0000
-Received: from drhqmail203.nvidia.com (10.126.190.182) by mail.nvidia.com
- (10.127.129.5) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Tue, 30 Apr
- 2024 11:58:46 -0700
-Received: from drhqmail202.nvidia.com (10.126.190.181) by
- drhqmail203.nvidia.com (10.126.190.182) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.4; Tue, 30 Apr 2024 11:58:46 -0700
-Received: from Asurada-Nvidia (10.127.8.12) by mail.nvidia.com
- (10.126.190.181) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4 via Frontend
- Transport; Tue, 30 Apr 2024 11:58:45 -0700
-Date: Tue, 30 Apr 2024 11:58:44 -0700
-From: Nicolin Chen <nicolinc@nvidia.com>
-To: Jason Gunthorpe <jgg@nvidia.com>
-CC: <will@kernel.org>, <robin.murphy@arm.com>, <joro@8bytes.org>,
-	<thierry.reding@gmail.com>, <vdumpa@nvidia.com>, <jonathanh@nvidia.com>,
-	<linux-kernel@vger.kernel.org>, <iommu@lists.linux.dev>,
-	<linux-arm-kernel@lists.infradead.org>, <linux-tegra@vger.kernel.org>
-Subject: Re: [PATCH v6 6/6] iommu/tegra241-cmdqv: Limit CMDs for guest owned
- VINTF
-Message-ID: <ZjE/ZKX7okSkztpR@Asurada-Nvidia>
-References: <cover.1714451595.git.nicolinc@nvidia.com>
- <4ee1f867e838b90a21de16b12cf2e39ba699eab4.1714451595.git.nicolinc@nvidia.com>
- <20240430170655.GU941030@nvidia.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 195B5172BD7;
+	Tue, 30 Apr 2024 19:00:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.50
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1714503654; cv=none; b=djUIzaS5ANEX4S54iDvnYtjO8mOoAnsMMOzOQAiQjqmbZVZ8Pb9J8SU/4JDyeqsjFWPoT9BDa9OO18/ZPckYgOdIVDvxLZ5psFGYORr6O43dsAPpjyOVp2fa9LbKOmlcstd3ZkdPMU/9DjeJgoZDZ1f1fA0EG1km9JzqcHZXz8w=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1714503654; c=relaxed/simple;
+	bh=u/gdSWdGM8mYYMgrUDNuHsUJmS41lA5p3je7EAW1HdI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=aDljxKjqCb+MTN8kTq6EPTVG/noFQhPab4vvETxfc01q/bxBtXRK0AbEfReSTTsTDmQzEDk0iM11suqicIbHRXeaJAcIgB1gVhu5fqJ0Q2lJntBNdAysPh42gQPg+dwA6GEGPKOejzhaWwSsPxl6GiSurPWOeG32ppyO6oMWLV4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BMMaJJZK; arc=none smtp.client-ip=209.85.208.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-56e6affdd21so2486822a12.3;
+        Tue, 30 Apr 2024 12:00:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1714503629; x=1715108429; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=AHowd7htZFxY677z1I+HnpA7wxpWxJyclfFsUx4Xnwk=;
+        b=BMMaJJZKApU7wYwaSOjob2+OYxPK9rp7ou5ZiMbvH36ADAgRH42ikngVarbF/m7/Jo
+         deFlq+ibyUfnPrB9YTd1FcjHu/CUvGlJEJbjJsUeVOJ3PQEx5m3xd1HsraEwVUpVZl0w
+         dcgyXPWR6eY9QkrEqlTNjxSAE7ppkN4AjvNwjKBSwfdxXuDlIiTG0WEYXJZftHRpdoOu
+         MxAvKjCiS4QrRzY7u/0+fhHTUiUUVCGUrsfxdeYQq8TQWF4xAxSgq+DnzA8bE38anNaG
+         emr9Yvr0zu7140rs01l+vwv+B2DyOEhIFaBdQ43rAGA2ALNkC79XakHZP3QMB/dSdcae
+         pAOQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714503629; x=1715108429;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=AHowd7htZFxY677z1I+HnpA7wxpWxJyclfFsUx4Xnwk=;
+        b=KMoliAS1zZsBGi842oEJ/cgK+osK8x8QhCpmaHe+GIsHPsF1K4lloJmy4Z6MwCs/CU
+         1gvH3OCyXfwlI6GQTtPpLCp1jz3A/rAzKKwOicOX9uRmOgCtjG0Q1FwMBA6VGh/wloYo
+         RJFzTcLZBhQfzcozoz2dP0StaQS8mvZwuPuPfYlms4HQ+MqZoWHHTb1AIXKtdiszUwBH
+         lBBisgJHV0jw+D8NK/pk6Xj8jaIXNcYhCZ6C4x0Vst+zI3u+7FGK1nJa8xrUDCdSwPE/
+         MHfaypWPSBi+43ht3ElEV4QWeGApQWabu7ddg3igZfqtGiKqthEXZlIaRnQvxpi18ZcX
+         7CpA==
+X-Forwarded-Encrypted: i=1; AJvYcCVF2uSJ+IsJHF7CunNE4Z7OGDJS7q6V1fRzCFU66o1yt3/7IuBHHGpcFPXiHVAM52//LiuZQLghFlL5RZCarc9Y77A9yYOxUDjYjHXmLFlQUIY4glJqthrKW3X7NMDKnrTQM1v03eLPed+QbQ==
+X-Gm-Message-State: AOJu0YyX415OG3z7v8OE0Y+IKeD/sIYOQINCjECMamZTuUDZm3rQ6Ax9
+	P8WcUAwPKGPpDCcSvnwes8Vd0J75o5v0zPQKwIsznufaPP0YBwgwM5B/Qps+1+9bcMY+0mj2y/Y
+	6810IDS7uKepOprqo7fp084KF9Zw=
+X-Google-Smtp-Source: AGHT+IHiCnT1wBxkeZPjxMy2GYxAXUTW3RAlqRgeZqMNovVmwAifCqMTzfxkI/+EHfgj0kHaYExgEM7fOKl+feI68qo=
+X-Received: by 2002:a50:c353:0:b0:570:5bcc:f749 with SMTP id
+ q19-20020a50c353000000b005705bccf749mr147139edb.29.1714503629075; Tue, 30 Apr
+ 2024 12:00:29 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20240430170655.GU941030@nvidia.com>
-X-NV-OnPremToCloud: ExternallySecured
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS1PEPF0001709C:EE_|MN6PR12MB8566:EE_
-X-MS-Office365-Filtering-Correlation-Id: dc9bd359-0482-463a-c6b1-08dc69479612
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230031|376005|36860700004|1800799015|82310400014;
-X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?4iuTsTmODsYtjVQSLwViasaIM/gJ8dMwGyxXQqPZjeGkQIx2NYDAqI6Ouorm?=
- =?us-ascii?Q?7lfyy8HZZxRf+0VJoE9JDg+buyERsymy7K9FXu6MZfvOgjwKsh0B5dc4qP2+?=
- =?us-ascii?Q?b5dhsaGu2QXLdKg+rXeezxgHhkobNlZi+KQZ+WWg9ng3MJeCqMQumoQe+6lz?=
- =?us-ascii?Q?VxaNsflVwWd+nfD3ycin1rHQAEhywfDTh8c4fvbI2TTrcb2iqWWoD1/KVDnm?=
- =?us-ascii?Q?nP7z3iAlhrGAe8RQQb3k/x0/TtFb3arJa52Wks8cdGtKaGLkcixYJHXe8VG3?=
- =?us-ascii?Q?4JBTSoCO750zNXHALuTKghsuyk4atSrp7SkXzMN9sX2IEgEljtX50cWFyEKu?=
- =?us-ascii?Q?KLLO0nwYDTn8tMxgVDud1L3uQ6ktJumMq61c0hmU4tBGa19GR9bCb3hWgIO3?=
- =?us-ascii?Q?PUk4HEIGdSZeEEcNawvOhD5DKiO3GtEHA+lECDSUu4fmlgFxcM257P1BA7Ej?=
- =?us-ascii?Q?i+v96E+nSEp+tVM4lC+FUobHPDo4ufzM0WDfeAYZWw4YLyGKTvYo7iJZifO9?=
- =?us-ascii?Q?qB9DwBOIiMe4XJXJk6+071C7LM92QrBnlWZpjhr/k+BRQyK0NhhmMIKr/EmL?=
- =?us-ascii?Q?smeC2gJQcIoaX64m2Y6qxHnDgTqKrE8XTl5ZyBDBaCYfLddwX5ZD8o37lCEo?=
- =?us-ascii?Q?riIXuaCpsK7c47bJyyKOz3/4Hw3Y3EVYlc6NIKhU9tSorVWecGxv/vN3Rk5h?=
- =?us-ascii?Q?qrEdFFTihQpUbaEJqHuOcEtoiClFXqs72/138I42rR1ulYjiI8hieN6uIfQv?=
- =?us-ascii?Q?shZAqVGpYi+UNgAeavR5eeJD2xrQwWJvpARGCFh6LqghEIgX2pK28gQlkd9H?=
- =?us-ascii?Q?7D+LYZ80y96IixHcxL0Gp/iuGWGGvjAv7H2IYEs3zsECbn6JFU0iZQx2vOqt?=
- =?us-ascii?Q?Q8twYJD7/jlX6XU7+kaKvLw/A0y2KwkEdbv+rf9EPDBBvG/1jlRVG+aiVUTX?=
- =?us-ascii?Q?OTpn+EGwAg1Fwl04CpcappO5dSkSqbhhMpRidO0h5NoH6O2tI3Dd2YXxIafS?=
- =?us-ascii?Q?7TREjq/jQT7MHrb+RcJh8uyv6uNzFeVVijk4Xns864Hu3rBR9cRpoJJ3MfBc?=
- =?us-ascii?Q?1RY6NSCAtQ8EBZLIQGedb1dppr6v8OzaTEbTCs/sAJgcSyVZ7F8X27LRkaqC?=
- =?us-ascii?Q?rwiGNlwAiy8iAdXz+fgLuhIkU/n5yUwtn5xAwt0rk9iJjNOe8TTQHRzYbJV+?=
- =?us-ascii?Q?1xJTV4lXxpvkrmIAc15LWnfvL5oJFgHhVlAL12NYk+fOR7gyjizy6YgQCm5V?=
- =?us-ascii?Q?sw8Uw/TOL9uFg7Gl70VNcP4Z7xfnpUyF8XtWWSpTOlBSfN7Um6kzSPKPLGMI?=
- =?us-ascii?Q?HvVMFO2S2RhGpVT6mZFkcKyI4lSeilLScduxhjH4qLCBpoW4fQEg8ov3cyhr?=
- =?us-ascii?Q?50DcbXg=3D?=
-X-Forefront-Antispam-Report:
-	CIP:216.228.118.232;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc7edge1.nvidia.com;CAT:NONE;SFS:(13230031)(376005)(36860700004)(1800799015)(82310400014);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Apr 2024 18:58:55.9769
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: dc9bd359-0482-463a-c6b1-08dc69479612
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.118.232];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	DS1PEPF0001709C.namprd05.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN6PR12MB8566
+References: <20240123144543.9405-1-quic_bibekkum@quicinc.com> <20240123144543.9405-4-quic_bibekkum@quicinc.com>
+In-Reply-To: <20240123144543.9405-4-quic_bibekkum@quicinc.com>
+From: Rob Clark <robdclark@gmail.com>
+Date: Tue, 30 Apr 2024 12:00:16 -0700
+Message-ID: <CAF6AEGs3_wBNo58EbGicFoQuq8--fDohTGv1JSFgoViygLS5Lg@mail.gmail.com>
+Subject: Re: [PATCH v9 3/5] iommu/arm-smmu: introduction of ACTLR for custom
+ prefetcher settings
+To: Bibek Kumar Patro <quic_bibekkum@quicinc.com>
+Cc: will@kernel.org, robin.murphy@arm.com, joro@8bytes.org, 
+	dmitry.baryshkov@linaro.org, konrad.dybcio@linaro.org, jsnitsel@redhat.com, 
+	quic_bjorande@quicinc.com, mani@kernel.org, quic_eberman@quicinc.com, 
+	robdclark@chromium.org, u.kleine-koenig@pengutronix.de, robh@kernel.org, 
+	vladimir.oltean@nxp.com, quic_pkondeti@quicinc.com, quic_molvera@quicinc.com, 
+	linux-arm-msm@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+	iommu@lists.linux.dev, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Apr 30, 2024 at 02:06:55PM -0300, Jason Gunthorpe wrote:
-> On Mon, Apr 29, 2024 at 09:43:49PM -0700, Nicolin Chen wrote:
-> > -struct arm_smmu_cmdq *tegra241_cmdqv_get_cmdq(struct arm_smmu_device *smmu)
-> > +static bool tegra241_vintf_support_cmds(struct tegra241_vintf *vintf,
-> > +					u64 *cmds, int n)
-> > +{
-> > +	int i;
-> > +
-> > +	/* VINTF owned by hypervisor can execute any command */
-> > +	if (vintf->hyp_own)
-> > +		return true;
-> > +
-> > +	/* Guest-owned VINTF must Check against the list of supported CMDs */
-> > +	for (i = 0; i < n; i++) {
-> > +		switch (FIELD_GET(CMDQ_0_OP, cmds[i * CMDQ_ENT_DWORDS])) {
-> > +		case CMDQ_OP_TLBI_NH_ASID:
-> > +		case CMDQ_OP_TLBI_NH_VA:
-> > +		case CMDQ_OP_ATC_INV:
-> 
-> So CMDQ only works if not ARM_SMMU_FEAT_E2H? Probably worth mentioning
-> that too along with the discussion about HYP
-
-Nod. EL2/EL3 commands aren't supported. And they aren't supposed
-to be issued by a guess either, since ARM64_HAS_VIRT_HOST_EXTN is
-the feature of "Virtualization Host Extensions"?
-
-> 
-> > +			continue;
-> > +		default:
-> > +			return false;
-> > +		}
-> > +	}
-> > +
-> > +	return true;
-> > +}
-> 
-> For a performance path this looping seems disappointing.. The callers
-> don't actually mix different command type. Is there something
-> preventing adding a parameter at the callers?
-
-The callers don't seem to mix at this moment. Yet we would have
-to be extra careful against any future SMMU patch that may mix
-commands?
-
-> Actually looking at this more closely, isn't the command q selection
-> in the wrong place?
-> 
-> Ie this batch stuff:
-> 
-> static void arm_smmu_cmdq_batch_add(struct arm_smmu_device *smmu,
-> 				    struct arm_smmu_cmdq_batch *cmds,
-> 				    struct arm_smmu_cmdq_ent *cmd)
-> {
-> 	int index;
-> 
-> 	if (cmds->num == CMDQ_BATCH_ENTRIES - 1 &&
-> 	    (smmu->options & ARM_SMMU_OPT_CMDQ_FORCE_SYNC)) {
-> 		arm_smmu_cmdq_issue_cmdlist(smmu, cmds->cmds, cmds->num, true);
-> 		cmds->num = 0;
-> 	}
-> 
-> 	if (cmds->num == CMDQ_BATCH_ENTRIES) {
-> 		arm_smmu_cmdq_issue_cmdlist(smmu, cmds->cmds, cmds->num, false);
-> 		cmds->num = 0;
-> 	}
-> 
-> 	index = cmds->num * CMDQ_ENT_DWORDS;
-> 	if (unlikely(arm_smmu_cmdq_build_cmd(&cmds->cmds[index], cmd))) {
-> 		dev_warn(smmu->dev, "ignoring unknown CMDQ opcode 0x%x\n",
-> 			 cmd->opcode);
-> 		return;
-> 	}
-> 
-> Has to push everything, across all the iterations of add/submut, onto
-> the same CMDQ otherwise the SYNC won't be properly flushing?
-
-ECMDQ seems to have such a limitation, but VCMDQs can get away
-as HW can insert a SYNC to a queue that doesn't end with a SYNC.
-
-> But each arm_smmu_cmdq_issue_cmdlist() calls its own get q
-> function. Yes, they probably return the same Q since we are probably
-> on the same CPU, but it seems logically wrong (and slower!) to
-> organize it like this.
-> 
-> I would expect the Q to be selected when the struct
-> arm_smmu_cmdq_batch is allocated on the stack, and be the same for the
-> entire batch operation. Not only do we spend less time trying to
-> compute the Q to use we have a built in guarentee that every command
-> will be on the same Q as the fenching SYNC.
-
-This seems to be helpful to ECMDQ. The current version disables
-the preempts, which feels costly to me.
-
-> Something sort of like this as another patch?
-> 
-> diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-> index 268da20baa4e9c..d8c9597878315a 100644
-> --- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-> +++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-> @@ -357,11 +357,22 @@ static int arm_smmu_cmdq_build_cmd(u64 *cmd, struct arm_smmu_cmdq_ent *ent)
->  	return 0;
+On Tue, Jan 23, 2024 at 7:00=E2=80=AFAM Bibek Kumar Patro
+<quic_bibekkum@quicinc.com> wrote:
+>
+> Currently in Qualcomm  SoCs the default prefetch is set to 1 which allows
+> the TLB to fetch just the next page table. MMU-500 features ACTLR
+> register which is implementation defined and is used for Qualcomm SoCs
+> to have a custom prefetch setting enabling TLB to prefetch the next set
+> of page tables accordingly allowing for faster translations.
+>
+> ACTLR value is unique for each SMR (Stream matching register) and stored
+> in a pre-populated table. This value is set to the register during
+> context bank initialisation.
+>
+> Signed-off-by: Bibek Kumar Patro <quic_bibekkum@quicinc.com>
+> ---
+>  drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c | 61 ++++++++++++++++++++++
+>  drivers/iommu/arm/arm-smmu/arm-smmu-qcom.h | 16 +++++-
+>  drivers/iommu/arm/arm-smmu/arm-smmu.c      |  5 +-
+>  drivers/iommu/arm/arm-smmu/arm-smmu.h      |  5 ++
+>  4 files changed, 84 insertions(+), 3 deletions(-)
+>
+> diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c b/drivers/iommu/a=
+rm/arm-smmu/arm-smmu-qcom.c
+> index 333daeb18c1c..6004c6d9a7b2 100644
+> --- a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
+> +++ b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
+> @@ -215,10 +215,42 @@ static bool qcom_adreno_can_do_ttbr1(struct arm_smm=
+u_device *smmu)
+>         return true;
 >  }
->  
-> -static struct arm_smmu_cmdq *arm_smmu_get_cmdq(struct arm_smmu_device *smmu,
-> -					       u64 *cmds, int n)
-> +enum required_cmds {
-> +	CMDS_ALL,
-> +	/*
-> +	 * Commands will be one of:
-> +	 *  CMDQ_OP_ATC_INV, CMDQ_OP_TLBI_EL2_VA, CMDQ_OP_TLBI_NH_VA,
-> +	 *  CMDQ_OP_TLBI_EL2_ASID, CMDQ_OP_TLBI_NH_ASID, CMDQ_OP_TLBI_S2_IPA,
-> +	 *  CMDQ_OP_TLBI_S12_VMALL, CMDQ_OP_SYNC
-> +	 */
-> +	CMDS_INVALIDATION,
+>
+> +static void qcom_smmu_set_actlr(struct device *dev, struct arm_smmu_devi=
+ce *smmu, int cbndx,
+> +               const struct actlr_config *actlrcfg, const size_t num_act=
+lrcfg)
+> +{
+> +       struct arm_smmu_master_cfg *cfg =3D dev_iommu_priv_get(dev);
+> +       struct iommu_fwspec *fwspec =3D dev_iommu_fwspec_get(dev);
+> +       struct arm_smmu_smr *smr;
+> +       u16 mask;
+> +       int idx;
+> +       u16 id;
+> +       int i;
+> +       int j;
+> +
+> +       for (i =3D 0; i < num_actlrcfg; i++) {
+> +               id =3D actlrcfg[i].sid;
+> +               mask =3D actlrcfg[i].mask;
+> +
+> +               for_each_cfg_sme(cfg, fwspec, j, idx) {
+> +                       smr =3D &smmu->smrs[idx];
+> +                       if (smr_is_subset(smr, id, mask)) {
+> +                               arm_smmu_cb_write(smmu, cbndx, ARM_SMMU_C=
+B_ACTLR,
+> +                                               actlrcfg[i].actlr);
+
+So, this makes ACTLR look like kind of a FIFO.  But I'm looking at
+downstream kgsl's PRR thing (which we'll need to implement vulkan
+sparse residency), and it appears to be wanting to set BIT(5) in ACTLR
+to enable PRR.
+
+        val =3D KGSL_IOMMU_GET_CTX_REG(ctx, KGSL_IOMMU_CTX_ACTLR);
+        val |=3D FIELD_PREP(KGSL_IOMMU_ACTLR_PRR_ENABLE, 1);
+        KGSL_IOMMU_SET_CTX_REG(ctx, KGSL_IOMMU_CTX_ACTLR, val);
+
+Any idea how this works?  And does it need to be done before or after
+the ACTLR programming done in this patch?
+
+BR,
+-R
+
+> +                               break;
+> +                       }
+> +               }
+> +       }
+> +}
+> +
+>  static int qcom_adreno_smmu_init_context(struct arm_smmu_domain *smmu_do=
+main,
+>                 struct io_pgtable_cfg *pgtbl_cfg, struct device *dev)
+>  {
+> +       struct arm_smmu_device *smmu =3D smmu_domain->smmu;
+> +       struct qcom_smmu *qsmmu =3D to_qcom_smmu(smmu);
+> +       const struct actlr_variant *actlrvar;
+> +       int cbndx =3D smmu_domain->cfg.cbndx;
+>         struct adreno_smmu_priv *priv;
+> +       int i;
+>
+>         smmu_domain->cfg.flush_walk_prefer_tlbiasid =3D true;
+>
+> @@ -248,6 +280,18 @@ static int qcom_adreno_smmu_init_context(struct arm_=
+smmu_domain *smmu_domain,
+>         priv->set_stall =3D qcom_adreno_smmu_set_stall;
+>         priv->resume_translation =3D qcom_adreno_smmu_resume_translation;
+>
+> +       actlrvar =3D qsmmu->data->actlrvar;
+> +       if (!actlrvar)
+> +               return 0;
+> +
+> +       for (i =3D 0; i < qsmmu->data->num_smmu ; i++) {
+> +               if (actlrvar[i].io_start =3D=3D smmu->ioaddr) {
+> +                       qcom_smmu_set_actlr(dev, smmu, cbndx, actlrvar[i]=
+actlrcfg,
+> +                                      actlrvar[i].num_actlrcfg);
+> +                       break;
+> +               }
+> +       }
+> +
+>         return 0;
+>  }
+>
+> @@ -274,7 +318,24 @@ static const struct of_device_id qcom_smmu_client_of=
+_match[] __maybe_unused =3D {
+>  static int qcom_smmu_init_context(struct arm_smmu_domain *smmu_domain,
+>                 struct io_pgtable_cfg *pgtbl_cfg, struct device *dev)
+>  {
+> +       struct arm_smmu_device *smmu =3D smmu_domain->smmu;
+> +       struct qcom_smmu *qsmmu =3D to_qcom_smmu(smmu);
+> +       const struct actlr_variant *actlrvar;
+> +       int cbndx =3D smmu_domain->cfg.cbndx;
+> +       int i;
+> +
+>         smmu_domain->cfg.flush_walk_prefer_tlbiasid =3D true;
+> +       actlrvar =3D qsmmu->data->actlrvar;
+> +       if (!actlrvar)
+> +               return 0;
+> +
+> +       for (i =3D 0; i < qsmmu->data->num_smmu ; i++) {
+> +               if (actlrvar[i].io_start =3D=3D smmu->ioaddr) {
+> +                       qcom_smmu_set_actlr(dev, smmu, cbndx, actlrvar[i]=
+actlrcfg,
+> +                                      actlrvar[i].num_actlrcfg);
+> +                       break;
+> +               }
+> +       }
+>
+>         return 0;
+>  }
+> diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.h b/drivers/iommu/a=
+rm/arm-smmu/arm-smmu-qcom.h
+> index f3b91963e234..3f651242de7c 100644
+> --- a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.h
+> +++ b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.h
+> @@ -1,6 +1,6 @@
+>  /* SPDX-License-Identifier: GPL-2.0-only */
+>  /*
+> - * Copyright (c) 2022, Qualcomm Innovation Center, Inc. All rights reser=
+ved.
+> + * Copyright (c) 2022-2023, Qualcomm Innovation Center, Inc. All rights =
+reserved.
+>   */
+>
+>  #ifndef _ARM_SMMU_QCOM_H
+> @@ -24,8 +24,22 @@ struct qcom_smmu_config {
+>         const u32 *reg_offset;
+>  };
+>
+> +struct actlr_config {
+> +       u16 sid;
+> +       u16 mask;
+> +       u32 actlr;
 > +};
-
-Hmm, guest-owned VCMDQs don't support EL2 commands. So, it feels
-to be somehow complicated to decouple them further in the callers
-of arm_smmu_cmdq_batch_add(). And I am not sure if there is a use
-case of guest issuing CMDQ_OP_TLBI_S2_IPA/CMDQ_OP_TLBI_S12_VMALL
-either, HW surprisingly supports these two though.
-
-Perhaps we could just scan the first command in the batch, giving
-a faith that no one will covertly sneak different commands in it?
-
-Otherwise, there has to be a get_suported_cmdq callback so batch
-or its callers can avoid adding unsupported commands at the first
-place.
-
-Thanks
-Nicolin
+> +
+> +struct actlr_variant {
+> +       const resource_size_t io_start;
+> +       const struct actlr_config * const actlrcfg;
+> +       const size_t num_actlrcfg;
+> +};
+> +
+>  struct qcom_smmu_match_data {
+> +       const struct actlr_variant * const actlrvar;
+>         const struct qcom_smmu_config *cfg;
+> +       const size_t num_smmu;
+>         const struct arm_smmu_impl *impl;
+>         const struct arm_smmu_impl *adreno_impl;
+>  };
+> diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu.c b/drivers/iommu/arm/ar=
+m-smmu/arm-smmu.c
+> index d6d1a2a55cc0..0c7f700b27dd 100644
+> --- a/drivers/iommu/arm/arm-smmu/arm-smmu.c
+> +++ b/drivers/iommu/arm/arm-smmu/arm-smmu.c
+> @@ -990,9 +990,10 @@ static int arm_smmu_find_sme(struct arm_smmu_device =
+*smmu, u16 id, u16 mask)
+>                  * expect simply identical entries for this case, but the=
+re's
+>                  * no harm in accommodating the generalisation.
+>                  */
+> -               if ((mask & smrs[i].mask) =3D=3D mask &&
+> -                   !((id ^ smrs[i].id) & ~smrs[i].mask))
+> +
+> +               if (smr_is_subset(&smrs[i], id, mask))
+>                         return i;
+> +
+>                 /*
+>                  * If the new entry has any other overlap with an existin=
+g one,
+>                  * though, then there always exists at least one stream I=
+D
+> diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu.h b/drivers/iommu/arm/ar=
+m-smmu/arm-smmu.h
+> index 703fd5817ec1..2e4f65412c6b 100644
+> --- a/drivers/iommu/arm/arm-smmu/arm-smmu.h
+> +++ b/drivers/iommu/arm/arm-smmu/arm-smmu.h
+> @@ -501,6 +501,11 @@ static inline void arm_smmu_writeq(struct arm_smmu_d=
+evice *smmu, int page,
+>                 writeq_relaxed(val, arm_smmu_page(smmu, page) + offset);
+>  }
+>
+> +static inline bool smr_is_subset(struct arm_smmu_smr *smrs, u16 id, u16 =
+mask)
+> +{
+> +       return (mask & smrs->mask) =3D=3D mask && !((id ^ smrs->id) & ~sm=
+rs->mask);
+> +}
+> +
+>  #define ARM_SMMU_GR0           0
+>  #define ARM_SMMU_GR1           1
+>  #define ARM_SMMU_CB(s, n)      ((s)->numpage + (n))
+> --
+> 2.17.1
+>
+>
 
