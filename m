@@ -1,259 +1,286 @@
-Return-Path: <linux-kernel+bounces-164128-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-164129-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D51F78B796C
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 16:29:10 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 81C308B7970
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 16:29:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4CC2E1F21033
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 14:29:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A30C91C22BA4
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 14:29:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3864E172BD3;
-	Tue, 30 Apr 2024 14:21:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C0442173349;
+	Tue, 30 Apr 2024 14:22:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RWQepjgq"
-Received: from mail-lj1-f181.google.com (mail-lj1-f181.google.com [209.85.208.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="mRB2WSl4"
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2055.outbound.protection.outlook.com [40.107.220.55])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 541BC17278D;
-	Tue, 30 Apr 2024 14:21:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.181
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714486914; cv=none; b=K12Jfbu0L55DCz/PDIWMpxxH1cM1nBidj9Xq4Z+iqiOdNTqBuGuSZIveAIdXim0N/uBT2JdWvLE0DCeEZa1awyk16RYaL/aWaov0Ue0iRfyYxHaNS9ihB+My1aRxs0m5o0UzrE3vDIgWFJjueENXjH6JIAsWcDyyA6+KrEPG5FE=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714486914; c=relaxed/simple;
-	bh=aJkTXFdiDDIRnJh37eZO9dtbGQoBiM0P46Smeiszvg4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=RN4JKl6l2nQeRybvCfeBQwr2awPheWOsE6+YvkqV2/Go50Z6zkgED3u9a8kdW+DebrXfi2edZYGj1O9R7Y5g0EixFfOMJwszNcCi7Dh+33bMYGieAU7O8fbXLS+RsDMfVTtaHliQ01gc6koyyNJN6/p+9E53fzOt3OB3+RkFgP4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RWQepjgq; arc=none smtp.client-ip=209.85.208.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f181.google.com with SMTP id 38308e7fff4ca-2dd7e56009cso74850401fa.3;
-        Tue, 30 Apr 2024 07:21:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714486910; x=1715091710; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=nNLtSQWQ+pUdMr4er7Ppah+nn4cfdZN22MtBKL7h/00=;
-        b=RWQepjgqz1lwNDJIfMroam0/6RIqPDizlqaBWoULDESIhCXTcmjt6/38tHbh1F5E8R
-         KzQ/5eh1YT9+uoDNc2C1BWG4bXlWnqMhuly1jws385sV+1LwcKWgYKFdrWmxsfy7F7IS
-         mwgvTmN6ERyFu5CGPz7Aac0gMXtNVRuag1oPwVU1aIfezUEg2KGEG9MxpY3V1CjscQ5n
-         /i2f8BEWUWvajnebHhCqcpBWGRSAW6bhIpHXsTpaMVxr4LgVoUxzSqsC3gkQM1T927Ey
-         OUeIWg6OWTGgAjUq01HN+PRNqP5Y1O0kucnUGIC+VW5TfC7sSqkEgZhUM1+X9drY8qbC
-         RspA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714486910; x=1715091710;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=nNLtSQWQ+pUdMr4er7Ppah+nn4cfdZN22MtBKL7h/00=;
-        b=Xhk/ZA5alitsH8c3Rg+mn52ywuW93spY/VKcI2pkTeHKduD4oihEDuz9BZ2oVGP/6c
-         NCzUlFZxQ8KIg8AKzKX6NstqDoDlIOPLsfTD+FsFDTkNIzKWW4oiYv5yylT17ztBbh6+
-         P2/vKhprBZmKHrAuqAs7v5UDggNkbtV+V5WLTF4DWBBmBq4DM/vSFOhUMTB3Hp4gKY2y
-         Zn/8l88Q2fgufNwwGUsBBCdRND4p83IjGHDwWP03xu5HNaVNQuDzOL7WIYVGx7bs3qOd
-         qRMGs/xY5wCiz/vBENaj3skd6LHpqoKER+SX+qyVcTP8mT000T1XfUPW+8jV5LKKleGu
-         MmoA==
-X-Forwarded-Encrypted: i=1; AJvYcCVRkeNQl3isA4H3Yjg+mykQA/H3b6fWmAuAGcP3AQ1govUW6aG9Ivv9Nbe9ex3Mi9f5Iv6U9FTxcJWJHxh1IPB1lx+WIMriRPMkKvKPK5SoR7vZR+7Bg8tIM3FZhO2V3xzbMS2GHNvjM86LlklNsTn9IoHSadOFVrcR0II/ktNQ21YlLVjj
-X-Gm-Message-State: AOJu0YxrV7a8+4WUCE+dub+d1E/kP/r7dxWInu7UtdHr7Rrv8IiwpuRM
-	m85FTfCFBDLJOauvQ8hfjdWL9RhN2WInBMhN+hosQgw9lR2nfgi4Esvj66yJnsh6B/6eOpn14K0
-	NwEl6joqfjioHLNgrxmS6YZo1QVM=
-X-Google-Smtp-Source: AGHT+IHTCS7gq5KRR3pfsSVkeAJrvhfopA+NEKyyLw2ElLjVgelXnMdwQQOGkXfLsu5N4H4RDfZBLvJ/HCfXzpYbniU=
-X-Received: by 2002:a2e:a28f:0:b0:2df:6e6d:2c22 with SMTP id
- k15-20020a2ea28f000000b002df6e6d2c22mr9310394lja.47.1714486910189; Tue, 30
- Apr 2024 07:21:50 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08AA317278D;
+	Tue, 30 Apr 2024 14:22:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.220.55
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1714486929; cv=fail; b=ag1Q7X49BFjYLKzxLDSUZf7+KcRj4lZzFzKh9dftY89ldE5aJty9HzECJ44oOAydX29XuX/NzFEnSeJxn+XYhQZzvwXxsnIdx0uEvqqolIZoyHuri8dCS67o3psKaz0eSeNwq0a/vW4xTCUHKQXiPZwvNtDHJz71juBue7CmPU0=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1714486929; c=relaxed/simple;
+	bh=UTasaX6C6RhqnXAn2qumn4L2kltj/tSYvWUPwZexkyM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=aFuTCvzNyEkrqbjSFrPVEDUOwculwNJ7GQd4Ckk5CrHiDmU26/qhmSRn27svBQ9Y1Vy3K4O0V+ual+BJCmhWWBD39HvpICsbzv5P9EPpKRoiACPKosGfSAA1m/A+2X1lO6Vtuhv9WvBXfSiEboooN8Jid33mqszPNxbOUcW1e8s=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=mRB2WSl4; arc=fail smtp.client-ip=40.107.220.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=RACvH1pxCK6tmdhee/ms3n+Zcyt7wuSKxw9ImAlBCET5JGhriYaKCa32MedTpM/ntNOmg7ssA+VL1N6gyYykxfOT6Gmf2A1i1hwvPsIvE44wXia2JSlPsEA7tfwmttYMdejUXTB0EFvAEDTLfB2uBaihJBluer/TPaHQpmmJJVPilX4Qe8SjbycTM30K9/DkOi17A1tjpkSWo1c8PW3BhVfyPQuZGrlVHIvJbGj2NndLa9+wuUQ8gP+l/KAJojOTK5CAY6yCOuQKzhXc2tagxG95H/Z+ml18QpxmW8Q0KyQxDRdxPE7AsBJ75f3RMJybPaCOACQ6WBddvTT8p/y0oA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=d9IMc04nsMI081cGtyAZymqvwuUWMdiM1zkZQqkk0M4=;
+ b=Q9PNzOBE5BHpmUviEbxmSX3XOcxCBXJdlz8ufBZ9u63SN2/kxMNzobdcFncJ3icup0xWMVDajX7aBj5Dj+A9+U21dmk3ft3HIoFGf/B9aL8vtNwsUikR+hgzw1WK8G3pSYfgfMoQH8WYIIr/KMATtA2+M3fgF+JF/pDklkvGkSdr6SUjkppPzKCRWepKK3JiEB7bEB4nAQnn0bvTkpYSifc2I6hs+fZJwq17wbaqxlFiA0XjF1DRbZHnB6G1mjpP4TobLit0rjx2tTpkk2nrpJi0ozoaYPUusSWqv4W4NIRGB5UmRvMf78N+pByXB6qlc0nna5VUFtlcMi5StdSRaQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=d9IMc04nsMI081cGtyAZymqvwuUWMdiM1zkZQqkk0M4=;
+ b=mRB2WSl4yC/w2lZHiOSrMNjy1+uU7nvZ3hGviJNgU+cdXMKW2sIqd+0KYy62k5q6aIKTOMg8hhVtzf+0pyu+W0YSAqwvk7tGLbH7jtunM+yQ4VyaJ+JAsy8cK+BLw4EDzBsOenwqiKoHlNLcTGTovhL16KfXcRPuSRuWWGIS7DQGrylPoVm6sFbEp4r2GaSktqnh1ohuaPX5P6gp31bwFauc7//21qVcVx1st+1hf2sLMQ2s8tehNi1K0tJ4MYiagEZxGGkkK3DdJh2BbrWZ0bO/ch+86i4AKxwP9dL21smRiUIXdEcOIVXA07hMAQ2xEC5FYQtILeAgejvrgpPnIQ==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from DM6PR12MB3849.namprd12.prod.outlook.com (2603:10b6:5:1c7::26)
+ by CH3PR12MB7690.namprd12.prod.outlook.com (2603:10b6:610:14e::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7519.34; Tue, 30 Apr
+ 2024 14:22:02 +0000
+Received: from DM6PR12MB3849.namprd12.prod.outlook.com
+ ([fe80::c296:774b:a5fc:965e]) by DM6PR12MB3849.namprd12.prod.outlook.com
+ ([fe80::c296:774b:a5fc:965e%3]) with mapi id 15.20.7519.031; Tue, 30 Apr 2024
+ 14:22:02 +0000
+Date: Tue, 30 Apr 2024 11:22:01 -0300
+From: Jason Gunthorpe <jgg@nvidia.com>
+To: Nicolin Chen <nicolinc@nvidia.com>
+Cc: will@kernel.org, robin.murphy@arm.com, joro@8bytes.org,
+	thierry.reding@gmail.com, vdumpa@nvidia.com, jonathanh@nvidia.com,
+	linux-kernel@vger.kernel.org, iommu@lists.linux.dev,
+	linux-arm-kernel@lists.infradead.org, linux-tegra@vger.kernel.org
+Subject: Re: [PATCH v6 2/6] iommu/arm-smmu-v3: Add CS_NONE quirk
+Message-ID: <20240430142201.GQ941030@nvidia.com>
+References: <cover.1714451595.git.nicolinc@nvidia.com>
+ <81d79f51c69604a38ea4f72c8ac2c573c52e8609.1714451595.git.nicolinc@nvidia.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <81d79f51c69604a38ea4f72c8ac2c573c52e8609.1714451595.git.nicolinc@nvidia.com>
+X-ClientProxiedBy: SN1PR12CA0067.namprd12.prod.outlook.com
+ (2603:10b6:802:20::38) To DM6PR12MB3849.namprd12.prod.outlook.com
+ (2603:10b6:5:1c7::26)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240426155801.25277-1-johan+linaro@kernel.org>
- <CAD=FV=V-pG9+5fLonNvydmjS=ziUFUHAyF8T7YTkEHiO405aSA@mail.gmail.com> <ZizKmtcUIYAMpvOQ@hovoldconsulting.com>
-In-Reply-To: <ZizKmtcUIYAMpvOQ@hovoldconsulting.com>
-From: Luiz Augusto von Dentz <luiz.dentz@gmail.com>
-Date: Tue, 30 Apr 2024 10:21:37 -0400
-Message-ID: <CABBYNZ+pPTTOSzb2HpStRo273EPsLYgwMFRPJTaJP9Xk038nwQ@mail.gmail.com>
-Subject: Re: [PATCH] Bluetooth: qca: generalise device address check
-To: Johan Hovold <johan@kernel.org>
-Cc: Doug Anderson <dianders@chromium.org>, Johan Hovold <johan+linaro@kernel.org>, 
-	Marcel Holtmann <marcel@holtmann.org>, linux-bluetooth@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, stable@vger.kernel.org, 
-	Janaki Ramaiah Thota <quic_janathot@quicinc.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM6PR12MB3849:EE_|CH3PR12MB7690:EE_
+X-MS-Office365-Filtering-Correlation-Id: b833b8bb-34a4-448c-4f56-08dc6920e7a0
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230031|366007|376005|1800799015;
+X-Microsoft-Antispam-Message-Info:
+	=?us-ascii?Q?oQFqHbf0YhIGQwpoOvXbyO+Qa8ganzUNZsfAf0zsergJYNrFplBvTKSa9q4H?=
+ =?us-ascii?Q?lXOI2FJTHO9Ah9v4fhh8G6VVyjMXLTDtQ9HgzQ3B4bUyRq+O1GZKQpJSaZLU?=
+ =?us-ascii?Q?2EqHaI9M7r2CfwhbQ6YR+pHrNqwTfBXVDdB9jF55AlO1cb0ucmkQs4KE7/aI?=
+ =?us-ascii?Q?Hk7ttmf+InKfN/7Iy4lVnifZwxXXKsCzr8OxvI3VN8v4BO1H4UDI814ibHz3?=
+ =?us-ascii?Q?ru8TP/8dfdkaM/uo+bI4t6NtiegZD0YjU93/Fae9cLQPIJohkOr/nBtMSKju?=
+ =?us-ascii?Q?cx7uTzJ7HAStVsnv+Y5+m6PB3x+l75m34pG1XXFyJOQ0CRAqejMwNF7LgwB4?=
+ =?us-ascii?Q?0rfzSQ58uCJ1yEauWyrn5fPlg0Lh93nYnAN1TOSBia+smRU9z3ykBbcvPXqE?=
+ =?us-ascii?Q?ONsbrwqeSl3Ksvd7mTNrnHM/dCSGJdszvAuVPPc4TlDSFNxHeaus48s3HviB?=
+ =?us-ascii?Q?w2wmSHRmcgpQPzyQz/wB0e0WUmai7XLCv99PSnECk7HwIoUz6jFBJzXt2XDP?=
+ =?us-ascii?Q?MKfN5Yihn5RDEB6OAugMskrUVwVSX4xTxFeQRovRsmzq8aKHS/GxlM7Oas2Y?=
+ =?us-ascii?Q?26NmW3PiqIgYIEdOY6FW7KuyC0wUKgY5Bebx7PSm0SXd2oVDojtghUlQRkGl?=
+ =?us-ascii?Q?nfkGZd8GqRwdqGIcqW8ViIDYRpQ64cSgEuhGtQZDKlc7bJBGG4Iq12NsD+v7?=
+ =?us-ascii?Q?1L8QCb9lHUnYr4pVXPeIAoRyS3x00jw5Hro4vbuMYEstIjGKb8d4p09Ul3GS?=
+ =?us-ascii?Q?ksks1M0j9aZcemF/sZ8PjmFa4q0NrceSDBvkvtHMMDekJFEuUADafPV2QtrD?=
+ =?us-ascii?Q?23ArAzCmvUVy039x/7e3QKiF4tkoirDp6h6x0QUmJ0Vin6kdmh3l2mOTPbAX?=
+ =?us-ascii?Q?MKRMCVPMVhy2zYsqGKPhRFXFr2wpYbxqgXwSNUmyUxfJnhvRctWTntgYixGW?=
+ =?us-ascii?Q?q447bbvI3W4hD3W377U71Fark7NbQMzJGADM774hEdk4w6ysvqato7AMzaw6?=
+ =?us-ascii?Q?GorBFEnrn6qlzGJ3ijNI/P+xvoEefnLcKWgBQWURQ4Fg70X55CCmpXtQQd4G?=
+ =?us-ascii?Q?iZNpmfiZ9Y05/EZlFGGxMagH+6UWDqZ97u6sVtR3iWVSxxVroBDG1n7MBTdH?=
+ =?us-ascii?Q?9wgtDNqeBg8qrC2Yi2EOxHqhcDDy94r4469RDcs4iBCvmgpVe2PR9rcMOMJ9?=
+ =?us-ascii?Q?CITQxNP89E9P5N0qeJ0hpQm/3seWQFeRlw3QsNQs05lLHScjaJ+5YEkT7zQL?=
+ =?us-ascii?Q?pzzDMAvGNCDYW0zbAfcj6jo4q9qNHXq6IrUazU80rA=3D=3D?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3849.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(376005)(1800799015);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?2Mt07unKBqidaWZacqXNkwwgkNtU3fc4G1KfGUVgsSdQgV7qXraIT8Unz1fB?=
+ =?us-ascii?Q?3pIWb8C2zU1BHXnGm+7/XyOE4+HRv0kWq2scGRXJ38mt8vWF+5Ix5obcItUj?=
+ =?us-ascii?Q?2B65N75M7sM+h6fWkUjI0u9ZkwiXnEm3enP7ylh7cLA9t18NDi80RkRST9G+?=
+ =?us-ascii?Q?ovSqP1EfZtDL3qpbVm03yxXTbJNO1xMOhAqn208Dr+Djciho7gl0+bCPt60Z?=
+ =?us-ascii?Q?O5WFvhZhOPSd1hMVRIxty0okzA3xPrf2ILi69D3B+pmS8bcMkrhm9CYHqya1?=
+ =?us-ascii?Q?9JjpAdsRrRtxrgSYEgVMDcXLR1x2dZjOg0xaBtl+icWKHqhUuHXDTCSqjiWb?=
+ =?us-ascii?Q?FaAyXOk6OcxXbmdffTft6EGmqYGMVSRuQeoe9ElUKTL0eVHOUSdqoLb8pS8t?=
+ =?us-ascii?Q?XxqbelX6ySH76vo+ESQJBfueb1igvvoYDL2UtxZOS0TuPkbOUI8QE4oV9b+a?=
+ =?us-ascii?Q?AUt2TRzRkZ49tLFaT8FhOtPJF5VnB7w0/fUUZAxF6+J3RKiw44ziWwcp7j9t?=
+ =?us-ascii?Q?jxMMZ7AGaTv3xKqVbWlCrBELBTyNY6BlteCvDdgswlLCCkgsoLyjTptUXHPv?=
+ =?us-ascii?Q?i5PhSTlVqejVFAUQ69nlgmE5DDtbQvG9swIHzMc8tRTBeq6JuA+w97EWB6jy?=
+ =?us-ascii?Q?qxR1vjnQ2tZCBeRwpVxT4W0LrKND4jBlZKUiKNOzzFpig7/dpGj5zAf4+EEG?=
+ =?us-ascii?Q?BshEjVDbnr3mqzw4wyRfxtfd+6avEMXXVAurwnf3G2Wu3FsMzLadayGsuWzE?=
+ =?us-ascii?Q?W19ay9I+SufLeqPM8fLOPEA4K+5E0WoNhN47+e/XptqNiiD+FFj2BYeXMvAn?=
+ =?us-ascii?Q?AXQW67MRW7SjoGsuS44FI2/2y77yVOIef1jTw95aVprrJQyZ5KH4WlVL9BF2?=
+ =?us-ascii?Q?0IU+n6qeIN939Phoh2Oe6gOvDmMFI5kA+CuxtTmUraZGpovBUCshlvWIk/PO?=
+ =?us-ascii?Q?QLYtvLKbF2OLW3IvnJNr6UkPpFixaT/PhPnlnVwtBwiQ0cmKeRlQMRJOS81E?=
+ =?us-ascii?Q?3dUpuj8LN63do8/a3hAMVG5ywJl+mvvxPIW+T0N4khvOPeAkgzyZ/timas+0?=
+ =?us-ascii?Q?Syr8kBIB8yVRsQ9NhEzfDXkh0ZOQOpT2JqnMflO8LYO39iIRBrFsagD+Q8Qq?=
+ =?us-ascii?Q?Up5G7Nl09guLt5VLJlK8B19E5pmF93D8qJRkl4VOHL/8xo/DGW65V+/xcoiQ?=
+ =?us-ascii?Q?BbM9OHreYPh+DdIng34hYG0d8+0JBfjAhSpO/rKWTbHk8DC6LXlK2k5+uh5T?=
+ =?us-ascii?Q?6xG304b/mGtZxP7WWDiBcUHHfCCtlIAgsfye+vIzjOBaz3aJT8xm+b9QGg7E?=
+ =?us-ascii?Q?UpNQuau5XxQsU+RxqJ5CdqWDBvi2ABRTLIKB3mqHc12z8qd4MWShLMEgq1Lt?=
+ =?us-ascii?Q?YyiNeAntl0lS9PSyMfm1n1MSVlWUzAJzOwDtI0kIdMkLyof+S5v8ZNBigoxY?=
+ =?us-ascii?Q?csTdosc6fmBnDu5bpDJG//zXtfwbEPjHRlRQ5S1jUw5IlMNkFDKImGWB+TX/?=
+ =?us-ascii?Q?GMrO3gRbp2UMUkm7y5eYL67ksmX165dCEaDMpRXF47d+cNKTQqAJvrjXW4Y2?=
+ =?us-ascii?Q?rh1yH3QSk2DB29dPMv8u+AVeCQGTfv4rNFnzoVy9?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b833b8bb-34a4-448c-4f56-08dc6920e7a0
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3849.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Apr 2024 14:22:02.7283
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: xoiPpf8L7jJ3s50SmGwOY8DXKyVs3tNzwdx0j+Zbxa+Vn3OimPl7UJwSJU6zA2yO
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR12MB7690
 
-Hi Johan,
+On Mon, Apr 29, 2024 at 09:43:45PM -0700, Nicolin Chen wrote:
+> The CMDQV extension in NVIDIA Tegra241 SoC only supports CS_NONE in the
+> CS field of CMD_SYNC. Add a quirk flag to accommodate that.
+> 
+> Signed-off-by: Nicolin Chen <nicolinc@nvidia.com>
+> ---
+>  drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c | 10 ++++++++--
+>  drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h |  4 ++++
+>  2 files changed, 12 insertions(+), 2 deletions(-)
 
-On Sat, Apr 27, 2024 at 5:51=E2=80=AFAM Johan Hovold <johan@kernel.org> wro=
-te:
->
-> On Fri, Apr 26, 2024 at 10:23:15AM -0700, Doug Anderson wrote:
-> > On Fri, Apr 26, 2024 at 9:00=E2=80=AFAM Johan Hovold <johan+linaro@kern=
-el.org> wrote:
-> > >
-> > > The default device address apparently comes from the NVM configuratio=
-n
-> > > file and can differ quite a bit.
-> > >
-> > > Store the default address when parsing the configuration file and use=
- it
-> > > to determine whether the controller has been provisioned with an
-> > > address.
-> > >
-> > > This makes sure that devices without a unique address start as
-> > > unconfigured unless a valid address has been provided in the devicetr=
-ee.
->
-> > >  int qca_read_soc_version(struct hci_dev *hdev, struct qca_btsoc_vers=
-ion *ver,
-> > >                          enum qca_btsoc_type soc_type)
-> > >  {
-> > > @@ -351,6 +348,11 @@ static void qca_tlv_check_data(struct hci_dev *h=
-dev,
-> > >
-> > >                         /* Update NVM tags as needed */
-> > >                         switch (tag_id) {
-> > > +                       case EDL_TAG_ID_BD_ADDR:
-> > > +                               if (tag_len !=3D sizeof(bdaddr_t))
-> > > +                                       break;
-> > > +                               memcpy(&config->bdaddr, tlv_nvm->data=
-, sizeof(bdaddr_t));
-> > > +                               break;
-> > >                         case EDL_TAG_ID_HCI:
-> >
-> > nit: blank line after "break" ?
->
-> Possibly, the driver isn't really consistent here and only two case
-> statements have such a newline after break.
->
-> > Also note that on my firmware I never see this tag and thus your patch
-> > breaks trogdor. Specifically I put a printout here and it never gets
-> > hit.
->
-> Thanks for the quick test. As the parser is modifying the configuration
-> file I assumed it was correct and tested...
->
-> > I printed all the tags/lengths:
-> >
-> > [   17.961087] DOUG: id 0xde02, len 0x0010
-> > [   17.965081] DOUG: id 0x0000, len 0x0000
-> > [   17.969050] DOUG: id 0x0000, len 0x0011
-> > [   17.973025] DOUG: id 0x0000, len 0x0a00
-> > [   17.976991] DOUG: id 0x0303, len 0x0303
-> > [   17.981066] DOUG: id 0x0033, len 0x1001
-> >
-> > Probably EDL_TAG_ID_BD_ADDR should have been 0xde02, not just 2.
->
-> No, the parser is apparently broken and fails to consider an extra
-> four-byte header found in some NVM files and just happily parses and
-> potentially modifies (sic!) random bytes.
->
-> I've fixed the parser so that it works also on configuration files with
-> the extra header (apnv??.bin, crnv??[u].bin) and can read out the
-> default address for all NVM files in linux-firmware that have one
-> (otherwise all-zeroes is printed below):
->
-> bluetooth hci0: bd_addr =3D 39:80:10:00:00:20 (qca/apnv10.bin)
-> bluetooth hci0: bd_addr =3D 39:80:12:74:08:00 (qca/apnv11.bin)
-> bluetooth hci0: bd_addr =3D 39:90:21:64:07:00 (qca/crnv21.bin)
-> bluetooth hci0: bd_addr =3D 39:98:00:00:5a:ad (qca/crnv32.bin)
-> bluetooth hci0: bd_addr =3D 39:98:00:00:5a:ad (qca/crnv32u.bin)
-> bluetooth hci0: bd_addr =3D 00:00:00:00:5a:ad (qca/hpnv21.301)
-> bluetooth hci0: bd_addr =3D 00:00:00:00:5a:ad (qca/hpnv21.302)
-> bluetooth hci0: bd_addr =3D 00:00:00:00:5a:ad (qca/hpnv21.309)
-> bluetooth hci0: bd_addr =3D 00:00:00:00:5a:ad (qca/hpnv21.bin)
-> bluetooth hci0: bd_addr =3D 00:00:00:00:5a:ad (qca/hpnv21.bin)
-> bluetooth hci0: bd_addr =3D 00:00:00:00:5a:ad (qca/hpnv21g.301)
-> bluetooth hci0: bd_addr =3D 00:00:00:00:5a:ad (qca/hpnv21g.302)
-> bluetooth hci0: bd_addr =3D 00:00:00:00:5a:ad (qca/hpnv21g.309)
-> bluetooth hci0: bd_addr =3D 00:00:00:00:5a:ad (qca/hpnv21g.bin)
-> bluetooth hci0: bd_addr =3D 00:00:00:00:5a:ad (qca/htnv20.bin)
-> bluetooth hci0: bd_addr =3D 64:90:00:00:5a:ad (qca/msnv11.b09)
-> bluetooth hci0: bd_addr =3D 64:90:00:00:5a:ad (qca/msnv11.b0a)
-> bluetooth hci0: bd_addr =3D 64:90:00:00:5a:ad (qca/msnv11.bin)
-> bluetooth hci0: bd_addr =3D 61:47:aa:31:22:14 (qca/nvm_00130300.bin)
-> bluetooth hci0: bd_addr =3D 61:47:aa:32:44:07 (qca/nvm_00130302.bin)
->
-> bluetooth hci0: bd_addr =3D 00:00:00:00:00:00 (qca/nvm_00230302.bin)
->
-> bluetooth hci0: bd_addr =3D 00:00:00:00:5a:ad (qca/nvm_00440302.bin)
-> bluetooth hci0: bd_addr =3D 00:00:00:00:5a:ad (qca/nvm_00440302_eu.bin)
-> bluetooth hci0: bd_addr =3D 00:00:00:00:5a:ad (qca/nvm_00440302_i2s_eu.bi=
-n)
->
-> bluetooth hci0: bd_addr =3D 00:00:00:00:00:00 (qca/nvm_usb_00000200.bin)
-> bluetooth hci0: bd_addr =3D 00:00:00:00:00:00 (qca/nvm_usb_00000201.bin)
-> bluetooth hci0: bd_addr =3D 00:00:00:00:00:00 (qca/nvm_usb_00000300.bin)
-> bluetooth hci0: bd_addr =3D 00:00:00:00:00:00 (qca/nvm_usb_00000302.bin)
-> bluetooth hci0: bd_addr =3D 00:00:00:00:00:00 (qca/nvm_usb_00000302_eu.bi=
-n)
->
-> bluetooth hci0: bd_addr =3D 00:00:00:00:5a:ad (qca/nvm_usb_00130200_0104.=
-bin)
-> bluetooth hci0: bd_addr =3D 00:00:00:00:5a:ad (qca/nvm_usb_00130200_0105.=
-bin)
-> bluetooth hci0: bd_addr =3D 00:00:00:00:5a:ad (qca/nvm_usb_00130200_0106.=
-bin)
-> bluetooth hci0: bd_addr =3D 00:00:00:00:5a:ad (qca/nvm_usb_00130200_0107.=
-bin)
-> bluetooth hci0: bd_addr =3D 00:00:00:00:5a:ad (qca/nvm_usb_00130200_0109.=
-bin)
-> bluetooth hci0: bd_addr =3D 00:00:00:00:5a:ad (qca/nvm_usb_00130200_0110.=
-bin)
-> bluetooth hci0: bd_addr =3D 00:00:00:00:5a:ad (qca/nvm_usb_00130200.bin)
-> bluetooth hci0: bd_addr =3D 00:00:00:00:5a:ad (qca/nvm_usb_00130201_010a.=
-bin)
-> bluetooth hci0: bd_addr =3D 00:00:00:00:5a:ad (qca/nvm_usb_00130201_010b.=
-bin)
-> bluetooth hci0: bd_addr =3D 00:00:00:00:5a:ad (qca/nvm_usb_00130201_0303.=
-bin)
-> bluetooth hci0: bd_addr =3D 00:00:00:00:5a:ad (qca/nvm_usb_00130201.bin)
-> bluetooth hci0: bd_addr =3D 00:00:00:00:5a:ad (qca/nvm_usb_00130201_gf_01=
-0a.bin)
-> bluetooth hci0: bd_addr =3D 00:00:00:00:5a:ad (qca/nvm_usb_00130201_gf_01=
-0b.bin)
-> bluetooth hci0: bd_addr =3D 00:00:00:00:5a:ad (qca/nvm_usb_00130201_gf_03=
-03.bin)
-> bluetooth hci0: bd_addr =3D 00:00:00:00:5a:ad (qca/nvm_usb_00130201_gf.bi=
-n)
-> bluetooth hci0: bd_addr =3D 00:00:00:00:5a:ad (qca/nvm_usb_00190200.bin)
->
-> It looks like we're being lucky and the parser is at least not
-> corrupting the configuration files with the extra header currently in
-> linux-firmware, but if it ever interprets a random 0x0011 or 0x001b word
-> as a tag it would.
->
-> Fixing the parser means that we would start modifying the configuration
-> also for files with the extra header. This involves configuring the baud
-> rate and enabling a deep sleep feature.
->
-> Presumably this is something that should be done also on Trogdor, but
-> this would obviously have to be tested first. I guess we can keep
-> skipping this step until it has been verified and just read out the
-> address for now.
->
-> > > @@ -624,6 +626,9 @@ static int qca_check_bdaddr(struct hci_dev *hdev)
-> > >         if (bacmp(&hdev->public_addr, BDADDR_ANY))
-> > >                 return 0;
-> > >
-> > > +       if (!bacmp(&config->bdaddr, BDADDR_ANY))
-> > > +               return 0;
-> >
-> > The above test feels non-obvious enough to deserve a comment. Could
-> > you add one? That would also help alleviate my confusion since I
-> > _think_ your if test is unneeded and maybe wrong? Let's say that the
-> > firmware didn't have a default address stored in it. It still seems
-> > like we could try to read the address and then if the firmware gave
-> > back BDADDR_ANY (0) we should set the `HCI_QUIRK_USE_BDADDR_PROPERTY`
-> > property, right?
->
-> You're right. I'll drop this check when revisiting this next week.
+This seems fine, other than the misplaced hunk
 
-I assume you will spin another version then?
+Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
 
---=20
-Luiz Augusto von Dentz
+But it might be tidier like the below. There is already a function
+that is called to build the sync that has the q, just build it
+directly there and avoid going through the ent?
+
+diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
+index 268da20baa4e9c..fa9cb0f49bf1ee 100644
+--- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
++++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
+@@ -338,18 +338,6 @@ static int arm_smmu_cmdq_build_cmd(u64 *cmd, struct arm_smmu_cmdq_ent *ent)
+ 		cmd[0] |= FIELD_PREP(CMDQ_RESUME_0_RESP, ent->resume.resp);
+ 		cmd[1] |= FIELD_PREP(CMDQ_RESUME_1_STAG, ent->resume.stag);
+ 		break;
+-	case CMDQ_OP_CMD_SYNC:
+-		if (ent->sync.cs_none) {
+-			cmd[0] |= FIELD_PREP(CMDQ_SYNC_0_CS, CMDQ_SYNC_0_CS_NONE);
+-		} else if (ent->sync.msiaddr) {
+-			cmd[0] |= FIELD_PREP(CMDQ_SYNC_0_CS, CMDQ_SYNC_0_CS_IRQ);
+-			cmd[1] |= ent->sync.msiaddr & CMDQ_SYNC_1_MSIADDR_MASK;
+-		} else {
+-			cmd[0] |= FIELD_PREP(CMDQ_SYNC_0_CS, CMDQ_SYNC_0_CS_SEV);
+-		}
+-		cmd[0] |= FIELD_PREP(CMDQ_SYNC_0_MSH, ARM_SMMU_SH_ISH);
+-		cmd[0] |= FIELD_PREP(CMDQ_SYNC_0_MSIATTR, ARM_SMMU_MEMATTR_OIWB);
+-		break;
+ 	default:
+ 		return -ENOENT;
+ 	}
+@@ -367,25 +355,30 @@ static struct arm_smmu_cmdq *arm_smmu_get_cmdq(struct arm_smmu_device *smmu,
+ }
+ 
+ static void arm_smmu_cmdq_build_sync_cmd(u64 *cmd, struct arm_smmu_device *smmu,
+-					 struct arm_smmu_queue *q, u32 prod)
++					 struct arm_smmu_queue *q, u32 prod,
++					 bool msi)
+ {
+-	struct arm_smmu_cmdq_ent ent = {
+-		.opcode = CMDQ_OP_CMD_SYNC,
+-	};
++	memset(cmd, 0, 1 << CMDQ_ENT_SZ_SHIFT);
++	cmd[0] = FIELD_PREP(CMDQ_0_OP, CMDQ_OP_CMD_SYNC) |
++		 FIELD_PREP(CMDQ_SYNC_0_MSH, ARM_SMMU_SH_ISH) |
++		 FIELD_PREP(CMDQ_SYNC_0_MSIATTR, ARM_SMMU_MEMATTR_OIWB);
++	if (q->quirks & CMDQ_QUIRK_SYNC_CS_NONE_ONLY) {
++		cmd[0] |= FIELD_PREP(CMDQ_SYNC_0_CS, CMDQ_SYNC_0_CS_NONE);
++		return;
++	}
++
++	if (!msi || !(smmu->options & ARM_SMMU_OPT_MSIPOLL)) {
++		cmd[0] |= FIELD_PREP(CMDQ_SYNC_0_CS, CMDQ_SYNC_0_CS_SEV);
++		return;
++	}
+ 
+ 	/*
+ 	 * Beware that Hi16xx adds an extra 32 bits of goodness to its MSI
+ 	 * payload, so the write will zero the entire command on that platform.
+ 	 */
+-	if (smmu->options & ARM_SMMU_OPT_MSIPOLL) {
+-		ent.sync.msiaddr = q->base_dma + Q_IDX(&q->llq, prod) *
+-				   q->ent_dwords * 8;
+-	}
+-
+-	if (q->quirks & CMDQ_QUIRK_SYNC_CS_NONE_ONLY)
+-		ent.sync.cs_none = true;
+-
+-	arm_smmu_cmdq_build_cmd(cmd, &ent);
++	cmd[0] |= FIELD_PREP(CMDQ_SYNC_0_CS, CMDQ_SYNC_0_CS_IRQ);
++	cmd[1] = (q->base_dma + Q_IDX(&q->llq, prod) * q->ent_dwords * 8) &
++		 CMDQ_SYNC_1_MSIADDR_MASK;
+ }
+ 
+ void __arm_smmu_cmdq_skip_err(struct arm_smmu_device *smmu,
+@@ -402,9 +395,6 @@ void __arm_smmu_cmdq_skip_err(struct arm_smmu_device *smmu,
+ 	u64 cmd[CMDQ_ENT_DWORDS];
+ 	u32 cons = readl_relaxed(q->cons_reg);
+ 	u32 idx = FIELD_GET(CMDQ_CONS_ERR, cons);
+-	struct arm_smmu_cmdq_ent cmd_sync = {
+-		.opcode = CMDQ_OP_CMD_SYNC,
+-	};
+ 
+ 	dev_err(smmu->dev, "CMDQ error (cons 0x%08x): %s\n", cons,
+ 		idx < ARRAY_SIZE(cerror_str) ?  cerror_str[idx] : "Unknown");
+@@ -437,11 +427,8 @@ void __arm_smmu_cmdq_skip_err(struct arm_smmu_device *smmu,
+ 	for (i = 0; i < ARRAY_SIZE(cmd); ++i)
+ 		dev_err(smmu->dev, "\t0x%016llx\n", (unsigned long long)cmd[i]);
+ 
+-	if (q->quirks & CMDQ_QUIRK_SYNC_CS_NONE_ONLY)
+-		cmd_sync.sync.cs_none = true;
+-
+ 	/* Convert the erroneous command into a CMD_SYNC */
+-	arm_smmu_cmdq_build_cmd(cmd, &cmd_sync);
++	arm_smmu_cmdq_build_sync_cmd(cmd, smmu, q, 0, false);
+ 
+ 	queue_write(Q_ENT(q, cons), cmd, q->ent_dwords);
+ }
+@@ -812,7 +799,8 @@ static int arm_smmu_cmdq_issue_cmdlist(struct arm_smmu_device *smmu,
+ 	arm_smmu_cmdq_write_entries(cmdq, cmds, llq.prod, n);
+ 	if (sync) {
+ 		prod = queue_inc_prod_n(&llq, n);
+-		arm_smmu_cmdq_build_sync_cmd(cmd_sync, smmu, &cmdq->q, prod);
++		arm_smmu_cmdq_build_sync_cmd(cmd_sync, smmu, &cmdq->q, prod,
++					     true);
+ 		queue_write(Q_ENT(&cmdq->q, prod), cmd_sync, CMDQ_ENT_DWORDS);
+ 
+ 		/*
+diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h
+index 9412fa4ff5e045..b1ce1986e61101 100644
+--- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h
++++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h
+@@ -520,10 +520,6 @@ struct arm_smmu_cmdq_ent {
+ 		} resume;
+ 
+ 		#define CMDQ_OP_CMD_SYNC	0x46
+-		struct {
+-			u64			msiaddr;
+-			bool			cs_none;
+-		} sync;
+ 	};
+ };
 
