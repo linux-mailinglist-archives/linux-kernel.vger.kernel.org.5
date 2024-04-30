@@ -1,477 +1,171 @@
-Return-Path: <linux-kernel+bounces-163847-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-163849-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 23A588B7491
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 13:33:34 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id CEA658B7496
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 13:35:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A624B1F2204C
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 11:33:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0BCB61C22AA1
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 11:35:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ACDCF12D769;
-	Tue, 30 Apr 2024 11:33:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F16912D768;
+	Tue, 30 Apr 2024 11:35:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="VuTmflJD"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	dkim=pass (2048-bit key) header.d=clip-os.org header.i=@clip-os.org header.b="nM0URJ6x"
+Received: from relay3-d.mail.gandi.net (relay3-d.mail.gandi.net [217.70.183.195])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0FBED12D1E9;
-	Tue, 30 Apr 2024 11:33:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB06612C47A
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 11:35:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.195
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714476805; cv=none; b=Vu+jRlQiznL8uRXmdL+QgJGOn1pKoJcVxD/eXSra95n88oEKtQxI0JCNDgrezx5Ii++yfGo+mYYJxGXWlyYDQnwTN7BsaRTXwK2za+RdeRcxKRD1sEUKhjKMXno2pas5rVJPzbYCe+FESIDHLJ5Zk8CS0+EfRkroAYvfUmM49MI=
+	t=1714476912; cv=none; b=tmRCH57LEnZqU6gSme6bb8Eetzr/5oRWL9KTv59Fyot3uwRZwhHtWSqwE7MtSMXcWoHMF4vFUyJ81DoI3jEWqymW/xK6YsrPrnimVfQ4t7Kzo2NjmD21LkecTrWRs6W1NCUIiyIIS8xBRL/xFxUPzkNdBh1W7THlyik5Q+Akhs4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714476805; c=relaxed/simple;
-	bh=0w5YEUbbQDmxnlY8WtAQqQUNXq1ZpWckW2j0exEtYoo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=m4WEQtF+CC+H0mrFDttSEWKQ9BSQKjbPCN+37gBIU76Q4z4MZOS45spwMN/MaQ/fZQ0U3Wo0F3WQGxeVgE7NiYKElUOJTe/hDtZxJqYxAy1ys/gRxF169g4SLqTa5b4MAHWfoO/9bxBj1qaYriZiXz7aAF3v6tUrfhaXGqnxkuA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=VuTmflJD; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1714476797;
-	bh=0w5YEUbbQDmxnlY8WtAQqQUNXq1ZpWckW2j0exEtYoo=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=VuTmflJDRloBpily1/ruHfyUL3wBKRo8vjc089iaNA6WTIitox0oHlZKj3G3NG0X0
-	 mS+JttWzMev1kV1P+VdS3e4AUOSF1QaWwKDKm4okHRhIaVFb4Dg9ADIKRlf2vSJS1B
-	 eJZ91QMu1Z++FORYq7A5b3WL8h3gxxRKg2F/wbVVdj2WgoHcFGg2T0a4jZPjR7v5sh
-	 iNvcyhun6D6B0v6o9i0HDjqM6DnuG+9vXAupSxWgePPtDyJOxDZDvQjgHuJCEWgm0/
-	 CnOP9O8Wo1CHhT97AVpD7ILlGt93ADClJWOu5zBNCWNvGixaiUEpUFdpXOeOUuLsaz
-	 a5vbFNYJKfDnw==
-Received: from [100.113.186.2] (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: kholk11)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 1D3CE37813C4;
-	Tue, 30 Apr 2024 11:33:16 +0000 (UTC)
-Message-ID: <608fdbde-ad06-45ec-9771-18aa9f002f2d@collabora.com>
-Date: Tue, 30 Apr 2024 13:33:15 +0200
+	s=arc-20240116; t=1714476912; c=relaxed/simple;
+	bh=Ro5C4SltTDmGHIqKcwc8eY9OizlrYbgNyQfowKhQ2Gg=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=GRFgcn2fpMXZvWq+pz+o9/hxxpbiOXBWCWgnHAwiAVQNXfRHHgimU4s5mJdIibuA96u4cVNh2JDErvVYW2bhVTThN1Z/twjrTmQNBKV4BwKC6IH+y4bT2uCsBWQ6HfmlnJeQ/Y5xk3Y/mL0+TJPI3ZRNSgFUFK3t0FmpJ4nL1ko=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=clip-os.org; spf=pass smtp.mailfrom=clip-os.org; dkim=pass (2048-bit key) header.d=clip-os.org header.i=@clip-os.org header.b=nM0URJ6x; arc=none smtp.client-ip=217.70.183.195
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=clip-os.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=clip-os.org
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 560CF60007;
+	Tue, 30 Apr 2024 11:35:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=clip-os.org; s=gm1;
+	t=1714476902;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+	bh=M0gCyZUgKj7iV3h/gwYac96jecnR+4EjQmwFBZXj584=;
+	b=nM0URJ6xiUOjlSg9J/l+2jP270ghHlvF+mpUuOm4n3R6s7J4d88Qx6Bg1Tx6+nyYwYexaP
+	5g7NiwAQ1S/X4G5VFVYSZHIr9Ky1615t2aUuYAGOulK9Qq3Uc8gp+fSzsYHyqOVZmHeMuZ
+	69eiP8stHv8cRpBpzTwjyU7Q5k6zQ1KwtnpnHuTjzzGe7TvF49shxJVREcZRoSjTbT6/N5
+	KBR459cNEASDd2k+pLdFaEod9GWNS+Y0HjS9qPpA/labyVLo2e8TAn9SQEFtJQcDkorLX5
+	m87rGXS34s+kA/NLRGbMlBwJcOAJzvTX8FsU4K4yfUGZ8mgTLEzJBMRYOjv+tA==
+Date: Tue, 30 Apr 2024 13:34:59 +0200
+From: Nicolas Bouchinet <nicolas.bouchinet@clip-os.org>
+To: linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Cc: Chengming Zhou <chengming.zhou@linux.dev>,
+	Christoph Lameter <cl@linux.com>, Pekka Enberg <penberg@kernel.org>,
+	David Rientjes <rientjes@google.com>,
+	Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Vlastimil Babka <vbabka@suse.cz>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Hyeonggon Yoo <42.hyeyoo@gmail.com>
+Subject: [PATCH v3] slub: Fixes freepointer encoding for single free
+Message-ID: <ZjDXY74yS6UyQPxv@archlinux>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 0/3] drm/mediatek: Add support for OF graphs
-To: Alexandre Mergnat <amergnat@baylibre.com>, chunkuang.hu@kernel.org
-Cc: robh@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
- p.zabel@pengutronix.de, airlied@gmail.com, daniel@ffwll.ch,
- maarten.lankhorst@linux.intel.com, mripard@kernel.org, tzimmermann@suse.de,
- matthias.bgg@gmail.com, shawn.sung@mediatek.com, yu-chang.lee@mediatek.com,
- ck.hu@mediatek.com, jitao.shi@mediatek.com, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
- linux-mediatek@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
- wenst@chromium.org, kernel@collabora.com
-References: <20240409120211.321153-1-angelogioacchino.delregno@collabora.com>
- <1fc23530-89ba-4e36-9e9a-a1289f56a9bc@baylibre.com>
-From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-Content-Language: en-US
-In-Reply-To: <1fc23530-89ba-4e36-9e9a-a1289f56a9bc@baylibre.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-GND-Sasl: nicolas.bouchinet@clip-os.org
 
-Il 30/04/24 12:17, Alexandre Mergnat ha scritto:
-> Hi Angelo,
-> 
-> On 09/04/2024 14:02, AngeloGioacchino Del Regno wrote:
->> This series was tested on MT8195 Cherry Tomato and on MT8395 Radxa
->> NIO-12L with both hardcoded paths, OF graph support and partially
->> hardcoded paths (meaning main display through OF graph and external
->> display hardcoded, because of OVL_ADAPTOR).
-> 
-> Is that make sense for you to add the DTS changes of these boards into this serie ?
-> I asked because, IMHO, that could help to understand the serie.
-> 
+From: Nicolas Bouchinet <nicolas.bouchinet@ssi.gouv.fr>
 
-Yes and no... but I imagine that you're asking this because you're trying to
-prepare something with a different SoC+board(s) combination :-)
+Commit 284f17ac13fe ("mm/slub: handle bulk and single object freeing
+separately") splits single and bulk object freeing in two functions
+slab_free() and slab_free_bulk() which leads slab_free() to call
+slab_free_hook() directly instead of slab_free_freelist_hook().
 
-In that case, I'm preventively sorry because what follows here is not 100%
-perfectly tidy yet as I didn't mean to send the devicetree commits upstream
-before this series got picked....
+If `init_on_free` is set, slab_free_hook() zeroes the object.
+Afterward, if `slub_debug=F` and `CONFIG_SLAB_FREELIST_HARDENED` are
+set, the do_slab_free() slowpath executes freelist consistency
+checks and try to decode a zeroed freepointer which leads to a
+"Freepointer corrupt" detection in check_object().
 
-.. but there you go - I'm sure that you won't mind and that the example will
-be more than good enough for you.
+During bulk free, slab_free_freelist_hook() isn't affected as it always
+sets it objects freepointer using set_freepointer() to maintain its
+reconstructed freelist after `init_on_free`.
 
-Please note that one of the reasons why I didn't want to add this to the series
-is that the following changes show only a mere 50% of the reasons why we want OF
-graph support on mediatek-drm (but mainly, it's because I didn't have time to
-actually rebase etc :-P )
+For single free, object's freepointer thus needs to be avoided when
+stored outside the object if `init_on_free` is set. The freepointer left
+as is, check_object() may later detect an invalid pointer value due to
+objects overflow.
 
+To reproduce, set `slub_debug=FU init_on_free=1 log_level=7` on the
+command line of a kernel build with `CONFIG_SLAB_FREELIST_HARDENED=y`.
 
-Cheers!
-Angelo
+dmesg sample log:
+[   10.708715] =============================================================================
+[   10.710323] BUG kmalloc-rnd-05-32 (Tainted: G    B           T ): Freepointer corrupt
+[   10.712695] -----------------------------------------------------------------------------
+[   10.712695]
+[   10.712695] Slab 0xffffd8bdc400d580 objects=32 used=4 fp=0xffff9d9a80356f80 flags=0x200000000000a00(workingset|slab|node=0|zone=2)
+[   10.716698] Object 0xffff9d9a80356600 @offset=1536 fp=0x7ee4f480ce0ecd7c
+[   10.716698]
+[   10.716698] Bytes b4 ffff9d9a803565f0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+[   10.720703] Object   ffff9d9a80356600: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+[   10.720703] Object   ffff9d9a80356610: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+[   10.724696] Padding  ffff9d9a8035666c: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+[   10.724696] Padding  ffff9d9a8035667c: 00 00 00 00                                      ....
+[   10.724696] FIX kmalloc-rnd-05-32: Object at 0xffff9d9a80356600 not freed
 
+Co-developed-by: Chengming Zhou <chengming.zhou@linux.dev>
+Signed-off-by: Nicolas Bouchinet <nicolas.bouchinet@ssi.gouv.fr>
+---
+Changes since v2:
+https://lore.kernel.org/all/ZjCxZfD1d36zfq-R@archlinux/
 
+* Reword commit message in order to clarify the patch approach
+as suggested by Vlastimil Babka
 
-  .../boot/dts/mediatek/mt8195-cherry.dtsi      |  65 +++++++-
-  arch/arm64/boot/dts/mediatek/mt8195.dtsi      | 153 +++++++++++++++++-
-  .../dts/mediatek/mt8395-radxa-nio-12l.dts     |  24 +++
-  3 files changed, 231 insertions(+), 11 deletions(-)
+Changes since v1:
+https://lore.kernel.org/all/Zij_fGjRS_rK-65r@archlinux/
 
-diff --git a/arch/arm64/boot/dts/mediatek/mt8195-cherry.dtsi 
-b/arch/arm64/boot/dts/mediatek/mt8195-cherry.dtsi
-index 86d283ffe807..b05b6bbd457c 100644
---- a/arch/arm64/boot/dts/mediatek/mt8195-cherry.dtsi
-+++ b/arch/arm64/boot/dts/mediatek/mt8195-cherry.dtsi
-@@ -267,12 +267,29 @@ &auxadc {
-  	status = "okay";
-  };
+* Jump above out of object freepointer if init_on_free is set
+instead of initializing it with set_freepointer() as suggested
+by Vlastimil Babka.
 
-+&dither0_out {
-+	remote-endpoint = <&dsc0_in>;
-+};
-+
-  &dp_intf0 {
-  	status = "okay";
+* Adapt maybe_wipe_obj_freeptr() to avoid wiping out of object
+on alloc freepointer as suggested by Chengming Zhou.
 
--	port {
--		dp_intf0_out: endpoint {
--			remote-endpoint = <&edp_in>;
-+	ports {
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+
-+		port@0 {
-+			reg = <0>;
-+			dp_intf0_in: endpoint {
-+				remote-endpoint = <&merge0_out>;
-+			};
-+		};
-+
-+		port@1 {
-+			reg = <1>;
-+			dp_intf0_out: endpoint {
-+				remote-endpoint = <&edp_in>;
-+			};
-  		};
-  	};
-  };
-@@ -287,6 +304,27 @@ dp_intf1_out: endpoint {
-  	};
-  };
+* Reword commit message.
+---
+ mm/slub.c | 11 ++++++++---
+ 1 file changed, 8 insertions(+), 3 deletions(-)
 
-+&dsc0 {
-+	ports {
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+
-+		port@0 {
-+			reg = <0>;
-+			dsc0_in: endpoint {
-+				remote-endpoint = <&dither0_out>;
-+			};
-+		};
-+
-+		port@1 {
-+			reg = <1>;
-+			dsc0_out: endpoint {
-+				remote-endpoint = <&merge0_in>;
-+			};
-+		};
-+	};
-+};
-+
-  &edp_tx {
-  	status = "okay";
-
-@@ -481,6 +519,27 @@ pmic@34 {
-  	};
-  };
-
-+&merge0 {
-+	ports {
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+
-+		port@0 {
-+			reg = <0>;
-+			merge0_in: endpoint {
-+				remote-endpoint = <&dsc0_out>;
-+			};
-+		};
-+
-+		port@1 {
-+			reg = <1>;
-+			merge0_out: endpoint {
-+				remote-endpoint = <&dp_intf0_in>;
-+			};
-+		};
-+	};
-+};
-+
-  &mfg0 {
-  	domain-supply = <&mt6315_7_vbuck1>;
-  };
-diff --git a/arch/arm64/boot/dts/mediatek/mt8195.dtsi 
-b/arch/arm64/boot/dts/mediatek/mt8195.dtsi
-index 88a0035a31a5..982572d7bfd8 100644
---- a/arch/arm64/boot/dts/mediatek/mt8195.dtsi
-+++ b/arch/arm64/boot/dts/mediatek/mt8195.dtsi
-@@ -3077,14 +3077,6 @@ vencsys_core1: clock-controller@1b000000 {
-  			#clock-cells = <1>;
-  		};
-
--		vdosys0: syscon@1c01a000 {
--			compatible = "mediatek,mt8195-vdosys0", "mediatek,mt8195-mmsys", "syscon";
--			reg = <0 0x1c01a000 0 0x1000>;
--			mboxes = <&gce0 0 CMDQ_THR_PRIO_4>;
--			#clock-cells = <1>;
--		};
--
--
-  		jpgenc-master {
-  			compatible = "mediatek,mt8195-jpgenc";
-  			power-domains = <&spm MT8195_POWER_DOMAIN_VENC_CORE1>;
-@@ -3143,6 +3135,38 @@ ovl0: ovl@1c000000 {
-  			clocks = <&vdosys0 CLK_VDO0_DISP_OVL0>;
-  			iommus = <&iommu_vdo M4U_PORT_L0_DISP_OVL0_RDMA0>;
-  			mediatek,gce-client-reg = <&gce0 SUBSYS_1c00XXXX 0x0000 0x1000>;
-+
-+			ports {
-+				#address-cells = <1>;
-+				#size-cells = <0>;
-+
-+				port@0 {
-+					reg = <0>;
-+					ovl0_in: endpoint {
-+						remote-endpoint = <&vdosys0_ep_main>;
-+					};
-+				};
-+
-+				port@1 {
-+					reg = <1>;
-+					ovl0_out: endpoint {
-+						remote-endpoint = <&rdma0_in>;
-+					};
-+				};
-+			};
-+		};
-+
-+		vdosys0: syscon@1c01a000 {
-+			compatible = "mediatek,mt8195-vdosys0", "mediatek,mt8195-mmsys", "syscon";
-+			reg = <0 0x1c01a000 0 0x1000>;
-+			mboxes = <&gce0 0 CMDQ_THR_PRIO_4>;
-+			#clock-cells = <1>;
-+
-+			port {
-+				vdosys0_ep_main: endpoint {
-+					remote-endpoint = <&ovl0_in>;
-+				};
-+			};
-  		};
-
-  		rdma0: rdma@1c002000 {
-@@ -3153,6 +3177,25 @@ rdma0: rdma@1c002000 {
-  			clocks = <&vdosys0 CLK_VDO0_DISP_RDMA0>;
-  			iommus = <&iommu_vdo M4U_PORT_L0_DISP_RDMA0>;
-  			mediatek,gce-client-reg = <&gce0 SUBSYS_1c00XXXX 0x2000 0x1000>;
-+
-+			ports {
-+				#address-cells = <1>;
-+				#size-cells = <0>;
-+
-+				port@0 {
-+					reg = <0>;
-+					rdma0_in: endpoint {
-+						remote-endpoint = <&ovl0_out>;
-+					};
-+				};
-+
-+				port@1 {
-+					reg = <1>;
-+					rdma0_out: endpoint {
-+						remote-endpoint = <&color0_in>;
-+					};
-+				};
-+			};
-  		};
-
-  		color0: color@1c003000 {
-@@ -3162,6 +3205,25 @@ color0: color@1c003000 {
-  			power-domains = <&spm MT8195_POWER_DOMAIN_VDOSYS0>;
-  			clocks = <&vdosys0 CLK_VDO0_DISP_COLOR0>;
-  			mediatek,gce-client-reg = <&gce0 SUBSYS_1c00XXXX 0x3000 0x1000>;
-+
-+			ports {
-+				#address-cells = <1>;
-+				#size-cells = <0>;
-+
-+				port@0 {
-+					reg = <0>;
-+					color0_in: endpoint {
-+						remote-endpoint = <&rdma0_out>;
-+					};
-+				};
-+
-+				port@1 {
-+					reg = <1>;
-+					color0_out: endpoint {
-+						remote-endpoint = <&ccorr0_in>;
-+					};
-+				};
-+			};
-  		};
-
-  		ccorr0: ccorr@1c004000 {
-@@ -3171,6 +3233,25 @@ ccorr0: ccorr@1c004000 {
-  			power-domains = <&spm MT8195_POWER_DOMAIN_VDOSYS0>;
-  			clocks = <&vdosys0 CLK_VDO0_DISP_CCORR0>;
-  			mediatek,gce-client-reg = <&gce0 SUBSYS_1c00XXXX 0x4000 0x1000>;
-+
-+			ports {
-+				#address-cells = <1>;
-+				#size-cells = <0>;
-+
-+				port@0 {
-+					reg = <0>;
-+					ccorr0_in: endpoint {
-+						remote-endpoint = <&color0_out>;
-+					};
-+				};
-+
-+				port@1 {
-+					reg = <1>;
-+					ccorr0_out: endpoint {
-+						remote-endpoint = <&aal0_in>;
-+					};
-+				};
-+			};
-  		};
-
-  		aal0: aal@1c005000 {
-@@ -3180,6 +3261,25 @@ aal0: aal@1c005000 {
-  			power-domains = <&spm MT8195_POWER_DOMAIN_VDOSYS0>;
-  			clocks = <&vdosys0 CLK_VDO0_DISP_AAL0>;
-  			mediatek,gce-client-reg = <&gce0 SUBSYS_1c00XXXX 0x5000 0x1000>;
-+
-+			ports {
-+				#address-cells = <1>;
-+				#size-cells = <0>;
-+
-+				port@0 {
-+					reg = <0>;
-+					aal0_in: endpoint {
-+						remote-endpoint = <&ccorr0_out>;
-+					};
-+				};
-+
-+				port@1 {
-+					reg = <1>;
-+					aal0_out: endpoint {
-+						remote-endpoint = <&gamma0_in>;
-+					};
-+				};
-+			};
-  		};
-
-  		gamma0: gamma@1c006000 {
-@@ -3189,6 +3289,25 @@ gamma0: gamma@1c006000 {
-  			power-domains = <&spm MT8195_POWER_DOMAIN_VDOSYS0>;
-  			clocks = <&vdosys0 CLK_VDO0_DISP_GAMMA0>;
-  			mediatek,gce-client-reg = <&gce0 SUBSYS_1c00XXXX 0x6000 0x1000>;
-+
-+			ports {
-+				#address-cells = <1>;
-+				#size-cells = <0>;
-+
-+				port@0 {
-+					reg = <0>;
-+					gamma0_in: endpoint {
-+						remote-endpoint = <&aal0_out>;
-+					};
-+				};
-+
-+				port@1 {
-+					reg = <1>;
-+					gamma0_out: endpoint {
-+						remote-endpoint = <&dither0_in>;
-+					};
-+				};
-+			};
-  		};
-
-  		dither0: dither@1c007000 {
-@@ -3198,6 +3317,24 @@ dither0: dither@1c007000 {
-  			power-domains = <&spm MT8195_POWER_DOMAIN_VDOSYS0>;
-  			clocks = <&vdosys0 CLK_VDO0_DISP_DITHER0>;
-  			mediatek,gce-client-reg = <&gce0 SUBSYS_1c00XXXX 0x7000 0x1000>;
-+
-+			ports {
-+				#address-cells = <1>;
-+				#size-cells = <0>;
-+
-+				port@0 {
-+					reg = <0>;
-+					dither0_in: endpoint {
-+						remote-endpoint = <&gamma0_out>;
-+					};
-+				};
-+
-+				port@1 {
-+					reg = <1>;
-+					dither0_out: endpoint {
-+					};
-+				};
-+			};
-  		};
-
-  		dsi0: dsi@1c008000 {
-diff --git a/arch/arm64/boot/dts/mediatek/mt8395-radxa-nio-12l.dts 
-b/arch/arm64/boot/dts/mediatek/mt8395-radxa-nio-12l.dts
-index 7ab19b4e046f..b4a7dad2fea7 100644
---- a/arch/arm64/boot/dts/mediatek/mt8395-radxa-nio-12l.dts
-+++ b/arch/arm64/boot/dts/mediatek/mt8395-radxa-nio-12l.dts
-@@ -1063,6 +1063,10 @@ &disp_pwm0 {
-  	status = "okay";
-  };
-
-+&dither0_out {
-+	remote-endpoint = <&dsi0_in>;
-+};
-+
-  &dsi0 {
-  	status = "okay";
-  	#address-cells = <1>;
-@@ -1089,6 +1093,25 @@ dsi_panel_in: endpoint {
-  		};
-  	};
-
-+	ports {
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+
-+		port@0 {
-+			reg = <0>;
-+			dsi0_in: endpoint {
-+				remote-endpoint = <&dither0_out>;
-+			};
-+		};
-+
-+		port@1 {
-+			reg = <1>;
-+			dsi_out: endpoint {
-+				remote-endpoint = <&dsi_panel_in>;
-+			};
-+		};
-+	};
-+/* old hardcoded dsi stuff, disappear!
-  	ports {
-  		port {
-  			dsi_out: endpoint {
-@@ -1096,6 +1119,7 @@ dsi_out: endpoint {
-  			};
-  		};
-  	};
-+*/
-
-  };
-
+diff --git a/mm/slub.c b/mm/slub.c
+index 3aa12b9b323d..173c340ec1d3 100644
+--- a/mm/slub.c
++++ b/mm/slub.c
+@@ -2102,15 +2102,20 @@ bool slab_free_hook(struct kmem_cache *s, void *x, bool init)
+ 	 *
+ 	 * The initialization memset's clear the object and the metadata,
+ 	 * but don't touch the SLAB redzone.
++	 *
++	 * The object's freepointer is also avoided if stored outside the
++	 * object.
+ 	 */
+ 	if (unlikely(init)) {
+ 		int rsize;
++		unsigned int inuse;
+ 
++		inuse = get_info_end(s);
+ 		if (!kasan_has_integrated_init())
+ 			memset(kasan_reset_tag(x), 0, s->object_size);
+ 		rsize = (s->flags & SLAB_RED_ZONE) ? s->red_left_pad : 0;
+-		memset((char *)kasan_reset_tag(x) + s->inuse, 0,
+-		       s->size - s->inuse - rsize);
++		memset((char *)kasan_reset_tag(x) + inuse, 0,
++			s->size - inuse - rsize);
+ 	}
+ 	/* KASAN might put x into memory quarantine, delaying its reuse. */
+ 	return !kasan_slab_free(s, x, init);
+@@ -3789,7 +3794,7 @@ static void *__slab_alloc_node(struct kmem_cache *s,
+ static __always_inline void maybe_wipe_obj_freeptr(struct kmem_cache *s,
+ 						   void *obj)
+ {
+-	if (unlikely(slab_want_init_on_free(s)) && obj)
++	if (unlikely(slab_want_init_on_free(s)) && obj && !freeptr_outside_object(s))
+ 		memset((void *)((char *)kasan_reset_tag(obj) + s->offset),
+ 			0, sizeof(void *));
+ }
 -- 
-2.45.0
+2.44.0
 
 
