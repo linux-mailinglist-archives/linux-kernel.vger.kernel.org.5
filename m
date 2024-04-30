@@ -1,105 +1,91 @@
-Return-Path: <linux-kernel+bounces-163711-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-163707-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 300278B6E9A
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 11:38:59 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D37728B6E8E
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 11:37:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B3669281A4C
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 09:38:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8909B1F246D8
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 09:37:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E490F1A38C1;
-	Tue, 30 Apr 2024 09:36:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D785199E80;
+	Tue, 30 Apr 2024 09:36:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KUv5qPYQ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gyX+AXMA"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3029E1A0B06;
-	Tue, 30 Apr 2024 09:36:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 568771292CE;
+	Tue, 30 Apr 2024 09:36:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714469793; cv=none; b=rs2VOdlKmIw6IHpJXrBwqYvg7/EXlNy57y4AyITq4R3iOYFBkgbk/1xlQZ7e8G7S5bk0SJxftnPcHINMlrW6DMT0U+056EVXAv9hlxIde/wlvrv5LxeMt/EK2vHZ3L650gf/r7/gwMkwCfoOXtGU5IYEKwwg5iusAWAWesDKHkQ=
+	t=1714469776; cv=none; b=MRRhs7Sq/Rdx3cMheMtuPHbg23Awvp1cmDW14lXP7osZ0/u6Az5Qob6zE86ROb95mxtG68MAWCXPmyDInfpmrLdfgVrNMGN8CZjx8hUiJDd+2zigXnC62FOkcJTaOj1+Qc9E4vc8s1/EUXXoXU9PFAw6WJ12TjbArviFeRdLITE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714469793; c=relaxed/simple;
-	bh=bhzZtbW8vADrbyYDpEyoD631jxsaMcAgBlvgv/dK/J4=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=RQDKS4v0R+QsqZ74QxV00VFNDdhdrPrnx/ZOcMl5D6g7QrLT/0kJlmiFqiD4iYJOTAmPslnaw+X6m0lNQBBItHhEZF6nuBcAPx9ppICXyy/7sPHWxozJTGEyFcoQJdu8BwQ/fsKevsrAIJ6FYyWcVZbGo/vm2Jea039cdYEt0DI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KUv5qPYQ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B165EC4AF19;
-	Tue, 30 Apr 2024 09:36:29 +0000 (UTC)
+	s=arc-20240116; t=1714469776; c=relaxed/simple;
+	bh=3l20woefNrUTmYr2WXVuXJsLYYGk9ONQKilh/0kO8iQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=FfDre1ZhayB4HWfrxOMm9nlpwmaHawrk6dC69qP8M/6nfG1jUIJuRSr4+UsLphNhI7XyaG6oalwKJBg40SfNcvyuGN0BUadb3/n6UpNE804Hk4s0kXAeb+S/R3H1/lu5RsAgr99LBszQX5WZRxlAUpprsgYI6XIsk+aGwFP7f90=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gyX+AXMA; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 647EEC2BBFC;
+	Tue, 30 Apr 2024 09:36:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714469793;
-	bh=bhzZtbW8vADrbyYDpEyoD631jxsaMcAgBlvgv/dK/J4=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=KUv5qPYQE65E6OtMiIdMBYO6aBSQUK+DK2gfLswwPV68AlPrJUwVEZRA6+9jw7IDW
-	 Y6n0al0Jt38Lu6ww3ijeOEAVwTYPfW1Foawdl4fbt4p6LlyOd1m9dI4VDgU0akIrhp
-	 f6pXJGsqBjG/8Wrq5PxbypdLpt6FZHvbTGofuJNo3ryZjgTEYwl+68Wk2UjrDAMHbN
-	 zhvIO92nOcOJj79myHtAbvVOXQUZKXGB5fmsfUP0FBezfJsUNBNj8EHTzNH3+8r2yQ
-	 306vqNOIqB5rpoZPLmB53SLSO1njcXdlwwMPMHUxLnsJbRV5HC2yr5f//OrvGCP3/A
-	 HeFuIgcD3cBeA==
-From: Benjamin Tissoires <bentiss@kernel.org>
+	s=k20201202; t=1714469775;
+	bh=3l20woefNrUTmYr2WXVuXJsLYYGk9ONQKilh/0kO8iQ=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=gyX+AXMA9YSULYnBC+gtH6mJufvYQCBvx6Ht5xJUrQvYCrX49bBiw6tH+Xj6k01im
+	 Rmo5vvSa1PYWEDPmetLVJZCJqSxWc2rl/4x3WGZ0Urr3ZHirbdjZxcLwT35sJVJWA0
+	 oZGrVOL5ET+QVSwNr+1Bphxt6zLbUjS+lCHYMy4wdrernxtiLWEmdYvhCWcc6hKMD9
+	 r7OByvdGgwnHbb5Row0k7R4W/2AticzWeWOpyut759IWQSdvxGVNMp4+7Ypp2pVoBn
+	 t2c/FtoCBv2qm91Sph9G79mT1SovRErqRlHEKvx6Zg5DYmO7IgQMjDI1Q0Mx7OLKW0
+	 BxQLptzD3DobQ==
 Date: Tue, 30 Apr 2024 11:36:12 +0200
-Subject: [PATCH v2 3/3] selftests/bpf: drop an unused local variable
+From: Andi Shyti <andi.shyti@kernel.org>
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Florian Fainelli <florian.fainelli@broadcom.com>, 
+	linux-kernel@vger.kernel.org, Jarkko Nikula <jarkko.nikula@linux.intel.com>, 
+	Mika Westerberg <mika.westerberg@linux.intel.com>, Jan Dabros <jsd@semihalf.com>, Lee Jones <lee@kernel.org>, 
+	Jiawen Wu <jiawenwu@trustnetic.com>, Mengyuan Lou <mengyuanlou@net-swift.com>, 
+	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	Maciej Fijalkowski <maciej.fijalkowski@intel.com>, Andrew Lunn <andrew@lunn.ch>, 
+	Duanqiang Wen <duanqiangwen@net-swift.com>, 
+	"open list:SYNOPSYS DESIGNWARE I2C DRIVER" <linux-i2c@vger.kernel.org>, "open list:WANGXUN ETHERNET DRIVER" <netdev@vger.kernel.org>
+Subject: Re: [PATCH v3 4/5] mfd: intel_quark_i2c_gpio: Utilize
+ i2c-designware.h
+Message-ID: <fidbc7locp32lypdui67crj3qkj3nbcp5vpxcnlxrdmme2sn4c@npdan5ncxxog>
+References: <20240425214438.2100534-1-florian.fainelli@broadcom.com>
+ <20240425214438.2100534-5-florian.fainelli@broadcom.com>
+ <Ziu6gDOqhEYQNhcH@smile.fi.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240430-bpf-next-v2-3-140aa50f0f19@kernel.org>
-References: <20240430-bpf-next-v2-0-140aa50f0f19@kernel.org>
-In-Reply-To: <20240430-bpf-next-v2-0-140aa50f0f19@kernel.org>
-To: Alexei Starovoitov <ast@kernel.org>, 
- Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
- Martin KaFai Lau <martin.lau@linux.dev>, 
- Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
- Yonghong Song <yonghong.song@linux.dev>, 
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
- Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
- Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>, 
- Shuah Khan <shuah@kernel.org>
-Cc: bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
- linux-kselftest@vger.kernel.org, Benjamin Tissoires <bentiss@kernel.org>
-X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1714469778; l=720;
- i=bentiss@kernel.org; s=20230215; h=from:subject:message-id;
- bh=bhzZtbW8vADrbyYDpEyoD631jxsaMcAgBlvgv/dK/J4=;
- b=YmoD9kZN4gNX/W8LY6WLJWW3Y5qI5CxWasAbaHC4nBctmuFGROznShnN1hKzrua6UdQI4w0fd
- UdrcC2YzSwhAiWKYSvSKsDodXjLbiBwYwiyL2dQIh5ocnIyvurk4FZz
-X-Developer-Key: i=bentiss@kernel.org; a=ed25519;
- pk=7D1DyAVh6ajCkuUTudt/chMuXWIJHlv2qCsRkIizvFw=
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <Ziu6gDOqhEYQNhcH@smile.fi.intel.com>
 
-Some copy/paste leftover, this is never used
+Hi Andy,
 
-Fixes: e3d9eac99afd ("selftests/bpf: wq: add bpf_wq_init() checks")
-Signed-off-by: Benjamin Tissoires <bentiss@kernel.org>
+On Fri, Apr 26, 2024 at 05:30:24PM +0300, Andy Shevchenko wrote:
+> On Thu, Apr 25, 2024 at 02:44:37PM -0700, Florian Fainelli wrote:
+> > Rather than open code the i2c_designware string, utilize the newly
+> > defined constant in i2c-designware.h.
+> 
+> Acked-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> 
+> P.S>
+> Note, my tags for MFD patches does not imply that I agree on the general idea
+> of this series, it's just in case if it will be approved by the respective
+> maintainers (I²C / MFD / etc).
 
----
+I waited a bit to see if more comments were coming.
 
-no changes in v2
----
- tools/testing/selftests/bpf/prog_tests/wq.c | 2 --
- 1 file changed, 2 deletions(-)
+Do you have a better approach in mind?
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/wq.c b/tools/testing/selftests/bpf/prog_tests/wq.c
-index c4bacd3160e1..99e438fe12ac 100644
---- a/tools/testing/selftests/bpf/prog_tests/wq.c
-+++ b/tools/testing/selftests/bpf/prog_tests/wq.c
-@@ -36,7 +36,5 @@ void serial_test_wq(void)
- 
- void serial_test_failures_wq(void)
- {
--	LIBBPF_OPTS(bpf_test_run_opts, topts);
--
- 	RUN_TESTS(wq_failures);
- }
-
--- 
-2.44.0
-
+Andi
 
