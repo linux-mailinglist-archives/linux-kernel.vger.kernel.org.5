@@ -1,191 +1,149 @@
-Return-Path: <linux-kernel+bounces-164806-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-164807-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A84598B8322
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 01:48:38 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id F34BF8B8324
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 01:50:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 988BEB2171C
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 23:48:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AF0C7281F6E
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 23:50:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F8691C2335;
-	Tue, 30 Apr 2024 23:48:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC1DA1C0DF3;
+	Tue, 30 Apr 2024 23:50:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OW15PHNu"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="O6d2wsxA"
+Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B2961C2327;
-	Tue, 30 Apr 2024 23:48:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 973B51BF6FD
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 23:50:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714520887; cv=none; b=CJjMJGFZAE0qVRPKv+vafEhAx1EEiTPnQK3hMug9YOATJ/oqroTYy/7rTdLTYtUVoup3EiCyEMzCNchwOrec2FDQjGzgsTdNi5XQlwDW1Rdt0ncU4dho+dIsjX0caS1lnCPlBy9qJb4t1n3beOY86iGCB5USANvzVB1tDi9Xytw=
+	t=1714521004; cv=none; b=BrjvQTh3U5TfDRMu/93I293QwZfa1gzTabnu4fy1x8bK5uRFAT1LX3KtP2MF0FXFRoLxvjWhezshs0iUCjwEjzYHcSMrKOTpNT7aeJ3HLWJsdPvpzoZPq46ubaJdxymyx40u3DKb5gOLi03/1BGFSgQXecMflOhJVXKdHvktRwk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714520887; c=relaxed/simple;
-	bh=CJftWXVNhPrzRJ8tO7vV2W8FE8qYON08xPmi6fVAAdI=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=gPB78mJDXaeKGGwrOFi7X2dMxJtDDNbAF/hifBhaxoqaQbcmxGt21HqeVPUX/w1eY/EgYxZg3IhzVwTgmM1Xn/Oybvp5KRGfdHHe3XXJepJKP4JpHEbEzeX+EjNpf1GaWT916BGH4ZjhZB2r+MkOFTG7VWq/M1WaMlvLBaagU+E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OW15PHNu; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CF3EFC4AF1B;
-	Tue, 30 Apr 2024 23:48:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714520887;
-	bh=CJftWXVNhPrzRJ8tO7vV2W8FE8qYON08xPmi6fVAAdI=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=OW15PHNubEu4xCwocIM+Qm5Bb70vBbuA9qr4coQ00C6pV9cKp8NBbJOiSJDcEnlx+
-	 /itoRLDRYZPh2QCIk+9VEZ0O3IGWVfrLoUCq4NJ4avE4j3HztGFDAzcAvWEydVV3lE
-	 zpzf3hCSrPuEpZq7wXe2KyGZ8HOXO0Y1Dpru4FOXF3pZ5+uJqQRiLDM27DNO3WGNBl
-	 aZcROQfzDsb7UjCZuvlX4uJA8ofTIOc0ZFITL5bsa1Q9r8kXgv4n76a/qnTGvdsavj
-	 RNp4CbyoAyFtmbu1iDGVdoFJrmz03MNMnS7RlExPXRpOSbM7ABgGQSSclqkVQTb3+Q
-	 bfmnrQPYBgc4Q==
-From: Puranjay Mohan <puranjay@kernel.org>
-To: Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Zi Shen Lim <zlim.lnx@gmail.com>,
-	Xu Kuohai <xukuohai@huawei.com>,
-	Florent Revest <revest@chromium.org>,
-	linux-arm-kernel@lists.infradead.org,
+	s=arc-20240116; t=1714521004; c=relaxed/simple;
+	bh=v82YBshvco4PyEh5G77y/OsBLZjjwmf7YEJkcuP6z4I=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=MYz2/arrHfsRAKaZmkXGEf4BlCDWJpRQ87JQ2Tbe5Y4SV1aEi8O9MLn+6T7Z91FZHE3TLV8EgHMhP7WT1YW7i6Bje8Ys/HAbWxY7uQjTmnyQrXNME8anLQzqdWOPoqgDdJ+VP82iH0wsKdnqAu3r8YtmtoqMj9tTNAqeuFXWpd8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=O6d2wsxA; arc=none smtp.client-ip=209.85.210.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pf1-f182.google.com with SMTP id d2e1a72fcca58-6ee12766586so284995b3a.0
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 16:50:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1714521002; x=1715125802; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=q6GmYXeTFVcSUp54UKC83JdujiOnqI837P/1obadSzo=;
+        b=O6d2wsxArtcRXM1VbU5lL70UkpGOwEgTKRUmTvZGWLr91mqTkiuJlDDLWy04eo+wpl
+         yRryhVW0HSfI/9rLkiLo7Egh6gwB6Gh7lqIIQq3axr+Nt0zmrSr8GwiqwUEXHyT9ffsK
+         MykE0QyVsZ+XSaOUBHYuy0o36iG+tW7Y5FQ5g=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714521002; x=1715125802;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=q6GmYXeTFVcSUp54UKC83JdujiOnqI837P/1obadSzo=;
+        b=qIV4C415WVy1IB5v7pYpeP8dldY11jKUrzc7wKxOzdQZRswLhOazKEs4MxrYn955Mg
+         tfUrulT6qB7Dk+0nt6lYfagsgyk1uWFFjbnAD9u32rST7KjkJvQN5ftp0CWTGy3+oa0g
+         bJ4qlf3/i49Rrz54r4+C12mJYBwMQutmz2E/RhssbwHxxQZnOrSRnvRJotugq6IDrgI/
+         K6MSQhANEt/plENy+gR2xgA0jXkRePwHR/vpSJ3kE7aDSQgs7zbmazykW9knp/8ojtpI
+         5QY4FTU+AVuEW9uhTOHqOA38VwFVb9lsu8vzoVmN94HRyMlAcyxQYk4r3uqepGBTmUrH
+         t+yA==
+X-Forwarded-Encrypted: i=1; AJvYcCXNb1SCOJ0RQk27i9MeqTWSql06SphhEMZrRoW/jzLy4ZnvcXzpcwRjIaCEfeIbOjaPFT97bmK4AZlkLBJhx8wJxVVGIaFOjU7G4k+C
+X-Gm-Message-State: AOJu0Yw6vL1Y93VG0G/SHl6Jxx3jGpYOWSL0Yldznlr3fI1yE2tZF8nP
+	Fh9JsgumsfZa+ORk6L+7Xm4zQHg/Nd4Fk/rBAubMbg+VRi0MJVKnQCoDExESpQ==
+X-Google-Smtp-Source: AGHT+IEmfpxUlFG6jobG9C4IRBlS63mOhqBwC7NHJec2cp7b9T7KiIvj1WwFDwJrXezIdjny2LBpLQ==
+X-Received: by 2002:aa7:88cf:0:b0:6e7:48e3:7895 with SMTP id k15-20020aa788cf000000b006e748e37895mr6650151pff.2.1714521001834;
+        Tue, 30 Apr 2024 16:50:01 -0700 (PDT)
+Received: from www.outflux.net ([198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id g25-20020a62e319000000b006ed59172d2fsm21676555pfh.87.2024.04.30.16.50.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 30 Apr 2024 16:50:01 -0700 (PDT)
+From: Kees Cook <keescook@chromium.org>
+To: Josh Poimboeuf <jpoimboe@kernel.org>
+Cc: Kees Cook <keescook@chromium.org>,
+	kernel test robot <oliver.sang@intel.com>,
+	Peter Zijlstra <peterz@infradead.org>,
 	linux-kernel@vger.kernel.org,
-	bpf@vger.kernel.org,
-	Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc: puranjay12@gmail.com
-Subject: [PATCH bpf-next v5 2/2] bpf, arm64: inline bpf_get_smp_processor_id() helper
-Date: Tue, 30 Apr 2024 23:47:39 +0000
-Message-Id: <20240430234739.79185-3-puranjay@kernel.org>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20240430234739.79185-1-puranjay@kernel.org>
-References: <20240430234739.79185-1-puranjay@kernel.org>
+	linux-hardening@vger.kernel.org
+Subject: [PATCH] lkdtm: Disable CFI checking for perms functions
+Date: Tue, 30 Apr 2024 16:49:57 -0700
+Message-Id: <20240430234953.work.760-kees@kernel.org>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2019; i=keescook@chromium.org;
+ h=from:subject:message-id; bh=v82YBshvco4PyEh5G77y/OsBLZjjwmf7YEJkcuP6z4I=;
+ b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBmMYOkTglh9tMl/QrCP6s553CKMV982fN7MSxdL
+ MST3mjqQlCJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZjGDpAAKCRCJcvTf3G3A
+ Jm3fD/0dRn5r9RWBuix2ZT86TX/uV70Bz9Qmi4QT+F7Cblh+0Q+ojjcy924KPfDG4FsEGUz3i0m
+ Dzybef/dbiGeJIU2sFp9XLVlVr/xQSPOLV0bk0UgeeOBse6j9hMJ5aQwJ1yjCGDGdLoQ8frZp4l
+ TYQYoLogqlxkBh/iKY4AmXCz1QvRxE3Rr/I0fEvk+Tnu7wgLL0BxmINUoTJjH9yV0l7o617scvM
+ yhRAwqCg4G2BlLqJRhvFh6MqtNu0dT5iBKGV0OMzR//GN4aK6xQHKGUO8lp8dmbwjwA9BLfhpjb
+ a0Was2bvKjd7fK785CezXnDSNUZNwixgx78Y2icicw/ZCmxiKW6lX/+KzWCeJpOk+EfxfrPpwhV
+ cMMtL2pgqmBz2Jh0L0Phnh/VW+S/fjPaf8KEHt26T+w7wNIYVPOpURyhJ4sTYcTslcPQbmSW+3Q
+ AEocfXffJu7Jtt5rXoWeDgGTtkwtlRsrczjZ8lqGVGasOCK48mw/a8LBEUIkTG5vUQfxARC261S
+ m9CL2ElrS23JpSysIua7LPB6eMgHSIPh+gEj2e0C8xzSkfStQ757wPO/713MWwOpiYN75X+d3Pc
+ 4N6WhkUc38UCypHgTYgTj/Aj0d/kUSJvFFxzzw1pJAllCCeOLkaaufcKdXv8v7h1mFocCcTwsjo
+ Mzqe5bx BzeMYBKQ==
+X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
 Content-Transfer-Encoding: 8bit
 
-Inline calls to bpf_get_smp_processor_id() helper in the JIT by emitting
-a read from struct thread_info. The SP_EL0 system register holds the
-pointer to the task_struct and thread_info is the first member of this
-struct. We can read the cpu number from the thread_info.
+The EXEC_RODATA test plays a lot of tricks to live in the .rodata section,
+and once again ran into objtool's (completely reasonable) assumptions
+that executable code should live in an executable section. However, this
+manifested only under CONFIG_CFI_CLANG=y, as one of the .cfi_sites was
+pointing into the .rodata section.
 
-Here is how the ARM64 JITed assembly changes after this commit:
+Since we're testing non-CFI execution properties in perms.c (and
+rodata.c), we can disable CFI for the involved functions, and remove the
+CFI arguments from rodata.c entirely.
 
-                                      ARM64 JIT
-                                     ===========
-
-              BEFORE                                    AFTER
-             --------                                  -------
-
-int cpu = bpf_get_smp_processor_id();        int cpu = bpf_get_smp_processor_id();
-
-mov     x10, #0xfffffffffffff4d0             mrs     x10, sp_el0
-movk    x10, #0x802b, lsl #16                ldr     w7, [x10, #24]
-movk    x10, #0x8000, lsl #32
-blr     x10
-add     x7, x0, #0x0
-
-               Performance improvement using benchmark[1]
-
-/benchs/run_bench_trigger.sh glob-arr-inc arr-inc hash-inc
-
-+---------------+-------------------+-------------------+--------------+
-|      Name     |      Before       |        After      |   % change   |
-|---------------+-------------------+-------------------+--------------|
-| glob-arr-inc  | 23.380 ± 1.675M/s | 25.893 ± 0.026M/s |   + 10.74%   |
-| arr-inc       | 23.928 ± 0.034M/s | 25.213 ± 0.063M/s |   + 5.37%    |
-| hash-inc      | 12.352 ± 0.005M/s | 12.609 ± 0.013M/s |   + 2.08%    |
-+---------------+-------------------+-------------------+--------------+
-
-[1] https://github.com/anakryiko/linux/commit/8dec900975ef
-
-Signed-off-by: Puranjay Mohan <puranjay@kernel.org>
+Reported-by: kernel test robot <oliver.sang@intel.com>
+Closes: https://lore.kernel.org/oe-lkp/202308301532.d7acf63e-oliver.sang@intel.com
+Fixes: 6342a20efbd8 ("objtool: Add elf_create_section_pair()")
+Signed-off-by: Kees Cook <keescook@chromium.org>
 ---
- arch/arm64/include/asm/insn.h |  1 +
- arch/arm64/net/bpf_jit.h      |  2 ++
- arch/arm64/net/bpf_jit_comp.c | 23 +++++++++++++++++++++++
- 3 files changed, 26 insertions(+)
+Cc: Josh Poimboeuf <jpoimboe@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+---
+ drivers/misc/lkdtm/Makefile | 2 +-
+ drivers/misc/lkdtm/perms.c  | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm64/include/asm/insn.h b/arch/arm64/include/asm/insn.h
-index 8de0e39b29f3..8c0a36f72d6f 100644
---- a/arch/arm64/include/asm/insn.h
-+++ b/arch/arm64/include/asm/insn.h
-@@ -138,6 +138,7 @@ enum aarch64_insn_special_register {
- enum aarch64_insn_system_register {
- 	AARCH64_INSN_SYSREG_TPIDR_EL1	= 0x4684,
- 	AARCH64_INSN_SYSREG_TPIDR_EL2	= 0x6682,
-+	AARCH64_INSN_SYSREG_SP_EL0	= 0x4208,
- };
+diff --git a/drivers/misc/lkdtm/Makefile b/drivers/misc/lkdtm/Makefile
+index 95ef971b5e1c..b28701138b4b 100644
+--- a/drivers/misc/lkdtm/Makefile
++++ b/drivers/misc/lkdtm/Makefile
+@@ -19,7 +19,7 @@ KASAN_SANITIZE_rodata.o			:= n
+ KCSAN_SANITIZE_rodata.o			:= n
+ KCOV_INSTRUMENT_rodata.o		:= n
+ OBJECT_FILES_NON_STANDARD_rodata.o	:= y
+-CFLAGS_REMOVE_rodata.o			+= $(CC_FLAGS_LTO) $(RETHUNK_CFLAGS)
++CFLAGS_REMOVE_rodata.o			+= $(CC_FLAGS_LTO) $(RETHUNK_CFLAGS) $(CC_FLAGS_CFI)
  
- enum aarch64_insn_variant {
-diff --git a/arch/arm64/net/bpf_jit.h b/arch/arm64/net/bpf_jit.h
-index b627ef7188c7..b22ab2f97a30 100644
---- a/arch/arm64/net/bpf_jit.h
-+++ b/arch/arm64/net/bpf_jit.h
-@@ -302,5 +302,7 @@
- 	aarch64_insn_gen_mrs(Rt, AARCH64_INSN_SYSREG_TPIDR_EL1)
- #define A64_MRS_TPIDR_EL2(Rt) \
- 	aarch64_insn_gen_mrs(Rt, AARCH64_INSN_SYSREG_TPIDR_EL2)
-+#define A64_MRS_SP_EL0(Rt) \
-+	aarch64_insn_gen_mrs(Rt, AARCH64_INSN_SYSREG_SP_EL0)
- 
- #endif /* _BPF_JIT_H */
-diff --git a/arch/arm64/net/bpf_jit_comp.c b/arch/arm64/net/bpf_jit_comp.c
-index ed8f9716d9d5..8084f3e61e0b 100644
---- a/arch/arm64/net/bpf_jit_comp.c
-+++ b/arch/arm64/net/bpf_jit_comp.c
-@@ -1215,6 +1215,19 @@ static int build_insn(const struct bpf_insn *insn, struct jit_ctx *ctx,
- 		const u8 r0 = bpf2a64[BPF_REG_0];
- 		bool func_addr_fixed;
- 		u64 func_addr;
-+		u32 cpu_offset = offsetof(struct thread_info, cpu);
-+
-+		/* Implement helper call to bpf_get_smp_processor_id() inline */
-+		if (insn->src_reg == 0 && insn->imm == BPF_FUNC_get_smp_processor_id) {
-+			emit(A64_MRS_SP_EL0(tmp), ctx);
-+			if (is_lsi_offset(cpu_offset, 2)) {
-+				emit(A64_LDR32I(r0, tmp, cpu_offset), ctx);
-+			} else {
-+				emit_a64_mov_i(1, tmp2, cpu_offset, ctx);
-+				emit(A64_LDR32(r0, tmp, tmp2), ctx);
-+			}
-+			break;
-+		}
- 
- 		ret = bpf_jit_get_func_addr(ctx->prog, insn, extra_pass,
- 					    &func_addr, &func_addr_fixed);
-@@ -2541,6 +2554,16 @@ bool bpf_jit_supports_percpu_insn(void)
- 	return true;
+ OBJCOPYFLAGS :=
+ OBJCOPYFLAGS_rodata_objcopy.o	:= \
+diff --git a/drivers/misc/lkdtm/perms.c b/drivers/misc/lkdtm/perms.c
+index b93404d65650..5b861dbff27e 100644
+--- a/drivers/misc/lkdtm/perms.c
++++ b/drivers/misc/lkdtm/perms.c
+@@ -61,7 +61,7 @@ static void *setup_function_descriptor(func_desc_t *fdesc, void *dst)
+ 	return fdesc;
  }
  
-+bool bpf_jit_inlines_helper_call(s32 imm)
-+{
-+	switch (imm) {
-+	case BPF_FUNC_get_smp_processor_id:
-+		return true;
-+	}
-+
-+	return false;
-+}
-+
- void bpf_jit_free(struct bpf_prog *prog)
+-static noinline void execute_location(void *dst, bool write)
++static noinline __nocfi void execute_location(void *dst, bool write)
  {
- 	if (prog->jited) {
+ 	void (*func)(void);
+ 	func_desc_t fdesc;
 -- 
-2.40.1
+2.34.1
 
 
