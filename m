@@ -1,136 +1,181 @@
-Return-Path: <linux-kernel+bounces-163621-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-163624-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id ED20B8B6DC1
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 11:10:47 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B442D8B6DCD
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 11:12:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AE9F2281C95
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 09:10:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D72101C22F49
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 09:12:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB1EB127E02;
-	Tue, 30 Apr 2024 09:10:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 56105127E3F;
+	Tue, 30 Apr 2024 09:12:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b="f2VFFO2N"
-Received: from mail.zeus03.de (www.zeus03.de [194.117.254.33])
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="KE5WpSPb"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 346CC4501C
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 09:10:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=194.117.254.33
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC6AC4501C;
+	Tue, 30 Apr 2024 09:12:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714468240; cv=none; b=SgRD6hRUfTsUZhLR6s2pU9Cs8qJfgY2R0nDZEoXxjR54Su7rG0ylxh+9Gh9KHXvCVI8E2BHFlUyGxyklhN+HGY4mvmDO+oR1mblBfwQngtcWvnmniOWIZWiQb/k88zmT2TfRQTIGXvFYGkkRlogo9ObFxTpqsxoXBUNUZbyitjY=
+	t=1714468339; cv=none; b=uOheMfTx9+K8KjlFFUuplKiN76lxMoaUPboJotOCnwq7+TsRZyG/H7vSBSsHkC+Rrl2zMONlqP7qwmmpq3ObwJQxAm7z88RG6ChGjNrScHhvMJ1CtNQ2LvnWgjlZ8KFYHQlOeYJeU0UNkCe8EgqVIStnHIGakVXE1G644KVQJ5o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714468240; c=relaxed/simple;
-	bh=EnpC8uxdaBLW+uWUMw9JJXC1K+AjyDTh9tv4xrNIOPw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Yk3e6KiGZVPQ/pju924+8RjCU4dq1rML4B6sEBsQwCUJv2XtTQk3ei/KUFbB0h/TCXWrp4ZexMxBC4taxVmA3EFp67LpQEK41G5wry1O3E65b5yiQpoosC3V8OJC3kdtYbfdQ3WWvcZtWmi1QMCRxdqXuPiF8Jd048gShKann+Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com; spf=pass smtp.mailfrom=sang-engineering.com; dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b=f2VFFO2N; arc=none smtp.client-ip=194.117.254.33
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sang-engineering.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	sang-engineering.com; h=date:from:to:cc:subject:message-id
-	:references:mime-version:content-type:in-reply-to; s=k1; bh=QJb4
-	ulNH2VMgB23s2bKMJ77ejPMzfrg0P2qy+6olDX4=; b=f2VFFO2NU+TWRiqZ/1o9
-	4J6WInkbsJkiez5lhD2sEvYzfWiIJXZ70xNiNBDKGMwpTmXZ2O/ZmjA5lqgLwBoq
-	f61buPFYT3ZfjTd5tuNDAhzYz0dToa5H/WqFBMryj0X3ViTaDws9Glx++eKhdpPC
-	Nwi0tnlAK3E2w7JkyzO7UE3nOrVBV1gdadLwO/uf1PETVzpEjEvPgFPFlei9eHSc
-	rED5CxPg7bLUcxRRrKZNnL42jbzC8Zr4L7sN2UjaRHyNhLVO7OPKf0urtiF1dZpP
-	g/7l20tEfqk++x+WZgVj5SUmyajdyBdswyhJzNh+kxE+F8SkXroUvCKiBo3qRGf2
-	uw==
-Received: (qmail 2570745 invoked from network); 30 Apr 2024 11:10:33 +0200
-Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 30 Apr 2024 11:10:33 +0200
-X-UD-Smtp-Session: l3s3148p1@tPMKvkwXBJtehhrb
-Date: Tue, 30 Apr 2024 11:10:33 +0200
-From: Wolfram Sang <wsa+renesas@sang-engineering.com>
-To: Claudiu Beznea <claudiu.beznea@tuxon.dev>
-Cc: ulf.hansson@linaro.org, linux-mmc@vger.kernel.org, 
-	linux-renesas-soc@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>, Hien Huynh <hien.huynh.px@renesas.com>
-Subject: Re: [PATCH v2] mmc: renesas_sdhi: Set the SDBUF after reset
-Message-ID: <h2fhduxr5bv3m7vkxl2ga6pqkkv5mlzpwgk2q6lfsnz3l63ckk@pyzj2vt4jkfw>
-Mail-Followup-To: Wolfram Sang <wsa+renesas@sang-engineering.com>, 
-	Claudiu Beznea <claudiu.beznea@tuxon.dev>, ulf.hansson@linaro.org, linux-mmc@vger.kernel.org, 
-	linux-renesas-soc@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>, Hien Huynh <hien.huynh.px@renesas.com>
-References: <20240410135416.2139173-1-claudiu.beznea.uj@bp.renesas.com>
+	s=arc-20240116; t=1714468339; c=relaxed/simple;
+	bh=Q6up+U23E5APYIMETLmfiB1ibki5YAl7MpYr3vD7xLE=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=N1uDJPRBOci+hBLC+2l35MH/TpTB+AchdgRVbGNTE4RfpA7nulog6g5yHj1iN5tWZQYluT06GNx4iT4YPqnOlTDqtZF381C29Svtdn8yfe0h7hMCX9J6x4tZDmbxUfFdiK7rZnOkLoQRkuB95jEeOCND0siX+oZxiHI8fuAEG7k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=KE5WpSPb; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1714468335;
+	bh=Q6up+U23E5APYIMETLmfiB1ibki5YAl7MpYr3vD7xLE=;
+	h=From:To:Cc:Subject:Date:From;
+	b=KE5WpSPbzhjMWvlaKe8+wAl5amqx/bo+kGu0nR8qV0BnT+EpHef2nFuLTNyuV/FUG
+	 OXpRrnwMw0UusKK2qo2ccvla2/MnwHsXXViKbFIU4DVI9bgWcvF7BrypK/E88QMIps
+	 rdZcASyjzRKYXiKVE3dp/I6f7PDihykSPDSyfLLC57JF9XN8KO9V2BLtL/YW7vESVq
+	 td7cUTrvNX/lZgp9E0jndbl9NKdAxHOlJevkfK4U3P6PVYbMCbY3+oGnDCmfxGf9Lq
+	 SCZG8TAY0vrh76a6z+gUYV/jdriHAZQwzAlVfLDGy3e3skmZF3EvWxop+G6+DSlx+v
+	 C6OVGbLdQR+Gg==
+Received: from localhost.localdomain (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: vignesh)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 53E3D3782165;
+	Tue, 30 Apr 2024 09:12:11 +0000 (UTC)
+From: Vignesh Raman <vignesh.raman@collabora.com>
+To: dri-devel@lists.freedesktop.org
+Cc: daniels@collabora.com,
+	helen.koike@collabora.com,
+	airlied@gmail.com,
+	daniel@ffwll.ch,
+	robdclark@gmail.com,
+	david.heidelberg@collabora.com,
+	guilherme.gallo@collabora.com,
+	sergi.blanch.torne@collabora.com,
+	dmitry.baryshkov@linaro.org,
+	mcanal@igalia.com,
+	linux-mediatek@lists.infradead.org,
+	linux-amlogic@lists.infradead.org,
+	linux-rockchip@lists.infradead.org,
+	amd-gfx@lists.freedesktop.org,
+	linux-arm-msm@vger.kernel.org,
+	intel-gfx@lists.freedesktop.org,
+	virtualization@lists.linux-foundation.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v1 0/5] drm/ci: uprev mesa and generate testlist
+Date: Tue, 30 Apr 2024 14:41:16 +0530
+Message-Id: <20240430091121.508099-1-vignesh.raman@collabora.com>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="n7owwzlqyi25o6qu"
-Content-Disposition: inline
-In-Reply-To: <20240410135416.2139173-1-claudiu.beznea.uj@bp.renesas.com>
+Content-Transfer-Encoding: 8bit
 
+Uprev mesa to the latest version and stop vendoring the
+testlist into the kernel. Instead, use the testlist from the
+IGT build to ensure we do not miss renamed or newly added tests.
+Update the xfails with the latest testlist run.
 
---n7owwzlqyi25o6qu
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Also build virtual GPU driver for virtio as module.
 
-Hi Claudiu,
+The flakes list needs to be reported upsteam. Will send it
+after this series is reviewed.
 
-On Wed, Apr 10, 2024 at 04:54:16PM +0300, Claudiu Beznea wrote:
-> For development purpose, renesas_sdhi_probe() could be called w/
-> dma_ops =3D NULL to force the usage of PIO mode. In this case the
-> renesas_sdhi_enable_dma() will not be called before transferring data.
->=20
-> If renesas_sdhi_enable_dma() is not called, renesas_sdhi_clk_enable()
-> call from renesas_sdhi_probe() will configure SDBUF by calling the
-> renesas_sdhi_sdbuf_width() function, but then SDBUF will be reset in
-> tmio_mmc_host_probe() when calling tmio_mmc_reset() though host->reset().
-> If SDBUF is zero the data transfer will not work in PIO mode for RZ/G3S.
->=20
-> To fix this call again the renesas_sdhi_sdbuf_width(host, 16) in
-> renesas_sdhi_reset(). The call of renesas_sdhi_sdbuf_width() was not
-> removed from renesas_sdhi_clk_enable() as the host->reset() is optional.
+https://gitlab.freedesktop.org/vigneshraman/linux/-/pipelines/1166575
 
-So, I tried to find a place where we would need only one call to
-renesas_sdhi_sdbuf_width() but I also couldn't find a sweet spot. So,
-this approach seems also best to me.
+Vignesh Raman (5):
+  drm/ci: uprev mesa version
+  drm/ci: generate testlist from build
+  drm/ci: build virtual GPU driver as module
+  drm/ci: skip driver specific tests
+  drm/ci: update xfails for the new testlist
 
-> +
-> +			/*
-> +			 * In case the controller works in PIO mode the SDBUF
-> +			 * needs to be set as its reset value is zero.
-> +			 */
+ drivers/gpu/drm/ci/build-igt.sh               |   23 +
+ drivers/gpu/drm/ci/build.sh                   |    2 +-
+ drivers/gpu/drm/ci/container.yml              |   12 +-
+ drivers/gpu/drm/ci/gitlab-ci.yml              |   11 +-
+ drivers/gpu/drm/ci/igt_runner.sh              |   15 +-
+ drivers/gpu/drm/ci/image-tags.yml             |    7 +-
+ drivers/gpu/drm/ci/test.yml                   |    3 +
+ drivers/gpu/drm/ci/testlist.txt               | 2761 -----------------
+ drivers/gpu/drm/ci/x86_64.config              |    2 +-
+ .../gpu/drm/ci/xfails/amdgpu-stoney-fails.txt |   47 +-
+ .../drm/ci/xfails/amdgpu-stoney-flakes.txt    |    8 +-
+ .../gpu/drm/ci/xfails/amdgpu-stoney-skips.txt |   29 +-
+ drivers/gpu/drm/ci/xfails/i915-amly-fails.txt |   22 +-
+ .../gpu/drm/ci/xfails/i915-amly-flakes.txt    |    8 +
+ drivers/gpu/drm/ci/xfails/i915-amly-skips.txt |   22 +-
+ drivers/gpu/drm/ci/xfails/i915-apl-fails.txt  |   45 +-
+ drivers/gpu/drm/ci/xfails/i915-apl-flakes.txt |    5 +
+ drivers/gpu/drm/ci/xfails/i915-apl-skips.txt  |   26 +-
+ drivers/gpu/drm/ci/xfails/i915-cml-fails.txt  |   26 +-
+ drivers/gpu/drm/ci/xfails/i915-cml-flakes.txt |    6 +
+ drivers/gpu/drm/ci/xfails/i915-cml-skips.txt  |   20 +
+ drivers/gpu/drm/ci/xfails/i915-glk-fails.txt  |   28 +-
+ drivers/gpu/drm/ci/xfails/i915-glk-skips.txt  |   26 +-
+ drivers/gpu/drm/ci/xfails/i915-kbl-fails.txt  |   39 +-
+ drivers/gpu/drm/ci/xfails/i915-kbl-flakes.txt |   10 +-
+ drivers/gpu/drm/ci/xfails/i915-kbl-skips.txt  |   35 +-
+ drivers/gpu/drm/ci/xfails/i915-tgl-fails.txt  |   75 +-
+ drivers/gpu/drm/ci/xfails/i915-tgl-skips.txt  |   27 +-
+ drivers/gpu/drm/ci/xfails/i915-whl-fails.txt  |   46 +-
+ drivers/gpu/drm/ci/xfails/i915-whl-skips.txt  |   22 +-
+ .../drm/ci/xfails/mediatek-mt8173-fails.txt   |   47 +-
+ .../drm/ci/xfails/mediatek-mt8173-skips.txt   |   12 +
+ .../drm/ci/xfails/mediatek-mt8183-fails.txt   |   17 +-
+ .../drm/ci/xfails/mediatek-mt8183-flakes.txt  |    5 +
+ .../drm/ci/xfails/mediatek-mt8183-skips.txt   |   14 +
+ .../gpu/drm/ci/xfails/meson-g12b-fails.txt    |   20 +-
+ .../gpu/drm/ci/xfails/meson-g12b-flakes.txt   |    5 +
+ .../gpu/drm/ci/xfails/meson-g12b-skips.txt    |   14 +
+ .../gpu/drm/ci/xfails/msm-apq8016-fails.txt   |   26 +-
+ .../gpu/drm/ci/xfails/msm-apq8016-flakes.txt  |    5 +
+ .../gpu/drm/ci/xfails/msm-apq8016-skips.txt   |   14 +
+ .../gpu/drm/ci/xfails/msm-apq8096-fails.txt   |    5 +-
+ .../gpu/drm/ci/xfails/msm-apq8096-flakes.txt  |    5 +
+ .../gpu/drm/ci/xfails/msm-apq8096-skips.txt   |   81 +-
+ .../msm-sc7180-trogdor-kingoftown-fails.txt   |   34 +-
+ .../msm-sc7180-trogdor-kingoftown-flakes.txt  |    5 +
+ .../msm-sc7180-trogdor-kingoftown-skips.txt   |   15 +
+ ...sm-sc7180-trogdor-lazor-limozeen-fails.txt |   34 +-
+ ...m-sc7180-trogdor-lazor-limozeen-flakes.txt |    5 +
+ ...sm-sc7180-trogdor-lazor-limozeen-skips.txt |   15 +
+ .../gpu/drm/ci/xfails/msm-sdm845-fails.txt    |   75 +-
+ .../gpu/drm/ci/xfails/msm-sdm845-flakes.txt   |   26 +-
+ .../gpu/drm/ci/xfails/msm-sdm845-skips.txt    |   15 +
+ .../drm/ci/xfails/rockchip-rk3288-fails.txt   |   54 -
+ .../drm/ci/xfails/rockchip-rk3288-skips.txt   |   17 +-
+ .../drm/ci/xfails/rockchip-rk3399-fails.txt   |   80 +-
+ .../drm/ci/xfails/rockchip-rk3399-flakes.txt  |    7 -
+ .../drm/ci/xfails/rockchip-rk3399-skips.txt   |   15 +
+ .../drm/ci/xfails/virtio_gpu-none-fails.txt   |   82 +-
+ .../drm/ci/xfails/virtio_gpu-none-skips.txt   |   18 +-
+ 60 files changed, 886 insertions(+), 3289 deletions(-)
+ delete mode 100644 drivers/gpu/drm/ci/testlist.txt
+ create mode 100644 drivers/gpu/drm/ci/xfails/i915-amly-flakes.txt
+ create mode 100644 drivers/gpu/drm/ci/xfails/i915-apl-flakes.txt
+ create mode 100644 drivers/gpu/drm/ci/xfails/i915-cml-flakes.txt
+ create mode 100644 drivers/gpu/drm/ci/xfails/mediatek-mt8173-skips.txt
+ create mode 100644 drivers/gpu/drm/ci/xfails/mediatek-mt8183-flakes.txt
+ create mode 100644 drivers/gpu/drm/ci/xfails/mediatek-mt8183-skips.txt
+ create mode 100644 drivers/gpu/drm/ci/xfails/meson-g12b-flakes.txt
+ create mode 100644 drivers/gpu/drm/ci/xfails/meson-g12b-skips.txt
+ create mode 100644 drivers/gpu/drm/ci/xfails/msm-apq8016-flakes.txt
+ create mode 100644 drivers/gpu/drm/ci/xfails/msm-apq8016-skips.txt
+ create mode 100644 drivers/gpu/drm/ci/xfails/msm-apq8096-flakes.txt
+ create mode 100644 drivers/gpu/drm/ci/xfails/msm-sc7180-trogdor-kingoftown-flakes.txt
+ create mode 100644 drivers/gpu/drm/ci/xfails/msm-sc7180-trogdor-lazor-limozeen-flakes.txt
+ delete mode 100644 drivers/gpu/drm/ci/xfails/rockchip-rk3288-fails.txt
+ delete mode 100644 drivers/gpu/drm/ci/xfails/rockchip-rk3399-flakes.txt
 
-But I think we can shorten the above comment to something like:
+-- 
+2.40.1
 
-			/* Ensure default value for this driver */
-> +			renesas_sdhi_sdbuf_width(host, 16);
-
-D'accord?
-
-Happy hacking,
-
-   Wolfram
-
-
---n7owwzlqyi25o6qu
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmYwtYUACgkQFA3kzBSg
-KbYqdhAAh1BHkpYuhh4UgC9lTha0M8cRwfM9fPYYxLfGuMgJkUlTzNpqu1rOSsSJ
-QyN4vggjd5lhvLmBwNLIpeDPSt8sM2Pp2rKbyZj89SHlRShvzZkSSkWSwRDu+gbL
-k2l2mU/0xhrMkO3s3ZX7FcA5HGok/qb44xGMqaBVI4cvdZd4uEGPNDxXi6Yijd48
-gAxLCh3PN1gwMVETT9qt9ckp2LEtFM1omIbXic/yvry1572d9ujoqCeN7E+mx8wi
-26vWP1pVRCUFhTLJVysz6B5kh1JBBamjR7iSQnSl9K1dICIVkHlZF6WbAh3FBqbJ
-nW4C6JVl6rWg2VosQ4sBfe105PpZw3sjyuaOELh2HXFhfrFKl9QlUd4spkVqxAVz
-BCptmAs4PgUBaOcIoM7RrPteLvTOLprdHwWI+qJbSuMZJr0bVsYBbkcDEFXRGpdf
-TlwBChaFj2CFnCLAYVBTFBdLmsRGUOUhFC5PE0Ev93m7rXxd1AfiDRV3KKF0jKGW
-V4hNyDBrdmaSJnZb3eCQhzyJ+5SyjNQhhRO+C4qpqfMK2Yx86G77jJtVBrZTVS8n
-JY1cZg7fnE2Et2mmpkbw5+VrBdPks0YEU5IGDquBGQ/Iyrt7liR/dWCVtb/YsYe+
-XbHVJiutlclajSwTBBfyxTggxyXdkHkXWxAnHuSm8W5WDZa4axk=
-=1g6D
------END PGP SIGNATURE-----
-
---n7owwzlqyi25o6qu--
 
