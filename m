@@ -1,122 +1,162 @@
-Return-Path: <linux-kernel+bounces-164138-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-164146-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B89B08B79A9
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 16:32:09 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 23A478B79D4
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 16:34:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 485F928696D
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 14:32:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CCFAC2889F5
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 14:34:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C650317BB26;
-	Tue, 30 Apr 2024 14:26:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 20C1D143747;
+	Tue, 30 Apr 2024 14:30:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OUp7ugBJ"
-Received: from mail-ot1-f54.google.com (mail-ot1-f54.google.com [209.85.210.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="KBZjaFKF"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BBF6317B51F;
-	Tue, 30 Apr 2024 14:26:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B83714373E;
+	Tue, 30 Apr 2024 14:30:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714487213; cv=none; b=XAemE22s6yXtzGs/zv/fIobhbR3iAzkfomImN8s+vVHFyZHfuiVRpYaE6hQF7+34QoDzjf/hDscPZuZ6ZyKOp3BPHgfbNCCuPGEZhjF6TugqyrfV2YlfYLBPk4q/fVhzykO4GqRvSniOC7SQNaqg1Lu1PA7w8PCMn4VRltwwa4Y=
+	t=1714487426; cv=none; b=EZrDeHGNU0ug2ElsitU6VHC7dBNBj+vVBp1lvXj1V90dFSyhk/blFH7OMCO9qddqxhFVg8zTSN0O+2VKfEO/c/nHDOqHLWb2aJNZVn0yY7/96FC4A+7PQi8H9VZ6PuCKQeq7/F5DJJ9x6WeCQa++rnGv1MeHbfIm47o/HIzINS0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714487213; c=relaxed/simple;
-	bh=YHCQtjphXshwVqzUSAjOkDLpjpy5GbeBEQC3/9BHAXc=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=PumrwMFJhLWxxG1F22huZHL2N3eBiriYrOFNTvlEWD2Jf72Gj7Z67w5owV5jEm8VRz62mVd+sTOl8rXOzV8g9SVtDWBWbBsCCrFZsxn8w1IYw+VEMaOfvZ19aAtQPeTO2eFwlsooeMFzRnuV+88NMlSWHNsUCxB85FpMbgewN0g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OUp7ugBJ; arc=none smtp.client-ip=209.85.210.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ot1-f54.google.com with SMTP id 46e09a7af769-6eb6b9e1808so2699399a34.3;
-        Tue, 30 Apr 2024 07:26:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714487210; x=1715092010; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=i8khSCxXJCwi9khL8crRhkrXjbgJsoFGy/y55ZpSA9U=;
-        b=OUp7ugBJaSP8os3B2+84lyE+eZLrMAqjTSXOd7UEweoWbbQfd3Hm0hTw0nLSU7+Tyk
-         XDxrgq2hg3xghYNv46ur/K9Ok2yB1RvQcPa0ZKVZMwYMz4/pZJZuwBVm/3Zx+IzM/cI+
-         2QOYBPbd4QfpdiIdBuy7gLsHuofI2ej+7YIf+vDZwmNrH7MWyhjAdlNRcQgTZzOpal1R
-         fNNAwx3Hhrpn3StJSwCTK35a1bovo/iKBHDL3v/Fw8EpJ2/w0qnK3AjWPG0+thp7pZeN
-         bvdNu/Y/rdlaBkdzzqvbJ9NAptpjRh2e818k3SWSVfCLzESyFZ9I5UA6YWwORuBnBJTF
-         W+uw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714487210; x=1715092010;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=i8khSCxXJCwi9khL8crRhkrXjbgJsoFGy/y55ZpSA9U=;
-        b=sOOM83u98L7ExInXRjW5ZODGYg1Pb63BWmm69+Ow8WwchZ+mYXecISC/gIVB0ZMnDK
-         5UKgvcooex5G9+2z5rLV+nJRcW2Z+F9OLasq4a64bW1gskV4MRLL0ui35wb+8AKd63jy
-         qDizCwR9ZsFKwW9aoyf7PiosCgrS23UAf+F7Vswi+eHd7DzJyCYMoS+dKQ3Ez1Mo4oAk
-         Tg2XYTVkICJa9hikm+st3UTdhcd6BmaKxEv9Tv85t0SDNFI0l0p3IUzpfmrBc6R8gFhE
-         JLv2p+sjBD1m4XJ/MCSn5ggNmu+L0/7Q2+jLK0HneCGuEG3o78dW88NAkYb5gQmuGVfy
-         4m9Q==
-X-Forwarded-Encrypted: i=1; AJvYcCVeA/s8gSZaNz4jYsI5NMNTbcD6iBp6klVeW0+5ipx5Zp2opXkqa5nq0hpjESkXXjdUkdakzKf0KYE3UGn0ix6Xo7kcRyjwAT6/+aRepBRWTOLIpWmCM8/5ByToC98yA9Jdh717QfUy
-X-Gm-Message-State: AOJu0YwCJhqqmFi82tZAEGZ/9KT1K98/iApFtixtTjLqSngqJqDjz2QH
-	dh21a/i4mbeCRcUyIZRP+QQ0xX8o1B+MAXUlQ7HNkhHBsMoeNoNsgmpGygpcoXUkN8ZI75HNeFJ
-	10VniXNUiKmEXuyIhLzTbn+qWPT7bqg==
-X-Google-Smtp-Source: AGHT+IH9x0LG2biuI13dWDJBzAICvj25gjg6iNMjcBSP/8vXYZmMMiKm8HjOEkEslMfStmh69O4cVv79dJWr5R/mIyA=
-X-Received: by 2002:a9d:7502:0:b0:6ee:21cc:ac91 with SMTP id
- r2-20020a9d7502000000b006ee21ccac91mr7492491otk.32.1714487210673; Tue, 30 Apr
- 2024 07:26:50 -0700 (PDT)
+	s=arc-20240116; t=1714487426; c=relaxed/simple;
+	bh=Sk3EMIVGnDX+IXhJwDnotDadG2kubVXVlJSnVukq+r0=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=dQsQ25k4+sLXhrGCZQIazMAafIhlgBdsADWOJFuQgcIcuQ/TwnZaPNW+IFedjJ0tIcvGZ505rItoaux0hWtFRo20vbc8pN+913NSVQgvNFlhB4/n+hSxneLbdo5UPB101IuXbKq7/WQ+/7O+a7sJ2NR627JAhjoCCRlddubA9iY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=KBZjaFKF; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 43UD9gaF014746;
+	Tue, 30 Apr 2024 14:30:18 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	from:to:cc:subject:date:message-id:mime-version
+	:content-transfer-encoding:content-type; s=qcppdkim1; bh=eiScpcg
+	hYJXZwIUI+wNiwCUPnWtB95AeIvA6e+mjE0Y=; b=KBZjaFKFI80ZSrJj6xeD0mK
+	NmjihOOstg/yI6N7XvncoSnLvalYy9xpUPNrzlfbOxU687cZFwf5CKhlr/oIXY1e
+	OuX6TN7OX1QSrmbE0n8XTich/K0EDTA2axsrXAf9pWzz16AUcj1ZrjYNmhdNyqM2
+	bvnUIvX76xdiYxo2hAWxxU0oi4EKvjKSl37uKWtfcD7+co/itYCRBrRcUz5GwCDi
+	DklZ8pIktjD5OdrbhES7jMgN+0pFvr9CQBfZanPRQnFyYJHMarGC3+PRkef7bHTn
+	2hGcXMOCYQqycD7gbQlosi+2bWWxaTthxCyDcMOFyQZOiiv+cmyVNx6Rb8dM6kA=
+	=
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xu199063n-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 30 Apr 2024 14:30:18 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 43UEUH33021137
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 30 Apr 2024 14:30:17 GMT
+Received: from hu-jkona-hyd.qualcomm.com (10.80.80.8) by
+ nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.9; Tue, 30 Apr 2024 07:30:11 -0700
+From: Jagadeesh Kona <quic_jkona@quicinc.com>
+To: Bjorn Andersson <andersson@kernel.org>,
+        Michael Turquette
+	<mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>, Rob Herring
+	<robh+dt@kernel.org>,
+        Krzysztof Kozlowski
+	<krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Vladimir Zapolskiy
+	<vladimir.zapolskiy@linaro.org>
+CC: Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+        <linux-arm-msm@vger.kernel.org>, <linux-clk@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Taniya Das
+	<quic_tdas@quicinc.com>,
+        Jagadeesh Kona <quic_jkona@quicinc.com>,
+        "Satya
+ Priya Kakitapalli" <quic_skakitap@quicinc.com>,
+        Ajit Pandey
+	<quic_ajipan@quicinc.com>,
+        Imran Shaik <quic_imrashai@quicinc.com>
+Subject: [PATCH V3 0/8] Add support for videocc and camcc on SM8650
+Date: Tue, 30 Apr 2024 19:57:49 +0530
+Message-ID: <20240430142757.16872-1-quic_jkona@quicinc.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240430131330.1555849-1-marc.ferland@sonatest.com> <20240430145935.0000055d@Huawei.com>
-In-Reply-To: <20240430145935.0000055d@Huawei.com>
-From: Marc Ferland <marc.ferland@gmail.com>
-Date: Tue, 30 Apr 2024 10:26:38 -0400
-Message-ID: <CAMRMzCBva+o5Mgkxue5F3o5AnAokDAXMhCNXqacPOPTGWwisCQ@mail.gmail.com>
-Subject: Re: [PATCH] iio: dac: ad5592r: fix temperature scale
-To: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Cc: lars@metafoo.de, Michael.Hennerich@analog.com, jic23@kernel.org, 
-	linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Marc Ferland <marc.ferland@sonatest.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: sQ-8O9UDvntGhcYPZEjeo3pDapc9qItW
+X-Proofpoint-GUID: sQ-8O9UDvntGhcYPZEjeo3pDapc9qItW
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
+ definitions=2024-04-30_08,2024-04-30_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 mlxlogscore=999
+ lowpriorityscore=0 mlxscore=0 adultscore=0 bulkscore=0 phishscore=0
+ priorityscore=1501 malwarescore=0 suspectscore=0 impostorscore=0
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2404010003 definitions=main-2404300102
 
-On Tue, Apr 30, 2024 at 9:59=E2=80=AFAM Jonathan Cameron
-<Jonathan.Cameron@huawei.com> wrote:
->
-> On Tue, 30 Apr 2024 09:13:30 -0400
-> marc.ferland@gmail.com wrote:
->
-> > From: Marc Ferland <marc.ferland@sonatest.com>
-> >
-> > For temperature readings, the remainder is returned as nano Celsius
-> > _but_ we mark it as IIO_VAL_INT_PLUS_MICRO. This results in incorrect
-> > temperature reporting through hwmon for example. I have a board here
-> > which reports the following when running 'sensors':
-> >
-> > iio_hwmon-isa-0000
-> > Adapter: ISA adapter
-> > temp1:        +93.3=C2=B0C
-> >
-> > With the patch applied, it returns the correct temperature:
-> >
-> > iio_hwmon-isa-0000
-> > Adapter: ISA adapter
-> > temp1:        +30.5=C2=B0C
-> >
-> > Signed-off-by: Marc Ferland <marc.ferland@sonatest.com>
->
-> IIO temperature units are milli celcius, so I'm not following
-> the argument here.  The driver might be reporting in pico celcius
-> I suppose?  Call out that this is the scale factor though, so
-> it corresponds to 1LSB hence a small number is certainly plausible..
->
-> Reasonable to argue it's taking the integer and dividing by 10^9 hence
-> INT_PLUS_NANO is the right answer, but it isn't nano celsius.
->
+Add support for video and camera clock controllers on Qualcomm SM8650
+platform.
 
-Oups! you're obviously right. I'll update my commit message and resend.
-Marc
+Changes in V3:
+[PATCH 1/8]: Split incorrect header file name in SM8450 videocc bindings
+             into a separate patch and added fixes tag
+[PATCH 2/8]: Added new header file for SM8650 videocc to define the extra clocks
+             and resets on top of SM8450 videocc bindings, Dropped Krzysztof
+             R-By tag due to these changes
+[PATCH 3/8]: Updated SM8550 videocc driver to use new SM8650 videocc header file,
+             added Dmitry and Konrad R-By tags
+[PATCH 4/8]: Updated offset variable name to sleep_clk_offset in probe and added
+             Dmitry R-By tag
+[PATCH 5/8]: This patch is newly added to fix the incorrect order for SC8280XP
+             camcc header file in bindings
+[PATCH 6/8]: Fixed the incorrect alphabetical order for SM8650 camcc compatible
+             and header files, added Krzysztof R-By tag and Vladimir Acked-By tags
+[PATCH 7/8]: No changes, added R-By tags received till V2 series
+[PATCH 8/8]: Dropped required-opps property in videocc and camcc nodes and
+             updated DT file to use new SM8650 videocc header file, added Vladimir R-By tag
+
+Previous series:
+V2 RESEND: https://lore.kernel.org/all/20240321092529.13362-1-quic_jkona@quicinc.com/
+V2: https://lore.kernel.org/all/20240220135121.22578-1-quic_jkona@quicinc.com/
+V1: https://lore.kernel.org/linux-kernel/20240206113145.31096-1-quic_jkona@quicinc.com/T/
+
+Jagadeesh Kona (8):
+  dt-bindings: clock: qcom: Fix SM8450 videocc incorrect header file
+    name
+  dt-bindings: clock: qcom: Add SM8650 video clock controller
+  clk: qcom: videocc-sm8550: Add support for videocc XO clk ares
+  clk: qcom: videocc-sm8550: Add SM8650 video clock controller
+  dt-bindings: clock: qcom: Fix the incorrect order of SC8280XP camcc
+    header
+  dt-bindings: clock: qcom: Add SM8650 camera clock controller
+  clk: qcom: camcc-sm8650: Add SM8650 camera clock controller driver
+  arm64: dts: qcom: sm8650: Add video and camera clock controllers
+
+ .../bindings/clock/qcom,sm8450-camcc.yaml     |    5 +-
+ .../bindings/clock/qcom,sm8450-videocc.yaml   |    6 +-
+ arch/arm64/boot/dts/qcom/sm8650.dtsi          |   26 +
+ drivers/clk/qcom/Kconfig                      |    8 +
+ drivers/clk/qcom/Makefile                     |    1 +
+ drivers/clk/qcom/camcc-sm8650.c               | 3591 +++++++++++++++++
+ drivers/clk/qcom/videocc-sm8550.c             |  156 +-
+ include/dt-bindings/clock/qcom,sm8650-camcc.h |  195 +
+ .../dt-bindings/clock/qcom,sm8650-videocc.h   |   23 +
+ 9 files changed, 4004 insertions(+), 7 deletions(-)
+ create mode 100644 drivers/clk/qcom/camcc-sm8650.c
+ create mode 100644 include/dt-bindings/clock/qcom,sm8650-camcc.h
+ create mode 100644 include/dt-bindings/clock/qcom,sm8650-videocc.h
+
+-- 
+2.43.0
+
 
