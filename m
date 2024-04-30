@@ -1,63 +1,64 @@
-Return-Path: <linux-kernel+bounces-164494-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-164495-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EA6ED8B7E35
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 19:09:59 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id B80038B7E39
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 19:10:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A68D0287699
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 17:09:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6E8811F21954
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 17:10:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 399C817B500;
-	Tue, 30 Apr 2024 17:09:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC75D17BB10;
+	Tue, 30 Apr 2024 17:10:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NMPWirFZ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tPOTRj/p"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 772D11B96B;
-	Tue, 30 Apr 2024 17:09:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 12C6017B4EB;
+	Tue, 30 Apr 2024 17:10:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714496967; cv=none; b=j6XXju9O7Wy/GgSjF/zYGvXWiVgdZM5W/7z/2+hKAsn83gFoe3OhV3rkTDFnojDu78xfRwcO8mFw5uRwQ2j8Usyuhtdjy3q8l5mcLoTraY9XnB4l5ElrZN4/GjGICVei4e3L/s1GC1M+O3pg+HSYY028xBqq03HLr9uQa4S4M14=
+	t=1714497004; cv=none; b=lAgRbXNQJbLO5RcHaOecn0lnv0n45ZrFP9ceRY4D/eMWsPePsqQ+Wd7+4uvDX5wQZvGp5SLwq0w3MaYdS9cHnUk9FeYfZ201yHKIwqH2cwZ3gvxevrZ4sglI9zzXEgjNs7CY6ciNggCpQPnkbA2d4gZsgkMur4XAxX5OpZBzRkY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714496967; c=relaxed/simple;
-	bh=vja6Gc4p2Q66vSyZ6Xt49ZUAyf09TFCpHOb3xnXdX6c=;
+	s=arc-20240116; t=1714497004; c=relaxed/simple;
+	bh=oS0wEIIVuLjHd8cAg9atHETWc00gOO4f/bvn8u2zung=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=CvkayvayUDTw21KirgpYQSYu98NPpRESb3hubVyUmlGbvss/izirivJ8frzHI1MgCgcI5h0edO40oerpwPz0tG0vXOcJtpeLKa56R/tVgmKTAKqcbVXGyElq3KhfiZH5TOp5BqzG60L261NKYtdQ0MpaNKDdUQetH1c8iK3ShwA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NMPWirFZ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D8D03C2BBFC;
-	Tue, 30 Apr 2024 17:09:22 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=dq8CSyFw2G785UT+mHfY+OIsGLiGOsahP+Gvlp9wMARydQQAMKsoLr0i2+8sBFlKDP4ZyZmcQ/s2r/sPuM6YkGix3bKdjgq0whgP78ZJ0OKX7BX7fIrIM7aiJ3qAG+gYaLpE7mJ9y8wCPXSOjW/5M4+bS3S2sfMtkk+Mb8sg9GE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tPOTRj/p; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id ADC49C2BBFC;
+	Tue, 30 Apr 2024 17:10:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714496966;
-	bh=vja6Gc4p2Q66vSyZ6Xt49ZUAyf09TFCpHOb3xnXdX6c=;
+	s=k20201202; t=1714497003;
+	bh=oS0wEIIVuLjHd8cAg9atHETWc00gOO4f/bvn8u2zung=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=NMPWirFZsEMJVL/LFnFVOkPCZAR7LC431C35R5CzyBoU7dRboQibAol0Ir/PhVDA/
-	 2NLQs+e44EoBoxUplvZq8Zg/+6alscnUsGZlT0cIxFQk3Z7NBnf1n8fjgCDc/TS8XB
-	 UKEZ7z5enHFKyJ+bN+2Bu6OXPIEefa1B1cf/pg/CLohkohsDPX/UNTGgx97OXhJB1p
-	 eDSv19pu8XQ/NDvdxXt88RO0GsZ/vk6c7gxjHBmBINZpmAijd7uvbnrNp8u1bL9UKT
-	 ySBZ10ptsaB34uYdI3ByA94rLlJ3VoEQweQlumsYP6RCCILhHfZiROk5dHcHxmx26P
-	 d9gZiP6qDHXkQ==
-Date: Tue, 30 Apr 2024 18:09:20 +0100
+	b=tPOTRj/pSHXu7HH0780Zg2qFPwdSz+xI5rhnE8huvbY2M8wUT0TKd6GZO/xcLPmeK
+	 nMSpyGD8zgZRw57MnXstP5RUDLKupLULh2avjfOTGfa1nZ1o1RbbOx6cZRhXbVs1fX
+	 8/oqsfSXTNR3ZT4aDnl7R/vP131ByBN6rsf+y57o1hhdCHwQfZJETY146WrLSxYpxK
+	 NbuKKamoS6EL/jliapcS9kqt3UwgS5leAL0YYlRXjbj9wbKFpgIiTmW4e1I6yATdcc
+	 Kv5AnZaZPwoJlM/WZ7QNAlxXzoIILTo+lJQLNQlqpZip9EfbHbd6cKk+KoG49DI77L
+	 PgPOuOoxA03hw==
+Date: Tue, 30 Apr 2024 18:09:58 +0100
 From: Conor Dooley <conor@kernel.org>
-To: Inochi Amaoto <inochiama@outlook.com>
-Cc: Vinod Koul <vkoul@kernel.org>,
-	Kishon Vijay Abraham I <kishon@kernel.org>,
-	Rob Herring <robh@kernel.org>,
+To: Prabhakar <prabhakar.csengg@gmail.com>
+Cc: Geert Uytterhoeven <geert+renesas@glider.be>,
+	Ulf Hansson <ulf.hansson@linaro.org>, Rob Herring <robh@kernel.org>,
 	Krzysztof Kozlowski <krzk+dt@kernel.org>,
 	Conor Dooley <conor+dt@kernel.org>,
-	Chen Wang <unicorn_wang@outlook.com>,
-	Jisheng Zhang <jszhang@kernel.org>,
-	Liu Gui <kenneth.liu@sophgo.com>,
-	Jingbao Qiu <qiujingbao.dlmu@gmail.com>, dlan@gentoo.org,
-	linux-phy@lists.infradead.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/2] dt-bindings: phy: Add Sophgo CV1800 USB phy
-Message-ID: <20240430-crummiest-overnight-0f46dba32bb8@spud>
-References: <IA1PR20MB4953182B8EDB465430289400BB1B2@IA1PR20MB4953.namprd20.prod.outlook.com>
- <IA1PR20MB495355A4186420B78BD78F49BB1B2@IA1PR20MB4953.namprd20.prod.outlook.com>
+	Magnus Damm <magnus.damm@gmail.com>,
+	Wolfram Sang <wsa+renesas@sang-engineering.com>,
+	linux-mmc@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+	Biju Das <biju.das.jz@bp.renesas.com>,
+	Fabrizio Castro <fabrizio.castro.jz@renesas.com>,
+	Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Subject: Re: [PATCH v3 1/3] dt-bindings: mmc: renesas,sdhi: Group single
+ const value items into an enum list
+Message-ID: <20240430-idealness-breeze-4712d0798800@spud>
+References: <20240430145937.133643-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <20240430145937.133643-2-prabhakar.mahadev-lad.rj@bp.renesas.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -65,130 +66,35 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="y6Qu6OsLbTAKgDXe"
+	protocol="application/pgp-signature"; boundary="G7AmvMY0rSIjFKEZ"
 Content-Disposition: inline
-In-Reply-To: <IA1PR20MB495355A4186420B78BD78F49BB1B2@IA1PR20MB4953.namprd20.prod.outlook.com>
+In-Reply-To: <20240430145937.133643-2-prabhakar.mahadev-lad.rj@bp.renesas.com>
 
 
---y6Qu6OsLbTAKgDXe
+--G7AmvMY0rSIjFKEZ
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Apr 29, 2024 at 08:31:11AM +0800, Inochi Amaoto wrote:
-> The USB phy of Sophgo CV18XX series SoC needs to sense a pin called
-> "VBUS_DET" to get the right operation mode. If this pin is not
-> connected, it only supports setting the mode manually.
+On Tue, Apr 30, 2024 at 03:59:35PM +0100, Prabhakar wrote:
+> From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
 >=20
-> Add USB phy bindings for Sophgo CV18XX/SG200X series SoC.
+> Group single const value items into an enum list.
 >=20
-> Signed-off-by: Inochi Amaoto <inochiama@outlook.com>
-> ---
->  .../bindings/phy/sophgo,cv1800-usb-phy.yaml   | 68 +++++++++++++++++++
->  1 file changed, 68 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/phy/sophgo,cv1800-u=
-sb-phy.yaml
->=20
-> diff --git a/Documentation/devicetree/bindings/phy/sophgo,cv1800-usb-phy.=
-yaml b/Documentation/devicetree/bindings/phy/sophgo,cv1800-usb-phy.yaml
-> new file mode 100644
-> index 000000000000..7e3382c18d44
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/phy/sophgo,cv1800-usb-phy.yaml
-> @@ -0,0 +1,68 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/phy/sophgo,cv1800-usb-phy.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Sophgo CV18XX/SG200X USB 2.0 PHY
-> +
-> +maintainers:
-> +  - Inochi Amaoto <inochiama@outlook.com>
-> +
-> +properties:
-> +  compatible:
-> +    const: sophgo,cv1800-usb-phy
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  "#phy-cells":
-> +    const: 0
-> +
-> +  clocks:
-> +    items:
-> +      - description: PHY clock
-> +      - description: PHY app clock
-> +      - description: PHY stb clock
-> +      - description: PHY lpm clock
-> +
-> +  clock-names:
-> +    items:
-> +      - const: phy
-> +      - const: app
-> +      - const: stb
-> +      - const: lpm
-> +
-> +  vbus_det-gpios:
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
 
-"vbus_det-gpios" isn't a common property AFAICT, why does it not get a
-vendor prefix when the other gpios property does?
+Acked-by: Conor Dooley <conor.dooley@microchip.com>
 
-> +    description: GPIO to the USB OTG VBUS detect pin. This should not be
-> +      defined if vbus_det pin and switch pin are connected, which may
-> +      break the VBUS detection.
-> +    maxItems: 1
-> +
-> +  sophgo,switch-gpios:
-> +    description: GPIO array for the phy to control connected switch. For
-> +      host mode, the driver will set these GPIOs to low one by one. For
-> +      device mode, the driver will set these GPIOs to high in reverse
-> +      order.
-> +    maxItems: 2
-
-You're still missing the itemised description of what each of the gpios
-here are - how would I know which order to put the GPIOs in?
-
-Cheers,
-Conor.
-
-> +
-> +required:
-> +  - compatible
-> +  - "#phy-cells"
-> +  - clocks
-> +  - clock-names
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    phy@48 {
-> +      compatible =3D "sophgo,cv1800-usb-phy";
-> +      reg =3D <0x48 0x4>;
-> +      #phy-cells =3D <0>;
-> +      clocks =3D <&clk 92>, <&clk 93>,
-> +               <&clk 94>, <&clk 95>;
-> +      clock-names =3D "phy", "app", "stb", "lpm";
-> +    };
-> +
-> +...
-> --
-> 2.44.0
->=20
-
---y6Qu6OsLbTAKgDXe
+--G7AmvMY0rSIjFKEZ
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZjElwAAKCRB4tDGHoIJi
-0myGAQCytikGFFNzOVuNwunmCX/BWh68iH4wQrpO1HAqqix/SwD/aZeymHuy/7OY
-NHDvTPVtayts2V8zWgNHjDhse4C2fwo=
-=phY5
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZjEl5gAKCRB4tDGHoIJi
+0m3CAQDjLgFJMGkDVl6KC0ieY80/I+Y5urG4mVkM7QOuqiWtYgD/d1I3Qf+zy1Ca
+KNZIUxZjNEZFpI+93O4C30JqCo0oaQo=
+=cL2N
 -----END PGP SIGNATURE-----
 
---y6Qu6OsLbTAKgDXe--
+--G7AmvMY0rSIjFKEZ--
 
