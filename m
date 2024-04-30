@@ -1,362 +1,283 @@
-Return-Path: <linux-kernel+bounces-164539-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-164528-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 812E88B7F1A
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 19:42:28 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7CD8D8B7ECC
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 19:39:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E2CCC1F21575
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 17:42:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9DC951C22B22
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 17:39:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D94F91C0DD2;
-	Tue, 30 Apr 2024 17:39:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 976B1180A8E;
+	Tue, 30 Apr 2024 17:39:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="aTRVaflF"
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 34DBE1BED9E;
-	Tue, 30 Apr 2024 17:39:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="hS92jbfk"
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83BC91802DA;
+	Tue, 30 Apr 2024 17:39:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714498797; cv=none; b=hlZXHR1LKFZTuS9DhA/epcII+f1RCrwhRF1o+qnPrr5HmDirfixuMxNO+hL7bt7JTjysn5StpLBCbXtjOTXUhxhnexzfIEQF77sKn13R1IdPlfeIEJYZFzICmb8ZGVINZaK/Y2/rneVw1BYNxovse+K0vDuQFcseQcHvah1Ugvg=
+	t=1714498758; cv=none; b=LaVqyyp8SEwjxZ+86CbC5BvB0AS0bgmgfbB4PqWowpYGP8pcJwaGko4YVHSEKeoiFskClYh8HUO4MMAmIi++GuIYB3VUAJkNcqYIFNUVU8fHh1eQRAhuv/E+47LvslYqoJStIVhSlPat5ECpjvSEd8UUzD1T6EfS8Q3/3IqEnIo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714498797; c=relaxed/simple;
-	bh=ifk8tN52a6wtdFvcXcSsSHl26szL4ybDyOnssUhXdG0=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=QwC/3R/+WZ4hm8fdvvbVlQnhpoETcz25j7rmHsq2hbpgXgcLwZ7soWTf36qOQzPi5cBl0sqJWq2DF8S6Lk+w8EmXXigI8OhAKotsorwpI26wGFjWZcH67m2MHt8poTk7qDshJDYHJyeN5UsM8NC7Ac4zaAWKV50GTB6a/qCVb1M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=aTRVaflF; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: from rrs24-12-35.corp.microsoft.com (unknown [131.107.174.176])
-	by linux.microsoft.com (Postfix) with ESMTPSA id E1EDA210FBDE;
-	Tue, 30 Apr 2024 10:39:55 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com E1EDA210FBDE
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1714498796;
-	bh=LvRO4FEESpLokCYQD2ZuS51ozrqf4H1RJsiJiahJkVU=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=aTRVaflFEWIMAqshiWDxArfU5XjQwH0ttqTTe5Eks67jfIs6N/s/t3VJRr53Vd5kP
-	 t2u2g1lYO0fbYogN/b8O8d+jc4JiLeivVSba5ffd7CCtnB4gXV6Px3pkmqR2bg2n/9
-	 oFPDohf+feN3GOXoi5OznLJ9+fXnJfhy93dhNsvo=
-From: Easwar Hariharan <eahariha@linux.microsoft.com>
-To: Florian Tobias Schandinat <FlorianSchandinat@gmx.de>,
-	Helge Deller <deller@gmx.de>,
-	linux-fbdev@vger.kernel.org (open list:VIA UNICHROME(PRO)/CHROME9 FRAMEBUFFER DRIVER),
-	dri-devel@lists.freedesktop.org (open list:FRAMEBUFFER LAYER),
-	linux-kernel@vger.kernel.org (open list)
-Cc: Wolfram Sang <wsa+renesas@sang-engineering.com>,
-	amd-gfx@lists.freedesktop.org (open list:RADEON and AMDGPU DRM DRIVERS),
-	dri-devel@lists.freedesktop.org (open list:DRM DRIVERS),
-	linux-kernel@vger.kernel.org (open list),
-	intel-gfx@lists.freedesktop.org (open list:INTEL DRM DISPLAY FOR XE AND I915 DRIVERS),
-	intel-xe@lists.freedesktop.org (open list:INTEL DRM DISPLAY FOR XE AND I915 DRIVERS),
-	nouveau@lists.freedesktop.org (open list:DRM DRIVER FOR NVIDIA GEFORCE/QUADRO GPUS),
-	linux-i2c@vger.kernel.org (open list:I2C SUBSYSTEM HOST DRIVERS),
-	linux-media@vger.kernel.org (open list:BTTV VIDEO4LINUX DRIVER),
-	linux-fbdev@vger.kernel.org (open list:FRAMEBUFFER LAYER),
-	Easwar Hariharan <eahariha@linux.microsoft.com>
-Subject: [PATCH v1 12/12] fbdev/viafb: Make I2C terminology more inclusive
-Date: Tue, 30 Apr 2024 17:38:11 +0000
-Message-Id: <20240430173812.1423757-13-eahariha@linux.microsoft.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240430173812.1423757-1-eahariha@linux.microsoft.com>
-References: <20240430173812.1423757-1-eahariha@linux.microsoft.com>
+	s=arc-20240116; t=1714498758; c=relaxed/simple;
+	bh=KDZORToeECB09dVf3+W1K9u0iF9SQRA+RKVJ3niiq78=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=nxgd2dd4yEyCbRC7fD93VHEOdMPEpLYWtTwR918owXPAuQdyb9DXp3NyzMSsUKc8qfQ44FLBAB2vbIWvNHRsIetngHgXlrVJBQL9fNfhr71WgvbC8I9YOrPIwJO5t3Z/8SdUG0mTjL2GqJwWsWltoxibghWjZqmu1GKBCsXN5os=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=casper.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=hS92jbfk; arc=none smtp.client-ip=90.155.50.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=casper.srs.infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=MIME-Version:Content-Type:References:
+	In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=KDZORToeECB09dVf3+W1K9u0iF9SQRA+RKVJ3niiq78=; b=hS92jbfkJ/u1jyFF5RrG/4JFps
+	Fr7TZpXJ1d7YWGo51MPqX9WD3Ut9Kv9+M1TfAcCTQMa7xtrofoI72XzayNf4H/2/AGxLfAvPJzTNB
+	QXwCXGj/6RJKDgzlSGnbnCNbPlWucVnlVTznh9Dakem23j7v5f6DE9bciQLiEg8tLJTlApPiSJreY
+	D3z8xMsbB8Uq/o/s0TtigtIQj3KEAjKAXL5FA/g+qq2VfNB0bAHnmnr3NgxZjQCTRLvELLLmwsTek
+	rfAGCgki5l90GAkZFh22P+MJMk9MgA161MBm/msBQaH6CQ+PO1FYZgyTYeZ4m2tBfMwlrI95DhsqW
+	DZI0j/aA==;
+Received: from [205.251.233.233] (helo=freeip.amazon.com)
+	by casper.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1s1rRg-0000000FGKC-25Ec;
+	Tue, 30 Apr 2024 17:39:12 +0000
+Message-ID: <7480160e472633ce44f71dbc51db0d74bd2c89b8.camel@infradead.org>
+Subject: Re: [PATCH v2] KVM: selftests: Compare wall time from xen shinfo
+ against KVM_GET_CLOCK
+From: David Woodhouse <dwmw2@infradead.org>
+To: Sean Christopherson <seanjc@google.com>
+Cc: kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>, Vitaly
+ Kuznetsov <vkuznets@redhat.com>, Jan Richter <jarichte@redhat.com>, 
+ linux-kernel@vger.kernel.org
+Date: Tue, 30 Apr 2024 10:39:08 -0700
+In-Reply-To: <ZjEV_6SpS7MEN_Cx@google.com>
+References: <20240206151950.31174-1-vkuznets@redhat.com>
+	 <171441840173.70995.3768949354008381229.b4-ty@google.com>
+	 <38e124dcdbf5e0badedf3c0e52c72e5e9352c435.camel@infradead.org>
+	 <ZjEV_6SpS7MEN_Cx@google.com>
+Content-Type: multipart/signed; micalg="sha-256"; protocol="application/pkcs7-signature";
+	boundary="=-pcZc+poY9WpN4jBVihe5"
+User-Agent: Evolution 3.44.4-0ubuntu2 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 
-I2C v7, SMBus 3.2, and I3C 1.1.1 specifications have replaced "master/slave"
-with more appropriate terms. Inspired by and following on to Wolfram's
-series to fix drivers/i2c/[1], fix the terminology for users of
-I2C_ALGOBIT bitbanging interface, now that the approved verbiage exists
-in the specification.
 
-Compile tested, no functionality changes intended
+--=-pcZc+poY9WpN4jBVihe5
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-[1]: https://lore.kernel.org/all/20240322132619.6389-1-wsa+renesas@sang-engineering.com/
+On Tue, 2024-04-30 at 09:02 -0700, Sean Christopherson wrote:
+> On Mon, Apr 29, 2024, David Woodhouse wrote:
+> > On Mon, 2024-04-29 at 13:45 -0700, Sean Christopherson wrote:
+> > > On Tue, 06 Feb 2024 16:19:50 +0100, Vitaly Kuznetsov wrote:
+> > > > xen_shinfo_test is observed to be flaky failing sporadically with
+> > > > "VM time too old". With min_ts/max_ts debug print added:
+> > > >=20
+> > > > Wall clock (v 3269818) 1704906491.986255664
+> > > > Time info 1: v 1282712 tsc 33530585736 time 14014430025 mul 3587552=
+223 shift 4294967295 flags 1
+> > > > Time info 2: v 1282712 tsc 33530585736 time 14014430025 mul 3587552=
+223 shift 4294967295 flags 1
+> > > > min_ts: 1704906491.986312153
+> > > > max_ts: 1704906506.001006963
+> > > > =3D=3D=3D=3D Test Assertion Failure =3D=3D=3D=3D
+> > > > =C2=A0=C2=A0 x86_64/xen_shinfo_test.c:1003: cmp_timespec(&min_ts, &=
+vm_ts) <=3D 0
+> > > > =C2=A0=C2=A0 pid=3D32724 tid=3D32724 errno=3D4 - Interrupted system=
+ call
+> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 1=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0 0x00000000004030ad: main at xen_shinfo_test.c:1003
+> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 2=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0 0x00007fca6b23feaf: ?? ??:0
+> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 3=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0 0x00007fca6b23ff5f: ?? ??:0
+> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 4=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0 0x0000000000405e04: _start at ??:?
+> > > > =C2=A0=C2=A0 VM time too old
+> > > >=20
+> > > > [...]
+> > >=20
+> > > Applied to kvm-x86 selftests, thanks!
+> > >=20
+> > > [1/1] KVM: selftests: Compare wall time from xen shinfo against KVM_G=
+ET_CLOCK
+> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 https://github.com/kvm-x86/linux/commi=
+t/201142d16010
+> >=20
+> > Of course, this just highlights the fact that the very *definition* of
+> > the wallclock time as exposed in the Xen shinfo and MSR_KVM_WALL_CLOCK
+> > is entirely broken now.=20
+> >=20
+> > When the KVM clock was based on CLOCK_MONOTONIC, the delta between that
+> > and wallclock time was constant (well, apart from leap seconds but KVM
+> > has *always* been utterly hosed for that, so that's just par for the
+> > course). So that made sense.
+> >=20
+> > But when we switched the KVM clock to CLOCK_MONOTONIC_RAW, trying to
+> > express wallclock time in terms of the KVM clock became silly. They run
+> > at different rates, so the value returned by kvm_get_wall_clock_epoch()
+> > will be constantly changing.
+> >=20
+> > As I work through cleaning up the KVM clock mess, it occurred to me
+> > that we should maybe *refresh* the wallclock time we report to the
+> > guest. But I think it's just been hosed for so long that no guest could
+> > ever trust it for anything but knowing roughly what year it is when
+> > first booting, and it isn't worth fixing.
+> >=20
+> > What we *should* do is expose something new which exposes the NTP-
+> > calibrated relationship between the arch counter (or TSC) and the real
+> > time, being explicit about TAI and about live migration (a guest needs
+> > to know when it's been migrated and should throw away any NTP
+> > refinement that it's done for *itself*).
+> >=20
+> > I know we have the PTP paired reading thing, but that's *still* not
+> > TAI, it makes guests do the work for themselves and doesn't give a
+> > clean signal when live migration disrupts them.
+>=20
+> Is the above an objection to the selftest change, or just an aside?=C2=A0=
+ Honest
+> question, I have no preference either way; I just don't have my head wrap=
+ped
+> around all of the clock stuff enough to have an informed opinion on what =
+the
+> right/best way forward is.
 
-Signed-off-by: Easwar Hariharan <eahariha@linux.microsoft.com>
----
- drivers/video/fbdev/via/chip.h    |  8 ++++----
- drivers/video/fbdev/via/dvi.c     | 24 ++++++++++++------------
- drivers/video/fbdev/via/lcd.c     |  6 +++---
- drivers/video/fbdev/via/via_aux.h |  2 +-
- drivers/video/fbdev/via/via_i2c.c | 12 ++++++------
- drivers/video/fbdev/via/vt1636.c  |  6 +++---
- 6 files changed, 29 insertions(+), 29 deletions(-)
+Sorry for not being clearer. The selftest change is fine; this is an
+aside (well, more of a corollary).
 
-diff --git a/drivers/video/fbdev/via/chip.h b/drivers/video/fbdev/via/chip.h
-index f0a19cbcb9e5..1ea6d4ce79e7 100644
---- a/drivers/video/fbdev/via/chip.h
-+++ b/drivers/video/fbdev/via/chip.h
-@@ -69,7 +69,7 @@
- #define     VT1632_TMDS             0x01
- #define     INTEGRATED_TMDS         0x42
- 
--/* Definition TMDS Trasmitter I2C Slave Address */
-+/* Definition TMDS Trasmitter I2C Client Address */
- #define     VT1632_TMDS_I2C_ADDR    0x10
- 
- /**************************************************/
-@@ -88,21 +88,21 @@
- #define     TX_DATA_DDR_MODE        0x04
- #define     TX_DATA_SDR_MODE        0x08
- 
--/* Definition LVDS Trasmitter I2C Slave Address */
-+/* Definition LVDS Trasmitter I2C Client Address */
- #define     VT1631_LVDS_I2C_ADDR    0x70
- #define     VT3271_LVDS_I2C_ADDR    0x80
- #define     VT1636_LVDS_I2C_ADDR    0x80
- 
- struct tmds_chip_information {
- 	int tmds_chip_name;
--	int tmds_chip_slave_addr;
-+	int tmds_chip_client_addr;
- 	int output_interface;
- 	int i2c_port;
- };
- 
- struct lvds_chip_information {
- 	int lvds_chip_name;
--	int lvds_chip_slave_addr;
-+	int lvds_chip_client_addr;
- 	int output_interface;
- 	int i2c_port;
- };
-diff --git a/drivers/video/fbdev/via/dvi.c b/drivers/video/fbdev/via/dvi.c
-index 13147e3066eb..db7db26416c3 100644
---- a/drivers/video/fbdev/via/dvi.c
-+++ b/drivers/video/fbdev/via/dvi.c
-@@ -70,7 +70,7 @@ bool viafb_tmds_trasmitter_identify(void)
- 	/* Check for VT1632: */
- 	viaparinfo->chip_info->tmds_chip_info.tmds_chip_name = VT1632_TMDS;
- 	viaparinfo->chip_info->
--		tmds_chip_info.tmds_chip_slave_addr = VT1632_TMDS_I2C_ADDR;
-+		tmds_chip_info.tmds_chip_client_addr = VT1632_TMDS_I2C_ADDR;
- 	viaparinfo->chip_info->tmds_chip_info.i2c_port = VIA_PORT_31;
- 	if (check_tmds_chip(VT1632_DEVICE_ID_REG, VT1632_DEVICE_ID)) {
- 		/*
-@@ -128,14 +128,14 @@ bool viafb_tmds_trasmitter_identify(void)
- 	viaparinfo->chip_info->
- 		tmds_chip_info.tmds_chip_name = NON_TMDS_TRANSMITTER;
- 	viaparinfo->chip_info->tmds_chip_info.
--		tmds_chip_slave_addr = VT1632_TMDS_I2C_ADDR;
-+		tmds_chip_client_addr = VT1632_TMDS_I2C_ADDR;
- 	return false;
- }
- 
- static void tmds_register_write(int index, u8 data)
- {
- 	viafb_i2c_writebyte(viaparinfo->chip_info->tmds_chip_info.i2c_port,
--			    viaparinfo->chip_info->tmds_chip_info.tmds_chip_slave_addr,
-+			    viaparinfo->chip_info->tmds_chip_info.tmds_chip_client_addr,
- 			    index, data);
- }
- 
-@@ -144,7 +144,7 @@ static int tmds_register_read(int index)
- 	u8 data;
- 
- 	viafb_i2c_readbyte(viaparinfo->chip_info->tmds_chip_info.i2c_port,
--			   (u8) viaparinfo->chip_info->tmds_chip_info.tmds_chip_slave_addr,
-+			   (u8) viaparinfo->chip_info->tmds_chip_info.tmds_chip_client_addr,
- 			   (u8) index, &data);
- 	return data;
- }
-@@ -152,7 +152,7 @@ static int tmds_register_read(int index)
- static int tmds_register_read_bytes(int index, u8 *buff, int buff_len)
- {
- 	viafb_i2c_readbytes(viaparinfo->chip_info->tmds_chip_info.i2c_port,
--			    (u8) viaparinfo->chip_info->tmds_chip_info.tmds_chip_slave_addr,
-+			    (u8) viaparinfo->chip_info->tmds_chip_info.tmds_chip_client_addr,
- 			    (u8) index, buff, buff_len);
- 	return 0;
- }
-@@ -256,14 +256,14 @@ static int viafb_dvi_query_EDID(void)
- 
- 	DEBUG_MSG(KERN_INFO "viafb_dvi_query_EDID!!\n");
- 
--	restore = viaparinfo->chip_info->tmds_chip_info.tmds_chip_slave_addr;
--	viaparinfo->chip_info->tmds_chip_info.tmds_chip_slave_addr = 0xA0;
-+	restore = viaparinfo->chip_info->tmds_chip_info.tmds_chip_client_addr;
-+	viaparinfo->chip_info->tmds_chip_info.tmds_chip_client_addr = 0xA0;
- 
- 	data0 = (u8) tmds_register_read(0x00);
- 	data1 = (u8) tmds_register_read(0x01);
- 	if ((data0 == 0) && (data1 == 0xFF)) {
- 		viaparinfo->chip_info->
--			tmds_chip_info.tmds_chip_slave_addr = restore;
-+			tmds_chip_info.tmds_chip_client_addr = restore;
- 		return EDID_VERSION_1;	/* Found EDID1 Table */
- 	}
- 
-@@ -280,8 +280,8 @@ static void dvi_get_panel_size_from_DDCv1(
- 
- 	DEBUG_MSG(KERN_INFO "\n dvi_get_panel_size_from_DDCv1 \n");
- 
--	restore = tmds_chip->tmds_chip_slave_addr;
--	tmds_chip->tmds_chip_slave_addr = 0xA0;
-+	restore = tmds_chip->tmds_chip_client_addr;
-+	tmds_chip->tmds_chip_client_addr = 0xA0;
- 	for (i = 0x25; i < 0x6D; i++) {
- 		switch (i) {
- 		case 0x36:
-@@ -306,7 +306,7 @@ static void dvi_get_panel_size_from_DDCv1(
- 
- 	DEBUG_MSG(KERN_INFO "DVI max pixelclock = %d\n",
- 		tmds_setting->max_pixel_clock);
--	tmds_chip->tmds_chip_slave_addr = restore;
-+	tmds_chip->tmds_chip_client_addr = restore;
- }
- 
- /* If Disable DVI, turn off pad */
-@@ -427,7 +427,7 @@ void viafb_dvi_enable(void)
- 				viafb_i2c_writebyte(viaparinfo->chip_info->
- 					tmds_chip_info.i2c_port,
- 					viaparinfo->chip_info->
--					tmds_chip_info.tmds_chip_slave_addr,
-+					tmds_chip_info.tmds_chip_client_addr,
- 					0x08, data);
- 			}
- 		}
-diff --git a/drivers/video/fbdev/via/lcd.c b/drivers/video/fbdev/via/lcd.c
-index beec5c8d4d08..9a6e4ac9e551 100644
---- a/drivers/video/fbdev/via/lcd.c
-+++ b/drivers/video/fbdev/via/lcd.c
-@@ -147,7 +147,7 @@ bool viafb_lvds_trasmitter_identify(void)
- 		return true;
- 	/* Check for VT1631: */
- 	viaparinfo->chip_info->lvds_chip_info.lvds_chip_name = VT1631_LVDS;
--	viaparinfo->chip_info->lvds_chip_info.lvds_chip_slave_addr =
-+	viaparinfo->chip_info->lvds_chip_info.lvds_chip_client_addr =
- 		VT1631_LVDS_I2C_ADDR;
- 
- 	if (check_lvds_chip(VT1631_DEVICE_ID_REG, VT1631_DEVICE_ID)) {
-@@ -161,7 +161,7 @@ bool viafb_lvds_trasmitter_identify(void)
- 
- 	viaparinfo->chip_info->lvds_chip_info.lvds_chip_name =
- 		NON_LVDS_TRANSMITTER;
--	viaparinfo->chip_info->lvds_chip_info.lvds_chip_slave_addr =
-+	viaparinfo->chip_info->lvds_chip_info.lvds_chip_client_addr =
- 		VT1631_LVDS_I2C_ADDR;
- 	return false;
- }
-@@ -327,7 +327,7 @@ static int lvds_register_read(int index)
- 	u8 data;
- 
- 	viafb_i2c_readbyte(VIA_PORT_2C,
--			(u8) viaparinfo->chip_info->lvds_chip_info.lvds_chip_slave_addr,
-+			(u8) viaparinfo->chip_info->lvds_chip_info.lvds_chip_client_addr,
- 			(u8) index, &data);
- 	return data;
- }
-diff --git a/drivers/video/fbdev/via/via_aux.h b/drivers/video/fbdev/via/via_aux.h
-index 0933bbf20e58..e2b617b1e6fd 100644
---- a/drivers/video/fbdev/via/via_aux.h
-+++ b/drivers/video/fbdev/via/via_aux.h
-@@ -24,7 +24,7 @@ struct via_aux_drv {
- 	struct list_head chain;		/* chain to support multiple drivers */
- 
- 	struct via_aux_bus *bus;	/* the I2C bus used */
--	u8 addr;			/* the I2C slave address */
-+	u8 addr;			/* the I2C client address */
- 
- 	const char *name;	/* human readable name of the driver */
- 	void *data;		/* private data of this driver */
-diff --git a/drivers/video/fbdev/via/via_i2c.c b/drivers/video/fbdev/via/via_i2c.c
-index 582502810575..907c739475d0 100644
---- a/drivers/video/fbdev/via/via_i2c.c
-+++ b/drivers/video/fbdev/via/via_i2c.c
-@@ -104,7 +104,7 @@ static void via_i2c_setsda(void *data, int state)
- 	spin_unlock_irqrestore(&i2c_vdev->reg_lock, flags);
- }
- 
--int viafb_i2c_readbyte(u8 adap, u8 slave_addr, u8 index, u8 *pdata)
-+int viafb_i2c_readbyte(u8 adap, u8 client_addr, u8 index, u8 *pdata)
- {
- 	int ret;
- 	u8 mm1[] = {0x00};
-@@ -115,7 +115,7 @@ int viafb_i2c_readbyte(u8 adap, u8 slave_addr, u8 index, u8 *pdata)
- 	*pdata = 0;
- 	msgs[0].flags = 0;
- 	msgs[1].flags = I2C_M_RD;
--	msgs[0].addr = msgs[1].addr = slave_addr / 2;
-+	msgs[0].addr = msgs[1].addr = client_addr / 2;
- 	mm1[0] = index;
- 	msgs[0].len = 1; msgs[1].len = 1;
- 	msgs[0].buf = mm1; msgs[1].buf = pdata;
-@@ -128,7 +128,7 @@ int viafb_i2c_readbyte(u8 adap, u8 slave_addr, u8 index, u8 *pdata)
- 	return ret;
- }
- 
--int viafb_i2c_writebyte(u8 adap, u8 slave_addr, u8 index, u8 data)
-+int viafb_i2c_writebyte(u8 adap, u8 client_addr, u8 index, u8 data)
- {
- 	int ret;
- 	u8 msg[2] = { index, data };
-@@ -137,7 +137,7 @@ int viafb_i2c_writebyte(u8 adap, u8 slave_addr, u8 index, u8 data)
- 	if (!via_i2c_par[adap].is_active)
- 		return -ENODEV;
- 	msgs.flags = 0;
--	msgs.addr = slave_addr / 2;
-+	msgs.addr = client_addr / 2;
- 	msgs.len = 2;
- 	msgs.buf = msg;
- 	ret = i2c_transfer(&via_i2c_par[adap].adapter, &msgs, 1);
-@@ -149,7 +149,7 @@ int viafb_i2c_writebyte(u8 adap, u8 slave_addr, u8 index, u8 data)
- 	return ret;
- }
- 
--int viafb_i2c_readbytes(u8 adap, u8 slave_addr, u8 index, u8 *buff, int buff_len)
-+int viafb_i2c_readbytes(u8 adap, u8 client_addr, u8 index, u8 *buff, int buff_len)
- {
- 	int ret;
- 	u8 mm1[] = {0x00};
-@@ -159,7 +159,7 @@ int viafb_i2c_readbytes(u8 adap, u8 slave_addr, u8 index, u8 *buff, int buff_len
- 		return -ENODEV;
- 	msgs[0].flags = 0;
- 	msgs[1].flags = I2C_M_RD;
--	msgs[0].addr = msgs[1].addr = slave_addr / 2;
-+	msgs[0].addr = msgs[1].addr = client_addr / 2;
- 	mm1[0] = index;
- 	msgs[0].len = 1; msgs[1].len = buff_len;
- 	msgs[0].buf = mm1; msgs[1].buf = buff;
-diff --git a/drivers/video/fbdev/via/vt1636.c b/drivers/video/fbdev/via/vt1636.c
-index 8d8cfdb05618..614e5c29a449 100644
---- a/drivers/video/fbdev/via/vt1636.c
-+++ b/drivers/video/fbdev/via/vt1636.c
-@@ -44,7 +44,7 @@ u8 viafb_gpio_i2c_read_lvds(struct lvds_setting_information
- 	u8 data;
- 
- 	viafb_i2c_readbyte(plvds_chip_info->i2c_port,
--			   plvds_chip_info->lvds_chip_slave_addr, index, &data);
-+			   plvds_chip_info->lvds_chip_client_addr, index, &data);
- 	return data;
- }
- 
-@@ -60,7 +60,7 @@ void viafb_gpio_i2c_write_mask_lvds(struct lvds_setting_information
- 	data = (data & (~io_data.Mask)) | io_data.Data;
- 
- 	viafb_i2c_writebyte(plvds_chip_info->i2c_port,
--			    plvds_chip_info->lvds_chip_slave_addr, index, data);
-+			    plvds_chip_info->lvds_chip_client_addr, index, data);
- }
- 
- void viafb_init_lvds_vt1636(struct lvds_setting_information
-@@ -113,7 +113,7 @@ bool viafb_lvds_identify_vt1636(u8 i2c_adapter)
- 	DEBUG_MSG(KERN_INFO "viafb_lvds_identify_vt1636.\n");
- 
- 	/* Sense VT1636 LVDS Transmiter */
--	viaparinfo->chip_info->lvds_chip_info.lvds_chip_slave_addr =
-+	viaparinfo->chip_info->lvds_chip_info.lvds_chip_client_addr =
- 		VT1636_LVDS_I2C_ADDR;
- 
- 	/* Check vendor ID first: */
--- 
-2.34.1
+Put differently: The selftest commit is entirely correct. We can't rely
+on the accuracy of the wallclock time that KVM advertises to the guest
+because it's fundamentally hosed. All the selftest can do is check that
+we put something *plausible* there.=20
 
+The corollary is that we do need a *proper* way of conveying the
+wallclock time to guests now that the old one is useless. And the PTP
+clock pairing ioctl isn't sufficient either.
+
+My previous email launched straight into the latter without taking the
+time to say "yes, that commit is entirely right but also serves to
+highlight the fact that..."
+
+
+--=-pcZc+poY9WpN4jBVihe5
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Transfer-Encoding: base64
+
+MIAGCSqGSIb3DQEHAqCAMIACAQExDzANBglghkgBZQMEAgEFADCABgkqhkiG9w0BBwEAAKCCEkQw
+ggYQMIID+KADAgECAhBNlCwQ1DvglAnFgS06KwZPMA0GCSqGSIb3DQEBDAUAMIGIMQswCQYDVQQG
+EwJVUzETMBEGA1UECBMKTmV3IEplcnNleTEUMBIGA1UEBxMLSmVyc2V5IENpdHkxHjAcBgNVBAoT
+FVRoZSBVU0VSVFJVU1QgTmV0d29yazEuMCwGA1UEAxMlVVNFUlRydXN0IFJTQSBDZXJ0aWZpY2F0
+aW9uIEF1dGhvcml0eTAeFw0xODExMDIwMDAwMDBaFw0zMDEyMzEyMzU5NTlaMIGWMQswCQYDVQQG
+EwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYD
+VQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50
+aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKC
+AQEAyjztlApB/975Rrno1jvm2pK/KxBOqhq8gr2+JhwpKirSzZxQgT9tlC7zl6hn1fXjSo5MqXUf
+ItMltrMaXqcESJuK8dtK56NCSrq4iDKaKq9NxOXFmqXX2zN8HHGjQ2b2Xv0v1L5Nk1MQPKA19xeW
+QcpGEGFUUd0kN+oHox+L9aV1rjfNiCj3bJk6kJaOPabPi2503nn/ITX5e8WfPnGw4VuZ79Khj1YB
+rf24k5Ee1sLTHsLtpiK9OjG4iQRBdq6Z/TlVx/hGAez5h36bBJMxqdHLpdwIUkTqT8se3ed0PewD
+ch/8kHPo5fZl5u1B0ecpq/sDN/5sCG52Ds+QU5O5EwIDAQABo4IBZDCCAWAwHwYDVR0jBBgwFoAU
+U3m/WqorSs9UgOHYm8Cd8rIDZsswHQYDVR0OBBYEFAnA8vwL2pTbX/4r36iZQs/J4K0AMA4GA1Ud
+DwEB/wQEAwIBhjASBgNVHRMBAf8ECDAGAQH/AgEAMB0GA1UdJQQWMBQGCCsGAQUFBwMCBggrBgEF
+BQcDBDARBgNVHSAECjAIMAYGBFUdIAAwUAYDVR0fBEkwRzBFoEOgQYY/aHR0cDovL2NybC51c2Vy
+dHJ1c3QuY29tL1VTRVJUcnVzdFJTQUNlcnRpZmljYXRpb25BdXRob3JpdHkuY3JsMHYGCCsGAQUF
+BwEBBGowaDA/BggrBgEFBQcwAoYzaHR0cDovL2NydC51c2VydHJ1c3QuY29tL1VTRVJUcnVzdFJT
+QUFkZFRydXN0Q0EuY3J0MCUGCCsGAQUFBzABhhlodHRwOi8vb2NzcC51c2VydHJ1c3QuY29tMA0G
+CSqGSIb3DQEBDAUAA4ICAQBBRHUAqznCFfXejpVtMnFojADdF9d6HBA4kMjjsb0XMZHztuOCtKF+
+xswhh2GqkW5JQrM8zVlU+A2VP72Ky2nlRA1GwmIPgou74TZ/XTarHG8zdMSgaDrkVYzz1g3nIVO9
+IHk96VwsacIvBF8JfqIs+8aWH2PfSUrNxP6Ys7U0sZYx4rXD6+cqFq/ZW5BUfClN/rhk2ddQXyn7
+kkmka2RQb9d90nmNHdgKrwfQ49mQ2hWQNDkJJIXwKjYA6VUR/fZUFeCUisdDe/0ABLTI+jheXUV1
+eoYV7lNwNBKpeHdNuO6Aacb533JlfeUHxvBz9OfYWUiXu09sMAviM11Q0DuMZ5760CdO2VnpsXP4
+KxaYIhvqPqUMWqRdWyn7crItNkZeroXaecG03i3mM7dkiPaCkgocBg0EBYsbZDZ8bsG3a08LwEsL
+1Ygz3SBsyECa0waq4hOf/Z85F2w2ZpXfP+w8q4ifwO90SGZZV+HR/Jh6rEaVPDRF/CEGVqR1hiuQ
+OZ1YL5ezMTX0ZSLwrymUE0pwi/KDaiYB15uswgeIAcA6JzPFf9pLkAFFWs1QNyN++niFhsM47qod
+x/PL+5jR87myx5uYdBEQkkDc+lKB1Wct6ucXqm2EmsaQ0M95QjTmy+rDWjkDYdw3Ms6mSWE3Bn7i
+5ZgtwCLXgAIe5W8mybM2JzCCBhQwggT8oAMCAQICEQDGvhmWZ0DEAx0oURL6O6l+MA0GCSqGSIb3
+DQEBCwUAMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVyMRAwDgYD
+VQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNlY3RpZ28g
+UlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMB4XDTIyMDEwNzAw
+MDAwMFoXDTI1MDEwNjIzNTk1OVowJDEiMCAGCSqGSIb3DQEJARYTZHdtdzJAaW5mcmFkZWFkLm9y
+ZzCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBALQ3GpC2bomUqk+91wLYBzDMcCj5C9m6
+oZaHwvmIdXftOgTbCJXADo6G9T7BBAebw2JV38EINgKpy/ZHh7htyAkWYVoFsFPrwHounto8xTsy
+SSePMiPlmIdQ10BcVSXMUJ3Juu16GlWOnAMJY2oYfEzmE7uT9YgcBqKCo65pTFmOnR/VVbjJk4K2
+xE34GC2nAdUQkPFuyaFisicc6HRMOYXPuF0DuwITEKnjxgNjP+qDrh0db7PAjO1D4d5ftfrsf+kd
+RR4gKVGSk8Tz2WwvtLAroJM4nXjNPIBJNT4w/FWWc/5qPHJy2U+eITZ5LLE5s45mX2oPFknWqxBo
+bQZ8a9dsZ3dSPZBvE9ZrmtFLrVrN4eo1jsXgAp1+p7bkfqd3BgBEmfsYWlBXO8rVXfvPgLs32VdV
+NZxb/CDWPqBsiYv0Hv3HPsz07j5b+/cVoWqyHDKzkaVbxfq/7auNVRmPB3v5SWEsH8xi4Bez2V9U
+KxfYCnqsjp8RaC2/khxKt0A552Eaxnz/4ly/2C7wkwTQnBmdlFYhAflWKQ03Ufiu8t3iBE3VJbc2
+5oMrglj7TRZrmKq3CkbFnX0fyulB+kHimrt6PIWn7kgyl9aelIl6vtbhMA+l0nfrsORMa4kobqQ5
+C5rveVgmcIad67EDa+UqEKy/GltUwlSh6xy+TrK1tzDvAgMBAAGjggHMMIIByDAfBgNVHSMEGDAW
+gBQJwPL8C9qU21/+K9+omULPyeCtADAdBgNVHQ4EFgQUzMeDMcimo0oz8o1R1Nver3ZVpSkwDgYD
+VR0PAQH/BAQDAgWgMAwGA1UdEwEB/wQCMAAwHQYDVR0lBBYwFAYIKwYBBQUHAwQGCCsGAQUFBwMC
+MEAGA1UdIAQ5MDcwNQYMKwYBBAGyMQECAQEBMCUwIwYIKwYBBQUHAgEWF2h0dHBzOi8vc2VjdGln
+by5jb20vQ1BTMFoGA1UdHwRTMFEwT6BNoEuGSWh0dHA6Ly9jcmwuc2VjdGlnby5jb20vU2VjdGln
+b1JTQUNsaWVudEF1dGhlbnRpY2F0aW9uYW5kU2VjdXJlRW1haWxDQS5jcmwwgYoGCCsGAQUFBwEB
+BH4wfDBVBggrBgEFBQcwAoZJaHR0cDovL2NydC5zZWN0aWdvLmNvbS9TZWN0aWdvUlNBQ2xpZW50
+QXV0aGVudGljYXRpb25hbmRTZWN1cmVFbWFpbENBLmNydDAjBggrBgEFBQcwAYYXaHR0cDovL29j
+c3Auc2VjdGlnby5jb20wHgYDVR0RBBcwFYETZHdtdzJAaW5mcmFkZWFkLm9yZzANBgkqhkiG9w0B
+AQsFAAOCAQEAyW6MUir5dm495teKqAQjDJwuFCi35h4xgnQvQ/fzPXmtR9t54rpmI2TfyvcKgOXp
+qa7BGXNFfh1JsqexVkIqZP9uWB2J+uVMD+XZEs/KYNNX2PvIlSPrzIB4Z2wyIGQpaPLlYflrrVFK
+v9CjT2zdqvy2maK7HKOQRt3BiJbVG5lRiwbbygldcALEV9ChWFfgSXvrWDZspnU3Gjw/rMHrGnql
+Htlyebp3pf3fSS9kzQ1FVtVIDrL6eqhTwJxe+pXSMMqFiN0whpBtXdyDjzBtQTaZJ7zTT/vlehc/
+tDuqZwGHm/YJy883Ll+GP3NvOkgaRGWEuYWJJ6hFCkXYjyR9IzCCBhQwggT8oAMCAQICEQDGvhmW
+Z0DEAx0oURL6O6l+MA0GCSqGSIb3DQEBCwUAMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3Jl
+YXRlciBNYW5jaGVzdGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0
+ZWQxPjA8BgNVBAMTNVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJl
+IEVtYWlsIENBMB4XDTIyMDEwNzAwMDAwMFoXDTI1MDEwNjIzNTk1OVowJDEiMCAGCSqGSIb3DQEJ
+ARYTZHdtdzJAaW5mcmFkZWFkLm9yZzCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBALQ3
+GpC2bomUqk+91wLYBzDMcCj5C9m6oZaHwvmIdXftOgTbCJXADo6G9T7BBAebw2JV38EINgKpy/ZH
+h7htyAkWYVoFsFPrwHounto8xTsySSePMiPlmIdQ10BcVSXMUJ3Juu16GlWOnAMJY2oYfEzmE7uT
+9YgcBqKCo65pTFmOnR/VVbjJk4K2xE34GC2nAdUQkPFuyaFisicc6HRMOYXPuF0DuwITEKnjxgNj
+P+qDrh0db7PAjO1D4d5ftfrsf+kdRR4gKVGSk8Tz2WwvtLAroJM4nXjNPIBJNT4w/FWWc/5qPHJy
+2U+eITZ5LLE5s45mX2oPFknWqxBobQZ8a9dsZ3dSPZBvE9ZrmtFLrVrN4eo1jsXgAp1+p7bkfqd3
+BgBEmfsYWlBXO8rVXfvPgLs32VdVNZxb/CDWPqBsiYv0Hv3HPsz07j5b+/cVoWqyHDKzkaVbxfq/
+7auNVRmPB3v5SWEsH8xi4Bez2V9UKxfYCnqsjp8RaC2/khxKt0A552Eaxnz/4ly/2C7wkwTQnBmd
+lFYhAflWKQ03Ufiu8t3iBE3VJbc25oMrglj7TRZrmKq3CkbFnX0fyulB+kHimrt6PIWn7kgyl9ae
+lIl6vtbhMA+l0nfrsORMa4kobqQ5C5rveVgmcIad67EDa+UqEKy/GltUwlSh6xy+TrK1tzDvAgMB
+AAGjggHMMIIByDAfBgNVHSMEGDAWgBQJwPL8C9qU21/+K9+omULPyeCtADAdBgNVHQ4EFgQUzMeD
+Mcimo0oz8o1R1Nver3ZVpSkwDgYDVR0PAQH/BAQDAgWgMAwGA1UdEwEB/wQCMAAwHQYDVR0lBBYw
+FAYIKwYBBQUHAwQGCCsGAQUFBwMCMEAGA1UdIAQ5MDcwNQYMKwYBBAGyMQECAQEBMCUwIwYIKwYB
+BQUHAgEWF2h0dHBzOi8vc2VjdGlnby5jb20vQ1BTMFoGA1UdHwRTMFEwT6BNoEuGSWh0dHA6Ly9j
+cmwuc2VjdGlnby5jb20vU2VjdGlnb1JTQUNsaWVudEF1dGhlbnRpY2F0aW9uYW5kU2VjdXJlRW1h
+aWxDQS5jcmwwgYoGCCsGAQUFBwEBBH4wfDBVBggrBgEFBQcwAoZJaHR0cDovL2NydC5zZWN0aWdv
+LmNvbS9TZWN0aWdvUlNBQ2xpZW50QXV0aGVudGljYXRpb25hbmRTZWN1cmVFbWFpbENBLmNydDAj
+BggrBgEFBQcwAYYXaHR0cDovL29jc3Auc2VjdGlnby5jb20wHgYDVR0RBBcwFYETZHdtdzJAaW5m
+cmFkZWFkLm9yZzANBgkqhkiG9w0BAQsFAAOCAQEAyW6MUir5dm495teKqAQjDJwuFCi35h4xgnQv
+Q/fzPXmtR9t54rpmI2TfyvcKgOXpqa7BGXNFfh1JsqexVkIqZP9uWB2J+uVMD+XZEs/KYNNX2PvI
+lSPrzIB4Z2wyIGQpaPLlYflrrVFKv9CjT2zdqvy2maK7HKOQRt3BiJbVG5lRiwbbygldcALEV9Ch
+WFfgSXvrWDZspnU3Gjw/rMHrGnqlHtlyebp3pf3fSS9kzQ1FVtVIDrL6eqhTwJxe+pXSMMqFiN0w
+hpBtXdyDjzBtQTaZJ7zTT/vlehc/tDuqZwGHm/YJy883Ll+GP3NvOkgaRGWEuYWJJ6hFCkXYjyR9
+IzGCBMcwggTDAgEBMIGsMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVz
+dGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMT
+NVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEA
+xr4ZlmdAxAMdKFES+jupfjANBglghkgBZQMEAgEFAKCCAeswGAYJKoZIhvcNAQkDMQsGCSqGSIb3
+DQEHATAcBgkqhkiG9w0BCQUxDxcNMjQwNDMwMTczOTA4WjAvBgkqhkiG9w0BCQQxIgQg0etV53dZ
+xh7qwhRZtpdGO+dFWRWuukmgKy3f1vXKhC0wgb0GCSsGAQQBgjcQBDGBrzCBrDCBljELMAkGA1UE
+BhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEYMBYG
+A1UEChMPU2VjdGlnbyBMaW1pdGVkMT4wPAYDVQQDEzVTZWN0aWdvIFJTQSBDbGllbnQgQXV0aGVu
+dGljYXRpb24gYW5kIFNlY3VyZSBFbWFpbCBDQQIRAMa+GZZnQMQDHShREvo7qX4wgb8GCyqGSIb3
+DQEJEAILMYGvoIGsMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVy
+MRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNl
+Y3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEAxr4Z
+lmdAxAMdKFES+jupfjANBgkqhkiG9w0BAQEFAASCAgBTmPzq2VA2PC8MFv2x+JB7Nna0nhp01aAW
+ngoRSnvRZrhz6NE7D+f+2ksGV+Upi9Jgo43tnQ8RcEFpVnzxq324Cyov+ndmQ1Hqv/oNo+nXs/I5
+SpX+wed03mXLqhpBt541nuUfi536vSMcb/dc1IisuscFQaoaO5o4xxLMqxgI99m4Of7BVw3zOUwv
+x9zzsFW+a/M8I/btPJGLFhaZ4VEV+nD6SsARlyAgnOQOCg0/CoG/RR7CKdLli6PME5rkoXlSHuQj
+SaUeX1d2HuQhYUJ4YDxZJAHVOFJIRp677Ok+3D5FheC7IOcLp1/Tgsl0t3+5oAPSLrfW2eX980c7
+z+NME6aleDBVCVeZElr53zXPQPvXW8fxmPCPLLZUMHAGzj4QKEeGQg/IdDgn3mth8ltXBGClgUCa
+yjBdXyUAxDFbKC6LFYCltP7Xhc7gFK4WDXGFPgEM2Ed7XOgegMMv+nhKySZKN2wAYQLu+/6LaLkD
+RdG/SNvxGtgGl3YpaY0E3ZvidCMhTVPeSWGXfhZFELkDPBcWtW1T9FyeJfnyvvoq0t2MoQu5iBlS
+GSEeFl+XDXNlgXS4u9q75ykTDfebIe+iYTtkqbo+GirfA9wiXGy4U8ogB6bMDGhlGXfDAHPdoPF6
+8SZMUNTVC4/m/zjtOHsAo1Pc17s7BGzLn9Bj4ZQvDQAAAAAAAA==
+
+
+--=-pcZc+poY9WpN4jBVihe5--
 
