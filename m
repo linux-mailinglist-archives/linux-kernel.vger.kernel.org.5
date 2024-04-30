@@ -1,273 +1,150 @@
-Return-Path: <linux-kernel+bounces-164389-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-164354-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6C2178B7D15
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 18:34:31 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5EC4B8B7CAB
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 18:21:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2410C2839F8
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 16:34:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7DE1C1C20361
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 16:21:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F67917B4FF;
-	Tue, 30 Apr 2024 16:32:48 +0000 (UTC)
-Received: from mail-ot1-f47.google.com (mail-ot1-f47.google.com [209.85.210.47])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1BDC5176FB2;
+	Tue, 30 Apr 2024 16:21:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=ndufresne-ca.20230601.gappssmtp.com header.i=@ndufresne-ca.20230601.gappssmtp.com header.b="JQMmw3R4"
+Received: from mail-qk1-f174.google.com (mail-qk1-f174.google.com [209.85.222.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5DA5FC01;
-	Tue, 30 Apr 2024 16:32:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C38D51F5FA
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 16:21:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714494767; cv=none; b=QFlonaDD07GaECz1XNMndL+hVbTo7DWgro+FSd+a4Xj/WQ0xZgeomRfCRMzdi+buneVWTjVWVN7vn3Yypyysra147rO5HPMPfMXxmqb7AQgKhADGazYTDfNrEOGPug3De/eXFhhIcPqKn/OSQmLO2cFmLWBXjYa0A6IdpbBNKBw=
+	t=1714494085; cv=none; b=F3qSFc9Mq7Axupneme1jxBHPBO5eBuDq3X8gZogdMN0/1u5K1MWoNPTJ2QOfkkEC6bsfYG1WIkEpIS9VJVf6O3e0eppcIMpfcbMEvnLQ7oJJolRybHqnLaQCaKCvCWn8aFRPShd68rag9B7Wz8APP8d6B6hkRnLZWsg2TXkBBpo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714494767; c=relaxed/simple;
-	bh=H/gvptIMyXKLzvEYbCGoc5f9/tDyYAwEGTyBOFG3GPY=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Tog/1qhOU7jKrSG7b99upndAvSIsEVkrPH/viWYVSQRTwFtOnCCXzmh+nHmbalmCJKj5U9dlKSJDJas7UX0tPaDN+fO6GJ9Q6/Aa6spfIaR9xfvFYXXp3+EQg8eWGThW8x8AyfnFt9CbIaDQHGt7jT+IhlQt33W29vK9fuUIy+Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=sung-woo.kim; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.210.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=sung-woo.kim
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ot1-f47.google.com with SMTP id 46e09a7af769-6ea2375d8d0so4788207a34.0;
-        Tue, 30 Apr 2024 09:32:45 -0700 (PDT)
+	s=arc-20240116; t=1714494085; c=relaxed/simple;
+	bh=ov2E1LXdhcvn+0Sr5iHwYH5U7dgRXwLTnepFTt5jYFA=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=QX5aMChUhPVYiEy1ovD4hmYol2+wmQ4X5xuJ4eKm5Lglq7aqB5E8RUpV09PPoWzKYLMbU8XuzTvPWMN6HJqZd6VwYayBkSHtG9+PiWyBp168rJ71ta3c5dy6nQNf+VMeAHUqywifd2hcjUxqsbOJagxl9cS4sQ3nKnTapDiFrrQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ndufresne.ca; spf=none smtp.mailfrom=ndufresne.ca; dkim=pass (2048-bit key) header.d=ndufresne-ca.20230601.gappssmtp.com header.i=@ndufresne-ca.20230601.gappssmtp.com header.b=JQMmw3R4; arc=none smtp.client-ip=209.85.222.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ndufresne.ca
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ndufresne.ca
+Received: by mail-qk1-f174.google.com with SMTP id af79cd13be357-78edc3ad5fdso506807285a.0
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 09:21:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ndufresne-ca.20230601.gappssmtp.com; s=20230601; t=1714494082; x=1715098882; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=mXGOQl9cAc/ekX6puhK0PlxYSMCVsGhUyl3CG8jYDPk=;
+        b=JQMmw3R4W4v6+xgTFQKHTrS+YqwrJ9EwGqvGJyu4xwjHdvK5UPHAYAaDDGRczKAh3w
+         PzF8oaUX/YSmzdFLsPJrdTruNGvs2wylBkpLzqTnRhXzOYlJKlMfb4uBzQnHUCzOV1Sk
+         JAciZu3zSr7J8x1GRB3KlROEGzyUni9L2QbkXCVXWtVvP+Ko2IGcyHglv4mhqMzF7h4G
+         UedjAv3gkQXEDawtfDAUWWtNNlgvXN/y0FUedxuDWdiNg7Jz8heOYlJwbgUILJEvUuAf
+         Tw4udcSd+RpSEgyi+6fqH3ZHvwhEMgTkrNHJayYn/sKgxapDHIRGb0A9XPTC6SFhL5Mk
+         fjVQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714494764; x=1715099564;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=oz6qJQr5VG/TB+Xly+mUB6KvAVjDu9XBnLvrYHSCw20=;
-        b=MOkrBFvk/MGkR6S0BKH5CYCGqjrKR78yndbSN39yCbm7MsSPU26kySIbAkrybe5TXw
-         wTvfyjROB4z05au9tSlFhCxr2R1PtBu8LZQCQi4E8dKh8ZY16UMvCx0h7KeAn3mj3tZz
-         kNijh+WXls4l7/WTN66cTSMTxOG+qjSdM8BfrBiujbOnc5nBo5smgv+kRAJtgNnkepvy
-         6svNSL26IMT1hxvl4kuD9HWifey+cvRA8h8IIkxEyk4DbcZz0BPPO8q7X/luMQXgiQBL
-         4vSiiz2c+szZNaNyhpNbsGNfYmBfdWxQ/YQd2t41sHVGhH4+PKvm9FM1tyUpkBCa4Ac3
-         fqeg==
-X-Forwarded-Encrypted: i=1; AJvYcCXKOA0b4Q3+Sxk9+0mCUbnceQdq1DZNbdRi+1DnTVZSd8Q66JpiOVE+2UwkTz0/v4O0i4TH8Q7OT8DCHlG5sZG2EKs1EXb8UJC6chDXT/KKZOlV2JYOe7C+P15yGhBN213UmHMmFKQiLsRxrNUR
-X-Gm-Message-State: AOJu0Yz/pJvfKoFUpoKUgRgR1WukitqnxD9lR8KcXt7JGem09J4e6m2y
-	bIz75KFFzOmSJY7XDHkqn1E1sd2y4Ie/tkVXaWeN/GKGJT3v6LKV
-X-Google-Smtp-Source: AGHT+IFZDNRbBFPAq2mVEzle/wE/Hj2AQDdOfd5ZDLOSkhtm9NXSl2ld7ax1Z/PlN+kdQRGSVnewUQ==
-X-Received: by 2002:a05:6830:1010:b0:6ef:8a99:d7a1 with SMTP id a16-20020a056830101000b006ef8a99d7a1mr1408002otp.34.1714494764485;
-        Tue, 30 Apr 2024 09:32:44 -0700 (PDT)
-Received: from tofu.cs.purdue.edu ([128.210.0.165])
-        by smtp.gmail.com with ESMTPSA id n8-20020a0cfbc8000000b006a0d1b1ecc3sm1800611qvp.59.2024.04.30.09.32.43
+        d=1e100.net; s=20230601; t=1714494082; x=1715098882;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=mXGOQl9cAc/ekX6puhK0PlxYSMCVsGhUyl3CG8jYDPk=;
+        b=S5ci2V+bUkiV0cqgIO8Bb07lmcxAZ5cn9iRKRKsjhivFAySp0mQSeFBkjs0lBSTfMS
+         kdP4NYMVvKptRqnQTj0bAx45egIQt2PfjdToeGivVAYBWHUNXZ59bPZZ+rRBAmf32XqL
+         m8MqxrXSRetIcQ8XwjwiLJ40vEEqkI6EAKe0jRcROPIT6ZTxPti47M6+7IaCmnzGzOaO
+         cuj5TWazxFH5UcIZRriCXENK4ZAmUCvMA0DOHYungB5xqoBCV8yZcLu6SXGoUPPmD3V8
+         LGM26lrPpyk6Gj5mRgczWFDhVxP5DLZgydItVlp07+fG0qQpxNfkPNKUx3vL7uuxlfEg
+         TyGw==
+X-Forwarded-Encrypted: i=1; AJvYcCUYcarOM5ddadLOrMkvdVijketF04trHw2mZwK9krJDuxAgJ0Tv1HrTQBtvFlcZ7WhUAnvkgpwKOs7crMauWv4NRoduzC+fEHKEwq/b
+X-Gm-Message-State: AOJu0YxuhqHuUJ+62q4JKjVWM92nApLCSYnetzbzGWM01Tl4VCMJ6UK5
+	KQmw0pvQp4d/17cocKmM4LPfuaNhO3E9GT5oIuOuxDMyfnfKctFrgPp2k5FfTFo=
+X-Google-Smtp-Source: AGHT+IH0NQBZBOgLEKq2kUdCPO3ctmAmOrn9KlWUcdcpsDQVdL8XpPMfwth/n2qHT+VVUlEawW7vPA==
+X-Received: by 2002:a05:620a:4054:b0:790:edd8:ac18 with SMTP id i20-20020a05620a405400b00790edd8ac18mr5590333qko.35.1714494082626;
+        Tue, 30 Apr 2024 09:21:22 -0700 (PDT)
+Received: from nicolas-tpx395.localdomain ([2606:6d00:17:6448::7a9])
+        by smtp.gmail.com with ESMTPSA id i15-20020ac8764f000000b0043a7f359414sm3946068qtr.19.2024.04.30.09.21.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Apr 2024 09:32:44 -0700 (PDT)
-From: Sungwoo Kim <iam@sung-woo.kim>
-To: luiz.dentz@gmail.com
-Cc: daveti@purdue.edu,
-	Sungwoo Kim <iam@sung-woo.kim>,
-	Marcel Holtmann <marcel@holtmann.org>,
-	Johan Hedberg <johan.hedberg@gmail.com>,
-	linux-bluetooth@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v3] Bluetooth: msft: fix slab-use-after-free in msft_do_close()
-Date: Tue, 30 Apr 2024 12:20:51 -0400
-Message-Id: <20240430162049.1516720-1-iam@sung-woo.kim>
-X-Mailer: git-send-email 2.34.1
+        Tue, 30 Apr 2024 09:21:22 -0700 (PDT)
+Message-ID: <59899cfa3d3245309ce6952ae1028dceae27b488.camel@ndufresne.ca>
+Subject: Re: [PATCH v7 1/2] dt-bindings: media: rockchip-vpu: Add rk3588
+ vpu121 compatible string
+From: Nicolas Dufresne <nicolas@ndufresne.ca>
+To: Jianfeng Liu <liujianfeng1994@gmail.com>, linux-media@vger.kernel.org, 
+	linux-rockchip@lists.infradead.org, devicetree@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc: ezequiel@vanguardiasur.com.ar, p.zabel@pengutronix.de,
+ mchehab@kernel.org,  robh@kernel.org, krzk+dt@kernel.org,
+ conor+dt@kernel.org, heiko@sntech.de,  sebastian.reichel@collabora.com,
+ sfr@canb.auug.org.au, sigmaris@gmail.com,  linkmauve@linkmauve.fr, Conor
+ Dooley <conor.dooley@microchip.com>
+Date: Tue, 30 Apr 2024 12:21:21 -0400
+In-Reply-To: <20240430024002.708227-2-liujianfeng1994@gmail.com>
+References: <20240430024002.708227-1-liujianfeng1994@gmail.com>
+	 <20240430024002.708227-2-liujianfeng1994@gmail.com>
+Autocrypt: addr=nicolas@ndufresne.ca; prefer-encrypt=mutual; keydata=mQGiBEUQN0MRBACQYceNSezSdMjx7sx6gwKkMghrrODgl3B0eXBTgNp6c431IfOOEsdvkoOh1kwoYcQgbg4MXw6beOltysX4e8fFWsiRkc2nvvRW9ir9kHDm49MkBLqaDjTqOkYKNMiurFW+gozpr/lUW15QqT6v68RYe0zRdtwGZqeLzX2LVuukGwCg4AISzswrrYHNV7vQLcbaUhPgIl0D+gILYT9TJgAEK4YHW+bFRcY+cgUFoLQqQayECMlctKoLOE69nIYOc/hDr9uih1wxrQ/yL0NJvQCohSPyoyLF9b2EuIGhQVp05XP7FzlTxhYvGO/DtO08ec85+bTfVBMV6eeY4MS3ZU+1z7ObD7Pf29YjyTehN2Dan6w1g2rBk5MoA/9nDocSlk4pbFpsYSFmVHsDiAOFje3+iY4ftVDKunKYWMhwRVBjAREOByBagmRau0cLEcElpf4hX5f978GoxSGIsiKoDAlXX+ICDOWC1/EXhEEmBR1gL0QJgiVviNyLfGJlZWnPjw6xhhmtHYWTDxBOP5peztyc2PqeKsLsLWzAr7RDTmljb2xhcyBEdWZyZXNuZSAoQi4gU2MuIEluZm9ybWF0aXF1ZSkgPG5pY29sYXMuZHVmcmVzbmVAZ21haWwuY29tPohgBBMRAgAgBQJFlCyOAhsDBgsJCAcDAgQVAggDBBYCAwECHgECF4AACgkQcVMCLawGqBwhLQCgzYlrLBj6KIAZ4gmsfjXD6ZtddT8AoIeGDicVq5WvMHNWign6ApQcZUihtElOaWNvbGFzIER1ZnJlc25lIChCLiBTYy4gSW5mb3JtYXRpcXVlKSA8bmljb2xhcy5kdWZyZXNuZUBjb2xsYWJvcmEuY28udWs+iGIEExECACIFAkuzca8CGwMGCwkIBwMCBhUIAgkKCwQWA
+ gMBAh4BAheAAAoJEHFTAi2sBqgcQX8An2By6LDEeMxi4B9hUbpvRnzaaeNqA J9Rox8rfqHZnSErw9bCHiBwvwJZ77QxTmljb2xhcyBEdWZyZXNuZSA8bmljb2xhcy5kdWZyZXNuZUBjb2xsYWJvcmEuY29tPohiBBMRAgAiBQJNzZzPAhsDBgsJCAcDAgYVCAIJCgsEFgIDAQIeAQIXgAAKCRBxUwItrAaoHLlxAKCYAGf4JL7DYDLs/188CPMGuwLypwCfWKc9DorA9f5pyYlD5pQo6SgSoiC0J05pY29sYXMgRHVmcmVzbmUgPG5pY29sYXNAbmR1ZnJlc25lLmNhPohiBBMRAgAiBQJVwNwgAhsDBgsJCAcDAgYVCAIJCgsEFgIDAQIeAQIXgAAKCRBxUwItrAaoHCZ4AJ0QwU6/G4c7h9CkMBT9ZxGLX4KSnQCgq0P7CX7hv/M7HeyfMFZe8t3vAEW0RE5pY29sYXMgRHVmcmVzbmUgKEIuIFNjLiBJbmZvcm1hdGlxdWUpIDxuaWNvbGFzZEBibHVlc3RyZWFrdGVjaC5jb20+iGAEExECACAFAkZjGzoCGwMGCwkIBwMCBBUCCAMEFgIDAQIeAQIXgAAKCRBxUwItrAaoHBl7AJ0d2lrzshMmJaik/EaDEakzEwqgxQCg0JVZMZm9gRfEou1FvinuZxwf/mu0R05pY29sYXMgRHVmcmVzbmUgKEIgU2MuIEluZm9ybWF0aXF1ZSkgPG5pY29sYXMuZHVmcmVzbmVAdXNoZXJicm9va2UuY2E+iGAEExECACAFAkUQN0MCGwMGCwkIBwMCBBUCCAMEFgIDAQIeAQIXgAAKCRBxUwItrAaoHPTnAJ0WGgJJVspoctAvEcI00mtp5WAFGgCgr+E7ItOqZEHAs+xabBgknYZIFPW5Ag0ERRA3UhAIAJ0rxl2HsVg/nSOAUt7U/T/W+RKzVAlD9orCB0pRVvyWNxSr8MHcH
+ mWCxykLuB34ouM4GuDVRKfGnqLzJRBfjs7Ax9K2FI3Odund9xpviLCt1jFC0K XL04RebrFT7xjDfocDaSLFvgxMVs/Jr2/ckKPId1oKvgYgt/o+MzUabKyFB8wIvq4GMtj3LoBKLCie2nCaSt7uVUt6q2t5bNWrd3lO6/mWn7YMc5Hsn33H9pS0+9szw6m3dG08eMKNueDlt72QxiYl2rhjzkT4ltKEkFgYBdyrtIj1UO6eX+YXb4E1rCMJrdjBSgqDPK1sWHC7gliy+izr+XTHuFwlfy8gBpsAAwUIAJJNus64gri4HAL632eqVpza83EphX1IuHzLi1LlMnQ9Tm7XKag46NhmJbOByMG33LwBsBdLjjHQSVkYZFWUifq+NWSFC/kqlb72vW8rBAv64+i3QdfxK9FWbweiRsPpvuHjJQuecbPDJpubLaxKbu2aqLCN5LuHXvdQr6KiXwabT+OJ9AJAqHG7q4IEzg4RNUVn9AS6L8bxqMSocjqpWNBCY2efCVd/c6k4Acv6jXu+wDAZEbWXK+71uaUHExhigBYBpiHGrobe32YlTVE/XEIzKKywhm/Hkn5YKWzumLte6xiD9JhKabmD7uqIvLt2twUpz4BdPzj0dvGlSmvFcaaISQQYEQIACQUCRRA3UgIbDAAKCRBxUwItrAaoHJLyAKDeS3AFowM3f1Y3OFU6XRCTKK2ZhwCfT/7P9WDjkkmiq5AfeOiwVlpuHtM=
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.4 (3.50.4-1.fc39) 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 
-Hello Luiz,
+Hi,
 
-Tying the msft->data lifectime to hdev by freeing it in
-hci_release_dev().
-Also, change msft_unregister() name to msft_release().
+Le mardi 30 avril 2024 =C3=A0 10:40 +0800, Jianfeng Liu a =C3=A9crit=C2=A0:
+> Add Hantro G1 VPU compatible string for RK3588.
+> RK3588 has the same Hantro G1 ip as RK3568, which are both
+> known as VDPU121 in TRM of RK3568 and RK3588.
+>=20
+> Note that this VPU also has a jpeg encoder, which is one part of
+> the five VEPU121 jpeg encoders on RK3588. So this VPU121 shoud be
+> the same as vpu@ff650000 on RK3399. But we don't use the compatible
+> string rk3399-vpu because of two reasons:
+> 1, rk3399-vpu has disabled H264 decoding because RK3399 also has
+> rkvdec to support 4K H264 decoding. And we need H264 decoding because
+> rkvdec2 on rk3588 for H264 decoding is not supported now.
+> 2, There are five VEPU121 jpeg encoders, but the kernel driver can't
+> do scheduling. So it's better to disable the VEPU121 jpeg encoder
+> at the moment.
+>=20
+> Signed-off-by: Jianfeng Liu <liujianfeng1994@gmail.com>
+> Acked-by: Conor Dooley <conor.dooley@microchip.com>
+> Reviewed-by: Sebastian Reichel <sebastian.reichel@collabora.com>
+> ---
+>  Documentation/devicetree/bindings/media/rockchip-vpu.yaml | 3 +++
+>  1 file changed, 3 insertions(+)
+>=20
+> diff --git a/Documentation/devicetree/bindings/media/rockchip-vpu.yaml b/=
+Documentation/devicetree/bindings/media/rockchip-vpu.yaml
+> index c57e1f488..2710bb2fb 100644
+> --- a/Documentation/devicetree/bindings/media/rockchip-vpu.yaml
+> +++ b/Documentation/devicetree/bindings/media/rockchip-vpu.yaml
+> @@ -31,6 +31,9 @@ properties:
+>        - items:
+>            - const: rockchip,rk3228-vpu
+>            - const: rockchip,rk3399-vpu
+> +      - items:
+> +          - const: rockchip,rk3588-vpu121
+> +          - const: rockchip,rk3568-vpu
 
-How msft is used after freed:
+Sorry to come that late, but I'm noticing a big mistake here. You said you =
+are
+enabling VDPU121, the JPEG decoder. But we don't have a JPEG decoder driver
+mainline, is there some patches missing ?
 
-[use]
-msft_do_close()
-  msft = hdev->msft_data;
-  if (!msft)                      ...(1) <- passed.
-    return;
-  mutex_lock(&msft->filter_lock); ...(4) <- used after freed.
+Nicolas
 
-[free]
-msft_unregister()
-  msft = hdev->msft_data;
-  hdev->msft_data = NULL;         ...(2)
-  kfree(msft);                    ...(3) <- msft is freed.
-
-==================================================================
-BUG: KASAN: slab-use-after-free in __mutex_lock_common kernel/locking/mutex.c:587 [inline]
-BUG: KASAN: slab-use-after-free in __mutex_lock+0x8f/0xc30 kernel/locking/mutex.c:752
-Read of size 8 at addr ffff888106cbbca8 by task kworker/u5:2/309
-
-CPU: 0 PID: 309 Comm: kworker/u5:2 Not tainted 6.9.0-rc5+ #5
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.15.0-1 04/01/2014
-Workqueue: hci4 hci_error_reset
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xcd/0x140 lib/dump_stack.c:114
- print_address_description mm/kasan/report.c:377 [inline]
- print_report+0x191/0x560 mm/kasan/report.c:488
- kasan_report+0xe2/0x120 mm/kasan/report.c:601
- __asan_report_load8_noabort+0x18/0x20 mm/kasan/report_generic.c:381
- __mutex_lock_common kernel/locking/mutex.c:587 [inline]
- __mutex_lock+0x8f/0xc30 kernel/locking/mutex.c:752
- mutex_lock_nested+0x1f/0x30 kernel/locking/mutex.c:804
- msft_do_close+0x292/0x700 net/bluetooth/msft.c:694
- hci_dev_close_sync+0x906/0xf10 net/bluetooth/hci_sync.c:5168
- hci_dev_do_close net/bluetooth/hci_core.c:554 [inline]
- hci_error_reset+0x152/0x410 net/bluetooth/hci_core.c:1091
- process_one_work kernel/workqueue.c:3254 [inline]
- process_scheduled_works+0x90f/0x1530 kernel/workqueue.c:3335
- worker_thread+0x926/0xe70 kernel/workqueue.c:3416
- kthread+0x2e3/0x380 kernel/kthread.c:388
- ret_from_fork+0x5c/0x90 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
- </TASK>
-
-Allocated by task 7328:
- kasan_save_stack mm/kasan/common.c:47 [inline]
- kasan_save_track+0x30/0x70 mm/kasan/common.c:68
- kasan_save_alloc_info+0x3c/0x50 mm/kasan/generic.c:565
- poison_kmalloc_redzone mm/kasan/common.c:370 [inline]
- __kasan_kmalloc+0xa2/0xc0 mm/kasan/common.c:387
- kasan_kmalloc include/linux/kasan.h:211 [inline]
- kmalloc_trace+0x20c/0x3e0 mm/slub.c:3997
- kmalloc include/linux/slab.h:628 [inline]
- kzalloc include/linux/slab.h:749 [inline]
- msft_register+0x66/0x1d0 net/bluetooth/msft.c:760
- hci_register_dev+0x85e/0x9a0 net/bluetooth/hci_core.c:2737
- __vhci_create_device drivers/bluetooth/hci_vhci.c:438 [inline]
- vhci_create_device+0x390/0x720 drivers/bluetooth/hci_vhci.c:480
- vhci_get_user drivers/bluetooth/hci_vhci.c:537 [inline]
- vhci_write+0x39b/0x460 drivers/bluetooth/hci_vhci.c:617
- call_write_iter include/linux/fs.h:2110 [inline]
- new_sync_write fs/read_write.c:497 [inline]
- vfs_write+0x8eb/0xb50 fs/read_write.c:590
- ksys_write+0x106/0x1f0 fs/read_write.c:643
- __do_sys_write fs/read_write.c:655 [inline]
- __se_sys_write fs/read_write.c:652 [inline]
- __x64_sys_write+0x84/0xa0 fs/read_write.c:652
- x64_sys_call+0x271a/0x2ce0 arch/x86/include/generated/asm/syscalls_64.h:2
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0x9c/0x130 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x76/0x7e
-
-Freed by task 7332:
- kasan_save_stack mm/kasan/common.c:47 [inline]
- kasan_save_track+0x30/0x70 mm/kasan/common.c:68
- kasan_save_free_info+0x44/0x50 mm/kasan/generic.c:579
- poison_slab_object+0x11a/0x190 mm/kasan/common.c:240
- __kasan_slab_free+0x3b/0x60 mm/kasan/common.c:256
- kasan_slab_free include/linux/kasan.h:184 [inline]
- slab_free_hook mm/slub.c:2106 [inline]
- slab_free mm/slub.c:4280 [inline]
- kfree+0x13c/0x330 mm/slub.c:4390
- msft_unregister+0x9d/0x120 net/bluetooth/msft.c:785
- hci_unregister_dev+0x1d9/0x520 net/bluetooth/hci_core.c:2771
- vhci_release+0x8c/0xe0 drivers/bluetooth/hci_vhci.c:674
- __fput+0x36f/0x750 fs/file_table.c:422
- ____fput+0x1e/0x30 fs/file_table.c:450
- task_work_run+0x1da/0x280 kernel/task_work.c:180
- exit_task_work include/linux/task_work.h:38 [inline]
- do_exit+0x856/0x2210 kernel/exit.c:878
- do_group_exit+0x201/0x2c0 kernel/exit.c:1027
- get_signal+0x12ff/0x1380 kernel/signal.c:2911
- arch_do_signal_or_restart+0x3b/0x650 arch/x86/kernel/signal.c:310
- exit_to_user_mode_loop kernel/entry/common.c:111 [inline]
- exit_to_user_mode_prepare include/linux/entry-common.h:328 [inline]
- __syscall_exit_to_user_mode_work kernel/entry/common.c:207 [inline]
- syscall_exit_to_user_mode+0xcc/0x2a0 kernel/entry/common.c:218
- do_syscall_64+0xa8/0x130 arch/x86/entry/common.c:89
- entry_SYSCALL_64_after_hwframe+0x76/0x7e
-
-The buggy address belongs to the object at ffff888106cbbc00
- which belongs to the cache kmalloc-256 of size 256
-The buggy address is located 168 bytes inside of
- freed 256-byte region [ffff888106cbbc00, ffff888106cbbd00)
-
-The buggy address belongs to the physical page:
-page: refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x106cba
-head: order:1 entire_mapcount:0 nr_pages_mapped:0 pincount:0
-flags: 0x17ffffe0000840(slab|head|node=0|zone=2|lastcpupid=0x3fffff)
-page_type: 0xffffffff()
-raw: 0017ffffe0000840 ffff888100042040 ffffea00042de590 ffffea00041b3e10
-raw: 0000000000000000 00000000000a000a 00000001ffffffff 0000000000000000
-head: 0017ffffe0000840 ffff888100042040 ffffea00042de590 ffffea00041b3e10
-head: 0000000000000000 00000000000a000a 00000001ffffffff 0000000000000000
-head: 0017ffffe0000001 ffffea00041b2e81 dead000000000122 00000000ffffffff
-head: 0000000200000000 0000000000000000 00000000ffffffff 0000000000000000
-page dumped because: kasan: bad access detected
-
-Memory state around the buggy address:
- ffff888106cbbb80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
- ffff888106cbbc00: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
->ffff888106cbbc80: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-                                  ^
- ffff888106cbbd00: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
- ffff888106cbbd80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-==================================================================
-
-Thanks,
-Sungwoo.
-
-Fixes: 9e14606d8f38 ("Bluetooth: disable advertisement filters during suspend")
-Signed-off-by: Sungwoo Kim <iam@sung-woo.kim>
----
-v1 -> v2: Move BT_DBG after null checking in msft_data_hold_unless_zero().
-v2 -> v3: Make a msft lifetime fit hdev.
-
- net/bluetooth/hci_core.c | 3 +--
- net/bluetooth/msft.c     | 2 +-
- net/bluetooth/msft.h     | 2 +-
- 3 files changed, 3 insertions(+), 4 deletions(-)
-
-diff --git a/net/bluetooth/hci_core.c b/net/bluetooth/hci_core.c
-index a7028d38c..bc5086423 100644
---- a/net/bluetooth/hci_core.c
-+++ b/net/bluetooth/hci_core.c
-@@ -2768,8 +2768,6 @@ void hci_unregister_dev(struct hci_dev *hdev)
- 
- 	hci_unregister_suspend_notifier(hdev);
- 
--	msft_unregister(hdev);
--
- 	hci_dev_do_close(hdev);
- 
- 	if (!test_bit(HCI_INIT, &hdev->flags) &&
-@@ -2823,6 +2821,7 @@ void hci_release_dev(struct hci_dev *hdev)
- 	hci_discovery_filter_clear(hdev);
- 	hci_blocked_keys_clear(hdev);
- 	hci_codec_list_clear(&hdev->local_codecs);
-+	msft_release(hdev);
- 	hci_dev_unlock(hdev);
- 
- 	ida_destroy(&hdev->unset_handle_ida);
-diff --git a/net/bluetooth/msft.c b/net/bluetooth/msft.c
-index 9612c5d1b..d039683d3 100644
---- a/net/bluetooth/msft.c
-+++ b/net/bluetooth/msft.c
-@@ -769,7 +769,7 @@ void msft_register(struct hci_dev *hdev)
- 	mutex_init(&msft->filter_lock);
- }
- 
--void msft_unregister(struct hci_dev *hdev)
-+void msft_release(struct hci_dev *hdev)
- {
- 	struct msft_data *msft = hdev->msft_data;
- 
-diff --git a/net/bluetooth/msft.h b/net/bluetooth/msft.h
-index 2a63205b3..cc438db09 100644
---- a/net/bluetooth/msft.h
-+++ b/net/bluetooth/msft.h
-@@ -14,7 +14,7 @@
- 
- bool msft_monitor_supported(struct hci_dev *hdev);
- void msft_register(struct hci_dev *hdev);
--void msft_unregister(struct hci_dev *hdev);
-+void msft_release(struct hci_dev *hdev);
- void msft_do_open(struct hci_dev *hdev);
- void msft_do_close(struct hci_dev *hdev);
- void msft_vendor_evt(struct hci_dev *hdev, void *data, struct sk_buff *skb);
--- 
-2.34.1
+>=20
+>    reg:
+>      maxItems: 1
+> --
+> 2.34.1
+>=20
 
 
