@@ -1,160 +1,144 @@
-Return-Path: <linux-kernel+bounces-163825-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-163828-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 74CD18B72A9
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 13:10:56 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3A1B68B72C7
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 13:11:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2A6CF1F2173B
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 11:10:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2F4F51C21B41
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 11:11:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5899A12C549;
-	Tue, 30 Apr 2024 11:10:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A913912DD91;
+	Tue, 30 Apr 2024 11:11:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=manjaro.org header.i=@manjaro.org header.b="O0R+Fag+"
-Received: from mail.manjaro.org (mail.manjaro.org [116.203.91.91])
-	(using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="D/+3JsSU"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F316112C819;
-	Tue, 30 Apr 2024 11:10:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=116.203.91.91
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CFCCD12D20F;
+	Tue, 30 Apr 2024 11:11:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714475449; cv=none; b=SBpbr2rEsNjsocCsvhxZzJzUXeJ9pvHGXWSoBTCI0QOTE/+ZebJ7gC84qqOP3eIsImlM0+Vomm+wS0VKp/98KYcCIAlO7cCeVV9LsOHdhT+ZZHBTTrE5v7Y9kWakdI5rHNsU/mKyX1olaeJexmNLq4JfaG9rZwCj23mDBiS8bw0=
+	t=1714475493; cv=none; b=nL0lKCTP8Iia3TSyf25ON7lvYuVVPiJDPxCqY8IVQUA0a09ju7WkNKSYzG5Gs9Zeb1qCV9ufvnfjTBxlA+aJSLd8hZeJ9dsLfX04oW+OvOGhfCV+3/GMQnzvkytNLNJGtl8CTzK2cjy3rxhn4W9W9247Et6A1BURvoqxyQnhwN0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714475449; c=relaxed/simple;
-	bh=5aMGY4TetrWZPSPC+bg6GoYf1PBtEi/MdRkPeSHwBkA=;
-	h=MIME-Version:Date:From:To:Cc:Subject:In-Reply-To:References:
-	 Message-ID:Content-Type; b=mUCx+7uwZq19XeaSP6jSnF+P4KR86jfxXHQZIUmi+zD4YGFwqKxbmBqdO54pjPLFVef89NywK4eQ5d44w1NIwRDmwAnfsJUZ7wTSmIhu2NH8gsK1vVmJfnB4L0fWrxWhbQll9ac2beM5Fs3CCjYyE+XmYztjl+t0sOpz6iLxenI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=manjaro.org; spf=pass smtp.mailfrom=manjaro.org; dkim=pass (2048-bit key) header.d=manjaro.org header.i=@manjaro.org header.b=O0R+Fag+; arc=none smtp.client-ip=116.203.91.91
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=manjaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=manjaro.org
+	s=arc-20240116; t=1714475493; c=relaxed/simple;
+	bh=OEZfaxKF5ZU2ktXmlXA2zI10IqUQ7mPBu+B5L+gYq0U=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=a8qSGte0vXl8JYwPZiVd5rHl9gB9O+vUfcK//ekLc+pJjXcKbKZfFDaeDliIF/xNWcqFLyNw77J2+EJdW2/EGcD5JOBmKlxb6Hzs//rNLE539E23IgwDVxZPdNIehfHccxh50aL8ozcJKu8bj8mT7JjBqRD6yTpA5JRbo5RU8VI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=D/+3JsSU; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 935B6C4AF19;
+	Tue, 30 Apr 2024 11:11:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714475493;
+	bh=OEZfaxKF5ZU2ktXmlXA2zI10IqUQ7mPBu+B5L+gYq0U=;
+	h=From:Subject:Date:To:Cc:Reply-To:From;
+	b=D/+3JsSU0ZQe9OSr8IWr+cPr6CkXLFAUYNYtgJfbLcYh3AA86hKZ+yKbekrEh2SO6
+	 7HQ1PFkYANdVWbfnNdXnsxkEgETUrDOsScMOENfHxuLZIcRPpRtGyrzarEIDC3KfnS
+	 3JAXcvv7tjbG1IxyC2IBA7VxtkSy9uYr4Hu1bAuO93xYHaF9fvfBWq9RvTRQJJiXE8
+	 guicSscxoZKjjeuziQQ0klih8DNnYIoo1ttaWYpSMq3sEFi+ebupX6U7AYJq+JyXm+
+	 4UP/oLqR1nbtzVEsHss79Tn5zCEpwip168GtFfR1tazMY10Pr1SuSwJoEa8ceASmVh
+	 OZLDN08lowNCg==
+Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 82412C10F16;
+	Tue, 30 Apr 2024 11:11:33 +0000 (UTC)
+From: Keguang Zhang via B4 Relay <devnull+keguang.zhang.gmail.com@kernel.org>
+Subject: [PATCH v7 0/3] Add support for Loongson-1 NAND
+Date: Tue, 30 Apr 2024 19:11:09 +0800
+Message-Id: <20240430-loongson1-nand-v7-0-60787c314fa4@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=manjaro.org; s=2021;
-	t=1714475442;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=KXKLEl88NqVHxINvq3HuX4hPm4pXSq+keAJ00os/VHk=;
-	b=O0R+Fag+OueqMCr1y90NL/AmfeM6wv77ctNtGipqjYYIKDwMFsAA+Bo+CFUhoucBanply6
-	SS+IUhjNc+Q0fQU69owBtO078NT5rWHaD7JOddHiO7on9Lrb7wtLwGxMr0zFafdThiYGoV
-	8ubR3tayTpRouA48EuchTCqZzMz9ciehSHajzmA1ZoB11iTOnVgObRTjQOcoWmn+jfrgKY
-	lvUbhkg52K+H5O2n/K9tqbPtVpwUEVTAs6b4Ev8G+13A7PQZK+4KMbbTWAtK9vKJMqXY49
-	tzJFSvrvFjfVKfTh2q4WQzTnbT50INSp/NRHBfAEsf7TigpL+rwL+1uviMh77g==
-Date: Tue, 30 Apr 2024 13:10:41 +0200
-From: Dragan Simic <dsimic@manjaro.org>
-To: Andre Przywara <andre.przywara@arm.com>
-Cc: linux-sunxi@lists.linux.dev, wens@csie.org, jernej.skrabec@gmail.com,
- samuel@sholland.org, linux-arm-kernel@lists.infradead.org,
- devicetree@vger.kernel.org, robh@kernel.org, krzk+dt@kernel.org,
- conor+dt@kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] arm64: dts: allwinner: Add cache information to the SoC
- dtsi for H6
-In-Reply-To: <20240430114627.0cfcd14a@donnerap.manchester.arm.com>
-References: <6a772756c2c677dbdaaab4a2c71a358d8e4b27e9.1714304058.git.dsimic@manjaro.org>
- <49abb93000078c692c48c0a65ff677893909361a.1714304071.git.dsimic@manjaro.org>
- <20240430001002.4797e4e3@minigeek.lan>
- <6fdeb49d57ccccca62e4f43dbe9475e3@manjaro.org>
- <20240430114627.0cfcd14a@donnerap.manchester.arm.com>
-Message-ID: <f4f4163d908c95d2a3f6f48bc3d7de49@manjaro.org>
-X-Sender: dsimic@manjaro.org
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Authentication-Results: ORIGINATING;
-	auth=pass smtp.auth=dsimic@manjaro.org smtp.mailfrom=dsimic@manjaro.org
+X-B4-Tracking: v=1; b=H4sIAM7RMGYC/12OzQ6CMBAGX8X07JL+YCuefA/DoYFtaYTWtEhUw
+ rtbiCbGyyZz2PlmJgmjw0ROu5lEnFxywWdQ+x1pOu0tgmszE055SQWT0IfgbQqegde+heoouGq
+ VQmokyU+3iMY9NuGlzmxiGGDsIuqvhtFDvrzkTBSqogoYXNHe81bxWhfPdtCuL5owrL7OpTHE5
+ 9Y3ydX6SeHqP2WSQEGZSjDWoKGc/pjqZVnemPQfiOwAAAA=
+To: Miquel Raynal <miquel.raynal@bootlin.com>, 
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, 
+ Rob Herring <robh@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org, 
+ linux-mips@vger.kernel.org, devicetree@vger.kernel.org, 
+ Keguang Zhang <keguang.zhang@gmail.com>
+X-Mailer: b4 0.12.3
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1714475491; l=2270;
+ i=keguang.zhang@gmail.com; s=20231129; h=from:subject:message-id;
+ bh=OEZfaxKF5ZU2ktXmlXA2zI10IqUQ7mPBu+B5L+gYq0U=;
+ b=hwxNWFMKDlRXils8CJGuEeMePaS3aFaXpabooj7K3FH22BhA6kh2hIorxi51q3NMwq6ZjXOZY
+ Kewg6Zw9t+vD2GXqyqj6rBUhb0xqT6M9rAKI5XP95b17Bx/XHjlcrfg
+X-Developer-Key: i=keguang.zhang@gmail.com; a=ed25519;
+ pk=FMKGj/JgKll/MgClpNZ3frIIogsh5e5r8CeW2mr+WLs=
+X-Endpoint-Received: by B4 Relay for keguang.zhang@gmail.com/20231129 with
+ auth_id=102
+X-Original-From: Keguang Zhang <keguang.zhang@gmail.com>
+Reply-To: keguang.zhang@gmail.com
 
-Hello Andre,
+Add the driver and dt-binding document for Loongson-1 NAND.
+And modify nand_read_subpage() to allow subpage read by a single operation.
 
-On 2024-04-30 12:46, Andre Przywara wrote:
-> On Tue, 30 Apr 2024 02:01:42 +0200
-> Dragan Simic <dsimic@manjaro.org> wrote:
->> On 2024-04-30 01:10, Andre Przywara wrote:
->> > On Sun, 28 Apr 2024 13:40:36 +0200
->> > Dragan Simic <dsimic@manjaro.org> wrote:
->> >
->> >> Add missing cache information to the Allwinner H6 SoC dtsi, to allow
->> >> the userspace, which includes lscpu(1) that uses the virtual files
->> >> provided
->> >> by the kernel under the /sys/devices/system/cpu directory, to display
->> >> the
->> >> proper H6 cache information.
->> >>
->> >> Adding the cache information to the H6 SoC dtsi also makes the
->> >> following
->> >> warning message in the kernel log go away:
->> >>
->> >>   cacheinfo: Unable to detect cache hierarchy for CPU 0
->> >>
->> >> The cache parameters for the H6 dtsi were obtained and partially
->> >> derived
->> >> by hand from the cache size and layout specifications found in the
->> >> following
->> >> datasheets and technical reference manuals:
->> >>
->> >>   - Allwinner H6 V200 datasheet, version 1.1
->> >>   - ARM Cortex-A53 revision r0p3 TRM, version E
->> >>
->> >> For future reference, here's a brief summary of the documentation:
->> >>
->> >>   - All caches employ the 64-byte cache line length
->> >>   - Each Cortex-A53 core has 32 KB of L1 2-way, set-associative
->> >> instruction
->> >>     cache and 32 KB of L1 4-way, set-associative data cache
->> >>   - The entire SoC has 512 KB of unified L2 16-way, set-associative
->> >> cache
->> >>
->> >> Signed-off-by: Dragan Simic <dsimic@manjaro.org>
->> >
->> > I can confirm that the data below matches the manuals, but also the
->> > decoding of the architectural cache type registers (CCSIDR_EL1):
->> >   L1D: 32 KB: 128 sets, 4 way associative, 64 bytes/line
->> >   L1I: 32 KB: 256 sets, 2 way associative, 64 bytes/line
->> >   L2: 512 KB: 512 sets, 16 way associative, 64 bytes/line
->> 
->> Thank you very much for reviewing my patch in such a detailed way!
->> It's good to know that the values in the Allwinner datasheets match
->> with the observed reality, so to speak. :)
-> 
-> YW, and yes, I like to double check things when it comes to Allwinner
-> documentation ;-) And it was comparably easy for this problem.
+Changes in v7:
+- Rename the file to loongson,ls1b-nfc.yaml
+- Rename the dependency to LOONGSON1_APB_DMA
+- Link to v6: https://lore.kernel.org/r/20240327-loongson1-nand-v6-0-7f9311cef020@gmail.com
 
-Double checking is always good, IMHO. :)
+Changes in v6:
+- Amend Kconfig
+- Add the dt-binding document
+- Modify nand_read_subpage() to allow subpage read by a single operation
+- Add DT support for driver
+- Use DT data instead of platform data
+- Remove MAX_ID_SIZE
+- Remove case NAND_OP_CMD_INSTR in ls1x_nand_set_controller()
+- Move ECC configuration to ls1x_nand_attach_chip()
+- Rename variable "nand" to "ls1x"
+- Rename variable "nc" to "nfc"
+- Some minor fixes
+- Link to v5: https://lore.kernel.org/all/20210520224213.7907-1-keguang.zhang@gmail.com
 
-> Out of curiosity: what triggered that patch? Trying to get rid of false
-> warning/error messages?
+Changes in v5:
+- Update the driver to fit the raw NAND framework.
+- Implement exec_op() instead of legacy cmdfunc().
+- Use dma_request_chan() instead of dma_request_channel().
+- Some minor fixes and cleanups.
 
-Yes, one of the motivators was to get rid of the false kernel warning,
-and the other was to have the cache information nicely available through
-lscpu(1).  I already did the same for a few Rockchip SoCs, [1][2][3] so
-a couple of Allwinner SoCs were the next on my mental TODO list. :)
+Changes in v4:
+- Retrieve the controller from nand_hw_control.
 
-> And do you plan to address the H616 as well? It's a bit more tricky 
-> there,
-> since there are two die revisions out: one with 256(?)KB of L2, one 
-> with
-> 1MB(!). We know how to tell them apart, so I could provide some TF-A 
-> code
-> to patch that up in the DT. The kernel DT copy could go with 256KB 
-> then.
+Changes in v3:
+- Replace __raw_readl/__raw_writel with readl/writel.
+- Split ls1x_nand into two structures:
+ls1x_nand_chip and ls1x_nand_controller.
 
-I have no boards based on the Allwinner H616, so it wasn't on my radar.
-Though, I'd be happy to prepare and submit a similar kernel patch for
-the H616, if you'd then take it further and submit a TF-A patch that
-fixes the DT according to the detected die revision?  Did I understand
-the plan right?
+Changes in v2:
+- Modify the dependency in Kconfig due to the changes of DMA module.
 
-[1] 
-https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/commit/?id=67a6a98575974416834c2294853b3814376a7ce7
-[2] 
-https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/commit/?id=8612169a05c5e979af033868b7a9b177e0f9fcdf
-[3] 
-https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/commit/?id=b72633ba5cfa932405832de25d0f0a11716903b4
+Signed-off-by: Keguang Zhang <keguang.zhang@gmail.com>
+---
+Keguang Zhang (3):
+      dt-bindings: mtd: Add Loongson-1 NAND Controller
+      mtd: rawnand: Enable monolithic read when reading subpages
+      mtd: rawnand: Add Loongson-1 NAND Controller driver
+
+ .../devicetree/bindings/mtd/loongson,ls1b-nfc.yaml |  66 ++
+ drivers/mtd/nand/raw/Kconfig                       |   7 +
+ drivers/mtd/nand/raw/Makefile                      |   1 +
+ drivers/mtd/nand/raw/loongson1_nand.c              | 748 +++++++++++++++++++++
+ drivers/mtd/nand/raw/nand_base.c                   |   5 +-
+ include/linux/mtd/rawnand.h                        |   5 +
+ 6 files changed, 830 insertions(+), 2 deletions(-)
+---
+base-commit: d04466706db5e241ee026f17b5f920e50dee26b5
+change-id: 20240316-loongson1-nand-98327d77e0f6
+
+Best regards,
+-- 
+Keguang Zhang <keguang.zhang@gmail.com>
+
+
 
