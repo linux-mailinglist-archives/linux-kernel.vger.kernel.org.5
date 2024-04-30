@@ -1,141 +1,211 @@
-Return-Path: <linux-kernel+bounces-164582-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-164584-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 888F08B7FA3
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 20:22:45 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8BAED8B7FA5
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 20:23:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 284B91F216C2
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 18:22:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 45F97281D1D
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 18:23:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83A7E1836ED;
-	Tue, 30 Apr 2024 18:22:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26BCA1836E0;
+	Tue, 30 Apr 2024 18:23:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=metaspace-dk.20230601.gappssmtp.com header.i=@metaspace-dk.20230601.gappssmtp.com header.b="jVdcxRlL"
-Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ThUC4bRR"
+Received: from mail-yw1-f176.google.com (mail-yw1-f176.google.com [209.85.128.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 647B2180A65
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 18:22:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CCBBA1802DA
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 18:23:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714501355; cv=none; b=HQTTvhH5nRMl9BGveML6BSXYd+K3tVz9R1N/recFq+OP663k0w+rSd+d30vXnhmHfWkXat63fwa94NmXe7Ig9yFy0yBPt/BmETidRMZ2oQCDwvOT5jZH3mDryg8rxoPkI3w1DhIiIWZ0vX3LqUVG4y+5mthWDiWTnvYBZvpsd6E=
+	t=1714501391; cv=none; b=SD28byru84Oe0Fal3qPNtIJ2lgaP6ODimN4a9eYeAlmwLGWjNxHu2oZ8LtA3+ZGMR09sxyxFyaYGYhlqojyqZ1a4ywA4isbYG+6RkqvhhuKgjx18jQqUW6aXzQx9A2GwlwZGsRUaanYPylh5eCRMZwWbZG3KL1+7aGrH/ol28Y0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714501355; c=relaxed/simple;
-	bh=Tys9Vqu4Np9NrR4Q24ohGiMMf8UxyZr7+N9SeUjltmg=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=nt10hzo5U6/QUGnNR/7KudUF91NcAgQ43BvrcGYMy4bubP5yksHPoDBD4+FPLhb8r4/7L8NJp7oP2E1kqlX8nD45dkcACV4/iE9m+6rJnBJpmFM4fafyi+0aoSwzzIl0C2xjKXwpzdaatd/51upMLKtemYOzDcJWvXH59OXMaVA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=metaspace.dk; spf=none smtp.mailfrom=metaspace.dk; dkim=pass (2048-bit key) header.d=metaspace-dk.20230601.gappssmtp.com header.i=@metaspace-dk.20230601.gappssmtp.com header.b=jVdcxRlL; arc=none smtp.client-ip=209.85.218.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=metaspace.dk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=metaspace.dk
-Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-a58eb9a42d9so454280866b.0
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 11:22:34 -0700 (PDT)
+	s=arc-20240116; t=1714501391; c=relaxed/simple;
+	bh=iBJZnHrXNYarliDg/M9giVZGmfwYrEdgs799HsjQpUw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=NIunP530o5T82ywgMks36seQ3uhYhaW8zAUmNQmk76X7x+2ufG0Mzg55mD9uhqTkqNbYr9UCqT2kDq5YhGoxMpRW4ioepHKbxCJWGdBKu2kkC7P1gvapqLbwlddX0OFiiQizaRHfayFeBG4Bggau9jD4Dq3W71QY0H+LNizi4Qw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ThUC4bRR; arc=none smtp.client-ip=209.85.128.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f176.google.com with SMTP id 00721157ae682-6184acc1ef3so57135557b3.0
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 11:23:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=metaspace-dk.20230601.gappssmtp.com; s=20230601; t=1714501352; x=1715106152; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:user-agent
-         :references:in-reply-to:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Eim2qM9dw2NaPc5K3CL5p94YEvS81xT9DDWzSJ6rzVw=;
-        b=jVdcxRlL5j4m5yjl+WkqXscbtYgVttxc/4JvOHNJSKoCALCp8m5WMRqqDyNQCmsAA4
-         WChmteAaj0mZVrJnCchQERr0n1ieqhyYmztRykfsQJ8lMjLyD4kBUjPTGhhmdCk0MMJ1
-         ZqXLxputKkkwMaIlMws1NdafEq2PMpSbXYuqGSfNedb895+iaPrvIzXcuN/4LibEUcjx
-         Cx1fTACsnSES/HawFo/TwxuJ7jG6+oACt62OwtYWj8bJN47HBesy6pQd1AASEl63CHSf
-         rvj4vjVYZYyRwtANKrfZU7hdxVUMZfbaL5vgQ7EKZZAWENl/MEvXAhZAre7eiM0F7qtW
-         +C4A==
+        d=gmail.com; s=20230601; t=1714501388; x=1715106188; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=JW3+FSPpt+/opwIJ6LOrfIys0S22EmOBe3yi/ffGuSo=;
+        b=ThUC4bRRcRgH+PNEMXgfNCqG0R6cbLCaRvSri69/CXAReNdNz/iDRd3K9UgUFHBNvn
+         thhUZkbKpHOYT5sl96tJO/kvCkRg7RKLFm18el8nEzC4Jgz8DLFOhHFWgo2JqO6SpNlm
+         wsVqO3tZ2ByWrc7MY4e5UAvLGdNQI25oU1QelNnQYNNrLbDCnerKJO37xyt+tYLgTbO7
+         Io0hWN9UapHp5+mzZeT7vZJSQiwJrc7lDtvsJOdXSvNp6JomfCKPuQh2zlxYJsJHZ++v
+         Ya26qB3WTtlVNaITS64SDXpth0Lh+8LvVV35WeIWVQJ7XLnWUHvqyuDktZ0nlyq/8UHi
+         Tn/g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714501352; x=1715106152;
-        h=content-transfer-encoding:mime-version:message-id:date:user-agent
-         :references:in-reply-to:subject:cc:to:from:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=Eim2qM9dw2NaPc5K3CL5p94YEvS81xT9DDWzSJ6rzVw=;
-        b=pfMutV5NgYz9UE3Reu987H0GvLhqZJirt2XJ0j51kJTGGzgq/kqLV/jFkK8G6O9ax+
-         wZfCgtGbcQFjRpEQo026DBUKZQmI1oFLtxv1pGdNSYQEmsU3RivSJ8xoJXFVFMAm8Bvb
-         MpV7CWSKrgeoFvTf+r8f0s+pI0s+Wh8N/4B+XgVm4BYHfCMgz0g90ObHXszkUOhKurw3
-         Gz1048nO253piecU5IA0XAyHQ29dZ/lNSD6UmJk8ctRmPXbzNQvVbApOjhTCmCBDqljE
-         gNfWYVbCVoYz9mCf+Y4xBNKNbCzQ1wx67FofRWV7lz47TMi6NYqsXqojNUoOlm5QWPHL
-         J1yg==
-X-Forwarded-Encrypted: i=1; AJvYcCWmFtRz4HrOV7igbmGllGnqskadg7ElPuSbmnFhSyJdoncXcrqrbKmt1m8re/mJ9Vocj4e8ThtEx8qCI7Ec4onllj6xCwJ7GLVORMhv
-X-Gm-Message-State: AOJu0Yx3Cb/4zgeDN97HINKMNr/GAWro4w9y7XqI21YZSsCnfxKJhp4k
-	aYUavTwouv6uqQNh18KLcqTxghf2IZNxCHUV2UMUglCORegwtg96i7qwMLETA8o=
-X-Google-Smtp-Source: AGHT+IE5aiBScuaQ19uargUpEfy39/b85ALLx+hF4lmyoM77hZpnbkfe7n/+rxmBeqSK1orOCqLUdw==
-X-Received: by 2002:a17:906:c791:b0:a55:b592:7e0a with SMTP id cw17-20020a170906c79100b00a55b5927e0amr377859ejb.48.1714501352560;
-        Tue, 30 Apr 2024 11:22:32 -0700 (PDT)
-Received: from localhost ([79.142.230.34])
-        by smtp.gmail.com with ESMTPSA id j11-20020a170906474b00b00a58eeb329d8sm3949305ejs.44.2024.04.30.11.22.31
+        d=1e100.net; s=20230601; t=1714501388; x=1715106188;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=JW3+FSPpt+/opwIJ6LOrfIys0S22EmOBe3yi/ffGuSo=;
+        b=NtgiSi9a7L+LxipVDxPVJxjbnM0tfzI6Unq5/GBRmEXI7eZCBKwPPPRH/oiuj8t9xl
+         LEvaSH0Anq0XJEJq7uyw+Ai77DYpAnOeQivb7WkJUvnQ5oJLLEjtAvsgINK76BGTAOeP
+         7v6N+3mvNDI1WBhwiG5vfT462DSX4iXDXGezmv8GgUn7U3qUEuid/nWR7Ei5GaEuk5ZP
+         IGopkChTEDB57uGZw4iEkGR3QnrXrboGDvqJ/3bRCf2eXhUgCG0FurX4Zuki8byCjhfp
+         KWlCAMzOKh1bXZHbRX1j0IeYdLCIpVP7dcxzp3iiicXCQzaNi73mBcvx54lDIjoTpBJ6
+         K99g==
+X-Forwarded-Encrypted: i=1; AJvYcCVvjzxmcENjrxEnpCm12RlM42nCptTfVEZ96ReB1bzLQK8qu32AclHXb25v3qgpomAmZx9ZkMocfnK5kLirvUos2mZVGxs7Hz02tnWW
+X-Gm-Message-State: AOJu0Yxsxx/lpIvRPtBXDBKzzDVwazolUH3jsxkur6+Ef5/Ob4GdV2ZU
+	sdAEu/TYjXOdmZxT5EHix+6ozxANtBESGoisPvYXgWkNyiSIG33h
+X-Google-Smtp-Source: AGHT+IGR7Bcs9X+gvTGcQYUe5hJK+mYgUTTy07UlAHsmIleZfDkEr1UASKRkbQ9DmS8JSBnnJrebpw==
+X-Received: by 2002:a05:690c:368e:b0:61a:b038:6d34 with SMTP id fu14-20020a05690c368e00b0061ab0386d34mr408457ywb.24.1714501388568;
+        Tue, 30 Apr 2024 11:23:08 -0700 (PDT)
+Received: from localhost ([69.73.66.55])
+        by smtp.gmail.com with ESMTPSA id bg20-20020a05690c031400b0061bd6a13a34sm1048450ywb.24.2024.04.30.11.23.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Apr 2024 11:22:32 -0700 (PDT)
-From: Andreas Hindborg <nmi@metaspace.dk>
-To: Boqun Feng <boqun.feng@gmail.com>
-Cc: Benno Lossin <benno.lossin@proton.me>,  Miguel Ojeda <ojeda@kernel.org>,
-  Alex Gaynor <alex.gaynor@gmail.com>,  Wedson Almeida Filho
- <wedsonaf@gmail.com>,  Anna-Maria Behnsen <anna-maria@linutronix.de>,
-  Frederic Weisbecker <frederic@kernel.org>,  Thomas Gleixner
- <tglx@linutronix.de>,  Andreas Hindborg <a.hindborg@samsung.com>,  Gary
- Guo <gary@garyguo.net>,  =?utf-8?Q?Bj=C3=B6rn?= Roy Baron
- <bjorn3_gh@protonmail.com>,
-  Alice Ryhl <aliceryhl@google.com>,  rust-for-linux@vger.kernel.org,
-  linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] rust: hrtimer: introduce hrtimer support
-In-Reply-To: <ZjELgVzzX4oru0gi@Boquns-Mac-mini.home> (Boqun Feng's message of
-	"Tue, 30 Apr 2024 08:17:21 -0700")
-References: <20240425094634.262674-1-nmi@metaspace.dk>
-	<a7a560c7-fb8c-4adf-9f46-2e272f24b335@proton.me>
-	<87v844lbhm.fsf@metaspace.dk> <Zi_Zb1lBOBBUFJFV@boqun-archlinux>
-	<87plu7jahd.fsf@metaspace.dk> <ZjELgVzzX4oru0gi@Boquns-Mac-mini.home>
-User-Agent: mu4e 1.12.4; emacs 29.3
-Date: Tue, 30 Apr 2024 20:22:25 +0200
-Message-ID: <87h6fik8wu.fsf@metaspace.dk>
+        Tue, 30 Apr 2024 11:23:08 -0700 (PDT)
+Date: Tue, 30 Apr 2024 11:23:07 -0700
+From: Yury Norov <yury.norov@gmail.com>
+To: Ankit Jain <ankit-aj.jain@broadcom.com>
+Cc: linux@rasmusvillemoes.dk, akpm@linux-foundation.org,
+	linux-kernel@vger.kernel.org, juri.lelli@redhat.com,
+	pauld@redhat.com, ajay.kaher@broadcom.com,
+	alexey.makhalov@broadcom.com, vasavi.sirnapalli@broadcom.com,
+	Paul Turner <pjt@google.com>, Ingo Molnar <mingo@redhat.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Vincent Guittot <vincent.guittot@linaro.org>,
+	Dietmar Eggemann <dietmar.eggemann@arm.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+	Daniel Bristot de Oliveira <bristot@redhat.com>,
+	Valentin Schneider <vschneid@redhat.com>
+Subject: Re: [PATCH] lib/cpumask: Boot option to disable tasks distribution
+ within cpumask
+Message-ID: <ZjE3C9UgeZR02Jyy@yury-ThinkPad>
+References: <20240430090431.1619622-1-ankit-aj.jain@broadcom.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240430090431.1619622-1-ankit-aj.jain@broadcom.com>
 
-Boqun Feng <boqun.feng@gmail.com> writes:
+On Tue, Apr 30, 2024 at 02:34:31PM +0530, Ankit Jain wrote:
+> commit 46a87b3851f0 ("sched/core: Distribute tasks within affinity masks")
+> and commit 14e292f8d453 ("sched,rt: Use cpumask_any*_distribute()")
+> introduced the logic to distribute the tasks within cpumask upon initial
+> wakeup.
 
-> On Tue, Apr 30, 2024 at 02:33:50PM +0200, Andreas Hindborg wrote:
-> [...]
->> >
->> > Could you see if you can replace this with a `SpinLock<bool>` +
->> > `CondVar`? We shouldn't use Rust atomic in kernel now. I know it's
->> > unfortunate that LKMM atomics are still work in process, but in real
->> > world, you won't do busy waiting for a timer to fire, so a
->> > `CondVar::wait` is better for example purpose.
->>=20
->> Since this is only using the atomic from Rust code, it should be fine
->> right? There is no mixing of memory models on this memory location.
->>=20
->
-> It's better compared to mixing accesses on a same location, but it's
-> still not allowed (for now, at least) to avoid mixing memory models on
-> ordering guarantees, for example:
->
-> (assume all memory location is initialized as 0)
->
-> 	CPU 0				CPU 1
-> 	-----				-----
-> 	x.store(1, RELAXED); // Rust native atomic
-> 	smp_store_release(&y, 1); // LKMM atomic
-> 					let r0 =3D smp_load_acquire(&y);
-> 					let r1 =3D x.load(RELAXED);
->
-> The smp_store_release() and smp_load_acquire() pairs per LKMM, and
-> provide certain rel-acq ordering. But to make it (r0 =3D=3D 1 && r1 =3D=
-=3D 0),
-> C11 memory model needs to understand this sort of orderings, but
-> currently there is no such thing as an "external ordering" to C11 memory
-> model.
->
-> I admit this is much of a theorical concern for code reasoning, in real
-> world, it must "just work", but "if you want to have fun, start with
-> one" ;-)
+So let's add the authors in CC list?
 
-Alright, I will change it to a `CondVar` or a `SpinLock` =F0=9F=91=8D
+> For Telco RAN deployments, isolcpus are a necessity to cater to
+> the requirement of low latency applications. These isolcpus are generally
+> tickless so that high priority SCHED_FIFO tasks can execute without any
+> OS jitter. Since load balancing is disabled on isocpus, any task
+> which gets placed on these CPUs can not be migrated on its own.
+> For RT applications to execute on isolcpus, a guaranteed kubernetes pod
+> with all isolcpus becomes the requirement and these RT applications are
+> affine to execute on a specific isolcpu within the kubernetes pod.
+> However, there may be some non-RT tasks which could also schedule in the
+> same kubernetes pod without being affine to any specific CPU(inherits the
+> pod cpuset affinity).
 
-BR Andreas
+OK... It looks like adding scheduler maintainers is also a necessity to
+cater here...
+
+> With multiple spawning and running containers inside
+> the pod, container runtime spawns several non-RT initializing tasks
+> ("runc init") inside the pod and due to above mentioned commits, these
+> non-RT tasks may get placed on any isolcpus and may starve if it happens
+> to wakeup on the same CPU as SCHED_FIFO task because RT throttling is also
+> disabled in telco setup. Thus, RAN deployment fails and eventually leads
+> to system hangs.
+
+Not that I'm familiar to your setup, but this sounds like a userspace
+configuration problems. Can you try to move your non-RT tasks into a
+cgroup attached to non-RT CPUs, or something like that? 
+
+> With the introduction of kernel cmdline param 'sched_pick_firstcpu',
+> there is an option provided for such usecases to disable the distribution
+> of tasks within the cpumask logic and use the previous 'pick first cpu'
+> approach for initial placement of tasks. Because many telco vendors
+> configure the system in such a way that the first cpu within a cpuset
+> of pod doesn't run any SCHED_FIFO or High priority tasks.
+> 
+> Co-developed-by: Alexey Makhalov <alexey.makhalov@broadcom.com>
+> Signed-off-by: Alexey Makhalov <alexey.makhalov@broadcom.com>
+> Signed-off-by: Ankit Jain <ankit-aj.jain@broadcom.com>
+> ---
+>  lib/cpumask.c | 24 ++++++++++++++++++++++++
+>  1 file changed, 24 insertions(+)
+> 
+> diff --git a/lib/cpumask.c b/lib/cpumask.c
+> index e77ee9d46f71..3dea87d5ec1f 100644
+> --- a/lib/cpumask.c
+> +++ b/lib/cpumask.c
+> @@ -154,6 +154,23 @@ unsigned int cpumask_local_spread(unsigned int i, int node)
+>  }
+>  EXPORT_SYMBOL(cpumask_local_spread);
+>  
+> +/*
+> + * Task distribution within the cpumask feature disabled?
+> + */
+> +static bool cpumask_pick_firstcpu __read_mostly;
+> +
+> +/*
+> + * Disable Tasks distribution within the cpumask feature
+> + */
+> +static int __init cpumask_pick_firstcpu_setup(char *str)
+> +{
+> +	cpumask_pick_firstcpu = 1;
+> +	pr_info("cpumask: Tasks distribution within cpumask is disabled.");
+> +	return 1;
+> +}
+> +
+> +__setup("sched_pick_firstcpu", cpumask_pick_firstcpu_setup);
+> +
+>  static DEFINE_PER_CPU(int, distribute_cpu_mask_prev);
+>  
+>  /**
+> @@ -171,6 +188,13 @@ unsigned int cpumask_any_and_distribute(const struct cpumask *src1p,
+>  {
+>  	unsigned int next, prev;
+>  
+> +	/*
+> +	 * Don't distribute, if tasks distribution
+> +	 * within cpumask feature is disabled
+> +	 */
+> +	if (cpumask_pick_firstcpu)
+> +		return cpumask_any_and(src1p, src2p);
+
+No, this is a wrong way.
+
+To begin with, this parameter shouldn't control a single random
+function. At least, the other cpumask_*_distribute() should be
+consistent to the policy.
+
+But in general... I don't think we should do things like that at all.
+Cpumask API is a simple and plain wrapper around bitmaps. If you want
+to modify a behavior of the scheduler, you could do that at scheduler
+level, not in a random helper function.
+
+Consider 2 cases:
+ - Someone unrelated to scheduler would use the same helper and will
+   be affected by this parameter inadvertently.
+ - Scheduler will switch to using another function to distribute CPUs,
+   and your setups will suddenly get broken again. This time deeply in
+   production.
+
+Thanks,
+Yury
+
+>  	/* NOTE: our first selection will skip 0. */
+>  	prev = __this_cpu_read(distribute_cpu_mask_prev);
+>  
+> -- 
+> 2.23.1
 
