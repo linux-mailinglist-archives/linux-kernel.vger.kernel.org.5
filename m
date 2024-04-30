@@ -1,217 +1,177 @@
-Return-Path: <linux-kernel+bounces-164350-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-164351-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 603788B7CA2
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 18:19:24 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E02FE8B7CA6
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 18:19:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1FDFC2843E1
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 16:19:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6B88E1F24A6C
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 16:19:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7DE42177992;
-	Tue, 30 Apr 2024 16:19:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="10DWIIV7"
-Received: from mail-lj1-f181.google.com (mail-lj1-f181.google.com [209.85.208.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F92C176FB2
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 16:19:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C8C91F5FA;
+	Tue, 30 Apr 2024 16:19:27 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51124176FA3
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 16:19:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714493957; cv=none; b=c+oUGA+/FJX/mIKpMLcTnz0QmCSkP6FjZS0GmWZ5H6eKQyJoduQ6cxz8RsVkBWCLZ7pGoYu30VV8/2aCGFJ4IOVmAIsVgyHKgPTjiSBGdwI7J4F5M1aua3K20qwjodq0IBxP/wL8agvAhn9OfTuyY4J9YlTHnPeljICeadbFFuw=
+	t=1714493967; cv=none; b=TByDK0x33ZI2la2fdDnryhjJtXtbpYmgbkw0L3PIEAZV5erRIKxSD01BnbKh4LP+1UAy4FpY02N4fZVUk9NsCle02sJci+Gc9t8lP18s/88Sq65xa+CrDwIOtuiGDxq+01id3a776boEhWzL6F8xFOGfgT8GLZbe53xmjl6HV+c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714493957; c=relaxed/simple;
-	bh=J44hCCyxD35NbqWW6nQLBqBSODmWNn0Dexkak4J/EvQ=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ojMD+Bi9YGLaLFqwUYJTbKK66Fz1UCRfWCddfuyo75OF3L1ULHqrFRDu+8RvnTmpi6gu/OLppNYU3lI7VDcwAMuxQtNTdJEajE47sA3Hyo12QcvsTqm/6HwNwgvIGW+L3HpPyTTnuteQ9cotosLJ/qRl8c4AAi/9/buqvzSVcpg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=10DWIIV7; arc=none smtp.client-ip=209.85.208.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
-Received: by mail-lj1-f181.google.com with SMTP id 38308e7fff4ca-2e060d49f87so18458871fa.0
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 09:19:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1714493953; x=1715098753; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=EYdB/zYMgqlA7okFvLjIPPWUlhTGwRwh73eiOLj9MZw=;
-        b=10DWIIV7lFrlwECtQ+gLiDg8MMuhXsRtzC/FDf4WbC1nhsxE+rB3dP9gXWEoZx8ey3
-         CfBdGszghuUQBfBtByeHtFLh0ChHCA5/oFG3clQRcdGGqTNBPa0wVNJE9f6pbcXyU87O
-         AKzsaY9d13YfZ5RHT04c/OIeP1STbjgtD+ADg5iXQ23TmqWf2FW+nuo5Xm9kut0npnQb
-         SAJwnNxo26e3tcHPtO6Yttq74QxTJJHFqsadVTNACUXyzSgmOvpp+5+Wuw3sgLpIQSS3
-         BFF+j8tA7syaoOsC9LOJASeHrjzr7cfsvbrGGH+TDj9Q4N2olM3sr/G4bSy6Rm+Sas8W
-         P3xw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714493953; x=1715098753;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=EYdB/zYMgqlA7okFvLjIPPWUlhTGwRwh73eiOLj9MZw=;
-        b=f7vCq1Fm/jxLHbROmMx9xTJkN2YbqTpP5/XhNYpPdwamp09jT39wTMgVrKFO9y7UiW
-         ighx8/FlgT9hVFOL/DzON2xsLr9uYSflJ9II6x+L7W2ey4Z3Rn30cHjIIVcDJJ5l3ZbT
-         K98SHw1PbvEMqX91qTUVjTUDHQsWVUjYw+8yGCR7vmxl3RaVP7iLaoBDYN7yGavsg7oD
-         ezUe6W9/TDJ77XH/lN7RZl+K/vP+1/V5J65pAxVan5HByKE3JSe4VrvMiLhj8Wfc/zT+
-         duGxMNUofhacrbgVP0wk4IbkLWM21NLbvcQVLYWF6qK6xNrnWO8yFQgWIllVywxBtTdz
-         3Rog==
-X-Forwarded-Encrypted: i=1; AJvYcCWtt/w0FB1KqRWxt3eZ7qTkNDr4+U5gwxc0Uxbumn7tLMq2fYPEK69fdGb19MZNlofMjA2KYsEygJFn8evMe8istxP0mkq1KH1+5UY1
-X-Gm-Message-State: AOJu0YzZqXLPEUhmtFa4ASTspmo1L9yj2YFx8GTIyMHmN9BtkhwtFWQa
-	3ZvBuNrEO3Uyy4TSmXNqdRLK8LbaeqGBXzHt/kZncgTvc7dV5EVSCQCwqVhJSZzjr2DwLVFA7cj
-	pmnbxqlE+WhiHaIxolzntowi2tSwVhfhIS47imA==
-X-Google-Smtp-Source: AGHT+IHNUEuRQYO/ery9q1WbMjDy+FPeaxsW7gh/vbOG22U6B5PZTmXy7tHPumx1KaMD3DrYzbtRncJOi4/QHYWE08I=
-X-Received: by 2002:a2e:3515:0:b0:2de:6f52:5c8d with SMTP id
- z21-20020a2e3515000000b002de6f525c8dmr73932ljz.21.1714493953250; Tue, 30 Apr
- 2024 09:19:13 -0700 (PDT)
+	s=arc-20240116; t=1714493967; c=relaxed/simple;
+	bh=yYdLPc+I+9+9f84rs7LgN9Ih3ymu0XcTzO3mnqVMFQc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Xog3WrHfC1H6HglUvhM/k/qDnREkA8jT+XhmTz0f310Euq7QmKm0lMbgJ579QMgNynDElIfehQGCkFk4sp0Bg3J2639ltE7gn7dJQKQxAVEusMTOyhLwJrBPTrUh9zNuFj+wkJEsA2enoNtggRD027r9pVDnlIxgRkUZvdP25Jc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9814C2F4;
+	Tue, 30 Apr 2024 09:19:50 -0700 (PDT)
+Received: from e133380.arm.com (e133380.arm.com [10.1.197.52])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 619A93F73F;
+	Tue, 30 Apr 2024 09:19:21 -0700 (PDT)
+Date: Tue, 30 Apr 2024 17:19:15 +0100
+From: Dave Martin <Dave.Martin@arm.com>
+To: Amit Singh Tomar <amitsinght@marvell.com>
+Cc: Reinette Chatre <reinette.chatre@intel.com>,
+	James Morse <james.morse@arm.com>, x86@kernel.org,
+	linux-kernel@vger.kernel.org, Fenghua Yu <fenghua.yu@intel.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+	H Peter Anvin <hpa@zytor.com>, Babu Moger <Babu.Moger@amd.com>,
+	shameerali.kolothum.thodi@huawei.com,
+	D Scott Phillips OS <scott@os.amperecomputing.com>,
+	carl@os.amperecomputing.com, lcherian@marvell.com,
+	bobo.shaobowang@huawei.com, tan.shaopeng@fujitsu.com,
+	baolin.wang@linux.alibaba.com, Jamie Iles <quic_jiles@quicinc.com>,
+	Xin Hao <xhao@linux.alibaba.com>, peternewman@google.com,
+	dfustini@baylibre.com, David Hildenbrand <david@redhat.com>,
+	Rex Nie <rex.nie@jaguarmicro.com>
+Subject: Re: [PATCH v1 28/31] x86/resctrl: Drop __init/__exit on assorted
+ symbols
+Message-ID: <ZjEaA+YRPA+p9msM@e133380.arm.com>
+References: <20240321165106.31602-1-james.morse@arm.com>
+ <20240321165106.31602-29-james.morse@arm.com>
+ <c27c7813-5744-4363-bb7b-f9fbe80fd549@intel.com>
+ <ZhfzF8L6w1pgJJ1r@e133380.arm.com>
+ <47af4fef-35d3-4d88-9afa-42c1a99fbe07@marvell.com>
+ <ZhlfQKMg4xeA53SD@e133380.arm.com>
+ <b87653fa-34e3-4124-a96f-f5d2b9730f10@marvell.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240429-regulator-get-enable-get-votlage-v2-0-b1f11ab766c1@baylibre.com>
- <20240429-regulator-get-enable-get-votlage-v2-1-b1f11ab766c1@baylibre.com>
-In-Reply-To: <20240429-regulator-get-enable-get-votlage-v2-1-b1f11ab766c1@baylibre.com>
-From: David Lechner <dlechner@baylibre.com>
-Date: Tue, 30 Apr 2024 11:19:01 -0500
-Message-ID: <CAMknhBG2ySYNEvghnO63wE=x6W8jk0-T2oWZKeXApM_d_eeoCw@mail.gmail.com>
-Subject: Re: [PATCH v2 1/7] regulator: devres: add API for reference voltage supplies
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, 
-	Jean Delvare <jdelvare@suse.com>, Guenter Roeck <linux@roeck-us.net>, 
-	Jonathan Cameron <jic23@kernel.org>, Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc: Jonathan Corbet <corbet@lwn.net>, Support Opensource <support.opensource@diasemi.com>, 
-	Cosmin Tanislav <cosmin.tanislav@analog.com>, Lars-Peter Clausen <lars@metafoo.de>, 
-	Michael Hennerich <Michael.Hennerich@analog.com>, Antoniu Miclaus <antoniu.miclaus@analog.com>, 
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-doc@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-hwmon@vger.kernel.org, 
-	linux-iio@vger.kernel.org, linux-staging@lists.linux.dev, 
-	linux-input@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b87653fa-34e3-4124-a96f-f5d2b9730f10@marvell.com>
 
-On Mon, Apr 29, 2024 at 6:40=E2=80=AFPM David Lechner <dlechner@baylibre.co=
-m> wrote:
->
-> A common use case for regulators is to supply a reference voltage to an
-> analog input or output device. This adds a new devres API to get,
-> enable, and get the voltage in a single call. This allows eliminating
-> boilerplate code in drivers that use reference supplies in this way.
->
-> Signed-off-by: David Lechner <dlechner@baylibre.com>
-> ---
->
-> v2 changes:
-> * removed dev_err_probe() on error return
-> * dropped optional version of the function since there is no more
->   difference after dev_err_probe() is removed
-> * renamed function to devm_regulator_get_enable_read_voltage()
-> * added unwinding on error paths
-> ---
->  Documentation/driver-api/driver-model/devres.rst |  1 +
->  drivers/regulator/devres.c                       | 59 ++++++++++++++++++=
-++++++
->  include/linux/regulator/consumer.h               |  7 +++
->  3 files changed, 67 insertions(+)
->
-> diff --git a/Documentation/driver-api/driver-model/devres.rst b/Documenta=
-tion/driver-api/driver-model/devres.rst
-> index 7be8b8dd5f00..18caebad7376 100644
-> --- a/Documentation/driver-api/driver-model/devres.rst
-> +++ b/Documentation/driver-api/driver-model/devres.rst
-> @@ -433,6 +433,7 @@ REGULATOR
->    devm_regulator_bulk_put()
->    devm_regulator_get()
->    devm_regulator_get_enable()
-> +  devm_regulator_get_enable_read_voltage()
->    devm_regulator_get_enable_optional()
->    devm_regulator_get_exclusive()
->    devm_regulator_get_optional()
-> diff --git a/drivers/regulator/devres.c b/drivers/regulator/devres.c
-> index 90bb0d178885..4f290b9b559b 100644
-> --- a/drivers/regulator/devres.c
-> +++ b/drivers/regulator/devres.c
-> @@ -145,6 +145,65 @@ struct regulator *devm_regulator_get_optional(struct=
- device *dev,
->  }
->  EXPORT_SYMBOL_GPL(devm_regulator_get_optional);
->
-> +/**
-> + * devm_regulator_get_enable_read_voltage - Resource managed regulator g=
-et and
-> + *                                          enable that returns the volt=
-age
-> + * @dev: device to supply
-> + * @id:  supply name or regulator ID.
-> + *
-> + * Get and enable regulator for duration of the device life-time.
-> + * regulator_disable() and regulator_put() are automatically called on d=
-river
-> + * detach. See regulator_get_optional(), regulator_enable(), and
-> + * regulator_get_voltage() for more information.
-> + *
-> + * This is a convenience function for supplies that provide a reference =
-voltage
-> + * where the consumer driver just needs to know the voltage and keep the
-> + * regulator enabled.
-> + *
-> + * In cases where the supply is not strictly required, callers can check=
- for
-> + * -ENODEV error and handle it accordingly.
-> + *
-> + * Returns: voltage in microvolts on success, or an error code on failur=
-e.
-> + */
-> +int devm_regulator_get_enable_read_voltage(struct device *dev, const cha=
-r *id)
-> +{
-> +       struct regulator *r;
-> +       int ret;
-> +
-> +       /*
-> +        * Since we need a real voltage, we use devm_regulator_get_option=
-al()
-> +        * rather than getting a dummy regulator with devm_regulator_get(=
-) and
-> +        * then letting regulator_get_voltage() fail with -EINVAL. This w=
-ay, the
-> +        * caller can handle the -ENODEV error code if needed instead of =
-the
-> +        * ambiguous -EINVAL.
-> +        */
-> +       r =3D devm_regulator_get_optional(dev, id);
-> +       if (IS_ERR(r))
-> +               return PTR_ERR(r);
-> +
-> +       ret =3D regulator_enable(r);
-> +       if (ret)
-> +               goto err_regulator_put;
-> +
-> +       ret =3D devm_add_action_or_reset(dev, regulator_action_disable, r=
-);
-> +       if (ret)
-> +               goto err_regulator_put;
-> +
-> +       ret =3D regulator_get_voltage(r);
-> +       if (ret < 0)
-> +               goto err_release_action;
-> +
-> +       return 0;
+On Tue, Apr 30, 2024 at 12:43:05PM +0530, Amit Singh Tomar wrote:
+> Hi Dave,
+> 
+> > Is it possible to unmount resctrl once the system is in this state?
+> No, it can't be unmounted, as there is no mount exist.
 
-Oof. Apparently I didn't test this as well as I should have after
-adding the unwinding. This obviously should return ret, not 0.
+I see.
 
-I did more extensive testing today, including faking error returns to
-test unwinding to make sure I didn't miss anything else.
 
-> +
-> +err_release_action:
-> +       devm_release_action(dev, regulator_action_disable, r);
-> +err_regulator_put:
-> +       devm_regulator_put(r);
-> +
-> +       return ret;
-> +}
-> +EXPORT_SYMBOL_GPL(devm_regulator_get_enable_read_voltage);
-> +
+> > > # mount -t resctrl resctrl /sys/fs/resctrl
+> > > mount: /sys/fs/resctrl: mount point does not exist.
+> > 
+> > What if you now try to mount resctrl somewhere else, e.g.:
+> > 
+> > # mount -t resctrl resctrl /mnt
+> root@localhost:~# mount -t resctrl resctrl /test
+> mount: /test: unknown filesystem type 'resctrl'.
+
+Oh, right, so the resctrl filesystem gets unregistered in that
+case...
+
+> > 
+> > I'm guessing this _should_ fail if you weren't able to unmount resctrl,
+> > since resctrl seems to forbid multiple mount instances.
+> > 
+> > I'm not sure what the best behaviour is here.  Leaving resctrl "half-
+> > mounted" might be a good thing: at this point the system is in a semi-
+> > bad state we want to make sure it can't be remounted.  Unregistering the
+> > resctrl filesystem from the fs core feels cleaner if feasible though.
+> > 
+> > Leaving an impossible unmount operation for init to do during reboot/
+> > shutdown feels unfortunate.
+> > 
+> > We might have to look at what other filesystems do in this area.
+> > 
+> > The mount machinery does provide other ways of getting into broken,
+> > impossible situations from userspace, so this doesn't feel like an
+> > entirely new problem.
+> > 
+> > > 
+> > > Additionally, a question regarding this, Is a complete system restart
+> > > necessary to regain the mount?
+> > > 
+> > > Thanks
+> > > -Amit
+> > 
+> > I think James will need to comment on this, but I think that yes, it
+> > is probably appropriate to require a reboot.  I think an MPAM error
+> > interrupt should only happen if the software did something wrong, so
+> > it's a bit like hitting a BUG(): we don't promise that everything works
+> > 100% properly until the system is restarted.  Misbehaviour should be
+> > contained to MPAM though.
+> > 
+> if "resctrl" is nonfunctional in this state, then this comment[1] here does
+> *not* make sense.
+> 
+> "restore any modified controls to their reset values."
+
+Can you clarify what you mean here?
+
+I think it makes sense to clean up the MPAM hardware as well as we can
+in these situations, even if we can't be certain what went wrong.
+
+[final comments below]
+
+> Thanks
+> -Amit
+> 
+> [1]: https://git.kernel.org/pub/scm/linux/kernel/git/morse/linux.git/tree/drivers/platform/mpam/mpam_devices.c?h=mpam/snapshot/v6.7-rc2#n2228
+> 
+> root@localhost:~# mount
+> tmpfs on /run/user/0 type tmpfs
+> (rw,nosuid,nodev,relatime,size=32923772k,nr_inodes=8230943,mode=700)
+> resctrl on /sys/fs/resctrl type resctrl (rw,relatime)
+> 
+> root@localhost:~# devmem msc_addr 32 0x9999
+> [  687.096276] mpam: error irq from msc:1 'PARTID_SEL_Range', partid:39321,
+> pmg: 0, ris: 0
+> 
+> root@localhost:~# mount
+> tmpfs on /run/user/0 type tmpfs
+> (rw,nosuid,nodev,relatime,size=32923772k,nr_inodes=8230943,mode=700)
+> resctrl on /sys/fs/resctrl type resctrl (rw,relatime)
+> 
+> root@localhost:~# umount resctrl
+> umount: /sys/fs/resctrl: no mount point specified.
+> 
+> root@localhost:~# mount
+> tmpfs on /run/user/0 type tmpfs
+> (rw,nosuid,nodev,relatime,size=32923772k,nr_inodes=8230943,mode=700)
+> 
+> root@localhost:~# mount -t resctrl resctrl /test
+> mount: /test: unknown filesystem type 'resctrl'.
+
+
+Thanks for trying this out.
+
+I guess the behaviour here might want a bit more thought.
+
+I'm not too keen on us leaving a defective mount in the namespace,
+with a nonexistent mount pount.  I'm wondering whether things like
+systemd may get confused by this...
+
+Cheers
+---Dave
 
