@@ -1,139 +1,203 @@
-Return-Path: <linux-kernel+bounces-163609-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-163599-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 42A958B6DA5
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 10:58:41 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DBD4A8B6D82
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 10:55:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C1CBC1F21496
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 08:58:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 91B6F28907A
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 08:55:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 502DA1C2331;
-	Tue, 30 Apr 2024 08:53:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BBF5199EAD;
+	Tue, 30 Apr 2024 08:53:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="QSjuvo0S"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Tky1BCLf"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36C96127B73;
-	Tue, 30 Apr 2024 08:53:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7CBF4194C9E
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 08:52:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714467238; cv=none; b=JrvG8+hbcO/oIxdQTAYHORGZT5J6VB9wdQF34hsd8qjFJ/jdMsJD2pqhDTgI8pmCSIAGaDCKqblZ4Xypsy1RLOuEtllkcNbmA7BxdTsYzvDFfCALlLjEDQF5vyLkce1usmWXuf/8Th04/Km4ZA5zdhzxEQp3uosDfXR3MNLAkfo=
+	t=1714467179; cv=none; b=k90ljwCafBDW1YDlsJkw+vZrP45ixVrZhAfUVenkK/yVz0z6fJ1Y0YA3BsCWn5GSZBs2sSxjXRfcFndLdiyOnNTzz0GC8G8iU386axNpBlhPq6AiLjuw+mcGl34cvw+e7DM1tCu/e6Es9fgJJizRW3BFo4usdfjTlq5FnA9ybxA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714467238; c=relaxed/simple;
-	bh=BGKIvW+QuSy639MKv7/DBEUGPRf9QzPFu13XKIQ74uc=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=BfshZB/JRmxspU1Oi/eZZCKFyvdHi3ub+xILGNPa57scCCOMr/2gxjrx213zjQaQMvpFZO1C18v+vPDTu3nWi2qHPrU8lVc93Z9R/QfgiDl9utifu3Co43bCMyP9u8J7sa1ATs3ncU+9hK8/s1SkFW5n0OerhSd+a0GEPx2pyr0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=QSjuvo0S; arc=none smtp.client-ip=198.175.65.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1714467238; x=1746003238;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=BGKIvW+QuSy639MKv7/DBEUGPRf9QzPFu13XKIQ74uc=;
-  b=QSjuvo0SW/0cCzvQRwylu7x/124QYbcJm3qZFvcOuR21Hrr3L4MtbLFo
-   GbM4QP1a6wb/9Xr4HgOgLqPvA7xxAXQw2iroVycWjETmiQc14+R/Pyh8l
-   zb1VC6EwvfoB7aiGb4LqZ6xDmIPY1G8oKwYfM+CkiRrsAtgSg7D02+Axv
-   kWYo3d0j2QzRwdx3zeMDPYt/J7sOnQjrByqhC6UUGCqxVbehHJn7c8mTl
-   wJ7CAXjOQ+gXBgp9jcjYGz98u2PR8GU7OX34SitpKUY69tNGonw3Jk2mv
-   m5zQoc7RSlHvEesILtoINaOivKLs0WZuhV2vcMNwHL8Uu3wHI6Hc1Xn6Z
-   A==;
-X-CSE-ConnectionGUID: j+xgJiCCRMS4RI5bFAud1g==
-X-CSE-MsgGUID: EWTQCX02QIuUa8Ae1rykGQ==
-X-IronPort-AV: E=McAfee;i="6600,9927,11059"; a="21311552"
-X-IronPort-AV: E=Sophos;i="6.07,241,1708416000"; 
-   d="scan'208";a="21311552"
-Received: from orviesa007.jf.intel.com ([10.64.159.147])
-  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Apr 2024 01:53:56 -0700
-X-CSE-ConnectionGUID: l241ZoNeQIeeof6w+W6Kmw==
-X-CSE-MsgGUID: PJqShxRRS+GYXQSyfxCF6A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,241,1708416000"; 
-   d="scan'208";a="26891701"
-Received: from inlubt0316.iind.intel.com ([10.191.20.213])
-  by orviesa007.jf.intel.com with ESMTP; 30 Apr 2024 01:53:49 -0700
-From: lakshmi.sowjanya.d@intel.com
-To: tglx@linutronix.de,
-	jstultz@google.com,
-	giometti@enneenne.com,
-	corbet@lwn.net,
-	linux-kernel@vger.kernel.org
-Cc: x86@kernel.org,
-	netdev@vger.kernel.org,
-	linux-doc@vger.kernel.org,
-	intel-wired-lan@lists.osuosl.org,
-	andriy.shevchenko@linux.intel.com,
-	eddie.dong@intel.com,
-	christopher.s.hall@intel.com,
-	jesse.brandeburg@intel.com,
-	davem@davemloft.net,
-	alexandre.torgue@foss.st.com,
-	joabreu@synopsys.com,
-	mcoquelin.stm32@gmail.com,
-	perex@perex.cz,
-	linux-sound@vger.kernel.org,
-	anthony.l.nguyen@intel.com,
-	peter.hilber@opensynergy.com,
-	pandith.n@intel.com,
-	subramanian.mohan@intel.com,
-	thejesh.reddy.t.r@intel.com,
-	lakshmi.sowjanya.d@intel.com
-Subject: [PATCH v7 12/12] ABI: pps: Add ABI documentation for Intel TIO
-Date: Tue, 30 Apr 2024 14:22:25 +0530
-Message-Id: <20240430085225.18086-13-lakshmi.sowjanya.d@intel.com>
-X-Mailer: git-send-email 2.35.3
-In-Reply-To: <20240430085225.18086-1-lakshmi.sowjanya.d@intel.com>
-References: <20240430085225.18086-1-lakshmi.sowjanya.d@intel.com>
+	s=arc-20240116; t=1714467179; c=relaxed/simple;
+	bh=FMYtqdX7LBrGeycIwufcBfemDYQ/h2L76qvKvdaCp+M=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=ne/n741bHvwPnSQPE7Gmr7jaW3JRP9gruYapFaCoTQz1nFGcDi4XLEkJpB55HfXEk8PKmawBScEzswt490DnGF2nc1w0KjhAGl3iPClETGCBWj10YK0pOIw3ntr4C+gxt86lEmETlzhoQ2ILlAm9JCYm2PL1TceD9e6ReBHS2XU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Tky1BCLf; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1714467175;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=4RGAMSRvGmFBURPdPPDKTgQXlqXHnKZVqOJq0Gtgi5s=;
+	b=Tky1BCLfQwpaGd5ib9Sak//zp2JnFOswX6VfWCcKUxPvWNJg4ySsqw5Ly0xZDww+cG1HxU
+	qSIUfhUa6Meb7KQguio7eHYnCNtNYR9RGdnvFHo42oaWTsQipje7WQ8yQ7RYwW+uczMDaO
+	zwVTW6rgpz5Zl3PVpGH+iJD6s2pNYwk=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-563-lGP9-0rkM3uu9K3Hb14gZQ-1; Tue, 30 Apr 2024 04:52:53 -0400
+X-MC-Unique: lGP9-0rkM3uu9K3Hb14gZQ-1
+Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-419e3f83aeeso28102265e9.1
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 01:52:53 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714467172; x=1715071972;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
+         :content-language:references:to:subject:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=4RGAMSRvGmFBURPdPPDKTgQXlqXHnKZVqOJq0Gtgi5s=;
+        b=C1rKB4IGkgsehIOOrv4ElbwwrDAmOKKuxMZ6dAaXqOcsdVJe/e+5fr/IQ9ap2oKpI+
+         akCzZ1c26d7+RjyeyuDmcl509N4gPs451gYV67SNzlIesN3JMmONiDJCTkYYqwM6vBb/
+         Yvkw7MN0rc5iNrnGIK040d3PFkIzSl40TaYQe4Z3KRXUfBslROjCjcgWVQasifaa5+yj
+         Uxwzp+tn7ZayE+8Um0b7OCZWTphXpzUaIY8PH1kiw/rWUAJ6Lom5Y24fjMatDGQw7KXa
+         v7R4jJ283g77hBX0r4XGZ/VrTGNEBAtiAu4EN5CFKXNdNWakepfdnAJujROD7AN9exOL
+         eUGw==
+X-Forwarded-Encrypted: i=1; AJvYcCUWd3yJqpSdnSF1J6ODqPtnoHKxFYRG5rCsL+Y+pWa3J0wN3ZUB04+z9ZWEFfN7GhF8sFN+DtdgV3hJoHTKcJcUFTxiU0Qfc7k6oPqK
+X-Gm-Message-State: AOJu0YyaO5KBaLfaEnl+c2vVCJbydDVZdEcJUDT9LWfhIZZ8U5ZUkau1
+	4FpP8NFbLLgIHf4u8ozYaiumA0rUTuJrQE281W4a7FxgZQyWyfEwmH3PZRnxBTUM5p/N/JrIcQ6
+	xNbhisMJh6KBoLWjVnE++wI0lCEkXxaU9mCdeiVK4fo8V4sfI++CjE7M6pmA3Mw==
+X-Received: by 2002:a05:600c:154b:b0:416:9b7f:7098 with SMTP id f11-20020a05600c154b00b004169b7f7098mr10267759wmg.24.1714467172343;
+        Tue, 30 Apr 2024 01:52:52 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEaK0DC9JY5CABrF0rmDmhJGegKoXKpgkcqasi4Ije0f/QAtIFvXUi/TqPAi4fh0cnhKDT/kQ==
+X-Received: by 2002:a05:600c:154b:b0:416:9b7f:7098 with SMTP id f11-20020a05600c154b00b004169b7f7098mr10267738wmg.24.1714467171892;
+        Tue, 30 Apr 2024 01:52:51 -0700 (PDT)
+Received: from ?IPV6:2a09:80c0:192:0:5dac:bf3d:c41:c3e7? ([2a09:80c0:192:0:5dac:bf3d:c41:c3e7])
+        by smtp.gmail.com with ESMTPSA id a18-20020adffad2000000b0034c9b7d406dsm8372883wrs.75.2024.04.30.01.52.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 30 Apr 2024 01:52:51 -0700 (PDT)
+Message-ID: <c911ab92-1bec-4e5d-9bc8-5a6044f4948b@redhat.com>
+Date: Tue, 30 Apr 2024 10:52:50 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/1] hv_balloon: Enable hot-add for memblock sizes > 128
+ Mbytes
+To: Michael Kelley <mhklinux@outlook.com>,
+ "haiyangz@microsoft.com" <haiyangz@microsoft.com>,
+ "wei.liu@kernel.org" <wei.liu@kernel.org>,
+ "decui@microsoft.com" <decui@microsoft.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>
+References: <20240311181238.1241-1-mhklinux@outlook.com>
+ <30d66f75-60c8-4ebf-8451-839806400dd4@redhat.com>
+ <SN6PR02MB41571838C410EB52F328A461D4162@SN6PR02MB4157.namprd02.prod.outlook.com>
+ <SN6PR02MB4157D5BB1C140D229875AB50D41B2@SN6PR02MB4157.namprd02.prod.outlook.com>
+Content-Language: en-US
+From: David Hildenbrand <david@redhat.com>
+Autocrypt: addr=david@redhat.com; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat
+In-Reply-To: <SN6PR02MB4157D5BB1C140D229875AB50D41B2@SN6PR02MB4157.namprd02.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-From: Lakshmi Sowjanya D <lakshmi.sowjanya.d@intel.com>
+On 29.04.24 17:30, Michael Kelley wrote:
+> From: Michael Kelley <mhklinux@outlook.com> Sent: Friday, April 26, 2024 9:36 AM
+>>>> @@ -505,8 +505,9 @@ enum hv_dm_state {
+>>>>
+>>>>    static __u8 recv_buffer[HV_HYP_PAGE_SIZE];
+>>>>    static __u8 balloon_up_send_buffer[HV_HYP_PAGE_SIZE];
+>>>> +static unsigned long ha_chunk_pgs;
+>>>
+>>> Why not stick to PAGES_IN_2M and call this
+>>>
+>>> ha_pages_in_chunk? Much easier to get than "pgs".
+>>
+>> OK.  I was trying to keep the new identifier short so that
+>> mechanically substituting it for HA_CHUNK didn't blow up
+>> the line length.
+>>
+>>>
+>>> Apart from that looks good. Some helper macros to convert size to chunks
+>>> etc. might make the code even more readable.
+>>
+>> I'll look at this.  Might help the line length problem too.
+>>
+> 
+> I didn't see any particular complexity in converting size to chunks. But
+> this slightly opaque sequence is repeated in three places:
+> 
+> 	new_inc = (residual / HA_CHUNK) * HA_CHUNK;
+> 	if (residual % HA_CHUNK)
+> 		new_inc += HA_CHUNK;
+> 
+> If HA_CHUNK (or the new memblock size based variable) is a
+> power of 2, then these can become:
+> 
+> 	new_inc = ALIGN(residual, HA_CHUNK);
+> 
+> which is a lot better.  I'll make that change, and a couple of other
+> changes where things are open coded that could be existing
+> kernel macros.
 
-Document sysfs interface for Intel Timed I/O PPS driver.
+Cool! Make sure to CC me on v2.
 
-Signed-off-by: Lakshmi Sowjanya D <lakshmi.sowjanya.d@intel.com>
----
- Documentation/ABI/testing/sysfs-platform-pps-tio | 7 +++++++
- MAINTAINERS                                      | 1 +
- 2 files changed, 8 insertions(+)
- create mode 100644 Documentation/ABI/testing/sysfs-platform-pps-tio
+> 
+> Question:  Is memblock size guaranteed to be a power of 2?  It looks
+> to be so in the x86 code, but I can't tell on s390 and ppc.  For safety,
+> I'll add a check in the Hyper-V balloon driver init code, as the
+> communication with Hyper-V expects a power of 2.
 
-diff --git a/Documentation/ABI/testing/sysfs-platform-pps-tio b/Documentation/ABI/testing/sysfs-platform-pps-tio
-new file mode 100644
-index 000000000000..2d9f7dd3813c
---- /dev/null
-+++ b/Documentation/ABI/testing/sysfs-platform-pps-tio
-@@ -0,0 +1,7 @@
-+What:		/sys/devices/platform/INTCxxxx/enable
-+Date:		May 2024
-+KernelVersion:	6.10
-+Contact:	Lakshmi Sowjanya D <lakshmi.sowjanya.d@intel.com>
-+Description:
-+		(RW) Enable or disable PPS TIO generator output, read to
-+		see the status of hardware (Enabled/Disabled).
-diff --git a/MAINTAINERS b/MAINTAINERS
-index f6dc90559341..381e31343db9 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -17669,6 +17669,7 @@ M:	Rodolfo Giometti <giometti@enneenne.com>
- L:	linuxpps@ml.enneenne.com (subscribers-only)
- S:	Maintained
- W:	http://wiki.enneenne.com/index.php/LinuxPPS_support
-+F:	Documentation/ABI/testing/sysfs-platform-pps-tio
- F:	Documentation/ABI/testing/sysfs-pps
- F:	Documentation/devicetree/bindings/pps/pps-gpio.yaml
- F:	Documentation/driver-api/pps.rst
+Yes, in memory_dev_init() we make sure that the size is a power of 2, 
+and if it is not, we would panic().
+
 -- 
-2.35.3
+Cheers,
+
+David / dhildenb
 
 
