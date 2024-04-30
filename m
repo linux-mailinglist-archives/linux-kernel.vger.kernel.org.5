@@ -1,259 +1,215 @@
-Return-Path: <linux-kernel+bounces-163187-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-163188-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 276E08B66EF
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 02:41:27 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9B6598B66F1
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 02:41:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F37CFB20D61
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 00:41:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4AFCB28241F
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 00:41:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 94ECD1843;
-	Tue, 30 Apr 2024 00:41:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BBAB91C33;
+	Tue, 30 Apr 2024 00:41:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="RPcGzTJL"
-Received: from IND01-BMX-obe.outbound.protection.outlook.com (mail-bmxind01olkn2035.outbound.protection.outlook.com [40.92.103.35])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="ugJOHsXo"
+Received: from mail-yb1-f173.google.com (mail-yb1-f173.google.com [209.85.219.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 74A43161;
-	Tue, 30 Apr 2024 00:41:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.103.35
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714437676; cv=fail; b=ZE+jUb048HHHDfs+DQGqsPvJzsjkh6fURfhVf2pfl3PRxnYmx7VXF5WoqKDJozO2UnYhpmO/9kP34pd/xEtY8u6zeB+NOoPpifWoaKybWZoijQgDPELxgUw2v3R+krwUV9gHG4p9N+sBqLb5OMfTSZ4YFsNAC+25DzZLBylpz4U=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714437676; c=relaxed/simple;
-	bh=kiyFPVrkestmBfsR71JLQS9llgbwGzGNCZC8Y35Ux8c=;
-	h=Message-ID:Date:Subject:To:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=rnPGPygl4s8SPRT0mXXHG5vjnlN0+S5C5nTX/Rhz3blGBcP8u/qEF0lSFU/Zvd7jOcGS6DlBxb+uqNNt5yGJ2tolTD9DqOdw2BOGjUrVl9NGinyo6GSSLZK1ICvZHuHzZVHCX7DrJqYSZyWJthCJIyWoKoyAyKVWfajBJeRPMxU=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=RPcGzTJL; arc=fail smtp.client-ip=40.92.103.35
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ZGv0NGHu0LL192j/r6yv9Zz5mlQK7G1tizflsnmklTjFqj8KmVnbDW9hPAy58sIxCehKkEnIi9Q8BQXGz4UpI9H8HT7OGVLnR/hv6g1zKqP860kg0KScYVCfXNoB0THyGw1ElNc8KzY3c/uDYkL5off/TVa+kPpm9LpiJXaKnQO2vLj7M2MJuTKnFpL5wa/dwMEh79r6Lks9tDP4p/duj4q7bRYtc3sP012dQPjh/AKvFAo0hiAIxcYHsWw4HOVloS474mXW2coTU14SqdxrnL0bZZpEaRmIRjbTM9jNQjSisVLKJ9ZVW2U3DW603ZZlC6VCdDrjsxvi9S1mehbTcQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=mBX2zPfuZ5GjHrr/JK8g+2cfVCbVjAAW/biNriGDW7E=;
- b=deWNePrC7BxoFWOHrecrfEL4PYtqxwTMLzJSQpaqeV1XfDt23mRyAlmjr82mzKSmHbCkYPl7YT+lWCmgMiAfUU7ZTIN8gfcxVZOTVVTYzEQWGA4TUpFkjTHFoyqdLio4WSbK/F53UUfkGlGDjuZiUi/1zoJvpTpw44gSdJxZtTpRLbAsbIig4nS9cyOUzi5K/6Z2EDMlezHkqEpZsZPXvQ+HzhqFjIHzukRXxJ0hwnZCYWSHtkmDVbGf9fDEjRRMMLGMPed74+4TmuYQUZqGxpSBUzWnrpJfyahJ7QUJmIByUUIwQE+QfGmQWNNKCO+k06nMHkbw4FLV1N61eD4CBg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=mBX2zPfuZ5GjHrr/JK8g+2cfVCbVjAAW/biNriGDW7E=;
- b=RPcGzTJL3BBSeJjW+3vYhmvzBEgE40sGkplt+Bd1PdO61r1Q7MFXRpWMMzm0NSK0jWi+67YkSzzG6Hg8pQ0WMDWT+UYAaYS7TiE1oggQnXJ3rXobFRJ8HLJdE+AyMIaNb8jOYG9phst7HKIS3mBKSuLMnrA7w5epDLL2pkuvSISVKm6bmePZLnj3WtFT9jF4yPaulr6gOyOE/K0hFYRa8j/yNdlhIQGhs8/qLyq3+V4Rlg83kjPFGNVt/+javS/TIrbtBXl3b6LUCUFUhphnHdTmQ7a6dEjWMEC0Yz8Pvvovpc0ek231NBX53wbzfX1OCmcTF6cs5yXCq07pbvm/wA==
-Received: from MA0P287MB2822.INDP287.PROD.OUTLOOK.COM (2603:1096:a01:138::5)
- by PN2P287MB1630.INDP287.PROD.OUTLOOK.COM (2603:1096:c01:126::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7519.36; Tue, 30 Apr
- 2024 00:41:07 +0000
-Received: from MA0P287MB2822.INDP287.PROD.OUTLOOK.COM
- ([fe80::664:2ecc:c36:1f2c]) by MA0P287MB2822.INDP287.PROD.OUTLOOK.COM
- ([fe80::664:2ecc:c36:1f2c%3]) with mapi id 15.20.7519.035; Tue, 30 Apr 2024
- 00:41:07 +0000
-Message-ID:
- <MA0P287MB28227252F140BE2A281AD2B9FE1A2@MA0P287MB2822.INDP287.PROD.OUTLOOK.COM>
-Date: Tue, 30 Apr 2024 08:41:04 +0800
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/1] mmc: sdhci-of-dwcmshc: add callback functions for
- dwcmshc_priv
-To: Adrian Hunter <adrian.hunter@intel.com>, Chen Wang <unicornxw@gmail.com>,
- ulf.hansson@linaro.org, linux-mmc@vger.kernel.org,
- linux-kernel@vger.kernel.org, jszhang@kernel.org, dfustini@baylibre.com,
- yifeng.zhao@rock-chips.com, shawn.lin@rock-chips.com, chao.wei@sophgo.com,
- haijiao.liu@sophgo.com, xiaoguang.xing@sophgo.com, tingzhu.wang@sophgo.com,
- guoren@kernel.org, inochiama@outlook.com
-References: <cover.1714270290.git.unicorn_wang@outlook.com>
- <5bb708cc830684676dede5f44ee22c7fd03300b7.1714270290.git.unicorn_wang@outlook.com>
- <ed900af1-f090-49a9-bc7e-363a28a4ac2b@intel.com>
-From: Chen Wang <unicorn_wang@outlook.com>
-In-Reply-To: <ed900af1-f090-49a9-bc7e-363a28a4ac2b@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-TMN: [FlW7jZoKia5xOk9j29feLSgmnVZZDEko]
-X-ClientProxiedBy: SG2PR04CA0178.apcprd04.prod.outlook.com
- (2603:1096:4:14::16) To MA0P287MB2822.INDP287.PROD.OUTLOOK.COM
- (2603:1096:a01:138::5)
-X-Microsoft-Original-Message-ID:
- <0320ce88-5e01-424b-9210-6b2677a9ed2e@outlook.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 15B2C6AD7
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 00:41:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.173
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1714437693; cv=none; b=I/zsRIZw+0S/uM0uOeCZ2t4UBSv0QWaeO46UF8Y2Fs/8eBwcANyBu+eQDeXpArpNwOJlFDuZPC+gV34peWjjZYa0qHY/8s2JXf2ojK5p9vQHcEQLgrrNZVUqeXfs0Ro2BmyDMjS6dg9ZoZ9/kTZklEEFXw/MQ3iLCc7fpqKGDC8=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1714437693; c=relaxed/simple;
+	bh=pk2Cj2RSwpAkddbu5ayAVxm8bKVUiyDImLMqV4vDwjg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ukGBq7kNNm8/4bAWoxslYDn5Tkl8QTlo2ltOg0igQV1M9nrhLrt6rB6Ni4foQx9dh5C4ECQHoJwv1PxEaTHOe4xhYfGIDzagvMpOIw4SGsJ8pEsGDUULm7IWaQBDerlbK7b5nU5WZc0I/M5xQ5XjfgSP89IkPduORT7/PPhVWZw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=ugJOHsXo; arc=none smtp.client-ip=209.85.219.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yb1-f173.google.com with SMTP id 3f1490d57ef6-dc6cbe1ac75so3900462276.1
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Apr 2024 17:41:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1714437691; x=1715042491; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=ewGjGVlVj/i6nUR8WSz8shyu8O8i8b1LnxiquSQu0Bc=;
+        b=ugJOHsXoMJR6TutipWWdvr8l2eJVlQtrvgYxaP0G6pR1Fvc6eOObAoWxgfSWjsFjl3
+         n3/LuXNERxpHXpGQtk7K/oTWF63gFePQHv9GQ7yb4VkNXwkJ9S3ymJxIKiU2tWDUIBYe
+         oSBRu/CdcWig8IvrCIrDI/xsKJs9eJJD9fojB5u6+ORQj9tjXvBn55ujm/5o3paSKr3f
+         ODVrOOf0eMoCJwmeG8RqwCgjfAICIjX7pGHpZByzxVuJszJ6bTPW3lVZ4+yOrQwF2jVj
+         eiz7iXdbKP+iFaOGRhQ6tppkWB6E7ekWEEABnKK1kHu+lTpLwnWI8oGxRYWyDM5AJbWO
+         H/TA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714437691; x=1715042491;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ewGjGVlVj/i6nUR8WSz8shyu8O8i8b1LnxiquSQu0Bc=;
+        b=HF6eXreR2amIaVpIzaMU+62T6hIOOX8TsW/SBxsIDgLuAxodPIh1GTQdE6KrrIx9jO
+         bFZVGisNn/HBVeeOxG+rEbacj4GK45Yaex4VnRxuUomM+QoJ7ChcosKkbeaHBxHzQinI
+         F6w2HZRgXMUw6UnpVMA7o/0DZ8zkj9obpuYp8ZvB95P08EjDP7ncIVI9HOK3VJd56Yo6
+         oQlqPeoskDJJhMpeVKJQ+Q6DFaCHFgVz0sQULMtriFVcoQyI2CDbCwbEWXcBoO2D+GOx
+         oProtbsng1A0g+S0Px4aONpZpT6w4nZfH3GHV63qhygd+iRGRMkwWcVpAay90/Y7oFCb
+         tkpQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWs3aPpQDUV7fN4/v4EIPBRl6SG02ZHPtWpXJ8UGjnjMYvj2+yNmOpvLSzpxfNhM5UU6H93E/lhE7uDBRcJ0/oPMw7KbNaXuAszUkM0
+X-Gm-Message-State: AOJu0YwvkIKdumYJgse1UVn7cTVz2CrK1aFfesA9RdUeNLFtarq7YarO
+	xOqPn3DmUAsgY7K0hehZ1r3A6ZKF8YTi1b4rNLQvTtWd58QO4vIXFf+dPYFdrk/Eq0udgBeJRcI
+	1o3m7In6Ls2ALIT4pobeoRkFCQoCm7zxcvZOpUw==
+X-Google-Smtp-Source: AGHT+IEwXWe4Z8CC1z4BRoDOt3xCr6XQiUXw2opzMRSv7RCMNxwJyE8N8t/S4Ivrg5f5f0R7smdIfn5jUi86Jmgafv8=
+X-Received: by 2002:a25:ab4b:0:b0:de5:56c4:acc3 with SMTP id
+ u69-20020a25ab4b000000b00de556c4acc3mr914713ybi.16.1714437690982; Mon, 29 Apr
+ 2024 17:41:30 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MA0P287MB2822:EE_|PN2P287MB1630:EE_
-X-MS-Office365-Filtering-Correlation-Id: 5b6c8604-ad46-4174-8b6f-08dc68ae394c
-X-Microsoft-Antispam: BCL:0;ARA:14566002|461199019|440099019|3412199016;
-X-Microsoft-Antispam-Message-Info:
-	gt/t3NEeAFK5oo5klL01OM521sDLLg7pIxmqzB/VFz8B15liX7fK57fVoWLx0foHuOanuZe2K29+NFIzONpmtMZyPh9QOi/6iScsM2ECUHY2im1mWFMMqR2m80DkHGpp/fcSLjdzxbiCDnXYJTtBDDigDEEI0Url+yeaZMHj4kEXm8kSxJXkZjsNe3+BU+EXPkRyZx5x4IHv11v8vMDQiz1J+h9Z9qfCCN45PKGwjeocSRgSWHgJE02OefTEo9QvuKOcSGCJs2OwUcM3Og9nXYVi827ldJp1pjyPZmkm6YusLxjKjB7e0jrhHkYmnbzfNbi/cS8P++RfGg3ay8XRA9Be4Cosl4FVtAGbov2gc2ggnr9mzvhEfQ6Wew87ChLZcflnwIHebdnUBNoXqAtTykK3E8LiLgpWph30HUOovcmhmzVXsoSqPkAf0pctV3jGIuGpFfMCMq32d8ZdEp/NdbA+xdxtu45uvf9Hle3y5cNSAMr+rzmg4gH6Y4ZxqZP4vZFvNDw/1+BSAvvX0vRSmhvEPdeomjbTMKAFK/j1FHKDLHNVcV36mL/2NYgN5usf
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?c3ljTFRFcDU1S3pPcm5rclQ2VFU3VDRTKzBaU3g5c0tWVlJMKzZPYXVrbGtG?=
- =?utf-8?B?VElBZVNnQ0xHcm4xQktLNFJvYUcxVFRIbVJhOXE0ck9QaDhvTW1aVURCVjUw?=
- =?utf-8?B?ZXg0bXdnb0NrOUNSLytxbVBiaCt3NXh5WWNFeVgxcW9xTDQ3eDJHUDc5Y0gy?=
- =?utf-8?B?VlFKSFVvSU9ZbDFGbEFDOGxIY3ZZOVZScXFhTUZtejRqU3FYbWxFeVdMTHVT?=
- =?utf-8?B?MDNDQWxESFJEQWd0ankvOEFRMDRKdm02SCtuNjVqbXpvTXNrZ3JISHQ5RXpw?=
- =?utf-8?B?KzhjTkNBV3RqdEMxVVVPV2gwSGUvWXBabU5hdFJvRjBMamIyWjlmc2Y1ZXRJ?=
- =?utf-8?B?OW9iSHBLTkRNVGZ0NndQRzFEb3QyY2daNy9GL2VXYUE4WCtyRENOSjk4Y0VB?=
- =?utf-8?B?bUNtaHlwVXhNWldWajB1RnppK3lVenk1M2hPK3JadlhaZ1VDOW44c3o4dkpy?=
- =?utf-8?B?VUVxbFErNXVLZUlPWHZ3Y0krK09RRkxidnhTRUlteVBrU3hVRlhGZDdGYmpV?=
- =?utf-8?B?YUF0eWVnK1Zmb3FqTENwYUF3RUJnVSt6clNUZEhHN3g2YzJPMDZFZ01LUFRh?=
- =?utf-8?B?ZHZPZFkwbUlOUmhVNHkrUzY4eklPODh0cHJoeVdHUzVJRVU3WHRKN3NoQzJq?=
- =?utf-8?B?cGFxTFdWRDJOaHo1UWJTMGw4cS9mUlhiOUFnY1R0RnR2bHhUc0VCL2lLMG1T?=
- =?utf-8?B?RzBaalUrSWxEUVpPMHppQ1UrMHBjQlo3c2ptaWR6WjFCd3pvcnF6TkJqbTA3?=
- =?utf-8?B?VzIvL3g1ekt2enJUZTJCenNiaEY4MkdOcmk5M3FVOFBKSytzWFBjUU0zTHl1?=
- =?utf-8?B?c1dCTnMwRGp1SEpBTXVHb1NwUWRJY1ViYWVDa0o3SnliNXFHZDhXeTFnTmMy?=
- =?utf-8?B?SWZlSHlDMm51TWs1Y0I5blptcjlISk5LSjlpWUQva1pMc2x5NmlJbG9xZldJ?=
- =?utf-8?B?YjBvQmlvNE9MYW5LRmdtZ1QvQ2pGem1WYzFyenEyd1ViS2thVmllY3dXbmdh?=
- =?utf-8?B?U3JzUXNTUFRwRTlaakt3ei9IM2ZPTHIrTkVyN2JiL1FxdldlM0wxVGtRd2F4?=
- =?utf-8?B?VVFtcnJTV1ZGU0dneGNRRnJ3MVZFRFEwcm9kY294TGMzV1kyNFBHa3NEV01F?=
- =?utf-8?B?MHRZaE5rcFJZQldGdzFsR1A2SHY3czRUaWJjMG5xWFUxcWNod3NTKzh4cTcy?=
- =?utf-8?B?OHM4emMvcDVJRUlINGIxRE9vdFFZNWxqNnJMaXNHRDExVEcwelBGUmVBN25a?=
- =?utf-8?B?eWhpY0dpMERQZGw2WGFTL0hsVXZ5cDhoSU1hTGxqR2JzS3laUmJWbm81YVJ3?=
- =?utf-8?B?V0pkYnhFTHZBYWhLbU5KK3d0VnZjRzY5OFpqVnIwVXN1REZaajF4ZDlnQjEr?=
- =?utf-8?B?Yjc1em9tVExhOHpSWGNEem5BclpoYVlMYUNEaDJNWkhXMnM2alhvdEY4NXFE?=
- =?utf-8?B?Q1o1ZE5rTlBrdnozRmxwNDBSOXVtdjNpM3ErbUlPUVhnT3k0RExpb01ySEJC?=
- =?utf-8?B?blcxZGlpUVVxbVd4bjlDd0Fkam12ZFQzUVdTZ0YySjhLeTQzZy8wSitxQVBR?=
- =?utf-8?B?a0pndEVlM242d1Vzd2ZrYVNJWUNrZVVMNDdiL0ZHY0x2WHJGa1ExdjVRSlZH?=
- =?utf-8?B?OTdmVC9OZld5WE9pQi9tOUxHV2IwdmZPWVhtcEpZM0Q3cHNDRWR3YldaSGhq?=
- =?utf-8?Q?O4tQachDF7lvCUcYJ7Kt?=
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5b6c8604-ad46-4174-8b6f-08dc68ae394c
-X-MS-Exchange-CrossTenant-AuthSource: MA0P287MB2822.INDP287.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Apr 2024 00:41:07.6812
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
-	00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PN2P287MB1630
+References: <cover.1713523152.git.robin.murphy@arm.com> <bebea331c1d688b34d9862eefd5ede47503961b8.1713523152.git.robin.murphy@arm.com>
+ <Zi_LV28TR-P-PzXi@eriador.lumag.spb.ru> <2662a5ba-3115-4fe5-9cec-bff71f703a82@arm.com>
+In-Reply-To: <2662a5ba-3115-4fe5-9cec-bff71f703a82@arm.com>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date: Tue, 30 Apr 2024 03:41:19 +0300
+Message-ID: <CAA8EJprxLvYEP8+ggk8fw--kHaK+_QoYan4st2wWpPicHa6_+w@mail.gmail.com>
+Subject: Re: [PATCH v4 6/7] iommu/dma: Centralise iommu_setup_dma_ops()
+To: Robin Murphy <robin.murphy@arm.com>
+Cc: Joerg Roedel <joro@8bytes.org>, Christoph Hellwig <hch@lst.de>, Vineet Gupta <vgupta@kernel.org>, 
+	Russell King <linux@armlinux.org.uk>, Catalin Marinas <catalin.marinas@arm.com>, 
+	Will Deacon <will@kernel.org>, Huacai Chen <chenhuacai@kernel.org>, WANG Xuerui <kernel@xen0n.name>, 
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Paul Walmsley <paul.walmsley@sifive.com>, 
+	Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, 
+	Lorenzo Pieralisi <lpieralisi@kernel.org>, Hanjun Guo <guohanjun@huawei.com>, 
+	Sudeep Holla <sudeep.holla@arm.com>, "K. Y. Srinivasan" <kys@microsoft.com>, 
+	Haiyang Zhang <haiyangz@microsoft.com>, Wei Liu <wei.liu@kernel.org>, 
+	Dexuan Cui <decui@microsoft.com>, Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>, 
+	David Woodhouse <dwmw2@infradead.org>, Lu Baolu <baolu.lu@linux.intel.com>, 
+	Niklas Schnelle <schnelle@linux.ibm.com>, Matthew Rosato <mjrosato@linux.ibm.com>, 
+	Gerald Schaefer <gerald.schaefer@linux.ibm.com>, 
+	Jean-Philippe Brucker <jean-philippe@linaro.org>, Rob Herring <robh+dt@kernel.org>, 
+	Frank Rowand <frowand.list@gmail.com>, Marek Szyprowski <m.szyprowski@samsung.com>, 
+	Jason Gunthorpe <jgg@ziepe.ca>, linux-kernel@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, linux-acpi@vger.kernel.org, 
+	iommu@lists.linux.dev, devicetree@vger.kernel.org, 
+	Jason Gunthorpe <jgg@nvidia.com>
+Content-Type: text/plain; charset="UTF-8"
+
+On Tue, 30 Apr 2024 at 01:26, Robin Murphy <robin.murphy@arm.com> wrote:
+>
+> On 2024-04-29 5:31 pm, Dmitry Baryshkov wrote:
+> > On Fri, Apr 19, 2024 at 05:54:45PM +0100, Robin Murphy wrote:
+> >> It's somewhat hard to see, but arm64's arch_setup_dma_ops() should only
+> >> ever call iommu_setup_dma_ops() after a successful iommu_probe_device(),
+> >> which means there should be no harm in achieving the same order of
+> >> operations by running it off the back of iommu_probe_device() itself.
+> >> This then puts it in line with the x86 and s390 .probe_finalize bodges,
+> >> letting us pull it all into the main flow properly. As a bonus this lets
+> >> us fold in and de-scope the PCI workaround setup as well.
+> >>
+> >> At this point we can also then pull the call up inside the group mutex,
+> >> and avoid having to think about whether iommu_group_store_type() could
+> >> theoretically race and free the domain if iommu_setup_dma_ops() ran just
+> >> *before* iommu_device_use_default_domain() claims it... Furthermore we
+> >> replace one .probe_finalize call completely, since the only remaining
+> >> implementations are now one which only needs to run once for the initial
+> >> boot-time probe, and two which themselves render that path unreachable.
+> >>
+> >> This leaves us a big step closer to realistically being able to unpick
+> >> the variety of different things that iommu_setup_dma_ops() has been
+> >> muddling together, and further streamline iommu-dma into core API flows
+> >> in future.
+> >>
+> >> Reviewed-by: Lu Baolu <baolu.lu@linux.intel.com> # For Intel IOMMU
+> >> Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
+> >> Tested-by: Hanjun Guo <guohanjun@huawei.com>
+> >> Signed-off-by: Robin Murphy <robin.murphy@arm.com>
+> >> ---
+> >> v2: Shuffle around to make sure the iommu_group_do_probe_finalize() case
+> >>      is covered as well, with bonus side-effects as above.
+> >> v3: *Really* do that, remembering the other two probe_finalize sites too.
+> >> ---
+> >>   arch/arm64/mm/dma-mapping.c  |  2 --
+> >>   drivers/iommu/amd/iommu.c    |  8 --------
+> >>   drivers/iommu/dma-iommu.c    | 18 ++++++------------
+> >>   drivers/iommu/dma-iommu.h    | 14 ++++++--------
+> >>   drivers/iommu/intel/iommu.c  |  7 -------
+> >>   drivers/iommu/iommu.c        | 20 +++++++-------------
+> >>   drivers/iommu/s390-iommu.c   |  6 ------
+> >>   drivers/iommu/virtio-iommu.c | 10 ----------
+> >>   include/linux/iommu.h        |  7 -------
+> >>   9 files changed, 19 insertions(+), 73 deletions(-)
+> >
+> > This patch breaks UFS on Qualcomm SC8180X Primus platform:
+> >
+> >
+> > [    3.846856] arm-smmu 15000000.iommu: Unhandled context fault: fsr=0x402, iova=0x1032db3e0, fsynr=0x130000, cbfrsynra=0x300, cb=4
+>
+> Hmm, a context fault implies that the device did get attached to a DMA
+> domain, thus has successfully been through __iommu_probe_device(), yet
+> somehow still didn't get the right DMA ops (since that "IOVA" looks more
+> like a PA to me). Do you see the "Adding to IOMMU group..." message for
+> this device, and/or any other relevant messages or errors before this
+> point?
+
+No, nothing relevant.
+
+[    8.372395] ufshcd-qcom 1d84000.ufshc: Adding to iommu group 6
+
+(please ignore the timestamp, it comes before ufshc being probed).
+
+> I'm guessing there's a fair chance probe deferral might be
+> involved as well. I'd like to understand what path(s) this ends up
+> taking through __iommu_probe_device() and of_dma_configure(), or at
+> least the number and order of probe attempts between the UFS and SMMU
+> drivers.
+
+__iommu_probe_device() gets called twice and returns early because ops is NULL.
+
+Then finally of_dma_configure_id() is called. The following branches are taken:
+
+np == dev->of_node
+of_dma_get_range() returned 0
+bus_dma_limit and dma_range_map are set
+__iommu_probe_device() is called, using the `!group->default_domain &&
+!group_lis` case, then group->default_domain() is not NULL,
+In the end, iommu_setup_dma_ops() is called.
+
+Then the ufshc probe defers (most likely the PHY is not present or
+some other device is not there yet).
+
+On the next (succeeding) try, of_dma_configure_id() is called again.
+The call trace is more or less the same, except that
+__iommu_probe_device() is not called
+
+> I'll stare at the code in the morning and see if I can spot any
+> overlooked ways in which what I think might be happening could happen,
+> but any more info to help narrow it down would be much appreciated.
+>
+> Thanks,
+> Robin.
+>
+> > [    3.846880] ufshcd-qcom 1d84000.ufshc: ufshcd_check_errors: saved_err 0x20000 saved_uic_err 0x0
+> > [    3.846929] host_regs: 00000000: 1587031f 00000000 00000300 00000000
+> > [    3.846935] host_regs: 00000010: 01000000 00010217 00000000 00000000
+> > [    3.846941] host_regs: 00000020: 00000000 00070ef5 00000000 00000000
+> > [    3.846946] host_regs: 00000030: 0000000f 00000001 00000000 00000000
+> > [    3.846951] host_regs: 00000040: 00000000 00000000 00000000 00000000
+> > [    3.846956] host_regs: 00000050: 032db000 00000001 00000000 00000000
+> > [    3.846962] host_regs: 00000060: 00000000 80000000 00000000 00000000
+> > [    3.846967] host_regs: 00000070: 032dd000 00000001 00000000 00000000
+> > [    3.846972] host_regs: 00000080: 00000000 00000000 00000000 00000000
+> > [    3.846977] host_regs: 00000090: 00000016 00000000 00000000 0000000c
+> > [    3.847074] ufshcd-qcom 1d84000.ufshc: ufshcd_err_handler started; HBA state eh_fatal; powered 1; shutting down 0; saved_err = 131072; saved_uic_err = 0; force_reset = 0
+> > [    4.406550] ufshcd-qcom 1d84000.ufshc: ufshcd_verify_dev_init: NOP OUT failed -11
+> > [    4.417953] ufshcd-qcom 1d84000.ufshc: ufshcd_async_scan failed: -11
+> >
 
 
-On 2024/4/29 15:08, Adrian Hunter wrote:
-> On 28/04/24 05:32, Chen Wang wrote:
->> From: Chen Wang <unicorn_wang@outlook.com>
->>
->> The current framework is not easily extended to support new SOCs.
->> For example, in the current code we see that the SOC-level
->> structure `rk35xx_priv` and related logic are distributed in
->> functions such as dwcmshc_probe/dwcmshc_remove/dwcmshc_suspend/......,
->> which is inappropriate.
->>
->> The solution is to abstract some possible common operations of soc
->> into virtual members of `dwcmshc_priv`. Each soc implements its own
->> corresponding callback function and registers it in init function.
->> dwcmshc framework is responsible for calling these callback functions
->> in those dwcmshc_xxx functions.
->>
->> Signed-off-by: Chen Wang <unicorn_wang@outlook.com>
->> ---
->>   drivers/mmc/host/sdhci-of-dwcmshc.c | 152 +++++++++++++++++-----------
->>   1 file changed, 91 insertions(+), 61 deletions(-)
->>
->> diff --git a/drivers/mmc/host/sdhci-of-dwcmshc.c b/drivers/mmc/host/sdhci-of-dwcmshc.c
->> index 39edf04fedcf..525f954bcb65 100644
->> --- a/drivers/mmc/host/sdhci-of-dwcmshc.c
->> +++ b/drivers/mmc/host/sdhci-of-dwcmshc.c
->> @@ -214,6 +214,10 @@ struct dwcmshc_priv {
->>   	void *priv; /* pointer to SoC private stuff */
->>   	u16 delay_line;
->>   	u16 flags;
->> +
->> +	void (*soc_postinit)(struct sdhci_host *host, struct dwcmshc_priv *dwc_priv);
->> +	int (*soc_clks_enable)(struct dwcmshc_priv *dwc_priv);
->> +	void (*soc_clks_disable)(struct dwcmshc_priv *dwc_priv);
-> Normally the ops would be part of platform data.  For example,
-> sdhci-of-arasan.c has:
->
-> 	struct sdhci_arasan_of_data {
-> 		const struct sdhci_arasan_soc_ctl_map *soc_ctl_map;
-> 		const struct sdhci_pltfm_data *pdata;
-> 		const struct sdhci_arasan_clk_ops *clk_ops;
-> 	};
->
-> And then:
->
-> 	static struct sdhci_arasan_of_data sdhci_arasan_rk3399_data = {
-> 		.soc_ctl_map = &rk3399_soc_ctl_map,
-> 		.pdata = &sdhci_arasan_cqe_pdata,
-> 		.clk_ops = &arasan_clk_ops,
-> 	};
-> 	etc
->
-> 	static const struct of_device_id sdhci_arasan_of_match[] = {
-> 		/* SoC-specific compatible strings w/ soc_ctl_map */
-> 		{
-> 			.compatible = "rockchip,rk3399-sdhci-5.1",
-> 			.data = &sdhci_arasan_rk3399_data,
-> 		},
-> 		etc
->
-> So, say:
->
-> struct dwcmshc_pltfm_data {
-> 	const struct sdhci_pltfm_data *pltfm_data;
-> 	void (*postinit)(struct sdhci_host *host, struct dwcmshc_priv *dwc_priv);
-> 	int  (*clks_enable)(struct dwcmshc_priv *dwc_priv);
-> 	void (*clks_disable)(struct dwcmshc_priv *dwc_priv);
-> }
->
-> Or if the ops are mostly the same, it might be more convenient to
-> have them in their own structure:
->
-> struct dwcmshc_pltfm_data {
-> 	const struct sdhci_pltfm_data *pltfm_data;
-> 	const struct dwcmshc_ops *ops;
-> }
-Thanks for your suggestion and it looks more formal, I will investigate 
-and provide a new revision.
->>   };
->>   
->>   /*
->> @@ -1033,10 +1037,40 @@ static void dwcmshc_cqhci_init(struct sdhci_host *host, struct platform_device *
->>   	host->mmc->caps2 &= ~(MMC_CAP2_CQE | MMC_CAP2_CQE_DCMD);
->>   }
->>   
->> -static int dwcmshc_rk35xx_init(struct sdhci_host *host, struct dwcmshc_priv *dwc_priv)
->> +static int dwcmshc_rk35xx_clks_enable(struct dwcmshc_priv *dwc_priv)
->>   {
->> -	int err;
->>   	struct rk35xx_priv *priv = dwc_priv->priv;
->> +	int ret = 0;
->> +
->> +	if (priv)
->> +		ret = clk_bulk_prepare_enable(RK35xx_MAX_CLKS, priv->rockchip_clks);
->> +	return ret;
->> +}
->> +
->> +static void dwcmshc_rk35xx_clks_disable(struct dwcmshc_priv *dwc_priv)
->> +{
->> +	struct rk35xx_priv *priv = dwc_priv->priv;
->> +
->> +	if (priv)
->> +		clk_bulk_disable_unprepare(RK35xx_MAX_CLKS,
->> +					   priv->rockchip_clks);
->> +}
->> +
->> +static void dwcmshc_rk35xx_postinit(struct sdhci_host *host, struct dwcmshc_priv *dwc_priv);
-> Avoid forward declarations if possible.  If necessary, it is
-> preferable to move the function definition.
-Yes, I add this declaration just want to make diff look clearer :). 
-Anyway, move this postinit to the front should be better.
->> +static int dwcmshc_rk35xx_init(struct device *dev,
->> +			       struct sdhci_host *host, struct dwcmshc_priv *dwc_priv)
-> This patch looks like it might be doing too much.  Please consider
-> splitting it so reorganising the code is separate from adding the
-> callbacks.
 
-Sure, will do like this. Thanks.
-
-[......]
-
-
+-- 
+With best wishes
+Dmitry
 
