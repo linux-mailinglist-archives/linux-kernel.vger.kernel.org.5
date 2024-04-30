@@ -1,59 +1,70 @@
-Return-Path: <linux-kernel+bounces-164712-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-164713-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 284CA8B8188
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 22:36:07 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 659A58B818D
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 22:36:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BD8CA1F23921
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 20:36:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2254D284635
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 20:36:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF8BC1A0AF5;
-	Tue, 30 Apr 2024 20:36:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8EA38129E72;
+	Tue, 30 Apr 2024 20:36:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jrQPMK4h"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OetM1xSZ"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F26619DF63;
-	Tue, 30 Apr 2024 20:35:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C26C7199E9B;
+	Tue, 30 Apr 2024 20:36:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714509360; cv=none; b=Ig8b5uT2gRkv2AR8Z8+6pQhThLTTBLauiL1ZaBcfWrT0WMtQOM4ThoBzDhjJM8mXVJBdzXahtlSP9tW4fWeNN2CSDjFGnI069d8zvTUksRj7Q30slPaMBM/fQBrm4O6EhJ9NMzyt4Bk4Jfq01Xq8ndis/K3rAx9htEy9AQQu09M=
+	t=1714509375; cv=none; b=EEGh1wMqq0hR9+LSfD7hlRkZ2DrYjTaoFPkHwGAyXnS57LmJ/0ONM3McAOh2aWaykO87mInIvQQgnqeDP+M99ZcV2aeG640YLYrRWs4s3KPUrUs5nZJQiN/4kiGaGLzeSITLudMZ9wdYyAbm8LGIujAL+MpFSfERDfFyJULJWno=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714509360; c=relaxed/simple;
-	bh=ZrTYOUt0FA8RjqCveMWIjHR3nc9J5/OM3ty8hfTg9GI=;
+	s=arc-20240116; t=1714509375; c=relaxed/simple;
+	bh=Hkj282ZLhfbSUGTDTtv67ovkyS9SO/gWC6U/Vkj6ntE=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=g3eF3PEETaRCESB0MuCUgJ6B4T60FEsDnnAildNL2dBS6ceSa49s2Km2KGiCtnzleJLn/mXLIr5BFDsA6GO44fiocJyPfKcWDkBlW5orK/PE+DeAHHMWWRS152pRlpFkIITJ1K7TCr/yxCnY6EvfJSeAtDUkj3+1QbUTJSI7/vI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jrQPMK4h; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8CBC6C2BBFC;
-	Tue, 30 Apr 2024 20:35:59 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=aGtfs7c5SgCzh7By2yX6e8tFARBTPOGhLMLBPIgtNU5DjtZhS5AUr6RZSRtekbJbSJIcX/EcoTZw9FCF/OhL3ImZMynIb/EYqBmEaB1ps25coUfcbaqLcRgj2XTNrJ0db8qtZpPhKf9GyA+aetzqyTQmlfv2BaCbBE3raxiqyaU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OetM1xSZ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 65FE6C2BBFC;
+	Tue, 30 Apr 2024 20:36:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714509359;
-	bh=ZrTYOUt0FA8RjqCveMWIjHR3nc9J5/OM3ty8hfTg9GI=;
+	s=k20201202; t=1714509375;
+	bh=Hkj282ZLhfbSUGTDTtv67ovkyS9SO/gWC6U/Vkj6ntE=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=jrQPMK4hLHPa87bL2k3flGO/gsvssdliaH1YPOAemAm7HEAwwCqNtpaBbpe3M7TGn
-	 lcJKx4gcihQA1LfwzLjMNH68CgI3ke/4jfH2s2qJXatuyhl5okeJajk1q1D99pH4DC
-	 QBTav2x+XoHBZWNInVxieteVzcIuCuYSxWRwkiayIN8TY3VomEmTKRjv4RGT+VAzNo
-	 XaVpiHwP/cq7/cIBPfo7cPzfy1swy+iLreQ668eNS0qy80wzhNHh39ysxNJ6pXeb2H
-	 JWQ++KlFbdLuX5dZSycckNntGspE8lku0q3lcUPO24UpZ2p+l1hdWOAq0iqNYm5476
-	 P1FD+rTDavcyg==
-Date: Tue, 30 Apr 2024 15:35:58 -0500
+	b=OetM1xSZk1J0d3YpjnwC9bXo2yKgdoivZ1Z2sUGNB56z1UgB9XmC+L6fSQBlWbQI/
+	 qKFuZWpF+P3kxNZoRXRfqPW6cU6T2XJW/G1Ux4af34+Tp7umnXcllQyUj+UjP06+p1
+	 a8VxltRmcsXGj1X7eQi9/gFo9y8jKV4xsGQy0EYHtFR8sWygzcmIb1Fd2WNYomut6L
+	 3qatP8rGrvwURD97AJZD99iqXpbk1DUASWyPQBNibwd+HI4tSiLzVkOWoEaMwko+9O
+	 e5ag0rcBDxffjSolV52iuRTxMkxf+ZNKtRV7ltVDUlTtkO8w7m+zvq40Im9rf7Wm1z
+	 Hu7AibVsyDe0Q==
+Date: Tue, 30 Apr 2024 15:36:14 -0500
 From: "Rob Herring (Arm)" <robh@kernel.org>
 To: "Rob Herring (Arm)" <robh@kernel.org>
-Cc: Thomas Gleixner <tglx@linutronix.de>, devicetree@vger.kernel.org,
-	Matthias Brugger <matthias.bgg@gmail.com>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-	linux-mediatek@lists.infradead.org,
-	Conor Dooley <conor+dt@kernel.org>,
+Cc: Kishon Vijay Abraham I <kishon@kernel.org>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Jonathan Hunter <jonathanh@nvidia.com>,
+	Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
+	Vinod Koul <vkoul@kernel.org>, Eric Dumazet <edumazet@google.com>,
+	linux-arm-kernel@lists.infradead.org,
 	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH] dt-bindings: interrupt-controller:
- mediatek,mt6577-sysirq: Drop unnecessary quotes
-Message-ID: <171450933497.1152845.17182769192054572844.robh@kernel.org>
-References: <20240426195404.2771046-1-robh@kernel.org>
+	"David S. Miller" <davem@davemloft.net>,
+	linux-phy@lists.infradead.org, devicetree@vger.kernel.org,
+	Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org,
+	Bharat Kumar Gogada <bharat.kumar.gogada@amd.com>,
+	Thierry Reding <thierry.reding@gmail.com>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Michal Simek <michal.simek@amd.com>, linux-pci@vger.kernel.org,
+	linux-tegra@vger.kernel.org, Paolo Abeni <pabeni@redhat.com>,
+	Bjorn Helgaas <bhelgaas@google.com>
+Subject: Re: [PATCH] dt-bindings: Drop unnecessary quotes on keys
+Message-ID: <171450935610.1153506.3784386455405156371.robh@kernel.org>
+References: <20240426202239.2837516-1-robh@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -62,19 +73,26 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240426195404.2771046-1-robh@kernel.org>
+In-Reply-To: <20240426202239.2837516-1-robh@kernel.org>
 
 
-On Fri, 26 Apr 2024 14:54:04 -0500, Rob Herring (Arm) wrote:
-> Drop unnecessary quotes which aren't needed in yaml. This is checked by
-> yamllint, but this case was excluded due to the comma and yamllint's
-> mishandling of some cases with commas. That's now fixed in yamllint
-> 1.34.
+On Fri, 26 Apr 2024 15:22:37 -0500, Rob Herring (Arm) wrote:
+> The yamllint quoted-strings check wasn't checking keys for quotes, but
+> support for checking keys was added in 1.34 release. Fix all the errors
+> found when enabling the check.
+> 
+> Clean-up the xilinx-versal-cpm formatting while we're here.
 > 
 > Signed-off-by: Rob Herring (Arm) <robh@kernel.org>
 > ---
->  .../bindings/interrupt-controller/mediatek,mt6577-sysirq.yaml   | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  Documentation/devicetree/bindings/net/sff,sfp.yaml   | 12 ++++++------
+>  .../devicetree/bindings/pci/xilinx-versal-cpm.yaml   |  7 +++++--
+>  .../devicetree/bindings/pci/xlnx,nwl-pcie.yaml       |  2 +-
+>  .../devicetree/bindings/phy/brcm,sata-phy.yaml       |  8 ++++----
+>  .../devicetree/bindings/regulator/ti,tps62864.yaml   |  2 +-
+>  .../bindings/soc/tegra/nvidia,tegra20-pmc.yaml       |  6 +++---
+>  Documentation/devicetree/bindings/tpm/ibm,vtpm.yaml  |  4 ++--
+>  7 files changed, 22 insertions(+), 19 deletions(-)
 > 
 
 Applied, thanks!
