@@ -1,109 +1,150 @@
-Return-Path: <linux-kernel+bounces-164520-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-164521-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6D14E8B7E9C
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 19:31:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id CE3888B7EAA
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 19:32:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 974151C2254D
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 17:31:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ED1141C225CC
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 17:32:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB312180A8D;
-	Tue, 30 Apr 2024 17:31:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9711F1802BE;
+	Tue, 30 Apr 2024 17:32:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="M0clFbDh"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="WYGlOYW9"
+Received: from mail-yb1-f177.google.com (mail-yb1-f177.google.com [209.85.219.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B8181802C3;
-	Tue, 30 Apr 2024 17:31:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75512176FD8
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 17:32:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714498306; cv=none; b=Ouhj8ycXPRhSHwNiprEuYfCclMCwV9bq53VycMvujb4R1V0edPzaH5EESthWSow4MHMMAlKj+55aUGPo9h4Czu7Bj24bWE8nGsfiJ1WDLytv8YGjhRa7ZhAZtW3wbe/OGgVaMbtidMyY+zHG+vUL+zFL+ieqBMPcYSy6pLKYZOs=
+	t=1714498340; cv=none; b=TiN9avxDi4hbUfcVMZ3GfpWNXh57I/Du27TgfSd0Z6KxVnEFj61gvCM4rQ1wW8bxi5/1T/Xp9Hqu82npYkCNy+ax0SL84+Me/XV26yrE6ujLByRmOFp5uDFrAudzubAW8kTYAoA25SBO6KcOHs19/UCOqNEf0MzN2esXZua8+nY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714498306; c=relaxed/simple;
-	bh=OZfdAv9Kd4pWfqB6VspdLN4BDbD4/2bmL+06pd8HlHM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=JdMg0mi9Q9Z4c/1uJ4PGIeqhWJmQxFw8YLknK/SR8hsL5lvDVxVbZm21aQiwyyEUyftsCUdRHVJA2BRM986gqEMVcxqBocWZnHAYpU6vKjJicoMjGd68VmLLcfpVnOIkhDgfDK61rzPdQ5jvS/paub1DELH7mDtZBP0hPf1C3fY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=M0clFbDh; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 64A0CC2BBFC;
-	Tue, 30 Apr 2024 17:31:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714498305;
-	bh=OZfdAv9Kd4pWfqB6VspdLN4BDbD4/2bmL+06pd8HlHM=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=M0clFbDha9R8iPiHDUgsn1ZVjkjm/cOV7b83d3UsD49XrAzNh57sVUpxiUTbDHH/b
-	 AiOryLLbKn10xcrSpBZEb3nmVKOVGpsAZ3B1r2Z4KgdobxAqQ/6eStc+GcuJm5g/kf
-	 qiajgLH5smRzG84WGTv4zWA9sqrTR47r9qvzgOndkOGiSR+X7grtOV687F4CAc3PF8
-	 kzLYKtIwljZh6iwtQOIiAxOYdiqlDuJ5M3ZA/6ysLXewYsbreyGSknjRjvgsS0SShU
-	 KZFUvzezZpmR8GMGHt50ZroWvXxHQW8ONzWNA5Nlr4tWDnk3cif12tNUsMCllmrxtD
-	 y7Im4/I4uo0uQ==
-Date: Tue, 30 Apr 2024 18:31:40 +0100
-From: Lee Jones <lee@kernel.org>
-To: Greg KH <gregkh@linuxfoundation.org>
-Cc: Edward Liaw <edliaw@google.com>, stable@vger.kernel.org,
-	Shuah Khan <shuah@kernel.org>, kernel-team@android.com,
-	Mark Brown <broonie@kernel.org>, Kees Cook <keescook@chromium.org>,
-	Shuah Khan <skhan@linuxfoundation.org>,
-	linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 6.6.y] kselftest: Add a ksft_perror() helper
-Message-ID: <20240430173140.GA840359@google.com>
-References: <20240430010628.430427-1-edliaw@google.com>
- <2024043037-debate-capsize-e44c@gregkh>
+	s=arc-20240116; t=1714498340; c=relaxed/simple;
+	bh=/N1TeT8Lt6jMTRUZgsuQRBjbnAA5fXJw6oTciw8CL8Q=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=iRVMut6nKtgbDa0DilspEw45dpIiXhWLOi475Crvhez4pOwxMP6Fmd1idxSu3u1IcG6BXPUcGbpGGi522gEyUwl7VTNJHPvaHZdVAILv+XaXoI8l411nc9k02sqMoLdoLBDFlkAYSs20VSHNiwbupIQoDZi8HlXbMat3dDAUPH0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=WYGlOYW9; arc=none smtp.client-ip=209.85.219.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-yb1-f177.google.com with SMTP id 3f1490d57ef6-de610800da0so1446254276.2
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 10:32:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1714498338; x=1715103138; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=yW/DKRBIS4ATn0WcLDg63sbAJpcKsatVFeaBysHTbx4=;
+        b=WYGlOYW9lrXLp0kV70aMtjPQqlzewAn9fM5oFblDVN8hIcDjkp0kwcX/IKuOw2iaRV
+         IotSXy7s6Q/HZJR9DXW6tpy3s//fUWHTiihoTW9+9p987qd3adoWTWC/5KhEGDxy3euD
+         S5idBJOU1pYIino8LZJXTteG5hkemFcRzGC/rtK66LWsCFAeWXlf/IkO/MHX87AgBDAc
+         9d1xWgYmcisWg1McydaqOlm7D4/YHUXOkyc2n/aE5VIyxtgK+hw1PXGDKF1gXYp9p8US
+         aPicNMOsRlNyZST8M3zOCy4AEM+1zh5fvixWMVN4eYfsrcGzRqjarPUFfBfIfBdWC5vv
+         EuUQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714498338; x=1715103138;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=yW/DKRBIS4ATn0WcLDg63sbAJpcKsatVFeaBysHTbx4=;
+        b=gK3obvG72TFQaqlOEVlRw2MdaxoadNekF8vtRu4wJxyv9XZJNgSgXWI3yV4dYrtljj
+         KOSU464aCuWkKq9xpyTFemIB81hyLp2HSdYvqFa/OCE527LXaDYI0ejg64DlGw1aRc9w
+         KeVjP82/goppfiEt4+jcc5ybW2rT5ZpJ3bH5g0JefJ4vWKmWLxlzWL9y4X66jj+p7dV2
+         oSL7DGBB+C2L6Q7bby5ytq2pGvSoZ25Ka8rinPOVxJ8tZwvCUoMjR4YM/7OzrTX+knU3
+         O0Fc6o+YsClw411ZD2uTjTB+uAy6Gk2tuv8sbr7OyeI76ghDyShfmhrGntm558vko+E4
+         Pdhg==
+X-Forwarded-Encrypted: i=1; AJvYcCW+mnLdBwKlHUCSezvpSG4Rge4DhhvCXg+n4FrmHRC8sX9H3AW8QEMsqYVGxRsvzKRQZdptjWrVXYnhvBdFE6FYjpWlXFTdXH1RNkev
+X-Gm-Message-State: AOJu0YxlAcHiZkbZYjA9S+lXxQBCabpUwixZhNQhXeqivl+rpDz1w18N
+	/TWgL0WbsNCb2pNPAzJNowPSoUxj7nkauocm70IjPIaXkYkbR0pPJEQAMaDQ21Ov3HY6SAw0wwj
+	yeTliCj+SGNYw34ZxUW04oc0z0PTs/WhXKd4f
+X-Google-Smtp-Source: AGHT+IGGj2j629aGObH5Im8Bk3IRYjZLXCZc3eAvdRTbmkI73mygaiDZqMZuoLjAKsy7A7OQwr72htT4re5sSltDfIc=
+X-Received: by 2002:a5b:609:0:b0:de5:5a39:2cb0 with SMTP id
+ d9-20020a5b0609000000b00de55a392cb0mr184524ybq.31.1714498338252; Tue, 30 Apr
+ 2024 10:32:18 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <2024043037-debate-capsize-e44c@gregkh>
+References: <20240430060612.2171650-1-shakeel.butt@linux.dev> <20240430060612.2171650-7-shakeel.butt@linux.dev>
+In-Reply-To: <20240430060612.2171650-7-shakeel.butt@linux.dev>
+From: "T.J. Mercier" <tjmercier@google.com>
+Date: Tue, 30 Apr 2024 10:32:05 -0700
+Message-ID: <CABdmKX2-5k7o9P0LDkghr5EFLwe=42aBU9kVfd05+4-Uf41WiA@mail.gmail.com>
+Subject: Re: [PATCH v3 6/8] mm: cleanup WORKINGSET_NODES in workingset
+To: Shakeel Butt <shakeel.butt@linux.dev>
+Cc: Andrew Morton <akpm@linux-foundation.org>, Johannes Weiner <hannes@cmpxchg.org>, 
+	Michal Hocko <mhocko@kernel.org>, Roman Gushchin <roman.gushchin@linux.dev>, 
+	Muchun Song <muchun.song@linux.dev>, Yosry Ahmed <yosryahmed@google.com>, kernel-team@meta.com, 
+	linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, 30 Apr 2024, Greg KH wrote:
+On Mon, Apr 29, 2024 at 11:06=E2=80=AFPM Shakeel Butt <shakeel.butt@linux.d=
+ev> wrote:
+>
+> WORKINGSET_NODES is not exposed in the memcg stats and thus there is no
+> need to use the memcg specific stat update functions for it. In future
+> if we decide to expose WORKINGSET_NODES in the memcg stats, we can
+> revert this patch.
+>
+> Signed-off-by: Shakeel Butt <shakeel.butt@linux.dev>
+> Reviewed-by: Roman Gushchin <roman.gushchin@linux.dev>
 
-> On Tue, Apr 30, 2024 at 01:06:27AM +0000, Edward Liaw wrote:
-> > From: Mark Brown <broonie@kernel.org>
-> > 
-> > [ Upstream commit 907f33028871fa7c9a3db1efd467b78ef82cce20 ]
-> > 
-> > The standard library perror() function provides a convenient way to print
-> > an error message based on the current errno but this doesn't play nicely
-> > with KTAP output. Provide a helper which does an equivalent thing in a KTAP
-> > compatible format.
-> > 
-> > nolibc doesn't have a strerror() and adding the table of strings required
-> > doesn't seem like a good fit for what it's trying to do so when we're using
-> > that only print the errno.
-> > 
-> > Signed-off-by: Mark Brown <broonie@kernel.org>
-> > Reviewed-by: Kees Cook <keescook@chromium.org>
-> > Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
-> > Stable-dep-of: 071af0c9e582 ("selftests: timers: Convert posix_timers test to generate KTAP output")
-> > Signed-off-by: Edward Liaw <edliaw@google.com>
-> > ---
-> >  tools/testing/selftests/kselftest.h | 14 ++++++++++++++
-> >  1 file changed, 14 insertions(+)
-> 
-> This commit is already in 6.6.29, why submit it again?
+Reviewed-by: T.J. Mercier <tjmercier@google.com>
 
-I don't see this in v6.6.29.
-
-The function that it adds is called, but doesn't exist however:
-
-stable/linux-6.6.y:tools/testing/selftests/timers/posix_timers.c:               ksft_perror("Can't call gettimeofday()");
-stable/linux-6.6.y:tools/testing/selftests/timers/posix_timers.c:               ksft_perror("Can't set timer");
-stable/linux-6.6.y:tools/testing/selftests/timers/posix_timers.c:               ksft_perror("Can't call gettimeofday()");
-stable/linux-6.6.y:tools/testing/selftests/timers/posix_timers.c:               ksft_perror("Can't create timer");
-stable/linux-6.6.y:tools/testing/selftests/timers/posix_timers.c:               ksft_perror("Can't call gettimeofday()");
-stable/linux-6.6.y:tools/testing/selftests/timers/posix_timers.c:               ksft_perror("Can't set timer");
-stable/linux-6.6.y:tools/testing/selftests/timers/posix_timers.c:               ksft_perror("Can't call gettimeofday()");
-
-We should probably have this added to linux-6.6.y.
-
--- 
-Lee Jones [李琼斯]
+> ---
+>
+> Changes since v2:
+> - N/A
+>
+>  mm/workingset.c | 7 ++++---
+>  1 file changed, 4 insertions(+), 3 deletions(-)
+>
+> diff --git a/mm/workingset.c b/mm/workingset.c
+> index f2a0ecaf708d..c22adb93622a 100644
+> --- a/mm/workingset.c
+> +++ b/mm/workingset.c
+> @@ -618,6 +618,7 @@ struct list_lru shadow_nodes;
+>  void workingset_update_node(struct xa_node *node)
+>  {
+>         struct address_space *mapping;
+> +       struct page *page =3D virt_to_page(node);
+>
+>         /*
+>          * Track non-empty nodes that contain only shadow entries;
+> @@ -633,12 +634,12 @@ void workingset_update_node(struct xa_node *node)
+>         if (node->count && node->count =3D=3D node->nr_values) {
+>                 if (list_empty(&node->private_list)) {
+>                         list_lru_add_obj(&shadow_nodes, &node->private_li=
+st);
+> -                       __inc_lruvec_kmem_state(node, WORKINGSET_NODES);
+> +                       __inc_node_page_state(page, WORKINGSET_NODES);
+>                 }
+>         } else {
+>                 if (!list_empty(&node->private_list)) {
+>                         list_lru_del_obj(&shadow_nodes, &node->private_li=
+st);
+> -                       __dec_lruvec_kmem_state(node, WORKINGSET_NODES);
+> +                       __dec_node_page_state(page, WORKINGSET_NODES);
+>                 }
+>         }
+>  }
+> @@ -742,7 +743,7 @@ static enum lru_status shadow_lru_isolate(struct list=
+_head *item,
+>         }
+>
+>         list_lru_isolate(lru, item);
+> -       __dec_lruvec_kmem_state(node, WORKINGSET_NODES);
+> +       __dec_node_page_state(virt_to_page(node), WORKINGSET_NODES);
+>
+>         spin_unlock(lru_lock);
+>
+> --
+> 2.43.0
+>
 
