@@ -1,213 +1,112 @@
-Return-Path: <linux-kernel+bounces-164563-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-164564-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 93D548B7F56
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 19:59:32 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3D8008B7F58
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 20:00:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7FEC1B2292C
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 17:59:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EDEFE2855CE
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 17:59:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0785D190664;
-	Tue, 30 Apr 2024 17:59:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 785A8181B89;
+	Tue, 30 Apr 2024 17:59:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qOO7OhOn"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="pJh+Fm2H"
+Received: from mail-yb1-f181.google.com (mail-yb1-f181.google.com [209.85.219.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32346184133;
-	Tue, 30 Apr 2024 17:59:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61D61181328
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 17:59:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714499942; cv=none; b=A3xw3+EAsGNerUkMLcwwAoTiqXfDEz41ZiK7e9TC0X2YddMbDKb0zgTO61j2P2Vs/FdNmlyR6kXsZin3Kxq7lS3kf//yAZcBA4F55TgDWss2jDnEKWDBCAGoO+Bte1nIXx9p9MbWd1Gdj4dF04tiBi22zgy6uC7QkaSOLvdqJcg=
+	t=1714499991; cv=none; b=krQ+2F1CcUKnp4WvtDuGO0IrikUnJMFv1AAnkNbxZaxMIU4Gb3ERvSR+UTlgmUdjdPVTIzFQhjjAAZbOzW0YyrCuWWOydI8un8lYtuLim9iExmKmicz9I4YNMA6xIdOSEgPLGiG4p7U21GAxJVinFpeDthpmYvHKjbFLIlCGgN0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714499942; c=relaxed/simple;
-	bh=Wvx/3pXiVZjsGrp+teOKlOLjuKUzaKF+KK8AcSH3HgY=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=enZ0LF0CXcTzWmMKTFmyy6GYdG617XZcrlGRszSxkKbZ+BZlVCch+i0iuqNWf+n0ZvKx75Sxb8SLiBvD/x2+srkE6LAq6PQtn6o1ZCzk9YOvTQZ6OMCusdXDAbNAdSQ+hj4lslCbs5xMB9uyiVyxT3avvuKeowPEQGtaTfr9UQ0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qOO7OhOn; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 885D1C4AF17;
-	Tue, 30 Apr 2024 17:59:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714499941;
-	bh=Wvx/3pXiVZjsGrp+teOKlOLjuKUzaKF+KK8AcSH3HgY=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=qOO7OhOn9XLshqvaybfK7bFe0eJuH5Av0Ybf7MV/Jn0CiLYmY5I92Qg9TjhhLzs/I
-	 8RigUH/4VhbXPXQ1zHER+H8/A7eWLNO1FyAmMrwM7Mt8mbXoP5DqNcBsE7wpnsyZm7
-	 z5F0POfbb+8Y/R4sNXBsEGjc54hFHz1tMTHH5pD6YjI0gu0mPRG+bW7p0UgMHmbDFp
-	 6KXbDW269CXDV18gkJeHpjaH6t+BDnRoQbuUVpomshG9CqI51PUo7Uu8enRAIBdEjr
-	 I0y1gGib+X9gJHN9kC1jshrY42KUzGeQy15KvxWB1tmK7kKsTNny44JhQcZqnaHF6l
-	 DuEHWNnBGn2WQ==
-From: Puranjay Mohan <puranjay@kernel.org>
-To: Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	=?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@kernel.org>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>,
-	bpf@vger.kernel.org,
-	linux-riscv@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	Pu Lehui <pulehui@huawei.com>
-Cc: puranjay12@gmail.com
-Subject: [PATCH bpf-next v2 2/2] riscv, bpf: inline bpf_get_smp_processor_id()
-Date: Tue, 30 Apr 2024 17:58:34 +0000
-Message-Id: <20240430175834.33152-3-puranjay@kernel.org>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20240430175834.33152-1-puranjay@kernel.org>
-References: <20240430175834.33152-1-puranjay@kernel.org>
+	s=arc-20240116; t=1714499991; c=relaxed/simple;
+	bh=L9oTYqz7coCes4v46W8uTEssCznxNlmpxkBvoifmY60=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=RHFlOPiHQMdlu3V3bMOk1AD93+571HLSGk2JPMYdArfZXwLxlIKQ6afy1bXtgWQk/FWNptvO6Ddc0R7leO8wUaO+4MMwFVGn5XxGdzGzVA4NFwNAa9sxe8HzHZKc1QmlsAsxXC9dhlhCA8mFJYeIC914YqQCOfw29eQE91nMZDY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=pJh+Fm2H; arc=none smtp.client-ip=209.85.219.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yb1-f181.google.com with SMTP id 3f1490d57ef6-de54b28c3b7so6675903276.1
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 10:59:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1714499989; x=1715104789; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=vseX6k1o+B5FqObwflCIgJI2bSMTOCAMOHrgjYjS0ao=;
+        b=pJh+Fm2Hu9uyHqmGO6wSmYgTyjcEk+KP0ZnDWNfk8Vj6EhzHHv/VQqt6eXq7wisjeV
+         Zn6ypK79yrC1hBz+VvWu3JPbJfntKCvfA5Q1YcvH0weJEYQLR9J3iAHdVoKu4eeN8KUe
+         QrWC2rTACvbnGF29DSRSLcWwb1A2Em0UQ682Ej8ZIU0SsGBV19pci9xXtMnM34pbNi7j
+         e0Kndd3hCTEY/coaLzeTUFPoRdY6QoyMPtgKrAdvXl2EsWzDJ/icDR5NjOgkTnKSFJsa
+         cZrHm1qR3z4xbA8e/+VI+BvTWGgnjnhsRxgoiWBzvHmY1q9u9+c5f4Z5sUkwB8NPpZ21
+         Z+Jg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714499989; x=1715104789;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=vseX6k1o+B5FqObwflCIgJI2bSMTOCAMOHrgjYjS0ao=;
+        b=u+aTowcQFZ9tis86ejgG0ftDpiNFQ9Q+x5WdUZmht847gkbmNc+4aNjB/7mNhYHZmh
+         PTyBDt0bmTj+HX+LyGRyqtA0UEM5mAzk/0ajWr4rtC9m2y7qs8RuZMLKYrGDglUnxu/E
+         DbdLhbNBnEuffrcPai4GKODY05fZVDj1sseK2eDrue6K7b2ytZL0eyIlfFpjdfak5aI2
+         dci2ovvq5C0w6lIYuL5FdnUVCfRLfLnQIcOasff2lgOJ9s6qbi8Z+fluO6JR0x8o+V+y
+         qbgoMFaKhrXeXf4V8rewA3X1XBOaYdHN0NC509J7150oigneeeZUrV2JVmkm6I7ZTGdc
+         8k/g==
+X-Forwarded-Encrypted: i=1; AJvYcCVqaGxuePmSZ7cRTJqf1l9Yf9nGi3S8uXaWxVRH7zfSB6YpV4WKnv/8ciZ/YVrHKrv4GDFWtLeiT9qUyfqSHYOk1b9z9zP0bgRj4Uvq
+X-Gm-Message-State: AOJu0YxGYRb7bGD6sW9/G09YXmwX2SblFpK9lk1PQfTGq7fnNJUxD6/z
+	klu74XQwNjClJYLpoKNmUtJGigppiF8JvuLdd4xcqujhgB3uw5cxTq0nwLBhZ8gs4hXJ8A0n2J4
+	LhT6rtuBMa61O7XnP72j64epRrs+m1RqU3d6Ciw==
+X-Google-Smtp-Source: AGHT+IFxTsE2SveaRlTBhB+EE6DHBgwYOYt11ZOE5SdTfnq52tv68cpVnXh2QMmknwt5E8opTI/WtCOAflJ81I1ljMk=
+X-Received: by 2002:a5b:648:0:b0:de4:7f18:4a3 with SMTP id o8-20020a5b0648000000b00de47f1804a3mr316138ybq.25.1714499989331;
+ Tue, 30 Apr 2024 10:59:49 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20240123144543.9405-1-quic_bibekkum@quicinc.com>
+In-Reply-To: <20240123144543.9405-1-quic_bibekkum@quicinc.com>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date: Tue, 30 Apr 2024 20:59:38 +0300
+Message-ID: <CAA8EJpo2nU81K275eze9W_LyXwrrzP-u3DE2OaVfBgsVgHcK=Q@mail.gmail.com>
+Subject: Re: [PATCH v9 0/5] iommu/arm-smmu: introduction of ACTLR
+ implementation for Qualcomm SoCs
+To: Bibek Kumar Patro <quic_bibekkum@quicinc.com>, Rob Clark <robdclark@gmail.com>, robin.murphy@arm.com, 
+	will@kernel.org
+Cc: joro@8bytes.org, konrad.dybcio@linaro.org, jsnitsel@redhat.com, 
+	quic_bjorande@quicinc.com, mani@kernel.org, quic_eberman@quicinc.com, 
+	robdclark@chromium.org, u.kleine-koenig@pengutronix.de, robh@kernel.org, 
+	vladimir.oltean@nxp.com, quic_pkondeti@quicinc.com, quic_molvera@quicinc.com, 
+	linux-arm-msm@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+	iommu@lists.linux.dev, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-Inline the calls to bpf_get_smp_processor_id() in the riscv bpf jit.
+On Tue, 23 Jan 2024 at 16:46, Bibek Kumar Patro
+<quic_bibekkum@quicinc.com> wrote:
+>
+> This patch series consist of five parts and covers the following:
+>
+> 1. Re-enable context caching for Qualcomm SoCs to retain prefetcher
+>    settings during reset and runtime suspend.
+>
+> 2. Remove cfg inside qcom_smmu structure and replace it with single
+>    pointer to qcom_smmu_match_data avoiding replication of multiple
+>    members from same.
+>
+> 3. Introduce intital set of driver changes to implement ACTLR register
+>    for custom prefetcher settings in Qualcomm SoCs.
+>
+> 4. Add ACTLR data and implementation operations for SM8550.
+>
+> 5. Add ACTLR data and implementation operations for SC7280.
 
-RISCV saves the pointer to the CPU's task_struct in the TP (thread
-pointer) register. This makes it trivial to get the CPU's processor id.
-As thread_info is the first member of task_struct, we can read the
-processor id from TP + offsetof(struct thread_info, cpu).
+Colleagues, just wanted to check, what happened to this series?
 
-          RISCV64 JIT output for `call bpf_get_smp_processor_id`
-	  ======================================================
-
-                Before                           After
-               --------                         -------
-
-         auipc   t1,0x848c                  ld    a5,32(tp)
-         jalr    604(t1)
-         mv      a5,a0
-
-Benchmark using [1] on Qemu.
-
-/benchs/run_bench_trigger.sh glob-arr-inc arr-inc hash-inc
-
-+---------------+------------------+------------------+--------------+
-|      Name     |     Before       |       After      |   % change   |
-|---------------+------------------+------------------+--------------|
-| glob-arr-inc  | 1.077 ± 0.006M/s | 1.336 ± 0.010M/s |   + 24.04%   |
-| arr-inc       | 1.078 ± 0.002M/s | 1.332 ± 0.015M/s |   + 23.56%   |
-| hash-inc      | 0.494 ± 0.004M/s | 0.653 ± 0.001M/s |   + 32.18%   |
-+---------------+------------------+------------------+--------------+
-
-NOTE: This benchmark includes changes from this patch and the previous
-      patch that implemented the per-cpu insn.
-
-[1] https://github.com/anakryiko/linux/commit/8dec900975ef
-
-Signed-off-by: Puranjay Mohan <puranjay@kernel.org>
----
- arch/riscv/net/bpf_jit_comp64.c | 26 ++++++++++++++++++++++++++
- include/linux/filter.h          |  1 +
- kernel/bpf/core.c               | 11 +++++++++++
- kernel/bpf/verifier.c           |  2 ++
- 4 files changed, 40 insertions(+)
-
-diff --git a/arch/riscv/net/bpf_jit_comp64.c b/arch/riscv/net/bpf_jit_comp64.c
-index 99d7006f1420..5789b7afae47 100644
---- a/arch/riscv/net/bpf_jit_comp64.c
-+++ b/arch/riscv/net/bpf_jit_comp64.c
-@@ -1493,6 +1493,22 @@ int bpf_jit_emit_insn(const struct bpf_insn *insn, struct rv_jit_context *ctx,
- 		bool fixed_addr;
- 		u64 addr;
- 
-+		/* Inline calls to bpf_get_smp_processor_id()
-+		 *
-+		 * RV_REG_TP holds the address of the current CPU's task_struct and thread_info is
-+		 * at offset 0 in task_struct.
-+		 * Load cpu from thread_info:
-+		 *     Set R0 to ((struct thread_info *)(RV_REG_TP))->cpu
-+		 *
-+		 * This replicates the implementation of raw_smp_processor_id() on RISCV
-+		 */
-+		if (insn->src_reg == 0 && insn->imm == BPF_FUNC_get_smp_processor_id) {
-+			/* Load current CPU number in R0 */
-+			emit_ld(bpf_to_rv_reg(BPF_REG_0, ctx), offsetof(struct thread_info, cpu),
-+				RV_REG_TP, ctx);
-+			break;
-+		}
-+
- 		mark_call(ctx);
- 		ret = bpf_jit_get_func_addr(ctx->prog, insn, extra_pass,
- 					    &addr, &fixed_addr);
-@@ -2062,3 +2078,13 @@ bool bpf_jit_supports_percpu_insn(void)
- {
- 	return true;
- }
-+
-+bool bpf_jit_inlines_helper_call(s32 imm)
-+{
-+	switch (imm) {
-+	case BPF_FUNC_get_smp_processor_id:
-+		return true;
-+	}
-+
-+	return false;
-+}
-diff --git a/include/linux/filter.h b/include/linux/filter.h
-index 7a27f19bf44d..3e19bb62ed1a 100644
---- a/include/linux/filter.h
-+++ b/include/linux/filter.h
-@@ -993,6 +993,7 @@ u64 __bpf_call_base(u64 r1, u64 r2, u64 r3, u64 r4, u64 r5);
- struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog);
- void bpf_jit_compile(struct bpf_prog *prog);
- bool bpf_jit_needs_zext(void);
-+bool bpf_jit_inlines_helper_call(s32 imm);
- bool bpf_jit_supports_subprog_tailcalls(void);
- bool bpf_jit_supports_percpu_insn(void);
- bool bpf_jit_supports_kfunc_call(void);
-diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-index 99b8b1c9a248..aa59af9f9bd9 100644
---- a/kernel/bpf/core.c
-+++ b/kernel/bpf/core.c
-@@ -2941,6 +2941,17 @@ bool __weak bpf_jit_needs_zext(void)
- 	return false;
- }
- 
-+/* Return true if the JIT inlines the call to the helper corresponding to
-+ * the imm.
-+ *
-+ * The verifier will not patch the insn->imm for the call to the helper if
-+ * this returns true.
-+ */
-+bool __weak bpf_jit_inlines_helper_call(s32 imm)
-+{
-+	return false;
-+}
-+
- /* Return TRUE if the JIT backend supports mixing bpf2bpf and tailcalls. */
- bool __weak bpf_jit_supports_subprog_tailcalls(void)
- {
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 5d42db05315e..e78f766d7f91 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -20013,6 +20013,8 @@ static int do_misc_fixups(struct bpf_verifier_env *env)
- 			goto next_insn;
- 		}
- 
-+		if (bpf_jit_inlines_helper_call(insn->imm))
-+			goto next_insn;
- 		if (insn->imm == BPF_FUNC_get_route_realm)
- 			prog->dst_needed = 1;
- 		if (insn->imm == BPF_FUNC_get_prandom_u32)
 -- 
-2.40.1
-
+With best wishes
+Dmitry
 
