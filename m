@@ -1,77 +1,172 @@
-Return-Path: <linux-kernel+bounces-163523-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-163525-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BC7B28B6C85
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 10:11:43 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B57028B6C8C
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 10:13:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E815B1C222E7
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 08:11:42 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C75B8B217B4
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 08:13:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3DEEF47F42;
-	Tue, 30 Apr 2024 08:11:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 60B5650287;
+	Tue, 30 Apr 2024 08:13:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="Ny2YddjI"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="IXXUF1rc"
+Received: from mail-yb1-f182.google.com (mail-yb1-f182.google.com [209.85.219.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A33140BEE;
-	Tue, 30 Apr 2024 08:11:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F6F840BF5
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 08:13:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714464697; cv=none; b=fom4Qw7CNv0iKZM6dcrR/BbvFTzAO5omMCRWzV8DJCCxn/rQ0h1odBlFGRvTmX/sJS7fY5gCmnoGaFqv+bQjAmRw6VFy26CMw6PG5arX5OZGwUrIzlMC92lWuuaMESK39EH5YZ1q7fBczo3yBu3FLnWtW7UQBugOG+pMwEntCnU=
+	t=1714464803; cv=none; b=pOUk3izfjdM/3kBF7FMyJ54YglmC5vWSo29DJWa5VF8INrxF85Sdrc05o0eU9HzOxaOHOR95Zi9hkARjhF5diN4PzyHdn58yqBgYbXwA9t3aYERCkgmQoWtm6ukcfpLA/ujJ9mz7wlatmxwU/G4/sloZ+DZDbWiNV1GwcoQk7vQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714464697; c=relaxed/simple;
-	bh=Okuepw31SRehXeoqshjfC4InPzrJlMsj8crjxsmEs+k=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=aA9tQE8BE/emAYOrNLovFLUJ8HDdEKzMx5V7MtSm+rqqN/KzxftEbbTdGytUpqsWj0orZCLrb1eSL04U9UtOZ88bgKaGJxzJtqyBx4Tk9W4X+XA8FoYhcYjr8wM0HuvQ24XOXkCnk9dWnnH8y4DrSYg6kFuTj/gQOt6UgRy9C14=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=Ny2YddjI; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 86651C2BBFC;
-	Tue, 30 Apr 2024 08:11:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1714464697;
-	bh=Okuepw31SRehXeoqshjfC4InPzrJlMsj8crjxsmEs+k=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Ny2YddjIXd62EgONouXUw4MIpgq1mcR4Ny2Gcwe6ACTc+CdV0UXIy/YQCIIYl47Vc
-	 UkQZoe0UGviKS6I/fiNMlR9e+zWbI6Va9a+ig1QuIAQgsZzcpNQGGCsroAtZYZ7Spv
-	 zoWTvbkxlPFJxh4l9BIbK80yv3YxIwAHjrS4aFH8=
-Date: Tue, 30 Apr 2024 10:11:34 +0200
-From: Greg KH <gregkh@linuxfoundation.org>
-To: Juergen Gross <jgross@suse.com>
-Cc: cve@kernel.org, linux-cve-announce@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	"xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
-	"Xen.org security team" <security@xen.org>
-Subject: Re: CVE-2024-26908: x86/xen: Add some null pointer checking to smp.c
-Message-ID: <2024043015-pauper-aching-a3d4@gregkh>
-References: <2024041747-CVE-2024-26908-4690@gregkh>
- <f73bb0fe-9ba6-46de-8732-bd372438068e@suse.com>
+	s=arc-20240116; t=1714464803; c=relaxed/simple;
+	bh=dNOE4T7/QwX8k1T/RC7x+ATlL1W5baul8IPqcUhm8Go=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=fPLsb0jviF5/xVIl4ncrCYHdJcSnXaR9otiY/4J45mZckh2udwkRpDS7OdSqKPgM06lABOlbb7+zbSaS0YZhIMsXHShf3pOUMaxyOuNJmX+VelcVDu5QMmAPUgR8Vx0ewqICOdraLU0q9DqG9w2m246jqX7Ibrll85WyD1SDldE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=IXXUF1rc; arc=none smtp.client-ip=209.85.219.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yb1-f182.google.com with SMTP id 3f1490d57ef6-de45dba15feso6362997276.3
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 01:13:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1714464801; x=1715069601; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=/TtRmxvOsaI0j8vIb/52uFQJ4Na+dlsFyaOa4Vf0Bw8=;
+        b=IXXUF1rckejiWA5Hg5AaStGobwm8R4lQB9M/udFJIUBAuB/dRLx602TamNgb4fEZCc
+         +XjERaZ5alsusC9y1D0t0JO5kAdCBdq+AespNnFu0pmWQEs6luckcpJRL8/yyk4PK97g
+         /qBZWGAHjt9IEZJ2f4/igW2MicII8cmI+nihw7j3svOfrFCUvyWKcOH8Ck5kozDKsNpf
+         TOzof9UYW/EFtOngIo5xolfGGRQ4l05rYFwZJdrbxoRMTZjshmsdXx9ZpmLC5nRy+KEB
+         y15lczcjKgG2t5B+6wXc/8xMhp23hdb1cTS5BuZIJYmqSX63+gROGtfHn9f6jMHnRTPu
+         q2gQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714464801; x=1715069601;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=/TtRmxvOsaI0j8vIb/52uFQJ4Na+dlsFyaOa4Vf0Bw8=;
+        b=tr8ucSo8mMSnPHyNAbm6SJjzRHq33jyhrAKgB6nWZlAWjVj9V7xqCn1qIr1FeNhlAF
+         fJjyO1f+Y7Ao5QEoxSB7iZtt2S3iPJXX6ZaENW6Q8ZTRPm0mz7uO39P6OvT9jfMDrqRR
+         DknIhs1BA++N8pW9VSpnUjQ0GjxGhdn2+jXWGp3F6We4zwv+dslV+WadBSsFE7m1ENwR
+         Gsszc+pY//Si9PBSplC0jYCm3vp7nkRpDNjG6YBxlusDIhysc1jbjrZzzxU4SXX5XUFC
+         S5QqQDpQ60ipRfdagF174A1eMtpNol1n6L3CHy68DwJjuKluguloiiUrmMmgqH9NF4ed
+         ruyg==
+X-Forwarded-Encrypted: i=1; AJvYcCWtC0uc5xu/mMHN54S+HfXOtbahGQNtsHSMPwA1sBS2s0+8UIjUxrU8Vc8VIkaKhHk46C/JtF2fnyxUckB+EB4O+PU3EvvvRTxDZf2d
+X-Gm-Message-State: AOJu0YzKSpLGIClNBeUWVT48wI15YbbZ/3UBiQTH8bwa8G1rUH22iIVX
+	kE5OCpA4m684TucPcgfv3PguuVXpuf3mjbfQ68OjsCv50tsqp4+/fpWwVon+SB+2yxqdC4ZKYhU
+	JysQaRnvfWuPrBWB2coB6Iqnl6yuyWIn0C/Vvj+MGebAPzX6a
+X-Google-Smtp-Source: AGHT+IFjQ4jcj+SFmGdgdYQVyeYWI84FI6MAtglUVUVYv0AmAjAKKjhMzdBf/Fl4uG4yVHAB5V7kQLamY+zMgVqWZJI=
+X-Received: by 2002:a05:6902:1b12:b0:dcc:2f09:4742 with SMTP id
+ eh18-20020a0569021b1200b00dcc2f094742mr2145150ybb.51.1714464800928; Tue, 30
+ Apr 2024 01:13:20 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f73bb0fe-9ba6-46de-8732-bd372438068e@suse.com>
+References: <20240226065113.1690534-1-nick.hu@sifive.com> <CAPDyKFph3WsZMmALnzBQKE4S_80Ji5h386Wi0vHda37QUsjMtg@mail.gmail.com>
+ <CAKddAkDcdaXKzpcKN=LCCx9S4Trv+joLX2s=nyhzaRtM5HorqA@mail.gmail.com> <CAKddAkC6N=Cfo0z+F8herKTuJzCyt_MA0vWNbLCr6CbQnj0y8g@mail.gmail.com>
+In-Reply-To: <CAKddAkC6N=Cfo0z+F8herKTuJzCyt_MA0vWNbLCr6CbQnj0y8g@mail.gmail.com>
+From: Ulf Hansson <ulf.hansson@linaro.org>
+Date: Tue, 30 Apr 2024 10:12:43 +0200
+Message-ID: <CAPDyKFr_M0NDH0gaunBpybnALOFfz4LpX4_JW2GCUxjwGzdZsg@mail.gmail.com>
+Subject: Re: [PATCH] cpuidle: riscv-sbi: Add cluster_pm_enter()/exit()
+To: Nick Hu <nick.hu@sifive.com>
+Cc: palmer@dabbelt.com, anup@brainfault.org, rafael@kernel.org, 
+	daniel.lezcano@linaro.org, paul.walmsley@sifive.com, linux-pm@vger.kernel.org, 
+	linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org, 
+	zong.li@sifive.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Apr 29, 2024 at 01:53:44PM +0200, Juergen Gross wrote:
-> Hi,
-> 
-> I'd like to dispute CVE-2024-26908: the issue fixed by upstream commit
-> 3693bb4465e6e32a204a5b86d3ec7e6b9f7e67c2 can in no way be triggered by
-> an unprivileged user or by a remote attack of the system, as it requires
-> hotplug of (virtual) cpus to the running system. This can be done only by
-> either a host admin or by an admin of the guest which might suffer the
-> out-of-memory situation.
-> 
-> Please revoke this CVE.
+On Mon, 29 Apr 2024 at 18:26, Nick Hu <nick.hu@sifive.com> wrote:
+>
+> On Tue, Apr 30, 2024 at 12:22=E2=80=AFAM Nick Hu <nick.hu@sifive.com> wro=
+te:
+> >
+> > Hi Ulf
+> >
+> > On Mon, Apr 29, 2024 at 10:32=E2=80=AFPM Ulf Hansson <ulf.hansson@linar=
+o.org> wrote:
+> > >
+> > > On Mon, 26 Feb 2024 at 07:51, Nick Hu <nick.hu@sifive.com> wrote:
+> > > >
+> > > > When the cpus in the same cluster are all in the idle state, the ke=
+rnel
+> > > > might put the cluster into a deeper low power state. Call the
+> > > > cluster_pm_enter() before entering the low power state and call the
+> > > > cluster_pm_exit() after the cluster woken up.
+> > > >
+> > > > Signed-off-by: Nick Hu <nick.hu@sifive.com>
+> > >
+> > > I was not cced this patch, but noticed that this patch got queued up
+> > > recently. Sorry for not noticing earlier.
+> > >
+> > > If not too late, can you please drop/revert it? We should really move
+> > > away from the CPU cluster notifiers. See more information below.
+> > >
+> > > > ---
+> > > >  drivers/cpuidle/cpuidle-riscv-sbi.c | 24 ++++++++++++++++++++++--
+> > > >  1 file changed, 22 insertions(+), 2 deletions(-)
+> > > >
+> > > > diff --git a/drivers/cpuidle/cpuidle-riscv-sbi.c b/drivers/cpuidle/=
+cpuidle-riscv-sbi.c
+> > > > index e8094fc92491..298dc76a00cf 100644
+> > > > --- a/drivers/cpuidle/cpuidle-riscv-sbi.c
+> > > > +++ b/drivers/cpuidle/cpuidle-riscv-sbi.c
+> > > > @@ -394,6 +394,7 @@ static int sbi_cpuidle_pd_power_off(struct gene=
+ric_pm_domain *pd)
+> > > >  {
+> > > >         struct genpd_power_state *state =3D &pd->states[pd->state_i=
+dx];
+> > > >         u32 *pd_state;
+> > > > +       int ret;
+> > > >
+> > > >         if (!state->data)
+> > > >                 return 0;
+> > > > @@ -401,6 +402,10 @@ static int sbi_cpuidle_pd_power_off(struct gen=
+eric_pm_domain *pd)
+> > > >         if (!sbi_cpuidle_pd_allow_domain_state)
+> > > >                 return -EBUSY;
+> > > >
+> > > > +       ret =3D cpu_cluster_pm_enter();
+> > > > +       if (ret)
+> > > > +               return ret;
+> > >
+> > > Rather than using the CPU cluster notifiers, consumers of the genpd
+> > > can register themselves to receive genpd on/off notifiers.
+> > >
+> > > In other words, none of this should be needed, right?
+> > >
+> > Thanks for the feedback!
+> > Maybe I miss something, I'm wondering about a case like below:
+> > If we have a shared L2 cache controller inside the cpu cluster power
+> > domain and we add this controller to be a consumer of the power
+> > domain, Shouldn't the genpd invoke the domain idle only after the
+> > shared L2 cache controller is suspended?
+> > Is there a way that we can put the L2 cache down while all cpus in the
+> > same cluster are idle?
+> > > [...]
+> Sorry, I made some mistake in my second question.
+> Update the question here:
+> Is there a way that we can save the L2 cache states while all cpus in the
+> same cluster are idle and the cluster could be powered down?
 
-Sorry for the delay, thanks for looking into this and letting us know.
-It's now rejected.
+If the L2 cache is a consumer of the cluster, the consumer driver for
+the L2 cache should register for genpd on/off notifiers.
 
-greg k-h
+The device representing the L2 cache needs to be enabled for runtime
+PM, to be taken into account correctly by the cluster genpd. In this
+case, the device should most likely remain runtime suspended, but
+instead rely on the genpd on/off notifiers to understand when
+save/restore of the cache states should be done.
+
+Kind regards
+Uffe
 
