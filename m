@@ -1,148 +1,164 @@
-Return-Path: <linux-kernel+bounces-163724-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-163725-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D549B8B6ECE
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 11:50:55 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 45AC38B6ED1
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 11:52:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8C29B1F2352E
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 09:50:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B1AE21F24222
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 09:52:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5BAFC1292C9;
-	Tue, 30 Apr 2024 09:49:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE6ED128833;
+	Tue, 30 Apr 2024 09:52:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="aptQc0kg"
-Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="0vDQKLOw"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D705013B2BC
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 09:49:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 86D711272AB;
+	Tue, 30 Apr 2024 09:52:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714470594; cv=none; b=WcT1TWozsOSvrvnzucPp05gWKblDBCkz1b+bCJr/4pxyObqYCVvrheNfH/WzCyFCPVzFLA53KwjKlvFPzDJqYs6d79SUtg8bbx1JLSzSKVpPHIrk4Y5MDGTaS7Gt205LOVXTHC8Ad4F93QaORiDCSj9sDA27Cxj2rBTQNGxq9H0=
+	t=1714470760; cv=none; b=a4NmXZgeOeiS8tVABFyxPYA9nRkjosEUvI2+NUKoaslvQtDDByA2e4UhHiHymf/fGiRivP3/5rXUL12kN9BgNw0mCZcV8aKYGPOk1WD7Nj70gO52xqFNm7dfATNSxpKlu3HcBTNNQVhLQ1WxqABzpmszUTl6oQ/dWDQmmvV+h9g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714470594; c=relaxed/simple;
-	bh=qQyNd2h599qj7egaidio8x869sx/hrwA+mPO7tRkKQ0=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=BQPB46qkzRRr12TpnzcRWfEpL1GsfTsu0p8wWUpoRRl6pOUJ5jeYUlVtrG2875jkVzRoG19zLSO9TGrTXH0FMPXKuP7g8H/oPUfBcXj7BIKOvxeb3ZSQYBAB1AFDNomP2jDdZqe3g3JXVtm6wuemy10IX8RDwnmuTIU3kUAXhK8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=aptQc0kg; arc=none smtp.client-ip=209.85.208.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-5727dc6d3edso2545846a12.0
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 02:49:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1714470591; x=1715075391; darn=vger.kernel.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=FhJZGevRo1C++Okgeic6/uROn8S2Hxmi7kQowqw5A8g=;
-        b=aptQc0kgbEyGGIUBaMnq5g7rpl1VsGEDY9f5KGZA21DNfOAde04myyc1C2sL3ln3YP
-         R+E8SDvpHwAY9zNjTmXDxegMqpgbJVueDRxE6515TpSbuoUo4MMHs2ONsfOFDFVZTdUf
-         lTC+HYhP68Xpha7jqfO6Q86HsiVC6Q0H1hj/YhdDTQAFneAFdL7fOBY6KDEzMUqZFQoW
-         +wcKyTN6muQLBE1FcTm1ZeKmR6Is/l3Vc7QqP26UqqHvcAD3caEuY+BehyA0aXqq2UN7
-         ilYf/X95j0OAAE1HD4QqfTPYUzttTXvplri/S0ojifZzi5hO7lJj3K4jiXSEBo9/4f1D
-         CcKw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714470591; x=1715075391;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=FhJZGevRo1C++Okgeic6/uROn8S2Hxmi7kQowqw5A8g=;
-        b=o4zI+ccDUbZl/aQfRTp/iuHa310f1ErZV3A7+4+bIl4/ZzpR7yMwKpF4Eb5vdka1t9
-         2P4CqLAnu47hEAPUFuQrZRZntYnd+vZR2z02Fk25ympGaN/8p0UtvAyFALax91oBKcJw
-         CUhqZqbIy8a8lW2cb5YIlnFckI2rVPdUIvI6gEbrwFg8JWCmN7+mXwoUH4k6ZzQ54Tuz
-         OYBJcd6RXM4TMDsaVuvZQSyU/TpzLHyZzld0tMH+/igWBB4n7N7cLW3pSTxluCBAsvRS
-         owUqNshrKdyq/ZjlhFp/spD1DAQcaLsomViLFvR9XyJhpjovWKwgbN/bPrEHowFwY5Zn
-         kZ4w==
-X-Forwarded-Encrypted: i=1; AJvYcCVicVP9YAami+gp3i7j9+8SIGIy8GSwdXyZOo8sPEyR3IAp4RLIpUYwcpqJxTPV9V3qwVxR4wJP9A0q/leZJtGA/zlTcfA5bCm5xoB8
-X-Gm-Message-State: AOJu0Yy9eUHJDhL2C7I6DvUz8fQbNPB9Ej8/DiDnJYO2iGd9yBfgRkPu
-	Lwv+oyX2V/JFEFiUJbgy9jXw/01bLlnEKY/A305oWb/Jn44BSOMZqzCUxwvs4hg=
-X-Google-Smtp-Source: AGHT+IHjR4VqbKBno6oOcsP9I88ns4NXyyx0hAoOpEbN6efsrEc8kzTNCaPoS2beYddSSlbI/rWFBA==
-X-Received: by 2002:a17:906:c352:b0:a55:8820:e8b3 with SMTP id ci18-20020a170906c35200b00a558820e8b3mr1488739ejb.19.1714470591199;
-        Tue, 30 Apr 2024 02:49:51 -0700 (PDT)
-Received: from puffmais.c.googlers.com (8.239.204.35.bc.googleusercontent.com. [35.204.239.8])
-        by smtp.gmail.com with ESMTPSA id dk21-20020a170907941500b00a55aee4bf74sm10981024ejc.79.2024.04.30.02.49.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Apr 2024 02:49:50 -0700 (PDT)
-From: =?utf-8?q?Andr=C3=A9_Draszik?= <andre.draszik@linaro.org>
-Date: Tue, 30 Apr 2024 10:49:49 +0100
-Subject: [PATCH v2 4/4] arm64: dts: exynos: gs101: specify empty clocks for
- remaining pinctrl
+	s=arc-20240116; t=1714470760; c=relaxed/simple;
+	bh=34AxLChZrxxqHn1rYrjE3n7vuuxWsZUQYT7Rf3uwoQc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=fbMoshS8ersUE0ykX/E8UxTCRHQmDudBI8R4u8Ma6cXVf85Dj9eYdoxsLzUsqHBssfLZjB5oOEGSjb9BqRNh3D/rpwumxr6mAtzWtIYeFwmGBMGqUlZ1Fk0uuiAC8TAIBAno1jOy+yG7sVFvLAW2Oi+V1kPShX0lch6Rli+DSh0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=0vDQKLOw; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1714470756;
+	bh=34AxLChZrxxqHn1rYrjE3n7vuuxWsZUQYT7Rf3uwoQc=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=0vDQKLOwgXxhzFhDjTWnQU3kuptP84J3H/JMQqd4nlpdZuZ245vHqSGv8SqIzEFyD
+	 pI64jSlCfB8+4477d7BHY5JMPlK4YNn8NqcKEmgKCQy/y+Ro5kJkP/MPIqA6VVqS1n
+	 OQCUC36ha+e8u2EvH0s1tSiUi3Yr7AgrU+c8cA6OnzoYRMJORAsTRQ/Wbx9SDBiYPt
+	 VPIDHGggwOh4xGokXkAYTj74YdHlcqgTAMAYKr3gPU93G866zVS+q1+BduFU86I2Hb
+	 KLL8liPgykUc49u9k0luukl8NXbE+5QTjujclGtNi1zj8oQSIqP/j7yu5wPkhi1FB7
+	 zH6leRSB1LbJQ==
+Received: from [100.113.186.2] (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: kholk11)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 27EE2378143B;
+	Tue, 30 Apr 2024 09:52:36 +0000 (UTC)
+Message-ID: <8c4f32db-5c80-4fef-8e8d-76f74d3c6bd4@collabora.com>
+Date: Tue, 30 Apr 2024 11:52:35 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] arm64: dts: mediatek: mt8192-asurada: Add off-on-delay-us
+ for pp3300_mipibrdg
+To: Pin-yen Lin <treapking@chromium.org>
+Cc: Matthias Brugger <matthias.bgg@gmail.com>,
+ "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS"
+ <devicetree@vger.kernel.org>,
+ "moderated list:ARM/Mediatek SoC support"
+ <linux-arm-kernel@lists.infradead.org>,
+ "moderated list:ARM/Mediatek SoC support"
+ <linux-mediatek@lists.infradead.org>,
+ =?UTF-8?Q?N=C3=ADcolas_F_=2E_R_=2E_A_=2E_Prado?= <nfraprado@collabora.com>,
+ "open list:ARM/Mediatek SoC support" <linux-kernel@vger.kernel.org>,
+ Hsin-Te Yuan <yuanhsinte@chromium.org>
+References: <20240429095333.3585438-1-treapking@chromium.org>
+ <b3c69a78-78c9-4a15-829b-e4b36e16566a@collabora.com>
+ <CAEXTbpf2HOQj_AxHGbsgOXVF_HyKttL=z7Mi8QStcmuOS+yN7g@mail.gmail.com>
+From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Content-Language: en-US
+In-Reply-To: <CAEXTbpf2HOQj_AxHGbsgOXVF_HyKttL=z7Mi8QStcmuOS+yN7g@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-Message-Id: <20240430-samsung-pinctrl-busclock-dts-v2-4-14fc988139dd@linaro.org>
-References: <20240430-samsung-pinctrl-busclock-dts-v2-0-14fc988139dd@linaro.org>
-In-Reply-To: <20240430-samsung-pinctrl-busclock-dts-v2-0-14fc988139dd@linaro.org>
-To: Peter Griffin <peter.griffin@linaro.org>, Rob Herring <robh@kernel.org>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Conor Dooley <conor+dt@kernel.org>, Alim Akhtar <alim.akhtar@samsung.com>
-Cc: Tudor Ambarus <tudor.ambarus@linaro.org>, 
- Will McVicker <willmcvicker@google.com>, 
- Sam Protsenko <semen.protsenko@linaro.org>, kernel-team@android.com, 
- linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org, 
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
- =?utf-8?q?Andr=C3=A9_Draszik?= <andre.draszik@linaro.org>
-X-Mailer: b4 0.12.4
 
-The pinctrl instances hsi1, gsactrl, and gsacore need a clock for
-register access to work.
+Il 30/04/24 11:32, Pin-yen Lin ha scritto:
+> Hi Angelo,
+> 
+> On Tue, Apr 30, 2024 at 4:17 PM AngeloGioacchino Del Regno
+> <angelogioacchino.delregno@collabora.com> wrote:
+>>
+>> Il 29/04/24 11:53, Pin-yen Lin ha scritto:
+>>> Set off-on-delay-us to 500000 us for pp3300_mipibrdg to make sure it
+>>> complies with the panel sequence. Explicit configuration on the
+>>> regulator node is required because mt8192-asurada uses the same power
+>>> supply for the panel and the anx7625 DP bridge. So powering on/off the
+>>> DP bridge could break the power sequence requirement for the panel.
+>>>
+>>> Fixes: f9f00b1f6b9b ("arm64: dts: mediatek: asurada: Add display regulators")
+>>> Signed-off-by: Pin-yen Lin <treapking@chromium.org>
+>>>
+>>
+>> Uhm, there might be more to it - I don't think that this should ever happen.
+>>
+>> The regulator is refcounted, so...
+>>    * Bridge on: panel goes off, but regulator doesn't turn off (refcount=1)
+>>      * Panel resume -> sequence respected (refcount=2 -> wait -> more vregs, etc)
+>>    * Bridge off: panel is already off (refcount=0)
+>>      * Bridge resume -> refcount=1, no panel commands yet
+> 
+> The off-on-delay could be violated because the bridge driver does not
+> check the delay.
+> 
+>>      * Panel resume -> refcount=2, wait -> more vregs, etc
+>>
+>> Can you please describe the issue that you're getting?
+> 
+> The symptom we observed is that the device has a small chance to
+> reboot to a black panel, and we think the panel's unprepare delay (the
+> time to power down completely) might not be satisfied because the
+> bridge doesn't check that when it enables the regulator. Even if the
+> regulator is enabled by the panel driver, the delay can also be
+> violated in the following sequence:
+> 
+> * t=0ms, bridge on: panel goes off, but regulator doesn't turn off
+> (refcount=1). The .unprepared_time in panel_edp is updated
+> * t=300ms, bridge off, regulator goes off (refcount=0)
+> * t=600ms, panel on, the panel driver thinks the unprepare delay
+> (500ms) is satisfied, but the regulator was disabled 300ms ago.
+> 
+> Did I miss anything here? Or should I add more detail to the commit message?
+> 
 
-Since we haven't implemented the relevant CMUs for the clocks required
-by these instances just add empty clocks for now so as to make the DT
-pass the validation checks.
-Once the clocks are implmented in the gs101 clock driver, these should
-be updated then.
+Heh, no you didn't miss anything, this time it's just me :-)
 
-Signed-off-by: André Draszik <andre.draszik@linaro.org>
+If you can please add that description to the commit message for a v2 that'd be
+appreciated on my side.
 
----
-v2: use empty clock instead of placeholder
----
- arch/arm64/boot/dts/exynos/google/gs101.dtsi | 9 +++++++++
- 1 file changed, 9 insertions(+)
+In any case
 
-diff --git a/arch/arm64/boot/dts/exynos/google/gs101.dtsi b/arch/arm64/boot/dts/exynos/google/gs101.dtsi
-index f8fcbbb06e7b..c8a5eb8c7d45 100644
---- a/arch/arm64/boot/dts/exynos/google/gs101.dtsi
-+++ b/arch/arm64/boot/dts/exynos/google/gs101.dtsi
-@@ -1309,6 +1309,9 @@ usbdrd31_dwc3: usb@0 {
- 		pinctrl_hsi1: pinctrl@11840000 {
- 			compatible = "google,gs101-pinctrl";
- 			reg = <0x11840000 0x00001000>;
-+			/* TODO: update once support for this CMU exists */
-+			clocks = <0>;
-+			clock-names = "pclk";
- 			interrupts = <GIC_SPI 471 IRQ_TYPE_LEVEL_HIGH 0>;
- 		};
- 
-@@ -1380,11 +1383,17 @@ wakeup-interrupt-controller {
- 		pinctrl_gsactrl: pinctrl@17940000 {
- 			compatible = "google,gs101-pinctrl";
- 			reg = <0x17940000 0x00001000>;
-+			/* TODO: update once support for this CMU exists */
-+			clocks = <0>;
-+			clock-names = "pclk";
- 		};
- 
- 		pinctrl_gsacore: pinctrl@17a80000 {
- 			compatible = "google,gs101-pinctrl";
- 			reg = <0x17a80000 0x00001000>;
-+			/* TODO: update once support for this CMU exists */
-+			clocks = <0>;
-+			clock-names = "pclk";
- 		};
- 
- 		cmu_top: clock-controller@1e080000 {
+Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 
--- 
-2.44.0.769.g3c40516874-goog
+>>
+>> Cheers,
+>> Angelo
+>>
+> Regards,
+> Pin-yen
+> 
+>>> ---
+>>>
+>>>    arch/arm64/boot/dts/mediatek/mt8192-asurada.dtsi | 1 +
+>>>    1 file changed, 1 insertion(+)
+>>>
+>>> diff --git a/arch/arm64/boot/dts/mediatek/mt8192-asurada.dtsi b/arch/arm64/boot/dts/mediatek/mt8192-asurada.dtsi
+>>> index 7a704246678f..08d71ddf3668 100644
+>>> --- a/arch/arm64/boot/dts/mediatek/mt8192-asurada.dtsi
+>>> +++ b/arch/arm64/boot/dts/mediatek/mt8192-asurada.dtsi
+>>> @@ -147,6 +147,7 @@ pp3300_mipibrdg: regulator-3v3-mipibrdg {
+>>>                regulator-boot-on;
+>>>                gpio = <&pio 127 GPIO_ACTIVE_HIGH>;
+>>>                vin-supply = <&pp3300_g>;
+>>> +             off-on-delay-us = <500000>;
+>>>        };
+>>>
+>>>        /* separately switched 3.3V power rail */
+>>
 
 
