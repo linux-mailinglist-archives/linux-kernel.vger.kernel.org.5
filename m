@@ -1,151 +1,233 @@
-Return-Path: <linux-kernel+bounces-164762-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-164763-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 19B648B8230
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 23:56:21 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 43C748B8235
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 23:58:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9CCC61F236C8
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 21:56:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EDCB32848B4
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 21:58:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 01A751BF6C7;
-	Tue, 30 Apr 2024 21:56:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE3411BF6CE;
+	Tue, 30 Apr 2024 21:57:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="lzdxmG8G"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="coTFXNn6"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75A531BED7A;
-	Tue, 30 Apr 2024 21:56:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.9
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4CE131A0AF9;
+	Tue, 30 Apr 2024 21:57:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714514167; cv=none; b=IU042oAgtqkU9uU7zzOE8dAKZpTfXgxfE5BvJ5QQ57i/y8+I7OguNLdjSb1nMm2dxAd/RHlpqt0wfh9MQAIBKjnzg8RZ/kfaKbMm5bNNc2ixJiM2YBGE3x58+qTwE/XNet6QHi0gVH0h9AN0s8Mbb41tgwvTPHi5fCBBmpY12Ww=
+	t=1714514279; cv=none; b=bR0fxVDTSQK+SxALJGOAM3TB2ZqO650mqFxw2yGatATq/plzmo7rqbSuh3lZlSpHZgqTy7R6OXUO9mpkzIKX8bF2vWVIrb47IBspns3bJcPd0HcFruPKtYUO9hTLD6iBH/F2fDST5gU2Our4z4NxEWldLk/C14IAOOyKqXkOFBI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714514167; c=relaxed/simple;
-	bh=oYOaHTepb15vC/qSY7PChf6EcjxS4EQy7wPC86gJYgQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=jHMcU9kz5gsizRhcinDn7Gm1hoMGOdwm7FXYkiy0+v4kZak2eAo+cftFN5/c2sVLl3JIfDNSYCFIj7ff9g+qg9ot6TSKhej7+NcXCgvVq6EsTE2yNHrO/xPo96CzR6+DYnkFuTykr4jM01UG3IZU5JcnCJhUKFrM41qwb/NhE90=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=lzdxmG8G; arc=none smtp.client-ip=192.198.163.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1714514166; x=1746050166;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=oYOaHTepb15vC/qSY7PChf6EcjxS4EQy7wPC86gJYgQ=;
-  b=lzdxmG8Gf0UKJFe6YNJAO7VJbQEYOK42XMxWEJXTZ4w51TSDsRdJo1OZ
-   CbND7GgD8XBoY39yHAFPXYEZsBuQ2rN4kIMCeyMV8mObIzWKj0EoP55I9
-   9Bdtpmc051At0RNEbjBnQOUfyp5U37/xFIZnISMBqo4n0UBJ+zFEarEhp
-   5+T6CJFFcMweA7RDGli/Xf7kQcrdttnXTmGzYfHe2X4pRDlcdcfT+zXlf
-   pn9984WFrKxJ6QQNLjJ5PZqAYk/rhpyfLZDoy264qAFLDhOUiytvBoP8T
-   YZ4AnComArcGg1xDRoSs4BRz2b48PHnRXRpkhd2AZkG1Sh8h1yTPqfJC9
-   A==;
-X-CSE-ConnectionGUID: yxm2rrDhQBisaa+vZ3FskA==
-X-CSE-MsgGUID: EN/uX/m7SlqNp/u1mSGEsQ==
-X-IronPort-AV: E=McAfee;i="6600,9927,11060"; a="20933056"
-X-IronPort-AV: E=Sophos;i="6.07,243,1708416000"; 
-   d="scan'208";a="20933056"
-Received: from fmviesa008.fm.intel.com ([10.60.135.148])
-  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Apr 2024 14:56:04 -0700
-X-CSE-ConnectionGUID: TchCh7r0TamQ1OVH80sp0A==
-X-CSE-MsgGUID: CC2GUAhDQjiPXwvl7epyew==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,243,1708416000"; 
-   d="scan'208";a="26609008"
-Received: from lkp-server01.sh.intel.com (HELO e434dd42e5a1) ([10.239.97.150])
-  by fmviesa008.fm.intel.com with ESMTP; 30 Apr 2024 14:55:58 -0700
-Received: from kbuild by e434dd42e5a1 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1s1vS7-0008df-0v;
-	Tue, 30 Apr 2024 21:55:55 +0000
-Date: Wed, 1 May 2024 05:55:38 +0800
-From: kernel test robot <lkp@intel.com>
-To: Herve Codina <herve.codina@bootlin.com>,
-	Thomas Gleixner <tglx@linutronix.de>, Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzk@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Lee Jones <lee@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-	Horatiu Vultur <horatiu.vultur@microchip.com>,
-	UNGLinuxDriver@microchip.com, Andrew Lunn <andrew@lunn.ch>,
-	Heiner Kallweit <hkallweit1@gmail.com>,
-	Russell King <linux@armlinux.org.uk>,
-	Saravana Kannan <saravanak@google.com>,
-	Bjorn Helgaas <helgaas@kernel.org>,
-	Philipp Zabel <p.zabel@pengutronix.de>,
-	Lars Povlsen <lars.povlsen@microchip.com>,
-	Steen Hegelund <Steen.Hegelund@microchip.com>,
-	Daniel Machon <daniel.machon@microchip.com>,
-	Alexandre Belloni <alexandre.belloni@bootlin.com>
-Cc: oe-kbuild-all@lists.linux.dev, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-pci@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	Allan Nielsen <allan.nielsen@microchip.com>,
-	Luca Ceresoli <luca.ceresoli@bootlin.com>
-Subject: Re: [PATCH 01/17] mfd: syscon: Add reference counting and device
- managed support
-Message-ID: <202405010521.dW27hHxi-lkp@intel.com>
-References: <20240430083730.134918-2-herve.codina@bootlin.com>
+	s=arc-20240116; t=1714514279; c=relaxed/simple;
+	bh=i/PgM4+9YzpPI2JE/sWr4KRAmUULs5TogIsWAyenxRU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=Z5Jk6IVwFp+IMsxPBD5COcj0Mbda4X5GhRLW6NFQYLlEGDDwslI0o3S2cYZf3CPIYjzbUJh/GV+T6Idq2+XhenESN4nLe4vxmTW4z/VLY3nFips2HXPZKsUgHyz4S3uZWWaaGGzhYd1d5whnFDWjA1nUTm9QGnX7TK0omSdqe1k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=coTFXNn6; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 43UKethg001390;
+	Tue, 30 Apr 2024 21:57:31 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=7jhPW16fQo6HuFqRFyf89B8cImkfjn+GX5pu77TR1SI=; b=co
+	TFXNn60mugFAdEwR/rk1bX9OZnL0IrglDSqwbRyCM86GmPpHuDz8D0AEPLEIXReI
+	hdo9LmpsbFHukvu2xZ9atp14ezXNnTYbWP600jSfTAst8TMmNSfwvTFJqQaIlyCS
+	AxHxwzGIbBkA9vT+53N6ZPeu96VsEbU3gGW1yLs/518ZmDXChX/vllnHDBttyval
+	FdTGHaG1DNdJJdUNpgSkmGNxKuSKEPR+x2NvlWmruNelZwUc9lMZelrmsEhuoxo3
+	DDW3E02DL2ys3efX7CFnBDfF2LEwvPevTQoQisg1jnuAoMr3UzlDJRSSNLgXjdJn
+	YRgCp0Rzr0momctfL7cw==
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xthgvv80b-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 30 Apr 2024 21:57:31 +0000 (GMT)
+Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
+	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 43ULvTaL030479
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 30 Apr 2024 21:57:29 GMT
+Received: from [10.110.61.50] (10.80.80.8) by nalasex01b.na.qualcomm.com
+ (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Tue, 30 Apr
+ 2024 14:57:29 -0700
+Message-ID: <33dfa0c5-c43f-79f6-2700-beee2e5d389f@quicinc.com>
+Date: Tue, 30 Apr 2024 14:57:28 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240430083730.134918-2-herve.codina@bootlin.com>
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v20 03/41] usb: host: xhci: Repurpose event handler for
+ skipping interrupter events
+Content-Language: en-US
+To: Mathias Nyman <mathias.nyman@linux.intel.com>,
+        <srinivas.kandagatla@linaro.org>, <mathias.nyman@intel.com>,
+        <perex@perex.cz>, <conor+dt@kernel.org>, <corbet@lwn.net>,
+        <lgirdwood@gmail.com>, <andersson@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <gregkh@linuxfoundation.org>,
+        <Thinh.Nguyen@synopsys.com>, <broonie@kernel.org>,
+        <bgoswami@quicinc.com>, <tiwai@suse.com>, <robh@kernel.org>,
+        <konrad.dybcio@linaro.org>
+CC: <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-sound@vger.kernel.org>, <linux-usb@vger.kernel.org>,
+        <linux-arm-msm@vger.kernel.org>, <linux-doc@vger.kernel.org>,
+        <alsa-devel@alsa-project.org>
+References: <20240425215125.29761-1-quic_wcheng@quicinc.com>
+ <20240425215125.29761-4-quic_wcheng@quicinc.com>
+ <12d29c54-c005-7112-0933-d9d28f11abd6@linux.intel.com>
+From: Wesley Cheng <quic_wcheng@quicinc.com>
+In-Reply-To: <12d29c54-c005-7112-0933-d9d28f11abd6@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01b.na.qualcomm.com (10.47.209.197)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: UId7krUyvkycsAgm6iTt_AwrnACSfBku
+X-Proofpoint-GUID: UId7krUyvkycsAgm6iTt_AwrnACSfBku
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
+ definitions=2024-04-30_13,2024-04-30_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 impostorscore=0
+ adultscore=0 mlxscore=0 spamscore=0 lowpriorityscore=0 bulkscore=0
+ mlxlogscore=999 priorityscore=1501 phishscore=0 malwarescore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2404010003 definitions=main-2404300156
 
-Hi Herve,
+Hi Mathias,
 
-kernel test robot noticed the following build errors:
+On 4/30/2024 4:02 AM, Mathias Nyman wrote:
+> On 26.4.2024 0.50, Wesley Cheng wrote:
+>> Depending on the interrupter use case, the OS may only be used to handle
+>> the interrupter event ring clean up.  In these scenarios, event TRBs 
+>> don't
+>> need to be handled by the OS, so introduce an xhci interrupter flag to 
+>> tag
+>> if the events from an interrupter needs to be handled or not.
+> 
+> Could you elaborate on this a bit.
+> 
+> If I understood correctly the whole point of requesting a secondary xhci 
+> interrupter
+> for the sideband device without ever requesting a real interrupt for it 
+> was to avoid
+> waking up the cpu and calling the interrupt handler.
+> 
 
-[auto build test ERROR on tip/irq/core]
-[also build test ERROR on lee-mfd/for-mfd-next pza/reset/next linus/master v6.9-rc6 next-20240430]
-[cannot apply to lee-mfd/for-mfd-fixes pza/imx-drm/next]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+Yes, this is the correct understanding.  We don't currently register the 
+separate interrupt line (from GIC) for the secondary interrupter, so the 
+main apps proc doesn't get interrupted on events generated on the 
+secondary interrupter.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Herve-Codina/mfd-syscon-Add-reference-counting-and-device-managed-support/20240430-164912
-base:   tip/irq/core
-patch link:    https://lore.kernel.org/r/20240430083730.134918-2-herve.codina%40bootlin.com
-patch subject: [PATCH 01/17] mfd: syscon: Add reference counting and device managed support
-config: i386-buildonly-randconfig-005-20240501 (https://download.01.org/0day-ci/archive/20240501/202405010521.dW27hHxi-lkp@intel.com/config)
-compiler: gcc-13 (Ubuntu 13.2.0-4ubuntu3) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240501/202405010521.dW27hHxi-lkp@intel.com/reproduce)
+> with this flag is seems the normal xhci interrupt handler does get 
+> called for
+> sideband transfer events.
+> 
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202405010521.dW27hHxi-lkp@intel.com/
+Main intention was to utilize the refactoring you did to expose the 
+xhci_handle_event_trb() for both handling events on the main 
+interrupter, as well as the logic to skip events on the secondary 
+interrupter.
 
-All error/warnings (new ones prefixed by >>):
+https://lore.kernel.org/linux-usb/44a3d4db-7759-dd93-782a-1efbebfdb22c@linux.intel.com/
 
-   In file included from drivers/misc/sram.c:18:
->> include/linux/mfd/syscon.h:76:15: error: expected ';' before 'void'
-      76 | static intline void syscon_put_regmap(struct regmap *regmap)
-         |               ^~~~~
-         |               ;
->> include/linux/mfd/syscon.h:76:21: warning: no previous prototype for 'syscon_put_regmap' [-Wmissing-prototypes]
-      76 | static intline void syscon_put_regmap(struct regmap *regmap)
-         |                     ^~~~~~~~~~~~~~~~~
+>>
+>> Signed-off-by: Wesley Cheng <quic_wcheng@quicinc.com>
+>> ---
+>>   drivers/usb/host/xhci-ring.c | 17 +++++++++++++----
+>>   drivers/usb/host/xhci.h      |  1 +
+>>   2 files changed, 14 insertions(+), 4 deletions(-)
+>>
+>> diff --git a/drivers/usb/host/xhci-ring.c b/drivers/usb/host/xhci-ring.c
+>> index 52278afea94b..6c7a21f522cd 100644
+>> --- a/drivers/usb/host/xhci-ring.c
+>> +++ b/drivers/usb/host/xhci-ring.c
+>> @@ -2973,14 +2973,22 @@ static int handle_tx_event(struct xhci_hcd *xhci,
+>>   }
+>>   /*
+>> - * This function handles one OS-owned event on the event ring. It may 
+>> drop
+>> - * xhci->lock between event processing (e.g. to pass up port status 
+>> changes).
+>> + * This function handles one OS-owned event on the event ring, or 
+>> ignores one event
+>> + * on interrupters which are non-OS owned. It may drop xhci->lock 
+>> between event
+>> + * processing (e.g. to pass up port status changes).
+>>    */
+>>   static int xhci_handle_event_trb(struct xhci_hcd *xhci, struct 
+>> xhci_interrupter *ir,
+>>                    union xhci_trb *event)
+>>   {
+>>       u32 trb_type;
+>> +    /*
+>> +     * Some interrupters do not need to handle event TRBs, as they 
+>> may be
+>> +     * managed by another entity, but rely on the OS to clean up.
+>> +     */
+>> +    if (ir->skip_events)
+>> +        return 0;
+>> +
+> 
+> I think we need another solution than a skip_events flag.
+> 
+> To make secondary xhci interrupters more useful in general it would make 
+> more
+> sense to add an interrupt handler function pointer to struct 
+> xhci_interrupter.
+> 
+> Then call that function instead of xhci_handle_event_trb()
+>
 
+I agree that is how it should be for when support for actually utilizing 
+secondary interrupters for routing events to different targets (instead 
+of offloading).  However, since I don't have an existing use case that 
+will exercise this functionality, its a bit difficult to verify that it 
+should be working the way it was intended.
 
-vim +76 include/linux/mfd/syscon.h
+> --- a/drivers/usb/host/xhci-ring.c
+> +++ b/drivers/usb/host/xhci-ring.c
+> @@ -3098,8 +3098,8 @@ static int xhci_handle_events(struct xhci_hcd 
+> *xhci, struct xhci_interrupter *ir
+> 
+>          /* Process all OS owned event TRBs on this event ring */
+>          while (unhandled_event_trb(ir->event_ring)) {
+> -               err = xhci_handle_event_trb(xhci, ir, 
+> ir->event_ring->dequeue);
+> -
+> +               if (ir->handle_event_trb)
+> +                       err = ir->handle_event_trb(xhci, ir, 
+> ir->event_ring->dequeue);
+>                  /*
+>                   * If half a segment of events have been handled in one 
+> go then
+>                   * update ERDP, and force isoc trbs to interrupt more 
+> often
+> 
+> The handler function would be passed to, and function pointer set in
+> xhci_create_secondary_interrupter()
+> 
+> For primary interrupter it would always be set to xhci_handle_event_trb()
+> 
 
-    75	
-  > 76	static intline void syscon_put_regmap(struct regmap *regmap)
-    77	{
-    78	}
-    79	
+Yes, definitely agree with this for when we introduce support for 
+handling the secondary interrupter GIC line within the apps proc itself. 
+  Would prefer if we took up that effort in another series, but willing 
+to go back to the skip events loop previously implemented if the above 
+change isn't where you want to go with this.
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Thanks
+Wesley Cheng
+
+> Thanks
+> Mathias
+> 
 
