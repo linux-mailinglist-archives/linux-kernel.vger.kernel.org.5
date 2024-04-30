@@ -1,192 +1,152 @@
-Return-Path: <linux-kernel+bounces-163945-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-163932-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8F0398B7669
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 14:56:59 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C6FB78B762B
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 14:50:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 44A522854C1
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 12:56:58 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EB3E71C21F3F
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 12:50:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A9EA517332F;
-	Tue, 30 Apr 2024 12:55:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 01C05171648;
+	Tue, 30 Apr 2024 12:50:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=crapouillou.net header.i=@crapouillou.net header.b="pRrgql8g"
-Received: from aposti.net (aposti.net [89.234.176.197])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="IcoXrQ5X"
+Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 470CD17279C;
-	Tue, 30 Apr 2024 12:55:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=89.234.176.197
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 727B245026
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 12:50:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714481753; cv=none; b=CkwTiMwyWOuq7coOE1aMeOvRuqxOadIAeE2k/StM/kStq3AFaGg6LugHmH6mSAgtRCDLdbdNzIGBhq6qWurt9+d5A8Ztjpy0rQWQrPp93HYegpMlcmI+3HPcJSLfrv29/UFHdmydwkmvqAMzw9Y8WeXfKFoHd9rjSYq0lJs/cOo=
+	t=1714481450; cv=none; b=V169p4jqxW1jiKKWxdtbJ6suEvydYsjOyJMw7jU/f8wJL/rutCzDiY963fyllalk6Bf/RTaLwvy88TdoyDSnNRm5sWbsB/WmWsZYEYkUqtAjA3xwmok8m8OvCIiQXnSo3PByhDIy67S/iUVLwUuE1ktABG5m9b5alxNOBIxDOj4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714481753; c=relaxed/simple;
-	bh=h1L/HFA86d8yYp7QrNCUAGu7UScmEPtBVcWRfNzKEnY=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=CmiubbLhj9Yw3/BbtK/WVvgSUYhAWwkfpwCcOJ9jKWnSVq5hC7ZV8Vf3/zDTRjnmrzKGFoaCESA1/gVuoZKb61WF2/CFWUeYxml3Fv4youWqQnMJH66+y0hKoRXzbKDl5JT7jFSb2Xsks9DkhGRcijx/HYERjabjh66Eck44hmU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=crapouillou.net; spf=pass smtp.mailfrom=crapouillou.net; dkim=pass (1024-bit key) header.d=crapouillou.net header.i=@crapouillou.net header.b=pRrgql8g; arc=none smtp.client-ip=89.234.176.197
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=crapouillou.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=crapouillou.net
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
-	s=mail; t=1714481392;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=rwUo9fW2TVE8Ef255vklCN/02eGVq/9QqsXdrnT9H4A=;
-	b=pRrgql8gXGvkBcFrqAfrVkBEdBtDICNZvNLy29XU8ZUF5SRr5aoK8WgojRsT2aOLGS52Uh
-	84Ok/Vzr/82s8p+FIfxrabWY+HgGdoDDRX/e1JfdXR5n/6PABifzC5YGvfzOk0C2rltE9O
-	tnRDIpTubyB8TDEDfL5haERyG2zYtcU=
-Message-ID: <1a72ad2d6f72805de2c99db8ba8ea984711da81b.camel@crapouillou.net>
-Subject: Re: [PATCH 11/15] i2c: jz4780: use 'time_left' variable with
- wait_for_completion_timeout()
-From: Paul Cercueil <paul@crapouillou.net>
-To: Wolfram Sang <wsa+renesas@sang-engineering.com>, 
-	linux-i2c@vger.kernel.org
-Cc: Andi Shyti <andi.shyti@kernel.org>, linux-mips@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Date: Tue, 30 Apr 2024 14:49:50 +0200
-In-Reply-To: <20240427203611.3750-12-wsa+renesas@sang-engineering.com>
-References: <20240427203611.3750-1-wsa+renesas@sang-engineering.com>
-	 <20240427203611.3750-12-wsa+renesas@sang-engineering.com>
-Autocrypt: addr=paul@crapouillou.net; prefer-encrypt=mutual;
- keydata=mQENBF0KhcEBCADkfmrzdTOp/gFOMQX0QwKE2WgeCJiHPWkpEuPH81/HB2dpjPZNW03ZM
- LQfECbbaEkdbN4YnPfXgcc1uBe5mwOAPV1MBlaZcEt4M67iYQwSNrP7maPS3IaQJ18ES8JJ5Uf5Uz
- FZaUawgH+oipYGW+v31cX6L3k+dGsPRM0Pyo0sQt52fsopNPZ9iag0iY7dGNuKenaEqkYNjwEgTtN
- z8dt6s3hMpHIKZFL3OhAGi88wF/21isv0zkF4J0wlf9gYUTEEY3Eulx80PTVqGIcHZzfavlWIdzhe
- +rxHTDGVwseR2Y1WjgFGQ2F+vXetAB8NEeygXee+i9nY5qt9c07m8mzjABEBAAG0JFBhdWwgQ2VyY
- 3VlaWwgPHBhdWxAY3JhcG91aWxsb3UubmV0PokBTgQTAQoAOBYhBNdHYd8OeCBwpMuVxnPua9InSr
- 1BBQJdCoXBAhsDBQsJCAcCBhUKCQgLAgQWAgMBAh4BAheAAAoJEHPua9InSr1BgvIH/0kLyrI3V0f
- 33a6D3BJwc1grbygPVYGuC5l5eMnAI+rDmLR19E2yvibRpgUc87NmPEQPpbbtAZt8On/2WZoE5OIP
- dlId/AHNpdgAtGXo0ZX4LGeVPjxjdkbrKVHxbcdcnY+zzaFglpbVSvp76pxqgVg8PgxkAAeeJV+ET
- 4t0823Gz2HzCL/6JZhvKAEtHVulOWoBh368SYdolp1TSfORWmHzvQiCCCA+j0cMkYVGzIQzEQhX7U
- rf9N/nhU5/SGLFEi9DcBfXoGzhyQyLXflhJtKm3XGB1K/pPulbKaPcKAl6rIDWPuFpHkSbmZ9r4KF
- lBwgAhlGy6nqP7O3u7q23hRW5AQ0EXQqFwQEIAMo+MgvYHsyjX3Ja4Oolg1Txzm8woj30ch2nACFC
- qaO0R/1kLj2VVeLrDyQUOlXx9PD6IQI4M8wy8m0sR4wV2p/g/paw7k65cjzYYLh+FdLNyO7IWYXnd
- JO+wDPi3aK/YKUYepqlP+QsmaHNYNdXEQDRKqNfJg8t0f5rfzp9ryxd1tCnbV+tG8VHQWiZXNqN70
- 62DygSNXFUfQ0vZ3J2D4oAcIAEXTymRQ2+hr3Hf7I61KMHWeSkCvCG2decTYsHlw5Erix/jYWqVOt
- X0roOOLqWkqpQQJWtU+biWrAksmFmCp5fXIg1Nlg39v21xCXBGxJkxyTYuhdWyu1yDQ+LSIUAEQEA
- AYkBNgQYAQoAIBYhBNdHYd8OeCBwpMuVxnPua9InSr1BBQJdCoXBAhsMAAoJEHPua9InSr1B4wsH/
- Az767YCT0FSsMNt1jkkdLCBi7nY0GTW+PLP1a4zvVqFMo/vD6uz1ZflVTUAEvcTi3VHYZrlgjcxmc
- Gu239oruqUS8Qy/xgZBp9KF0NTWQSl1iBfVbIU5VV1vHS6r77W5x0qXgfvAUWOH4gmN3MnF01SH2z
- McLiaUGF+mcwl15rHbjnT3Nu2399aSE6cep86igfCAyFUOXjYEGlJy+c6UyT+DUylpjQg0nl8MlZ/
- 7Whg2fAU9+FALIbQYQzGlT4c71SibR9T741jnegHhlmV4WXXUD6roFt54t0MSAFSVxzG8mLcSjR2c
- LUJ3NIPXixYUSEn3tQhfZj07xIIjWxAYZo=
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+	s=arc-20240116; t=1714481450; c=relaxed/simple;
+	bh=S4K/2cmpUrfA9WmOXZYhE508OZ2TD020p6sfzKaml8s=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=g8a4s6B1uraOvGHoEsAGoOQ03sWD+8hVEByywWwwVMi9pa90TehQwUhcGJKiHSU5D2YGC/rYALmbdreF5+y1uTDOPvhVw7fB7FRnpL2ldil1E00zIvozlWwsTP/dMKWdrDos/n7XfuE4bBJsPG5l09l8TS74wsefh3uYaKCrit0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=IcoXrQ5X; arc=none smtp.client-ip=209.85.218.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-a55bf737cecso669189666b.0
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 05:50:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1714481446; x=1715086246; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=PiyLrbcdCVqy4NleK3Wr91InaBV+aCWg5BCtmdVPUws=;
+        b=IcoXrQ5XkE/0dMA+Xm19Lp7tE/ZfIrreqgjOd1xTRod+DEc++KOvsqWV4cTP017GiD
+         wxWA5JMhhPrjHZXZk3CnTgp6UgeaV9behus7MXbA8Micwa6lh5XbdNFa34uZ/vYnqoYI
+         MoluA/vYKcyr9j3n/A0AnUJZiQgJAgZM6UMy1CRakBbefkCeZcYWZ72UX4T0LY4eXlbv
+         zX3bouj2sjxWt4Dj7jXqa1PyL4ZaLxsVR4ydanK2O3bVeAi11vJBWfrU+3Cbf5ZflsKc
+         ONkjhf8CioeH/LJUa0rfm9k+Dbfh5Kz5MNrsCtUGvaUxFVwCfx8HSmHY/1Uj1cQfxMYv
+         hvEg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714481446; x=1715086246;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=PiyLrbcdCVqy4NleK3Wr91InaBV+aCWg5BCtmdVPUws=;
+        b=kTUaFwM1vSaZKVuE2sYG/5d+PBzX9Yyqb1zOuSQp5VxgjZ1FafEP2wI96P2m9b6hKP
+         RVVgyMNFL9u+2oooQwtSDMBBISs7fPAgKlRucfKKjqqsiaL5ypu/tm3xvdHM7HtSLLJi
+         djh+yRQtTtflc4XFt8gRX96dZxl3LbDQBd/+XrK6UsZs/Ldnerk6yaRgxJ0DelxI+IRv
+         oRK6J0gPTkbdH5LFQQze4mN8dYtOE653NBQ6YiRr2Cl9AoaZhMtHjq7fnd662xd++Tb8
+         6Yu0HCy8OxH7kxRdaRj8lLNISIBV2apQK6k0uziFX1kWzpCK9vYcWFU7Gd033K3R7dRU
+         08ZA==
+X-Forwarded-Encrypted: i=1; AJvYcCUGxldfKzZ3Yn9zBV62semTYc+I5OUk/+avzLo//odPoqbMPoW69TOpKY7mgP6akEBkZjNNc3P+K2CWzpX+TKSqKMJJcOkLousvUjaY
+X-Gm-Message-State: AOJu0YyzxqxW7LbExsCfQB0QGZqYA/JlLKkGoYM58qFoCIMnjQ8/ZUVC
+	EMW9lxik1FZaJIW47aECXOf62EW4RT+2oZsVh8h+uEPxQ5sqw5ShlEXItkwjEPM=
+X-Google-Smtp-Source: AGHT+IGXHVEzHP4YowE90reqc5tdTfM/OhXF9If/ZUuwRokjnwdtEkX7kyOqr5GK1QsclcwOixY0YA==
+X-Received: by 2002:a17:906:dfc5:b0:a58:bd1b:a05f with SMTP id jt5-20020a170906dfc500b00a58bd1ba05fmr9322033ejc.68.1714481445375;
+        Tue, 30 Apr 2024 05:50:45 -0700 (PDT)
+Received: from localhost ([102.222.70.76])
+        by smtp.gmail.com with ESMTPSA id d18-20020a1709064c5200b00a58aff25d77sm6340151ejw.193.2024.04.30.05.50.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 30 Apr 2024 05:50:44 -0700 (PDT)
+Date: Tue, 30 Apr 2024 15:50:40 +0300
+From: Dan Carpenter <dan.carpenter@linaro.org>
+To: Vlastimil Babka <vbabka@suse.cz>
+Cc: Matthew Wilcox <willy@infradead.org>, Christoph Lameter <cl@linux.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Pekka Enberg <penberg@kernel.org>,
+	David Rientjes <rientjes@google.com>,
+	Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Hyeonggon Yoo <42.hyeyoo@gmail.com>, linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
+	"Lameter, Christopher" <cl@os.amperecomputing.com>
+Subject: Re: [PATCH] mm/slab: make __free(kfree) accept error pointers
+Message-ID: <49e072da-3d2c-4246-8b7e-7f25513afde3@moroto.mountain>
+References: <285fee25-b447-47a1-9e00-3deb8f9af53e@moroto.mountain>
+ <Zi8N66yehahl6D59@casper.infradead.org>
+ <6a10be7d-b556-42a9-852c-b6ed821ec41e@suse.cz>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <6a10be7d-b556-42a9-852c-b6ed821ec41e@suse.cz>
 
-Le samedi 27 avril 2024 =C3=A0 22:36 +0200, Wolfram Sang a =C3=A9crit=C2=A0=
-:
-> There is a confusing pattern in the kernel to use a variable named
-> 'timeout' to
-> store the result of wait_for_completion_timeout() causing patterns
-> like:
->=20
-> 	timeout =3D wait_for_completion_timeout(...)
-> 	if (!timeout) return -ETIMEDOUT;
->=20
-> with all kinds of permutations. Use 'time_left' as a variable to make
-> the code
-> self explaining.
->=20
-> Fix to the proper variable type 'unsigned long' while here.
->=20
-> Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+On Tue, Apr 30, 2024 at 02:09:10PM +0200, Vlastimil Babka wrote:
+> On 4/29/24 5:03 AM, Matthew Wilcox wrote:
+> > On Sun, Apr 28, 2024 at 05:26:44PM +0300, Dan Carpenter wrote:
+> >> Currently, if an automatically freed allocation is an error pointer that
+> >> will lead to a crash.  An example of this is in wm831x_gpio_dbg_show().
+> >> 
+> >>    171	char *label __free(kfree) = gpiochip_dup_line_label(chip, i);
+> >>    172	if (IS_ERR(label)) {
+> >>    173		dev_err(wm831x->dev, "Failed to duplicate label\n");
+> >>    174		continue;
+> >>    175  }
+> >> 
+> >> The auto clean up function should check for error pointers as well,
+> >> otherwise we're going to keep hitting issues like this.
+> >> 
+> >> Fixes: 54da6a092431 ("locking: Introduce __cleanup() based infrastructure")
+> >> Cc: <stable@vger.kernel.org>
+> >> Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
+> >> ---
+> >> Obviously, the fixes tag isn't very fair but it will tell the -stable
+> >> tools how far to backport this.
+> >> 
+> >>  include/linux/slab.h  | 4 ++--
+> >>  1 files changed, 2 insertions(+), 2 deletions(-)
+> >> 
+> >> diff --git a/include/linux/slab.h b/include/linux/slab.h
+> >> index 4cc37ef22aae..5f5766219375 100644
+> >> --- a/include/linux/slab.h
+> >> +++ b/include/linux/slab.h
+> >> @@ -279,7 +279,7 @@ void kfree(const void *objp);
+> >>  void kfree_sensitive(const void *objp);
+> >>  size_t __ksize(const void *objp);
+> >>  
+> >> -DEFINE_FREE(kfree, void *, if (_T) kfree(_T))
+> >> +DEFINE_FREE(kfree, void *, if (!IS_ERR_OR_NULL(_T)) kfree(_T))
+> > 
+> > Wait, why do we check 'if (_T)' at all?  kfree() already handles NULL
+> > pointers just fine.  I wouldn't be averse to making it handle error
+> > pointers either.
+> 
+> Making kfree() handle IS_ERR() is perhaps a discussion for something else
+> than a stable fix. But Christoph has a point that kfree() checks
+> ZERO_OR_NULL_PTR. Here we check IS_ERR_OR_NULL. How about we checked only
+> IS_ERR here so it makes some sense?
+> 
 
-Acked-by: Paul Cercueil <paul@crapouillou.net>
+I wondered why Peter Z wrote it like this as well...  I think he did
+it so the compiler can figure out which calls to kfree() are unnecessary
+and remove them.  These functions are inline and kfree() is not.  I
+haven't measured to see if it actually results in a space savings but
+the theory is sound.
 
-Cheers,
--Paul
-
-> ---
-> =C2=A0drivers/i2c/busses/i2c-jz4780.c | 22 +++++++++++-----------
-> =C2=A01 file changed, 11 insertions(+), 11 deletions(-)
->=20
-> diff --git a/drivers/i2c/busses/i2c-jz4780.c
-> b/drivers/i2c/busses/i2c-jz4780.c
-> index 55035cca0ae5..7951891d6b97 100644
-> --- a/drivers/i2c/busses/i2c-jz4780.c
-> +++ b/drivers/i2c/busses/i2c-jz4780.c
-> @@ -565,7 +565,7 @@ static inline int jz4780_i2c_xfer_read(struct
-> jz4780_i2c *i2c,
-> =C2=A0				=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 int idx)
-> =C2=A0{
-> =C2=A0	int ret =3D 0;
-> -	long timeout;
-> +	unsigned long time_left;
-> =C2=A0	int wait_time =3D JZ4780_I2C_TIMEOUT * (len + 5);
-> =C2=A0	unsigned short tmp;
-> =C2=A0	unsigned long flags;
-> @@ -600,10 +600,10 @@ static inline int jz4780_i2c_xfer_read(struct
-> jz4780_i2c *i2c,
-> =C2=A0
-> =C2=A0	spin_unlock_irqrestore(&i2c->lock, flags);
-> =C2=A0
-> -	timeout =3D wait_for_completion_timeout(&i2c->trans_waitq,
-> -					=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0
-> msecs_to_jiffies(wait_time));
-> +	time_left =3D wait_for_completion_timeout(&i2c->trans_waitq,
-> +						msecs_to_jiffies(wai
-> t_time));
-> =C2=A0
-> -	if (!timeout) {
-> +	if (!time_left) {
-> =C2=A0		dev_err(&i2c->adap.dev, "irq read timeout\n");
-> =C2=A0		dev_dbg(&i2c->adap.dev, "send cmd count:%d=C2=A0 %d\n",
-> =C2=A0			i2c->cmd, i2c->cmd_buf[i2c->cmd]);
-> @@ -627,7 +627,7 @@ static inline int jz4780_i2c_xfer_write(struct
-> jz4780_i2c *i2c,
-> =C2=A0{
-> =C2=A0	int ret =3D 0;
-> =C2=A0	int wait_time =3D JZ4780_I2C_TIMEOUT * (len + 5);
-> -	long timeout;
-> +	unsigned long time_left;
-> =C2=A0	unsigned short tmp;
-> =C2=A0	unsigned long flags;
-> =C2=A0
-> @@ -655,14 +655,14 @@ static inline int jz4780_i2c_xfer_write(struct
-> jz4780_i2c *i2c,
-> =C2=A0
-> =C2=A0	spin_unlock_irqrestore(&i2c->lock, flags);
-> =C2=A0
-> -	timeout =3D wait_for_completion_timeout(&i2c->trans_waitq,
-> -					=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0
-> msecs_to_jiffies(wait_time));
-> -	if (timeout && !i2c->stop_hold) {
-> +	time_left =3D wait_for_completion_timeout(&i2c->trans_waitq,
-> +						msecs_to_jiffies(wai
-> t_time));
-> +	if (time_left && !i2c->stop_hold) {
-> =C2=A0		unsigned short i2c_sta;
-> =C2=A0		int write_in_process;
-> =C2=A0
-> -		timeout =3D JZ4780_I2C_TIMEOUT * 100;
-> -		for (; timeout > 0; timeout--) {
-> +		time_left =3D JZ4780_I2C_TIMEOUT * 100;
-> +		for (; time_left > 0; time_left--) {
-> =C2=A0			i2c_sta =3D jz4780_i2c_readw(i2c,
-> JZ4780_I2C_STA);
-> =C2=A0
-> =C2=A0			write_in_process =3D (i2c_sta &
-> JZ4780_I2C_STA_MSTACT) ||
-> @@ -673,7 +673,7 @@ static inline int jz4780_i2c_xfer_write(struct
-> jz4780_i2c *i2c,
-> =C2=A0		}
-> =C2=A0	}
-> =C2=A0
-> -	if (!timeout) {
-> +	if (!time_left) {
-> =C2=A0		dev_err(&i2c->adap.dev, "write wait timeout\n");
-> =C2=A0		ret =3D -EIO;
-> =C2=A0	}
+regards,
+dan carpenter
 
 
