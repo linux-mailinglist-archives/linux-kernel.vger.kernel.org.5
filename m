@@ -1,125 +1,170 @@
-Return-Path: <linux-kernel+bounces-163819-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-163820-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 104D08B7255
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 13:07:10 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A5BD38B725F
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 13:07:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3340F1C22B0E
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 11:07:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D701C1C21E80
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 11:07:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 654E712D1E8;
-	Tue, 30 Apr 2024 11:07:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="j5oqDNOQ"
-Received: from mail-oo1-f48.google.com (mail-oo1-f48.google.com [209.85.161.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E5C4D12D74F;
+	Tue, 30 Apr 2024 11:07:22 +0000 (UTC)
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4FFD612C805
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 11:07:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D88BC1E50A;
+	Tue, 30 Apr 2024 11:07:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714475224; cv=none; b=WyH0OFfcYReUyQXd1v/yYi5Vs1bmnEtRajPo1AF92UTaSQ2cXwvzxN1IefIsiwPtsYbu9jxQU65qTNygF4kRVxY67QEHnzQ3GNCbPx0aaFKIYlU6eLu7UAJUShA/iy/RdToV+D1ccd4/HF7rcgkHO+AZC+hpsSzJo4uctOU3I7w=
+	t=1714475242; cv=none; b=JUWz8hmjhlUQBYGWWj+bWn15Q42ztMLCG9fR6Jle3FDAWiZxpC6PcJpdPgYQpZqNPyd0qMqRMHLb32bY+gNFeHYCd5Gmg86zSuNB3BfhdTdHthj9wTF2j5/Hfx0TBSgaf/DTeUDQIlKcjYdh7OPSHklpYPIKyVLnxz+/zgePwlM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714475224; c=relaxed/simple;
-	bh=+6cV7rhQy0tyqmlQOhmCF7WmeVnptWzEPHeS6lT3oBA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=mY6YYXVOQPsCEu5yiLxQXJxjEMqu2b8p99pP6q7B6OVkwceKo4JJIUDidqsNnwPRaczqbmTk8iIpO9/Rp0MROIOglJby1cAbxRjt1R7q6sL/z5mYAe1F0FAuUfcLy0esYvHAQnr6Kahzcpf5ZvZI0iXGs+kRhA8X0DP70RLmtsQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=j5oqDNOQ; arc=none smtp.client-ip=209.85.161.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-oo1-f48.google.com with SMTP id 006d021491bc7-5aa17c29ba0so3714774eaf.3
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 04:07:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1714475222; x=1715080022; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=JlFLonT6AbxZce1grlaceJ+UmWNTD7jKyAmm8+eZz5A=;
-        b=j5oqDNOQqQauMBOj/sZxhKQI62RwyUm8Zb9wcuXvP+wlTiuuDEq3rzLJezH3nL9KML
-         WTKx4SJfCmnwDbF8x+ncK2/RIocgcPiV5/7ZQBoyPlylR+YL7Cnpz9hkJkKe82URr405
-         iaErhH7KEpAV1kYDg2m8Lw+WcSwDcb5e18K1aOJpHT0zBUk5JoPhhNqoMFn58VwbZWTr
-         lbmwfRTU6lis+Mgwia5l0iokmf8GfaT5bNftZoa7OrSimoKrjNDfAhsRHlploRnxSE8s
-         zvA2y3L8zQ+5GzwxrbRnj6oiL/dDoFXRPKHzbT8VRdM/cSpjzY86hSqfNZxvCcgAkHT2
-         44Wg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714475222; x=1715080022;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=JlFLonT6AbxZce1grlaceJ+UmWNTD7jKyAmm8+eZz5A=;
-        b=OWAdC+Bna1E86pi60h57p7HiV2QRY7r7tOMgqdtY0H+NvD60eX8DgnUEEvBiLoscON
-         FjHq6HKEDyERVeN/axC6fnYi9sbIeT7rX5NWsEs+hGAtdPOj+daMWEK6iQy9MdzXyI/h
-         T+KG7sgOkgL1dMY8L6IEQrLiA/6Tt06MisN7FBWollUQ1iOO/6VaZWClAnOBpXJT0oUq
-         B/36AYXrkyJYxO8EjL5HNqb1f+DN6Wv2Q/dZ+k0DN51uWvHI7bfXYJhsjUPs3yAa3tSp
-         92UpVmGch5J7Ap+PsxTyCpdnQbvww7xF7pPF3C00NmC/UR6Q6zw2D3LvSiVdnJIe9ZHw
-         UgbQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXyPlE4zSbQ07mFidsYC3kQP0kiJLcWKFHL7OJ5QD3QPaLMJpqVmm1N1Ke4eUQSQAC3cRCy3CSZdKBNTnTV4M+YbPWu/ICtuydBY/3S
-X-Gm-Message-State: AOJu0YxACHX9clhZIoFRHUZ5FUuAe6E5eCk7VvaHnITaldF0uzeNoy51
-	w0suwgQUr9u9VqaPzOaGvojr0HN8/AkBOXSn1mltcxJIVqx+/AANB0alwFbzZnB5y38VmCm5V54
-	GntWsrucWvGOw7VzW+ry0PNh8MJdKpODcvZe1jQ==
-X-Google-Smtp-Source: AGHT+IFhPeJXeV1s//xKAbfSLFyLypE5EQb5yNM836B9rqVy61LRxN3Mxm8oY0UDLV94lhjAp+2c4sfuf0XgokC2zZQ=
-X-Received: by 2002:a4a:d46:0:b0:5ac:c39b:3a7a with SMTP id
- 67-20020a4a0d46000000b005acc39b3a7amr16090427oob.1.1714475222500; Tue, 30 Apr
- 2024 04:07:02 -0700 (PDT)
+	s=arc-20240116; t=1714475242; c=relaxed/simple;
+	bh=3qxr+TObkd/zG873vQZ3MoGhZ/M55hk6OTuRvE2QsSQ=;
+	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=AFqv/67FPfaNyLOMxtwX9zQM/pNn412yk/TKwHAG15kh7SnhUR4X//5SGkrmGKrhFL/MPvBwfj2PozNC2BAaguatnFYWbtYkNT37Mx4z5UDRQCJXb0E6qtOneqWAJNWLQ5DpAhfGBCtupiEiuYp/bgMg2WQOjGK34ESNLGxNUTs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.18.186.216])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4VTHQW5wKlz6J6mX;
+	Tue, 30 Apr 2024 19:04:35 +0800 (CST)
+Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
+	by mail.maildlp.com (Postfix) with ESMTPS id 34773140B2A;
+	Tue, 30 Apr 2024 19:07:16 +0800 (CST)
+Received: from localhost (10.122.247.231) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Tue, 30 Apr
+ 2024 12:07:15 +0100
+Date: Tue, 30 Apr 2024 12:07:14 +0100
+From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+To: Gavin Shan <gshan@redhat.com>
+CC: Thomas Gleixner <tglx@linutronix.de>, Peter Zijlstra
+	<peterz@infradead.org>, <linux-pm@vger.kernel.org>,
+	<loongarch@lists.linux.dev>, <linux-acpi@vger.kernel.org>,
+	<linux-arch@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<linux-arm-kernel@lists.infradead.org>, <kvmarm@lists.linux.dev>,
+	<x86@kernel.org>, Russell King <linux@armlinux.org.uk>, "Rafael J . Wysocki"
+	<rafael@kernel.org>, Miguel Luis <miguel.luis@oracle.com>, James Morse
+	<james.morse@arm.com>, Salil Mehta <salil.mehta@huawei.com>, "Jean-Philippe
+ Brucker" <jean-philippe@linaro.org>, Catalin Marinas
+	<catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, Marc Zyngier
+	<maz@kernel.org>, Hanjun Guo <guohanjun@huawei.com>, Ingo Molnar
+	<mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Dave Hansen
+	<dave.hansen@linux.intel.com>, <linuxarm@huawei.com>, <justin.he@arm.com>,
+	<jianyong.wu@arm.com>, Lorenzo Pieralisi <lpieralisi@kernel.org>, "Sudeep
+ Holla" <sudeep.holla@arm.com>
+Subject: Re: [PATCH v8 05/16] ACPI: processor: Add
+ acpi_get_processor_handle() helper
+Message-ID: <20240430120714.00007ee3@huawei.com>
+In-Reply-To: <63f7c71a-fa01-4604-8fc6-9f52b5b31d6b@redhat.com>
+References: <20240426135126.12802-1-Jonathan.Cameron@huawei.com>
+	<20240426135126.12802-6-Jonathan.Cameron@huawei.com>
+	<63f7c71a-fa01-4604-8fc6-9f52b5b31d6b@redhat.com>
+Organization: Huawei Technologies R&D (UK) Ltd.
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.29; x86_64-w64-mingw32)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240429111537.2369227-1-peter.griffin@linaro.org>
- <20240429111537.2369227-4-peter.griffin@linaro.org> <8b3c9d34-15d5-4aac-b725-4cc25e469a58@kernel.org>
-In-Reply-To: <8b3c9d34-15d5-4aac-b725-4cc25e469a58@kernel.org>
-From: Peter Griffin <peter.griffin@linaro.org>
-Date: Tue, 30 Apr 2024 12:06:51 +0100
-Message-ID: <CADrjBPrSLpjsgHBncYG5cfh6nnnFMv-vsk3Uq9PXsBa2JHRf7w@mail.gmail.com>
-Subject: Re: [PATCH v4 3/4] arm64: dts: exynos: gs101: Add ufs and ufs-phy dt nodes
-To: Krzysztof Kozlowski <krzk@kernel.org>
-Cc: robh@kernel.org, krzk+dt@kernel.org, conor+dt@kernel.org, 
-	alim.akhtar@samsung.com, devicetree@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, tudor.ambarus@linaro.org, 
-	andre.draszik@linaro.org, saravanak@google.com, willmcvicker@google.com, 
-	kernel-team@android.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: lhrpeml100006.china.huawei.com (7.191.160.224) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
 
-Hi Krzysztof,
+On Tue, 30 Apr 2024 14:26:06 +1000
+Gavin Shan <gshan@redhat.com> wrote:
 
-On Mon, 29 Apr 2024 at 18:30, Krzysztof Kozlowski <krzk@kernel.org> wrote:
->
-> On 29/04/2024 13:15, Peter Griffin wrote:
-> > +             ufs_0: ufs@14700000 {
-> > +                     compatible = "google,gs101-ufs";
-> > +                     reg = <0x14700000 0x200>,
-> > +                           <0x14701100 0x200>,
-> > +                           <0x14780000 0xa000>,
-> > +                           <0x14600000 0x100>;
-> > +                     reg-names = "hci", "vs_hci", "unipro", "ufsp";
-> > +                     interrupts = <GIC_SPI 532 IRQ_TYPE_LEVEL_HIGH 0>;
-> > +                     clocks = <&cmu_hsi2 CLK_GOUT_HSI2_UFS_EMBD_I_ACLK>,
-> > +                              <&cmu_hsi2 CLK_GOUT_HSI2_UFS_EMBD_I_CLK_UNIPRO>,
-> > +                              <&cmu_hsi2 CLK_GOUT_HSI2_UFS_EMBD_I_FMP_CLK>,
-> > +                              <&cmu_hsi2 CLK_GOUT_HSI2_QE_UFS_EMBD_HSI2_ACLK>,
-> > +                              <&cmu_hsi2 CLK_GOUT_HSI2_QE_UFS_EMBD_HSI2_PCLK>,
-> > +                              <&cmu_hsi2 CLK_GOUT_HSI2_SYSREG_HSI2_PCLK>;
-> > +                     clock-names = "core_clk", "sclk_unipro_main", "fmp",
-> > +                                   "aclk", "pclk", "sysreg";
-> > +                     freq-table-hz = <0 0>, <0 0>, <0 0>, <0 0>, <0 0>, <0 0>;
-> > +                     pinctrl-0 = <&ufs_rst_n &ufs_refclk_out>;
-> > +                     pinctrl-names = "default";
-> > +                     phys = <&ufs_0_phy>;
-> > +                     phy-names = "ufs-phy";
-> > +                     samsung,sysreg = <&sysreg_hsi2 0x710>;
-> > +                     status = "disabled";
-> > +             };
+> On 4/26/24 23:51, Jonathan Cameron wrote:
+> > If CONFIG_ACPI_PROCESSOR provide a helper to retrieve the
+> > acpi_handle for a given CPU allowing access to methods
+> > in DSDT.
+> > 
+> > Tested-by: Miguel Luis <miguel.luis@oracle.com>
+> > Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+> > 
+> > ---
+> > v8: Code simplification suggested by Rafael.
+> >      Fixup ;; spotted by Gavin
+> > ---
+> >   drivers/acpi/acpi_processor.c | 11 +++++++++++
+> >   include/linux/acpi.h          |  7 +++++++
+> >   2 files changed, 18 insertions(+)
+> >   
+> 
+> Reviewed-by: Gavin Shan <gshan@redhat.com>
+> 
+Thanks,
+> > diff --git a/drivers/acpi/acpi_processor.c b/drivers/acpi/acpi_processor.c
+> > index 3b180e21f325..ecc2721fecae 100644
+> > --- a/drivers/acpi/acpi_processor.c
+> > +++ b/drivers/acpi/acpi_processor.c
+> > @@ -35,6 +35,17 @@ EXPORT_PER_CPU_SYMBOL(processors);
+> >   struct acpi_processor_errata errata __read_mostly;
+> >   EXPORT_SYMBOL_GPL(errata);
+> >   
+> > +acpi_handle acpi_get_processor_handle(int cpu)
+> > +{
+> > +	struct acpi_processor *pr;
 > > +
-> > +             ufs_0_phy: phy@0x14704000 {
->
-> Drop 0x from unit address.
+> > +	pr = per_cpu(processors, cpu);
+> > +	if (pr)
+> > +		return pr->handle;
+> > +
+> > +	return NULL;
+> > +}
+> > +  
+> 
+> Maybe it's worthy to have more check here, something like below.
+> However, it's also fine without the extra check.
 
-Thanks for the review,  will fix.
+We could harden this, but for now the call sites are only
+int arch_(un)register_cpu() so if we get there with either
+of these failing something went very wrong.
 
-Peter
+Maybe if it gets used more widely this defense would be wise.
+
+Jonathan
+
+> 
+> 	if (cpu >= nr_cpu_ids || !cpu_possible(cpu))
+> 		return NULL;
+> 
+> >   static int acpi_processor_errata_piix4(struct pci_dev *dev)
+> >   {
+> >   	u8 value1 = 0;
+> > diff --git a/include/linux/acpi.h b/include/linux/acpi.h
+> > index 34829f2c517a..9844a3f9c4e5 100644
+> > --- a/include/linux/acpi.h
+> > +++ b/include/linux/acpi.h
+> > @@ -309,6 +309,8 @@ int acpi_map_cpu(acpi_handle handle, phys_cpuid_t physid, u32 acpi_id,
+> >   int acpi_unmap_cpu(int cpu);
+> >   #endif /* CONFIG_ACPI_HOTPLUG_CPU */
+> >   
+> > +acpi_handle acpi_get_processor_handle(int cpu);
+> > +
+> >   #ifdef CONFIG_ACPI_HOTPLUG_IOAPIC
+> >   int acpi_get_ioapic_id(acpi_handle handle, u32 gsi_base, u64 *phys_addr);
+> >   #endif
+> > @@ -1077,6 +1079,11 @@ static inline bool acpi_sleep_state_supported(u8 sleep_state)
+> >   	return false;
+> >   }
+> >   
+> > +static inline acpi_handle acpi_get_processor_handle(int cpu)
+> > +{
+> > +	return NULL;
+> > +}
+> > +
+> >   #endif	/* !CONFIG_ACPI */
+> >   
+> >   extern void arch_post_acpi_subsys_init(void);  
+> 
+> Thanks,
+> Gavin
+> 
+
 
