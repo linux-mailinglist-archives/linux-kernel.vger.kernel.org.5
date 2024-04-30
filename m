@@ -1,99 +1,76 @@
-Return-Path: <linux-kernel+bounces-163718-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-163719-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id AD44C8B6EB9
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 11:44:37 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id CA4A28B6EBB
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 11:44:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1A43FB21A13
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 09:44:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6AB2D1F2352E
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 09:44:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 359CC1292D8;
-	Tue, 30 Apr 2024 09:44:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="hxQbr2tY";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="5DsTfBnc"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D7C9312882E;
+	Tue, 30 Apr 2024 09:44:29 +0000 (UTC)
+Received: from mail-wr1-f52.google.com (mail-wr1-f52.google.com [209.85.221.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B2D9FC02;
-	Tue, 30 Apr 2024 09:44:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DADA2FC02
+	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 09:44:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714470262; cv=none; b=aBwNRPZlSN6YxrqVDc+y43BUx9DqkvG5N5517MlngR2UYgkXxK4SI0jmA9IhwKS7r3sZBmMDQun8S5Bvhs2KUAtJmJuLg6Fv2dNQ8UpqXAP3vD6/Wz4AkhVUxfQCmy/pfv/YS/1Oq6qilTxt3aa3pdBGzjHESs2X68VgkqKeyxg=
+	t=1714470269; cv=none; b=mX8BVP1hBP3UTGv9OgVxCkoXRQ4dlvjeepPstubcdybrXTLW3r16sRUvRAtnXSXjqroYsN8WhwIuiKAqfGB5RVGx4lrbYXFRr7JJ7Q56Rx3WdAGl62K4Y/0pKLmaRLHOuxgjI3slvmCCxzWKjH4i9P65KsneamfH5xfdDme4bi4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714470262; c=relaxed/simple;
-	bh=aIsQXx2cN/50Udekd5YIExQDXbNkiZsE9WboBbCOMQk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=TW6upqxv/4G83X7LN83q2ZNHIIaNcpfx6cQT/7SLRmWWeprGzCtrPaDZGZtsvwCTcir1eDf6Bn5nqvFDYhacOvZQqjOry1knoUVE/8Rsl5/sHWEW21rX6IDxbYYA+YQbue2gyTExpOZxgASThqkJBCtq4ZX7xEkqk1yU1JZFyXE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=hxQbr2tY; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=5DsTfBnc; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Tue, 30 Apr 2024 11:44:11 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1714470253;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=bOowKsb3vb6yvE+cHvGM8w7R27xqlmhDeNm22h9uWUE=;
-	b=hxQbr2tYYR6Ee1lJAT7He76rz7uXN6fITztCydq5R0y+2aXyzx8y+6Vo8XqV6nS88lNBRf
-	O8dHd4EW32yeLXJN8c7IKdifsAlO/z0QgYuVXt10ewaEHZegcW665jqMZzWSDTOEsV6fnJ
-	D2v2sjGmwSHsyH+eMnHr9ER3CAys89T2NuTcRDKFHdgCWlieih6ADW0382t8MACk0ufyas
-	PELieLLS62LEZEJy8FVU96XIkb1Jr0GMDe5hw0BihhHKlh8k15qs0GHB/rJ+BUTg3SkykZ
-	deJDPLJbOmfwjOUasL+gCCspLGCL0L92T2ePcmO29MlTjMtEryv846jW3oGUaw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1714470253;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=bOowKsb3vb6yvE+cHvGM8w7R27xqlmhDeNm22h9uWUE=;
-	b=5DsTfBnc0PChyayOH2+kxEBXSDG2J4T+waLj2XZspU23YotrwFbDfRM+u0cPo8IfqEAVz0
-	5oX+BJ6diAdjfrAw==
-From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To: Ulf Hansson <ulf.hansson@linaro.org>
-Cc: "Rafael J . Wysocki" <rafael@kernel.org>,
-	Sudeep Holla <sudeep.holla@arm.com>, linux-pm@vger.kernel.org,
-	Lorenzo Pieralisi <Lorenzo.Pieralisi@arm.com>,
-	Nikunj Kela <nkela@quicinc.com>,
-	Prasad Sodagudi <psodagud@quicinc.com>,
-	Maulik Shah <quic_mkshah@quicinc.com>,
-	Daniel Lezcano <daniel.lezcano@linaro.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-	linux-rt-users@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/6] pmdomain/cpuidle-psci: Support s2idle/s2ram on
- PREEMPT_RT
-Message-ID: <20240430094411.HyS2Gecw@linutronix.de>
-References: <20240429140531.210576-1-ulf.hansson@linaro.org>
+	s=arc-20240116; t=1714470269; c=relaxed/simple;
+	bh=nWpDQmZNg8zKVk12QskQ7NNS05C4fI/JmZBKLdKyu8Q=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=YlGLZShIqhs55G3kVw25QdQanxCG6VZ6IwnXGDhkkrpU8mb2eoHNg2K4Miw+qvf1RCgn1+FuWQysE5l+b4zA/Xd/ZBshVas7T12cIEF9DmvsEW3ZZ2eyuV5FPfRpfcstiA9Uhr/KU8jGD/J4ZCwVOHh9SQ9YhGzDMWxjEBgzD6M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=grimberg.me; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.221.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=grimberg.me
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f52.google.com with SMTP id ffacd0b85a97d-346407b8c9aso1190330f8f.0
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 02:44:27 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714470266; x=1715075066;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=nWpDQmZNg8zKVk12QskQ7NNS05C4fI/JmZBKLdKyu8Q=;
+        b=AtvvcDr4oVU8QKPPRelSqUizRt0bSwf1OKAgInVqh3o12kqm0JsEViIYGmKIS5FIA4
+         jsPihsJK/MpbKF9f8asI8UbWDx5DyrjXt4BB7nuTsVvvm+F5qZElaej2mvdE202m4Xdj
+         OqtFtb/DEQdrRlM++POBiQWpTEdCZFFHiJxXrpK987HO5BTElZPaiVBXZpE8+V0Q3MEN
+         6TYLc5h4A362H6/qgt0HFKJQMmlD6nCmroUSiMme24sy9rGWllSeC0FTlorp+H67x65y
+         HmCCv/dJII5LWP2sdz45eI6V5N2EsrCYcQbbBKHi/OzC3TTxtePy/aNsc8tA7gibf9mQ
+         paAQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUTvZsrb5hgCWKCKRA2xjLcvu3ss+yqeXe8os1Ps47gK0odsmX8Qknd9gIRaVdPMZ3ipMAdDZlzNBdQf9MQMq+S16LAvV7/5aZcFUYS
+X-Gm-Message-State: AOJu0Yzx9ZHAnG7dvKcX+JjpM8mecUeFgy1o6ZVmJ92izB4oL+QFSq0s
+	xYscLM6tMXr/11FKWeXpntBMxEVQDi06kWBf8UGCukBRQnXwImxr
+X-Google-Smtp-Source: AGHT+IFS04wTgqa0IYe3y3a3f/GOKbZm4K9dD19fJ+08CDnEmgnJyLJz4JGTwurQc7btDIEUZLLW2Q==
+X-Received: by 2002:a05:600c:1d26:b0:41a:c04a:8021 with SMTP id l38-20020a05600c1d2600b0041ac04a8021mr9216511wms.0.1714470265951;
+        Tue, 30 Apr 2024 02:44:25 -0700 (PDT)
+Received: from [10.50.4.180] (bzq-84-110-32-226.static-ip.bezeqint.net. [84.110.32.226])
+        by smtp.gmail.com with ESMTPSA id bh18-20020a05600c3d1200b0041bd920d41csm12130042wmb.1.2024.04.30.02.44.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 30 Apr 2024 02:44:25 -0700 (PDT)
+Message-ID: <4f95ac4c-4243-4de6-b397-adf4637d5aa4@grimberg.me>
+Date: Tue, 30 Apr 2024 12:44:24 +0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20240429140531.210576-1-ulf.hansson@linaro.org>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] nvme-fabrics: use reserved tag for reg read/write command
+To: "brookxu.cn" <brookxu.cn@gmail.com>, kbusch@kernel.org, axboe@kernel.dk,
+ hch@lst.de
+Cc: linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20240430021753.385089-1-brookxu.cn@gmail.com>
+Content-Language: he-IL, en-US
+From: Sagi Grimberg <sagi@grimberg.me>
+In-Reply-To: <20240430021753.385089-1-brookxu.cn@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On 2024-04-29 16:05:25 [+0200], Ulf Hansson wrote:
-> The hierarchical PM domain topology and the corresponding domain-idle-states
-> are currently disabled on a PREEMPT_RT based configuration. The main reason is
-> because spinlocks are turned into sleepable locks on PREEMPT_RT, which means
-> genpd and runtime PM can't be use in the atomic idle-path when
-> selecting/entering an idle-state.
-> 
-> For s2idle/s2ram this is an unnecessary limitation that this series intends to
-> address. Note that, the support for cpuhotplug is left to future improvements.
-> More information about this are available in the commit messages.
-> 
-> I have tested this on a Dragonboard 410c.
-
-Have you tested this with PREEMPT_RT enabled and if so, which kernel?
-
-> Kind regards
-> Ulf Hansson
-
-Sebastian
+Reviewed-by: Sagi Grimberg <sagi@grimberg.me>
 
