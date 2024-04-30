@@ -1,105 +1,117 @@
-Return-Path: <linux-kernel+bounces-164783-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-164784-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7790B8B82CF
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 00:55:22 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B320C8B82D0
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 00:56:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 878A7B20E3C
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 22:55:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 524F01F23F30
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 22:56:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4FB2B53E33;
-	Tue, 30 Apr 2024 22:55:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA35A86126;
+	Tue, 30 Apr 2024 22:56:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b="LR1+SD3b"
-Received: from mail-yb1-f173.google.com (mail-yb1-f173.google.com [209.85.219.173])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NV7bh0xT"
+Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08ADA2C853
-	for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 22:55:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AFDDA1B806;
+	Tue, 30 Apr 2024 22:56:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714517712; cv=none; b=IJAf0u6KCqb/oCxskO8NcMNZn4qFiqi+ezaVmJ3MJYXYCFYNcQ4HgqRQ+1k4wrT9gUU4xGGjm516a2Glr1IeN0ulZtC+O/wpgH3L80uuRolgVMWUxorMTa/+H/EDsKkPfnVyoKrlJnQIhDd0sHWRJZvCAzhHDj77ppu+G0z5UW0=
+	t=1714517773; cv=none; b=XSkV6CkW2Ye3pjExi3GsVM39ZM/Iku9lJffoT667aXhGOMQ6eWj4ZA86lv1ziSHgMD3aR73c+LEAm2KWUziytTeGJMplWBZqAixAqc1PulMIHcBsjX0QfnRBNiIsxMH6e2/dUJ0Jq19NBrEOnCvm7tVcOMXA+dSIn0ICGNnX3z0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714517712; c=relaxed/simple;
-	bh=ho9UgidLiuIiBiXIVvh/lWotAt12lUioguVCFMrGAmc=;
-	h=Date:Message-ID:MIME-Version:Content-Type:Content-Disposition:
-	 From:To:Cc:Subject:References:In-Reply-To; b=HGHKWnyLB5cLL30aa/duXZloE2OIKFJM7oyZByGgBbGAFIYDufv/zh1tY3+44rfnCb55ddfmTDK+TeEYvjLLK6kAOHToVmq0Xg8imdCXbCf4VFZwwpO/s4V3OZ9Zk1RX5mEGZHOXdG0yNsPjbzIXM6OJW4VbH2prnzb/7P5phHo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com; spf=pass smtp.mailfrom=paul-moore.com; dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b=LR1+SD3b; arc=none smtp.client-ip=209.85.219.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=paul-moore.com
-Received: by mail-yb1-f173.google.com with SMTP id 3f1490d57ef6-de604ca3cfcso2362114276.3
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 15:55:10 -0700 (PDT)
+	s=arc-20240116; t=1714517773; c=relaxed/simple;
+	bh=7CoAfxPnaArb0ZA8kJv4JzOFvKITr9J3FcOwlllSr8w=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=WG2mmZb3BkmaUTxj8cvYjpLtJ5B5On+uachsPG3wUcOC3tBiUyOXka44WzXYMjWjmPaZZU1mpG+caBW4O30sEfGe0jPGl9FHQeiZ0Ty0Bge7sughwiNVUl3k56beCfvYOn6w9dt+G0uMBoNxNW8LVFm1YHZTfKQcF6B3KMjKxao=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NV7bh0xT; arc=none smtp.client-ip=209.85.214.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-1ec4dd8525cso9761335ad.3;
+        Tue, 30 Apr 2024 15:56:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore.com; s=google; t=1714517710; x=1715122510; darn=vger.kernel.org;
-        h=in-reply-to:references:subject:cc:to:from:content-transfer-encoding
-         :content-disposition:mime-version:message-id:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=qAxmFkbAsUiCyvuOdki7NFBNiRnXQiLD4GpfQPzTS0g=;
-        b=LR1+SD3biqdcF6A6o9pUxIPnARLIy/lqOU8lmNIDYmyGTvDQoCNNta3I47of2ph6fW
-         eGU8a2VXkCc9WQHGyIrUzkQUy42/i03fHhhhxKgdYFtByYb2hheXB01p5erwO6Dxtr+Z
-         WdczpBnzj389dx9qVi49wWn4YB1UJx18mPj2LD0Yj4+TCjqOAIWbnfMDFhufIUjGH5BD
-         wBTrckUCqxK0i6Sk7ZX0TxfeStHOWZlLvpEpY3KTiH60NL5z0/CBwZiHzP7tBhMUN3+6
-         211G1wr87B4266HARbONbsivvTlga/RmPxYfxE31efayQkQPqQLAwh/sbvSQN+5xKv/g
-         79jA==
+        d=gmail.com; s=20230601; t=1714517771; x=1715122571; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Veyz6JUTol4w3y2OGMosN5q47FoqpORfwva9+IEnyHk=;
+        b=NV7bh0xTK5PlfoYq9xWIxF8cS/J4hEagsfmmLd4MD6rnJ4mHCt1Q6BDrhvvI/p/2ct
+         WnqbPlv6z2HP49D3SK0MTzZk7BreP9Tj4FKXj7w1PmqyAUvPUEXKETaqdCJ+7iHG8YQS
+         8wDkuXR/iaWIhFp6RV2HR0UYTcNLi9SlsRD7G5xAqJypJoT2OoJMPtbPHBq9dAq7xB9O
+         W5arXIn+hQ/b6UWAlt5FNUqidkdqVWhUgQ7RlhZSVP0HOls47hWVQoptBz6tNLzmWi5u
+         AmvZWOTMI4d9Pn9OYQOecfoBJ0xNoY3aRK0jW4OV4Z6JPSXI0Dj47XabIGN1y0n/itNT
+         o63w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714517710; x=1715122510;
-        h=in-reply-to:references:subject:cc:to:from:content-transfer-encoding
-         :content-disposition:mime-version:message-id:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=qAxmFkbAsUiCyvuOdki7NFBNiRnXQiLD4GpfQPzTS0g=;
-        b=wTtEDLuBdvWSAjY9FH/XjPN3L+XzczFcdWc+0elKgv0W6wUFNAIeSRVW3JN4Pc5eRD
-         DoxV3uI4R3NTv/2rgRu7QNxslzSIkafHQ/qkAJ5Cl2TMpv2Err49U6u14OIaQ6YsIik4
-         ubNqzAv6kHiMbl534wGtswO6rXdnWHnwzUNSKLkk9OhEVar110LUa5LZmKb8TgJXYOlO
-         Id3E3cEwcdlyXoyqTEz06l1Kt9Eu85LAQPoKeJTc519brt/w/irhD5b08o03aF2wQp3B
-         OEK6F5l7ZPT0NghNqrKeKT1Wg4CHFmJzp4V4qoqELrjgwiiYFgN2COydnNx4q3RNhw1f
-         3n4w==
-X-Forwarded-Encrypted: i=1; AJvYcCXDXf1M/lFdFew8XozEhttYoprMP8mlVB2+ThSQWPWich8Qh4e+gfMqdtOSJULKDeoyIsgale2QkkN87eCIHYZUHyGuxoGg3O+EyPGP
-X-Gm-Message-State: AOJu0Yw1WAdJzhyEP5g63wpx05pEMgwZhkvVpDfbBsfdinbv8Jada8W3
-	kGVzDetnlQU9SiHxvEbs0kbYv2/pB+/9RtL0mtjI1/acgRgX1ge8+6Pz8wKGqQ==
-X-Google-Smtp-Source: AGHT+IHK9ZYLCG8b4npZTwuIzKwuk6dxY3kvvWa4cO4t/DUmBAbDvkYeEA1Yoj55aGkAuQsGiPcMbw==
-X-Received: by 2002:a25:e08b:0:b0:de0:f74b:25f3 with SMTP id x133-20020a25e08b000000b00de0f74b25f3mr1085836ybg.60.1714517709840;
-        Tue, 30 Apr 2024 15:55:09 -0700 (PDT)
-Received: from localhost ([70.22.175.108])
-        by smtp.gmail.com with ESMTPSA id do7-20020a05622a478700b0043999fccc10sm8941117qtb.62.2024.04.30.15.55.09
+        d=1e100.net; s=20230601; t=1714517771; x=1715122571;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Veyz6JUTol4w3y2OGMosN5q47FoqpORfwva9+IEnyHk=;
+        b=iti5fFQCR2g7FFHC4gphp9+XlYaKK2aP8yJsG2938X0JSSTL+DShsm4JtLdFl+A8DS
+         KXxZiS+xKFesQC+xxBbwfrwn1LbW5dBmEKpz43BGU21m9cH8ynvTkZ+Pzq9qpGDDlwJJ
+         S9U8tY0J6niKqzqf7QjrJGF6Ofv9n3dgk7XgSnk9Jj6kX5NN96QjjfGuRSOW2rHK0QBl
+         L9D636H1/7UdLLvb9fOoA32trKkmmqCD+++om0ETVRaW2OhHzere0X7/tYDnhTJRsl4M
+         h3HbZFMq/DK1gJosnskyzBtICEG/nknJH5SjS/nKF7ESmEzxM/OUD7SyQWl1X4aPvr8d
+         Jx1Q==
+X-Forwarded-Encrypted: i=1; AJvYcCWSE2XkndadtPHeSFnYvSxvSHVC0w+Lzy50b5U/mZocFNbJA8L6m4D0nIy9iB4aODMeE6De/1hhpf0rS0N0+j5wxuzajAPeDMGkocb436iipoux5UsQvrEvhqZmjqILnBrbNjdx9YN9
+X-Gm-Message-State: AOJu0Yxhf4kEzO2M+dpjzwmCWIqfFwBWJDGXMCFvFQkXtXqclQIN9+Ll
+	SOJ3H34mJNC+CKpVulmakL6e4tILs6ISNjF7jdgltQHXSMngt9H2
+X-Google-Smtp-Source: AGHT+IFk3FGttA19d4bBfU+VBMedCxAAEOTaH+klHLjfQ1aQ+VqJ4YWLp2T/ZlCdTJAjzA7nGb7Pbw==
+X-Received: by 2002:a17:902:d38d:b0:1e7:b6f4:971 with SMTP id e13-20020a170902d38d00b001e7b6f40971mr753885pld.27.1714517771009;
+        Tue, 30 Apr 2024 15:56:11 -0700 (PDT)
+Received: from debian ([2601:641:300:14de:9960:3485:279e:a1e0])
+        by smtp.gmail.com with ESMTPSA id q5-20020a170902bd8500b001db8145a1a2sm22847272pls.274.2024.04.30.15.56.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Apr 2024 15:55:09 -0700 (PDT)
-Date: Tue, 30 Apr 2024 18:55:09 -0400
-Message-ID: <6a578214df994a783c067644c62aa443@paul-moore.com>
+        Tue, 30 Apr 2024 15:56:10 -0700 (PDT)
+From: fan <nifan.cxl@gmail.com>
+X-Google-Original-From: fan <fan@debian>
+Date: Tue, 30 Apr 2024 15:55:59 -0700
+To: Li Zhijian <lizhijian@fujitsu.com>
+Cc: dave@stgolabs.net, jonathan.cameron@huawei.com, dave.jiang@intel.com,
+	alison.schofield@intel.com, vishal.l.verma@intel.com,
+	ira.weiny@intel.com, dan.j.williams@intel.com,
+	linux-cxl@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] cxl/region: Fix cxlr_pmem leaks
+Message-ID: <ZjF2_0epRVOrgtV-@debian>
+References: <20240428030748.318985-1-lizhijian@fujitsu.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0 
-Content-Type: text/plain; charset=utf-8 
-Content-Disposition: inline 
-Content-Transfer-Encoding: 8bit
-From: Paul Moore <paul@paul-moore.com>
-To: =?UTF-8?q?Christian=20G=C3=B6ttsche?= <cgoettsche@seltendoof.de>, selinux@vger.kernel.org
-Cc: =?UTF-8?q?Christian=20G=C3=B6ttsche?= <cgzones@googlemail.com>, Stephen Smalley <stephen.smalley.work@gmail.com>, Ondrej Mosnacek <omosnace@redhat.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] selinux: constify source policy in cond_policydb_dup()
-References: <20240405161042.260113-2-cgoettsche@seltendoof.de>
-In-Reply-To: <20240405161042.260113-2-cgoettsche@seltendoof.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240428030748.318985-1-lizhijian@fujitsu.com>
 
-On Apr  5, 2024 =?UTF-8?q?Christian=20G=C3=B6ttsche?= <cgoettsche@seltendoof.de> wrote:
+On Sun, Apr 28, 2024 at 11:07:48AM +0800, Li Zhijian wrote:
+> Before this error path, cxlr_pmem pointed to a kzalloc() memory, free
+> it to avoid this memory leaking.
 > 
-> cond_policydb_dup() duplicates conditional parts of an existing policy.
-> Declare the source policy const, since it should not be modified.
-> 
-> Signed-off-by: Christian Göttsche <cgzones@googlemail.com>
+> Fixes: f17b558d6663 ("cxl/pmem: Refactor nvdimm device registration, delete the workqueue")
+> Signed-off-by: Li Zhijian <lizhijian@fujitsu.com>
 > ---
->  security/selinux/ss/conditional.c | 12 ++++++------
->  security/selinux/ss/conditional.h |  2 +-
->  security/selinux/ss/hashtab.c     |  9 +++++----
->  security/selinux/ss/hashtab.h     |  4 ++--
->  4 files changed, 14 insertions(+), 13 deletions(-)
 
-I had to do some line length fixups, but otherwise this looked good
-to me, merged into selinux/dev.  Thanks!
+Reviewed-by: Fan Ni <fan.ni@samsung.com>
 
---
-paul-moore.com
+>  drivers/cxl/core/region.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/cxl/core/region.c b/drivers/cxl/core/region.c
+> index 5c186e0a39b9..812b2948b6c6 100644
+> --- a/drivers/cxl/core/region.c
+> +++ b/drivers/cxl/core/region.c
+> @@ -2719,6 +2719,7 @@ static struct cxl_pmem_region *cxl_pmem_region_alloc(struct cxl_region *cxlr)
+>  		if (i == 0) {
+>  			cxl_nvb = cxl_find_nvdimm_bridge(cxlmd);
+>  			if (!cxl_nvb) {
+> +				kfree(cxlr_pmem);
+>  				cxlr_pmem = ERR_PTR(-ENODEV);
+>  				goto out;
+>  			}
+> -- 
+> 2.29.2
+> 
 
