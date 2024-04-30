@@ -1,115 +1,133 @@
-Return-Path: <linux-kernel+bounces-163712-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-163713-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 37E0F8B6E9C
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 11:39:14 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 46A7C8B6E9E
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 11:39:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E7ACC282048
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 09:39:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F26C81F24866
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 09:39:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35759129A78;
-	Tue, 30 Apr 2024 09:36:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B34C1A38E3;
+	Tue, 30 Apr 2024 09:36:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="NSF4OoFu"
-Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
+	dkim=pass (2048-bit key) header.d=mess.org header.i=@mess.org header.b="OiWl84V5"
+Received: from gofer.mess.org (gofer.mess.org [88.97.38.141])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3753FC02;
-	Tue, 30 Apr 2024 09:36:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.248
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E624FC02;
+	Tue, 30 Apr 2024 09:36:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=88.97.38.141
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714469805; cv=none; b=ml/gT+cxCSqEkL6lE/PVjgguobVieWhwxH+iZppBWN9FoItRQwZ0gcyJqel/HjOgsypqVGO2dI+UDLPlIjSx1G87mukvYAvnFujHbmKZZNgMKZv0hT8zJPfi8aHuhJmi0qaJuIxPfPwlCgcowEU39V2sgjS5KZERYBePTcKRsJA=
+	t=1714469810; cv=none; b=e5ICjvra3EsI4VfTsMOlibOc4ESV3Ze85FE5u1yPuxMhcwKfqk7Sj+yQoKUXMdjARZniRxMiPHFXmBQ/eM2p46LOvm01WQCCpmtLczbdQ7f8Zgn50IvWkWajT1ILGK+wC7eN/bJrDijRg1ZSN3LTl1iXKhn05WALD0r4IdZB9cU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714469805; c=relaxed/simple;
-	bh=/x8Zhi2ct4Y6VhAKhc287XA7fVf97CpbCo/XzJpZAe0=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=tDjg0sQBK6GEybxyJVEsDmvYoVmsx4te90ublrG28v9xamK6qRuOMag4GnI4btdKyfmNZdYs2LOXacFBs/wdxwZDPjTQypY8orq0qYwiqvijQ1bh3J+nVw+G6pno038Q5oXlLTQxZL3iJy+nWPcNwT118WPo/yS5fVG6RAEigEw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=NSF4OoFu; arc=none smtp.client-ip=198.47.23.248
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-	by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 43U9aS2v100704;
-	Tue, 30 Apr 2024 04:36:28 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1714469788;
-	bh=e5EcbOebBnZOxjyjMA63HIyjpRB+ieKp7VwIXBGCGR0=;
-	h=Date:From:To:CC:Subject:References:In-Reply-To;
-	b=NSF4OoFuYkLd4fQOcsBbH41E8TcG8IznJNL4MIu9jBK8chMBVLSUo1NYvyaEYh5PC
-	 9DdoVCLu+Ld6QaSCZrLHt4XGncc+BgR68cdJLn/98UhQG1lxqA1UGd10oAcILhBqXI
-	 dVLHYDQ/KBB9ajKctaZ1gmlEG2l46G4+2+mkcYgU=
-Received: from DFLE115.ent.ti.com (dfle115.ent.ti.com [10.64.6.36])
-	by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 43U9aRNK009592
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Tue, 30 Apr 2024 04:36:27 -0500
-Received: from flwvowa02.ent.ti.com (10.64.41.53) by DFLE115.ent.ti.com
- (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 30
- Apr 2024 04:36:27 -0500
-Received: from DFLE113.ent.ti.com (10.64.6.34) by flwvowa02.ent.ti.com
- (10.64.41.53) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2507.34; Tue, 30 Apr
- 2024 04:36:27 -0500
-Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DFLE113.ent.ti.com
- (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Tue, 30 Apr 2024 04:36:27 -0500
-Received: from localhost (dhruva.dhcp.ti.com [172.24.227.68])
-	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 43U9aQFp019953;
-	Tue, 30 Apr 2024 04:36:27 -0500
-Date: Tue, 30 Apr 2024 15:06:25 +0530
-From: Dhruva Gole <d-gole@ti.com>
-To: Justin Stitt <justinstitt@google.com>
-CC: "Rafael J. Wysocki" <rafael@kernel.org>, Len Brown <len.brown@intel.com>,
-        Pavel Machek <pavel@ucw.cz>, <linux-pm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-hardening@vger.kernel.org>
-Subject: Re: [PATCH] PM: hibernate: replace deprecated strncpy with strscpy
-Message-ID: <20240430093625.qbuaxltkrmlaoiza@dhruva>
-References: <20240429-strncpy-kernel-power-hibernate-c-v1-1-8688f492d3e6@google.com>
+	s=arc-20240116; t=1714469810; c=relaxed/simple;
+	bh=6pVPCtjEhaN9YMepNxoaA6Di8GBA8TQ/2wuNs1NSRqo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=LhCUEdXc2W+hMeI22QKy9Y6aq9b/Six97S02Me9anGnccfWVsX3so3lWj2EkJcAiS8q2VeCzIUYKOxp8jj0qmcv+Vw2m8y3QkxyshLlR2jQLi3fpTqAVyLRtaaUJ496iw4lS3M8PXXj0Pea1S7I3/onI9VOFS1Q4wpi+Z+58KHM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mess.org; spf=pass smtp.mailfrom=mess.org; dkim=pass (2048-bit key) header.d=mess.org header.i=@mess.org header.b=OiWl84V5; arc=none smtp.client-ip=88.97.38.141
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mess.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mess.org
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mess.org; s=2020;
+	t=1714469805; bh=6pVPCtjEhaN9YMepNxoaA6Di8GBA8TQ/2wuNs1NSRqo=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=OiWl84V5o0akms2gy6ED0kg8NOAMXZMTIwMPrPVDetnJkYqCdm/hSgxuPY0EpApGN
+	 L8mwd/xtvzidpG3XVfvavQZKm0FxLOslKztW8yKO3CxfXSzC0GslVlGFTAHBlS14Vg
+	 c3+kzhvP/2NuDnqs4eb44m0vOO9VolsnreDtyvoP+XvOi1ETUpytlwWO/h2/ILebZI
+	 uf5ioSkWWyR18SzAFy1flo7UMR+DfuRXS/Q6GFU7ECzTVJH+VgapTQVopiQ4V9PeAg
+	 6Oo+HyTNWve3sbgg+NHGev0zBjPoEwzslvkTIjMwdFEtprYlGSN9/LdbS3AG+pPOHt
+	 L8E8Hfw7rwjdg==
+Received: by gofer.mess.org (Postfix, from userid 1000)
+	id C0BC310005E; Tue, 30 Apr 2024 10:36:45 +0100 (BST)
+Date: Tue, 30 Apr 2024 10:36:45 +0100
+From: Sean Young <sean@mess.org>
+To: Zheng Yejian <zhengyejian1@huawei.com>
+Cc: mchehab@kernel.org, linux-media@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] media: dvb-usb: Fix unexpected infinite loop in
+ dvb_usb_read_remote_control()
+Message-ID: <ZjC7rXU7ViaH60_S@gofer.mess.org>
+References: <20240412135256.1546051-1-zhengyejian1@huawei.com>
+ <5c0359c7-502f-fe8b-c1ee-3470b36b586c@huawei.com>
+ <ZjCl97Ww6NrzJQCB@gofer.mess.org>
+ <37581090-ae63-46c4-98c1-76e9138e6b6e@huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240429-strncpy-kernel-power-hibernate-c-v1-1-8688f492d3e6@google.com>
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+In-Reply-To: <37581090-ae63-46c4-98c1-76e9138e6b6e@huawei.com>
 
-On Apr 29, 2024 at 20:50:30 +0000, Justin Stitt wrote:
-> strncpy() is deprecated for use on NUL-terminated destination strings
-> [1] and as such we should prefer more robust and less ambiguous string
-> interfaces.
+On Tue, Apr 30, 2024 at 05:19:56PM +0800, Zheng Yejian wrote:
+> Thanks for your suggestion!
+> Do you mean the following change? If it is ok, I'll send a v2!
 > 
-> This kernel config option is simply assigned with the resume_file
-> buffer. It should be NUL-terminated but not necessarily NUL-padded as
-> per its further usage with other string apis:
-> |	static int __init find_resume_device(void)
-> |	{
-> |		if (!strlen(resume_file))
-> |			return -ENOENT;
-> |
-> |		pm_pr_dbg("Checking hibernation image partition %s\n", resume_file);
+> diff --git a/drivers/media/usb/dvb-usb/dvb-usb-init.c b/drivers/media/usb/dvb-usb/dvb-usb-init.c
+> index fbf58012becd..2a8395d6373c 100644
+> --- a/drivers/media/usb/dvb-usb/dvb-usb-init.c
+> +++ b/drivers/media/usb/dvb-usb/dvb-usb-init.c
+> @@ -23,6 +23,23 @@ static int dvb_usb_force_pid_filter_usage;
+>  module_param_named(force_pid_filter_usage, dvb_usb_force_pid_filter_usage, int, 0444);
+>  MODULE_PARM_DESC(force_pid_filter_usage, "force all dvb-usb-devices to use a PID filter, if any (default: 0).");
 > 
-> Use strscpy [2] as it guarantees NUL-termination on the destination
-> buffer. Specifically, use the new 2-argument version of strscpy()
-> introduced in Commit e6584c3964f2f ("string: Allow 2-argument
-> strscpy()").
-> 
-> Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
-> Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
-> Link: https://github.com/KSPP/linux/issues/90
-> Cc: linux-hardening@vger.kernel.org
-> Signed-off-by: Justin Stitt <justinstitt@google.com>
-> ---
-[...]
+> +static int dvb_usb_clear_halt(struct dvb_usb_device *d, u8 endpoint)
 
-Reviewed-by: Dhruva Gole <d-gole@ti.com>
+I don't think this is a good function name; we are checking that the
+endpoint is correct and also clearing halts.
 
--- 
-Best regards,
-Dhruva Gole <d-gole@ti.com>
+How about: dvb_usb_check_bulk_endpoint()
+
+Looks good otherwise
+
+Sean
+
+> +{
+> +       if (endpoint) {
+> +               int ret;
+> +
+> +               ret = usb_pipe_type_check(d->udev, usb_sndbulkpipe(d->udev, endpoint));
+> +               if (ret)
+> +                       return ret;
+> +               ret = usb_pipe_type_check(d->udev, usb_rcvbulkpipe(d->udev, endpoint));
+> +               if (ret)
+> +                       return ret;
+> +               usb_clear_halt(d->udev, usb_sndbulkpipe(d->udev, endpoint));
+> +               usb_clear_halt(d->udev, usb_rcvbulkpipe(d->udev, endpoint));
+> +       }
+> +       return 0;
+> +}
+> +
+>  static int dvb_usb_adapter_init(struct dvb_usb_device *d, short *adapter_nrs)
+>  {
+>         struct dvb_usb_adapter *adap;
+> @@ -103,10 +120,12 @@ static int dvb_usb_adapter_init(struct dvb_usb_device *d, short *adapter_nrs)
+>          * when reloading the driver w/o replugging the device
+>          * sometimes a timeout occurs, this helps
+>          */
+> -       if (d->props.generic_bulk_ctrl_endpoint != 0) {
+> -               usb_clear_halt(d->udev, usb_sndbulkpipe(d->udev, d->props.generic_bulk_ctrl_endpoint));
+> -               usb_clear_halt(d->udev, usb_rcvbulkpipe(d->udev, d->props.generic_bulk_ctrl_endpoint));
+> -       }
+> +       ret = dvb_usb_clear_halt(d, d->props.generic_bulk_ctrl_endpoint);
+> +       if (ret)
+> +               goto frontend_init_err;
+> +       ret = dvb_usb_clear_halt(d, d->props.generic_bulk_ctrl_endpoint_response);
+> +       if (ret)
+> +               goto frontend_init_err;
+> 
+>         return 0;
+> 
+> --
+> Thanks,
+> Zheng Yejian
+> 
+> > Thanks
+> > 
+> > Sean
+> 
 
