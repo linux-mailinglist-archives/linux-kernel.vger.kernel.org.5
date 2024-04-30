@@ -1,121 +1,261 @@
-Return-Path: <linux-kernel+bounces-164039-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-164040-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E7AA28B778F
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 15:48:27 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6D3358B7795
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 15:49:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8439E1F22077
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 13:48:27 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4BF73B21F0D
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 13:49:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7545A172761;
-	Tue, 30 Apr 2024 13:48:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6177817278D;
+	Tue, 30 Apr 2024 13:49:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="KBafVTva"
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AmdVDwkB"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D2FA17167F;
-	Tue, 30 Apr 2024 13:48:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6CAE517167F;
+	Tue, 30 Apr 2024 13:49:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714484901; cv=none; b=M4cgHupqXXArWpqWN4LAb4Ax0MIu3xE00uLt0ibiSuddC991uIuslTwqYN1DFRrLtsEZef3ky2WNDZked1GqRJU13BbCYlRVUbheJmwhCHadL+4LVrkqCDV0rO+n00+1qg7+LIfrXImgen1K98ZRn5eqs1YxX9QKxpzNGcKXnaY=
+	t=1714484951; cv=none; b=mvXmj6y85ZL60cq1Pq4EC7vZigMwVqhqM1VZKQLKGVpTSQKx3RdEt5d1hlSX0iG2wNDAcvq8p1JT0ZZ+0GQq1SD12xplWiikF9ef/aprBj6gCATGpQc50uTiM7VFPep/Mn+wUuU6G9J+71ILsIANUqwbVBJdOyRRPpVFk3X7Yqw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714484901; c=relaxed/simple;
-	bh=8G2dkZsISNPsJnxDPFxSqCHDC2NnCRCxIewWXpeyS3s=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=oCKny+gffUkarL3VCegNeckiw6CMYOFwIvXXINHJZNczXSDF7M3MmLCXvIdL/OCxIQnGLFiW2M5a5mj9DvEcqFfnBcjOGX+o1y7+XjeINwc/i1P1i8rbANhppaBu9rXjZdEO8oeyQ4tQWqnfAdNIo7wvxElJQBpoNYTvdd7yA5c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=KBafVTva; arc=none smtp.client-ip=65.109.113.108
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 205D840E0187;
-	Tue, 30 Apr 2024 13:48:17 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-	header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id xECjcqlxMJe3; Tue, 30 Apr 2024 13:48:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1714484893; bh=MasTPhLFk4wvJV4dMMwrd241d1uVUzrMfthE7bDhqs8=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=KBafVTvazS/DYhOcVg3G7qk11+hDp6roSdu4mbuGw6v7Ngnp8p40JyJSJWDHccys6
-	 itbO29c7cUIL1JEuh62TxdRk2YFA78dmS4+kFSWQImB1KT9fln2ulB63EX0DVru7tR
-	 GmBBmUfjaA+fy8iDqwGqwDtPCuIinwQ1PBNsWEMTl/NSD+bIiGqACrYJGo5RPf+whn
-	 Bof/EksTibY7li1o8GcDTltZ0KkWInC8V5X7/9P/El23WD73oEvE4KlZ9MdPmUfnz1
-	 fpkYOnEa6OLfMKI5eda35p3796aEtYYV3IsrPA7+gmzMJPrcRmlummRoHWfa3EivKv
-	 SzvyRVPRqs5ct2ZFGjeHI6WyyqL5Sww08b5b0mLQKOJlDgcCRObtXstZDgl7OJNVVw
-	 EnxNMwy1pjWSSu+nHEPvD7KLxU/G4x7AdAdiX5BZztK8LbYHHz7I+XC0dJ/d45GJHI
-	 4T2fhUi1+WKU7BpIsuqxRI501JOt/M9nep+PqnRvEjJtI4fhcj5HAvSDIsgCmmUDI4
-	 e2KRujjk7DNWpiPia8Sig1dedl+nUwxMfHuLYbX54p/pRcfN41aFZ1iFB+K6E9RFBn
-	 E+Wm3Zv4oKLd0y08jGB0WLLceBLbqs9JRUXpPKHvagwGlUASVJu8cXB+BIONvQOo4T
-	 DHSnOUtnxDn3rOX42F34KxA0=
-Received: from zn.tnic (pd953020b.dip0.t-ipconnect.de [217.83.2.11])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id C678B40E016B;
-	Tue, 30 Apr 2024 13:48:05 +0000 (UTC)
-Date: Tue, 30 Apr 2024 15:47:59 +0200
-From: Borislav Petkov <bp@alien8.de>
-To: Yazen Ghannam <yazen.ghannam@amd.com>
-Cc: robert.richter@amd.com, linux-edac@vger.kernel.org,
-	linux-kernel@vger.kernel.org, tony.luck@intel.com, x86@kernel.org,
-	Avadhut.Naik@amd.com, John.Allen@amd.com
-Subject: Re: [PATCH v2 07/16] x86/mce/amd: Simplify DFR handler setup
-Message-ID: <20240430134759.GBZjD2j942leiJGSrQ@fat_crate.local>
-References: <20240404151359.47970-1-yazen.ghannam@amd.com>
- <20240404151359.47970-8-yazen.ghannam@amd.com>
- <20240424190658.GHZilYUvw1KfSfVd_e@fat_crate.local>
- <e0d10606-4472-4cde-b55d-34180efad42b@amd.com>
- <20240429125956.GNZi-ZzN1Izxps8ztT@fat_crate.local>
- <d1e329da-6a04-47f7-bdab-ea6c4f584802@amd.com>
- <20240429141244.GGZi-q3NdmI17pai4N@fat_crate.local>
- <891ec639-e557-4dbe-8afa-3317b9c173ce@amd.com>
+	s=arc-20240116; t=1714484951; c=relaxed/simple;
+	bh=meGcxxXXiP0PlH9WpeNhgSVE5M8UyQkFn5po/beRdsw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=uSBryCaFnAOsF/LdynsbSC0IZHzlYoO565SIYOW3O5QdfC8Qac0j3ezNinEhzhssW+zQIMtOtMRltfhB1qgG6tYwOEn6nBvwFP2v7MK0FjoIbbzqZUHtDSDw1QK3X2ZUOc8GarfjV1pqTW5GYCttLmORDOo+lvD2qmJV7tkzTi0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AmdVDwkB; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 110BCC4AF19;
+	Tue, 30 Apr 2024 13:49:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714484951;
+	bh=meGcxxXXiP0PlH9WpeNhgSVE5M8UyQkFn5po/beRdsw=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=AmdVDwkBKQAFLyPh+EL9vC6PEkNA3xTeczhVs2h3oB0oAPHyfOZckvM+EQRi9LvWK
+	 Vgrc53QbeklE0l0gNX4IMq3Iuok2d7vxXVz7EMI2O86aNWrAhN/jSZpzT5lYKpQbKZ
+	 g9M3eaVSWLD25WWqc91ZHtZQuh+uXxKvhexlJNJKdv3EFiJrNJ4Qt16/Pounmtoc0B
+	 MmqeaomsI+TZmSdXxfo7CNgQzBo7m0K/+EkBUrrXL4aea0UDUBuY6Sl+7GZIYjVC4b
+	 DzjzewK0I12CXhaI4eamG5Ke8AvESe0AzN+bkohIv0m0b+Lsn9Q160zjCKcp431/lB
+	 fgszHGK2jYf9A==
+Received: by mail-oo1-f53.google.com with SMTP id 006d021491bc7-5a9ef9ba998so1342402eaf.1;
+        Tue, 30 Apr 2024 06:49:11 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCXrsWN5CCCzl1FUd2SA6eD7eUUHEULnCxCjCsZ8DtubKkwKZMdX56M0RXkf5wq4uRZJitDkRSFYe1ECO9vGFXJeFvgPMJ7sCVdw5lKbzGuga9lODovo+KcsjkVg+IbspkXpEXudEdE=
+X-Gm-Message-State: AOJu0YxqQvTfEZyjNN2cVXNGm4o1BC75UR2/RztpqGzCA8loPb2GeETP
+	ndSRx9TMczGRMMlnV8CVF1WL8XyDun+yRQKPmnxEeWaMga60y2dGhslteJhLUx6b8go2RTRUWJg
+	HZWMlC3qc+Ki649NnbUVrXCvffuk=
+X-Google-Smtp-Source: AGHT+IFf5bnp4mDF8jP5gJBNYsuoNpIzgyJ7jHRXp0loXpO2IvpM4hchnN5ORul1kFGPtGQcEZKPce54eeoWsGFge78=
+X-Received: by 2002:a05:6820:e09:b0:5a7:db56:915c with SMTP id
+ el9-20020a0568200e0900b005a7db56915cmr14075194oob.1.1714484950252; Tue, 30
+ Apr 2024 06:49:10 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <891ec639-e557-4dbe-8afa-3317b9c173ce@amd.com>
+References: <5938055.MhkbZ0Pkbq@kreacher> <c29247b8-89d4-404a-b294-81f19720e236@arm.com>
+In-Reply-To: <c29247b8-89d4-404a-b294-81f19720e236@arm.com>
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Date: Tue, 30 Apr 2024 15:48:58 +0200
+X-Gmail-Original-Message-ID: <CAJZ5v0iv_HQ3ej1C3u3iHuwW=Ae5EEAZY4vxMoHDZpKxYMvXkw@mail.gmail.com>
+Message-ID: <CAJZ5v0iv_HQ3ej1C3u3iHuwW=Ae5EEAZY4vxMoHDZpKxYMvXkw@mail.gmail.com>
+Subject: Re: [PATCH v1] thermal: core: Move passive polling management to the core
+To: Lukasz Luba <lukasz.luba@arm.com>
+Cc: "Rafael J. Wysocki" <rjw@rjwysocki.net>, Daniel Lezcano <daniel.lezcano@linaro.org>, 
+	Linux PM <linux-pm@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
+	"Rafael J. Wysocki" <rafael@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Apr 29, 2024 at 10:25:02AM -0400, Yazen Ghannam wrote:
-> Yep, "MCA init cleanup" is another thing on my TODO list.
+Hi Lukasz,
 
-Right, so looking at the code, early_identify_cpu()/identify_boot_cpu()
-could call a
+On Mon, Apr 29, 2024 at 11:21=E2=80=AFPM Lukasz Luba <lukasz.luba@arm.com> =
+wrote:
+>
+> Hi Rafael,
+>
+> On 4/25/24 15:11, Rafael J. Wysocki wrote:
+> > From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> >
+> > Passive polling is enabled by setting the 'passive' field in
+> > struct thermal_zone_device to a positive value so long as the
+> > 'passive_delay_jiffies' field is greater than zero.  It causes
+> > the thermal core to actively check the thermal zone temperature
+> > periodically which in theory should be done after crossing a
+> > passive trip point on the way up in order to allow governors to
+> > react more rapidly to temperature changes and adjust mitigation
+> > more precisely.
+> >
+> > However, the 'passive' field in struct thermal_zone_device is currently
+> > managed by governors which is quite problematic.  First of all, only
+> > two governors, Step-Wise and Power Allocator, update that field at
+> > all, so the other governors do not benefit from passive polling,
+> > although in principle they should.  Moreover, if the zone governor is
+> > changed from, say, Step-Wise to Fair-Share after 'passive' has been
+> > incremented by the former, it is not going to be reset back to zero by
+> > the latter even if the zone temperature falls down below all passive
+> > trip points.
+> >
+> > For this reason, make handle_thermal_trip() increment 'passive'
+> > to enable passive polling for the given thermal zone whenever a
+> > passive trip point is crossed on the way up and decrement it
+> > whenever a passive trip point is crossed on the way down.  Also
+> > remove the 'passive' field updates from governors and additionally
+> > clear it in thermal_zone_device_init() to prevent passive polling
+> > from being enabled after a system resume just beacuse it was enabled
+> > before suspending the system.
+> >
+> > Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> > ---
+> >
+> > This has been mentioned here:
+> >
+> > https://lore.kernel.org/linux-pm/61560bc6-d453-4b0c-a4ea-b375d547b143@l=
+inaro.org/
+> >
+> > and I need someone to double check if the Power Allocator governor does=
+ not
+> > need to be adjusted more for this change.
+> >
+> > ---
+> >   drivers/thermal/gov_power_allocator.c |   12 +++++++-----
+> >   drivers/thermal/gov_step_wise.c       |   10 ----------
+> >   drivers/thermal/thermal_core.c        |   10 ++++++++--
+> >   3 files changed, 15 insertions(+), 17 deletions(-)
+> >
+> > Index: linux-pm/drivers/thermal/thermal_core.c
+> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> > --- linux-pm.orig/drivers/thermal/thermal_core.c
+> > +++ linux-pm/drivers/thermal/thermal_core.c
+> > @@ -389,6 +389,9 @@ static void handle_thermal_trip(struct t
+> >               if (tz->temperature < trip->temperature - trip->hysteresi=
+s) {
+> >                       list_add(&td->notify_list_node, way_down_list);
+> >                       td->notify_temp =3D trip->temperature - trip->hys=
+teresis;
+> > +
+> > +                     if (trip->type =3D=3D THERMAL_TRIP_PASSIVE)
+> > +                             tz->passive--;
+>
+> This gets negative values and than the core switches to fast 'polling'
+> mode. The values is decremented from 0 each time the
+> thermal_zone_device_enable() is called.
 
-mca_bsp_init()
+Interesting.
 
-or so which does the once, vendor-agnostic setup.
+This shouldn't happen because it means that the passive trip has been
+crossed on the way down, but it wasn't crossed on the way up.
 
-identify_cpu->mcheck_cpu_init()
+It looks like an initialization issue to me.
 
-already does both the BSP and AP per-CPU init.
+> Then IPA is actually called every 100ms after boot w/ low temp,
+> while it should 1s.
+>
+> Please see the logs below:
+> 'short log' after boot
+> ----------------------------------------------
+>
+> [    1.632670] thermal_sys: TZ: tz_id=3D0 passive-- =3D -1
+> [    1.637984] thermal_sys: TZ: tz_id=3D0 passive-- =3D -2
+> [    1.643641] thermal_sys: TZ: tz_id=3D1 passive-- =3D -1
+> ----------------------------------------------
+>
+> long log with call stack dumped
+> ----------------------------------------------
+>
+> [    1.632973] thermal_sys: TZ: tz_id=3D0 passive-- =3D -1
+> [    1.638295] CPU: 4 PID: 1 Comm: swapper/0 Not tainted 6.9.0-rc5+ #28
+> [    1.645409] Hardware name: Radxa ROCK 4SE (DT)
+> [    1.650376] Call trace:
+> [    1.653109]  dump_backtrace+0x9c/0x100
+> [    1.657309]  show_stack+0x20/0x38
+> [    1.661017]  dump_stack_lvl+0xc0/0xd0
+> [    1.665119]  dump_stack+0x18/0x28
+> [    1.668828]  __thermal_zone_device_update+0x1fc/0x550
+> [    1.674484]  thermal_zone_device_set_mode+0x64/0xc0
+> [    1.679943]  thermal_zone_device_enable+0x1c/0x30
+> [    1.685206]  thermal_of_zone_register+0x34c/0x590
 
-With such a split, I think we'll have all the proper places to do setup
-at the right time without hackery.
+So let's see.
 
-> The BSP still completely finishes init before the APs, correct?
+thermal_of_zone_register() calls
+thermal_zone_device_register_with_trips() which calls
+thermal_zone_device_update() for the first time, but
+__thermal_zone_device_update() sees that
+thermal_zone_device_is_enabled() returns false, so it does nothing.
 
-Yes.
+This is right after thermal_zone_device_init() has been called, so
+tz->temperature =3D=3D THERMAL_TEMP_INVALID and tz->passive =3D=3D 0.
 
-> I recall some effort to make CPU init more parallel, but I haven't
-> been following it.
+Next, thermal_zone_device_enable() is called by
+thermal_of_zone_register() and it calls __thermal_zone_device_update()
+via thermal_zone_device_set_mode().
 
-I think you mean parallel hotplug but that's for the APs only.
+This time thermal_zone_device_is_enabled() returns true, so
+update_temperature() is called and, unless __thermal_zone_get_temp()
+returns an error, it sets tz->last_temperature to THERMAL_TEMP_INVALID
+and tz->temperature to the current zone temperature.
 
-Thx.
+Next, handle_thermal_trip() is called for all trips and it sees that
+tz->last_temperature =3D=3D THERMAL_TEMP_INVALID, so it skips the branch
+in which tz->passive is decremented.
 
--- 
-Regards/Gruss,
-    Boris.
+The only case I can see in which something else can happen in when
+__thermal_zone_get_temp() called by update_temperature() returns an
+error code (and if it is -EAGAIN, it won't even trigger a warning
+message) in which case the error is silently discarded and
+__thermal_zone_device_update() happily proceeds with tz->temperature
+=3D=3D THERMAL_TEMP_INVALID and tz->last_temperature =3D=3D 0.
 
-https://people.kernel.org/tglx/notes-about-netiquette
+This can lead to many surprises down the road, so IMV
+__thermal_zone_device_update() should abort if it sees tz->temperature
+=3D=3D THERMAL_TEMP_INVALID past calling update_temperature().
+
+So I'm wondering if the patch below (modulo white-space damage from
+GMail) helps.
+
+> [    1.690473]  devm_thermal_of_zone_register+0x6c/0xc0
+> [    1.696031]  rockchip_thermal_probe+0x238/0x5e8
+> [    1.701106]  platform_probe+0x70/0xe8
+> [    1.705208]  really_probe+0xc4/0x278
+> [    1.709205]  __driver_probe_device+0x80/0x140
+> [    1.714078]  driver_probe_device+0x48/0x130
+> [    1.718756]  __driver_attach+0x7c/0x138
+> [    1.723045]  bus_for_each_dev+0x80/0xf0
+> [    1.727342]  driver_attach+0x2c/0x40
+> [    1.731340]  bus_add_driver+0xec/0x1f8
+> [    1.735539]  driver_register+0x68/0x138
+> [    1.739828]  __platform_driver_register+0x30/0x48
+> [    1.745093]  rockchip_thermal_driver_init+0x24/0x38
+> [    1.750551]  do_one_initcall+0x50/0x2d8
+> [    1.754844]  kernel_init_freeable+0x204/0x440
+> [    1.759722]  kernel_init+0x28/0x140
+> [    1.763631]  ret_from_fork+0x10/0x20
+> [    1.767802] thermal_sys: TZ: tz_id=3D0 passive-- =3D -2
+
+---
+ drivers/thermal/thermal_core.c |    3 +++
+ 1 file changed, 3 insertions(+)
+
+Index: linux-pm/drivers/thermal/thermal_core.c
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+--- linux-pm.orig/drivers/thermal/thermal_core.c
++++ linux-pm/drivers/thermal/thermal_core.c
+@@ -496,6 +496,9 @@ void __thermal_zone_device_update(struct
+
+     update_temperature(tz);
+
++    if (tz->temperature =3D=3D THERMAL_TEMP_INVALID)
++        return;
++
+     tz->notify_event =3D event;
+
+     for_each_trip_desc(tz, td)
 
