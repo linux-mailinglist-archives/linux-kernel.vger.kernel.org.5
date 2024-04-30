@@ -1,149 +1,126 @@
-Return-Path: <linux-kernel+bounces-163869-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-163865-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E52238B74D6
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 13:50:54 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C86818B74C8
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 13:45:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 225451C21CE4
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 11:50:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 699DA1F2264B
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 11:45:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D8F9013C9C3;
-	Tue, 30 Apr 2024 11:50:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3DB57134411;
+	Tue, 30 Apr 2024 11:45:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=valentinobst.de header.i=kernel@valentinobst.de header.b="Yz4YLsJk"
-Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.17.24])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PiPVix9N"
+Received: from mail-yw1-f180.google.com (mail-yw1-f180.google.com [209.85.128.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B1B7112D76B;
-	Tue, 30 Apr 2024 11:50:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.24
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32C3212CD90;
+	Tue, 30 Apr 2024 11:45:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714477845; cv=none; b=lNaybM2TtEkwAft29FNz9Jt6ADeo/Igced9bvv3SX4qCnf7OHjNqWOB2s8yQsU0WPfANMuryWq6H6hjfTiAxxjEb9AE/b1DNTtqe4PyaM04K9gd0m6TKxMLByj43HSvlDE8UwIJH2Usf5Mssm0OKFxuo1JfqAFRYEWUF+2Bnuh0=
+	t=1714477539; cv=none; b=eXyYl6whfNIPnLkmG3VjEHS1GRNAxEh1pZF2zKcDdFxYz7Bw4HVOSfJhiVcKvazp+IucetBVcUalvqi10xy7/vzxVoYdjNDgN4erVIidYP123PrxsiEAkC5Jjdk5RuDbVgrxTEIAEcUrZcEHjEVgKOD/nG53dljRhDbsOCRRHqc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714477845; c=relaxed/simple;
-	bh=Tu5t4kxrmarr+4UrOhU6m3uxZ7B/TAFw4gqJFUxfAcs=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=E2nFFAyl9GHRg7cQMWJ7WM7ugRSVqJcLNmxdgh22dgbeSWb8TZA5Udou1T2JnDcthHCklMCdbNDSCwNa1pjqT/wshEpwaz1XiXK3eOG2YfB3HTINCyaNDn3dbiWE23vZO0O+IkCxNTUMhKwPLg4OwqGLZqnWnV9T/6euDfeDJ5s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=valentinobst.de; spf=pass smtp.mailfrom=valentinobst.de; dkim=pass (2048-bit key) header.d=valentinobst.de header.i=kernel@valentinobst.de header.b=Yz4YLsJk; arc=none smtp.client-ip=212.227.17.24
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=valentinobst.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=valentinobst.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=valentinobst.de;
-	s=s1-ionos; t=1714477826; x=1715082626; i=kernel@valentinobst.de;
-	bh=/A+2+zfwofr8ZeGQzVFabRyhfp0XLsUp/JabKpPvgcM=;
-	h=X-UI-Sender-Class:From:To:Cc:Subject:Date:Message-ID:In-Reply-To:
-	 References:MIME-Version:cc:content-transfer-encoding:content-type:
-	 date:from:message-id:mime-version:reply-to:subject:to;
-	b=Yz4YLsJkFHD/YIhbsTmDG74+J7gRg/5RwCX2BbbydX8v/RYABokavAoH+8A++kW9
-	 pkAXOA4dQM6OwSl6oAEQ5QVLMtX0K92nzpG1cmhsM2/qyzEFfkizgU3grffXhu/a9
-	 f1LD0So2NdT1mXnp5vkVskRTbvWBnDEyhVUR7bH2YyVDyZI3bdQCn5S646wkVlcQF
-	 MuBZrHvM9guQ5PmSm6DUXmkxxpUVNEElJXCRHRGwLuC4GVVyRBE2T38F1mBYJ71Tc
-	 v9JaMYKAcJP8rq107mUvCiXMwNaX4fbiUhw+7hEpO+Hv3byaq3j78vvB5hcQ2rmxE
-	 Egx6/dG2Wf1rFDFcYw==
-X-UI-Sender-Class: 55c96926-9e95-11ee-ae09-1f7a4046a0f6
-Received: from archbook.fritz.box ([217.245.131.25]) by
- mrelayeu.kundenserver.de (mreue109 [213.165.67.113]) with ESMTPSA (Nemesis)
- id 1MCbMz-1rtpgb0Avj-009hOP; Tue, 30 Apr 2024 13:44:54 +0200
-From: Valentin Obst <kernel@valentinobst.de>
-To: jhubbard@nvidia.com
-Cc: anders.roxell@linaro.org,
-	bpoirier@nvidia.com,
-	broonie@kernel.org,
-	kernel@valentinobst.de,
-	linux-kernel@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	mpdesouza@suse.com,
-	nathan@kernel.org,
-	sashal@kernel.org,
-	shuah@kernel.org
-Subject: Re: [PATCH] selftests: default to host arch for LLVM builds
-Date: Tue, 30 Apr 2024 13:44:52 +0200
-Message-ID: <20240430114452.432969-1-kernel@valentinobst.de>
-X-Mailer: git-send-email 2.44.0
-In-Reply-To: <b728014e-9e8f-4b65-8d9e-ace0e2f6f18c@nvidia.com>
-References: <b728014e-9e8f-4b65-8d9e-ace0e2f6f18c@nvidia.com>
+	s=arc-20240116; t=1714477539; c=relaxed/simple;
+	bh=LMWMwIrhoja/mjJ97z4DdQVv6xt1vL+14RxvDcfeu+U=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=R6CyYpeqUx+RLwb4MN9WlaMem9mtmy6H4mBPUBsSCYaMgm1W+B6iEcJmYxZonqB/6kqAj+mfkEVOlyK6xR9j8Q0Fkqo3EqM06R0yrs3poXwpUOb9s/V52ZlXqbL65YLIwKOc12vumtAm+PA79cp1iuJGusp47tQcpkMN6mg0ReA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PiPVix9N; arc=none smtp.client-ip=209.85.128.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f180.google.com with SMTP id 00721157ae682-6181d032bf9so52865407b3.3;
+        Tue, 30 Apr 2024 04:45:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1714477537; x=1715082337; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=LMWMwIrhoja/mjJ97z4DdQVv6xt1vL+14RxvDcfeu+U=;
+        b=PiPVix9N1yb10opGXeYCroy7n8EgyaLrdYQeB0gjD0uLq4maw3uMzBkT2SfW6xiuI0
+         E1iDbeaaOZaNDN18RpITglH8fQtraPjjc5frwA1XO29QAGuxPg8iV/2dKkRXX2nSKo6Z
+         NZgbksvxUrSPVv1TNvlfMGUAoCqWqWUBKmJDQtNUMi4IYbpOWccbnZOZVyJh8e0dd4V8
+         b9ltfQLnrhl6h27IwRSOCN110VZYiynb3r8ZCKpv9xkkPk4OhjS8ty0mU7h1EXNpoGUZ
+         j5VSNSEApw7xYF3YqgIa5ZG/wdFdBXP2wqQWZzQj2Pfty0j1tbsgLHYTq8famibG9ikx
+         3NMQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714477537; x=1715082337;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=LMWMwIrhoja/mjJ97z4DdQVv6xt1vL+14RxvDcfeu+U=;
+        b=wPqJMUT/eZFvlZDFQSLY8kttlqGHtK+5l3Bz8O4Qpjyn7YQNeaoE+V30GWcjH9jlhI
+         t35LXoZO/oAzKQgBxJxXLW11iqppkltes1hbEUts/M+jcoZkig0gMs4Ftp6vR0ItAO0S
+         eWpD4SnM7dDENn+O/si7qJm/cjGtTKFcWFHPeB44rn12v2PRC3019DSUe0ey9BbHOh1d
+         7BK2hd4lBVHZtrxPxh4GXb8oj0j+nC9oVpgPygRlXkRT4d/RlA0f89DI+4P0lmyJ6QwW
+         GocN6exZ6JUn7m6//39hXwqX5PDGGkl3sFvT0uusPd+zL98YbA6zPRhIIZgGQG/bFPbp
+         vvoA==
+X-Forwarded-Encrypted: i=1; AJvYcCU8zKjoOoJLCNyvYOuhpbrFTycGOese8oMVZp/iZRkw8R2JR9Qg0k4ZLywok1h2/SZy78cFLQZi9DmW/3l4xvWWBh/AKjScKQw/H9GDDrxQRe3tqS92wv4UzZlzBGeukfSn6Xo9K5P87rU=
+X-Gm-Message-State: AOJu0YxkQ/ngkrVKk6ATdeNOOZW2Uf9SP18vAjjYDow6kANGoBNKQHe7
+	uAT7vUVDh5+ynhr5+OwOeYsmbB4FPVyTfMCTeC3KChIVHu/RWlnZ5rW3MUjfkm1+CKWaySdPbWe
+	KGab9abK5I0alwZMWMtfv4avXJNQ=
+X-Google-Smtp-Source: AGHT+IFWLTsceRYhi9/QmpyJz0woosjkTHL1KGvFF1YijYKO8GYKfCOxMxGlv6J7qjRlI6WEtNMdz4TuS1BN+EvgbfE=
+X-Received: by 2002:a05:6902:2304:b0:dcc:693e:b396 with SMTP id
+ do4-20020a056902230400b00dcc693eb396mr14627529ybb.2.1714477537033; Tue, 30
+ Apr 2024 04:45:37 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Provags-ID: V03:K1:ihCwGuz4XS6xoYi2SCDTomFOQdrj/iFgf4Jjrqq/Ljexc7Dpohx
- a+QsMuVio+Mye/gIW6q2eP5ZOXvpM6T8rA3JpfvdaZn6WBM5+B8+YKLGUmDypfJ1yrx72Rz
- 0N0vqE9xC6ZqSeq2/mp/FfCFvVqlpLL9wGaqQypfsQbR5w+H5SXLCGaeFiQSCZn4dvZL7c6
- 2ffwOINURyBQW/baaQ1hQ==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:TglXCKDtlkE=;1Nrx+bbypK+Zc3OXZvxvj3oOJ8W
- WyWbrLHg91XPvA0XK7O0lR6sjkYkvqbglvT80WsLOFx8myUerz3cWIPxqce9iKp8Wm8McxzWf
- J1Sj8Cux9BOJFsbukSQJQcowa5046LngU/WeQh6YG5r40YmTydnQzRcIC6UhrW+xBtcoA6T65
- U5iojhWD0kT6E/kAE833Lknk5AHP7Uh/pfOQ3Dwiz0GgKjA2C78dJbUVQAPI5kD/ntMGw6Whn
- MNiz3KtE32uQJX4w73bVGF6iKsQmMkG1mdGvPh/P1x1H7xYEgH01toL/wxXkJxGd/Y+3ShvaN
- vMSfsaNPa2fIUS3c6cBFBTI0Yf08Z0pqwIT7iBmC3zJz6raf5BZMnU6fL/cpJUChCQl6xf5aU
- 7U5aunFAq1SfMujYDkOwxSP5yIIaBZKCwR+MBKjiYNm+DRjFUwgJQX4TW3VjaetsFe/VjMaW+
- snDKe01GD2oNv62zDeubLsNXiN0llI+P5zV29j5xw6h/KZZbQhDORUfn5as1J1zTccaB/zy5/
- iz4AQAzAX2u8Y0RwTtCEr+6huXxoCDzSreJOXyaWLmq3pTk+wtmEFwpCmMIzcnshnpbCKqwKN
- SvXxunTnd0/A6Z8Su1Qx1DNqJUG3reTqlsPmpCbgt2mqon5fP6iEH6wG/tC2FUos+RUG5wbVh
- xhdv1t2Gew5m9u5SsdTpu9s8ePlWLd8Ux7F3YeSnH5MNuS21kMApAY7Xfk5BxrGNckjoiaUnC
- fHYyBE0wEja6mhCB+eKF0K2QAGXr5dOGXuemnyKJ4YstmJyMMci5OQ=
+References: <271372d6-e665-4e7f-b088-dee5f4ab341a@oracle.com>
+ <20240418160652.68df1a86@namcao> <87ttjywxv5.wl-tiwai@suse.de>
+ <a7843657-c3f6-4d2e-8c36-5541d4c52956@gmx.de> <878r19voks.wl-tiwai@suse.de>
+ <5febb249-1d4d-4ea7-b031-1df4d14620d2@oracle.com> <8734rhvlr2.wl-tiwai@suse.de>
+ <CAMeQTsbEjUyOYDAF-kFwTcovLr+8gHQGa27jPkeeJqmLhwbTag@mail.gmail.com> <20240419173443.6c49706e@namcao>
+In-Reply-To: <20240419173443.6c49706e@namcao>
+From: Patrik Jakobsson <patrik.r.jakobsson@gmail.com>
+Date: Tue, 30 Apr 2024 13:45:25 +0200
+Message-ID: <CAMeQTsZJdiyLZvY07gup0ib4SvTQ83p36mLDMRv4C6BH5M69XA@mail.gmail.com>
+Subject: Re: [bug-report] task info hung problem in fb_deferred_io_work()
+To: Nam Cao <namcao@linutronix.de>
+Cc: Takashi Iwai <tiwai@suse.de>, Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>, 
+	Helge Deller <deller@gmx.de>, Thomas Zimmermann <tzimmermann@suse.de>, Daniel Vetter <daniel@ffwll.ch>, 
+	linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org, 
+	bigeasy@linutronix.de, LKML <linux-kernel@vger.kernel.org>, 
+	Vegard Nossum <vegard.nossum@oracle.com>, George Kennedy <george.kennedy@oracle.com>, 
+	Darren Kenny <darren.kenny@oracle.com>, chuansheng.liu@intel.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 4/29/24 12:04 AM, John Hubbard wrote:
-> ...
->>> And yes, the selftests "normal" (non-cross-compile) build is *broken*
->>> right now, for clang. I didn't realize from the patch title that this is
->>> actually a significant fix. Maybe we should change the subject line
->>> (patch
->>> title) to something like:
->>>
->>>      [PATCH] selftests: fix the clang build: default to host arch for
->>> LLVM builds
->>
->> Yes, I agree that the title should contain the word 'fix' somewhere. For
->> me its okay if maintainers reword the title when applying the patch,
->> alternatively I can send a v2. (Is it still a v2 if I change the
->> title, or
->> rather a new patch?).
+On Fri, Apr 19, 2024 at 5:34=E2=80=AFPM Nam Cao <namcao@linutronix.de> wrot=
+e:
 >
-> It would still be a v2, although the cover letter, or the section after the
-> "---", would need to point to v1 so that people could make the connection.
+> On 2024-04-19 Patrik Jakobsson wrote:
+> > Neither cancel_delayed_work_sync() or flush_delayed_work() prevent new
+> > work from being scheduled after they return.
 >
->>
->> Any thoughts on whether this also needs a 'Cc stable'? Its not quite
->> clear to me if this fix meets the requirements. As above, no
->> objections if
->> maintainers should decide to add it.
->>
->
-> Maybe not, because it doesn't seem urgent. But it's a judgment call.
->
-> By the way, I've been chipping away at fixing clang selftest build
-> failures and warnings that are only visible after clang is working again
-> (due to your fix here), and I'm up to 30+ patches, and probably only a
-> few more to go to get all of them.
+> flush_delayed_work() is called during device closing. And because no
+> writes are performed after the device has been closed, no new work
+> should be queued after flush_delayed_work().
 
-Thanks! There're really a lot of those.
+Yes, nothing should write after the device is closed but the events
+are asynchronous so in theory the order is not guaranteed. I also find
+it unlikely but I have no other theory at this point.
 
 >
-> I'm expecting to post the series soon, hopefully this week. And I'm
-> thinking maybe I should carry your patch as the first one in the series,
-> in order to ensure it gets picked up. Or, I can just refer to it as a
-> prerequisite in the cover letter.
+> > But
+> > cancel_delayed_work_sync() at least makes sure the queue is empty so
+> > the problem becomes less apparent.
+> >
+> > Could this explain what we're seeing?
+>
+> I suspect that cancel_delayed_work_sync() is only treating the symptoms
+> by preventing the deferred work from running. The real bug is "someone"
+> giving fb_deferred_io_work() invalid pages to work with. But that's
+> just a blind guess.
 
-Correct me if I'm wrong, but intuitively 30+ patches that touch selftests
-from many different subsystems do not sound like something that is going
-to be merged fast. Since I'm also planning to send a separate series that
-removes explicit setting of `ARCH` from subsystem Makefiles (if they do it
-for the sole purpose of working around this issue) I'd prefer to leave this
-patch separate for easier reference and potentially faster merging.
-
-Referring to it should hopefully be sufficient to prevent it from being
-forgotten.
-
-	- Best Valentin
+Trying to figure out when the page goes away in relation to when the
+work is triggered might be a good place to start.
 
 >
->
-> thanks,
-
+> Best regards,
+> Nam
 
