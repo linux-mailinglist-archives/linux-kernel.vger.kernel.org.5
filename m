@@ -1,204 +1,337 @@
-Return-Path: <linux-kernel+bounces-165213-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-165214-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 19ECE8B8995
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 14:10:50 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E14418B8998
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 14:11:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C133328163B
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 12:10:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EC8581C209FD
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 12:11:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC02984D34;
-	Wed,  1 May 2024 12:10:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F24ED85268;
+	Wed,  1 May 2024 12:11:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="ZAZF0PbY"
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2067.outbound.protection.outlook.com [40.107.93.67])
+	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="ioaviImF"
+Received: from EUR05-VI1-obe.outbound.protection.outlook.com (mail-vi1eur05on2087.outbound.protection.outlook.com [40.107.21.87])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 460774437;
-	Wed,  1 May 2024 12:10:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.93.67
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3701F7CF3A;
+	Wed,  1 May 2024 12:11:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.21.87
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714565440; cv=fail; b=d31Zme5lupzFu3Yw/8R5XqYv7uPNQkRrauyXAtxOw5V6QVLF98l2/NnXH2bZDZCmlTumkL0cpgRdprWTX6g7/wOSZHA5TH7Upsi7ns/leGm6uw2GOcSC++qZ5VjJb/vUH03+1FDAcLyvcWlv6IrzxOpmhjmp3mRChvwdIRZhAbM=
+	t=1714565508; cv=fail; b=eezPM1lgDMuGnREhTPaRtBY93gQcOlb5oMmGbdAHICzGlt5HPbtYD1vtE/YFbHJZsNocZENRoUKo33hk+9x6a6XZzVOO3xNPDaQvY5TklQJmwYrAdFP5ckXhX4ES3B1PT2AXtVVr2QC9gts+lN6PNRdN73i7wPvYSTnSKQJ2xpw=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714565440; c=relaxed/simple;
-	bh=6jBngJ+iy2VGj/xWmxGjLQ5lnLrx4MpBoH6W9fT9QnU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=gtEIaVfkZJqvVgyu+tN4ihw1NXVtibaUx9BVPXxNQ0w8wbH5gqWnf6GZYOsahHrlNM445RYZjAGlXfj5fRm3A/JMo02oOSE7hWRQTW7MOY9Ywt2ezBZeQLc416KwL7gZBWPJP8t7SCY47E4wxnOeLJmZ7af4WnZ5Cwp9ZJ+CfAI=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=ZAZF0PbY; arc=fail smtp.client-ip=40.107.93.67
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+	s=arc-20240116; t=1714565508; c=relaxed/simple;
+	bh=+FsyOCO7ET7tIlBgM0GU65w2FzhnKqoKWWKjBrnR6J0=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=miFpBJBU+0jrdpCcKl54tcHBdcMg0Jp6SUmxHylcBI9HGsL+SIHkbQeKrPoD/1deGclXU1p12UoLXkqtY7l22h2bVlV/Pp8sBe5RGnSBHUxJCGQiGwxWRviMgzlgeWPoixyB3OsAMBkumI9RInDdIN5yQ+l8BDZgrqb+idbIRsU=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b=ioaviImF; arc=fail smtp.client-ip=40.107.21.87
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Ns2qT7Yx3IClk6eq+mWQfjg/lQvVxQF/Hevhy02QZcZw6Uosb+lJjy8H6ARl7k+WZoMJT4n/gt71fdQVz9JgTN/dYjZdjxEsIHZKdihSlhvic7/9PCHHPAmGEdqj2R74EzMvDzDX7kCnhM3bhTPnmhgY02SxAG+F8B7DQPaEz3tUGDYqBQcK6fPrCNUDiP48nXD8Nn9aDFKWerOEBC4fJ7j0vHB9Sf0TXeyf0f+ej6QGnOY/GpmTCi5lfii+JmFVgXG5VA+yKEqJrQZ/sQb2bR9x0+70muxD6yBibZkmIANftnI7KCfA3FucV1InX2WJv0GRLAIa8gU+BgulO558Wg==
+ b=TgIUH9cdeiq6tOFRkSEBDCK4e9pqyOYehzSh0bBM9JJBzPV7qVGm3QVS9aGvK/qBru8lrRMMiW6v3AJcvIv8h9IaU0zvqThNEZfz45byOtOO6yW15xNWPUY0+9HbPVn8T5O4YnNP5trCo6aWJblVcPx23u2dEFFDoZhrRzpHytrIz4eVcFs1fiZFJeW7d2Mu1HD7wJVx/OH38pIxc5w7xg5Nq1vGVv5ZG5mPI46EO6oUEA5gqOsgyTYopbRsJWnHhy7GYOL0Qh/qU9hwFbhVj2aC5NItV0vq7XoObtVHQcsrtrXrtHGv+PKKPLGQ7sET1ad6f4cqidTkuBmyr9PLhw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ZnJkJO7orUqyoqrS/FjEYW9dopHDcxHV/lfxRSrGFSs=;
- b=LndbW8qIkZhXBXrAIp/kJ3xBVkfLEbuKV3gVyG1AZIhsx7IgELjsK5ehIjkaJxoITsqPjQ2e9UKHkv2Gor61mApFKKSL616jjZk3VqmFjUKh+UsXUGdzesUsxCQh/jqkI7M763+JXV/JJzhjN+skNFR49tD48UT5jJ+JIGsTGULfzUYEMINKi74wcz7P2YE4lCNpOJbB1K/V1YX3k+CewSgGBapoB7Qk8UIhTAEsm40s28ZwnPosqS59HTAWocnuYMKhMSexuGuxCGRoEHGGb0wBR0jck6mw4+qJyOfKD54l7BhlIiEE9Xu0BnzVoZPIR6Sb3TcSDvV6Mk8O7fhFdg==
+ bh=63AFgmoK5ZnxMjlnA/eKLVH5OYzFjCliZ/lL5MTQnWY=;
+ b=FXYN2jNN8+kGxTz4z4dQlainIb2Dg/WNav4IxJCCylzZbyFLEvilf2SGIAP8JAWcBtES0OPntBeVAm/vFGSMIItiMt+Nnu1XUvs1MWa+TbiXejyIBR/yHMVflFNVs1dlhkldrvbl8/TNqJWoC30gkjpPRZl+OiqRn66lP4IOMZe/V/uP1mjwhObTzj4PJyeitcmx8q6wj+F6Kxa+i9aVK/NB+B75YlEErEB7i3SXfM/9dgkMJ/ol+s9T8ISAo7baYfpqryz0PCRpkb8pper88WOOiN4u7tYFfFMvcso8+mItiOzIJBodcu2SbjXe1kf1Qlx0cZWCFg6C4IU/s6juaw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ZnJkJO7orUqyoqrS/FjEYW9dopHDcxHV/lfxRSrGFSs=;
- b=ZAZF0PbYpAukV01czbfEiKIvGruRHvOrrO3Lx4u8/akmNIfMbKZtGWtEC5NR+iB+8NuiJV316fIFsMnonRAs0iMlwwjY+Nhmgv9BZ9F0rf3e8l2tpX1UmNWxcvXuINZvfco7i1PrvA1wKgMawcMH/OOBgCMn1GDwGk6Ikq3TuGguBkynAtqiIdNZ3JdUc/h5FzsDI/2tMhUm5EqEV4Ue0eiMe5bEF9hBTG7OSBTSE3AovlOh6tPrceWOBfmyXCtkb++vRsc9j+HoZNoL7o+kN852Cz/ChSYsfwff2UAZLp1MXVH7ofMKaCZvqagBnQaszfhcYWwY5LGrC3FB5LjX0g==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from DM6PR12MB3849.namprd12.prod.outlook.com (2603:10b6:5:1c7::26)
- by PH7PR12MB7283.namprd12.prod.outlook.com (2603:10b6:510:20a::21) with
+ bh=63AFgmoK5ZnxMjlnA/eKLVH5OYzFjCliZ/lL5MTQnWY=;
+ b=ioaviImF14tGtxP51AfnqhQaaW/T1LYWtePVgiuvxtHykVVGSC/w8Ix7qJnEhLI4SDgpnm+eTMck2pk1ZD5mrfvAH1bC7sc2svNC1/gwwqHEMZLooNKLL0CxPFmLqvV61Hua0glGPOz4uDU5pQbUmGhupvTe7DR/28Jf7m7TVSU=
+Received: from DU0PR04MB9417.eurprd04.prod.outlook.com (2603:10a6:10:358::11)
+ by AS8PR04MB8930.eurprd04.prod.outlook.com (2603:10a6:20b:42d::11) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7519.35; Wed, 1 May
- 2024 12:10:35 +0000
-Received: from DM6PR12MB3849.namprd12.prod.outlook.com
- ([fe80::c296:774b:a5fc:965e]) by DM6PR12MB3849.namprd12.prod.outlook.com
- ([fe80::c296:774b:a5fc:965e%3]) with mapi id 15.20.7544.029; Wed, 1 May 2024
- 12:10:34 +0000
-Date: Wed, 1 May 2024 09:10:32 -0300
-From: Jason Gunthorpe <jgg@nvidia.com>
-To: Christoph Hellwig <hch@infradead.org>
-Cc: John Hubbard <jhubbard@nvidia.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	LKML <linux-kernel@vger.kernel.org>, linux-rdma@vger.kernel.org,
-	linux-mm@kvack.org, Mike Marciniszyn <mike.marciniszyn@intel.com>,
-	Leon Romanovsky <leon@kernel.org>,
-	Artemy Kovalyov <artemyko@nvidia.com>,
-	Michael Guralnik <michaelgur@nvidia.com>,
-	Alistair Popple <apopple@nvidia.com>,
-	Pak Markthub <pmarkthub@nvidia.com>
-Subject: Re: [RFC] RDMA/umem: pin_user_pages*() can temporarily fail due to
- migration glitches
-Message-ID: <20240501121032.GA941030@nvidia.com>
-References: <20240501003117.257735-1-jhubbard@nvidia.com>
- <ZjHO04Rb75TIlmkA@infradead.org>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZjHO04Rb75TIlmkA@infradead.org>
-X-ClientProxiedBy: MN2PR13CA0009.namprd13.prod.outlook.com
- (2603:10b6:208:160::22) To DM6PR12MB3849.namprd12.prod.outlook.com
- (2603:10b6:5:1c7::26)
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7519.34; Wed, 1 May
+ 2024 12:11:42 +0000
+Received: from DU0PR04MB9417.eurprd04.prod.outlook.com
+ ([fe80::d30b:44e7:e78e:662d]) by DU0PR04MB9417.eurprd04.prod.outlook.com
+ ([fe80::d30b:44e7:e78e:662d%4]) with mapi id 15.20.7519.031; Wed, 1 May 2024
+ 12:11:42 +0000
+From: Peng Fan <peng.fan@nxp.com>
+To: Cristian Marussi <cristian.marussi@arm.com>
+CC: Rob Herring <robh@kernel.org>, "Peng Fan (OSS)" <peng.fan@oss.nxp.com>,
+	Linus Walleij <linus.walleij@linaro.org>, Krzysztof Kozlowski
+	<krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>, Shawn Guo
+	<shawnguo@kernel.org>, Sascha Hauer <s.hauer@pengutronix.de>, Pengutronix
+ Kernel Team <kernel@pengutronix.de>, Fabio Estevam <festevam@gmail.com>, Peng
+ Fan <peng.fan@arm.com>, Sudeep Holla <sudeep.holla@arm.com>,
+	"linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
+	"devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+	"imx@lists.linux.dev" <imx@lists.linux.dev>,
+	"linux-arm-kernel@lists.infradead.org"
+	<linux-arm-kernel@lists.infradead.org>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH v2 1/2] dt-bindings: firmware: arm,scmi: Add properties
+ for i.MX95 Pinctrl OEM extensions
+Thread-Topic: [PATCH v2 1/2] dt-bindings: firmware: arm,scmi: Add properties
+ for i.MX95 Pinctrl OEM extensions
+Thread-Index: AQHakTp0F0gZzKwEJ0KLehvuXBXWtLF32SuAgADPKOCACauUAIAAClDg
+Date: Wed, 1 May 2024 12:11:41 +0000
+Message-ID:
+ <DU0PR04MB9417B9CD74A1E15F2515ECA588192@DU0PR04MB9417.eurprd04.prod.outlook.com>
+References: <20240418-pinctrl-scmi-oem-v1-v2-0-3a555a3c58c3@nxp.com>
+ <20240418-pinctrl-scmi-oem-v1-v2-1-3a555a3c58c3@nxp.com>
+ <20240424193007.GA329896-robh@kernel.org>
+ <DU0PR04MB9417C67342B1DD6CC299B4CE88172@DU0PR04MB9417.eurprd04.prod.outlook.com>
+ <ZjIoMJOAxtC-nkZO@pluto>
+In-Reply-To: <ZjIoMJOAxtC-nkZO@pluto>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: DU0PR04MB9417:EE_|AS8PR04MB8930:EE_
+x-ms-office365-filtering-correlation-id: 2fd3d8ac-752e-4d4c-be1c-08dc69d7dc9a
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam:
+ BCL:0;ARA:13230031|366007|376005|1800799015|7416005|38070700009;
+x-microsoft-antispam-message-info:
+ =?us-ascii?Q?ULx/rq5QMmP1ytmWrdLP9F1V45ClaJpwta6xJsAGBolOe6xKlirhwz+N6S5d?=
+ =?us-ascii?Q?FMGrz1ZXONOrGqb0On4LniojyH/Ef8rvqSOiYNDNhltcwzHtrN9gH4PTNv+v?=
+ =?us-ascii?Q?SWodt4lPqT6EuLSaP7D2U9DIpJU2aSkpT47Cjp6gZ95zzUb8BTz1S2pN+42R?=
+ =?us-ascii?Q?rnp739VJRCeVc4lO/RZDpzpSH6IO+B/Cb0iO0h4FNoJVIyItwnNEVRRi6ddv?=
+ =?us-ascii?Q?7XYCk2qUbK2LjMIpKHy0tSBNAZW5Pv9oXgjBI6Cl2UnhmEChV5oueKKha7iS?=
+ =?us-ascii?Q?oNxT/lej0c2CahHV2bRnlWeZejvcmDKB7JpgTlgVaE3S/iPXi4OrQH1A0sVw?=
+ =?us-ascii?Q?PiU0ELrumypcCbs77A48NAigK53GbpXyWS1BpoOphrrnpw17Ki3VF7Ri5QRz?=
+ =?us-ascii?Q?uzRq1We0dy0ZmCEAxmacVaRaF6ZmS4Fo2/+5jMnXh+vwodAMPp6BiSPBOH3N?=
+ =?us-ascii?Q?dkP3hFCRs0rRpRFQaZMES+ZssWmLL2lRCvoY4BTHwIRoELdFodfEbjozakS5?=
+ =?us-ascii?Q?FXXSJXUeKsO1U+jnwEIlq5p5mazzSw+liWbbSJnFkKI2kvglRkO+f7If6R7z?=
+ =?us-ascii?Q?7Rz5LJPnVBSEVVZlr1jx0w6H+2KbkQy1f4rgPDH+aIM5qL6ws2W1bXFyKUSV?=
+ =?us-ascii?Q?jig9u5HrpB5nbWUYT9AS6IXtf8vMNKxnuTx8qyCw45/ZWXfQWETjXsFIbWTa?=
+ =?us-ascii?Q?YiWLvJFkhF5dLlY0tS0uDkvPljoEgtmoOHZv4/DNjGoquM9ZHC5CScfQvCiQ?=
+ =?us-ascii?Q?CQNVdZcyGHqzyQmVK8Ef79V9SQt1IelvS7P8peRFXefdxTghEviIIY6kqhQO?=
+ =?us-ascii?Q?sMW86inJClU8hEarMthvgHBeWfchXjrQhLFMjU+7urDEWCvWFYCCETB249ml?=
+ =?us-ascii?Q?7dbnJf2hn7UFnTXW65hMzeeKcok4xCUxX3UWVnNU74T1yrSuWSuS/bTTLxl+?=
+ =?us-ascii?Q?9ApsQQ6BvIPrHhUQ/c7UrIGrLn7MgWmF5Q4yMkvt53SmDkGU/gBmAc/Wv+dY?=
+ =?us-ascii?Q?3f0SJMKoFcNwDrhEPYbBCesuC+dGdU1wRG9h+8drwpHD4au89y3gceXqFS9V?=
+ =?us-ascii?Q?ZBU/IJ246/LD5I000iPAbBUCf0U4Ag6gwkinjoGtvMjgHYbRaUHK3KGYFcgw?=
+ =?us-ascii?Q?ELP+ikGw0HnlNiQccCPJ6V6gy4ncKM7pPuvzVRfSNhhhtg7hZ+DNI1TDl+D6?=
+ =?us-ascii?Q?l+50dzPPZOVPBr/5euVlO5ATE/NF5n7TNwJali1dn7YBPKcIyEBsOBPiZlan?=
+ =?us-ascii?Q?1eouIjntNIZIYyp7jwovIuUmFdN3HqdjViU9DPoNQaKd7W0j19Dmj+/qe0HE?=
+ =?us-ascii?Q?5vKLhMOzgYlPwidkgmb3as/eAm472+/5Pq3LtUhlYeaWFw=3D=3D?=
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DU0PR04MB9417.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(376005)(1800799015)(7416005)(38070700009);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?us-ascii?Q?rIp8JMg+5xUk+YNLUP3cY57KUTJTYqxwxnX2ZL3keINrXdYJScpApcUsxLFi?=
+ =?us-ascii?Q?UxZeN4KAxlhy93HyQZln/SzcwZfJ36zra4LPOSqtpAbdsvuTmRCCKJWFL2or?=
+ =?us-ascii?Q?WlmH9KGWwZM+v1EA8PNnXNBbwbw4NBEtRwCB0rj9H9+lrmPhrJxOvZRFndvR?=
+ =?us-ascii?Q?Giij/JhancQkTH3yrXUqQ/twtxR73e+yQ0csw7OhsFMvcPx9+sP67uAYsKA5?=
+ =?us-ascii?Q?51siz+fDzgvbAIJveiDHBm7iwgnG00N79M0+Wt2J8DRztB7Ga9yWP5e4GLhO?=
+ =?us-ascii?Q?rCsHr2vnpJQ1rPBT41vOxj1m1EVZyaBr1tL/Gb9Z6l/AgkZUydma8A/it7MV?=
+ =?us-ascii?Q?N5jujyyMxfNJiWUsRoPZJCdxu1EN/ghXBvN/SF3OjYJKrGSkiOLSD2RhfO+K?=
+ =?us-ascii?Q?32D+HKvAYaWKvbEAkGBHENitDzrkAPfHaIuTXR5YSVOrE2rK1pwLkYeSVmXM?=
+ =?us-ascii?Q?f94yhgcQJ5iXy5OHL+iVqAcLTiSNsdp3S7zA6fDI/ZRkSAE/d3jm0tOY6SDN?=
+ =?us-ascii?Q?T+bSadR1DiNJOu2QO3gVHyJEwq5llSYHIXtk8R7IjIpe/9NwSKa6TeiGuv1W?=
+ =?us-ascii?Q?+EMdbNx0XSNtNDGDDrAeFEo0idWSoN6J96W0CYHND4ohZqzU7FM3q4WEj0MA?=
+ =?us-ascii?Q?+m0GplkNfeT/pWFhii5yimz6l8qRpygtEFWL9uAR9UFP11wZTY3bYWVKyMs4?=
+ =?us-ascii?Q?nmgem03A/gpzlF5wE1Hm0Hwy0Z9sewxpeSIKjx9tTPzOTywjQT+Tyt3naQos?=
+ =?us-ascii?Q?juh+Ldkv4hEQfMITt01gI6cXcna1tMVzJftsAj0mhuSvRegvIy12RgNCu0Lx?=
+ =?us-ascii?Q?hTnVnKwiZn64CRXNJaa/nJHpgbAxgvBg4YJv6CGZwKmwTGxKTmy3JftE44D7?=
+ =?us-ascii?Q?+00J3rh/75/MQx9yElAN1vHryqivAKHjWf67cTjWptjmiOw61ypZ51/B3nAv?=
+ =?us-ascii?Q?2vF5OOhd840EFk1i7w/dbNjnKIgyFo07AZ4YttWB9RWJbVufOAFGWo6iyEWN?=
+ =?us-ascii?Q?d6EJ61vmP7RWMrofAlTf99j52UuZdP7ooycKxGRcSy1bN9t5PGpVHw/VGyW9?=
+ =?us-ascii?Q?0HrrDqndds2NwcbwGrtre1KwFfyEy0XUcK46N5J2QY82VNeG+4QnxJ/iuplh?=
+ =?us-ascii?Q?RHJ3pTxWzAZTUhgxXwdYU8gzZC6RlT+Aq6yr/2TAvi0lm6IF10OpngHXxFIY?=
+ =?us-ascii?Q?xE6sFmEjy8mrFdVo7PUjGIP4orPnSfIPzu8HiA+ce7EQ5czwdRq2XFf4ie/b?=
+ =?us-ascii?Q?eCRsgryiLLpbBCHMtlPF5Y+zMkL4k8t4VVpPH9gQB1oO2UCErcrkgjgzV9dQ?=
+ =?us-ascii?Q?CojhD7Po3pHxdCNMK2q2Zc+LHUz/Chi+YZ0jnUrWouAlvCyF4RAqe/E0Togh?=
+ =?us-ascii?Q?44LYcr0UZh6WwQjGWbf/J0KAgct37UvsnuSFXp6GHwRvuE9LQNLh7qU9CapS?=
+ =?us-ascii?Q?ULAae5lgR60Ueg8Wsx/JsFhob/c3EngDePR0I5Geg283h626C8rbWa+rxpZH?=
+ =?us-ascii?Q?1rVwBBjJkPLToGeRVlIKzX5v/iqtHG0fmpc5dVRCJ12JY6q4quXleWiu4PQE?=
+ =?us-ascii?Q?wWhAcWwp5VyWpv6TMs0=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM6PR12MB3849:EE_|PH7PR12MB7283:EE_
-X-MS-Office365-Filtering-Correlation-Id: ad664f03-e733-4e47-5f08-08dc69d7b41a
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230031|376005|1800799015|366007;
-X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?mtAEUFuSCuTQwbFH3joNXrkHVodfkMxG796g80mnGMT+bGnSyeCYb1sQZpX+?=
- =?us-ascii?Q?ch5xNtgdwjLxocicSl2zJzXbiIXqqI3bI0O7FV3jDo792onPjbiq3lFWmIE0?=
- =?us-ascii?Q?D25dJ9yoj3sLUCFE1hJ5F0MLTXQEXDnEUHfrFEy+V+qQ8QGF5SYQWHmy2qZz?=
- =?us-ascii?Q?YmP+HRS+Qxcfdqa1iGF7uFz+8OEaRpHGHJgqZ4e/EN4Z9qQxVU013qacHj8e?=
- =?us-ascii?Q?8SJV1jv25sqOHf8ng9WgdiKWMHHp8MIdhBxkcbZF5Sl+nUOVyEKDbCDtMcla?=
- =?us-ascii?Q?j/RDcgUE9A+VrnEnS9tFYysosiphmLKYPX6cNDe+014JLmEvqP5DyyXMH/ZL?=
- =?us-ascii?Q?gqvo2L4sHHHRxj/ltYGxrvwHolv8sQ3dgJYwsGeSK5a8qu7717sM6Xn6zvWh?=
- =?us-ascii?Q?q4350MAr/avYTxWExeL3jAWgktEQCEP+O4EyOJK0KYsXbcGwBT2Lc0LhHaK1?=
- =?us-ascii?Q?XOIyl8HFoDesW6FXthGbnls2fdzG+Hqil5kNjeA5v51XssDMUczA3lcvHd7r?=
- =?us-ascii?Q?UkUegogw+ebV8FAXU2OggKCmgoQ6WL9g+80WD0MRDIMpX/d+Nr1S/xGMK79o?=
- =?us-ascii?Q?VmZsP5a0P8KC56fKP1ooj9rFmneaJH2gTNKSoghrDNjIiMYk7i/lUbTNRqtm?=
- =?us-ascii?Q?9HQdttCVdGlDmP7mh8HeYvMyTR36Qubk3a616xD2SOgUlc/+bRY7h7gayPIi?=
- =?us-ascii?Q?Deq/iTPc1P7CC+q1U5xtQgygAOZcQW3pMNjarAo0OISuJ0ly2rkHQrBRLrFB?=
- =?us-ascii?Q?0wYZ4JqyspGsCeg0kDggf1bfngsO6fenD/lGYcaEzBTQKMvfS7ddR1F01xZN?=
- =?us-ascii?Q?BP546fDvaYbyC8hAQdi8IbvfNtMEyuLV4+FEzc7mQp7cEpmxJn3TguMoDfkk?=
- =?us-ascii?Q?F+khkqxqB+6jLz4TpjtL1ZomBbZxctmcOaLLvK2dFrjhejCSYh7tMVwBj6eM?=
- =?us-ascii?Q?Rr4pcrk40drJYlUMHY+nSCQQPb5QFfgBVzVnDNREpPallzgNnPBcqrmI9BtW?=
- =?us-ascii?Q?+c/ipxB2xTPkSvO6Fm+G6hpF+Sw7hpV+SayvcljWDQ3dYZ1NNj2GGGhltMiP?=
- =?us-ascii?Q?M7vscSu5DQYkOrSJXuZ1nsHjvtOesFs7A6Lh9VF+A8c5nkjIGrcgc0Kz2KkE?=
- =?us-ascii?Q?72Kovc0ZpKTOjPYE9UTCy8Tn8GcefIWdZgjiJoEGhIXoAMXbyQwbH8Ex7zXF?=
- =?us-ascii?Q?U34bYqdNo8/x21J9tlCXTkGDk7IyA605dGY2hwI/iBOqOwNJ0wPmqgOaRwRY?=
- =?us-ascii?Q?W7sjTD/lCn7J8gjF+c/akSOF8q3UWHwuRzEGcpQoMA=3D=3D?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3849.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(1800799015)(366007);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?mDcEyuKOVjIAERu9Qxo8GmTEsJYBGtc/cDf06KkCC9JpTmGG7XgM97VH6zbs?=
- =?us-ascii?Q?Mwk39pjsAL5kZXOXp0KHliu4HEyP+EoO2iAvmedD4ezpp9w5Dk4Rn62MxvBE?=
- =?us-ascii?Q?l91uICDVp0gQpHPgFnC7/+LYUzRGG7PBEQAQINqPADSruQ3DkMLSABrNsWCF?=
- =?us-ascii?Q?xwVsF8ERED593Q0u4qyTauh0ufA/juSMFLr6kqkFAjUSdXNoeu9Jhaqsm3Lr?=
- =?us-ascii?Q?75ZGVmDH5hCG6IFp3xQDwHqMRL9m+DIOUSbs17ETfI+jpP5c27lXXFnjyolQ?=
- =?us-ascii?Q?YsxLHeR2iWddh/8nlNJ3DNBPbPv+7BDuc/t70fHkJXXs0pNlF+9G4VfWnfoL?=
- =?us-ascii?Q?TpD1ILLXE26OyyG7SSoXxIm4NgsdtdqYGnUkhj68WYQ55EviivG6ZOcee79H?=
- =?us-ascii?Q?ktDxippODFe+kx2ItaWX6qIjLOQkRG/FIEnNhulwu24kH7wWMc8MgvK60Xdf?=
- =?us-ascii?Q?QjFqdMYB/dwsV4eDw4SVJz3I7vZLZoEBVl8elJg04BEcFXAO+/g89EtlPgEM?=
- =?us-ascii?Q?beFzmw9vvwXstXyVCcDN3gBiZ9iS9GlJ7CPO15d+6MAWguhhvu+9bVf+Ck5j?=
- =?us-ascii?Q?y1N1P5GesSE8VBhCVb7cAqWzwJCleMO/SxpkakI+ehdTiwVb8rAykPF4/ARz?=
- =?us-ascii?Q?vMbVeVhAX6Beg44/WsMKUJZQbxHy7aWf6OoioYeSe/hwNx64ATlbIUwAzelt?=
- =?us-ascii?Q?XnRAuWQset5nHkwAlqxg30W9K4E0WdvDKZTo7DdQAiJYfulYBbP9nLsKYRXf?=
- =?us-ascii?Q?GwY8lY664YB9xthz8022WXrslvU1LxmbT5PBBCcG6BgU+qSIyhJqXNkrOROS?=
- =?us-ascii?Q?ZY5NwY3mSIVaDAUgecf7ABRZVyzjjiHKDAGhAjW9P9IGYqrX7hv/olIRlk1B?=
- =?us-ascii?Q?bgMvaxUPeFl9Luhf5yegVzCflux+VXhjW0o3rMXTMN6/WKB8ESUQZCgstRGR?=
- =?us-ascii?Q?nIsu768KS4msd++EAxON4G1ApWB/SC0GPtqn9hcS/JCfCWIKvf3PkwmgGtQO?=
- =?us-ascii?Q?h8gnpQ90b4hQpW2v4STeCF7483yA284rB6qJ+BSGJnspUgq+NtSl4bCBbJp5?=
- =?us-ascii?Q?uqpTfmOgD+Hbgd2C9L4RJ7kimUyOd+r7R43b6/4GWbno3aGVZzO4aVgrjGxj?=
- =?us-ascii?Q?sZCaBvgjnq2D3q0kmOxFROfL/3bOx1lBDt5XOKgXkeCp4u176crnGQOSpZmW?=
- =?us-ascii?Q?LaGcUcWxkxeEGDr29nLG1hLP6YDgcYVu+kxz0KbCJkZyFBfYtSx3uFHhaYzB?=
- =?us-ascii?Q?1iMLHEh/rMTYLMsInXT96zhKpKSj7qCiC8PVh0K2qq/ZE2ce/73GPocnwerM?=
- =?us-ascii?Q?KcFB7uQlIzPwO6WWk5msr0gRcs+qr3N4ZdZ+cuDJb7bdcVVMdJiEed3cY+hY?=
- =?us-ascii?Q?H3V9bYWYI5rHW9wthAtkrdNhB5EZ0ZMNAEn2isx4oVWB/5qqojrZJfVd/tOm?=
- =?us-ascii?Q?VjeihMQxjGRCZHV7MnTqxzyYqyMLwDXlDZE6FtrsUcxIu2ssfixSMUg0rC1U?=
- =?us-ascii?Q?OEkhnmLem71wigsApUvya33kFIlUyvs84c/PZt51Zn0PPQVov2GTzdE0div1?=
- =?us-ascii?Q?TTJqaYE65A5AzQGEnEIclox+czBaXFQEKI9aMeR+?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ad664f03-e733-4e47-5f08-08dc69d7b41a
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3849.namprd12.prod.outlook.com
+X-OriginatorOrg: nxp.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 May 2024 12:10:34.1953
+X-MS-Exchange-CrossTenant-AuthSource: DU0PR04MB9417.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2fd3d8ac-752e-4d4c-be1c-08dc69d7dc9a
+X-MS-Exchange-CrossTenant-originalarrivaltime: 01 May 2024 12:11:41.9645
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: V+r7PVpf1xn4kawtTN5uNQ+nybR9mNnPhUukwuhUcVqjbZxhSU+Ipm0bS4SPBbon
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB7283
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: qwvfVEygf4zoFMoKAtj/uhWYsvorI6u+0VXT8K6pl0MdKxWyYJ6AcVb/5N4j4Dmby2wk5ibzChoHFS3OMKREhQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR04MB8930
 
-On Tue, Apr 30, 2024 at 10:10:43PM -0700, Christoph Hellwig wrote:
-> > +		pinned = -ENOMEM;
-> > +		int attempts = 0;
-> > +		/*
-> > +		 * pin_user_pages_fast() can return -EAGAIN, due to falling back
-> > +		 * to gup-slow and then failing to migrate pages out of
-> > +		 * ZONE_MOVABLE due to a transient elevated page refcount.
-> > +		 *
-> > +		 * One retry is enough to avoid this problem, so far, but let's
-> > +		 * use a slightly higher retry count just in case even larger
-> > +		 * systems have a longer-lasting transient refcount problem.
-> > +		 *
-> > +		 */
-> > +		static const int MAX_ATTEMPTS = 3;
-> > +
-> > +		while (pinned == -EAGAIN && attempts < MAX_ATTEMPTS) {
-> > +			pinned = pin_user_pages_fast(cur_base,
-> > +						     min_t(unsigned long,
-> > +							npages, PAGE_SIZE /
-> > +							sizeof(struct page *)),
-> > +						     gup_flags, page_list);
-> >  			ret = pinned;
-> > -			goto umem_release;
-> > +			attempts++;
-> > +
-> > +			if (pinned == -EAGAIN)
-> > +				continue;
-> >  		}
-> > +		if (pinned < 0)
-> > +			goto umem_release;
-> 
-> This doesn't make sense.  IFF a blind retry is all that is needed it
-> should be done in the core functionality.  I fear it's not that easy,
-> though.
+> Subject: Re: [PATCH v2 1/2] dt-bindings: firmware: arm,scmi: Add properti=
+es
+> for i.MX95 Pinctrl OEM extensions
+>=20
+> On Thu, Apr 25, 2024 at 09:06:00AM +0000, Peng Fan wrote:
+> > Hi Rob,
+> >
+> > > Subject: Re: [PATCH v2 1/2] dt-bindings: firmware: arm,scmi: Add
+> > > properties for i.MX95 Pinctrl OEM extensions
+> > >
+> > > On Thu, Apr 18, 2024 at 10:53:17AM +0800, Peng Fan (OSS) wrote:
+> > > > From: Peng Fan <peng.fan@nxp.com>
+> > > >
+> > > > i.MX95 Pinctrl is managed by SCMI firmware using OEM extensions.
+> > > > This patch is to add i.MX95 Pinctrl OEM extensions properties.
+> > > >
+> > > > Signed-off-by: Peng Fan <peng.fan@nxp.com>
+> > > > ---
+> > > >  .../devicetree/bindings/firmware/arm,scmi.yaml     |  9 ++-
+> > > >  .../bindings/firmware/nxp,imx95-scmi-pinctrl.yaml  | 66
+> > > > ++++++++++++++++++++++
+> > > >  2 files changed, 72 insertions(+), 3 deletions(-)
+> > > >
+> > > > diff --git
+> > > > a/Documentation/devicetree/bindings/firmware/arm,scmi.yaml
+> > > > b/Documentation/devicetree/bindings/firmware/arm,scmi.yaml
+> >
+> > ....
+> >
+> > > > +
+> > > > +title: i.MX System Control and Management Interface (SCMI)
+> > > > +Pinctrl Protocol
+> > > > +
+> > > > +maintainers:
+> > > > +  - Peng Fan <peng.fan@arm.com>
+> > > > +
+> > > > +patternProperties:
+> > > > +  '[a-f0-9]+$':
+> > > > +    type: object
+> > > > +    unevaluatedProperties: false
+> > > > +
+> > > > +    properties:
+> > > > +      pins:
+> > > > +        $ref: /schemas/types.yaml#/definitions/string
+> > > > +        description: name of the pin
+> > > > +        items:
+> > > > +          enum: [ daptdi, daptmsswdio, daptclkswclk, daptdotracesw=
+o,
+> > > > +                  gpioio00, gpioio01, gpioio02, gpioio03,
+> > > > + gpioio04,
+> > >
+> > > ioio?
+> >
+> > Yes. The name is exported from SCMI firmware.
+> >
+> > >
+> > > > +                  gpioio05, gpioio06, gpioio07, gpioio08, gpioio09=
+,
+> > > > +                  gpioio10, gpioio11, gpioio12, gpioio13, gpioio14=
+,
+> > > > +                  gpioio15, gpioio16, gpioio17, gpioio18, gpioio19=
+,
+> > > > +                  gpioio20, gpioio21, gpioio22, gpioio23, gpioio24=
+,
+> > > > +                  gpioio25, gpioio26, gpioio27, gpioio28, gpioio29=
+,
+> > > > +                  gpioio30, gpioio31, gpioio32, gpioio33, gpioio34=
+,
+> > > > +                  gpioio35, gpioio36, gpioio37, ccmclko1, ccmclko2=
+,
+> > > > +                  ccmclko3, ccmclko4, enet1mdc, enet1mdio, enet1td=
+3,
+> > > > +                  enet1td2, enet1td1, enet1td0, enet1txctl, enet1t=
+xc,
+> > > > +                  enet1rxctl, enet1rxc, enet1rd0, enet1rd1, enet1r=
+d2,
+> > > > +                  enet1rd3, enet2mdc, enet2mdio, enet2td3, enet2td=
+2,
+> > > > +                  enet2td1, enet2td0, enet2txctl, enet2txc, enet2r=
+xctl,
+> > > > +                  enet2rxc, enet2rd0, enet2rd1, enet2rd2, enet2rd3=
+,
+> > > > +                  sd1clk, sd1cmd, sd1data0, sd1data1, sd1data2, sd=
+1data3,
+> > > > +                  sd1data4, sd1data5, sd1data6, sd1data7, sd1strob=
+e,
+> > > > +                  sd2vselect, sd3clk, sd3cmd, sd3data0, sd3data1,
+> > > > +                  sd3data2, sd3data3, xspi1data0, xspi1data1, xspi=
+1data2,
+> > > > +                  xspi1data3, xspi1data4, xspi1data5, xspi1data6,
+> > > > +                  xspi1data7, xspi1dqs, xspi1sclk, xspi1ss0b, xspi=
+1ss1b,
+> > > > +                  sd2cdb, sd2clk, sd2cmd, sd2data0, sd2data1, sd2d=
+ata2,
+> > > > +                  sd2data3, sd2resetb, i2c1scl, i2c1sda, i2c2scl, =
+i2c2sda,
+> > > > +                  uart1rxd, uart1txd, uart2rxd, uart2txd, pdmclk,
+> > > > +                  pdmbitstream0, pdmbitstream1, sai1txfs, sai1txc,
+> > > > +                  sai1txd0, sai1rxd0, wdogany, fccuerr0 ]
+> > > > +
+> > > > +      nxp,func-id:
+> > > > +        $ref: /schemas/types.yaml#/definitions/uint32
+> > > > +        description: Indicates the PAD connections which function
+> > > > + module
+> > >
+> > > The description makes no sense...
+> >
+> > I will use below description in v3:
+> > For each pin, there are up to 8 muxing options (called ALT modes). For
+> example:
+> > Select 1 of 5 iomux modes to be used for pad: DAP_TCLK_SWCLK.
+> > 000b - Select mux mode: ALT0 mux port: JTAG_MUX_TCK of instance:
+> > jtag_mux 010b - Select mux mode: ALT2 mux port: CAN4_RX of instance:
+> > imx95_wakeupmix_top 100b - Select mux mode: ALT4 mux port:
+> > FLEXIO1_FLEXIO30 of instance: imx95_wakeupmix_top 101b - Select mux
+> > mode: ALT5 mux port: GPIO3_IO30 of instance: imx95_wakeupmix_top
+> 110b
+> > - Select mux mode: ALT6 mux port: LPUART5_CTS_B of instance:
+> imx95_wakeupmix_top The nxp,func-id property is selecting one ALT mode.
+> >
+> > >
+> > > > +
+> > > > +      nxp,pin-conf:
+> > > > +        $ref: /schemas/types.yaml#/definitions/uint32
+> > > > +        description: The PAD configuration
+> > >
+> > > PAD stands for? Or is it pin configuration as the property name says?
+> >
+> > It is pin configuration which includes pull up/down, drive strength and=
+ etc.
+> >
+> > >
+> > > This is just a raw register values?
+> >
+> > Yes.
+> >
+> > Why can't standard pinctrl properties be
+> > > used here. What's the point of using SCMI pinctrl if you are just
+> > > shuttling register values to SCMI?
+> >
+> > Standard pinctrl properties will need more memory in our SCMI firmware
+> > design. We have limited on-chip memory for SCMI firmware usage.
+> >
+>=20
+> So you sort of strip-down the server due to hw constraints, but is it the=
+ SCMI
+> server still compliant with the spec ? (as in supporting all the mandator=
+y
+> commands and features for the protocols you decided to
+> support)
 
-+1
+Yes, the SCMI server is compliant with the spec. It is the SCMI firmware
+returns num function with value zero, num group with value zero.
 
-This migration retry weirdness is a GUP issue, it needs to be solved
-in the mm not exposed to every pin_user_pages caller.
+And only OEM pin configure type supported in our SCMI firmware.
 
-If it turns out ZONE_MOVEABLE pages can't actually be reliably moved
-then it is pretty broken..
+I have posted out v3 following Rob's suggestion, using property
+'pinmux', but now we could not reuse pinctrl-scmi.c
 
-Jason
+Thanks,
+Peng.
+
+>=20
+> Thanks,
+> Cristian
 
