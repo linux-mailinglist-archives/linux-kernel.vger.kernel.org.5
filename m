@@ -1,171 +1,158 @@
-Return-Path: <linux-kernel+bounces-165538-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-165542-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 38E198B8DBC
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 18:07:34 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9B6AF8B8DC4
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 18:08:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 67BCAB230EE
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 16:07:31 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 93C03B227C1
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 16:08:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8202C12FF8F;
-	Wed,  1 May 2024 16:06:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 725B013049B;
+	Wed,  1 May 2024 16:08:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="mN6XUyB0"
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pOTfPEIL"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1AC2212F361;
-	Wed,  1 May 2024 16:06:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2E534CE1F;
+	Wed,  1 May 2024 16:08:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714579584; cv=none; b=W+AfzYeXyP4rTgC1izrO0SNMQJPa3EkN6npHiKQoBQRuv6tWPQwEO5YwAIAaDE/drHAFvLEuuu/zI7Rv0JGR1SYDs4lShL0t2XYCQK85XYpsqj0IaubFcU+pJuizpDJ5hXi3r0jjqLKC5KBv0IPBhMbGc1PjVAILh21Sh9Hc46M=
+	t=1714579692; cv=none; b=C8hRYiy7WNuf0YDuev8KM/eWbKTiKCc2JhTFFJs6pfXXaZKQ5DLSMpZsMVPRHPA9gfmHH60Dj+2Z1ZBk5MEA/MH1gbJUuzY6t2GZmdSgsP7+todtUaSkBRPkMfI3unjHA/Rqyl+4qzd3aH57ZL7Mk+BBVXdYlCMj2jTV8XTZ3hs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714579584; c=relaxed/simple;
-	bh=ZcgzKDm/of9Wt+5rIopJ7QuvS112pELrgGHc232E0m8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=b7fmiDVHnW0H7lGekSDobftbGR8nEPNl+r/Gl7N+d1X+vHZGPCym94BPIpswoyub/0e/1ftMLwaZ1fBTZC8kghRECvKXlfUkevIccw1yGlPggj8whYzsZST9pGiZlSG0aqLZ3gQ7vRSyLacHNorIUOIu+gQQZ8TR61GB4X+CPxI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=mN6XUyB0; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353724.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 441FQ0qY015311;
-	Wed, 1 May 2024 16:06:06 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=qhTErhXv7kPwGaPxnSu5C0AL6AK3KjxuhOkfaFwZrQ0=;
- b=mN6XUyB00UsD2iuJxIAR04/2WE9DudhyREnnD24y80M8HKvcoLajesGJdOQzsfhHZ9Sh
- MQK8OqsIAhXvCmhFFLDQrdMmG9wGjTvkDzLQnWFa0H/yXKLx7OUOvfSM1LnSJ+KorEiW
- 8/qnsCaW3V2YNUMZr6O1/tKAa5ad13gsALUOMhNLZknEeBe5dOqPtU7rhbA4gikRM+Ih
- Bw3YGwD25SpLbrpD/7JZZJ+b7PHhj5MMewZEZmCOhVE/WXGlP0R0vl7URVtoWtnAR1ri
- u6W3Zpwu25ESVPKcEZh3jmMynzhMtdpJiLcMTEz5DiV0ybCN+4CmUQ0DJiHTh2Nv+27I JQ== 
-Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xurc882g1-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 01 May 2024 16:06:06 +0000
-Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 441D6r2m022258;
-	Wed, 1 May 2024 16:06:05 GMT
-Received: from smtprelay03.dal12v.mail.ibm.com ([172.16.1.5])
-	by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3xsd6mu5sa-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 01 May 2024 16:06:05 +0000
-Received: from smtpav01.dal12v.mail.ibm.com (smtpav01.dal12v.mail.ibm.com [10.241.53.100])
-	by smtprelay03.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 441G62iY23069406
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 1 May 2024 16:06:05 GMT
-Received: from smtpav01.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id E1FC058057;
-	Wed,  1 May 2024 16:06:02 +0000 (GMT)
-Received: from smtpav01.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 57E3358058;
-	Wed,  1 May 2024 16:06:02 +0000 (GMT)
-Received: from [9.61.151.254] (unknown [9.61.151.254])
-	by smtpav01.dal12v.mail.ibm.com (Postfix) with ESMTP;
-	Wed,  1 May 2024 16:06:02 +0000 (GMT)
-Message-ID: <366b0cb8-1309-4f15-b4f0-077dfaf4250c@linux.ibm.com>
-Date: Wed, 1 May 2024 11:06:02 -0500
+	s=arc-20240116; t=1714579692; c=relaxed/simple;
+	bh=Iey2iVH1MIhrk7WU5n9kwLcgqdG/28gxVMTeDEIBfOU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=uRPnVZN4pQhUnOJXZGBVJmYkjKuSVafJDZQkf/4KghXaUrgtuoaSZWoV61g0zxDd12lA8ZZOUp0lHrBmMujObZKGpIT9nMSJbIZ0L27AAXVjJIYZXSPDGOEG5b7CrkxZbxP/g2W+mXVeUA5iZhYyImkSn9XjX+yv20be/Y1h92Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pOTfPEIL; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 09CCCC113CC;
+	Wed,  1 May 2024 16:08:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714579692;
+	bh=Iey2iVH1MIhrk7WU5n9kwLcgqdG/28gxVMTeDEIBfOU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=pOTfPEILul9GgwLwVzI08ADSnYF3WZ7Yn7KJxwHjapMUQm7fmgWUnyZkmX58hOCut
+	 Qk88ysylEyLMUFMdH7RASGzWCNTCBxEK/Pe5C0xhPwgZdn3a98FdKbCE/UNXUHae54
+	 99pO5crWIscgPmcFff1NW7kIcZiJ5FGbtlKXSvcoSqqXl+RdsHaF0jGtl5rCF4R5Gm
+	 25hdTp+iBC+lPsIo5O57Kh/JZBhTuuxBA/O3930KRca3l+DdxObHvfxVq5tQ8X0jCX
+	 jUTNFZvkq3UEhIpfvm0WYiFqonjxvaN4DF4maSCGPVGplL722OK5c+FoyucpQ1Epv8
+	 T1u8Ud8afbvqQ==
+Date: Wed, 1 May 2024 17:06:37 +0100
+From: Simon Horman <horms@kernel.org>
+To: Geetha sowjanya <gakula@marvell.com>
+Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, kuba@kernel.org,
+	davem@davemloft.net, pabeni@redhat.com, edumazet@google.com,
+	sgoutham@marvell.com, sbhatta@marvell.com, hkelam@marvell.com
+Subject: Re: [net-next PATCH v3 2/9] octeontx2-pf: RVU representor driver
+Message-ID: <20240501160637.GW2575892@kernel.org>
+References: <20240428105312.9731-1-gakula@marvell.com>
+ <20240428105312.9731-3-gakula@marvell.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 06/17] dt-bindings: fsi: Document the FSI controller
- common properties
-To: Krzysztof Kozlowski <krzk@kernel.org>, linux-aspeed@lists.ozlabs.org
-Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-fsi@lists.ozlabs.org, linux-spi@vger.kernel.org,
-        linux-i2c@vger.kernel.org, lakshmiy@us.ibm.com, robh@kernel.org,
-        krzk+dt@kernel.org, conor+dt@kernel.org, joel@jms.id.au,
-        andrew@codeconstruct.com.au, andi.shyti@kernel.org
-References: <20240429210131.373487-1-eajames@linux.ibm.com>
- <20240429210131.373487-7-eajames@linux.ibm.com>
- <3bcc9143-6896-496b-aa30-7ac0fc2d8e51@kernel.org>
-Content-Language: en-US
-From: Eddie James <eajames@linux.ibm.com>
-In-Reply-To: <3bcc9143-6896-496b-aa30-7ac0fc2d8e51@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: EUwgN6h4fW5c-n53JwXNklGrSmNFME6R
-X-Proofpoint-ORIG-GUID: EUwgN6h4fW5c-n53JwXNklGrSmNFME6R
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
- definitions=2024-05-01_15,2024-04-30_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 lowpriorityscore=0
- bulkscore=0 phishscore=0 malwarescore=0 suspectscore=0 priorityscore=1501
- impostorscore=0 mlxlogscore=999 clxscore=1015 spamscore=0 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2404010000
- definitions=main-2405010112
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240428105312.9731-3-gakula@marvell.com>
 
+On Sun, Apr 28, 2024 at 04:23:05PM +0530, Geetha sowjanya wrote:
+> This patch adds basic driver for the RVU representor.
+> Driver on probe does pci specific initialization and does hw
+> resources configuration.
+> Introduces RVU_ESWITCH kernel config to enable/disable
+> this driver. Representor and NIC shares the code but representors
+> netdev support subset of NIC functionality. Hence "otx2_rep_dev"
+> api helps to skip the features initialization that are not supported
+> by the representors.
+> 
+> Signed-off-by: Geetha sowjanya <gakula@marvell.com>
 
-On 4/30/24 02:01, Krzysztof Kozlowski wrote:
-> On 29/04/2024 23:01, Eddie James wrote:
->> +
->> +patternProperties:
->> +  "cfam@[0-9a-f],[0-9a-f]":
->> +    type: object
->> +    properties:
->> +      chip-id:
->> +        $ref: /schemas/types.yaml#/definitions/uint32
->> +        description:
->> +          Processor index
-> fsi.txt tells a bit more about it, so extend the description.
+..
 
+> +static int rvu_rep_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+> +{
+> +	struct device *dev = &pdev->dev;
+> +	struct otx2_nic *priv;
+> +	struct otx2_hw *hw;
+> +	int err;
+> +
+> +	err = pcim_enable_device(pdev);
+> +	if (err) {
+> +		dev_err(dev, "Failed to enable PCI device\n");
+> +		return err;
+> +	}
+> +
+> +	err = pci_request_regions(pdev, DRV_NAME);
+> +	if (err) {
+> +		dev_err(dev, "PCI request regions failed 0x%x\n", err);
+> +		return err;
+> +	}
+> +
+> +	err = dma_set_mask_and_coherent(dev, DMA_BIT_MASK(48));
+> +	if (err) {
+> +		dev_err(dev, "DMA mask config failed, abort\n");
+> +		goto err_release_regions;
+> +	}
+> +
+> +	pci_set_master(pdev);
+> +
+> +	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
+> +	if (!priv)
+> +		goto err_release_regions;
 
-Ack.
+Hi Geetha,
 
+This goto will result in the function returning err.
+But err is 0 here. Perhaps it should be set to -ENOMEM?
 
-Thanks,
+Flagged by Smatch.
 
-Eddie
+> +
+> +	pci_set_drvdata(pdev, priv);
+> +	priv->pdev = pdev;
+> +	priv->dev = dev;
+> +	priv->flags |= OTX2_FLAG_INTF_DOWN;
+> +	priv->flags |= OTX2_FLAG_REP_MODE_ENABLED;
+> +
+> +	hw = &priv->hw;
+> +	hw->pdev = pdev;
+> +	hw->max_queues = OTX2_MAX_CQ_CNT;
+> +	hw->rbuf_len = OTX2_DEFAULT_RBUF_LEN;
+> +	hw->xqe_size = 128;
+> +
+> +	err = otx2_init_rsrc(pdev, priv);
+> +	if (err)
+> +		goto err_release_regions;
+> +
+> +	err = rvu_get_rep_cnt(priv);
+> +	if (err)
+> +		goto err_detach_rsrc;
+> +
+> +	err = rvu_rep_rsrc_init(priv);
+> +	if (err)
+> +		goto err_detach_rsrc;
+> +
+> +	return 0;
+> +
+> +err_detach_rsrc:
+> +	if (priv->hw.lmt_info)
+> +		free_percpu(priv->hw.lmt_info);
+> +	if (test_bit(CN10K_LMTST, &priv->hw.cap_flag))
+> +		qmem_free(priv->dev, priv->dync_lmt);
+> +	otx2_detach_resources(&priv->mbox);
+> +	otx2_disable_mbox_intr(priv);
+> +	otx2_pfaf_mbox_destroy(priv);
+> +	pci_free_irq_vectors(pdev);
+> +err_release_regions:
+> +	pci_set_drvdata(pdev, NULL);
+> +	pci_release_regions(pdev);
+> +	return err;
+> +}
 
-
->
->
->> +
->> +      reg:
->> +        maxItems: 1
->> +
->> +      "#address-cells":
->> +        const: 1
->> +
->> +      "#size-cells":
->> +        const: 1
->> +
->> +    required:
->> +      - reg
->> +
->> +    additionalProperties: true
->> +
->> +additionalProperties: true
->> +
->> +examples:
->> +  - |
->> +    fsi {
->> +        #address-cells = <2>;
->> +        #size-cells = <0>;
->> +
->> +        cfam@0,0 {
->> +            reg = <0 0>;
->> +            #address-cells = <1>;
->> +            #size-cells = <1>;
->> +            chip-id = <0>;
->> +        };
->> +    };
-> Drop the example, it's not being validated/used.
-
-
-Ack.
-
-
->
-> Best regards,
-> Krzysztof
->
+..
 
