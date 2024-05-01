@@ -1,163 +1,139 @@
-Return-Path: <linux-kernel+bounces-165826-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-165827-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 36F0B8B9216
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 01:14:02 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8B49F8B9217
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 01:14:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E11222837A4
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 23:14:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C5DCF1C20E14
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 23:14:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9827E165FDB;
-	Wed,  1 May 2024 23:13:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1331A168AE4;
+	Wed,  1 May 2024 23:14:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="cEwmYYd2"
-Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp header.b="Lxhr1KIB";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="SQmShT7U"
+Received: from wfhigh3-smtp.messagingengine.com (wfhigh3-smtp.messagingengine.com [64.147.123.154])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 550C4165FCF
-	for <linux-kernel@vger.kernel.org>; Wed,  1 May 2024 23:13:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BDB70168AE2
+	for <linux-kernel@vger.kernel.org>; Wed,  1 May 2024 23:14:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.154
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714605232; cv=none; b=ICKJ+rpJsRbZFGf297ZAPuUS+tpwV75yI5hykUsDvX4XhWCdWhN4BEPRjff3QZUdSzDx2ELImurZrIGS6v2xkG7MnWrNaqR6nbIXM+q40PcSRu66c0JCwF2ObbRyibv7G4pp3q6s6kzctbmRSi28+wRVI2FGkEvem//e9cWhO9w=
+	t=1714605258; cv=none; b=LHqO6KgHMGzHIwwF0ITPWGaRurTxYtQAUx4eMSJHpirCJlzUBUKMlr2RD1bpHmD2cgzM0WyzxRoMV7UKNObRhepvyRDXXzUh46uLylMAnHHRAWX/3RYcltaYCCCr9TcMJW6+Mok2/swd5wQLPkiK9r5dk6e0WR/E1lZamh2EVgk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714605232; c=relaxed/simple;
-	bh=Jp5j7VAsVFbBco8tSe/QBTxiO2L2qNjnlYyph8TEINU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=eVZuS66agtJm3utClr+rMDSN1dmDZJQ6QPeo1hqn9uGbkztOqX7A+jd0PzoRdwgtrGRPezJozuSsSx067z6Ki2sVkyqU56K6UDvsQctyzW+98wTeNiU3e9QO8u7GgAGieLHgVc5r3TV7VMKSwiHWxeKHKgaVB4NAEfwXgSfNL6o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=cEwmYYd2; arc=none smtp.client-ip=209.85.218.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-a5200202c1bso939272766b.0
-        for <linux-kernel@vger.kernel.org>; Wed, 01 May 2024 16:13:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1714605230; x=1715210030; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=Jp5j7VAsVFbBco8tSe/QBTxiO2L2qNjnlYyph8TEINU=;
-        b=cEwmYYd2eGJgJo8DYjDWvcCGv68Hzs4IBBDJLGfc5AePnC/yv22daJGjG9GHwE3udW
-         yoURiL9o8leCa6nAv0ha07JBpthMs1aDWuh3livgDgxLxwGVbHBwHBlXrFqusx97fa5x
-         7AxLoQWnTGGMgvc7UaLaUOX65p4AMIGRAYUw5H3nZZTSxZL0OuTgc+5fOob/caZRUxun
-         srw5Vr1e4ezGkzS5oU1fNaDxXvxc7Iwz/R8ejkUyKPc05zbo476UbPbf0Ch3RNj+ls9a
-         oZlrMKCUNq/qd4D3eBo4AhvOv/Ui2WRqWegVVMNx5iccjji7CVHGUn0zri6IuPEllqsY
-         ALkw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714605230; x=1715210030;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Jp5j7VAsVFbBco8tSe/QBTxiO2L2qNjnlYyph8TEINU=;
-        b=bUuCEMSOaHzuMdDnQ1/mKrnCzfsgKCtvRMngrMa7Z4zvlfNb9GQQyEBfvNYJCMLM+W
-         UL8+SHb1nYYdkWlTObBt1B3VGaP2iLtdPpyD8f6yuJW2RfKIsPHDiyXF6lYbGOA2GXUZ
-         CUddp9OBi2D2s0q+9rYE+PtYkkpzvwQHIkyhc+yh2GcdjDBXi31KXUL63STFrC5hvcyO
-         3zXUud2l8huRqvsTOFEPRTKDAz9lgYVEjhpLIhOq7K3/hVV+7HQMX1mgRMP9GKDzjD/W
-         59irt/3FTTk2wV8HPbtKdsnFY0wq5AKhHGxz9dAHFyR42B1xfxeR4WcNZAqMN2Z5XBK+
-         yRCQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXBlXuWhVoksMkMWJ1x7862fioPGSjigolB2YGgUdLX+BA5Nr4OriMPw7WZJP0GC9QlQlVZVkoZqrfkC2RBzGo0BBT6d+Ira48iy32y
-X-Gm-Message-State: AOJu0YxHNz+tH5awEXginmokGJ2E5t83IwNF4unCVRAZm2JKbZG6s6P0
-	OuHRWgNLSv84TPXkl3O+Tg4tuRa/RzxTdFAeuY+r6kvlHM5NMhzer2YOJrJEwPI=
-X-Google-Smtp-Source: AGHT+IExWqXN6g2T7SY8JNtnknwKEW5mG45BY2T0TJuAt/4o10r4NoWhLjn9eNQ+drkTypV8TMBiTw==
-X-Received: by 2002:a17:906:e08:b0:a55:5ff4:ff4f with SMTP id l8-20020a1709060e0800b00a555ff4ff4fmr238868eji.71.1714605229754;
-        Wed, 01 May 2024 16:13:49 -0700 (PDT)
-Received: from [192.168.114.15] (078088045141.garwolin.vectranet.pl. [78.88.45.141])
-        by smtp.gmail.com with ESMTPSA id u14-20020a170906b10e00b00a5534758ef7sm17073698ejy.148.2024.05.01.16.13.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 01 May 2024 16:13:48 -0700 (PDT)
-Message-ID: <5a9a0c90-d191-49e1-8cd5-1d45c82040ac@linaro.org>
-Date: Thu, 2 May 2024 01:13:45 +0200
+	s=arc-20240116; t=1714605258; c=relaxed/simple;
+	bh=AiqxsKjFKvp/SSZ7vb4FWRu3hvbAWkDogSSTrauTYPs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=GiVy+G+aGyKRHa5OZ32YIduTBiCkFuu9FV2MQmUaHMHkiDT3x/wXsYWa6DyVn4ZGYyBY4LLnRfPUCIDzW9ZpZKDRQxy/x01MfwuCXo8NSrm4HCUrwxrL9rN6BJdmy+RpBqYa6gUaSWwEgM+S8tS0Dog90LjsndoWhlsIqqsvqQ8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sakamocchi.jp; spf=pass smtp.mailfrom=sakamocchi.jp; dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp header.b=Lxhr1KIB; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=SQmShT7U; arc=none smtp.client-ip=64.147.123.154
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sakamocchi.jp
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sakamocchi.jp
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
+	by mailfhigh.west.internal (Postfix) with ESMTP id C63D718001AE;
+	Wed,  1 May 2024 19:14:14 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute6.internal (MEProxy); Wed, 01 May 2024 19:14:14 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
+	 h=cc:cc:content-type:content-type:date:date:from:from
+	:in-reply-to:in-reply-to:message-id:mime-version:references
+	:reply-to:subject:subject:to:to; s=fm3; t=1714605254; x=
+	1714691654; bh=LGBpfsfi1Wa2XZqumOpfSa70+soAJ7ROMnIXyxLaxJM=; b=L
+	xhr1KIBXSIGKhTDSwFtwCxJrtrg8yLtZkfRbApMQk04ZvCjFemUooob0vRLimEV0
+	aUrcUvqU5P8oAdxfkFPMwJpGZhdOEmMx/NRNRjKygZijwp1IuCAI6eQlIPHVQGiy
+	/9HhjnrX7zOP/mHbbeQW4gSku6QeU0SuUi2+kbPuGykOsVts6YQeQ1q43cy3f8Mi
+	zZIkthpQ1plC31UFghzp4DtpddeNIKgCg0EdwfpQccemf3OwIZsX8vPHlSjGWrtt
+	JqU9ZV/Vw1BGiEFY51KudZAxECn7dAJW01TZPf5xkGOapuNag6AmdG4NIRNPucj/
+	Lh84X4uj6mWdsASfH0J7Q==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm3; t=1714605254; x=1714691654; bh=LGBpfsfi1Wa2XZqumOpfSa70+soA
+	J7ROMnIXyxLaxJM=; b=SQmShT7USHei3dws+1rm3m1358/r2FIN/MpbL8TlQM1K
+	0yEAnspPLQGPaBVuGiV9yETrJ21SvQBPCZrG8gAYQDtAArC10LmaDIhPgGs4VWSV
+	d3SZxX8KVX+xMWcv+XasS59eJdwKAJ2SkIRzF+8JneWJskHjE0iBE5shEn5Ws36N
+	kWqqrVgVSuysnBScPDFa/dMokZXx0DiqQ4edqBp8/kWvZsmlSnZg1TZDVSHKq4Gx
+	Q4QdVIGkVxufsrag34rDjbZX1POWQyzPcw8De6It5hg1hTimXuDgb09hDJSKewn7
+	cNK7pu0c6Z692I7uEbG1fYV4aBmBAuQpb57Ho6fbig==
+X-ME-Sender: <xms:xswyZqtsg806iXZeFUmHer5HpTnVbqnDLtuFKFPCrkkhD_WB5WXItg>
+    <xme:xswyZvcCMVTlEETK4SbEXyp8AaFlFT5610dFLx7fc7Cnscbk12eq8z3_MqPo7iYsZ
+    ejkKbnSaRIh8qg2uoc>
+X-ME-Received: <xmr:xswyZlyFnMZdPRaLTd0LJ1JVOxeU3gmJN5tz-lISapdkkDk4bv2ci0rGJnwkwtC7267PWy3mW6FyKqtvlZbvmLorvefp9lj5>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrvddujedgvddtucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucenucfjughrpeffhffvvefukfhfgggtuggjsehttd
+    ertddttddvnecuhfhrohhmpefvrghkrghshhhiucfurghkrghmohhtohcuoehoqdhtrghk
+    rghshhhisehsrghkrghmohgttghhihdrjhhpqeenucggtffrrghtthgvrhhnpeehhffhte
+    etgfekvdeiueffveevueeftdelhfejieeitedvleeftdfgfeeuudekueenucevlhhushht
+    vghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehoqdhtrghkrghshhhise
+    hsrghkrghmohgttghhihdrjhhp
+X-ME-Proxy: <xmx:xswyZlPcKC7QkqKMf-KT4Y0O9y1C5Z_aVIisCvtuLX60K8G611pHZw>
+    <xmx:xswyZq8lILCgqTDBmRVpJ4cg3OQFM3t-wkx_tYvq15czWMkgSnGTIA>
+    <xmx:xswyZtXhxd_NvAsUPWZGV-Zd9PEmzdJtsGvWM5T9iFTtGnPRhVeQCQ>
+    <xmx:xswyZjcXIGk6yNSkgscSanAhaxb2BZkBd_UFpsEX3plTl1rMREDIfg>
+    <xmx:xswyZsKZoov1_uTTV5OYBRRJUXI2Xwif-29k72jphASDbw7u8tIcmH6D>
+Feedback-ID: ie8e14432:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 1 May 2024 19:14:13 -0400 (EDT)
+Date: Thu, 2 May 2024 08:14:10 +0900
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+To: linux1394-devel@lists.sourceforge.net
+Cc: linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/5] firewire: core/ohci: add tracepoints events for
+ bus-reset
+Message-ID: <20240501231410.GA106963@workstation.local>
+Mail-Followup-To: linux1394-devel@lists.sourceforge.net,
+	linux-kernel@vger.kernel.org
+References: <20240501073238.72769-1-o-takashi@sakamocchi.jp>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 3/3] PCI: qcom: Add rx margining settings for 16GT/s
-To: Shashank Babu Chinta Venkata <quic_schintav@quicinc.com>,
- agross@kernel.org, andersson@kernel.org, mani@kernel.org
-Cc: quic_msarkar@quicinc.com, quic_kraravin@quicinc.com,
- Lorenzo Pieralisi <lpieralisi@kernel.org>,
- =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
- Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
- Jingoo Han <jingoohan1@gmail.com>,
- Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
- Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
- Serge Semin <fancer.lancer@gmail.com>,
- Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
- Conor Dooley <conor.dooley@microchip.com>, linux-kernel@vger.kernel.org,
- linux-pci@vger.kernel.org, linux-arm-msm@vger.kernel.org
-References: <20240419001013.28788-1-quic_schintav@quicinc.com>
- <20240419001013.28788-4-quic_schintav@quicinc.com>
- <02ae9e6b-b652-433e-b36d-e6106d4fbcd1@linaro.org>
- <53c0e508-60fe-ee5d-cb2b-a5392c330377@quicinc.com>
-Content-Language: en-US
-From: Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <53c0e508-60fe-ee5d-cb2b-a5392c330377@quicinc.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240501073238.72769-1-o-takashi@sakamocchi.jp>
 
-[...]
+Hi,
 
->>>   EXPORT_SYMBOL_GPL(qcom_pcie_common_set_16gt_eq_settings);
->>>   +void qcom_pcie_common_set_16gt_rx_margining_settings(struct dw_pcie *pci)
->>> +{
->>> +    u32 reg;
->>> +
->>> +    reg = dw_pcie_readl_dbi(pci, GEN4_LANE_MARGINING_1_OFF);
->>> +    reg = MARGINING_MAX_VOLTAGE_OFFSET(0x24) |
->>> +        MARGINING_NUM_VOLTAGE_STEPS(0x78) |
->>> +        MARGINING_MAX_TIMING_OFFSET(0x32) |
->>> +        MARGINING_NUM_TIMING_STEPS(0x10);
->>> +    dw_pcie_writel_dbi(pci, GEN4_LANE_MARGINING_1_OFF, reg);
->>
->> Since this is DW-common, why is this inside the qcom driver?
-> Though this register space is in dw-common specific, these settings are purely vendor specific . These settings are determined by systems team on vendor hardware, as these settings are used as margin to compensate signal variance due to various physical factors(like connection length, retimers etc).
+On Wed, May 01, 2024 at 04:32:33PM +0900, Takashi Sakamoto wrote:
+> Hi,
+> 
+> IEEE 1394 bus is under bus-reset state when the physical state of bus is
+> changed; e.g. bus topology change by adding new nodes in the bus. It is
+> important to handle the state appropriately for the maintenance of bus.
+> 
+> This series of change adds some tracepoints events to trace the events
+> related to bus-reset. Some kernel log messages are obsoleted and
+> deleted. It also includes for 1394 OHCI driver so that bus-reset IRQ
+> event is recorded as much as possible, and obsoletes bus-resets bit
+> from debug parameter successfully.
+> 
+> Takashi Sakamoto (5):
+>   firewire: ohci: add bus-reset event for initial set of handled irq
+>   firewire: ohci: obsolete OHCI_PARAM_DEBUG_BUSRESETS from debug module
+>     parameter
+>   firewire: core: add tracepoints events for initiating bus reset
+>   Revert "firewire: core: option to log bus reset initiation"
+>   firewire: core: add tracepoint event for handling bus reset
+> 
+>  drivers/firewire/core-card.c        | 13 +++---
+>  drivers/firewire/core-topology.c    |  3 ++
+>  drivers/firewire/core-transaction.c |  7 ----
+>  drivers/firewire/core.h             |  4 --
+>  drivers/firewire/ohci.c             | 18 +++------
+>  include/trace/events/firewire.h     | 61 ++++++++++++++++++++++++++++-
+>  6 files changed, 73 insertions(+), 33 deletions(-)
 
-Okay, so:
+Applied to for-next branch.
 
-1. is the register layout vendor-specific too? i.e. are the bitfields DW-common?
 
-2. will these settings work on all Qualcomm devices, regardless of SoC/board/
-retimers used etc.?
+Regards
 
-Konrad
+Takashi Sakamoto
 
