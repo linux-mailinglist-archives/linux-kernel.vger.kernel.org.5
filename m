@@ -1,102 +1,102 @@
-Return-Path: <linux-kernel+bounces-164937-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-164939-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 433EB8B853E
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 07:13:47 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E48668B8544
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 07:17:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9A19328437F
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 05:13:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 75370284603
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 05:17:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CFF6D433D4;
-	Wed,  1 May 2024 05:13:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8576A44361;
+	Wed,  1 May 2024 05:16:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="P4LlReB3"
-Received: from out-175.mta1.migadu.com (out-175.mta1.migadu.com [95.215.58.175])
+	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="OT71XiCW"
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C46C91D68F
-	for <linux-kernel@vger.kernel.org>; Wed,  1 May 2024 05:13:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A20871D68F;
+	Wed,  1 May 2024 05:16:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714540420; cv=none; b=fpl0I2pwiscKU4JQoJs0YO8DI3bE3IMq7TS2xzMol6QD30U1RGsQQqZJTglkTJqV1aSPbIqN+iaUVPLwq9K3hQBJIZqEPRjW67D3UYj+rBJhX8b1L+g6LLhfU67rDLPBgiCIZR8DpJhS49DGQsbOyxY4X0eW9dqIZw1TvG4Pc+E=
+	t=1714540614; cv=none; b=iNNBkkUZv6DAKz3MjLFaIeanyXLR8u/56wUtfJAfChWSxCcQU+Xo6MdlN57kv31d8x+9sEQv7LUnerwDrH0vCUB8Jwfm8UNkfG2dWNSOj6sD3cY4c9u9wsRpfqxkPAoVh12A0ArboQlToG99/WjNq2osJGHs/2rh6tKkdHodXtk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714540420; c=relaxed/simple;
-	bh=IyHptUUohnW3r093RcnjlP6XPm56w94Pwp2frUOijAI=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=c23mKpyCiyxzyzl+w+5zmJdkcMH40vuMMSjjwv4khUsDY71D2XL0DLwhdjSLyzBacmiBDxNksjANSeDEoPcKXY82PGgQXYUVE9bYGdndOL7jkZIbEcHCKFjx9zQNI1ahy74ugGRz/m5+DZLkicLRCVNrkHjmc/DwVq5e4DXyFfw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=P4LlReB3; arc=none smtp.client-ip=95.215.58.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1714540415;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=05WNzqmqLv1QKE4Y/P8AHkj3HrmEQHj1mc/aw/CiANo=;
-	b=P4LlReB3hNgroqsQTv26mFyfidd8iGuH/1AmYn2a2a+9/AAjaNSHIv/1eduVEhv/qT0Mu1
-	CmWzSBBOMzrQUlXyqtVDQ5eRxj2xmPevcqmh4supYL87m1NFulRvWkIt6O04idgr4BDPuV
-	o+itTgVj/XYKtPLs0TlKOIi3TnzUFOU=
-From: Sui Jingfeng <sui.jingfeng@linux.dev>
-To: Doug Anderson <dianders@chromium.org>
-Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	David Airlie <airlied@gmail.com>,
-	Daniel Vetter <daniel@ffwll.ch>,
-	dri-devel@lists.freedesktop.org,
-	linux-kernel@vger.kernel.org,
-	Sui Jingfeng <sui.jingfeng@linux.dev>,
-	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Subject: [PATCH v2] drm/debugfs: Drop conditionals around of_node pointers
-Date: Wed,  1 May 2024 13:13:23 +0800
-Message-Id: <20240501051323.805076-1-sui.jingfeng@linux.dev>
+	s=arc-20240116; t=1714540614; c=relaxed/simple;
+	bh=7A6sJY/a61zFk3jw04VSruoJTX3tq1XA9gEuQpzPB5U=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=YETKIp7pPrCG+iDpJIisySFNPl4R1qSc/JPdWa2lwyICQ5iwqKVzMYY5YA0Anzg92/C5pixKHj+pAPVIku0reGd/NB1zHG2UGRGJfWwJt/c9sBDBJdCjDAkYGnI6VGDiokRiqSH2XrA0bNKvc6nTm5Iowl3iHaw+XUkbXOBabLE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=OT71XiCW; arc=none smtp.client-ip=150.107.74.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+	s=201702; t=1714540607;
+	bh=FJFn14SYejNiIAAK7ADw8KLEx9XqaTWenC4rhDOfxOQ=;
+	h=Date:From:To:Cc:Subject:From;
+	b=OT71XiCWZ74NvtkVpUFELtQCFwyCNAyXMI+0HtX4uFryeofrBr/WK0r2wZ01Ep2Fr
+	 HYYENNGgKwgMVY6lsjKPCGBNB0D2Nqdz679RYFOtaXE4TLXMe+R8KQLcZDvCksQVZi
+	 322ccksfp5t70MAHmVOjZO7UD/BE+Wak+ZUat0cBqiUPNCzq217qAz+zBuVOv3o8TL
+	 IQ9OZFdURLK9QtiTeTdJoX835V910m9XRiFB5cZDmy6jC5zikhg4TcBY93MsZmBRMl
+	 LzZ1WniB3A3dmtejQ62aQbFVWLlJgD8+z4j793ipE/wNlACddDTLMC5+Vy6bnRCutj
+	 o5zYWQwipSkdw==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4VTlfl4rzlz4wxf;
+	Wed,  1 May 2024 15:16:47 +1000 (AEST)
+Date: Wed, 1 May 2024 15:16:45 +1000
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux Next
+ Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build warning after merge of the bcachefs tree
+Message-ID: <20240501151645.281f1b07@canb.auug.org.au>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: multipart/signed; boundary="Sig_/LM8eP+xGV/iJMurorRt9V+U";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 
-Having conditional around the of_node pointer of the drm_bridge structure
-is not necessary anymore, since drm_bridge structure always has the of_node
-member since the commit d8dfccde2709 ("drm/bridge: Drop conditionals around
-of_node pointers").
+--Sig_/LM8eP+xGV/iJMurorRt9V+U
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-So drop the conditional, please also note that this patch is following the
-convention used by driver core, see commit c9e358dfc4a8 ("driver-core:
-remove conditionals around devicetree pointers").
+Hi all,
 
-Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Signed-off-by: Sui Jingfeng <sui.jingfeng@linux.dev>
----
-v2: Update commit message
----
- drivers/gpu/drm/drm_debugfs.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+After merging the bcachefs tree, today's linux-next build (htmldocs)
+produced this warning:
 
-diff --git a/drivers/gpu/drm/drm_debugfs.c b/drivers/gpu/drm/drm_debugfs.c
-index 08fcefd804bc..28a471fe4bc8 100644
---- a/drivers/gpu/drm/drm_debugfs.c
-+++ b/drivers/gpu/drm/drm_debugfs.c
-@@ -597,10 +597,10 @@ static int bridges_show(struct seq_file *m, void *data)
- 		drm_printf(&p, "\ttype: [%d] %s\n",
- 			   bridge->type,
- 			   drm_get_connector_type_name(bridge->type));
--#ifdef CONFIG_OF
-+
- 		if (bridge->of_node)
- 			drm_printf(&p, "\tOF: %pOFfc\n", bridge->of_node);
--#endif
-+
- 		drm_printf(&p, "\tops: [0x%x]", bridge->ops);
- 		if (bridge->ops & DRM_BRIDGE_OP_DETECT)
- 			drm_puts(&p, " detect");
--- 
-2.34.1
+Documentation/filesystems/bcachefs/index.rst:7: WARNING: toctree contains r=
+eference to document 'filesystems/bcachefs/CodingStyle' that doesn't have a=
+ title: no link will be generated
 
+Introduced by commit
+
+  78b8f7949d02 ("bcachefs: CodingStyle")
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/LM8eP+xGV/iJMurorRt9V+U
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmYx0D0ACgkQAVBC80lX
+0GzNCgf/XyS/OLHMf1rrgvWSiw4J3cD7vEbaqmz/R/8f6oGgZC1sfzt/XFMp+4jD
+BqIsz2RVORIz7JS+6d5PGKOOxelyj5CPK+u13WNB83KhuDglNCocFyJ+TQ4PpnEW
+r5XBxy+mAVka5kAsWMBvgiZCA27LrsTZ4vSkIt33KV8cjB1ftMNn/zxXC1nsd0ow
+j4+DUDpaZvKgqxDFy+Zh4V/0EnENQLhniAdIRdIenMmi0xEJox5zhAL/crac4Q6E
+FGwzjf12w0wQ4MyU68/Vq1BGtm/sFrW/QOBa5ISfQsB9pawUzNZ79kVJ7iDzsfAV
+uD2JWIFsUNe8h7bp/ERn/6+/u1DyfA==
+=Ealc
+-----END PGP SIGNATURE-----
+
+--Sig_/LM8eP+xGV/iJMurorRt9V+U--
 
