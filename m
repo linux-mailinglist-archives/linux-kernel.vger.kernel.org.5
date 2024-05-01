@@ -1,109 +1,117 @@
-Return-Path: <linux-kernel+bounces-165859-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-165860-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 349838B927C
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 01:45:39 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6B3328B9285
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 01:48:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7C5C3B22099
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 23:45:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 96DBE1C20FB1
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 23:48:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C646516C447;
-	Wed,  1 May 2024 23:45:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C9E7416ABCE;
+	Wed,  1 May 2024 23:47:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="S3vbD+96"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="wT9WSWe7"
+Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D39016ABEA;
-	Wed,  1 May 2024 23:45:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3DAB165FCF
+	for <linux-kernel@vger.kernel.org>; Wed,  1 May 2024 23:47:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714607120; cv=none; b=p4fY7CXHnFWcLuzUsdj0d+WQkL1cfnrC7lwISq7dUtDzU3AkyH6Xd8+PcgELcry/QtygutpXJ6xJh58Hxl/DY0+jRLUniILRahsvtBW66xDiKOCJ2dBvuWv1D/KxiikzoGrYm+JDZYngBK4+KQ1WrV2rYNRXE8nq81dswNO7hxE=
+	t=1714607277; cv=none; b=I2RUsuqx+0LojYbgD5QUy72NaPaJGu2OFyFyAnXPnK99NopXDoWSLAJ1RODARzLdBe9Tp0vf8OQSAGUvG+4CUNpJpcpdf95mVWTvQLLdqdqWM9UqWdGxNb9Bxez/tmZjNSgWERIbWbxi0bCeVumPSrrMB+uCTMLe/fq4fVi2Tc8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714607120; c=relaxed/simple;
-	bh=JqsnPMx+K0Fb9o3uuuX18tWIg4pXD/BhCsys1itl9Ds=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=fOFuNSetxE6Sm9AFGw27MyHtqDBWyitB+NXoZjpUFFm4Dch8fjyofNlYSBSm5eIqlud1KKY2KnIOXy/BxYkKhQ6Vp9kVE2gieXLjIK1CQoQWDdj3naOeLFRfKGAZgf8cPjNiwWVcfJGeqffSX1jNlzcrg2JE4GLxT2TnX3PDzLg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=S3vbD+96; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8313CC072AA;
-	Wed,  1 May 2024 23:45:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714607119;
-	bh=JqsnPMx+K0Fb9o3uuuX18tWIg4pXD/BhCsys1itl9Ds=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=S3vbD+96i3eyTiifGVE6VmejV/oPGXqx532ALF6Xh/weAd4m/qsVPpkdFNKX+9qpt
-	 J9ETkVfp3+juMZXflg+QajMTSmFW/C+a2xvn6l6/sXrSprM8vLpFIfT2Tad+rsNHta
-	 rnhaGd5+AVJF0WBU7uPoMkTKibHSOdmkQMkMAcOZEqDeifEp41R5L1wt909qIZT/IB
-	 yf4HTde0DJKO2aMdDF94lXs61e0LtIPazmBGTs7F4WR1JzOF7/PJHThjF7Ty1HoKeG
-	 Zk1x4JqziNdAz5ED1Tvqc4JRgHjgAN3yHvbFxeWFAmRafqrh87/A64KsKYhPm8VJ06
-	 7VwR+oQDHLzQA==
-Date: Wed, 1 May 2024 16:45:18 -0700
-From: "Darrick J. Wong" <djwong@kernel.org>
-To: John Garry <john.g.garry@oracle.com>
-Cc: Dave Chinner <david@fromorbit.com>, hch@lst.de, viro@zeniv.linux.org.uk,
-	brauner@kernel.org, jack@suse.cz, chandan.babu@oracle.com,
-	willy@infradead.org, axboe@kernel.dk, martin.petersen@oracle.com,
-	linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	tytso@mit.edu, jbongio@google.com, ojaswin@linux.ibm.com,
-	ritesh.list@gmail.com, mcgrof@kernel.org, p.raghav@samsung.com,
-	linux-xfs@vger.kernel.org, catherine.hoang@oracle.com
-Subject: Re: [PATCH v3 10/21] xfs: Update xfs_is_falloc_aligned() mask for
- forcealign
-Message-ID: <20240501234518.GO360919@frogsfrogsfrogs>
-References: <20240429174746.2132161-1-john.g.garry@oracle.com>
- <20240429174746.2132161-11-john.g.garry@oracle.com>
- <ZjGAN8g3yqH01g1w@dread.disaster.area>
- <33700d9d-08d3-4fad-8ca4-e6beb3529bcb@oracle.com>
+	s=arc-20240116; t=1714607277; c=relaxed/simple;
+	bh=zk7hguYQKFwSHRyp7R/vDvN5DFjovQ4oMdoyTqmcLWg=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=IsCU6kSSSKJ0xrO8dFi+niBRrCOsIdudv2UD3fnWublzL0zar7o2tmu1WH3xART44haljO5k63zJeecXRa1m8ygAIKwqVCXhHleSPPlrKW2A005kKQoJB6G1VYT/VYBCc8we+U+NDb10fnkmZktcEzGGQXVoCqOiBmmG9UhmzDY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=wT9WSWe7; arc=none smtp.client-ip=209.85.128.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-61814249649so137201207b3.3
+        for <linux-kernel@vger.kernel.org>; Wed, 01 May 2024 16:47:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1714607275; x=1715212075; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=RoxPA6m+G5OUNgLu5u82aTZ89MVMLW7NEW4au0aEBfY=;
+        b=wT9WSWe7/n5nqo9kGJ8f3NJbtTZNdstj2yux7bJS4wVCIWR9h+ePeU1LDtZiT3qxqh
+         s26Dw3UymzpCp+Lhv+fObkcg4cPVvhbQnLR6JZl9/sxJ+Ki70nqe4oJ+4Vb3xrlP03nV
+         JlBrOz4ec+q45rB/48lxy9Z4W/HO94ykDZYGQ83QTKvMdVssd1NpIVYOZXJ9SUpCs/3/
+         lDWKHLZK3LmKZTYyj+PXlgw6uWdNfm9jyq+boqee6QsZinqSD3jk4yn+iJS6s1IAd/nc
+         5f3bKssmbJ4CESxAhM0ZRP5PnZfnAMUL6yeZQymYpXF3xucOhQKjm9UylZ50uyzK/S11
+         70SA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714607275; x=1715212075;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=RoxPA6m+G5OUNgLu5u82aTZ89MVMLW7NEW4au0aEBfY=;
+        b=qebtZiX26lic9WOJRLjYtHT3DN2kbw20a7Mn177GdzK1VilWbaVxAovYwwpe/h6YGv
+         fKeMjtj+97pR7Ssn9BluXW7kX/T2nbjUmznM9JyS5jSVVePpYooM8yU8Yv+YNrlIq6zG
+         E5r6oXVn0p1RZd5Hf/4cAlHSQ5/MkpEKrytHsH2xeKlscCUQFSL9AlVOL3weB4eMtgLq
+         9LqTQp0qLvQECoueAVPBp0Pcttex1nfuMHxJQ+5Z5jMwoO+CTKfEG6V5lM0TRJsOPTKR
+         s2Mqalg5H7xKERRu2BVUiXZPwOTTnqQsR6t3kxeONSl57LEVvWepFxxoyDB0kTBc9WRC
+         88Kg==
+X-Forwarded-Encrypted: i=1; AJvYcCVtY0K5GLERC3YKNayLjNinGGoSZegN0PgZMvsrPisjhA3z0YrVMO0DCwwGrkJZDVqLLevBfm+duMuOmESU2qKJZ1cUZQW0eFjlHNbX
+X-Gm-Message-State: AOJu0YymqPQgE8mqcAFMg++NCWh6d1K0EAOC5e4lL1S3oFU1eP/p2G5I
+	IakiTsj517qVRQUpz6cHRy1DSB24c8oZK5PstSRF8H+cWnLESv0fqFUEOgFJwiY9bH8zTmEHYTB
+	S9g==
+X-Google-Smtp-Source: AGHT+IE/lQuPOTvDxWjzkM/iusdROrnl0/N7wrOKUBofNs3qRmYLDyhVrHon2c6cmTGKid45nIAheN1qXvg=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a05:6902:150a:b0:dd9:2a64:e98a with SMTP id
+ q10-20020a056902150a00b00dd92a64e98amr425840ybu.9.1714607274831; Wed, 01 May
+ 2024 16:47:54 -0700 (PDT)
+Date: Wed, 1 May 2024 16:47:53 -0700
+In-Reply-To: <20240226213244.18441-10-john.allen@amd.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <33700d9d-08d3-4fad-8ca4-e6beb3529bcb@oracle.com>
+Mime-Version: 1.0
+References: <20240226213244.18441-1-john.allen@amd.com> <20240226213244.18441-10-john.allen@amd.com>
+Message-ID: <ZjLUqaDbRglCCnD7@google.com>
+Subject: Re: [PATCH v2 9/9] KVM: SVM: Add CET features to supported_xss
+From: Sean Christopherson <seanjc@google.com>
+To: John Allen <john.allen@amd.com>
+Cc: kvm@vger.kernel.org, weijiang.yang@intel.com, rick.p.edgecombe@intel.com, 
+	thomas.lendacky@amd.com, bp@alien8.de, pbonzini@redhat.com, 
+	mlevitsk@redhat.com, linux-kernel@vger.kernel.org, x86@kernel.org
+Content-Type: text/plain; charset="us-ascii"
 
-On Wed, May 01, 2024 at 11:48:59AM +0100, John Garry wrote:
-> On 01/05/2024 00:35, Dave Chinner wrote:
-> > >   	return !((pos | len) & mask);
-> > I think this whole function needs to be rewritten so that
-> > non-power-of-2 extent sizes are supported on both devices properly.
-> > 
-> > 	xfs_extlen_t	fsbs = 1;
-> > 	u64		bytes;
-> > 	u32		mod;
-> > 
-> > 	if (xfs_inode_has_forcealign(ip))
-> > 		fsbs = ip->i_extsize;
-> > 	else if (XFS_IS_REALTIME_INODE(ip))
-> > 		fsbs = mp->m_sb.sb_rextsize;
-> > 
-> > 	bytes = XFS_FSB_TO_B(mp, fsbs);
-> > 	if (is_power_of_2(fsbs))
-> > 		return !((pos | len) & (bytes - 1));
-> > 
-> > 	div_u64_rem(pos, bytes, &mod);
-> > 	if (mod)
-> > 		return false;
-> > 	div_u64_rem(len, bytes, &mod);
-> > 	return mod == 0;
+On Mon, Feb 26, 2024, John Allen wrote:
+> If the CPU supports CET, add CET XSAVES feature bits to the
+> supported_xss mask.
 > 
-> ok, but I still have a doubt about non-power-of-2 forcealign extsize
-> support.
-
-The trouble is, non-power-of-2 extent size hints are supported for
-regular and realtime files for funny cases like trying to align
-allocations to RAID stripes.  I think it would be hard to drop support
-for this, given that means that old filesystems can't ever get upgraded
-to forcealign.
-
---D
-
-> Thanks,
-> John
+> Signed-off-by: John Allen <john.allen@amd.com>
+> ---
+>  arch/x86/kvm/svm/svm.c | 4 ++++
+>  1 file changed, 4 insertions(+)
 > 
+> diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
+> index 1181f017c173..d97d82ebec4a 100644
+> --- a/arch/x86/kvm/svm/svm.c
+> +++ b/arch/x86/kvm/svm/svm.c
+> @@ -5177,6 +5177,10 @@ static __init void svm_set_cpu_caps(void)
+>  	    boot_cpu_has(X86_FEATURE_AMD_SSBD))
+>  		kvm_cpu_cap_set(X86_FEATURE_VIRT_SSBD);
+>  
+> +	if (kvm_cpu_cap_has(X86_FEATURE_SHSTK))
+> +		kvm_caps.supported_xss |= XFEATURE_MASK_CET_USER |
+> +					  XFEATURE_MASK_CET_KERNEL;
+
+Based on Weijiang's series, I believe this is unnecessary.  Common x86 code will
+both set supported_xss, and clear bits if their associated features are unsupported.
+
+I also asked Weijiang to modify the "advertise to userspace" patch to explicitly
+clear SHSTK and IBT in svm_set_cpu_caps()[*], so if the stars align as I think they
+will, this patch should simply need to delete the
+
+	kvm_cpu_cap_clear(X86_FEATURE_SHSTK);
+
+that will be added by the VMX series.
+
+[*] https://lore.kernel.org/all/ZjLRnisdUgeYgg8i@google.com
 
