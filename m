@@ -1,124 +1,101 @@
-Return-Path: <linux-kernel+bounces-165569-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-165570-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D6D018B8E19
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 18:23:07 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9F0188B8E1E
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 18:23:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8DFD72841A7
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 16:23:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C14A01C21186
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 16:23:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 946541350EC;
-	Wed,  1 May 2024 16:20:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC2EE130488;
+	Wed,  1 May 2024 16:23:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ZGvG9/SO"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.20])
+	dkim=pass (1024-bit key) header.d=marvell.com header.i=@marvell.com header.b="VezXFfSH"
+Received: from mx0b-0016f401.pphosted.com (mx0b-0016f401.pphosted.com [67.231.156.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 321C81304B1
-	for <linux-kernel@vger.kernel.org>; Wed,  1 May 2024 16:19:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 163F7502A9
+	for <linux-kernel@vger.kernel.org>; Wed,  1 May 2024 16:23:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=67.231.156.173
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714580400; cv=fail; b=W6VSc6w69xpcdyWHmpNiFTj3+D3MUXt66JQ2JQN2zMxj2KcS7QZ1uMjuXhxqJpn2S61MuQy5QKDVMAgYAELMeHXmdR8qEA+r4GnASboAIuink7k3bnGcnwQw9YdGVFvucnfyYWhjp8B3IX2SF5WhbRXErjArj6S0U4mX32Mc4KY=
+	t=1714580615; cv=fail; b=DjftZuq/AExgY7sAgSNLDGjr5gy4MZk5k/mimLQIiEk+4/+Iu0UT3WUQ6uJ2m2Yyqkn46hl28U8v3c3CM6VrSFJMcuecW0HX56FGIialXQhk3jq4lNRmLBADy9OcEAkHcJZaj1+9yOUqNR91KNHNatUl1SnqX/fEIZv6V23s8nw=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714580400; c=relaxed/simple;
-	bh=kT4MVXkx3Wm0MmyTv/P3zIK9QbmYqdq7tp3gYMThCDc=;
-	h=Date:From:To:CC:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=r38yloOf9Z+ivncbGeSkgbKdUmq70KBkO0EPrn/+FgIhg9pheaE1S0qnczEfG3XR/skWW85TSW6So5QyRmrvLmRtuUeYuHqV1KBaZ7EIEqgjA81RE2VVbNljYV2cYShfGLM5osdgfH+n4ydJdIrYDgfKT8c+0weKTs9gAwmRNqo=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ZGvG9/SO; arc=fail smtp.client-ip=198.175.65.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1714580399; x=1746116399;
-  h=date:from:to:cc:subject:message-id:references:
-   content-transfer-encoding:in-reply-to:mime-version;
-  bh=kT4MVXkx3Wm0MmyTv/P3zIK9QbmYqdq7tp3gYMThCDc=;
-  b=ZGvG9/SOLUsVFLg4mr/RFOVmHcYS4sKhlmCv/8E3gOwq7NMSlqutRS7t
-   ln1f2n6EV2JTmFa6T31XgX8GQF+BSKTPxw4Pel/0hI4nX9FCekO83+SMF
-   0QBw+w6R1pTs0/4aRhcgogsib7Dmjs4zAjYgYfzG+NpJsFcyNM5TKSgQ8
-   IzwauRZFIa/E4oAiaH4fOVNljqBMiK8ek5hksQyj4DDuPOQBzvmwFBq3C
-   8ZNe7OuFr4cy5qVb532v3o2GzB2oV7EGEIrL41NDo8W4jjDDbO4QLxMra
-   yMcbjAjSkoKah4FaT8GXcgpdKelq6afn6TLUEWS6I/KbWcdW+z0yq2myN
-   Q==;
-X-CSE-ConnectionGUID: lQaMdlfBRgSDyWt144FYhA==
-X-CSE-MsgGUID: d14oVxfzTYe0QGShDCGJ3A==
-X-IronPort-AV: E=McAfee;i="6600,9927,11061"; a="10143183"
-X-IronPort-AV: E=Sophos;i="6.07,245,1708416000"; 
-   d="scan'208";a="10143183"
-Received: from orviesa007.jf.intel.com ([10.64.159.147])
-  by orvoesa112.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 May 2024 09:19:58 -0700
-X-CSE-ConnectionGUID: xcx442xdSlCwcja5g8m+lw==
-X-CSE-MsgGUID: jAAzs1qaT0m+zlDO4z/kzg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,245,1708416000"; 
-   d="scan'208";a="27316398"
-Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
-  by orviesa007.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 01 May 2024 09:19:57 -0700
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Wed, 1 May 2024 09:19:56 -0700
-Received: from fmsmsx602.amr.corp.intel.com (10.18.126.82) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Wed, 1 May 2024 09:19:56 -0700
-Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
- fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Wed, 1 May 2024 09:19:56 -0700
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (104.47.58.168)
- by edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Wed, 1 May 2024 09:19:56 -0700
+	s=arc-20240116; t=1714580615; c=relaxed/simple;
+	bh=ISIoHi24+h3cjjAkxZ6WhB21AozgMAm1aJ0axr/tQRQ=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=mhNhtw/3XK2zNn7eOenpA/orbh7mx8wbuPf49ecm5Ho4nmbBgDBqbhkTDaieeiMY7iJzthjg4vgfCBIXqduqrXpNKaAW3h/3Rt2vVmQtnRjeH3miH2MeXqFAL2HRugZDE4II77aBTy4gDebrjExSIs0kBbnsjIpAEpS5CJhmIFQ=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com; spf=pass smtp.mailfrom=marvell.com; dkim=pass (1024-bit key) header.d=marvell.com header.i=@marvell.com header.b=VezXFfSH; arc=fail smtp.client-ip=67.231.156.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=marvell.com
+Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
+	by mx0b-0016f401.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 4415HUUl010308;
+	Wed, 1 May 2024 09:22:17 -0700
+Received: from nam10-bn7-obe.outbound.protection.outlook.com (mail-bn7nam10lp2101.outbound.protection.outlook.com [104.47.70.101])
+	by mx0b-0016f401.pphosted.com (PPS) with ESMTPS id 3xtxqf603t-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 01 May 2024 09:22:17 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=mnR78VMu5jK08BGnEjD/t4dcU8lgD+Yd/Oaq8HE4IUwBVt9IVuadx2W7SoMz9cAXl+fVhx1NIq9y/Mh83fg/ba+MKjvQ/Adoi55v1FEn+AE81Tlsn8p8KpqxCImPyseccWKVSzM1b9LMC7fDCO0fmEo4IBKZzr0RCpA7eNXkXG054V4ldMF2IrNVY457cK5ikiGxcXgckdtQBiMtdCw9mHRFZkQHmUbtzLGzPzfFgFzvzqASUwT0whbq7v60t38WALp8Rio6VVcKfj+42InO/AcB+kbQj/7CDSY5vtkTjggAPhWI/fi5XpwM6B92D3dqImkldxhaTyCwUzWfNmELTA==
+ b=fCWgoIkr6CoH3JS7VdIr7dLFhtMnFq1YrCouWmVs9m1oplwfKStyAEmRXVnm41XDsTG7u1MtyWKf4G9gK+p7u/CqGub+4juy3iyzzNAzRpOzVbzfrOA88eBILWDbZ75KJRfAbSe0Pq86lF1OW0fZgEt/eSrLgX4l/D15MdjzxZOU4f0PfS71K/jp+1UpG2RUkQpyM3uNswXXYJpInCOTyl4H/xlrnbeIRoTCk+LEjwZhZXRHGCUNeQ19F/cAfXmYwZwO8j6CUrB9jj+PGxfLHsDAoCSYecxlf5jWD/bdtYCvetMDo04YgGlcbb4imO2Fdm/ZiCqLuT2baJLDKYcJAQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=24OsQDyo/JwvRWiZEoOMQg2gupZfX+tKKSlQXEwIxTE=;
- b=HorWq8X0+IJFrQaQEce8EWhl4BgDKP1ZzQVhjXMR3u301Rm3gzRN4cPpyXEnt/XhbceVmAR4zMKZvdfqFmBGVHhu84ji3UbrNW/waak4BhW/iFt6WHMYWvsUjr8UPka3akpRbH21nox79Wq3B4tRDumXC7Xoh9sMEMzZOOOkiRVkZTVH8J4SxTGLIZ2xqLaezNcntkJ2oY/HL7iLstWBGqDha18iBmeBk278FtsZoqX/qBZOba5Fh/CeAzSfG0Obs8yfADHrkHXifNrDVH4DNPL6lgT3lXwLuZoN+GVO63VxsZprgf7RYoGgBTjdfjKZ9Un/ZsbjUSM9v2P3dWmPTg==
+ bh=2uVr8U7MsAEQtQqxEOy9cwDl6KPLnKptW7/nPQdoNTk=;
+ b=PR12kLVGzDZ02usYXY+RDzSu9OXt/CynXSCgjKbGPxCCPmOGaqIBWYx68sMofSikOtdyJhwUCv+Hqji7nOtyJbVPz0PAn08EH4pYKdylSxDbQxOOb4vjYM8wtHRS+vdgIiq2SHoyXo9YYFjxBpFmOHJsIrN9wEXQg8at+1B0mXgkkjHiwlNiwxig7FxZEha26gaUJbcQLFfqjk8bSQCpTbEvmgNXjGDeERVYRp4sD2m0Mfo8E8rPEoOvjjANH9ylfNWum+35aCrHfb3KZlKvJ5o5NvUeM76CFHbGGaEQXWiteCVZOpQkAQZEZox93MYUJsH2xZsSgQqo9gzZTTDpWw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from CY5PR11MB6139.namprd11.prod.outlook.com (2603:10b6:930:29::17)
- by BL1PR11MB5980.namprd11.prod.outlook.com (2603:10b6:208:387::18) with
+ smtp.mailfrom=marvell.com; dmarc=pass action=none header.from=marvell.com;
+ dkim=pass header.d=marvell.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=2uVr8U7MsAEQtQqxEOy9cwDl6KPLnKptW7/nPQdoNTk=;
+ b=VezXFfSHazmB+Fq32t/OnG+WEtDj5xjBoVnrvCqSNGc+92+/1L+f9g5EBIMFyDwOgk1qgWM9oQsClukKg6AmgVQ5nmG0RTvjmIF3LQ5G5GU0ofP4mCc+2EZ0K7sR4d41zL9lJGuarll25ASs4vd93MFDxjV+LGO0UFFsUQPyjjE=
+Received: from MW4PR18MB5084.namprd18.prod.outlook.com (2603:10b6:303:1a7::8)
+ by BY1PR18MB6041.namprd18.prod.outlook.com (2603:10b6:a03:4b7::22) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7519.34; Wed, 1 May
- 2024 16:19:53 +0000
-Received: from CY5PR11MB6139.namprd11.prod.outlook.com
- ([fe80::9365:d8e6:4e8d:8711]) by CY5PR11MB6139.namprd11.prod.outlook.com
- ([fe80::9365:d8e6:4e8d:8711%6]) with mapi id 15.20.7519.031; Wed, 1 May 2024
- 16:19:53 +0000
-Date: Wed, 1 May 2024 11:19:48 -0500
-From: Lucas De Marchi <lucas.demarchi@intel.com>
-To: Tvrtko Ursulin <tursulin@ursulin.net>
-CC: =?utf-8?Q?Adri=C3=A1n?= Larumbe <adrian.larumbe@collabora.com>, Rob Clark
-	<robdclark@gmail.com>, Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
-	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, "Hans de
- Goede" <hdegoede@redhat.com>, <kernel@collabora.com>, Boris Brezillon
-	<boris.brezillon@collabora.com>, Christopher Healy <healych@amazon.com>,
-	<dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] drm/sysfs: Add drm class-wide attribute to get active
- device clients
-Message-ID: <zz7tsf5ozqh24br7qgnslwmhgtgazeceif6ih22rjkl3bjfws4@u5bvmdjddzj6>
-References: <20240403182951.724488-1-adrian.larumbe@collabora.com>
- <CAF6AEGsWtJs2xcZx59P9_maxn1RqCO6-4GwEp2fL31bZtTyuoA@mail.gmail.com>
- <e6500d5b-0151-4c31-9032-3a23157b3126@ursulin.net>
- <4btlparspmb47v3nq3mip6cjr2adwejepnglvh6q5nlbmdzwvt@74gg6tjpngbv>
- <54ebd0a0-dc9d-43d7-b530-065832cda160@ursulin.net>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <54ebd0a0-dc9d-43d7-b530-065832cda160@ursulin.net>
-X-ClientProxiedBy: MW4PR03CA0256.namprd03.prod.outlook.com
- (2603:10b6:303:b4::21) To CY5PR11MB6139.namprd11.prod.outlook.com
- (2603:10b6:930:29::17)
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7519.37; Wed, 1 May
+ 2024 16:22:10 +0000
+Received: from MW4PR18MB5084.namprd18.prod.outlook.com
+ ([fe80::1fe2:3c84:eebf:a905]) by MW4PR18MB5084.namprd18.prod.outlook.com
+ ([fe80::1fe2:3c84:eebf:a905%5]) with mapi id 15.20.7519.031; Wed, 1 May 2024
+ 16:22:10 +0000
+Message-ID: <cb40c3e6-f678-45c7-b8e7-a6f337b51dfb@marvell.com>
+Date: Wed, 1 May 2024 21:51:51 +0530
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 28/31] x86/resctrl: Drop __init/__exit on assorted
+ symbols
+To: Dave Martin <Dave.Martin@arm.com>
+Cc: Reinette Chatre <reinette.chatre@intel.com>,
+        James Morse <james.morse@arm.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, Fenghua Yu <fenghua.yu@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+        Borislav Petkov <bp@alien8.de>, H Peter Anvin <hpa@zytor.com>,
+        Babu Moger <Babu.Moger@amd.com>, shameerali.kolothum.thodi@huawei.com,
+        D Scott Phillips OS <scott@os.amperecomputing.com>,
+        carl@os.amperecomputing.com, lcherian@marvell.com,
+        bobo.shaobowang@huawei.com, tan.shaopeng@fujitsu.com,
+        baolin.wang@linux.alibaba.com, Jamie Iles <quic_jiles@quicinc.com>,
+        Xin Hao <xhao@linux.alibaba.com>, peternewman@google.com,
+        dfustini@baylibre.com, David Hildenbrand <david@redhat.com>,
+        Rex Nie <rex.nie@jaguarmicro.com>
+References: <20240321165106.31602-1-james.morse@arm.com>
+ <20240321165106.31602-29-james.morse@arm.com>
+ <c27c7813-5744-4363-bb7b-f9fbe80fd549@intel.com>
+ <ZhfzF8L6w1pgJJ1r@e133380.arm.com>
+ <47af4fef-35d3-4d88-9afa-42c1a99fbe07@marvell.com>
+ <ZhlfQKMg4xeA53SD@e133380.arm.com>
+ <b87653fa-34e3-4124-a96f-f5d2b9730f10@marvell.com>
+ <ZjEaA+YRPA+p9msM@e133380.arm.com>
+Content-Language: en-US
+From: Amit Singh Tomar <amitsinght@marvell.com>
+In-Reply-To: <ZjEaA+YRPA+p9msM@e133380.arm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: MA0PR01CA0076.INDPRD01.PROD.OUTLOOK.COM
+ (2603:1096:a01:ad::17) To MW4PR18MB5084.namprd18.prod.outlook.com
+ (2603:10b6:303:1a7::8)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -126,425 +103,165 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CY5PR11MB6139:EE_|BL1PR11MB5980:EE_
-X-MS-Office365-Filtering-Correlation-Id: bf7c1c06-4169-4a75-8544-08dc69fa887e
+X-MS-TrafficTypeDiagnostic: MW4PR18MB5084:EE_|BY1PR18MB6041:EE_
+X-MS-Office365-Filtering-Correlation-Id: 6399667d-140e-47fc-c954-08dc69fada49
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230031|376005|7416005|1800799015|366007;
-X-Microsoft-Antispam-Message-Info: =?utf-8?B?N1VucGlYcHFSQmROMDFFREJRL3NFMElxN3UzSnN0NFlZQVV3Y1p2cXVhcVht?=
- =?utf-8?B?QTlSRkYrYS83WlYrdzBnbGxKL2xqLzZIb1FRTDBlTUlIYnNQbXBWeGRWQUQw?=
- =?utf-8?B?TGFMNFc2eW4zNHRxRit3U3hpbjc1RXNjNkRnWmpmeEFJMlFUUmJSdEdVQW14?=
- =?utf-8?B?R3JyU2JiaTVMZ0k2YmlIVHprdTVwMXczWHZ3aW5XelVIczc4VlZOaEFkWlUv?=
- =?utf-8?B?MDd1WHE3a2FHV09zL3MxcTEydG9iVlR6eVNVM2pCdGg2MlN1RWh3Z2ZLS2tp?=
- =?utf-8?B?dFlVdzlqWFQ3eDBvZCtlVzFzMVcvdnRvYzZjdnViN2J6SDZ4RzFwRzJNM2c2?=
- =?utf-8?B?QmZZb0doaUlIU3RNcHVUNTc2c0V0ZTg1YTAxMHRreEJnZm92S1FnTGd2anlx?=
- =?utf-8?B?KzZuaVZVVUZ4VUgzQXBsZlpjK3hMeFZodFFLbzJyak5hSG16bkdsWGZaKzk1?=
- =?utf-8?B?VzNVYmZDSmlaTXoySlRiY2VGRHl6dVpBMTlYcnRDQWQ0UEdSR05TV2FVVU1n?=
- =?utf-8?B?RkxqOTRRUnEwYUFFQmRyalJSYmE3dWVMYy94ZUhxSE4vNFFJVy9Ma1pqMmZC?=
- =?utf-8?B?VEFKaGRMTVJOaFBKTDlhOXpOQVNmQ1Jta1cwb0t2ZGxhbDdwYnQ5aFdlNUUx?=
- =?utf-8?B?SjltOHVFYzRlM3lxcHFKUmZ0d2p3aFh3Q0phZ3d5K1Q3c05UazRLdVFDbk0w?=
- =?utf-8?B?QlRpeXNOSTdKV3B4SXNNbGNKZWFtRnJVUWFsWEUzSE91OEtqemFPd0krNGJx?=
- =?utf-8?B?R2RsQmgyYko4em5yMkw1M2NSUmwwenUrME1YZWpNWld6YlhuREROS2ZHNEZR?=
- =?utf-8?B?aXB2aEFiZkFpUkE0SGkwd1NSei9xS2RBa3Z0TnlxRUdPNGNUNVhIdGZhTWpt?=
- =?utf-8?B?amJEN3ZUR1JYbHMxTEV5OWJGeGZMUytvTG5BSDJNTVV6OUk1L0FGaHZWbmxZ?=
- =?utf-8?B?UDgrZlJEVWtyZkQ2OWR1Uk9SSjdLWmowRFpGcHBxTjZnaC91SUpUZkVKYUt1?=
- =?utf-8?B?NXc2WEhTZnY4bERZWU9VclJiUUxqMWhFZ3A1N1hPYm9OMXpnMnRXQnkxMWpv?=
- =?utf-8?B?ZllMcEhOSjFOMWszMExkOEw2S3FJdStaMFBnbS80eGtuQy9MNWR4M241bTZT?=
- =?utf-8?B?RmRRMEF4YklaY2xscjBHWEs5aWQzd1V3djZJb1lXcjFNZnlKYXY5ZFR0Mkk1?=
- =?utf-8?B?QXh2eGcrS0pFZlF0MUdOT25BMEpmZFk4YmU2eGlSWFJpMVV1QjNRY1dpRjJ1?=
- =?utf-8?B?ekw5aUZISnZodjg2M0JlMXJrSmhhTDFEaExHSlVQWXhSWkgrdzRoSzN3cjFG?=
- =?utf-8?B?ZDljS0lrUU1Eb1U3bjhPY01zZ2EweXl3SDFpRG10Ny9GVDZ0L1NPbzVpdWsr?=
- =?utf-8?B?VE5KNUNSeTFvelUzcVpQM2FYejdHbldzWkdVaHR6ajRSVDZKVGQzeWxoMFB6?=
- =?utf-8?B?bVFOOExRV09vQWU4OHhGUjVDVGlCTFZaSmFKbndUVVlYd3AxVEl3aFhXUTc3?=
- =?utf-8?B?YzViSENlMHQxQzdyazdWbzhpMWg1NTEvRkpmcU9IRFpqT0MyZXR3ZXRhMThE?=
- =?utf-8?B?bElUV0ZMSVJuVHJaUkx2RWhXRk12QWVPSUFpZ0NORzBKZVdhWUczUU1RWFpu?=
- =?utf-8?B?SlRWdnVaUzE4ZWp3M1l3bVhTUSswQ3VLYTVlcDBhMXozZlB4ZkRVZmZmZWUy?=
- =?utf-8?B?Q3RYS3ZxaldZem9aN1lpaXlPd3ZacENlUlZ2N1NKUERGbmdaMlRHZUJnPT0=?=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY5PR11MB6139.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(7416005)(1800799015)(366007);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam: BCL:0;ARA:13230031|1800799015|7416005|366007|376005;
+X-Microsoft-Antispam-Message-Info: 
+	=?utf-8?B?V2tYUUNzRkZQdzFTZkU4TytsQkpDeUU0SnRaYWs5dGVraGFORmxnK0FyQ1B4?=
+ =?utf-8?B?K0xqQzZocjBiMnRTS0pkUE1ta2xUaWNleE0zUkJ6VVhZTVk4U2NPRy93ZlZu?=
+ =?utf-8?B?UVphdjdVc0tGLzVMRUJRWnBJTlhPU1hIWjNQNHBIbUswUHRNbUFTZGlwV3dj?=
+ =?utf-8?B?SURsVnZqNFgvcDlRZmhCWUh1bGVWZWd0MXJWN2hVWEc4ZlJmVUhkVFRBdzhZ?=
+ =?utf-8?B?NFJvNVd4UlVoOFBTZHVLeHJSSFdFK3pmVmlhZTFKdFZyWnJ6OEpuaVlrZnln?=
+ =?utf-8?B?dDBqUnRDZEJ2WE5ocjdvdjl3NVBIRUtndHhQZnN5TzFTcWxYcXhQdkhXbnBy?=
+ =?utf-8?B?VVJKR2YzRm9VWExtaWg3WWNPcXNoUnNQSHMrb055TXZWUTJ6ZnViN0ZnSDZP?=
+ =?utf-8?B?S3orSVFPZW5hbnFKTzVWVnVTa0wvdWtlM1h2czB6QTl1R3hubTZtRFJWZGpt?=
+ =?utf-8?B?anl5eGZGaEI1L0hTZCtVNmRtaE9TeU9XQk5YTlZnYkhEYkpOVjNHdThEbjdH?=
+ =?utf-8?B?V1U1L2dpUXlCOThUUFNUWXFPVGIyb0d3SWpTVlZpeWpHNXVUZ1lNWU5oWXJn?=
+ =?utf-8?B?cnFOaU9leDlpT0FrNC9hbTBObHpJOFZQNERoMkxkcUlMbHh0MVRZWlFiYlR3?=
+ =?utf-8?B?VHd3TmRJMm8ybjhETnN5UE5iQXN4RUdNbHJsNFJRZEcyaHI2cnlhcFpRUEZM?=
+ =?utf-8?B?NkEvbHFGMTUrRTUranVpMWU0cXlZK3lQQnFvb0x2OGNaaXFsK3puUTBIb21V?=
+ =?utf-8?B?Rmh6YXBBbnRXSEQxWWhMa0J3MytsRElQR2k5eXBBeG9HbE50Qys2eFk3YWhh?=
+ =?utf-8?B?cEpIZ3Q1cjE0SDI2M01CL2lENVRBSlhXcDh0UTdLTFBCYzlKcUVtSDg3S2Z1?=
+ =?utf-8?B?R0RWSHUxWmx1dUhUelNZTjQ4b25ZcDhsWWZaakN1eDZZVHVJRmpJTlFxTzlz?=
+ =?utf-8?B?cS9BMEsweEFGZXJ4VUQrZkM4QlZDS0pPU3htZDNYV053dGJYempKWkJzVU1v?=
+ =?utf-8?B?Skh2YzZhSmk3ajV1NUdzZ1gyQzE0OGZ0WkJLc0pzNG92QU5FcllTVlhPd2FI?=
+ =?utf-8?B?ODlMcTA3UjJwd1hNS0s1YURvU2ExM1UrVGx4anlJTDRrbitaazNIQzE0N3hI?=
+ =?utf-8?B?Q2plcDhKRXorU2tkN2ljNS9WUXY1akd6Y2E2b1pKVEd0VnhTTXZEblVMRkRV?=
+ =?utf-8?B?MWNmWFp3bThtWFFtQW9jNit6MnJiTSt5Zi9uZHRHS1JRZjRJci8xcXZqVFMx?=
+ =?utf-8?B?WEV5QlhrVjJhNDlOa3lkVG44Q1YwdGRPaTF2bHlaQUZwSjlsWkFydzJoazhQ?=
+ =?utf-8?B?WFVzUGxOSUVJWEtvZEpZaVBGQkNsenNUNnNlZTR4N1NWYXpaaERoT0w1b3Vq?=
+ =?utf-8?B?Q3J0WXlIL1ZsZzRtMTRmbDRuTFF2dDVmV1RJMW9pM3hDeUEvSE9oQXpwUS9C?=
+ =?utf-8?B?R1YrRUJBSDlvVnE4NUVJNHVhdWl1TEZzVEZ2aGdRaDNaUy9hMmZQc2IxYWk3?=
+ =?utf-8?B?NnZNUkw2Qk9yRC9MUDhtNVNJQ0t0c3VUOUtrY1N3MmZiQm52RW4yeVlJeGZJ?=
+ =?utf-8?B?L01LcHIyUFo5c3hkZ3lnZEJlQ0EwY05jYWQ3L3h6WFBiMkpyVmVLbVI3eEpt?=
+ =?utf-8?Q?24JuorC0DYw8PYQ1/AxWe2W6UNL7RpcIrlKPkf5ICfUU=3D?=
+X-Forefront-Antispam-Report: 
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW4PR18MB5084.namprd18.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(7416005)(366007)(376005);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?U3lpdkgyeDFzZ1QxZWJPZTFZQTNSTWFyUlM2Umo0ZlZlWEpKY1habUp5R3k0?=
- =?utf-8?B?bWpJTE9scURjaC9XaGVPOTVXYkYxaGo4QzVYbk5XU1BWNWlWUjl3eEJZU0hE?=
- =?utf-8?B?dEk2SjZJNUtyRVM5WFJMTmFqTUpXd0VGMmxrcVhoZ1JzN2hiTjhja1lwL2wv?=
- =?utf-8?B?VG9zeUc4bEdPd0xVUjRsajNXU1BwejBlcTdseEdzYmJtV2pnWFp1dFFWS2pw?=
- =?utf-8?B?bGJxTHFJazZJQVdqVkpoc2lBSTN5bFVwZ2YwT0tKa2hnM1ppbmZPWjNYZ3B3?=
- =?utf-8?B?MTZCMnJnekdabWNjNVVWZUwyWU9CNFdIamdQRVVjOE1pQUsrcHY0MGhjRUpU?=
- =?utf-8?B?MzFwVVNpeTRTdW90ZW5wMzduQjd3ZjhvTXZoT2hCS3pOTFRvdHJseHNjdm5G?=
- =?utf-8?B?aTFrNER6OEZBTlJ6T293bExvaEE4SktQUWYrdFFvU055KzJZQ1N0SkpmSW1E?=
- =?utf-8?B?TC90VE1CMDJwcjhzOTQ0Ti9TeHJhcGJDMDUvTVVlWHVSYWVGbzF6TXpmUE8x?=
- =?utf-8?B?STJtajNqTkRhdXpVTVFKR3ZVUGV2bVBvcWFaV01haGlNVlNPSDg2K3hMakVX?=
- =?utf-8?B?ZjQ3VURqeVRyODh1OWJMTzh3L3dxbldSSnZsd0o0YXZKOHViQ0FheDFUaVJN?=
- =?utf-8?B?cHJ0UG96M3JiSGhHdmRaWVFOQmY0WUZhUCsyUENKMVhyV1ZIcHI3bVp1d3k2?=
- =?utf-8?B?ZnoyUUR0dk03TkVQSHY1cFc1MWczRzlWaHdPL1dlRk5xOGxJQjkvc2pmZVRC?=
- =?utf-8?B?TDlUL0JNaFRRSVh1ckF1by9lajRmRUw1cVllQ05pY3h0Wm1KZENIdE1wd1Jn?=
- =?utf-8?B?NU04M3dwd1g1NU4zNEx6dTl2d2tsWWszOUVUb3pEZ3NySTVKVFVtd0ttdDYw?=
- =?utf-8?B?S0NKb0JuUlZONWYxaFU2MU43VTYvc3Y2R01qWXBJZTdHWXc3bk9sZy8vOVJG?=
- =?utf-8?B?cVp6TlYrazdoODRpcllvSitBV05VckZBUEl5QWNhRXM1MzJMalRieVRnK3Z2?=
- =?utf-8?B?SzdXR1lzMkVIWWV1UExjdm5CbDJMQ2tNMk02bUVQakc5VEFsTG1BNXRuTEpS?=
- =?utf-8?B?V2VPMTRITmdTaFpJLzJxWHJZZVIxZldGUkpFNEgzSVUzbUU3NkZ6T01lVVU1?=
- =?utf-8?B?czlESE5ZQzN4bGRaTFpwMGFtR2xrMUR0OEQvR2hodEtlNjlMN1VWcmsrUENx?=
- =?utf-8?B?SG9pTUl1cFhVWm4ycGxkM1NZejFVa3lMOUZaMzZQOW50K08zVTlCMEIvZXlP?=
- =?utf-8?B?cU1jZEIzam1wMTdIbW44OUpDTlljbmNBRzJodTdCdlNvMVFuNnRGYVdxcTV2?=
- =?utf-8?B?NjJKZEMvSmwyOE9wS1VQVFdxaEt0aWVpTnlMbFYyVEd2TU1vek12aVFPdzJo?=
- =?utf-8?B?Z1pNb1ducmN0ZGx0RmIrWjBLK2FYeXhJeDJoK2RhSDlRZ25mRGsxdisrc0RN?=
- =?utf-8?B?a1J2N1EybU5NOWlMS3YzbDRoM29NSnNPMG83ZG44U1Y5RmtnbDNkeHY1S1VX?=
- =?utf-8?B?aytvZll0aTNUeTRmVEtIbkJIYk81ZlIzRU9vQUJGYXFlc2w0VytXSjk0b016?=
- =?utf-8?B?MDR6N1FWTmhvcXJUblg1K2pvbGFQVGl6SzhkZ0ptZXZRMFJYZFhmajJXSnBV?=
- =?utf-8?B?U3lZVjZBc2dseW14WTVXTWxhRUpGbURWOWRUK1FIRFdKbzR0SjZyM2Q3UmZw?=
- =?utf-8?B?R1Z1Skdwa2VXazJ1cnBIQVZUUzhGeS9LV3p1c25KRTlGQWM1K2VqbktTMjc2?=
- =?utf-8?B?VVNOYkFUeFc4NVlNSjhVY1N0Nk16RzlLS3dUT3Yza1hDMHdBYmMyMGJVbzRp?=
- =?utf-8?B?eVN0NExCV2RRNzhPQkVRKzRjU1oxRk0yTVlGcDNSYWtHNURVV1NDbi9USDlV?=
- =?utf-8?B?Z1R0TkRma0xwaTRWVGJ5OTJQdE9tcEdtanNia1lhK3V1Q1ZOa2llc2dSYW5O?=
- =?utf-8?B?ejN5N09KUExlS3hWNnJJaTRpSE9FeTFveTEvOFVoV3V0V1dkWEdIdGQ4SmZu?=
- =?utf-8?B?V0lxZHVLNFE3ak56Z0haOUliMjRVQ2ZGZk1RaS9oOUM5UERObi9EU3ZhSkVp?=
- =?utf-8?B?dXE0cHJ1ejBDMnlBdVZkOTd1UisrV0NZTXl1Q29WM2wzYlBCeWM4cE1KYnhK?=
- =?utf-8?B?SFYyeTJRcDBZUzB3MVhrcm5SbDNyRUhJMWQ1bGFHMDBtOEtPUkkyUXB4ZDIv?=
- =?utf-8?B?WGc9PQ==?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: bf7c1c06-4169-4a75-8544-08dc69fa887e
-X-MS-Exchange-CrossTenant-AuthSource: CY5PR11MB6139.namprd11.prod.outlook.com
+X-MS-Exchange-AntiSpam-MessageData-0: 
+	=?utf-8?B?QkFuaWE4Myt6N0s1d2s4emE1YkxzcVdsaitkN2x6cW1yWDRHQmxGcmxZTWZq?=
+ =?utf-8?B?d25kSXBZYTdIV1R0UEtwTTlBM0x5TkNJclFJbURMVHhWWVEycFFUcDEwNk1R?=
+ =?utf-8?B?cmU3dUF2MWtjdVJDYU5qTE8wMmhtOGJFcEpTTmUyM2V6dzFjZE5MLzVSaTdZ?=
+ =?utf-8?B?cytMbkxkYlFZY1lveC9IMXltVC9EMjhTcTI3Z3B6NDdHY09aVWN6dlFEWkdI?=
+ =?utf-8?B?Q213ZkpWMy9pdmlUMGk0L0srY1Nka1l6d0dHVlIzNXBRUFhKcXkwMDBydndu?=
+ =?utf-8?B?R2RnVmJNTUlrTVBaSGFvWHRCQVZjckNTSkVZQS9VTzFBclh0TmcyV0FxKzBq?=
+ =?utf-8?B?SExmYjl5cjFZMXNJOG40N0pDUlpJU2xTRVJjb0FvVFYwMGpjWUxXNW5KUTdR?=
+ =?utf-8?B?bnpkT3pWWW4wbkx3a1kxRnM1LzN4amZPQTdldFhYZjdWZFFyaVB5R3ZvNzQy?=
+ =?utf-8?B?UUlacUdhb29UN05TUWtBb0pXWEpOU2dvZERidThFK1N6MlFSdHMvbUFhVTAw?=
+ =?utf-8?B?bnBlWGEvWVhpeWxvYm5maXdHWVovb00rbDU4bzBoRDdTb1RRWllEQTdzUm83?=
+ =?utf-8?B?UWoveVRIbURxZ3JQRjdMMTM3dERJMDRqUzJ5bGF5ZTdDZ2VDRjFSVzBDSlhm?=
+ =?utf-8?B?NlY5OC9CTFNESzlvU3l6b3dMK3RrZGQyR3ZMMHBuL05BOFB4ZndYZTliOXRj?=
+ =?utf-8?B?bTlld2pvRnUxcmMyZ1pOR0o5MzZrTktGeEFBMzJXdXVkcDJsb0xRWFFUc3FV?=
+ =?utf-8?B?aFJMbk54RjdsMGdLZGc5RlVSRjRnMEZJaFFpMFRXSHNZUG9wckI1TWJzVkZz?=
+ =?utf-8?B?a0IwbzVtS1o5YkZDM2VUUExlUlpYREY4YUhSQkpOVVBpdG1iRlp0VzE3TnAz?=
+ =?utf-8?B?ZjNNMFIyK0k4cmNWTk40V0FUK0JNNHRLU2dFT3JwTmtPNnJ6OURSdzdRWEg1?=
+ =?utf-8?B?ejB0VWdxTzBNQy81NzFwa1Q4aGhVWktMWkE2aDVKZzRGTWtualB1ZzAwYlE2?=
+ =?utf-8?B?MER6TDJGNnB1MUQyT0JhVGJjd0lPTnU3U0Zic252RnJkbGROU3J4c1hXa3ZL?=
+ =?utf-8?B?alhPOGt2WHZlNkd3a0pjS0lxZ3ZmZWVJY0IwaVU3bStuWmY1dlJMR1NPMmM1?=
+ =?utf-8?B?enV0L2xkaDFhSG8yb044YVVXWmtneDJzSEF3QmFyelMxb2c3ZVltR2hnTFJk?=
+ =?utf-8?B?dlNPajMvSkRDb3V0dldLcEFGc0w3bGJ1dS80dXhwd0RZZ1JMWTdlQnRWOVRZ?=
+ =?utf-8?B?N1BLbXB0NEgxQlJEdytzeUpsc0ljR09RakJzMjhtTkJqa1p3WW1Mc2J3eGdV?=
+ =?utf-8?B?UkhsT2g1MXZVMGhDVkZHZXNJRUZjTjQzM25ORStPUDFoczlnU2hxOTBnUnFt?=
+ =?utf-8?B?czY0NGhYT282WGFGUE9mRlVnOWdzNXB5WkcxOENsTFg4U3QrK2l6cHozVmhI?=
+ =?utf-8?B?eS9lb2kxdVVpSDJJUFhOSVJieEcrdHFSK2RsaFFJYlFVcHBGcmZTZWl0eVU0?=
+ =?utf-8?B?UzBjejBQVkhSYWk3YjhBQTFiNnJydW1GMVU0N3VvNWQxRW1sNFIxaVZyajdU?=
+ =?utf-8?B?QzBpOC9nc3NYUUFLVmUxNldSMDlyamZMSTc5dFZodUZ1VXhmODZpY3Q2b3pL?=
+ =?utf-8?B?MzIrZldSeEhZK3FzWkVjTytQeGtrQ1p4WEZoV3VKcFlXa1VFU1IwRXVlRlho?=
+ =?utf-8?B?Sy9ieGpDaWo2SVFqQTFVNmlXcUdvVEVnRkRlWWdqLzQrYm5BL01wdG55ck1n?=
+ =?utf-8?B?UTBHd2I2cUdENmx0c1VIbzViTGsxaURMZHgvSHlwT1VURXdHSitPb01vNXNY?=
+ =?utf-8?B?MHMrNGFzUTd1c0dlRm1BOWVhbWJ2dUZSYVdPMlNONCthTFMybG1FK05tejRl?=
+ =?utf-8?B?dDZUK0VxSDZYbTloRjRycHJ6REp2clhFTXRVTUttdXVMNWVFdTA4WkFxRksw?=
+ =?utf-8?B?cGRSaTg1VzJQM0J4VVRQMFhYcmxBb1FLSWRNbnpacjNDNGtzendXbGEwUHJT?=
+ =?utf-8?B?MjRPcXVZbHcydGdhZmVSeFd0MUphdEc5SlU5TEU0dnZBcktWa3FNK0FtbklB?=
+ =?utf-8?B?NTJQTGhmSjBKV2QrR205aXBwOUQ1cDZRWEQ5Y29QbGIrdjBSZC9NdjdQVnNK?=
+ =?utf-8?Q?mg6gCcsQGxauMjpiiZpMiEUpq?=
+X-OriginatorOrg: marvell.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6399667d-140e-47fc-c954-08dc69fada49
+X-MS-Exchange-CrossTenant-AuthSource: MW4PR18MB5084.namprd18.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 May 2024 16:19:53.5305
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 May 2024 16:22:10.7929
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-Id: 70e1fb47-1155-421d-87fc-2e58f638b6e0
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: zQVMLxUlpTZnrHO1vUuhtYynIoLhuo4zPOBUZgCOdExj4wgCzNGzLWSHKLgE1YdoVDCM/HAmkOV9Dw60zZ++BSCSi9e274HIdgFaE3CGLpc=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR11MB5980
-X-OriginatorOrg: intel.com
-
-On Wed, May 01, 2024 at 04:58:05PM GMT, Tvrtko Ursulin wrote:
->
->Hi,
->
->On 24/04/2024 15:48, Adrián Larumbe wrote:
->>Hi Tvrtko,
->>
->>On 15.04.2024 13:50, Tvrtko Ursulin wrote:
->>>
->>>On 05/04/2024 18:59, Rob Clark wrote:
->>>>On Wed, Apr 3, 2024 at 11:37 AM Adrián Larumbe
->>>><adrian.larumbe@collabora.com> wrote:
->>>>>
->>>>>Up to this day, all fdinfo-based GPU profilers must traverse the entire
->>>>>/proc directory structure to find open DRM clients with fdinfo file
->>>>>descriptors. This is inefficient and time-consuming.
->>>>>
->>>>>This patch adds a new device class attribute that will install a sysfs file
->>>>>per DRM device, which can be queried by profilers to get a list of PIDs for
->>>>>their open clients. This file isn't human-readable, and it's meant to be
->>>>>queried only by GPU profilers like gputop and nvtop.
->>>>>
->>>>>Cc: Boris Brezillon <boris.brezillon@collabora.com>
->>>>>Cc: Tvrtko Ursulin <tursulin@ursulin.net>
->>>>>Cc: Christopher Healy <healych@amazon.com>
->>>>>Signed-off-by: Adrián Larumbe <adrian.larumbe@collabora.com>
->>>>
->>>>It does seem like a good idea.. idk if there is some precedent to
->>>>prefer binary vs ascii in sysfs, but having a way to avoid walking
->>>>_all_ processes is a good idea.
->>>
->>>I naturally second that it is a needed feature, but I do not think binary
->>>format is justified. AFAIR it should be used for things like hw/fw
->>>standardised tables or firmware images, not when exporting a simple list of
->>>PIDs. It also precludes easy shell/script access and the benefit of avoiding
->>>parsing a short list is I suspect completely dwarfed by needing to parse all
->>>the related fdinfo etc.
->>
->>I'd rather keep it as a binary file for the sake of easily parsing the number
->>list on the client side, in gputop or nvtop. For textual access, there's already
->>a debugfs file that presents the same information, so I thought it was best not
->>to duplicate that functionality and restrict sysfs to serving the very specific
->>use case of UM profilers having to access the DRM client list.
->>
->>I should mention I did something controversial here, which is a semantically
->>binary attribute through the regular attribute interface. I guess if I keep it
->>as a binary attribute in the end, I should switch over to the binary attribute
->>API.
->>
->>Another reason why I implemented it as a binary file is that we can only send
->>back at most a whole page. If a PID takes 4 bytes, that's usually 1024 clients
->>at most, which is probably enough for any UM profiler, but will decrease even
->>more if we turn it into an ASCII readable file.
->
->I'm afraid I still think there is no reason for a binary file, even 
->less so artificially limited to 1024 clients. Any consumer will have 
->to parse text fdinfo so a binary list of pids is not adding any real 
->cost.
-
-yeah, I don't really understand why you'd want the binary number that
-you'd then have to turn into a string to open the /proc/<pid>/. To me it
-sounds more like we want a text output and that output to be:
-
-<pid>/fdinfo/<fd>
-
-So gputop could just read this file to know where the info is.
-Too bad we can't symlink cross fs, otherwise we could just add symlinks
-to e.g. /sys/class/drm/card<N>/clients/*, which then nicely separate it
-per gpu too.
-
-But see below.
-
->
->>I did some research into sysfs binary attributes, and while some sources mention that
->>it's often used for dumping or loading of driver FW, none of them claim it cannot
->>be used for other purposes.
->>
->>>>>---
->>>>>   drivers/gpu/drm/drm_internal.h       |  2 +-
->>>>>   drivers/gpu/drm/drm_privacy_screen.c |  2 +-
->>>>>   drivers/gpu/drm/drm_sysfs.c          | 89 ++++++++++++++++++++++------
->>>>>   3 files changed, 74 insertions(+), 19 deletions(-)
->>>>>
->>>>>diff --git a/drivers/gpu/drm/drm_internal.h b/drivers/gpu/drm/drm_internal.h
->>>>>index 2215baef9a3e..9a399b03d11c 100644
->>>>>--- a/drivers/gpu/drm/drm_internal.h
->>>>>+++ b/drivers/gpu/drm/drm_internal.h
->>>>>@@ -145,7 +145,7 @@ bool drm_master_internal_acquire(struct drm_device *dev);
->>>>>   void drm_master_internal_release(struct drm_device *dev);
->>>>>
->>>>>   /* drm_sysfs.c */
->>>>>-extern struct class *drm_class;
->>>>>+extern struct class drm_class;
->>>>>
->>>>>   int drm_sysfs_init(void);
->>>>>   void drm_sysfs_destroy(void);
->>>>>diff --git a/drivers/gpu/drm/drm_privacy_screen.c b/drivers/gpu/drm/drm_privacy_screen.c
->>>>>index 6cc39e30781f..2fbd24ba5818 100644
->>>>>--- a/drivers/gpu/drm/drm_privacy_screen.c
->>>>>+++ b/drivers/gpu/drm/drm_privacy_screen.c
->>>>>@@ -401,7 +401,7 @@ struct drm_privacy_screen *drm_privacy_screen_register(
->>>>>          mutex_init(&priv->lock);
->>>>>          BLOCKING_INIT_NOTIFIER_HEAD(&priv->notifier_head);
->>>>>
->>>>>-       priv->dev.class = drm_class;
->>>>>+       priv->dev.class = &drm_class;
->>>>>          priv->dev.type = &drm_privacy_screen_type;
->>>>>          priv->dev.parent = parent;
->>>>>          priv->dev.release = drm_privacy_screen_device_release;
->>>>>diff --git a/drivers/gpu/drm/drm_sysfs.c b/drivers/gpu/drm/drm_sysfs.c
->>>>>index a953f69a34b6..56ca9e22c720 100644
->>>>>--- a/drivers/gpu/drm/drm_sysfs.c
->>>>>+++ b/drivers/gpu/drm/drm_sysfs.c
->>>>>@@ -58,8 +58,6 @@ static struct device_type drm_sysfs_device_connector = {
->>>>>          .name = "drm_connector",
->>>>>   };
->>>>>
->>>>>-struct class *drm_class;
->>>>>-
->>>>>   #ifdef CONFIG_ACPI
->>>>>   static bool drm_connector_acpi_bus_match(struct device *dev)
->>>>>   {
->>>>>@@ -128,6 +126,62 @@ static const struct component_ops typec_connector_ops = {
->>>>>
->>>>>   static CLASS_ATTR_STRING(version, S_IRUGO, "drm 1.1.0 20060810");
->>>>>
->>>>>+static ssize_t clients_show(struct device *cd, struct device_attribute *attr, char *buf)
->>>>>+{
->>>>>+       struct drm_minor *minor = cd->driver_data;
->>>>>+       struct drm_device *ddev = minor->dev;
->>>>>+       struct drm_file *priv;
->>>>>+       ssize_t offset = 0;
->>>>>+       void *pid_buf;
->>>>>+
->>>>>+       if (minor->type != DRM_MINOR_RENDER)
->>>>>+               return 0;
->>>
->>>Why this?
->>
->>I return nothing in case of a non-render node because we don't want display drivers
->>to confuse UM GPU profilers.
->
->Feels to arbitrary to me. Let them handle it.
->
->>>>>+
->>>>>+       pid_buf = kvmalloc(PAGE_SIZE, GFP_KERNEL);
->>>
->>>I don't quite get the kvmalloc for just one page (or why even a temporay
->>>buffer and not write into buf directly?).
->>
->>Should've used kmalloc, you're right. Or else I could just write everything straight into 'buf'.
->>
->>>>>+       if (!pid_buf)
->>>>>+               return 0;
->>>>>+
->>>>>+       mutex_lock(&ddev->filelist_mutex);
->>>>>+       list_for_each_entry_reverse(priv, &ddev->filelist, lhead) {
->>>>>+               struct pid *pid;
->>>>>+
->>>>>+               if (drm_WARN_ON(ddev, (PAGE_SIZE - offset) < sizeof(pid_t)))
->>>>>+                       break;
->>>
->>>Feels bad.. I would suggest exploring implementing a read callback (instead of
->>>show) and handling arbitrary size output.
->>
->>I think regular class attributes can only implement show() and set(). For a more complex
->>interface, I would have to turn it into an actual binary attribute, and that would be the only
->>choice if we want the list of clients to be of arbitrary size.
->
->Yeah, i915 uses that to dump the error capture file which can be huge 
->and is text so it is doable.
->
->>>>>+
->>>>>+               rcu_read_lock();
->>>>>+               pid = rcu_dereference(priv->pid);
->>>>>+               (*(pid_t *)(pid_buf + offset)) = pid_vnr(pid);
->>>>>+               rcu_read_unlock();
->>>>>+
->>>>>+               offset += sizeof(pid_t);
->>>>>+       }
->>>>>+       mutex_unlock(&ddev->filelist_mutex);
->>>>>+
->>>>>+       if (offset < PAGE_SIZE)
->>>>>+               (*(pid_t *)(pid_buf + offset)) = 0;
->>>
->>>Either NULL terminated or PAGE_SIZE/sizeof(pid) entries and not NULL
->>>terminated feels weird. If I got that right.
->>>
->>>For me everything points towards going for text output.
->>
->>Yes, I know it might sound weird, but my reasoning was: either there are PAGE_SIZE/sizeof(pid) entries
->>and the file isn't NULL terminated (which should be picked up by clients as being one page worth
->>of data, the sysfs attribute maximum transfer unit), or else there aren't enough entries to fill
->>a page and after the last one there's a NULL entry.
->>
->>
->>>>>+
->>>>>+       memcpy(buf, pid_buf, offset);
->>>>>+
->>>>>+       kvfree(pid_buf);
->>>>>+
->>>>>+       return offset;
->>>>>+
->>>>>+}
->>>>>+static DEVICE_ATTR_RO(clients);
+X-MS-Exchange-CrossTenant-UserPrincipalName: diy4yqZcjVFL/YaYfl27+JMHviLne4p3LvW0El2o6aOwSP2XfLIhgboFs49VkAs5rOyyFdLFiufE7XDA3EO4Lw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY1PR18MB6041
+X-Proofpoint-GUID: 3H6zONeAO6ltHlWTteLpfSTU2zw8UnRq
+X-Proofpoint-ORIG-GUID: 3H6zONeAO6ltHlWTteLpfSTU2zw8UnRq
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
+ definitions=2024-05-01_16,2024-04-30_01,2023-05-22_02
 
 
-/proc/<pid>/fdinfo/ is only readable by the owner. if we report what are
-the open fds (or even what are the pids with a drm fd), we are
-leaking that info. So we should probably make this
-DEVICE_ATTR_ADMIN_RO.
+>>> I think James will need to comment on this, but I think that yes, it
+>>> is probably appropriate to require a reboot.  I think an MPAM error
+>>> interrupt should only happen if the software did something wrong, so
+>>> it's a bit like hitting a BUG(): we don't promise that everything works
+>>> 100% properly until the system is restarted.  Misbehaviour should be
+>>> contained to MPAM though.
+>>>
+>> if "resctrl" is nonfunctional in this state, then this comment[1] here does
+>> *not* make sense.
+>>
+>> "restore any modified controls to their reset values."
+> 
+> Can you clarify what you mean here?
 
-Lucas De Marchi
+What I meant was, What's the rationale behind restoring the modified 
+controls, if user is going to restart the system anyways (in order to 
+use MPAM again), but later realized that it is needed so that *non* MPAM 
+loads (user may still want to run other things even after MPAM error 
+interrupt) would not have any adverse effect with modified controls.
 
->>>
->>>Shouldn't BIN_ATTR_RO be used for binary files in sysfs?
+Therefore, taking my statement back.
+
+> 
+> I think it makes sense to clean up the MPAM hardware as well as we can
+> in these situations, even if we can't be certain what went wrong.
+> 
+> [final comments below]
+> 
+>> Thanks
+>> -Amit
 >>
->>Like I said above, I sort of faked a binary attribute through the regular sysfs attr API,
->>which is most likely a bad idea.
+>> [1]: https://urldefense.proofpoint.com/v2/url?u=https-3A__git.kernel.org_pub_scm_linux_kernel_git_morse_linux.git_tree_drivers_platform_mpam_mpam-5Fdevices.c-3Fh-3Dmpam_snapshot_v6.7-2Drc2-23n2228&d=DwIBAg&c=nKjWec2b6R0mOyPaz7xtfQ&r=V_GK7jRuCHDErm6txmgDK1-MbUihtnSQ3gPgB-A-JKU&m=DzR4EYX-356bYvqcrD5mYQBzLmDppMaRaHx6yjN7nRE5GH7nogtw6VtDZchmqb_q&s=SKpVy4sPg3dbFJGfMfUGoo252IHOrHrLfcv5f0sCmm0&e=
 >>
->>>Regards,
->>>
->>>Tvrtko
->>>
->>>P.S. Or maybe it is time for drmfs? Where each client gets a directory and
->>>drivers can populate files. Such as per client logging streams and whatnot.
+>> root@localhost:~# mount
+>> tmpfs on /run/user/0 type tmpfs
+>> (rw,nosuid,nodev,relatime,size=32923772k,nr_inodes=8230943,mode=700)
+>> resctrl on /sys/fs/resctrl type resctrl (rw,relatime)
 >>
->>Yes, but maybe this is something we can discuss in depth in an RFC at a later time?
->
->Yes of course, it is just a long standing idea for flexible per client 
->stuff.
->
->Regards,
->
->Tvrtko
->
+>> root@localhost:~# devmem msc_addr 32 0x9999
+>> [  687.096276] mpam: error irq from msc:1 'PARTID_SEL_Range', partid:39321,
+>> pmg: 0, ris: 0
 >>
->>>>>+
->>>>>+static struct attribute *drm_device_attrs[] = {
->>>>>+       &dev_attr_clients.attr,
->>>>>+       NULL,
->>>>>+};
->>>>>+ATTRIBUTE_GROUPS(drm_device);
->>>>>+
->>>>>+struct class drm_class = {
->>>>>+       .name           = "drm",
->>>>>+       .dev_groups     = drm_device_groups,
->>>>>+};
->>>>>+
->>>>>+static bool drm_class_initialised;
->>>>>+
->>>>>   /**
->>>>>    * drm_sysfs_init - initialize sysfs helpers
->>>>>    *
->>>>>@@ -142,18 +196,19 @@ int drm_sysfs_init(void)
->>>>>   {
->>>>>          int err;
->>>>>
->>>>>-       drm_class = class_create("drm");
->>>>>-       if (IS_ERR(drm_class))
->>>>>-               return PTR_ERR(drm_class);
->>>>>+       err = class_register(&drm_class);
->>>>>+       if (err)
->>>>>+               return err;
->>>>>
->>>>>-       err = class_create_file(drm_class, &class_attr_version.attr);
->>>>>+       err = class_create_file(&drm_class, &class_attr_version.attr);
->>>>>          if (err) {
->>>>>-               class_destroy(drm_class);
->>>>>-               drm_class = NULL;
->>>>>+               class_destroy(&drm_class);
->>>>>                  return err;
->>>>>          }
->>>>>
->>>>>-       drm_class->devnode = drm_devnode;
->>>>>+       drm_class.devnode = drm_devnode;
->>>>>+
->>>>>+       drm_class_initialised = true;
->>>>>
->>>>>          drm_sysfs_acpi_register();
->>>>>          return 0;
->>>>>@@ -166,12 +221,12 @@ int drm_sysfs_init(void)
->>>>>    */
->>>>>   void drm_sysfs_destroy(void)
->>>>>   {
->>>>>-       if (IS_ERR_OR_NULL(drm_class))
->>>>>+       if (!drm_class_initialised)
->>>>>                  return;
->>>>>          drm_sysfs_acpi_unregister();
->>>>>-       class_remove_file(drm_class, &class_attr_version.attr);
->>>>>-       class_destroy(drm_class);
->>>>>-       drm_class = NULL;
->>>>>+       class_remove_file(&drm_class, &class_attr_version.attr);
->>>>>+       class_destroy(&drm_class);
->>>>>+       drm_class_initialised = false;
->>>>>   }
->>>>>
->>>>>   static void drm_sysfs_release(struct device *dev)
->>>>>@@ -372,7 +427,7 @@ int drm_sysfs_connector_add(struct drm_connector *connector)
->>>>>                  return -ENOMEM;
->>>>>
->>>>>          device_initialize(kdev);
->>>>>-       kdev->class = drm_class;
->>>>>+       kdev->class = &drm_class;
->>>>>          kdev->type = &drm_sysfs_device_connector;
->>>>>          kdev->parent = dev->primary->kdev;
->>>>>          kdev->groups = connector_dev_groups;
->>>>>@@ -550,7 +605,7 @@ struct device *drm_sysfs_minor_alloc(struct drm_minor *minor)
->>>>>                          minor_str = "card%d";
->>>>>
->>>>>                  kdev->devt = MKDEV(DRM_MAJOR, minor->index);
->>>>>-               kdev->class = drm_class;
->>>>>+               kdev->class = &drm_class;
->>>>>                  kdev->type = &drm_sysfs_device_minor;
->>>>>          }
->>>>>
->>>>>@@ -579,10 +634,10 @@ struct device *drm_sysfs_minor_alloc(struct drm_minor *minor)
->>>>>    */
->>>>>   int drm_class_device_register(struct device *dev)
->>>>>   {
->>>>>-       if (!drm_class || IS_ERR(drm_class))
->>>>>+       if (!drm_class_initialised)
->>>>>                  return -ENOENT;
->>>>>
->>>>>-       dev->class = drm_class;
->>>>>+       dev->class = &drm_class;
->>>>>          return device_register(dev);
->>>>>   }
->>>>>   EXPORT_SYMBOL_GPL(drm_class_device_register);
->>>>>
->>>>>base-commit: 45c734fdd43db14444025910b4c59dd2b8be714a
->>>>>--
->>>>>2.44.0
->>>>>
+>> root@localhost:~# mount
+>> tmpfs on /run/user/0 type tmpfs
+>> (rw,nosuid,nodev,relatime,size=32923772k,nr_inodes=8230943,mode=700)
+>> resctrl on /sys/fs/resctrl type resctrl (rw,relatime)
 >>
->>Adrian Larumbe
+>> root@localhost:~# umount resctrl
+>> umount: /sys/fs/resctrl: no mount point specified.
+>>
+>> root@localhost:~# mount
+>> tmpfs on /run/user/0 type tmpfs
+>> (rw,nosuid,nodev,relatime,size=32923772k,nr_inodes=8230943,mode=700)
+>>
+>> root@localhost:~# mount -t resctrl resctrl /test
+>> mount: /test: unknown filesystem type 'resctrl'.
+> 
+> 
+> Thanks for trying this out.
+> 
+> I guess the behaviour here might want a bit more thought.
+> 
+> I'm not too keen on us leaving a defective mount in the namespace,
+> with a nonexistent mount pount.  I'm wondering whether things like
+> systemd may get confused by this...
+> 
+> Cheers
+> ---Dave
+
 
