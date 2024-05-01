@@ -1,155 +1,132 @@
-Return-Path: <linux-kernel+bounces-165668-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-165669-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0B72B8B8F42
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 19:56:11 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3EE298B8F46
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 19:58:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9F2131F221B4
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 17:56:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C08B61F22AEE
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 17:58:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 720B21474A2;
-	Wed,  1 May 2024 17:56:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 24A38146D6C;
+	Wed,  1 May 2024 17:58:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="oCCD4AZV"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Vb7E4SxH"
+Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1416C748D;
-	Wed,  1 May 2024 17:55:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F9FA748D;
+	Wed,  1 May 2024 17:58:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714586159; cv=none; b=GQ5arNIIaO5/Zqtcogc1N4ru8WuPo5DIfrVVyqo1NjSLm1cUNOS7aLiZ/eBaY4FRXqpCqQe51tLu40CRqo5EU0fSijY4QJOmDTRBQ1Q5UxWKh9lwlwu+o4ANQo2WX8bt1QAVNlYaByuWGK3VfJQmFoCgyv5RtX0hEUZikp7u5N0=
+	t=1714586283; cv=none; b=SQieEnkuO6a1CI+3jDgyFqNGu4SH/KWLzETXIfPuILkVTdsZ8ZBk+nte50oi4Q9toUg2v9PjNvahEyiz6EjbzQjCha/EtucI3gPDj8Y8mQCc/p+UT9W/IQF49/wytw2bZNUSKGrrXfCMbJfBBOPuyCapikJOs5ANDvFnWjbR5gY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714586159; c=relaxed/simple;
-	bh=ImsoO37LmIyxcjfq9GfK3cKoACG+YHaB+w+naaUo6Rc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=GcdYb3w1ufVHzaz+XoW7JkksLHYkfADravCF0VITV15A0HCmtr6lB4pAENIOJinl4bFp7+fAGULnXEi/YDiWdBYCgPdFG7ZQ5rxBQ48hbJee+/ZH3oAU6rOHI/W5kU9nXrQDKli6KvzLGRRwpatRW3P92d6NhCDR3HDi08lhd4o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=oCCD4AZV; arc=none smtp.client-ip=192.198.163.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1714586158; x=1746122158;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=ImsoO37LmIyxcjfq9GfK3cKoACG+YHaB+w+naaUo6Rc=;
-  b=oCCD4AZVluDNgtK8Q06y6mGOUX82+UpJWc8Wls3ttzpAAQPz7LXqInbf
-   wvh+cCuVBplvrZhH3ptZOYaNmn9aUh0g3uTY+ArXInmKv5PEBRT68kSFJ
-   MiJrAkrXru0JiHxuYfdC3vW3XKp0ck0Ip64Is4nuwWWxHrMc0prY9AvDo
-   2T7Oh30vCVLPr1WhMth9Z9YKLf7+fV3kcmgx0OTksEN8ZxAb+x1bo0XhZ
-   NFzFped9EblFeyPlYZbZC/24M45FB4TY5BW8BCcymA95aFDwq4ETH4Ofb
-   pkYMUUPJOmRt7ui2ux1a2UWNuBevyOFwaF+o02EoxivUKa+aIObcuMKTG
-   w==;
-X-CSE-ConnectionGUID: jA7c0FJbTJaUZLK8G5Y/0w==
-X-CSE-MsgGUID: xnm3Mn8XRWe1GWyq1ggQ4w==
-X-IronPort-AV: E=McAfee;i="6600,9927,11061"; a="35714918"
-X-IronPort-AV: E=Sophos;i="6.07,246,1708416000"; 
-   d="scan'208";a="35714918"
-Received: from orviesa005.jf.intel.com ([10.64.159.145])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 May 2024 10:55:45 -0700
-X-CSE-ConnectionGUID: fA5cYtbySBK+URiVZ2UYqQ==
-X-CSE-MsgGUID: sl7aHpoRT0mXP/c6i7u+8w==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,246,1708416000"; 
-   d="scan'208";a="31663564"
-Received: from soc-cp83kr3.jf.intel.com (HELO [10.24.10.57]) ([10.24.10.57])
-  by orviesa005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 May 2024 10:55:44 -0700
-Message-ID: <d788bdab-91b9-4034-a241-ee253ee4fb3e@intel.com>
-Date: Wed, 1 May 2024 10:55:46 -0700
+	s=arc-20240116; t=1714586283; c=relaxed/simple;
+	bh=wPz8gz9fdNMhqbvWjuPfZ+k8F+pcSH6WWATe+mVvD8w=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=BOGlAm86KQlfHosJsqLXdmdbt50oad7Qj2v6wZjljAVwQ3CvgVgKzo2/zTeI3mkEgDZB6xdyTCRaarLixOUoKsqzTt1OuaC/Kzt1scL5ID5nVQy1Swro0uSe9+ez2JLp+H66ICTPpUEfCtZmY6Lv3PsRX86VgZBLcju7g+IDOqo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Vb7E4SxH; arc=none smtp.client-ip=209.85.210.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f176.google.com with SMTP id d2e1a72fcca58-6f0b9f943cbso5750495b3a.0;
+        Wed, 01 May 2024 10:58:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1714586281; x=1715191081; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=q4rOKnsNhG1Q1vhr4pc7ubFIt+2tsJXhdN/DYA8iQLw=;
+        b=Vb7E4SxHTSrGx+33Mai5xTM1VzUO6SwhdfsJINnOqFUddUf4cGeXFqhujOyawXziiW
+         zhRBrS6VvID9uZpAOvsgWQH38Ow7yz+bYpbJqJgkfgIoq5MxyaHhdu379jMOtslx6PdY
+         Z6iT7wF2/KwlVylnJRBCpKpnzTAggBrSX0ZqJTSERb1D+gahliK6JlNCYb2uSDv4cfEW
+         Yzw5n8seVGmEDKcnm9EhGz2Kvz05uzrsSEXqE+WsTdBOM11TxzVWQl00bGjaKdEaxdYY
+         Wu9c5Su2Xs6qTiUCa6SNFVamXHFsJPRbNeHtLvpf27JPfEoCGt0hng0bXvSA8v1S4G2L
+         h6hg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714586281; x=1715191081;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=q4rOKnsNhG1Q1vhr4pc7ubFIt+2tsJXhdN/DYA8iQLw=;
+        b=WrYWuwYPxnUARbSXi2ATxenfpqguTVuoFWdoj3hAMmMWQwg5dA8ClRa1BR871XtXVU
+         w1ZAgnCMtbLcl2FkjWBIejyaFnftvANz9U6CxTZ3H/Sa3oF4Go6EscTFMTNu76NdEtWz
+         4OwqdA4yr5bxNMyV6RRIeieRo8cr8xebtQB6dFz3pf5F32HDUib1NvjOO+P/38jOkynW
+         d+bbKLWMXqlqB2nWhWIYhVdd0w/KbqHUxfq9w7cyccg29n8yqcEDJViECtAaT7wBh93S
+         gzm3+PWIfNA8vPhyWygFRI4P9gybdy3mNt6xaSYtNzJog/ol6BsPAkuGZy9VGHi61nCX
+         gMKg==
+X-Forwarded-Encrypted: i=1; AJvYcCWtymM198+eDT5LfA3ZLqtMp+FsFukX3C46Dt1pjdwaDovh+BvTPwPSrtgWIZHgHq88R1bZJWdk55QFwkH9Cjp/RF2iiMYtYBh6d59MIOB0iVIiM4QmGo2Qo/RD+HOaIl45HygHy0NT
+X-Gm-Message-State: AOJu0Yzno2p9CrS3iLjze2Wb3fQzmQPLC2SltKaoJhQiwCUeC//V87tb
+	XxFgXuPvzLd56rI70FzkBHn192tJ7CHiu7HeuHLD+9O+lrFCWPY=
+X-Google-Smtp-Source: AGHT+IGqS6uE4xVjWbe8+ml+8Z6WT8GiuaF7BBzcpLLyVnyizp7pmn8/IyGwfSKof+aWeUQjW0XGCA==
+X-Received: by 2002:a05:6a20:6a24:b0:1ad:92e0:f5d7 with SMTP id p36-20020a056a206a2400b001ad92e0f5d7mr4244462pzk.46.1714586281223;
+        Wed, 01 May 2024 10:58:01 -0700 (PDT)
+Received: from utkarsh-ROG-Zephyrus-G14-GA401II-GA401II.. ([117.203.246.41])
+        by smtp.gmail.com with ESMTPSA id v2-20020aa78082000000b006eab6ac1f83sm22981821pff.0.2024.05.01.10.57.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 01 May 2024 10:58:00 -0700 (PDT)
+From: Utkarsh Tripathi <utripathi2002@gmail.com>
+To: corbet@lwn.net,
+	akiyks@gmail.com
+Cc: Utkarsh Tripathi <utripathi2002@gmail.com>,
+	linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	skhan@linuxfoundation.org
+Subject: [PATCH v2] Sphinx error fixed for inline literal end-string by changing $type_constant2 in kernel-doc script to include "*" unicode character in highlights_rst.
+Date: Wed,  1 May 2024 23:27:30 +0530
+Message-Id: <20240501175730.23326-1-utripathi2002@gmail.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <b9e4bedb-6678-42ed-9ac1-c10179be5b69@gmail.com>
+References: <b9e4bedb-6678-42ed-9ac1-c10179be5b69@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 15/15] KVM: x86: Factor out kvm_use_master_clock()
-To: David Woodhouse <dwmw2@infradead.org>, kvm@vger.kernel.org
-Cc: Paolo Bonzini <pbonzini@redhat.com>, Jonathan Corbet <corbet@lwn.net>,
- Sean Christopherson <seanjc@google.com>, Thomas Gleixner
- <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
- Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
- x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>, Paul Durrant
- <paul@xen.org>, Shuah Khan <shuah@kernel.org>, linux-doc@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
- Oliver Upton <oliver.upton@linux.dev>, Marcelo Tosatti
- <mtosatti@redhat.com>, jalliste@amazon.co.uk, sveith@amazon.de,
- Dongli Zhang <dongli.zhang@oracle.com>
-References: <20240427111929.9600-1-dwmw2@infradead.org>
- <20240427111929.9600-16-dwmw2@infradead.org>
-Content-Language: en-US
-From: "Chen, Zide" <zide.chen@intel.com>
-In-Reply-To: <20240427111929.9600-16-dwmw2@infradead.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
+The kernel-doc script uses the $type_constant2 variable to match
+expressions used to find embedded type information. The current
+implementation of $type_constant2 does not include the "*" unicode
+character, which is used to highlight inline literals in the
+documentation. This causes a Sphinx error when the inline literal
+end-string is used in the documentation.
 
+This commit follows the pattern of the commit
+8aaf297a0dd6 ("docs: scripts: kernel-doc: accept bitwise negation like ~@var")
+and takes inspiration from the following commit
+69fc23efc7e5 ("kernel-doc: Add unary operator * to $type_param_ref").
 
-On 4/27/2024 4:05 AM, David Woodhouse wrote:
-> From: David Woodhouse <dwmw@amazon.co.uk>
-> 
-> Both kvm_track_tsc_matching() and pvclock_update_vm_gtod_copy() make a
-> decision about whether the KVM clock should be in master clock mode.
-> 
-> They use *different* criteria for the decision though. This isn't really
-> a problem; it only has the potential to cause unnecessary invocations of
-> KVM_REQ_MASTERCLOCK_UPDATE if the masterclock was disabled due to TSC
-> going backwards, or the guest using the old MSR. But it isn't pretty.
-> 
-> Factor the decision out to a single function. And document the historical
-> reason why it's disabled for guests that use the old MSR_KVM_SYSTEM_TIME.
-> 
-> Signed-off-by: David Woodhouse <dwmw@amazon.co.uk>
-> ---
->  arch/x86/kvm/x86.c | 27 +++++++++++++++++++++++----
->  1 file changed, 23 insertions(+), 4 deletions(-)
-> 
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index d6e4469f531a..680b39f17851 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -2518,6 +2518,27 @@ static inline bool gtod_is_based_on_tsc(int mode)
->  }
->  #endif
->  
-> +static bool kvm_use_master_clock(strut kvm *kvm)
+Thanks Akira, for your suggestions, I have made the required changes.
+I am fairly new to the kernel community, so if I am making 
+any mistakes while making patches and replying to mails,
+please let me know, it will be very helpful.
 
-typo: 'strut' -> 'struct'
+Signed-off-by: Utkarsh Tripathi <utripathi2002@gmail.com>
+Reviewed-by: Akira Yokosawa <akiyks@gmail.com>
+Suggested-by: Akira Yokosawa <akiyks@gmail.com>
+---
+ scripts/kernel-doc | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> +{
-> +	struct kvm_arch *ka = &kvm->arch;
-> +
-> +	/*
-> +	 * The 'old kvmclock' check is a workaround (from 2015) for a
-> +	 * SUSE 2.6.16 kernel that didn't boot if the system_time in
-> +	 * its kvmclock was too far behind the current time. So the
-> +	 * mode of just setting the reference point and allowing time
-> +	 * to proceed linearly from there makes it fail to boot.
-> +	 * Despite that being kind of the *point* of the way the clock
-> +	 * is exposed to the guest. By coincidence, the offending
-> +	 * kernels used the old MSR_KVM_SYSTEM_TIME, which was moved
-> +	 * only because it resided in the wrong number range. So the
-> +	 * workaround is activated for *all* guests using the old MSR.
-> +	 */
-> +	return ka->all_vcpus_matched_tsc &&
-> +		!ka->backwards_tsc_observed &&
-> +		!ka->boot_vcpu_runs_old_kvmclock;
-> +}
-> +
->  static void kvm_track_tsc_matching(struct kvm_vcpu *vcpu)
->  {
->  #ifdef CONFIG_X86_64
-> @@ -2550,7 +2571,7 @@ static void kvm_track_tsc_matching(struct kvm_vcpu *vcpu)
->  	 * To use the masterclock, the host clocksource must be based on TSC
->  	 * and all vCPUs must have matching TSC frequencies.
->  	 */
-> -	bool use_master_clock = ka->all_vcpus_matched_tsc &&
-> +	bool use_master_clock = kvm_use_master_clock(kvm) &&
+diff --git a/scripts/kernel-doc b/scripts/kernel-doc
+index cb1be22afc65..58129b1cf3f4 100755
+--- a/scripts/kernel-doc
++++ b/scripts/kernel-doc
+@@ -62,7 +62,7 @@ my $anon_struct_union = 0;
+ 
+ # match expressions used to find embedded type information
+ my $type_constant = '\b``([^\`]+)``\b';
+-my $type_constant2 = '\%([-_\w]+)';
++my $type_constant2 = '\%([-_*\w]+)';
+ my $type_func = '(\w+)\(\)';
+ my $type_param = '\@(\w*((\.\w+)|(->\w+))*(\.\.\.)?)';
+ my $type_param_ref = '([\!~\*]?)\@(\w*((\.\w+)|(->\w+))*(\.\.\.)?)';
 
-'kvm' should be `vcpu->kvm`
+base-commit: 4d2008430ce87061c9cefd4f83daf2d5bb323a96
+-- 
+2.34.1
 
->  				gtod_is_based_on_tsc(gtod->clock.vclock_mode);
 
