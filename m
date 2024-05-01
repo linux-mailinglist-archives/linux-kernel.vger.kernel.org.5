@@ -1,98 +1,74 @@
-Return-Path: <linux-kernel+bounces-164924-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-164926-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 10F148B8500
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 06:31:27 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 19D7D8B8507
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 06:32:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 92A3F1F23995
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 04:31:26 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 113D6B20EA9
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 04:32:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 687B450255;
-	Wed,  1 May 2024 04:29:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PcOxE6aV"
-Received: from mail-ot1-f53.google.com (mail-ot1-f53.google.com [209.85.210.53])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D76823D97D;
+	Wed,  1 May 2024 04:32:37 +0000 (UTC)
+Received: from mail-vk1-f179.google.com (mail-vk1-f179.google.com [209.85.221.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0602A4E1DD;
-	Wed,  1 May 2024 04:29:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 86975D2E5;
+	Wed,  1 May 2024 04:32:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714537752; cv=none; b=C3qOmHu0RD5nvu5bVZIcqFIdyLGKNsjLVktaJIT2uFDfOobd5td2FHvhTBfwd8lLVE9oISSy1Eii0jaQsgracp+h0CxrlvA6jYnA5mrigsKUOJpE0vjZdH2jOAtkwmyawiIR5i33SMn5N9Rcq7Fi1u79zOOYP1YvdTZoQDjuRH4=
+	t=1714537957; cv=none; b=lp/SMW6kt7mB8XKlHUavBALKxYLBjDbyWQqJEqtB4XsoTmcdxXSvKQQ3DIr3GpvpOLgYWAvm6C/QSqeyPH439z3O4pccYQrSfOAS+gqcz/2JEwBdUS9T63yhjluElzDtxw7UxA9N5PK4sW9BzI3fInBDlkja2Bhg84YogGmMaE8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714537752; c=relaxed/simple;
-	bh=SGFo0nYVaGclh6uWy9vzUTrAnYsZxkd5dvKmm42KMDw=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=XFcZLMayxemrU/MuRqt8lwUtzXaUGtJdJQTcc0VsqkixwPUhij09e6XAob57gqeKNjXrVHJ7860Zhqu2yRJTUuodCzja9EjHX2R6+5Z5wnhJQucp/J2sQiCLVH8ES5vlE323g4J6rQTguuWN9GIoY27ciBKoe/0j+P1Dsy0S3Z4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PcOxE6aV; arc=none smtp.client-ip=209.85.210.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+	s=arc-20240116; t=1714537957; c=relaxed/simple;
+	bh=2JY5OY0eLf0Go09E4VV+/1JdG4dIaohPD9zFXAum5sk=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=kMv6ohQXWjRsYECJ948FEzlvCN1Wynpxaokj1lOBAsJ6gZ2c6oLpnnc3Si4ELebYnB7B5NcoKWoZOYrhfSBIQP3z0+GO2iBI2geApfJCqhT6tresxyRPEkn/xMND6tlNfrALOFVm/JXzXF3Q0PyRIXfq3++dSAv4lMITXQmJVL4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=sung-woo.kim; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.221.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=sung-woo.kim
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ot1-f53.google.com with SMTP id 46e09a7af769-6ee2fda66easo1542799a34.3;
-        Tue, 30 Apr 2024 21:29:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714537750; x=1715142550; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=lS+64DkLIQ8nbNaGoMXOJ1Gbc+Q4ngs9pfz0WhHIiSc=;
-        b=PcOxE6aVyVoVzI7eWwpBaJtFGmrTA8ejLu3boRu9fMrAUVG7UrDZC8GHrOrcMYa/ZA
-         VB3J9XD8sfaZi2yDztuuRPpdsRF5RPxPwWIMn2MDUSB794EwhK+9z2DKwCJwlZdeZatR
-         M4CaTQrfaMJPV4A2RksOmiNH4eMyYhGvkzDzQ1UWYOHcq9qrsbob8cqTr0XMGE9F6r/5
-         U8qPyOt4XYOOjJxMMZbN6JNQ5atCZwecn+IvpcspE/B1yCT/x3KiPYyzPpf6VR3Z5G51
-         pVoPA+RFBAMSkKjLOlEGs4iL9wVNdL2dQ3GPa84jrFn1gS+PlmZYtCS+NHf4xl8cg92S
-         P2Qg==
+Received: by mail-vk1-f179.google.com with SMTP id 71dfb90a1353d-4dee77a2b49so1212153e0c.1;
+        Tue, 30 Apr 2024 21:32:35 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714537750; x=1715142550;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=lS+64DkLIQ8nbNaGoMXOJ1Gbc+Q4ngs9pfz0WhHIiSc=;
-        b=A7RN/XJOmIj9rvYCNFcU3mAY6I6CkJ4z71Es0DOjrcke1K1r60i+5DAmX/GI/iJYN4
-         oWBwXUiI9F8U1QNDIa1FDbfTKaXn3gXvPdjsKHdJBvHl68q63yVdftlPiRErsSaQFb55
-         5qd8M5pVGa7O4DU/CDB1ihbAoNmhwSc/3CvL8np7nTGIfuUQv7G1yl1Jotmmu/U+hUMy
-         aLVsNZb8+wzdh+t7E0c1wZNPKXOh8gSr9J3I5Zm8VqGIwP+/XZv8ViNAvnZitdBOOS1R
-         vkUx0snQ1EX3xPTeb4UzDSqaezdC7MqBeSkgC9QFVSU6UoP8Ta3eEFvgnPNGjyE7jlic
-         bJDw==
-X-Forwarded-Encrypted: i=1; AJvYcCWkpJHBzJy5KWecAXCJHdym1MuB0fYLz0fzcQZa2H7WpHG0WtkSC8s9RFwFSajK/x8Jro7ELXgrSLrzp7jXeI2yLk4djzozJESfGz0cXPf7wnhpZvW8CF/VKpnvOBuf1dcJ5clvA6fMX/CYAabUqecgYdGrwva+1e/yK7shSHpB6sz12wcbdoirI5Mi1oD4So6oBqoA8v+I69Hp60Et/SbjMLf5j4zHcBjAJ7gKbpaXCBfvomaRYJnkR0SG60g=
-X-Gm-Message-State: AOJu0YxKDPJf7aNL4hiqyy0alz3yseBYbCJIS4MQ/wZ1hpDF4S/eSftv
-	/mLm6su/ASve38F8f2ikiGCGXYne9Qu1lYFEK0czhUFECuKXQTen
-X-Google-Smtp-Source: AGHT+IGIrAKyP/bGpH/Jtpq/owhHBsB2H5z0Uq8LIuVBmhtjxaoJpsLgICttbWudaLL6KNIRsTBjMw==
-X-Received: by 2002:a05:6830:100f:b0:6ee:575b:8dd5 with SMTP id a15-20020a056830100f00b006ee575b8dd5mr1499213otp.20.1714537750061;
-        Tue, 30 Apr 2024 21:29:10 -0700 (PDT)
-Received: from nukework.lan (c-98-197-58-203.hsd1.tx.comcast.net. [98.197.58.203])
-        by smtp.gmail.com with ESMTPSA id do26-20020a0568300e1a00b006ed6dc9fd54sm2719058otb.25.2024.04.30.21.29.08
+        d=1e100.net; s=20230601; t=1714537954; x=1715142754;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=5Z5lN9ouraph5ntmF9cLLqC94FKMgX8DNOshw4gn8zw=;
+        b=JusS84OA+OTwpPp8KwmveLTPm22mgiuGnpmpf6KAJAaTJ4nZuvz539jvj57IQZegSJ
+         7I3EqlDAXc589bq3m460sw/0S9iR6TIgkGexZDLGfhqTfl68imgW1oddJyMDOdyNm64N
+         JUIzVXhv1e/W1PppsOhtowbq2oFGEK/eEtOUNVu/A+FTxdojr/Axd3yvhLiM/nPH+gZS
+         YZAPsCc9etC0X2PFn8C5FZxKc8cZzHbpFmL1PKqjhiuFKYdtUintZaf5Ry8HjbU5k0Bd
+         fz1zh66jWWE8Atv10UgMdUV4sKtMvAhmKtt1PsSyJIWOWdp2ZPm6DCFR1GbrzYFIxc0q
+         Pb2A==
+X-Forwarded-Encrypted: i=1; AJvYcCWRKqHPccsbp7AkOu/wMEhKtXsqnjKx8L6Qu2YB4dvbJwt7cU9tLOLB8bVhfKB5jW0DI5e/n+kVjMfjXMNafew2cwdG0Ww6OHvnYLnolBu2Kv81QDVXHSuhK/EErg50J5sIAWhsNpbqVuYPnpxEKHb8F8yR2+26qoD42AtjrTwJRCfDORS8
+X-Gm-Message-State: AOJu0YzLZtxOYdGvvpjB/JWg3QaNmHO8IXaK/SNvPrdhnxRJNlpnVntf
+	AXYkYQ48iPG6jh0olP/NeMLpmFjrhuXr6oBMz+M4AJNnEdtDFujT
+X-Google-Smtp-Source: AGHT+IFEsfnWehxiAiumsg8emFvB06y8Nfu+9ZDYXnIqFHeuB3FAWBoMcAZIutFPX/7RUaCD07qFjw==
+X-Received: by 2002:a05:6122:3187:b0:4d4:1ec7:76e5 with SMTP id ch7-20020a056122318700b004d41ec776e5mr1328818vkb.16.1714537954179;
+        Tue, 30 Apr 2024 21:32:34 -0700 (PDT)
+Received: from tofu.cs.purdue.edu ([128.210.0.165])
+        by smtp.gmail.com with ESMTPSA id i1-20020ae9ee01000000b0078f12b01bbdsm11618561qkg.101.2024.04.30.21.32.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Apr 2024 21:29:09 -0700 (PDT)
-From: Alexandru Gagniuc <mr.nuke.me@gmail.com>
-To: Bjorn Andersson <andersson@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	=?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
-	Rob Herring <robh@kernel.org>,
-	Bjorn Helgaas <bhelgaas@google.com>,
-	Krzysztof Kozlowski <krzk+dt@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Vinod Koul <vkoul@kernel.org>,
-	Kishon Vijay Abraham I <kishon@kernel.org>,
-	Michael Turquette <mturquette@baylibre.com>,
-	Stephen Boyd <sboyd@kernel.org>,
-	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-	linux-arm-msm@vger.kernel.org,
-	linux-pci@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-phy@lists.infradead.org,
-	linux-clk@vger.kernel.org
-Cc: Alexandru Gagniuc <mr.nuke.me@gmail.com>
-Subject: [PATCH v4 RESEND 8/8] arm64: dts: qcom: ipq9574: add PCIe2 and PCIe3 nodes
-Date: Tue, 30 Apr 2024 23:28:47 -0500
-Message-Id: <20240501042847.1545145-9-mr.nuke.me@gmail.com>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20240501042847.1545145-1-mr.nuke.me@gmail.com>
-References: <20240501042847.1545145-1-mr.nuke.me@gmail.com>
+        Tue, 30 Apr 2024 21:32:33 -0700 (PDT)
+From: Sungwoo Kim <iam@sung-woo.kim>
+To: luiz.dentz@gmail.com
+Cc: daveti@purdue.edu,
+	benquike@gmail.com,
+	Sungwoo Kim <iam@sung-woo.kim>,
+	Marcel Holtmann <marcel@holtmann.org>,
+	Johan Hedberg <johan.hedberg@gmail.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	linux-bluetooth@vger.kernel.org,
+	netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v2] Bluetooth: L2CAP: Fix div-by-zero in l2cap_le_flowctl_init()
+Date: Wed,  1 May 2024 00:29:36 -0400
+Message-Id: <20240501042936.2579739-1-iam@sung-woo.kim>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -101,215 +77,145 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-On ipq9574, there are 4 PCIe controllers. Describe the pcie2 and pcie3
-nodes, and their PHYs in devicetree.
+Hi Luiz, could you review this patch?
 
-The pcie0 and pcie1 controllers use a gen3x1 PHY, which is not
-currently supported. Hence, only pcie2 and pcie3 are described. Only
-pcie2 was tested because my devboard only has conenctions to pcie2.
+This patch prevents a div-by-zero error and potential int overflow by
+adding a range check for MTU in hci_cc_le_read_buffer_size() and
+hci_cc_le_read_buffer_size_v2().
+Also, hci_connect_le() will refuse to allocate hcon if the MTU is not in
+the valid range.
 
-Signed-off-by: Alexandru Gagniuc <mr.nuke.me@gmail.com>
+Bug description:
+
+l2cap_le_flowctl_init() can cause both div-by-zero and an integer overflow.
+
+l2cap_le_flowctl_init()
+  chan->mps = min_t(u16, chan->imtu, chan->conn->mtu - L2CAP_HDR_SIZE);
+  chan->rx_credits = (chan->imtu / chan->mps) + 1;  <- div-by-zero
+
+Here, chan->conn->mtu could be less than or equal to L2CAP_HDR_SIZE (4).
+If mtu is 4, it causes div-by-zero. If mtu is less than 4, it causes an
+integer overflow.
+
+How mtu could have such low value:
+
+hci_cc_le_read_buffer_size()
+  hdev->le_mtu = __le16_to_cpu(rp->le_mtu);
+
+l2cap_conn_add()
+  conn->mtu = hcon->hdev->le_mtu;
+
+As shown, mtu is an input from an HCI device. So, any HCI device can
+set mtu value to any value, such as lower than 4.
+According to the spec v5.4 7.8.2 LE Read Buffer Size command, the value
+should be fall in [0x001b, 0xffff].
+
+Thank you,
+Sungwoo.
+
+divide error: 0000 [#1] PREEMPT SMP KASAN NOPTI
+CPU: 0 PID: 67 Comm: kworker/u5:0 Tainted: G        W          6.9.0-rc5+ #20
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.15.0-1 04/01/2014
+Workqueue: hci0 hci_rx_work
+RIP: 0010:l2cap_le_flowctl_init+0x19e/0x3f0 net/bluetooth/l2cap_core.c:547
+Code: e8 17 17 0c 00 66 41 89 9f 84 00 00 00 bf 01 00 00 00 41 b8 02 00 00 00 4c 89 fe 4c 89 e2 89 d9 e8 27 17 0c 00 44 89 f0 31 d2 <66> f7 f3 89 c3 ff c3 4d 8d b7 88 00 00 00 4c 89 f0 48 c1 e8 03 42
+RSP: 0018:ffff88810bc0f858 EFLAGS: 00010246
+RAX: 00000000000002a0 RBX: 0000000000000000 RCX: dffffc0000000000
+RDX: 0000000000000000 RSI: ffff88810bc0f7c0 RDI: ffffc90002dcb66f
+RBP: ffff88810bc0f880 R08: aa69db2dda70ff01 R09: 0000ffaaaaaaaaaa
+R10: 0084000000ffaaaa R11: 0000000000000000 R12: ffff88810d65a084
+R13: dffffc0000000000 R14: 00000000000002a0 R15: ffff88810d65a000
+FS:  0000000000000000(0000) GS:ffff88811ac00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000020000100 CR3: 0000000103268003 CR4: 0000000000770ef0
+PKRU: 55555554
+Call Trace:
+ <TASK>
+ l2cap_le_connect_req net/bluetooth/l2cap_core.c:4902 [inline]
+ l2cap_le_sig_cmd net/bluetooth/l2cap_core.c:5420 [inline]
+ l2cap_le_sig_channel net/bluetooth/l2cap_core.c:5486 [inline]
+ l2cap_recv_frame+0xe59d/0x11710 net/bluetooth/l2cap_core.c:6809
+ l2cap_recv_acldata+0x544/0x10a0 net/bluetooth/l2cap_core.c:7506
+ hci_acldata_packet net/bluetooth/hci_core.c:3939 [inline]
+ hci_rx_work+0x5e5/0xb20 net/bluetooth/hci_core.c:4176
+ process_one_work kernel/workqueue.c:3254 [inline]
+ process_scheduled_works+0x90f/0x1530 kernel/workqueue.c:3335
+ worker_thread+0x926/0xe70 kernel/workqueue.c:3416
+ kthread+0x2e3/0x380 kernel/kthread.c:388
+ ret_from_fork+0x5c/0x90 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
+ </TASK>
+Modules linked in:
+---[ end trace 0000000000000000 ]---
+
+Signed-off-by: Sungwoo Kim <iam@sung-woo.kim>
 ---
- arch/arm64/boot/dts/qcom/ipq9574.dtsi | 178 +++++++++++++++++++++++++-
- 1 file changed, 176 insertions(+), 2 deletions(-)
+v1 -> v2:
+- Reply with an error code if a given MTU is not valid.
+- Refuse hcon allocation if MTU is not still valid.
 
-diff --git a/arch/arm64/boot/dts/qcom/ipq9574.dtsi b/arch/arm64/boot/dts/qcom/ipq9574.dtsi
-index 7f2e5cbf3bbb..c391886cf9ab 100644
---- a/arch/arm64/boot/dts/qcom/ipq9574.dtsi
-+++ b/arch/arm64/boot/dts/qcom/ipq9574.dtsi
-@@ -300,8 +300,8 @@ gcc: clock-controller@1800000 {
- 				 <0>,
- 				 <0>,
- 				 <0>,
--				 <0>,
--				 <0>,
-+				 <&pcie2_phy>,
-+				 <&pcie3_phy>,
- 				 <0>;
- 			#clock-cells = <1>;
- 			#reset-cells = <1>;
-@@ -745,6 +745,180 @@ frame@b128000 {
- 				status = "disabled";
- 			};
- 		};
-+
-+		pcie2_phy: phy@8c000 {
-+			compatible = "qcom,ipq9574-qmp-gen3x2-pcie-phy";
-+			reg = <0x0008c000 0x14f4>;
-+
-+			clocks = <&gcc GCC_PCIE2_AUX_CLK>,
-+				 <&gcc GCC_PCIE2_AHB_CLK>,
-+				 <&gcc GCC_PCIE2_PIPE_CLK>;
-+			clock-names = "aux",
-+				      "cfg_ahb",
-+				      "pipe";
-+
-+			clock-output-names = "pcie_phy2_pipe_clk";
-+			#clock-cells = <0>;
-+			#phy-cells = <0>;
-+
-+			resets = <&gcc GCC_PCIE2_PHY_BCR>,
-+				 <&gcc GCC_PCIE2PHY_PHY_BCR>;
-+			reset-names = "phy",
-+				      "common";
-+			status = "disabled";
-+		};
-+
-+		pcie3_phy: phy@f4000 {
-+			compatible = "qcom,ipq9574-qmp-gen3x2-pcie-phy";
-+			reg = <0x000f4000 0x14f4>;
-+
-+			clocks = <&gcc GCC_PCIE3_AUX_CLK>,
-+				 <&gcc GCC_PCIE3_AHB_CLK>,
-+				 <&gcc GCC_PCIE3_PIPE_CLK>;
-+			clock-names = "aux",
-+				      "cfg_ahb",
-+				      "pipe";
-+
-+			clock-output-names = "pcie_phy3_pipe_clk";
-+			#clock-cells = <0>;
-+			#phy-cells = <0>;
-+
-+			resets = <&gcc GCC_PCIE3_PHY_BCR>,
-+				 <&gcc GCC_PCIE3PHY_PHY_BCR>;
-+			reset-names = "phy",
-+				      "common";
-+			status = "disabled";
-+		};
-+
-+		/* TODO: Populate pcie0/pcie1 when gen3x1 phy support is added. */
-+
-+		pcie2: pcie@20000000 {
-+			compatible = "qcom,pcie-ipq9574";
-+			reg = <0x20000000 0xf1d>,
-+			      <0x20000f20 0xa8>,
-+			      <0x20001000 0x1000>,
-+			      <0x00088000 0x4000>,
-+			      <0x20100000 0x1000>;
-+			reg-names = "dbi", "elbi", "atu", "parf", "config";
-+
-+			ranges = <0x81000000 0x0 0x20200000 0x20200000 0x0 0x00100000>,
-+				 <0x82000000 0x0 0x20300000 0x20300000 0x0 0x07d00000>;
-+
-+			device_type = "pci";
-+			linux,pci-domain = <3>;
-+			bus-range = <0x00 0xff>;
-+			num-lanes = <2>;
-+			max-link-speed = <3>;
-+			#address-cells = <3>;
-+			#size-cells = <2>;
-+
-+			phys = <&pcie2_phy>;
-+			phy-names = "pciephy";
-+
-+			interrupts = <GIC_SPI 126 IRQ_TYPE_LEVEL_HIGH>;
-+			interrupt-names = "msi";
-+
-+			#interrupt-cells = <1>;
-+			interrupt-map-mask = <0 0 0 0x7>;
-+			interrupt-map = <0 0 0 1 &intc 0 0 164 IRQ_TYPE_LEVEL_HIGH>,
-+					<0 0 0 2 &intc 0 0 165 IRQ_TYPE_LEVEL_HIGH>,
-+					<0 0 0 3 &intc 0 0 186 IRQ_TYPE_LEVEL_HIGH>,
-+					<0 0 0 4 &intc 0 0 187 IRQ_TYPE_LEVEL_HIGH>;
-+
-+			clocks = <&gcc GCC_PCIE2_AXI_M_CLK>,
-+				 <&gcc GCC_PCIE2_AXI_S_CLK>,
-+				 <&gcc GCC_PCIE2_AXI_S_BRIDGE_CLK>,
-+				 <&gcc GCC_ANOC_PCIE2_2LANE_M_CLK>,
-+				 <&gcc GCC_SNOC_PCIE2_2LANE_S_CLK>,
-+				 <&gcc GCC_PCIE2_RCHNG_CLK>;
-+			clock-names = "axi_m",
-+				      "axi_s",
-+				      "axi_bridge",
-+				      "rchng";
-+
-+			resets = <&gcc GCC_PCIE2_PIPE_ARES>,
-+				 <&gcc GCC_PCIE2_AUX_ARES>,
-+				 <&gcc GCC_PCIE2_CORE_STICKY_ARES>,
-+				 <&gcc GCC_PCIE2_AXI_M_ARES>,
-+				 <&gcc GCC_PCIE2_AXI_S_ARES>,
-+				 <&gcc GCC_PCIE2_AXI_S_STICKY_ARES>,
-+				 <&gcc GCC_PCIE2_AXI_M_STICKY_ARES>,
-+				 <&gcc GCC_PCIE2_AHB_ARES>;
-+			reset-names = "pipe",
-+				      "aux",
-+				      "sticky",
-+				      "axi_m",
-+				      "axi_s",
-+				      "axi_s_sticky",
-+				      "axi_m_sticky",
-+				      "ahb";
-+			status = "disabled";
-+		};
-+
-+		pcie3: pcie@18000000 {
-+			compatible = "qcom,pcie-ipq9574";
-+			reg = <0x18000000 0xf1d>,
-+			      <0x18000f20 0xa8>,
-+			      <0x18001000 0x1000>,
-+			      <0x000f0000 0x4000>,
-+			      <0x18100000 0x1000>;
-+			reg-names = "dbi", "elbi", "atu", "parf", "config";
-+
-+			ranges = <0x81000000 0x0 0x18200000 0x18200000 0x0 0x00100000>,
-+				 <0x82000000 0x0 0x18300000 0x18300000 0x0 0x07d00000>;
-+
-+			device_type = "pci";
-+			linux,pci-domain = <4>;
-+			bus-range = <0x00 0xff>;
-+			num-lanes = <2>;
-+			max-link-speed = <3>;
-+			#address-cells = <3>;
-+			#size-cells = <2>;
-+
-+			phys = <&pcie3_phy>;
-+			phy-names = "pciephy";
-+
-+			interrupts = <GIC_SPI 189 IRQ_TYPE_LEVEL_HIGH>;
-+			interrupt-names = "msi";
-+
-+			#interrupt-cells = <1>;
-+			interrupt-map-mask = <0 0 0 0x7>;
-+			interrupt-map = <0 0 0 1 &intc 0 0 189 IRQ_TYPE_LEVEL_HIGH>,
-+					<0 0 0 2 &intc 0 0 190 IRQ_TYPE_LEVEL_HIGH>,
-+					<0 0 0 3 &intc 0 0 192 IRQ_TYPE_LEVEL_HIGH>,
-+					<0 0 0 4 &intc 0 0 192 IRQ_TYPE_LEVEL_HIGH>;
-+
-+			clocks = <&gcc GCC_PCIE3_AXI_M_CLK>,
-+				 <&gcc GCC_PCIE3_AXI_S_CLK>,
-+				 <&gcc GCC_PCIE3_AXI_S_BRIDGE_CLK>,
-+				 <&gcc GCC_ANOC_PCIE3_2LANE_M_CLK>,
-+				 <&gcc GCC_SNOC_PCIE3_2LANE_S_CLK>,
-+				 <&gcc GCC_PCIE3_RCHNG_CLK>;
-+			clock-names = "axi_m",
-+				      "axi_s",
-+				      "axi_bridge",
-+				      "anoc",
-+				      "snoc",
-+				      "rchng";
-+
-+			resets = <&gcc GCC_PCIE3_PIPE_ARES>,
-+				 <&gcc GCC_PCIE3_AUX_ARES>,
-+				 <&gcc GCC_PCIE3_CORE_STICKY_ARES>,
-+				 <&gcc GCC_PCIE3_AXI_M_ARES>,
-+				 <&gcc GCC_PCIE3_AXI_S_ARES>,
-+				 <&gcc GCC_PCIE3_AXI_S_STICKY_ARES>,
-+				 <&gcc GCC_PCIE3_AXI_M_STICKY_ARES>,
-+				 <&gcc GCC_PCIE3_AHB_ARES>;
-+			reset-names = "pipe",
-+				      "aux",
-+				      "sticky",
-+				      "axi_m",
-+				      "axi_s",
-+				      "axi_s_sticky",
-+				      "axi_m_sticky",
-+				      "ahb";
-+			status = "disabled";
-+		};
- 	};
+ include/net/bluetooth/hci.h | 6 ++++++
+ net/bluetooth/hci_conn.c    | 4 ++++
+ net/bluetooth/hci_event.c   | 6 ++++++
+ 3 files changed, 16 insertions(+)
+
+diff --git a/include/net/bluetooth/hci.h b/include/net/bluetooth/hci.h
+index 5c12761cb..a7bc07e9c 100644
+--- a/include/net/bluetooth/hci.h
++++ b/include/net/bluetooth/hci.h
+@@ -1666,6 +1666,12 @@ struct hci_cp_le_set_event_mask {
+ 	__u8     mask[8];
+ } __packed;
  
- 	thermal-zones {
++/* BLUETOOTH CORE SPECIFICATION Version 5.4 | Vol 4, Part E
++ * 7.8.2 LE Read Buffer Size command
++ */
++#define HCI_MIN_LE_MTU 0x001b
++#define HCI_MAX_LE_MTU 0xFFFF
++
+ #define HCI_OP_LE_READ_BUFFER_SIZE	0x2002
+ struct hci_rp_le_read_buffer_size {
+ 	__u8     status;
+diff --git a/net/bluetooth/hci_conn.c b/net/bluetooth/hci_conn.c
+index 05346250f..0b86a7452 100644
+--- a/net/bluetooth/hci_conn.c
++++ b/net/bluetooth/hci_conn.c
+@@ -1277,6 +1277,10 @@ struct hci_conn *hci_connect_le(struct hci_dev *hdev, bdaddr_t *dst,
+ 		return ERR_PTR(-EOPNOTSUPP);
+ 	}
+ 
++	/* Check the mtu is valid */
++	if (hdev->le_mtu < HCI_MIN_LE_MTU || HCI_MAX_LE_MTU < hdev->le_mtu)
++		return ERR_PTR(-ECONNREFUSED);
++
+ 	/* Since the controller supports only one LE connection attempt at a
+ 	 * time, we return -EBUSY if there is any connection attempt running.
+ 	 */
+diff --git a/net/bluetooth/hci_event.c b/net/bluetooth/hci_event.c
+index 4a27e4a17..a8563cbe2 100644
+--- a/net/bluetooth/hci_event.c
++++ b/net/bluetooth/hci_event.c
+@@ -1263,6 +1263,9 @@ static u8 hci_cc_le_read_buffer_size(struct hci_dev *hdev, void *data,
+ 
+ 	BT_DBG("%s le mtu %d:%d", hdev->name, hdev->le_mtu, hdev->le_pkts);
+ 
++	if (hdev->le_mtu < HCI_MIN_LE_MTU || HCI_MAX_LE_MTU < hdev->le_mtu)
++		return HCI_ERROR_INVALID_PARAMETERS;
++
+ 	return rp->status;
+ }
+ 
+@@ -3821,6 +3824,9 @@ static u8 hci_cc_le_read_buffer_size_v2(struct hci_dev *hdev, void *data,
+ 	BT_DBG("%s acl mtu %d:%d iso mtu %d:%d", hdev->name, hdev->acl_mtu,
+ 	       hdev->acl_pkts, hdev->iso_mtu, hdev->iso_pkts);
+ 
++	if (hdev->le_mtu < HCI_MIN_LE_MTU || HCI_MAX_LE_MTU < hdev->le_mtu)
++		return HCI_ERROR_INVALID_PARAMETERS;
++
+ 	return rp->status;
+ }
+ 
 -- 
-2.40.1
+2.34.1
 
 
