@@ -1,113 +1,114 @@
-Return-Path: <linux-kernel+bounces-165637-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-165638-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7DA998B8EEB
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 19:19:09 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id DC3118B8EF0
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 19:19:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AD5961C2134A
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 17:19:08 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E21CFB215BF
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 17:19:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 900F618C1F;
-	Wed,  1 May 2024 17:19:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B88C418C38;
+	Wed,  1 May 2024 17:19:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XsAlGXHL"
-Received: from mail-pj1-f41.google.com (mail-pj1-f41.google.com [209.85.216.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HMSpGVhI"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 97DC018030;
-	Wed,  1 May 2024 17:18:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E842FDDAB;
+	Wed,  1 May 2024 17:19:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714583940; cv=none; b=hQ7eXL6KbO/PCBUv8sDNoCJ5m+M9vwYtxgQg8kRdIt4nRQNf11EbvNAvPkHI+cRo0mtAnOaHr3fn7OqZd5b9OSfnNVv2aY2N5nVuZ2kG9osYXhj0wuhoBHUiqa86MuQ8pqUwAQdjiL6mX77SzHBWSq4UbopiybiilRDwU+ZTRAk=
+	t=1714583982; cv=none; b=Y1hiCtw+VXiUPgU6Qu+S6vjMqMHHeAUWeV0tbj3EiEOLwjJHBK4cYKvdnDHRhZ4ODTOaPPvC7GOYzksnahUv1senflII4xVrc/orKH1pEpcijJfMgmSLLcgz4rXC6U+iHa7zHO9ycIN287OyIJiFRgjwIAG2HuknW8I5J8Cs07Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714583940; c=relaxed/simple;
-	bh=A4CNBvfCgBvtTve4c3x3JmtcP/T/LBzmR3wc5V/73Yc=;
+	s=arc-20240116; t=1714583982; c=relaxed/simple;
+	bh=mJpQKEtcJ3c2v8AHUID+6FduoqIlPGmY7MH+0xeYgrQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=S0TZT5c++uWrF2uIm/44WOcfnFbE6IkiYApm+f8WRsUPX7iym+v7mEoY9cOr4OVuFib2kgq0DMzmYHCMzv8t2nzdtCSgWmiKPmzq6npgDMcbcUNH/k61nJejSaoDRkts8Ue4yD4VbUaNOMTcNG6BBrmOIgWatV1fLrVb+L+Y6d0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XsAlGXHL; arc=none smtp.client-ip=209.85.216.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f41.google.com with SMTP id 98e67ed59e1d1-2ac9b225a91so5419694a91.2;
-        Wed, 01 May 2024 10:18:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714583939; x=1715188739; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=m07c5Fi/jiQW9GTxIy2Gh/ikvj0HKOu2QlszwrphLI0=;
-        b=XsAlGXHLlD0V/32kJDh2a7CBY8CnkinUAKJvM+jkq6QTy9mQk24Ia2XF3liyIAyPEt
-         kQ36w3XHJCn7Urvib/ys3WO7jgpletvo3ezoy6Wnql+8YVxZZxYm5IXgpvDK/Eo2ZGhP
-         a6wCU+vZNr3gqGcGZeBpDJgKiMOhqB6l3wdGwle1tADGdDNLlRQaCVBiTyrbMCih6048
-         dag1k9SaJc/Mp1ETFUI0y9YNRlccl/2x+MnTgsL08mV6/XOfXxNEPTl+wpkZC+fTGdbV
-         +Yw2MvabHEFAF8/Nybt06/0yV7I0Hzo3ZmqukWgE8nlhy0ArhmeSrPN75LBm2w1mpTU3
-         Japg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714583939; x=1715188739;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=m07c5Fi/jiQW9GTxIy2Gh/ikvj0HKOu2QlszwrphLI0=;
-        b=VRNIwpRNCFEyjEJvHS/7TQ0d5qlg8AAE9WgE55V1Q606pReLYcUs2ZpFm8ugxoa6yP
-         FF1JILxSx+D2X/WfFtYhE2vy1YijpnjL+bVhf0FZL/5GV3Rjn4G4e7zLIJAgHx0oskyE
-         3WIiZVmQrhU5d5cdjuzqGiS7hG0ZHwgUJANV2shhLBdOr2ilIqVBAjA733ktix2RrwhU
-         Mh9NafgcuoZBUGsUafS+reSrhtF1tvzhtjPMEYho0oiyzXOxAZ78OsPFKdRgJtlThg6C
-         E0JrVysFwVG2NhpGUF/6pvafB468InHcvwbH+gePDm7fre62+i9rEo8rkJs5xQkTXuSz
-         +kOQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWp8i/QcIdxGHaNs0ZeYFk4pzFobfThGrB7FqjMh0YB31dpOgDz860gSkwYkuhTxcZnIJ71mVZRFTD0gzlQw/AJVUai7lH9wYLJ0mKOaV8U7oytkKhPWa4rv8PtFQTRneD+RrubCtac6vVPnw==
-X-Gm-Message-State: AOJu0Ywn0pX9N4mMDz9ftrs19sGJjaJ7uDylq4r0N9hvlUgSCUur4qOZ
-	akXVw1d1k87lzlxYta/or1x6aWbBSzetRrWv33qBqNBhbn2/yh/y
-X-Google-Smtp-Source: AGHT+IEM3V8NcvdrAmWIJZjePi+DWealRmXF6lmrLSb3GFNx1agPl7w6QxPM1Kw8esx4uAxxYweJOw==
-X-Received: by 2002:a17:90b:602:b0:2b1:535f:c3dc with SMTP id gb2-20020a17090b060200b002b1535fc3dcmr3293351pjb.26.1714583938764;
-        Wed, 01 May 2024 10:18:58 -0700 (PDT)
-Received: from localhost (dhcp-141-239-159-203.hawaiiantel.net. [141.239.159.203])
-        by smtp.gmail.com with ESMTPSA id o9-20020a17090aac0900b002ad059491f6sm1572839pjq.5.2024.05.01.10.18.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 01 May 2024 10:18:58 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date: Wed, 1 May 2024 07:18:57 -1000
-From: Tejun Heo <tj@kernel.org>
-To: Kemeng Shi <shikemeng@huaweicloud.com>
-Cc: willy@infradead.org, akpm@linux-foundation.org, jack@suse.cz,
-	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 07/10] writeback: factor out wb_dirty_freerun to remove
- more repeated freerun code
-Message-ID: <ZjJ5gfIXBmpKMj9c@slm.duckdns.org>
-References: <20240429034738.138609-1-shikemeng@huaweicloud.com>
- <20240429034738.138609-8-shikemeng@huaweicloud.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=RVy/shA78FbIgIrTO0k/VH+JcuOVb2nuHdluATBXTfUVb6UyEYW6mc2/Sj5MOl5B3mTRDtHdW6ZH41PbXn6dNFo6njIJtEoiyftTi+mckeuyPH7WCN0tc8N33d7jwISN6b2wt2OZG44amj92sjWjcBMtijyp4EGbGDdDysZOxCk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HMSpGVhI; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 07A04C072AA;
+	Wed,  1 May 2024 17:19:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714583981;
+	bh=mJpQKEtcJ3c2v8AHUID+6FduoqIlPGmY7MH+0xeYgrQ=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=HMSpGVhI8L8uDLsSJJEyFBTgsakjDAs1is1XCNC2hQxzL/c3hmNjyHKnYw9L7pnNm
+	 3VrCgUo1asZ5RBoNv4kM5h9lNXbDcn//XWfzXfR8sj3XMhA6M1MgMq8QH4Gi+wWaJ5
+	 0l2lDkdkGXWlXMWPo4BAyk0qBvpH9mWWcG2UvJeygxKc85jiZz0wukD31Ex0OU/5s2
+	 gg6jbKOb2F7NJjqav6GG3wo7ox9dAtoBhAVqLdD5ZgpQImiveSIsKvm6tUjj1me2Xj
+	 npHYon9go63e2dhegSbafdb4RQwnnOedglZqjxDB5gNnJW+9JfXd8t44tI5kKN+1dT
+	 QOkkuGbs4LPzg==
+Date: Wed, 1 May 2024 18:19:34 +0100
+From: Conor Dooley <conor@kernel.org>
+To: Evan Green <evan@rivosinc.com>
+Cc: Charlie Jenkins <charlie@rivosinc.com>, Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>, Guo Ren <guoren@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+	Jernej Skrabec <jernej.skrabec@gmail.com>,
+	Samuel Holland <samuel@sholland.org>,
+	Conor Dooley <conor.dooley@microchip.com>,
+	=?iso-8859-1?Q?Cl=E9ment_L=E9ger?= <cleger@rivosinc.com>,
+	Jonathan Corbet <corbet@lwn.net>, Shuah Khan <shuah@kernel.org>,
+	linux-riscv@lists.infradead.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, Palmer Dabbelt <palmer@rivosinc.com>,
+	linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
+	linux-doc@vger.kernel.org, linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH v4 05/16] riscv: Extend cpufeature.c to detect vendor
+ extensions
+Message-ID: <20240501-flagstone-zealous-2fc722bfad39@spud>
+References: <20240426-dev-charlie-support_thead_vector_6_9-v4-0-b692f3c516ec@rivosinc.com>
+ <20240426-dev-charlie-support_thead_vector_6_9-v4-5-b692f3c516ec@rivosinc.com>
+ <CALs-HstM64Hy_=XVz=0sWQt=8j1u+bq6RhthUuD3P0E4=HyvcA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="mVgGewDsv8YXPdzq"
 Content-Disposition: inline
-In-Reply-To: <20240429034738.138609-8-shikemeng@huaweicloud.com>
+In-Reply-To: <CALs-HstM64Hy_=XVz=0sWQt=8j1u+bq6RhthUuD3P0E4=HyvcA@mail.gmail.com>
 
-On Mon, Apr 29, 2024 at 11:47:35AM +0800, Kemeng Shi wrote:
-..
-> +static void wb_dirty_freerun(struct dirty_throttle_control *dtc,
-> +			     bool strictlimit)
-> +{
-..
-> +	/*
-> +	 * LOCAL_THROTTLE tasks must not be throttled when below the per-wb
-> +	 * freerun ceiling.
-> +	 */
-> +	if (!(current->flags & PF_LOCAL_THROTTLE))
-> +		return;
 
-Shouldn't this set free_run to true?
+--mVgGewDsv8YXPdzq
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Also, wouldn't it be better if these functions return bool instead of
-recording the result in dtc->freerun?
+On Wed, May 01, 2024 at 09:44:15AM -0700, Evan Green wrote:
+> On Fri, Apr 26, 2024 at 2:29=E2=80=AFPM Charlie Jenkins <charlie@rivosinc=
+=2Ecom> wrote:
 
-Thanks.
+> > +struct riscv_isa_vendor_ext_data_list {
+> > +       const struct riscv_isa_ext_data *ext_data;
+> > +       struct riscv_isainfo *per_hart_vendor_bitmap;
+> > +       unsigned long *vendor_bitmap;
+>=20
+> It took a lot of digging for me to understand this was the set of
+> vendor extensions supported on all harts. Can we add that to the name,
+> maybe something like isa_bitmap_all_harts? (I wonder if we could drop
+> the vendor part of the name since we already know we're in a
+> vendor_ext_data_list structure).
 
--- 
-tejun
+Reading this made me wonder, why is the all-hart bitmap an unsigned long
+when the per hart one is a riscv_isainfo struct?
+
+--mVgGewDsv8YXPdzq
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZjJ5pgAKCRB4tDGHoIJi
+0mvKAQDZ/PuqkdmAAHeDEhcfzV4GeMOwujPT7ib0jWzVFEvmMAEAhdzNdXJHw+cT
+qfdruwRE1FLdK0IBpLEhnxWwE/OVvgc=
+=uVOz
+-----END PGP SIGNATURE-----
+
+--mVgGewDsv8YXPdzq--
 
