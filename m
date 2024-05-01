@@ -1,131 +1,105 @@
-Return-Path: <linux-kernel+bounces-165497-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-165500-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BC2A38B8D44
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 17:37:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8F2B48B8D50
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 17:38:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EB6CE1C215C8
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 15:37:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C05FA1C20C47
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 15:38:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B71812FB18;
-	Wed,  1 May 2024 15:36:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B473E12FB1E;
+	Wed,  1 May 2024 15:38:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UsYOGQX/"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="arNoMv24"
+Received: from mout.web.de (mout.web.de [212.227.17.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 85F0212F59D;
-	Wed,  1 May 2024 15:36:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9BBE4C2FD;
+	Wed,  1 May 2024 15:38:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714577808; cv=none; b=SJA2Izqbfga6KAIxZlBAIhvLvxqAZK9Avvl5Wl68eUilu7Xt31QtRmAoXog2rCVTYra23NXbJNJQ4KJpCady4AYbTfNU/uEz8amVwhLIONy01z9wezCNLYQxgtJz4A6Vqpxu197gyU4D+w7B3d7ErtAntKpev75JmJ7nO1wnf7M=
+	t=1714577900; cv=none; b=Yr1jSX7GnWxHHX4R0NfEbqjckl39bbuahUCE8uOGDbbUwm6KyqUAgVdN6I+bkjt2416erdZpuquuuQRXfnBfr/kXDoLLIXrWpJXNyn8JcVODy4zFXCD36tl4y2KDwHiZCV4XjN3L2Aq6IYCXeZGHBGlQ+MEsmKvepG9i5ygBVu8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714577808; c=relaxed/simple;
-	bh=H43Z4wgbneQvtO9lOey4SVLIXIEEJWVeRwaZ4YWCu7A=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=klq3fpObB5q605Bj80K14LA8pIDjzutgy9zheKs/AU54cfqYzvdo9HYFNLv54W9C2PMDhGOJPNbOdsuwq4GRPjjIea5ilDoU5JjjVwgURDgR59OSW4Rs79bUiWZJ/1BPCS+jlLfGDVsU6m7YcI3JwYffW0N9wRwmRojxbx+yOR4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UsYOGQX/; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4F879C072AA;
-	Wed,  1 May 2024 15:36:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714577808;
-	bh=H43Z4wgbneQvtO9lOey4SVLIXIEEJWVeRwaZ4YWCu7A=;
-	h=From:To:Cc:Subject:Date:From;
-	b=UsYOGQX/t6MdBD4L55qbAiRXgRV0yCJL0PcNAH1ykns2kVT6+aiGrDVNTioib50qO
-	 fVuMzecaVmfudYZ8y/t696yAT9dEdBpGPbjSaGMGWU/wel/omYY6a/lGruZci9DqmS
-	 /bUmpsqdbdWbAHpdI4cM+rFHTaVtiLAbUvbR7sOfUtbsZUh0/aSQdMZhmDDYRWzqqQ
-	 VPkgWo2xyKeyfHiC3FjG0rL3SEwDLNS+4pteQEcEKYJiUADzefGYAiKJC3bvH63z1r
-	 3bOHEjsY6Ee5t49S7R26BatI1lgqu0ROEiT4tdEVg/+25F8k1RSFwuO+J8fJyAf3hT
-	 QPSp6tOzank6Q==
-From: Conor Dooley <conor@kernel.org>
-To: linux-riscv@lists.infradead.org
-Cc: conor@kernel.org,
-	Conor Dooley <conor.dooley@microchip.com>,
-	Daire McNamara <daire.mcnamara@microchip.com>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] riscv: dts: microchip: add pac1934 power-monitor to icicle
-Date: Wed,  1 May 2024 16:36:31 +0100
-Message-ID: <20240501-spearman-primary-17df3c21c770@spud>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1714577900; c=relaxed/simple;
+	bh=eDoeRon2FNe588ZUGUZc3+AJ6puekYfMV5lxqbbJ3gE=;
+	h=Message-ID:Date:MIME-Version:To:Cc:References:Subject:From:
+	 In-Reply-To:Content-Type; b=qHuBJhCAeslGsOsR977u9ifMK/P0gyVP0R+yG6iHRupG9w7SLRO4FDwb7fosyslU+O6ZR0xA0dplH2rhBosq/XmNnDKxR8NzJUXPyzRVMZEad9KOMkXjEx+S5rAChcNudR5JA/hidp72DWbYuizA32p+v+PTZkW6ItFeN5Q3rbE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=arNoMv24; arc=none smtp.client-ip=212.227.17.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=web.de;
+	s=s29768273; t=1714577820; x=1715182620; i=markus.elfring@web.de;
+	bh=eDoeRon2FNe588ZUGUZc3+AJ6puekYfMV5lxqbbJ3gE=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:To:Cc:References:
+	 Subject:From:In-Reply-To:Content-Type:Content-Transfer-Encoding:
+	 cc:content-transfer-encoding:content-type:date:from:message-id:
+	 mime-version:reply-to:subject:to;
+	b=arNoMv246RrlBebVKPsArQ2tTWPM3YvFF/URq94nk+24URwTNiIDjTRwrM4kRD9j
+	 KJj9LQDUTzvR6cbeRlOQSVxs3+tNtP9TTAMDi/IzkgfKLiIAXx4/RPDvohGIHEPlF
+	 1spumDATTDeKTIrhZkZ28IrT8DTMeCyJOQiSLZWLNkN4a7RtN/NdXCkYq80LQynGc
+	 IOrvRfBLodljkRNVjEZljVUGVwBv0mJxtJUD9N8LDZGR+PMhHUxT8Shesf43/Q3/q
+	 I2/daoFcaA/JtU1MlJ3ap+w4IVXCMY0B4KrUH8JROXRpDUwfNmjM4c/d0jqRYL2We
+	 OuF/dizoGo0wzUZ1aA==
+X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
+Received: from [192.168.178.21] ([94.31.85.95]) by smtp.web.de (mrweb105
+ [213.165.67.124]) with ESMTPSA (Nemesis) id 1MS17h-1sCp9M3Yrb-00U3Xg; Wed, 01
+ May 2024 17:36:59 +0200
+Message-ID: <1cdce712-f007-495b-80ef-0efe67dd5e20@web.de>
+Date: Wed, 1 May 2024 17:36:54 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1690; i=conor.dooley@microchip.com; h=from:subject:message-id; bh=FR3O438NmrY2UU2Fa9xj9X2SWoXZf7FrPgh3S7n8dV4=; b=owGbwMvMwCFWscWwfUFT0iXG02pJDGlGifUKzt45m0oaa5d41NdWVy8Mez3HUb3t6cwZywV9E hcqODB0lLIwiHEwyIopsiTe7muRWv/HZYdzz1uYOaxMIEMYuDgFYCIh0xn+mQrefiVZOiMkf9aE zSHevarTsgryiss2FzedmfU4pTpvBiPDt1/c3M9cc68WaAQYzvsoX/i+JfxTrGP6g97jhySOXlL lAwA=
-X-Developer-Key: i=conor.dooley@microchip.com; a=openpgp; fpr=F9ECA03CF54F12CD01F1655722E2C55B37CF380C
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+To: Usama Arif <usamaarif642@gmail.com>, linux-mm@kvack.org,
+ cgroups@vger.kernel.org, linux-kselftest@vger.kernel.org,
+ kernel-janitors@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>
+Cc: LKML <linux-kernel@vger.kernel.org>, kernel-team@meta.com,
+ Chengming Zhou <chengming.zhou@linux.dev>,
+ Johannes Weiner <hannes@cmpxchg.org>, Nhat Pham <nphamcs@gmail.com>,
+ Shuah Khan <shuah@kernel.org>, Tejun Heo <tj@kernel.org>,
+ Yosry Ahmed <yosryahmed@google.com>, Zefan Li <lizefan.x@bytedance.com>
+References: <20240501100620.1461685-1-usamaarif642@gmail.com>
+Subject: Re: [PATCH] selftests: cgroup: remove redundant addition of memory
+ controller
+Content-Language: en-GB
+From: Markus Elfring <Markus.Elfring@web.de>
+In-Reply-To: <20240501100620.1461685-1-usamaarif642@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:V37OePDYSXHrrNlgIy/91VHaZf4oW15rKVNXlr0apLkPnPgkYvj
+ QVG0wyXvdoM0h6ld1A848+F4MW34V7/OMLkhLq4t1w4S9Pkrhgk9SDkmePtrNe02qzCN2+3
+ c71O9PYKCuBiE6dacslGkPT1tMrTBKbrerG2rS6Fdyn6viqfl4PHjbFVJjZfNU0ytUy4vsy
+ xzi5BouNuUXv8e66Bu+yA==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:kH699/Ne5mE=;WP0scAqvZ/5b5l0T3EdGVB0lKEt
+ JDPTry589asK0ZpypIUQdoLm2ejtlhOcekQzTJJxPyYZs40l9muiY1bC1UMCEfxHCcl7MzLT8
+ zmcZm16mnYhpo6jZIp8PvgDCuPDMt/HdonGgw1XuF0A5C58W2wmyBMQY8NnuDCFOE8alpLf2C
+ MZACMjJT2fdw+mbIdi7FeWSOrgIKUryMMqVNAD+1GsQrjsw/jKBllCyx9MRZ3yDOCsPFXTJy1
+ kKK0zfgSsMoKSIEamcbcD8Ke4CbiT7Ls6WpHFBblaZo8wp7BCcOLLC6SGj4uNHSMT7nMc1yfw
+ ytlvrIbEOxp9m09u+PVuK834KlRayVJp9ARXiXP1929AbICWTvWEhCkKMM8dCYF/Ixr3/l67D
+ CXoWJYE2+UO8h6pvQ7RvsjLLgkN5VuEvW796SQXu81SkMWVvxsIkqtSTja3NB331zgxYZRwlz
+ qa42mJUWgW0+2emKkYNIO4DYUCzyZ6MQJV7GbOOVgjt9+hM4qXb6jDpSHTqBeBO+oN6Uq3qne
+ mSL2SKlALeQlpGuiawl0k2tj8dIEBmbs7UTRdRHjdIji5rmFPltTxi+H3i9cYfgbg9X3aJvcg
+ CoJXyKj4iVvBLbg1OPX+3UJxVUZqtV86x3Bmijadhq8GDzRvyQo50JAL1pQfjoYqoBKW0Dxfy
+ CqSlulvB2/liu+XHnD4iCtQpHwvWv5hYCIFMyNfESSM5UYtTngdp1XEvuZ29T2ODUb8lXVrTy
+ 1TtRnUMzSHTYt5oLAnBEavJkgLl+LapqwMxVuvi15sgWk4MDGXeAQlpIBnBfvbr/oK01Hdi41
+ dI8WGg0SRL6OcFl+fMSjMauPU60UbfSFtaWfIuvNWpZeY=
 
-From: Conor Dooley <conor.dooley@microchip.com>
+> This is already done in main.
 
-The binding for this landed in v6.9, add the description. In the
-off-chance that there were people carrying local patches for this based
-on the driver shipped on the Microchip website (or vendor kernel) both
-the binding and sysfs filenames changed during upstreaming.
+Please improve this change description.
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Do=
+cumentation/process/submitting-patches.rst?h=3Dv6.9-rc6#n45
 
-Signed-off-by: Conor Dooley <conor.dooley@microchip.com>
----
-CC: Conor Dooley <conor.dooley@microchip.com>
-CC: Daire McNamara <daire.mcnamara@microchip.com>
-CC: Rob Herring <robh@kernel.org>
-CC: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
-CC: linux-riscv@lists.infradead.org
-CC: devicetree@vger.kernel.org
-CC: linux-kernel@vger.kernel.org
----
- .../boot/dts/microchip/mpfs-icicle-kit.dts    | 32 +++++++++++++++++++
- 1 file changed, 32 insertions(+)
+Will the tag =E2=80=9CFixes=E2=80=9D become relevant here (besides an impe=
+rative wording)?
 
-diff --git a/arch/riscv/boot/dts/microchip/mpfs-icicle-kit.dts b/arch/riscv/boot/dts/microchip/mpfs-icicle-kit.dts
-index 222a39d90f85..f80df225f72b 100644
---- a/arch/riscv/boot/dts/microchip/mpfs-icicle-kit.dts
-+++ b/arch/riscv/boot/dts/microchip/mpfs-icicle-kit.dts
-@@ -100,6 +100,38 @@ &i2c0 {
- 
- &i2c1 {
- 	status = "okay";
-+
-+	power-monitor@10 {
-+		compatible = "microchip,pac1934";
-+		reg = <0x10>;
-+
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+
-+		channel@1 {
-+			reg = <0x1>;
-+			shunt-resistor-micro-ohms = <10000>;
-+			label = "VDDREG";
-+		};
-+
-+		channel@2 {
-+			reg = <0x2>;
-+			shunt-resistor-micro-ohms = <10000>;
-+			label = "VDDA25";
-+		};
-+
-+		channel@3 {
-+			reg = <0x3>;
-+			shunt-resistor-micro-ohms = <10000>;
-+			label = "VDD25";
-+		};
-+
-+		channel@4 {
-+			reg = <0x4>;
-+			shunt-resistor-micro-ohms = <10000>;
-+			label = "VDDA_REG";
-+		};
-+	};
- };
- 
- &i2c2 {
--- 
-2.43.0
-
+Regards,
+Markus
 
