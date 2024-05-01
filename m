@@ -1,154 +1,102 @@
-Return-Path: <linux-kernel+bounces-165345-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-165350-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 734218B8B91
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 15:59:33 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 722D18B8B98
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 16:01:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2FEC42836C1
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 13:59:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A2FC31C210D5
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 14:01:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BDABA12F37B;
-	Wed,  1 May 2024 13:59:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 495BB12EBE6;
+	Wed,  1 May 2024 14:00:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sCbrUaES"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="YRiDdFzy"
+Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC09212C490;
-	Wed,  1 May 2024 13:59:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE42B433D4
+	for <linux-kernel@vger.kernel.org>; Wed,  1 May 2024 14:00:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714571957; cv=none; b=J3nv4JNhCH3zr/s7JdeCsI2Z5LuWf1arbxDg7Qyw7WRs8NW/s+Ms+ZHv1rgylDWWOPIEg7X1kQ0Ich2HQzQ+nboY35WZXfcQc7sKgsxTfa8x/5sXx2f+pVpQnKr9XRTaacybTZNig9nm+QFiRTEg5LGAeJjQFINFafgtD1bON2E=
+	t=1714572056; cv=none; b=BtZWklhnXO1ObasnjVyG9/QvN2QHY4lZ6VqGJITjxiyIhYmaOVIprXKsqcLOEWeMm1Hvjz8Q640SJAQ+4X1mLt0UxP+s/qton/AtQTHMSOilNjfby54Ff836wDnIqVu2UT+amqz4xvD8Usb1mWByvyogpiAjYOArHe2LczAnzkg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714571957; c=relaxed/simple;
-	bh=Fi4PvMRZrF9DXNpSOwwia/BblzTiRO6iyf1z/eVq1XU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=NbchjvG3iRoD7tZsVbSHBC2VDA1pFY2cj3SWAp5gw7+QlIJJAkkhCxOyXperwsUU5+WmLLsJDxONdC8ykFbY6y9qB9qCS+FG6ugqs8QH6pC8ieafJ/cFNzvbEp2j2Hhzi3kO26lzjrgh3dVTN/naxrWwGNw4DCa+GCEq30m/AXM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sCbrUaES; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5B3C7C072AA;
-	Wed,  1 May 2024 13:59:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714571956;
-	bh=Fi4PvMRZrF9DXNpSOwwia/BblzTiRO6iyf1z/eVq1XU=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=sCbrUaESax+zNwmTNdY7otL0UFOQLPT1tCLvxhS1E2UCWFKHW4CFOG8eHXGAPEzYV
-	 K59HSeGnESqWuVyypeDsfjxCGIwlrkTiIB8RtlSIeODJISpG+bjrjqgUZTNnVYoXFo
-	 0nAjOD3kay/wsGxmwOPaAc5VD0eUhuiBlauj3Z2WQisvO7reiDxOn7qiXguQyswbXz
-	 eGzZQLUgdh76hRrtTEFJVQdEHnMA2UjgtwHVl2z9L4Tsb3ZTSE/wBE57PdTiTs8Ocp
-	 FhNUI+PSuIOyAwwjpVUsbAi1uNR+QWMI+7HqtFjSwPStPFYwbkZKYGKHcbZk0YZOQW
-	 CZlqUKG4oenXA==
-Message-ID: <779b9542-4170-483a-af54-ca0dd471f774@kernel.org>
-Date: Wed, 1 May 2024 15:58:59 +0200
+	s=arc-20240116; t=1714572056; c=relaxed/simple;
+	bh=rdAIHRb5K1bT7Od1HyC3wAX9P/OYSoTvMRkvbnnLFZc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=m7eM2D5U1R07qkXzCbqR99k4td+mv4qB9kf1DOQzbyvcX2S28pPD43iQeofH8D45OkzncwS+uvQqE8uIJMNL9FeJUHLArj33Aa3CaU/d3jqUZ9Ezh4ie7UlisQMH9Zj2jI5Exnwe7gcRg8WLvinT+2cIP/4xEQ2SkgY4kzVXfss=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=YRiDdFzy; arc=none smtp.client-ip=209.85.128.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-41a1d2a7b81so4390105e9.0
+        for <linux-kernel@vger.kernel.org>; Wed, 01 May 2024 07:00:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1714572053; x=1715176853; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=ce2ghPDIUabAJ7BTjIQdi05k+ciDOHn/xruVAQep5Rs=;
+        b=YRiDdFzyvXbRV0lWN+NP62wNgE4BdxE+QIFhuCQTLEukyMUZ2wyv1sH6b5MWgSKskB
+         KbhAHHktWIw9YMf6r18tDfuc+iEr8k1KL6q+kJdqXY3FoCezaRB/s5CD/3ZPOPKxtBsS
+         OXGIAjue0HqIGq8jOhQH0c04n2gCa2EGGvBllqjR63By+i1RVGxDkH/SJPf4x+2RQiGQ
+         VCsauKVylD5wTqRMyTGMw3uMIO4HtPMPrELfyIZzekjQyMWS3lZK7BUBOY8WPfyKcjT9
+         nFvPct2v/etEMdW/7PyY81J4Y44K/MOScqM3FemJKwvV4U5Bvgak7XD+LZZNd1Pm8bRh
+         U0mQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714572053; x=1715176853;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ce2ghPDIUabAJ7BTjIQdi05k+ciDOHn/xruVAQep5Rs=;
+        b=ihRIwEMu5GLBX4lehy42dUqTeXzNDe050cTnRop3ovbX66lw9Sj7aiTIQg2aIZbgO6
+         TUY+miHrvQ/PV08+vcTWy2Gdg/hK976afwR+Ye3oLKyunTzqrV/PkU2oW1k0m2h4HMWm
+         7nGX+fJDhUysF+efMBuNTVYxt783U1qqzffLEkjhPOX6xeYSqEHhrVeIi4k7dIxwitgh
+         g8ffRSyRkMZgACKNWxiWaFKWRYwtbmvuytAH0rmEz3Ze0U9MdTkpRj86xiMpbzPmIw0j
+         9Oct8fG1QzseVknhS+Dvd3C97429fXI+KUkL8/LOtt3Nk8NKZco6Mu5RoPScJMj2k8C2
+         4ZKA==
+X-Forwarded-Encrypted: i=1; AJvYcCUFj80sbEh6uXjLFmM1RB5qsi1+1BBpjKrpQGMGB4VKmfoqb9uYrE3Wpfhx14USxcrHA50W0M63N0jy8BG9Y9cF5ZiptfJjz0O5DNf7
+X-Gm-Message-State: AOJu0YyaqhDt6+AiDVFnpUhiW4ZBLD3VbQB+5CWzlMy+3g4VgUWkLHIu
+	0yJ/wF5gkxdlPHt/WxawTbqmD1zPGmdBK7N0GkCivKlwD44aVrlk2g2oaoxF9lKLLW8pQBdij/T
+	4
+X-Google-Smtp-Source: AGHT+IEhJeHYMc24dikdGnQsg7CdYY79Z3xZ0Or5bhU4+pyqRK8XrrawQDghDkZ/w6GQsTHKEF5j4w==
+X-Received: by 2002:a05:600c:4e8e:b0:41c:2334:fffd with SMTP id f14-20020a05600c4e8e00b0041c2334fffdmr2398224wmq.9.1714572053033;
+        Wed, 01 May 2024 07:00:53 -0700 (PDT)
+Received: from localhost ([102.222.70.76])
+        by smtp.gmail.com with ESMTPSA id bg4-20020a05600c3c8400b0041bf29ab003sm2313844wmb.30.2024.05.01.07.00.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 01 May 2024 07:00:52 -0700 (PDT)
+Date: Wed, 1 May 2024 17:00:44 +0300
+From: Dan Carpenter <dan.carpenter@linaro.org>
+To: Shahar Avidar <ikobh7@gmail.com>
+Cc: gregkh@linuxfoundation.org, hverkuil-cisco@xs4all.nl,
+	andriy.shevchenko@linux.intel.com, robh@kernel.org,
+	felixkimbu1@gmail.com, krzysztof.kozlowski@linaro.org,
+	linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] staging: pi433: Use class_create instead of
+ class_register.
+Message-ID: <cc00ea68-0ec9-40af-a147-e8f67f7f29d0@moroto.mountain>
+References: <20240501055820.603272-1-ikobh7@gmail.com>
+ <20240501055820.603272-2-ikobh7@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH net-next v8 07/14] page_pool: devmem support
-To: Jens Axboe <axboe@kernel.dk>, Mina Almasry <almasrymina@google.com>
-Cc: David Wei <dw@davidwei.uk>, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
- linux-alpha@vger.kernel.org, linux-mips@vger.kernel.org,
- linux-parisc@vger.kernel.org, sparclinux@vger.kernel.org,
- linux-trace-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
- bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
- linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- Jonathan Corbet <corbet@lwn.net>,
- Richard Henderson <richard.henderson@linaro.org>,
- Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner
- <mattst88@gmail.com>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
- "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
- Helge Deller <deller@gmx.de>, Andreas Larsson <andreas@gaisler.com>,
- Ilias Apalodimas <ilias.apalodimas@linaro.org>,
- Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu
- <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Arnd Bergmann <arnd@arndb.de>, Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
- Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman
- <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
- Yonghong Song <yonghong.song@linux.dev>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, Steffen Klassert
- <steffen.klassert@secunet.com>, Herbert Xu <herbert@gondor.apana.org.au>,
- David Ahern <dsahern@kernel.org>,
- Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
- Shuah Khan <shuah@kernel.org>, Sumit Semwal <sumit.semwal@linaro.org>,
- =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
- Amritha Nambiar <amritha.nambiar@intel.com>,
- Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
- Alexander Mikhalitsyn <alexander@mihalicyn.com>,
- Kaiyuan Zhang <kaiyuanz@google.com>, Christian Brauner <brauner@kernel.org>,
- Simon Horman <horms@kernel.org>, David Howells <dhowells@redhat.com>,
- Florian Westphal <fw@strlen.de>, Yunsheng Lin <linyunsheng@huawei.com>,
- Kuniyuki Iwashima <kuniyu@amazon.com>,
- Arseniy Krasnov <avkrasnov@salutedevices.com>,
- Aleksander Lobakin <aleksander.lobakin@intel.com>,
- Michael Lass <bevan@bi-co.net>, Jiri Pirko <jiri@resnulli.us>,
- Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
- Lorenzo Bianconi <lorenzo@kernel.org>,
- Richard Gobert <richardbgobert@gmail.com>,
- Sridhar Samudrala <sridhar.samudrala@intel.com>,
- Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
- Johannes Berg <johannes.berg@intel.com>, Abel Wu <wuyun.abel@bytedance.com>,
- Breno Leitao <leitao@debian.org>, Pavel Begunkov <asml.silence@gmail.com>,
- Jason Gunthorpe <jgg@ziepe.ca>, Shailend Chand <shailend@google.com>,
- Harshitha Ramamurthy <hramamurthy@google.com>,
- Shakeel Butt <shakeel.butt@linux.dev>, Jeroen de Borst
- <jeroendb@google.com>, Praveen Kaligineedi <pkaligineedi@google.com>,
- linux-mm@kvack.org, Matthew Wilcox <willy@infradead.org>
-References: <20240403002053.2376017-1-almasrymina@google.com>
- <20240403002053.2376017-8-almasrymina@google.com>
- <8357256a-f0e9-4640-8fec-23341fc607db@davidwei.uk>
- <CAHS8izPeYryoLdCAQdGQU-wn7YVdtuofVKNvRFjFjhqTDsT7zA@mail.gmail.com>
- <aafbbf09-a33d-4e73-99c8-9ddab5910657@kernel.dk>
- <CAHS8izMKLYATo6g3xkj_thFo3whCfq6LSoex5s0m5XZd-U7SVQ@mail.gmail.com>
- <11f52113-7b67-4b45-ba1d-29b070050cec@kernel.dk>
-Content-Language: en-US
-From: Jesper Dangaard Brouer <hawk@kernel.org>
-In-Reply-To: <11f52113-7b67-4b45-ba1d-29b070050cec@kernel.dk>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240501055820.603272-2-ikobh7@gmail.com>
 
+On Wed, May 01, 2024 at 08:58:19AM +0300, Shahar Avidar wrote:
+> Make use of a higher level API.
+> Reduce global memory allocation from struct class to pointer size.
 
+Doesn't this move the memory in the opposite direction from what we
+want?  Originally, it's static const.  Isn't that the simplest best
+kind of memory?
 
-On 30/04/2024 20.55, Jens Axboe wrote:
-> On 4/30/24 12:29 PM, Mina Almasry wrote:
->> On Tue, Apr 30, 2024 at 6:46?AM Jens Axboe<axboe@kernel.dk>  wrote:
-[...]
->>> In general, attempting to hide overhead behind config options is always
->>> a losing proposition. It merely serves to say "look, if these things
->>> aren't enabled, the overhead isn't there", while distros blindly enable
->>> pretty much everything and then you're back where you started.
->>>
->> The history there is that this check adds 1 cycle regression to the
->> page_pool fast path benchmark. The regression last I measured is 8->9
->> cycles, so in % wise it's a quite significant 12.5% (more details in
->> the cover letter[1]). I doubt I can do much better than that to be
->> honest.
->
-> I'm all for cycle counting, and do it myself too, but is that even
-> measurable in anything that isn't a super targeted microbenchmark? Or
-> even in that?
+regards,
+dan carpenter
 
-The reason for page_pool fast path being critical is that it is used for 
-the XDP_DROP use-case.
-E.g on Mellanox mlx5 driver we see 24 Mpps XDP_DROP, which is approx 42 
-nanosec per packet. Adding 9 nanosec will reduce this to 19.6 Mpps.
-
-   1/(42+9)*10^9 = 19607843
-
---Jesper
-
-p.s. Upstreaming my PP microbenchmark[1] is still at the bottom of my 
-todo-list.
-  [1] 
-https://github.com/netoptimizer/prototype-kernel/blob/master/kernel/lib/bench_page_pool_simple.c
 
