@@ -1,115 +1,120 @@
-Return-Path: <linux-kernel+bounces-165207-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-165206-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AD2638B8980
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 13:56:26 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F113B8B897E
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 13:56:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E157CB22447
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 11:56:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2DBD21C216CE
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 11:56:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B615884D26;
-	Wed,  1 May 2024 11:56:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85CA082498;
+	Wed,  1 May 2024 11:56:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="Q2CXlT7z"
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
+	dkim=pass (1024-bit key) header.d=inria.fr header.i=@inria.fr header.b="tXgRllry"
+Received: from mail3-relais-sop.national.inria.fr (mail3-relais-sop.national.inria.fr [192.134.164.104])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A375C81AD2;
-	Wed,  1 May 2024 11:56:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.167.242.64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6BC617C082
+	for <linux-kernel@vger.kernel.org>; Wed,  1 May 2024 11:56:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.134.164.104
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714564570; cv=none; b=oBO+Vkk6KWH6A183wblgzfuQxIJ8nw+7obW63DvD98qdguSelqkh1MXC6uK/GOSRQMF2scEHCs4yWVUhbstvmklFzgCq8dV1PUiLdzYbo6/0r8uBboBci3g7oCmp/0754GT44xSOomct6wZ658To1vdkvPmmQMlX3t6ANVMehag=
+	t=1714564568; cv=none; b=j8K86Jg/gg4yAISJC5w2gvIJUs5sesJ973p5cO6ZXaGIsb4hiJNZrVMG65TL/zJ/GDdOTyiih3PAGgcqZGfTDTHETKkpyUxZhh2L+1XlZfYZmpbEmHMTUOnhjiZGINnCRyT2chhHGtofg+J8H2eTvkz/UIa55x6dHYr/VIOj99E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714564570; c=relaxed/simple;
-	bh=NZgG/mC5HNHBoFa+cWXwBNRptuAUKGFzgt4fxdRtnFU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=jFYj4cTwYDFqPkGAMMkw5GZvxVNo3Hde/4Jd36M7O7/dldPVedoxp5qW6NgEcs7+wvuuF2wHPU6/kPWH0bdx2gysCEA259TgnGVPi3sEIZbDA9eC2/FMVi6o0XWiIEBcHpwIyOdm5jLInFs7vcHzatMw0tStEjCRMGcOzS0B9bg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=Q2CXlT7z; arc=none smtp.client-ip=213.167.242.64
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
-Received: from pendragon.ideasonboard.com (85-76-79-44-nat.elisa-mobile.fi [85.76.79.44])
-	by perceval.ideasonboard.com (Postfix) with ESMTPSA id 1DD16524;
-	Wed,  1 May 2024 13:55:09 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-	s=mail; t=1714564510;
-	bh=NZgG/mC5HNHBoFa+cWXwBNRptuAUKGFzgt4fxdRtnFU=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Q2CXlT7z9+BcP/SbIYt6w8DTo8XU4P9Ijv8Qwi9lcvqx1NZnoJAoNTss3nYU641Vi
-	 wNrcxPRupc6Re2yGYBxOSv6bg1u0n6KLgRP1dM9zm0NTcTdG4FpFgPudzrhpzp9Pox
-	 UUZb520ra7D6Y2nKrJknkI59/WNcPNdoNBSkypO8=
-Date: Wed, 1 May 2024 14:55:59 +0300
-From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
-Cc: linux-media@vger.kernel.org,
-	Florian Fainelli <florian.fainelli@broadcom.com>,
-	Ray Jui <rjui@broadcom.com>, Scott Branden <sbranden@broadcom.com>,
-	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>,
-	Naushir Patuck <naush@raspberrypi.com>,
-	Dave Stevenson <dave.stevenson@raspberrypi.com>,
-	Sakari Ailus <sakari.ailus@linux.intel.com>,
-	linux-rpi-kernel@lists.infradead.org,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] media: bcm2835-unicam: Include v4l2-subdev.h
-Message-ID: <20240501115559.GI17852@pendragon.ideasonboard.com>
-References: <20240430213146.23187-1-laurent.pinchart@ideasonboard.com>
- <20240430213633.23767-1-laurent.pinchart@ideasonboard.com>
- <20240430213633.23767-2-laurent.pinchart@ideasonboard.com>
- <CAPybu_2xjWg8sUW9jk7n1UXLTsoGXfftxVqLaZcWzn+ZcCRhOg@mail.gmail.com>
- <20240501114715.GG17852@pendragon.ideasonboard.com>
+	s=arc-20240116; t=1714564568; c=relaxed/simple;
+	bh=cKNzn1s8a9SYJT2nlDlwGGXNLaZCx/FBbDmlKkWkTPQ=;
+	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=pj/7K+n4Ara3OyIf/pThNgh/7Art9FXoZ+p5Q2dIO4ZUJwTyY9W89dQX88sTCLjHi+rD5HZCfRRhSTFwLE/en2d5IGx9kQN6asiSjSMvXFLnqfZE1i5kitwfE6sudnwA8HD4XSu2B+UnGC0U9ftioqknHdpNVPEAdaJw/o/n8ak=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=inria.fr; spf=pass smtp.mailfrom=inria.fr; dkim=pass (1024-bit key) header.d=inria.fr header.i=@inria.fr header.b=tXgRllry; arc=none smtp.client-ip=192.134.164.104
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=inria.fr
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=inria.fr
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=inria.fr; s=dc;
+  h=date:from:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=ES8+uZdQuIC4h4krwNG6xP2GbtVLZjjoE+7amz2RWV0=;
+  b=tXgRllryf0zp5PUoUzlw0YxI+D+l8E6hj+nEvqVYM3FoREdjfxL8QdiM
+   +SG9o3p9Uk/OUZi4Q56Wgqc7YQ3eXvXUcvWgGE1JQJZ9uV4TkJCp2y6IE
+   bbpy7qHHLy9aGPWNF/SyvKI3caC1MlcGRnepHqKwI4YGuWSRZKC31Kp9I
+   8=;
+Authentication-Results: mail3-relais-sop.national.inria.fr; dkim=none (message not signed) header.i=none; spf=SoftFail smtp.mailfrom=julia.lawall@inria.fr; dmarc=fail (p=none dis=none) d=inria.fr
+X-IronPort-AV: E=Sophos;i="6.07,245,1708383600"; 
+   d="scan'208";a="86149003"
+Received: from 231.85.89.92.rev.sfr.net (HELO hadrien) ([92.89.85.231])
+  by mail3-relais-sop.national.inria.fr with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 May 2024 13:56:01 +0200
+Date: Wed, 1 May 2024 13:56:00 +0200 (CEST)
+From: Julia Lawall <julia.lawall@inria.fr>
+X-X-Sender: jll@hadrien
+To: Sudeep Holla <sudeep.holla@arm.com>
+cc: Vincenzo Mezzela <vincenzo.mezzela@gmail.com>, gregkh@linuxfoundation.org, 
+    javier.carrasco.cruz@gmail.com, julia.lawall@inria.fr, 
+    linux-kernel@vger.kernel.org, rafael@kernel.org, skhan@linuxfoundation.org
+Subject: Re: [PATCH 2/2 v3] drivers: use __free attribute instead of
+ of_node_put()
+In-Reply-To: <ZjIivZOzGCNNG5QE@bogus>
+Message-ID: <alpine.DEB.2.22.394.2405011355430.3278@hadrien>
+References: <20240424125401.oxvt5n64d7a57ge3@bogus> <20240501094313.407820-1-vincenzo.mezzela@gmail.com> <20240501094313.407820-3-vincenzo.mezzela@gmail.com> <ZjIivZOzGCNNG5QE@bogus>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240501114715.GG17852@pendragon.ideasonboard.com>
+Content-Type: text/plain; charset=US-ASCII
 
-On Wed, May 01, 2024 at 02:47:15PM +0300, Laurent Pinchart wrote:
-> On Wed, May 01, 2024 at 01:07:29PM +0200, Ricardo Ribalda Delgado wrote:
-> > Hi Laurent
-> > 
-> > I have to send a v2 of
-> > https://patchwork.linuxtv.org/project/linux-media/list/?series=12759 I
-> > can include this patch in that set if you want
-> 
-> Fine with me.
 
-Assuming your v2 will be merged in v6.10.
 
-> > On Tue, Apr 30, 2024 at 11:39 PM Laurent Pinchart wrote:
-> > >
-> > > The unicam driver uses the v4l2_subdev structure. Include the
-> > > corresponding header instead of relying on indirect includes.
-> > >
-> > > Signed-off-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-> > > Reported-by: kernel test robot <lkp@intel.com>
-> > Reviewed-by: Ricardo Ribalda <ribalda@chromium.org>
-> > > Closes: https://lore.kernel.org/oe-kbuild-all/202404302324.8aTC84kE-lkp@intel.com/
-> > > ---
-> > >  drivers/media/platform/broadcom/bcm2835-unicam.c | 1 +
-> > >  1 file changed, 1 insertion(+)
-> > >
-> > > diff --git a/drivers/media/platform/broadcom/bcm2835-unicam.c b/drivers/media/platform/broadcom/bcm2835-unicam.c
-> > > index c590e26fe2cf..3c7878d8d79b 100644
-> > > --- a/drivers/media/platform/broadcom/bcm2835-unicam.c
-> > > +++ b/drivers/media/platform/broadcom/bcm2835-unicam.c
-> > > @@ -55,6 +55,7 @@
-> > >  #include <media/v4l2-ioctl.h>
-> > >  #include <media/v4l2-fwnode.h>
-> > >  #include <media/v4l2-mc.h>
-> > > +#include <media/v4l2-subdev.h>
-> > >  #include <media/videobuf2-dma-contig.h>
-> > >
-> > >  #include "bcm2835-unicam-regs.h"
+On Wed, 1 May 2024, Sudeep Holla wrote:
 
--- 
-Regards,
+> As mentioned in 1/2, please fix the subject to be more precise.
+>
+> On Wed, May 01, 2024 at 11:43:13AM +0200, Vincenzo Mezzela wrote:
+> > Introduce the __free attribute for scope-based resource management.
+> > Resources allocated with __free are automatically released at the end of
+> > the scope. This enhancement aims to mitigate memory management issues
+> > associated with forgetting to release resources by utilizing __free
+> > instead of of_node_put().
+> >
+> > The declaration of the device_node used within the do-while loops is
+> > moved directly within the loop so that the resource is automatically
+> > freed at the end of each iteration.
+> >
+> > Suggested-by: Julia Lawall <julia.lawall@inria.fr>
+> > Signed-off-by: Vincenzo Mezzela <vincenzo.mezzela@gmail.com>
+> > ---
+> >  drivers/base/arch_topology.c | 51 +++++++++++++++---------------------
+> >  1 file changed, 21 insertions(+), 30 deletions(-)
+> >
+> > diff --git a/drivers/base/arch_topology.c b/drivers/base/arch_topology.c
+> > index ea8836f0bb4b..eef26e304018 100644
+> > --- a/drivers/base/arch_topology.c
+> > +++ b/drivers/base/arch_topology.c
+> > @@ -8,6 +8,7 @@
+> >
+> >  #include <linux/acpi.h>
+> >  #include <linux/cacheinfo.h>
+> > +#include <linux/cleanup.h>
+> >  #include <linux/cpu.h>
+> >  #include <linux/cpufreq.h>
+> >  #include <linux/device.h>
+> > @@ -513,10 +514,10 @@ core_initcall(free_raw_capacity);
+> >   */
+> >  static int __init get_cpu_for_node(struct device_node *node)
+> >  {
+> > -	struct device_node *cpu_node;
+> >  	int cpu;
+> >
+> > -	cpu_node = of_parse_phandle(node, "cpu", 0);
+> > +	struct device_node *cpu_node __free(device_node) =
+> > +		of_parse_phandle(node, "cpu", 0);
+>
+> Prefer a blank line after this, applies to all the place where you are
+> introducing this style.
 
-Laurent Pinchart
+There should also be no blank line before it.
+
+julia
 
