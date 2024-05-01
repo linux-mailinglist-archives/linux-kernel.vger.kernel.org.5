@@ -1,139 +1,106 @@
-Return-Path: <linux-kernel+bounces-164871-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-164873-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 64DAB8B843E
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 04:14:57 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 633A98B8448
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 04:19:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DBF722830C8
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 02:14:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 86DDF1C224F4
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 02:19:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D8C5D125B9;
-	Wed,  1 May 2024 02:14:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4BA21134BD;
+	Wed,  1 May 2024 02:19:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CDsNAgvz"
-Received: from mail-vk1-f172.google.com (mail-vk1-f172.google.com [209.85.221.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jW1bmFjs"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F17EEADB;
-	Wed,  1 May 2024 02:14:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 91EFD11CAB
+	for <linux-kernel@vger.kernel.org>; Wed,  1 May 2024 02:19:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714529688; cv=none; b=IKsmzW3krW3Sp9lDKB/+3/TJ5+rt853thcZNRyzTUgEDwAaopqXjWVivjPZWRTMqAeigH+OZNfmzeqxGzezKpbATFKuld8d4OL5r5NvBwzZhZXVmxGTMZOPtu5tFNIDx+0B0hg33Nyh1eJA639VyJsMj41IiVB3QHz8F/Ejm8Do=
+	t=1714529948; cv=none; b=b7kvAvoTbgaUP70l2DpcADoiUjgD/Kgylzlg7IEfC3of2xdra9YN2dHSxPnYVtypBD8iA0ptANd3zdogMCOeo90wcK1UAxWkndw0vT03Ig5NS3u2WPiIQ2TZdDi62ywFaKy4o45l/geBmnq+DPU1U6ifkvkZFBqxggzJR/mrOoM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714529688; c=relaxed/simple;
-	bh=4Ga4byRB5JzhOWhFbukEMd0FTYKkJjneqrc6tELT6Ck=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=tWMQLcSdB2twA6HMpBSl2yNh9uTHdaqsuVnC6ClSRE1DlKz+UmxDJKTMGPrVPQcvNK1xVeQAUW5tE8c3cYFQ1w3WsqamOmWHhwulICb9JA0S8Q3evv4VrIFedxQAwfztlbdE61zJ4QPDasrYC/WDFjZ+k3JZ/vIOp/6m4WeFfHc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CDsNAgvz; arc=none smtp.client-ip=209.85.221.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-vk1-f172.google.com with SMTP id 71dfb90a1353d-4defa67bc32so760944e0c.1;
-        Tue, 30 Apr 2024 19:14:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714529685; x=1715134485; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=YGUCzWGwJDreMW+w/ahTCJ1HXWC5ZH4jSL81Igfy5Hg=;
-        b=CDsNAgvzOZ2QA+08gKyToMGWCBAEMt94zvCAR/SF5gsjOrLH7WJSEfb8RyAu+1s8Ax
-         iuL2/4eWLkeskSJ+NnAtZSaypFjyrFaEzKjpSQcHUi4Edmms01373tpoO9ID/eVuU1Jl
-         6NAOQNBya4iXCeqlRzbc307EQh5udCfYEl4nsXW6Fj5thtRCchTplrBSVyMIHi5KiKD4
-         YtCp1YRiATq/c+bL+CSil3t1Lmue3xlpdktC1yJxZhaFwX38bdWSnz9GqJOCNjTqAUZ6
-         ez331AHCRrD1xYYr1asf1kBYxXhAxvTvK56sFu6ynCrmoYc1D4X18DEgSlHBGfmA37l3
-         7o7Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714529685; x=1715134485;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=YGUCzWGwJDreMW+w/ahTCJ1HXWC5ZH4jSL81Igfy5Hg=;
-        b=fUcfZpLzDDtMUfjW/evy+z3u6zwhI8kZQk9Nf40/JEhLNFaCtLrXiCHrq3Ovk+F/Xf
-         HftmqXIKGMfMaL9xPfieUtMUUh9iXHliaQIyv8dj9EbP2IG3/wrzz5JPHiuTk1gCSr6S
-         e453BJ0E8rXHzgnH1LtTEgULvfCddKg0JiAG3pUvm9ZIO9d75WeiTBeAE7VpWDzqnq5D
-         pVU/BZeZF3QRtFByi+OzkgvxXS+2G57VCkUkbRiL3Fn26sVFCAzSe9b+3FVjYIDYBmaT
-         cNCrUhgmDzhELgLMfNGT7EYIrooArHgXS2YmaVn4xX4SpNIG6Q2Ao16MygPD2MfZwjyb
-         ds4A==
-X-Forwarded-Encrypted: i=1; AJvYcCVVhZBCYJIPFynv4tKGbydc/c75Oq14I2ZE22i7I1YjqWwmcRiQ3pYBDqOj81BcCbQugDt7p72JS7Jz8BupfzgwTsgayLzKfGk0Al5ZSj3RnvnUfo8ijcaMxhqlDSahczy9htoe8PoxrxJw3ks/HYK63Dre3dcozQVfI0fJra38PbqGUPhrt2Q=
-X-Gm-Message-State: AOJu0Yy1AlaABL7fInZJ9MmyES0LpJG/oDcgEwsA+Ci05F3NmWxf+SpJ
-	oMTJ4u5piXViavDmeCkc31eTPOSKmNTnTW/VSXKIPr8FcxBEGsJCOwFC9e0Pt9KODlIvfvjwcsr
-	W4t0KdgQkV4hzEP+MDtHEuI9VcmA=
-X-Google-Smtp-Source: AGHT+IGPPfSTCD7g9ZFYa4QpVWKMONA41O4TTEwotbnATEOHxIa8YL1v5ol82Lg81C2j7nOjgSBg7d9LZogLXZCjTkc=
-X-Received: by 2002:a05:6102:9a3:b0:47b:b9cb:c7e9 with SMTP id
- f3-20020a05610209a300b0047bb9cbc7e9mr1608127vsb.16.1714529684527; Tue, 30 Apr
- 2024 19:14:44 -0700 (PDT)
+	s=arc-20240116; t=1714529948; c=relaxed/simple;
+	bh=1VcapQ93ruE/UvGkBUNCPXJf+4grWuZ4C0nUxAGJUZk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Zjspx0/El+FgZkhC87lU5hKH6Y2so4wtaDqcsLmxxw3ou4vlYf5AstjUE3P4DOgVgUp45ny46mdd4D6steCu7iaBgJiaqJKTIeEi7MIfsS5qJ7rVkDGt1nbC1sECX0TadUHeGvXjoJPY3NVcxaXqaAyVP82UKlYe6S/mA+PXOvg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jW1bmFjs; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BFD4DC2BBFC;
+	Wed,  1 May 2024 02:19:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714529948;
+	bh=1VcapQ93ruE/UvGkBUNCPXJf+4grWuZ4C0nUxAGJUZk=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=jW1bmFjsmZTi3mp9Z7tz1ja/LUhLRUlzj1eEv9RfkB+oebkJUgsBaSTcUUMA58lpP
+	 Yw5umspTsm2yipGh2fhzw9uJ/9o33V1fAXmL8pJiZj4pzBKuPcO+z0d/j4J7uX07zE
+	 /SrtJ2GMeFoztAOOPZvG/jbaicuH+wZdytL+FtKZiEig9rXzAgdjzWGlum4pVrduyY
+	 CSSCnjn21SIV/b4YUhyuOwew8+kFeDkQwPLGKbXp0IKR+kJb8Qv7WX+okz5PTcMDlh
+	 o2zKVMzZKWaJqn/VPVCltIvjSuP9Y7fptvLlZmtsiekqnIre5IjkoGBEa9AGlXdR6M
+	 Non6pqxksbbIQ==
+Date: Wed, 1 May 2024 11:19:05 +0900
+From: Mark Brown <broonie@kernel.org>
+To: Alina Yu <alina_yu@richtek.com>
+Cc: lgirdwood@gmail.com, linux-kernel@vger.kernel.org,
+	johnny_lai@richtek.com, cy_huang@richtek.com
+Subject: Re: [PATCH v2 2/4] regulator: rtq2208: Fix LDO to be compatible with
+ both fixed and adjustable vout
+Message-ID: <ZjGmmYWHu-ZQQdIh@finisterre.sirena.org.uk>
+References: <cover.1714467553.git.alina_yu@richtek.com>
+ <ffeecd61c194df1f7f049bd50cb2bbbad3cf1025.1714467553.git.alina_yu@richtek.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240422164035.1045501-1-quic_sibis@quicinc.com> <20240422164035.1045501-3-quic_sibis@quicinc.com>
-In-Reply-To: <20240422164035.1045501-3-quic_sibis@quicinc.com>
-From: Jassi Brar <jassisinghbrar@gmail.com>
-Date: Tue, 30 Apr 2024 21:14:32 -0500
-Message-ID: <CABb+yY2mjc0BmvdUxZvkEvFMS30g=h5F7aHEKogfH9=W0C1a2w@mail.gmail.com>
-Subject: Re: [PATCH V4 2/5] mailbox: Add support for QTI CPUCP mailbox controller
-To: Sibi Sankar <quic_sibis@quicinc.com>
-Cc: sudeep.holla@arm.com, cristian.marussi@arm.com, andersson@kernel.org, 
-	konrad.dybcio@linaro.org, robh+dt@kernel.org, 
-	krzysztof.kozlowski+dt@linaro.org, dmitry.baryshkov@linaro.org, 
-	linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org, 
-	devicetree@vger.kernel.org, quic_rgottimu@quicinc.com, 
-	quic_kshivnan@quicinc.com, conor+dt@kernel.org, quic_gkohli@quicinc.com, 
-	quic_nkela@quicinc.com, quic_psodagud@quicinc.com, abel.vesa@linaro.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="yl7/Eyy5kVACNkCg"
+Content-Disposition: inline
+In-Reply-To: <ffeecd61c194df1f7f049bd50cb2bbbad3cf1025.1714467553.git.alina_yu@richtek.com>
+X-Cookie: lisp, v.:
 
-On Mon, Apr 22, 2024 at 11:41=E2=80=AFAM Sibi Sankar <quic_sibis@quicinc.co=
-m> wrote:
->
-> Add support for CPUSS Control Processor (CPUCP) mailbox controller,
-> this driver enables communication between AP and CPUCP by acting as
-> a doorbell between them.
->
-> Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-> Signed-off-by: Sibi Sankar <quic_sibis@quicinc.com>
-> ---
 
-Do you want to add an entry in the MAINTAINERS ?
+--yl7/Eyy5kVACNkCg
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> diff --git a/drivers/mailbox/qcom-cpucp-mbox.c b/drivers/mailbox/qcom-cpu=
-cp-mbox.c
- .....
-> +static irqreturn_t qcom_cpucp_mbox_irq_fn(int irq, void *data)
-> +{
-> +       struct qcom_cpucp_mbox *cpucp =3D data;
-> +       struct mbox_chan *chan;
-> +       unsigned long flags;
-> +       u64 status;
-> +       u32 val;
-> +       int i;
-> +
-The variables flags, val and chan are better inside the for loop below.
+On Tue, Apr 30, 2024 at 05:58:25PM +0800, Alina Yu wrote:
 
-> +       status =3D readq(cpucp->rx_base + APSS_CPUCP_RX_MBOX_STAT);
-> +
-> +       for_each_set_bit(i, (unsigned long *)&status, APSS_CPUCP_IPC_CHAN=
-_SUPPORTED) {
-> +               val =3D readl(cpucp->rx_base + APSS_CPUCP_RX_MBOX_CMD(i) =
-+ APSS_CPUCP_MBOX_CMD_OFF);
-> +               chan =3D &cpucp->chans[i];
-> +               /* Provide mutual exclusion with changes to chan->cl */
-> +               spin_lock_irqsave(&chan->lock, flags);
-> +               if (chan->cl)
-> +                       mbox_chan_received_data(chan, &val);
-> +               writeq(BIT(i), cpucp->rx_base + APSS_CPUCP_RX_MBOX_CLEAR)=
-;
-> +               spin_unlock_irqrestore(&chan->lock, flags);
-> +       }
-> +
-> +       return IRQ_HANDLED;
-> +}
-> +
+> In this patch, LDO's adjustable and fixed Vout settings are compatible.
+> The LDO Vout ability depends on the init_data->constraints.
+> If adjustable, the Vout can be set to either 1800mV or 3300mV.
 
-Thanks
-Jassi
+> +		if (init_data->constraints.min_uV == init_data->constraints.max_uV) {
+> +			desc->n_voltages = 1;
+> +			desc->fixed_uV = init_data->constraints.min_uV;
+> +			desc->ops = &rtq2208_regulator_ldo_fix_ops;
+> +		} else {
+> +			desc->n_voltages = ARRAY_SIZE(rtq2208_ldo_volt_table);
+> +			desc->volt_table = rtq2208_ldo_volt_table;
+> +			desc->ops = &rtq2208_regulator_ldo_adj_ops;
+> +		}
+
+Why are you making this change?  The operations supported by the
+regulator don't change depending on if the system is going to chnage the
+voltage.
+
+--yl7/Eyy5kVACNkCg
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmYxppYACgkQJNaLcl1U
+h9ApSgf+LgoXJNxcFSw3tb07ue63Ba7DUWaYbOaUrYuzQic4YN68AXn7b79upQWH
+LmAuIwHrohpDbvgPh2xNoC+sQhs6EHa6Pb9TlXelRg2Um4mMVGdrOWV34+wTgtm8
+NdTOMLI1Y6uhYQZaxtZ5PN4TU/hjbqdUYfObsU4k6kjTbrmhlNXhH2BsM0gmQhg3
+UiaWeMd7puJxf1SLu7vVWtOwFR/aGk4Yiy3hcJc0InTeHISdT3N5A3U/56UT/L65
+0JDauDxcX1dPLnYcMLQx1mN44cAz0GgLbpzrGVnCW+9Pdc4lrcBAuJ32k6GzuSYv
+VJ1NIXVocd4Sg2zZi/r8BemcjzmnhQ==
+=F+eV
+-----END PGP SIGNATURE-----
+
+--yl7/Eyy5kVACNkCg--
 
