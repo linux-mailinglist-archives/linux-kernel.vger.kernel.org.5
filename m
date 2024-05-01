@@ -1,162 +1,140 @@
-Return-Path: <linux-kernel+bounces-165179-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-165180-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 52A508B8921
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 13:19:54 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 91F358B8924
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 13:20:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8CACCB21191
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 11:19:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3005C1F231A1
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 11:20:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B270760269;
-	Wed,  1 May 2024 11:19:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 554995FEF2;
+	Wed,  1 May 2024 11:20:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="r1GBh8g1"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="BVDh0Yk6"
+Received: from relay1-d.mail.gandi.net (relay1-d.mail.gandi.net [217.70.183.193])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC22956B63;
-	Wed,  1 May 2024 11:19:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D93F856B63;
+	Wed,  1 May 2024 11:20:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.193
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714562382; cv=none; b=t7CUtKKlXNBhNYmkLSlDkg61GlD5YorA2/b+6mP3rnPpnCPatbgu2BZbIWkG+NybqMOzC9VrE3z6tCUnNWm8IClBDZnjGkPqrDIJKxq3avx7z0HltR8Wn+ErDMdwQqqSjtTpJ/i2mrtOX+rYvmmdusFXilQtC5+Dx87a5Z32ZFQ=
+	t=1714562414; cv=none; b=tRsva6PVhjY+h/qilwPURxzbjAhv4VbGKd3UhSUOVAqlchQrHuYQc0Q8LQANpnhLHNAzLTVCuJgpkAQB2ipkKBEqGntqZd17zVjie1hl3vzFiQoB/VBevf7w/IN7oqoyupj6HXkTDE7KNKfsae8n1cWyqrf5hyR6Fi7SkLO+EJU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714562382; c=relaxed/simple;
-	bh=NdA764WJcGvt8lXly8jeVIEutQMXNgk81JN1Ta7vWVY=;
+	s=arc-20240116; t=1714562414; c=relaxed/simple;
+	bh=VdaxhUn/XM6Ym1rOWk8SQaeNn5/QJQcnrhKtg4irLf0=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=DTobHv7krHL4IgXAorK98I/fq4rOC7gkVISaSelsjLXvoCt9TEX8jqlpvppeAqQD+e5xtX4mIYTRXOV8qB1yDq7eCjCyBFxa8Ed0RBAQkYCuvS3qTLTDw/rBP4l5qfsKPuF02XefkTpaids+yIKCgWgtDgRdkQwyYwW2DecfoHI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=r1GBh8g1; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D7021C113CC;
-	Wed,  1 May 2024 11:19:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714562381;
-	bh=NdA764WJcGvt8lXly8jeVIEutQMXNgk81JN1Ta7vWVY=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=r1GBh8g178zlWYlSPyVe2IH0YcLY8mAJwRU9UH6hXxlYt1gtua7k+rREM54kTau8v
-	 Y7H5zBcJuIl+SZda1BS1vSVtZAvg3vHs7pYF6qdrJGk5t2JULK+jPJSDUbfF/lFJnH
-	 mMet8WFbpQw6okf2wyuvVSnse3Sy2Je/ak+0cQNHc1F2ZLmFtcIkEnjQMc3awKM1RT
-	 oo9KexsvtcE8/ZSxRErW4WHCu/GL31Ut8GKqV/Ce4A1OlM4v/AttF/xsFREivm2Y6/
-	 d2oip2TN9cSMH8U+W9EJskrejkG8sx4vcgkggrLIEBTr5l8AiJx7BN4XblhE8sNr8g
-	 yR40X/LPEX0Ig==
-Date: Wed, 1 May 2024 12:19:34 +0100
-From: Conor Dooley <conor@kernel.org>
-To: Charlie Jenkins <charlie@rivosinc.com>
-Cc: Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>, Guo Ren <guoren@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-	Jernej Skrabec <jernej.skrabec@gmail.com>,
-	Samuel Holland <samuel@sholland.org>,
-	Conor Dooley <conor.dooley@microchip.com>,
-	Evan Green <evan@rivosinc.com>,
-	=?iso-8859-1?Q?Cl=E9ment_L=E9ger?= <cleger@rivosinc.com>,
-	Jonathan Corbet <corbet@lwn.net>, Shuah Khan <shuah@kernel.org>,
-	linux-riscv@lists.infradead.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org, Palmer Dabbelt <palmer@rivosinc.com>,
-	linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
-	linux-doc@vger.kernel.org, linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH v4 05/16] riscv: Extend cpufeature.c to detect vendor
- extensions
-Message-ID: <20240501-pelican-throwaway-da84be7dac30@spud>
-References: <20240426-dev-charlie-support_thead_vector_6_9-v4-0-b692f3c516ec@rivosinc.com>
- <20240426-dev-charlie-support_thead_vector_6_9-v4-5-b692f3c516ec@rivosinc.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=m6VOpakN3EwgsCxEPuIaHJMValg5hEmmnAge1wHL+3RP+9a6oMK7Bp+r/j7NgdBfjHpDzByzfPIXLEfgMuEtKkm/XYiolL0tSKnluWM6r/NNNxLTs0EE4YQf1JDLvBZAA+GxmAGCwAbda6PH/QjnmYrM0GFrinfEluqGWUajwqE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=BVDh0Yk6; arc=none smtp.client-ip=217.70.183.193
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id BFD2324000C;
+	Wed,  1 May 2024 11:20:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1714562403;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=+cNJcR4HKthr4uVQ8bZMEc3QTkCQ0VDxcnetbrScSKg=;
+	b=BVDh0Yk6zShpiP0lUaFPccR0hocR9I7SgxGCP1iFeWYYv8Hjj3fFidC+tuWwRSRv7ygAHx
+	Y0239OrhnxD0dawobTnFpggmXx2SNnDuluNCBRXuirnvhg4JvuYz4KctaDHzWErIHMpLYD
+	fkKR9MmCCBXK7DIK0NqceuT+odWLR3bB2/70HJOaWSbMXR+o4IxeTYyFPDwoGamqe87AbO
+	lKZI1frIGFZqDPgB94mNLtTtwVlcNfYnBSm9YJbfnvot02lfclM9UnnwSracs4zwF5QcTh
+	olBgKp5IBR28GBPHyLOvVV2houTWn+b66Xze0nXZuuqgtM6SleFZiYxJFyVJfQ==
+Date: Wed, 1 May 2024 13:20:01 +0200
+From: Alexandre Belloni <alexandre.belloni@bootlin.com>
+To: Jingbao Qiu <qiujingbao.dlmu@gmail.com>
+Cc: Inochi Amaoto <inochiama@outlook.com>, robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+	paul.walmsley@sifive.com, palmer@dabbelt.com, aou@eecs.berkeley.edu,
+	linux-rtc@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, dlan@gentoo.org
+Subject: Re: [PATCH v8 2/2] rtc: sophgo: add rtc support for Sophgo CV1800 SoC
+Message-ID: <20240501112001dc47d549@mail.local>
+References: <20240204044143.415915-1-qiujingbao.dlmu@gmail.com>
+ <20240204044143.415915-3-qiujingbao.dlmu@gmail.com>
+ <IA1PR20MB49533772D594D18204E9F9EEBB192@IA1PR20MB4953.namprd20.prod.outlook.com>
+ <CAJRtX8Rz0BhbtBJq+gSRTU3vsOwfyWjrqJ-Q1fqr7ZFeY2uaNQ@mail.gmail.com>
+ <IA1PR20MB495377FCD5101F85B02BB5BCBB192@IA1PR20MB4953.namprd20.prod.outlook.com>
+ <CAJRtX8Ruh4BethYcGM2RueNBDioXpn8dJ3yvUD4iW_1cmiVFqg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="p3ofyY8PZFrt+4od"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240426-dev-charlie-support_thead_vector_6_9-v4-5-b692f3c516ec@rivosinc.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAJRtX8Ruh4BethYcGM2RueNBDioXpn8dJ3yvUD4iW_1cmiVFqg@mail.gmail.com>
+X-GND-Sasl: alexandre.belloni@bootlin.com
 
+On 01/05/2024 17:14:43+0800, Jingbao Qiu wrote:
+> On Wed, May 1, 2024 at 3:43 PM Inochi Amaoto <inochiama@outlook.com> wrote:
+> >
+> > On Wed, May 01, 2024 at 01:03:58PM GMT, Jingbao Qiu wrote:
+> > > Hi, Inochi
+> > >
+> > > On Wed, May 1, 2024 at 10:19 AM Inochi Amaoto <inochiama@outlook.com> wrote:
+> 
+> > > > Another thing is that I do not think is a good way to let the
+> > > > rtc driver access RTC_CTRL area directly. You have already
+> > > > know there is a 8051 device in the 0x05025000. It is necessary
+> > > > to make some room for this device. Maybe you want to implement
+> > > > them all in the rtc driver? If so, I do think it is a bad idea.
+> > >
+> > >
+> > > Do you mean that RTC drivers should not directly access the 0x05025000 address?
+> > > Because there is an 8051 subsystem on this address.
+> >
+> > Yes. At least we need some mechanism to share these address between
+> > this devices.
+> >
+> > > Firstly, I do not intend to implement 8051 in the RTC driver,
+> > > but the 8051 subsystem is located within a module independently
+> > > powered by the RTC.
+> > > So if we want to implement the 8051 subsystem in the future, it can be
+> > > used as a node in RTC? I'm not sure.
+> >
+> > Yes, this is what I care about.
+> >
+> > > Then, Alexandre told me that there are operations related to PM in
+> > > RTC, such as the following files.
+> > > This matches the description of address 0x05025000.
+> > >
+> > > drivers/rtc/rtc jz4740. c
+> > >
+> >
+> > I do not think this is something related to the PM. 8051 is more
+> > like remoteproc. So it is necessary to arrange them carefully.
+> >
+> 
+> You are right.
+> I learned from official documents that 8051 works in the RTC domain.
+> Linux does not provide relevant interfaces to operate 8051,
+> Just providing a mailbox for communication between them, or through
+> interruptions.
+> I don't understand how 8051 works, so I shouldn't write to the
+> corresponding registers in RTC.
+> 
+> https://milkv.io/docs/duo/getting-started/8051core
 
---p3ofyY8PZFrt+4od
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Then you will have to have a driver for the 8051 firmware before being
+able to access registers that are outside of the RTC range. However, I
+se the firmware is using RTC_INFOx without any form of locking but I
+guess this just means Linux will have to ensure it never writes to
+those.
 
-On Fri, Apr 26, 2024 at 02:29:19PM -0700, Charlie Jenkins wrote:
-> @@ -353,6 +336,10 @@ static void __init riscv_parse_isa_string(unsigned l=
-ong *this_hwcap, struct risc
->  		bool ext_long =3D false, ext_err =3D false;
-> =20
->  		switch (*ext) {
-> +		case 'x':
-> +		case 'X':
-> +			pr_warn_once("Vendor extensions are ignored in riscv,isa. Use riscv,i=
-sa-extensions instead.");
-> +			continue;
+> 
+> 
+> > > > > 2.25.1
+> > > > >
 
-Yeah, so this is not right - you need to find the end of the extension
-before containing - for example if I had a system with
-rv64imafdcxconorkwe, you get something like:
-[    0.000000] CPU with hartid=3D0 is not available
-[    0.000000] Falling back to deprecated "riscv,isa"
-[    0.000000] Vendor extensions are ignored in riscv,isa. Use riscv,isa-ex=
-tensions instead.
-[    0.000000] riscv: base ISA extensions acdefikmnorw
-[    0.000000] riscv: ELF capabilities acdfim
-
-kwe are all pretty safe letters, but suppose one was a v..
-I think you can just yoink the code from the s/z case:
-
-diff --git a/arch/riscv/kernel/cpufeature.c b/arch/riscv/kernel/cpufeature.c
-index 20bc9ba6b7a2..4daedba7961f 100644
---- a/arch/riscv/kernel/cpufeature.c
-+++ b/arch/riscv/kernel/cpufeature.c
-@@ -338,8 +338,19 @@ static void __init riscv_parse_isa_string(unsigned lon=
-g *this_hwcap, struct risc
- 		switch (*ext) {
- 		case 'x':
- 		case 'X':
--			pr_warn_once("Vendor extensions are ignored in riscv,isa. Use riscv,isa=
--extensions instead.");
--			continue;
-+			if (acpi_disabled)
-+				pr_warn_once("Vendor extensions are ignored in riscv,isa. Use riscv,is=
-a-extensions instead.");
-+			/*
-+			 * To skip an extension, we find its end.
-+			 * As multi-letter extensions must be split from other multi-letter
-+			 * extensions with an "_", the end of a multi-letter extension will
-+			 * either be the null character or the "_" at the start of the next
-+			 * multi-letter extension.
-+			 */
-+			for (; *isa && *isa !=3D '_'; ++isa)
-+				;
-+			ext_err =3D true;
-+			break;
- 		case 's':
- 			/*
- 			 * Workaround for invalid single-letter 's' & 'u' (QEMU).
-
-You'll note that I made the dt property error dt only, this function
-gets called for ACPI too. I think the skip is pretty safe there though
-at the moment, we've not established any meanings yet for vendor stuff
-on ACPI.
-I think breaking is probably better than using continue - we get the _
-skip from outside the switch statement out of that. And ye, I am lazy
-so I kept it as a for loop.
-
-Cheers,
-Conor.
-
---p3ofyY8PZFrt+4od
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZjIlRgAKCRB4tDGHoIJi
-0ugAAPoDPa6ArkzDoKOdltjV690jUcxJanZcOTddmqK/7OVlEQEAxQBqLmw0FIrU
-vufC89X3QQxXx0ONQsmNnf3NeXJ//QU=
-=Ec6E
------END PGP SIGNATURE-----
-
---p3ofyY8PZFrt+4od--
+-- 
+Alexandre Belloni, co-owner and COO, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
 
