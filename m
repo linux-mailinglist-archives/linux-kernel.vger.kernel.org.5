@@ -1,226 +1,146 @@
-Return-Path: <linux-kernel+bounces-165075-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-165076-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D7A7C8B8770
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 11:16:51 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 105658B8775
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 11:19:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F05DE1C21E04
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 09:16:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3299B1C20BE0
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 09:19:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA2D151034;
-	Wed,  1 May 2024 09:16:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 573B2502AD;
+	Wed,  1 May 2024 09:19:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="qtjfimlG"
-Received: from mailout1.w1.samsung.com (mailout1.w1.samsung.com [210.118.77.11])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="WDjoYGB9"
+Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D75BD482F4;
-	Wed,  1 May 2024 09:16:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=210.118.77.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8577502A6
+	for <linux-kernel@vger.kernel.org>; Wed,  1 May 2024 09:19:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714554987; cv=none; b=VlPsjZAIIf2c9RRZrDoG/VbU6apQqB32aX2o1e8wu3eq63GmAgSVrg6vAi/IkLzvD8d0GNb69+PpL7ilhe/VL8Z4gQlAcvyqqYYMQeDQKwm3SFi8qYLutS2c9OihFiHXftb5PQwwyHA33YQu84asoKV5AUJx9tI71QSyAZJkAwM=
+	t=1714555180; cv=none; b=SDnYcsnTtM3/4y4iqjeAhU6ld+1wIODeC6rN4ttv5Q8dW2Xa3i6iTl0eKCUK/4bLm5c5eIIz13kJt9O5UA+75xnAeyVO/1nkCmNQWo3OXDInQCRV28Ray6yTAH+eFUhxIaZC1jhiZi7gknaTShHDw8reNW16cDBcGRIKNgpYd/k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714554987; c=relaxed/simple;
-	bh=Bh9hPo2uey5lp23nsLdXOm90vyuVIwTkNvDgSmEOXq8=;
-	h=Date:From:To:CC:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To:References; b=jZtc99Cm4PanMAXQtWFb4j74c9Gx5agxLJSeDuiwZXS41guKw+XV5B1vgkbJbncapDtzMR26BRupKNk5+g+W7rtuDgkd/AokwyQnUij/7CH9HPHPh/y1bq+v4Y+balHrQ2rRkZ4gMh54wcngiL7QdNzbQ0IO+bKd66ZcwCSyN5E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com; spf=pass smtp.mailfrom=samsung.com; dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b=qtjfimlG; arc=none smtp.client-ip=210.118.77.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samsung.com
-Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
-	by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20240501091622euoutp0185062aa4c3a99a27921905bcb8f2a125~LUqwcVgkR0419604196euoutp01A;
-	Wed,  1 May 2024 09:16:22 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20240501091622euoutp0185062aa4c3a99a27921905bcb8f2a125~LUqwcVgkR0419604196euoutp01A
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-	s=mail20170921; t=1714554982;
-	bh=5IGaB0xRZYtjliALLSGXpUihG1E6qjKnUGlfcVQzZ1I=;
-	h=Date:From:To:CC:Subject:In-Reply-To:References:From;
-	b=qtjfimlGHbq5/hF+JLl8nhyG/6SrdDTPVWuo6f+Z/hrnSqbcVIs/Rs95GmglC9FCy
-	 K4UJYONi8Bi14WpSE0AyZGm7xZafwtwlJqsCXOMYGENE9/kFQY4/egfa9XH0/fohSm
-	 FBpETMovwcjIMv+k/7phXTIyIcDfZiTLWa3uQkGA=
-Received: from eusmges2new.samsung.com (unknown [203.254.199.244]) by
-	eucas1p2.samsung.com (KnoxPortal) with ESMTP id
-	20240501091621eucas1p2b2c7ce9b2c8cc3831fb047063b819cf8~LUqwIAHw42837328373eucas1p2z;
-	Wed,  1 May 2024 09:16:21 +0000 (GMT)
-Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
-	eusmges2new.samsung.com (EUCPMTA) with SMTP id AE.8E.09875.56802366; Wed,  1
-	May 2024 10:16:21 +0100 (BST)
-Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
-	eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
-	20240501091621eucas1p2c3ccea8dafd966d43988e22a23eead6c~LUqvh_fcP3008530085eucas1p2l;
-	Wed,  1 May 2024 09:16:21 +0000 (GMT)
-Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
-	eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
-	20240501091621eusmtrp1fb724c878928a0f89f2f93afabd24c18~LUqvgZuNc2733527335eusmtrp1G;
-	Wed,  1 May 2024 09:16:21 +0000 (GMT)
-X-AuditID: cbfec7f4-131ff70000002693-28-663208658582
-Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
-	eusmgms1.samsung.com (EUCPMTA) with SMTP id DC.F4.08810.56802366; Wed,  1
-	May 2024 10:16:21 +0100 (BST)
-Received: from CAMSVWEXC02.scsc.local (unknown [106.1.227.72]) by
-	eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
-	20240501091620eusmtip131dc9f3268c7188765a5db272b94006c~LUqvNBdzi3152531525eusmtip1E;
-	Wed,  1 May 2024 09:16:20 +0000 (GMT)
-Received: from localhost (106.210.248.68) by CAMSVWEXC02.scsc.local
-	(2002:6a01:e348::6a01:e348) with Microsoft SMTP Server (TLS) id 15.0.1497.2;
-	Wed, 1 May 2024 10:16:20 +0100
-Date: Wed, 1 May 2024 11:16:14 +0200
-From: Joel Granados <j.granados@samsung.com>
-To: Jakub Kicinski <kuba@kernel.org>
-CC: Joel Granados via B4 Relay <devnull+j.granados.samsung.com@kernel.org>,
-	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
-	Paolo Abeni <pabeni@redhat.com>, Alexander Aring <alex.aring@gmail.com>,
-	Stefan Schmidt <stefan@datenfreihafen.org>, Miquel Raynal
-	<miquel.raynal@bootlin.com>, David Ahern <dsahern@kernel.org>, Steffen
-	Klassert <steffen.klassert@secunet.com>, Herbert Xu
-	<herbert@gondor.apana.org.au>, Matthieu Baerts <matttbe@kernel.org>, Mat
-	Martineau <martineau@kernel.org>, Geliang Tang <geliang@kernel.org>, Ralf
-	Baechle <ralf@linux-mips.org>, Remi Denis-Courmont <courmisch@gmail.com>,
-	Allison Henderson <allison.henderson@oracle.com>, David Howells
-	<dhowells@redhat.com>, Marc Dionne <marc.dionne@auristor.com>, Marcelo
-	Ricardo Leitner <marcelo.leitner@gmail.com>, Xin Long
-	<lucien.xin@gmail.com>, Wenjia Zhang <wenjia@linux.ibm.com>, Jan Karcher
-	<jaka@linux.ibm.com>, "D. Wythe" <alibuda@linux.alibaba.com>, Tony Lu
-	<tonylu@linux.alibaba.com>, Wen Gu <guwen@linux.alibaba.com>, Trond
-	Myklebust <trond.myklebust@hammerspace.com>, Anna Schumaker
-	<anna@kernel.org>, Chuck Lever <chuck.lever@oracle.com>, Jeff Layton
-	<jlayton@kernel.org>, Neil Brown <neilb@suse.de>, Olga Kornievskaia
-	<kolga@netapp.com>, Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey
-	<tom@talpey.com>, Jon Maloy <jmaloy@redhat.com>, Ying Xue
-	<ying.xue@windriver.com>, Martin Schiller <ms@dev.tdt.de>, Pablo Neira Ayuso
-	<pablo@netfilter.org>, Jozsef Kadlecsik <kadlec@netfilter.org>, Florian
-	Westphal <fw@strlen.de>, Roopa Prabhu <roopa@nvidia.com>, Nikolay
-	Aleksandrov <razor@blackwall.org>, Simon Horman <horms@verge.net.au>, Julian
-	Anastasov <ja@ssi.bg>, Joerg Reuter <jreuter@yaina.de>, Luis Chamberlain
-	<mcgrof@kernel.org>, Kees Cook <keescook@chromium.org>,
-	<netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<dccp@vger.kernel.org>, <linux-wpan@vger.kernel.org>,
-	<mptcp@lists.linux.dev>, <linux-hams@vger.kernel.org>,
-	<linux-rdma@vger.kernel.org>, <rds-devel@oss.oracle.com>,
-	<linux-afs@lists.infradead.org>, <linux-sctp@vger.kernel.org>,
-	<linux-s390@vger.kernel.org>, <linux-nfs@vger.kernel.org>,
-	<tipc-discussion@lists.sourceforge.net>, <linux-x25@vger.kernel.org>,
-	<netfilter-devel@vger.kernel.org>, <coreteam@netfilter.org>,
-	<bridge@lists.linux.dev>, <lvs-devel@vger.kernel.org>
-Subject: Re: [PATCH v4 1/8] net: Remove the now superfluous sentinel
- elements from ctl_table array
-Message-ID: <20240501091614.7r6wded6quegxr6z@joelS2.panther.com>
+	s=arc-20240116; t=1714555180; c=relaxed/simple;
+	bh=vOiHeEPDJN5GlmzdRmXiBwTTBEgNxD0YW3MwZ4O0Zuw=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=sCuhyxep2tAyBUuzVfGGGkoj4TiKqBEnnLCM4cezhwwV8NXiBQhGg27iCWROhq7S+r31fmRCE8G/XBEZnaf3qnqV1Ff4Gt4g+fUpTYrZTbZHPg9zqI/V4SybRiMiHWSBR/9Nhp2hkuRnDE+ATy3rqNF10tUUzppylZiYOY9TekE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=WDjoYGB9; arc=none smtp.client-ip=209.85.218.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-a55b93f5540so895935866b.1
+        for <linux-kernel@vger.kernel.org>; Wed, 01 May 2024 02:19:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1714555177; x=1715159977; darn=vger.kernel.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=IU5666ZgVnJUhWYrIKpU1fyu97lInGaK9ybimnvX8Wc=;
+        b=WDjoYGB9xWSwByFJ4M8d3ZoITb4mHcB9toVxy8G0Xoix6yTHcnqO9rrUrEkCpu9xXT
+         otz1kB4MKlo9e92Wa/jOwb28tJKf3TAHWKUg10FUzwnUOIIGlJ0r9uUBjWUfCNP6R31h
+         0OWT/7Zm54Ng793dXx00dBiOdQWGvG5I3fjsooKZMWfX1NuwdHRa89waIeL84MubpiJL
+         ZQyib9LQGcQBqKvpW+p/UUgOd2mS4WG//uKbHmr6r40uLW1bEPpBuAMG3CaTr431wWtA
+         hxs9H6ZINhDJ9zf85ZjshOO+TrUhsfo8JiVWei0DBUkR6BzEHvwk53Q6jBkIXzRnHe4d
+         MbWg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714555177; x=1715159977;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=IU5666ZgVnJUhWYrIKpU1fyu97lInGaK9ybimnvX8Wc=;
+        b=CrpvyJgVs3rG4GvWDSDLq5TnpYPGXhj81/a6u3vdKaaHG2hVPUX/T1UKZWjjKcg2HP
+         515mcDaddNFuYnUqjMJRJcJRsRDATjN5rECEtZiP1FDbXXzOmJL3huAfus22F05mFcrg
+         MKBZhWnqyX238AM/3g63qHMh9pnN4LNYE8QBNDYrtRel83KOKR91kTVIC1URvsJELzF5
+         m7Oz4+Q+bqRFcwxnM0YZyX8pbFAT27E18ABeO11vrYzfxRBUAQzgsgGJ4f/Y0TgLuHKL
+         IMWKYZU/dO0QKIZw1oy2yPr0o2g/MYYaqBLhaTnxl7ixOtrGJpBpa4eNTvebGhBZNREV
+         0PNQ==
+X-Forwarded-Encrypted: i=1; AJvYcCU7T5DEZ0V0qdsUrs4p59dmJihLfLBMCdfTqMRES7PBgaHfEf4Gj5PN+GNO0j8KuurlqQaqb6jxsB0/q+Hwx4bDKcYEqWcYc9RRkFVT
+X-Gm-Message-State: AOJu0Yy+af9s14FffBUUlbdHdOZctvTq8yYLuHvVS6n+CmMRby/P+diY
+	daO4rTGZZEnn3suYjdiweV+N9E5MZlp/UfA2eLK/ez7GfF+oe5iKO/trjU6H29Q=
+X-Google-Smtp-Source: AGHT+IH/Ba7QbLPRPS+XzgPny6nXWZgsA7cIv4uu6lM0q2mhIikp9GNHF5bwt9YwZT+naZcTk3Cmgw==
+X-Received: by 2002:a17:906:2c16:b0:a51:982e:b3f7 with SMTP id e22-20020a1709062c1600b00a51982eb3f7mr1404669ejh.37.1714555177187;
+        Wed, 01 May 2024 02:19:37 -0700 (PDT)
+Received: from puffmais.c.googlers.com (8.239.204.35.bc.googleusercontent.com. [35.204.239.8])
+        by smtp.gmail.com with ESMTPSA id bw13-20020a170906c1cd00b00a58de09fd92sm5425674ejb.27.2024.05.01.02.19.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 01 May 2024 02:19:36 -0700 (PDT)
+From: =?utf-8?q?Andr=C3=A9_Draszik?= <andre.draszik@linaro.org>
+Subject: [PATCH v2 0/7] USB31DRD phy support for Google Tensor gs101 (HS &
+ SS)
+Date: Wed, 01 May 2024 10:19:35 +0100
+Message-Id: <20240501-usb-phy-gs101-v2-0-ed9f14a1bd6d@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg="pgp-sha512";
-	protocol="application/pgp-signature"; boundary="kxagwr5qamp3g4z2"
-Content-Disposition: inline
-In-Reply-To: <20240429082219.3qev2nzftzp2gecc@joelS2.panther.com>
-X-ClientProxiedBy: CAMSVWEXC01.scsc.local (2002:6a01:e347::6a01:e347) To
-	CAMSVWEXC02.scsc.local (2002:6a01:e348::6a01:e348)
-X-Brightmail-Tracker: H4sIAAAAAAAAA2WTbVATZxSFfXc3yYJgl2jrO6C2pKBWUDTa8Wqtyqjt2hk7jtP+qJ2WprKo
-	rQSagCAd20BAhUgMYsunfFpAosESCKCoJCpIoIBVLDpSBwSpSMEaCB8qlLA4dab/7jn7nPue
-	+2NpUpxEu9N75WGcQi7bJxE6U6ba0ealHC0NWj6c5wcW1WroqE4QgCr2EAFxVRMUmPI1BEy0
-	9xDwouowCbaOHgFk5xmFkNkcS8GLPzRCuHmyi4D+mGcUGM7HEdBd2ykCU6IegT7mHgUVPcNC
-	0PTOA3X5EIKuY50CuFXwRAijBcUiuD/UScGodiakJagJaNQEQ2V7FwUtJq0AdNYVcLuinYCb
-	5zOF0FLTIICHlkQKdLlqErpzHgvgXnIBBTUXsxF0lgwQoM5+SoLa9oCEsaI6ATQlTpCQbigm
-	oU3XjeDK4UsCaCyJEYE96zoJF7NVFNTmvAE6g5UCe0MfgpS+VhJ+r/YC6+AEAU1GmwBsmYsh
-	uaiMgAvxIyIoa/4GrGNWAh4M9whhom0DRDeaRBv92budQyTb31SP2Kwz37MZqhsUOza6hC07
-	fYdgNVd7SbYqvV3Emmq82ZzScPa55VcRW1ocL2SvnT5LsFUda1hdXg1ijad+3O6503ldILdv
-	735O4bf+K+c9DefyUeiYS+RISRKhQvEzE5ATjZlV+GrRA1ECcqbFTBHCqofGaTGIsKYni3BQ
-	YsaGsN5MvEzoNVqChwoRNjQ1U7yYhM5ohxEvjAgPlNeQjgjFeOH4MRvlmIWML27uuzflz5n0
-	Y41pU2mSqRZjrf2SMAHR9GwmECclKx2jK7MR1/e7OHBXxg3Xp3VNrSGZSPz82nGBAyEZD1w4
-	TjtsJ8YfZ/amUHxRCU5MPTld+iC2lt2dKo2ZGy64sfUX0pHFzGZ890okz8zGvXVlIn6ehxuS
-	j1I8n4zw5fEnIl7oES6IHpre+h6OvdU1nfDH2YZyAb90Fm77243vOQsfN6VMv+WKjxwS8/RC
-	rP+zj9Kht9NfuSz9lcvS/7uMt31xzoWnwv/ZPrgg9zHJz+9jg2GAykGiYjSXC1cG7+aUUjkX
-	sUwpC1aGy3cv2xUSXIom/9SG8brBSlTY+88yCyJoZEFek+HOc/oW5E7JQ+ScZI7riVy/ILFr
-	oOxAFKcICVCE7+OUFuRBU5K5rt6Bb3JiZrcsjPuW40I5xcuvBO3kriK0a8eP6NgvtwyxI0Ge
-	iWs1qwZ707ul+favd55tSf6sdtCcusBno27+xdfdpM0f+vrVj1col1879uxdt3bniKdESknA
-	pk93IdkVa+hYsb0InnUtXxn7RVxYlMemQtmaYz+YFdsbK4nXON/LZvMsDZu5NCJaVnugwy7Z
-	FhfpPeT1c+T8kMFNdcaO9dEeLndq1yy437CVvm4ZcZG/890pv6i3GhWLzvnuz7lkT6nI3dwq
-	Vm/Z9tfq6oczfnp8++PfjmbgCNvBoKbFbqEZ9/uPSD85Mb5o9YWVM1IP7CDCzQvNjyTKrdlh
-	bQHl66RFyD1qg29c65OsF7d8hKbPS1yknh990KP2eaTYIaGUe2QrlpAKpexfXewBpyQFAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA2VTa0xTZxjedy5tQXDHyrYjkmzrNDiVQpHq20UdJjMc0en8MZZtOGj0CGpL
-	SVvMZCFWy0XagVWcaK2ADBFhFqSIgNzCJo6LojAdTjoECwgiwqpyhxW7ZSb797zP7fvyJi8P
-	5xdxPXl7otSsMkoqE3BciaaZG1Yflue/2+9etQvUadZAV6WOBE18IgYJ5bMElP6ox2DW2ofB
-	dHkSDvauPhIysy0cMLXEEzD9u54DbWdtGAwdniTAXJGAQU99NxdKUwoQFBzuIOBq3ygH9ANe
-	oL3yAoHtaDcJv+UOc2A8N58LnS+6CRhPnQendVoMmvVyKLPaCLhdmkqCoVEE965aMWirMHHg
-	dm0TCb11KQQYzmlx6Ml6QkJHWi4BtVWZCLoLn2GgzfwLB639EQ4TeTdIuJUyi4PRnI9Du6EH
-	wc9J1SQ0Fx7mwsuMX3GoytQQUJ/1NhjMjQS8bBpEkD54F4fWyiXQ+HwWg1sWOwl20zJIyyvB
-	4FryGBdKWvZC40QjBo9G+zgw2/4xHGou5QZuYP7ofoEzQ7caEJPx03fMGc0dgpkYX86UXLyP
-	MfpfBnCm3GjlMqW1S5ms4hhmqu4ylynOT+Yw1y9ewpjyLgljyK5FjCXn4GfvfyVcq1TEqNn3
-	IhUq9TrB1yLwF4okIPQPkAhFq9bs+MhfLPBdv3YXK9uzn1X6rg8XRuqrGsjoMbdvHw9YCA1K
-	mqdDLjyaCqAL9KmYDrny+NR5RLf2PiScghd9+fld0okX0lP3dBynaQTRlh+GSOdgQXRO4Qya
-	cxHUEjp5wv4qzaFW0i2DHfgc9nDw8ZbTxFwApyr5dEN/NXdOWEjtovOqvncIPJ47FUg3DLk5
-	S8/gdEJ7xqun3akFdMNp26tSnNpPm4wa7pwfpxbTF2Z4c7QLtYE2DaT/82sBnXLqLObEcbR9
-	uhcZ0ELja03G15qM/zU56eV0+0w/9j96BZ177gnuxOtos/kZkYW4+ciDjVHJI+QqkVAllati
-	oiKEOxXyYuQ4l9L6cUsZyhgYEdYhjIfq0BJHsruo4DbyJKIUUazAw/3EOd/dfPdd0gOxrFIR
-	poyRsao6JHZs8Rju+dZOheP2otRhotV+YlHAaomfWLJ6leAd903RR6R8KkKqZvexbDSr/DeH
-	8Vw8NRhx0vb5g8jeZv+VPtbqmMSN9VLPooroBQ+rA7xr3HTilmDloUsh1OVgc+bYopkti2mN
-	R+fkqKuIjLeGTMaFTAhbjyvlEbae7WWKKxl3OtKVPluW9vumDYbmhXllfRIkXhnhHTxTuCM6
-	qH734/lftuzz8ivcBmEybU2DqVcVuCA8f1/VGyM1sabQE3FHho+HeMg1ys0+n37Bu2ZMzfG+
-	3iuTnHoQKz54qdJMvvnn/K1U0rag7QnyxE2BbZMFOx/cFKbluKmrcmSuyRvf/VB97HqN5CT9
-	9IPUpz3eoX3frFhkOR97c39ncVpT80jNsubs7KnwC5v3JnaUTRUNB3ke2Lz1Pr9mhYBQRUpF
-	y3GlSvo33vQ56sMEAAA=
-X-CMS-MailID: 20240501091621eucas1p2c3ccea8dafd966d43988e22a23eead6c
-X-Msg-Generator: CA
-X-RootMTR: 20240425225817eucas1p21d1f3bcedc248575285a74af88e66966
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20240425225817eucas1p21d1f3bcedc248575285a74af88e66966
-References: <20240425-jag-sysctl_remset_net-v4-0-9e82f985777d@samsung.com>
-	<20240425-jag-sysctl_remset_net-v4-1-9e82f985777d@samsung.com>
-	<CGME20240425225817eucas1p21d1f3bcedc248575285a74af88e66966@eucas1p2.samsung.com>
-	<20240425155804.66f3bed5@kernel.org>
-	<20240426065931.wyrzevlheburnf47@joelS2.panther.com>
-	<20240426071944.206e9cff@kernel.org>
-	<20240429082219.3qev2nzftzp2gecc@joelS2.panther.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-B4-Tracking: v=1; b=H4sIACcJMmYC/3XMywrCMBCF4Vcps3YkkwQKrnwP6SKXaTogTUm0W
+ Erf3di9y//A+XaoXIQr3LodCq9SJc8t9KWDMLk5MUpsDVppq6w2+K4el2nDVEkROj8apl5HChb
+ aZyk8yuf0HkPrSeorl+3kV/qt/6SVUCH7GLxxgXob70+ZXcnXXBIMx3F8Aa6V3tGrAAAA
+To: Vinod Koul <vkoul@kernel.org>, 
+ Kishon Vijay Abraham I <kishon@kernel.org>, Rob Herring <robh@kernel.org>, 
+ Krzysztof Kozlowski <krzk+dt@kernel.org>, 
+ Conor Dooley <conor+dt@kernel.org>, 
+ Peter Griffin <peter.griffin@linaro.org>, 
+ Marek Szyprowski <m.szyprowski@samsung.com>, 
+ Sylwester Nawrocki <s.nawrocki@samsung.com>, 
+ Alim Akhtar <alim.akhtar@samsung.com>, 
+ Sam Protsenko <semen.protsenko@linaro.org>
+Cc: Krzysztof Kozlowski <krzk@kernel.org>, 
+ Tudor Ambarus <tudor.ambarus@linaro.org>, 
+ Will McVicker <willmcvicker@google.com>, Roy Luo <royluo@google.com>, 
+ kernel-team@android.com, linux-phy@lists.infradead.org, 
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org, 
+ Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, 
+ Arnd Bergmann <arnd@arndb.de>, lee@kernel.org, 
+ =?utf-8?q?Andr=C3=A9_Draszik?= <andre.draszik@linaro.org>
+X-Mailer: b4 0.12.4
 
---kxagwr5qamp3g4z2
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+This patch series adds support for the Exynos USB 3.1 DRD combo phy, as
+found in Exynos 9 SoCs like Google GS101. It supports USB SS, HS and
+DisplayPort, but DisplayPort is out of scope for this series.
 
-On Mon, Apr 29, 2024 at 10:22:19AM +0200, Joel Granados wrote:
-> On Fri, Apr 26, 2024 at 07:19:44AM -0700, Jakub Kicinski wrote:
-> > On Fri, 26 Apr 2024 08:59:31 +0200 Joel Granados wrote:
-> > > Sorry about this. I pulled the trigger way too early. This is already
-> > > fixed in my v4.
-> > > >       |                ^~~~~~~~~~
-> > > > --=20
-> > > > netdev FAQ tl;dr:
-> > > >  - designate your patch to a tree - [PATCH net] or [PATCH net-next]
-> I'll add "net" to my V6. I wont change the my base commit which is
-> v6.9-rc1.
-Actually, I added net-next and rebased onto net-next/main. Please advise
-if I need to rebase to some other branch in
-pub/scm/linux/kernel/git/netdev/net-next
+In terms of UTMI+, this is very similar to the existing Exynos850
+support in this driver. The difference is that it supports both UTMI+
+(HS) and PIPE3 (SS). Firstly, there are some preparatory patches to simplify
+addition, while the bulk of the changes is around the SS part.
 
-Best
+This version doesn't change anything around Krzysztof's comments regarding
+syscon- vs Exynos-specific PMU APIs, but I wanted to post a version with at
+least the simple fixes that are necessary as well applied.
 
---=20
+Signed-off-by: André Draszik <andre.draszik@linaro.org>
+---
+Changes in v2:
+- avoid having nested else/if in the DT binding (Rob)
+- add missing bitfield.h include
+- Link to v1: https://lore.kernel.org/r/20240423-usb-phy-gs101-v1-0-ebdcb3ac174d@linaro.org
 
-Joel Granados
+---
+André Draszik (7):
+      dt-bindings: phy: samsung,usb3-drd-phy: add gs101 compatible
+      phy: exynos5-usbdrd: use exynos_get_pmu_regmap_by_phandle() for PMU regs
+      phy: exynos5-usbdrd: support isolating HS and SS ports independently
+      phy: exynos5-usbdrd: set ref clk freq in exynos850_usbdrd_utmi_init()
+      phy: exynos5-usbdrd: uniform order of register bit macros
+      phy: exynos5-usbdrd: convert to clk_bulk for phy (register) access
+      phy: exynos5-usbdrd: support Exynos USBDRD 3.1 combo phy (HS & SS)
 
---kxagwr5qamp3g4z2
-Content-Type: application/pgp-signature; name="signature.asc"
+ .../bindings/phy/samsung,usb3-drd-phy.yaml         |  61 +-
+ drivers/phy/samsung/Kconfig                        |   1 -
+ drivers/phy/samsung/phy-exynos5-usbdrd.c           | 754 +++++++++++++++++++--
+ include/linux/soc/samsung/exynos-regs-pmu.h        |   4 +
+ 4 files changed, 756 insertions(+), 64 deletions(-)
+---
+base-commit: d04466706db5e241ee026f17b5f920e50dee26b5
+change-id: 20240423-usb-phy-gs101-abf3e172d1c4
 
------BEGIN PGP SIGNATURE-----
+Best regards,
+-- 
+André Draszik <andre.draszik@linaro.org>
 
-iQGzBAABCgAdFiEErkcJVyXmMSXOyyeQupfNUreWQU8FAmYyCF4ACgkQupfNUreW
-QU95/Qv/X8C3z+cUo5mFZSH58JGLjuIFRnItgNnJEsWPKxRWReISYkCaty681/oU
-CncRPcbCh4zH0r+DsBl7Xd9HS7JhqeB32eucmqy/z69+qJE2OOR6RjJCAP/+/byy
-5rHGpkWngTnn9Yau3W0F1I8G+sqSVnVDdOZucZ6/MlhBpbYiDQcp+rgeHnT+c/6z
-YAFVuQtHBuVXfWLw8wb3rzHvNRGy6BA8slN0vM1JguHp4StbFz0jaJnhA+0M8lZJ
-sucA8jryk6C9tr3bi4l5fOcsfdIZrljIt1ZJZzO7rjpVrLQRsgtec3JSZH6ySkqs
-E8xl7P335ASWdVK18TGWdQ1LcG/X9QEk61Pcrk62O92DUh7exe1N29JENjKtJ/h2
-vjG6phdtdeVwCrlC2XrSSZ6pZzSi52zDWd7GssuA21G7rtxWyIaKyDs4WbuaISpe
-SPbpyrDhvRrM/7B/kGi7WJX40zPeuAPcOQApOKpg2vT2FlmlruQtOmF683lfB3u2
-o8diyPqJ
-=WVyX
------END PGP SIGNATURE-----
-
---kxagwr5qamp3g4z2--
 
