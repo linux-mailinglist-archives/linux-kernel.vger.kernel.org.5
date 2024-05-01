@@ -1,103 +1,90 @@
-Return-Path: <linux-kernel+bounces-164941-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-164942-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C44EB8B8547
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 07:19:43 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 580218B854B
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 07:24:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 645331F22A75
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 05:19:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 13EF8284379
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 05:24:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C349444361;
-	Wed,  1 May 2024 05:19:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2774D481C6;
+	Wed,  1 May 2024 05:24:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="OEnKf3Bv"
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="HRayLi8T"
+Received: from out-176.mta1.migadu.com (out-176.mta1.migadu.com [95.215.58.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D86F2576B;
-	Wed,  1 May 2024 05:19:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2275B45C10
+	for <linux-kernel@vger.kernel.org>; Wed,  1 May 2024 05:24:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714540776; cv=none; b=E7x7mH9KA+xF6yQSc1Rx6dfL0iqNxjBOAVhBuZmCG6DwQ/muQmkGZzFr+KEw3n66Fgr8mMhR3MPYxd50i+npUdRgmuu60xenvM3E8ufcTE99qhPUVbLxLCUjWzwAdiRh+qkkCNdDyAPUMJDP6epOKtL4ODaOdov3LNMqPXCh/8g=
+	t=1714541059; cv=none; b=o2QsvyxwEiO96/QDIbEuHOLyoZpY7E2otC4Z7WTZwLsT24hAdWlrOMVrN9/jK7CN3/sddb7NHCJuxNRTc2YBoIyGlo1C6HAAUuJpzsIAsKaIa0vYvuVsQxcgGgS3FlHoBMctIVpfjUJGP06mhjoiBTJ1y9nQDgUGS3zlBlnZAWI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714540776; c=relaxed/simple;
-	bh=rZOVMkjacxk6ggX2MZ0ySIKeOu+bur476T2sZGzGrI4=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=quDqmlc4xm2FC6qP//fw8yNxyQlD06V2Ofw6scCqxX5zifz7hgAik6VBvGOuQcWcwqXRTMNuHzU+0fTOIjn6LwXfETQpB9n/pPrnJMs4K5zp+cVfLF+dXv9fGrRGQC0JI7l++PnlH5rcOltrWR+FiK7GCGeSVBzszT3YeqZdVLo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=OEnKf3Bv; arc=none smtp.client-ip=150.107.74.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-	s=201702; t=1714540770;
-	bh=qIOMi5cZWSDGMcCVi4MgiYeL0Wgytoc+x8bs5oC5YgA=;
-	h=Date:From:To:Cc:Subject:From;
-	b=OEnKf3Bv4CmkjWVQpyVhJR8IU9hmp3QnGVs8GcO81IE/iYHQZXH8CR3cU7itiOfE5
-	 WCSJlUCRUN2alsLkNZoeUPM3WVsGz+Ub/C98uuw+Hn8/IhCzySNKQnc0rBqOTnJQTy
-	 AN69gdnWfUKoMcv3oQfS6tq+Y5VjIvsmOFA1DHx4uYtne4D9uWjB9jb1WJ/AYHsb11
-	 cMCexrqGej4+8TWLsTlCCvVnF7nTdOqBH0owMl+f2EAiy50Fr0mDbz1AFAjbZw3Pf7
-	 2gmb8MlL8JTGEB+Wf0mcwusYJ2bJJzq5zPoeVt0X3TrP6n/jDEc08BWy0C7iMgTMFm
-	 PR21C0NaLoUuA==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4VTljt3FFSz4wxf;
-	Wed,  1 May 2024 15:19:30 +1000 (AEST)
-Date: Wed, 1 May 2024 15:19:29 +1000
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-To: Alex Deucher <alexdeucher@gmail.com>
-Cc: Alex Deucher <alexander.deucher@amd.com>, Roman Li <roman.li@amd.com>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux Next
- Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build warning after merge of the amdgpu tree
-Message-ID: <20240501151929.219916ee@canb.auug.org.au>
+	s=arc-20240116; t=1714541059; c=relaxed/simple;
+	bh=8VgZBGOqasxtDu8NoWssIzgWua0nNl/c606VADtxgo8=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=ZPYQBJRONNj/LfMcar/gKOeSFaeDZvVPigUfLiz6RdirajBWPxHzVyjySOQpdVJF9a/noUTOMlqCYZRMCVY5/ykAm5jo3HtpaLwOmDYeAL7aNySN5hVLNuq41fgbVUDpmPQmhnZRsRKSEYpdls0F/WnH8etp72BGpqYFkj+5pCA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=HRayLi8T; arc=none smtp.client-ip=95.215.58.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1714541051;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=Hv/zMJfrUtuR9SIXrjoG0hpn5IoOJRa072jft5yenws=;
+	b=HRayLi8TZdep+HY2YBszNDQ9ymBbo+6MbPxdFt5JssNdZaEMQE1BQefVADpwku6mbKHiCS
+	BgtlKdhJTz7BIQ/CXijEGow6CwEGgx+vp7V4b4ub95T+sbx+u3zhVjcYLgYpnAUVoF+R8v
+	UDdihFrVlH190A6rSYEXvMt0NB1uiIs=
+From: Sui Jingfeng <sui.jingfeng@linux.dev>
+To: Neil Armstrong <neil.armstrong@linaro.org>
+Cc: Jessica Zhang <quic_jesszhan@quicinc.com>,
+	Sam Ravnborg <sam@ravnborg.org>,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Maxime Ripard <mripard@kernel.org>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	dri-devel@lists.freedesktop.org,
+	linux-kernel@vger.kernel.org,
+	Sui Jingfeng <sui.jingfeng@linux.dev>
+Subject: [PATCH v2] drm/panel: ili9341: Remove a superfluous else after return
+Date: Wed,  1 May 2024 13:24:02 +0800
+Message-Id: <20240501052402.806006-1-sui.jingfeng@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_//XGt8rXHGLsv+32atP6I7T1";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
---Sig_//XGt8rXHGLsv+32atP6I7T1
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Because the else clause after the return clause is not useful, remove it
+to get a better look.
 
-Hi all,
+Reviewed-by: Jessica Zhang <quic_jesszhan@quicinc.com>
+Signed-off-by: Sui Jingfeng <sui.jingfeng@linux.dev>
+---
+ drivers/gpu/drm/panel/panel-ilitek-ili9341.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-After merging the amdgpu tree, today's linux-next build (htmldocs)
-produced this warning:
+diff --git a/drivers/gpu/drm/panel/panel-ilitek-ili9341.c b/drivers/gpu/drm/panel/panel-ilitek-ili9341.c
+index 3574681891e8..433572c4caf9 100644
+--- a/drivers/gpu/drm/panel/panel-ilitek-ili9341.c
++++ b/drivers/gpu/drm/panel/panel-ilitek-ili9341.c
+@@ -722,7 +722,8 @@ static int ili9341_probe(struct spi_device *spi)
+ 
+ 	if (!strcmp(id->name, "sf-tc240t-9370-t"))
+ 		return ili9341_dpi_probe(spi, dc, reset);
+-	else if (!strcmp(id->name, "yx240qv29"))
++
++	if (!strcmp(id->name, "yx240qv29"))
+ 		return ili9341_dbi_probe(spi, dc, reset);
+ 
+ 	return -1;
+-- 
+2.34.1
 
-drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.h:581: warning: Function pa=
-rameter or struct member 'idle_workqueue' not described in 'amdgpu_display_=
-manager'
-
-Introduced by commit
-
-  afca033f10d3 ("drm/amd/display: Add periodic detection for IPS")
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_//XGt8rXHGLsv+32atP6I7T1
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmYx0OEACgkQAVBC80lX
-0GxqKAf/d30FYXwhVSxsM1+mBP3YLfd+W/gOhfsAW/B/ksEkT8rQISKzlrxKcY2K
-vJkXDF22v0AYS/qBvrEj50tvhzgSKcsyr7jGwQZ8wydj+uPzOrqyQdG9ul71rs5C
-gEoJLc4ULBLUGXt/t6gJSPHrtIsbFezgTJ24DV6WDtQ0+62Ey439Cs81U7YlcGoA
-x2sKaPd4rqKiOJELt8Y7YhyrzarKuEp7JYBeOR2iv1kxh1c+SFXYR8CruNBJqave
-kropRFHN6lzHDYml+6tBSpGjOkGMW9HZzYzfY+jGEcemHcRr6dzG9GenbEHK8V+m
-Wzic4L/kCg+QuAeMqmrKsjRqcH9LtQ==
-=//8Z
------END PGP SIGNATURE-----
-
---Sig_//XGt8rXHGLsv+32atP6I7T1--
 
