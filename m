@@ -1,139 +1,128 @@
-Return-Path: <linux-kernel+bounces-165827-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-165828-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8B49F8B9217
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 01:14:24 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id AE0D18B921A
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 01:15:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C5DCF1C20E14
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 23:14:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 282F61F21E81
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 23:15:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1331A168AE4;
-	Wed,  1 May 2024 23:14:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E6F2168AFC;
+	Wed,  1 May 2024 23:15:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp header.b="Lxhr1KIB";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="SQmShT7U"
-Received: from wfhigh3-smtp.messagingengine.com (wfhigh3-smtp.messagingengine.com [64.147.123.154])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="sNHY3byj"
+Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BDB70168AE2
-	for <linux-kernel@vger.kernel.org>; Wed,  1 May 2024 23:14:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.154
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D4E54D9EF
+	for <linux-kernel@vger.kernel.org>; Wed,  1 May 2024 23:15:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714605258; cv=none; b=LHqO6KgHMGzHIwwF0ITPWGaRurTxYtQAUx4eMSJHpirCJlzUBUKMlr2RD1bpHmD2cgzM0WyzxRoMV7UKNObRhepvyRDXXzUh46uLylMAnHHRAWX/3RYcltaYCCCr9TcMJW6+Mok2/swd5wQLPkiK9r5dk6e0WR/E1lZamh2EVgk=
+	t=1714605333; cv=none; b=ngzjkC8c3FHxiprMRA4YKLspgQA3e5H7MnXqzU1JB+J/bWGJNloZX3fjgrEgM/lffBJls83KxVGCsobO/lK1Il3UFZ8JdCtl4oZt/WY8X6el/9hgn04WQZTf5tNPDxSqr0fp6bJbzuavlqJMulkspiaun7rUclGBRkJ9RChdH8k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714605258; c=relaxed/simple;
-	bh=AiqxsKjFKvp/SSZ7vb4FWRu3hvbAWkDogSSTrauTYPs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=GiVy+G+aGyKRHa5OZ32YIduTBiCkFuu9FV2MQmUaHMHkiDT3x/wXsYWa6DyVn4ZGYyBY4LLnRfPUCIDzW9ZpZKDRQxy/x01MfwuCXo8NSrm4HCUrwxrL9rN6BJdmy+RpBqYa6gUaSWwEgM+S8tS0Dog90LjsndoWhlsIqqsvqQ8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sakamocchi.jp; spf=pass smtp.mailfrom=sakamocchi.jp; dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp header.b=Lxhr1KIB; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=SQmShT7U; arc=none smtp.client-ip=64.147.123.154
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sakamocchi.jp
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sakamocchi.jp
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
-	by mailfhigh.west.internal (Postfix) with ESMTP id C63D718001AE;
-	Wed,  1 May 2024 19:14:14 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute6.internal (MEProxy); Wed, 01 May 2024 19:14:14 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
-	 h=cc:cc:content-type:content-type:date:date:from:from
-	:in-reply-to:in-reply-to:message-id:mime-version:references
-	:reply-to:subject:subject:to:to; s=fm3; t=1714605254; x=
-	1714691654; bh=LGBpfsfi1Wa2XZqumOpfSa70+soAJ7ROMnIXyxLaxJM=; b=L
-	xhr1KIBXSIGKhTDSwFtwCxJrtrg8yLtZkfRbApMQk04ZvCjFemUooob0vRLimEV0
-	aUrcUvqU5P8oAdxfkFPMwJpGZhdOEmMx/NRNRjKygZijwp1IuCAI6eQlIPHVQGiy
-	/9HhjnrX7zOP/mHbbeQW4gSku6QeU0SuUi2+kbPuGykOsVts6YQeQ1q43cy3f8Mi
-	zZIkthpQ1plC31UFghzp4DtpddeNIKgCg0EdwfpQccemf3OwIZsX8vPHlSjGWrtt
-	JqU9ZV/Vw1BGiEFY51KudZAxECn7dAJW01TZPf5xkGOapuNag6AmdG4NIRNPucj/
-	Lh84X4uj6mWdsASfH0J7Q==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm3; t=1714605254; x=1714691654; bh=LGBpfsfi1Wa2XZqumOpfSa70+soA
-	J7ROMnIXyxLaxJM=; b=SQmShT7USHei3dws+1rm3m1358/r2FIN/MpbL8TlQM1K
-	0yEAnspPLQGPaBVuGiV9yETrJ21SvQBPCZrG8gAYQDtAArC10LmaDIhPgGs4VWSV
-	d3SZxX8KVX+xMWcv+XasS59eJdwKAJ2SkIRzF+8JneWJskHjE0iBE5shEn5Ws36N
-	kWqqrVgVSuysnBScPDFa/dMokZXx0DiqQ4edqBp8/kWvZsmlSnZg1TZDVSHKq4Gx
-	Q4QdVIGkVxufsrag34rDjbZX1POWQyzPcw8De6It5hg1hTimXuDgb09hDJSKewn7
-	cNK7pu0c6Z692I7uEbG1fYV4aBmBAuQpb57Ho6fbig==
-X-ME-Sender: <xms:xswyZqtsg806iXZeFUmHer5HpTnVbqnDLtuFKFPCrkkhD_WB5WXItg>
-    <xme:xswyZvcCMVTlEETK4SbEXyp8AaFlFT5610dFLx7fc7Cnscbk12eq8z3_MqPo7iYsZ
-    ejkKbnSaRIh8qg2uoc>
-X-ME-Received: <xmr:xswyZlyFnMZdPRaLTd0LJ1JVOxeU3gmJN5tz-lISapdkkDk4bv2ci0rGJnwkwtC7267PWy3mW6FyKqtvlZbvmLorvefp9lj5>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrvddujedgvddtucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucenucfjughrpeffhffvvefukfhfgggtuggjsehttd
-    ertddttddvnecuhfhrohhmpefvrghkrghshhhiucfurghkrghmohhtohcuoehoqdhtrghk
-    rghshhhisehsrghkrghmohgttghhihdrjhhpqeenucggtffrrghtthgvrhhnpeehhffhte
-    etgfekvdeiueffveevueeftdelhfejieeitedvleeftdfgfeeuudekueenucevlhhushht
-    vghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehoqdhtrghkrghshhhise
-    hsrghkrghmohgttghhihdrjhhp
-X-ME-Proxy: <xmx:xswyZlPcKC7QkqKMf-KT4Y0O9y1C5Z_aVIisCvtuLX60K8G611pHZw>
-    <xmx:xswyZq8lILCgqTDBmRVpJ4cg3OQFM3t-wkx_tYvq15czWMkgSnGTIA>
-    <xmx:xswyZtXhxd_NvAsUPWZGV-Zd9PEmzdJtsGvWM5T9iFTtGnPRhVeQCQ>
-    <xmx:xswyZjcXIGk6yNSkgscSanAhaxb2BZkBd_UFpsEX3plTl1rMREDIfg>
-    <xmx:xswyZsKZoov1_uTTV5OYBRRJUXI2Xwif-29k72jphASDbw7u8tIcmH6D>
-Feedback-ID: ie8e14432:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 1 May 2024 19:14:13 -0400 (EDT)
-Date: Thu, 2 May 2024 08:14:10 +0900
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-To: linux1394-devel@lists.sourceforge.net
-Cc: linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/5] firewire: core/ohci: add tracepoints events for
- bus-reset
-Message-ID: <20240501231410.GA106963@workstation.local>
-Mail-Followup-To: linux1394-devel@lists.sourceforge.net,
-	linux-kernel@vger.kernel.org
-References: <20240501073238.72769-1-o-takashi@sakamocchi.jp>
+	s=arc-20240116; t=1714605333; c=relaxed/simple;
+	bh=3AM2EWff9SwBfyQdM1iIgurVCO8gQYGt1lNkAfst2vM=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=n2DgJ0VLpff+xLOCb4v1SWTuTYJFOf1nUFTF52MzOLsXjzu3GjzuYmfUVfivAIclODP8unQPb0pu4+jeGBJkjCUouHZI3SGfc6Sqd7GijCEp7uCW8+3tSbb3ywvvXKIV5tlbxOQzCOFzF3K1snuW9mZEJPjt3+A1bSl3hzSIVmk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=sNHY3byj; arc=none smtp.client-ip=209.85.219.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dc691f1f83aso569737276.1
+        for <linux-kernel@vger.kernel.org>; Wed, 01 May 2024 16:15:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1714605330; x=1715210130; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=rLsdIwymTCHMRiGzZhz/oYnmKJwch+ZfMdjTvC31E8w=;
+        b=sNHY3byjO3koyPG2YQ+HHE8hcMBqJr/Z1+sayNL28W8riMusWbo0YsEDsqm36jR9of
+         LRoNJq4mL64tnmhAPB0Kjhi+FVUY3OGzuEEnjxL0t7kFPeZUJH5S9G5bGik9rjUVwC8Y
+         54IynVwEoLG7Vq1bYeLmi4Rkl2/2b/mHHeYQYuqMsw11Nq4oiLNre8zAxIvTHpC/evUz
+         3gv0l/z8WYSPk6lgPQvWVzly2SAj0Vut/XnG99mUJp9kwkARSHvB3JvusUKAB2EJFlkQ
+         MV73VVKLGOspzSQpEM0/jvYXe8Ds2/BaPaQZXF5KEgZTfhWg9GhOk9ccO2OaG9cLzt8L
+         RmTw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714605330; x=1715210130;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=rLsdIwymTCHMRiGzZhz/oYnmKJwch+ZfMdjTvC31E8w=;
+        b=mu35wtww0JySkWlVTDzLbqLtRw/nx382Ypcigj6W3/Th+DGOpliiY/sU/1mpf5B3Xv
+         mFOXiXtrM3gK6IEGVYyeCiKCfI2fesEMtx63jCCZ1zBzdV8Wp6PtbG3cmGf5nxro6kTy
+         wlP4VTFP63fdgLAcZuXtZ5qtL1z+eZCYJHX9XrTPqfj0WLdXvYPwgNktnyo59EQuyj34
+         7abfSzWN7TgS6kUtfFuJ1EN6LpRq54Oe4WTvJxWZiChsVGwgEt8rAAnf4NVOqrZfZjJc
+         z9TW5pp13RyS11a5qgCpxXb/wDngPGobe4mFF7iJavznzf9yzZ6D35RBxTaRhm4YC7Wu
+         CkmA==
+X-Forwarded-Encrypted: i=1; AJvYcCWu1XMNUcZctAJWZZ5j33cZKbeufBBRrmJi5N6eH2GdOqu80CDLHwN9o6JRi7c7V7QWzq7rqA8eulWpg3O3vGKwfzJK3+gic2srA6Z3
+X-Gm-Message-State: AOJu0Yx/bIKiooSJneCu+Lfaw1nO6Bg2xiQB9DNRNw7Y6JIDibcaUE8s
+	gYxl5pJK3e8ScdW01Ao9SHMqQHp77cJaKXJJoAbYgaye15eqvrUG1twDTwRoTAmWu8YBHBgCM3Y
+	JGQ==
+X-Google-Smtp-Source: AGHT+IH5Jbyvd3OHt3LMjFeRYVLdua5jhWirNWwQZU+zhsPQlAr4tntyRhPDF3UtZtz+lXOjBlBpJeVMz/c=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a05:6902:100a:b0:dd9:2782:d1c6 with SMTP id
+ w10-20020a056902100a00b00dd92782d1c6mr263457ybt.1.1714605330246; Wed, 01 May
+ 2024 16:15:30 -0700 (PDT)
+Date: Wed, 1 May 2024 16:15:28 -0700
+In-Reply-To: <20240219074733.122080-25-weijiang.yang@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240501073238.72769-1-o-takashi@sakamocchi.jp>
+Mime-Version: 1.0
+References: <20240219074733.122080-1-weijiang.yang@intel.com> <20240219074733.122080-25-weijiang.yang@intel.com>
+Message-ID: <ZjLNEPwXwPFJ5HJ3@google.com>
+Subject: Re: [PATCH v10 24/27] KVM: x86: Enable CET virtualization for VMX and
+ advertise to userspace
+From: Sean Christopherson <seanjc@google.com>
+To: Yang Weijiang <weijiang.yang@intel.com>
+Cc: pbonzini@redhat.com, dave.hansen@intel.com, x86@kernel.org, 
+	kvm@vger.kernel.org, linux-kernel@vger.kernel.org, peterz@infradead.org, 
+	chao.gao@intel.com, rick.p.edgecombe@intel.com, mlevitsk@redhat.com, 
+	john.allen@amd.com
+Content-Type: text/plain; charset="us-ascii"
 
-Hi,
+On Sun, Feb 18, 2024, Yang Weijiang wrote:
+> @@ -696,6 +697,20 @@ void kvm_set_cpu_caps(void)
+>  		kvm_cpu_cap_set(X86_FEATURE_INTEL_STIBP);
+>  	if (boot_cpu_has(X86_FEATURE_AMD_SSBD))
+>  		kvm_cpu_cap_set(X86_FEATURE_SPEC_CTRL_SSBD);
+> +	/*
+> +	 * Don't use boot_cpu_has() to check availability of IBT because the
+> +	 * feature bit is cleared in boot_cpu_data when ibt=off is applied
+> +	 * in host cmdline.
 
-On Wed, May 01, 2024 at 04:32:33PM +0900, Takashi Sakamoto wrote:
-> Hi,
-> 
-> IEEE 1394 bus is under bus-reset state when the physical state of bus is
-> changed; e.g. bus topology change by adding new nodes in the bus. It is
-> important to handle the state appropriately for the maintenance of bus.
-> 
-> This series of change adds some tracepoints events to trace the events
-> related to bus-reset. Some kernel log messages are obsoleted and
-> deleted. It also includes for 1394 OHCI driver so that bus-reset IRQ
-> event is recorded as much as possible, and obsoletes bus-resets bit
-> from debug parameter successfully.
-> 
-> Takashi Sakamoto (5):
->   firewire: ohci: add bus-reset event for initial set of handled irq
->   firewire: ohci: obsolete OHCI_PARAM_DEBUG_BUSRESETS from debug module
->     parameter
->   firewire: core: add tracepoints events for initiating bus reset
->   Revert "firewire: core: option to log bus reset initiation"
->   firewire: core: add tracepoint event for handling bus reset
-> 
->  drivers/firewire/core-card.c        | 13 +++---
->  drivers/firewire/core-topology.c    |  3 ++
->  drivers/firewire/core-transaction.c |  7 ----
->  drivers/firewire/core.h             |  4 --
->  drivers/firewire/ohci.c             | 18 +++------
->  include/trace/events/firewire.h     | 61 ++++++++++++++++++++++++++++-
->  6 files changed, 73 insertions(+), 33 deletions(-)
+I'm not convinced this is a good reason to diverge from the host kernel.  E.g.
+PCID and many other features honor the host setup, I don't see what makes IBT
+special.
 
-Applied to for-next branch.
+LA57 is special because it's entirely reasonable, likely even, for a host to
+only want to use 48-bit virtual addresses, but still want to let the guest enable
+LA57.
 
+> @@ -4934,6 +4935,14 @@ static void vmx_vcpu_reset(struct kvm_vcpu *vcpu, bool init_event)
+>  
+>  	vmcs_write32(VM_ENTRY_INTR_INFO_FIELD, 0);  /* 22.2.1 */
+>  
+> +	if (kvm_cpu_cap_has(X86_FEATURE_SHSTK)) {
+> +		vmcs_writel(GUEST_SSP, 0);
+> +		vmcs_writel(GUEST_S_CET, 0);
+> +		vmcs_writel(GUEST_INTR_SSP_TABLE, 0);
+> +	} else if (kvm_cpu_cap_has(X86_FEATURE_IBT)) {
+> +		vmcs_writel(GUEST_S_CET, 0);
+> +	}
 
-Regards
+Similar to my comments about MSR interception, I think it would be better to
+explicitly handle the "common" field.  At first glance, code like the above makes
+it look like IBT is mutually exclusive with SHSTK, e.g. a reader that isn't
+looking closely could easily miss that both paths write GUEST_S_CET.
 
-Takashi Sakamoto
+	if (kvm_cpu_cap_has(X86_FEATURE_SHSTK)) {
+		vmcs_writel(GUEST_SSP, 0);
+		vmcs_writel(GUEST_INTR_SSP_TABLE, 0); 
+	}
+	if (kvm_cpu_cap_has(X86_FEATURE_IBT) ||
+	    kvm_cpu_cap_has(X86_FEATURE_SHSTK))
+		vmcs_writel(GUEST_S_CET, 0);
 
