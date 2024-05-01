@@ -1,127 +1,116 @@
-Return-Path: <linux-kernel+bounces-164830-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-164831-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 43E748B83AC
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 02:22:17 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 19FE28B83B0
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 02:22:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EE36F1F22A83
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 00:22:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2ED271C21F53
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 00:22:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 547C410FD;
-	Wed,  1 May 2024 00:22:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0783210FD;
+	Wed,  1 May 2024 00:22:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="rS8f8JJg"
-Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="Htu1Lox5"
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5403C625
-	for <linux-kernel@vger.kernel.org>; Wed,  1 May 2024 00:22:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ADE47625;
+	Wed,  1 May 2024 00:22:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714522930; cv=none; b=QyiaRo97l2Dr3MKj0vXwI43vYbkrZdMgJsGl74ysi6cPARuoMuGc8vNuD3TZm3L+6pnAehITWhEW0736gRzMtbbujE6+/epLUv8XhOYZIxPlawSSTkys0MY7d8OQSrN3S50Nf46F1lJ2eR1iEJSKFN6gC1M7+end/gf7Mo9pxQY=
+	t=1714522968; cv=none; b=Uzz+1XMECvbrrwFm/dr/6LjV3H3BspwdbbCHLr9O6nt3kXHK1JUhEc5BCbQKAnQyHAqzMRrZCBUuniaI7Ju/xw+A1HUQPmeNdA2XLLW+aVQ7TV574PJZ6zCZxu61+yWSM16Mm5Qyr/oW7VKBsnViWT2cMkV3vGttlKRVuOpv84A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714522930; c=relaxed/simple;
-	bh=X0WM2lVVVkrpkqRH8pWOu5puLWSYx1PKBK2oxI4tuB4=;
-	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=VviZ02Rxw3Y8RCGVVZgnSEl81ZPYeM0iRbC89k5QIHHP9LS1BvHS+WoeaS+EYZxaX+dnEl9zT88O8eaqR1I4RnrXjySmj1I6be0psttiRlKKdTjFFL3P/s4D6PLQnJGrI99jvwOAYJtYgFgIudG3OJC8+Jojh0jekzNnbSclHB4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--edliaw.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=rS8f8JJg; arc=none smtp.client-ip=209.85.219.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--edliaw.bounces.google.com
-Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dbf618042daso12404464276.0
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 17:22:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1714522928; x=1715127728; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=aOeVT5ijOmluYWTqyy0kihWy6E7/FOShE/HltlDIAgs=;
-        b=rS8f8JJgNyNBX4VffEd/p7utgRtfbyqdOOSI0UjuUThBpbIJ/Kz6yp7ZikxYlKCVWv
-         ctfFzzxlzJm1Lt0PgHqcuLv34KOtuOJh4ATEthbNBOsGKNjqtJZu5mYLOCmP78ARyuKA
-         gBAPvSRzBYh2unuZBxywSXgB5al3rgyyOCMNjZg6RuHOG9l6tANBpv73UwXtEJ4L0UN9
-         kwGioub22oGxJESpDrtSI1Cy81D3VP7q9oi0OgzEgGqPa6S/Pa9hPPM6MKiMetu8cP5i
-         pRAn3jLAeewFbUQupG9Cp5dukm28d45aZK2ytAQ/AgrJVhL9CiOPNWK+QH64KOKPZae7
-         hwaQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714522928; x=1715127728;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=aOeVT5ijOmluYWTqyy0kihWy6E7/FOShE/HltlDIAgs=;
-        b=g1496hHx5va3Ex8FOC1NlwvH3rOzcpHgjLvX779CSJP5CNtIlF5MgXgx0Hg4E6SRG6
-         IViQK8FpBVysUcPSB0RdjucoXOaLsAPOAcVrCjtQYasPEyF/vzky3lq69AG9AxrSsHNM
-         ubwGMOS4iuRP6F5fkqr4zQ8WvNBeAhP+gGFDjhSjS4Bzdh8ZFVuGLf6HtAqxs7BV389l
-         DKVLLocmNEKzcrkEN4N9hq3IiwxG/jTNRpxMs4BOxJEr6W4hzvsuKxNZaKCh6Iz/CWWU
-         JYlUr1m2q1igxBQagiTVB06gxYAWUtbilRXs5cQr1f5FJ9Vys4eQy0+r0KXti06O5DSA
-         No2g==
-X-Gm-Message-State: AOJu0YwbRikDkFKNxvEcynMwkOimBBL75HrNqvxeHzWp5UgPQWygCm8B
-	psDoI1mYUULBXf1LWhXjGHlhszYe7g791v50knA6DqWlU5aoLf89zw70RlQIkEl1gtvf5qf+Lpr
-	oHHPjEJYgH5RBLHB1mgLpwx7JKBkCfG1f4Bc02VkxuYQ8tPNnvZ9MZxw9Tqsz/TcBpPYa+Qf7rl
-	66ew/m0/688cGzfya1xlhjd/y9JoLe4qhhhA0LJBkr
-X-Google-Smtp-Source: AGHT+IEklaC0M02gKwu0vEYUSv6f+jBLX5i1o80HacxvejQgGQU/HK8rwZXcSzpBPGZ7mCbPiYEdzIATv2o=
-X-Received: from edliaw.c.googlers.com ([fda3:e722:ac3:cc00:24:72f4:c0a8:305d])
- (user=edliaw job=sendgmr) by 2002:a05:6902:2b8c:b0:dd9:1b94:edb5 with SMTP id
- fj12-20020a0569022b8c00b00dd91b94edb5mr169322ybb.10.1714522928046; Tue, 30
- Apr 2024 17:22:08 -0700 (PDT)
-Date: Wed,  1 May 2024 00:21:48 +0000
+	s=arc-20240116; t=1714522968; c=relaxed/simple;
+	bh=9ma8h1YWI7JVJDivGTyD80NXVGyder/zRwEJYPUfQ4k=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=BBtwkUm/srsJ8CqkTPuqeDHRwzuCJCp4mO2mWnuMIJo71PhyKYbacUi5SSYT3GQAXh+tpH8EVbiJouIDSIcXYzW9xnXhmA5BGyf2qmW6q6dazSUEPiJtPNa8NBsTpiIWvNO1j4Ndf7yo0/8ssRpRX5iElZzJJ1BtySv/b6BgcOo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=Htu1Lox5; arc=none smtp.client-ip=150.107.74.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+	s=201702; t=1714522961;
+	bh=j/MQyFD4x7ofxGWW87wj/gBPiZZOf5wZndIiflW6PPU=;
+	h=Date:From:To:Cc:Subject:From;
+	b=Htu1Lox5mEzLvB6ELDIV4QXlxHOJOfRJ23E1Z6rAe3CMKFnQOSVQx2XkBA2Y9CFuL
+	 GvzZma2Ys+IVLfWqamcmZ9mXVA4kC9iei3E6QgISgYvDFGb0nBcUGt+A89WVsZGMNV
+	 OU7hqJ6ns10ICUx8KbkO+SnHqyRgtxQ403wTf/HRGw7Q4e9k/1AJjcbjSRN+QGHHe4
+	 KVei1ybxD9mStvMzOLU0L0YU6Tynmz03CJ0AYZST/ToavWQ61x/uiWp3DjPF2DFyVM
+	 ViE2yj7i4VPfoH/StD358DIC/SSZTmCmCHW1cwPUgM6DdDiQ9F24Bgs1o9q2tFRqm1
+	 2RSYxmjFD9BKg==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4VTd7M5Mvxz4wxs;
+	Wed,  1 May 2024 10:22:39 +1000 (AEST)
+Date: Wed, 1 May 2024 10:22:36 +1000
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+To: Mauro Carvalho Chehab <mchehab@kernel.org>
+Cc: Bingbu Cao <bingbu.cao@intel.com>, Hans Verkuil
+ <hverkuil-cisco@xs4all.nl>, Sakari Ailus <sakari.ailus@linux.intel.com>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux Next
+ Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build failure after merge of the v4l-dvb-next tree
+Message-ID: <20240501102236.3b2585d1@canb.auug.org.au>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.45.0.rc0.197.gbae5840b3b-goog
-Message-ID: <20240501002150.1370861-1-edliaw@google.com>
-Subject: [PATCH v2] selftests/vDSO: Fix assignment in condition without parentheses
-From: Edward Liaw <edliaw@google.com>
-To: linux-kernel@vger.kernel.org, Shuah Khan <shuah@kernel.org>, 
-	Nathan Chancellor <nathan@kernel.org>, Nick Desaulniers <ndesaulniers@google.com>, 
-	Bill Wendling <morbo@google.com>, Justin Stitt <justinstitt@google.com>, 
-	Andy Lutomirski <luto@mit.edu>, "H. Peter Anvin" <hpa@linux.intel.com>
-Cc: linux-kselftest@vger.kernel.org, kernel-team@android.com, 
-	Edward Liaw <edliaw@google.com>, llvm@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="Sig_/vwnLW3NQHmckwq=vflSFPAf";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 
-Fixes clang compiler warnings by adding parentheses:
+--Sig_/vwnLW3NQHmckwq=vflSFPAf
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-parse_vdso.c:65:9: warning: using the result of an assignment as a
- condition without parentheses [-Wparentheses]
-                if (g = h & 0xf0000000)
-                    ~~^~~~~~~~~~~~~~~~
-parse_vdso.c:65:9: note: place parentheses around the assignment to
- silence this warning
-                if (g = h & 0xf0000000)
-                      ^
-                    (                 )
-parse_vdso.c:65:9: note: use '==' to turn this assignment into an
- equality comparison
-                if (g = h & 0xf0000000)
-                      ^
-                      ==
+Hi all,
 
-Fixes: 98eedc3a9dbf ("Document the vDSO and add a reference parser")
-Reviewed-by: Justin Stitt <justinstitt@google.com>
-Signed-off-by: Edward Liaw <edliaw@google.com>
----
-v2: separated assignment from predicate
----
- tools/testing/selftests/vDSO/parse_vdso.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+After merging the v4l-dvb-next tree, today's linux-next build (x86_64
+allmodconfig) failed like this:
 
-diff --git a/tools/testing/selftests/vDSO/parse_vdso.c b/tools/testing/selftests/vDSO/parse_vdso.c
-index 413f75620a35..fdd38f7e0e43 100644
---- a/tools/testing/selftests/vDSO/parse_vdso.c
-+++ b/tools/testing/selftests/vDSO/parse_vdso.c
-@@ -62,7 +62,8 @@ static unsigned long elf_hash(const unsigned char *name)
- 	while (*name)
- 	{
- 		h = (h << 4) + *name++;
--		if (g = h & 0xf0000000)
-+		g = h & 0xf0000000;
-+		if (g)
- 			h ^= g >> 24;
- 		h &= ~g;
- 	}
---
-2.45.0.rc0.197.gbae5840b3b-goog
+drivers/media/pci/intel/ipu6/ipu6.c: In function 'request_cpd_fw':
+drivers/media/pci/intel/ipu6/ipu6.c:529:21: error: implicit declaration of =
+function 'vmalloc'; did you mean 'kvmalloc'? [-Werror=3Dimplicit-function-d=
+eclaration]
+  529 |         dst->data =3D vmalloc(fw->size);
+      |                     ^~~~~~~
+      |                     kvmalloc
+drivers/media/pci/intel/ipu6/ipu6.c:529:19: error: assignment to 'const u8 =
+*' {aka 'const unsigned char *'} from 'int' makes pointer from integer with=
+out a cast [-Werror=3Dint-conversion]
+  529 |         dst->data =3D vmalloc(fw->size);
+      |                   ^
+cc1: all warnings being treated as errors
 
+Caused by commit
+
+  25fedc021985 ("media: intel/ipu6: add Intel IPU6 PCI device driver")
+
+I have used the vl4-dvb-next tree from next-20240430 for today.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/vwnLW3NQHmckwq=vflSFPAf
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmYxi0wACgkQAVBC80lX
+0Gz+tAf/Rc6y9Y7QPG1nKRw3l5B3PCGRfYktRKEp73ruX84UZUV4hPrPnwE08WNM
+y0Y4MO4UaPCEpGD5xQ3qrm6xdR0Vi7LoIjUMF0dqKT3FVuQ8nf05ZGMDhiHdGqC4
+lm6vCNOZfUvVVxSzrRPtBWjFVXfPjw31uSuJqAeRNj4F/HOx8B2/LDRroP0fYzph
+t21AjAKnqep8mnk1slpF1fGyKXpnScHyukuv4pVD9RBeje9/26Calv2cJbkJy/9E
++MFjUfbZhFPFj3owPcyvSBPkDNFaTRhGMVfOFrL7WSjVoqGhVSyCnH9Iql68TUJj
+/ARaZCoUnFv7UMsd0aJrz3kCp0lRIQ==
+=O8G2
+-----END PGP SIGNATURE-----
+
+--Sig_/vwnLW3NQHmckwq=vflSFPAf--
 
