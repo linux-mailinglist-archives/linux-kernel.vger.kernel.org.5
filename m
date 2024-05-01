@@ -1,80 +1,128 @@
-Return-Path: <linux-kernel+bounces-165848-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-165851-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D31D78B925D
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 01:27:01 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1F2938B9260
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 01:28:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 74D0A1F2146B
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 23:27:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 505791C2084E
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 23:28:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 539CC16C6B9;
-	Wed,  1 May 2024 23:26:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1BD2E16C436;
+	Wed,  1 May 2024 23:27:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YvS+vGrR"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="SHIsYObo"
+Received: from mail-pj1-f73.google.com (mail-pj1-f73.google.com [209.85.216.73])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 900AA16C6A4;
-	Wed,  1 May 2024 23:26:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1BE4B1581E3
+	for <linux-kernel@vger.kernel.org>; Wed,  1 May 2024 23:27:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.73
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714605976; cv=none; b=k9zAJ8iGFjnChCBhOFCdnJMFfFWg0xTwJ7jdP5F0pv1Q7ujGcUX5cZbPUqUnVlSrURzVbt0/eR9CNrQ14tzzNyoPW/5LOAJOfBzVkuH9OI6rUON2HL6bIdiwJkdslsEKPV1zP9y68wBJ3BgZyhw6GcHKYkGRgXgkOWKYuhkS8q8=
+	t=1714606070; cv=none; b=U5+Xvqr+KCniXyNGRh2TxuXhtYmGe2HGeEvHpOm0BuULC+isfJJChcib92gwMOuV8o4EGOpDkA8kaDjD8XWR8oDzlHrZ4k5k3Z7ze/UNIzZy2YxogMu5fnkRYALqHFP4w9T93sQVuBI1ggASyYiGWKN3C/sYiGdjxvfs3qAwAYE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714605976; c=relaxed/simple;
-	bh=wHBTAMKIcvRLwkC8AoFZJyXUiPOkQ5EwhQFLUq2hD7U=;
-	h=Message-ID:Content-Type:MIME-Version:In-Reply-To:References:
-	 Subject:From:Cc:To:Date; b=U0BbBOILEp1vv8Lsx4Fw4rHO78v7v4waTsDgcGBh/ddIC7S319o/L3CSgzk1UGMUiJ6TuihT0TfKQ7j3klGHiAhQxh5EN6A6LLbfF+ZhTFO1syCVRGoWUMEHP0vWIzLce9n7fOavex6tMU/zn/4nz3trtDiH7olfUgT98Sloo8o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YvS+vGrR; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1CD41C072AA;
-	Wed,  1 May 2024 23:26:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714605976;
-	bh=wHBTAMKIcvRLwkC8AoFZJyXUiPOkQ5EwhQFLUq2hD7U=;
-	h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-	b=YvS+vGrRQQ5MFS7uuvjRk413GdyPc4CrxN/UjqvtEftCzRL272O+XbR1KnFGOF2tS
-	 o5VlQ2rUJRpD2xSFGkwQ+9G1LW0qBOSLI2VmALGqAARjoU4lRZruYU4Qtmok4iWWU8
-	 T69i5THHhZ6rvB1hXuuKH6eDWZzOUJMLYFkf5pEIMGChOIdz2mUbrRab8EpTn/qu1Y
-	 +x8H0rpzY7YsbZW8JeuofflDIsLoWjfmHidorRtxq7z5ZY87+V/fTrW0YA2c9LZ+fY
-	 dTpmSvgWkdpUrEqd1mr5y42x7knLd9sRhVI6xMEL3sH4OHFZJuY4a6wgs5TYqO6MJm
-	 SdvPER2T5vVTQ==
-Message-ID: <b58509db1147e9290e1a006a03e5fec1.sboyd@kernel.org>
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1714606070; c=relaxed/simple;
+	bh=xPKTQAY6H9NH4LCGNLAuTIrJpoVGbJlh2oFRm7BmuLA=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=PUwkKEt9pkdgXY3ypLEGhOieCavYeBhYIgLZW6nDGTqnORaxTGhDB/lNK5ymW4D0bUBovP67wSICIg8M1wkug9PxBzQVrrW2nbgKsbGGs7vqVqgftkeqC8O4TAtRxFsaok7H8C80yBxyb8bo+/apZYueBAvOR0s1G2AjpFx05WA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=SHIsYObo; arc=none smtp.client-ip=209.85.216.73
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-pj1-f73.google.com with SMTP id 98e67ed59e1d1-2a49440f7b5so7076876a91.1
+        for <linux-kernel@vger.kernel.org>; Wed, 01 May 2024 16:27:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1714606068; x=1715210868; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=MXAwrtGLrbcI4VZUxU94il3rKUGPiRgHtzGv9dxe9YQ=;
+        b=SHIsYObocUNELf4CV9FZxpUx69nv7W7TC52LxT0jKwUMQ2SUYNPeBT7V4/rN4g99GR
+         Wbyg+uAgd6x1ZCFStANOfcizhcfSrm7S/RH2S1GPW4q3mb5g2qzYDgfQHHitqP21aExy
+         fHjcIVSRWLqOExMDbuU8y6x3TtL3U7+9xoDF9wu8yKXGK/M5ZTjRRVgohvAmCR5NltdC
+         4/ST5AeMhLLD1UfC9xvp6dbb3dnBKmtQthhYfzthozYicfkSdtUNI/iKWIn4ZZOjcXSW
+         HbLaZdKQ2e3/uJ9t57OgJtWnPXmlFkdBNpikVFZKrfkHTew/ntOnqfWaxQVyThUzXPgD
+         gUaA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714606068; x=1715210868;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=MXAwrtGLrbcI4VZUxU94il3rKUGPiRgHtzGv9dxe9YQ=;
+        b=pbTC4kCM7Sm7xBift3EPme9lk5APPLi6CmqsKHmqiVTiFrgZNMkVdMcbIK6/lmKQBP
+         g03YZpByD9jqA8XVwu1G76loDPx49tgxU8m0McdU1n7kyUjqH/C9c0GqubvoTp+HzU2n
+         hk1SgkgHXgQ7tJs5cq9GQUCLc6H1ahA/xILbvX/V28WvUrjZPLEc5FexFYkfwoOo+yyV
+         MnN43dyoC10s/sRxMIui1VC6LbKQZIGCYnKGHt27QuJcA3dq7Xg4eRCGqrPgb7iUoF+M
+         ES2krEq+6W0ca4vhYvuq9FuL4i1IuXqpLIi5Yjuz4pxHqTzVfct7yRC7BqHJSl/Ubrqc
+         doIw==
+X-Forwarded-Encrypted: i=1; AJvYcCU5yFvf8oNxSN9WMSATIRu9NrdKuY1wyHCMTmQ6e+P8pBH+wlj7Wuj5ogFT32ncrkOJgOv+sWZ3sjBj5c2Qiz3lj06/aa37XWzeg3Uf
+X-Gm-Message-State: AOJu0Yxlhxzm7qaaPX6AOmduYdEvMiBuTxZtWy5R33MPuHKD7NZFv8qp
+	Y22XKp5OJvYgUWOoavYoYNB3eGwATTGJ83qNjlpu+sb+yTk4ixI9bc+SEjQZRxXZu7zJpliJ04P
+	S2A==
+X-Google-Smtp-Source: AGHT+IF4EwXU0JmQLvZRvuwORWuJiQp6XzXl9sqqMI0dc8K3/CZscl+xenDCC2dCoWsq9Og/2wncxvjuPJ8=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a17:90b:4d85:b0:2b2:7c77:ec7d with SMTP id
+ oj5-20020a17090b4d8500b002b27c77ec7dmr11147pjb.2.1714606068268; Wed, 01 May
+ 2024 16:27:48 -0700 (PDT)
+Date: Wed, 1 May 2024 16:27:46 -0700
+In-Reply-To: <20240219074733.122080-1-weijiang.yang@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20240501144445.892045-1-abel.vesa@linaro.org>
-References: <20240501144445.892045-1-abel.vesa@linaro.org>
-Subject: Re: [GIT PULL] clk: imx: Updates for v6.10
-From: Stephen Boyd <sboyd@kernel.org>
-Cc: imx@lists.linux.dev, NXP Linux Team <linux-imx@nxp.com>, linux-clk@vger.kernel.org, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-To: Abel Vesa <abel.vesa@linaro.org>, Mike Turquette <mturquette@baylibre.com>
-Date: Wed, 01 May 2024 16:26:13 -0700
-User-Agent: alot/0.10
+Mime-Version: 1.0
+References: <20240219074733.122080-1-weijiang.yang@intel.com>
+Message-ID: <ZjLP8jLWGOWnNnau@google.com>
+Subject: Re: [PATCH v10 00/27] Enable CET Virtualization
+From: Sean Christopherson <seanjc@google.com>
+To: Yang Weijiang <weijiang.yang@intel.com>
+Cc: pbonzini@redhat.com, dave.hansen@intel.com, x86@kernel.org, 
+	kvm@vger.kernel.org, linux-kernel@vger.kernel.org, peterz@infradead.org, 
+	chao.gao@intel.com, rick.p.edgecombe@intel.com, mlevitsk@redhat.com, 
+	john.allen@amd.com
+Content-Type: text/plain; charset="us-ascii"
 
-Quoting Abel Vesa (2024-05-01 07:44:45)
-> The following changes since commit 4cece764965020c22cff7665b18a0120063590=
-95:
->=20
->   Linux 6.9-rc1 (2024-03-24 14:10:05 -0700)
->=20
-> are available in the Git repository at:
->=20
->   git://git.kernel.org/pub/scm/linux/kernel/git/abelvesa/linux.git/ tags/=
-clk-imx-6.10
->=20
-> for you to fetch changes up to f5072cffb35c122ec85d91ef327fa8814f04297b:
->=20
->   clk: imx: imx8mp: Convert to platform remove callback returning void (2=
-024-05-01 14:40:49 +0300)
->=20
-> ----------------------------------------------------------------
+On Sun, Feb 18, 2024, Yang Weijiang wrote:
+> Sean Christopherson (4):
+>   x86/fpu/xstate: Always preserve non-user xfeatures/flags in
+>     __state_perm
+>   KVM: x86: Rework cpuid_get_supported_xcr0() to operate on vCPU data
+>   KVM: x86: Report XSS as to-be-saved if there are supported features
+>   KVM: x86: Load guest FPU state when access XSAVE-managed MSRs
+> 
+> Yang Weijiang (23):
+>   x86/fpu/xstate: Refine CET user xstate bit enabling
+>   x86/fpu/xstate: Add CET supervisor mode state support
+>   x86/fpu/xstate: Introduce XFEATURE_MASK_KERNEL_DYNAMIC xfeature set
+>   x86/fpu/xstate: Introduce fpu_guest_cfg for guest FPU configuration
+>   x86/fpu/xstate: Create guest fpstate with guest specific config
+>   x86/fpu/xstate: Warn if kernel dynamic xfeatures detected in normal
+>     fpstate
+>   KVM: x86: Rename kvm_{g,s}et_msr()* to menifest emulation operations
+>   KVM: x86: Refine xsave-managed guest register/MSR reset handling
+>   KVM: x86: Add kvm_msr_{read,write}() helpers
+>   KVM: x86: Refresh CPUID on write to guest MSR_IA32_XSS
+>   KVM: x86: Initialize kvm_caps.supported_xss
+>   KVM: x86: Add fault checks for guest CR4.CET setting
+>   KVM: x86: Report KVM supported CET MSRs as to-be-saved
+>   KVM: VMX: Introduce CET VMCS fields and control bits
+>   KVM: x86: Use KVM-governed feature framework to track "SHSTK/IBT
+>     enabled"
+>   KVM: VMX: Emulate read and write to CET MSRs
+>   KVM: x86: Save and reload SSP to/from SMRAM
+>   KVM: VMX: Set up interception for CET MSRs
+>   KVM: VMX: Set host constant supervisor states to VMCS fields
+>   KVM: x86: Enable CET virtualization for VMX and advertise to userspace
+>   KVM: nVMX: Introduce new VMX_BASIC bit for event error_code delivery
+>     to L1
+>   KVM: nVMX: Enable CET support for nested guest
+>   KVM: x86: Don't emulate instructions guarded by CET
 
-Thanks. Pulled into clk-next
+A decent number of comments, but almost all of them are quite minor.  The big
+open is how to handle save/restore of SSP from userspace.
+
+Instead of spinning a full v10, maybe send an RFC for KVM_{G,S}ET_ONE_REG idea?
+That will make it easier to review, and if you delay v11 a bit, I should be able
+to get various series applied that have minor conflicts/dependencies, e.g. the
+MSR access and the kvm_host series.
 
