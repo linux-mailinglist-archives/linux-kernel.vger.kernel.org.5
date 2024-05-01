@@ -1,125 +1,163 @@
-Return-Path: <linux-kernel+bounces-165825-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-165826-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1491B8B9213
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 01:13:49 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 36F0B8B9216
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 01:14:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C2E8528200C
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 23:13:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E11222837A4
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 23:14:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B07FC168AE4;
-	Wed,  1 May 2024 23:13:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9827E165FDB;
+	Wed,  1 May 2024 23:13:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="aGio9w8O"
-Received: from mail-ot1-f53.google.com (mail-ot1-f53.google.com [209.85.210.53])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="cEwmYYd2"
+Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ADB114D9EF;
-	Wed,  1 May 2024 23:13:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 550C4165FCF
+	for <linux-kernel@vger.kernel.org>; Wed,  1 May 2024 23:13:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714605223; cv=none; b=cdNMkh3QM7kQx7nymoRN7mkXc4VkGYNh0LjLVr9w4eAhKtrnhNB0AANADDT0vX0jEDtKdNgcPTUvV1uEfV8bKA3ipU8F6SCOxS+JuqAuSQG8xv4R2U/zLvaiZcdAxchP4vc1TClWQp0qsl+NIHw8ZnqyKz1gaz9unyWQwDsB2XY=
+	t=1714605232; cv=none; b=ICKJ+rpJsRbZFGf297ZAPuUS+tpwV75yI5hykUsDvX4XhWCdWhN4BEPRjff3QZUdSzDx2ELImurZrIGS6v2xkG7MnWrNaqR6nbIXM+q40PcSRu66c0JCwF2ObbRyibv7G4pp3q6s6kzctbmRSi28+wRVI2FGkEvem//e9cWhO9w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714605223; c=relaxed/simple;
-	bh=PoFcIeZkV/mxc2J82vfCM4Z3LKMi/U9yVabayINCqEg=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=jbef4nesr2WR2Uqq8uBzVY9q4v+m5W3GfFNg4aQgB0NaJMN5ZlLiMN+zjdpiea+UHvpwufPaT30pdGf93j7PgtwNX8kUz5IKeIaHQSNzuR9EnOP698Egm1VjetUmTCkkrurWn139kQLq+rQMuw0O/uEJjELfpekBV3rttnlbxmY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=aGio9w8O; arc=none smtp.client-ip=209.85.210.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ot1-f53.google.com with SMTP id 46e09a7af769-6ee3a7cb9f1so1955892a34.1;
-        Wed, 01 May 2024 16:13:40 -0700 (PDT)
+	s=arc-20240116; t=1714605232; c=relaxed/simple;
+	bh=Jp5j7VAsVFbBco8tSe/QBTxiO2L2qNjnlYyph8TEINU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=eVZuS66agtJm3utClr+rMDSN1dmDZJQ6QPeo1hqn9uGbkztOqX7A+jd0PzoRdwgtrGRPezJozuSsSx067z6Ki2sVkyqU56K6UDvsQctyzW+98wTeNiU3e9QO8u7GgAGieLHgVc5r3TV7VMKSwiHWxeKHKgaVB4NAEfwXgSfNL6o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=cEwmYYd2; arc=none smtp.client-ip=209.85.218.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-a5200202c1bso939272766b.0
+        for <linux-kernel@vger.kernel.org>; Wed, 01 May 2024 16:13:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714605220; x=1715210020; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=y6hR+LTCh++HJmDxNTitSkT354S+V0BUkggMSxAqRI4=;
-        b=aGio9w8OFdT6tc6FZ4p7MebLg5ALGbAcIO3QUDLqRn84zP2p3EJZE2244QkxYm47I6
-         z6VXyYrdmwO0+hZNxQUEwWZlhcUrFLAHMfMHU9rdlaHhi6F7M4TT7uihNQYYgJZgD6SD
-         w2xIKFAR0JpN0LEOK2BJD6RBvd8h7Ss6nX2GSKLpJnn6TUQphu50ci0O6lrT+QR9JeVd
-         JKg+JL6d+D7SoS3JtrHHTwpv501OGr7NjIDxe24PzVqeihSZVfxDcuGOQR3g4tLhBqeB
-         HDClOfqNhKGrzE7MSc6CB24iDYI6qA7rEgRtHFBNVOkKFaSaA7gFDcGOMgzIv4244DKP
-         vFNQ==
+        d=linaro.org; s=google; t=1714605230; x=1715210030; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=Jp5j7VAsVFbBco8tSe/QBTxiO2L2qNjnlYyph8TEINU=;
+        b=cEwmYYd2eGJgJo8DYjDWvcCGv68Hzs4IBBDJLGfc5AePnC/yv22daJGjG9GHwE3udW
+         yoURiL9o8leCa6nAv0ha07JBpthMs1aDWuh3livgDgxLxwGVbHBwHBlXrFqusx97fa5x
+         7AxLoQWnTGGMgvc7UaLaUOX65p4AMIGRAYUw5H3nZZTSxZL0OuTgc+5fOob/caZRUxun
+         srw5Vr1e4ezGkzS5oU1fNaDxXvxc7Iwz/R8ejkUyKPc05zbo476UbPbf0Ch3RNj+ls9a
+         oZlrMKCUNq/qd4D3eBo4AhvOv/Ui2WRqWegVVMNx5iccjji7CVHGUn0zri6IuPEllqsY
+         ALkw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714605220; x=1715210020;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=y6hR+LTCh++HJmDxNTitSkT354S+V0BUkggMSxAqRI4=;
-        b=V4wkEFhkpq4EHMLce+k6stPoDpNYiHuXjzo6+UpxyUfsNQaBUcaf4E+ZlTe4vWoR+U
-         2Oc2dEXJ1nLF0KF2Iw+xVwPIJDdaQzSwVNR00aHOsc5dZumnOeCG4WRsQSdUoQWws204
-         G28R0LZAY+Y1hAXTHP7qhFBaOAXo6WdKYhBMscNwvGHcKn3gLKDQxY0SmOSt0GIPaL4/
-         oJHxCBoZX0xC2BAbl4uPmeuPQt0lOKu0O+ZrS0up3a2894WKQc6emg59Ez3z/UVLbdjf
-         C1KwmUpin/NMoDplYmVglt1cBQBIQX5ZTXmULQHFF31/CO/q9tz28Ge/MpKPeZaueTrL
-         7nwA==
-X-Forwarded-Encrypted: i=1; AJvYcCVFfdPTDA6h9nnptM0nNwYZP8b4vWjelqku+w7vXK10hU9fbEFDGIcQAR2rUOLp8E145MkSJPeCCeW1ocxH9VSJjNKtWPEuxr8U5HVuoWaY0GESjU09tCDzDll6i8MFIJVM7TQml+vrx6OHEXdD
-X-Gm-Message-State: AOJu0YyrOW8X1gWop/dESOUcsHs5k7fpBF9YZPWEWNDBFfa3V+6YYid/
-	lPJnDA+YGwBC5IYO8QGOJ1QVNwsi2IPCwVzEu1oqbK87D26eGQH6
-X-Google-Smtp-Source: AGHT+IGF40LvLfwKdlI2BiBWH2OfsCP+ZKCXvoGuJrWhVtkss/fRm6OgoMJv2CGbgRhTF1qLa/bZDQ==
-X-Received: by 2002:a05:6870:548c:b0:23d:2ac9:1207 with SMTP id f12-20020a056870548c00b0023d2ac91207mr589011oan.28.1714605219691;
-        Wed, 01 May 2024 16:13:39 -0700 (PDT)
-Received: from kerneldev.. ([171.76.83.90])
-        by smtp.gmail.com with ESMTPSA id w1-20020a6556c1000000b005f3d54c0a57sm12997153pgs.49.2024.05.01.16.13.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 01 May 2024 16:13:39 -0700 (PDT)
-From: Saurav Shah <sauravshah.31@gmail.com>
-To: shuah@kernel.org,
-	akpm@linux-foundation.org,
-	cyphar@cyphar.com,
-	jeffxu@google.com,
-	gthelen@google.com
-Cc: Saurav Shah <sauravshah.31@gmail.com>,
-	linux-kselftest@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] selftests/memfd: fix spelling mistakes
-Date: Thu,  2 May 2024 04:43:17 +0530
-Message-Id: <20240501231317.24648-1-sauravshah.31@gmail.com>
-X-Mailer: git-send-email 2.34.1
+        d=1e100.net; s=20230601; t=1714605230; x=1715210030;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Jp5j7VAsVFbBco8tSe/QBTxiO2L2qNjnlYyph8TEINU=;
+        b=bUuCEMSOaHzuMdDnQ1/mKrnCzfsgKCtvRMngrMa7Z4zvlfNb9GQQyEBfvNYJCMLM+W
+         UL8+SHb1nYYdkWlTObBt1B3VGaP2iLtdPpyD8f6yuJW2RfKIsPHDiyXF6lYbGOA2GXUZ
+         CUddp9OBi2D2s0q+9rYE+PtYkkpzvwQHIkyhc+yh2GcdjDBXi31KXUL63STFrC5hvcyO
+         3zXUud2l8huRqvsTOFEPRTKDAz9lgYVEjhpLIhOq7K3/hVV+7HQMX1mgRMP9GKDzjD/W
+         59irt/3FTTk2wV8HPbtKdsnFY0wq5AKhHGxz9dAHFyR42B1xfxeR4WcNZAqMN2Z5XBK+
+         yRCQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXBlXuWhVoksMkMWJ1x7862fioPGSjigolB2YGgUdLX+BA5Nr4OriMPw7WZJP0GC9QlQlVZVkoZqrfkC2RBzGo0BBT6d+Ira48iy32y
+X-Gm-Message-State: AOJu0YxHNz+tH5awEXginmokGJ2E5t83IwNF4unCVRAZm2JKbZG6s6P0
+	OuHRWgNLSv84TPXkl3O+Tg4tuRa/RzxTdFAeuY+r6kvlHM5NMhzer2YOJrJEwPI=
+X-Google-Smtp-Source: AGHT+IExWqXN6g2T7SY8JNtnknwKEW5mG45BY2T0TJuAt/4o10r4NoWhLjn9eNQ+drkTypV8TMBiTw==
+X-Received: by 2002:a17:906:e08:b0:a55:5ff4:ff4f with SMTP id l8-20020a1709060e0800b00a555ff4ff4fmr238868eji.71.1714605229754;
+        Wed, 01 May 2024 16:13:49 -0700 (PDT)
+Received: from [192.168.114.15] (078088045141.garwolin.vectranet.pl. [78.88.45.141])
+        by smtp.gmail.com with ESMTPSA id u14-20020a170906b10e00b00a5534758ef7sm17073698ejy.148.2024.05.01.16.13.46
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 01 May 2024 16:13:48 -0700 (PDT)
+Message-ID: <5a9a0c90-d191-49e1-8cd5-1d45c82040ac@linaro.org>
+Date: Thu, 2 May 2024 01:13:45 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 3/3] PCI: qcom: Add rx margining settings for 16GT/s
+To: Shashank Babu Chinta Venkata <quic_schintav@quicinc.com>,
+ agross@kernel.org, andersson@kernel.org, mani@kernel.org
+Cc: quic_msarkar@quicinc.com, quic_kraravin@quicinc.com,
+ Lorenzo Pieralisi <lpieralisi@kernel.org>,
+ =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
+ Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+ Jingoo Han <jingoohan1@gmail.com>,
+ Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
+ Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+ Serge Semin <fancer.lancer@gmail.com>,
+ Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+ Conor Dooley <conor.dooley@microchip.com>, linux-kernel@vger.kernel.org,
+ linux-pci@vger.kernel.org, linux-arm-msm@vger.kernel.org
+References: <20240419001013.28788-1-quic_schintav@quicinc.com>
+ <20240419001013.28788-4-quic_schintav@quicinc.com>
+ <02ae9e6b-b652-433e-b36d-e6106d4fbcd1@linaro.org>
+ <53c0e508-60fe-ee5d-cb2b-a5392c330377@quicinc.com>
+Content-Language: en-US
+From: Konrad Dybcio <konrad.dybcio@linaro.org>
+Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
+ 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
+ izWDgYvmBE8=
+In-Reply-To: <53c0e508-60fe-ee5d-cb2b-a5392c330377@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-Fix spelling mistakes in the comments.
+[...]
 
-Signed-off-by: Saurav Shah <sauravshah.31@gmail.com>
----
- tools/testing/selftests/memfd/fuse_test.c  | 2 +-
- tools/testing/selftests/memfd/memfd_test.c | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+>>>   EXPORT_SYMBOL_GPL(qcom_pcie_common_set_16gt_eq_settings);
+>>>   +void qcom_pcie_common_set_16gt_rx_margining_settings(struct dw_pcie *pci)
+>>> +{
+>>> +    u32 reg;
+>>> +
+>>> +    reg = dw_pcie_readl_dbi(pci, GEN4_LANE_MARGINING_1_OFF);
+>>> +    reg = MARGINING_MAX_VOLTAGE_OFFSET(0x24) |
+>>> +        MARGINING_NUM_VOLTAGE_STEPS(0x78) |
+>>> +        MARGINING_MAX_TIMING_OFFSET(0x32) |
+>>> +        MARGINING_NUM_TIMING_STEPS(0x10);
+>>> +    dw_pcie_writel_dbi(pci, GEN4_LANE_MARGINING_1_OFF, reg);
+>>
+>> Since this is DW-common, why is this inside the qcom driver?
+> Though this register space is in dw-common specific, these settings are purely vendor specific . These settings are determined by systems team on vendor hardware, as these settings are used as margin to compensate signal variance due to various physical factors(like connection length, retimers etc).
 
-diff --git a/tools/testing/selftests/memfd/fuse_test.c b/tools/testing/selftests/memfd/fuse_test.c
-index 93798c8c5d54..dbc171a3806d 100644
---- a/tools/testing/selftests/memfd/fuse_test.c
-+++ b/tools/testing/selftests/memfd/fuse_test.c
-@@ -306,7 +306,7 @@ int main(int argc, char **argv)
- 	 * then the kernel did a page-replacement or canceled the read() (or
- 	 * whatever magic it did..). In that case, the memfd object is still
- 	 * all zero.
--	 * In case the memfd-object was *not* sealed, the read() was successfull
-+	 * In case the memfd-object was *not* sealed, the read() was successful
- 	 * and the memfd object must *not* be all zero.
- 	 * Note that in real scenarios, there might be a mixture of both, but
- 	 * in this test-cases, we have explicit 200ms delays which should be
-diff --git a/tools/testing/selftests/memfd/memfd_test.c b/tools/testing/selftests/memfd/memfd_test.c
-index 18f585684e20..95af2d78fd31 100644
---- a/tools/testing/selftests/memfd/memfd_test.c
-+++ b/tools/testing/selftests/memfd/memfd_test.c
-@@ -1528,7 +1528,7 @@ static void test_share_open(char *banner, char *b_suffix)
- 
- /*
-  * Test sharing via fork()
-- * Test whether seal-modifications work as expected with forked childs.
-+ * Test whether seal-modifications work as expected with forked children.
-  */
- static void test_share_fork(char *banner, char *b_suffix)
- {
--- 
-2.34.1
+Okay, so:
 
+1. is the register layout vendor-specific too? i.e. are the bitfields DW-common?
+
+2. will these settings work on all Qualcomm devices, regardless of SoC/board/
+retimers used etc.?
+
+Konrad
 
