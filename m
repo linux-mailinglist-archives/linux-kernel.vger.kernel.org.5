@@ -1,335 +1,159 @@
-Return-Path: <linux-kernel+bounces-165655-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-165656-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 86D6B8B8F1B
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 19:35:39 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C3F858B8F20
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 19:38:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3DB212832E1
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 17:35:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 019431C2130A
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 17:38:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 070CB12FF87;
-	Wed,  1 May 2024 17:35:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E7A4B1304AF;
+	Wed,  1 May 2024 17:38:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="n7eUQT/8"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FG482jE1"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB46817C9B;
-	Wed,  1 May 2024 17:35:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 262C5D2FE;
+	Wed,  1 May 2024 17:38:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714584930; cv=none; b=kG7iDTDQTCM6hmB1ZKwAurAqXTfd5cLsj0yU7dIQHimCCWEVUNGRRQSCWM80f7Unc0SOE4yq0Roa542K7pIndKcw4dmLmx9GyONpS54AMj7/XHHcx3lcUvJa8D3BJRmzBWQ1adGtjkNrqaZYcWvoEQgyNq+VKBJx4lvJKzsRT6A=
+	t=1714585109; cv=none; b=hBk2z4MA3JWM4s9SPx9gD1wB+k3oOIF838svJx7zBs7ci2c0h0vzOkCe+zll1l/GZ2tndh3qjRk2MNMEfhACMp2I7kiw5zAiXZNBufq5lxZxxmqCejxKSR9T3NZxRRYYXp7vpkwjgHdIYEu0JGYW5+nsyzT6akqMdv4A3KKBOtA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714584930; c=relaxed/simple;
-	bh=i5Yel4re/gpYyg9W0x9D7AVuSGIzMUN9waF0CV8LGiA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=bIsCORz6v+EIjbCjLZD+AvHLt2E7wOuvBEqRKtTeuXLxqogCBYWBmYDTbQJk29wWCUDIxV2ZXyj2hEORKRSPa/VmOLdy1UUs7ecvvXfQXWR6sGkOvKDywLJ2z/9T53vG0rBBdhdwICuvSQGpw2yr6c49tzFC5Sd3xQZA+6lHMhw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=n7eUQT/8; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 451F6C4AF18;
-	Wed,  1 May 2024 17:35:29 +0000 (UTC)
+	s=arc-20240116; t=1714585109; c=relaxed/simple;
+	bh=3Rom1K33gLjGc5KMu7YOMHTB0qLyXpnfXozkAEwXuwQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To; b=PKd7GUJiMxZwD9EtP178mmOwafAs8acex0vuvItmIA2xOvSSHmWCXODQqCbzHtp5IdRS5hGP++HP5v2a2s/ohYHksgV9LNPzJFNql/MZhmGG/XLU66BfuIauZ+06/gfc+rRRl6eJrcL1mBD8DVOYJCnRq3l//RRNp02yaW6MSN4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FG482jE1; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5EA32C072AA;
+	Wed,  1 May 2024 17:38:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714584929;
-	bh=i5Yel4re/gpYyg9W0x9D7AVuSGIzMUN9waF0CV8LGiA=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=n7eUQT/8mER933KsE9ph6iqTihSCWywhDiBnKKtOM/MK9itKMnUHn1SiKy9b5d2e+
-	 d/m3W3goFdpo7WY0O06tLDaUK1tDBUuZVupR5/uMWFW699UBcoDeztC4L6IbAYrWMw
-	 OHmZ44uYNxK+s4Cv+wY8Ufe4ruAguL8j6uctiUJ98z6N1OywGYhimrx85YHHgvD5GW
-	 CaVDf04rnNdFEH3W/TrrI6oJBy+5s/DV8P2GpOv7XLIXBIN/0CXL3Cp5UH3gqNxkMT
-	 rpJ+C40Esk8W9E5qwKIuqSmPzWM+Rqji5d08uOxb9aRE0frNfdwGsOcIsQFR9X65Se
-	 tsbmpDVKgkeFg==
-Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-572af0b12b8so654488a12.2;
-        Wed, 01 May 2024 10:35:29 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCXSlxFypLulBhcFQmzid5j4FtjnGcgRkxxPd/HyhvTfcDggHO5pJ9NRIL58W9zFWSH4rqTU27bO2dAqvDdtGG9DGYr4IevRf+BHAZx5ODQWPJzb2QzqblcjEBVRIa1SuQpxCJ+rHhBmsQ97owlpfWg45efUuyZ3bQX4nxmOjDMJavfGJofuXSycikI9q0B10MS5oXA8hIgPipqFu6S9zM8u4ua0hJHnFVn0xPPk3k4jPR06Ceql+QJAWRMcZCoVzaC+ll12iN8=
-X-Gm-Message-State: AOJu0YyORGou7V6HbOUAe/v1QzpvmUsPGj0r4+v86srXS5fhc1iSE95O
-	nWEKcAkg7ZOPGEKgvNUzXdnAOgQkmfnrk15qsVvv7V7E71WDOKVRezP+lnW1tQ5vazeJDL0fdax
-	xt7Pn155pLPGl4YepFZUmiwoHFa0=
-X-Google-Smtp-Source: AGHT+IEhp06z8PCIlVF1hpW4hJBFp2boXUQOEcPvL4fU9iRfZCC258FtGJKDPaIGuDs/Gks4hDv4XD1KMR1DM4Yf91w=
-X-Received: by 2002:a05:6402:11c8:b0:572:315a:b2d3 with SMTP id
- j8-20020a05640211c800b00572315ab2d3mr1958514edw.15.1714584927605; Wed, 01 May
- 2024 10:35:27 -0700 (PDT)
+	s=k20201202; t=1714585108;
+	bh=3Rom1K33gLjGc5KMu7YOMHTB0qLyXpnfXozkAEwXuwQ=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:From;
+	b=FG482jE1b23MALPQTleYDyQE1i/V2NpJTWpzv1GQrZKsSaSchZfte6XfXHrUIstsY
+	 wWdvHyKMw9fx5FUqlBzhSH8osTQZvwTaZrGrt0Xn7ftNu8Xnk9lGJlz2dzCPMB9qoz
+	 KALX3k6b91XTBT3kA1wPdPZM1m66uA/qOBn4jLCr8YaiQvQ9BXxjfR5pprRftIrhrw
+	 /9yJKII93CaytSG1/TarbiJyKVzIxg351HGh1Dn0Eh9JPrh8emJM5tohPnWbTgYddS
+	 MVvWkLicm8OIZWsV8yNLVsfkfG/AJ0uL+iysVuZKcIktl/Ty/JJRX7tSvQs9GmjmOW
+	 nh95iuzB5VEsA==
+Date: Wed, 1 May 2024 12:38:26 -0500
+From: Bjorn Helgaas <helgaas@kernel.org>
+To: Herve Codina <herve.codina@bootlin.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>, Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Lee Jones <lee@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+	Horatiu Vultur <horatiu.vultur@microchip.com>,
+	UNGLinuxDriver@microchip.com, Andrew Lunn <andrew@lunn.ch>,
+	Heiner Kallweit <hkallweit1@gmail.com>,
+	Russell King <linux@armlinux.org.uk>,
+	Saravana Kannan <saravanak@google.com>,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	Philipp Zabel <p.zabel@pengutronix.de>,
+	Lars Povlsen <lars.povlsen@microchip.com>,
+	Steen Hegelund <Steen.Hegelund@microchip.com>,
+	Daniel Machon <daniel.machon@microchip.com>,
+	Alexandre Belloni <alexandre.belloni@bootlin.com>,
+	linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+	netdev@vger.kernel.org, linux-pci@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	Allan Nielsen <allan.nielsen@microchip.com>,
+	Luca Ceresoli <luca.ceresoli@bootlin.com>,
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Subject: Re: [PATCH 15/17] pci: of_property: Add the interrupt-controller
+ property in PCI device nodes
+Message-ID: <20240501173826.GA808463@bhelgaas>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240501162956.229427-1-stephen.s.brennan@oracle.com>
-In-Reply-To: <20240501162956.229427-1-stephen.s.brennan@oracle.com>
-From: Guo Ren <guoren@kernel.org>
-Date: Thu, 2 May 2024 01:35:16 +0800
-X-Gmail-Original-Message-ID: <CAJF2gTT8a4PBU3ekZFNTi6EuETT9hhKfhXrPgGGpn92rQMNSvg@mail.gmail.com>
-Message-ID: <CAJF2gTT8a4PBU3ekZFNTi6EuETT9hhKfhXrPgGGpn92rQMNSvg@mail.gmail.com>
-Subject: Re: [PATCH v3] kprobe/ftrace: bail out if ftrace was killed
-To: Stephen Brennan <stephen.s.brennan@oracle.com>
-Cc: Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>, 
-	Mark Rutland <mark.rutland@arm.com>, Huacai Chen <chenhuacai@kernel.org>, 
-	WANG Xuerui <kernel@xen0n.name>, 
-	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>, Helge Deller <deller@gmx.de>, 
-	Michael Ellerman <mpe@ellerman.id.au>, Nicholas Piggin <npiggin@gmail.com>, 
-	Christophe Leroy <christophe.leroy@csgroup.eu>, "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>, 
-	"Naveen N. Rao" <naveen.n.rao@linux.ibm.com>, Paul Walmsley <paul.walmsley@sifive.com>, 
-	Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, 
-	Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, 
-	Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, 
-	Sven Schnelle <svens@linux.ibm.com>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, 
-	Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, 
-	"H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org, 
-	linux-trace-kernel@vger.kernel.org, linux-csky@vger.kernel.org, 
-	loongarch@lists.linux.dev, linux-parisc@vger.kernel.org, 
-	linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, 
-	linux-s390@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240430083730.134918-16-herve.codina@bootlin.com>
 
-On Thu, May 2, 2024 at 12:30=E2=80=AFAM Stephen Brennan
-<stephen.s.brennan@oracle.com> wrote:
->
-> If an error happens in ftrace, ftrace_kill() will prevent disarming
-> kprobes. Eventually, the ftrace_ops associated with the kprobes will be
-> freed, yet the kprobes will still be active, and when triggered, they
-> will use the freed memory, likely resulting in a page fault and panic.
->
-> This behavior can be reproduced quite easily, by creating a kprobe and
-> then triggering a ftrace_kill(). For simplicity, we can simulate an
-> ftrace error with a kernel module like [1]:
->
-> [1]: https://github.com/brenns10/kernel_stuff/tree/master/ftrace_killer
->
->   sudo perf probe --add commit_creds
->   sudo perf trace -e probe:commit_creds
->   # In another terminal
->   make
->   sudo insmod ftrace_killer.ko  # calls ftrace_kill(), simulating bug
->   # Back to perf terminal
->   # ctrl-c
->   sudo perf probe --del commit_creds
->
-> After a short period, a page fault and panic would occur as the kprobe
-> continues to execute and uses the freed ftrace_ops. While ftrace_kill()
-> is supposed to be used only in extreme circumstances, it is invoked in
-> FTRACE_WARN_ON() and so there are many places where an unexpected bug
-> could be triggered, yet the system may continue operating, possibly
-> without the administrator noticing. If ftrace_kill() does not panic the
-> system, then we should do everything we can to continue operating,
-> rather than leave a ticking time bomb.
->
-> Signed-off-by: Stephen Brennan <stephen.s.brennan@oracle.com>
+In subject: s/pci:/PCI:/ to match history. s/Add the/Add/ for brevity.
+
+On Tue, Apr 30, 2024 at 10:37:24AM +0200, Herve Codina wrote:
+> PCI devices and bridges DT nodes created during the PCI scan are created
+> with the interrupt-map property set to handle interrupts.
+> 
+> In order to set this interrupt-map property at a specific level, a
+> phandle to the parent interrupt controller is needed.
+> On systems that are not fully described by a device-tree, the parent
+> interrupt controller may be unavailable (i.e. not described by the
+> device-tree).
+
+Rewrap into one paragraph or add blank line to separate paragraphs.
+
+> As mentioned in the [1], avoiding the use of the interrupt-map property
+> and considering a PCI device as an interrupt controller itself avoid the
+> use of a parent interrupt phandle.
+> 
+> In that case, the PCI device itself as an interrupt controller is
+> responsible for routing the interrupts described in the device-tree
+> world (DT overlay) to the PCI interrupts.
+> 
+> Add the 'interrupt-controller' property in the PCI device DT node.
+> 
+> [1]: https://lore.kernel.org/lkml/CAL_Jsq+je7+9ATR=B6jXHjEJHjn24vQFs4Tvi9=vhDeK9n42Aw@mail.gmail.com/
+> 
+> Signed-off-by: Herve Codina <herve.codina@bootlin.com>
 > ---
-> Changes in v3:
->   Don't expose ftrace_is_dead(). Create a "kprobe_ftrace_disabled"
->   variable and check it directly in the kprobe handlers.
-> Link to v1/v2 discussion:
->   https://lore.kernel.org/all/20240426225834.993353-1-stephen.s.brennan@o=
-racle.com/
->
->  arch/csky/kernel/probes/ftrace.c     | 3 +++
->  arch/loongarch/kernel/ftrace_dyn.c   | 3 +++
->  arch/parisc/kernel/ftrace.c          | 3 +++
->  arch/powerpc/kernel/kprobes-ftrace.c | 3 +++
->  arch/riscv/kernel/probes/ftrace.c    | 3 +++
->  arch/s390/kernel/ftrace.c            | 3 +++
->  arch/x86/kernel/kprobes/ftrace.c     | 3 +++
->  include/linux/kprobes.h              | 7 +++++++
->  kernel/kprobes.c                     | 6 ++++++
->  kernel/trace/ftrace.c                | 1 +
->  10 files changed, 35 insertions(+)
->
-> diff --git a/arch/csky/kernel/probes/ftrace.c b/arch/csky/kernel/probes/f=
-trace.c
-> index 834cffcfbce3..7ba4b98076de 100644
-> --- a/arch/csky/kernel/probes/ftrace.c
-> +++ b/arch/csky/kernel/probes/ftrace.c
-> @@ -12,6 +12,9 @@ void kprobe_ftrace_handler(unsigned long ip, unsigned l=
-ong parent_ip,
->         struct kprobe_ctlblk *kcb;
->         struct pt_regs *regs;
->
-> +       if (unlikely(kprobe_ftrace_disabled))
-> +               return;
-> +
-For csky part.
-Acked-by: Guo Ren <guoren@kernel.org>
-
->         bit =3D ftrace_test_recursion_trylock(ip, parent_ip);
->         if (bit < 0)
->                 return;
-> diff --git a/arch/loongarch/kernel/ftrace_dyn.c b/arch/loongarch/kernel/f=
-trace_dyn.c
-> index 73858c9029cc..bff058317062 100644
-> --- a/arch/loongarch/kernel/ftrace_dyn.c
-> +++ b/arch/loongarch/kernel/ftrace_dyn.c
-> @@ -287,6 +287,9 @@ void kprobe_ftrace_handler(unsigned long ip, unsigned=
- long parent_ip,
->         struct kprobe *p;
->         struct kprobe_ctlblk *kcb;
->
-> +       if (unlikely(kprobe_ftrace_disabled))
-> +               return;
-> +
->         bit =3D ftrace_test_recursion_trylock(ip, parent_ip);
->         if (bit < 0)
->                 return;
-> diff --git a/arch/parisc/kernel/ftrace.c b/arch/parisc/kernel/ftrace.c
-> index 621a4b386ae4..c91f9c2e61ed 100644
-> --- a/arch/parisc/kernel/ftrace.c
-> +++ b/arch/parisc/kernel/ftrace.c
-> @@ -206,6 +206,9 @@ void kprobe_ftrace_handler(unsigned long ip, unsigned=
- long parent_ip,
->         struct kprobe *p;
->         int bit;
->
-> +       if (unlikely(kprobe_ftrace_disabled))
-> +               return;
-> +
->         bit =3D ftrace_test_recursion_trylock(ip, parent_ip);
->         if (bit < 0)
->                 return;
-> diff --git a/arch/powerpc/kernel/kprobes-ftrace.c b/arch/powerpc/kernel/k=
-probes-ftrace.c
-> index 072ebe7f290b..f8208c027148 100644
-> --- a/arch/powerpc/kernel/kprobes-ftrace.c
-> +++ b/arch/powerpc/kernel/kprobes-ftrace.c
-> @@ -21,6 +21,9 @@ void kprobe_ftrace_handler(unsigned long nip, unsigned =
-long parent_nip,
->         struct pt_regs *regs;
->         int bit;
->
-> +       if (unlikely(kprobe_ftrace_disabled))
-> +               return;
-> +
->         bit =3D ftrace_test_recursion_trylock(nip, parent_nip);
->         if (bit < 0)
->                 return;
-> diff --git a/arch/riscv/kernel/probes/ftrace.c b/arch/riscv/kernel/probes=
-/ftrace.c
-> index 7142ec42e889..a69dfa610aa8 100644
-> --- a/arch/riscv/kernel/probes/ftrace.c
-> +++ b/arch/riscv/kernel/probes/ftrace.c
-> @@ -11,6 +11,9 @@ void kprobe_ftrace_handler(unsigned long ip, unsigned l=
-ong parent_ip,
->         struct kprobe_ctlblk *kcb;
->         int bit;
->
-> +       if (unlikely(kprobe_ftrace_disabled))
-> +               return;
-> +
->         bit =3D ftrace_test_recursion_trylock(ip, parent_ip);
->         if (bit < 0)
->                 return;
-> diff --git a/arch/s390/kernel/ftrace.c b/arch/s390/kernel/ftrace.c
-> index c46381ea04ec..7f6f8c438c26 100644
-> --- a/arch/s390/kernel/ftrace.c
-> +++ b/arch/s390/kernel/ftrace.c
-> @@ -296,6 +296,9 @@ void kprobe_ftrace_handler(unsigned long ip, unsigned=
- long parent_ip,
->         struct kprobe *p;
->         int bit;
->
-> +       if (unlikely(kprobe_ftrace_disabled))
-> +               return;
-> +
->         bit =3D ftrace_test_recursion_trylock(ip, parent_ip);
->         if (bit < 0)
->                 return;
-> diff --git a/arch/x86/kernel/kprobes/ftrace.c b/arch/x86/kernel/kprobes/f=
-trace.c
-> index dd2ec14adb77..15af7e98e161 100644
-> --- a/arch/x86/kernel/kprobes/ftrace.c
-> +++ b/arch/x86/kernel/kprobes/ftrace.c
-> @@ -21,6 +21,9 @@ void kprobe_ftrace_handler(unsigned long ip, unsigned l=
-ong parent_ip,
->         struct kprobe_ctlblk *kcb;
->         int bit;
->
-> +       if (unlikely(kprobe_ftrace_disabled))
-> +               return;
-> +
->         bit =3D ftrace_test_recursion_trylock(ip, parent_ip);
->         if (bit < 0)
->                 return;
-> diff --git a/include/linux/kprobes.h b/include/linux/kprobes.h
-> index 0ff44d6633e3..5fcbc254d186 100644
-> --- a/include/linux/kprobes.h
-> +++ b/include/linux/kprobes.h
-> @@ -378,11 +378,15 @@ static inline void wait_for_kprobe_optimizer(void) =
-{ }
->  extern void kprobe_ftrace_handler(unsigned long ip, unsigned long parent=
-_ip,
->                                   struct ftrace_ops *ops, struct ftrace_r=
-egs *fregs);
->  extern int arch_prepare_kprobe_ftrace(struct kprobe *p);
-> +/* Set when ftrace has been killed: kprobes on ftrace must be disabled f=
-or safety */
-> +extern bool kprobe_ftrace_disabled __read_mostly;
-> +extern void kprobe_ftrace_kill(void);
->  #else
->  static inline int arch_prepare_kprobe_ftrace(struct kprobe *p)
->  {
->         return -EINVAL;
+>  drivers/pci/of_property.c | 24 ++++++++++++++++++++++++
+>  1 file changed, 24 insertions(+)
+> 
+> diff --git a/drivers/pci/of_property.c b/drivers/pci/of_property.c
+> index c2c7334152bc..9f8b940029ed 100644
+> --- a/drivers/pci/of_property.c
+> +++ b/drivers/pci/of_property.c
+> @@ -183,6 +183,26 @@ static int of_pci_prop_interrupts(struct pci_dev *pdev,
+>  	return of_changeset_add_prop_u32(ocs, np, "interrupts", (u32)pin);
 >  }
-> +static inline void kprobe_ftrace_kill(void) {}
->  #endif /* CONFIG_KPROBES_ON_FTRACE */
->
->  /* Get the kprobe at this addr (if any) - called with preemption disable=
-d */
-> @@ -495,6 +499,9 @@ static inline void kprobe_flush_task(struct task_stru=
-ct *tk)
->  static inline void kprobe_free_init_mem(void)
->  {
->  }
-> +static inline void kprobe_ftrace_kill(void)
+>  
+> +static int of_pci_prop_intr_ctrl(struct pci_dev *pdev, struct of_changeset *ocs,
+> +				 struct device_node *np)
 > +{
-> +}
->  static inline int disable_kprobe(struct kprobe *kp)
->  {
->         return -EOPNOTSUPP;
-> diff --git a/kernel/kprobes.c b/kernel/kprobes.c
-> index 65adc815fc6e..166ebf81dc45 100644
-> --- a/kernel/kprobes.c
-> +++ b/kernel/kprobes.c
-> @@ -1068,6 +1068,7 @@ static struct ftrace_ops kprobe_ipmodify_ops __read=
-_mostly =3D {
->
->  static int kprobe_ipmodify_enabled;
->  static int kprobe_ftrace_enabled;
-> +bool kprobe_ftrace_disabled;
->
->  static int __arm_kprobe_ftrace(struct kprobe *p, struct ftrace_ops *ops,
->                                int *cnt)
-> @@ -1136,6 +1137,11 @@ static int disarm_kprobe_ftrace(struct kprobe *p)
->                 ipmodify ? &kprobe_ipmodify_ops : &kprobe_ftrace_ops,
->                 ipmodify ? &kprobe_ipmodify_enabled : &kprobe_ftrace_enab=
-led);
->  }
+> +	int ret;
+> +	u8 pin;
 > +
-> +void kprobe_ftrace_kill()
-> +{
-> +       kprobe_ftrace_disabled =3D true;
+> +	ret = pci_read_config_byte(pdev, PCI_INTERRUPT_PIN, &pin);
+> +	if (ret != 0)
+> +		return ret;
+> +
+> +	if (!pin)
+> +		return 0;
+> +
+> +	ret = of_changeset_add_prop_u32(ocs, np, "#interrupt-cells", 1);
+> +	if (ret)
+> +		return ret;
+> +
+> +	return of_changeset_add_prop_bool(ocs, np, "interrupt-controller");
 > +}
->  #else  /* !CONFIG_KPROBES_ON_FTRACE */
->  static inline int arm_kprobe_ftrace(struct kprobe *p)
+> +
+>  static int of_pci_prop_intr_map(struct pci_dev *pdev, struct of_changeset *ocs,
+>  				struct device_node *np)
 >  {
-> diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
-> index da1710499698..96db99c347b3 100644
-> --- a/kernel/trace/ftrace.c
-> +++ b/kernel/trace/ftrace.c
-> @@ -7895,6 +7895,7 @@ void ftrace_kill(void)
->         ftrace_disabled =3D 1;
->         ftrace_enabled =3D 0;
->         ftrace_trace_function =3D ftrace_stub;
-> +       kprobe_ftrace_kill();
->  }
->
->  /**
-> --
-> 2.39.3
->
-
-
---=20
-Best Regards
- Guo Ren
+> @@ -334,6 +354,10 @@ int of_pci_add_properties(struct pci_dev *pdev, struct of_changeset *ocs,
+>  		ret = of_pci_prop_intr_map(pdev, ocs, np);
+>  		if (ret)
+>  			return ret;
+> +	} else {
+> +		ret = of_pci_prop_intr_ctrl(pdev, ocs, np);
+> +		if (ret)
+> +			return ret;
+>  	}
+>  
+>  	ret = of_pci_prop_ranges(pdev, ocs, np);
+> -- 
+> 2.44.0
+> 
 
