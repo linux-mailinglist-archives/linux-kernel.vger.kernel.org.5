@@ -1,247 +1,298 @@
-Return-Path: <linux-kernel+bounces-164832-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-164834-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 878BF8B83B2
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 02:28:32 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4A32C8B83B7
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 02:31:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 75E471C22141
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 00:28:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 022E12840EC
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 00:31:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D84B810FD;
-	Wed,  1 May 2024 00:28:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2DEC13C2D;
+	Wed,  1 May 2024 00:31:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="Ry836726"
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10olkn2082.outbound.protection.outlook.com [40.92.42.82])
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="INeQAww0"
+Received: from NAM02-BN1-obe.outbound.protection.outlook.com (mail-bn1nam02on2056.outbound.protection.outlook.com [40.107.212.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A4A47E6;
-	Wed,  1 May 2024 00:28:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.42.82
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59996A20;
+	Wed,  1 May 2024 00:31:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.212.56
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714523301; cv=fail; b=KT+pqnlrNdvGdhrdCxpXtlM/tLBwuVQfpxH46nS2/twGff2eHXDdqyhr/O6eMnetuLhSFyT1DWbI0T8N78iOSNUGpjJUIR8VcWmk6fr3HYXVCjR8W2KO3RT9oS9ttJXrgNnCFyd+eGdqNcew/J0oGqIhgkvVW7bR1kH4PjQhaUk=
+	t=1714523486; cv=fail; b=nn27rv1GRJNFmwWtOb6yUJZQxmxPLzw95kdBEqEsqQ0AAlSXrxZEoloILDOtthRy/nyNVkqy/vVFnrunGq2q5apDslYn0MGYT/3rBDCsogffa/w5gI9iwImnQ+Zx68aRtvUPPnJK7RsZBVSNl0oZC/zH5s50m1Po1aQOMXaHsSQ=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714523301; c=relaxed/simple;
-	bh=8E+R5eofkOReaVi198L30iJpjtbRq/fVKHnKtWbW7KA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=Bj5PhfCkFXy+Um7iD8uUX6mX1jiw31jd68fN07sxPjSr7a24ElbB6aUrRUJEH1Zln/1peqJKWgrVIqKpFbRrzEeL46xcRJxq69wrwuZavVLwZRlfaqHhBQ/k+sRtJRVcwdHSRpMfA1jVKOCa+UfcY8LBH4hTMHXFX0Ko8zCxOBE=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=Ry836726; arc=fail smtp.client-ip=40.92.42.82
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
+	s=arc-20240116; t=1714523486; c=relaxed/simple;
+	bh=q8lBEVbKzZmLBls5g82d+3gvg5Zc4C7xN9TglS11vBs=;
+	h=From:To:Cc:Subject:Date:Message-ID:Content-Type:MIME-Version; b=Ar8Xw9xLcyIcJ4ZpzZ4tffF9vcmTXbZ8fDwY67GBNzi17G9LNX6wCNSvEZgV9Ci0I0wFxvsfuDRrKHAaYUHwBSL+3xD0fSLco9hKJgnAJ/BWte/kHkf9ACRdjA4zyIxqoTXRlf7kM7Du9L/9lTibH9Cdh9Mr6W27XGlXhvT8qfw=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=INeQAww0; arc=fail smtp.client-ip=40.107.212.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=FJ8vdy9PQ8/PLEGf44Ja76GO5RsYrVSCPS+HQcAsfqXnG05JtillBcVP2zHiV7Jo92mMLRnCbxwaqmsxdMXny+CwKvWbT9qyHqMSSXPfXIo41gHtCgDJK6enVRWZhqLyNT8rmnCyAaRtgnlNyUYmZ1Zpp0wT1wLJv5BxLqhj1RtEFMIEKz+Li4D8Sy9Zhdj0KAy7LkZTDyV6soFK+D2uFb3hjDLG3mfc9RfXdj6gcL1vmZKAcxwSkrvHGUUvXqYMv4PU5a1M5vuA22E453v6+BWYqKVdHQhIoM3K4yyPRtX5KPcuv+LjI27w4yVjCCXFKYba+9hfsqTMh0fJCicL9w==
+ b=Wgcn/WiV41qUDNuH6DMOrrkOQXuA6N11o6lHgf3c2iecoXS3rrbMF4DH7TAS6J9pFgvhexo5gh0TYyhdDCoMuEWUAm/pfUElyh7n1I73EJ9elaEszN+WrnVI5rUwBfrZwC3zkgO0tfXyxgkNYI3gKNOGxjqwi+zaf8jxukSZ7N66iEhU5Zh7cB3ogU5hhYEf5bQ9t3ICmpBDwNYxr52uqYJNx3LaR/9WS3xwW5tpiXZUmqewymjCdW0VD6hTLcQX56bPLKud3qMR4HEwX4rfyqmSO75KohtMpqJMmzY+utLjSTsN5WoQLCln2fyMPJWohQQtIP4FtnR/O5C47PkgcA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=epBFYB3Tcv45E6oDutf3k1ew+s8ZesgUmK+L9DQJPoc=;
- b=OxqhW2SsSArIaAzvA4MqHfmzURYOJcmcJWo1z2pk3J0ueV12HjGZ9MkRtKuh1VCEhstIi3scI240DeyNeFvKeo4TzxZEzKXNLzW0R9+5z3xcdtQ6qAy/CefrbsAqDtwonIKN0sZsZ9Gy7uVZhj+jsdPfrYvukj6BRuHKYzJz84dIrqgwj8Bm2Ij6THZd1Iw6+8URl6mqK9heQhlt2x5uqON4PXs5jXOq6Oxw712059vY93A18KgemJA69n9bUmLhZ6NW6LX3VDSZsm1s0MK28HcUB5QKahKbP0JHyOn4Qn3hbnDsM224+DpAZV0ySjELiIinW8TJm5YOPhxrVFVrlg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
- s=selector1;
+ bh=m2LgVUGJSIxGqIt845MEA68GeKD12DPNwOYOT71mnYE=;
+ b=bgCGW06k+QNmLO/kVmCMYM1gP6VmOdvABwkZC3veFAFKcqKuAsDjL8LWwjt5oIrlIqWlHdFaKnUsUkJLKPA4gl7yNEMDKvlgkjDGhjyNMJNnMazRlZDJeI7LAuq5El0DUU1jmmICgmvBYCdYa1+x+E4SazxtQ8fMM2g+TiGRBqIUj7NPMw2JX7XxLz65fY/tzdkIhV8UwRtrIN3ZO3q9H0OXeSXwFLBd/zvJ8c88dUjMquAOSSHnqZmuokdfIMry81SasT1ucaF+8Vrf8Peh/lNA7B+QLKTVae0L3kyLtReol+3A6CZzc4uVzezD7dwjtYJWpDCqjUvfVjcdbYk6Gw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=epBFYB3Tcv45E6oDutf3k1ew+s8ZesgUmK+L9DQJPoc=;
- b=Ry836726lzJWNcm+oVL4QnWHXwopIul5aHejk/WB6QHPw3vpl/JCk9iwhLzlwJn024SjzLEK1OIXY+1KDySHesddNNHRgKJbOJRh6eXLK+2/3RJhfNxsgwffZeJroSQmC23J//syZjw97mP693HvlId+FG2sJvVfC+RBZI9QpGDP35CS80ks9jJwCFKEW3uiJKwbw3EJxx01drfVduMMmuF15Ydt9urQymGrEj2FNZtOlV0WMS3HeM8wqXeUHigXPp43pmdSBjmAP8LCJyS2eEODsFYtsknOvCjGkoHKgjhU+V/zQ1CFZAFs89ljug77S4blwH4aJPqeHwpSpMj0/w==
-Received: from IA1PR20MB4953.namprd20.prod.outlook.com (2603:10b6:208:3af::19)
- by SA1PR20MB5549.namprd20.prod.outlook.com (2603:10b6:806:2b9::12) with
+ bh=m2LgVUGJSIxGqIt845MEA68GeKD12DPNwOYOT71mnYE=;
+ b=INeQAww0AGKcqZapeqGJyBofUL9mJZPoaxhCgaTEd+4ZSbNqBpWE/BXpICt0Cccf8L56X83VH/ISRcpf0y9haELl/rK7nlOHAUqbd8mdqhOIvN/A++PyWBfHLBM/MoY7SVdKcNQYN7hhF5mzT2TNhbWDBVC1frVkczh8+VVuFSVwL6gtz4X1EkyMEg2UtQ2zL+2FtjaAtC4TkPpLMEfOrhkuTrFJ1dd6Hd013tBafSwio1hmYy3B18csfJRX/cReAtX5j2L+1ZEWoXq4H8r7xmqOr0WzT8ePShDRkn7QtbGegGC9wG9b8Ni0hHnmP0zfbWOyvHH7HWX1ChK5oPvgzQ==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from BY5PR12MB4130.namprd12.prod.outlook.com (2603:10b6:a03:20b::16)
+ by PH7PR12MB9075.namprd12.prod.outlook.com (2603:10b6:510:2f0::20) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7519.35; Wed, 1 May
- 2024 00:28:17 +0000
-Received: from IA1PR20MB4953.namprd20.prod.outlook.com
- ([fe80::182f:841b:6e76:b819]) by IA1PR20MB4953.namprd20.prod.outlook.com
- ([fe80::182f:841b:6e76:b819%2]) with mapi id 15.20.7519.031; Wed, 1 May 2024
- 00:28:17 +0000
-Date: Wed, 1 May 2024 08:28:47 +0800
-From: Inochi Amaoto <inochiama@outlook.com>
-To: Conor Dooley <conor@kernel.org>, Inochi Amaoto <inochiama@outlook.com>
-Cc: Vinod Koul <vkoul@kernel.org>, 
-	Kishon Vijay Abraham I <kishon@kernel.org>, Rob Herring <robh@kernel.org>, 
-	Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Chen Wang <unicorn_wang@outlook.com>, Jisheng Zhang <jszhang@kernel.org>, 
-	Liu Gui <kenneth.liu@sophgo.com>, Jingbao Qiu <qiujingbao.dlmu@gmail.com>, dlan@gentoo.org, 
-	linux-phy@lists.infradead.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/2] dt-bindings: phy: Add Sophgo CV1800 USB phy
-Message-ID:
- <IA1PR20MB49535665CF1C89FFB4E1E46DBB192@IA1PR20MB4953.namprd20.prod.outlook.com>
-References: <IA1PR20MB4953182B8EDB465430289400BB1B2@IA1PR20MB4953.namprd20.prod.outlook.com>
- <IA1PR20MB495355A4186420B78BD78F49BB1B2@IA1PR20MB4953.namprd20.prod.outlook.com>
- <20240430-crummiest-overnight-0f46dba32bb8@spud>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240430-crummiest-overnight-0f46dba32bb8@spud>
-X-TMN: [jK8xXiqRyD1Hsu4E7Qx5yNwyeHuKfQtgOOf1lxrSwKg=]
-X-ClientProxiedBy: TYCP286CA0175.JPNP286.PROD.OUTLOOK.COM
- (2603:1096:400:3c6::14) To IA1PR20MB4953.namprd20.prod.outlook.com
- (2603:10b6:208:3af::19)
-X-Microsoft-Original-Message-ID:
- <h3w62i52ioua6u33mxdg6ndmsvodfqj2k2i4r2wewt3yfsweoh@nbtjxis6zvh3>
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7519.36; Wed, 1 May
+ 2024 00:31:20 +0000
+Received: from BY5PR12MB4130.namprd12.prod.outlook.com
+ ([fe80::2cf4:5198:354a:cd07]) by BY5PR12MB4130.namprd12.prod.outlook.com
+ ([fe80::2cf4:5198:354a:cd07%4]) with mapi id 15.20.7519.035; Wed, 1 May 2024
+ 00:31:20 +0000
+From: John Hubbard <jhubbard@nvidia.com>
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: Jason Gunthorpe <jgg@nvidia.com>,
+	LKML <linux-kernel@vger.kernel.org>,
+	linux-rdma@vger.kernel.org,
+	linux-mm@kvack.org,
+	John Hubbard <jhubbard@nvidia.com>,
+	Mike Marciniszyn <mike.marciniszyn@intel.com>,
+	Leon Romanovsky <leon@kernel.org>,
+	Artemy Kovalyov <artemyko@nvidia.com>,
+	Michael Guralnik <michaelgur@nvidia.com>,
+	Alistair Popple <apopple@nvidia.com>,
+	Pak Markthub <pmarkthub@nvidia.com>
+Subject: [RFC] RDMA/umem: pin_user_pages*() can temporarily fail due to migration glitches
+Date: Tue, 30 Apr 2024 17:31:17 -0700
+Message-ID: <20240501003117.257735-1-jhubbard@nvidia.com>
+X-Mailer: git-send-email 2.45.0
+X-NVConfidentiality: public
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: BYAPR06CA0027.namprd06.prod.outlook.com
+ (2603:10b6:a03:d4::40) To BY5PR12MB4130.namprd12.prod.outlook.com
+ (2603:10b6:a03:20b::16)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: IA1PR20MB4953:EE_|SA1PR20MB5549:EE_
-X-MS-Office365-Filtering-Correlation-Id: b5f3d48b-4b73-4949-730e-08dc69759884
-X-Microsoft-Antispam:
-	BCL:0;ARA:14566002|461199019|440099019|3412199016|1602099003|1710799017;
+X-MS-TrafficTypeDiagnostic: BY5PR12MB4130:EE_|PH7PR12MB9075:EE_
+X-MS-Office365-Filtering-Correlation-Id: 8d415bd1-c514-4726-8bc0-08dc697605e9
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230031|376005|366007|1800799015;
 X-Microsoft-Antispam-Message-Info:
-	jITKLcSrRvpaMizkhvksd920dfl1ksdfozpHC8mLmjg/KvIZXRYS+ZY+BAJ89eWVqvg2imTpvoXtD6+GP51FcWv1syEur0v2+jWrHWm1y4JpwaV5qhfckFs9xSsGLRs8Ypc8Um+mbFZdRQAm34gerczznHC+Md+3BADPw/W5dzDsiX6P16cvZ013AKVF3cElEi5Mev0bcu/bD+An+8a3hJwbFOXuPbycuDPdqcu0/h47aiV2exyUQM2GvqDLHDlIE73ArdAj0bMYUf7IOsvtCG0lRvkbIj5ySXR74XXZp15fkMqPaLxEQ5r4HzAdIES4X1vYVIB/7tla7JcA2AGsqKX8wOGbveAn9J8Vv4UONRDe5ObhWPsFUMOAgPzAlq9O9wgF+HLj6gGFklX5D1QttmsXtNlGEyXQycixQ/xisItBIN3vFi2UTZZI7xDn6F+HeHLc8NZEQFSBN9xcKTOofzWNDDxNGTmQVHxRabZ9FJW1AJfGNpydK9xcxK6PCTfqjoOUokMLIRd21c2R/8UQFdF+s3qmQ45qkZeC3h8BChgKerGyy8LUvWWBIPDFl6LtP+dyGmHzv1mY0+oDO6qY/mi+fVSr0VDuZ64ZgD4xuBR5hJEqacJOG3MFTurRIzN2eXFuhLfegymloo+Ir2vKqgL6lecOERxj5r47OyEiKcB3mY04wxeB1hyA7DN9xrO0
+	=?us-ascii?Q?bav24N4tm63dYodSlva77w/6UMGu1BB+IRxuqYLUttcqJ6A73tE2xc9mpFpj?=
+ =?us-ascii?Q?A+geG4cuXplvX6bLl5TMLfqh/TwSzkmEWMJKl5JkVGqOR4El2yVYoLNkFdc3?=
+ =?us-ascii?Q?3uogdOPZvHEnTnujFgAJPvQTxBuJMzvA/8ONpjTD1qxW8F85k83RDonM553l?=
+ =?us-ascii?Q?y5/3wtEyuzTjbRY7NmL+6uPQYeLrISYdr5qvniG9khJuFHqWoVDZrcRcmF+N?=
+ =?us-ascii?Q?9Mha+mQBxBfe2a8CeseFAnsbdUDdFANmAIH04BMnjfuDQwZh0H9aNt6gfOZZ?=
+ =?us-ascii?Q?rlve+LbyTxQaEVjJc/2rZIsHYtPP26TpUWO7cxIrfPhLQ/B1dx8k/mImyJGn?=
+ =?us-ascii?Q?FIgDMCrMBh7sMrnuebv9wwAzkMLNBtFfXh1wRJwdpFaXOLfYa+n4+14B6hp/?=
+ =?us-ascii?Q?t7EcBEKWcF4+Q7jnTS/ReWGPjVXoEbfbm1r+sjrncSrH5qKME4D5MZICG4Os?=
+ =?us-ascii?Q?S79yVDL1rrZDwb2CvouxWQwljQrmCOt1AHK0pX4iZ+6gfRhZexfMtbSx/osu?=
+ =?us-ascii?Q?REhgtm4TprfxsFjvRKg3z+7DKelMQDPgkZ0McGyYrZGnC5yFSfAeDB+YpTbJ?=
+ =?us-ascii?Q?p1P755mDJkL6M1bmpgjoPPAM68VsFJiF/yHGdv08TwxXEYNxZSiPCPJAhjJ9?=
+ =?us-ascii?Q?qu1i2WBW7C0m7Cm8YFDESYLcXQuvu0mFgXjyIL5cWtC9YEJibf7xeE/Q+PD9?=
+ =?us-ascii?Q?gvsLtiI7jPKKkxVFrAWHJTqILmHxxsFzSyqxZWVEfvNnyHJEZi1/UfcGME6/?=
+ =?us-ascii?Q?XUFv+XdyEqnCq9vYHtFgLFfxmtJr34bHQu/02+PhAnD2bRwG9/Fv6rAVVBQ6?=
+ =?us-ascii?Q?iy7mkQ9K4wxz2+gRg/o2O1XHzS97xz1nuw9y5V43qgJMN/6c1odeEq09N9+Y?=
+ =?us-ascii?Q?tTT2afz9vFr04Al/nrTacGRxcQWzofN7suOIWVFo3/Hm6l7Cn7LTlPu40mUj?=
+ =?us-ascii?Q?GkEWCLLPExm//WGjJFG/G2K/o/VH/6MvmnzHBIWdMajUnZjinAdvEbNBG9F0?=
+ =?us-ascii?Q?1Oos4I5RAaVcvvBTD1HfH/B+lE3gq3KmLPJ2EFSiQWOF3ozwXqsFDWhQWO0q?=
+ =?us-ascii?Q?XcxeN5hueAVaiyLLQX6OrqUvw120wQ/3jdK8ZDhdlVqSgWyCLYPDKpk0GKOy?=
+ =?us-ascii?Q?3h2b11kXRHbzhs1KbPtTZsIw3ISKQbjOv1Ke5sC0PiDKM/4xAN21FpVVSQWC?=
+ =?us-ascii?Q?CYM3iYoED+iKgDcDwLfSSpHMXiiUfAVf6j1BmXyQP1Y+OG8hI2i7wD64WnAD?=
+ =?us-ascii?Q?mWTxCHcxjdC7kuxta2kJyApS7IBMuQeFCyq0am1TQQ=3D=3D?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR12MB4130.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(366007)(1800799015);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?Fhmb39a9xOt5mtTSwTaAS7LGxNhMgm8AzQG2iZRlzlqDeYXCrMVJ6lQEXk5U?=
- =?us-ascii?Q?E0mSDPacY9tKkW17SPDBaLb6qNR90Ju2Gv8iZGNXz33FDuVAN/O3I3SP0YDo?=
- =?us-ascii?Q?k3wb7FxVwosV+eRM0vR9LsuqrVhvWUxJnx8S8SuxMFFk1wW54owa8BDkssSq?=
- =?us-ascii?Q?uPyufCHMeOxKdYo9IlLHz+L3k4GOREHDm/N4yMcrt4FwdJDr/j3apDSqglPg?=
- =?us-ascii?Q?ua0o3C9E/tzONaUkSHtLILjSOq1KQfy10SIzsO2Fe8sppX0LA5JVAqGXyfPu?=
- =?us-ascii?Q?t2NFDYTBpBZPSIvC1zIpTyO2TN177eugry5jW9UcpNxEgjAIakv7sgWPLtpl?=
- =?us-ascii?Q?aa+cul9na6DUf/nxM0P1ArQSFheFdmraQzQ2Ave/8oDnVaRQ8WrmVZUxMg7h?=
- =?us-ascii?Q?Zrpd9pzh1fXTZPtoXk8Jwx4YNi0XmFIrzsxNDSWMyMNRoBKi61VvcJ1Gl5FP?=
- =?us-ascii?Q?a/5QMmq0rEJuub/xqN8Rd9lEGZ3H8DLK68wdT8dztzqA4fudjlygNSghSyFp?=
- =?us-ascii?Q?rbgu32FTgrg6FMG8ldqT146bLiSpVNLKwi8Lm8dPyLK0SEc0kITdr0OPEnv8?=
- =?us-ascii?Q?NoWW8ACsrH7GACFAldER2Auc4zSI9gzFhKOobD4J4ExJhcA79Jmzc3+CnEzl?=
- =?us-ascii?Q?IKp8vxSWaOUrOYM9UN4Rv87UUySiuXFtkoJB5l5pzt0hU9dHEanSPrI+SkAs?=
- =?us-ascii?Q?33Mt0YBQTc8+s4X/SV9fpJpKtMAB5MOUqm1QRnqzs9DZbEDDcfoacsINTfj3?=
- =?us-ascii?Q?EEp/FQfygJSkkvva4/YVNttnGHTfnP1sFfdDH2pWyNDqYLoVKakDC7tMUL7U?=
- =?us-ascii?Q?ZsagBDKEUu5xMFgj5o9GUkhRES9ZBPIzimZYg3QtA9KzhhXljaNfeVYRxzP7?=
- =?us-ascii?Q?HCVpTG/wCvDyQ5AxTZNwD5SQbfydiZijq+Kb1oaAB5eHX8vwIq2+KpAOJJqQ?=
- =?us-ascii?Q?36jCejDoJ7Cl25qZuYiH2zmBU47SkgbjE+sRmXvY7CnADg9I/x8oz6zpnwPg?=
- =?us-ascii?Q?KeI5WKZ1Z1bjSG/mv23vqZIu/zTh01+T6Q67hM9JI1WOIvuye4kGgfHa0OI4?=
- =?us-ascii?Q?tkXe4gb7z3Df9UnZiu2tyAr4yV+WoGlj9J80lWSA5vkcakUj8K3PoPfDpM3K?=
- =?us-ascii?Q?OheVpO7UMnOabBc/djy/r1dVLrDhKHt8wadNFg5J/2huPEy71muIUJYy9zFY?=
- =?us-ascii?Q?zS2UKLphE43OgGDYQwYKrjQYar+xa7vF70e+7CGg8itSu50CSkeE22fJho0o?=
- =?us-ascii?Q?M3yEKFmncQnNbOikwo1i?=
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b5f3d48b-4b73-4949-730e-08dc69759884
-X-MS-Exchange-CrossTenant-AuthSource: IA1PR20MB4953.namprd20.prod.outlook.com
+	=?us-ascii?Q?5H/TClfK3PD0hdPBo/i43hADtqwITcUpF9L26iCK2gFeZvT1dB6ocvYzylqZ?=
+ =?us-ascii?Q?zZIjQAlg8ai2s8dKb/AvFhcWoKYp8jcjUL6ioEP323XoMFf2BT1O+9zjV/zS?=
+ =?us-ascii?Q?9HPsUsMUficVSWgglHNhfjy6JC3T1VbqAPX8R6fT/+Ki/SqpPn4zwTp6XZ5u?=
+ =?us-ascii?Q?XRzELVMt3dpml7n8MpMRq+0O6Jv++6h/UIpqKYlEid3ciBFcJKVTaRSn1cDu?=
+ =?us-ascii?Q?OTeHto7VFt+G738uUDlkpQ7LwubX5TN76P1B8IJCC6OV2KYIds6nd5RfK8OD?=
+ =?us-ascii?Q?/OLw1wtU/xQT56IxARjJfH9TNNFpXj2mpjMax07WXPLKYd8IKNmo0RotWyab?=
+ =?us-ascii?Q?wdON/RNdicFOZmboirYQ2He3jz0fIPeT52FolzjfWudG8qMUWeFxq9r3JZtP?=
+ =?us-ascii?Q?S9sskZmKXyf3XevL9XULeN8UzXTwZesXrOTBJ3wD7vY+W+gnGj/kpBat4FWI?=
+ =?us-ascii?Q?7T1te/kdBQxD1vvaPFAgGcL/rCjYAyEp8ghTsoQpN4F532tH4gzT3m75tHEn?=
+ =?us-ascii?Q?Znkch/RKul/xyynpwvPDEJUA7GpXTUjOTCe9nFBWoeNAJDXuGM17pbTyixF4?=
+ =?us-ascii?Q?BBokSYgUGHWFg8xe28Xcuj4en5H0F2IfvJ6AoNHjQfeRoL3ScImMhCy8pH0P?=
+ =?us-ascii?Q?ndBAlG0xZHXIC5hMCpdIFY8biKhHfifbirx/E2A8YUEnc2xtPU75zE2WZKVf?=
+ =?us-ascii?Q?qYsg8AkHG/bPTYHD8XDNah1HLqvYsZ6Um1qTfJZITjrCxKsNinnge5iuwjaM?=
+ =?us-ascii?Q?Q1+JJcclmZ8iu/0ZeqUo74mAuq55oV/Mh3YSLKASyJzlBFMsf3qjG/Ke6iQ8?=
+ =?us-ascii?Q?z8uWs8RBn9517J2AUf2ICzkcxeubuExUFDGssAyMW88bhz2DQO45+3Uvu9Qt?=
+ =?us-ascii?Q?3RPnjWCbYwcsJZrIe82AOfQ1IrrYZBsg2G4MC91/lpWkxTmP9BjEF6g2/MT2?=
+ =?us-ascii?Q?+AfvPFRTwmj10BR5IzwQaTeTgRQF+1dAAEdZUQzmRBBePH1RBYHsHyFGhsfY?=
+ =?us-ascii?Q?MQTJv8J6bjz8ujvIprMqMA/0T9PHzoUHw0sc2x4LZMhKgqRHh5YAg7LLfmNG?=
+ =?us-ascii?Q?r1SzWD2kjevJYwH4NQFwdmBbEkQW4W1vmWZhYcJuWSV192sPK+xY4fpDhHAb?=
+ =?us-ascii?Q?XKYhr/+qu0PaqwNKkOtwSG3oZqXgn7SFKQwQKQQvOpkVrIhNf6zeco7xsE+7?=
+ =?us-ascii?Q?HKLK4yWGbQNC9dvxd+eJi13adqFym1oqrz6UYnhEljOUox1PFcps6VbWGmGg?=
+ =?us-ascii?Q?ufXHaIDDRMc9R1WbUmq5xznLGqGmpW7F6ZjzYnuU1s18sMsLAzBzGmCm54P+?=
+ =?us-ascii?Q?9f9qHjbDlA44B9quku25QdUPibrcNP7c6aW0S0i3SJhWa12KdKInwTpt+gaR?=
+ =?us-ascii?Q?YM0Oiv1wYPAq0eOpBhPmAlHs8TbW7dr9JhPdymRaA5SzSyCEuOeVxjyGZtrv?=
+ =?us-ascii?Q?d6x3OW5sLPtjDcaQvsTmAz3nKXlMwOoX2KhYO4+m7/WG9DL/5fU5c57xKklb?=
+ =?us-ascii?Q?bqQYMRDnweGUZZxnBuLt5TvCGozxWTmyCJlsmVJ58rTIwCpl0MT4NnYOfRxk?=
+ =?us-ascii?Q?FQyU1sWnFmcj6mLcgsigZPv33YWTaRbUnwGJC40a?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8d415bd1-c514-4726-8bc0-08dc697605e9
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR12MB4130.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 May 2024 00:28:17.4230
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 May 2024 00:31:20.7128
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
-	00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR20MB5549
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: sNzgy0MO4alX5MmJFOtXz3vXysOmGsGxNSMBbl9jQfOvI4LT2lgro3TdzIYt4wYk7nzbUODRPdIls5Yc+AZNGg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB9075
 
-On Tue, Apr 30, 2024 at 06:09:20PM GMT, Conor Dooley wrote:
-> On Mon, Apr 29, 2024 at 08:31:11AM +0800, Inochi Amaoto wrote:
-> > The USB phy of Sophgo CV18XX series SoC needs to sense a pin called
-> > "VBUS_DET" to get the right operation mode. If this pin is not
-> > connected, it only supports setting the mode manually.
-> > 
-> > Add USB phy bindings for Sophgo CV18XX/SG200X series SoC.
-> > 
-> > Signed-off-by: Inochi Amaoto <inochiama@outlook.com>
-> > ---
-> >  .../bindings/phy/sophgo,cv1800-usb-phy.yaml   | 68 +++++++++++++++++++
-> >  1 file changed, 68 insertions(+)
-> >  create mode 100644 Documentation/devicetree/bindings/phy/sophgo,cv1800-usb-phy.yaml
-> > 
-> > diff --git a/Documentation/devicetree/bindings/phy/sophgo,cv1800-usb-phy.yaml b/Documentation/devicetree/bindings/phy/sophgo,cv1800-usb-phy.yaml
-> > new file mode 100644
-> > index 000000000000..7e3382c18d44
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/phy/sophgo,cv1800-usb-phy.yaml
-> > @@ -0,0 +1,68 @@
-> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> > +%YAML 1.2
-> > +---
-> > +$id: http://devicetree.org/schemas/phy/sophgo,cv1800-usb-phy.yaml#
-> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > +
-> > +title: Sophgo CV18XX/SG200X USB 2.0 PHY
-> > +
-> > +maintainers:
-> > +  - Inochi Amaoto <inochiama@outlook.com>
-> > +
-> > +properties:
-> > +  compatible:
-> > +    const: sophgo,cv1800-usb-phy
-> > +
-> > +  reg:
-> > +    maxItems: 1
-> > +
-> > +  "#phy-cells":
-> > +    const: 0
-> > +
-> > +  clocks:
-> > +    items:
-> > +      - description: PHY clock
-> > +      - description: PHY app clock
-> > +      - description: PHY stb clock
-> > +      - description: PHY lpm clock
-> > +
-> > +  clock-names:
-> > +    items:
-> > +      - const: phy
-> > +      - const: app
-> > +      - const: stb
-> > +      - const: lpm
-> > +
-> > +  vbus_det-gpios:
-> 
-> "vbus_det-gpios" isn't a common property AFAICT, why does it not get a
-> vendor prefix when the other gpios property does?
-> 
+pin_user_pages*() occasionally fails due to migrate_pages() failures
+that, in turn, are due to temporarily elevated folio refcounts. This
+happens because a few years ago, pin_user_pages*() APIs were upgraded to
+automatically migrate pages away from ZONE_MOVABLE, but the callers were
+not upgraded to handle any migration failures. And in fact, they can't
+easily do so anyway, because the migration return code was filtered out:
+-EAGAIN failures from migration are squashed, along with any other
+failure, into -ENOMEM, thus hiding details from the upper layer callers.
 
-I have seen other binding (such as sunxi phy) uses this property without 
-vendor prefix. So I think it is a common property and don't add perfix 
-for it. But it is OK for me add the vendor prefix, thanks.
+One failure case that we ran into recently looks like this:
 
-> > +    description: GPIO to the USB OTG VBUS detect pin. This should not be
-> > +      defined if vbus_det pin and switch pin are connected, which may
-> > +      break the VBUS detection.
-> > +    maxItems: 1
-> > +
-> > +  sophgo,switch-gpios:
-> > +    description: GPIO array for the phy to control connected switch. For
-> > +      host mode, the driver will set these GPIOs to low one by one. For
-> > +      device mode, the driver will set these GPIOs to high in reverse
-> > +      order.
-> > +    maxItems: 2
-> 
-> You're still missing the itemised description of what each of the gpios
-> here are - how would I know which order to put the GPIOs in?
-> 
-> Cheers,
-> Conor.
+pin_user_pages_fast()
+  internal_get_user_pages_fast()
+    __gup_longterm_locked()
+      check_and_migrate_movable_pages()
+        migrate_longterm_unpinnable_pages()
+          migrate_pages()
+            migrate_pages_batch(..., NR_MAX_MIGRATE_PAGES_RETRY==10)
+              migrate_folio_move()
+                  move_to_new_folio()
+                    migrate_folio()
+                      migrate_folio_extra()
+                        folio_migrate_mapping()
+                          if (folio_ref_count(folio) != expected_count)
+                            return -EAGAIN;
+                              // ...and migrate_longterm_unpinnable_pages()
+                              // translates -EAGAIN to -ENOMEM
 
-In most case, the order depends on hardware design. But following the
-guide sophgo provides, it does have an common order. Is it good to add
-this description as a reference guide? If so, I will add it.
+Although so far I have not pinpointed the cause of such transient
+refcount increases, these are sufficiently common (and expected by the
+entire design) that I think we have enough information to proceed
+directly to a fix. This patch shows my preferred solution, which does
+the following:
 
-Regards,
-Inochi
+a) Restore the -EAGAIN return code: pass it unchanged all the way back
+to pin_user_pages*() callers.
 
-> 
-> > +
-> > +required:
-> > +  - compatible
-> > +  - "#phy-cells"
-> > +  - clocks
-> > +  - clock-names
-> > +
-> > +additionalProperties: false
-> > +
-> > +examples:
-> > +  - |
-> > +    phy@48 {
-> > +      compatible = "sophgo,cv1800-usb-phy";
-> > +      reg = <0x48 0x4>;
-> > +      #phy-cells = <0>;
-> > +      clocks = <&clk 92>, <&clk 93>,
-> > +               <&clk 94>, <&clk 95>;
-> > +      clock-names = "phy", "app", "stb", "lpm";
-> > +    };
-> > +
-> > +...
-> > --
-> > 2.44.0
-> > 
+b) Then, retry pin_user_pages_fast() from ib_umem_get(), because that IB
+driver is displaying real failures in the field, and we've confirmed
+that a retry at this location will fix those failures. Retrying at this
+higher level (as compared to the pre-existing, low-level retry in
+migrate_pages_batch()) allows more things to happen, and more time to
+elapse, between retries.
 
+Cc: Mike Marciniszyn <mike.marciniszyn@intel.com>
+Cc: Leon Romanovsky <leon@kernel.org>
+Cc: Artemy Kovalyov <artemyko@nvidia.com>
+Cc: Michael Guralnik <michaelgur@nvidia.com>
+Cc: Alistair Popple <apopple@nvidia.com>
+Cc: Pak Markthub <pmarkthub@nvidia.com>
+Cc: Jason Gunthorpe <jgg@nvidia.com>
+Signed-off-by: John Hubbard <jhubbard@nvidia.com>
+---
+ drivers/infiniband/core/umem.c | 33 ++++++++++++++++++++++++++-------
+ mm/gup.c                       | 14 +++++++++++---
+ 2 files changed, 37 insertions(+), 10 deletions(-)
+
+diff --git a/drivers/infiniband/core/umem.c b/drivers/infiniband/core/umem.c
+index 07c571c7b699..7c691faacc8a 100644
+--- a/drivers/infiniband/core/umem.c
++++ b/drivers/infiniband/core/umem.c
+@@ -210,15 +210,34 @@ struct ib_umem *ib_umem_get(struct ib_device *device, unsigned long addr,
+ 
+ 	while (npages) {
+ 		cond_resched();
+-		pinned = pin_user_pages_fast(cur_base,
+-					  min_t(unsigned long, npages,
+-						PAGE_SIZE /
+-						sizeof(struct page *)),
+-					  gup_flags, page_list);
+-		if (pinned < 0) {
++		pinned = -ENOMEM;
++		int attempts = 0;
++		/*
++		 * pin_user_pages_fast() can return -EAGAIN, due to falling back
++		 * to gup-slow and then failing to migrate pages out of
++		 * ZONE_MOVABLE due to a transient elevated page refcount.
++		 *
++		 * One retry is enough to avoid this problem, so far, but let's
++		 * use a slightly higher retry count just in case even larger
++		 * systems have a longer-lasting transient refcount problem.
++		 *
++		 */
++		static const int MAX_ATTEMPTS = 3;
++
++		while (pinned == -EAGAIN && attempts < MAX_ATTEMPTS) {
++			pinned = pin_user_pages_fast(cur_base,
++						     min_t(unsigned long,
++							npages, PAGE_SIZE /
++							sizeof(struct page *)),
++						     gup_flags, page_list);
+ 			ret = pinned;
+-			goto umem_release;
++			attempts++;
++
++			if (pinned == -EAGAIN)
++				continue;
+ 		}
++		if (pinned < 0)
++			goto umem_release;
+ 
+ 		cur_base += pinned * PAGE_SIZE;
+ 		npages -= pinned;
+diff --git a/mm/gup.c b/mm/gup.c
+index 1611e73b1121..edb069f937cb 100644
+--- a/mm/gup.c
++++ b/mm/gup.c
+@@ -2141,15 +2141,23 @@ static int migrate_longterm_unpinnable_pages(
+ 	}
+ 
+ 	if (!list_empty(movable_page_list)) {
++		int rc;
+ 		struct migration_target_control mtc = {
+ 			.nid = NUMA_NO_NODE,
+ 			.gfp_mask = GFP_USER | __GFP_NOWARN,
+ 		};
+ 
+-		if (migrate_pages(movable_page_list, alloc_migration_target,
++		rc = migrate_pages(movable_page_list, alloc_migration_target,
+ 				  NULL, (unsigned long)&mtc, MIGRATE_SYNC,
+-				  MR_LONGTERM_PIN, NULL)) {
+-			ret = -ENOMEM;
++				  MR_LONGTERM_PIN, NULL);
++		if (rc) {
++			/*
++			 * Report any failure *except* -EAGAIN as "not enough
++			 * memory". -EAGAIN is valuable because callers further
++			 * up the call stack can benefit from a retry.
++			 */
++			if (rc != -EAGAIN)
++				ret = -ENOMEM;
+ 			goto err;
+ 		}
+ 	}
+
+base-commit: 18daea77cca626f590fb140fc11e3a43c5d41354
+-- 
+2.45.0
 
 
