@@ -1,180 +1,96 @@
-Return-Path: <linux-kernel+bounces-165379-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-165381-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E833C8B8BFD
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 16:39:17 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CE1168B8C0E
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 16:42:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 156621C22C57
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 14:39:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8DA5B28236D
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 14:42:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0AF93433A8;
-	Wed,  1 May 2024 14:39:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8677D50249;
+	Wed,  1 May 2024 14:42:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b="w/ZJL00n";
-	dkim=pass (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b="w/ZJL00n"
-Received: from bedivere.hansenpartnership.com (bedivere.hansenpartnership.com [96.44.175.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="aRygughN"
+Received: from mail-pf1-f174.google.com (mail-pf1-f174.google.com [209.85.210.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32AFE14012;
-	Wed,  1 May 2024 14:39:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=96.44.175.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 936CB12E6A;
+	Wed,  1 May 2024 14:42:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714574348; cv=none; b=fRMJu0pgF2JrORixDgJA3K9ByiBRets4P4HmKD5dRswrH5LhYHyOzkDsNoyx7FgueyPxFjTGzTjTMCGcSmO6ksKU3Py6djthykhsvke1a+ruBhvr72b6Kj6vOjLoubOr3Uqh3/AXQ2gOWee4qMC2CZ3ZsAnozo5iJnE/s8988fU=
+	t=1714574523; cv=none; b=XGQhvd9BH/xwiUQGoOHwR23XcH3tIj09thptsyUS9lSE9rQWCpBYHQ+aTwQShU+jxRyvak6TUEgz4zP+J6rBmQ4DDxT8rWnNH7GTrJInkp0X0DBB0FCwa49Xze1DXmTsEtQbd/DfcdEW2G9mCwVQWbb1PUzGiB837x0g0nVbllw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714574348; c=relaxed/simple;
-	bh=3EQ+oWKQqtrjsODeFi5xeD2z30PLypWt44MJVuizc/8=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=QcwheGEdC1QL+pgrGQ0fPW/YXU/1CqVf5GtJER6NmJAnwopt2IY83PGmnjBnZ4SC/dURD//0M7NwhQvnjAXyzU0KcNDvXr8ORjS1rjJ0wL7Cwt3/c4Ler0ww3kpntP9Zheo9nM08jw2OLdYQ81JgcfsVP+PFhy9zSdAA8Oc06aU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=HansenPartnership.com; spf=pass smtp.mailfrom=HansenPartnership.com; dkim=pass (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b=w/ZJL00n; dkim=pass (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b=w/ZJL00n; arc=none smtp.client-ip=96.44.175.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=HansenPartnership.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=HansenPartnership.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-	d=hansenpartnership.com; s=20151216; t=1714574345;
-	bh=3EQ+oWKQqtrjsODeFi5xeD2z30PLypWt44MJVuizc/8=;
-	h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
-	b=w/ZJL00nwM6w5z/8CbB0oSsA797HfCvyxdopQkvYx9dCpWNA+8qXeSUuB49jEP3Ju
-	 /7sRc8sTS3KGQt04J0Jgv4Cwl11wLPvK+a6T4i4cSKo7U9Ski3NzNH/fbhpOg988WJ
-	 7hvKmo+i166QYTG33tUNslnEQgg3Blb1X2dFJ59E=
-Received: from localhost (localhost [127.0.0.1])
-	by bedivere.hansenpartnership.com (Postfix) with ESMTP id 67F261285DB5;
-	Wed,  1 May 2024 10:39:05 -0400 (EDT)
-Received: from bedivere.hansenpartnership.com ([127.0.0.1])
- by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavis, port 10024)
- with ESMTP id 1f2y665NX5OW; Wed,  1 May 2024 10:39:05 -0400 (EDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-	d=hansenpartnership.com; s=20151216; t=1714574345;
-	bh=3EQ+oWKQqtrjsODeFi5xeD2z30PLypWt44MJVuizc/8=;
-	h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
-	b=w/ZJL00nwM6w5z/8CbB0oSsA797HfCvyxdopQkvYx9dCpWNA+8qXeSUuB49jEP3Ju
-	 /7sRc8sTS3KGQt04J0Jgv4Cwl11wLPvK+a6T4i4cSKo7U9Ski3NzNH/fbhpOg988WJ
-	 7hvKmo+i166QYTG33tUNslnEQgg3Blb1X2dFJ59E=
-Received: from [IPv6:2601:5c4:4302:c21::a774] (unknown [IPv6:2601:5c4:4302:c21::a774])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(Client did not present a certificate)
-	by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id 661001285D8D;
-	Wed,  1 May 2024 10:39:04 -0400 (EDT)
-Message-ID: <c358208c5d4c823e3373aca4fe42998a6edd12fb.camel@HansenPartnership.com>
-Subject: Re: [PATCH v3] scsi: csiostor: Use kcalloc() instead of kzalloc()
-From: James Bottomley <James.Bottomley@HansenPartnership.com>
-To: Kees Cook <keescook@chromium.org>, "Martin K. Petersen"
-	 <martin.petersen@oracle.com>
-Cc: Erick Archer <erick.archer@outlook.com>, Bjorn Helgaas
- <bhelgaas@google.com>,  Justin Stitt <justinstitt@google.com>, "Gustavo A.
- R. Silva" <gustavoars@kernel.org>,  linux-scsi@vger.kernel.org,
- linux-kernel@vger.kernel.org,  linux-hardening@vger.kernel.org
-Date: Wed, 01 May 2024 10:39:02 -0400
-In-Reply-To: <202404291259.3A8EE11@keescook>
-References: 
-	<AS8PR02MB7237BA2BBAA646DFDB21C63B8B392@AS8PR02MB7237.eurprd02.prod.outlook.com>
-	 <202404291019.5AC903A@keescook> <yq17cgg58sp.fsf@ca-mkp.ca.oracle.com>
-	 <202404291259.3A8EE11@keescook>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.42.4 
+	s=arc-20240116; t=1714574523; c=relaxed/simple;
+	bh=H7nascuVRiOc1h40qWuw1zSs4lOrgFH4nRcw4Gl/srw=;
+	h=Date:Message-Id:From:To:Cc:Subject:In-Reply-To; b=tgrQFD0rbz7t7MRw9BMroIzBNr9zPONF8qsFT9lSqv/BOML4Y4yu5VsIyN02fA49v9Bxmp1oQY/VuxcftMOynz9jGVKtUY6xha488ZsnJ0jL43djMKXHPcUeM1E5QGHu8NN8w2DWRb3saWCmvtN3SfX+lDOop3puF1H0wjaPcJA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=aRygughN; arc=none smtp.client-ip=209.85.210.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f174.google.com with SMTP id d2e1a72fcca58-6f0aeee172dso616709b3a.1;
+        Wed, 01 May 2024 07:42:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1714574522; x=1715179322; darn=vger.kernel.org;
+        h=in-reply-to:subject:cc:to:from:message-id:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=QWu0hcmQYixAs4X/1S4ZEhgKxoQgCqRdjgR7BLis12I=;
+        b=aRygughNNqxGuqMOcULzIKDbh3qFg3dQRHiLwkt0FvKCZDagBDf24FYiKCVelsTPtv
+         wUlijVUEPJeZIXAIxriHR1Ggh+IyPXX7L+t3D0xCrPD6WmD3DDOnFKUh+XuszKvM0qM6
+         75g+Nr/Ey3k/kSa4q0XKwRL8S6xk9UGt2mMxJ/0xOEZmskiRKJeZaDBmFekfM96lX6R4
+         W1h/QI6XFKteO6st7FE9DDBTLhceizR7A7f+bTYC/no40LOJmeaQN8DHN+PJaYTVT3AJ
+         RuLLkjwjGkcv8phX04JDY2+mFYBc6EN/6K/DpPFGu6pUmrahYwik63fCgRkfTIitiOCU
+         OsGQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714574522; x=1715179322;
+        h=in-reply-to:subject:cc:to:from:message-id:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=QWu0hcmQYixAs4X/1S4ZEhgKxoQgCqRdjgR7BLis12I=;
+        b=Wn8rBEATBnhLiMQ+wDzCb5FruWxwZBKjcyUfDhvf43n1XPXfnvzU73tXzrTCy/Zxgg
+         CNbaqBj+b/0xoLvknP1/+ybpNlX6I0dMFfyJtEGxE+Ozc3O+UldDzanIFM8qA4wm56t0
+         tm++F2YMG9beaV8CnfIx7gYKMm0PqdJIsT5juLpeTXdRvGoz9QYTgLv+xPPNW7DEPQMY
+         U+ejBPiZD4fpHD+l6pFX3VbVWNplcQXtl8cUjWhQ6oL0btRt62QK5TszZLBslERzJeuG
+         Ji8qEjeJENXTZpdQjXBDENrY0G83Eixtk0cmLd2km7S6aZfB+KAo66ksbYQeodV6xoZ2
+         fV1A==
+X-Forwarded-Encrypted: i=1; AJvYcCW/3PNVkDydtsyguvZQ/6Da34ybSOsemXuo5UbFIjoCuST8hbbiC3I29lop1tGSLMCZ1oltX1YCrEJC+8knlbxTmBasFFbcr3ojdIXUl0FcFdc65/LE6m7r4lm0fxwL4+L9fhw4KGLWoQ==
+X-Gm-Message-State: AOJu0YyPVMzVAMyUdWTBNhy4qrkqR2uHAvfyFzZOHYWhdmiHC+drqQKT
+	oo7AzRxH7R1VOT4dy7vCfFI6PbnXZz9WYrKNGyuqvMJhvRn4yZxD
+X-Google-Smtp-Source: AGHT+IGU7duUTElL35l5TS5yKDvJK9y5574CYJ5VoN+Egsb1ISGasGHrZHHgLoeL4IlHddUjwiDm5A==
+X-Received: by 2002:a05:6a20:914d:b0:1af:6088:10fc with SMTP id x13-20020a056a20914d00b001af608810fcmr4553269pzc.13.1714574521775;
+        Wed, 01 May 2024 07:42:01 -0700 (PDT)
+Received: from dw-tp ([171.76.84.250])
+        by smtp.gmail.com with ESMTPSA id p52-20020a056a0026f400b006ede45680a6sm22684900pfw.59.2024.05.01.07.41.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 01 May 2024 07:42:01 -0700 (PDT)
+Date: Wed, 01 May 2024 20:11:54 +0530
+Message-Id: <87edal4mrx.fsf@gmail.com>
+From: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
+To: Zhang Yi <yi.zhang@huaweicloud.com>, linux-ext4@vger.kernel.org
+Cc: linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, linux-kernel@vger.kernel.org, tytso@mit.edu, adilger.kernel@dilger.ca, jack@suse.cz, hch@infradead.org, djwong@kernel.org, david@fromorbit.com, willy@infradead.org, zokeefe@google.com, yi.zhang@huawei.com, yi.zhang@huaweicloud.com, chengzhihao1@huawei.com, yukuai3@huawei.com, wangkefeng.wang@huawei.com
+Subject: Re: [PATCH v4 04/34] ext4: drop iblock parameter
+In-Reply-To: <20240410142948.2817554-5-yi.zhang@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 
-On Mon, 2024-04-29 at 13:13 -0700, Kees Cook wrote:
-> On Mon, Apr 29, 2024 at 02:31:19PM -0400, Martin K. Petersen wrote:
-> > 
-> > Kees,
-> > 
-> > > > This patch seems to be lost. Gustavo reviewed it on January 15,
-> > > > 2024 but the patch has not been applied since.
-> > > 
-> > > This looks correct to me. I can pick this up if no one else snags
-> > > it?
-> > 
-> > I guess my original reply didn't make it out, I don't see it in the
-> > archives.
-> > 
-> > My objections were:
-> > 
-> >  1. The original code is more readable to me than the proposed
-> >     replacement.
-> 
-> I guess this is a style preference. I find the proposed easier to
-> read. It also removes lines while doing it. :)
-> 
-> >  2. The original code has worked since introduced in 2012. Nobody
-> > has touched it since, presumably it's fine.
-> 
-> The code itself is fine unless you have a 32-bit system with a
-> malicious card, so yeah, near zero risk.
+Zhang Yi <yi.zhang@huaweicloud.com> writes:
 
-Well, no actually zero: we assume plugged in hardware to operate
-correctly (had this argument in the driver hardening thread a while
-ago), but in this particular case you'd have to have a card with a very
-high number of ports, which would cause kernel allocations to fail long
-before anything could introduce an overflow of sizeof(struct csio_lnode
-*) * hw->num_lns.
+> From: Zhang Yi <yi.zhang@huawei.com>
+>
+> The start block of the delalloc extent to be inserted is equal to
+> map->m_lblk, just drop the duplicate iblock input parameter.
+>
 
-> >  3. I don't have the hardware and thus no way of validating the
-> > proposed changes.
-> 
-> This is kind of an ongoing tension we have between driver code and
-> refactoring efforts.
+That is indeed correct. Let's drop the unnecessary function argument.
+Please feel free to add - 
 
-That's because we keep having cockups where we accept so called "zero
-risk" changes to older drivers only to have people with the hardware
-turn up months to years later demanding to know why we broke it.
+Ritesh Harjani (IBM) <ritesh.list@gmail.com>
 
-Security is about balancing risks and the risk here of a malicious
-adversary crafting an attack based on a driver so few people use (and
-given they'd have to come up with modified hardware) seems equally
-zero.
-
->  And this isn't a case where we can show identical binary output,
-> since this actively adds overflow checking via kcalloc() internals.
-
-Overflow checking which is unnecessary as I showed above.
-
-> > So what is the benefit of me accepting this patch? We have had
-> > several regressions in these conversions. Had one just last week,
-> > almost identical in nature to the one at hand.
-> 
-> People are working through large piles of known "weak code patterns"
-> with the goal of reaching 0 instances in the kernel. Usually this is
-> for ongoing greater compiler flag coverage, but this particular one
-> is harder for the compiler to warn on, so it's from Coccinelle
-> patterns.
-
-We understand the problem and we're happy to investigate and then
-explain why something like this can't be exploited, so what's the issue
-with adding it to the exceptions list given that, as you said, it's
-never going to be compiler detected?
-
-> > I am all for fixing code which is undergoing active use and
-> > development. But I really don't see the benefit of updating a
-> > legacy driver which hasn't seen updates in ages. Why risk
-> > introducing a regression?
-> 
-> I see a common pattern where "why risk introducing a regression?"
-> gets paired with "we can't test this code". I'm really not sure what
-> to do about this given how much the kernel is changing all the time.
-
-Well, it's a balance of risks, but given that there's zero chance of
-exploitation of the potential overflow, it would seem that balance lies
-on the side of not risking the regression.  I think if you could
-demonstrate you were fixing an exploitable bug (without needing
-modified hardware) the balance would lie differently.
-
-> In this particular case, I guess all I can say is that it is a
-> trivially correct change that uses a more robust API and more
-> idiomatic allocation sizeof()s (i.e. use the sizeof() of what is
-> being allocated, not a potentially disconnected struct name).
-
-Which is somewhat similar to the statement other people made about the
-strncpy replacement which eventually turned out to cause a problem.
-
-James
-
+> Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
+> ---
+>  fs/ext4/inode.c | 15 +++++++--------
+>  1 file changed, 7 insertions(+), 8 deletions(-)
 
