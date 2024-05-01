@@ -1,72 +1,54 @@
-Return-Path: <linux-kernel+bounces-165776-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-165777-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4C76F8B9129
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 23:49:25 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 27B188B912B
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 23:50:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B47C01F246E5
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 21:49:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CC04B1F246F6
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 21:50:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 576F6165FC1;
-	Wed,  1 May 2024 21:49:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A8F2D165FC7;
+	Wed,  1 May 2024 21:50:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dGVtthAq"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="a2XI3Aqr"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A3D14D5BF
-	for <linux-kernel@vger.kernel.org>; Wed,  1 May 2024 21:49:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E79294D5BF;
+	Wed,  1 May 2024 21:50:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714600158; cv=none; b=YybcINNrZKcHepGtoFEB2785VAfD5CFpWqyPR35Bkv93HmbNeZ1q8OgYzLkxUIaCcdrE1Lj/KgdD1myE9lcm/dMt/01aN6WyUAh5FyNvNi6qGg+ADsukrV+CKBj7W5CAMuVvTHcoLVcfuCIyqquI0oxtDlQ7/FPsjywOsC2hZuc=
+	t=1714600212; cv=none; b=AU3ktb2A50CfV76tFvmDdig/NQtj2wv0+EzDt8kc9ZKGZLxfAG0UQtRisxYL2MZsAJAv9p58oF/8U6XnZ0HiKFPgZ074JTsxkFAQ5JpK+sHCJP8bW9rOl4oUPqHu7a/fxRDXRfn3x51ek7GkZF64s5/Xj63jRXLL8N2sizAF85g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714600158; c=relaxed/simple;
-	bh=T0e6v2EEGGmGQq2DG+fHGV5WDwv7F/hfovJ40/z0/Zg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=EnamLwdRbsx+W/aoQ8ZkIwZrhv+1bMxYezl7Afunue3/tPi5/tBoIcIohh6NVBqYk6PIhWfVr/5g9n/XL3IH7GNQNhug+Ps/aUHbycbxbCmewjwIFndMxpIj6NIVtpeZafKvOzUFpVT8P4BIPpZVxb2Uz2Br14wH70r0Yu6VXKQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dGVtthAq; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0A9A4C072AA;
-	Wed,  1 May 2024 21:49:18 +0000 (UTC)
+	s=arc-20240116; t=1714600212; c=relaxed/simple;
+	bh=pcEtMp9KIjl5HwjSdfzFcU8G7IUQM5kmByyI59bmh78=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To; b=EZFTCbFaC+Svd6l804yczIh3IQmxm5h/5TUnGY/ealGjXEMBUS9yIALL9LB+VKW6Q7ic08jeBv2uslW9BmOWISAC63Vv+iTJcF2SOzdRR/zlnnPHZwrkGfqJvD/FZxr7emskJ6iZuX1moJ8Kwm0nW9QOBh23jNva3QR7EQ1KqKY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=a2XI3Aqr; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8E9D2C072AA;
+	Wed,  1 May 2024 21:50:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714600158;
-	bh=T0e6v2EEGGmGQq2DG+fHGV5WDwv7F/hfovJ40/z0/Zg=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=dGVtthAq1OTTQR3QC38kzQA9ogfbxze0/eX5Qgu7ICvOK3Um1LgWVVzlDv0X9yq0C
-	 kqFIjgAAVsZRtReZru9aGxaHjNMaMbNbPsKxd+jDS1A508lLEIdEBizVr7Y9rpGRtm
-	 0jCAeNR0Q+vGYosDS9q4wR8jWiY7LLX7pW1Q+iDakGzFiVuAuG7Tut2DYUZZQ+/om9
-	 CLSu0TP/aKe+EztSB3CAVNiTikzM4nH7kwvt+Wx8idbNkYXRUm+Rjazg04RomKECTR
-	 HDOlxfSb8DFKdVSovFdqtngYxbiihbK3cNy7yiiEnFESFiOhlNFN5Ttd7XccZU4vd1
-	 xPeyXh7wZnDow==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 926D2CE1073; Wed,  1 May 2024 14:49:17 -0700 (PDT)
-Date: Wed, 1 May 2024 14:49:17 -0700
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Marco Elver <elver@google.com>,
-	Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Dmitry Vyukov <dvyukov@google.com>,
-	syzbot <syzbot+b7c3ba8cdc2f6cf83c21@syzkaller.appspotmail.com>,
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-	Nathan Chancellor <nathan@kernel.org>,
-	Arnd Bergmann <arnd@kernel.org>, Al Viro <viro@zeniv.linux.org.uk>,
-	Jiri Slaby <jirislaby@kernel.org>
-Subject: Re: [PATCH v3] tty: tty_io: remove hung_up_tty_fops
-Message-ID: <1c886023-ae61-46ba-bb3c-b460c30de937@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <a3be44f9-64eb-42e8-bf01-8610548a68a7@I-love.SAKURA.ne.jp>
- <CAHk-=wj6HmDetTDhNNUNcAXZzmCv==oHk22_kVW4znfO-HuMnA@mail.gmail.com>
- <CANpmjNN250UCxsWCpUHAvJo28Lzv=DN-BKTmjEpcLFOCA+U+pw@mail.gmail.com>
- <CAHk-=whnQXNVwuf42Sh2ngBGhBqbJjUfq5ux6e7Si_XSPAt05A@mail.gmail.com>
- <d4de136e-c4e0-45c2-b33e-9a819cb3a791@paulmck-laptop>
- <CAHk-=wi3iondeh_9V2g3Qz5oHTRjLsOpoy83hb58MVh=nRZe0A@mail.gmail.com>
- <892324fc-9b75-4e8a-b3b6-cf3c5b4c3506@paulmck-laptop>
- <CANpmjNOY=Qpm3hBu-eN4Xk8n-2VXQRvcQ3_PfwPwNw9MmC8ctw@mail.gmail.com>
- <CAHk-=whTakjVGgBC5OtoZ5Foo=hd4-g+NZ79nkMDVj6Ug7ARKQ@mail.gmail.com>
- <CAHk-=wiGzmJXZwHxCE6P0jVBqU4gHEm=zcfj3v+zM_S_9RF4_Q@mail.gmail.com>
+	s=k20201202; t=1714600211;
+	bh=pcEtMp9KIjl5HwjSdfzFcU8G7IUQM5kmByyI59bmh78=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:From;
+	b=a2XI3AqrZE+c4PfLpNkS3DVRHX69WeR8DfKh9dfh2+rLOw4e4jgz/XiRTLn5VEXlJ
+	 p7ZYKrpnIMstghUlbT9S4HwMjGfF4ru0HB2Fx4r+FW+ZDhjN0BcLEuhCZqyKdTCDAh
+	 X1bH0zST764gXfP3Gi3CkJQHC7J+3QSFXEuc8uL94qpprjhkER3cG1yQ92kj0Fe0mS
+	 Q3D4Y1EOviK1gTKwEvb5pm1f4EW8vOFe5GzDGsvawGTp8QQHbQlUI74eSCOT2xn8gD
+	 1Wa3qDaXvn7s6k12RBZ2fwrfs78eCflFWbkyuINAmo7dFA1YYzgWHv20KX8NV0Utmi
+	 qVfDlMY4p/4Hg==
+Date: Wed, 1 May 2024 16:50:09 -0500
+From: Bjorn Helgaas <helgaas@kernel.org>
+To: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+Cc: Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Thatchanamurthy Satish <Satish.Thatchanamurt@dell.com>
+Subject: Re: [PATCH v1] PCI/EDR: Align EDR implementation with PCI firmware
+ r3.3 spec
+Message-ID: <20240501215009.GA1497134@bhelgaas>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -75,52 +57,100 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAHk-=wiGzmJXZwHxCE6P0jVBqU4gHEm=zcfj3v+zM_S_9RF4_Q@mail.gmail.com>
+In-Reply-To: <20240501022543.1626025-1-sathyanarayanan.kuppuswamy@linux.intel.com>
 
-On Wed, May 01, 2024 at 02:20:35PM -0700, Linus Torvalds wrote:
-> On Wed, 1 May 2024 at 14:06, Linus Torvalds
-> <torvalds@linux-foundation.org> wrote:
-> >
-> > So it would be something like
-> >
-> >         const struct file_operations    * __data_racy f_op;
-> >
-> > and only the load of f_op would be volatile - not the pointer itself.
+On Wed, May 01, 2024 at 02:25:43AM +0000, Kuppuswamy Sathyanarayanan wrote:
+> During the Error Disconnect Recover (EDR) spec transition from r3.2 ECN
+> to PCI firmware spec r3.3, improvements were made to definitions of
+> EDR_PORT_DPC_ENABLE_DSM (0x0C) and EDR_PORT_LOCATE_DSM(0x0D) _DSMs.
 > 
-> Noe that in reality, we'd actually prefer the compiler to treat that
-> "__data_racy" as volatile in the sense of "don't reload this value",
-> but at the same time be the opposite of volatile in the sense that
-> using one read multiple times is actually a good idea.
+> Specifically,
 > 
-> IOW, the problem is rematerialization ("read the value more than once
-> when there is just one access in the source"), not strictly a "read
-> the value separately each time it is accessed".
+> * EDR_PORT_DPC_ENABLE_DSM _DSM version changed from 5 to 6, and
+>   arg4 is now a package type instead of an integer in version 5.
+> * EDR_PORT_LOCATE_DSM _DSM uses BIT(31) to return the status of the
+>   operation.
 > 
-> We've actually had that before: it's not that we want each access to
-> force a read from memory, we want to avoid a TOCTOU race.
+> Ensure _DSM implementation aligns with PCI firmware r3.3 spec
+> recommendation. More details about the EDR_PORT_DPC_ENABLE_DSM and
+> EDR_PORT_LOCATE_DSM _DSMs can be found in PCI firmware specification,
+> r3.3, sec 4.6.12 and sec 4.6.13.
+>
+> While at it, fix a typo in EDR_PORT_LOCATE_DSM comments.
 > 
-> Many of our "READ_ONCE()" uses are of that kind, and using "volatile"
-> sadly generates horrible code, but is the only way to tell the
-> compiler to not ever rematerialize the value by loading it _twice_.
+> Fixes: ac1c8e35a326 ("PCI/DPC: Add Error Disconnect Recover (EDR) support")
+> Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+> ---
+>  drivers/pci/pcie/edr.c | 23 +++++++++++++++++------
+>  1 file changed, 17 insertions(+), 6 deletions(-)
 > 
-> I'd love to see an extension where "const volatile" basically means
-> exactly that: the volatile tells the compiler that it can't
-> rematerialize by doing the load multiple times, but the "const" would
-> say that if the compiler sees two or more accesses, it can still CSE
-> them.
+> diff --git a/drivers/pci/pcie/edr.c b/drivers/pci/pcie/edr.c
+> index 5f4914d313a1..fea098e22e3e 100644
+> --- a/drivers/pci/pcie/edr.c
+> +++ b/drivers/pci/pcie/edr.c
+> @@ -35,7 +35,7 @@ static int acpi_enable_dpc(struct pci_dev *pdev)
+>  	 * Behavior when calling unsupported _DSM functions is undefined,
+>  	 * so check whether EDR_PORT_DPC_ENABLE_DSM is supported.
+>  	 */
+> -	if (!acpi_check_dsm(adev->handle, &pci_acpi_dsm_guid, 5,
+> +	if (!acpi_check_dsm(adev->handle, &pci_acpi_dsm_guid, 6,
+>  			    1ULL << EDR_PORT_DPC_ENABLE_DSM))
 
-No promises, other than that if we don't ask, they won't say "yes".
+How confident are we that this won't break any existing platforms?
+Any idea how many platforms implement EDR_PORT_DPC_ENABLE_DSM and what
+Revision IDs they support?
 
-Let me see what can be done.
+>  		return 0;
+>  
+> @@ -47,11 +47,11 @@ static int acpi_enable_dpc(struct pci_dev *pdev)
+>  	argv4.package.elements = &req;
+>  
+>  	/*
+> -	 * Per Downstream Port Containment Related Enhancements ECN to PCI
+> -	 * Firmware Specification r3.2, sec 4.6.12, EDR_PORT_DPC_ENABLE_DSM is
+> -	 * optional.  Return success if it's not implemented.
+> +	 * Per PCI Firmware Specification r3.3, sec 4.6.12,
+> +	 * EDR_PORT_DPC_ENABLE_DSM is optional. Return success if it's not
+> +	 * implemented.
+>  	 */
+> -	obj = acpi_evaluate_dsm(adev->handle, &pci_acpi_dsm_guid, 5,
+> +	obj = acpi_evaluate_dsm(adev->handle, &pci_acpi_dsm_guid, 6,
+>  				EDR_PORT_DPC_ENABLE_DSM, &argv4);
+>  	if (!obj)
+>  		return 0;
+> @@ -86,7 +86,7 @@ static struct pci_dev *acpi_dpc_port_get(struct pci_dev *pdev)
+>  
+>  	/*
+>  	 * Behavior when calling unsupported _DSM functions is undefined,
+> -	 * so check whether EDR_PORT_DPC_ENABLE_DSM is supported.
+> +	 * so check whether EDR_PORT_LOCATE_DSM is supported.
+>  	 */
+>  	if (!acpi_check_dsm(adev->handle, &pci_acpi_dsm_guid, 5,
+>  			    1ULL << EDR_PORT_LOCATE_DSM))
+> @@ -103,6 +103,17 @@ static struct pci_dev *acpi_dpc_port_get(struct pci_dev *pdev)
+>  		return NULL;
+>  	}
+>  
+> +	/*
+> +	 * Per PCI Firmware Specification r3.3, sec 4.6.13, bit 31 represents
+> +	 * the success/failure of the operation. If bit 31 is set, the operation
+> +	 * is failed.
+> +	 */
+> +	if (obj->integer.value & BIT(31)) {
+> +		ACPI_FREE(obj);
+> +		pci_err(pdev, "Locate Port _DSM failed\n");
+> +		return NULL;
+> +	}
 
-							Thanx, Paul
+This changes two _DSMs, and I think it should be two patches.
 
-> Oh well. Thankfully it's not a hugely common code generation problem.
-> It comes up every once in a while, and I think the last time this
-> worry came up, I think we had gcc people tell us that they don't
-> actually ever rematerialize loads from memory.
+Same question here: we now depend on functionality we didn't depend on
+before.  How confident are we in this?
+
+>  	/*
+>  	 * Firmware returns DPC port BDF details in following format:
+>  	 *	15:8 = bus
+> -- 
+> 2.25.1
 > 
-> Of course, that was an implementation issue, not a guarantee.
-> 
->                            Linus
 
