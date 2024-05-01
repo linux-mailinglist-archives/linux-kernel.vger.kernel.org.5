@@ -1,174 +1,136 @@
-Return-Path: <linux-kernel+bounces-165013-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-165014-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id DBB2C8B8678
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 09:55:03 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1F7878B8683
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 09:55:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EC4ADB2111B
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 07:55:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C96951F23954
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 07:55:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D18494E1CB;
-	Wed,  1 May 2024 07:54:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1184C5027F;
+	Wed,  1 May 2024 07:55:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DXHCjHrW"
-Received: from mail-pg1-f178.google.com (mail-pg1-f178.google.com [209.85.215.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="bfGhnYDC"
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BBEED3D556;
-	Wed,  1 May 2024 07:54:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7DF564F5FA;
+	Wed,  1 May 2024 07:54:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714550089; cv=none; b=oOlCvLDC4KDYyRrC9EoXHtv2bObmGTDXJLUzYTqhStS5DMP6LDUxU6hIyu6fmu0UJ0D/QVyRL2n50Uv8Hsvx2EsTY+cgYqiwd+uKzmp8mN3C+vmrM7zfcHCBxU9Cy+W79M6e6kB9Du6fkg8cgFq5nwlyAT2Jen53tkaTJF05QXo=
+	t=1714550099; cv=none; b=rjdCquukknCfDz29ADYnVcV8mc1T3W8O/EvXQ0bz8iwSx6nh3jxHBmIn/qlZKdTD3Pb/14dNsB1UCbXYa/asjAiHhk92IQQ51SrkqbAqW49hVY7kk2pb3fwTo+YVBgr2VCaAmWbxGJvNgrchFsFb/u4aFRIARGpwAXMc8rccYXY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714550089; c=relaxed/simple;
-	bh=j2XT9iQsFZQa6Fjh2X72M1N1VeElDtC0hJ47xBaDOzY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Content-Type; b=TeFxko+9dRksylDQLc0GTmkcW8pIoKnAiHgNZkENQJapEmYRuesQX5Opwix8ClYAejyJFQrx+jC8KzofS4pd4aZRlndBfFomq4HladCbZ65tUPP29yW02hYMduVxA+GOMBW5SL3fAmmIWIabQmyNeu6beTAGaXVERRCnl7pAoek=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DXHCjHrW; arc=none smtp.client-ip=209.85.215.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f178.google.com with SMTP id 41be03b00d2f7-613a6bb2947so2068782a12.3;
-        Wed, 01 May 2024 00:54:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714550087; x=1715154887; darn=vger.kernel.org;
-        h=content-transfer-encoding:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=SzAwahuGtK7hRiLSlWGC1HCezqllP/i63RMLPgdJihw=;
-        b=DXHCjHrW5c6fDmBJwSyVv6qRdx+acdgwbFVjw9biECrg5gLk47+pb2rbh2/w0zyJB8
-         aCzvSY+n5ijw9kNtmgzmpVsDv47aCX5OYrLtwduICnbl9EdICfwP8uY/zFA13/42izv0
-         C4nc0nKyfLORzBf6jYFN1ohCQ3x/tz/LeUJ/X9/HAwAWZdXe8rxWLKFlYybmVGi0vqc+
-         S7g3NXPoVmsLkEJOyXxYx+JPGYymw1xWX0VPcungRmvmf++mc8tensQtODZX81zb7lL+
-         24YyPMkLrjLYuMvPKbb6UHaNghYhnmQVKbA0ZA79UQW34QHkFYaqCHOhKP1iPT2Rwsxw
-         YQbQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714550087; x=1715154887;
-        h=content-transfer-encoding:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=SzAwahuGtK7hRiLSlWGC1HCezqllP/i63RMLPgdJihw=;
-        b=nZ1/qSg7Ho6fOP+TBWwC9EQ+e00Erozj4GL2m+i60szRQNQPBZ1BS9OaQ6wbA8RNdt
-         CZM0VIOm78YLApami5+Xvwm6DrFw8kxPbr/af8sw7c69kgUXhqy0iuz+LmqqlB0xgC8w
-         WvD1ClUEcNkFbJg9Gdu0VMW/O3oFLkl7GMGie88/z4x3v7/B00B2k+54EZ6uxaPdUKA5
-         NrswG+RZK1VOrotyYeNuBKXRX8fJa7xSpEWeUFNuI6jxVz21ih9Cn3qwlPsXXnWJGVId
-         h/9vMOp/ZrR7hvxanm/w2O98c07OrKkNmIdpyjuz2SjkiOs2OG6CVW6sE4IwttThcpOu
-         ptPw==
-X-Forwarded-Encrypted: i=1; AJvYcCXN4QLBuY0EL0FgLFe6/2jY0hFPrfQ8mJajFE/wtSYu7swTfAVkngejv2igPq7kd6Qr0YQ1zsHxkhfVqne2k3IZjMXJilvu2PGIpdaPQ98aKMqeHFQ6JjH8zNzS4rOPjkLF72OaGBWUPng=
-X-Gm-Message-State: AOJu0YwPSoN7qd2KS97imee/wuRV4CbZy2938jMF2Lj7AOxpwXVcBZYD
-	FabdzFiI9Sh7kGmfM4JZm4i6679b6lvItUKmdme2vd6wBvy2rCvHG8AVdlpsPAQw/M/CxWS/b8s
-	Wr9kZtqXw6h1u8eGNMsFAyYcHRn4=
-X-Google-Smtp-Source: AGHT+IGOe8OCDEZGhCLHxUmCnemj0Hk4sKbvlMPTR2p1n4WQeoDgNivMXYTJMJuiDzzsWXV690B5e4WEtxWLy859PUg=
-X-Received: by 2002:a05:6a21:1a9:b0:1af:5a19:70a4 with SMTP id
- le41-20020a056a2101a900b001af5a1970a4mr2411491pzb.29.1714550086911; Wed, 01
- May 2024 00:54:46 -0700 (PDT)
+	s=arc-20240116; t=1714550099; c=relaxed/simple;
+	bh=8sTLmBe4e6NEzE5W91OaWrAkBkkpZr1qotPYVHDkhKw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=BGujQ0JVbADiNrPSQQToPEbzRCzw93yUbGEhHmIbbMObrys3ZKFpnF8YmLZ/2rmNwGAoBzN9S+l6ih5IW+yiCBsMtLkotiU5iA0bKZNHDi1Z7XC7WF4Prr2CVpsiksd6oAuQsbkBBFKErb0YMHBura9cD+Xp9ez3zbGI5WsprQk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=bfGhnYDC; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Transfer-Encoding
+	:Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+	Sender:Reply-To:Content-ID:Content-Description;
+	bh=aBV+1nnc4nEQPCYOtpvvVf+o4bvFOap0m5gmh/nCYCg=; b=bfGhnYDCggaTx9oehvzxFbXZrH
+	ZqN7cmIAB1BbFtRc1wHMmVusw6cJUlB1NhMP5Dv9X2RjN2QTpx0PK4oFkz9ZGdl187+6ZNQoywux3
+	YaswCMA448yCQjeTjqLvziQtoTm2XxogyzKlXiOR33bwaVqdb+dUgagWMMtAGzbvM5VW2eYbMPBp5
+	UZmgpSzzglnokVtmBzlR/PGhMgzd2ozpXwfaB65HARTyYzFd0mcijD9gKhI++AXS/jl1oL1qBWOYh
+	FhcojGxJt4eoAXXvprPABlnDQp25Z3AMOSchEbU7ghrBQivczGlag9TchdpTxarWXXcZG0Z6+9nxL
+	nvVbtMrg==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1s24nZ-00000008nfR-35ld;
+	Wed, 01 May 2024 07:54:41 +0000
+Date: Wed, 1 May 2024 00:54:41 -0700
+From: Christoph Hellwig <hch@infradead.org>
+To: Mina Almasry <almasrymina@google.com>
+Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-doc@vger.kernel.org, linux-alpha@vger.kernel.org,
+	linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
+	sparclinux@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+	linux-arch@vger.kernel.org, bpf@vger.kernel.org,
+	linux-kselftest@vger.kernel.org, linux-media@vger.kernel.org,
+	dri-devel@lists.freedesktop.org,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Richard Henderson <richard.henderson@linaro.org>,
+	Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+	Matt Turner <mattst88@gmail.com>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+	Helge Deller <deller@gmx.de>, Andreas Larsson <andreas@gaisler.com>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Arnd Bergmann <arnd@arndb.de>, Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+	Steffen Klassert <steffen.klassert@secunet.com>,
+	Herbert Xu <herbert@gondor.apana.org.au>,
+	David Ahern <dsahern@kernel.org>,
+	Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+	Shuah Khan <shuah@kernel.org>,
+	Sumit Semwal <sumit.semwal@linaro.org>,
+	Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+	Amritha Nambiar <amritha.nambiar@intel.com>,
+	Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+	Alexander Mikhalitsyn <alexander@mihalicyn.com>,
+	Kaiyuan Zhang <kaiyuanz@google.com>,
+	Christian Brauner <brauner@kernel.org>,
+	Simon Horman <horms@kernel.org>,
+	David Howells <dhowells@redhat.com>,
+	Florian Westphal <fw@strlen.de>,
+	Yunsheng Lin <linyunsheng@huawei.com>,
+	Kuniyuki Iwashima <kuniyu@amazon.com>, Jens Axboe <axboe@kernel.dk>,
+	Arseniy Krasnov <avkrasnov@salutedevices.com>,
+	Aleksander Lobakin <aleksander.lobakin@intel.com>,
+	Michael Lass <bevan@bi-co.net>, Jiri Pirko <jiri@resnulli.us>,
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+	Lorenzo Bianconi <lorenzo@kernel.org>,
+	Richard Gobert <richardbgobert@gmail.com>,
+	Sridhar Samudrala <sridhar.samudrala@intel.com>,
+	Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+	Johannes Berg <johannes.berg@intel.com>,
+	Abel Wu <wuyun.abel@bytedance.com>,
+	Breno Leitao <leitao@debian.org>,
+	Pavel Begunkov <asml.silence@gmail.com>, David Wei <dw@davidwei.uk>,
+	Jason Gunthorpe <jgg@ziepe.ca>,
+	Shailend Chand <shailend@google.com>,
+	Harshitha Ramamurthy <hramamurthy@google.com>,
+	Shakeel Butt <shakeel.butt@linux.dev>,
+	Jeroen de Borst <jeroendb@google.com>,
+	Praveen Kaligineedi <pkaligineedi@google.com>
+Subject: Re: [RFC PATCH net-next v8 02/14] net: page_pool: create hooks for
+ custom page providers
+Message-ID: <ZjH1QaSSQ98mw158@infradead.org>
+References: <20240403002053.2376017-1-almasrymina@google.com>
+ <20240403002053.2376017-3-almasrymina@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240308121338.1983-1-yongsuyoo0215@gmail.com> <CANXPkT6Bcj0Xbn308jNGp-vqTEcB9LKtUjZ1_zS-tc7KuBEMwA@mail.gmail.com>
-In-Reply-To: <CANXPkT6Bcj0Xbn308jNGp-vqTEcB9LKtUjZ1_zS-tc7KuBEMwA@mail.gmail.com>
-From: YongSu Yoo <yongsuyoo0215@gmail.com>
-Date: Wed, 1 May 2024 16:54:37 +0900
-Message-ID: <CANXPkT7Sv3TSNaPuPMVdpST4vGYZrvh+cfuEX7WjO+i0SP__PA@mail.gmail.com>
-Subject: Re: [PATCH] media: dvb_ca_en50221: Add a returing EBUSY logic into CA_RESET
-To: mchehab@kernel.org, yongsuyoo0215@gmail.com, v4bel@theori.io, 
-	linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240403002053.2376017-3-almasrymina@google.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 
-Dear All
+Still NAK to creating aⅺbitrary hooks here.  This should be a page or
+dmabuf pool and not an indirect call abstraction allowing random
+crap to hook into it.
 
-Can you review this patch ?
-Can you share how this modification is going ?
-
-2024=EB=85=84 4=EC=9B=94 11=EC=9D=BC (=EB=AA=A9) =EC=98=A4=ED=9B=84 9:02, Y=
-ongSu Yoo <yongsuyoo0215@gmail.com>=EB=8B=98=EC=9D=B4 =EC=9E=91=EC=84=B1:
->
-> Dear All
->
-> Can you review this patch ?
-> Can you share how this modification is going ?
->
-> 2024=EB=85=84 3=EC=9B=94 8=EC=9D=BC (=EA=B8=88) =EC=98=A4=ED=9B=84 9:13, =
-<yongsuyoo0215@gmail.com>=EB=8B=98=EC=9D=B4 =EC=9E=91=EC=84=B1:
-> >
-> > From: Yongsu yoo <yongsuyoo0215@gmail.com>
-> >
-> > Signed-off-by:Yongsu Yoo <yongsuyoo0215@gmail.com>
-> >
-> > In source/drivers/media/dvb-core/dvb_ca_en50221.c, if the CA_RESET ioct=
-l
-> > is called, in a normal case, the state of the thread of the
-> > dvb_ca_en50221_thread_state_machine will transit like below order.
-> > DVB_CA_SLOTSTATE_NONE -> DVB_CA_SLOTSTATE_UNINITIALISED ->
-> > DVB_CA_SLOTSTATE_WAITREADY -> DVB_CA_SLOTSTATE_VALIDATE ->
-> > DVB_CA_SLOTSTATE_WAITFR -> DVB_CA_SLOTSTATE_LINKINIT ->
-> > DVB_CA_SLOTSTATE_RUNNING
-> > But in some problem cases, the state will become DVB_CA_SLOTSTATE_INVAL=
-ID.
-> > Among the above mentioned states, the DVB_CA_SLOTSTATE_NONE and
-> > the DVB_CA_SLOTSTATE_INVALID are "already stablized" states,
-> > whereas other states are "transiting" states.
-> > The "already stablized" states mean no matter how long time we wait,
-> > the state will not be changed.
-> > The "transiting" states mean the states whose final state is not yet
-> > determined. The state keeps to be changed. Only after some time passes,
-> > we get to know whether the final state will be DVB_CA_SLOTSTATE_RUNNING
-> > or DVB_CA_SLOTSTATE_INVALID.
-> > During the "transiting" states, we do not yet know whether the
-> > CA_RESET operation, which triggered the "transiting" states, will
-> > succeed or fail. For this reason, during the "transiting" states, if
-> > another CA_RESET ioctl is called and if this new CA_RESET ioctl
-> > operation begins again, it will be meaningless and waste time.
-> > For preventing this problem from happening, we make CA_RESET ioctl do
-> > nothing and only return EBUSY if the ioctl is called during the
-> > "transiting" states.
-> > ---
-> >  drivers/media/dvb-core/dvb_ca_en50221.c | 8 +++++++-
-> >  1 file changed, 7 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/media/dvb-core/dvb_ca_en50221.c b/drivers/media/dv=
-b-core/dvb_ca_en50221.c
-> > index baf64540dc00..2e8aec354b7c 100644
-> > --- a/drivers/media/dvb-core/dvb_ca_en50221.c
-> > +++ b/drivers/media/dvb-core/dvb_ca_en50221.c
-> > @@ -1362,13 +1362,19 @@ static int dvb_ca_en50221_io_do_ioctl(struct fi=
-le *file,
-> >                         struct dvb_ca_slot *sl =3D &ca->slot_info[slot]=
-;
-> >
-> >                         mutex_lock(&sl->slot_lock);
-> > -                       if (sl->slot_state !=3D DVB_CA_SLOTSTATE_NONE) =
-{
-> > +                       if ((sl->slot_state =3D=3D DVB_CA_SLOTSTATE_RUN=
-NING) ||
-> > +                           (sl->slot_state =3D=3D DVB_CA_SLOTSTATE_INV=
-ALID)) {
-> >                                 dvb_ca_en50221_slot_shutdown(ca, slot);
-> >                                 if (ca->flags & DVB_CA_EN50221_FLAG_IRQ=
-_CAMCHANGE)
-> >                                         dvb_ca_en50221_camchange_irq(ca=
-->pub,
-> >                                                                      sl=
-ot,
-> >                                                                      DV=
-B_CA_EN50221_CAMCHANGE_INSERTED);
-> >                         }
-> > +                       else {
-> > +                               if (sl->slot_state !=3D DVB_CA_SLOTSTAT=
-E_NONE) {
-> > +                                       err =3D -EBUSY;
-> > +                               }
-> > +                       }
-> >                         mutex_unlock(&sl->slot_lock);
-> >                 }
-> >                 ca->next_read_slot =3D 0;
-> > --
-> > 2.17.1
-> >
 
