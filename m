@@ -1,253 +1,250 @@
-Return-Path: <linux-kernel+bounces-165188-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-165189-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id AEEBA8B8949
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 13:35:25 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B47788B894B
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 13:35:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1F4761F22ABD
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 11:35:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D7C2E1C2166C
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 11:35:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 583CC7D3F4;
-	Wed,  1 May 2024 11:35:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 405017F7CE;
+	Wed,  1 May 2024 11:35:41 +0000 (UTC)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE6E964A98;
-	Wed,  1 May 2024 11:35:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 00B4864A98;
+	Wed,  1 May 2024 11:35:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714563317; cv=none; b=KMdqh4RadnsJK81FdXebAUy4Q9HZyKUkr5FZYiV7bETB8O+6D4cvhoFJeEiKCs0SziD6WjpwSX3FVJ0bFLjKQFKb6+f9/OHNPCP3tZ7gwwv65oWKxqNGNvr79RYCOsxxjJc488Vtj+KNNxCWKuFE8Y9Zo2e4rJ/cc+X/1AtAgF4=
+	t=1714563340; cv=none; b=chuEALxUr7UIuOnQF+8Rfz68J8tzwZnXAIFLuL/FqZwK6hNLkpbjo8OnIZfrexVxUTWg8NcIefCK4bUzcNUG+9oTpWkSqGDHvSFAYAxjjFyx5V1a25jhJchgC+LXMOgWE7jChzxRMO+iW4ZZU9lXNHPxT/SkIxXgDGoJC8XkmuY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714563317; c=relaxed/simple;
-	bh=wJy87bfpS7s04Gzynz66njZDUrj0KmFwHecK8KcHmF8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=lG8hRjyphwkzGvnBnqZGnVE/+7L44wDINj7fNUS4smBuOnvNKicXiCwUK3otDUFXNxiqAP5flexkjR3G+YkZGRVFM8kg5Skhbi3SdftG0a+bM+jC0xKB8b6iHtUFnCrKttkeD1oBK2Zg1H9c4Q5ORu8NvhWYrlwy2ZEiyccKJnQ=
+	s=arc-20240116; t=1714563340; c=relaxed/simple;
+	bh=/9Gt92MX4NTEbr32xrQETEyuVad3B2YH4vYh9uQ2Flg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=kT3008sXPl9O1FzyJzY4THwJA4zEJ6/LGYJm61mvTrba5jZTXKXIBe+yQFSiXFJno3S+tBejNhy8ZX9dYx6NvaFqIrUxe7OR9EofwwoWfvfdZV2Cgv9HxtsAF091bsepXctr1ubeV5Jf7RAcxjRU/R4ukGl2zNCO/Z5JCpzg5k0=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 82CB42F4;
-	Wed,  1 May 2024 04:35:41 -0700 (PDT)
-Received: from e133380.arm.com (e133380.arm.com [10.1.197.52])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 347083F793;
-	Wed,  1 May 2024 04:35:14 -0700 (PDT)
-Date: Wed, 1 May 2024 12:35:08 +0100
-From: Dave Martin <Dave.Martin@arm.com>
-To: Dorine Tipo <dorine.a.tipo@gmail.com>
-Cc: Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>, Shuah Khan <shuah@kernel.org>,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-kernel-mentees@lists.linuxfoundation.org,
-	Javier Carrasco <javier.carrasco.cruz@gmail.com>
-Subject: Re: [PATCH] selftests:arm64: Test PR_SVE_VL_INHERIT after a double
- fork
-Message-ID: <ZjIo7E/IBYlNvO8H@e133380.arm.com>
-References: <20240429044012.5018-1-dorine.a.tipo@gmail.com>
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 561EC339;
+	Wed,  1 May 2024 04:36:04 -0700 (PDT)
+Received: from [10.57.65.146] (unknown [10.57.65.146])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id ADA683F793;
+	Wed,  1 May 2024 04:35:36 -0700 (PDT)
+Message-ID: <9fb15315-6317-4bf4-a736-a8a44288b0c2@arm.com>
+Date: Wed, 1 May 2024 12:35:35 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240429044012.5018-1-dorine.a.tipo@gmail.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] arm64/mm: pmd_mkinvalid() must handle swap pmds
+Content-Language: en-GB
+To: Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
+ Mark Rutland <mark.rutland@arm.com>,
+ Anshuman Khandual <anshuman.khandual@arm.com>,
+ Andrew Morton <akpm@linux-foundation.org>, Zi Yan <zi.yan@cs.rutgers.edu>,
+ "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>
+Cc: linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
+ linux-kernel@vger.kernel.org, stable@vger.kernel.org
+References: <20240430133138.732088-1-ryan.roberts@arm.com>
+From: Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <20240430133138.732088-1-ryan.roberts@arm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Mon, Apr 29, 2024 at 04:40:12AM +0000, Dorine Tipo wrote:
-> [PATCH] selftests:arm64: Test PR_SVE_VL_INHERIT after a double fork
+Zi Yan, I'm hoping you might have some input on the below...
 
-Nit: Please follow the same commit message prefix convention as in the
-existing code (e.g., try git log tools/testing/selftests/arm64/fp/ ).
 
-[...]
-
-> Add a new test, double_fork_test() to check the inheritance of the SVE
-> vector length after a double fork.
-> The `EXPECTED_TESTS` macro has been updated to account for this additional
-> test.
-> This patch addresses task 7 on the TODO list.
+On 30/04/2024 14:31, Ryan Roberts wrote:
+> __split_huge_pmd_locked() can be called for a present THP, devmap or
+> (non-present) migration entry. It calls pmdp_invalidate()
+> unconditionally on the pmdp and only determines if it is present or not
+> based on the returned old pmd.
 > 
-> Signed-off-by: Dorine Tipo <dorine.a.tipo@gmail.com>
+> But arm64's pmd_mkinvalid(), called by pmdp_invalidate(),
+> unconditionally sets the PMD_PRESENT_INVALID flag, which causes future
+> pmd_present() calls to return true - even for a swap pmd. Therefore any
+> lockless pgtable walker could see the migration entry pmd in this state
+> and start interpretting the fields (e.g. pmd_pfn()) as if it were
+> present, leading to BadThings (TM). GUP-fast appears to be one such
+> lockless pgtable walker.
+> 
+> While the obvious fix is for core-mm to avoid such calls for non-present
+> pmds (pmdp_invalidate() will also issue TLBI which is not necessary for
+> this case either), all other arches that implement pmd_mkinvalid() do it
+> in such a way that it is robust to being called with a non-present pmd.
+
+OK the plot thickens; The tests I wrote to check that pmd_mkinvalid() is safe for swap entries fails on x86_64. See below...
+
+> So it is simpler and safer to make arm64 robust too. This approach means
+> we can even add tests to debug_vm_pgtable.c to validate the required
+> behaviour.
+> 
+> This is a theoretical bug found during code review. I don't have any
+> test case to trigger it in practice.
+> 
+> Cc: stable@vger.kernel.org
+> Fixes: 53fa117bb33c ("arm64/mm: Enable THP migration")
+> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
 > ---
->  tools/testing/selftests/arm64/fp/za-fork.c | 95 +++++++++++++++++++++-
->  1 file changed, 94 insertions(+), 1 deletion(-)
 > 
-> diff --git a/tools/testing/selftests/arm64/fp/za-fork.c b/tools/testing/selftests/arm64/fp/za-fork.c
-> index 587b94648222..35229e570dcf 100644
-> --- a/tools/testing/selftests/arm64/fp/za-fork.c
-> +++ b/tools/testing/selftests/arm64/fp/za-fork.c
-> @@ -11,7 +11,7 @@
+> Hi all,
 > 
->  #include "kselftest.h"
+> v1 of this fix [1] took the approach of fixing core-mm to never call
+> pmdp_invalidate() on a non-present pmd. But Zi Yan highlighted that only arm64
+> suffers this problem; all other arches are robust. So his suggestion was to
+> instead make arm64 robust in the same way and add tests to validate it. Despite
+> my stated reservations in the context of the v1 discussion, having thought on it
+> for a bit, I now agree with Zi Yan. Hence this post.
 > 
-> -#define EXPECTED_TESTS 1
-> +#define EXPECTED_TESTS 2
+> Andrew has v1 in mm-unstable at the moment, so probably the best thing to do is
+> remove it from there and have this go in through the arm64 tree? Assuming there
+> is agreement that this approach is right one.
 > 
->  int fork_test(void);
->  int verify_fork(void);
-> @@ -69,6 +69,97 @@ int fork_test_c(void)
-> 	}
+> This applies on top of v6.9-rc5. Passes all the mm selftests on arm64.
+> 
+> [1] https://lore.kernel.org/linux-mm/20240425170704.3379492-1-ryan.roberts@arm.com/
+> 
+> Thanks,
+> Ryan
+> 
+> 
+>  arch/arm64/include/asm/pgtable.h | 12 +++++--
+>  mm/debug_vm_pgtable.c            | 61 ++++++++++++++++++++++++++++++++
+>  2 files changed, 71 insertions(+), 2 deletions(-)
+> 
+> diff --git a/arch/arm64/include/asm/pgtable.h b/arch/arm64/include/asm/pgtable.h
+> index afdd56d26ad7..7d580271a46d 100644
+> --- a/arch/arm64/include/asm/pgtable.h
+> +++ b/arch/arm64/include/asm/pgtable.h
+> @@ -511,8 +511,16 @@ static inline int pmd_trans_huge(pmd_t pmd)
+> 
+>  static inline pmd_t pmd_mkinvalid(pmd_t pmd)
+>  {
+> -	pmd = set_pmd_bit(pmd, __pgprot(PMD_PRESENT_INVALID));
+> -	pmd = clear_pmd_bit(pmd, __pgprot(PMD_SECT_VALID));
+> +	/*
+> +	 * If not valid then either we are already present-invalid or we are
+> +	 * not-present (i.e. none or swap entry). We must not convert
+> +	 * not-present to present-invalid. Unbelievably, the core-mm may call
+> +	 * pmd_mkinvalid() for a swap entry and all other arches can handle it.
+> +	 */
+> +	if (pmd_valid(pmd)) {
+> +		pmd = set_pmd_bit(pmd, __pgprot(PMD_PRESENT_INVALID));
+> +		pmd = clear_pmd_bit(pmd, __pgprot(PMD_SECT_VALID));
+> +	}
+> 
+>  	return pmd;
+>  }
+> diff --git a/mm/debug_vm_pgtable.c b/mm/debug_vm_pgtable.c
+> index 65c19025da3d..7e9c387d06b0 100644
+> --- a/mm/debug_vm_pgtable.c
+> +++ b/mm/debug_vm_pgtable.c
+> @@ -956,6 +956,65 @@ static void __init hugetlb_basic_tests(struct pgtable_debug_args *args) { }
+>  #endif /* CONFIG_HUGETLB_PAGE */
+> 
+>  #ifdef CONFIG_TRANSPARENT_HUGEPAGE
+> +#if !defined(__HAVE_ARCH_PMDP_INVALIDATE) && defined(CONFIG_ARCH_ENABLE_THP_MIGRATION)
+> +static void __init swp_pmd_mkinvalid_tests(struct pgtable_debug_args *args)
+> +{
 
-"git am" or "patch" report the patch as corrupted here, any idea why?
+Printing various values at different locations in this function for debug:
 
-Fixing the whitespace here allows the patch to be applied, but it still
-doesn't seem to build, so I think there are bigger problems here.
+> +	unsigned long max_swap_offset;
+> +	swp_entry_t swp_set, swp_clear, swp_convert;
+> +	pmd_t pmd_set, pmd_clear;
+> +
+> +	/*
+> +	 * See generic_max_swapfile_size(): probe the maximum offset, then
+> +	 * create swap entry will all possible bits set and a swap entry will
+> +	 * all bits clear.
+> +	 */
+> +	max_swap_offset = swp_offset(pmd_to_swp_entry(swp_entry_to_pmd(swp_entry(0, ~0UL))));
+> +	swp_set = swp_entry((1 << MAX_SWAPFILES_SHIFT) - 1, max_swap_offset);
+> +	swp_clear = swp_entry(0, 0);
+> +
+> +	/* Convert to pmd. */
+> +	pmd_set = swp_entry_to_pmd(swp_set);
+> +	pmd_clear = swp_entry_to_pmd(swp_clear);
 
+[    0.702163] debug_vm_pgtable: [swp_pmd_mkinvalid_tests  ]: valid: pmd_set=f800000000000000, pmd_clear=7fffffffffffe00
+
+> +
+> +	/*
+> +	 * Sanity check that the pmds are not-present, not-huge and swap entry
+> +	 * is recoverable without corruption.
+> +	 */
+> +	WARN_ON(pmd_present(pmd_set));
+> +	WARN_ON(pmd_trans_huge(pmd_set));
+> +	swp_convert = pmd_to_swp_entry(pmd_set);
+> +	WARN_ON(swp_type(swp_set) != swp_type(swp_convert));
+> +	WARN_ON(swp_offset(swp_set) != swp_offset(swp_convert));
+> +	WARN_ON(pmd_present(pmd_clear));
+> +	WARN_ON(pmd_trans_huge(pmd_clear));
+> +	swp_convert = pmd_to_swp_entry(pmd_clear);
+> +	WARN_ON(swp_type(swp_clear) != swp_type(swp_convert));
+> +	WARN_ON(swp_offset(swp_clear) != swp_offset(swp_convert));
+> +
+> +	/* Now invalidate the pmd. */
+> +	pmd_set = pmd_mkinvalid(pmd_set);
+> +	pmd_clear = pmd_mkinvalid(pmd_clear);
+
+[    0.704452] debug_vm_pgtable: [swp_pmd_mkinvalid_tests  ]: invalid: pmd_set=f800000000000000, pmd_clear=7ffffffffe00e00
+
+> +
+> +	/*
+> +	 * Since its a swap pmd, invalidation should effectively be a noop and
+> +	 * the checks we already did should give the same answer. Check the
+> +	 * invalidation didn't corrupt any fields.
+> +	 */
+> +	WARN_ON(pmd_present(pmd_set));
+> +	WARN_ON(pmd_trans_huge(pmd_set));
+> +	swp_convert = pmd_to_swp_entry(pmd_set);
+
+[    0.706461] debug_vm_pgtable: [swp_pmd_mkinvalid_tests  ]: set: swp=7c03ffffffffffff (1f, 3ffffffffffff), convert=7c03ffffffffffff (1f, 3ffffffffffff)
+
+> +	WARN_ON(swp_type(swp_set) != swp_type(swp_convert));
+> +	WARN_ON(swp_offset(swp_set) != swp_offset(swp_convert));
+> +	WARN_ON(pmd_present(pmd_clear));
+> +	WARN_ON(pmd_trans_huge(pmd_clear));
+> +	swp_convert = pmd_to_swp_entry(pmd_clear);
+
+[    0.708841] debug_vm_pgtable: [swp_pmd_mkinvalid_tests  ]: clear: swp=0 (0, 0), convert=ff8 (0, ff8)
+
+> +	WARN_ON(swp_type(swp_clear) != swp_type(swp_convert));
+> +	WARN_ON(swp_offset(swp_clear) != swp_offset(swp_convert));
+
+This line fails on x86_64.
+
+The logs show that the offset is indeed being corrupted by pmd_mkinvalid(); 0 -> 0xff8.
+
+I think this is due to x86's pmd_mkinvalid() assuming the pmd is present; pmd_flags() and pmd_pfn() do all sorts of weird and wonderful things.
+
+So does this take us full circle? Are we now back to modifying the core-mm to never call pmd_mkinvalid() on a non-present entry? If so, then I guess we should remove the arm64 fix from for-next/fixes.
+
+> +}
+> +#else
+> +static void __init swp_pmd_mkinvalid_tests(struct pgtable_debug_args *args) { }
+> +#endif /* !__HAVE_ARCH_PMDP_INVALIDATE && CONFIG_ARCH_ENABLE_THP_MIGRATION */
+> +
+>  static void __init pmd_thp_tests(struct pgtable_debug_args *args)
+>  {
+>  	pmd_t pmd;
+> @@ -982,6 +1041,8 @@ static void __init pmd_thp_tests(struct pgtable_debug_args *args)
+>  	WARN_ON(!pmd_trans_huge(pmd_mkinvalid(pmd_mkhuge(pmd))));
+>  	WARN_ON(!pmd_present(pmd_mkinvalid(pmd_mkhuge(pmd))));
+>  #endif /* __HAVE_ARCH_PMDP_INVALIDATE */
+> +
+> +	swp_pmd_mkinvalid_tests(args);
 >  }
 > 
-> +int double_fork_test(void)
-> +{
-> +	pid_t newpid, grandchild_pid, waiting;
-> +	int ret, child_status, parent_result;
-> +
-> +	ret = prctl(PR_SVE_SET_VL, vl | PR_SVE_VL_INHERIT);
-> +	if (ret < 0)
-> +		ksft_exit_fail_msg("Failed to set SVE VL %d\n", vl);
-
-Thanks for the attempt, but this file doesn't look like the correct
-place to add these tests.  This file is specific to testing SME (the
-"ZA" register array is specific to SME). Looking at the history of the
-TODO file, it looks like the entry you're looking at was related to the
-tests in vec-syscfg.c.  That looks like a better place to test the API
-behaviour of these prctl calls; most of the needed framework is already
-there.
-
-So, please consider adapting vec-syscfg.c to add the double-fork tests,
-rather than trying to write this from scratch.
-
-(See commit e96595c55d23 ("kselftest/arm64: Add a TODO list for floating
-point tests") for history.)
-
-
-If you haven't already done so, you should go and look at the following
-to get a better idea of how these prctl calls are supposed to work:
-
-Documentation/arch/arm64/sve.rst
-Documentation/arch/arm64/sme.rst
-
-The prctl(2) man page also documents the SVE prctls:
-
-https://man7.org/linux/man-pages/man2/prctl.2.html .
-
-
-[more comments below]
-
-> +
-> +	newpid = fork();
-> +	if (newpid == 0) {
-> +		/* In child */
-> +		if (!verify_fork()) {
-> +			ksft_print_msg("ZA state invalid in child\n");
-> +			exit(0);
-> +		}
-> +
-> +		grandchild_pid = fork();
-> +		if (grandchild_pid == 0) {
-> +			/* in grandchild */
-> +			if (!verfy_fork()) {
-> +				ksft_print_msg("ZA state invalid in grandchild\n");
-> +				exit(0);
-> +			}
-> +
-> +			ret = prctl(PR_SVE_GET_VL);
-> +			if (ret & PR_SVE_VL_INHERIT) {
-> +				ksft_print_msg("prctl() reports _INHERIT\n");
-> +				return;
-> +			}
-> +			 ksft_print_msg("prctl() does not report _INHERIT\n");
-> +
-> +		} else if (grandchild_pid < 0) {
-> +			ksft_print_msg("fork() failed in first child: %d\n", grandchild_pid);
-> +			return 0;
-> +		}
-> +
-> +		/*  Wait for the grandchild process to exit */
-> +		waiting = waitpid(grandchild_pid, &child_status, 0);
-> +		if (waiting < 0) {
-> +			if (errno == EINTR)
-> +				continue;
-> +			ksft_print_msg("waitpid() failed: %d\n", errno);
-> +			return 0;
-> +		}
-> +		if (waiting != grandchild_pid) {
-> +			ksft_print_msg("waitpid() returned wrong PID\n");
-> +			return 0;
-> +		}
-> +
-> +		if (!WIFEXITED(child_status)) {
-> +			ksft_print_msg("grandchild did not exit\n");
-> +			return 0;
-> +		}
-> +
-> +		exit(1);
-> +		}
-> +	}
-> +	if (newpid < 0) {
-> +		ksft_print_msg("fork() failed: %d\n", newpid);
-> +
-> +		return 0;
-> +	}
-> +
-> +	parent_result = verify_fork();
-> +	if (!parent_result)
-> +		ksft_print_msg("ZA state invalid in parent\n");
-> +
-> +	for (;;) {
-> +		waiting = waitpid(newpid, &child_status, 0);
-> +
-> +		if (waiting < 0) {
-> +			if (errno == EINTR)
-> +				continue;
-> +			ksft_print_msg("waitpid() failed: %d\n", errno);
-> +			return 0;
-> +		}
-> +		if (waiting != newpid) {
-> +			ksft_print_msg("waitpid() returned wrong PID\n");
-> +			return 0;
-> +		}
-> +
-> +		if (!WIFEXITED(child_status)) {
-> +			ksft_print_msg("child did not exit\n");
-> +			return 0;
-> +		}
-> +
-> +		return WEXITSTATUS(child_status) && parent_result;
-> +	}
-> +}
-> +
->  int main(int argc, char **argv)
->  {
->  	int ret, i;
-> @@ -86,11 +177,13 @@ int main(int argc, char **argv)
->  	ret = open("/proc/sys/abi/sme_default_vector_length", O_RDONLY, 0);
->  	if (ret >= 0) {
->  		ksft_test_result(fork_test(), "fork_test\n");
-> +		ksft_test_result(double_fork_test(), "double_fork_test\n");
+>  #ifdef CONFIG_HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD
+> --
+> 2.25.1
 > 
->  	} else {
->  		ksft_print_msg("SME not supported\n");
->  		for (i = 0; i < EXPECTED_TESTS; i++) {
->  			ksft_test_result_skip("fork_test\n");
-> +			ksft_test_result_skip("double_fork_test\n");
 
-I'm not very familiar with the kselftest framework, but this looks
-weird to me.
-
-Why should we skip both tests twice when there are two tests?
-
-(Looking at the history, I think this loop may have been left behind
-from an old edit and perhaps shouldn't be there any more.  Comparing
-with the way ksft_test_result_skip() is used in other tests may provide
-a clue.  Maybe Mark Brown remembers...)
-
-
->  		}
->  	}
-
-And finally... how are you running these tests?
-
-Cheers
----Dave
 
