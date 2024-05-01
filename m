@@ -1,246 +1,410 @@
-Return-Path: <linux-kernel+bounces-165523-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-165524-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B52C28B8D8F
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 17:58:19 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0C9E18B8D90
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 17:58:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6AE3728233B
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 15:58:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BBD66281B3C
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 15:58:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3FC9112FF6D;
-	Wed,  1 May 2024 15:58:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1FCA112FB16;
+	Wed,  1 May 2024 15:58:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="RjFyqt01";
-	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="iEtoSBrG"
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=ursulin-net.20230601.gappssmtp.com header.i=@ursulin-net.20230601.gappssmtp.com header.b="c2jb32La"
+Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D65212F593;
-	Wed,  1 May 2024 15:58:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.165.32
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714579083; cv=fail; b=aiQSzP7ezF7YWY0YGVNQQCdO22OImRV4vlvXSuz9zEoinSSe4PAGBlS8GVrjZ88IFfS4JCaZS/AEzKPWLfSMTSh2FBsNeQmmnJOlHUWqeAuRbZ842ukxsLiCWlMO+Bk3AOzhLDukc82JH5eeP78aWLg9Fz9Fndv2FlmvnV6JOW8=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714579083; c=relaxed/simple;
-	bh=YYm5r3RIaioTJCDrg7dYG8wIkPZATzTXAOSzxa/d1JI=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=rooy86znz0u7mnXLU6LBTyRPSlWB92QZt7YqKZQ8MAbR8Wjo6jGEBK9fMCj6nomyyVZfaEJXNxptMsCX7wnqWZaDA8W3n4/eVgp/lxRlDW+x5i4SscmE5Tyx3woTRnBMhGTObZjsUHbYJmE/OWWaKfTdyA4+3+WazK0k2XGfdtg=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=RjFyqt01; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=iEtoSBrG; arc=fail smtp.client-ip=205.220.165.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 441ARpUH014742;
-	Wed, 1 May 2024 15:57:43 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2023-11-20;
- bh=8wYTwblizp8OkkY8XmK1qn67s08eo0pcL24mUK/JnZE=;
- b=RjFyqt01u+XUc6AgEflfvgPwgjar1wpiQ8JDZl4vIursg3by4HKUTl4+mpZhmVh9Zq8o
- C4j94gHLI5UY0L482p6hcmVnxev3xyMpW7dvoS5eWweqhGrE0xc9SEWlU9ACPDeCQuSs
- V2MevvrdMoLL2P0K+tqY0dh20x9vxoN9DSkuO75WBXdd2uoVllVNXai4Onyc0fpPAXC2
- fOP0qkF1uncnUqPgSlq4qQyuzQSbtyCIeXwq7zfv/J5TuYzS/3kDBuyRpy7lYaqqYkQy
- JRoQvtmPpbC7KghvZlmqpeNVDuxo4hrxhhRP/OHNcaZWUXm14/4OruZL/FFu5ldd431F lA== 
-Received: from phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta01.appoci.oracle.com [138.1.114.2])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3xrs8cqebk-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 01 May 2024 15:57:43 +0000
-Received: from pps.filterd (phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 441FoieT005145;
-	Wed, 1 May 2024 15:57:43 GMT
-Received: from nam02-sn1-obe.outbound.protection.outlook.com (mail-sn1nam02lp2041.outbound.protection.outlook.com [104.47.57.41])
-	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3xrqt8ym2s-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 01 May 2024 15:57:42 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=P8Snlqb61vVef71NzqHjdmT8tJCS2kTPZAFHS/CcLeQ1+axARE5vDXRSRES7ShR5bC+l+FfuUfxpdkfrzTUgvHSHNvVZ7xUUPklUudRfBWiQYSJL6Q3MBSAIV9pOAiP/u6dHPGVuyPhjyKmlTjwYSWA9mr6EspA3f2OtkPUjoguOLhtjpd6XuZO3Tx66KjB1ZIWoJM56R6CBJv33dIBaW8ZWTFFcmETQznx9XnRWN9AzD2AKWhOfrganglEFo/FlT2QdlvSaTmSgNUiCfk50A8g+/SCftlFbFmYaMlNr5SU8ajWXUdwWyXKp/2AESfusOfivGXkjVoy7VZZmzL8miA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=8wYTwblizp8OkkY8XmK1qn67s08eo0pcL24mUK/JnZE=;
- b=K11NazgTvWIF3SXvQLKXdAohFN6mIlQChx5q/fxaLiNVTn5NIqafgaI2jREdDKGLRmyKxYPy1/D7L7TSrRTNx9cTEn0wNUZLQOe4jhegTnWF12l2rRULjfgY6Ulfo6or2n2Jx+7txRi5lpWgKIQHvCoRr9DfXBXhWbpELZEicBfVLf+OsAj6H++bnReo8lSpt+jL7AQxfuCfW5KBi17apDWINcJdBiJbl5YJlCGyXVGusgDevEwm8NcTZoACrE3J2Ijm5nZtdOaBQP1UoEZlbEKvbbGkv8xTLWpy58J9RCYClQsyfMunaAuhRsytRWTweQ/5K3u3qhbfsECgXdeHgQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA045130484
+	for <linux-kernel@vger.kernel.org>; Wed,  1 May 2024 15:58:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.53
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1714579090; cv=none; b=iVGaVjLeGpji2zYUcJ5eb/NTrSjtUeSNoDcAaPw1crK+XyZmGsAF+ULDG+a17eh9kYmJySk5fzArHnAFHNFg71tpRTflcs6qBulDD3gK4G12xwMoXeCPpJJzS+CV51CmM1rGIkUMluJkY2WH6a0wPAWp8Y2gLTCutB/gWSvjeIo=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1714579090; c=relaxed/simple;
+	bh=3nypYby7QjQLs4qv+F8KIs8ITv2kzmtQy9aqWDRkbT4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=iNQ84TUWVpzp3P6lOuZoXnebK0YvEG5KkYLpDzTku94v7nA8ScfMoBcJQm0dGaRbPxETkg7rcBIZdDbdjNS6bcZC2jAOo9QWpAfbLTl3EHxa7PVNM7P07p03zVlPeGmNpYxkYSEake92I30EKGKW8IzXxAFV5nbbhasO2LmgdUU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ursulin.net; spf=none smtp.mailfrom=ursulin.net; dkim=pass (2048-bit key) header.d=ursulin-net.20230601.gappssmtp.com header.i=@ursulin-net.20230601.gappssmtp.com header.b=c2jb32La; arc=none smtp.client-ip=209.85.128.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ursulin.net
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ursulin.net
+Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-41ba1ba55ebso37990435e9.1
+        for <linux-kernel@vger.kernel.org>; Wed, 01 May 2024 08:58:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=8wYTwblizp8OkkY8XmK1qn67s08eo0pcL24mUK/JnZE=;
- b=iEtoSBrGB2F/zAKsSzsoMWV3m4W6p8IrY38n7IzUNXJV9f5JrOH1KKSC0iuOdawLHK9armJCxt52L0nG9ewJj5LEiuUuSait4sozcD5HLq3kE4KM0YlMjv7R2BOuvpgeey2Dk5CiG9Q6u/ASZpAELunQrYGF0yXL6iJayJ7I9Pw=
-Received: from CY8PR10MB7243.namprd10.prod.outlook.com (2603:10b6:930:7c::10)
- by CY8PR10MB7338.namprd10.prod.outlook.com (2603:10b6:930:7e::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7519.34; Wed, 1 May
- 2024 15:57:40 +0000
-Received: from CY8PR10MB7243.namprd10.prod.outlook.com
- ([fe80::b779:d0be:9e3a:34f0]) by CY8PR10MB7243.namprd10.prod.outlook.com
- ([fe80::b779:d0be:9e3a:34f0%7]) with mapi id 15.20.7519.031; Wed, 1 May 2024
- 15:57:40 +0000
-Message-ID: <6971427a-d3ab-41c8-b34b-be84a594e40b@oracle.com>
-Date: Wed, 1 May 2024 10:57:38 -0500
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH next] vhost_task: after freeing vhost_task it should not
- be accessed in vhost_task_fn
-To: Hillf Danton <hdanton@sina.com>, "Michael S. Tsirkin" <mst@redhat.com>
-Cc: Edward Adam Davis <eadavis@qq.com>,
-        syzbot+98edc2df894917b3431f@syzkaller.appspotmail.com,
-        jasowang@redhat.com, kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        virtualization@lists.linux.dev
-References: <b959b82a-510f-45c0-9e06-acf526c2f4a1@oracle.com>
- <20240501001544.1606-1-hdanton@sina.com>
- <20240501075057.1670-1-hdanton@sina.com>
-Content-Language: en-US
-From: Mike Christie <michael.christie@oracle.com>
-In-Reply-To: <20240501075057.1670-1-hdanton@sina.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: CH0PR04CA0019.namprd04.prod.outlook.com
- (2603:10b6:610:76::24) To CY8PR10MB7243.namprd10.prod.outlook.com
- (2603:10b6:930:7c::10)
+        d=ursulin-net.20230601.gappssmtp.com; s=20230601; t=1714579087; x=1715183887; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=IM1Q38Vixc5rGoB4SXPdlKbe9Yze7I43pEzyGZNiY0c=;
+        b=c2jb32Lat+MgN6Qgc+CyWstPToMOLhO1O+bQPV3hgA94fHAlMB49R3UWKZc33zcs+y
+         f2d4Wvttu6qjfZVFUi41fgYYwmcD40vYYCTKwGTqLIb47PyoRii2H7Y2/8+uDqtgEawe
+         0NtAh2KgXD6/qpVd2tOH25yAyHOZ8RHYWeH0xDtHPb+N/EUbEDZaf+otc9md7C2D6ZqZ
+         DqKxTJTQ1qGIImYw8xQ/KQspLf2DUxMFbU6Tr1yVti3rdIBvcK54K7jpNXjt/JRL+N9n
+         DJQyhCUZtfSCQrkxbeL68xHBII8o+9W+FNbKAUzP62mW1/O5lhkEuT1MS6bzrESYA8U9
+         /C6g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714579087; x=1715183887;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=IM1Q38Vixc5rGoB4SXPdlKbe9Yze7I43pEzyGZNiY0c=;
+        b=b0HTGwY7omC+qwzg0u9IkTi48i3Vv/gyOyKvsat0Es9NKvWDxsMxVKYWh78ht8NITj
+         /FxzBVi+5PJthZaKqHaGRwRteqN93TZlUVuA3tjHtpvE142DkbdmSBeEec2ATwuF+UT1
+         QEG0PLhXzOtAI5P4sCIfXs6yVfuopVlW1iXXoWCiZKspIcEnS/Q2/T4TaojBGTlK1+CD
+         7JncEw/UGmuSOZbVZv5BXiBkAxT49UfMtNO8gaH2jh6rYroXikozldIS/jEjfeOwJycd
+         C3fu1Ylwk2TdKiMN1gbPnX6OTW/6Ktm6UYCUQ6qBFpvuIrQ5x9k1/5Q17V8BI7Ct0joE
+         g86Q==
+X-Forwarded-Encrypted: i=1; AJvYcCWsBWzlVkRusdHTY9e/85LXkRpm1jhkUCsL7oS3Ahhmt/ErrPwf2SC4nyeofGmMSKrgIK4H7a+pKjVuDSn3hJEEvO14vUrBy3tqrB0s
+X-Gm-Message-State: AOJu0YxPAkrrFg5PioM0lJK2vxqlZJtVdxDkrSJf6qPqr2BPWpYGhNdm
+	wagKTGs3qs1D3WWt00oqka/+V2K/LvQsrfM2aeNHocYZsp0O1tUXQ30cz5BnJeQ=
+X-Google-Smtp-Source: AGHT+IEriy/yldJww68D/EaXvNBSqKxiyuZ/kdKCUsiW8K8RJDY1SusYSvfyjDkgPP8ckBM0NLlkdw==
+X-Received: by 2002:a05:600c:1d88:b0:419:e773:9052 with SMTP id p8-20020a05600c1d8800b00419e7739052mr2391402wms.14.1714579086858;
+        Wed, 01 May 2024 08:58:06 -0700 (PDT)
+Received: from [192.168.0.101] ([84.65.0.132])
+        by smtp.gmail.com with ESMTPSA id n44-20020a05600c502c00b004146e58cc35sm2626540wmr.46.2024.05.01.08.58.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 01 May 2024 08:58:06 -0700 (PDT)
+Message-ID: <54ebd0a0-dc9d-43d7-b530-065832cda160@ursulin.net>
+Date: Wed, 1 May 2024 16:58:05 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CY8PR10MB7243:EE_|CY8PR10MB7338:EE_
-X-MS-Office365-Filtering-Correlation-Id: 1e48222c-c692-40ca-b059-08dc69f76de1
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230031|1800799015|376005|7416005|366007;
-X-Microsoft-Antispam-Message-Info: 
-	=?utf-8?B?bXA3amMreW9keStPbmdueWZVNXZlcWFDU1ZxZ3Iza3VZRDdoL0ZDNDQwNEx2?=
- =?utf-8?B?bmpZckhqYUVsSTlyVlY3d1dka09XOG9xNG45TTZNSUcyTSt5RGVuMHZtMisy?=
- =?utf-8?B?T1NERVRPMUZHNU5pVFJ4bTFJZmZLQTZVRnQ3ZW85WHcvRnRxWHBzU0tWMUVS?=
- =?utf-8?B?RU5sYzdDNWplTFZrOFV4RTMzbVcwMjZuK3hlWWZLTVhSaEdZci9QbGxnbmxi?=
- =?utf-8?B?OElaWWFyNU40UkJZb3o2cURsOGZOOEdMOGtZcU8rRHBjQVlpMGhBRi9IZVQr?=
- =?utf-8?B?WHVnL1NUbWxHOXVUK3pHQXoxemxoYkI3aGwwVjUweUdESm9icEM4K29zM0dl?=
- =?utf-8?B?bnQ2ajBtb3FwWS9jbnJMd0E4ZXNFOXdqQVdtOU9DVHFzbWV0MXZIQW1mUTh6?=
- =?utf-8?B?bDhaYnVtVEFLcXY4UmRXeXhFT21WcW9EL1BzVXVNWnQzaGcrN1Mzc2Z5TDRC?=
- =?utf-8?B?M2g5N0lubWIxdXR6MVV3dldhNG1nRHFRRmVIMjgwazd6MzFCYlFTRmtPNXN1?=
- =?utf-8?B?QkdWQUFMczVVRmc5VTFyUEhWV1Qvc0hua1cycDF3SHdnTEhqVEFVQlFxRW5P?=
- =?utf-8?B?d0F2bm4xOWFZZFpxb2JHTStWS1BzN25qL1BYbW1rRE05L1lMWjRkKytoaGph?=
- =?utf-8?B?NHZQSUhrbzZPVlZVd3lQWm12eGpUUFVCaWlzeUpxYktGL2xIbFNETjJ1MUlu?=
- =?utf-8?B?bU94SEw5NzQybzkxVHZPczczMko5bHF1R0VYQjFUWHlObitOaWQwT1U2dzZ2?=
- =?utf-8?B?UzkvRE1NQjZUYlBRMzYxRDBjOVBhY3Vld0d6RlQ4ck0vMGRYdjdMT2NheDJY?=
- =?utf-8?B?VVI1QkUrYnZjdTdQdzl4SlNjdDdYVEM3UXc1S0x0VFBEQ1diNHI3SDIrUCsx?=
- =?utf-8?B?eTJ3TkFnSnkrYzBjQlN0Y1o4Ny8xRUJwK2tsMkhNMDR5S3huRHRmem1WSkU1?=
- =?utf-8?B?OXR1S3RhUnlOaHFweW1tbXNiWXZjOFEwcWk3L1cyb2MwSVlMMWRBeGk5V0tv?=
- =?utf-8?B?NDVMdHNaWFd6d29CV2V6cXNseE5HVGFSR2FpNXhqN1RkZEd5TWtocWlmTnBL?=
- =?utf-8?B?c2FrWUxoa0Z6QkZOUGo3cHQ1cExnaGtoeVZCdFdGUUo1WTBqS1djTi9OLzEv?=
- =?utf-8?B?bU1iYXBiU1ZxQmlhMnpKZlhHNVQ3ZnVONnJHYmVZTXg0Vm5nNGVMWEhUTVpI?=
- =?utf-8?B?V2p1MnNIa2h3WEszSWZmZnc0ek1CcmQ5R0hNWFlRbEVmeVg1U0dWYVJDT0tT?=
- =?utf-8?B?NVZncUwxcnVjKzE1VER6a2Y1NTZ0Rllkd0lYOEsxTlNYeFZTRTRYUkJHSTBB?=
- =?utf-8?B?cVhUNXlvRUZ0a2NzeEJXaTNtTnhMbWFSSEUrNGIreEV2SjhmRTZnd3g1YTMr?=
- =?utf-8?B?SXo5OVNFNW8xK1dtaTQ2cTB6TVVteHJtTjh6MzRTSksyTU9WcWtEWDdOc1lo?=
- =?utf-8?B?REpJcGd4SFNEaW0veVY4SFlrRjJOM2h6TjhOUnlzNVYzUFVhYTVmeGZjK2Y5?=
- =?utf-8?B?Mkg0OG1kM0V0TjR5TnNQMWllcXVmTmZ0Q3djeEdYemNTUTl1eE5vRDlMYmNq?=
- =?utf-8?B?NkQ2WU8rNGJWQ1V0Y1AyMnhBNFl3V1FTN3lIL0xaQnJOamJ6WEZrcWtsZ2dL?=
- =?utf-8?Q?JRzZRrDymRXtipyDvQ3rSX6zcQV6mySzT+mCqOhp5SpE=3D?=
-X-Forefront-Antispam-Report: 
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY8PR10MB7243.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(376005)(7416005)(366007);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: 
-	=?utf-8?B?R2pPQ1NTYnRWbE1qMTF4K25uTjBtS05vMUVvQlRPQm9PbUF1NmJlSFMyd1RR?=
- =?utf-8?B?MVBTbmVRc1VGRmw3SlhWMlNKbTU5d1lheDlyOWlGbVkzOHpQQlpYenNXMmpU?=
- =?utf-8?B?c3pnQ2tvenBpS2FaM0VHR21iZmtvV3VKMy9NN1UvUDZxbnZGRGMwODZwTStr?=
- =?utf-8?B?SC96dEhWNEpKc2pFNVdiWHpmYnJxVXYvMzh6aGpYeHdDWHBxKzdUc1I4dzRV?=
- =?utf-8?B?dUd1bGduZEhYOE9xWDJSeHJsYTNXZ1hFSGpmU1RpQ2Z1WGNzOXNaSWpmUXJp?=
- =?utf-8?B?Znk2emtIYmRsaVZmcW1jVW9kV3d2TkFLNkMvTExqSlorVFQ1S2poMlJVQU5q?=
- =?utf-8?B?NFM5NXRxbGRUYWt6WUF6blN3eVNKZ3FwQVNzWnZVNURlV3lyZHd2djVaSitE?=
- =?utf-8?B?SmhkTjVWNldUYkc0SEpWOVJGbkhIanJSNGVJUnIvZUtGYTdONVBLZVdtS0Fp?=
- =?utf-8?B?N3ZUS3QzWnFoUU1uWXJpMVpwSGhNdFMyY2xydno4UDNnS1VRaHp3OGphZ0Ew?=
- =?utf-8?B?YnVoSWFST0VhR0lPRktIT2JhZ0N2TTBCVFdDTU03SnlxL2NJZVRaOHd2UlVD?=
- =?utf-8?B?bEtSNkJDSDAyTVJFejQ5Q3VQTzk2M05RMm9vSlVHdnA3cXd1RE1qcWFyYVhq?=
- =?utf-8?B?enNEOHZockpxS0k4dllpQkNqZk9XQUpJaDk5bnl6MUdhc29KbXRoUE1kRmhk?=
- =?utf-8?B?Z3hJYUhaWTdwMm1EN3Q1d0ExcTJiSHU3cW02ZVU0cXV2OFZMM2pPL1JGbk5a?=
- =?utf-8?B?RFJCYndkMi9vV1d4NkthblllcStDWjBpSU5MbDlhSW5TcllhZWcvQXV6MUJ5?=
- =?utf-8?B?OC9OUkJyUFlWK3hnZkpCeDFIcjBacENmRnI1Q3d0dUtqS0svRzdjRm1CdnVB?=
- =?utf-8?B?MlV4aGlWZ1prNnJjLzZtVU5qUllzMEJSYXFGY3Jkak1KOUpWNHZhcVd2ZFdq?=
- =?utf-8?B?MjFWRTA0TU1vam9OYjRuY2xjSTZuT000dGhDWUttTVFYa25ITkx2RXIrQnJU?=
- =?utf-8?B?TEVqWlpyV1Nlem9WUWRFaTJjaGtRQnlXR29UNFZDT2M5NkVldEpFRGpTRDVE?=
- =?utf-8?B?Tkh4c2JHSXE1dXF0Q1FFQjZIMXVhNW1QZmJmSktmMEJOQnFqN1hBTXREVXZt?=
- =?utf-8?B?K3QyOTg0S25wbFhCcm1DcThzZGgyTGlvREkwT1NDcFZiYTFscGtVRzVwZWRG?=
- =?utf-8?B?NWpFRlpTZ2ZYTmNOWUd6NHVoVkZVYzl0TEFVSkJFa01tYkY4VVg5bk4wd0kz?=
- =?utf-8?B?R3NVMXBDMzJrejJwaExBU0NTQ2VqTEd6TmpEZzFQRXFkZWZCc2krUnZ3S2xF?=
- =?utf-8?B?dkJoUWx6eUFiNWdscVJYcURMS0luYjNIbENPb3dNc002R2w3dmZ3R2pRRERo?=
- =?utf-8?B?d3VwMy9ycDhGeTN2MEp4WSsybWNKMkJNYm04Sm4ycnVWNWRPczF6YlpHY2J6?=
- =?utf-8?B?RDJpS2U1SHpucHB4bXVCMlYyMjYweDdZT3FYK0lraHBvNEVMNERZZXRCYUcr?=
- =?utf-8?B?VjU0Y3FXd2YvWEpsNGZ3Y3JUVGZxb0ZTQlR0Y25GenB5dXJ3eFZWWW9QZy9v?=
- =?utf-8?B?UW1oZTBoVkFGOExCb1JBbHB1TkZTdWR2Qkx1RWgwQXVzWGxleEE4RmtoSTlU?=
- =?utf-8?B?dGYxQmpRcVUzRmhIc1JRQWsvRUFQb2xCK25jUmFrYWdLQzVTQ3Q2ZVozUW9E?=
- =?utf-8?B?Sm1GOTZQa3pLRUYwL3hFYllYMFJ2WWovOHR6TXQ1U3p0UzgyaG9iNFF5QzR3?=
- =?utf-8?B?Y3NFcmNnaXgzaXZkNmMyN2NuTDYxKy82YWtscHIyalpKaEp3Vm1Fc0FrUm4r?=
- =?utf-8?B?TWdjK1BxOWRjdHRHeExMbDdqclFXamxWM2dYc1FtYTliaTk5V3ZkbkhkY2Uz?=
- =?utf-8?B?bGdnUndWcUhadEZPaVNZSHQ0MmxscjlsdU9pMWdPMHBPSFFMamIwQWNheEk4?=
- =?utf-8?B?clRYM3ZFYVB0N0N0TnJHTDVkc1BBQkRZa2dabGpSNERwRTFCSVpkSVAxQTY2?=
- =?utf-8?B?S3hLNHdLbEhhRDlWM01TSGJTeTdlTHArL3VwQlpNdHYycXh2cGc2bUZVV0NO?=
- =?utf-8?B?WG5JdlZjZ2k4bDJ0RHBZdXovcUZvQXJGRHlPcjI4TTVMMk41RWRlQmZNMmJJ?=
- =?utf-8?B?ekdDNmxsTi81djJRRWNjVGJFbEhwU2lFL3pCQzc2Y2pnc2ZNU0tDQzZvSlpZ?=
- =?utf-8?B?dkE9PQ==?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
-	U0AjEh6aAb3spnhU1RxfxTEyMJWqsHUfuh7J/O+p6PJ1slrj2dG0k/ZGkTNcp67gEB5ZTT46dtcoDWmZR2C7ynENW67Zd3jdc4FSqZUa7atRUCE5uGqFbAoHFfv/kgamV33nWzSkUAWpv61A1D3qkjKGvBGj9vJ0xDjY1uCYSlLihC9PmoP5ew/Eg/I/sc4sa1ochkXSV4m8Gr3CrdEWzbWtEv5o+BkXnRqm3SMuSt3xjqc7vaToU5HaLUW2y9nwN+j2XDYErPArJaFxvytAVUq7awh2YVlw0FJI2+jiKkXJ0GA1ak+ns2uy+Qq1KvRK+2eK1NcmqC6khLMoKYYfsFTikZS1GjJM1xo4Ao5c+Oc+OO0+dJRMF8UBzyWzaaIHvBhkYPJER/glf5ncPvXZWYFSgWSQRbyJ+EsUYXWZYQrYg9dZ76HD5kYcszDASTwKiCDLB3JJ0rmvT+F3RJVavGcEWmw4v2MEWdzI7XnVdLeBt4sS69XN0blcaN8iEE/Hl83EYzmmG3sd70hocvSOQ6ly5S8or61/JZ6tlefhsk80IzrbugovLBSYZQG3XWj2uCUGnxkkHuXKME5+oAZ1GGcMiV7Oe/OI7soW54V6/os=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1e48222c-c692-40ca-b059-08dc69f76de1
-X-MS-Exchange-CrossTenant-AuthSource: CY8PR10MB7243.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 May 2024 15:57:40.2857
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 0MxjeYJcSFDbYFwBELZgfZaumc26cy8EC7obiNjmXnTnLk18SsnC05JqGmLCP9NW1YLzFCaVKxYFEUMfTIt9bXMBS3tQdQyalp3uw1jQTMc=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY8PR10MB7338
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
- definitions=2024-05-01_16,2024-04-30_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 bulkscore=0 adultscore=0
- phishscore=0 mlxscore=0 suspectscore=0 mlxlogscore=999 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2404010000
- definitions=main-2405010113
-X-Proofpoint-GUID: yzBd8FuK229K2A1YmS1YEM6RiOF_mCy_
-X-Proofpoint-ORIG-GUID: yzBd8FuK229K2A1YmS1YEM6RiOF_mCy_
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] drm/sysfs: Add drm class-wide attribute to get active
+ device clients
+Content-Language: en-GB
+To: =?UTF-8?Q?Adri=C3=A1n_Larumbe?= <adrian.larumbe@collabora.com>
+Cc: Rob Clark <robdclark@gmail.com>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
+ David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+ Hans de Goede <hdegoede@redhat.com>, kernel@collabora.com,
+ Boris Brezillon <boris.brezillon@collabora.com>,
+ Christopher Healy <healych@amazon.com>, dri-devel@lists.freedesktop.org,
+ linux-kernel@vger.kernel.org
+References: <20240403182951.724488-1-adrian.larumbe@collabora.com>
+ <CAF6AEGsWtJs2xcZx59P9_maxn1RqCO6-4GwEp2fL31bZtTyuoA@mail.gmail.com>
+ <e6500d5b-0151-4c31-9032-3a23157b3126@ursulin.net>
+ <4btlparspmb47v3nq3mip6cjr2adwejepnglvh6q5nlbmdzwvt@74gg6tjpngbv>
+From: Tvrtko Ursulin <tursulin@ursulin.net>
+In-Reply-To: <4btlparspmb47v3nq3mip6cjr2adwejepnglvh6q5nlbmdzwvt@74gg6tjpngbv>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On 5/1/24 2:50 AM, Hillf Danton wrote:
-> On Wed, 1 May 2024 02:01:20 -0400 Michael S. Tsirkin <mst@redhat.com>
->>
->> and then it failed testing.
->>
-> So did my patch [1] but then the reason was spotted [2,3]
+
+Hi,
+
+On 24/04/2024 15:48, Adrián Larumbe wrote:
+> Hi Tvrtko,
 > 
-> [1] https://lore.kernel.org/lkml/20240430110209.4310-1-hdanton@sina.com/
-> [2] https://lore.kernel.org/lkml/20240430225005.4368-1-hdanton@sina.com/
-> [3] https://lore.kernel.org/lkml/000000000000a7f8470617589ff2@google.com/
+> On 15.04.2024 13:50, Tvrtko Ursulin wrote:
+>>
+>> On 05/04/2024 18:59, Rob Clark wrote:
+>>> On Wed, Apr 3, 2024 at 11:37 AM Adrián Larumbe
+>>> <adrian.larumbe@collabora.com> wrote:
+>>>>
+>>>> Up to this day, all fdinfo-based GPU profilers must traverse the entire
+>>>> /proc directory structure to find open DRM clients with fdinfo file
+>>>> descriptors. This is inefficient and time-consuming.
+>>>>
+>>>> This patch adds a new device class attribute that will install a sysfs file
+>>>> per DRM device, which can be queried by profilers to get a list of PIDs for
+>>>> their open clients. This file isn't human-readable, and it's meant to be
+>>>> queried only by GPU profilers like gputop and nvtop.
+>>>>
+>>>> Cc: Boris Brezillon <boris.brezillon@collabora.com>
+>>>> Cc: Tvrtko Ursulin <tursulin@ursulin.net>
+>>>> Cc: Christopher Healy <healych@amazon.com>
+>>>> Signed-off-by: Adrián Larumbe <adrian.larumbe@collabora.com>
+>>>
+>>> It does seem like a good idea.. idk if there is some precedent to
+>>> prefer binary vs ascii in sysfs, but having a way to avoid walking
+>>> _all_ processes is a good idea.
+>>
+>> I naturally second that it is a needed feature, but I do not think binary
+>> format is justified. AFAIR it should be used for things like hw/fw
+>> standardised tables or firmware images, not when exporting a simple list of
+>> PIDs. It also precludes easy shell/script access and the benefit of avoiding
+>> parsing a short list is I suspect completely dwarfed by needing to parse all
+>> the related fdinfo etc.
+> 
+> I'd rather keep it as a binary file for the sake of easily parsing the number
+> list on the client side, in gputop or nvtop. For textual access, there's already
+> a debugfs file that presents the same information, so I thought it was best not
+> to duplicate that functionality and restrict sysfs to serving the very specific
+> use case of UM profilers having to access the DRM client list.
+> 
+> I should mention I did something controversial here, which is a semantically
+> binary attribute through the regular attribute interface. I guess if I keep it
+> as a binary attribute in the end, I should switch over to the binary attribute
+> API.
+> 
+> Another reason why I implemented it as a binary file is that we can only send
+> back at most a whole page. If a PID takes 4 bytes, that's usually 1024 clients
+> at most, which is probably enough for any UM profiler, but will decrease even
+> more if we turn it into an ASCII readable file.
 
-Just to make sure I understand the conclusion.
+I'm afraid I still think there is no reason for a binary file, even less 
+so artificially limited to 1024 clients. Any consumer will have to parse 
+text fdinfo so a binary list of pids is not adding any real cost.
 
-Edward's patch that just swaps the order of the calls:
+> I did some research into sysfs binary attributes, and while some sources mention that
+> it's often used for dumping or loading of driver FW, none of them claim it cannot
+> be used for other purposes.
+> 
+>>>> ---
+>>>>    drivers/gpu/drm/drm_internal.h       |  2 +-
+>>>>    drivers/gpu/drm/drm_privacy_screen.c |  2 +-
+>>>>    drivers/gpu/drm/drm_sysfs.c          | 89 ++++++++++++++++++++++------
+>>>>    3 files changed, 74 insertions(+), 19 deletions(-)
+>>>>
+>>>> diff --git a/drivers/gpu/drm/drm_internal.h b/drivers/gpu/drm/drm_internal.h
+>>>> index 2215baef9a3e..9a399b03d11c 100644
+>>>> --- a/drivers/gpu/drm/drm_internal.h
+>>>> +++ b/drivers/gpu/drm/drm_internal.h
+>>>> @@ -145,7 +145,7 @@ bool drm_master_internal_acquire(struct drm_device *dev);
+>>>>    void drm_master_internal_release(struct drm_device *dev);
+>>>>
+>>>>    /* drm_sysfs.c */
+>>>> -extern struct class *drm_class;
+>>>> +extern struct class drm_class;
+>>>>
+>>>>    int drm_sysfs_init(void);
+>>>>    void drm_sysfs_destroy(void);
+>>>> diff --git a/drivers/gpu/drm/drm_privacy_screen.c b/drivers/gpu/drm/drm_privacy_screen.c
+>>>> index 6cc39e30781f..2fbd24ba5818 100644
+>>>> --- a/drivers/gpu/drm/drm_privacy_screen.c
+>>>> +++ b/drivers/gpu/drm/drm_privacy_screen.c
+>>>> @@ -401,7 +401,7 @@ struct drm_privacy_screen *drm_privacy_screen_register(
+>>>>           mutex_init(&priv->lock);
+>>>>           BLOCKING_INIT_NOTIFIER_HEAD(&priv->notifier_head);
+>>>>
+>>>> -       priv->dev.class = drm_class;
+>>>> +       priv->dev.class = &drm_class;
+>>>>           priv->dev.type = &drm_privacy_screen_type;
+>>>>           priv->dev.parent = parent;
+>>>>           priv->dev.release = drm_privacy_screen_device_release;
+>>>> diff --git a/drivers/gpu/drm/drm_sysfs.c b/drivers/gpu/drm/drm_sysfs.c
+>>>> index a953f69a34b6..56ca9e22c720 100644
+>>>> --- a/drivers/gpu/drm/drm_sysfs.c
+>>>> +++ b/drivers/gpu/drm/drm_sysfs.c
+>>>> @@ -58,8 +58,6 @@ static struct device_type drm_sysfs_device_connector = {
+>>>>           .name = "drm_connector",
+>>>>    };
+>>>>
+>>>> -struct class *drm_class;
+>>>> -
+>>>>    #ifdef CONFIG_ACPI
+>>>>    static bool drm_connector_acpi_bus_match(struct device *dev)
+>>>>    {
+>>>> @@ -128,6 +126,62 @@ static const struct component_ops typec_connector_ops = {
+>>>>
+>>>>    static CLASS_ATTR_STRING(version, S_IRUGO, "drm 1.1.0 20060810");
+>>>>
+>>>> +static ssize_t clients_show(struct device *cd, struct device_attribute *attr, char *buf)
+>>>> +{
+>>>> +       struct drm_minor *minor = cd->driver_data;
+>>>> +       struct drm_device *ddev = minor->dev;
+>>>> +       struct drm_file *priv;
+>>>> +       ssize_t offset = 0;
+>>>> +       void *pid_buf;
+>>>> +
+>>>> +       if (minor->type != DRM_MINOR_RENDER)
+>>>> +               return 0;
+>>
+>> Why this?
+> 
+> I return nothing in case of a non-render node because we don't want display drivers
+> to confuse UM GPU profilers.
 
-https://lore.kernel.org/lkml/tencent_546DA49414E876EEBECF2C78D26D242EE50A@qq.com/
+Feels to arbitrary to me. Let them handle it.
 
-fixes the UAF. I tested the same in my setup. However, when you guys tested it
-with sysbot, it also triggered a softirq/RCU warning.
+>>>> +
+>>>> +       pid_buf = kvmalloc(PAGE_SIZE, GFP_KERNEL);
+>>
+>> I don't quite get the kvmalloc for just one page (or why even a temporay
+>> buffer and not write into buf directly?).
+> 
+> Should've used kmalloc, you're right. Or else I could just write everything straight into 'buf'.
+> 
+>>>> +       if (!pid_buf)
+>>>> +               return 0;
+>>>> +
+>>>> +       mutex_lock(&ddev->filelist_mutex);
+>>>> +       list_for_each_entry_reverse(priv, &ddev->filelist, lhead) {
+>>>> +               struct pid *pid;
+>>>> +
+>>>> +               if (drm_WARN_ON(ddev, (PAGE_SIZE - offset) < sizeof(pid_t)))
+>>>> +                       break;
+>>
+>> Feels bad.. I would suggest exploring implementing a read callback (instead of
+>> show) and handling arbitrary size output.
+> 
+> I think regular class attributes can only implement show() and set(). For a more complex
+> interface, I would have to turn it into an actual binary attribute, and that would be the only
+> choice if we want the list of clients to be of arbitrary size.
 
-The softirq/RCU part of the issue is fixed with this commit:
+Yeah, i915 uses that to dump the error capture file which can be huge 
+and is text so it is doable.
 
-https://lore.kernel.org/all/20240427102808.29356-1-qiang.zhang1211@gmail.com/
+>>>> +
+>>>> +               rcu_read_lock();
+>>>> +               pid = rcu_dereference(priv->pid);
+>>>> +               (*(pid_t *)(pid_buf + offset)) = pid_vnr(pid);
+>>>> +               rcu_read_unlock();
+>>>> +
+>>>> +               offset += sizeof(pid_t);
+>>>> +       }
+>>>> +       mutex_unlock(&ddev->filelist_mutex);
+>>>> +
+>>>> +       if (offset < PAGE_SIZE)
+>>>> +               (*(pid_t *)(pid_buf + offset)) = 0;
+>>
+>> Either NULL terminated or PAGE_SIZE/sizeof(pid) entries and not NULL
+>> terminated feels weird. If I got that right.
+>>
+>> For me everything points towards going for text output.
+> 
+> Yes, I know it might sound weird, but my reasoning was: either there are PAGE_SIZE/sizeof(pid) entries
+> and the file isn't NULL terminated (which should be picked up by clients as being one page worth
+> of data, the sysfs attribute maximum transfer unit), or else there aren't enough entries to fill
+> a page and after the last one there's a NULL entry.
+> 
+> 
+>>>> +
+>>>> +       memcpy(buf, pid_buf, offset);
+>>>> +
+>>>> +       kvfree(pid_buf);
+>>>> +
+>>>> +       return offset;
+>>>> +
+>>>> +}
+>>>> +static DEVICE_ATTR_RO(clients);
+>>
+>> Shouldn't BIN_ATTR_RO be used for binary files in sysfs?
+> 
+> Like I said above, I sort of faked a binary attribute through the regular sysfs attr API,
+> which is most likely a bad idea.
+> 
+>> Regards,
+>>
+>> Tvrtko
+>>
+>> P.S. Or maybe it is time for drmfs? Where each client gets a directory and
+>> drivers can populate files. Such as per client logging streams and whatnot.
+> 
+> Yes, but maybe this is something we can discuss in depth in an RFC at a later time?
 
-commit 1dd1eff161bd55968d3d46bc36def62d71fb4785
-Author: Zqiang <qiang.zhang1211@gmail.com>
-Date:   Sat Apr 27 18:28:08 2024 +0800
+Yes of course, it is just a long standing idea for flexible per client 
+stuff.
 
-    softirq: Fix suspicious RCU usage in __do_softirq()
+Regards,
 
-The problem was that I was testing with -next master which has that patch.
-It looks like you guys were testing against bb7a2467e6be which didn't have
-the patch, and so that's why you guys still hit the softirq/RCU issue. Later
-when you added that patch to your patch, it worked with syzbot.
+Tvrtko
 
-So is it safe to assume that the softirq/RCU patch above will be upstream
-when the vhost changes go in or is there a tag I need to add to my patches?
+> 
+>>>> +
+>>>> +static struct attribute *drm_device_attrs[] = {
+>>>> +       &dev_attr_clients.attr,
+>>>> +       NULL,
+>>>> +};
+>>>> +ATTRIBUTE_GROUPS(drm_device);
+>>>> +
+>>>> +struct class drm_class = {
+>>>> +       .name           = "drm",
+>>>> +       .dev_groups     = drm_device_groups,
+>>>> +};
+>>>> +
+>>>> +static bool drm_class_initialised;
+>>>> +
+>>>>    /**
+>>>>     * drm_sysfs_init - initialize sysfs helpers
+>>>>     *
+>>>> @@ -142,18 +196,19 @@ int drm_sysfs_init(void)
+>>>>    {
+>>>>           int err;
+>>>>
+>>>> -       drm_class = class_create("drm");
+>>>> -       if (IS_ERR(drm_class))
+>>>> -               return PTR_ERR(drm_class);
+>>>> +       err = class_register(&drm_class);
+>>>> +       if (err)
+>>>> +               return err;
+>>>>
+>>>> -       err = class_create_file(drm_class, &class_attr_version.attr);
+>>>> +       err = class_create_file(&drm_class, &class_attr_version.attr);
+>>>>           if (err) {
+>>>> -               class_destroy(drm_class);
+>>>> -               drm_class = NULL;
+>>>> +               class_destroy(&drm_class);
+>>>>                   return err;
+>>>>           }
+>>>>
+>>>> -       drm_class->devnode = drm_devnode;
+>>>> +       drm_class.devnode = drm_devnode;
+>>>> +
+>>>> +       drm_class_initialised = true;
+>>>>
+>>>>           drm_sysfs_acpi_register();
+>>>>           return 0;
+>>>> @@ -166,12 +221,12 @@ int drm_sysfs_init(void)
+>>>>     */
+>>>>    void drm_sysfs_destroy(void)
+>>>>    {
+>>>> -       if (IS_ERR_OR_NULL(drm_class))
+>>>> +       if (!drm_class_initialised)
+>>>>                   return;
+>>>>           drm_sysfs_acpi_unregister();
+>>>> -       class_remove_file(drm_class, &class_attr_version.attr);
+>>>> -       class_destroy(drm_class);
+>>>> -       drm_class = NULL;
+>>>> +       class_remove_file(&drm_class, &class_attr_version.attr);
+>>>> +       class_destroy(&drm_class);
+>>>> +       drm_class_initialised = false;
+>>>>    }
+>>>>
+>>>>    static void drm_sysfs_release(struct device *dev)
+>>>> @@ -372,7 +427,7 @@ int drm_sysfs_connector_add(struct drm_connector *connector)
+>>>>                   return -ENOMEM;
+>>>>
+>>>>           device_initialize(kdev);
+>>>> -       kdev->class = drm_class;
+>>>> +       kdev->class = &drm_class;
+>>>>           kdev->type = &drm_sysfs_device_connector;
+>>>>           kdev->parent = dev->primary->kdev;
+>>>>           kdev->groups = connector_dev_groups;
+>>>> @@ -550,7 +605,7 @@ struct device *drm_sysfs_minor_alloc(struct drm_minor *minor)
+>>>>                           minor_str = "card%d";
+>>>>
+>>>>                   kdev->devt = MKDEV(DRM_MAJOR, minor->index);
+>>>> -               kdev->class = drm_class;
+>>>> +               kdev->class = &drm_class;
+>>>>                   kdev->type = &drm_sysfs_device_minor;
+>>>>           }
+>>>>
+>>>> @@ -579,10 +634,10 @@ struct device *drm_sysfs_minor_alloc(struct drm_minor *minor)
+>>>>     */
+>>>>    int drm_class_device_register(struct device *dev)
+>>>>    {
+>>>> -       if (!drm_class || IS_ERR(drm_class))
+>>>> +       if (!drm_class_initialised)
+>>>>                   return -ENOENT;
+>>>>
+>>>> -       dev->class = drm_class;
+>>>> +       dev->class = &drm_class;
+>>>>           return device_register(dev);
+>>>>    }
+>>>>    EXPORT_SYMBOL_GPL(drm_class_device_register);
+>>>>
+>>>> base-commit: 45c734fdd43db14444025910b4c59dd2b8be714a
+>>>> --
+>>>> 2.44.0
+>>>>
+> 
+> Adrian Larumbe
 
