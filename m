@@ -1,144 +1,146 @@
-Return-Path: <linux-kernel+bounces-165526-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-165527-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 11ABF8B8D9A
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 18:02:49 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EB4258B8DA0
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 18:04:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B885C28304F
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 16:02:47 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E1908B21D6E
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 16:04:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2529712FF67;
-	Wed,  1 May 2024 16:02:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BBB1712FF6A;
+	Wed,  1 May 2024 16:03:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b="P1YcI/de"
-Received: from mail-yw1-f179.google.com (mail-yw1-f179.google.com [209.85.128.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=hotmail.com header.i=@hotmail.com header.b="n+Hv1FBw"
+Received: from NAM04-DM6-obe.outbound.protection.outlook.com (mail-dm6nam04olkn2071.outbound.protection.outlook.com [40.92.45.71])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5FFB12F58F
-	for <linux-kernel@vger.kernel.org>; Wed,  1 May 2024 16:02:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.179
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714579359; cv=none; b=q3vcIdbhA11ZAImp0Yb+jnWl9hdAzwF5t9TOv6H/PHW81jyr5Ad81nEQfCm2TMge0w8plDH0RjM6iUq6Wg+45lzgseF1iikn311kxl0h3y/O2LPZxL5RDerSL3EdfZdfxtUQmh+9m3RQgUP3DGpY1Fe9i6YmPKNNB7ygSo2eboc=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714579359; c=relaxed/simple;
-	bh=GIg0qqxY8IGXzYWeoYuXFScFx99CyexVXC/du3NFi4g=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=mErNHrtpyMvHdlzmGrzOMkV/dd9iXWMDKAhcmykF+Hsm+gYAE+PzWCu9wzEbql+4vlUzwQi32yzKQTTZr3/i/JKx2cic9m1OflfABX/WqX5Wspfymqkx4P4Mp2oZvaqCVH16MBV5jXcF8pi5wTQkG/bZ6ILNSIQVVoJx716zezg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com; spf=pass smtp.mailfrom=paul-moore.com; dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b=P1YcI/de; arc=none smtp.client-ip=209.85.128.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=paul-moore.com
-Received: by mail-yw1-f179.google.com with SMTP id 00721157ae682-615019cd427so55280227b3.3
-        for <linux-kernel@vger.kernel.org>; Wed, 01 May 2024 09:02:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore.com; s=google; t=1714579357; x=1715184157; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=cuTSwyg4Duor6hNxagd4NLjWGY2C1Kh2NptH/U7fxFA=;
-        b=P1YcI/dem4TRC4j5+FEOVVmy1k7Gt8gMWaFa6DR/9SVJeRjicoNaEQCQVMzn1oNHBD
-         z0Dp8S6oBaPuxUEkhALGNvzdBHH0JrqKliWUoscGUAzGRGUp/e081f7qNDokqODU7uv/
-         kYmCgiUJ/pMKp8EMeba/cDuDhEmbM7IcK2Ijk1NaflsxBqhQkSSkOy4QsFQjIJKl9zzr
-         yz9A6wXnlqR84x+ayJ3AJ5YbdrEovDtmmHXOfI8OH1HdK17+3dI2FZLiUlaEszLexg9w
-         ITtukCHBAu5jgQMhxyIDEIfiHcRciLu3OuHmC5ZMHQXm87dEKE/YAtz77jH7reGs1ZXa
-         o56A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714579357; x=1715184157;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=cuTSwyg4Duor6hNxagd4NLjWGY2C1Kh2NptH/U7fxFA=;
-        b=WDj+6HATY5VuHIX8BDZ7+Rc0T2pHkDf+miMIudMeZcXQNzDube+vgcpuCOsusXNe/R
-         91W8Nz5whx9MciZXoqOU4jhLMg1aKLzPlssAC3VgEj4NT+waXHNjSLwo2IYYlhxnBehm
-         o9wtsL/V/3QT1sIkaPRDy9GGluiiUbo89hc/SzyTbojZkm+cllD6j4i0dTbcj44o/XCK
-         EkNby4wm5jW9Y0Qz5X1WI7b8HZYtzjyZMYrBxUtQMq4YlBx7Tbl1SY+FojJpqk8lGQuF
-         GI5u+uCFsdOpNZ3sxsxqYWXY4pOk8eKkNj+2tBmajPmjmYAFxe8X0Mao2b6WpsAPQ6tQ
-         tzlQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWoo2fMylXAS54Wi1KFydq9vqHaqXe1z6Nlupd3V3/8isetrl4EEbgoXFoXlug1zBjCnYu9TtGmeGNRaQ1ucyfzTO8hCfeM5/r3PGpU
-X-Gm-Message-State: AOJu0Yy3zY+4hYavz9MtFiS1IcL2lxaf6ZGfd/UtPgI+Q9W5lSm8Wuld
-	QC8LIqF1B1Rfq1GCqAHLSGdlTGqqzBZTZeexT6CcjMwnyza7O3MtAnFk4so+51+xnWVGw77L3Z2
-	8GIa7xLSSHI29KewqA+zEg5avpbGgZI/sbxmb
-X-Google-Smtp-Source: AGHT+IH43KKvgq5pfK+zLJrg5zNUpKsT1cly8y7M41qu+UjyduRLJHzscgOqbVjTe8DbGTiF22UP57FY9wim6c+i6ZY=
-X-Received: by 2002:a05:690c:3586:b0:61a:edf1:da55 with SMTP id
- fr6-20020a05690c358600b0061aedf1da55mr2907562ywb.47.1714579356786; Wed, 01
- May 2024 09:02:36 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E27A12FB06;
+	Wed,  1 May 2024 16:03:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.45.71
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1714579431; cv=fail; b=bSM6H75saySSI0s+qjfU3Sscjfk+7rqNwei+2TtsY+8KYttLNv1gBnEg1vtj3PrPOkVH2DTG25lTorNKb/LmejG9J5dAC6coZ/0II4+znEWkhQN1s76WQzuuPAcVJcwA44S86DWQ+hEFmTvUvMcj9tk4nL6jJi6Xsxhrx0ZLe6A=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1714579431; c=relaxed/simple;
+	bh=gUquANMlWcYdIaPuxXUeQnYpQKPvujL2Dh+Cpieh6Vo=;
+	h=From:To:Cc:Subject:Date:Message-ID:Content-Type:MIME-Version; b=oLmT3R8f8UDCeiR6VuIbt0F5XmzWJExDDrbGpzAwhQ3w2ELeVhxmoYahQ0e5aQtw903pPCXnirEy8Fss1DLAjj26s5xcm8b2bpHC3jRGKxnqgj5/IH+vrw/PcZudKPcjaJzHbOGO+T1xdpzBTmedQD0LX4OoiX/4xBmK4He2GA4=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=hotmail.com; spf=pass smtp.mailfrom=hotmail.com; dkim=pass (2048-bit key) header.d=hotmail.com header.i=@hotmail.com header.b=n+Hv1FBw; arc=fail smtp.client-ip=40.92.45.71
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=hotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hotmail.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=FxSgKJryq7qpVcYC66uyEkMHLbia7HiPwHexrJ5z9zRijRjE7l0SNQv1YFG0dudyXmDekXFPzYckbTVqLHcXvtHh3uk8n5c/S6y9xGmSv7JaLcXoJ6Z1q2ei+AlkBPUcSmmz3hKZHDKcoXpHprvASSo+or9CRo6crtrvQ92dog5PKANe1eKvmtCRTqP2VY6BluGkV+UtDEewtOi6Cp6ozCe9wYxGnp1EV1xuRt3dVn+eXMeA2v07Y0Y6JEWB9WUzByvWZLu0G4QvSYm+tcBWSqIoKJPgzOvIfIFIsrEmTDMpn1gMOr4h6h3xH79MtjdnetnnqNz6MNZtlci5YW4oEQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=rcf1gZIoZNtYsqOi9BO64j30c7w7uBRLlsu9fJeEv5k=;
+ b=oQli0Dsoe5kxr6/BVGiHJ9boVRqEic9c6/5CWPzhsRRXMU8b4vyrR+b/SSv5wQPnk6NctBD5NoFitxW07yqpP+z7wYua/ctf+00KJchUyFCcb573gS/ka0Pb4V+nFWgayDanSZNWb1Ge9Djmfb83KS9qxffyT0ZIGpFi/TWha+mRufPeTw+8K6eySADsTBs3Ali6uh2swPZhp62eklv1Qmu7s8xjCbXfo2gFtKm0A8/fONgTM4Y3rQFTDwHGP7v1LjtRps1WAbAxDvlDdZlB60mLj3SNz6JZstW2w5GaM3rAMN5pVkrewx4rA4r/FeA4u7iyWiseqt/cImOrZN75hg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hotmail.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=rcf1gZIoZNtYsqOi9BO64j30c7w7uBRLlsu9fJeEv5k=;
+ b=n+Hv1FBwLauLnCb+9pkZdJH/w418pB96QRDpS/zsmokb/pLeApHNBqDDAxVKNkU+8rfcXYY8xCGTAZMWVrNK/Aok6ZrdzWd9c8rF9j487MOFxbelB2uyD8NJSzMzSA6AJ4Cc5ho5D913af+KKmJlGEYmevoYh33SG6GHDZcEHgJbjbFHUh6IKAGwryg/rHQpv6TTn+k2A8lgtnC98aUfa4RO4CAriinjwkB0rBnh8pauwteRmhV2IBXmvt+d6hT+XUAAqyU0R5N8bwzMrweR7/JvMisJOvmgdvtU45xsL7H6VhmnLqnZviiroaiyrkWEXPqW9eu+ljyXkshpn6L5Dg==
+Received: from LV3P220MB1202.NAMP220.PROD.OUTLOOK.COM (2603:10b6:408:1ac::6)
+ by EA2P220MB1331.NAMP220.PROD.OUTLOOK.COM (2603:10b6:303:257::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7544.28; Wed, 1 May
+ 2024 16:03:43 +0000
+Received: from LV3P220MB1202.NAMP220.PROD.OUTLOOK.COM
+ ([fe80::7d42:dbbf:4d41:6999]) by LV3P220MB1202.NAMP220.PROD.OUTLOOK.COM
+ ([fe80::7d42:dbbf:4d41:6999%4]) with mapi id 15.20.7544.023; Wed, 1 May 2024
+ 16:03:43 +0000
+From: Min Li <lnimi@hotmail.com>
+To: richardcochran@gmail.com,
+	lee@kernel.org
+Cc: linux-kernel@vger.kernel.org,
+	netdev@vger.kernel.org,
+	Min Li <min.li.xe@renesas.com>
+Subject: [PATCH net-next v7 0/5] ptp: clockmatrix: support 32-bit address space 
+Date: Wed,  1 May 2024 12:03:19 -0400
+Message-ID:
+ <LV3P220MB12026032F3316F557415AD9FA0192@LV3P220MB1202.NAMP220.PROD.OUTLOOK.COM>
+X-Mailer: git-send-email 2.39.2
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-TMN: [U7r5c/sKRNqkJESHHUtHX7DHfYA/ZIgB]
+X-ClientProxiedBy: MN2PR18CA0016.namprd18.prod.outlook.com
+ (2603:10b6:208:23c::21) To LV3P220MB1202.NAMP220.PROD.OUTLOOK.COM
+ (2603:10b6:408:1ac::6)
+X-Microsoft-Original-Message-ID: <20240501160324.27514-1-lnimi@hotmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240429114636.123395-1-fuzhen5@huawei.com>
-In-Reply-To: <20240429114636.123395-1-fuzhen5@huawei.com>
-From: Paul Moore <paul@paul-moore.com>
-Date: Wed, 1 May 2024 12:02:25 -0400
-Message-ID: <CAHC9VhTCFOCE0E-en3HnNkPVRumzWRPcrJMF-=dxke53dOv1Gg@mail.gmail.com>
-Subject: Re: [PATCH -next] lsm: fix default return value for inode_set(remove)xattr
-To: felix <fuzhen5@huawei.com>, linux-security-module@vger.kernel.org
-Cc: casey@schaufler-ca.com, roberto.sassu@huawei.com, stefanb@linux.ibm.com, 
-	zohar@linux.ibm.com, kamrankhadijadj@gmail.com, andrii@kernel.org, 
-	omosnace@redhat.com, linux-kernel@vger.kernel.org, bpf@vger.kernel.org, 
-	xiujianfeng@huawei.com, wangweiyang2@huawei.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: LV3P220MB1202:EE_|EA2P220MB1331:EE_
+X-MS-Office365-Filtering-Correlation-Id: 45d775b6-0c9b-46df-ae8a-08dc69f84616
+X-Microsoft-Antispam: BCL:0;ARA:14566002|461199019|440099019|3412199016;
+X-Microsoft-Antispam-Message-Info:
+	jYw4DALEYoON5kcJtOv3+nQaQmpyNN96VccpjWjKusgJsZJkACSCpfINbBkYTeSKSetLkf0Jylj0JdfsgEWslgVS8dwMPpLJH3krprPytNN1t/Sn1AhcariVAjnGpRPEWazowW7f8ckpnD+H4JN6Jm2+/92IaQmfNQb+yVojKzrN1wjtrJ6wBMr8GfnxgAu6yERm08jqv+xeL9ixF3xsbOCZSU07/NH1fk4sHUhu98K8AfMVXAi5SHNwz7DCRV2HpGRVBKgAGxjOU87XDQCDCMTTdxB8dSEQ8LOg7V5dvv/r3DXuSFHCfi/DSeOCp2PS+BoL68Vp28ARW0WejeoezobhC/nJgMKwZrz0qfJEO6SU2Wzb0B4TUlCFvAaygQR9cfXpy3NX6OPmFtCbC0JwCarkjsLifC0QYjm2v26/GH6cNEloDzC1MXOxYqHDi29pnwtsCPiWJJkIbNZCNy/Wgph0uDOwqRua1napOc2qs/2YTU3clRUSnAAQskkskp/7Wv3iAIdS+REOXMT967KQrIswUjrpvKpZVuP8/LFQJxjqA3JS6Flbd19sDrj+2HeA
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?qJHYd7W0CWYJwhwKVUL/RFOce4IZvuZ3QX9pzGCtaJGJCp1JgGRIYguo+788?=
+ =?us-ascii?Q?0pooMKjPwnXyDiwDXjtrqEFSraDfoTFbT2ZE9XKwC3BF8AOmPZECdlLwl0fb?=
+ =?us-ascii?Q?GIz6bJIYuNCf6Z7zuYTpbnSZZ0HOkUErLYjnZGAGUz1zf4hZBmazffSAgx2J?=
+ =?us-ascii?Q?FHnY6AgtrDqwDDyjBXwEuLQHR3CX+HfIyfTpxjbqbQgPv0XAZtw/Wz7WGlY5?=
+ =?us-ascii?Q?fD1Zv4fMTUZmK1bNjR5KGoewePulQQZZXQhw2ad/MSzlT5Fzxh4JLrEhENiL?=
+ =?us-ascii?Q?yNSI8NFtuocF3rbfcxYPVXgD22O+7mFHXYqy1iiFQQOv9y9NOw/yZJfxaaM9?=
+ =?us-ascii?Q?ynyC6Nw0kaTw/bIV8/KeG2CM9PL2WzdymxT9Ufri1vzATs2CeJu6Bs1bvFWl?=
+ =?us-ascii?Q?OWxbcGsygbZdj4iPohJLsFHtM0ixZ8jXv6iS7ixKB2/DY5kPFKK8zUQa2F1C?=
+ =?us-ascii?Q?aCmp9SN+IpmFmSUEXWuoGY3YXWuPOisBZsZxBQv3Jygb5N74wjHLkOzgRCUK?=
+ =?us-ascii?Q?8+zo6B6UkHqG/aPcpH95IkPHztecCFdjOZ41FJIeKNVm6OWexx56d/GYlxtP?=
+ =?us-ascii?Q?K8vkbqLRh4+03J+QQjTwGGi/2PfJVt8fh0U3KCHiyxzVJgrVyYhxoDoXa5k/?=
+ =?us-ascii?Q?PRi1KjJ//WpsVwy11lBHegX3VHiHzD/1Gtd01+Leu9cW4Dduk9h8HgtX6nX9?=
+ =?us-ascii?Q?ZgWbbGWI2PYsI56l/Bh/qnVLtpDKiiLUILhetXtofsAL+pRWdoM/hqcbU4AO?=
+ =?us-ascii?Q?jp0Pwn6H6suyNVtNgSTypuWO9TUWpXNnSUtcirORIcB8zxxEHQ+di1hvWb0g?=
+ =?us-ascii?Q?HONIApFxEmyW/B5Mvi5edPCBn2ejHkh8DeGRQE6LCnGwartQmgbre6H7EKbh?=
+ =?us-ascii?Q?jFxubnB3rd8MrYgVRd8ITvqACwb32+7bSM0hZPu1asq4uERVtQvgJ4AImUO/?=
+ =?us-ascii?Q?UFLagaJJ4VWkNIao3bIsPpnRgQn9ijdZTKL60pWWOzdrdcend7jQcCKnE+6T?=
+ =?us-ascii?Q?lkUHVAK1qmPl5c5wgdzEQZx8uPoXUeet3l8skqK4edhmPfOs7+Pqc1+THEQr?=
+ =?us-ascii?Q?EWXXqcYB3asjOHlnWSjJMHyrhP+fVJ+Fjs9ODR5qG/YoxonhRzTJWu3u9oxY?=
+ =?us-ascii?Q?2WFOh+3BSXstgpen90ni5Ue0Glep/KRN2z+46wmmqy92H0A0RxhGvQ2ygWo6?=
+ =?us-ascii?Q?UdMHMuYA2Dl1NAMTt7oWyERytM8jHS1b6APrxUDig9bnRTimzWiwUV9elss?=
+ =?us-ascii?Q?=3D?=
+X-OriginatorOrg: sct-15-20-4755-11-msonline-outlook-3458f.templateTenant
+X-MS-Exchange-CrossTenant-Network-Message-Id: 45d775b6-0c9b-46df-ae8a-08dc69f84616
+X-MS-Exchange-CrossTenant-AuthSource: LV3P220MB1202.NAMP220.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 May 2024 16:03:43.0960
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
+	00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: EA2P220MB1331
 
-On Mon, Apr 29, 2024 at 7:47=E2=80=AFAM felix <fuzhen5@huawei.com> wrote:
->
-> From: Felix Fu <fuzhen5@huawei.com>
->
-> The return value of security_inode_set(remove)xattr should
-> be 1. If it return 0, cap_inode_setxattr would not be
-> executed when no lsm exist, which is not what we expected,
-> any user could set some security.* xattr for a file.
->
-> Before commit 260017f31a8c ("lsm: use default hook return
-> value in call_int_hook()") was approved, this issue would
-> still happened when lsm only include bpf, because bpf_lsm_
-> inode_setxattr return 0 by default which cause cap_inode_set
-> xattr to be not executed.
->
-> Fixes: 260017f31a8c ("lsm: use default hook return value in call_int_hook=
-()")
-> Signed-off-by: Felix Fu <fuzhen5@huawei.com>
-> ---
->  include/linux/lsm_hook_defs.h | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+From: Min Li <min.li.xe@renesas.com>
 
-Adding the LSM list as that is the important list for this patch.  I'm
-also just realizing we don't include lsm_hook_defs.h in the LSM
-MAINTAINERS entry, I'll submit a patch for that shortly.
+The main porpose of this series is [PATCH 1/5], which is to support read/write
+to the whole 32-bit address space. Other changes are increamental since
+[PATCH 1/5].
+ 
 
-> diff --git a/include/linux/lsm_hook_defs.h b/include/linux/lsm_hook_defs.=
-h
-> index f804b76cde44..9c768b954264 100644
-> --- a/include/linux/lsm_hook_defs.h
-> +++ b/include/linux/lsm_hook_defs.h
-> @@ -144,14 +144,14 @@ LSM_HOOK(int, 0, inode_setattr, struct mnt_idmap *i=
-dmap, struct dentry *dentry,
->  LSM_HOOK(void, LSM_RET_VOID, inode_post_setattr, struct mnt_idmap *idmap=
-,
->          struct dentry *dentry, int ia_valid)
->  LSM_HOOK(int, 0, inode_getattr, const struct path *path)
-> -LSM_HOOK(int, 0, inode_setxattr, struct mnt_idmap *idmap,
-> +LSM_HOOK(int, 1, inode_setxattr, struct mnt_idmap *idmap,
->          struct dentry *dentry, const char *name, const void *value,
->          size_t size, int flags)
->  LSM_HOOK(void, LSM_RET_VOID, inode_post_setxattr, struct dentry *dentry,
->          const char *name, const void *value, size_t size, int flags)
->  LSM_HOOK(int, 0, inode_getxattr, struct dentry *dentry, const char *name=
-)
->  LSM_HOOK(int, 0, inode_listxattr, struct dentry *dentry)
-> -LSM_HOOK(int, 0, inode_removexattr, struct mnt_idmap *idmap,
-> +LSM_HOOK(int, 1, inode_removexattr, struct mnt_idmap *idmap,
->          struct dentry *dentry, const char *name)
->  LSM_HOOK(void, LSM_RET_VOID, inode_post_removexattr, struct dentry *dent=
-ry,
->          const char *name)
-> --
-> 2.34.1
+Min Li (5):
+  ptp: clockmatrix: support 32-bit address space
+  ptp: clockmatrix: set write phase timer to 0 when not in PCW mode
+  ptp: clockmatrix: dco input-to-output delay is 20 FOD cycles + 8ns
+  ptp: clockmatrix: Fix caps.max_adj to reflect
+    DPLL_MAX_FREQ_OFFSET[MAX_FFO]
+  ptp: clockmatrix: move register and firmware related definition to
+    idt8a340_reg.h
 
---=20
-paul-moore.com
+ drivers/ptp/ptp_clockmatrix.c    | 120 ++++--
+ drivers/ptp/ptp_clockmatrix.h    |  66 +--
+ include/linux/mfd/idt8a340_reg.h | 664 ++++++++++++++++++-------------
+ 3 files changed, 482 insertions(+), 368 deletions(-)
+
+-- 
+2.39.2
+
 
