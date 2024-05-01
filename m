@@ -1,92 +1,130 @@
-Return-Path: <linux-kernel+bounces-165663-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-165664-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D43638B8F34
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 19:50:16 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id AA5998B8F36
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 19:51:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 48AA5283641
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 17:50:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 607931F2491E
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 17:51:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E26BF13BC0E;
-	Wed,  1 May 2024 17:50:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB38A13B592;
+	Wed,  1 May 2024 17:51:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UvHbspfh"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Sr6116lC"
+Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2509C8495;
-	Wed,  1 May 2024 17:50:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E74F8495
+	for <linux-kernel@vger.kernel.org>; Wed,  1 May 2024 17:51:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714585806; cv=none; b=JjdLgaUeMV6dxH4c56syWz1l6kbMiWw6f1Kp+QjXhAPV0hePrBV6519ElqDlvZKVERxHgOD8VLqKIPQoxUGdQqGGkb1nPt/S68AfJ0VhWWN8EUJTcZUqXKUiyW060MvM5qzRPxWE4xLG1Aj3ywV2QXXaIKJrfZZ78y2iGw+C6Cw=
+	t=1714585894; cv=none; b=Wl2aBvFdj92xfDYI+UIU3yuQq06znbJHBUobvCf+HRzrcfG3103uGwqjqGp31eCA+OsKY2TTCYWTBUv44mWuDjgdYGdj+63O5aEWNbQY+8zhKZRWZmQovj5MQnE8LPsq+q34Mz583LunwNMsNRkiG6XfnTjxGSU+MVanygFTuoI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714585806; c=relaxed/simple;
-	bh=0EfiIpBtBr+YNfU8vUQr6lF5Q/I+R3DuRMpwVvzyS1U=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=f+Y3hsIb+BAWjzqG3q3RThkTqszDiE2iLDWvBKCybpGOe6vA8ogh8S+EMBjYOxcs6whxR/1kJoJ1WN6soWXPSPqowmkr0ko/tWCuQlNjjMyP6nmRMqcYIJLnd+9BkruMHhfnTtrX3RNW1vzCvyZhHGfsUhJ4HInySJV3nTRAfxQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UvHbspfh; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 26DF4C072AA;
-	Wed,  1 May 2024 17:50:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714585805;
-	bh=0EfiIpBtBr+YNfU8vUQr6lF5Q/I+R3DuRMpwVvzyS1U=;
-	h=Date:From:To:Cc:Subject:From;
-	b=UvHbspfhwkjrYE8ShOvmOjDearA7qNJ62V8tFnnD5d1M4r6ixWfEhLqWPxKp585Jm
-	 x1e/1tgQmNBMwDHBOGmeaR6Slwm5dDpL4EJzmf8nv7hmBBmBF/H1hchgd6NqjpNCLF
-	 k69IJdkM+XQx0sSFEFjPe8jXQW8cGsOgy/LEZwiyZXA2ng3EVWgq/XCl/8adThmRgz
-	 QP5y35+Fo7ulvTlCklQBL9Ek1g8iHgtYZVCtAFWFfABESNV2YaoXBJ2WfEjipZ7IdB
-	 A5mb7Tfvuwr2+OIqC48b4TXUTBueg6dqsyhA2N7hgzbqi93JDZ9C7dwZMFSvXJMYy8
-	 zRiok0vPJOvCA==
-Date: Wed, 1 May 2024 11:50:02 -0600
-From: "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To: Marcel Holtmann <marcel@holtmann.org>,
-	Johan Hedberg <johan.hedberg@gmail.com>,
-	Luiz Augusto von Dentz <luiz.dentz@gmail.com>
-Cc: linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
-	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
-	linux-hardening@vger.kernel.org
-Subject: [PATCH][next] Bluetooth: hci_sync: Use cmd->num_cis instead of magic
- number
-Message-ID: <ZjKAyg2bZNyTcT+C@neat>
+	s=arc-20240116; t=1714585894; c=relaxed/simple;
+	bh=5ZZzMRluvzAZl1AQwx7JpyOKF1ab9xMN11ApWuUwiIc=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=gMQBd+lv7G2VuJKwSLaySIwae6nqniH++T6DenKQvtY7wqs6S/YTTTGb8uv84/Sid247Na5/eQPNzojZsLX3rb/FBPdpxHj8jgOHXkaIEeNZ5D83xxGXrUSjXKBbQWI1Nzx24LiXC4WPPki9eKfJePFcGE8ZsvuPqGmZeYh3P1A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Sr6116lC; arc=none smtp.client-ip=209.85.128.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-41a1d88723bso48991255e9.0
+        for <linux-kernel@vger.kernel.org>; Wed, 01 May 2024 10:51:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1714585891; x=1715190691; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=/81fAAO7tSbrp7DiPZB/sQZzbcLbBgfoiaQER6Oz3O0=;
+        b=Sr6116lC6HfZ3sLl/0Hp+NHLXx1ShBO4g8XHVg3yQHSX1Hwt2aJionHQ40Ow4edWhF
+         arieNgZcC7xubuPjETu03a2uT07bkuApwI9J4PIZX0z17Jp1HPLXerIDmIu9YkiFjTxu
+         7dnzmAFsmaIUQ0RRPw+ZgLeoK8xEZnMg+wP5QWqI/qPWvZ9cvdzHO7kAWZ3DftYHBfXn
+         ki8QJY/XrjKRhvdy93syff8V6rCqFB89sOsNh6+tHZC9WpuMXB3MDCicuAZu6L7bh3+u
+         RP0UKkBvJPCl1MUpjJbyQw11ZGVw7IK2fKb8Svv2LLCl3I0mnr3PKf9lqlbviYgcVg/L
+         bk1Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714585891; x=1715190691;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=/81fAAO7tSbrp7DiPZB/sQZzbcLbBgfoiaQER6Oz3O0=;
+        b=kLlQnoBd+QGJyMvITfK0U6vjmKV3RO0mVK99I4Xs9kCsQB2z/4gkhCDv8GkRTbPgz7
+         xLAJhuL+0ySPe5OI3ldlN6Op2y5Uo8K5NqBJ0XZBLr2KOHhwTfNbKO5OEBxx30T3yqRz
+         0eXUGO6b15GwVbrqQOLoeHdtP6xqV0rC2VH8qY9flCXBywORRuwKUqLNpy0TZwDrIrVW
+         CAS3RGZAPH9k0MWE27/YVLWgv8z2vlPeDAVoAcQMvkTgevJIWoaqBvptz4Hdm1LPNEEU
+         Z3RsFOZtBqAa9GdaTouNSp8lCTQ5M/CNgzeA1VrlQmNfA4lqgEX5cf5cEBMoAIX/jWZ7
+         /8DA==
+X-Forwarded-Encrypted: i=1; AJvYcCWMtvfvr8IbwJU3T5uELnF6TprxUDHg67yU52A72K0JXm5C5jf+DDqF+ZdApa247XBTxfv4M1jpXBzlZKvOvUuW4Y4Y5uKwq+/GbzH1
+X-Gm-Message-State: AOJu0YwxNUfSDZsFylqYOiVBpJ3hTp5188SAJjJOii5q6CEEDNtOY13u
+	G1Rj6KiLUoGX1aKaMLSzJ93hYbaYbqyoQEbl0O1zesMkpTr5qd7auCI+24ZKrtw=
+X-Google-Smtp-Source: AGHT+IHquCsYoJyPtIrulLcrRjwsfC6PKDaFYdv7tt3IIa5cijvcc2rCziprUOjBPfKg/753a8zo0Q==
+X-Received: by 2002:a05:600c:3d8b:b0:41c:8123:f8a5 with SMTP id bi11-20020a05600c3d8b00b0041c8123f8a5mr1980232wmb.23.1714585890722;
+        Wed, 01 May 2024 10:51:30 -0700 (PDT)
+Received: from krzk-bin.. ([178.197.223.16])
+        by smtp.gmail.com with ESMTPSA id x35-20020a05600c18a300b0041b61504565sm2845605wmp.28.2024.05.01.10.51.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 01 May 2024 10:51:30 -0700 (PDT)
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+To: Liam Girdwood <lgirdwood@gmail.com>,
+	Mark Brown <broonie@kernel.org>,
+	Jaroslav Kysela <perex@perex.cz>,
+	Takashi Iwai <tiwai@suse.com>,
+	linux-sound@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: [PATCH v2] ASoC: Use inline function for type safety in snd_soc_substream_to_rtd()
+Date: Wed,  1 May 2024 19:51:27 +0200
+Message-ID: <20240501175127.34301-1-krzysztof.kozlowski@linaro.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 
-At the moment of the check, `cmd->num_cis` holds the value of 0x1f,
-which is the max number of elements in the `cmd->cis[]` array at
-declaration, which is 0x1f.
+A common pattern in sound drivers is getting 'struct snd_soc_pcm_runtime'
+from 'struct snd_pcm_substream' opaque pointer private_data field with
+snd_soc_substream_to_rtd().  However 'private_data' appears in several
+other structures as well, including 'struct snd_compr_stream'.  The
+field might not hold the same type for every structure, although seems
+the case at least for 'struct snd_compr_stream', so code can easily make
+a mistake by using macro for wrong structure passed as argument.
 
-So, avoid using 0x1f directly, and instead use `cmd->num_cis`. Similarly
-to this other patch[1].
+Switch from macro to inline function, so such mistake will be build-time
+detectable.
 
-Link: https://lore.kernel.org/linux-hardening/ZivaHUQyDDK9fXEk@neat/ [1]
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+
 ---
- net/bluetooth/hci_sync.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/net/bluetooth/hci_sync.c b/net/bluetooth/hci_sync.c
-index 6e15594d3565..af9513f3c451 100644
---- a/net/bluetooth/hci_sync.c
-+++ b/net/bluetooth/hci_sync.c
-@@ -6559,7 +6559,7 @@ int hci_le_create_cis_sync(struct hci_dev *hdev)
- 		cis->cis_handle = cpu_to_le16(conn->handle);
- 		aux_num_cis++;
+Changes in v2:
+1. Do not open-code underlying macro snd_pcm_substream_chip()
+---
+ include/sound/soc.h | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
+
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index 2a1b6c198547..ab2dd1590db0 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -1215,8 +1215,12 @@ struct snd_soc_pcm_runtime {
+ /* see soc_new_pcm_runtime()  */
+ #define snd_soc_rtd_to_cpu(rtd, n)   (rtd)->dais[n]
+ #define snd_soc_rtd_to_codec(rtd, n) (rtd)->dais[n + (rtd)->dai_link->num_cpus]
+-#define snd_soc_substream_to_rtd(substream) \
+-	(struct snd_soc_pcm_runtime *)snd_pcm_substream_chip(substream)
++
++static inline struct snd_soc_pcm_runtime *
++snd_soc_substream_to_rtd(const struct snd_pcm_substream *substream)
++{
++	return snd_pcm_substream_chip(substream);
++}
  
--		if (aux_num_cis >= 0x1f)
-+		if (aux_num_cis >= cmd->num_cis)
- 			break;
- 	}
- 	cmd->num_cis = aux_num_cis;
+ #define for_each_rtd_components(rtd, i, component)			\
+ 	for ((i) = 0, component = NULL;					\
 -- 
-2.34.1
+2.43.0
 
 
