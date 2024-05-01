@@ -1,154 +1,423 @@
-Return-Path: <linux-kernel+bounces-165578-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-165580-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id C8B6B8B8E2E
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 18:29:56 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EE04E8B8E33
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 18:31:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 10457B20FAA
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 16:29:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 159F11C22A06
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 16:31:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6930413048F;
-	Wed,  1 May 2024 16:29:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16E3FCA40;
+	Wed,  1 May 2024 16:31:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bzT9TCCV"
-Received: from mail-yw1-f170.google.com (mail-yw1-f170.google.com [209.85.128.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="GznjsAFR";
+	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="Xuf/hNig"
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5213854FB8
-	for <linux-kernel@vger.kernel.org>; Wed,  1 May 2024 16:29:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.170
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714580987; cv=none; b=axaW53qY53V9rcih47ud1qRFjNpb1hd23bePyJ0y6Bdgv3/6gJLYG25BW1o5qgrCM0SW6J0aumNjTMSqTaXJzjv9mjWQnaQu8YxpZDzCwhCTqv4qmfq70jriXNuDtlTurZGdFC/VXZwco24j97upg2RSbX3EOh6F0mjzincVSdw=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714580987; c=relaxed/simple;
-	bh=fO0a+oEeNqiYC72c6HVz6VJiZMcPjwMi22qouPgD1T4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=dOYSi9t9qtN7fCr1WFRZIYvFHdeMKla55GYgBi79btScSFpIUjJFvR+S9eKtxd+7Z6dKAML8GxOSMR528ikV0nQpc3/cTm3kLMMqQIeyBT/BwBQ4zuPeESfb2LBMPth0JHwQbB4qVhM/tUYwQd1OAU+C9PMLCjVg3jJf7YUmvrQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bzT9TCCV; arc=none smtp.client-ip=209.85.128.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f170.google.com with SMTP id 00721157ae682-6153d85053aso56500597b3.0
-        for <linux-kernel@vger.kernel.org>; Wed, 01 May 2024 09:29:46 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB768748D;
+	Wed,  1 May 2024 16:31:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.177.32
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1714581069; cv=fail; b=gOp8sa/273UJlhVYSeYnLrGjTr3KLN4kvWRiqE6lrGOTECbipf68avBya1HIeWz2KWce7G1764L+jXTfBfGat/buM0+PHWwpFx6wgUaGjn4IkAi/CuRn1jwYFcY7+j2mCKFlCK6KzBtr+aGie1KXOYB/btgBerV5LxApSlpZ2JU=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1714581069; c=relaxed/simple;
+	bh=sAF9EXAAVJMGY6lj49sFM2NAgocSL0S4NLDIZonhzys=;
+	h=From:To:Cc:Subject:Date:Message-Id:Content-Type:MIME-Version; b=oTpDSf53OF8Jl1uWagw5WD2UM9By3pQJreoaevqkkOPI76wGfG3YXSloOIO3v73/4F7QbkvyI+fO5KA3EZtKrf9SXUHppZ047UrGDU/ufdcNQvcT/l9qqyUGJ+uwDo2T2ERzc3E5QyQEfbdUVDqmTgEQHYkXGlxonEZuWSxcebs=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=GznjsAFR; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=Xuf/hNig; arc=fail smtp.client-ip=205.220.177.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 441ASQCh000841;
+	Wed, 1 May 2024 16:30:03 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : content-transfer-encoding : content-type :
+ mime-version; s=corp-2023-11-20;
+ bh=D6Q0HjUFQndlmfDDOu29602YdmMwTwaW0ee4gdbrLvE=;
+ b=GznjsAFRA9efiy0DMDjtuml6b17+xU/gR3/X0ZIHEBJ0AmgKlYFaVLQ8EVxq+oKIitfK
+ 6goQt3MxkKGZ4Jmp7AxBm5xlWUAeqbpk20nKrS11heVlmr3wkro+PdlEgPTur3qxRiyn
+ gRynODercvq8Bf0gmiKfRccGpmqn56iVxPlnCo22rFN17OS0s7BnCKhWmhz9WPuAudEc
+ OUJLoPRa3TcPmVV3kYzNHB60JfLf/4TFC0jjUaTJlwK4DOcNbuUJ4z6FUN5zVeH9JTO5
+ CpPn3GMI5eY9x6fke4QfY0vitYJtRQLA1v1t8wKoh2rsnyfahPtXdCql+3/80ZKshIQG lA== 
+Received: from iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta03.appoci.oracle.com [130.35.103.27])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3xrqseyftt-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Wed, 01 May 2024 16:30:03 +0000
+Received: from pps.filterd (iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+	by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 441G4BBP016672;
+	Wed, 1 May 2024 16:30:02 GMT
+Received: from nam02-dm3-obe.outbound.protection.outlook.com (mail-dm3nam02lp2040.outbound.protection.outlook.com [104.47.56.40])
+	by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3xrqtfgxcy-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Wed, 01 May 2024 16:30:02 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=XB6g7+2uwwDgcRTdu4+fb/7XpTAfFLSFSaOZFaeBEHF059d3VcSip1yhSIEF/oYheVGdGmX03HYsCJJwwIE1U2R1njFNffFlKx4N1is5+qs6+lIoSgMrbth5eoVccMLBQI5NN2jUb0Mu3YAAJ+Q/Zb+bmcqtmCDwtVuuC6iBTQWQ8MgXoPshsrzByP6yUhAEMRcUnmne6yWZFUKcGGMX+L8ynY/lyDSFQkhrXUf9vlynBf/Irm3pR2urr8Kbg9Dt4ctLCPnqs6tIqAHMDQ8UgyhROmvmb3AOiRruK2DpaEDpIxsQLUltSU2pAvbN9m1DcGLwJLQ0Mk82l4qAUHbQgg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=D6Q0HjUFQndlmfDDOu29602YdmMwTwaW0ee4gdbrLvE=;
+ b=FyrngWj4mMJpuJRH2g7fJY5Of+EXEUYR5yKQRNZCU7nGvTq/7yZDYCnOX9ep0FMMAozUMaXx1wk06ChS0C/mKxROiyOAL61zSD3jhGa4D0kue50hjv5C7sjUYsyKm9c59kyQHv3TQQKL5kHvkwtRdFaTN+RYnc+nEM4OuQuhloh+84t9B/jJxpGvGyq5Ur/jXMG7J+a/e6Z5mp89gxwFBekbf8wa5qIKWpf9/WXw0/JShBqY9YxvSr34Oi9kiiSzTfXd7sUPC7wqhB73YEpvrWcgxG8MDhN0zbvxmmLCb0v8g1MmeWSdb788Wzmu3prpoR+QQll4vr1DFhOypm7WVg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714580985; x=1715185785; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=1JhUFoDuTe/RQlJB0MwNXH98/7xR5MEc4zbU3I5zlyw=;
-        b=bzT9TCCV45rnNCXyVlwtSv3k2pEBItwR5BMWVMSKOXLcB8FG4tQm4VsAnpTVxIJ/AH
-         NzscocbsWpD/c+1g720U0vhH5UaChHCHaAB6TZoO46rqrf5BLgwu4ENijrzbWbshxyW6
-         7MbIwFDAN4jZopv9OH/fw/2pvV1031DEyWmlJ3BwUe3u55Snkz8h5hMfc5KtNkdyyXaT
-         5zUFlU5bZ5AIJyrZsRUJiwSMD0apDx9TpZB4+IdOFACtkd4gy0OnOeyfLWfpB521YkPS
-         tR4USq94EnULYjcH5sgyslLumBmoKEGXO7d0kBLkN4LKZOMRD8QSfCtxPX4rfLPnaTIo
-         /fbQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714580985; x=1715185785;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=1JhUFoDuTe/RQlJB0MwNXH98/7xR5MEc4zbU3I5zlyw=;
-        b=L8MRowhr34/Hp7PjmlJz6MRjOFDOFB6wZ6QPy6LqnkfDlNhtEs/9iXSM4JLnyqYpkc
-         +5wtoFwHkSK8xCsz5py9ZzCgTmwp+CStfi2jtWxbynWHmAVyfyyHbvV19PZ7PovETseU
-         drTk4qHQFh8ZhGfOrFGGh24Bo81YUewUVjkD31xMUwRxWPWIzVTY8+KQ0dumrfxijUfd
-         PmfnU8gLYXfSp2Pvs36beWEDEbX8S0GdfOLRou2/oupfrYORKmsSPG5jSAqNb6Sy4IGB
-         QdPimh4mApzHXXSSp3XHsVtA/nLqZOYFXHlb22QUxOUKYw69ZYdXA+OP3kfRue9IQIlu
-         nr6A==
-X-Forwarded-Encrypted: i=1; AJvYcCUb6d3JQqS+f1aVh+K+QeUe2UBrCnrLhpVZGTkrBdRPQK5JkFhPz6197FKilBORSIvq01SJZh1qauAWiQDQAyFOvo7qKlLQsjslfgqW
-X-Gm-Message-State: AOJu0YycZLNk9CzEc+YEIJAYmYFpB6ZZd/64jjNEMsNKAIg5ap62rApu
-	iHhAjnu3/EgNb45SK0yEb5TBVPb5/bGubvUEI0N4C1wpqktY52mU
-X-Google-Smtp-Source: AGHT+IG27y2zQWrGAZ7qm7rjKC5KjbYj2HHspK3M7ldH5NqvuVm9gNVPVyPOF1FwdYlvp+vSrDzCfQ==
-X-Received: by 2002:a05:690c:6688:b0:61b:2b7:27d8 with SMTP id hz8-20020a05690c668800b0061b02b727d8mr3067484ywb.23.1714580985149;
-        Wed, 01 May 2024 09:29:45 -0700 (PDT)
-Received: from localhost ([69.73.66.55])
-        by smtp.gmail.com with ESMTPSA id j6-20020a819206000000b0061880ec01d6sm959158ywg.93.2024.05.01.09.29.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 01 May 2024 09:29:44 -0700 (PDT)
-Date: Wed, 1 May 2024 09:29:43 -0700
-From: Yury Norov <yury.norov@gmail.com>
-To: Kuan-Wei Chiu <visitorckw@gmail.com>
-Cc: akpm@linux-foundation.org, linux@rasmusvillemoes.dk,
-	n26122115@gs.ncku.edu.tw, jserv@ccns.ncku.edu.tw,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 1/2] lib/test_bitops: Add benchmark test for fns()
-Message-ID: <ZjJt9w2mvdm2P+dM@yury-ThinkPad>
-References: <20240501132047.14536-1-visitorckw@gmail.com>
- <20240501132047.14536-2-visitorckw@gmail.com>
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=D6Q0HjUFQndlmfDDOu29602YdmMwTwaW0ee4gdbrLvE=;
+ b=Xuf/hNigxZ4jndcg6Ra9W6BBmOanMKJLq34Fp7bF11oWEDNwvjfiO/e2CfoZOTemVNQRnf8FbhJAFC4Z+RAEOez7e5GgpDNvt/TNVz2wLxK+b2xwA9YkqTpmEpllkMYA2NiE/GgDstpOqbKG+mc2c+JzzbSli3/c0qtVdWPxUK4=
+Received: from PH8PR10MB6597.namprd10.prod.outlook.com (2603:10b6:510:226::20)
+ by PH7PR10MB7840.namprd10.prod.outlook.com (2603:10b6:510:2fd::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7519.37; Wed, 1 May
+ 2024 16:29:59 +0000
+Received: from PH8PR10MB6597.namprd10.prod.outlook.com
+ ([fe80::6874:4af6:bf0a:6ca]) by PH8PR10MB6597.namprd10.prod.outlook.com
+ ([fe80::6874:4af6:bf0a:6ca%3]) with mapi id 15.20.7519.031; Wed, 1 May 2024
+ 16:29:59 +0000
+From: Stephen Brennan <stephen.s.brennan@oracle.com>
+To: Steven Rostedt <rostedt@goodmis.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>
+Cc: Guo Ren <guoren@kernel.org>, Huacai Chen <chenhuacai@kernel.org>,
+        WANG Xuerui <kernel@xen0n.name>,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Helge Deller <deller@gmx.de>, Michael Ellerman <mpe@ellerman.id.au>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>,
+        "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
+        Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org,
+        linux-trace-kernel@vger.kernel.org, linux-csky@vger.kernel.org,
+        loongarch@lists.linux.dev, linux-parisc@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
+        linux-s390@vger.kernel.org,
+        Stephen Brennan <stephen.s.brennan@oracle.com>
+Subject: [PATCH v3] kprobe/ftrace: bail out if ftrace was killed
+Date: Wed,  1 May 2024 09:29:56 -0700
+Message-Id: <20240501162956.229427-1-stephen.s.brennan@oracle.com>
+X-Mailer: git-send-email 2.39.3
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: BLAPR03CA0050.namprd03.prod.outlook.com
+ (2603:10b6:208:32d::25) To PH8PR10MB6597.namprd10.prod.outlook.com
+ (2603:10b6:510:226::20)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240501132047.14536-2-visitorckw@gmail.com>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH8PR10MB6597:EE_|PH7PR10MB7840:EE_
+X-MS-Office365-Filtering-Correlation-Id: d72807aa-f8a2-4316-35fe-08dc69fbf1b9
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230031|366007|7416005|376005|1800799015;
+X-Microsoft-Antispam-Message-Info: 
+	=?us-ascii?Q?L9LO8DTteml+3KZfyHgQD+oFpQc8F6lpOY1EgvhC64Tjc9xRHAoLOQSW/rMd?=
+ =?us-ascii?Q?vlmSnpeiVl644KpsbheP8y3XRxtQKIA8lyxvL6r6s3H6h02TkpeoNBuIkQhO?=
+ =?us-ascii?Q?8bJFEsltaKTIj8kLCBph8QgrQWPfwHgsO5wVSQCB981Y6fDq4iYD4T0rHDaH?=
+ =?us-ascii?Q?OyXhQ+3MZWAoj0xbPyWoNJSMZs8t0eiYnB+PC0CWU54a+9V770NR8kRIs3Z8?=
+ =?us-ascii?Q?CFJ6Bb0S9uSJua9eacUIFmT8nxScqw7sinFcMlL3yJa34dlSsKWcRmaTJrHO?=
+ =?us-ascii?Q?CXZSTFlcx2qEuKQu4yhTKdi87s0qZLASi+R/UND2SGX6ZxljW2huzujgq9d9?=
+ =?us-ascii?Q?Ie89wFy9ChpBRXrTD6JECQlTFe7SBQerz2wSK4//ORobmz9FeItvTNYLw4Zj?=
+ =?us-ascii?Q?rya0CG8xXzmFj9mW2tbOqiFTQktG5T+m+ixwazK11Sn1mMHcfCwJ3aI6ejgK?=
+ =?us-ascii?Q?Lj/KZNgFCtmZ/KA/J1JT+NMT6LAxQsLb7EOR6B6Su5jnU7Y3HFpsYXNAOJi5?=
+ =?us-ascii?Q?RnpORYEP9f7n0me0CbZuyKkCXeARNRf5J+3vwpg75XnPWcwhTlwhO1LdtWT5?=
+ =?us-ascii?Q?E2IW0khSbX8Ja2BR5uZ1IUSkpnjfJQImSzHcF0TbR2E6/lqVP9t8XVPQFITN?=
+ =?us-ascii?Q?u29qcHk+djTQqo6/vQQha6rbH440nqT3q/HOjPhS3eiB9rMbWszwReGBPz9H?=
+ =?us-ascii?Q?hoYrREFjmpn+Jf+f0sldK4Jd+m1e/VitwZtrXNdRr/GF5rCH44FXQEqyP0kf?=
+ =?us-ascii?Q?IkLP0bNUtPp2q+4t8zNyC3+QirqfU+8KaPvlzvywhFsgr9E7GWgUHEW8TsjK?=
+ =?us-ascii?Q?pdolT4UTMDd37OM/bP/67YrqDeCrvdKEB+6zzQTeQWiULvk+YroZ55WDjWm7?=
+ =?us-ascii?Q?+IgavoJBRU1glWE60+5fE9AOXBT6277BRSPsvMdcq/B3Io4BuS59VTKqUXrM?=
+ =?us-ascii?Q?Tdl5NbC7tvI+20vfY+oBYEjl7x7b68voomXrjVg9ee4Dx+pONWzpIV1O2AmG?=
+ =?us-ascii?Q?irc413A2uHGYwdcVJXiK2UZKhZ8uR+eTzJa98+ohFRqXqZFKPICcpijlD26y?=
+ =?us-ascii?Q?rQBq2/lSVE1bHTFZmK1kzX7plch1CkzaHJ79ZCRQoGG3U30MLoYx5+VhVyhy?=
+ =?us-ascii?Q?JAYc44GqWHrBJqWWEzM4DDWMDzj3Sj8+JmjGbBHn4Qo3HBFgfNltRuGop168?=
+ =?us-ascii?Q?bjR4iZ7GsaQUZ4s4K/36rfb4tfWQ1vOK2oHxGPpsV1OFSAFiRJ00XGtOc5c?=
+ =?us-ascii?Q?=3D?=
+X-Forefront-Antispam-Report: 
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH8PR10MB6597.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(7416005)(376005)(1800799015);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: 
+	=?us-ascii?Q?/bWbJrhPiwZfcZiGFn0Sidf7VfP0BtX95W72LtHGyGkYfV08QGpPw/YQlfn9?=
+ =?us-ascii?Q?YtN75Nm9hFvJEdKpVOcuxbPaTLSEwMc8zxnNzLggsgt9TbDLQ5g1XriMD5R2?=
+ =?us-ascii?Q?Jug4KxTPhPZ55+Al9tglHuwqYNEmFt7WUDqgbt87goPjUfekJ5OYT1jgGjCf?=
+ =?us-ascii?Q?3/rcZ+4H7rONhvyUsEAH8Tgo1dUBoEeH6of/IExqQg/NdKA9RNUlaRp6MEQg?=
+ =?us-ascii?Q?USB4BCxrjtGIR83op59GHogl90h7g0mrmykbKLhpmz04MXoXL0zCKM9/Ynb3?=
+ =?us-ascii?Q?AEQYO8TLq3Sk0rEjnudCFGk53M4l7+0NNPpmPHom6pDsaQWAhb2RUW/LhR6c?=
+ =?us-ascii?Q?Ipu+fUfCuFeeTRpfGOnIgzS3o7oILH9YeJr6XGhiA3osUul8VeAJ4ommyOnt?=
+ =?us-ascii?Q?VuIi33GSg4hrYne03prVm6Yz+9YAXq829uyE4afFOCdMmjOyBgmGS1RKf+jY?=
+ =?us-ascii?Q?8YGL+tkq2zEDpNsSwXJC5hyYHNikj18P5EWeDVlEX+TuFiTChp+DR9r07HlM?=
+ =?us-ascii?Q?oVrW7DV+IH5kIKAeL7H7//NIr9Nmt5aC9Bn6Q+ZQNr7pnSqXoMxCds/2U7Wj?=
+ =?us-ascii?Q?4jMPJqUBf8D3RZ79szMimr6dNjHDh2VH2d1OeXG4RhGN/8tc9m2XUFJTwHHg?=
+ =?us-ascii?Q?O54SZokW+8qIYKhiRl8uAIpQhfKzG7l0Gj90DNzWOnidv4NQPP+vN9HT2Uwl?=
+ =?us-ascii?Q?6DWv9bIvgpgIX5FtbSvxKoxAxwHn9LXd1ZN7+VFLAiDXlfYLxx7EIOOgIknK?=
+ =?us-ascii?Q?jZzNdxOP8tfhdA7zAzFcmrYzs9c+u99TJkZDva7Zo1eF1EiLeANS75EllyJ9?=
+ =?us-ascii?Q?oKWnCbV9dHgOHbU24m9tlHAHMFjjBTQvnLDV+8hUmCkQBbX5y7EvArhkFvwZ?=
+ =?us-ascii?Q?++0FG9ArZ85IWOBICwzEAv8NCzuawEHyvt9W2Kz/0DUeNhEZxqP9jqTXprnw?=
+ =?us-ascii?Q?QtjeVtpQ5GitZPi37l+l216qSLy+eDDjB92J7s/jg0g42YdT0wYhKbRnpF6d?=
+ =?us-ascii?Q?I3+Vq1tNvzqS1Xk0LevBT0W9Z5pcOJVbGedsKejcTGyA75oYIRNjM/qPDXt6?=
+ =?us-ascii?Q?IQlvaOF15ksWsc6JnM4gcF1vFu7fkZ5639yY7+LPdO191fC8Z66rAKwHVnzl?=
+ =?us-ascii?Q?y2Mg1bZCgRLHcbHGh6cC/hjv7kn1kGTl3JjXZlmirKeAJxvuMByUGC8QbLqL?=
+ =?us-ascii?Q?Ul4JDEraEmv2XbZzcAM7MVWk7QAnUbQxTqYDjSb47TbX8dAQO4pUHFhXS1LE?=
+ =?us-ascii?Q?2/9QNIqqB2p7UzysBMIUab27bf45IC/koqpF+w4w16cxH0vOlSw66C7W1NuP?=
+ =?us-ascii?Q?T1VKEclsdkY08f+GwLxfL+1JEbCnbBSjkLVffLrCMHD8/uZiDoEvM3MyQjP5?=
+ =?us-ascii?Q?dk6KY/VGy1SmUsnBkDgP66V8DsZvmlZdeQO/IQsuZ42rs1tgvAGPlYiNEj01?=
+ =?us-ascii?Q?/5sBGwk75z1l/PXCuzUOiopRLyBLprDw4asN6PmGfJ50PvGC738BbNGgTGcP?=
+ =?us-ascii?Q?hv4/Gjlp47Gv3b/6OOhWk5ZiYaX0EUTt4/eFV8ypuqJbKwBZ1U2PYeRHJuXW?=
+ =?us-ascii?Q?0xS9hebWEwTGMnCCSDRkNfFxugHOV3cwynNyCfHq8TrzrPyHgZfdoOhIosvQ?=
+ =?us-ascii?Q?QXmO3D3W4RXQU6VUtjjqu1VfE19dORM4nztFP/j5WinU?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
+	y6en0yKetvTWgNvSB5JFVxUVVCrmLP0EpnNUPHNiuacbYgdYGfHk96SSnocaXsd9Do5MNIfuwrVofh0T2I4/8kkJ6V1aRa1ToUKT7d3t5fL5JkpbmEdKI4leIZX5jpe4kONx1oMRZ4FRUe5ZxoFqNPn9u7/NIlwlsHgFH9JJKa4GIgjaBisZcs5lByCsfTIr8ekVZyt71i7sSB7Kv+RKPrbgXcGyiiF5S2rcS4S6K/6RPaCEtJrT9AsJf77xomSCLmrXgRby7c4lxas7jtR7z8qFKCnvClHQ4Co/Fm6u00NiL7SRASdlr5V+3k0yr5oFqqQoUcqr0rpTgXHKPIFNkxQIf9lY9V8yNs51WSVJa7Bg1Pa+l4perpf/6XSCZIf5Bql5r4eQBNPvp64WNhiJeTKn7SApT4whsBUyoOPpBGanG2MQ+9xEXhFfspOhtx+K4A47aeG/VRbdOMkvx8cwXHarzRXCLCziUgsOkKl5xopLmWqcw1Revg9p4zt4WzDRUHGmw3/lvhH/5ViS+uTWS3bYFOLJM/rQSmw/EPiGDHYdrCmCTLhVnG67hfcO0XsPSoiN+R1pS8HUDN6HIV3SfOfuuVhnsuURADw40yUeElQ=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d72807aa-f8a2-4316-35fe-08dc69fbf1b9
+X-MS-Exchange-CrossTenant-AuthSource: PH8PR10MB6597.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 May 2024 16:29:59.5016
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 8vdZLDWPguGAKCD8OMXSgHR2XDHP/dNrKnfMlDzG9x3ssOwuEwuMzF9viOdolbxvhzuuJxKmgvXfdtLhmnhvvkETPJVBbjhWFPMSp5h4LX0=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR10MB7840
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
+ definitions=2024-05-01_16,2024-04-30_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 malwarescore=0
+ phishscore=0 spamscore=0 bulkscore=0 suspectscore=0 adultscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2404010000 definitions=main-2405010116
+X-Proofpoint-ORIG-GUID: IXmcrLujswrITd78LZ4dHtCKDsyzi5aM
+X-Proofpoint-GUID: IXmcrLujswrITd78LZ4dHtCKDsyzi5aM
 
-On Wed, May 01, 2024 at 09:20:46PM +0800, Kuan-Wei Chiu wrote:
-> Introduce a benchmark test for the fns(). It measures the total time
-> taken by fns() to process 1,000,000 test data generated using
-> get_random_bytes() for each n in the range [0, BITS_PER_LONG).
-> 
-> example:
-> test_bitops: fns:          5876762553 ns, 64000000 iterations
+If an error happens in ftrace, ftrace_kill() will prevent disarming
+kprobes. Eventually, the ftrace_ops associated with the kprobes will be
+freed, yet the kprobes will still be active, and when triggered, they
+will use the freed memory, likely resulting in a page fault and panic.
 
-So... 5 seconds for a test sounds too much. I see the following patch
-improves it dramatically, but in general let's stay in a range of
-milliseconds. On other machines it may run much slower and trigger
-a stall watchdog.
+This behavior can be reproduced quite easily, by creating a kprobe and
+then triggering a ftrace_kill(). For simplicity, we can simulate an
+ftrace error with a kernel module like [1]:
 
-> Signed-off-by: Kuan-Wei Chiu <visitorckw@gmail.com>
+[1]: https://github.com/brenns10/kernel_stuff/tree/master/ftrace_killer
 
-Suggested-by: Yury Norov <yury.norov@gmail.com>
+  sudo perf probe --add commit_creds
+  sudo perf trace -e probe:commit_creds
+  # In another terminal
+  make
+  sudo insmod ftrace_killer.ko  # calls ftrace_kill(), simulating bug
+  # Back to perf terminal
+  # ctrl-c
+  sudo perf probe --del commit_creds
 
-> ---
-> 
-> Changes in v4:
-> - Correct get_random_long() -> get_random_bytes() in the commit
->   message.
-> 
->  lib/test_bitops.c | 22 ++++++++++++++++++++++
->  1 file changed, 22 insertions(+)
-> 
-> diff --git a/lib/test_bitops.c b/lib/test_bitops.c
-> index 3b7bcbee84db..ed939f124417 100644
-> --- a/lib/test_bitops.c
-> +++ b/lib/test_bitops.c
-> @@ -50,6 +50,26 @@ static unsigned long order_comb_long[][2] = {
->  };
->  #endif
->  
-> +static unsigned long buf[1000000];
+After a short period, a page fault and panic would occur as the kprobe
+continues to execute and uses the freed ftrace_ops. While ftrace_kill()
+is supposed to be used only in extreme circumstances, it is invoked in
+FTRACE_WARN_ON() and so there are many places where an unexpected bug
+could be triggered, yet the system may continue operating, possibly
+without the administrator noticing. If ftrace_kill() does not panic the
+system, then we should do everything we can to continue operating,
+rather than leave a ticking time bomb.
 
-Can you make it __init, or allocate with kmalloc_array(), so that 64M
-of memory will not last forever in the kernel?
+Signed-off-by: Stephen Brennan <stephen.s.brennan@oracle.com>
+---
+Changes in v3:
+  Don't expose ftrace_is_dead(). Create a "kprobe_ftrace_disabled"
+  variable and check it directly in the kprobe handlers.
+Link to v1/v2 discussion:
+  https://lore.kernel.org/all/20240426225834.993353-1-stephen.s.brennan@oracle.com/
 
-> +static int __init test_fns(void)
-> +{
-> +	unsigned int i, n;
-> +	ktime_t time;
-> +
-> +	get_random_bytes(buf, sizeof(buf));
-> +	time = ktime_get();
-> +
-> +	for (n = 0; n < BITS_PER_LONG; n++)
-> +		for (i = 0; i < 1000000; i++)
-> +			fns(buf[i], n);
+ arch/csky/kernel/probes/ftrace.c     | 3 +++
+ arch/loongarch/kernel/ftrace_dyn.c   | 3 +++
+ arch/parisc/kernel/ftrace.c          | 3 +++
+ arch/powerpc/kernel/kprobes-ftrace.c | 3 +++
+ arch/riscv/kernel/probes/ftrace.c    | 3 +++
+ arch/s390/kernel/ftrace.c            | 3 +++
+ arch/x86/kernel/kprobes/ftrace.c     | 3 +++
+ include/linux/kprobes.h              | 7 +++++++
+ kernel/kprobes.c                     | 6 ++++++
+ kernel/trace/ftrace.c                | 1 +
+ 10 files changed, 35 insertions(+)
 
-What concerns me here is that fns() is a in fact a const function, and
-the whole loop may be eliminated. Can you make sure it's not your case
-because 450x performance boost sounds a bit too much to me.
+diff --git a/arch/csky/kernel/probes/ftrace.c b/arch/csky/kernel/probes/ftrace.c
+index 834cffcfbce3..7ba4b98076de 100644
+--- a/arch/csky/kernel/probes/ftrace.c
++++ b/arch/csky/kernel/probes/ftrace.c
+@@ -12,6 +12,9 @@ void kprobe_ftrace_handler(unsigned long ip, unsigned long parent_ip,
+ 	struct kprobe_ctlblk *kcb;
+ 	struct pt_regs *regs;
+ 
++	if (unlikely(kprobe_ftrace_disabled))
++		return;
++
+ 	bit = ftrace_test_recursion_trylock(ip, parent_ip);
+ 	if (bit < 0)
+ 		return;
+diff --git a/arch/loongarch/kernel/ftrace_dyn.c b/arch/loongarch/kernel/ftrace_dyn.c
+index 73858c9029cc..bff058317062 100644
+--- a/arch/loongarch/kernel/ftrace_dyn.c
++++ b/arch/loongarch/kernel/ftrace_dyn.c
+@@ -287,6 +287,9 @@ void kprobe_ftrace_handler(unsigned long ip, unsigned long parent_ip,
+ 	struct kprobe *p;
+ 	struct kprobe_ctlblk *kcb;
+ 
++	if (unlikely(kprobe_ftrace_disabled))
++		return;
++
+ 	bit = ftrace_test_recursion_trylock(ip, parent_ip);
+ 	if (bit < 0)
+ 		return;
+diff --git a/arch/parisc/kernel/ftrace.c b/arch/parisc/kernel/ftrace.c
+index 621a4b386ae4..c91f9c2e61ed 100644
+--- a/arch/parisc/kernel/ftrace.c
++++ b/arch/parisc/kernel/ftrace.c
+@@ -206,6 +206,9 @@ void kprobe_ftrace_handler(unsigned long ip, unsigned long parent_ip,
+ 	struct kprobe *p;
+ 	int bit;
+ 
++	if (unlikely(kprobe_ftrace_disabled))
++		return;
++
+ 	bit = ftrace_test_recursion_trylock(ip, parent_ip);
+ 	if (bit < 0)
+ 		return;
+diff --git a/arch/powerpc/kernel/kprobes-ftrace.c b/arch/powerpc/kernel/kprobes-ftrace.c
+index 072ebe7f290b..f8208c027148 100644
+--- a/arch/powerpc/kernel/kprobes-ftrace.c
++++ b/arch/powerpc/kernel/kprobes-ftrace.c
+@@ -21,6 +21,9 @@ void kprobe_ftrace_handler(unsigned long nip, unsigned long parent_nip,
+ 	struct pt_regs *regs;
+ 	int bit;
+ 
++	if (unlikely(kprobe_ftrace_disabled))
++		return;
++
+ 	bit = ftrace_test_recursion_trylock(nip, parent_nip);
+ 	if (bit < 0)
+ 		return;
+diff --git a/arch/riscv/kernel/probes/ftrace.c b/arch/riscv/kernel/probes/ftrace.c
+index 7142ec42e889..a69dfa610aa8 100644
+--- a/arch/riscv/kernel/probes/ftrace.c
++++ b/arch/riscv/kernel/probes/ftrace.c
+@@ -11,6 +11,9 @@ void kprobe_ftrace_handler(unsigned long ip, unsigned long parent_ip,
+ 	struct kprobe_ctlblk *kcb;
+ 	int bit;
+ 
++	if (unlikely(kprobe_ftrace_disabled))
++		return;
++
+ 	bit = ftrace_test_recursion_trylock(ip, parent_ip);
+ 	if (bit < 0)
+ 		return;
+diff --git a/arch/s390/kernel/ftrace.c b/arch/s390/kernel/ftrace.c
+index c46381ea04ec..7f6f8c438c26 100644
+--- a/arch/s390/kernel/ftrace.c
++++ b/arch/s390/kernel/ftrace.c
+@@ -296,6 +296,9 @@ void kprobe_ftrace_handler(unsigned long ip, unsigned long parent_ip,
+ 	struct kprobe *p;
+ 	int bit;
+ 
++	if (unlikely(kprobe_ftrace_disabled))
++		return;
++
+ 	bit = ftrace_test_recursion_trylock(ip, parent_ip);
+ 	if (bit < 0)
+ 		return;
+diff --git a/arch/x86/kernel/kprobes/ftrace.c b/arch/x86/kernel/kprobes/ftrace.c
+index dd2ec14adb77..15af7e98e161 100644
+--- a/arch/x86/kernel/kprobes/ftrace.c
++++ b/arch/x86/kernel/kprobes/ftrace.c
+@@ -21,6 +21,9 @@ void kprobe_ftrace_handler(unsigned long ip, unsigned long parent_ip,
+ 	struct kprobe_ctlblk *kcb;
+ 	int bit;
+ 
++	if (unlikely(kprobe_ftrace_disabled))
++		return;
++
+ 	bit = ftrace_test_recursion_trylock(ip, parent_ip);
+ 	if (bit < 0)
+ 		return;
+diff --git a/include/linux/kprobes.h b/include/linux/kprobes.h
+index 0ff44d6633e3..5fcbc254d186 100644
+--- a/include/linux/kprobes.h
++++ b/include/linux/kprobes.h
+@@ -378,11 +378,15 @@ static inline void wait_for_kprobe_optimizer(void) { }
+ extern void kprobe_ftrace_handler(unsigned long ip, unsigned long parent_ip,
+ 				  struct ftrace_ops *ops, struct ftrace_regs *fregs);
+ extern int arch_prepare_kprobe_ftrace(struct kprobe *p);
++/* Set when ftrace has been killed: kprobes on ftrace must be disabled for safety */
++extern bool kprobe_ftrace_disabled __read_mostly;
++extern void kprobe_ftrace_kill(void);
+ #else
+ static inline int arch_prepare_kprobe_ftrace(struct kprobe *p)
+ {
+ 	return -EINVAL;
+ }
++static inline void kprobe_ftrace_kill(void) {}
+ #endif /* CONFIG_KPROBES_ON_FTRACE */
+ 
+ /* Get the kprobe at this addr (if any) - called with preemption disabled */
+@@ -495,6 +499,9 @@ static inline void kprobe_flush_task(struct task_struct *tk)
+ static inline void kprobe_free_init_mem(void)
+ {
+ }
++static inline void kprobe_ftrace_kill(void)
++{
++}
+ static inline int disable_kprobe(struct kprobe *kp)
+ {
+ 	return -EOPNOTSUPP;
+diff --git a/kernel/kprobes.c b/kernel/kprobes.c
+index 65adc815fc6e..166ebf81dc45 100644
+--- a/kernel/kprobes.c
++++ b/kernel/kprobes.c
+@@ -1068,6 +1068,7 @@ static struct ftrace_ops kprobe_ipmodify_ops __read_mostly = {
+ 
+ static int kprobe_ipmodify_enabled;
+ static int kprobe_ftrace_enabled;
++bool kprobe_ftrace_disabled;
+ 
+ static int __arm_kprobe_ftrace(struct kprobe *p, struct ftrace_ops *ops,
+ 			       int *cnt)
+@@ -1136,6 +1137,11 @@ static int disarm_kprobe_ftrace(struct kprobe *p)
+ 		ipmodify ? &kprobe_ipmodify_ops : &kprobe_ftrace_ops,
+ 		ipmodify ? &kprobe_ipmodify_enabled : &kprobe_ftrace_enabled);
+ }
++
++void kprobe_ftrace_kill()
++{
++	kprobe_ftrace_disabled = true;
++}
+ #else	/* !CONFIG_KPROBES_ON_FTRACE */
+ static inline int arm_kprobe_ftrace(struct kprobe *p)
+ {
+diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
+index da1710499698..96db99c347b3 100644
+--- a/kernel/trace/ftrace.c
++++ b/kernel/trace/ftrace.c
+@@ -7895,6 +7895,7 @@ void ftrace_kill(void)
+ 	ftrace_disabled = 1;
+ 	ftrace_enabled = 0;
+ 	ftrace_trace_function = ftrace_stub;
++	kprobe_ftrace_kill();
+ }
+ 
+ /**
+-- 
+2.39.3
 
-You can declare a "static volatile __used __init" variable to assign
-the result of fns(), and ensure that the code is not eliminated
-
-> +	time = ktime_get() - time;
-> +	pr_err("fns:  %18llu ns, %6d iterations\n", time, BITS_PER_LONG * 1000000);
-
-Here the number of iterations is always the same. What's the point to
-print it?
-
-Thanks,
-Yury
 
