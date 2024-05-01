@@ -1,173 +1,137 @@
-Return-Path: <linux-kernel+bounces-165519-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-165521-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 910968B8D81
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 17:56:33 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4AD7A8B8D87
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 17:57:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 944C71C210DB
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 15:56:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7BB121C2113C
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 15:57:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 39F1112FB20;
-	Wed,  1 May 2024 15:56:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 30FEA12FF7B;
+	Wed,  1 May 2024 15:57:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="CzjFCQLp"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Teu73MUk"
+Received: from mail-pj1-f45.google.com (mail-pj1-f45.google.com [209.85.216.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4FB64F898;
-	Wed,  1 May 2024 15:56:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B82012FB28;
+	Wed,  1 May 2024 15:57:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714578984; cv=none; b=pzCLTIfiAcmk6ncC6kA3yp2jomK73Acfm1CNO4DFPQA62DyKwhKOMr6vin2VU1l2K1s82KXvOgBPUM0PrUmpoFcWC/6lHuHqHknNQzN1hAsgQ+4eMHkkMH7Z4lghs85OgnaNNRoC/ZoZEU+la5fvDhDFnr7LsO699bdHcOTW3Vs=
+	t=1714579031; cv=none; b=GvI8s1MUfTiJCBxVgkzVFp78AWffdOKiB7CjYO+ApJwuypHzr2qSIYNUz90yX8BFzz4BjdXytDab7Rbez1b6Id752h6c86SF+L7fZQHUyU/W+lWSgu9VADHjU8+7IVevb2l4sLMFORzeJjjWSuWWy+0576io+ytKun/k7Sho2Yk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714578984; c=relaxed/simple;
-	bh=Ul+Jpm9d6lTEfAqkG8TmFAbQb3enioJbvf95sNAE7uI=;
+	s=arc-20240116; t=1714579031; c=relaxed/simple;
+	bh=ckoWfyyPNvCGxi2fVomdJaaX3vET2oCk2vilFXck1oc=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=earuoNLHONCfe+cGTmd3sCAkKS0RtPDA/61Nmf2Gi0mxLptzA6GvFxpC/LsWqmT2RkhpAXdTlpf+kNVUTItlZ4huPaFCOzz7RA1bt53aNZvRBqM8uXm/ttd/2H5kH/g0NbwgshiGQbUy8wYm/DPSOIeFuORhPqoBEtoTcVzfR80=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=CzjFCQLp; arc=none smtp.client-ip=192.198.163.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1714578982; x=1746114982;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=Ul+Jpm9d6lTEfAqkG8TmFAbQb3enioJbvf95sNAE7uI=;
-  b=CzjFCQLpLwupMzj5xygPoiVPYh1bSkw8WUs1ba/+nDWTzFihRb92ylBs
-   fwhKpyEwU02mJj5WgcFuRYhkOM3slVBZBvbDkf76VLZLFKkkG1HcNeKnB
-   pbtazssEBmVkxYz76J2URZI7OViP17I9uN2FzzRwU9Pr/mzu2vVP+b3n5
-   sQ1MDzwuIfJB3037q1xyrlzX+ygtBHACo+C9guZU5XJyUAYmVO2THVYux
-   wMPiX8UsHoJQ4MLoQYAojMHeWNAWv1204ajH+IsAxqnzVWLJr9urv/BVT
-   KHOW3QF8jZExuOvSca+JmOLr39qUb45hYlShHcz75SCDtaAv/7OvCn/wk
-   g==;
-X-CSE-ConnectionGUID: urGOcVmJSWSAmmN2HnO3zg==
-X-CSE-MsgGUID: DqWBf76QRQ2YvtT7Vw49nQ==
-X-IronPort-AV: E=McAfee;i="6600,9927,11061"; a="35700423"
-X-IronPort-AV: E=Sophos;i="6.07,245,1708416000"; 
-   d="scan'208";a="35700423"
-Received: from orviesa002.jf.intel.com ([10.64.159.142])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 May 2024 08:56:21 -0700
-X-CSE-ConnectionGUID: MxDtOalKSem0hZXTLSBVEA==
-X-CSE-MsgGUID: SnI2oLpSQtCt6AEYlAPvEA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,245,1708416000"; 
-   d="scan'208";a="57709782"
-Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
-  by orviesa002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 May 2024 08:56:22 -0700
-Date: Wed, 1 May 2024 08:56:20 -0700
-From: Isaku Yamahata <isaku.yamahata@intel.com>
-To: Reinette Chatre <reinette.chatre@intel.com>
-Cc: Isaku Yamahata <isaku.yamahata@intel.com>,
-	Chao Gao <chao.gao@intel.com>, kvm@vger.kernel.org,
-	linux-kernel@vger.kernel.org, isaku.yamahata@gmail.com,
-	Paolo Bonzini <pbonzini@redhat.com>, erdemaktas@google.com,
-	Sean Christopherson <seanjc@google.com>,
-	Sagi Shahar <sagis@google.com>, Kai Huang <kai.huang@intel.com>,
-	chen.bo@intel.com, hang.yuan@intel.com, tina.zhang@intel.com,
-	isaku.yamahata@linux.intel.com
-Subject: Re: [PATCH v19 101/130] KVM: TDX: handle ept violation/misconfig exit
-Message-ID: <20240501155620.GA13783@ls.amr.corp.intel.com>
-References: <cover.1708933498.git.isaku.yamahata@intel.com>
- <f05b978021522d70a259472337e0b53658d47636.1708933498.git.isaku.yamahata@intel.com>
- <Zgoz0sizgEZhnQ98@chao-email>
- <20240403184216.GJ2444378@ls.amr.corp.intel.com>
- <43cbaf90-7af3-4742-97b7-2ea587b16174@intel.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=Mve1SLSzeXTPC6pHk5seRXGehaXPv9DGJ2/fKdOkwYfdruv1M3Fa3oEOIKiuA0foLOT+4EjJve6YawkvT8n1voSvtBWkCwWadlpAJvTZ6IJmm2x1cPo1vmpEXR7mXSls/1LVIfTUnb2Li2PE5Saz18yV14LoJojhNxI3NE4IGhI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Teu73MUk; arc=none smtp.client-ip=209.85.216.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f45.google.com with SMTP id 98e67ed59e1d1-2b370e63d96so79687a91.3;
+        Wed, 01 May 2024 08:57:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1714579029; x=1715183829; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=JzfY/kmW53uOWAjNU/h5BVe0MuVfIdc+r+3hv3BH8NA=;
+        b=Teu73MUkjYaEKcNVW9NY23lU4vyeAKML5RMpZHGJGbl11WFR/s/ItVK+/rVuvX/DM6
+         DfEM6GQHctpsaEbS410C4VpWumWCMCCIWNJ2rNXsdzW4DgY2V8TTR/B5bDHQKAHfVMIi
+         gCTBhO2N2Mqpj3m9Wv2FkOxQIUyBI85PalVwYfaC1Ku/g92Ll0rd5agVvxxUuECha7pd
+         kHkXuWHPcD86RPeyqQLpZ4UyGimJn8iefblg0XCWmIZetTpncELrkPt+AIj+UYnCzOI1
+         4lbeiXIAYhM4X2OlWZO13/q0esvN0Ixrwc6Pb0mmfP5fmg/zxUxI6E9QFHTAjGcPUMG0
+         QODw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714579029; x=1715183829;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=JzfY/kmW53uOWAjNU/h5BVe0MuVfIdc+r+3hv3BH8NA=;
+        b=xUveGThBhfwoTKZbCVW6oOq+LLJTQDYex01rGxllUdT1WcxX+QE1uVyzhSn9VlGs19
+         f7ipKuobHN5HKn1UNH9PwhvhN32AC5AXGFgPuK8XSNHABzFQ/hdlXz/hRY5PrOgE8UpV
+         LWHv90HQXDEiwMB29BFmYq1hn3Ybf+1FfDGaOQjQ4L5e3rXGML2BgMY6zkCebNvrkJM7
+         aKMQ6sgKsXtcGs20PqhRRjHRNtzzD3f21R8VCdBDxQvTwdJAcfOtVWjDT5HU1AiPz02a
+         H9E3c9afqZYuSPEPR0JW7xq7yoMvih42M09BgLr2a3Mwe5rxe5T80cmEU6pqpYTpQTMe
+         bkLg==
+X-Forwarded-Encrypted: i=1; AJvYcCUYZqg0799HBlHwYq+fl+ACQJWQzpBoIJOwLGm+rA969SG0mp6RNi/mKddZRs0BHEOcmIejH9Ez9IC0ysWUK1T8Ip7Ptk5qEl2w9IOHuvbRkjRgDHJ/CNwbrxB7UHhclbmOcKnY
+X-Gm-Message-State: AOJu0Yxnig631ozZhXIBlmTEkQJ7c+6St043aX+JHsvrNOknhl4SLZw4
+	0yG06HVFPtseCYqgyrnln5ZZpbMM9bn7HXmgZL/rq4LzCulsB8uX
+X-Google-Smtp-Source: AGHT+IEqUo1eBvHR/WvPzsLh02ckKC0kjNX4dU4g0A0KwEIj4AgPLsyI8oM8EjDjFw9PvnKEhB/wtg==
+X-Received: by 2002:a17:902:db0e:b0:1e7:b7da:842 with SMTP id m14-20020a170902db0e00b001e7b7da0842mr3016504plx.2.1714579029330;
+        Wed, 01 May 2024 08:57:09 -0700 (PDT)
+Received: from visitorckw-System-Product-Name ([140.113.216.168])
+        by smtp.gmail.com with ESMTPSA id h9-20020a170902f54900b001ebd7bdaaffsm5820761plf.288.2024.05.01.08.57.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 01 May 2024 08:57:08 -0700 (PDT)
+Date: Wed, 1 May 2024 23:57:05 +0800
+From: Kuan-Wei Chiu <visitorckw@gmail.com>
+To: Shi-Sheng Yang <fourcolor4c@gmail.com>,
+	Shi-Sheng Yang <james1qaz2wsx12qw@gmail.com>
+Cc: Simon Horman <horms@kernel.org>, matttbe@kernel.org,
+	martineau@kernel.org, davem@davemloft.net, edumazet@google.com,
+	kuba@kernel.org, pabeni@redhat.com, geliang@kernel.org,
+	netdev@vger.kernel.org, mptcp@lists.linux.dev,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mptcp: subflow.c: fix typo
+Message-ID: <ZjJmUcfDioUzX2Gg@visitorckw-System-Product-Name>
+References: <20240429225033.3920874-1-james1qaz2wsx12qw@gmail.com>
+ <20240430180057.GB2575892@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <43cbaf90-7af3-4742-97b7-2ea587b16174@intel.com>
+In-Reply-To: <20240430180057.GB2575892@kernel.org>
 
-On Tue, Apr 30, 2024 at 01:47:07PM -0700,
-Reinette Chatre <reinette.chatre@intel.com> wrote:
+On Tue, Apr 30, 2024 at 07:00:57PM +0100, Simon Horman wrote:
+> On Tue, Apr 30, 2024 at 06:50:33AM +0800, Shi-Sheng Yang wrote:
+> > Replace 'greceful' with 'graceful'.
+> > 
+> > Signed-off-by: Shi-Sheng Yang <james1qaz2wsx12qw@gmail.com>
+> 
+> Hi Shi-Sheng Yang,
+> 
+> Elsewhere in the same file 'earlier' is mispelt as 'eariler'.
+> Could you consider fixing that too?
+> 
+> Better still, could you consider running codespell over
+> net/mptcp/ and fixing (the non false-positives) that it flags?
+> 
+> If you do repost then I think an appropriate prefix
+> would be 'mctp: ' rather than 'mctp: subflow.c ',
+> as this follows the pattern in git history.
+> 
+> And I think the target tree should be net-next.
+> That is, the patch should be based on net-next and
+> it should be designated in the subject.
+> 
+> e.g. Subject: [PATCH v2 net-next] mptcp: fix typos in comments
+> 
+> Lastly, please keep in mind that 24h should elapse
+> before posting a new version.
+> 
+> Link: https://docs.kernel.org/process/maintainer-netdev.html
+> 
+> ...
+>
 
-> Hi Isaku,
-> 
-> On 4/3/2024 11:42 AM, Isaku Yamahata wrote:
-> > On Mon, Apr 01, 2024 at 12:10:58PM +0800,
-> > Chao Gao <chao.gao@intel.com> wrote:
-> > 
-> >>> +static int tdx_handle_ept_violation(struct kvm_vcpu *vcpu)
-> >>> +{
-> >>> +	unsigned long exit_qual;
-> >>> +
-> >>> +	if (kvm_is_private_gpa(vcpu->kvm, tdexit_gpa(vcpu))) {
-> >>> +		/*
-> >>> +		 * Always treat SEPT violations as write faults.  Ignore the
-> >>> +		 * EXIT_QUALIFICATION reported by TDX-SEAM for SEPT violations.
-> >>> +		 * TD private pages are always RWX in the SEPT tables,
-> >>> +		 * i.e. they're always mapped writable.  Just as importantly,
-> >>> +		 * treating SEPT violations as write faults is necessary to
-> >>> +		 * avoid COW allocations, which will cause TDAUGPAGE failures
-> >>> +		 * due to aliasing a single HPA to multiple GPAs.
-> >>> +		 */
-> >>> +#define TDX_SEPT_VIOLATION_EXIT_QUAL	EPT_VIOLATION_ACC_WRITE
-> >>> +		exit_qual = TDX_SEPT_VIOLATION_EXIT_QUAL;
-> >>> +	} else {
-> >>> +		exit_qual = tdexit_exit_qual(vcpu);
-> >>> +		if (exit_qual & EPT_VIOLATION_ACC_INSTR) {
-> >>
-> >> Unless the CPU has a bug, instruction fetch in TD from shared memory causes a
-> >> #PF. I think you can add a comment for this.
-> > 
-> > Yes.
-> > 
-> > 
-> >> Maybe KVM_BUG_ON() is more appropriate as it signifies a potential bug.
-> > 
-> > Bug of what component? CPU. If so, I think KVM_EXIT_INTERNAL_ERROR +
-> > KVM_INTERNAL_ERROR_UNEXPECTED_EXIT_REASON is more appropriate.
-> > 
-> 
-> Is below what you have in mind?
+Hi Shi-Sheng,
 
-Yes. data[0] should be the raw value of exit reason if possible.
-data[2] should be exit_qual.  Hmm, I don't find document on data[] for
-KVM_INTERNAL_ERROR_UNEXPECTED_EXIT_REASON.
-Qemu doesn't assumt ndata = 2. Just report all data within ndata.
+I also noticed that the email you sent and the email from SoB are not
+the same, which causes checkpatch.pl to complain about the following
+warning:
 
+WARNING: From:/Signed-off-by: email address mismatch: 'From: Shi-ShengYang fourcolor4c@gmail.com' != 'Signed-off-by: Shi-Sheng Yang james1qaz2wsx12qw@gmail.com'
 
-> diff --git a/arch/x86/kvm/vmx/tdx.c b/arch/x86/kvm/vmx/tdx.c
-> index 499c6cd9633f..bd30b4c4d710 100644
-> --- a/arch/x86/kvm/vmx/tdx.c
-> +++ b/arch/x86/kvm/vmx/tdx.c
-> @@ -1305,11 +1305,18 @@ static int tdx_handle_ept_violation(struct kvm_vcpu *vcpu)
->  	} else {
->  		exit_qual = tdexit_exit_qual(vcpu);
->  		if (exit_qual & EPT_VIOLATION_ACC_INSTR) {
-> +			/*
-> +			 * Instruction fetch in TD from shared memory
-> +			 * causes a #PF.
-> +			 */
->  			pr_warn("kvm: TDX instr fetch to shared GPA = 0x%lx @ RIP = 0x%lx\n",
->  				tdexit_gpa(vcpu), kvm_rip_read(vcpu));
-> -			vcpu->run->exit_reason = KVM_EXIT_EXCEPTION;
-> -			vcpu->run->ex.exception = PF_VECTOR;
-> -			vcpu->run->ex.error_code = exit_qual;
-> +			vcpu->run->exit_reason = KVM_EXIT_INTERNAL_ERROR;
-> +			vcpu->run->internal.suberror =
-> +				KVM_INTERNAL_ERROR_UNEXPECTED_EXIT_REASON;
-> +			vcpu->run->internal.ndata = 2;
-> +			vcpu->run->internal.data[0] = EXIT_REASON_EPT_VIOLATION;
-> +			vcpu->run->internal.data[1] = vcpu->arch.last_vmentry_cpu;
->  			return 0;
->  		}
->  	}
-> 
-> Thank you
-> 
-> Reinette
-> 
-> 
-> 
+total: 0 errors, 1 warning, 0 checks, 8 lines checked
 
--- 
-Isaku Yamahata <isaku.yamahata@intel.com>
+Could you please address this issue in the next version as well?
+
+Regards,
+Kuan-Wei
 
