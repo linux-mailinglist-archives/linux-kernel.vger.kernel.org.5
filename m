@@ -1,82 +1,112 @@
-Return-Path: <linux-kernel+bounces-165160-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-165161-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2E8318B88D3
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 12:55:44 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2F1078B88D7
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 12:58:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7F669B23016
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 10:55:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C57B21F24786
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 10:58:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26FAA53E09;
-	Wed,  1 May 2024 10:55:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4889056754;
+	Wed,  1 May 2024 10:58:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rere.qmqm.pl header.i=@rere.qmqm.pl header.b="STxE3S9v"
-Received: from rere.qmqm.pl (rere.qmqm.pl [91.227.64.183])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="D6rD372u"
+Received: from mail-wr1-f65.google.com (mail-wr1-f65.google.com [209.85.221.65])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 196B150A9D
-	for <linux-kernel@vger.kernel.org>; Wed,  1 May 2024 10:55:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.227.64.183
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2273633CD1;
+	Wed,  1 May 2024 10:58:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.65
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714560938; cv=none; b=afjfZgr5jFYvmGB5IEYykp4Ag+ShUX8GIuK/M+QP+BXOsaCEInblPVupauKyuPO5GMh+njU01HR4Bnd1/swPvk9YCxMttGOmv1Vt3jxzV3cnC5cX6GgBNPTrAq+ZaRCOLAimmjyyS6D66g9uASBXayFq9M6/W87atuht6wUsnL0=
+	t=1714561104; cv=none; b=XMWOjnl7YN/rSg03HKGsGHNJHV1egGFxqI+avEkjwJg4b8qYGeMI+H/pFQoYnQ0q7IsGF+vpUREXe5paMpemWMITRBp4ECearBcBAfsMhGVLcr6qABjD06yqo1Ew3CkKDSWFmmYENqUXG++Rsb9ojA4KkLAGNLE4jUm0NckK6ks=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714560938; c=relaxed/simple;
-	bh=qhf5AF1OezFa8YQN7goIJJBnh70oq/0z5QrJY3rdkTU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=XVBb1MsqVoYzJ9ApZG5XP/5KSguXPzYSZ2iCOU+Ke9wL2mZVkmIcSrc++sARzku0XN/0djdB0N7gtUeBgqqKi76kW9OQBJPyiyqdgI4MEPHO1tPzwvt7JIYp3q4//hhc5F/wUHYe1VfC5GOCkGBfX0F5N78Reu1vUfpqB3xVAtA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=rere.qmqm.pl; spf=pass smtp.mailfrom=rere.qmqm.pl; dkim=pass (2048-bit key) header.d=rere.qmqm.pl header.i=@rere.qmqm.pl header.b=STxE3S9v; arc=none smtp.client-ip=91.227.64.183
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=rere.qmqm.pl
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rere.qmqm.pl
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
-	t=1714560927; bh=qhf5AF1OezFa8YQN7goIJJBnh70oq/0z5QrJY3rdkTU=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=STxE3S9vrugOsg8R52GCFheLHk0i559Wli/REbzGmQE6/a0fjnrZrR0e+TmTuDBnu
-	 2c5Siu2TzcpvATIgY7N+rGdSoQxl+g3wn07X6FJXdQkTbc2B6pQR7PAWNBdf/cY+Zo
-	 eslpW0ACR4X+0Hd5jyXvkC4VKL7Fj60ES2uevuVK4TLYl56Cos+kjmGsTr3kte7rxM
-	 B9XPsXlUvgRExOc+ZCA9BnCOHRIagat9WrLnw3HMA81dO1A05CM0D4I8D0ODaZx1u4
-	 KjyqVTiU4Vd55zhPc535OdtqBLKMdpcrjL43mT6hS1ejfsQiLxQ4wUjiCC16YF82Mu
-	 8nYAkkoRuUFMg==
-Received: from remote.user (localhost [127.0.0.1])
-	by rere.qmqm.pl (Postfix) with ESMTPSA id 4VTv9W0V5szBL;
-	Wed,  1 May 2024 12:55:26 +0200 (CEST)
-X-Virus-Status: Clean
-X-Virus-Scanned: clamav-milter 1.0.5 at mail
-Date: Wed, 1 May 2024 12:55:25 +0200
-From: =?iso-8859-2?Q?Micha=B3_Miros=B3aw?= <mirq-linux@rere.qmqm.pl>
-To: Mark Brown <broonie@kernel.org>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 04/12] regulator/core: regulator_bulk_get: remove
- redundant NULL stores
-Message-ID: <ZjIfnYgCvA8tcchP@qmqm.qmqm.pl>
-References: <cover.1714399603.git.mirq-linux@rere.qmqm.pl>
- <1ec1a8090c0e316ee005629c24f2779211e0aebf.1714399603.git.mirq-linux@rere.qmqm.pl>
- <Zi_EWBtMFISQJcHE@finisterre.sirena.org.uk>
+	s=arc-20240116; t=1714561104; c=relaxed/simple;
+	bh=j/Xajgm4NK/lzgqgFTaDH7ZeBAQsVIQsUpgLf7xd+18=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=CD/z5xlI0pFk19sDJiMMz/jiat45mB8ovNBt9IrZLWgua05dwFDW5SyuxiJWFxo/3omjVKY7QNF1AjvBKGz0Yr5cWwI6FQAAZj2gqdHDipHzgGT5EtsUAH766XHwh9vqOGj99TpGPdGUrw597DG+YOMfQStnvVbeo4l/tu7N4ME=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=D6rD372u; arc=none smtp.client-ip=209.85.221.65
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f65.google.com with SMTP id ffacd0b85a97d-34d7b0dac54so383507f8f.0;
+        Wed, 01 May 2024 03:58:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1714561101; x=1715165901; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=j/Xajgm4NK/lzgqgFTaDH7ZeBAQsVIQsUpgLf7xd+18=;
+        b=D6rD372uAobSJnckyljWWc4bOJed71WAjo6tB5TaKkWcw8NcWr986Mk745bH15nD2T
+         R5NzIEkLToTr7jtjgVPa79T9OTHIg5kyHWE5S7u+4H229YLLQ2yE/FtQto82YRIQYDZR
+         JqpSpH7kg1zHh5oKITNx44XhDBW1cbWZ7JG6gh00ylXNBQ2+yk8Q/3qxdYTFX3yCeZTd
+         DO0nOJnHoIDhXpGqjO0k7Y3n/BCD4iA+k0l0jChBFpX2CsnN4Hze8VFguiUfdKTB7SVi
+         QEGQ3tsWda/GcUMlrV5g70Biq3rT9jvv6X0T2hOmuG+1PzwFQZCEj1E5uDufVU0pEwTq
+         bI9g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714561101; x=1715165901;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=j/Xajgm4NK/lzgqgFTaDH7ZeBAQsVIQsUpgLf7xd+18=;
+        b=fWWB+dh3xGN2ZRfmlESM4v6hl3+DQYT4ewdtlwO5dmjK171wkPHp0GFW4K4RuqpEQm
+         92M8UC8PS77rbv/BsaLEwjg2IcMnoJGoJy6hVXJNnx2itGDtYlZ/rvbDLb4enFlw6HyL
+         60QY9WLcWCbE9+WdQvWzE5iy6WAkQrIww9XnQdkQ7wAYRkCdf0YesiJ1+1nDAPC4G3SD
+         cmIsDrYyr2bE0zgPGss8I00mSrcmba8e4yTUGJjR60PSWXYCmOb/JDwwFwZToRSVIkDR
+         KHcbmPXQtQFVoEaL2M53bSFMpmsTmwxEsusXama4C8PKTEe7Gpc1Qy7lsaWUroWJWwMx
+         RTKQ==
+X-Forwarded-Encrypted: i=1; AJvYcCW0Yp1KEhu/OHfYzCIH8q9zSgbf/zVWeCcK8l31mIcfKxS7bKBj20EYD231W4+b3NZUNsENRaxfmXi/VkGmksscPVd6UiJ7WezUqic6bUFvaNoZmOSpHV3rFLj/OfCUSBqwbcG7Fkov6Q==
+X-Gm-Message-State: AOJu0YxMAlPcbZUO9MH8uI572Umgs3xsiJ96dxkJxh1owqzzLfsIu0Ff
+	Ipbj1cJzZscWuCYexN/KWijOWGiUwqNh3iyO1PenDXXc37/uQTOG2OJslBJLSdMkD7lpNUEQF9i
+	6eYjWo/HA0rP7N4FXcAxA/79852s=
+X-Google-Smtp-Source: AGHT+IHtZt1GnkElYxtQ+de9g9Z0CTksnHeTnCeTOMgHpQJQApOQPvfeWXhm9Dvmz8ahmZA+Re/IaJ8yF908J+rF3vY=
+X-Received: by 2002:adf:f44a:0:b0:34c:c53e:f2ca with SMTP id
+ f10-20020adff44a000000b0034cc53ef2camr2046993wrp.14.1714561101245; Wed, 01
+ May 2024 03:58:21 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-2
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <Zi_EWBtMFISQJcHE@finisterre.sirena.org.uk>
+References: <CADFWO8EZWkXeAMcURgGGEmzVjiSxFTVAbKpsb2Qmv66EZiTc+A@mail.gmail.com>
+ <eb9538fe-1d1a-40e0-a46f-3b4b5da3e8d7@linaro.org>
+In-Reply-To: <eb9538fe-1d1a-40e0-a46f-3b4b5da3e8d7@linaro.org>
+From: Petar Stoykov <pd.pstoykov@gmail.com>
+Date: Wed, 1 May 2024 12:58:10 +0200
+Message-ID: <CADFWO8Gz__4s2h6Led=oGAObjzkymc=vPsHzZ07HUFU_VCGfTw@mail.gmail.com>
+Subject: Re: [PATCH v2 0/3] Add support for Sensirion SDP500
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: linux-iio@vger.kernel.org, Jonathan Cameron <jic23@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Lars-Peter Clausen <lars@metafoo.de>, 
+	Rob Herring <robh+dt@kernel.org>, Andy Shevchenko <andriy.shevchenko@linux.intel.com>, 
+	Angel Iglesias <ang.iglesiasg@gmail.com>, Conor Dooley <conor+dt@kernel.org>, 
+	linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Apr 30, 2024 at 01:01:28AM +0900, Mark Brown wrote:
-> On Mon, Apr 29, 2024 at 04:45:28PM +0200, Micha³ Miros³aw wrote:
-> > On error, callers of regulator_bulk_get() pass the error up and don't
-> > use the pointers in consumers[]. The function is documented to release
-> > all regulators if any request fails.
-> 
-> This doesn't seem good from a robustness point of view and should be
-> nowhere near a fast path.
+On Wed, May 1, 2024 at 11:45=E2=80=AFAM Krzysztof Kozlowski
+<krzysztof.kozlowski@linaro.org> wrote:
+>
+> On 30/04/2024 17:27, Petar Stoykov wrote:
+> > functions in use so it should be fine here too.
+> >
+> > All feedback is appreciated! Thank you for taking the time to review th=
+is.
+> >
+> > v1->v2:
+> > Many fixes suggested by Jonathan Cameron and Krzysztof Kozlowsk.
+>
+> No, be specific. What EXACTLY changed. This is way too generic.
+> Considering entire indentation is broken, I could assume you actually
+> did not implement feedback.
+>
+> Best regards,
+> Krzysztof
+>
 
-I take it you'd prefer to have the function fixed to clear the other
-pointers? I'll do that in the v3 then.
-
-Best Regards
-Micha³ Miros³aw
+Hi Krzysztof, I'll include all changes in v3 then (or as a response here?).
+I just thought it was too much to list all changes.
+And about the indentation, can you elaborate please?
 
