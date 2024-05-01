@@ -1,242 +1,212 @@
-Return-Path: <linux-kernel+bounces-165696-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-165697-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 010288B8FE2
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 20:51:10 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 046028B8FE3
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 20:51:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ACD85284D05
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 18:51:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 858D31F23ECB
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 18:51:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 224BE16089A;
-	Wed,  1 May 2024 18:50:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E1291805A;
+	Wed,  1 May 2024 18:51:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="XQmRb5Dw"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="gftzcC19"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD1BC1805A
-	for <linux-kernel@vger.kernel.org>; Wed,  1 May 2024 18:50:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714589458; cv=none; b=Q7xscaNXC/W//WhBJ950S9l+TLGsW0SCKSu6z7/p2Fnx4mbcH4xNEcf1d8T6mWbohOjacSYkpPnUZSXG7SQ2qW09pSbLFGZxY8lWRczPeBKlVRUoaC1oSY3H6N3hiKdcvrN3K/SKLPWPfytauoxZFN6wU11eO2Bl/d7euM7pFaI=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714589458; c=relaxed/simple;
-	bh=fmR6Y2iZ0ul/zqlZu3wJj92Mn58/IbpPaqkgp5e3wv8=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=m9tWqwKjz11bCcGcVrxZmCnBIMJ0lXWB7vwACGrpbhOZlEcDy4LDveTvxGWmzTQqr/rHm/YnjnIQ7r3uv3MX528UvJdW36eaOU3ZVTdc4ZW/94eGZTr/gTbHOazSJxHs6njNqT40gEP3O9TVC3Vdj1AM7vHvWARp9wfui8Krpps=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=XQmRb5Dw; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1714589454;
-	bh=fmR6Y2iZ0ul/zqlZu3wJj92Mn58/IbpPaqkgp5e3wv8=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=XQmRb5DwY/6A+Hdy0xsYDTItkKHOV0yc7BERY054zF/pfTy9fOL0fVVSSUxzFnqbh
-	 ywkVJWhBgdSjwUc0DUWjQV4BJxKSN0unimawA8BsY+MMzSDehl+AZVzxeJyuk4iqoK
-	 YSpsCtag4JH2h7vSpjMcZc2Me/wqi8IOymL9+Dh7t/DLoP0mjF4u08Oqqi3LPkL/5i
-	 I4sLhk3u3d9Hn6bWgGIVke/UIRwYxx5982DfJyJl1w9ANqw09KyV3BeyXJsb8+xoeS
-	 r7Koi8K3ip5d5apQrP80ZoDc2WwKDtTrTVxvt2nbY46plHSli5/m1drZ8j6h4MVv6/
-	 OUJZBi0EB2QPA==
-Received: from localhost.localdomain (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: alarumbe)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 5F4CF37820A4;
-	Wed,  1 May 2024 18:50:54 +0000 (UTC)
-From: =?UTF-8?q?Adri=C3=A1n=20Larumbe?= <adrian.larumbe@collabora.com>
-To: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	David Airlie <airlied@gmail.com>,
-	Daniel Vetter <daniel@ffwll.ch>
-Cc: kernel@collabora.com,
-	Adrian Larumbe <adrian.larumbe@collabora.com>,
-	dri-devel@lists.freedesktop.org,
-	linux-kernel@vger.kernel.org,
-	Rob Clark <robdclark@gmail.com>,
-	Tvrtko Ursulin <tursulin@ursulin.net>
-Subject: [PATCH v2 1/1] drm: Add ioctl for querying a DRM device's list of open client PIDs
-Date: Wed,  1 May 2024 19:50:43 +0100
-Message-ID: <20240501185047.3126832-2-adrian.larumbe@collabora.com>
-X-Mailer: git-send-email 2.44.0
-In-Reply-To: <20240501185047.3126832-1-adrian.larumbe@collabora.com>
-References: <20240501185047.3126832-1-adrian.larumbe@collabora.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A291146D53;
+	Wed,  1 May 2024 18:51:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.11
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1714589498; cv=fail; b=NDp7uorkpzBxsw4C7oIl6a9/LaNdN9dM21wg7gNhY6sAm64Qz62o0pIpBtNV5K60zG5RczrbzkV19xb8sf4n35QXE4L+9JNVJAP3mJj/XaphlnnpM3vS3/vWHVZjrKNs5N4bSJ0EXUm+CvPioYGEghoQJtnpLUf5LUWzwGJb358=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1714589498; c=relaxed/simple;
+	bh=t7jKREjWjakiLiwbdar7YlSI8HJZhJYEh4cLY02N0Us=;
+	h=Date:From:To:CC:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=ndQwIdkwt2+Mnk6xmqHQFSjCM3ptvCslMLpm3kZyrom4Vv9fosFPZ7GlWztZHivox+7eIObfYGFK1M/oznIjxdtsaB/3j9Pg5oPrdfx+uu6wdsjEs5xT0yhxaHFjRDhLStcw87iNhdOLhsHaftJ1XSMYfQsA46z7HiFkBfEB4+c=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=gftzcC19; arc=fail smtp.client-ip=192.198.163.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1714589496; x=1746125496;
+  h=date:from:to:cc:subject:message-id:references:
+   in-reply-to:mime-version;
+  bh=t7jKREjWjakiLiwbdar7YlSI8HJZhJYEh4cLY02N0Us=;
+  b=gftzcC197RmCUP58QOk3fTN+M96gOfYCmHmk2TGkRA1xGeKWusFiJQTv
+   GqjBpmVsBebSSigpdlEbhZjTwLRwjYTpNh4wg62cyCf4pPKbpwJkyLUyN
+   VLwVRT+gadA3Y9TweoMfjO6MjlBw40+QTVaCg/TvYHTiLWYU1mq5EroBY
+   fvd2/Pb6qMdc8Hj2RKS6BfgbXbB8U29i2Ub7ZCmU88EoSuNcCyH8zoDEO
+   /WYPpZnKqZ9ulUM/mjc1N9mThw9yvtfqLmUM3enMrZZ5ogI3EdL5Y+XID
+   Cxbh7lv/Kwng1gruuDY+hzyBl7FgfjMpbnh0K0BcWaeULrANwPB+T/3ZS
+   g==;
+X-CSE-ConnectionGUID: AIY2+YTRT3a+0adg036vUQ==
+X-CSE-MsgGUID: XJ3N/W/sSoK2TJz+TBZRag==
+X-IronPort-AV: E=McAfee;i="6600,9927,11061"; a="20950534"
+X-IronPort-AV: E=Sophos;i="6.07,246,1708416000"; 
+   d="scan'208";a="20950534"
+Received: from fmviesa007.fm.intel.com ([10.60.135.147])
+  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 May 2024 11:51:35 -0700
+X-CSE-ConnectionGUID: uDZ+fjBdQPasxXYQWHtFsA==
+X-CSE-MsgGUID: QxYAYEMrQLSrSSFbQju5EA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,246,1708416000"; 
+   d="scan'208";a="26888040"
+Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
+  by fmviesa007.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 01 May 2024 11:51:32 -0700
+Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
+ ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Wed, 1 May 2024 11:51:31 -0700
+Received: from orsmsx601.amr.corp.intel.com (10.22.229.14) by
+ ORSMSX611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Wed, 1 May 2024 11:51:30 -0700
+Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
+ orsmsx601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Wed, 1 May 2024 11:51:30 -0700
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.169)
+ by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Wed, 1 May 2024 11:51:30 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ntvsHL6RSbQA5lc4rBKggYH3qTspCt11VzUAOeOZCajxmj81qcq84oL84xdw8awjORHXR3B6mkhMZHfgq8mUPyw4O5iUPjnL2BJWVkJa+pc+vqywaqQghAjYZl5DKEAkcSZSKRmFWxFl7uS9gLFFXrsD+M5o0CErsfZO42MsefUC6jvdYk0IxHOtZrogVFErbC6WxqQfRQqZq/vrdL47ty9i6joph7Ky0ql74MsShMKqeuok7e6j5930QpCOpCg0NTP7w6dJMbKqtYOTLfVK1UvzfAFPwhGNM7hWO1LTFKg8liJw2WyjlOMQnC4LEjBiB1BwyhrXbURTOnywPEAKxQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=uhsUYyVp4+CeqiHil7LseJ9UMUfwV+jcobVe6fOOXKY=;
+ b=jSwKfxGolcJIJILrA6N67MYc976DbaB+SDoWE4W0fv9UeWo1VFS96SMDAEsvxSKqzPcSU2PQePae1RTIFTPADw6Vlu8irkTTmDI/PqcQ77nk4dq/e6btKGUKPCihUWPZor/6+MXUKqU9vqwq9ID7wZYdm5GIF1+42lbGC5h7s0TdMw+2x9bUeI5SI8KrVNhkPi6R/GVnONDvbh48rV5odC4+9LxIyvPkdGAMZoqiKCYB/1/5d9H0FH5FcumiQVL/2Y/S2budwWCnJpIIC2gSQ9tMhj7UpAa0UOwn0Twf0j3CbnpBlodkMlJerQW6tXrjMxkVQsAniTUyfZborIxAGA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from PH8PR11MB8107.namprd11.prod.outlook.com (2603:10b6:510:256::6)
+ by CY5PR11MB6089.namprd11.prod.outlook.com (2603:10b6:930:2f::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7519.34; Wed, 1 May
+ 2024 18:51:27 +0000
+Received: from PH8PR11MB8107.namprd11.prod.outlook.com
+ ([fe80::6b05:74cf:a304:ecd8]) by PH8PR11MB8107.namprd11.prod.outlook.com
+ ([fe80::6b05:74cf:a304:ecd8%5]) with mapi id 15.20.7519.031; Wed, 1 May 2024
+ 18:51:27 +0000
+Date: Wed, 1 May 2024 11:51:24 -0700
+From: Dan Williams <dan.j.williams@intel.com>
+To: Ira Weiny <ira.weiny@intel.com>, Davidlohr Bueso <dave@stgolabs.net>,
+	Jonathan Cameron <jonathan.cameron@huawei.com>, Dave Jiang
+	<dave.jiang@intel.com>, Alison Schofield <alison.schofield@intel.com>, Vishal
+ Verma <vishal.l.verma@intel.com>, Dan Williams <dan.j.williams@intel.com>
+CC: <linux-cxl@vger.kernel.org>, <linux-kernel@vger.kernel.org>, "kernel test
+ robot" <lkp@intel.com>, Ira Weiny <ira.weiny@intel.com>
+Subject: Re: [PATCH] cxl/cper: Fix non-ACPI-APEI-GHES build
+Message-ID: <66328f2caac87_1384629462@dwillia2-mobl3.amr.corp.intel.com.notmuch>
+References: <20240501-cper-fix-0day-v1-1-c0b0056eafbc@intel.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20240501-cper-fix-0day-v1-1-c0b0056eafbc@intel.com>
+X-ClientProxiedBy: MW4PR03CA0296.namprd03.prod.outlook.com
+ (2603:10b6:303:b5::31) To PH8PR11MB8107.namprd11.prod.outlook.com
+ (2603:10b6:510:256::6)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH8PR11MB8107:EE_|CY5PR11MB6089:EE_
+X-MS-Office365-Filtering-Correlation-Id: a7e17b1b-526a-41ac-740d-08dc6a0fb4e5
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230031|1800799015|376005|366007;
+X-Microsoft-Antispam-Message-Info: =?us-ascii?Q?laYLT/dogmCno6kgD8AO4HytaVbGMvtjRUpwpAFBvsKi4ou9AkOT6Hn74wWv?=
+ =?us-ascii?Q?HxZb/VJOxDopj3+lc1P+FXSArU2u8lraoLvaV6bHDn5LYG+wDvx3fAyrxSDL?=
+ =?us-ascii?Q?1oDHl3Sw1JMRx1bJdVx+2jrWuHywG2xe/WMcFab7RwcwrEBQwp3r0V4fFd8m?=
+ =?us-ascii?Q?K3ZjOOSj6f210IZBepoympBMpeeRJwIW+rNF1f88C8xgR56rb9MvvngqEGUj?=
+ =?us-ascii?Q?zUZArPBqVpMzFYedpWRpxsh7iJi4Aa33lRsRFEu0jgHINq9pIw+0li4BTmCR?=
+ =?us-ascii?Q?fGdjujq7443wy/0XXEP/66Mp3oiJoLfPlh0RoBmMoMYsUzVkvf9Taj6V3ipN?=
+ =?us-ascii?Q?KHyO2U1whhCc3wU6fnAwyBt9ZL7BS8ntTxfxm9qFBHo2FfPYQ//rLNGJmULq?=
+ =?us-ascii?Q?/LGReG68TjGNnKpBtRgmAq/nGTb/13FGgR1ybzCJjN7QtJQObMQqHYUlU1HR?=
+ =?us-ascii?Q?3VFQUCA4yWvkr2mQvrqqybMP90ZgyuzrtR5gxS59e1Hi7oA+U3Xih3/MM4DL?=
+ =?us-ascii?Q?F5ifnw4arshhYPNRph7VnVLeqyptCA9NgDE7aLdXathdu4NZud4hsveej0qi?=
+ =?us-ascii?Q?s7jGALzTp8Jv2TlQ/WKJpnnnKTaMRZQ1bv5MIZuuHj7caDfxhAyWYNaaFgFX?=
+ =?us-ascii?Q?sfi7bsyhkUjZA6iXs+ZZCZCzOBtwGR7nLjMhpVbCDEOGes8urNlwDV3P5zU8?=
+ =?us-ascii?Q?BHiOqPcwAltleGJyQ+kOmyfP+mhXokd5Zgf7xMpALUpnjo+o3/aCUD+QBsf+?=
+ =?us-ascii?Q?c6qA8yQddWX4PUpaqXIkxnMGsQkbrUwHi4OlQjEB8hIj7KHKtXB/ljDRQCgc?=
+ =?us-ascii?Q?05u3HNoFYBSfUPSM7n7L4GQMLoSRKcZxQafHhJc0oTviaSb/tdMspySnVfj8?=
+ =?us-ascii?Q?v9Yv1+61YnettelHhmNynDTyn4XIKLYQign0dWa2Tudc4fLcUU4AmnQZEePN?=
+ =?us-ascii?Q?l2yfMZFJpS1HP08EhdU/QIf7PQr+wcAc6vJ2ucgCa0Zdvqht8wy0W4L2q9nJ?=
+ =?us-ascii?Q?uO5sHIwVzf8eDXm3BiZKKaCA6mXH1zQAlH7lVAkkPoGwha2i7lQsO0a9psW7?=
+ =?us-ascii?Q?M+0fPrKDiiBNpQ4vGVquEcKE3tHZH9giIVtEq4XaE0qQZGu06JvAXU5lYPZ5?=
+ =?us-ascii?Q?bXAwXCruPkRWEnSRgeoXw6y0LrLpySpYfzUtOEs2UcgQY6VbH0hmHiuHrsuK?=
+ =?us-ascii?Q?1k71p6sl/Ql6393zwn3Yo0BPWlxsJl7x5Bz+VZrADd3fnOqbKG+qFcZpYzw?=
+ =?us-ascii?Q?=3D?=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH8PR11MB8107.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(376005)(366007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?X6QHz6oFU8alB8v9poo4u4TCLbiUzadhEt44SkRNIuDCkTtvuY7NOWn/LUiR?=
+ =?us-ascii?Q?1n3pTuvLA43gEMgTXfHERKBx9Uh1CSJhh4ck4uhAMiZXi1ZRTCyALl5+F3Gr?=
+ =?us-ascii?Q?LuNkc7yinzuSfynZcacQi/EFN667dDOrfXHQALjvHXLrPS3LQsmxRSWLrux3?=
+ =?us-ascii?Q?Lob8+k0FZxFPbSPXXEZaezrozh3sfwL2f5rEaAShXmlse3U+pN0RCyI9lfir?=
+ =?us-ascii?Q?AAfJUtvhDob/JksDSLg4IoleUDBJiWHWZi6SSln1PyMk2a7RUKlXuXDFTsNt?=
+ =?us-ascii?Q?bAFQCw9H6a5X8Tf3pEW65hA0ISwyhmJ5/R4L6o+ConRu/L04LaqVhnM12un9?=
+ =?us-ascii?Q?MlGhXVFhJ4gBQ9uzm/tBM9iO6xne/ygv1yARuE7TeWmzMSuduOPFfRygV4AF?=
+ =?us-ascii?Q?MBigWDNj4C5Niu4GiQaVX+sisO51Mi51tugd0+4jxeJLgRXg+dUcwSjZRjH+?=
+ =?us-ascii?Q?+NDLQoVE739RY2olW6dJuzkHQ17WLidoljX7dkj0C8Bfsxrn5obLouj2NT2b?=
+ =?us-ascii?Q?TwWaJ368uPjTd1kpjnZLpoJDMDaYNXtb0vJHnRpNWNSC+excfyt5AmlHmsMU?=
+ =?us-ascii?Q?igIc4kjAGyfBiMBfINC3besREpPw7eQfPOiovjJmDI9lcTo/ewNTvjeaoXOT?=
+ =?us-ascii?Q?b6CS7ukO0FsFKKSuftUm2WU+eUxI5dxTWElHoAymNNj0wCDMPnXJXU3Fbt2i?=
+ =?us-ascii?Q?9NXrISkChst0lEre/K79pItgjdddkslZZqlxOfc7xEnZfUYqfbH43D+1Excy?=
+ =?us-ascii?Q?gBLSHh2iRaQB4R+DH7s0BqXeNHxVWh59I/1rEU/xd6ZiMxh9v0W/0vW+IqyA?=
+ =?us-ascii?Q?PPYosAuZ4je3CM4SaARE0JIIRuU492WQeXqXn50HwMSQcNAQgGt36ASzGdkp?=
+ =?us-ascii?Q?fj2K6ku4/zRV89/RFlPTdxuS/bBI2dpoLev1o9vxYvWOzUuqJW/iZeZsFYBj?=
+ =?us-ascii?Q?nnHEpaX8lu/cT4YlK7QEyxsLUEZk7NUs81I+76GpsnKR8BA2+U0cPZhSYQTJ?=
+ =?us-ascii?Q?1gSk+y6Cz2eqYXERs0sU479q3448FMCZP49jO5oBk2RWlxIHwMF28mSKWaF2?=
+ =?us-ascii?Q?bXsOmYXoJ5ISakEG95aj83BCBk7Nullre96+b5nK+1PMsqVNo9fcQXR+VNje?=
+ =?us-ascii?Q?u2I/W2HxLDRgyLo5HUvbIIblHCee5hYG0LAoTMFEFRr4j/Z3uM945yBjPM88?=
+ =?us-ascii?Q?D6rcH3tIWWZZd/59TczriO2OaRxo+4Gt8pmX7Gqz4Wxo9AbhewCNuSGPrjfL?=
+ =?us-ascii?Q?bXTBaZrXnJ1dvQ0raZA4JUcogn1d6UBnCclu/3ATxKC+OWp6qF2sCvKVLpxt?=
+ =?us-ascii?Q?DHC7q5IHw4pb5VO0fIdksJLVcvP27ruG5Au77sJmUpKk0fXU6hwoPzINe+pw?=
+ =?us-ascii?Q?mZA68M9LjaieSkUsMncbpxcjUpKvhDFXfD43AZI0HiFisIAs+iDoG8X30Kcy?=
+ =?us-ascii?Q?q1+kyz4o9o0nx0IByxgGIE58plRrcimg1GNyDVAHox6VV36QchI0+uO2GR64?=
+ =?us-ascii?Q?6KafR1kouzoIc5bMy4z2LiLwGWA+M8pL5eYwFw2H84n5dh+71ykerKE+Eb4t?=
+ =?us-ascii?Q?guCV7qOGi2mhQweaUcWTq2/5aCcf7bRVokDLdkif0DBuJLjnPMx26Ac7RG6G?=
+ =?us-ascii?Q?Eg=3D=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: a7e17b1b-526a-41ac-740d-08dc6a0fb4e5
+X-MS-Exchange-CrossTenant-AuthSource: PH8PR11MB8107.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 May 2024 18:51:27.2777
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: HT46CjtQRXHAkXqOrX/ydy8M5v9WrZagTiL7V4e/0IbYugB8Slf3j4PJN5TrNxCQCkDvtkmmIeRhjFSt12EVrESlET4ExGiUUiwhMB/Skn4=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY5PR11MB6089
+X-OriginatorOrg: intel.com
 
-Up to this day, all fdinfo-based GPU profilers must traverse the entire
-/proc directory structure to find open DRM clients with fdinfo file
-descriptors. This is inefficient and time-consuming.
+Ira Weiny wrote:
+> If ACPI_APEI_GHES is not configured the [un]register work functions are
+> not properly declared.
+> 
+> Fix copy paste error.
 
-This patch adds a new DRM ioctl that allows users to obtain a list of PIDs
-for clients who have opened the DRM device. Output from the ioctl isn't
-human-readable, and it's meant to be retrieved only by GPU profilers like
-gputop and nvtop.
+Copy paste? I would just say:
 
-Cc: Rob Clark <robdclark@gmail.com>
-Cc: Tvrtko Ursulin <tursulin@ursulin.net>
-Signed-off-by: Adrián Larumbe <adrian.larumbe@collabora.com>
----
- drivers/gpu/drm/drm_internal.h |  1 +
- drivers/gpu/drm/drm_ioctl.c    | 89 ++++++++++++++++++++++++++++++++++
- include/uapi/drm/drm.h         |  7 +++
- 3 files changed, 97 insertions(+)
+0day notices that the cxl_cper_register_work() declaration in the
+CONFIG_ACPI_APEI_GHES=n is broken, fix it to be typical nop stub.
 
-diff --git a/drivers/gpu/drm/drm_internal.h b/drivers/gpu/drm/drm_internal.h
-index 690505a1f7a5..6f78954cae16 100644
---- a/drivers/gpu/drm/drm_internal.h
-+++ b/drivers/gpu/drm/drm_internal.h
-@@ -243,6 +243,7 @@ static inline void drm_debugfs_encoder_remove(struct drm_encoder *encoder)
- drm_ioctl_t drm_version;
- drm_ioctl_t drm_getunique;
- drm_ioctl_t drm_getclient;
-+drm_ioctl_t drm_getclients;
- 
- /* drm_syncobj.c */
- void drm_syncobj_open(struct drm_file *file_private);
-diff --git a/drivers/gpu/drm/drm_ioctl.c b/drivers/gpu/drm/drm_ioctl.c
-index e368fc084c77..da7057376581 100644
---- a/drivers/gpu/drm/drm_ioctl.c
-+++ b/drivers/gpu/drm/drm_ioctl.c
-@@ -207,6 +207,93 @@ int drm_getclient(struct drm_device *dev, void *data,
- 	}
- }
- 
-+/*
-+ * Get list of client PIDs who have opened a DRM file
-+ *
-+ * \param dev DRM device we are querying
-+ * \param data IOCTL command input.
-+ * \param file_priv DRM file private.
-+ *
-+ * \return zero on success or a negative number on failure.
-+ *
-+ * Traverses list of open clients for the given DRM device, and
-+ * copies them into userpace as an array of PIDs
-+ */
-+int drm_getclients(struct drm_device *dev, void *data,
-+		   struct drm_file *file_priv)
-+
-+{
-+	struct drm_get_clients *get_clients = data;
-+	ssize_t size = get_clients->len;
-+	char __user *pid_buf;
-+	ssize_t offset = 0;
-+	int ret = 0;
-+
-+	/*
-+	 * We do not want to show clients of display only devices so
-+	 * as to avoid confusing UM GPU profilers
-+	 */
-+	if (!dev->render) {
-+		get_clients->len = 0;
-+		return 0;
-+	}
-+
-+	/*
-+	 * An input size of zero means UM wants to know the size of the PID buffer
-+	 * We round it up to the nearest multiple of the page size so that we can have
-+	 * some spare headroom in case more clients came in between successive calls
-+	 * of this ioctl, and also to simplify parsing of the PIDs buffer, because
-+	 * sizeof(pid_t) will hopefully always divide PAGE_SIZE
-+	 */
-+	if (size == 0) {
-+		get_clients->len =
-+			roundup(atomic_read(&dev->open_count) * sizeof(pid_t), PAGE_SIZE);
-+		return 0;
-+	}
-+
-+	pid_buf = (char *)(void *)get_clients->user_data;
-+
-+	if (!pid_buf)
-+		return -EINVAL;
-+
-+	mutex_lock(&dev->filelist_mutex);
-+	list_for_each_entry_reverse(file_priv, &dev->filelist, lhead) {
-+		pid_t pid_num;
-+
-+		if ((size - offset) < sizeof(pid_t))
-+			break;
-+
-+		rcu_read_lock();
-+		pid_num = pid_vnr(rcu_dereference(file_priv->pid));
-+		rcu_read_unlock();
-+
-+		/* We do not want to return the profiler's PID */
-+		if (pid_vnr(task_tgid(current)) == pid_num)
-+			continue;
-+
-+		ret = copy_to_user(pid_buf + offset, &pid_num, sizeof(pid_t));
-+		if (ret)
-+			break;
-+
-+		offset += sizeof(pid_t);
-+	}
-+	mutex_unlock(&dev->filelist_mutex);
-+
-+	if (ret)
-+		return -EFAULT;
-+
-+	if ((size - offset) >= sizeof(pid_t)) {
-+		pid_t pid_zero = 0;
-+
-+		ret = copy_to_user(pid_buf + offset,
-+				   &pid_zero, sizeof(pid_t));
-+		if (ret)
-+			return -EFAULT;
-+	}
-+
-+	return 0;
-+}
-+
- /*
-  * Get statistics information.
-  *
-@@ -672,6 +759,8 @@ static const struct drm_ioctl_desc drm_ioctls[] = {
- 	DRM_IOCTL_DEF(DRM_IOCTL_MODE_LIST_LESSEES, drm_mode_list_lessees_ioctl, DRM_MASTER),
- 	DRM_IOCTL_DEF(DRM_IOCTL_MODE_GET_LEASE, drm_mode_get_lease_ioctl, DRM_MASTER),
- 	DRM_IOCTL_DEF(DRM_IOCTL_MODE_REVOKE_LEASE, drm_mode_revoke_lease_ioctl, DRM_MASTER),
-+
-+	DRM_IOCTL_DEF(DRM_IOCTL_GET_CLIENTS, drm_getclients, DRM_RENDER_ALLOW),
- };
- 
- #define DRM_CORE_IOCTL_COUNT	ARRAY_SIZE(drm_ioctls)
-diff --git a/include/uapi/drm/drm.h b/include/uapi/drm/drm.h
-index 16122819edfe..c47aa9de51ab 100644
---- a/include/uapi/drm/drm.h
-+++ b/include/uapi/drm/drm.h
-@@ -1024,6 +1024,11 @@ struct drm_crtc_queue_sequence {
- 	__u64 user_data;	/* user data passed to event */
- };
- 
-+struct drm_get_clients {
-+	__u64 user_data;
-+	__kernel_size_t len;
-+};
-+
- #if defined(__cplusplus)
- }
- #endif
-@@ -1236,6 +1241,8 @@ extern "C" {
- #define DRM_IOCTL_SYNCOBJ_TRANSFER	DRM_IOWR(0xCC, struct drm_syncobj_transfer)
- #define DRM_IOCTL_SYNCOBJ_TIMELINE_SIGNAL	DRM_IOWR(0xCD, struct drm_syncobj_timeline_array)
- 
-+#define DRM_IOCTL_GET_CLIENTS		DRM_IOWR(0xD1, struct drm_get_clients)
-+
- /**
-  * DRM_IOCTL_MODE_GETFB2 - Get framebuffer metadata.
-  *
--- 
-2.44.0
+> 
+> Reported-by: kernel test robot <lkp@intel.com>
 
+Checkpatch asks for Closes: tags these days:
+
+Closes: http://lore.kernel.org/r/202405012230.6kXItWen-lkp@intel.com
+
+With that,
+
+Reviewed-by: Dan Williams <dan.j.williams@intel.com>
 
