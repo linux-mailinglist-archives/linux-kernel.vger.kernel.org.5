@@ -1,141 +1,123 @@
-Return-Path: <linux-kernel+bounces-165204-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-165205-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5DB878B8976
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 13:51:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 515528B897B
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 13:54:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 606D4B21E59
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 11:51:37 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 741CBB21A1D
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 11:54:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EFD3A82893;
-	Wed,  1 May 2024 11:51:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88FB5824A3;
+	Wed,  1 May 2024 11:54:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="PAM5MxBl"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="qG305f/l"
+Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com [209.85.208.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AFF5881AB1
-	for <linux-kernel@vger.kernel.org>; Wed,  1 May 2024 11:51:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 41A197E777
+	for <linux-kernel@vger.kernel.org>; Wed,  1 May 2024 11:54:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714564286; cv=none; b=dr3wD3utb1/PbhbSIs+xQbShyCeLqlGyyWlExvrl4yk6kq40gd8UQwJPXweT3g5Uj+EGVjUFZNGtKtbh+Q638G6FnK2MM6ZVoVuKKPz0U/imRDfGj4AApA9Ky8HSY8Iw99CescWRo3mu2ciFRl9nrxBEgkz5uSXOd15cdIfEGhQ=
+	t=1714564480; cv=none; b=YHbopHKmrh7h9DoeDLVMgrzs48MOlpO0QPCsqZf0H80Xl6qh4epuDOAfx+ge7buvpgW8oH6Pm/bGaISCI9MJk7syLIiZnXM+xd9LjR5yI3VmHEs8YKPH4HpcsFkxmVYZDmNOh4WfRqA3e02BnlsU7IMiLs+cSF/y0cf0ijZfPnY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714564286; c=relaxed/simple;
-	bh=oVTq80pkXwyoy7TcJqALMpS8YpNVIddBTvSgvA6rBi8=;
-	h=From:In-Reply-To:References:To:Cc:Subject:MIME-Version:
-	 Content-Type:Date:Message-ID; b=PMhcm87wQX3ktUUyDPzZ0z+LRL76Ua63pmIsjtWwVIlv462QDsWWt6RoWCpL32+cp2nTdWnIdIGsldR98BOd+e3E4djrv/oopzICGbHMjqvLzulniqCz5MqqkGTZzu8cql6vxOIb2NIzNQN0/tveU4S473OT3hrQzrw1j9qFsk4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=PAM5MxBl; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1714564283;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=nnkmVhq2S0BNaQkleOd6XJ3VpQjTfweOjGM/NIr2sKM=;
-	b=PAM5MxBlLuddov9UL5zV2h/d/H6iIyFtSPg9HYn2B6qo7JvsS872ZRWj++6sWiDNNetGpB
-	q30OBxoXpl1F2D5ZlFzW1s6JsJhIKcuNiCsc704pmieDKPVnX8Xyw5TfuSNZiFfAXvH8Gt
-	TK6qoSGNTbnI7J2oFjAopwn04JCVayM=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-140-U1b9OOAKMZWq_gl7OFzGfQ-1; Wed, 01 May 2024 07:51:19 -0400
-X-MC-Unique: U1b9OOAKMZWq_gl7OFzGfQ-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 67ED7812C52;
-	Wed,  1 May 2024 11:51:18 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.42.28.22])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id E08F740C6CC0;
-	Wed,  1 May 2024 11:51:13 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-	Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-	Kingdom.
-	Registered in England and Wales under Company Registration No. 3798903
-From: David Howells <dhowells@redhat.com>
-In-Reply-To: <20240430140056.261997-8-dhowells@redhat.com>
-References: <20240430140056.261997-8-dhowells@redhat.com> <20240430140056.261997-1-dhowells@redhat.com>
-To: Christian Brauner <christian@brauner.io>,
-    Jeff Layton <jlayton@kernel.org>,
-    Gao Xiang <hsiangkao@linux.alibaba.com>,
-    Dominique Martinet <asmadeus@codewreck.org>
-Cc: David Howells <dhowells@redhat.com>,
-    Matthew Wilcox <willy@infradead.org>,
-    Steve French <smfrench@gmail.com>,
-    Marc Dionne <marc.dionne@auristor.com>,
-    Paulo Alcantara <pc@manguebit.com>,
-    Shyam Prasad N <sprasad@microsoft.com>, Tom Talpey <tom@talpey.com>,
-    Eric Van Hensbergen <ericvh@kernel.org>,
-    Ilya Dryomov <idryomov@gmail.com>, netfs@lists.linux.dev,
-    linux-cachefs@redhat.com, linux-afs@lists.infradead.org,
-    linux-cifs@vger.kernel.org, linux-nfs@vger.kernel.org,
-    ceph-devel@vger.kernel.org, v9fs@lists.linux.dev,
-    linux-erofs@lists.ozlabs.org, linux-fsdevel@vger.kernel.org,
-    linux-mm@kvack.org, netdev@vger.kernel.org,
-    linux-kernel@vger.kernel.org, Miklos Szeredi <miklos@szeredi.hu>,
-    Trond Myklebust <trond.myklebust@hammerspace.com>,
-    Christoph Hellwig <hch@lst.de>,
-    Andrew Morton <akpm@linux-foundation.org>,
-    Alexander Viro <viro@zeniv.linux.org.uk>,
-    Christian Brauner <brauner@kernel.org>, devel@lists.orangefs.org
-Subject: Re: [PATCH v2 07/22] mm: Provide a means of invalidation without using launder_folio
+	s=arc-20240116; t=1714564480; c=relaxed/simple;
+	bh=VgLKkmgQwkz24VDfpIkR7Ysk2CwmG6rtIKGUvwJr2P0=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=QbxsoXrK13YdlMLIrpjDDqXbmLrkfw9X9/SlBvtwblomVH8Pmh8CT76dwJAG5QXwnSjREt6j4pkCNepd9CcO06zGTZMNBp4hNA4iC8V7cesq5CV/iddZqGInH/h6pOjgBatogkPPLwvYS+cvvDXAfPNunPCV2/cOLtemtXI6uRY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=qG305f/l; arc=none smtp.client-ip=209.85.208.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-571ba432477so7177182a12.1
+        for <linux-kernel@vger.kernel.org>; Wed, 01 May 2024 04:54:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1714564477; x=1715169277; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=KWU5y5fq+7Sh/5YAl7I0WzeqGM8D5DqoKBNmDtAfIbo=;
+        b=qG305f/lb9AJMQuRS9UYKZthKMnhVNFyInSeRDj44yi0rR4Yfl5Ze1xzMJD83ugUDL
+         WXl9R8YOnqVpt+EkYm9e7lxXERl4QyAyhzzYbiwqWHfGGhu2c17L3MJ3H+VdXg/0XFWi
+         LXLNm6tDt8Ry447DCFmb8yirTE73D7RM6iHEam0npJBneZnxsvPsvmv5LM9vaikDhab0
+         brU7qzp4VisoydZ1gwIpqNBGg4mYNEDyzwTligLvSB8FMWTXbRKna/ktU2lNCzZfSbRc
+         LKmTdvu7+1Q9XYw8IRMF+NKr+8WxI/XgzW1Y/spjLI6rrEXePTLje6h37sDtuEfDuchi
+         iXuA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714564477; x=1715169277;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=KWU5y5fq+7Sh/5YAl7I0WzeqGM8D5DqoKBNmDtAfIbo=;
+        b=iPBcsZ1g/pirEYUWmpb6N+7B572NJ1MSnQU+batJ5cgSa0as4Fzv+ee9fy1olQg0Ru
+         SnzaODcDBgzKmw21KmzLhAEWagc3YOanU56CC3J7o9epJHYQWRCQn4DYX07GtAWS/hQu
+         hl3t1V3i1AePbt+me2Z+yYJZMM1HyMt5YtjV4ixohIXX2LusIu3PZtALPy5NUlmn677g
+         fPWLYge0lblsKXdNRiOfCcNMM4yzS6ZT8t4/N2uZj0wzfHB3/OuPiQtE80gthadIz0+0
+         +JQPapVpJd66pennZSKAyK8q5W+bphp+jnK0N+G0HrlNIvewbGkp2ZS0EtCEl95/FEy+
+         hqng==
+X-Forwarded-Encrypted: i=1; AJvYcCVnQvpczutlSMuWbYZiE7K4TwJU+Nf5ZM28aljLCYQ5DakeC1kGuU7IjOF67pBZPKWzn2a+/TFRSLgHxbWVTZZlXPFAY6aeCDjBUVgh
+X-Gm-Message-State: AOJu0Yx1CG1tloxEObRFPGQufWe2VXRppshiW/NvFI3uQn83MYjqXxZC
+	z4KnkRv9/GLP3HRLNZ6yJ406OoOR0f5pvXLnbsW02s2BtEHzMo6fGIY2QytIlC8=
+X-Google-Smtp-Source: AGHT+IFvuGfM78B72ca+Oa4xepiLh6v1yafhkqQhzAn8IImg9PFRUyZjFCtX26ZD8B0uUZkAFvpSgQ==
+X-Received: by 2002:a50:9b59:0:b0:570:374:d6ab with SMTP id a25-20020a509b59000000b005700374d6abmr2113395edj.3.1714564477326;
+        Wed, 01 May 2024 04:54:37 -0700 (PDT)
+Received: from hackbox.lan ([62.231.100.236])
+        by smtp.gmail.com with ESMTPSA id q25-20020aa7cc19000000b0057203242f31sm11334987edt.11.2024.05.01.04.54.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 01 May 2024 04:54:36 -0700 (PDT)
+From: Abel Vesa <abel.vesa@linaro.org>
+To: Abel Vesa <abelvesa@kernel.org>,
+	Shawn Guo <shawnguo@kernel.org>,
+	Sascha Hauer <s.hauer@pengutronix.de>,
+	Marc Kleine-Budde <mkl@pengutronix.de>,
+	Shengjiu Wang <shengjiu.wang@nxp.com>,
+	=?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+Cc: Peng Fan <peng.fan@nxp.com>,
+	Michael Turquette <mturquette@baylibre.com>,
+	Stephen Boyd <sboyd@kernel.org>,
+	Pengutronix Kernel Team <kernel@pengutronix.de>,
+	Fabio Estevam <festevam@gmail.com>,
+	linux-clk@vger.kernel.org,
+	imx@lists.linux.dev,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH] clk: imx: imx8mp: Convert to platform remove callback returning void
+Date: Wed,  1 May 2024 14:54:30 +0300
+Message-Id: <171456445302.602991.15999220730191213802.b4-ty@linaro.org>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20240423071232.463201-2-u.kleine-koenig@pengutronix.de>
+References: <20240423071232.463201-2-u.kleine-koenig@pengutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <438907.1714564273.1@warthog.procyon.org.uk>
-Content-Transfer-Encoding: quoted-printable
-Date: Wed, 01 May 2024 12:51:13 +0100
-Message-ID: <438908.1714564273@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.2
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 
-David Howells <dhowells@redhat.com> wrote:
 
-> +			.range_start	=3D first,
-> +			.range_end	=3D last,
-> ...
-> +	truncate_inode_pages_range(mapping, first, last);
+On Tue, 23 Apr 2024 09:12:31 +0200, Uwe Kleine-König wrote:
+> The .remove() callback for a platform driver returns an int which makes
+> many driver authors wrongly assume it's possible to do error handling by
+> returning an error code. However the value returned is ignored (apart
+> from emitting a warning) and this typically results in resource leaks.
+> 
+> To improve here there is a quest to make the remove callback return
+> void. In the first step of this quest all drivers are converted to
+> .remove_new(), which already returns void. Eventually after all drivers
+> are converted, .remove_new() will be renamed to .remove().
+> 
+> [...]
 
-These actually take file offsets and not page ranges and so the attached
-change is needed.  Without this, the generic/412 xfstest fails.
+Applied, thanks!
 
-David
----
-diff --git a/mm/filemap.c b/mm/filemap.c
-index 53516305b4b4..3916fc8b10e6 100644
---- a/mm/filemap.c
-+++ b/mm/filemap.c
-@@ -4171,15 +4171,15 @@ int filemap_invalidate_inode(struct inode *inode, =
-bool flush,
- 		struct writeback_control wbc =3D {
- 			.sync_mode	=3D WB_SYNC_ALL,
- 			.nr_to_write	=3D LONG_MAX,
--			.range_start	=3D first,
--			.range_end	=3D last,
-+			.range_start	=3D start,
-+			.range_end	=3D end,
- 		};
- =
+[1/1] clk: imx: imx8mp: Convert to platform remove callback returning void
+      commit: f5072cffb35c122ec85d91ef327fa8814f04297b
 
- 		filemap_fdatawrite_wbc(mapping, &wbc);
- 	}
- =
-
- 	/* Wait for writeback to complete on all folios and discard. */
--	truncate_inode_pages_range(mapping, first, last);
-+	truncate_inode_pages_range(mapping, start, end);
- =
-
- unlock:
- 	filemap_invalidate_unlock(mapping);
-
+Best regards,
+-- 
+Abel Vesa <abel.vesa@linaro.org>
 
