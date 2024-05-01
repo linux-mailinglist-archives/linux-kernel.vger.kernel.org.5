@@ -1,84 +1,85 @@
-Return-Path: <linux-kernel+bounces-164899-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-164900-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id DF25A8B84A8
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 06:10:06 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0A50C8B84AB
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 06:10:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6E1461F24ECE
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 04:10:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B39DF283A4F
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 04:10:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E25B74D599;
-	Wed,  1 May 2024 04:08:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61A304DA04;
+	Wed,  1 May 2024 04:08:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gigGCmiG"
-Received: from mail-oi1-f169.google.com (mail-oi1-f169.google.com [209.85.167.169])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="T1pDOQAE"
+Received: from mail-oi1-f176.google.com (mail-oi1-f176.google.com [209.85.167.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 15C5E495E5;
-	Wed,  1 May 2024 04:08:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 01BF94CE05;
+	Wed,  1 May 2024 04:08:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714536496; cv=none; b=gvshkbbowJVcmzAKfiMS4DotWEw3cxkbCUALyc9HUQUO3QXsaKhu9Dfmd9Jcqsb6jI/1RdDyExNUFqWDnbjkWMF84NMflJw/2NTE7jWjePnhSKvLdWhphmA+GwGOg8/UTqlt6RavYrX0rAzo67ac8WTVXbXcjKM9jyjh97Cj8xc=
+	t=1714536498; cv=none; b=Hy8RdB3K+/55lC2MX4/q9yiFxGuC2cvYdGosseunOwinEUJvTYwdh243s+py6UNlXtGSued0s5yG2DiaDlDSEEvesSzqBjJ3ySQpL56wm+pYDjTGkUZijWNk0fU6HhHeki4fDO5zifPhjRWMr9hUb/LLwZkXu2PHekgfIZ9yqxo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714536496; c=relaxed/simple;
-	bh=0BfEtfmjkngC0ceF0AlrchQUuHHooF2cpIxhIeT/QuQ=;
+	s=arc-20240116; t=1714536498; c=relaxed/simple;
+	bh=SGFo0nYVaGclh6uWy9vzUTrAnYsZxkd5dvKmm42KMDw=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=QcIZty6Mki08ScgXzYysLLdo+ctxl5+V/2NyvI4pTVsgmWPfntm+IbuYL//gsad3PNvykhMvDCZuVC7SD0z3ZW8U49KKGpipUf0nZMSJP6l+wLm3hKQCsUfy5L+KRjrKcUmiNsNNV8m0g9v/P8JiYOPHLtjeyHZsyzA+Rasd+Yg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gigGCmiG; arc=none smtp.client-ip=209.85.167.169
+	 MIME-Version; b=BBAT0hUvAMGu/ufeKm+RUCGrlE7yXR2ZKJ7N09Y/O7p3nIWLAoR0vCFtPtuJh4ghYUArL2CaIP6AqX1PfBU09Un3jcSa7rPV8cc2wcCO8IaCYLZc/Dd6tn2OdQRp634fp5eq68ynuMZhy4Anlc6p9hq4KzxlrN81RLAcQukfYm8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=T1pDOQAE; arc=none smtp.client-ip=209.85.167.176
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oi1-f169.google.com with SMTP id 5614622812f47-3c6f785208dso1241009b6e.1;
-        Tue, 30 Apr 2024 21:08:14 -0700 (PDT)
+Received: by mail-oi1-f176.google.com with SMTP id 5614622812f47-3c862c613fcso2220234b6e.3;
+        Tue, 30 Apr 2024 21:08:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714536494; x=1715141294; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1714536496; x=1715141296; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=VmjrDrgf8IhRX/sC5LhfboQGEOFKZ/tJGIYEXDMm4jU=;
-        b=gigGCmiGEmr7GVKFT171oY41Io+msHvq24sgqI4AXdngYbZ91itP1uh7Yz8B0f2M5T
-         GmMAL4397HhgtoOFk7lUeBqJ7Mqd9JupyeJFv78qxmusmF2IJ3jO64oUyQwZjGqABedY
-         2HBwqTHN0DOHLa7d2Ub2F1t1Vz86iUyfxHV+uNq6kFCBJO/czhOhrOqCIsU998JtbJ5Q
-         KmxtlMeUa3d/815Rwlov9EImhTfZVZJ0GJv9WkLe6PivOcjI0RZueujYhc3v2hbVz4EI
-         rNrTPmXNBKcGP+H6HKNeyALNqytzIE0HP4c9T2hwoQueeWAdizx7HeDo9CXdj+oxxGSQ
-         Y0sw==
+        bh=lS+64DkLIQ8nbNaGoMXOJ1Gbc+Q4ngs9pfz0WhHIiSc=;
+        b=T1pDOQAEv7RwHS4b+GYQUz04Hpyh3x2B1UXjvZt4xW8Gp+GU3H19Y9QO4tYr3i4de/
+         Owik5EoZi+D1HP17Q0DTxHOccqRX97W5ti1hi3+CICMoutcofpY6frq6wNR6GD5xMd2a
+         zGywuYW+M9WAIg66elQPEYSnFNIJdJwKe00DjmXnsRLba4hux+ItfsEP1iUuuSp9xyKv
+         YSJD0fxM5M6T0VxtKH4y4hAC6qyaH+bN2+xu154QMcYO9e8sMODliuH+jwUs0GgSYuBf
+         rzbCUQOyvhECfZaoU0cAD/hAM1wXEdGmG0bHqbkegb862WsQ9Y/j+kRmPk8SV5nVJ6cJ
+         8w8A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714536494; x=1715141294;
+        d=1e100.net; s=20230601; t=1714536496; x=1715141296;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=VmjrDrgf8IhRX/sC5LhfboQGEOFKZ/tJGIYEXDMm4jU=;
-        b=D8zi9bXiiNNHwQBp1T6GEgUR4UkID5RhYvjnXtVYdT5LcPJB0hFi4IHzSGVN9BcwVr
-         DFEDqUjzY5RGPp3MXpuCF9DEjgN93+6vDrRGb9MRsUpJoKLST28zaGFIpNO6WR0gKTKF
-         +zKs1rfReX1pr7+5IwNGJBQ+/4rq8e3cTWMWL/WdGw72WTz4MdFgYfISs1lTYSzYKxPT
-         FXFHezlkNLKzCJFZhIxHE8MXk5o+tTNY3v6Za9jEWIECsWeINkClbwtkHxll4NffEFfB
-         xvX1PWHiRZAK1GgZNxykrnBQONn6fcDtFu/gg16UwZlTrmNOrGKXpeYFzdN63r0l/7Ma
-         qJwA==
-X-Forwarded-Encrypted: i=1; AJvYcCVHh7r4ky+lm0nh15acRQ8iEjT0RLUqysDSB4UgWPX0lUYZZp6W+gXqZfocFYJeikG5E7bUtr4/iTgb55syoUc1OKRyMOa1aZJCz5LORA==
-X-Gm-Message-State: AOJu0YxoCIBfGIbAawGn26jSrN5EgTo17MwhYydqbak5jXGzbo6yqS3w
-	AaipNz4FE4QWsJAGj2JIY8Nkb5UAzuvTqaYOlIk1fiF36IHqkDRa
-X-Google-Smtp-Source: AGHT+IE059yWmz4HptKAGSGfQKQOEVyacMWcAj9Y+NXGhMtevC2Bwf7I3EeelHtLc6y7L0oe7xS4oA==
-X-Received: by 2002:a05:6808:15a9:b0:3c8:6238:8c38 with SMTP id t41-20020a05680815a900b003c862388c38mr2070514oiw.11.1714536494106;
-        Tue, 30 Apr 2024 21:08:14 -0700 (PDT)
+        bh=lS+64DkLIQ8nbNaGoMXOJ1Gbc+Q4ngs9pfz0WhHIiSc=;
+        b=P0vJsT+owM15Poy0dHhmbeW1JDUlHiRR6Zlf6kEnr3PZrvO6sqz4mizuvi+TY3KqnU
+         O13k/mzrpCLfgeCZBX3vAvDYX6JmtSnUrttjFXdHhlf3PRVvkB+y8Sb3MOfexcff4HdZ
+         v/j4B1SyBvy3HafXOs+t5LxHa0NXqigd1m1qmrRWbMXsIFsR28eRvIY1dBU3sOTayAj9
+         5rx3QwNRtt2h6DIiK8zjv1ZC3b/T8ZxrtyTVXjki0CdXZfEPanAtujvXQYiP+S8zPSCe
+         Fd+KBri8nulTsC+ZCulTXrP65Ig4h47vE1S8gW/5xuX2PN4DUxMRitySEGNJ5kP8avK9
+         tiHQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXGHWysZLZVxUOjRohDtmH6QYYkyBBZ3PYZaKtfevqMG2cykpgwnAOETUpYjNy8/Szev+/qzGOOrlLFEHqUEsCzWhli6nwV0hijrCKvh78kAUERNqqsef+yefgSZJgb7m/YM9Bd2GvgdoM=
+X-Gm-Message-State: AOJu0Yy+641c+w49sxMN2izlvlsprfQMdtI6FuviTm0hRm73CQOkJcb7
+	hm3Ve+VC6S+kfS6qM5NE3jNgCLputC2NyaoTY6833yD0MlUXviTZ
+X-Google-Smtp-Source: AGHT+IGkOYYdIKQz+4ta3HQIj2EhnM9ZNT2U/H8O9PWsU4LE1bdETO3BcBN0MlmC8qyrh0Lf05ugTw==
+X-Received: by 2002:a05:6808:1a90:b0:3c8:2ccb:84ac with SMTP id bm16-20020a0568081a9000b003c82ccb84acmr1426880oib.37.1714536495731;
+        Tue, 30 Apr 2024 21:08:15 -0700 (PDT)
 Received: from nukework.lan (c-98-197-58-203.hsd1.tx.comcast.net. [98.197.58.203])
-        by smtp.gmail.com with ESMTPSA id w2-20020a056808018200b003c8643f0e5csm1067872oic.16.2024.04.30.21.08.13
+        by smtp.gmail.com with ESMTPSA id w2-20020a056808018200b003c8643f0e5csm1067872oic.16.2024.04.30.21.08.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Apr 2024 21:08:13 -0700 (PDT)
+        Tue, 30 Apr 2024 21:08:15 -0700 (PDT)
 From: Alexandru Gagniuc <mr.nuke.me@gmail.com>
 To: Bjorn Andersson <andersson@kernel.org>,
 	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Vinod Koul <vkoul@kernel.org>,
-	Kishon Vijay Abraham I <kishon@kernel.org>
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>
 Cc: linux-kernel@vger.kernel.org,
 	quic_kathirav@quicinc.com,
 	Alexandru Gagniuc <mr.nuke.me@gmail.com>,
 	linux-arm-msm@vger.kernel.org,
-	linux-phy@lists.infradead.org
-Subject: [PATCH v4 7/8] phy: qcom-qmp-pcie: add support for ipq9574 gen3x2 PHY
-Date: Tue, 30 Apr 2024 23:07:49 -0500
-Message-Id: <20240501040800.1542805-8-mr.nuke.me@gmail.com>
+	devicetree@vger.kernel.org
+Subject: [PATCH v4 8/8] arm64: dts: qcom: ipq9574: add PCIe2 and PCIe3 nodes
+Date: Tue, 30 Apr 2024 23:07:50 -0500
+Message-Id: <20240501040800.1542805-9-mr.nuke.me@gmail.com>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20240501040800.1542805-1-mr.nuke.me@gmail.com>
 References: <20240501040800.1542805-1-mr.nuke.me@gmail.com>
@@ -90,218 +91,214 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Add support for the gen3x2 PCIe PHY on IPQ9574, ported form downstream
-5.4 kernel. Only the serdes and pcs_misc tables are new, the others
-being reused from IPQ8074 and IPQ6018 PHYs.
+On ipq9574, there are 4 PCIe controllers. Describe the pcie2 and pcie3
+nodes, and their PHYs in devicetree.
+
+The pcie0 and pcie1 controllers use a gen3x1 PHY, which is not
+currently supported. Hence, only pcie2 and pcie3 are described. Only
+pcie2 was tested because my devboard only has conenctions to pcie2.
 
 Signed-off-by: Alexandru Gagniuc <mr.nuke.me@gmail.com>
 ---
- drivers/phy/qualcomm/phy-qcom-qmp-pcie.c      | 136 +++++++++++++++++-
- .../phy/qualcomm/phy-qcom-qmp-pcs-pcie-v5.h   |  14 ++
- 2 files changed, 149 insertions(+), 1 deletion(-)
+ arch/arm64/boot/dts/qcom/ipq9574.dtsi | 178 +++++++++++++++++++++++++-
+ 1 file changed, 176 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/phy/qualcomm/phy-qcom-qmp-pcie.c b/drivers/phy/qualcomm/phy-qcom-qmp-pcie.c
-index 8836bb1ff0cc..055d04d0c9b6 100644
---- a/drivers/phy/qualcomm/phy-qcom-qmp-pcie.c
-+++ b/drivers/phy/qualcomm/phy-qcom-qmp-pcie.c
-@@ -487,6 +487,100 @@ static const struct qmp_phy_init_tbl ipq8074_pcie_gen3_pcs_misc_tbl[] = {
- 	QMP_PHY_INIT_CFG(QPHY_V4_PCS_PCIE_ENDPOINT_REFCLK_DRIVE, 0xc1),
- };
- 
-+static const struct qmp_phy_init_tbl ipq9574_gen3x2_pcie_serdes_tbl[] = {
-+	QMP_PHY_INIT_CFG(QSERDES_PLL_BIAS_EN_CLKBUFLR_EN, 0x18),
-+	QMP_PHY_INIT_CFG(QSERDES_PLL_BIAS_EN_CTRL_BY_PSM, 0x01),
-+	QMP_PHY_INIT_CFG(QSERDES_PLL_CLK_SELECT, 0x31),
-+	QMP_PHY_INIT_CFG(QSERDES_PLL_PLL_IVCO, 0x0f),
-+	QMP_PHY_INIT_CFG(QSERDES_PLL_BG_TRIM, 0x0f),
-+	QMP_PHY_INIT_CFG(QSERDES_PLL_CMN_CONFIG, 0x06),
-+	QMP_PHY_INIT_CFG(QSERDES_PLL_LOCK_CMP_EN, 0x42),
-+	QMP_PHY_INIT_CFG(QSERDES_PLL_RESETSM_CNTRL, 0x20),
-+	QMP_PHY_INIT_CFG(QSERDES_PLL_SVS_MODE_CLK_SEL, 0x01),
-+	QMP_PHY_INIT_CFG(QSERDES_PLL_VCO_TUNE_MAP, 0x04),
-+	QMP_PHY_INIT_CFG(QSERDES_PLL_SVS_MODE_CLK_SEL, 0x05),
-+	QMP_PHY_INIT_CFG(QSERDES_PLL_VCO_TUNE_TIMER1, 0xff),
-+	QMP_PHY_INIT_CFG(QSERDES_PLL_VCO_TUNE_TIMER2, 0x3f),
-+	QMP_PHY_INIT_CFG(QSERDES_PLL_CORE_CLK_EN, 0x30),
-+	QMP_PHY_INIT_CFG(QSERDES_PLL_HSCLK_SEL, 0x21),
-+	QMP_PHY_INIT_CFG(QSERDES_PLL_DEC_START_MODE0, 0x68),
-+	QMP_PHY_INIT_CFG(QSERDES_PLL_DIV_FRAC_START3_MODE0, 0x02),
-+	QMP_PHY_INIT_CFG(QSERDES_PLL_DIV_FRAC_START2_MODE0, 0xaa),
-+	QMP_PHY_INIT_CFG(QSERDES_PLL_DIV_FRAC_START1_MODE0, 0xab),
-+	QMP_PHY_INIT_CFG(QSERDES_PLL_LOCK_CMP2_MODE0, 0x14),
-+	QMP_PHY_INIT_CFG(QSERDES_PLL_LOCK_CMP1_MODE0, 0xd4),
-+	QMP_PHY_INIT_CFG(QSERDES_PLL_CP_CTRL_MODE0, 0x09),
-+	QMP_PHY_INIT_CFG(QSERDES_PLL_PLL_RCTRL_MODE0, 0x16),
-+	QMP_PHY_INIT_CFG(QSERDES_PLL_PLL_CCTRL_MODE0, 0x28),
-+	QMP_PHY_INIT_CFG(QSERDES_PLL_INTEGLOOP_GAIN1_MODE0, 0x00),
-+	QMP_PHY_INIT_CFG(QSERDES_PLL_INTEGLOOP_GAIN0_MODE0, 0xa0),
-+	QMP_PHY_INIT_CFG(QSERDES_PLL_VCO_TUNE2_MODE0, 0x02),
-+	QMP_PHY_INIT_CFG(QSERDES_PLL_VCO_TUNE1_MODE0, 0x24),
-+	QMP_PHY_INIT_CFG(QSERDES_PLL_SVS_MODE_CLK_SEL, 0x05),
-+	QMP_PHY_INIT_CFG(QSERDES_PLL_CORE_CLK_EN, 0x00),
-+	QMP_PHY_INIT_CFG(QSERDES_PLL_CORECLK_DIV, 0x0a),
-+	QMP_PHY_INIT_CFG(QSERDES_PLL_CLK_SELECT, 0x32),
-+	QMP_PHY_INIT_CFG(QSERDES_PLL_SYS_CLK_CTRL, 0x02),
-+	QMP_PHY_INIT_CFG(QSERDES_PLL_SYSCLK_BUF_ENABLE, 0x07),
-+	QMP_PHY_INIT_CFG(QSERDES_PLL_SYSCLK_EN_SEL, 0x08),
-+	QMP_PHY_INIT_CFG(QSERDES_PLL_BG_TIMER, 0x0a),
-+	QMP_PHY_INIT_CFG(QSERDES_PLL_HSCLK_SEL, 0x01),
-+	QMP_PHY_INIT_CFG(QSERDES_PLL_DEC_START_MODE1, 0x53),
-+	QMP_PHY_INIT_CFG(QSERDES_PLL_DIV_FRAC_START3_MODE1, 0x05),
-+	QMP_PHY_INIT_CFG(QSERDES_PLL_DIV_FRAC_START2_MODE1, 0x55),
-+	QMP_PHY_INIT_CFG(QSERDES_PLL_DIV_FRAC_START1_MODE1, 0x55),
-+	QMP_PHY_INIT_CFG(QSERDES_PLL_LOCK_CMP2_MODE1, 0x29),
-+	QMP_PHY_INIT_CFG(QSERDES_PLL_LOCK_CMP1_MODE1, 0xaa),
-+	QMP_PHY_INIT_CFG(QSERDES_PLL_CP_CTRL_MODE1, 0x09),
-+	QMP_PHY_INIT_CFG(QSERDES_PLL_PLL_RCTRL_MODE1, 0x16),
-+	QMP_PHY_INIT_CFG(QSERDES_PLL_PLL_CCTRL_MODE1, 0x28),
-+	QMP_PHY_INIT_CFG(QSERDES_PLL_INTEGLOOP_GAIN1_MODE1, 0x00),
-+	QMP_PHY_INIT_CFG(QSERDES_PLL_INTEGLOOP_GAIN0_MODE1, 0xa0),
-+	QMP_PHY_INIT_CFG(QSERDES_PLL_VCO_TUNE2_MODE1, 0x03),
-+	QMP_PHY_INIT_CFG(QSERDES_PLL_VCO_TUNE1_MODE1, 0xb4),
-+	QMP_PHY_INIT_CFG(QSERDES_PLL_SVS_MODE_CLK_SEL, 0x05),
-+	QMP_PHY_INIT_CFG(QSERDES_PLL_CORE_CLK_EN, 0x00),
-+	QMP_PHY_INIT_CFG(QSERDES_PLL_CORECLK_DIV_MODE1, 0x08),
-+	QMP_PHY_INIT_CFG(QSERDES_COM_SSC_EN_CENTER, 0x01),
-+	QMP_PHY_INIT_CFG(QSERDES_PLL_SSC_PER1, 0x7d),
-+	QMP_PHY_INIT_CFG(QSERDES_PLL_SSC_PER2, 0x01),
-+	QMP_PHY_INIT_CFG(QSERDES_COM_SSC_ADJ_PER1, 0x00),
-+	QMP_PHY_INIT_CFG(QSERDES_COM_SSC_ADJ_PER2, 0x00),
-+	QMP_PHY_INIT_CFG(QSERDES_PLL_SSC_STEP_SIZE1_MODE0, 0x0a),
-+	QMP_PHY_INIT_CFG(QSERDES_PLL_SSC_STEP_SIZE2_MODE0, 0x05),
-+	QMP_PHY_INIT_CFG(QSERDES_PLL_SSC_STEP_SIZE1_MODE1, 0x08),
-+	QMP_PHY_INIT_CFG(QSERDES_PLL_SSC_STEP_SIZE2_MODE1, 0x04),
-+	QMP_PHY_INIT_CFG(QSERDES_PLL_CLK_EP_DIV_MODE0, 0x19),
-+	QMP_PHY_INIT_CFG(QSERDES_PLL_CLK_EP_DIV_MODE1, 0x28),
-+	QMP_PHY_INIT_CFG(QSERDES_PLL_CLK_ENABLE1, 0x90),
-+	QMP_PHY_INIT_CFG(QSERDES_PLL_HSCLK_SEL, 0x89),
-+	QMP_PHY_INIT_CFG(QSERDES_PLL_CLK_ENABLE1, 0x10),
-+};
+diff --git a/arch/arm64/boot/dts/qcom/ipq9574.dtsi b/arch/arm64/boot/dts/qcom/ipq9574.dtsi
+index 7f2e5cbf3bbb..c391886cf9ab 100644
+--- a/arch/arm64/boot/dts/qcom/ipq9574.dtsi
++++ b/arch/arm64/boot/dts/qcom/ipq9574.dtsi
+@@ -300,8 +300,8 @@ gcc: clock-controller@1800000 {
+ 				 <0>,
+ 				 <0>,
+ 				 <0>,
+-				 <0>,
+-				 <0>,
++				 <&pcie2_phy>,
++				 <&pcie3_phy>,
+ 				 <0>;
+ 			#clock-cells = <1>;
+ 			#reset-cells = <1>;
+@@ -745,6 +745,180 @@ frame@b128000 {
+ 				status = "disabled";
+ 			};
+ 		};
 +
-+static const struct qmp_phy_init_tbl ipq9574_gen3x2_pcie_pcs_misc_tbl[] = {
-+	QMP_PHY_INIT_CFG(QPHY_V5_PCS_PCIE_OSC_DTCT_ACTIONS, 0x00),
-+	QMP_PHY_INIT_CFG(QPHY_V5_PCS_PCIE_POWER_STATE_CONFIG2, 0x1d),
-+	QMP_PHY_INIT_CFG(QPHY_V5_PCS_PCIE_L1P1_WAKEUP_DLY_TIME_AUXCLK_H, 0x00),
-+	QMP_PHY_INIT_CFG(QPHY_V5_PCS_PCIE_L1P1_WAKEUP_DLY_TIME_AUXCLK_L, 0x01),
-+	QMP_PHY_INIT_CFG(QPHY_V5_PCS_PCIE_L1P2_WAKEUP_DLY_TIME_AUXCLK_H, 0x00),
-+	QMP_PHY_INIT_CFG(QPHY_V5_PCS_PCIE_L1P2_WAKEUP_DLY_TIME_AUXCLK_L, 0x01),
-+	QMP_PHY_INIT_CFG(QPHY_V5_PCS_PCIE_EQ_CONFIG1, 0x14),
-+	QMP_PHY_INIT_CFG(QPHY_V5_PCS_PCIE_EQ_CONFIG1, 0x10),
-+	QMP_PHY_INIT_CFG(QPHY_V5_PCS_PCIE_EQ_CONFIG2, 0x0b),
-+	QMP_PHY_INIT_CFG(QPHY_V5_PCS_PCIE_PRESET_P10_PRE, 0x00),
-+	QMP_PHY_INIT_CFG(QPHY_V5_PCS_PCIE_PRESET_P10_POST, 0x58),
-+	QMP_PHY_INIT_CFG(QPHY_V5_PCS_PCIE_POWER_STATE_CONFIG4, 0x07),
-+	QMP_PHY_INIT_CFG(QPHY_V5_PCS_PCIE_OSC_DTCT_CONFIG1, 0x00),
-+	QMP_PHY_INIT_CFG(QPHY_V5_PCS_PCIE_OSC_DTCT_CONFIG2, 0x52),
-+	QMP_PHY_INIT_CFG(QPHY_V5_PCS_PCIE_OSC_DTCT_CONFIG4, 0x19),
-+	QMP_PHY_INIT_CFG(QPHY_V5_PCS_PCIE_INT_AUX_CLK_CONFIG1, 0x00),
-+	QMP_PHY_INIT_CFG(QPHY_V5_PCS_PCIE_OSC_DTCT_MODE2_CONFIG2, 0x49),
-+	QMP_PHY_INIT_CFG(QPHY_V5_PCS_PCIE_OSC_DTCT_MODE2_CONFIG4, 0x2a),
-+	QMP_PHY_INIT_CFG(QPHY_V5_PCS_PCIE_OSC_DTCT_MODE2_CONFIG5, 0x02),
-+	QMP_PHY_INIT_CFG(QPHY_V5_PCS_PCIE_OSC_DTCT_MODE2_CONFIG6, 0x03),
-+	QMP_PHY_INIT_CFG(QPHY_V5_PCS_PCIE_ENDPOINT_REFCLK_DRIVE, 0xc1),
-+};
++		pcie2_phy: phy@8c000 {
++			compatible = "qcom,ipq9574-qmp-gen3x2-pcie-phy";
++			reg = <0x0008c000 0x14f4>;
 +
- static const struct qmp_phy_init_tbl sdm845_qmp_pcie_serdes_tbl[] = {
- 	QMP_PHY_INIT_CFG(QSERDES_V3_COM_BIAS_EN_CLKBUFLR_EN, 0x14),
- 	QMP_PHY_INIT_CFG(QSERDES_V3_COM_CLK_SELECT, 0x30),
-@@ -2448,7 +2542,7 @@ static inline void qphy_clrbits(void __iomem *base, u32 offset, u32 val)
- 
- /* list of clocks required by phy */
- static const char * const qmp_pciephy_clk_l[] = {
--	"aux", "cfg_ahb", "ref", "refgen", "rchng", "phy_aux",
-+	"aux", "cfg_ahb", "ref", "refgen", "rchng", "phy_aux", "anoc", "snoc"
- };
- 
- /* list of regulators */
-@@ -2519,6 +2613,16 @@ static const struct qmp_pcie_offsets qmp_pcie_offsets_v4_20 = {
- 	.rx2		= 0x0a00,
- };
- 
-+static const struct qmp_pcie_offsets qmp_pcie_offsets_ipq9574 = {
-+	.serdes		= 0,
-+	.pcs		= 0x1000,
-+	.pcs_misc	= 0x1400,
-+	.tx		= 0x0200,
-+	.rx		= 0x0400,
-+	.tx2		= 0x0600,
-+	.rx2		= 0x0800,
-+};
++			clocks = <&gcc GCC_PCIE2_AUX_CLK>,
++				 <&gcc GCC_PCIE2_AHB_CLK>,
++				 <&gcc GCC_PCIE2_PIPE_CLK>;
++			clock-names = "aux",
++				      "cfg_ahb",
++				      "pipe";
 +
- static const struct qmp_pcie_offsets qmp_pcie_offsets_v5 = {
- 	.serdes		= 0,
- 	.pcs		= 0x0200,
-@@ -2728,6 +2832,33 @@ static const struct qmp_phy_cfg sm8250_qmp_gen3x1_pciephy_cfg = {
- 	.phy_status		= PHYSTATUS,
- };
++			clock-output-names = "pcie_phy2_pipe_clk";
++			#clock-cells = <0>;
++			#phy-cells = <0>;
++
++			resets = <&gcc GCC_PCIE2_PHY_BCR>,
++				 <&gcc GCC_PCIE2PHY_PHY_BCR>;
++			reset-names = "phy",
++				      "common";
++			status = "disabled";
++		};
++
++		pcie3_phy: phy@f4000 {
++			compatible = "qcom,ipq9574-qmp-gen3x2-pcie-phy";
++			reg = <0x000f4000 0x14f4>;
++
++			clocks = <&gcc GCC_PCIE3_AUX_CLK>,
++				 <&gcc GCC_PCIE3_AHB_CLK>,
++				 <&gcc GCC_PCIE3_PIPE_CLK>;
++			clock-names = "aux",
++				      "cfg_ahb",
++				      "pipe";
++
++			clock-output-names = "pcie_phy3_pipe_clk";
++			#clock-cells = <0>;
++			#phy-cells = <0>;
++
++			resets = <&gcc GCC_PCIE3_PHY_BCR>,
++				 <&gcc GCC_PCIE3PHY_PHY_BCR>;
++			reset-names = "phy",
++				      "common";
++			status = "disabled";
++		};
++
++		/* TODO: Populate pcie0/pcie1 when gen3x1 phy support is added. */
++
++		pcie2: pcie@20000000 {
++			compatible = "qcom,pcie-ipq9574";
++			reg = <0x20000000 0xf1d>,
++			      <0x20000f20 0xa8>,
++			      <0x20001000 0x1000>,
++			      <0x00088000 0x4000>,
++			      <0x20100000 0x1000>;
++			reg-names = "dbi", "elbi", "atu", "parf", "config";
++
++			ranges = <0x81000000 0x0 0x20200000 0x20200000 0x0 0x00100000>,
++				 <0x82000000 0x0 0x20300000 0x20300000 0x0 0x07d00000>;
++
++			device_type = "pci";
++			linux,pci-domain = <3>;
++			bus-range = <0x00 0xff>;
++			num-lanes = <2>;
++			max-link-speed = <3>;
++			#address-cells = <3>;
++			#size-cells = <2>;
++
++			phys = <&pcie2_phy>;
++			phy-names = "pciephy";
++
++			interrupts = <GIC_SPI 126 IRQ_TYPE_LEVEL_HIGH>;
++			interrupt-names = "msi";
++
++			#interrupt-cells = <1>;
++			interrupt-map-mask = <0 0 0 0x7>;
++			interrupt-map = <0 0 0 1 &intc 0 0 164 IRQ_TYPE_LEVEL_HIGH>,
++					<0 0 0 2 &intc 0 0 165 IRQ_TYPE_LEVEL_HIGH>,
++					<0 0 0 3 &intc 0 0 186 IRQ_TYPE_LEVEL_HIGH>,
++					<0 0 0 4 &intc 0 0 187 IRQ_TYPE_LEVEL_HIGH>;
++
++			clocks = <&gcc GCC_PCIE2_AXI_M_CLK>,
++				 <&gcc GCC_PCIE2_AXI_S_CLK>,
++				 <&gcc GCC_PCIE2_AXI_S_BRIDGE_CLK>,
++				 <&gcc GCC_ANOC_PCIE2_2LANE_M_CLK>,
++				 <&gcc GCC_SNOC_PCIE2_2LANE_S_CLK>,
++				 <&gcc GCC_PCIE2_RCHNG_CLK>;
++			clock-names = "axi_m",
++				      "axi_s",
++				      "axi_bridge",
++				      "rchng";
++
++			resets = <&gcc GCC_PCIE2_PIPE_ARES>,
++				 <&gcc GCC_PCIE2_AUX_ARES>,
++				 <&gcc GCC_PCIE2_CORE_STICKY_ARES>,
++				 <&gcc GCC_PCIE2_AXI_M_ARES>,
++				 <&gcc GCC_PCIE2_AXI_S_ARES>,
++				 <&gcc GCC_PCIE2_AXI_S_STICKY_ARES>,
++				 <&gcc GCC_PCIE2_AXI_M_STICKY_ARES>,
++				 <&gcc GCC_PCIE2_AHB_ARES>;
++			reset-names = "pipe",
++				      "aux",
++				      "sticky",
++				      "axi_m",
++				      "axi_s",
++				      "axi_s_sticky",
++				      "axi_m_sticky",
++				      "ahb";
++			status = "disabled";
++		};
++
++		pcie3: pcie@18000000 {
++			compatible = "qcom,pcie-ipq9574";
++			reg = <0x18000000 0xf1d>,
++			      <0x18000f20 0xa8>,
++			      <0x18001000 0x1000>,
++			      <0x000f0000 0x4000>,
++			      <0x18100000 0x1000>;
++			reg-names = "dbi", "elbi", "atu", "parf", "config";
++
++			ranges = <0x81000000 0x0 0x18200000 0x18200000 0x0 0x00100000>,
++				 <0x82000000 0x0 0x18300000 0x18300000 0x0 0x07d00000>;
++
++			device_type = "pci";
++			linux,pci-domain = <4>;
++			bus-range = <0x00 0xff>;
++			num-lanes = <2>;
++			max-link-speed = <3>;
++			#address-cells = <3>;
++			#size-cells = <2>;
++
++			phys = <&pcie3_phy>;
++			phy-names = "pciephy";
++
++			interrupts = <GIC_SPI 189 IRQ_TYPE_LEVEL_HIGH>;
++			interrupt-names = "msi";
++
++			#interrupt-cells = <1>;
++			interrupt-map-mask = <0 0 0 0x7>;
++			interrupt-map = <0 0 0 1 &intc 0 0 189 IRQ_TYPE_LEVEL_HIGH>,
++					<0 0 0 2 &intc 0 0 190 IRQ_TYPE_LEVEL_HIGH>,
++					<0 0 0 3 &intc 0 0 192 IRQ_TYPE_LEVEL_HIGH>,
++					<0 0 0 4 &intc 0 0 192 IRQ_TYPE_LEVEL_HIGH>;
++
++			clocks = <&gcc GCC_PCIE3_AXI_M_CLK>,
++				 <&gcc GCC_PCIE3_AXI_S_CLK>,
++				 <&gcc GCC_PCIE3_AXI_S_BRIDGE_CLK>,
++				 <&gcc GCC_ANOC_PCIE3_2LANE_M_CLK>,
++				 <&gcc GCC_SNOC_PCIE3_2LANE_S_CLK>,
++				 <&gcc GCC_PCIE3_RCHNG_CLK>;
++			clock-names = "axi_m",
++				      "axi_s",
++				      "axi_bridge",
++				      "anoc",
++				      "snoc",
++				      "rchng";
++
++			resets = <&gcc GCC_PCIE3_PIPE_ARES>,
++				 <&gcc GCC_PCIE3_AUX_ARES>,
++				 <&gcc GCC_PCIE3_CORE_STICKY_ARES>,
++				 <&gcc GCC_PCIE3_AXI_M_ARES>,
++				 <&gcc GCC_PCIE3_AXI_S_ARES>,
++				 <&gcc GCC_PCIE3_AXI_S_STICKY_ARES>,
++				 <&gcc GCC_PCIE3_AXI_M_STICKY_ARES>,
++				 <&gcc GCC_PCIE3_AHB_ARES>;
++			reset-names = "pipe",
++				      "aux",
++				      "sticky",
++				      "axi_m",
++				      "axi_s",
++				      "axi_s_sticky",
++				      "axi_m_sticky",
++				      "ahb";
++			status = "disabled";
++		};
+ 	};
  
-+static const struct qmp_phy_cfg ipq9574_pciephy_gen3x2_cfg = {
-+	.lanes			= 2,
-+
-+	.offsets		= &qmp_pcie_offsets_ipq9574,
-+
-+	.tbls = {
-+		.serdes		= ipq9574_gen3x2_pcie_serdes_tbl,
-+		.serdes_num	= ARRAY_SIZE(ipq9574_gen3x2_pcie_serdes_tbl),
-+		.tx		= ipq8074_pcie_gen3_tx_tbl,
-+		.tx_num		= ARRAY_SIZE(ipq8074_pcie_gen3_tx_tbl),
-+		.rx		= ipq6018_pcie_rx_tbl,
-+		.rx_num		= ARRAY_SIZE(ipq6018_pcie_rx_tbl),
-+		.pcs		= ipq6018_pcie_pcs_tbl,
-+		.pcs_num	= ARRAY_SIZE(ipq6018_pcie_pcs_tbl),
-+		.pcs_misc	= ipq9574_gen3x2_pcie_pcs_misc_tbl,
-+		.pcs_misc_num	= ARRAY_SIZE(ipq9574_gen3x2_pcie_pcs_misc_tbl),
-+	},
-+	.reset_list		= ipq8074_pciephy_reset_l,
-+	.num_resets		= ARRAY_SIZE(ipq8074_pciephy_reset_l),
-+	.vreg_list		= NULL,
-+	.num_vregs		= 0,
-+	.regs			= pciephy_v5_regs_layout,
-+
-+	.pwrdn_ctrl		= SW_PWRDN | REFCLK_DRV_DSBL,
-+	.phy_status		= PHYSTATUS,
-+};
-+
- static const struct qmp_phy_cfg sm8250_qmp_gen3x2_pciephy_cfg = {
- 	.lanes			= 2,
- 
-@@ -3935,6 +4066,9 @@ static const struct of_device_id qmp_pcie_of_match_table[] = {
- 	}, {
- 		.compatible = "qcom,ipq8074-qmp-pcie-phy",
- 		.data = &ipq8074_pciephy_cfg,
-+	}, {
-+		.compatible = "qcom,ipq9574-qmp-gen3x2-pcie-phy",
-+		.data = &ipq9574_pciephy_gen3x2_cfg,
- 	}, {
- 		.compatible = "qcom,msm8998-qmp-pcie-phy",
- 		.data = &msm8998_pciephy_cfg,
-diff --git a/drivers/phy/qualcomm/phy-qcom-qmp-pcs-pcie-v5.h b/drivers/phy/qualcomm/phy-qcom-qmp-pcs-pcie-v5.h
-index a469ae2a10a1..fa15a03055de 100644
---- a/drivers/phy/qualcomm/phy-qcom-qmp-pcs-pcie-v5.h
-+++ b/drivers/phy/qualcomm/phy-qcom-qmp-pcs-pcie-v5.h
-@@ -11,8 +11,22 @@
- #define QPHY_V5_PCS_PCIE_POWER_STATE_CONFIG2		0x0c
- #define QPHY_V5_PCS_PCIE_POWER_STATE_CONFIG4		0x14
- #define QPHY_V5_PCS_PCIE_ENDPOINT_REFCLK_DRIVE		0x20
-+#define QPHY_V5_PCS_PCIE_L1P1_WAKEUP_DLY_TIME_AUXCLK_L	0x44
-+#define QPHY_V5_PCS_PCIE_L1P1_WAKEUP_DLY_TIME_AUXCLK_H	0x48
-+#define QPHY_V5_PCS_PCIE_L1P2_WAKEUP_DLY_TIME_AUXCLK_L	0x4c
-+#define QPHY_V5_PCS_PCIE_L1P2_WAKEUP_DLY_TIME_AUXCLK_H	0x50
- #define QPHY_V5_PCS_PCIE_INT_AUX_CLK_CONFIG1		0x54
-+#define QPHY_V5_PCS_PCIE_OSC_DTCT_CONFIG1		0x5c
-+#define QPHY_V5_PCS_PCIE_OSC_DTCT_CONFIG2		0x60
-+#define QPHY_V5_PCS_PCIE_OSC_DTCT_CONFIG4		0x68
-+#define QPHY_V5_PCS_PCIE_OSC_DTCT_MODE2_CONFIG2		0x7c
-+#define QPHY_V5_PCS_PCIE_OSC_DTCT_MODE2_CONFIG4		0x84
-+#define QPHY_V5_PCS_PCIE_OSC_DTCT_MODE2_CONFIG5		0x88
-+#define QPHY_V5_PCS_PCIE_OSC_DTCT_MODE2_CONFIG6		0x8c
- #define QPHY_V5_PCS_PCIE_OSC_DTCT_ACTIONS		0x94
-+#define QPHY_V5_PCS_PCIE_EQ_CONFIG1			0xa4
- #define QPHY_V5_PCS_PCIE_EQ_CONFIG2			0xa8
-+#define QPHY_V5_PCS_PCIE_PRESET_P10_PRE			0xc0
-+#define QPHY_V5_PCS_PCIE_PRESET_P10_POST		0xe4
- 
- #endif
+ 	thermal-zones {
 -- 
 2.40.1
 
