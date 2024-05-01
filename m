@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-164983-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-164984-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id AD9168B85DD
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 09:17:15 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A3B6C8B85E0
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 09:17:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AF6B1B220BD
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 07:17:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D44A41C2220A
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 07:17:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C3694D9FB;
-	Wed,  1 May 2024 07:16:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4D094E1CB;
+	Wed,  1 May 2024 07:17:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ICzV6ec9"
-Received: from mail-pg1-f182.google.com (mail-pg1-f182.google.com [209.85.215.182])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WF71u6YT"
+Received: from mail-pj1-f45.google.com (mail-pj1-f45.google.com [209.85.216.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F0FB4D13F
-	for <linux-kernel@vger.kernel.org>; Wed,  1 May 2024 07:16:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9AC524DA1F
+	for <linux-kernel@vger.kernel.org>; Wed,  1 May 2024 07:17:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714547819; cv=none; b=RmDueYS+r5EFZPjLF8VuU12I64r8GweIERev+v69ZIYKdXcOx7uZspyYNPTMkcQj44UbGeqgKeAz4M2Gf+wWI/LzEF0JPRD2VMRZfuszaZFofga14v7W9DxNLcnXJ8KANl3FHj3yeuRyBxleei9yT6YVVo1dMSFydIFZ+acpeAc=
+	t=1714547822; cv=none; b=MQ6EKy/WEs50LWzrbwh2ey6fVhBmiEE+MshXQHHnmHZcz7qmzC9FG5GIkhCT2N1G/RseYOQfhbPQMdeKTWD0HaeNAEAwhpIMc0Dyx8XGCO5rAMaOB9WwPgH6yxLQ97T3Fq2UOmAehc+pTeCNSTW2yB2raLxa12SbuXSOAKF1qZ0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714547819; c=relaxed/simple;
-	bh=wleAs3KAWztDL0dCFGFKxp3hSp3edkFRQgnZ399jByI=;
+	s=arc-20240116; t=1714547822; c=relaxed/simple;
+	bh=dQiDbGzFQhvzO2BiRKhTFzDLJjd0wQo11WrQqMn7DNI=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=jdCA2G4ZNHWVYJ+vbZuZY5H2n+Jm44JrY0crN+fO/wuahNiLdhhFpcx8JqjHt4nUAoZBoODKYspoMGTLrbXltqjX96rfc49oP+RAwsUa6ge8xryCFQ+1z6W7ztCDRy9rU9PFw92A6WBK3vo/UIriXce/NxsV4SUlU5UxyC5MPjM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ICzV6ec9; arc=none smtp.client-ip=209.85.215.182
+	 MIME-Version; b=jZ05x0uWrDgbMVCLZPiRXa3RcsirZOhCu8YZL6xW0MJZ+XE+ThOuQ2tF6NOb95H03hIDM79igLUzPbT+1x74hbNyWOK0uUozVs32x6KAv/hF07x6jByE5CRVhKRNRL/JlUNs0N/s0axdkMdCJFtY+cyJSJ76T5kxx4hFArFXD3Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WF71u6YT; arc=none smtp.client-ip=209.85.216.45
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f182.google.com with SMTP id 41be03b00d2f7-5f803c625c2so320471a12.3
-        for <linux-kernel@vger.kernel.org>; Wed, 01 May 2024 00:16:57 -0700 (PDT)
+Received: by mail-pj1-f45.google.com with SMTP id 98e67ed59e1d1-2a2cced7482so1709975a91.0
+        for <linux-kernel@vger.kernel.org>; Wed, 01 May 2024 00:17:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714547817; x=1715152617; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1714547820; x=1715152620; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=kHl+vjSQhlOCDo1HkWE4HoBo27/jjplAYwQBRwMSU5k=;
-        b=ICzV6ec9CfOICX2QjWNrUxOhVhoH8W1hFlICGJgSSGIoKIrUk9m96HiszoR4aFfDn9
-         V+2fSle9COIlS7DRVMesvv4PWOzckAAbvUAALn95OMOJOimE2Gzw5O/CjQTJUFTsCcz4
-         s9BnZfffPUWEyMZScjlXKOcDU7RHQcs45XVbs8KP8c1OcDoIs67aoT/Le3yfqQjzJNST
-         qYruAYTlJe3nTbgk4jmW/yOfA3ya8dlg5DEv1V6ilbK1/a/qIwCZykfDvuOrpsfCUg0q
-         6Fb7lZkEUR1XUKIsmZe4qYdYg6p/r3BST35TLBSStpkv26KyerT1Z1HYHeLEGdjEA7z2
-         vvjg==
+        bh=iY6sp9ljp7T3vkUfo6tvm0cE9jMbRaDd7ciNPeCLxpA=;
+        b=WF71u6YTVMLGWep5JpWuJuh5SgQYKcPpz/bscxu0XSkp6mXH1f+nRCPPVJAXLdaAOw
+         S0LRjfDGFHG+bb9c7nmzsDLobXSk1pzP5WgWCl7GRQUldGb0ISRwf1qizMt5s8W8l13x
+         4ZjNe/5IuLpqdsQM4XI1mFB/AV9GBCqODmYRn36Us2Lf9xpRElYIdpWJmkHKx83AavVb
+         eYHEcy/8ltfyQ4KJDo3xas6kBgPDr/S+zymk9LILIxV2trYc2TOTdLnVWSPByKknmEOL
+         6o3lBn+qwWUWu1X8i/1eJnjIPIIJXwM43FiuoGt0YecL4713QjB/1B5lEXjFUaWevwbu
+         AvJA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714547817; x=1715152617;
+        d=1e100.net; s=20230601; t=1714547820; x=1715152620;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=kHl+vjSQhlOCDo1HkWE4HoBo27/jjplAYwQBRwMSU5k=;
-        b=qhezwtIN/xYAh4NQ34jcPCFxw9a/1s5OA0uzG6g6tsinySa1tBjyY4vI6lUfVQyLQ6
-         LarG5GPrJFce/uW3hFCciU3ZykoOaU225SALEiERsyPOexRVOVtNZBfKSeLyEUJhF5Vm
-         yuyCRyw/zN+4gzBg2CehkZckKFSzUYVSpOZmzAkgfXJ83VVaJyPLZ9qe7Zvvuf8VUHyA
-         FqmkMtPO8CsMMi0SaN3kNEypmeFxtDoOzNQTSOMkryv5UvYqXU3CLMYkKyX8kgffdHTM
-         TTlYApK0n41TsPtzH/Tk1BmR0gZ1cQ8W614+qKHHVwxwP0ST1067H4m9/TxiVDsQ5Qho
-         Wjjg==
-X-Forwarded-Encrypted: i=1; AJvYcCUk8KgM1J45iEuU0Iez5430wDEEULOnqKqCIiWv9tLmo5w2U5pRbobtbzEuc+Q9b2cyKaYzKEAz2fHUBiMHSUQlI5IHbAfkXCftQ2Gr
-X-Gm-Message-State: AOJu0YxHUnVRxnkjTHnHY5tkS2k1+Hhya5S74zCmOmhKKuddJQzY3Vln
-	dOy6oSv4nlWERNOoOF72NEYgKybi2NhPpG0MaNEn3N9RvfBSgn9O
-X-Google-Smtp-Source: AGHT+IH1hik2ZX0W4SU0KnweszilV0tRhRWaVEpHTGUtZVQesVKTdBYaWYX4DrAApFnGF2FfZVQ2Sg==
-X-Received: by 2002:a17:902:e88a:b0:1dd:85eb:b11 with SMTP id w10-20020a170902e88a00b001dd85eb0b11mr1838568plg.1.1714547816610;
-        Wed, 01 May 2024 00:16:56 -0700 (PDT)
+        bh=iY6sp9ljp7T3vkUfo6tvm0cE9jMbRaDd7ciNPeCLxpA=;
+        b=TFQo2oOT88Gfg9PbdahO0upCmr7OL3xNG6PYvBeQ5L4gNIxWQC9qlLv2KGFclel+6K
+         vuJxudcehVrQRti1a0wdprBSKABGYwFOPnLyJwFCDPQ5rDaTV9MzsMQ7cHBX7BJwUutn
+         nKIKTvaFCN7UaTo0TEGzyHffumOHjdk9wDmyQTas0Qy3rkLQWzeWnVjDnV8dF2hRujRH
+         J/tqdqwxCUml94qZ+a5y+vLUR5yGoyKrQFiT4rRYBhRGT1fGahmdRl313mFVrzJQEjP4
+         +zim/5Gay+0j2EgrH7+dDUmX+1zG8xjxyK0aunYC9yq+J7nF5PEzIaTiVvQ8kkpljyEp
+         ITHQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXoQfG4niuvg9UaKyBaHdWBiJWmRxIoJ2GfQLPcwSIGegjQ1aJpvGlUwQnbFuQ5lyzt6Zo1WaRifb6b8cRrRJqrJmEPKNcvNK79GB5u
+X-Gm-Message-State: AOJu0YyCjHwgmkQOhOUjw9pMRln0m2pY9sRavKO48/6YyqBQlS46wbFH
+	civnGDH2kGje/gsNTTpP3PkeUm3Jbqb+eZc1Ej4lOuFjWzKGA5XYkNKr+p/V
+X-Google-Smtp-Source: AGHT+IFik85TYd9H0b7dKGKorXpJfQAjhS9OxjH/VgZwKlQzrg02RMyrLmzhJc7kbTJ81Egq2fOq9w==
+X-Received: by 2002:a17:902:f546:b0:1dd:da28:e5ca with SMTP id h6-20020a170902f54600b001ddda28e5camr1772480plf.0.1714547819693;
+        Wed, 01 May 2024 00:16:59 -0700 (PDT)
 Received: from visitorckw-System-Product-Name.. ([140.113.216.168])
-        by smtp.gmail.com with ESMTPSA id kk14-20020a170903070e00b001e560db091asm23523013plb.72.2024.05.01.00.16.54
+        by smtp.gmail.com with ESMTPSA id kk14-20020a170903070e00b001e560db091asm23523013plb.72.2024.05.01.00.16.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 01 May 2024 00:16:56 -0700 (PDT)
+        Wed, 01 May 2024 00:16:59 -0700 (PDT)
 From: Kuan-Wei Chiu <visitorckw@gmail.com>
 To: akpm@linux-foundation.org,
 	yury.norov@gmail.com
@@ -74,9 +74,9 @@ Cc: linux@rasmusvillemoes.dk,
 	jserv@ccns.ncku.edu.tw,
 	linux-kernel@vger.kernel.org,
 	Kuan-Wei Chiu <visitorckw@gmail.com>
-Subject: [PATCH v3 1/2] lib/test_bitops: Add benchmark test for fns()
-Date: Wed,  1 May 2024 15:16:46 +0800
-Message-Id: <20240501071647.10228-2-visitorckw@gmail.com>
+Subject: [PATCH v3 2/2] bitops: Optimize fns() for improved performance
+Date: Wed,  1 May 2024 15:16:47 +0800
+Message-Id: <20240501071647.10228-3-visitorckw@gmail.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240501071647.10228-1-visitorckw@gmail.com>
 References: <20240501071647.10228-1-visitorckw@gmail.com>
@@ -88,66 +88,67 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Introduce a benchmark test for the fns(). It measures the total time
-taken by fns() to process 1,000,000 test data generated using
-get_random_long() for each n in the range [0, BITS_PER_LONG).
+The current fns() repeatedly uses __ffs() to find the index of the
+least significant bit and then clears the corresponding bit using
+__clear_bit(). The method for clearing the least significant bit can be
+optimized by using word &= word - 1 instead.
 
-example:
+Typically, the execution time of one __ffs() plus one __clear_bit() is
+longer than that of a bitwise AND operation and a subtraction. To
+improve performance, the loop for clearing the least significant bit
+has been replaced with word &= word - 1, followed by a single __ffs()
+operation to obtain the answer. This change reduces the number of
+__ffs() iterations from n to just one, enhancing overall performance.
+
+This modification significantly accelerates the fns() function in the
+test_bitops benchmark, improving its speed by approximately 439 times.
+Additionally, it enhances the performance of find_nth_bit() in the
+find_bit benchmark by approximately 26%.
+
+Before:
 test_bitops: fns:          5876762553 ns, 64000000 iterations
+find_nth_bit:                  4254313 ns,  16525 iterations
+
+After:
+test_bitops: fns:            13388431 ns, 64000000 iterations
+find_nth_bit:                  3362863 ns,  16501 iterations
 
 Signed-off-by: Kuan-Wei Chiu <visitorckw@gmail.com>
 ---
 
 Changes in v3:
-- Move the benchmark test for fns() to lib/test_bitops.c.
-- Exclude the overhead of random number generation from the benchmark
-  result.
-- Change the output to print only a total gross instead of each n in
-  the benchmark result.
+- Add the fns() benchmark result from lib/test_bitops.c to the commit
+  message.
+- Modify the commit message to display only the total gross instead of
+  each n values in the benchmark result.
 
- lib/test_bitops.c | 22 ++++++++++++++++++++++
- 1 file changed, 22 insertions(+)
+ include/linux/bitops.h | 12 +++---------
+ 1 file changed, 3 insertions(+), 9 deletions(-)
 
-diff --git a/lib/test_bitops.c b/lib/test_bitops.c
-index 3b7bcbee84db..ed939f124417 100644
---- a/lib/test_bitops.c
-+++ b/lib/test_bitops.c
-@@ -50,6 +50,26 @@ static unsigned long order_comb_long[][2] = {
- };
- #endif
- 
-+static unsigned long buf[1000000];
-+
-+static int __init test_fns(void)
-+{
-+	unsigned int i, n;
-+	ktime_t time;
-+
-+	get_random_bytes(buf, sizeof(buf));
-+	time = ktime_get();
-+
-+	for (n = 0; n < BITS_PER_LONG; n++)
-+		for (i = 0; i < 1000000; i++)
-+			fns(buf[i], n);
-+
-+	time = ktime_get() - time;
-+	pr_err("fns:  %18llu ns, %6d iterations\n", time, BITS_PER_LONG * 1000000);
-+
-+	return 0;
-+}
-+
- static int __init test_bitops_startup(void)
+diff --git a/include/linux/bitops.h b/include/linux/bitops.h
+index 2ba557e067fe..57ecef354f47 100644
+--- a/include/linux/bitops.h
++++ b/include/linux/bitops.h
+@@ -254,16 +254,10 @@ static inline unsigned long __ffs64(u64 word)
+  */
+ static inline unsigned long fns(unsigned long word, unsigned int n)
  {
- 	int i, bit_set;
-@@ -94,6 +114,8 @@ static int __init test_bitops_startup(void)
- 	if (bit_set != BITOPS_LAST)
- 		pr_err("ERROR: FOUND SET BIT %d\n", bit_set);
+-	unsigned int bit;
++	while (word && n--)
++		word &= word - 1;
  
-+	test_fns();
-+
- 	pr_info("Completed bitops test\n");
+-	while (word) {
+-		bit = __ffs(word);
+-		if (n-- == 0)
+-			return bit;
+-		__clear_bit(bit, &word);
+-	}
+-
+-	return BITS_PER_LONG;
++	return word ? __ffs(word) : BITS_PER_LONG;
+ }
  
- 	return 0;
+ /**
 -- 
 2.34.1
 
