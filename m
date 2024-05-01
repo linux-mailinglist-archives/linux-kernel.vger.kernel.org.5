@@ -1,155 +1,161 @@
-Return-Path: <linux-kernel+bounces-164984-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-164985-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A3B6C8B85E0
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 09:17:23 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 40CDE8B8613
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 09:28:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D44A41C2220A
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 07:17:22 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E01951F23668
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 07:28:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4D094E1CB;
-	Wed,  1 May 2024 07:17:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3664C4D11D;
+	Wed,  1 May 2024 07:27:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WF71u6YT"
-Received: from mail-pj1-f45.google.com (mail-pj1-f45.google.com [209.85.216.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b="VRNh6w6T"
+Received: from mail.zeus03.de (www.zeus03.de [194.117.254.33])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9AC524DA1F
-	for <linux-kernel@vger.kernel.org>; Wed,  1 May 2024 07:17:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68D4F1D6BD
+	for <linux-kernel@vger.kernel.org>; Wed,  1 May 2024 07:27:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=194.117.254.33
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714547822; cv=none; b=MQ6EKy/WEs50LWzrbwh2ey6fVhBmiEE+MshXQHHnmHZcz7qmzC9FG5GIkhCT2N1G/RseYOQfhbPQMdeKTWD0HaeNAEAwhpIMc0Dyx8XGCO5rAMaOB9WwPgH6yxLQ97T3Fq2UOmAehc+pTeCNSTW2yB2raLxa12SbuXSOAKF1qZ0=
+	t=1714548472; cv=none; b=qtJ3RTZQgMmmCzCjcTkfR2pLDSlk8g286M3D1rY1QZHpaJTWCJymycabtgVueqDCudWGjGixAiTiY46+NHA4G3Rb3HC/eP6cgrE9rJKJzYZZPnQ9QtTyt1LIxPD87vYV/dNswCIWIk3HVIx3uIjI5bWBmi7NYj986mhv2UMOXjQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714547822; c=relaxed/simple;
-	bh=dQiDbGzFQhvzO2BiRKhTFzDLJjd0wQo11WrQqMn7DNI=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=jZ05x0uWrDgbMVCLZPiRXa3RcsirZOhCu8YZL6xW0MJZ+XE+ThOuQ2tF6NOb95H03hIDM79igLUzPbT+1x74hbNyWOK0uUozVs32x6KAv/hF07x6jByE5CRVhKRNRL/JlUNs0N/s0axdkMdCJFtY+cyJSJ76T5kxx4hFArFXD3Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WF71u6YT; arc=none smtp.client-ip=209.85.216.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f45.google.com with SMTP id 98e67ed59e1d1-2a2cced7482so1709975a91.0
-        for <linux-kernel@vger.kernel.org>; Wed, 01 May 2024 00:17:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714547820; x=1715152620; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=iY6sp9ljp7T3vkUfo6tvm0cE9jMbRaDd7ciNPeCLxpA=;
-        b=WF71u6YTVMLGWep5JpWuJuh5SgQYKcPpz/bscxu0XSkp6mXH1f+nRCPPVJAXLdaAOw
-         S0LRjfDGFHG+bb9c7nmzsDLobXSk1pzP5WgWCl7GRQUldGb0ISRwf1qizMt5s8W8l13x
-         4ZjNe/5IuLpqdsQM4XI1mFB/AV9GBCqODmYRn36Us2Lf9xpRElYIdpWJmkHKx83AavVb
-         eYHEcy/8ltfyQ4KJDo3xas6kBgPDr/S+zymk9LILIxV2trYc2TOTdLnVWSPByKknmEOL
-         6o3lBn+qwWUWu1X8i/1eJnjIPIIJXwM43FiuoGt0YecL4713QjB/1B5lEXjFUaWevwbu
-         AvJA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714547820; x=1715152620;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=iY6sp9ljp7T3vkUfo6tvm0cE9jMbRaDd7ciNPeCLxpA=;
-        b=TFQo2oOT88Gfg9PbdahO0upCmr7OL3xNG6PYvBeQ5L4gNIxWQC9qlLv2KGFclel+6K
-         vuJxudcehVrQRti1a0wdprBSKABGYwFOPnLyJwFCDPQ5rDaTV9MzsMQ7cHBX7BJwUutn
-         nKIKTvaFCN7UaTo0TEGzyHffumOHjdk9wDmyQTas0Qy3rkLQWzeWnVjDnV8dF2hRujRH
-         J/tqdqwxCUml94qZ+a5y+vLUR5yGoyKrQFiT4rRYBhRGT1fGahmdRl313mFVrzJQEjP4
-         +zim/5Gay+0j2EgrH7+dDUmX+1zG8xjxyK0aunYC9yq+J7nF5PEzIaTiVvQ8kkpljyEp
-         ITHQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXoQfG4niuvg9UaKyBaHdWBiJWmRxIoJ2GfQLPcwSIGegjQ1aJpvGlUwQnbFuQ5lyzt6Zo1WaRifb6b8cRrRJqrJmEPKNcvNK79GB5u
-X-Gm-Message-State: AOJu0YyCjHwgmkQOhOUjw9pMRln0m2pY9sRavKO48/6YyqBQlS46wbFH
-	civnGDH2kGje/gsNTTpP3PkeUm3Jbqb+eZc1Ej4lOuFjWzKGA5XYkNKr+p/V
-X-Google-Smtp-Source: AGHT+IFik85TYd9H0b7dKGKorXpJfQAjhS9OxjH/VgZwKlQzrg02RMyrLmzhJc7kbTJ81Egq2fOq9w==
-X-Received: by 2002:a17:902:f546:b0:1dd:da28:e5ca with SMTP id h6-20020a170902f54600b001ddda28e5camr1772480plf.0.1714547819693;
-        Wed, 01 May 2024 00:16:59 -0700 (PDT)
-Received: from visitorckw-System-Product-Name.. ([140.113.216.168])
-        by smtp.gmail.com with ESMTPSA id kk14-20020a170903070e00b001e560db091asm23523013plb.72.2024.05.01.00.16.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 01 May 2024 00:16:59 -0700 (PDT)
-From: Kuan-Wei Chiu <visitorckw@gmail.com>
-To: akpm@linux-foundation.org,
-	yury.norov@gmail.com
-Cc: linux@rasmusvillemoes.dk,
-	n26122115@gs.ncku.edu.tw,
-	jserv@ccns.ncku.edu.tw,
-	linux-kernel@vger.kernel.org,
-	Kuan-Wei Chiu <visitorckw@gmail.com>
-Subject: [PATCH v3 2/2] bitops: Optimize fns() for improved performance
-Date: Wed,  1 May 2024 15:16:47 +0800
-Message-Id: <20240501071647.10228-3-visitorckw@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240501071647.10228-1-visitorckw@gmail.com>
-References: <20240501071647.10228-1-visitorckw@gmail.com>
+	s=arc-20240116; t=1714548472; c=relaxed/simple;
+	bh=CbmnI0ixFU/UnH5GwPrDfwF3OFJuaiKTaWu3NEzh3fo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=G9CKiXCvbXqV4H60Kuti4NOMSA0a72Fxd+IoaW81HKAFR7dJWSU6qkJ2Uxk/Mb/dcCNI3yBkoYPJd4N/94jm3pVkQRLM8fGSwDZ4fRqe9DeDbCZPO1oahP24I7c7oa2aB0uZHeIShBXPCOsq/AVq5W25kaIqk8AXi2XYFY/uk+4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com; spf=pass smtp.mailfrom=sang-engineering.com; dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b=VRNh6w6T; arc=none smtp.client-ip=194.117.254.33
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sang-engineering.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	sang-engineering.com; h=date:from:to:cc:subject:message-id
+	:references:mime-version:content-type:in-reply-to; s=k1; bh=eFUG
+	sqLXKowvxfkkojJ7LTLfmxYmD0KYjv2UmQgqrSk=; b=VRNh6w6THAl5uYgAhAyK
+	UZSKHgt6zWevqTgJjmmXZGzsvkR1ugOSv+M34y7VcExy/iJs80Fp90neLuIeHLsG
+	hvxflTjB2MqNR0JXepBkUkV2kS9b1juGQdVRirJf4gHcjy3V+/HGFLnAA2pGp/Xx
+	IdE4TRl9jHFHQ9poLnuV24i0YqzuTiNOvamesiEsLmg0NNc096CvwP67VT1nkKMY
+	lVAUo55ngz+pVlJoTb95kegggTgvehZ0+8yeGCw28ctHlfXU0qP9e9nJ/5gy5fUT
+	w5kViDoK8wL7i4oZ2bM880PH3ajAtYDTrv+1MbUhu5k/QsO2FpJAGyZGskr+t22e
+	KA==
+Received: (qmail 2867333 invoked from network); 1 May 2024 09:27:44 +0200
+Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 1 May 2024 09:27:44 +0200
+X-UD-Smtp-Session: l3s3148p1@jI8rbF8XgOdehhrb
+Date: Wed, 1 May 2024 09:27:44 +0200
+From: Wolfram Sang <wsa+renesas@sang-engineering.com>
+To: Mateusz =?utf-8?Q?Jo=C5=84czyk?= <mat.jonczyk@o2.pl>,
+	Heiner Kallweit <hkallweit1@gmail.com>
+Cc: Jean Delvare <jdelvare@suse.de>, linux-kernel@vger.kernel.org,
+	linux-i2c@vger.kernel.org, ruirui.yang@linux.dev,
+	Wolfram Sang <wsa@kernel.org>
+Subject: Re: [Regression] dmesg warnings after "i2c: smbus: Support up to 8
+ SPD EEPROMs"
+Message-ID: <20240501072744.2xm4v3idjjsehwkq@ninjato>
+Mail-Followup-To: Wolfram Sang <wsa+renesas@sang-engineering.com>,
+	Mateusz =?utf-8?Q?Jo=C5=84czyk?= <mat.jonczyk@o2.pl>,
+	Heiner Kallweit <hkallweit1@gmail.com>,
+	Jean Delvare <jdelvare@suse.de>, linux-kernel@vger.kernel.org,
+	linux-i2c@vger.kernel.org, ruirui.yang@linux.dev,
+	Wolfram Sang <wsa@kernel.org>
+References: <53582ef1-6d05-4379-a445-5f879cd676b8@o2.pl>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="5bhcmolquvvegtpf"
+Content-Disposition: inline
+In-Reply-To: <53582ef1-6d05-4379-a445-5f879cd676b8@o2.pl>
 
-The current fns() repeatedly uses __ffs() to find the index of the
-least significant bit and then clears the corresponding bit using
-__clear_bit(). The method for clearing the least significant bit can be
-optimized by using word &= word - 1 instead.
 
-Typically, the execution time of one __ffs() plus one __clear_bit() is
-longer than that of a bitwise AND operation and a subtraction. To
-improve performance, the loop for clearing the least significant bit
-has been replaced with word &= word - 1, followed by a single __ffs()
-operation to obtain the answer. This change reduces the number of
-__ffs() iterations from n to just one, enhancing overall performance.
+--5bhcmolquvvegtpf
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-This modification significantly accelerates the fns() function in the
-test_bitops benchmark, improving its speed by approximately 439 times.
-Additionally, it enhances the performance of find_nth_bit() in the
-find_bit benchmark by approximately 26%.
 
-Before:
-test_bitops: fns:          5876762553 ns, 64000000 iterations
-find_nth_bit:                  4254313 ns,  16525 iterations
+Adding Heiner...
 
-After:
-test_bitops: fns:            13388431 ns, 64000000 iterations
-find_nth_bit:                  3362863 ns,  16501 iterations
+On Tue, Apr 30, 2024 at 09:39:03PM +0200, Mateusz Jo=C5=84czyk wrote:
+> Hello,
+>=20
+> I have received a regression report on
+> commit 13e3a512a29001c ("i2c: smbus: Support up to 8 SPD EEPROMs")
+> as I was subscribed to some kernel Bugzilla thread and I'm posting it here
+> to make you aware of it.
+>=20
+> This thread was
+>=20
+> Bug 213345 - i801_smbus: Timeout waiting for interrupt, driver can't acce=
+ss SMBus=20
+>=20
+> ruirui.yang@linux.dev on 2024-04-19 08:22:57 UTC wrote:
+> > I got similar issue on thinkpad X1 gen9 with latest 6.9.0-rc4+
+> > Git bisect the first bad commit is "13e3a512a29001c  i2c: smbus: Suppor=
+t up to 8 SPD EEPROMs
+> > "
+> >=20
+> > modprobe without param:
+> > [ 1290.401393] i801_smbus 0000:00:1f.4: SPD Write Disable is set
+> > [ 1290.401486] i801_smbus 0000:00:1f.4: SMBus using PCI interrupt
+> > [ 1290.403340] i801_smbus 0000:00:1f.4: SMBus is busy, can't use it!
+> > [ 1290.403383] i801_smbus 0000:00:1f.4: SMBus is busy, can't use it!
+> > [ 1290.403410] i801_smbus 0000:00:1f.4: SMBus is busy, can't use it!
+> > [ 1290.403437] i801_smbus 0000:00:1f.4: SMBus is busy, can't use it!
+> > [ 1290.403465] i801_smbus 0000:00:1f.4: SMBus is busy, can't use it!
+> > [ 1290.403492] i801_smbus 0000:00:1f.4: SMBus is busy, can't use it!
+> > [ 1290.403519] i801_smbus 0000:00:1f.4: SMBus is busy, can't use it!
+> > [ 1290.403546] i801_smbus 0000:00:1f.4: SMBus is busy, can't use it!
+> >=20
+> > with param=20
+> > [ 1314.568785] i801_smbus 0000:00:1f.4: Interrupt disabled by user
+> > [ 1314.568837] i801_smbus 0000:00:1f.4: SPD Write Disable is set
+> > [ 1314.568894] i801_smbus 0000:00:1f.4: SMBus using po*lling
+> > [ 1314.570230] i801_smbus 0000:00:1f.4: SMBus is busy, can't use it!
+> > [ 1314.570257] i801_smbus 0000:00:1f.4: SMBus is busy, can't use it!
+> > [ 1314.570283] i801_smbus 0000:00:1f.4: SMBus is busy, can't use it!
+> > [ 1314.570310] i801_smbus 0000:00:1f.4: SMBus is busy, can't use it!
+> > [ 1314.570336] i801_smbus 0000:00:1f.4: SMBus is busy, can't use it!
+> > [ 1314.570362] i801_smbus 0000:00:1f.4: SMBus is busy, can't use it!
+> > [ 1314.570389] i801_smbus 0000:00:1f.4: SMBus is busy, can't use it!
+> > [ 1314.570415] i801_smbus 0000:00:1f.4: SMBus is busy, can't use it!
+>=20
+> Link: https://bugzilla.kernel.org/show_bug.cgi?id=3D213345
+>=20
+> The param mentioned was i2c-i801.disable_features=3D0x10, which disables =
+interrupt usage
+> of this driver.
+>=20
+> Please decide if this is serious enough to warrant a revert.
+>=20
+> Greetings,
+> Mateusz
+>=20
+>=20
 
-Signed-off-by: Kuan-Wei Chiu <visitorckw@gmail.com>
----
+--5bhcmolquvvegtpf
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Changes in v3:
-- Add the fns() benchmark result from lib/test_bitops.c to the commit
-  message.
-- Modify the commit message to display only the total gross instead of
-  each n values in the benchmark result.
+-----BEGIN PGP SIGNATURE-----
 
- include/linux/bitops.h | 12 +++---------
- 1 file changed, 3 insertions(+), 9 deletions(-)
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmYx7uwACgkQFA3kzBSg
+KbY56hAApyd18s1XTbNkvQKTxaD25o149Usj9rZ5GmAG8BpkmHq4pDny2dTrFO9z
+SRnofnKId9t/uAkVQdWBK8RI4IuRKKk5ER3xJ/6DFECkWA6b1ZSYRzLsi8h7b2BR
+EmgCAM2Tiq1VsHnD6PAU4WSb8TUuypr/psD4a0C5vVi8exqAIx/sFeK+ps94iM0k
+qgJWNx8vF8xAmWLmjswHDkIyjeUKGi3MI6z8hc2NXoyR7B4vXisszVivMtlB7N0E
+TWb+tBmGaQ0kswQK8UtTt/++GZQh3fSNky17Wh1xByBjfrFQOh48sJWViniwBE2m
+gdeCmXjJPht+DHnL7HBjwUpExXgReU+Ej6f12T5ek103qEyH9pn38zNZqJW9PqzT
+PhmndNX4LHYpVE/AhLZ+mWLteBF0MmK1ZI/QBFUtM0pZzsU1zx1Qm2UzM6df8DWI
+83Qo9SlLEIhVJipzFPXT5JxvVf9j7XmT92uLR9Va47MK7iwzwkvFwKtZqCLvHQUZ
+JJp0T946Zk2pNl3K7QjDyn/ZuQo6LEKYw/K0XE46xvHprmWcxDCYeFxcF6Lo2RSS
+s8vsTwj3HZP1FLdA/WsCb9SxMHkNlIrMi/b3Nqg7nWjId1rxwwN6qlPWZUs+bTFi
+LEtq5OK2b0wjOifZZKFIrM5OP6aEIxmgS2s1k4xmvFtb/qrI+gM=
+=XhB/
+-----END PGP SIGNATURE-----
 
-diff --git a/include/linux/bitops.h b/include/linux/bitops.h
-index 2ba557e067fe..57ecef354f47 100644
---- a/include/linux/bitops.h
-+++ b/include/linux/bitops.h
-@@ -254,16 +254,10 @@ static inline unsigned long __ffs64(u64 word)
-  */
- static inline unsigned long fns(unsigned long word, unsigned int n)
- {
--	unsigned int bit;
-+	while (word && n--)
-+		word &= word - 1;
- 
--	while (word) {
--		bit = __ffs(word);
--		if (n-- == 0)
--			return bit;
--		__clear_bit(bit, &word);
--	}
--
--	return BITS_PER_LONG;
-+	return word ? __ffs(word) : BITS_PER_LONG;
- }
- 
- /**
--- 
-2.34.1
-
+--5bhcmolquvvegtpf--
 
