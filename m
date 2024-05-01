@@ -1,124 +1,126 @@
-Return-Path: <linux-kernel+bounces-165841-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-165829-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 063998B9242
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 01:22:59 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 84C5A8B921C
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 01:16:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 982B01F211AD
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 23:22:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 418B228593E
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 23:16:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD8C1168B09;
-	Wed,  1 May 2024 23:22:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62598168AE2;
+	Wed,  1 May 2024 23:16:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=bewilderbeest.net header.i=@bewilderbeest.net header.b="cfBYHfFj"
-Received: from thorn.bewilderbeest.net (thorn.bewilderbeest.net [71.19.156.171])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FgWbrj+/"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5AC5168AE2;
-	Wed,  1 May 2024 23:22:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=71.19.156.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA2371649A8
+	for <linux-kernel@vger.kernel.org>; Wed,  1 May 2024 23:16:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714605771; cv=none; b=BPJEdmXNdUNGE28q5wjvv6G74OiMfHUxpFAJEYTjvHXCICZpl3HVskSr/L7RHXttRZGiC6r62tfIb+/udSBpDB3NLLLUqz3IIMA+4qwDg5rhEU/8BqPRMHXSUc8aPdSRDr4lF0jT29YdJEPJ5ZOnhiaimPItq19co7bCYlwdzMA=
+	t=1714605379; cv=none; b=UV58mRMV/GLBgd8B96b0H86aWAflOCK+4lgOm5I0c3XBw7GKhjy/7AzPf8XQZLEZJ/lMOwwZ2vdTjypp9xa1K8xkawWGTsMD28GiBhfBI7pUPdM/yDwK7n32gfPKQzxZhPHq0n0qqvUoQQYJGEyf2b0pAMmWBmjrVi4oRUNmuns=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714605771; c=relaxed/simple;
-	bh=ASG9oeBUFZtM4xnfSdSwMJ0RkzBAhW91WAMIIg//66I=;
+	s=arc-20240116; t=1714605379; c=relaxed/simple;
+	bh=eA6Bqgpezupf42/4NRslV+u8V0YsI2GtSGd5jtItFeU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=bRkURIZfIntfuSrj9d5nsoSpe1TAFKge0He/qMtwNIOSrBOUaGNgeQdfZXKjJ5UvQ6TdOEMPvOowAaW7HFnfNHpYFfbnKrvRNfKoTepprREOEHOOr62Jyt1txo4znfn8xrmx++4b1QyffMH7iqKiF5/B1I36y4dZ9FaErYQp72Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=bewilderbeest.net; spf=pass smtp.mailfrom=bewilderbeest.net; dkim=pass (1024-bit key) header.d=bewilderbeest.net header.i=@bewilderbeest.net header.b=cfBYHfFj; arc=none smtp.client-ip=71.19.156.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=bewilderbeest.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bewilderbeest.net
-Received: from hatter.bewilderbeest.net (unknown [IPv6:2602:61:712b:6300::2])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: zev)
-	by thorn.bewilderbeest.net (Postfix) with ESMTPSA id 36D3A1E4;
-	Wed,  1 May 2024 16:15:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bewilderbeest.net;
-	s=thorn; t=1714605337;
-	bh=LA75uaniDW9QbvPNlFYPb/h62PSnV3LT98zz/24EjcM=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=cfBYHfFjUj9spCXIvTPWoe0grN9GBk4zZD9EBNPT87kJNyFwebFs8KOjPnsicacQr
-	 3gKXWVTe/LlFNeucZ4NxYj9sGXdQ6ORmlSWWuH+Q8qoCq/4fkVB1dnYiEjfLgPkRok
-	 PV+61sd320i63fCX0lJIFAdzcI561zcirWD1SKvo=
-Date: Wed, 1 May 2024 16:15:35 -0700
-From: Zev Weiss <zev@bewilderbeest.net>
-To: Joel Stanley <joel@jms.id.au>
-Cc: Andrew Jeffery <andrew@codeconstruct.com.au>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, linux-aspeed@lists.ozlabs.org,
-	linux-kernel@vger.kernel.org, openbmc@lists.ozlabs.org
-Subject: Re: [PATCH v2 2/2] ARM: dts: aspeed: Add ASRock SPC621D8HM3 BMC
-Message-ID: <561b69da-f4e4-49df-ac3e-db0003d549e0@hatter.bewilderbeest.net>
-References: <20231120121954.19926-4-zev@bewilderbeest.net>
- <20231120121954.19926-6-zev@bewilderbeest.net>
- <CACPK8Xf6vRKJZHuovMXd2h=nnuKW4m5mcRrfZaTsY987Ai6huQ@mail.gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=SATBF9PNtuZZKnM94G5k+rupZs9v3GsHaWlJmowJ4KozEjLgv5y+Q2FBfnUNNG8n3Z4SWk8CpjDm2HzjhY/a8FtVXbPHuydmMLDIxDLAkH99agbZvc4ZqNmHh1zfjC/wR3XVM7ki2QF7fYQUwCScN1bp7uP9HknekEsYAX1wXxg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FgWbrj+/; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3141AC072AA;
+	Wed,  1 May 2024 23:16:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714605379;
+	bh=eA6Bqgpezupf42/4NRslV+u8V0YsI2GtSGd5jtItFeU=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=FgWbrj+/kOawgLC90GqWNy8Kk5jt+0MFAIZTysPeA2G69ytKHorfEZpaI2uxbgs35
+	 mpA57QN4Xh9Fs+28Tprtf1lLnY2SnPQihr5+43s7E+NefhhgEbju81aNxdCYUiBSPm
+	 sSbMyXRPf6lf+SmF+0Wo5tIb9Z3wY4X4f+8NOS0sF4DFhkgCoHojoq3N5NOPu3WA7B
+	 7qXd3KutxhPdmcLzUJ1aYtAF6W6nJlJpLIMvDN/cNT30lu8/g/mFbSAroFFfEdY3Yx
+	 sHq/zB6oqbEAiRxrV3pzLfbldswirdE/ow1gnQblqe/mLobZtnwNliEPGeT2D/fDf6
+	 Z1l+jrITVe8Jw==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id CAA9CCE1073; Wed,  1 May 2024 16:16:18 -0700 (PDT)
+Date: Wed, 1 May 2024 16:16:18 -0700
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Feng Tang <feng.tang@intel.com>
+Cc: linux-kernel@vger.kernel.org, x86@kernel.org,
+	Zhengxu Chen <zhxchen17@meta.com>,
+	Danielle Costantino <dcostantino@meta.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	"H. Peter Anvin" <hpa@zytor.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Waiman Long <longman@redhat.com>, John Stultz <jstultz@google.com>,
+	Boqun Feng <boqun.feng@gmail.com>,
+	Neeraj Upadhyay <Neeraj.Upadhyay@amd.com>
+Subject: [PATCH RFC v3 tsc] Check for sockets instead of CPUs to make code
+ match comment
+Message-ID: <b09884cc-4729-42bc-a3a1-10f38993627e@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <62a0a0cd-3103-4e8f-b4c8-a91f12121e92@paulmck-laptop>
+ <Zg416EXHJa9CdI9L@feng-clx.sh.intel.com>
+ <4b6724fb-2fb7-4081-ba1d-0797d746d9b8@paulmck-laptop>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CACPK8Xf6vRKJZHuovMXd2h=nnuKW4m5mcRrfZaTsY987Ai6huQ@mail.gmail.com>
+In-Reply-To: <4b6724fb-2fb7-4081-ba1d-0797d746d9b8@paulmck-laptop>
 
-On Mon, Apr 29, 2024 at 06:23:27PM PDT, Joel Stanley wrote:
->Hi Zev,
->
->On Mon, 20 Nov 2023 at 22:50, Zev Weiss <zev@bewilderbeest.net> wrote:
->>
->> This is a Xeon board broadly similar (aside from CPU vendor) to the
->> already-support romed8hm3 (half-width, single-socket, ast2500).  It
->> doesn't require anything terribly special for OpenBMC support, so this
->> device-tree should provide everything necessary for basic
->> functionality with it.
->
->We've had these in the aspeed tree for a while, but as I was on leave
->there was no pull request. I'm just putting one together now and
->noticed some unusual looking device tree compatibles:
->
->WARNING: DT compatible string "renesas,isl69269" appears un-documented
->-- check ./Documentation/devicetree/bindings/
->#220: FILE: arch/arm/boot/dts/aspeed/aspeed-bmc-asrock-e3c256d4i.dts:181:
->+        compatible = "renesas,isl69269", "isl69269";
->
->WARNING: DT compatible string "isl69269" appears un-documented --
->check ./Documentation/devicetree/bindings/
->#220: FILE: arch/arm/boot/dts/aspeed/aspeed-bmc-asrock-e3c256d4i.dts:181:
->+        compatible = "renesas,isl69269", "isl69269";
->
->WARNING: DT compatible string "st,24c128" appears un-documented --
->check ./Documentation/devicetree/bindings/
->#230: FILE: arch/arm/boot/dts/aspeed/aspeed-bmc-asrock-e3c256d4i.dts:191:
->+        compatible = "st,24c128", "atmel,24c128";
->
->
->Can you update the patch to be checkpatch clean when applied to v6.9?
->
->Cheers,
->
->Joel
+The unsynchronized_tsc() eventually checks num_possible_cpus(), and
+if the system is non-Intel and the number of possible CPUs is greater
+than one, assumes that TSCs are unsynchronized.  This despite the
+comment saying "assume multi socket systems are not synchronized",
+that is, socket rather than CPU.  This behavior was preserved by
+commit 8fbbc4b45ce3 ("x86: merge tsc_init and clocksource code") and
+by the previous relevant commit 7e69f2b1ead2 ("clocksource: Remove the
+update callback").
 
-Hi Joel,
+The clocksource drivers were added by commit 5d0cf410e94b ("Time: i386
+Clocksource Drivers") back in 2006, and the comment still said "socket"
+rather than "CPU".
 
-After looking at it a bit, I *think* the third warning above (st,24c128) 
-is a false positive due to the checkpatch script's ad-hoc grep of the DT 
-binding files not picking up on the regex-based compatible definition in 
-Documentation/devicetree/bindings/eeprom/at24.yaml -- AFAICT, the 
-compatible strings match what's described in the comment in that file 
-(and the actual regex itself I believe).
+Therefore, bravely (and perhaps foolishly) make the code match the
+comment.
 
-The isl69269 warnings are certainly legitimate though; I'll submit a v3 
-with that added to trivial-devices.yml.
+Note that it is possible to bypass both code and comment by booting
+with tsc=reliable, but this also disables the clocksource watchdog,
+which is undesirable when trust in the TSC is strictly limited.
 
+[ paulmck: Switch from nr_online_nodes to topology_max_packages() per Feng Tang feedback. ]
 
-Thanks,
-Zev
+Reported-by: Zhengxu Chen <zhxchen17@meta.com>
+Reported-by: Danielle Costantino <dcostantino@meta.com>
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Borislav Petkov <bp@alien8.de>
+Cc: Dave Hansen <dave.hansen@linux.intel.com>
+Cc: "H. Peter Anvin" <hpa@zytor.com>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Feng Tang <feng.tang@intel.com>
+Cc: Waiman Long <longman@redhat.com>
+Cc: John Stultz <jstultz@google.com>
+Cc: Neeraj Upadhyay <Neeraj.Upadhyay@amd.com>
+Cc: <x86@kernel.org>
 
+diff --git a/arch/x86/kernel/tsc.c b/arch/x86/kernel/tsc.c
+index 5a69a49acc963..0e7f44cc168e2 100644
+--- a/arch/x86/kernel/tsc.c
++++ b/arch/x86/kernel/tsc.c
+@@ -1289,7 +1289,7 @@ int unsynchronized_tsc(void)
+ 	 */
+ 	if (boot_cpu_data.x86_vendor != X86_VENDOR_INTEL) {
+ 		/* assume multi socket systems are not synchronized: */
+-		if (num_possible_cpus() > 1)
++		if (topology_max_packages() > 1)
+ 			return 1;
+ 	}
+ 
 
