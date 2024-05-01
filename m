@@ -1,228 +1,173 @@
-Return-Path: <linux-kernel+bounces-165623-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-165624-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 086B78B8EC0
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 19:05:41 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 652548B8EC5
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 19:06:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8AEE81F2195A
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 17:05:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 882201C20F20
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 17:06:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83E2B17BCE;
-	Wed,  1 May 2024 17:05:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A019918030;
+	Wed,  1 May 2024 17:06:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PbJ274z8"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="pskqzGJO"
+Received: from mail-pj1-f41.google.com (mail-pj1-f41.google.com [209.85.216.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2C81FBEA;
-	Wed,  1 May 2024 17:05:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A974117580
+	for <linux-kernel@vger.kernel.org>; Wed,  1 May 2024 17:06:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714583133; cv=none; b=RhEOoAAKutiNxskisqgSsAN5HMjwJtbkvyJhln3FL9lTOvLIJGGU0ZjFF7Ho/DYc5+ozuTmCufiHaMbhoPIVZW4Q9L7jWTd/i6dIJftJW077GalKu25djSau50cGG6zMOoJSl94g6tqlSTlpYTUjf14IbYYjgVljga6vHVkZYYQ=
+	t=1714583183; cv=none; b=aTLtcSZcNdVf1Zgw6up6t3tlpgPKlUJWArHQDO5+PSx4CwY7jD/PHivAsMQJrc5ueSZ4XrdnUTZAZULH4upevGPO4lcab+XW6al5Ed5DVW1zRHWcL001nPVG7TrEqpq/U2kU6ArymIl3/9/sCEnUHPGKLTQawB1pWUZk9rER5C4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714583133; c=relaxed/simple;
-	bh=WZbKbkoibAOTBbyLIFnKVCRX0lYAJryMRAupW0LKaZY=;
+	s=arc-20240116; t=1714583183; c=relaxed/simple;
+	bh=pqU7oYGJgnj9NuhHq21MW2iYlmXEJsCtkyhRbZQMx0c=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=n/sJ7A1hu3+TNbTUMG2R+3vnzVJ7mc8XRzfzz7SC2WOhPlPCUIBgUNnQPqpQqr8TfrLujWsaE8++uM3XrJPBb6L66BRBoHajKAkLi4Wk3ex8s19u4zI6hARw7JyKqUEuaqKeVWwkL+787cIxvCIjjvJkFJD1+iT/034MM0girRY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PbJ274z8; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 94BA0C072AA;
-	Wed,  1 May 2024 17:05:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714583133;
-	bh=WZbKbkoibAOTBbyLIFnKVCRX0lYAJryMRAupW0LKaZY=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=PbJ274z89ZKqvddIWUlErvreEXL2V5sEkkcHpFlGnb02y5xe8Hekk0wgyw9Ofyl5O
-	 BQ//NtU1UWaYaHe5XRzSoCLwdqdbr5oaWFkTosiOa9wAcRLhIUsOaxcEzrXBf+x1Em
-	 XW0JaNNeV3vnmbz3kJ6p6kb254xEnm/fD82mxFJgP2GtlRKrMtWRbm0yzSBuyFF0tr
-	 uoWbMMZ5YUwCe5O88R88euN/uy4lGyWse1sL0Q3a0dGREE+i5NTouyObaGO5tc/KOO
-	 WUNmMIHVJkS/08OGJVpiOaXCK7zln5tLNdBolFH88tkt91VO33eAoiEaYBn13nt0Gq
-	 FNlvjG8a1Mrng==
-Date: Wed, 1 May 2024 18:05:28 +0100
-From: Conor Dooley <conor@kernel.org>
-To: Inochi Amaoto <inochiama@outlook.com>
-Cc: Vinod Koul <vkoul@kernel.org>,
-	Kishon Vijay Abraham I <kishon@kernel.org>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzk+dt@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Chen Wang <unicorn_wang@outlook.com>,
-	Jisheng Zhang <jszhang@kernel.org>,
-	Liu Gui <kenneth.liu@sophgo.com>,
-	Jingbao Qiu <qiujingbao.dlmu@gmail.com>, dlan@gentoo.org,
-	linux-phy@lists.infradead.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/2] dt-bindings: phy: Add Sophgo CV1800 USB phy
-Message-ID: <20240501-effort-virus-9baa07daf429@spud>
-References: <IA1PR20MB4953182B8EDB465430289400BB1B2@IA1PR20MB4953.namprd20.prod.outlook.com>
- <IA1PR20MB495355A4186420B78BD78F49BB1B2@IA1PR20MB4953.namprd20.prod.outlook.com>
- <20240430-crummiest-overnight-0f46dba32bb8@spud>
- <IA1PR20MB49535665CF1C89FFB4E1E46DBB192@IA1PR20MB4953.namprd20.prod.outlook.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=tLWMcl9XlAGqlAiIozOXQQzu9Dkym/KBOHR0SRYiXUIaIO6EoK3I2s5Dnx7P6TVMwA3QjPKJs/F0VFU25xT18zcKz0yK/FWv1OJoClyYW38JA6BPqO9Bkdmrn9xEC0tLWzkbO326kFbeUpLgSlF8KcYb5pHQh1rbpU326FqkHI8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=pskqzGJO; arc=none smtp.client-ip=209.85.216.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
+Received: by mail-pj1-f41.google.com with SMTP id 98e67ed59e1d1-2b3374e08cfso439336a91.2
+        for <linux-kernel@vger.kernel.org>; Wed, 01 May 2024 10:06:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1714583182; x=1715187982; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=ulUTnrt0/o6KrpYj4/lKXwggI1Tcz4XFzc+8cliUI0c=;
+        b=pskqzGJOaoD4BIUPmMgmZijLoimhceT6AA89Byuqf5OmPWuyi2gxFvdjI3/X03PuT2
+         EiwArqrECy9mcOB3xfJJ+1lze8cCIfiwxbuvkiiQsE3reif3c9wshk39vjGz7oRUyVKs
+         oP7nYrbhpvOv4rAj8cgKbAcxJNF8RhsGArvXSW3vW8+IQWd4eqGw04cdmA+n8qwlJF1f
+         +CDjKde9V11tnI0tbFVfymVf39gmimnXqG35VXjWnnYhkZkR+v/7u5DZKNx77prWM36C
+         Gz8sN8tqZ4Tp9hB3twsSbnTOHXhUnx6MkpgfUw134PNlQ6N1Cxf+IqdBWPZZ/LSFngnU
+         jn6g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714583182; x=1715187982;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ulUTnrt0/o6KrpYj4/lKXwggI1Tcz4XFzc+8cliUI0c=;
+        b=f9lu1yhvQl6nsuTqvc7avAz+EpxVnRmYv80KjCD+K2aDlojL/QypzmR24z08GLZwbV
+         Y8xd+r5XEhRi++azpPrYNfYnvr+7VSW+TKqOXqHkCfLcr6t2QN4HWpdn7/wqts2Ml7tK
+         s73bpMmIAvDovWPF2lTLEe3Q4WHR6jV79fOPFzgVjkxVJjMZX8XL+KPplc9YhdGFdRW+
+         ot6i68mD6mB8KPQIXbcBbpPiYpAvutdo5+BgARPIGALxr9i2baVEF3qaNu3l5khhPtq4
+         Q3Snm7hAVoG313JuzsY7zUVJIG3zHSSoXrIALNiWzWdX0rg990UghtNkS7fTL6W95OCC
+         dcvw==
+X-Forwarded-Encrypted: i=1; AJvYcCXphJKca4HZGJC+RcqYt/v/VgeSHsXXz7e6cf44V1q8kk7ob+1wIgL9biWaMzzEUc+GjLgXeDKwxjX65EbLlvAvYX0hePjQyEhrd86T
+X-Gm-Message-State: AOJu0Yz+pLlVEHzLri7J9i0r09XQ5QCnTo2FoBSGPmBL3yppGj1UkcCT
+	0rQY+PQklGcIUgxIPJI2iakr2PN61ZRSHfsfGz3rh+77jhCqzSC8d7khJeeNX8w=
+X-Google-Smtp-Source: AGHT+IGbQ99FfsOuQfbPD1HKb4OFUev7bCmbhruunbIFw2+vddc7cv9+d7D2Uj+7TUiDOOY0K6p1lQ==
+X-Received: by 2002:a17:90a:f493:b0:2b2:d001:db41 with SMTP id bx19-20020a17090af49300b002b2d001db41mr2837033pjb.40.1714583181995;
+        Wed, 01 May 2024 10:06:21 -0700 (PDT)
+Received: from ghost ([2601:647:5700:6860:1dcc:e03e:dc61:895d])
+        by smtp.gmail.com with ESMTPSA id db5-20020a17090ad64500b002a53b33afa3sm1593854pjb.8.2024.05.01.10.06.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 01 May 2024 10:06:21 -0700 (PDT)
+Date: Wed, 1 May 2024 10:06:18 -0700
+From: Charlie Jenkins <charlie@rivosinc.com>
+To: Conor Dooley <conor@kernel.org>
+Cc: Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>, Guo Ren <guoren@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+	Jernej Skrabec <jernej.skrabec@gmail.com>,
+	Samuel Holland <samuel@sholland.org>,
+	Conor Dooley <conor.dooley@microchip.com>,
+	Evan Green <evan@rivosinc.com>,
+	=?iso-8859-1?Q?Cl=E9ment_L=E9ger?= <cleger@rivosinc.com>,
+	Jonathan Corbet <corbet@lwn.net>, Shuah Khan <shuah@kernel.org>,
+	linux-riscv@lists.infradead.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, Palmer Dabbelt <palmer@rivosinc.com>,
+	linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
+	linux-doc@vger.kernel.org, linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH v4 05/16] riscv: Extend cpufeature.c to detect vendor
+ extensions
+Message-ID: <ZjJ2irS2ornhzeYc@ghost>
+References: <20240426-dev-charlie-support_thead_vector_6_9-v4-0-b692f3c516ec@rivosinc.com>
+ <20240426-dev-charlie-support_thead_vector_6_9-v4-5-b692f3c516ec@rivosinc.com>
+ <20240501-pelican-throwaway-da84be7dac30@spud>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="LScSdEfhhOhhxX79"
-Content-Disposition: inline
-In-Reply-To: <IA1PR20MB49535665CF1C89FFB4E1E46DBB192@IA1PR20MB4953.namprd20.prod.outlook.com>
-
-
---LScSdEfhhOhhxX79
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20240501-pelican-throwaway-da84be7dac30@spud>
 
-On Wed, May 01, 2024 at 08:28:47AM +0800, Inochi Amaoto wrote:
-> On Tue, Apr 30, 2024 at 06:09:20PM GMT, Conor Dooley wrote:
-> > On Mon, Apr 29, 2024 at 08:31:11AM +0800, Inochi Amaoto wrote:
-> > > The USB phy of Sophgo CV18XX series SoC needs to sense a pin called
-> > > "VBUS_DET" to get the right operation mode. If this pin is not
-> > > connected, it only supports setting the mode manually.
-> > >=20
-> > > Add USB phy bindings for Sophgo CV18XX/SG200X series SoC.
-> > >=20
-> > > Signed-off-by: Inochi Amaoto <inochiama@outlook.com>
-> > > ---
-> > >  .../bindings/phy/sophgo,cv1800-usb-phy.yaml   | 68 +++++++++++++++++=
-++
-> > >  1 file changed, 68 insertions(+)
-> > >  create mode 100644 Documentation/devicetree/bindings/phy/sophgo,cv18=
-00-usb-phy.yaml
-> > >=20
-> > > diff --git a/Documentation/devicetree/bindings/phy/sophgo,cv1800-usb-=
-phy.yaml b/Documentation/devicetree/bindings/phy/sophgo,cv1800-usb-phy.yaml
-> > > new file mode 100644
-> > > index 000000000000..7e3382c18d44
-> > > --- /dev/null
-> > > +++ b/Documentation/devicetree/bindings/phy/sophgo,cv1800-usb-phy.yaml
-> > > @@ -0,0 +1,68 @@
-> > > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> > > +%YAML 1.2
-> > > +---
-> > > +$id: http://devicetree.org/schemas/phy/sophgo,cv1800-usb-phy.yaml#
-> > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > > +
-> > > +title: Sophgo CV18XX/SG200X USB 2.0 PHY
-> > > +
-> > > +maintainers:
-> > > +  - Inochi Amaoto <inochiama@outlook.com>
-> > > +
-> > > +properties:
-> > > +  compatible:
-> > > +    const: sophgo,cv1800-usb-phy
-> > > +
-> > > +  reg:
-> > > +    maxItems: 1
-> > > +
-> > > +  "#phy-cells":
-> > > +    const: 0
-> > > +
-> > > +  clocks:
-> > > +    items:
-> > > +      - description: PHY clock
-> > > +      - description: PHY app clock
-> > > +      - description: PHY stb clock
-> > > +      - description: PHY lpm clock
-> > > +
-> > > +  clock-names:
-> > > +    items:
-> > > +      - const: phy
-> > > +      - const: app
-> > > +      - const: stb
-> > > +      - const: lpm
-> > > +
-> > > +  vbus_det-gpios:
-> >=20
-> > "vbus_det-gpios" isn't a common property AFAICT, why does it not get a
-> > vendor prefix when the other gpios property does?
-> >=20
->=20
-> I have seen other binding (such as sunxi phy) uses this property without=
-=20
-> vendor prefix. So I think it is a common property and don't add perfix=20
-> for it. But it is OK for me add the vendor prefix, thanks.
+On Wed, May 01, 2024 at 12:19:34PM +0100, Conor Dooley wrote:
+> On Fri, Apr 26, 2024 at 02:29:19PM -0700, Charlie Jenkins wrote:
+> > @@ -353,6 +336,10 @@ static void __init riscv_parse_isa_string(unsigned long *this_hwcap, struct risc
+> >  		bool ext_long = false, ext_err = false;
+> >  
+> >  		switch (*ext) {
+> > +		case 'x':
+> > +		case 'X':
+> > +			pr_warn_once("Vendor extensions are ignored in riscv,isa. Use riscv,isa-extensions instead.");
+> > +			continue;
+> 
+> Yeah, so this is not right - you need to find the end of the extension
+> before containing - for example if I had a system with
+> rv64imafdcxconorkwe, you get something like:
+> [    0.000000] CPU with hartid=0 is not available
+> [    0.000000] Falling back to deprecated "riscv,isa"
+> [    0.000000] Vendor extensions are ignored in riscv,isa. Use riscv,isa-extensions instead.
+> [    0.000000] riscv: base ISA extensions acdefikmnorw
+> [    0.000000] riscv: ELF capabilities acdfim
+> 
+> kwe are all pretty safe letters, but suppose one was a v..
+> I think you can just yoink the code from the s/z case:
 
-I asked yesterday and Krzysztof said:
-"gpios just like supplies - no prefixes, I think."
-The other phy used a different property (they're not identical), I did
-check that yesterday.
+Oh right, I forgot about that.
 
->=20
-> > > +    description: GPIO to the USB OTG VBUS detect pin. This should no=
-t be
-> > > +      defined if vbus_det pin and switch pin are connected, which may
-> > > +      break the VBUS detection.
-> > > +    maxItems: 1
-> > > +
-> > > +  sophgo,switch-gpios:
-> > > +    description: GPIO array for the phy to control connected switch.=
- For
-> > > +      host mode, the driver will set these GPIOs to low one by one. =
-For
-> > > +      device mode, the driver will set these GPIOs to high in reverse
-> > > +      order.
-> > > +    maxItems: 2
-> >=20
-> > You're still missing the itemised description of what each of the gpios
-> > here are - how would I know which order to put the GPIOs in?
-> >=20
-> > Cheers,
-> > Conor.
->=20
-> In most case, the order depends on hardware design. But following the
-> guide sophgo provides, it does have an common order. Is it good to add
-> this description as a reference guide? If so, I will add it.
+> 
+> diff --git a/arch/riscv/kernel/cpufeature.c b/arch/riscv/kernel/cpufeature.c
+> index 20bc9ba6b7a2..4daedba7961f 100644
+> --- a/arch/riscv/kernel/cpufeature.c
+> +++ b/arch/riscv/kernel/cpufeature.c
+> @@ -338,8 +338,19 @@ static void __init riscv_parse_isa_string(unsigned long *this_hwcap, struct risc
+>  		switch (*ext) {
+>  		case 'x':
+>  		case 'X':
+> -			pr_warn_once("Vendor extensions are ignored in riscv,isa. Use riscv,isa-extensions instead.");
+> -			continue;
+> +			if (acpi_disabled)
+> +				pr_warn_once("Vendor extensions are ignored in riscv,isa. Use riscv,isa-extensions instead.");
+> +			/*
+> +			 * To skip an extension, we find its end.
+> +			 * As multi-letter extensions must be split from other multi-letter
+> +			 * extensions with an "_", the end of a multi-letter extension will
+> +			 * either be the null character or the "_" at the start of the next
+> +			 * multi-letter extension.
+> +			 */
+> +			for (; *isa && *isa != '_'; ++isa)
+> +				;
+> +			ext_err = true;
+> +			break;
+>  		case 's':
+>  			/*
+>  			 * Workaround for invalid single-letter 's' & 'u' (QEMU).
+> 
+> You'll note that I made the dt property error dt only, this function
+> gets called for ACPI too. I think the skip is pretty safe there though
+> at the moment, we've not established any meanings yet for vendor stuff
+> on ACPI.
+> I think breaking is probably better than using continue - we get the _
+> skip from outside the switch statement out of that. And ye, I am lazy
+> so I kept it as a for loop.
 
-If we can say "gpio 1 connects to xyz on the switch" & "gpio 2 connects
-to tuv" then it'll be easier to understand how to write the node.
+Awesome, thanks!
 
->=20
-> Regards,
-> Inochi
->=20
-> >=20
-> > > +
-> > > +required:
-> > > +  - compatible
-> > > +  - "#phy-cells"
-> > > +  - clocks
-> > > +  - clock-names
-> > > +
-> > > +additionalProperties: false
-> > > +
-> > > +examples:
-> > > +  - |
-> > > +    phy@48 {
-> > > +      compatible =3D "sophgo,cv1800-usb-phy";
-> > > +      reg =3D <0x48 0x4>;
-> > > +      #phy-cells =3D <0>;
-> > > +      clocks =3D <&clk 92>, <&clk 93>,
-> > > +               <&clk 94>, <&clk 95>;
-> > > +      clock-names =3D "phy", "app", "stb", "lpm";
-> > > +    };
-> > > +
-> > > +...
-> > > --
-> > > 2.44.0
-> > >=20
->=20
->=20
+- Charlie
 
---LScSdEfhhOhhxX79
-Content-Type: application/pgp-signature; name="signature.asc"
+> 
+> Cheers,
+> Conor.
 
------BEGIN PGP SIGNATURE-----
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZjJ2WAAKCRB4tDGHoIJi
-0t3pAP0SMmeNRY7MkfCW54V9OEGUp1dtBrR5XDLqYPsCAYvb5QEA17rw7TzzPlPc
-Is2n9IJ026qIajuo2X0UOUZlLuZiRwU=
-=S11l
------END PGP SIGNATURE-----
-
---LScSdEfhhOhhxX79--
 
