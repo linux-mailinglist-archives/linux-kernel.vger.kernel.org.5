@@ -1,81 +1,102 @@
-Return-Path: <linux-kernel+bounces-165364-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-165365-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F3EC08B8BC4
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 16:19:29 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id F091B8B8BC7
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 16:19:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2B7B11C20E97
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 14:19:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AB115283E19
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 14:19:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2195312F389;
-	Wed,  1 May 2024 14:19:21 +0000 (UTC)
-Received: from netrider.rowland.org (netrider.rowland.org [192.131.102.5])
-	by smtp.subspace.kernel.org (Postfix) with SMTP id 256B012EBEE
-	for <linux-kernel@vger.kernel.org>; Wed,  1 May 2024 14:19:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.131.102.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 74E4412F36F;
+	Wed,  1 May 2024 14:19:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=inria.fr header.i=@inria.fr header.b="m0kGQ34T"
+Received: from mail3-relais-sop.national.inria.fr (mail3-relais-sop.national.inria.fr [192.134.164.104])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C4C312EBEE;
+	Wed,  1 May 2024 14:19:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.134.164.104
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714573160; cv=none; b=f4F5A8cAmP0bBpX6oZzVG5otAdRA333p1+BFfiRLNximJwnUQI8yRQ9LVn5qXgi093dI4csMfw9ONZoNDxmuD3ys4ntshiMZuqB/kc1wlxipOBhs6cDw8EGyzfPKAZJPyigA6CmhVX0gM/WwWiAUCGrPQuBAG7u5+/9UHfh8kaE=
+	t=1714573189; cv=none; b=OfBLOE3x8/5oytuGG+2W47tSOWi68N8llV6/xLlTY1KRPTY3XuvXDpZh7W398XGGFWLNXv3jEzKoqPLzcQT0HmXtRc7S/ylodT2zwxBlaRd+kZY3lwYFk2EvX4lqzFCFLaoHoj9DYow4t7qPFBFMseec2DpZNoijFINVll/fvNM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714573160; c=relaxed/simple;
-	bh=0fX7DMTnyqd2OctZ1Pn8GWeMAq5i4D6ET5kIT05SFxI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=udFf4cQHt1GnIliLj7KyvXiSIAk1ZyYQN1JI+fG1VizV/RsJ/Khek2eUP99UK/dFbDHvd+FIwjLk2Se1p2W1FLu/jKa5u/HSbs1Mm6XbFuMDveLBb9j4LnckAP3XFBBNioxwVOm9/6rhkyDx2/eCeuYl7UIJL/9GkM8gCmOr6qE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=rowland.harvard.edu; spf=pass smtp.mailfrom=netrider.rowland.org; arc=none smtp.client-ip=192.131.102.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=rowland.harvard.edu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netrider.rowland.org
-Received: (qmail 693310 invoked by uid 1000); 1 May 2024 10:19:18 -0400
-Date: Wed, 1 May 2024 10:19:18 -0400
-From: Alan Stern <stern@rowland.harvard.edu>
-To: Michael Grzeschik <mgr@pengutronix.de>
-Cc: Eric Van Hensbergen <ericvh@kernel.org>,
-  Latchesar Ionkov <lucho@ionkov.net>,
-  Dominique Martinet <asmadeus@codewreck.org>,
-  Christian Schoenebeck <linux_oss@crudebyte.com>,
-  Jonathan Corbet <corbet@lwn.net>,
-  Greg Kroah-Hartman <gregkh@linuxfoundation.org>, v9fs@lists.linux.dev,
-  linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-  linux-usb@vger.kernel.org, kernel@pengutronix.de
-Subject: Re: [PATCH v4 1/3] usb: gadget: function: move u_f.h to
- include/linux/usb/
-Message-ID: <96fe85f7-eaf1-4231-985b-14514cf53f3d@rowland.harvard.edu>
-References: <20240116-ml-topic-u9p-v4-0-722ed28b0ade@pengutronix.de>
- <20240116-ml-topic-u9p-v4-1-722ed28b0ade@pengutronix.de>
- <1fb801bf-3bef-4f95-8036-fc8634679141@rowland.harvard.edu>
- <ZjH_cx_0uBLc6M6L@pengutronix.de>
+	s=arc-20240116; t=1714573189; c=relaxed/simple;
+	bh=k3SWeRnxAXa2TO+tWpwkxrtkHOTZjCVdqWoasShV9vU=;
+	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=B0u1EFnjyWVOvj8Q3wgYEB1bTE2kK1yNHNCGMIRYiCmWR9Lsd3yLfsEihxJMVwwXF2oaxEFX584f/uGdCfSGf8zvRA2oJRdKpyx/o3JrfL9b/hfxGofY8Eu2ylUKb/cN/sMfro3oxFDMuxRCbx0ZkdenNl4s7WyAruPlUPqnaMs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=inria.fr; spf=pass smtp.mailfrom=inria.fr; dkim=pass (1024-bit key) header.d=inria.fr header.i=@inria.fr header.b=m0kGQ34T; arc=none smtp.client-ip=192.134.164.104
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=inria.fr
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=inria.fr
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=inria.fr; s=dc;
+  h=date:from:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=zJzS+8XGm8C4eeKbbvynEhybHsCB9GY4MtQsheFW4g8=;
+  b=m0kGQ34TqXJluxRVGGNrLA09V6Txt+Z9ku33c1j23Q36O/8vdp6BLV9y
+   ExfPtsxkkKdiQ6xw9uzfJA0Yb37xhPCWtQDS6YVdQM0CugOOM3qCmngJn
+   jOefRpTslor9tZeeajd/64gCoIZ9w3AWnWVoHcZLUyw7UHMLvz+7j/Ejt
+   A=;
+Authentication-Results: mail3-relais-sop.national.inria.fr; dkim=none (message not signed) header.i=none; spf=SoftFail smtp.mailfrom=julia.lawall@inria.fr; dmarc=fail (p=none dis=none) d=inria.fr
+X-IronPort-AV: E=Sophos;i="6.07,245,1708383600"; 
+   d="scan'208";a="86154178"
+Received: from 231.85.89.92.rev.sfr.net (HELO hadrien) ([92.89.85.231])
+  by mail3-relais-sop.national.inria.fr with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 May 2024 16:19:43 +0200
+Date: Wed, 1 May 2024 16:19:42 +0200 (CEST)
+From: Julia Lawall <julia.lawall@inria.fr>
+X-X-Sender: jll@hadrien
+To: Daniel Thompson <daniel.thompson@linaro.org>
+cc: R Sundar <prosunofficial@gmail.com>, Lee Jones <lee@kernel.org>, 
+    Jingoo Han <jingoohan1@gmail.com>, Helge Deller <deller@gmx.de>, 
+    dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org, 
+    linux-kernel@vger.kernel.org, skhan@linuxfoundation.org, 
+    javier.carrasco.cruz@gmail.com, Julia Lawall <julia.lawall@inria.fr>, 
+    Shresth Prasad <shresthprasad7@gmail.com>
+Subject: Re: [PATCH] backlight: sky81452-backlight: replace of_node_put with
+ __free
+In-Reply-To: <20240501140144.GA10180@aspen.lan>
+Message-ID: <alpine.DEB.2.22.394.2405011618351.3278@hadrien>
+References: <20240501125146.33648-1-prosunofficial@gmail.com> <20240501140144.GA10180@aspen.lan>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZjH_cx_0uBLc6M6L@pengutronix.de>
+Content-Type: text/plain; charset=US-ASCII
 
-On Wed, May 01, 2024 at 10:38:11AM +0200, Michael Grzeschik wrote:
-> On Mon, Apr 29, 2024 at 09:51:20PM -0400, Alan Stern wrote:
-> > On Tue, Apr 30, 2024 at 01:33:26AM +0200, Michael Grzeschik wrote:
-> > > We move the u_f.h header to include/linux/usb to be
-> > > able to compile function drivers outside of the
-> > > drivers/usb/gadget/function directory.
-> > > 
-> > > Signed-off-by: Michael Grzeschik <m.grzeschik@pengutronix.de>
-> > 
-> > Given that you're moving a private header file to a public location,
-> > don't you think it should now have a name that's more meaningful to
-> > general kernel developers than "u_f.h"?
-> 
-> Fair point.
-> 
-> How about func_utils.h instead?
 
-Yes, that would be a lot better.  Especially if you put it in 
-include/linux/usb/gadget rather than include/linux/usb.
 
-Thanks.
+On Wed, 1 May 2024, Daniel Thompson wrote:
 
-Alan Stern
+> On Wed, May 01, 2024 at 06:21:46PM +0530, R Sundar wrote:
+> > Use the new cleanup magic to replace of_node_put() with
+> > __free(device_node) marking to auto release when they get out of scope.
+> >
+> > Suggested-by: Julia Lawall <julia.lawall@inria.fr>
+> > Signed-off-by: R Sundar <prosunofficial@gmail.com>
+>
+> Thanks for the patch but I think this one is a more appropriate
+> solution to this issue:
+> https://lore.kernel.org/all/20240421104916.312588-2-shresthprasad7@gmail.com/
+
+Maybe neither one is perfect?  The one I see at that link has:
+
+ 	if (!pdata) {
+-		of_node_put(np);
+ 		return ERR_PTR(-ENOMEM);
+ 	}
+
+which has unneeded {}
+
+julia
+
+
+>
+>
+> Daniel.
+>
 
