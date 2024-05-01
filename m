@@ -1,166 +1,161 @@
-Return-Path: <linux-kernel+bounces-165597-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-165598-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8C62E8B8E5F
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 18:41:24 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 794508B8E64
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 18:44:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BD7671C21F3B
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 16:41:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2F645283F9C
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 16:44:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 65FD5EAEB;
-	Wed,  1 May 2024 16:41:17 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85B86DDA1;
-	Wed,  1 May 2024 16:41:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4306613ADA;
+	Wed,  1 May 2024 16:43:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QXRFrzgS"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 521C8DDC9;
+	Wed,  1 May 2024 16:43:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714581677; cv=none; b=KokEd9P4S9tdWFOkYQzgCORLhqlIGOFDMfSRUQzshc0yPln8DF3osH8pdV+EszYPYgydSksDs2pR9LG4lbVrelFJz6s9NEj2LKm/QydW5m697RApYd26muzSOhA2WHhYvXJSKPVrnt1jQDZahWHk4219bD44Mazuau5KLaecROM=
+	t=1714581837; cv=none; b=tRst9nypEsM9t3qDtE6xUIJxbI0NWkTl9pd/ZxbRpUfLeNULBtvtIbt0y0a24fy8T5ttUs2gwvtFn0EYzXctIL51FI+l8O+bRVIwH0Rfi+sG6wu98KMK0lKQljZAwkI3pkA4BAhWHuo6Ageh1wVkaiE12qi8Am/MN/NU00EvBFU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714581677; c=relaxed/simple;
-	bh=BQOQVhDGO9cPhZi4LM32TABd3WoSx8+2gBNiKq+LIlo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=CdLdMi5IV9ZHPgOET76G+sPoxBQDwq/QOaYya3dsLTRYTP34pXnxoJPjNzdU/9dkwVQSfH9D7ZuOrijro2y5IaiyTx5QbgrvXIWsdNWKcw5wzwwVTRxMtaTVsDmgLjPnv/9kqxAS7pCpiE+oXbhmPJ+XPzucK8G5lMmYjrYVBjM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B86402F4;
-	Wed,  1 May 2024 09:41:39 -0700 (PDT)
-Received: from FVFF77S0Q05N.cambridge.arm.com (FVFF77S0Q05N.cambridge.arm.com [10.1.26.173])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id EC2763F793;
-	Wed,  1 May 2024 09:41:11 -0700 (PDT)
-Date: Wed, 1 May 2024 17:41:06 +0100
-From: Mark Rutland <mark.rutland@arm.com>
-To: Puranjay Mohan <puranjay@kernel.org>
-Cc: Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>, Sumit Garg <sumit.garg@linaro.org>,
-	Stephen Boyd <swboyd@chromium.org>,
-	Douglas Anderson <dianders@chromium.org>,
-	"Peter Zijlstra (Intel)" <peterz@infradead.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	bpf@vger.kernel.org, puranjay12@gmail.com,
-	Ard Biesheuvel <ardb@kernel.org>
-Subject: Re: [PATCH] arm64: implement raw_smp_processor_id() using thread_info
-Message-ID: <ZjJwos7KpvzhoK_f@FVFF77S0Q05N.cambridge.arm.com>
-References: <20240501154236.10236-1-puranjay@kernel.org>
+	s=arc-20240116; t=1714581837; c=relaxed/simple;
+	bh=QWcAOLTO8HSRNQR7l2tPRwkVIRhPLH+s6spyTlBFlVA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=p7qlWiM5LdDHjwSSvgGxzrZ0L0rkOvBFeddm5+GHEfbFyZSXDdxvLbOYMLhlmZS3nVYCoijhN0mVuJI0ML4iioYuD0V99BFM3s6pD8Mc2vhVMZ7/smZHSxvTKODnAmnODjVqh6G2TQ1mKBv/pQCmBJQYZ/0lou9BOjtwugGbMXU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QXRFrzgS; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 39F64C072AA;
+	Wed,  1 May 2024 16:43:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714581837;
+	bh=QWcAOLTO8HSRNQR7l2tPRwkVIRhPLH+s6spyTlBFlVA=;
+	h=Date:Subject:To:References:From:In-Reply-To:From;
+	b=QXRFrzgSeRD7793XdFLDK/nIA6hZnOkmMcSnEVzFrhE0kdCOkMEjukGK7LbugYMEE
+	 OQwsbvAcOL5EZxkkO79sGYUko7wA3iS2BGkTxDg+dtqBr/ywp0rHNpcspCzzOE/nMJ
+	 g30O3nsIsdXX/vOPv1O9aP/+bWwk5IBiGebVWcaKdXQubKMRyi0Kap1Ue3fqkH24sW
+	 DpELp/LEH3+Tn1pVFYB0I3ak0+u4eBk5sSPL+qxo+dw8z3wfk6nkp0yYeuLxH555m0
+	 prCTYTd1qQJSWdugkGhW/EabhZ55A1qh/9ealOXZ8+/YOMBT1w2SVZpfaLui8nJMGJ
+	 Qgibg52MlDJtg==
+Message-ID: <621b4545-454f-46d1-8ccb-2d1dc522e8eb@kernel.org>
+Date: Wed, 1 May 2024 18:43:49 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240501154236.10236-1-puranjay@kernel.org>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 RESEND 5/8] PCI: qcom: Add support for IPQ9574
+To: mr.nuke.me@gmail.com, Bjorn Andersson <andersson@kernel.org>,
+ Konrad Dybcio <konrad.dybcio@linaro.org>,
+ Lorenzo Pieralisi <lpieralisi@kernel.org>,
+ =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
+ Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+ Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley
+ <conor+dt@kernel.org>, Vinod Koul <vkoul@kernel.org>,
+ Kishon Vijay Abraham I <kishon@kernel.org>,
+ Michael Turquette <mturquette@baylibre.com>, Stephen Boyd
+ <sboyd@kernel.org>, Manivannan Sadhasivam
+ <manivannan.sadhasivam@linaro.org>, linux-arm-msm@vger.kernel.org,
+ linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-phy@lists.infradead.org,
+ linux-clk@vger.kernel.org
+References: <20240501042847.1545145-1-mr.nuke.me@gmail.com>
+ <20240501042847.1545145-6-mr.nuke.me@gmail.com>
+ <a973f67b-de7f-4e21-b6b4-3b85d056456d@kernel.org>
+ <f7176c82-3702-4667-b68b-a8b7e3ad8690@gmail.com>
+From: Krzysztof Kozlowski <krzk@kernel.org>
+Content-Language: en-US
+Autocrypt: addr=krzk@kernel.org; keydata=
+ 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 fv0=
+In-Reply-To: <f7176c82-3702-4667-b68b-a8b7e3ad8690@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Hi Puranjay,
+On 01/05/2024 17:43, mr.nuke.me@gmail.com wrote:
+> On 5/1/24 5:21 AM, Krzysztof Kozlowski wrote:
+>> On 01/05/2024 06:28, Alexandru Gagniuc wrote:
+>>> IPQ9574 has four PCIe controllers: two single-lane Gen3, and two
+>>> dual-lane Gen3. The controllers are identical from a software
+>>> perspective, with the differences appearing in the PHYs.
+>>>
+>>> Add a compatible for the PCIe on IPQ9574.
+>>
+>> This is a friendly reminder during the review process.
+>>
+>> It looks like you received a tag and forgot to add it.
+>>
+>> If you do not know the process, here is a short explanation:
+>> Please add Acked-by/Reviewed-by/Tested-by tags when posting new
+>> versions, under or above your Signed-off-by tag. Tag is "received", when
+>> provided in a message replied to you on the mailing list. Tools like b4
+>> can help here. However, there's no need to repost patches *only* to add
+>> the tags. The upstream maintainer will do that for tags received on the
+>> version they apply.
+>>
+>> https://elixir.bootlin.com/linux/v6.5-rc3/source/Documentation/process/submitting-patches.rst#L577
+>>
+>> If a tag was not added on purpose, please state why and what changed.
+> 
+> I had an Acked-by tag from Rob for what is now patch 6/8 -- previously 
+> 5/7. Due to last-minute info from QUIC Inc, Dmitry and I decided to move 
+> the "snoc" and "anoc" clocks out of the PHY and to the PCIe controller.
+> 
+> This change resulted in a 6/8 patch that is substantially different from 
+> what Rob acked. I felt it was inappropriate to keep the tag.
 
-On Wed, May 01, 2024 at 03:42:36PM +0000, Puranjay Mohan wrote:
-> ARM64 defines THREAD_INFO_IN_TASK which means the cpu id can be found
-> from current_thread_info()->cpu.
+So please read my message again:
+"If a tag was not added on purpose, please state why and what changed."
 
-Nice!
+Your changelog for that patch should say that.
 
-This is something that we'd wanted to do, but there were some historical
-reasons that prevented that. I think it'd be worth describing that in the
-commit message, e.g.
 
-| Historically, arm64 implemented raw_smp_processor_id() as a read of
-| current_thread_info()->cpu. This changed when arm64 moved thread_info into
-| task struct, as at the time CONFIG_THREAD_INFO_IN_TASK made core code use
-| thread_struct::cpu for the cpu number, and due to header dependencies
-| prevented using this in raw_smp_processor_id(). As a workaround, we moved to
-| using a percpu variable in commit:
-|
-|   57c82954e77fa12c ("arm64: make cpu number a percpu variable")
-|
-| Since then, thread_info::cpu was reintroduced, and core code was made to use
-| this in commits:
-|
-|   001430c1910df65a ("arm64: add CPU field to struct thread_info")
-|   bcf9033e5449bdca ("sched: move CPU field back into thread_info if THREAD_INFO_IN_TASK=y")
-|
-| Consequently it is possible to use current_thread_info()->cpu again.
+Best regards,
+Krzysztof
 
-> Implement raw_smp_processor_id() using the above. This decreases the
-> number of emitted instructions like in the following example:
-> 
-> Dump of assembler code for function bpf_get_smp_processor_id:
->    0xffff8000802cd608 <+0>:     nop
->    0xffff8000802cd60c <+4>:     nop
->    0xffff8000802cd610 <+8>:     adrp    x0, 0xffff800082138000
->    0xffff8000802cd614 <+12>:    mrs     x1, tpidr_el1
->    0xffff8000802cd618 <+16>:    add     x0, x0, #0x8
->    0xffff8000802cd61c <+20>:    ldrsw   x0, [x0, x1]
->    0xffff8000802cd620 <+24>:    ret
-> 
-> After this patch:
-> 
-> Dump of assembler code for function bpf_get_smp_processor_id:
->    0xffff8000802c9130 <+0>:     nop
->    0xffff8000802c9134 <+4>:     nop
->    0xffff8000802c9138 <+8>:     mrs     x0, sp_el0
->    0xffff8000802c913c <+12>:    ldr     w0, [x0, #24]
->    0xffff8000802c9140 <+16>:    ret
-> 
-> A microbenchmark[1] was built to measure the performance improvement
-> provided by this change. It calls the following function given number of
-> times and finds the runtime overhead:
-> 
-> static noinline int get_cpu_id(void)
-> {
-> 	return smp_processor_id();
-> }
-> 
-> Run the benchmark like:
->  modprobe smp_processor_id nr_function_calls=1000000000
-> 
->       +--------------------------+------------------------+
->       |        | Number of Calls |    Time taken          |
->       +--------+-----------------+------------------------+
->       | Before |   1000000000    |   1602888401ns         |
->       +--------+-----------------+------------------------+
->       | After  |   1000000000    |   1206212658ns         |
->       +--------+-----------------+------------------------+
->       |  Difference (decrease)   |   396675743ns (24.74%) |
->       +---------------------------------------------------+
-> 
-> This improvement is in this very specific microbenchmark but it proves
-> the point.
-> 
-> The percpu variable cpu_number is left as it is because it is used in
-> set_smp_ipi_range()
-> 
-> [1] https://github.com/puranjaymohan/linux/commit/77d3fdd
-> 
-> Signed-off-by: Puranjay Mohan <puranjay@kernel.org>
-> ---
->  arch/arm64/include/asm/smp.h | 8 ++------
->  1 file changed, 2 insertions(+), 6 deletions(-)
-> 
-> diff --git a/arch/arm64/include/asm/smp.h b/arch/arm64/include/asm/smp.h
-> index efb13112b408..88fd2ab805ec 100644
-> --- a/arch/arm64/include/asm/smp.h
-> +++ b/arch/arm64/include/asm/smp.h
-> @@ -34,13 +34,9 @@
->  DECLARE_PER_CPU_READ_MOSTLY(int, cpu_number);
->  
->  /*
-> - * We don't use this_cpu_read(cpu_number) as that has implicit writes to
-> - * preempt_count, and associated (compiler) barriers, that we'd like to avoid
-> - * the expense of. If we're preemptible, the value can be stale at use anyway.
-> - * And we can't use this_cpu_ptr() either, as that winds up recursing back
-> - * here under CONFIG_DEBUG_PREEMPT=y.
-> + * This relies on THREAD_INFO_IN_TASK, but arm64 defines that unconditionally.
->   */
-> -#define raw_smp_processor_id() (*raw_cpu_ptr(&cpu_number))
-> +#define raw_smp_processor_id() (current_thread_info()->cpu)
-
-I think we can (and should) delete the comment entirely.
-
-Mark.
 
