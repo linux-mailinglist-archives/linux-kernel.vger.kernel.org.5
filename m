@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-165232-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-165233-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2FC168B89E4
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 14:23:46 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7ACF88B89EA
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 14:24:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 537271C21503
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 12:23:45 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 79D1EB21866
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 12:24:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B91A212FF91;
-	Wed,  1 May 2024 12:20:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6FF2F12D77B;
+	Wed,  1 May 2024 12:20:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b="DRcpgpEN"
-Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
+	dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b="Glp0pIEB"
+Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6147E128385
-	for <linux-kernel@vger.kernel.org>; Wed,  1 May 2024 12:20:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D81512880A
+	for <linux-kernel@vger.kernel.org>; Wed,  1 May 2024 12:20:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714566009; cv=none; b=uQ3p36LjipItSyyLeJefmviVZHZ06PzQ5RWTYN3yHqDPO8OFklQUXkBJVoiMxFbqPYOdLGti6GzIC6+UrZYFiT8cxZXhsxxQOtHFTm27p0geSkk2STHdEbZcRTpaWxUR8k7V8qBBJ5hK3RP/BSobEx657pPnMHNmE8uCfAmPe+E=
+	t=1714566017; cv=none; b=Z1vyPMJ6oBuhtLr+ZWlJUglG+7jqiU/pY9wzHot5vs+Zn5agR36rJoFQ5FLFA6NeUU3eKz5gydHtdUJg7A1wTaA0tPIO2VRmclMjvi1or8Ba9nrBPtXbGUnKKjtV5I2PyYZU3+qkpBYQX5h1GYEHg0om/JH87YzDpCCTzwwFV3A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714566009; c=relaxed/simple;
-	bh=m6TSaqDnA4vNxdsvAdEsFy7ZWBxeRMhznnW8/gHp2ag=;
+	s=arc-20240116; t=1714566017; c=relaxed/simple;
+	bh=VlgCsjgHFwA68EYgPCGJqFoun4py/yY/7/kh2NDKDJI=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=ayBNBOgvPUNirGvzWSFBnObG3QsWQsodN0VWzCnMvBFZyEXbs4/fyC7ykS2WN/7OnW30OmevsvprLO8xLg3ZLdvkirevWkifzCU1XBNvAB83nVmsDMLEsQ+o+QP1JVcplWuN40CDePhoiz6GrxVp31zK9LXQ9kHgnJ1o4vKGbG0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com; spf=pass smtp.mailfrom=ventanamicro.com; dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b=DRcpgpEN; arc=none smtp.client-ip=209.85.214.180
+	 MIME-Version; b=ZY3EW1/gly5aBRETyUPtj6xeSKnwEmQTv3nCmTPrsU/R+4pQ2BBhqJ8Bida8NSuTVg9a9MKJ4tRSPo2BkEjaPrAyzLI8w31E55LdRVOCe/S4dIauxcmbjuoxodAEaqnzvKnKrSoYes8A0GJ2m0cRhUsAgg1SHB2665DXrjJ8Rq4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com; spf=pass smtp.mailfrom=ventanamicro.com; dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b=Glp0pIEB; arc=none smtp.client-ip=209.85.214.181
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ventanamicro.com
-Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-1e9ffd3f96eso54548385ad.3
-        for <linux-kernel@vger.kernel.org>; Wed, 01 May 2024 05:20:08 -0700 (PDT)
+Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-1eb0e08bfd2so33078575ad.1
+        for <linux-kernel@vger.kernel.org>; Wed, 01 May 2024 05:20:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1714566008; x=1715170808; darn=vger.kernel.org;
+        d=ventanamicro.com; s=google; t=1714566015; x=1715170815; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=sCs3yrmzFwEswQj2N8wV0vpYdlRUqd+77n2ry9m3784=;
-        b=DRcpgpEN5mKVeJmcdK8mPgOLT4hftb/Sm7Y/6UQqNMwV6Mh190Gg4ytwn3Zdplw7qb
-         yRU9SovhmqWpTv2qflFvir3UuYu3yXRI4RohidsXIuYKzOuhdPTB2RZrQGghhF5YD29U
-         6L7YWRP1WJciPA30b6Rf+4c8NOcNcogx+aWJlYBAF+0GABai7bY2O+MLRSTnQbke+RSW
-         I+IenjwArZLcyjIKn+Lqz6lirH0p/+8o3ZxTM15KGVDY+mKHnJUwyQqiUs0KOEgFTV4A
-         R8zTLRHFLZmZ05UxnjquD4t10MjgdD1+97R4QJFHQPmfEJZ9PpOP+j72nQdXB97V0tLG
-         rlNA==
+        bh=NA6fALA+ztvPArpqc5Jdn/FWi0fZsP181uxTjKG28r0=;
+        b=Glp0pIEBnVyWeZfWxXYwNzC8oBfI/wqSyuBNSK23gqbox17wl8dbxbg3SLmsFTLuBc
+         aFmZvcC5mFntdKMRgAyyLdoPUf5w10nExohVbqrACvqZfyvpmualCzeh4MeCQb33XFUN
+         TfcsYtAApQ4/CbhKCTUEqy5m2PcmhLUY0veX7jB7ec3fX5NGhc2xpvz5nr1GEcpbCwY6
+         tiWnjhdCIJICqwtQpFlohK+LmIVwmu4JKc1HIdGvTwk6OnIQEN63TYyyYEoAgYfI63QQ
+         z8wr9ovAubxPsHobyewJw+ZPDK0fOge/1KstpFBphf6a5HhU8WaIvFMwe3CQxl7oILnj
+         yL7g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714566008; x=1715170808;
+        d=1e100.net; s=20230601; t=1714566015; x=1715170815;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=sCs3yrmzFwEswQj2N8wV0vpYdlRUqd+77n2ry9m3784=;
-        b=S0OpRi3hlhcMcBktONyApOXpMo/p4pEOcUh8Rj2UgjVOuiKabrolgg09H/DHiQqRLh
-         AxaCoqdCid1S6lumn4qaPtPSBT2jlJo1rlWIdEAAzcGQXGBVmr8xA3cZzMhMSeRvaEL2
-         YSaxRjUjLbk63p8T/2skj72vxXfT1aMi31BOjncRhmRYBXNNJdHVZDCVFds77ef7NKLe
-         Y5xUu4NVPNyZdlUz0GNim8Ljo3MOtmPbM8MZaSdgqOG42wdR+ZEwMr5BbJmMcq4/uUvU
-         cuhV9oIpmAK0WYmmAwRFQxg9zym0Akr5AOwSi059heHEv1xLsv70GMYClphSMsKCgNdm
-         y/4w==
-X-Forwarded-Encrypted: i=1; AJvYcCVYPrPkCGlp3kwEbLAs3tF5eKYKSYrpz6no4BFvEV6broF9q48POMlj5oCvdvFLhkKUz+vT2NZ0p7sbGLbsmDJVjWNKrFNA9bi4KDRe
-X-Gm-Message-State: AOJu0YwWA0kUEdJSrKbpfCLz3GjG+LlGYAeafeoL1K3CwYhvTIaBtew2
-	s7sclIpNIJnmqT1YBsEhix4ss0JZ7gn2W/z1tbDzzPYc+4L0lRwUJQwuLC26vFQ=
-X-Google-Smtp-Source: AGHT+IEE0GElfwoFz8rK8ax73/m32/DYftPNktmYVGk+PoIc+wfQ5hYwE+vbTd662q3C/FXcAaIUlQ==
-X-Received: by 2002:a17:903:2303:b0:1eb:7172:673b with SMTP id d3-20020a170903230300b001eb7172673bmr2574288plh.16.1714566007835;
-        Wed, 01 May 2024 05:20:07 -0700 (PDT)
+        bh=NA6fALA+ztvPArpqc5Jdn/FWi0fZsP181uxTjKG28r0=;
+        b=X8liK3k3+n7cMsi4pEz7Fmn5UNbcqqhSimUt1/77vIWCZWhn6M4pkSSNsExb5vDGuv
+         pojGQi2VmzUektHC7RzZlx5TlHlC5rucBAzBpLVOf/Vu5EXbLoaMC9Z2iY1f6/5gjsb1
+         PHZOCL8dc/oVis7G9Xs1bl76TPSoAQp9kJoLNesai+eDLsAoq+P3ZoyC7X4q/qWCKNW3
+         /Z0z+Xqrkml1s1RD/H1ZLCYkyM4xqoRGzN8vLJPU/X/3GnN117f1uDINrO01LC88Punr
+         8r/0ADcVmZ4/6Lo3kXS6AnO7u0CfpqX0QOtthhxuW+iIefrIzJ9R3EE+nRrNKbQC+Mp0
+         DqJQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVA3lJf5ytzsoq42rJsNIoBYFLi/pCIUmJXFeYNLPv60kNU2SYU8o0ujU1fYrnvU/XO3pKvyx1Ev7jwAzMQeQ6pe7n64lFiUYweQjlo
+X-Gm-Message-State: AOJu0YyFoLTnXOUHHb5w/djJm2RYIInJrxCOMVCdwh65zTNhJB/sBo6/
+	4MqTBlW3rWu4zFBQEVjTjOORAw2oqKO6WNH6dNRbxgBs0IxdwnUwKzxaF9Lh5to=
+X-Google-Smtp-Source: AGHT+IHYfyPObdgft5ubD0a+EdF/ZUFESa543BOMp550uRgpGcGY3JeWyQR+nmnrayByMoL+UjNZmA==
+X-Received: by 2002:a17:902:ed01:b0:1eb:494f:dc66 with SMTP id b1-20020a170902ed0100b001eb494fdc66mr2209312pld.23.1714566015601;
+        Wed, 01 May 2024 05:20:15 -0700 (PDT)
 Received: from sunil-pc.Dlink ([106.51.188.106])
-        by smtp.gmail.com with ESMTPSA id im15-20020a170902bb0f00b001ec8888b22esm1336900plb.65.2024.05.01.05.20.00
+        by smtp.gmail.com with ESMTPSA id im15-20020a170902bb0f00b001ec8888b22esm1336900plb.65.2024.05.01.05.20.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 01 May 2024 05:20:07 -0700 (PDT)
+        Wed, 01 May 2024 05:20:15 -0700 (PDT)
 From: Sunil V L <sunilvl@ventanamicro.com>
 To: linux-arm-kernel@lists.infradead.org,
 	linux-kernel@vger.kernel.org,
@@ -96,9 +96,9 @@ Cc: Catalin Marinas <catalin.marinas@arm.com>,
 	Haibo1 Xu <haibo1.xu@intel.com>,
 	=?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@kernel.org>,
 	Sunil V L <sunilvl@ventanamicro.com>
-Subject: [PATCH v5 16/17] irqchip/sifive-plic: Add ACPI support
-Date: Wed,  1 May 2024 17:47:41 +0530
-Message-Id: <20240501121742.1215792-17-sunilvl@ventanamicro.com>
+Subject: [PATCH v5 17/17] serial: 8250: Add 8250_acpi driver
+Date: Wed,  1 May 2024 17:47:42 +0530
+Message-Id: <20240501121742.1215792-18-sunilvl@ventanamicro.com>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20240501121742.1215792-1-sunilvl@ventanamicro.com>
 References: <20240501121742.1215792-1-sunilvl@ventanamicro.com>
@@ -110,229 +110,164 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Add ACPI support in PLIC driver. Use the mapping created early during
-boot to get details about the PLIC.
+RISC-V has non-PNP generic 16550A compatible UART which needs to be
+enumerated as ACPI platform device. Add driver support for such devices
+similar to 8250_of.
+
+The driver is enabled when the CONFIG_SERIAL_ACPI_PLATFORM option is
+enabled. Enable this option for RISC-V.
 
 Signed-off-by: Sunil V L <sunilvl@ventanamicro.com>
-Co-developed-by: Haibo Xu <haibo1.xu@intel.com>
-Signed-off-by: Haibo Xu <haibo1.xu@intel.com>
 ---
- drivers/irqchip/irq-sifive-plic.c | 89 +++++++++++++++++++++++--------
- 1 file changed, 68 insertions(+), 21 deletions(-)
+ arch/riscv/configs/defconfig        |  1 +
+ drivers/tty/serial/8250/8250_acpi.c | 96 +++++++++++++++++++++++++++++
+ drivers/tty/serial/8250/Kconfig     |  8 +++
+ drivers/tty/serial/8250/Makefile    |  1 +
+ 4 files changed, 106 insertions(+)
+ create mode 100644 drivers/tty/serial/8250/8250_acpi.c
 
-diff --git a/drivers/irqchip/irq-sifive-plic.c b/drivers/irqchip/irq-sifive-plic.c
-index 8fb183ced1e7..b6b04b5923c2 100644
---- a/drivers/irqchip/irq-sifive-plic.c
-+++ b/drivers/irqchip/irq-sifive-plic.c
-@@ -3,6 +3,7 @@
-  * Copyright (C) 2017 SiFive
-  * Copyright (C) 2018 Christoph Hellwig
-  */
+diff --git a/arch/riscv/configs/defconfig b/arch/riscv/configs/defconfig
+index 3cae018f9315..bea8241f52eb 100644
+--- a/arch/riscv/configs/defconfig
++++ b/arch/riscv/configs/defconfig
+@@ -150,6 +150,7 @@ CONFIG_SERIAL_8250=y
+ CONFIG_SERIAL_8250_CONSOLE=y
+ CONFIG_SERIAL_8250_DW=y
+ CONFIG_SERIAL_OF_PLATFORM=y
++CONFIG_SERIAL_ACPI_PLATFORM=y
+ CONFIG_SERIAL_SH_SCI=y
+ CONFIG_SERIAL_EARLYCON_RISCV_SBI=y
+ CONFIG_VIRTIO_CONSOLE=y
+diff --git a/drivers/tty/serial/8250/8250_acpi.c b/drivers/tty/serial/8250/8250_acpi.c
+new file mode 100644
+index 000000000000..3682443bb69c
+--- /dev/null
++++ b/drivers/tty/serial/8250/8250_acpi.c
+@@ -0,0 +1,96 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Serial Port driver for ACPI platform devices
++ *
++ * This driver is for generic 16550 compatible UART enumerated via ACPI
++ * platform bus instead of PNP bus like PNP0501. This is not a full
++ * driver but mostly provides the ACPI wrapper and uses generic
++ * 8250 framework for rest of the functionality.
++ */
++
 +#include <linux/acpi.h>
- #include <linux/cpu.h>
- #include <linux/interrupt.h>
- #include <linux/io.h>
-@@ -70,6 +71,8 @@ struct plic_priv {
- 	unsigned long plic_quirks;
- 	unsigned int nr_irqs;
- 	unsigned long *prio_save;
-+	u32 gsi_base;
-+	int id;
- };
- 
- struct plic_handler {
-@@ -324,6 +327,10 @@ static int plic_irq_domain_translate(struct irq_domain *d,
- {
- 	struct plic_priv *priv = d->host_data;
- 
-+	/* For DT, gsi_base is always zero. */
-+	if (fwspec->param[0] >= priv->gsi_base)
-+		fwspec->param[0] = fwspec->param[0] - priv->gsi_base;
++#include <linux/serial_reg.h>
++#include <linux/serial_8250.h>
 +
- 	if (test_bit(PLIC_QUIRK_EDGE_INTERRUPT, &priv->plic_quirks))
- 		return irq_domain_translate_twocell(d, fwspec, hwirq, type);
- 
-@@ -424,18 +431,32 @@ static const struct of_device_id plic_match[] = {
- 	{}
- };
- 
-+#ifdef CONFIG_ACPI
++#include "8250.h"
 +
-+static const struct acpi_device_id plic_acpi_match[] = {
-+	{ "RSCV0001", 0 },
-+	{}
++struct acpi_serial_info {
++	int	line;
 +};
-+MODULE_DEVICE_TABLE(acpi, plic_acpi_match);
 +
-+#endif
- static int plic_parse_nr_irqs_and_contexts(struct platform_device *pdev,
--					   u32 *nr_irqs, u32 *nr_contexts)
-+					   u32 *nr_irqs, u32 *nr_contexts,
-+					   u32 *gsi_base, u32 *id)
- {
- 	struct device *dev = &pdev->dev;
- 	int rc;
- 
--	/*
--	 * Currently, only OF fwnode is supported so extend this
--	 * function for ACPI support.
--	 */
--	if (!is_of_node(dev->fwnode))
--		return -EINVAL;
-+	if (!is_of_node(dev->fwnode)) {
-+		riscv_acpi_get_gsi_info(dev->fwnode, gsi_base, id, nr_irqs, NULL);
-+		acpi_get_plic_nr_contexts(*id, nr_contexts);
-+		if (WARN_ON(!*nr_contexts)) {
-+			dev_err(dev, "no PLIC context available\n");
-+			return -EINVAL;
-+		}
++static int acpi_platform_serial_probe(struct platform_device *pdev)
++{
++	struct acpi_serial_info *data;
++	struct uart_8250_port port8250;
++	struct device *dev = &pdev->dev;
++	struct resource *regs;
 +
-+		return 0;
++	int ret, irq;
++
++	regs = platform_get_resource(pdev, IORESOURCE_MEM, 0);
++	if (!regs) {
++		dev_err(dev, "no registers defined\n");
++		return -EINVAL;
 +	}
- 
- 	rc = of_property_read_u32(to_of_node(dev->fwnode), "riscv,ndev", nr_irqs);
- 	if (rc) {
-@@ -449,23 +470,29 @@ static int plic_parse_nr_irqs_and_contexts(struct platform_device *pdev,
- 		return -EINVAL;
- 	}
- 
-+	*gsi_base = 0;
-+	*id = 0;
 +
- 	return 0;
- }
- 
- static int plic_parse_context_parent(struct platform_device *pdev, u32 context,
--				     u32 *parent_hwirq, int *parent_cpu)
-+				     u32 *parent_hwirq, int *parent_cpu, u32 id)
- {
- 	struct device *dev = &pdev->dev;
- 	struct of_phandle_args parent;
- 	unsigned long hartid;
- 	int rc;
- 
--	/*
--	 * Currently, only OF fwnode is supported so extend this
--	 * function for ACPI support.
--	 */
--	if (!is_of_node(dev->fwnode))
--		return -EINVAL;
-+	if (!is_of_node(dev->fwnode)) {
-+		rc = acpi_get_ext_intc_parent_hartid(id, context, &hartid);
-+		if (rc)
-+			return rc;
++	irq = platform_get_irq(pdev, 0);
++	if (irq < 0)
++		return irq;
 +
-+		*parent_cpu = riscv_hartid_to_cpuid(hartid);
-+		*parent_hwirq = RV_IRQ_EXT;
-+		return 0;
-+	}
- 
- 	rc = of_irq_parse_one(to_of_node(dev->fwnode), context, &parent);
- 	if (rc)
-@@ -490,7 +517,9 @@ static int plic_probe(struct platform_device *pdev)
- 	struct irq_domain *domain;
- 	struct plic_priv *priv;
- 	irq_hw_number_t hwirq;
-+	int id, context_id;
- 	bool cpuhp_setup;
-+	u32 gsi_base;
- 
- 	if (is_of_node(dev->fwnode)) {
- 		const struct of_device_id *id;
-@@ -500,7 +529,7 @@ static int plic_probe(struct platform_device *pdev)
- 			plic_quirks = (unsigned long)id->data;
- 	}
- 
--	error = plic_parse_nr_irqs_and_contexts(pdev, &nr_irqs, &nr_contexts);
-+	error = plic_parse_nr_irqs_and_contexts(pdev, &nr_irqs, &nr_contexts, &gsi_base, &id);
- 	if (error)
- 		return error;
- 
-@@ -511,6 +540,8 @@ static int plic_probe(struct platform_device *pdev)
- 	priv->dev = dev;
- 	priv->plic_quirks = plic_quirks;
- 	priv->nr_irqs = nr_irqs;
-+	priv->gsi_base = gsi_base;
-+	priv->id = id;
- 
- 	priv->regs = devm_platform_ioremap_resource(pdev, 0);
- 	if (WARN_ON(!priv->regs))
-@@ -521,12 +552,22 @@ static int plic_probe(struct platform_device *pdev)
- 		return -ENOMEM;
- 
- 	for (i = 0; i < nr_contexts; i++) {
--		error = plic_parse_context_parent(pdev, i, &parent_hwirq, &cpu);
-+		error = plic_parse_context_parent(pdev, i, &parent_hwirq, &cpu, priv->id);
- 		if (error) {
- 			dev_warn(dev, "hwirq for context%d not found\n", i);
- 			continue;
- 		}
- 
-+		if (is_of_node(dev->fwnode)) {
-+			context_id = i;
-+		} else {
-+			error = acpi_get_plic_context(priv->id, i, &context_id);
-+			if (error) {
-+				dev_warn(dev, "invalid context id for context%d\n", i);
-+				continue;
-+			}
-+		}
++	memset(&port8250, 0, sizeof(port8250));
 +
- 		/*
- 		 * Skip contexts other than external interrupts for our
- 		 * privilege level.
-@@ -572,10 +613,10 @@ static int plic_probe(struct platform_device *pdev)
- 		cpumask_set_cpu(cpu, &priv->lmask);
- 		handler->present = true;
- 		handler->hart_base = priv->regs + CONTEXT_BASE +
--			i * CONTEXT_SIZE;
-+			context_id * CONTEXT_SIZE;
- 		raw_spin_lock_init(&handler->enable_lock);
- 		handler->enable_base = priv->regs + CONTEXT_ENABLE_BASE +
--			i * CONTEXT_ENABLE_SIZE;
-+			context_id * CONTEXT_ENABLE_SIZE;
- 		handler->priv = priv;
- 
- 		handler->enable_save = devm_kcalloc(dev, DIV_ROUND_UP(nr_irqs, 32),
-@@ -591,8 +632,8 @@ static int plic_probe(struct platform_device *pdev)
- 		nr_handlers++;
- 	}
- 
--	priv->irqdomain = irq_domain_add_linear(to_of_node(dev->fwnode), nr_irqs + 1,
--						&plic_irqdomain_ops, priv);
-+	priv->irqdomain = irq_domain_create_linear(dev->fwnode, nr_irqs + 1,
-+						   &plic_irqdomain_ops, priv);
- 	if (WARN_ON(!priv->irqdomain))
- 		goto fail_cleanup_contexts;
- 
-@@ -619,13 +660,18 @@ static int plic_probe(struct platform_device *pdev)
- 		}
- 	}
- 
-+#ifdef CONFIG_ACPI
-+	if (!acpi_disabled)
-+		acpi_dev_clear_dependencies(ACPI_COMPANION(dev));
-+#endif
++	spin_lock_init(&port8250.port.lock);
 +
- 	dev_info(dev, "mapped %d interrupts with %d handlers for %d contexts.\n",
- 		 nr_irqs, nr_handlers, nr_contexts);
- 	return 0;
++	port8250.port.mapbase           = regs->start;
++	port8250.port.irq               = irq;
++	port8250.port.type              = PORT_16550A;
++	port8250.port.flags             = UPF_SHARE_IRQ | UPF_BOOT_AUTOCONF | UPF_FIXED_PORT |
++					  UPF_IOREMAP | UPF_FIXED_TYPE;
++	port8250.port.dev               = dev;
++	port8250.port.mapsize           = resource_size(regs);
++	port8250.port.iotype            = UPIO_MEM;
++	port8250.port.irqflags          = IRQF_SHARED;
++
++	port8250.port.membase = devm_ioremap(dev, port8250.port.mapbase, port8250.port.mapsize);
++	if (!port8250.port.membase)
++		return -ENOMEM;
++
++	ret = uart_read_and_validate_port_properties(&port8250.port);
++	if (ret)
++		return -EINVAL;
++
++	data = devm_kzalloc(dev, sizeof(*data), GFP_KERNEL);
++	if (!data)
++		return -ENOMEM;
++
++	data->line = serial8250_register_8250_port(&port8250);
++	if (data->line < 0)
++		return data->line;
++
++	platform_set_drvdata(pdev, data);
++	return 0;
++}
++
++static void acpi_platform_serial_remove(struct platform_device *pdev)
++{
++	struct acpi_serial_info *data = platform_get_drvdata(pdev);
++
++	serial8250_unregister_port(data->line);
++}
++
++static const struct acpi_device_id acpi_platform_serial_table[] = {
++	{ "RSCV0003", 0 },
++	{ },
++};
++MODULE_DEVICE_TABLE(acpi, acpi_platform_serial_table);
++
++static struct platform_driver acpi_platform_serial_driver = {
++	.driver = {
++		.name			= "acpi_serial",
++		.acpi_match_table	= ACPI_PTR(acpi_platform_serial_table),
++	},
++	.probe			= acpi_platform_serial_probe,
++	.remove_new		= acpi_platform_serial_remove,
++};
++
++builtin_platform_driver(acpi_platform_serial_driver);
+diff --git a/drivers/tty/serial/8250/Kconfig b/drivers/tty/serial/8250/Kconfig
+index 47ff50763c04..fbfe4d3501b1 100644
+--- a/drivers/tty/serial/8250/Kconfig
++++ b/drivers/tty/serial/8250/Kconfig
+@@ -576,3 +576,11 @@ config SERIAL_OF_PLATFORM
+ 	  are probed through devicetree, including Open Firmware based
+ 	  PowerPC systems and embedded systems on architectures using the
+ 	  flattened device tree format.
++
++config SERIAL_ACPI_PLATFORM
++	tristate "ACPI platform bus based probing for 8250 ports"
++	depends on SERIAL_8250 && ACPI
++	default n
++	help
++	  This option is used for generic 8250 compatible serial ports
++	  that are enumerated through ACPI platform bus.
+diff --git a/drivers/tty/serial/8250/Makefile b/drivers/tty/serial/8250/Makefile
+index ea2e81f58eac..8c0ef357fc4e 100644
+--- a/drivers/tty/serial/8250/Makefile
++++ b/drivers/tty/serial/8250/Makefile
+@@ -18,6 +18,7 @@ obj-$(CONFIG_SERIAL_8250_CONSOLE)	+= 8250_early.o
  
- fail_cleanup_contexts:
- 	for (i = 0; i < nr_contexts; i++) {
--		if (plic_parse_context_parent(pdev, i, &parent_hwirq, &cpu))
-+		if (plic_parse_context_parent(pdev, i, &parent_hwirq, &cpu, priv->id))
- 			continue;
- 		if (parent_hwirq != RV_IRQ_EXT || cpu < 0)
- 			continue;
-@@ -644,6 +690,7 @@ static struct platform_driver plic_driver = {
- 	.driver = {
- 		.name		= "riscv-plic",
- 		.of_match_table	= plic_match,
-+		.acpi_match_table = ACPI_PTR(plic_acpi_match),
- 	},
- 	.probe = plic_probe,
- };
+ obj-$(CONFIG_SERIAL_8250_ACCENT)	+= 8250_accent.o
+ obj-$(CONFIG_SERIAL_8250_ACORN)		+= 8250_acorn.o
++obj-$(CONFIG_SERIAL_ACPI_PLATFORM)	+= 8250_acpi.o
+ obj-$(CONFIG_SERIAL_8250_ASPEED_VUART)	+= 8250_aspeed_vuart.o
+ obj-$(CONFIG_SERIAL_8250_BCM2835AUX)	+= 8250_bcm2835aux.o
+ obj-$(CONFIG_SERIAL_8250_BCM7271)	+= 8250_bcm7271.o
 -- 
 2.40.1
 
