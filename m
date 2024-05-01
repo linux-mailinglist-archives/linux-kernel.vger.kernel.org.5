@@ -1,142 +1,185 @@
-Return-Path: <linux-kernel+bounces-165410-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-165412-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 110BE8B8C64
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 16:59:51 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 55F318B8C69
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 17:01:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BFAD2280402
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 14:59:49 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8D9AAB21410
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 15:01:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BB6C12FB03;
-	Wed,  1 May 2024 14:57:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="HOoF+NRT"
-Received: from mail-qk1-f176.google.com (mail-qk1-f176.google.com [209.85.222.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6518612F58D;
+	Wed,  1 May 2024 15:01:36 +0000 (UTC)
+Received: from smtprelay03.ispgateway.de (smtprelay03.ispgateway.de [80.67.29.5])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6EFA112F367
-	for <linux-kernel@vger.kernel.org>; Wed,  1 May 2024 14:57:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2382A5FBB1;
+	Wed,  1 May 2024 15:01:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.67.29.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714575454; cv=none; b=iz2p+0jMSxC3BZaYNW+7jBXl7jNDs4fm2Qlmaki3jLY52J2B7mo/yQd9Glac2owlTvxHPu21wk6YNmNgWVGhxI5d3UPx6DbL/Ql8k3iuX73hwHPqDkrLuZGztVnGG/Y9lCagGe7PeIavxFMz8wqnF15LnF/julj3v7h8RGxo4ZI=
+	t=1714575696; cv=none; b=lSQXEbJf2RDY0jyneU+bkO08P4YmLzu/F0mJcsO3RXVjOadtW/wezVJs/EoKpHOMTbBNOzd+6oFEZi43fNBEd8g0QC5KYh78wkrXkHV7cHxn7SDEfwT+chrip19KRd7lu96kOgzifnlHNTd3nQcDBuJwNzeD9ZrxEQag2BKsBZk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714575454; c=relaxed/simple;
-	bh=ap3BJox/MGVOgxqCNy7fpIJSXCiWokvcBZnrVfJZjT4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=QQbKgoCO3c/paFaXzYST4MUptTGXk50O5oIIcknvqOhR5MCI8LzKx42hMaZZWzm/p1QesqVfqWA06X9S1Z1anMLT5J6seeAnvZ1m/AZqoQelaAA2MRj0Be6iCF1uKc1LE2SJDRU68T2EXZs62JViZRA9up/QbBVjMas2+AT0cjU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=HOoF+NRT; arc=none smtp.client-ip=209.85.222.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
-Received: by mail-qk1-f176.google.com with SMTP id af79cd13be357-790f91b834cso275434585a.0
-        for <linux-kernel@vger.kernel.org>; Wed, 01 May 2024 07:57:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1714575452; x=1715180252; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=yMDuFgQIFZusBttFcIEeiK3dO+QLC27z5ORAgCsbWKI=;
-        b=HOoF+NRTkf8cPp1HPVTa/V5KOkmGUnuM8FNW+ZEucrvVRizDSeLFkKBZROoOzxNCF4
-         n33yNkaSdydbS1b3/8IYdH/HOZzrNzzYNBQF14eHvT8TgvYvx7gtvoNZ0igxXiTxuk6P
-         adM+7ijguEhkjQgivQDLPws4moV+nPvGjU5W6G79rvXeNZ08wiGGrlIJ4lqYgk0A9EMs
-         Ndhe2/AwLgYUx1EBqarKnj+us1MVaPheOS9nFMyaQHic+xBM7JndmP1uihelnJ4mbdR3
-         PHCXb/afHLM/4PucqpXlf/pUzyFsn2foa936bOrw+0k6zfsVZBu9rXjfgDQMsgak9ksv
-         VPAA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714575452; x=1715180252;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=yMDuFgQIFZusBttFcIEeiK3dO+QLC27z5ORAgCsbWKI=;
-        b=Fa3b2fjwIjB7+ROoUiplgLcFN1Wd+7QaJHLRg6/fSq18InwTtj5mUiqflpdqw+Aj+f
-         4hRzkEQMjFBzEtvk5hZVdiWQRqV4yjWIdP8SmvoJGsj9jJwKzS56Y8UQrxH8T9POOZTx
-         iVp/dwmhlLupbq0ZW8IhoDoKudTKH+M/4OyccXtGd/KrPD4zQuHhsYTfgqLyuKVsMgfr
-         1MHxvH7LJQS78si2Epsrn6EnwpC44pI14iX0gB2+/XAq8xyv9akESxSw8X2lSqrlCwaG
-         F8TjKA2xlz6iWbFiTAk3S6vS4u3nngy+3Y7TjY3rSrxeG8p+qTBtwfsK9YH5WZfTuEN8
-         HV3A==
-X-Forwarded-Encrypted: i=1; AJvYcCV2prPsvDiCTnypyvq2zXK5tmwbosq5meWR3jlJOWgDrcsR9kEWwoyQyyKNqo7knZMIAkOH9Q06emYj4n3tAm3r1npxL+mzx9d7R1C+
-X-Gm-Message-State: AOJu0YyBpr/+XhdY6Tv9EGjHgfZjl1dNVTGsCd0EIpXvCXrPs8kW3qRO
-	svg0QM4l+2/Eblz8AzQHUuv8qeqhk8MYKnzmSbbnL7xrk6kTRVTJmoVjM9OWJo4=
-X-Google-Smtp-Source: AGHT+IHmOIDK/Mldt2hAVSSoxj1UCLR3AUkPhDiQrlj4ZsACrgmp5YSJE5CUYE4eJ91yhllDRNrddw==
-X-Received: by 2002:a05:6214:2486:b0:6a0:cb42:993d with SMTP id gi6-20020a056214248600b006a0cb42993dmr3978427qvb.23.1714575452398;
-        Wed, 01 May 2024 07:57:32 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-68-80-239.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.80.239])
-        by smtp.gmail.com with ESMTPSA id g18-20020ad45152000000b006a0af6e25c2sm5039912qvq.94.2024.05.01.07.57.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 01 May 2024 07:57:31 -0700 (PDT)
-Received: from jgg by wakko with local (Exim 4.95)
-	(envelope-from <jgg@ziepe.ca>)
-	id 1s2BOl-00DcLt-Fb;
-	Wed, 01 May 2024 11:57:31 -0300
-Date: Wed, 1 May 2024 11:57:31 -0300
-From: Jason Gunthorpe <jgg@ziepe.ca>
-To: Tomasz Jeznach <tjeznach@rivosinc.com>
-Cc: Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-	Robin Murphy <robin.murphy@arm.com>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>,
-	Anup Patel <apatel@ventanamicro.com>,
-	Sunil V L <sunilvl@ventanamicro.com>,
-	Nick Kossifidis <mick@ics.forth.gr>,
-	Sebastien Boeuf <seb@rivosinc.com>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzk+dt@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org,
-	iommu@lists.linux.dev, linux-riscv@lists.infradead.org,
-	linux-kernel@vger.kernel.org, linux@rivosinc.com
-Subject: Re: [PATCH v3 5/7] iommu/riscv: Device directory management.
-Message-ID: <20240501145731.GE1723318@ziepe.ca>
-References: <cover.1714494653.git.tjeznach@rivosinc.com>
- <ce3b82a20db0b776685269674ce9b7a926d5680d.1714494653.git.tjeznach@rivosinc.com>
+	s=arc-20240116; t=1714575696; c=relaxed/simple;
+	bh=NvCi5JvUW+/oPdxAzW+ciyt2Sx1QV/dEnicrPhl7NDg=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=t2BlLAdFAWQO09n5ePpsE8dakZRvR+pvDXC0OKZik9QrLRiGZgSztyY0Tk4672Y1PukUugc4kOM31SZSW7ueminl9L5PShwUkOmk1izIvA5Zh0/oGNTulL7bqA8NlUd/sbqNxqyMtyM5WOf8Z8aZHE+2gP8Xbgz8pT2HgW2VsYM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=apitzsch.eu; spf=pass smtp.mailfrom=apitzsch.eu; arc=none smtp.client-ip=80.67.29.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=apitzsch.eu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=apitzsch.eu
+Received: from [92.206.191.65] (helo=framework.lan)
+	by smtprelay03.ispgateway.de with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.97.1)
+	(envelope-from <git@apitzsch.eu>)
+	id 1s2BQb-000000002oW-10Po;
+	Wed, 01 May 2024 16:59:25 +0200
+Message-ID: <c5e5f49295350ada2cdb280a77b1c877058d4d64.camel@apitzsch.eu>
+Subject: Re: [PATCH v2 2/3] leds: sy7802: Add support for Silergy SY7802
+ flash LED controller
+From: =?ISO-8859-1?Q?Andr=E9?= Apitzsch <git@apitzsch.eu>
+To: Lee Jones <lee@kernel.org>
+Cc: Pavel Machek <pavel@ucw.cz>, Rob Herring <robh@kernel.org>, Krzysztof
+ Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley
+ <conor+dt@kernel.org>, Kees Cook <keescook@chromium.org>, "Gustavo A. R.
+ Silva" <gustavoars@kernel.org>,  Bjorn Andersson <andersson@kernel.org>,
+ Konrad Dybcio <konrad.dybcio@linaro.org>, linux-leds@vger.kernel.org, 
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ linux-hardening@vger.kernel.org, linux-arm-msm@vger.kernel.org, 
+ ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org
+Date: Wed, 01 May 2024 16:59:34 +0200
+In-Reply-To: <20240411124855.GJ1980182@google.com>
+References: <20240401-sy7802-v2-0-1138190a7448@apitzsch.eu>
+	 <20240401-sy7802-v2-2-1138190a7448@apitzsch.eu>
+	 <20240411124855.GJ1980182@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.52.1 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ce3b82a20db0b776685269674ce9b7a926d5680d.1714494653.git.tjeznach@rivosinc.com>
+X-Df-Sender: YW5kcmVAYXBpdHpzY2guZXU=
 
-On Tue, Apr 30, 2024 at 01:01:55PM -0700, Tomasz Jeznach wrote:
-> Introduce device context allocation and device directory tree
-> management including capabilities discovery sequence, as described
-> in Chapter 2.1 of the RISC-V IOMMU Architecture Specification.
-> 
-> Device directory mode will be auto detected using DDTP WARL property,
-> using highest mode supported by the driver and hardware. If none
-> supported can be configured, driver will fall back to global pass-through.
-> 
-> First level DDTP page can be located in I/O (detected using DDTP WARL)
-> and system memory.
-> 
-> Only simple identity and release (blocking) protection domains are
-> supported by this implementation.
+Hi Lee Jones,
 
-Why rename the concept? We call it a BLOCKING domain, just use that
-name please.
+thanks for the feedback. I will address your comments in the next
+version. I have a few comments/questions though, see below.
 
-> +static int riscv_iommu_attach_release_domain(struct iommu_domain *iommu_domain,
-> +					     struct device *dev)
-> +{
-> +	struct riscv_iommu_device *iommu = dev_to_iommu(dev);
-> +
-> +	if (iommu->ddt_mode > RISCV_IOMMU_DDTP_MODE_BARE)
-> +		riscv_iommu_iodir_update(iommu, dev, RISCV_IOMMU_FSC_BARE, 0);
-> +
-> +	return 0;
-> +}
-> +
-> +static struct iommu_domain riscv_iommu_release_domain = {
-> +	.type = IOMMU_DOMAIN_BLOCKED,
-> +	.ops = &(const struct iommu_domain_ops) {
-> +		.attach_dev = riscv_iommu_attach_release_domain,
-> +	}
-> +};
+Best regards,
+Andr=C3=A9
 
-'riscv_iommu_release_domain' doesn't make sense..
+Am Donnerstag, dem 11.04.2024 um 13:48 +0100 schrieb Lee Jones:
+> On Mon, 01 Apr 2024, Andr=C3=A9 Apitzsch via B4 Relay wrote:
+> >=20
+> > [..]
+> > +
+> > +#define SY7802_TIMEOUT_DEFAULT_US	512000U
+> > +#define SY7802_TIMEOUT_MIN_US		32000U
+> > +#define SY7802_TIMEOUT_MAX_US		1024000U
+> > +#define SY7802_TIMEOUT_STEPSIZE_US	32000U
+> > +
+> > +#define SY7802_TORCH_BRIGHTNESS_MAX 8
+> > +
+> > +#define SY7802_FLASH_BRIGHTNESS_DEFAULT	14
+> > +#define SY7802_FLASH_BRIGHTNESS_MIN	0
+> > +#define SY7802_FLASH_BRIGHTNESS_MAX	15
+> > +#define SY7802_FLASH_BRIGHTNESS_STEP	1
+>=20
+> Much nicer to read if everything was aligned.
 
-Jason
+Using tab size 8, SY7802_FLASH_BRIGHTNESS_* look aligned to me. Do you
+refer to SY7802_TORCH_BRIGHTNESS_MAX here?=20
+
+>=20
+> > [..]
+> > +
+> > +	/*
+> > +	 * There is only one set of flash control logic, and this
+> > flag is used to check if 'strobe'
+>=20
+> The ',' before 'and' is superfluous.
+>=20
+> > +	 * is currently being used.
+> > +	 */
+>=20
+> Doesn't the variable name kind of imply this?
+>=20
+> > +	if (chip->fled_strobe_used) {
+> > +		dev_warn(chip->dev, "Please disable strobe first
+> > [%d]\n", chip->fled_strobe_used);
+>=20
+> "Cannot set torch brightness whilst strobe is enabled"
+
+The comment and the warn message are taken from 'leds-mt6370-flash.c'.
+But I think using the warn message you suggested the comment can be
+removed.
+
+>=20
+> > +		ret =3D -EBUSY;
+> > +		goto unlock;
+> > +	}
+> > +
+> > +	if (level)
+> > +		curr =3D chip->fled_torch_used | BIT(led->led_no);
+> > +	else
+> > +		curr =3D chip->fled_torch_used & ~BIT(led->led_no);
+> > +
+> > +	if (curr)
+> > +		val |=3D SY7802_MODE_TORCH;
+> > +
+> > +	/* Torch needs to be disabled first to apply new
+> > brightness */
+>=20
+> "Disable touch to apply brightness"
+>=20
+> > +	ret =3D regmap_update_bits(chip->regmap, SY7802_REG_ENABLE,
+> > SY7802_MODE_MASK,
+> > +				 SY7802_MODE_OFF);
+> > +	if (ret)
+> > +		goto unlock;
+> > +
+> > +	mask =3D led->led_no =3D=3D SY7802_LED_JOINT ?
+> > SY7802_TORCH_CURRENT_MASK_ALL :
+>=20
+> Why not just use led->led_no in place of mask?
+
+I might be missing something, but I don't know how to use led->led_no
+in place of mask, when
+led->led_no is in {0,1,2} and
+mask is in {0x07, 0x38, 0x3f}.
+
+>=20
+> Easier to read if you drop SY7802_TORCH_CURRENT_MASK_ALL to its own
+> line.
+>=20
+> > +	=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 SY7802_TORCH_CURRENT_MASK(led->l=
+ed_no);
+> > +
+> > [..]
+> > +
+> > +static int sy7802_probe(struct i2c_client *client)
+> > +{
+> > +	struct device *dev =3D &client->dev;
+> > +	struct sy7802 *chip;
+> > +	size_t count;
+> > +	int ret;
+> > +
+> > +	count =3D device_get_child_node_count(dev);
+> > +	if (!count || count > SY7802_MAX_LEDS)
+> > +		return dev_err_probe(dev, -EINVAL,
+> > +		=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 "No child node or node count ov=
+er max led
+> > number %zu\n", count);
+>=20
+> Split them up and report on them individually or combine the error
+> message:
+>=20
+> "Invalid amount of LED nodes"
+
+This snippet was also taken from 'leds-mt6370-flash.c'.
+
+>=20
 
