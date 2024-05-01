@@ -1,115 +1,100 @@
-Return-Path: <linux-kernel+bounces-164847-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-164845-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D74658B83F0
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 03:19:32 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2EE4C8B83EA
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 03:17:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8E2801F241D8
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 01:19:32 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5B3FFB21F74
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 01:17:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B27D24C97;
-	Wed,  1 May 2024 01:19:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D49634C83;
+	Wed,  1 May 2024 01:17:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="hJavO/0c"
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Qf5qLzh5"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7FF982F2D;
-	Wed,  1 May 2024 01:19:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 998432F2D;
+	Wed,  1 May 2024 01:17:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714526365; cv=none; b=GJ+TBVyPE5BUUHQDyDg2e+xpvGURnYSftB/7JTPIpcPmYmrDGuhX+IPMMdRtLY2gXV72m7089DvpPHSY8vz3knieYOpSkXk/iuG2amlMmWGMWDDjvoOcl5apazwRpZmQYl+R8tKKhApg6zt6vNivnDP1pdF9X4ilUnv0bmLjCwQ=
+	t=1714526240; cv=none; b=cVqKYajf9vsjb4Irt8R718jT+1FzS5Ur53HH3w9SlDQ7KmbbNhX9njXk3eFZxIliNh4eseTXhK4Y06sBnUqXungAqbCjfJtUQGxkNlXlcuXmlpl/xw7hSsDIXrlqbMW8pgZsnpmZJL7DsvDx6gLwF1zfLPc9R8Y/fa5MATJmwrE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714526365; c=relaxed/simple;
-	bh=IhXmNZJJdH367PAssW8LFakW0qsPQ61s1Qx0ncC9DuI=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=UaML6JX/AZX+4m+vpFg1ZsrAa0pOI3Wr4lwb8SQePIh/MucxmpT9IbXghwwixAI6renlmjHzLcwNwt5uQHwuS546XRwabtOAsYUz89ZKaDvvWc85rkirucgwCwgpE/wOjWpY4owEnNN0Jh0ZsSY16aehRxs1Bfd459nkgwYAvHQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=hJavO/0c; arc=none smtp.client-ip=150.107.74.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-	s=201702; t=1714526358;
-	bh=d+aPeYIf2KHFxdj0UU+VmTIVu6fugcBFXrv/V7KQIII=;
-	h=Date:From:To:Cc:Subject:From;
-	b=hJavO/0cvIe6proFVMK2ouM9YNPc06uQsMycbv/2w/P1x2CJlXjQRTTJhl45Qou/h
-	 JnA6RYOGmE8RAZgOrO7ce12DJJQ1/EzKlGyzdA1GWMrD46Y4o/YdxTODveww3xRTWC
-	 ssgjZQDrtFzDDwDfXHWRyrZ24bD2JM6P8Ajy6x+OOPaJbfqb7cN+4MHtRoYhOKLaqF
-	 qpHALuJ9xWvav8lDLLFBnDKDtGVUetzU/BkgS+wDNpjjzDbfuHUldFqNk1/FDuqPL/
-	 3V5UuW2p3Pf//T/zgbFJsiobhju8/N7bur6zUBi9OJTXdC8yWHLM5zHwoASiMFG9N2
-	 D0IyBGk+C9T5w==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4VTfNk47Ksz4x0t;
-	Wed,  1 May 2024 11:19:18 +1000 (AEST)
-Date: Wed, 1 May 2024 11:19:17 +1000
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-To: Marcel Holtmann <marcel@holtmann.org>, Johan Hedberg
- <johan.hedberg@gmail.com>
-Cc: Luiz Augusto von Dentz <luiz.von.dentz@intel.com>, Sungwoo Kim
- <iam@sung-woo.kim>, Linux Kernel Mailing List
- <linux-kernel@vger.kernel.org>, Linux Next Mailing List
- <linux-next@vger.kernel.org>
-Subject: linux-next: build failure after merge of the bluetooth tree
-Message-ID: <20240501111917.23e2b0f2@canb.auug.org.au>
+	s=arc-20240116; t=1714526240; c=relaxed/simple;
+	bh=oJaUTBcQlK8qJ9qOb+HMLCEHC2Kl529WSXhH2LODFiU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=fDHBdx+gBVawv8zcjg+qtj4kMy6Jft67XGAn4ABjLZK+2a1YrJb/YVvCeiKP09NG8hbb1uGvvwbiPAqx3mg/uGO1Osj0HX91llHq1Vl3UA+hcvyzqq+oiz0kXHZ0q/keZAeK2+6q3NpbamDiSQo52uX90Fe5nUtNrw/ox+Bqs5o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Qf5qLzh5; arc=none smtp.client-ip=198.175.65.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1714526239; x=1746062239;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=oJaUTBcQlK8qJ9qOb+HMLCEHC2Kl529WSXhH2LODFiU=;
+  b=Qf5qLzh5yWypTJ5GBRJ5nzbCsCG+ekWdsHQpBacvGnKUTfkAtEtdPS3c
+   Iq+XYXYQOti4zYRmKop3mYDzqkXha3VaxbUyiPbndSQm4dRrtXeLi2q4B
+   zV6QF01NwvhVD5ggcCLrRSV8/HelzdfY1g7xq5P9ETXcuG10ds/iqr5Fk
+   RCT23PzboA/FmnA5CQQ2lPj1d0eKtO8OeRhcCm0xoac+0IwbSyCmX49H7
+   Hqi0whjLmT9pEIHi0tcmG9jRTMrXg0AdaXnY+1xIorQWkvW8glZb7c2Zt
+   Vm76VRBouwRNhIsIRwuKKcd3kUNClM2xKs+jIfLKhkwx0w4xo0Zs/8wnP
+   g==;
+X-CSE-ConnectionGUID: jRsU/NO/Trqqcy9EPuX6dw==
+X-CSE-MsgGUID: VPlocZetQFyP4TusnMMGVQ==
+X-IronPort-AV: E=McAfee;i="6600,9927,11060"; a="32757386"
+X-IronPort-AV: E=Sophos;i="6.07,243,1708416000"; 
+   d="scan'208";a="32757386"
+Received: from fmviesa004.fm.intel.com ([10.60.135.144])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Apr 2024 18:17:18 -0700
+X-CSE-ConnectionGUID: eZEkDgarR2yNzyiu4A4j/Q==
+X-CSE-MsgGUID: TZFKuiSkRQCCRRzzo988Cw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,243,1708416000"; 
+   d="scan'208";a="31257776"
+Received: from ranerica-svr.sc.intel.com ([172.25.110.23])
+  by fmviesa004.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Apr 2024 18:17:17 -0700
+Date: Tue, 30 Apr 2024 18:24:02 -0700
+From: Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
+To: "Rafael J. Wysocki" <rafael@kernel.org>
+Cc: "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+	Zhang Rui <rui.zhang@intel.com>, Jean Delvare <jdelvare@suse.com>,
+	Guenter Roeck <linux@roeck-us.net>,
+	Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+	Lukasz Luba <lukasz.luba@arm.com>,
+	Daniel Lezcano <daniel.lezcano@linaro.org>,
+	linux-pm@vger.kernel.org, linux-hwmon@vger.kernel.org,
+	linux-kernel@vger.kernel.org, Ricardo Neri <ricardo.neri@intel.com>,
+	Tony Luck <tony.luck@intel.com>
+Subject: Re: [PATCH v2 1/3] thermal: intel: intel_tcc: Add model checks for
+ temperature registers
+Message-ID: <20240501012402.GC29652@ranerica-svr.sc.intel.com>
+References: <20240425171311.19519-1-ricardo.neri-calderon@linux.intel.com>
+ <20240425171311.19519-2-ricardo.neri-calderon@linux.intel.com>
+ <CAJZ5v0i4pREX_HPRvxFM209MiwMScxGCYUr0L8XSXfvkrav1_Q@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/FTr+TF281UwiWCOq85mXmJM";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAJZ5v0i4pREX_HPRvxFM209MiwMScxGCYUr0L8XSXfvkrav1_Q@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 
---Sig_/FTr+TF281UwiWCOq85mXmJM
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Tue, Apr 30, 2024 at 09:07:39PM +0200, Rafael J. Wysocki wrote:
+> 
+> This clashes with the Tony Luck's rework of Intel CPU model defines
+> (see https://lore.kernel.org/lkml/20240430164913.73473-1-tony.luck@intel.com/),
+> so I'd rather defer it until commit 2eda374e883a ("x86/mm: Switch to
+> new Intel CPU model defines") reaches the mainline and make it use the
+> new CPU model defines from the start.
 
-Hi all,
+Sounds good to me. I can repost the remaining patches of this series once
+Tony's rework is merged into mainline.
 
-After merging the bluetooth tree, today's linux-next build (arm
-multi_v7_defconfig) failed like this:
-
-net/bluetooth/hci_core.c: In function 'hci_release_dev':
-net/bluetooth/hci_core.c:2831:9: error: implicit declaration of function 'm=
-sft_release'; did you mean 'dst_release'? [-Werror=3Dimplicit-function-decl=
-aration]
- 2831 |         msft_release(hdev);
-      |         ^~~~~~~~~~~~
-      |         dst_release
-cc1: some warnings being treated as errors
-
-Caused by commit
-
-  d85d07aefca7 ("Bluetooth: msft: fix slab-use-after-free in msft_do_close(=
-)")
-
-(though I don't see why)
-
-I have used the bluetooth tree from next-20240430 for today.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/FTr+TF281UwiWCOq85mXmJM
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmYxmJUACgkQAVBC80lX
-0Gzk+wgAlpBP/bo5ZVyL1uMJxtq8Z/DOfbKAT3YRqCf4dA25zcW85H4XFT+yVtlE
-Mk42e1aXtDJmAskFN+5WN+3OTqrOU8l4wpNep2aOxca29H5QfhwT9P3vKXMYvM2V
-KeXL0XQk9mkRD5Jiw7tn1zbo4mAQM9QiZ+MC9Tpw23XSSb4aS5+2c0TtQtrV7N4f
-mlUtSkwYhdkX1PT33EbsYvHQDgG1b+QxnVMMfqxaCYfna4AXY0S9k5jxDTY7nHR2
-e1FH8cyayQg87jNYKVNYbjba7rtkAWvzI0qEPUZohHcTHzKDDnItwBKwXkvU1H8B
-6XiXre4av1iElp+ijD39yLKYtBBraQ==
-=xEAS
------END PGP SIGNATURE-----
-
---Sig_/FTr+TF281UwiWCOq85mXmJM--
 
