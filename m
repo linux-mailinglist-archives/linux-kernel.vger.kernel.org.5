@@ -1,98 +1,137 @@
-Return-Path: <linux-kernel+bounces-165730-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-165734-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6CA3C8B9055
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 22:00:58 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D4A878B905B
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 22:04:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 239E21F2386F
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 20:00:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 33D7128426C
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 20:04:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D00921635D4;
-	Wed,  1 May 2024 20:00:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 60846161B53;
+	Wed,  1 May 2024 20:04:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="G97bP5Ma"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="0Dst0cKx"
+Received: from mail-io1-f52.google.com (mail-io1-f52.google.com [209.85.166.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0ACF0F9EB;
-	Wed,  1 May 2024 20:00:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58746161319
+	for <linux-kernel@vger.kernel.org>; Wed,  1 May 2024 20:04:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714593633; cv=none; b=Jaw03rXGT9nz9OnDK84P9RR0n2EtIBG+Cfiokr9BN6G5mWc9c1emK7okUV1uuQXLgwEBlBvOfUqsmqq2WCaZvTx4xrisSY+CE7kS83YoSfS+wm3ukecdpXC9NEomQHMxOkvRSV6RP3SAXI7JWEzAbc3xtVUB6g09IaTFmghaR2c=
+	t=1714593856; cv=none; b=LiaVnx6qTdNzdDXe9F7NhEUuyZ41rxktcMoho/jUjXyOAGyBJrKgmT1lMKyQI9q6NNeDSNmwS/0SZUFcxoGWvQt8Fvz+2b7bObZCPRglB0qY8PExeq3GXsBNPtSzspYlWpixG7hCMH/JwVMgfvgn2yGKgK3Y1g5HnbsHMvZka2o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714593633; c=relaxed/simple;
-	bh=ih/GNLm1WfdtWekFHhQEBTY1Uux1rbHOHII15bWTT7w=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=lWnOeewhfixcaTLwXn1gsE29jL0/htW79+jJmSpMyMFRylB8EXY18NGmhqiqKH5kL4edxjXw6kFtE/ruJo0kZw5oGs7bg+fCHj7vAaUizBFeLiAmXD+V2dCdqN9rwW2/6vUpdxdgloBdfDyg3npKm+MIM9YiZ1vK3DKuwxhshSw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=G97bP5Ma; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 8CD74C32789;
-	Wed,  1 May 2024 20:00:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714593632;
-	bh=ih/GNLm1WfdtWekFHhQEBTY1Uux1rbHOHII15bWTT7w=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=G97bP5Ma6O1GmaFHCiLS88qaUqCoJRxYZqRJTK1ogOmwN27MRVeBqJ3pGHsyob2uw
-	 609DOXu+g1hXMWHcNi/hclKtJrxKcVww/Mlj8Jgc+aoasqExS07GdjOCsdTsMdjo/m
-	 24MtdUaIGUjzrfcQAWqHtP9eB+ccQ1zA08xJYTyp9UgSiBuOCNPIEi0Whe0HBUsyzu
-	 TJyzuj9oeOTi49q9VVcm5Xmfql+eYMIOwdO7wv1Pw+QHlDEQvUg7N22W5mZ5qRJVwh
-	 isL/IMrY4U2Go/Oz1rhwLI1DSVtfThFFWmT31rINcUmZxxlg+XvMeMUYV2n6oZqSJZ
-	 eKNOeHhfECmDA==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 79D44C4339F;
-	Wed,  1 May 2024 20:00:32 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1714593856; c=relaxed/simple;
+	bh=goFmT9k+2JBPJZfg9ckRb9nR9k6bSBMAukkNNw6B6Hg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=QTkI5LK0Vs4mWXNPoO6h5aZT25rVWL8K7cgDrirNyp6FMY0fUZ+sWLDJZG8MDV6UP1Q0HIPxbHlm8GNDpMY44ruXVD1xqOqxnp/zKPF/MP+97wW2Cefk0mxs2IFMVX+w0XwEjDpamDdQU3J46OLnUXxCSKyf+HnHEvw1RQSpaXc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=0Dst0cKx; arc=none smtp.client-ip=209.85.166.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-io1-f52.google.com with SMTP id ca18e2360f4ac-7dee8d177e1so44395439f.2
+        for <linux-kernel@vger.kernel.org>; Wed, 01 May 2024 13:04:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1714593854; x=1715198654; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=la4DlPMR/LfwCzRSAUSsTV1pUfLPTBPpS3kAQ67eY88=;
+        b=0Dst0cKxRAN94eQXZsEOLg8krWQz3TQsYZ1f/u6n9FX72Kl/C+L5A1/y9GDu1SZLPl
+         rKD25k7N7AU6YwQjJjyKazefqadIwmW5C8dRG1j/oh2ner+lT4EuO6bJVZRYkp49Wutv
+         9WrAflyCslzVnf7Pmhp28ohqVmshCfKWPT36Y4Impy2XrgNlDh9ILVhyCk9mdw+ptrc/
+         CwGsgTYPE43vgaaebaRzpzWda+p8i38QafhBEvqbmqt0lqZq6+7K3pMSYSNrhaMstgSw
+         VDhmt91s9FmZZ7pjKEokcAo5YToLqKC1rfGJ6Rd6/123ROZOD8luy9TfeCYHIcmEwnEW
+         RB6Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714593854; x=1715198654;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=la4DlPMR/LfwCzRSAUSsTV1pUfLPTBPpS3kAQ67eY88=;
+        b=GouKuU0ArSG/dEKtRFgA68M5Ur0wjsN4QxClmnFaoA0YMw2MOt4ZFDthFBi9DU6JQy
+         9bxiTevqzrGs0CssEuvl48yIxhE+EW7SAvvT7kh60K64WLm9mfd781gTEUi9d7UGvAK6
+         jaVnl/rdhkaurd1AuHR9g4kAFdsxjztxdjwY54aCuRCqw5/KdMGV1++Cu0rPtk6vJH7w
+         Br+OJtbB/gSvSs+7t0hSkZ38wHWHkfUA76NOvbdoswxpY/3fjWVYR9QRopbgN4Bcm80b
+         IVMpmjXrqsmotL/uZWHtyvMfv4Pa7FpL7NzAG2hsT6yLX+JQGrmGIu9lq6Gd5w85YBzU
+         YSgA==
+X-Forwarded-Encrypted: i=1; AJvYcCW5oB19BGjwP8s5AV4c1WTEZSRtCeMqm/7XKhZ3g8VYtgjkDhg24dHTajmprFPqLzw2TNh14C9ksZnr0t8i0pdhEsKHzXC5jdLoYHga
+X-Gm-Message-State: AOJu0Yx8BG25Z2NQMBVgYOvMyi/PdW/B3xgGpeCaNY95gzVQgiHV8r9n
+	GguVuFeLJkMILFufmy8XSNHWOhu7NzxFYUk4pRQK5rkZ5p5bagv0Tu4tUa1RIQ==
+X-Google-Smtp-Source: AGHT+IEEEQZDWGpMnb8dlVbqbwAhZplRKDs07yBgDxjFH/4t0U8l/v9WICZttfLVrjYYi7DRpJYwqQ==
+X-Received: by 2002:a5e:c80c:0:b0:7de:ca48:4fab with SMTP id y12-20020a5ec80c000000b007deca484fabmr4120481iol.2.1714593854425;
+        Wed, 01 May 2024 13:04:14 -0700 (PDT)
+Received: from google.com (195.121.66.34.bc.googleusercontent.com. [34.66.121.195])
+        by smtp.gmail.com with ESMTPSA id f3-20020a056638168300b00487bf7fcf5csm1925536jat.179.2024.05.01.13.04.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 01 May 2024 13:04:13 -0700 (PDT)
+Date: Wed, 1 May 2024 20:04:11 +0000
+From: Justin Stitt <justinstitt@google.com>
+To: Erick Archer <erick.archer@outlook.com>
+Cc: Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>, 
+	Xin Long <lucien.xin@gmail.com>, Kees Cook <keescook@chromium.org>, 
+	"Gustavo A. R. Silva" <gustavoars@kernel.org>, Nathan Chancellor <nathan@kernel.org>, 
+	Nick Desaulniers <ndesaulniers@google.com>, Bill Wendling <morbo@google.com>, linux-sctp@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org, llvm@lists.linux.dev
+Subject: Re: [PATCH] sctp: annotate struct sctp_assoc_ids with __counted_by()
+Message-ID: <jtcun2xb3ekurqekt4ckgvu2a2hgqyidkno5a5wwy4br54cqdo@riyxzf3kxtn6>
+References: <AS8PR02MB723728DA244A82D97342D6498B192@AS8PR02MB7237.eurprd02.prod.outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH 0/5] Bluetooth: qca: info leak fixes and cleanups
-From: patchwork-bot+bluetooth@kernel.org
-Message-Id: 
- <171459363249.6729.10986328345003471376.git-patchwork-notify@kernel.org>
-Date: Wed, 01 May 2024 20:00:32 +0000
-References: <20240501123456.6712-1-johan+linaro@kernel.org>
-In-Reply-To: <20240501123456.6712-1-johan+linaro@kernel.org>
-To: Johan Hovold <johan+linaro@kernel.org>
-Cc: marcel@holtmann.org, luiz.dentz@gmail.com, quic_janathot@quicinc.com,
- linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <AS8PR02MB723728DA244A82D97342D6498B192@AS8PR02MB7237.eurprd02.prod.outlook.com>
 
-Hello:
+Hi,
 
-This series was applied to bluetooth/bluetooth-next.git (master)
-by Luiz Augusto von Dentz <luiz.von.dentz@intel.com>:
-
-On Wed,  1 May 2024 14:34:51 +0200 you wrote:
-> Here are two fixes for potential info leaks in the QCA driver and a few
-> cleanups.
+On Wed, May 01, 2024 at 07:01:22PM +0200, Erick Archer wrote:
+> Prepare for the coming implementation by GCC and Clang of the
+> __counted_by attribute. Flexible array members annotated with
+> __counted_by can have their accesses bounds-checked at run-time via
+> CONFIG_UBSAN_BOUNDS (for array indexing) and CONFIG_FORTIFY_SOURCE
+> (for strcpy/memcpy-family functions).
 > 
-> All of these can go into 6.10.
+> Suggested-by: Kees Cook <keescook@chromium.org>
+> Signed-off-by: Erick Archer <erick.archer@outlook.com>
+> ---
+>  include/uapi/linux/sctp.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> Johan
+> diff --git a/include/uapi/linux/sctp.h b/include/uapi/linux/sctp.h
+> index b7d91d4cf0db..836173e73401 100644
+> --- a/include/uapi/linux/sctp.h
+> +++ b/include/uapi/linux/sctp.h
+> @@ -1007,7 +1007,7 @@ enum sctp_sstat_state {
+>   */
+>  struct sctp_assoc_ids {
+>  	__u32		gaids_number_of_ids;
+> -	sctp_assoc_t	gaids_assoc_id[];
+> +	sctp_assoc_t	gaids_assoc_id[] __counted_by(gaids_number_of_ids);
+
+Crucially, gaids_number_of_ids is assigned before any accesses to
+gaids_assoc_id[] are made.
+
+|	ids->gaids_number_of_ids = num;
+|	num = 0;
+|	list_for_each_entry(asoc, &(sp->ep->asocs), asocs) {
+|		ids->gaids_assoc_id[num++] = asoc->assoc_id;
+|	}
+
+So this looks good to me.
+
+Reviewed-by: Justin Stitt <justinstitt@google.com>
+
+>  };
+>  
+>  /*
+> -- 
+> 2.25.1
 > 
-> [...]
 
-Here is the summary with links:
-  - [1/5] Bluetooth: qca: fix info leak when fetching fw build id
-    https://git.kernel.org/bluetooth/bluetooth-next/c/cfc2a7747108
-  - [2/5] Bluetooth: qca: fix info leak when fetching board id
-    https://git.kernel.org/bluetooth/bluetooth-next/c/3e2faecb09fb
-  - [3/5] Bluetooth: qca: drop bogus edl header checks
-    https://git.kernel.org/bluetooth/bluetooth-next/c/ca8934466039
-  - [4/5] Bluetooth: qca: drop bogus module version
-    https://git.kernel.org/bluetooth/bluetooth-next/c/2684457bf2dd
-  - [5/5] Bluetooth: qca: clean up defines
-    https://git.kernel.org/bluetooth/bluetooth-next/c/f50efbe27afd
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+Thanks
+Justin
 
