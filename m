@@ -1,121 +1,144 @@
-Return-Path: <linux-kernel+bounces-164960-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-164961-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D15FD8B8576
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 07:58:59 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CADCA8B857A
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 08:01:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 845D91F23D13
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 05:58:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0875A1C22DE7
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 06:01:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1EC44D9FE;
-	Wed,  1 May 2024 05:58:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 071D84CDE0;
+	Wed,  1 May 2024 06:01:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="O6sVQv06"
-Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="WP9p/LKs"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D0E74C62B
-	for <linux-kernel@vger.kernel.org>; Wed,  1 May 2024 05:58:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9138C1BDCF
+	for <linux-kernel@vger.kernel.org>; Wed,  1 May 2024 06:01:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714543110; cv=none; b=q7SReoXdinSppARxobnu2MOKeEVs37kkn92mhm8CTlL+0/wTJbA5DGGuj86nIXitv8O7wh+MclHLy233OOY53PwzWkK+03KWwWnnF1iaQ4ScmCuZbNQghNKftxHuyP4SNua2ayVLlB6DruS3qN1zBKqB5CVcspoeq7ZwE7LnBrI=
+	t=1714543294; cv=none; b=RfyZa/m0woUhuxzfmQkv6XSZCTNbLpm0vVqOwh0NxpVkq5X+hrt1Oof8jwHD2NF7+KW0x/aSSjVSsWHo4J0JPUbBXSLvx5G/0ti8zQK8vXfGW3fiHlqZnHG9PvB0YAURw9z4lfHWWv/PC78YP9g6faLNuIslmy2g4SGmHRcasqU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714543110; c=relaxed/simple;
-	bh=qFOxNZDdgb4xgczhp7k/37TYS9T8b5TqtSX9kQNfMB4=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=OkfGc9RUsy17qey99kJJ+pMThMgZl4yKZyx1WwX9fh1wpx+E3HY7wba7OkV++cZ9RImCLU/RWSQjWcXnrZfl+N3pMHxsvSPmlrblz9+ME8ABtIwwufMdgjYmdVqJm1T1ncrzoVbP4RIAhGr7NbPCc1o0SlkekTeVH/EjZA99iQo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=O6sVQv06; arc=none smtp.client-ip=209.85.128.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-41adf155cffso46262935e9.2
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 22:58:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714543106; x=1715147906; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=3hiWw6jP2yYUJTSlYbKDexViseqF5lmbHWHi/tGYz+w=;
-        b=O6sVQv06mLAUUVm0+hQoovc1gRErngqbwpquISs31t+A6LHX2z5+EPI/DwRQL35gm4
-         xWKEm0kHGAnqe6m5b+HUjnyuTi0d+0FK5H5rsYZl/cUEGwpTBPNrqckg5JB4oeGSz5H6
-         4m2UYFBRlyfY/N/SdAi83IbQAJ7bbnxM7ZjOjNXJBvF/KvIsBviueoDHsGzxNawTOfXR
-         k4XEFQdGxnFEiyvtaMZsreeF1s1Qy1pu1wtB5Sufx1xloK6e8fE0hrd18TtCwc9QMN0t
-         C3Qn6HsvuEFHqNW2taHUjbQgvt8OZjk7cX8zrgqqUxVrHpBdFKNxNwTsMrpUXKaLogDY
-         XMrQ==
+	s=arc-20240116; t=1714543294; c=relaxed/simple;
+	bh=826e6puMm6zzTrxffD62gEQ3vdQCaEKJUlUGOq1Xpv4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=G8zBcgSp8MXBFIGxj29BsQHn6d1FOIKJPGqLpY8iUAO2UiJfw8/uk/4hfn7Gf20gBgLZ3JdxSsySV5G3cmKfStmW72NdVlJYLvzSWy44ZgmLvcNLDzNe/HtVhyEsZz9KazcOqU44Qy79kbyWkMDJ9XoBeJA0pzrSdBjuiDXmV/U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=WP9p/LKs; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1714543290;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ACs9fP8UeUOFIH6gYeB8LpBxm1NZNbq1XOuqsdPyK04=;
+	b=WP9p/LKsTQuPefpgMXTto/pbKquAMY6VUr/xniB1xNPII0E1KfAHYVKX6IkawFw+KUmZWX
+	0V1xLQsnLqJlpTuTCZCnbRE9/awc+RANCIfhfCJFtDpqP329RgKBdNsW1QCKOLVrgP5YkY
+	mreeMJkTFwI/Mhuk1hKMy78iE2dO10M=
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
+ [209.85.218.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-232-aIQREy5zN8e_AcShuauzww-1; Wed, 01 May 2024 02:01:29 -0400
+X-MC-Unique: aIQREy5zN8e_AcShuauzww-1
+Received: by mail-ej1-f71.google.com with SMTP id a640c23a62f3a-a59324b5fb3so84120066b.0
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 23:01:28 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714543106; x=1715147906;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=3hiWw6jP2yYUJTSlYbKDexViseqF5lmbHWHi/tGYz+w=;
-        b=NFsSKnU/CmPDsvEHJO0489eEXfweo97NMvaqkkWHscSt6XZQo5j8/Bhgyfla9iC/u9
-         BW7Q1qTgQihAUavTljobx1DH+gPpD5zNIs1LPzi+Q9J1+GIRFcwHu0SPTzfYG/sHO1mD
-         /nLEGYmy/O4fZZ4ZGXQZl6BwH/8IrLO9Hc1q9li/iV0YoOa8PrFNl9Zviarf+LUrS3mt
-         sqRgMh/6oIZQaOc6UHuBWbUFg/1rw6R0sVKYrDv4v9UJy2+6gjohHF81y+4UyNbkg+U+
-         wmPae5zbCBn2r7lzkcFIjkDW17h5AhGXeUeu+11qkAhAjwSehk5hc810Emj7Ur6gby1K
-         iNWA==
-X-Forwarded-Encrypted: i=1; AJvYcCVNkTd28z91bpemLE9QIYPaKwflGqWtwI1AVdsGzehUV+Bx30CQhaa5GrEV8Q17DgPqpBDkFVzo6pueUyas8+qGF4y0/n/qES/4cXkD
-X-Gm-Message-State: AOJu0YybJgALOJImEd0n2V79LiMmHuVhMx24xePidwGOfA/bBMTH3WGp
-	89PaScBWaOAUReilCX7jG3T9SuEiaVCFTCP4dfSyOZIvURte3PUR
-X-Google-Smtp-Source: AGHT+IGSsffDeCqMeZYpwWvnrTyvTJE6ovsRobFE+nE77rXh8klVag5MujXA89iVOdsPZMVzGiBzuA==
-X-Received: by 2002:a05:600c:1988:b0:418:f5a9:b91c with SMTP id t8-20020a05600c198800b00418f5a9b91cmr965776wmq.33.1714543105688;
-        Tue, 30 Apr 2024 22:58:25 -0700 (PDT)
-Received: from YOGA.local ([2a06:c701:737b:ef00:e314:db5d:b033:4fc2])
-        by smtp.gmail.com with ESMTPSA id s7-20020a5d5107000000b0034c61e211a5sm12451390wrt.63.2024.04.30.22.58.24
+        d=1e100.net; s=20230601; t=1714543286; x=1715148086;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ACs9fP8UeUOFIH6gYeB8LpBxm1NZNbq1XOuqsdPyK04=;
+        b=ZOp/9E00Tz/4rj4F/RtDUeVxlK9I22q0Q95aTJpGtBqmt1+BiIiB+mm+bB5xkFNDFh
+         LYxUTDEluI4aj2EP+LTS8ZPrrm2SY42WW+8VZCD1FSQ5ViEGNZD1q9sFuhAfGEbU1E/8
+         EHQ3rOyp9iyRXHj3hcq5N03JMR5eCYC9FsEJM8utkK7Tg03YWHos/B6DqnWwN454Gtsr
+         +nspp8fpejFbmfU2RX2pscWBvOQb/TtZZWBJkgqJfaceV1Bx6A9yNiKOnCMkA11lzhMv
+         9RT6c9oGFoyfDRrXNxhn3SrWduJg0zw06HVm8m9mkCMjssr+ukjsOKR+J8g6qXSECLFr
+         P2zA==
+X-Forwarded-Encrypted: i=1; AJvYcCV1wRpPadG1h67UeszLTz0Y1OzmN85G6R26I0+KL8LEgq3CnNuNUtSFz5bLhAsHng/Du/NGV96bOod9mGH0xYuDujlSHmvtDPMWx714
+X-Gm-Message-State: AOJu0YzP4DSvpIMqhXvxnY5OxGjl44+L1qoUq+lbUIjgtsQIbvHmuCWr
+	NJOxLwCbePDbIU4A4XY/2bbutNZ0qlZgReFrEj/zsnnlPE5ZneLs52PsvcOkBwNrrRM1SK6dhrb
+	nON2t20K4ewLKfIuCI8cCibyP4Ju7/XbYt1VRUHBMCczyNkdq2KHQwUdLo6MUZHkPjbi3Cw==
+X-Received: by 2002:a17:906:e219:b0:a58:f186:192 with SMTP id gf25-20020a170906e21900b00a58f1860192mr1224393ejb.0.1714543286367;
+        Tue, 30 Apr 2024 23:01:26 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHSlMxEoUZ88OBzUnW9OSy6mbDeqVmGiKA+13uWDb7mOt6quE44mzfAWkhW9+s6sFw1/mZ2+A==
+X-Received: by 2002:a17:906:e219:b0:a58:f186:192 with SMTP id gf25-20020a170906e21900b00a58f1860192mr1224363ejb.0.1714543285807;
+        Tue, 30 Apr 2024 23:01:25 -0700 (PDT)
+Received: from redhat.com ([2a0d:6fc7:346:6a42:bb79:449b:3f0b:a228])
+        by smtp.gmail.com with ESMTPSA id e20-20020a170906249400b00a5910978816sm2187459ejb.121.2024.04.30.23.01.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Apr 2024 22:58:25 -0700 (PDT)
-From: Shahar Avidar <ikobh7@gmail.com>
-To: gregkh@linuxfoundation.org,
-	hverkuil-cisco@xs4all.nl,
-	andriy.shevchenko@linux.intel.com,
-	robh@kernel.org,
-	felixkimbu1@gmail.com,
-	dan.carpenter@linaro.org,
-	krzysztof.kozlowski@linaro.org
-Cc: linux-staging@lists.linux.dev,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] staging: pi433: Rename goto label.
-Date: Wed,  1 May 2024 08:58:20 +0300
-Message-Id: <20240501055820.603272-3-ikobh7@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240501055820.603272-1-ikobh7@gmail.com>
-References: <20240501055820.603272-1-ikobh7@gmail.com>
+        Tue, 30 Apr 2024 23:01:25 -0700 (PDT)
+Date: Wed, 1 May 2024 02:01:20 -0400
+From: "Michael S. Tsirkin" <mst@redhat.com>
+To: Hillf Danton <hdanton@sina.com>
+Cc: Mike Christie <michael.christie@oracle.com>,
+	Edward Adam Davis <eadavis@qq.com>,
+	syzbot+98edc2df894917b3431f@syzkaller.appspotmail.com,
+	jasowang@redhat.com, kvm@vger.kernel.org,
+	linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+	syzkaller-bugs@googlegroups.com, virtualization@lists.linux.dev
+Subject: Re: [PATCH next] vhost_task: after freeing vhost_task it should not
+ be accessed in vhost_task_fn
+Message-ID: <20240501020057-mutt-send-email-mst@kernel.org>
+References: <b959b82a-510f-45c0-9e06-acf526c2f4a1@oracle.com>
+ <20240501001544.1606-1-hdanton@sina.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240501001544.1606-1-hdanton@sina.com>
 
-Use destroy_class_and_remove_dbfs instead of unreg_class_and_remove_dbfs.
+On Wed, May 01, 2024 at 08:15:44AM +0800, Hillf Danton wrote:
+> On Tue, Apr 30, 2024 at 11:23:04AM -0500, Mike Christie wrote:
+> > On 4/30/24 8:05 AM, Edward Adam Davis wrote:
+> > >  static int vhost_task_fn(void *data)
+> > >  {
+> > >  	struct vhost_task *vtsk = data;
+> > > @@ -51,7 +51,7 @@ static int vhost_task_fn(void *data)
+> > >  			schedule();
+> > >  	}
+> > >  
+> > > -	mutex_lock(&vtsk->exit_mutex);
+> > > +	mutex_lock(&exit_mutex);
+> > >  	/*
+> > >  	 * If a vhost_task_stop and SIGKILL race, we can ignore the SIGKILL.
+> > >  	 * When the vhost layer has called vhost_task_stop it's already stopped
+> > > @@ -62,7 +62,7 @@ static int vhost_task_fn(void *data)
+> > >  		vtsk->handle_sigkill(vtsk->data);
+> > >  	}
+> > >  	complete(&vtsk->exited);
+> > > -	mutex_unlock(&vtsk->exit_mutex);
+> > > +	mutex_unlock(&exit_mutex);
+> > >  
+> > 
+> > Edward, thanks for the patch. I think though I just needed to swap the
+> > order of the calls above.
+> > 
+> > Instead of:
+> > 
+> > complete(&vtsk->exited);
+> > mutex_unlock(&vtsk->exit_mutex);
+> > 
+> > it should have been:
+> > 
+> > mutex_unlock(&vtsk->exit_mutex);
+> > complete(&vtsk->exited);
+> 
+> JFYI Edward did it [1]
+> 
+> [1] https://lore.kernel.org/lkml/tencent_546DA49414E876EEBECF2C78D26D242EE50A@qq.com/
 
-Signed-off-by: Shahar Avidar <ikobh7@gmail.com>
----
- drivers/staging/pi433/pi433_if.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+and then it failed testing.
 
-diff --git a/drivers/staging/pi433/pi433_if.c b/drivers/staging/pi433/pi433_if.c
-index c8c1d296184b..4fffd7007040 100644
---- a/drivers/staging/pi433/pi433_if.c
-+++ b/drivers/staging/pi433/pi433_if.c
-@@ -1409,11 +1409,11 @@ static int __init pi433_init(void)
- 
- 	status = spi_register_driver(&pi433_spi_driver);
- 	if (status < 0)
--		goto unreg_class_and_remove_dbfs;
-+		goto destroy_class_and_remove_dbfs;
- 
- 	return 0;
- 
--unreg_class_and_remove_dbfs:
-+destroy_class_and_remove_dbfs:
- 	debugfs_remove(root_dir);
- 	class_destroy(pi433_class);
- unreg_chrdev:
--- 
-2.34.1
+> > 
+> > If my analysis is correct, then Michael do you want me to resubmit a
+> > patch on top of your vhost branch or resubmit the entire patchset?
 
 
