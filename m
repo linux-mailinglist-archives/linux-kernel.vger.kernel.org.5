@@ -1,219 +1,138 @@
-Return-Path: <linux-kernel+bounces-164887-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-164888-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0F6168B847F
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 05:34:04 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id C85408B8481
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 05:44:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8C9C11F23CF0
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 03:34:03 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 109B7B220DF
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 03:44:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7525629405;
-	Wed,  1 May 2024 03:33:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AEA122941C;
+	Wed,  1 May 2024 03:44:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kQJDmZtw"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="d9/hjdIP"
+Received: from out203-205-251-84.mail.qq.com (unknown [203.205.251.84])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4CB81BDC3;
-	Wed,  1 May 2024 03:33:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DD3833E1
+	for <linux-kernel@vger.kernel.org>; Wed,  1 May 2024 03:44:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.251.84
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714534435; cv=none; b=uAjfo0jzghZrENzzvbXnE+gIoexV+4Csyq3n4BeFlq5XAbw6mFW1zduvUTiuFNSn19Vah8nWE3MIt4HW/e2Qy2mzHQrwXub2r5RxMlfMwXVKxta2tleseTGiEUaNJMyS9OumAyG7WxByklEeC90yvoUf0xF3cOo8lsGgAk21m08=
+	t=1714535049; cv=none; b=PypHR2C9cfF4KfXPkk2HV4YghTGxy3/f3zbxIyu4mtszkZHxQ1K6YvBphHIpHdTW3pVf+oZN3ejQNd8Sa3jEpyy68M0ncwsC4PA0HiQJO+ops5EAlYwebtB7R5wwmfUoW8kbk4vfYlE1Xalkh0e//noNVQcruEP91svZJMN/GdA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714534435; c=relaxed/simple;
-	bh=qabpSfLrHZ8yY23+xfb8YBr/5AsMrlrsYJIMWSZLp3g=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=I/qZNtFRaaDG4i3hlQee3YWszlGOCsxlLb4i6GuHNZkBz4UCLcTW5vkLLWv+20b4aZIIJJ8/VKym3KPjMBiE/vPMBimGJ5NvVgkRN/eQk0hRXmKpBDq5W8UWP62D8XyS7o1eV8mdFV2OG0JosTAQaSfR8XfDmMnTuT+mz4YH8hs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kQJDmZtw; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9FDDDC32789;
-	Wed,  1 May 2024 03:33:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714534435;
-	bh=qabpSfLrHZ8yY23+xfb8YBr/5AsMrlrsYJIMWSZLp3g=;
-	h=From:Date:Subject:To:Cc:From;
-	b=kQJDmZtwUEurZt1lZr1IIecBEGFze2KBarzkicFoVPNhBNiTxLu29BII4yeEQJjmt
-	 UfF0RajAVmjNR0rMKSsxjhLwYcmR9t4T206eobMo/X8CRkNCtgtoPPyYGetNDZzxC7
-	 ZENn79CkCFbMLSbzFlZ1WB9q6ISz/uv3kOP0JB76pj/0AdJyXSNpAQNF8hfdvbtNaN
-	 kO+QNYdgT32i9VKBvjsb0uMqbQKcRZIsehwEnuAhDxFRwikVlZRyQra3saAiu2ePNB
-	 Zsgf9EWA7UA2pF1A7q6LzGt59SVvsuNYJ/Fqy0LIlLhI+m4QXhCKFprFmKq+85ISDW
-	 nBqTqKquzU7+g==
-From: Bjorn Andersson <andersson@kernel.org>
-Date: Tue, 30 Apr 2024 20:38:57 -0700
-Subject: [PATCH] soc: qcom: pmic_glink: Make client-lock non-sleeping
+	s=arc-20240116; t=1714535049; c=relaxed/simple;
+	bh=VMECdDoevSZi2gTEGIIaMYMyx2i/AYirE3sFF5i/blo=;
+	h=Message-ID:From:To:Cc:Subject:Date:In-Reply-To:References:
+	 MIME-Version; b=hcGOqmL1Tx/mrMi51rzvQRn1Q+gd6yscTEcPkFSoRXAYV7/0attnrsyxF0n4zGNq5P0ZmkRj2BiNi8wrblfnBNKMBaGrV/UrHhYTXlCaFNxRb6RmKPhS8yCE5FdD2pWNQCt0D0STXp5Dg+JE7pF+nxgd8+HQIyrUpgWN5a7UiJc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=d9/hjdIP; arc=none smtp.client-ip=203.205.251.84
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
+	t=1714535044; bh=srw6zZpjyd7bfaFwU/LrQvYoyq7KMbt2LYOo6HL6/10=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=d9/hjdIPOW1tp68xWPqNJAFmoTDikfWYyZ7WYcoQwxdPaIg1qJtCGUrjpSNfIkYoo
+	 HQ8LcVgtgTg1WXMmLqUbmkT4qKG/xzTmHGRHRzEvIQAjDarEveagjzmeLq/ioW9A7R
+	 PFKS4T83igSvK7Uc7n3EKeeuIwfWsCiEOy45T8co=
+Received: from pek-lxu-l1.wrs.com ([111.198.228.153])
+	by newxmesmtplogicsvrszb9-0.qq.com (NewEsmtp) with SMTP
+	id B029B249; Wed, 01 May 2024 11:44:02 +0800
+X-QQ-mid: xmsmtpt1714535042tlfvcbnqd
+Message-ID: <tencent_C006E452DF067C49AD2ED7AED90CAB27CB06@qq.com>
+X-QQ-XMAILINFO: NQR8mRxMnur9+sRo5sukoIcvVWU1miBjLMm8bzAwkdJGH1mbTPAduF7h2+kmeb
+	 9sYhMd0kYtWT9KBE5Tw/mqZex4mx5GcEum6859vb+8iPXY7537o1ucqho1Zhq2pHHBVFDx33AKZ4
+	 9u54IqhAqQpK26oo5hurwmO/vK1pJMZjn/ToB8hdgNKsODMCmPdoRvcB0UR+gb6S7KElStXvS2iS
+	 /XVHBFBd0fbKKV1koFoiFdF0WmFeXCoX0TyWGftiO4E2N2u0h/Ra5Q90DiBEw8TQTYd7bTltFhEC
+	 UEYk7zGGI+2bFe+HuFVl1kSHGJg2eQb9apZX1JhRxOsP1lh6NGajsea/C/aavA9pxD2Oh/8SxH3i
+	 VjRYq+O+GSLW2C5EsBd7oFbeAjkX3WWs9591vXHNu8VSDAkXeSdbw1gIpQjvHUJ98LwzexSy8Nfv
+	 Z+SaywhMkF3mkf+WssFrESYdm6EOyKF/AcCAINLcBtighjiO94NdzCIDpirz/gZmJ496bu2KTrMp
+	 wGjQ3OonbmUjXHGJ4tCO0FcjAm99A8/vYkL6R6EJ5EsgyqXthS4D7oBHnjx11al5zGWy8I21CDZj
+	 5Z05XrZPTQYGCE9fOyEIckFVP4zwp14GDUy1wTTcMJu5T0pj77AhJ1Lpjmmo7HNeNHcNvWABj+RG
+	 G582vuh5h/zcL6Qe0sMibQWXbj+o5JRHGjLzNz73OA7xI1f9zktu/Gi+tYtEFugRGYFxGDnNbk+x
+	 et1xCym3Yhe5Z0/sPrymOL7AvXO0lQ1ym12ujHBDkRbhDVF7o+pwGxF7fXCnoqgH34gEDPSG4nqH
+	 l6fAHCm2m/y3iZW378xXHOJjilNoXM2SCeQarHsEVZ3Y8GEU/tPVO7bHqjcoWFFB7FSSb7deRU4s
+	 V7JYPqqIAz2nvZ02hi1o9mzTm7vdHh09zqBxy+M8ZUR8JHvD99kbR16MVr9Fl3ochKmmqLmAW+Eo
+	 giXQBDMW0=
+X-QQ-XMRINFO: M/715EihBoGSf6IYSX1iLFg=
+From: Edward Adam Davis <eadavis@qq.com>
+To: syzbot+98edc2df894917b3431f@syzkaller.appspotmail.com
+Cc: linux-kernel@vger.kernel.org,
+	syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] [net?] [virt?] [kvm?] KASAN: slab-use-after-free Read in vhost_task_fn
+Date: Wed,  1 May 2024 11:44:03 +0800
+X-OQ-MSGID: <20240501034402.1222730-2-eadavis@qq.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <000000000000a9613006174c1c4c@google.com>
+References: <000000000000a9613006174c1c4c@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240430-pmic-glink-sleep-while-atomic-v1-1-88fb493e8545@quicinc.com>
-X-B4-Tracking: v=1; b=H4sIAFC5MWYC/x3MQQqAIBBA0avErBswtU1XiRaiUw2ZiUYF0d2zl
- o8P/4ZMiSlDV92Q6ODMWyho6grsbMJEyK4YpJBaaCUwrmxx8hwWzJ4o4jmzJzT79gWnldXStsY
- 5AeURE418/f9+eJ4XyZOKtW8AAAA=
-To: Bjorn Andersson <andersson@kernel.org>, 
- Konrad Dybcio <konrad.dybcio@linaro.org>, 
- Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, 
- Mukesh Ojha <quic_mojha@quicinc.com>, Andrew Halaney <ahalaney@redhat.com>
-Cc: linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org, 
- Bjorn Andersson <quic_bjorande@quicinc.com>
-X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=openpgp-sha256; l=4626;
- i=quic_bjorande@quicinc.com; h=from:subject:message-id;
- bh=5Okqqvc+uPrucYooncyQft1LkqnSxU7//QfoENy5k2Y=;
- b=owEBgwJ8/ZANAwAIAQsfOT8Nma3FAcsmYgBmMblT96FOWK8laYL689pXrhn8i7xVexRY/hmKe
- Vp6CDEotiuJAkkEAAEIADMWIQQF3gPMXzXqTwlm1SULHzk/DZmtxQUCZjG5UxUcYW5kZXJzc29u
- QGtlcm5lbC5vcmcACgkQCx85Pw2ZrcUu0A//SY7PHvz0FY4C99ikvtRsAnSJ5DHgd4TPcMBKqbY
- X6BIQeCmLFN8/GD6gFkYBI1kV37wor+7SoDTJWb+c1zfRx3tUZ1o5xcLf2ArSgs6qVaD2/6TSvz
- Tx8eugUDuK90MEwCwEkroryXuA5aPbj3cxV6QJVm4ooZXrAzINPajD9MB9T7T8Rga+NreCIYUFA
- 8bmIP1+cHRv8Ism32nGynoiS4FH920Ud6AUciw7lQi2CsPqM8Snm3nObmNDw+L6wJvjtb7wWu/k
- F+Ilcxd2v1Wn6WOR0hQkYETTI3b+0x9hWEJSZlPygcGhFBPWb++W6HQhIC+qs2rMgyOlhl6yIWy
- SH+GQBmV9VmMmmMW1yQOyL8++eVjGiPrZwgT2gNkRcxcClINOlFMeUJcrRaZNwmd+FY03MUyl5H
- JM8r7DlR0XEB4HaXY5PZx7QjNP1no4j3ztN3YiYbBmolRwrBNrO5PZ14dfsfQnB5E5oTkXJ4Jkz
- pI4ErWkXK1JEuP7rpquKaPyEEPAelqoSuxiFri4/T9Z2YXM286jQVikHrerosyMSpbPn2+AqOYR
- xMFIBEKgVFdXU3DsNH/ylRoQ72MLv55dOOPisyajR1jjaeDQjn8pqq1WtMyVfu1P+hg9vITRbPG
- K1GbeF/mkl4s0eVu7suz5MXJioyiISxs1FT+89FxiHHw=
-X-Developer-Key: i=quic_bjorande@quicinc.com; a=openpgp;
- fpr=05DE03CC5F35EA4F0966D5250B1F393F0D99ADC5
+Content-Transfer-Encoding: 8bit
 
-From: Bjorn Andersson <quic_bjorande@quicinc.com>
+please test uaf in vhost_task_fn
 
-The recently introduced commit '635ce0db8956 ("soc: qcom: pmic_glink:
-don't traverse clients list without a lock")' ensured that the clients
-list is not modified while traversed.
+#syz test https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git bb7a2467e6be
 
-But the callback is made from the GLINK IRQ handler and as such this
-mutual exclusion can not be provided by a (sleepable) mutex.
-
-Replace the mutex with a spinlock.
-
-Fixes: 635ce0db8956 ("soc: qcom: pmic_glink: don't traverse clients list without a lock")
-Signed-off-by: Bjorn Andersson <quic_bjorande@quicinc.com>
----
- drivers/soc/qcom/pmic_glink.c | 25 +++++++++++++++----------
- 1 file changed, 15 insertions(+), 10 deletions(-)
-
-diff --git a/drivers/soc/qcom/pmic_glink.c b/drivers/soc/qcom/pmic_glink.c
-index 9bdbd8944c4e..40fb09d69014 100644
---- a/drivers/soc/qcom/pmic_glink.c
-+++ b/drivers/soc/qcom/pmic_glink.c
-@@ -11,6 +11,7 @@
- #include <linux/slab.h>
- #include <linux/soc/qcom/pdr.h>
- #include <linux/soc/qcom/pmic_glink.h>
-+#include <linux/spinlock.h>
- 
- enum {
- 	PMIC_GLINK_CLIENT_BATT = 0,
-@@ -36,7 +37,7 @@ struct pmic_glink {
- 	unsigned int pdr_state;
- 
- 	/* serializing clients list updates */
--	struct mutex client_lock;
-+	spinlock_t client_lock;
- 	struct list_head clients;
- };
- 
-@@ -58,10 +59,11 @@ static void _devm_pmic_glink_release_client(struct device *dev, void *res)
- {
- 	struct pmic_glink_client *client = (struct pmic_glink_client *)res;
- 	struct pmic_glink *pg = client->pg;
-+	unsigned long flags;
- 
--	mutex_lock(&pg->client_lock);
-+	spin_lock_irqsave(&pg->client_lock, flags);
- 	list_del(&client->node);
--	mutex_unlock(&pg->client_lock);
-+	spin_unlock_irqrestore(&pg->client_lock, flags);
- }
- 
- struct pmic_glink_client *devm_pmic_glink_register_client(struct device *dev,
-@@ -72,6 +74,7 @@ struct pmic_glink_client *devm_pmic_glink_register_client(struct device *dev,
- {
- 	struct pmic_glink_client *client;
- 	struct pmic_glink *pg = dev_get_drvdata(dev->parent);
-+	unsigned long flags;
- 
- 	client = devres_alloc(_devm_pmic_glink_release_client, sizeof(*client), GFP_KERNEL);
- 	if (!client)
-@@ -84,12 +87,12 @@ struct pmic_glink_client *devm_pmic_glink_register_client(struct device *dev,
- 	client->priv = priv;
- 
- 	mutex_lock(&pg->state_lock);
--	mutex_lock(&pg->client_lock);
-+	spin_lock_irqsave(&pg->client_lock, flags);
- 
- 	list_add(&client->node, &pg->clients);
- 	client->pdr_notify(client->priv, pg->client_state);
- 
--	mutex_unlock(&pg->client_lock);
-+	spin_unlock_irqrestore(&pg->client_lock, flags);
- 	mutex_unlock(&pg->state_lock);
- 
- 	devres_add(dev, client);
-@@ -112,6 +115,7 @@ static int pmic_glink_rpmsg_callback(struct rpmsg_device *rpdev, void *data,
- 	struct pmic_glink_client *client;
- 	struct pmic_glink_hdr *hdr;
- 	struct pmic_glink *pg = dev_get_drvdata(&rpdev->dev);
-+	unsigned long flags;
- 
- 	if (len < sizeof(*hdr)) {
- 		dev_warn(pg->dev, "ignoring truncated message\n");
-@@ -120,12 +124,12 @@ static int pmic_glink_rpmsg_callback(struct rpmsg_device *rpdev, void *data,
- 
- 	hdr = data;
- 
--	mutex_lock(&pg->client_lock);
-+	spin_lock_irqsave(&pg->client_lock, flags);
- 	list_for_each_entry(client, &pg->clients, node) {
- 		if (client->id == le32_to_cpu(hdr->owner))
- 			client->cb(data, len, client->priv);
+diff --git a/kernel/vhost_task.c b/kernel/vhost_task.c
+index 48c289947b99..8800f5acc007 100644
+--- a/kernel/vhost_task.c
++++ b/kernel/vhost_task.c
+@@ -61,8 +61,8 @@ static int vhost_task_fn(void *data)
+ 		set_bit(VHOST_TASK_FLAGS_KILLED, &vtsk->flags);
+ 		vtsk->handle_sigkill(vtsk->data);
  	}
--	mutex_unlock(&pg->client_lock);
-+	spin_unlock_irqrestore(&pg->client_lock, flags);
- 
- 	return 0;
+-	complete(&vtsk->exited);
+ 	mutex_unlock(&vtsk->exit_mutex);
++	complete(&vtsk->exited);
+
+ 	do_exit(0);
  }
-@@ -165,6 +169,7 @@ static void pmic_glink_state_notify_clients(struct pmic_glink *pg)
- {
- 	struct pmic_glink_client *client;
- 	unsigned int new_state = pg->client_state;
-+	unsigned long flags;
+--- a/kernel/softirq.c
++++ b/kernel/softirq.c
+@@ -508,7 +508,7 @@ static inline bool lockdep_softirq_start(void) { return false; }
+ static inline void lockdep_softirq_end(bool in_hardirq) { }
+ #endif
  
- 	if (pg->client_state != SERVREG_SERVICE_STATE_UP) {
- 		if (pg->pdr_state == SERVREG_SERVICE_STATE_UP && pg->ept)
-@@ -175,10 +180,10 @@ static void pmic_glink_state_notify_clients(struct pmic_glink *pg)
+-asmlinkage __visible void __softirq_entry __do_softirq(void)
++static void handle_softirqs(bool ksirqd)
+ {
+ 	unsigned long end = jiffies + MAX_SOFTIRQ_TIME;
+ 	unsigned long old_flags = current->flags;
+@@ -563,8 +563,7 @@ restart:
+ 		pending >>= softirq_bit;
  	}
  
- 	if (new_state != pg->client_state) {
--		mutex_lock(&pg->client_lock);
-+		spin_lock_irqsave(&pg->client_lock, flags);
- 		list_for_each_entry(client, &pg->clients, node)
- 			client->pdr_notify(client->priv, new_state);
--		mutex_unlock(&pg->client_lock);
-+		spin_unlock_irqrestore(&pg->client_lock, flags);
- 		pg->client_state = new_state;
- 	}
+-	if (!IS_ENABLED(CONFIG_PREEMPT_RT) &&
+-	    __this_cpu_read(ksoftirqd) == current)
++	if (!IS_ENABLED(CONFIG_PREEMPT_RT) && ksirqd)
+ 		rcu_softirq_qs();
+ 
+ 	local_irq_disable();
+@@ -584,6 +583,11 @@ restart:
+ 	current_restore_flags(old_flags, PF_MEMALLOC);
  }
-@@ -265,7 +270,7 @@ static int pmic_glink_probe(struct platform_device *pdev)
- 	pg->dev = &pdev->dev;
  
- 	INIT_LIST_HEAD(&pg->clients);
--	mutex_init(&pg->client_lock);
-+	spin_lock_init(&pg->client_lock);
- 	mutex_init(&pg->state_lock);
- 
- 	match_data = (unsigned long *)of_device_get_match_data(&pdev->dev);
-
----
-base-commit: bb7a2467e6beef44a80a17d45ebf2931e7631083
-change-id: 20240430-pmic-glink-sleep-while-atomic-d43c42c5add0
-
-Best regards,
--- 
-Bjorn Andersson <quic_bjorande@quicinc.com>
++asmlinkage __visible void __softirq_entry __do_softirq(void)
++{
++	handle_softirqs(false);
++}
++
+ /**
+  * irq_enter_rcu - Enter an interrupt context with RCU watching
+  */
+@@ -921,7 +925,7 @@ static void run_ksoftirqd(unsigned int cpu)
+ 		 * We can safely run softirq on inline stack, as we are not deep
+ 		 * in the task stack here.
+ 		 */
+-		__do_softirq();
++		handle_softirqs(true);
+ 		ksoftirqd_run_end();
+ 		cond_resched();
+ 		return;
 
 
