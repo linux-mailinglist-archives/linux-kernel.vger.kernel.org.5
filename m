@@ -1,109 +1,141 @@
-Return-Path: <linux-kernel+bounces-164932-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-164933-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id CD4F58B8526
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 06:58:57 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id CE6608B8529
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 07:00:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6DE3A1F22CB3
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 04:58:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5DF251F22D31
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 05:00:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4542D3F8F1;
-	Wed,  1 May 2024 04:58:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B551A3FB1E;
+	Wed,  1 May 2024 05:00:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LvP64AOU"
-Received: from mail-pj1-f50.google.com (mail-pj1-f50.google.com [209.85.216.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="MYmYdORC"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 687E13BBCC;
-	Wed,  1 May 2024 04:58:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B9E93D968;
+	Wed,  1 May 2024 05:00:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714539528; cv=none; b=WwK+JD4alIJrmdOs8E656LSOMpbpfx4mYvL3oOvvqGsJ/+wcvuZ7HQQhc1RVZ4L6UQjE29uyN6RpegioH1/mvUZtQ/ax65Us9o4TP90hh91+fZQo3TvSbGZ21sJUA3N2eBT5nRGjJjARQcezmyIAb5KiGbeVu6GhwErQywISdaI=
+	t=1714539612; cv=none; b=XOsqZJX/hSLKC57H+oQjuWwhSFt+tzs5oKd3/CzOI/LLjOu8LoMZaPzmw48Q2rgi3e9UKSaPnorAsWcqI18lefaKvlLS2TOWCu3jeND3jM1iVCCmCESVQrvihgwh3Xx8Exj0csGTSQS2loUX/2RID3+0xtZb3GOBfMC3KPF1UEE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714539528; c=relaxed/simple;
-	bh=z8BfY5vw4WwDVxzv6VR+IM7TSGzYBOvn+OEqviyCF6s=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=DiJ25ARAScxHWbG/y4B3MFFyvAIhfBFIVm70xsP9cTO5Ob+zXmwDe5HnxRThRlDAMQknUtz2j7AEVIoCU/y5LLkpTMebPxI6Rhu1sxDGPruQGyyRi2AiHPT0E8CHfbFcdgC0EPVjBIsvVvIUYsgUoGfR81EvFPvlioS+lFZ8hAQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LvP64AOU; arc=none smtp.client-ip=209.85.216.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f50.google.com with SMTP id 98e67ed59e1d1-2b2b42b5126so971504a91.3;
-        Tue, 30 Apr 2024 21:58:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714539527; x=1715144327; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=z8BfY5vw4WwDVxzv6VR+IM7TSGzYBOvn+OEqviyCF6s=;
-        b=LvP64AOUILpdpWFDpFwrZSThZ0RdjDltHfGe95oe2iEhRwYlcJ0XY6+rF2+dB1f+CP
-         buUOf56mY6mXJkue1PKVg9PTZ4l7L5Lt8MUqDdptvq9zIUshlRy8Onw9Zy3AgpBMl4In
-         0hntF3A2bDYtx+EW50OSedZ0r2qH62aw3YGHaoOqicHqZlZAu6o2EbDxAoYAl24QBXjD
-         q8Jw1b0O+lMkCimbgL6bwieV0P75uK96KfzbueVSXBydsFTubuYr+SmVI47QpL/+vL07
-         c0tD2GwtyleoS+eiAH2m/UEnyYMxJ4PzYzHyIajnxEjupe6Jjcv5GC/0aoQadZ9i9APw
-         cVhw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714539527; x=1715144327;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=z8BfY5vw4WwDVxzv6VR+IM7TSGzYBOvn+OEqviyCF6s=;
-        b=sAXfVE1V50OTUhB3suaE9VpHmZFKW1OcSbFdwJDpnHzA8kLrbPeMb5FG4G4QvXu7tt
-         QiEIkisq8kwhAn5UJvl1e0nGhhc2TNdule2mKutcIPW7yymZbO5Mvzij2SqbGyYMJ6Gh
-         uqNVVhMypGqfOj4X6l6V9h912sSTScI31NfpC+KvjiHJPQJITsJZ1Nc72zaT93aZRqPL
-         trt1ztqSVconDrLhcXHMHRkI/JpwxnVChyFzAgAqnatxyDR0lBt+U5eb3fzX5sVNcnUj
-         W/fuaScELt+cWfgRdZPU3b0Nbv2X54rS2eCHKrGmLidkSMK0GYMvrtuEbmQ23Yomu03O
-         ewmA==
-X-Forwarded-Encrypted: i=1; AJvYcCVJ3nNBzejMggel5OO8a28RXJAyiMEKi+NyTg6V4XFs8xVitCbEZVF4AEJvJ2OTCHMG3Vi7yE8dGwd4KW5JU4aomXf9k6Sr3jNOdyT1NHfDSuA5cj1P3dboaJM2jeQS9n+Aq/VpxTWIvPfIrTttbBQp+UB+rVgWXVMp3u9WigAJtjqACov2cQ==
-X-Gm-Message-State: AOJu0YzG9igwjfvH7FYLOYBL+PhcZ251uslBbOl+xoEqeXwaTDPvClrK
-	hV6DZNPBgBgYHgDRDtHV2i5SLDp0/SXHSdzPXJRCUSqakwJVRLnndfN94D/hHcTEpvNYoEn0hgz
-	toU07p4VfK6TLKk0L26yXCY2AH4c=
-X-Google-Smtp-Source: AGHT+IEzz4gLZ9uCpo0NMxIIZ4FsCp6By0fYcSUllRCSYrZJdTP4Ev2JoEzHX1qEt3Bhc9zH3PaGbs16BcdNaklqdr0=
-X-Received: by 2002:a17:90b:1192:b0:2b2:56f:52ec with SMTP id
- gk18-20020a17090b119200b002b2056f52ecmr1460870pjb.35.1714539526539; Tue, 30
- Apr 2024 21:58:46 -0700 (PDT)
+	s=arc-20240116; t=1714539612; c=relaxed/simple;
+	bh=xGgIRf+AUlgNu4Hmw4Eq+u2jwmcGNa54lIyE8XYNIqg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=o5Hdx1ViQupgJe0Xdfm4opL+W6b0g2CiBnfWY8ztg1MlrLqM4fiRvpnKt9rvpOuWX1q5s8z6Zan3swKIh0QTFzQqjfbV8tmcIMh4EUbjpE4jkT3A9xImSubLUEjFzHWgEn1PNWp99gYCdu1rwGq4N9WbuYSzFXaIqKoJPU7LpkM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=MYmYdORC; arc=none smtp.client-ip=198.175.65.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1714539609; x=1746075609;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=xGgIRf+AUlgNu4Hmw4Eq+u2jwmcGNa54lIyE8XYNIqg=;
+  b=MYmYdORCgQn6SitgMANP13TVgocwFSiYzJ7spSXysQIaOxrHFfHtZ177
+   ekAdZDz5sRhiDrOs2SWJBvVPtZHKzM7N3H+ovhaH0yUKMG3Ap6OnGTMTL
+   qC90LQJAy0NktH6q7hndX89ZGEPdtSLgsn5Qs9VjgCPROe4x11nckmITK
+   Ep/wC7jV8seqytdLA8LQSRcC9BfIQ/UYV0g4Hy2Qw9qd80pAJpevzrOwG
+   AV0vQz9LA2Pu6j2ve049aX8DXM+OqAsHEpKE+lDp4eJ8jDajfAkCBmIad
+   Z4yRZahG4MGN6f7A99Eb4qz4LzjVylVQxdT85363Dq/2f/x0Wf9W4iOIR
+   Q==;
+X-CSE-ConnectionGUID: gSHdX6hmSuGDmCn/WpyjJw==
+X-CSE-MsgGUID: T+ddMySpRoKrTMMnwvm34g==
+X-IronPort-AV: E=McAfee;i="6600,9927,11060"; a="21685689"
+X-IronPort-AV: E=Sophos;i="6.07,244,1708416000"; 
+   d="scan'208";a="21685689"
+Received: from orviesa004.jf.intel.com ([10.64.159.144])
+  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Apr 2024 22:00:09 -0700
+X-CSE-ConnectionGUID: sCXbPdPwQy6s9UjquLETkw==
+X-CSE-MsgGUID: d8ABBAZJQOK+XCc+ZhXLFQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,244,1708416000"; 
+   d="scan'208";a="31479719"
+Received: from lkp-server01.sh.intel.com (HELO e434dd42e5a1) ([10.239.97.150])
+  by orviesa004.jf.intel.com with ESMTP; 30 Apr 2024 22:00:07 -0700
+Received: from kbuild by e434dd42e5a1 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1s224b-0008rn-03;
+	Wed, 01 May 2024 05:00:05 +0000
+Date: Wed, 1 May 2024 12:59:21 +0800
+From: kernel test robot <lkp@intel.com>
+To: skseofh@gmail.com, robh@kernel.org, saravanak@google.com,
+	rppt@kernel.org
+Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Daero Lee <daero_le.lee@samsung.com>
+Subject: Re: [PATCH] of: of_reserved_mem: clean-up reserved memory with no-map
+Message-ID: <202405011208.qsZQwChO-lkp@intel.com>
+References: <20240428125505.434962-1-skseofh@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CAE8VWi+UwYWw+RBMPi5ozg+sQHKtyxp2i2K3u9e3b42Gt8D+qw@mail.gmail.com>
- <2024050119-pediatric-prankish-64b9@gregkh>
-In-Reply-To: <2024050119-pediatric-prankish-64b9@gregkh>
-From: Shresth Prasad <shresthprasad7@gmail.com>
-Date: Wed, 1 May 2024 10:28:35 +0530
-Message-ID: <CAE8VWiKqrPge_OaeCXXAER6ofFLULLPrPK8StCMV9DPM+WHuHw@mail.gmail.com>
-Subject: Re: [PATCH][next] tty: sunsu: Simplify device_node cleanup by using __free
-To: Greg KH <gregkh@linuxfoundation.org>
-Cc: davem@davemloft.net, jirislaby@kernel.org, linux-serial@vger.kernel.org, 
-	Javier Carrasco <javier.carrasco.cruz@gmail.com>, Julia Lawall <julia.lawall@inria.fr>, 
-	Shuah Khan <skhan@linuxfoundation.org>, sparclinux@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240428125505.434962-1-skseofh@gmail.com>
 
-> I don't see anything here, sorry.
-I'm sorry but is this patch not visible?
-https://lore.kernel.org/all/20240425060303.8045-2-shresthprasad7@gmail.com/
+Hi,
 
-> Also, how was this tested?
-I tested it using a qemu x86_64 virtual machine
+kernel test robot noticed the following build warnings:
 
-Regards,
-Shresth
+[auto build test WARNING on robh/for-next]
+[also build test WARNING on linus/master v6.9-rc6 next-20240430]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-On Wed, May 1, 2024 at 10:21=E2=80=AFAM Greg KH <gregkh@linuxfoundation.org=
-> wrote:
->
-> On Wed, May 01, 2024 at 10:01:00AM +0530, Shresth Prasad wrote:
-> > Hi,
-> >
-> > Could I please get some feedback for this patch?
->
-> I don't see anything here, sorry.
->
-> Also, how was this tested?
+url:    https://github.com/intel-lab-lkp/linux/commits/skseofh-gmail-com/of-of_reserved_mem-clean-up-reserved-memory-with-no-map/20240430-144643
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/robh/linux.git for-next
+patch link:    https://lore.kernel.org/r/20240428125505.434962-1-skseofh%40gmail.com
+patch subject: [PATCH] of: of_reserved_mem: clean-up reserved memory with no-map
+config: arm-defconfig (https://download.01.org/0day-ci/archive/20240501/202405011208.qsZQwChO-lkp@intel.com/config)
+compiler: clang version 14.0.6 (https://github.com/llvm/llvm-project.git f28c006a5895fc0e329fe15fead81e37457cb1d1)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240501/202405011208.qsZQwChO-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202405011208.qsZQwChO-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+>> drivers/of/of_reserved_mem.c:95:4: warning: non-void function 'early_init_dt_reserve_memory' should return a value [-Wreturn-type]
+                           return;
+                           ^
+   1 warning generated.
+
+
+vim +/early_init_dt_reserve_memory +95 drivers/of/of_reserved_mem.c
+
+    80	
+    81	static int __init early_init_dt_reserve_memory(phys_addr_t base,
+    82						       phys_addr_t size, bool nomap)
+    83	{
+    84		if (nomap) {
+    85			/*
+    86			 * If the memory is already reserved (by another region), we
+    87			 * should not allow it to be marked nomap, but don't worry
+    88			 * if the region isn't memory as it won't be mapped.
+    89			 */
+    90			if (memblock_overlaps_region(&memblock.memory, base, size) &&
+    91			    memblock_is_region_reserved(base, size))
+    92				return -EBUSY;
+    93	
+    94			if (memblock_mark_nomap(base, size))
+  > 95				return;
+    96		}
+    97		return memblock_reserve(base, size);
+    98	}
+    99	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
