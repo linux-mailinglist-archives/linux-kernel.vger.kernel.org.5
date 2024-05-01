@@ -1,117 +1,144 @@
-Return-Path: <linux-kernel+bounces-165671-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-165672-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0B2768B8F4D
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 20:00:39 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5F0C48B8F50
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 20:00:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B8472281537
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 18:00:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 14B491F23701
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 18:00:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 01FC71474B2;
-	Wed,  1 May 2024 18:00:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="l2U3kks0"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 060A71474AD;
+	Wed,  1 May 2024 18:00:46 +0000 (UTC)
+Received: from mail-io1-f72.google.com (mail-io1-f72.google.com [209.85.166.72])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5FE1F5024E;
-	Wed,  1 May 2024 18:00:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2CF7D1384B1
+	for <linux-kernel@vger.kernel.org>; Wed,  1 May 2024 18:00:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.72
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714586429; cv=none; b=kpze8KVtXJTtd3fLyoUjE+W5souMCVp3REkYnHzsIVK/E7k34854p8VZRJXgoKnlyzOHSWzyh8AAX3ECxVvn1Y2iEQPduepyE9R5CCx6gtvT4+ve7asz6RjQzTBfBjJb2fpySfDJYt4FcqVlxP7Z+grbw7C+asb5jcHyin9ZrMs=
+	t=1714586445; cv=none; b=mRlZ3kHfe9/bpuBmY9cgbgKG6s0GT5G8WqHAPNGXm59zkbp9QIbk13uWfTUg9+IRPiTWwTR/sLjPwfc5q2QxyZENNhpJptlMqR+lpxx3ctTByTkpAqKfmENIeX6unVqz2dFroAZc+VImVJMIAuygjA8F2winnwSXVhnig2OlED0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714586429; c=relaxed/simple;
-	bh=k+dIFqMwQZ2aUiDi9ejc2u8LVegSYH+CS+A6rMZQZao=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Gc3T49NwV1U7JMS6tKx6kyuB3QvNQvFTKHDrKzrkFy+4OwCUe82vzWLVfQEpj29ExH+hglhe7urPL05AyQd/2BS0xok+yP1P3hvlOyCN9OqWvENyqJfemWPlQLAyu8YuRQBG3bE2q012hR9L6FwbJ8Td0Dl9qO39CrsuVfdFbho=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=l2U3kks0; arc=none smtp.client-ip=198.175.65.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1714586427; x=1746122427;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=k+dIFqMwQZ2aUiDi9ejc2u8LVegSYH+CS+A6rMZQZao=;
-  b=l2U3kks0iRB8jYGQG3x1sKgp6MHMsY3puPxNm32woUFqaanu2KzTzTEa
-   UOr0SSlP7ikiSC0miQ2L0e5bFSHON/9I2ua93ajkNMbeOdt45vRF0G29u
-   /Zxn9BYyrnKph7JmXOGCmZZ6X4sSPfNYyQTiwdlOPpareCWccBto+OOEY
-   QwJEk36pJSEYrp5QCBfYtrBhZEopkipFbQrkVFrKAW6XATg9Nn0pk5RPb
-   AYWA/SKdKM+WCMVR9KuUUbXodMbXQwMrJT63CCl/o3dkSkE6Nf602DzLn
-   hUxHQcC9gnuuTWhdlE+wCYHxqT8K+ljZqPeBAw4LuJodqAidnkJuWbo+H
-   A==;
-X-CSE-ConnectionGUID: zNTOMlCdTUywh+crgY7l9w==
-X-CSE-MsgGUID: WTeGrNNvRHqeb2hDMKNH/Q==
-X-IronPort-AV: E=McAfee;i="6600,9927,11061"; a="10454627"
-X-IronPort-AV: E=Sophos;i="6.07,246,1708416000"; 
-   d="scan'208";a="10454627"
-Received: from fmviesa009.fm.intel.com ([10.60.135.149])
-  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 May 2024 11:00:26 -0700
-X-CSE-ConnectionGUID: 6yvooRm2TD+Bsr9luSpjyg==
-X-CSE-MsgGUID: ykIbpHkiRSai8G40A9GwMQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,246,1708416000"; 
-   d="scan'208";a="26817144"
-Received: from linux.intel.com ([10.54.29.200])
-  by fmviesa009.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 May 2024 11:00:26 -0700
-Received: from [10.212.96.143] (kliang2-mobl1.ccr.corp.intel.com [10.212.96.143])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by linux.intel.com (Postfix) with ESMTPS id 2AD8620B5739;
-	Wed,  1 May 2024 11:00:23 -0700 (PDT)
-Message-ID: <e1aae0a8-fcd8-42ea-81b2-0f95c9d7cc2b@linux.intel.com>
-Date: Wed, 1 May 2024 14:00:21 -0400
+	s=arc-20240116; t=1714586445; c=relaxed/simple;
+	bh=zUm2mz7vlyO2X/Zw/kb5eSC3GNO8p3NhZ+BwvbdKjJg=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=Ru5qyjFw1wSoHIuJy3YE/QO8CiCT+GYE4MBB1Gp+v+uUv7FXVuCSixKc2eemRb/UxWf1xyKh3VVaVtAz4Ao/pXceXcoPyRg9zwOUur9xI32Yfzs0f+tg6X4GpbbWZLtCk4iYjg6yHNDYFQGI7KEdzd8Dtr3l3NzUHLppo7ok5Dc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.72
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f72.google.com with SMTP id ca18e2360f4ac-7da7d4ccb67so756794039f.0
+        for <linux-kernel@vger.kernel.org>; Wed, 01 May 2024 11:00:43 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714586443; x=1715191243;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=UZnet9X3XAB5zOp6ShaIsnBpDIJDTNZCMwS7jegTrZA=;
+        b=evefkwLieowscypanQ1fhdyGV2raesWOHgSdsNqBpfnmyq2ekIfubQ7Y3EFlFwEroT
+         D7jCfgBhOAE21uEKqGdUbn61DDLDFMjtTn/ZA6jXFWrxVmAj5AQJ9AZ3MtxMH+Itfr9Q
+         RAFDNo7XQDHxv2V8b7BP6D1dvuwJHJjlruFlcmX2WkEo9IV5Cw8z6sVOdJtzI+UZi5PT
+         0QxxNjZoyb4qDtjS21P3+BmnzZrKAW1I9L9i6SK9wese6j5AZBPt30ycYvHQRucY1UQP
+         BX2Ui5jLAQ44YwJF6k9LGV0dHjDXfJ35Q4QVKNEdYmjgZxmyoOToIxKTvQNHIgqeLwuG
+         CgiA==
+X-Gm-Message-State: AOJu0Yz5AZSxTnBmyhZ4yoAWNvzev1WDlfhfAI388LtBc6pmFo0yWGKT
+	/J/XPOb+3L+fFS3KfsKz9x8BSuLwGiFlijocia+oH3iwZ4j6GLnWLu5t3U9iFgieL4v6BXmKsSf
+	QdjJd1oddd9bT5rCjY0oPRgh+WRpxaeLmDVW0x3w7YE90Q2Kyhv75Ryk=
+X-Google-Smtp-Source: AGHT+IHJOTVW+BiItJLl26yyFvyZ3uR/dOijvYva1ZzT4C80ivo63O55JlUQeMoc3YPO8PR1GQMiCyo7W0Afd1KgGbdY8klCee1W
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH 23/41] KVM: x86/pmu: Implement the save/restore of PMU
- state for Intel CPU
-To: Mingwei Zhang <mizhang@google.com>,
- Sean Christopherson <seanjc@google.com>
-Cc: Dapeng Mi <dapeng1.mi@linux.intel.com>, maobibo <maobibo@loongson.cn>,
- Xiong Zhang <xiong.y.zhang@linux.intel.com>, pbonzini@redhat.com,
- peterz@infradead.org, kan.liang@intel.com, zhenyuw@linux.intel.com,
- jmattson@google.com, kvm@vger.kernel.org, linux-perf-users@vger.kernel.org,
- linux-kernel@vger.kernel.org, zhiyuan.lv@intel.com, eranian@google.com,
- irogers@google.com, samantha.alt@intel.com, like.xu.linux@gmail.com,
- chao.gao@intel.com
-References: <ZirPGnSDUzD-iWwc@google.com>
- <77913327-2115-42b5-850a-04ef0581faa7@linux.intel.com>
- <CAL715WJCHJD_wcJ+r4TyWfvmk9uNT_kPy7Pt=CHkB-Sf0D4Rqw@mail.gmail.com>
- <ff4a4229-04ac-4cbf-8aea-c84ccfa96e0b@linux.intel.com>
- <CAL715WJKL5__8RU0xxUf0HifNVQBDRODE54O2bwOx45w67TQTQ@mail.gmail.com>
- <5f5bcbc0-e2ef-4232-a56a-fda93c6a569e@linux.intel.com>
- <ZiwEoZDIg8l7-uid@google.com>
- <CAL715WJ4jHmto3ci=Fz5Bwx2Y=Hiy1MoFCpcUhz-C8aPMqYskw@mail.gmail.com>
- <b9095b0d-72f0-4e54-8d2e-f965ddff06bb@linux.intel.com>
- <CAL715WKm0X9NJxq8SNGD5EJomzY4DDSiwLb1wMMgcgHqeZ64BA@mail.gmail.com>
- <Zi_cle1-5SZK2558@google.com>
- <CAL715WJbYNqm2SXiTgqWHs34DtRfdFE7Hx48X_4ASHyQXeaPzA@mail.gmail.com>
-Content-Language: en-US
-From: "Liang, Kan" <kan.liang@linux.intel.com>
-In-Reply-To: <CAL715WJbYNqm2SXiTgqWHs34DtRfdFE7Hx48X_4ASHyQXeaPzA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+X-Received: by 2002:a05:6e02:1d8d:b0:36c:852:9dc with SMTP id
+ h13-20020a056e021d8d00b0036c085209dcmr264622ila.6.1714586443072; Wed, 01 May
+ 2024 11:00:43 -0700 (PDT)
+Date: Wed, 01 May 2024 11:00:43 -0700
+In-Reply-To: <00000000000003b4af060de27f6b@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000e058dc061768436a@google.com>
+Subject: Re: [syzbot] [PATCH net v3] nfc: nci: Fix uninit-value in nci_rx_work
+From: syzbot <syzbot+d7b4dc6cd50410152534@syzkaller.appspotmail.com>
+To: linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
+For archival purposes, forwarding an incoming command email to
+linux-kernel@vger.kernel.org.
 
+***
 
-On 2024-05-01 1:43 p.m., Mingwei Zhang wrote:
-> One of the things on top of the mind is that: there seems to be no way
-> for the perf subsystem to express this: "no, your host-level profiling
-> is not interested in profiling the KVM_RUN loop when our guest vPMU is
-> actively running".
+Subject: [PATCH net v3] nfc: nci: Fix uninit-value in nci_rx_work
+Author: ryasuoka@redhat.com
 
-exclude_hv? Although it seems the option is not well supported on X86
-for now.
+#syz test: git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
 
-Thanks,
-Kan
+diff --git a/net/nfc/nci/core.c b/net/nfc/nci/core.c
+index 0d26c8ec9993..e4f92a090022 100644
+--- a/net/nfc/nci/core.c
++++ b/net/nfc/nci/core.c
+@@ -1463,6 +1463,16 @@ int nci_core_ntf_packet(struct nci_dev *ndev, __u16 opcode,
+ 				 ndev->ops->n_core_ops);
+ }
+ 
++static bool nci_valid_size(struct sk_buff *skb, unsigned int header_size)
++{
++	if (skb->len < header_size ||
++	    !nci_plen(skb->data) ||
++	    skb->len < header_size + nci_plen(skb->data)) {
++		return false;
++	}
++	return true;
++}
++
+ /* ---- NCI TX Data worker thread ---- */
+ 
+ static void nci_tx_work(struct work_struct *work)
+@@ -1516,30 +1526,35 @@ static void nci_rx_work(struct work_struct *work)
+ 		nfc_send_to_raw_sock(ndev->nfc_dev, skb,
+ 				     RAW_PAYLOAD_NCI, NFC_DIRECTION_RX);
+ 
+-		if (!nci_plen(skb->data)) {
+-			kfree_skb(skb);
+-			break;
+-		}
++		if (!skb->len)
++			goto invalid_pkt_free;
+ 
+ 		/* Process frame */
+ 		switch (nci_mt(skb->data)) {
+ 		case NCI_MT_RSP_PKT:
++			if (!nci_valid_size(skb, NCI_CTRL_HDR_SIZE))
++				goto invalid_pkt_free;
+ 			nci_rsp_packet(ndev, skb);
+-			break;
++			continue;
+ 
+ 		case NCI_MT_NTF_PKT:
++			if (!nci_valid_size(skb, NCI_CTRL_HDR_SIZE))
++				goto invalid_pkt_free;
+ 			nci_ntf_packet(ndev, skb);
+-			break;
++			continue;
+ 
+ 		case NCI_MT_DATA_PKT:
++			if (!nci_valid_size(skb, NCI_DATA_HDR_SIZE))
++				goto invalid_pkt_free;
+ 			nci_rx_data_packet(ndev, skb);
+-			break;
++			continue;
+ 
+ 		default:
+ 			pr_err("unknown MT 0x%x\n", nci_mt(skb->data));
+-			kfree_skb(skb);
+-			break;
++			goto invalid_pkt_free;
+ 		}
++invalid_pkt_free:
++		kfree_skb(skb);
+ 	}
+ 
+ 	/* check if a data exchange timeout has occurred */
+
 
