@@ -1,113 +1,144 @@
-Return-Path: <linux-kernel+bounces-165201-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-165202-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8AEEF8B8969
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 13:47:43 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1044C8B896C
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 13:48:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 46AB9285DC3
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 11:47:42 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 52B3CB229ED
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 11:48:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CEE7381AD2;
-	Wed,  1 May 2024 11:47:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E568682488;
+	Wed,  1 May 2024 11:48:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="Yd2yYiy2"
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gRk8qU5n"
+Received: from mail-wr1-f68.google.com (mail-wr1-f68.google.com [209.85.221.68])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D4FE1758D;
-	Wed,  1 May 2024 11:47:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.167.242.64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B3B5C60253;
+	Wed,  1 May 2024 11:48:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.68
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714564054; cv=none; b=rUFk1/6tTQ6vLi24uYK8UBrcxc5Bj6o+ut+N2I5zORaIuEXSS403xM4dHRigcO+3EmXjAeUap60mFJYJqmUNl+hT40WwPA42EvIM79UKEWOlLK1oLE2k1S351DSjfUchfP+t+q90QEWdrqP6oRV+veBxE/pmHghIPZ5iQpE8SuA=
+	t=1714564118; cv=none; b=Da4gNOm04vzDkHQsq+s9o6Q+24A0JYEk9pcA/403UUgk6qlg0LMCE0sd+rxUvt1gnSLeFidiJx6wtN3hHNMGGijgxNPBw079MlS4Z2em5piyfu5EcXK7AJWPQq/KbF/jMTOGRs0MJH8IChEEYzREAux+1Pt67B0loJLqeQycKbk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714564054; c=relaxed/simple;
-	bh=1qvnq8BYqrVzZ+c/6mc11hPFXliDCWNW1o9mQOt1OwE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=s4CLUGbVnIbuSOAzil2g21kiLIR11VZLwPkYZYF9bQSHWnzhr7KVLvFhOY5AOs9/1DaDYxHd/ysdlkPwE4qFXKaQ0bWb57yGaRdu1JxLtEQBbxugYDTWsuBrGJl+7mDjoB+0+nOjroR4AUZmRo8xcicBVbPf+TqkbzHMlas6GmI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=Yd2yYiy2; arc=none smtp.client-ip=213.167.242.64
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
-Received: from pendragon.ideasonboard.com (85-76-79-44-nat.elisa-mobile.fi [85.76.79.44])
-	by perceval.ideasonboard.com (Postfix) with ESMTPSA id A465E524;
-	Wed,  1 May 2024 13:46:26 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-	s=mail; t=1714563987;
-	bh=1qvnq8BYqrVzZ+c/6mc11hPFXliDCWNW1o9mQOt1OwE=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Yd2yYiy2b1M2LU+PeBmv8gAJ8BBty8NRithDHJHLETyTL9a2MioAjCthW88vAcxT1
-	 hRt1xiaOsey4r+2dc5nnWn9B4rvgs5300IRu2hLLY8mtD9JSCm650S8ZbARpRADWBA
-	 RgH1GVY6AtdqV/9S3CGjdECP16JLetDsnGGotU8Q=
-Date: Wed, 1 May 2024 14:47:15 +0300
-From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
-Cc: linux-media@vger.kernel.org,
-	Florian Fainelli <florian.fainelli@broadcom.com>,
-	Ray Jui <rjui@broadcom.com>, Scott Branden <sbranden@broadcom.com>,
-	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>,
-	Naushir Patuck <naush@raspberrypi.com>,
-	Dave Stevenson <dave.stevenson@raspberrypi.com>,
-	Sakari Ailus <sakari.ailus@linux.intel.com>,
-	linux-rpi-kernel@lists.infradead.org,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] media: bcm2835-unicam: Include v4l2-subdev.h
-Message-ID: <20240501114715.GG17852@pendragon.ideasonboard.com>
-References: <20240430213146.23187-1-laurent.pinchart@ideasonboard.com>
- <20240430213633.23767-1-laurent.pinchart@ideasonboard.com>
- <20240430213633.23767-2-laurent.pinchart@ideasonboard.com>
- <CAPybu_2xjWg8sUW9jk7n1UXLTsoGXfftxVqLaZcWzn+ZcCRhOg@mail.gmail.com>
+	s=arc-20240116; t=1714564118; c=relaxed/simple;
+	bh=6Ya7Rv8BuzUkqblZ4uH5Cr8VfDH163fZl6KXp5OnzUI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=AEPPqtHFI8aQKnYoLUzYFCz8PsEo6Cb0kElDMG+aKyv32oLsJDx+6wU+ddoWIl4IGLTTwdTbORB5nWowB8Gv5/hm2R78Pi84L5ULx13l3iTCe/kljxid3WImTbJiVSgd0aNfQzVPizQht1Ls5Ft5pZ7xfea9XBbz+9J46CEprrc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gRk8qU5n; arc=none smtp.client-ip=209.85.221.68
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f68.google.com with SMTP id ffacd0b85a97d-34db9a38755so738026f8f.1;
+        Wed, 01 May 2024 04:48:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1714564115; x=1715168915; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=tPNlg3N+tpItgmZ3Kd/LLiIPFyrNbnMxBWM/z7K+b0A=;
+        b=gRk8qU5nzoutb7V4npkDTmWTpne7L7K7dM7dl16CRvESWzWdQPsLgLAWdVUD+hJzdi
+         VDoismkocjrnWcHZXZktduHyvybb7OlPOTztgaCaUyehR+qcdteShAxWV74/pZGu5pMp
+         I/gwidQt1mVunuWoss6G0huNDzbONVywfOyQY70RHM0GCeNgOrE/IuthgmlnpOgl+bdj
+         +iIjQhf6g7drPwpOoBB+AVRuU9zKEqWhQ7kt3jHHhGtIFe6Dcpxny+A8sAwO2KIVQXmI
+         /Fw0T3QSadvAbc/Bi+DBmNR10yduy2vGCt0tMrBgCqUSIQ5y0qU2Sjy+snbpg4eYoPef
+         In/g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714564115; x=1715168915;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=tPNlg3N+tpItgmZ3Kd/LLiIPFyrNbnMxBWM/z7K+b0A=;
+        b=IN2oYjyevL5lQwRH5u7/OyukAQEBWeHAHHVxn4Jdi/HjGxrGj4OvvMwsyzPH3QUscI
+         LfP6YYMpUAORf8D2eUsPOXbHP0OPUSRbMMJdOd3pABRvmOqNRWmtPLrTolVrWqLCdhaN
+         ar+yvD/G34mtLyKKeJpm/a4eeFg78yhPwc5fxWsfmBjmvua/OXghKKxFOtMh2/Hijz3e
+         1S+LNK+YLGKy+9j2Dez8476fIdfukKVQzeyjzzQmRnVAO3+N+P0kg8X2UmVsuMkryVcs
+         KS0f/FH5qDXi9LqsQaxRS1klKtXlwjMIAFh6DdAlrduqZiqPzMJv5sxEU3+dZkFYP8+s
+         6j4A==
+X-Forwarded-Encrypted: i=1; AJvYcCW1DUOOgHa0oZiRXPo6Xa4G+HVqF6p+S6m4N9sLhyxFvyMbQhSTeN/dsoRqfoQmQAtGQni+Q5yezMgWidKWvfRUwayaij9Ogno0NKsw9CSg8Bk4QFZVsdAFpd2llDX+9wYGFfuaBGzOQQ==
+X-Gm-Message-State: AOJu0YxLH5XgB9Fnxtlw07LwbtAeNBuxQw+AuDbb8irTEU0c5ZBfzpXL
+	DEaMDIF4DdWqsfAySbecpblpVhr2ncO64XmgEbsvhishuJkWR1os16lvv3MscYJ7imE4sj5O3PN
+	71+0TZyDmUfepaWzm3HFz2A344wo=
+X-Google-Smtp-Source: AGHT+IFPhHJ8nW/Vce7eH7J1N/gsX5h6zfNOTtqvMU6c6oVQ1taBqOxhbd4Nk7sjoEMPR+PH7bglvxSMSHbgmw6dtUE=
+X-Received: by 2002:adf:e687:0:b0:33e:c528:c900 with SMTP id
+ r7-20020adfe687000000b0033ec528c900mr2079683wrm.55.1714564114889; Wed, 01 May
+ 2024 04:48:34 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAPybu_2xjWg8sUW9jk7n1UXLTsoGXfftxVqLaZcWzn+ZcCRhOg@mail.gmail.com>
+References: <CADFWO8EQUkGcbE=RXjxXbub2tZge9+ss=gB-Q6wngFAvwFygRg@mail.gmail.com>
+ <ZjEQ8LBxftcr0Z0t@smile.fi.intel.com>
+In-Reply-To: <ZjEQ8LBxftcr0Z0t@smile.fi.intel.com>
+From: Petar Stoykov <pd.pstoykov@gmail.com>
+Date: Wed, 1 May 2024 13:48:24 +0200
+Message-ID: <CADFWO8HL_pwEQwYn0K9AkPV=HZyWN3NSOs8k4dRrB40w_1KdCw@mail.gmail.com>
+Subject: Re: [PATCH v2 2/3] iio: pressure: Add driver for Sensirion SDP500
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: linux-iio@vger.kernel.org, Jonathan Cameron <jic23@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Lars-Peter Clausen <lars@metafoo.de>, 
+	Rob Herring <robh+dt@kernel.org>, Angel Iglesias <ang.iglesiasg@gmail.com>, 
+	Conor Dooley <conor+dt@kernel.org>, linux-kernel@vger.kernel.org, 
+	devicetree@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Ricardo,
-
-On Wed, May 01, 2024 at 01:07:29PM +0200, Ricardo Ribalda Delgado wrote:
-> Hi Laurent
-> 
-> I have to send a v2 of
-> https://patchwork.linuxtv.org/project/linux-media/list/?series=12759 I
-> can include this patch in that set if you want
-
-Fine with me.
-
-> On Tue, Apr 30, 2024 at 11:39 PM Laurent Pinchart wrote:
+On Tue, Apr 30, 2024 at 5:40=E2=80=AFPM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
+>
+> On Tue, Apr 30, 2024 at 05:27:24PM +0200, Petar Stoykov wrote:
+> > From 6ae7537517f551540121ca6fb3b99080b7580410 Mon Sep 17 00:00:00 2001
+> > From: Petar Stoykov <pd.pstoykov@gmail.com>
+> > Date: Mon, 15 Jan 2024 12:21:26 +0100
+> > Subject: [PATCH 2/3] iio: pressure: Add driver for Sensirion SDP500
 > >
-> > The unicam driver uses the v4l2_subdev structure. Include the
-> > corresponding header instead of relying on indirect includes.
-> >
-> > Signed-off-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-> > Reported-by: kernel test robot <lkp@intel.com>
-> Reviewed-by: Ricardo Ribalda <ribalda@chromium.org>
-> > Closes: https://lore.kernel.org/oe-kbuild-all/202404302324.8aTC84kE-lkp@intel.com/
-> > ---
-> >  drivers/media/platform/broadcom/bcm2835-unicam.c | 1 +
-> >  1 file changed, 1 insertion(+)
-> >
-> > diff --git a/drivers/media/platform/broadcom/bcm2835-unicam.c b/drivers/media/platform/broadcom/bcm2835-unicam.c
-> > index c590e26fe2cf..3c7878d8d79b 100644
-> > --- a/drivers/media/platform/broadcom/bcm2835-unicam.c
-> > +++ b/drivers/media/platform/broadcom/bcm2835-unicam.c
-> > @@ -55,6 +55,7 @@
-> >  #include <media/v4l2-ioctl.h>
-> >  #include <media/v4l2-fwnode.h>
-> >  #include <media/v4l2-mc.h>
-> > +#include <media/v4l2-subdev.h>
-> >  #include <media/videobuf2-dma-contig.h>
-> >
-> >  #include "bcm2835-unicam-regs.h"
+> > Sensirion SDP500 is a digital differential pressure sensor. The sensor =
+is
+> > accessed over I2C.
+>
+> Any Datasheet: tag can be added?
+>
 
--- 
-Regards,
+Ok. I see some drivers also include the pdf link in the driver's code.
+I can do that as well.
 
-Laurent Pinchart
+> ...
+>
+> > +config SDP500
+> > +    tristate "Sensirion SDP500 differential pressure sensor I2C driver=
+"
+> > +    depends on I2C
+> > +    help
+> > +      Say Y here to build support for Sensirion SDP500 differential pr=
+essure
+> > +      sensor I2C driver.
+> > +      To compile this driver as a module, choose M here: the core modu=
+le
+> > +      will be called sdp500.
+>
+> You patch is broken. Fix the way how you send patches.
+>
+> ...
+>
+> > +static int sdp500_start_measurement(struct sdp500_data *data, const
+> > struct iio_dev *indio_dev)
+>
+> Here is more visible.
+>
+> --
+> With Best Regards,
+> Andy Shevchenko
+>
+>
+
+I finally figured it out. Gmail has a hard word-wrap at 80 characters per l=
+ine.
+At first I thought it was word-wrap on the receiving side but I was wrong.
+I will try to convince IT to change things so I can use b4 or git send e-ma=
+il.
+If that doesn't work then I guess my code will have shorter lines in next p=
+atch.
 
