@@ -1,129 +1,125 @@
-Return-Path: <linux-kernel+bounces-165543-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-165545-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9723E8B8DC5
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 18:08:58 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 91B218B8DC9
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 18:09:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C7CFF1C213AD
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 16:08:57 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id ADB51B248F8
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 16:09:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B28312FF76;
-	Wed,  1 May 2024 16:08:26 +0000 (UTC)
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8040F12FF8E;
+	Wed,  1 May 2024 16:09:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="TH6sMGYn"
+Received: from mail-oo1-f50.google.com (mail-oo1-f50.google.com [209.85.161.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CDBC78827;
-	Wed,  1 May 2024 16:08:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6BA4B12FB18
+	for <linux-kernel@vger.kernel.org>; Wed,  1 May 2024 16:09:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714579705; cv=none; b=HcvFABegW9UXJJerf7k4jqkt45sovKg1IPyWXGaUHBcITKYpj+DheF7LGVq1mEwIIzRtzw/nwwVgQI//EhqiyhzuBKfu2Qu+5Gjlc2g3Q7KLIY83XVntZAzbVokaF7dRkFjkTNpmRIzQN0v804MLv/i5YgSwF2/a9WHYpDuFzIg=
+	t=1714579766; cv=none; b=ke4AUSULVtEf5tbqwSxUuHVClIIDoKDPPcFJoN5uSK4wf1hxqp0kKrNf/AH0tNUvcf8l87yj1fVIH32PfuBbKKIMMpbaAP/4EEcG5ls9A2LhL0ImaP7Gyduq6lpbcZuU1oY4KbNFj+tMESDggekNJUrRVKXkcpSONjOi8R9hAmc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714579705; c=relaxed/simple;
-	bh=2SspBcZpqjL2uiy7RfwIeISM+1+EsXvx/gfjXujlavw=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=F33cU1zh+mC52L9Cuvxt97rS32LWtADV+noxty/8VBfoN2sPuufiFCceljo7cJdaXQijEXNbt1LMPCLTuGxJVsfXc8ZZL4TY28uXEpQrR014B4mdBYDZZGdXNCD5mB/P+GbHvI6DLoGM8TKdriM9EepAoEIlEP/DjV1SiKOWgh4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 43EE9C072AA;
-	Wed,  1 May 2024 16:08:21 +0000 (UTC)
-Date: Wed, 1 May 2024 12:09:04 -0400
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Mike Rapoport <rppt@kernel.org>
-Cc: "Guilherme G. Piccoli" <gpiccoli@igalia.com>, "Luck, Tony"
- <tony.luck@intel.com>, Kees Cook <keescook@chromium.org>, Joel Fernandes
- <joel@joelfernandes.org>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>, "linux-trace-kernel@vger.kernel.org"
- <linux-trace-kernel@vger.kernel.org>, Masami Hiramatsu
- <mhiramat@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Mathieu
- Desnoyers <mathieu.desnoyers@efficios.com>, Andrew Morton
- <akpm@linux-foundation.org>, "Liam R. Howlett" <Liam.Howlett@oracle.com>,
- Vlastimil Babka <vbabka@suse.cz>, Lorenzo Stoakes <lstoakes@gmail.com>,
- "linux-mm@kvack.org" <linux-mm@kvack.org>, Thomas Gleixner
- <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov
- <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, "x86@kernel.org"
- <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>, Peter Zijlstra
- <peterz@infradead.org>, "linux-hardening@vger.kernel.org"
- <linux-hardening@vger.kernel.org>, Guenter Roeck <linux@roeck-us.net>, Ross
- Zwisler <zwisler@google.com>, "wklin@google.com" <wklin@google.com>,
- Vineeth Remanan Pillai <vineeth@bitbyteword.org>, Suleiman Souhlal
- <suleiman@google.com>, Linus Torvalds <torvalds@linuxfoundation.org>,
- Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>
-Subject: Re: [POC][RFC][PATCH 0/2] pstore/mm/x86: Add wildcard memmap to map
- pstore consistently
-Message-ID: <20240501120904.61c7617c@gandalf.local.home>
-In-Reply-To: <ZjJgIIOvvEdnisNA@kernel.org>
-References: <20240409210254.660888920@goodmis.org>
-	<20240409172358.34ea19f0@gandalf.local.home>
-	<202404091519.B7B2221@keescook>
-	<SJ1PR11MB608317E066B6B3390F55FCB1FC072@SJ1PR11MB6083.namprd11.prod.outlook.com>
-	<3391c693-cf54-526b-79a8-d565e7140947@igalia.com>
-	<20240411154007.5bdf8d95@gandalf.local.home>
-	<fa5fa4c6-2b02-f47e-b9ba-65cfd85f57f8@igalia.com>
-	<20240412132243.053ad096@gandalf.local.home>
-	<ZjJVnZUX3NZiGW6q@kernel.org>
-	<20240501105455.42b78a0b@gandalf.local.home>
-	<ZjJgIIOvvEdnisNA@kernel.org>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1714579766; c=relaxed/simple;
+	bh=w45uJndfwrvSJq4iRCq3cjF1YjdgQLGQeSBXlESvxyE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=A7pJMTdXIO/xx2GNPQ684sIcOER6ai3H0Nam7VgntwwqycOB/daJhRIbaSWNWdxekYa0vRlJUv6BsM0OTwAQakK2H+V2XVMzVb8bCrsg+11S3Pc6KoaLJjgq4i4d8U59uIMUjSvdPK8EAm6q60BhUVev62Qgq3Y+n+IyY8HOr1A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=TH6sMGYn; arc=none smtp.client-ip=209.85.161.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-oo1-f50.google.com with SMTP id 006d021491bc7-5aa4204bacdso4224880eaf.2
+        for <linux-kernel@vger.kernel.org>; Wed, 01 May 2024 09:09:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1714579762; x=1715184562; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Z2spOwtWOqMT7Ms41TL5RVzlbesAQkmsONqFkI4fS7c=;
+        b=TH6sMGYnvrKFGRTzf/D2pHDicpJ9aSMx1ocX2nvQjVZte4r7RViEm6XGw38kvmy4x5
+         Zd/oqY8s8qKaVIzkFrM7rk5Kj9M7zE8b8ZsZgrBtGt6S1ezMcwybcmBEAnOHKjHwYA3i
+         6rAly5HL5APOTTgTFJY+7HMvw+lW7g4bITDdA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714579762; x=1715184562;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Z2spOwtWOqMT7Ms41TL5RVzlbesAQkmsONqFkI4fS7c=;
+        b=LNFzGFfc1mGTPkXylrUmoEkdldpTT1mili0AyyfkzJfq4uOjpLDl80+97G6tghaLOE
+         /Nc72PNOZcP9y1olIDMyYWFJn1nm8eNyG4dBlEZZZoCA/IhjRDbHCQb/Td9mASYUiFg1
+         EoHIoI4lvRDakth3fhQKt6xrS5dA/qNCpXFqUaIc2BfAR5d3UG+KRXfk+WICpFY4i5pg
+         ZWugO6Veofz4T8eQbsqC5zsL7zvny8LU4duuymNDSBLJIUrhchspbXuZ1Vs93GlKDqaj
+         DdHYYi8nwuLE4SckJYd+qpHjTy+bMPxp4QeWjjjgScwoj+14oZqTi00Xu6iW1JsZcIsc
+         2t2g==
+X-Forwarded-Encrypted: i=1; AJvYcCU2pHWcmOR2tSDMV/Llt2X1Wux3n+ijndlWzAZphVq7CxbFsP0UfIKb4XhCEGmZm2w46oYLKg32TbdAnNWEXfuUfxPjW1k3yYK0CjkX
+X-Gm-Message-State: AOJu0YxGinX6JHQemtb4uY+o3WkcAcUAqyXz8OQ/B93Ialw5er14BR4i
+	ZVeY2De5+5RStoEk6cnYh1PjQXrWK4jrb8228qG2xD1ZqgJ0PmV2zePL9WDaSnZdynOH54fqy5U
+	=
+X-Google-Smtp-Source: AGHT+IFItGmM4BSSvzXzZvagSGywhuS0rs0a48PeUchgjYjRETBmkibU0KGmXcn5+moleehO5FPSSw==
+X-Received: by 2002:a4a:b00e:0:b0:5ac:a573:7422 with SMTP id f14-20020a4ab00e000000b005aca5737422mr3003611oon.2.1714579761816;
+        Wed, 01 May 2024 09:09:21 -0700 (PDT)
+Received: from mail-qt1-f171.google.com (mail-qt1-f171.google.com. [209.85.160.171])
+        by smtp.gmail.com with ESMTPSA id dh3-20020a05622a4e0300b0043c7d293f9fsm848206qtb.67.2024.05.01.09.09.20
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 01 May 2024 09:09:21 -0700 (PDT)
+Received: by mail-qt1-f171.google.com with SMTP id d75a77b69052e-439b1c72676so77851cf.1
+        for <linux-kernel@vger.kernel.org>; Wed, 01 May 2024 09:09:20 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCXzygKelBNNZx5WmxEIx+jyOghxAqwHqgSEyfDojt1oowqMu84PPQ6D7rcHVt4fMNcXXDoEkc19eHSzd+zFofT+9F0NbnFTvoaaz92J
+X-Received: by 2002:ac8:5d8f:0:b0:43a:c84f:5689 with SMTP id
+ d15-20020ac85d8f000000b0043ac84f5689mr233727qtx.1.1714579759956; Wed, 01 May
+ 2024 09:09:19 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20240501051323.805076-1-sui.jingfeng@linux.dev>
+In-Reply-To: <20240501051323.805076-1-sui.jingfeng@linux.dev>
+From: Doug Anderson <dianders@chromium.org>
+Date: Wed, 1 May 2024 09:09:07 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=XdQjEM05Jw7iVVcHbJ9oqy8qQeH66oxf2g304QKDaL=Q@mail.gmail.com>
+Message-ID: <CAD=FV=XdQjEM05Jw7iVVcHbJ9oqy8qQeH66oxf2g304QKDaL=Q@mail.gmail.com>
+Subject: Re: [PATCH v2] drm/debugfs: Drop conditionals around of_node pointers
+To: Sui Jingfeng <sui.jingfeng@linux.dev>
+Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, 
+	Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
+	dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org, 
+	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, 1 May 2024 18:30:40 +0300
-Mike Rapoport <rppt@kernel.org> wrote:
+Hi,
 
-> > > /*
-> > >  * Parse early_reserve_mem=nn:align:name
-> > >  */
-> > > static int __init early_reserve_mem(char *p)
-> > > {
-> > > 	phys_addr_t start, size, align;
-> > > 	char *oldp;
-> > > 	int err;
-> > > 
-> > > 	if (!p)
-> > > 		return -EINVAL;
-> > > 
-> > > 	oldp = p;
-> > > 	size = memparse(p, &p);
-> > > 	if (p == oldp)
-> > > 		return -EINVAL;
-> > > 
-> > > 	if (*p != ':')
-> > > 		return -EINVAL;
-> > > 
-> > > 	align = memparse(p+1, &p);
-> > > 	if (*p != ':')
-> > > 		return -EINVAL;
-> > > 
-> > > 	start = memblock_phys_alloc(size, align);  
-> > 
-> > So this will allocate the same physical location for every boot, if booting
-> > the same kernel and having the same physical memory layout?  
-> 
-> Up to kaslr that might use that location for the kernel image.
-> But it's the same as allocating from e820 after kaslr.
-> 
-> And, TBH, I don't have good ideas how to ensure the same physical location
-> with randomization of the physical address of the kernel image.
+On Tue, Apr 30, 2024 at 10:13=E2=80=AFPM Sui Jingfeng <sui.jingfeng@linux.d=
+ev> wrote:
+>
+> Having conditional around the of_node pointer of the drm_bridge structure
+> is not necessary anymore, since drm_bridge structure always has the of_no=
+de
+> member since the commit d8dfccde2709 ("drm/bridge: Drop conditionals arou=
+nd
+> of_node pointers").
+>
+> So drop the conditional, please also note that this patch is following th=
+e
+> convention used by driver core, see commit c9e358dfc4a8 ("driver-core:
+> remove conditionals around devicetree pointers").
+>
+> Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+> Signed-off-by: Sui Jingfeng <sui.jingfeng@linux.dev>
+> ---
+> v2: Update commit message
+> ---
+>  drivers/gpu/drm/drm_debugfs.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 
-I'll try it out. Looking at arch/x86/boot/compressed/kaslr.c, if I read the
-code correctly, it creates up to a 100 slots to store the kernel.
+Pushed to drm-misc-next:
 
-The method I used was to make sure that the allocation was always done at
-the top address of memory, which I think would in most cases never be
-assigned by KASLR.
+235e60653f8d drm/debugfs: Drop conditionals around of_node pointers
 
-This looks to just grab the next available physical address, which KASLR
-can most definitely mess with.
-
-I would still like to get the highest address possible.
-
--- Steve
+-Doug
 
