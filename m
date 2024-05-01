@@ -1,163 +1,134 @@
-Return-Path: <linux-kernel+bounces-165707-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-165709-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3DF628B9001
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 21:20:20 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 605128B9007
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 21:24:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 781D7B22043
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 19:20:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 921A41C213F5
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 19:24:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 68F85160887;
-	Wed,  1 May 2024 19:20:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B4F2161937;
+	Wed,  1 May 2024 19:23:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="d/bz9Sca"
-Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="mtNr6Bui"
+Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 685AC1C287;
-	Wed,  1 May 2024 19:20:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 97AFA1C287
+	for <linux-kernel@vger.kernel.org>; Wed,  1 May 2024 19:23:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714591208; cv=none; b=MsObkkZLk+Ns53XnM4jaisY7lJpO3qTXsm5uU6MDz63S2T8mxtiDd14aGSu4vKt7vLGgftuEbdr7GvIifxljLOMEP5k+nVsj+rL7o+xwe3LnBFEAflXKD4wgoiJOR7/0FYMmtzgX3VR6RoSm9cHJUbIAuI1vabPW5bsnYa+0LfQ=
+	t=1714591425; cv=none; b=Pc6frUUW3zFFnI4YSqi/Vw0ogwMQmN4RaQfHNzPmWkZugVYs/WBI5uQhsVbpkNIpAKgKg7ZylL+TkNjFIHU/RSvwXZ4jhQYvTCFpYhLB5wtCuir+o6P4ZG/piCw3ngWrnovqhUOspIIZ5ocroscoJlf0v/ZPzAeGKJcj/CFSt3M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714591208; c=relaxed/simple;
-	bh=2icMSh1KJRQHkfMpRS4no2f8fdq6UTlQRe2OM5Yszuo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=e38QcdCVttAFL8uEgGfX1QJ/zymYbkkplSa0Heb+Gdoelt/4EyR3pydRa2Sp70jAZj5sAVtd8j8EmwKcmUhOJR3PB5Y4iJ60FV/Not4prqkH/OXNroZe/VdKupFTDEQ+naAEFGswEoect8nkYLY6sXpfLdToWosOJJIIofAFZuU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=d/bz9Sca; arc=none smtp.client-ip=209.85.214.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-1e50a04c317so39552685ad.1;
-        Wed, 01 May 2024 12:20:07 -0700 (PDT)
+	s=arc-20240116; t=1714591425; c=relaxed/simple;
+	bh=ZhyoVBBIHgstfRuGDnnjMiKeVhXKdonZKZf22uLclA0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Kjn0TuHKOyIZG67eXYjz5vbEJ3EBGeVwoWDfXUG+x1c69HdqWq3S8qYUvv+SGqlqkfn02TiuBZm8ASC6wZ4jRPBeXGVxT47Ch91IfimQuyNOenKykfEkpFPXTQu3vZtTu6o36dioZhsWjDVRt1Wvls/KGic5RHnbsFlr0S+RRbs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=mtNr6Bui; arc=none smtp.client-ip=209.85.214.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-1ecddf96313so704015ad.2
+        for <linux-kernel@vger.kernel.org>; Wed, 01 May 2024 12:23:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714591207; x=1715196007; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=NQMIHTv3D4/FbFaMQCgt0UeLIRCHiGP+9OlGQP/6AIQ=;
-        b=d/bz9Scaa7BuPvz3nctbRQ8UuZ0zHTgFvD63K+KqLaScb6PGEk1x233HnxDN2gBZ/h
-         8JQfqCsLksHbuHQhJf7HY2jesXbSZIH4O0iQY2LIUQHsvX3yV3uJ2n3DEgXpb5aZ9LNb
-         HS9oaOGO46o7qxlAlh8G0++arBZLx6Lec57sygx9MkK4SxRvEgzL+sZSo1KEj+n3vHkv
-         G8A5brAcRSQsmuAW7XO+EWi04+fdF57Ngey4MPvc0iW1UGTj/pIFW8ueLAWLfgOJUmbn
-         F5gI/9tg+yPccKQcm3JB4w2UbDHAOTqW48h67b/K1pXeKFoHG3IiCO1t+F+Y0HBM//+y
-         5ERg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714591207; x=1715196007;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=chromium.org; s=google; t=1714591423; x=1715196223; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=NQMIHTv3D4/FbFaMQCgt0UeLIRCHiGP+9OlGQP/6AIQ=;
-        b=AEBSMVOkxetFgvTLv4h+Qv0S4Sd5VNNtvF9Fpak3Ho5FxxZozoeqbKOvHx7XrMBH5c
-         n3K9qWFoP98q7355NLTMtjS/Dx04nq+QRFDkr6vhGUDnQyG91IRyLoirfrdcp2X66Wpf
-         FG0ObyD4u5Y7qKcf5Bj7ql2JYlNHhbf6tqDkQ3WJiueVgkVbmmoIjBPb2/9CqYbGnC2A
-         6ehCih/At2P3w5Z7L+56vkb5r1HCpduxxDkCRfy67KLPTAVn3gVMXHLLOzl1s80Jngze
-         kRJM0zOcBSnKmYz/EL0aktVr9XZwk/gXByklK1TPBrmnoR6tsdlJGyOvHJFZQVxziEHm
-         hKAA==
-X-Forwarded-Encrypted: i=1; AJvYcCU2MkLABgmVkWu1B6XWmbr0MLxH/XkOSUbg+KRKEgmV9tktMjMSuq+pyRM1u5EgVI3p5VJxZHCyHXwjqJyVHTPZfxTrlAsHS1qMoP4=
-X-Gm-Message-State: AOJu0Yx+/mYO5XCBcM348ygRlC1PH+cTEW8VvDvCiPovlfPqLR6HRc2K
-	XsrLIIJKfwh6SPjRRgyfV3XwhxtjQkop+CEO23N0lD5Y6+60tNFk
-X-Google-Smtp-Source: AGHT+IGd58y/IOmwV5M13fhinNX4nSAJNZ+EFLovipF4lfrEQyQp9BGMZPZfm9gGlJJy8nVMxvg6Dg==
-X-Received: by 2002:a17:903:1108:b0:1e2:307f:d283 with SMTP id n8-20020a170903110800b001e2307fd283mr3810879plh.1.1714591206533;
-        Wed, 01 May 2024 12:20:06 -0700 (PDT)
-Received: from google.com ([2620:15c:9d:2:1cb4:dd50:d6f1:6308])
-        by smtp.gmail.com with ESMTPSA id u8-20020a170902e5c800b001e420abf8c1sm24596381plf.165.2024.05.01.12.20.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 01 May 2024 12:20:06 -0700 (PDT)
-Date: Wed, 1 May 2024 12:20:03 -0700
-From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To: Jonathan Denose <jdenose@google.com>
-Cc: LKML <linux-kernel@vger.kernel.org>, linux-input@vger.kernel.org,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Jeffery Miller <jefferymiller@google.com>,
-	Phoenix Huang <phoenix@emc.com.tw>,
-	Hans de Goede <hdegoede@redhat.com>
-Subject: Re: [PATCH] Input: elantech - fix touchpad state on resume for
- Lenovo N24
-Message-ID: <ZjKV44wZWH4MBCrF@google.com>
-References: <20240501140231.1.Ifa0e25ebf968d8f307f58d678036944141ab17e6@changeid>
+        bh=hbubMcULTqXEpjOw1/tNxpjigRY/QT4JGEZ8U1qfXOo=;
+        b=mtNr6BuiTFOm8/3utSLHviO7vJkPB6Ik6FlgBlJ6WV5PFM6C/z4Trc/IYhaRBWCiIB
+         zECmQ/REPPhA0MQeJr/luhcQKsWXW0hAPLEeriaLsGWLfaoTpnFRAAoRZkjdi8hCgaXR
+         Ly3xXsa/YpzB2CGoGGvfFIgRyZCLp0icjqXrs=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714591423; x=1715196223;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=hbubMcULTqXEpjOw1/tNxpjigRY/QT4JGEZ8U1qfXOo=;
+        b=wnpT3hoEmTMC79ZZyu9B3hJXNPy86QgAXOPPXh97LYKPld5FR+ptzyDp6ygOrheEQ5
+         k+DjI3GrAMUUICvZqRPKPn1rRcEQk3ND62Ujv9fcadTezYF2QQgI8F//8ZZqiFlfUt3G
+         algPnI1hv8ZYVwuEsGiLeNwaprZSRzuVKH7Ky5QOsHC8bbrsN7PAEoDyjDWz/F6Bq5Ac
+         9JjBj9YwujSW6CYWl3oIQ6OUeMgOu3h3usFE20VXRIrOuB2Y8pFGMG1IaopjcgKfVHVU
+         PkRc5FQbG4SulApF3gFaxTDNAs/Ops0M00LRtZOaWN+B8CBxnp4DmYm6WeXJfQ09gnvX
+         p++w==
+X-Forwarded-Encrypted: i=1; AJvYcCU+Jqe9shFT9PgdNwUT2sKQl69PjMYvczdAlWOPtjEfzRSUtkIVekEfueZuw5ndeF5liIdG3vT+X1V0SmvVCfwdw/IggzAGnGGzDyws
+X-Gm-Message-State: AOJu0YyoKoo2ZunEEo1+wIUNXdkyrDa5ULv8CMWUWaKIO3fZ3M1YLRCb
+	ZTD8EKPOGgvgqkuHjF5uT9jDN0EmOMckvpKhHCGiXI5OzJAf3KAKUva1QeLkc5Ym7L0r8CsOZ4M
+	=
+X-Google-Smtp-Source: AGHT+IE+g5jeyjhztmDRZ067VzaLSvowKGOjQ8RoK93pyH31AnrzybSzw8K+25PfBlaN9GewS/IBvA==
+X-Received: by 2002:a17:902:f681:b0:1eb:1240:1aea with SMTP id l1-20020a170902f68100b001eb12401aeamr4508856plg.20.1714591423041;
+        Wed, 01 May 2024 12:23:43 -0700 (PDT)
+Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com. [209.85.214.180])
+        by smtp.gmail.com with ESMTPSA id jy14-20020a17090342ce00b001ecacdd23a7sm1201134plb.281.2024.05.01.12.23.42
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 01 May 2024 12:23:42 -0700 (PDT)
+Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-1eb1cb1a8f1so1725ad.0
+        for <linux-kernel@vger.kernel.org>; Wed, 01 May 2024 12:23:42 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCXn5/M1wr9nsEoVnFkrA+x0hHS7ZiaBeuVt1F1NSvD2lv5owMxcDerljG/mKX4j3oxC0JcviO1UU3Ixq6lhXW70lEWru127Pb4tXABI
+X-Received: by 2002:ac8:7f03:0:b0:43a:f821:5b17 with SMTP id
+ f3-20020ac87f03000000b0043af8215b17mr33651qtk.3.1714591400761; Wed, 01 May
+ 2024 12:23:20 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240501140231.1.Ifa0e25ebf968d8f307f58d678036944141ab17e6@changeid>
+References: <20240501-qcom-phy-fixes-v1-0-f1fd15c33fb3@linaro.org> <20240501-qcom-phy-fixes-v1-4-f1fd15c33fb3@linaro.org>
+In-Reply-To: <20240501-qcom-phy-fixes-v1-4-f1fd15c33fb3@linaro.org>
+From: Doug Anderson <dianders@chromium.org>
+Date: Wed, 1 May 2024 12:23:05 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=VYKELU-xBjMUqLSASC+m+eGCxHCgueCFjxwphxggNAww@mail.gmail.com>
+Message-ID: <CAD=FV=VYKELU-xBjMUqLSASC+m+eGCxHCgueCFjxwphxggNAww@mail.gmail.com>
+Subject: Re: [PATCH 04/13] arm64: dts: qcom: sc7180: drop extra UFS PHY compat
+To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc: Vinod Koul <vkoul@kernel.org>, Kishon Vijay Abraham I <kishon@kernel.org>, Rob Herring <robh@kernel.org>, 
+	Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Abel Vesa <abel.vesa@linaro.org>, Wesley Cheng <quic_wcheng@quicinc.com>, 
+	cros-qcom-dts-watchers@chromium.org, Bjorn Andersson <andersson@kernel.org>, 
+	Konrad Dybcio <konrad.dybcio@linaro.org>, David Wronek <davidwronek@gmail.com>, 
+	Andy Gross <andy.gross@linaro.org>, Evan Green <evgreen@chromium.org>, 
+	Iskren Chernev <me@iskren.info>, Luca Weiss <luca.weiss@fairphone.com>, 
+	"Bryan O'Donoghue" <bryan.odonoghue@linaro.org>, Yassine Oudjana <y.oudjana@protonmail.com>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, linux-arm-msm@vger.kernel.org, 
+	linux-phy@lists.infradead.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Krzysztof Kozlowski <krzk@kernel.org>, 
+	Konrad Dybcio <konrad.dybcio@somainline.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, May 01, 2024 at 02:02:32PM +0000, Jonathan Denose wrote:
-> The Lenovo N24 on resume becomes stuck in a state where it
-> sends incorrect packets, causing elantech_packet_check_v4 to fail.
-> The only way for the device to resume sending the correct packets is for
-> it to be disabled and then re-enabled.
-> 
-> This change adds a dmi check to trigger this behavior on resume.
-> Signed-off-by: Jonathan Denose <jdenose@google.com>
+Hi,
 
-Adding a couple more folks to take a look at this...
-
+On Wed, May 1, 2024 at 9:19=E2=80=AFAM Dmitry Baryshkov
+<dmitry.baryshkov@linaro.org> wrote:
+>
+> The DT schema doesn't have a fallback compatible for
+> qcom,sc7180-qmp-ufs-phy. Drop it from the dtsi too.
+>
+> Fixes: 858536d9dc94 ("arm64: dts: qcom: sc7180: Add UFS nodes")
+> Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 > ---
-> 
->  drivers/input/mouse/elantech.c | 33 +++++++++++++++++++++++++++++++++
->  1 file changed, 33 insertions(+)
-> 
-> diff --git a/drivers/input/mouse/elantech.c b/drivers/input/mouse/elantech.c
-> index 4e38229404b4b..e0f3095b4227e 100644
-> --- a/drivers/input/mouse/elantech.c
-> +++ b/drivers/input/mouse/elantech.c
-> @@ -1476,6 +1476,23 @@ static void elantech_disconnect(struct psmouse *psmouse)
->  	psmouse->private = NULL;
->  }
->  
-> +/*
-> + * Some hw_version 4 models fail to properly activate absolute mode on
-> + * resume without going through disable/enable cycle.
-> + */
-> +static const struct dmi_system_id elantech_needs_reenable[] = {
-> +#if defined(CONFIG_DMI) && defined(CONFIG_X86)
-> +	{
-> +		/* Lenovo N24 */
-> +		.matches = {
-> +			DMI_MATCH(DMI_SYS_VENDOR, "LENOVO"),
-> +			DMI_MATCH(DMI_PRODUCT_NAME, "81AF"),
-> +		},
-> +	},
-> +#endif
-> +	{ }
-> +};
-> +
->  /*
->   * Put the touchpad back into absolute mode when reconnecting
->   */
-> @@ -1486,6 +1503,22 @@ static int elantech_reconnect(struct psmouse *psmouse)
->  	if (elantech_detect(psmouse, 0))
->  		return -1;
->  
-> +	if (dmi_check_system(elantech_needs_reenable)) {
-> +		int err;
-> +
-> +		err = ps2_sendbyte(&psmouse->ps2dev, PSMOUSE_CMD_DISABLE, NULL);
-> +
-> +		if (err)
-> +			psmouse_warn(psmouse, "Failed to deactivate mouse on %s: %d\n",
-> +					psmouse->ps2dev.serio->phys, err);
-> +
-> +		err = ps2_sendbyte(&psmouse->ps2dev, PSMOUSE_CMD_ENABLE, NULL);
-> +
-> +		if (err)
-> +			psmouse_warn(psmouse, "Failed to reactivate mouse on %s: %d\n",
-> +					psmouse->ps2dev.serio->phys, err);
-> +	}
-> +
->  	if (elantech_set_absolute_mode(psmouse)) {
->  		psmouse_err(psmouse,
->  			    "failed to put touchpad back into absolute mode.\n");
-> -- 
-> 2.45.0.rc0.197.gbae5840b3b-goog
-> 
+>  arch/arm64/boot/dts/qcom/sc7180.dtsi | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+>
+> diff --git a/arch/arm64/boot/dts/qcom/sc7180.dtsi b/arch/arm64/boot/dts/q=
+com/sc7180.dtsi
+> index 4774a859bd7e..52d074a4fbf3 100644
+> --- a/arch/arm64/boot/dts/qcom/sc7180.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sc7180.dtsi
+> @@ -1582,8 +1582,7 @@ &mc_virt SLAVE_EBI1 QCOM_ICC_TAG_ALWAYS>,
+>                 };
+>
+>                 ufs_mem_phy: phy@1d87000 {
+> -                       compatible =3D "qcom,sc7180-qmp-ufs-phy",
+> -                                    "qcom,sm7150-qmp-ufs-phy";
+> +                       compatible =3D "qcom,sc7180-qmp-ufs-phy";
 
--- 
-Dmitry
+Seems OK to me. It looks like UFS support for sc7180 is new enough
+that we're not breaking any sort of compatbility by changing this.
+
+Reviewed-by: Douglas Anderson <dianders@chromium.org>
 
