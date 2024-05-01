@@ -1,311 +1,129 @@
-Return-Path: <linux-kernel+bounces-165376-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-165377-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 01E188B8BEC
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 16:33:33 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 972678B8BEF
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 16:34:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 252001C22F19
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 14:33:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 52799282129
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 14:34:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2630612E6A;
-	Wed,  1 May 2024 14:33:26 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9373910958;
-	Wed,  1 May 2024 14:33:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 731AC1DFE3;
+	Wed,  1 May 2024 14:34:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GxDlY5Y1"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8096E552;
+	Wed,  1 May 2024 14:34:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714574005; cv=none; b=i2qvJO26ZeoW+MAuUEN9F/cBP0e16oC5UWs0TkmIGEhiBbyzgVnIenPH41z6+5FuJ97qdZZ1Y400SRepuRIXFTLd6xtpV7StekS73d5Rs86yNSn8Lgm2WllYnneHf2DbD1siNhg5E2ufkQ4n6DfriF6vGoZlC4xTbsIpGAdc5og=
+	t=1714574048; cv=none; b=NEPkJDIuCiGw6qBTvEVsKwvyNXoWLfsn6R9RBBgaCvhTS3Ms5SL4X4VViERpq6ohYf6ilf+aI1DqZ4jI8FZk9JT7rhwIVtdoqh9NhNRy4NYFKNNlef/0Bet0U1lKHo+hi9xW6Yw01R/8wBoj2ctolUNBlDXPDM/9UsiAttfaN/Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714574005; c=relaxed/simple;
-	bh=7fLc7nbKAkX4BCM1/bdRyeu0RaBXmRQwl5APnBvxZYI=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=DRczLsAqKbMCRulZUcbKR3EFSce7040Hb8FkgoFxYCQPq1pey5R7Qc5EzVegbkLFZqTTLN2AqNDq2GBkSI0s0HlLILZVc7hDdqzovNQvOhI4ZRzpZArAuv5Yo286GJacRnjUEiBHeIKqDpAiW+u/RYxJ4gaQ2Hj3cqxM+EahZvA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E904A2F4;
-	Wed,  1 May 2024 07:33:47 -0700 (PDT)
-Received: from e125769.cambridge.arm.com (e125769.cambridge.arm.com [10.1.196.27])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C06C83F71E;
-	Wed,  1 May 2024 07:33:18 -0700 (PDT)
-From: Ryan Roberts <ryan.roberts@arm.com>
-To: Andrew Morton <akpm@linux-foundation.org>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Anshuman Khandual <anshuman.khandual@arm.com>,
-	Zi Yan <zi.yan@cs.rutgers.edu>,
-	"Aneesh Kumar K.V" <aneesh.kumar@kernel.org>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Nicholas Piggin <npiggin@gmail.com>,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	"Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
-	Christian Borntraeger <borntraeger@linux.ibm.com>,
-	Sven Schnelle <svens@linux.ibm.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Andreas Larsson <andreas@gaisler.com>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	Andy Lutomirski <luto@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>,
-	Borislav Petkov <bp@alien8.de>
-Cc: Ryan Roberts <ryan.roberts@arm.com>,
-	linux-arm-kernel@lists.infradead.org,
-	linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org
-Subject: [PATCH v3] mm: Fix race between __split_huge_pmd_locked() and GUP-fast
-Date: Wed,  1 May 2024 15:33:10 +0100
-Message-Id: <20240501143310.1381675-1-ryan.roberts@arm.com>
-X-Mailer: git-send-email 2.25.1
+	s=arc-20240116; t=1714574048; c=relaxed/simple;
+	bh=CWxfucLjZKMuCq9KUz1Dscdcskx00ZJ/clYJpxna/Wk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=f2Ra0Oj04w0Nwl0ZU/QwhEOv/l+Ww4zI9IXYIHSFBnxXrrPnSbvZnHF6mnKKhCzTHwfTeWyIDibXlH4HvQdQbWvaTmp0moSRiw9z98FWKc2WKzbAaBQZKtr1a2QBQyTBc9++i4d8ogtSJGw8kgQBNuu2zvJoVDqwY5mnJfXQLCo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GxDlY5Y1; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B9A77C072AA;
+	Wed,  1 May 2024 14:34:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714574048;
+	bh=CWxfucLjZKMuCq9KUz1Dscdcskx00ZJ/clYJpxna/Wk=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=GxDlY5Y1ypPthIpoAtKyaQd/ZBIcHSLBpr/2xmEoAGoXygcPxqr51/dxE+AgvpT2h
+	 desQDC+pv+ZldTvWod9pExwhM7IjD3Ryup55foKD4EKmtLb8ayHlP63eor321wLfBP
+	 YjsWuCPgsTYztYTBA7ydpIf/E5DarzDgWJJ3SuCxbZW5zJVHgr6OZ+8WhH1wQwyGP3
+	 XmKLUcYlcfl+ug5TyoX62OvbbrHC80zfCVYaPQrN5FWht2SPjZSTIL/w7cbJ6Oy9zQ
+	 z6kp4yP27xuZlcSId5Jg1Q9ow/Wm6lV8ldyR7ZLFrftpmVVbJiaJKi9LsKawzZkABE
+	 dafvfUzoG6ihQ==
+Date: Wed, 1 May 2024 15:34:01 +0100
+From: Will Deacon <will@kernel.org>
+To: Georgi Djakov <quic_c_gdjako@quicinc.com>
+Cc: robin.murphy@arm.com, joro@8bytes.org, iommu@lists.linux.dev,
+	robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org, devicetree@vger.kernel.org,
+	andersson@kernel.org, konrad.dybcio@linaro.org, robdclark@gmail.com,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	linux-arm-msm@vger.kernel.org, quic_cgoldswo@quicinc.com,
+	quic_sukadev@quicinc.com, quic_pdaly@quicinc.com,
+	quic_sudaraja@quicinc.com, djakov@kernel.org
+Subject: Re: [PATCH v8 2/7] iommu/arm-smmu-qcom-debug: Add support for TBUs
+Message-ID: <20240501143400.GA15503@willie-the-truck>
+References: <20240417133731.2055383-1-quic_c_gdjako@quicinc.com>
+ <20240417133731.2055383-3-quic_c_gdjako@quicinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240417133731.2055383-3-quic_c_gdjako@quicinc.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 
-__split_huge_pmd_locked() can be called for a present THP, devmap or
-(non-present) migration entry. It calls pmdp_invalidate()
-unconditionally on the pmdp and only determines if it is present or not
-based on the returned old pmd. This is a problem for the migration entry
-case because pmd_mkinvalid(), called by pmdp_invalidate() must only be
-called for a present pmd.
+Hi Georgi,
 
-On arm64 at least, pmd_mkinvalid() will mark the pmd such that any
-future call to pmd_present() will return true. And therefore any
-lockless pgtable walker could see the migration entry pmd in this state
-and start interpretting the fields as if it were present, leading to
-BadThings (TM). GUP-fast appears to be one such lockless pgtable walker.
+On Wed, Apr 17, 2024 at 06:37:26AM -0700, Georgi Djakov wrote:
+> diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom-debug.c b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom-debug.c
+> index bb89d49adf8d..eff7ca94ec8d 100644
+> --- a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom-debug.c
+> +++ b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom-debug.c
 
-x86 does not suffer the above problem, but instead pmd_mkinvalid() will
-corrupt the offset field of the swap entry within the swap pte. See link
-below for discussion of that problem.
+..
 
-Fix all of this by only calling pmdp_invalidate() for a present pmd. And
-for good measure let's add a warning to all implementations of
-pmdp_invalidate[_ad](). I've manually reviewed all other
-pmdp_invalidate[_ad]() call sites and believe all others to be
-conformant.
+> +static const struct of_device_id qcom_tbu_of_match[] = {
+> +	{ .compatible = "qcom,sc7280-tbu" },
+> +	{ .compatible = "qcom,sdm845-tbu" },
+> +	{ }
+> +};
+> +
+> +static struct platform_driver qcom_tbu_driver = {
+> +	.driver = {
+> +		.name           = "qcom_tbu",
+> +		.of_match_table = qcom_tbu_of_match,
+> +	},
+> +	.probe = qcom_tbu_probe,
+> +};
+> +builtin_platform_driver(qcom_tbu_driver);
 
-This is a theoretical bug found during code review. I don't have any
-test case to trigger it in practice.
+I just noticed that this breaks a modular build of the arm-smmu driver
+because we now have two init functions for the module:
 
-Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/all/0dd7827a-6334-439a-8fd0-43c98e6af22b@arm.com/
-Fixes: 84c3fc4e9c56 ("mm: thp: check pmd migration entry in common path")
-Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
----
+  ld.lld: error: duplicate symbol: init_module
+  >>> defined at arm-smmu.c
+  >>>            drivers/iommu/arm/arm-smmu/arm-smmu.o:(init_module)
+  >>> defined at arm-smmu-qcom-debug.c
+  >>>            drivers/iommu/arm/arm-smmu/arm-smmu-qcom-debug.o:(.init.text+0x4)
 
-Right v3; this goes back to the original approach in v1 to fix core-mm rather
-than push the fix into arm64, since we discovered that x86 can't handle
-pmd_mkinvalid() being called for non-present pmds either.
+I think you should initialise the TBU debug feature by calling into it
+manually from qcom_smmu_impl_init().
 
-I'm pulling in more arch maintainers because this version adds some warnings in
-arch code to help spot incorrect usage.
+Please can you send a patch to fix that? For now, I'll bodge it so that
+the qcom debug stuff doesn't build as a module (see below).
 
-Although Catalin had already accepted v2 (fixing arm64) [2] into for-next/fixes,
-he's agreed to either remove or revert it.
+Cheers,
 
+Will
 
-Changes since v1 [1]
-====================
+--->8
 
-  - Improve pmdp_mkinvalid() docs to make it clear it can only be called for
-    present pmd (per JohnH, Zi Yan)
-  - Added warnings to arch overrides of pmdp_invalidate[_ad]() (per Zi Yan)
-  - Moved comment next to new location of pmpd_invalidate() (per Zi Yan)
+diff --git a/drivers/iommu/Kconfig b/drivers/iommu/Kconfig
+index 032bfd681307..66325210c8c9 100644
+--- a/drivers/iommu/Kconfig
++++ b/drivers/iommu/Kconfig
+@@ -376,7 +376,7 @@ config ARM_SMMU_QCOM
 
-
-[1] https://lore.kernel.org/linux-mm/20240425170704.3379492-1-ryan.roberts@arm.com/
-[2] https://lore.kernel.org/all/20240430133138.732088-1-ryan.roberts@arm.com/
-
-Thanks,
-Ryan
-
-
- Documentation/mm/arch_pgtable_helpers.rst |  6 ++-
- arch/powerpc/mm/book3s64/pgtable.c        |  1 +
- arch/s390/include/asm/pgtable.h           |  4 +-
- arch/sparc/mm/tlb.c                       |  1 +
- arch/x86/mm/pgtable.c                     |  2 +
- mm/huge_memory.c                          | 49 ++++++++++++-----------
- mm/pgtable-generic.c                      |  2 +
- 7 files changed, 39 insertions(+), 26 deletions(-)
-
-diff --git a/Documentation/mm/arch_pgtable_helpers.rst b/Documentation/mm/arch_pgtable_helpers.rst
-index 2466d3363af7..ad50ca6f495e 100644
---- a/Documentation/mm/arch_pgtable_helpers.rst
-+++ b/Documentation/mm/arch_pgtable_helpers.rst
-@@ -140,7 +140,8 @@ PMD Page Table Helpers
- +---------------------------+--------------------------------------------------+
- | pmd_swp_clear_soft_dirty  | Clears a soft dirty swapped PMD                  |
- +---------------------------+--------------------------------------------------+
--| pmd_mkinvalid             | Invalidates a mapped PMD [1]                     |
-+| pmd_mkinvalid             | Invalidates a present PMD; do not call for       |
-+|                           | non-present PMD [1]                              |
- +---------------------------+--------------------------------------------------+
- | pmd_set_huge              | Creates a PMD huge mapping                       |
- +---------------------------+--------------------------------------------------+
-@@ -196,7 +197,8 @@ PUD Page Table Helpers
- +---------------------------+--------------------------------------------------+
- | pud_mkdevmap              | Creates a ZONE_DEVICE mapped PUD                 |
- +---------------------------+--------------------------------------------------+
--| pud_mkinvalid             | Invalidates a mapped PUD [1]                     |
-+| pud_mkinvalid             | Invalidates a present PUD; do not call for       |
-+|                           | non-present PUD [1]                              |
- +---------------------------+--------------------------------------------------+
- | pud_set_huge              | Creates a PUD huge mapping                       |
- +---------------------------+--------------------------------------------------+
-diff --git a/arch/powerpc/mm/book3s64/pgtable.c b/arch/powerpc/mm/book3s64/pgtable.c
-index 83823db3488b..2975ea0841ba 100644
---- a/arch/powerpc/mm/book3s64/pgtable.c
-+++ b/arch/powerpc/mm/book3s64/pgtable.c
-@@ -170,6 +170,7 @@ pmd_t pmdp_invalidate(struct vm_area_struct *vma, unsigned long address,
- {
- 	unsigned long old_pmd;
-
-+	VM_WARN_ON_ONCE(!pmd_present(*pmdp));
- 	old_pmd = pmd_hugepage_update(vma->vm_mm, address, pmdp, _PAGE_PRESENT, _PAGE_INVALID);
- 	flush_pmd_tlb_range(vma, address, address + HPAGE_PMD_SIZE);
- 	return __pmd(old_pmd);
-diff --git a/arch/s390/include/asm/pgtable.h b/arch/s390/include/asm/pgtable.h
-index 60950e7a25f5..480bea44559d 100644
---- a/arch/s390/include/asm/pgtable.h
-+++ b/arch/s390/include/asm/pgtable.h
-@@ -1768,8 +1768,10 @@ static inline pmd_t pmdp_huge_clear_flush(struct vm_area_struct *vma,
- static inline pmd_t pmdp_invalidate(struct vm_area_struct *vma,
- 				   unsigned long addr, pmd_t *pmdp)
- {
--	pmd_t pmd = __pmd(pmd_val(*pmdp) | _SEGMENT_ENTRY_INVALID);
-+	pmd_t pmd;
-
-+	VM_WARN_ON_ONCE(!pmd_present(*pmdp));
-+	pmd = __pmd(pmd_val(*pmdp) | _SEGMENT_ENTRY_INVALID);
- 	return pmdp_xchg_direct(vma->vm_mm, addr, pmdp, pmd);
- }
-
-diff --git a/arch/sparc/mm/tlb.c b/arch/sparc/mm/tlb.c
-index b44d79d778c7..ef69127d7e5e 100644
---- a/arch/sparc/mm/tlb.c
-+++ b/arch/sparc/mm/tlb.c
-@@ -249,6 +249,7 @@ pmd_t pmdp_invalidate(struct vm_area_struct *vma, unsigned long address,
- {
- 	pmd_t old, entry;
-
-+	VM_WARN_ON_ONCE(!pmd_present(*pmdp));
- 	entry = __pmd(pmd_val(*pmdp) & ~_PAGE_VALID);
- 	old = pmdp_establish(vma, address, pmdp, entry);
- 	flush_tlb_range(vma, address, address + HPAGE_PMD_SIZE);
-diff --git a/arch/x86/mm/pgtable.c b/arch/x86/mm/pgtable.c
-index d007591b8059..103cbccf1d7d 100644
---- a/arch/x86/mm/pgtable.c
-+++ b/arch/x86/mm/pgtable.c
-@@ -631,6 +631,8 @@ int pmdp_clear_flush_young(struct vm_area_struct *vma,
- pmd_t pmdp_invalidate_ad(struct vm_area_struct *vma, unsigned long address,
- 			 pmd_t *pmdp)
- {
-+	VM_WARN_ON_ONCE(!pmd_present(*pmdp));
-+
- 	/*
- 	 * No flush is necessary. Once an invalid PTE is established, the PTE's
- 	 * access and dirty bits cannot be updated.
-diff --git a/mm/huge_memory.c b/mm/huge_memory.c
-index 89f58c7603b2..dd1fc105f70b 100644
---- a/mm/huge_memory.c
-+++ b/mm/huge_memory.c
-@@ -2493,32 +2493,11 @@ static void __split_huge_pmd_locked(struct vm_area_struct *vma, pmd_t *pmd,
- 		return __split_huge_zero_page_pmd(vma, haddr, pmd);
- 	}
-
--	/*
--	 * Up to this point the pmd is present and huge and userland has the
--	 * whole access to the hugepage during the split (which happens in
--	 * place). If we overwrite the pmd with the not-huge version pointing
--	 * to the pte here (which of course we could if all CPUs were bug
--	 * free), userland could trigger a small page size TLB miss on the
--	 * small sized TLB while the hugepage TLB entry is still established in
--	 * the huge TLB. Some CPU doesn't like that.
--	 * See http://support.amd.com/TechDocs/41322_10h_Rev_Gd.pdf, Erratum
--	 * 383 on page 105. Intel should be safe but is also warns that it's
--	 * only safe if the permission and cache attributes of the two entries
--	 * loaded in the two TLB is identical (which should be the case here).
--	 * But it is generally safer to never allow small and huge TLB entries
--	 * for the same virtual address to be loaded simultaneously. So instead
--	 * of doing "pmd_populate(); flush_pmd_tlb_range();" we first mark the
--	 * current pmd notpresent (atomically because here the pmd_trans_huge
--	 * must remain set at all times on the pmd until the split is complete
--	 * for this pmd), then we flush the SMP TLB and finally we write the
--	 * non-huge version of the pmd entry with pmd_populate.
--	 */
--	old_pmd = pmdp_invalidate(vma, haddr, pmd);
--
--	pmd_migration = is_pmd_migration_entry(old_pmd);
-+	pmd_migration = is_pmd_migration_entry(*pmd);
- 	if (unlikely(pmd_migration)) {
- 		swp_entry_t entry;
-
-+		old_pmd = *pmd;
- 		entry = pmd_to_swp_entry(old_pmd);
- 		page = pfn_swap_entry_to_page(entry);
- 		write = is_writable_migration_entry(entry);
-@@ -2529,6 +2508,30 @@ static void __split_huge_pmd_locked(struct vm_area_struct *vma, pmd_t *pmd,
- 		soft_dirty = pmd_swp_soft_dirty(old_pmd);
- 		uffd_wp = pmd_swp_uffd_wp(old_pmd);
- 	} else {
-+		/*
-+		 * Up to this point the pmd is present and huge and userland has
-+		 * the whole access to the hugepage during the split (which
-+		 * happens in place). If we overwrite the pmd with the not-huge
-+		 * version pointing to the pte here (which of course we could if
-+		 * all CPUs were bug free), userland could trigger a small page
-+		 * size TLB miss on the small sized TLB while the hugepage TLB
-+		 * entry is still established in the huge TLB. Some CPU doesn't
-+		 * like that. See
-+		 * http://support.amd.com/TechDocs/41322_10h_Rev_Gd.pdf, Erratum
-+		 * 383 on page 105. Intel should be safe but is also warns that
-+		 * it's only safe if the permission and cache attributes of the
-+		 * two entries loaded in the two TLB is identical (which should
-+		 * be the case here). But it is generally safer to never allow
-+		 * small and huge TLB entries for the same virtual address to be
-+		 * loaded simultaneously. So instead of doing "pmd_populate();
-+		 * flush_pmd_tlb_range();" we first mark the current pmd
-+		 * notpresent (atomically because here the pmd_trans_huge must
-+		 * remain set at all times on the pmd until the split is
-+		 * complete for this pmd), then we flush the SMP TLB and finally
-+		 * we write the non-huge version of the pmd entry with
-+		 * pmd_populate.
-+		 */
-+		old_pmd = pmdp_invalidate(vma, haddr, pmd);
- 		page = pmd_page(old_pmd);
- 		folio = page_folio(page);
- 		if (pmd_dirty(old_pmd)) {
-diff --git a/mm/pgtable-generic.c b/mm/pgtable-generic.c
-index 4fcd959dcc4d..a78a4adf711a 100644
---- a/mm/pgtable-generic.c
-+++ b/mm/pgtable-generic.c
-@@ -198,6 +198,7 @@ pgtable_t pgtable_trans_huge_withdraw(struct mm_struct *mm, pmd_t *pmdp)
- pmd_t pmdp_invalidate(struct vm_area_struct *vma, unsigned long address,
- 		     pmd_t *pmdp)
- {
-+	VM_WARN_ON_ONCE(!pmd_present(*pmdp));
- 	pmd_t old = pmdp_establish(vma, address, pmdp, pmd_mkinvalid(*pmdp));
- 	flush_pmd_tlb_range(vma, address, address + HPAGE_PMD_SIZE);
- 	return old;
-@@ -208,6 +209,7 @@ pmd_t pmdp_invalidate(struct vm_area_struct *vma, unsigned long address,
- pmd_t pmdp_invalidate_ad(struct vm_area_struct *vma, unsigned long address,
- 			 pmd_t *pmdp)
- {
-+	VM_WARN_ON_ONCE(!pmd_present(*pmdp));
- 	return pmdp_invalidate(vma, address, pmdp);
- }
- #endif
---
-2.25.1
+ config ARM_SMMU_QCOM_DEBUG
+        bool "ARM SMMU QCOM implementation defined debug support"
+-       depends on ARM_SMMU_QCOM
++       depends on ARM_SMMU_QCOM=y
+        help
+          Support for implementation specific debug features in ARM SMMU
+          hardware found in QTI platforms. This include support for
 
 
