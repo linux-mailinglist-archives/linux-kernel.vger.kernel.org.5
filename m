@@ -1,201 +1,200 @@
-Return-Path: <linux-kernel+bounces-165518-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-165517-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0C0008B8D80
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 17:55:35 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 512F18B8D7C
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 17:54:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E0EC9B2116C
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 15:55:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D1D0F281841
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 15:54:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1ECCC12FB09;
-	Wed,  1 May 2024 15:55:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F24912FB1B;
+	Wed,  1 May 2024 15:54:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="WTIHg8ih"
-Received: from mail-qk1-f177.google.com (mail-qk1-f177.google.com [209.85.222.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="RKK/tTST"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6F244F898
-	for <linux-kernel@vger.kernel.org>; Wed,  1 May 2024 15:55:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E98654F898
+	for <linux-kernel@vger.kernel.org>; Wed,  1 May 2024 15:54:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714578924; cv=none; b=FREhtx/OQRsC/cNmYeERDa8F9C+AF7XhvYLdYfIHSNNjLjDKfS+xRJjXwd3TGGZZKzRbsWh/waLYLFjD1eIYfXsnCM4z7AZesCxlCTUmrTzeKpImwW3rUOIGdZf72H9mINFpBEWdmkgI0npQMaOdEslHhVUqP7U/dViOne017a0=
+	t=1714578868; cv=none; b=cQu1c39bB6a2tCU/Rde40f8Unw18Aa85C/t5/o6dA+usPjMCULhl3pMPJXDu6+L7cOQjgIDaNF3aLoUcRWgEjOAs0f7nIV5kIsPL0eLwBx4zavD7dlCP005U38Iz7JtBLiChHUUZb8ZY6xiaPaMxmwNn2UfFtCLMxqYRwvGLuKo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714578924; c=relaxed/simple;
-	bh=6c0ffKKB7xWFV1lWREMe9851jShL7RHPMX7gzZKaIfQ=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=S/WhSHg6J59NeGBjqUzU3pvAhGxDCSLDyeT1olia2wal/LjdMxZKg7SojDI56V8V6HRIZGOTHtAYekJk6NYwJuZ3Ws4IMNRbGvlJVe4yFLZ/Bh7TUf0apS5T9Aysa5HBQa1YF7L9u2BThbj2XJCF1W63tE0KT0pgH9asqYc837o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=WTIHg8ih; arc=none smtp.client-ip=209.85.222.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-qk1-f177.google.com with SMTP id af79cd13be357-790c7785ddbso321660385a.1
-        for <linux-kernel@vger.kernel.org>; Wed, 01 May 2024 08:55:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1714578921; x=1715183721; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=bkEs8J1ffdIWhMMglu+CsW3L9Q3EHJqY0I8USedJfzM=;
-        b=WTIHg8ihK8oj5puVVsAIlB8AfxhRuQiUINS0zfU7CPv1CBYV+CzKGB9UTjQnZvFFLs
-         YiQ06bgf/4uDj0NoMBkUj4duKmRXNLS1ONtcqF50hxEJNuvq8ZHKGt68tamPjVt/85E6
-         w7m3l4VbkB9OstjWiiTrGeyNam+XtYBTQyQEM=
+	s=arc-20240116; t=1714578868; c=relaxed/simple;
+	bh=71Le3lhOqF7mJtXiAKBiwjI7NHwk1zXCvXbuooCnktY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=nGhr6Uyv8lScFgfRvJ3+n6YAF/gVZdFOYuhMd/H1N4lVu3ZZC+JPFBvBm1zelVvoiQh+2LsHi5QZfk8oG/pB5uHKKQE5T4/jFUbcdjYa7KIyCQ3VQMnyOiPoqW034may/7rBaYb0RMTiMjirtGDW6uB0ZCU+T85TOFc/Q05RzmM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=RKK/tTST; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1714578865;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=dra4crM6SuKxZJFC32MDFH32iIO5Ahcz86JXAbj7hAo=;
+	b=RKK/tTSTKYqtV/dhC84Mzo8XNmbBAoMLdbtdeV14vNcUkNdZ/z2N2GKv6h3W1nW7CM/7lc
+	od4z/WunjIIhMOnTtCGbFpaB4O1FxNa8rx6xjN14SE3JPojxerGD1hewge1KqiXWAR7wKB
+	eaGTEA2K1Tb0UXi3QsoIV7lo7OKNikY=
+Received: from mail-lj1-f198.google.com (mail-lj1-f198.google.com
+ [209.85.208.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-395-jaefUqf2MJO5P6_grty3eA-1; Wed, 01 May 2024 11:54:24 -0400
+X-MC-Unique: jaefUqf2MJO5P6_grty3eA-1
+Received: by mail-lj1-f198.google.com with SMTP id 38308e7fff4ca-2db099e687fso58575991fa.1
+        for <linux-kernel@vger.kernel.org>; Wed, 01 May 2024 08:54:24 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714578921; x=1715183721;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=bkEs8J1ffdIWhMMglu+CsW3L9Q3EHJqY0I8USedJfzM=;
-        b=HIWQLCFnUGU5zfszDSIOThsvbR/wlQRvMICqYY191zSNzGeOC0T5dC/uHf1Asgi9my
-         TeiUl6hwIhqtAgMwqSQ92hXFFh+RtSuPgQ4xa7genoMZEA5nkfZSTJqAsYYn05HdccYU
-         GLH8Bjy00yJL0ECdbVii0DX9h/rl1+wP2OwbgzGLPHFWHOGqcxR+2KV1YV+pNpqIuitl
-         Jh9LpX/D45RAmqOygtyiWh+ELwIjtE64zwmUyr2+szjs5XSHDugOOwgc0GpDpJ5gI0jq
-         Od7MIQnUVaLRem0hH3r1kfQ6xQWl8Y+f1LNL/wA0nQvgnHEjz91NNWyfLf7RUL+0Vk3/
-         FvAQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXI9pgk4Au74m6PEXlv8XdZ/2lf2aaWQAbljx4EsIuxuNC3xc0I4V9eNrX0YsORGgZwSesMMNQHbMyTvfypAPt6kb3l4kPD+YtcZ5m3
-X-Gm-Message-State: AOJu0YwDU1HvxWIKaV2RATRbLtuqxRXNWhr3oXabWBe7mw8CPx1wW72+
-	TmAnyr5Mhb279BX2q+5g328FbVIZplc0yJwQP34GoDVBkip1MtYeD5c5Uxip4lIEeCO3GFCYTxs
-	=
-X-Google-Smtp-Source: AGHT+IGyFNLPRR13c9S7fb1iRbDl87UIoxvwZ9gL2IEU2tzUlZX3guHw5WTSpqSSRcW6hicx+0H7og==
-X-Received: by 2002:a05:620a:564e:b0:790:f6bf:3b1 with SMTP id vw14-20020a05620a564e00b00790f6bf03b1mr2647569qkn.26.1714578921239;
-        Wed, 01 May 2024 08:55:21 -0700 (PDT)
-Received: from mail-qt1-f181.google.com (mail-qt1-f181.google.com. [209.85.160.181])
-        by smtp.gmail.com with ESMTPSA id b20-20020a05620a119400b00790c2b14a5fsm4280726qkk.12.2024.05.01.08.55.20
-        for <linux-kernel@vger.kernel.org>
+        d=1e100.net; s=20230601; t=1714578863; x=1715183663;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=dra4crM6SuKxZJFC32MDFH32iIO5Ahcz86JXAbj7hAo=;
+        b=PxbwWMOXskbRWk+F4wEHAJfSYR1zUSaBF2N7qznn/5oTr67HT++ghhTgKDh6tKQd8s
+         GlfSnMswCD/9EvZC+mF5s8sLvf4dIb24fUutQa6mYoE+X77cGh8sR3nuXJufJm5x+doF
+         2XlS3pCPM0QCRhD89qKhDlkMFDT0xQZPVAPp+++LIYlun4n7G7ZfMjZ6Ouu6Zxql4BWW
+         DmqY38x7EpEFXJ/015k3bDjMDdZH53m3VasI/w8RE6wpkfjM9Ww81IQxVsMDc3w1oQAT
+         y5vss1d66aI7XuuJikaXIs3LpMEHQUREw6tUixjoBO+1KgT39BxFlTY8MtLhAuk+BHcU
+         0QOQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXG87Bzg+32iJOHm2C3NguxAOLo9nM14OCQNncFpyWhP3P7zWAOC4hlpG5TsNaJKMOml0roX/5nJnI4PdOFjv/HU/GkGu0CgItgwdqp
+X-Gm-Message-State: AOJu0Yw15dZpClnxT9Rrzu69JODl9AVZAUPaIKiN0k9HAtQce1n7V92q
+	8ugZ4nRSR6d43QYv3mLVtMbAQu/082bonPusqVa6ozx2BNozgBDEUgITuNLLuGjGhY4sbKjb+C1
+	MjlDFTktyO/uDkmPEP3vaoQTX/s2GtAsL+QNZaCmBiYV9TS3SYChjl1zjjReTDg==
+X-Received: by 2002:a2e:9b8f:0:b0:2de:8197:4cfe with SMTP id z15-20020a2e9b8f000000b002de81974cfemr1797711lji.42.1714578862726;
+        Wed, 01 May 2024 08:54:22 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHKr7d6c/oB7PFq2oL854rqRRnRilrbgxqDDmOJ1RvTkaJGXBxXwYZLNlmieyrQ97pKCT8ojA==
+X-Received: by 2002:a2e:9b8f:0:b0:2de:8197:4cfe with SMTP id z15-20020a2e9b8f000000b002de81974cfemr1797697lji.42.1714578862194;
+        Wed, 01 May 2024 08:54:22 -0700 (PDT)
+Received: from ?IPV6:2003:cb:c712:aa00:299:f96e:f7b3:adae? (p200300cbc712aa000299f96ef7b3adae.dip0.t-ipconnect.de. [2003:cb:c712:aa00:299:f96e:f7b3:adae])
+        by smtp.gmail.com with ESMTPSA id w20-20020a05600c475400b0041befc2652csm2604047wmo.31.2024.05.01.08.54.21
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 01 May 2024 08:55:21 -0700 (PDT)
-Received: by mail-qt1-f181.google.com with SMTP id d75a77b69052e-439b1c72676so70271cf.1
-        for <linux-kernel@vger.kernel.org>; Wed, 01 May 2024 08:55:20 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCXFOQaj0YP/HfUmzs71/X7Ttt1cmpsu2vcfIp0aGQcq4hZlEdZLdognF8tok3cSTCDrasJ/CZVnuFg7b6Uqk7RSL/r9bqzgp50zMLqR
-X-Received: by 2002:ac8:5a0c:0:b0:43a:fa0d:69b5 with SMTP id
- n12-20020ac85a0c000000b0043afa0d69b5mr214045qta.7.1714578588051; Wed, 01 May
- 2024 08:49:48 -0700 (PDT)
+        Wed, 01 May 2024 08:54:21 -0700 (PDT)
+Message-ID: <736282e2-e17f-4434-9009-8252055451c5@redhat.com>
+Date: Wed, 1 May 2024 17:54:20 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240426235857.3870424-1-dianders@chromium.org>
- <20240426165839.v2.4.Ie94246c30fe95101e0e26dd5f96e976dbeb8f242@changeid>
- <2af446d3-7834-4a6b-897b-b14c6bccff65@linaro.org> <CAD=FV=V=EvEGp4tGDd-UQ1R=XkAwDn04ftd8oWU=UE=3Gi7SLQ@mail.gmail.com>
- <87y18w2n6h.fsf@intel.com>
-In-Reply-To: <87y18w2n6h.fsf@intel.com>
-From: Doug Anderson <dianders@chromium.org>
-Date: Wed, 1 May 2024 08:49:36 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=X5jBqBgOqtm8nYtEKNHcnJgQDWj+ynS5U7KXuQgHLySg@mail.gmail.com>
-Message-ID: <CAD=FV=X5jBqBgOqtm8nYtEKNHcnJgQDWj+ynS5U7KXuQgHLySg@mail.gmail.com>
-Subject: Re: [PATCH v2 4/8] drm/mipi-dsi: Introduce mipi_dsi_*_write_seq_multi()
-To: Jani Nikula <jani.nikula@linux.intel.com>
-Cc: neil.armstrong@linaro.org, dri-devel@lists.freedesktop.org, 
-	Linus Walleij <linus.walleij@linaro.org>, lvzhaoxiong@huaqin.corp-partner.google.com, 
-	Hsin-Yi Wang <hsinyi@google.com>, Javier Martinez Canillas <javierm@redhat.com>, Joel Selvaraj <jo@jsfamily.in>, 
-	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, 
-	Cong Yang <yangcong5@huaqin.corp-partner.google.com>, Sam Ravnborg <sam@ravnborg.org>, 
-	Daniel Vetter <daniel@ffwll.ch>, David Airlie <airlied@gmail.com>, 
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, 
-	Thomas Zimmermann <tzimmermann@suse.de>, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5] mm/rmap: do not add fully unmapped large folio to
+ deferred split list
+To: Zi Yan <ziy@nvidia.com>, Alexander Gordeev <agordeev@linux.ibm.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+ "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+ Yang Shi <shy828301@gmail.com>, Ryan Roberts <ryan.roberts@arm.com>,
+ Barry Song <21cnbao@gmail.com>, Lance Yang <ioworker0@gmail.com>,
+ linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org
+References: <20240426190253.541419-1-zi.yan@sent.com>
+ <ZjJCdodEf4CBa1N7@li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com>
+ <5FAD7FB6-4AC0-4427-B56E-4942A95DB68C@nvidia.com>
+Content-Language: en-US
+From: David Hildenbrand <david@redhat.com>
+Autocrypt: addr=david@redhat.com; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat
+In-Reply-To: <5FAD7FB6-4AC0-4427-B56E-4942A95DB68C@nvidia.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Hi,
+On 01.05.24 15:38, Zi Yan wrote:
+> On 1 May 2024, at 9:24, Alexander Gordeev wrote:
+> 
+>> On Fri, Apr 26, 2024 at 03:02:53PM -0400, Zi Yan wrote:
+>>
+>> Hi Zi,
+>>
+>> It increasingly looks like this commit is crashing on s390 since
+>> 2024-04-30 in linux-next. If I do not miss something - since it
+>> was included in mm-everything.
+>>
+>>> @@ -1553,9 +1558,10 @@ static __always_inline void __folio_remove_rmap(struct folio *folio,
+>>>   		 * page of the folio is unmapped and at least one page
+>>>   		 * is still mapped.
+>>>   		 */
+>>> -		if (folio_test_large(folio) && folio_test_anon(folio))
+>>> -			if (level == RMAP_LEVEL_PTE || nr < nr_pmdmapped)
+>>> -				deferred_split_folio(folio);
+>>> +		if (folio_test_anon(folio) &&
+>>> +		    list_empty(&folio->_deferred_list) &&
+>>
+>> An attempt to reference folio->_deferred_list causes the crash below.
+> 
+> So if you remove this line, the crash no longer happens? It looks strange to
+> me that referencing a anonymous folio's _deferred_list would cause a crash.
+> Hmm, unless the folio is order-0.
+> 
+> Can you try the patch below and see if it fixes the crash? It moves partially_mapped
+> ahead to exclude order-0 folios.
+> 
+> diff --git a/mm/rmap.c b/mm/rmap.c
+> index 087a79f1f611..2d27c92bb6d5 100644
+> --- a/mm/rmap.c
+> +++ b/mm/rmap.c
+> @@ -1557,9 +1557,8 @@ static __always_inline void __folio_remove_rmap(struct folio *folio,
+>                   * page of the folio is unmapped and at least one page
+>                   * is still mapped.
+>                   */
+> -               if (folio_test_anon(folio) &&
+> -                   list_empty(&folio->_deferred_list) &&
+> -                   partially_mapped)
+> +               if (folio_test_anon(folio) && partially_mapped &&
+> +                   list_empty(&folio->_deferred_list))
+>                          deferred_split_folio(folio);
 
-On Mon, Apr 29, 2024 at 8:39=E2=80=AFAM Jani Nikula <jani.nikula@linux.inte=
-l.com> wrote:
->
-> On Mon, 29 Apr 2024, Doug Anderson <dianders@chromium.org> wrote:
-> > Hi,
-> >
-> > On Mon, Apr 29, 2024 at 2:38=E2=80=AFAM Neil Armstrong
-> > <neil.armstrong@linaro.org> wrote:
-> >>
-> >> > +/**
-> >> > + * struct mipi_dsi_multi_context - Context to call multiple MIPI DS=
-I funcs in a row
-> >> > + * @dsi: Pointer to the MIPI DSI device
-> >> > + * @accum_err: Storage for the accumulated error over the multiple =
-calls. Init
-> >> > + *   to 0. If a function encounters an error then the error code wi=
-ll be
-> >> > + *   stored here. If you call a function and this points to a non-z=
-ero
-> >> > + *   value then the function will be a noop. This allows calling a =
-function
-> >> > + *   many times in a row and just checking the error at the end to =
-see if
-> >> > + *   any of them failed.
-> >> > + */
-> >> > +
-> >> > +struct mipi_dsi_multi_context {
-> >> > +     struct mipi_dsi_device *dsi;
-> >> > +     int accum_err;
-> >> > +};
-> >>
-> >> I like the design, but having a context struct seems over-engineered w=
-hile we could pass
-> >> a single int over without encapsulating it with mipi_dsi_multi_context=
-.
-> >>
-> >> void mipi_dsi_dcs_write_buffer_multi(struct mipi_dsi_multi_context *ct=
-x,
-> >>                                      const void *data, size_t len);
-> >> vs
-> >> void mipi_dsi_dcs_write_buffer_multi(struct mipi_dsi_device *dsi, int =
-*accum_err,
-> >>                                      const void *data, size_t len);
-> >>
-> >> is the same, and it avoids having to declare a mipi_dsi_multi_context =
-and set ctx->dsi,
-> >> and I'll find it much easier to migrate, just add a &ret and make sure=
- ret is initialized to 0.
-> >
-> > Yeah, I had the same reaction when Jani suggested the context style
-> > [1] and I actually coded it up exactly as you suggest above. I then
-> > changed my mind and went with the context. My motivation was that when
-> > I tested it I found that using the context produced smaller code.
-> > Specifically, from the description of this patch we see we end up
-> > with:
-> >
-> > Total: Before=3D10651, After=3D9663, chg -9.28%
-> >
-> > ...when I didn't have the context and I had the accum_err then instead
-> > of getting ~9% smaller I believe it actually got ~0.5% bigger. This
-> > makes some sense as the caller has to pass 4 parameters to each call
-> > instead of 3.
-> >
-> > It's not a giant size difference but it was at least some motivation
-> > that helped push me in this direction. I'd also say that when I looked
-> > at the code in the end the style grew on me. It's really not too
-> > terrible to have one line in your functions that looks like:
-> >
-> > struct mipi_dsi_multi_context ctx =3D { .dsi =3D boe->dsi };
-> >
-> > ...and if that becomes the canonical way to do it then it's really
-> > hard to accidentally forget to initialize the error value. With the
-> > other API it's _very_ easy to forget to initialize the error value and
-> > the compiler won't yell at you. It also makes it very obvious to the
-> > caller that this function is doing something a little different than
-> > most Linux APIs with that error return.
-> >
-> > So I guess I'd say that I ended up being pretty happy with the
-> > "context" even if it does feel a little over engineered and I'd argue
-> > to keep it that way. That being said, if you feel strongly about it
-> > then we can perhaps get others to chime in to see which style they
-> > prefer? Let me know what you think.
-> >
-> >
-> > [1] https://lore.kernel.org/r/8734r85tcf.fsf@intel.com
->
-> FWIW, I don't feel strongly about this, and I could be persuaded either
-> way, but I've got this gut feeling that an extensible context parameter
-> might be benefitial future proofing in this case.
+Yes, that should fix it and is the right thing to do. For small folios, 
+partially_mapped will always be false.
 
-I've gone ahead and sent out a v3 where I still leave it as taking
-`struct mipi_dsi_multi_context`. Neil: if you feel strongly about it,
-I have no problem sending out a v4. I still think that the size
-savings of using the context are a good "tiebreaking" factor in
-choosing between the two styles... ;-)
+-- 
+Cheers,
 
--Doug
+David / dhildenb
+
 
