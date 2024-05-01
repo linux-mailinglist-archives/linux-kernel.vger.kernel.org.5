@@ -1,143 +1,202 @@
-Return-Path: <linux-kernel+bounces-165770-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-165771-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3FD268B910D
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 23:21:05 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 592278B911B
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 23:39:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EA4D9283372
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 21:21:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DD2F41F22EB3
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 21:39:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B88A165FBA;
-	Wed,  1 May 2024 21:20:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85F18165FC6;
+	Wed,  1 May 2024 21:39:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="c1B8vUXJ"
-Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
+	dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b="ByewqnLA"
+Received: from msa.smtpout.orange.fr (smtp-81.smtpout.orange.fr [80.12.242.81])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E23D4D52F
-	for <linux-kernel@vger.kernel.org>; Wed,  1 May 2024 21:20:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C891D1474B9;
+	Wed,  1 May 2024 21:39:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.12.242.81
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714598457; cv=none; b=W7xA84CKBBsiXB42o6w71/Lu7rglJtf+o2Q9PaSbn9oS2GTqyk/Jq/dmwTyuEPlJXNgih0LmqoS0kwBBvKT1gPJtGJWUEr/HJi+andVKl2m8pkJpsDJaXs4AqYsUI1Tgn1Qxli4Jx2mq33Qvt687hXo/Cm+33ZPUGMnMc3z3lmc=
+	t=1714599565; cv=none; b=k9cU46AVX9iwV+ROodLZy4ePKlXIZ+88JlRC4dVGVYHf9WDy9Q/7fVvrZiDkJhpGt29ZmWf37LM8+1yWoTRTIrsh3UUxL/LCn5yueugCCGJO41OdNN1S33ql61slGbePbPWmLlgvWHufyi1FrNFGhXXsTlY281X+FnjE5WqELYQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714598457; c=relaxed/simple;
-	bh=O34grSvAn3ldZ0aHb/U4Q+6zVX17IPoCgaWasx5R/TU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=bxfO1+rbFdOth37Kv5d8syH6/mudvFljOC4f8cCv+xWtg+Ak9Kb3cqVTTjbnAW7Resj1beIRc/1IubFp/gUpBnSExuime+e1gE9Gmys18tKDt8ygIXA2/1sWJmdpt6Pd1DVuWl2OOc/U2ruz4xWOXFFkiHqqlml9ihj7EKqOUAg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=c1B8vUXJ; arc=none smtp.client-ip=209.85.208.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-56e69a51a33so6603830a12.1
-        for <linux-kernel@vger.kernel.org>; Wed, 01 May 2024 14:20:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1714598454; x=1715203254; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=j0f+lrtMA8Tr8cBnaWXK4wxxIlkiIC1fLe265KtbI7g=;
-        b=c1B8vUXJ+Gc6JL1h/iab4RhLdu/i9CoRx4djGzqSPqzTJjjCLkQqaxCm3U1JW9/iou
-         o471sQC4jqirHTn02irdZAYzn7rBmHqEC0c59ejXQ1dQPEq0z7hkLAZiX5zmWQDC19Of
-         QrM3bl+DWqPuItdkYe6sC/Ftyg6nA92I1Y6Cw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714598454; x=1715203254;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=j0f+lrtMA8Tr8cBnaWXK4wxxIlkiIC1fLe265KtbI7g=;
-        b=mVbkc42pIAbmIXyyTP2dXQ0H3igGTmKd5/hWgpsSTDDy06i1RumovrHSOFl2DCrOLA
-         rLAVI62FOqFA6vgNDZ89cJ7Edzbbc2HAQM4lWUN39tooH/vlbfXdUQYYGrqK9euOZe9W
-         S/X8IvBgPAUZYsRa2pCPZgU4vvjtvufu1NIf+jGlUWqUsoz/L6jF+Uuel1ucn/Q2YGfm
-         OJp/aTtJo9zgufhRuO2Kvw/Ew06MdGV3z9IfaAD9pX0tVUN8VgwQr7hLoM1RI8YJTVEt
-         bOSO4rWWuN3ZGY+5CTgV4bdMeHmWo+ixQDW1EOizuBJsTR9t9hZ3woSvKguD8nW+9B77
-         olbg==
-X-Forwarded-Encrypted: i=1; AJvYcCVMGkGUZcT+ebNiJpxXZUmqxBO50F6LBCrAg7Ry9hI2AL3BxbVsz/m6geD797xJnzCJn8lwVW7XsDJG7nXKMZakD2C0tCYpFlZPTViF
-X-Gm-Message-State: AOJu0Yw2gWc1hpcPJA1WULpwZBQXWbu6Z1eZ1b/iOCjFocCwDlcwZWDx
-	Jg9Z142+tN46zDQt+d9aOqdz+iyPRNDjvATsuA5B/04T2W95jsRGwqb06bKgpqxYKvWPGcaR2oE
-	1iYrC8Q==
-X-Google-Smtp-Source: AGHT+IGb7WUaYjODnFI1iueNFB//cAE+dMAW6LLnn3+dZ4+f13PWVLWC5f5bKxUu7SIOjF7A8Uxc2w==
-X-Received: by 2002:a50:f619:0:b0:572:72fc:df54 with SMTP id c25-20020a50f619000000b0057272fcdf54mr149557edn.22.1714598454100;
-        Wed, 01 May 2024 14:20:54 -0700 (PDT)
-Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com. [209.85.218.46])
-        by smtp.gmail.com with ESMTPSA id ec4-20020a0564020d4400b00572accd13dasm1019037edb.80.2024.05.01.14.20.52
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 01 May 2024 14:20:53 -0700 (PDT)
-Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-a519e1b0e2dso955962866b.2
-        for <linux-kernel@vger.kernel.org>; Wed, 01 May 2024 14:20:52 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCWZa3cqOY0AstqDlSvVaS1jGZNzAklJdUWEUwODLe99xziPhEyRBADd9fYQHXNFZJb/cuO/lllzQ9XnxPANWzaqoFArzxks81jDRsH5
-X-Received: by 2002:a17:906:2e87:b0:a55:b581:dca8 with SMTP id
- o7-20020a1709062e8700b00a55b581dca8mr92670eji.38.1714598452573; Wed, 01 May
- 2024 14:20:52 -0700 (PDT)
+	s=arc-20240116; t=1714599565; c=relaxed/simple;
+	bh=xCX7DN4ArF6BjEHpKxCUjLo/sTx+uQ/UYj/ZWCCrQdg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=fz74hdWVBMWm/KuNlK12gy9cqHsSEcnt6padWPV9nl5kiKzOYFgVMmYqJIfy4fbOz/k2VQtnE455bRqHxHYuTwbVOU/yqWxcubkX9b3oESxZgSLvhJiO2YvlCUAcAACiYDQvXSsdVqPDVbFAbNPUQslmTkHBZWzJ3VkF0zhmdQI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wanadoo.fr; spf=pass smtp.mailfrom=wanadoo.fr; dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b=ByewqnLA; arc=none smtp.client-ip=80.12.242.81
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wanadoo.fr
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wanadoo.fr
+Received: from [192.168.1.37] ([86.243.17.157])
+	by smtp.orange.fr with ESMTPA
+	id 2HfZsx4ATpDee2HfZs0ZRe; Wed, 01 May 2024 23:39:19 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
+	s=t20230301; t=1714599559;
+	bh=b/uendQadFoqJ6JUcsRVTxUOv2sgr+9vrXfQIk/X5eI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:From;
+	b=ByewqnLAT2Hq/nsspQoWd1u5FHIvkZeGSt1pmJ2Wx5+rjP6Fx8/kvAQCMQO72OAqj
+	 MNJaRSHWXELm6vkDaxlTbPyeqQ9EaPPxTm8IQp+IxNZVmtZkOmilhhAdOTF4+kGb3Q
+	 dyg8HzRbYOIBftXHuyiuPCG4DNLX+RTzxyLZtmtloV/fti9bBu/+7kBDexWti99G+Z
+	 i6xaugiME0GA3nvrQz33lS62KFGKyDIV4gLm5LmstkcbkIkLcV8eALveny6aUWpDRh
+	 bib6knrZ1DqxDy3YbRxqaoETm2rbM+YB/fmlbzPwO5PFe+YXZsdq4CTzZSQJyn1rvE
+	 KxE3i/ZZOxbew==
+X-ME-Helo: [192.168.1.37]
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Wed, 01 May 2024 23:39:19 +0200
+X-ME-IP: 86.243.17.157
+Message-ID: <7cdc63b3-31cc-442c-8c2e-75adb2c76b52@wanadoo.fr>
+Date: Wed, 1 May 2024 23:39:16 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <8edbd558-a05f-c775-4d0c-09367e688682@I-love.SAKURA.ne.jp>
- <2023053048-saved-undated-9adf@gregkh> <18a58415-4aa9-4cba-97d2-b70384407313@I-love.SAKURA.ne.jp>
- <CAHk-=wgSOa_g+bxjNi+HQpC=6sHK2yKeoW-xOhb0-FVGMTDWjg@mail.gmail.com>
- <a3be44f9-64eb-42e8-bf01-8610548a68a7@I-love.SAKURA.ne.jp>
- <CAHk-=wj6HmDetTDhNNUNcAXZzmCv==oHk22_kVW4znfO-HuMnA@mail.gmail.com>
- <CANpmjNN250UCxsWCpUHAvJo28Lzv=DN-BKTmjEpcLFOCA+U+pw@mail.gmail.com>
- <CAHk-=whnQXNVwuf42Sh2ngBGhBqbJjUfq5ux6e7Si_XSPAt05A@mail.gmail.com>
- <d4de136e-c4e0-45c2-b33e-9a819cb3a791@paulmck-laptop> <CAHk-=wi3iondeh_9V2g3Qz5oHTRjLsOpoy83hb58MVh=nRZe0A@mail.gmail.com>
- <892324fc-9b75-4e8a-b3b6-cf3c5b4c3506@paulmck-laptop> <CANpmjNOY=Qpm3hBu-eN4Xk8n-2VXQRvcQ3_PfwPwNw9MmC8ctw@mail.gmail.com>
- <CAHk-=whTakjVGgBC5OtoZ5Foo=hd4-g+NZ79nkMDVj6Ug7ARKQ@mail.gmail.com>
-In-Reply-To: <CAHk-=whTakjVGgBC5OtoZ5Foo=hd4-g+NZ79nkMDVj6Ug7ARKQ@mail.gmail.com>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Wed, 1 May 2024 14:20:35 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wiGzmJXZwHxCE6P0jVBqU4gHEm=zcfj3v+zM_S_9RF4_Q@mail.gmail.com>
-Message-ID: <CAHk-=wiGzmJXZwHxCE6P0jVBqU4gHEm=zcfj3v+zM_S_9RF4_Q@mail.gmail.com>
-Subject: Re: [PATCH v3] tty: tty_io: remove hung_up_tty_fops
-To: Marco Elver <elver@google.com>
-Cc: paulmck@kernel.org, Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>, 
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Dmitry Vyukov <dvyukov@google.com>, 
-	syzbot <syzbot+b7c3ba8cdc2f6cf83c21@syzkaller.appspotmail.com>, 
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com, 
-	Nathan Chancellor <nathan@kernel.org>, Arnd Bergmann <arnd@kernel.org>, Al Viro <viro@zeniv.linux.org.uk>, 
-	Jiri Slaby <jirislaby@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] printk: cleanup deprecated uses of strncpy/strcpy
+To: Justin Stitt <justinstitt@google.com>, Petr Mladek <pmladek@suse.com>,
+ Steven Rostedt <rostedt@goodmis.org>, John Ogness
+ <john.ogness@linutronix.de>, Sergey Senozhatsky <senozhatsky@chromium.org>
+Cc: linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+References: <20240429-strncpy-kernel-printk-printk-c-v1-1-4da7926d7b69@google.com>
+Content-Language: en-MW
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+In-Reply-To: <20240429-strncpy-kernel-printk-printk-c-v1-1-4da7926d7b69@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Wed, 1 May 2024 at 14:06, Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
->
-> So it would be something like
->
->         const struct file_operations    * __data_racy f_op;
->
-> and only the load of f_op would be volatile - not the pointer itself.
+Le 30/04/2024 à 01:06, Justin Stitt a écrit :
+> Cleanup some deprecated uses of strncpy() and strcpy() [1].
+> 
+> There doesn't seem to be any bugs with the current code but the
+> readability of this code could benefit from a quick makeover while
+> removing some deprecated stuff as a benefit.
+> 
+> The most interesting replacement made in this patch involves
+> concatenating "ttyS" with a digit-led user-supplied string. Instead of
+> doing two distinct string copies with carefully managed offsets and
+> lengths, let's use the more robust and self-explanatory scnprintf().
+> scnprintf will 1) respect the bounds of @buf, 2) null-terminate @buf, 3)
+> do the concatenation. This allows us to drop the manual NUL-byte assignment.
+> 
+> Also, since isdigit() is used about a dozen lines after the open-coded
+> version we'll replace it for uniformity's sake.
+> 
+> All the strcpy() --> strscpy() replacements are trivial as the source
+> strings are literals and much smaller than the destination size. No
+> behavioral change here.
+> 
+> Use the new 2-argument version of strscpy() introduced in Commit
+> e6584c3964f2f ("string: Allow 2-argument strscpy()"). However, to make
+> this work fully (since the size must be known at compile time), also
+> update the extern-qualified declaration to have the proper size
+> information.
+> 
+> Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
+> Link: https://github.com/KSPP/linux/issues/90 [2]
+> Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [3]
+> Cc: linux-hardening@vger.kernel.org
+> Signed-off-by: Justin Stitt <justinstitt@google.com>
+> ---
+> ---
+>   include/linux/printk.h |  2 +-
+>   kernel/printk/printk.c | 20 +++++++++-----------
+>   2 files changed, 10 insertions(+), 12 deletions(-)
+> 
+> diff --git a/include/linux/printk.h b/include/linux/printk.h
+> index 955e31860095..b3a29c27abe9 100644
+> --- a/include/linux/printk.h
+> +++ b/include/linux/printk.h
+> @@ -71,7 +71,7 @@ extern void console_verbose(void);
+>   
+>   /* strlen("ratelimit") + 1 */
+>   #define DEVKMSG_STR_MAX_SIZE 10
+> -extern char devkmsg_log_str[];
+> +extern char devkmsg_log_str[DEVKMSG_STR_MAX_SIZE];
+>   struct ctl_table;
+>   
+>   extern int suppress_printk;
+> diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
+> index adf99c05adca..64617bcda070 100644
+> --- a/kernel/printk/printk.c
+> +++ b/kernel/printk/printk.c
+> @@ -178,9 +178,9 @@ static int __init control_devkmsg(char *str)
+>   	 * Set sysctl string accordingly:
+>   	 */
+>   	if (devkmsg_log == DEVKMSG_LOG_MASK_ON)
+> -		strcpy(devkmsg_log_str, "on");
+> +		strscpy(devkmsg_log_str, "on");
+>   	else if (devkmsg_log == DEVKMSG_LOG_MASK_OFF)
+> -		strcpy(devkmsg_log_str, "off");
+> +		strscpy(devkmsg_log_str, "off");
+>   	/* else "ratelimit" which is set by default. */
+>   
+>   	/*
+> @@ -209,7 +209,7 @@ int devkmsg_sysctl_set_loglvl(struct ctl_table *table, int write,
+>   			return -EINVAL;
+>   
+>   		old = devkmsg_log;
+> -		strncpy(old_str, devkmsg_log_str, DEVKMSG_STR_MAX_SIZE);
+> +		strscpy(old_str, devkmsg_log_str);
+>   	}
+>   
+>   	err = proc_dostring(table, write, buffer, lenp, ppos);
+> @@ -227,7 +227,7 @@ int devkmsg_sysctl_set_loglvl(struct ctl_table *table, int write,
+>   
+>   			/* ... and restore old setting. */
+>   			devkmsg_log = old;
+> -			strncpy(devkmsg_log_str, old_str, DEVKMSG_STR_MAX_SIZE);
+> +			strscpy(devkmsg_log_str, old_str);
+>   
+>   			return -EINVAL;
+>   		}
+> @@ -2506,21 +2506,19 @@ static int __init console_setup(char *str)
+>   	/*
+>   	 * Decode str into name, index, options.
+>   	 */
+> -	if (str[0] >= '0' && str[0] <= '9') {
+> -		strcpy(buf, "ttyS");
+> -		strncpy(buf + 4, str, sizeof(buf) - 5);
+> +	if (isdigit(str[0])) {
+> +		scnprintf(buf, sizeof(buf), "ttyS%s", str);
+>   	} else {
+> -		strncpy(buf, str, sizeof(buf) - 1);
+> +		strscpy(buf, str);
+>   	}
 
-Noe that in reality, we'd actually prefer the compiler to treat that
-"__data_racy" as volatile in the sense of "don't reload this value",
-but at the same time be the opposite of volatile in the sense that
-using one read multiple times is actually a good idea.
+Hi,
 
-IOW, the problem is rematerialization ("read the value more than once
-when there is just one access in the source"), not strictly a "read
-the value separately each time it is accessed".
+Nit: The { } around each branch can now also be removed.
 
-We've actually had that before: it's not that we want each access to
-force a read from memory, we want to avoid a TOCTOU race.
+CJ
 
-Many of our "READ_ONCE()" uses are of that kind, and using "volatile"
-sadly generates horrible code, but is the only way to tell the
-compiler to not ever rematerialize the value by loading it _twice_.
+> -	buf[sizeof(buf) - 1] = 0;
+>   	options = strchr(str, ',');
+>   	if (options)
+>   		*(options++) = 0;
+>   #ifdef __sparc__
+>   	if (!strcmp(str, "ttya"))
+> -		strcpy(buf, "ttyS0");
+> +		strscpy(buf, "ttyS0");
+>   	if (!strcmp(str, "ttyb"))
+> -		strcpy(buf, "ttyS1");
+> +		strscpy(buf, "ttyS1");
+>   #endif
+>   	for (s = buf; *s; s++)
+>   		if (isdigit(*s) || *s == ',')
+> 
+> ---
+> base-commit: 9e4bc4bcae012c98964c3c2010debfbd9e5b229f
+> change-id: 20240429-strncpy-kernel-printk-printk-c-6a72fe6d0715
+> 
+> Best regards,
+> --
+> Justin Stitt <justinstitt@google.com>
+> 
+> 
+> 
 
-I'd love to see an extension where "const volatile" basically means
-exactly that: the volatile tells the compiler that it can't
-rematerialize by doing the load multiple times, but the "const" would
-say that if the compiler sees two or more accesses, it can still CSE
-them.
-
-Oh well. Thankfully it's not a hugely common code generation problem.
-It comes up every once in a while, and I think the last time this
-worry came up, I think we had gcc people tell us that they don't
-actually ever rematerialize loads from memory.
-
-Of course, that was an implementation issue, not a guarantee.
-
-                           Linus
 
