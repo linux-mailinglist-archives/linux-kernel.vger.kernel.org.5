@@ -1,332 +1,237 @@
-Return-Path: <linux-kernel+bounces-165261-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-165260-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id D15098B8A33
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 14:42:56 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 945F88B8A30
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 14:42:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D9D9BB210AA
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 12:42:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B616C1C21A0B
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 12:42:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC32C54FA1;
-	Wed,  1 May 2024 12:42:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B903F535B8;
+	Wed,  1 May 2024 12:42:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=geanix.com header.i=@geanix.com header.b="kkafn2+E"
-Received: from www530.your-server.de (www530.your-server.de [188.40.30.78])
+	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="Y4clWtdo"
+Received: from EUR02-DB5-obe.outbound.protection.outlook.com (mail-db5eur02on2065.outbound.protection.outlook.com [40.107.249.65])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4D3C3FB3B;
-	Wed,  1 May 2024 12:42:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=188.40.30.78
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714567361; cv=none; b=ETCqamoBl0ZV1dbsfmlKwSmfmeIgwX3ozHqymIuzUitqktVypdEK5Ct6JMnTu4/+5r5eDfYDVO+QgmUlqaLVNTkT6+HHlgRlW59QkJ22TsFtdRvfJwPGnXxlFN4L84B7pxTXBmySfdlc4lfKkO7ewIXOnHCRi+mTl7pcA5kV1xs=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714567361; c=relaxed/simple;
-	bh=2mvWFwvnyhiO7gdd/5IqYXs8PhYFwr04k79cjJMP0R0=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=gO6aIh/0OMGWag/DH+W0YMV7nj9ATv7bN4e96OW+uU7mQxFF7myGzoh/yM51WSP+7QMqqHoFpXOM6IgWkSCpwoYzGoPn/EpH8wwlwZIcTp2eN1EnFzOSGLJ56dNrU1pFiL0SI15sImQl0as5tjpX0VFrmS6G4uvzuuT7MqOQE4c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=geanix.com; spf=pass smtp.mailfrom=geanix.com; dkim=pass (2048-bit key) header.d=geanix.com header.i=@geanix.com header.b=kkafn2+E; arc=none smtp.client-ip=188.40.30.78
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=geanix.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=geanix.com
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=geanix.com;
-	s=default2211; h=Content-Transfer-Encoding:Content-Type:MIME-Version:
-	Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:In-Reply-To:References;
-	bh=PsJ1bUtExedTmewh63dJJIGm2USLf/ue8T14sDod4hg=; b=kkafn2+EnftqzxAnWp5SbpbsHJ
-	0dIcHeBNGNGkLlTjpQWgpFvjtxlT7OnM/4ZByzc5Qh+N2c++VFIOlgYkkYx2R/7RSNliwkZDXUuWo
-	etJjyGLAYEn1xX7mw3bIGtaopjyLaGKu4Tghu/UOpN5/eKo+huol8gkIFAX/DGukqQnssIJeWgdl4
-	OMwiYYZqkqcGkoaOEQWdO8MfYLBEhD9FZVTecrrbTCYsUx/9IYtAXhtoH/XY08cCPRT8bEDR2bIX3
-	G7Zj44bBoipI08dvtE+6B1N2Fug8upm0vJMxw3mc6sRYEqh30//l3ZXH767rk+DF+2aI7jUXg1Fpk
-	cvwYMe5w==;
-Received: from sslproxy02.your-server.de ([78.47.166.47])
-	by www530.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <martin@geanix.com>)
-	id 1s29I5-00007M-D6; Wed, 01 May 2024 14:42:29 +0200
-Received: from [185.17.218.86] (helo=zen..)
-	by sslproxy02.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <martin@geanix.com>)
-	id 1s29I4-00Fdis-2R;
-	Wed, 01 May 2024 14:42:28 +0200
-From: =?UTF-8?q?Martin=20Hundeb=C3=B8ll?= <martin@geanix.com>
-To: Chandrasekar Ramakrishnan <rcsekar@samsung.com>,
-	Marc Kleine-Budde <mkl@pengutronix.de>,
-	Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>
-Cc: Markus Schneider-Pargmann <msp@baylibre.com>,
-	=?UTF-8?q?Martin=20Hundeb=C3=B8ll?= <martin@geanix.com>,
-	linux-can@vger.kernel.org,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v2] can: m_can: don't enable transceiver when probing
-Date: Wed,  1 May 2024 14:42:03 +0200
-Message-ID: <20240501124204.3545056-1-martin@geanix.com>
-X-Mailer: git-send-email 2.44.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D21EC43178;
+	Wed,  1 May 2024 12:42:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.249.65
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1714567336; cv=fail; b=GmnWKEGi5GBA7+2a5EE6x1NFf5cfMGBcXa4aTan45wPVyjijJ9v80G0v6j5yfArccxO+d7m/Mww0IAVCFTCViF+jCrQgHdryRmOeFcZIWsWA9PSkGlrZPQljztH6TP4hvLevjEe516i+FQBtmcXrDw6srSYz6Ngv7ZoR0ScSs0Q=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1714567336; c=relaxed/simple;
+	bh=wAPU1rH4p4LBRKeytfzhyXKBLLRKo0d4Evx/2OJcTSc=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=uJqy1Pw1yRtQAKJrblRMgf4AVi9tOFHPPbDbPg0m8LrStnQ6d/FJe7x3bUtj+y9nCGVy3Ar0j2n1mOIJC+dNa717i/AkIEnyusWUVDwWTFTy+1pc69mq7y/lcponSg405+YBTKTRb8NDr2CVvNw0OGvZDHMzmYhFqmhe9fD3Edc=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b=Y4clWtdo; arc=fail smtp.client-ip=40.107.249.65
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=jkxIVN8VDIOcJMjKrUJN5AnhQ1o54bmr1l1wfiGA7BO9+PKaAs7NI6WW/L1Qhxv2Z3jjYCp8RaRqvzTeINUKVjkeB+wsVP52rzfOS7a8vxB9URlUqrVYqoM9UppSPhZKtpHt6RD8fXRhtCtTydKoRsD5j8BYJ534PfI/L/Dl2YdkhDLUO5Shos7oY3fc52lJBIgzq/wJXkFfZYDp0+glK+V4HapqyUqP1apbKySabmr3+FA1NeQhegYqJx36T/LyhN4Vy7rPN15EK/GE4VmeUKPOqzN7O5hFg64g1ibqxIEHJCe5dAv8NA3/laaDex+fTk5i0whoNVoQsQhRlDdBog==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=wAPU1rH4p4LBRKeytfzhyXKBLLRKo0d4Evx/2OJcTSc=;
+ b=AMokFdMaizwyochtuS1VvGWwrV8tjeab5Xe02A4q+RB4dbmI6Cc3fO+VgPJZBnDFgU6Hxfd680ZaksroolqrWDFTLifwvOZHczl+1p4FmR2KDS6A5K1KHBcrCvZ8zI0b0dHlIFSfwS3mQIPYn07y+9BRtZlJ6rQh6tH/DEvC66wN+2yRB/zqjMNzSvUdSu2s8KF+BWRvgLsQhHV8Aj8Xl8X2u4agXR7o1fvyV5YrWYHbE+Z9uCAgRempjEBgUpQJgppQjmrJAF7KgFwqS5u6Th4tfK48EY2kENO54bs1dQxlB+cm9qw5eC13pISKKipx8aer/ddmDX7p3xFQzWyCvA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=wAPU1rH4p4LBRKeytfzhyXKBLLRKo0d4Evx/2OJcTSc=;
+ b=Y4clWtdoEhWchYLjfNUYoLYDaQTNrTivz7sZDAMFN4Voy5sTlR1DVyOJTYVB5ebxChQO95sr0eDmgVCvMtt1pR6VH3ssH4f7f/hB3yPKmqT1/LrYlfrFhn6sgSChRIDR19K3Y7ms5ZIZHrHXu5+LT5x1z2Z3hO72cglDa6xnQpQ=
+Received: from DU0PR04MB9417.eurprd04.prod.outlook.com (2603:10a6:10:358::11)
+ by DB9PR04MB9284.eurprd04.prod.outlook.com (2603:10a6:10:36c::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7519.36; Wed, 1 May
+ 2024 12:42:12 +0000
+Received: from DU0PR04MB9417.eurprd04.prod.outlook.com
+ ([fe80::d30b:44e7:e78e:662d]) by DU0PR04MB9417.eurprd04.prod.outlook.com
+ ([fe80::d30b:44e7:e78e:662d%4]) with mapi id 15.20.7519.031; Wed, 1 May 2024
+ 12:42:12 +0000
+From: Peng Fan <peng.fan@nxp.com>
+To: Cristian Marussi <cristian.marussi@arm.com>, "Peng Fan (OSS)"
+	<peng.fan@oss.nxp.com>
+CC: Sudeep Holla <sudeep.holla@arm.com>, Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>,
+	Shawn Guo <shawnguo@kernel.org>, Sascha Hauer <s.hauer@pengutronix.de>,
+	Pengutronix Kernel Team <kernel@pengutronix.de>, Fabio Estevam
+	<festevam@gmail.com>, Linus Walleij <linus.walleij@linaro.org>, Aisheng Dong
+	<aisheng.dong@nxp.com>, Jacky Bai <ping.bai@nxp.com>,
+	"linux-arm-kernel@lists.infradead.org"
+	<linux-arm-kernel@lists.infradead.org>, "devicetree@vger.kernel.org"
+	<devicetree@vger.kernel.org>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>, "imx@lists.linux.dev" <imx@lists.linux.dev>,
+	"linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>
+Subject: RE: [PATCH v3 4/6] pinctrl: scmi: export pinctrl_scmi_get_pins
+Thread-Topic: [PATCH v3 4/6] pinctrl: scmi: export pinctrl_scmi_get_pins
+Thread-Index: AQHamSj4tA0oEn/LJ0GAeG40RoRvxrGCVjCAgAAAbEA=
+Date: Wed, 1 May 2024 12:42:11 +0000
+Message-ID:
+ <DU0PR04MB9417FD3BBDB9C37E34EF4B8388192@DU0PR04MB9417.eurprd04.prod.outlook.com>
+References: <20240428-pinctrl-scmi-oem-v3-v3-0-eda341eb47ed@nxp.com>
+ <20240428-pinctrl-scmi-oem-v3-v3-4-eda341eb47ed@nxp.com>
+ <ZjI3abJUIgo4xgRu@pluto>
+In-Reply-To: <ZjI3abJUIgo4xgRu@pluto>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: DU0PR04MB9417:EE_|DB9PR04MB9284:EE_
+x-ms-office365-filtering-correlation-id: e757e81b-a310-4468-3588-08dc69dc1f64
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam:
+ BCL:0;ARA:13230031|1800799015|376005|7416005|366007|38070700009;
+x-microsoft-antispam-message-info:
+ =?us-ascii?Q?NolM75K713U/8NIeE+N20HttvfYiuuPixV8SFXAW4i+acAFAV6XUlbVR5VSr?=
+ =?us-ascii?Q?tbMFGZKzGLkEwX32Qqa/b655w42Vzt0E7Ks8ePgm1KzpQ/lKlBaZWHFkero2?=
+ =?us-ascii?Q?tDnPwCBrtG2f0BG+YvoduB3CgSE0fO8aQxQF7IOjjXDvk0DOtu6BW3xt1UXX?=
+ =?us-ascii?Q?UtKhglSQRC5Ds2PfWJE/6ZvzzWBCK/v+nzaR3U2dYI7mBr6ZvRvHwYngqv7O?=
+ =?us-ascii?Q?mOjahFh9w1JNYWMPbhdE5yTbmWDcrvHUyL9oLVxn01joc3QZ6mqQO8zEkv9M?=
+ =?us-ascii?Q?g76HiCOBJkkml6LSXCD75SiDDwrFPXxzysrQ621b/quI/r1clYy7pfp5HRYb?=
+ =?us-ascii?Q?LvgXTXM6GrHKKa4OrPAyK42FM6908mxu1S+5swIRxUx/HsxcwmwYOHJMq8Xn?=
+ =?us-ascii?Q?+0Nxv75TUb+4ro9pUKZsnsxu9AoLxa+mV7Gl0iw1Ibbuy03aHQkBbxPa59bp?=
+ =?us-ascii?Q?WUZSL56uNRm/x1r8Fs30a+unINCg01kHY4Ld1amYnwyh8/LPq10Y69Gr9OpD?=
+ =?us-ascii?Q?qY+jKXy5ETNetw4+MgBhsO+sJeP5jBaAtURopj7oFz0CMbru5GZd6ON1+JDS?=
+ =?us-ascii?Q?ehwbL37L2NjW+Fg8LSirwXRHGEqu6MA4/bYDzKIDlXS80Nu0/aejnHdDuvhA?=
+ =?us-ascii?Q?v2GfSnQ2LTOEf1wotb/CnZD3GDeNmX81nKfrlphMOrCWlpJwyUIJSUI1FNRw?=
+ =?us-ascii?Q?MGvTDHJ6RGRou4kKiy9F9GxKQoFOBWODomwnfGl+a5fFm3nPtZFeEuTn/pj0?=
+ =?us-ascii?Q?UIbzFrXZKfr31GQuPZk0uknupOZEP0bm0R1izyA76TXJA3arUnZIVcRa6R10?=
+ =?us-ascii?Q?Q2Z4LEJSkJ/vUSccKanO9M+yzjARoVfaDm128V7wVqyubY3VkZE1vwWXYg/D?=
+ =?us-ascii?Q?6+OJvzikkxrOKKIkMV8K24CI9IfE0uSTX4PnjOhSNmGtk2qtwNyAaXkPOwkf?=
+ =?us-ascii?Q?ASobM6NOxY8gbR9sS4+muOwBMUsQoH53WTMLXEtG1kM1tjKhf7D+7GpDN6NV?=
+ =?us-ascii?Q?5xTUUDEbYrkku9f/chvZUWPuI5/BKa/ygtF517zSgmfK8C+Q+4Kzhic2qbIg?=
+ =?us-ascii?Q?y1EctJuQA17pgyw9lhb57Opc8UXgU3inSrwuXzxXR3XOY5fuANpJC1kdrMgE?=
+ =?us-ascii?Q?S6G0MEush3ZranZMlk3zp+ASj8CGqJ3gDMZXkMPKfnAmhZbJG8HfN30Tjf62?=
+ =?us-ascii?Q?aGUp/Ryrid0zK8MzCIZPMcNwrlLsrSKLq+Fj0EZg1kiDxxAvN7Pe2miGa6Y6?=
+ =?us-ascii?Q?niDHaGx/z/uA+dmOq4q9eEO0SWXn9o33e9nh3kzixXhmr15k6JwQE7sNMTp4?=
+ =?us-ascii?Q?1qVXV6w/wc7JUwn8a/omXxxpieznMf6UKTBEfeZH+Oq3Gg=3D=3D?=
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DU0PR04MB9417.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(376005)(7416005)(366007)(38070700009);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?us-ascii?Q?6VnV5vleNpgoA3+OUscKMcsgVFYwlVnPGvUo14aJtLSG5qMHgOupTOAh0lTH?=
+ =?us-ascii?Q?EEQJ+dZPSW8bZnhPLb/ZW+nyqhwIrTQX9Evhw6XmqdMuL00UmE4wy6fgR/46?=
+ =?us-ascii?Q?WFAbgKuFqUeHILS1lYLfCP70/7wBjctB/ROQNCRhkMg7+p0+b5xOIjOSczyw?=
+ =?us-ascii?Q?0keNcUjvbx2J0JHZarbN3RRQAVpm97175ZKfsaDfsq1O1L6R0lIJXVUiKw8t?=
+ =?us-ascii?Q?Ft2R5qq3t3ZZIkYAAWH/Zcr0NmcNjRjPuEW5/iN/3n72c2lNkyf79J/ife9B?=
+ =?us-ascii?Q?bE0WIlmGvB8KZF0+D3VoVB9xzbjpPfEFupnezeh5Z/RprVLAHZalTWOEJaAR?=
+ =?us-ascii?Q?hlGyZmudCcAP7FV2ci3e0ZbC6UVa5NX8VlxnQiokmQqlNT1syyCpcR8iI+xZ?=
+ =?us-ascii?Q?uhW4Lxz/97bRdeQg0q+u1TeU9yUTazoe8q7Mhvb5k5YIBiJGNPQ6x+iuO9vO?=
+ =?us-ascii?Q?2dX8q2E6FqE0gXcnoLSjvq97wdJXJ38qJd20VGStil5lZVbfkHBWHV2op4ij?=
+ =?us-ascii?Q?ZloNVlO5JbpSYuBWWpiKMHo9IsgXHDoTWyKjygHr0TOcPEtcuWSsH8rLJAQt?=
+ =?us-ascii?Q?A8WNs3Qg3tjzPlRNZhnjbDQdq4NW7Qc7FjSncd8s9O67Z0DIRGBhN+9LpJj1?=
+ =?us-ascii?Q?AuPivlT9VWs23PfaJoDA4EnLl1obJO1H/AglNX4d5zO8l4jd1sQIkCsc4Jth?=
+ =?us-ascii?Q?trUjJEZ/sYOIAE1i4e/BLqIqCTgXlK9GpswrpN6N2s739KKEmUJjaePsuNFr?=
+ =?us-ascii?Q?Yn1IoZ9fPKL1GeORVQSxQ+jv28qSzJ2ZNncVmdkIhqnGyCk8yiwCMp2IqhHS?=
+ =?us-ascii?Q?BThknS97CMTon7rsCF7uDXU0Tl/Jeu6UE31VKksA0eodBC/O5HyT3rMVJiqx?=
+ =?us-ascii?Q?yo240llCtwIpiNZy7hPn8X3ZQQRQlP5aF3XMLw0fny6EZ2DBpZzKQ/pDpSm9?=
+ =?us-ascii?Q?5DZLuS3JZT1nBAHUSEm7dTpX9q5kD3Ak2FO7Uy4nD5w4gN5AVtgkYlKhT1JL?=
+ =?us-ascii?Q?Zaf4w5/CeBLiKmnyP88AGnsxJxgs/D/2xQQ8zdGdHdZP01S0LGt0Kwo8bEQf?=
+ =?us-ascii?Q?uQBz31AEBrMjxywZ2BDcsStRduz6q0qFT/kuKf7k2x7iTvxtHjIRZCokyK3g?=
+ =?us-ascii?Q?4JPCIS1UUPV6ZfsNDcBRxgSp+VzS84DdccLJRS4fKwOXFF8KU7YMSJQ+DA2/?=
+ =?us-ascii?Q?ljzh2FAzpeCiFjdArF3PE7a7ZhuRNhofEAbXFIDsOBBIN2yQjwWbzroDA9HN?=
+ =?us-ascii?Q?Z8jm2qNzEWwx0uI1ouZ4Qwd1G5rvqdzKsdIKDgswKr09PTn+KPSASya2wPqG?=
+ =?us-ascii?Q?wu2O0cqEDMaUmmxKtzgSBKNUUda0wYOiFQQKxIb7obLgH8cDNFFPRs6rvKiQ?=
+ =?us-ascii?Q?wDjrMbQpyJw0r1K0DG+wgoLjogUGYHEpc2JRPBCj/3UiYEvcITAZK/3S5GN5?=
+ =?us-ascii?Q?a7YDgPQMTdf9RQTT9L3Px8/K2U2lmfVRzJ4hcjgP8HldDrOIkZ8+XKj7RvpT?=
+ =?us-ascii?Q?lrTaYVEGYoxGv1sQWLv0fWv9Hs5WUx4JZJW7kYWvm/pJlQin11NqbnWZP+Id?=
+ =?us-ascii?Q?1sMG90zEmuQNNbLKgpM=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: martin@geanix.com
-X-Virus-Scanned: Clear (ClamAV 0.103.10/27262/Wed May  1 10:22:56 2024)
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DU0PR04MB9417.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e757e81b-a310-4468-3588-08dc69dc1f64
+X-MS-Exchange-CrossTenant-originalarrivaltime: 01 May 2024 12:42:11.9904
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: ERVKL2jgMKjgBIrzeUfqeAskrEQhBDgJsmk3ZTGwbL/1UtxJyAHWzpNG95l7NNMVASqCqpQA+30UzLLM/Soipw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB9PR04MB9284
 
-The m_can driver sets and clears the CCCR.INIT bit during probe (both
-when testing the NON-ISO bit, and when configuring the chip). After
-clearing the CCCR.INIT bit, the transceiver enters normal mode, where it
-affects the CAN bus (i.e. it ACKs frames). This can cause troubles when
-the m_can node is only used for monitoring the bus, as one cannot setup
-listen-only mode before the device is probed.
+> Subject: Re: [PATCH v3 4/6] pinctrl: scmi: export pinctrl_scmi_get_pins
+>=20
+> On Sun, Apr 28, 2024 at 01:07:50PM +0800, Peng Fan (OSS) wrote:
+> > From: Peng Fan <peng.fan@nxp.com>
+> >
+> > Add pinctrl-scmi.h to include the function prototype and 'struct
+> > scmi_pinctrl' to export pinctrl_scmi_get_pins, so other drivers could
+> > use it.
+> >
+>=20
+> Hi Peng,
+>=20
+> so you wrote a new alternative SCMI driver using Pinctrl protocol@0x19 so
+> that you can just parse you custom DT bindings and then use the SCMI
+> pinctrl_ops to set the OEM extensions to configure your platform...
+> ...since your firmware cannot cope with the all SCMI stack footprint....
+>=20
+> ... you seemed to have solved the issue of having 2 Pinctrl drivers coexi=
+sting
+> under the Linux Pinctrl subsystem while attached to the same
+> protocol@19 node with patch 5/6 blocklist (if I get that right..)
 
-Rework the probe flow, so that the CCCR.INIT bit is only cleared when
-upping the device. First, the tcan4x5x driver is changed to stay in
-standby mode during/after probe. This in turn requires changes when
-setting bits in the CCCR register, as its CSR and CSA bits are always
-high in standby mode.
+Yes, right. With blocklist and allowlist, two drivers could coexist.
 
-Signed-off-by: Martin Hundebøll <martin@geanix.com>
----
+>=20
+> I think this approach of a standalone SCMI alternative Pinctrl driver tha=
+t
+> handles distinctly NXP OEM extensions and DT-parsing is certainly more
+> preferable than the original series you posted months ago where custom NX=
+P
+> stuff were simply stuck on top of the Generic SCMI Pinctrl driver...
+>=20
+> ...what I still dont understand is why you exported data and structure fr=
+om
+> pincttl-scmi.c to use it here; when NXP pinctrl is active the standard Li=
+nux
+> generic Pinctrl driver wont be alive, so not probed, so no data can be sh=
+ared,
+> the only thing I can imagine is that you are just trying to avoid duplica=
+ting a
+> dozen lines from the logic of
+> scmi_pinctrl_get_pins() into your new NXP driver.
 
-Changes since v1:
- * Implement Markus review comments:
-   - Rename m_can_cccr_wait_bits() to m_can_cccr_update_bits()
-   - Explicitly set CCCR_INIT bit in m_can_dev_setup()
-   - Revert to 5 timeouts/tries to 10
-   - Use m_can_config_{en|dis}able() in m_can_niso_supported()
-   - Revert move of call to m_can_enable_all_interrupts()
-   - Return -EBUSY on failure to enter normal mode
-   - Use tcan4x5x_clear_interrupts() in tcan4x5x_can_probe()
+Yes, you are right, I just wanna avoid duplicating scmi_pinctrl_get_pins.
 
- drivers/net/can/m_can/m_can.c         | 131 +++++++++++++++-----------
- drivers/net/can/m_can/tcan4x5x-core.c |  13 ++-
- 2 files changed, 85 insertions(+), 59 deletions(-)
+>=20
+> In this way, though, you are creating a dependency between 2 drivers, tha=
+t
+> are not even allowed to cohexist at runtime really (due to the blocklist =
+trick).
+>=20
+> Am I missing something ?
 
-diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
-index 14b231c4d7ec..7974aaa5d8cc 100644
---- a/drivers/net/can/m_can/m_can.c
-+++ b/drivers/net/can/m_can/m_can.c
-@@ -379,38 +379,60 @@ m_can_txe_fifo_read(struct m_can_classdev *cdev, u32 fgi, u32 offset, u32 *val)
- 	return cdev->ops->read_fifo(cdev, addr_offset, val, 1);
- }
- 
--static void m_can_config_endisable(struct m_can_classdev *cdev, bool enable)
-+static bool m_can_cccr_update_bits(struct m_can_classdev *cdev, u32 mask, u32 val)
- {
--	u32 cccr = m_can_read(cdev, M_CAN_CCCR);
--	u32 timeout = 10;
--	u32 val = 0;
--
--	/* Clear the Clock stop request if it was set */
--	if (cccr & CCCR_CSR)
--		cccr &= ~CCCR_CSR;
--
--	if (enable) {
--		/* enable m_can configuration */
--		m_can_write(cdev, M_CAN_CCCR, cccr | CCCR_INIT);
--		udelay(5);
--		/* CCCR.CCE can only be set/reset while CCCR.INIT = '1' */
--		m_can_write(cdev, M_CAN_CCCR, cccr | CCCR_INIT | CCCR_CCE);
--	} else {
--		m_can_write(cdev, M_CAN_CCCR, cccr & ~(CCCR_INIT | CCCR_CCE));
--	}
-+	u32 val_before = m_can_read(cdev, M_CAN_CCCR);
-+	u32 val_after = (val_before & ~mask) | val;
-+	size_t tries = 10;
-+
-+	if (!(mask & CCCR_INIT) && !(val_before & CCCR_INIT))
-+		dev_warn(cdev->dev,
-+			 "trying to configure device when in normal mode. Expect failures\n");
-+
-+	/* The chip should be in standby mode when changing the CCCR register,
-+	 * and some chips set the CSR and CSA bits when in standby. Furthermore,
-+	 * the CSR and CSA bits should be written as zeros, even when they read
-+	 * ones.
-+	 */
-+	val_after &= ~(CCCR_CSR | CCCR_CSA);
-+
-+	while (tries--) {
-+		u32 val_read;
-+
-+		/* Write the desired value in each try, as setting some bits in
-+		 * the CCCR register require other bits to be set first. E.g.
-+		 * setting the NISO bit requires setting the CCE bit first.
-+		 */
-+		m_can_write(cdev, M_CAN_CCCR, val_after);
-+
-+		val_read = m_can_read(cdev, M_CAN_CCCR) & ~(CCCR_CSR | CCCR_CSA);
- 
--	/* there's a delay for module initialization */
--	if (enable)
--		val = CCCR_INIT | CCCR_CCE;
--
--	while ((m_can_read(cdev, M_CAN_CCCR) & (CCCR_INIT | CCCR_CCE)) != val) {
--		if (timeout == 0) {
--			netdev_warn(cdev->net, "Failed to init module\n");
--			return;
--		}
--		timeout--;
--		udelay(1);
-+		if (val_read == val_after)
-+			return true;
-+
-+		usleep_range(1, 5);
- 	}
-+
-+	return false;
-+}
-+
-+static void m_can_config_enable(struct m_can_classdev *cdev)
-+{
-+	/* CCCR_INIT must be set in order to set CCCR_CCE, but access to
-+	 * configuration registers should only be enabled when in standby mode,
-+	 * where CCCR_INIT is always set.
-+	 */
-+	if (!m_can_cccr_update_bits(cdev, CCCR_CCE, CCCR_CCE))
-+		netdev_err(cdev->net, "failed to enable configuration mode\n");
-+}
-+
-+static void m_can_config_disable(struct m_can_classdev *cdev)
-+{
-+	/* Only clear CCCR_CCE, since CCCR_INIT cannot be cleared while in
-+	 * standby mode
-+	 */
-+	if (!m_can_cccr_update_bits(cdev, CCCR_CCE, 0))
-+		netdev_err(cdev->net, "failed to disable configuration registers\n");
- }
- 
- static void m_can_interrupt_enable(struct m_can_classdev *cdev, u32 interrupts)
-@@ -1403,7 +1425,7 @@ static int m_can_chip_config(struct net_device *dev)
- 	interrupts &= ~(IR_ARA | IR_ELO | IR_DRX | IR_TEFF | IR_TFE | IR_TCF |
- 			IR_HPM | IR_RF1F | IR_RF1W | IR_RF1N | IR_RF0F);
- 
--	m_can_config_endisable(cdev, true);
-+	m_can_config_enable(cdev);
- 
- 	/* RX Buffer/FIFO Element Size 64 bytes data field */
- 	m_can_write(cdev, M_CAN_RXESC,
-@@ -1521,7 +1543,7 @@ static int m_can_chip_config(struct net_device *dev)
- 		    FIELD_PREP(TSCC_TCP_MASK, 0xf) |
- 		    FIELD_PREP(TSCC_TSS_MASK, TSCC_TSS_INTERNAL));
- 
--	m_can_config_endisable(cdev, false);
-+	m_can_config_disable(cdev);
- 
- 	if (cdev->ops->init)
- 		cdev->ops->init(cdev);
-@@ -1550,6 +1572,11 @@ static int m_can_start(struct net_device *dev)
- 		cdev->tx_fifo_putidx = FIELD_GET(TXFQS_TFQPI_MASK,
- 						 m_can_read(cdev, M_CAN_TXFQS));
- 
-+	if (!m_can_cccr_update_bits(cdev, CCCR_INIT, 0)) {
-+		netdev_err(dev, "failed to enter normal mode\n");
-+		return -EBUSY;
-+	}
-+
- 	return 0;
- }
- 
-@@ -1603,33 +1630,20 @@ static int m_can_check_core_release(struct m_can_classdev *cdev)
-  */
- static bool m_can_niso_supported(struct m_can_classdev *cdev)
- {
--	u32 cccr_reg, cccr_poll = 0;
--	int niso_timeout = -ETIMEDOUT;
--	int i;
-+	bool niso_supported;
- 
--	m_can_config_endisable(cdev, true);
--	cccr_reg = m_can_read(cdev, M_CAN_CCCR);
--	cccr_reg |= CCCR_NISO;
--	m_can_write(cdev, M_CAN_CCCR, cccr_reg);
-+	m_can_config_enable(cdev);
- 
--	for (i = 0; i <= 10; i++) {
--		cccr_poll = m_can_read(cdev, M_CAN_CCCR);
--		if (cccr_poll == cccr_reg) {
--			niso_timeout = 0;
--			break;
--		}
-+	/* First try to set the NISO bit. */
-+	niso_supported = m_can_cccr_update_bits(cdev, CCCR_NISO, CCCR_NISO);
- 
--		usleep_range(1, 5);
--	}
-+	/* Then clear the it again. */
-+	if (!m_can_cccr_update_bits(cdev, CCCR_NISO, 0))
-+		dev_err(cdev->dev, "failed to revert the NON-ISO bit in CCCR\n");
- 
--	/* Clear NISO */
--	cccr_reg &= ~(CCCR_NISO);
--	m_can_write(cdev, M_CAN_CCCR, cccr_reg);
-+	m_can_config_disable(cdev);
- 
--	m_can_config_endisable(cdev, false);
--
--	/* return false if time out (-ETIMEDOUT), else return true */
--	return !niso_timeout;
-+	return niso_supported;
- }
- 
- static int m_can_dev_setup(struct m_can_classdev *cdev)
-@@ -1694,8 +1708,12 @@ static int m_can_dev_setup(struct m_can_classdev *cdev)
- 		return -EINVAL;
- 	}
- 
--	if (cdev->ops->init)
--		cdev->ops->init(cdev);
-+	/* Forcing standby mode should be redunant, as the chip should be in
-+	 * standby after a reset. Write the INIT bit anyways, should the chip
-+	 * be configured by previous stage.
-+	 */
-+	if (!m_can_cccr_update_bits(cdev, CCCR_INIT, CCCR_INIT))
-+		return -EBUSY;
- 
- 	return 0;
- }
-@@ -1708,7 +1726,8 @@ static void m_can_stop(struct net_device *dev)
- 	m_can_disable_all_interrupts(cdev);
- 
- 	/* Set init mode to disengage from the network */
--	m_can_config_endisable(cdev, true);
-+	if (!m_can_cccr_update_bits(cdev, CCCR_INIT, CCCR_INIT))
-+		netdev_err(dev, "failed to enter standby mode\n");
- 
- 	/* set the state as STOPPED */
- 	cdev->can.state = CAN_STATE_STOPPED;
-diff --git a/drivers/net/can/m_can/tcan4x5x-core.c b/drivers/net/can/m_can/tcan4x5x-core.c
-index a42600dac70d..d723206ac7c9 100644
---- a/drivers/net/can/m_can/tcan4x5x-core.c
-+++ b/drivers/net/can/m_can/tcan4x5x-core.c
-@@ -453,10 +453,17 @@ static int tcan4x5x_can_probe(struct spi_device *spi)
- 		goto out_power;
- 	}
- 
--	ret = tcan4x5x_init(mcan_class);
-+	tcan4x5x_check_wake(priv);
-+
-+	ret = tcan4x5x_write_tcan_reg(mcan_class, TCAN4X5X_INT_EN, 0);
- 	if (ret) {
--		dev_err(&spi->dev, "tcan initialization failed %pe\n",
--			ERR_PTR(ret));
-+		dev_err(&spi->dev, "Disabling interrupts failed %pe\n", ERR_PTR(ret));
-+		goto out_power;
-+	}
-+
-+	ret = tcan4x5x_clear_interrupts(mcan_class);
-+	if (ret) {
-+		dev_err(&spi->dev, "Clearing interrupts failed %pe\n", ERR_PTR(ret));
- 		goto out_power;
- 	}
- 
--- 
-2.44.0
+No, your understanding is correct.
+
+>=20
+> If not, I think it will be much better to just rewrite that few lines of
+> scmi_pincrtrl_pins_get trivial logic into your NXP driver and keep the 2
+> drivers fully distinct at all times.
+
+ok. I could write the pinctrl-scmi-imx.c local get pins logic, not using
+pinctrl-scmi.c to decouple the two drivers.
+
+Thanks,
+Peng
+>=20
+> Thanks,
+> Cristian
 
 
