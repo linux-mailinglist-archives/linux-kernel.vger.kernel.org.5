@@ -1,119 +1,107 @@
-Return-Path: <linux-kernel+bounces-165737-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-165738-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6AEB48B9066
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 22:07:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id F06998B906A
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 22:08:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EA6621F23EE7
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 20:07:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 909251F24322
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 20:08:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ADDF1161B6A;
-	Wed,  1 May 2024 20:07:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B3EB81635AC;
+	Wed,  1 May 2024 20:07:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="CWQ0wY9N"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
+	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="c2Veqygb"
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 48D3A16191E;
-	Wed,  1 May 2024 20:07:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.9
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38F5C1474B1;
+	Wed,  1 May 2024 20:07:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714594025; cv=none; b=CNWLoHi44dpG6kViWZs56cCEJvSh0OsN+gRvdWZBOikFjjaXZclGthpFjTp3dLa6LahZL7HHsbxmcsVaZqnAMxKGVkON/RKC09w0VEB9q/NslSrSc9iD7C7LqmZXQgmXfTqbYzJcjFQjTpDI8YOIJg4hQI3FXUFVpTx5+FCpx3M=
+	t=1714594079; cv=none; b=ZOGLVPEbPNTLfZTD7vDXPYDUcbhR4DvpsPVmdcLLZT4LNts/nN3DVYUGWDqXWGtUSsQ5zdfs0iIJC9eiNEE3m/yAzKFm5/fHrA0+Cap4hreCW57h3W5cp7avhANTOD4sZzE6To56mLfFiLtidNsWDNPCnsxYCypD52BjgJy+stg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714594025; c=relaxed/simple;
-	bh=V/K9SYCQMalXsilBTuDB5HWAA77CoQ8l41FBGzMkUl4=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=WlwKp9eLO1KV0naZDvo/OehinpyJVXalZeXW3cR1BZDGruEGT9AYdEE+hLmE2VNKXjGyaEMnz1O+PRmVWsONbOllkYt9ryuXVZf4a2oLE2uY6Ga4JUeOGQZ5NMM/Dw5meKgpxhxTZfffROu5SjS2Hotg4i3cc7HifYdvjvj7sjw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=CWQ0wY9N; arc=none smtp.client-ip=192.198.163.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1714594023; x=1746130023;
-  h=message-id:subject:from:reply-to:to:cc:date:in-reply-to:
-   references:content-transfer-encoding:mime-version;
-  bh=V/K9SYCQMalXsilBTuDB5HWAA77CoQ8l41FBGzMkUl4=;
-  b=CWQ0wY9NRqBzFCI/Y+pa6HFa2ycU5LaAvPUN8aiuVEbSKDc266/7FMs5
-   o6rHb17/lI0wIRRTYEQDhO0Ie8vtgl87zUuzWZ6ips7IFnqOgTNnsBmjG
-   vDA+4/SfcQNYesxud7uEYmJOOLjkXgUIQdJpQCvaQluw9Ar1WaU+UCr/S
-   iEMM9mTSLFK9E8LDAiCGsE6TQ62gTSg0UVzdXmQx8E08P5YnmdhjS6ERJ
-   VuW+wMctRFTtuegFaEhKX9wvgBgNWie0a87EkThyFoavq4aLPPWfo9UxK
-   XOEaOap/BvqNqOVgHPT9BsKhfQ83MlZyYFYrQUHlOnu3Bki1aLPUFpf1C
-   Q==;
-X-CSE-ConnectionGUID: MwFtOnWwREicsMqXajVZ6A==
-X-CSE-MsgGUID: tKeHS10mR2iMNxrX9P+4qQ==
-X-IronPort-AV: E=McAfee;i="6600,9927,11061"; a="21028252"
-X-IronPort-AV: E=Sophos;i="6.07,246,1708416000"; 
-   d="scan'208";a="21028252"
-Received: from orviesa003.jf.intel.com ([10.64.159.143])
-  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 May 2024 13:07:02 -0700
-X-CSE-ConnectionGUID: ntLDZ+aGQze2UbSSB060Mg==
-X-CSE-MsgGUID: AwZBiScgSkG2SHIqrAufvg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,246,1708416000"; 
-   d="scan'208";a="31581495"
-Received: from pgateley-mobl1.amr.corp.intel.com ([10.212.209.203])
-  by ORVIESA003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 May 2024 13:07:02 -0700
-Message-ID: <e84ba9a250615de2f39600160ad0577f2d5caf94.camel@linux.intel.com>
-Subject: Re: [PATCH] PCI/ASPM: Clarify that pcie_aspm=off means leave ASPM
- untouched
-From: "David E. Box" <david.e.box@linux.intel.com>
-Reply-To: david.e.box@linux.intel.com
-To: Bjorn Helgaas <helgaas@kernel.org>, linux-pci@vger.kernel.org
-Cc: Vidya Sagar <vidyas@nvidia.com>, Ilpo =?ISO-8859-1?Q?J=E4rvinen?=
- <ilpo.jarvinen@linux.intel.com>, "Maciej W . Rozycki" <macro@orcam.me.uk>, 
- Johan Hovold <johan+linaro@kernel.org>, Heiner Kallweit
- <hkallweit1@gmail.com>, Ajay Agarwal <ajayagarwal@google.com>,
- linux-kernel@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>
-Date: Wed, 01 May 2024 13:07:01 -0700
-In-Reply-To: <20240429191821.691726-1-helgaas@kernel.org>
-References: <20240429191821.691726-1-helgaas@kernel.org>
-Organization: David E. Box
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
-User-Agent: Evolution 3.44.4-0ubuntu2 
+	s=arc-20240116; t=1714594079; c=relaxed/simple;
+	bh=N3zk6Y234MgqGMAQG9RoCDph4rWUl30bnD7vWlEU0cw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=BJQR/pgzR6geXSkwWZpFr6v9U+gIvkepusfjkyBlGvnBP44Vr57uSrjPDF4VsWs8kpdRhsa75KcfdX65C7NoSIeQttKOJdUb/Qxj8/fSNdtInR7mhYNTLtTAA37CYonX/QeyVcpJ5Gxhhc0SuX0hyakcOMxqoahhfRSjuaeMEDw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=c2Veqygb; arc=none smtp.client-ip=156.67.10.101
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+	s=20171124; h=In-Reply-To:Content-Transfer-Encoding:Content-Disposition:
+	Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:From:
+	Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:Content-Type:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Content-Disposition:
+	In-Reply-To:References; bh=k3d7/UgyKgzqATK8IOdA9YZPJAlZPNvl/CaLjYyubLs=; b=c2
+	VeqygbK4kMrNOqM+BMGsJoDKkcY8/L1sC1BdKVRwWunbcGmKnxKzIw5ryFrljq/SUBxRQs+XKcUFr
+	cv/uJ2pJvJ+MpTTXawoowC07lYn9u1e1E53MQo0TjgAsKAeK8Y+TWasPdoUreKn77/8PHzbiBREFF
+	ZQa0/qUbiRvX1GQ=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+	(envelope-from <andrew@lunn.ch>)
+	id 1s2GEz-00ERzR-Gv; Wed, 01 May 2024 22:07:45 +0200
+Date: Wed, 1 May 2024 22:07:45 +0200
+From: Andrew Lunn <andrew@lunn.ch>
+To: =?iso-8859-1?Q?Ram=F3n?= Nordin Rodriguez <ramon.nordin.rodriguez@ferroamp.se>
+Cc: Parthiban Veerasooran <Parthiban.Veerasooran@microchip.com>,
+	davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+	pabeni@redhat.com, horms@kernel.org, saeedm@nvidia.com,
+	anthony.l.nguyen@intel.com, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, corbet@lwn.net,
+	linux-doc@vger.kernel.org, robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+	devicetree@vger.kernel.org, horatiu.vultur@microchip.com,
+	ruanjinjie@huawei.com, steen.hegelund@microchip.com,
+	vladimir.oltean@nxp.com, UNGLinuxDriver@microchip.com,
+	Thorsten.Kummermehr@microchip.com, Pier.Beruto@onsemi.com,
+	Selvamani.Rajagopal@onsemi.com, Nicolas.Ferre@microchip.com,
+	benjamin.bigler@bernformulastudent.ch
+Subject: Re: [PATCH net-next v4 05/12] net: ethernet: oa_tc6: implement error
+ interrupts unmasking
+Message-ID: <78395aa9-5871-4db1-8232-ffdaacc7671a@lunn.ch>
+References: <20240418125648.372526-1-Parthiban.Veerasooran@microchip.com>
+ <20240418125648.372526-6-Parthiban.Veerasooran@microchip.com>
+ <Zi1Xbz7ARLm3HkqW@builder>
+ <77d7d190-0847-4dc9-8fc5-4e33308ce7c8@lunn.ch>
+ <Zi4czGX8jlqSdNrr@builder>
+ <874654d4-3c52-4b0e-944a-dc5822f54a5d@lunn.ch>
+ <ZjKJ93uPjSgoMOM7@builder>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ZjKJ93uPjSgoMOM7@builder>
 
-T24gTW9uLCAyMDI0LTA0LTI5IGF0IDE0OjE4IC0wNTAwLCBCam9ybiBIZWxnYWFzIHdyb3RlOgo+
-IEZyb206IEJqb3JuIEhlbGdhYXMgPGJoZWxnYWFzQGdvb2dsZS5jb20+Cj4gCj4gUHJldmlvdXNs
-eSB3ZSBjbGFpbWVkICJwY2llX2FzcG09b2ZmIiBtZWFudCB0aGF0IEFTUE0gd291bGQgYmUgZGlz
-YWJsZWQsCj4gd2hpY2ggaXMgd3JvbmcuCj4gCj4gQ29ycmVjdCB0aGlzIHRvIHNheSB0aGF0IHdp
-dGggInBjaWVfYXNwbT1vZmYiLCBMaW51eCBkb2Vzbid0IHRvdWNoIGFueSBBU1BNCj4gY29uZmln
-dXJhdGlvbiBhdCBhbGwuwqAgQVNQTSBtYXkgaGF2ZSBiZWVuIGVuYWJsZWQgYnkgZmlybXdhcmUs
-IGFuZCB0aGF0Cj4gd2lsbCBiZSBsZWZ0IHVuY2hhbmdlZC7CoCBTZWUgImFzcG1fc3VwcG9ydF9l
-bmFibGVkIi4KPiAKPiBTaWduZWQtb2ZmLWJ5OiBCam9ybiBIZWxnYWFzIDxiaGVsZ2Fhc0Bnb29n
-bGUuY29tPgoKTEdUTS4KClJldmlld2VkLWJ5OiBEYXZpZCBFLiBCb3ggPGRhdmlkLmUuYm94QGxp
-bnV4LmludGVsLmNvbT4KCj4gLS0tCj4gwqBEb2N1bWVudGF0aW9uL2FkbWluLWd1aWRlL2tlcm5l
-bC1wYXJhbWV0ZXJzLnR4dCB8IDUgKysrLS0KPiDCoDEgZmlsZSBjaGFuZ2VkLCAzIGluc2VydGlv
-bnMoKyksIDIgZGVsZXRpb25zKC0pCj4gCj4gZGlmZiAtLWdpdCBhL0RvY3VtZW50YXRpb24vYWRt
-aW4tZ3VpZGUva2VybmVsLXBhcmFtZXRlcnMudHh0Cj4gYi9Eb2N1bWVudGF0aW9uL2FkbWluLWd1
-aWRlL2tlcm5lbC1wYXJhbWV0ZXJzLnR4dAo+IGluZGV4IGJiODg0YzE0YjJmNi4uNGJjMjgxZDZl
-OGQzIDEwMDY0NAo+IC0tLSBhL0RvY3VtZW50YXRpb24vYWRtaW4tZ3VpZGUva2VybmVsLXBhcmFt
-ZXRlcnMudHh0Cj4gKysrIGIvRG9jdW1lbnRhdGlvbi9hZG1pbi1ndWlkZS9rZXJuZWwtcGFyYW1l
-dGVycy50eHQKPiBAQCAtNDU5MCw5ICs0NTkwLDEwIEBACj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqBub3JpZMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBbUzM5MF0gaWdub3JlIHRoZSBS
-SUQgZmllbGQgYW5kIGZvcmNlIHVzZSBvZgo+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBvbmUgUENJIGRvbWFpbiBwZXIgUENJ
-IGZ1bmN0aW9uCj4gwqAKPiAtwqDCoMKgwqDCoMKgwqBwY2llX2FzcG09wqDCoMKgwqDCoMKgW1BD
-SUVdIEZvcmNpYmx5IGVuYWJsZSBvciBkaXNhYmxlIFBDSWUgQWN0aXZlIFN0YXRlCj4gUG93ZXIK
-PiArwqDCoMKgwqDCoMKgwqBwY2llX2FzcG09wqDCoMKgwqDCoMKgW1BDSUVdIEZvcmNpYmx5IGVu
-YWJsZSBvciBpZ25vcmUgUENJZSBBY3RpdmUgU3RhdGUKPiBQb3dlcgo+IMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoE1hbmFnZW1lbnQuCj4gLcKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoG9mZsKgwqDCoMKgwqBEaXNhYmxlIEFTUE0uCj4gK8KgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoG9mZsKgwqDCoMKgwqBEb24ndCB0b3VjaCBBU1BNIGNv
-bmZpZ3VyYXRpb24gYXQgYWxsLsKgIExlYXZlIGFueQo+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgY29uZmlndXJhdGlvbiBkb25lIGJ5IGZpcm13YXJlIHVu
-Y2hhbmdlZC4KPiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoGZvcmNlwqDCoMKgRW5h
-YmxlIEFTUE0gZXZlbiBvbiBkZXZpY2VzIHRoYXQgY2xhaW0gbm90IHRvIHN1cHBvcnQKPiBpdC4K
-PiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBXQVJOSU5H
-OiBGb3JjaW5nIEFTUE0gb24gbWF5IGNhdXNlIHN5c3RlbSBsb2NrdXBzLgo+IMKgCgo=
+> I don't have access to a logic analyzer but my old oscilloscope is
+> almost reliable. I could confirm that the spi clock is indeed running at
+> the expected 25MHz, but I could observe some gaps of up to 320µs so
+> that's 8k spi cycles spent doing something else.
+> These gaps were observed on the SPI clock and the macphy interrupt was
+> active for the same ammount of time(though this was measured independently
+> and not on the same trigger).
+> I've been drinking way to much coffe, so soldering is not gonna happen
+> today (shaky hands), but if it helps I can solder wires to attach both
+> probes to confirm that the gap in the SPI clock happens at the same time
+> or not as the interrupt is active.
 
+What i expect you will see is that the interrupt line goes active. A
+while later there is an SPI bus transfer to fetch the interrupt
+status, and when that transfer completes the interrupt should go
+inactive. But you will need your second channel to confirm this.
+
+One question would be, is 320µs reasonable for an interrupt, and one
+SPI transfer?
+
+I would then expect a number of back to back transfers, each around 64
+bytes in size, as it gets the received frame. The gaps between those
+transfers will be interesting.
+
+	Andrew
 
