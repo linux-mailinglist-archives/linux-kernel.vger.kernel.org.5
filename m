@@ -1,128 +1,117 @@
-Return-Path: <linux-kernel+bounces-165670-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-165671-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E7B158B8F4A
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 19:58:26 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0B2768B8F4D
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 20:00:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9C60A2833EA
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 17:58:25 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B8472281537
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 18:00:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 00C051474A7;
-	Wed,  1 May 2024 17:58:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 01FC71474B2;
+	Wed,  1 May 2024 18:00:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="MADNhq7u"
-Received: from mail-pf1-f180.google.com (mail-pf1-f180.google.com [209.85.210.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="l2U3kks0"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EFD7F748D
-	for <linux-kernel@vger.kernel.org>; Wed,  1 May 2024 17:58:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5FE1F5024E;
+	Wed,  1 May 2024 18:00:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714586298; cv=none; b=TxHSbQ/MLABqw4j8XcB3tUOTzov6lJbxYfDQNo1Cf3EVNR5LXOAu0/eBfmg4vMDu8mHrtoCy79FzEkKBz+EcZGGGL4rxL61OWji45CQX6KdSK2ghyJti+uM/z3S+vYnzMoRqme2hoWaYTSkGahW7GhdSDNsPP/unGgnD6QkiD/o=
+	t=1714586429; cv=none; b=kpze8KVtXJTtd3fLyoUjE+W5souMCVp3REkYnHzsIVK/E7k34854p8VZRJXgoKnlyzOHSWzyh8AAX3ECxVvn1Y2iEQPduepyE9R5CCx6gtvT4+ve7asz6RjQzTBfBjJb2fpySfDJYt4FcqVlxP7Z+grbw7C+asb5jcHyin9ZrMs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714586298; c=relaxed/simple;
-	bh=aEhywgK1Wn89FaWrhTM0HBEIeT3AwLow+BB6CKrQbCE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=VVUAYA/O9VE65Uah/Pd4yUtvfNWnEJqFmDjoFdizQysLbNeVIX0URQo5kFOC6vbfbRWO8BWYQsVe2la0Ukk4djb0m515epqbTQF6Kan+yG4Q5fs3n4apSz/AB/DFasn3FaciUVvYGQw9HM3gXG8ZmZTE4qL75L2Yuen0cuaW0MY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=MADNhq7u; arc=none smtp.client-ip=209.85.210.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
-Received: by mail-pf1-f180.google.com with SMTP id d2e1a72fcca58-6f2f6142d64so6640626b3a.2
-        for <linux-kernel@vger.kernel.org>; Wed, 01 May 2024 10:58:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1714586296; x=1715191096; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=ewiZxKEDhipFv9WpDKT1OvAInIM8Qy/YnJeIqtYAQ20=;
-        b=MADNhq7uxAPe3Mo8Oc0YkZUpGYLzdPHDbZPF0TfE7xGFeexml65gBIKfVcJjORoU4p
-         8O2TNe1B5m4MNfZTfj+Jy6ZYBlydcqSy0FA+cL8RCeMe1EZUB5H0fGYWvfKLPqhnceYM
-         /STiwv/l0HTWBmNoRId3ivMlkEmVYGxSFFXtgDeihan/5IjX4PDFc5CQ9/l2L48tmBHY
-         G0sEDO+kJVE5Cu0ebMu7fBOv/6pkqCMks7+RjYjChg2plhaV3zFSFXoOKua0AccgcuOr
-         ksfy5Av2m/c0UzdUxMDccwhWVBHydx6XU72bR1NAkHa5LLp9ZZVJrsYwCB7irWAW+JPp
-         9vhA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714586296; x=1715191096;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ewiZxKEDhipFv9WpDKT1OvAInIM8Qy/YnJeIqtYAQ20=;
-        b=uwlXHvDhorL/ylSPsk+ekTi0rukGJrYZAyk0bIA+Z8Su9QYWNYvmvE7IU6tvkxKN1X
-         bJVm3+LsAadWUtjlsPDIlT92rnFJY9pq5SjvXZDhYfU8LpzmxdQvk9rcfRDvYMrKOw66
-         l07YPzJDJpQjzjs1zUMnwfW8nzK1TwUOqv+j8axRfsgsGQ6RP4RP10L9wtatp9Z8WLql
-         gYBvZHF3G/uJ+rYhOB4qr8c+UhDSLmBpG+3ToGUh7fjp/zOdS7xmoh06FCXGT/Bylp6h
-         jPibaZmsSIzCwolao7qYkyzE/jdVLvSuhrj7zLrk/7cPqD/1QlVTPmzEC5gurP9CFwQr
-         TsBw==
-X-Forwarded-Encrypted: i=1; AJvYcCUK3MwfYOeL8l5v1BIWqDIHmBmy3ctcEjJ1eup64/SqAWdrN2jY86kV/QwhmppIJE9Py+jIsgg7vsvB/aXLCTK322EKByXZjGVq1Deo
-X-Gm-Message-State: AOJu0Yzb+RuGEyMQEqplcBBRZkXjPauQgy9j3c+AQRnVK4oaTaAZGxtQ
-	7sHDhrIiw5FJXvaVLBi9lAkXrJ/kp6c/zrs1zzlQ05S67nrm6dyhU3VxZnhyy3w=
-X-Google-Smtp-Source: AGHT+IHowJBwbgP8/Vm7zaF9odAFfRxagmDXAI/fLRPFmpGJdmGG+eEAuwcNKsDXaL6jhqUEVkKVOQ==
-X-Received: by 2002:a05:6a00:1305:b0:6e8:f57d:f1ec with SMTP id j5-20020a056a00130500b006e8f57df1ecmr4107317pfu.17.1714586296277;
-        Wed, 01 May 2024 10:58:16 -0700 (PDT)
-Received: from ghost ([2601:647:5700:6860:1dcc:e03e:dc61:895d])
-        by smtp.gmail.com with ESMTPSA id o7-20020a056a001b4700b006edcbbff2b0sm22940382pfv.199.2024.05.01.10.58.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 01 May 2024 10:58:15 -0700 (PDT)
-Date: Wed, 1 May 2024 10:58:12 -0700
-From: Charlie Jenkins <charlie@rivosinc.com>
-To: Conor Dooley <conor@kernel.org>
-Cc: Evan Green <evan@rivosinc.com>, Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>, Guo Ren <guoren@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-	Jernej Skrabec <jernej.skrabec@gmail.com>,
-	Samuel Holland <samuel@sholland.org>,
-	Conor Dooley <conor.dooley@microchip.com>,
-	=?iso-8859-1?Q?Cl=E9ment_L=E9ger?= <cleger@rivosinc.com>,
-	Jonathan Corbet <corbet@lwn.net>, Shuah Khan <shuah@kernel.org>,
-	linux-riscv@lists.infradead.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org, Palmer Dabbelt <palmer@rivosinc.com>,
-	linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
-	linux-doc@vger.kernel.org, linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH v4 05/16] riscv: Extend cpufeature.c to detect vendor
- extensions
-Message-ID: <ZjKCtJWqoiLM3xZv@ghost>
-References: <20240426-dev-charlie-support_thead_vector_6_9-v4-0-b692f3c516ec@rivosinc.com>
- <20240426-dev-charlie-support_thead_vector_6_9-v4-5-b692f3c516ec@rivosinc.com>
- <CALs-HstM64Hy_=XVz=0sWQt=8j1u+bq6RhthUuD3P0E4=HyvcA@mail.gmail.com>
- <20240501-flagstone-zealous-2fc722bfad39@spud>
+	s=arc-20240116; t=1714586429; c=relaxed/simple;
+	bh=k+dIFqMwQZ2aUiDi9ejc2u8LVegSYH+CS+A6rMZQZao=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Gc3T49NwV1U7JMS6tKx6kyuB3QvNQvFTKHDrKzrkFy+4OwCUe82vzWLVfQEpj29ExH+hglhe7urPL05AyQd/2BS0xok+yP1P3hvlOyCN9OqWvENyqJfemWPlQLAyu8YuRQBG3bE2q012hR9L6FwbJ8Td0Dl9qO39CrsuVfdFbho=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=l2U3kks0; arc=none smtp.client-ip=198.175.65.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1714586427; x=1746122427;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=k+dIFqMwQZ2aUiDi9ejc2u8LVegSYH+CS+A6rMZQZao=;
+  b=l2U3kks0iRB8jYGQG3x1sKgp6MHMsY3puPxNm32woUFqaanu2KzTzTEa
+   UOr0SSlP7ikiSC0miQ2L0e5bFSHON/9I2ua93ajkNMbeOdt45vRF0G29u
+   /Zxn9BYyrnKph7JmXOGCmZZ6X4sSPfNYyQTiwdlOPpareCWccBto+OOEY
+   QwJEk36pJSEYrp5QCBfYtrBhZEopkipFbQrkVFrKAW6XATg9Nn0pk5RPb
+   AYWA/SKdKM+WCMVR9KuUUbXodMbXQwMrJT63CCl/o3dkSkE6Nf602DzLn
+   hUxHQcC9gnuuTWhdlE+wCYHxqT8K+ljZqPeBAw4LuJodqAidnkJuWbo+H
+   A==;
+X-CSE-ConnectionGUID: zNTOMlCdTUywh+crgY7l9w==
+X-CSE-MsgGUID: WTeGrNNvRHqeb2hDMKNH/Q==
+X-IronPort-AV: E=McAfee;i="6600,9927,11061"; a="10454627"
+X-IronPort-AV: E=Sophos;i="6.07,246,1708416000"; 
+   d="scan'208";a="10454627"
+Received: from fmviesa009.fm.intel.com ([10.60.135.149])
+  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 May 2024 11:00:26 -0700
+X-CSE-ConnectionGUID: 6yvooRm2TD+Bsr9luSpjyg==
+X-CSE-MsgGUID: ykIbpHkiRSai8G40A9GwMQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,246,1708416000"; 
+   d="scan'208";a="26817144"
+Received: from linux.intel.com ([10.54.29.200])
+  by fmviesa009.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 May 2024 11:00:26 -0700
+Received: from [10.212.96.143] (kliang2-mobl1.ccr.corp.intel.com [10.212.96.143])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by linux.intel.com (Postfix) with ESMTPS id 2AD8620B5739;
+	Wed,  1 May 2024 11:00:23 -0700 (PDT)
+Message-ID: <e1aae0a8-fcd8-42ea-81b2-0f95c9d7cc2b@linux.intel.com>
+Date: Wed, 1 May 2024 14:00:21 -0400
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240501-flagstone-zealous-2fc722bfad39@spud>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH 23/41] KVM: x86/pmu: Implement the save/restore of PMU
+ state for Intel CPU
+To: Mingwei Zhang <mizhang@google.com>,
+ Sean Christopherson <seanjc@google.com>
+Cc: Dapeng Mi <dapeng1.mi@linux.intel.com>, maobibo <maobibo@loongson.cn>,
+ Xiong Zhang <xiong.y.zhang@linux.intel.com>, pbonzini@redhat.com,
+ peterz@infradead.org, kan.liang@intel.com, zhenyuw@linux.intel.com,
+ jmattson@google.com, kvm@vger.kernel.org, linux-perf-users@vger.kernel.org,
+ linux-kernel@vger.kernel.org, zhiyuan.lv@intel.com, eranian@google.com,
+ irogers@google.com, samantha.alt@intel.com, like.xu.linux@gmail.com,
+ chao.gao@intel.com
+References: <ZirPGnSDUzD-iWwc@google.com>
+ <77913327-2115-42b5-850a-04ef0581faa7@linux.intel.com>
+ <CAL715WJCHJD_wcJ+r4TyWfvmk9uNT_kPy7Pt=CHkB-Sf0D4Rqw@mail.gmail.com>
+ <ff4a4229-04ac-4cbf-8aea-c84ccfa96e0b@linux.intel.com>
+ <CAL715WJKL5__8RU0xxUf0HifNVQBDRODE54O2bwOx45w67TQTQ@mail.gmail.com>
+ <5f5bcbc0-e2ef-4232-a56a-fda93c6a569e@linux.intel.com>
+ <ZiwEoZDIg8l7-uid@google.com>
+ <CAL715WJ4jHmto3ci=Fz5Bwx2Y=Hiy1MoFCpcUhz-C8aPMqYskw@mail.gmail.com>
+ <b9095b0d-72f0-4e54-8d2e-f965ddff06bb@linux.intel.com>
+ <CAL715WKm0X9NJxq8SNGD5EJomzY4DDSiwLb1wMMgcgHqeZ64BA@mail.gmail.com>
+ <Zi_cle1-5SZK2558@google.com>
+ <CAL715WJbYNqm2SXiTgqWHs34DtRfdFE7Hx48X_4ASHyQXeaPzA@mail.gmail.com>
+Content-Language: en-US
+From: "Liang, Kan" <kan.liang@linux.intel.com>
+In-Reply-To: <CAL715WJbYNqm2SXiTgqWHs34DtRfdFE7Hx48X_4ASHyQXeaPzA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Wed, May 01, 2024 at 06:19:34PM +0100, Conor Dooley wrote:
-> On Wed, May 01, 2024 at 09:44:15AM -0700, Evan Green wrote:
-> > On Fri, Apr 26, 2024 at 2:29 PM Charlie Jenkins <charlie@rivosinc.com> wrote:
-> 
-> > > +struct riscv_isa_vendor_ext_data_list {
-> > > +       const struct riscv_isa_ext_data *ext_data;
-> > > +       struct riscv_isainfo *per_hart_vendor_bitmap;
-> > > +       unsigned long *vendor_bitmap;
-> > 
-> > It took a lot of digging for me to understand this was the set of
-> > vendor extensions supported on all harts. Can we add that to the name,
-> > maybe something like isa_bitmap_all_harts? (I wonder if we could drop
-> > the vendor part of the name since we already know we're in a
-> > vendor_ext_data_list structure).
-> 
-> Reading this made me wonder, why is the all-hart bitmap an unsigned long
-> when the per hart one is a riscv_isainfo struct?
 
-Hmm I don't think there is a good reason for that. I believe this can
-become struct riscv_isainfo * with no issues.
 
-- Charlie
+On 2024-05-01 1:43 p.m., Mingwei Zhang wrote:
+> One of the things on top of the mind is that: there seems to be no way
+> for the perf subsystem to express this: "no, your host-level profiling
+> is not interested in profiling the KVM_RUN loop when our guest vPMU is
+> actively running".
 
+exclude_hv? Although it seems the option is not well supported on X86
+for now.
+
+Thanks,
+Kan
 
