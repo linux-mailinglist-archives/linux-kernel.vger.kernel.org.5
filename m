@@ -1,123 +1,115 @@
-Return-Path: <linux-kernel+bounces-165205-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-165207-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 515528B897B
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 13:54:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id AD2638B8980
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 13:56:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 741CBB21A1D
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 11:54:48 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E157CB22447
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 11:56:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88FB5824A3;
-	Wed,  1 May 2024 11:54:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B615884D26;
+	Wed,  1 May 2024 11:56:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="qG305f/l"
-Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com [209.85.208.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="Q2CXlT7z"
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 41A197E777
-	for <linux-kernel@vger.kernel.org>; Wed,  1 May 2024 11:54:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A375C81AD2;
+	Wed,  1 May 2024 11:56:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.167.242.64
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714564480; cv=none; b=YHbopHKmrh7h9DoeDLVMgrzs48MOlpO0QPCsqZf0H80Xl6qh4epuDOAfx+ge7buvpgW8oH6Pm/bGaISCI9MJk7syLIiZnXM+xd9LjR5yI3VmHEs8YKPH4HpcsFkxmVYZDmNOh4WfRqA3e02BnlsU7IMiLs+cSF/y0cf0ijZfPnY=
+	t=1714564570; cv=none; b=oBO+Vkk6KWH6A183wblgzfuQxIJ8nw+7obW63DvD98qdguSelqkh1MXC6uK/GOSRQMF2scEHCs4yWVUhbstvmklFzgCq8dV1PUiLdzYbo6/0r8uBboBci3g7oCmp/0754GT44xSOomct6wZ658To1vdkvPmmQMlX3t6ANVMehag=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714564480; c=relaxed/simple;
-	bh=VgLKkmgQwkz24VDfpIkR7Ysk2CwmG6rtIKGUvwJr2P0=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=QbxsoXrK13YdlMLIrpjDDqXbmLrkfw9X9/SlBvtwblomVH8Pmh8CT76dwJAG5QXwnSjREt6j4pkCNepd9CcO06zGTZMNBp4hNA4iC8V7cesq5CV/iddZqGInH/h6pOjgBatogkPPLwvYS+cvvDXAfPNunPCV2/cOLtemtXI6uRY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=qG305f/l; arc=none smtp.client-ip=209.85.208.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-571ba432477so7177182a12.1
-        for <linux-kernel@vger.kernel.org>; Wed, 01 May 2024 04:54:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1714564477; x=1715169277; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=KWU5y5fq+7Sh/5YAl7I0WzeqGM8D5DqoKBNmDtAfIbo=;
-        b=qG305f/lb9AJMQuRS9UYKZthKMnhVNFyInSeRDj44yi0rR4Yfl5Ze1xzMJD83ugUDL
-         WXl9R8YOnqVpt+EkYm9e7lxXERl4QyAyhzzYbiwqWHfGGhu2c17L3MJ3H+VdXg/0XFWi
-         LXLNm6tDt8Ry447DCFmb8yirTE73D7RM6iHEam0npJBneZnxsvPsvmv5LM9vaikDhab0
-         brU7qzp4VisoydZ1gwIpqNBGg4mYNEDyzwTligLvSB8FMWTXbRKna/ktU2lNCzZfSbRc
-         LKmTdvu7+1Q9XYw8IRMF+NKr+8WxI/XgzW1Y/spjLI6rrEXePTLje6h37sDtuEfDuchi
-         iXuA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714564477; x=1715169277;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=KWU5y5fq+7Sh/5YAl7I0WzeqGM8D5DqoKBNmDtAfIbo=;
-        b=iPBcsZ1g/pirEYUWmpb6N+7B572NJ1MSnQU+batJ5cgSa0as4Fzv+ee9fy1olQg0Ru
-         SnzaODcDBgzKmw21KmzLhAEWagc3YOanU56CC3J7o9epJHYQWRCQn4DYX07GtAWS/hQu
-         hl3t1V3i1AePbt+me2Z+yYJZMM1HyMt5YtjV4ixohIXX2LusIu3PZtALPy5NUlmn677g
-         fPWLYge0lblsKXdNRiOfCcNMM4yzS6ZT8t4/N2uZj0wzfHB3/OuPiQtE80gthadIz0+0
-         +JQPapVpJd66pennZSKAyK8q5W+bphp+jnK0N+G0HrlNIvewbGkp2ZS0EtCEl95/FEy+
-         hqng==
-X-Forwarded-Encrypted: i=1; AJvYcCVnQvpczutlSMuWbYZiE7K4TwJU+Nf5ZM28aljLCYQ5DakeC1kGuU7IjOF67pBZPKWzn2a+/TFRSLgHxbWVTZZlXPFAY6aeCDjBUVgh
-X-Gm-Message-State: AOJu0Yx1CG1tloxEObRFPGQufWe2VXRppshiW/NvFI3uQn83MYjqXxZC
-	z4KnkRv9/GLP3HRLNZ6yJ406OoOR0f5pvXLnbsW02s2BtEHzMo6fGIY2QytIlC8=
-X-Google-Smtp-Source: AGHT+IFvuGfM78B72ca+Oa4xepiLh6v1yafhkqQhzAn8IImg9PFRUyZjFCtX26ZD8B0uUZkAFvpSgQ==
-X-Received: by 2002:a50:9b59:0:b0:570:374:d6ab with SMTP id a25-20020a509b59000000b005700374d6abmr2113395edj.3.1714564477326;
-        Wed, 01 May 2024 04:54:37 -0700 (PDT)
-Received: from hackbox.lan ([62.231.100.236])
-        by smtp.gmail.com with ESMTPSA id q25-20020aa7cc19000000b0057203242f31sm11334987edt.11.2024.05.01.04.54.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 01 May 2024 04:54:36 -0700 (PDT)
-From: Abel Vesa <abel.vesa@linaro.org>
-To: Abel Vesa <abelvesa@kernel.org>,
-	Shawn Guo <shawnguo@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Marc Kleine-Budde <mkl@pengutronix.de>,
-	Shengjiu Wang <shengjiu.wang@nxp.com>,
-	=?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-Cc: Peng Fan <peng.fan@nxp.com>,
-	Michael Turquette <mturquette@baylibre.com>,
-	Stephen Boyd <sboyd@kernel.org>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>,
-	linux-clk@vger.kernel.org,
-	imx@lists.linux.dev,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH] clk: imx: imx8mp: Convert to platform remove callback returning void
-Date: Wed,  1 May 2024 14:54:30 +0300
-Message-Id: <171456445302.602991.15999220730191213802.b4-ty@linaro.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240423071232.463201-2-u.kleine-koenig@pengutronix.de>
-References: <20240423071232.463201-2-u.kleine-koenig@pengutronix.de>
+	s=arc-20240116; t=1714564570; c=relaxed/simple;
+	bh=NZgG/mC5HNHBoFa+cWXwBNRptuAUKGFzgt4fxdRtnFU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=jFYj4cTwYDFqPkGAMMkw5GZvxVNo3Hde/4Jd36M7O7/dldPVedoxp5qW6NgEcs7+wvuuF2wHPU6/kPWH0bdx2gysCEA259TgnGVPi3sEIZbDA9eC2/FMVi6o0XWiIEBcHpwIyOdm5jLInFs7vcHzatMw0tStEjCRMGcOzS0B9bg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=Q2CXlT7z; arc=none smtp.client-ip=213.167.242.64
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
+Received: from pendragon.ideasonboard.com (85-76-79-44-nat.elisa-mobile.fi [85.76.79.44])
+	by perceval.ideasonboard.com (Postfix) with ESMTPSA id 1DD16524;
+	Wed,  1 May 2024 13:55:09 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+	s=mail; t=1714564510;
+	bh=NZgG/mC5HNHBoFa+cWXwBNRptuAUKGFzgt4fxdRtnFU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Q2CXlT7z9+BcP/SbIYt6w8DTo8XU4P9Ijv8Qwi9lcvqx1NZnoJAoNTss3nYU641Vi
+	 wNrcxPRupc6Re2yGYBxOSv6bg1u0n6KLgRP1dM9zm0NTcTdG4FpFgPudzrhpzp9Pox
+	 UUZb520ra7D6Y2nKrJknkI59/WNcPNdoNBSkypO8=
+Date: Wed, 1 May 2024 14:55:59 +0300
+From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
+Cc: linux-media@vger.kernel.org,
+	Florian Fainelli <florian.fainelli@broadcom.com>,
+	Ray Jui <rjui@broadcom.com>, Scott Branden <sbranden@broadcom.com>,
+	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>,
+	Naushir Patuck <naush@raspberrypi.com>,
+	Dave Stevenson <dave.stevenson@raspberrypi.com>,
+	Sakari Ailus <sakari.ailus@linux.intel.com>,
+	linux-rpi-kernel@lists.infradead.org,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] media: bcm2835-unicam: Include v4l2-subdev.h
+Message-ID: <20240501115559.GI17852@pendragon.ideasonboard.com>
+References: <20240430213146.23187-1-laurent.pinchart@ideasonboard.com>
+ <20240430213633.23767-1-laurent.pinchart@ideasonboard.com>
+ <20240430213633.23767-2-laurent.pinchart@ideasonboard.com>
+ <CAPybu_2xjWg8sUW9jk7n1UXLTsoGXfftxVqLaZcWzn+ZcCRhOg@mail.gmail.com>
+ <20240501114715.GG17852@pendragon.ideasonboard.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240501114715.GG17852@pendragon.ideasonboard.com>
 
-
-On Tue, 23 Apr 2024 09:12:31 +0200, Uwe Kleine-König wrote:
-> The .remove() callback for a platform driver returns an int which makes
-> many driver authors wrongly assume it's possible to do error handling by
-> returning an error code. However the value returned is ignored (apart
-> from emitting a warning) and this typically results in resource leaks.
+On Wed, May 01, 2024 at 02:47:15PM +0300, Laurent Pinchart wrote:
+> On Wed, May 01, 2024 at 01:07:29PM +0200, Ricardo Ribalda Delgado wrote:
+> > Hi Laurent
+> > 
+> > I have to send a v2 of
+> > https://patchwork.linuxtv.org/project/linux-media/list/?series=12759 I
+> > can include this patch in that set if you want
 > 
-> To improve here there is a quest to make the remove callback return
-> void. In the first step of this quest all drivers are converted to
-> .remove_new(), which already returns void. Eventually after all drivers
-> are converted, .remove_new() will be renamed to .remove().
-> 
-> [...]
+> Fine with me.
 
-Applied, thanks!
+Assuming your v2 will be merged in v6.10.
 
-[1/1] clk: imx: imx8mp: Convert to platform remove callback returning void
-      commit: f5072cffb35c122ec85d91ef327fa8814f04297b
+> > On Tue, Apr 30, 2024 at 11:39 PM Laurent Pinchart wrote:
+> > >
+> > > The unicam driver uses the v4l2_subdev structure. Include the
+> > > corresponding header instead of relying on indirect includes.
+> > >
+> > > Signed-off-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+> > > Reported-by: kernel test robot <lkp@intel.com>
+> > Reviewed-by: Ricardo Ribalda <ribalda@chromium.org>
+> > > Closes: https://lore.kernel.org/oe-kbuild-all/202404302324.8aTC84kE-lkp@intel.com/
+> > > ---
+> > >  drivers/media/platform/broadcom/bcm2835-unicam.c | 1 +
+> > >  1 file changed, 1 insertion(+)
+> > >
+> > > diff --git a/drivers/media/platform/broadcom/bcm2835-unicam.c b/drivers/media/platform/broadcom/bcm2835-unicam.c
+> > > index c590e26fe2cf..3c7878d8d79b 100644
+> > > --- a/drivers/media/platform/broadcom/bcm2835-unicam.c
+> > > +++ b/drivers/media/platform/broadcom/bcm2835-unicam.c
+> > > @@ -55,6 +55,7 @@
+> > >  #include <media/v4l2-ioctl.h>
+> > >  #include <media/v4l2-fwnode.h>
+> > >  #include <media/v4l2-mc.h>
+> > > +#include <media/v4l2-subdev.h>
+> > >  #include <media/videobuf2-dma-contig.h>
+> > >
+> > >  #include "bcm2835-unicam-regs.h"
 
-Best regards,
 -- 
-Abel Vesa <abel.vesa@linaro.org>
+Regards,
+
+Laurent Pinchart
 
