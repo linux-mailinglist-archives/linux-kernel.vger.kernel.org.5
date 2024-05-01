@@ -1,181 +1,143 @@
-Return-Path: <linux-kernel+bounces-165409-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-165411-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 81C388B8C60
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 16:59:34 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id B4B288B8C65
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 17:00:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1F1DB1F224C0
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 14:59:34 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 117ABB23EB8
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 15:00:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 30C83131730;
-	Wed,  1 May 2024 14:56:39 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6287112F5AC;
-	Wed,  1 May 2024 14:56:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8FEB612FB09;
+	Wed,  1 May 2024 14:59:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HYSPzSqH"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CFF9B5FBB1;
+	Wed,  1 May 2024 14:59:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714575398; cv=none; b=qYzUi71udQLDaDN3GtLkiye0k/a638D3F6gD6ZNDT21Kaf1HgeHDD9h+jsPgILFE3DO6UXjX+bOJQiQBCFUH717ctuDP/Gi0AoLO2udlhty10V4nz3vmLPYV0M7pNbWbQhcJ/RbCKww3C03OwQFXudJ3S2CP/3EeQEzunMO0oSg=
+	t=1714575540; cv=none; b=XcGKMzGLsmEOqgq210NKp9iz0IkFMyc9Xs9NSuk88GJJYGALP8UriNvqTZ1D52+bwkGNfNXprBJTSI11IeIms0qrUTy2uEpDf/5do9PAP4C8l2nfzEqE1Bq1u8bn/sCMrjkQrNpeHBxDOIJJHfXp/u0rWs7Oo7F1dKVsHZRxyA8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714575398; c=relaxed/simple;
-	bh=p52p3F37XvyVfrfrsqWyEV0jgw7gj7LU4qdYq7WAN2o=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=gMycCskeuPq+65i2dpuGkCIOiWnmpIbaqHar+8POcAQXSKEfZVisPTqrNWQPKopW1HZT/Ht3120iT6vVxA8UQV3tjFssfgu7yLVc5sOLuQ9Mpgu9m2Z51pYYS5mkcsn+ofysynMv2Q9IVMgRcVAubqwJhSbZ23xfRa1Vt5gigiU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 20F062F4;
-	Wed,  1 May 2024 07:57:03 -0700 (PDT)
-Received: from [10.57.82.68] (unknown [10.57.82.68])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B37333F793;
-	Wed,  1 May 2024 07:56:34 -0700 (PDT)
-Message-ID: <fcb0cd30-ba40-48d2-8ce1-c5aa1d36cd1f@arm.com>
-Date: Wed, 1 May 2024 15:56:33 +0100
+	s=arc-20240116; t=1714575540; c=relaxed/simple;
+	bh=397yuEegza1YdxCHGmXo6Fr1V3efYfawXEgbly0+WSI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=dKEKTi1cFHsQnK1Wb+WFhJw6Q00IgYivFww33zOIhZeiK1wazYBRCSsuCum37Rf6xYqsfMJgJ/ETysVqTT5RCUmNhAvxDgGW6dVOvH457TiPw0BdfPuaI3nYRAbwNpiyTa8t4rD0SVUIF2x6nl8VDGQbv/x0MZzJdhcvZdxp79I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HYSPzSqH; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 37583C4AF18;
+	Wed,  1 May 2024 14:58:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714575540;
+	bh=397yuEegza1YdxCHGmXo6Fr1V3efYfawXEgbly0+WSI=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=HYSPzSqHFLggbq/xDWYyuhjhUA3byLwI0cx20K+Ar9H0VFMume+4mA27mZufxXN/J
+	 VKgOoUDQemQOr7L3Ygs+Gga6YEZcBqDMORKkDNDsWFVWM6k74eSypUDVzcnPqME0d1
+	 On1AuvdGl3WZuSpo3YqkwaV3plOdeqN3b9AFy5bqX+qHtznRQtYeLOe4geDiyoj6Wr
+	 +pVoO67wG+b53CM0KBXBz45w+0LkBJMbzFSDEyL3EJ7qRUk97dtX9zUBeIueBeFdgN
+	 m92gi+XSOseCE6xMOh+VvwTCIDrfyAMnReFeSM0HHb1iBks0/k4qQowBV2E/n7X1od
+	 zuI3FXuNKBwMA==
+Date: Wed, 1 May 2024 17:57:27 +0300
+From: Mike Rapoport <rppt@kernel.org>
+To: Kees Cook <keescook@chromium.org>
+Cc: Steven Rostedt <rostedt@goodmis.org>, linux-kernel@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	"Liam R. Howlett" <Liam.Howlett@oracle.com>,
+	Vlastimil Babka <vbabka@suse.cz>,
+	Lorenzo Stoakes <lstoakes@gmail.com>, linux-mm@kvack.org,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+	"H. Peter Anvin" <hpa@zytor.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Tony Luck <tony.luck@intel.com>,
+	"Guilherme G. Piccoli" <gpiccoli@igalia.com>,
+	linux-hardening@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>,
+	Ross Zwisler <zwisler@google.com>, wklin@google.com,
+	Vineeth Remanan Pillai <vineeth@bitbyteword.org>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	Suleiman Souhlal <suleiman@google.com>,
+	Linus Torvalds <torvalds@linuxfoundation.org>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>
+Subject: Re: [POC][RFC][PATCH 1/2] mm/x86: Add wildcard * option as
+ memmap=nn*align:name
+Message-ID: <ZjJYV7ak5ApgNTBx@kernel.org>
+References: <20240409210254.660888920@goodmis.org>
+ <20240409211351.075320273@goodmis.org>
+ <202404091521.B63E85D@keescook>
+ <20240409191156.5f92a15c@gandalf.local.home>
+ <202404091638.2F98764A41@keescook>
+ <Zhmgm86tzpanoweB@kernel.org>
+ <20240412181940.3e1d99f7@gandalf.local.home>
+ <202404151017.FC002AA5@keescook>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 17/43] arm64: RME: Allow VMM to set RIPAS
-Content-Language: en-GB
-To: Jean-Philippe Brucker <jean-philippe@linaro.org>,
- Steven Price <steven.price@arm.com>
-Cc: kvm@vger.kernel.org, kvmarm@lists.linux.dev,
- Catalin Marinas <catalin.marinas@arm.com>, Marc Zyngier <maz@kernel.org>,
- Will Deacon <will@kernel.org>, James Morse <james.morse@arm.com>,
- Oliver Upton <oliver.upton@linux.dev>, Zenghui Yu <yuzenghui@huawei.com>,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- Joey Gouly <joey.gouly@arm.com>, Alexandru Elisei
- <alexandru.elisei@arm.com>, Christoffer Dall <christoffer.dall@arm.com>,
- Fuad Tabba <tabba@google.com>, linux-coco@lists.linux.dev,
- Ganapatrao Kulkarni <gankulkarni@os.amperecomputing.com>
-References: <20240412084056.1733704-1-steven.price@arm.com>
- <20240412084309.1733783-1-steven.price@arm.com>
- <20240412084309.1733783-18-steven.price@arm.com>
- <20240501142712.GB484338@myrica>
-From: Suzuki K Poulose <suzuki.poulose@arm.com>
-In-Reply-To: <20240501142712.GB484338@myrica>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <202404151017.FC002AA5@keescook>
 
-On 01/05/2024 15:27, Jean-Philippe Brucker wrote:
-> On Fri, Apr 12, 2024 at 09:42:43AM +0100, Steven Price wrote:
->> +static inline bool realm_is_addr_protected(struct realm *realm,
->> +					   unsigned long addr)
->> +{
->> +	unsigned int ia_bits = realm->ia_bits;
->> +
->> +	return !(addr & ~(BIT(ia_bits - 1) - 1));
+On Mon, Apr 15, 2024 at 10:22:53AM -0700, Kees Cook wrote:
+> On Fri, Apr 12, 2024 at 06:19:40PM -0400, Steven Rostedt wrote:
+> > On Fri, 12 Apr 2024 23:59:07 +0300
+> > Mike Rapoport <rppt@kernel.org> wrote:
+> > 
+> > > On Tue, Apr 09, 2024 at 04:41:24PM -0700, Kees Cook wrote:
+> > > > On Tue, Apr 09, 2024 at 07:11:56PM -0400, Steven Rostedt wrote:  
+> > > > > On Tue, 9 Apr 2024 15:23:07 -0700
+> > > > > Kees Cook <keescook@chromium.org> wrote:
+> > > > >   
+> > > > > > Do we need to involve e820 at all? I think it might be possible to just
+> > > > > > have pstore call request_mem_region() very early? Or does KASLR make
+> > > > > > that unstable?  
+> > > > > 
+> > > > > Yeah, would that give the same physical memory each boot, and can we
+> > > > > guarantee that KASLR will not map the kernel over the previous location?  
+> > > > 
+> > > > Hm, no, for physical memory it needs to get excluded very early, which
+> > > > means e820.  
+> > > 
+> > > Whatever memory is reserved in arch/x86/kernel/e820.c, that happens after
+> > > kaslr, so to begin with, a new memmap parameter should be also added to
+> > > parse_memmap in arch/x86/boot/compressed/kaslr.c to ensure the same
+> > > physical address will be available after KASLR.
+> > 
+> > But doesn't KASLR only affect virtual memory not physical memory?
 > 
-> Is it enough to return !(addr & BIT(realm->ia_bits - 1))?
-
-I thought about that too. But if we are dealing with an IPA
-that is > (BIT(realm->ia_bits)), we don't want to be treating
-that as a protected address. This could only happen if the Realm
-is buggy (or the VMM has tricked it). So the existing check
-looks safer.
-
+> KASLR for x86 (and other archs, like arm64) do both physical and virtual
+> base randomization.
 > 
->> +static void realm_unmap_range_shared(struct kvm *kvm,
->> +				     int level,
->> +				     unsigned long start,
->> +				     unsigned long end)
->> +{
->> +	struct realm *realm = &kvm->arch.realm;
->> +	unsigned long rd = virt_to_phys(realm->rd);
->> +	ssize_t map_size = rme_rtt_level_mapsize(level);
->> +	unsigned long next_addr, addr;
->> +	unsigned long shared_bit = BIT(realm->ia_bits - 1);
->> +
->> +	if (WARN_ON(level > RME_RTT_MAX_LEVEL))
->> +		return;
->> +
->> +	start |= shared_bit;
->> +	end |= shared_bit;
->> +
->> +	for (addr = start; addr < end; addr = next_addr) {
->> +		unsigned long align_addr = ALIGN(addr, map_size);
->> +		int ret;
->> +
->> +		next_addr = ALIGN(addr + 1, map_size);
->> +
->> +		if (align_addr != addr || next_addr > end) {
->> +			/* Need to recurse deeper */
->> +			if (addr < align_addr)
->> +				next_addr = align_addr;
->> +			realm_unmap_range_shared(kvm, level + 1, addr,
->> +						 min(next_addr, end));
->> +			continue;
->> +		}
->> +
->> +		ret = rmi_rtt_unmap_unprotected(rd, addr, level, &next_addr);
->> +		switch (RMI_RETURN_STATUS(ret)) {
->> +		case RMI_SUCCESS:
->> +			break;
->> +		case RMI_ERROR_RTT:
->> +			if (next_addr == addr) {
->> +				next_addr = ALIGN(addr + 1, map_size);
->> +				realm_unmap_range_shared(kvm, level + 1, addr,
->> +							 next_addr);
->> +			}
->> +			break;
->> +		default:
->> +			WARN_ON(1);
+> > This just makes sure the physical memory it finds will not be used by the
+> > system. Then ramoops does the mapping via vmap() I believe, to get a
+> > virtual address to access the physical address.
 > 
-> In this case we also need to return, because RMM returns with next_addr ==
-> 0, causing an infinite loop. At the moment a VMM can trigger this easily
-> by creating guest memfd before creating a RD, see below
+> I was assuming, since you were in the e820 code, that it was
+> manipulating that before KASLR chose a location. But if not, yeah, Mike
+> is right -- you need to make sure this is getting done before
+> decompress_kernel().
 
-Thats a good point. I agree.
+Right now kaslr can handle up to 4 memmap regions and parse_memmap() in
+arch/x86/boot/compressed/kaslr.c should be updated for a new memmap type.
 
-> 
->> +		}
->> +	}
->> +}
->> +
->> +static void realm_unmap_range_private(struct kvm *kvm,
->> +				      unsigned long start,
->> +				      unsigned long end)
->> +{
->> +	struct realm *realm = &kvm->arch.realm;
->> +	ssize_t map_size = RME_PAGE_SIZE;
->> +	unsigned long next_addr, addr;
->> +
->> +	for (addr = start; addr < end; addr = next_addr) {
->> +		int ret;
->> +
->> +		next_addr = ALIGN(addr + 1, map_size);
->> +
->> +		ret = realm_destroy_protected(realm, addr, &next_addr);
->> +
->> +		if (WARN_ON(ret))
->> +			break;
->> +	}
->> +}
->> +
->> +static void realm_unmap_range(struct kvm *kvm,
->> +			      unsigned long start,
->> +			      unsigned long end,
->> +			      bool unmap_private)
->> +{
-> 
-> Should this check for a valid kvm->arch.realm.rd, or a valid realm state?
-> I'm not sure what the best place is but none of the RMM calls will succeed
-> if the RD is NULL, causing some WARNs.
-> 
-> I can trigger this with set_memory_attributes() ioctls before creating a
-> RD for example.
-> 
+But I think it's better to add a new kernel parameter as I suggested in
+another email and teach mem_avoid_memmap() in kaslr.c to deal with it, as
+well as with crashkernel=size@offset, btw.
+ 
+> -- 
+> Kees Cook
 
-True, this could be triggered by a buggy VMM in other ways, and we could
-easily gate it on the Realm state >= NEW.
-
-Suzuki
-
-
+-- 
+Sincerely yours,
+Mike.
 
