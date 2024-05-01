@@ -1,116 +1,93 @@
-Return-Path: <linux-kernel+bounces-165832-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-165831-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CA5428B922C
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 01:19:27 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id BCC6F8B9229
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 01:19:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F11A4B215E5
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 23:19:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 341CD1F222B9
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 23:19:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3AD1416ABF3;
-	Wed,  1 May 2024 23:19:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69E25168B17;
+	Wed,  1 May 2024 23:19:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="sT0Eez54"
-Received: from out-178.mta1.migadu.com (out-178.mta1.migadu.com [95.215.58.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="JZPfk5M/"
+Received: from mail-pf1-f201.google.com (mail-pf1-f201.google.com [209.85.210.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42356165FAA
-	for <linux-kernel@vger.kernel.org>; Wed,  1 May 2024 23:19:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 886F8165FD6
+	for <linux-kernel@vger.kernel.org>; Wed,  1 May 2024 23:19:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714605546; cv=none; b=dL1J/VPCJwU1R7KXQwCqfKxDna0RETVio59kFUZK82U5n2KGF/njJ+5mr3wD8RuQ1rP14/TUVLcXMPrk/hv/qP6hkse2b9pm8PjKttoUygNMpeui1hrq2RQmknTRtmyQ7FLMF+cJi9NVEyn9t7I5L1ba2f8kZ6CJeo4oGothoSo=
+	t=1714605545; cv=none; b=sht8YEOyPdrxFx2bn61QlMQyAxBLPCoQcMHE1D6mOfoDujgZlNsW7SLfAwEL6CH3HEQbmzwLPO6G1rq1nm3YKu/xMmBiguqw6Kc0IGjkT0D0DjGaq5w2vMEXd6Brn/G5O3pQFo6F4aLgePGeg7379hOj9XwU2zmsAOwByQ7o+O4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714605546; c=relaxed/simple;
-	bh=RVX6CWee9Et4secAL4eq9G6Zu+mOoI+QY67WAZDE8E0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=N+WwJVdD+kWUdY4xeUBXYFwU9fX96L1AHO/2aOkcNKZ1nSzBHju8QCN9ZbwRgRRn09DiEfNwWxYTEgqizd1LOTz7bZ+B4m/LB7k/cZtM9ILNs5lg0PLkFOBv8jtUOrhQXlKV+HjlrdXcV53lqom14pNzDpm6E0Q/UTxURsEw1zY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=sT0Eez54; arc=none smtp.client-ip=95.215.58.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Wed, 1 May 2024 16:18:57 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1714605542;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=RHAt9ryWcPi6r2+Mi2K4KwgaN6ilqj66ygb1ZhC0eWM=;
-	b=sT0Eez54kn5LXckYJgvnME+XvNbRTMK9yBJj9F8KcSEPZEt8zfhE/VofpK8jFd0lHvGqUk
-	alZaUuT1i0JMSjV7KhPdjAwZ+m5HI8mZ3x1oxjNe15zrz/psBqoekqvPdbZccKxgsOvtus
-	u/pG3K25JeP1Xw5D55xtgd6NAzYHsng=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Roman Gushchin <roman.gushchin@linux.dev>
-To: Breno Leitao <leitao@debian.org>
-Cc: Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>,
-	Shakeel Butt <shakeel.butt@linux.dev>,
-	Muchun Song <muchun.song@linux.dev>,
-	Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
-	"open list:CONTROL GROUP - MEMORY RESOURCE CONTROLLER (MEMCG)" <cgroups@vger.kernel.org>,
-	"open list:CONTROL GROUP - MEMORY RESOURCE CONTROLLER (MEMCG)" <linux-mm@kvack.org>,
-	open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] mm: memcg: use READ_ONCE()/WRITE_ONCE() to access
- stock->nr_pages
-Message-ID: <ZjLN4eWVwr9W-pk8@P9FQF9L96D>
-References: <20240501095420.679208-1-leitao@debian.org>
+	s=arc-20240116; t=1714605545; c=relaxed/simple;
+	bh=gYC/W2xaDFXJYpjFLqNWMFw+2VXkrn96q+xybr/GbjY=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=nLCxdLkEIF3F6zcXL/3PunA0A45vfRHnpMtUoOm/qMKHuKWMD8w1nNt5VRDAEz/DlltOCAkzZs8zFqIyE4cESmIY1T+8V1cEV1g1D/UUNYXRxrYZkS0w970qlboyKymN08SISnUjNgwFSFdqa7TVya+hwYnincW5VY+57gneyY0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=JZPfk5M/; arc=none smtp.client-ip=209.85.210.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-pf1-f201.google.com with SMTP id d2e1a72fcca58-6ed25ed4a5fso8344873b3a.1
+        for <linux-kernel@vger.kernel.org>; Wed, 01 May 2024 16:19:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1714605544; x=1715210344; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=8I49xdD+d9776Vt2j9z1NeaJ1EuBZRI/KuJy9t3rDCU=;
+        b=JZPfk5M/Qmk7FhXmvLH8JdHQzpXDe/XqwwJzd+RCN0cq0RTw2YF0/wyLZ3Mps3uD9O
+         23W3ZaQKi5VPzO0B2iiVj3ySDelBpMWSE2jc0F0nmy0vOKRg+P36X5Eu78ocqJgKDkPM
+         avaNGkNyw9RpqK3mzsEGPRI7Zq71C/dsTVC/y1yLAm30E13qvLFc+t9UHT7928oktLOC
+         WapFIL/SzOuDk4LOgWY/qfBOF9aI1FbQgIB6USBCyBri2gZf/ukCUxCv1jSVMf6Ol09m
+         McE3ZSrAw7t8/ogY0ef0U7Z4npojFrB8FslzMv3p4Fv6mrqcKVtR1aiqJe/lATQUJmRP
+         AHNA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714605544; x=1715210344;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=8I49xdD+d9776Vt2j9z1NeaJ1EuBZRI/KuJy9t3rDCU=;
+        b=oD6Gaz4F6RxvVa+G4j0c5mRAF9/gk7smefk4NgSGuHT/SGOk7bLslFteN/JXdLjcEI
+         qyxPIG8yDEDYi+yw0Ob8/Eu1b6rgRgmn1jWw2MHAenJoXbyW1q8XOFICynla8DG5fv4e
+         1/D0YK0fn5Rz9iR8m2SeX2/SJemXvn0MdUfzT/n5xbqgoFhKOL0BOvuAU/FqwbOQEQR7
+         Km0UFGwzmzkkg/BRKJHAENLL9TyqyvHgwntxStqZabDOZXnh1xBoDSl9bbA5nISxPcUD
+         R/8NJ2/+HmbFRLk8oEaQ3KYSJt0gCwHefVwPlJZLpsp09ZA4VcjUvkLnH/+bu4/Kgx/O
+         VG4Q==
+X-Forwarded-Encrypted: i=1; AJvYcCWt8MZu13MkXg6ekz7kzgbMPXSyEYWGTp9j2+eN6CWG/QkUZaoQ+taNMEgqf3I5GFIR/3+5//oA07JnhFy3YJ/2+gfWrkJ1YU0mjZ7O
+X-Gm-Message-State: AOJu0YwfX9ZQoHc3H1Gi1cZmk4FGIgXlzUXbg/SJ0NZmr69u2OTGM+Hs
+	6GDaq+x2z3rWpgsUy1mi9leBJkp0exwxpj+Zm41QxOYHJuTPo7FAVbdDWKXOm1RkhdiIV21lY16
+	LjA==
+X-Google-Smtp-Source: AGHT+IHGioM5y7DlQhAaE5h84bb61oIJh9p3OQBuHDNj7qkZt5fkzHadbnSfgpeEs/q9h0bU0gSGOvD+1Dk=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a05:6a00:ac5:b0:6ec:ceb4:d9e2 with SMTP id
+ c5-20020a056a000ac500b006ecceb4d9e2mr336913pfl.0.1714605543866; Wed, 01 May
+ 2024 16:19:03 -0700 (PDT)
+Date: Wed, 1 May 2024 16:19:02 -0700
+In-Reply-To: <20240219074733.122080-26-weijiang.yang@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240501095420.679208-1-leitao@debian.org>
-X-Migadu-Flow: FLOW_OUT
+Mime-Version: 1.0
+References: <20240219074733.122080-1-weijiang.yang@intel.com> <20240219074733.122080-26-weijiang.yang@intel.com>
+Message-ID: <ZjLN5iGKE6DgEyVa@google.com>
+Subject: Re: [PATCH v10 25/27] KVM: nVMX: Introduce new VMX_BASIC bit for
+ event error_code delivery to L1
+From: Sean Christopherson <seanjc@google.com>
+To: Yang Weijiang <weijiang.yang@intel.com>
+Cc: pbonzini@redhat.com, dave.hansen@intel.com, x86@kernel.org, 
+	kvm@vger.kernel.org, linux-kernel@vger.kernel.org, peterz@infradead.org, 
+	chao.gao@intel.com, rick.p.edgecombe@intel.com, mlevitsk@redhat.com, 
+	john.allen@amd.com
+Content-Type: text/plain; charset="us-ascii"
 
-On Wed, May 01, 2024 at 02:54:20AM -0700, Breno Leitao wrote:
-> A memcg pointer in the per-cpu stock can be accessed by drain_all_stock()
-> and consume_stock() in parallel, causing a potential race.
-> 
-> KCSAN shows this data-race clearly in the splat below:
-> 
-> 	BUG: KCSAN: data-race in drain_all_stock.part.0 / try_charge_memcg
-> 
-> 	write to 0xffff88903f8b0788 of 4 bytes by task 35901 on cpu 2:
-> 	try_charge_memcg (mm/memcontrol.c:2323 mm/memcontrol.c:2746)
-> 	__mem_cgroup_charge (mm/memcontrol.c:7287 mm/memcontrol.c:7301)
-> 	do_anonymous_page (mm/memory.c:1054 mm/memory.c:4375 mm/memory.c:4433)
-> 	__handle_mm_fault (mm/memory.c:3878 mm/memory.c:5300 mm/memory.c:5441)
-> 	handle_mm_fault (mm/memory.c:5606)
-> 	do_user_addr_fault (arch/x86/mm/fault.c:1363)
-> 	exc_page_fault (./arch/x86/include/asm/irqflags.h:37
-> 		        ./arch/x86/include/asm/irqflags.h:72
-> 			arch/x86/mm/fault.c:1513
-> 			arch/x86/mm/fault.c:1563)
-> 	asm_exc_page_fault (./arch/x86/include/asm/idtentry.h:623)
-> 
-> 	read to 0xffff88903f8b0788 of 4 bytes by task 287 on cpu 27:
-> 	drain_all_stock.part.0 (mm/memcontrol.c:2433)
-> 	mem_cgroup_css_offline (mm/memcontrol.c:5398 mm/memcontrol.c:5687)
-> 	css_killed_work_fn (kernel/cgroup/cgroup.c:5521 kernel/cgroup/cgroup.c:5794)
-> 	process_one_work (kernel/workqueue.c:3254)
-> 	worker_thread (kernel/workqueue.c:3329 kernel/workqueue.c:3416)
-> 	kthread (kernel/kthread.c:388)
-> 	ret_from_fork (arch/x86/kernel/process.c:147)
-> 	ret_from_fork_asm (arch/x86/entry/entry_64.S:257)
-> 
-> 	value changed: 0x00000014 -> 0x00000013
-> 
-> This happens because drain_all_stock() is reading stock->nr_pages, while
-> consume_stock() might be updating the same address, causing a potential
-> data-race.
+The shortlog is wrong, or perhaps just misleading.  This isn't "for event error_code
+delivery to L1", it's for event inject error code deliver for _L2_, i.e. from L1
+to L2.
 
-Btw there is an actual data race, which is periodically causing a needless
-draining of a per-cpu stock.
+The shortlog should be something more like:
 
-> 
-> Make the shared addresses bulletproof regarding to reads and writes,
-> similarly to what stock->cached_objcg and stock->cached.
-> Annotate all accesses to stock->nr_pages with READ_ONCE()/WRITE_ONCE().
-> 
-> Signed-off-by: Breno Leitao <leitao@debian.org>
-
-Reviewed-by: Roman Gushchin <roman.gushchin@linux.dev>
+ KVM: nVMX: Virtualize NO_HW_ERROR_CODE_CC for L1 event injection to L2
 
