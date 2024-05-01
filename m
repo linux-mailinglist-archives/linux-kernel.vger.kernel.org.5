@@ -1,299 +1,175 @@
-Return-Path: <linux-kernel+bounces-164858-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-164859-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BFA228B8408
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 03:45:13 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6CF0C8B840D
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 03:47:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 758012830FE
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 01:45:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8D5E61C2256A
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 01:47:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 554B653A9;
-	Wed,  1 May 2024 01:45:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9056F846F;
+	Wed,  1 May 2024 01:47:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=codeconstruct.com.au header.i=@codeconstruct.com.au header.b="DEuJpU1n"
-Received: from codeconstruct.com.au (pi.codeconstruct.com.au [203.29.241.158])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b="Egtkymk9"
+Received: from mail-oa1-f47.google.com (mail-oa1-f47.google.com [209.85.160.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C2F54400;
-	Wed,  1 May 2024 01:45:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.29.241.158
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 240705C99
+	for <linux-kernel@vger.kernel.org>; Wed,  1 May 2024 01:47:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714527906; cv=none; b=DZWjz2noR8Ly4oZpa0N1eReX4lRdTIaIESjq13G2jjBCSyTymkui8RpOw3Z9ONCW22qxm3AONleDV5SN8okaDORNgyfgSTdrZupCjvrDmzdaftt18/ho7X1l4fjK90dgYunrJY+Wp2bT8uIY62ofoZkyT615VaBUcTOILq6k6ns=
+	t=1714528066; cv=none; b=Rx7o1Uw+JByZjBfKKFh2v85U+znoj2x0qDMcnRzW6p2xqPAmPSttT/KynN1+msLdXgCgdiamX8wHQYGI2zp9LNbTQj2CfrS7LCaOnly07u7mnBWwY4mLG+wXBgejkcIeap5+H0Irz0jkEaKJUR+pqr4YykCiE0JY3qY76yLFt/8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714527906; c=relaxed/simple;
-	bh=lK7a7gnYx+MPhhBSF1LDgxnaaS/2UCrfWJOos7YVUdc=;
-	h=Message-ID:Subject:From:To:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=ODmqne+FaOlJuaniEdVbgnXqwpFHRnGQ7JE3wy2vcuHUK/371kqgLFxpqu346Y8kHuB6TFpmfalLtFmTHDus1q1JsldU9Sd4SrO4TnmVHCo5JL7Xu41o0vFMOeGjTCN+koyESVM/S16f9Ju3oCV2qBpO4T+mPzcnuL11MSJpi+A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=codeconstruct.com.au; spf=pass smtp.mailfrom=codeconstruct.com.au; dkim=pass (2048-bit key) header.d=codeconstruct.com.au header.i=@codeconstruct.com.au header.b=DEuJpU1n; arc=none smtp.client-ip=203.29.241.158
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=codeconstruct.com.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=codeconstruct.com.au
-Received: from [192.168.68.112] (ppp14-2-127-66.adl-apt-pir-bras32.tpg.internode.on.net [14.2.127.66])
-	by mail.codeconstruct.com.au (Postfix) with ESMTPSA id F3CA620018;
-	Wed,  1 May 2024 09:44:55 +0800 (AWST)
+	s=arc-20240116; t=1714528066; c=relaxed/simple;
+	bh=1BevPDrC06ybAYlvpZi7vW1hZEysUlTpN+aYC4MLwG0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Sp4BrctUoBD7oidtpju6BUQ4uiOVbsDbNYOCwMI6U5ftKv1raCt64KLjiorYZlbd2C6Fvj7Ar7AOxx4akyNVxLrVgQAUPgp+URKnKEaRNax1ccV2sAPgBr1FPRmvyQV9YRQKm1GecakZUFWnc0Z0sQjfDq8ceLvf+P/vQT+SerU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com; spf=pass smtp.mailfrom=fromorbit.com; dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b=Egtkymk9; arc=none smtp.client-ip=209.85.160.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fromorbit.com
+Received: by mail-oa1-f47.google.com with SMTP id 586e51a60fabf-23d41245bd9so448493fac.2
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 18:47:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=codeconstruct.com.au; s=2022a; t=1714527900;
-	bh=ZUO6/mIEPvRrIf6sOjB0OOCuuBBpsNn5gaBZcvAFNGU=;
-	h=Subject:From:To:Date:In-Reply-To:References;
-	b=DEuJpU1n2T179kw/VKuYB0kv6eaibJXxG1x5cT0mm2lDuy2xpBYFgKW7mC3Ij+2wq
-	 rAkC9E19A5xWnfZUTRdc9yysux/Aed85KGkYmZawnaSMDVWuHK6zaMWOaeuQ2PjY1j
-	 JEJsD/on49LzAEZHy2ta5K95I6VI5FpR3pzbBmk0Qy1o49qffISe4/mhyKUL1VkKxF
-	 hmnPK4/p4rGogkOGhBOFvw2F0DQf1GUkCEs7RcEbxZeD9Crnfz7mF3a1nyt7efCk8/
-	 IoK3ahRFwvyFpR4c5JHoDYCL8fn6c9j51wQ1DQHs+YxA6M11k4TbOtezZzOXM37jIh
-	 K97AMlDrenALg==
-Message-ID: <4042d277a5200317254f6ab98b5ebf708c5a4f25.camel@codeconstruct.com.au>
-Subject: Re: [PATCH v9 1/1] watchdog: aspeed: Revise handling of bootstatus
-From: Andrew Jeffery <andrew@codeconstruct.com.au>
-To: Peter Yin <peteryin.openbmc@gmail.com>, patrick@stwcx.xyz, Wim Van
- Sebroeck <wim@linux-watchdog.org>, Guenter Roeck <linux@roeck-us.net>, Joel
- Stanley <joel@jms.id.au>, Eddie James <eajames@linux.vnet.ibm.com>, 
- linux-watchdog@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
- linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Date: Wed, 01 May 2024 11:14:55 +0930
-In-Reply-To: <20240430143114.1323686-2-peteryin.openbmc@gmail.com>
-References: <20240430143114.1323686-1-peteryin.openbmc@gmail.com>
-	 <20240430143114.1323686-2-peteryin.openbmc@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.46.4-2 
+        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1714528063; x=1715132863; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=X2lTibDiFI0ZoiOE7Og2GQjpallD6n8zJfYR3muw4DE=;
+        b=Egtkymk99E8HdIFt7CFI80d1oLSo/+q0ExuR+ZmXm6FjAh1KoWY5xXmrKdaZH8JX0S
+         lss1PXc6PE2l+fG8yob+pZZV3VdDPuu9R0xUWRNSnIGfnLc+ikTID02PKGqgFL76BhGZ
+         4TxbDicveQ2bPgAxk/x/jTNcPBx/6IUiS4qVbhr1t1ajg6oPaGkXcUDWt9/fFf6Q4Q3R
+         ISxo1xktJScvePyFsyhVwWVtpwAElt8xmMUuGTL1LWrc1n6d0Uu8paQsnVuGSV3G0V4H
+         vqnXE770Q/n9LYMNfRRbmwxdB3xAclqWRM+8RRIvp0N6BzgmTKtJ67dsdf5IVSR7FmXt
+         QGlA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714528063; x=1715132863;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=X2lTibDiFI0ZoiOE7Og2GQjpallD6n8zJfYR3muw4DE=;
+        b=r45XhEosJnShQ0pAVM+oomjarsxazlceTIdZFEcuxU/ivkqUnbOxe5nBMQ1/arW+Pc
+         NeIJi22WP9ghJhkZdzUL8ljhReO6+lRHBv7z86LZkK3G/j0hTh8ip2fW0yDCk3cT2j8O
+         O3iuAFlCkkeiXd7bzFajaUkAaP9kksyqsd2f9MYzH2euXHn1s6ZNQJMnhmRo8fVD0bCn
+         8Mhf8RlUbwm7i2HJDoBFKd1Vho6LneiKxNHO+QnSYOwTHu8uKD66tGZQdhe3c5cCctMY
+         v7qcBi7ZZEaDSNRVqeHjuepe+GL0ju4wMaUtT0LeFm55f8tmWA/4an9fTIHPSiVnxOuF
+         EK1g==
+X-Forwarded-Encrypted: i=1; AJvYcCW6U8XUNDguabZgVs3hCFK8ZbIb9NqCP4sYuMjeDUpPlNTyYPbXZWCq5YoZ//TW/Pc0Norx7EyrHgVBn9TdeyFfjSCmNVzhbV6hN524
+X-Gm-Message-State: AOJu0Yx0NE4NC0BmTIkCFm4Bc9q7q33QnGwxl8Dw0LxaweJXjlOzzt1E
+	roZFxS29cFdhbKnT7eLvzmh9Zn9yYkHlQD4i1gU7XuyeyGKyLLzpuh4FRBNwjs4=
+X-Google-Smtp-Source: AGHT+IEmewIJwY7Yi1W0lOvUPHQD+aXLDxZ98fdhOHrZpRU1dqWfUjvKTaI2jboHvumLvPnDmIO3YQ==
+X-Received: by 2002:a05:6870:4414:b0:23c:bc3a:6ccb with SMTP id u20-20020a056870441400b0023cbc3a6ccbmr1237203oah.19.1714528062942;
+        Tue, 30 Apr 2024 18:47:42 -0700 (PDT)
+Received: from dread.disaster.area (pa49-179-32-121.pa.nsw.optusnet.com.au. [49.179.32.121])
+        by smtp.gmail.com with ESMTPSA id i11-20020a056a00004b00b006e4432027d1sm5918046pfk.142.2024.04.30.18.47.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 30 Apr 2024 18:47:42 -0700 (PDT)
+Received: from dave by dread.disaster.area with local (Exim 4.96)
+	(envelope-from <david@fromorbit.com>)
+	id 1s1z4N-00Gq9H-2k;
+	Wed, 01 May 2024 11:47:39 +1000
+Date: Wed, 1 May 2024 11:47:39 +1000
+From: Dave Chinner <david@fromorbit.com>
+To: John Garry <john.g.garry@oracle.com>
+Cc: djwong@kernel.org, hch@lst.de, viro@zeniv.linux.org.uk,
+	brauner@kernel.org, jack@suse.cz, chandan.babu@oracle.com,
+	willy@infradead.org, axboe@kernel.dk, martin.petersen@oracle.com,
+	linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+	tytso@mit.edu, jbongio@google.com, ojaswin@linux.ibm.com,
+	ritesh.list@gmail.com, mcgrof@kernel.org, p.raghav@samsung.com,
+	linux-xfs@vger.kernel.org, catherine.hoang@oracle.com
+Subject: Re: [PATCH v3 17/21] iomap: Atomic write support
+Message-ID: <ZjGfOyJl5y3D49fC@dread.disaster.area>
+References: <20240429174746.2132161-1-john.g.garry@oracle.com>
+ <20240429174746.2132161-18-john.g.garry@oracle.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240429174746.2132161-18-john.g.garry@oracle.com>
 
-Hi Peter,
-
-Overall this seems okay, however I have some follow-ups to my naming
-nitpicks on v8. Broadly, my preferences are that:
-
- * It's clear from the macro name what SoC, controller and register
-   each macro applies to
- * We have a consistent structure in the macro naming -
-   <soc>_<controller>_<register>_<description> - i.e. the values for
-   <soc> (AST, AST2400, AST2500, AST2600), <controller> (SCU), and
-   <register> (SYS_RESET) are consistent across the macro names
- * I prefer consistent use of 'mask' instead of 'flag' for things that
-   are used as masks, as to me flag implies a constraint of a single
-   bit, where mask doesn't feel like it has such a constraint. However,
-   it's fine if a mask consists of a single bit, it's still a mask.
-
-On Tue, 2024-04-30 at 22:31 +0800, Peter Yin wrote:
-> Regarding the AST2600 specification, the WDTn Timeout Status Register
-> (WDT10) has bit 1 reserved. Bit 1 of the status register indicates
-> on ast2500 if the boot was from the second boot source.
-> It does not indicate that the most recent reset was triggered by
-> the watchdog. The code should just be changed to set WDIOF_CARDRESET
-> if bit 0 of the status register is set. However, this bit can be clear wh=
-en
-> watchdog register 0x0c bit1(Reset System after timeout) is enabled.
-> Thereforce include SCU register to veriy WDIOF_EXTERN1 and WDIOF_CARDRESE=
-T
-> in ast2600 SCU74 or ast2400/ast2500 SCU3C.
->=20
-> Fixes: 49d4d277ca54 ("aspeed: watchdog: Set bootstatus during probe")
-> Signed-off-by: Peter Yin <peteryin.openbmc@gmail.com>
+On Mon, Apr 29, 2024 at 05:47:42PM +0000, John Garry wrote:
+> Support atomic writes by producing a single BIO with REQ_ATOMIC flag set.
+> 
+> We rely on the FS to guarantee extent alignment, such that an atomic write
+> should never straddle two or more extents. The FS should also check for
+> validity of an atomic write length/alignment.
+> 
+> Signed-off-by: John Garry <john.g.garry@oracle.com>
 > ---
->  drivers/watchdog/aspeed_wdt.c | 90 +++++++++++++++++++++++++++++++----
->  1 file changed, 82 insertions(+), 8 deletions(-)
->=20
-> diff --git a/drivers/watchdog/aspeed_wdt.c b/drivers/watchdog/aspeed_wdt.=
-c
-> index b4773a6aaf8c..556493763793 100644
-> --- a/drivers/watchdog/aspeed_wdt.c
-> +++ b/drivers/watchdog/aspeed_wdt.c
-> @@ -11,10 +11,12 @@
->  #include <linux/io.h>
->  #include <linux/kernel.h>
->  #include <linux/kstrtox.h>
-> +#include <linux/mfd/syscon.h>
->  #include <linux/module.h>
->  #include <linux/of.h>
->  #include <linux/of_irq.h>
->  #include <linux/platform_device.h>
-> +#include <linux/regmap.h>
->  #include <linux/watchdog.h>
->  static bool nowayout =3D WATCHDOG_NOWAYOUT;
-> @@ -22,10 +24,38 @@ module_param(nowayout, bool, 0);
->  MODULE_PARM_DESC(nowayout, "Watchdog cannot be stopped once started (def=
-ault=3D"
->  __MODULE_STRING(WATCHDOG_NOWAYOUT) ")");
-> +/* AST SCU Register for System Reset Event Log Register Set
-> + * ast2600 is scu074 ast2400/2500 is scu03c
-> + */
-> +#define AST_SCU_SYS_RESET_POWERON_MASK BIT(0)
-> +#define AST_SCU_SYS_RESET_EXTERN_FLAG BIT(1)
+>  fs/iomap/direct-io.c | 10 ++++++++++
+>  1 file changed, 10 insertions(+)
+> 
+> diff --git a/fs/iomap/direct-io.c b/fs/iomap/direct-io.c
+> index a3ed7cfa95bc..d7bdeb675068 100644
+> --- a/fs/iomap/direct-io.c
+> +++ b/fs/iomap/direct-io.c
+> @@ -275,6 +275,7 @@ static inline blk_opf_t iomap_dio_bio_opflags(struct iomap_dio *dio,
+>  static loff_t iomap_dio_bio_iter(const struct iomap_iter *iter,
+>  		struct iomap_dio *dio)
+>  {
+> +	bool is_atomic = dio->iocb->ki_flags & IOCB_ATOMIC;
+>  	const struct iomap *iomap = &iter->iomap;
+>  	struct inode *inode = iter->inode;
+>  	unsigned int zeroing_size, pad;
+> @@ -387,6 +388,9 @@ static loff_t iomap_dio_bio_iter(const struct iomap_iter *iter,
+>  		bio->bi_iter.bi_sector = iomap_sector(iomap, pos);
+>  		bio->bi_write_hint = inode->i_write_hint;
+>  		bio->bi_ioprio = dio->iocb->ki_ioprio;
+> +		if (is_atomic)
+> +			bio->bi_opf |= REQ_ATOMIC;
 
-s/_FLAG/_MASK/ here too?
+REQ_ATOMIC is only valid for write IO, isn't it?
+
+This should be added in iomap_dio_bio_opflags() after it is
+determined we are doing a write operation.  Regardless, it should be
+added in iomap_dio_bio_opflags(), not here. That also allows us to
+get rid of the is_atomic variable.
 
 > +
-> +#define AST2400_SYSTEM_RESET_STATUS 0x3C
+>  		bio->bi_private = dio;
+>  		bio->bi_end_io = iomap_dio_bio_end_io;
+>  
+> @@ -403,6 +407,12 @@ static loff_t iomap_dio_bio_iter(const struct iomap_iter *iter,
+>  		}
+>  
+>  		n = bio->bi_iter.bi_size;
+> +		if (is_atomic && n != orig_count) {
+> +			/* This bio should have covered the complete length */
+> +			ret = -EINVAL;
+> +			bio_put(bio);
+> +			goto out;
+> +		}
 
-You chose to use my suggestion of `..._SCU_SYS_RESET_...` for the
-POWERON and EXTERN macros above, but here you've dropped `SCU` and also
-used `SYSTEM_RESET` instead `SYS_RESET`. I'd prefer we pick a
-consistent register name, so
+What happens now if we've done zeroing IO before this? I suspect we
+might expose stale data if the partial block zeroing converts the
+unwritten extent in full...
 
-```
-#define AST2400_SCU_SYS_RESET_STATUS 0x3c
-```
+>  		if (dio->flags & IOMAP_DIO_WRITE) {
+>  			task_io_account_write(n);
+>  		} else {
 
-> +#define AST2400_WATCHDOG_RESET_MASK BIT(1)
+Ignoring the error handling issues, this code might be better as:
 
-Again, I'd prefer all these field macros at least have `SCU` in the
-name, and preferably the register name too, so:
+		if (dio->flags & IOMAP_DIO_WRITE) {
+			if ((opflags & REQ_ATOMIC) && n != orig_count) {
+				/* atomic writes are all or nothing */
+				ret = -EIO
+				bio_put(bio);
+				goto out;
+			}
+		}
 
-```
-#define AST2400_SCU_SYS_RESET_WDT_MASK BIT(1)
-```
+so that we are not putting atomic write error checks in the read IO
+submission path.
 
-
-> +#define AST2400_RESET_FLAG_CLEAR GENMASK(2, 0)
-
-s/FLAG/FLAGS/ given it's defined over multiple bits? Also, to include
-the register name in the macro name:
-
-```
-#define AST2400_SCU_SYS_RESET_FLAGS_CLEAR GENMASK(2, 0)
-```
-
-> +
-> +#define AST2500_WATCHDOG_RESET_MASK GENMASK(4, 2)
-> +#define AST2500_RESET_FLAG_CLEAR (AST2500_WATCHDOG_RESET_MASK | \
-> + AST_SCU_SYS_RESET_POWERON_MASK | \
-> + AST_SCU_SYS_RESET_EXTERN_FLAG)
-
-The same comments above apply to the AST2500 macros.
-
-> +
-> +#define AST2600_SYSTEM_RESET_STATUS 0x74
-> +#define AST2600_WATCHDOG_RESET_MASK GENMASK(31, 16)
-> +#define AST2600_RESET_FLAG_CLEAR (AST2600_WATCHDOG_RESET_MASK | \
-> + AST_SCU_SYS_RESET_POWERON_MASK | \
-> + AST_SCU_SYS_RESET_EXTERN_FLAG)
-
-.. and the AST2600 macros.
-
-> +
->  struct aspeed_wdt_config {
->  u32 ext_pulse_width_mask;
->  u32 irq_shift;
->  u32 irq_mask;
-> + struct {
-> + const char *compatible;
-> + u32 reset_status_reg;
-> + u32 watchdog_reset_mask;
-> + u32 extern_reset_mask;
-> + u32 reset_flag_clear;
-> + } scu;
->  };
->  struct aspeed_wdt {
-> @@ -39,18 +69,39 @@ static const struct aspeed_wdt_config ast2400_config =
-=3D {
->  .ext_pulse_width_mask =3D 0xff,
->  .irq_shift =3D 0,
->  .irq_mask =3D 0,
-> + .scu =3D {
-> + .compatible =3D "aspeed,ast2400-scu",
-> + .reset_status_reg =3D AST2400_SYSTEM_RESET_STATUS,
-> + .watchdog_reset_mask =3D AST2400_WATCHDOG_RESET_MASK,
-> + .extern_reset_mask =3D 0,
-> + .reset_flag_clear =3D AST2400_RESET_FLAG_CLEAR,
-> + }
->  };
->  static const struct aspeed_wdt_config ast2500_config =3D {
->  .ext_pulse_width_mask =3D 0xfffff,
->  .irq_shift =3D 12,
->  .irq_mask =3D GENMASK(31, 12),
-> + .scu =3D {
-> + .compatible =3D "aspeed,ast2500-scu",
-> + .reset_status_reg =3D AST2400_SYSTEM_RESET_STATUS,
-> + .watchdog_reset_mask =3D AST2500_WATCHDOG_RESET_MASK,
-> + .extern_reset_mask =3D AST_SCU_SYS_RESET_EXTERN_FLAG,
-> + .reset_flag_clear =3D AST2500_RESET_FLAG_CLEAR,
-> + }
->  };
->  static const struct aspeed_wdt_config ast2600_config =3D {
->  .ext_pulse_width_mask =3D 0xfffff,
->  .irq_shift =3D 0,
->  .irq_mask =3D GENMASK(31, 10),
-> + .scu =3D {
-> + .compatible =3D "aspeed,ast2600-scu",
-> + .reset_status_reg =3D AST2600_SYSTEM_RESET_STATUS,
-> + .watchdog_reset_mask =3D AST2600_WATCHDOG_RESET_MASK,
-> + .extern_reset_mask =3D AST_SCU_SYS_RESET_EXTERN_FLAG,
-> + .reset_flag_clear =3D AST2600_RESET_FLAG_CLEAR,
-> + }
->  };
->  static const struct of_device_id aspeed_wdt_of_table[] =3D {
-> @@ -310,6 +361,7 @@ static int aspeed_wdt_probe(struct platform_device *p=
-dev)
->  const struct of_device_id *ofdid;
->  struct aspeed_wdt *wdt;
->  struct device_node *np;
-> + struct regmap *scu;
->  const char *reset_type;
->  u32 duration;
->  u32 status;
-> @@ -458,14 +510,36 @@ static int aspeed_wdt_probe(struct platform_device =
-*pdev)
->  writel(duration - 1, wdt->base + WDT_RESET_WIDTH);
->  }
-> - status =3D readl(wdt->base + WDT_TIMEOUT_STATUS);
-> - if (status & WDT_TIMEOUT_STATUS_BOOT_SECONDARY) {
-> - wdt->wdd.bootstatus =3D WDIOF_CARDRESET;
-> -
-> - if (of_device_is_compatible(np, "aspeed,ast2400-wdt") ||
-> - of_device_is_compatible(np, "aspeed,ast2500-wdt"))
-> - wdt->wdd.groups =3D bswitch_groups;
-> - }
-> + /*
-> + * Power on reset is set when triggered by AC or SRSRST.
-
-s/SRSRST/SRST/
-
-> + * Thereforce, we clear flag to ensure
-
-s/Thereforce/Therefore/
-
-Also the line-wrapping for the comment seems a bit aggressive?
-
-> + * next boot cause is a real watchdog case.
-> + * We use the external reset flag to determine
-> + * if it is an external reset or card reset.
-> + * However, The ast2400 watchdog flag is cleared by an external reset,
-> + * so it only supports WDIOF_CARDRESET.
-> + */
-> + scu =3D syscon_regmap_lookup_by_compatible(wdt->cfg->scu.compatible);
-> + if (IS_ERR(scu))
-> + return PTR_ERR(scu);
-> +
-> + ret =3D regmap_read(scu, wdt->cfg->scu.reset_status_reg, &status);
-> + if (ret)
-> + return ret;
-> +
-> + if (!(status & AST_SCU_SYS_RESET_POWERON_MASK) &&
-> + status & wdt->cfg->scu.watchdog_reset_mask)
-> + wdt->wdd.bootstatus =3D (status & wdt->cfg->scu.extern_reset_mask)
-> + ? WDIOF_EXTERN1 : WDIOF_CARDRESET;
-> +
-> + status =3D wdt->cfg->scu.reset_flag_clear;
-
-Seems unnecessary to assign the mask to clear the reset state into
-status?
-
-Andrew
-
-> + ret =3D regmap_write(scu, wdt->cfg->scu.reset_status_reg, status);
-> + if (ret)
-> + return ret;
-> +
-> + if (of_device_is_compatible(np, "aspeed,ast2400-wdt") ||
-> + of_device_is_compatible(np, "aspeed,ast2500-wdt"))
-> + wdt->wdd.groups =3D bswitch_groups;
->  dev_set_drvdata(dev, wdt);
-
+-Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
 
