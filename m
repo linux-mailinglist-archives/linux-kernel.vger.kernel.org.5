@@ -1,123 +1,110 @@
-Return-Path: <linux-kernel+bounces-165762-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-165763-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6638F8B90D8
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 22:48:12 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EE86E8B90DA
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 22:48:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 97E211C21AAF
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 20:48:11 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2E20EB2291B
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 20:48:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1F27165FCF;
-	Wed,  1 May 2024 20:47:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 10D80168AE4;
+	Wed,  1 May 2024 20:47:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b="gpgH3Rvt"
-Received: from mail-yw1-f180.google.com (mail-yw1-f180.google.com [209.85.128.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="ti7JLpz3"
+Received: from out-189.mta0.migadu.com (out-189.mta0.migadu.com [91.218.175.189])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 696FE165FC6
-	for <linux-kernel@vger.kernel.org>; Wed,  1 May 2024 20:47:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6831C1649A8
+	for <linux-kernel@vger.kernel.org>; Wed,  1 May 2024 20:47:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.189
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714596470; cv=none; b=MEKMyzUe28EBdsSjLh2AGPeLvv4XHiLtOqSM/NeJTkhDj1akZluomMi8xRlZ5GoW9UTv2U9BSrwUhGBqm3CEOO+2SMOhoJ+HhBJGsyyPgnXDJFVhaoybM1PCVFGbhAg6j68LYjbtYoLJLpmlCm3WQ77GrAuvjC9BQJgk/2tUuQM=
+	t=1714596472; cv=none; b=RCwTbfxP/B7KiutCdNQH5UGoz1ThKnJnMKuVNDLbAMhbXdyV7RgCKxH7Qp6A7XKG3L+axrKjPlFFXiqs26EDPRCTwa+5YwMETcSDxQDyAPLXXsCsoqrqA7UWE3jUv2U/ufFesSmv5mvft+OD7qvSGnS7W3uaYNYUjwYDaHw6cN8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714596470; c=relaxed/simple;
-	bh=ra1d6k+dPLwUnrnNIckVGDJJ8lliajlQVTK90DkxH3k=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=a3A2UeGnd81QRjaIh9GRU1iLMGDrnZP3j6Cmvh4LCicrCL3a34yHqPobMfYK2tqblx/e93vFR3H6dxjM3eTJpY5nERORraWoQn763UyWzgavW/jbwJf74DWwFQIgzHwudHJEdM/eFzXkELGCqzZM3Mqn/E3TNyGawIrZF7gyG7Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com; spf=pass smtp.mailfrom=paul-moore.com; dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b=gpgH3Rvt; arc=none smtp.client-ip=209.85.128.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=paul-moore.com
-Received: by mail-yw1-f180.google.com with SMTP id 00721157ae682-6153d85053aso59074047b3.0
-        for <linux-kernel@vger.kernel.org>; Wed, 01 May 2024 13:47:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore.com; s=google; t=1714596468; x=1715201268; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=5+PTRDKy8eCh7IoM5KV0mi1ceXwqoykRHY4lJtZB0kY=;
-        b=gpgH3RvtZYGw+ehS9sDjZywyTGvxgtr+CsG/iYIp1RP2kH9I5ZGN4Iirt8M6IbLEDd
-         bS0N+UYIhG6F/JmgoaA1EyvpyN7jV/5HCgLSVhOSbcgJqIP1RhEOHICKCUY/gbHVzta6
-         nfw+cRGHAWNv/p5i2tsDwfk8Klj+48tJnTmK21WsKLMCcnIWDz6HCVEbX4NVX88Ps/fB
-         oNPigxEi3/l14dujgguG9nykyLMMekTAuW9pyaRhQ5KMPIvVmYj8VIA5JHtxqhx7c8IR
-         WRrNqZG4YPacFIV4AiN95uj8cBb94VRX9LK5BGKvSCOu5kMF+fb7ZLAm34Jmh1XvjFaR
-         BDGA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714596468; x=1715201268;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=5+PTRDKy8eCh7IoM5KV0mi1ceXwqoykRHY4lJtZB0kY=;
-        b=n1TDLBFiZZCPeVKurYF1PEQEas+19RLvZfNkHvL3GKfXO/n8IIjBKAtL2smvHrTkxy
-         Ng1mSuRryAqtxNFTSiDc3Guqw2EtlTl7+go4Y6c33tf5G0SQZRFTq+Uvr9qi6OvWyVvL
-         3/eDdJurSU9rcV/hGMesb7pr8ootwIh+u1UjWA4z29PzDbVOerp0cCcRnBTXSok17FwY
-         hRiKlq59GFkMK19FW7irjmW5jfrH7jvmMydMc62okuV9JroAH1T2bEGnKVjPftAWS9K4
-         pMZ/Eb15eMA00XCPFX6p4vEm4jX1ShlGlwof7izbZxOkbMLo1wK3q6HOmdvFe+crjzj0
-         j3Xg==
-X-Forwarded-Encrypted: i=1; AJvYcCVa7308HqsJkxE1Vnt0D0Wr3/hoRO/eC0UuNx8XfOOyXCtBdgZJOSNyuPiY1fq1XMlvC5PbnSE/890/7aq0Qs5WxcQ6ZmaQ5nEcxSjY
-X-Gm-Message-State: AOJu0Yzwe3O4xneGRGEtsoUYPQMo42u7mbg15Lx486qP19KF8hnzA/+p
-	0vqW0HWjIxFVcsbL4wp6bTkQeKBhkI6J6sAYH609q2xlRk9l6+bG6+doLeoD964Qaw2RhIdNdWF
-	n//mr1o7IBE7OkAzqo2V+MLPo73GYagvEHq2W
-X-Google-Smtp-Source: AGHT+IHOwjK39aAkCf1U1a1zITPFDSZFgBnRkiLpnvhJSWgbMTwWHIaF/yZdq1CGwHLPTrZin8UvRonaWrA3BNBSiHg=
-X-Received: by 2002:a05:690c:dc3:b0:61b:3356:a679 with SMTP id
- db3-20020a05690c0dc300b0061b3356a679mr69311ywb.17.1714596468387; Wed, 01 May
- 2024 13:47:48 -0700 (PDT)
+	s=arc-20240116; t=1714596472; c=relaxed/simple;
+	bh=is7OKVQ4oHTUSKCVgI8woUplkhLb0ChtKjfZ52WSoxI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=kouGfvMxSlrK0MccBvYLJZ6KEaJ+eQsqMZ5Z9rnkzlh5ubZzwoo2tzrvI44q+ryiUpj0W/W5k60aO9V/E0BIePFQTfP/wisFAxyD82+7HqOzLLyG5Q0xGv3GK6cnZHq+JPMNrDLEnIRDgTgOmwZKdIEXmqK2r5lhpqq/4wcnzrY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=ti7JLpz3; arc=none smtp.client-ip=91.218.175.189
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Wed, 1 May 2024 13:47:43 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1714596468;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=XiLp0x8XfXFTs7cYbJkOcVg/j2s1qKapf0EMhMbr3E8=;
+	b=ti7JLpz3C3Yb5ms1o6GyQawPVNzUf4kx27q/4+a0kn/c3JMW4r42eZJcujOqrrj4UIo5pq
+	M0WChPcWDgdYd1OLBlfsmKqKC8970KRUNpxzQK1dTa50MrQCnhK8B68HnK8zrOmVfTmJ2J
+	vcMTZH4mZqsM83qf39/5NWAxs22+7Hg=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Shakeel Butt <shakeel.butt@linux.dev>
+To: Breno Leitao <leitao@debian.org>
+Cc: Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>, 
+	Roman Gushchin <roman.gushchin@linux.dev>, Muchun Song <muchun.song@linux.dev>, 
+	Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org, 
+	"open list:CONTROL GROUP - MEMORY RESOURCE CONTROLLER (MEMCG)" <cgroups@vger.kernel.org>, 
+	"open list:CONTROL GROUP - MEMORY RESOURCE CONTROLLER (MEMCG)" <linux-mm@kvack.org>, open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] mm: memcg: use READ_ONCE()/WRITE_ONCE() to access
+ stock->nr_pages
+Message-ID: <7hm5jb6sxg3hd2qtp3qpei6mskdva6kseik6jlna4dlpliangc@m4xs3i2cgg34>
+References: <20240501095420.679208-1-leitao@debian.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240429114636.123395-1-fuzhen5@huawei.com> <CAHC9VhTCFOCE0E-en3HnNkPVRumzWRPcrJMF-=dxke53dOv1Gg@mail.gmail.com>
-In-Reply-To: <CAHC9VhTCFOCE0E-en3HnNkPVRumzWRPcrJMF-=dxke53dOv1Gg@mail.gmail.com>
-From: Paul Moore <paul@paul-moore.com>
-Date: Wed, 1 May 2024 16:47:37 -0400
-Message-ID: <CAHC9VhT0=Useuop92s4J9CGNpXa54r4NYnY9DOTnGmoo0hNv5w@mail.gmail.com>
-Subject: Re: [PATCH -next] lsm: fix default return value for inode_set(remove)xattr
-To: felix <fuzhen5@huawei.com>, linux-security-module@vger.kernel.org
-Cc: casey@schaufler-ca.com, roberto.sassu@huawei.com, stefanb@linux.ibm.com, 
-	zohar@linux.ibm.com, kamrankhadijadj@gmail.com, andrii@kernel.org, 
-	omosnace@redhat.com, linux-kernel@vger.kernel.org, bpf@vger.kernel.org, 
-	xiujianfeng@huawei.com, wangweiyang2@huawei.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240501095420.679208-1-leitao@debian.org>
+X-Migadu-Flow: FLOW_OUT
 
-On Wed, May 1, 2024 at 12:02=E2=80=AFPM Paul Moore <paul@paul-moore.com> wr=
-ote:
-> On Mon, Apr 29, 2024 at 7:47=E2=80=AFAM felix <fuzhen5@huawei.com> wrote:
-> >
-> > From: Felix Fu <fuzhen5@huawei.com>
-> >
-> > The return value of security_inode_set(remove)xattr should
-> > be 1. If it return 0, cap_inode_setxattr would not be
-> > executed when no lsm exist, which is not what we expected,
-> > any user could set some security.* xattr for a file.
-> >
-> > Before commit 260017f31a8c ("lsm: use default hook return
-> > value in call_int_hook()") was approved, this issue would
-> > still happened when lsm only include bpf, because bpf_lsm_
-> > inode_setxattr return 0 by default which cause cap_inode_set
-> > xattr to be not executed.
-> >
-> > Fixes: 260017f31a8c ("lsm: use default hook return value in call_int_ho=
-ok()")
-> > Signed-off-by: Felix Fu <fuzhen5@huawei.com>
-> > ---
-> >  include/linux/lsm_hook_defs.h | 4 ++--
-> >  1 file changed, 2 insertions(+), 2 deletions(-)
->
-> Adding the LSM list as that is the important list for this patch.
+On Wed, May 01, 2024 at 02:54:20AM -0700, Breno Leitao wrote:
+> A memcg pointer in the per-cpu stock can be accessed by drain_all_stock()
+> and consume_stock() in parallel, causing a potential race.
+> 
+> KCSAN shows this data-race clearly in the splat below:
+> 
+> 	BUG: KCSAN: data-race in drain_all_stock.part.0 / try_charge_memcg
+> 
+> 	write to 0xffff88903f8b0788 of 4 bytes by task 35901 on cpu 2:
+> 	try_charge_memcg (mm/memcontrol.c:2323 mm/memcontrol.c:2746)
+> 	__mem_cgroup_charge (mm/memcontrol.c:7287 mm/memcontrol.c:7301)
+> 	do_anonymous_page (mm/memory.c:1054 mm/memory.c:4375 mm/memory.c:4433)
+> 	__handle_mm_fault (mm/memory.c:3878 mm/memory.c:5300 mm/memory.c:5441)
+> 	handle_mm_fault (mm/memory.c:5606)
+> 	do_user_addr_fault (arch/x86/mm/fault.c:1363)
+> 	exc_page_fault (./arch/x86/include/asm/irqflags.h:37
+> 		        ./arch/x86/include/asm/irqflags.h:72
+> 			arch/x86/mm/fault.c:1513
+> 			arch/x86/mm/fault.c:1563)
+> 	asm_exc_page_fault (./arch/x86/include/asm/idtentry.h:623)
+> 
+> 	read to 0xffff88903f8b0788 of 4 bytes by task 287 on cpu 27:
+> 	drain_all_stock.part.0 (mm/memcontrol.c:2433)
+> 	mem_cgroup_css_offline (mm/memcontrol.c:5398 mm/memcontrol.c:5687)
+> 	css_killed_work_fn (kernel/cgroup/cgroup.c:5521 kernel/cgroup/cgroup.c:5794)
+> 	process_one_work (kernel/workqueue.c:3254)
+> 	worker_thread (kernel/workqueue.c:3329 kernel/workqueue.c:3416)
+> 	kthread (kernel/kthread.c:388)
+> 	ret_from_fork (arch/x86/kernel/process.c:147)
+> 	ret_from_fork_asm (arch/x86/entry/entry_64.S:257)
+> 
+> 	value changed: 0x00000014 -> 0x00000013
+> 
+> This happens because drain_all_stock() is reading stock->nr_pages, while
+> consume_stock() might be updating the same address, causing a potential
+> data-race.
+> 
+> Make the shared addresses bulletproof regarding to reads and writes,
+> similarly to what stock->cached_objcg and stock->cached.
+> Annotate all accesses to stock->nr_pages with READ_ONCE()/WRITE_ONCE().
+> 
+> Signed-off-by: Breno Leitao <leitao@debian.org>
 
-It's also worth noting the discussion below from earlier this year.  I
-just spent a little bit of time working on a different solution which
-I personally find more acceptable; I'm building a test kernel now,
-assuming it works I'll post it as a RFC.
-
-https://lore.kernel.org/linux-security-module/20240129133058.1627971-1-omos=
-nace@redhat.com/
-
---=20
-paul-moore.com
+Acked-by: Shakeel Butt <shakeel.butt@linux.dev>
 
