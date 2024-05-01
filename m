@@ -1,112 +1,141 @@
-Return-Path: <linux-kernel+bounces-165161-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-165162-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2F1078B88D7
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 12:58:33 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5DD888B88DA
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 13:04:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C57B21F24786
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 10:58:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 98C0B1C22EB3
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 11:04:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4889056754;
-	Wed,  1 May 2024 10:58:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 60AD056763;
+	Wed,  1 May 2024 11:04:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="D6rD372u"
-Received: from mail-wr1-f65.google.com (mail-wr1-f65.google.com [209.85.221.65])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gWh76Eb0"
+Received: from mail-oo1-f50.google.com (mail-oo1-f50.google.com [209.85.161.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2273633CD1;
-	Wed,  1 May 2024 10:58:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.65
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C60A48CE0;
+	Wed,  1 May 2024 11:04:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714561104; cv=none; b=XMWOjnl7YN/rSg03HKGsGHNJHV1egGFxqI+avEkjwJg4b8qYGeMI+H/pFQoYnQ0q7IsGF+vpUREXe5paMpemWMITRBp4ECearBcBAfsMhGVLcr6qABjD06yqo1Ew3CkKDSWFmmYENqUXG++Rsb9ojA4KkLAGNLE4jUm0NckK6ks=
+	t=1714561442; cv=none; b=nEczN4bD8DsZ839qUQh/P4pFN45Ck6PWJv1yPlJ3nI/JRFY+SM6iISnu7UcZiT1PtIyemwC+P5XvbcHpggWNLo9JGBghufz1v1Ea+344AzbP1mVpPNaSnCr8vcFKzqT5ir/xoXSGnUanmd4m5XWpTfP4tz02+DnpsagJSRt3XBA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714561104; c=relaxed/simple;
-	bh=j/Xajgm4NK/lzgqgFTaDH7ZeBAQsVIQsUpgLf7xd+18=;
+	s=arc-20240116; t=1714561442; c=relaxed/simple;
+	bh=Lv+nMOQFs0BluawuyLrKMUkT6cwH9pGWcIkHyav3pR0=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=CD/z5xlI0pFk19sDJiMMz/jiat45mB8ovNBt9IrZLWgua05dwFDW5SyuxiJWFxo/3omjVKY7QNF1AjvBKGz0Yr5cWwI6FQAAZj2gqdHDipHzgGT5EtsUAH766XHwh9vqOGj99TpGPdGUrw597DG+YOMfQStnvVbeo4l/tu7N4ME=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=D6rD372u; arc=none smtp.client-ip=209.85.221.65
+	 To:Cc:Content-Type; b=BqAk3kZrYxsOFpof8fnmvWVka88ESdznm4FuVUZ1oMlcHD/6rTg9eq1VXbPdxJgGfOQl504C0/jCiCkaU3AF9cPiRtOuwHwRUod9/jCZ3L7qltvIuFFGDG6KC4+ni6/b+/J9MviHU5XmoL1hxQbIPr2mNuDI7OpMQ6jy55uGgNg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gWh76Eb0; arc=none smtp.client-ip=209.85.161.50
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f65.google.com with SMTP id ffacd0b85a97d-34d7b0dac54so383507f8f.0;
-        Wed, 01 May 2024 03:58:22 -0700 (PDT)
+Received: by mail-oo1-f50.google.com with SMTP id 006d021491bc7-5aa4204bacdso4076353eaf.2;
+        Wed, 01 May 2024 04:04:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714561101; x=1715165901; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1714561440; x=1715166240; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=j/Xajgm4NK/lzgqgFTaDH7ZeBAQsVIQsUpgLf7xd+18=;
-        b=D6rD372uAobSJnckyljWWc4bOJed71WAjo6tB5TaKkWcw8NcWr986Mk745bH15nD2T
-         R5NzIEkLToTr7jtjgVPa79T9OTHIg5kyHWE5S7u+4H229YLLQ2yE/FtQto82YRIQYDZR
-         JqpSpH7kg1zHh5oKITNx44XhDBW1cbWZ7JG6gh00ylXNBQ2+yk8Q/3qxdYTFX3yCeZTd
-         DO0nOJnHoIDhXpGqjO0k7Y3n/BCD4iA+k0l0jChBFpX2CsnN4Hze8VFguiUfdKTB7SVi
-         QEGQ3tsWda/GcUMlrV5g70Biq3rT9jvv6X0T2hOmuG+1PzwFQZCEj1E5uDufVU0pEwTq
-         bI9g==
+        bh=jet+oML+586hOmiIToGtwYMGYre9ZmsemSsDP6Wj4sU=;
+        b=gWh76Eb0rvgsAJqokLpKNAtK5iQNATn4mNkn0f6o3QR3npeYwtbuqX3RB137Pr4TU7
+         gilp4KGFHWwxTwRZWLYNlhFtA8JItK5h0B30iUjAgGFvCfLhwzqtOEdU897EuGSBB/A2
+         EIsHH5g2UBjekCCdwAUdaXFakTnXdKMo9SLjU5lQDW5b9GY6rRiR4sFmNttgu8kskrrF
+         AplQlTrPwPWEt5vbaZyquzdGbAKEPEkB5oIBnil1AZiUZhPdaPxD4u0EuVNAbNnDOdG8
+         QoAb2VL3nBhQe9R0TBrl2GmexK9jBL92W+vLDRpR6rQcR6GarpkOWKWEuXVMyPR270Fs
+         EAmg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714561101; x=1715165901;
+        d=1e100.net; s=20230601; t=1714561440; x=1715166240;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=j/Xajgm4NK/lzgqgFTaDH7ZeBAQsVIQsUpgLf7xd+18=;
-        b=fWWB+dh3xGN2ZRfmlESM4v6hl3+DQYT4ewdtlwO5dmjK171wkPHp0GFW4K4RuqpEQm
-         92M8UC8PS77rbv/BsaLEwjg2IcMnoJGoJy6hVXJNnx2itGDtYlZ/rvbDLb4enFlw6HyL
-         60QY9WLcWCbE9+WdQvWzE5iy6WAkQrIww9XnQdkQ7wAYRkCdf0YesiJ1+1nDAPC4G3SD
-         cmIsDrYyr2bE0zgPGss8I00mSrcmba8e4yTUGJjR60PSWXYCmOb/JDwwFwZToRSVIkDR
-         KHcbmPXQtQFVoEaL2M53bSFMpmsTmwxEsusXama4C8PKTEe7Gpc1Qy7lsaWUroWJWwMx
-         RTKQ==
-X-Forwarded-Encrypted: i=1; AJvYcCW0Yp1KEhu/OHfYzCIH8q9zSgbf/zVWeCcK8l31mIcfKxS7bKBj20EYD231W4+b3NZUNsENRaxfmXi/VkGmksscPVd6UiJ7WezUqic6bUFvaNoZmOSpHV3rFLj/OfCUSBqwbcG7Fkov6Q==
-X-Gm-Message-State: AOJu0YxMAlPcbZUO9MH8uI572Umgs3xsiJ96dxkJxh1owqzzLfsIu0Ff
-	Ipbj1cJzZscWuCYexN/KWijOWGiUwqNh3iyO1PenDXXc37/uQTOG2OJslBJLSdMkD7lpNUEQF9i
-	6eYjWo/HA0rP7N4FXcAxA/79852s=
-X-Google-Smtp-Source: AGHT+IHtZt1GnkElYxtQ+de9g9Z0CTksnHeTnCeTOMgHpQJQApOQPvfeWXhm9Dvmz8ahmZA+Re/IaJ8yF908J+rF3vY=
-X-Received: by 2002:adf:f44a:0:b0:34c:c53e:f2ca with SMTP id
- f10-20020adff44a000000b0034cc53ef2camr2046993wrp.14.1714561101245; Wed, 01
- May 2024 03:58:21 -0700 (PDT)
+        bh=jet+oML+586hOmiIToGtwYMGYre9ZmsemSsDP6Wj4sU=;
+        b=WX836kYYaUr+2Klr5xwKEaDNtDlrzpBAiiv8NQyOtgj+dCc1CRcuzpxp7P95yxhn3h
+         3Lj7dKUKdRmbhW/1KSXJVeg52Prwwu9hyu2kRYFtP3Vp0phS+Pxw1I9Op4KLvFgpkbHd
+         pMFoNzUCsx9hBndG3ZhCLBIG9117zQkmtincGABPvUc0CgsaLXGAp20ke5kd8i0zxytE
+         y7+WT12XiuBlgCUFvap2iwDKJ94eIXVEt9BwDllv11QDdnzJED+nxZrGXf6FcacAkNH4
+         MX64W+Hx1qETuckCjIrG0AhozBXJlLvXIegB4wTVigjcbEj2uWyOHF8lqfD5Ipq3G6vc
+         BPuQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXPMYgGlMiaTQcYd+zKCTVclNjUH9xaG6FYS/f8Kl2QoAnSB+vRz1rXDvmkOAv+rvCiv5WGbVDq82nIJMJChwkHf333qICUZZF715Gt
+X-Gm-Message-State: AOJu0Yy0U8UAPpN5A6zTI1zWjMMfqMvK/YFeUQA/jXmvm/wcRiiszYpr
+	0EDRwt6Uu8OPPS17XbXUjMB6sdi5afUFGwn7GQMeQ41GbeUqend9XusOc4Yu9fy++JI+oKU6OA0
+	bqFPPcuFg/V2ILl1lJgIkK0ZX2wI=
+X-Google-Smtp-Source: AGHT+IGvr2xGduu9rKyaqbgAP+JsJNNCD1tDKh/BEYkdGrcGXI17CeFWB0RqX1SAgpl9fY5NwDnLg1RMbJeP+cw73h8=
+X-Received: by 2002:a05:6358:703:b0:183:f7cb:af75 with SMTP id
+ e3-20020a056358070300b00183f7cbaf75mr2410215rwj.32.1714561440176; Wed, 01 May
+ 2024 04:04:00 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CADFWO8EZWkXeAMcURgGGEmzVjiSxFTVAbKpsb2Qmv66EZiTc+A@mail.gmail.com>
- <eb9538fe-1d1a-40e0-a46f-3b4b5da3e8d7@linaro.org>
-In-Reply-To: <eb9538fe-1d1a-40e0-a46f-3b4b5da3e8d7@linaro.org>
-From: Petar Stoykov <pd.pstoykov@gmail.com>
-Date: Wed, 1 May 2024 12:58:10 +0200
-Message-ID: <CADFWO8Gz__4s2h6Led=oGAObjzkymc=vPsHzZ07HUFU_VCGfTw@mail.gmail.com>
-Subject: Re: [PATCH v2 0/3] Add support for Sensirion SDP500
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: linux-iio@vger.kernel.org, Jonathan Cameron <jic23@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Lars-Peter Clausen <lars@metafoo.de>, 
-	Rob Herring <robh+dt@kernel.org>, Andy Shevchenko <andriy.shevchenko@linux.intel.com>, 
-	Angel Iglesias <ang.iglesiasg@gmail.com>, Conor Dooley <conor+dt@kernel.org>, 
-	linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+References: <20240430213146.23187-1-laurent.pinchart@ideasonboard.com> <20240430213633.23767-1-laurent.pinchart@ideasonboard.com>
+In-Reply-To: <20240430213633.23767-1-laurent.pinchart@ideasonboard.com>
+From: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
+Date: Wed, 1 May 2024 13:03:42 +0200
+Message-ID: <CAPybu_3E5M4uWoX0sOTxji9Rj25xajh9jbyJOSBsa+MV_h_GaA@mail.gmail.com>
+Subject: Re: [PATCH 1/2] media: bcm2835-unicam: Drop usage of of_match_ptr()
+To: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc: linux-media@vger.kernel.org, 
+	Florian Fainelli <florian.fainelli@broadcom.com>, Ray Jui <rjui@broadcom.com>, 
+	Scott Branden <sbranden@broadcom.com>, 
+	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>, 
+	Naushir Patuck <naush@raspberrypi.com>, Dave Stevenson <dave.stevenson@raspberrypi.com>, 
+	Sakari Ailus <sakari.ailus@linux.intel.com>, linux-rpi-kernel@lists.infradead.org, 
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, May 1, 2024 at 11:45=E2=80=AFAM Krzysztof Kozlowski
-<krzysztof.kozlowski@linaro.org> wrote:
+Hi Laurent
+
+This is a dupe of:
+
+https://patchwork.linuxtv.org/project/linux-media/patch/20240430-fix-ipu6-v=
+1-1-9b31fbbce6e4@chromium.org/
+
+regards!
+
+On Tue, Apr 30, 2024 at 11:39=E2=80=AFPM Laurent Pinchart
+<laurent.pinchart@ideasonboard.com> wrote:
 >
-> On 30/04/2024 17:27, Petar Stoykov wrote:
-> > functions in use so it should be fine here too.
-> >
-> > All feedback is appreciated! Thank you for taking the time to review th=
-is.
-> >
-> > v1->v2:
-> > Many fixes suggested by Jonathan Cameron and Krzysztof Kozlowsk.
+> Using of_match_ptr() to set the .of_match_table field of the device
+> driver results in the unicam_of_match table being unused on non-OF
+> platforms, causing a compilation warning. Fix it by dropping usage of
+> of_match_ptr(), which can be done because the .of_match_table field is
+> part of the device_driver structure regardless of whether or not
+> CONFIG_OF is selected.
 >
-> No, be specific. What EXACTLY changed. This is way too generic.
-> Considering entire indentation is broken, I could assume you actually
-> did not implement feedback.
+> Signed-off-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+> Reported-by: kernel test robot <lkp@intel.com>
+> Closes: https://lore.kernel.org/oe-kbuild-all/202404302324.8aTC84kE-lkp@i=
+ntel.com/
+> ---
+>  drivers/media/platform/broadcom/bcm2835-unicam.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 >
-> Best regards,
-> Krzysztof
+> diff --git a/drivers/media/platform/broadcom/bcm2835-unicam.c b/drivers/m=
+edia/platform/broadcom/bcm2835-unicam.c
+> index bd2bbb53070e..c590e26fe2cf 100644
+> --- a/drivers/media/platform/broadcom/bcm2835-unicam.c
+> +++ b/drivers/media/platform/broadcom/bcm2835-unicam.c
+> @@ -2733,7 +2733,7 @@ static struct platform_driver unicam_driver =3D {
+>         .driver =3D {
+>                 .name   =3D UNICAM_MODULE_NAME,
+>                 .pm     =3D pm_ptr(&unicam_pm_ops),
+> -               .of_match_table =3D of_match_ptr(unicam_of_match),
+> +               .of_match_table =3D unicam_of_match,
+>         },
+>  };
+>
+> --
+> Regards,
+>
+> Laurent Pinchart
+>
 >
 
-Hi Krzysztof, I'll include all changes in v3 then (or as a response here?).
-I just thought it was too much to list all changes.
-And about the indentation, can you elaborate please?
+
+--=20
+Ricardo Ribalda
 
