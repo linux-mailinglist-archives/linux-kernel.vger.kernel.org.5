@@ -1,99 +1,300 @@
-Return-Path: <linux-kernel+bounces-165369-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-165370-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0230E8B8BD2
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 16:24:46 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5C7248B8BDA
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 16:27:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 914B71F2235A
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 14:24:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7F29E1C20E4B
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 14:27:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D33912F389;
-	Wed,  1 May 2024 14:24:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ECAC712F395;
+	Wed,  1 May 2024 14:27:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pfrn5fwv"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="ZzVsZ8T7"
+Received: from mail-lj1-f173.google.com (mail-lj1-f173.google.com [209.85.208.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C813F12F369;
-	Wed,  1 May 2024 14:24:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3479A12F379
+	for <linux-kernel@vger.kernel.org>; Wed,  1 May 2024 14:27:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714573476; cv=none; b=gorPcIp6WM+kxx4eGpPvokp7CqQ42fIbgtyLMzaFm2cLeUWMjUWFGkK82n6pmore/vedgA8GiJI6Ka3pWzVPQ/53EYqtG1I+upAIZp1bqJWlLKq1IAwN4MxjdZPIX/H+yU6lyRM8OQ7i91cwPJSVLTiVkF16Hz6M9dJXzLP6TAE=
+	t=1714573624; cv=none; b=mxrc7+kSoxQ/Lh/sJM/Sj8q6eYG1/pS8U4tCDEjcwNlNPwOYpZf4f4CW+gGSIBqy1FX0rBEW/HXqSYHmCRTO1gT5SEbALFS9J7rR/PKQ84QTzyE/c8b09gsrcjS7cDuZNrox8CQSzwXeeBe+imfXTDle2tn8HrqwxBgqaaTibnU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714573476; c=relaxed/simple;
-	bh=5SMHChzXslPomkTdsmjySqWEgGtys1hP+1JViTdT/Tw=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=noNwYKKZ948iuSDeiVqFJnnnBG3IexMhpJ9LfgnjhGJN6J9OglFGjE0oAdDCyzrdSBoQoESSz/ELmyjjrX8ftlqs+w9uu1JleqCsQqTTqHe0oeBTkkfBfqm7jgHO0YHj635cDvhxOKTnNHT9/kqNxFdZgNzavmPzJmbvPSoXm8I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pfrn5fwv; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E40B4C072AA;
-	Wed,  1 May 2024 14:24:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714573476;
-	bh=5SMHChzXslPomkTdsmjySqWEgGtys1hP+1JViTdT/Tw=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=pfrn5fwvvguoy5iBs6q3RWzQjvxCYThiAH1qBgxpjGW0XmbWcT1ON+jSE99g+1jVD
-	 GjOhTFTQcBuk+/t/9u7Z8RUzCw8oY2s/z0IwAHNKIuPtqJUOWNLh+DcO8ZEiIibUtv
-	 cLD2JpTuoAjuQ/xu+mAsy9gTsCUR6RGAnBwiq3jlWk81zSjFVXzEwTFX2YDuib5Q2W
-	 T301KBrX3FRrbBEKHDV8DBYGnfmys/e2cVmC9T90HKk2ar2skRkfF/y096BRiKaTpQ
-	 Eo9gMXekxMBjvwPIkwFTKdZGp2Qxhc8y0o1caJxFmp6pcTcOA7vuvhjmpqndfsB08p
-	 +Yw4CyqJ6Zg4g==
-Date: Wed, 1 May 2024 07:24:34 -0700
-From: Jakub Kicinski <kuba@kernel.org>
-To: Mina Almasry <almasrymina@google.com>
-Cc: Dragos Tatulea <dtatulea@nvidia.com>, "davem@davemloft.net"
- <davem@davemloft.net>, "ilias.apalodimas@linaro.org"
- <ilias.apalodimas@linaro.org>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>, "jacob.e.keller@intel.com"
- <jacob.e.keller@intel.com>, "pabeni@redhat.com" <pabeni@redhat.com>, Jianbo
- Liu <jianbol@nvidia.com>, "netdev@vger.kernel.org"
- <netdev@vger.kernel.org>, "edumazet@google.com" <edumazet@google.com>
-Subject: Re: [RFC PATCH] net: Fix one page_pool page leak from
- skb_frag_unref
-Message-ID: <20240501072434.5720fd42@kernel.org>
-In-Reply-To: <CAHS8izOsFqiSiS4Z-E-jfD70aogNp5Bcyt7Rk8xFoR2TcDjz=g@mail.gmail.com>
-References: <20240424165646.1625690-2-dtatulea@nvidia.com>
-	<4ba023709249e11d97c78a98ac7db3b37f419960.camel@nvidia.com>
-	<CAHS8izMbAJHatnM6SvsZVLPY+N7LgGJg03pSdNfSRFCufGh9Zg@mail.gmail.com>
-	<4c20b500c2ed615aba424c0f3c7a79f5f5a04171.camel@nvidia.com>
-	<20240426160557.51de91f9@kernel.org>
-	<c307a3086d255d1dfed22284f500aa9fb70f11a3.camel@nvidia.com>
-	<7a5a1d74040052afc8cc6cc5c2700fdf2e836b0c.camel@nvidia.com>
-	<CAHS8izOsFqiSiS4Z-E-jfD70aogNp5Bcyt7Rk8xFoR2TcDjz=g@mail.gmail.com>
+	s=arc-20240116; t=1714573624; c=relaxed/simple;
+	bh=VLDaNGeiHmozD59IvSgOUbhpYMSflJM6reIT+ykbn0Q=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=gRRLWhBmQ2sBks28B/bB0a9uTHOv29NcyEqlpkhx0uN7oeY9XeOTJAKrjkUCnTiS1Pq3EyHoO7294W0ExAgL6XGL2ZkqrKh61435ygU0HnVKKiPoWF64dpFHzg/bxW1znfJGdAQ9oLGN8eMkPCynwtb5byG9uLK+QbtfehRr3UI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=ZzVsZ8T7; arc=none smtp.client-ip=209.85.208.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lj1-f173.google.com with SMTP id 38308e7fff4ca-2d8b2389e73so82176671fa.3
+        for <linux-kernel@vger.kernel.org>; Wed, 01 May 2024 07:27:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1714573620; x=1715178420; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=/ZjthxVOkAIkSgJpgMhl5+EWLLpCqE1AJWtsVBUVw14=;
+        b=ZzVsZ8T7FBNw7kQ0Wu4QVusISJrAvYXSTU5tWOR0BWvk3RQ1uP92yTbx8zSIdKNY/s
+         qNZf2RYbYaThduQ1KsPxSTIIBTQHM1Zv570JGoOnk7B2rqfq21r37sDAh0epOfY9KbMu
+         o5yLB87TDQBA3jGLmUAtwfhLIbs+Oj7MHqxHu8Nga13phfzoEdT3uBMruUS2OULg+Oqk
+         9LsEgIHBqib/eBrOjRWU0loNafAIQyFUURHkMRIP2vrgmChPZIVsyY/S8B6eEjBc9vrR
+         nfO4RclXeNxQrlEM5N6Q5gzLuji6dW0VNjt45H6xobTUv8XMMWGjJHJ8wpSaY/U76d8Q
+         9MFg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714573620; x=1715178420;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=/ZjthxVOkAIkSgJpgMhl5+EWLLpCqE1AJWtsVBUVw14=;
+        b=gm1XezC+toPOLVygWx6paJYFLqyPklME28sZREMg2m5mapravKzzWN8Ej4FuFhause
+         LOaXGAe+ztTToP+y94lWH8NyrEYuLmfPXSv95Ho6wZ56lTi0Q6Fnp2qwbGFJFBDnwvu8
+         P4w7bN1mWo0T9dBIp2Ef+WzcL3TrW751ilIaOKMUi3lpSTgGsbXi0wk6Ymqux31EQYCt
+         4kNu6ONVICG5Y/NbjXWv0nHbmAdJccUxdq2qMNHSICkNOpIda8Fv2I9NF0BGLTgNPB0A
+         eJd7BOM4IryCfLqlwsHGAgn3p5vXM9Jtcdn92FAcp+UfRdMMzfPqJpjau4oFp5Ixs8YB
+         BGEA==
+X-Forwarded-Encrypted: i=1; AJvYcCV4m8+nzeGBIhc3fOe7D7CeGaarS5Ujk8Im62W33VMk+65qRUzVJsMlzVsnieyhKgab4O97IFGh+W8YEDrtqqc4qEVzecLyqDMfsd7X
+X-Gm-Message-State: AOJu0Yy8jrHz5m3v5fNdFfKS4RuOESuOT4+Fe7Bco0B8Yas75jaQdzWy
+	tGyMZOnLNOZBxSSpfMxKrw178vVfL49RCm5Z386HkCu/I5cPN8re1mOB4bDt6IE=
+X-Google-Smtp-Source: AGHT+IFP00lEVMK3ZoYagazXRbuD0jd0lzZYQqIAYWDPU+So3WVKQ11BgdI+7AOnv7sHvxT3s2Lbbg==
+X-Received: by 2002:a2e:87d6:0:b0:2e0:c6ec:bcf8 with SMTP id v22-20020a2e87d6000000b002e0c6ecbcf8mr1753294ljj.41.1714573620325;
+        Wed, 01 May 2024 07:27:00 -0700 (PDT)
+Received: from myrica ([2.221.137.100])
+        by smtp.gmail.com with ESMTPSA id p18-20020a7bcc92000000b0041bfa2171efsm2340897wma.40.2024.05.01.07.26.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 01 May 2024 07:26:59 -0700 (PDT)
+Date: Wed, 1 May 2024 15:27:12 +0100
+From: Jean-Philippe Brucker <jean-philippe@linaro.org>
+To: Steven Price <steven.price@arm.com>
+Cc: kvm@vger.kernel.org, kvmarm@lists.linux.dev,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>,
+	James Morse <james.morse@arm.com>,
+	Oliver Upton <oliver.upton@linux.dev>,
+	Suzuki K Poulose <suzuki.poulose@arm.com>,
+	Zenghui Yu <yuzenghui@huawei.com>,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	Joey Gouly <joey.gouly@arm.com>,
+	Alexandru Elisei <alexandru.elisei@arm.com>,
+	Christoffer Dall <christoffer.dall@arm.com>,
+	Fuad Tabba <tabba@google.com>, linux-coco@lists.linux.dev,
+	Ganapatrao Kulkarni <gankulkarni@os.amperecomputing.com>
+Subject: Re: [PATCH v2 17/43] arm64: RME: Allow VMM to set RIPAS
+Message-ID: <20240501142712.GB484338@myrica>
+References: <20240412084056.1733704-1-steven.price@arm.com>
+ <20240412084309.1733783-1-steven.price@arm.com>
+ <20240412084309.1733783-18-steven.price@arm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240412084309.1733783-18-steven.price@arm.com>
 
-On Wed, 1 May 2024 00:48:43 -0700 Mina Almasry wrote:
-> > 1) Revert commit 2cc3aeb5eccc
-> > ("skbuff: Fix a potential race while recycling page_pool packets"). I tested
-> > this btw and it works (for this specific scenario).
-> >
-> > 2) Revert Mina's commit a580ea994fd3 ("net: mirror skb frag ref/unref helpers")
-> > for now.
-> 
-> I vote for #1, and IIUC Jakub's feedback, he seems to prefer this as
-> well.
+On Fri, Apr 12, 2024 at 09:42:43AM +0100, Steven Price wrote:
+> +static inline bool realm_is_addr_protected(struct realm *realm,
+> +					   unsigned long addr)
+> +{
+> +	unsigned int ia_bits = realm->ia_bits;
+> +
+> +	return !(addr & ~(BIT(ia_bits - 1) - 1));
 
-I vote #2, actually :( Or #3 make page pool ref safe to acquire
-concurrently, but that plus fixing all the places where we do crazy
-things may be tricky.
+Is it enough to return !(addr & BIT(realm->ia_bits - 1))?
 
-Even taking the ref is not as simple as using atomic_long_inc_not_zero()
-sadly, partly because we try to keep the refcount at one, in an apparent
-attempt to avoid dirtying the cache line twice.
+> +static void realm_unmap_range_shared(struct kvm *kvm,
+> +				     int level,
+> +				     unsigned long start,
+> +				     unsigned long end)
+> +{
+> +	struct realm *realm = &kvm->arch.realm;
+> +	unsigned long rd = virt_to_phys(realm->rd);
+> +	ssize_t map_size = rme_rtt_level_mapsize(level);
+> +	unsigned long next_addr, addr;
+> +	unsigned long shared_bit = BIT(realm->ia_bits - 1);
+> +
+> +	if (WARN_ON(level > RME_RTT_MAX_LEVEL))
+> +		return;
+> +
+> +	start |= shared_bit;
+> +	end |= shared_bit;
+> +
+> +	for (addr = start; addr < end; addr = next_addr) {
+> +		unsigned long align_addr = ALIGN(addr, map_size);
+> +		int ret;
+> +
+> +		next_addr = ALIGN(addr + 1, map_size);
+> +
+> +		if (align_addr != addr || next_addr > end) {
+> +			/* Need to recurse deeper */
+> +			if (addr < align_addr)
+> +				next_addr = align_addr;
+> +			realm_unmap_range_shared(kvm, level + 1, addr,
+> +						 min(next_addr, end));
+> +			continue;
+> +		}
+> +
+> +		ret = rmi_rtt_unmap_unprotected(rd, addr, level, &next_addr);
+> +		switch (RMI_RETURN_STATUS(ret)) {
+> +		case RMI_SUCCESS:
+> +			break;
+> +		case RMI_ERROR_RTT:
+> +			if (next_addr == addr) {
+> +				next_addr = ALIGN(addr + 1, map_size);
+> +				realm_unmap_range_shared(kvm, level + 1, addr,
+> +							 next_addr);
+> +			}
+> +			break;
+> +		default:
+> +			WARN_ON(1);
 
-So maybe partial revert to stop be bleeding and retry after more testing
-is the way to go?
+In this case we also need to return, because RMM returns with next_addr ==
+0, causing an infinite loop. At the moment a VMM can trigger this easily
+by creating guest memfd before creating a RD, see below
 
-I had a quick look at the code and there is also a bunch of functions
-which "shift" frags from one skb to another, without checking whether
-the pp_recycle state matches.
+> +		}
+> +	}
+> +}
+> +
+> +static void realm_unmap_range_private(struct kvm *kvm,
+> +				      unsigned long start,
+> +				      unsigned long end)
+> +{
+> +	struct realm *realm = &kvm->arch.realm;
+> +	ssize_t map_size = RME_PAGE_SIZE;
+> +	unsigned long next_addr, addr;
+> +
+> +	for (addr = start; addr < end; addr = next_addr) {
+> +		int ret;
+> +
+> +		next_addr = ALIGN(addr + 1, map_size);
+> +
+> +		ret = realm_destroy_protected(realm, addr, &next_addr);
+> +
+> +		if (WARN_ON(ret))
+> +			break;
+> +	}
+> +}
+> +
+> +static void realm_unmap_range(struct kvm *kvm,
+> +			      unsigned long start,
+> +			      unsigned long end,
+> +			      bool unmap_private)
+> +{
+
+Should this check for a valid kvm->arch.realm.rd, or a valid realm state?
+I'm not sure what the best place is but none of the RMM calls will succeed
+if the RD is NULL, causing some WARNs.
+
+I can trigger this with set_memory_attributes() ioctls before creating a
+RD for example.
+
+> +	realm_unmap_range_shared(kvm, RME_RTT_MAX_LEVEL - 1, start, end);
+> +	if (unmap_private)
+> +		realm_unmap_range_private(kvm, start, end);
+> +}
+> +
+>  u32 kvm_realm_ipa_limit(void)
+>  {
+>  	return u64_get_bits(rmm_feat_reg0, RMI_FEATURE_REGISTER_0_S2SZ);
+> @@ -190,6 +341,30 @@ static int realm_rtt_destroy(struct realm *realm, unsigned long addr,
+>  	return ret;
+>  }
+>  
+> +static int realm_create_rtt_levels(struct realm *realm,
+> +				   unsigned long ipa,
+> +				   int level,
+> +				   int max_level,
+> +				   struct kvm_mmu_memory_cache *mc)
+> +{
+> +	if (WARN_ON(level == max_level))
+> +		return 0;
+> +
+> +	while (level++ < max_level) {
+> +		phys_addr_t rtt = alloc_delegated_page(realm, mc);
+> +
+> +		if (rtt == PHYS_ADDR_MAX)
+> +			return -ENOMEM;
+> +
+> +		if (realm_rtt_create(realm, ipa, level, rtt)) {
+> +			free_delegated_page(realm, rtt);
+> +			return -ENXIO;
+> +		}
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+>  static int realm_tear_down_rtt_level(struct realm *realm, int level,
+>  				     unsigned long start, unsigned long end)
+>  {
+> @@ -265,6 +440,68 @@ static int realm_tear_down_rtt_range(struct realm *realm,
+>  					 start, end);
+>  }
+>  
+> +/*
+> + * Returns 0 on successful fold, a negative value on error, a positive value if
+> + * we were not able to fold all tables at this level.
+> + */
+> +static int realm_fold_rtt_level(struct realm *realm, int level,
+> +				unsigned long start, unsigned long end)
+> +{
+> +	int not_folded = 0;
+> +	ssize_t map_size;
+> +	unsigned long addr, next_addr;
+> +
+> +	if (WARN_ON(level > RME_RTT_MAX_LEVEL))
+> +		return -EINVAL;
+> +
+> +	map_size = rme_rtt_level_mapsize(level - 1);
+> +
+> +	for (addr = start; addr < end; addr = next_addr) {
+> +		phys_addr_t rtt_granule;
+> +		int ret;
+> +		unsigned long align_addr = ALIGN(addr, map_size);
+> +
+> +		next_addr = ALIGN(addr + 1, map_size);
+> +
+> +		ret = realm_rtt_fold(realm, align_addr, level, &rtt_granule);
+> +
+> +		switch (RMI_RETURN_STATUS(ret)) {
+> +		case RMI_SUCCESS:
+> +			if (!WARN_ON(rmi_granule_undelegate(rtt_granule)))
+> +				free_page((unsigned long)phys_to_virt(rtt_granule));
+> +			break;
+> +		case RMI_ERROR_RTT:
+> +			if (level == RME_RTT_MAX_LEVEL ||
+> +			    RMI_RETURN_INDEX(ret) < level) {
+> +				not_folded++;
+> +				break;
+> +			}
+> +			/* Recurse a level deeper */
+> +			ret = realm_fold_rtt_level(realm,
+> +						   level + 1,
+> +						   addr,
+> +						   next_addr);
+> +			if (ret < 0)
+> +				return ret;
+> +			else if (ret == 0)
+> +				/* Try again at this level */
+> +				next_addr = addr;
+> +			break;
+> +		default:
+
+Maybe this also deserves a WARN() to be consistent with the other RMI
+calls
+
+Thanks,
+Jean
+
+> +			return -ENXIO;
+> +		}
+> +	}
+> +
+> +	return not_folded;
+> +}
 
