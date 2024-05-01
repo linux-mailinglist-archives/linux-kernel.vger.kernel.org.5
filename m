@@ -1,142 +1,161 @@
-Return-Path: <linux-kernel+bounces-165703-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-165704-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D176A8B8FF5
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 21:09:31 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A819B8B8FF8
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 21:12:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 880741F22973
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 19:09:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5F29A284811
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 19:12:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 48D41160877;
-	Wed,  1 May 2024 19:09:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BDA91160877;
+	Wed,  1 May 2024 19:11:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UtJEbuOv"
-Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FebS1O+D"
+Received: from mail-pj1-f49.google.com (mail-pj1-f49.google.com [209.85.216.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4334437E;
-	Wed,  1 May 2024 19:09:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AAF4837E;
+	Wed,  1 May 2024 19:11:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714590563; cv=none; b=NysMiZHSsRMdPbYq6XJByom9IkLh1lWyJeRCbqOnPCL9Pw6599Y2zJkRTZNEa1VUW+W3730GdAuhlf7QrD99mUjkaKlTLj2KBpnnyzZ8cH3fVLF03qF+hZLuzEiFdvY+n/AqLfLWnL3UovhKyy7L6MDQxkMp5Dre3bnA9MTamKU=
+	t=1714590715; cv=none; b=gRK02dpDm3m+YHp+b5yo1y59EVqKYgrrYOtcJiTkJ/zNz12gSSwn0GbqKOvczN55dPpTt8UyY0hJIDbEk5cSI1obLHetu6sAbBWTXIsYoJ3yf2nyU6ewg9NyIS6MASHawEwBOz7aGEXgN0xIZQP2WYUr3OhI4a/Tq4DRjCTYBP8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714590563; c=relaxed/simple;
-	bh=n5pYTyvFni944oaVibayAqa80uMHIsdKECpSvi5360E=;
+	s=arc-20240116; t=1714590715; c=relaxed/simple;
+	bh=tMQZV9fHGSGxPJBBtUnKfp2Inz9V/QY8CXv91C6xmiU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=pFIIjYWo7rNqAMHRX/1bdiDrvmE+rL6JM2L2IcjkTG/EiQ+I16wn4xOON2juWnW68VscLXLvSTFOE8b+TvDu/9lidaIeiUQrKPb0A24vmM+JCzOZQdkDIZf9fY4eQywq8vGgOSWWTSYFrdpGGlLAf9m2fSTmq0tlVozKy+3ueRg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UtJEbuOv; arc=none smtp.client-ip=209.85.214.172
+	 Content-Type:Content-Disposition:In-Reply-To; b=IGwolYnkSohWYhY34QtfN6x9TXENvkIzYKVar4iHmHzwH3oKA5UDy+RGOR38kEJwSHqRl3Unp42Yhw677Ey/D0dfiH9m5LWSL/gCqdckA30k3DTfwPyAm4RBRMQ4wg99P5aL0ovZEY/PLp9cs2lZP9iwX4w64woM8a1sWzpRqZY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FebS1O+D; arc=none smtp.client-ip=209.85.216.49
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-1e4bf0b3e06so71147145ad.1;
-        Wed, 01 May 2024 12:09:21 -0700 (PDT)
+Received: by mail-pj1-f49.google.com with SMTP id 98e67ed59e1d1-2b33e342c03so608884a91.0;
+        Wed, 01 May 2024 12:11:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714590561; x=1715195361; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=iodSlTyJGn2wkptHN8yi6myJ+vX1z0AKpyPf47Fk2gk=;
-        b=UtJEbuOvEX/KdIvUGDWguXdqdgdDIqAV5MZdW5fWlNYCe8R8BH21OEbxW2CGI7TLL2
-         YmiVOT0Fsxv8lS8DKt5ofw/pMKcjDsiup8TUS3mNDaEuv6N76g7bJKIm0X75a26yfDxX
-         QFx1w4LeBnjrXLh2FiH/16elOdZ81rpSHU6iphTl0hDqXARdURXwahp2Jrl7SN03x+03
-         XJLUDBOo2sLgVWjcOi4UEtqfuXLp8JZ4V8jXzK8YOEPE+ynP1R79csPqjiSRz2nf4Tn3
-         U9NPd+5xdSHlN4GkB2ylkKyryeq21Uxgydx1gIvlGrpQ2jsVvj8GAw3sx+N+waw4y9m2
-         Ba0Q==
+        d=gmail.com; s=20230601; t=1714590713; x=1715195513; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=wRf2rHKBPCLYia00jxfTeMnUCgUqm7QyU6rnSroHoWY=;
+        b=FebS1O+D4/jI+LWR8j9dLBMLfZYbVFyyif+9Z4YCIK7A1oAGQ2mpHOPHiLF7CXwsxX
+         kdBIQCymR0oNxsA9Q+Dpj/+uvvjFkQA3W9BNRsz70Eh5S54hyoKV48Gy6QOVtxH8oDjq
+         GNN734Yk8yjiS8pHuvUyf3X0jYkVCRftLggPaPzkCitZ0mwqzdhD3AipODcwpbIDP6Uy
+         qh728XdMpzpbl5tTkh1scpMAaDfER2dIHsoa88re9a+G5lfZNZwjCWV0IDOrtZ1/vIKN
+         wOILsUSW0aenQa8K6xoljPya+9bxLge000vgFBT1Dadu/5BChlpyp+Rw7x0Y7W8+0P2+
+         HU5g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714590561; x=1715195361;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=iodSlTyJGn2wkptHN8yi6myJ+vX1z0AKpyPf47Fk2gk=;
-        b=YhPIYDfc5Dww3E90/vr1GUp3VK1BPZjTERhVlZwS5xeur3E/Y/n9zqTsVvmT/k2O+e
-         wCiDtAx9bMZtBR7/n/8x8w4RLcs2l03ePWXrLPq5v0EIvOmps+V5N47wZmJmQ1m38Sqq
-         8ygGGYEMUN+mBNFNgNKrqDCAD2RckxBA7Ze7cs1g7CWPCKwHYMI18kbxiukg8O72q/Z3
-         Sz6xGvIYnemR02c7r0ByGH9ZbaW15r67/dRPoxgnFec3w4BhgftHUnW6od2Tvbdmhari
-         2xV0dpcGVPS6hl1ZMLEtmtrsBAfX9TUHODbq/eVjNa/yz6mgGU7cL+JqwkM+oTAjXKo2
-         fp+g==
-X-Forwarded-Encrypted: i=1; AJvYcCUHWVw5Mvs/wDzCWufoJaBGSApiRWUVBkzPD+A8Z6M3ZanZ4lUZ9gDQBvceKhwluUrBLWGvdre9X3l6VVJWt16xm4CRcAR85Qfyu2zCKQ+KmeI2kE3CeLJHldSpSSIi8Kmh0UYN33lZOxU=
-X-Gm-Message-State: AOJu0Yzk40I0Fzd7Plbn17HI5QehE3kGQ5HkXooz11TnI8Svw979ZwS0
-	2a2hq8bSG8nUocxJ/S69ArI4zVJZhM0h0aAOvVumE28JUs9BM4EQAMaQYg==
-X-Google-Smtp-Source: AGHT+IFBRTGo3q2l+2CV+0YqPCSPL25JiEqdpXw1p9Y6qwypLs/r9eOYqEu6HtVbpxqlgqGe0xR64Q==
-X-Received: by 2002:a17:902:ec8a:b0:1e3:999a:9726 with SMTP id x10-20020a170902ec8a00b001e3999a9726mr3985060plg.29.1714590561209;
-        Wed, 01 May 2024 12:09:21 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1714590713; x=1715195513;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=wRf2rHKBPCLYia00jxfTeMnUCgUqm7QyU6rnSroHoWY=;
+        b=A6KyVRDAxKOokeZ+uyDQ0wCMzcD6C9WKBJnGZRAWkDnYixktofs//4i+L81MWIGeCW
+         Ls7c9346Jl8m9jTECAXoKfu6nG7EcAVCDw3k5m8DcOYSH6G6LEMpIld18xcTGAhvvTq7
+         h27DbkPMTZ1fgsTVZV7sNODzI4WVR/cl5PvRpC9IIhJ4x+mgPlMojxphg2HAD4MiwsI5
+         gWkVBGCwQhPgQdEE2a0Q2qlDEvrqgB60VQfLlyWCrJyIMbRoanoyMTjSTm9I+Khd8nNY
+         vdB6TOb8mnZJcx0jbh/S1nu6s0a5nEgsEtAsX2faQUGlZ69GSfjR98YxT/0IE2wkR6YJ
+         lJMg==
+X-Forwarded-Encrypted: i=1; AJvYcCVVOgisx9Np1sjwXhr+OF+bEdRUpPmjqsr/abwVV/8F7knBbh24qm/YFtBgDtJVrSQi+2EyORRUA6Ch2yyInVfxx8NAD0UMkmULLzT0
+X-Gm-Message-State: AOJu0YzEHCd0KqKxzn5GvgkG2MvUqC90gES65h42Yt5LQglgRuT+Do+/
+	fmb7C9dKLjJHr+ytjhVi4ChLkBEeBa/PbsEOmqOxN9zhCTejjG1u
+X-Google-Smtp-Source: AGHT+IGGgphCUXgegkHhqB4uM36UDoxOGPvxxub2dK7Go0WZGERBSZn/RJudjnUX1UyL8qlwBfxS7g==
+X-Received: by 2002:a17:90b:609:b0:2a2:7a00:f101 with SMTP id gb9-20020a17090b060900b002a27a00f101mr3180196pjb.47.1714590712812;
+        Wed, 01 May 2024 12:11:52 -0700 (PDT)
 Received: from google.com ([2620:15c:9d:2:1cb4:dd50:d6f1:6308])
-        by smtp.gmail.com with ESMTPSA id t6-20020a170902e84600b001e604438791sm24506880plg.156.2024.05.01.12.09.20
+        by smtp.gmail.com with ESMTPSA id sz15-20020a17090b2d4f00b002aff85b97dfsm1680453pjb.27.2024.05.01.12.11.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 01 May 2024 12:09:20 -0700 (PDT)
-Date: Wed, 1 May 2024 12:09:17 -0700
+        Wed, 01 May 2024 12:11:52 -0700 (PDT)
+Date: Wed, 1 May 2024 12:11:49 -0700
 From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To: Kenny Levinsen <kl@kl.wtf>
-Cc: Jiri Kosina <jikos@kernel.org>, Dmitry Torokhov <dtor@chromium.org>,
+To: Jason Andryuk <jandryuk@gmail.com>
+Cc: linux-input@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
 	Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-	Douglas Anderson <dianders@chromium.org>,
-	Hans de Goede <hdegoede@redhat.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Kai-Heng Feng <kai.heng.feng@canonical.com>,
-	Johan Hovold <johan+linaro@kernel.org>, linux-input@vger.kernel.org,
-	linux-kernel@vger.kernel.org, Radoslaw Biernacki <rad@chromium.org>,
-	Lukasz Majczak <lma@chromium.org>
-Subject: Re: [PATCH v3 1/3] HID: i2c-hid: Rely on HID descriptor fetch to
- probe
-Message-ID: <ZjKTXaBrb1vs4har@google.com>
-References: <20240426225739.2166-1-kl@kl.wtf>
- <20240426225739.2166-2-kl@kl.wtf>
- <ZixvUNooESC02cJK@google.com>
- <5aa9f745-7f6a-4873-90ba-79c55335905c@kl.wtf>
- <ZjFli4zOalXkDWx_@google.com>
- <26070c7a-4005-4bb4-b4af-779bfc415dea@kl.wtf>
+	Peter Hutterer <peter.hutterer@who-t.net>,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] Input: try trimming too long modalias strings
+Message-ID: <ZjKT9QYB1ScvYeIo@google.com>
+References: <ZjAWMQCJdrxZkvkB@google.com>
+ <CAKf6xpvzrCHAsbokGu_+7P0H=n4T=dsRN81msJjW6yVMcEZi6g@mail.gmail.com>
+ <CAKf6xpsiLbZN=v2G052kuwPLNxmmbt4uoZAM21Zr+RtH0YD8kA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <26070c7a-4005-4bb4-b4af-779bfc415dea@kl.wtf>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAKf6xpsiLbZN=v2G052kuwPLNxmmbt4uoZAM21Zr+RtH0YD8kA@mail.gmail.com>
 
-On Wed, May 01, 2024 at 07:24:08AM +0200, Kenny Levinsen wrote:
-> On 4/30/24 11:41 PM, Dmitry Torokhov wrote:
-> > I actually believe there is. On Chromebooks we may source components
-> > from several vendors and use them in our devices. The components
-> > are electrically compatible with each other, have exactly the same
-> > connector, and therefore interchangeable. Because of that at probe time
-> > we do not quite know if the device is there at given address, or not
-> > (i.e. the touchpad could be from a different vendor and listening on
-> > another address) and we need to make a quick determination whether we
-> > should continue with probe or not.
+On Tue, Apr 30, 2024 at 06:25:13PM -0400, Jason Andryuk wrote:
+> On Mon, Apr 29, 2024 at 9:04 PM Jason Andryuk <jandryuk@gmail.com> wrote:
+> >
+> > On Mon, Apr 29, 2024 at 5:50 PM Dmitry Torokhov
+> > <dmitry.torokhov@gmail.com> wrote:
+> > >
+> > > If an input device declares too many capability bits then modalias
+> > > string for such device may become too long and not fit into uevent
+> > > buffer, resulting in failure of sending said uevent. This, in turn,
+> > > may prevent userspace from recognizing existence of such devices.
+> > >
+> > > This is typically not a concern for real hardware devices as they have
+> > > limited number of keys, but happen with synthetic devices such as
+> > > ones created by xen-kbdfront driver, which creates devices as being
+> > > capable of delivering all possible keys, since it doesn't know what
+> > > keys the backend may produce.
+> > >
+> > > To deal with such devices input core will attempt to trim key data,
+> > > in the hope that the rest of modalias string will fit in the given
+> > > buffer. When trimming key data it will indicate that it is not
+> > > complete by placing "+," sign, resulting in conversions like this:
+> > >
+> > > old: k71,72,73,74,78,7A,7B,7C,7D,8E,9E,A4,AD,E0,E1,E4,F8,174,
+> > > new: k71,72,73,74,78,7A,7B,7C,+,
+> > >
+> > > This should allow existing udev rules continue to work with existing
+> > > devices, and will also allow writing more complex rules that would
+> > > recognize trimmed modalias and check input device characteristics by
+> > > other means (for example by parsing KEY= data in uevent or parsing
+> > > input device sysfs attributes).
+> > >
+> > > Note that the driver core may try adding more uevent environment
+> > > variables once input core is done adding its own, so when forming
+> > > modalias we can not use the entire available buffer, so we reduce
+> > > it by somewhat an arbitrary amount (96 bytes).
+> > >
+> > > Reported-by: Jason Andryuk <jandryuk@gmail.com>
+> > > Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+> >
+> > Tested-by: Jason Andryuk <jandryuk@gmail.com>
+> >
+> > I don't have the gdm setup available to test, but loginctl looks good
+> > showing the Xen Virtual Keyboard assigned to a seat:
+> > # loginctl seat-status seat0
+> > seat0
+> >          Devices:
+> >                   ├─/sys/devices/LNXSYSTM:00/LNXPWRBN:00/input/input0
+> >                   │ input:input0 "Power Button"
+> >                   ├─/sys/devices/LNXSYSTM:00/LNXSLPBN:00/input/input1
+> >                   │ input:input1 "Sleep Button"
+> >                   ├─/sys/devices/platform/i8042/serio0/input/input2
+> >                   │ input:input2 "AT Translated Set 2 keyboard"
+> >                   ├─/sys/devices/platform/i8042/serio1/input/input4
+> >                   │ input:input4 "ImExPS/2 Generic Explorer Mouse"
+> >                   ├─/sys/devices/virtual/input/input5
+> >                   │ input:input5 "Xen Virtual Keyboard"
+> >                   │ └─/sys/devices/virtual/input/input5/event4
+> >                   │   input:event4
+> >                   └─/sys/devices/virtual/input/input6
+> >                     input:input6 "Xen Virtual Pointer"
 > 
-> Maybe I should clarify what I meant: All I2C operations start with the
-> master writing the slave address to the bus. When a slave reads its own
-> address off the bus, it pulls the data line low to ACK. If no device is
-> present on the bus with the specified address, the line stays high which is
-> a NACK. This means that on the bus level, we have a clear error condition
-> specifically for no device with the specified address being present on the
-> bus.
-> 
-> Whether the operation used is a dummy read or our first actual write should
-> not matter - if the address is not acknowledged, the device is not present
-> (or able to talk I2C).
+> What do you think about Cc: stable@vger.kernel.org?  I'd like to get
+> the Xen Keyboard working as widely as possible, so I'd like it
+> backported if possible.
 
-Is it possible for a device to be wedged so hard that it refuses to
-acknowledge the address?
-
-> The problem lies in whether this "no device present
-> on bus" error is reported clearly to us: Some drivers use -ENXIO
-> specifically for this, some use it also for NACKs on written data, some
-> report it but use other return codes for it, etc.
-> 
-> Even if we stick to the smbus probe in the long run, if we get to the point
-> where we can rely on the error codes from I2C drivers we would be able to
-> correctly log and propagate other error classes like bus errors or I2C
-> driver issues which are all currently silenced as "nothing at address" by
-> the smbus probe.
-
-I think this depends on the answer to the question above. If there is
-potential that the chip may stop responding, I still see benefit in
-differentiating initial "soft touch" poke vs. hard errors once we
-established that there is/was a device and it started misbehaving.
+I am open to it, but I'd like Benjamin/Hans to take a look at this
+as well (I see Peter already gave his Reviewed-by).
 
 Thanks.
 
