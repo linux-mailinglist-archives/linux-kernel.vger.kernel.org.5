@@ -1,135 +1,209 @@
-Return-Path: <linux-kernel+bounces-165785-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-165784-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 364A48B918C
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 00:08:25 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8D63B8B918B
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 00:07:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9379428575F
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 22:08:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B01E81C23381
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 22:07:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2529D165FD7;
-	Wed,  1 May 2024 22:08:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB896165FD5;
+	Wed,  1 May 2024 22:07:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FWzhgUUw"
-Received: from mail-pj1-f46.google.com (mail-pj1-f46.google.com [209.85.216.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="YP1XcFam"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 338F7165FAA;
-	Wed,  1 May 2024 22:08:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 536761649A8;
+	Wed,  1 May 2024 22:07:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714601296; cv=none; b=dx8aIwckSMupTM3H9HUq+ywWD8Itdzxgz5NsYQ/QFkw/OCF5HavSPpYhumWTiUB+mFD5WAsnBvvVeN9DCqmdRYXRXQ2/9gCrzfQzf7nBwEZeAq4+tW562Uw5L4af0n+cluTuQjUqW0+mWd0d8yfnLsNRystyjfvvO/NVMWhbotY=
+	t=1714601263; cv=none; b=n3tNIQREqL7+L+ab1moNWvpddBztK6x4eofRP4uJ0qDdWr5A++6hVavptd0ruDiBRCbEFu0GGHpyFL9zyZMKPBNmHp5KBJRK3qrk/3Aho48kHhh9GwhZiv82q9Msm+tfOk1IkN+vt8Wp/imclq9LKXIlQJ3A/gWMh4Ti/tWXdlE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714601296; c=relaxed/simple;
-	bh=Fzok5aJqa4+7oGLlWSOjZLQFV+oy3BXKUkmid8inYTA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=bmmRvrRGusRFg51jS5f/ox7BzOmtLgMvrj34K8mJteMYyWzELd8XEu4QSYpwnzSvY4ylmcb3xoQSHwSrRJ1JLidbJKJyjJI4TBGSwXdMiZGVUlhneiIssCthF41VEu+SdtW+p0/uAyXWqgOonzWvhO5Hrhfrr8BWOZ0fp05OLMY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FWzhgUUw; arc=none smtp.client-ip=209.85.216.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f46.google.com with SMTP id 98e67ed59e1d1-2a526803fccso4872411a91.1;
-        Wed, 01 May 2024 15:08:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714601294; x=1715206094; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Fzok5aJqa4+7oGLlWSOjZLQFV+oy3BXKUkmid8inYTA=;
-        b=FWzhgUUwf9BvLzXNxmjNHTYlTqQSPvIaovYdhbhZgPPY0rm0K8FKetLmIHK7pmt/pB
-         TRKheL/AKcUpY9s6ephsn5xMDm2HAprRSqd/8qPgVrHeOZUAOfumB2au0CEgPQLe40BC
-         lg4B9L3ocw0JoKBCLJ8bvfx2jmZkaE5m6osQjgdkJ60GkWLL18XtPKIlvksukRFIq1sT
-         kvXZGAfHsEU5DpX/s74wQPxyC/z1i3OtdcgXaPtYE3kdXHUeyBvdkrB9Q/ObKCmtA6c3
-         apJvWa6+GtKn6S124YKP/J1AZQ1Vd+LPonBqwOzgVAMgiqidqcRSfm2EZQv51dQdSSHU
-         ZmEw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714601294; x=1715206094;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Fzok5aJqa4+7oGLlWSOjZLQFV+oy3BXKUkmid8inYTA=;
-        b=gvI7E5gNTKm4BSiK9syW3RcRM23hvPaxVYDAIYPYDb6RfKDEZF866cW5sFwtG6TUHj
-         9mixi3x/VQSkf764nFwD04pWiCX1JHWbpukvh6+tu7IwvF1T5lVq1kmZXdSNb0hei8rW
-         BiVzZn+ubQK3Y56XW9ReYDxvNS/i07244R3Iq4WyQ/WVJP6g7jcFu9ue6MTzGqZ0UzEb
-         j47nBnnhOsQSuWAJv72YUcrNlBFuQSvVmpS4lZjbJGycHnWP0G0N9Zuncl/1M9fZKdpI
-         XP0kv5mvRDqfPKEQCxBRfcCE/opu1hxM3I2WgP22JHqD3AVHDK9jLpZSEYbcN0Mldntr
-         +SUw==
-X-Forwarded-Encrypted: i=1; AJvYcCWPvjnJh2HxBwoLwEEByeHTQoHceM1Z0GNY6gk8CjkG/85qmU0AXyDcUwr6DWI1soP9OorxpTnfttRXlQ7h/37E09djKa4fw5E3i2MVoNWovBpjv/LKj+frdMziLxFgqNvYbLr2zg7L3FBHh8k=
-X-Gm-Message-State: AOJu0YzbVmghV6BvyQz2QFJnU7pd8J24u5Mf1RJMg0GO4ljR/UiIKvMq
-	rV1jQn0BgcdjuKDw5wLiNDmRViGwvfl3G6qqwuONEPTDKEKfqx7qx0p8xbf1b+SyCZXbBScmb16
-	r8ofJ5BwGPUwQJgFP95v76j54/mM=
-X-Google-Smtp-Source: AGHT+IGVV48XRtpNQ9/4wKjJtS7cTSF5aA0dcNMF5dGvaXLHjGojpjfQteWjzWdxyzR3mWNJlAsihyloF0y5iS07LWY=
-X-Received: by 2002:a17:90a:b389:b0:2b1:1c9d:fa8d with SMTP id
- e9-20020a17090ab38900b002b11c9dfa8dmr3595697pjr.28.1714601294400; Wed, 01 May
- 2024 15:08:14 -0700 (PDT)
+	s=arc-20240116; t=1714601263; c=relaxed/simple;
+	bh=SlBQ+fw5MzFKBS2OWIQSolGLFOpblAAXYbWwBv6gOjA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=WVVEwDzZo4G958FGUqMr/Uw3ei7MQUJaIT3ZiSc3j8f3YXRn0iUeNzIoMfaVVCCnXAxN8QzwMBZGlJC/ly2QINhYdimMJfzNlpwQKe1iqTzEzWDIkKqY3sD9kPiHgFN81CUKde874IIW90xrCe3PEAVkiOD4s5cAM9ykLkmWK10=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=YP1XcFam; arc=none smtp.client-ip=192.198.163.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1714601261; x=1746137261;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=SlBQ+fw5MzFKBS2OWIQSolGLFOpblAAXYbWwBv6gOjA=;
+  b=YP1XcFamnMQRkvrgaAhJSvec6QA52UWqQovH3G7FHDpmF7mgH+UE4bax
+   VJmLN76Cm6pelfcz5jQhAWxm4qsHMOnjblwwatGiJhUP40MMJ2nJ0fWTb
+   /kHGukrdiyLoZNJGXRLcu7Kc7nD9SkbIS+S//E9jSga/vBiKvrmppcvZm
+   8vlkFu1U4tUu+8npDOMCFL2Bf+eFQt6WjyldS/VOB7FNXglQpb0M79N2s
+   RpsS2oYRq6QSqzuuYulDT24f45ydOkydfS9MJFF1Bf3yxD9JxPRYvGPZP
+   BRW9Ku9X+u0nTNblgHDrNcFYeG9VHhn51Vq53KT8RsdbLC9h2Im5spWKM
+   w==;
+X-CSE-ConnectionGUID: d2dm6SERTgqBSEfUjtBShg==
+X-CSE-MsgGUID: r6hsyex0RaOXe7A17CcuXw==
+X-IronPort-AV: E=McAfee;i="6600,9927,11061"; a="14158558"
+X-IronPort-AV: E=Sophos;i="6.07,246,1708416000"; 
+   d="scan'208";a="14158558"
+Received: from fmviesa006.fm.intel.com ([10.60.135.146])
+  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 May 2024 15:07:40 -0700
+X-CSE-ConnectionGUID: COJ9DY6TS5muhgObgsrxPw==
+X-CSE-MsgGUID: WwXc4/QASHCU83SdC7lXrA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,246,1708416000"; 
+   d="scan'208";a="27025929"
+Received: from bjrankin-mobl3.amr.corp.intel.com (HELO [10.124.221.178]) ([10.124.221.178])
+  by fmviesa006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 May 2024 15:07:40 -0700
+Message-ID: <1b54ca20-5dce-4257-bc3f-38e3106b6746@linux.intel.com>
+Date: Wed, 1 May 2024 15:07:39 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240328013603.206764-1-wedsonaf@gmail.com> <20240408094738.00005e59.zhiw@nvidia.com>
-In-Reply-To: <20240408094738.00005e59.zhiw@nvidia.com>
-From: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date: Thu, 2 May 2024 00:06:57 +0200
-Message-ID: <CANiq72nrMpg_dk4eM2Ve+aOi7QF4U-SCvLpx9PMD6o=6sdzOYQ@mail.gmail.com>
-Subject: Re: [PATCH v3 00/10] Allocation APIs
-To: Zhi Wang <zhiw@nvidia.com>
-Cc: Wedson Almeida Filho <wedsonaf@gmail.com>, rust-for-linux@vger.kernel.org, 
-	Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, 
-	Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, 
-	=?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
-	Benno Lossin <benno.lossin@proton.me>, Andreas Hindborg <a.hindborg@samsung.com>, 
-	Alice Ryhl <aliceryhl@google.com>, linux-kernel@vger.kernel.org, 
-	Wedson Almeida Filho <walmeida@microsoft.com>, John Hubbard <jhubbard@nvidia.com>, Neo Jia <cjia@nvidia.com>, 
-	Andy Currid <acurrid@nvidia.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1] PCI/EDR: Align EDR implementation with PCI firmware
+ r3.3 spec
+To: Bjorn Helgaas <helgaas@kernel.org>
+Cc: Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
+ linux-kernel@vger.kernel.org,
+ Thatchanamurthy Satish <Satish.Thatchanamurt@dell.com>,
+ Tushar Dave <tdave@nvidia.com>
+References: <20240501215009.GA1497134@bhelgaas>
+Content-Language: en-US
+From: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+In-Reply-To: <20240501215009.GA1497134@bhelgaas>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Mon, Apr 8, 2024 at 8:48=E2=80=AFAM Zhi Wang <zhiw@nvidia.com> wrote:
+Hi,
+
+On 5/1/24 2:50 PM, Bjorn Helgaas wrote:
+> On Wed, May 01, 2024 at 02:25:43AM +0000, Kuppuswamy Sathyanarayanan wrote:
+>> During the Error Disconnect Recover (EDR) spec transition from r3.2 ECN
+>> to PCI firmware spec r3.3, improvements were made to definitions of
+>> EDR_PORT_DPC_ENABLE_DSM (0x0C) and EDR_PORT_LOCATE_DSM(0x0D) _DSMs.
+>>
+>> Specifically,
+>>
+>> * EDR_PORT_DPC_ENABLE_DSM _DSM version changed from 5 to 6, and
+>>   arg4 is now a package type instead of an integer in version 5.
+>> * EDR_PORT_LOCATE_DSM _DSM uses BIT(31) to return the status of the
+>>   operation.
+>>
+>> Ensure _DSM implementation aligns with PCI firmware r3.3 spec
+>> recommendation. More details about the EDR_PORT_DPC_ENABLE_DSM and
+>> EDR_PORT_LOCATE_DSM _DSMs can be found in PCI firmware specification,
+>> r3.3, sec 4.6.12 and sec 4.6.13.
+>>
+>> While at it, fix a typo in EDR_PORT_LOCATE_DSM comments.
+>>
+>> Fixes: ac1c8e35a326 ("PCI/DPC: Add Error Disconnect Recover (EDR) support")
+>> Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+>> ---
+>>  drivers/pci/pcie/edr.c | 23 +++++++++++++++++------
+>>  1 file changed, 17 insertions(+), 6 deletions(-)
+>>
+>> diff --git a/drivers/pci/pcie/edr.c b/drivers/pci/pcie/edr.c
+>> index 5f4914d313a1..fea098e22e3e 100644
+>> --- a/drivers/pci/pcie/edr.c
+>> +++ b/drivers/pci/pcie/edr.c
+>> @@ -35,7 +35,7 @@ static int acpi_enable_dpc(struct pci_dev *pdev)
+>>  	 * Behavior when calling unsupported _DSM functions is undefined,
+>>  	 * so check whether EDR_PORT_DPC_ENABLE_DSM is supported.
+>>  	 */
+>> -	if (!acpi_check_dsm(adev->handle, &pci_acpi_dsm_guid, 5,
+>> +	if (!acpi_check_dsm(adev->handle, &pci_acpi_dsm_guid, 6,
+>>  			    1ULL << EDR_PORT_DPC_ENABLE_DSM))
+> How confident are we that this won't break any existing platforms?
+
+Since we are already using arg4 as package, it wont work with
+platforms that implement version 5.  So I think we won't be
+breaking any existing users of version 5.
+
+
+> Any idea how many platforms implement EDR_PORT_DPC_ENABLE_DSM and what
+> Revision IDs they support?
+
+I am not very sure about it. I think it is being used in some Dell
+and Nvidia platforms.
+
+@Satish from Dell, tested this fix in some Dell server platforms
+that implements this support and found it working.
+
+@Tushar Dave, since you previously submitted some error report
+related to EDR, I assume you have some platforms that uses these
+_DSMs. Can you please take a look at this patch and let us know
+whether it works for you?
+
 >
-> IMO, It seems the allocation flag here means GFP flags according to
-> Patch 5 and I understand the benefit of introducing the flags.
+>>  		return 0;
+>>  
+>> @@ -47,11 +47,11 @@ static int acpi_enable_dpc(struct pci_dev *pdev)
+>>  	argv4.package.elements = &req;
+>>  
+>>  	/*
+>> -	 * Per Downstream Port Containment Related Enhancements ECN to PCI
+>> -	 * Firmware Specification r3.2, sec 4.6.12, EDR_PORT_DPC_ENABLE_DSM is
+>> -	 * optional.  Return success if it's not implemented.
+>> +	 * Per PCI Firmware Specification r3.3, sec 4.6.12,
+>> +	 * EDR_PORT_DPC_ENABLE_DSM is optional. Return success if it's not
+>> +	 * implemented.
+>>  	 */
+>> -	obj = acpi_evaluate_dsm(adev->handle, &pci_acpi_dsm_guid, 5,
+>> +	obj = acpi_evaluate_dsm(adev->handle, &pci_acpi_dsm_guid, 6,
+>>  				EDR_PORT_DPC_ENABLE_DSM, &argv4);
+>>  	if (!obj)
+>>  		return 0;
+>> @@ -86,7 +86,7 @@ static struct pci_dev *acpi_dpc_port_get(struct pci_dev *pdev)
+>>  
+>>  	/*
+>>  	 * Behavior when calling unsupported _DSM functions is undefined,
+>> -	 * so check whether EDR_PORT_DPC_ENABLE_DSM is supported.
+>> +	 * so check whether EDR_PORT_LOCATE_DSM is supported.
+>>  	 */
+>>  	if (!acpi_check_dsm(adev->handle, &pci_acpi_dsm_guid, 5,
+>>  			    1ULL << EDR_PORT_LOCATE_DSM))
+>> @@ -103,6 +103,17 @@ static struct pci_dev *acpi_dpc_port_get(struct pci_dev *pdev)
+>>  		return NULL;
+>>  	}
+>>  
+>> +	/*
+>> +	 * Per PCI Firmware Specification r3.3, sec 4.6.13, bit 31 represents
+>> +	 * the success/failure of the operation. If bit 31 is set, the operation
+>> +	 * is failed.
+>> +	 */
+>> +	if (obj->integer.value & BIT(31)) {
+>> +		ACPI_FREE(obj);
+>> +		pci_err(pdev, "Locate Port _DSM failed\n");
+>> +		return NULL;
+>> +	}
+> This changes two _DSMs, and I think it should be two patches.
+
+Ok. I can split it into two patches.
+
+> Same question here: we now depend on functionality we didn't depend on
+> before.  How confident are we in this?
+
+In some platforms I have tested so far, it seems to work. But I am
+not sure whether there are other platforms that does not implement
+this support.
+
+IMO, since this change aligns with the spec, it is best to fix it.
+
 >
-> I am interested in the future plan. With this change, will Vec and Box
-> stick to kernel memory application APIs with GFP flags in the future?
-> e.g. GUP, kmalloc, those mostly allocates continuous memory for small
-> objects. Is that the future for Vec and Box in kernel?
->
-> Is there any plan for having vmalloc() in rust kernel? Currently, if I
-> push a large object into a Vec, kernel MM will complain for sure. And
-> literally Vec/Box themselves don't imply to the user that they allocate
-> memory with limitations.
->
-> Kernel uses different MM alloc APIs for different usages. For rust,
-> should we have a different kind of "Vec/Box" or having a Vec/Box with
-> different set of allocation flags that covers both GFP MM APIs and
-> vmalloc()? I am curious about the plan.
+>>  	/*
+>>  	 * Firmware returns DPC port BDF details in following format:
+>>  	 *	15:8 = bus
+>> -- 
+>> 2.25.1
+>>
+-- 
+Sathyanarayanan Kuppuswamy
+Linux Kernel Developer
 
-Sorry Zhi, Danilo brought this message to my attention today (thanks!).
-
-We have been trying to find the best way forward to support fallible
-allocations, per-call-site flags, other kernel allocators and so on
-for a long time, including discussions with upstream Rust.
-
-At this point, after these years, I think the ideal path is to try our
-best to avoid re-enabling `allocator_api` and to have perhaps our own
-custom APIs/types as needed (possibly several depending on the use
-case) -- please also see my reply at
-https://lore.kernel.org/rust-for-linux/CANiq72=3D0BNw-KiURBjosLqfuUEPpjZPbR=
-g1XMFZyobOzBt7aMA@mail.gmail.com/
-
-Regarding this patch series, we mainly wanted to make progress on
-(finally) allowing at least to use the GFP flags and also,
-importantly, dropping `alloc` since we want to start supporting
-several compiler versions soon.
-
-Thank you for your feedback on this. It would be nice to hear what you
-think about Danilo's approach in the other series and other possible
-approaches that may not rely on `allocator_api`.
-
-Cheers,
-Miguel
 
