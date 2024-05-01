@@ -1,125 +1,113 @@
-Return-Path: <linux-kernel+bounces-165636-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-165637-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B8C3B8B8EEA
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 19:18:36 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7DA998B8EEB
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 19:19:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 596A91F21FA3
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 17:18:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AD5961C2134A
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 17:19:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83947182DF;
-	Wed,  1 May 2024 17:18:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 900F618C1F;
+	Wed,  1 May 2024 17:19:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=fu-berlin.de header.i=@fu-berlin.de header.b="cHhxykkL"
-Received: from outpost1.zedat.fu-berlin.de (outpost1.zedat.fu-berlin.de [130.133.4.66])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XsAlGXHL"
+Received: from mail-pj1-f41.google.com (mail-pj1-f41.google.com [209.85.216.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8AFAFDDAB;
-	Wed,  1 May 2024 17:18:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=130.133.4.66
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 97DC018030;
+	Wed,  1 May 2024 17:18:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714583909; cv=none; b=DAfGuaE+7Y2JFQjzJQsnBFoF6D8rjmFPl0xeUzeKFaWgIACy3UJSvpmlromf1LWhlcrWTsmUKn2ChnvF1LxsF7Oz1sOpShdJYjzkRJwoqopPESbDL7DxXeZ30MwVusfBgy+IjkTAE9uYrGrLw416p9cQ9li4qAFUe21Fghf/gV0=
+	t=1714583940; cv=none; b=hQ7eXL6KbO/PCBUv8sDNoCJ5m+M9vwYtxgQg8kRdIt4nRQNf11EbvNAvPkHI+cRo0mtAnOaHr3fn7OqZd5b9OSfnNVv2aY2N5nVuZ2kG9osYXhj0wuhoBHUiqa86MuQ8pqUwAQdjiL6mX77SzHBWSq4UbopiybiilRDwU+ZTRAk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714583909; c=relaxed/simple;
-	bh=Q+1d4Gnsr2lrEMS3UmDxaI6tEyeZXyIHtm2WulLERJQ=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=LNHN8LfTLTxmIKh25Fl9JQ6sCfHBO5D6Glvf2odIeakeLztBdKgxRsrP+aDrHkEZ9dB2e2qz0gZuuiL3bz3Fig8H39AN2Xp4YdkdTmixpTEm4njUFhQqpfZ+lQBluDFIuRC5/RkS+wkbXErI2tUYIKhVnTxRJnPwfJjUx7u1mFA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=physik.fu-berlin.de; spf=pass smtp.mailfrom=zedat.fu-berlin.de; dkim=pass (2048-bit key) header.d=fu-berlin.de header.i=@fu-berlin.de header.b=cHhxykkL; arc=none smtp.client-ip=130.133.4.66
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=physik.fu-berlin.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zedat.fu-berlin.de
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=fu-berlin.de; s=fub01; h=MIME-Version:Content-Transfer-Encoding:
-	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-	List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=uIgYMEKuj7hxe92rvJmgWaiFo3MDqmc6kRLX2X0/8qs=; t=1714583906; x=1715188706; 
-	b=cHhxykkL5qL+l4V6dKsWLWZ6wXCo5kbcczhVAM6MffKYgvoqSWdc4WsrgOJeF4kOHq2bsDaaGjx
-	GcKh5OfgylF5xqVKmNE4adXmRdfdWk2sRpD9h3zPvgC0ZXL9I3De4T25tivZBLl1zh2vIUE3+mb6J
-	zEjtgKx2BTKT8QcBLTRyjDbhKqRRQz8Qs3s3sO1GWo7NFkbJn9J122XcbvwHQMlDQ29Hc9ATzUKad
-	3iRCSdJQtxYNhn/o6SW0hoiwTyE2EWzj8OrySZEbQt5pmLd/rIB1lgTNBJUdG7oKbPCi8YdpmO53h
-	4JgcdR+KLhiAQZ1VFYxs6ice2qs+GZXKSqug==;
-Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
-          by outpost.zedat.fu-berlin.de (Exim 4.97)
-          with esmtps (TLS1.3)
-          tls TLS_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@zedat.fu-berlin.de>)
-          id 1s2Db4-00000001w6i-3M2S; Wed, 01 May 2024 19:18:22 +0200
-Received: from p57bd90e8.dip0.t-ipconnect.de ([87.189.144.232] helo=[192.168.178.20])
-          by inpost2.zedat.fu-berlin.de (Exim 4.97)
-          with esmtpsa (TLS1.3)
-          tls TLS_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@physik.fu-berlin.de>)
-          id 1s2Db4-00000001i3u-2CVD; Wed, 01 May 2024 19:18:22 +0200
-Message-ID: <72ec7831604326e852eb228072b1d817bab829fb.camel@physik.fu-berlin.de>
-Subject: Re: [PATCH v2] sh: Call paging_init() earlier in the init sequence
-From: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-To: Oreoluwa Babatunde <quic_obabatun@quicinc.com>, 
-	ysato@users.sourceforge.jp, dalias@libc.org
-Cc: akpm@linux-foundation.org, linux-sh@vger.kernel.org, 
- linux-kernel@vger.kernel.org, robh+dt@kernel.org, kernel@quicinc.com, Rob
- Herring <robh@kernel.org>, Rob Landley <rob@landley.net>
-Date: Wed, 01 May 2024 19:18:21 +0200
-In-Reply-To: <20240423233150.74302-1-quic_obabatun@quicinc.com>
-References: <20240423233150.74302-1-quic_obabatun@quicinc.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.52.0 
+	s=arc-20240116; t=1714583940; c=relaxed/simple;
+	bh=A4CNBvfCgBvtTve4c3x3JmtcP/T/LBzmR3wc5V/73Yc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=S0TZT5c++uWrF2uIm/44WOcfnFbE6IkiYApm+f8WRsUPX7iym+v7mEoY9cOr4OVuFib2kgq0DMzmYHCMzv8t2nzdtCSgWmiKPmzq6npgDMcbcUNH/k61nJejSaoDRkts8Ue4yD4VbUaNOMTcNG6BBrmOIgWatV1fLrVb+L+Y6d0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XsAlGXHL; arc=none smtp.client-ip=209.85.216.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f41.google.com with SMTP id 98e67ed59e1d1-2ac9b225a91so5419694a91.2;
+        Wed, 01 May 2024 10:18:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1714583939; x=1715188739; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=m07c5Fi/jiQW9GTxIy2Gh/ikvj0HKOu2QlszwrphLI0=;
+        b=XsAlGXHLlD0V/32kJDh2a7CBY8CnkinUAKJvM+jkq6QTy9mQk24Ia2XF3liyIAyPEt
+         kQ36w3XHJCn7Urvib/ys3WO7jgpletvo3ezoy6Wnql+8YVxZZxYm5IXgpvDK/Eo2ZGhP
+         a6wCU+vZNr3gqGcGZeBpDJgKiMOhqB6l3wdGwle1tADGdDNLlRQaCVBiTyrbMCih6048
+         dag1k9SaJc/Mp1ETFUI0y9YNRlccl/2x+MnTgsL08mV6/XOfXxNEPTl+wpkZC+fTGdbV
+         +Yw2MvabHEFAF8/Nybt06/0yV7I0Hzo3ZmqukWgE8nlhy0ArhmeSrPN75LBm2w1mpTU3
+         Japg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714583939; x=1715188739;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=m07c5Fi/jiQW9GTxIy2Gh/ikvj0HKOu2QlszwrphLI0=;
+        b=VRNIwpRNCFEyjEJvHS/7TQ0d5qlg8AAE9WgE55V1Q606pReLYcUs2ZpFm8ugxoa6yP
+         FF1JILxSx+D2X/WfFtYhE2vy1YijpnjL+bVhf0FZL/5GV3Rjn4G4e7zLIJAgHx0oskyE
+         3WIiZVmQrhU5d5cdjuzqGiS7hG0ZHwgUJANV2shhLBdOr2ilIqVBAjA733ktix2RrwhU
+         Mh9NafgcuoZBUGsUafS+reSrhtF1tvzhtjPMEYho0oiyzXOxAZ78OsPFKdRgJtlThg6C
+         E0JrVysFwVG2NhpGUF/6pvafB468InHcvwbH+gePDm7fre62+i9rEo8rkJs5xQkTXuSz
+         +kOQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWp8i/QcIdxGHaNs0ZeYFk4pzFobfThGrB7FqjMh0YB31dpOgDz860gSkwYkuhTxcZnIJ71mVZRFTD0gzlQw/AJVUai7lH9wYLJ0mKOaV8U7oytkKhPWa4rv8PtFQTRneD+RrubCtac6vVPnw==
+X-Gm-Message-State: AOJu0Ywn0pX9N4mMDz9ftrs19sGJjaJ7uDylq4r0N9hvlUgSCUur4qOZ
+	akXVw1d1k87lzlxYta/or1x6aWbBSzetRrWv33qBqNBhbn2/yh/y
+X-Google-Smtp-Source: AGHT+IEM3V8NcvdrAmWIJZjePi+DWealRmXF6lmrLSb3GFNx1agPl7w6QxPM1Kw8esx4uAxxYweJOw==
+X-Received: by 2002:a17:90b:602:b0:2b1:535f:c3dc with SMTP id gb2-20020a17090b060200b002b1535fc3dcmr3293351pjb.26.1714583938764;
+        Wed, 01 May 2024 10:18:58 -0700 (PDT)
+Received: from localhost (dhcp-141-239-159-203.hawaiiantel.net. [141.239.159.203])
+        by smtp.gmail.com with ESMTPSA id o9-20020a17090aac0900b002ad059491f6sm1572839pjq.5.2024.05.01.10.18.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 01 May 2024 10:18:58 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date: Wed, 1 May 2024 07:18:57 -1000
+From: Tejun Heo <tj@kernel.org>
+To: Kemeng Shi <shikemeng@huaweicloud.com>
+Cc: willy@infradead.org, akpm@linux-foundation.org, jack@suse.cz,
+	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 07/10] writeback: factor out wb_dirty_freerun to remove
+ more repeated freerun code
+Message-ID: <ZjJ5gfIXBmpKMj9c@slm.duckdns.org>
+References: <20240429034738.138609-1-shikemeng@huaweicloud.com>
+ <20240429034738.138609-8-shikemeng@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Original-Sender: glaubitz@physik.fu-berlin.de
-X-ZEDAT-Hint: PO
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240429034738.138609-8-shikemeng@huaweicloud.com>
 
-Hi Oreoluwa,
+On Mon, Apr 29, 2024 at 11:47:35AM +0800, Kemeng Shi wrote:
+..
+> +static void wb_dirty_freerun(struct dirty_throttle_control *dtc,
+> +			     bool strictlimit)
+> +{
+..
+> +	/*
+> +	 * LOCAL_THROTTLE tasks must not be throttled when below the per-wb
+> +	 * freerun ceiling.
+> +	 */
+> +	if (!(current->flags & PF_LOCAL_THROTTLE))
+> +		return;
 
-On Tue, 2024-04-23 at 16:31 -0700, Oreoluwa Babatunde wrote:
-> The unflatten_device_tree() function contains a call to
-> memblock_alloc(). This is a problem because this allocation is done
-> before any of the reserved memory is set aside in paging_init().
-> This means that there is a possibility for memblock to allocate from
-> any of the memory regions that are supposed to be set aside as reserved.
->=20
-> Hence, move the call to paging_init() to be earlier in the init
-> sequence so that the reserved memory regions are set aside before any
-> allocations are done using memblock.
+Shouldn't this set free_run to true?
 
-I was just about to merge your patch when I ran a git blame on the code in
-arch/sh/kernel/setup.c and noticed the following commit by Rich Felker:
+Also, wouldn't it be better if these functions return bool instead of
+recording the result in dtc->freerun?
 
-commit eb6b6930a70faefe04479a71088cc10366782d9a
-Author: Rich Felker <dalias@libc.org>
-Date:   Mon Jul 31 01:27:50 2017 -0400
+Thanks.
 
-    sh: fix memory corruption of unflattened device tree
-   =20
-    unflatten_device_tree() makes use of memblock allocation, and
-    therefore must be called before paging_init() migrates the memblock
-    allocation data to the bootmem framework. Otherwise the record of the
-    allocation for the expanded device tree will be lost, and will
-    eventually be clobbered when allocated for another use.
-   =20
-    Signed-off-by: Rich Felker <dalias@libc.org>
-
-It looks like that the call to unflatten_device_tree() before paging_init()
-is intentional and needed for the device tree to be preserved in memory
-after running paging_init().
-
-@Geert: Do you have any comments on this patch?
-@Rob: Could you test this patch on your J2 board and report back?
-
-Thanks,
-Adrian
-
---=20
- .''`.  John Paul Adrian Glaubitz
-: :' :  Debian Developer
-`. `'   Physicist
-  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
+-- 
+tejun
 
