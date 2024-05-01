@@ -1,226 +1,181 @@
-Return-Path: <linux-kernel+bounces-165408-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-165409-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7B9528B8C5F
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 16:59:16 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 81C388B8C60
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 16:59:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9FA311C20EFB
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 14:59:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1F1DB1F224C0
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 14:59:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4CA9F12FB1A;
-	Wed,  1 May 2024 14:56:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fm2WbPJh"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 755BB1E87C;
-	Wed,  1 May 2024 14:56:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 30C83131730;
+	Wed,  1 May 2024 14:56:39 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6287112F5AC;
+	Wed,  1 May 2024 14:56:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714575390; cv=none; b=jBIW1dfDN+E5SCfEflQuXpXRuS4QSLikC/19LPGdx5i0rII5CIOEl1uQL3LYb3ts1gLuccTFP7mH7qsoU1Yp2SKJHIYE7HDWBesGk8ldEedwJ9cD/p91PnEPr34ol4ty+rTpjfzFQOhc0KkCs7McdogOpmiKy6biZSI/qrEt9Og=
+	t=1714575398; cv=none; b=qYzUi71udQLDaDN3GtLkiye0k/a638D3F6gD6ZNDT21Kaf1HgeHDD9h+jsPgILFE3DO6UXjX+bOJQiQBCFUH717ctuDP/Gi0AoLO2udlhty10V4nz3vmLPYV0M7pNbWbQhcJ/RbCKww3C03OwQFXudJ3S2CP/3EeQEzunMO0oSg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714575390; c=relaxed/simple;
-	bh=VHoAtVLPOx3zYSUeVy7+X3UHEdH8dcd9ZPPasKe0tk8=;
-	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=uumtvMiZqdnke/qeQ8PtIdpHk69+ycxSLGfjxygEfLOX7koJ+BetxWzMxFEYQnmSec7IOKZ8t9VkhHvvKzwvDkAOJpf/vBkBzcwvemKIEEpRBGAmRY3bQl75uBRnjx8wNAoNaOVo3sfAMEwGsjREqkw5r1mRwlYhsLyLIw2FcpY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fm2WbPJh; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 58C9CC072AA;
-	Wed,  1 May 2024 14:56:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714575389;
-	bh=VHoAtVLPOx3zYSUeVy7+X3UHEdH8dcd9ZPPasKe0tk8=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=fm2WbPJhs0+4FoxG2fOfYLogVhy7Ss2BUVbT2dn7WfzG8hUdy72HvWVRNYf/6Mftv
-	 8LimdrFXO7n9g1a/3vdXBkKWeHmcurnWWUf8ykS0vZRSncJ6etvlwC24eaCWS7xgZX
-	 E+rxuqVxAZSdmObsxSW8ZZ+CSRm7JDhwHvSABvLflB+1RH9DGqnGvtwJWI/RIY/oMd
-	 +ZGK4FDpTPcKfDXzmbiAtBWeyVgbs+GPWfSZPUoSHho5DrgGnca0DBoM6muKNv8Q8J
-	 Z26VR5tsVtV7pkxeG6gBItBSfcsea2Dt+7kpGjOnx5TVOxvzapkrNZ3nPNG4sKlYbm
-	 5KqSH+t5HUAjw==
-Date: Wed, 1 May 2024 23:56:26 +0900
-From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: LKML <linux-kernel@vger.kernel.org>, Linux Trace Kernel
- <linux-trace-kernel@vger.kernel.org>, Masami Hiramatsu
- <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Tze-nan wu <Tze-nan.Wu@mediatek.com>
-Subject: Re: [PATCH] eventfs/tracing: Add callback for release of an
- eventfs_inode
-Message-Id: <20240501235626.81178236dc8826c038089c0c@kernel.org>
-In-Reply-To: <20240430142327.7bff81ba@gandalf.local.home>
-References: <20240430142327.7bff81ba@gandalf.local.home>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1714575398; c=relaxed/simple;
+	bh=p52p3F37XvyVfrfrsqWyEV0jgw7gj7LU4qdYq7WAN2o=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=gMycCskeuPq+65i2dpuGkCIOiWnmpIbaqHar+8POcAQXSKEfZVisPTqrNWQPKopW1HZT/Ht3120iT6vVxA8UQV3tjFssfgu7yLVc5sOLuQ9Mpgu9m2Z51pYYS5mkcsn+ofysynMv2Q9IVMgRcVAubqwJhSbZ23xfRa1Vt5gigiU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 20F062F4;
+	Wed,  1 May 2024 07:57:03 -0700 (PDT)
+Received: from [10.57.82.68] (unknown [10.57.82.68])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B37333F793;
+	Wed,  1 May 2024 07:56:34 -0700 (PDT)
+Message-ID: <fcb0cd30-ba40-48d2-8ce1-c5aa1d36cd1f@arm.com>
+Date: Wed, 1 May 2024 15:56:33 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 17/43] arm64: RME: Allow VMM to set RIPAS
+Content-Language: en-GB
+To: Jean-Philippe Brucker <jean-philippe@linaro.org>,
+ Steven Price <steven.price@arm.com>
+Cc: kvm@vger.kernel.org, kvmarm@lists.linux.dev,
+ Catalin Marinas <catalin.marinas@arm.com>, Marc Zyngier <maz@kernel.org>,
+ Will Deacon <will@kernel.org>, James Morse <james.morse@arm.com>,
+ Oliver Upton <oliver.upton@linux.dev>, Zenghui Yu <yuzenghui@huawei.com>,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ Joey Gouly <joey.gouly@arm.com>, Alexandru Elisei
+ <alexandru.elisei@arm.com>, Christoffer Dall <christoffer.dall@arm.com>,
+ Fuad Tabba <tabba@google.com>, linux-coco@lists.linux.dev,
+ Ganapatrao Kulkarni <gankulkarni@os.amperecomputing.com>
+References: <20240412084056.1733704-1-steven.price@arm.com>
+ <20240412084309.1733783-1-steven.price@arm.com>
+ <20240412084309.1733783-18-steven.price@arm.com>
+ <20240501142712.GB484338@myrica>
+From: Suzuki K Poulose <suzuki.poulose@arm.com>
+In-Reply-To: <20240501142712.GB484338@myrica>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
-On Tue, 30 Apr 2024 14:23:27 -0400
-Steven Rostedt <rostedt@goodmis.org> wrote:
+On 01/05/2024 15:27, Jean-Philippe Brucker wrote:
+> On Fri, Apr 12, 2024 at 09:42:43AM +0100, Steven Price wrote:
+>> +static inline bool realm_is_addr_protected(struct realm *realm,
+>> +					   unsigned long addr)
+>> +{
+>> +	unsigned int ia_bits = realm->ia_bits;
+>> +
+>> +	return !(addr & ~(BIT(ia_bits - 1) - 1));
+> 
+> Is it enough to return !(addr & BIT(realm->ia_bits - 1))?
 
-> From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
-> 
-> Synthetic events create and destroy tracefs files when they are created
-> and removed. The tracing subsystem has its own file descriptor
-> representing the state of the events attached to the tracefs files.
-> There's a race between the eventfs files and this file descriptor of the
-> tracing system where the following can cause an issue:
-> 
-> With two scripts 'A' and 'B' doing:
-> 
->   Script 'A':
->     echo "hello int aaa" > /sys/kernel/tracing/synthetic_events
->     while :
->     do
->       echo 0 > /sys/kernel/tracing/events/synthetic/hello/enable
->     done
-> 
->   Script 'B':
->     echo > /sys/kernel/tracing/synthetic_events
-> 
-> Script 'A' creates a synthetic event "hello" and then just writes zero
-> into its enable file.
-> 
-> Script 'B' removes all synthetic events (including the newly created
-> "hello" event).
-> 
-> What happens is that the opening of the "enable" file has:
-> 
->  {
-> 	struct trace_event_file *file = inode->i_private;
-> 	int ret;
-> 
-> 	ret = tracing_check_open_get_tr(file->tr);
->  [..]
-> 
-> But deleting the events frees the "file" descriptor, and a "use after
-> free" happens with the dereference at "file->tr".
-> 
-> The file descriptor does have a reference counter, but there needs to be a
-> way to decrement it from the eventfs when the eventfs_inode is removed
-> that represents this file descriptor.
-> 
-> Add an optional "release" callback to the eventfs_entry array structure,
-> that gets called when the eventfs file is about to be removed. This allows
-> for the creating on the eventfs file to increment the tracing file
-> descriptor ref counter. When the eventfs file is deleted, it can call the
-> release function that will call the put function for the tracing file
-> descriptor.
-> 
-> This will protect the tracing file from being freed while a eventfs file
-> that references it is being opened.
-> 
+I thought about that too. But if we are dealing with an IPA
+that is > (BIT(realm->ia_bits)), we don't want to be treating
+that as a protected address. This could only happen if the Realm
+is buggy (or the VMM has tricked it). So the existing check
+looks safer.
 
-Looks good to me.
-
-Reviewed-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-
-Thank you,
-
-> Link: https://lore.kernel.org/linux-trace-kernel/20240426073410.17154-1-Tze-nan.Wu@mediatek.com/
 > 
-> Cc: stable@vger.kernel.org
-> Fixes: 5790b1fb3d672 ("eventfs: Remove eventfs_file and just use eventfs_inode")
-> Reported-by: Tze-nan wu <Tze-nan.Wu@mediatek.com>
-> Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
-> ---
->  fs/tracefs/event_inode.c    |  7 +++++++
->  include/linux/tracefs.h     |  3 +++
->  kernel/trace/trace_events.c | 12 ++++++++++++
->  3 files changed, 22 insertions(+)
+>> +static void realm_unmap_range_shared(struct kvm *kvm,
+>> +				     int level,
+>> +				     unsigned long start,
+>> +				     unsigned long end)
+>> +{
+>> +	struct realm *realm = &kvm->arch.realm;
+>> +	unsigned long rd = virt_to_phys(realm->rd);
+>> +	ssize_t map_size = rme_rtt_level_mapsize(level);
+>> +	unsigned long next_addr, addr;
+>> +	unsigned long shared_bit = BIT(realm->ia_bits - 1);
+>> +
+>> +	if (WARN_ON(level > RME_RTT_MAX_LEVEL))
+>> +		return;
+>> +
+>> +	start |= shared_bit;
+>> +	end |= shared_bit;
+>> +
+>> +	for (addr = start; addr < end; addr = next_addr) {
+>> +		unsigned long align_addr = ALIGN(addr, map_size);
+>> +		int ret;
+>> +
+>> +		next_addr = ALIGN(addr + 1, map_size);
+>> +
+>> +		if (align_addr != addr || next_addr > end) {
+>> +			/* Need to recurse deeper */
+>> +			if (addr < align_addr)
+>> +				next_addr = align_addr;
+>> +			realm_unmap_range_shared(kvm, level + 1, addr,
+>> +						 min(next_addr, end));
+>> +			continue;
+>> +		}
+>> +
+>> +		ret = rmi_rtt_unmap_unprotected(rd, addr, level, &next_addr);
+>> +		switch (RMI_RETURN_STATUS(ret)) {
+>> +		case RMI_SUCCESS:
+>> +			break;
+>> +		case RMI_ERROR_RTT:
+>> +			if (next_addr == addr) {
+>> +				next_addr = ALIGN(addr + 1, map_size);
+>> +				realm_unmap_range_shared(kvm, level + 1, addr,
+>> +							 next_addr);
+>> +			}
+>> +			break;
+>> +		default:
+>> +			WARN_ON(1);
 > 
-> diff --git a/fs/tracefs/event_inode.c b/fs/tracefs/event_inode.c
-> index 894c6ca1e500..dc97c19f9e0a 100644
-> --- a/fs/tracefs/event_inode.c
-> +++ b/fs/tracefs/event_inode.c
-> @@ -84,10 +84,17 @@ enum {
->  static void release_ei(struct kref *ref)
->  {
->  	struct eventfs_inode *ei = container_of(ref, struct eventfs_inode, kref);
-> +	const struct eventfs_entry *entry;
->  	struct eventfs_root_inode *rei;
->  
->  	WARN_ON_ONCE(!ei->is_freed);
->  
-> +	for (int i = 0; i < ei->nr_entries; i++) {
-> +		entry = &ei->entries[i];
-> +		if (entry->release)
-> +			entry->release(entry->name, ei->data);
-> +	}
-> +
->  	kfree(ei->entry_attrs);
->  	kfree_const(ei->name);
->  	if (ei->is_events) {
-> diff --git a/include/linux/tracefs.h b/include/linux/tracefs.h
-> index 7a5fe17b6bf9..d03f74658716 100644
-> --- a/include/linux/tracefs.h
-> +++ b/include/linux/tracefs.h
-> @@ -62,6 +62,8 @@ struct eventfs_file;
->  typedef int (*eventfs_callback)(const char *name, umode_t *mode, void **data,
->  				const struct file_operations **fops);
->  
-> +typedef void (*eventfs_release)(const char *name, void *data);
-> +
->  /**
->   * struct eventfs_entry - dynamically created eventfs file call back handler
->   * @name:	Then name of the dynamic file in an eventfs directory
-> @@ -72,6 +74,7 @@ typedef int (*eventfs_callback)(const char *name, umode_t *mode, void **data,
->  struct eventfs_entry {
->  	const char			*name;
->  	eventfs_callback		callback;
-> +	eventfs_release			release;
->  };
->  
->  struct eventfs_inode;
-> diff --git a/kernel/trace/trace_events.c b/kernel/trace/trace_events.c
-> index 52f75c36bbca..6ef29eba90ce 100644
-> --- a/kernel/trace/trace_events.c
-> +++ b/kernel/trace/trace_events.c
-> @@ -2552,6 +2552,14 @@ static int event_callback(const char *name, umode_t *mode, void **data,
->  	return 0;
->  }
->  
-> +/* The file is incremented on creation and freeing the enable file decrements it */
-> +static void event_release(const char *name, void *data)
-> +{
-> +	struct trace_event_file *file = data;
-> +
-> +	event_file_put(file);
-> +}
-> +
->  static int
->  event_create_dir(struct eventfs_inode *parent, struct trace_event_file *file)
->  {
-> @@ -2566,6 +2574,7 @@ event_create_dir(struct eventfs_inode *parent, struct trace_event_file *file)
->  		{
->  			.name		= "enable",
->  			.callback	= event_callback,
-> +			.release	= event_release,
->  		},
->  		{
->  			.name		= "filter",
-> @@ -2634,6 +2643,9 @@ event_create_dir(struct eventfs_inode *parent, struct trace_event_file *file)
->  		return ret;
->  	}
->  
-> +	/* Gets decremented on freeing of the "enable" file */
-> +	event_file_get(file);
-> +
->  	return 0;
->  }
->  
-> -- 
-> 2.43.0
+> In this case we also need to return, because RMM returns with next_addr ==
+> 0, causing an infinite loop. At the moment a VMM can trigger this easily
+> by creating guest memfd before creating a RD, see below
+
+Thats a good point. I agree.
+
+> 
+>> +		}
+>> +	}
+>> +}
+>> +
+>> +static void realm_unmap_range_private(struct kvm *kvm,
+>> +				      unsigned long start,
+>> +				      unsigned long end)
+>> +{
+>> +	struct realm *realm = &kvm->arch.realm;
+>> +	ssize_t map_size = RME_PAGE_SIZE;
+>> +	unsigned long next_addr, addr;
+>> +
+>> +	for (addr = start; addr < end; addr = next_addr) {
+>> +		int ret;
+>> +
+>> +		next_addr = ALIGN(addr + 1, map_size);
+>> +
+>> +		ret = realm_destroy_protected(realm, addr, &next_addr);
+>> +
+>> +		if (WARN_ON(ret))
+>> +			break;
+>> +	}
+>> +}
+>> +
+>> +static void realm_unmap_range(struct kvm *kvm,
+>> +			      unsigned long start,
+>> +			      unsigned long end,
+>> +			      bool unmap_private)
+>> +{
+> 
+> Should this check for a valid kvm->arch.realm.rd, or a valid realm state?
+> I'm not sure what the best place is but none of the RMM calls will succeed
+> if the RD is NULL, causing some WARNs.
+> 
+> I can trigger this with set_memory_attributes() ioctls before creating a
+> RD for example.
 > 
 
+True, this could be triggered by a buggy VMM in other ways, and we could
+easily gate it on the Realm state >= NEW.
 
--- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+Suzuki
+
+
 
