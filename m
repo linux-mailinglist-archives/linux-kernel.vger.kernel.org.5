@@ -1,132 +1,219 @@
-Return-Path: <linux-kernel+bounces-165238-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-165239-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D68788B89F6
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 14:25:58 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D6DC48B89F9
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 14:29:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 03FF81C210DC
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 12:25:58 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F3F9E1C21530
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 12:29:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F91D85636;
-	Wed,  1 May 2024 12:25:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8AAD584E15;
+	Wed,  1 May 2024 12:29:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=futuring-girl-com.20230601.gappssmtp.com header.i=@futuring-girl-com.20230601.gappssmtp.com header.b="aS+66/h8"
-Received: from mail-pf1-f178.google.com (mail-pf1-f178.google.com [209.85.210.178])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VhbShkT1"
+Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 45E0B84A30
-	for <linux-kernel@vger.kernel.org>; Wed,  1 May 2024 12:25:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29861824A3
+	for <linux-kernel@vger.kernel.org>; Wed,  1 May 2024 12:29:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714566349; cv=none; b=UqUXT7kqH26v9oPrIb+MM5z0WCbNzUKJRqOQGy0NEpR+VLPtt7WfNrbUa72QTDg42W7t4xYjT94fqTcGGhOn1IWNXS+YeKoR9+10NIEepJQUnow9tqlLed/RQePpcWPz51y3NugAGLCV9wJ+d5DfVJs93aKBt2ntcWn0mcqiLJ0=
+	t=1714566545; cv=none; b=QAXVm1kI4n/cteJCss9ufPqVV/yp+W7d9DHkS+orf+PKuwiHoZWpTmJGofiPYig1c+8fiGqicJZ7EqlviO9QcWOdJUdQWMsjMxvMVYcpkNfWkvYMHjCeYUvWYMlR/MNb49izu5OSf1hKqSVrwl50T3zwhVwdNb5QVdACxUbC/Z0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714566349; c=relaxed/simple;
-	bh=NSwHWAOCmxw85tG4MpaDkx4K6KlMQMGRZ9GWBGkHOuQ=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ZyQfEta8V5JOybHF3Eo/vJ9fV+s4X7BvUnshkNQLz4CnVxCR3N9z0gAjVGVJ2PwbP6fRxCcUs7jDTRuhDQXvYYSWTRPXd1IYiQZmEn90TA2Tp2wZeMPLKY8BtMALDaLGNbzqE5NZMx9l7WM5ZJ0UzD2hAx102Y3Wv2cOrtJzkL8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=futuring-girl.com; spf=pass smtp.mailfrom=futuring-girl.com; dkim=pass (2048-bit key) header.d=futuring-girl-com.20230601.gappssmtp.com header.i=@futuring-girl-com.20230601.gappssmtp.com header.b=aS+66/h8; arc=none smtp.client-ip=209.85.210.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=futuring-girl.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=futuring-girl.com
-Received: by mail-pf1-f178.google.com with SMTP id d2e1a72fcca58-6ecec796323so6420847b3a.3
-        for <linux-kernel@vger.kernel.org>; Wed, 01 May 2024 05:25:48 -0700 (PDT)
+	s=arc-20240116; t=1714566545; c=relaxed/simple;
+	bh=8GbieHlYsAwn+9UzwNuT7AWB1YzIw3xmRM9ekc5TfPo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=LxWUxQEyh1WD1Zp11s4QnxXFdLNnBqVd5CYp6bR/WRk9KiCu666XYxEVnFKB/lF+CvrSxZj7x6FaLQLW7UyBLCnuokig0Qnp59/xDFt02CQDBLHPJ9GWGsx8y8KRPChh0XmmViIYIyEjyLS0NsH2Udjs2Jl0VBbhvg6tW7IYuVE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VhbShkT1; arc=none smtp.client-ip=209.85.218.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-a556d22fa93so737423266b.3
+        for <linux-kernel@vger.kernel.org>; Wed, 01 May 2024 05:29:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=futuring-girl-com.20230601.gappssmtp.com; s=20230601; t=1714566347; x=1715171147; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=JiVKU3GODS4dwlptSTMaoTCW/CBkEG4u9gcmVKIN794=;
-        b=aS+66/h8a+lR/RBQ46xAnMPWozJ8dggz3K8j3nNKgwIoE1xr04vxfDdL39XBvNqErY
-         rlu16aR5hMQzTehH2Z97dkkwVlHnx5ndvYGHoS20BDHgsOrMlY/rRUz+DpRg08RbjpGV
-         aKmu4VNukrPCKJm3VQ+6/L6HJT9k5crncyndMBe5nrlUAGTwOysSrh3RU1vOzKQ1W4KN
-         /W8xAZjKyE7l3QpwyACQMOVinGiRf2oTHWfr3T2PNNMwp+b4+LwzU4Ik8VpcjVQyAv9+
-         s5zhfJ2SDlC/vzGpICh8Bfw9miqWtyaHfYg8t0egnE286WLOyVdCRcBQxfuNe5kABK9e
-         Hc4g==
+        d=gmail.com; s=20230601; t=1714566542; x=1715171342; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=41aaC9phhdSl5EUFnErBqiAfHUdpr+Xaat+EsN6yMpc=;
+        b=VhbShkT1mT/L/bFXa4Fu9u8CqVv2pcmOnkvijwT9RyeGA4Oud5boY4QgSqabrk0urT
+         YjQtC/kzgPJ6I48W5kCvm6IKwAADwYcDurH00mYoffP5BTzfFOjzG6NcnjC+C65kLahY
+         MKSU6TOltbudR+OcpSneLmqcNRMdhIu78/gLW28Ti40bVaZ0gbKohLxNhG/u6A3lTaDQ
+         0jZauaRNqOjaQgj5jesxvB4CzDvneKDIe5a02/rfI1MsC7hCw/xtmCg95BiQBAyAipi3
+         fZj5K7vhKVkykSmPLDa+MqHhZdnnrPTqnlltoGoEYdkQob9X8EEggDrinnV1zz7xQhzr
+         3C7Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714566347; x=1715171147;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=JiVKU3GODS4dwlptSTMaoTCW/CBkEG4u9gcmVKIN794=;
-        b=Uw/sWQaw5PIhMbufAYcgOUB3n5Tq2DtGOj7yJFbFI8SR+kZzOev+aF+J2HXoXgjLjp
-         BM0ZHi+J1c5t45QOw8nmXKUqzCFOd76BbCS0cyJLHIKXiq2jZdZsOkcJ3lN3/9W3fKOI
-         UNREdb2WQq0H98ohHk4uM6Ee2zy+IzQejitq0MXQdrZN+6vJCo4KvMkCobLQYIbzEHU4
-         6g8hVi3NzfpKtVB8ZxbACaPWPJkyrmj9Bj/TRPSmkDMrT3376JLIqK33wjwYly77g8d1
-         fm2HzUVyZ2AGtfpHAkTDfeYh7vJ9s24TW14VjC4rPfdsaM/iGnvH0DIoe3yK3FKp1OXv
-         0hKw==
-X-Forwarded-Encrypted: i=1; AJvYcCXYdYDQSXwxijZkZI0LaZNoT+5BseVIRW+sniwNPEzX2UGKRLDkt0J9uCB0hGiP2UGmk/tjnnpJMT1k8QOqfZ0B4UxHWz0C5v8nJt7i
-X-Gm-Message-State: AOJu0Yz40l82Wn+tn9qI7Agq/tgSUUYfSwFVeZ99sFoj+IAPfDu9VyPG
-	ZyuAi9O0u9Os7Ty1MCSI8GDmIW/05nExi/gZob3XQs3DjLoWykJOZ1GPJLplXYhdX+IVCp6r5mU
-	bbeXjcncEiRlAYfBpCtR1JPRHQND+DemU2I4JG/P97OR4f2xIvAk=
-X-Google-Smtp-Source: AGHT+IFu7bWRAod+fNBklmqwmdOx9dOl716oP5Qi4fuEP26czGC5fQL/lUqerfzxAy382qDKgagM6DDf6j+5N6sB8SA=
-X-Received: by 2002:a17:902:cec1:b0:1eb:1698:ea0b with SMTP id
- d1-20020a170902cec100b001eb1698ea0bmr2947039plg.6.1714566347519; Wed, 01 May
- 2024 05:25:47 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1714566542; x=1715171342;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=41aaC9phhdSl5EUFnErBqiAfHUdpr+Xaat+EsN6yMpc=;
+        b=e0pj7S/Nw7btccR663RA9VByk1VOHuX3YQISNmbk4jM54PXIAauhaYWefZfbObo7el
+         EN1y41K/ZhTsWUfzN4P08H/3iZRFKamv6RxVXHIz56oZwjc7hPyqMuaX632AazCpkA28
+         mLBSebHk8VKmEwnODR1MaQyiIp+AR1JDuOEutN69ldLSAa0rXKe0CudnTKmM2UNhObNq
+         bcG7WwhrqlCQOHT3RF8q2/fhbZvC00wROl/3FTqwp8yxf4OLBtM93GBH8HDq0klmRFy7
+         dm50tctS1xQ9bPnSWHIjEh3n2HZbFjQZrXg3vXs/IMEYfF8KCak78CfIOwCfyf9z2akr
+         bzyA==
+X-Forwarded-Encrypted: i=1; AJvYcCU1pOKxJVbhjVNvgLLWcRU1zaodB7hbIrODahTZzFXCtmoXQjGSh+AA4+B3JY7x8YrnSZUZRSm65EkNSFKUc5p12alqIXLGyL61ljZG
+X-Gm-Message-State: AOJu0YxiQXKjGReDEd3y/WUxZfoL/4nbnjLJBuTJjqzfEudOZukQ3rDa
+	IsX1tH2hYb83dxCFdbPKGS4gvRu8e0EXAFJaBoOm2bAVGH2foR9Z
+X-Google-Smtp-Source: AGHT+IHJynM1WpKiteasQwNmtpBx2dJbZ0nmL+jqu8Z9KLhIcffVhdPBAjbMeeU61HtazScfwmirJg==
+X-Received: by 2002:a17:906:90c:b0:a58:bcdc:cf40 with SMTP id i12-20020a170906090c00b00a58bcdccf40mr1513488ejd.77.1714566542219;
+        Wed, 01 May 2024 05:29:02 -0700 (PDT)
+Received: from ?IPV6:2a03:83e0:1126:4:eb:d0d0:c7fd:c82c? ([2620:10d:c093:500::5:e805])
+        by smtp.gmail.com with ESMTPSA id i8-20020a170906264800b00a52433f0907sm16296331ejc.37.2024.05.01.05.29.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 01 May 2024 05:29:01 -0700 (PDT)
+Message-ID: <befff094-eb1a-4160-907f-f12e3c923d34@gmail.com>
+Date: Wed, 1 May 2024 13:29:01 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240430103058.010791820@linuxfoundation.org>
-In-Reply-To: <20240430103058.010791820@linuxfoundation.org>
-From: Takeshi Ogasawara <takeshi.ogasawara@futuring-girl.com>
-Date: Wed, 1 May 2024 21:25:36 +0900
-Message-ID: <CAKL4bV4UNZTAwz1Lge9qXfSA4dRwZp1NVgv3kXxiwzEhPxfDyw@mail.gmail.com>
-Subject: Re: [PATCH 6.6 000/186] 6.6.30-rc1 review
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: stable@vger.kernel.org, patches@lists.linux.dev, 
-	linux-kernel@vger.kernel.org, torvalds@linux-foundation.org, 
-	akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org, 
-	patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de, 
-	jonathanh@nvidia.com, f.fainelli@gmail.com, sudipm.mukherjee@gmail.com, 
-	srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org, allen.lkml@gmail.com, 
-	broonie@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] selftests: cgroup: add tests to verify the zswap
+ writeback path
+To: akpm@linux-foundation.org
+Cc: hannes@cmpxchg.org, yosryahmed@google.com, nphamcs@gmail.com,
+ chengming.zhou@linux.dev, linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+ kernel-team@meta.com
+References: <20240501100446.1454264-1-usamaarif642@gmail.com>
+Content-Language: en-US
+From: Usama Arif <usamaarif642@gmail.com>
+In-Reply-To: <20240501100446.1454264-1-usamaarif642@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Hi Greg
 
-On Tue, Apr 30, 2024 at 8:08=E2=80=AFPM Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
+On 01/05/2024 11:04, Usama Arif wrote:
+> The condition for writeback can be triggered by allocating random
+> memory more than memory.high to push memory into zswap, more than
+> zswap.max to trigger writeback if enabled, but less than memory.max
+> so that OOM is not triggered. Both values of memory.zswap.writeback
+> are tested.
 >
-> This is the start of the stable review cycle for the 6.6.30 release.
-> There are 186 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+> Signed-off-by: Usama Arif <usamaarif642@gmail.com>
+
+
+Forgot to add:
+
+Suggested-by: Nhat Pham <nphamcs@gmail.com>
+
+
+> ---
+>   tools/testing/selftests/cgroup/test_zswap.c | 83 +++++++++++++++++++++
+>   1 file changed, 83 insertions(+)
 >
-> Responses should be made by Thu, 02 May 2024 10:30:27 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-=
-6.6.30-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-6.6.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
-
-6.6.30-rc1 tested.
-
-Build successfully completed.
-Boot successfully completed.
-No dmesg regressions.
-Video output normal.
-Sound output normal.
-
-Lenovo ThinkPad X1 Carbon Gen10(Intel i7-1260P(x86_64) arch linux)
-
-[    0.000000] Linux version 6.6.30-rc1rv
-(takeshi@ThinkPadX1Gen10J0764) (gcc (GCC) 13.2.1 20240417, GNU ld (GNU
-Binutils) 2.42.0) #1 SMP PREEMPT_DYNAMIC Wed May  1 20:29:45 JST 2024
-
-Thanks
-
-Tested-by: Takeshi Ogasawara <takeshi.ogasawara@futuring-girl.com>
+> diff --git a/tools/testing/selftests/cgroup/test_zswap.c b/tools/testing/selftests/cgroup/test_zswap.c
+> index f0e488ed90d8..fe0e7221525c 100644
+> --- a/tools/testing/selftests/cgroup/test_zswap.c
+> +++ b/tools/testing/selftests/cgroup/test_zswap.c
+> @@ -94,6 +94,19 @@ static int allocate_bytes(const char *cgroup, void *arg)
+>   	return 0;
+>   }
+>   
+> +static int allocate_random_bytes(const char *cgroup, void *arg)
+> +{
+> +	size_t size = (size_t)arg;
+> +	char *mem = (char *)malloc(size);
+> +
+> +	if (!mem)
+> +		return -1;
+> +	for (int i = 0; i < size; i++)
+> +		mem[i] = rand() % 128;
+> +	free(mem);
+> +	return 0;
+> +}
+> +
+>   static char *setup_test_group_1M(const char *root, const char *name)
+>   {
+>   	char *group_name = cg_name(root, name);
+> @@ -248,6 +261,74 @@ static int test_zswapin(const char *root)
+>   	return ret;
+>   }
+>   
+> +/* Test to verify the zswap writeback path */
+> +static int test_zswap_writeback(const char *root, bool wb)
+> +{
+> +	int ret = KSFT_FAIL;
+> +	char *test_group;
+> +	long zswpwb_before, zswpwb_after;
+> +
+> +	test_group = cg_name(root,
+> +		wb ? "zswap_writeback_enabled_test" : "zswap_writeback_disabled_test");
+> +	if (!test_group)
+> +		goto out;
+> +	if (cg_create(test_group))
+> +		goto out;
+> +	if (cg_write(test_group, "memory.max", "8M"))
+> +		goto out;
+> +	if (cg_write(test_group, "memory.high", "2M"))
+> +		goto out;
+> +	if (cg_write(test_group, "memory.zswap.max", "2M"))
+> +		goto out;
+> +	if (cg_write(test_group, "memory.zswap.writeback", wb ? "1" : "0"))
+> +		goto out;
+> +
+> +	zswpwb_before = cg_read_key_long(test_group, "memory.stat", "zswpwb ");
+> +	if (zswpwb_before < 0) {
+> +		ksft_print_msg("failed to get zswpwb_before\n");
+> +		goto out;
+> +	}
+> +
+> +	/*
+> +	 * Allocate more than memory.high to push memory into zswap,
+> +	 * more than zswap.max to trigger writeback if enabled,
+> +	 * but less than memory.max so that OOM is not triggered
+> +	 */
+> +	if (cg_run(test_group, allocate_random_bytes, (void *)MB(3)))
+> +		goto out;
+> +
+> +	/* Verify that zswap writeback occurred only if writeback was enabled */
+> +	zswpwb_after = cg_read_key_long(test_group, "memory.stat", "zswpwb ");
+> +	if (wb) {
+> +		if (zswpwb_after <= zswpwb_before) {
+> +			ksft_print_msg("writeback enabled and zswpwb_after <= zswpwb_before\n");
+> +			goto out;
+> +		}
+> +	} else {
+> +		if (zswpwb_after != zswpwb_before) {
+> +			ksft_print_msg("writeback disabled and zswpwb_after != zswpwb_before\n");
+> +			goto out;
+> +		}
+> +	}
+> +
+> +	ret = KSFT_PASS;
+> +
+> +out:
+> +	cg_destroy(test_group);
+> +	free(test_group);
+> +	return ret;
+> +}
+> +
+> +static int test_zswap_writeback_enabled(const char *root)
+> +{
+> +	return test_zswap_writeback(root, true);
+> +}
+> +
+> +static int test_zswap_writeback_disabled(const char *root)
+> +{
+> +	return test_zswap_writeback(root, false);
+> +}
+> +
+>   /*
+>    * When trying to store a memcg page in zswap, if the memcg hits its memory
+>    * limit in zswap, writeback should affect only the zswapped pages of that
+> @@ -425,6 +506,8 @@ struct zswap_test {
+>   	T(test_zswap_usage),
+>   	T(test_swapin_nozswap),
+>   	T(test_zswapin),
+> +	T(test_zswap_writeback_enabled),
+> +	T(test_zswap_writeback_disabled),
+>   	T(test_no_kmem_bypass),
+>   	T(test_no_invasive_cgroup_shrink),
+>   };
 
