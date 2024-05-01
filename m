@@ -1,279 +1,270 @@
-Return-Path: <linux-kernel+bounces-165660-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-165661-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 933468B8F2B
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 19:44:30 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9F8B48B8F2E
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 19:44:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B5D3B1C212CD
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 17:44:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 54405283819
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 17:44:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A19612FF8F;
-	Wed,  1 May 2024 17:44:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D570513C67F;
+	Wed,  1 May 2024 17:44:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="ZqEWEa3k"
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2075.outbound.protection.outlook.com [40.107.94.75])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="KJ/tdbuA"
+Received: from mail-ed1-f45.google.com (mail-ed1-f45.google.com [209.85.208.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D67512FF89;
-	Wed,  1 May 2024 17:44:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.94.75
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714585459; cv=fail; b=VFoB0t2IG5CwgTn6NuAUCDEEujqn5XTJ3vbQCwgyDNgMD37C715l3k64agOEYy+V+w09J6L27hnZOltupRnYjfZjpA1S1RiZAUwrWPkUtHpzMsm/IUH8USR8ZmwOMC6X2WhYYSKCnS6UO5ppgDzyCfnDiIz0EIh8z82JxQcqC0o=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714585459; c=relaxed/simple;
-	bh=hGaaiqAJqESh7Mfw7HCfKn6QlN3im4teHVHZBDBS3jM=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=OloxmPcXNTGia5S1w5+r0V7XKLQdLu7SW4ys9x9YYtEPhq3XSio/L44I8dFLRjpl3YX1ayeqygZTVmVszYIwvmAe1cn/Lq5RcKoizX9oB+STUXjXMG8FiYioD37XWyAWP4xqfRY3bbMVXOAek84/3LZmJOe0zwKOd++CBAYVsiI=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=ZqEWEa3k; arc=fail smtp.client-ip=40.107.94.75
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=cA7v1e+OIdz3gIDwU3WUx3UaKVg4yvXMqQ7zG8WZ8ozkzk9/4+ce++/WwrsXGkqaTZo0VhFHSi0potMLi9XfeQtvmcwzZHwrHl5goUPZ72vnIH9/NadnSY69dpRWOjVua8uIcxsqwtV9Wbe88O7WJHp+3O54QJfmPjK/yUGcdl3M64iafQqWqf4Ue236EXJiMnZf3bZFlWgbApiWvqyP2jGwxm/XjuJ1KP6+giaum4yUZPXhulE+whWlzXIc/7dzv7P3IAq6aOHeiYkqkOVxk55JwM4Ue+CqQzZsPPn/WaBx4JO0SzwSdQG4o+4klLLLEs6KbVoPyg6vxMek+h7FSg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=mqMBZtrpTt49/Cdtzq5Ejr1dkQMh6WnVRJNebGCi2Ok=;
- b=gIwFmYvHoLu7/SEyerI+qnhodxNzCrMYS6m1Hzbm4pJF2JGn1wRgxNisBGeKPSl2omMiAVzB8uBIyMzqwekcgStTqt+SdnddBCqIY18f6pKZstQzYba92WiR5YJrlXBggiqvTQH/TQ1mlXAhC4IHmvchVv5NVtfzzvsVUun+6P8juAFr9M6J1ZKQsgzXqi3j7xdBaCG75dZPhjaCO8R28YCAzKjTuPB9zZ71sbuBbgl3kJAvcnx9hHUJUE8xJw+eVg6F2a3HJ99rqoxQIsSHHBs7gRwUCQCov1covnSyZ2iFgMcHLV2/BqV+89AV20x310BYnT+AJnkFZYL0uDhj7g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.117.161) smtp.rcpttodomain=kernel.org smtp.mailfrom=nvidia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=mqMBZtrpTt49/Cdtzq5Ejr1dkQMh6WnVRJNebGCi2Ok=;
- b=ZqEWEa3kUmsR5fpIjbMvLLScq8Ol424AUccGctzR6YEWyNqGKqLIofCo6Wkdvu0O3NyUJYCjK3Y8F6J9NO5GFSw4Qtrh/Qrgm5dc6BnsCcIxLNIviX7yRVCvRXKs0SyuqPCoiKzf79LNUSLoeuQUKXefHHnOIMTJsGgQ4WGs4dX63l4B8J7NrwXOxqBqrD7KDo88lP7O/NKYs3YTFOmQevYM3gzUfvRYPGSSwGCN45pjdULwZDDJhrwKJ86+GkRUmv0PfMWF9CyLa0BdjtPJd/Ew7Y9QgcEKPcaZ1TekhGzdmp6SntazJG9DLZitSf7Q3DZ86i6DOv0RIFb96T3nSA==
-Received: from PH8PR07CA0014.namprd07.prod.outlook.com (2603:10b6:510:2cd::25)
- by CY5PR12MB6252.namprd12.prod.outlook.com (2603:10b6:930:20::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7519.35; Wed, 1 May
- 2024 17:44:10 +0000
-Received: from CY4PEPF0000E9DB.namprd05.prod.outlook.com
- (2603:10b6:510:2cd:cafe::8) by PH8PR07CA0014.outlook.office365.com
- (2603:10b6:510:2cd::25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7544.29 via Frontend
- Transport; Wed, 1 May 2024 17:44:09 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.161)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.117.161 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.117.161; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.117.161) by
- CY4PEPF0000E9DB.mail.protection.outlook.com (10.167.241.74) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7544.18 via Frontend Transport; Wed, 1 May 2024 17:44:09 +0000
-Received: from rnnvmail202.nvidia.com (10.129.68.7) by mail.nvidia.com
- (10.129.200.67) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Wed, 1 May 2024
- 10:43:41 -0700
-Received: from rnnvmail204.nvidia.com (10.129.68.6) by rnnvmail202.nvidia.com
- (10.129.68.7) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Wed, 1 May 2024
- 10:43:41 -0700
-Received: from Asurada-Nvidia (10.127.8.12) by mail.nvidia.com (10.129.68.6)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4 via Frontend
- Transport; Wed, 1 May 2024 10:43:40 -0700
-Date: Wed, 1 May 2024 10:43:39 -0700
-From: Nicolin Chen <nicolinc@nvidia.com>
-To: Jason Gunthorpe <jgg@nvidia.com>
-CC: <will@kernel.org>, <robin.murphy@arm.com>, <joro@8bytes.org>,
-	<thierry.reding@gmail.com>, <vdumpa@nvidia.com>, <jonathanh@nvidia.com>,
-	<linux-kernel@vger.kernel.org>, <iommu@lists.linux.dev>,
-	<linux-arm-kernel@lists.infradead.org>, <linux-tegra@vger.kernel.org>
-Subject: Re: [PATCH v6 5/6] iommu/arm-smmu-v3: Add in-kernel support for
- NVIDIA Tegra241 (Grace) CMDQV
-Message-ID: <ZjJ/S1bawYkfs1I4@Asurada-Nvidia>
-References: <cover.1714451595.git.nicolinc@nvidia.com>
- <63414546b1eafdf8032ac1b95ea514da6d206d63.1714451595.git.nicolinc@nvidia.com>
- <20240430163545.GS941030@nvidia.com>
- <ZjEztwhd5AN1FTCk@Asurada-Nvidia>
- <20240501130042.GC941030@nvidia.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 103711386A6
+	for <linux-kernel@vger.kernel.org>; Wed,  1 May 2024 17:44:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.45
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1714585479; cv=none; b=FYiqp+M3CvfbrmIgD502riSo53ff+xas9hMqYP+wz/uAchx//ZVzCNd1OHG3F+hZfCmZFg3XUpeXIkk/iUgEgm+geXWeYHbpE4OEES7AIXGmSlebD+1lT++S7Fmb+AYzYMPY68kqu0XrtV+iOPxrfPmzipCq5GcLKSE0wzXzW1I=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1714585479; c=relaxed/simple;
+	bh=v3enCvAplcrQ4cwOxDbhFJqukTTawzuTb94s+VDDEG8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=jEOkIGN3ol1JW6dwRuNL82ZomRRaakxzszgm9xVwFbvR4MZEGGUiTnmnZ08vpSUHISgGAy8VB5L0BgDySLYRwp3nRAe0AwKOINLCcj+eLL2ckfXyPM+aNlpLJvNCp/KjrEYIqOLD8AluUfNs/nd/+ngNBB9mp7jssdIkNbp7vQQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=KJ/tdbuA; arc=none smtp.client-ip=209.85.208.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-5729fd821ebso2451413a12.0
+        for <linux-kernel@vger.kernel.org>; Wed, 01 May 2024 10:44:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1714585476; x=1715190276; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=k4IV5MUpcWstax6ntK82tb+sL5JFIt+jl6TpQDKHYAY=;
+        b=KJ/tdbuADaCz4crloVoTX94jcQM+1tZ4wO6NmrGraFZFOu7DIv2s9+lH/FLJjrNVxv
+         2zytiW86b1K6wLFQn1nwViioeWcI4PTDCJkcjZX1eq+9ET6snFHYHcyKsA8fONhcgfPE
+         LMQysJ3FD8Ukm48RTh9acYTfz8BnTOObS5EnRN4HlZH9++D5uTeM4jye467cCmGBgm8N
+         h0GJMKrOsXsaZ3K+jS1k6j0iC/wgfXuKf/AE+cZ9IPIkYMJ8WDw/yEmvHaKTAxQ6w0ux
+         si31Nh4NV3QBpsVGgJ4AbFdaLZN6Q/3y+ooMNzJatNoGyZv6L0qDB8zQ2SpHIonCYQ18
+         v9VQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714585476; x=1715190276;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=k4IV5MUpcWstax6ntK82tb+sL5JFIt+jl6TpQDKHYAY=;
+        b=tEwT+CdWl6yqqD+jppE3JvWcRx19H9kXTf6Er66FVCm/4njEUms6KgcVNiAW0Cd47x
+         uQK4REWkdfZNY7kKdMVzW5oEREYBYseymbQfoLXOiMOanJEnPgxydBaBYAAqsxcb/tRq
+         bYuG5hV7ZVwnJ0rO+fjH1WyiyBMOK6GLrgdwXOhZJPmchEJgtsotbTu4vudLubQM1jyt
+         wmJKLA27QTHgtwRTTGKDXBq2GXUpEWWX7mIXwTXbHjyEtKihzH5kE4yYYjs6MAf6JSrr
+         Qb159Ez1uGNUAoVmybKyrEi23pi0co6P2K8q8cvEpfnSFM0vfWQZgYwTao1MVMzyXk8M
+         5geg==
+X-Forwarded-Encrypted: i=1; AJvYcCVBDh/jdM5c0VQaLOG8DcPgguiSg23pK+ehrDVm2/uQj89ECywPdEuBexJiI5Z48H4qGN9w7QsOy3s9oT6deMAxgV+YzNYOJ0r+wg1b
+X-Gm-Message-State: AOJu0YyWT9G6EWYtRd/dr5vrSR00L1ixR4pBY0AtlhH3g8qBXPl7snSQ
+	1rZyZsYPJkj3zEQGjHJXXsxKj+nmgXQ0gSKG953LN7bnNEtVxycdX9nWA6FqOwK8ut0bQyS1bbp
+	ySArMIEjhV3u9o3s/XLdyjEnwKHtiNtR95SyF
+X-Google-Smtp-Source: AGHT+IEdVVrTb7Zgs76FxcoRst8fi50Xits/93UMcuS3YKQMepe35H6XK3g97W1kPj+TBrSHq/3jFIHOcy+3gL+GTq0=
+X-Received: by 2002:a17:907:9850:b0:a55:59e6:13f5 with SMTP id
+ jj16-20020a170907985000b00a5559e613f5mr2475844ejc.26.1714585475945; Wed, 01
+ May 2024 10:44:35 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20240501130042.GC941030@nvidia.com>
-X-NV-OnPremToCloud: ExternallySecured
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CY4PEPF0000E9DB:EE_|CY5PR12MB6252:EE_
-X-MS-Office365-Filtering-Correlation-Id: 7a79739c-2540-48ef-658a-08dc6a064e14
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230031|82310400014|1800799015|376005|36860700004;
-X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?PHLxILkMYN6OtsdgXa+Q52Pe/rjzPTnBBiAYe6LWoviFa/2gK6xO6HYovpvK?=
- =?us-ascii?Q?bM3XdjlCAhEa/Edv3xYHNXU1CZKqxYgb/I7ilneGqY7vC23ra6raaoLV6cta?=
- =?us-ascii?Q?MgvTSW5mq2JxF9xU0VryVH9JyPBRNZ9ZmIiPIVoFuUpXFq9S7kmBXjjB1bxv?=
- =?us-ascii?Q?ZBLCcHr5rl76BggcQ02H2URQQRH9Ulnnr0m1yZhyaQ0tEwMg4aFU5jKiCgw9?=
- =?us-ascii?Q?nF/eJZE0UK3j+OI1SgIepFhjENLSsXtwPuwjNMtQXa8+ld4A9LMhNvOTAH3I?=
- =?us-ascii?Q?2dZPBB5yzLkO1KBsX0KfWYzYmR/0/98l1R4teRTXCrahau/5JkIgDsVOn1lm?=
- =?us-ascii?Q?TBBpBiLQCGmG1AOHYSEO6dSllO5IN+pguuyy+DOg7XX6QHvZ3gxVsmFkhwg2?=
- =?us-ascii?Q?1ORoZg3RceLFrfStPff3kafRqiZzZGkIvlgcF1KZF91asmAc7tRZJJfOVwYt?=
- =?us-ascii?Q?QPFl73VGOH3f4nTvenY+hEyuElvMENdJXvkX8oSn8v8q/AvQlyVGFl+4E2tP?=
- =?us-ascii?Q?5/qMVDlfytCzWqQSpVF3NFS1etbUqikqf0F4I4lTTkj295T99br78+61rfgr?=
- =?us-ascii?Q?LmjTeESuR65FNACj/Tvd65bOjeYc3DLWgeyQd7OpBksCRkxhXVJqABBB44GG?=
- =?us-ascii?Q?dGL4q0NzJylv60bigduNY+kjS7+UdY78JWXV0pCGKQbh+xG/o7dsnDAcW4hg?=
- =?us-ascii?Q?O9RxlKb1f38U6l63SbeN0ZoPQtOAnEeOM7a1NIQgPXDLKqKcxKI1rAXYmg/s?=
- =?us-ascii?Q?JGbsruoJ0o7net+dR9UjBLB3Fu0F7Eh3FLf/6tB8VbA8oOYymJP3r4TLL9HR?=
- =?us-ascii?Q?zwRpzG3ZFoLUivBU+aILmI8SoUUzdl7U6qa7Nh6tu3/s3wnyemG1cSCmHqsA?=
- =?us-ascii?Q?IzmdMaVIn9Jkbe5doUv+BY+5qqioZUyhAs6+/qn94wyeSLryAwCrchbwcgLZ?=
- =?us-ascii?Q?Q4nuGCtgXgZADfK+B7UUBPBvh+Cb/dlbL1rbB6jG6D+kKf/RDecBJstLAUBw?=
- =?us-ascii?Q?mmjwzcYmDuCv5IwxTlBMvpTUzvndvBs9U8TU0NbICL15cWAj70LSaXglHPiV?=
- =?us-ascii?Q?YCurX93/MBkMZpkEoyAs+QhtC54t8nlKL4BGen/w1aXZcGwfJ67Yx561EmFj?=
- =?us-ascii?Q?ZFyzbzOeBSOdlNUmOdf5i0iM5FXu+T2G5QBiUgMdBtxMN0i2wqcD+HyarRo3?=
- =?us-ascii?Q?7KHo0c8olAPJBx4zGrnx5fR2u9xWw0F8ku/GlE9qfvb5npL2HPmNRb/9Jb9q?=
- =?us-ascii?Q?oFKnmCmBSgAQfaMwKVpXsCMoa3ELZLWagTjiAggSnoJm2/lt6ZC0SKpxySr7?=
- =?us-ascii?Q?MoLtBGCwEnzd5O+njADSrpDF3kkbh4f7/8MswtyomaNSoUendSZrHQy2Oo63?=
- =?us-ascii?Q?rpLgfL66sqIZ51+xSmkLakbWLmkr?=
-X-Forefront-Antispam-Report:
-	CIP:216.228.117.161;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge2.nvidia.com;CAT:NONE;SFS:(13230031)(82310400014)(1800799015)(376005)(36860700004);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 May 2024 17:44:09.0669
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7a79739c-2540-48ef-658a-08dc6a064e14
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.161];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	CY4PEPF0000E9DB.namprd05.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY5PR12MB6252
+References: <ZirPGnSDUzD-iWwc@google.com> <77913327-2115-42b5-850a-04ef0581faa7@linux.intel.com>
+ <CAL715WJCHJD_wcJ+r4TyWfvmk9uNT_kPy7Pt=CHkB-Sf0D4Rqw@mail.gmail.com>
+ <ff4a4229-04ac-4cbf-8aea-c84ccfa96e0b@linux.intel.com> <CAL715WJKL5__8RU0xxUf0HifNVQBDRODE54O2bwOx45w67TQTQ@mail.gmail.com>
+ <5f5bcbc0-e2ef-4232-a56a-fda93c6a569e@linux.intel.com> <ZiwEoZDIg8l7-uid@google.com>
+ <CAL715WJ4jHmto3ci=Fz5Bwx2Y=Hiy1MoFCpcUhz-C8aPMqYskw@mail.gmail.com>
+ <b9095b0d-72f0-4e54-8d2e-f965ddff06bb@linux.intel.com> <CAL715WKm0X9NJxq8SNGD5EJomzY4DDSiwLb1wMMgcgHqeZ64BA@mail.gmail.com>
+ <Zi_cle1-5SZK2558@google.com>
+In-Reply-To: <Zi_cle1-5SZK2558@google.com>
+From: Mingwei Zhang <mizhang@google.com>
+Date: Wed, 1 May 2024 10:43:58 -0700
+Message-ID: <CAL715WJbYNqm2SXiTgqWHs34DtRfdFE7Hx48X_4ASHyQXeaPzA@mail.gmail.com>
+Subject: Re: [RFC PATCH 23/41] KVM: x86/pmu: Implement the save/restore of PMU
+ state for Intel CPU
+To: Sean Christopherson <seanjc@google.com>
+Cc: Dapeng Mi <dapeng1.mi@linux.intel.com>, Kan Liang <kan.liang@linux.intel.com>, 
+	maobibo <maobibo@loongson.cn>, Xiong Zhang <xiong.y.zhang@linux.intel.com>, pbonzini@redhat.com, 
+	peterz@infradead.org, kan.liang@intel.com, zhenyuw@linux.intel.com, 
+	jmattson@google.com, kvm@vger.kernel.org, linux-perf-users@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, zhiyuan.lv@intel.com, eranian@google.com, 
+	irogers@google.com, samantha.alt@intel.com, like.xu.linux@gmail.com, 
+	chao.gao@intel.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, May 01, 2024 at 10:00:42AM -0300, Jason Gunthorpe wrote:
-> On Tue, Apr 30, 2024 at 11:08:55AM -0700, Nicolin Chen wrote:
-> > On Tue, Apr 30, 2024 at 01:35:45PM -0300, Jason Gunthorpe wrote:
-> > > On Mon, Apr 29, 2024 at 09:43:48PM -0700, Nicolin Chen wrote:
-> > > Really this all seems like alot of overkill to make a little bit of
-> > > shorthand. It is not so wordy just to type it out:
-> > > 
-> > >   readl(vintf->base + TEGRA241_VINTF_CONFIG) 
-> > 
-> > vintf_readl(vintf, CONFIG) is much shorter. Doing so reduced the
-> > line breaks at quite a lot places, so overall the driver looks a
-> > lot cleaner to me.
-> 
-> We don't have the strict 80 column limit now, it would be fine to go a
-> few extra to avoid the breaks.
-> 
-> Certainly preferred to these readability damaging macros.
-
-I think only very few folks will look up for the register macros
-that are actually damaged, and these MMIO macros still look very
-straightforward that we will always know the correct ->base and
-register offset pair will be used.
-
-There are four sets of ->base in the driver. Sometimes they can
-be so dazzling that a wrong pair might be accidentally used. Yet
-such a stupid mistake can be really difficult to catch it out --
-I had a hard time earlier to sort it out..
-
-> > I can probably change these logging helpers to inline functions.
-> 
-> Just call the normal logging functions directly.
+On Mon, Apr 29, 2024 at 10:44=E2=80=AFAM Sean Christopherson <seanjc@google=
+com> wrote:
+>
+> On Sat, Apr 27, 2024, Mingwei Zhang wrote:
+> > On Sat, Apr 27, 2024 at 5:59=E2=80=AFPM Mi, Dapeng <dapeng1.mi@linux.in=
+tel.com> wrote:
+> > >
+> > >
+> > > On 4/27/2024 11:04 AM, Mingwei Zhang wrote:
+> > > > On Fri, Apr 26, 2024 at 12:46=E2=80=AFPM Sean Christopherson <seanj=
+c@google.com> wrote:
+> > > >> On Fri, Apr 26, 2024, Kan Liang wrote:
+> > > >>>> Optimization 4
+> > > >>>> allows the host side to immediately profiling this part instead =
+of
+> > > >>>> waiting for vcpu to reach to PMU context switch locations. Doing=
+ so
+> > > >>>> will generate more accurate results.
+> > > >>> If so, I think the 4 is a must to have. Otherwise, it wouldn't ho=
+ner the
+> > > >>> definition of the exclude_guest. Without 4, it brings some random=
+ blind
+> > > >>> spots, right?
+> > > >> +1, I view it as a hard requirement.  It's not an optimization, it=
+'s about
+> > > >> accuracy and functional correctness.
+> > > > Well. Does it have to be a _hard_ requirement? no?
+>
+> Assuming I understand how perf_event_open() works, which may be a fairly =
+big
+> assumption, for me, yes, this is a hard requirement.
+>
+> > > > The irq handler triggered by "perf record -a" could just inject a
+> > > > "state". Instead of immediately preempting the guest PMU context, p=
+erf
+> > > > subsystem could allow KVM defer the context switch when it reaches =
+the
+> > > > next PMU context switch location.
+>
+> FWIW, forcefully interrupting the guest isn't a hard requirement, but pra=
+ctically
+> speaking I think that will yield the simplest, most robust implementation=
 .
-> Just call the normal logging functions, there are so few callers
-> typing out the VCMDQ%u is not going to be so bad
+>
+> > > > This is the same as the preemption kernel logic. Do you want me to
+> > > > stop the work immediately? Yes (if you enable preemption), or No, l=
+et
+> > > > me finish my job and get to the scheduling point.
+>
+> Not really.  Task scheduling is by its nature completely exclusive, i.e. =
+it's
+> not possible to concurrently run multiple tasks on a single logical CPU. =
+ Given
+> a single CPU, to run task B, task A _must_ be scheduled out.
+>
+> That is not the case here.  Profiling the host with exclude_guest=3D1 isn=
+'t mutually
+> exclusive with the guest using the PMU.  There's obviously the additional=
+ overhead
+> of switching PMU context, but the two uses themselves are not mutually ex=
+clusive.
+>
+> And more importantly, perf_event_open() already has well-established ABI =
+where it
+> can install events across CPUs.  And when perf_event_open() returns, user=
+space can
+> rely on the event being active and counting (assuming it wasn't disabled =
+by default).
+>
+> > > > Implementing this might be more difficult to debug. That's my real
+> > > > concern. If we do not enable preemption, the PMU context switch wil=
+l
+> > > > only happen at the 2 pairs of locations. If we enable preemption, i=
+t
+> > > > could happen at any time.
+>
+> Yes and no.  I agree that swapping guest/host state from IRQ context coul=
+d lead
+> to hard to debug issues, but NOT doing so could also lead to hard to debu=
+g issues.
+> And even worse, those issues would likely be unique to specific kernel an=
+d/or
+> system configurations.
+>
+> E.g. userspace creates an event, but sometimes it randomly doesn't count =
+correctly.
+> Is the problem simply that it took a while for KVM to get to a scheduling=
+ point,
+> or is there a race lurking?  And what happens if the vCPU is the only run=
+nable task
+> on its pCPU, i.e. never gets scheduled out?
+>
+> Mix in all of the possible preemption and scheduler models, and other sou=
+rces of
+> forced rescheduling, e.g. RCU, and the number of factors to account for b=
+ecomes
+> quite terrifying.
+>
+> > > IMO I don't prefer to add a switch to enable/disable the preemption. =
+I
+> > > think current implementation is already complicated enough and
+> > > unnecessary to introduce an new parameter to confuse users. Furthermo=
+re,
+> > > the switch could introduce an uncertainty and may mislead the perf us=
+er
+> > > to read the perf stats incorrectly.
+>
+> +1000.
+>
+> > > As for debug, it won't bring any difference as long as no host event =
+is created.
+> > >
+> > That's ok. It is about opinions and brainstorming. Adding a parameter
+> > to disable preemption is from the cloud usage perspective. The
+> > conflict of opinions is which one you prioritize: guest PMU or the
+> > host PMU? If you stand on the guest vPMU usage perspective, do you
+> > want anyone on the host to shoot a profiling command and generate
+> > turbulence? no. If you stand on the host PMU perspective and you want
+> > to profile VMM/KVM, you definitely want accuracy and no delay at all.
+>
+> Hard no from me.  Attempting to support two fundamentally different model=
+s means
+> twice the maintenance burden.  The *best* case scenario is that usage is =
+roughly
+> a 50/50 spit.  The worst case scenario is that the majority of users favo=
+r one
+> model over the other, thus resulting in extremely limited tested of the m=
+inority
+> model.
+>
+> KVM already has this problem with scheduler preemption models, and it's p=
+ainful.
+> The overwhelming majority of KVM users run non-preemptible kernels, and s=
+o our
+> test coverage for preemtible kernels is abysmal.
+>
+> E.g. the TDP MMU effectively had a fatal flaw with preemptible kernels th=
+at went
+> unnoticed for many kernel releases[*], until _another_ bug introduced wit=
+h dynamic
+> preemption models resulted in users running code that was supposed to be =
+specific
+> to preemtible kernels.
+>
+> [* https://lore.kernel.org/kvm/ef81ff36-64bb-4cfe-ae9b-e3acf47bff24@proxm=
+ox.com
+>
 
-There're a few more in the part 2. And it's actually a bit wordy
-doing "VINTF%u: LVCDMQ%u/VCMDQ%u" at every place..
+I hear your voice, Sean.
 
-> > It would be unrolled to three mostly identical inline functions:
-> > 	tegra241_cmdqv_write_config(cmdqv, regval)
-> > 	tegra241_vintf_write_config(vintf, regval)
-> > 	tegra241_vcmdq_write_config(vcmdq, regval)
-> 
-> Expand the parameters in the caller:
-> 
-> __do_write_config(owner->base, &owner->status, _CMDQV_EN, TEGRA241_CMDQ_CONFIG,
->                   TEGRA241_CMDQ_STATUS, _CMDQ_ENABLED)
+In our cloud, we have a host-level profiling going on for all cores
+periodically. It will be profiling X seconds every Y minute. Having
+the host-level profiling using exclude_guest is fine, but stopping the
+host-level profiling is a no no. Tweaking the X and Y is theoretically
+possible, but highly likely out of the scope of virtualization. Now,
+some of the VMs might be actively using vPMU at the same time. How can
+we properly ensure the guest vPMU has consistent performance? Instead
+of letting the VM suffer from the high overhead of PMU for X seconds
+of every Y minute?
 
-Yea, I just did something like that. _CMDQV_EN and _CMDQ_ENABLED
-always equal to BIT(0), so I also move them to the common place.
+Any thought/help is appreciated. I see the logic of having preemption
+there for correctness of the profiling on the host level. Doing this,
+however, negatively impacts the above business usage.
 
-> > > > +#define cmdqv_write_config(_regval) \
-> > > > +	tegra241_cmdqv_write_config(cmdqv, CMDQV, _regval)
-> > > > +#define vintf_write_config(_regval) \
-> > > > +	tegra241_cmdqv_write_config(vintf, VINTF, _regval)
-> > > > +#define vcmdq_write_config(_regval) \
-> > > > +	tegra241_cmdqv_write_config(vcmdq, VCMDQ, _regval)
-> > > 
-> > > More hidden access to stack values
-> > 
-> > Btw, any reason for forbidding this practice? It will break the
-> > build if something goes wrong, which seems to be pretty easy to
-> > catch.
-> 
-> It is the kernel consensus not to do that. function-like-macros should
-> act like functions and not reach into some other stack frame. It makes
-> it very hard to follow the calling function if you can't follow where
-> the references are.
+One of the things on top of the mind is that: there seems to be no way
+for the perf subsystem to express this: "no, your host-level profiling
+is not interested in profiling the KVM_RUN loop when our guest vPMU is
+actively running".
 
-I see.
+Thanks.
+-Mingwei
 
-> > > > +	/* Use SMMU CMDQ if vintfs[0] is uninitialized */
-> > > > +	if (!FIELD_GET(VINTF_ENABLED, atomic_read(&vintf->status)))
-> > > > +		return &smmu->cmdq;
-> > > > +
-> > > > +	/* Use SMMU CMDQ if vintfs[0] has error status */
-> > > > +	if (FIELD_GET(VINTF_STATUS, atomic_read(&vintf->status)))
-> > > > +		return &smmu->cmdq;
-> > > 
-> > > Why atomic_read? The unlocked interaction with
-> > > tegra241_cmdqv_handle_vintf0_error() doesn't seem especially sane IMHO
-> > 
-> > Race between this get_cmdq() and the isr. Any alternative practice?
-> 
-> It doesn't fix any real race, I'm not sure what this is supposed to be
-> doing. The cmdq becomes broken and you get an ISR, so before the ISR
-> it will still post but get stuck, during the ISR it will avoid
-> posting, and after it will go back to posting?
-> 
-> Why? Just always post to the Q and let the ISR fix it?
-
-Yes, we could do so. I was thinking of the worst case by giving
-the guest OS a chance to continue (though in a slower mode), if
-something unrecoverable happens to the VINTF/VCMDQ part.
-
-> > > > +	if (tegra241_cmdqv_probe(cmdqv)) {
-> > > > +		if (cmdqv->irq > 0)
-> > > > +			devm_free_irq(smmu->dev, cmdqv->irq, cmdqv);
-> > > > +		devm_iounmap(smmu->dev, cmdqv->base);
-> > > > +		devm_kfree(smmu->dev, cmdqv);
-> > > > +		return NULL;
-> > > 
-> > > Oh. Please don't use devm at all in this code then, it is not attached
-> > > to a probed driver with the proper scope, devm isn't going to work in
-> > > sensible way.
-> > 
-> > Mind elaborating "it is not"? This function is called by
-> > arm_smmu_device_acpi_probe and arm_smmu_device_probe.
-> 
-> Normal devm usage will unwind the devm allocations when probe fails.
-> 
-> That doesn't happen here, you open coded the unwind above, and then
-> you have open coded freeing in another place anyhow.
-> 
-> So just don't use it. There is no value if the places where it should
-> work automatically are not functioning.
-
-I thought devm could work when rmmod too, not only when the probe
-fails..
-
-In that case, should we be concerned about the "rmmod arm-smmu-v3"?
-There is no callback function for that yet, so memory on the cmdqv
-side wouldn't be free-ed.
-
-Thanks
-Nicolin
+-Mingwei
 
