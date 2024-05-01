@@ -1,136 +1,193 @@
-Return-Path: <linux-kernel+bounces-165432-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-165459-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 17D018B8C97
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 17:16:38 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5444A8B8CD1
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 17:23:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C79CA283F24
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 15:16:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B8B601F258F6
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 15:23:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C642713247D;
-	Wed,  1 May 2024 15:13:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E5B4130AE7;
+	Wed,  1 May 2024 15:15:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sgn55JcK"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NtXiDdFs"
+Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0575713175F;
-	Wed,  1 May 2024 15:13:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26059130AD6;
+	Wed,  1 May 2024 15:15:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714576426; cv=none; b=cAmUBiy57DHdlcnkOe7ciIllkQdcT/XR4Q6HyjQNxv5oopFwU6m2Rn8mRv78DZezKb3zPk+lWgTRNWrdBn3ZYEoRNHx0aGmt7K7xIvXaw54vQrsp1UX2yauU1dJvs3ttkjcqgxE0weJwYhXe8BlBkdp2Xc/WFZh55raIwM8eD+k=
+	t=1714576515; cv=none; b=ULiPbSSzTL/T9ABzXsh4SJULfLm7be0N26c06n2arrJdJSWa/QLJGpK7LgSvmolBAKo0sN+zn1JmqnH+6gWnZbduXHyOOOiggIlHxB4ZTDhp8O6Kg/2yihtztZZ+x60iapG032+Rxt4F5vp3WqPvcnioJn8bggUeMOg9c7Jx7F8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714576426; c=relaxed/simple;
-	bh=YBjLSMIppWafWg7KldsTZKrs4eG5nttTEthhu+OXRyE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=boJGeukFb7N+UW2BBSGVsIxTwEitqj8GGT+ENrVjMtX+GmbGFRrWwRwfY8ykEL4txzG37bJC6lNohGpaeQKDx+PKb2WdrwiPK9fGO/uPp3B4L9E/gfjLF8pWhrRyQb/wrsLY5Wndu306inJxHpwUZPl5V/WSGkqsGC1EKqRsPDQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sgn55JcK; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 00153C113CC;
-	Wed,  1 May 2024 15:13:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714576425;
-	bh=YBjLSMIppWafWg7KldsTZKrs4eG5nttTEthhu+OXRyE=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=sgn55JcKpxb0pLy4qCshQKV2X7q87m847hTuD9aQU5FueGeUjKn1Ewd1x6Fo+tFBn
-	 3nf/SbivuIkR97d5ZJe9t1Ux0gtgcFkXcJzYW4o3JXODsxdpWQgRDzPvRUPV9grzXp
-	 cQCzyox8PXtHPaou1zC3L7V5TYuKeuLLlPaVVI1QrVbT8dmv/feK/hBr8IdjS7I9Pg
-	 sTchsz/A3n3RoeSu6av8EHHa53C+nTj3apISSqsfkTNUgIlAgbiSyk2uGrbhNyWrkD
-	 SKWOnfmtdl+v8gfZAbF+ppCC9hJ835PC+7dw24BFM9oiZ7fVQpQjDPaXkYb7boa5Uk
-	 ocDWzBfVLm/HA==
-Date: Wed, 1 May 2024 08:13:43 -0700
-From: Nathan Chancellor <nathan@kernel.org>
-To: John Hubbard <jhubbard@nvidia.com>
-Cc: Shuah Khan <shuah@kernel.org>, linux-kselftest@vger.kernel.org,
-	LKML <linux-kernel@vger.kernel.org>,
-	Valentin Obst <kernel@valentinobst.de>,
-	Kees Cook <keescook@chromium.org>,
-	Nick Desaulniers <ndesaulniers@google.com>,
-	Justin Stitt <justinstitt@google.com>,
-	Bill Wendling <morbo@google.com>
-Subject: Re: [PATCH] selftests/harness: fix many "format string is empty"
- warnings
-Message-ID: <20240501151343.GA1018661@dev-arch.thelio-3990X>
-References: <20240501020813.264878-1-jhubbard@nvidia.com>
+	s=arc-20240116; t=1714576515; c=relaxed/simple;
+	bh=OKF5BJ9LX19SO+TK+66BXlQN4ZOtSpHwwd+vox4LDTw=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=EdSEpAYctac3DETOx/hQWGy7bgjM/UFmuZfjaMZ5kZE8rmHX0lq0MKvFI0xXdqVmKdvhsh0vrfzGtfEuj8nJD/z4FRy65zRYVpqNLK02afHTh/xzfhkAYuCHZPCMajlgXoy1DfBTua9rhVpwcpmGvjP+gFl8iY1CfaRh3SQYe9c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NtXiDdFs; arc=none smtp.client-ip=209.85.214.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-1eb24e3a2d9so45814205ad.1;
+        Wed, 01 May 2024 08:15:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1714576513; x=1715181313; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:reply-to:message-id:date
+         :subject:cc:to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=lxPICHufJrRI7eTEH0R3o+PRxHFpRqv6o+L5HQrT7GQ=;
+        b=NtXiDdFsKNBrqBLbdI5uBIJbx0vw4BHWX/nwy7cLyGjOLtVDX0m1dBM6eeFZkqJDBZ
+         7Sz8pTlK1SrAvUTHA2trlrhiw8Kh2088ok0xh3GvrR22qx0QbenGq0YIGKHQ98lF9gdq
+         L1xOViWr+oSrre4KbSCGE8erhsHoBP/KbYcGv1dFwciQvVPDS/9BMRJJZ1tN6BNQaOGG
+         iryvrWm0gVXFzBRjMhBp8gLmW2dqh0wUHenzvJrmDrveBwb+3lREbE4u428tqUfjhKbQ
+         TU6djJ0ZVdOxPi+rw/xD3IXwZmArcbGPxwyIYZAICs7QwRRcRcO3JEJgzzJEO98tNCci
+         LE5g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714576513; x=1715181313;
+        h=content-transfer-encoding:mime-version:reply-to:message-id:date
+         :subject:cc:to:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=lxPICHufJrRI7eTEH0R3o+PRxHFpRqv6o+L5HQrT7GQ=;
+        b=vzXodrDWuv/o5rUAGFVxgSveXoYDyfGG9CCdhsYXw95YJ4Aqo+hTxJ5/iMWTGfmeKs
+         UQAS1x4MT0sTzT8ePRxD6xo0fDofDnFKlMoEXfcF70p2Na3HQe67dg70aJBHIENTYBpU
+         TYqNMX6N+qMFkXf94cIBsyF4zTUC9fYGxDdSPQrEoTuqxWNEWFwoXDjbWRo85KsSwdtE
+         0HPrdz8LPkWWoMZDCmrjRBE2K93HO8ST/mZeYuraippGCZImcD8oz0MEQxDtXEfgH410
+         W0hi1Vw9eWNp2gQC8xqkGWpzWBFHsxeLg/57YsD80/AaHuu+bGjxuWcWw4IMNrnP8UTg
+         bwJQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXJSHwrTcVWEemNfRMvsrnDNyGBp9S1JDrUtrJnojdN4FRyeHzFUfxA1VC5KwZmsZJ2ttveHHkQUAj8e5lX4YH/ccDzvJX4YDPTTXjsGvluJ8af/pqFCbuWRamEHqaYyAJ9kit9uPrFtYvG
+X-Gm-Message-State: AOJu0YwA4brD3e8HaWif+r1YALrwafLVXmOAbb9/iN2724AkoDDgFzfv
+	IASDXs9xbwAR3d1ptWy3TlwIXQi0lPKvO+xTApY4zUtekvmw/DYq
+X-Google-Smtp-Source: AGHT+IHkQBGQObUTbD7dIWZi83Gg6HMVwyNu54SfpdiChcNl2AiJWxhaUqx2/AW1fWxBUTIpVDQ4ow==
+X-Received: by 2002:a17:902:dac5:b0:1eb:60ec:32d0 with SMTP id q5-20020a170902dac500b001eb60ec32d0mr3725577plx.5.1714576513369;
+        Wed, 01 May 2024 08:15:13 -0700 (PDT)
+Received: from localhost.localdomain (c-73-254-87-52.hsd1.wa.comcast.net. [73.254.87.52])
+        by smtp.gmail.com with ESMTPSA id m9-20020a170902db0900b001dd88a5dc47sm5586861plx.290.2024.05.01.08.15.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 01 May 2024 08:15:13 -0700 (PDT)
+From: mhkelley58@gmail.com
+X-Google-Original-From: mhklinux@outlook.com
+To: haiyangz@microsoft.com,
+	wei.liu@kernel.org,
+	decui@microsoft.com,
+	linux-kernel@vger.kernel.org,
+	linux-hyperv@vger.kernel.org
+Cc: david@redhat.com
+Subject: [PATCH v2 1/2] hv_balloon: Use kernel macros to simplify open coded sequences
+Date: Wed,  1 May 2024 08:14:57 -0700
+Message-Id: <20240501151458.2807-1-mhklinux@outlook.com>
+X-Mailer: git-send-email 2.25.1
+Reply-To: mhklinux@outlook.com
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240501020813.264878-1-jhubbard@nvidia.com>
+Content-Transfer-Encoding: 8bit
 
-Hi John,
+From: Michael Kelley <mhklinux@outlook.com>
 
-On Tue, Apr 30, 2024 at 07:08:13PM -0700, John Hubbard wrote:
-> In order to build with clang at all, in order to see these symptoms, one
-> must first apply Valentin Obst's build fix for LLVM [1]. Once that is
-> done, then when building with clang, via:
-> 
->     make LLVM=1 -C tools/testing/selftests
-> 
-> ...clang emits a "format string is empty" warning. (gcc also emits a
-> similar warning.)
+Code sequences equivalent to ALIGN(), ALIGN_DOWN(), and umin() are
+currently open coded. Change these to use the kernel macro to
+improve code clarity. ALIGN() and ALIGN_DOWN() require the
+alignment value to be a power of 2, which is the case here.
 
-The warning you are describing here sounds like the same exact one that
-commit caed8eba2215 ("selftests: kselftest_harness: fix Clang warning
-about zero-length format") should have addressed in 6.9-rc5. Is this
-patch actually necessary?
+Signed-off-by: Michael Kelley <mhklinux@outlook.com>
+---
+Changes in v2:
+* No changes. This is a new patch that goes with v2 of patch 2 of this series.
 
-> Fix by passing NULL, instead of "", for the msg argument to
+ drivers/hv/hv_balloon.c | 40 ++++++++--------------------------------
+ 1 file changed, 8 insertions(+), 32 deletions(-)
 
-Because this text is describing what was done in caed8eba2215...
+diff --git a/drivers/hv/hv_balloon.c b/drivers/hv/hv_balloon.c
+index e000fa3b9f97..9f45b8a6762c 100644
+--- a/drivers/hv/hv_balloon.c
++++ b/drivers/hv/hv_balloon.c
+@@ -729,15 +729,8 @@ static void hv_mem_hot_add(unsigned long start, unsigned long size,
+ 
+ 		scoped_guard(spinlock_irqsave, &dm_device.ha_lock) {
+ 			has->ha_end_pfn +=  HA_CHUNK;
+-
+-			if (total_pfn > HA_CHUNK) {
+-				processed_pfn = HA_CHUNK;
+-				total_pfn -= HA_CHUNK;
+-			} else {
+-				processed_pfn = total_pfn;
+-				total_pfn = 0;
+-			}
+-
++			processed_pfn = umin(total_pfn, HA_CHUNK);
++			total_pfn -= processed_pfn;
+ 			has->covered_end_pfn +=  processed_pfn;
+ 		}
+ 
+@@ -800,7 +793,7 @@ static int pfn_covered(unsigned long start_pfn, unsigned long pfn_cnt)
+ {
+ 	struct hv_hotadd_state *has;
+ 	struct hv_hotadd_gap *gap;
+-	unsigned long residual, new_inc;
++	unsigned long residual;
+ 	int ret = 0;
+ 
+ 	guard(spinlock_irqsave)(&dm_device.ha_lock);
+@@ -836,15 +829,9 @@ static int pfn_covered(unsigned long start_pfn, unsigned long pfn_cnt)
+ 		 * our current limit; extend it.
+ 		 */
+ 		if ((start_pfn + pfn_cnt) > has->end_pfn) {
++			/* Extend the region by multiples of HA_CHUNK */
+ 			residual = (start_pfn + pfn_cnt - has->end_pfn);
+-			/*
+-			 * Extend the region by multiples of HA_CHUNK.
+-			 */
+-			new_inc = (residual / HA_CHUNK) * HA_CHUNK;
+-			if (residual % HA_CHUNK)
+-				new_inc += HA_CHUNK;
+-
+-			has->end_pfn += new_inc;
++			has->end_pfn += ALIGN(residual, HA_CHUNK);
+ 		}
+ 
+ 		ret = 1;
+@@ -915,9 +902,7 @@ static unsigned long handle_pg_range(unsigned long pg_start,
+ 			 */
+ 			size = (has->end_pfn - has->ha_end_pfn);
+ 			if (pfn_cnt <= size) {
+-				size = ((pfn_cnt / HA_CHUNK) * HA_CHUNK);
+-				if (pfn_cnt % HA_CHUNK)
+-					size += HA_CHUNK;
++				size = ALIGN(pfn_cnt, HA_CHUNK);
+ 			} else {
+ 				pfn_cnt = size;
+ 			}
+@@ -1011,9 +996,6 @@ static void hot_add_req(struct work_struct *dummy)
+ 	rg_sz = dm->ha_wrk.ha_region_range.finfo.page_cnt;
+ 
+ 	if ((rg_start == 0) && (!dm->host_specified_ha_region)) {
+-		unsigned long region_size;
+-		unsigned long region_start;
+-
+ 		/*
+ 		 * The host has not specified the hot-add region.
+ 		 * Based on the hot-add page range being specified,
+@@ -1021,14 +1003,8 @@ static void hot_add_req(struct work_struct *dummy)
+ 		 * that need to be hot-added while ensuring the alignment
+ 		 * and size requirements of Linux as it relates to hot-add.
+ 		 */
+-		region_size = (pfn_cnt / HA_CHUNK) * HA_CHUNK;
+-		if (pfn_cnt % HA_CHUNK)
+-			region_size += HA_CHUNK;
+-
+-		region_start = (pg_start / HA_CHUNK) * HA_CHUNK;
+-
+-		rg_start = region_start;
+-		rg_sz = region_size;
++		rg_start = ALIGN_DOWN(pg_start, HA_CHUNK);
++		rg_sz = ALIGN(pfn_cnt, HA_CHUNK);
+ 	}
+ 
+ 	if (do_hot_add)
+-- 
+2.25.1
 
-> ksft_test_result_code(). This removes dozens of warnings and a few
-> errors (some tests have -Werror set).
->
-> [1] https://lore.kernel.org/all/20240329-selftests-libmk-llvm-rfc-v1-1-2f9ed7d1c49f@valentinobst.de/
-> 
-> Cc: Valentin Obst <kernel@valentinobst.de>
-> Cc: Kees Cook <keescook@chromium.org>
-> Cc: Nick Desaulniers <ndesaulniers@google.com>
-> Cc: Nathan Chancellor <nathan@kernel.org>
-> Cc: Shuah Khan <shuah@kernel.org>
-> Cc: Justin Stitt <justinstitt@google.com>
-> Cc: Bill Wendling <morbo@google.com>
-> Signed-off-by: John Hubbard <jhubbard@nvidia.com>
-> ---
->  tools/testing/selftests/kselftest_harness.h | 6 ++++--
->  1 file changed, 4 insertions(+), 2 deletions(-)
-> 
-> diff --git a/tools/testing/selftests/kselftest_harness.h b/tools/testing/selftests/kselftest_harness.h
-> index d98702b6955d..456b8694e678 100644
-> --- a/tools/testing/selftests/kselftest_harness.h
-> +++ b/tools/testing/selftests/kselftest_harness.h
-> @@ -1207,8 +1207,10 @@ void __run_test(struct __fixture_metadata *f,
->  	else
->  		diagnostic = "unknown";
->  
-> -	ksft_test_result_code(t->exit_code, test_name,
-> -			      diagnostic ? "%s" : NULL, diagnostic);
-> +	if (diagnostic)
-> +		ksft_test_result_code(t->exit_code, test_name, "%s", diagnostic);
-> +	else
-> +		ksft_test_result_code(t->exit_code, test_name, NULL);
-
-but this diff is not doing that because it is based on a tree that has
-caed8eba2215; instead, it appears to be a completely identical
-transformation?
-
-Cheers,
-Nathan
-
->  	free(test_name);
->  }
->  
-> 
-> base-commit: 18daea77cca626f590fb140fc11e3a43c5d41354
-> prerequisite-patch-id: b901ece2a5b78503e2fb5480f20e304d36a0ea27
-> -- 
-> 2.45.0
-> 
 
