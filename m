@@ -1,93 +1,158 @@
-Return-Path: <linux-kernel+bounces-165831-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-165833-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id BCC6F8B9229
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 01:19:16 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 58A3D8B922E
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 01:19:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 341CD1F222B9
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 23:19:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7B43B1C2117D
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 23:19:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69E25168B17;
-	Wed,  1 May 2024 23:19:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F318165FD6;
+	Wed,  1 May 2024 23:19:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="JZPfk5M/"
-Received: from mail-pf1-f201.google.com (mail-pf1-f201.google.com [209.85.210.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp header.b="nEPLbHnv";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="H4vhHlVX"
+Received: from wfout1-smtp.messagingengine.com (wfout1-smtp.messagingengine.com [64.147.123.144])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 886F8165FD6
-	for <linux-kernel@vger.kernel.org>; Wed,  1 May 2024 23:19:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C79D6168AE4
+	for <linux-kernel@vger.kernel.org>; Wed,  1 May 2024 23:19:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.144
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714605545; cv=none; b=sht8YEOyPdrxFx2bn61QlMQyAxBLPCoQcMHE1D6mOfoDujgZlNsW7SLfAwEL6CH3HEQbmzwLPO6G1rq1nm3YKu/xMmBiguqw6Kc0IGjkT0D0DjGaq5w2vMEXd6Brn/G5O3pQFo6F4aLgePGeg7379hOj9XwU2zmsAOwByQ7o+O4=
+	t=1714605577; cv=none; b=NM9CG204mn24rbUywJjufC5FiNPNgXi7GSW5HW+j6vgvqIkhNAnFDoVZUTKHyuDDmZO73Jt61moZtHqTFoedlcZtdmLJ3rsEMIysqNndLZmdDjyP+KU5n119u7bZ/klKldht8sCCs9fCWShbBviqZTbEevd9I2G5fQfXYPU3AOI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714605545; c=relaxed/simple;
-	bh=gYC/W2xaDFXJYpjFLqNWMFw+2VXkrn96q+xybr/GbjY=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=nLCxdLkEIF3F6zcXL/3PunA0A45vfRHnpMtUoOm/qMKHuKWMD8w1nNt5VRDAEz/DlltOCAkzZs8zFqIyE4cESmIY1T+8V1cEV1g1D/UUNYXRxrYZkS0w970qlboyKymN08SISnUjNgwFSFdqa7TVya+hwYnincW5VY+57gneyY0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=JZPfk5M/; arc=none smtp.client-ip=209.85.210.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-pf1-f201.google.com with SMTP id d2e1a72fcca58-6ed25ed4a5fso8344873b3a.1
-        for <linux-kernel@vger.kernel.org>; Wed, 01 May 2024 16:19:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1714605544; x=1715210344; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=8I49xdD+d9776Vt2j9z1NeaJ1EuBZRI/KuJy9t3rDCU=;
-        b=JZPfk5M/Qmk7FhXmvLH8JdHQzpXDe/XqwwJzd+RCN0cq0RTw2YF0/wyLZ3Mps3uD9O
-         23W3ZaQKi5VPzO0B2iiVj3ySDelBpMWSE2jc0F0nmy0vOKRg+P36X5Eu78ocqJgKDkPM
-         avaNGkNyw9RpqK3mzsEGPRI7Zq71C/dsTVC/y1yLAm30E13qvLFc+t9UHT7928oktLOC
-         WapFIL/SzOuDk4LOgWY/qfBOF9aI1FbQgIB6USBCyBri2gZf/ukCUxCv1jSVMf6Ol09m
-         McE3ZSrAw7t8/ogY0ef0U7Z4npojFrB8FslzMv3p4Fv6mrqcKVtR1aiqJe/lATQUJmRP
-         AHNA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714605544; x=1715210344;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=8I49xdD+d9776Vt2j9z1NeaJ1EuBZRI/KuJy9t3rDCU=;
-        b=oD6Gaz4F6RxvVa+G4j0c5mRAF9/gk7smefk4NgSGuHT/SGOk7bLslFteN/JXdLjcEI
-         qyxPIG8yDEDYi+yw0Ob8/Eu1b6rgRgmn1jWw2MHAenJoXbyW1q8XOFICynla8DG5fv4e
-         1/D0YK0fn5Rz9iR8m2SeX2/SJemXvn0MdUfzT/n5xbqgoFhKOL0BOvuAU/FqwbOQEQR7
-         Km0UFGwzmzkkg/BRKJHAENLL9TyqyvHgwntxStqZabDOZXnh1xBoDSl9bbA5nISxPcUD
-         R/8NJ2/+HmbFRLk8oEaQ3KYSJt0gCwHefVwPlJZLpsp09ZA4VcjUvkLnH/+bu4/Kgx/O
-         VG4Q==
-X-Forwarded-Encrypted: i=1; AJvYcCWt8MZu13MkXg6ekz7kzgbMPXSyEYWGTp9j2+eN6CWG/QkUZaoQ+taNMEgqf3I5GFIR/3+5//oA07JnhFy3YJ/2+gfWrkJ1YU0mjZ7O
-X-Gm-Message-State: AOJu0YwfX9ZQoHc3H1Gi1cZmk4FGIgXlzUXbg/SJ0NZmr69u2OTGM+Hs
-	6GDaq+x2z3rWpgsUy1mi9leBJkp0exwxpj+Zm41QxOYHJuTPo7FAVbdDWKXOm1RkhdiIV21lY16
-	LjA==
-X-Google-Smtp-Source: AGHT+IHGioM5y7DlQhAaE5h84bb61oIJh9p3OQBuHDNj7qkZt5fkzHadbnSfgpeEs/q9h0bU0gSGOvD+1Dk=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:6a00:ac5:b0:6ec:ceb4:d9e2 with SMTP id
- c5-20020a056a000ac500b006ecceb4d9e2mr336913pfl.0.1714605543866; Wed, 01 May
- 2024 16:19:03 -0700 (PDT)
-Date: Wed, 1 May 2024 16:19:02 -0700
-In-Reply-To: <20240219074733.122080-26-weijiang.yang@intel.com>
+	s=arc-20240116; t=1714605577; c=relaxed/simple;
+	bh=BQsvHIpsbm/ye5b6OR/dSwwmp8PukAId2ZXHkT3Kz3o=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=FzXAyT+8AtBRTo0PlD6qrAHaJMt4fHlfHdj3+gkTlGMPxE9xtlZbw742fF3xjq6X8EnehSy0d4llxnyHBwsMpOTFieMUgi6f0u0vTuVtLuFBz1MW3GFKkyJLEaf1HL73m5WkL24r7mBw0DBnNKX2Y6CxTsXDvVctggmMNftESEo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sakamocchi.jp; spf=pass smtp.mailfrom=sakamocchi.jp; dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp header.b=nEPLbHnv; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=H4vhHlVX; arc=none smtp.client-ip=64.147.123.144
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sakamocchi.jp
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sakamocchi.jp
+Received: from compute7.internal (compute7.nyi.internal [10.202.2.48])
+	by mailfout.west.internal (Postfix) with ESMTP id C91B01C0016C;
+	Wed,  1 May 2024 19:19:34 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute7.internal (MEProxy); Wed, 01 May 2024 19:19:35 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
+	 h=cc:cc:content-type:content-type:date:date:from:from
+	:in-reply-to:in-reply-to:message-id:mime-version:references
+	:reply-to:subject:subject:to:to; s=fm3; t=1714605574; x=
+	1714691974; bh=aJ9bQTQ0bXFx75w1V4iyVyCDpPwSIeyvhFaFFkaoznc=; b=n
+	EPLbHnvn7kk3Q6HYjNnt/OXnh2RN8kQC3XElkRXx4fy6QTwG9blEl6lkid8ZwMim
+	8FQi8ec1df3ls65liqVggKMSjpM+QBFJr/mddTOIjhWNETefC3/JXegbfOaBUjer
+	JISoUSTAo7y804jT37zdEoPkQsZQPeL0dAl9yMsNVDHOdjFD873E9eSfrldfA/pX
+	ajgFI5Y5/gDTED430KysQOfkugOQII5d40QyYK6mUXwso3a2kxYYuMCq7z5yEF/W
+	ZM4KeW4ndUPYoRjnqbzG0XQARkQGUo+eW/tDQI++l+Dl5CK/nAL2j3r2GIyz2z4R
+	dvCZSoYSQKWDHva1v/niw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm3; t=1714605574; x=1714691974; bh=aJ9bQTQ0bXFx75w1V4iyVyCDpPwS
+	IeyvhFaFFkaoznc=; b=H4vhHlVXcT7kw8wLXefLQE0IW9kvUA1YOGNJ+6u3jMt5
+	r9vulwR5ilNwStsg3THwnqPVsQ8u0Zac1wWi3eB6BRtNa1THS5QbRUZUzOf0OOdJ
+	0qa07qFx5UdseBIzTtekvG7ovSPmFR9sCXiAed/1opVbxbHoWzIW+8mVWzc53W16
+	608mf3dInts22j0emQNJYmmmj0vyuQ/ZNO1FQ1TyzWh6NuoIriE3rojrou9dQ3Gy
+	5vzRy0ksA6XriYxxs6C4/YI1PMypzbGdP31xC/+GGZMRhlmdK+IvkHLcjVZsIdp2
+	/T9AVVm7Q5J+i4rhTgqFeAE4ivCYYBJ/gopfF7mwyA==
+X-ME-Sender: <xms:Bs4yZuRj43ouOoEpzP8FU7k6rpScrGu09QeP69ppwqQFsSLibHkkmA>
+    <xme:Bs4yZjx8trRk0btoDEE8pQ_n7Ao6XmyIkqVKoP2oF0zL8UKnvFIyhQldpBP9aJ-64
+    AGYops0DDXj2DO3Uz4>
+X-ME-Received: <xmr:Bs4yZr0lAWzSUccET_TrZW6auV7zr4dIt8Z8_5_4q_KoQG-UT9lA90VPCdVHNAz_CDB0ECLb8kVf8G2S6eDc0MnORsuCrzjg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrvddujedgvddvucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepvfgrkhgr
+    shhhihcuufgrkhgrmhhothhouceoohdqthgrkhgrshhhihesshgrkhgrmhhotggthhhird
+    hjpheqnecuggftrfgrthhtvghrnhepveeilefhudekffehkeffudduvedvfeduleelfeeg
+    ieeljeehjeeuvdeghfetvedvnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucevlh
+    hushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehoqdhtrghkrghs
+    hhhisehsrghkrghmohgttghhihdrjhhp
+X-ME-Proxy: <xmx:Bs4yZqBLhPn0s0kH3DDdkD0LhW7U9VHdrcG9Y54R4AsKQLO1k8xytg>
+    <xmx:Bs4yZni3Cc1erQbDWL2xgUxdnkm_4V0xAmlv22bP1KhhpJUSDqoQ6g>
+    <xmx:Bs4yZmqKf7uSx2_MfxSilQVE_d4GtThPJjKXXLt00SZVYdHP-mPWjw>
+    <xmx:Bs4yZqi8_mMMxL-AffjltSMYssZjEvGhCbK7cxX6NpBoWfxmvVq_wg>
+    <xmx:Bs4yZksTYx_eDfEVfaQ_VLIuW8wInPg7bPWNQ18YPbp18VlzDcERlPMq>
+Feedback-ID: ie8e14432:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 1 May 2024 19:19:32 -0400 (EDT)
+Date: Thu, 2 May 2024 08:19:31 +0900
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+To: Adam Goldman <adamg@pobox.com>
+Cc: linux1394-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] firewire: ohci: mask bus reset interrupts between ISR
+ and bottom half
+Message-ID: <20240501231931.GB106963@workstation.local>
+Mail-Followup-To: Adam Goldman <adamg@pobox.com>,
+	linux1394-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
+References: <ZfqpJ061hLtPT8XL@iguana.24-8.net>
+ <20240325005828.GB21329@workstation.local>
+ <20240401121800.GA220025@workstation.local>
+ <ZjIp68AqHhegFmDv@iguana.24-8.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240219074733.122080-1-weijiang.yang@intel.com> <20240219074733.122080-26-weijiang.yang@intel.com>
-Message-ID: <ZjLN5iGKE6DgEyVa@google.com>
-Subject: Re: [PATCH v10 25/27] KVM: nVMX: Introduce new VMX_BASIC bit for
- event error_code delivery to L1
-From: Sean Christopherson <seanjc@google.com>
-To: Yang Weijiang <weijiang.yang@intel.com>
-Cc: pbonzini@redhat.com, dave.hansen@intel.com, x86@kernel.org, 
-	kvm@vger.kernel.org, linux-kernel@vger.kernel.org, peterz@infradead.org, 
-	chao.gao@intel.com, rick.p.edgecombe@intel.com, mlevitsk@redhat.com, 
-	john.allen@amd.com
-Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZjIp68AqHhegFmDv@iguana.24-8.net>
 
-The shortlog is wrong, or perhaps just misleading.  This isn't "for event error_code
-delivery to L1", it's for event inject error code deliver for _L2_, i.e. from L1
-to L2.
+Hi Adam,
 
-The shortlog should be something more like:
+On Wed, May 01, 2024 at 04:39:23AM -0700, Adam Goldman wrote:
+> Hi Takashi,
+> 
+> On Mon, Apr 01, 2024 at 09:18:00PM +0900, Takashi Sakamoto wrote:
+> > I sent an additional patch[1] to handle the bus-reset event at the first
+> > time. I'd like you to review and test it as well, especially under your
+> > environment in which 1394:1995 and 1394a phys exist.
+> > 
+> > [1] https://lore.kernel.org/lkml/20240401121200.220013-1-o-takashi@sakamocchi.jp/
+> 
+> I'm sorry for another very late reply.
+> 
+> Now that we eliminated the IRQ storm, it makes sense to always enable 
+> the bus-reset interrupt at startup. I tested your patch with various 
+> devices, with a FW800 repeater, with a FW400 hub, without a hub, etc. 
+> Everything works OK. However, I only tested with XIO2213B OHCI.
+> 
+> -- Adam
 
- KVM: nVMX: Virtualize NO_HW_ERROR_CODE_CC for L1 event injection to L2
+Thanks for your test. The content of patch is equivalent to the first
+one in the candidate series[1], so I appended Tested-by tag when
+applying to for-next branch.
+
+The for-next branch includes the commits to provide the following
+tracepoints events:
+
+* firewire:async_request_outbound_initiate
+* firewire:async_request_outbound_complete
+* firewire:async_response_inbound
+* firewire:async_request_inbound
+* firewire:async_response_outbound_initiate
+* firewire:async_response_outbound_complete
+* firewire:async_phy_outbound_initiate
+* firewire:async_phy_outbound_complete
+* firewire:async_phy_inbound
+* firewire:bus_reset_initiate
+* firewire:bus_reset_schedule
+* firewire:bus_reset_postpone
+* firewire:bus_reset_handle
+
+All of them are used to trace the action of firewire core function,
+instead of 1394 OHCI driver. I think they are helpful to debug the kind
+of issue which we handled for v6.8 kernel.
+
+[1] https://lore.kernel.org/lkml/20240501073238.72769-1-o-takashi@sakamocchi.jp/
+
+
+Thanks
+
+Takashi Sakamoto
 
