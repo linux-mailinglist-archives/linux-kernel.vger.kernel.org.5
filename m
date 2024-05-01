@@ -1,146 +1,121 @@
-Return-Path: <linux-kernel+bounces-165855-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-165856-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 92D4F8B9268
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 01:37:22 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 28BBC8B926A
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 01:39:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 48F2E1F21D88
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 23:37:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5A0411C20DAA
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 23:39:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E8C9168B1A;
-	Wed,  1 May 2024 23:37:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 68858168B1A;
+	Wed,  1 May 2024 23:39:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kuMxEqdL"
-Received: from mail-pf1-f169.google.com (mail-pf1-f169.google.com [209.85.210.169])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UJJU5NG8"
+Received: from mail-pg1-f176.google.com (mail-pg1-f176.google.com [209.85.215.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E2DD43AC3;
-	Wed,  1 May 2024 23:37:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7786C42A96;
+	Wed,  1 May 2024 23:39:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714606633; cv=none; b=LiU/sefeT5hKB7ERyi9XT9qRp7JUh3E7cRAMrslq7Z58AHldMlcn59rE42NBSumKAulXRhUm5zQsmIlc1EHMazsqd6vz3J6yq8SUWkRzsldsLzjrbGDbSX8rjd/eut35ql1pbsy2pT77VlTJzXqiiqtH+g/yBov+NaNNCBOwmz8=
+	t=1714606741; cv=none; b=Mm2YzPOm3s9roIKixHz4ir6nch9Km7QFmZV5l4GcDh8YjSQA7/wp8JZliUOiufcHEp8YV4c5tN44ZjEqTX93lKIFhbO9M0L3vxOGCI/aupyx+BrJ7/gEmj6h9QMjoJepvKezn9VVjsq+RHEtUj0l000L7QYT5nMJfnA9VUVq164=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714606633; c=relaxed/simple;
-	bh=rnl3c4G/tQscwHdO1WvhkGb3RuY0yplXQv/UgVy5H2I=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Z3W4cClLWDvwRW1Hm/h8VY8mk9tIRbNDXfyNsWO5ACRsfeagu5guSLGC1NFxmHMDl0boqxIweHHzmvVbrvJ98NZVorvkW6wALh8cK4dryWoJ0gYTzcSalZwAVOIOYnIOZjpUU6wBtZLa0IhagGtA9ZQvdJZVTW6DwigFC1oehOc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kuMxEqdL; arc=none smtp.client-ip=209.85.210.169
+	s=arc-20240116; t=1714606741; c=relaxed/simple;
+	bh=sAWhs9jOyU3K4rULubdKQssmAH2mklmjkWpo7Fp5YOA=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=oiEgzkvSROjnd7r5r+qLtKp6r2XRM6UgDAkaDvMhu6jXQVtw50fgSzJgv5jo5o8mO3z4ejCtsag8cVscNLcBV4Oc6MjmDMgfiCFRwkZpDJSXm8C1DaIyd3d9vamr+KuuzMr6aOFENMPQsaU5yjJJ8bSNKpSFNbykmAvckToWAHw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UJJU5NG8; arc=none smtp.client-ip=209.85.215.176
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f169.google.com with SMTP id d2e1a72fcca58-6f42924ca64so696020b3a.2;
-        Wed, 01 May 2024 16:37:12 -0700 (PDT)
+Received: by mail-pg1-f176.google.com with SMTP id 41be03b00d2f7-5f80aa2d4a3so6030070a12.0;
+        Wed, 01 May 2024 16:39:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714606632; x=1715211432; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=WKj4Cu5JwcGHu7MqkGml23dMliHgLjGgTV4e25b7pDA=;
-        b=kuMxEqdLpWUTtZrl5mL9DvNgY8qhPYD9aEWYf5yJdycT68THMNJ3zCTA4PUMhzaFDJ
-         C4wH/wZHkqDG8C4yJDxGLjjLnmHn1OqxxllWAYgA4sicUXSRnbzR486McM4uwUZbR6+7
-         K7gavl0PxqFTIF5Z8pJvP2OOs3cySXMqwS6lEVTfgoV+SwpHx1KFWI5Z4MAO5EPT1Zbe
-         Y1JOboj4I11nOOdtSlV6u0G6Py5/QYS6jIsyqXOz4OM9/j71Sxs5aHxAhw4/mgNvaogO
-         EzUfOb9c2VyomMGIaGIqITuvloQgQKa9M11eXDuWjw8eESBz2Lk2lNH1F6B/ypnlvXT4
-         fcgg==
+        d=gmail.com; s=20230601; t=1714606739; x=1715211539; darn=vger.kernel.org;
+        h=content-transfer-encoding:content-disposition:mime-version
+         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=75Xvc7zrlEfmkMI9nebj9FrvBmWWK0w54I8lGIIUNsQ=;
+        b=UJJU5NG8ZVIKWvJNojKuP+a3ZXBLOUVABvawytVl36BZF5w+YwoStdlYqZZbTXdLYx
+         ejzF37RFUctcQIzPoptR56Dx0k8e/Z6AQ8AxiHv7iwCOhUN9nauy9OvB7KqiNlD+vm5u
+         KVBAZgaHIxkv8UeZ/+lSV23VspCK8Ko5hnVoUwmkgBQ8QkdND8D7oMVq55Lq0lctGNyD
+         aw6+cjyYH+NFU+Dn0vZL56eTRroKviC/bR2bwMVHu61T/N/EBxRRBJe2Sd2HYjwwnMJ3
+         Kwy+DXNsoVVupzgDiQ1XJz9v1sqPKCBfdEgMDpzVoNYHmKeYqCfHAicfRVMJeRGxM39J
+         Zgzg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714606632; x=1715211432;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=WKj4Cu5JwcGHu7MqkGml23dMliHgLjGgTV4e25b7pDA=;
-        b=E+AgGiA/yTwJ2qCCjyYmQe9Ygr2FteIjkNVQhj1773xJ4M+pOav8PoLkvN85e1D01/
-         36SDmLzPoCpIOyujzsCZuPtY5VyfGl3RKVA5aLEOOqcQ15d1vzDRmV1N1pn8h18OUTst
-         oUyb4bEoN/hcfVjJ6RAJb5S5FcmEBgug/C1dPBKTaJ+ySdrsWEOjgYO/KNFn7+H2MBom
-         0rhsVaz00ZIElDj0LB8dWvPHbLVoIrZBXdhibEU2ml1h3mMOEiBssN3ReWvryqpAnGcr
-         2qVImwBsEYg83UoqNBRPC6LFN/meo8/MpNTfa7qSDV6gKdIcymrvxK63xTOgyufzUHwR
-         SJSA==
-X-Forwarded-Encrypted: i=1; AJvYcCWu2Pc2e+TS8j2WKc0MJ/uJR61mpT45wG6x3BFwEk+jNFaMzKgX0pf0LnGz/o7JOFfIoLCxwT+CYuFFe2HCRVvo/w4UkTPs6NFhXvnrZzrbtZF3oxY10c9KkMt9BqfsOZeyZM6OQ8Z47aISrYCgFE7ChkvV/O2Twl4J69eF2rJ7wvilPuKXqs1bCgBm
-X-Gm-Message-State: AOJu0Yw/CIR8V2iZTy+m//bQ9D7E1HrUZ+eMHjtRLXnxSDMstf13UFVv
-	gZEp9tm33VyzMwpwAGeLa6Pt+hW51ONv0SDllokmIdE4ufnBzMUZ
-X-Google-Smtp-Source: AGHT+IGFR8pm1CNFzIVNLm94eUZlW4x5k9oMkl+Qqu09gm0jdDYqmsno4wWdEkryf2l3k56EpgQfqA==
-X-Received: by 2002:a05:6a21:2d86:b0:1af:66e6:bfdf with SMTP id ty6-20020a056a212d8600b001af66e6bfdfmr5105308pzb.15.1714606631351;
-        Wed, 01 May 2024 16:37:11 -0700 (PDT)
-Received: from kerneldev.. ([171.76.83.90])
-        by smtp.gmail.com with ESMTPSA id r12-20020aa7988c000000b006f41798fde5sm3075463pfl.214.2024.05.01.16.37.08
+        d=1e100.net; s=20230601; t=1714606739; x=1715211539;
+        h=content-transfer-encoding:content-disposition:mime-version
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=75Xvc7zrlEfmkMI9nebj9FrvBmWWK0w54I8lGIIUNsQ=;
+        b=cCU0U4zd3RTLD2CFJGnYi2S6BvGVXvPGc2qRMpKDzBEBTLZcqWK/a8JqiyLs9wosVJ
+         yqz0cYRLN6fsJQv3FeukigJKecXYAExaKNasAxBlbHgjrWQ6Bzwu4iqGOm0lIaIZSMJI
+         2KmXTsSYjFhQkrFyidM8NRKHeC34c+/Iu8dWkx+TMxqDuqEwkNnhgoXd/mRgpK8Z63Oz
+         lglp/OSGsLk3QqT3jF5lZ4g78jgm9Ur/IBieiGzpxBswIkKUXedi/gi0pkkQQBaYhP+n
+         2eo1C8PvNJh1XkxH5yjZFmJJ7wkJKQLv3c268hdeIF44loIQ+BhcsasJid6BKWwuNBgQ
+         YvaA==
+X-Forwarded-Encrypted: i=1; AJvYcCWfQ1H5bjfxcfiT5XJ6ryiQddnxLXA2dn2wvbARCHKrg06df5W5y/0ZNAPES3E1VhmuoEeyYi4DyWyR8/IwVr30Q8UPhDBvWUvJgIME
+X-Gm-Message-State: AOJu0YxLt/7X2aJaHhakg1k7yPW43frd6V431Pbjh6B3nI17munwOJL2
+	kdbA//TSabppVA6MqYSFt84eIFrHeCqphjIyx4p5JzGI28mjoDAGB0ZiYA==
+X-Google-Smtp-Source: AGHT+IHgNxy49xxZrYAd4l6cvOp4qdcb4LbJ2Zz0Ly2t5SVNdkiQgxiZxYZtrJZGUqogxVpg3CuJ0w==
+X-Received: by 2002:a17:90a:d08:b0:2b2:7c42:bcd7 with SMTP id t8-20020a17090a0d0800b002b27c42bcd7mr4048748pja.21.1714606739395;
+        Wed, 01 May 2024 16:38:59 -0700 (PDT)
+Received: from joaog-nb ([189.78.25.116])
+        by smtp.gmail.com with ESMTPSA id ha24-20020a17090af3d800b002b1b1a3611dsm1889042pjb.43.2024.05.01.16.38.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 01 May 2024 16:37:10 -0700 (PDT)
-From: Saurav Shah <sauravshah.31@gmail.com>
-To: rostedt@goodmis.org,
-	mhiramat@kernel.org,
-	mathieu.desnoyers@efficios.com,
-	mark.rutland@arm.com,
-	corbet@lwn.net
-Cc: Saurav Shah <sauravshah.31@gmail.com>,
-	linux-kernel@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org,
-	linux-doc@vger.kernel.org
-Subject: [PATCH] Documentation: tracing: Fix spelling mistakes
-Date: Thu,  2 May 2024 05:06:59 +0530
-Message-Id: <20240501233659.25441-1-sauravshah.31@gmail.com>
-X-Mailer: git-send-email 2.34.1
+        Wed, 01 May 2024 16:38:58 -0700 (PDT)
+Date: Wed, 1 May 2024 20:38:53 -0300
+From: =?utf-8?Q?Jo=C3=A3o_Paulo_Gon=C3=A7alves?= <jpaulo.silvagoncalves@gmail.com>
+To: linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc: joao.goncalves@toradex.com
+Subject: Supporting a Device with Switchable Current/Voltage Measurement
+Message-ID: <20240501233853.32y4ev7jvas5ahdz@joaog-nb>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
 
-Fix spelling mistakes in the documentation.
+Hello all,
 
-Signed-off-by: Saurav Shah <sauravshah.31@gmail.com>
----
- Documentation/trace/fprobetrace.rst | 4 ++--
- Documentation/trace/ftrace.rst      | 2 +-
- Documentation/trace/kprobetrace.rst | 2 +-
- 3 files changed, 4 insertions(+), 4 deletions(-)
+We need to support a hardware that can measure current and voltage on
+the same differential analog input, similar to a multimeter. The mode
+of measurement is controlled by a GPIO switch and goes to different
+ADC inputs depending on the mode. If the switch is enabled, a current
+loop with a shunt is enabled for current measurement; otherwise, voltage
+is measured. From the software point of view, we are considering using
+the iio-rescale driver as a consumer of an ADC IIO parent device. One
+of the problems is that we need to change the mode of measurement at
+runtime, but we are trying to avoid using some userspace "hack". The
+other is that for a minimal solution to enable the mode from boot, we
+can use a gpio-hog and control it with overlays. However,
+still would be better that this was done by the kernel. Do you know
+or have some guidance on how to properly support this in the kernel?
 
-diff --git a/Documentation/trace/fprobetrace.rst b/Documentation/trace/fprobetrace.rst
-index 0f187e3796e4..b4c2ca3d02c1 100644
---- a/Documentation/trace/fprobetrace.rst
-+++ b/Documentation/trace/fprobetrace.rst
-@@ -74,7 +74,7 @@ Function arguments at exit
- --------------------------
- Function arguments can be accessed at exit probe using $arg<N> fetcharg. This
- is useful to record the function parameter and return value at once, and
--trace the difference of structure fields (for debuging a function whether it
-+trace the difference of structure fields (for debugging a function whether it
- correctly updates the given data structure or not)
- See the :ref:`sample<fprobetrace_exit_args_sample>` below for how it works.
- 
-@@ -248,4 +248,4 @@ mode. You can trace that changes with return probe.
-              cat-143     [007] ...1.  1945.720616: vfs_open__entry: (vfs_open+0x4/0x40) mode=0x1 inode=0x0
-              cat-143     [007] ...1.  1945.728263: vfs_open__exit: (do_open+0x274/0x3d0 <- vfs_open) mode=0xa800d inode=0xffff888004ada8d8
- 
--You can see the `file::f_mode` and `file::f_inode` are upated in `vfs_open()`.
-+You can see the `file::f_mode` and `file::f_inode` are updated in `vfs_open()`.
-diff --git a/Documentation/trace/ftrace.rst b/Documentation/trace/ftrace.rst
-index 7e7b8ec17934..5aba74872ba7 100644
---- a/Documentation/trace/ftrace.rst
-+++ b/Documentation/trace/ftrace.rst
-@@ -1968,7 +1968,7 @@ wakeup
- One common case that people are interested in tracing is the
- time it takes for a task that is woken to actually wake up.
- Now for non Real-Time tasks, this can be arbitrary. But tracing
--it none the less can be interesting. 
-+it nonetheless can be interesting. 
- 
- Without function tracing::
- 
-diff --git a/Documentation/trace/kprobetrace.rst b/Documentation/trace/kprobetrace.rst
-index a49662ccd53c..69cb7776ae99 100644
---- a/Documentation/trace/kprobetrace.rst
-+++ b/Documentation/trace/kprobetrace.rst
-@@ -74,7 +74,7 @@ Function arguments at kretprobe
- -------------------------------
- Function arguments can be accessed at kretprobe using $arg<N> fetcharg. This
- is useful to record the function parameter and return value at once, and
--trace the difference of structure fields (for debuging a function whether it
-+trace the difference of structure fields (for debugging a function whether it
- correctly updates the given data structure or not).
- See the :ref:`sample<fprobetrace_exit_args_sample>` in fprobe event for how
- it works.
--- 
-2.34.1
+For the in kernel gpio solution, this is a draft of DT we are thinking:
+
+current-sense {
+      compatible = "current-sense-shunt";
+      io-channels = <&adc 0>;
+      gpio = <&main_gpio0 29 GPIO_ACTIVE_HIGH>;
+      shunt-resistor-micro-ohms = <3300000>;      
+};
+
+voltage-sense {
+        compatible = "voltage-divider";
+        io-channels = <&adc 1>;
+        gpio = <&main_gpio0 29 GPIO_ACTIVE_LOW>;
+        output-ohms = <22>;
+        full-ohms = <222>;
+};
+
+Regards,
+João Paulo Gonçalves
 
 
