@@ -1,146 +1,202 @@
-Return-Path: <linux-kernel+bounces-164822-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-164823-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 466438B8372
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 01:57:27 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9C1818B8378
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 02:02:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F0DAF2827EA
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Apr 2024 23:57:25 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 953DCB214ED
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 00:02:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4EDBE1C2314;
-	Tue, 30 Apr 2024 23:54:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F3F0F4400;
+	Wed,  1 May 2024 00:02:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BGqvg/v/"
-Received: from mail-oa1-f45.google.com (mail-oa1-f45.google.com [209.85.160.45])
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="kwBwHkxg"
+Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8982524D4;
-	Tue, 30 Apr 2024 23:54:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE0C41109
+	for <linux-kernel@vger.kernel.org>; Wed,  1 May 2024 00:02:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714521277; cv=none; b=O5N8AE7lVFQeU7xuNU0yr+IR21k1KTUXBR6Iyjo7/J9KPLtom2LurA47EheIEx+FiuK5n8tulSWzHTYBTxWs885gyV559tK3n/UV4h+pfHHgLTEUMUaaShGY625WEprudJtbb28fY/FQxXfbVu62zhlY1BL5Qu5EZ9w9PfKviwM=
+	t=1714521746; cv=none; b=hFyYw2Ny5Ib0XF7pqYYReIFV4vfts+S5iyuBO3unsJ3o3wU1j0+d7pJpzt6hSBpOs3chMAY1pltxpY+kd/I6A2ZOfxe6sVm9Bfs6Zpu5abAW9xasjQpC92RHnqq02qJZqD9fSjtg9dy5zT5v2jk2ij8ODSUJTcrNYaC0nRw6LxY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714521277; c=relaxed/simple;
-	bh=YtyCKayesUiIeIm0W0jJvwGLaTqIYSr/pR+hWFKzDcM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=s04+DPwHf6vGNbO+cVUyj0Obo+WcZfKJac+0yhPTlIYRtbpQ4CarR9TPFW4qlFYDsO4vOo6vv/VKbMblzy3wsqGh9uai91VSpfueJbYnNbvYHYd/dU3gPbWheZc+rWeH0DltEAxCSVDU4MVqtSDxTNhY8ZRhtYyNi+L5mvnGrfM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BGqvg/v/; arc=none smtp.client-ip=209.85.160.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oa1-f45.google.com with SMTP id 586e51a60fabf-23d41245bd9so417967fac.2;
-        Tue, 30 Apr 2024 16:54:35 -0700 (PDT)
+	s=arc-20240116; t=1714521746; c=relaxed/simple;
+	bh=ulDNw/dTdqEw0P5LS7YX4UHclLYMZBwZ4qj/77v2d+g=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Ol0Ej/Cfh/4pluwM/q4h7ThngqhZwrtblbYz7ZpRXJgh4BIDY9s1jMVkOvbhuPGI0/lkKiswxUsKBrReddcJhTiDGTSroJSvt6/M98ZcpoE/XahgPYzQcaoJN5NhMQJ9NsuSYARTc8zPP9ar9eFbNTGblzINGwqUJBrVDV3riCY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=kwBwHkxg; arc=none smtp.client-ip=209.85.214.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-1eb24e3a2d9so40538725ad.1
+        for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 17:02:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714521275; x=1715126075; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=QaB3ubfOzdM+QesYPMjf3PyvqBfAHdvEU9TgS4uvEtU=;
-        b=BGqvg/v/SACvuqMlJntHztTEBIdwrtkUk/SCFY8XCHm1LkUZUoQ8dh5vFkrtIj05IX
-         Uzb9d+hTwp8cgAxLP4mEpaHe0YnPjlqblaU28552D/0X61So1CHTUfrGtn5lLNu6VXHB
-         fE8hltMbLEfiu1tgPjaybczgbiCvrmsqK5nbqhaVAI+aT21p5MegtIS949JqffgRZHMY
-         mt+GQBahwca0hg0ANviP2ycb9OV24g3XVvlsFOaOeNaR8LUfpcmIY83pIrp8eAe5s80l
-         wlcwl48gjvZKduY9kexYzaqprYsMDa9euHeoxsykSbM+zbR16DXLnVzouZI3WQvVNhrP
-         qi9Q==
+        d=chromium.org; s=google; t=1714521744; x=1715126544; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=4nxn6SCMz5lVVXCZzlqH1YfFaziZDiU8+cMzwDJO3R4=;
+        b=kwBwHkxgNVxQ9sZc0MHlralht3mT28/nfTf+gWaVM55a5dhuz4vwg1mfZXbghjimuV
+         8J0fqXO0bk5ta56cBPagwB6R7Sb6KB5dy6dfDM5ojpiC1pLZMwwNAQ3pqydbDC+hMmxS
+         w+6VdmcnY5r73TcwCJ/ZB7pki7VgI8vr6ZPhI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714521275; x=1715126075;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:sender:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=QaB3ubfOzdM+QesYPMjf3PyvqBfAHdvEU9TgS4uvEtU=;
-        b=w3UOmltx2Bjuc5K7WsN8WgUorKx+SyFecXcK/bS1rxFdWb/4+apk6kIFnWcS1b1T6H
-         gIgVLWHeBYVoyWcBQvzu5T5W/807888KbTM1ZSPzMCyJ/DXyWnDN8azLDlm4hA21i26I
-         Xce91n6HprStlPFHQunD4J8ng5iR1e9cQQnswr2tgZ43EbiYD1Equ+bdZxh8DXfyFHLp
-         ObYtB3X9zn+jteT4MZtIDdgbtAHr8ls9UqVvICBb2hJnl0b/rvsf4CtTP+kqSJsKCX3I
-         QJJzlS0GxT0sTG1LN03RM0TdSgyoUo4345NsK+vu/nKXze7Q4YlbMarkZeVVieX4s1Oi
-         xHSQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWV/bsROKx2tvI3TMacdXUdnfefeV1xou0vbjRaK3H9xK5AWknHx0DOOQ4OwYAYwos4y+1vjFW6jj2jT8eUeeBoZu3Xv6fLcKPsuT/9
-X-Gm-Message-State: AOJu0YxwT9oODof3qLTm77bPZccd8K2s2SaITYO7syBGxz259ZXjPXuA
-	E8EAeQcmrQvmOMz/FD/Qa1hK0R0sNLHkJNHtaMWIj29LdIIlFHxo
-X-Google-Smtp-Source: AGHT+IHekV9LCbfB20xlNq24pvNOqTDf7ZxCdh44H19GWBdBXmlyyp9EWuhnM2CAzowJEwoy0exa/w==
-X-Received: by 2002:a05:6870:9690:b0:22a:6ce3:d57 with SMTP id o16-20020a056870969000b0022a6ce30d57mr1067862oaq.25.1714521274577;
-        Tue, 30 Apr 2024 16:54:34 -0700 (PDT)
-Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id g21-20020a63e615000000b005f75f325db4sm21471963pgh.29.2024.04.30.16.54.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 30 Apr 2024 16:54:33 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Message-ID: <1fef896c-0624-4a3c-af3b-ecb43782eea7@roeck-us.net>
-Date: Tue, 30 Apr 2024 16:54:32 -0700
+        d=1e100.net; s=20230601; t=1714521744; x=1715126544;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=4nxn6SCMz5lVVXCZzlqH1YfFaziZDiU8+cMzwDJO3R4=;
+        b=mCu8p4Fk9rSfnCk41t92iOGREYg24WbtQYW0rjL2dai6DQ0CyU72yuVuDEKTE+Zt/F
+         yP5FMKbfYOGxN53wbfCkxsGd3r4BUFBJ2b7+5E5Za7NhYVqrBdSHsjBBzRlcJzAbcknU
+         po7yb3f9REbSHrQ/8OB6n62UA+i517Iva48RuSneDvCjrFs6/KbuzyTHnVsyqCpEHGYQ
+         IPZ7U0Bn7VKOdUjJ3ihu2iOA7bYwG9XMISeOcdYMsebCexMmFUA93q6AV5v2SITeA0UP
+         C6mIR5k+GV57w1LkyjeEaUs2xnA72jxBOc808q4VPL98whx2Z3PNH1e8EHN4dg5R53F4
+         3lGw==
+X-Forwarded-Encrypted: i=1; AJvYcCWgGu18Qc0nOAxGSyfrvfa0yHNa0P4fddDpi3o1JP/6GyBVgaHoHZuJgMW0AwFzraronl0tLg+bn7gNXcaGPT09+SKj0EBxiPE1QuTw
+X-Gm-Message-State: AOJu0Yyv9XCwq03YcUslksJk6VKa9JleehvyCtmBEzLrZ3tg6Wi8l6hH
+	Bqca2qMUFBMBitCZMsCUq5nJZILtfPJ2wBruGEHPmcUCOx1/vSjAEWn5UA7J8w==
+X-Google-Smtp-Source: AGHT+IGQ7+uHcauYymFMd1a9l+W+Ookyr5oT1C+Il/oslPkJPGipBryZKj9OsrcmmX0CvT/vx/s0Xg==
+X-Received: by 2002:a17:902:8682:b0:1e2:9066:4a8b with SMTP id g2-20020a170902868200b001e290664a8bmr1054365plo.26.1714521744025;
+        Tue, 30 Apr 2024 17:02:24 -0700 (PDT)
+Received: from www.outflux.net ([198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id e3-20020a17090301c300b001eb0ef6ab56sm8693683plh.64.2024.04.30.17.02.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 30 Apr 2024 17:02:23 -0700 (PDT)
+From: Kees Cook <keescook@chromium.org>
+To: Peter Zijlstra <peterz@infradead.org>
+Cc: Kees Cook <keescook@chromium.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>,
+	Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	x86@kernel.org,
+	"H. Peter Anvin" <hpa@zytor.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Sami Tolvanen <samitolvanen@google.com>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Josh Poimboeuf <jpoimboe@kernel.org>,
+	Juergen Gross <jgross@suse.com>,
+	Breno Leitao <leitao@debian.org>,
+	linux-kernel@vger.kernel.org,
+	linux-hardening@vger.kernel.org
+Subject: [PATCH] x86/alternatives: Make FineIBT mode Kconfig selectable
+Date: Tue, 30 Apr 2024 17:02:22 -0700
+Message-Id: <20240501000218.work.998-kees@kernel.org>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] hwmon (max6639): Use regmap
-To: Naresh Solanki <naresh.solanki@9elements.com>,
- Jean Delvare <jdelvare@suse.com>
-Cc: linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240430210539.935040-1-naresh.solanki@9elements.com>
-Content-Language: en-US
-From: Guenter Roeck <linux@roeck-us.net>
-Autocrypt: addr=linux@roeck-us.net; keydata=
- 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
- mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-In-Reply-To: <20240430210539.935040-1-naresh.solanki@9elements.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+X-Developer-Signature: v=1; a=openpgp-sha256; l=3307; i=keescook@chromium.org;
+ h=from:subject:message-id; bh=ulDNw/dTdqEw0P5LS7YX4UHclLYMZBwZ4qj/77v2d+g=;
+ b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBmMYaNiBd/XlJFp0ZZ9P3bb7NESL+wUOlhanba9
+ R3cjKKT6liJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZjGGjQAKCRCJcvTf3G3A
+ JimOD/0TJNCCGvcLiriuaFgxG3n3TYUsY+GKhj0nnIshN1RlfzpGc6osmYkDqg+ih4j0AftMnkW
+ iLjkxikX8o11WwTScsbS1hztczb6BCb0jXOxdfu9UDgQEPMJs60II2/bMLGmeNWbPA6XS0KRY/6
+ wMpKIwUxdSKjhVU0fHOyAXgmffaQzZLa8fQgMuJ73fRDWxyEhpxYrvuNYj3/cV19EM1+UyaJRN1
+ N1jzqpkVUOeoBY+/pPN1BIg69b34jrdnykvZYEZWaH5udT3V0IzpenNe+SWrfurYbOrFR5PJ1Lt
+ jDuDd+frTpG9M+9sapZ/OHmfQnzkEe0cvDyavXNkNGvTeiQGIQ9ztx4PSGqJpv+8K9s5fwcWZsD
+ +W7hxsNYQR79URK5RK+jjZPV8hZWxkZRV4OOvyS54sVQugTGQfsb48ZtKc8OLO+7og3AgYlDZGM
+ tg4f1hA93QSQAo43o5el2pzcHMtqAWGvyGdAiyM8qdyXlHUpjizp2gnzppYDxglPC4W7BQSsaHp
+ Y2eB8/yRvZS/E4/s0452cGrPP0uV8pWgOSPpK4fMflNoQiMB/3KZnL6N0tCmwac7sN/Ajo30vWL
+ WOrsfkJzwI8/arxr9SmNGtmUy3mn32qRfPxugXt5OSzPgqIsU1WZz8e52oPqwLyfWl5K2ZbNGJh
+ +X0RK1z j1olrq8A==
+X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
+Content-Transfer-Encoding: 8bit
 
-On 4/30/24 14:05, Naresh Solanki wrote:
-> Add regmap support & remove local caching.
-> 
-> Signed-off-by: Naresh Solanki <naresh.solanki@9elements.com>
+Since FineIBT performs checking at the destination, it is weaker against
+attacks that can construct arbitrary executable memory contents. As such,
+some system builders want to run with FineIBT disabled by default. Allow
+the "cfi=kcfi" boot param mode to be selectable through Kconfig via the
+newly introduced CONFIG_CFI_AUTO_DEFAULT.
 
-I assume the first post was superseded due to the missing version ?
+Signed-off-by: Kees Cook <keescook@chromium.org>
+---
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Borislav Petkov <bp@alien8.de>
+Cc: Dave Hansen <dave.hansen@linux.intel.com>
+Cc: x86@kernel.org
+Cc: "H. Peter Anvin" <hpa@zytor.com>
+Cc: Alexei Starovoitov <ast@kernel.org>
+Cc: Sami Tolvanen <samitolvanen@google.com>
+Cc: Nathan Chancellor <nathan@kernel.org>
+Cc: Josh Poimboeuf <jpoimboe@kernel.org>
+---
+ arch/x86/Kconfig              | 9 +++++++++
+ arch/x86/include/asm/cfi.h    | 2 +-
+ arch/x86/kernel/alternative.c | 8 ++++----
+ 3 files changed, 14 insertions(+), 5 deletions(-)
 
-Either case, please provide change logs with your patches.
-
-Thanks,
-Guenter
+diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+index 4fff6ed46e90..d5cf52d2f6a8 100644
+--- a/arch/x86/Kconfig
++++ b/arch/x86/Kconfig
+@@ -2424,6 +2424,15 @@ config STRICT_SIGALTSTACK_SIZE
+ 
+ 	  Say 'N' unless you want to really enforce this check.
+ 
++config CFI_AUTO_DEFAULT
++	bool "Attempt to use FineIBT by default at boot time"
++	depends on FINEIBT
++	default y
++	help
++	  Attempt to use FineIBT by default at boot time. If enabled,
++	  this is the same as booting with "cfi=auto". If disabled,
++	  this is the same as booting with "cfi=kcfi".
++
+ source "kernel/livepatch/Kconfig"
+ 
+ endmenu
+diff --git a/arch/x86/include/asm/cfi.h b/arch/x86/include/asm/cfi.h
+index 7cd752557905..31d19c815f99 100644
+--- a/arch/x86/include/asm/cfi.h
++++ b/arch/x86/include/asm/cfi.h
+@@ -93,7 +93,7 @@
+  *
+  */
+ enum cfi_mode {
+-	CFI_DEFAULT,	/* FineIBT if hardware has IBT, otherwise kCFI */
++	CFI_AUTO,	/* FineIBT if hardware has IBT, otherwise kCFI */
+ 	CFI_OFF,	/* Taditional / IBT depending on .config */
+ 	CFI_KCFI,	/* Optionally CALL_PADDING, IBT, RETPOLINE */
+ 	CFI_FINEIBT,	/* see arch/x86/kernel/alternative.c */
+diff --git a/arch/x86/kernel/alternative.c b/arch/x86/kernel/alternative.c
+index 45a280f2161c..e8d0892d89cf 100644
+--- a/arch/x86/kernel/alternative.c
++++ b/arch/x86/kernel/alternative.c
+@@ -902,8 +902,8 @@ void __init_or_module apply_seal_endbr(s32 *start, s32 *end) { }
+ 
+ #endif /* CONFIG_X86_KERNEL_IBT */
+ 
+-#ifdef CONFIG_FINEIBT
+-#define __CFI_DEFAULT	CFI_DEFAULT
++#ifdef CONFIG_CFI_AUTO_DEFAULT
++#define __CFI_DEFAULT	CFI_AUTO
+ #elif defined(CONFIG_CFI_CLANG)
+ #define __CFI_DEFAULT	CFI_KCFI
+ #else
+@@ -1011,7 +1011,7 @@ static __init int cfi_parse_cmdline(char *str)
+ 		}
+ 
+ 		if (!strcmp(str, "auto")) {
+-			cfi_mode = CFI_DEFAULT;
++			cfi_mode = CFI_AUTO;
+ 		} else if (!strcmp(str, "off")) {
+ 			cfi_mode = CFI_OFF;
+ 			cfi_rand = false;
+@@ -1271,7 +1271,7 @@ static void __apply_fineibt(s32 *start_retpoline, s32 *end_retpoline,
+ 		      "FineIBT preamble wrong size: %ld", fineibt_preamble_size))
+ 		return;
+ 
+-	if (cfi_mode == CFI_DEFAULT) {
++	if (cfi_mode == CFI_AUTO) {
+ 		cfi_mode = CFI_KCFI;
+ 		if (HAS_KERNEL_IBT && cpu_feature_enabled(X86_FEATURE_IBT))
+ 			cfi_mode = CFI_FINEIBT;
+-- 
+2.34.1
 
 
