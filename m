@@ -1,232 +1,167 @@
-Return-Path: <linux-kernel+bounces-165592-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-165593-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 252F88B8E53
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 18:37:44 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 46CC48B8E56
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 18:38:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 42A3D1C22F2E
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 16:37:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C73261F22E2A
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 16:37:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 59186D27D;
-	Wed,  1 May 2024 16:37:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96F4D11CBD;
+	Wed,  1 May 2024 16:37:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="kAQ3yZw8"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="ppjLnAXA"
+Received: from EUR04-DB3-obe.outbound.protection.outlook.com (mail-db3eur04olkn2077.outbound.protection.outlook.com [40.92.74.77])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E011B1B59A;
-	Wed,  1 May 2024 16:37:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714581427; cv=none; b=a5wlrYCXDpUm9CLVyQeWoPLF8j6G+7TTMWfnSf8F2KUyg97X4KWoULH2wg6pDQXSzKLu8ipq+AaLQAGR/tEIdWVioXZKiwJDJnY0QoFm+UIZBPehnOdH2XnW/Y0TAP5t5JUhDqoqgcREJ3YHiVQDRhZAEMT/t7zpfLi0lFkKPvg=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714581427; c=relaxed/simple;
-	bh=yF8dPiRP5cP3fXnEcgflGw4Fpd7IDI6fSilI+0JEMiA=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=WXGS1JgILLoIhPX6RKSZ5CkKuTClcbMHUOFse2sEWHjJ5rYBvrBXBTuVAHEbqxoFt1Iqw0d+0zY8NHf+a9yv4lEw7zwlo56wMPmfqn4f7QeE13mnuaKQinA2i+JOrNrNsTcITRGtGlzrZp8IAEGV0rTZ4A8rUCYh781SPFG771s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=kAQ3yZw8; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 441ER7qG027190;
-	Wed, 1 May 2024 16:36:49 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	from:to:cc:subject:date:message-id:in-reply-to:references
-	:mime-version:content-transfer-encoding:content-type; s=
-	qcppdkim1; bh=cXaenI9+leuO7eYu3ig6KGqchQBjeXNHDhPjF3tdXJQ=; b=kA
-	Q3yZw8Ail239tgk1adip42HBjJ18Yx0+3KTXEuDX3YT20eppV7Mkyvy/pLrDG+ox
-	f3WjdNYBmvyl0KahWqb/UoRkLzIT91+0RSmcbcwXekEi9DZ2J+SFuPwPWkCGoVKJ
-	FKGUr5upKsEWItYjyuujYmUFruwLL2z+fAkzVnboP1AbY87ld6F8nZ25kWKfVEg3
-	ZRvwwdcg65rFqY5Mwy/tYIy+kxFneOvb/pfetBIKIpzeEYTe+zgX5dNQvzfhdzuW
-	xAVlmnB1UjBPOxzOLhIqe/MWm3E9LpvZWhRT23xUbZsl04uH7erxMZdwbKrg055P
-	EQHqnbrn3jAWXJ+rMOAQ==
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xup5krfs7-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 01 May 2024 16:36:48 +0000 (GMT)
-Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
-	by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 441Gal6d023532
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 1 May 2024 16:36:47 GMT
-Received: from adas-linux5.qualcomm.com (10.80.80.8) by
- nalasex01b.na.qualcomm.com (10.47.209.197) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.9; Wed, 1 May 2024 09:36:46 -0700
-From: Shashank Babu Chinta Venkata <quic_schintav@quicinc.com>
-To: <jingoohan1@gmail.com>, <gustavo.pimentel@synopsys.com>,
-        <manivannan.sadhasivam@linaro.org>, <andersson@kernel.org>,
-        <agross@kernel.org>, <konrad.dybcio@linaro.org>, <mani@kernel.org>
-CC: <quic_msarkar@quicinc.com>, <quic_kraravin@quicinc.com>,
-        Lorenzo Pieralisi
-	<lpieralisi@kernel.org>,
-        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?=
-	<kw@linux.com>,
-        Rob Herring <robh@kernel.org>, Bjorn Helgaas
-	<bhelgaas@google.com>,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        Conor Dooley
-	<conor.dooley@microchip.com>,
-        <linux-kernel@vger.kernel.org>, <linux-pci@vger.kernel.org>,
-        <linux-arm-msm@vger.kernel.org>
-Subject: [PATCH v4 3/3] PCI: qcom: Add RX margining settings for 16 GT/s
-Date: Wed, 1 May 2024 09:35:34 -0700
-Message-ID: <20240501163610.8900-4-quic_schintav@quicinc.com>
-X-Mailer: git-send-email 2.43.2
-In-Reply-To: <20240501163610.8900-1-quic_schintav@quicinc.com>
-References: <20240501163610.8900-1-quic_schintav@quicinc.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5D0ECA40;
+	Wed,  1 May 2024 16:37:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.74.77
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1714581453; cv=fail; b=bPJbF1tXiUzufkhf/LMKJaxwPxMNsez4JRef8G44mPvGWNqKuw1C1qHOxrY2NhXoAQGHTfux/AvxipxS3nvGIRwqOIXB2kyVzsKVh5/DQRmSNwaeLdc/3VwY0ACxM6iDfcqg0rk+be/dolf5I0ajhJvKmmCN2zvL2zd5e7rpQFw=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1714581453; c=relaxed/simple;
+	bh=OooobC4A8kqMtKwMra6Ngc2WaKs0SGSrVTHTuxpEedE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=XCsTI57YJrWR5DvBKlpBFKApwLi1/J0NKJ5FLvD8wB4xTg5xetCqTiWnNglPGfeT23eSRrit6TE5ZSkW/ehWNCJ6qHIoqj7tIg8LjOHfHb63u+0t/riJoJTln1ZpBuG+th8QmvZr1DWxhWOImUfVxaC9S7tj8qCUoyT4KOVlPXY=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=ppjLnAXA; arc=fail smtp.client-ip=40.92.74.77
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=KuL78lWlQEEM9C295ble6ga1xW8+WX5tQZBspe/Nfy24mzW2OxWX8gTHzd/NHUKpTlmtvg0M8FwD4CTQS+jxsdri6xxUNrUm5qlPYbmR3N3wgd+RgFwfSxtxxu3dSfYXO0ou0FSV0cuNnJD7YjFlqT/Od8UiFtVcAFScrNealbUU17nXj+zw6aM0zzUr9bReHFL3Nw3mxitvtLJcS8JFsXSNlBcL9kkDsiKeEaGpWJJ1ZB+8e1vdOv3z5HJ3O8FKVCXNyqdw0TfKrA6XE5WgQoSDf9Wd5vqXbYg8fTEBp5twVm8HRizjqRm2dpdgk+wS8Ya8UyzM0/ciOiR1AhmVxg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=yfsFczYG91bQA32ZlVBrilhwXs7nxmIlA0HUgNxST0k=;
+ b=JbBP26TYlE+PkOalv0YCN32Qmxsecq78cI1f8sgyGKbA+ZTzu9qZtBk5WRcH7WQFizFZ9S883wD9AHkASsdGMZb5FsfbyoruxfBVHV3BeJ59f/HJ3Q29WIysNMswMcVNdCBqSu2uk+idtJhqwnJztUR8kwtxwNbGl7CTBs+jMJSAwmsNf/GJO8ZyhtoN7Z6XtplYEWZRpBY4hnQ2pRtYEgasrIKDjZ4/4NFwFT2U5q95BbCRcgQifoqBB2EN7HoJHAuFDjLNxEMED0NPm820hAWwV/LyXXtDY6Bo9DGUxyUfQetMrmCtiJFKNku6tymc5DLlsBDbo2XwYmIvgN1IuQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=yfsFczYG91bQA32ZlVBrilhwXs7nxmIlA0HUgNxST0k=;
+ b=ppjLnAXAvZoRBVZbZwQkaDMIiDeh50R1kwbpmFwe7a5OJEGV/db9kBuUTlyREhYRfd92DnXWwy2q7Z0TUb8uoESstdjA2Bde3f33zTU7nWIJl2ltV9nAN+Rs5ENaMjTbHwoeYWlhYGN0+AuPdv7CUD1nk5bGV9AcJ5B5zdW54JvQb4C3cv2s1eyKPjY/7sMCKizqCRAkstRO1uNliPY/JyD7dEGvTJN7+2wsE/r6LRmF7bBmjDrb5MxxUc3TKxXqgzCbl83LlcLNkP4+eQbjvp+yBc25E6WJm3eofi4Glyd3rC+QoiwpuYbw49oSNdDGMTg0bSOLZp2lilwHZgDm7w==
+Received: from AS8PR02MB7237.eurprd02.prod.outlook.com (2603:10a6:20b:3f1::10)
+ by VI0PR02MB10768.eurprd02.prod.outlook.com (2603:10a6:800:204::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7519.36; Wed, 1 May
+ 2024 16:37:29 +0000
+Received: from AS8PR02MB7237.eurprd02.prod.outlook.com
+ ([fe80::409b:1407:979b:f658]) by AS8PR02MB7237.eurprd02.prod.outlook.com
+ ([fe80::409b:1407:979b:f658%5]) with mapi id 15.20.7519.035; Wed, 1 May 2024
+ 16:37:29 +0000
+Date: Wed, 1 May 2024 18:37:18 +0200
+From: Erick Archer <erick.archer@outlook.com>
+To: Kees Cook <keescook@chromium.org>, Xin Long <lucien.xin@gmail.com>
+Cc: Erick Archer <erick.archer@outlook.com>,
+	Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
+	Justin Stitt <justinstitt@google.com>, linux-sctp@vger.kernel.org,
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-hardening@vger.kernel.org
+Subject: Re: [PATCH] sctp: prefer struct_size over open coded arithmetic
+Message-ID:
+ <AS8PR02MB7237FFA530C63CD23BCAED378B192@AS8PR02MB7237.eurprd02.prod.outlook.com>
+References: <PAXPR02MB724871DB78375AB06B5171C88B152@PAXPR02MB7248.eurprd02.prod.outlook.com>
+ <202404291044.E9A6A13@keescook>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <202404291044.E9A6A13@keescook>
+X-TMN: [18fQlFTCXQDkNU0VRO5NxCCU0JVepnWa]
+X-ClientProxiedBy: MA2P292CA0021.ESPP292.PROD.OUTLOOK.COM (2603:10a6:250::13)
+ To AS8PR02MB7237.eurprd02.prod.outlook.com (2603:10a6:20b:3f1::10)
+X-Microsoft-Original-Message-ID: <20240501163718.GA2735@titan>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01b.na.qualcomm.com (10.47.209.197)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: 6pESSpz_z8xm8orijpm67aKzyVuUv5bZ
-X-Proofpoint-GUID: 6pESSpz_z8xm8orijpm67aKzyVuUv5bZ
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
- definitions=2024-05-01_16,2024-04-30_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 phishscore=0
- priorityscore=1501 suspectscore=0 adultscore=0 clxscore=1015
- impostorscore=0 spamscore=0 mlxlogscore=930 lowpriorityscore=0 bulkscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2404010003 definitions=main-2405010117
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: AS8PR02MB7237:EE_|VI0PR02MB10768:EE_
+X-MS-Office365-Filtering-Correlation-Id: c5e5f06f-e1a2-43d9-d5f3-08dc69fcfdbb
+X-Microsoft-Antispam:
+	BCL:0;ARA:14566002|461199019|3412199016|440099019|1710799017;
+X-Microsoft-Antispam-Message-Info:
+	2cQab2gUCmqyRYobw6gPY6uBBDX3DnG/oEyCAI+8xd1vKCXl3+ecEbFfi2VXnRTBw9GJQjHeCMo5XDkEtT/WQPb8iD1lMx/rRXzbix9PPbawlhyHgktKxJh6K41HP1wkHHYxFMe4My9SF9y+mpomKkHVhixmIVd97SMHIRhHzhvq2UXrGaNvd2e6i9W1Yxct1S8MJzbPkwV9PP+KU+IijIQkJtaHMz2LzfRLAchOndB7ksedcoBTDUj/8mQpVLEXQef9xxTr4GVvraKcIgKYYpdjxn+GNYGw1IQtkf+ekpHHtNo6x9xo24eCMeJAUtgaLoPWvp4bCGU0UVnwvS6i6SO4w6z4tkdWbBJZYibCuC3X/XIWTjHi/usRsO/wxUmo3Iqrncer+HDOcFMi5JYMLVOxasXrc0zwFRvSrWhl+xLiAbz88KQPVcPlRDTIf9s07hiMVYd+3elwC/xrXOcefG8BNwS7IquRo9dBGC0lQ1S0mdRaQNQDRWvjwKMHKoD0vJPrtz9gwsGU+uXY7FiNHPGEghRFUqNwaKzm9Ogiuz8tLPOxMy/JUJ6P2pVaumxcYr8/sBbSsmgYObzJPLL8C+CQOeBHmoDvSzMds1BogZjbq7bXe0cUizSVMDqfJFZn
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?2q+/a5b5VPjoDgsODGSQ8KKICd6RAw8v743y3Ux1qdjM4pgPnXw6KWzCimlo?=
+ =?us-ascii?Q?y1CCK4+HJ3m1nvTn4uChMk8ac7z4HUkIEPNZcZ2dpDtDT4BlvcIYBU/9YS3B?=
+ =?us-ascii?Q?jlTItyQ1oHnGOFcQYEssEXffZUu+ShH/01n738gw+VmI4sUiguhITdGTsuRe?=
+ =?us-ascii?Q?DsDvXzlkbF2D+rhfoccaG89NmgNn09I7FtqI4LzOqsColBu0YJT5yv7EDUAJ?=
+ =?us-ascii?Q?HRK/y744CTfmn1cC7nTqXnTDOR1BACxIgZpNtlhuhzHRLX3MzjMjs4Uv7Fu0?=
+ =?us-ascii?Q?RrdeDPvaRyrs/2BHoRA/nXMbvBP/zB8Gfo8s1Q6yhw8wS4QS6jiCYtgfJw2l?=
+ =?us-ascii?Q?bSWx+4ATmjs9pxi63nxJda6Oz5s7NMG2W2pC36RTrkWaRaWrHpIzWlOcfXHK?=
+ =?us-ascii?Q?grIWq44jD+qSPagOpxFltxmaacTW788qIuU4RLoSMJtKCC7SMn7mDFeNGDft?=
+ =?us-ascii?Q?398ExM/W61KxuFLnB9/SzW2fpotNkDmyN1L1NwhGjW8LNBYN67MWC8RLYVe3?=
+ =?us-ascii?Q?tLJjy2xsEWfnUsx2DT9E8bIhZKRPHVHVV9SpfDcy+WMk64l/Ar586hSWCWCk?=
+ =?us-ascii?Q?yOs8nOZHbR/Pwc7n7salNM0EmOlgso/5wwhyD7OS3wOj80MUNqcsfDgcxpFU?=
+ =?us-ascii?Q?AHGGaTvkFB4X0oipH9s4cMdfaZo6IbxA1Oz0xE+mZ5/1Cqe3QqWSmnSVGsR1?=
+ =?us-ascii?Q?cr5Nk0LwfbOg91bQejMxKcVnSUA/2TP7sRpl6wt+4QkSu2cxWGX0hs1J4cFO?=
+ =?us-ascii?Q?cRw+OAE/14Fbm/ESfiCdnW+mI3K7hRwH/lh+rYLwARpctFvKli3s8EGNTjli?=
+ =?us-ascii?Q?6Y9cdyhfRlLmM3y43x49gg1qK1K6GRYNHFfoMV2PUT3hXk2NXxyIk4BuvAie?=
+ =?us-ascii?Q?CwcGPFS96u3YcVBGeNcaEI2pjghOzZzNSuZWKC7NxXkP8NHA8y4SkaddFLb5?=
+ =?us-ascii?Q?bhpxXw7D+X9dJLGXV/y3jSHE1O1WO6pBziBAZL6BPt+1r5PyvPreE3XK4vZX?=
+ =?us-ascii?Q?SjhaE+PM5lECvYN4eM3QHliqh24XCS+NxIijqXeSfeYIskLpq5LcvNVlhwyT?=
+ =?us-ascii?Q?8fVl3i6fIP364/ILymA0UcfDTOsJL8ob1gCDAw4oHSKpP6/hU3h5aGRAGXUg?=
+ =?us-ascii?Q?5dy+YRb4bTm0ocqZi8p2T1Q+ygruTgd2LL+ieWY+D6bgeIYn6cckId2UDB7c?=
+ =?us-ascii?Q?jUWSOBZpWHN31WO7S7R7arGk/TtcHMzbi9PSfr4naHC+jAr4HUAShuaoJwgO?=
+ =?us-ascii?Q?jIgdU4L1U2XNTD6EaFT5?=
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c5e5f06f-e1a2-43d9-d5f3-08dc69fcfdbb
+X-MS-Exchange-CrossTenant-AuthSource: AS8PR02MB7237.eurprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 May 2024 16:37:29.1165
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
+	00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI0PR02MB10768
 
-Add RX lane margining settings for 16 GT/s(GEN 4) data rate. These
-settings improve link stability while operating at high date rates
-and helps to improve signal quality.
+Hi Kees and Xin,
 
-Signed-off-by: Shashank Babu Chinta Venkata <quic_schintav@quicinc.com>
----
- drivers/pci/controller/dwc/pcie-designware.h  | 18 +++++++++++
- drivers/pci/controller/dwc/pcie-qcom-common.c | 31 +++++++++++++++++++
- drivers/pci/controller/dwc/pcie-qcom-common.h |  1 +
- drivers/pci/controller/dwc/pcie-qcom-ep.c     |  4 ++-
- drivers/pci/controller/dwc/pcie-qcom.c        |  4 ++-
- 5 files changed, 56 insertions(+), 2 deletions(-)
+On Mon, Apr 29, 2024 at 10:45:20AM -0700, Kees Cook wrote:
+> On Sat, Apr 27, 2024 at 07:23:36PM +0200, Erick Archer wrote:
+> > This is an effort to get rid of all multiplications from allocation
+> > functions in order to prevent integer overflows [1][2].
+> > 
+> > As the "ids" variable is a pointer to "struct sctp_assoc_ids" and this
+> > structure ends in a flexible array:
+> > 
+> > struct sctp_assoc_ids {
+>         __u32           gaids_number_of_ids;
+> > 	sctp_assoc_t	gaids_assoc_id[];
+> > };
+> 
+> This could gain __counted_by:
+> 
+> diff --git a/include/uapi/linux/sctp.h b/include/uapi/linux/sctp.h
+> index b7d91d4cf0db..836173e73401 100644
+> --- a/include/uapi/linux/sctp.h
+> +++ b/include/uapi/linux/sctp.h
+> @@ -1007,7 +1007,7 @@ enum sctp_sstat_state {
+>   */
+>  struct sctp_assoc_ids {
+>  	__u32		gaids_number_of_ids;
+> -	sctp_assoc_t	gaids_assoc_id[];
+> +	sctp_assoc_t	gaids_assoc_id[] __counted_by(gaids_number_of_ids);
+>  };
+>  
 
-diff --git a/drivers/pci/controller/dwc/pcie-designware.h b/drivers/pci/controller/dwc/pcie-designware.h
-index ed0045043847..343450c04e05 100644
---- a/drivers/pci/controller/dwc/pcie-designware.h
-+++ b/drivers/pci/controller/dwc/pcie-designware.h
-@@ -203,6 +203,24 @@
- 
- #define PCIE_PL_CHK_REG_ERR_ADDR			0xB28
- 
-+/*
-+ * 16 GT/s (GEN4) lane margining register definitions
-+ */
-+#define GEN4_LANE_MARGINING_1_OFF		0xb80
-+#define MARGINING_MAX_VOLTAGE_OFFSET		GENMASK(29, 24)
-+#define MARGINING_NUM_VOLTAGE_STEPS		GENMASK(22, 16)
-+#define MARGINING_MAX_TIMING_OFFSET		GENMASK(13, 8)
-+#define MARGINING_NUM_TIMING_STEPS		GENMASK(5, 0)
-+
-+#define GEN4_LANE_MARGINING_2_OFF		0xb84
-+#define MARGINING_IND_ERROR_SAMPLER		BIT(28)
-+#define MARGINING_SAMPLE_REPORTING_METHOD	BIT(27)
-+#define MARGINING_IND_LEFT_RIGHT_TIMING		BIT(26)
-+#define MARGINING_IND_UP_DOWN_VOLTAGE		BIT(25)
-+#define MARGINING_VOLTAGE_SUPPORTED		BIT(24)
-+#define MARGINING_MAXLANES			GENMASK(20, 16)
-+#define MARGINING_SAMPLE_RATE_TIMING		GENMASK(13, 8)
-+#define MARGINING_SAMPLE_RATE_VOLTAGE		GENMASK(5, 0)
- /*
-  * iATU Unroll-specific register definitions
-  * From 4.80 core version the address translation will be made by unroll
-diff --git a/drivers/pci/controller/dwc/pcie-qcom-common.c b/drivers/pci/controller/dwc/pcie-qcom-common.c
-index 16c277b2e9d4..fe6f7dde5d8c 100644
---- a/drivers/pci/controller/dwc/pcie-qcom-common.c
-+++ b/drivers/pci/controller/dwc/pcie-qcom-common.c
-@@ -53,6 +53,37 @@ void qcom_pcie_common_set_16gt_eq_settings(struct dw_pcie *pci)
- }
- EXPORT_SYMBOL_GPL(qcom_pcie_common_set_16gt_eq_settings);
- 
-+void qcom_pcie_common_set_16gt_rx_margining_settings(struct dw_pcie *pci)
-+{
-+	u32 reg;
-+
-+	reg = dw_pcie_readl_dbi(pci, GEN4_LANE_MARGINING_1_OFF);
-+	reg &= ~(MARGINING_MAX_VOLTAGE_OFFSET |
-+		MARGINING_NUM_VOLTAGE_STEPS |
-+		MARGINING_MAX_TIMING_OFFSET |
-+		MARGINING_NUM_TIMING_STEPS);
-+	reg |= FIELD_PREP(MARGINING_MAX_VOLTAGE_OFFSET, 0x24) |
-+		FIELD_PREP(MARGINING_NUM_VOLTAGE_STEPS, 0x78) |
-+		FIELD_PREP(MARGINING_MAX_TIMING_OFFSET, 0x32) |
-+		FIELD_PREP(MARGINING_NUM_TIMING_STEPS, 0x10);
-+	dw_pcie_writel_dbi(pci, GEN4_LANE_MARGINING_1_OFF, reg);
-+
-+	reg = dw_pcie_readl_dbi(pci, GEN4_LANE_MARGINING_2_OFF);
-+	reg |= MARGINING_IND_ERROR_SAMPLER |
-+		MARGINING_SAMPLE_REPORTING_METHOD |
-+		MARGINING_IND_LEFT_RIGHT_TIMING |
-+		MARGINING_VOLTAGE_SUPPORTED;
-+	reg &= ~(MARGINING_IND_UP_DOWN_VOLTAGE |
-+		MARGINING_MAXLANES |
-+		MARGINING_SAMPLE_RATE_TIMING |
-+		MARGINING_SAMPLE_RATE_VOLTAGE);
-+	reg |= FIELD_PREP(MARGINING_MAXLANES, pci->num_lanes) |
-+		FIELD_PREP(MARGINING_SAMPLE_RATE_TIMING, 0x3f) |
-+		FIELD_PREP(MARGINING_SAMPLE_RATE_VOLTAGE, 0x3f);
-+	dw_pcie_writel_dbi(pci, GEN4_LANE_MARGINING_2_OFF, reg);
-+}
-+EXPORT_SYMBOL_GPL(qcom_pcie_common_set_16gt_rx_margining_settings);
-+
- struct icc_path *qcom_pcie_common_icc_get_resource(struct dw_pcie *pci, const char *path)
- {
- 	struct icc_path *icc_mem_p;
-diff --git a/drivers/pci/controller/dwc/pcie-qcom-common.h b/drivers/pci/controller/dwc/pcie-qcom-common.h
-index 5c01f6c18b3b..c7eb87aa0677 100644
---- a/drivers/pci/controller/dwc/pcie-qcom-common.h
-+++ b/drivers/pci/controller/dwc/pcie-qcom-common.h
-@@ -11,3 +11,4 @@ struct icc_path *qcom_pcie_common_icc_get_resource(struct dw_pcie *pci, const ch
- int qcom_pcie_common_icc_init(struct dw_pcie *pci, struct icc_path *icc_mem);
- void qcom_pcie_common_icc_update(struct dw_pcie *pci, struct icc_path *icc_mem);
- void qcom_pcie_common_set_16gt_eq_settings(struct dw_pcie *pci);
-+void qcom_pcie_common_set_16gt_rx_margining_settings(struct dw_pcie *pci);
-diff --git a/drivers/pci/controller/dwc/pcie-qcom-ep.c b/drivers/pci/controller/dwc/pcie-qcom-ep.c
-index 7940222d35f6..2aea78da9c5b 100644
---- a/drivers/pci/controller/dwc/pcie-qcom-ep.c
-+++ b/drivers/pci/controller/dwc/pcie-qcom-ep.c
-@@ -438,8 +438,10 @@ static int qcom_pcie_perst_deassert(struct dw_pcie *pci)
- 		goto err_disable_resources;
- 	}
- 
--	if (pcie_link_speed[pci->link_gen] == PCIE_SPEED_16_0GT)
-+	if (pcie_link_speed[pci->link_gen] == PCIE_SPEED_16_0GT) {
- 		qcom_pcie_common_set_16gt_eq_settings(pci);
-+		qcom_pcie_common_set_16gt_rx_margining_settings(pci);
-+	}
- 
- 	/*
- 	 * The physical address of the MMIO region which is exposed as the BAR
-diff --git a/drivers/pci/controller/dwc/pcie-qcom.c b/drivers/pci/controller/dwc/pcie-qcom.c
-index 525942f2cf98..9b3d7729b34b 100644
---- a/drivers/pci/controller/dwc/pcie-qcom.c
-+++ b/drivers/pci/controller/dwc/pcie-qcom.c
-@@ -263,8 +263,10 @@ static int qcom_pcie_start_link(struct dw_pcie *pci)
- {
- 	struct qcom_pcie *pcie = to_qcom_pcie(pci);
- 
--	if (pcie_link_speed[pci->link_gen] == PCIE_SPEED_16_0GT)
-+	if (pcie_link_speed[pci->link_gen] == PCIE_SPEED_16_0GT) {
- 		qcom_pcie_common_set_16gt_eq_settings(pci);
-+		qcom_pcie_common_set_16gt_rx_margining_settings(pci);
-+	}
- 
- 	/* Enable Link Training state machine */
- 	if (pcie->cfg->ops->ltssm_enable)
--- 
-2.43.2
+Since this patch has been applied to the linux-next tree, I will send an
+incremental one.
 
+Thanks Kees and Xin for the review.
+
+Regards,
+Erick
 
