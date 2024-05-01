@@ -1,133 +1,103 @@
-Return-Path: <linux-kernel+bounces-165788-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-165789-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id EF0858B919E
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 00:24:09 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C403F8B91A0
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 00:24:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2C9EB1C21B60
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 22:24:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 012991C22A14
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 22:24:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 59986168AEE;
-	Wed,  1 May 2024 22:24:02 +0000 (UTC)
-Received: from mail-lf1-f54.google.com (mail-lf1-f54.google.com [209.85.167.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27E9B168B18;
+	Wed,  1 May 2024 22:24:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="Q1RxNljT"
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 340C0D52F;
-	Wed,  1 May 2024 22:24:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CFD604F898;
+	Wed,  1 May 2024 22:24:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714602241; cv=none; b=gg+tCv0yY1MFJzE6wtgBRrXxVHPVaGBCj/AjcRSxOF0qSIHdJBFtwTGH3x9PoZ84bXqO5ehW6tr5TJgFi4S0kOKoxiR6NGhrdmMCqqrTUXSV86T+EFXMf2K31aQR9ZyBnUzj884dvm6t916jwcF68TNznRg06K+XMBAayvUHZSQ=
+	t=1714602245; cv=none; b=nLZet0rnvkzubiaZ32GNoXUpEs3DUhfLaak2I/5/W45sHDDbJUwEAlXa4m8LkSF0+f0Q5+ndNSmkhlmNI1G/iGza5hLtgvbjf3sf1mtk7GHj+J4IHjppsfqlzoVfxyQSrJRe1o5n52aQMrVvGuFNf5bsZ6yc8+Cy1aETMphN3Xo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714602241; c=relaxed/simple;
-	bh=ADuypZQLrp42+wzz6dAjns3zYS9BMzA54Y1ziYzZThI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=XIvbz4ZR+UcoW9RtXPY9WoRaCWDEG9Qu5IWnJkbMiE77mWNu02WDxS00avX7V7FeVK0ddSvh8DYv/HIYz/przAZzNgThwi9I55+BD3fFWHth3aFrSfUpaQ5VQ0P2ygr4o5EjW6+S7ZKgV3xycXTINt6zcKNaLSukzwq0166VltA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=sung-woo.kim; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.167.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=sung-woo.kim
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f54.google.com with SMTP id 2adb3069b0e04-51967f75729so8770062e87.0;
-        Wed, 01 May 2024 15:23:59 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714602238; x=1715207038;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=V3qrt1xRo5QCY5suOVWHp3CVjoIjT79/EgSVanPYZqA=;
-        b=dYcGljbhfdLuX6dO9hjbgJzg1rZxO9quEq0zdSlLK5ii4AkuZh8VxX4tZXc8lLeuOF
-         MdvTlNwVNaU0aymU+3AkOiFuPeksDygeZbM0R4YqfXRpNSdMO5B15wmac6azIRSccRJ3
-         y+GFwjQxRmKCSC73klhmdMnWC4ROIJGYUxtuzr95bjjE9QlzlGrd5LwTmjuDcrZ9VHWr
-         jckJYKfizfvx2HNLxcl6wMstiK2XHhmjj7PLYFlRNWJydacJpuurL/SZB2ONXyH1XZle
-         4XK7uqD4hgjQmgoQwYLjujeKlOzCwR3vQGTZ7LaHcBwKCYV8jWSz/JfDGtQdcntFIeMF
-         EetQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWy9NP2KBnflRHIAqO1aiL7oWEqK0l5q+UbCiLvEAFsSgHhmT/WPBHIpV83ligzlHjERHCV1gGwHIWKYgYWoZ+Ol29Bmkb1W7qvEjhSmbTz6qOkSfiTtVAuwhgbx3jnjFKkZtWsvkjemyZPkKsW
-X-Gm-Message-State: AOJu0YxaABtGnj6Uz1gsWw0s4uZb9TlbTsSKwZiBIlvpg7vPfHXluA+U
-	ov8BTLcKT1phjal88jtSe38Da/0dcyiBkd2DG71HNYzjbBu4N8uHMhboT/oJsBE=
-X-Google-Smtp-Source: AGHT+IFlCHAjHrJeGruvmMrNXMmEgwG6wQut/ZBB6xteIYiFm12u38mMwzCh41+6l4tjeIvC2F7cHA==
-X-Received: by 2002:a05:6512:3b8a:b0:51f:5c3:2d6e with SMTP id g10-20020a0565123b8a00b0051f05c32d6emr464517lfv.17.1714602237131;
-        Wed, 01 May 2024 15:23:57 -0700 (PDT)
-Received: from mail-lf1-f48.google.com (mail-lf1-f48.google.com. [209.85.167.48])
-        by smtp.gmail.com with ESMTPSA id k8-20020a05651239c800b00517746176ebsm4990611lfu.49.2024.05.01.15.23.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 01 May 2024 15:23:56 -0700 (PDT)
-Received: by mail-lf1-f48.google.com with SMTP id 2adb3069b0e04-518931f8d23so7367866e87.3;
-        Wed, 01 May 2024 15:23:56 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCUYQnk0GxK7SvpyIHb5CDUrR3VzpWDV4JgKyLTFU3NN6IZybrIdsHCFZcbHnbm3woi0iCJQ7dk6FxeKGSPSh0dG182bZ8yDZU53n3FiT1RZtBoKipljqYVFJwmJ9BzSKl/paiJ5htNIY41SEuuG
-X-Received: by 2002:ac2:44c2:0:b0:51b:3ffa:f22d with SMTP id
- d2-20020ac244c2000000b0051b3ffaf22dmr2147374lfm.18.1714602236670; Wed, 01 May
- 2024 15:23:56 -0700 (PDT)
+	s=arc-20240116; t=1714602245; c=relaxed/simple;
+	bh=JVfcya/jKkUh7wEB6H95SPt1ZMf6hwTCE17Gjs+G9Co=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=Q/1yH/towk/2RZvSg8hRNS6nQOeieWQZDt9AZA6FFMRTNKJqQH1K26OrNGN3wFae6BX8d9BBK1BvkYf9+vRVSiF6IMY4OwLJpxlMcM4ceD323Nhdy/oY4qRVf17lBcfzheGqjoeQnOMD/3Q9hg0k4HjAhaJFyahnNsFEqcH/8qM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=Q1RxNljT; arc=none smtp.client-ip=150.107.74.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+	s=201702; t=1714602238;
+	bh=u3vG1QSQ9V3HsJJru4TfRhmLRCf/1MxcaOa+LKz4MUE=;
+	h=Date:From:To:Cc:Subject:From;
+	b=Q1RxNljT49YNCcbrzunAHvemQfBV7vCH+gBVLXKtNO1+bMvyJEYFWmU+N38kzU8xY
+	 gftN6c1Qm5FV7/ST52qtuNQge5S33Iz/qUj/99DQq8Egy87Qdj6w1Llct3tkpFGiot
+	 jLiode01T+qJOBjCx3jEV9NGSkT7jbJeBB0SobkZH1sDjJnyxKd3XBCKly9h50fnQL
+	 DM3HyGWAm7+EZktzV43TEsry/RYnZgvWab/ny/PknDRD9VguVFnnfVVXdZkQXrSk9x
+	 ltO1A9LhZJGU39cW24bEPB8CYZCo23doJPpHuWs+UrJbVAl+jys6li3M0wj65QRmre
+	 r2zZLEQPzjsrw==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4VVBRy2KZhz4x1R;
+	Thu,  2 May 2024 08:23:57 +1000 (AEST)
+Date: Thu, 2 May 2024 08:23:54 +1000
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+To: Mike Turquette <mturquette@baylibre.com>, Stephen Boyd
+ <sboyd@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux Next
+ Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: duplicate patch in the clk-fixes tree
+Message-ID: <20240502082354.61d147f9@canb.auug.org.au>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240428054307.1178347-1-iam@sung-woo.kim> <CABBYNZKDouOrxG1XcSq2me0WW3A3yAbfdtonw2XJ54VZ8+Nbfg@mail.gmail.com>
-In-Reply-To: <CABBYNZKDouOrxG1XcSq2me0WW3A3yAbfdtonw2XJ54VZ8+Nbfg@mail.gmail.com>
-From: Sungwoo Kim <iam@sung-woo.kim>
-Date: Wed, 1 May 2024 18:23:43 -0400
-X-Gmail-Original-Message-ID: <CAJNyHpKzhFBJ3N0eF1x0icd7O1VkWbTA9k0Gkm8aCMonsagYwg@mail.gmail.com>
-Message-ID: <CAJNyHpKzhFBJ3N0eF1x0icd7O1VkWbTA9k0Gkm8aCMonsagYwg@mail.gmail.com>
-Subject: Re: [PATCH] Bluetooth: L2CAP: Fix div-by-zero in l2cap_le_flowctl_init()
-To: Luiz Augusto von Dentz <luiz.dentz@gmail.com>
-Cc: daveti@purdue.edu, Marcel Holtmann <marcel@holtmann.org>, 
-	Johan Hedberg <johan.hedberg@gmail.com>, linux-bluetooth@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="Sig_/JBjV_EQQCO5RMNVssWCU36M";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+
+--Sig_/JBjV_EQQCO5RMNVssWCU36M
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: quoted-printable
 
-Dear Luiz,
+Hi all,
 
-On Mon, Apr 29, 2024 at 11:15=E2=80=AFAM Luiz Augusto von Dentz
-<luiz.dentz@gmail.com> wrote:
->
-> Hi Sungwoo,
->
-> On Sun, Apr 28, 2024 at 1:43=E2=80=AFAM Sungwoo Kim <iam@sung-woo.kim> wr=
-ote:
-> >
-> > Hello, could you review this bug and its patch?
-> >
-> > l2cap_le_flowctl_init() can cause both div-by-zero and an integer overf=
-low.
-> >
-> > l2cap_le_flowctl_init()
-> >   chan->mps =3D min_t(u16, chan->imtu, chan->conn->mtu - L2CAP_HDR_SIZE=
-);
-> >   chan->rx_credits =3D (chan->imtu / chan->mps) + 1;  <- div-by-zero
-> >
-> > Here, mtu could be less than or equal to L2CAP_HDR_SIZE (4). If mtu is =
-4, it
-> > causes div-by-zero. If mtu is less than 4, it causes an integer overflo=
-w.
->
-> That is because it is not valid to have hdev->le_mtu < 0x001b (the
-> range is 0x001b to 0xffff), so we should really look into checking
-> that conn->mtu is actually valid.
->
-> > How mtu could have such low value:
-> >
-> > hci_cc_le_read_buffer_size()
-> >   hdev->le_mtu =3D __le16_to_cpu(rp->le_mtu);
-> >
-> > l2cap_conn_add()
-> >   conn->mtu =3D hcon->hdev->le_mtu;
->
-> Yeah this assignment is incorrect and in fact we don't do that if
-> le_mtu is zero so we probably should do some checks e.g. le_mtu >
-> 0x001a, or perhaps we need to move the MTU directly to hci_conn so it
-> can check there are enough buffers to serve the link so we stop the
-> connection procedure earlier.
+The following commit is also in the samasung-krzk-fixes tree as a different
+commit (but the same patch):
 
-Let's say we moved MTU directly to hci_conn and already checked enough
-buffers at the creation of hcon.
-Then, what should happen if hdev->le_mtu is updated? (by a new
-le_read_buffer_size cmd)
-Should hcon->mtu be synced with hdev->le_mtu? Or hcon->mtu can keep
-its old value?
+  aacb99de1099 ("clk: samsung: Revert "clk: Use device_get_match_data()"")
 
-Best,
-Sungwoo.
+This is commit
+
+  da244c16ac58 ("clk: samsung: Revert "clk: Use device_get_match_data()"")
+
+in the samasung-krzk-fixes tree.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/JBjV_EQQCO5RMNVssWCU36M
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmYywPoACgkQAVBC80lX
+0GyHewf/eddND7Tg05zQ51KH40cLpijDFQGM+KtruhiEU0GQ+43WWBNJDlaQ5VaD
+1rK/RgpHsBEuVqd0pD7fFQz0KHeUhu8sy9LocyBZxmd1+E6p8WHcRg3zayq2Pmp0
++nmplQBGyI5vad6RzN/3ro7LkLVygon/mUzA12gjB3COPkzRnvdPOrxTDLKDrJig
+Vp8+okzBw7vmv4F5cOWLQuxsq89GxZtlnUeYOKypAbBgmmykB+Kpy2sdSTqO8JTC
+vxf948czRh32fJadEfXPbJwydkSTmPc5p8Wp0nn4ZrU3EfrtOh6RKDgjqfj96a2g
+1ylMTGof5dzJ7NUl+o5/c+tkWTfiMA==
+=Qml7
+-----END PGP SIGNATURE-----
+
+--Sig_/JBjV_EQQCO5RMNVssWCU36M--
 
