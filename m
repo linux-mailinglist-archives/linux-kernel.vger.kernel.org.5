@@ -1,87 +1,172 @@
-Return-Path: <linux-kernel+bounces-165613-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-165615-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 684D68B8E98
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 18:56:18 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 106328B8EA0
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 18:57:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 65D82B21770
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 16:56:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C51B8284148
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 16:57:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 72CC1179A7;
-	Wed,  1 May 2024 16:56:06 +0000 (UTC)
-Received: from mail-io1-f69.google.com (mail-io1-f69.google.com [209.85.166.69])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5281317995;
+	Wed,  1 May 2024 16:56:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nwrFK+fQ"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0A81125B9
-	for <linux-kernel@vger.kernel.org>; Wed,  1 May 2024 16:56:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.69
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7BBC513FF6;
+	Wed,  1 May 2024 16:56:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714582566; cv=none; b=S2AMGAOp/1GYY6SulMsGh7gRtM++LME+ll7+VrLfiqQibswYHcAIkU6Bmbxs55Nfgt+7/H8yhz+tRLEgHhM4p24Q+5sJormDV2qRYjDI9xu02vdcfADb4D+b9oDOHeoQq692OGPpBBO2w88cjIkObT6Nj+WT2NihdGVWanqzI2M=
+	t=1714582577; cv=none; b=fI7lkGFhIajUZZMNurhtQdEiXoRY3PrTHzLBgQdpaebMWNxSTfYr3LQ/4y4yhKXc5Ch0zKoXN66AlQdF/mHsnEI2MOBn40jCG43CqNZ+79b+bBxxNZr/fmiN0XZolGp3yfpPheR7aabIzer8f21lrEGBMjfiq3V0d0iyG9jHddg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714582566; c=relaxed/simple;
-	bh=1XZHi0YzBLS47mbettJ83dDPGL16uhOqOK1tJN4dlpw=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=Z+y/EA18J6u89HXxiaux52nLbh+Qr3eqPdrG+AdXu4BemL0j8ASJWmuD/+wxJySMDngqbYRCrfVabRYkGUgQQuxM5C/4BiMnV70bv6JJo3wb9T/41ezUdMQ/FKuUWzLIQJ6uvudiRluleLAgLxshMOgc1Ras5W4Oywbr2qO8VOE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.69
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f69.google.com with SMTP id ca18e2360f4ac-7def449f58fso1015039f.0
-        for <linux-kernel@vger.kernel.org>; Wed, 01 May 2024 09:56:04 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714582564; x=1715187364;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=zL5zLFLZ9/A+euis3e08Nm55+lvX3+T3wPrxtwGnFpQ=;
-        b=l1g30fSuilPjbr6F84RM7viJbksc0/08Du7tUf2+/2wU2OXt/6QowleHFaM1TY06kn
-         N7h952PpwyPfpTXwzVG0wKmYR4PPHgnTWAPS63F2mkH7A/36mOksJ9ZF52hvPfgfhcWf
-         UJDdIhOPEhpF991HSA/9IBl7mSb37M4fjCSNi+5qzxpyx+NVFi5m0CtLSuVjXudJwdpV
-         j52qzjvbunBnO1SEtSzSOwxhVYQdWwEKl6NRI/Pb/hlHxKOsoRsOD9okAIhEWPpmKNcX
-         I5tvFxBYGhTY3wxiVorPXmR5zu3Xq/ItbTtGtY3+7WTW3+EEfYDRZnztAGOLzjV/llXH
-         LZ9g==
-X-Forwarded-Encrypted: i=1; AJvYcCXJriUbUpI4xJRiwIIlo0cSuTBwHyptYJxCQlds2HqNW/obmX5+d0I3jY3q0/XwsNffoPVFdOzKgv4HSbY9Omc4d6K7FSAjvMIo6LaU
-X-Gm-Message-State: AOJu0Ywfn6IooWlhNB+UH4MBhRjCFNG5v4fJFzhqqUNxaJe0qgF9NdkU
-	VEHSknnxdNgQw9ie/4NlUhO7aJB+FEdGiq4fSwRjaZfWFiqprSiNlMHR3MoK3WasCNc06GgsCTE
-	MGt7EzhHjzh4IM2lw1Se/AsE0MTlMb4Rv4PfxISaltaVxMe3uZbNBwh8=
-X-Google-Smtp-Source: AGHT+IEBjXreViAye+0kXgWGM8QAOQnK+EHu2cHJMy66fdP74jLwDb6XfrE99WN2U9+ggleDVkBLcX+2gumyBDoVt+kvePoHzc8o
+	s=arc-20240116; t=1714582577; c=relaxed/simple;
+	bh=SfIUnFvTodi3ZAdSokEGwrQBZQMoBGP2gvIdsXxo1z8=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To; b=D5xabfYICiRdM0GdfDmOH0nzsEQWjB2W/U/nTi3G7sYIsUsXPb7MPhT9LdnfBdP2ulwOJfH410ACBzlZjmM8rSPHaGyMDZGCdHDWQnL54LzB/aUTkf8Keuodi+HuaZHOsCGy2Xa0sVXEJxV2rb7LMzDwEMA1vtZlb9/xkpsksmI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nwrFK+fQ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BC497C072AA;
+	Wed,  1 May 2024 16:56:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714582577;
+	bh=SfIUnFvTodi3ZAdSokEGwrQBZQMoBGP2gvIdsXxo1z8=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:From;
+	b=nwrFK+fQYl6W4IHr6gnMS8swEZfLcfdSm4TEcZt5aWvI5cpqh7w4by/NlSlrVYjZL
+	 nSyMc1JZUgqnVPi3l4AskQDTBIg9ssQDqVRKrNblj13co5FmyvpEeH/66UR7xpkZOB
+	 00NeWDZlTLiVmA0UQWYWoqUKgZkqpFbxOsnnVkdBIiEpBc979vFlZAfENsKIP5C4FP
+	 ZgIXwvnYDTXwcasDNez+ynbUOZgMUa5OPy4YdrNoLJ+KdsG164DtG/7BQjY2pA2zWK
+	 GEd3kS4ypFHM9mTJOQSG/RGht9W4bkGnY7CGz8RqZ+/Ebp1vm8DPjQkVyYEp898vFN
+	 W1ZUMK9aRV32A==
+Date: Wed, 1 May 2024 11:56:15 -0500
+From: Bjorn Helgaas <helgaas@kernel.org>
+To: Sunil V L <sunilvl@ventanamicro.com>
+Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	linux-riscv@lists.infradead.org, linux-acpi@vger.kernel.org,
+	linux-pci@vger.kernel.org, linux-serial@vger.kernel.org,
+	acpica-devel@lists.linux.dev,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	"Rafael J . Wysocki" <rafael@kernel.org>,
+	Len Brown <lenb@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+	Anup Patel <anup@brainfault.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Samuel Holland <samuel.holland@sifive.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Jiri Slaby <jirislaby@kernel.org>,
+	Robert Moore <robert.moore@intel.com>,
+	Conor Dooley <conor.dooley@microchip.com>,
+	Andrew Jones <ajones@ventanamicro.com>,
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+	Marc Zyngier <maz@kernel.org>,
+	Atish Kumar Patra <atishp@rivosinc.com>,
+	Andrei Warkentin <andrei.warkentin@intel.com>,
+	Haibo1 Xu <haibo1.xu@intel.com>,
+	=?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
+Subject: Re: [PATCH v5 08/17] ACPI: pci_link: Clear the dependencies after
+ probe
+Message-ID: <20240501165615.GA758227@bhelgaas>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:8684:b0:487:5dce:65ab with SMTP id
- iv4-20020a056638868400b004875dce65abmr6872jab.0.1714582564003; Wed, 01 May
- 2024 09:56:04 -0700 (PDT)
-Date: Wed, 01 May 2024 09:56:03 -0700
-In-Reply-To: <20240501121200-mutt-send-email-mst@kernel.org>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000aa73d50617675ca3@google.com>
-Subject: Re: [syzbot] [net?] [virt?] [kvm?] KASAN: slab-use-after-free Read in vhost_task_fn
-From: syzbot <syzbot+98edc2df894917b3431f@syzkaller.appspotmail.com>
-To: jasowang@redhat.com, kvm@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	michael.christie@oracle.com, mst@redhat.com, netdev@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com, virtualization@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240501121742.1215792-9-sunilvl@ventanamicro.com>
 
-Hello,
+On Wed, May 01, 2024 at 05:47:33PM +0530, Sunil V L wrote:
+> RISC-V platforms need to use dependencies between PCI host bridge, Link
+> devices and the interrupt controllers to ensure probe order. The
+> dependency is like below.
+> 
+> Interrupt controller <-- Link Device <-- PCI Host bridge.
+> 
+> If there is no dependency added between Link device and PCI Host Bridge,
+> then the PCI end points can get probed prior to link device, unable to
+> get mapping for INTx.
+> 
+> So, add the link device's HID to dependency honor list and also clear it
+> after its probe.
+> 
+> Since this is required only for architectures like RISC-V, enable this
+> code under a new config option and set this only in RISC-V.
+> 
+> Signed-off-by: Sunil V L <sunilvl@ventanamicro.com>
+> ---
+>  arch/riscv/Kconfig      | 1 +
+>  drivers/acpi/Kconfig    | 3 +++
+>  drivers/acpi/pci_link.c | 3 +++
+>  drivers/acpi/scan.c     | 1 +
+>  4 files changed, 8 insertions(+)
+> 
+> diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+> index f961449ca077..f7a36d79ff1a 100644
+> --- a/arch/riscv/Kconfig
+> +++ b/arch/riscv/Kconfig
+> @@ -14,6 +14,7 @@ config RISCV
+>  	def_bool y
+>  	select ACPI_GENERIC_GSI if ACPI
+>  	select ACPI_REDUCED_HARDWARE_ONLY if ACPI
+> +	select ARCH_ACPI_DEFERRED_GSI if ACPI
+>  	select ARCH_DMA_DEFAULT_COHERENT
+>  	select ARCH_ENABLE_HUGEPAGE_MIGRATION if HUGETLB_PAGE && MIGRATION
+>  	select ARCH_ENABLE_SPLIT_PMD_PTLOCK if PGTABLE_LEVELS > 2
+> diff --git a/drivers/acpi/Kconfig b/drivers/acpi/Kconfig
+> index e3a7c2aedd5f..ebec1707f662 100644
+> --- a/drivers/acpi/Kconfig
+> +++ b/drivers/acpi/Kconfig
+> @@ -587,6 +587,9 @@ config ACPI_PRMT
+>  	  substantially increase computational overhead related to the
+>  	  initialization of some server systems.
+>  
+> +config ARCH_ACPI_DEFERRED_GSI
+> +	bool
+> +
+>  endif	# ACPI
+>  
+>  config X86_PM_TIMER
+> diff --git a/drivers/acpi/pci_link.c b/drivers/acpi/pci_link.c
+> index aa1038b8aec4..48cdcedafad6 100644
+> --- a/drivers/acpi/pci_link.c
+> +++ b/drivers/acpi/pci_link.c
+> @@ -748,6 +748,9 @@ static int acpi_pci_link_add(struct acpi_device *device,
+>  	if (result)
+>  		kfree(link);
+>  
+> +	if (IS_ENABLED(CONFIG_ARCH_ACPI_DEFERRED_GSI))
+> +		acpi_dev_clear_dependencies(device);
 
-syzbot has tested the proposed patch and the reproducer did not trigger any issue:
+This is really a question for Rafael, but it doesn't seem right that
+this completely depends on a config option.
 
-Reported-and-tested-by: syzbot+98edc2df894917b3431f@syzkaller.appspotmail.com
+Is there a reason this wouldn't work for all architectures, i.e., what
+would happen if you just called acpi_dev_clear_dependencies()
+unconditionally?
 
-Tested on:
-
-commit:         f138e94c KASAN: slab-use-after-free Read in vhost_task..
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/mst/vhost.git
-console output: https://syzkaller.appspot.com/x/log.txt?x=10a152a7180000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=3714fc09f933e505
-dashboard link: https://syzkaller.appspot.com/bug?extid=98edc2df894917b3431f
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-
-Note: no patches were applied.
-Note: testing is done by a robot and is best-effort only.
+> +
+>  	return result < 0 ? result : 1;
+>  }
+>  
+> diff --git a/drivers/acpi/scan.c b/drivers/acpi/scan.c
+> index 3eeb4ce39fcc..67677a6ff8e3 100644
+> --- a/drivers/acpi/scan.c
+> +++ b/drivers/acpi/scan.c
+> @@ -834,6 +834,7 @@ static const char * const acpi_honor_dep_ids[] = {
+>  	"INTC10CF", /* IVSC (MTL) driver must be loaded to allow i2c access to camera sensors */
+>  	"RSCV0001", /* RISC-V PLIC */
+>  	"RSCV0002", /* RISC-V APLIC */
+> +	"PNP0C0F",  /* PCI Link Device */
+>  	NULL
+>  };
+>  
+> -- 
+> 2.40.1
+> 
+> 
 
