@@ -1,198 +1,145 @@
-Return-Path: <linux-kernel+bounces-165529-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-165534-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 479A98B8DA6
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 18:04:31 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 71E6F8B8DB2
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 18:06:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B27801F22099
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 16:04:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F17361F22144
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 16:06:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A7E34130A4F;
-	Wed,  1 May 2024 16:03:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C54D61304B7;
+	Wed,  1 May 2024 16:04:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="FVHDf1Mx"
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="WGtN5lXQ"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A13A512FF87;
-	Wed,  1 May 2024 16:03:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AAA2613048E
+	for <linux-kernel@vger.kernel.org>; Wed,  1 May 2024 16:04:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714579435; cv=none; b=G6nu7QKna5xrfqDUF+56Xs9D8xRVVQlM5UvQ+nd9dhqov+arTMPCRkptkC5Pa3ghZ4KGmfNhxyJVkqLbo5LyRoqz5m6Oyonfh3PT3uxP45xywDNPIoG+O24RL90k6wF6zje0YKyPgTnzSYsIkobDSNqGdALvnj/h6nOGEX4o6qQ=
+	t=1714579463; cv=none; b=snDQs/oj7mTlfWQjPEzdo+7VF9FFx9TJHER3upJYyBphBrmXKAbdO9oiFF1ZDyM57ETQcUkEnXE2xRr3W+UUlQVOsr0eRyD3e5lVcVlvj9dFn7GGv1fyGIRcpUoL1se8EzoAePRxDRl44mNVLu/awAK5Vp0eie/LMx+kcHub7B8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714579435; c=relaxed/simple;
-	bh=14jc/detGQ5TzItOMaHeh+ywpYEiIvV5Sa600X5xVqk=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=FUKw/GiSKTvA6s5DAq63iisu4pUNOJSKwUvLclRflKAcYH7krfQ9fgSwnWROCQmVZoiK4JC8muSTt16/Rty9LGROFq6JEyD+v+jFJs9fgCd/AaTLQTNmOYLDuyXb4dBrxAE4kcepToX7tw9kkxRKwAUQNlfT3sOq5IR54TlScgk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=FVHDf1Mx; arc=none smtp.client-ip=148.163.156.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353728.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 441G1Cfd031425;
-	Wed, 1 May 2024 16:03:36 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=2QcX4Wal+FwHEdj1HqqU82UN7oqS7WyWkek8eeHf/5s=;
- b=FVHDf1MxBERiVku3sF/BWE47hZIpDQ4l9FGCuhX6c8e7Z2E/hD+d05WmVj6qlzzZJoPf
- wG0vpOj152I1PwRfmfAce15v42GIZSRgMrpepp5HQknl66H2ZviclmsgUPFklPvFz4Lr
- 6BKT6zeoq8sZ6FBl1HFDPJtSGk+994MI6nKRGYtkUCVmlGZKAx77bMBmzfFIF7EZtBzK
- Rkk4hsTqj7KX/Oo6tZg6HPxjsCLSa+QBOB/XM8mUWaL8N0qYSwthbDP1FsBZvkiKeJ3T
- TgpXGOi9cIQN5I3+4Tz2eXu3ZjjtCZVPl+Thmy5uNHrr5d70Q6PbW4TeOx3oAW35fmp4 1Q== 
-Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xurcwr25c-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 01 May 2024 16:03:35 +0000
-Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 441EQQ0X015530;
-	Wed, 1 May 2024 16:03:34 GMT
-Received: from smtprelay04.dal12v.mail.ibm.com ([172.16.1.6])
-	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3xsed32twx-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 01 May 2024 16:03:34 +0000
-Received: from smtpav01.dal12v.mail.ibm.com (smtpav01.dal12v.mail.ibm.com [10.241.53.100])
-	by smtprelay04.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 441G3WHZ26870398
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 1 May 2024 16:03:34 GMT
-Received: from smtpav01.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 367B958062;
-	Wed,  1 May 2024 16:03:32 +0000 (GMT)
-Received: from smtpav01.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id A03565805D;
-	Wed,  1 May 2024 16:03:31 +0000 (GMT)
-Received: from [9.61.151.254] (unknown [9.61.151.254])
-	by smtpav01.dal12v.mail.ibm.com (Postfix) with ESMTP;
-	Wed,  1 May 2024 16:03:31 +0000 (GMT)
-Message-ID: <4fd58344-d9fa-49c5-a89c-a0ebc11f3ac3@linux.ibm.com>
-Date: Wed, 1 May 2024 11:03:31 -0500
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 05/17] dt-bindings: fsi: Document the IBM SBEFIFO
- engine
-To: Krzysztof Kozlowski <krzk@kernel.org>, linux-aspeed@lists.ozlabs.org
-Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-fsi@lists.ozlabs.org, linux-spi@vger.kernel.org,
-        linux-i2c@vger.kernel.org, lakshmiy@us.ibm.com, robh@kernel.org,
-        krzk+dt@kernel.org, conor+dt@kernel.org, joel@jms.id.au,
-        andrew@codeconstruct.com.au, andi.shyti@kernel.org
-References: <20240429210131.373487-1-eajames@linux.ibm.com>
- <20240429210131.373487-6-eajames@linux.ibm.com>
- <b89bb761-49dc-4e76-9b80-c45e2b7e7638@kernel.org>
-Content-Language: en-US
-From: Eddie James <eajames@linux.ibm.com>
-In-Reply-To: <b89bb761-49dc-4e76-9b80-c45e2b7e7638@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: v4kroMnRGSL7KiMr3zpNLxq23W_DYXW4
-X-Proofpoint-ORIG-GUID: v4kroMnRGSL7KiMr3zpNLxq23W_DYXW4
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+	s=arc-20240116; t=1714579463; c=relaxed/simple;
+	bh=P6d5RLZ9VJEKer0SyZETamUjQ9ajSGTTh3YaOmyXPww=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=eBpEH2RgNPTF3x0U+N7TfbwoGfG4p2XALoltQ5ZwFcZ0yTUNmnf/gNnvm0Wkmek2tK6sJGPe2OC+1KCvrbhSut1a6IXtueXU5E9EXzq3JjBGxvFezxCf2TOhaCcucWRMIwMl9uKplZGOUA3Rq4DpmylhGb7hUtr+qSFTo5VsRVo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=WGtN5lXQ; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1714579460;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=V/YklrOhByKuNoE3Hpyt5F0lLjn7VOok73FuSFdcLv0=;
+	b=WGtN5lXQ7E/JAdIbRhdIfk2esgD2YMUukdAAAjaXWVeicRskYQM8EQWPQ6+5VpyAUHJCYW
+	Ifmevg0B7/DFDGIdc2G9BXY7U95v+qmPatQRFRM6mzA31ZXwvTMFi7gbbs3PfxwfIJVpQF
+	3eEJE2Ax3g9pQvRNA0KtdLjOxWrkYEY=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-450-4bOnNHF7M7y_6BUaOemb2w-1; Wed, 01 May 2024 12:04:17 -0400
+X-MC-Unique: 4bOnNHF7M7y_6BUaOemb2w-1
+Received: by mail-ed1-f72.google.com with SMTP id 4fb4d7f45d1cf-572a175621bso426435a12.3
+        for <linux-kernel@vger.kernel.org>; Wed, 01 May 2024 09:04:17 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714579456; x=1715184256;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=V/YklrOhByKuNoE3Hpyt5F0lLjn7VOok73FuSFdcLv0=;
+        b=P/dD9NesAc1oPXwfo8udFveBdPUBvrxvnhQ01ZlmY6c1InA3JrhGxW7kmyGIaI6zNX
+         UeykMObHphpqUOoArXEpb3QjnLuhKBk4tfGaJExEPSesp4gGL2pOBqrX2+RNUoQ8uUbt
+         EpvsNlncCyGT8ozb310AokXhNs5gKxMvljaPMWLjCBZXnBZ+7MChbp8u0usPtRu/KTMJ
+         vn3PTdtB9IASxrBwVzBV04usJpkzcJOpFi6JAeWZPb5lodH2oX4PfGGzgXkhlI1BTxf4
+         k7oz6bi2Mzv37pVRIOElvd2KV+GjR0IK/XSpZZiKnCMWvHUH8r6uMtZ3wC5CMkGWtfYF
+         UUdQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUqi/l87nPSS0aAw/MQyQJKhLMYdmmdeKRVSZN0iKOaKtultO/kF9K4DrbFCwsibVKYYhA1DleSZGMJEcntOAwjHdKF51O6EmHyQCOd
+X-Gm-Message-State: AOJu0YyG/IdirEubTaxWKKUPs0Evoi6BYpWqjycd6TkICQmehE8VGgMP
+	YE23aLDheHiQIIzwXTUMIdxmJVjRnR26ECo73yzDA69yPR9CpCnARdVfCXoFa5F985Y4bcNHjAt
+	qw1J+haQm9zunyG3oUhsw4u/ng3UZD+4wEzc9NDhCAxGT3GI9cWwPprwQSALPmA==
+X-Received: by 2002:a50:cdd3:0:b0:572:78e4:c6bd with SMTP id h19-20020a50cdd3000000b0057278e4c6bdmr1674046edj.27.1714579456054;
+        Wed, 01 May 2024 09:04:16 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEaaihY3p6Ul/xzJhWWgryIS8flkyjApL+P4BpRyfoZzyU2F773yPksS0yIyST2HX5jxGzdFA==
+X-Received: by 2002:a50:cdd3:0:b0:572:78e4:c6bd with SMTP id h19-20020a50cdd3000000b0057278e4c6bdmr1674022edj.27.1714579455443;
+        Wed, 01 May 2024 09:04:15 -0700 (PDT)
+Received: from redhat.com ([2a0d:6fc7:346:6a42:bb79:449b:3f0b:a228])
+        by smtp.gmail.com with ESMTPSA id et10-20020a056402378a00b005725ffd7305sm5542574edb.75.2024.05.01.09.04.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 01 May 2024 09:04:14 -0700 (PDT)
+Date: Wed, 1 May 2024 12:04:11 -0400
+From: "Michael S. Tsirkin" <mst@redhat.com>
+To: Mike Christie <michael.christie@oracle.com>
+Cc: Hillf Danton <hdanton@sina.com>, Edward Adam Davis <eadavis@qq.com>,
+	syzbot+98edc2df894917b3431f@syzkaller.appspotmail.com,
+	jasowang@redhat.com, kvm@vger.kernel.org,
+	linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+	syzkaller-bugs@googlegroups.com, virtualization@lists.linux.dev
+Subject: Re: [PATCH next] vhost_task: after freeing vhost_task it should not
+ be accessed in vhost_task_fn
+Message-ID: <20240501120023-mutt-send-email-mst@kernel.org>
+References: <b959b82a-510f-45c0-9e06-acf526c2f4a1@oracle.com>
+ <20240501001544.1606-1-hdanton@sina.com>
+ <20240501075057.1670-1-hdanton@sina.com>
+ <6971427a-d3ab-41c8-b34b-be84a594e40b@oracle.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
- definitions=2024-05-01_16,2024-04-30_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 adultscore=0
- priorityscore=1501 impostorscore=0 phishscore=0 mlxscore=0 spamscore=0
- suspectscore=0 clxscore=1015 malwarescore=0 mlxlogscore=999
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2404010000 definitions=main-2405010114
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <6971427a-d3ab-41c8-b34b-be84a594e40b@oracle.com>
 
+On Wed, May 01, 2024 at 10:57:38AM -0500, Mike Christie wrote:
+> On 5/1/24 2:50 AM, Hillf Danton wrote:
+> > On Wed, 1 May 2024 02:01:20 -0400 Michael S. Tsirkin <mst@redhat.com>
+> >>
+> >> and then it failed testing.
+> >>
+> > So did my patch [1] but then the reason was spotted [2,3]
+> > 
+> > [1] https://lore.kernel.org/lkml/20240430110209.4310-1-hdanton@sina.com/
+> > [2] https://lore.kernel.org/lkml/20240430225005.4368-1-hdanton@sina.com/
+> > [3] https://lore.kernel.org/lkml/000000000000a7f8470617589ff2@google.com/
+> 
+> Just to make sure I understand the conclusion.
+> 
+> Edward's patch that just swaps the order of the calls:
+> 
+> https://lore.kernel.org/lkml/tencent_546DA49414E876EEBECF2C78D26D242EE50A@qq.com/
+> 
+> fixes the UAF. I tested the same in my setup. However, when you guys tested it
+> with sysbot, it also triggered a softirq/RCU warning.
+> 
+> The softirq/RCU part of the issue is fixed with this commit:
+> 
+> https://lore.kernel.org/all/20240427102808.29356-1-qiang.zhang1211@gmail.com/
+> 
+> commit 1dd1eff161bd55968d3d46bc36def62d71fb4785
+> Author: Zqiang <qiang.zhang1211@gmail.com>
+> Date:   Sat Apr 27 18:28:08 2024 +0800
+> 
+>     softirq: Fix suspicious RCU usage in __do_softirq()
+> 
+> The problem was that I was testing with -next master which has that patch.
+> It looks like you guys were testing against bb7a2467e6be which didn't have
+> the patch, and so that's why you guys still hit the softirq/RCU issue. Later
+> when you added that patch to your patch, it worked with syzbot.
+> 
+> So is it safe to assume that the softirq/RCU patch above will be upstream
+> when the vhost changes go in or is there a tag I need to add to my patches?
 
-On 4/30/24 01:54, Krzysztof Kozlowski wrote:
-> On 29/04/2024 23:01, Eddie James wrote:
->> The SBEFIFO engine provides an interface to the POWER processor
->> Self Boot Engine (SBE).
->>
->> Signed-off-by: Eddie James <eajames@linux.ibm.com>
->> Acked-by: Conor Dooley <conor.dooley@microchip.com>
->> Reviewed-by: Andrew Jeffery <andrew@codeconstruct.com.au>
->> ---
->> Changes since v3:
->>   - Drop occ unit address
->>
->>   .../bindings/fsi/ibm,p9-sbefifo.yaml          | 51 +++++++++++++++++++
->>   1 file changed, 51 insertions(+)
->>   create mode 100644 Documentation/devicetree/bindings/fsi/ibm,p9-sbefifo.yaml
->>
->> diff --git a/Documentation/devicetree/bindings/fsi/ibm,p9-sbefifo.yaml b/Documentation/devicetree/bindings/fsi/ibm,p9-sbefifo.yaml
->> new file mode 100644
->> index 000000000000..24903829fca1
->> --- /dev/null
->> +++ b/Documentation/devicetree/bindings/fsi/ibm,p9-sbefifo.yaml
->> @@ -0,0 +1,51 @@
->> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
->> +%YAML 1.2
->> +---
->> +$id: http://devicetree.org/schemas/fsi/ibm,p9-sbefifo.yaml#
->> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->> +
->> +title: IBM FSI-attached SBEFIFO engine
->> +
->> +maintainers:
->> +  - Eddie James <eajames@linux.ibm.com>
->> +
->> +description:
->> +  The SBEFIFO is an FSI CFAM engine that provides an interface to the
->> +  POWER processor Self Boot Engine (SBE). This node will always be a child
->> +  of an FSI CFAM node.
->> +
->> +properties:
->> +  compatible:
->> +    enum:
->> +      - ibm,p9-sbefifo
->> +      - ibm,odyssey-sbefifo
->> +
->> +  reg:
->> +    items:
->> +      - description: FSI slave address
->> +
->> +patternProperties:
->> +  "^occ":
-> Same questions as patch #4.
->
->> +    type: object
->> +    $ref: ibm,p9-occ.yaml#
->> +
->> +required:
->> +  - compatible
->> +  - reg
->> +
->> +additionalProperties: false
->> +
->> +examples:
->> +  - |
->> +    fsi-slave-engine@2400 {
->> +        compatible = "ibm,p9-sbefifo";
->> +        reg = <0x2400 0x400>;
->> +
->> +        occ {
->> +            compatible = "ibm,p9-occ";
->> +
->> +            hwmon {
->> +                compatible = "ibm,p9-occ-hwmon";
-> Three nodes which should be just one node.
+Two points:
+- I do not want bisect broken. If you depend on this patch either I pick
+  it too before your patch, or we defer until 1dd1eff161bd55968d3d46bc36def62d71fb4785
+  is merged. You can also ask for that patch to be merged in this cycle.
+- Do not assume - pls push somewhere a hash based on vhost that syzbot can test
+  and confirm all is well. Thanks!
 
-
-The other two are already documented... The SBEFIFO should have 
-documented a long time ago, and designed accordingly. However keep in 
-mind, the OCC nodes are optional on SBEFIFOs, since the Odyssey chip 
-SBEFIFOs are not connected to OCCs.
-
-
-Thanks for your detailed review.
-
-Eddie
-
-
->
-> Best regards,
-> Krzysztof
->
 
