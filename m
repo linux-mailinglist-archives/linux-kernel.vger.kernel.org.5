@@ -1,178 +1,142 @@
-Return-Path: <linux-kernel+bounces-165371-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-165373-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 852DF8B8BDE
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 16:28:35 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 160E28B8BE3
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 16:29:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3AFE0283FC6
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 14:28:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C12161F2267B
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 14:29:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 511AA12F398;
-	Wed,  1 May 2024 14:28:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3CD8312F586;
+	Wed,  1 May 2024 14:28:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="yIkInVr+"
-Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="iphh46RM"
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19A9D12F367
-	for <linux-kernel@vger.kernel.org>; Wed,  1 May 2024 14:28:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 472FA12F367;
+	Wed,  1 May 2024 14:28:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714573705; cv=none; b=Gpe7rV7DeYnOizhnnxM52xZbd/WD9yuKDYId8qWKgon4mzoLhCsS3y4gEkeYd31KJ/E9u4W9fHbqWGSVdbA9v/WjJeKMYDbvGWnIBjlosWQd6Ecm3uajbK1+sRw+IdgWYX97e+DGmSGiqeZ1Xx1kMZ8+/hMgidFv7/PGu4Gm93w=
+	t=1714573718; cv=none; b=OgQEAlcQmG9tI2mL4Ux/96zOqDa+qqViEK77h2PO88x3DkMR6jh4nY+mlOG7ZKIOX4DXxzN5RNA+akPDsD9L5VoGiGY6Fjlf53lIO4FSc9NRnJTCBlDIRX5Zbohguh4XX74hJBoxfnjDIDWBxmgp/AuXliHyMiFoO36w5u6nVV4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714573705; c=relaxed/simple;
-	bh=ejN7GdpXckHQzIXsC1FJGXtUzTE2KYdclj/fn/dJjrg=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=WZntnB/le90MRoOi22DWhk0zLQGMtcPUD81bhoKZNyoPYez77Slyv1s1gPAhqASjev1voIp4ZJwPQKEnviEWednXVUazTDQdSBUBVQgYQAIZD5K1mOhTKqviMnwi9qkJHL0jquPR26HNvBQb3zj6HwVfc3XpC2z11sogX16Y/Eg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=yIkInVr+; arc=none smtp.client-ip=209.85.219.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-de60cd96bf3so1950689276.0
-        for <linux-kernel@vger.kernel.org>; Wed, 01 May 2024 07:28:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1714573703; x=1715178503; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=XN3PxGtZEQXNqntUnTfIz5xk/K9LwEoscNdYQ+/jCbc=;
-        b=yIkInVr+T2n9SqoReSpWC6KAI3dtuyHyqF3lQtWvSow7T07+bGmZXWhr/D/jWWZXG6
-         y5ZV3CtlY7DKLyOvsYU6R6PJEVtXlb7/7A9mGgIzZ9hd7/gk/cq5vAVqwlZDuMscRWO6
-         Vnwf7MeCNZcfoEDWziDkYZnzDHrdhSgL76ACkpU3JdjLixdwGCn7HzKMUQf8l4EDgYSV
-         0w+HSrjqbZIiH4EpBEitkRRrP5CLRz8UTk0lEwQlqJfcsZTOM/OcQY84IkuRhl+I1eFb
-         BN/E5oDtYLo6Oya7cu9vWEiLyVucoQrrOdBqFqpSL6yIQ6uPPmq8t57yEaeKrneSN0Gf
-         f/0g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714573703; x=1715178503;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=XN3PxGtZEQXNqntUnTfIz5xk/K9LwEoscNdYQ+/jCbc=;
-        b=cyxe4g4ZtYfBzbBH0I/9QdqQWy0687wQssh8mjx9AANY6a94LYbtd3LoYmd94cK7r/
-         tNyXxp4qr2ALdTQ3Cx5Bo114fBEjOz594DmAUiAl2UL3KvqZzQy/Of8QW6IdJkY4Nhri
-         1HcIpYT0FGbTwf1O+3j61+mYDDYg1JwCVbWZT5Aay/ZRKARs7K3T5T6sN8m3QCNSiedq
-         rYdIMUoBRFLX/Lju0xzKFw1g/hy1cfB0yhwajq2/6T5MoeCZAZ35qv1BYrdZSK+QBsIe
-         XM+3uKHs2qzQCWOTXIobktpJR5myWeMKSBxYfvtytiIJFEhOH3e3OjZ9irrNJ5m/3S27
-         qDGA==
-X-Forwarded-Encrypted: i=1; AJvYcCVx0L9vVP1PkvVFSPDyGtgu87u0lS07q9zKDPRQsqQA401YYz4rW9Z07Vp54fSBceJ6YPVzmLHgRjTZbVjiKeQwlXXfWeU1PYOfns8C
-X-Gm-Message-State: AOJu0YyKhlvtubsyRednLEcr0mET+SS3X9oLP/KfmJzLlFWhVdAtCCVv
-	AJQNPO7Z9Ep8l5vVvHy7zm6sWkdkWgMGFppodIMqsgar5eDC8lQckoz1nJtruYrsrkdhfNVq4gw
-	yng==
-X-Google-Smtp-Source: AGHT+IHUezc4IZyZaMpXPcKS4Nl6spB8OORkXUO8w6Eu/n8Z2MEF5bQ0emcAkaZbOCNg6hB5INRjxf830ZQ=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a25:a283:0:b0:de5:a44c:25af with SMTP id
- c3-20020a25a283000000b00de5a44c25afmr1319848ybi.5.1714573703105; Wed, 01 May
- 2024 07:28:23 -0700 (PDT)
-Date: Wed, 1 May 2024 07:28:21 -0700
-In-Reply-To: <ZjGMn5tlq8edKZYv@linux.dev>
+	s=arc-20240116; t=1714573718; c=relaxed/simple;
+	bh=jEmQ4txAq3/S4EgZfg1vd1tqSRsNWdIJJEIUUU1j5Q4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=bpNXTQDtKNotthKs5PxYd/XXGf7fyxVtlGvbY7eG+g8Cfq1bJIeh17y3uyyGfcoMmYuOxLm2loLMgbkFR35YgSGsTpzxa9OkqLLx8C6qMEcf8q2jKLFiW5uP9z7tzEe5KPKQUP/fkaR8vBi+Sh+6ljJn6Rzcsm+5xJk9dM+1YVw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=iphh46RM; arc=none smtp.client-ip=90.155.50.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=JoTrIvL17+SwrKhlHwdvALrB368mhDrkTh87Dex2qHk=; b=iphh46RMtc1VisceeYQYEMTctQ
+	7IE0zuIqLkGjqVjpiZfl58A5H4WMuhjTQ+ueoeV9fEuIGP8/n8/LFo1Pa5rDaehZxOSVtKBrzRm57
+	w1KlcUk0alQep3MeSVvdWMYxNb+G+R3BTVIyibyvvECw+qaZUnsGq4dj7rHrv+PArJ5iJydn0nqAb
+	jcLK+2FUWHyAFfKn+l7TuFYTj0C2OWatOAsHQS4WFcftGvlvdNTp/4lF+wkknhR8WB1nY/3vqilpa
+	Bo3fpi+IHJnzgSZKnAKItzcIxUXwk9sRkAor1lTVvmtlGj42OkW4K3EIASQRKBggHx9Flzaqm+ySv
+	Aq/lS4jA==;
+Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1s2Awc-0000000H4FY-3319;
+	Wed, 01 May 2024 14:28:26 +0000
+Date: Wed, 1 May 2024 15:28:26 +0100
+From: Matthew Wilcox <willy@infradead.org>
+To: Luis Chamberlain <mcgrof@kernel.org>
+Cc: Zi Yan <ziy@nvidia.com>, Andrew Morton <akpm@linux-foundation.org>,
+	Vlastimil Babka <vbabka@suse.cz>,
+	Sean Christopherson <seanjc@google.com>,
+	"Pankaj Raghav (Samsung)" <kernel@pankajraghav.com>,
+	djwong@kernel.org, brauner@kernel.org, david@fromorbit.com,
+	chandan.babu@oracle.com, linux-fsdevel@vger.kernel.org,
+	hare@suse.de, linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+	linux-xfs@vger.kernel.org, gost.dev@samsung.com,
+	p.raghav@samsung.com
+Subject: Re: [PATCH v4 05/11] mm: do not split a folio if it has minimum
+ folio order requirement
+Message-ID: <ZjJRimEszNRvvGdJ@casper.infradead.org>
+References: <Ziq4qAJ_p7P9Smpn@casper.infradead.org>
+ <Zir5n6JNiX14VoPm@bombadil.infradead.org>
+ <Ziw8w3P9vljrO9JV@bombadil.infradead.org>
+ <Zi2e7ecKJK6p6ERu@bombadil.infradead.org>
+ <Zi8aYA92pvjDY7d5@bombadil.infradead.org>
+ <6799F341-9E37-4F3E-B0D0-B5B2138A5F5F@nvidia.com>
+ <ZjA7yBQjkh52TM_T@bombadil.infradead.org>
+ <202988BE-58D1-4D21-BF7F-9AECDC178D2A@nvidia.com>
+ <ZjFGCOYk3FK_zVy3@bombadil.infradead.org>
+ <ZjHBh7my1X7qYtCV@casper.infradead.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240430193157.419425-1-seanjc@google.com> <ZjGMn5tlq8edKZYv@linux.dev>
-Message-ID: <ZjJRhQhX_12eBvY-@google.com>
-Subject: Re: [PATCH 0/4] KVM: Fold kvm_arch_sched_in() into kvm_arch_vcpu_load()
-From: Sean Christopherson <seanjc@google.com>
-To: Oliver Upton <oliver.upton@linux.dev>
-Cc: Marc Zyngier <maz@kernel.org>, Tianrui Zhao <zhaotianrui@loongson.cn>, 
-	Bibo Mao <maobibo@loongson.cn>, Huacai Chen <chenhuacai@kernel.org>, 
-	Michael Ellerman <mpe@ellerman.id.au>, Anup Patel <anup@brainfault.org>, 
-	Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
-	Albert Ou <aou@eecs.berkeley.edu>, Christian Borntraeger <borntraeger@linux.ibm.com>, 
-	Janosch Frank <frankja@linux.ibm.com>, Claudio Imbrenda <imbrenda@linux.ibm.com>, 
-	Paolo Bonzini <pbonzini@redhat.com>, linux-arm-kernel@lists.infradead.org, 
-	kvmarm@lists.linux.dev, kvm@vger.kernel.org, loongarch@lists.linux.dev, 
-	linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, 
-	kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZjHBh7my1X7qYtCV@casper.infradead.org>
 
-On Wed, May 01, 2024, Oliver Upton wrote:
-> On Tue, Apr 30, 2024 at 12:31:53PM -0700, Sean Christopherson wrote:
-> > Drop kvm_arch_sched_in() and instead pass a @sched_in boolean to
-> > kvm_arch_vcpu_load().
-> > 
-> > While fiddling with an idea for optimizing state management on AMD CPUs,
-> > I wanted to skip re-saving certain host state when a vCPU is scheduled back
-> > in, as the state (theoretically) shouldn't change for the task while it's
-> > scheduled out.  Actually doing that was annoying and unnecessarily brittle
-> > due to having a separate API for the kvm_sched_in() case (the state save
-> > needed to be in kvm_arch_vcpu_load() for the common path).
-> > 
-> > E.g. I could have set a "temporary"-ish flag somewhere in kvm_vcpu, but (a)
-> > that's gross and (b) it would rely on the arbitrary ordering between
-> > sched_in() and vcpu_load() staying the same.
+On Wed, May 01, 2024 at 05:13:59AM +0100, Matthew Wilcox wrote:
+> On Tue, Apr 30, 2024 at 12:27:04PM -0700, Luis Chamberlain wrote:
+> >   2a:*	8b 43 34             	mov    0x34(%rbx),%eax		<-- trapping instruction
+> > RBX: 0000000000000002 RCX: 0000000000018000
 > 
-> Another option would be to change the rules around kvm_arch_sched_in()
-> where the callee is expected to load the vCPU context.
-> 
-> The default implementation could just call kvm_arch_vcpu_load() directly
-> and the x86 implementation can order things the way it wants before
-> kvm_arch_vcpu_load().
-> 
-> I say this because ...
-> 
-> > The only real downside I see is that arm64 and riscv end up having to pass
-> > "false" for their direct usage of kvm_arch_vcpu_load(), and passing boolean
-> > literals isn't ideal.  But that can be solved by adding an inner helper that
-> > omits the @sched_in param (I almost added a patch to do that, but I couldn't
-> > convince myself it was necessary).
-> 
-> Needing to pass @sched_in for other usage of kvm_arch_vcpu_load() hurts
-> readability, especially when no other architecture besides x86 cares
-> about it.
+> Thanks, got it.  I'll send a patch in the morning, but I know exactly
+> what the problem is.  You're seeing sibling entries tagged as dirty.
+> That shouldn't happen; we should only see folios tagged as dirty.
+> The bug is in node_set_marks() which calls node_mark_all().  This works
+> fine when splitting to order 0, but we should only mark the first entry
+> of each order.  eg if we split to order 3, we should tag slots 0, 8,
+> 16, 24, .., 56.
 
-Yeah, that bothers me too.
+Confirmed:
 
-I tried your suggestion of having x86's kvm_arch_sched_in() do kvm_arch_vcpu_load(),
-and even with an added kvm_arch_sched_out() to provide symmetry, the x86 code is
-kludgy, and even the common code is a bit confusing as it's not super obvious
-that kvm_sched_{in,out}() is really just kvm_arch_vcpu_{load,put}().
++++ b/lib/test_xarray.c
+@@ -1789,8 +1789,10 @@ static void check_split_1(struct xarray *xa, unsigned lon
+g index,
+ {
+        XA_STATE_ORDER(xas, xa, index, new_order);
+        unsigned int i;
++       void *entry;
 
-Staring a bit more at the vCPU flags we have, adding a "bool scheduled_out" isn't
-terribly gross if it's done in common code and persists across load() and put(),
-i.e. isn't so blatantly a temporary field.  And because it's easy, it could be
-set with WRITE_ONCE() so that if it can be read cross-task if there's ever a
-reason to do so.
+        xa_store_order(xa, index, order, xa, GFP_KERNEL);
++       xa_set_mark(xa, index, XA_MARK_1);
 
-The x86 code ends up being less ugly, and adding future arch/vendor code for
-sched_in() *or* sched_out() requires minimal churn, e.g. arch code doesn't need
-to override kvm_arch_sched_in().
+        xas_split_alloc(&xas, xa, order, GFP_KERNEL);
+        xas_lock(&xas);
+@@ -1807,6 +1809,12 @@ static void check_split_1(struct xarray *xa, unsigned long index,
+        xa_set_mark(xa, index, XA_MARK_0);
+        XA_BUG_ON(xa, !xa_get_mark(xa, index, XA_MARK_0));
 
-The only weird part is that vcpu->preempted and vcpu->ready have slightly
-different behavior, as they are cleared before kvm_arch_vcpu_load().  But the
-weirdness is really with those flags no having symmetry, not with scheduled_out
-itself.
++       xas_set_order(&xas, index, 0);
++       rcu_read_lock();
++       xas_for_each_marked(&xas, entry, ULONG_MAX, XA_MARK_1)
++               XA_BUG_ON(xa, xa_is_internal(entry));
++       rcu_read_unlock();
++
+        xa_destroy(xa);
+ }
 
-Thoughts?
 
-static void kvm_sched_in(struct preempt_notifier *pn, int cpu)
-{
-	struct kvm_vcpu *vcpu = preempt_notifier_to_vcpu(pn);
+spits out:
 
-	WRITE_ONCE(vcpu->preempted, false);
-	WRITE_ONCE(vcpu->ready, false);
+$ ./tools/testing/radix-tree/xarray
+BUG at check_split_1:1815
+xarray: 0x562b4043e580x head 0x50c0095cc082x flags 3000000 marks 1 1 0
+0-63: node 0x50c0095cc080x max 0 parent (nil)x shift 3 count 1 values 0 array 0x562b4043e580x list 0x50c0095cc098x 0x50c0095cc098x marks 1 1 0
+0-7: node 0x50c0095cc140x offset 0 parent 0x50c0095cc080x shift 0 count 8 values 4 array 0x562b4043e580x list 0x50c0095cc158x 0x50c0095cc158x marks 1 ff 0
+0: value 0 (0x0) [0x1x]
+1: sibling (slot 0)
+2: value 2 (0x2) [0x5x]
+3: sibling (slot 2)
+4: value 4 (0x4) [0x9x]
+5: sibling (slot 4)
+6: value 6 (0x6) [0xdx]
+7: sibling (slot 6)
+xarray: ../../../lib/test_xarray.c:1815: check_split_1: Assertion `0' failed.
+Aborted
 
-	__this_cpu_write(kvm_running_vcpu, vcpu);
-	kvm_arch_vcpu_load(vcpu, cpu);
 
-	WRITE_ONCE(vcpu->scheduled_out, false);
-}
-
-static void kvm_sched_out(struct preempt_notifier *pn,
-			  struct task_struct *next)
-{
-	struct kvm_vcpu *vcpu = preempt_notifier_to_vcpu(pn);
-
-	WRITE_ONCE(vcpu->scheduled_out, true);
-
-	if (current->on_rq) {
-		WRITE_ONCE(vcpu->preempted, true);
-		WRITE_ONCE(vcpu->ready, true);
-	}
-	kvm_arch_vcpu_put(vcpu);
-	__this_cpu_write(kvm_running_vcpu, NULL);
-}
 
