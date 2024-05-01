@@ -1,246 +1,321 @@
-Return-Path: <linux-kernel+bounces-165145-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-165146-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id BEE0F8B889E
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 12:32:02 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 042CF8B88A1
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 12:32:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5513C1F22CA8
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 10:32:02 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2DD06B20E0F
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 10:32:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 71F2653E2B;
-	Wed,  1 May 2024 10:31:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF57A548EF;
+	Wed,  1 May 2024 10:32:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="U5ee8bwg"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="jpzlSzF0"
+Received: from mail-pj1-f48.google.com (mail-pj1-f48.google.com [209.85.216.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 930CED520;
-	Wed,  1 May 2024 10:31:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3932A5336A
+	for <linux-kernel@vger.kernel.org>; Wed,  1 May 2024 10:32:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714559512; cv=none; b=lsIPGrcB8Njd/R8HOWAI4UPSiKPauaEKhAf9wiSkycgbNpk4qBttjBQrK7XNUlNk16qv/AQ2dtGkajwLmrjFKnAtVgoxUxYHc74hXGo5xJ3CQIrHRjTcGyHCCI7C94/RRvmKIPZvvwfuprftmSFxNUrPTIMmDanufhELaIWOPRc=
+	t=1714559529; cv=none; b=rG1iWu6wOWrxfq76EFKGb1eMY1lH6RYUnxuI9TW4ChMc2YQ6rtV5yQkugfWTqrDbsQG17H3sSmT996JfrrMVzEjZtA8H3IBXVCPdda44/LNHD3euc8Ukviyo1vSJba4CmdGMa1C6T+P2UpkRvpeq6y2zVFi25RHgBkiuWIJeKEk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714559512; c=relaxed/simple;
-	bh=6DBbHrkfxS0tiwHrPZgT+bjTP/LQ6KTVWXOSl9oS0uw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=GKJbMJNsr0yj38pAKqBpiKs5xQVbQQcuAfZ1cZgyJeNFz6vZH5R1M1Bjg5cJ+u7FfyeUlomXxchX8lZcMhZpVaiiviHdvt9yA2Ram5bt/8vSvcWnLcGFiQxSk12Dog9QMSSBUec2cKXbCUBHjyemEprVjYo07NmYuDdmpflJsZA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=U5ee8bwg; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 87259C113CC;
-	Wed,  1 May 2024 10:31:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714559512;
-	bh=6DBbHrkfxS0tiwHrPZgT+bjTP/LQ6KTVWXOSl9oS0uw=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=U5ee8bwgBLBCu4DumpOEAERsjw3ZbAP1XblSkz9aVFKZGtMgCFTiA0pxj3GXTowo2
-	 7ckb1Z6BdjEoy5msRFbdI7BAYmKf3htSei2B1D+T+yu7FP0PpQaNy/3aUaePzp97sH
-	 cKmbeqTesHi0Ye71vJBxFoyAGSy1+14roh4mNDgO4HIUFKck3ZWyiaPStY1bnoEVLR
-	 X+s8MeH8GU3OZ/Bbz6IXbIwrDt+H/pAnwRuBeq5KVjdgFCzLaJJOUDaF7GmMYbxq0+
-	 c/FTazQwk1znasxvU2OYJorZPiHHCvI29cVf3yfADDUqbsf5qSiQcr3P/qB1DuRqmk
-	 iHHbtFC1LN2rw==
-Date: Wed, 1 May 2024 11:31:45 +0100
-From: Conor Dooley <conor@kernel.org>
-To: Charlie Jenkins <charlie@rivosinc.com>
-Cc: Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>, Guo Ren <guoren@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-	Jernej Skrabec <jernej.skrabec@gmail.com>,
-	Samuel Holland <samuel@sholland.org>,
-	Conor Dooley <conor.dooley@microchip.com>,
-	Evan Green <evan@rivosinc.com>,
-	=?iso-8859-1?Q?Cl=E9ment_L=E9ger?= <cleger@rivosinc.com>,
-	Jonathan Corbet <corbet@lwn.net>, Shuah Khan <shuah@kernel.org>,
-	linux-riscv@lists.infradead.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org, Palmer Dabbelt <palmer@rivosinc.com>,
-	linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
-	linux-doc@vger.kernel.org, linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH v4 03/16] riscv: vector: Use vlenb from DT
-Message-ID: <20240501-showroom-rephrase-66c0929011b3@spud>
-References: <20240426-dev-charlie-support_thead_vector_6_9-v4-0-b692f3c516ec@rivosinc.com>
- <20240426-dev-charlie-support_thead_vector_6_9-v4-3-b692f3c516ec@rivosinc.com>
+	s=arc-20240116; t=1714559529; c=relaxed/simple;
+	bh=GAKXLe2Is4H3TF3PuKnSnSg9R0sRbQcdm6AZsy/uFf0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=YyYNKX5hh1BfoeQBn8jn7nZKH3kE/jMBuQz4ZNS40zZFerNPDuYEoe5aPAzqhb8ZRm/Oc0aACCdugWyhzyNBhwIXrBV4ld8QgijQLYs9oBrmioYA1YRpa6qytWgj/W+QXQHVUkpw4sn/jJG5bQ0r0Dbubtdo20i1ZI60hMeirvE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=jpzlSzF0; arc=none smtp.client-ip=209.85.216.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-pj1-f48.google.com with SMTP id 98e67ed59e1d1-2b07f6b38daso484879a91.1
+        for <linux-kernel@vger.kernel.org>; Wed, 01 May 2024 03:32:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1714559527; x=1715164327; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=uY43QB8T+78HEj8GRDRsb60L4Nl0N1qrUHvHx08Om7c=;
+        b=jpzlSzF03hItuCf31xobOjInNOA/JLgEExgtu+rqETaWpCoECoGwZq3zfoqjqZ+BEI
+         8HSwU0nTfnZB7IHy6lXAp6BrjcOfvbHZKA4F9xkaWm9u/i9Snjg2eGgYxLRyrOkbx4b5
+         OOg6BagEOWoWMmzX33qvLe2FRDoTili7ROw0CMjoyHuMNNOfZrdT5BkUua7sK/05K8zK
+         WgHBb8OG9AGTg3tUK9HrvDAoOLaikPnS89/JuSf7EmLhQUszXzQnLSGDVYsZfRpYSMxo
+         zWV1GoPRUuiVM9vGdJ/WG5btrw4O8BAkjRigwTw2Z7MnVfCxImZjlgL5t2dJm+vNkmuc
+         r0Wg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714559527; x=1715164327;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=uY43QB8T+78HEj8GRDRsb60L4Nl0N1qrUHvHx08Om7c=;
+        b=eqJEhwz4Eq8A56DdHrBj7X07btzjnqGFJTqaVQX+soPjIAsiBzNh3lyR7vg3w/n6zo
+         TA3GnNOfOQO12eCIxDkSQA9tM5lbcPMcL7XEhegRX2kFJATSGiWu1etuYQKtTQp86l/o
+         8iYX8ewgBXsF9LmkhuvGoTrAtsj/jO++vaA2jawPOHFzvarOQhbxpT6ecaB1Y93Xx9DV
+         XVFy2eBx6BmTlFo83P3kJXfZTR0ku6arlpFNaPIG2Fj0SXjeQmOdeC/sK+2oQZTM2YJP
+         6lu0NlZpMxPFO1seGczIMRgH2TSfvKtYO0o1S41uSqCJl3f+vT2TRpX8xrk7I/ahovHW
+         Ny3Q==
+X-Forwarded-Encrypted: i=1; AJvYcCXkVdnuJPyVbIhKwBZ+i0TSg8KQrXiyuAGQizX/BcewfxoRLpFpyvtjmHwccS0k8AYPdX6cxV/YN687syEE1CH21LrM1jU1Rba57jn6
+X-Gm-Message-State: AOJu0YzU5FhkkmiZFlGug/eivme0z6ylhmOsKMjDgbcYktih4V0yXRCj
+	WA05m12/DSOGVl0DighwLU574ffuWWkvqrr8/PksQd8PsBhnUeCg4KewAaEzqvLUsVijeg59wWr
+	nuzxBFNEFJLuuv6MUOtHwHqawpDf042A+sIV0IQ==
+X-Google-Smtp-Source: AGHT+IE9uEu1vJlCTupgk+SDI07oGQrpRujdIkoor/k7RAy+jeSqTU8+p3+oUQFS3xpCSp+HkI5pSQOQZuJxs+bZ7uE=
+X-Received: by 2002:a17:90a:df09:b0:2ab:8324:1b47 with SMTP id
+ gp9-20020a17090adf0900b002ab83241b47mr3682681pjb.15.1714559527363; Wed, 01
+ May 2024 03:32:07 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="SnPvkgTlHmJo6buD"
-Content-Disposition: inline
-In-Reply-To: <20240426-dev-charlie-support_thead_vector_6_9-v4-3-b692f3c516ec@rivosinc.com>
+References: <20240429152207.479221-1-james.clark@arm.com> <20240429152207.479221-12-james.clark@arm.com>
+In-Reply-To: <20240429152207.479221-12-james.clark@arm.com>
+From: Mike Leach <mike.leach@linaro.org>
+Date: Wed, 1 May 2024 11:31:56 +0100
+Message-ID: <CAJ9a7Vjj++Bvu2EFVxpXvW4nes0qxVqjxgBWwi1L904p86a7gw@mail.gmail.com>
+Subject: Re: [PATCH 11/17] coresight: Expose map argument in trace ID API
+To: James Clark <james.clark@arm.com>
+Cc: linux-perf-users@vger.kernel.org, gankulkarni@os.amperecomputing.com, 
+	scclevenger@os.amperecomputing.com, coresight@lists.linaro.org, 
+	suzuki.poulose@arm.com, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, 
+	Maxime Coquelin <mcoquelin.stm32@gmail.com>, Alexandre Torgue <alexandre.torgue@foss.st.com>, 
+	Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
+	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
+	Mark Rutland <mark.rutland@arm.com>, Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>, 
+	Adrian Hunter <adrian.hunter@intel.com>, John Garry <john.g.garry@oracle.com>, 
+	Will Deacon <will@kernel.org>, Leo Yan <leo.yan@linux.dev>, 
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, 
+	linux-stm32@st-md-mailman.stormreply.com
+Content-Type: text/plain; charset="UTF-8"
 
+Hi James,
 
---SnPvkgTlHmJo6buD
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Fri, Apr 26, 2024 at 02:29:17PM -0700, Charlie Jenkins wrote:
-> If vlenb is provided in the device tree, prefer that over reading the
-> vlenb csr.
->=20
-> Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
+On Mon, 29 Apr 2024 at 16:25, James Clark <james.clark@arm.com> wrote:
+>
+> The trace ID API is currently hard coded to always use the global map.
+> The functions that take the map as an argument aren't currently public.
+> Make them public so that Perf mode can pass in its own maps. At the
+> moment all usages are still hard coded to use the global map, but now
+> on the caller side.
+>
+> System ID functions are unchanged because they will always use the
+> default map.
+>
+> Signed-off-by: James Clark <james.clark@arm.com>
 > ---
->  arch/riscv/include/asm/cpufeature.h |  2 ++
->  arch/riscv/kernel/cpufeature.c      | 43 +++++++++++++++++++++++++++++++=
-++++++
->  arch/riscv/kernel/vector.c          | 12 ++++++++++-
->  3 files changed, 56 insertions(+), 1 deletion(-)
->=20
-> diff --git a/arch/riscv/include/asm/cpufeature.h b/arch/riscv/include/asm=
-/cpufeature.h
-> index 347805446151..0c4f08577015 100644
-> --- a/arch/riscv/include/asm/cpufeature.h
-> +++ b/arch/riscv/include/asm/cpufeature.h
-> @@ -31,6 +31,8 @@ DECLARE_PER_CPU(struct riscv_cpuinfo, riscv_cpuinfo);
->  /* Per-cpu ISA extensions. */
->  extern struct riscv_isainfo hart_isa[NR_CPUS];
-> =20
-> +extern u32 riscv_vlenb_of;
-> +
->  void riscv_user_isa_enable(void);
-> =20
->  #if defined(CONFIG_RISCV_MISALIGNED)
-> diff --git a/arch/riscv/kernel/cpufeature.c b/arch/riscv/kernel/cpufeatur=
-e.c
-> index 3ed2359eae35..8158f34c3e36 100644
-> --- a/arch/riscv/kernel/cpufeature.c
-> +++ b/arch/riscv/kernel/cpufeature.c
-> @@ -35,6 +35,8 @@ static DECLARE_BITMAP(riscv_isa, RISCV_ISA_EXT_MAX) __r=
-ead_mostly;
->  /* Per-cpu ISA extensions. */
->  struct riscv_isainfo hart_isa[NR_CPUS];
-> =20
-> +u32 riscv_vlenb_of;
-> +
+>  .../hwtracing/coresight/coresight-etm-perf.c  |  5 +++--
+>  .../coresight/coresight-etm3x-core.c          |  5 +++--
+>  .../coresight/coresight-etm4x-core.c          |  5 +++--
+>  .../hwtracing/coresight/coresight-trace-id.c  | 22 +++++++------------
+>  .../hwtracing/coresight/coresight-trace-id.h  |  9 +++++---
+>  5 files changed, 23 insertions(+), 23 deletions(-)
+>
+> diff --git a/drivers/hwtracing/coresight/coresight-etm-perf.c b/drivers/hwtracing/coresight/coresight-etm-perf.c
+> index c0c60e6a1703..4afb9d29f355 100644
+> --- a/drivers/hwtracing/coresight/coresight-etm-perf.c
+> +++ b/drivers/hwtracing/coresight/coresight-etm-perf.c
+> @@ -232,7 +232,7 @@ static void free_event_data(struct work_struct *work)
+>                 if (!(IS_ERR_OR_NULL(*ppath)))
+>                         coresight_release_path(*ppath);
+>                 *ppath = NULL;
+> -               coresight_trace_id_put_cpu_id(cpu);
+> +               coresight_trace_id_put_cpu_id(cpu, coresight_trace_id_map_default());
+>         }
+>
+>         /* mark perf event as done for trace id allocator */
+> @@ -401,7 +401,8 @@ static void *etm_setup_aux(struct perf_event *event, void **pages,
+>                 }
+>
+>                 /* ensure we can allocate a trace ID for this CPU */
+> -               trace_id = coresight_trace_id_get_cpu_id(cpu);
+> +               trace_id = coresight_trace_id_get_cpu_id(cpu,
+> +                                                        coresight_trace_id_map_default());
+>                 if (!IS_VALID_CS_TRACE_ID(trace_id)) {
+>                         cpumask_clear_cpu(cpu, mask);
+>                         coresight_release_path(path);
+> diff --git a/drivers/hwtracing/coresight/coresight-etm3x-core.c b/drivers/hwtracing/coresight/coresight-etm3x-core.c
+> index 9d5c1391ffb1..4149e7675ceb 100644
+> --- a/drivers/hwtracing/coresight/coresight-etm3x-core.c
+> +++ b/drivers/hwtracing/coresight/coresight-etm3x-core.c
+> @@ -465,7 +465,8 @@ int etm_read_alloc_trace_id(struct etm_drvdata *drvdata)
+>          *
+>          * trace id function has its own lock
+>          */
+> -       trace_id = coresight_trace_id_get_cpu_id(drvdata->cpu);
+> +       trace_id = coresight_trace_id_get_cpu_id(drvdata->cpu,
+> +                                                coresight_trace_id_map_default());
+>         if (IS_VALID_CS_TRACE_ID(trace_id))
+>                 drvdata->traceid = (u8)trace_id;
+>         else
+> @@ -477,7 +478,7 @@ int etm_read_alloc_trace_id(struct etm_drvdata *drvdata)
+>
+>  void etm_release_trace_id(struct etm_drvdata *drvdata)
+>  {
+> -       coresight_trace_id_put_cpu_id(drvdata->cpu);
+> +       coresight_trace_id_put_cpu_id(drvdata->cpu, coresight_trace_id_map_default());
+>  }
+>
+>  static int etm_enable_perf(struct coresight_device *csdev,
+> diff --git a/drivers/hwtracing/coresight/coresight-etm4x-core.c b/drivers/hwtracing/coresight/coresight-etm4x-core.c
+> index a0bdfabddbc6..f32c8cd7742d 100644
+> --- a/drivers/hwtracing/coresight/coresight-etm4x-core.c
+> +++ b/drivers/hwtracing/coresight/coresight-etm4x-core.c
+> @@ -241,7 +241,8 @@ int etm4_read_alloc_trace_id(struct etmv4_drvdata *drvdata)
+>          * or return the one currently allocated.
+>          * The trace id function has its own lock
+>          */
+> -       trace_id = coresight_trace_id_get_cpu_id(drvdata->cpu);
+> +       trace_id = coresight_trace_id_get_cpu_id(drvdata->cpu,
+> +                                                coresight_trace_id_map_default());
+>         if (IS_VALID_CS_TRACE_ID(trace_id))
+>                 drvdata->trcid = (u8)trace_id;
+>         else
+> @@ -253,7 +254,7 @@ int etm4_read_alloc_trace_id(struct etmv4_drvdata *drvdata)
+>
+>  void etm4_release_trace_id(struct etmv4_drvdata *drvdata)
+>  {
+> -       coresight_trace_id_put_cpu_id(drvdata->cpu);
+> +       coresight_trace_id_put_cpu_id(drvdata->cpu, coresight_trace_id_map_default());
+>  }
+>
+>  struct etm4_enable_arg {
+> diff --git a/drivers/hwtracing/coresight/coresight-trace-id.c b/drivers/hwtracing/coresight/coresight-trace-id.c
+> index 19005b5b4dc4..45ddd50d09a6 100644
+> --- a/drivers/hwtracing/coresight/coresight-trace-id.c
+> +++ b/drivers/hwtracing/coresight/coresight-trace-id.c
+> @@ -12,7 +12,7 @@
+>
+>  #include "coresight-trace-id.h"
+>
+> -/* Default trace ID map. Used on systems that don't require per sink mappings */
+> +/* Default trace ID map. Used in sysfs mode and for system sources */
+>  static struct coresight_trace_id_map id_map_default;
+>
+>  /* maintain a record of the mapping of IDs and pending releases per cpu */
+> @@ -152,7 +152,7 @@ static void coresight_trace_id_release_all_pending(void)
+>         DUMP_ID_MAP(id_map);
+>  }
+>
+> -static int coresight_trace_id_map_get_cpu_id(int cpu, struct coresight_trace_id_map *id_map)
+> +int coresight_trace_id_get_cpu_id(int cpu, struct coresight_trace_id_map *id_map)
+>  {
+>         unsigned long flags;
+>         int id;
+> @@ -195,8 +195,9 @@ static int coresight_trace_id_map_get_cpu_id(int cpu, struct coresight_trace_id_
+>         DUMP_ID_MAP(id_map);
+>         return id;
+>  }
+> +EXPORT_SYMBOL_GPL(coresight_trace_id_get_cpu_id);
+>
+> -static void coresight_trace_id_map_put_cpu_id(int cpu, struct coresight_trace_id_map *id_map)
+> +void coresight_trace_id_put_cpu_id(int cpu, struct coresight_trace_id_map *id_map)
+>  {
+>         unsigned long flags;
+>         int id;
+> @@ -222,6 +223,7 @@ static void coresight_trace_id_map_put_cpu_id(int cpu, struct coresight_trace_id
+>         DUMP_ID_CPU(cpu, id);
+>         DUMP_ID_MAP(id_map);
+>  }
+> +EXPORT_SYMBOL_GPL(coresight_trace_id_put_cpu_id);
+>
+>  static int coresight_trace_id_map_get_system_id(struct coresight_trace_id_map *id_map)
+>  {
+> @@ -250,19 +252,11 @@ static void coresight_trace_id_map_put_system_id(struct coresight_trace_id_map *
+>         DUMP_ID_MAP(id_map);
+>  }
+>
+> -/* API functions */
+> -
+
+Rather than remove the existing default trace ID functions, simply add
+a few new ones...
+
+e.g. given the existing...
+
+void coresight_trace_id_put_cpu_id(int cpu)
+{
+    coresight_trace_id_map_put_cpu_id(cpu, &id_map_default);
+}
+EXPORT_SYMBOL_GPL(coresight_trace_id_put_cpu_id);
+
+add:-
+
+void coresight_trace_id_put_cpu_id_map(int cpu, struct
+coresight_trace_id_map *id_map)
+{
+    coresight_trace_id_map_put_cpu_id(cpu, id_map);
+}
+EXPORT_SYMBOL_GPL(coresight_trace_id_put_cpu_id_map);
+
+This avoids a whole lot of churn in exposing the default map to
+external functions, putting it in there and then removing it later.
+When any location that was using coresight_trace_id_put_cpu_id() needs
+to supply its own map, change the function name at that point to
+coresight_trace_id_put_cpu_id_map()
+
+Mike
+
+
+> -int coresight_trace_id_get_cpu_id(int cpu)
+> -{
+> -       return coresight_trace_id_map_get_cpu_id(cpu, &id_map_default);
+> -}
+> -EXPORT_SYMBOL_GPL(coresight_trace_id_get_cpu_id);
+> -
+> -void coresight_trace_id_put_cpu_id(int cpu)
+> +struct coresight_trace_id_map *coresight_trace_id_map_default(void)
+>  {
+> -       coresight_trace_id_map_put_cpu_id(cpu, &id_map_default);
+> +       return &id_map_default;
+>  }
+> -EXPORT_SYMBOL_GPL(coresight_trace_id_put_cpu_id);
+> +EXPORT_SYMBOL_GPL(coresight_trace_id_map_default);
+>
+>  int coresight_trace_id_read_cpu_id(int cpu)
+>  {
+> diff --git a/drivers/hwtracing/coresight/coresight-trace-id.h b/drivers/hwtracing/coresight/coresight-trace-id.h
+> index 49438a96fcc6..54b9d8ed903b 100644
+> --- a/drivers/hwtracing/coresight/coresight-trace-id.h
+> +++ b/drivers/hwtracing/coresight/coresight-trace-id.h
+> @@ -42,7 +42,10 @@
+>  #define IS_VALID_CS_TRACE_ID(id)       \
+>         ((id > CORESIGHT_TRACE_ID_RES_0) && (id < CORESIGHT_TRACE_ID_RES_TOP))
+>
+> -/* Allocate and release IDs for a single default trace ID map */
+> +/**
+> + * Get the global map that's used by sysfs
+> + */
+> +struct coresight_trace_id_map *coresight_trace_id_map_default(void);
+>
 >  /**
->   * riscv_isa_extension_base() - Get base extension word
+>   * Read and optionally allocate a CoreSight trace ID and associate with a CPU.
+> @@ -57,7 +60,7 @@
 >   *
-> @@ -648,6 +650,42 @@ static int __init riscv_isa_fallback_setup(char *__u=
-nused)
->  early_param("riscv_isa_fallback", riscv_isa_fallback_setup);
->  #endif
-> =20
-> +static int riscv_homogeneous_vlenb(void)
+>   * return: CoreSight trace ID or -EINVAL if allocation impossible.
+>   */
+> -int coresight_trace_id_get_cpu_id(int cpu);
+> +int coresight_trace_id_get_cpu_id(int cpu, struct coresight_trace_id_map *id_map);
+>
+>  /**
+>   * Release an allocated trace ID associated with the CPU.
+> @@ -70,7 +73,7 @@ int coresight_trace_id_get_cpu_id(int cpu);
+>   *
+>   * @cpu: The CPU index to release the associated trace ID.
+>   */
+> -void coresight_trace_id_put_cpu_id(int cpu);
+> +void coresight_trace_id_put_cpu_id(int cpu, struct coresight_trace_id_map *id_map);
+>
+>  /**
+>   * Read the current allocated CoreSight Trace ID value for the CPU.
+> --
+> 2.34.1
+>
 
-Without a verb, this function name is rather odd.
 
-> +{
-> +	int cpu;
-> +	u32 prev_vlenb =3D 0;
-> +	u32 vlenb;
-> +
-> +	for_each_possible_cpu(cpu) {
-> +		struct device_node *cpu_node;
-> +
-> +		cpu_node =3D of_cpu_device_node_get(cpu);
-> +		if (!cpu_node) {
-> +			pr_warn("Unable to find cpu node\n");
-> +			continue;
-
-Hmm, if we fail to find the cpu node, then shouldn't we be returning an
-error?
-
-> +		}
-> +
-> +		if (of_property_read_u32(cpu_node, "riscv,vlenb", &vlenb)) {
-> +			of_node_put(cpu_node);
-> +
-> +			if (prev_vlenb)
-> +				return -1;
-
-Can you return an errno here and below please?
-
-> +			continue;
-> +		}
-> +
-> +		if (prev_vlenb && vlenb !=3D prev_vlenb) {
-> +			of_node_put(cpu_node);
-> +			return -1;
-> +		}
-> +
-> +		prev_vlenb =3D vlenb;
-> +		of_node_put(cpu_node);
-> +	}
-> +
-> +	riscv_vlenb_of =3D vlenb;
-> +	return 0;
-> +}
-> +
->  void __init riscv_fill_hwcap(void)
->  {
->  	char print_str[NUM_ALPHA_EXTS + 1];
-> @@ -671,6 +709,11 @@ void __init riscv_fill_hwcap(void)
->  			pr_info("Falling back to deprecated \"riscv,isa\"\n");
->  			riscv_fill_hwcap_from_isa_string(isa2hwcap);
->  		}
-> +
-> +		if (riscv_homogeneous_vlenb() < 0) {
-> +			pr_warn("RISCV_ISA_V only supports one vlenb on SMP systems. Please e=
-nsure that the riscv,vlenb devicetree property is the same across all CPUs.=
- Either all CPUs must have the riscv,vlenb property, or none. If no CPUs in=
- the devicetree use riscv,vlenb then vlenb will be probed from the vlenb CS=
-R. Disabling vector.\n");
-
-Oh dear, that's a bit unwieldy... I think you could get away with a far
-more basic message - and you should be able to break this over lines,
-adjacent string literals should get concatenated.
-I'd probably say something like "unsupported heterogeneous vlen detected,
-vector extension disabled", however we should actually check that the
-vector extension has been detected on all CPUs and that kernel support
-for vector is enabled before emitting a warning for this.
-
-Cheers,
-Conor.
-
-> +			elf_hwcap &=3D ~COMPAT_HWCAP_ISA_V;
-> +		}
->  	}
-> =20
->  	/*
-> diff --git a/arch/riscv/kernel/vector.c b/arch/riscv/kernel/vector.c
-> index 6727d1d3b8f2..e04586cdb7f0 100644
-> --- a/arch/riscv/kernel/vector.c
-> +++ b/arch/riscv/kernel/vector.c
-> @@ -33,7 +33,17 @@ int riscv_v_setup_vsize(void)
->  {
->  	unsigned long this_vsize;
-> =20
-> -	/* There are 32 vector registers with vlenb length. */
-> +	/*
-> +	 * There are 32 vector registers with vlenb length.
-> +	 *
-> +	 * If the riscv,vlenb property was provided by the firmware, use that
-> +	 * instead of probing the CSRs.
-> +	 */
-> +	if (riscv_vlenb_of) {
-> +		this_vsize =3D riscv_vlenb_of * 32;
-> +		return 0;
-> +	}
-> +
->  	riscv_v_enable();
->  	this_vsize =3D csr_read(CSR_VLENB) * 32;
->  	riscv_v_disable();
->=20
-> --=20
-> 2.44.0
->=20
-
---SnPvkgTlHmJo6buD
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZjIaEQAKCRB4tDGHoIJi
-0hNBAP9YH38VakJjIeXqwOnQlJJWTLPRdPDQPf5eTY+Ir67I6QEA8WCxzjgKtaAO
-OCpGug+WIcHcZlm8J+isXxxHhyQ9TwQ=
-=T1wq
------END PGP SIGNATURE-----
-
---SnPvkgTlHmJo6buD--
+-- 
+Mike Leach
+Principal Engineer, ARM Ltd.
+Manchester Design Centre. UK
 
