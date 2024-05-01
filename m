@@ -1,128 +1,169 @@
-Return-Path: <linux-kernel+bounces-165851-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-165852-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1F2938B9260
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 01:28:04 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 18C678B9263
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 01:30:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 505791C2084E
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 23:28:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BED86285B0B
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 23:29:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1BD2E16C436;
-	Wed,  1 May 2024 23:27:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 90130168B09;
+	Wed,  1 May 2024 23:29:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="SHIsYObo"
-Received: from mail-pj1-f73.google.com (mail-pj1-f73.google.com [209.85.216.73])
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="bW3mr/RQ"
+Received: from mail-ot1-f42.google.com (mail-ot1-f42.google.com [209.85.210.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1BE4B1581E3
-	for <linux-kernel@vger.kernel.org>; Wed,  1 May 2024 23:27:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.73
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2CBCA130A4E
+	for <linux-kernel@vger.kernel.org>; Wed,  1 May 2024 23:29:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714606070; cv=none; b=U5+Xvqr+KCniXyNGRh2TxuXhtYmGe2HGeEvHpOm0BuULC+isfJJChcib92gwMOuV8o4EGOpDkA8kaDjD8XWR8oDzlHrZ4k5k3Z7ze/UNIzZy2YxogMu5fnkRYALqHFP4w9T93sQVuBI1ggASyYiGWKN3C/sYiGdjxvfs3qAwAYE=
+	t=1714606192; cv=none; b=douMuKcxj7g/P13CF0SBNXntTFNlXX/E5zJcLoBzHGL5NDBvCmsGhbaAe9yJwGTs1iSJmyP2VJvd8b4hnGrUt7F5v5MNlVrZ6ZZVewTJuyh6ijztj3Fag55HdOrVNpEzNe5lI+kt+mh2W71Xzd75Ghex4a64LprUOxDSA05o6pU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714606070; c=relaxed/simple;
-	bh=xPKTQAY6H9NH4LCGNLAuTIrJpoVGbJlh2oFRm7BmuLA=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=PUwkKEt9pkdgXY3ypLEGhOieCavYeBhYIgLZW6nDGTqnORaxTGhDB/lNK5ymW4D0bUBovP67wSICIg8M1wkug9PxBzQVrrW2nbgKsbGGs7vqVqgftkeqC8O4TAtRxFsaok7H8C80yBxyb8bo+/apZYueBAvOR0s1G2AjpFx05WA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=SHIsYObo; arc=none smtp.client-ip=209.85.216.73
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-pj1-f73.google.com with SMTP id 98e67ed59e1d1-2a49440f7b5so7076876a91.1
-        for <linux-kernel@vger.kernel.org>; Wed, 01 May 2024 16:27:48 -0700 (PDT)
+	s=arc-20240116; t=1714606192; c=relaxed/simple;
+	bh=4yXGVupLk19qBVTQBEk549iroBDGqX+1k4Vl05US0V4=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=cTOQWD//e9KWPJ04oOO78H438GhPZBttrE/CHiklWZDoF+y7Vj0s1mPazo4rBMuFNsTdEcgjxDs7TG8KNc1n9H1RoNct9AHr6XHz2HncmSo+0Dbu/p/o2uH5XjkQu6dO14n6/EihjCEJ73P41bQEv7yyabwdnoXg2k3y9AqXLXc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=bW3mr/RQ; arc=none smtp.client-ip=209.85.210.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-ot1-f42.google.com with SMTP id 46e09a7af769-6ee1c0ecfa5so2592341a34.0
+        for <linux-kernel@vger.kernel.org>; Wed, 01 May 2024 16:29:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1714606068; x=1715210868; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=MXAwrtGLrbcI4VZUxU94il3rKUGPiRgHtzGv9dxe9YQ=;
-        b=SHIsYObocUNELf4CV9FZxpUx69nv7W7TC52LxT0jKwUMQ2SUYNPeBT7V4/rN4g99GR
-         Wbyg+uAgd6x1ZCFStANOfcizhcfSrm7S/RH2S1GPW4q3mb5g2qzYDgfQHHitqP21aExy
-         fHjcIVSRWLqOExMDbuU8y6x3TtL3U7+9xoDF9wu8yKXGK/M5ZTjRRVgohvAmCR5NltdC
-         4/ST5AeMhLLD1UfC9xvp6dbb3dnBKmtQthhYfzthozYicfkSdtUNI/iKWIn4ZZOjcXSW
-         HbLaZdKQ2e3/uJ9t57OgJtWnPXmlFkdBNpikVFZKrfkHTew/ntOnqfWaxQVyThUzXPgD
-         gUaA==
+        d=chromium.org; s=google; t=1714606190; x=1715210990; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=7dISoR/F5tfj4gTzAljBl0G32nuqdqdDkvElUgLUPzE=;
+        b=bW3mr/RQGLji9yLzEcpbVK4VQL1iCTwN4Jv8FfH1R1V7hPzydoHRGgEnPgdZKacFgD
+         UdqZq8/Pnar95dT/E7NGaYXtLPh8nxJqkBlMzsn5zqoC9b1lHac83oUkOQR295wESgLb
+         dG43nbtGUHBA1RZwKWk+0UiUCh8ueayloHp/A=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714606068; x=1715210868;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=MXAwrtGLrbcI4VZUxU94il3rKUGPiRgHtzGv9dxe9YQ=;
-        b=pbTC4kCM7Sm7xBift3EPme9lk5APPLi6CmqsKHmqiVTiFrgZNMkVdMcbIK6/lmKQBP
-         g03YZpByD9jqA8XVwu1G76loDPx49tgxU8m0McdU1n7kyUjqH/C9c0GqubvoTp+HzU2n
-         hk1SgkgHXgQ7tJs5cq9GQUCLc6H1ahA/xILbvX/V28WvUrjZPLEc5FexFYkfwoOo+yyV
-         MnN43dyoC10s/sRxMIui1VC6LbKQZIGCYnKGHt27QuJcA3dq7Xg4eRCGqrPgb7iUoF+M
-         ES2krEq+6W0ca4vhYvuq9FuL4i1IuXqpLIi5Yjuz4pxHqTzVfct7yRC7BqHJSl/Ubrqc
-         doIw==
-X-Forwarded-Encrypted: i=1; AJvYcCU5yFvf8oNxSN9WMSATIRu9NrdKuY1wyHCMTmQ6e+P8pBH+wlj7Wuj5ogFT32ncrkOJgOv+sWZ3sjBj5c2Qiz3lj06/aa37XWzeg3Uf
-X-Gm-Message-State: AOJu0Yxlhxzm7qaaPX6AOmduYdEvMiBuTxZtWy5R33MPuHKD7NZFv8qp
-	Y22XKp5OJvYgUWOoavYoYNB3eGwATTGJ83qNjlpu+sb+yTk4ixI9bc+SEjQZRxXZu7zJpliJ04P
-	S2A==
-X-Google-Smtp-Source: AGHT+IF4EwXU0JmQLvZRvuwORWuJiQp6XzXl9sqqMI0dc8K3/CZscl+xenDCC2dCoWsq9Og/2wncxvjuPJ8=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a17:90b:4d85:b0:2b2:7c77:ec7d with SMTP id
- oj5-20020a17090b4d8500b002b27c77ec7dmr11147pjb.2.1714606068268; Wed, 01 May
- 2024 16:27:48 -0700 (PDT)
-Date: Wed, 1 May 2024 16:27:46 -0700
-In-Reply-To: <20240219074733.122080-1-weijiang.yang@intel.com>
+        d=1e100.net; s=20230601; t=1714606190; x=1715210990;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=7dISoR/F5tfj4gTzAljBl0G32nuqdqdDkvElUgLUPzE=;
+        b=o3i9V/cz/plMFlDPTemy4UeNvESTjIpnah+foot/jwA5miQndL4BiCuHhyai6LF/Qr
+         wwSyktbBD9LCX+mOQtVST2JaobAVcZ6oJvDW6R5O98rlv4hKgigiSJ2pB4lFBeJVMJgc
+         pDxHjovHoCl1UpbZPtsvwEmA2XBp+p0kNe11L3lkC7E7yAKQG8ClzqIL+FX7v+YIMoXf
+         s9T7rz6Y1KWazl+AUufurtOqnKJLqfFgzwTf/g2w51uy9K4r+4IaDrJf5UevhbsElakg
+         GNPQDpCPjdvvx2J9CJ/fOvl18VjJL+iG8Oqo1bxvUEf2iH+BUYO1PGndDTdZjr//TpuF
+         u9nA==
+X-Forwarded-Encrypted: i=1; AJvYcCUs5/lqg4LsnFdgIFuDLyAFYHcgRSnM0eLFkPCQ+m7esbzRANVqJ2Hh7wdxGVURq845kDxaltSKgDU/l2kUqB46CbGX10XXFH4bah9Q
+X-Gm-Message-State: AOJu0YwLxLXdPMA0QpPMMY6sNENnz2/TTULYBoRjrBMB4Mxf/H1xBYhu
+	nxA4Mr4jdxyNDug1MM3XjUvTAuNZ9mnshAf8O80Jhn0W0AdjTr8O5FytZRMiwOrGa2Sj2E2L87U
+	=
+X-Google-Smtp-Source: AGHT+IFxrmXP1FPmykiQaZKkoA+c8VkJNoSxMdJBCA6PH9qSYW8eOS9grinif8S4SkabK8KpuqGivQ==
+X-Received: by 2002:a05:6870:b153:b0:23c:357f:c475 with SMTP id a19-20020a056870b15300b0023c357fc475mr4763058oal.38.1714606190280;
+        Wed, 01 May 2024 16:29:50 -0700 (PDT)
+Received: from www.outflux.net ([198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id m20-20020a634c54000000b005ceeeea1816sm22885951pgl.77.2024.05.01.16.29.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 01 May 2024 16:29:49 -0700 (PDT)
+From: Kees Cook <keescook@chromium.org>
+To: linux-hardening@vger.kernel.org
+Cc: Kees Cook <keescook@chromium.org>,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] kunit/fortify: Fix replaced failure path to unbreak __alloc_size
+Date: Wed,  1 May 2024 16:29:48 -0700
+Message-Id: <20240501232937.work.532-kees@kernel.org>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240219074733.122080-1-weijiang.yang@intel.com>
-Message-ID: <ZjLP8jLWGOWnNnau@google.com>
-Subject: Re: [PATCH v10 00/27] Enable CET Virtualization
-From: Sean Christopherson <seanjc@google.com>
-To: Yang Weijiang <weijiang.yang@intel.com>
-Cc: pbonzini@redhat.com, dave.hansen@intel.com, x86@kernel.org, 
-	kvm@vger.kernel.org, linux-kernel@vger.kernel.org, peterz@infradead.org, 
-	chao.gao@intel.com, rick.p.edgecombe@intel.com, mlevitsk@redhat.com, 
-	john.allen@amd.com
-Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2983; i=keescook@chromium.org;
+ h=from:subject:message-id; bh=4yXGVupLk19qBVTQBEk549iroBDGqX+1k4Vl05US0V4=;
+ b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBmMtBswx0QYtZ0rs+tmVZCkrxjpdO96z9v30SuQ
+ PXQbvHvF32JAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZjLQbAAKCRCJcvTf3G3A
+ Jv0cD/9rjTr4nf4bUtgCGuLeGwUkaR7oehV53YB8I7E7VSAL09bqN7jFS15qKdHwtFKfif9iaxe
+ SMck57SSDFpDJuynhJ+i/zIsVMLZPtIC1YM/qXxhdkMDnMxUALOttDuJ+nM0s53k0DT3NpSb2ic
+ q+zxhuCMUjgOOTN+YY4S4qpaiMU8pC6e410vM/pJoTamsfuShEg0qIwcu0LXQbzTzaFRlm9Ghgr
+ 3qr91BJKm+JyDdJgO1UQZJxZggaKHP9qaRIBC8m1aMrRAOWTY+Gc5SSSrSvFvGPGVmydMSDEROc
+ b1QbMtc8Mqso2aQX8mP0gYUa3CbmKw4Gd0T+Or9wLYa9BQaX/qbYN4SP/u5Eaw657wDu7us5V+4
+ KMifVOHHL0LTCk3mplJ2NCOA4IFoQVPqlAb+8jdBtKFaPjxqP38nwwBWVmNX8OYVLVVkqDK0pyQ
+ Ypm05AvNT0YtH8SCKkJoNcvXJlszHzO+WuCgDb8cMCqRFYvpf5qWowwLHzoasgixd31sEiHu1yZ
+ IH0JEWPRVks3+HGBDZAWhdtSExkHzTVqs3aQQ/MSbFhcxj1xGi7WMlx4UgAstOpM4JECpcgodPM
+ bH76x1iR5kZow8RNky8zpnPQA2GpsFi7zx8IROfMSiRUkmDfqBVkgve4yY3+yAJTbvbiRJmhviY
+ M7dL0Y+ zS/WXqew==
+X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
+Content-Transfer-Encoding: 8bit
 
-On Sun, Feb 18, 2024, Yang Weijiang wrote:
-> Sean Christopherson (4):
->   x86/fpu/xstate: Always preserve non-user xfeatures/flags in
->     __state_perm
->   KVM: x86: Rework cpuid_get_supported_xcr0() to operate on vCPU data
->   KVM: x86: Report XSS as to-be-saved if there are supported features
->   KVM: x86: Load guest FPU state when access XSAVE-managed MSRs
-> 
-> Yang Weijiang (23):
->   x86/fpu/xstate: Refine CET user xstate bit enabling
->   x86/fpu/xstate: Add CET supervisor mode state support
->   x86/fpu/xstate: Introduce XFEATURE_MASK_KERNEL_DYNAMIC xfeature set
->   x86/fpu/xstate: Introduce fpu_guest_cfg for guest FPU configuration
->   x86/fpu/xstate: Create guest fpstate with guest specific config
->   x86/fpu/xstate: Warn if kernel dynamic xfeatures detected in normal
->     fpstate
->   KVM: x86: Rename kvm_{g,s}et_msr()* to menifest emulation operations
->   KVM: x86: Refine xsave-managed guest register/MSR reset handling
->   KVM: x86: Add kvm_msr_{read,write}() helpers
->   KVM: x86: Refresh CPUID on write to guest MSR_IA32_XSS
->   KVM: x86: Initialize kvm_caps.supported_xss
->   KVM: x86: Add fault checks for guest CR4.CET setting
->   KVM: x86: Report KVM supported CET MSRs as to-be-saved
->   KVM: VMX: Introduce CET VMCS fields and control bits
->   KVM: x86: Use KVM-governed feature framework to track "SHSTK/IBT
->     enabled"
->   KVM: VMX: Emulate read and write to CET MSRs
->   KVM: x86: Save and reload SSP to/from SMRAM
->   KVM: VMX: Set up interception for CET MSRs
->   KVM: VMX: Set host constant supervisor states to VMCS fields
->   KVM: x86: Enable CET virtualization for VMX and advertise to userspace
->   KVM: nVMX: Introduce new VMX_BASIC bit for event error_code delivery
->     to L1
->   KVM: nVMX: Enable CET support for nested guest
->   KVM: x86: Don't emulate instructions guarded by CET
+The __alloc_size annotation for kmemdup() was getting disabled under
+KUnit testing because the replaced fortify_panic macro implementation
+was using "return NULL" as a way to survive the sanity checking. But
+having the chance to return NULL invalidated __alloc_size, so kmemdup
+was not passing the __builtin_dynamic_object_size() tests any more:
 
-A decent number of comments, but almost all of them are quite minor.  The big
-open is how to handle save/restore of SSP from userspace.
+[23:26:18] [PASSED] fortify_test_alloc_size_kmalloc_const
+[23:26:19]     # fortify_test_alloc_size_kmalloc_dynamic: EXPECTATION FAILED at lib/fortify_kunit.c:265
+[23:26:19]     Expected __builtin_dynamic_object_size(p, 1) == expected, but
+[23:26:19]         __builtin_dynamic_object_size(p, 1) == -1 (0xffffffffffffffff)
+[23:26:19]         expected == 11 (0xb)
+[23:26:19] __alloc_size() not working with __bdos on kmemdup("hello there", len, gfp)
+[23:26:19] [FAILED] fortify_test_alloc_size_kmalloc_dynamic
 
-Instead of spinning a full v10, maybe send an RFC for KVM_{G,S}ET_ONE_REG idea?
-That will make it easier to review, and if you delay v11 a bit, I should be able
-to get various series applied that have minor conflicts/dependencies, e.g. the
-MSR access and the kvm_host series.
+Normal builds were not affected: __alloc_size continued to work there.
+
+Use a zero-sized allocation instead, which allows __alloc_size to
+behave.
+
+Fixes: 4ce615e798a7 ("fortify: Provide KUnit counters for failure testing")
+Fixes: fa4a3f86d498 ("fortify: Add KUnit tests for runtime overflows")
+Signed-off-by: Kees Cook <keescook@chromium.org>
+---
+Cc: linux-hardening@vger.kernel.org
+---
+ include/linux/fortify-string.h | 3 ++-
+ lib/fortify_kunit.c            | 6 +++---
+ 2 files changed, 5 insertions(+), 4 deletions(-)
+
+diff --git a/include/linux/fortify-string.h b/include/linux/fortify-string.h
+index a0bb13825109..85fc0e6f0f7f 100644
+--- a/include/linux/fortify-string.h
++++ b/include/linux/fortify-string.h
+@@ -738,7 +738,8 @@ __FORTIFY_INLINE void *kmemdup(const void * const POS0 p, size_t size, gfp_t gfp
+ 	if (__compiletime_lessthan(p_size, size))
+ 		__read_overflow();
+ 	if (p_size < size)
+-		fortify_panic(FORTIFY_FUNC_kmemdup, FORTIFY_READ, p_size, size, NULL);
++		fortify_panic(FORTIFY_FUNC_kmemdup, FORTIFY_READ, p_size, size,
++			      __real_kmemdup(p, 0, gfp));
+ 	return __real_kmemdup(p, size, gfp);
+ }
+ 
+diff --git a/lib/fortify_kunit.c b/lib/fortify_kunit.c
+index ef3e4c68b759..306522fd0aa2 100644
+--- a/lib/fortify_kunit.c
++++ b/lib/fortify_kunit.c
+@@ -1002,19 +1002,19 @@ static void fortify_test_kmemdup(struct kunit *test)
+ 
+ 	/* Out of bounds by 1 byte. */
+ 	copy = kmemdup(src, len + 1, GFP_KERNEL);
+-	KUNIT_EXPECT_NULL(test, copy);
++	KUNIT_EXPECT_PTR_EQ(test, copy, ZERO_SIZE_PTR);
+ 	KUNIT_EXPECT_EQ(test, fortify_read_overflows, 1);
+ 	kfree(copy);
+ 
+ 	/* Way out of bounds. */
+ 	copy = kmemdup(src, len * 2, GFP_KERNEL);
+-	KUNIT_EXPECT_NULL(test, copy);
++	KUNIT_EXPECT_PTR_EQ(test, copy, ZERO_SIZE_PTR);
+ 	KUNIT_EXPECT_EQ(test, fortify_read_overflows, 2);
+ 	kfree(copy);
+ 
+ 	/* Starting offset causing out of bounds. */
+ 	copy = kmemdup(src + 1, len, GFP_KERNEL);
+-	KUNIT_EXPECT_NULL(test, copy);
++	KUNIT_EXPECT_PTR_EQ(test, copy, ZERO_SIZE_PTR);
+ 	KUNIT_EXPECT_EQ(test, fortify_read_overflows, 3);
+ 	kfree(copy);
+ }
+-- 
+2.34.1
+
 
