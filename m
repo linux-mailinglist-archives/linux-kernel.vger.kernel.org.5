@@ -1,47 +1,47 @@
-Return-Path: <linux-kernel+bounces-164868-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-164867-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B10EF8B8435
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 04:11:04 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 651F58B8434
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 04:11:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6C888283960
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 02:11:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1AE991F2353E
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 02:11:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE9BA18E29;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E09718C1A;
 	Wed,  1 May 2024 02:10:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WztpWvbI"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dCu/jQ5N"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F38C614AB8;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D547714A81;
 	Wed,  1 May 2024 02:10:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714529433; cv=none; b=ETYLTnu7/LfSFmGgS4uO8rNiHJHnWguy4nTyB9f1cjF52acRE9F83ajLFqdTJBpoAKa9eX6puM4jBwTxLrO9ub9qEtxCJqGcyO5shkZHfHMXVsUwbeaNrWxoojBD5/0xhZr/hp8quWDs5zLufToTJv2URwZ5ajU5vREVNeARqnA=
+	t=1714529433; cv=none; b=CJ6Orq9DzcoE+eaXhsn2+r5joh0YmBhcdYon47SYcBIt2Ovi++e0vav8o5LBSbc4zDZwbxO82sd+bvFx0KtboNc4N87zNH0Rcgt5d7UOEIakymeqcYSn0bhsmJRk954TnLW47R0ghL5j2bYy5/CbJ8ihqkef1XDf8idfPsxDQow=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1714529433; c=relaxed/simple;
-	bh=y5/Bv7A2y009Vap3hu7nx7c3Igg/xranL15UDJAq04Q=;
+	bh=JkkG2HQgyj4Dng0B7QaD5x4I2y9yo+brfwfoHgYEHBg=;
 	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=h201MiEAXqPq+B2KEgqMftmcqXNL37e96KB42wf1v7eInznHu2f0eT10niOjViXZwPFRFmjhmy1FmAbFMe3yMNgaZ9jXgdvuVq/Yh9LAeRqTitGlkeyxbLXo2tpp/Nv73tPMKyC8JS+NvU38oUqC7Q9qgL5GJ5TH47BBNpn9Yqw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WztpWvbI; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 7B2CAC4AF1D;
+	 In-Reply-To:To:Cc; b=NWHuvVCLgBCvs/umqrzBDH/w5t4zFuV4sANkUXQMDTwyDwkj7RUAs11BvM7rFJ7pGJ1+Xqo3Ai/ZPpboKcLWARbO9O1Mm/lGCJYSL5NvTcs6t2IPJ0ta6yA0r0iRrMenJGpuMOb8tIlWZ9JV25OIgmq0oKFXkYhSO2QBf2smo7Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dCu/jQ5N; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 750AAC4AF1C;
 	Wed,  1 May 2024 02:10:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1714529432;
-	bh=y5/Bv7A2y009Vap3hu7nx7c3Igg/xranL15UDJAq04Q=;
+	bh=JkkG2HQgyj4Dng0B7QaD5x4I2y9yo+brfwfoHgYEHBg=;
 	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=WztpWvbIvciO7cJfpyuc9s8diV+qDyLoynWyBCcMlZXEXWTYWt3BNthSFnz8vWp+S
-	 qch2QWm6cXZ6XTV5OMCmcM9Y5uDMm3HZm9Sn7ECh1wcnB0ctPm+2XF+b/5+OR+N/yP
-	 QOtfakCN62gLDp7plYMNES3ER5S8OqKIHKUQulIvFqJzC8rClF3hEePHdZ3YkQCasf
-	 Aemg62RLfhMAubmwa3yO+gJUJscR3ZnOjDWUIoTNtN+V59+prSvvUHYQQ4DkiIDPt2
-	 zRztdxq3Xbo6duUO/1IJNkzq9N2IIU0SEFsDa+pzQ9g7q2dgIm/hcgz9Pg5lMBZlmA
-	 RbPSXKOS9uUHg==
+	b=dCu/jQ5NmyxGTDmC2ZTkGBZtLaT9mcTx5KYZoaH1G8PDXalD4JTYU39ryzSsqjIhW
+	 xHF55rwWQnvGJe3b1cOrkDB0FnGDJ7dJu1XpRgga0I95uQC923YMDwXbMAd5dDjljO
+	 U7xSgwJ91+GFb+7pJ5+CsXIHoLX5CONLMqg5d/anjuaCpciI8cs7teBEoJQpE9x2XQ
+	 rQ+GgsE/IvTrRbW8dphtCKWA9gBuUOYwZpB327uHAJQ6xjvKwF8+BwrQLKTm9gCOAY
+	 lXUk4+WSuJf7XHUihS7jSQIXH2LzlPNDWhKYwWC7fVAW9lvTr8Q7fGAm9Mv6jcc26H
+	 lvHi/6WYP1GMg==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 6E9D6C43619;
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 66935C43616;
 	Wed,  1 May 2024 02:10:32 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
@@ -51,39 +51,41 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next v3 0/1] dt-bindings: net: snps,
- dwmac: remove tx-sched-sp property
+Subject: Re: [PATCH net-next] netpoll: Fix race condition in netpoll_owner_active
 From: patchwork-bot+netdevbpf@kernel.org
 Message-Id: 
- <171452943244.31721.11324975670397906931.git-patchwork-notify@kernel.org>
+ <171452943241.31721.5323172862996753044.git-patchwork-notify@kernel.org>
 Date: Wed, 01 May 2024 02:10:32 +0000
-References: <20240429092654.31390-1-f.suligoi@asem.it>
-In-Reply-To: <20240429092654.31390-1-f.suligoi@asem.it>
-To: Flavio Suligoi <f.suligoi@asem.it>
+References: <20240429100437.3487432-1-leitao@debian.org>
+In-Reply-To: <20240429100437.3487432-1-leitao@debian.org>
+To: Breno Leitao <leitao@debian.org>
 Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
- pabeni@redhat.com, robh@kernel.org, krzysztof.kozlowski+dt@linaro.org,
- conor+dt@kernel.org, alexandre.torgue@foss.st.com, peppe.cavallaro@st.com,
- joabreu@synopsys.com, aford173@gmail.com, netdev@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+ pabeni@redhat.com, leit@meta.com, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org
 
 Hello:
 
 This patch was applied to netdev/net-next.git (main)
 by Jakub Kicinski <kuba@kernel.org>:
 
-On Mon, 29 Apr 2024 11:26:53 +0200 you wrote:
-> Strict priority for the tx scheduler is by default in Linux driver, so the
-> tx-sched-sp property was removed in commit aed6864035b1 ("net: stmmac:
-> platform: Delete a redundant condition branch").
+On Mon, 29 Apr 2024 03:04:33 -0700 you wrote:
+> KCSAN detected a race condition in netpoll:
 > 
-> This property is still in use in the following DT (and it will be removed
-> in a separate patch series):
+> 	BUG: KCSAN: data-race in net_rx_action / netpoll_send_skb
+> 	write (marked) to 0xffff8881164168b0 of 4 bytes by interrupt on cpu 10:
+> 	net_rx_action (./include/linux/netpoll.h:90 net/core/dev.c:6712 net/core/dev.c:6822)
+> <snip>
+> 	read to 0xffff8881164168b0 of 4 bytes by task 1 on cpu 2:
+> 	netpoll_send_skb (net/core/netpoll.c:319 net/core/netpoll.c:345 net/core/netpoll.c:393)
+> 	netpoll_send_udp (net/core/netpoll.c:?)
+> <snip>
+> 	value changed: 0x0000000a -> 0xffffffff
 > 
 > [...]
 
 Here is the summary with links:
-  - [net-next,v3,1/1] dt-bindings: net: snps, dwmac: remove tx-sched-sp property
-    https://git.kernel.org/netdev/net-next/c/a2af49293db6
+  - [net-next] netpoll: Fix race condition in netpoll_owner_active
+    https://git.kernel.org/netdev/net-next/c/c2e6a872bde9
 
 You are awesome, thank you!
 -- 
