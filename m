@@ -1,153 +1,150 @@
-Return-Path: <linux-kernel+bounces-165818-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-165819-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7847D8B91FC
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 01:07:04 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 89FF58B91FE
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 01:07:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 99EF7B23699
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 23:07:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 36CF41F21060
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 23:07:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E50916C44F;
-	Wed,  1 May 2024 23:06:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70FEA168AEE;
+	Wed,  1 May 2024 23:07:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="svdrPq5Y"
-Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="WtOmTfIK"
+Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 01C80168AEC
-	for <linux-kernel@vger.kernel.org>; Wed,  1 May 2024 23:06:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3F4D13D892
+	for <linux-kernel@vger.kernel.org>; Wed,  1 May 2024 23:07:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714604782; cv=none; b=TFQKndo1zgONv01B71ggzEKPLHhViLJE768F0YnSLyOJkMjwElC0BL8GnVtu6cbgdsPVBJygIMiVEc9k2nbshIQYe81hh6CKowyB2Qpq3cgmJn7tj8UN6sEcdUI7OuOTkafAh52J24BMVOjbiGSSnZOGv470SWhkYBlje6HAZto=
+	t=1714604860; cv=none; b=rRVv5N8/8aoNKEm+SUhajD7ePLSo2J5DHnr1lnpV+0CRaofr2VD9U8NXAQV+ka5yzr+ZNSq26jukzHOtSSjkp2JFV/SK9vg2VKGmfmsKzrMxrl6ggTVODUUGt4NIOm4m27u5LENmPv9YYAFYQLSQ94A/rGDye0tYsMzoAdHFE1U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714604782; c=relaxed/simple;
-	bh=qOMS3MoG0aX2cNKPdjTXQCQNi6X2PhisZGHzvEgo8uY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=STRKVhW0PRrWZGq84MMIWfr1OWbd2ZullAn59qJBrWPsRZLL3dR/Z3t3nxBl+nx39jFKK3DsQTgL+Y/tzXUgqV9KfZmba15Jz61dHmP2/jcTLVjJYCSuFOSAk3G02q68AOZkrYIFIT/MLs7TAj3iW9pvpsSW4vAva76Jh9iy7MA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=svdrPq5Y; arc=none smtp.client-ip=209.85.208.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-572ba002a6bso455398a12.1
-        for <linux-kernel@vger.kernel.org>; Wed, 01 May 2024 16:06:20 -0700 (PDT)
+	s=arc-20240116; t=1714604860; c=relaxed/simple;
+	bh=4QDGvas4u9w8udrkJBB6Q7Kg1UUo6G22Iv+BP5EKegM=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=L51GGWiqup58M721T5DCQr8CuS18xQ5p28oiQcPLwbH5NBNM4+87f5/F91WRVjVp8df3eD1t0FOJp7SopqnMy2zxa0mTcOxQ3G1BkWUJM5tfx5ysgNpfTXzfpDlD7C2poQKe8QlmJuLBV3jj+HBcqvzWxXfVEhCuUAMsoLyXQBA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=WtOmTfIK; arc=none smtp.client-ip=209.85.128.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-61bef0accddso43210277b3.0
+        for <linux-kernel@vger.kernel.org>; Wed, 01 May 2024 16:07:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1714604779; x=1715209579; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=qwpEevQkgvQWDxui1XX4xGxUmAhA1SDqUMX6U8phr3w=;
-        b=svdrPq5YtLnFMM3N72IBv4R+Fxj0uVJF2+gilWn/8iVaLZbPNBv+WO2qOD+HpnAFP7
-         gP7NbBYbcEyBTc11KLWqp6IIjU1gxChPpHuhV3uhMRjCowm5VRK/P4PJunINQPNohbma
-         +ZMS609etoaRbhOjm/rkdtWY0txhZMCUCrcb8Fh6y+btlYfJy938yFLrT+OI7oaH9F3E
-         HNPlMxtWyUOPsvtwgF+2jKXVzvWPw/fza/UQ8QefE9Q0ZuU/YM5ZkWtI8Xg0/RtED8kV
-         4w474UhPesk5WAvkfP4B01aZ1R6tQThWuNdKkNgxvCyl1BYLh5+xsPMhMI+nnDLTsp95
-         UfUw==
+        d=google.com; s=20230601; t=1714604857; x=1715209657; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=hcfy46ofNDIF08JDPxCSwUXWD3ohxE7j32bndZidSTQ=;
+        b=WtOmTfIKE+Pe3nFawO4tn+kdHDia6cl6rWovBhp4cOrEseZqY1+KJOL5UkjpAQr95c
+         fGHjIITEdJc8LpdfIGKFxw2pFxDFGa0y7HFAoC3VIFDvENUwoagyS7bMciThMRNttX3c
+         vlsBW5HOumKiTWvglqeAETcNzE/zLMQ5xkRKSExamVRvsaoyhc/o/mTLsv0IxruIK2Ax
+         5CFSl4DwOHUONLy79liwK5HU+ZkbmUvEzGrxMTHswMx69NMiBQq/4HxNSdLRfS1UuczV
+         r4zVnwHtqD4juYdPgCRHfeqVr8oOXIObs0w5DTCtydq5g+UPeqzx685jJelB/Ao6B7lA
+         7Fig==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714604779; x=1715209579;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=qwpEevQkgvQWDxui1XX4xGxUmAhA1SDqUMX6U8phr3w=;
-        b=LnfZD24VmedjOSvphXQAFJFg6xidjkUlN7bYz54xKx42hC+MlloIladNdFe0O8+QEj
-         WLkh59JUZwg1UNLq+hj9826vB4faE3sv99YZritbGVEZxB7C3P3QEK9JrDQNlihzalms
-         Ks+kLZzHV1XS+DJp8v+i186FPEgTGy4qUsrEwt2NDqEQnbsInxkCjF3wxqavyOLHyPh/
-         4vyl0VjH7sOVmca30xTcs6kXZJVYZMNhZaRxzROLl3N6jWOxG0g9EvQafsnLWJOVTGjj
-         API/yMdbkPrNmWhY+e8vRHfVDGCcB5uqUxD27e6TVcnb6bp8Ilx2tCsd07sF0OoRLxIS
-         qn9Q==
-X-Forwarded-Encrypted: i=1; AJvYcCWAkZQVEh7SMQyx32YUTG9oYw1B5Hv3B6vRI/r5BdWbbbVRUo9cBlnC3ryOBW10ivdcTvesQBwOxLRORjQPVWf9Ucob9TGt2p6NxGUm
-X-Gm-Message-State: AOJu0Yw6YJdSN4xyqjSIPP5BP9Bwu4MIL8MA6OqlZgW2WnSTT6zF0dtL
-	GvphHbczrF6QBy27ix0Bjyli8dYKYxhTEBtotktS2qewQV+6T5FP2gaoEvLwk6s=
-X-Google-Smtp-Source: AGHT+IEdDJ6/tpSGDxJqUtcc/zZXiz7VPOwYk2D71sQKxM/B1c+7VKjW7GvvSayUi5NLXBSRF9GJTg==
-X-Received: by 2002:a50:c00a:0:b0:572:a711:3daf with SMTP id r10-20020a50c00a000000b00572a7113dafmr1892644edb.40.1714604779521;
-        Wed, 01 May 2024 16:06:19 -0700 (PDT)
-Received: from [192.168.114.15] (078088045141.garwolin.vectranet.pl. [78.88.45.141])
-        by smtp.gmail.com with ESMTPSA id p6-20020a05640243c600b005725d859e4esm6083491edc.73.2024.05.01.16.06.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 01 May 2024 16:06:19 -0700 (PDT)
-Message-ID: <5393c638-a21b-4972-8b85-1736ce8ce0b9@linaro.org>
-Date: Thu, 2 May 2024 01:06:16 +0200
+        d=1e100.net; s=20230601; t=1714604857; x=1715209657;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=hcfy46ofNDIF08JDPxCSwUXWD3ohxE7j32bndZidSTQ=;
+        b=f1WnjDzhQeDP+TOfUajKaqyQZQhyH2PIKJQhEGwyowwXhxjkzgV7YnGAWm3OXxRHIY
+         UdsEQpPu0f2ZnV9/Wpw7PT4mK2jn9KI2CZttsE3uAEFO/V0iOHfCUfR091yCAxvXmmpE
+         xBM6DZ8eUJFiFUvBs8syDe+oDOXU1lSxLWS+C97rWAo7s3YSGTca93U+08ye9IowLbPD
+         gYLri+IryWgEhBchZN5oV0aqErdo19/aZI6LCnsXA4qLIj/qfTEsGEkxVIqVwgHGXo9u
+         Bysa4tL6xoEn/H1lDFyTopIku4oeO7wmXrkxHMcAvDpUIOIR0XDOkusJj2U81AGb9oaI
+         vvRw==
+X-Forwarded-Encrypted: i=1; AJvYcCUY2AOctPWsznsb5ggQTcdlai5ahw9AaclVxGq5kNbeOxdb3DoJ/ixa0bVUFBNOmR0KDwbQFDDhplDXIa8B8RI6KUSm6jmHNY6vA5mX
+X-Gm-Message-State: AOJu0Yw6vrI0RkJpW35XV17apZkNBamNNFsEKcFndZ5su22xfagaHFbI
+	civBVOsOMFRFwEMCcTRDanv15v8XE26nahzSDao+Y8wFjh9lWkIsQbtVK+MbJxXMiJcFrGmrWRF
+	uEA==
+X-Google-Smtp-Source: AGHT+IEoso9E1EzUZlOXERGVZBES24HUmNdhkCjXroYBDlZzz/sTnYht/qkC0ZK79I1dSTlWsUaLZS+I51w=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a0d:e212:0:b0:61b:e2eb:f05 with SMTP id
+ l18-20020a0de212000000b0061be2eb0f05mr75358ywe.2.1714604856835; Wed, 01 May
+ 2024 16:07:36 -0700 (PDT)
+Date: Wed, 1 May 2024 16:07:35 -0700
+In-Reply-To: <20240219074733.122080-23-weijiang.yang@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 11/13] arm64: dts: qcom: sm8450: add power-domain to UFS
- PHY
-To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
- Vinod Koul <vkoul@kernel.org>, Kishon Vijay Abraham I <kishon@kernel.org>,
- Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>,
- Conor Dooley <conor+dt@kernel.org>, Abel Vesa <abel.vesa@linaro.org>,
- Wesley Cheng <quic_wcheng@quicinc.com>, cros-qcom-dts-watchers@chromium.org,
- Bjorn Andersson <andersson@kernel.org>, David Wronek
- <davidwronek@gmail.com>, Andy Gross <andy.gross@linaro.org>,
- Evan Green <evgreen@chromium.org>, Douglas Anderson <dianders@chromium.org>,
- Iskren Chernev <me@iskren.info>, Luca Weiss <luca.weiss@fairphone.com>,
- Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
- Yassine Oudjana <y.oudjana@protonmail.com>
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
- linux-arm-msm@vger.kernel.org, linux-phy@lists.infradead.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- Krzysztof Kozlowski <krzk@kernel.org>,
- Konrad Dybcio <konrad.dybcio@somainline.org>
-References: <20240501-qcom-phy-fixes-v1-0-f1fd15c33fb3@linaro.org>
- <20240501-qcom-phy-fixes-v1-11-f1fd15c33fb3@linaro.org>
-Content-Language: en-US
-From: Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <20240501-qcom-phy-fixes-v1-11-f1fd15c33fb3@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Mime-Version: 1.0
+References: <20240219074733.122080-1-weijiang.yang@intel.com> <20240219074733.122080-23-weijiang.yang@intel.com>
+Message-ID: <ZjLLNyvbpfemyN5g@google.com>
+Subject: Re: [PATCH v10 22/27] KVM: VMX: Set up interception for CET MSRs
+From: Sean Christopherson <seanjc@google.com>
+To: Yang Weijiang <weijiang.yang@intel.com>
+Cc: pbonzini@redhat.com, dave.hansen@intel.com, x86@kernel.org, 
+	kvm@vger.kernel.org, linux-kernel@vger.kernel.org, peterz@infradead.org, 
+	chao.gao@intel.com, rick.p.edgecombe@intel.com, mlevitsk@redhat.com, 
+	john.allen@amd.com
+Content-Type: text/plain; charset="us-ascii"
 
-On 1.05.2024 6:19 PM, Dmitry Baryshkov wrote:
-> The UFS PHY is powered on via the UFS_PHY_GDSC power domain. Add
-> corresponding power-domain the the PHY node.
-> 
-> Fixes: 07fa917a335e ("arm64: dts: qcom: sm8450: add ufs nodes")
-> Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-> ---
+On Sun, Feb 18, 2024, Yang Weijiang wrote:
+> @@ -7767,6 +7771,41 @@ static void update_intel_pt_cfg(struct kvm_vcpu *vcpu)
+>  		vmx->pt_desc.ctl_bitmask &= ~(0xfULL << (32 + i * 4));
+>  }
+>  
+> +static void vmx_update_intercept_for_cet_msr(struct kvm_vcpu *vcpu)
+> +{
+> +	bool incpt;
+> +
+> +	if (kvm_cpu_cap_has(X86_FEATURE_SHSTK)) {
+> +		incpt = !guest_cpuid_has(vcpu, X86_FEATURE_SHSTK);
+> +
+> +		vmx_set_intercept_for_msr(vcpu, MSR_IA32_U_CET,
+> +					  MSR_TYPE_RW, incpt);
+> +		vmx_set_intercept_for_msr(vcpu, MSR_IA32_S_CET,
+> +					  MSR_TYPE_RW, incpt);
+> +		vmx_set_intercept_for_msr(vcpu, MSR_IA32_PL0_SSP,
+> +					  MSR_TYPE_RW, incpt);
+> +		vmx_set_intercept_for_msr(vcpu, MSR_IA32_PL1_SSP,
+> +					  MSR_TYPE_RW, incpt);
+> +		vmx_set_intercept_for_msr(vcpu, MSR_IA32_PL2_SSP,
+> +					  MSR_TYPE_RW, incpt);
+> +		vmx_set_intercept_for_msr(vcpu, MSR_IA32_PL3_SSP,
+> +					  MSR_TYPE_RW, incpt);
+> +		vmx_set_intercept_for_msr(vcpu, MSR_IA32_INT_SSP_TAB,
+> +					  MSR_TYPE_RW, incpt);
+> +		if (!incpt)
+> +			return;
 
-Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+Hmm, I find this is unnecessarily confusing and brittle.  E.g. in the unlikely
+event more CET stuff comes along, this lurking return could cause problems.
 
-(same comment as p5)
+Why not handle S_CET and U_CET in a single common path?  IMO, this is less error
+prone, and more clearly captures the relationship between S/U_CET, SHSTK, and IBT.
+Updating MSR intercepts is not a hot path, so the overhead of checking guest CPUID
+multiple times should be a non-issue.  And eventually KVM should effectively cache
+all of those lookups, i.e. the cost will be negilible.
 
-Konrad
+	bool incpt;
+
+	if (kvm_cpu_cap_has(X86_FEATURE_SHSTK)) {
+		incpt = !guest_cpuid_has(vcpu, X86_FEATURE_SHSTK);
+
+		vmx_set_intercept_for_msr(vcpu, MSR_IA32_PL0_SSP,
+					  MSR_TYPE_RW, incpt);
+		vmx_set_intercept_for_msr(vcpu, MSR_IA32_PL1_SSP,
+					  MSR_TYPE_RW, incpt);
+		vmx_set_intercept_for_msr(vcpu, MSR_IA32_PL2_SSP,
+					  MSR_TYPE_RW, incpt);
+		vmx_set_intercept_for_msr(vcpu, MSR_IA32_PL3_SSP,
+					  MSR_TYPE_RW, incpt);
+		vmx_set_intercept_for_msr(vcpu, MSR_IA32_INT_SSP_TAB,
+					  MSR_TYPE_RW, incpt);
+	}
+
+	if (kvm_cpu_cap_has(X86_FEATURE_SHSTK) ||
+	    kvm_cpu_cap_has(X86_FEATURE_IBT)) {
+		incpt = !guest_cpuid_has(vcpu, X86_FEATURE_IBT) &&
+			!guest_cpuid_has(vcpu, X86_FEATURE_SHSTK);
+
+		vmx_set_intercept_for_msr(vcpu, MSR_IA32_U_CET,
+					  MSR_TYPE_RW, incpt);
+		vmx_set_intercept_for_msr(vcpu, MSR_IA32_S_CET,
+					  MSR_TYPE_RW, incpt);
+	}
 
