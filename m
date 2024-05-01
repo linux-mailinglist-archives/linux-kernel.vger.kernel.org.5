@@ -1,324 +1,369 @@
-Return-Path: <linux-kernel+bounces-165024-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-165025-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E62D08B86C3
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 10:08:34 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0AB7C8B86C7
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 10:11:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 994AB284447
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 08:08:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B68D4284C69
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 08:11:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2AD344EB31;
-	Wed,  1 May 2024 08:08:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A2D24F5ED;
+	Wed,  1 May 2024 08:11:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="xHSjlmV4"
-Received: from mail-qt1-f172.google.com (mail-qt1-f172.google.com [209.85.160.172])
+	dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b="iafXz9zO"
+Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3BC644DA16
-	for <linux-kernel@vger.kernel.org>; Wed,  1 May 2024 08:08:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB4484DA16
+	for <linux-kernel@vger.kernel.org>; Wed,  1 May 2024 08:11:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714550905; cv=none; b=MwoSe8cKxPCV8dST+/cwxGzpwbbR66pE6KIv4FC7WCxaIgYYPNmERfaPqmVND3EuHXp+4Q4o8yJE44C9I0bKy04kUr3TP6umBLvNTJqeltYnUvrXaYUMoA1AOL8DQ2i9nyOWTvvhPLBssJAvB6Uck6YW4i7GgyYlTlUCXwf/BV4=
+	t=1714551079; cv=none; b=s5rhWfa1Paj1spwnEwmcetJg2O6c0F5hVuRd4F35RkW7ro09kzECW9jStGppte9nbDakYLSbdsBXAGDrC6U9U+HR0o8fT0amWx+KzGyRk/476Exs0R+RJ9In0PvKWtOtIlpYcC8pGyQufMXtoFkAQXittus+BJiALxdruSyrZss=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714550905; c=relaxed/simple;
-	bh=F2i8f5anTeRMlxb1xILxu2qitI/J8BJzAT5bMDP6XyA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=J9qNjHg3DdhMHxJWbLwd09GrGugzB4lxsGUUPsQ75m4RCfPE8A81NeCutiOJG87+n7ryEgbG3AYALxfKAWJ8YdFQP2ph8TA1EOe7YLGs7LXvvKzvBeU0hLYpDYaPzKKCxRKoZjWH3OfuBGYcZxdIYG4S+V8TPpBl1emRl9/iqMk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=xHSjlmV4; arc=none smtp.client-ip=209.85.160.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-qt1-f172.google.com with SMTP id d75a77b69052e-436ed871225so164731cf.1
-        for <linux-kernel@vger.kernel.org>; Wed, 01 May 2024 01:08:23 -0700 (PDT)
+	s=arc-20240116; t=1714551079; c=relaxed/simple;
+	bh=rF18oZhZ7iFAHJVUJBC8xUYuRnp+juu+DBURf6UAmNY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=V498dGURUGEdAAt3lrybaSn4JgE1SOQsN3UHYFKXLRmgm3IAc8gKY33W0mNp02nlzSy0Z2Iut7sXIx4v9h6qNckHczlDCwhNwPN6uSu75JvviUCbWdA2ynFc50ejJLIym4gcspXsPvyYvy70pY3YbiUm4Y4Ei+rfb4muzbf4JRU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com; spf=pass smtp.mailfrom=fromorbit.com; dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b=iafXz9zO; arc=none smtp.client-ip=209.85.214.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fromorbit.com
+Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-1eab16dcfd8so57037165ad.0
+        for <linux-kernel@vger.kernel.org>; Wed, 01 May 2024 01:11:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1714550903; x=1715155703; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=0Uwoti4VzollmLokT1K3M3F3gVYwyCsgTxwiXJrncYY=;
-        b=xHSjlmV46Hq6y8rQ/oCDDM/HRvFL+mm3ineoOlsDv7jocKchiQQ6DKNX2ZXTvzOPl4
-         hgapkvB0f94TwUH3KAfc93mLH4twCGM39DC8fq3d+x8ydU8ecasHnBs9P5jg0iwt+fTR
-         i5RP/tIwb4rYgvLx9e+vzvlTefL3T/7oMTaVIk4AgzfLh2NnqLd9AgAAJAwo1zYcHjwA
-         8IMRlfZDeepLN6BhyiKOXUMYU8m4ezg4VbA0Q5fDU/XigxcADwMPeRnCMmBzTiNoszx7
-         bSthzsTQVfpMqupvfIcMUuUxhlNAl7+j6+AjqI1rGC5zLUrb/aBQ/Mn9hGzJJUdQMi4Y
-         xYjA==
+        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1714551077; x=1715155877; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=RCv0XoUxtwGu7CqXQBG2S9RvRVUsuvWpS02r0QITg4Y=;
+        b=iafXz9zON+eRa0pvgEC7Pu5V6DymnTjYSVh5wUa7Uwbk0Hjxjej6X+NqnzRHztPgSR
+         0sWWGEk8o8ZIOYc7kyIbIs4YyIhbd/ZN4ZJqH4HK3EYFFlizgdn/pd31NNVSYftrUua/
+         9xGzoDfvIxJiTI6IK14I6Ckjp3PVRJrzIsLY7eW/NOtDLGlz2HYw7Lv1mB5JlZ0gsXNM
+         8gcDuf/m4gEXiy9BtGV1BJqCVFoAyvjtK1YWcHt36HznEdPb4HSBUVU50yC9b/fRo0IB
+         G0hn778CWNU+jr/Sw/i3bQA+Aon/LdyouwrMV8UJQdMqn5Sfce1lZv5sLbSHFaJopVdV
+         TLcw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714550903; x=1715155703;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=0Uwoti4VzollmLokT1K3M3F3gVYwyCsgTxwiXJrncYY=;
-        b=G+b0RfIKMzA0S479VO6LrIiDr2VBNIfb03YKLcAuIGGn4M0MAfXa/+iLyZuidYC0vo
-         +nRSZqhSuVfpVsyL/Ms/AudXS9JC/9Bld+8bekoavbSCUNsD8c5FiEmWF6otaxvXRfFh
-         z7uz/K9t/BHRIKLpcnSVuk3loj/OtKceOR+QnTU0730KCdKApOYu+LpauzhiWEVu+Tj+
-         E0KROuc6GpDFGHsNfv+cftvZ+V5q1igUXdSq9OdkGcUUu4bEtAXUHhKTRH9Cj8miHwO9
-         NCJ78eOGidIR1E22v5liswRHCIlK1CeLLduY+KKGv1wf3xfgbhJpMN2Iwe3ueWSo8zzn
-         ahNg==
-X-Forwarded-Encrypted: i=1; AJvYcCXw8ldf4JaUu5wtohj3D1F5Qa1pXXyAUJTDD4hpwBFwYcoqeW56DpUekbcSY7u5pSA8SWW3uwYcvTp8GWjJixIuAGNCl6kUfQqrtBCu
-X-Gm-Message-State: AOJu0YxG0SzWoA+KYYRI0AO/cOOzaXTvDA6Hz6zuqLbF+c0IGnBhlWA+
-	AnV5NnZ0dGJctqlb8/L3fh02EXWN1Dg9risiGysZ+Kko2+5dC5WTF12QFhgGRRfyyWYshsPQai+
-	GHDtMSWCHsTqofRzOtNrHgApO9I633emkKIPZ
-X-Google-Smtp-Source: AGHT+IFiINPh/pP6LprotN6w/s9YJNbbitC9Jw4wClFiGPlvs5yiKfaRZ7Ar5V1Tg4hR0wAbLNOpBluEHG/yAW9HY64=
-X-Received: by 2002:ac8:5d02:0:b0:43a:b186:634d with SMTP id
- f2-20020ac85d02000000b0043ab186634dmr197663qtx.10.1714550902641; Wed, 01 May
- 2024 01:08:22 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1714551077; x=1715155877;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=RCv0XoUxtwGu7CqXQBG2S9RvRVUsuvWpS02r0QITg4Y=;
+        b=hHHtCL6ah98orr4wh6NJ3ekZ5wJe/vZMIQ8BvEqvcLnSuzDnkMp2tO8FRKc5SJja7e
+         8OyLK7iB9v0lSLpM7X+qa6LRxwxmq6MXyammX+zGMH0eXCncFmy04mzwyywcKk6xq33D
+         NnC2efEWvjuwBhHdjktl8tzdF5nix/6KVSCNDdBmKmeEQIgo3udzdZQ/fh+urczhq+Sv
+         LvTi5XEk//kg0SztzXZsyko3bw3bUypVpDBLlclaVc1wvueU3G0nVe6FWWkiHo2FSeAc
+         Ph2m74ildNkvCA2PxatJPoWoGHzxlXhUrm2G1HTBAZPsPBQ2EY+KAoXxsZfhLZE3l/bx
+         n5KQ==
+X-Forwarded-Encrypted: i=1; AJvYcCU3d/qtKvk4oxwmPBGf9VwQKQirGs18BkctJ6MiDS6eibzuXu2UeLuZsWcj4ERXvBFbOabeA9OFda284xYBQyWgcBKfy+dWbjFj3Gdl
+X-Gm-Message-State: AOJu0Yw4HAunKGA71EFjvukMAWXO71yVHi/UePTDx79E4ip1pcp1V+6T
+	zgb4Fkw6t9bTCk/gpDElYxFFcnLI7F+vT5NOox5tF9//c1M5fArKvmNascDvux0=
+X-Google-Smtp-Source: AGHT+IFTWLbPFA+nd6gmvYTqwqnSgDqVXNKVB+O1GG6+9S4CZi8Sdb0Tf1uHIFSH1D9IBisDluOtEw==
+X-Received: by 2002:a05:6a21:8196:b0:1aa:59ff:5902 with SMTP id pd22-20020a056a21819600b001aa59ff5902mr2127063pzb.9.1714551076783;
+        Wed, 01 May 2024 01:11:16 -0700 (PDT)
+Received: from dread.disaster.area (pa49-179-32-121.pa.nsw.optusnet.com.au. [49.179.32.121])
+        by smtp.gmail.com with ESMTPSA id i16-20020a170902c95000b001eb542b85aasm7769134pla.117.2024.05.01.01.11.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 01 May 2024 01:11:16 -0700 (PDT)
+Received: from dave by dread.disaster.area with local (Exim 4.96)
+	(envelope-from <david@fromorbit.com>)
+	id 1s253Z-00H9G8-1s;
+	Wed, 01 May 2024 18:11:13 +1000
+Date: Wed, 1 May 2024 18:11:13 +1000
+From: Dave Chinner <david@fromorbit.com>
+To: Zhang Yi <yi.zhang@huaweicloud.com>
+Cc: linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+	linux-mm@kvack.org, linux-kernel@vger.kernel.org, tytso@mit.edu,
+	adilger.kernel@dilger.ca, jack@suse.cz, ritesh.list@gmail.com,
+	hch@infradead.org, djwong@kernel.org, willy@infradead.org,
+	zokeefe@google.com, yi.zhang@huawei.com, chengzhihao1@huawei.com,
+	yukuai3@huawei.com, wangkefeng.wang@huawei.com
+Subject: Re: [RFC PATCH v4 24/34] ext4: implement buffered write iomap path
+Message-ID: <ZjH5Ia+dWGss5Duv@dread.disaster.area>
+References: <20240410142948.2817554-1-yi.zhang@huaweicloud.com>
+ <20240410142948.2817554-25-yi.zhang@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240422232404.213174-1-sboyd@kernel.org>
-In-Reply-To: <20240422232404.213174-1-sboyd@kernel.org>
-From: David Gow <davidgow@google.com>
-Date: Wed, 1 May 2024 16:08:11 +0800
-Message-ID: <CABVgOSmgUJp3FijpYGCphi1OzRUNvmYQmPDdL6mN59YnbkR2iQ@mail.gmail.com>
-Subject: Re: [PATCH v4 00/10] clk: Add kunit tests for fixed rate and parent data
-To: Stephen Boyd <sboyd@kernel.org>
-Cc: Michael Turquette <mturquette@baylibre.com>, linux-kernel@vger.kernel.org, 
-	linux-clk@vger.kernel.org, patches@lists.linux.dev, 
-	kunit-dev@googlegroups.com, linux-kselftest@vger.kernel.org, 
-	devicetree@vger.kernel.org, Brendan Higgins <brendan.higgins@linux.dev>, 
-	Rae Moar <rmoar@google.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
-	"Rafael J . Wysocki" <rafael@kernel.org>, Rob Herring <robh@kernel.org>, 
-	Saravana Kannan <saravanak@google.com>, Daniel Latypov <dlatypov@google.com>, 
-	Christian Marangi <ansuelsmth@gmail.com>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Maxime Ripard <maxime@cerno.tech>
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-	boundary="0000000000008c876206175ffdb8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240410142948.2817554-25-yi.zhang@huaweicloud.com>
 
---0000000000008c876206175ffdb8
-Content-Type: text/plain; charset="UTF-8"
+On Wed, Apr 10, 2024 at 10:29:38PM +0800, Zhang Yi wrote:
+> From: Zhang Yi <yi.zhang@huawei.com>
+> 
+> Implement buffered write iomap path, use ext4_da_map_blocks() to map
+> delalloc extents and add ext4_iomap_get_blocks() to allocate blocks if
+> delalloc is disabled or free space is about to run out.
+> 
+> Note that we always allocate unwritten extents for new blocks in the
+> iomap write path, this means that the allocation type is no longer
+> controlled by the dioread_nolock mount option. After that, we could
+> postpone the i_disksize updating to the writeback path, and drop journal
+> handle in the buffered dealloc write path completely.
+> 
+> Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
+> ---
+>  fs/ext4/ext4.h  |   3 +
+>  fs/ext4/file.c  |  19 +++++-
+>  fs/ext4/inode.c | 168 ++++++++++++++++++++++++++++++++++++++++++++++--
+>  3 files changed, 183 insertions(+), 7 deletions(-)
+> 
+> diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
+> index 05949a8136ae..2bd543c43341 100644
+> --- a/fs/ext4/ext4.h
+> +++ b/fs/ext4/ext4.h
+> @@ -2970,6 +2970,7 @@ int ext4_walk_page_buffers(handle_t *handle,
+>  				     struct buffer_head *bh));
+>  int do_journal_get_write_access(handle_t *handle, struct inode *inode,
+>  				struct buffer_head *bh);
+> +int ext4_nonda_switch(struct super_block *sb);
+>  #define FALL_BACK_TO_NONDELALLOC 1
+>  #define CONVERT_INLINE_DATA	 2
+>  
+> @@ -3827,6 +3828,8 @@ static inline void ext4_clear_io_unwritten_flag(ext4_io_end_t *io_end)
+>  extern const struct iomap_ops ext4_iomap_ops;
+>  extern const struct iomap_ops ext4_iomap_overwrite_ops;
+>  extern const struct iomap_ops ext4_iomap_report_ops;
+> +extern const struct iomap_ops ext4_iomap_buffered_write_ops;
+> +extern const struct iomap_ops ext4_iomap_buffered_da_write_ops;
+>  
+>  static inline int ext4_buffer_uptodate(struct buffer_head *bh)
+>  {
+> diff --git a/fs/ext4/file.c b/fs/ext4/file.c
+> index 54d6ff22585c..52f37c49572a 100644
+> --- a/fs/ext4/file.c
+> +++ b/fs/ext4/file.c
+> @@ -282,6 +282,20 @@ static ssize_t ext4_write_checks(struct kiocb *iocb, struct iov_iter *from)
+>  	return count;
+>  }
+>  
+> +static ssize_t ext4_iomap_buffered_write(struct kiocb *iocb,
+> +					 struct iov_iter *from)
+> +{
+> +	struct inode *inode = file_inode(iocb->ki_filp);
+> +	const struct iomap_ops *iomap_ops;
+> +
+> +	if (test_opt(inode->i_sb, DELALLOC) && !ext4_nonda_switch(inode->i_sb))
+> +		iomap_ops = &ext4_iomap_buffered_da_write_ops;
+> +	else
+> +		iomap_ops = &ext4_iomap_buffered_write_ops;
+> +
+> +	return iomap_file_buffered_write(iocb, from, iomap_ops);
+> +}
+> +
+>  static ssize_t ext4_buffered_write_iter(struct kiocb *iocb,
+>  					struct iov_iter *from)
+>  {
+> @@ -296,7 +310,10 @@ static ssize_t ext4_buffered_write_iter(struct kiocb *iocb,
+>  	if (ret <= 0)
+>  		goto out;
+>  
+> -	ret = generic_perform_write(iocb, from);
+> +	if (ext4_test_inode_state(inode, EXT4_STATE_BUFFERED_IOMAP))
+> +		ret = ext4_iomap_buffered_write(iocb, from);
+> +	else
+> +		ret = generic_perform_write(iocb, from);
+>  
+>  out:
+>  	inode_unlock(inode);
+> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+> index 20eb772f4f62..e825ed16fd60 100644
+> --- a/fs/ext4/inode.c
+> +++ b/fs/ext4/inode.c
+> @@ -2857,7 +2857,7 @@ static int ext4_dax_writepages(struct address_space *mapping,
+>  	return ret;
+>  }
+>  
+> -static int ext4_nonda_switch(struct super_block *sb)
+> +int ext4_nonda_switch(struct super_block *sb)
+>  {
+>  	s64 free_clusters, dirty_clusters;
+>  	struct ext4_sb_info *sbi = EXT4_SB(sb);
+> @@ -3254,6 +3254,15 @@ static bool ext4_inode_datasync_dirty(struct inode *inode)
+>  	return inode->i_state & I_DIRTY_DATASYNC;
+>  }
+>  
+> +static bool ext4_iomap_valid(struct inode *inode, const struct iomap *iomap)
+> +{
+> +	return iomap->validity_cookie == READ_ONCE(EXT4_I(inode)->i_es_seq);
+> +}
+> +
+> +static const struct iomap_folio_ops ext4_iomap_folio_ops = {
+> +	.iomap_valid = ext4_iomap_valid,
+> +};
+> +
+>  static void ext4_set_iomap(struct inode *inode, struct iomap *iomap,
+>  			   struct ext4_map_blocks *map, loff_t offset,
+>  			   loff_t length, unsigned int flags)
+> @@ -3284,6 +3293,9 @@ static void ext4_set_iomap(struct inode *inode, struct iomap *iomap,
+>  	    !ext4_test_inode_flag(inode, EXT4_INODE_EXTENTS))
+>  		iomap->flags |= IOMAP_F_MERGED;
+>  
+> +	iomap->validity_cookie = READ_ONCE(EXT4_I(inode)->i_es_seq);
+> +	iomap->folio_ops = &ext4_iomap_folio_ops;
+> +
+>  	/*
+>  	 * Flags passed to ext4_map_blocks() for direct I/O writes can result
+>  	 * in m_flags having both EXT4_MAP_MAPPED and EXT4_MAP_UNWRITTEN bits
+> @@ -3523,11 +3535,42 @@ const struct iomap_ops ext4_iomap_report_ops = {
+>  	.iomap_begin = ext4_iomap_begin_report,
+>  };
+>  
+> -static int ext4_iomap_buffered_io_begin(struct inode *inode, loff_t offset,
+> +static int ext4_iomap_get_blocks(struct inode *inode,
+> +				 struct ext4_map_blocks *map)
+> +{
+> +	handle_t *handle;
+> +	int ret, needed_blocks;
+> +
+> +	/*
+> +	 * Reserve one block more for addition to orphan list in case
+> +	 * we allocate blocks but write fails for some reason.
+> +	 */
+> +	needed_blocks = ext4_writepage_trans_blocks(inode) + 1;
+> +	handle = ext4_journal_start(inode, EXT4_HT_WRITE_PAGE, needed_blocks);
+> +	if (IS_ERR(handle))
+> +		return PTR_ERR(handle);
+> +
+> +	ret = ext4_map_blocks(handle, inode, map,
+> +			      EXT4_GET_BLOCKS_CREATE_UNWRIT_EXT);
+> +	/*
+> +	 * Have to stop journal here since there is a potential deadlock
+> +	 * caused by later balance_dirty_pages(), it might wait on the
+> +	 * ditry pages to be written back, which might start another
+> +	 * handle and wait this handle stop.
+> +	 */
+> +	ext4_journal_stop(handle);
+> +
+> +	return ret;
+> +}
+> +
+> +#define IOMAP_F_EXT4_DELALLOC		IOMAP_F_PRIVATE
+> +
+> +static int __ext4_iomap_buffered_io_begin(struct inode *inode, loff_t offset,
+>  				loff_t length, unsigned int iomap_flags,
+> -				struct iomap *iomap, struct iomap *srcmap)
+> +				struct iomap *iomap, struct iomap *srcmap,
+> +				bool delalloc)
+>  {
+> -	int ret;
+> +	int ret, retries = 0;
+>  	struct ext4_map_blocks map;
+>  	u8 blkbits = inode->i_blkbits;
+>  
+> @@ -3537,20 +3580,133 @@ static int ext4_iomap_buffered_io_begin(struct inode *inode, loff_t offset,
+>  		return -EINVAL;
+>  	if (WARN_ON_ONCE(ext4_has_inline_data(inode)))
+>  		return -ERANGE;
+> -
+> +retry:
+>  	/* Calculate the first and last logical blocks respectively. */
+>  	map.m_lblk = offset >> blkbits;
+>  	map.m_len = min_t(loff_t, (offset + length - 1) >> blkbits,
+>  			  EXT4_MAX_LOGICAL_BLOCK) - map.m_lblk + 1;
+> +	if (iomap_flags & IOMAP_WRITE) {
+> +		if (delalloc)
+> +			ret = ext4_da_map_blocks(inode, &map);
+> +		else
+> +			ret = ext4_iomap_get_blocks(inode, &map);
+>  
+> -	ret = ext4_map_blocks(NULL, inode, &map, 0);
+> +		if (ret == -ENOSPC &&
+> +		    ext4_should_retry_alloc(inode->i_sb, &retries))
+> +			goto retry;
+> +	} else {
+> +		ret = ext4_map_blocks(NULL, inode, &map, 0);
+> +	}
+>  	if (ret < 0)
+>  		return ret;
+>  
+>  	ext4_set_iomap(inode, iomap, &map, offset, length, iomap_flags);
+> +	if (delalloc)
+> +		iomap->flags |= IOMAP_F_EXT4_DELALLOC;
+> +
+> +	return 0;
+> +}
 
-On Tue, 23 Apr 2024 at 07:24, Stephen Boyd <sboyd@kernel.org> wrote:
->
-> This patch series adds unit tests for the clk fixed rate basic type and
-> the clk registration functions that use struct clk_parent_data. To get
-> there, we add support for loading device tree overlays onto the live DTB
-> along with probing platform drivers to bind to device nodes in the
-> overlays. With this series, we're able to exercise some of the code in
-> the common clk framework that uses devicetree lookups to find parents
-> and the fixed rate clk code that scans device tree directly and creates
-> clks. Please review.
->
-> I Cced everyone to all the patches so they get the full context. I'm
-> hoping I can take the whole pile through the clk tree as they all build
-> upon each other. Or the DT part can be merged through the DT tree to
-> reduce the dependencies.
->
-> Changes from v3 (https://lore.kernel.org/r/20230327222159.3509818-1-sboyd@kernel.org):
->  * No longer depend on Frank's series[1] because it was merged upstream[2]
->  * Use kunit_add_action_or_reset() to shorten code
->  * Skip tests properly when CONFIG_OF_OVERLAY isn't set
->
-> Changes from v2 (https://lore.kernel.org/r/20230315183729.2376178-1-sboyd@kernel.org):
->  * Overlays don't depend on __symbols__ node
->  * Depend on Frank's always create root node if CONFIG_OF series[1]
->  * Added kernel-doc to KUnit API doc
->  * Fixed some kernel-doc on functions
->  * More test cases for fixed rate clk
->
-> Changes from v1 (https://lore.kernel.org/r/20230302013822.1808711-1-sboyd@kernel.org):
->  * Don't depend on UML, use unittest data approach to attach nodes
->  * Introduce overlay loading API for KUnit
->  * Move platform_device KUnit code to drivers/base/test
->  * Use #define macros for constants shared between unit tests and
->    overlays
->  * Settle on "test" as a vendor prefix
->  * Make KUnit wrappers have "_kunit" postfix
->
-> [1] https://lore.kernel.org/r/20230317053415.2254616-1-frowand.list@gmail.com
-> [2] https://lore.kernel.org/r/20240308195737.GA1174908-robh@kernel.org
->
+Why are you implementing both read and write mapping paths in
+the one function? The whole point of having separate ops vectors for
+read and write is that it allows a clean separation of the read and
+write mapping operations. i.e. there is no need to use "if (write)
+else {do read}" code constructs at all.
 
-Thanks very much. I'm about halfway through reviewing these, and I
-like them a lot so far.
+You can even have a different delalloc mapping function so you don't
+need "if (delalloc) else {do nonda}" branches everiywhere...
 
-Most of my thoughts are just naming ideas. I fear some of them may be
-the reverse of previous suggestions, as we've since landed the KUnit
-device wrappers in include/kunit/device.h, which we decided would live
-as part of KUnit, not as part of the device infrastructure. I don't
-enormously mind if we make the opposite decision for these, though it
-does seem a bit inconsistent if we do 'devices' differently from
-'platform_devices'. Thoughts?
+> +
+> +static inline int ext4_iomap_buffered_io_begin(struct inode *inode,
+> +			loff_t offset, loff_t length, unsigned int flags,
+> +			struct iomap *iomap, struct iomap *srcmap)
+> +{
+> +	return __ext4_iomap_buffered_io_begin(inode, offset, length, flags,
+> +					      iomap, srcmap, false);
+> +}
+> +
+> +static inline int ext4_iomap_buffered_da_write_begin(struct inode *inode,
+> +			loff_t offset, loff_t length, unsigned int flags,
+> +			struct iomap *iomap, struct iomap *srcmap)
+> +{
+> +	return __ext4_iomap_buffered_io_begin(inode, offset, length, flags,
+> +					      iomap, srcmap, true);
+> +}
+> +
+> +/*
+> + * Drop the staled delayed allocation range from the write failure,
+> + * including both start and end blocks. If not, we could leave a range
+> + * of delayed extents covered by a clean folio, it could lead to
+> + * inaccurate space reservation.
+> + */
+> +static int ext4_iomap_punch_delalloc(struct inode *inode, loff_t offset,
+> +				     loff_t length)
+> +{
+> +	ext4_es_remove_extent(inode, offset >> inode->i_blkbits,
+> +			DIV_ROUND_UP_ULL(length, EXT4_BLOCK_SIZE(inode->i_sb)));
+>  	return 0;
+>  }
+>  
+> +static int ext4_iomap_buffered_write_end(struct inode *inode, loff_t offset,
+> +					 loff_t length, ssize_t written,
+> +					 unsigned int flags,
+> +					 struct iomap *iomap)
+> +{
+> +	handle_t *handle;
+> +	loff_t end;
+> +	int ret = 0, ret2;
+> +
+> +	/* delalloc */
+> +	if (iomap->flags & IOMAP_F_EXT4_DELALLOC) {
+> +		ret = iomap_file_buffered_write_punch_delalloc(inode, iomap,
+> +			offset, length, written, ext4_iomap_punch_delalloc);
+> +		if (ret)
+> +			ext4_warning(inode->i_sb,
+> +			     "Failed to clean up delalloc for inode %lu, %d",
+> +			     inode->i_ino, ret);
+> +		return ret;
+> +	}
 
-The other thing I've noted so far is that the
-of_apply_kunit_platform_device and of_overlay_apply_kunit_cleanup
-tests fail (and BUG() with a NULL pointer) on powerpc:
-> [15:18:51]     # of_overlay_apply_kunit_platform_device: EXPECTATION FAILED at drivers/of/overlay_test.c:47
-> [15:18:51]     Expected pdev is not null, but is
-> [15:18:51] BUG: Kernel NULL pointer dereference at 0x0000004c
-<...>
-> [15:18:51]     # of_overlay_apply_kunit_platform_device: try faulted: last line seen lib/kunit/resource.c:99
-> [15:18:51]     # of_overlay_apply_kunit_platform_device: internal error occurred preventing test case from running: -4
-> [15:18:51] [FAILED] of_overlay_apply_kunit_platform_device
+Why are you creating a delalloc extent for the write operation and
+then immediately deleting it from the extent tree once the write
+operation is done? Delayed allocation is a state that persists for
+that file range until the data is written back, right, but this
+appears to return the range to a hole in the extent state tree?
 
-> [15:18:51] BUG: Kernel NULL pointer dereference at 0x0000004c
-> [15:18:51] note: kunit_try_catch[698] exited with irqs disabled
-> [15:18:51]     # of_overlay_apply_kunit_cleanup: try faulted: last line seen drivers/of/overlay_test.c:77
-> [15:18:51]     # of_overlay_apply_kunit_cleanup: internal error occurred preventing test case from running: -4
-> [15:18:51] [FAILED] of_overlay_apply_kunit_cleanup
+What happens when we do a second write to this same range? WIll it
+do another delayed allocation because there are no extents over this
+range?
 
-I've not had a chance to dig into it any further, yet, but it appears
-to work on all of the other architectures I tried.
+Also, why do you need IOMAP_F_EXT4_DELALLOC? Isn't a delalloc iomap
+set up with iomap->type = IOMAP_DELALLOC? Why can't that be used?
 
-Otherwise, I think this would be fine to take via either the clk or DT
-and clk trees: there are no conflicts with the current KUnit changes
-for 6.10. At worst, we might hit some conflicts in the documentation,
-but there's nothing scheduled yet.
+-Dave.
 
-Cheers,
--- David
-
-> Stephen Boyd (10):
->   of: Add test managed wrappers for of_overlay_apply()/of_node_put()
->   dt-bindings: vendor-prefixes: Add "test" vendor for KUnit and friends
->   dt-bindings: test: Add KUnit empty node binding
->   of: Add a KUnit test for overlays and test managed APIs
->   platform: Add test managed platform_device/driver APIs
->   dt-bindings: kunit: Add fixed rate clk consumer test
->   clk: Add test managed clk provider/consumer APIs
->   clk: Add KUnit tests for clk fixed rate basic type
->   dt-bindings: clk: Add KUnit clk_parent_data test
->   clk: Add KUnit tests for clks registered with struct clk_parent_data
->
->  Documentation/dev-tools/kunit/api/clk.rst     |  10 +
->  Documentation/dev-tools/kunit/api/index.rst   |  21 +
->  Documentation/dev-tools/kunit/api/of.rst      |  13 +
->  .../dev-tools/kunit/api/platformdevice.rst    |  10 +
->  .../bindings/clock/test,clk-parent-data.yaml  |  47 ++
->  .../bindings/test/test,clk-fixed-rate.yaml    |  35 ++
->  .../devicetree/bindings/test/test,empty.yaml  |  30 ++
->  .../devicetree/bindings/vendor-prefixes.yaml  |   2 +
->  drivers/base/test/Makefile                    |   3 +
->  drivers/base/test/platform_kunit-test.c       | 140 ++++++
->  drivers/base/test/platform_kunit.c            | 174 +++++++
->  drivers/clk/.kunitconfig                      |   2 +
->  drivers/clk/Kconfig                           |   9 +
->  drivers/clk/Makefile                          |   9 +-
->  drivers/clk/clk-fixed-rate_test.c             | 377 +++++++++++++++
->  drivers/clk/clk-fixed-rate_test.h             |   8 +
->  drivers/clk/clk_kunit.c                       | 198 ++++++++
->  drivers/clk/clk_parent_data_test.h            |  10 +
->  drivers/clk/clk_test.c                        | 451 +++++++++++++++++-
->  drivers/clk/kunit_clk_fixed_rate_test.dtso    |  19 +
->  drivers/clk/kunit_clk_parent_data_test.dtso   |  28 ++
->  drivers/of/.kunitconfig                       |   1 +
->  drivers/of/Kconfig                            |  10 +
->  drivers/of/Makefile                           |   2 +
->  drivers/of/kunit_overlay_test.dtso            |   9 +
->  drivers/of/of_kunit.c                         |  99 ++++
->  drivers/of/overlay_test.c                     | 115 +++++
->  include/kunit/clk.h                           |  28 ++
->  include/kunit/of.h                            |  94 ++++
->  include/kunit/platform_device.h               |  15 +
->  30 files changed, 1967 insertions(+), 2 deletions(-)
->  create mode 100644 Documentation/dev-tools/kunit/api/clk.rst
->  create mode 100644 Documentation/dev-tools/kunit/api/of.rst
->  create mode 100644 Documentation/dev-tools/kunit/api/platformdevice.rst
->  create mode 100644 Documentation/devicetree/bindings/clock/test,clk-parent-data.yaml
->  create mode 100644 Documentation/devicetree/bindings/test/test,clk-fixed-rate.yaml
->  create mode 100644 Documentation/devicetree/bindings/test/test,empty.yaml
->  create mode 100644 drivers/base/test/platform_kunit-test.c
->  create mode 100644 drivers/base/test/platform_kunit.c
->  create mode 100644 drivers/clk/clk-fixed-rate_test.c
->  create mode 100644 drivers/clk/clk-fixed-rate_test.h
->  create mode 100644 drivers/clk/clk_kunit.c
->  create mode 100644 drivers/clk/clk_parent_data_test.h
->  create mode 100644 drivers/clk/kunit_clk_fixed_rate_test.dtso
->  create mode 100644 drivers/clk/kunit_clk_parent_data_test.dtso
->  create mode 100644 drivers/of/kunit_overlay_test.dtso
->  create mode 100644 drivers/of/of_kunit.c
->  create mode 100644 drivers/of/overlay_test.c
->  create mode 100644 include/kunit/clk.h
->  create mode 100644 include/kunit/of.h
->  create mode 100644 include/kunit/platform_device.h
->
->
-> base-commit: 4cece764965020c22cff7665b18a012006359095
-> --
-> https://git.kernel.org/pub/scm/linux/kernel/git/clk/linux.git/
-> https://git.kernel.org/pub/scm/linux/kernel/git/sboyd/spmi.git
->
-
---0000000000008c876206175ffdb8
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
-
-MIIPqgYJKoZIhvcNAQcCoIIPmzCCD5cCAQExDzANBglghkgBZQMEAgEFADALBgkqhkiG9w0BBwGg
-gg0EMIIEtjCCA56gAwIBAgIQeAMYYHb81ngUVR0WyMTzqzANBgkqhkiG9w0BAQsFADBMMSAwHgYD
-VQQLExdHbG9iYWxTaWduIFJvb3QgQ0EgLSBSMzETMBEGA1UEChMKR2xvYmFsU2lnbjETMBEGA1UE
-AxMKR2xvYmFsU2lnbjAeFw0yMDA3MjgwMDAwMDBaFw0yOTAzMTgwMDAwMDBaMFQxCzAJBgNVBAYT
-AkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMSowKAYDVQQDEyFHbG9iYWxTaWduIEF0bGFz
-IFIzIFNNSU1FIENBIDIwMjAwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCvLe9xPU9W
-dpiHLAvX7kFnaFZPuJLey7LYaMO8P/xSngB9IN73mVc7YiLov12Fekdtn5kL8PjmDBEvTYmWsuQS
-6VBo3vdlqqXZ0M9eMkjcKqijrmDRleudEoPDzTumwQ18VB/3I+vbN039HIaRQ5x+NHGiPHVfk6Rx
-c6KAbYceyeqqfuJEcq23vhTdium/Bf5hHqYUhuJwnBQ+dAUcFndUKMJrth6lHeoifkbw2bv81zxJ
-I9cvIy516+oUekqiSFGfzAqByv41OrgLV4fLGCDH3yRh1tj7EtV3l2TngqtrDLUs5R+sWIItPa/4
-AJXB1Q3nGNl2tNjVpcSn0uJ7aFPbAgMBAAGjggGKMIIBhjAOBgNVHQ8BAf8EBAMCAYYwHQYDVR0l
-BBYwFAYIKwYBBQUHAwIGCCsGAQUFBwMEMBIGA1UdEwEB/wQIMAYBAf8CAQAwHQYDVR0OBBYEFHzM
-CmjXouseLHIb0c1dlW+N+/JjMB8GA1UdIwQYMBaAFI/wS3+oLkUkrk1Q+mOai97i3Ru8MHsGCCsG
-AQUFBwEBBG8wbTAuBggrBgEFBQcwAYYiaHR0cDovL29jc3AyLmdsb2JhbHNpZ24uY29tL3Jvb3Ry
-MzA7BggrBgEFBQcwAoYvaHR0cDovL3NlY3VyZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvcm9vdC1y
-My5jcnQwNgYDVR0fBC8wLTAroCmgJ4YlaHR0cDovL2NybC5nbG9iYWxzaWduLmNvbS9yb290LXIz
-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
-7xDrOPfX3COqq162RFg/MFcGA1UdIARQME4wCQYHZ4EMAQUBATBBBgkrBgEEAaAyASgwNDAyBggr
-BgEFBQcCARYmaHR0cHM6Ly93d3cuZ2xvYmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wDAYDVR0TAQH/
-BAIwADCBmgYIKwYBBQUHAQEEgY0wgYowPgYIKwYBBQUHMAGGMmh0dHA6Ly9vY3NwLmdsb2JhbHNp
-Z24uY29tL2NhL2dzYXRsYXNyM3NtaW1lY2EyMDIwMEgGCCsGAQUFBzAChjxodHRwOi8vc2VjdXJl
-Lmdsb2JhbHNpZ24uY29tL2NhY2VydC9nc2F0bGFzcjNzbWltZWNhMjAyMC5jcnQwHwYDVR0jBBgw
-FoAUfMwKaNei6x4schvRzV2Vb4378mMwRgYDVR0fBD8wPTA7oDmgN4Y1aHR0cDovL2NybC5nbG9i
-YWxzaWduLmNvbS9jYS9nc2F0bGFzcjNzbWltZWNhMjAyMC5jcmwwDQYJKoZIhvcNAQELBQADggEB
-AK0lDd6/eSh3qHmXaw1YUfIFy07B25BEcTvWgOdla99gF1O7sOsdYaTz/DFkZI5ghjgaPJCovgla
-mRMfNcxZCfoBtsB7mAS6iOYjuwFOZxi9cv6jhfiON6b89QWdMaPeDddg/F2Q0bxZ9Z2ZEBxyT34G
-wlDp+1p6RAqlDpHifQJW16h5jWIIwYisvm5QyfxQEVc+XH1lt+taSzCfiBT0ZLgjB9Sg+zAo8ys6
-5PHxFaT2a5Td/fj5yJ5hRSrqy/nj/hjT14w3/ZdX5uWg+cus6VjiiR/5qGSZRjHt8JoApD6t6/tg
-ITv8ZEy6ByumbU23nkHTMOzzQSxczHkT+0q10/MxggJqMIICZgIBATBoMFQxCzAJBgNVBAYTAkJF
-MRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMSowKAYDVQQDEyFHbG9iYWxTaWduIEF0bGFzIFIz
-IFNNSU1FIENBIDIwMjACEAHS+TgZvH/tCq5FcDC0n9IwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZI
-hvcNAQkEMSIEIDLIZUOSGseHFPa4KOa5nTFl9McUHsPER0iHzhbSDkZeMBgGCSqGSIb3DQEJAzEL
-BgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTI0MDUwMTA4MDgyM1owaQYJKoZIhvcNAQkPMVww
-WjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkq
-hkiG9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQAbJSBr
-80vU9swNMdH+wZzsFJ9+wyNYgyl8JWyTxiF3nnndMnz8BD8ZdMqSZVltOmF4gSTZ3A9VfiQsgXuZ
-DAP1kHbNCwDFtZkzxA6BkiG0tFBcnI3E4SzQ3k4PNvqlVoeXCxFbBynxo9BaZD/565qd0cS2x47M
-G+VMG+8utmxaCStTLcrvcmXyV3qM92jNKDaPQSQhc369PEY4nU87CuoMRhPn0yWNdPMXHLaMRacW
-yYc5cUycAiDF2iA4sPktFOKO90/v3IvVe2d08Xj/NjeOmfCLEoZLXIXi3VbYsT0DV7GozdgRye0A
-1dr9GllgBnDt7IdN4sOgNQF6q/yqlPwr
---0000000000008c876206175ffdb8--
+-- 
+Dave Chinner
+david@fromorbit.com
 
