@@ -1,111 +1,302 @@
-Return-Path: <linux-kernel+bounces-165712-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-165713-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 674A58B900E
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 21:31:05 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id AA42F8B9010
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 21:31:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 983F81C21294
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 19:31:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3C0491F22E2A
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 19:31:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BED23161302;
-	Wed,  1 May 2024 19:30:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D406160887;
+	Wed,  1 May 2024 19:31:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="dMAnDhpn"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="ldwMNYUg"
+Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E33812FB21
-	for <linux-kernel@vger.kernel.org>; Wed,  1 May 2024 19:30:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B66016086C
+	for <linux-kernel@vger.kernel.org>; Wed,  1 May 2024 19:31:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714591859; cv=none; b=TrNls1Qm4p4/EsaD1XJNibsOKT28D9GSEdctIGd3ttzSPk9AGBClqW3f6f1pfHeFybzHnLPzMLCO1Am3oGN0uBGX98FKt4HcKe1fzYR5j+6kvug4/ai7CkZTr8QOrNqVA0rGG8GAkTCg8JP0CdWEqGKQK1e90ZZ6S/h3MNphqR8=
+	t=1714591882; cv=none; b=faPH7RSIUfuddr/X1wp8enk5nPJ9AeB6mxohgDggE7PqfziJEPOREKPblKODy0NA0uSBeeM+L5Wi4edOXPkyl1akYDCkVghP+ckUv4UBd5Y9OEJ9AU4Cp5Z+a+4wWdn5uR0WsilxEPJOPNFfL0rGKx+ttJWPfaA4g1udV7j3NLM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714591859; c=relaxed/simple;
-	bh=1a8IGgt0atPExNL0kQlcJPYtvH5vrk5eOtxf0vuFGSE=;
+	s=arc-20240116; t=1714591882; c=relaxed/simple;
+	bh=4V4nOXAJK4lEKU8JJiUWuMjaMfSMrqSP/Y1lsJzv9Ms=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=InMEQatzOFDlhKQ8zHLtSc8iQgOFUU5bzjhwQmXN88pua0/epqO+gtYLIbmvPgd7cOusQnIXBUlI3RoG5HcGj/xqjVzoX1mnlj8chr752gOoIduilQV3VrUMZVN9DRUInuRukfWLQt4Qp+aFmZvVR5cXjJFkvHmhME/xVMGYWM0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=dMAnDhpn; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1714591856;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=0DpMH3OPKUdeatip9xrDr22zswVgKLvrfLJ6qW8iRrc=;
-	b=dMAnDhpnb1wXgklkKWShvpfGGbPYAykJCXOsipGQ/UbDyDX5PgmbmPgP1IKDXiqpykAEW3
-	AnCwqgeF3BQOrJH5x0M8tuuNlMoCNFymiG76ZLwisao9q34FCdjdlRtXyPXKf87Smqadvm
-	LxMgsCX1igGhpZOHZOnV1YdA2TcxIM0=
-Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com
- [209.85.219.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-649-2AYy3yQlN3-Hqug-eHzfVA-1; Wed, 01 May 2024 15:30:55 -0400
-X-MC-Unique: 2AYy3yQlN3-Hqug-eHzfVA-1
-Received: by mail-qv1-f70.google.com with SMTP id 6a1803df08f44-69b601a248dso89095516d6.2
-        for <linux-kernel@vger.kernel.org>; Wed, 01 May 2024 12:30:55 -0700 (PDT)
+	 Content-Type:Content-Disposition:In-Reply-To; b=KEPZxP5VlqJypVHLh2sZKhGNRik3/CQLTOfriYPgo9zsPM3tBtV458C2NrNSVnulvPC4B/24u3R6Ih7Id8bexFkMrlWjwK68ynLIaRMwIMgBaYEOAGP3RC0hxIbg8O73FNj/AJRANLc/ubLDUsUnnhSwsU2+2V1HON0Mti5Cl18=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=ldwMNYUg; arc=none smtp.client-ip=209.85.214.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
+Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-1e4266673bbso64853495ad.2
+        for <linux-kernel@vger.kernel.org>; Wed, 01 May 2024 12:31:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1714591879; x=1715196679; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=yCUZ0lJZi4XrPs9F0orCitlVzShTGN4BIsUI0TAYPxE=;
+        b=ldwMNYUgSs7H4c9TGKR+qfFgDhUhfLTyyjQVlrL7GT64BlKCY3LU4HO+7RhUlyEarR
+         XbVJxjp6a0ekBb7WTR2FUG44YFjIiHS/Y8zKrqZ3Ze6k+CaqHAMuyWwVP8AAX6bBYVfS
+         jJIo6VEvQcoTROIxNuEgxBk4PRiEOOvrrvXVdV5Kn3UTK1Y7dXkBmjcNn/mJhtJy6Weu
+         dcfaCm4iaFsHuUIY+aXN+gTe8+N5prOOtrqzG9e84fkkcWNxUZrK/KxSVTtxBw1NAdUJ
+         rLyNnEEmE7CLXV9BkBfNRfCxivPhlSX7SBMg/pDgx5g1BHGs0PvraZyCxMabOdA3IERZ
+         OKsA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714591854; x=1715196654;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=0DpMH3OPKUdeatip9xrDr22zswVgKLvrfLJ6qW8iRrc=;
-        b=X4H77EfGBjOu0K2ueJjJjZuQYi/pL2R1MvbdPb+KoSNR5r+FgcyuK9eEoUzJO0mYT9
-         SP3zj99wSCDqtCsddc9UKIvo9h1arU0gs6h1Zq4m1vzt00uNTGrxi8SAZ0ePrJXA+UF+
-         V5N55jqTZG3qYEBgxx/c7HyHhRIMeIQunoDG9O5zWajNz0Bm/c+XDJ1FapXAFh3IIr/o
-         fZkkb0jAmsMPW7+f4Q7RTl5vtsY3Ntw/iLBOwAyHWyMmrTeUY/TiI+jO1c4M4raHI3ZJ
-         5W9vScu6NfRbLH+cCFJSMm0feDv3Y51JM0KonO5uxrnRwj4rTg+B7JK18/a+0XRmIw36
-         A63g==
-X-Forwarded-Encrypted: i=1; AJvYcCU4SG3Ih+eAiX28hT2gjwMwgPVcln8zDxn/mMaDt9Fp+ylMAgzTckwHmwspvoZAymRqcm+9BmqCETCNwAeM9C8JzNicue1Ivoga3uiC
-X-Gm-Message-State: AOJu0YwEiW0S2HfgBgGbKLc8r1rUx4eDwg7RO9EJGa7SzkOGqhHXKLAf
-	2MwW8Lcwg7s1QBO+Ns6PsPY1bwpusHiqKhg4wxAKhiQyU3/rcOWkl8YROBGdw00YvOkIPgXZDJL
-	LQzyiWrMKty/HthASzhM3pe3I+7FwN6RQjeOksydLSC6XsO32HP53JghpRhVFAA==
-X-Received: by 2002:ad4:5f86:0:b0:6a0:b2bc:bc86 with SMTP id jp6-20020ad45f86000000b006a0b2bcbc86mr2846295qvb.12.1714591854528;
-        Wed, 01 May 2024 12:30:54 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IF3bWXYpLEJh92rPxL57n6U+eQww159xQ4NM+NP8YOjyTp+DBAE5EN2Ij8n9qCiPiyz//h92A==
-X-Received: by 2002:ad4:5f86:0:b0:6a0:b2bc:bc86 with SMTP id jp6-20020ad45f86000000b006a0b2bcbc86mr2846262qvb.12.1714591853943;
-        Wed, 01 May 2024 12:30:53 -0700 (PDT)
-Received: from x1gen2nano ([2600:1700:1ff0:d0e0::33])
-        by smtp.gmail.com with ESMTPSA id kh14-20020a056214514e00b006a0fb776a77sm391077qvb.137.2024.05.01.12.30.53
+        d=1e100.net; s=20230601; t=1714591879; x=1715196679;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=yCUZ0lJZi4XrPs9F0orCitlVzShTGN4BIsUI0TAYPxE=;
+        b=iynfhYcsyKc5v0kdyumsl1G4BkMZVI0S9I4bJGxX4lBwvn9qASt+0dWTPgk/6r49JA
+         sur3WdMXxfoufa8mHOLhdRe+0oqLmX/kNgbpKGm4ohofcf7EfPgzGCINftMC9VOSxWYW
+         KOsN4Z/YtAnUnmJz8yl8ZxWgrrLmexvrc0/u2xtEwGvbcqa2ijKZYRFV+PP8uDQYEREq
+         A81g3oOEfBGDrO0eoEJAQzeU9i4wAGEjHk0csfB+AVvlXt/q0VqI581kTR3DmJZoqE51
+         CpnuJff3t6jktY9OmHs65em8FqX9u13B9TQfCvOnFyntLe63bfsBDo6H9jy4Cm1cXsZV
+         VrFg==
+X-Forwarded-Encrypted: i=1; AJvYcCW5LrE7Ei1iRFcwS0lOVh61db2Af/7KfzhqLL7vuoTzxy//4oUW5gCdjU6YaLedLMyy2+H9lUruPeAhXCTHOOXIZdoD2SWMw90d23Oe
+X-Gm-Message-State: AOJu0YwHh/lMrYXLqFk9OFtLdIUr44f+Iid6QD/46S1FV4hCaSRWy1ut
+	GTGi1riJyebStrOcE6rOW9HKK0/8KqPG6PPggObEl1SP7us+NJhuk3vYlHZlNg4=
+X-Google-Smtp-Source: AGHT+IF+r6LzNom8uhqtQWXEjd5uhhgWb7qm6I7GST1rhNDBMa9dUd0xMpP2FPO8ekUjklgZmgxoeQ==
+X-Received: by 2002:a17:902:aa01:b0:1eb:49cb:bf70 with SMTP id be1-20020a170902aa0100b001eb49cbbf70mr3274061plb.62.1714591879439;
+        Wed, 01 May 2024 12:31:19 -0700 (PDT)
+Received: from ghost ([2601:647:5700:6860:1dcc:e03e:dc61:895d])
+        by smtp.gmail.com with ESMTPSA id h4-20020a170902f7c400b001ec76a2303bsm2192009plw.175.2024.05.01.12.31.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 01 May 2024 12:30:53 -0700 (PDT)
-Date: Wed, 1 May 2024 14:30:51 -0500
-From: Andrew Halaney <ahalaney@redhat.com>
-To: Bjorn Andersson <andersson@kernel.org>
-Cc: Konrad Dybcio <konrad.dybcio@linaro.org>, 
-	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, Mukesh Ojha <quic_mojha@quicinc.com>, 
-	linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Bjorn Andersson <quic_bjorande@quicinc.com>
-Subject: Re: [PATCH] soc: qcom: pmic_glink: Make client-lock non-sleeping
-Message-ID: <vhvuux6xxrepe5isqsbqg2hwt7k7vpjikatg27427jwsjxva3n@ywgfiptf4llx>
-References: <20240430-pmic-glink-sleep-while-atomic-v1-1-88fb493e8545@quicinc.com>
+        Wed, 01 May 2024 12:31:18 -0700 (PDT)
+Date: Wed, 1 May 2024 12:31:15 -0700
+From: Charlie Jenkins <charlie@rivosinc.com>
+To: Evan Green <evan@rivosinc.com>
+Cc: Conor Dooley <conor@kernel.org>, Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>, Guo Ren <guoren@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+	Jernej Skrabec <jernej.skrabec@gmail.com>,
+	Samuel Holland <samuel@sholland.org>,
+	Conor Dooley <conor.dooley@microchip.com>,
+	=?iso-8859-1?Q?Cl=E9ment_L=E9ger?= <cleger@rivosinc.com>,
+	Jonathan Corbet <corbet@lwn.net>, Shuah Khan <shuah@kernel.org>,
+	linux-riscv@lists.infradead.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, Palmer Dabbelt <palmer@rivosinc.com>,
+	linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
+	linux-doc@vger.kernel.org, linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH v4 13/16] riscv: hwprobe: Add thead vendor extension
+ probing
+Message-ID: <ZjKYg0EGKq4nwSnp@ghost>
+References: <20240426-dev-charlie-support_thead_vector_6_9-v4-0-5cf53b5bc492@rivosinc.com>
+ <20240426-dev-charlie-support_thead_vector_6_9-v4-13-5cf53b5bc492@rivosinc.com>
+ <CALs-HsuPXhc93jqs==-Gq5Os701jxmzjxg82EHdOFHn+H-9Jdg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240430-pmic-glink-sleep-while-atomic-v1-1-88fb493e8545@quicinc.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CALs-HsuPXhc93jqs==-Gq5Os701jxmzjxg82EHdOFHn+H-9Jdg@mail.gmail.com>
 
-On Tue, Apr 30, 2024 at 08:38:57PM -0700, Bjorn Andersson wrote:
-> From: Bjorn Andersson <quic_bjorande@quicinc.com>
+On Wed, May 01, 2024 at 09:46:00AM -0700, Evan Green wrote:
+> On Fri, Apr 26, 2024 at 2:37 PM Charlie Jenkins <charlie@rivosinc.com> wrote:
+> >
+> > Add a new hwprobe key "RISCV_HWPROBE_KEY_VENDOR_EXT_THEAD_0" which
+> > allows userspace to probe for the new RISCV_ISA_VENDOR_EXT_XTHEADVECTOR
+> > vendor extension.
+> >
+> > This new key will allow userspace code to probe for which thead vendor
+> > extensions are supported. This API is modeled to be consistent with
+> > RISCV_HWPROBE_KEY_IMA_EXT_0. The bitmask returned will have each bit
+> > corresponding to a supported thead vendor extension of the cpumask set.
+> > Just like RISCV_HWPROBE_KEY_IMA_EXT_0, this allows a userspace program
+> > to determine all of the supported thead vendor extensions in one call.
+> >
+> > Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
+> > ---
+> >  arch/riscv/include/asm/hwprobe.h                   |  4 +--
+> >  .../include/asm/vendor_extensions/thead_hwprobe.h  | 11 ++++++
+> >  arch/riscv/include/uapi/asm/hwprobe.h              |  3 +-
+> >  arch/riscv/include/uapi/asm/vendor/thead.h         |  3 ++
+> >  arch/riscv/kernel/sys_hwprobe.c                    |  9 +++++
+> >  arch/riscv/kernel/vendor_extensions/Makefile       |  1 +
+> >  .../riscv/kernel/vendor_extensions/thead_hwprobe.c | 42 ++++++++++++++++++++++
+> >  7 files changed, 70 insertions(+), 3 deletions(-)
+> >
+> > diff --git a/arch/riscv/include/asm/hwprobe.h b/arch/riscv/include/asm/hwprobe.h
+> > index 630507dff5ea..e68496b4f8de 100644
+> > --- a/arch/riscv/include/asm/hwprobe.h
+> > +++ b/arch/riscv/include/asm/hwprobe.h
+> > @@ -1,6 +1,6 @@
+> >  /* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
+> >  /*
+> > - * Copyright 2023 Rivos, Inc
+> > + * Copyright 2023-2024 Rivos, Inc
+> >   */
+> >
+> >  #ifndef _ASM_HWPROBE_H
+> > @@ -8,7 +8,7 @@
+> >
+> >  #include <uapi/asm/hwprobe.h>
+> >
+> > -#define RISCV_HWPROBE_MAX_KEY 6
+> > +#define RISCV_HWPROBE_MAX_KEY 7
+> >
+> >  static inline bool riscv_hwprobe_key_is_valid(__s64 key)
+> >  {
+> > diff --git a/arch/riscv/include/asm/vendor_extensions/thead_hwprobe.h b/arch/riscv/include/asm/vendor_extensions/thead_hwprobe.h
+> > new file mode 100644
+> > index 000000000000..907cfc4eb4dc
+> > --- /dev/null
+> > +++ b/arch/riscv/include/asm/vendor_extensions/thead_hwprobe.h
+> > @@ -0,0 +1,11 @@
+> > +/* SPDX-License-Identifier: GPL-2.0 */
+> > +#ifndef _ASM_RISCV_VENDOR_EXTENSIONS_THEAD_HWPROBE_H
+> > +#define _ASM_RISCV_VENDOR_EXTENSIONS_THEAD_HWPROBE_H
+> > +
+> > +#include <linux/cpumask.h>
+> > +
+> > +#include <uapi/asm/hwprobe.h>
+> > +
+> > +void hwprobe_isa_vendor_ext_thead_0(struct riscv_hwprobe *pair, const struct cpumask *cpus);
+> > +
+> > +#endif
+> > diff --git a/arch/riscv/include/uapi/asm/hwprobe.h b/arch/riscv/include/uapi/asm/hwprobe.h
+> > index 9f2a8e3ff204..21e96a63f9ea 100644
+> > --- a/arch/riscv/include/uapi/asm/hwprobe.h
+> > +++ b/arch/riscv/include/uapi/asm/hwprobe.h
+> > @@ -1,6 +1,6 @@
+> >  /* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
+> >  /*
+> > - * Copyright 2023 Rivos, Inc
+> > + * Copyright 2023-2024 Rivos, Inc
+> >   */
+> >
+> >  #ifndef _UAPI_ASM_HWPROBE_H
+> > @@ -67,6 +67,7 @@ struct riscv_hwprobe {
+> >  #define                RISCV_HWPROBE_MISALIGNED_UNSUPPORTED    (4 << 0)
+> >  #define                RISCV_HWPROBE_MISALIGNED_MASK           (7 << 0)
+> >  #define RISCV_HWPROBE_KEY_ZICBOZ_BLOCK_SIZE    6
+> > +#define RISCV_HWPROBE_KEY_VENDOR_EXT_THEAD_0   7
+> >  /* Increase RISCV_HWPROBE_MAX_KEY when adding items. */
+> >
+> >  /* Flags */
+> > diff --git a/arch/riscv/include/uapi/asm/vendor/thead.h b/arch/riscv/include/uapi/asm/vendor/thead.h
+> > new file mode 100644
+> > index 000000000000..43790ebe5faf
+> > --- /dev/null
+> > +++ b/arch/riscv/include/uapi/asm/vendor/thead.h
+> > @@ -0,0 +1,3 @@
+> > +/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
+> > +
+> > +#define                RISCV_HWPROBE_VENDOR_EXT_XTHEADVECTOR   (1 << 0)
+> > diff --git a/arch/riscv/kernel/sys_hwprobe.c b/arch/riscv/kernel/sys_hwprobe.c
+> > index 8cae41a502dd..e59cac545df5 100644
+> > --- a/arch/riscv/kernel/sys_hwprobe.c
+> > +++ b/arch/riscv/kernel/sys_hwprobe.c
+> > @@ -13,6 +13,7 @@
+> >  #include <asm/uaccess.h>
+> >  #include <asm/unistd.h>
+> >  #include <asm/vector.h>
+> > +#include <asm/vendor_extensions/thead_hwprobe.h>
+> >  #include <vdso/vsyscall.h>
+> >
+> >
+> > @@ -216,6 +217,14 @@ static void hwprobe_one_pair(struct riscv_hwprobe *pair,
+> >                         pair->value = riscv_cboz_block_size;
+> >                 break;
+> >
+> > +       case RISCV_HWPROBE_KEY_VENDOR_EXT_THEAD_0:
+> > +#ifdef CONFIG_RISCV_ISA_VENDOR_EXT_THEAD
+> > +               hwprobe_isa_vendor_ext_thead_0(pair, cpus);
+> > +#else
+> > +               pair->value = 0;
+> > +#endif
 > 
-> The recently introduced commit '635ce0db8956 ("soc: qcom: pmic_glink:
-> don't traverse clients list without a lock")' ensured that the clients
-> list is not modified while traversed.
+> Could we move this ifdef into the header by declaring a dummy
+> hwprobe_isa_vendor_ext_thead_0() in the header for the !ENABLED case?
 > 
-> But the callback is made from the GLINK IRQ handler and as such this
-> mutual exclusion can not be provided by a (sleepable) mutex.
+> > +               break;
+> > +
+> >         /*
+> >          * For forward compatibility, unknown keys don't fail the whole
+> >          * call, but get their element key set to -1 and value set to 0
+> > diff --git a/arch/riscv/kernel/vendor_extensions/Makefile b/arch/riscv/kernel/vendor_extensions/Makefile
+> > index 8f1c5a4dc38f..f511fd269e8a 100644
+> > --- a/arch/riscv/kernel/vendor_extensions/Makefile
+> > +++ b/arch/riscv/kernel/vendor_extensions/Makefile
+> > @@ -1,4 +1,5 @@
+> >  # SPDX-License-Identifier: GPL-2.0-only
+> >
+> >  obj-$(CONFIG_RISCV_ISA_VENDOR_EXT_THEAD)       += thead.o
+> > +obj-$(CONFIG_RISCV_ISA_VENDOR_EXT_THEAD)       += thead_hwprobe.o
+> >  obj-$(CONFIG_RISCV_ISA_VENDOR_EXT_ANDES)       += andes.o
+> > diff --git a/arch/riscv/kernel/vendor_extensions/thead_hwprobe.c b/arch/riscv/kernel/vendor_extensions/thead_hwprobe.c
+> > new file mode 100644
+> > index 000000000000..e8e2de292032
+> > --- /dev/null
+> > +++ b/arch/riscv/kernel/vendor_extensions/thead_hwprobe.c
+> > @@ -0,0 +1,42 @@
+> > +// SPDX-License-Identifier: GPL-2.0-only
+> > +
+> > +#include <asm/vector.h>
+> > +#include <asm/vendor_extensions/thead.h>
+> > +#include <asm/vendor_extensions/thead_hwprobe.h>
+> > +
+> > +#include <linux/cpumask.h>
+> > +#include <linux/types.h>
+> > +
+> > +#include <uapi/asm/hwprobe.h>
+> > +#include <uapi/asm/vendor/thead.h>
+> > +
+> > +void hwprobe_isa_vendor_ext_thead_0(struct riscv_hwprobe *pair, const struct cpumask *cpus)
+> > +{
+> > +       /*
+> > +        * Loop through and record extensions that 1) anyone has, and 2) anyone
+> > +        * doesn't have.
+> > +        */
+> > +
+> > +       struct riscv_isainfo *per_hart_thead_bitmap = riscv_isa_vendor_ext_list_thead.per_hart_vendor_bitmap;
+> > +       int cpu;
+> > +       u64 missing;
+> > +
+> > +       for_each_cpu(cpu, cpus) {
+> > +               struct riscv_isainfo *isainfo = &per_hart_thead_bitmap[cpu];
+> > +
+> > +#define EXT_KEY(ext)                                                                   \
+> > +       do {                                                                            \
+> > +               if (__riscv_isa_extension_available(isainfo->isa, RISCV_ISA_VENDOR_EXT_##ext)) \
+> > +                       pair->value |= RISCV_HWPROBE_VENDOR_EXT_##ext;                  \
+> > +               else                                                                    \
+> > +                       missing |= RISCV_HWPROBE_VENDOR_EXT_##ext;                      \
+> > +       } while (false)
+> > +
+> > +       EXT_KEY(XTHEADVECTOR);
+> > +
+> > +#undef EXT_KEY
+> > +       }
+> > +
+> > +       /* Now turn off reporting features if any CPU is missing it. */> +       pair->value &= ~missing;
+> > +}
 > 
-> Replace the mutex with a spinlock.
+> Something to consider, perhaps when there's a second vendor, is how we
+> might reduce this boilerplate on the second vendor. Probably best to
+> wait though until we know exactly what the commonalities are. This
+> looks good for now.
 > 
-> Fixes: 635ce0db8956 ("soc: qcom: pmic_glink: don't traverse clients list without a lock")
-> Signed-off-by: Bjorn Andersson <quic_bjorande@quicinc.com>
 
-Reviewed-by: Andrew Halaney <ahalaney@redhat.com>
+Yes it should be mostly identical on second vendor. I think the only
+difference would be "per_hart_thead_bitmap" and the list of extensions.
+I can probably factor this out a bit.
 
+- Charlie
+
+> 
+> >
+> > --
+> > 2.44.0
+> >
 
