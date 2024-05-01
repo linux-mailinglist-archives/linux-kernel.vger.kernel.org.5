@@ -1,37 +1,37 @@
-Return-Path: <linux-kernel+bounces-165347-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-165348-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 321A48B8B93
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 15:59:59 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B812A8B8B95
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 16:00:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9BCCD1F21BE5
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 13:59:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6EB82284464
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 14:00:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5593B12EBED;
-	Wed,  1 May 2024 13:59:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4342212FB07;
+	Wed,  1 May 2024 13:59:29 +0000 (UTC)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 315AF12F595;
-	Wed,  1 May 2024 13:59:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D43F412EBF4;
+	Wed,  1 May 2024 13:59:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714571965; cv=none; b=iYAEQpRK0pwVAkrZk+m6QevKCagVR0wpT1kKutSti8cYpMWvIuh7cCz2ZZfW99TaV2QOVeUj1HGYjQFXSiWHIzD2S8yzSlpsSj9ityCaDt/1YHs1nGoIeFZN2RSYmqyiSq0qj1wmt5OYa5IYMKv4UxbXQVRi0KoxYyhJSAde5FA=
+	t=1714571968; cv=none; b=bO03wvKQA1TqsaetxOi/SZEEoNKErDXkUcR3bQrimFDl3NOYLi7qUEO3k413H1t7QA8CZEOg9l5+11Oq1d7qEiq1rlxViY36x+080Zn4SwZkRZoNYL7mCLiPYlWIxR6sWttmPkbXzZ3L5buepg1c4FA/7A0+B6t+y0Vn6qH2LQk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714571965; c=relaxed/simple;
-	bh=QNJs6RrOvtn5N5kc06mBTyYMyX4L6Ypkks6mJvPgrTE=;
+	s=arc-20240116; t=1714571968; c=relaxed/simple;
+	bh=NMGvVwOXWaxbv/nmLwC9gZ4w+4dXSSoUpLzPolluBN0=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=IdVJa8sUBTxd3F/kjpsyt2v/XYZnqHHk/TCBxO9l6zLLiZw8rHxiXPGnife2RQKDtAkDCBpv1+pgpQ2f/xk8FzIUzN8XzQ8/tmObt1kBgPfAR8YcI/J1SLiuwvAXYvOM5aTfnow2AFPv1la+qL/TfuaifKFXwTU+gyorAbHKj80=
+	 MIME-Version; b=hdxTMf1UpXOrY0MgYu1Y7y3lcmDU9mDUcQJBfgYo+ctYWD5INVqHfT8ucnShg250uleFMaUaZx1tEcp4a+YeRLlkHNktN5k1GasArFMYiwZ9LDV0KCxwGEpU4l0kUFkUJCEW25RNahZQIoDj3jds5d69OpBwPS4YCMV74HQrhQQ=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 954D4339;
-	Wed,  1 May 2024 06:59:48 -0700 (PDT)
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0EB97DA7;
+	Wed,  1 May 2024 06:59:52 -0700 (PDT)
 Received: from e127643.broadband (usa-sjc-mx-foss1.foss.arm.com [172.31.20.19])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id DA1C63F71E;
-	Wed,  1 May 2024 06:59:19 -0700 (PDT)
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 53E5A3F71E;
+	Wed,  1 May 2024 06:59:23 -0700 (PDT)
 From: James Clark <james.clark@arm.com>
 To: linux-perf-users@vger.kernel.org,
 	coresight@lists.linaro.org,
@@ -53,9 +53,9 @@ Cc: James Clark <james.clark@arm.com>,
 	"Liang, Kan" <kan.liang@linux.intel.com>,
 	linux-arm-kernel@lists.infradead.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH v2 1/3] perf cs-etm: Use struct perf_cpu as much as possible
-Date: Wed,  1 May 2024 14:57:51 +0100
-Message-Id: <20240501135753.508022-2-james.clark@arm.com>
+Subject: [PATCH v2 2/3] perf cs-etm: Remove repeated fetches of the ETM PMU
+Date: Wed,  1 May 2024 14:57:52 +0100
+Message-Id: <20240501135753.508022-3-james.clark@arm.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240501135753.508022-1-james.clark@arm.com>
 References: <20240501135753.508022-1-james.clark@arm.com>
@@ -67,425 +67,196 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The perf_cpu struct makes some iterators simpler and avoids some
-mistakes with interchanging CPU IDs with indexes etc. At the moment in
-this file the conversion to an integer is done somewhere in the middle
-of the call tree. Change it to delay the conversion to an int until the
-leaf functions.
-
-Some of the usage patterns are duplicated, so instead of changing them
-all, make cs_etm_get_ro() more reusable and use that everywhere.
-cs_etm_get_ro() didn't return an error before, but return one now so
-that it can also be used where an error is needed. Continue to ignore
-the error where it was already ignored.
-
-Use cs_etm_pmu_path_exists() instead of cs_etm_get_ro() in
-cs_etm_is_etmv4() because cs_etm_get_ro() prints a warning, but path
-exists is sufficient for this use case.
+Most functions already have cs_etm_pmu, so it's a bit neater to pass
+it through rather than itr only to convert it again.
 
 Signed-off-by: James Clark <james.clark@arm.com>
 ---
- tools/perf/arch/arm/util/cs-etm.c | 204 +++++++++++++-----------------
- 1 file changed, 88 insertions(+), 116 deletions(-)
+ tools/perf/arch/arm/util/cs-etm.c | 60 ++++++++++++++-----------------
+ 1 file changed, 27 insertions(+), 33 deletions(-)
 
 diff --git a/tools/perf/arch/arm/util/cs-etm.c b/tools/perf/arch/arm/util/cs-etm.c
-index 07be32d99805..a1fa711dc41a 100644
+index a1fa711dc41a..2fc4b41daea1 100644
 --- a/tools/perf/arch/arm/util/cs-etm.c
 +++ b/tools/perf/arch/arm/util/cs-etm.c
-@@ -66,18 +66,19 @@ static const char * const metadata_ete_ro[] = {
+@@ -66,17 +66,14 @@ static const char * const metadata_ete_ro[] = {
  	[CS_ETE_TS_SOURCE]		= "ts_source",
  };
  
--static bool cs_etm_is_etmv4(struct auxtrace_record *itr, int cpu);
--static bool cs_etm_is_ete(struct auxtrace_record *itr, int cpu);
-+static bool cs_etm_is_etmv4(struct auxtrace_record *itr, struct perf_cpu cpu);
-+static bool cs_etm_is_ete(struct auxtrace_record *itr, struct perf_cpu cpu);
-+static int cs_etm_get_ro(struct perf_pmu *pmu, struct perf_cpu cpu, const char *path, __u64 *val);
-+static bool cs_etm_pmu_path_exists(struct perf_pmu *pmu, struct perf_cpu cpu, const char *path);
+-static bool cs_etm_is_etmv4(struct auxtrace_record *itr, struct perf_cpu cpu);
+-static bool cs_etm_is_ete(struct auxtrace_record *itr, struct perf_cpu cpu);
++static bool cs_etm_is_etmv4(struct perf_pmu *cs_etm_pmu, struct perf_cpu cpu);
++static bool cs_etm_is_ete(struct perf_pmu *cs_etm_pmu, struct perf_cpu cpu);
+ static int cs_etm_get_ro(struct perf_pmu *pmu, struct perf_cpu cpu, const char *path, __u64 *val);
+ static bool cs_etm_pmu_path_exists(struct perf_pmu *pmu, struct perf_cpu cpu, const char *path);
  
--static int cs_etm_validate_context_id(struct auxtrace_record *itr,
--				      struct evsel *evsel, int cpu)
-+static int cs_etm_validate_context_id(struct auxtrace_record *itr, struct evsel *evsel,
-+				      struct perf_cpu cpu)
+-static int cs_etm_validate_context_id(struct auxtrace_record *itr, struct evsel *evsel,
++static int cs_etm_validate_context_id(struct perf_pmu *cs_etm_pmu, struct evsel *evsel,
+ 				      struct perf_cpu cpu)
  {
- 	struct cs_etm_recording *ptr =
- 		container_of(itr, struct cs_etm_recording, itr);
- 	struct perf_pmu *cs_etm_pmu = ptr->cs_etm_pmu;
--	char path[PATH_MAX];
+-	struct cs_etm_recording *ptr =
+-		container_of(itr, struct cs_etm_recording, itr);
+-	struct perf_pmu *cs_etm_pmu = ptr->cs_etm_pmu;
  	int err;
--	u32 val;
-+	__u64 val;
+ 	__u64 val;
  	u64 contextid = evsel->core.attr.config &
- 		(perf_pmu__format_bits(cs_etm_pmu, "contextid") |
- 		 perf_pmu__format_bits(cs_etm_pmu, "contextid1") |
-@@ -94,16 +95,9 @@ static int cs_etm_validate_context_id(struct auxtrace_record *itr,
- 	}
+@@ -88,7 +85,7 @@ static int cs_etm_validate_context_id(struct auxtrace_record *itr, struct evsel
+ 		return 0;
  
- 	/* Get a handle on TRCIDR2 */
--	snprintf(path, PATH_MAX, "cpu%d/%s",
--		 cpu, metadata_etmv4_ro[CS_ETMV4_TRCIDR2]);
--	err = perf_pmu__scan_file(cs_etm_pmu, path, "%x", &val);
--
--	/* There was a problem reading the file, bailing out */
--	if (err != 1) {
--		pr_err("%s: can't read file %s\n", CORESIGHT_ETM_PMU_NAME,
--		       path);
-+	err = cs_etm_get_ro(cs_etm_pmu, cpu, metadata_etmv4_ro[CS_ETMV4_TRCIDR2], &val);
-+	if (err)
- 		return err;
--	}
- 
- 	if (contextid &
- 	    perf_pmu__format_bits(cs_etm_pmu, "contextid1")) {
-@@ -140,15 +134,14 @@ static int cs_etm_validate_context_id(struct auxtrace_record *itr,
+ 	/* Not supported in etmv3 */
+-	if (!cs_etm_is_etmv4(itr, cpu)) {
++	if (!cs_etm_is_etmv4(cs_etm_pmu, cpu)) {
+ 		pr_err("%s: contextid not supported in ETMv3, disable with %s/contextid=0/\n",
+ 		       CORESIGHT_ETM_PMU_NAME, CORESIGHT_ETM_PMU_NAME);
+ 		return -EINVAL;
+@@ -134,12 +131,9 @@ static int cs_etm_validate_context_id(struct auxtrace_record *itr, struct evsel
  	return 0;
  }
  
--static int cs_etm_validate_timestamp(struct auxtrace_record *itr,
--				     struct evsel *evsel, int cpu)
-+static int cs_etm_validate_timestamp(struct auxtrace_record *itr, struct evsel *evsel,
-+				     struct perf_cpu cpu)
+-static int cs_etm_validate_timestamp(struct auxtrace_record *itr, struct evsel *evsel,
++static int cs_etm_validate_timestamp(struct perf_pmu *cs_etm_pmu, struct evsel *evsel,
+ 				     struct perf_cpu cpu)
  {
- 	struct cs_etm_recording *ptr =
- 		container_of(itr, struct cs_etm_recording, itr);
- 	struct perf_pmu *cs_etm_pmu = ptr->cs_etm_pmu;
--	char path[PATH_MAX];
+-	struct cs_etm_recording *ptr =
+-		container_of(itr, struct cs_etm_recording, itr);
+-	struct perf_pmu *cs_etm_pmu = ptr->cs_etm_pmu;
  	int err;
--	u32 val;
-+	__u64 val;
+ 	__u64 val;
  
- 	if (!(evsel->core.attr.config &
+@@ -147,7 +141,7 @@ static int cs_etm_validate_timestamp(struct auxtrace_record *itr, struct evsel *
  	      perf_pmu__format_bits(cs_etm_pmu, "timestamp")))
-@@ -161,16 +154,9 @@ static int cs_etm_validate_timestamp(struct auxtrace_record *itr,
- 	}
+ 		return 0;
  
- 	/* Get a handle on TRCIRD0 */
--	snprintf(path, PATH_MAX, "cpu%d/%s",
--		 cpu, metadata_etmv4_ro[CS_ETMV4_TRCIDR0]);
--	err = perf_pmu__scan_file(cs_etm_pmu, path, "%x", &val);
--
--	/* There was a problem reading the file, bailing out */
--	if (err != 1) {
--		pr_err("%s: can't read file %s\n",
--		       CORESIGHT_ETM_PMU_NAME, path);
-+	err = cs_etm_get_ro(cs_etm_pmu, cpu, metadata_etmv4_ro[CS_ETMV4_TRCIDR0], &val);
-+	if (err)
- 		return err;
--	}
+-	if (!cs_etm_is_etmv4(itr, cpu)) {
++	if (!cs_etm_is_etmv4(cs_etm_pmu, cpu)) {
+ 		pr_err("%s: timestamp not supported in ETMv3, disable with %s/timestamp=0/\n",
+ 		       CORESIGHT_ETM_PMU_NAME, CORESIGHT_ETM_PMU_NAME);
+ 		return -EINVAL;
+@@ -173,6 +167,13 @@ static int cs_etm_validate_timestamp(struct auxtrace_record *itr, struct evsel *
+ 	return 0;
+ }
  
- 	/*
- 	 * TRCIDR0.TSSIZE, bit [28-24], indicates whether global timestamping
-@@ -218,11 +204,11 @@ static int cs_etm_validate_config(struct auxtrace_record *itr,
++static struct perf_pmu *cs_etm_get_pmu(struct auxtrace_record *itr)
++{
++	struct cs_etm_recording *ptr = container_of(itr, struct cs_etm_recording, itr);
++
++	return ptr->cs_etm_pmu;
++}
++
+ /*
+  * Check whether the requested timestamp and contextid options should be
+  * available on all requested CPUs and if not, tell the user how to override.
+@@ -180,7 +181,7 @@ static int cs_etm_validate_timestamp(struct auxtrace_record *itr, struct evsel *
+  * first is better. In theory the kernel could still disable the option for
+  * some other reason so this is best effort only.
+  */
+-static int cs_etm_validate_config(struct auxtrace_record *itr,
++static int cs_etm_validate_config(struct perf_pmu *cs_etm_pmu,
+ 				  struct evsel *evsel)
+ {
+ 	int idx, err = 0;
+@@ -204,11 +205,11 @@ static int cs_etm_validate_config(struct auxtrace_record *itr,
  	}
  
  	perf_cpu_map__for_each_cpu_skip_any(cpu, idx, intersect_cpus) {
--		err = cs_etm_validate_context_id(itr, evsel, cpu.cpu);
-+		err = cs_etm_validate_context_id(itr, evsel, cpu);
+-		err = cs_etm_validate_context_id(itr, evsel, cpu);
++		err = cs_etm_validate_context_id(cs_etm_pmu, evsel, cpu);
  		if (err)
  			break;
  
--		err = cs_etm_validate_timestamp(itr, evsel, cpu.cpu);
-+		err = cs_etm_validate_timestamp(itr, evsel, cpu);
+-		err = cs_etm_validate_timestamp(itr, evsel, cpu);
++		err = cs_etm_validate_timestamp(cs_etm_pmu, evsel, cpu);
  		if (err)
  			break;
  	}
-@@ -549,9 +535,9 @@ cs_etm_info_priv_size(struct auxtrace_record *itr __maybe_unused,
+@@ -449,7 +450,7 @@ static int cs_etm_recording_options(struct auxtrace_record *itr,
+ 	if (!perf_cpu_map__is_any_cpu_or_is_empty(cpus))
+ 		evsel__set_sample_bit(evsel, TIME);
+ 
+-	err = cs_etm_validate_config(itr, cs_etm_evsel);
++	err = cs_etm_validate_config(cs_etm_pmu, cs_etm_evsel);
+ out:
+ 	return err;
+ }
+@@ -515,14 +516,15 @@ static u64 cs_etmv4_get_config(struct auxtrace_record *itr)
+ }
+ 
+ static size_t
+-cs_etm_info_priv_size(struct auxtrace_record *itr __maybe_unused,
+-		      struct evlist *evlist __maybe_unused)
++cs_etm_info_priv_size(struct auxtrace_record *itr,
++		      struct evlist *evlist)
+ {
+ 	int idx;
+ 	int etmv3 = 0, etmv4 = 0, ete = 0;
+ 	struct perf_cpu_map *event_cpus = evlist->core.user_requested_cpus;
+ 	struct perf_cpu_map *intersect_cpus;
+ 	struct perf_cpu cpu;
++	struct perf_pmu *cs_etm_pmu = cs_etm_get_pmu(itr);
+ 
+ 	if (!perf_cpu_map__has_any_cpu(event_cpus)) {
+ 		/* cpu map is not "any" CPU , we have specific CPUs to work with */
+@@ -535,9 +537,9 @@ cs_etm_info_priv_size(struct auxtrace_record *itr __maybe_unused,
  		intersect_cpus = perf_cpu_map__new_online_cpus();
  	}
  	perf_cpu_map__for_each_cpu_skip_any(cpu, idx, intersect_cpus) {
--		if (cs_etm_is_ete(itr, cpu.cpu))
-+		if (cs_etm_is_ete(itr, cpu))
+-		if (cs_etm_is_ete(itr, cpu))
++		if (cs_etm_is_ete(cs_etm_pmu, cpu))
  			ete++;
--		else if (cs_etm_is_etmv4(itr, cpu.cpu))
-+		else if (cs_etm_is_etmv4(itr, cpu))
+-		else if (cs_etm_is_etmv4(itr, cpu))
++		else if (cs_etm_is_etmv4(cs_etm_pmu, cpu))
  			etmv4++;
  		else
  			etmv3++;
-@@ -564,66 +550,59 @@ cs_etm_info_priv_size(struct auxtrace_record *itr __maybe_unused,
+@@ -550,12 +552,8 @@ cs_etm_info_priv_size(struct auxtrace_record *itr __maybe_unused,
  	       (etmv3 * CS_ETMV3_PRIV_SIZE));
  }
  
--static bool cs_etm_is_etmv4(struct auxtrace_record *itr, int cpu)
-+static bool cs_etm_is_etmv4(struct auxtrace_record *itr, struct perf_cpu cpu)
+-static bool cs_etm_is_etmv4(struct auxtrace_record *itr, struct perf_cpu cpu)
++static bool cs_etm_is_etmv4(struct perf_pmu *cs_etm_pmu, struct perf_cpu cpu)
  {
--	bool ret = false;
--	char path[PATH_MAX];
--	int scan;
--	unsigned int val;
- 	struct cs_etm_recording *ptr =
- 			container_of(itr, struct cs_etm_recording, itr);
- 	struct perf_pmu *cs_etm_pmu = ptr->cs_etm_pmu;
- 
+-	struct cs_etm_recording *ptr =
+-			container_of(itr, struct cs_etm_recording, itr);
+-	struct perf_pmu *cs_etm_pmu = ptr->cs_etm_pmu;
+-
  	/* Take any of the RO files for ETMv4 and see if it present */
--	snprintf(path, PATH_MAX, "cpu%d/%s",
--		 cpu, metadata_etmv4_ro[CS_ETMV4_TRCIDR0]);
--	scan = perf_pmu__scan_file(cs_etm_pmu, path, "%x", &val);
--
--	/* The file was read successfully, we have a winner */
--	if (scan == 1)
--		ret = true;
--
--	return ret;
-+	return cs_etm_pmu_path_exists(cs_etm_pmu, cpu, metadata_etmv4_ro[CS_ETMV4_TRCIDR0]);
+ 	return cs_etm_pmu_path_exists(cs_etm_pmu, cpu, metadata_etmv4_ro[CS_ETMV4_TRCIDR0]);
  }
- 
--static int cs_etm_get_ro(struct perf_pmu *pmu, int cpu, const char *path)
-+static int cs_etm_get_ro(struct perf_pmu *pmu, struct perf_cpu cpu, const char *path, __u64 *val)
- {
- 	char pmu_path[PATH_MAX];
- 	int scan;
--	unsigned int val = 0;
- 
- 	/* Get RO metadata from sysfs */
--	snprintf(pmu_path, PATH_MAX, "cpu%d/%s", cpu, path);
-+	snprintf(pmu_path, PATH_MAX, "cpu%d/%s", cpu.cpu, path);
- 
--	scan = perf_pmu__scan_file(pmu, pmu_path, "%x", &val);
--	if (scan != 1)
-+	scan = perf_pmu__scan_file(pmu, pmu_path, "%llx", val);
-+	if (scan != 1) {
- 		pr_err("%s: error reading: %s\n", __func__, pmu_path);
-+		return -EINVAL;
-+	}
- 
--	return val;
-+	return 0;
- }
- 
--static int cs_etm_get_ro_signed(struct perf_pmu *pmu, int cpu, const char *path)
-+static int cs_etm_get_ro_signed(struct perf_pmu *pmu, struct perf_cpu cpu, const char *path,
-+				__u64 *out_val)
- {
- 	char pmu_path[PATH_MAX];
- 	int scan;
- 	int val = 0;
- 
- 	/* Get RO metadata from sysfs */
--	snprintf(pmu_path, PATH_MAX, "cpu%d/%s", cpu, path);
-+	snprintf(pmu_path, PATH_MAX, "cpu%d/%s", cpu.cpu, path);
- 
- 	scan = perf_pmu__scan_file(pmu, pmu_path, "%d", &val);
--	if (scan != 1)
-+	if (scan != 1) {
- 		pr_err("%s: error reading: %s\n", __func__, pmu_path);
-+		return -EINVAL;
-+	}
- 
--	return val;
-+	*out_val = (__u64) val;
-+	return 0;
- }
- 
--static bool cs_etm_pmu_path_exists(struct perf_pmu *pmu, int cpu, const char *path)
-+static bool cs_etm_pmu_path_exists(struct perf_pmu *pmu, struct perf_cpu cpu, const char *path)
- {
- 	char pmu_path[PATH_MAX];
- 
- 	/* Get RO metadata from sysfs */
--	snprintf(pmu_path, PATH_MAX, "cpu%d/%s", cpu, path);
-+	snprintf(pmu_path, PATH_MAX, "cpu%d/%s", cpu.cpu, path);
- 
- 	return perf_pmu__file_exists(pmu, pmu_path);
- }
-@@ -636,16 +615,16 @@ static bool cs_etm_pmu_path_exists(struct perf_pmu *pmu, int cpu, const char *pa
+@@ -615,10 +613,8 @@ static bool cs_etm_pmu_path_exists(struct perf_pmu *pmu, struct perf_cpu cpu, co
  #define TRCDEVARCH_ARCHVER_MASK  GENMASK(15, 12)
  #define TRCDEVARCH_ARCHVER(x)    (((x) & TRCDEVARCH_ARCHVER_MASK) >> TRCDEVARCH_ARCHVER_SHIFT)
  
--static bool cs_etm_is_ete(struct auxtrace_record *itr, int cpu)
-+static bool cs_etm_is_ete(struct auxtrace_record *itr, struct perf_cpu cpu)
+-static bool cs_etm_is_ete(struct auxtrace_record *itr, struct perf_cpu cpu)
++static bool cs_etm_is_ete(struct perf_pmu *cs_etm_pmu, struct perf_cpu cpu)
  {
- 	struct cs_etm_recording *ptr = container_of(itr, struct cs_etm_recording, itr);
- 	struct perf_pmu *cs_etm_pmu = ptr->cs_etm_pmu;
--	int trcdevarch;
-+	__u64 trcdevarch;
+-	struct cs_etm_recording *ptr = container_of(itr, struct cs_etm_recording, itr);
+-	struct perf_pmu *cs_etm_pmu = ptr->cs_etm_pmu;
+ 	__u64 trcdevarch;
  
  	if (!cs_etm_pmu_path_exists(cs_etm_pmu, cpu, metadata_ete_ro[CS_ETE_TRCDEVARCH]))
- 		return false;
- 
--	trcdevarch = cs_etm_get_ro(cs_etm_pmu, cpu, metadata_ete_ro[CS_ETE_TRCDEVARCH]);
-+	cs_etm_get_ro(cs_etm_pmu, cpu, metadata_ete_ro[CS_ETE_TRCDEVARCH], &trcdevarch);
- 	/*
- 	 * ETE if ARCHVER is 5 (ARCHVER is 4 for ETM) and ARCHPART is 0xA13.
- 	 * See ETM_DEVARCH_ETE_ARCH in coresight-etm4x.h
-@@ -653,7 +632,12 @@ static bool cs_etm_is_ete(struct auxtrace_record *itr, int cpu)
- 	return TRCDEVARCH_ARCHVER(trcdevarch) == 5 && TRCDEVARCH_ARCHPART(trcdevarch) == 0xA13;
- }
- 
--static void cs_etm_save_etmv4_header(__u64 data[], struct auxtrace_record *itr, int cpu)
-+static __u64 cs_etm_get_legacy_trace_id(struct perf_cpu cpu)
-+{
-+	return CORESIGHT_LEGACY_CPU_TRACE_ID(cpu.cpu);
-+}
-+
-+static void cs_etm_save_etmv4_header(__u64 data[], struct auxtrace_record *itr, struct perf_cpu cpu)
+@@ -707,19 +703,17 @@ static void cs_etm_get_metadata(struct perf_cpu cpu, u32 *offset,
  {
- 	struct cs_etm_recording *ptr = container_of(itr, struct cs_etm_recording, itr);
- 	struct perf_pmu *cs_etm_pmu = ptr->cs_etm_pmu;
-@@ -661,33 +645,32 @@ static void cs_etm_save_etmv4_header(__u64 data[], struct auxtrace_record *itr,
- 	/* Get trace configuration register */
- 	data[CS_ETMV4_TRCCONFIGR] = cs_etmv4_get_config(itr);
- 	/* traceID set to legacy version, in case new perf running on older system */
--	data[CS_ETMV4_TRCTRACEIDR] =
--		CORESIGHT_LEGACY_CPU_TRACE_ID(cpu) | CORESIGHT_TRACE_ID_UNUSED_FLAG;
-+	data[CS_ETMV4_TRCTRACEIDR] = cs_etm_get_legacy_trace_id(cpu) |
-+				     CORESIGHT_TRACE_ID_UNUSED_FLAG;
+ 	u32 increment, nr_trc_params;
+ 	u64 magic;
+-	struct cs_etm_recording *ptr =
+-			container_of(itr, struct cs_etm_recording, itr);
+-	struct perf_pmu *cs_etm_pmu = ptr->cs_etm_pmu;
++	struct perf_pmu *cs_etm_pmu = cs_etm_get_pmu(itr);
  
- 	/* Get read-only information from sysFS */
--	data[CS_ETMV4_TRCIDR0] = cs_etm_get_ro(cs_etm_pmu, cpu,
--					       metadata_etmv4_ro[CS_ETMV4_TRCIDR0]);
--	data[CS_ETMV4_TRCIDR1] = cs_etm_get_ro(cs_etm_pmu, cpu,
--					       metadata_etmv4_ro[CS_ETMV4_TRCIDR1]);
--	data[CS_ETMV4_TRCIDR2] = cs_etm_get_ro(cs_etm_pmu, cpu,
--					       metadata_etmv4_ro[CS_ETMV4_TRCIDR2]);
--	data[CS_ETMV4_TRCIDR8] = cs_etm_get_ro(cs_etm_pmu, cpu,
--					       metadata_etmv4_ro[CS_ETMV4_TRCIDR8]);
--	data[CS_ETMV4_TRCAUTHSTATUS] = cs_etm_get_ro(cs_etm_pmu, cpu,
--						     metadata_etmv4_ro[CS_ETMV4_TRCAUTHSTATUS]);
-+	cs_etm_get_ro(cs_etm_pmu, cpu, metadata_etmv4_ro[CS_ETMV4_TRCIDR0],
-+		      &data[CS_ETMV4_TRCIDR0]);
-+	cs_etm_get_ro(cs_etm_pmu, cpu, metadata_etmv4_ro[CS_ETMV4_TRCIDR1],
-+		      &data[CS_ETMV4_TRCIDR1]);
-+	cs_etm_get_ro(cs_etm_pmu, cpu, metadata_etmv4_ro[CS_ETMV4_TRCIDR2],
-+		      &data[CS_ETMV4_TRCIDR2]);
-+	cs_etm_get_ro(cs_etm_pmu, cpu, metadata_etmv4_ro[CS_ETMV4_TRCIDR8],
-+		      &data[CS_ETMV4_TRCIDR8]);
-+	cs_etm_get_ro(cs_etm_pmu, cpu, metadata_etmv4_ro[CS_ETMV4_TRCAUTHSTATUS],
-+		      &data[CS_ETMV4_TRCAUTHSTATUS]);
- 
- 	/* Kernels older than 5.19 may not expose ts_source */
--	if (cs_etm_pmu_path_exists(cs_etm_pmu, cpu, metadata_etmv4_ro[CS_ETMV4_TS_SOURCE]))
--		data[CS_ETMV4_TS_SOURCE] = (__u64) cs_etm_get_ro_signed(cs_etm_pmu, cpu,
--				metadata_etmv4_ro[CS_ETMV4_TS_SOURCE]);
--	else {
-+	if (!cs_etm_pmu_path_exists(cs_etm_pmu, cpu, metadata_etmv4_ro[CS_ETMV4_TS_SOURCE]) ||
-+	    cs_etm_get_ro_signed(cs_etm_pmu, cpu, metadata_etmv4_ro[CS_ETMV4_TS_SOURCE],
-+				 &data[CS_ETMV4_TS_SOURCE])) {
- 		pr_debug3("[%03d] pmu file 'ts_source' not found. Fallback to safe value (-1)\n",
--			  cpu);
-+			  cpu.cpu);
- 		data[CS_ETMV4_TS_SOURCE] = (__u64) -1;
- 	}
- }
- 
--static void cs_etm_save_ete_header(__u64 data[], struct auxtrace_record *itr, int cpu)
-+static void cs_etm_save_ete_header(__u64 data[], struct auxtrace_record *itr, struct perf_cpu cpu)
- {
- 	struct cs_etm_recording *ptr = container_of(itr, struct cs_etm_recording, itr);
- 	struct perf_pmu *cs_etm_pmu = ptr->cs_etm_pmu;
-@@ -695,36 +678,30 @@ static void cs_etm_save_ete_header(__u64 data[], struct auxtrace_record *itr, in
- 	/* Get trace configuration register */
- 	data[CS_ETE_TRCCONFIGR] = cs_etmv4_get_config(itr);
- 	/* traceID set to legacy version, in case new perf running on older system */
--	data[CS_ETE_TRCTRACEIDR] =
--		CORESIGHT_LEGACY_CPU_TRACE_ID(cpu) | CORESIGHT_TRACE_ID_UNUSED_FLAG;
-+	data[CS_ETE_TRCTRACEIDR] = cs_etm_get_legacy_trace_id(cpu) | CORESIGHT_TRACE_ID_UNUSED_FLAG;
- 
- 	/* Get read-only information from sysFS */
--	data[CS_ETE_TRCIDR0] = cs_etm_get_ro(cs_etm_pmu, cpu,
--					     metadata_ete_ro[CS_ETE_TRCIDR0]);
--	data[CS_ETE_TRCIDR1] = cs_etm_get_ro(cs_etm_pmu, cpu,
--					     metadata_ete_ro[CS_ETE_TRCIDR1]);
--	data[CS_ETE_TRCIDR2] = cs_etm_get_ro(cs_etm_pmu, cpu,
--					     metadata_ete_ro[CS_ETE_TRCIDR2]);
--	data[CS_ETE_TRCIDR8] = cs_etm_get_ro(cs_etm_pmu, cpu,
--					     metadata_ete_ro[CS_ETE_TRCIDR8]);
--	data[CS_ETE_TRCAUTHSTATUS] = cs_etm_get_ro(cs_etm_pmu, cpu,
--						   metadata_ete_ro[CS_ETE_TRCAUTHSTATUS]);
-+	cs_etm_get_ro(cs_etm_pmu, cpu, metadata_ete_ro[CS_ETE_TRCIDR0], &data[CS_ETE_TRCIDR0]);
-+	cs_etm_get_ro(cs_etm_pmu, cpu, metadata_ete_ro[CS_ETE_TRCIDR1], &data[CS_ETE_TRCIDR1]);
-+	cs_etm_get_ro(cs_etm_pmu, cpu, metadata_ete_ro[CS_ETE_TRCIDR2], &data[CS_ETE_TRCIDR2]);
-+	cs_etm_get_ro(cs_etm_pmu, cpu, metadata_ete_ro[CS_ETE_TRCIDR8], &data[CS_ETE_TRCIDR8]);
-+	cs_etm_get_ro(cs_etm_pmu, cpu, metadata_ete_ro[CS_ETE_TRCAUTHSTATUS],
-+		      &data[CS_ETE_TRCAUTHSTATUS]);
- 	/* ETE uses the same registers as ETMv4 plus TRCDEVARCH */
--	data[CS_ETE_TRCDEVARCH] = cs_etm_get_ro(cs_etm_pmu, cpu,
--						metadata_ete_ro[CS_ETE_TRCDEVARCH]);
-+	cs_etm_get_ro(cs_etm_pmu, cpu, metadata_ete_ro[CS_ETE_TRCDEVARCH],
-+		      &data[CS_ETE_TRCDEVARCH]);
- 
- 	/* Kernels older than 5.19 may not expose ts_source */
--	if (cs_etm_pmu_path_exists(cs_etm_pmu, cpu, metadata_ete_ro[CS_ETE_TS_SOURCE]))
--		data[CS_ETE_TS_SOURCE] = (__u64) cs_etm_get_ro_signed(cs_etm_pmu, cpu,
--				metadata_ete_ro[CS_ETE_TS_SOURCE]);
--	else {
-+	if (!cs_etm_pmu_path_exists(cs_etm_pmu, cpu, metadata_ete_ro[CS_ETE_TS_SOURCE]) ||
-+	    cs_etm_get_ro_signed(cs_etm_pmu, cpu, metadata_ete_ro[CS_ETE_TS_SOURCE],
-+				 &data[CS_ETE_TS_SOURCE])) {
- 		pr_debug3("[%03d] pmu file 'ts_source' not found. Fallback to safe value (-1)\n",
--			  cpu);
-+			  cpu.cpu);
- 		data[CS_ETE_TS_SOURCE] = (__u64) -1;
- 	}
- }
- 
--static void cs_etm_get_metadata(int cpu, u32 *offset,
-+static void cs_etm_get_metadata(struct perf_cpu cpu, u32 *offset,
- 				struct auxtrace_record *itr,
- 				struct perf_record_auxtrace_info *info)
- {
-@@ -754,15 +731,13 @@ static void cs_etm_get_metadata(int cpu, u32 *offset,
- 		/* Get configuration register */
- 		info->priv[*offset + CS_ETM_ETMCR] = cs_etm_get_config(itr);
- 		/* traceID set to legacy value in case new perf running on old system */
--		info->priv[*offset + CS_ETM_ETMTRACEIDR] =
--			CORESIGHT_LEGACY_CPU_TRACE_ID(cpu) | CORESIGHT_TRACE_ID_UNUSED_FLAG;
-+		info->priv[*offset + CS_ETM_ETMTRACEIDR] = cs_etm_get_legacy_trace_id(cpu) |
-+							   CORESIGHT_TRACE_ID_UNUSED_FLAG;
- 		/* Get read-only information from sysFS */
--		info->priv[*offset + CS_ETM_ETMCCER] =
--			cs_etm_get_ro(cs_etm_pmu, cpu,
--				      metadata_etmv3_ro[CS_ETM_ETMCCER]);
--		info->priv[*offset + CS_ETM_ETMIDR] =
--			cs_etm_get_ro(cs_etm_pmu, cpu,
--				      metadata_etmv3_ro[CS_ETM_ETMIDR]);
-+		cs_etm_get_ro(cs_etm_pmu, cpu, metadata_etmv3_ro[CS_ETM_ETMCCER],
-+			      &info->priv[*offset + CS_ETM_ETMCCER]);
-+		cs_etm_get_ro(cs_etm_pmu, cpu, metadata_etmv3_ro[CS_ETM_ETMIDR],
-+			      &info->priv[*offset + CS_ETM_ETMIDR]);
+ 	/* first see what kind of tracer this cpu is affined to */
+-	if (cs_etm_is_ete(itr, cpu)) {
++	if (cs_etm_is_ete(cs_etm_pmu, cpu)) {
+ 		magic = __perf_cs_ete_magic;
+ 		cs_etm_save_ete_header(&info->priv[*offset], itr, cpu);
  
  		/* How much space was used */
- 		increment = CS_ETM_PRIV_MAX;
-@@ -771,7 +746,7 @@ static void cs_etm_get_metadata(int cpu, u32 *offset,
+ 		increment = CS_ETE_PRIV_MAX;
+ 		nr_trc_params = CS_ETE_PRIV_MAX - CS_ETM_COMMON_BLK_MAX_V1;
+-	} else if (cs_etm_is_etmv4(itr, cpu)) {
++	} else if (cs_etm_is_etmv4(cs_etm_pmu, cpu)) {
+ 		magic = __perf_cs_etmv4_magic;
+ 		cs_etm_save_etmv4_header(&info->priv[*offset], itr, cpu);
  
- 	/* Build generic header portion */
- 	info->priv[*offset + CS_ETM_MAGIC] = magic;
--	info->priv[*offset + CS_ETM_CPU] = cpu;
-+	info->priv[*offset + CS_ETM_CPU] = cpu.cpu;
- 	info->priv[*offset + CS_ETM_NR_TRC_PARAMS] = nr_trc_params;
- 	/* Where the next CPU entry should start from */
- 	*offset += increment;
-@@ -791,6 +766,7 @@ static int cs_etm_info_fill(struct auxtrace_record *itr,
- 	struct cs_etm_recording *ptr =
- 			container_of(itr, struct cs_etm_recording, itr);
- 	struct perf_pmu *cs_etm_pmu = ptr->cs_etm_pmu;
-+	struct perf_cpu cpu;
- 
- 	if (priv_size != cs_etm_info_priv_size(itr, session->evlist))
- 		return -EINVAL;
-@@ -803,8 +779,6 @@ static int cs_etm_info_fill(struct auxtrace_record *itr,
- 		cpu_map = online_cpus;
- 	} else {
- 		/* Make sure all specified CPUs are online */
--		struct perf_cpu cpu;
--
- 		perf_cpu_map__for_each_cpu(cpu, i, event_cpus) {
- 			if (!perf_cpu_map__has(online_cpus, cpu))
- 				return -EINVAL;
-@@ -826,11 +800,9 @@ static int cs_etm_info_fill(struct auxtrace_record *itr,
- 
- 	offset = CS_ETM_SNAPSHOT + 1;
- 
--	for (i = 0; i < cpu__max_cpu().cpu && offset < priv_size; i++) {
--		struct perf_cpu cpu = { .cpu = i, };
--
--		if (perf_cpu_map__has(cpu_map, cpu))
--			cs_etm_get_metadata(i, &offset, itr, info);
-+	perf_cpu_map__for_each_cpu(cpu, i, cpu_map) {
-+		assert(offset < priv_size);
-+		cs_etm_get_metadata(cpu, &offset, itr, info);
- 	}
- 
- 	perf_cpu_map__put(online_cpus);
 -- 
 2.34.1
 
