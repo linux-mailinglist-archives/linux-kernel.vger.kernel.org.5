@@ -1,233 +1,154 @@
-Return-Path: <linux-kernel+bounces-165349-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-165345-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2B74B8B8B96
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 16:00:24 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 734218B8B91
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 15:59:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 411EE1C22612
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 14:00:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2FEC42836C1
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 13:59:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2F3212F373;
-	Wed,  1 May 2024 13:59:32 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5802B12FB28;
-	Wed,  1 May 2024 13:59:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BDABA12F37B;
+	Wed,  1 May 2024 13:59:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sCbrUaES"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC09212C490;
+	Wed,  1 May 2024 13:59:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714571972; cv=none; b=ftVXtyuWzMrq8CqZDBdIO8FDBT/+QOslC6mCzUMdfPsZrK89owk27WnErQGfot8J2OCwE7OxzAfWtA3J1NXNrAJ/DzJoPmgwE2IOXbeJa3rElRqX6enyQhh2e5NZkQnnbR1XLfPTbRcDvo/KjajwHLYOrA6bvpn7K0SNZKXrlVs=
+	t=1714571957; cv=none; b=J3nv4JNhCH3zr/s7JdeCsI2Z5LuWf1arbxDg7Qyw7WRs8NW/s+Ms+ZHv1rgylDWWOPIEg7X1kQ0Ich2HQzQ+nboY35WZXfcQc7sKgsxTfa8x/5sXx2f+pVpQnKr9XRTaacybTZNig9nm+QFiRTEg5LGAeJjQFINFafgtD1bON2E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714571972; c=relaxed/simple;
-	bh=MrpCWDSQ20D9MblFT3Nd0Ml40zCW3TmmxyMQ5O0ywDU=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=uLTmNLr83QOD3q0MFyNCHwkAO/NT654W7z6MlXqti+2q2PSvGb5VEjRiWp8ptK8cfYOXfmp0OJGhwBPKLqzObAQkBRqS4v46ODFI9QXIXOaHaUhq6aYT2NsPqp2RERy6JZP1L8B3OcoRA2JSD3f2h/EPX15r1n9h9ke/wQXOQ+c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 796441042;
-	Wed,  1 May 2024 06:59:55 -0700 (PDT)
-Received: from e127643.broadband (usa-sjc-mx-foss1.foss.arm.com [172.31.20.19])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id BDDFD3F71E;
-	Wed,  1 May 2024 06:59:26 -0700 (PDT)
-From: James Clark <james.clark@arm.com>
-To: linux-perf-users@vger.kernel.org,
-	coresight@lists.linaro.org,
-	leo.yan@linux.dev,
-	irogers@google.com
-Cc: James Clark <james.clark@arm.com>,
-	Suzuki K Poulose <suzuki.poulose@arm.com>,
-	Mike Leach <mike.leach@linaro.org>,
-	John Garry <john.g.garry@oracle.com>,
-	Will Deacon <will@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Ingo Molnar <mingo@redhat.com>,
-	Arnaldo Carvalho de Melo <acme@kernel.org>,
-	Namhyung Kim <namhyung@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	"Liang, Kan" <kan.liang@linux.intel.com>,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v2 3/3] perf cs-etm: Improve version detection and error reporting
-Date: Wed,  1 May 2024 14:57:53 +0100
-Message-Id: <20240501135753.508022-4-james.clark@arm.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240501135753.508022-1-james.clark@arm.com>
-References: <20240501135753.508022-1-james.clark@arm.com>
+	s=arc-20240116; t=1714571957; c=relaxed/simple;
+	bh=Fi4PvMRZrF9DXNpSOwwia/BblzTiRO6iyf1z/eVq1XU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=NbchjvG3iRoD7tZsVbSHBC2VDA1pFY2cj3SWAp5gw7+QlIJJAkkhCxOyXperwsUU5+WmLLsJDxONdC8ykFbY6y9qB9qCS+FG6ugqs8QH6pC8ieafJ/cFNzvbEp2j2Hhzi3kO26lzjrgh3dVTN/naxrWwGNw4DCa+GCEq30m/AXM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sCbrUaES; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5B3C7C072AA;
+	Wed,  1 May 2024 13:59:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714571956;
+	bh=Fi4PvMRZrF9DXNpSOwwia/BblzTiRO6iyf1z/eVq1XU=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=sCbrUaESax+zNwmTNdY7otL0UFOQLPT1tCLvxhS1E2UCWFKHW4CFOG8eHXGAPEzYV
+	 K59HSeGnESqWuVyypeDsfjxCGIwlrkTiIB8RtlSIeODJISpG+bjrjqgUZTNnVYoXFo
+	 0nAjOD3kay/wsGxmwOPaAc5VD0eUhuiBlauj3Z2WQisvO7reiDxOn7qiXguQyswbXz
+	 eGzZQLUgdh76hRrtTEFJVQdEHnMA2UjgtwHVl2z9L4Tsb3ZTSE/wBE57PdTiTs8Ocp
+	 FhNUI+PSuIOyAwwjpVUsbAi1uNR+QWMI+7HqtFjSwPStPFYwbkZKYGKHcbZk0YZOQW
+	 CZlqUKG4oenXA==
+Message-ID: <779b9542-4170-483a-af54-ca0dd471f774@kernel.org>
+Date: Wed, 1 May 2024 15:58:59 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH net-next v8 07/14] page_pool: devmem support
+To: Jens Axboe <axboe@kernel.dk>, Mina Almasry <almasrymina@google.com>
+Cc: David Wei <dw@davidwei.uk>, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+ linux-alpha@vger.kernel.org, linux-mips@vger.kernel.org,
+ linux-parisc@vger.kernel.org, sparclinux@vger.kernel.org,
+ linux-trace-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+ bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
+ linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+ Jonathan Corbet <corbet@lwn.net>,
+ Richard Henderson <richard.henderson@linaro.org>,
+ Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner
+ <mattst88@gmail.com>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+ "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+ Helge Deller <deller@gmx.de>, Andreas Larsson <andreas@gaisler.com>,
+ Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+ Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu
+ <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+ Arnd Bergmann <arnd@arndb.de>, Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
+ Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman
+ <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+ Yonghong Song <yonghong.song@linux.dev>,
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, Steffen Klassert
+ <steffen.klassert@secunet.com>, Herbert Xu <herbert@gondor.apana.org.au>,
+ David Ahern <dsahern@kernel.org>,
+ Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+ Shuah Khan <shuah@kernel.org>, Sumit Semwal <sumit.semwal@linaro.org>,
+ =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+ Amritha Nambiar <amritha.nambiar@intel.com>,
+ Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+ Alexander Mikhalitsyn <alexander@mihalicyn.com>,
+ Kaiyuan Zhang <kaiyuanz@google.com>, Christian Brauner <brauner@kernel.org>,
+ Simon Horman <horms@kernel.org>, David Howells <dhowells@redhat.com>,
+ Florian Westphal <fw@strlen.de>, Yunsheng Lin <linyunsheng@huawei.com>,
+ Kuniyuki Iwashima <kuniyu@amazon.com>,
+ Arseniy Krasnov <avkrasnov@salutedevices.com>,
+ Aleksander Lobakin <aleksander.lobakin@intel.com>,
+ Michael Lass <bevan@bi-co.net>, Jiri Pirko <jiri@resnulli.us>,
+ Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+ Lorenzo Bianconi <lorenzo@kernel.org>,
+ Richard Gobert <richardbgobert@gmail.com>,
+ Sridhar Samudrala <sridhar.samudrala@intel.com>,
+ Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+ Johannes Berg <johannes.berg@intel.com>, Abel Wu <wuyun.abel@bytedance.com>,
+ Breno Leitao <leitao@debian.org>, Pavel Begunkov <asml.silence@gmail.com>,
+ Jason Gunthorpe <jgg@ziepe.ca>, Shailend Chand <shailend@google.com>,
+ Harshitha Ramamurthy <hramamurthy@google.com>,
+ Shakeel Butt <shakeel.butt@linux.dev>, Jeroen de Borst
+ <jeroendb@google.com>, Praveen Kaligineedi <pkaligineedi@google.com>,
+ linux-mm@kvack.org, Matthew Wilcox <willy@infradead.org>
+References: <20240403002053.2376017-1-almasrymina@google.com>
+ <20240403002053.2376017-8-almasrymina@google.com>
+ <8357256a-f0e9-4640-8fec-23341fc607db@davidwei.uk>
+ <CAHS8izPeYryoLdCAQdGQU-wn7YVdtuofVKNvRFjFjhqTDsT7zA@mail.gmail.com>
+ <aafbbf09-a33d-4e73-99c8-9ddab5910657@kernel.dk>
+ <CAHS8izMKLYATo6g3xkj_thFo3whCfq6LSoex5s0m5XZd-U7SVQ@mail.gmail.com>
+ <11f52113-7b67-4b45-ba1d-29b070050cec@kernel.dk>
+Content-Language: en-US
+From: Jesper Dangaard Brouer <hawk@kernel.org>
+In-Reply-To: <11f52113-7b67-4b45-ba1d-29b070050cec@kernel.dk>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-When the config validation functions are warning about ETMv3, they do it
-based on "not ETMv4". If the drivers aren't all loaded or the hardware
-doesn't support Coresight it will appear as "not ETMv4" and then Perf
-will print the error message "... not supported in ETMv3 ..." which is
-wrong and confusing.
 
-cs_etm_is_etmv4() is also misnamed because it also returns true for
-ETE because ETE has a superset of the ETMv4 metadata files. Although
-this was always done in the correct order so it wasn't a bug.
 
-Improve all this by making a single get version function which also
-handles not present as a separate case. Change the ETMv3 error message
-to only print when ETMv3 is detected, and add a new error message for
-the not present case.
+On 30/04/2024 20.55, Jens Axboe wrote:
+> On 4/30/24 12:29 PM, Mina Almasry wrote:
+>> On Tue, Apr 30, 2024 at 6:46?AM Jens Axboe<axboe@kernel.dk>  wrote:
+[...]
+>>> In general, attempting to hide overhead behind config options is always
+>>> a losing proposition. It merely serves to say "look, if these things
+>>> aren't enabled, the overhead isn't there", while distros blindly enable
+>>> pretty much everything and then you're back where you started.
+>>>
+>> The history there is that this check adds 1 cycle regression to the
+>> page_pool fast path benchmark. The regression last I measured is 8->9
+>> cycles, so in % wise it's a quite significant 12.5% (more details in
+>> the cover letter[1]). I doubt I can do much better than that to be
+>> honest.
+>
+> I'm all for cycle counting, and do it myself too, but is that even
+> measurable in anything that isn't a super targeted microbenchmark? Or
+> even in that?
 
-Reviewed-by: Leo Yan <leo.yan@linux.dev>
-Reviewed-by: Ian Rogers <irogers@google.com>
-Signed-off-by: James Clark <james.clark@arm.com>
----
- tools/perf/arch/arm/util/cs-etm.c | 61 ++++++++++++++++++++++---------
- 1 file changed, 43 insertions(+), 18 deletions(-)
+The reason for page_pool fast path being critical is that it is used for 
+the XDP_DROP use-case.
+E.g on Mellanox mlx5 driver we see 24 Mpps XDP_DROP, which is approx 42 
+nanosec per packet. Adding 9 nanosec will reduce this to 19.6 Mpps.
 
-diff --git a/tools/perf/arch/arm/util/cs-etm.c b/tools/perf/arch/arm/util/cs-etm.c
-index 2fc4b41daea1..da6231367993 100644
---- a/tools/perf/arch/arm/util/cs-etm.c
-+++ b/tools/perf/arch/arm/util/cs-etm.c
-@@ -66,11 +66,25 @@ static const char * const metadata_ete_ro[] = {
- 	[CS_ETE_TS_SOURCE]		= "ts_source",
- };
- 
--static bool cs_etm_is_etmv4(struct perf_pmu *cs_etm_pmu, struct perf_cpu cpu);
-+enum cs_etm_version { CS_NOT_PRESENT, CS_ETMV3, CS_ETMV4, CS_ETE };
-+
- static bool cs_etm_is_ete(struct perf_pmu *cs_etm_pmu, struct perf_cpu cpu);
- static int cs_etm_get_ro(struct perf_pmu *pmu, struct perf_cpu cpu, const char *path, __u64 *val);
- static bool cs_etm_pmu_path_exists(struct perf_pmu *pmu, struct perf_cpu cpu, const char *path);
- 
-+static enum cs_etm_version cs_etm_get_version(struct perf_pmu *cs_etm_pmu,
-+					      struct perf_cpu cpu)
-+{
-+	if (cs_etm_is_ete(cs_etm_pmu, cpu))
-+		return CS_ETE;
-+	else if (cs_etm_pmu_path_exists(cs_etm_pmu, cpu, metadata_etmv4_ro[CS_ETMV4_TRCIDR0]))
-+		return CS_ETMV4;
-+	else if (cs_etm_pmu_path_exists(cs_etm_pmu, cpu, metadata_etmv3_ro[CS_ETM_ETMCCER]))
-+		return CS_ETMV3;
-+
-+	return CS_NOT_PRESENT;
-+}
-+
- static int cs_etm_validate_context_id(struct perf_pmu *cs_etm_pmu, struct evsel *evsel,
- 				      struct perf_cpu cpu)
- {
-@@ -85,7 +99,7 @@ static int cs_etm_validate_context_id(struct perf_pmu *cs_etm_pmu, struct evsel
- 		return 0;
- 
- 	/* Not supported in etmv3 */
--	if (!cs_etm_is_etmv4(cs_etm_pmu, cpu)) {
-+	if (cs_etm_get_version(cs_etm_pmu, cpu) == CS_ETMV3) {
- 		pr_err("%s: contextid not supported in ETMv3, disable with %s/contextid=0/\n",
- 		       CORESIGHT_ETM_PMU_NAME, CORESIGHT_ETM_PMU_NAME);
- 		return -EINVAL;
-@@ -141,7 +155,7 @@ static int cs_etm_validate_timestamp(struct perf_pmu *cs_etm_pmu, struct evsel *
- 	      perf_pmu__format_bits(cs_etm_pmu, "timestamp")))
- 		return 0;
- 
--	if (!cs_etm_is_etmv4(cs_etm_pmu, cpu)) {
-+	if (cs_etm_get_version(cs_etm_pmu, cpu) == CS_ETMV3) {
- 		pr_err("%s: timestamp not supported in ETMv3, disable with %s/timestamp=0/\n",
- 		       CORESIGHT_ETM_PMU_NAME, CORESIGHT_ETM_PMU_NAME);
- 		return -EINVAL;
-@@ -205,6 +219,11 @@ static int cs_etm_validate_config(struct perf_pmu *cs_etm_pmu,
- 	}
- 
- 	perf_cpu_map__for_each_cpu_skip_any(cpu, idx, intersect_cpus) {
-+		if (cs_etm_get_version(cs_etm_pmu, cpu) == CS_NOT_PRESENT) {
-+			pr_err("%s: Not found on CPU %d. Check hardware and firmware support and that all Coresight drivers are loaded\n",
-+			       CORESIGHT_ETM_PMU_NAME, cpu.cpu);
-+			return -EINVAL;
-+		}
- 		err = cs_etm_validate_context_id(cs_etm_pmu, evsel, cpu);
- 		if (err)
- 			break;
-@@ -536,13 +555,13 @@ cs_etm_info_priv_size(struct auxtrace_record *itr,
- 		/* Event can be "any" CPU so count all online CPUs. */
- 		intersect_cpus = perf_cpu_map__new_online_cpus();
- 	}
-+	/* Count number of each type of ETM. Don't count if that CPU has CS_NOT_PRESENT. */
- 	perf_cpu_map__for_each_cpu_skip_any(cpu, idx, intersect_cpus) {
--		if (cs_etm_is_ete(cs_etm_pmu, cpu))
--			ete++;
--		else if (cs_etm_is_etmv4(cs_etm_pmu, cpu))
--			etmv4++;
--		else
--			etmv3++;
-+		enum cs_etm_version v = cs_etm_get_version(cs_etm_pmu, cpu);
-+
-+		ete   += v == CS_ETE;
-+		etmv4 += v == CS_ETMV4;
-+		etmv3 += v == CS_ETMV3;
- 	}
- 	perf_cpu_map__put(intersect_cpus);
- 
-@@ -552,12 +571,6 @@ cs_etm_info_priv_size(struct auxtrace_record *itr,
- 	       (etmv3 * CS_ETMV3_PRIV_SIZE));
- }
- 
--static bool cs_etm_is_etmv4(struct perf_pmu *cs_etm_pmu, struct perf_cpu cpu)
--{
--	/* Take any of the RO files for ETMv4 and see if it present */
--	return cs_etm_pmu_path_exists(cs_etm_pmu, cpu, metadata_etmv4_ro[CS_ETMV4_TRCIDR0]);
--}
--
- static int cs_etm_get_ro(struct perf_pmu *pmu, struct perf_cpu cpu, const char *path, __u64 *val)
- {
- 	char pmu_path[PATH_MAX];
-@@ -706,21 +719,26 @@ static void cs_etm_get_metadata(struct perf_cpu cpu, u32 *offset,
- 	struct perf_pmu *cs_etm_pmu = cs_etm_get_pmu(itr);
- 
- 	/* first see what kind of tracer this cpu is affined to */
--	if (cs_etm_is_ete(cs_etm_pmu, cpu)) {
-+	switch (cs_etm_get_version(cs_etm_pmu, cpu)) {
-+	case CS_ETE:
- 		magic = __perf_cs_ete_magic;
- 		cs_etm_save_ete_header(&info->priv[*offset], itr, cpu);
- 
- 		/* How much space was used */
- 		increment = CS_ETE_PRIV_MAX;
- 		nr_trc_params = CS_ETE_PRIV_MAX - CS_ETM_COMMON_BLK_MAX_V1;
--	} else if (cs_etm_is_etmv4(cs_etm_pmu, cpu)) {
-+		break;
-+
-+	case CS_ETMV4:
- 		magic = __perf_cs_etmv4_magic;
- 		cs_etm_save_etmv4_header(&info->priv[*offset], itr, cpu);
- 
- 		/* How much space was used */
- 		increment = CS_ETMV4_PRIV_MAX;
- 		nr_trc_params = CS_ETMV4_PRIV_MAX - CS_ETMV4_TRCCONFIGR;
--	} else {
-+		break;
-+
-+	case CS_ETMV3:
- 		magic = __perf_cs_etmv3_magic;
- 		/* Get configuration register */
- 		info->priv[*offset + CS_ETM_ETMCR] = cs_etm_get_config(itr);
-@@ -736,6 +754,13 @@ static void cs_etm_get_metadata(struct perf_cpu cpu, u32 *offset,
- 		/* How much space was used */
- 		increment = CS_ETM_PRIV_MAX;
- 		nr_trc_params = CS_ETM_PRIV_MAX - CS_ETM_ETMCR;
-+		break;
-+
-+	default:
-+	case CS_NOT_PRESENT:
-+		/* Unreachable, CPUs already validated in cs_etm_validate_config() */
-+		assert(true);
-+		return;
- 	}
- 
- 	/* Build generic header portion */
--- 
-2.34.1
+   1/(42+9)*10^9 = 19607843
 
+--Jesper
+
+p.s. Upstreaming my PP microbenchmark[1] is still at the bottom of my 
+todo-list.
+  [1] 
+https://github.com/netoptimizer/prototype-kernel/blob/master/kernel/lib/bench_page_pool_simple.c
 
