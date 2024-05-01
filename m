@@ -1,227 +1,178 @@
-Return-Path: <linux-kernel+bounces-165501-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-165502-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B45A08B8D54
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 17:39:56 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id CE18C8B8D56
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 17:43:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2C36E1F211A8
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 15:39:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F08091C20F7B
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 15:43:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D569012FB06;
-	Wed,  1 May 2024 15:39:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A83412FB0B;
+	Wed,  1 May 2024 15:43:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="gwRkcnqz"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="RdClgPHI"
+Received: from mail-pf1-f170.google.com (mail-pf1-f170.google.com [209.85.210.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E71B5024E
-	for <linux-kernel@vger.kernel.org>; Wed,  1 May 2024 15:39:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3256112F5A7
+	for <linux-kernel@vger.kernel.org>; Wed,  1 May 2024 15:43:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714577987; cv=none; b=WLThm7iDo6elifD3ao8yHZrMQtglXR26n0Jyr1fkbvdqOCLsQDL6kjgS8ScN0uDLbb1DIXnw6ZPbNvOdKMeYxqeCSCbFL1WnLPAUdYuhUZRt9SHP2n6r5+dRB1y15JGJ7j/K5a0XMIgMQ5DNGSAnKGees0IXtAHXBJ603RsO2nA=
+	t=1714578200; cv=none; b=HzAMNiUNyBjtRKH7zqayEjsBOwpr5y62hnL75Z3UyFESIXGN6vnPRqZocNGdjS+/V0FBK99tvnS7Khtz6uqcs3p/gdUiNbxsuatJ3Fvxh8kL0eipgWaCidaSMAK8+T3PBBLbS5Ox5xcmEw275lXiWfvYrPGW9veBLT+DXH1bGZo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714577987; c=relaxed/simple;
-	bh=TXnlRUd4wzTg+J3RDLQaov6hXIMql18Rm1XlXmIxRJw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=fxAjQkXedU/5elsRgZyGGuuH7aB5A9xNYDK9yc9DEFOjomiI6+9oGoCmYW873cDXLiWFKgaGA5jPzQpgUDaR0u8KgRtKJMbIgesCOax1izjRb7wDdu6KoM6b83TtN9hSoQY7/iNcdgtSv3C8y1dldBp+6ztjGA1LnG4wnnOHiOU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=gwRkcnqz; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1714577984;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=7HEIRVOOxs9+Z4JyFqDhStdwNE4nDa7vmALaBzUWy5c=;
-	b=gwRkcnqzQNoKA/c/sIYzp3400oK8EH+TUh6785N12gTORtrOE/Ki1lcZmxLS5vy5d2O1ep
-	Dq72c4kPn69HTtIiBmEq8Kcqc0VkkxVEW7w93XSjBsyfpk7cgPzMrDQ+LcbWkY9/EKiin6
-	xbSUaVPLFrXpog1ZKOYQJtSHrEUKCIE=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-533-sC1vH30zMqy-tC0TGZzU7g-1; Wed,
- 01 May 2024 11:39:36 -0400
-X-MC-Unique: sC1vH30zMqy-tC0TGZzU7g-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 839D0385A185;
-	Wed,  1 May 2024 15:39:19 +0000 (UTC)
-Received: from lorien.usersys.redhat.com (unknown [10.39.192.58])
-	by smtp.corp.redhat.com (Postfix) with ESMTPS id 4C8511C0654E;
-	Wed,  1 May 2024 15:39:14 +0000 (UTC)
-Date: Wed, 1 May 2024 11:39:11 -0400
-From: Phil Auld <pauld@redhat.com>
-To: Yury Norov <yury.norov@gmail.com>
-Cc: Ankit Jain <ankit-aj.jain@broadcom.com>, linux@rasmusvillemoes.dk,
-	akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
-	juri.lelli@redhat.com, ajay.kaher@broadcom.com,
-	alexey.makhalov@broadcom.com, vasavi.sirnapalli@broadcom.com,
-	Paul Turner <pjt@google.com>, Ingo Molnar <mingo@redhat.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Vincent Guittot <vincent.guittot@linaro.org>,
-	Dietmar Eggemann <dietmar.eggemann@arm.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-	Daniel Bristot de Oliveira <bristot@redhat.com>,
-	Valentin Schneider <vschneid@redhat.com>
-Subject: Re: [PATCH] lib/cpumask: Boot option to disable tasks distribution
- within cpumask
-Message-ID: <20240501153911.GD39737@lorien.usersys.redhat.com>
-References: <20240430090431.1619622-1-ankit-aj.jain@broadcom.com>
- <ZjE3C9UgeZR02Jyy@yury-ThinkPad>
- <20240501133608.GB39737@lorien.usersys.redhat.com>
- <ZjJfftWMbjT9r8iT@yury-ThinkPad>
+	s=arc-20240116; t=1714578200; c=relaxed/simple;
+	bh=l18OjoF9z9/KJIkQeFHeAoDUNt5M0OaJGhX0AhKmSsM=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=D1E/aFx6PSakvn9lTpwbsrpmsY3ByRexW4LFVNYGzUSb6sK07JadgIw2ZIJpEDk96dRxewR+b2Sxo88YUDRTPkdp8oh5S3Kk9ckDJVMGT3gbIIIglXfNrdvrnYF1+kGsPJh1rfiasfn7i9RLx8rSWniA7nNUUIcyztx6qkkCPcA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=RdClgPHI; arc=none smtp.client-ip=209.85.210.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pf1-f170.google.com with SMTP id d2e1a72fcca58-6eced6fd98aso6145161b3a.0
+        for <linux-kernel@vger.kernel.org>; Wed, 01 May 2024 08:43:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1714578198; x=1715182998; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=FY1JyFaDnQGTqxfQ2HctDPUgwCZwwkdXbXVkbs7t8UM=;
+        b=RdClgPHIUybVdXYZDa00LyPqBFKzbNlZQxe1ubNsNGf6G9+uUIJDQFQbEIRJnrr7ng
+         saJTzz60/yugVTU30ABoh9mJyOVgYXL313YN27Hpm4pjQjrz6Ix6c23qidxajT4JF+N0
+         9eJrAhWbjOgv/HHVeN0NaURGB+/WCwMWfoFyA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714578198; x=1715182998;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=FY1JyFaDnQGTqxfQ2HctDPUgwCZwwkdXbXVkbs7t8UM=;
+        b=rxkB90mL0QPCNmSOtchFiykKlsryauzyFlpyspTYuUydhdR+SgkjTWfpv7oFih2VAT
+         /AN2fl/m4eRxsJNmEl5UTQUPmJEgs42uzRFVYA11g3t01rnEC+O7XiNvpOrhJtePclif
+         I0LBkO1jIZA9k5ferqUlVlR/J8+kFEP6yryVduObZxw1CosGwR6PieoFg3SEWtjxa1kk
+         v6v/6Ft3uZAZNpyJB73DNNXOIgYjd8T8s5o+nRVNqWMO033e8PkwtI1GEhcv9qgcMG9R
+         NfjnOhDykOLcgnoAu/oX1Rs0sB8QAmq89e36yYpMrfWCUNIaZMP4EjBbYDV2qw62OU6s
+         Un0Q==
+X-Forwarded-Encrypted: i=1; AJvYcCUG8IoukaVaDSEUtQ4oyC/o0q4cizz+VnmMRHxsStoJPjIARECUSGJk9PFe1ppz+F+3JoIFJFr9dB4oorAzaTJP5Az2qxbwAbBB3CxG
+X-Gm-Message-State: AOJu0YyeveXpYEQxREy4xfWdVHXLkxGTBBeWoQtVHYBFmtSoifzS7umw
+	WHQ50iCm4tvKF3MvzGmmgl69OTLJRMhs6AIgtZwVqVXFjWnfwAmxRXv9Ebd81A==
+X-Google-Smtp-Source: AGHT+IG5IE9X8NYR+TK2tL4Nw0zNG4DxZx7ua7w9u0B4daBN4S28dT+xY2gFWEmWj9/+wdCLMHCxxA==
+X-Received: by 2002:a05:6a20:3aaf:b0:1ae:3f36:28d3 with SMTP id d47-20020a056a203aaf00b001ae3f3628d3mr3648768pzh.49.1714578198442;
+        Wed, 01 May 2024 08:43:18 -0700 (PDT)
+Received: from dianders.sjc.corp.google.com ([2620:15c:9d:2:e886:8de:19a2:55b0])
+        by smtp.gmail.com with ESMTPSA id fb12-20020a056a002d8c00b006f3ec69bc09sm7717924pfb.75.2024.05.01.08.43.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 01 May 2024 08:43:17 -0700 (PDT)
+From: Douglas Anderson <dianders@chromium.org>
+To: dri-devel@lists.freedesktop.org
+Cc: Linus Walleij <linus.walleij@linaro.org>,
+	Jani Nikula <jani.nikula@linux.intel.com>,
+	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+	Cong Yang <yangcong5@huaqin.corp-partner.google.com>,
+	Hsin-Yi Wang <hsinyi@google.com>,
+	Brian Norris <briannorris@chromium.org>,
+	Sam Ravnborg <sam@ravnborg.org>,
+	Neil Armstrong <neil.armstrong@linaro.org>,
+	Javier Martinez Canillas <javierm@redhat.com>,
+	Joel Selvaraj <jo@jsfamily.in>,
+	lvzhaoxiong@huaqin.corp-partner.google.com,
+	Douglas Anderson <dianders@chromium.org>,
+	Daniel Vetter <daniel@ffwll.ch>,
+	David Airlie <airlied@gmail.com>,
+	Jessica Zhang <quic_jesszhan@quicinc.com>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Maxime Ripard <mripard@kernel.org>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v3 0/9] drm/mipi-dsi: Reduce bloat and add funcs for cleaner init seqs
+Date: Wed,  1 May 2024 08:41:03 -0700
+Message-ID: <20240501154251.3302887-1-dianders@chromium.org>
+X-Mailer: git-send-email 2.45.0.rc0.197.gbae5840b3b-goog
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZjJfftWMbjT9r8iT@yury-ThinkPad>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.7
+Content-Transfer-Encoding: 8bit
 
-On Wed, May 01, 2024 at 08:27:58AM -0700 Yury Norov wrote:
-> On Wed, May 01, 2024 at 09:36:08AM -0400, Phil Auld wrote:
-> > 
-> > Hi Yuri,
-> 
-> [...]
->  
-> > > Not that I'm familiar to your setup, but this sounds like a userspace
-> > > configuration problems. Can you try to move your non-RT tasks into a
-> > > cgroup attached to non-RT CPUs, or something like that? 
-> > >
-> > 
-> > It's not really. In a container environment just logging in to the
-> > container could end up with the exec'd task landing on one of
-> > the polling or latency sensitive cores.
-> > 
-> > In a telco deployment the applications will run containers with
-> > isolated(pinned) cpus with load balacning disabled.  These
-> > containers typically use one of these cpus for its "housekeeping"
-> > with the remainder used for the latency sensitive workloads.
-> > 
-> > Also, this is a change in kernel behavior which is breaking
-> > userspace.
-> 
-> Alright, that's a different story.
->
+The consensus of many DRM folks is that we want to move away from DSI
+drivers defining tables of init commands. Instead, we want to move to
+init functions that can use common DRM functions. The issue thus far
+has been that using the macros mipi_dsi_generic_write_seq() and
+mipi_dsi_dcs_write_seq() bloats the driver using them.
 
-It's a specific edge case. I'd prefer to push for a forward solution
-than revert. 
+While trying to solve bloat, we realized that the majority of the it
+was easy to solve. This series solves the bloat for existing drivers
+by moving the printout outside of the macro.
 
-> > We are also hitting this and are interested in a way to get the
-> > old behavior back for some workloads.
-> > 
-> > > > With the introduction of kernel cmdline param 'sched_pick_firstcpu',
-> > > > there is an option provided for such usecases to disable the distribution
-> > > > of tasks within the cpumask logic and use the previous 'pick first cpu'
-> > > > approach for initial placement of tasks. Because many telco vendors
-> > > > configure the system in such a way that the first cpu within a cpuset
-> > > > of pod doesn't run any SCHED_FIFO or High priority tasks.
-> > > > 
-> > > > Co-developed-by: Alexey Makhalov <alexey.makhalov@broadcom.com>
-> > > > Signed-off-by: Alexey Makhalov <alexey.makhalov@broadcom.com>
-> > > > Signed-off-by: Ankit Jain <ankit-aj.jain@broadcom.com>
-> > > > ---
-> > > >  lib/cpumask.c | 24 ++++++++++++++++++++++++
-> > > >  1 file changed, 24 insertions(+)
-> > > > 
-> > > > diff --git a/lib/cpumask.c b/lib/cpumask.c
-> > > > index e77ee9d46f71..3dea87d5ec1f 100644
-> > > > --- a/lib/cpumask.c
-> > > > +++ b/lib/cpumask.c
-> > > > @@ -154,6 +154,23 @@ unsigned int cpumask_local_spread(unsigned int i, int node)
-> > > >  }
-> > > >  EXPORT_SYMBOL(cpumask_local_spread);
-> > > >  
-> > > > +/*
-> > > > + * Task distribution within the cpumask feature disabled?
-> > > > + */
-> > > > +static bool cpumask_pick_firstcpu __read_mostly;
-> > > > +
-> > > > +/*
-> > > > + * Disable Tasks distribution within the cpumask feature
-> > > > + */
-> > > > +static int __init cpumask_pick_firstcpu_setup(char *str)
-> > > > +{
-> > > > +	cpumask_pick_firstcpu = 1;
-> > > > +	pr_info("cpumask: Tasks distribution within cpumask is disabled.");
-> > > > +	return 1;
-> > > > +}
-> > > > +
-> > > > +__setup("sched_pick_firstcpu", cpumask_pick_firstcpu_setup);
-> > > > +
-> > > >  static DEFINE_PER_CPU(int, distribute_cpu_mask_prev);
-> > > >  
-> > > >  /**
-> > > > @@ -171,6 +188,13 @@ unsigned int cpumask_any_and_distribute(const struct cpumask *src1p,
-> > > >  {
-> > > >  	unsigned int next, prev;
-> > > >  
-> > > > +	/*
-> > > > +	 * Don't distribute, if tasks distribution
-> > > > +	 * within cpumask feature is disabled
-> > > > +	 */
-> > > > +	if (cpumask_pick_firstcpu)
-> > > > +		return cpumask_any_and(src1p, src2p);
-> > > 
-> > > No, this is a wrong way.
-> > > 
-> > > To begin with, this parameter shouldn't control a single random
-> > > function. At least, the other cpumask_*_distribute() should be
-> > > consistent to the policy.
-> > > 
-> > > But in general... I don't think we should do things like that at all.
-> > > Cpumask API is a simple and plain wrapper around bitmaps. If you want
-> > > to modify a behavior of the scheduler, you could do that at scheduler
-> > > level, not in a random helper function.
-> > > 
-> > > Consider 2 cases:
-> > >  - Someone unrelated to scheduler would use the same helper and will
-> > >    be affected by this parameter inadvertently.
-> > >  - Scheduler will switch to using another function to distribute CPUs,
-> > >    and your setups will suddenly get broken again. This time deeply in
-> > >    production.
-> > >
-> > 
-> > Yeah, I think I agree with this part.  At the scheduler level, where this
-> > is called, makes more sense. 
-> > 
-> > Note, this is "deeply in production" now...
-> 
-> So, if we all agree that touching cpumasks is a bad idea, let's drop
-> this patch and try figuring out a better solution.
-> 
-> Now that you're saying the scheduler patches break userspace, I think
-> it would be legitimate to revert them, unless there's a simple fix for
-> that.
+During discussion of my v1 patch to fix the bloat [1], we also decided
+that we really want to change the way that drivers deal with init
+sequences to make it clearer. In addition to being cleaner, a side
+effect of moving drivers to the new style reduces bloat _even more_.
 
-As I said above let's try to go forward if we can. I'd argue that relying
-on the old first cpu selection is not really an API, or documented so I
-don't think a revert is needed.
+This series also contains a few minor fixes / cleanups that I found
+along the way.
 
-I think a static key at the one or two places _distribute() is used
-in the scheduler (and workqueue?) code would have the same effect as
-this and be a better fit. 
+This series converts four drivers over to the new
+mipi_dsi_dcs_write_seq_multi() function. Not all conversions have been
+tested, but hopefully they are straightforward enough. I'd appreciate
+testing.
 
+NOTE: In v3 I tried to incorporate the feedback from v2. I also
+converted the other two panels I could find that used table-based
+initialization.
 
-Cheers,
-Phil
+[1] https://lore.kernel.org/r/20240424172017.1.Id15fae80582bc74a0d4f1338987fa375738f45b9@changeid
 
-> 
-> Let's see what the folks will say. Please keep me in CC.
-> 
-> Thanks,
-> Yury
-> 
+Changes in v3:
+- ("mipi_dsi_*_write functions don't need to ratelimit...") moved earlier.
+- Add a TODO item for cleaning up the deprecated macros/functions.
+- Fix spacing of init function.
+- Inline kerneldoc comments for struct mipi_dsi_multi_context.
+- Rebased upon patch to remove ratelimit of prints.
+- Remove an unneeded error print.
+- Squash boe-tv101wum-nl6 lowercase patch into main patch
+- Use %zd in print instead of casting errors to int.
+- drm/panel: ili9882t: Don't use a table for initting panels
+- drm/panel: innolux-p079zca: Don't use a table for initting panels
+
+Changes in v2:
+- Add some comments to the macros about printing and returning.
+- Change the way err value is handled in prep for next patch.
+- Modify commit message now that this is part of a series.
+- Rebased upon patches to avoid theoretical int overflow.
+- drm/mipi-dsi: Fix theoretical int overflow in mipi_dsi_dcs_write_seq()
+- drm/mipi-dsi: Fix theoretical int overflow in mipi_dsi_generic_write_seq()
+- drm/mipi-dsi: Introduce mipi_dsi_*_write_seq_multi()
+- drm/mipi-dsi: mipi_dsi_*_write functions don't need to ratelimit prints
+- drm/panel: boe-tv101wum-nl6: Convert hex to lowercase
+- drm/panel: boe-tv101wum-nl6: Don't use a table for initting commands
+- drm/panel: novatek-nt36672e: Switch to mipi_dsi_dcs_write_seq_multi()
+
+Douglas Anderson (9):
+  drm/mipi-dsi: Fix theoretical int overflow in mipi_dsi_dcs_write_seq()
+  drm/mipi-dsi: Fix theoretical int overflow in
+    mipi_dsi_generic_write_seq()
+  drm/mipi-dsi: mipi_dsi_*_write functions don't need to ratelimit
+    prints
+  drm/mipi-dsi: Reduce driver bloat of mipi_dsi_*_write_seq()
+  drm/mipi-dsi: Introduce mipi_dsi_*_write_seq_multi()
+  drm/panel: novatek-nt36672e: Switch to mipi_dsi_dcs_write_seq_multi()
+  drm/panel: boe-tv101wum-nl6: Don't use a table for initting panels
+  drm/panel: ili9882t: Don't use a table for initting panels
+  drm/panel: innolux-p079zca: Don't use a table for initting panels
+
+ Documentation/gpu/todo.rst                    |   18 +
+ drivers/gpu/drm/drm_mipi_dsi.c                |  112 +
+ .../gpu/drm/panel/panel-boe-tv101wum-nl6.c    | 2792 +++++++++--------
+ drivers/gpu/drm/panel/panel-ilitek-ili9882t.c |  794 +++--
+ drivers/gpu/drm/panel/panel-innolux-p079zca.c |  284 +-
+ .../gpu/drm/panel/panel-novatek-nt36672e.c    |  576 ++--
+ include/drm/drm_mipi_dsi.h                    |  101 +-
+ 7 files changed, 2451 insertions(+), 2226 deletions(-)
 
 -- 
+2.45.0.rc0.197.gbae5840b3b-goog
 
 
