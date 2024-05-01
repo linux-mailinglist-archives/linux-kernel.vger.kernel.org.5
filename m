@@ -1,209 +1,149 @@
-Return-Path: <linux-kernel+bounces-165784-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-165786-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8D63B8B918B
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 00:07:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7ABBF8B9192
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 00:13:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B01E81C23381
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 22:07:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 82F531C2358E
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 22:13:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB896165FD5;
-	Wed,  1 May 2024 22:07:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E5017165FDF;
+	Wed,  1 May 2024 22:12:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="YP1XcFam"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gCXCc3OC"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 536761649A8;
-	Wed,  1 May 2024 22:07:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C6851C68D;
+	Wed,  1 May 2024 22:12:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714601263; cv=none; b=n3tNIQREqL7+L+ab1moNWvpddBztK6x4eofRP4uJ0qDdWr5A++6hVavptd0ruDiBRCbEFu0GGHpyFL9zyZMKPBNmHp5KBJRK3qrk/3Aho48kHhh9GwhZiv82q9Msm+tfOk1IkN+vt8Wp/imclq9LKXIlQJ3A/gWMh4Ti/tWXdlE=
+	t=1714601573; cv=none; b=SdOfJG0MkdfcU9mdjZr5yQ4djdPneAPSq5NDGcLlze2mM976v+5Xs2rAEh/aVimFSbKVUsdIk8V42NugTD96mhkqW7z2pZmG78XddDQbiNuR4bS8Qs/mdTf+Gs7+mXa0drP9HavvxOBEtKWgfSGmL1+zPRQELcTebSUPXJeLLRs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714601263; c=relaxed/simple;
-	bh=SlBQ+fw5MzFKBS2OWIQSolGLFOpblAAXYbWwBv6gOjA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=WVVEwDzZo4G958FGUqMr/Uw3ei7MQUJaIT3ZiSc3j8f3YXRn0iUeNzIoMfaVVCCnXAxN8QzwMBZGlJC/ly2QINhYdimMJfzNlpwQKe1iqTzEzWDIkKqY3sD9kPiHgFN81CUKde874IIW90xrCe3PEAVkiOD4s5cAM9ykLkmWK10=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=YP1XcFam; arc=none smtp.client-ip=192.198.163.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1714601261; x=1746137261;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=SlBQ+fw5MzFKBS2OWIQSolGLFOpblAAXYbWwBv6gOjA=;
-  b=YP1XcFamnMQRkvrgaAhJSvec6QA52UWqQovH3G7FHDpmF7mgH+UE4bax
-   VJmLN76Cm6pelfcz5jQhAWxm4qsHMOnjblwwatGiJhUP40MMJ2nJ0fWTb
-   /kHGukrdiyLoZNJGXRLcu7Kc7nD9SkbIS+S//E9jSga/vBiKvrmppcvZm
-   8vlkFu1U4tUu+8npDOMCFL2Bf+eFQt6WjyldS/VOB7FNXglQpb0M79N2s
-   RpsS2oYRq6QSqzuuYulDT24f45ydOkydfS9MJFF1Bf3yxD9JxPRYvGPZP
-   BRW9Ku9X+u0nTNblgHDrNcFYeG9VHhn51Vq53KT8RsdbLC9h2Im5spWKM
-   w==;
-X-CSE-ConnectionGUID: d2dm6SERTgqBSEfUjtBShg==
-X-CSE-MsgGUID: r6hsyex0RaOXe7A17CcuXw==
-X-IronPort-AV: E=McAfee;i="6600,9927,11061"; a="14158558"
-X-IronPort-AV: E=Sophos;i="6.07,246,1708416000"; 
-   d="scan'208";a="14158558"
-Received: from fmviesa006.fm.intel.com ([10.60.135.146])
-  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 May 2024 15:07:40 -0700
-X-CSE-ConnectionGUID: COJ9DY6TS5muhgObgsrxPw==
-X-CSE-MsgGUID: WwXc4/QASHCU83SdC7lXrA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,246,1708416000"; 
-   d="scan'208";a="27025929"
-Received: from bjrankin-mobl3.amr.corp.intel.com (HELO [10.124.221.178]) ([10.124.221.178])
-  by fmviesa006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 May 2024 15:07:40 -0700
-Message-ID: <1b54ca20-5dce-4257-bc3f-38e3106b6746@linux.intel.com>
-Date: Wed, 1 May 2024 15:07:39 -0700
+	s=arc-20240116; t=1714601573; c=relaxed/simple;
+	bh=Ug3FQ7I2qR/RHww0ckNHp2CA4CIPVdT90yjcPc5ds/c=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=fnKuljarPxaeFXl3MREWE5BraBP+1XLccCiTFKz5MyjfJrc2hkf/ScRIE85Yle3O6IkzVGYoSWRchAFosdOa2wud4u20CO8OAy87eBBo3NPQNErgP6Hvp46So45BXT43Z2j4xSsJRIISV38YG6SDBmmbfocG226694vdSU9NjJk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gCXCc3OC; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6C65BC072AA;
+	Wed,  1 May 2024 22:12:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714601572;
+	bh=Ug3FQ7I2qR/RHww0ckNHp2CA4CIPVdT90yjcPc5ds/c=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=gCXCc3OCNyr6+i3h4YTHs9KepSLe6n7aIrtfRjc0yAHqvWeildSuL6MWAYA37i3C5
+	 jRrpQ4zd2eq/p/dpUQkoUYs52Cn4Im+Z+AogwoRh5jxXZityH0Y+8q0v8n0q9b7DsY
+	 JwtpslpDaQW0EehLBq5b435NxyKJe9XNoOg0CeAv+a/YK+jgnMNt5+UwLD66pAQsYv
+	 zMguRGrKKHK6EXaZpRSLWSsDhBTpdvXviFQsLg4/kbtTmDW+iUngl31YDx0HIiBfiR
+	 QMCDcKJz3jXFJJPPTw+X30RCnZC95AFPy88KOwNmF9fciBSSTWyTvN7hCtwCslDzqA
+	 QYxNlRWvDDdYg==
+Date: Wed, 1 May 2024 15:12:51 -0700
+From: Jakub Kicinski <kuba@kernel.org>
+To: Praveen Kumar Kannoju <praveen.kannoju@oracle.com>
+Cc: jhs@mojatatu.com, xiyou.wangcong@gmail.com, jiri@resnulli.us,
+ davem@davemloft.net, netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+ rajesh.sivaramasubramaniom@oracle.com, rama.nichanamatlu@oracle.com,
+ manjunath.b.patil@oracle.com
+Subject: Re: [PATCH RFC] net/sched: adjust device watchdog timer to detect
+ stopped queue at right time
+Message-ID: <20240501151251.2eccb4d0@kernel.org>
+In-Reply-To: <20240430140010.5005-1-praveen.kannoju@oracle.com>
+References: <20240430140010.5005-1-praveen.kannoju@oracle.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1] PCI/EDR: Align EDR implementation with PCI firmware
- r3.3 spec
-To: Bjorn Helgaas <helgaas@kernel.org>
-Cc: Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
- linux-kernel@vger.kernel.org,
- Thatchanamurthy Satish <Satish.Thatchanamurt@dell.com>,
- Tushar Dave <tdave@nvidia.com>
-References: <20240501215009.GA1497134@bhelgaas>
-Content-Language: en-US
-From: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
-In-Reply-To: <20240501215009.GA1497134@bhelgaas>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-Hi,
+On Tue, 30 Apr 2024 19:30:10 +0530 Praveen Kumar Kannoju wrote:
+> Applications are sensitive to long network latency, particularly
+> heartbeat monitoring ones. Longer the tx timeout recovery higher the
+> risk with such applications on a production machines. This patch
+> remedies, yet honoring device set tx timeout.
+> 
+> Modify watchdog next timeout to be shorter than the device specified.
+> Compute the next timeout be equal to device watchdog timeout less the
+> how long ago queue stop had been done. At next watchdog timeout tx
+> timeout handler is called into if still in stopped state. Either called
+> or not called, restore the watchdog timeout back to device specified.
 
-On 5/1/24 2:50 PM, Bjorn Helgaas wrote:
-> On Wed, May 01, 2024 at 02:25:43AM +0000, Kuppuswamy Sathyanarayanan wrote:
->> During the Error Disconnect Recover (EDR) spec transition from r3.2 ECN
->> to PCI firmware spec r3.3, improvements were made to definitions of
->> EDR_PORT_DPC_ENABLE_DSM (0x0C) and EDR_PORT_LOCATE_DSM(0x0D) _DSMs.
->>
->> Specifically,
->>
->> * EDR_PORT_DPC_ENABLE_DSM _DSM version changed from 5 to 6, and
->>   arg4 is now a package type instead of an integer in version 5.
->> * EDR_PORT_LOCATE_DSM _DSM uses BIT(31) to return the status of the
->>   operation.
->>
->> Ensure _DSM implementation aligns with PCI firmware r3.3 spec
->> recommendation. More details about the EDR_PORT_DPC_ENABLE_DSM and
->> EDR_PORT_LOCATE_DSM _DSMs can be found in PCI firmware specification,
->> r3.3, sec 4.6.12 and sec 4.6.13.
->>
->> While at it, fix a typo in EDR_PORT_LOCATE_DSM comments.
->>
->> Fixes: ac1c8e35a326 ("PCI/DPC: Add Error Disconnect Recover (EDR) support")
->> Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
->> ---
->>  drivers/pci/pcie/edr.c | 23 +++++++++++++++++------
->>  1 file changed, 17 insertions(+), 6 deletions(-)
->>
->> diff --git a/drivers/pci/pcie/edr.c b/drivers/pci/pcie/edr.c
->> index 5f4914d313a1..fea098e22e3e 100644
->> --- a/drivers/pci/pcie/edr.c
->> +++ b/drivers/pci/pcie/edr.c
->> @@ -35,7 +35,7 @@ static int acpi_enable_dpc(struct pci_dev *pdev)
->>  	 * Behavior when calling unsupported _DSM functions is undefined,
->>  	 * so check whether EDR_PORT_DPC_ENABLE_DSM is supported.
->>  	 */
->> -	if (!acpi_check_dsm(adev->handle, &pci_acpi_dsm_guid, 5,
->> +	if (!acpi_check_dsm(adev->handle, &pci_acpi_dsm_guid, 6,
->>  			    1ULL << EDR_PORT_DPC_ENABLE_DSM))
-> How confident are we that this won't break any existing platforms?
+Idea makes sense, some comments on the code below.
 
-Since we are already using arg4 as package, it wont work with
-platforms that implement version 5.  So I think we won't be
-breaking any existing users of version 5.
+> diff --git a/net/sched/sch_generic.c b/net/sched/sch_generic.c
+> index 4a2c763e2d11..64e31f8b4ac1 100644
+> --- a/net/sched/sch_generic.c
+> +++ b/net/sched/sch_generic.c
+> @@ -506,18 +506,25 @@ static void dev_watchdog(struct timer_list *t)
+>  			unsigned int timedout_ms = 0;
+>  			unsigned int i;
+>  			unsigned long trans_start;
+> +			unsigned long next_check = 0;
+> +			unsigned long current_jiffies;
+>  
+>  			for (i = 0; i < dev->num_tx_queues; i++) {
+>  				struct netdev_queue *txq;
+> +				current_jiffies = jiffies;
 
+Not sure why you save current jiffies.
 
-> Any idea how many platforms implement EDR_PORT_DPC_ENABLE_DSM and what
-> Revision IDs they support?
+>  				txq = netdev_get_tx_queue(dev, i);
+>  				trans_start = READ_ONCE(txq->trans_start);
+> -				if (netif_xmit_stopped(txq) &&
+> -				    time_after(jiffies, (trans_start +
+> -							 dev->watchdog_timeo))) {
+> -					timedout_ms = jiffies_to_msecs(jiffies - trans_start);
+> -					atomic_long_inc(&txq->trans_timeout);
+> -					break;
+> +				if (netif_xmit_stopped(txq)) {
 
-I am not very sure about it. I think it is being used in some Dell
-and Nvidia platforms.
+please use continue instead of adding another indentation level
 
-@Satish from Dell, tested this fix in some Dell server platforms
-that implements this support and found it working.
+> +					if (time_after(current_jiffies, (trans_start +
 
-@Tushar Dave, since you previously submitted some error report
-related to EDR, I assume you have some platforms that uses these
-_DSMs. Can you please take a look at this patch and let us know
-whether it works for you?
+wrap at 80 characters
 
->
->>  		return 0;
->>  
->> @@ -47,11 +47,11 @@ static int acpi_enable_dpc(struct pci_dev *pdev)
->>  	argv4.package.elements = &req;
->>  
->>  	/*
->> -	 * Per Downstream Port Containment Related Enhancements ECN to PCI
->> -	 * Firmware Specification r3.2, sec 4.6.12, EDR_PORT_DPC_ENABLE_DSM is
->> -	 * optional.  Return success if it's not implemented.
->> +	 * Per PCI Firmware Specification r3.3, sec 4.6.12,
->> +	 * EDR_PORT_DPC_ENABLE_DSM is optional. Return success if it's not
->> +	 * implemented.
->>  	 */
->> -	obj = acpi_evaluate_dsm(adev->handle, &pci_acpi_dsm_guid, 5,
->> +	obj = acpi_evaluate_dsm(adev->handle, &pci_acpi_dsm_guid, 6,
->>  				EDR_PORT_DPC_ENABLE_DSM, &argv4);
->>  	if (!obj)
->>  		return 0;
->> @@ -86,7 +86,7 @@ static struct pci_dev *acpi_dpc_port_get(struct pci_dev *pdev)
->>  
->>  	/*
->>  	 * Behavior when calling unsupported _DSM functions is undefined,
->> -	 * so check whether EDR_PORT_DPC_ENABLE_DSM is supported.
->> +	 * so check whether EDR_PORT_LOCATE_DSM is supported.
->>  	 */
->>  	if (!acpi_check_dsm(adev->handle, &pci_acpi_dsm_guid, 5,
->>  			    1ULL << EDR_PORT_LOCATE_DSM))
->> @@ -103,6 +103,17 @@ static struct pci_dev *acpi_dpc_port_get(struct pci_dev *pdev)
->>  		return NULL;
->>  	}
->>  
->> +	/*
->> +	 * Per PCI Firmware Specification r3.3, sec 4.6.13, bit 31 represents
->> +	 * the success/failure of the operation. If bit 31 is set, the operation
->> +	 * is failed.
->> +	 */
->> +	if (obj->integer.value & BIT(31)) {
->> +		ACPI_FREE(obj);
->> +		pci_err(pdev, "Locate Port _DSM failed\n");
->> +		return NULL;
->> +	}
-> This changes two _DSMs, and I think it should be two patches.
+> +								   dev->watchdog_timeo))) {
+> +						timedout_ms = jiffies_to_msecs(current_jiffies -
+> +										trans_start);
+> +						atomic_long_inc(&txq->trans_timeout);
+> +						break;
+> +					}
+> +					next_check = trans_start + dev->watchdog_timeo -
+> +									current_jiffies;
 
-Ok. I can split it into two patches.
+this will give us "next_check" for last queue. Let's instead find the
+oldest trans_start in the loop. Do:
 
-> Same question here: we now depend on functionality we didn't depend on
-> before.  How confident are we in this?
+		unsigned long oldest_start = jiffies;
 
-In some platforms I have tested so far, it seems to work. But I am
-not sure whether there are other platforms that does not implement
-this support.
+then in the loop:
 
-IMO, since this change aligns with the spec, it is best to fix it.
+		oldest_start = min(...)
 
->
->>  	/*
->>  	 * Firmware returns DPC port BDF details in following format:
->>  	 *	15:8 = bus
->> -- 
->> 2.25.1
->>
--- 
-Sathyanarayanan Kuppuswamy
-Linux Kernel Developer
+>  				}
+>  			}
+>  
+> @@ -530,9 +537,11 @@ static void dev_watchdog(struct timer_list *t)
+>  				dev->netdev_ops->ndo_tx_timeout(dev, i);
+>  				netif_unfreeze_queues(dev);
+>  			}
+> +			if (!next_check)
+> +				next_check = dev->watchdog_timeo;
+>  			if (!mod_timer(&dev->watchdog_timer,
+>  				       round_jiffies(jiffies +
+> -						     dev->watchdog_timeo)))
+> +						     next_check)))
+
+then here you just need to swap jiffies for oldest_start
+
+>  				release = false;
+>  		}
+>  	}
 
 
