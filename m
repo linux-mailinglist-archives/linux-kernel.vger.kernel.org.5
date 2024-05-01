@@ -1,151 +1,130 @@
-Return-Path: <linux-kernel+bounces-165415-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-165416-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 440E08B8C70
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 17:06:09 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0057B8B8C74
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 17:08:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 66ABC1C21911
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 15:06:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AA68A1F232A4
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 15:08:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B82C312F580;
-	Wed,  1 May 2024 15:06:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19D0612F584;
+	Wed,  1 May 2024 15:08:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DZrR9QJ7"
-Received: from mail-lj1-f176.google.com (mail-lj1-f176.google.com [209.85.208.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="Ub7vtwJF"
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 806891F176;
-	Wed,  1 May 2024 15:06:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30C8E1527AD;
+	Wed,  1 May 2024 15:08:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714575963; cv=none; b=IdijetVErK/HhUn/EozeBDwPTkpixWnV9QX2Jas8lsfyJjPXCTnhMIAWFhhlaiVaYjFSMMkXZ1BLtLKWwP+1Nw402vQHdN2pYz2afyqVWADurRFWHtz7h+V3xiVoNopH74NQVj73NVCNmTfSeGUv8M3s5VLgk4gPHyEBZcpd0X0=
+	t=1714576085; cv=none; b=KLWa+kWZhjzbBNTxosDV1yeeYTgVQaC5SzHUiPj6Il4jeRYUAvdIpOzpGYdHArooVenZfKuM3Zs9Hvg0Q9dIhjIMrFP1JmdjfZEawhWouA3G+ZRPRlW3Ve2N+shEU8RcB4dWqcwUA7NR4RW4oQ4Oy+qQbtAE1VKrRcpJD8eBDP8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714575963; c=relaxed/simple;
-	bh=ZwcoVXh6+PU1Qu8+uoknJ6rPtJiNfbVuHlJ8BsHXYqA=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=tz6UJZP0YrnH5RIKI8OZsxIX3HuVNwK9s99S/NGKIeK+9T2l1eYsmfNUnKsV+Zd4ZGykTMC7KS1Ot65TGR00PS//xfzQUeGSM/sCf1PS/a9TQBdvH7lk8ndI2hVPatmSAeV+wuojM8JdArQoVTXRYEYkR10SCKgQxrKCUd7MzGY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DZrR9QJ7; arc=none smtp.client-ip=209.85.208.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f176.google.com with SMTP id 38308e7fff4ca-2df83058d48so57894911fa.1;
-        Wed, 01 May 2024 08:06:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714575960; x=1715180760; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=Fb5C+Oc43A6y8Mz0LyTdT4dWeHAlemsr8HHVEt5MmiU=;
-        b=DZrR9QJ7kn13Z+/kt5/Hny+CgW8udKSowgsKkI8vnlnFjWMtgoWCscLsMwQ20vJSz3
-         dTEXbHp/t9qmG29Vt5krBKlu7QCFHvZesdhGEL/KQfQtZhmWjxWsl/4Y+IIau1FWBXVv
-         CTyH3P4a4AN90gXUkncA1ruajt5leGLVxPH6ndNk/fW7P6OGi0FtIhwJYrgBZydi2Pvp
-         rE4+pJbKqeYogq59hp+i3mJZgwdXo9sgUepQHsWklCN8fgW8oA7oXqA4rSsDslImzy/4
-         ZhXlUCJWBU9QUJxYN+0N9/sIHnyyHqhnBa//YfES+eqneSE5UAp8NBPzs+gpALxtJufk
-         1pQg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714575960; x=1715180760;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Fb5C+Oc43A6y8Mz0LyTdT4dWeHAlemsr8HHVEt5MmiU=;
-        b=ugYeE+x2viOkjJI0f7ZkG2e2DiwbI3AYzbMgZGeWvX2rU5sE2OVoiSY3GsRi5CVEMX
-         EMxxZmH9lbqhwepkmLAXe+wRIKF7TzkYVtwIJ0woskLOQwjTs2TmXZSOSuQhGlfk50jz
-         kPDbfRLJ0E/JZFC7EqFIAKqbloIF+H5/fubCjyLFPDNttVGiQuPwYBtftX4TVKMGyYTG
-         h3K3Hl6zSCD3+0sR8dgy/y3PQAOdHfcrHdWzuFkTCt9Vc2Tdj69gGqk6xm8cqQYP51a2
-         67+fY1BqWYh1DhsN7Qx/LrYG37cE0P1pXc6JV4QxR1mapaNwB2wFOL1CpPPIocH2Qe4R
-         7D/w==
-X-Forwarded-Encrypted: i=1; AJvYcCXgrO1dGT09a9dE780OPk+vxubmty1ACJPO3Q3neF4sSxlFYkERsoMTerl0sjV2ZVNTRowcFFrcaFbJx8j4Xg7Wq0dyOH2S066I7Uta3nZOmYOTVHqngughxqoU1jO1BHsJ9aNBRGHn
-X-Gm-Message-State: AOJu0Ywk45MnKDNhrVxz/3qcNOy6JdNg4oG5MC6/KNHxYPdpArZtr3j3
-	BjjIhBqSslDl4ljrHgtr0BK6etRhI0h/3iv5zGiTP6Xn60uAydE4
-X-Google-Smtp-Source: AGHT+IEvmLsjyKIR3eHEAoH52jjjYcX0cNpyCFmb2VP3y0BOTdMQXrtbKIx9KoVxZ7ALexiwSMj5UA==
-X-Received: by 2002:a05:651c:1a07:b0:2df:6524:581a with SMTP id by7-20020a05651c1a0700b002df6524581amr2084004ljb.30.1714575959435;
-        Wed, 01 May 2024 08:05:59 -0700 (PDT)
-Received: from mfe-desktop.Sonatest.net (ipagstaticip-d73c7528-4de5-0861-800b-03d8b15e3869.sdsl.bell.ca. [174.94.156.236])
-        by smtp.googlemail.com with ESMTPSA id m17-20020a05600c3b1100b0041b4c293f75sm2493160wms.13.2024.05.01.08.05.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 01 May 2024 08:05:59 -0700 (PDT)
-From: marc.ferland@gmail.com
-X-Google-Original-From: marc.ferland@sonatest.com
-To: lars@metafoo.de
-Cc: Michael.Hennerich@analog.com,
-	jic23@kernel.org,
-	linux-iio@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Marc Ferland <marc.ferland@sonatest.com>
-Subject: [PATCH v2] iio: dac: ad5592r: fix temperature channel scaling value
-Date: Wed,  1 May 2024 11:05:54 -0400
-Message-Id: <20240501150554.1871390-1-marc.ferland@sonatest.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1714576085; c=relaxed/simple;
+	bh=WkNpj7MrWb1DUuLQkCSwYjQqW4spsuCzL5df6e8cjYY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=NQsUTn2Dyupc7ScBqaIpadE1rPVlRdNB++EmexKQ+7+n4gCetnoP/Fgf6IjHMBnSWr767GhlV9ogLGxpuQyUBzaE6m0VkuXmUd9h+Agerhsn/PJzhLXvdvsXNEeRlKtRj8/h0rvmoGdPcDZn+siji8dd9lNCyGeUn1BxMn7bQno=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=Ub7vtwJF; arc=none smtp.client-ip=156.67.10.101
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+	bh=r7gAXy+cNEHO7G6rohfcs/xnGaGYf4/LzouNOqGTrog=; b=Ub7vtwJFu31k+jCSuleQcGO1Qb
+	sfN8ktFXayykcXReCJZQowkbnYKx3TSDpjEm1o8mt0XUt0DXYlyqZiU7v9r7rVUKusSvnVZ5sM22d
+	5h/kFCCevEEeyuUEiAtX7MZgTd3RdYRuzF+zrYLm7hFVDfTbPQ0T6hRRl4JBw0/yZRxw=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+	(envelope-from <andrew@lunn.ch>)
+	id 1s2BYe-00EQuu-Kp; Wed, 01 May 2024 17:07:44 +0200
+Date: Wed, 1 May 2024 17:07:44 +0200
+From: Andrew Lunn <andrew@lunn.ch>
+To: Andrew Halaney <ahalaney@redhat.com>
+Cc: linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-stm32@st-md-mailman.stormreply.com, netdev@vger.kernel.org,
+	alexandre.torgue@foss.st.com, joabreu@synopsys.com,
+	davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+	pabeni@redhat.com, mcoquelin.stm32@gmail.com, hkallweit1@gmail.com,
+	linux@armlinux.org.uk
+Subject: Re: racing ndo_open()/phylink*connect() with phy_probe()
+Message-ID: <229b5a82-1086-40be-8ee5-16b7f3a03b30@lunn.ch>
+References: <uz66kbjbxieof6vkliuwgpzhlrbcmeb2f5aeuourw2vqcoc4hv@2adpvba3zszx>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <uz66kbjbxieof6vkliuwgpzhlrbcmeb2f5aeuourw2vqcoc4hv@2adpvba3zszx>
 
-From: Marc Ferland <marc.ferland@sonatest.com>
+On Tue, Apr 30, 2024 at 04:02:19PM -0500, Andrew Halaney wrote:
+> Hi,
+> 
+> I've been taking a look at the following error message:
+> 
+>     qcom-ethqos 23000000.ethernet end1: __stmmac_open: Cannot attach to PHY (error: -19)
+> 
+> end1 is using a phy on the mdio bus of end0, not on its own bus. Something
+> like this devicetree snippet highlights the relationship:
+> 
+>     // end0
+>     &ethernet0 {
+>             phy-mode = "sgmii";
+>             phy-handle = <&sgmii_phy0>;
+> 
+>             mdio {
+>                     compatible = "snps,dwmac-mdio";
+>                     sgmii_phy0: phy@8 {
+>                             compatible = "ethernet-phy-id0141.0dd4";
+>                             reg = <0x8>;
+>                             device_type = "ethernet-phy";
+>                     };
+> 
+>                     sgmii_phy1: phy@a {
+>                             compatible = "ethernet-phy-id0141.0dd4";
+>                             reg = <0xa>;
+>                             device_type = "ethernet-phy";
+>                     };
+>             };
+>     };
+> 
+>     // end1
+>     &ethernet1 {
+>             phy-mode = "sgmii";
+>             phy-handle = <&sgmii_phy1>;
+>     };
 
-The scale value for the temperature channel is (assuming Vref=2.5 and
-the datasheet):
+I agree with Russell here. You need to determine where the ENODEV
+comes from.
 
-    376.7897513
+It seems unlikely, but one possibility is:
 
-When calculating both val and val2 for the temperature scale we
-use (3767897513/25) and multiply it by Vref (here I assume 2500mV) to
-obtain:
+static int stmmac_xgmac2_mdio_read_c22(struct mii_bus *bus, int phyaddr,
+                                       int phyreg)
+{
+        struct net_device *ndev = bus->priv;
+        struct stmmac_priv *priv;
+        u32 addr;
 
-  2500 * (3767897513/25) ==> 376789751300
+        priv = netdev_priv(ndev);
 
-Finally we divide with remainder by 10^9 to get:
+        /* Until ver 2.20 XGMAC does not support C22 addr >= 4 */
+        if (priv->synopsys_id < DWXGMAC_CORE_2_20 &&
+            phyaddr > MII_XGMAC_MAX_C22ADDR)
+                return -ENODEV;
 
-    val = 376
-    val2 = 789751300
+Maybe if the interface is down, priv->synopsys_id has not been set
+yet? Your devices are at address 8 and 10, so if priv->synopsys_id
+where 0, this would give you the ENODEV.
 
-However, we return IIO_VAL_INT_PLUS_MICRO (should have been NANO) as
-the scale type. So when converting the raw temperature value to the
-'processed' temperature value we will get (assuming raw=810,
-offset=-753):
+Once you know the root cause, we might be able to make suggests how to
+fix it.
 
-    processed = (raw + offset) * scale_val
-              = (810 + -753) * 376
-	      = 21432
-
-    processed += div((raw + offset) * scale_val2, 10^6)
-              += div((810 + -753) * 789751300, 10^6)
-	      += 45015
-    ==> 66447
-    ==> 66.4 Celcius
-
-instead of the expected 21.5 Celsius.
-
-Fix this issue by changing IIO_VAL_INT_PLUS_MICRO to
-IIO_VAL_INT_PLUS_NANO.
-
-Signed-off-by: Marc Ferland <marc.ferland@sonatest.com>
----
-Change in v2:
- - Improve commit message as suggested by Jonathan.
-
- drivers/iio/dac/ad5592r-base.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/iio/dac/ad5592r-base.c b/drivers/iio/dac/ad5592r-base.c
-index 076bc9ecfb49..4763402dbcd6 100644
---- a/drivers/iio/dac/ad5592r-base.c
-+++ b/drivers/iio/dac/ad5592r-base.c
-@@ -415,7 +415,7 @@ static int ad5592r_read_raw(struct iio_dev *iio_dev,
- 			s64 tmp = *val * (3767897513LL / 25LL);
- 			*val = div_s64_rem(tmp, 1000000000LL, val2);
- 
--			return IIO_VAL_INT_PLUS_MICRO;
-+			return IIO_VAL_INT_PLUS_NANO;
- 		}
- 
- 		mutex_lock(&st->lock);
-
-base-commit: 98369dccd2f8e16bf4c6621053af7aa4821dcf8e
--- 
-2.34.1
-
+      Andrew
 
