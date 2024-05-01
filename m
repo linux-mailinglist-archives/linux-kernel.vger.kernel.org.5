@@ -1,423 +1,318 @@
-Return-Path: <linux-kernel+bounces-165580-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-165579-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EE04E8B8E33
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 18:31:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 386258B8E30
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 18:31:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 159F11C22A06
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 16:31:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5B1EF1C213D6
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 16:31:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16E3FCA40;
-	Wed,  1 May 2024 16:31:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D7735BE71;
+	Wed,  1 May 2024 16:31:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="GznjsAFR";
-	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="Xuf/hNig"
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=ffwll.ch header.i=@ffwll.ch header.b="WPtYmdAt"
+Received: from mail-lj1-f179.google.com (mail-lj1-f179.google.com [209.85.208.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB768748D;
-	Wed,  1 May 2024 16:31:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.177.32
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714581069; cv=fail; b=gOp8sa/273UJlhVYSeYnLrGjTr3KLN4kvWRiqE6lrGOTECbipf68avBya1HIeWz2KWce7G1764L+jXTfBfGat/buM0+PHWwpFx6wgUaGjn4IkAi/CuRn1jwYFcY7+j2mCKFlCK6KzBtr+aGie1KXOYB/btgBerV5LxApSlpZ2JU=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714581069; c=relaxed/simple;
-	bh=sAF9EXAAVJMGY6lj49sFM2NAgocSL0S4NLDIZonhzys=;
-	h=From:To:Cc:Subject:Date:Message-Id:Content-Type:MIME-Version; b=oTpDSf53OF8Jl1uWagw5WD2UM9By3pQJreoaevqkkOPI76wGfG3YXSloOIO3v73/4F7QbkvyI+fO5KA3EZtKrf9SXUHppZ047UrGDU/ufdcNQvcT/l9qqyUGJ+uwDo2T2ERzc3E5QyQEfbdUVDqmTgEQHYkXGlxonEZuWSxcebs=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=GznjsAFR; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=Xuf/hNig; arc=fail smtp.client-ip=205.220.177.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 441ASQCh000841;
-	Wed, 1 May 2024 16:30:03 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : content-transfer-encoding : content-type :
- mime-version; s=corp-2023-11-20;
- bh=D6Q0HjUFQndlmfDDOu29602YdmMwTwaW0ee4gdbrLvE=;
- b=GznjsAFRA9efiy0DMDjtuml6b17+xU/gR3/X0ZIHEBJ0AmgKlYFaVLQ8EVxq+oKIitfK
- 6goQt3MxkKGZ4Jmp7AxBm5xlWUAeqbpk20nKrS11heVlmr3wkro+PdlEgPTur3qxRiyn
- gRynODercvq8Bf0gmiKfRccGpmqn56iVxPlnCo22rFN17OS0s7BnCKhWmhz9WPuAudEc
- OUJLoPRa3TcPmVV3kYzNHB60JfLf/4TFC0jjUaTJlwK4DOcNbuUJ4z6FUN5zVeH9JTO5
- CpPn3GMI5eY9x6fke4QfY0vitYJtRQLA1v1t8wKoh2rsnyfahPtXdCql+3/80ZKshIQG lA== 
-Received: from iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta03.appoci.oracle.com [130.35.103.27])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3xrqseyftt-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 01 May 2024 16:30:03 +0000
-Received: from pps.filterd (iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-	by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 441G4BBP016672;
-	Wed, 1 May 2024 16:30:02 GMT
-Received: from nam02-dm3-obe.outbound.protection.outlook.com (mail-dm3nam02lp2040.outbound.protection.outlook.com [104.47.56.40])
-	by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3xrqtfgxcy-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 01 May 2024 16:30:02 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=XB6g7+2uwwDgcRTdu4+fb/7XpTAfFLSFSaOZFaeBEHF059d3VcSip1yhSIEF/oYheVGdGmX03HYsCJJwwIE1U2R1njFNffFlKx4N1is5+qs6+lIoSgMrbth5eoVccMLBQI5NN2jUb0Mu3YAAJ+Q/Zb+bmcqtmCDwtVuuC6iBTQWQ8MgXoPshsrzByP6yUhAEMRcUnmne6yWZFUKcGGMX+L8ynY/lyDSFQkhrXUf9vlynBf/Irm3pR2urr8Kbg9Dt4ctLCPnqs6tIqAHMDQ8UgyhROmvmb3AOiRruK2DpaEDpIxsQLUltSU2pAvbN9m1DcGLwJLQ0Mk82l4qAUHbQgg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=D6Q0HjUFQndlmfDDOu29602YdmMwTwaW0ee4gdbrLvE=;
- b=FyrngWj4mMJpuJRH2g7fJY5Of+EXEUYR5yKQRNZCU7nGvTq/7yZDYCnOX9ep0FMMAozUMaXx1wk06ChS0C/mKxROiyOAL61zSD3jhGa4D0kue50hjv5C7sjUYsyKm9c59kyQHv3TQQKL5kHvkwtRdFaTN+RYnc+nEM4OuQuhloh+84t9B/jJxpGvGyq5Ur/jXMG7J+a/e6Z5mp89gxwFBekbf8wa5qIKWpf9/WXw0/JShBqY9YxvSr34Oi9kiiSzTfXd7sUPC7wqhB73YEpvrWcgxG8MDhN0zbvxmmLCb0v8g1MmeWSdb788Wzmu3prpoR+QQll4vr1DFhOypm7WVg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 72EF58BE5
+	for <linux-kernel@vger.kernel.org>; Wed,  1 May 2024 16:30:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.179
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1714581060; cv=none; b=VddWa6nomd7hZBoIZ52smSdI2DaJgt6TXcF6k7EV4Dmlt+ifC1i1BFLNZfX0ebjGcsbD/k5eFxabfhtHQBMXs+66dB1HwKMxRKl/0sV+yxjq/U/YWlMwQP3Guymx8ppmNK4VXazO3r2XMy0dazkzzhKL71LMBUNLa3rCqvVOPck=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1714581060; c=relaxed/simple;
+	bh=wI0d5uI2O5mnddc0qH/JEJEhRyya2bF6GgWgGHIwi+A=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=o78Rs88MKZZu7/QOHZsdek9717NPh7jKDLfEtwVcISehPDGRf+XyfCWzX7Cjmf/dzVX1Ce9A0qwoA3U/7MrfBPdWrOy+3V3FDQFftoDDvxyTSU/+mlaJZv7oQcIvkIApm4ABEAHVck7aDq/pf7LbsptAmiMu5lEfw8YdzEulqqk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ffwll.ch; spf=none smtp.mailfrom=ffwll.ch; dkim=pass (1024-bit key) header.d=ffwll.ch header.i=@ffwll.ch header.b=WPtYmdAt; arc=none smtp.client-ip=209.85.208.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ffwll.ch
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ffwll.ch
+Received: by mail-lj1-f179.google.com with SMTP id 38308e7fff4ca-2dffaf0c6afso1344841fa.1
+        for <linux-kernel@vger.kernel.org>; Wed, 01 May 2024 09:30:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=D6Q0HjUFQndlmfDDOu29602YdmMwTwaW0ee4gdbrLvE=;
- b=Xuf/hNigxZ4jndcg6Ra9W6BBmOanMKJLq34Fp7bF11oWEDNwvjfiO/e2CfoZOTemVNQRnf8FbhJAFC4Z+RAEOez7e5GgpDNvt/TNVz2wLxK+b2xwA9YkqTpmEpllkMYA2NiE/GgDstpOqbKG+mc2c+JzzbSli3/c0qtVdWPxUK4=
-Received: from PH8PR10MB6597.namprd10.prod.outlook.com (2603:10b6:510:226::20)
- by PH7PR10MB7840.namprd10.prod.outlook.com (2603:10b6:510:2fd::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7519.37; Wed, 1 May
- 2024 16:29:59 +0000
-Received: from PH8PR10MB6597.namprd10.prod.outlook.com
- ([fe80::6874:4af6:bf0a:6ca]) by PH8PR10MB6597.namprd10.prod.outlook.com
- ([fe80::6874:4af6:bf0a:6ca%3]) with mapi id 15.20.7519.031; Wed, 1 May 2024
- 16:29:59 +0000
-From: Stephen Brennan <stephen.s.brennan@oracle.com>
-To: Steven Rostedt <rostedt@goodmis.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>
-Cc: Guo Ren <guoren@kernel.org>, Huacai Chen <chenhuacai@kernel.org>,
-        WANG Xuerui <kernel@xen0n.name>,
-        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-        Helge Deller <deller@gmx.de>, Michael Ellerman <mpe@ellerman.id.au>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>,
-        "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
-        Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org,
-        linux-trace-kernel@vger.kernel.org, linux-csky@vger.kernel.org,
-        loongarch@lists.linux.dev, linux-parisc@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
-        linux-s390@vger.kernel.org,
-        Stephen Brennan <stephen.s.brennan@oracle.com>
-Subject: [PATCH v3] kprobe/ftrace: bail out if ftrace was killed
-Date: Wed,  1 May 2024 09:29:56 -0700
-Message-Id: <20240501162956.229427-1-stephen.s.brennan@oracle.com>
-X-Mailer: git-send-email 2.39.3
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: BLAPR03CA0050.namprd03.prod.outlook.com
- (2603:10b6:208:32d::25) To PH8PR10MB6597.namprd10.prod.outlook.com
- (2603:10b6:510:226::20)
+        d=ffwll.ch; s=google; t=1714581057; x=1715185857; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:mail-followup-to:message-id:subject:cc:to
+         :from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=y752jhftptdt0C7UFaUbMxDQZl9ZN6d8fmcUcY8z3mk=;
+        b=WPtYmdAtgYaMY0sV1rQR5jL9M/206PtZKQj1RUdIT2KouWjAEap3bjTFseg1QYUmDO
+         3C6leFPgaZInQgPMLoc4AnYDUjXrOidfTVUF/YVq73ZlNSTkRRKltkOdGs9XxP0iLjfb
+         zhj4GbUnSxSP1RubjV4NxuAWBX1L6asj7Re7s=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714581057; x=1715185857;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:mail-followup-to:message-id:subject:cc:to
+         :from:date:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=y752jhftptdt0C7UFaUbMxDQZl9ZN6d8fmcUcY8z3mk=;
+        b=qY50+fdXGqXYrUNTKFi9ElzeMP0pbYL7rio3EkAf6M7Dd1SgVEJaRUSrmaC/bXHFqC
+         JM8pMhMld9E8KgehNFQsj+stZAH4vry4I1kcHLoXiv2BnckpBy9QPXHvGwww0U+w6b0U
+         cUfnMVT5eqTXUrobwJB8F85BscDBcgJbf8J0TneK/lagXwL36DbH5eqhQpvQ7MmM07Up
+         cjtqM9o0PaKNyPVYMRALtNPcnhJApLSWmA5Bte3ZEoI6gdQbBRZrSDc1jZLSM0ATaSXi
+         rlxsp1nqeaNDn8uVTFHq3n4UxzX41WnLaKxrJM8ucGU+srPlaAuGLaxTEy63npeMZfvg
+         drDg==
+X-Forwarded-Encrypted: i=1; AJvYcCUZxRHzyjTYea8TM73QvTCFulaEfluGu92BhNngYXdamzUxyvU7CIqTzHTfGf9SFDxw7kgaGn6Golq1WWIWg5DBesGGpwCPenr4HVMD
+X-Gm-Message-State: AOJu0Yw6DmyM3akdBFlGYZ65Ho5uz/0wXt71zV9vslxFE1jKU98Bkf4e
+	Zm3zwshMSWaG5c7UPDv+h46mtMCpWRDUlkT7I4j3z/DLu6YkA9I1J5SqnHIeXPQ=
+X-Google-Smtp-Source: AGHT+IGOJ9H+Nbtt2+OO9+GYWkWMUBLFGQppNYe+EIrQMMqtvnGDY+i0r0rEj2BJ6xY09jE/PuJLbw==
+X-Received: by 2002:a2e:9e15:0:b0:2df:4a6a:a18d with SMTP id e21-20020a2e9e15000000b002df4a6aa18dmr1821945ljk.2.1714581056513;
+        Wed, 01 May 2024 09:30:56 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id o27-20020a05600c511b00b00418a386c17bsm2665811wms.12.2024.05.01.09.30.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 01 May 2024 09:30:55 -0700 (PDT)
+Date: Wed, 1 May 2024 18:30:53 +0200
+From: Daniel Vetter <daniel@ffwll.ch>
+To: =?iso-8859-1?Q?Adri=E1n?= Larumbe <adrian.larumbe@collabora.com>
+Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Maxime Ripard <mripard@kernel.org>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+	Hans de Goede <hdegoede@redhat.com>, kernel@collabora.com,
+	Boris Brezillon <boris.brezillon@collabora.com>,
+	Tvrtko Ursulin <tursulin@ursulin.net>,
+	Christopher Healy <healych@amazon.com>,
+	dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] drm/sysfs: Add drm class-wide attribute to get active
+ device clients
+Message-ID: <ZjJuPQBNnu41Djrr@phenom.ffwll.local>
+Mail-Followup-To: =?iso-8859-1?Q?Adri=E1n?= Larumbe <adrian.larumbe@collabora.com>,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Maxime Ripard <mripard@kernel.org>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	David Airlie <airlied@gmail.com>,
+	Hans de Goede <hdegoede@redhat.com>, kernel@collabora.com,
+	Boris Brezillon <boris.brezillon@collabora.com>,
+	Tvrtko Ursulin <tursulin@ursulin.net>,
+	Christopher Healy <healych@amazon.com>,
+	dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+References: <20240403182951.724488-1-adrian.larumbe@collabora.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH8PR10MB6597:EE_|PH7PR10MB7840:EE_
-X-MS-Office365-Filtering-Correlation-Id: d72807aa-f8a2-4316-35fe-08dc69fbf1b9
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230031|366007|7416005|376005|1800799015;
-X-Microsoft-Antispam-Message-Info: 
-	=?us-ascii?Q?L9LO8DTteml+3KZfyHgQD+oFpQc8F6lpOY1EgvhC64Tjc9xRHAoLOQSW/rMd?=
- =?us-ascii?Q?vlmSnpeiVl644KpsbheP8y3XRxtQKIA8lyxvL6r6s3H6h02TkpeoNBuIkQhO?=
- =?us-ascii?Q?8bJFEsltaKTIj8kLCBph8QgrQWPfwHgsO5wVSQCB981Y6fDq4iYD4T0rHDaH?=
- =?us-ascii?Q?OyXhQ+3MZWAoj0xbPyWoNJSMZs8t0eiYnB+PC0CWU54a+9V770NR8kRIs3Z8?=
- =?us-ascii?Q?CFJ6Bb0S9uSJua9eacUIFmT8nxScqw7sinFcMlL3yJa34dlSsKWcRmaTJrHO?=
- =?us-ascii?Q?CXZSTFlcx2qEuKQu4yhTKdi87s0qZLASi+R/UND2SGX6ZxljW2huzujgq9d9?=
- =?us-ascii?Q?Ie89wFy9ChpBRXrTD6JECQlTFe7SBQerz2wSK4//ORobmz9FeItvTNYLw4Zj?=
- =?us-ascii?Q?rya0CG8xXzmFj9mW2tbOqiFTQktG5T+m+ixwazK11Sn1mMHcfCwJ3aI6ejgK?=
- =?us-ascii?Q?Lj/KZNgFCtmZ/KA/J1JT+NMT6LAxQsLb7EOR6B6Su5jnU7Y3HFpsYXNAOJi5?=
- =?us-ascii?Q?RnpORYEP9f7n0me0CbZuyKkCXeARNRf5J+3vwpg75XnPWcwhTlwhO1LdtWT5?=
- =?us-ascii?Q?E2IW0khSbX8Ja2BR5uZ1IUSkpnjfJQImSzHcF0TbR2E6/lqVP9t8XVPQFITN?=
- =?us-ascii?Q?u29qcHk+djTQqo6/vQQha6rbH440nqT3q/HOjPhS3eiB9rMbWszwReGBPz9H?=
- =?us-ascii?Q?hoYrREFjmpn+Jf+f0sldK4Jd+m1e/VitwZtrXNdRr/GF5rCH44FXQEqyP0kf?=
- =?us-ascii?Q?IkLP0bNUtPp2q+4t8zNyC3+QirqfU+8KaPvlzvywhFsgr9E7GWgUHEW8TsjK?=
- =?us-ascii?Q?pdolT4UTMDd37OM/bP/67YrqDeCrvdKEB+6zzQTeQWiULvk+YroZ55WDjWm7?=
- =?us-ascii?Q?+IgavoJBRU1glWE60+5fE9AOXBT6277BRSPsvMdcq/B3Io4BuS59VTKqUXrM?=
- =?us-ascii?Q?Tdl5NbC7tvI+20vfY+oBYEjl7x7b68voomXrjVg9ee4Dx+pONWzpIV1O2AmG?=
- =?us-ascii?Q?irc413A2uHGYwdcVJXiK2UZKhZ8uR+eTzJa98+ohFRqXqZFKPICcpijlD26y?=
- =?us-ascii?Q?rQBq2/lSVE1bHTFZmK1kzX7plch1CkzaHJ79ZCRQoGG3U30MLoYx5+VhVyhy?=
- =?us-ascii?Q?JAYc44GqWHrBJqWWEzM4DDWMDzj3Sj8+JmjGbBHn4Qo3HBFgfNltRuGop168?=
- =?us-ascii?Q?bjR4iZ7GsaQUZ4s4K/36rfb4tfWQ1vOK2oHxGPpsV1OFSAFiRJ00XGtOc5c?=
- =?us-ascii?Q?=3D?=
-X-Forefront-Antispam-Report: 
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH8PR10MB6597.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(7416005)(376005)(1800799015);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: 
-	=?us-ascii?Q?/bWbJrhPiwZfcZiGFn0Sidf7VfP0BtX95W72LtHGyGkYfV08QGpPw/YQlfn9?=
- =?us-ascii?Q?YtN75Nm9hFvJEdKpVOcuxbPaTLSEwMc8zxnNzLggsgt9TbDLQ5g1XriMD5R2?=
- =?us-ascii?Q?Jug4KxTPhPZ55+Al9tglHuwqYNEmFt7WUDqgbt87goPjUfekJ5OYT1jgGjCf?=
- =?us-ascii?Q?3/rcZ+4H7rONhvyUsEAH8Tgo1dUBoEeH6of/IExqQg/NdKA9RNUlaRp6MEQg?=
- =?us-ascii?Q?USB4BCxrjtGIR83op59GHogl90h7g0mrmykbKLhpmz04MXoXL0zCKM9/Ynb3?=
- =?us-ascii?Q?AEQYO8TLq3Sk0rEjnudCFGk53M4l7+0NNPpmPHom6pDsaQWAhb2RUW/LhR6c?=
- =?us-ascii?Q?Ipu+fUfCuFeeTRpfGOnIgzS3o7oILH9YeJr6XGhiA3osUul8VeAJ4ommyOnt?=
- =?us-ascii?Q?VuIi33GSg4hrYne03prVm6Yz+9YAXq829uyE4afFOCdMmjOyBgmGS1RKf+jY?=
- =?us-ascii?Q?8YGL+tkq2zEDpNsSwXJC5hyYHNikj18P5EWeDVlEX+TuFiTChp+DR9r07HlM?=
- =?us-ascii?Q?oVrW7DV+IH5kIKAeL7H7//NIr9Nmt5aC9Bn6Q+ZQNr7pnSqXoMxCds/2U7Wj?=
- =?us-ascii?Q?4jMPJqUBf8D3RZ79szMimr6dNjHDh2VH2d1OeXG4RhGN/8tc9m2XUFJTwHHg?=
- =?us-ascii?Q?O54SZokW+8qIYKhiRl8uAIpQhfKzG7l0Gj90DNzWOnidv4NQPP+vN9HT2Uwl?=
- =?us-ascii?Q?6DWv9bIvgpgIX5FtbSvxKoxAxwHn9LXd1ZN7+VFLAiDXlfYLxx7EIOOgIknK?=
- =?us-ascii?Q?jZzNdxOP8tfhdA7zAzFcmrYzs9c+u99TJkZDva7Zo1eF1EiLeANS75EllyJ9?=
- =?us-ascii?Q?oKWnCbV9dHgOHbU24m9tlHAHMFjjBTQvnLDV+8hUmCkQBbX5y7EvArhkFvwZ?=
- =?us-ascii?Q?++0FG9ArZ85IWOBICwzEAv8NCzuawEHyvt9W2Kz/0DUeNhEZxqP9jqTXprnw?=
- =?us-ascii?Q?QtjeVtpQ5GitZPi37l+l216qSLy+eDDjB92J7s/jg0g42YdT0wYhKbRnpF6d?=
- =?us-ascii?Q?I3+Vq1tNvzqS1Xk0LevBT0W9Z5pcOJVbGedsKejcTGyA75oYIRNjM/qPDXt6?=
- =?us-ascii?Q?IQlvaOF15ksWsc6JnM4gcF1vFu7fkZ5639yY7+LPdO191fC8Z66rAKwHVnzl?=
- =?us-ascii?Q?y2Mg1bZCgRLHcbHGh6cC/hjv7kn1kGTl3JjXZlmirKeAJxvuMByUGC8QbLqL?=
- =?us-ascii?Q?Ul4JDEraEmv2XbZzcAM7MVWk7QAnUbQxTqYDjSb47TbX8dAQO4pUHFhXS1LE?=
- =?us-ascii?Q?2/9QNIqqB2p7UzysBMIUab27bf45IC/koqpF+w4w16cxH0vOlSw66C7W1NuP?=
- =?us-ascii?Q?T1VKEclsdkY08f+GwLxfL+1JEbCnbBSjkLVffLrCMHD8/uZiDoEvM3MyQjP5?=
- =?us-ascii?Q?dk6KY/VGy1SmUsnBkDgP66V8DsZvmlZdeQO/IQsuZ42rs1tgvAGPlYiNEj01?=
- =?us-ascii?Q?/5sBGwk75z1l/PXCuzUOiopRLyBLprDw4asN6PmGfJ50PvGC738BbNGgTGcP?=
- =?us-ascii?Q?hv4/Gjlp47Gv3b/6OOhWk5ZiYaX0EUTt4/eFV8ypuqJbKwBZ1U2PYeRHJuXW?=
- =?us-ascii?Q?0xS9hebWEwTGMnCCSDRkNfFxugHOV3cwynNyCfHq8TrzrPyHgZfdoOhIosvQ?=
- =?us-ascii?Q?QXmO3D3W4RXQU6VUtjjqu1VfE19dORM4nztFP/j5WinU?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
-	y6en0yKetvTWgNvSB5JFVxUVVCrmLP0EpnNUPHNiuacbYgdYGfHk96SSnocaXsd9Do5MNIfuwrVofh0T2I4/8kkJ6V1aRa1ToUKT7d3t5fL5JkpbmEdKI4leIZX5jpe4kONx1oMRZ4FRUe5ZxoFqNPn9u7/NIlwlsHgFH9JJKa4GIgjaBisZcs5lByCsfTIr8ekVZyt71i7sSB7Kv+RKPrbgXcGyiiF5S2rcS4S6K/6RPaCEtJrT9AsJf77xomSCLmrXgRby7c4lxas7jtR7z8qFKCnvClHQ4Co/Fm6u00NiL7SRASdlr5V+3k0yr5oFqqQoUcqr0rpTgXHKPIFNkxQIf9lY9V8yNs51WSVJa7Bg1Pa+l4perpf/6XSCZIf5Bql5r4eQBNPvp64WNhiJeTKn7SApT4whsBUyoOPpBGanG2MQ+9xEXhFfspOhtx+K4A47aeG/VRbdOMkvx8cwXHarzRXCLCziUgsOkKl5xopLmWqcw1Revg9p4zt4WzDRUHGmw3/lvhH/5ViS+uTWS3bYFOLJM/rQSmw/EPiGDHYdrCmCTLhVnG67hfcO0XsPSoiN+R1pS8HUDN6HIV3SfOfuuVhnsuURADw40yUeElQ=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d72807aa-f8a2-4316-35fe-08dc69fbf1b9
-X-MS-Exchange-CrossTenant-AuthSource: PH8PR10MB6597.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 May 2024 16:29:59.5016
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 8vdZLDWPguGAKCD8OMXSgHR2XDHP/dNrKnfMlDzG9x3ssOwuEwuMzF9viOdolbxvhzuuJxKmgvXfdtLhmnhvvkETPJVBbjhWFPMSp5h4LX0=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR10MB7840
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
- definitions=2024-05-01_16,2024-04-30_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 malwarescore=0
- phishscore=0 spamscore=0 bulkscore=0 suspectscore=0 adultscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2404010000 definitions=main-2405010116
-X-Proofpoint-ORIG-GUID: IXmcrLujswrITd78LZ4dHtCKDsyzi5aM
-X-Proofpoint-GUID: IXmcrLujswrITd78LZ4dHtCKDsyzi5aM
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240403182951.724488-1-adrian.larumbe@collabora.com>
+X-Operating-System: Linux phenom 6.6.15-amd64 
 
-If an error happens in ftrace, ftrace_kill() will prevent disarming
-kprobes. Eventually, the ftrace_ops associated with the kprobes will be
-freed, yet the kprobes will still be active, and when triggered, they
-will use the freed memory, likely resulting in a page fault and panic.
+On Wed, Apr 03, 2024 at 07:29:39PM +0100, Adrián Larumbe wrote:
+> Up to this day, all fdinfo-based GPU profilers must traverse the entire
+> /proc directory structure to find open DRM clients with fdinfo file
+> descriptors. This is inefficient and time-consuming.
+> 
+> This patch adds a new device class attribute that will install a sysfs file
+> per DRM device, which can be queried by profilers to get a list of PIDs for
+> their open clients. This file isn't human-readable, and it's meant to be
+> queried only by GPU profilers like gputop and nvtop.
+> 
+> Cc: Boris Brezillon <boris.brezillon@collabora.com>
+> Cc: Tvrtko Ursulin <tursulin@ursulin.net>
+> Cc: Christopher Healy <healych@amazon.com>
+> Signed-off-by: Adrián Larumbe <adrian.larumbe@collabora.com>
 
-This behavior can be reproduced quite easily, by creating a kprobe and
-then triggering a ftrace_kill(). For simplicity, we can simulate an
-ftrace error with a kernel module like [1]:
+Tvrtko pointed me at this on irc and .. uh I think this definitely needs
+an ack from Greg KH before we can land it. It's quite far away from what
+sysfs uapi usually looks like and also semantically does ...
+-Sima
 
-[1]: https://github.com/brenns10/kernel_stuff/tree/master/ftrace_killer
+> ---
+>  drivers/gpu/drm/drm_internal.h       |  2 +-
+>  drivers/gpu/drm/drm_privacy_screen.c |  2 +-
+>  drivers/gpu/drm/drm_sysfs.c          | 89 ++++++++++++++++++++++------
+>  3 files changed, 74 insertions(+), 19 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/drm_internal.h b/drivers/gpu/drm/drm_internal.h
+> index 2215baef9a3e..9a399b03d11c 100644
+> --- a/drivers/gpu/drm/drm_internal.h
+> +++ b/drivers/gpu/drm/drm_internal.h
+> @@ -145,7 +145,7 @@ bool drm_master_internal_acquire(struct drm_device *dev);
+>  void drm_master_internal_release(struct drm_device *dev);
+>  
+>  /* drm_sysfs.c */
+> -extern struct class *drm_class;
+> +extern struct class drm_class;
+>  
+>  int drm_sysfs_init(void);
+>  void drm_sysfs_destroy(void);
+> diff --git a/drivers/gpu/drm/drm_privacy_screen.c b/drivers/gpu/drm/drm_privacy_screen.c
+> index 6cc39e30781f..2fbd24ba5818 100644
+> --- a/drivers/gpu/drm/drm_privacy_screen.c
+> +++ b/drivers/gpu/drm/drm_privacy_screen.c
+> @@ -401,7 +401,7 @@ struct drm_privacy_screen *drm_privacy_screen_register(
+>  	mutex_init(&priv->lock);
+>  	BLOCKING_INIT_NOTIFIER_HEAD(&priv->notifier_head);
+>  
+> -	priv->dev.class = drm_class;
+> +	priv->dev.class = &drm_class;
+>  	priv->dev.type = &drm_privacy_screen_type;
+>  	priv->dev.parent = parent;
+>  	priv->dev.release = drm_privacy_screen_device_release;
+> diff --git a/drivers/gpu/drm/drm_sysfs.c b/drivers/gpu/drm/drm_sysfs.c
+> index a953f69a34b6..56ca9e22c720 100644
+> --- a/drivers/gpu/drm/drm_sysfs.c
+> +++ b/drivers/gpu/drm/drm_sysfs.c
+> @@ -58,8 +58,6 @@ static struct device_type drm_sysfs_device_connector = {
+>  	.name = "drm_connector",
+>  };
+>  
+> -struct class *drm_class;
+> -
+>  #ifdef CONFIG_ACPI
+>  static bool drm_connector_acpi_bus_match(struct device *dev)
+>  {
+> @@ -128,6 +126,62 @@ static const struct component_ops typec_connector_ops = {
+>  
+>  static CLASS_ATTR_STRING(version, S_IRUGO, "drm 1.1.0 20060810");
+>  
+> +static ssize_t clients_show(struct device *cd, struct device_attribute *attr, char *buf)
+> +{
+> +	struct drm_minor *minor = cd->driver_data;
+> +	struct drm_device *ddev = minor->dev;
+> +	struct drm_file *priv;
+> +	ssize_t offset = 0;
+> +	void *pid_buf;
+> +
+> +	if (minor->type != DRM_MINOR_RENDER)
+> +		return 0;
+> +
+> +	pid_buf = kvmalloc(PAGE_SIZE, GFP_KERNEL);
+> +	if (!pid_buf)
+> +		return 0;
+> +
+> +	mutex_lock(&ddev->filelist_mutex);
+> +	list_for_each_entry_reverse(priv, &ddev->filelist, lhead) {
+> +		struct pid *pid;
+> +
+> +		if (drm_WARN_ON(ddev, (PAGE_SIZE - offset) < sizeof(pid_t)))
+> +			break;
+> +
+> +		rcu_read_lock();
+> +		pid = rcu_dereference(priv->pid);
+> +		(*(pid_t *)(pid_buf + offset)) = pid_vnr(pid);
+> +		rcu_read_unlock();
+> +
+> +		offset += sizeof(pid_t);
+> +	}
+> +	mutex_unlock(&ddev->filelist_mutex);
+> +
+> +	if (offset < PAGE_SIZE)
+> +		(*(pid_t *)(pid_buf + offset)) = 0;
+> +
+> +	memcpy(buf, pid_buf, offset);
+> +
+> +	kvfree(pid_buf);
+> +
+> +	return offset;
+> +
+> +}
+> +static DEVICE_ATTR_RO(clients);
+> +
+> +static struct attribute *drm_device_attrs[] = {
+> +	&dev_attr_clients.attr,
+> +	NULL,
+> +};
+> +ATTRIBUTE_GROUPS(drm_device);
+> +
+> +struct class drm_class = {
+> +	.name		= "drm",
+> +	.dev_groups	= drm_device_groups,
+> +};
+> +
+> +static bool drm_class_initialised;
+> +
+>  /**
+>   * drm_sysfs_init - initialize sysfs helpers
+>   *
+> @@ -142,18 +196,19 @@ int drm_sysfs_init(void)
+>  {
+>  	int err;
+>  
+> -	drm_class = class_create("drm");
+> -	if (IS_ERR(drm_class))
+> -		return PTR_ERR(drm_class);
+> +	err = class_register(&drm_class);
+> +	if (err)
+> +		return err;
+>  
+> -	err = class_create_file(drm_class, &class_attr_version.attr);
+> +	err = class_create_file(&drm_class, &class_attr_version.attr);
+>  	if (err) {
+> -		class_destroy(drm_class);
+> -		drm_class = NULL;
+> +		class_destroy(&drm_class);
+>  		return err;
+>  	}
+>  
+> -	drm_class->devnode = drm_devnode;
+> +	drm_class.devnode = drm_devnode;
+> +
+> +	drm_class_initialised = true;
+>  
+>  	drm_sysfs_acpi_register();
+>  	return 0;
+> @@ -166,12 +221,12 @@ int drm_sysfs_init(void)
+>   */
+>  void drm_sysfs_destroy(void)
+>  {
+> -	if (IS_ERR_OR_NULL(drm_class))
+> +	if (!drm_class_initialised)
+>  		return;
+>  	drm_sysfs_acpi_unregister();
+> -	class_remove_file(drm_class, &class_attr_version.attr);
+> -	class_destroy(drm_class);
+> -	drm_class = NULL;
+> +	class_remove_file(&drm_class, &class_attr_version.attr);
+> +	class_destroy(&drm_class);
+> +	drm_class_initialised = false;
+>  }
+>  
+>  static void drm_sysfs_release(struct device *dev)
+> @@ -372,7 +427,7 @@ int drm_sysfs_connector_add(struct drm_connector *connector)
+>  		return -ENOMEM;
+>  
+>  	device_initialize(kdev);
+> -	kdev->class = drm_class;
+> +	kdev->class = &drm_class;
+>  	kdev->type = &drm_sysfs_device_connector;
+>  	kdev->parent = dev->primary->kdev;
+>  	kdev->groups = connector_dev_groups;
+> @@ -550,7 +605,7 @@ struct device *drm_sysfs_minor_alloc(struct drm_minor *minor)
+>  			minor_str = "card%d";
+>  
+>  		kdev->devt = MKDEV(DRM_MAJOR, minor->index);
+> -		kdev->class = drm_class;
+> +		kdev->class = &drm_class;
+>  		kdev->type = &drm_sysfs_device_minor;
+>  	}
+>  
+> @@ -579,10 +634,10 @@ struct device *drm_sysfs_minor_alloc(struct drm_minor *minor)
+>   */
+>  int drm_class_device_register(struct device *dev)
+>  {
+> -	if (!drm_class || IS_ERR(drm_class))
+> +	if (!drm_class_initialised)
+>  		return -ENOENT;
+>  
+> -	dev->class = drm_class;
+> +	dev->class = &drm_class;
+>  	return device_register(dev);
+>  }
+>  EXPORT_SYMBOL_GPL(drm_class_device_register);
+> 
+> base-commit: 45c734fdd43db14444025910b4c59dd2b8be714a
+> -- 
+> 2.44.0
+> 
 
-  sudo perf probe --add commit_creds
-  sudo perf trace -e probe:commit_creds
-  # In another terminal
-  make
-  sudo insmod ftrace_killer.ko  # calls ftrace_kill(), simulating bug
-  # Back to perf terminal
-  # ctrl-c
-  sudo perf probe --del commit_creds
-
-After a short period, a page fault and panic would occur as the kprobe
-continues to execute and uses the freed ftrace_ops. While ftrace_kill()
-is supposed to be used only in extreme circumstances, it is invoked in
-FTRACE_WARN_ON() and so there are many places where an unexpected bug
-could be triggered, yet the system may continue operating, possibly
-without the administrator noticing. If ftrace_kill() does not panic the
-system, then we should do everything we can to continue operating,
-rather than leave a ticking time bomb.
-
-Signed-off-by: Stephen Brennan <stephen.s.brennan@oracle.com>
----
-Changes in v3:
-  Don't expose ftrace_is_dead(). Create a "kprobe_ftrace_disabled"
-  variable and check it directly in the kprobe handlers.
-Link to v1/v2 discussion:
-  https://lore.kernel.org/all/20240426225834.993353-1-stephen.s.brennan@oracle.com/
-
- arch/csky/kernel/probes/ftrace.c     | 3 +++
- arch/loongarch/kernel/ftrace_dyn.c   | 3 +++
- arch/parisc/kernel/ftrace.c          | 3 +++
- arch/powerpc/kernel/kprobes-ftrace.c | 3 +++
- arch/riscv/kernel/probes/ftrace.c    | 3 +++
- arch/s390/kernel/ftrace.c            | 3 +++
- arch/x86/kernel/kprobes/ftrace.c     | 3 +++
- include/linux/kprobes.h              | 7 +++++++
- kernel/kprobes.c                     | 6 ++++++
- kernel/trace/ftrace.c                | 1 +
- 10 files changed, 35 insertions(+)
-
-diff --git a/arch/csky/kernel/probes/ftrace.c b/arch/csky/kernel/probes/ftrace.c
-index 834cffcfbce3..7ba4b98076de 100644
---- a/arch/csky/kernel/probes/ftrace.c
-+++ b/arch/csky/kernel/probes/ftrace.c
-@@ -12,6 +12,9 @@ void kprobe_ftrace_handler(unsigned long ip, unsigned long parent_ip,
- 	struct kprobe_ctlblk *kcb;
- 	struct pt_regs *regs;
- 
-+	if (unlikely(kprobe_ftrace_disabled))
-+		return;
-+
- 	bit = ftrace_test_recursion_trylock(ip, parent_ip);
- 	if (bit < 0)
- 		return;
-diff --git a/arch/loongarch/kernel/ftrace_dyn.c b/arch/loongarch/kernel/ftrace_dyn.c
-index 73858c9029cc..bff058317062 100644
---- a/arch/loongarch/kernel/ftrace_dyn.c
-+++ b/arch/loongarch/kernel/ftrace_dyn.c
-@@ -287,6 +287,9 @@ void kprobe_ftrace_handler(unsigned long ip, unsigned long parent_ip,
- 	struct kprobe *p;
- 	struct kprobe_ctlblk *kcb;
- 
-+	if (unlikely(kprobe_ftrace_disabled))
-+		return;
-+
- 	bit = ftrace_test_recursion_trylock(ip, parent_ip);
- 	if (bit < 0)
- 		return;
-diff --git a/arch/parisc/kernel/ftrace.c b/arch/parisc/kernel/ftrace.c
-index 621a4b386ae4..c91f9c2e61ed 100644
---- a/arch/parisc/kernel/ftrace.c
-+++ b/arch/parisc/kernel/ftrace.c
-@@ -206,6 +206,9 @@ void kprobe_ftrace_handler(unsigned long ip, unsigned long parent_ip,
- 	struct kprobe *p;
- 	int bit;
- 
-+	if (unlikely(kprobe_ftrace_disabled))
-+		return;
-+
- 	bit = ftrace_test_recursion_trylock(ip, parent_ip);
- 	if (bit < 0)
- 		return;
-diff --git a/arch/powerpc/kernel/kprobes-ftrace.c b/arch/powerpc/kernel/kprobes-ftrace.c
-index 072ebe7f290b..f8208c027148 100644
---- a/arch/powerpc/kernel/kprobes-ftrace.c
-+++ b/arch/powerpc/kernel/kprobes-ftrace.c
-@@ -21,6 +21,9 @@ void kprobe_ftrace_handler(unsigned long nip, unsigned long parent_nip,
- 	struct pt_regs *regs;
- 	int bit;
- 
-+	if (unlikely(kprobe_ftrace_disabled))
-+		return;
-+
- 	bit = ftrace_test_recursion_trylock(nip, parent_nip);
- 	if (bit < 0)
- 		return;
-diff --git a/arch/riscv/kernel/probes/ftrace.c b/arch/riscv/kernel/probes/ftrace.c
-index 7142ec42e889..a69dfa610aa8 100644
---- a/arch/riscv/kernel/probes/ftrace.c
-+++ b/arch/riscv/kernel/probes/ftrace.c
-@@ -11,6 +11,9 @@ void kprobe_ftrace_handler(unsigned long ip, unsigned long parent_ip,
- 	struct kprobe_ctlblk *kcb;
- 	int bit;
- 
-+	if (unlikely(kprobe_ftrace_disabled))
-+		return;
-+
- 	bit = ftrace_test_recursion_trylock(ip, parent_ip);
- 	if (bit < 0)
- 		return;
-diff --git a/arch/s390/kernel/ftrace.c b/arch/s390/kernel/ftrace.c
-index c46381ea04ec..7f6f8c438c26 100644
---- a/arch/s390/kernel/ftrace.c
-+++ b/arch/s390/kernel/ftrace.c
-@@ -296,6 +296,9 @@ void kprobe_ftrace_handler(unsigned long ip, unsigned long parent_ip,
- 	struct kprobe *p;
- 	int bit;
- 
-+	if (unlikely(kprobe_ftrace_disabled))
-+		return;
-+
- 	bit = ftrace_test_recursion_trylock(ip, parent_ip);
- 	if (bit < 0)
- 		return;
-diff --git a/arch/x86/kernel/kprobes/ftrace.c b/arch/x86/kernel/kprobes/ftrace.c
-index dd2ec14adb77..15af7e98e161 100644
---- a/arch/x86/kernel/kprobes/ftrace.c
-+++ b/arch/x86/kernel/kprobes/ftrace.c
-@@ -21,6 +21,9 @@ void kprobe_ftrace_handler(unsigned long ip, unsigned long parent_ip,
- 	struct kprobe_ctlblk *kcb;
- 	int bit;
- 
-+	if (unlikely(kprobe_ftrace_disabled))
-+		return;
-+
- 	bit = ftrace_test_recursion_trylock(ip, parent_ip);
- 	if (bit < 0)
- 		return;
-diff --git a/include/linux/kprobes.h b/include/linux/kprobes.h
-index 0ff44d6633e3..5fcbc254d186 100644
---- a/include/linux/kprobes.h
-+++ b/include/linux/kprobes.h
-@@ -378,11 +378,15 @@ static inline void wait_for_kprobe_optimizer(void) { }
- extern void kprobe_ftrace_handler(unsigned long ip, unsigned long parent_ip,
- 				  struct ftrace_ops *ops, struct ftrace_regs *fregs);
- extern int arch_prepare_kprobe_ftrace(struct kprobe *p);
-+/* Set when ftrace has been killed: kprobes on ftrace must be disabled for safety */
-+extern bool kprobe_ftrace_disabled __read_mostly;
-+extern void kprobe_ftrace_kill(void);
- #else
- static inline int arch_prepare_kprobe_ftrace(struct kprobe *p)
- {
- 	return -EINVAL;
- }
-+static inline void kprobe_ftrace_kill(void) {}
- #endif /* CONFIG_KPROBES_ON_FTRACE */
- 
- /* Get the kprobe at this addr (if any) - called with preemption disabled */
-@@ -495,6 +499,9 @@ static inline void kprobe_flush_task(struct task_struct *tk)
- static inline void kprobe_free_init_mem(void)
- {
- }
-+static inline void kprobe_ftrace_kill(void)
-+{
-+}
- static inline int disable_kprobe(struct kprobe *kp)
- {
- 	return -EOPNOTSUPP;
-diff --git a/kernel/kprobes.c b/kernel/kprobes.c
-index 65adc815fc6e..166ebf81dc45 100644
---- a/kernel/kprobes.c
-+++ b/kernel/kprobes.c
-@@ -1068,6 +1068,7 @@ static struct ftrace_ops kprobe_ipmodify_ops __read_mostly = {
- 
- static int kprobe_ipmodify_enabled;
- static int kprobe_ftrace_enabled;
-+bool kprobe_ftrace_disabled;
- 
- static int __arm_kprobe_ftrace(struct kprobe *p, struct ftrace_ops *ops,
- 			       int *cnt)
-@@ -1136,6 +1137,11 @@ static int disarm_kprobe_ftrace(struct kprobe *p)
- 		ipmodify ? &kprobe_ipmodify_ops : &kprobe_ftrace_ops,
- 		ipmodify ? &kprobe_ipmodify_enabled : &kprobe_ftrace_enabled);
- }
-+
-+void kprobe_ftrace_kill()
-+{
-+	kprobe_ftrace_disabled = true;
-+}
- #else	/* !CONFIG_KPROBES_ON_FTRACE */
- static inline int arm_kprobe_ftrace(struct kprobe *p)
- {
-diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
-index da1710499698..96db99c347b3 100644
---- a/kernel/trace/ftrace.c
-+++ b/kernel/trace/ftrace.c
-@@ -7895,6 +7895,7 @@ void ftrace_kill(void)
- 	ftrace_disabled = 1;
- 	ftrace_enabled = 0;
- 	ftrace_trace_function = ftrace_stub;
-+	kprobe_ftrace_kill();
- }
- 
- /**
 -- 
-2.39.3
-
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
 
