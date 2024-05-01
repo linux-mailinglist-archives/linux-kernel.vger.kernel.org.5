@@ -1,54 +1,54 @@
-Return-Path: <linux-kernel+bounces-165471-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-165494-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 89EEE8B8CF1
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 17:27:37 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 09C428B8D39
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 17:36:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 81DE6B213FE
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 15:27:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BA31D28AE58
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 15:36:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 336CB12F5B7;
-	Wed,  1 May 2024 15:27:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 23ED9134CE8;
+	Wed,  1 May 2024 15:32:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=luigi311.com header.i=@luigi311.com header.b="CnC+cnQl"
-Received: from mail-108-mta29.mxroute.com (mail-108-mta29.mxroute.com [136.175.108.29])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=luigi311.com header.i=@luigi311.com header.b="bI7olhIK"
+Received: from mail-108-mta234.mxroute.com (mail-108-mta234.mxroute.com [136.175.108.234])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 18F4712F59F
-	for <linux-kernel@vger.kernel.org>; Wed,  1 May 2024 15:26:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=136.175.108.29
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05E42130AF6
+	for <linux-kernel@vger.kernel.org>; Wed,  1 May 2024 15:32:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=136.175.108.234
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714577221; cv=none; b=P15+IAwmX8kSu5gDo95KcgraL7neGXHXkIntYmWmXwesY5qn0BTuY+4q0Efl7dAgw5F/yx0S8J3Mad7bKdRO+hCFIJ7QNiDlz5Z0NrOv2wCOWxrJscqqhnfmkpO2Qi1pOWQl1peN4EVUxy07ITN0FVUKQQX62c9CJQuSHHTAJ/Q=
+	t=1714577529; cv=none; b=qQFkGl9B4r4JNFxf72LjFWrwalcT0Mjb3UnavEg++mCjxtntIh8BVzz0b6mt+4Z9vL5KcC/or67XNWWXZrLaUEZoYTfQMRNJZqu5LlMWP6vLjem+rRoU3A+odXxV0ggrlEu0UMpIpZ1G4cuLLO1yuBkMNbHhw0v3Ei+F/XxqBcQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714577221; c=relaxed/simple;
-	bh=cy2aWmrWmWiUHsiEVhlHLdnMObXYvjQ2zBk5thr1UPg=;
+	s=arc-20240116; t=1714577529; c=relaxed/simple;
+	bh=nLM7risJ0XMUwfzT2iF91IqF6mJWvjzYjQDU7pYI8ac=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Vj23h7N4UGzgr6NSIQ4qk3THnOUTSYZUnEeMI9XjQnj4FX/oy1qCyRyrd2UOVIpZLdVpkczjC+/+v6oz7Tzguebc4kDyfaRSqx0m962gCI9jUSHQREYCcHakb0DSSFmDlX5KskxWEWDpsWY8jfmBj2fHeO0MGcJy32U8sAFme0A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=luigi311.com; spf=pass smtp.mailfrom=luigi311.com; dkim=pass (2048-bit key) header.d=luigi311.com header.i=@luigi311.com header.b=CnC+cnQl; arc=none smtp.client-ip=136.175.108.29
+	 MIME-Version; b=tn/X7bvdIRlLFXcJLEqhDVJd4QTauc/ZnfI6yNH5btcc/Lcrla0XDlEz8vUh/ixtOsvsofrgJWMgLlw90Yy06/KfyxWJe0hzlbs/YAPiagDt4EJbsjxDY7AoFC+DMalY7rt9YRx2m07tEYtMnuTUsQ5j4ZJ68LyH9juf4daLK2o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=luigi311.com; spf=pass smtp.mailfrom=luigi311.com; dkim=pass (2048-bit key) header.d=luigi311.com header.i=@luigi311.com header.b=bI7olhIK; arc=none smtp.client-ip=136.175.108.234
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=luigi311.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=luigi311.com
 Received: from filter006.mxroute.com ([136.175.111.2] filter006.mxroute.com)
  (Authenticated sender: mN4UYu2MZsgR)
- by mail-108-mta29.mxroute.com (ZoneMTA) with ESMTPSA id 18f34c2fda00008ca2.011
+ by mail-108-mta234.mxroute.com (ZoneMTA) with ESMTPSA id 18f34c2fd460008ca2.010
  for <linux-kernel@vger.kernel.org>
  (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384);
  Wed, 01 May 2024 15:25:45 +0000
-X-Zone-Loop: e64f0011bbbcfe84882c2f0cc8a6626d00e283648bb0
+X-Zone-Loop: 10330c76fae8cfad19e02e7f2712228b156028f39a0b
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=luigi311.com; s=x; h=Content-Transfer-Encoding:MIME-Version:References:
 	In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
 	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
 	Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
 	List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=Qrzk3wtzTAL6vILXNad62uNrTzT00IUmuGyKQ40D23U=; b=CnC+cnQl5j2zYk5kiv4/HYytuq
-	0GKCkhCKHsLadAqx2Cso4NC+cRO6KpTmr3QsAviBgg//ghwYvIirI1elHtjDGEnJpcEqztKEYouaR
-	X0kAHRfUNlRZKce2K42aWo3qCJHRlgbC210yJGH+uv2vPKALwqYL4xHJV/TAElEW02ujYMghD9FHk
-	UP42HhhAGvoQLB5zREnuiFBPTteOybjPR+BaRi5BC5+YclO/abkUzcYtHeYmlgNcbgqlFscT01GC9
-	fSz6Z3vkznWx8xUZ6ziqo/v/80u9/LkhQmAy55raY8/VDIqbkbe+H1ZzkxegNPq30E9sAjmHQPhIn
-	v4u8+xWA==;
+	bh=8XM+yDZwX8unHh0IpGoxwkH3HhBX4oqo+tDv7sLbN1s=; b=bI7olhIKP9WJMIk2FYTePpq+IM
+	CVtmkDTxXXg7wE364rki2eHxCwJGdSggYwQT6grqjzakR4Yk+7DTu0gSxnTSIAkhw09X371E21Kpm
+	Tm8D2JHbu6RFeLvVfX8WAWZLSFi4QoENukspiX/b1EbHB4whncLKBgcond1biHwjle/NoUBly3j+j
+	EWdo5e2YIBsW+HylFydNSXG4DgTnn/FP5MblV4vQXdNKZGAd0wRI8/wCbQJRO/ZOc+kIvbLdcx1ca
+	fmxq7vsti0LczCQd/dUaUJ077H87hRCugoBp4jYSojSqII/u6LwW7r34Y+GEbJ1k3zPJyNUVnuNNx
+	0PXGaIEQ==;
 From: git@luigi311.com
 To: linux-media@vger.kernel.org
 Cc: dave.stevenson@raspberrypi.com,
@@ -69,11 +69,10 @@ Cc: dave.stevenson@raspberrypi.com,
 	pavel@ucw.cz,
 	phone-devel@vger.kernel.org,
 	Ondrej Jirman <megi@xff.cz>,
-	Luis Garcia <git@luigi311.com>,
-	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: [PATCH v5 21/25] dt-bindings: media: imx258: Add binding for powerdown-gpio
-Date: Wed,  1 May 2024 09:24:38 -0600
-Message-ID: <20240501152442.1072627-22-git@luigi311.com>
+	Luis Garcia <git@luigi311.com>
+Subject: [PATCH v5 22/25] media: i2c: imx258: Add support for powerdown gpio
+Date: Wed,  1 May 2024 09:24:39 -0600
+Message-ID: <20240501152442.1072627-23-git@luigi311.com>
 In-Reply-To: <20240501152442.1072627-1-git@luigi311.com>
 References: <20240501152442.1072627-1-git@luigi311.com>
 Precedence: bulk
@@ -87,31 +86,69 @@ X-Authenticated-Id: personal@luigi311.com
 
 From: Ondrej Jirman <megi@xff.cz>
 
-Add powerdown-gpio binding as it is required for some boards.
+On some boards powerdown signal needs to be deasserted for this
+sensor to be enabled.
 
 Signed-off-by: Ondrej Jirman <megi@xff.cz>
 Signed-off-by: Luis Garcia <git@luigi311.com>
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Reviewed-by: Pavel Machek <pavel@ucw.cz>
 ---
- Documentation/devicetree/bindings/media/i2c/sony,imx258.yaml | 4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/media/i2c/imx258.c | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/media/i2c/sony,imx258.yaml b/Documentation/devicetree/bindings/media/i2c/sony,imx258.yaml
-index c978abc0cdb3..33338139e6e8 100644
---- a/Documentation/devicetree/bindings/media/i2c/sony,imx258.yaml
-+++ b/Documentation/devicetree/bindings/media/i2c/sony,imx258.yaml
-@@ -36,6 +36,10 @@ properties:
-   reg:
-     maxItems: 1
+diff --git a/drivers/media/i2c/imx258.c b/drivers/media/i2c/imx258.c
+index f043200e336e..f0bd72f241e4 100644
+--- a/drivers/media/i2c/imx258.c
++++ b/drivers/media/i2c/imx258.c
+@@ -698,6 +698,8 @@ struct imx258 {
+ 	unsigned int lane_mode_idx;
+ 	unsigned int csi2_flags;
  
-+  powerdown-gpios:
-+    description:
-+      Reference to the GPIO connected to the PWDN pin, if any.
++	struct gpio_desc *powerdown_gpio;
 +
-   reset-gpios:
-     description: |-
-       Reference to the GPIO connected to the XCLR pin, if any.
+ 	/*
+ 	 * Mutex for serialized access:
+ 	 * Protect sensor module set pad format and start/stop streaming safely.
+@@ -1231,6 +1233,8 @@ static int imx258_power_on(struct device *dev)
+ 	struct imx258 *imx258 = to_imx258(sd);
+ 	int ret;
+ 
++	gpiod_set_value_cansleep(imx258->powerdown_gpio, 0);
++
+ 	ret = regulator_bulk_enable(IMX258_NUM_SUPPLIES,
+ 				    imx258->supplies);
+ 	if (ret) {
+@@ -1242,6 +1246,7 @@ static int imx258_power_on(struct device *dev)
+ 	ret = clk_prepare_enable(imx258->clk);
+ 	if (ret) {
+ 		dev_err(dev, "failed to enable clock\n");
++		gpiod_set_value_cansleep(imx258->powerdown_gpio, 1);
+ 		regulator_bulk_disable(IMX258_NUM_SUPPLIES, imx258->supplies);
+ 	}
+ 
+@@ -1254,6 +1259,9 @@ static int imx258_power_off(struct device *dev)
+ 	struct imx258 *imx258 = to_imx258(sd);
+ 
+ 	clk_disable_unprepare(imx258->clk);
++
++	gpiod_set_value_cansleep(imx258->powerdown_gpio, 1);
++
+ 	regulator_bulk_disable(IMX258_NUM_SUPPLIES, imx258->supplies);
+ 
+ 	return 0;
+@@ -1559,6 +1567,12 @@ static int imx258_probe(struct i2c_client *client)
+ 	if (!imx258->variant_cfg)
+ 		imx258->variant_cfg = &imx258_cfg;
+ 
++	/* request optional power down pin */
++	imx258->powerdown_gpio = devm_gpiod_get_optional(&client->dev, "powerdown",
++							 GPIOD_OUT_HIGH);
++	if (IS_ERR(imx258->powerdown_gpio))
++		return PTR_ERR(imx258->powerdown_gpio);
++
+ 	/* Initialize subdev */
+ 	v4l2_i2c_subdev_init(&imx258->sd, client, &imx258_subdev_ops);
+ 
 -- 
 2.44.0
 
