@@ -1,66 +1,68 @@
-Return-Path: <linux-kernel+bounces-165502-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-165503-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id CE18C8B8D56
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 17:43:25 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3C5878B8D5E
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 17:43:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F08091C20F7B
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 15:43:24 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3B365B22054
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 15:43:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A83412FB0B;
-	Wed,  1 May 2024 15:43:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51CA712FF65;
+	Wed,  1 May 2024 15:43:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="RdClgPHI"
-Received: from mail-pf1-f170.google.com (mail-pf1-f170.google.com [209.85.210.170])
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="j6aJ4JYp"
+Received: from mail-pf1-f180.google.com (mail-pf1-f180.google.com [209.85.210.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3256112F5A7
-	for <linux-kernel@vger.kernel.org>; Wed,  1 May 2024 15:43:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F38912FB09
+	for <linux-kernel@vger.kernel.org>; Wed,  1 May 2024 15:43:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714578200; cv=none; b=HzAMNiUNyBjtRKH7zqayEjsBOwpr5y62hnL75Z3UyFESIXGN6vnPRqZocNGdjS+/V0FBK99tvnS7Khtz6uqcs3p/gdUiNbxsuatJ3Fvxh8kL0eipgWaCidaSMAK8+T3PBBLbS5Ox5xcmEw275lXiWfvYrPGW9veBLT+DXH1bGZo=
+	t=1714578202; cv=none; b=XWQclD5UWd7sOAVhRNLYgfzvnEeDGiKBmKRlX6dL5pgsimfWzEfO10ekv9HT4LmaGcMGfQs7TBwN3MyhjFUQorCU4UtPJKXmceOg+Kh71/te7b2mbeqKIuAwt/HFmyo1E47DgXGLqRCXLpHJ+NKlNDxN75HMa+BUtV2XSdnrg6s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714578200; c=relaxed/simple;
-	bh=l18OjoF9z9/KJIkQeFHeAoDUNt5M0OaJGhX0AhKmSsM=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=D1E/aFx6PSakvn9lTpwbsrpmsY3ByRexW4LFVNYGzUSb6sK07JadgIw2ZIJpEDk96dRxewR+b2Sxo88YUDRTPkdp8oh5S3Kk9ckDJVMGT3gbIIIglXfNrdvrnYF1+kGsPJh1rfiasfn7i9RLx8rSWniA7nNUUIcyztx6qkkCPcA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=RdClgPHI; arc=none smtp.client-ip=209.85.210.170
+	s=arc-20240116; t=1714578202; c=relaxed/simple;
+	bh=CHn6dd9juJ7QU5kf8EIUTCmIhfjE5Sww12t5qi+aUgg=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=tP9WV0/PBdoV2+1B1HSMim47lzMWVnQB55Ul1mvGClwwKtRZqW6KCLNrL6PjM5EIGFHNMo2xmZr1g4VQIFsGeVKLpEm6fyjLUSHgwVkFP059fbD/x0jm2vy4E762JWINs1G4g5aXRfK/5wdZzoHqWkJpCTQh9vP3Mri/Mz2Eg2U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=j6aJ4JYp; arc=none smtp.client-ip=209.85.210.180
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pf1-f170.google.com with SMTP id d2e1a72fcca58-6eced6fd98aso6145161b3a.0
-        for <linux-kernel@vger.kernel.org>; Wed, 01 May 2024 08:43:18 -0700 (PDT)
+Received: by mail-pf1-f180.google.com with SMTP id d2e1a72fcca58-6edb76d83d0so5978443b3a.0
+        for <linux-kernel@vger.kernel.org>; Wed, 01 May 2024 08:43:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1714578198; x=1715182998; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=FY1JyFaDnQGTqxfQ2HctDPUgwCZwwkdXbXVkbs7t8UM=;
-        b=RdClgPHIUybVdXYZDa00LyPqBFKzbNlZQxe1ubNsNGf6G9+uUIJDQFQbEIRJnrr7ng
-         saJTzz60/yugVTU30ABoh9mJyOVgYXL313YN27Hpm4pjQjrz6Ix6c23qidxajT4JF+N0
-         9eJrAhWbjOgv/HHVeN0NaURGB+/WCwMWfoFyA=
+        d=chromium.org; s=google; t=1714578200; x=1715183000; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=IqSRaJ+I/NgAMp1CRzQlMWp8eVTN4Fv5wLPbhbxPoyI=;
+        b=j6aJ4JYpowemZ8CpNRS0SWwYCLoo4QD+CzHSz+cmugY7cc/mT/YsotZ1lAj9ZCKnrJ
+         tqKTqwUiUmlY9J+08bC/UbYrZ7ZYSU7i5dtvdNFcj4BX6Rio06/WItBIklS3UvifuvSA
+         9ROBBay844DA2zQjkNu/R4SlhR7TWJea0W2a4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714578198; x=1715182998;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=FY1JyFaDnQGTqxfQ2HctDPUgwCZwwkdXbXVkbs7t8UM=;
-        b=rxkB90mL0QPCNmSOtchFiykKlsryauzyFlpyspTYuUydhdR+SgkjTWfpv7oFih2VAT
-         /AN2fl/m4eRxsJNmEl5UTQUPmJEgs42uzRFVYA11g3t01rnEC+O7XiNvpOrhJtePclif
-         I0LBkO1jIZA9k5ferqUlVlR/J8+kFEP6yryVduObZxw1CosGwR6PieoFg3SEWtjxa1kk
-         v6v/6Ft3uZAZNpyJB73DNNXOIgYjd8T8s5o+nRVNqWMO033e8PkwtI1GEhcv9qgcMG9R
-         NfjnOhDykOLcgnoAu/oX1Rs0sB8QAmq89e36yYpMrfWCUNIaZMP4EjBbYDV2qw62OU6s
-         Un0Q==
-X-Forwarded-Encrypted: i=1; AJvYcCUG8IoukaVaDSEUtQ4oyC/o0q4cizz+VnmMRHxsStoJPjIARECUSGJk9PFe1ppz+F+3JoIFJFr9dB4oorAzaTJP5Az2qxbwAbBB3CxG
-X-Gm-Message-State: AOJu0YyeveXpYEQxREy4xfWdVHXLkxGTBBeWoQtVHYBFmtSoifzS7umw
-	WHQ50iCm4tvKF3MvzGmmgl69OTLJRMhs6AIgtZwVqVXFjWnfwAmxRXv9Ebd81A==
-X-Google-Smtp-Source: AGHT+IG5IE9X8NYR+TK2tL4Nw0zNG4DxZx7ua7w9u0B4daBN4S28dT+xY2gFWEmWj9/+wdCLMHCxxA==
-X-Received: by 2002:a05:6a20:3aaf:b0:1ae:3f36:28d3 with SMTP id d47-20020a056a203aaf00b001ae3f3628d3mr3648768pzh.49.1714578198442;
-        Wed, 01 May 2024 08:43:18 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1714578200; x=1715183000;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=IqSRaJ+I/NgAMp1CRzQlMWp8eVTN4Fv5wLPbhbxPoyI=;
+        b=TeFLjENDBrGZtdgmiH9YARhoUfYdGsb9rkXNxyAlSlO3rqfuLfIKhFgzv4MWCTYIts
+         HDCjWWoi8NR2lUGBW6uIXieNCOnH9XqOSOWrfLOZLpwE844tYsEKuwjxKVy3IQ4wJQdC
+         g0JAaDJYR3UP2hRVfIi8v6rfsQwAt5omsKIPMLrdwAem+XQJHuu0Wvtxy/OP43wK0xHD
+         vGJ2p97WibMMidGbhsX9BPdPQ05tLtGhcyrjYX+VHXUtq6cxx20g+mA+bqUOHHZgZhF5
+         iqea4NzCAeZpAEnT/zntOdIoXDnXbG9dqhHjsj1VCKJMSk6aXjW4GvoKuIPTS6WscJYp
+         U/rA==
+X-Forwarded-Encrypted: i=1; AJvYcCUnJ1+WLBL1iK+Qnh87VhU5A1A5BAknbxrbVwfUdje3J0rrDDJWVJXi1wVhLpmKqdPFbAeGlgFXqKAuB4+SuMEowwg1roh/0vGNlBo0
+X-Gm-Message-State: AOJu0YwFvMCdUogMRD5hVWLAQqgmP8ztVwtsMTcEO1OOHxfip19vsYwZ
+	B52nhr4pb5Pz9fM5FWjknftQWW0u8dxfMYcO1ye7mKP46dVAD8UDT/FgToVQwg==
+X-Google-Smtp-Source: AGHT+IFI0XRKl4xlF9oA6mVlSbPDXsPwloqxxCaCX7TyGbZ6xYS649sCJKaSQ+96XKkEBKOMHdGtmg==
+X-Received: by 2002:a05:6a20:2593:b0:1a9:8251:41ba with SMTP id k19-20020a056a20259300b001a9825141bamr3504545pzd.51.1714578200409;
+        Wed, 01 May 2024 08:43:20 -0700 (PDT)
 Received: from dianders.sjc.corp.google.com ([2620:15c:9d:2:e886:8de:19a2:55b0])
-        by smtp.gmail.com with ESMTPSA id fb12-20020a056a002d8c00b006f3ec69bc09sm7717924pfb.75.2024.05.01.08.43.16
+        by smtp.gmail.com with ESMTPSA id fb12-20020a056a002d8c00b006f3ec69bc09sm7717924pfb.75.2024.05.01.08.43.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 01 May 2024 08:43:17 -0700 (PDT)
+        Wed, 01 May 2024 08:43:19 -0700 (PDT)
 From: Douglas Anderson <dianders@chromium.org>
 To: dri-devel@lists.freedesktop.org
 Cc: Linus Walleij <linus.walleij@linaro.org>,
@@ -77,17 +79,16 @@ Cc: Linus Walleij <linus.walleij@linaro.org>,
 	Douglas Anderson <dianders@chromium.org>,
 	Daniel Vetter <daniel@ffwll.ch>,
 	David Airlie <airlied@gmail.com>,
-	Jessica Zhang <quic_jesszhan@quicinc.com>,
-	Jonathan Corbet <corbet@lwn.net>,
 	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
 	Maxime Ripard <mripard@kernel.org>,
 	Thomas Zimmermann <tzimmermann@suse.de>,
-	linux-doc@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH v3 0/9] drm/mipi-dsi: Reduce bloat and add funcs for cleaner init seqs
-Date: Wed,  1 May 2024 08:41:03 -0700
-Message-ID: <20240501154251.3302887-1-dianders@chromium.org>
+Subject: [PATCH v3 1/9] drm/mipi-dsi: Fix theoretical int overflow in mipi_dsi_dcs_write_seq()
+Date: Wed,  1 May 2024 08:41:04 -0700
+Message-ID: <20240501084109.v3.1.I30fa4c8348ea316c886ef8a522a52fed617f930d@changeid>
 X-Mailer: git-send-email 2.45.0.rc0.197.gbae5840b3b-goog
+In-Reply-To: <20240501154251.3302887-1-dianders@chromium.org>
+References: <20240501154251.3302887-1-dianders@chromium.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -96,82 +97,72 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The consensus of many DRM folks is that we want to move away from DSI
-drivers defining tables of init commands. Instead, we want to move to
-init functions that can use common DRM functions. The issue thus far
-has been that using the macros mipi_dsi_generic_write_seq() and
-mipi_dsi_dcs_write_seq() bloats the driver using them.
+The mipi_dsi_dcs_write_seq() macro makes a call to
+mipi_dsi_dcs_write_buffer() which returns a type ssize_t. The macro
+then stores it in an int and checks to see if it's negative. This
+could theoretically be a problem if "ssize_t" is larger than "int".
 
-While trying to solve bloat, we realized that the majority of the it
-was easy to solve. This series solves the bloat for existing drivers
-by moving the printout outside of the macro.
+To see the issue, imagine that "ssize_t" is 32-bits and "int" is
+16-bits, you could see a problem if there was some code out there that
+looked like:
 
-During discussion of my v1 patch to fix the bloat [1], we also decided
-that we really want to change the way that drivers deal with init
-sequences to make it clearer. In addition to being cleaner, a side
-effect of moving drivers to the new style reduces bloat _even more_.
+  mipi_dsi_dcs_write_seq(dsi, cmd, <32767 bytes as arguments>);
 
-This series also contains a few minor fixes / cleanups that I found
-along the way.
+..since we'd get back that 32768 bytes were transferred and 32768
+stored in a 16-bit int would look negative.
 
-This series converts four drivers over to the new
-mipi_dsi_dcs_write_seq_multi() function. Not all conversions have been
-tested, but hopefully they are straightforward enough. I'd appreciate
-testing.
+Though there are no callsites where we'd actually hit this (even if
+"int" was only 16-bit), it's cleaner to make the types match so let's
+fix it.
 
-NOTE: In v3 I tried to incorporate the feedback from v2. I also
-converted the other two panels I could find that used table-based
-initialization.
-
-[1] https://lore.kernel.org/r/20240424172017.1.Id15fae80582bc74a0d4f1338987fa375738f45b9@changeid
+Fixes: 2a9e9daf7523 ("drm/mipi-dsi: Introduce mipi_dsi_dcs_write_seq macro")
+Signed-off-by: Douglas Anderson <dianders@chromium.org>
+---
 
 Changes in v3:
-- ("mipi_dsi_*_write functions don't need to ratelimit...") moved earlier.
-- Add a TODO item for cleaning up the deprecated macros/functions.
-- Fix spacing of init function.
-- Inline kerneldoc comments for struct mipi_dsi_multi_context.
-- Rebased upon patch to remove ratelimit of prints.
-- Remove an unneeded error print.
-- Squash boe-tv101wum-nl6 lowercase patch into main patch
 - Use %zd in print instead of casting errors to int.
-- drm/panel: ili9882t: Don't use a table for initting panels
-- drm/panel: innolux-p079zca: Don't use a table for initting panels
 
 Changes in v2:
-- Add some comments to the macros about printing and returning.
-- Change the way err value is handled in prep for next patch.
-- Modify commit message now that this is part of a series.
-- Rebased upon patches to avoid theoretical int overflow.
-- drm/mipi-dsi: Fix theoretical int overflow in mipi_dsi_dcs_write_seq()
-- drm/mipi-dsi: Fix theoretical int overflow in mipi_dsi_generic_write_seq()
-- drm/mipi-dsi: Introduce mipi_dsi_*_write_seq_multi()
-- drm/mipi-dsi: mipi_dsi_*_write functions don't need to ratelimit prints
-- drm/panel: boe-tv101wum-nl6: Convert hex to lowercase
-- drm/panel: boe-tv101wum-nl6: Don't use a table for initting commands
-- drm/panel: novatek-nt36672e: Switch to mipi_dsi_dcs_write_seq_multi()
+- New
 
-Douglas Anderson (9):
-  drm/mipi-dsi: Fix theoretical int overflow in mipi_dsi_dcs_write_seq()
-  drm/mipi-dsi: Fix theoretical int overflow in
-    mipi_dsi_generic_write_seq()
-  drm/mipi-dsi: mipi_dsi_*_write functions don't need to ratelimit
-    prints
-  drm/mipi-dsi: Reduce driver bloat of mipi_dsi_*_write_seq()
-  drm/mipi-dsi: Introduce mipi_dsi_*_write_seq_multi()
-  drm/panel: novatek-nt36672e: Switch to mipi_dsi_dcs_write_seq_multi()
-  drm/panel: boe-tv101wum-nl6: Don't use a table for initting panels
-  drm/panel: ili9882t: Don't use a table for initting panels
-  drm/panel: innolux-p079zca: Don't use a table for initting panels
+ include/drm/drm_mipi_dsi.h | 24 ++++++++++++------------
+ 1 file changed, 12 insertions(+), 12 deletions(-)
 
- Documentation/gpu/todo.rst                    |   18 +
- drivers/gpu/drm/drm_mipi_dsi.c                |  112 +
- .../gpu/drm/panel/panel-boe-tv101wum-nl6.c    | 2792 +++++++++--------
- drivers/gpu/drm/panel/panel-ilitek-ili9882t.c |  794 +++--
- drivers/gpu/drm/panel/panel-innolux-p079zca.c |  284 +-
- .../gpu/drm/panel/panel-novatek-nt36672e.c    |  576 ++--
- include/drm/drm_mipi_dsi.h                    |  101 +-
- 7 files changed, 2451 insertions(+), 2226 deletions(-)
-
+diff --git a/include/drm/drm_mipi_dsi.h b/include/drm/drm_mipi_dsi.h
+index 82b1cc434ea3..70ce0b8cbc68 100644
+--- a/include/drm/drm_mipi_dsi.h
++++ b/include/drm/drm_mipi_dsi.h
+@@ -333,18 +333,18 @@ int mipi_dsi_dcs_get_display_brightness_large(struct mipi_dsi_device *dsi,
+  * @cmd: Command
+  * @seq: buffer containing data to be transmitted
+  */
+-#define mipi_dsi_dcs_write_seq(dsi, cmd, seq...)                           \
+-	do {                                                               \
+-		static const u8 d[] = { cmd, seq };                        \
+-		struct device *dev = &dsi->dev;                            \
+-		int ret;                                                   \
+-		ret = mipi_dsi_dcs_write_buffer(dsi, d, ARRAY_SIZE(d));    \
+-		if (ret < 0) {                                             \
+-			dev_err_ratelimited(                               \
+-				dev, "sending command %#02x failed: %d\n", \
+-				cmd, ret);                                 \
+-			return ret;                                        \
+-		}                                                          \
++#define mipi_dsi_dcs_write_seq(dsi, cmd, seq...)                            \
++	do {                                                                \
++		static const u8 d[] = { cmd, seq };                         \
++		struct device *dev = &dsi->dev;                             \
++		ssize_t ret;                                                \
++		ret = mipi_dsi_dcs_write_buffer(dsi, d, ARRAY_SIZE(d));     \
++		if (ret < 0) {                                              \
++			dev_err_ratelimited(                                \
++				dev, "sending command %#02x failed: %zd\n", \
++				cmd, ret);                                  \
++			return ret;                                         \
++		}                                                           \
+ 	} while (0)
+ 
+ /**
 -- 
 2.45.0.rc0.197.gbae5840b3b-goog
 
