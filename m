@@ -1,83 +1,52 @@
-Return-Path: <linux-kernel+bounces-165596-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-165597-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 330078B8E5D
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 18:41:05 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8C62E8B8E5F
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 18:41:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C1CD81F22E2E
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 16:41:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BD7671C21F3B
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 16:41:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B42AE554;
-	Wed,  1 May 2024 16:40:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kY5cInoV"
-Received: from mail-pg1-f182.google.com (mail-pg1-f182.google.com [209.85.215.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A01B8F58;
-	Wed,  1 May 2024 16:40:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 65FD5EAEB;
+	Wed,  1 May 2024 16:41:17 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85B86DDA1;
+	Wed,  1 May 2024 16:41:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714581656; cv=none; b=SRbOHpct1bctrSIRiIeCw6AVsjoDcnv+gUvflqHYe7iO1wfK5ZSa+O2GjOv3yA2GHC+6mDpH7GSKLal4zpzjEtMH6b9SJWjxfhLW1lge/KZJ9UxEOWWQ3GbGKTo23bLFZoAvddABU5gQzt0HC91oo9n91scwJyDNMuK7zwvJt1Q=
+	t=1714581677; cv=none; b=KokEd9P4S9tdWFOkYQzgCORLhqlIGOFDMfSRUQzshc0yPln8DF3osH8pdV+EszYPYgydSksDs2pR9LG4lbVrelFJz6s9NEj2LKm/QydW5m697RApYd26muzSOhA2WHhYvXJSKPVrnt1jQDZahWHk4219bD44Mazuau5KLaecROM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714581656; c=relaxed/simple;
-	bh=nR1Qm4DJN7uo5wNpi2m2Z/EIIU2ePczqF64Cv0AT5Zo=;
+	s=arc-20240116; t=1714581677; c=relaxed/simple;
+	bh=BQOQVhDGO9cPhZi4LM32TABd3WoSx8+2gBNiKq+LIlo=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=hdwrSLE/oaaexIVnEOfwVFQTYiaYaECV79siAHXoLtA/v/5HbbEZfP5f8QlIdlHcex5i5n5KZISKYAYBzMnUkeGYzttUE+0txEcmhJXbYZ4Ao9ST2cGCQ2Cf6u/jyAkA0qAYGu68z6dLq4f9Iqfl5JWZkr1oJV1U0b9wKkQC1Jg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kY5cInoV; arc=none smtp.client-ip=209.85.215.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f182.google.com with SMTP id 41be03b00d2f7-53fbf2c42bfso4919125a12.3;
-        Wed, 01 May 2024 09:40:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714581654; x=1715186454; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=vUMDq886brWG/iK3lObFVRTNP/KpgYi0SpmrG9l3pfU=;
-        b=kY5cInoVr/o1SE8z3GrZMe6q3YeB3ElZAKBGKltuDaTSpV7DqvzVgsagK7gXfc+Ynu
-         VsaKyIJ5m8BS6Bw0PF+h5kMmZMPw7JDXG88etVG++JFMzsZwVgnzecawYeKsvBujBezR
-         jnMhK+zMwgFFGHsE9id066qhEtgsjAc13ULmLuP56Xhnp9if072OyuyhixIPyYQ0kXuy
-         4dVof1Yq1do9z+tZPlUBeWOTL7ImSzKRdoXgtsQQNQVG/r/MkVWA3uqGrPGo+7SpkLh5
-         d9Do0giag8+EMILUHLVizfa94efhK9yH6Bo9++o41gHbtRBNFbXmmFyWGfpD/tzwiNYs
-         JGJw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714581654; x=1715186454;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=vUMDq886brWG/iK3lObFVRTNP/KpgYi0SpmrG9l3pfU=;
-        b=fidBIvaohSRXqVJ7+PUF16smbkdWCEaxNvmz4DkonUe5qrSnxE/0zyFsDhXx69hskx
-         nXWDvixxyBbtsfo2LdMnI0hGpDLHa8fHhZp9+/OQclDDfZ+XthXSuoGCj8g6qtdfp87O
-         CYEKTB5Sktg9wfgDWdHDoXTKfyRFCAWhrn6uMW/BefAOHFfM3ZZ/XtC1E4lBx3Gj6gWc
-         zZrK9kYke9kWqed7wTLNmQ0c64eUyDrAc3rrZJ/B1uE7Q/mLpv3EE1/GWEr4EU/Q3GAe
-         0g3PqsGC/RtLqxlSv1EBCDk55i2uLN3NNa9a8ZVBsKr7pj0jAWS9mOsxjFzn9PDBq5+3
-         DUrA==
-X-Forwarded-Encrypted: i=1; AJvYcCUq4extWtoEDF5/N1D5OYaj5wNRY9BZqN+bdKLYyJ+XWvytPIYku6fg2unianzKz9ZWQcZX7GxzYK5c01LzEC5c85JQcxmBk2RkEwLGRPqVS5K3/IMj0zp4bqnhcQhjUJtaFWfTUdqZeXtOgQ==
-X-Gm-Message-State: AOJu0YyYWPeaHwhrSz/pTrzeeDv1UQJxg5QlNl/GkeUbsRzLRfVTHJS3
-	vNloyJvukhVUUlKW1J1ZZJ8+hxr30wTJPhBS7NgeCwrCNcohiKwE
-X-Google-Smtp-Source: AGHT+IGORi83PoZPdA3rN9Nzl0hVavuekUtxyDHDG+F20qP/0jKwaPzyRimTL9apcEdpyCq6kmUnFA==
-X-Received: by 2002:a17:90a:1fca:b0:2b0:7f15:9155 with SMTP id z10-20020a17090a1fca00b002b07f159155mr3004322pjz.31.1714581654409;
-        Wed, 01 May 2024 09:40:54 -0700 (PDT)
-Received: from localhost (dhcp-141-239-159-203.hawaiiantel.net. [141.239.159.203])
-        by smtp.gmail.com with ESMTPSA id sx11-20020a17090b2ccb00b002b1750f228csm1546999pjb.7.2024.05.01.09.40.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 01 May 2024 09:40:54 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date: Wed, 1 May 2024 06:40:52 -1000
-From: Tejun Heo <tj@kernel.org>
-To: Kemeng Shi <shikemeng@huaweicloud.com>
-Cc: willy@infradead.org, akpm@linux-foundation.org, jack@suse.cz,
-	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 01/10] writeback: factor out wb_bg_dirty_limits to remove
- repeated code
-Message-ID: <ZjJwlKzSYYR1hx7M@slm.duckdns.org>
-References: <20240429034738.138609-1-shikemeng@huaweicloud.com>
- <20240429034738.138609-2-shikemeng@huaweicloud.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=CdLdMi5IV9ZHPgOET76G+sPoxBQDwq/QOaYya3dsLTRYTP34pXnxoJPjNzdU/9dkwVQSfH9D7ZuOrijro2y5IaiyTx5QbgrvXIWsdNWKcw5wzwwVTRxMtaTVsDmgLjPnv/9kqxAS7pCpiE+oXbhmPJ+XPzucK8G5lMmYjrYVBjM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B86402F4;
+	Wed,  1 May 2024 09:41:39 -0700 (PDT)
+Received: from FVFF77S0Q05N.cambridge.arm.com (FVFF77S0Q05N.cambridge.arm.com [10.1.26.173])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id EC2763F793;
+	Wed,  1 May 2024 09:41:11 -0700 (PDT)
+Date: Wed, 1 May 2024 17:41:06 +0100
+From: Mark Rutland <mark.rutland@arm.com>
+To: Puranjay Mohan <puranjay@kernel.org>
+Cc: Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>, Sumit Garg <sumit.garg@linaro.org>,
+	Stephen Boyd <swboyd@chromium.org>,
+	Douglas Anderson <dianders@chromium.org>,
+	"Peter Zijlstra (Intel)" <peterz@infradead.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	bpf@vger.kernel.org, puranjay12@gmail.com,
+	Ard Biesheuvel <ardb@kernel.org>
+Subject: Re: [PATCH] arm64: implement raw_smp_processor_id() using thread_info
+Message-ID: <ZjJwos7KpvzhoK_f@FVFF77S0Q05N.cambridge.arm.com>
+References: <20240501154236.10236-1-puranjay@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -86,20 +55,112 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240429034738.138609-2-shikemeng@huaweicloud.com>
+In-Reply-To: <20240501154236.10236-1-puranjay@kernel.org>
 
-On Mon, Apr 29, 2024 at 11:47:29AM +0800, Kemeng Shi wrote:
-> Similar to wb_dirty_limits which calculates dirty and thresh of wb,
-> wb_bg_dirty_limits calculates background dirty and background thresh of
-> wb. With wb_bg_dirty_limits, we could remove repeated code in
-> wb_over_bg_thresh.
+Hi Puranjay,
+
+On Wed, May 01, 2024 at 03:42:36PM +0000, Puranjay Mohan wrote:
+> ARM64 defines THREAD_INFO_IN_TASK which means the cpu id can be found
+> from current_thread_info()->cpu.
+
+Nice!
+
+This is something that we'd wanted to do, but there were some historical
+reasons that prevented that. I think it'd be worth describing that in the
+commit message, e.g.
+
+| Historically, arm64 implemented raw_smp_processor_id() as a read of
+| current_thread_info()->cpu. This changed when arm64 moved thread_info into
+| task struct, as at the time CONFIG_THREAD_INFO_IN_TASK made core code use
+| thread_struct::cpu for the cpu number, and due to header dependencies
+| prevented using this in raw_smp_processor_id(). As a workaround, we moved to
+| using a percpu variable in commit:
+|
+|   57c82954e77fa12c ("arm64: make cpu number a percpu variable")
+|
+| Since then, thread_info::cpu was reintroduced, and core code was made to use
+| this in commits:
+|
+|   001430c1910df65a ("arm64: add CPU field to struct thread_info")
+|   bcf9033e5449bdca ("sched: move CPU field back into thread_info if THREAD_INFO_IN_TASK=y")
+|
+| Consequently it is possible to use current_thread_info()->cpu again.
+
+> Implement raw_smp_processor_id() using the above. This decreases the
+> number of emitted instructions like in the following example:
 > 
-> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
+> Dump of assembler code for function bpf_get_smp_processor_id:
+>    0xffff8000802cd608 <+0>:     nop
+>    0xffff8000802cd60c <+4>:     nop
+>    0xffff8000802cd610 <+8>:     adrp    x0, 0xffff800082138000
+>    0xffff8000802cd614 <+12>:    mrs     x1, tpidr_el1
+>    0xffff8000802cd618 <+16>:    add     x0, x0, #0x8
+>    0xffff8000802cd61c <+20>:    ldrsw   x0, [x0, x1]
+>    0xffff8000802cd620 <+24>:    ret
+> 
+> After this patch:
+> 
+> Dump of assembler code for function bpf_get_smp_processor_id:
+>    0xffff8000802c9130 <+0>:     nop
+>    0xffff8000802c9134 <+4>:     nop
+>    0xffff8000802c9138 <+8>:     mrs     x0, sp_el0
+>    0xffff8000802c913c <+12>:    ldr     w0, [x0, #24]
+>    0xffff8000802c9140 <+16>:    ret
+> 
+> A microbenchmark[1] was built to measure the performance improvement
+> provided by this change. It calls the following function given number of
+> times and finds the runtime overhead:
+> 
+> static noinline int get_cpu_id(void)
+> {
+> 	return smp_processor_id();
+> }
+> 
+> Run the benchmark like:
+>  modprobe smp_processor_id nr_function_calls=1000000000
+> 
+>       +--------------------------+------------------------+
+>       |        | Number of Calls |    Time taken          |
+>       +--------+-----------------+------------------------+
+>       | Before |   1000000000    |   1602888401ns         |
+>       +--------+-----------------+------------------------+
+>       | After  |   1000000000    |   1206212658ns         |
+>       +--------+-----------------+------------------------+
+>       |  Difference (decrease)   |   396675743ns (24.74%) |
+>       +---------------------------------------------------+
+> 
+> This improvement is in this very specific microbenchmark but it proves
+> the point.
+> 
+> The percpu variable cpu_number is left as it is because it is used in
+> set_smp_ipi_range()
+> 
+> [1] https://github.com/puranjaymohan/linux/commit/77d3fdd
+> 
+> Signed-off-by: Puranjay Mohan <puranjay@kernel.org>
+> ---
+>  arch/arm64/include/asm/smp.h | 8 ++------
+>  1 file changed, 2 insertions(+), 6 deletions(-)
+> 
+> diff --git a/arch/arm64/include/asm/smp.h b/arch/arm64/include/asm/smp.h
+> index efb13112b408..88fd2ab805ec 100644
+> --- a/arch/arm64/include/asm/smp.h
+> +++ b/arch/arm64/include/asm/smp.h
+> @@ -34,13 +34,9 @@
+>  DECLARE_PER_CPU_READ_MOSTLY(int, cpu_number);
+>  
+>  /*
+> - * We don't use this_cpu_read(cpu_number) as that has implicit writes to
+> - * preempt_count, and associated (compiler) barriers, that we'd like to avoid
+> - * the expense of. If we're preemptible, the value can be stale at use anyway.
+> - * And we can't use this_cpu_ptr() either, as that winds up recursing back
+> - * here under CONFIG_DEBUG_PREEMPT=y.
+> + * This relies on THREAD_INFO_IN_TASK, but arm64 defines that unconditionally.
+>   */
+> -#define raw_smp_processor_id() (*raw_cpu_ptr(&cpu_number))
+> +#define raw_smp_processor_id() (current_thread_info()->cpu)
 
-Acked-by: Tejun Heo <tj@kernel.org>
+I think we can (and should) delete the comment entirely.
 
-Thanks.
-
--- 
-tejun
+Mark.
 
