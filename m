@@ -1,158 +1,227 @@
-Return-Path: <linux-kernel+bounces-165499-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-165501-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 88DBF8B8D4C
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 17:38:00 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B45A08B8D54
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 17:39:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A56E6B2418C
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 15:37:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2C36E1F211A8
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 15:39:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F09B5024E;
-	Wed,  1 May 2024 15:37:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D569012FB06;
+	Wed,  1 May 2024 15:39:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nQRo45x6"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="gwRkcnqz"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96EEB12D76E;
-	Wed,  1 May 2024 15:37:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E71B5024E
+	for <linux-kernel@vger.kernel.org>; Wed,  1 May 2024 15:39:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714577871; cv=none; b=dSoPOzycZsjC520Fh9GL3+ASkma3Dz0fG0zjpEziRt/QTeaU61/qMCXN7gi0cuV55Zqne7uKOxmGm9x0Wq+1dPQZoZv4/SdftfWdlkGxhkf6wk6T9ZAb2xZDlEqwjdB67gKNL+NIuySe13abq/GRsAHIE4as2drhJgc/V9Xo4wM=
+	t=1714577987; cv=none; b=WLThm7iDo6elifD3ao8yHZrMQtglXR26n0Jyr1fkbvdqOCLsQDL6kjgS8ScN0uDLbb1DIXnw6ZPbNvOdKMeYxqeCSCbFL1WnLPAUdYuhUZRt9SHP2n6r5+dRB1y15JGJ7j/K5a0XMIgMQ5DNGSAnKGees0IXtAHXBJ603RsO2nA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714577871; c=relaxed/simple;
-	bh=tOaXeYboyg42eCPqOMwORm62P596gWjbt6g51zfe0Vc=;
+	s=arc-20240116; t=1714577987; c=relaxed/simple;
+	bh=TXnlRUd4wzTg+J3RDLQaov6hXIMql18Rm1XlXmIxRJw=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=rusBVnOAJn7TLFZSmNP4+u9Z0wSPB+dUosIcldYNLzAzjCTGdHv0WtUMbab+BHBKq81yFWCZZTkdu/0nLGBMrLi1rFou78tborMkLr0HgDc15/tNf5I7LrD3kCDy2hb8WkJP8S6SW3eWwu0BkUSQmB0QP8EarSeCIS5PgbkJoDg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nQRo45x6; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9D043C072AA;
-	Wed,  1 May 2024 15:37:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714577871;
-	bh=tOaXeYboyg42eCPqOMwORm62P596gWjbt6g51zfe0Vc=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=nQRo45x6cv1XiZVauPVHrKv0tMy1MzUFsbyTNl1CZlAdqI42DWLtymOOv4AJvNvsa
-	 PnbUiil5j3X15lAmFo/7elGuJcr2ajnhDlrJNvH9fGPavZMnj7yz1uaNbyiJXgzia1
-	 B5SVlYxOXbBxyJFW2aoBftzdWN6dppGsVIZ6ffX2+Ymb2g/jrj0pjNHguV0KhvlvBy
-	 uZjLYorjD+GfHoa4qBSYq5ZZULSjLrvOhhY98/8tCU+4/y4266k3m5qK3URa3WD8qn
-	 2KMw5sn+yaQ3xFoHHMEdC7oNcAocEPYe7X7hyZKeIkjYKCQK4ZVyS7es7gYfjEILsL
-	 3a7Bqp4ohEmUA==
-Date: Wed, 1 May 2024 16:37:47 +0100
-From: Conor Dooley <conor@kernel.org>
-To: linux-riscv@lists.infradead.org
-Cc: Conor Dooley <conor.dooley@microchip.com>,
-	Daire McNamara <daire.mcnamara@microchip.com>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] riscv: dts: microchip: add pac1934 power-monitor to
- icicle
-Message-ID: <20240501-throwing-squeegee-7c3697167309@spud>
-References: <20240501-spearman-primary-17df3c21c770@spud>
+	 Content-Type:Content-Disposition:In-Reply-To; b=fxAjQkXedU/5elsRgZyGGuuH7aB5A9xNYDK9yc9DEFOjomiI6+9oGoCmYW873cDXLiWFKgaGA5jPzQpgUDaR0u8KgRtKJMbIgesCOax1izjRb7wDdu6KoM6b83TtN9hSoQY7/iNcdgtSv3C8y1dldBp+6ztjGA1LnG4wnnOHiOU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=gwRkcnqz; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1714577984;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=7HEIRVOOxs9+Z4JyFqDhStdwNE4nDa7vmALaBzUWy5c=;
+	b=gwRkcnqzQNoKA/c/sIYzp3400oK8EH+TUh6785N12gTORtrOE/Ki1lcZmxLS5vy5d2O1ep
+	Dq72c4kPn69HTtIiBmEq8Kcqc0VkkxVEW7w93XSjBsyfpk7cgPzMrDQ+LcbWkY9/EKiin6
+	xbSUaVPLFrXpog1ZKOYQJtSHrEUKCIE=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-533-sC1vH30zMqy-tC0TGZzU7g-1; Wed,
+ 01 May 2024 11:39:36 -0400
+X-MC-Unique: sC1vH30zMqy-tC0TGZzU7g-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 839D0385A185;
+	Wed,  1 May 2024 15:39:19 +0000 (UTC)
+Received: from lorien.usersys.redhat.com (unknown [10.39.192.58])
+	by smtp.corp.redhat.com (Postfix) with ESMTPS id 4C8511C0654E;
+	Wed,  1 May 2024 15:39:14 +0000 (UTC)
+Date: Wed, 1 May 2024 11:39:11 -0400
+From: Phil Auld <pauld@redhat.com>
+To: Yury Norov <yury.norov@gmail.com>
+Cc: Ankit Jain <ankit-aj.jain@broadcom.com>, linux@rasmusvillemoes.dk,
+	akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
+	juri.lelli@redhat.com, ajay.kaher@broadcom.com,
+	alexey.makhalov@broadcom.com, vasavi.sirnapalli@broadcom.com,
+	Paul Turner <pjt@google.com>, Ingo Molnar <mingo@redhat.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Vincent Guittot <vincent.guittot@linaro.org>,
+	Dietmar Eggemann <dietmar.eggemann@arm.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+	Daniel Bristot de Oliveira <bristot@redhat.com>,
+	Valentin Schneider <vschneid@redhat.com>
+Subject: Re: [PATCH] lib/cpumask: Boot option to disable tasks distribution
+ within cpumask
+Message-ID: <20240501153911.GD39737@lorien.usersys.redhat.com>
+References: <20240430090431.1619622-1-ankit-aj.jain@broadcom.com>
+ <ZjE3C9UgeZR02Jyy@yury-ThinkPad>
+ <20240501133608.GB39737@lorien.usersys.redhat.com>
+ <ZjJfftWMbjT9r8iT@yury-ThinkPad>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="+MZcxOM3iSq3hzNf"
-Content-Disposition: inline
-In-Reply-To: <20240501-spearman-primary-17df3c21c770@spud>
-
-
---+MZcxOM3iSq3hzNf
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <ZjJfftWMbjT9r8iT@yury-ThinkPad>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.7
 
-On Wed, May 01, 2024 at 04:36:31PM +0100, Conor Dooley wrote:
-> From: Conor Dooley <conor.dooley@microchip.com>
->=20
-> The binding for this landed in v6.9, add the description. In the
-> off-chance that there were people carrying local patches for this based
-> on the driver shipped on the Microchip website (or vendor kernel) both
-> the binding and sysfs filenames changed during upstreaming.
->=20
-> Signed-off-by: Conor Dooley <conor.dooley@microchip.com>
-> ---
-> CC: Conor Dooley <conor.dooley@microchip.com>
-> CC: Daire McNamara <daire.mcnamara@microchip.com>
-> CC: Rob Herring <robh@kernel.org>
-> CC: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
-> CC: linux-riscv@lists.infradead.org
-> CC: devicetree@vger.kernel.org
-> CC: linux-kernel@vger.kernel.org
+On Wed, May 01, 2024 at 08:27:58AM -0700 Yury Norov wrote:
+> On Wed, May 01, 2024 at 09:36:08AM -0400, Phil Auld wrote:
+> > 
+> > Hi Yuri,
+> 
+> [...]
+>  
+> > > Not that I'm familiar to your setup, but this sounds like a userspace
+> > > configuration problems. Can you try to move your non-RT tasks into a
+> > > cgroup attached to non-RT CPUs, or something like that? 
+> > >
+> > 
+> > It's not really. In a container environment just logging in to the
+> > container could end up with the exec'd task landing on one of
+> > the polling or latency sensitive cores.
+> > 
+> > In a telco deployment the applications will run containers with
+> > isolated(pinned) cpus with load balacning disabled.  These
+> > containers typically use one of these cpus for its "housekeeping"
+> > with the remainder used for the latency sensitive workloads.
+> > 
+> > Also, this is a change in kernel behavior which is breaking
+> > userspace.
+> 
+> Alright, that's a different story.
+>
 
-I thought I send this out last week, but I could not find the patch on
-either lore or patchwork when I went to apply it today, so I must not
-have...
+It's a specific edge case. I'd prefer to push for a forward solution
+than revert. 
 
-> ---
->  .../boot/dts/microchip/mpfs-icicle-kit.dts    | 32 +++++++++++++++++++
->  1 file changed, 32 insertions(+)
->=20
-> diff --git a/arch/riscv/boot/dts/microchip/mpfs-icicle-kit.dts b/arch/ris=
-cv/boot/dts/microchip/mpfs-icicle-kit.dts
-> index 222a39d90f85..f80df225f72b 100644
-> --- a/arch/riscv/boot/dts/microchip/mpfs-icicle-kit.dts
-> +++ b/arch/riscv/boot/dts/microchip/mpfs-icicle-kit.dts
-> @@ -100,6 +100,38 @@ &i2c0 {
-> =20
->  &i2c1 {
->  	status =3D "okay";
-> +
-> +	power-monitor@10 {
-> +		compatible =3D "microchip,pac1934";
-> +		reg =3D <0x10>;
-> +
-> +		#address-cells =3D <1>;
-> +		#size-cells =3D <0>;
-> +
-> +		channel@1 {
-> +			reg =3D <0x1>;
-> +			shunt-resistor-micro-ohms =3D <10000>;
-> +			label =3D "VDDREG";
-> +		};
-> +
-> +		channel@2 {
-> +			reg =3D <0x2>;
-> +			shunt-resistor-micro-ohms =3D <10000>;
-> +			label =3D "VDDA25";
-> +		};
-> +
-> +		channel@3 {
-> +			reg =3D <0x3>;
-> +			shunt-resistor-micro-ohms =3D <10000>;
-> +			label =3D "VDD25";
-> +		};
-> +
-> +		channel@4 {
-> +			reg =3D <0x4>;
-> +			shunt-resistor-micro-ohms =3D <10000>;
-> +			label =3D "VDDA_REG";
-> +		};
-> +	};
->  };
-> =20
->  &i2c2 {
-> --=20
-> 2.43.0
->=20
+> > We are also hitting this and are interested in a way to get the
+> > old behavior back for some workloads.
+> > 
+> > > > With the introduction of kernel cmdline param 'sched_pick_firstcpu',
+> > > > there is an option provided for such usecases to disable the distribution
+> > > > of tasks within the cpumask logic and use the previous 'pick first cpu'
+> > > > approach for initial placement of tasks. Because many telco vendors
+> > > > configure the system in such a way that the first cpu within a cpuset
+> > > > of pod doesn't run any SCHED_FIFO or High priority tasks.
+> > > > 
+> > > > Co-developed-by: Alexey Makhalov <alexey.makhalov@broadcom.com>
+> > > > Signed-off-by: Alexey Makhalov <alexey.makhalov@broadcom.com>
+> > > > Signed-off-by: Ankit Jain <ankit-aj.jain@broadcom.com>
+> > > > ---
+> > > >  lib/cpumask.c | 24 ++++++++++++++++++++++++
+> > > >  1 file changed, 24 insertions(+)
+> > > > 
+> > > > diff --git a/lib/cpumask.c b/lib/cpumask.c
+> > > > index e77ee9d46f71..3dea87d5ec1f 100644
+> > > > --- a/lib/cpumask.c
+> > > > +++ b/lib/cpumask.c
+> > > > @@ -154,6 +154,23 @@ unsigned int cpumask_local_spread(unsigned int i, int node)
+> > > >  }
+> > > >  EXPORT_SYMBOL(cpumask_local_spread);
+> > > >  
+> > > > +/*
+> > > > + * Task distribution within the cpumask feature disabled?
+> > > > + */
+> > > > +static bool cpumask_pick_firstcpu __read_mostly;
+> > > > +
+> > > > +/*
+> > > > + * Disable Tasks distribution within the cpumask feature
+> > > > + */
+> > > > +static int __init cpumask_pick_firstcpu_setup(char *str)
+> > > > +{
+> > > > +	cpumask_pick_firstcpu = 1;
+> > > > +	pr_info("cpumask: Tasks distribution within cpumask is disabled.");
+> > > > +	return 1;
+> > > > +}
+> > > > +
+> > > > +__setup("sched_pick_firstcpu", cpumask_pick_firstcpu_setup);
+> > > > +
+> > > >  static DEFINE_PER_CPU(int, distribute_cpu_mask_prev);
+> > > >  
+> > > >  /**
+> > > > @@ -171,6 +188,13 @@ unsigned int cpumask_any_and_distribute(const struct cpumask *src1p,
+> > > >  {
+> > > >  	unsigned int next, prev;
+> > > >  
+> > > > +	/*
+> > > > +	 * Don't distribute, if tasks distribution
+> > > > +	 * within cpumask feature is disabled
+> > > > +	 */
+> > > > +	if (cpumask_pick_firstcpu)
+> > > > +		return cpumask_any_and(src1p, src2p);
+> > > 
+> > > No, this is a wrong way.
+> > > 
+> > > To begin with, this parameter shouldn't control a single random
+> > > function. At least, the other cpumask_*_distribute() should be
+> > > consistent to the policy.
+> > > 
+> > > But in general... I don't think we should do things like that at all.
+> > > Cpumask API is a simple and plain wrapper around bitmaps. If you want
+> > > to modify a behavior of the scheduler, you could do that at scheduler
+> > > level, not in a random helper function.
+> > > 
+> > > Consider 2 cases:
+> > >  - Someone unrelated to scheduler would use the same helper and will
+> > >    be affected by this parameter inadvertently.
+> > >  - Scheduler will switch to using another function to distribute CPUs,
+> > >    and your setups will suddenly get broken again. This time deeply in
+> > >    production.
+> > >
+> > 
+> > Yeah, I think I agree with this part.  At the scheduler level, where this
+> > is called, makes more sense. 
+> > 
+> > Note, this is "deeply in production" now...
+> 
+> So, if we all agree that touching cpumasks is a bad idea, let's drop
+> this patch and try figuring out a better solution.
+> 
+> Now that you're saying the scheduler patches break userspace, I think
+> it would be legitimate to revert them, unless there's a simple fix for
+> that.
 
---+MZcxOM3iSq3hzNf
-Content-Type: application/pgp-signature; name="signature.asc"
+As I said above let's try to go forward if we can. I'd argue that relying
+on the old first cpu selection is not really an API, or documented so I
+don't think a revert is needed.
 
------BEGIN PGP SIGNATURE-----
+I think a static key at the one or two places _distribute() is used
+in the scheduler (and workqueue?) code would have the same effect as
+this and be a better fit. 
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZjJhywAKCRB4tDGHoIJi
-0vfCAQDUQJl/9kA+o/1f2k4AfVeR23NVv5bpvBhPTJlsCaqglgD/UwU8NzXpVJ/v
-GvE592tD3NfALiCT5CbMseoQWp0xugY=
-=iZ82
------END PGP SIGNATURE-----
 
---+MZcxOM3iSq3hzNf--
+Cheers,
+Phil
+
+> 
+> Let's see what the folks will say. Please keep me in CC.
+> 
+> Thanks,
+> Yury
+> 
+
+-- 
+
 
