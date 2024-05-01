@@ -1,113 +1,202 @@
-Return-Path: <linux-kernel+bounces-165321-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-165320-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 447CC8B8B43
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 15:33:51 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5B7E98B8B3F
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 15:33:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DA1521F23466
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 13:33:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8B9161C216FE
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 13:33:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E2FBC12E1E4;
-	Wed,  1 May 2024 13:33:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F59812E1E2;
+	Wed,  1 May 2024 13:32:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BdNsCGdc"
-Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="F6vq4feq"
+Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16DCD12DDB0;
-	Wed,  1 May 2024 13:33:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5313812DDBC
+	for <linux-kernel@vger.kernel.org>; Wed,  1 May 2024 13:32:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714570424; cv=none; b=hBGbWXFD8S4VSaJtUiwRiPbp6AvQ4SujGK9Np716Uu1uMQ6bK8A8nEKN1jnnb2vIA3tGfL8Gz1HS3/aN/vOatuf2s2PHAK5cTvmEvVyiJ/ciNtZNV0OPJ6qGGhU0u+CvG2RxrZ8azV3XDn3y6zAyvg1K6GP6d8k02DtWYmqCs2s=
+	t=1714570373; cv=none; b=XD/S82V7+H07fKoxUSroZa6nFTPamPvEVslez9Fn1YJ6mKivsv45mxVKLc6Y8eft0ijVCUluAf9Y3hvqz7A7/F5jail91dAzvWPw+8R/mZTok+fXAMRCayan3KzdL4IxsbYesjKGSPs+4gqucfgGC/VadOye1CTywSTxj+bqKpE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714570424; c=relaxed/simple;
-	bh=v1uq+AqyCYjTejfbtW5mvJzoxMflu+kesffuEm3SeEI=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=J1qj5FylZj6DFHkwcgNxyKYj48Y5cdDFvySAEch/CNB2DT+5/nuUbWH3dhWAzf1FbhpGbQMNOkiVGtIe5rQ86Ls1HFdcy72MHYr2HxFlwkU+RcoPiD3awqiA+VeaKjuOjQiMbGObhPoQys6lmM0TI4yYw8fPqWJDnKVrV467t+U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BdNsCGdc; arc=none smtp.client-ip=209.85.214.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-1ec69e3dbe5so12082975ad.0;
-        Wed, 01 May 2024 06:33:42 -0700 (PDT)
+	s=arc-20240116; t=1714570373; c=relaxed/simple;
+	bh=ZqcDVgO1hmm+00KuoWmbr7W1NZLQvg1QhUiwr8SEKP0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=QLxe0N2aSztik36UFqDXwOY/wnY78aBWRY1YN4AkVJuNzODrnOdgGSKlwPrfrqaxpRgs+BWZb4WKZ84WolZ40jUeb8khN6V06UcYYPyHcOisOHOfHGpmmeegzl0TbwICa05iILLgcEZ75xgWdKzmgBPwI381tbXTikAP4vDDq34=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=F6vq4feq; arc=none smtp.client-ip=209.85.221.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-34dc9065606so334682f8f.1
+        for <linux-kernel@vger.kernel.org>; Wed, 01 May 2024 06:32:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714570422; x=1715175222; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=RIs2EAnwhy7zwu/YLIZtkKABdkCncOCCKCOVBsGpvIA=;
-        b=BdNsCGdcqgcqVexGQrbg/DJ+fklwWTfkZL7NTPXycG4Om0c9e8VU9TShvK63b/CZdb
-         zMr52VghsyYXzq/rGi9StMvZJBlDGjH8y2cZzaTkYNhfUTTJZLcy/I4xHbi9xnYloO2u
-         jBzdyGpF1bILKMwAkJ9GkUFRmGFz93ZH8YI11vDcQjICsO3TQVIzSrkWQmc1Sa05bdZV
-         OFtXZeV3wBZisXojvoufn5I6emQc8XQPjMwbDCPFVeVrdDgMoGNa8gQQP68ea6rtKDHL
-         YXlPrMaBC2UG4HIVj4hQ4jp+I16hCkzlSaXco57VCJhrNHsFp60afPTnUWKllC5Co4iy
-         TAQA==
+        d=linaro.org; s=google; t=1714570370; x=1715175170; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=ior2gPFVlEOyeV8FJQcXfdx4VXM0R/609sKh6Of53VM=;
+        b=F6vq4feq2N5K6oTj556OwcPXVHZ7iw0HaZm1/3fK7K35ZYPLVA0aEuiko5H4MqYkQh
+         qSe5VEjBpSX5FByvdImvMsfRPr6G+ZrVMz0YoI/HbJ3QeVzdcsCZ6ZekbH6GTvtKEgj1
+         WBCFyOatej8cYNzphRSYOmgr3QN/8q7hkrGHzYwN2POMuPVHWKe9DGe0pKFAEUO1l1t6
+         mWgb4K4+leSysSgczOEMCz+aChc6vudaAWSlV36rkLHpFSd8ZfJb/sGN0wvi8bxq04eA
+         vcRNjkl/2HVD/Q82Qhv9vnhuCGOS9syNHALjM4eJ72PUF/+Nuxe0rEm7F19s8DlUBlhg
+         xPaQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714570422; x=1715175222;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=RIs2EAnwhy7zwu/YLIZtkKABdkCncOCCKCOVBsGpvIA=;
-        b=e6P6n+ZfXrbb45DBw60LzcDw2aBcBlVTxEj77cbgeTa9QKRMRZQ/hjf7aSphSn2oeP
-         1WrMP+4gQKleaKAEZtxL2INongZMFSUWuqhyeNeukPD6NpjLg+64qfiiaMoURJrV/Zwk
-         1ZU9VrOi4qD4MxneZEgs9MZQLsbrj5I8YT5FIjEFiAGxbF5UjzrMGWqgvjIvJfP2LYCV
-         g1sUG1HsEHyTcYyne+wdTF37UUr30WFoDaQODt85SCBE/0ZXtL1vLzyMEMjN2vODv41c
-         QwfP7jvgeRCTsOuFnpVjMQuILDawvJ3c17f9jQ26usSEWwpoVjmcQEF6p3uMoxHt1MfH
-         2IqA==
-X-Forwarded-Encrypted: i=1; AJvYcCXjQ7xX2auAqAljn9jp2eW5sWgLC/jLF/pGGvZH0iAuNFSRiRfc6qJZdH9mMcS+tr+qFlXG5Zc7I+jTO/eNWT2kOWru2rDMU84+dONKaG+9kQ66X2lyulTc6HVZ++nZJVVqjnwL97FC
-X-Gm-Message-State: AOJu0Yxx3pp0tuUM0NAjrl20lSuGQgrn0x/y4YbQZj0RFearG7m17jsg
-	o4zZHw3FbPyPiXnVRBki2/8ERpYFzAFHbmx821EUUEQvQl6ahFQ=
-X-Google-Smtp-Source: AGHT+IGoLzo5WXbR9Dq1fTr1Mlwf77nJ95s7iCo/7aejTpbvHOgX2b3snoBNCMj1rdhtryNIvOLIIg==
-X-Received: by 2002:a17:903:191:b0:1e6:7731:80 with SMTP id z17-20020a170903019100b001e677310080mr2959626plg.11.1714570422111;
-        Wed, 01 May 2024 06:33:42 -0700 (PDT)
-Received: from utkarsh-ROG-Zephyrus-G14-GA401II-GA401II.. ([117.203.246.41])
-        by smtp.gmail.com with ESMTPSA id l6-20020a170903244600b001ea963d0d58sm12435926pls.137.2024.05.01.06.33.38
+        d=1e100.net; s=20230601; t=1714570370; x=1715175170;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ior2gPFVlEOyeV8FJQcXfdx4VXM0R/609sKh6Of53VM=;
+        b=cPa4a6OEExtJJRjVuUWnj5KtYThQtHzojT44SuqKh8utsPVMciTP4bQQwdBI8mzOJ9
+         agDsDmcVBH51wo7CQMaL5/I5G/d938k/FA+fbgwzboi7yHKcmMwtgXdJ1lGyIaCWx8q/
+         OqWWpB62S//GqDhGG8XgYE508JmUOO8+0PNqBOPvAdbItingjRZxnsdqI8VL1qVDBnI/
+         zKdfcncCuV+sM4XgCuc788BPYFBvDqnCVB6CP1OHKpIpFerncEOzUF0y4Ozr1YjTr9Pa
+         FE2hoYBdscJP6LzIT5K0RDl1YP8q3qyX84tTS6FOh68x04KwZP7asupBO7MMNB9lBpyl
+         BF0g==
+X-Forwarded-Encrypted: i=1; AJvYcCUqf8I7vXzoA7nCxEp4QSbf9aanEi7PhDXyWP3EBfVsRca+WUQgRqSCyAMs3tI3Wq0WTU7WOA5ANNi1LFOyTvZzmZcwx3XYv06aO8k7
+X-Gm-Message-State: AOJu0YySZNX+7dnNysz3Yp5CSWiU4la6DMwCZSu9a9VSEXCs8POp5XtZ
+	aHrVq8lLJMPXLH0LPff4cYRJ0PFYZYCAYqqTcixnMO1Q6nB86w7MJqVBiWJ+W7A=
+X-Google-Smtp-Source: AGHT+IHuNu3c35RsAkvpJAfWqKVWQhv6Z4Ac0yjTjDmpBKt12bv5Zna3drXEkGYfHrENBoZl/SwOjw==
+X-Received: by 2002:a05:6000:24f:b0:34c:bf22:73f9 with SMTP id m15-20020a056000024f00b0034cbf2273f9mr2265612wrz.28.1714570369370;
+        Wed, 01 May 2024 06:32:49 -0700 (PDT)
+Received: from localhost ([102.222.70.76])
+        by smtp.gmail.com with ESMTPSA id d4-20020adfe2c4000000b0034a3a0a753asm32876234wrj.100.2024.05.01.06.32.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 01 May 2024 06:33:41 -0700 (PDT)
-From: Utkarsh Tripathi <utripathi2002@gmail.com>
-To: tj@kernel.org,
-	jiangshanlai@gmail.com,
-	skhan@linuxfoundation.org
-Cc: Utkarsh Tripathi <utripathi2002@gmail.com>,
-	linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] Sphinx error fixed for inline literal end-string in include/linux/workqueue.h
-Date: Wed,  1 May 2024 19:02:40 +0530
-Message-Id: <20240501133240.6003-1-utripathi2002@gmail.com>
-X-Mailer: git-send-email 2.34.1
+        Wed, 01 May 2024 06:32:49 -0700 (PDT)
+Date: Wed, 1 May 2024 16:32:40 +0300
+From: Dan Carpenter <dan.carpenter@linaro.org>
+To: "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
+Cc: Linus Walleij <linus.walleij@linaro.org>,
+	Thierry Reding <thierry.reding@gmail.com>,
+	Jonathan Hunter <jonathanh@nvidia.com>,
+	Dvorkin Dmitry <dvorkin@tibbo.com>, Wells Lu <wellslutw@gmail.com>,
+	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+	Alexandre Torgue <alexandre.torgue@foss.st.com>,
+	Emil Renner Berthing <kernel@esmil.dk>,
+	Jianlong Huang <jianlong.huang@starfivetech.com>,
+	Hal Feng <hal.feng@starfivetech.com>,
+	Orson Zhai <orsonzhai@gmail.com>,
+	Baolin Wang <baolin.wang@linux.alibaba.com>,
+	Chunyan Zhang <zhang.lyra@gmail.com>,
+	Viresh Kumar <vireshk@kernel.org>,
+	Shiraz Hashim <shiraz.linux.kernel@gmail.com>, soc@kernel.org,
+	Krzysztof Kozlowski <krzk@kernel.org>,
+	Sylwester Nawrocki <s.nawrocki@samsung.com>,
+	Alim Akhtar <alim.akhtar@samsung.com>,
+	Geert Uytterhoeven <geert+renesas@glider.be>,
+	Patrice Chotard <patrice.chotard@foss.st.com>,
+	Heiko Stuebner <heiko@sntech.de>,
+	Damien Le Moal <dlemoal@kernel.org>,
+	Ludovic Desroches <ludovic.desroches@microchip.com>,
+	Nicolas Ferre <nicolas.ferre@microchip.com>,
+	Alexandre Belloni <alexandre.belloni@bootlin.com>,
+	Claudiu Beznea <claudiu.beznea@tuxon.dev>,
+	Dong Aisheng <aisheng.dong@nxp.com>,
+	Fabio Estevam <festevam@gmail.com>, Shawn Guo <shawnguo@kernel.org>,
+	Jacky Bai <ping.bai@nxp.com>,
+	Pengutronix Kernel Team <kernel@pengutronix.de>,
+	Chester Lin <chester62515@gmail.com>,
+	Matthias Brugger <mbrugger@suse.com>,
+	Ghennadi Procopciuc <ghennadi.procopciuc@oss.nxp.com>,
+	Sean Wang <sean.wang@kernel.org>,
+	Matthias Brugger <matthias.bgg@gmail.com>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	Sascha Hauer <s.hauer@pengutronix.de>,
+	Andrew Jeffery <andrew@codeconstruct.com.au>,
+	Joel Stanley <joel@jms.id.au>, linux-gpio@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-stm32@st-md-mailman.stormreply.com,
+	linux-samsung-soc@vger.kernel.org,
+	linux-renesas-soc@vger.kernel.org,
+	linux-rockchip@lists.infradead.org, linux-riscv@lists.infradead.org,
+	linux-mediatek@lists.infradead.org, imx@lists.linux.dev,
+	linux-aspeed@lists.ozlabs.org, openbmc@lists.ozlabs.org,
+	Peng Fan <peng.fan@nxp.com>
+Subject: Re: [PATCH 01/21] pinctrl: ti: iodelay: Use scope based
+ of_node_put() cleanups
+Message-ID: <ee5c8637-b8b2-491b-b011-e399942691dc@moroto.mountain>
+References: <20240501-pinctrl-cleanup-v1-0-797ceca46e5c@nxp.com>
+ <20240501-pinctrl-cleanup-v1-1-797ceca46e5c@nxp.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240501-pinctrl-cleanup-v1-1-797ceca46e5c@nxp.com>
 
-Fixed Error in Workqueue Documentation in the kernel-doc comment 
-for alloc_workqueue function in include/linux/workqueue.h, 
-the error was "Inline literal start-string without end-string" 
-which was fixed by removing the inline literal.
-Kernel Version - 6.9.0-rc5
+On Wed, May 01, 2024 at 08:55:59PM +0800, Peng Fan (OSS) wrote:
+> @@ -879,16 +874,12 @@ static int ti_iodelay_probe(struct platform_device *pdev)
+>  	ret = pinctrl_register_and_init(&iod->desc, dev, iod, &iod->pctl);
+>  	if (ret) {
+>  		dev_err(dev, "Failed to register pinctrl\n");
+> -		goto exit_out;
+> +		return ret;
+>  	}
+>  
+>  	platform_set_drvdata(pdev, iod);
+>  
+>  	return pinctrl_enable(iod->pctl);
+> -
+> -exit_out:
+> -	of_node_put(np);
+> -	return ret;
+>  }
 
-Signed-off-by: Utkarsh Tripathi <utripathi2002@gmail.com>
----
- include/linux/workqueue.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+This will call of_node_put() on the success path so it's a behavior
+change.  The original code is buggy, it's supposed to call of_node_put()
+on the success path here or in ti_iodelay_remove().
 
-diff --git a/include/linux/workqueue.h b/include/linux/workqueue.h
-index 158784dd189a..b4aebd981a23 100644
---- a/include/linux/workqueue.h
-+++ b/include/linux/workqueue.h
-@@ -490,7 +490,7 @@ void workqueue_softirq_dead(unsigned int cpu);
-  * min_active which is set to min(@max_active, %WQ_DFL_MIN_ACTIVE). This means
-  * that the sum of per-node max_active's may be larger than @max_active.
-  *
-- * For detailed information on %WQ_* flags, please refer to
-+ * For detailed information on WQ_* flags, please refer to
-  * Documentation/core-api/workqueue.rst.
-  *
-  * RETURNS:
--- 
-2.34.1
+If it's supposed to call of_node_put() here, then fine, this is bugfix
+but if it's supposed to call it in ti_iodelay_remove() then we need to
+save the pointer somewhere using no_free_ptr().  Probably saving ->np
+is the safest choice?
+
+The original code is already a little bit buggy because it doesn't
+check for pinctrl_enable() errors and cleanup.
+
+
+diff --git a/drivers/pinctrl/ti/pinctrl-ti-iodelay.c b/drivers/pinctrl/ti/pinctrl-ti-iodelay.c
+index 040f2c46a868..f40a1476e4ff 100644
+--- a/drivers/pinctrl/ti/pinctrl-ti-iodelay.c
++++ b/drivers/pinctrl/ti/pinctrl-ti-iodelay.c
+@@ -156,6 +156,7 @@ struct ti_iodelay_device {
+ 
+ 	const struct ti_iodelay_reg_data *reg_data;
+ 	struct ti_iodelay_reg_values reg_init_conf_values;
++	struct device_node *np;
+ };
+ 
+ /**
+@@ -884,7 +885,12 @@ static int ti_iodelay_probe(struct platform_device *pdev)
+ 
+ 	platform_set_drvdata(pdev, iod);
+ 
+-	return pinctrl_enable(iod->pctl);
++	ret = pinctrl_enable(iod->pctl);
++	if (ret)
++		goto exit_out;
++
++	iod->np = no_free_ptr(np);
++	return 0;
+ 
+ exit_out:
+ 	of_node_put(np);
+@@ -903,6 +909,7 @@ static void ti_iodelay_remove(struct platform_device *pdev)
+ 		pinctrl_unregister(iod->pctl);
+ 
+ 	ti_iodelay_pinconf_deinit_dev(iod);
++	of_node_put(iod->np);
+ 
+ 	/* Expect other allocations to be freed by devm */
+ }
+
+
+
 
 
