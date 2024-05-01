@@ -1,111 +1,135 @@
-Return-Path: <linux-kernel+bounces-165783-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-165785-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 874A38B9187
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 00:06:23 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 364A48B918C
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 00:08:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3D3471F22E8E
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 22:06:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9379428575F
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 22:08:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A772E165FD6;
-	Wed,  1 May 2024 22:06:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2529D165FD7;
+	Wed,  1 May 2024 22:08:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="PUA60mfw"
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FWzhgUUw"
+Received: from mail-pj1-f46.google.com (mail-pj1-f46.google.com [209.85.216.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC3DB1649A8;
-	Wed,  1 May 2024 22:06:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 338F7165FAA;
+	Wed,  1 May 2024 22:08:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714601174; cv=none; b=BMju/YlitrRB4m6FKMByVfEUVlPnrdcDk91BDgeJ7weOHcUuZTZfxc8FilmLXfdBeUI8WheGveD3CgMP6bMevTit0TuSP1d9/feVvGat7J6KQ0eMf7/fphP36cftry4IC7iAMnab8lLHWUkDTHzdU9uMei2DK0qfKd9TQ24v+z0=
+	t=1714601296; cv=none; b=dx8aIwckSMupTM3H9HUq+ywWD8Itdzxgz5NsYQ/QFkw/OCF5HavSPpYhumWTiUB+mFD5WAsnBvvVeN9DCqmdRYXRXQ2/9gCrzfQzf7nBwEZeAq4+tW562Uw5L4af0n+cluTuQjUqW0+mWd0d8yfnLsNRystyjfvvO/NVMWhbotY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714601174; c=relaxed/simple;
-	bh=h5/Bf9TDZQL4DKdeJo0EsruEaQY9edKPqbpWJiW44JI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=BEIfz2kF9vMgNVc0q6T6TOuzrahJ/ok3fqi/hj9hWXq7eVvLMv0i6rsD7qMW5q+fBzBnzrPVhfNW6SVH4jfd3TfZakfDL7KwzQ9ZIWk+/6qlJcJIBzlS0rTWAgxrNzKToH+J4/al6NwXUTehCeEtmqDo5qAiHKipATqTY/QApnc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=PUA60mfw; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=sm0RzHylR5Zw9bOYvZFFoHhRX899/0BlSNXO6Xo2wxI=; b=PUA60mfwCcmYT5Y4hGx/5oenxS
-	JcgVYk8xSO4t/Iktb2IEdf8FSfSP5/+Q8uDWlEt1sAyG7YWVLHmfAw2CXARVf6u4dktB7l1dL9npd
-	pEg2ZZyTdDRg9wU+MDdQw7nB3mo5S7kbH2/ioilACesFLIop/JtDuSx0hWYimDbEKebt6gjNArEXR
-	3rJ9rqMmv8QCYyFDivehLSsg1UU3vIwj2QhAU/j40xmLMfO96RwOHc20ZgmbR6YfPaZSVGWJ78LJE
-	Fm9IS2M355V6DPt0w4Gyckjp+iGMaYPGbuCCee1w9RcQvl+S2jQHq4Dew4HKLYFQbiXZZMMl03QDM
-	oa7yPR1Q==;
-Received: from mcgrof by bombadil.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1s2I5U-0000000Amjt-1n7n;
-	Wed, 01 May 2024 22:06:04 +0000
-Date: Wed, 1 May 2024 15:06:04 -0700
-From: Luis Chamberlain <mcgrof@kernel.org>
-To: David Hildenbrand <david@redhat.com>
-Cc: akpm@linux-foundation.org, ziy@nvidia.com, linux-mm@kvack.org,
-	fstests@vger.kernel.org, linux-xfs@vger.kernel.org,
-	linux-kernel@vger.kernel.org, willy@infradead.org, hare@suse.de,
-	john.g.garry@oracle.com, p.raghav@samsung.com, da.gomez@samsung.com
-Subject: Re: [PATCH] mm/huge_memory: move writeback and truncation checks
- early
-Message-ID: <ZjK8zDzIjN3xPR9n@bombadil.infradead.org>
-References: <20240424225736.1501030-1-mcgrof@kernel.org>
- <37374089-895f-4c6f-a2f5-33859eb02b13@redhat.com>
+	s=arc-20240116; t=1714601296; c=relaxed/simple;
+	bh=Fzok5aJqa4+7oGLlWSOjZLQFV+oy3BXKUkmid8inYTA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=bmmRvrRGusRFg51jS5f/ox7BzOmtLgMvrj34K8mJteMYyWzELd8XEu4QSYpwnzSvY4ylmcb3xoQSHwSrRJ1JLidbJKJyjJI4TBGSwXdMiZGVUlhneiIssCthF41VEu+SdtW+p0/uAyXWqgOonzWvhO5Hrhfrr8BWOZ0fp05OLMY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FWzhgUUw; arc=none smtp.client-ip=209.85.216.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f46.google.com with SMTP id 98e67ed59e1d1-2a526803fccso4872411a91.1;
+        Wed, 01 May 2024 15:08:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1714601294; x=1715206094; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Fzok5aJqa4+7oGLlWSOjZLQFV+oy3BXKUkmid8inYTA=;
+        b=FWzhgUUwf9BvLzXNxmjNHTYlTqQSPvIaovYdhbhZgPPY0rm0K8FKetLmIHK7pmt/pB
+         TRKheL/AKcUpY9s6ephsn5xMDm2HAprRSqd/8qPgVrHeOZUAOfumB2au0CEgPQLe40BC
+         lg4B9L3ocw0JoKBCLJ8bvfx2jmZkaE5m6osQjgdkJ60GkWLL18XtPKIlvksukRFIq1sT
+         kvXZGAfHsEU5DpX/s74wQPxyC/z1i3OtdcgXaPtYE3kdXHUeyBvdkrB9Q/ObKCmtA6c3
+         apJvWa6+GtKn6S124YKP/J1AZQ1Vd+LPonBqwOzgVAMgiqidqcRSfm2EZQv51dQdSSHU
+         ZmEw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714601294; x=1715206094;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Fzok5aJqa4+7oGLlWSOjZLQFV+oy3BXKUkmid8inYTA=;
+        b=gvI7E5gNTKm4BSiK9syW3RcRM23hvPaxVYDAIYPYDb6RfKDEZF866cW5sFwtG6TUHj
+         9mixi3x/VQSkf764nFwD04pWiCX1JHWbpukvh6+tu7IwvF1T5lVq1kmZXdSNb0hei8rW
+         BiVzZn+ubQK3Y56XW9ReYDxvNS/i07244R3Iq4WyQ/WVJP6g7jcFu9ue6MTzGqZ0UzEb
+         j47nBnnhOsQSuWAJv72YUcrNlBFuQSvVmpS4lZjbJGycHnWP0G0N9Zuncl/1M9fZKdpI
+         XP0kv5mvRDqfPKEQCxBRfcCE/opu1hxM3I2WgP22JHqD3AVHDK9jLpZSEYbcN0Mldntr
+         +SUw==
+X-Forwarded-Encrypted: i=1; AJvYcCWPvjnJh2HxBwoLwEEByeHTQoHceM1Z0GNY6gk8CjkG/85qmU0AXyDcUwr6DWI1soP9OorxpTnfttRXlQ7h/37E09djKa4fw5E3i2MVoNWovBpjv/LKj+frdMziLxFgqNvYbLr2zg7L3FBHh8k=
+X-Gm-Message-State: AOJu0YzbVmghV6BvyQz2QFJnU7pd8J24u5Mf1RJMg0GO4ljR/UiIKvMq
+	rV1jQn0BgcdjuKDw5wLiNDmRViGwvfl3G6qqwuONEPTDKEKfqx7qx0p8xbf1b+SyCZXbBScmb16
+	r8ofJ5BwGPUwQJgFP95v76j54/mM=
+X-Google-Smtp-Source: AGHT+IGVV48XRtpNQ9/4wKjJtS7cTSF5aA0dcNMF5dGvaXLHjGojpjfQteWjzWdxyzR3mWNJlAsihyloF0y5iS07LWY=
+X-Received: by 2002:a17:90a:b389:b0:2b1:1c9d:fa8d with SMTP id
+ e9-20020a17090ab38900b002b11c9dfa8dmr3595697pjr.28.1714601294400; Wed, 01 May
+ 2024 15:08:14 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <37374089-895f-4c6f-a2f5-33859eb02b13@redhat.com>
-Sender: Luis Chamberlain <mcgrof@infradead.org>
+References: <20240328013603.206764-1-wedsonaf@gmail.com> <20240408094738.00005e59.zhiw@nvidia.com>
+In-Reply-To: <20240408094738.00005e59.zhiw@nvidia.com>
+From: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date: Thu, 2 May 2024 00:06:57 +0200
+Message-ID: <CANiq72nrMpg_dk4eM2Ve+aOi7QF4U-SCvLpx9PMD6o=6sdzOYQ@mail.gmail.com>
+Subject: Re: [PATCH v3 00/10] Allocation APIs
+To: Zhi Wang <zhiw@nvidia.com>
+Cc: Wedson Almeida Filho <wedsonaf@gmail.com>, rust-for-linux@vger.kernel.org, 
+	Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, 
+	Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, 
+	=?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
+	Benno Lossin <benno.lossin@proton.me>, Andreas Hindborg <a.hindborg@samsung.com>, 
+	Alice Ryhl <aliceryhl@google.com>, linux-kernel@vger.kernel.org, 
+	Wedson Almeida Filho <walmeida@microsoft.com>, John Hubbard <jhubbard@nvidia.com>, Neo Jia <cjia@nvidia.com>, 
+	Andy Currid <acurrid@nvidia.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Apr 25, 2024 at 11:40:48AM +0200, David Hildenbrand wrote:
-> On 25.04.24 00:57, Luis Chamberlain wrote:
-> > We should check as early as possible if we should bail due to writeback
-> > or truncation. This will allow us to add further sanity checks earlier
-> > as well.
-> > 
-> > This introduces no functional changes.
-> > 
-> > Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
-> > ---
-> >   mm/huge_memory.c | 23 +++++++++++------------
-> >   1 file changed, 11 insertions(+), 12 deletions(-)
-> > 
-> > While working on min order support for LBS this came up as an improvement
-> > as we can check for the min order early earlier, so this sets the stage
-> > up for that.
-> > 
-> > diff --git a/mm/huge_memory.c b/mm/huge_memory.c
-> > index 86a8c7b3b8dc..32c701821e0d 100644
-> > --- a/mm/huge_memory.c
-> > +++ b/mm/huge_memory.c
-> > @@ -3055,8 +3055,17 @@ int split_huge_page_to_list_to_order(struct page *page, struct list_head *list,
-> >   	if (new_order >= folio_order(folio))
-> >   		return -EINVAL;
-> > -	/* Cannot split anonymous THP to order-1 */
-> > -	if (new_order == 1 && folio_test_anon(folio)) {
-> > +	if (folio_test_writeback(folio))
-> > +		return -EBUSY;
-> > +
-> 
-> Why earlier than basic input parameter checks (new_order?
-> 
-> Sorry, but I don't see the reason for that change. It's all happening
-> extremely early, what are we concerned about?
-> 
-> It's likely better to send that patch with the actual patch "to add further
-> sanity checks earlier as well", and why they have to be that early.
+On Mon, Apr 8, 2024 at 8:48=E2=80=AFAM Zhi Wang <zhiw@nvidia.com> wrote:
+>
+> IMO, It seems the allocation flag here means GFP flags according to
+> Patch 5 and I understand the benefit of introducing the flags.
+>
+> I am interested in the future plan. With this change, will Vec and Box
+> stick to kernel memory application APIs with GFP flags in the future?
+> e.g. GUP, kmalloc, those mostly allocates continuous memory for small
+> objects. Is that the future for Vec and Box in kernel?
+>
+> Is there any plan for having vmalloc() in rust kernel? Currently, if I
+> push a large object into a Vec, kernel MM will complain for sure. And
+> literally Vec/Box themselves don't imply to the user that they allocate
+> memory with limitations.
+>
+> Kernel uses different MM alloc APIs for different usages. For rust,
+> should we have a different kind of "Vec/Box" or having a Vec/Box with
+> different set of allocation flags that covers both GFP MM APIs and
+> vmalloc()? I am curious about the plan.
 
-It's a clear eye-sore when we add min order, I'll leave the eyesores for
-others. It can wait.
+Sorry Zhi, Danilo brought this message to my attention today (thanks!).
 
-  Luis
+We have been trying to find the best way forward to support fallible
+allocations, per-call-site flags, other kernel allocators and so on
+for a long time, including discussions with upstream Rust.
+
+At this point, after these years, I think the ideal path is to try our
+best to avoid re-enabling `allocator_api` and to have perhaps our own
+custom APIs/types as needed (possibly several depending on the use
+case) -- please also see my reply at
+https://lore.kernel.org/rust-for-linux/CANiq72=3D0BNw-KiURBjosLqfuUEPpjZPbR=
+g1XMFZyobOzBt7aMA@mail.gmail.com/
+
+Regarding this patch series, we mainly wanted to make progress on
+(finally) allowing at least to use the GFP flags and also,
+importantly, dropping `alloc` since we want to start supporting
+several compiler versions soon.
+
+Thank you for your feedback on this. It would be nice to hear what you
+think about Danilo's approach in the other series and other possible
+approaches that may not rely on `allocator_api`.
+
+Cheers,
+Miguel
 
