@@ -1,45 +1,45 @@
-Return-Path: <linux-kernel+bounces-165187-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-165190-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 69A588B8947
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 13:34:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id D16DF8B894D
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 13:36:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2EEA9284F76
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 11:34:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8C7BC284FF3
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 11:36:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A6F67BB01;
-	Wed,  1 May 2024 11:34:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 650567E777;
+	Wed,  1 May 2024 11:36:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Y6Jf84Lb"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="vJxJM/vv"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 495D055E6E;
-	Wed,  1 May 2024 11:34:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1E0864A98;
+	Wed,  1 May 2024 11:36:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714563276; cv=none; b=ZiK97VaAcKrD49Ewr4SLFiQ9z1ZbFetjqhjLR2N10DYz5OW4gTa57HAdi+zBTsMes9CyA4Za0FNr3KSmp1Y/Bixz7ahQzCkWQ1QVFzqUEWc3hQzdNAsMzD8dRLzBaGvgOLAkcew7pw51wvs6oYGcL8R0ljl3JFrnepFy1LXKkZQ=
+	t=1714563370; cv=none; b=Zn6S5F0AKMIZqx/8qbf0A51sTdCDkHEm65Ka7Y0qsnwMAWgRmZFQY7TZMV5nxhCxemqRnSUddD5UE/unmsWbNUIBdcHjZtpG1asvIgqYe3XKmIdayu4VicSHmz2832G/qa0606K0XDFQm9bSTaf/iY6W/wwjLknKpFR/OUN+kVo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714563276; c=relaxed/simple;
-	bh=gNVXVVA4JrNDjG/CYhU8DTulUJJ3tV8kEgoCtEvzwlw=;
+	s=arc-20240116; t=1714563370; c=relaxed/simple;
+	bh=W1gAooAPoV3wDLnmgA+EEUzyuPq/TUOfoPkExhmYnng=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=rBpuPrqxdGj9TFHNNz2Xay/+yFxV9xBY5Zbh2gkdzt6l488P9W+Iw1Ds+mmagoUy43D/xOBgOye0FRRfviewYVF+0O9F64hF1wo8iaUZPG3jEjKs8656xMxH1dX4fvo/f1j0X3rlvj7S+atc26ZBcXLgtrjuTJ4/o4nBx1I7Q58=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Y6Jf84Lb; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6CD96C113CC;
-	Wed,  1 May 2024 11:34:31 +0000 (UTC)
+	 MIME-Version; b=NxozvXl0IlxNLkRlekDRowQheCKGcsBaC+8rGMMnCG4Uilrp6Vm7u9fH+WFxiA+9E7O9IVjaGLtU2lHUmPSMDHo2a3i5qTxE8IzAqrWHgwmVNC9BqXtXGjorBKMkD+7uQQ3PEeLdYZ3GIZG8j1YTmoc50VhwMwwEtVZkaWjpWVw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=vJxJM/vv; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B5B39C32789;
+	Wed,  1 May 2024 11:36:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714563275;
-	bh=gNVXVVA4JrNDjG/CYhU8DTulUJJ3tV8kEgoCtEvzwlw=;
+	s=k20201202; t=1714563370;
+	bh=W1gAooAPoV3wDLnmgA+EEUzyuPq/TUOfoPkExhmYnng=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Y6Jf84Lb7OSzNkOBHmrluwd1Qw2UgreCgNCnKDIZ1qbbhZlfuaCzduRvjj+X2Hewm
-	 vSkHgpf5p3Jato0fN76UIFhTvMUAz9yDiR+NXuwaeyHerBfQz7vzYgXHmxQ0yyjpgS
-	 4isuv3respvSeOAKFjlMyAImEFFVJ2MzeRxucF3otrISbx6/2m9EaMCvN/p2xFzKho
-	 sxD2IpK9qIjzwI7zMhpNmTWNdfZSIszZtgPLz/RT7ATXydjrT3cVToAvNYSXRrNrO2
-	 GoSM/hADBBjliLL8un/oiKoFF3p5R3pI0XI5q2/4l0P3qU1k4LdlDtBwF8uEnBhD87
-	 8bRf6dpiWKoxg==
+	b=vJxJM/vvEHbUluWku5C/odCn9nejR+HdSG24WlKnhFgapy8CglYchcsWTR+g7nMPC
+	 X1RCEc4kSErPTOe+Hnk3djGO6++8lRw3i/HQhhELVtv2wvX4iG/yfAbwLrM3tX9zd1
+	 91XiQ/nLgSsrKxqsu7+DYwbiTIv75MY+CyelYWInm284X5mphAMAAwALDfIl4N5s4C
+	 MfBdS6zzAaPo5zDi0kavR0Jpl4ecMnjlEa+dGhXru0mY/uQXOPXHKiT/eZRPkreWsj
+	 pMYg9AZImGL5v/3l85FsaLylYazMoHEdVq/XdAo6TnQDmIpC07PC20IsQpYY+5cnTz
+	 xcXTSSZQLg9Ww==
 From: Miguel Ojeda <ojeda@kernel.org>
 To: gregkh@linuxfoundation.org
 Cc: akpm@linux-foundation.org,
@@ -61,11 +61,11 @@ Cc: akpm@linux-foundation.org,
 	sudipm.mukherjee@gmail.com,
 	torvalds@linux-foundation.org,
 	Miguel Ojeda <ojeda@kernel.org>
-Subject: Re: [PATCH 6.1 000/110] 6.1.90-rc1 review
-Date: Wed,  1 May 2024 13:33:04 +0200
-Message-ID: <20240501113304.164608-1-ojeda@kernel.org>
-In-Reply-To: <20240430103047.561802595@linuxfoundation.org>
-References: <20240430103047.561802595@linuxfoundation.org>
+Subject: Re: [PATCH 6.6 000/186] 6.6.30-rc1 review
+Date: Wed,  1 May 2024 13:34:52 +0200
+Message-ID: <20240501113452.164810-1-ojeda@kernel.org>
+In-Reply-To: <20240430103058.010791820@linuxfoundation.org>
+References: <20240430103058.010791820@linuxfoundation.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -74,10 +74,10 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-On Tue, 30 Apr 2024 12:05:32 -0700 Greg Kroah-Hartman wrote:
+On Tue, 30 Apr 2024 12:37:32 +0200 Greg Kroah-Hartman wrote:
 >
-> This is the start of the stable review cycle for the 6.1.90 release.
-> There are 110 patches in this series, all will be posted as a response
+> This is the start of the stable review cycle for the 6.6.30 release.
+> There are 186 patches in this series, all will be posted as a response
 > to this one.  If anyone has any issues with these being applied, please
 > let me know.
 >
