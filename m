@@ -1,130 +1,100 @@
-Return-Path: <linux-kernel+bounces-165690-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-165691-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0FF948B8FA4
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 20:40:42 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 60E668B8FD7
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 20:45:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A770D1F2239C
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 18:40:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1288A2841CF
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 18:45:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CFDD61607AC;
-	Wed,  1 May 2024 18:40:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B3AA1607B9;
+	Wed,  1 May 2024 18:45:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="MTaZraSH"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.18])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="SbceQ6NH"
+Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3342912F395;
-	Wed,  1 May 2024 18:40:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2CF7E13956C
+	for <linux-kernel@vger.kernel.org>; Wed,  1 May 2024 18:45:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714588834; cv=none; b=pfxOVOGXxIMphNu9dz6wD2yrx4q/ERxizFrG5i2TqHru88iIi03ivCXulD6aey1UDqJzm5J0txeQ/XbcwM669RaEkirfzkGsWB8E2IapaVJMo1BNo/2IJq06EfcHpN1LTLUgkt2LugGfGpbvvzfZSi7G4zH/4flQjKzdyYu4fG8=
+	t=1714589130; cv=none; b=WaF31H50LoF3fZBjcTKxBRIogKW3wwBAH1L8sSoCV60a8QDTNc5B4RcyxYfY2y97/G2AGBoVi2rfhPedNYzoPPRDRmUPVrKCnjXUEIpkcC+UaWgQJ5howbaAzRTLB97N7ABCdHFU6yy/jeL5T6efKAihezKDFSP3+UV/H6ehCi0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714588834; c=relaxed/simple;
-	bh=Mzgv9pzl4+hs8G726Lz4maLhlKFliw7RLIHFVXczfgI=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=LOxDKYemBJvquYW+l7hRFhr/0d1VE5H28vBducUv6tYNacbs9FdjT09Fmh1DCrGFLYF1TbJ/UQsuRcGfzkSZylZgB1c7Fx3Ye+bo5fmYE6mirVG1Em1QlLvtiti5JmPwyRify90mu4r24Wg+BQwVXUlzlKpqGRuxLorcJuH/RJ8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=MTaZraSH; arc=none smtp.client-ip=192.198.163.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1714588832; x=1746124832;
-  h=from:date:subject:mime-version:content-transfer-encoding:
-   message-id:to:cc;
-  bh=Mzgv9pzl4+hs8G726Lz4maLhlKFliw7RLIHFVXczfgI=;
-  b=MTaZraSHF17mmT28GoqVTn0HRTa1n2rbQHzhVp2A/AQ03/FDJOwzlU2R
-   h0I0lHyCXxoqhAm3FM5yshNJTqXg6gPqSWbTsz0L5vl5OI8vxraf7zUoY
-   RIWPST2KKcghMCcrSF8D8MMiD0Eio+u2vhCZ59MVpvPPoh3o1noeQWpEB
-   ElGkae65DMaxLHQlIL/V3PFNjW/yTD+7U9/LOQtXqzdcai1RKufuUAx28
-   Mnv2FEDv+dZu1uMv+aR+sOnqocppJtXWK/jfQ7cXH8D9QFUYzmGId319I
-   XXnKHLapfu8XtLSbvUdZXLxTYKfSC084S86UmZWGVGb55htL0Wy9wZhaX
-   Q==;
-X-CSE-ConnectionGUID: P9w2venFREy4KkAsPi0OYg==
-X-CSE-MsgGUID: s5jg0wIBStihxZUBmmDNrg==
-X-IronPort-AV: E=McAfee;i="6600,9927,11061"; a="10185858"
-X-IronPort-AV: E=Sophos;i="6.07,246,1708416000"; 
-   d="scan'208";a="10185858"
-Received: from fmviesa003.fm.intel.com ([10.60.135.143])
-  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 May 2024 11:40:31 -0700
-X-CSE-ConnectionGUID: Ckai+5VxSsqFj9YRS1mJpQ==
-X-CSE-MsgGUID: /uN/ZNZOTvyDOiK+9irPhA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,246,1708416000"; 
-   d="scan'208";a="31348092"
-Received: from iweiny-mobl.amr.corp.intel.com (HELO localhost) ([10.212.82.114])
-  by fmviesa003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 May 2024 11:40:31 -0700
-From: Ira Weiny <ira.weiny@intel.com>
-Date: Wed, 01 May 2024 11:40:23 -0700
-Subject: [PATCH] cxl/cper: Fix non-ACPI-APEI-GHES build
+	s=arc-20240116; t=1714589130; c=relaxed/simple;
+	bh=CKht8bznP+UrF9kl+MNPOitTbYsC3SPRd8wkazD2v9c=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=I0mq4xgmfkjc5RSvz1ex5Jjo+Q2z1c0+JOSbQ0JeWp0vq3brG//e0sJ1yEB1qagK0s45k4akG7C3xcOgM0WYrB7UF75SjvGQb3JcbLge5SbbqCQTQE6A/MWm8JCJQa3eiECdpFCStGck6pyFztW8D13FcJtoV0bM8lqKYxeQZ0M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=SbceQ6NH; arc=none smtp.client-ip=209.85.128.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-61b028ae5easo136678897b3.3
+        for <linux-kernel@vger.kernel.org>; Wed, 01 May 2024 11:45:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1714589128; x=1715193928; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=4bH1nuvxEqAgawnP6q/iapzLLCUAYNh0OeHBy6uBTGA=;
+        b=SbceQ6NHANLsrGwRCT5ojuOB5bJgEpMDWI2gQFCk+sD3rpANkACXDBuwvHaNMTbIB9
+         EVrlZNPxp4i/2B3WWjKHQrpvKF3Qnxb6JhYr0nfq8dbTvNNA4/DGPpcx4cQvRd1kr7Rf
+         fxFzCZREULBmglqMj0H7qamkelvJe9SweONXL9EjixL11hR+pEHLENvVnvYGgJaOQlLy
+         iCtaQqRdNvt4k/8oE25t2ENwfCu12kPTlinA/50Q413k8azsJcw/5S+Xm4yY5anUSDCT
+         1zLD/cpiCYM7H9pMl4dy+Q1wuc43ZmURxk1QsvblVGHRADys1P5laIXpXHBXgSmKyevS
+         3A0A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714589128; x=1715193928;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=4bH1nuvxEqAgawnP6q/iapzLLCUAYNh0OeHBy6uBTGA=;
+        b=RiP1oNJkDHo5cgFP9Cm2dVkwlycsy7nQvyYEXexeF3CVPQ7/5/SBycYdatEwinHZ8L
+         XkxEHfAC1FKjnM77JT3pY8mQB0J75RKlDDIJ0xT93uskAdgszJdbalIeAaUSyvvqKgYf
+         jZt0f8nFdyX98LpEFdlwkQLqFe0tgBigHUlbdb/EqM/Bd0XcEqAHSJZUEW96p+/xROrz
+         vY/MlCPsTAcFhJ8d8Q2wWST5X0laxV+QLDgzHPr3XqowDybtdRG1Z0HJkqKAUa1GBnVq
+         UWA4J2YFoPhMkOC434L6dMeH8c0LyMtCX9zG/rqqm4CC+aBC4X70ob2/pNlVLzbXvT4Y
+         DZNA==
+X-Forwarded-Encrypted: i=1; AJvYcCXgplbsCX7mcv0Z30OLmeK7gkqL+1pF/zteki754LT9t/UigEDd1eN1PwUsDxq/Gk4KU41/m92IOSRQsRWA+J9r57W/2PZLzuj79Xpi
+X-Gm-Message-State: AOJu0YyrwWm7gwiBteGUdEY2yv40A8o6JUVixEE+CTq7JTJzp024PGX4
+	Yqo+UpgFlfutHTrqGkmifRNRZ/DPMR0x5mw09Cy08KBa9yIhZTYhgrQmym2rqvPinDrr5mT90Bx
+	YsQ==
+X-Google-Smtp-Source: AGHT+IHPZlT/rXriMsZSarLntfzWBGiGG5X7zn3dhED1eI9ACNPDW54s2YOj5XuX8BkV8xtoww8NyMh/8oY=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a05:6902:18d2:b0:de4:c54c:6754 with SMTP id
+ ck18-20020a05690218d200b00de4c54c6754mr1067004ybb.3.1714589128223; Wed, 01
+ May 2024 11:45:28 -0700 (PDT)
+Date: Wed, 1 May 2024 11:45:26 -0700
+In-Reply-To: <20240219074733.122080-5-weijiang.yang@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240501-cper-fix-0day-v1-1-c0b0056eafbc@intel.com>
-X-B4-Tracking: v=1; b=H4sIAJaMMmYC/x2MQQqAIBAAvyJ7bmHViugr0cF0q71YKEQh/T3pO
- AwzBTIn4QyjKpD4kixHrKAbBX53cWOUUBkMmZY60uhPTrjKjRTcg56sC0Ovl8VbqM2ZuLr/N83
- v+wHbPxw9XwAAAA==
-To: Davidlohr Bueso <dave@stgolabs.net>, 
- Jonathan Cameron <jonathan.cameron@huawei.com>, 
- Dave Jiang <dave.jiang@intel.com>, 
- Alison Schofield <alison.schofield@intel.com>, 
- Vishal Verma <vishal.l.verma@intel.com>, 
- Dan Williams <dan.j.williams@intel.com>
-Cc: linux-cxl@vger.kernel.org, linux-kernel@vger.kernel.org, 
- kernel test robot <lkp@intel.com>, Ira Weiny <ira.weiny@intel.com>
-X-Mailer: b4 0.13-dev-2d940
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1714588831; l=1181;
- i=ira.weiny@intel.com; s=20221211; h=from:subject:message-id;
- bh=Mzgv9pzl4+hs8G726Lz4maLhlKFliw7RLIHFVXczfgI=;
- b=5t1ueDJnE6x+j+9ekOG12qu6ugjSPoamFqnOoF/ury2/1DDeq23OhIKWoTlUK1x5+qvkhNUgA
- cybnde75kDlCq0h5ILqKipfEKPEyVbWoO3W4VtK5vbjgdci2pPPkJBC
-X-Developer-Key: i=ira.weiny@intel.com; a=ed25519;
- pk=noldbkG+Wp1qXRrrkfY1QJpDf7QsOEthbOT7vm0PqsE=
+Mime-Version: 1.0
+References: <20240219074733.122080-1-weijiang.yang@intel.com> <20240219074733.122080-5-weijiang.yang@intel.com>
+Message-ID: <ZjKNxt1Sq71DI0K8@google.com>
+Subject: Re: [PATCH v10 04/27] x86/fpu/xstate: Introduce XFEATURE_MASK_KERNEL_DYNAMIC
+ xfeature set
+From: Sean Christopherson <seanjc@google.com>
+To: Yang Weijiang <weijiang.yang@intel.com>
+Cc: pbonzini@redhat.com, dave.hansen@intel.com, x86@kernel.org, 
+	kvm@vger.kernel.org, linux-kernel@vger.kernel.org, peterz@infradead.org, 
+	chao.gao@intel.com, rick.p.edgecombe@intel.com, mlevitsk@redhat.com, 
+	john.allen@amd.com
+Content-Type: text/plain; charset="us-ascii"
 
-If ACPI_APEI_GHES is not configured the [un]register work functions are
-not properly declared.
+On Sun, Feb 18, 2024, Yang Weijiang wrote:
+> Define a new XFEATURE_MASK_KERNEL_DYNAMIC mask to specify the features
 
-Fix copy paste error.
+I still don't understand why this is being called DYNAMIC.  CET_SS isn't dynamic,
+as KVM is _always_ allowed to save/restore CET_SS, i.e. whether or not KVM can
+expose CET_SS to a guest is a static, boot-time decision.  Whether or not a guest
+XSS actually enables CET_SS is "dynamic", but that's true of literally every
+xfeature in XCR0 and XSS.
 
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Ira Weiny <ira.weiny@intel.com>
----
- include/linux/cxl-event.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+XFEATURE_MASK_XTILE_DATA is labeled as dynamic because userspace has to explicitly
+request that XTILE_DATA be enabled, and thus whether or not KVM is allowed to
+expose XTILE_DATA to the guest is a dynamic, runtime decision.
 
-diff --git a/include/linux/cxl-event.h b/include/linux/cxl-event.h
-index a0067c49e2ca..13090857c066 100644
---- a/include/linux/cxl-event.h
-+++ b/include/linux/cxl-event.h
-@@ -152,12 +152,12 @@ int cxl_cper_register_work(struct work_struct *work);
- int cxl_cper_unregister_work(struct work_struct *work);
- int cxl_cper_kfifo_get(struct cxl_cper_work_data *wd);
- #else
--static inline int cxl_cper_register_work(struct work_struct *work);
-+static inline int cxl_cper_register_work(struct work_struct *work)
- {
- 	return 0;
- }
- 
--static inline int cxl_cper_unregister_work(struct work_struct *work);
-+static inline int cxl_cper_unregister_work(struct work_struct *work)
- {
- 	return 0;
- }
-
----
-base-commit: c19ac30eda3a1d14d4883de0ea214b6c5c96a9b4
-change-id: 20240501-cper-fix-0day-c03ad861bbc3
-
-Best regards,
--- 
-Ira Weiny <ira.weiny@intel.com>
-
+So IMO, the umbrella macro should be XFEATURE_MASK_KERNEL_GUEST_ONLY.
 
