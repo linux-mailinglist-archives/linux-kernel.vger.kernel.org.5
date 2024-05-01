@@ -1,112 +1,110 @@
-Return-Path: <linux-kernel+bounces-165318-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-165317-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D1CD58B8B30
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 15:28:11 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 72F6F8B8B2D
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 15:27:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 16A6AB21485
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 13:28:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A494C1C215C7
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 13:27:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B58D12E1E5;
-	Wed,  1 May 2024 13:28:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A233C12EBE3;
+	Wed,  1 May 2024 13:27:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="gfm9KiI2"
-Received: from mout.web.de (mout.web.de [217.72.192.78])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="uTNPffqV"
+Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB6B412DDB0;
-	Wed,  1 May 2024 13:27:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.72.192.78
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 838A280BEC
+	for <linux-kernel@vger.kernel.org>; Wed,  1 May 2024 13:27:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714570081; cv=none; b=f3yXh7kHkhd//rj1dqVqMN+Z0xOf4UlfwpXdfTp+tIei1xZE3Fg4Ej/IbIf6aIR87fUdnziliU0SOrmSpPphhxHN8QhQu+rsZpJaQWFNQwca8+xTa6/hPW/5cL/twbOViaRxHwdoT1eYZ7BnFzyuct5spMIqnpCvxGxqkpaOcw0=
+	t=1714570023; cv=none; b=IZROqy0//O4hcJkM4KLd62kMzkr/5cCIxfIMO5BkL9BYdwb5ZJp56gj7ajkcrUMaibfZ75sdh3qVBY+eU5tWBUkzWtGz7APSwnrfrINXYeTD6P0Gh8FVmvkfNvvHWQagezIn7+sRXEUq5oOEKv/wCMdjLJIJTxJS/TaIakkUxtU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714570081; c=relaxed/simple;
-	bh=QtCYznDFxAqU7kOOd/hY0Cb2aqW53mLPzwqiX702hVM=;
-	h=Message-ID:Date:MIME-Version:To:Cc:References:Subject:From:
-	 In-Reply-To:Content-Type; b=UXgEmMSEP6utc+Q+duct8jJT9MdXgdmbWzsGbO3F0aP6oIyGccxcPIAyRmRgukiE2aFuCpzXdAzIE9zNGXD4/J8eg1AwHvikz8Z5egN/bHgOkMruL8EZcxEPT4HtPXO7PTplQx24vDS906fbHM4a21ci/9MEyDKgSgkLa8Otiks=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=gfm9KiI2; arc=none smtp.client-ip=217.72.192.78
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=web.de;
-	s=s29768273; t=1714569989; x=1715174789; i=markus.elfring@web.de;
-	bh=iS/r3J9lwCCODjyNXcaefNMyX7CRPZrNN91+KUc3PB4=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:To:Cc:References:
-	 Subject:From:In-Reply-To:Content-Type:Content-Transfer-Encoding:
-	 cc:content-transfer-encoding:content-type:date:from:message-id:
-	 mime-version:reply-to:subject:to;
-	b=gfm9KiI213O4FGS2IDi3MOi5TLT1a5yfTjYqtTsLqkCMt8rHZHsHEdvNDEfKKMH0
-	 uOgZwR5ufGuJJKTg8tlJrBEHgQDvmQbwZJVckzntSM6tFCKLNMYCX7c0z45qMZzwh
-	 V2qo32T3mogEqYf92/qlWm2FFp9w2rXSqSvpkTeZEvzKWuacKpTCwiQ6CC8iRZnu3
-	 gbBlA0sQFIVNY+EyanpAFzKGQVEWaUWKqlJHGx68uLAuaUDnCAaAJk3oskEEGzRne
-	 idv5/M9CiNG4XfW/pXSYutyTkuy5JC7/bhuMkFsFDq1N8PuIIxtcXqZ25qs6Olu2z
-	 qyeB1/Te+P/QzlqVHQ==
-X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
-Received: from [192.168.178.21] ([94.31.85.95]) by smtp.web.de (mrweb105
- [213.165.67.124]) with ESMTPSA (Nemesis) id 1MwjFg-1sqIf83FmM-00ylNB; Wed, 01
- May 2024 15:26:28 +0200
-Message-ID: <d69ce186-6406-40ec-b8a3-a4b66d005ad6@web.de>
-Date: Wed, 1 May 2024 15:26:06 +0200
+	s=arc-20240116; t=1714570023; c=relaxed/simple;
+	bh=ehw6SAG+kbHsliF4OQ8Xm50055J6yx3+DlaZFnM29tg=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=lV2AJ8H0Dr/lD/6KdQa4sA7oLY57TzoV26kEkzK+zUtIbtENKh7Mq/7mg7ybo9yaNdvNwePWCMReKyb+JMIOEijoRzpSteufjYiJRi6MK9Mh5A8DGaMELIfWQkzEQMOSZHbZopWS4bIlcPv+Er/qjLdCgCbxr53x5GYV3gPboXU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=uTNPffqV; arc=none smtp.client-ip=209.85.219.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-de54ccab44aso14039308276.3
+        for <linux-kernel@vger.kernel.org>; Wed, 01 May 2024 06:27:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1714570019; x=1715174819; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=6DBcVje7sQJG8s2uu2fApbOLUVVFcT0/1pZS1Vx+f9Y=;
+        b=uTNPffqVlUqLjz+4jQmUnI5a0s4/9svKkZ7q3Xq9K4igc+YHeaqeK0fL+B55w91y6B
+         Ws0eQFfS7SutYbDXBRzID+gUIKuRL9pQjQ9uCDf52iQLC5EoxTcofh3DGKsfZENz8Kqd
+         ynpzjhOsyW7G1MWnMADNHCQ02mwVaxZ6qm7EFcgTs6SCsLvawFiHjVKx6/omS5TNXCx4
+         nlzgLixhCgvllAHX067FwE2iVs1riNyLNT7R8Sow1HE5fl4Vm1dbDYCdIPGS29H9g7/u
+         cxh2tbc/Gl3qn/BMWHz+kxJDx68QhRb6ZMdQjW6KKxvI9ZudKygzgHDzOaujEEU4Wu3r
+         fteQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714570019; x=1715174819;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=6DBcVje7sQJG8s2uu2fApbOLUVVFcT0/1pZS1Vx+f9Y=;
+        b=VxN1IIkkeCgLJ9e09tigrz/HoSVbwddx1hmcwtMG+V3hFFuTUizQRzJbP+H/AVfeCo
+         IEuPIosxITIxUsUcwuR5rX7x/eH6LESjsHaysF2RclPNrRx/xoyyQE5MBGZ85CbLY9bV
+         U5Wf7QgyPt/41tiCYE7nlYoTEw85b1gapqtaveGn1h475awYPUDBbIPYiRnGYkgEqe3r
+         piOKrTPGOA+J1YZfaxRXDn7At8/+ogXaVY6XszZ80o5NHIX5FNOxCO9aw6slClNifcRB
+         1qYKnn3tGa7i5Bdi7kTa5ci1hJNgLQgmBRh6ODMrRHZaV7MfkasyB/kVyRZwUEl7Fqhx
+         Ug5w==
+X-Forwarded-Encrypted: i=1; AJvYcCXOMybuvdtPaWEebsjR5XjlDU5rxPpGwuuXdjxaHnWFVmLHOqYaeL5gEbY0YKcvapP663ktqteNiQRdPNL38po9WguQXLQwqc1NQFRL
+X-Gm-Message-State: AOJu0YxTSCz6YjjhwjLbnta1VXGnbIglSuOdk7OFz4YiHmXxqXd+cw6W
+	BXoghkiIUfN8lQDJcr/pTHHbSqMECKe6/q9XvX0aQlc6EpyY5msRL0HCb2YQSbuaw5dN3I5Vz0d
+	vuA==
+X-Google-Smtp-Source: AGHT+IEJWGpbrUgjXt0agMfxl6uH0KA2xXXQIskrVStdJjQn0+KbWAVgSKalUCRrBzWfmm3VN3uGF/mvoZE=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a25:74d1:0:b0:de5:9ebb:bfc9 with SMTP id
+ p200-20020a2574d1000000b00de59ebbbfc9mr716769ybc.9.1714570019532; Wed, 01 May
+ 2024 06:26:59 -0700 (PDT)
+Date: Wed, 1 May 2024 06:26:58 -0700
+In-Reply-To: <20240430235057.1351993-5-edliaw@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: Shenghao Ding <shenghao-ding@ti.com>, alsa-devel@alsa-project.org,
- kernel-janitors@vger.kernel.org, Mark Brown <broonie@kernel.org>
-Cc: LKML <linux-kernel@vger.kernel.org>,
- Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
- Baojun Xu <Baojun.Xu@fpt.com>, Baojun Xu <baojun.xu@ti.com>,
- Bard Liao <bard.liao@intel.com>, Bard Liao
- <yung-chuan.liao@linux.intel.com>,
- Cameron Berkenpas <cameron.berkenpas@gmail.com>, Gergo Koteles
- <soyer@irl.hu>, Jaroslav Kysela <perex@perex.cz>, Kevin Lu
- <kevin-lu@ti.com>, Liam Girdwood <lgirdwood@gmail.com>,
- Liam Girdwood <liam.r.girdwood@intel.com>, mimperial@lenovo.com,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Shenghao Ding <13916275206@139.com>, Takashi Iwai <tiwai@suse.de>
-References: <20240501122252.1215-1-shenghao-ding@ti.com>
-Subject: Re: [PATCH v2] ALSA: ASoc/tas2781: Fix wrong loading calibrated data
- sequence
-Content-Language: en-GB
-From: Markus Elfring <Markus.Elfring@web.de>
-In-Reply-To: <20240501122252.1215-1-shenghao-ding@ti.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:tC3X+GrzsotPgf+R/O7R1QzbOvKPtHRkYGtPGuFEp6iXPQyKEsb
- sCfhQHr+xF90jdOxVxhUmudOdLZB0aJwka+qTur5jv34SPxWBD2/sr/xDhuU4tDhfGO/6Px
- aopo2bxCZ1HfiAor+Rga88jCHsBAeLDKxHh761DdERfoXcH2wL8eeatxNIH8SWSnV5zmtep
- lNLON/93vd8Ab/LR9RZ2Q==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:2AKk/GKNh8g=;DIT/7tzccpnbJLKqm6tsIt75NpI
- aWJarwT56NcwoY13VQFhfeqfTrfiXm5Bl8jUwZNNdbxut7Src4TEm3BWh4GhFONIHezvTvWjV
- uAcIBU+YyWb+yJjs3J3vFMR4WeBK4TWfeooN+Bp7W3RkQaS0DW06EKAVlnNQMm8AXaITXBdYB
- jxiwYlU/pxE9xypmgCUX0xBwQIHtL82FDWNc+t9impuUZPbOfQ1SXkQqH7Qi2ErIxLBqykb+0
- v/ZOZLhjkObxaElawDIm5VCAFEA5e5pv/edEX8m1GI0+c+E4DCtqGc+AI1/rfWQBpjSX9J5zb
- CmHZvh3QrtTJwtvKeEM4N7dVSi2FAy358EHRGZ3jau2H+uYnfKRPxgETEV4O5N01ezjiTjLbL
- uRtd4FjvCebmu/35H5BEAD4PC5uW72pv1NVl0PjfHcRMkDQMy7JIZ7hxF65yhopKkhlcGnF0M
- K9/yY4qBGKztNR1OAqeqBlpv+TPd8N1EuyLsmX6NWzquTyL80AP0N1KBLaVS22bOJ+lnwOmSQ
- 6nFktRzAf+PslYRG23Atkm54lAQMZPAGlV+L+udlUuNtmvi4+XaUXy1BVWED6fWeWF4rYPqmK
- 3DMlQ+7LYaPV28A2NH0c6LmaVtv82rTLcrChU+eEg6nmM8hKt6l4fTfuamwTVyeh/sPh8vwXC
- ihr2xa9SvaLFrduH+/nMb2GL/0+cQ4RLeVl0Kvkfe+SO53F5p+G2aLgI0eXW4HiGI0IEX/bRx
- tbnHwAAyu49s1BmpgWb9kySsxa44No6nJfxvR8bupqH+G+xL40pX0YUOZnusx3IQ9Tm2YTguK
- XmSQb2wFpaaPieFpc+qEHnNlBw+2nh5Y11t1jaQJxHcTE=
+Mime-Version: 1.0
+References: <20240430235057.1351993-1-edliaw@google.com> <20240430235057.1351993-5-edliaw@google.com>
+Message-ID: <ZjJDIlQCkzIjP189@google.com>
+Subject: Re: [PATCH v1 04/10] selftests/kvm: Define _GNU_SOURCE
+From: Sean Christopherson <seanjc@google.com>
+To: Edward Liaw <edliaw@google.com>
+Cc: shuah@kernel.org, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, 
+	Takashi Iwai <tiwai@suse.com>, Jiri Kosina <jikos@kernel.org>, 
+	Benjamin Tissoires <bentiss@kernel.org>, Paolo Bonzini <pbonzini@redhat.com>, 
+	Bongsu Jeon <bongsu.jeon@samsung.com>, "David S. Miller" <davem@davemloft.net>, 
+	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	Alexandre Belloni <alexandre.belloni@bootlin.com>, Jarkko Sakkinen <jarkko@kernel.org>, 
+	Dave Hansen <dave.hansen@linux.intel.com>, Andrew Morton <akpm@linux-foundation.org>, 
+	Muhammad Usama Anjum <usama.anjum@collabora.com>, linux-kernel@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org, kernel-team@android.com, 
+	linux-sound@vger.kernel.org, linux-input@vger.kernel.org, kvm@vger.kernel.org, 
+	netdev@vger.kernel.org, linux-rtc@vger.kernel.org, linux-sgx@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
 
-> 'Fixes: 0a0877812628 ("ASoc: tas2781: Fix spelling mistake "calibraiton"
->  -> "calibration"")'
+On Tue, Apr 30, 2024, Edward Liaw wrote:
+> 809216233555 ("selftests/harness: remove use of LINE_MAX") introduced
+> asprintf into kselftest_harness.h, which is a GNU extension and needs
+> _GNU_SOURCE to either be defined prior to including headers or with the
+> -D_GNU_SOURCE flag passed to the compiler.
+> 
+> Fixes: 809216233555 ("selftests/harness: remove use of LINE_MAX")
+> Signed-off-by: Edward Liaw <edliaw@google.com>
+> ---
+>  tools/testing/selftests/kvm/x86_64/fix_hypercall_test.c | 2 ++
+>  1 file changed, 2 insertions(+)
 
-Please improve this tag.
-Would you like to omit a line break?
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Do=
-cumentation/process/submitting-patches.rst?h=3Dv6.9-rc6#n145
+Regardless of where this series ends up going, this patch can be dropped as I
+already have a fix applied for all KVM selftests[*].
 
-Are you looking for better ways to embed double quotation characters
-in the corresponding commit =E2=80=9Csummary=E2=80=9D?
+Thanks!
 
-Regards,
-Markus
+[*] https://lore.kernel.org/all/20240423190308.2883084-1-seanjc@google.com
 
