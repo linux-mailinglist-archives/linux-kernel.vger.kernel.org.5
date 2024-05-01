@@ -1,270 +1,263 @@
-Return-Path: <linux-kernel+bounces-165661-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-165662-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9F8B48B8F2E
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 19:44:54 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0AECE8B8F31
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 19:49:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 54405283819
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 17:44:53 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E6728B22717
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 17:48:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D570513C67F;
-	Wed,  1 May 2024 17:44:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E0BA13A89C;
+	Wed,  1 May 2024 17:48:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="KJ/tdbuA"
-Received: from mail-ed1-f45.google.com (mail-ed1-f45.google.com [209.85.208.45])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="nZGi6Txe"
+Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 103711386A6
-	for <linux-kernel@vger.kernel.org>; Wed,  1 May 2024 17:44:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F632CA40
+	for <linux-kernel@vger.kernel.org>; Wed,  1 May 2024 17:48:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714585479; cv=none; b=FYiqp+M3CvfbrmIgD502riSo53ff+xas9hMqYP+wz/uAchx//ZVzCNd1OHG3F+hZfCmZFg3XUpeXIkk/iUgEgm+geXWeYHbpE4OEES7AIXGmSlebD+1lT++S7Fmb+AYzYMPY68kqu0XrtV+iOPxrfPmzipCq5GcLKSE0wzXzW1I=
+	t=1714585729; cv=none; b=FAHCHreIwfu4HDPHY4q5kJRtwiLxSSQJ2sDwCqC6PyWhDsDadM0Xd55QjJW3cvPoTQJ2c1SOdEUGuXT/EIoA2AbLUABRJPp5ijwXf52+of2k2BdANaHJbkN/+S1VKvW2VMwkSVFBs1ZlUzlB5QkKffzV2c4yWfOlbMj2SUrn+/E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714585479; c=relaxed/simple;
-	bh=v3enCvAplcrQ4cwOxDbhFJqukTTawzuTb94s+VDDEG8=;
+	s=arc-20240116; t=1714585729; c=relaxed/simple;
+	bh=/xGW7znOLdzOY0WX24JlnO885mm1taJeBbhKcj79fL8=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=jEOkIGN3ol1JW6dwRuNL82ZomRRaakxzszgm9xVwFbvR4MZEGGUiTnmnZ08vpSUHISgGAy8VB5L0BgDySLYRwp3nRAe0AwKOINLCcj+eLL2ckfXyPM+aNlpLJvNCp/KjrEYIqOLD8AluUfNs/nd/+ngNBB9mp7jssdIkNbp7vQQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=KJ/tdbuA; arc=none smtp.client-ip=209.85.208.45
+	 To:Cc:Content-Type; b=J9uo9auBbcx3ng342By4KHCqDEfXBCyg84Nz6eqgDh7ybXaKDdBlgprjn3kPqTEZkHVhpxO189HaQv/WMRvG3lQ45KG9eW2E4JLilWNsGPysOhLeWtWsIkRr22nD5k8YbgQGYL4K8mpZha2Gdn55NYPPTLUqmJygfT2pMI7/H9Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=nZGi6Txe; arc=none smtp.client-ip=209.85.214.173
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-5729fd821ebso2451413a12.0
-        for <linux-kernel@vger.kernel.org>; Wed, 01 May 2024 10:44:37 -0700 (PDT)
+Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-1ec76185cb3so15515ad.0
+        for <linux-kernel@vger.kernel.org>; Wed, 01 May 2024 10:48:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1714585476; x=1715190276; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1714585727; x=1715190527; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=k4IV5MUpcWstax6ntK82tb+sL5JFIt+jl6TpQDKHYAY=;
-        b=KJ/tdbuADaCz4crloVoTX94jcQM+1tZ4wO6NmrGraFZFOu7DIv2s9+lH/FLJjrNVxv
-         2zytiW86b1K6wLFQn1nwViioeWcI4PTDCJkcjZX1eq+9ET6snFHYHcyKsA8fONhcgfPE
-         LMQysJ3FD8Ukm48RTh9acYTfz8BnTOObS5EnRN4HlZH9++D5uTeM4jye467cCmGBgm8N
-         h0GJMKrOsXsaZ3K+jS1k6j0iC/wgfXuKf/AE+cZ9IPIkYMJ8WDw/yEmvHaKTAxQ6w0ux
-         si31Nh4NV3QBpsVGgJ4AbFdaLZN6Q/3y+ooMNzJatNoGyZv6L0qDB8zQ2SpHIonCYQ18
-         v9VQ==
+        bh=YSgYxDDPLjqkX8EyBQbLQKb/QjqGOlLZGZqPCQdQNIo=;
+        b=nZGi6Txe3RDM6m03ssJgMfzHAZYTN1/zew5x5MCEzAKtjeu51jmpoAUxAdujUyS9OQ
+         tp81rbu8zy7yP/pV3vhIm6IA6+rH3aylRfE0IplXyjNDN9iqGdLyiojg1bvimTeNJAv1
+         T55Fif1+k57DdES/2rpPGACYesXhSZ5aqRXZqWJTcgab1TN+RH2vp80bZzPWVkLg0gh/
+         zPEwTLp2q7uDhbrYzdLfXKKc4FgJ40EHuUTk7rLL5Y3a91bjkoNoi221th+M8iGq4zY8
+         CuVE/PvfroQlFdeJDJ5tqTsDZyexQgwQVjY108WQzGV25H8FKmZJtL0G9JwyPryKtLVS
+         I9zg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714585476; x=1715190276;
+        d=1e100.net; s=20230601; t=1714585727; x=1715190527;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=k4IV5MUpcWstax6ntK82tb+sL5JFIt+jl6TpQDKHYAY=;
-        b=tEwT+CdWl6yqqD+jppE3JvWcRx19H9kXTf6Er66FVCm/4njEUms6KgcVNiAW0Cd47x
-         uQK4REWkdfZNY7kKdMVzW5oEREYBYseymbQfoLXOiMOanJEnPgxydBaBYAAqsxcb/tRq
-         bYuG5hV7ZVwnJ0rO+fjH1WyiyBMOK6GLrgdwXOhZJPmchEJgtsotbTu4vudLubQM1jyt
-         wmJKLA27QTHgtwRTTGKDXBq2GXUpEWWX7mIXwTXbHjyEtKihzH5kE4yYYjs6MAf6JSrr
-         Qb159Ez1uGNUAoVmybKyrEi23pi0co6P2K8q8cvEpfnSFM0vfWQZgYwTao1MVMzyXk8M
-         5geg==
-X-Forwarded-Encrypted: i=1; AJvYcCVBDh/jdM5c0VQaLOG8DcPgguiSg23pK+ehrDVm2/uQj89ECywPdEuBexJiI5Z48H4qGN9w7QsOy3s9oT6deMAxgV+YzNYOJ0r+wg1b
-X-Gm-Message-State: AOJu0YyWT9G6EWYtRd/dr5vrSR00L1ixR4pBY0AtlhH3g8qBXPl7snSQ
-	1rZyZsYPJkj3zEQGjHJXXsxKj+nmgXQ0gSKG953LN7bnNEtVxycdX9nWA6FqOwK8ut0bQyS1bbp
-	ySArMIEjhV3u9o3s/XLdyjEnwKHtiNtR95SyF
-X-Google-Smtp-Source: AGHT+IEdVVrTb7Zgs76FxcoRst8fi50Xits/93UMcuS3YKQMepe35H6XK3g97W1kPj+TBrSHq/3jFIHOcy+3gL+GTq0=
-X-Received: by 2002:a17:907:9850:b0:a55:59e6:13f5 with SMTP id
- jj16-20020a170907985000b00a5559e613f5mr2475844ejc.26.1714585475945; Wed, 01
- May 2024 10:44:35 -0700 (PDT)
+        bh=YSgYxDDPLjqkX8EyBQbLQKb/QjqGOlLZGZqPCQdQNIo=;
+        b=vV61aY85nkKOF8rh+lW2UFEtxYoJjl1Dxdskcpj7k7CICHizpFni/6yjSlPqz9PZ75
+         anm8vcTolDMSU6EC7no6BYv10gkZb1P0p2WexBpsciO9PHx0ZSx7RrmZIpc5we3Ve9YY
+         3fd+afwfloakx0DUmYa6ELhJgOVtS+WWXQNWcduQNNJ7enli37IyidILFF9/oxTCB4Bk
+         mvkL1qO4uA1MQoHl5nDKiQsNl1cX/pAayhYVDqTk4R2J3aGdImtKU3cKpYi0yQbYUuqx
+         OzS5Rb7nRBwGENN1CXPg/5rYou/J3ZYybHks6tEnSe+CXFeWWl0H25ARZC8pqPoP90rw
+         UUHQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWughzMohkeMJk1FEOdJ7hI2YH5p+x/CWiwmPbDwz4zL14nmzI2KUNUMfJP41VCp4v8UuZ6Opy/dVLQ7BnzMLnz2M3thOdQLSZc8oFS
+X-Gm-Message-State: AOJu0YzC1P0o0tAaESsUT5YazsSWCeTzGi00nBlISdHI7ZfmjU0sfObv
+	7n9hI/G29Ghr6KygW9KnQPFqJBM3e6zAcxLpiJE89VCFjT8dP2Yy/AVr+Rw2DuHEZ1WERK4xU/h
+	WvoYPmpU76mVwbol6YaQX79sZmmvKbwD+8zt4
+X-Google-Smtp-Source: AGHT+IEnMcdCsrZoGc3K83qrgNZTW1YYWzYpzYYI7cXK5LyFAuMVjt80FDSn02KAnFK7wZ8HpoZs7/fFq3vB2JbQ8eo=
+X-Received: by 2002:a17:902:ef52:b0:1e5:32f5:8f00 with SMTP id
+ d9443c01a7336-1ecdb2c147fmr126365ad.0.1714585727211; Wed, 01 May 2024
+ 10:48:47 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <ZirPGnSDUzD-iWwc@google.com> <77913327-2115-42b5-850a-04ef0581faa7@linux.intel.com>
- <CAL715WJCHJD_wcJ+r4TyWfvmk9uNT_kPy7Pt=CHkB-Sf0D4Rqw@mail.gmail.com>
- <ff4a4229-04ac-4cbf-8aea-c84ccfa96e0b@linux.intel.com> <CAL715WJKL5__8RU0xxUf0HifNVQBDRODE54O2bwOx45w67TQTQ@mail.gmail.com>
- <5f5bcbc0-e2ef-4232-a56a-fda93c6a569e@linux.intel.com> <ZiwEoZDIg8l7-uid@google.com>
- <CAL715WJ4jHmto3ci=Fz5Bwx2Y=Hiy1MoFCpcUhz-C8aPMqYskw@mail.gmail.com>
- <b9095b0d-72f0-4e54-8d2e-f965ddff06bb@linux.intel.com> <CAL715WKm0X9NJxq8SNGD5EJomzY4DDSiwLb1wMMgcgHqeZ64BA@mail.gmail.com>
- <Zi_cle1-5SZK2558@google.com>
-In-Reply-To: <Zi_cle1-5SZK2558@google.com>
-From: Mingwei Zhang <mizhang@google.com>
-Date: Wed, 1 May 2024 10:43:58 -0700
-Message-ID: <CAL715WJbYNqm2SXiTgqWHs34DtRfdFE7Hx48X_4ASHyQXeaPzA@mail.gmail.com>
-Subject: Re: [RFC PATCH 23/41] KVM: x86/pmu: Implement the save/restore of PMU
- state for Intel CPU
-To: Sean Christopherson <seanjc@google.com>
-Cc: Dapeng Mi <dapeng1.mi@linux.intel.com>, Kan Liang <kan.liang@linux.intel.com>, 
-	maobibo <maobibo@loongson.cn>, Xiong Zhang <xiong.y.zhang@linux.intel.com>, pbonzini@redhat.com, 
-	peterz@infradead.org, kan.liang@intel.com, zhenyuw@linux.intel.com, 
-	jmattson@google.com, kvm@vger.kernel.org, linux-perf-users@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, zhiyuan.lv@intel.com, eranian@google.com, 
-	irogers@google.com, samantha.alt@intel.com, like.xu.linux@gmail.com, 
-	chao.gao@intel.com
+References: <cover.1711674410.git.babu.moger@amd.com>
+In-Reply-To: <cover.1711674410.git.babu.moger@amd.com>
+From: Peter Newman <peternewman@google.com>
+Date: Wed, 1 May 2024 10:48:35 -0700
+Message-ID: <CALPaoCjZ3oLdKymJjASt0aqtd0GGOme7LavvYOtPYTb_rA-mYQ@mail.gmail.com>
+Subject: Re: [RFC PATCH v3 00/17] x86/resctrl : Support AMD Assignable
+ Bandwidth Monitoring Counters (ABMC)
+To: Babu Moger <babu.moger@amd.com>
+Cc: corbet@lwn.net, fenghua.yu@intel.com, reinette.chatre@intel.com, 
+	tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, 
+	dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com, 
+	paulmck@kernel.org, rdunlap@infradead.org, tj@kernel.org, 
+	peterz@infradead.org, yanjiewtw@gmail.com, kim.phillips@amd.com, 
+	lukas.bulwahn@gmail.com, seanjc@google.com, jmattson@google.com, 
+	leitao@debian.org, jpoimboe@kernel.org, rick.p.edgecombe@intel.com, 
+	kirill.shutemov@linux.intel.com, jithu.joseph@intel.com, kai.huang@intel.com, 
+	kan.liang@linux.intel.com, daniel.sneddon@linux.intel.com, 
+	pbonzini@redhat.com, sandipan.das@amd.com, ilpo.jarvinen@linux.intel.com, 
+	maciej.wieczor-retman@intel.com, linux-doc@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, eranian@google.com, james.morse@arm.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Apr 29, 2024 at 10:44=E2=80=AFAM Sean Christopherson <seanjc@google=
-com> wrote:
+Hi Babu,
+
+On Thu, Mar 28, 2024 at 6:07=E2=80=AFPM Babu Moger <babu.moger@amd.com> wro=
+te:
 >
-> On Sat, Apr 27, 2024, Mingwei Zhang wrote:
-> > On Sat, Apr 27, 2024 at 5:59=E2=80=AFPM Mi, Dapeng <dapeng1.mi@linux.in=
-tel.com> wrote:
-> > >
-> > >
-> > > On 4/27/2024 11:04 AM, Mingwei Zhang wrote:
-> > > > On Fri, Apr 26, 2024 at 12:46=E2=80=AFPM Sean Christopherson <seanj=
-c@google.com> wrote:
-> > > >> On Fri, Apr 26, 2024, Kan Liang wrote:
-> > > >>>> Optimization 4
-> > > >>>> allows the host side to immediately profiling this part instead =
-of
-> > > >>>> waiting for vcpu to reach to PMU context switch locations. Doing=
- so
-> > > >>>> will generate more accurate results.
-> > > >>> If so, I think the 4 is a must to have. Otherwise, it wouldn't ho=
-ner the
-> > > >>> definition of the exclude_guest. Without 4, it brings some random=
- blind
-> > > >>> spots, right?
-> > > >> +1, I view it as a hard requirement.  It's not an optimization, it=
-'s about
-> > > >> accuracy and functional correctness.
-> > > > Well. Does it have to be a _hard_ requirement? no?
 >
-> Assuming I understand how perf_event_open() works, which may be a fairly =
-big
-> assumption, for me, yes, this is a hard requirement.
+> This series adds the support for Assignable Bandwidth Monitoring Counters
+> (ABMC). It is also called QoS RMID Pinning feature
 >
-> > > > The irq handler triggered by "perf record -a" could just inject a
-> > > > "state". Instead of immediately preempting the guest PMU context, p=
-erf
-> > > > subsystem could allow KVM defer the context switch when it reaches =
-the
-> > > > next PMU context switch location.
+> The feature details are documented in the  APM listed below [1].
+> [1] AMD64 Architecture Programmer's Manual Volume 2: System Programming
+> Publication # 24593 Revision 3.41 section 19.3.3.3 Assignable Bandwidth
+> Monitoring (ABMC). The documentation is available at
+> Link: https://bugzilla.kernel.org/show_bug.cgi?id=3D206537
 >
-> FWIW, forcefully interrupting the guest isn't a hard requirement, but pra=
-ctically
-> speaking I think that will yield the simplest, most robust implementation=
-.
+> The patches are based on top of commit
+> cd80c2c94699913f9334414189487ff3f93cf0b5 (tip/master)
 >
-> > > > This is the same as the preemption kernel logic. Do you want me to
-> > > > stop the work immediately? Yes (if you enable preemption), or No, l=
-et
-> > > > me finish my job and get to the scheduling point.
+> # Introduction
 >
-> Not really.  Task scheduling is by its nature completely exclusive, i.e. =
-it's
-> not possible to concurrently run multiple tasks on a single logical CPU. =
- Given
-> a single CPU, to run task B, task A _must_ be scheduled out.
->
-> That is not the case here.  Profiling the host with exclude_guest=3D1 isn=
-'t mutually
-> exclusive with the guest using the PMU.  There's obviously the additional=
- overhead
-> of switching PMU context, but the two uses themselves are not mutually ex=
-clusive.
->
-> And more importantly, perf_event_open() already has well-established ABI =
-where it
-> can install events across CPUs.  And when perf_event_open() returns, user=
-space can
-> rely on the event being active and counting (assuming it wasn't disabled =
-by default).
->
-> > > > Implementing this might be more difficult to debug. That's my real
-> > > > concern. If we do not enable preemption, the PMU context switch wil=
-l
-> > > > only happen at the 2 pairs of locations. If we enable preemption, i=
-t
-> > > > could happen at any time.
->
-> Yes and no.  I agree that swapping guest/host state from IRQ context coul=
-d lead
-> to hard to debug issues, but NOT doing so could also lead to hard to debu=
-g issues.
-> And even worse, those issues would likely be unique to specific kernel an=
-d/or
-> system configurations.
->
-> E.g. userspace creates an event, but sometimes it randomly doesn't count =
-correctly.
-> Is the problem simply that it took a while for KVM to get to a scheduling=
- point,
-> or is there a race lurking?  And what happens if the vCPU is the only run=
-nable task
-> on its pCPU, i.e. never gets scheduled out?
->
-> Mix in all of the possible preemption and scheduler models, and other sou=
-rces of
-> forced rescheduling, e.g. RCU, and the number of factors to account for b=
-ecomes
-> quite terrifying.
->
-> > > IMO I don't prefer to add a switch to enable/disable the preemption. =
-I
-> > > think current implementation is already complicated enough and
-> > > unnecessary to introduce an new parameter to confuse users. Furthermo=
-re,
-> > > the switch could introduce an uncertainty and may mislead the perf us=
+> AMD hardware can support 256 or more RMIDs. However, bandwidth monitoring
+> feature only guarantees that RMIDs currently assigned to a processor will
+> be tracked by hardware. The counters of any other RMIDs which are no long=
 er
-> > > to read the perf stats incorrectly.
+> being tracked will be reset to zero. The MBM event counters return
+> "Unavailable" for the RMIDs that are not active.
 >
-> +1000.
+> Users can create 256 or more monitor groups. But there can be only limite=
+d
+> number of groups that can give guaranteed monitoring numbers. With ever
+> changing configurations there is no way to definitely know which of these
+> groups will be active for certain point of time. Users do not have the
+> option to monitor a group or set of groups for certain period of time
+> without worrying about RMID being reset in between.
 >
-> > > As for debug, it won't bring any difference as long as no host event =
-is created.
-> > >
-> > That's ok. It is about opinions and brainstorming. Adding a parameter
-> > to disable preemption is from the cloud usage perspective. The
-> > conflict of opinions is which one you prioritize: guest PMU or the
-> > host PMU? If you stand on the guest vPMU usage perspective, do you
-> > want anyone on the host to shoot a profiling command and generate
-> > turbulence? no. If you stand on the host PMU perspective and you want
-> > to profile VMM/KVM, you definitely want accuracy and no delay at all.
+> The ABMC feature provides an option to the user to assign an RMID to the
+> hardware counter and monitor the bandwidth for a longer duration.
+> The assigned RMID will be active until the user unassigns it manually.
+> There is no need to worry about counters being reset during this period.
+> Additionally, the user can specify a bitmask identifying the specific
+> bandwidth types from the given source to track with the counter.
 >
-> Hard no from me.  Attempting to support two fundamentally different model=
-s means
-> twice the maintenance burden.  The *best* case scenario is that usage is =
-roughly
-> a 50/50 spit.  The worst case scenario is that the majority of users favo=
-r one
-> model over the other, thus resulting in extremely limited tested of the m=
-inority
-> model.
+> Without ABMC enabled, monitoring will work in current mode without
+> assignment option.
 >
-> KVM already has this problem with scheduler preemption models, and it's p=
-ainful.
-> The overwhelming majority of KVM users run non-preemptible kernels, and s=
-o our
-> test coverage for preemtible kernels is abysmal.
+> # Linux Implementation
 >
-> E.g. the TDP MMU effectively had a fatal flaw with preemptible kernels th=
-at went
-> unnoticed for many kernel releases[*], until _another_ bug introduced wit=
-h dynamic
-> preemption models resulted in users running code that was supposed to be =
-specific
-> to preemtible kernels.
+> Linux resctrl subsystem provides the interface to count maximum of two
+> memory bandwidth events per group, from a combination of available total
+> and local events. Keeping the current interface, users can assign a maxim=
+um
+> of 2 ABMC counters per group. User will also have the option to assign on=
+ly
+> one counter to the group. If the system runs out of assignable ABMC
+> counters, kernel will display an error. Users need to unassign an already
+> assigned counter to make space for new assignments.
 >
-> [* https://lore.kernel.org/kvm/ef81ff36-64bb-4cfe-ae9b-e3acf47bff24@proxm=
-ox.com
+>
+> # Examples
+>
+> a. Check if ABMC support is available
+>         #mount -t resctrl resctrl /sys/fs/resctrl/
+>
+>         #cat /sys/fs/resctrl/info/L3_MON/mbm_assign
+>         [abmc]
+>         legacy_mbm
+>
+>         Linux kernel detected ABMC feature and it is enabled.
+>
+> b. Check how many ABMC counters are available.
+>
+>         #cat /sys/fs/resctrl/info/L3_MON/mbm_assign_cntrs
+>         32
+>
+> c. Create few resctrl groups.
+>
+>         # mkdir /sys/fs/resctrl/mon_groups/default_mon1
+>         # mkdir /sys/fs/resctrl/non_defult_group
+>         # mkdir /sys/fs/resctrl/non_defult_group/mon_groups/non_default_m=
+on1
+>
+> d. This series adds a new interface file /sys/fs/resctrl/info/L3_MON/mbm_=
+assign_control
+>    to list and modify the group's assignment states.
+>
+>    The list follows the following format:
+>
+>        * Default CTRL_MON group:
+>                "//<domain_id>=3D<assignment_flags>"
+>
+>        * Non-default CTRL_MON group:
+>                "<CTRL_MON group>//<domain_id>=3D<assignment_flags>"
+>
+>        * Child MON group of default CTRL_MON group:
+>                "/<MON group>/<domain_id>=3D<assignment_flags>"
+>
+>        * Child MON group of non-default CTRL_MON group:
+>                "<CTRL_MON group>/<MON group>/<domain_id>=3D<assignment_fl=
+ags>"
+>
+>        Assignment flags can be one of the following:
+>
+>         t  MBM total event is assigned
+>         l  MBM local event is assigned
+>         tl Both total and local MBM events are assigned
+>         _  None of the MBM events are assigned
 >
 
-I hear your voice, Sean.
+I was able to successfully build a kernel where this interface is
+adapted to work with both real ABMC on hardware that supports it and
+my software workaround for older hardware.
 
-In our cloud, we have a host-level profiling going on for all cores
-periodically. It will be profiling X seconds every Y minute. Having
-the host-level profiling using exclude_guest is fine, but stopping the
-host-level profiling is a no no. Tweaking the X and Y is theoretically
-possible, but highly likely out of the scope of virtualization. Now,
-some of the VMs might be actively using vPMU at the same time. How can
-we properly ensure the guest vPMU has consistent performance? Instead
-of letting the VM suffer from the high overhead of PMU for X seconds
-of every Y minute?
+My prototype is based on a refactored version of the codebase
+supporting MPAM, but the capabilities of the MPAM hardware look
+similar enough to ABMC that I'm not concerned about the feasibility.
 
-Any thought/help is appreciated. I see the logic of having preemption
-there for correctness of the profiling on the host level. Doing this,
-however, negatively impacts the above business usage.
+The FS layer is informed by the arch layer (through rdt_resource
+fields) how many assignable monitors are available and whether a
+monitor is assigned to an entire group or a single event in a group.
+Also, the FS layer can assume that monitors are indexed contiguously,
+allowing it to host the data structures managing FS-level view of
+monitor usage.
 
-One of the things on top of the mind is that: there seems to be no way
-for the perf subsystem to express this: "no, your host-level profiling
-is not interested in profiling the KVM_RUN loop when our guest vPMU is
-actively running".
+I used the following resctrl_arch-interfaces to propagate assignments
+to the implementation:
 
-Thanks.
--Mingwei
+void resctrl_arch_assign_monitor(struct rdt_domain *d, u32 mon_id, u32
+closid, u32 rmid, int evtid);
+void resctrl_arch_unassign_monitor(struct rdt_domain *d, u32 mon_id);
 
--Mingwei
+I chose to allow reassigning an assigned monitor without calling
+unassign first. This is important when monitors are unassigned and
+assigned in a single write to mbm_assign_control, as it allows all
+updates to be performed in a single round of parallel IPIs to the
+domains.
+
+
+>
+> g. Users will have the option to go back to legacy_mbm mode if required.
+>    This can be done using the following command.
+>
+>         # echo "legacy_mbm" > /sys/fs/resctrl/info/L3_MON/mbm_assign
+>         # cat /sys/fs/resctrl/info/L3_MON/mbm_assign
+>         abmc
+>         [legacy_mbm]
+
+I chose to make this a mount option to simplify the management of the
+monitor tracking data structures. They are simply allocated at mount
+time and deallocated and unmount.
+
+I called the option "mon_assign": The mount option parser calls
+resctrl_arch_mon_assign_enable() to determine whether the
+implementation supports assignment in some form. If it returns an
+error, the mount fails. When successful, the assignable monitor count
+is made non-zero in the appropriate rdt_resource, triggering the
+behavior change in the FS layer.
+
+I'm still not sure if it's a good idea to enable monitor assignment by
+default. This would be a major disruption in the MBM usage model
+triggered by moving software between AMD CPU models. I thought the
+safest option was to disallow creating more monitoring groups than
+monitors unless the option is selected. Given that nobody else
+complained about monitoring HW limitations on the mailing list, I
+assumed few users create enough monitoring groups to be impacted.
+
+Thanks!
+-Peter
 
