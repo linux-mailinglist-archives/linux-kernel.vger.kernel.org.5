@@ -1,74 +1,74 @@
-Return-Path: <linux-kernel+bounces-165111-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-165112-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2DC1E8B8834
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 11:44:24 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 69C828B8837
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 11:45:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4A91F1C215BE
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 09:44:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D4C071F23531
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 09:45:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E499E502AD;
-	Wed,  1 May 2024 09:44:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CACA550285;
+	Wed,  1 May 2024 09:45:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="DMB6pqea"
-Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com [209.85.167.42])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="uqQRXpAN"
+Received: from mail-lj1-f179.google.com (mail-lj1-f179.google.com [209.85.208.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 76BDF50285
-	for <linux-kernel@vger.kernel.org>; Wed,  1 May 2024 09:44:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94649645
+	for <linux-kernel@vger.kernel.org>; Wed,  1 May 2024 09:45:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714556654; cv=none; b=cFosBHoIqN91GFeC3+bWpX3s8090Lt+h2LZGPw+eTLYIaQOHG5G3/+pDyeRfXTKWIeKcfK2bMdOj7kCZDgM4dl3/swraJtqfV/npYMamK9O+TJS7l0fRqMd59/vdvqFfVQOWwtXL0AjDr2u9csNiSD3OiSWRqzZSwTXY2ETA3lc=
+	t=1714556707; cv=none; b=nE+HrHervhbDBDysc/v9L0eD//DQ7gmml0wKlWW7VfDHepObmnsCFN3h3d1WSHxRhvfL7aSZptGQCScqcoUKYDz0UFOaomCKpUouPorAlzNJAT4uGo/45CYkOMdpA5L3GT7tS+sbfVg+8jWXC5m8P2gsgJMuipQb/8jCzYVN/JA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714556654; c=relaxed/simple;
-	bh=f6wpEooJtwWJ+ahaDwEFCER9nqHelz/wsrgxG8KPVb8=;
+	s=arc-20240116; t=1714556707; c=relaxed/simple;
+	bh=pry+PQ7L3VsSddwQ20gj4XnNTiFrnFQyGjhMreF2cys=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=RLOg4V+SO50T5h5gkVRBdpPoGoV8i5RXKAMoBHtBZYlPmJCc7gbwN1iMSDWkSd1nztZxR3FoigxOy2873VFvzeEvLbBDE/9ilOtCmc2XCvBK1LJefnNwnWHXXlOLxsd4s68sQ85ZkxX79up+N0beNiiDfTJfyROQ3Mj0IkeTQyo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=DMB6pqea; arc=none smtp.client-ip=209.85.167.42
+	 In-Reply-To:Content-Type; b=KhFLWMmlSi9vmrET2sSoo5cFudIfpOGmx21D96m1IDfs2unVZ4d5LZhNAd5KmhLDIbzF7jbDfU270/5PJOuo4nHaIq//LpypK+F+4Tj/nwBoxHV1mv3bdy8AQdnyxeiPCyiLA6LnrXEYFfder7aY/mzYPxbj1/+LK19JPCMPRS0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=uqQRXpAN; arc=none smtp.client-ip=209.85.208.179
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f42.google.com with SMTP id 2adb3069b0e04-51d62b0ecb7so6152619e87.3
-        for <linux-kernel@vger.kernel.org>; Wed, 01 May 2024 02:44:12 -0700 (PDT)
+Received: by mail-lj1-f179.google.com with SMTP id 38308e7fff4ca-2db6f5977e1so78001841fa.2
+        for <linux-kernel@vger.kernel.org>; Wed, 01 May 2024 02:45:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1714556651; x=1715161451; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1714556704; x=1715161504; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:content-language
          :from:references:cc:to:subject:user-agent:mime-version:date
          :message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=s1BsM7nPYyk6GT9odC7z1GavcCOWF8wVv42LevVt3wY=;
-        b=DMB6pqeaxDAilkfsn5PACrJlSClWRmH+OUzS3UFrygiLLWvTgc3OM6P8WXQt5hn7sp
-         dOqveL6sEU8PNn46sB7QESqftJT+U6VerZ623xTN+jZmzdwodoUkJeitNXGPrMVeFdN3
-         tfVdwVuyqpyhUsMDvACiFSrlgclk0k0IIijEsPBNIZU21wSl2nv+0o6P9NLfGHRytJy6
-         MfdpztvX3Uq9qU5HU1Q1gIhB8mHQxRJky3iI0HiOgMM+iziH09lh6tEkAofgHH8V57Fs
-         E8j8Nb0QxTPETE5ift4cj7ZI640dG7Q+qBRygwcYSiOgOBxPLGg94WO4ngCCzUB1Wjl8
-         KJPw==
+        bh=xnObvPwiieYwnQInszTH7mfu0PtHsqWytCTqPKrebKU=;
+        b=uqQRXpANmzC0ZUuxn6qeNzy6qpUNCUlh4MYpqBO/USeL4ehKaYxGwl3JCs3iMIrrsS
+         XqLfMgDyZ1Hh1XZWn91xi0/GgTaq9GpIn2Ql1gu/sihbn5f7eCFYZjX06FpzQwbwo2ms
+         /Hhcgb1Rz3cBN1Ll1zWoXBDIjTStrBVg5mGHFo5iPK+it8jJBZgKNceeyjrIpF/PjJNp
+         6wXJG3fsNz+qI+4HKLJDzoeZsY+dmQw49Ak7dsrWD5dQpJPz3sIPWUQubIqNkAM/yrqn
+         xgZUDjeOcOQ1Q7yPaBXGguql0tCSTvq1kNuVzb6P3UFZxhA7iR2sz+0BwAiiYBJFycSl
+         BMGw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714556651; x=1715161451;
+        d=1e100.net; s=20230601; t=1714556704; x=1715161504;
         h=content-transfer-encoding:in-reply-to:autocrypt:content-language
          :from:references:cc:to:subject:user-agent:mime-version:date
          :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=s1BsM7nPYyk6GT9odC7z1GavcCOWF8wVv42LevVt3wY=;
-        b=CuCQ9G6VGdw35Iq7EIDDq83w4as7KGJlnosid50WNav4IVIkfDn7p4fQQSBDJHeG9T
-         d25Q1KIf0WdUieLcN9oBDJYExUlDPRlTCA3vo2bSmeoydd7V479OrHwG/dm+bKeWz1cR
-         3mP/ghILLlZTCavbQG+0O7TDTOa+uwibLQr6dTdk9Y5epe6FNY19b/KyLjMORzPeX2Ot
-         LLdP8u/ZStgz/lO6u4/J6DgMxBn3DCKPc8rLlcw9TdL2YewWjF4nruSpPwcrwtqg7Jj4
-         +IeGboFAEE0FCjs5HKvBC7N5YHXABX4kSv+x5JFTbd8f7IaZDmXvZIJ5jdRxFgaJYw7j
-         QoAw==
-X-Forwarded-Encrypted: i=1; AJvYcCUssD8kgma966xZacDyHXIGWB5qGQ0PcYdCBk/lW4vf906KaoUBpYzIUCZdnmQMOjSb13x4EHmNV6hLAANU9lCrGOXymcr2C9RML5G8
-X-Gm-Message-State: AOJu0YyA1Ajb8wXDHx9dtYl6x4Ab+zeZnsELjNb/JypLpN8P4uQyf7l/
-	+WwxwIA+//M9QjZ456t99Dww54Nn64N1JW7eGvG/gHzUxyaIXjel2Bk8+Ttxp8s=
-X-Google-Smtp-Source: AGHT+IGpzUbetpg+zOiWo96yxUAS0+Sso1cgwsBv5u0PKwxWfdTbHvU9h3kHUYqyYIxmIzEElsV3IQ==
-X-Received: by 2002:ac2:523a:0:b0:51d:fb6f:e9c with SMTP id i26-20020ac2523a000000b0051dfb6f0e9cmr1475261lfl.42.1714556650607;
-        Wed, 01 May 2024 02:44:10 -0700 (PDT)
+        bh=xnObvPwiieYwnQInszTH7mfu0PtHsqWytCTqPKrebKU=;
+        b=r+4MvZox5T8j8mLYe3eC8PjRWh908KfATX8gVo9HRGnw4AjdU3e1WdikFm9ppIa9vJ
+         Obt99MLahd8yJ7w3dXGbHbmQr+s9LwXpy+eQjj5+J8oYntVxRkv+Kl7gYPU47mAeTcAS
+         qK8NELk+NXpx0A733Kp+Rgw7StD7qibNIWk1SZaDnGcFrfU0gOkbPqsO/xqa4IFe7R9z
+         9gpU0pifyXzWQSjYzbS2rGCZIkNm0NB6JL5bBCAEQL06rGmWm0HJfgiEJuSkbNqfpmkG
+         NpeASwrYHNFe/7xuzH9cy7WQqDcE6W3QTRmYfR0susD3LGwfiXP51Kz6or67dXXVRiDN
+         KZQA==
+X-Forwarded-Encrypted: i=1; AJvYcCURmrCJ8AZNuJyu1+yG1OI19bmgHFxUIw0wHOQSUoUL6PlhbEeFUWHNXE/aWdrlXEC47NDc6CwTdfijDg7O2zECo6QE6JW9dKvIi9FN
+X-Gm-Message-State: AOJu0Ywdr/VX7D3Yu1ZKUpP5zeQu57SjJrowZbMHrxZEpY/WInhxYgbc
+	aRd2aWkcEXqt2YKJoA3xqWyP+xePalSDXUj2D4vRQVcc6E7scmm4smmpKdaia2c=
+X-Google-Smtp-Source: AGHT+IEiHGFsYiETxtdbiTTE6FVJmSJEATiezAy2M+TLp1Kda1XmZdBwe5r9aL4qvSyu9yN0MHLvSQ==
+X-Received: by 2002:a2e:2286:0:b0:2da:aa0:f948 with SMTP id i128-20020a2e2286000000b002da0aa0f948mr1402233lji.8.1714556703906;
+        Wed, 01 May 2024 02:45:03 -0700 (PDT)
 Received: from [192.168.1.20] ([178.197.223.16])
-        by smtp.gmail.com with ESMTPSA id z2-20020a17090665c200b00a55bbc4fd16sm11193261ejn.48.2024.05.01.02.44.09
+        by smtp.gmail.com with ESMTPSA id f12-20020a2eb38c000000b002e0f0372923sm443596lje.116.2024.05.01.02.45.02
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 01 May 2024 02:44:10 -0700 (PDT)
-Message-ID: <490cd4b4-c836-4512-9566-07fcdda40b82@linaro.org>
-Date: Wed, 1 May 2024 11:44:08 +0200
+        Wed, 01 May 2024 02:45:03 -0700 (PDT)
+Message-ID: <eb9538fe-1d1a-40e0-a46f-3b4b5da3e8d7@linaro.org>
+Date: Wed, 1 May 2024 11:45:00 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -76,7 +76,7 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 2/3] iio: pressure: Add driver for Sensirion SDP500
+Subject: Re: [PATCH v2 0/3] Add support for Sensirion SDP500
 To: Petar Stoykov <pd.pstoykov@gmail.com>, linux-iio@vger.kernel.org
 Cc: Jonathan Cameron <jic23@kernel.org>,
  Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
@@ -85,7 +85,7 @@ Cc: Jonathan Cameron <jic23@kernel.org>,
  Angel Iglesias <ang.iglesiasg@gmail.com>, Conor Dooley
  <conor+dt@kernel.org>, linux-kernel@vger.kernel.org,
  devicetree@vger.kernel.org
-References: <CADFWO8EQUkGcbE=RXjxXbub2tZge9+ss=gB-Q6wngFAvwFygRg@mail.gmail.com>
+References: <CADFWO8EZWkXeAMcURgGGEmzVjiSxFTVAbKpsb2Qmv66EZiTc+A@mail.gmail.com>
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Content-Language: en-US
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
@@ -132,44 +132,21 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <CADFWO8EQUkGcbE=RXjxXbub2tZge9+ss=gB-Q6wngFAvwFygRg@mail.gmail.com>
+In-Reply-To: <CADFWO8EZWkXeAMcURgGGEmzVjiSxFTVAbKpsb2Qmv66EZiTc+A@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
 On 30/04/2024 17:27, Petar Stoykov wrote:
-> From 6ae7537517f551540121ca6fb3b99080b7580410 Mon Sep 17 00:00:00 2001
-> From: Petar Stoykov <pd.pstoykov@gmail.com>
-> Date: Mon, 15 Jan 2024 12:21:26 +0100
-> Subject: [PATCH 2/3] iio: pressure: Add driver for Sensirion SDP500
+> functions in use so it should be fine here too.
 > 
-> Sensirion SDP500 is a digital differential pressure sensor. The sensor is
-> accessed over I2C.
+> All feedback is appreciated! Thank you for taking the time to review this.
 > 
-> Signed-off-by: Petar Stoykov <pd.pstoykov@gmail.com>
-> ---
->  drivers/iio/pressure/Kconfig  |   9 +++
->  drivers/iio/pressure/Makefile |   1 +
->  drivers/iio/pressure/sdp500.c | 144 ++++++++++++++++++++++++++++++++++
->  3 files changed, 154 insertions(+)
->  create mode 100644 drivers/iio/pressure/sdp500.c
-> 
-> diff --git a/drivers/iio/pressure/Kconfig b/drivers/iio/pressure/Kconfig
-> index 95efa32e4289..5debdfbd5324 100644
-> --- a/drivers/iio/pressure/Kconfig
-> +++ b/drivers/iio/pressure/Kconfig
-> @@ -212,6 +212,15 @@ config MS5637
->        This driver can also be built as a module. If so, the module will
->        be called ms5637.
-> 
-> +config SDP500
-> +    tristate "Sensirion SDP500 differential pressure sensor I2C driver"
+> v1->v2:
+> Many fixes suggested by Jonathan Cameron and Krzysztof Kozlowsk.
 
-Nothing improved. Indentation is even more broken.
-
-Use b4 to send patches. If you decide to send them manually, be sure you
-use proper process, so git format-patch -3 --cover-letter && git
-send-email. All threading is broken, all patches are not real patches
-and have some headers pasted. That's not how it works.
+No, be specific. What EXACTLY changed. This is way too generic.
+Considering entire indentation is broken, I could assume you actually
+did not implement feedback.
 
 Best regards,
 Krzysztof
