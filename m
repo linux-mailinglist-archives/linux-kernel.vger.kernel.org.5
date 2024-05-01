@@ -1,245 +1,148 @@
-Return-Path: <linux-kernel+bounces-165634-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-165635-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2AAF68B8EE1
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 19:16:46 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id AF03A8B8EE7
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 19:17:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CD5DAB20FD3
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 17:16:42 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9A969B21186
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 17:17:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1EA3018040;
-	Wed,  1 May 2024 17:16:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BDEC7DDAB;
+	Wed,  1 May 2024 17:16:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="BHoppEpb"
-Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="iVpOppxs"
+Received: from mail-lf1-f51.google.com (mail-lf1-f51.google.com [209.85.167.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C3E4DDAB
-	for <linux-kernel@vger.kernel.org>; Wed,  1 May 2024 17:16:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6713C18039
+	for <linux-kernel@vger.kernel.org>; Wed,  1 May 2024 17:16:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714583796; cv=none; b=i/qYhweKrFsN4Y1i7YegQgh4DA3S4Wp8o/yOgquxC7ZVJbnid862yD9DNcRq0QGwD2qJGOaTa85Bsoise1MVr2YYRVctCOJsUpJgkCd0kZu4ZUtw1PTHV0KrU+FJdpgVS3L2BVpVnl4TkT2r1v04Ww7cz1uA5qzOYrwxH5Zi2NI=
+	t=1714583819; cv=none; b=IYvyAHN/NFnVUh7uzy54z+ilpewOUPBJG8KbUWyzvirmeOJ34PulpNZ80qwlcvu4CPGSD5IlVumY1jZSfWUhOk0lKenfJUVSXmsPKhCImXyGAi3YpIXT/REvlJ+Iqrj5K1ry/Skp5Nv3cZG04IWJZwM4vM4XmM7CpOJnd36yFho=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714583796; c=relaxed/simple;
-	bh=0BmLq37R522FU/HxHiaxBEjlQlb5UJR6+0WcNtEbFCY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=kZW8/SGxlrdb/kk0qDfT0FBL/PwqIU4j6Y0Y8s1HEhFl69xfw0Be+NRE+FGjhBk+uyFmPakcJqcEKEYSkHjBr/5xFWjmwZrZCWrNBqjCYYeLcnYgZXPRMfUk2EchH5wN8ZACwsgPP2hqwOgXuIFoT7APwAXWm0xVVH/cn1k6O4k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=BHoppEpb; arc=none smtp.client-ip=209.85.218.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-a51a7d4466bso761232966b.2
-        for <linux-kernel@vger.kernel.org>; Wed, 01 May 2024 10:16:34 -0700 (PDT)
+	s=arc-20240116; t=1714583819; c=relaxed/simple;
+	bh=02BhFBAy4ZX6ytoV+oKn8+uM4s9GylTFH+6SsonvGE8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=QBw5E1df5DQhfcUA5U+BtV2mTuGWq6G8yNkZDZtRGvWTWilkVFxViKQpK8w0u9GIXLM+YdQ/zJ/aArfvXek5rHr/ljoGUcu2qJS6Y3cFBb3ckYr2h7odHUkrJIEG/ibV+pX6fAWuGTusF1IZf+FlmrnZgzICdtb46QLANjqWYwg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=iVpOppxs; arc=none smtp.client-ip=209.85.167.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lf1-f51.google.com with SMTP id 2adb3069b0e04-51ef64d04b1so345659e87.3
+        for <linux-kernel@vger.kernel.org>; Wed, 01 May 2024 10:16:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1714583793; x=1715188593; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ONQyBcD8VRLw4uQD2Qcjp9+m2MW2Gbhx15MpCK/CXQs=;
-        b=BHoppEpbCUtnHzspEiXWLtgu9n6wjtvsillrEj5uqw41Bho0bmrrM74BWxL0EB2IKO
-         36vYzf/vzu2p4TGD7yymXyyExRrjzRTvs2KeEVFVKWRyACsEG+tSNv4bokyxFZCcnPkx
-         i6Q0jWeduVXM1Wap9CrbKnA+jeaaroxqeuuGK4dvMG5oXWX4tEOgh7jDUyjEXvzWG9YT
-         h2sVcMW2FPDvcWZ2uABsqvnReMJS926AckPHABH19uxEE/itO3dO+gn24goRa66EJ+ka
-         BtSnsWE1RIStmrVj/irLEZ9yFYTvrgco2Pefl+6eUgDIGGr+2uQzX24LTspmUhE/l60Z
-         hA/Q==
+        d=linaro.org; s=google; t=1714583815; x=1715188615; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=MOHqyTk2nsRZy88pDJJ/quBzrqb3UUPa7Yn14ZhLib4=;
+        b=iVpOppxsz5ghxxUEB9NfOFKKI+6G8FWE8KMpEIgL0IzcDWO4UZU0AxzNOAubNoopfN
+         wjDM612rx0zN/3xvdmazYR0SfUpXTWhGudu6WKk0hkW3jEUkVEA3CZ1UlmRSoRPZ/6Vg
+         6jh64wo3h4vc8RtCyuPEogJauoXB7cj9we+zmVBImIlXav+Epi9zhso7KEwFJL8Oa+Fe
+         D5oDbAAGeTOuSvCkxWVy6dZ6tkNo61rsMt3dn65YW4J5gK5gwwAh+GyeiY9KGXdMYwhT
+         QOh0+tIniDa0BMRg+6CaFlTm2JlG1ykwbhZdyw/VV7ozKz3xoHVWT6DaM+O9Xs+DwgDM
+         kLpg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714583793; x=1715188593;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ONQyBcD8VRLw4uQD2Qcjp9+m2MW2Gbhx15MpCK/CXQs=;
-        b=CxBmR8/WP/u3NFIjPgInkLLANz1i/bG6i/B+c7frlTJg28h6fdsEifd983/4s4hyVC
-         +G1I9WbsKLsQ0VFZerVqvr3wlPlasTRW2MZBzoIv+EPz5LcaKvZmmPmyUwQJaZJSTUod
-         yWkeLUEamEiS8KI4IcknOF1+Il0S9sDXaGgs4/0xUz4n1LUgvrVI5eMIQSpotSZECasy
-         FnfS7EZxJTR+pILhzvoJngEZNzOaArrciMicxOepgz14ef3dI74U4ysgHCGug5IpSz3A
-         cN1pbBOF+1savbbl1UTzU45y4IICAANM3o4M6L5V451P0Qm6lCkjb3/LObb15Y5Ma39e
-         edhw==
-X-Forwarded-Encrypted: i=1; AJvYcCUxZxg4jxiLEqrGmPxnrGb8CoUsCNFw+RdPMgIUwoh+uhlaE00UKG5WeWhesKvuSppN7FDf66zM3ljR21NI/KS/9DeX2lV1FjH4CW/U
-X-Gm-Message-State: AOJu0YwBB1kbYI7sCkm5bnK4rpkEM/kUcKrHqNU75zEijdCWe2o6ruCR
-	0dAgnkHXzocHp+qpCZB2DYSPyGtKW1/ddCEHaRlO1VzHT3lXcUkTHGpdxpJ579wA2WPPWNwNYwN
-	1cwN1eYfK1pZVa/7TMtv3z0l8hEBy1XwHzHTl
-X-Google-Smtp-Source: AGHT+IHowXyWVWUMsYZG3v7H2VTVJc9cyGycjNtSuZrYRRdK9YOB+oIJBeQ/0JwCKLpK+peFqmNZF1398qplDqqYd6E=
-X-Received: by 2002:a17:906:f8d4:b0:a52:5baf:23d with SMTP id
- lh20-20020a170906f8d400b00a525baf023dmr2258407ejb.15.1714583792458; Wed, 01
- May 2024 10:16:32 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1714583815; x=1715188615;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=MOHqyTk2nsRZy88pDJJ/quBzrqb3UUPa7Yn14ZhLib4=;
+        b=VdG5qb/OgpE9HErZQulx3oQYDLYLsXbbLclVEIWp21+3LugUwwjaCTWx4lbKeTxwSv
+         a6WIqMdN4p5wKoN0iOFVdkjNSX5mgbkSmqFRVmxdFZGDOniWAg2ceXgK+hM5ixtBbI1a
+         jQ6mGnYfons2byiRhdR9AKUXVyBM9O4AqCiTSQ9ihihkpNdNATsHsvpuEYEE0GQibt/q
+         gpNSNgygRbcEaKrVadVvHBS29+GHTG9q23QDctJ2a76bQmCYF2pFSfK2rH/9gXx6QbeQ
+         5YTJXxzWOLz9jxSZBwyxbQ4NpnrDTOBwE5HmgV8W8iyUMBLlZa04iknk3sosA5sYvEjs
+         Cbmw==
+X-Forwarded-Encrypted: i=1; AJvYcCWrnjxQXBLV42uQKKBFA23yM64TFuYvdX5iASOC9iW0so9Wl+CnF2lWCOh10YHBG6Dt3AUU0HNRkUEWhn2fq47sL0NWeMEyCkEhKf68
+X-Gm-Message-State: AOJu0YzuK0+2BDsjVHn/0BG8pOKidXjyLC4RSZ1k3a1yCcrdVuVEZRkc
+	0JmGDldrdM4OXMKRGkDMn2KADQJ6hLNFSblfh3rhwVLTNRqJvpciSM1K980DXKQ=
+X-Google-Smtp-Source: AGHT+IGQV4KLhJUah5uwpDXzYUszrhPNSItjqkYS07RJilfCu8tUsg9Dz64nf2enkLVMqtqy/1k75Q==
+X-Received: by 2002:a05:6512:12c7:b0:51f:196:d217 with SMTP id p7-20020a05651212c700b0051f0196d217mr197144lfg.63.1714583815158;
+        Wed, 01 May 2024 10:16:55 -0700 (PDT)
+Received: from localhost ([102.222.70.76])
+        by smtp.gmail.com with ESMTPSA id t10-20020a192d4a000000b0051d5616c3e1sm1524897lft.231.2024.05.01.10.16.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 01 May 2024 10:16:54 -0700 (PDT)
+Date: Wed, 1 May 2024 20:16:49 +0300
+From: Dan Carpenter <dan.carpenter@linaro.org>
+To: "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
+Cc: Linus Walleij <linus.walleij@linaro.org>,
+	Thierry Reding <thierry.reding@gmail.com>,
+	Jonathan Hunter <jonathanh@nvidia.com>,
+	Dvorkin Dmitry <dvorkin@tibbo.com>, Wells Lu <wellslutw@gmail.com>,
+	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+	Alexandre Torgue <alexandre.torgue@foss.st.com>,
+	Emil Renner Berthing <kernel@esmil.dk>,
+	Jianlong Huang <jianlong.huang@starfivetech.com>,
+	Hal Feng <hal.feng@starfivetech.com>,
+	Orson Zhai <orsonzhai@gmail.com>,
+	Baolin Wang <baolin.wang@linux.alibaba.com>,
+	Chunyan Zhang <zhang.lyra@gmail.com>,
+	Viresh Kumar <vireshk@kernel.org>,
+	Shiraz Hashim <shiraz.linux.kernel@gmail.com>, soc@kernel.org,
+	Krzysztof Kozlowski <krzk@kernel.org>,
+	Sylwester Nawrocki <s.nawrocki@samsung.com>,
+	Alim Akhtar <alim.akhtar@samsung.com>,
+	Geert Uytterhoeven <geert+renesas@glider.be>,
+	Patrice Chotard <patrice.chotard@foss.st.com>,
+	Heiko Stuebner <heiko@sntech.de>,
+	Damien Le Moal <dlemoal@kernel.org>,
+	Ludovic Desroches <ludovic.desroches@microchip.com>,
+	Nicolas Ferre <nicolas.ferre@microchip.com>,
+	Alexandre Belloni <alexandre.belloni@bootlin.com>,
+	Claudiu Beznea <claudiu.beznea@tuxon.dev>,
+	Dong Aisheng <aisheng.dong@nxp.com>,
+	Fabio Estevam <festevam@gmail.com>, Shawn Guo <shawnguo@kernel.org>,
+	Jacky Bai <ping.bai@nxp.com>,
+	Pengutronix Kernel Team <kernel@pengutronix.de>,
+	Chester Lin <chester62515@gmail.com>,
+	Matthias Brugger <mbrugger@suse.com>,
+	Ghennadi Procopciuc <ghennadi.procopciuc@oss.nxp.com>,
+	Sean Wang <sean.wang@kernel.org>,
+	Matthias Brugger <matthias.bgg@gmail.com>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	Sascha Hauer <s.hauer@pengutronix.de>,
+	Andrew Jeffery <andrew@codeconstruct.com.au>,
+	Joel Stanley <joel@jms.id.au>, linux-gpio@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-stm32@st-md-mailman.stormreply.com,
+	linux-samsung-soc@vger.kernel.org,
+	linux-renesas-soc@vger.kernel.org,
+	linux-rockchip@lists.infradead.org, linux-riscv@lists.infradead.org,
+	linux-mediatek@lists.infradead.org, imx@lists.linux.dev,
+	linux-aspeed@lists.ozlabs.org, openbmc@lists.ozlabs.org,
+	Peng Fan <peng.fan@nxp.com>
+Subject: Re: [PATCH 10/21] pinctrl: st: Use scope based of_node_put() cleanups
+Message-ID: <f6aa3a17-90d2-42e3-8c55-639dfcdbf8ca@moroto.mountain>
+References: <20240501-pinctrl-cleanup-v1-0-797ceca46e5c@nxp.com>
+ <20240501-pinctrl-cleanup-v1-10-797ceca46e5c@nxp.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240501100446.1454264-1-usamaarif642@gmail.com>
-In-Reply-To: <20240501100446.1454264-1-usamaarif642@gmail.com>
-From: Yosry Ahmed <yosryahmed@google.com>
-Date: Wed, 1 May 2024 10:15:54 -0700
-Message-ID: <CAJD7tkZ_fmzo8RGGpiH+0uUZCC7Nbnny6iHHfBruk2oa21Pi9Q@mail.gmail.com>
-Subject: Re: [PATCH] selftests: cgroup: add tests to verify the zswap
- writeback path
-To: Usama Arif <usamaarif642@gmail.com>
-Cc: akpm@linux-foundation.org, hannes@cmpxchg.org, nphamcs@gmail.com, 
-	chengming.zhou@linux.dev, linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
-	kernel-team@meta.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240501-pinctrl-cleanup-v1-10-797ceca46e5c@nxp.com>
 
-Hi Usama,
+On Wed, May 01, 2024 at 08:56:08PM +0800, Peng Fan (OSS) wrote:
+> @@ -1224,8 +1221,7 @@ static int st_pctl_dt_parse_groups(struct device_node *np,
+>  	grp->pin_conf = devm_kcalloc(dev, npins, sizeof(*grp->pin_conf), GFP_KERNEL);
+>  
+>  	if (!grp->pins || !grp->pin_conf) {
+> -		ret = -ENOMEM;
+> -		goto out_put_node;
+> +		return -ENOMEM;
+>  	}
 
-On Wed, May 1, 2024 at 3:04=E2=80=AFAM Usama Arif <usamaarif642@gmail.com> =
-wrote:
->
-> The condition for writeback can be triggered by allocating random
-> memory more than memory.high to push memory into zswap, more than
-> zswap.max to trigger writeback if enabled, but less than memory.max
-> so that OOM is not triggered. Both values of memory.zswap.writeback
-> are tested.
+You could delete the curly braces as well.
 
-Thanks for working on this :)
+regards,
+dan carpenter
 
->
-> Signed-off-by: Usama Arif <usamaarif642@gmail.com>
-> ---
->  tools/testing/selftests/cgroup/test_zswap.c | 83 +++++++++++++++++++++
->  1 file changed, 83 insertions(+)
->
-> diff --git a/tools/testing/selftests/cgroup/test_zswap.c b/tools/testing/=
-selftests/cgroup/test_zswap.c
-> index f0e488ed90d8..fe0e7221525c 100644
-> --- a/tools/testing/selftests/cgroup/test_zswap.c
-> +++ b/tools/testing/selftests/cgroup/test_zswap.c
-> @@ -94,6 +94,19 @@ static int allocate_bytes(const char *cgroup, void *ar=
-g)
->         return 0;
->  }
->
-> +static int allocate_random_bytes(const char *cgroup, void *arg)
-> +{
-> +       size_t size =3D (size_t)arg;
-> +       char *mem =3D (char *)malloc(size);
-> +
-> +       if (!mem)
-> +               return -1;
-> +       for (int i =3D 0; i < size; i++)
-> +               mem[i] =3D rand() % 128;
-> +       free(mem);
-> +       return 0;
-> +}
-> +
->  static char *setup_test_group_1M(const char *root, const char *name)
->  {
->         char *group_name =3D cg_name(root, name);
-> @@ -248,6 +261,74 @@ static int test_zswapin(const char *root)
->         return ret;
->  }
->
-> +/* Test to verify the zswap writeback path */
-> +static int test_zswap_writeback(const char *root, bool wb)
-> +{
-> +       int ret =3D KSFT_FAIL;
-> +       char *test_group;
-> +       long zswpwb_before, zswpwb_after;
-> +
-> +       test_group =3D cg_name(root,
-> +               wb ? "zswap_writeback_enabled_test" : "zswap_writeback_di=
-sabled_test");
-> +       if (!test_group)
-> +               goto out;
-> +       if (cg_create(test_group))
-> +               goto out;
-> +       if (cg_write(test_group, "memory.max", "8M"))
-> +               goto out;
-> +       if (cg_write(test_group, "memory.high", "2M"))
-> +               goto out;
-> +       if (cg_write(test_group, "memory.zswap.max", "2M"))
-> +               goto out;
-> +       if (cg_write(test_group, "memory.zswap.writeback", wb ? "1" : "0"=
-))
-> +               goto out;
-> +
-> +       zswpwb_before =3D cg_read_key_long(test_group, "memory.stat", "zs=
-wpwb ");
-> +       if (zswpwb_before < 0) {
-> +               ksft_print_msg("failed to get zswpwb_before\n");
-> +               goto out;
-> +       }
-> +
-> +       /*
-> +        * Allocate more than memory.high to push memory into zswap,
-> +        * more than zswap.max to trigger writeback if enabled,
-> +        * but less than memory.max so that OOM is not triggered
-> +        */
-> +       if (cg_run(test_group, allocate_random_bytes, (void *)MB(3)))
-> +               goto out;
 
-We set the zswap limit to 2M. So for this to work properly we need to
-guarantee that the 3M of random data will compress into more than 2M.
-Is this true for all possible zpool implementations and compression
-algorithms? How likely for this to break and start producing false
-negatives if zswap magically becomes more efficient?
-
-One alternative approach that I used before, although more complex, is
-to start by compressing the memory (i.e. through reclaim) without a
-zswap limit, and check the zswap usage. Then, fault the memory back
-in, set the zswap limit lower than the observed usage, and repeat.
-This should guarantee writeback AFAICT.
-
-Also, using memory.reclaim may be easier than memory.high if you
-follow this approach, as you would need to raise memory.high again to
-be able to decompress the memory.
-
-> +
-> +       /* Verify that zswap writeback occurred only if writeback was ena=
-bled */
-> +       zswpwb_after =3D cg_read_key_long(test_group, "memory.stat", "zsw=
-pwb ");
-> +       if (wb) {
-> +               if (zswpwb_after <=3D zswpwb_before) {
-> +                       ksft_print_msg("writeback enabled and zswpwb_afte=
-r <=3D zswpwb_before\n");
-> +                       goto out;
-> +               }
-> +       } else {
-> +               if (zswpwb_after !=3D zswpwb_before) {
-> +                       ksft_print_msg("writeback disabled and zswpwb_aft=
-er !=3D zswpwb_before\n");
-> +                       goto out;
-> +               }
-> +       }
-> +
-> +       ret =3D KSFT_PASS;
-> +
-> +out:
-> +       cg_destroy(test_group);
-> +       free(test_group);
-> +       return ret;
-> +}
-> +
-> +static int test_zswap_writeback_enabled(const char *root)
-> +{
-> +       return test_zswap_writeback(root, true);
-> +}
-> +
-> +static int test_zswap_writeback_disabled(const char *root)
-> +{
-> +       return test_zswap_writeback(root, false);
-> +}
-> +
->  /*
->   * When trying to store a memcg page in zswap, if the memcg hits its mem=
-ory
->   * limit in zswap, writeback should affect only the zswapped pages of th=
-at
-> @@ -425,6 +506,8 @@ struct zswap_test {
->         T(test_zswap_usage),
->         T(test_swapin_nozswap),
->         T(test_zswapin),
-> +       T(test_zswap_writeback_enabled),
-> +       T(test_zswap_writeback_disabled),
->         T(test_no_kmem_bypass),
->         T(test_no_invasive_cgroup_shrink),
->  };
-> --
-> 2.43.0
->
 
