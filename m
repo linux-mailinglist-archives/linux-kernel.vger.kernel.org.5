@@ -1,234 +1,298 @@
-Return-Path: <linux-kernel+bounces-165606-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-165608-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E0D7A8B8E83
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 18:50:40 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id F2D568B8E89
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 18:52:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5E3791F236E4
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 16:50:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 21CC11C21394
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 16:52:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D708134CC;
-	Wed,  1 May 2024 16:50:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 169A111CAB;
+	Wed,  1 May 2024 16:52:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bw4iEbZq"
-Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="l9Dndnjt"
+Received: from mail-lj1-f179.google.com (mail-lj1-f179.google.com [209.85.208.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E97783234;
-	Wed,  1 May 2024 16:50:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 24109748D;
+	Wed,  1 May 2024 16:52:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714582231; cv=none; b=uwEexJWVPBT+UXSE4rNJrBNqZOQH2u1KQ0/Sh4lmXfTa5BsX6CD9OU9HCm9KM47uGNo+28Ntp16trdOSkUryRW8ClneCPZoTjV703O3v4/8f4sMpQWYgj41qMug2RIj3hvIjiljVRtzKwSgvb0W+AvMlajR413Qehs//bb+RnDU=
+	t=1714582349; cv=none; b=IyN+1TEr75zHy91uC1Geg391aIWexew2ENolQW20krVLrb4JNU1P2B+x6vUKtZNLUsmzGAetkCQzCuyH1zTE0sQ8TFadxUXqJcjIKMytKkc7XGSe8wk7xsvnhPcVrengs6uzpYx5LF88NGIlJBpWFnVP8T6n02xrgbsOQDOYkiE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714582231; c=relaxed/simple;
-	bh=T5uWjQn0TdTai7lZsSs6aSnBx3aKCjraRrFmpU3ySSc=;
+	s=arc-20240116; t=1714582349; c=relaxed/simple;
+	bh=2EnY6jlUJdwfnq9vKIeMfPfdmHIS1mOXct0+S+bKfOM=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=R1IMewGxdvRNyMcOpAMkIfz7dVDvi2/u4qwCH2+kvRygrqgGijN86dMhibCDLw3rIfM4yGEh1N6cuFhPAt7lgw6kFakSGhu16xS1QMx492sRj0CsCOS+1PuOxULxk98Ia/qdiInA/EHeiXPXCPksPsLbwEluTaaqTWX9XtgEbzA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bw4iEbZq; arc=none smtp.client-ip=209.85.214.176
+	 To:Cc:Content-Type; b=Wh0eX6qWz0kJXy313ZCGGjvXlCInyk0nbc19INGsJ2beyebi7gsNmpNlId+M9C7CZARnbHVMMslgUcH6HltREc1xOdKVkEiX8kgf7FAEeXWMIfofmXn/08CrFnZmAC46lR2L3p5x/3W3mplB2Xzz1WX+cTNvOdejrxGBHKrxWo0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=l9Dndnjt; arc=none smtp.client-ip=209.85.208.179
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-1ec69e3dbe5so14030255ad.0;
-        Wed, 01 May 2024 09:50:29 -0700 (PDT)
+Received: by mail-lj1-f179.google.com with SMTP id 38308e7fff4ca-2e1c09eff95so33021fa.1;
+        Wed, 01 May 2024 09:52:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714582229; x=1715187029; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1714582345; x=1715187145; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Aksft0yTn/V06U1VI9NL6+QbOurl0GnC7c4G4bkaC4s=;
-        b=bw4iEbZqMgtryJK8jVcUh+L7aGw1WXn2xuw+mp3DnHua2S0t8xrhjUNBua6TmyRQly
-         aW3TV9PEoa8gx/T2fh7IcGG9SjdaYzKCW8YU+BU7BQ/AQgKwjnRAvx6Xi9eFrl4i27e2
-         9HwiVAeq2H0CqobYNmNrp3oYQfEPbELWJooN4yqVn68QgsIkF2BSuOjqTO/dIvAVcGJV
-         SnhfDIZQGAGnvmS25JfUsstTaz9xD6xE2Wts81ycNaztE3CAlNcRew0Jj6onbEMsRccp
-         gb0GpokqfcIUj/yjTcg38Sg8kaPC9vScq9dsoNw869ZwMJdDUkE3km1Ke863H2bC2yXZ
-         hXaw==
+        bh=ERfpwxgCZf+sBZVMcgjD4HYC9mmOkZ9NslkItmGclBI=;
+        b=l9DndnjtH92aVIp0VCLSjTWqC9782DQDkRJFbByVbiQa3nDrVpg2rWl0AY/XYBAQLg
+         QUGBuLHLu9fMGP5QFVP0zDlDFjy2TFTBwPd3+EhSJ9S3F72xoHyAph4tuKPdSBjYOgTj
+         3Jh2F1uwhQ5rijbljlwaQM2HU1pxEhmhVhgIJDQt4/4GWXGVPLsqxQYZb1vYB3+xs5zj
+         T4mMWGJ36pnFdzD58GPq5ISpOaHKrpFKOrAEXspEvL1zUs51VzPwiQSju87JAD+vk39A
+         YuW/XpGYNie6Tmqh3mlqXPWnoMHBv+a+3vvK5JmnvuXqIs9BasKEXky4wxnUuAFRSJWZ
+         a+1w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714582229; x=1715187029;
+        d=1e100.net; s=20230601; t=1714582345; x=1715187145;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Aksft0yTn/V06U1VI9NL6+QbOurl0GnC7c4G4bkaC4s=;
-        b=Kc3NfFKi8Go7+RFk+QXQUrdVC0RjZVpdot88TdPWVCXsMMGUMpHlauKH4/o/NT2bTN
-         WOO3hRrajzlq2R2DTQKAa4YC/Dr0xmoklJZ7l+XQ+onqZ2NV5hkWd4jQWNOfa4Orz9e8
-         /XcULzsdT0tF6K/C1srTpa+Ro/DKaJicy76fhdZkHzX82YlKCDj6bK2WbNC7r9udwqGD
-         Pp0ude6FMHhNVdcIEeujKujAGf4S1kGSXplzSkfTpWFd9BkaPnGBvkPu7H1qmUuU2MGL
-         Fu3cPUJ9t+0sI8MY/TAnxmeeYHeDSkPbSMhX9vBvvOod3DiW3sayMy7hSvTnBVNmr2Kx
-         5ShQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUEOpzP7o4uRNRXm+Fgvank3qORKMczukEmA+Jq0aKAx34Kc9yeZnjosZZrY3mI0VJZc2axtPVRQrSe9fPk5SW06/Hs2whltD+3MHwlQyGF0zYGzn2bsaiSqYX8N1jzHTvo
-X-Gm-Message-State: AOJu0YwMz51EwFmliUBWnSy128l1l/f15vhAtZpjG0g7vz64y/zxTjUp
-	0NeA45ogi5LWxdi4sV0BzcAzdKr21ROfeq5zssCLERY2jwHvwlLWcYuIo9Lw15q11x0gOny0uNH
-	rl8KDgs/aob/DBYxhQ259y02uUeQ=
-X-Google-Smtp-Source: AGHT+IGphJowQwPdQc/IaHX5fYRv9tLnSqbTNSMg8oYW9E7t5aRvVSuJjG7AQiuaR5dOEj0zY6wFvDFEVRQ7xzc7xek=
-X-Received: by 2002:a17:90b:68e:b0:2a5:4e39:6a8 with SMTP id
- m14-20020a17090b068e00b002a54e3906a8mr3089123pjz.33.1714582229167; Wed, 01
- May 2024 09:50:29 -0700 (PDT)
+        bh=ERfpwxgCZf+sBZVMcgjD4HYC9mmOkZ9NslkItmGclBI=;
+        b=lS4O2kfgsShkxjH5zx/6w+YGV2eJ3nSvrREOUivee5OPqNOVq6sj0j23JXFYYLkwnj
+         219OUtaVwWrWvinkfbzalvoyPdM4HIjyE7AeXqyzVwo7uaJfULzPVR/dGdS5IPf03Eha
+         6gk9PyoCVW0siDmrU2OMa1IZn1zMHQpr4oVar2L4pqdjiFfRtM2rojHYfayZj71zLfff
+         vci8MTowQR5hqNTkJKvjexfJuF/h4kGt/V8UEBdGplhwEjE3zre3Z1U66WIYzcxMhYAY
+         nqj49rE+Wht/2wsUsaoIxe55mE/uYfxFf9r4QgLn5Xkb9c4qSxqby6Lr3XCgv5XPaJev
+         bCuQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXh5rtHMEgrY27ET1WARZirxvX/tRGyVDLaZGNzCLqa6AcjHDN+w9bPEfiMcYcD2tNwk0mjBr7U2IdoMr50ndHELt9ZJu3ITZrupAj+Q99WchOvR4hZtRRLvQLoGrQthdYVOXmOZsx1yiHuH3tI
+X-Gm-Message-State: AOJu0YwQLdC+qZUM3S2yckgL58zbkjpzO50IczvEzR84OIcEPsMagI1v
+	T6ZVtHMkwxfFNkp8OfstmA2eKdodxgeR+WPMeyYymkStvGGVftnt52fUQbaRDgwsZBk0hZ+SWVE
+	GypmepnUeoBuG8Y0A/ivOOfT2Ag4=
+X-Google-Smtp-Source: AGHT+IFFxpObw475ZTfxnUpPYNyknx7u3fyI1szOE6lb5MxCpukdzbx2u1R923UOhURn8q+hYfQ6fKafUowytSLdlKE=
+X-Received: by 2002:a2e:9e58:0:b0:2e1:a40b:af28 with SMTP id
+ g24-20020a2e9e58000000b002e1a40baf28mr56752ljk.18.1714582344911; Wed, 01 May
+ 2024 09:52:24 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240430234739.79185-1-puranjay@kernel.org> <20240430234739.79185-3-puranjay@kernel.org>
-In-Reply-To: <20240430234739.79185-3-puranjay@kernel.org>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Wed, 1 May 2024 09:50:16 -0700
-Message-ID: <CAEf4BzbszfMGoOCx7hQPBfDLNLfBuAQ1PQDEq=ut=WiEubm_oA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v5 2/2] bpf, arm64: inline bpf_get_smp_processor_id()
- helper
-To: Puranjay Mohan <puranjay@kernel.org>
-Cc: Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Zi Shen Lim <zlim.lnx@gmail.com>, Xu Kuohai <xukuohai@huawei.com>, 
-	Florent Revest <revest@chromium.org>, linux-arm-kernel@lists.infradead.org, 
-	linux-kernel@vger.kernel.org, bpf@vger.kernel.org, 
-	Kumar Kartikeya Dwivedi <memxor@gmail.com>, puranjay12@gmail.com
+References: <20240422152500.1.I8939e49084a6fef78496eb73edafdf3c2c4afbf4@changeid>
+ <CABBYNZLCjrJUiVzNf53XYM-ZHWL6TZD4yFNtNGOuYi=6s5Q+OA@mail.gmail.com>
+ <CAJQfnxHUW+MdJUp9VCrF2Nq_-JZrd7mKBR9NdDoo0SOvgH5WUQ@mail.gmail.com>
+ <CANFp7mU2Chj_cZ_26kfM8TE1OToZzUeFKz61D7j-0ykMBQeG4A@mail.gmail.com>
+ <CABBYNZJK6zyYYmi66prKMdF69HkwfhOvMeB0TnEcGYRLTTr2jw@mail.gmail.com> <CANFp7mWWYmm9gPrsDBho3sDGu5q_fQztR+LJJUWQ_Faw0QRXFQ@mail.gmail.com>
+In-Reply-To: <CANFp7mWWYmm9gPrsDBho3sDGu5q_fQztR+LJJUWQ_Faw0QRXFQ@mail.gmail.com>
+From: Luiz Augusto von Dentz <luiz.dentz@gmail.com>
+Date: Wed, 1 May 2024 12:52:12 -0400
+Message-ID: <CABBYNZLtDc2MVh8f=2vLK6czfiz8wN=940exiw+fDv-fkNkqJA@mail.gmail.com>
+Subject: Re: [PATCH] Bluetooth: btusb: Add debugfs to force toggling remote wakeup
+To: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
+Cc: Archie Pusaka <apusaka@google.com>, linux-bluetooth <linux-bluetooth@vger.kernel.org>, 
+	Johan Hedberg <johan.hedberg@gmail.com>, Marcel Holtmann <marcel@holtmann.org>, 
+	CrosBT Upstreaming <chromeos-bluetooth-upstreaming@chromium.org>, 
+	Archie Pusaka <apusaka@chromium.org>, Abhishek Pandit-Subedi <abhishekpandit@google.com>, 
+	linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Apr 30, 2024 at 4:48=E2=80=AFPM Puranjay Mohan <puranjay@kernel.org=
-> wrote:
->
-> Inline calls to bpf_get_smp_processor_id() helper in the JIT by emitting
-> a read from struct thread_info. The SP_EL0 system register holds the
-> pointer to the task_struct and thread_info is the first member of this
-> struct. We can read the cpu number from the thread_info.
->
-> Here is how the ARM64 JITed assembly changes after this commit:
->
->                                       ARM64 JIT
->                                      =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
->
->               BEFORE                                    AFTER
->              --------                                  -------
->
-> int cpu =3D bpf_get_smp_processor_id();        int cpu =3D bpf_get_smp_pr=
-ocessor_id();
->
-> mov     x10, #0xfffffffffffff4d0             mrs     x10, sp_el0
-> movk    x10, #0x802b, lsl #16                ldr     w7, [x10, #24]
-> movk    x10, #0x8000, lsl #32
-> blr     x10
-> add     x7, x0, #0x0
->
->                Performance improvement using benchmark[1]
->
-> ./benchs/run_bench_trigger.sh glob-arr-inc arr-inc hash-inc
->
-> +---------------+-------------------+-------------------+--------------+
-> |      Name     |      Before       |        After      |   % change   |
-> |---------------+-------------------+-------------------+--------------|
-> | glob-arr-inc  | 23.380 =C2=B1 1.675M/s | 25.893 =C2=B1 0.026M/s |   + 1=
-0.74%   |
-> | arr-inc       | 23.928 =C2=B1 0.034M/s | 25.213 =C2=B1 0.063M/s |   + 5=
-37%    |
-> | hash-inc      | 12.352 =C2=B1 0.005M/s | 12.609 =C2=B1 0.013M/s |   + 2=
-08%    |
-> +---------------+-------------------+-------------------+--------------+
->
-> [1] https://github.com/anakryiko/linux/commit/8dec900975ef
->
-> Signed-off-by: Puranjay Mohan <puranjay@kernel.org>
-> ---
->  arch/arm64/include/asm/insn.h |  1 +
->  arch/arm64/net/bpf_jit.h      |  2 ++
->  arch/arm64/net/bpf_jit_comp.c | 23 +++++++++++++++++++++++
->  3 files changed, 26 insertions(+)
->
+Hi Abhishek,
 
-Nice improvements! I suggest combining arm64 and risc-v patches
-together when resubmitting, so that we can land them in one go. This
-one depends on RISC-V patches landing first to avoid a warning about
-global function without a prototype, right?
-
-Please add my ack as well
-
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
-
-
-> diff --git a/arch/arm64/include/asm/insn.h b/arch/arm64/include/asm/insn.=
-h
-> index 8de0e39b29f3..8c0a36f72d6f 100644
-> --- a/arch/arm64/include/asm/insn.h
-> +++ b/arch/arm64/include/asm/insn.h
-> @@ -138,6 +138,7 @@ enum aarch64_insn_special_register {
->  enum aarch64_insn_system_register {
->         AARCH64_INSN_SYSREG_TPIDR_EL1   =3D 0x4684,
->         AARCH64_INSN_SYSREG_TPIDR_EL2   =3D 0x6682,
-> +       AARCH64_INSN_SYSREG_SP_EL0      =3D 0x4208,
->  };
+On Wed, May 1, 2024 at 12:34=E2=80=AFPM Abhishek Pandit-Subedi
+<abhishekpandit@chromium.org> wrote:
 >
->  enum aarch64_insn_variant {
-> diff --git a/arch/arm64/net/bpf_jit.h b/arch/arm64/net/bpf_jit.h
-> index b627ef7188c7..b22ab2f97a30 100644
-> --- a/arch/arm64/net/bpf_jit.h
-> +++ b/arch/arm64/net/bpf_jit.h
-> @@ -302,5 +302,7 @@
->         aarch64_insn_gen_mrs(Rt, AARCH64_INSN_SYSREG_TPIDR_EL1)
->  #define A64_MRS_TPIDR_EL2(Rt) \
->         aarch64_insn_gen_mrs(Rt, AARCH64_INSN_SYSREG_TPIDR_EL2)
-> +#define A64_MRS_SP_EL0(Rt) \
-> +       aarch64_insn_gen_mrs(Rt, AARCH64_INSN_SYSREG_SP_EL0)
+> On Tue, Apr 30, 2024 at 9:46=E2=80=AFAM Luiz Augusto von Dentz
+> <luiz.dentz@gmail.com> wrote:
+> >
+> > Hi Abhishek,
+> >
+> > On Fri, Apr 26, 2024 at 1:04=E2=80=AFPM Abhishek Pandit-Subedi
+> > <abhishekpandit@chromium.org> wrote:
+> > >
+> > > On Fri, Apr 26, 2024 at 2:08=E2=80=AFAM 'Archie Pusaka' via ChromeOS =
+Bluetooth
+> > > Upstreaming <chromeos-bluetooth-upstreaming@chromium.org> wrote:
+> > > >
+> > > > Hi Luiz,
+> > > >
+> > > > On Thu, 25 Apr 2024 at 03:05, Luiz Augusto von Dentz
+> > > > <luiz.dentz@gmail.com> wrote:
+> > > > >
+> > > > > Hi Archie,
+> > > > >
+> > > > > On Mon, Apr 22, 2024 at 3:25=E2=80=AFAM Archie Pusaka <apusaka@go=
+ogle.com> wrote:
+> > > > > >
+> > > > > > From: Archie Pusaka <apusaka@chromium.org>
+> > > > > >
+> > > > > > Sometimes we want the controller to not wake the host up, e.g. =
+to
+> > > > > > save the battery. Add some debugfs knobs to force the wake by B=
+T
+> > > > > > behavior.
+> > > > > >
+> > > > > > Signed-off-by: Archie Pusaka <apusaka@chromium.org>
+> > > > > > Reviewed-by: Abhishek Pandit-Subedi <abhishekpandit@google.com>
+> > > > > >
+> > > > > > ---
+> > > > > >
+> > > > > >  drivers/bluetooth/btusb.c | 19 +++++++++++++++++++
+> > > > > >  1 file changed, 19 insertions(+)
+> > > > > >
+> > > > > > diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btus=
+b.c
+> > > > > > index 8bede0a335668..846b15fc3c04c 100644
+> > > > > > --- a/drivers/bluetooth/btusb.c
+> > > > > > +++ b/drivers/bluetooth/btusb.c
+> > > > > > @@ -873,6 +873,9 @@ struct btusb_data {
+> > > > > >         unsigned cmd_timeout_cnt;
+> > > > > >
+> > > > > >         struct qca_dump_info qca_dump;
+> > > > > > +
+> > > > > > +       bool force_enable_remote_wake;
+> > > > > > +       bool force_disable_remote_wake;
+> > > > > >  };
+> > > > > >
+> > > > > >  static void btusb_reset(struct hci_dev *hdev)
+> > > > > > @@ -4596,6 +4599,10 @@ static int btusb_probe(struct usb_interf=
+ace *intf,
+> > > > > >
+> > > > > >         debugfs_create_file("force_poll_sync", 0644, hdev->debu=
+gfs, data,
+> > > > > >                             &force_poll_sync_fops);
+> > > > > > +       debugfs_create_bool("force_enable_remote_wake", 0644, h=
+dev->debugfs,
+> > > > > > +                           &data->force_enable_remote_wake);
+> > > > > > +       debugfs_create_bool("force_disable_remote_wake", 0644, =
+hdev->debugfs,
+> > > > > > +                           &data->force_disable_remote_wake);
+> > > > > >
+> > > > > >         return 0;
+> > > > > >
+> > > > > > @@ -4702,6 +4709,18 @@ static int btusb_suspend(struct usb_inte=
+rface *intf, pm_message_t message)
+> > > > > >                 }
+> > > > > >         }
+> > > > > >
+> > > > > > +       if (!PMSG_IS_AUTO(message)) {
+> > > > > > +               if (data->force_enable_remote_wake) {
+> > > > > > +                       data->udev->do_remote_wakeup =3D 1;
+> > > > > > +                       if (test_bit(BTUSB_WAKEUP_AUTOSUSPEND, =
+&data->flags))
+> > > > > > +                               data->udev->reset_resume =3D 0;
+> > > > > > +               } else if (data->force_disable_remote_wake) {
+> > > > > > +                       data->udev->do_remote_wakeup =3D 0;
+> > > > > > +                       if (test_bit(BTUSB_WAKEUP_AUTOSUSPEND, =
+&data->flags))
+> > > > > > +                               data->udev->reset_resume =3D 1;
+> > > > > > +               }
+> > > > > > +       }
+> > > > > > +
+> > > > > >         return 0;
+> > > > > >  }
+> > > > > >
+> > > > > > --
+> > > > > > 2.44.0.769.g3c40516874-goog
+> > > > >
+> > > > > There is a D-Bus interface available to overwrite the wakeup sett=
+ing:
+> > > > >
+> > > > > https://github.com/bluez/bluez/blob/master/doc/org.bluez.Device.r=
+st#boolean-wakeallowed-readwrite
+> > > > >
+> > > > > Or do you want a master switch for it? On the other hand aren't w=
+e
+> > > > > getting into the rfkill area if you really want to switch off rad=
+io
+> > > > > activity while suspended? That seems like a better idea then just
+> > > > > disable remote wakeup.
+> > >
+> > > This DBUS api is different from the quirk this is introducing.
+> > >
+> > > The `Wake Allowed` field in D-bus controls whether we add the address
+> > > to the Classic Event Filter (HIDP) or LE Filter Accept List (HOGP) bu=
+t
+> > > not whether we allow wake at the transport level (which is why
+> > > hdev->wakeup exists).
+> > >
+> > > This change specifically addresses a quirk with Realtek chipsets:
+> > > RTL8822/RTL8852 will do "global shutdown" and power off Bluetooth if
+> > > USB Remote Wake bit is not set. The USB remote_wake bit is normally
+> > > set by the USB stack based on whether device_may_wakeup(udev) =3D=3D =
+true.
+> > > This means that RTL88x2 will lose power around suspend/resume if ther=
+e
+> > > are no wake capable devices connected.
+> > >
+> > > ChromeOS decided to use idle power and resume-time to determine
+> > > whether to allow remote wake or not for these chipsets and we want to
+> > > move this control to userspace so that we don't have to hold CHROMIUM
+> > > patches in the kernel applying this policy (we want udev rules
+> > > instead). RTL8852 gets force enabled remote wake because the
+> > > RESET_RESUME behavior of this chip would otherwise increase our resum=
+e
+> > > time >1s which breaks one of our platform requirements.
+> > >
+> > > The end-goal of these changes:
+> > > * We detect RTL8822 or RTL8852 with udev and apply the right policy.
+> > > * RTL8822 gets force_disable_remote_wake (idle power consumption too
+> > > high otherwise)
+> > > * RTL8852 gets force_enable_remote_wake (resume time too long otherwi=
+se)
+> >
+> > Got it, but the suggestion was to instead of using
+> > force_enable_remote_wake, which is sort of non-standard, why don't
+> > Chrome OS simply use rkill interface to tell the driver to shutdown?
+> > On resume then you can just unblock via rfkill that should have the
+> > same result as using force_enable_remote_wake, well except if there is
+> > a bug in the driver that is not handling rfkill as a 'global
+> > shutdown', but then you need to fix the driver not introduce yet
+> > another debugfs entry to bypass it.
 >
->  #endif /* _BPF_JIT_H */
-> diff --git a/arch/arm64/net/bpf_jit_comp.c b/arch/arm64/net/bpf_jit_comp.=
-c
-> index ed8f9716d9d5..8084f3e61e0b 100644
-> --- a/arch/arm64/net/bpf_jit_comp.c
-> +++ b/arch/arm64/net/bpf_jit_comp.c
-> @@ -1215,6 +1215,19 @@ static int build_insn(const struct bpf_insn *insn,=
- struct jit_ctx *ctx,
->                 const u8 r0 =3D bpf2a64[BPF_REG_0];
->                 bool func_addr_fixed;
->                 u64 func_addr;
-> +               u32 cpu_offset =3D offsetof(struct thread_info, cpu);
-> +
-> +               /* Implement helper call to bpf_get_smp_processor_id() in=
-line */
-> +               if (insn->src_reg =3D=3D 0 && insn->imm =3D=3D BPF_FUNC_g=
-et_smp_processor_id) {
-> +                       emit(A64_MRS_SP_EL0(tmp), ctx);
-> +                       if (is_lsi_offset(cpu_offset, 2)) {
-> +                               emit(A64_LDR32I(r0, tmp, cpu_offset), ctx=
-);
-> +                       } else {
-> +                               emit_a64_mov_i(1, tmp2, cpu_offset, ctx);
-> +                               emit(A64_LDR32(r0, tmp, tmp2), ctx);
-> +                       }
-> +                       break;
-> +               }
->
->                 ret =3D bpf_jit_get_func_addr(ctx->prog, insn, extra_pass=
-,
->                                             &func_addr, &func_addr_fixed)=
-;
-> @@ -2541,6 +2554,16 @@ bool bpf_jit_supports_percpu_insn(void)
->         return true;
->  }
->
-> +bool bpf_jit_inlines_helper_call(s32 imm)
-> +{
-> +       switch (imm) {
-> +       case BPF_FUNC_get_smp_processor_id:
-> +               return true;
-> +       }
-> +
-> +       return false;
+> Did you mean `force_disable_remote_wake`? rfkill will work for that
+> around system suspend. We preferred not to do it because we don't use
+> userspace suspend signals with Bluez today (preferring the kernel
+> suspend notifier).
 
-same minor nit to use default: return false inside the switch itself
+Yeah, that said rfkill has nothing to do with suspend afaik, it is
+more for achieving flight mode and as far I know it is a kernel
+interface.
 
+> `force_enable_remote_wake` still needs debugfs as rfkill can't force
+> an interface to stay awake as far as I know.
 
-> +}
-> +
->  void bpf_jit_free(struct bpf_prog *prog)
->  {
->         if (prog->jited) {
-> --
-> 2.40.1
+You mixing up, Im not saying to use rfkill to enable/disable wake
+support, the remains the same, what changes is that if you want to
+overwrite that it just use rfkill to block the traffic while suspended
+that way wake being enable or not doesn't matter since the controller
+radio shall be off if it is blocked.
+
 >
+> >
+> > > Hope this provides enough context for why this change is necessary.
+> > >
+> > > >
+> > > > Yes, the initial idea was a master switch.
+> > > > Thanks for your suggestions.
+> > > > Let me discuss it with Abhishek.
+> > > > >
+> > > > > --
+> > > > > Luiz Augusto von Dentz
+> > > >
+> > > > Thanks,
+> > > > Archie
+> > > >
+> > > > --
+> > > > You received this message because you are subscribed to the Google =
+Groups "ChromeOS Bluetooth Upstreaming" group.
+> > > > To unsubscribe from this group and stop receiving emails from it, s=
+end an email to chromeos-bluetooth-upstreaming+unsubscribe@chromium.org.
+> > > > To post to this group, send email to chromeos-bluetooth-upstreaming=
+@chromium.org.
+> > > > To view this discussion on the web visit https://groups.google.com/=
+a/chromium.org/d/msgid/chromeos-bluetooth-upstreaming/CAJQfnxHUW%2BMdJUp9VC=
+rF2Nq_-JZrd7mKBR9NdDoo0SOvgH5WUQ%40mail.gmail.com.
+> >
+> >
+> >
+> > --
+> > Luiz Augusto von Dentz
+
+
+
+--=20
+Luiz Augusto von Dentz
 
