@@ -1,210 +1,246 @@
-Return-Path: <linux-kernel+bounces-165522-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-165523-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CE7008B8D89
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 17:57:40 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B52C28B8D8F
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 17:58:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 83EBE281882
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 15:57:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6AE3728233B
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 15:58:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A02F12FB20;
-	Wed,  1 May 2024 15:57:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3FC9112FF6D;
+	Wed,  1 May 2024 15:58:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="g8Z2TOtt"
-Received: from mail-yb1-f182.google.com (mail-yb1-f182.google.com [209.85.219.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="RjFyqt01";
+	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="iEtoSBrG"
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA4EA12EBDD
-	for <linux-kernel@vger.kernel.org>; Wed,  1 May 2024 15:57:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.182
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714579050; cv=none; b=rwAGJSGR95F0HMIGFpAquayAwt8HGpr9jYybE8jBXWMfnZaRNMuVRMg+wrN5u2WmcIUKo2BdZvJs5KpSr0G63CXrqFz31+myyLodjQU4hgUy/oSpIlrDZbe3/yxOzISOhbTtpE0ui6oZjYJ8bHIxBGKWk3vTq51U0lxN+S7rNDA=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714579050; c=relaxed/simple;
-	bh=9+wuxJmDrcioFBRkTT68VsS9xa2ednOiLM11tM+SlGs=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ieGTRyjLXXi1fZP2poSUEhUeKKIpAtqZbv2B//a7XNl/z/v1ucgCUjFHRLpa73ciNMmqPZzBbPS6/xF5KhIr9kBZF5CMZx1HGEE5W8gSmWOklXvYSRQMG8QW5hqGICu1hazW6nCeeGeXbMKHZB2y7dS1JlVhNwzdJj9oIK3AZ0M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=g8Z2TOtt; arc=none smtp.client-ip=209.85.219.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yb1-f182.google.com with SMTP id 3f1490d57ef6-de60a51fe21so2708374276.0
-        for <linux-kernel@vger.kernel.org>; Wed, 01 May 2024 08:57:28 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D65212F593;
+	Wed,  1 May 2024 15:58:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.165.32
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1714579083; cv=fail; b=aiQSzP7ezF7YWY0YGVNQQCdO22OImRV4vlvXSuz9zEoinSSe4PAGBlS8GVrjZ88IFfS4JCaZS/AEzKPWLfSMTSh2FBsNeQmmnJOlHUWqeAuRbZ842ukxsLiCWlMO+Bk3AOzhLDukc82JH5eeP78aWLg9Fz9Fndv2FlmvnV6JOW8=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1714579083; c=relaxed/simple;
+	bh=YYm5r3RIaioTJCDrg7dYG8wIkPZATzTXAOSzxa/d1JI=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=rooy86znz0u7mnXLU6LBTyRPSlWB92QZt7YqKZQ8MAbR8Wjo6jGEBK9fMCj6nomyyVZfaEJXNxptMsCX7wnqWZaDA8W3n4/eVgp/lxRlDW+x5i4SscmE5Tyx3woTRnBMhGTObZjsUHbYJmE/OWWaKfTdyA4+3+WazK0k2XGfdtg=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=RjFyqt01; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=iEtoSBrG; arc=fail smtp.client-ip=205.220.165.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 441ARpUH014742;
+	Wed, 1 May 2024 15:57:43 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2023-11-20;
+ bh=8wYTwblizp8OkkY8XmK1qn67s08eo0pcL24mUK/JnZE=;
+ b=RjFyqt01u+XUc6AgEflfvgPwgjar1wpiQ8JDZl4vIursg3by4HKUTl4+mpZhmVh9Zq8o
+ C4j94gHLI5UY0L482p6hcmVnxev3xyMpW7dvoS5eWweqhGrE0xc9SEWlU9ACPDeCQuSs
+ V2MevvrdMoLL2P0K+tqY0dh20x9vxoN9DSkuO75WBXdd2uoVllVNXai4Onyc0fpPAXC2
+ fOP0qkF1uncnUqPgSlq4qQyuzQSbtyCIeXwq7zfv/J5TuYzS/3kDBuyRpy7lYaqqYkQy
+ JRoQvtmPpbC7KghvZlmqpeNVDuxo4hrxhhRP/OHNcaZWUXm14/4OruZL/FFu5ldd431F lA== 
+Received: from phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta01.appoci.oracle.com [138.1.114.2])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3xrs8cqebk-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Wed, 01 May 2024 15:57:43 +0000
+Received: from pps.filterd (phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 441FoieT005145;
+	Wed, 1 May 2024 15:57:43 GMT
+Received: from nam02-sn1-obe.outbound.protection.outlook.com (mail-sn1nam02lp2041.outbound.protection.outlook.com [104.47.57.41])
+	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3xrqt8ym2s-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Wed, 01 May 2024 15:57:42 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=P8Snlqb61vVef71NzqHjdmT8tJCS2kTPZAFHS/CcLeQ1+axARE5vDXRSRES7ShR5bC+l+FfuUfxpdkfrzTUgvHSHNvVZ7xUUPklUudRfBWiQYSJL6Q3MBSAIV9pOAiP/u6dHPGVuyPhjyKmlTjwYSWA9mr6EspA3f2OtkPUjoguOLhtjpd6XuZO3Tx66KjB1ZIWoJM56R6CBJv33dIBaW8ZWTFFcmETQznx9XnRWN9AzD2AKWhOfrganglEFo/FlT2QdlvSaTmSgNUiCfk50A8g+/SCftlFbFmYaMlNr5SU8ajWXUdwWyXKp/2AESfusOfivGXkjVoy7VZZmzL8miA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=8wYTwblizp8OkkY8XmK1qn67s08eo0pcL24mUK/JnZE=;
+ b=K11NazgTvWIF3SXvQLKXdAohFN6mIlQChx5q/fxaLiNVTn5NIqafgaI2jREdDKGLRmyKxYPy1/D7L7TSrRTNx9cTEn0wNUZLQOe4jhegTnWF12l2rRULjfgY6Ulfo6or2n2Jx+7txRi5lpWgKIQHvCoRr9DfXBXhWbpELZEicBfVLf+OsAj6H++bnReo8lSpt+jL7AQxfuCfW5KBi17apDWINcJdBiJbl5YJlCGyXVGusgDevEwm8NcTZoACrE3J2Ijm5nZtdOaBQP1UoEZlbEKvbbGkv8xTLWpy58J9RCYClQsyfMunaAuhRsytRWTweQ/5K3u3qhbfsECgXdeHgQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1714579048; x=1715183848; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Eg8D/K80r70GPeKVeJzvUlTNioKE+UQ27ElJDTct8fc=;
-        b=g8Z2TOtthkAiS3X0ErUqVYPS4xh5jSYO5pBVDyaFnhABYfuY1vFQi8jIncx5dA8s3a
-         ncCbJN3Cey9ViYkYRQAMpcoQpWKdtfQzNaS9cEuKUhZzOXY2TLwYxKAaz+3atK0mkrMe
-         /6LQjnt6G1sryhlp71gahwQG770GerUK7AQD9jCUTD0lkIUq8XJ6bpffkrGfpfQQKzHT
-         hCGcMnoFzmVka3JZUwDFhfX0iU+51lwvb4x/BOOy5028z6zHmXUa2YSptNUw1sitFZAZ
-         4XeLHAFLSKYdATgRB7pblyMH66IMgcsWBQSTBBBB09K4hC2zgrTlUxrnUrxi8YKz0TnL
-         WYEg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714579048; x=1715183848;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Eg8D/K80r70GPeKVeJzvUlTNioKE+UQ27ElJDTct8fc=;
-        b=oqm1P8QrYNy+8VUZOG3XDHZrBGVrn0dXbEEij7PTV3wu0Wx02l+0CRGodQmx7HBonu
-         nVlQ7VnSmZGYhKUV0mPEuarW1CWE9o2PqYBCh79IdrZnqJlf4qvezpIhSaNW5F2xqpxD
-         HNt31737/SolHbr4ADYsVO9j4GmLddqNKeUgEkCFKTwVFNfMo6TOXlgecSNv7pljxurc
-         JaEKXiN7p06A74A+M0OMycoAOSQvRsprMKdYp5nQ74Jn58WnQRzmg2YYo0OZn1uXUich
-         Y2TWWCd5cvwSQTQsfUN4xx3WgzHx4FgevtKH8FuYwA87k+9b9pO2RQjz5RREwfmhavaj
-         VwAw==
-X-Forwarded-Encrypted: i=1; AJvYcCXlPy6QAP2CNhEzn6eWz5TqiOm9oVbSoPMhHxk/3hkeR96AJvKSP7gWk4HJZsE6h5hFrtupN8YnHfdssXd8ewMZ+jGXqRs5IMAnsHb8
-X-Gm-Message-State: AOJu0YxcRWH2/p0I6SJ5u9jnDxwaf4hOpkI8LMITxPY0HowCIzW8kmhn
-	IZj+TtkFZogNkz2Syo2ryOMg9uNrH474pdjwafwZlYqgjeiw/Zn81SJy9/irSiN6zLiYVQDfTHB
-	eRs3h7QNE8JLCjqYbH4TY/2trLQcDJ2wJM+xP4g==
-X-Google-Smtp-Source: AGHT+IH86QJyeyp567BCwp8BUUZmiXku0Gk/2CGwoI60s7MqsC0CFmX7RnQZ7KksZBZqJhbhph4o/NFIeEggEjh0Icw=
-X-Received: by 2002:a25:a2c6:0:b0:de4:6334:5534 with SMTP id
- c6-20020a25a2c6000000b00de463345534mr3234633ybn.63.1714579047482; Wed, 01 May
- 2024 08:57:27 -0700 (PDT)
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=8wYTwblizp8OkkY8XmK1qn67s08eo0pcL24mUK/JnZE=;
+ b=iEtoSBrGB2F/zAKsSzsoMWV3m4W6p8IrY38n7IzUNXJV9f5JrOH1KKSC0iuOdawLHK9armJCxt52L0nG9ewJj5LEiuUuSait4sozcD5HLq3kE4KM0YlMjv7R2BOuvpgeey2Dk5CiG9Q6u/ASZpAELunQrYGF0yXL6iJayJ7I9Pw=
+Received: from CY8PR10MB7243.namprd10.prod.outlook.com (2603:10b6:930:7c::10)
+ by CY8PR10MB7338.namprd10.prod.outlook.com (2603:10b6:930:7e::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7519.34; Wed, 1 May
+ 2024 15:57:40 +0000
+Received: from CY8PR10MB7243.namprd10.prod.outlook.com
+ ([fe80::b779:d0be:9e3a:34f0]) by CY8PR10MB7243.namprd10.prod.outlook.com
+ ([fe80::b779:d0be:9e3a:34f0%7]) with mapi id 15.20.7519.031; Wed, 1 May 2024
+ 15:57:40 +0000
+Message-ID: <6971427a-d3ab-41c8-b34b-be84a594e40b@oracle.com>
+Date: Wed, 1 May 2024 10:57:38 -0500
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH next] vhost_task: after freeing vhost_task it should not
+ be accessed in vhost_task_fn
+To: Hillf Danton <hdanton@sina.com>, "Michael S. Tsirkin" <mst@redhat.com>
+Cc: Edward Adam Davis <eadavis@qq.com>,
+        syzbot+98edc2df894917b3431f@syzkaller.appspotmail.com,
+        jasowang@redhat.com, kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        virtualization@lists.linux.dev
+References: <b959b82a-510f-45c0-9e06-acf526c2f4a1@oracle.com>
+ <20240501001544.1606-1-hdanton@sina.com>
+ <20240501075057.1670-1-hdanton@sina.com>
+Content-Language: en-US
+From: Mike Christie <michael.christie@oracle.com>
+In-Reply-To: <20240501075057.1670-1-hdanton@sina.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: CH0PR04CA0019.namprd04.prod.outlook.com
+ (2603:10b6:610:76::24) To CY8PR10MB7243.namprd10.prod.outlook.com
+ (2603:10b6:930:7c::10)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240426235857.3870424-1-dianders@chromium.org>
- <20240426165839.v2.4.Ie94246c30fe95101e0e26dd5f96e976dbeb8f242@changeid>
- <2af446d3-7834-4a6b-897b-b14c6bccff65@linaro.org> <CAD=FV=V=EvEGp4tGDd-UQ1R=XkAwDn04ftd8oWU=UE=3Gi7SLQ@mail.gmail.com>
- <87y18w2n6h.fsf@intel.com> <CAD=FV=X5jBqBgOqtm8nYtEKNHcnJgQDWj+ynS5U7KXuQgHLySg@mail.gmail.com>
-In-Reply-To: <CAD=FV=X5jBqBgOqtm8nYtEKNHcnJgQDWj+ynS5U7KXuQgHLySg@mail.gmail.com>
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Wed, 1 May 2024 18:57:16 +0300
-Message-ID: <CAA8EJppMf2nAU_=pZz6eUhasQGEzEnz1_i72pNXBsmE9UgV--Q@mail.gmail.com>
-Subject: Re: [PATCH v2 4/8] drm/mipi-dsi: Introduce mipi_dsi_*_write_seq_multi()
-To: Doug Anderson <dianders@chromium.org>
-Cc: Jani Nikula <jani.nikula@linux.intel.com>, neil.armstrong@linaro.org, 
-	dri-devel@lists.freedesktop.org, Linus Walleij <linus.walleij@linaro.org>, 
-	lvzhaoxiong@huaqin.corp-partner.google.com, Hsin-Yi Wang <hsinyi@google.com>, 
-	Javier Martinez Canillas <javierm@redhat.com>, Joel Selvaraj <jo@jsfamily.in>, 
-	Cong Yang <yangcong5@huaqin.corp-partner.google.com>, Sam Ravnborg <sam@ravnborg.org>, 
-	Daniel Vetter <daniel@ffwll.ch>, David Airlie <airlied@gmail.com>, 
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, 
-	Thomas Zimmermann <tzimmermann@suse.de>, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CY8PR10MB7243:EE_|CY8PR10MB7338:EE_
+X-MS-Office365-Filtering-Correlation-Id: 1e48222c-c692-40ca-b059-08dc69f76de1
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230031|1800799015|376005|7416005|366007;
+X-Microsoft-Antispam-Message-Info: 
+	=?utf-8?B?bXA3amMreW9keStPbmdueWZVNXZlcWFDU1ZxZ3Iza3VZRDdoL0ZDNDQwNEx2?=
+ =?utf-8?B?bmpZckhqYUVsSTlyVlY3d1dka09XOG9xNG45TTZNSUcyTSt5RGVuMHZtMisy?=
+ =?utf-8?B?T1NERVRPMUZHNU5pVFJ4bTFJZmZLQTZVRnQ3ZW85WHcvRnRxWHBzU0tWMUVS?=
+ =?utf-8?B?RU5sYzdDNWplTFZrOFV4RTMzbVcwMjZuK3hlWWZLTVhSaEdZci9QbGxnbmxi?=
+ =?utf-8?B?OElaWWFyNU40UkJZb3o2cURsOGZOOEdMOGtZcU8rRHBjQVlpMGhBRi9IZVQr?=
+ =?utf-8?B?WHVnL1NUbWxHOXVUK3pHQXoxemxoYkI3aGwwVjUweUdESm9icEM4K29zM0dl?=
+ =?utf-8?B?bnQ2ajBtb3FwWS9jbnJMd0E4ZXNFOXdqQVdtOU9DVHFzbWV0MXZIQW1mUTh6?=
+ =?utf-8?B?bDhaYnVtVEFLcXY4UmRXeXhFT21WcW9EL1BzVXVNWnQzaGcrN1Mzc2Z5TDRC?=
+ =?utf-8?B?M2g5N0lubWIxdXR6MVV3dldhNG1nRHFRRmVIMjgwazd6MzFCYlFTRmtPNXN1?=
+ =?utf-8?B?QkdWQUFMczVVRmc5VTFyUEhWV1Qvc0hua1cycDF3SHdnTEhqVEFVQlFxRW5P?=
+ =?utf-8?B?d0F2bm4xOWFZZFpxb2JHTStWS1BzN25qL1BYbW1rRE05L1lMWjRkKytoaGph?=
+ =?utf-8?B?NHZQSUhrbzZPVlZVd3lQWm12eGpUUFVCaWlzeUpxYktGL2xIbFNETjJ1MUlu?=
+ =?utf-8?B?bU94SEw5NzQybzkxVHZPczczMko5bHF1R0VYQjFUWHlObitOaWQwT1U2dzZ2?=
+ =?utf-8?B?UzkvRE1NQjZUYlBRMzYxRDBjOVBhY3Vld0d6RlQ4ck0vMGRYdjdMT2NheDJY?=
+ =?utf-8?B?VVI1QkUrYnZjdTdQdzl4SlNjdDdYVEM3UXc1S0x0VFBEQ1diNHI3SDIrUCsx?=
+ =?utf-8?B?eTJ3TkFnSnkrYzBjQlN0Y1o4Ny8xRUJwK2tsMkhNMDR5S3huRHRmem1WSkU1?=
+ =?utf-8?B?OXR1S3RhUnlOaHFweW1tbXNiWXZjOFEwcWk3L1cyb2MwSVlMMWRBeGk5V0tv?=
+ =?utf-8?B?NDVMdHNaWFd6d29CV2V6cXNseE5HVGFSR2FpNXhqN1RkZEd5TWtocWlmTnBL?=
+ =?utf-8?B?c2FrWUxoa0Z6QkZOUGo3cHQ1cExnaGtoeVZCdFdGUUo1WTBqS1djTi9OLzEv?=
+ =?utf-8?B?bU1iYXBiU1ZxQmlhMnpKZlhHNVQ3ZnVONnJHYmVZTXg0Vm5nNGVMWEhUTVpI?=
+ =?utf-8?B?V2p1MnNIa2h3WEszSWZmZnc0ek1CcmQ5R0hNWFlRbEVmeVg1U0dWYVJDT0tT?=
+ =?utf-8?B?NVZncUwxcnVjKzE1VER6a2Y1NTZ0Rllkd0lYOEsxTlNYeFZTRTRYUkJHSTBB?=
+ =?utf-8?B?cVhUNXlvRUZ0a2NzeEJXaTNtTnhMbWFSSEUrNGIreEV2SjhmRTZnd3g1YTMr?=
+ =?utf-8?B?SXo5OVNFNW8xK1dtaTQ2cTB6TVVteHJtTjh6MzRTSksyTU9WcWtEWDdOc1lo?=
+ =?utf-8?B?REpJcGd4SFNEaW0veVY4SFlrRjJOM2h6TjhOUnlzNVYzUFVhYTVmeGZjK2Y5?=
+ =?utf-8?B?Mkg0OG1kM0V0TjR5TnNQMWllcXVmTmZ0Q3djeEdYemNTUTl1eE5vRDlMYmNq?=
+ =?utf-8?B?NkQ2WU8rNGJWQ1V0Y1AyMnhBNFl3V1FTN3lIL0xaQnJOamJ6WEZrcWtsZ2dL?=
+ =?utf-8?Q?JRzZRrDymRXtipyDvQ3rSX6zcQV6mySzT+mCqOhp5SpE=3D?=
+X-Forefront-Antispam-Report: 
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY8PR10MB7243.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(376005)(7416005)(366007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: 
+	=?utf-8?B?R2pPQ1NTYnRWbE1qMTF4K25uTjBtS05vMUVvQlRPQm9PbUF1NmJlSFMyd1RR?=
+ =?utf-8?B?MVBTbmVRc1VGRmw3SlhWMlNKbTU5d1lheDlyOWlGbVkzOHpQQlpYenNXMmpU?=
+ =?utf-8?B?c3pnQ2tvenBpS2FaM0VHR21iZmtvV3VKMy9NN1UvUDZxbnZGRGMwODZwTStr?=
+ =?utf-8?B?SC96dEhWNEpKc2pFNVdiWHpmYnJxVXYvMzh6aGpYeHdDWHBxKzdUc1I4dzRV?=
+ =?utf-8?B?dUd1bGduZEhYOE9xWDJSeHJsYTNXZ1hFSGpmU1RpQ2Z1WGNzOXNaSWpmUXJp?=
+ =?utf-8?B?Znk2emtIYmRsaVZmcW1jVW9kV3d2TkFLNkMvTExqSlorVFQ1S2poMlJVQU5q?=
+ =?utf-8?B?NFM5NXRxbGRUYWt6WUF6blN3eVNKZ3FwQVNzWnZVNURlV3lyZHd2djVaSitE?=
+ =?utf-8?B?SmhkTjVWNldUYkc0SEpWOVJGbkhIanJSNGVJUnIvZUtGYTdONVBLZVdtS0Fp?=
+ =?utf-8?B?N3ZUS3QzWnFoUU1uWXJpMVpwSGhNdFMyY2xydno4UDNnS1VRaHp3OGphZ0Ew?=
+ =?utf-8?B?YnVoSWFST0VhR0lPRktIT2JhZ0N2TTBCVFdDTU03SnlxL2NJZVRaOHd2UlVD?=
+ =?utf-8?B?bEtSNkJDSDAyTVJFejQ5Q3VQTzk2M05RMm9vSlVHdnA3cXd1RE1qcWFyYVhq?=
+ =?utf-8?B?enNEOHZockpxS0k4dllpQkNqZk9XQUpJaDk5bnl6MUdhc29KbXRoUE1kRmhk?=
+ =?utf-8?B?Z3hJYUhaWTdwMm1EN3Q1d0ExcTJiSHU3cW02ZVU0cXV2OFZMM2pPL1JGbk5a?=
+ =?utf-8?B?RFJCYndkMi9vV1d4NkthblllcStDWjBpSU5MbDlhSW5TcllhZWcvQXV6MUJ5?=
+ =?utf-8?B?OC9OUkJyUFlWK3hnZkpCeDFIcjBacENmRnI1Q3d0dUtqS0svRzdjRm1CdnVB?=
+ =?utf-8?B?MlV4aGlWZ1prNnJjLzZtVU5qUllzMEJSYXFGY3Jkak1KOUpWNHZhcVd2ZFdq?=
+ =?utf-8?B?MjFWRTA0TU1vam9OYjRuY2xjSTZuT000dGhDWUttTVFYa25ITkx2RXIrQnJU?=
+ =?utf-8?B?TEVqWlpyV1Nlem9WUWRFaTJjaGtRQnlXR29UNFZDT2M5NkVldEpFRGpTRDVE?=
+ =?utf-8?B?Tkh4c2JHSXE1dXF0Q1FFQjZIMXVhNW1QZmJmSktmMEJOQnFqN1hBTXREVXZt?=
+ =?utf-8?B?K3QyOTg0S25wbFhCcm1DcThzZGgyTGlvREkwT1NDcFZiYTFscGtVRzVwZWRG?=
+ =?utf-8?B?NWpFRlpTZ2ZYTmNOWUd6NHVoVkZVYzl0TEFVSkJFa01tYkY4VVg5bk4wd0kz?=
+ =?utf-8?B?R3NVMXBDMzJrejJwaExBU0NTQ2VqTEd6TmpEZzFQRXFkZWZCc2krUnZ3S2xF?=
+ =?utf-8?B?dkJoUWx6eUFiNWdscVJYcURMS0luYjNIbENPb3dNc002R2w3dmZ3R2pRRERo?=
+ =?utf-8?B?d3VwMy9ycDhGeTN2MEp4WSsybWNKMkJNYm04Sm4ycnVWNWRPczF6YlpHY2J6?=
+ =?utf-8?B?RDJpS2U1SHpucHB4bXVCMlYyMjYweDdZT3FYK0lraHBvNEVMNERZZXRCYUcr?=
+ =?utf-8?B?VjU0Y3FXd2YvWEpsNGZ3Y3JUVGZxb0ZTQlR0Y25GenB5dXJ3eFZWWW9QZy9v?=
+ =?utf-8?B?UW1oZTBoVkFGOExCb1JBbHB1TkZTdWR2Qkx1RWgwQXVzWGxleEE4RmtoSTlU?=
+ =?utf-8?B?dGYxQmpRcVUzRmhIc1JRQWsvRUFQb2xCK25jUmFrYWdLQzVTQ3Q2ZVozUW9E?=
+ =?utf-8?B?Sm1GOTZQa3pLRUYwL3hFYllYMFJ2WWovOHR6TXQ1U3p0UzgyaG9iNFF5QzR3?=
+ =?utf-8?B?Y3NFcmNnaXgzaXZkNmMyN2NuTDYxKy82YWtscHIyalpKaEp3Vm1Fc0FrUm4r?=
+ =?utf-8?B?TWdjK1BxOWRjdHRHeExMbDdqclFXamxWM2dYc1FtYTliaTk5V3ZkbkhkY2Uz?=
+ =?utf-8?B?bGdnUndWcUhadEZPaVNZSHQ0MmxscjlsdU9pMWdPMHBPSFFMamIwQWNheEk4?=
+ =?utf-8?B?clRYM3ZFYVB0N0N0TnJHTDVkc1BBQkRZa2dabGpSNERwRTFCSVpkSVAxQTY2?=
+ =?utf-8?B?S3hLNHdLbEhhRDlWM01TSGJTeTdlTHArL3VwQlpNdHYycXh2cGc2bUZVV0NO?=
+ =?utf-8?B?WG5JdlZjZ2k4bDJ0RHBZdXovcUZvQXJGRHlPcjI4TTVMMk41RWRlQmZNMmJJ?=
+ =?utf-8?B?ekdDNmxsTi81djJRRWNjVGJFbEhwU2lFL3pCQzc2Y2pnc2ZNU0tDQzZvSlpZ?=
+ =?utf-8?B?dkE9PQ==?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
+	U0AjEh6aAb3spnhU1RxfxTEyMJWqsHUfuh7J/O+p6PJ1slrj2dG0k/ZGkTNcp67gEB5ZTT46dtcoDWmZR2C7ynENW67Zd3jdc4FSqZUa7atRUCE5uGqFbAoHFfv/kgamV33nWzSkUAWpv61A1D3qkjKGvBGj9vJ0xDjY1uCYSlLihC9PmoP5ew/Eg/I/sc4sa1ochkXSV4m8Gr3CrdEWzbWtEv5o+BkXnRqm3SMuSt3xjqc7vaToU5HaLUW2y9nwN+j2XDYErPArJaFxvytAVUq7awh2YVlw0FJI2+jiKkXJ0GA1ak+ns2uy+Qq1KvRK+2eK1NcmqC6khLMoKYYfsFTikZS1GjJM1xo4Ao5c+Oc+OO0+dJRMF8UBzyWzaaIHvBhkYPJER/glf5ncPvXZWYFSgWSQRbyJ+EsUYXWZYQrYg9dZ76HD5kYcszDASTwKiCDLB3JJ0rmvT+F3RJVavGcEWmw4v2MEWdzI7XnVdLeBt4sS69XN0blcaN8iEE/Hl83EYzmmG3sd70hocvSOQ6ly5S8or61/JZ6tlefhsk80IzrbugovLBSYZQG3XWj2uCUGnxkkHuXKME5+oAZ1GGcMiV7Oe/OI7soW54V6/os=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1e48222c-c692-40ca-b059-08dc69f76de1
+X-MS-Exchange-CrossTenant-AuthSource: CY8PR10MB7243.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 May 2024 15:57:40.2857
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 0MxjeYJcSFDbYFwBELZgfZaumc26cy8EC7obiNjmXnTnLk18SsnC05JqGmLCP9NW1YLzFCaVKxYFEUMfTIt9bXMBS3tQdQyalp3uw1jQTMc=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY8PR10MB7338
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
+ definitions=2024-05-01_16,2024-04-30_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 bulkscore=0 adultscore=0
+ phishscore=0 mlxscore=0 suspectscore=0 mlxlogscore=999 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2404010000
+ definitions=main-2405010113
+X-Proofpoint-GUID: yzBd8FuK229K2A1YmS1YEM6RiOF_mCy_
+X-Proofpoint-ORIG-GUID: yzBd8FuK229K2A1YmS1YEM6RiOF_mCy_
 
-On Wed, 1 May 2024 at 18:49, Doug Anderson <dianders@chromium.org> wrote:
->
-> Hi,
->
-> On Mon, Apr 29, 2024 at 8:39=E2=80=AFAM Jani Nikula <jani.nikula@linux.in=
-tel.com> wrote:
-> >
-> > On Mon, 29 Apr 2024, Doug Anderson <dianders@chromium.org> wrote:
-> > > Hi,
-> > >
-> > > On Mon, Apr 29, 2024 at 2:38=E2=80=AFAM Neil Armstrong
-> > > <neil.armstrong@linaro.org> wrote:
-> > >>
-> > >> > +/**
-> > >> > + * struct mipi_dsi_multi_context - Context to call multiple MIPI =
-DSI funcs in a row
-> > >> > + * @dsi: Pointer to the MIPI DSI device
-> > >> > + * @accum_err: Storage for the accumulated error over the multipl=
-e calls. Init
-> > >> > + *   to 0. If a function encounters an error then the error code =
-will be
-> > >> > + *   stored here. If you call a function and this points to a non=
--zero
-> > >> > + *   value then the function will be a noop. This allows calling =
-a function
-> > >> > + *   many times in a row and just checking the error at the end t=
-o see if
-> > >> > + *   any of them failed.
-> > >> > + */
-> > >> > +
-> > >> > +struct mipi_dsi_multi_context {
-> > >> > +     struct mipi_dsi_device *dsi;
-> > >> > +     int accum_err;
-> > >> > +};
-> > >>
-> > >> I like the design, but having a context struct seems over-engineered=
- while we could pass
-> > >> a single int over without encapsulating it with mipi_dsi_multi_conte=
-xt.
-> > >>
-> > >> void mipi_dsi_dcs_write_buffer_multi(struct mipi_dsi_multi_context *=
-ctx,
-> > >>                                      const void *data, size_t len);
-> > >> vs
-> > >> void mipi_dsi_dcs_write_buffer_multi(struct mipi_dsi_device *dsi, in=
-t *accum_err,
-> > >>                                      const void *data, size_t len);
-> > >>
-> > >> is the same, and it avoids having to declare a mipi_dsi_multi_contex=
-t and set ctx->dsi,
-> > >> and I'll find it much easier to migrate, just add a &ret and make su=
-re ret is initialized to 0.
-> > >
-> > > Yeah, I had the same reaction when Jani suggested the context style
-> > > [1] and I actually coded it up exactly as you suggest above. I then
-> > > changed my mind and went with the context. My motivation was that whe=
-n
-> > > I tested it I found that using the context produced smaller code.
-> > > Specifically, from the description of this patch we see we end up
-> > > with:
-> > >
-> > > Total: Before=3D10651, After=3D9663, chg -9.28%
-> > >
-> > > ...when I didn't have the context and I had the accum_err then instea=
-d
-> > > of getting ~9% smaller I believe it actually got ~0.5% bigger. This
-> > > makes some sense as the caller has to pass 4 parameters to each call
-> > > instead of 3.
-> > >
-> > > It's not a giant size difference but it was at least some motivation
-> > > that helped push me in this direction. I'd also say that when I looke=
-d
-> > > at the code in the end the style grew on me. It's really not too
-> > > terrible to have one line in your functions that looks like:
-> > >
-> > > struct mipi_dsi_multi_context ctx =3D { .dsi =3D boe->dsi };
-> > >
-> > > ...and if that becomes the canonical way to do it then it's really
-> > > hard to accidentally forget to initialize the error value. With the
-> > > other API it's _very_ easy to forget to initialize the error value an=
-d
-> > > the compiler won't yell at you. It also makes it very obvious to the
-> > > caller that this function is doing something a little different than
-> > > most Linux APIs with that error return.
-> > >
-> > > So I guess I'd say that I ended up being pretty happy with the
-> > > "context" even if it does feel a little over engineered and I'd argue
-> > > to keep it that way. That being said, if you feel strongly about it
-> > > then we can perhaps get others to chime in to see which style they
-> > > prefer? Let me know what you think.
-> > >
-> > >
-> > > [1] https://lore.kernel.org/r/8734r85tcf.fsf@intel.com
-> >
-> > FWIW, I don't feel strongly about this, and I could be persuaded either
-> > way, but I've got this gut feeling that an extensible context parameter
-> > might be benefitial future proofing in this case.
->
-> I've gone ahead and sent out a v3 where I still leave it as taking
-> `struct mipi_dsi_multi_context`. Neil: if you feel strongly about it,
-> I have no problem sending out a v4. I still think that the size
-> savings of using the context are a good "tiebreaking" factor in
-> choosing between the two styles... ;-)
+On 5/1/24 2:50 AM, Hillf Danton wrote:
+> On Wed, 1 May 2024 02:01:20 -0400 Michael S. Tsirkin <mst@redhat.com>
+>>
+>> and then it failed testing.
+>>
+> So did my patch [1] but then the reason was spotted [2,3]
+> 
+> [1] https://lore.kernel.org/lkml/20240430110209.4310-1-hdanton@sina.com/
+> [2] https://lore.kernel.org/lkml/20240430225005.4368-1-hdanton@sina.com/
+> [3] https://lore.kernel.org/lkml/000000000000a7f8470617589ff2@google.com/
 
-I like the idea of context. If later on we need to add additional data
-(like DSC PPS or drm_mode), we can simply extend the context
-structure.
+Just to make sure I understand the conclusion.
 
->
-> -Doug
+Edward's patch that just swaps the order of the calls:
 
+https://lore.kernel.org/lkml/tencent_546DA49414E876EEBECF2C78D26D242EE50A@qq.com/
 
+fixes the UAF. I tested the same in my setup. However, when you guys tested it
+with sysbot, it also triggered a softirq/RCU warning.
 
---=20
-With best wishes
-Dmitry
+The softirq/RCU part of the issue is fixed with this commit:
+
+https://lore.kernel.org/all/20240427102808.29356-1-qiang.zhang1211@gmail.com/
+
+commit 1dd1eff161bd55968d3d46bc36def62d71fb4785
+Author: Zqiang <qiang.zhang1211@gmail.com>
+Date:   Sat Apr 27 18:28:08 2024 +0800
+
+    softirq: Fix suspicious RCU usage in __do_softirq()
+
+The problem was that I was testing with -next master which has that patch.
+It looks like you guys were testing against bb7a2467e6be which didn't have
+the patch, and so that's why you guys still hit the softirq/RCU issue. Later
+when you added that patch to your patch, it worked with syzbot.
+
+So is it safe to assume that the softirq/RCU patch above will be upstream
+when the vhost changes go in or is there a tag I need to add to my patches?
 
