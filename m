@@ -1,145 +1,132 @@
-Return-Path: <linux-kernel+bounces-165673-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-165674-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id CFB948B8F52
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 20:01:52 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 591818B8F57
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 20:04:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E3FEA1C218DB
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 18:01:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 143C2283F0C
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 18:04:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C582F1474B0;
-	Wed,  1 May 2024 18:01:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D4451474BB;
+	Wed,  1 May 2024 18:03:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="OKthm/ur"
-Received: from out-179.mta0.migadu.com (out-179.mta0.migadu.com [91.218.175.179])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qN29Q61T"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40A8B8F58
-	for <linux-kernel@vger.kernel.org>; Wed,  1 May 2024 18:01:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9872C146D60;
+	Wed,  1 May 2024 18:03:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714586503; cv=none; b=EwBxIZMJzD/eS37M4qIyJjyDQggg8Fg+kGSgfT7HO6Qz8NvvQBhOloMiasOgBMQrELK7MMtw/hvN0IubCbWPK8Z7UeHERrT6mxJ9Thnt2R0q1SvMlWM5Bp6Jo3df4cSFXCBZ5igEUDQ0xbfLtd9Y+eOSdRx30XOmLC6LB55cgjI=
+	t=1714586633; cv=none; b=mF1nBBAs2dUnuvy/OpTsnWHKvQc9Bwo4mI7pZg8MQyyFcTpHMPNPAnzBzz01/4Em9ROkwGlQEZ6Vix9QUlqh+gTRUbQGWQHEWJtDqH+oAt7k+7af9wYonpUH0HbVEfv2bPLwayUUuzrtmWG+2Or3eBUQncDudB+Ymidma9/20YQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714586503; c=relaxed/simple;
-	bh=zjpxgyAK4GAbrd3HGC5s/4QO74a8GhDO3MiVtLjfZEA=;
+	s=arc-20240116; t=1714586633; c=relaxed/simple;
+	bh=drTPFEBrSB98Q77bfO9fNzjeKZr9JPcrroYaZiR1E/0=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=uVu3hMXiE2N2y3+1GWTk1o2FKgMnYFxN/1W/g4fPNpj5puIY8147MbUXhYRv0waxNVjs/rgPjwF75FzvUYWdaBqVH1E8FdtjDCx5BOIWOor10zySA5XWjv/gfCDkAlL7XRxazOXt26/Fz8rkqODpFhEW4ACnq33tler7kN7Mohk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=OKthm/ur; arc=none smtp.client-ip=91.218.175.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Wed, 1 May 2024 18:01:31 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1714586499;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=69cqu9i0hgyzyuHYDqr+vrRYe6XfjRaXapX+zs6xjnE=;
-	b=OKthm/ur+byGKYcHm2DPTNC5z/URFbkOGPadzI7eiZzZ5mezBuOrZl7iO90ODYz9fRbgEy
-	6ouYU5nahmPlBewz9DVswxKYUkCE/I5p4/wec5b9+XAdcs6XajZ/4HudNHe28xxU0lQwpd
-	WHY0DzOGslb59/2viaOe877XKsJlqEk=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Oliver Upton <oliver.upton@linux.dev>
-To: Sean Christopherson <seanjc@google.com>
-Cc: Marc Zyngier <maz@kernel.org>, Tianrui Zhao <zhaotianrui@loongson.cn>,
-	Bibo Mao <maobibo@loongson.cn>, Huacai Chen <chenhuacai@kernel.org>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Anup Patel <anup@brainfault.org>,
+	 Content-Type:Content-Disposition:In-Reply-To; b=L0yij9+qnxtxb5hb5npFAbXKSpHso26mt6VBYhG5npL3Kl39ExSY8/4xcWvlOG1LAo5Nqg/3zvQPNmA18l+UUGS0WznA0mbT4qt/VVXjdhGN5uFD2cNXKf+SCW0ZYx+fxJxR/AnIDsN8ZPcnU9sApdBkCoAaaa3oGW0HZ8efgvc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qN29Q61T; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A0CB5C072AA;
+	Wed,  1 May 2024 18:03:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714586633;
+	bh=drTPFEBrSB98Q77bfO9fNzjeKZr9JPcrroYaZiR1E/0=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=qN29Q61To54o4hphAo7D6ESVL5CLcZ22ZHpI0FyvYvFgLaFOBDvLlrbsKw9PUcy16
+	 TdhZ8IltTvssrtMVEElRJH/lued5Rf9aQs3IwxXmxDMeOfCZkMXkPcVhn4/JicsHw5
+	 B0UCecIgcjbVQEWadDfGNsMY/WIcfZWgJWkcZdQdn+grMkc4EW6c5HQ/M5qrSvfD7V
+	 n+TDSu+G2xvUHeWKLLGMTrnbT2HYGkpmfC2D/dbyODDAShXE0KLAySIvrgReg8bZUj
+	 lQLQRnOko30Wy0F+eHnN6YKuMuZWuj5rhHdeiU+ZzDDv+kmMt5ZvIv4AP+w+Bzt/x5
+	 7IRI/B/fm+YVg==
+Date: Wed, 1 May 2024 19:03:46 +0100
+From: Conor Dooley <conor@kernel.org>
+To: Charlie Jenkins <charlie@rivosinc.com>
+Cc: Evan Green <evan@rivosinc.com>, Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
 	Paul Walmsley <paul.walmsley@sifive.com>,
 	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>,
-	Christian Borntraeger <borntraeger@linux.ibm.com>,
-	Janosch Frank <frankja@linux.ibm.com>,
-	Claudio Imbrenda <imbrenda@linux.ibm.com>,
-	Paolo Bonzini <pbonzini@redhat.com>,
-	linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-	kvm@vger.kernel.org, loongarch@lists.linux.dev,
-	linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-	kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/4] KVM: Fold kvm_arch_sched_in() into
- kvm_arch_vcpu_load()
-Message-ID: <ZjKDe6SlVWGj0ugA@linux.dev>
-References: <20240430193157.419425-1-seanjc@google.com>
- <ZjGMn5tlq8edKZYv@linux.dev>
- <ZjJRhQhX_12eBvY-@google.com>
+	Albert Ou <aou@eecs.berkeley.edu>, Guo Ren <guoren@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+	Jernej Skrabec <jernej.skrabec@gmail.com>,
+	Samuel Holland <samuel@sholland.org>,
+	Conor Dooley <conor.dooley@microchip.com>,
+	=?iso-8859-1?Q?Cl=E9ment_L=E9ger?= <cleger@rivosinc.com>,
+	Jonathan Corbet <corbet@lwn.net>, Shuah Khan <shuah@kernel.org>,
+	linux-riscv@lists.infradead.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, Palmer Dabbelt <palmer@rivosinc.com>,
+	linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
+	linux-doc@vger.kernel.org, linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH v4 05/16] riscv: Extend cpufeature.c to detect vendor
+ extensions
+Message-ID: <20240501-banner-sniff-4c5958eb15ef@spud>
+References: <20240426-dev-charlie-support_thead_vector_6_9-v4-0-b692f3c516ec@rivosinc.com>
+ <20240426-dev-charlie-support_thead_vector_6_9-v4-5-b692f3c516ec@rivosinc.com>
+ <CALs-HstM64Hy_=XVz=0sWQt=8j1u+bq6RhthUuD3P0E4=HyvcA@mail.gmail.com>
+ <ZjKBKg5zzikR5ngl@ghost>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="DB2yQnBvjkhLdZ/3"
 Content-Disposition: inline
-In-Reply-To: <ZjJRhQhX_12eBvY-@google.com>
-X-Migadu-Flow: FLOW_OUT
+In-Reply-To: <ZjKBKg5zzikR5ngl@ghost>
 
-On Wed, May 01, 2024 at 07:28:21AM -0700, Sean Christopherson wrote:
-> On Wed, May 01, 2024, Oliver Upton wrote:
-> > On Tue, Apr 30, 2024 at 12:31:53PM -0700, Sean Christopherson wrote:
-> > > Drop kvm_arch_sched_in() and instead pass a @sched_in boolean to
-> > > kvm_arch_vcpu_load().
-> > > 
-> > > While fiddling with an idea for optimizing state management on AMD CPUs,
-> > > I wanted to skip re-saving certain host state when a vCPU is scheduled back
-> > > in, as the state (theoretically) shouldn't change for the task while it's
-> > > scheduled out.  Actually doing that was annoying and unnecessarily brittle
-> > > due to having a separate API for the kvm_sched_in() case (the state save
-> > > needed to be in kvm_arch_vcpu_load() for the common path).
-> > > 
-> > > E.g. I could have set a "temporary"-ish flag somewhere in kvm_vcpu, but (a)
-> > > that's gross and (b) it would rely on the arbitrary ordering between
-> > > sched_in() and vcpu_load() staying the same.
-> > 
-> > Another option would be to change the rules around kvm_arch_sched_in()
-> > where the callee is expected to load the vCPU context.
-> > 
-> > The default implementation could just call kvm_arch_vcpu_load() directly
-> > and the x86 implementation can order things the way it wants before
-> > kvm_arch_vcpu_load().
-> > 
-> > I say this because ...
-> > 
-> > > The only real downside I see is that arm64 and riscv end up having to pass
-> > > "false" for their direct usage of kvm_arch_vcpu_load(), and passing boolean
-> > > literals isn't ideal.  But that can be solved by adding an inner helper that
-> > > omits the @sched_in param (I almost added a patch to do that, but I couldn't
-> > > convince myself it was necessary).
-> > 
-> > Needing to pass @sched_in for other usage of kvm_arch_vcpu_load() hurts
-> > readability, especially when no other architecture besides x86 cares
-> > about it.
-> 
-> Yeah, that bothers me too.
-> 
-> I tried your suggestion of having x86's kvm_arch_sched_in() do kvm_arch_vcpu_load(),
-> and even with an added kvm_arch_sched_out() to provide symmetry, the x86 code is
-> kludgy, and even the common code is a bit confusing as it's not super obvious
-> that kvm_sched_{in,out}() is really just kvm_arch_vcpu_{load,put}().
-> 
-> Staring a bit more at the vCPU flags we have, adding a "bool scheduled_out" isn't
-> terribly gross if it's done in common code and persists across load() and put(),
-> i.e. isn't so blatantly a temporary field.  And because it's easy, it could be
-> set with WRITE_ONCE() so that if it can be read cross-task if there's ever a
-> reason to do so.
-> 
-> The x86 code ends up being less ugly, and adding future arch/vendor code for
-> sched_in() *or* sched_out() requires minimal churn, e.g. arch code doesn't need
-> to override kvm_arch_sched_in().
-> 
-> The only weird part is that vcpu->preempted and vcpu->ready have slightly
-> different behavior, as they are cleared before kvm_arch_vcpu_load().  But the
-> weirdness is really with those flags no having symmetry, not with scheduled_out
-> itself.
-> 
-> Thoughts?
 
-Yeah, this seems reasonable. Perhaps scheduled_out could be a nice hint
-for guardrails / sanity checks in the future.
+--DB2yQnBvjkhLdZ/3
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
--- 
-Thanks,
-Oliver
+On Wed, May 01, 2024 at 10:51:38AM -0700, Charlie Jenkins wrote:
+> On Wed, May 01, 2024 at 09:44:15AM -0700, Evan Green wrote:
+> > On Fri, Apr 26, 2024 at 2:29=E2=80=AFPM Charlie Jenkins <charlie@rivosi=
+nc.com> wrote:
+> > > +       for (int i =3D 0; i < riscv_isa_vendor_ext_list_size; i++) {
+> > > +               const struct riscv_isa_vendor_ext_data_list *ext_list=
+ =3D riscv_isa_vendor_ext_list[i];
+> > > +
+> > > +               if (bitmap_empty(ext_list->vendor_bitmap, ext_list->b=
+itmap_size))
+> > > +                       bitmap_copy(ext_list->vendor_bitmap,
+> > > +                                   ext_list->per_hart_vendor_bitmap[=
+cpu].isa,
+> > > +                                   ext_list->bitmap_size);
+> >=20
+> > Could you get into trouble here if the set of vendor extensions
+> > reduces to zero, and then becomes non-zero? To illustrate, consider
+> > these masks:
+> > cpu 0: 0x0000C000
+> > cpu 1: 0x00000003 <<< vendor_bitmap ANDs out to 0
+> > cpu 2: 0x00000010 <<< oops, we end up copying this into vendor_bitmap
+> >=20
+>=20
+> Huh that's a good point. The standard extensions have that same bug too?
+>=20
+> 	if (bitmap_empty(riscv_isa, RISCV_ISA_EXT_MAX))
+> 		bitmap_copy(riscv_isa, isainfo->isa, RISCV_ISA_EXT_MAX);
+> 	else
+> 		bitmap_and(riscv_isa, riscv_isa, isainfo->isa, RISCV_ISA_EXT_MAX);
+
+I suppose it could in theory, but the boot hart needs ima to even get
+this far. I think you'd only end up with this happening if there were
+enabled harts that supported rvXXe, but I don't think we even add those
+to the possible set of CPUs. I'll have to check.
+
+--DB2yQnBvjkhLdZ/3
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZjKEAgAKCRB4tDGHoIJi
+0t4AAP48TlGaRjpIOJcoV+H8wuppgNwKKx3OUtSc+5sg9jOMTgD/cl2e9XPolr3n
+9O0nDbaTisOGW7yGRdUZvJ0dsEhOqwE=
+=mFwP
+-----END PGP SIGNATURE-----
+
+--DB2yQnBvjkhLdZ/3--
 
