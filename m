@@ -1,291 +1,231 @@
-Return-Path: <linux-kernel+bounces-165685-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-165686-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2FFA78B8F7C
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 20:22:55 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DC5BD8B8F86
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 20:29:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 46521B21E05
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 18:22:52 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0B1A91C2188D
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 18:29:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D7FB1474D7;
-	Wed,  1 May 2024 18:22:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E5B4147C7F;
+	Wed,  1 May 2024 18:29:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="XZFuIDRX"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=ferroamp-se.20230601.gappssmtp.com header.i=@ferroamp-se.20230601.gappssmtp.com header.b="PNNt6GIx"
+Received: from mail-lf1-f67.google.com (mail-lf1-f67.google.com [209.85.167.67])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6851E182DF;
-	Wed,  1 May 2024 18:22:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.8
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714587759; cv=fail; b=FjiwUCXtLlDy60ctVTpMBa5LVxyWMZTrvJn+sMiurHMCycWQHc+t0JR1QukmIMh+eXfSKaechoft616dx5PKe9tCFwmK9i2Ma6he2gWnopy/ILHDLyOIeqYSzpbkJDimNte/DBrH+hWQebvw9RguUNmiAInMknBJs6LRUEoPP4A=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714587759; c=relaxed/simple;
-	bh=ssZvVptyOYOEqeInhWKL/STj3nPPOtctfNnbqcaCkvw=;
-	h=Message-ID:Date:Subject:To:CC:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=HKhhF61yTfch0k8W+At56QTiGHtRgAIIlDm3l788Ki0CA/YdIrDTikv9ej6mL3iimB2ICLPkWin0rizm9TpKkxtggU0koMT+henBerE8L8UMn3tRRk6mSH1VDthvL7sqi666FDOBr7st8OwOad14xqFWqVDRHtg1a/DpC4hg2c8=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=XZFuIDRX; arc=fail smtp.client-ip=192.198.163.8
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1714587758; x=1746123758;
-  h=message-id:date:subject:to:cc:references:from:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=ssZvVptyOYOEqeInhWKL/STj3nPPOtctfNnbqcaCkvw=;
-  b=XZFuIDRX7ylO8Q8lKL5cqkJ7QbUC+91UjfPqxqv8Kr+J9873PVACeXl+
-   5dXj260MpMzADB8LcoT90IIYG32w1k6vvHKZMnmtMDINMKSdqzQhyrzS2
-   VlYpzr+FsUDuXbieFKl5Do6EUOvRwXNpX8JLblMfRk/l/BEF+rS+rKvyL
-   FtP/IOY9zb/jiv3Ah6jYCspfwj59+MMC2P/uN9HS+Q8PWkSUcque6rINV
-   OExQ6XmFk2vPmJx09bMqaw2dJOWnrzy4qRwXcA2EGN9lbsS3MJ0hzIIVm
-   8q6Q1MBbJW7t3X/gMoBpuer1IRQP+LQ/+ru+IZcd1FRCcqaMmfRgf+PFB
-   Q==;
-X-CSE-ConnectionGUID: p0QcfHcVQ4KAq6zJiwgw4A==
-X-CSE-MsgGUID: yOYBNCJ1QCmbZ8PpWOFB1w==
-X-IronPort-AV: E=McAfee;i="6600,9927,11061"; a="27855564"
-X-IronPort-AV: E=Sophos;i="6.07,246,1708416000"; 
-   d="scan'208";a="27855564"
-Received: from fmviesa008.fm.intel.com ([10.60.135.148])
-  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 May 2024 11:22:29 -0700
-X-CSE-ConnectionGUID: LxKEZry+QYyf2J8PAEHZ3Q==
-X-CSE-MsgGUID: sdoiNUumSJmuoWdVW7Qd8A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,246,1708416000"; 
-   d="scan'208";a="26860124"
-Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
-  by fmviesa008.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 01 May 2024 11:22:28 -0700
-Received: from orsmsx602.amr.corp.intel.com (10.22.229.15) by
- ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Wed, 1 May 2024 11:22:27 -0700
-Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
- orsmsx602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Wed, 1 May 2024 11:22:27 -0700
-Received: from NAM02-DM3-obe.outbound.protection.outlook.com (104.47.56.41) by
- edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Wed, 1 May 2024 11:22:26 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=OhhImly2csMJKW8ixStJ4JORWSCwBgC5ea1XGHv3dfPH47EPcqxMm2JB0H5e5/3Xrdq/1n2LAazz1BXZJnMucFialQRLosISb/+mnIKxt5cj70CPfWurPUvPiI0tKdv1c8W+y2XsN3+xhHldAEv3QSh+CuUUutsebIwbxPQXddjsENfRYjzPiwSW6cmCNHLBdFkSBvpdVhcvQ78gvKWXjKdW7hPMmbdHzbaoFSjqmzRUGa/qItighjhnwgMu1Ieva3IhfgrYcCbfsF+lc4IW93QcLfE3ka1X6XeunBuaAVZpo1v+jL52dL3EbV3GkFJVmr8aOQ1Bk5IF3uA4/SbUag==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=o14ruo/V9ESTfm4eMVeNrok8aUwYuR4op+vyqu8GkV4=;
- b=crJacuBlD8snKA4fYNFUT4c6seSOmWINZIJ836yzihgWdiYzCpOVO9jPqgq9AC1xN0Y0wJui255e21g1Zq2LW/dxCApmpQJYJEI2MWJDK7avH9NwGzYfFyRabsZ3WBpN8PKuBHrid9CQMVJ3lo1G9SQ9hppSt9zX7wHDqA7PvZnouv4uUHHMABhRjC/hctdW4ceCPprHQSG9cNZvfRN14Bh3rN7U3BfBa8vdaoFvvMxSsu2hikicBUOn2NZ+/g526bzadzdEj9Ls2s0Gh6Js1szTajzO5iysn2UWfmaHGX0xzPQ1lfyqGZwavplxZZxEPU0PIEYqFHVJHgEIPrh4HA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from SJ2PR11MB7573.namprd11.prod.outlook.com (2603:10b6:a03:4d2::10)
- by PH7PR11MB8009.namprd11.prod.outlook.com (2603:10b6:510:248::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7519.36; Wed, 1 May
- 2024 18:22:22 +0000
-Received: from SJ2PR11MB7573.namprd11.prod.outlook.com
- ([fe80::b394:287f:b57e:2519]) by SJ2PR11MB7573.namprd11.prod.outlook.com
- ([fe80::b394:287f:b57e:2519%4]) with mapi id 15.20.7544.023; Wed, 1 May 2024
- 18:22:22 +0000
-Message-ID: <3b1b1b23-b633-4085-825b-2867f665abc7@intel.com>
-Date: Wed, 1 May 2024 11:22:19 -0700
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v19 101/130] KVM: TDX: handle ept violation/misconfig exit
-To: Isaku Yamahata <isaku.yamahata@intel.com>
-CC: Chao Gao <chao.gao@intel.com>, <kvm@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <isaku.yamahata@gmail.com>, Paolo Bonzini
-	<pbonzini@redhat.com>, <erdemaktas@google.com>, Sean Christopherson
-	<seanjc@google.com>, Sagi Shahar <sagis@google.com>, Kai Huang
-	<kai.huang@intel.com>, <chen.bo@intel.com>, <hang.yuan@intel.com>,
-	<tina.zhang@intel.com>, <isaku.yamahata@linux.intel.com>
-References: <cover.1708933498.git.isaku.yamahata@intel.com>
- <f05b978021522d70a259472337e0b53658d47636.1708933498.git.isaku.yamahata@intel.com>
- <Zgoz0sizgEZhnQ98@chao-email>
- <20240403184216.GJ2444378@ls.amr.corp.intel.com>
- <43cbaf90-7af3-4742-97b7-2ea587b16174@intel.com>
- <20240501155620.GA13783@ls.amr.corp.intel.com>
- <399cec29-ddf4-4dd5-a34b-ffec72cbfa26@intel.com>
- <20240501181921.GB13783@ls.amr.corp.intel.com>
-Content-Language: en-US
-From: Reinette Chatre <reinette.chatre@intel.com>
-In-Reply-To: <20240501181921.GB13783@ls.amr.corp.intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: MW4PR03CA0288.namprd03.prod.outlook.com
- (2603:10b6:303:b5::23) To SJ2PR11MB7573.namprd11.prod.outlook.com
- (2603:10b6:a03:4d2::10)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C361B1474BF
+	for <linux-kernel@vger.kernel.org>; Wed,  1 May 2024 18:29:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.67
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1714588159; cv=none; b=i35SyqSiYiEKe7xgtbGvkgvmoRLwLZwbTn4YKHnz5fBaU2CDiSR12Yd4ikd7pY9mOR4l5O3WPL/KtjpAGowl+gxJ62l/wMKIr1iXa3gx9LcGTJ6QK2ViWRgaomByjTeg2NIJTr1vQO8pAJOcGOoqamqnRG38G29MYz7fAedbLiA=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1714588159; c=relaxed/simple;
+	bh=THVFJ9NHFLgWi1oxltoNvQXatcR4HTHJmtOxAkP7Mz4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=g/2E2rMqrpmk820w6yPoIiEIs5ORkgOtvioU3KPgCMtgEAVzZygrFzF9z0qTONGwm7GPQzxAdQO6jQhhlA0TLKg5eqP78syAF/+WOigk6uGjmpjNHGs+gVvhpq0dETVWCCjbphXmWkinbxXj+vLUS3EbSPrHatBlZIIcwzAK4ho=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ferroamp.se; spf=pass smtp.mailfrom=ferroamp.se; dkim=pass (2048-bit key) header.d=ferroamp-se.20230601.gappssmtp.com header.i=@ferroamp-se.20230601.gappssmtp.com header.b=PNNt6GIx; arc=none smtp.client-ip=209.85.167.67
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ferroamp.se
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ferroamp.se
+Received: by mail-lf1-f67.google.com with SMTP id 2adb3069b0e04-51ef64d04b1so422363e87.3
+        for <linux-kernel@vger.kernel.org>; Wed, 01 May 2024 11:29:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ferroamp-se.20230601.gappssmtp.com; s=20230601; t=1714588156; x=1715192956; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=i1SxH6Yi2QDvFptePuvBwgOkc7k60xPbDJ8MDa/H9BA=;
+        b=PNNt6GIxtsi1ZH0TulUEltGSYef75esf3Y7B7CI/yaqjfRF3Xpf7y7+pT97YSwozIr
+         h42r8TYF4baQuLUw5LBy8bNnEtEvuu6VO4iKV1cPj/ahI9zg8n9pd/tQnYQJPba5OkZv
+         hvvMRcN6GrdORi00CDI4GksKQHUCmljSS5XZ8DbFI2jcDPe0IugEuVYtTBEzkhqJf+hH
+         E9sqS4VVc3KGfZJgwivSPXnE39zNS3olIU2gghIZ1ZQNoISPP4na+beyZInBe+M3bbYN
+         Ba3iQ5oQDkmertzHrGanAE77R8cAkQnr4l4PyWr2xlOiuKze30578ArlY1T2Qe3bKJtM
+         BK5A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714588156; x=1715192956;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=i1SxH6Yi2QDvFptePuvBwgOkc7k60xPbDJ8MDa/H9BA=;
+        b=DifYXFqwv7ibaO0Qn5CPmb4A/f5ip0IMG7t8kV2Fgsk9W9st+3V4wEKONowgUCwyVc
+         /GLbPf0Uj4Cm2SYbTGtQ+jdYGd9nNAHKf+A2Skne55AD2/tlrG9UYRV2OBfE6s6Igtq0
+         3YgmQxu8aVj1QX724GVpQJuJaUEyABRdbIqL/LZ8RGv+K4e+pUX8tLBBLUN3bQr/sfVx
+         fzN8R3dQD2eeO7yBe2FXSgaTpulZTIvS+kptbi3vKTRq3WvbIyHkbC0EpY+5dYZyFfu5
+         8z8354CJiFpJ3be3e8y8wIZPIU/yhaSCyyr/rSoF39l4VPMH//mev8h074QfM7Cx+0pV
+         IwEA==
+X-Forwarded-Encrypted: i=1; AJvYcCU1PRyIc9vQAjszjSfNiMSZRSfigQTmOEyWzesoCXbu6/dXZhtQKg+Z8M7cRzczNb1ud3yPSbZEUJ1YIxrX3ntB0vLaI+sVvWJdQHKU
+X-Gm-Message-State: AOJu0YyhOIUTRmC2Day1YRH/skXoM6yia+akWwptfnGDHgA6l3FwhtIq
+	XA8Ra9Etm0KGEmoA8AIxAUQvlmJOoUfyfpnkXpshSAyhRF/cQeuuK2yI82Xn7OY=
+X-Google-Smtp-Source: AGHT+IE88hVIU2jnQTwuqTvy58xxi494R22YPulFAfwib/5JkkL+UtEk2v3BfunXAhNF6rJr6WtaQw==
+X-Received: by 2002:a05:6512:48d4:b0:51e:147d:bd2d with SMTP id er20-20020a05651248d400b0051e147dbd2dmr2098684lfb.39.1714588153665;
+        Wed, 01 May 2024 11:29:13 -0700 (PDT)
+Received: from builder (c188-149-135-220.bredband.tele2.se. [188.149.135.220])
+        by smtp.gmail.com with ESMTPSA id o13-20020ac24e8d000000b005178f5ad215sm4975613lfr.122.2024.05.01.11.29.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 01 May 2024 11:29:13 -0700 (PDT)
+Date: Wed, 1 May 2024 20:29:11 +0200
+From: =?iso-8859-1?Q?Ram=F3n?= Nordin Rodriguez <ramon.nordin.rodriguez@ferroamp.se>
+To: Andrew Lunn <andrew@lunn.ch>
+Cc: Parthiban Veerasooran <Parthiban.Veerasooran@microchip.com>,
+	davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+	pabeni@redhat.com, horms@kernel.org, saeedm@nvidia.com,
+	anthony.l.nguyen@intel.com, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, corbet@lwn.net,
+	linux-doc@vger.kernel.org, robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+	devicetree@vger.kernel.org, horatiu.vultur@microchip.com,
+	ruanjinjie@huawei.com, steen.hegelund@microchip.com,
+	vladimir.oltean@nxp.com, UNGLinuxDriver@microchip.com,
+	Thorsten.Kummermehr@microchip.com, Pier.Beruto@onsemi.com,
+	Selvamani.Rajagopal@onsemi.com, Nicolas.Ferre@microchip.com,
+	benjamin.bigler@bernformulastudent.ch
+Subject: Re: [PATCH net-next v4 05/12] net: ethernet: oa_tc6: implement error
+ interrupts unmasking
+Message-ID: <ZjKJ93uPjSgoMOM7@builder>
+References: <20240418125648.372526-1-Parthiban.Veerasooran@microchip.com>
+ <20240418125648.372526-6-Parthiban.Veerasooran@microchip.com>
+ <Zi1Xbz7ARLm3HkqW@builder>
+ <77d7d190-0847-4dc9-8fc5-4e33308ce7c8@lunn.ch>
+ <Zi4czGX8jlqSdNrr@builder>
+ <874654d4-3c52-4b0e-944a-dc5822f54a5d@lunn.ch>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SJ2PR11MB7573:EE_|PH7PR11MB8009:EE_
-X-MS-Office365-Filtering-Correlation-Id: 478f9a66-4208-42a4-e831-08dc6a0ba4e1
-X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230031|1800799015|376005|366007;
-X-Microsoft-Antispam-Message-Info: =?utf-8?B?RlIwMFRSSlpTaHBPL2NWczdNUGZwOFpaZklJNUxKelQ2TVhYZmZmUGZXZTdz?=
- =?utf-8?B?YW51cGYya0h4OXlINnZ3djgrQ1VjRUk3ZVNrMmRBakQvd3lSWWs2RmVLVjQ4?=
- =?utf-8?B?a0lQSUdkdStKU1hYR0xRSEJNbk1abHlUTHgrTXZ2UXp4MTRMeXpIVDN1SWJ2?=
- =?utf-8?B?Sk1xM2Y0c1BBR01NVFByOXp1WTlsYmtRWHVwVC8yYUU1eVpaLzFvZThqSFNz?=
- =?utf-8?B?WVprbkl0VTNNcWJVNTBEZE1DdDg2K3IzT0c1Y2tiU0pneTdYay9zUFd1bCth?=
- =?utf-8?B?T1ZoNVh6V05GSmNpZUZkSERHd0R2U3orK1R0bU51VXd0N1pLazZZdUFTY0Rq?=
- =?utf-8?B?ZXlNNnUzZ0RQdGF4TGZJeFBsUG5IMm90NXdJZHlaQnJjWng4Y0NRY0U0UUhS?=
- =?utf-8?B?dW5OQmNrOXJPK09KVTM4RlVsV09lZVVLYmpiNW51NmplbXYyekdGMVJ2dVFX?=
- =?utf-8?B?Q0I1NllnVkY4eFpDamd5d3RJZ2hCblpmenBIYkRnWkRHVU9ndUEwUlFMUUtR?=
- =?utf-8?B?WlhKaUVHbVNZcnlLV0dLRURBbVNleVE4RUFYYnRlNlBEbnJvdlVqMXdsMGVy?=
- =?utf-8?B?ZU95S1VMMWZnbE1MM0hRYVJINnRBazZac0c4U1JxMDBWelZkRVBlcHVDYnZs?=
- =?utf-8?B?TTJJc0JkZGRvSXIxU2lJalljTFE0cmI3R0Z5aEoyWmlabGU5VXFWQ1ZyLzZL?=
- =?utf-8?B?NHRXWWt2ak5jbnZnS1NpOC9EMndvSG1na25ySHV4dTJyOTEzc0N3VUdIME81?=
- =?utf-8?B?VlZvZ0RUVEZRbFdSZjNuejR5elVzVGw1Z29ZR1VPYzZpSkxoN3JGTzBIcDRM?=
- =?utf-8?B?VklsMW1MOWI2bmFsL0FOaFpyY0hVbUhaY1NTc3Jyb2N2STNUNHhxaGxxYks0?=
- =?utf-8?B?c0NOKy9wNXl1Ym1mQlJpVEY4byt3d1F1azFKZTJ4RlIvYjlReU1tK3IwNWtU?=
- =?utf-8?B?dkR4cktQak95RTZsY3lBbkdnQURWYnNGZG9JQnNtbFNCWXpZbERCdVBZd3hu?=
- =?utf-8?B?SUVld2VwYkxDdTI4V1dmcDd1TWJyejBUY0d4OXI2Nk9TR2NQUUx0cmFSTTlY?=
- =?utf-8?B?Z1NpbnVLbzNhTzBhdFY5ZGl5OEtWRkIxejlzdE04aUk3V1ZYekkyZHBqUTB3?=
- =?utf-8?B?R0RoTWlwekFhU3RNTzYzZFVvaWZSOHRGYWhrTW9PbHJRc3ZqTmxPL2luY2cw?=
- =?utf-8?B?cEVFZ25WQXhMcE9qc3BLR1gwOHE1MDF6cVdKUDMrOUo5VUczUlZueW11bXYw?=
- =?utf-8?B?bGsyYjJJajNVUG9US1UyMzlzWGQwNHgwam9ubFZxaWNKUkcwUmpvaWxHWWZo?=
- =?utf-8?B?bWNBY2FOcUg1ek9nYzV6aytCcFdTWExhMzZld2lTZVIxalg5MHhrYXg0YkFI?=
- =?utf-8?B?MEZTQzZNS1o1TjlYQTlrMll0aStON3JmZHlmYlY5djFEL3ExSVp0VVkvQ1l5?=
- =?utf-8?B?aUZzMEp3L0hwRmRrVnE1cE01STVUV1BwbktqYi8xbVByb0VURzZoMHViNTV6?=
- =?utf-8?B?TC9IYnJuOHBRT3NxenBCSDVzZWdrM3BWYnhSRkp5MDJSQ0l3OCtUOCtlNGtX?=
- =?utf-8?B?TDVxc1ZteGM2Y1hhZFlhZFFtbTNCbWlIRUpFc0M2N2xOZDU3bkFhNm1pZHQw?=
- =?utf-8?B?b0hmSWhsdlRZc25vaDhNRVRuU0ZackJHQUw3WEVGR2dPRHFucktRclpISHI0?=
- =?utf-8?B?UW1ETDAvTUo5TEllWTZuYjZVSjQwN2U1WjQ2UGR6a2NBcHZNWWlYZ2NBPT0=?=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ2PR11MB7573.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(376005)(366007);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?Mm9NTmZoVVlLN2Mzc1B2VFNyYzJ3U1l6OThDc25ZL1NJdHJ1c21jTXdBdkdr?=
- =?utf-8?B?V0ZXWllNbVNYeFBZbkFXeFpFOGRpT3BVQTNqM1lVTWFsRUNqUG1pZ1o0ckxa?=
- =?utf-8?B?UVVvakxXMWg1d3MzbHNLMEhWdmJzcS95dGdDSnRKMWw0Q0t4QmptUFBnbEpH?=
- =?utf-8?B?RGJ3TU9oRjlINDM4SDRLTktIQXBKSmVqd3o0V0VUdTVZcGFQWHV3dkF0cERR?=
- =?utf-8?B?dEEzalRVSHBSbEphNmo0Ymd1aEJCNnZ3U1RrL054c3pISU1OWkdhemtMTi9q?=
- =?utf-8?B?WUhFaTJOSHlnSHpxeDZqN3krdDRxMTNsYXBpSU1wVnRSMmRuaVFmalRsRUVq?=
- =?utf-8?B?ek1tMmNGNkoxWmRkOXMyajRvSFJsTW1iaXJJSVJSdzZGQzlxcDRpcFRCdm8x?=
- =?utf-8?B?Vk9vNVpORjBTQnpGdkV2bGpYcm00YVA0dVZFSGo3SGtDWVR4WS9hZ0lRbktp?=
- =?utf-8?B?ZGZyOVFJR3NSVzA0ODlyK0w2SGZCb0c0L0lEZFZVc2FCSklsbDdxN3VNa0tm?=
- =?utf-8?B?VkNZYlBoWGtUbkdIVENhQm9wVldXdWVRNmVrZnRBUzBZOEJjb0drZVFpR0hx?=
- =?utf-8?B?dSs1Z3c2emhGZm1FMFhyYkZyMEt2ZGZ2TkFVdS84aHNEQ25UNC9LUlFuWkY3?=
- =?utf-8?B?ZE9rdXhweEhzZXRacy8yRktHd0hWK2IvcEZWUVpBcHF6M0swWndTVkxIdWEr?=
- =?utf-8?B?cUdJQjdDQ3NPUE5xZ1lISXVzMVlQOXhZVjIxNXBmNjR1NmIyRHA1MUppUFUw?=
- =?utf-8?B?WVZLenhuYm1CakNrd3RHQmVOa0w2NE9CSHhhd0ZzOGh6VUNaM0QwaXVOellM?=
- =?utf-8?B?V3JZOEdxdVdXdWw2c2xLalR3OVlSck1JT1RRZ0tOYVNqeDUyS0ZFbVdmMTg0?=
- =?utf-8?B?Q1MrNjBDQ3BJb2x3NmRKSjM2ZnFrRDV6RXJoajBHRGN1YUhRc3c0SmVVbmh5?=
- =?utf-8?B?Z3pQMjA2V1hmM2FEOHZVNm03R0w2Y1JEUm1FQTJvbkMxL1BtM1IvYnc2bkJ0?=
- =?utf-8?B?bHVGUncwTTFJV3JOb2ZOc0RuWHh4TnB5UEdwTFVDcG5CcWVIL01ZQ3FqUUdh?=
- =?utf-8?B?Vk9EcFdNR0JtTXpRTk1qT01rTG9VK0ovc2RqbCtuYTd4NkcxYmRNdlp3cjFS?=
- =?utf-8?B?Z0kxV2RWOUFmVjJ0b3NyZHVIRFJqMXRmcDRtaGl0bkZhR2lIcDFHY1JMMWdT?=
- =?utf-8?B?RkswNk14cHFhV0xQZlNIckwvT1M1Um1JK1ZKMUdXcGgrSjQ0Mm9SKzRJM05H?=
- =?utf-8?B?WEwrcFkzWEdqVGJia00zd2c4OVhoclRlQ3M5ZE1DOGZLbzZ4WjR5VkttSkVQ?=
- =?utf-8?B?c0owOFdpZ0xyRnk4RWdmcmwwc1NyWjJWOG1nTFI0dExaVk5CR2xPeFdQSkpU?=
- =?utf-8?B?bWx5c2lFVHFuNVZtZGZUODAwNWtJcWRxTTlJcVNzVkRKQ2trVjZma0ZjMGw2?=
- =?utf-8?B?NnhMd2I3dGdhSjJZWHF4eU1nRE01djlLU3RFYjgxL2ttWWR0VnY3ZGluMG1H?=
- =?utf-8?B?b1VMSVhUZSs4ZCtQRERyMVpvQm8wZ0M0R2taNXg4RVgxRlhoS0NjOU94TlJt?=
- =?utf-8?B?blhVNlp2L1lkVGZRM3ViOENDN2p6c3ppTFJjelRsdVQvUXhKdWdCbkRxNjhq?=
- =?utf-8?B?Mzk4ckJWRG95ZUp0Qmpka0o1Q3ppQTBhY1g1UXJjT1l4RkUxOUZ0MFgvMHhM?=
- =?utf-8?B?YzNPZ0dwenJWbWQ5MnArVUpyRnA3U3VpbWc4UDFxdVdhYWRqZE5iUlZRM3BL?=
- =?utf-8?B?NFNIa2JyV2hrQk5NSC9FWitGaTZBQURIS2dBcEgxQU1ncEdCWWNHSmlTek5V?=
- =?utf-8?B?VmFuekxSaGFWRjV6RC9TUzZqcEV5SFRxOWJGOTBkM09Rc2FhWDlZc1RKdCtL?=
- =?utf-8?B?dS9takM1b3FBRFlud2hRQzhKaDlITk0yUVdidEpVdEErd1FiMWttUDdpWDJk?=
- =?utf-8?B?ZWlGY2kzckgyU0ErTmp5b2Y1bUZwME5sZ0tNVHgzTlJsQ2JJOXRCSUhtQXRE?=
- =?utf-8?B?LzIySDZLOWNIaVZNWU5SNnlUZTJCQThQVUV6VThvM2pQcDBLM1p3UkczR0Z6?=
- =?utf-8?B?L2ZVRDBrTGMxZ3hUd0lLWitxcGNPenBhMVU1c28wRGtLcnlORUVqejVnVXFV?=
- =?utf-8?B?MWFscXBzZGU3MlBHMWlEcUFRNm5YR290cnVlM2dwUVhwa0x2eVVKMzM4Q0d6?=
- =?utf-8?B?QkE9PQ==?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 478f9a66-4208-42a4-e831-08dc6a0ba4e1
-X-MS-Exchange-CrossTenant-AuthSource: SJ2PR11MB7573.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 May 2024 18:22:22.4781
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 1XK2eAQRyG53OwEH8LbKqyh7tzNiMUZ/I5PFmxkMY0xw+vS8VFqXqqdWzt8OzMMyXwyNuyeLXC1BDkHgGk740b/5l+/gMQZEJYT2em9IVtE=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR11MB8009
-X-OriginatorOrg: intel.com
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <874654d4-3c52-4b0e-944a-dc5822f54a5d@lunn.ch>
 
-Hi Isaku,
-
-On 5/1/2024 11:19 AM, Isaku Yamahata wrote:
-> On Wed, May 01, 2024 at 09:54:07AM -0700,
-> Reinette Chatre <reinette.chatre@intel.com> wrote:
+> > n  |  name     |  min  |  avg  |  max  |  rx dropped  |  samples
+> > 1  |  no mod   |  827K |  846K |  891K |      945     |     5
+> > 2  |  no log   |  711K |  726K |  744K |      562     |     5
+> > 3  |  less irq |  815K |  833K |  846K |      N/A     |     5
+> > 4  |  no irq   |  914K |  924K |  931K |      N/A     |     5
+> > 5  |  simple   |  857K |  868K |  879K |      615     |     5
 > 
->> Hi Isaku,
->>
->> On 5/1/2024 8:56 AM, Isaku Yamahata wrote:
->>> On Tue, Apr 30, 2024 at 01:47:07PM -0700,
->>> Reinette Chatre <reinette.chatre@intel.com> wrote:
->>>> On 4/3/2024 11:42 AM, Isaku Yamahata wrote:
->>>>> On Mon, Apr 01, 2024 at 12:10:58PM +0800,
->>>>> Chao Gao <chao.gao@intel.com> wrote:
->>>>>
->>>>>>> +static int tdx_handle_ept_violation(struct kvm_vcpu *vcpu)
->>>>>>> +{
->>>>>>> +	unsigned long exit_qual;
->>>>>>> +
->>>>>>> +	if (kvm_is_private_gpa(vcpu->kvm, tdexit_gpa(vcpu))) {
->>>>>>> +		/*
->>>>>>> +		 * Always treat SEPT violations as write faults.  Ignore the
->>>>>>> +		 * EXIT_QUALIFICATION reported by TDX-SEAM for SEPT violations.
->>>>>>> +		 * TD private pages are always RWX in the SEPT tables,
->>>>>>> +		 * i.e. they're always mapped writable.  Just as importantly,
->>>>>>> +		 * treating SEPT violations as write faults is necessary to
->>>>>>> +		 * avoid COW allocations, which will cause TDAUGPAGE failures
->>>>>>> +		 * due to aliasing a single HPA to multiple GPAs.
->>>>>>> +		 */
->>>>>>> +#define TDX_SEPT_VIOLATION_EXIT_QUAL	EPT_VIOLATION_ACC_WRITE
->>>>>>> +		exit_qual = TDX_SEPT_VIOLATION_EXIT_QUAL;
->>>>>>> +	} else {
->>>>>>> +		exit_qual = tdexit_exit_qual(vcpu);
->>>>>>> +		if (exit_qual & EPT_VIOLATION_ACC_INSTR) {
->>>>>>
->>>>>> Unless the CPU has a bug, instruction fetch in TD from shared memory causes a
->>>>>> #PF. I think you can add a comment for this.
->>>>>
->>>>> Yes.
->>>>>
->>>>>
->>>>>> Maybe KVM_BUG_ON() is more appropriate as it signifies a potential bug.
->>>>>
->>>>> Bug of what component? CPU. If so, I think KVM_EXIT_INTERNAL_ERROR +
->>>>> KVM_INTERNAL_ERROR_UNEXPECTED_EXIT_REASON is more appropriate.
->>>>>
->>>>
->>>> Is below what you have in mind?
->>>
->>> Yes. data[0] should be the raw value of exit reason if possible.
->>> data[2] should be exit_qual.  Hmm, I don't find document on data[] for
->>
->> Did you perhaps intend to write "data[1] should be exit_qual" or would you
->> like to see ndata = 3? I followed existing usages, for example [1] and [2],
->> that have ndata = 2 with "data[1] = vcpu->arch.last_vmentry_cpu".
->>
->>> KVM_INTERNAL_ERROR_UNEXPECTED_EXIT_REASON.
->>> Qemu doesn't assumt ndata = 2. Just report all data within ndata.
->>
->> I am not sure I interpreted your response correctly so I share one possible
->> snippet below as I interpret it. Could you please check where I misinterpreted
->> you? I could also make ndata = 3 to break the existing custom and add
->> "data[2] = vcpu->arch.last_vmentry_cpu" to match existing pattern. What do you
->> think?
->>
-> Sorry, I wasn't clear enough. I meant
->   ndata = 3;
->   data[0] = exit_reason.full;
->   data[1] = vcpu->arch.last_vmentry_cpu;
->   data[2] = exit_qual;
+> That is odd.
 > 
-> Because I hesitate to change the meaning of data[1] from other usage, I
-> appended exit_qual as data[2].
+> Side question: What CONFIG_HZ= do you have? 100, 250, 1000?  Try
+> 1000. I've seen problems where the driver wants to sleep for a short
+> time, but the CONFIG_HZ value limits how short a time it can actually
+> sleep. It ends up sleeping much longer than it wants.
+> 
 
-I understand it now. Thank you very much Isaku.
+I have been doing my best to abuse the link some more. In brief tweaking
+CONFIG_HZ has some but limited effect. 
+Saturating the link with the rx buffer interrupt enabled breaks the driver.
+Saturating the link with the rx buffer interrupt disabled has poor
+performance.
 
-Reinette
- 
+The following scenario has been tested. Both ends of the link run:
+* server.py
+* client.py
+
+One end is an arm64 quad core running at 1.2GHz with the lan8650 macphy.
+The other end is an amd 3950x running the lan8670 usb eval board.
+Both systems should be fast enough that running python should not be a
+limiting factor.
+
+-- The test code --
+server.py
+#!/bin/env python3
+import socket
+
+def serve(sock: socket.socket):
+    while True:
+        client, addr = sock.accept()
+        print(f'connection from: {addr}')
+        while len(client.recv(2048)) > 0:
+            pass
+        print('client disconnected')
+        client.close()
+
+if __name__ == '__main__':
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+    sock.bind(('0.0.0.0', 4040))
+    sock.listen(1)
+    serve(sock)
+    print("something went wrong")
+
+client.py
+#!/bin/env python3
+import socket
+import sys
+
+if __name__ == '__main__':
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    sock.connect((sys.argv[1], 4040))
+
+    while True:
+        sock.sendall(b'0'*2048)
+
+-- test runs --
+run 1 - all interrupts enabled
+Time to failure:
+1 min or less
+
+Kernel output:
+[   94.361312] sched: RT throttling activated
+
+top output:
+ PID USER      PR  NI    VIRT    RES    SHR S  %CPU  %MEM     TIME+ COMMAND
+ 145 root     -51   0       0      0      0 R  95.5   0.0   1:11.22 oa-tc6-spi-thread
+
+link stats:
+3: eth1: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast state UP mode DEFAULT group default qlen 1000
+    link/ether 32:c2:7e:22:93:99 brd ff:ff:ff:ff:ff:ff
+    RX:  bytes packets errors dropped  missed   mcast
+       3371902    7186      0      48       0       0
+    RX errors:  length    crc   frame    fifo overrun
+                     0      0       0       0       0
+    TX:  bytes packets errors dropped carrier collsns
+      10341438    8071      0       0       0       0
+    TX errors: aborted   fifo  window heartbt transns
+                     0      0       0       0       1
+state:
+Completly borked, can't ping in or out, bringing the interface down then up
+has no effect.
+There is no SPI clock and no interrupts generated by the mac-phy.
+The worker thread seems to have live locked.
+
+-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+run 2 - RX_BUFFER_OVERLOW interrupt disabled
+
+state:
+Runs just fine but the oa-tc6-spi-thread is consuming 10-20% cpu
+Ping times have increased from 1-2ms to 8-35ms
+
+
+-- additional notes --
+When tweaking CONFIG_HZ I do get some changes in behaviour, the cpu
+consumption stays stable at 20%+-2 with CONFIG_HZ=250, when increased to
+CONFIG_HZ=1000 it jumps up and down between 10-20%.
+
+I don't have access to a logic analyzer but my old oscilloscope is
+almost reliable. I could confirm that the spi clock is indeed running at
+the expected 25MHz, but I could observe some gaps of up to 320µs so
+that's 8k spi cycles spent doing something else.
+These gaps were observed on the SPI clock and the macphy interrupt was
+active for the same ammount of time(though this was measured independently
+and not on the same trigger).
+I've been drinking way to much coffe, so soldering is not gonna happen
+today (shaky hands), but if it helps I can solder wires to attach both
+probes to confirm that the gap in the SPI clock happens at the same time
+or not as the interrupt is active.
+
+I'd be keen on hearing what Microchips plans to address. If tracking
+down performance issues is a priority I'll probably not spend any time
+on it, if not then I'll definetly dig into it more.
+
+Let me know if anything is unclear or if I can help out with anything
+specific.
+
+R
 
