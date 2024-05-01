@@ -1,119 +1,152 @@
-Return-Path: <linux-kernel+bounces-165725-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-165727-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E21E68B903F
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 21:51:29 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 58B498B9046
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 21:54:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9CE4A2832D8
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 19:51:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8A0A91C213EB
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 19:54:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 709CB16133C;
-	Wed,  1 May 2024 19:51:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78B8216191E;
+	Wed,  1 May 2024 19:54:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XDI21BXC"
-Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="aNuSTsxd"
+Received: from mail-io1-f52.google.com (mail-io1-f52.google.com [209.85.166.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3AEFF14A8B
-	for <linux-kernel@vger.kernel.org>; Wed,  1 May 2024 19:51:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DCC7C161320
+	for <linux-kernel@vger.kernel.org>; Wed,  1 May 2024 19:54:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714593081; cv=none; b=m2tSayatnk0bsfsa1/V9KAa/i4wf5xT2qi3HoLFT/SJR1W/8+uG1NeC5Mqx+d117lDmamYGuuPiStRmYykEh/LiSaH4evjJ7UmADiNIUZ2f9nbgyKqniFbG6ngHDShqRQEBEoUc2B3JRYvmNoHa8eZtWG4mt6pnJqcRkifIGpaI=
+	t=1714593283; cv=none; b=CLD8wO7FbnGk5eHUX9VASGlw8OCY1sbj5S8IY0azTBht3q6/t4Z4rHosOM16I/MnZV6srHAnpipqkXTcxdwV/1o64hDIwzPNjDRbb6ERUIuAfBW/No1S0XHl2XcMXItTnPRbpLMzV0kKXJaHHYWmR1PZ6iLhcR5YCULul4Qt9a4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714593081; c=relaxed/simple;
-	bh=GkObCUITKdr9RhCq2jDAsceModZcdkprHTA7AZ6PtSM=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Si13nKNrFoEjcfDvhcsmR4w47xJysHYZTbLRulfy+BnzXIDCiAa1zQ75A+S2LWWw02R6I/0I8i7hhGg3tu57QXz5zrGUcCYM3pE5i2TNVbpbQFduhbH+pL+atO5QZcyqaavN+3CpA6mQjzEHer+olPRi6Og/5kOfEmAOUwWbDZ8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XDI21BXC; arc=none smtp.client-ip=209.85.221.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-349545c3eb8so4622805f8f.2
-        for <linux-kernel@vger.kernel.org>; Wed, 01 May 2024 12:51:19 -0700 (PDT)
+	s=arc-20240116; t=1714593283; c=relaxed/simple;
+	bh=3AFePkdooPErfFu/qbXBokEPm+8+qcbQdefFXCyvhhE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=qebbmVHPcfGORYTNxY3TjXUTV6sWgeL9QhbQEa4dzNIRXWoh5njG5zjUZ/yAkWSS2fr1H2G7ZLHIqvfRbjRXywKfzY4+weZNHKx/7NZv8bBB4McgNwsZhMNOjhK7i8ZEoHitdPuzN0OH6IWayFOiaz/RK+wGmcStE1cyScy2xkQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=aNuSTsxd; arc=none smtp.client-ip=209.85.166.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-io1-f52.google.com with SMTP id ca18e2360f4ac-7decd8cd028so160881739f.0
+        for <linux-kernel@vger.kernel.org>; Wed, 01 May 2024 12:54:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714593078; x=1715197878; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=9RGgVA0uaJ+u00171aAWEQYeSgT0x3gMmjEz5WTHpZk=;
-        b=XDI21BXCCehlyaG6T+Juiv9zWPdXbjmPVjafboCggEcF/vDBlc1R+W/6ShtrfIUJNY
-         xrxZjIDsm8h45IDzabQLQgXBu6gdJQkif75RE3EK1vz5xDoOUaGRMzYiSiQkn7Ipunq0
-         7DuFHbgiVUlK44Ekj1w/FZSqjBY0FYKfK3HuDhREO1lEghP/Ie2jteTIw5X8z1iCiu/F
-         qhRJSF/YecCORYVMnnTZjWNtIM/e47KnmK7TK8LWm9pBt8LcykyYpeeAGpa3h9boe1Ru
-         2MW7TDte1HGgH8aJePv5D5s8Yh18iefGx7ax3EYY+ul6wudAJmMk7SIfDZOVeFgDLwWs
-         blJg==
+        d=google.com; s=20230601; t=1714593281; x=1715198081; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=o3qjMSjjDTWfiqOEbDNPmH92wnyK6R57JD3befS8Eeg=;
+        b=aNuSTsxdZmgG85sScL/nfJYe1Mbz1e3SPwZGzUqMj5b26GVRWAKXmBYPVlsQjvQob6
+         37tcwIzjfIQm5xLLv7s90JjC/OfKdywLrWnxUX0WBblntFnQyijsoBstFU6uZzodU8fM
+         jKRVkb8oTiANGs59L4RwaCicFJBpavw9Fo8+6EAooIPp1lkJnVUhglOehiAl6LGBxl3S
+         I8ouCYnuSH5jILjiIjYvUC82vDbwFsXLDHAnqu6HSo/nl/rl/y8HJuiCwaNuObguyXf1
+         MTRSjrABORasTaMv3I4+vKBuYx5a1EM1M3fQajSHmVjv+PHtbTId1L5xMZ0FNNGdwj7g
+         u+vQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714593078; x=1715197878;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=9RGgVA0uaJ+u00171aAWEQYeSgT0x3gMmjEz5WTHpZk=;
-        b=M1iGwaLGGK14N22uKDFZx/DKVyNNTaIVkJXz7OzgdUqNLgRt6BO7oRoc/ZYbiYldP3
-         P+ojJKV78QUoRNEjcg8CO/VyfEO8Hpn901oGcHEQIeQGLr7o60/RZpQuzOJopONrqMaA
-         p4jLZhTDzkMyThdubU/ibfc9Mg1Wr9N80QND8fZAQ6hhZiM3OiuftD/KB/E5LERwg5Ye
-         qtsBkM/rI8mwbnQdPaGk+xls6Eh35eq4dl8ZTNbMptX2bSXdbvky8L0FrB9KTm7M7DMO
-         0w6JRGVPRj7CijygKXISnfzXZVXbQ8AWtmjMRXn/aoxALMyPTGJlG7SqN6+s1VWB+ive
-         cTeg==
-X-Gm-Message-State: AOJu0YzRKkLcgZKD7jBB3naR/nQ2L+Z6dpiZ36xR+GoIuny1bUunJfRD
-	DZo+B6b0QzMxbxZidCPrxJsYWmsSxnjcWPVBkuPlGVmwL9Muw9/m
-X-Google-Smtp-Source: AGHT+IGVdUPn4F5Eo3DjG1sC4XVT/3I3Y2RIqyUpMPBSwKUZGcBAcVWFHzcYKgdzZ01xwkNWSAnGZw==
-X-Received: by 2002:adf:ef08:0:b0:346:47d6:5d17 with SMTP id e8-20020adfef08000000b0034647d65d17mr2704258wro.57.1714593078343;
-        Wed, 01 May 2024 12:51:18 -0700 (PDT)
-Received: from localhost.localdomain (host86-151-98-16.range86-151.btcentralplus.com. [86.151.98.16])
-        by smtp.gmail.com with ESMTPSA id h15-20020adfe98f000000b0034c926ef66csm315045wrm.51.2024.05.01.12.51.17
-        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Wed, 01 May 2024 12:51:17 -0700 (PDT)
-From: Levi Yun <ppbuk5246@gmail.com>
-To: anna-maria@linutronix.de,
-	frederic@kernel.org,
-	tglx@linutronix.de
-Cc: linux-kernel@vger.kernel.org,
-	Levi Yun <ppbuk5246@gmail.com>
-Subject: [PATCH] time/timgr: Fix wrong reference when level 0 group allocation failed
-Date: Wed,  1 May 2024 20:51:16 +0100
-Message-ID: <20240501195116.62669-1-ppbuk5246@gmail.com>
-X-Mailer: git-send-email 2.41.0
+        d=1e100.net; s=20230601; t=1714593281; x=1715198081;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=o3qjMSjjDTWfiqOEbDNPmH92wnyK6R57JD3befS8Eeg=;
+        b=HZkj1j5AmFn3jnavlyvhfq75+Qdnwl3pNdWaO13eG9mTZwheIe5phWNI8EIsvrG9cf
+         aKChAtNtGbYrTaeQwWc95hRnUBkUL1Lte0MbmvWTMLGd0wwJCfAsS6r8lZBlI8OJQJvs
+         rsp/BZ5QkCs1yojMmPWp8MgjWzrzCsW75tC3bg6IFahsljDpbVxfMqQUoBZ8YbRYc44d
+         PoTxpAA+G0+xVF3NKFfLqJm91lxK/DUBwS7tfI+eZ/RnVxIM6AJRzv/buNtEXXcxAptX
+         40/sECkJ7J3620RJQ1D+pvKifYcQtlKe4V8M/9m487bqpCUs3CRNRDjAsFHjJ5gHft6o
+         ppbQ==
+X-Gm-Message-State: AOJu0Yyor2VtUGBmGPsqb6k2po1615flKpIniTpHoswfYJj8dxzDEDk9
+	2mWZdEqXmNiw0Y0QeVSHQZzc1zWfwuWE/hQozHC306JnCr58k3rqiMTAer+gCw==
+X-Google-Smtp-Source: AGHT+IFV0Ej1qR/QMLUPSTTY0DQ7vd7qiVQm5fV9ISZXRkhorw2Wgn4KuGk7bnpcpR08pavfAqxO4Q==
+X-Received: by 2002:a5e:c80c:0:b0:7de:ca48:4fab with SMTP id y12-20020a5ec80c000000b007deca484fabmr4093192iol.2.1714593281030;
+        Wed, 01 May 2024 12:54:41 -0700 (PDT)
+Received: from google.com (195.121.66.34.bc.googleusercontent.com. [34.66.121.195])
+        by smtp.gmail.com with ESMTPSA id ci10-20020a0566383d8a00b004874d717cffsm3529346jab.29.2024.05.01.12.54.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 01 May 2024 12:54:40 -0700 (PDT)
+Date: Wed, 1 May 2024 19:54:35 +0000
+From: Justin Stitt <justinstitt@google.com>
+To: Edward Liaw <edliaw@google.com>
+Cc: linux-kernel@vger.kernel.org, Shuah Khan <shuah@kernel.org>, 
+	Nathan Chancellor <nathan@kernel.org>, Nick Desaulniers <ndesaulniers@google.com>, 
+	Bill Wendling <morbo@google.com>, "H. Peter Anvin" <hpa@linux.intel.com>, 
+	Andy Lutomirski <luto@mit.edu>, linux-kselftest@vger.kernel.org, kernel-team@android.com, 
+	llvm@lists.linux.dev
+Subject: Re: [PATCH v3] selftests/vDSO: Explicit unsigned char conversion for
+ elf_hash
+Message-ID: <osgrbhnqlyh5yw4y4x6wjggx56dogsgje5yy3mkpu75ubs3zwg@5tliydzky37k>
+References: <20240501180622.1676340-1-edliaw@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240501180622.1676340-1-edliaw@google.com>
 
-When tmigr_setup_groups() failed level 0 group allocation,
-next do while loop refers wrong local stack array location.
+Hi,
 
-Changing group init do while loop with while loop to fix this problem.
+On Wed, May 01, 2024 at 06:06:18PM +0000, Edward Liaw wrote:
+> Fixes clang compilation warnings by adding explicit unsigned conversion:
+> 
+> parse_vdso.c:206:22: warning: passing 'const char *' to parameter of
+>  type 'const unsigned char *' converts between pointers to integer types
+>  where one is of the unique plain 'char' type and the other is not
+>  [-Wpointer-sign]
+>         ver_hash = elf_hash(version);
+>                             ^~~~~~~
+> parse_vdso.c:59:52: note: passing argument to parameter 'name' here
+> static unsigned long elf_hash(const unsigned char *name)
+>                                                    ^
+> parse_vdso.c:207:46: warning: passing 'const char *' to parameter of
+>  type 'const unsigned char *' converts between pointers to integer types
+>  where one is of the unique plain 'char' type and the other is not
+>  [-Wpointer-sign]
+>         ELF(Word) chain = vdso_info.bucket[elf_hash(name) % vdso_info.nbucket];
+>                                                     ^~~~
+> parse_vdso.c:59:52: note: passing argument to parameter 'name' here
+> static unsigned long elf_hash(const unsigned char *name)
+> 
+> Fixes: 98eedc3a9dbf ("Document the vDSO and add a reference parser")
+> Signed-off-by: Edward Liaw <edliaw@google.com>
 
-Signed-off-by: Levi Yun <ppbuk5246@gmail.com>
----
- kernel/time/timer_migration.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+> ---
+> v2: update commit message with correct compiler warning
+> v3: fix checkpatch errors and indentation
+> ---
+>  tools/testing/selftests/vDSO/parse_vdso.c | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
+> 
+> diff --git a/tools/testing/selftests/vDSO/parse_vdso.c b/tools/testing/selftests/vDSO/parse_vdso.c
+> index 413f75620a35..9e29ff0657ea 100644
+> --- a/tools/testing/selftests/vDSO/parse_vdso.c
+> +++ b/tools/testing/selftests/vDSO/parse_vdso.c
+> @@ -203,8 +203,9 @@ void *vdso_sym(const char *version, const char *name)
 
-diff --git a/kernel/time/timer_migration.c b/kernel/time/timer_migration.c
-index ccba875d2234..84413114db5c 100644
---- a/kernel/time/timer_migration.c
-+++ b/kernel/time/timer_migration.c
-@@ -1596,7 +1596,7 @@ static int tmigr_setup_groups(unsigned int cpu, unsigned int node)
- 
- 	} while (i < tmigr_hierarchy_levels);
- 
--	do {
-+	while (i > 0) {
- 		group = stack[--i];
- 
- 		if (err < 0) {
-@@ -1645,7 +1645,7 @@ static int tmigr_setup_groups(unsigned int cpu, unsigned int node)
- 				tmigr_connect_child_parent(child, group);
- 			}
- 		}
--	} while (i > 0);
-+	}
- 
- 	kfree(stack);
- 
--- 
-2.41.0
+Is it possible to just change the types of the parameters of vdso_sym()
+or does that trigger even more warnings on the callsites of vdso_sym()?
 
+Either way, this looks ok to me.
+
+Acked-by: Justin Stitt <justinstitt@google.com>
+
+>  	if (!vdso_info.valid)
+>  		return 0;
+> 
+> -	ver_hash = elf_hash(version);
+> -	ELF(Word) chain = vdso_info.bucket[elf_hash(name) % vdso_info.nbucket];
+> +	ver_hash = elf_hash((const unsigned char *)version);
+> +	ELF(Word) chain = vdso_info.bucket[
+> +		elf_hash((const unsigned char *)name) % vdso_info.nbucket];
+> 
+>  	for (; chain != STN_UNDEF; chain = vdso_info.chain[chain]) {
+>  		ELF(Sym) *sym = &vdso_info.symtab[chain];
+> --
+> 2.45.0.rc0.197.gbae5840b3b-goog
+> 
+
+Thanks
+Justin
 
