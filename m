@@ -1,75 +1,75 @@
-Return-Path: <linux-kernel+bounces-165077-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-165078-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3122A8B8777
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 11:19:53 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 081698B877D
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 11:20:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DBCB0284961
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 09:19:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 736EF1F216F8
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 09:20:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B01345103E;
-	Wed,  1 May 2024 09:19:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C109453379;
+	Wed,  1 May 2024 09:19:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="CB7VoMDD"
-Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="uzSOTTFo"
+Received: from mail-lf1-f50.google.com (mail-lf1-f50.google.com [209.85.167.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 351EA502AC
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B55B502B2
 	for <linux-kernel@vger.kernel.org>; Wed,  1 May 2024 09:19:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.52
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714555180; cv=none; b=hgF24hIRmqNBRAHKX+mzV1gcTBZGN2YSwj9kM490d/Lpntcst+7RcxwvZL542VWROnMfNEgRTMnmfnYkVZo0a8yylhSAfhIhCleisbg0cJnCue8WYEI6gz3P75pb5//k3fCnhBo59oiIjuskRMepbJ57Yd3QFuTQ1UB9OKF2X+s=
+	t=1714555181; cv=none; b=fN2zuyHfMv5Gf2Y4AmzaSPGs80L5/2KlWbI2UZPD8dx7GLssq1FYC/K+zyPfYRQH5yU7cucf504xeUq55uHAF1zVizvPGnbRW69Z/riTfDsPPchwAaZkW06VCTABRMykRYCB/1uwEwYV/A/7xPjawC7CrtcSh+4ow5V3+nyRmwo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714555180; c=relaxed/simple;
-	bh=fWuvS/YrupAs+2uDCcwTv76fh6CyTz+lWnjpdQCnTmM=;
+	s=arc-20240116; t=1714555181; c=relaxed/simple;
+	bh=ZyNnKgvZCiDg/WDXGvirLjjH/RMUJBnGJV7fcumvd3Q=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=ucQECPPDvBjD0NUo0GhnbZRTl4UvFmC0E/HoNnXRRUpKBM1HeSbykRubNQaFnpeWrQR5bxHPLhMdjDPUFOEbnaSWY9zBAnhaEuZYz6encDOKWQEVIAjoKYS6umzAY6ickXQsbvFcXbjroE/3R6TICwFWHfjaUTSb9BRDdwpw1iU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=CB7VoMDD; arc=none smtp.client-ip=209.85.218.52
+	 In-Reply-To:To:Cc; b=s2scs3NIaW3rwqyeyTgRLtsn7F+csK/AJBl843bqqL7QJ26EewhkLXED63CtxTEM+2q6CWVpy8FtzEf7890P0xb2IHGoZeObNKw3t9Cdv9qaQQ/iIPR8To3B1Vdb0i5xrWQL/QBrV9CEaRz1gs4/dTIQEesnp5qPphGI+ndcVGU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=uzSOTTFo; arc=none smtp.client-ip=209.85.167.50
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-a58a36008ceso774263766b.0
+Received: by mail-lf1-f50.google.com with SMTP id 2adb3069b0e04-51ab4ee9df8so8309384e87.1
         for <linux-kernel@vger.kernel.org>; Wed, 01 May 2024 02:19:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1714555177; x=1715159977; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1714555178; x=1715159978; darn=vger.kernel.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=HjC0thOUO3AI+wU5orw4JxlnIQvZns1Xrbd8AZdvPQo=;
-        b=CB7VoMDDGzAQ+mCP89r2PbkPl0TqBc6wek0ajpxgVSq74sbOZBv3Hhr2Zd0u6SsOJd
-         ib0mRuyj8KAPkXiCW5OEJZIC2VmNYeoH+lDgB0iNHLC1F7MnsCJUM3ZLJJKppNn35BNP
-         MqxYKl/u+azEjwF1hMY2x21xzotGmZ66CsvlHhTzTIk/Onq1lyreBoEf8rLwzuFpvxV5
-         jfkQ8zv/twTwMKJ0T/b5frs42722txD6zJTQoYCd/LXwxtN7T/b4lKCfP62VhmSYOonW
-         HZDfNyjy8B+vWQ01eQBLDaEwXDMN2rdAb30frIvelbC3FOfWcCbNHyHhBAFVZdR/V12O
-         OEdA==
+        bh=gDKjYuMOOvQueQlZtzxRYnLgIlA8f7Ari39jSEC+hu0=;
+        b=uzSOTTFoK92qHI92dtkOeF92jCEN56Wr5hUJRtqQ3dj3uJ16/8vWw1a7XbodQ7GVuN
+         X/akwxanJiw3BXxTcNywCkq317Cv6J4HwYCVCFPyCGA+BCdyOguWhH6KXxCkyu+d5HCB
+         RUoBo4+VJGImn4BpDSG6CNscGwWNgH69D+5MJ8esbO4E4phrJJ6clnP3AW1XlAn7sh81
+         kiFVCEJRxh5eVgBxVgYqBW4uISpKyq7tfgjgvaq5kliTCF79Nu+PXlV7K2+YKeZb8kTl
+         pYM2kfmP0vvfyJfGPGdBKsvHlXnHpKivCuedQqjzKT4dqbaVOWCGxnHBBsMPK+iT9RHJ
+         JIDw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714555177; x=1715159977;
+        d=1e100.net; s=20230601; t=1714555178; x=1715159978;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=HjC0thOUO3AI+wU5orw4JxlnIQvZns1Xrbd8AZdvPQo=;
-        b=VuUQpXkhCRv1Tdd8N07JgnG7oihg1u3E5Ht98FxVDiUm/l0TJfQuCnjbW2SXX+X9Tr
-         zPVVwaIo66eugsRoNE3mTaLojH9O4rQthJ2N+1amm+M8seKIVCsT50TphW4YpZe26ZIg
-         rDMhNJWKI9U4CBbD7qSdW+qWkKqQUbzUbZ4i9PH7iTHugtmy1MaCacfXLrnJwgJp6He+
-         0ICCksLI/K2KB0nunPugk4kctJtow+lBgZP4ySSY5J9zRdFZdNT51YbclqwJoLNg6t5Z
-         n4ttc0y5pfxHevRinpeeJZWJZ/pXgIuxpSZMmPLIE9SdYT0TmTcwPy8kQj8LTKKOleYG
-         0u+g==
-X-Forwarded-Encrypted: i=1; AJvYcCWhylqoCpOlT4JxJQhZ10wdGEO0Un3VEBJfssWLir69WSFfFPmovZJM2gWKaztgjv9noB8ky4jFTZYfrEN8kXQdJjZ1mAfSOQ95Mmmx
-X-Gm-Message-State: AOJu0YxNLAdIq+607xKhoarDvZmJTwhyr+vscC5jwgBJFCpoN7Y6ZQlQ
-	OyOJ2PM1q9wT2S2XGILFZxJDLddpTlJdbaawDbefbhsWCn874qtF3KWaNkMHV1c=
-X-Google-Smtp-Source: AGHT+IHZcl/NwEeZn+eEz03CLh9cMSeWZJA/2KYO9UAu5/Lo5NKkHlI5Bg8SHMlhBa7fThQtTrER9w==
-X-Received: by 2002:a17:906:e2ce:b0:a52:19ea:8df0 with SMTP id gr14-20020a170906e2ce00b00a5219ea8df0mr1534908ejb.66.1714555177641;
-        Wed, 01 May 2024 02:19:37 -0700 (PDT)
+        bh=gDKjYuMOOvQueQlZtzxRYnLgIlA8f7Ari39jSEC+hu0=;
+        b=nlJZ4ixD9UCBTFpX0NabeEXi02BPMgibApSg/XKYtdnpTpsPKDWgMTNHswNqt6m7wg
+         Lcn+ahVrL+Q/bM5uQ+EuuUko/R8KhbF+VbbsuaVKkjpaqM0Ar18YIeiJvRa7bRCK4map
+         x9hVb4O2BnIB+7SU35fYVvwgnX0YjPVcrku3O9J1iTe//iNi/6HK2E16atKEjuLiOBzJ
+         1P7wiHAljvWeqj4Coh2KPfhKMTlZ684oILAiHR4a5QZzGWZk3WMIpKO+NmkIGzbQ0SIe
+         xwnaCHJY/Ss7hXsMDTknqoZ5dMG2xKzNJsasmjujXXCRBy3roPnRmdfi/FBJD0vuCCLo
+         eOhQ==
+X-Forwarded-Encrypted: i=1; AJvYcCW910vsA9yQnloVMqHOKFgYQMEqVzJC6HwR82YIUp3bYEcfw0IsLgM+Qeb2uMuc5ispnN8TulykDTu6hfDqCHwHe6Qyt1IjNjcbTGG9
+X-Gm-Message-State: AOJu0YzUclUcsUq3C1MG/rN6AmwEgAd5rD+Xy2F7nGrJ4+3ZFcWMhs94
+	H5VQT7XGSh/DILceTDKGcClSfJp7DhmrW7o5gT/snuFFQEAxjbQFH1DaHVgfJOo=
+X-Google-Smtp-Source: AGHT+IG35wPVpTgwkzCXgj+m93i9OP3q32II4vi8eJQ5xijSDEEE5d2Q9QmPaTZNA6Hi++3pKyY3vg==
+X-Received: by 2002:a19:ca53:0:b0:51b:396e:2880 with SMTP id h19-20020a19ca53000000b0051b396e2880mr1133041lfj.63.1714555178313;
+        Wed, 01 May 2024 02:19:38 -0700 (PDT)
 Received: from puffmais.c.googlers.com (8.239.204.35.bc.googleusercontent.com. [35.204.239.8])
         by smtp.gmail.com with ESMTPSA id bw13-20020a170906c1cd00b00a58de09fd92sm5425674ejb.27.2024.05.01.02.19.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Wed, 01 May 2024 02:19:37 -0700 (PDT)
 From: =?utf-8?q?Andr=C3=A9_Draszik?= <andre.draszik@linaro.org>
-Date: Wed, 01 May 2024 10:19:36 +0100
-Subject: [PATCH v2 1/7] dt-bindings: phy: samsung,usb3-drd-phy: add gs101
- compatible
+Date: Wed, 01 May 2024 10:19:37 +0100
+Subject: [PATCH v2 2/7] phy: exynos5-usbdrd: use
+ exynos_get_pmu_regmap_by_phandle() for PMU regs
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -78,7 +78,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Message-Id: <20240501-usb-phy-gs101-v2-1-ed9f14a1bd6d@linaro.org>
+Message-Id: <20240501-usb-phy-gs101-v2-2-ed9f14a1bd6d@linaro.org>
 References: <20240501-usb-phy-gs101-v2-0-ed9f14a1bd6d@linaro.org>
 In-Reply-To: <20240501-usb-phy-gs101-v2-0-ed9f14a1bd6d@linaro.org>
 To: Vinod Koul <vkoul@kernel.org>, 
@@ -101,121 +101,58 @@ Cc: Krzysztof Kozlowski <krzk@kernel.org>,
  =?utf-8?q?Andr=C3=A9_Draszik?= <andre.draszik@linaro.org>
 X-Mailer: b4 0.12.4
 
-Add a dedicated google,gs101-usb31drd-phy compatible for Google Tensor
-gs101 SoC.
+Some Exynos based SoCs like Tensor gs101 protect the PMU registers for
+security hardening reasons so that they are only write accessible in
+EL3 via an SMC call.
 
-It needs additional clocks enabled for register access, and additional
-memory regions (PCS & PMA) are required for successful configuration.
+The Exynos PMU driver handles this transparently when using
+exynos_get_pmu_regmap_by_phandle().
+
+Switch to using that API to support such SoCs. As this driver now no
+longer depends on mfd syscon remove that header and Kconfig dependency.
 
 Signed-off-by: André Draszik <andre.draszik@linaro.org>
-
 ---
-v2: avoid having nested else/if, and instead change the existing 'else'
-    to explicitly state the platforms using 'if'
----
- .../bindings/phy/samsung,usb3-drd-phy.yaml         | 61 +++++++++++++++++++++-
- 1 file changed, 59 insertions(+), 2 deletions(-)
+ drivers/phy/samsung/Kconfig              | 1 -
+ drivers/phy/samsung/phy-exynos5-usbdrd.c | 4 ++--
+ 2 files changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/phy/samsung,usb3-drd-phy.yaml b/Documentation/devicetree/bindings/phy/samsung,usb3-drd-phy.yaml
-index 452e584d9812..f99f055ec704 100644
---- a/Documentation/devicetree/bindings/phy/samsung,usb3-drd-phy.yaml
-+++ b/Documentation/devicetree/bindings/phy/samsung,usb3-drd-phy.yaml
-@@ -25,6 +25,7 @@ description: |
- properties:
-   compatible:
-     enum:
-+      - google,gs101-usb31drd-phy
-       - samsung,exynos5250-usbdrd-phy
-       - samsung,exynos5420-usbdrd-phy
-       - samsung,exynos5433-usbdrd-phy
-@@ -57,7 +58,18 @@ properties:
-       the OF graph bindings specified.
+diff --git a/drivers/phy/samsung/Kconfig b/drivers/phy/samsung/Kconfig
+index f10afa3d7ff5..bb63fa710803 100644
+--- a/drivers/phy/samsung/Kconfig
++++ b/drivers/phy/samsung/Kconfig
+@@ -82,7 +82,6 @@ config PHY_EXYNOS5_USBDRD
+ 	depends on HAS_IOMEM
+ 	depends on USB_DWC3_EXYNOS
+ 	select GENERIC_PHY
+-	select MFD_SYSCON
+ 	default y
+ 	help
+ 	  Enable USB DRD PHY support for Exynos 5 SoC series.
+diff --git a/drivers/phy/samsung/phy-exynos5-usbdrd.c b/drivers/phy/samsung/phy-exynos5-usbdrd.c
+index 04171eed5b16..ac208b89f5a6 100644
+--- a/drivers/phy/samsung/phy-exynos5-usbdrd.c
++++ b/drivers/phy/samsung/phy-exynos5-usbdrd.c
+@@ -18,9 +18,9 @@
+ #include <linux/phy/phy.h>
+ #include <linux/platform_device.h>
+ #include <linux/mutex.h>
+-#include <linux/mfd/syscon.h>
+ #include <linux/regmap.h>
+ #include <linux/regulator/consumer.h>
++#include <linux/soc/samsung/exynos-pmu.h>
+ #include <linux/soc/samsung/exynos-regs-pmu.h>
  
-   reg:
--    maxItems: 1
-+    minItems: 1
-+    items:
-+      - description: PHY register base address.
-+      - description: PCS register base address.
-+      - description: PMA register base address.
-+
-+  reg-names:
-+    minItems: 1
-+    items:
-+      - const: phy
-+      - const: pcs
-+      - const: pma
+ /* Exynos USB PHY registers */
+@@ -1034,7 +1034,7 @@ static int exynos5_usbdrd_phy_probe(struct platform_device *pdev)
+ 		return ret;
+ 	}
  
-   samsung,pmu-syscon:
-     $ref: /schemas/types.yaml#/definitions/phandle
-@@ -81,6 +93,34 @@ required:
-   - samsung,pmu-syscon
- 
- allOf:
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
-+            const: google,gs101-usb31drd-phy
-+    then:
-+      properties:
-+        clocks:
-+          items:
-+            - description: Gate of main PHY clock
-+            - description: Gate of PHY reference clock
-+            - description: Gate of control interface AXI clock
-+            - description: Gate of control interface APB clock
-+            - description: Gate of SCL APB clock
-+        clock-names:
-+          items:
-+            - const: phy
-+            - const: ref
-+            - const: ctrl_aclk
-+            - const: ctrl_pclk
-+            - const: scl_pclk
-+        reg:
-+          minItems: 3
-+        reg-names:
-+          minItems: 3
-+      required:
-+        - reg-names
-+
-   - if:
-       properties:
-         compatible:
-@@ -100,7 +140,20 @@ allOf:
-             - const: phy_utmi
-             - const: phy_pipe
-             - const: itp
--    else:
-+        reg:
-+          maxItems: 1
-+        reg-names:
-+          maxItems: 1
-+
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
-+            enum:
-+              - samsung,exynos5250-usbdrd-phy
-+              - samsung,exynos5420-usbdrd-phy
-+              - samsung,exynos850-usbdrd-phy
-+    then:
-       properties:
-         clocks:
-           minItems: 2
-@@ -109,6 +162,10 @@ allOf:
-           items:
-             - const: phy
-             - const: ref
-+        reg:
-+          maxItems: 1
-+        reg-names:
-+          maxItems: 1
- 
- additionalProperties: false
- 
+-	reg_pmu = syscon_regmap_lookup_by_phandle(dev->of_node,
++	reg_pmu = exynos_get_pmu_regmap_by_phandle(dev->of_node,
+ 						   "samsung,pmu-syscon");
+ 	if (IS_ERR(reg_pmu)) {
+ 		dev_err(dev, "Failed to lookup PMU regmap\n");
 
 -- 
 2.45.0.rc0.197.gbae5840b3b-goog
