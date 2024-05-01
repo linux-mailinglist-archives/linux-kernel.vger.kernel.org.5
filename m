@@ -1,276 +1,102 @@
-Return-Path: <linux-kernel+bounces-165294-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-165295-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 47E708B8AD4
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 14:58:39 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E3A0D8B8AD8
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 14:59:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 73AB2B20DE0
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 12:58:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9FD222824C5
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 12:59:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 71B3712BF12;
-	Wed,  1 May 2024 12:58:30 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2739129E74;
-	Wed,  1 May 2024 12:58:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE32912D746;
+	Wed,  1 May 2024 12:59:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WRiju2N6"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 123B012BEBE;
+	Wed,  1 May 2024 12:59:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714568309; cv=none; b=a8GlMylWRZiuYu9n2grnqZxvwpCociWLNvBSRaawLjtlSFgWLvi+v9G7/PuezZ2RYpDUeMxxIEtMaAWt0x3x4FadLBwyRSi22fUZ1KyU+LmCXQILZgJ1DslzQ0QGG4GJmgazRedvEKmiNAWeOVopCDXWScthWLMOdtbcgAZlj5E=
+	t=1714568384; cv=none; b=Ql/Y4AsQyaacR6czoWiFrBozJ4RNcGbd79WbviMet4tF1wwGyd2Bnpp8NV98mbbxT/iOUzkcqwVc/dwLtAkA469e2kqe4/LneYr4p6QmHJFihj5u/oI+mCyqpsOciYlPq8TzZfbgorBbrqwWLOM3s/CYc4kwz34pPZdDuHHXh9U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714568309; c=relaxed/simple;
-	bh=A1RyJVvHDFq7z1RG2AnVrS/Zc/sAfXIHM65N39THnYE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=o0rDDkN1w8w5XvbApInlRj9CRVucRQfVrRygE62ifR/cz21fUVfK8nj+nDkANRJM3m/w7qZieIfyvoC87csLJy815fBsM5tnm1AbwtjnRTIbRX4xkU08Rs+EV07gM8NdBs3e217OirZUEdlWkgZKezSy+AvaAxLZmusnUH1Gf3s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7868D2F4;
-	Wed,  1 May 2024 05:58:53 -0700 (PDT)
-Received: from [10.57.65.146] (unknown [10.57.65.146])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A03A43F73F;
-	Wed,  1 May 2024 05:58:25 -0700 (PDT)
-Message-ID: <2a1b4275-39c5-4c9e-830f-cde16e81c12c@arm.com>
-Date: Wed, 1 May 2024 13:58:24 +0100
+	s=arc-20240116; t=1714568384; c=relaxed/simple;
+	bh=KxstT7yaWo1HV/VdY87oK/SPbrVfRoguXq0JxrzWNVQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=MYLwZFHmNThxwdbfULiyi35RrusPqFKtA1st7XpQBs/cM67PuU+jkgeWl+H/km+2QIBlR7n0n5STOB6f9hW92cShHJXnfCNiGzP4Hn5d9JWWKzndGqZQ6PgRiFwCjMCQXpM04PzJFB+sijVc5pJns6tYA+6HiP74nbtD3potPg4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WRiju2N6; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D6A68C4AF18;
+	Wed,  1 May 2024 12:59:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714568383;
+	bh=KxstT7yaWo1HV/VdY87oK/SPbrVfRoguXq0JxrzWNVQ=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=WRiju2N6FSf6SmX8/SeiqxqDPVUn58NouaFEjSc492GjsVq4LUVMxAbS8dWnH+EOS
+	 NNvZWiF33xtYtN0AMZ/wOMIZBhl9LzLBvpzq04+5viXGioH02aT1aqueLlUGeTAsdM
+	 bevXE43WHP0/R0GnK6QMm88pTy7hn66rPkS4mlV1/0atSqvc9CF/t+aC8qAta3BZsI
+	 //c6VwQ+zBloA+jYaSXYVQUA7E3ie3k1NbdK8HBck3G7AUQlbIvkWcqwnZJRENxiwv
+	 9uIJBgNvmE9nr+qDv4ZZM2RRjByu9o2FhpZR9aikuuH2Go/7bd6e+GprMLjydr/dpR
+	 xRW1NZVyGuhVA==
+Date: Wed, 1 May 2024 13:59:35 +0100
+From: Will Deacon <will@kernel.org>
+To: Sunil V L <sunilvl@ventanamicro.com>
+Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	linux-riscv@lists.infradead.org, linux-acpi@vger.kernel.org,
+	linux-pci@vger.kernel.org, linux-serial@vger.kernel.org,
+	acpica-devel@lists.linux.dev,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	"Rafael J . Wysocki" <rafael@kernel.org>,
+	Len Brown <lenb@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+	Anup Patel <anup@brainfault.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Samuel Holland <samuel.holland@sifive.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Jiri Slaby <jirislaby@kernel.org>,
+	Robert Moore <robert.moore@intel.com>,
+	Conor Dooley <conor.dooley@microchip.com>,
+	Andrew Jones <ajones@ventanamicro.com>,
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+	Marc Zyngier <maz@kernel.org>,
+	Atish Kumar Patra <atishp@rivosinc.com>,
+	Andrei Warkentin <andrei.warkentin@intel.com>,
+	Haibo1 Xu <haibo1.xu@intel.com>,
+	=?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>
+Subject: Re: [PATCH v5 01/17] arm64: PCI: Migrate ACPI related functions to
+ pci-acpi.c
+Message-ID: <20240501125935.GA15380@willie-the-truck>
+References: <20240501121742.1215792-1-sunilvl@ventanamicro.com>
+ <20240501121742.1215792-2-sunilvl@ventanamicro.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] arm64/mm: pmd_mkinvalid() must handle swap pmds
-Content-Language: en-GB
-To: Zi Yan <ziy@nvidia.com>
-Cc: Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
- Mark Rutland <mark.rutland@arm.com>,
- Anshuman Khandual <anshuman.khandual@arm.com>,
- Andrew Morton <akpm@linux-foundation.org>,
- "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>,
- David Hildenbrand <david@redhat.com>, linux-arm-kernel@lists.infradead.org,
- linux-mm@kvack.org, linux-kernel@vger.kernel.org, stable@vger.kernel.org
-References: <20240430133138.732088-1-ryan.roberts@arm.com>
- <9fb15315-6317-4bf4-a736-a8a44288b0c2@arm.com>
- <0dd7827a-6334-439a-8fd0-43c98e6af22b@arm.com>
- <4DDEF271-9DDE-4D24-9F0C-13046CE78C6C@nvidia.com>
-From: Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <4DDEF271-9DDE-4D24-9F0C-13046CE78C6C@nvidia.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240501121742.1215792-2-sunilvl@ventanamicro.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 
-On 01/05/2024 13:07, Zi Yan wrote:
-> On 1 May 2024, at 7:38, Ryan Roberts wrote:
+On Wed, May 01, 2024 at 05:47:26PM +0530, Sunil V L wrote:
+> The functions defined in arm64 for ACPI support are required
+> for RISC-V also. To avoid duplication, move these functions
+> to common location.
 > 
->> Pulling in David, who may be able to advise...
->>
->>
->> On 01/05/2024 12:35, Ryan Roberts wrote:
->>> Zi Yan, I'm hoping you might have some input on the below...
->>>
->>>
->>> On 30/04/2024 14:31, Ryan Roberts wrote:
->>>> __split_huge_pmd_locked() can be called for a present THP, devmap or
->>>> (non-present) migration entry. It calls pmdp_invalidate()
->>>> unconditionally on the pmdp and only determines if it is present or not
->>>> based on the returned old pmd.
->>>>
->>>> But arm64's pmd_mkinvalid(), called by pmdp_invalidate(),
->>>> unconditionally sets the PMD_PRESENT_INVALID flag, which causes future
->>>> pmd_present() calls to return true - even for a swap pmd. Therefore any
->>>> lockless pgtable walker could see the migration entry pmd in this state
->>>> and start interpretting the fields (e.g. pmd_pfn()) as if it were
->>>> present, leading to BadThings (TM). GUP-fast appears to be one such
->>>> lockless pgtable walker.
->>>>
->>>> While the obvious fix is for core-mm to avoid such calls for non-present
->>>> pmds (pmdp_invalidate() will also issue TLBI which is not necessary for
->>>> this case either), all other arches that implement pmd_mkinvalid() do it
->>>> in such a way that it is robust to being called with a non-present pmd.
->>>
->>> OK the plot thickens; The tests I wrote to check that pmd_mkinvalid() is safe for swap entries fails on x86_64. See below...
->>>
->>>> So it is simpler and safer to make arm64 robust too. This approach means
->>>> we can even add tests to debug_vm_pgtable.c to validate the required
->>>> behaviour.
->>>>
->>>> This is a theoretical bug found during code review. I don't have any
->>>> test case to trigger it in practice.
->>>>
->>>> Cc: stable@vger.kernel.org
->>>> Fixes: 53fa117bb33c ("arm64/mm: Enable THP migration")
->>>> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
->>>> ---
->>>>
->>>> Hi all,
->>>>
->>>> v1 of this fix [1] took the approach of fixing core-mm to never call
->>>> pmdp_invalidate() on a non-present pmd. But Zi Yan highlighted that only arm64
->>>> suffers this problem; all other arches are robust. So his suggestion was to
->>>> instead make arm64 robust in the same way and add tests to validate it. Despite
->>>> my stated reservations in the context of the v1 discussion, having thought on it
->>>> for a bit, I now agree with Zi Yan. Hence this post.
->>>>
->>>> Andrew has v1 in mm-unstable at the moment, so probably the best thing to do is
->>>> remove it from there and have this go in through the arm64 tree? Assuming there
->>>> is agreement that this approach is right one.
->>>>
->>>> This applies on top of v6.9-rc5. Passes all the mm selftests on arm64.
->>>>
->>>> [1] https://lore.kernel.org/linux-mm/20240425170704.3379492-1-ryan.roberts@arm.com/
->>>>
->>>> Thanks,
->>>> Ryan
->>>>
->>>>
->>>>  arch/arm64/include/asm/pgtable.h | 12 +++++--
->>>>  mm/debug_vm_pgtable.c            | 61 ++++++++++++++++++++++++++++++++
->>>>  2 files changed, 71 insertions(+), 2 deletions(-)
->>>>
->>>> diff --git a/arch/arm64/include/asm/pgtable.h b/arch/arm64/include/asm/pgtable.h
->>>> index afdd56d26ad7..7d580271a46d 100644
->>>> --- a/arch/arm64/include/asm/pgtable.h
->>>> +++ b/arch/arm64/include/asm/pgtable.h
->>>> @@ -511,8 +511,16 @@ static inline int pmd_trans_huge(pmd_t pmd)
->>>>
->>>>  static inline pmd_t pmd_mkinvalid(pmd_t pmd)
->>>>  {
->>>> -	pmd = set_pmd_bit(pmd, __pgprot(PMD_PRESENT_INVALID));
->>>> -	pmd = clear_pmd_bit(pmd, __pgprot(PMD_SECT_VALID));
->>>> +	/*
->>>> +	 * If not valid then either we are already present-invalid or we are
->>>> +	 * not-present (i.e. none or swap entry). We must not convert
->>>> +	 * not-present to present-invalid. Unbelievably, the core-mm may call
->>>> +	 * pmd_mkinvalid() for a swap entry and all other arches can handle it.
->>>> +	 */
->>>> +	if (pmd_valid(pmd)) {
->>>> +		pmd = set_pmd_bit(pmd, __pgprot(PMD_PRESENT_INVALID));
->>>> +		pmd = clear_pmd_bit(pmd, __pgprot(PMD_SECT_VALID));
->>>> +	}
->>>>
->>>>  	return pmd;
->>>>  }
->>>> diff --git a/mm/debug_vm_pgtable.c b/mm/debug_vm_pgtable.c
->>>> index 65c19025da3d..7e9c387d06b0 100644
->>>> --- a/mm/debug_vm_pgtable.c
->>>> +++ b/mm/debug_vm_pgtable.c
->>>> @@ -956,6 +956,65 @@ static void __init hugetlb_basic_tests(struct pgtable_debug_args *args) { }
->>>>  #endif /* CONFIG_HUGETLB_PAGE */
->>>>
->>>>  #ifdef CONFIG_TRANSPARENT_HUGEPAGE
->>>> +#if !defined(__HAVE_ARCH_PMDP_INVALIDATE) && defined(CONFIG_ARCH_ENABLE_THP_MIGRATION)
->>>> +static void __init swp_pmd_mkinvalid_tests(struct pgtable_debug_args *args)
->>>> +{
->>>
->>> Printing various values at different locations in this function for debug:
->>>
->>>> +	unsigned long max_swap_offset;
->>>> +	swp_entry_t swp_set, swp_clear, swp_convert;
->>>> +	pmd_t pmd_set, pmd_clear;
->>>> +
->>>> +	/*
->>>> +	 * See generic_max_swapfile_size(): probe the maximum offset, then
->>>> +	 * create swap entry will all possible bits set and a swap entry will
->>>> +	 * all bits clear.
->>>> +	 */
->>>> +	max_swap_offset = swp_offset(pmd_to_swp_entry(swp_entry_to_pmd(swp_entry(0, ~0UL))));
->>>> +	swp_set = swp_entry((1 << MAX_SWAPFILES_SHIFT) - 1, max_swap_offset);
->>>> +	swp_clear = swp_entry(0, 0);
->>>> +
->>>> +	/* Convert to pmd. */
->>>> +	pmd_set = swp_entry_to_pmd(swp_set);
->>>> +	pmd_clear = swp_entry_to_pmd(swp_clear);
->>>
->>> [    0.702163] debug_vm_pgtable: [swp_pmd_mkinvalid_tests  ]: valid: pmd_set=f800000000000000, pmd_clear=7fffffffffffe00
->>>
->>>> +
->>>> +	/*
->>>> +	 * Sanity check that the pmds are not-present, not-huge and swap entry
->>>> +	 * is recoverable without corruption.
->>>> +	 */
->>>> +	WARN_ON(pmd_present(pmd_set));
->>>> +	WARN_ON(pmd_trans_huge(pmd_set));
->>>> +	swp_convert = pmd_to_swp_entry(pmd_set);
->>>> +	WARN_ON(swp_type(swp_set) != swp_type(swp_convert));
->>>> +	WARN_ON(swp_offset(swp_set) != swp_offset(swp_convert));
->>>> +	WARN_ON(pmd_present(pmd_clear));
->>>> +	WARN_ON(pmd_trans_huge(pmd_clear));
->>>> +	swp_convert = pmd_to_swp_entry(pmd_clear);
->>>> +	WARN_ON(swp_type(swp_clear) != swp_type(swp_convert));
->>>> +	WARN_ON(swp_offset(swp_clear) != swp_offset(swp_convert));
->>>> +
->>>> +	/* Now invalidate the pmd. */
->>>> +	pmd_set = pmd_mkinvalid(pmd_set);
->>>> +	pmd_clear = pmd_mkinvalid(pmd_clear);
->>>
->>> [    0.704452] debug_vm_pgtable: [swp_pmd_mkinvalid_tests  ]: invalid: pmd_set=f800000000000000, pmd_clear=7ffffffffe00e00
->>>
->>>> +
->>>> +	/*
->>>> +	 * Since its a swap pmd, invalidation should effectively be a noop and
->>>> +	 * the checks we already did should give the same answer. Check the
->>>> +	 * invalidation didn't corrupt any fields.
->>>> +	 */
->>>> +	WARN_ON(pmd_present(pmd_set));
->>>> +	WARN_ON(pmd_trans_huge(pmd_set));
->>>> +	swp_convert = pmd_to_swp_entry(pmd_set);
->>>
->>> [    0.706461] debug_vm_pgtable: [swp_pmd_mkinvalid_tests  ]: set: swp=7c03ffffffffffff (1f, 3ffffffffffff), convert=7c03ffffffffffff (1f, 3ffffffffffff)
->>>
->>>> +	WARN_ON(swp_type(swp_set) != swp_type(swp_convert));
->>>> +	WARN_ON(swp_offset(swp_set) != swp_offset(swp_convert));
->>>> +	WARN_ON(pmd_present(pmd_clear));
->>>> +	WARN_ON(pmd_trans_huge(pmd_clear));
->>>> +	swp_convert = pmd_to_swp_entry(pmd_clear);
->>>
->>> [    0.708841] debug_vm_pgtable: [swp_pmd_mkinvalid_tests  ]: clear: swp=0 (0, 0), convert=ff8 (0, ff8)
->>>
->>>> +	WARN_ON(swp_type(swp_clear) != swp_type(swp_convert));
->>>> +	WARN_ON(swp_offset(swp_clear) != swp_offset(swp_convert));
->>>
->>> This line fails on x86_64.
->>>
->>> The logs show that the offset is indeed being corrupted by pmd_mkinvalid(); 0 -> 0xff8.
->>>
->>> I think this is due to x86's pmd_mkinvalid() assuming the pmd is present; pmd_flags() and pmd_pfn() do all sorts of weird and wonderful things.
->>>
->>> So does this take us full circle? Are we now back to modifying the core-mm to never call pmd_mkinvalid() on a non-present entry? If so, then I guess we should remove the arm64 fix from for-next/fixes.
-> 
-> If x86_64's pmd_mkinvalid() also corrupts swap entries, yes, your original fix
-> is better. I will dig into the x86 code more to figure out what goes wrong.
-> Last time, I only checked PAGE_* bits in these pmd|pte_* operations.
-> Sorry for the misinformation.
+> Signed-off-by: Sunil V L <sunilvl@ventanamicro.com>
+> Acked-by: Bjorn Helgaas <bhelgaas@google.com>
+> ---
+>  arch/arm64/kernel/pci.c | 191 ----------------------------------------
+>  drivers/pci/pci-acpi.c  | 182 ++++++++++++++++++++++++++++++++++++++
+>  2 files changed, 182 insertions(+), 191 deletions(-)
 
-No worries, I'll do the amends we originally agreed for the original fix and resend.
+Looks like a straight-forward move of the code, so:
 
-> 
->>>
->>>> +}
->>>> +#else
->>>> +static void __init swp_pmd_mkinvalid_tests(struct pgtable_debug_args *args) { }
->>>> +#endif /* !__HAVE_ARCH_PMDP_INVALIDATE && CONFIG_ARCH_ENABLE_THP_MIGRATION */
->>>> +
->>>>  static void __init pmd_thp_tests(struct pgtable_debug_args *args)
->>>>  {
->>>>  	pmd_t pmd;
->>>> @@ -982,6 +1041,8 @@ static void __init pmd_thp_tests(struct pgtable_debug_args *args)
->>>>  	WARN_ON(!pmd_trans_huge(pmd_mkinvalid(pmd_mkhuge(pmd))));
->>>>  	WARN_ON(!pmd_present(pmd_mkinvalid(pmd_mkhuge(pmd))));
->>>>  #endif /* __HAVE_ARCH_PMDP_INVALIDATE */
->>>> +
->>>> +	swp_pmd_mkinvalid_tests(args);
->>>>  }
->>>>
->>>>  #ifdef CONFIG_HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD
->>>> --
->>>> 2.25.1
->>>>
->>>
-> 
-> 
-> --
-> Best Regards,
-> Yan, Zi
+Acked-by: Will Deacon <will@kernel.org>
 
+Will
 
