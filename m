@@ -1,309 +1,346 @@
-Return-Path: <linux-kernel+bounces-165236-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-165235-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B9D8A8B89F1
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 14:25:04 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 11BB48B89F0
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 14:24:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 495D81F23524
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 12:25:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BD828281379
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 12:24:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C455D1272AE;
-	Wed,  1 May 2024 12:24:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="YpaItMYL"
-Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0A4085920;
+	Wed,  1 May 2024 12:24:36 +0000 (UTC)
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B948A85923
-	for <linux-kernel@vger.kernel.org>; Wed,  1 May 2024 12:24:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.248
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A400F4F20C;
+	Wed,  1 May 2024 12:24:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714566280; cv=none; b=YVbhrqTWWGVUWuEyUsdy0gkokg+irIDROl4lagjuNHF1rE+UxzIuJQQ1tU9vHiiXWqEn08TDo2mi/DRD7VFPktSthnqfS35YnyVSdFgXsy2YsZzbsykdJ5Y7tepytRqjAhecfzOa0IvEhjlwgutzFGT7XXJU2s9NQtao7p0d/B0=
+	t=1714566276; cv=none; b=QdNabGahLpjALqEfMKP6Cf7979f1kFTC2RAxqG2Y4vkQz5uIyJdueSqRcZTSqrTnzL5NBbLpzjONXaBxcAZXXRvyPLmZ1+qhHqQSsiTTB/RS09RnwisvfJ/SditcRhF6+nu+ykT7hAO1qCL1zYk8TF++jlfB8ph0YRXZqtNANL0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714566280; c=relaxed/simple;
-	bh=QQttAjkWsqg4VXZTAH5YeoEfGOe259wZhk6ldrPF234=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=E1n0ZQ8M82aH8DGxiCO6y4mijsdjToRmXXdGrBtf0h6a4ibArKeGbJdUWJEGFH/Cq9zBc6fjEXbkAWBu+/NCk0wcXdPIqju4A9FBenEzF/Fz2EvXrB5fjdX1fz0CsSbKxEsPhSTjiHCh4i7islJldHP/njrESMjjhtWealEZicQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=YpaItMYL; arc=none smtp.client-ip=198.47.23.248
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-	by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 441CN8m8071177;
-	Wed, 1 May 2024 07:23:08 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1714566188;
-	bh=LzZ/t7t/FM96l7qsRcnfi3T22p23/zeE2lnAV0eULX0=;
-	h=From:To:CC:Subject:Date;
-	b=YpaItMYLGpPIdyeRT+MWR16VgCnXowS/1u1bq3OMnGT2vsRf8H1Fh47HcdqjKOm9/
-	 UntQFWn7swM7fsFog8+OH+nQTTXQUrQC62fwPt2mmo9EiM7O4sI9lkr/gu2uNdy3RM
-	 BEh76JnFXeVIbzs627Wf0tt6VJChwdC2MLaY/9hE=
-Received: from DFLE104.ent.ti.com (dfle104.ent.ti.com [10.64.6.25])
-	by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 441CN8vi092019
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Wed, 1 May 2024 07:23:08 -0500
-Received: from DFLE111.ent.ti.com (10.64.6.32) by DFLE104.ent.ti.com
- (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 1
- May 2024 07:23:08 -0500
-Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DFLE111.ent.ti.com
- (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Wed, 1 May 2024 07:23:08 -0500
-Received: from LT5CG31242FY.dhcp.ti.com ([10.250.160.109])
-	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 441CN1EP113570;
-	Wed, 1 May 2024 07:23:02 -0500
-From: Shenghao Ding <shenghao-ding@ti.com>
-To: <broonie@kernel.org>
-CC: <andriy.shevchenko@linux.intel.com>, <lgirdwood@gmail.com>,
-        <perex@perex.cz>, <pierre-louis.bossart@linux.intel.com>,
-        <13916275206@139.com>, <mimperial@lenovo.com>,
-        <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
-        <liam.r.girdwood@intel.com>, <bard.liao@intel.com>,
-        <yung-chuan.liao@linux.intel.com>, <kevin-lu@ti.com>,
-        <cameron.berkenpas@gmail.com>, <tiwai@suse.de>, <baojun.xu@ti.com>,
-        <soyer@irl.hu>, <Baojun.Xu@fpt.com>,
-        Shenghao Ding <shenghao-ding@ti.com>
-Subject: [PATCH v2] ALSA: ASoc/tas2781: Fix wrong loading calibrated data sequence
-Date: Wed, 1 May 2024 20:22:50 +0800
-Message-ID: <20240501122252.1215-1-shenghao-ding@ti.com>
-X-Mailer: git-send-email 2.33.0.windows.2
+	s=arc-20240116; t=1714566276; c=relaxed/simple;
+	bh=qVnDhd01gJ3gZCSundBV8CKrCGWQfxZkVcoyP18X+7s=;
+	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=r+QxGaFjqMUY7FHAcSKF+CrfI9rX0yP0RZcJJjJq+IZf0pK4Slb1Ftmq8E6a7A5EbhiWHqsH+enX59VYCwMB1VSYVlX0NN42xu9NXl/tWUjTrZ7i/z7/7gCvcCPGV6G6TOjh5AMPMS9aNMaSDW0x4rE8FLspD3wO24iu4HKhdDc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.18.186.216])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4VTx5755tPz687NT;
+	Wed,  1 May 2024 20:21:47 +0800 (CST)
+Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
+	by mail.maildlp.com (Postfix) with ESMTPS id 6C746140B73;
+	Wed,  1 May 2024 20:24:31 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Wed, 1 May
+ 2024 13:24:30 +0100
+Date: Wed, 1 May 2024 13:24:29 +0100
+From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To: "Duan, Zhenzhong" <zhenzhong.duan@intel.com>
+CC: "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+	"linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+	"linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
+	"rafael@kernel.org" <rafael@kernel.org>, "lenb@kernel.org" <lenb@kernel.org>,
+	"james.morse@arm.com" <james.morse@arm.com>, "Luck, Tony"
+	<tony.luck@intel.com>, "bp@alien8.de" <bp@alien8.de>, "dave@stgolabs.net"
+	<dave@stgolabs.net>, "Jiang, Dave" <dave.jiang@intel.com>, "Schofield,
+ Alison" <alison.schofield@intel.com>, "Verma, Vishal L"
+	<vishal.l.verma@intel.com>, "Weiny, Ira" <ira.weiny@intel.com>,
+	"bhelgaas@google.com" <bhelgaas@google.com>, "helgaas@kernel.org"
+	<helgaas@kernel.org>, "mahesh@linux.ibm.com" <mahesh@linux.ibm.com>,
+	"oohall@gmail.com" <oohall@gmail.com>, "linmiaohe@huawei.com"
+	<linmiaohe@huawei.com>, "shiju.jose@huawei.com" <shiju.jose@huawei.com>,
+	"Preble, Adam C" <adam.c.preble@intel.com>, "leoyang.li@nxp.com"
+	<leoyang.li@nxp.com>, "lukas@wunner.de" <lukas@wunner.de>,
+	"Smita.KoralahalliChannabasappa@amd.com"
+	<Smita.KoralahalliChannabasappa@amd.com>, "rrichter@amd.com"
+	<rrichter@amd.com>, "linux-cxl@vger.kernel.org" <linux-cxl@vger.kernel.org>,
+	"linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "Tsaur, Erwin"
+	<erwin.tsaur@intel.com>, "Kuppuswamy, Sathyanarayanan"
+	<sathyanarayanan.kuppuswamy@intel.com>, "Williams, Dan J"
+	<dan.j.williams@intel.com>, "Wanyan, Feiting" <feiting.wanyan@intel.com>,
+	"Wang, Yudong" <yudong.wang@intel.com>, "Peng, Chao P"
+	<chao.p.peng@intel.com>, "qingshun.wang@linux.intel.com"
+	<qingshun.wang@linux.intel.com>
+Subject: Re: [PATCH v3 1/3] PCI/AER: Store UNCOR_STATUS bits that might be
+ ANFE in aer_err_info
+Message-ID: <20240501132429.00002b4a@Huawei.com>
+In-Reply-To: <SJ0PR11MB6744C3EAA6E9D738EA0D3BAC92142@SJ0PR11MB6744.namprd11.prod.outlook.com>
+References: <20240417061407.1491361-1-zhenzhong.duan@intel.com>
+	<20240417061407.1491361-2-zhenzhong.duan@intel.com>
+	<20240422171629.00005675@Huawei.com>
+	<SJ0PR11MB6744EC971D1BE6F3119EEA9992112@SJ0PR11MB6744.namprd11.prod.outlook.com>
+	<20240426171158.000024d4@Huawei.com>
+	<SJ0PR11MB6744C3EAA6E9D738EA0D3BAC92142@SJ0PR11MB6744.namprd11.prod.outlook.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+X-ClientProxiedBy: lhrpeml500006.china.huawei.com (7.191.161.198) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
 
-Calibrated data will be set to default after loading DSP config params,
-which will cause speaker protection work abnormally. Reload calibrated
-data after loading DSP config params.
+On Sun, 28 Apr 2024 03:31:11 +0000
+"Duan, Zhenzhong" <zhenzhong.duan@intel.com> wrote:
 
-'Fixes: 0a0877812628 ("ASoc: tas2781: Fix spelling mistake "calibraiton"
- -> "calibration"")'
-Signed-off-by: Shenghao Ding <shenghao-ding@ti.com>
+> Hi Jonathan,
+>=20
+> >-----Original Message-----
+> >From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+> >Subject: Re: [PATCH v3 1/3] PCI/AER: Store UNCOR_STATUS bits that might
+> >be ANFE in aer_err_info
+> >
+> >On Tue, 23 Apr 2024 02:25:05 +0000
+> >"Duan, Zhenzhong" <zhenzhong.duan@intel.com> wrote:
+> > =20
+> >> >-----Original Message-----
+> >> >From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+> >> >Subject: Re: [PATCH v3 1/3] PCI/AER: Store UNCOR_STATUS bits that =20
+> >might =20
+> >> >be ANFE in aer_err_info
+> >> >
+> >> >On Wed, 17 Apr 2024 14:14:05 +0800
+> >> >Zhenzhong Duan <zhenzhong.duan@intel.com> wrote:
+> >> > =20
+> >> >> In some cases the detector of a Non-Fatal Error(NFE) is not the most
+> >> >> appropriate agent to determine the type of the error. For example,
+> >> >> when software performs a configuration read from a non-existent
+> >> >> device or Function, completer will send an ERR_NONFATAL Message.
+> >> >> On some platforms, ERR_NONFATAL results in a System Error, which
+> >> >> breaks normal software probing.
+> >> >>
+> >> >> Advisory Non-Fatal Error(ANFE) is a special case that can be used
+> >> >> in above scenario. It is predominantly determined by the role of the
+> >> >> detecting agent (Requester, Completer, or Receiver) and the specific
+> >> >> error. In such cases, an agent with AER signals the NFE (if enabled)
+> >> >> by sending an ERR_COR Message as an advisory to software, instead of
+> >> >> sending ERR_NONFATAL.
+> >> >>
+> >> >> When processing an ANFE, ideally both correctable error(CE) status =
+and
+> >> >> uncorrectable error(UE) status should be cleared. However, there is=
+ no
+> >> >> way to fully identify the UE associated with ANFE. Even worse, a Fa=
+tal
+> >> >> Error(FE) or Non-Fatal Error(NFE) may set the same UE status bit as
+> >> >> ANFE. Treating an ANFE as NFE will reproduce above mentioned issue,
+> >> >> i.e., breaking softwore probing; treating NFE as ANFE will make us
+> >> >> ignoring some UEs which need active recover operation. To avoid =20
+> >clearing =20
+> >> >> UEs that are not ANFE by accident, the most conservative route is t=
+aken
+> >> >> here: If any of the FE/NFE Detected bits is set in Device Status, d=
+o not
+> >> >> touch UE status, they should be cleared later by the UE handler. =20
+> >Otherwise, =20
+> >> >> a specific set of UEs that may be raised as ANFE according to the P=
+CIe
+> >> >> specification will be cleared if their corresponding severity is No=
+n-Fatal.
+> >> >>
+> >> >> To achieve above purpose, store UNCOR_STATUS bits that might be =20
+> >ANFE =20
+> >> >> in aer_err_info.anfe_status. So that those bits could be printed and
+> >> >> processed later.
+> >> >>
+> >> >> Tested-by: Yudong Wang <yudong.wang@intel.com>
+> >> >> Co-developed-by: "Wang, Qingshun" <qingshun.wang@linux.intel.com>
+> >> >> Signed-off-by: "Wang, Qingshun" <qingshun.wang@linux.intel.com>
+> >> >> Signed-off-by: Zhenzhong Duan <zhenzhong.duan@intel.com>
+> >> >> ---
+> >> >>  drivers/pci/pci.h      |  1 +
+> >> >>  drivers/pci/pcie/aer.c | 45 =20
+> >> >++++++++++++++++++++++++++++++++++++++++++ =20
+> >> >>  2 files changed, 46 insertions(+)
+> >> >>
+> >> >> diff --git a/drivers/pci/pci.h b/drivers/pci/pci.h
+> >> >> index 17fed1846847..3f9eb807f9fd 100644
+> >> >> --- a/drivers/pci/pci.h
+> >> >> +++ b/drivers/pci/pci.h
+> >> >> @@ -412,6 +412,7 @@ struct aer_err_info {
+> >> >>
+> >> >>  	unsigned int status;		/* COR/UNCOR Error Status */
+> >> >>  	unsigned int mask;		/* COR/UNCOR Error Mask */
+> >> >> +	unsigned int anfe_status;	/* UNCOR Error Status for ANFE */
+> >> >>  	struct pcie_tlp_log tlp;	/* TLP Header */
+> >> >>  };
+> >> >>
+> >> >> diff --git a/drivers/pci/pcie/aer.c b/drivers/pci/pcie/aer.c
+> >> >> index ac6293c24976..27364ab4b148 100644
+> >> >> --- a/drivers/pci/pcie/aer.c
+> >> >> +++ b/drivers/pci/pcie/aer.c
+> >> >> @@ -107,6 +107,12 @@ struct aer_stats {
+> >> >>  					PCI_ERR_ROOT_MULTI_COR_RCV | =20
+> >> >	\ =20
+> >> >>  					PCI_ERR_ROOT_MULTI_UNCOR_RCV)
+> >> >>
+> >> >> +#define AER_ERR_ANFE_UNC_MASK =20
+> >> >	(PCI_ERR_UNC_POISON_TLP |	\ =20
+> >> >> +					PCI_ERR_UNC_COMP_TIME | =20
+> >> >	\ =20
+> >> >> +					PCI_ERR_UNC_COMP_ABORT | =20
+> >> >	\ =20
+> >> >> +					PCI_ERR_UNC_UNX_COMP | =20
+> >> >	\ =20
+> >> >> +					PCI_ERR_UNC_UNSUP)
+> >> >> +
+> >> >>  static int pcie_aer_disable;
+> >> >>  static pci_ers_result_t aer_root_reset(struct pci_dev *dev);
+> >> >>
+> >> >> @@ -1196,6 +1202,41 @@ void aer_recover_queue(int domain, =20
+> >unsigned =20
+> >> >int bus, unsigned int devfn, =20
+> >> >>  EXPORT_SYMBOL_GPL(aer_recover_queue);
+> >> >>  #endif
+> >> >>
+> >> >> +static void anfe_get_uc_status(struct pci_dev *dev, struct =20
+> >aer_err_info =20
+> >> >*info) =20
+> >> >> +{
+> >> >> +	u32 uncor_mask, uncor_status;
+> >> >> +	u16 device_status;
+> >> >> +	int aer =3D dev->aer_cap;
+> >> >> +
+> >> >> +	if (pcie_capability_read_word(dev, PCI_EXP_DEVSTA, =20
+> >> >&device_status)) =20
+> >> >> +		return;
+> >> >> +	/*
+> >> >> +	 * Take the most conservative route here. If there are
+> >> >> +	 * Non-Fatal/Fatal errors detected, do not assume any
+> >> >> +	 * bit in uncor_status is set by ANFE.
+> >> >> +	 */
+> >> >> +	if (device_status & (PCI_EXP_DEVSTA_NFED | PCI_EXP_DEVSTA_FED))
+> >> >> +		return;
+> >> >> + =20
+> >> >
+> >> >Is there not a race here?  If we happen to get either an NFED or FED
+> >> >between the read of device_status above and here we might pick up a =
+=20
+> >status =20
+> >> >that corresponds to that (and hence clear something we should not). =
+=20
+> >>
+> >> In this scenario, info->anfe_status is 0. =20
+> >
+> >OK. In that case what is the point of the check above?
+> >If the code is safe to races, it's safe to go ahead without that check
+> >on what might race. =20
+>=20
+> Good question.
+> After further digging into the spec, I just found I misunderstood it.
+> An UNCUR error raised as ANFE can be raised as NFE in different cases,
+> so info->anfe_status can be nonzero here and the race you mentioned
+> does exist, the check on PCI_EXP_DEVSTA_FED is also unnecessary.
+> Sorry for the misleading. I plan to have below change to fix the race:
+>=20
+>        unsigned int anfe_status;
+>        anfe_status =3D uncor_status & ~uncor_mask & ~info->severity &
+>                            AER_ERR_ANFE_UNC_MASK;
+>=20
+>        if (pcie_capability_read_word(dev, PCI_EXP_DEVSTA, &device_status))
+>                return;
+>        /*
+>         * Take the most conservative route here. If there are
+>         * Non-Fatal errors detected, do not assume any
+>         * bit in uncor_status is set by ANFE.
+>         */
+>        if (device_status & PCI_EXP_DEVSTA_NFED)
+>                return;
+>         info->anfe_status =3D anfe_status;
+>=20
+> With this change, there is still a small window between reading uncor_sta=
+tus
+> and device_status to leak ANFE, but that's the best we can do and better
+> than clearing NFE. Let me know if you have better idea=F0=9F=98=8A
 
----
-v2:
- - In the Subject, fixed --> Fix
- - In tas2781-fmwlib.c, tasdevice-fmw.c ---> tas2781-fmwlib.c
- - dsp --> DSP
- - Remove unneeded parentheses for & (dereference) operator
- - Add Fixes tag
- - Changed the copyright year to 2024 in the related files
- - In tas2781-dsp.h, __TASDEVICE_DSP_H__ --> __TAS2781_DSP_H__
-v1:
- - Download calibrated data after loading the new DSP config params
- - call tasdevice_prmg_load instead of tasdevice_prmg_calibdata_load, it
-   is unnecessary to load calibrated data after loading DSP program. Load
-   it after loading DSP config params each time.
- - Remove tasdevice_prmg_calibdata_load, because it is unnecessary to load
-   calibrated data after loading DSP program.
----
- include/sound/tas2781-dsp.h       |  7 +--
- sound/soc/codecs/tas2781-fmwlib.c | 99 +++++++------------------------
- sound/soc/codecs/tas2781-i2c.c    |  4 +-
- 3 files changed, 28 insertions(+), 82 deletions(-)
-
-diff --git a/include/sound/tas2781-dsp.h b/include/sound/tas2781-dsp.h
-index ea9af2726a53..7fba7ea26a4b 100644
---- a/include/sound/tas2781-dsp.h
-+++ b/include/sound/tas2781-dsp.h
-@@ -2,7 +2,7 @@
- //
- // ALSA SoC Texas Instruments TAS2781 Audio Smart Amplifier
- //
--// Copyright (C) 2022 - 2023 Texas Instruments Incorporated
-+// Copyright (C) 2022 - 2024 Texas Instruments Incorporated
- // https://www.ti.com
- //
- // The TAS2781 driver implements a flexible and configurable
-@@ -13,8 +13,8 @@
- // Author: Kevin Lu <kevin-lu@ti.com>
- //
- 
--#ifndef __TASDEVICE_DSP_H__
--#define __TASDEVICE_DSP_H__
-+#ifndef __TAS2781_DSP_H__
-+#define __TAS2781_DSP_H__
- 
- #define MAIN_ALL_DEVICES			0x0d
- #define MAIN_DEVICE_A				0x01
-@@ -180,7 +180,6 @@ void tasdevice_calbin_remove(void *context);
- int tasdevice_select_tuningprm_cfg(void *context, int prm,
- 	int cfg_no, int rca_conf_no);
- int tasdevice_prmg_load(void *context, int prm_no);
--int tasdevice_prmg_calibdata_load(void *context, int prm_no);
- void tasdevice_tuning_switch(void *context, int state);
- int tas2781_load_calibration(void *context, char *file_name,
- 	unsigned short i);
-diff --git a/sound/soc/codecs/tas2781-fmwlib.c b/sound/soc/codecs/tas2781-fmwlib.c
-index 45760fe19523..5a4095c6a954 100644
---- a/sound/soc/codecs/tas2781-fmwlib.c
-+++ b/sound/soc/codecs/tas2781-fmwlib.c
-@@ -2,7 +2,7 @@
- //
- // tasdevice-fmw.c -- TASDEVICE firmware support
- //
--// Copyright 2023 Texas Instruments, Inc.
-+// Copyright 2023 - 2024 Texas Instruments, Inc.
- //
- // Author: Shenghao Ding <shenghao-ding@ti.com>
- 
-@@ -2151,6 +2151,20 @@ static int tasdevice_load_data(struct tasdevice_priv *tas_priv,
- 	return ret;
- }
- 
-+static void tasdev_load_calibrated_data(struct tasdevice_priv *priv,
-+	int i)
-+{
-+	struct tasdevice_fw *cal_fmw = priv->tasdevice[i].cali_data_fmw;
-+
-+	if (cal_fmw) {
-+		struct tasdevice_calibration *cal = cal_fmw->calibrations;
-+
-+		if (cal)
-+			load_calib_data(priv, &cal->dev_data);
-+		return;
-+	}
-+}
-+
- int tasdevice_select_tuningprm_cfg(void *context, int prm_no,
- 	int cfg_no, int rca_conf_no)
- {
-@@ -2210,21 +2224,9 @@ int tasdevice_select_tuningprm_cfg(void *context, int prm_no,
- 		for (i = 0; i < tas_priv->ndev; i++) {
- 			if (tas_priv->tasdevice[i].is_loaderr == true)
- 				continue;
--			else if (tas_priv->tasdevice[i].is_loaderr == false
--				&& tas_priv->tasdevice[i].is_loading == true) {
--				struct tasdevice_fw *cal_fmw =
--					tas_priv->tasdevice[i].cali_data_fmw;
--
--				if (cal_fmw) {
--					struct tasdevice_calibration
--						*cal = cal_fmw->calibrations;
--
--					if (cal)
--						load_calib_data(tas_priv,
--							&(cal->dev_data));
--				}
-+			if (tas_priv->tasdevice[i].is_loaderr == false
-+				&& tas_priv->tasdevice[i].is_loading == true)
- 				tas_priv->tasdevice[i].cur_prog = prm_no;
--			}
- 		}
- 	}
- 
-@@ -2247,9 +2249,13 @@ int tasdevice_select_tuningprm_cfg(void *context, int prm_no,
- 			if (tas_priv->tasdevice[i].is_loaderr == true) {
- 				status |= 1 << (i + 4);
- 				continue;
--			} else if (tas_priv->tasdevice[i].is_loaderr == false
--				&& tas_priv->tasdevice[i].is_loading == true)
-+			}
-+
-+			if (tas_priv->tasdevice[i].is_loaderr == false
-+				&& tas_priv->tasdevice[i].is_loading == true) {
-+				tasdev_load_calibrated_data(tas_priv, i);
- 				tas_priv->tasdevice[i].cur_conf = cfg_no;
-+			}
- 		}
- 	} else
- 		dev_dbg(tas_priv->dev, "%s: Unneeded loading dsp conf %d\n",
-@@ -2308,65 +2314,6 @@ int tasdevice_prmg_load(void *context, int prm_no)
- }
- EXPORT_SYMBOL_NS_GPL(tasdevice_prmg_load, SND_SOC_TAS2781_FMWLIB);
- 
--int tasdevice_prmg_calibdata_load(void *context, int prm_no)
--{
--	struct tasdevice_priv *tas_priv = (struct tasdevice_priv *) context;
--	struct tasdevice_fw *tas_fmw = tas_priv->fmw;
--	struct tasdevice_prog *program;
--	int prog_status = 0;
--	int i;
--
--	if (!tas_fmw) {
--		dev_err(tas_priv->dev, "%s: Firmware is NULL\n", __func__);
--		goto out;
--	}
--
--	if (prm_no >= tas_fmw->nr_programs) {
--		dev_err(tas_priv->dev,
--			"%s: prm(%d) is not in range of Programs %u\n",
--			__func__, prm_no, tas_fmw->nr_programs);
--		goto out;
--	}
--
--	for (i = 0, prog_status = 0; i < tas_priv->ndev; i++) {
--		if (prm_no >= 0 && tas_priv->tasdevice[i].cur_prog != prm_no) {
--			tas_priv->tasdevice[i].cur_conf = -1;
--			tas_priv->tasdevice[i].is_loading = true;
--			prog_status++;
--		}
--		tas_priv->tasdevice[i].is_loaderr = false;
--	}
--
--	if (prog_status) {
--		program = &(tas_fmw->programs[prm_no]);
--		tasdevice_load_data(tas_priv, &(program->dev_data));
--		for (i = 0; i < tas_priv->ndev; i++) {
--			if (tas_priv->tasdevice[i].is_loaderr == true)
--				continue;
--			else if (tas_priv->tasdevice[i].is_loaderr == false
--				&& tas_priv->tasdevice[i].is_loading == true) {
--				struct tasdevice_fw *cal_fmw =
--					tas_priv->tasdevice[i].cali_data_fmw;
--
--				if (cal_fmw) {
--					struct tasdevice_calibration *cal =
--						cal_fmw->calibrations;
--
--					if (cal)
--						load_calib_data(tas_priv,
--							&(cal->dev_data));
--				}
--				tas_priv->tasdevice[i].cur_prog = prm_no;
--			}
--		}
--	}
--
--out:
--	return prog_status;
--}
--EXPORT_SYMBOL_NS_GPL(tasdevice_prmg_calibdata_load,
--	SND_SOC_TAS2781_FMWLIB);
--
- void tasdevice_tuning_switch(void *context, int state)
- {
- 	struct tasdevice_priv *tas_priv = (struct tasdevice_priv *) context;
-diff --git a/sound/soc/codecs/tas2781-i2c.c b/sound/soc/codecs/tas2781-i2c.c
-index b5abff230e43..9350972dfefe 100644
---- a/sound/soc/codecs/tas2781-i2c.c
-+++ b/sound/soc/codecs/tas2781-i2c.c
-@@ -2,7 +2,7 @@
- //
- // ALSA SoC Texas Instruments TAS2563/TAS2781 Audio Smart Amplifier
- //
--// Copyright (C) 2022 - 2023 Texas Instruments Incorporated
-+// Copyright (C) 2022 - 2024 Texas Instruments Incorporated
- // https://www.ti.com
- //
- // The TAS2563/TAS2781 driver implements a flexible and configurable
-@@ -414,7 +414,7 @@ static void tasdevice_fw_ready(const struct firmware *fmw,
- 				__func__, tas_priv->cal_binaryname[i]);
- 	}
- 
--	tasdevice_prmg_calibdata_load(tas_priv, 0);
-+	tasdevice_prmg_load(tas_priv, 0);
- 	tas_priv->cur_prog = 0;
- out:
- 	if (tas_priv->fw_state == TASDEVICE_DSP_FW_FAIL) {
--- 
-2.34.1
+Worth leaving some breadcrumbs about there being a race (so a comment)
+and explain what the side effects of hitting that race are (lost info
+on the error I think, but not a missed error)?
+>=20
+> Thanks
+> Zhenzhong
+>=20
+> > =20
+> >> =20
+> >> >
+> >> >Or am I missing that race being close somewhere? =20
+> >>
+> >> The bits leading to NFED or FED is masked out when assigning info-
+> >>anfe_status.
+> >> Bits for FED is masked out by ~info->severity,
+> >> bit for NFED is masked out by AER_ERR_ANFE_UNC_MASK.
+> >>
+> >> So we never clear status bits for NFED or FED in ANFE handler.
+> >>
+> >> See below assignment of info->anfe_status.
+> >>
+> >> Thanks
+> >> Zhenzhong
+> >> =20
+> >> > =20
+> >> >> +	pci_read_config_dword(dev, aer + PCI_ERR_UNCOR_STATUS, =20
+> >> >&uncor_status); =20
+> >> >> +	pci_read_config_dword(dev, aer + PCI_ERR_UNCOR_MASK, =20
+> >> >&uncor_mask); =20
+> >> >> +	/*
+> >> >> +	 * According to PCIe Base Specification Revision 6.1,
+> >> >> +	 * Section 6.2.3.2.4, if an UNCOR error is raised as
+> >> >> +	 * Advisory Non-Fatal error, it will match the following
+> >> >> +	 * conditions:
+> >> >> +	 *	a. The severity of the error is Non-Fatal.
+> >> >> +	 *	b. The error is one of the following:
+> >> >> +	 *		1. Poisoned TLP           (Section 6.2.3.2.4.3)
+> >> >> +	 *		2. Completion Timeout     (Section 6.2.3.2.4.4)
+> >> >> +	 *		3. Completer Abort        (Section 6.2.3.2.4.1)
+> >> >> +	 *		4. Unexpected Completion  (Section 6.2.3.2.4.5)
+> >> >> +	 *		5. Unsupported Request    (Section 6.2.3.2.4.1)
+> >> >> +	 */
+> >> >> +	info->anfe_status =3D uncor_status & ~uncor_mask & ~info->severit=
+y =20
+> >> >& =20
+> >> >> +			    AER_ERR_ANFE_UNC_MASK;
+> >> >> +}
+> >> >> +
+> >> >>  /**
+> >> >>   * aer_get_device_error_info - read error status from dev and stor=
+e it =20
+> >to =20
+> >> >info =20
+> >> >>   * @dev: pointer to the device expected to have a error record
+> >> >> @@ -1213,6 +1254,7 @@ int aer_get_device_error_info(struct pci_dev =
+=20
+> >> >*dev, struct aer_err_info *info) =20
+> >> >>
+> >> >>  	/* Must reset in this function */
+> >> >>  	info->status =3D 0;
+> >> >> +	info->anfe_status =3D 0;
+> >> >>  	info->tlp_header_valid =3D 0;
+> >> >>
+> >> >>  	/* The device might not support AER */
+> >> >> @@ -1226,6 +1268,9 @@ int aer_get_device_error_info(struct pci_dev =
+=20
+> >> >*dev, struct aer_err_info *info) =20
+> >> >>  			&info->mask);
+> >> >>  		if (!(info->status & ~info->mask))
+> >> >>  			return 0;
+> >> >> +
+> >> >> +		if (info->status & PCI_ERR_COR_ADV_NFAT)
+> >> >> +			anfe_get_uc_status(dev, info);
+> >> >>  	} else if (type =3D=3D PCI_EXP_TYPE_ROOT_PORT ||
+> >> >>  		   type =3D=3D PCI_EXP_TYPE_RC_EC ||
+> >> >>  		   type =3D=3D PCI_EXP_TYPE_DOWNSTREAM || =20
+> >>
+> >> =20
+>=20
 
 
