@@ -1,140 +1,148 @@
-Return-Path: <linux-kernel+bounces-165305-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-165308-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 76A648B8AF5
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 15:14:23 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 89EF88B8B06
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 15:16:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 158DA1F232A9
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 13:14:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3E2341F23236
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 13:16:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1265012DDB3;
-	Wed,  1 May 2024 13:14:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="QQfY/NH6"
-Received: from mail-ed1-f51.google.com (mail-ed1-f51.google.com [209.85.208.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8817E12E1F7;
+	Wed,  1 May 2024 13:16:19 +0000 (UTC)
+Received: from us-smtp-delivery-44.mimecast.com (us-smtp-delivery-44.mimecast.com [207.211.30.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B0EB12DDA2
-	for <linux-kernel@vger.kernel.org>; Wed,  1 May 2024 13:14:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DBE3312E1DD
+	for <linux-kernel@vger.kernel.org>; Wed,  1 May 2024 13:16:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=207.211.30.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714569253; cv=none; b=iioGOLcnvlt83Lb7PDiz7gJ9m7Y8lJn/2/FyGInWNaO3daVETNsEqBPAdXw7ZD30wcyljhnppZapOwFJJwJa7aw7lkRoVzdOwn+W1cUgoURVw8pBNcZJsjFZiIzsDbhhgvtpv6WIdQbQ0idPXUy5fNurz/hiAzkp2TVSt0ZOU2c=
+	t=1714569379; cv=none; b=seOY6mnVDuEScfvoLphTcWbfdk08YbqSvRl9DO56HvuY3nXpjHy41yMK7IgTar0uD7sTPKntWajiVn9x24tK7JTRdE3qcK2+otRZPnfCxTQ++j/aRX/fbT45GvSpWAHDmXxgC8fRU8MRh3T6pJ5ovTfGTH0OCyyRhBCzYPx2DNw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714569253; c=relaxed/simple;
-	bh=jEgju86kkZEUEWsLIY6KhIUfB0Ro+wi3O82aVd7+8K4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=mvExtnEX8y1CQ1T87h/G1piTk5a1N/ytfm7nnlzVxRf+YdLVRbyvlPpQPqy5qHclk74u6yNeiuTeyVzg2zUu86qkH1LXB7VtlT6ZKSkgXMb9LU5mR+LdE1EhE2fUcsKaOL+b7c7Fn8j6wCAUQUoyCrh+ie9txvgBv533Cv8O1aI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=QQfY/NH6; arc=none smtp.client-ip=209.85.208.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-56e48d0a632so10475357a12.2
-        for <linux-kernel@vger.kernel.org>; Wed, 01 May 2024 06:14:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1714569250; x=1715174050; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=cAEo938B55svTFKi87S7P75nYRID5Y30PIP36kBSdrs=;
-        b=QQfY/NH6GEG5DLl+vgk8XzCtLNPzCS+c58hlbJ1WckXlKrPRKT8srqyVfrRbyW1Rq2
-         bGGVj1x3e8zpUlpxZcCuNPh/sNc7zRLBmjhPDp+e3biFzRD15cCWPjZXqOrDYbWQspxY
-         GnPfueuNq9pkUqyWXSKTs2tVjix9oJoioWOBNTvl1To3MAFw937eytX+SZa+HkX4zXrc
-         J8xdBS2WpMT9WJJ9JV8w51I7FW0lno1aLqGAdOTboHwIWfIVoLxn2g/cbyFV1cpTPwrc
-         qeY59hFXT+BX2vFrb+F2K3BWwglQxZfcz6kgURFk4GwKuooGhdB197zfg1+M+JtDxAxD
-         ejRA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714569250; x=1715174050;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=cAEo938B55svTFKi87S7P75nYRID5Y30PIP36kBSdrs=;
-        b=wQCNDMsua9j1pKx0HjtdV37fRfMPLHMOUlCwhAjLzP2XZtl4GxfczLRnN73AufKOwA
-         NbaHHJbcRdnb3v1nQZ3hA32wef4oC6tJIgx0pmDgpD0GvGpK8129r3yt8DaF3CukMTFQ
-         +y9l57pQQ6Cu3uOQ6LZPdoH6BE++u7m2VSV/Mc7ncuXW6gtOGGZGS3U4kGUI4I3vTekk
-         tbAoiOGUUlNS38XDLh8KDgDFFU0kQFJqdrD5u8wv2W5ptJLIO2hGZQIeX2msDd6jzVaa
-         NutdlO9w0YHnIuL49l42Xtm7SA7PWYVKLMCsI5TudXITJjBNnnrMMTeCv/3gjI9t0bRW
-         J3yA==
-X-Forwarded-Encrypted: i=1; AJvYcCVkn4Rwwb08kGMjG78CVJtEXVEEjxVJOWqlvTnbsyb1qptmJBf/2dPCVEs/b4su+GYz4qF7wMgUlAx4c9Ou8AWU4uQqee8RHvP4UYl6
-X-Gm-Message-State: AOJu0YxUKpoCEUF+wRbxPCvDnh1IiHERT6CPb0OBCNp9P5OPyB4wRdg1
-	lsCiNlRU9HkzE1vPK2ne3q0l4Z/DbovWJsqjpnw5msFPpaz+8oua8s03Og0Rj50=
-X-Google-Smtp-Source: AGHT+IHiS0OX7HJtlx1wK1J1hPxkGTBoUFdyOaKFMQMeW3Iz5o6HbKJVjNgIFb7CMb2XqnqMB/oEMg==
-X-Received: by 2002:a50:d701:0:b0:56c:522f:53e1 with SMTP id t1-20020a50d701000000b0056c522f53e1mr2256165edi.17.1714569249690;
-        Wed, 01 May 2024 06:14:09 -0700 (PDT)
-Received: from [192.168.114.15] (078088045141.garwolin.vectranet.pl. [78.88.45.141])
-        by smtp.gmail.com with ESMTPSA id b17-20020a056402139100b00572047bf766sm11353468edv.51.2024.05.01.06.14.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 01 May 2024 06:14:09 -0700 (PDT)
-Message-ID: <cb55130c-5332-4904-87d0-5fce4d4e1f19@linaro.org>
-Date: Wed, 1 May 2024 15:14:07 +0200
+	s=arc-20240116; t=1714569379; c=relaxed/simple;
+	bh=juN4Ny8Hm6qA0zsZ9K4+OvOZiB1X0k0WkV7pZSOQMuQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=X1EK9wBrrOhpKUjymhhZWo2XrGjzy//TMzNMo3d5IyARaMraAiHJJt6C65zafhUWIfsP1HF9OCcXCqTpFzFMpi7391/f3fDuqOU3+biWd5XkIvwv//W+Dtbd1eAYSvozWWOGvNoXSRpZaTIXJzUOwpVfUuEEC3jSXrk72+WIsUQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=queasysnail.net; spf=none smtp.mailfrom=queasysnail.net; arc=none smtp.client-ip=207.211.30.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=queasysnail.net
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=queasysnail.net
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-531-F3TRqiq5Oo6qB2-P5FKodQ-1; Wed, 01 May 2024 09:16:08 -0400
+X-MC-Unique: F3TRqiq5Oo6qB2-P5FKodQ-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 07D1C802E4D;
+	Wed,  1 May 2024 13:16:06 +0000 (UTC)
+Received: from hog (unknown [10.39.193.137])
+	by smtp.corp.redhat.com (Postfix) with ESMTPS id 0FC61C271A4;
+	Wed,  1 May 2024 13:15:55 +0000 (UTC)
+Date: Wed, 1 May 2024 15:15:54 +0200
+From: Sabrina Dubroca <sd@queasysnail.net>
+To: j.granados@samsung.com
+Cc: "David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Alexander Aring <alex.aring@gmail.com>,
+	Stefan Schmidt <stefan@datenfreihafen.org>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	David Ahern <dsahern@kernel.org>,
+	Steffen Klassert <steffen.klassert@secunet.com>,
+	Herbert Xu <herbert@gondor.apana.org.au>,
+	Matthieu Baerts <matttbe@kernel.org>,
+	Mat Martineau <martineau@kernel.org>,
+	Geliang Tang <geliang@kernel.org>,
+	Remi Denis-Courmont <courmisch@gmail.com>,
+	Allison Henderson <allison.henderson@oracle.com>,
+	David Howells <dhowells@redhat.com>,
+	Marc Dionne <marc.dionne@auristor.com>,
+	Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
+	Xin Long <lucien.xin@gmail.com>,
+	Wenjia Zhang <wenjia@linux.ibm.com>,
+	Jan Karcher <jaka@linux.ibm.com>,
+	"D. Wythe" <alibuda@linux.alibaba.com>,
+	Tony Lu <tonylu@linux.alibaba.com>,
+	Wen Gu <guwen@linux.alibaba.com>,
+	Trond Myklebust <trond.myklebust@hammerspace.com>,
+	Anna Schumaker <anna@kernel.org>,
+	Chuck Lever <chuck.lever@oracle.com>,
+	Jeff Layton <jlayton@kernel.org>, Neil Brown <neilb@suse.de>,
+	Olga Kornievskaia <kolga@netapp.com>, Dai Ngo <Dai.Ngo@oracle.com>,
+	Tom Talpey <tom@talpey.com>, Jon Maloy <jmaloy@redhat.com>,
+	Ying Xue <ying.xue@windriver.com>, Martin Schiller <ms@dev.tdt.de>,
+	Pablo Neira Ayuso <pablo@netfilter.org>,
+	Jozsef Kadlecsik <kadlec@netfilter.org>,
+	Florian Westphal <fw@strlen.de>, Roopa Prabhu <roopa@nvidia.com>,
+	Nikolay Aleksandrov <razor@blackwall.org>,
+	Simon Horman <horms@verge.net.au>, Julian Anastasov <ja@ssi.bg>,
+	Joerg Reuter <jreuter@yaina.de>,
+	Luis Chamberlain <mcgrof@kernel.org>,
+	Kees Cook <keescook@chromium.org>, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, dccp@vger.kernel.org,
+	linux-wpan@vger.kernel.org, mptcp@lists.linux.dev,
+	linux-hams@vger.kernel.org, linux-rdma@vger.kernel.org,
+	rds-devel@oss.oracle.com, linux-afs@lists.infradead.org,
+	linux-sctp@vger.kernel.org, linux-s390@vger.kernel.org,
+	linux-nfs@vger.kernel.org, tipc-discussion@lists.sourceforge.net,
+	linux-x25@vger.kernel.org, netfilter-devel@vger.kernel.org,
+	coreteam@netfilter.org, bridge@lists.linux.dev,
+	lvs-devel@vger.kernel.org
+Subject: Re: [PATCH net-next v6 8/8] ax.25: x.25: Remove the now superfluous
+ sentinel elements from ctl_table array
+Message-ID: <ZjJAikcdWzzaIr1s@hog>
+References: <20240501-jag-sysctl_remset_net-v6-0-370b702b6b4a@samsung.com>
+ <20240501-jag-sysctl_remset_net-v6-8-370b702b6b4a@samsung.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] firmware: qcom: uefisecapp: Allow on sc8180x Primus and
- Flex 5G
-To: Bjorn Andersson <andersson@kernel.org>
-Cc: linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
- Bjorn Andersson <quic_bjorande@quicinc.com>
-References: <20240430-uefisecapp-allowlist-sc8180x-v1-1-1a626ea9c5f1@quicinc.com>
-Content-Language: en-US
-From: Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <20240430-uefisecapp-allowlist-sc8180x-v1-1-1a626ea9c5f1@quicinc.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20240501-jag-sysctl_remset_net-v6-8-370b702b6b4a@samsung.com>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.8
 
-On 1.05.2024 4:33 AM, Bjorn Andersson wrote:
-> From: Bjorn Andersson <quic_bjorande@quicinc.com>
+2024-05-01, 11:29:32 +0200, Joel Granados via B4 Relay wrote:
+> From: Joel Granados <j.granados@samsung.com>
 > 
-> Testing indicates that qseecom and uefisecapp are working on both the
-> SC8180X Primus and Lenovo Flex 5G, providing EFI variable access.
+> This commit comes at the tail end of a greater effort to remove the
+> empty elements at the end of the ctl_table arrays (sentinels) which will
+> reduce the overall build time size of the kernel and run time memory
+> bloat by ~64 bytes per sentinel (further information Link :
+> https://lore.kernel.org/all/ZO5Yx5JFogGi%2FcBo@bombadil.infradead.org/)
 > 
-> Add the two to the allow list.
-> 
-> Signed-off-by: Bjorn Andersson <quic_bjorande@quicinc.com>
-> ---
+> Avoid a buffer overflow when traversing the ctl_table by ensuring that
+> AX25_MAX_VALUES is the same as the size of ax25_param_table. This is
+> done with a BUILD_BUG_ON where ax25_param_table is defined and a
+> CONFIG_AX25_DAMA_SLAVE guard in the unnamed enum definition as well as
+> in the ax25_dev_device_up and ax25_ds_set_timer functions.
+                                ^^
+nit:                            not anymore ;)
+(but not worth a repost IMO)
 
-Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 
-Konrad
+> diff --git a/net/ax25/ax25_ds_timer.c b/net/ax25/ax25_ds_timer.c
+> index c4f8adbf8144..c50a58d9e368 100644
+> --- a/net/ax25/ax25_ds_timer.c
+> +++ b/net/ax25/ax25_ds_timer.c
+> @@ -55,6 +55,7 @@ void ax25_ds_set_timer(ax25_dev *ax25_dev)
+>  	ax25_dev->dama.slave_timeout =
+>  		msecs_to_jiffies(ax25_dev->values[AX25_VALUES_DS_TIMEOUT]) / 10;
+>  	mod_timer(&ax25_dev->dama.slave_timer, jiffies + HZ);
+> +	return;
+
+nit: return not needed here since we're already at the bottom of the
+function, but probably not worth a repost of the series.
+
+>  }
+
+-- 
+Sabrina
+
 
