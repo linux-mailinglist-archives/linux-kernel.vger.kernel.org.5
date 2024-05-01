@@ -1,170 +1,151 @@
-Return-Path: <linux-kernel+bounces-165676-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-165677-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 434EB8B8F5D
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 20:06:14 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A22F88B8F5F
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 20:06:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5D517B22406
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 18:06:11 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A4CC6B231CE
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 18:06:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1F1B1474B1;
-	Wed,  1 May 2024 18:05:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 456CD146D60;
+	Wed,  1 May 2024 18:06:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GhjwguJ6"
-Received: from mail-pg1-f177.google.com (mail-pg1-f177.google.com [209.85.215.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="K5YkeYGY"
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10olkn2091.outbound.protection.outlook.com [40.92.40.91])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D549F1474C3;
-	Wed,  1 May 2024 18:05:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.177
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714586757; cv=none; b=EQBL84uxn9ykF9dd1l05JLBV1zRbl/O93OXJ3Td/yrMWi+cmtLSkMksmuXLL+Qt+16a1ii6/TM8dJVpwzJ6We9jR6nmDQ29mA3S+iyiqEbhjxK/dYe9bpjNdkoZleznh6xtDIMiRQgJCQmTJg+tx0mlC0fLVUFPsyQBZhUTzhXo=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714586757; c=relaxed/simple;
-	bh=hHIvEQ62EVYxaVwUmggRp5VXC2JBbn6OtLN3ohkV6u0=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=iOICGu8qyHslukfWPA41z2AuWmN7xJSWAjQ9rkxTcLtp9FgFRoTcUsGLRcjGTLXCOjOPmi52+qtP4pmRLXhl7Lh6FTUDjaiUGnSf9KRHBu0NbfpCw3VafhKZE6MQOtRbyyVnSX6Vlh2THahNtDES7+V+m+u33Y+Lx770C4j9tEg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GhjwguJ6; arc=none smtp.client-ip=209.85.215.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f177.google.com with SMTP id 41be03b00d2f7-5ce2aada130so4922375a12.1;
-        Wed, 01 May 2024 11:05:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714586755; x=1715191555; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=yR53KWHGuwP1KvXLEas31HXBzXPK5rB5SP4fkg7uyBw=;
-        b=GhjwguJ6FSB1v5XjWy4L6/dpiBmf4nb9icMnxiU/U5Fc+gaEchaqEfu856kBKZErSj
-         bntZS+vgJWdMu+KnCStn/BaeSgzbNJMAp49jqO74QMYobIlLXTFvsN9eMZ5uIlxRxtI3
-         Vv5N9JufwQEeVw8fKvCrnaqrTxle8L2/DNSiU8SwPlu8yatU1C36tkOxikeK+Y79jNlk
-         vhMtsNRiYuAbKv8kamgljJoF4s8Ok1FKY4exgfjhi7hHkEqw465u1cOJ79HQy4Ot+VJa
-         4/ra3hwqTwZMHrV/RN0wStY4m3e82ot9tqF0GciP0ft8Ju/V0dpAcJJxmZcUBdgTmlOf
-         Wxkg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714586755; x=1715191555;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=yR53KWHGuwP1KvXLEas31HXBzXPK5rB5SP4fkg7uyBw=;
-        b=Nqs46RB5VEYckTvNwzHxtOm2uCkE8wDaEJ+Ef24NOJwU5KEyeJQTYUhPUWW7flmdMR
-         rjrVw85dbRoNMUkaccQvrkq8eZrvn9ccffGBTScPGWFQBSw2pYCu60CzbWiuhzMKVDaX
-         2q5DbJFloL0jC/9r4qppbWzrdnyHQhm6tGRAiLclCGxxrr4OzFYHjb3USBrmdZdBPlNQ
-         ap00JflNkmcRRXS+z4CZ2xD0FNc6nvw/A1TQ+2tvfLj1epXEb5H3asAh5/6V7/jMMso+
-         1fqunCts+77SFWUu81iEKkabyctiBPULccbEG1ROepWX9cO5uiKRq4AuOcnIme/DuWeS
-         wTgQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVPkGPVtZau9aAjAVu6Tz/cvUdCPFJ+cDoQapqfcztu7ckk3rQhQxgxXPi/JRNMM0jaUmjKsD9oG/P+hAXD6vdww2b1rAqMvsqsafBqUTONc0qvpf8Qja3U+chNdmAtJLTKa1KqUZBk
-X-Gm-Message-State: AOJu0Yzx0Http9B9w9tG0AJseCJmUY4qeDNPGL1g0ZTVHxJBO2kGxy8H
-	bkXbwlB/22ZY1ZpbOBbzXRuWHwLSg6cYIMF6r9MfkJ3/KjFMXNM=
-X-Google-Smtp-Source: AGHT+IHw4AIBDPK368UPCLWl0k5njEuu1tSORmgBszoOjr8eJTlL7+p1+fH0mQihT2Pt8H3eOjsfyA==
-X-Received: by 2002:a05:6a20:a897:b0:1af:3d3f:83f1 with SMTP id ca23-20020a056a20a89700b001af3d3f83f1mr3295373pzb.44.1714586755038;
-        Wed, 01 May 2024 11:05:55 -0700 (PDT)
-Received: from utkarsh-ROG-Zephyrus-G14-GA401II-GA401II.. ([112.196.126.3])
-        by smtp.gmail.com with ESMTPSA id sp8-20020a17090b52c800b002a6e67e197dsm1618140pjb.45.2024.05.01.11.05.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 01 May 2024 11:05:54 -0700 (PDT)
-From: Utkarsh Tripathi <utripathi2002@gmail.com>
-To: corbet@lwn.net,
-	akiyks@gmail.com
-Cc: Utkarsh Tripathi <utripathi2002@gmail.com>,
-	linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	skhan@linuxfoundation.org
-Subject: [PATCH v2] Sphinx error fixed for inline literal end-string by changing $type_constant2 in kernel-doc script to include "*" unicode character in highlights_rst.
-Date: Wed,  1 May 2024 23:35:47 +0530
-Message-Id: <20240501180547.23752-1-utripathi2002@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <b9e4bedb-6678-42ed-9ac1-c10179be5b69@gmail.com>
-References: <b9e4bedb-6678-42ed-9ac1-c10179be5b69@gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78913147C7E;
+	Wed,  1 May 2024 18:05:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.40.91
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1714586760; cv=fail; b=g6AZn73MIWx6UmtC9z1MGsrZr1lTCnoNZoEGdMSxWKQRuqyeMgE6h8nTLkgwAzLxy9YZiuiQ6bmZEzZh3FOMJzLuabeE9/SFmLKd16Yact91qUCvPW8z1umOc2b8vDhZUn1TfOJQcyxaieqAZlij2Hm9QjXSp26hEZXiMpbSvbs=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1714586760; c=relaxed/simple;
+	bh=u+xVEnrMXNgyM7GDeLQifnJbt3fQSP3jfWvrMqMowKc=;
+	h=From:To:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=L/+2ppH+CQwnGf04LsOKs4wynf/+unWRFiFLDxe8T74lX5T1NI5z8NNDV5rDcIjSto2V9gf3RTRdA36gFRIDuEvX6RiOCNHO58qEEkgCJIOITSzUHP4keKjSFQAzC8Jl3BZuyRe0vriwz8D0LEOfFN5FS5WN+5WMSD6L9ZkcLqI=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=K5YkeYGY; arc=fail smtp.client-ip=40.92.40.91
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=WoaaNPjyVkoUa/vbKEyziwdEPgiVnrUIXOQfzKny/6bCBaq2D/jEJnFv1QuixoecAMEsCUHfGsKk3wo58cNLNvrm+TY5NBIHs1XPJ72tM7GkNdO4f4t3r3SPP9d7pNVkzNNVXCVw7ikEGctqZqVB1irAAbODrjcgygTFyELlfTT4c8Izjb1gfWBUuD7/xeq0uQi6CLdAMjnBsYBspg7UwGr4pb1M8sA/bbws8mqcOexjXbS7KHQxNy9vJtejiyKUFm75mRDJwAVD8IMfsYJlyuh4yGg/wsK4frMsU5Xk4UyXqSVXHAlwS+eUmr0tGQOekvw3hQq1aAILVEtclQOXYA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=u+xVEnrMXNgyM7GDeLQifnJbt3fQSP3jfWvrMqMowKc=;
+ b=EfYxgjq6wa1u6n91Zcg3NWjtTkM4jd+3UL6J7UCTjCc1Zeof12QPTZxN5oFfH5hgj/thISBKcbmV0bsGJMLCWrWaXJDX9UtTDmIUu+VnYwV6XcDrs5jPHjfnTv66G4JP7Wno4Q/Bm0oIhWJcIyuUrqWUuSQfM3xbEj9fjTP3j9DvPtkZsN5THFJ+cYwmZj3sC6w6CMLlwRGNkHFXg2wSrJd9KleK59Rsk0qWDEOgRMmj3THF3dD9dPVSNmBTIUSoHjXeQ49q1bIBwTu31vUkRAgqoICowDS71X07xpKQYmrbglbZAQam8tN0qdMbf3ogmftiFOGcicIRqHu2Y5kw7w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=u+xVEnrMXNgyM7GDeLQifnJbt3fQSP3jfWvrMqMowKc=;
+ b=K5YkeYGYMayGXy0O2nipwqUKVKOL32AZzytswq3ZcR/VpNaIFWp8tpY9GX5wBVDJntqZCu2NUPGUs0dxf9GHE+2Jwx8dTrqAnh+u+/cAaIGnVhBBFdT/OhsBHoZACp+yB1JztVJwymlPrcmx7ZrsX8CGuTfXNsZpQ88X+dWl6aupMLkcGzyB46mSh94DWuihvFgCI8wvsIjGsiaxc5dhXpUMJQHVtPQOZ7rtbgimPGuPHJy4wrZ6maUi4rPPRL0dKYlz5/i3CTX12H5w6TjmYecVh1WgePM42ShghaPm4srU23MCYf/opv2XYvSSq3D+1jbSBBMujVUM00gxUo3bhg==
+Received: from SN6PR02MB4157.namprd02.prod.outlook.com (2603:10b6:805:33::23)
+ by PH0PR02MB7253.namprd02.prod.outlook.com (2603:10b6:510:18::24) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7519.35; Wed, 1 May
+ 2024 18:05:55 +0000
+Received: from SN6PR02MB4157.namprd02.prod.outlook.com
+ ([fe80::1276:e87b:ae1:a596]) by SN6PR02MB4157.namprd02.prod.outlook.com
+ ([fe80::1276:e87b:ae1:a596%5]) with mapi id 15.20.7519.031; Wed, 1 May 2024
+ 18:05:55 +0000
+From: Michael Kelley <mhklinux@outlook.com>
+To: Bagas Sanjaya <bagasdotme@gmail.com>, "robin.murphy@arm.com"
+	<robin.murphy@arm.com>, "joro@8bytes.org" <joro@8bytes.org>,
+	"will@kernel.org" <will@kernel.org>, "hch@lst.de" <hch@lst.de>,
+	"m.szyprowski@samsung.com" <m.szyprowski@samsung.com>, "corbet@lwn.net"
+	<corbet@lwn.net>, "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>, "petr@tesarici.cz"
+	<petr@tesarici.cz>, "roberto.sassu@huaweicloud.com"
+	<roberto.sassu@huaweicloud.com>
+Subject: RE: [PATCH v3 1/1] Documentation/core-api: Add swiotlb documentation
+Thread-Topic: [PATCH v3 1/1] Documentation/core-api: Add swiotlb documentation
+Thread-Index: AQHamkkjbWfDkycKIE6vEiaFEPOMJrGCAO2AgACueAA=
+Date: Wed, 1 May 2024 18:05:53 +0000
+Message-ID:
+ <SN6PR02MB41574D7C31507EA7AD10FAA5D4192@SN6PR02MB4157.namprd02.prod.outlook.com>
+References: <20240429151337.1069470-1-mhklinux@outlook.com>
+ <ZjHxxzRb-63ARo6Z@archie.me>
+In-Reply-To: <ZjHxxzRb-63ARo6Z@archie.me>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+x-tmn: [79ELTPKoueVHdG848RtJe4R9zJq1NQ8m]
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: SN6PR02MB4157:EE_|PH0PR02MB7253:EE_
+x-ms-office365-filtering-correlation-id: d6ba9b0b-6327-4f9c-f2e5-08dc6a09577d
+x-microsoft-antispam:
+ BCL:0;ARA:14566002|461199019|102099023|3412199016|440099019;
+x-microsoft-antispam-message-info:
+ 7Ji2Ek6BGn1nq/OGQZLMoIrdg1Fp2z/yNe9wY4L1xFPkGZBeEWO/TU4rnm7ekkB4ni+6YYPaVhc5do4Rz/LvIwLHFIxzCOuZZBhf0auD2Kxe4vJR6iFGy3FnqzMLrCBBAsqbVid1QNydG53VMmk6EB5cGXLMS15Izt39rHtnU+tl91Ig0Nc9LbmmzUzFuxvM6kvrAjB64lMkwi1GieZEq9y8xFd7jhZ+kVAKf6iSstvWVM3pTRfELLE4DaXv/K2OybZJjoy/xKl+KE9PNQ+Va27ZHKTV2lp3/CBTrjLeGqLEXfaHUzrevoB8P+v0+tK4mztvx1TGCZqDOQaIAlaWr8SFzlumg3/VZFkxbdHDguB0ukoNi392okkVyZmH4avQaUpKy9Z5cBIHkDcY/DxvtvKQtIuGCAeaTBZQ4TxqGsvIfbM6fqro4HXtmbOGwdoTbXLOvVP53UNYRh3jHTPM7NVbqFTV3i4rjmFJ/3onFniU+0OUdjH4Ynnh4oFb1EIry8+3azPWqjjWa18o4Wt/e8mjKLFoipviFkzAy27usK6OIDDGDM6kBsnwGah6cTqJ
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?utf-8?B?dmlyNXh0V21hM096TzlkOVg1ZXVOOEtpMXJNRVlLTEo1a09RT3JSckQrZWF4?=
+ =?utf-8?B?Q1lycU45VTRuQ0dxSFF0bXZyTFQ0eGJLS2x0WXNiQVhidHN6RnlVZlg4U3U5?=
+ =?utf-8?B?R1dsY3JDWFo2VkpnMlpnT2FCRHF1MjAzbmhJZVFVSm1LQ0JYdjgwYVczdWRr?=
+ =?utf-8?B?enpWa0ZYbmtOcjVSM1QwOW5Gc2ZQMmdJbkxBa1ZTeTV4cVpURlNoMng1Vkl2?=
+ =?utf-8?B?T0ZVN1o2cnIzM3p0bkxjQTREbVZhM2dMNDJnVDRlTDFESGRLdlVOR1p2bUNp?=
+ =?utf-8?B?azd4YWQxcUYydjQzTHlDYmU3ak9LSHhWY1dybUpCbUlxRjk3WW90ZVlVZ2s0?=
+ =?utf-8?B?YlprQTAwc0FITDFJaTdWZHdlcTNYak96MGU3Qm9DaCtlcndQaUVCVlNIbCsr?=
+ =?utf-8?B?K2laYkliTml1Y2JGeUJjOXF2SWF4dHcwMzhUKy9BaStUUTZIZmJSZkhvKzQy?=
+ =?utf-8?B?SytaZkNHaEZLM2creXZiVWE5dENuOGtFd0VINFhUZEdEWnhmVVU2NDRETGxM?=
+ =?utf-8?B?MStxTDdTNDMwUE15bkt4VHZWRXhyVTFlTGFyN3BYNU1EQ2VPTlZaeW1vSWY5?=
+ =?utf-8?B?NVF1M25SMzhDSERsVWMyOXljSWRlSElpcVNZbXNMZ1VlSHFtKy9HWVNDTUl4?=
+ =?utf-8?B?Um1GMTdtcUYvMDRMWWJqVVV6Rk8zcytCV0pBSjN0eXNsREVTUWRqcGlKN3JW?=
+ =?utf-8?B?TXYzdFlaRzUvMDZFY3FaQ3crVUxHQThMMVNhUmxMUUF3bm56MlBZNzFja1dq?=
+ =?utf-8?B?amNJVVVzNm5ML3ZqR25XUXFITVhzNG8yYW9xcUF5TlRDeXpPc0Y5dWlxbE8z?=
+ =?utf-8?B?cXBCVEtyVHBuUHN5VmpMeGJYMmdqQW5BUEtoWCs2MEJEc3Rwd0x2NlVlaVoy?=
+ =?utf-8?B?VFNWQ0I5UGVUeDRwcllqNC8wRmJNd29OWU95d3F1UFdDdHgrR2Z2cklWTXYw?=
+ =?utf-8?B?OHIreSsvWDA3dXFBNG16bWlQK3VjRkZUUURUbEEwV1JBUU0vMEZBQ29DV2h1?=
+ =?utf-8?B?SGkxN3BqZktFMFFqZkNhd01VbmlKVHJ2OWcrdjJYZG5zL0hPdUxCait3WFN2?=
+ =?utf-8?B?OG1zZHpLMm9Oam9BZnB3UVRwMW5QcUswc0F3eGIyVmhyNDVNR3pDaGszNzhr?=
+ =?utf-8?B?NDU1elZTL3pndlA4Y3pobjB4NnZjZHcvRkVhOEd4RXQvTUEyQ2VFVjNYVlB6?=
+ =?utf-8?B?SWI1UGdDV0dObDZiV2FMMHZzaklteUVUVmRjRXQzYUU0TTQrdDJoSENSVEF1?=
+ =?utf-8?B?Qm8yanduS29BR0o3VXZzTERRSHFUN0lqRHkxMW01bjVkRDJ2ZmhvblRiSkJI?=
+ =?utf-8?B?QmFJdUUvcElhbVhkcU9zUXVOblQ4cEpmWFVqaVJ6RVh4N3lodTYxdkxIWHdY?=
+ =?utf-8?B?UUtzTVUrWE5iUDBxUzhDWnkrZnhMd090NE5WdXZPUk01OUQrYjBEMFNoaHgy?=
+ =?utf-8?B?VzFHVmNuMzdkNFc2Uys0Q1ZhM1FiNjJ0TFFzYm4wUXZubHg0RU1aMTVBazRw?=
+ =?utf-8?B?SHc5RmtndDU0ZVRZdG94QUhueHkydFZ2NUdaQlNGUmNWVWgxRXl6RWRKRkUv?=
+ =?utf-8?B?NWJYTkZUZ0tjL0NydFhLelduSTlXY0VLbWNHOEY5MVVtc0kvMGw3ZkhlUHZy?=
+ =?utf-8?Q?5qujpewdfTsZlTjvhTmv73QtY1GEPXUMz8cCWjfm058A=3D?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR02MB4157.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-CrossTenant-Network-Message-Id: d6ba9b0b-6327-4f9c-f2e5-08dc6a09577d
+X-MS-Exchange-CrossTenant-rms-persistedconsumerorg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-CrossTenant-originalarrivaltime: 01 May 2024 18:05:53.4832
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR02MB7253
 
-Hello,
-
-On Wed,  1 May 2024 19:02:40 +0530, Utkarsh Tripathi wrote:
-> Fixed Error in Workqueue Documentation in the kernel-doc comment 
-> for alloc_workqueue function in include/linux/workqueue.h, 
-> the error was "Inline literal start-string without end-string" 
-> which was fixed by removing the inline literal.
-> Kernel Version - 6.9.0-rc5
-> 
-> Signed-off-by: Utkarsh Tripathi <utripathi2002@gmail.com>
-
-There was a slightly different patch submission on the same issue the
-other day.  You might be interested in seeing my response to it [1].
-
-[1]: https://lore.kernel.org/r/6875fb17-f781-4594-803a-c11969f36022@gmail.com/
-
-Quoting below for your convenience:
-
-> In my opinion, reST-specific clutters like these should be avoided in
-> kernel-doc comments as far as possible.
->
-> Instead, I think you can educate kernel-doc (script) so that "*" is
-> allowed in the %CONSTANT pattern, meaning %WQ_* can be converted
-> to ``WQ_*`` in reST.
->
-> For similar changes made against the @param pattern, see commits
-> 69fc23efc7e5 ("kernel-doc: Add unary operator * to $type_param_ref")
-> and 8aaf297a0dd6 ("docs: scripts: kernel-doc: accept bitwise negation
-> like ~@var").
->
-> I guess it is $type_constant2 that needs a tweak in this case.
-
-Unfortunately, there's been no patch submission in this direction so far.
-I'd be delighted if you can try this approach instead.
-
-Thanks, Akira
-
-The kernel-doc script uses the $type_constant2 variable to match
-expressions used to find embedded type information. The current
-implementation of $type_constant2 does not include the "*" unicode
-character, which is used to highlight inline literals in the
-documentation. This causes a Sphinx error when the inline literal
-end-string is used in the documentation.
-
-This commit follows the pattern of the commit
-8aaf297a0dd6 ("docs: scripts: kernel-doc: accept bitwise negation like ~@var")
-and takes inspiration from the following commit
-69fc23efc7e5 ("kernel-doc: Add unary operator * to $type_param_ref").
-
-Thanks Akira, for your suggestions, I have made the required changes.
-I am fairly new to the kernel community, so if I am making 
-any mistakes while making patches and replying to mails,
-please let me know, it will be very helpful.
-Sorry, I mailed without adding the previous replies in the mail.
-
-Signed-off-by: Utkarsh Tripathi <utripathi2002@gmail.com>
-Reviewed-by: Akira Yokosawa <akiyks@gmail.com>
-Suggested-by: Akira Yokosawa <akiyks@gmail.com>
----
- scripts/kernel-doc | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/scripts/kernel-doc b/scripts/kernel-doc
-index cb1be22afc65..58129b1cf3f4 100755
---- a/scripts/kernel-doc
-+++ b/scripts/kernel-doc
-@@ -62,7 +62,7 @@ my $anon_struct_union = 0;
- 
- # match expressions used to find embedded type information
- my $type_constant = '\b``([^\`]+)``\b';
--my $type_constant2 = '\%([-_\w]+)';
-+my $type_constant2 = '\%([-_*\w]+)';
- my $type_func = '(\w+)\(\)';
- my $type_param = '\@(\w*((\.\w+)|(->\w+))*(\.\.\.)?)';
- my $type_param_ref = '([\!~\*]?)\@(\w*((\.\w+)|(->\w+))*(\.\.\.)?)';
-
-base-commit: 4d2008430ce87061c9cefd4f83daf2d5bb323a96
--- 
-2.34.1
-
+RnJvbTogQmFnYXMgU2FuamF5YSA8YmFnYXNkb3RtZUBnbWFpbC5jb20+IFNlbnQ6IFdlZG5lc2Rh
+eSwgTWF5IDEsIDIwMjQgMTI6NDAgQU0NCj4gDQo+IE9uIE1vbiwgQXByIDI5LCAyMDI0IGF0IDA4
+OjEzOjM3QU0gLTA3MDAsIG1oa2VsbGV5NThAZ21haWwuY29tIHdyb3RlOg0KPiA+IEZyb206IE1p
+Y2hhZWwgS2VsbGV5IDxtaGtsaW51eEBvdXRsb29rLmNvbT4NCj4gPg0KPiA+IFRoZXJlJ3MgY3Vy
+cmVudGx5IG5vIGRvY3VtZW50YXRpb24gZm9yIHRoZSBzd2lvdGxiLiBBZGQgZG9jdW1lbnRhdGlv
+bg0KPiA+IGRlc2NyaWJpbmcgdXNhZ2Ugc2NlbmFyaW9zLCB0aGUga2V5IEFQSXMsIGFuZCBpbXBs
+ZW1lbnRhdGlvbiBkZXRhaWxzLg0KPiA+IEdyb3VwIHRoZSBuZXcgZG9jdW1lbnRhdGlvbiB3aXRo
+IG90aGVyIERNQS1yZWxhdGVkIGRvY3VtZW50YXRpb24uDQo+ID4NCj4gPiBTaWduZWQtb2ZmLWJ5
+OiBNaWNoYWVsIEtlbGxleSA8bWhrbGludXhAb3V0bG9vay5jb20+DQo+IA0KPiBPdGhlciB0aGFu
+IG91dHN0YW5kaW5nIHJldmlld3MsIHRoZSBkb2MgTEdUTS4gVGhhbmtzIQ0KPiANCj4gUmV2aWV3
+ZWQtYnk6IEJhZ2FzIFNhbmpheWEgPGJhZ2FzZG90bWVAZ21haWwuY29tPg0KPiANCg0KVGhhbmtz
+IGZvciB5b3VyIHJldmlldyEgIEkgcmVhbGl6ZSB0aGF0IEkgZm9yZ290IHRvIGNhcnJ5IHlvdXIg
+UmV2aWV3ZWQtYnkNCmZvcndhcmQgdG8gdjQuICAgSWYgeW91IGNhcmUgdG8gZG8gaXQgYWdhaW4g
+Zm9yIHY0LCB0aGF0IHdvdWxkIGJlIGdyZWF0Lg0KDQpNaWNoYWVsDQo=
 
