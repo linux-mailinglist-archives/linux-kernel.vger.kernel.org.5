@@ -1,231 +1,200 @@
-Return-Path: <linux-kernel+bounces-165686-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-165687-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DC5BD8B8F86
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 20:29:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id AAA748B8F91
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 20:32:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0B1A91C2188D
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 18:29:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CD1B11C216D1
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 18:31:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E5B4147C7F;
-	Wed,  1 May 2024 18:29:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 65FCB15B560;
+	Wed,  1 May 2024 18:31:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ferroamp-se.20230601.gappssmtp.com header.i=@ferroamp-se.20230601.gappssmtp.com header.b="PNNt6GIx"
-Received: from mail-lf1-f67.google.com (mail-lf1-f67.google.com [209.85.167.67])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="dwp9upVU"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C361B1474BF
-	for <linux-kernel@vger.kernel.org>; Wed,  1 May 2024 18:29:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.67
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4A7E15B0E7;
+	Wed,  1 May 2024 18:31:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714588159; cv=none; b=i35SyqSiYiEKe7xgtbGvkgvmoRLwLZwbTn4YKHnz5fBaU2CDiSR12Yd4ikd7pY9mOR4l5O3WPL/KtjpAGowl+gxJ62l/wMKIr1iXa3gx9LcGTJ6QK2ViWRgaomByjTeg2NIJTr1vQO8pAJOcGOoqamqnRG38G29MYz7fAedbLiA=
+	t=1714588313; cv=none; b=kE/hRDHSJBh6+ozj1CuQng9D+wjnFrQxDc5w7r7qclToXCm6i2yPUrw54vXnef3f3FR8owtHPi7WwDDCyp/BGrbl4v+lLfFhBxQjBsDyWC2n7dyiUbwDSGNLD1Tvgs9vwyogQK20o1jSE+wWLemjdgJTbnQEZ1pKPImZxvrJIPs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714588159; c=relaxed/simple;
-	bh=THVFJ9NHFLgWi1oxltoNvQXatcR4HTHJmtOxAkP7Mz4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=g/2E2rMqrpmk820w6yPoIiEIs5ORkgOtvioU3KPgCMtgEAVzZygrFzF9z0qTONGwm7GPQzxAdQO6jQhhlA0TLKg5eqP78syAF/+WOigk6uGjmpjNHGs+gVvhpq0dETVWCCjbphXmWkinbxXj+vLUS3EbSPrHatBlZIIcwzAK4ho=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ferroamp.se; spf=pass smtp.mailfrom=ferroamp.se; dkim=pass (2048-bit key) header.d=ferroamp-se.20230601.gappssmtp.com header.i=@ferroamp-se.20230601.gappssmtp.com header.b=PNNt6GIx; arc=none smtp.client-ip=209.85.167.67
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ferroamp.se
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ferroamp.se
-Received: by mail-lf1-f67.google.com with SMTP id 2adb3069b0e04-51ef64d04b1so422363e87.3
-        for <linux-kernel@vger.kernel.org>; Wed, 01 May 2024 11:29:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ferroamp-se.20230601.gappssmtp.com; s=20230601; t=1714588156; x=1715192956; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=i1SxH6Yi2QDvFptePuvBwgOkc7k60xPbDJ8MDa/H9BA=;
-        b=PNNt6GIxtsi1ZH0TulUEltGSYef75esf3Y7B7CI/yaqjfRF3Xpf7y7+pT97YSwozIr
-         h42r8TYF4baQuLUw5LBy8bNnEtEvuu6VO4iKV1cPj/ahI9zg8n9pd/tQnYQJPba5OkZv
-         hvvMRcN6GrdORi00CDI4GksKQHUCmljSS5XZ8DbFI2jcDPe0IugEuVYtTBEzkhqJf+hH
-         E9sqS4VVc3KGfZJgwivSPXnE39zNS3olIU2gghIZ1ZQNoISPP4na+beyZInBe+M3bbYN
-         Ba3iQ5oQDkmertzHrGanAE77R8cAkQnr4l4PyWr2xlOiuKze30578ArlY1T2Qe3bKJtM
-         BK5A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714588156; x=1715192956;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=i1SxH6Yi2QDvFptePuvBwgOkc7k60xPbDJ8MDa/H9BA=;
-        b=DifYXFqwv7ibaO0Qn5CPmb4A/f5ip0IMG7t8kV2Fgsk9W9st+3V4wEKONowgUCwyVc
-         /GLbPf0Uj4Cm2SYbTGtQ+jdYGd9nNAHKf+A2Skne55AD2/tlrG9UYRV2OBfE6s6Igtq0
-         3YgmQxu8aVj1QX724GVpQJuJaUEyABRdbIqL/LZ8RGv+K4e+pUX8tLBBLUN3bQr/sfVx
-         fzN8R3dQD2eeO7yBe2FXSgaTpulZTIvS+kptbi3vKTRq3WvbIyHkbC0EpY+5dYZyFfu5
-         8z8354CJiFpJ3be3e8y8wIZPIU/yhaSCyyr/rSoF39l4VPMH//mev8h074QfM7Cx+0pV
-         IwEA==
-X-Forwarded-Encrypted: i=1; AJvYcCU1PRyIc9vQAjszjSfNiMSZRSfigQTmOEyWzesoCXbu6/dXZhtQKg+Z8M7cRzczNb1ud3yPSbZEUJ1YIxrX3ntB0vLaI+sVvWJdQHKU
-X-Gm-Message-State: AOJu0YyhOIUTRmC2Day1YRH/skXoM6yia+akWwptfnGDHgA6l3FwhtIq
-	XA8Ra9Etm0KGEmoA8AIxAUQvlmJOoUfyfpnkXpshSAyhRF/cQeuuK2yI82Xn7OY=
-X-Google-Smtp-Source: AGHT+IE88hVIU2jnQTwuqTvy58xxi494R22YPulFAfwib/5JkkL+UtEk2v3BfunXAhNF6rJr6WtaQw==
-X-Received: by 2002:a05:6512:48d4:b0:51e:147d:bd2d with SMTP id er20-20020a05651248d400b0051e147dbd2dmr2098684lfb.39.1714588153665;
-        Wed, 01 May 2024 11:29:13 -0700 (PDT)
-Received: from builder (c188-149-135-220.bredband.tele2.se. [188.149.135.220])
-        by smtp.gmail.com with ESMTPSA id o13-20020ac24e8d000000b005178f5ad215sm4975613lfr.122.2024.05.01.11.29.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 01 May 2024 11:29:13 -0700 (PDT)
-Date: Wed, 1 May 2024 20:29:11 +0200
-From: =?iso-8859-1?Q?Ram=F3n?= Nordin Rodriguez <ramon.nordin.rodriguez@ferroamp.se>
-To: Andrew Lunn <andrew@lunn.ch>
-Cc: Parthiban Veerasooran <Parthiban.Veerasooran@microchip.com>,
-	davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-	pabeni@redhat.com, horms@kernel.org, saeedm@nvidia.com,
-	anthony.l.nguyen@intel.com, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org, corbet@lwn.net,
-	linux-doc@vger.kernel.org, robh+dt@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-	devicetree@vger.kernel.org, horatiu.vultur@microchip.com,
-	ruanjinjie@huawei.com, steen.hegelund@microchip.com,
-	vladimir.oltean@nxp.com, UNGLinuxDriver@microchip.com,
-	Thorsten.Kummermehr@microchip.com, Pier.Beruto@onsemi.com,
-	Selvamani.Rajagopal@onsemi.com, Nicolas.Ferre@microchip.com,
-	benjamin.bigler@bernformulastudent.ch
-Subject: Re: [PATCH net-next v4 05/12] net: ethernet: oa_tc6: implement error
- interrupts unmasking
-Message-ID: <ZjKJ93uPjSgoMOM7@builder>
-References: <20240418125648.372526-1-Parthiban.Veerasooran@microchip.com>
- <20240418125648.372526-6-Parthiban.Veerasooran@microchip.com>
- <Zi1Xbz7ARLm3HkqW@builder>
- <77d7d190-0847-4dc9-8fc5-4e33308ce7c8@lunn.ch>
- <Zi4czGX8jlqSdNrr@builder>
- <874654d4-3c52-4b0e-944a-dc5822f54a5d@lunn.ch>
+	s=arc-20240116; t=1714588313; c=relaxed/simple;
+	bh=uSZJZlVEjnv5VVZKI60BYw+Pc0dZMrsdmpS1r51v58E=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=tds3u7cwx68ZmdA3hbXhA6Gzj0iAidZNbtqbmFFac2lV100NI2mVykc56b491DWMAtQbkSgZp3fpnxOkO0LR7+8eHvCSDa9tOdR6UVzA4/Per570ybJr77wOAHcUEyPlx7VotFYsBFgfq1OFV2lhcDg/p00fMSWcUmJaMbqk1GA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=dwp9upVU; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1714588309;
+	bh=uSZJZlVEjnv5VVZKI60BYw+Pc0dZMrsdmpS1r51v58E=;
+	h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+	b=dwp9upVUf8uqjfy0K5alr3USuis2rsxquerVShprotY1c3DyZ9pnNikSrA/dSHLDN
+	 PIubU7wjjYsNDCxL2+OWUkngL8e+0qx0jsRqpw+UyhYV7V+9t9a10JmC0VY3l/fuo6
+	 HQj9Kg1cLRanQHF1Jwwt7x5PivXepUFgmuDT3l8DdQU3GtT3387uWnhtl1B3dJ1bF3
+	 PF3TmYh6ZH0fl9oN3eQtb1GJOTx+zR5WeXQ1kRCCMoqWESb14k57a3kyILv7OMXGD0
+	 ie8/fD/WotD5gU77wZZgd044WGdQ3/NREbr7/7EAWvTCNTnFkoOTyT6iqM8lAXBsHm
+	 0dlXiU26yUmIQ==
+Received: from nicolas-tpx395.localdomain (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: nicolas)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id D498B3781F9A;
+	Wed,  1 May 2024 18:31:47 +0000 (UTC)
+Message-ID: <d73d7ade60de2bf4c4e9048756dc59062af64bc4.camel@collabora.com>
+Subject: Re: [PATCH] media: mediatek: vcodec: Alloc DMA memory with
+ DMA_ATTR_ALLOC_SINGLE_PAGES
+From: Nicolas Dufresne <nicolas.dufresne@collabora.com>
+To: Fei Shao <fshao@chromium.org>, Doug Anderson <dianders@chromium.org>
+Cc: Tiffany Lin <tiffany.lin@mediatek.com>, Andrew-CT Chen
+ <andrew-ct.chen@mediatek.com>, Yunfei Dong <yunfei.dong@mediatek.com>,
+ Mauro Carvalho Chehab <mchehab@kernel.org>, Matthias Brugger
+ <matthias.bgg@gmail.com>, AngeloGioacchino Del Regno
+ <angelogioacchino.delregno@collabora.com>, Wei-Shun Chang
+ <weishunc@google.com>,  Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+ =?ISO-8859-1?Q?N=EDcolas?= "F. R. A. Prado" <nfraprado@collabora.com>, Rob
+ Herring <robh@kernel.org>,  linux-arm-kernel@lists.infradead.org,
+ linux-kernel@vger.kernel.org,  linux-media@vger.kernel.org,
+ linux-mediatek@lists.infradead.org
+Date: Wed, 01 May 2024 14:31:43 -0400
+In-Reply-To: <CAJ66y9FrpyzEwa1J=5L1OwRkrSBm308g8OZKnasYQcJYJpRbRA@mail.gmail.com>
+References: 
+	<20240422100354.1.I58b4456c014a4d678455a4ec09b908b1c71c3017@changeid>
+	 <022936a6704d08fbed22e7f241810d857eecaeda.camel@collabora.com>
+	 <CAD=FV=XSyLJiTCHYF7UaLersix0zP-q-MybW+nOR3A2WfccQcg@mail.gmail.com>
+	 <CAJ66y9FrpyzEwa1J=5L1OwRkrSBm308g8OZKnasYQcJYJpRbRA@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.52.1 (3.52.1-1.fc40) 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <874654d4-3c52-4b0e-944a-dc5822f54a5d@lunn.ch>
 
-> > n  |  name     |  min  |  avg  |  max  |  rx dropped  |  samples
-> > 1  |  no mod   |  827K |  846K |  891K |      945     |     5
-> > 2  |  no log   |  711K |  726K |  744K |      562     |     5
-> > 3  |  less irq |  815K |  833K |  846K |      N/A     |     5
-> > 4  |  no irq   |  914K |  924K |  931K |      N/A     |     5
-> > 5  |  simple   |  857K |  868K |  879K |      615     |     5
-> 
-> That is odd.
-> 
-> Side question: What CONFIG_HZ= do you have? 100, 250, 1000?  Try
-> 1000. I've seen problems where the driver wants to sleep for a short
-> time, but the CONFIG_HZ value limits how short a time it can actually
-> sleep. It ends up sleeping much longer than it wants.
-> 
+Le vendredi 26 avril 2024 =C3=A0 18:20 +0800, Fei Shao a =C3=A9crit=C2=A0:
+> Hi Nicolas,
+>=20
+> On Tue, Apr 23, 2024 at 2:52=E2=80=AFPM Doug Anderson <dianders@chromium.=
+org> wrote:
+> >=20
+> > Hi,
+> >=20
+> > On Mon, Apr 22, 2024 at 11:27=E2=80=AFAM Nicolas Dufresne
+> > <nicolas.dufresne@collabora.com> wrote:
+> > >=20
+> > > Hi,
+> > >=20
+> > > Le lundi 22 avril 2024 =C3=A0 10:03 -0700, Douglas Anderson a =C3=A9c=
+rit :
+> > > > As talked about in commit 14d3ae2efeed ("ARM: 8507/1: dma-mapping: =
+Use
+> > > > DMA_ATTR_ALLOC_SINGLE_PAGES hint to optimize alloc"), it doesn't
+> > > > really make sense to try to allocate contiguous chunks of memory fo=
+r
+> > > > video encoding/decoding. Let's switch the Mediatek vcodec driver to
+> > > > pass DMA_ATTR_ALLOC_SINGLE_PAGES and take some of the stress off th=
+e
+> > > > memory subsystem.
+> > > >=20
+> > > > Signed-off-by: Douglas Anderson <dianders@chromium.org>
+> > > > ---
+> > > > NOTE: I haven't personally done massive amounts of testing with thi=
+s
+> > > > change, but I originally added the DMA_ATTR_ALLOC_SINGLE_PAGES flag
+> > > > specifically for the video encoding / decoding cases and I know it
+> > > > helped avoid memory problems in the past on other systems. Colleagu=
+es
+> > > > of mine have told me that with this change memory problems are hard=
+er
+> > > > to reproduce, so it seems like we should consider doing it.
+> > >=20
+> > > One thing to improve in your patch submission is to avoid abstracting=
+ the
+> > > problems. Patch review and pulling is based on a technical rational a=
+nd very
+> > > rarely on the trust that it helps someone somewhere in some unknown c=
+ontext.
+> > > What kind of memory issues are you facing ? What is the technical adv=
+antage of
+> > > using DMA_ATTR_ALLOC_SINGLE_PAGES over the current approach that help=
+s fixing
+> > > the issue? I do expect this to be documented in the commit message it=
+self=C3=A9.
+> >=20
+> > Right. The problem here is that I'm not _directly_ facing any problems
+> > here and I also haven't done massive amounts of analysis of the
+> > Mediatek video codec. I know that some of my colleagues have run into
+> > issues on Mediatek devices where the system starts getting
+> > unresponsive when lots of videos are decoded in parallel. That
+> > reminded me of the old problem I debugged in 2015 on Rockchip
+> > platforms and is talked about a bunch in the referenced commit
+> > 14d3ae2efeed ("ARM: 8507/1: dma-mapping: Use
+> > DMA_ATTR_ALLOC_SINGLE_PAGES hint to optimize alloc") so I wrote up
+> > this patch. The referenced commit contains quite a bit of details
+> > about the problems faced back in 2015.
+> >=20
+> > When I asked, my colleagues said that my patch seemed to help, though
+> > it was more of a qualitative statement than a quantitative one.
+>=20
+> The story behind this is that I'm looking into an issue on the MediaTek
+> MT8188 Chromebook, where in some scenarios the system may emit 30+
+> video decoders concurrently (e.g. generating thumbnails for excess
+> amount of video files etc.), and such behavior can easily hang the
+> system if it has a smaller amount of memory (<4GB).
+>=20
+> In addition to seeking mitigation in the user space software side,
+> we're also looking for ways to optimize how the video decoders use
+> memory, so Doug suggested this improvement.
+> My preliminary experiment showed that it has some positive impact -
+> the system doesn't freeze up completely with it and is still
+> responsive in the UART serial console. However, just like mentioned, I
+> didn=E2=80=99t have any rigorous numbers to support it.
+>=20
+> To test the patch better, today I set up a local WebRTC demo to
+> simulate a video conference with 49 people where the mocked input
+> stream is captured from the device's own front camera.
+> With that, the original system easily hung in less than one minute
+> with less than 40MB available memory at the time; but with the change,
+> the system ran for several minutes and had an average of over 100MB
+> memory. It's not a huge improvement, but it's something.
+>=20
+> I know this isn't the most scientific experiment, but I hope it=E2=80=99s=
+ a
+> good enough representation of one of the multi video decoder use
+> cases, and gives you some confidence that the patch is worth merging.
+>=20
+> With the test above I think I can give this:
+> Tested-by: Fei Shao <fshao@chromium.org>
+>=20
+> And, since this patch LGTM and I support it, here's my humble
+> Reviewed-by: Fei Shao <fshao@chromium.org>
 
-I have been doing my best to abuse the link some more. In brief tweaking
-CONFIG_HZ has some but limited effect. 
-Saturating the link with the rx buffer interrupt enabled breaks the driver.
-Saturating the link with the rx buffer interrupt disabled has poor
-performance.
+The arguments hew and my own research has finish convincing me we want to d=
+o
+this (unless we had limited TLB space at the device level, or performance m=
+etric
+that show that bigger contiguous chunk helps).
 
-The following scenario has been tested. Both ends of the link run:
-* server.py
-* client.py
+Reviewed-by: Nicolas Dufresne <nicolas.dufresne@collabora.com>
 
-One end is an arm64 quad core running at 1.2GHz with the lan8650 macphy.
-The other end is an amd 3950x running the lan8670 usb eval board.
-Both systems should be fast enough that running python should not be a
-limiting factor.
+>=20
+> Regards,
+> Fei
+>=20
+> >=20
+> > I wasn't 100% sure if it was worth sending the patch up at this point,
+> > but logically, I think it makes sense. There aren't great reasons to
+> > hog all the large chunks of memory for video decoding.
+> >=20
+> > -Doug
+>=20
 
--- The test code --
-server.py
-#!/bin/env python3
-import socket
-
-def serve(sock: socket.socket):
-    while True:
-        client, addr = sock.accept()
-        print(f'connection from: {addr}')
-        while len(client.recv(2048)) > 0:
-            pass
-        print('client disconnected')
-        client.close()
-
-if __name__ == '__main__':
-    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-    sock.bind(('0.0.0.0', 4040))
-    sock.listen(1)
-    serve(sock)
-    print("something went wrong")
-
-client.py
-#!/bin/env python3
-import socket
-import sys
-
-if __name__ == '__main__':
-    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    sock.connect((sys.argv[1], 4040))
-
-    while True:
-        sock.sendall(b'0'*2048)
-
--- test runs --
-run 1 - all interrupts enabled
-Time to failure:
-1 min or less
-
-Kernel output:
-[   94.361312] sched: RT throttling activated
-
-top output:
- PID USER      PR  NI    VIRT    RES    SHR S  %CPU  %MEM     TIME+ COMMAND
- 145 root     -51   0       0      0      0 R  95.5   0.0   1:11.22 oa-tc6-spi-thread
-
-link stats:
-3: eth1: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast state UP mode DEFAULT group default qlen 1000
-    link/ether 32:c2:7e:22:93:99 brd ff:ff:ff:ff:ff:ff
-    RX:  bytes packets errors dropped  missed   mcast
-       3371902    7186      0      48       0       0
-    RX errors:  length    crc   frame    fifo overrun
-                     0      0       0       0       0
-    TX:  bytes packets errors dropped carrier collsns
-      10341438    8071      0       0       0       0
-    TX errors: aborted   fifo  window heartbt transns
-                     0      0       0       0       1
-state:
-Completly borked, can't ping in or out, bringing the interface down then up
-has no effect.
-There is no SPI clock and no interrupts generated by the mac-phy.
-The worker thread seems to have live locked.
-
--- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
-run 2 - RX_BUFFER_OVERLOW interrupt disabled
-
-state:
-Runs just fine but the oa-tc6-spi-thread is consuming 10-20% cpu
-Ping times have increased from 1-2ms to 8-35ms
-
-
--- additional notes --
-When tweaking CONFIG_HZ I do get some changes in behaviour, the cpu
-consumption stays stable at 20%+-2 with CONFIG_HZ=250, when increased to
-CONFIG_HZ=1000 it jumps up and down between 10-20%.
-
-I don't have access to a logic analyzer but my old oscilloscope is
-almost reliable. I could confirm that the spi clock is indeed running at
-the expected 25MHz, but I could observe some gaps of up to 320µs so
-that's 8k spi cycles spent doing something else.
-These gaps were observed on the SPI clock and the macphy interrupt was
-active for the same ammount of time(though this was measured independently
-and not on the same trigger).
-I've been drinking way to much coffe, so soldering is not gonna happen
-today (shaky hands), but if it helps I can solder wires to attach both
-probes to confirm that the gap in the SPI clock happens at the same time
-or not as the interrupt is active.
-
-I'd be keen on hearing what Microchips plans to address. If tracking
-down performance issues is a priority I'll probably not spend any time
-on it, if not then I'll definetly dig into it more.
-
-Let me know if anything is unclear or if I can help out with anything
-specific.
-
-R
 
