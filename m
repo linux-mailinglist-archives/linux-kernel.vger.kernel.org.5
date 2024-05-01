@@ -1,118 +1,99 @@
-Return-Path: <linux-kernel+bounces-164945-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-164947-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C470B8B854F
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 07:28:59 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 99A808B8555
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 07:32:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 64ED21F23575
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 05:28:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4D9CC1F21180
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 05:32:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E7D0E481B3;
-	Wed,  1 May 2024 05:28:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78A004CB4E;
+	Wed,  1 May 2024 05:32:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="Y9SeVoLN"
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b="Su0SsbPE"
+Received: from msa.smtpout.orange.fr (msa-210.smtpout.orange.fr [193.252.23.210])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 126C345C10;
-	Wed,  1 May 2024 05:28:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 773BF48781;
+	Wed,  1 May 2024 05:32:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.252.23.210
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714541332; cv=none; b=UgNWsmRcnLA/1VxXS39KS0AGdxFCRy5VCwPdU6/WKllbrAuPpmMnjy19fJXip6QNX3bJxBzW9bJDZip5IYSVBepQCnmPwvqJKuCRUbW2YOc87YHZfg6Twb5atQKEzeGeSMAY3zM1vw1iNZtw2o2a8Eouq2bRzcWz4vR0245d+E4=
+	t=1714541551; cv=none; b=Gy6hAC5yBlZpi0qjlO/kewC0HqfhocqVwfEJlW4jNOLsyZqYXowfdfLXDadcBbtAKZ3pooyTYP9sFMoxoEkyIlvIzAXqMb6aivsRcvcIwA8g18aWkcUaTe/9QcWph5zmXR5Yzl0OiNRxeGRSlJzICI7lpMwYoO1W1r3sfYtzgb8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714541332; c=relaxed/simple;
-	bh=3bPyfozDstmDwZLV/ukzH1VbLQqxYqjZIzAj2hMugxs=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=Zj3hOVzPBhQPASYiZNc07Nb1H3cbT95MHbvLNS/RqrOiSqqGWHMeqVRuNLBXPi+pZ/O0J9lWix3O5sXM8SZ72o/OThJwRiIGQGq+1KRC8PIDdgRNLHXWkFR8ULT1rPF31O8VypADdMCnQ3uYin/4XiS9zkSTtGzWPnECFWX6spw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=Y9SeVoLN; arc=none smtp.client-ip=150.107.74.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-	s=201702; t=1714541328;
-	bh=7iCiIxpOc6gBOG6oc53IQAt5L1pLTD4S8r3Fd/+jfGo=;
-	h=Date:From:To:Cc:Subject:From;
-	b=Y9SeVoLNkuwKMSixdOVwOUEDImRD1Q1+nHe0e//Lo88IRUfMPbNmOFJSkzyme1NEP
-	 brneucKVgQQ+xV2i/4KoTI+GR81VbCCMF5yXJUXcvMUXUyjFRW+QTuBK77h3FXSzYq
-	 cldiFAr7jhZT3srgrW7OOqParjMo6APLg5nHI/tDEA4aYFOmWrX6MWJmiyiigccAzp
-	 tGnTiCl7EqTmcHlVK9ymPwssX3ywfwie2rJEoxJdJLMLvHO3JH35Xb8v66GhZnEe3T
-	 jJjOpP2wEBe9IpuFpjz6xrHRqsOfeJK7CdahjSNHOFOK5C/LK3numEOpWEbsx8ynvD
-	 VpGZhd+PyFjtQ==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4VTlwb29y4z4x0t;
-	Wed,  1 May 2024 15:28:46 +1000 (AEST)
-Date: Wed, 1 May 2024 15:28:46 +1000
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-To: Vlastimil Babka <vbabka@suse.cz>
-Cc: Chengming Zhou <chengming.zhou@linux.dev>, Nicolas Bouchinet
- <nicolas.bouchinet@ssi.gouv.fr>, Linux Kernel Mailing List
- <linux-kernel@vger.kernel.org>, Linux Next Mailing List
- <linux-next@vger.kernel.org>
-Subject: linux-next: build failure after merge of the slab tree
-Message-ID: <20240501152846.311be492@canb.auug.org.au>
+	s=arc-20240116; t=1714541551; c=relaxed/simple;
+	bh=XGnwqzGVRVLKMqUxqhbPMjTk3pC1cEJXJekJTprHVbY=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Q7B8smJc+qBygTaL16I1elJwy8dYDPwqJtGvk9XFclyiqfjztidnY55l8rsQ3ObJC4Gbux0z5OIzKD6Mqabdz1xZ8TZ4iGgjuKG1KL3LqOEXUILF+VuLPmeWvHpWXRJGTTiYEZkeF5ThFszi8jVEvc5qUCk+1DCmRtcr6ctgG4Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wanadoo.fr; spf=pass smtp.mailfrom=wanadoo.fr; dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b=Su0SsbPE; arc=none smtp.client-ip=193.252.23.210
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wanadoo.fr
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wanadoo.fr
+Received: from localhost.localdomain ([86.243.17.157])
+	by smtp.orange.fr with ESMTPA
+	id 22YcsEsBRAF5O22YcsxtZ3; Wed, 01 May 2024 07:31:09 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
+	s=t20230301; t=1714541469;
+	bh=gkHbjdcpVGhYwhArziDiurlEAkgTgXQtE1ztZgQ3NT0=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version;
+	b=Su0SsbPEuir6j/Zux1shoe7hWU5cHbMmAjZeNs+AcGlPQSQzH6xK4g3hpG/lvEYMo
+	 4PIs7R86sjYyJBuc8U4bGpMUTnaiLPi7jJq1qJYqDndXtMdUsG+Bg3UiMlYt2oEqzH
+	 uLz1xQciAnlGsatK1tLkvNwo02V0pHtM7GQNygrpGOB443fIH8qyHwoLKojrFXi/hV
+	 1AhKneC8872Xdz8T3HJkWr/NEf91mmgnvUyuPlBQuTTZdAbnsBAnJ39g5dghr/OGVn
+	 ZvyOT1V7D551eaLhKwrldwt3LZdXQKLu0YFve9CyrMVNwAL5PfinnDdg+zo5Xt7nkI
+	 ylq36OpLmWmHw==
+X-ME-Helo: localhost.localdomain
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Wed, 01 May 2024 07:31:09 +0200
+X-ME-IP: 86.243.17.157
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc: linux-kernel@vger.kernel.org,
+	kernel-janitors@vger.kernel.org,
+	Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+	linux-input@vger.kernel.org
+Subject: [PATCH 1/2] Input: tca6416-keypad - Remove an unused field in struct tca6416_keypad_chip
+Date: Wed,  1 May 2024 07:30:54 +0200
+Message-ID: <926c0f40040671565dcc54d5146a8f9511fb6d46.1714541432.git.christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/dZ+1.=a=9al1OJivYkBYJTL";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 8bit
 
---Sig_/dZ+1.=a=9al1OJivYkBYJTL
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+In "struct tca6416_keypad_chip", the 'irqnum' field is unused.
+Remove it.
 
-Hi all,
+Found with cppcheck, unusedStructMember.
 
-After merging the slab tree, today's linux-next build (x86_64
-allmodconfig) failed like this:
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+---
+Compile tested only.
 
-mm/slub.c: In function 'slab_free_hook':
-mm/slub.c:2187:25: error: implicit declaration of function 'get_info_end' [=
--Werror=3Dimplicit-function-declaration]
- 2187 |                 inuse =3D get_info_end(s);
-      |                         ^~~~~~~~~~~~
-mm/slub.c: In function 'maybe_wipe_obj_freeptr':
-mm/slub.c:3872:14: error: implicit declaration of function 'freeptr_outside=
-_object' [-Werror=3Dimplicit-function-declaration]
- 3872 |             !freeptr_outside_object(s))
-      |              ^~~~~~~~~~~~~~~~~~~~~~
-cc1: all warnings being treated as errors
+It was added in the initial commit 30ba3ead0576 ("Input: add keypad driver
+for keys interfaced to TCA6416") and its users were removed in commit
+687fe7dfb736 ("Input: tca6416-keypad - always expect proper IRQ number in
+i2c client").
+---
+ drivers/input/keyboard/tca6416-keypad.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-Caused by commit
+diff --git a/drivers/input/keyboard/tca6416-keypad.c b/drivers/input/keyboard/tca6416-keypad.c
+index 677bc4baa5d1..044401d01bf6 100644
+--- a/drivers/input/keyboard/tca6416-keypad.c
++++ b/drivers/input/keyboard/tca6416-keypad.c
+@@ -45,7 +45,6 @@ struct tca6416_keypad_chip {
+ 	struct i2c_client *client;
+ 	struct input_dev *input;
+ 	int io_size;
+-	int irqnum;
+ 	u16 pinmask;
+ 	bool use_polling;
+ 	struct tca6416_button buttons[];
+-- 
+2.44.0
 
-  7f39e23ed8dd ("mm/slub: avoid zeroing outside-object freepointer for sing=
-le free")
-
-$ grep CONFIG_SLUB_DEBUG .config
-$
-
-I have used the slab tree from next-20240430 for today.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/dZ+1.=a=9al1OJivYkBYJTL
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmYx0w4ACgkQAVBC80lX
-0Gyq5wgAiD/Wy9xaBsjDyaTUstXKWq5pQBwbuPWJlsCVitTF1wElG3f4WcY7SkGH
-/AjOH/ZSHF/FyQfID14/ccQ9a7DWlhVF1X0J9KGSoJLra8eCI3Ui4GiHug5rRQdi
-ZkRIw2Lf6L8nKj63BZhCvfUpoxashC8SUOUD8losZ/itoveGfB9PY8xC/6wLHSxE
-dQrE6R+kJC3cEa7hz56XdizasDmlpxQNKaBfMEG16ZWGZ8wbI2Eh3qFqlWlm1ndn
-TTu3yYUJmoEJhyIl8ZVBnimtMhSK7Qt37qEBLs060ICiYMzScI8jON14US0dr17m
-IopkuNEgukrsfu96V6/z5CBFCbkyEg==
-=Hnlj
------END PGP SIGNATURE-----
-
---Sig_/dZ+1.=a=9al1OJivYkBYJTL--
 
