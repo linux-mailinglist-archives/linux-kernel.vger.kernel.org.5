@@ -1,47 +1,47 @@
-Return-Path: <linux-kernel+bounces-165732-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-165730-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 97DB98B9057
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 22:01:01 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6CA3C8B9055
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 22:00:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 53D5128493B
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 20:01:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 239E21F2386F
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 20:00:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D0361635DD;
-	Wed,  1 May 2024 20:00:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D00921635D4;
+	Wed,  1 May 2024 20:00:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TEHp1xyc"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="G97bP5Ma"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4350A161933;
-	Wed,  1 May 2024 20:00:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0ACF0F9EB;
+	Wed,  1 May 2024 20:00:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714593633; cv=none; b=Nv0j/zuOraKTEFEqG/oQG8bKaYmETLX/FqW1g1trlR0I2LEFANjuSEhvH7A7kCD4EjErNRHZ9wYQIpfab8gpAxt+JLQcUI8v1gtz/WZ6qCUFh5HH2Wtk597z9L7xbhXvrxm2hURhfOoBCyT7XsbNbFvEurqrEMwvEmsyXKGYQ34=
+	t=1714593633; cv=none; b=Jaw03rXGT9nz9OnDK84P9RR0n2EtIBG+Cfiokr9BN6G5mWc9c1emK7okUV1uuQXLgwEBlBvOfUqsmqq2WCaZvTx4xrisSY+CE7kS83YoSfS+wm3ukecdpXC9NEomQHMxOkvRSV6RP3SAXI7JWEzAbc3xtVUB6g09IaTFmghaR2c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1714593633; c=relaxed/simple;
-	bh=x+afZ/lBvkh7G/V9CHNvY+KNspnxVj0aXOOymsZmFKA=;
+	bh=ih/GNLm1WfdtWekFHhQEBTY1Uux1rbHOHII15bWTT7w=;
 	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=B8Vs/a2Uy+jMgjotAuNo8dqXqs6NkuU8S0PTUoawGlFsAn4MGfupKo57VX2RwzZLuCwMHxgaaNORbl0tGJj2x+bNiEdFgqsN+F/UrCOTVTizahiM3WFKduAzltB6tDdxRMIwuqoHIBrUqG6DLN/j8hUAz/v+4xlAHerWqAMkNII=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TEHp1xyc; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id E66D5C4AF1D;
+	 In-Reply-To:To:Cc; b=lWnOeewhfixcaTLwXn1gsE29jL0/htW79+jJmSpMyMFRylB8EXY18NGmhqiqKH5kL4edxjXw6kFtE/ruJo0kZw5oGs7bg+fCHj7vAaUizBFeLiAmXD+V2dCdqN9rwW2/6vUpdxdgloBdfDyg3npKm+MIM9YiZ1vK3DKuwxhshSw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=G97bP5Ma; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 8CD74C32789;
 	Wed,  1 May 2024 20:00:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1714593632;
-	bh=x+afZ/lBvkh7G/V9CHNvY+KNspnxVj0aXOOymsZmFKA=;
+	bh=ih/GNLm1WfdtWekFHhQEBTY1Uux1rbHOHII15bWTT7w=;
 	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=TEHp1xyceYq23j/TFHAjRwhtY8OyvOvQZ4QUfhZ2nvQsAbMF8pP+prbAJDkcNgBJZ
-	 COPklfwtfzEwfKOeG5uUyDRv9xE7aeH13IBHBllgE5cfYa6A9V499DyY9cVf9N415a
-	 kcWfXwBb88BHSQSGgWALnR0qG+MHUXfmy95PEhgpjUUyb0/QdxX2tXKx/2EafjEqnW
-	 Qeo/Hu3+RKDR+LKMj5ifOBaRDriQcd73jOJf2QOeLpCofyB+WEk7vRGiY8oj4Z7T20
-	 JV+LOmrp9JeEAXo4Vhh5AnHspmvHJZub84RYf5aDGPLg6WThKIgBz55eOEgNwNE47x
-	 up2056Ful3h5Q==
+	b=G97bP5Ma6O1GmaFHCiLS88qaUqCoJRxYZqRJTK1ogOmwN27MRVeBqJ3pGHsyob2uw
+	 609DOXu+g1hXMWHcNi/hclKtJrxKcVww/Mlj8Jgc+aoasqExS07GdjOCsdTsMdjo/m
+	 24MtdUaIGUjzrfcQAWqHtP9eB+ccQ1zA08xJYTyp9UgSiBuOCNPIEi0Whe0HBUsyzu
+	 TJyzuj9oeOTi49q9VVcm5Xmfql+eYMIOwdO7wv1Pw+QHlDEQvUg7N22W5mZ5qRJVwh
+	 isL/IMrY4U2Go/Oz1rhwLI1DSVtfThFFWmT31rINcUmZxxlg+XvMeMUYV2n6oZqSJZ
+	 eKNOeHhfECmDA==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id DB52FC433A2;
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 79D44C4339F;
 	Wed,  1 May 2024 20:00:32 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
@@ -51,37 +51,43 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH][next] Bluetooth: hci_conn: Use struct_size() in
- hci_le_big_create_sync()
+Subject: Re: [PATCH 0/5] Bluetooth: qca: info leak fixes and cleanups
 From: patchwork-bot+bluetooth@kernel.org
 Message-Id: 
- <171459363289.6729.5344742999194693596.git-patchwork-notify@kernel.org>
+ <171459363249.6729.10986328345003471376.git-patchwork-notify@kernel.org>
 Date: Wed, 01 May 2024 20:00:32 +0000
-References: <ZjKFWg0f9uU5jxaI@neat>
-In-Reply-To: <ZjKFWg0f9uU5jxaI@neat>
-To: Gustavo A. R. Silva <gustavoars@kernel.org>
-Cc: marcel@holtmann.org, johan.hedberg@gmail.com, luiz.dentz@gmail.com,
- linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-hardening@vger.kernel.org
+References: <20240501123456.6712-1-johan+linaro@kernel.org>
+In-Reply-To: <20240501123456.6712-1-johan+linaro@kernel.org>
+To: Johan Hovold <johan+linaro@kernel.org>
+Cc: marcel@holtmann.org, luiz.dentz@gmail.com, quic_janathot@quicinc.com,
+ linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org
 
 Hello:
 
-This patch was applied to bluetooth/bluetooth-next.git (master)
+This series was applied to bluetooth/bluetooth-next.git (master)
 by Luiz Augusto von Dentz <luiz.von.dentz@intel.com>:
 
-On Wed, 1 May 2024 12:09:30 -0600 you wrote:
-> Use struct_size() instead of the open-coded version. Similarly to
-> this other patch[1].
+On Wed,  1 May 2024 14:34:51 +0200 you wrote:
+> Here are two fixes for potential info leaks in the QCA driver and a few
+> cleanups.
 > 
-> Link: https://lore.kernel.org/linux-hardening/ZiwwPmCvU25YzWek@neat/ [1]
-> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-> ---
->  net/bluetooth/hci_conn.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> All of these can go into 6.10.
+> 
+> Johan
+> 
+> [...]
 
 Here is the summary with links:
-  - [next] Bluetooth: hci_conn: Use struct_size() in hci_le_big_create_sync()
-    https://git.kernel.org/bluetooth/bluetooth-next/c/7bbc06151f36
+  - [1/5] Bluetooth: qca: fix info leak when fetching fw build id
+    https://git.kernel.org/bluetooth/bluetooth-next/c/cfc2a7747108
+  - [2/5] Bluetooth: qca: fix info leak when fetching board id
+    https://git.kernel.org/bluetooth/bluetooth-next/c/3e2faecb09fb
+  - [3/5] Bluetooth: qca: drop bogus edl header checks
+    https://git.kernel.org/bluetooth/bluetooth-next/c/ca8934466039
+  - [4/5] Bluetooth: qca: drop bogus module version
+    https://git.kernel.org/bluetooth/bluetooth-next/c/2684457bf2dd
+  - [5/5] Bluetooth: qca: clean up defines
+    https://git.kernel.org/bluetooth/bluetooth-next/c/f50efbe27afd
 
 You are awesome, thank you!
 -- 
