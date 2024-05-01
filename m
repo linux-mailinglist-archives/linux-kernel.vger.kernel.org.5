@@ -1,154 +1,223 @@
-Return-Path: <linux-kernel+bounces-165791-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-165792-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 78C048B91A9
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 00:36:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 89CEF8B91B1
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 00:41:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 39BD2282C5A
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 22:36:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2875D282A30
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 22:41:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF90213D892;
-	Wed,  1 May 2024 22:36:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F4361635D3;
+	Wed,  1 May 2024 22:40:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WgGWzdiU"
-Received: from mail-lj1-f172.google.com (mail-lj1-f172.google.com [209.85.208.172])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="2uieFxCE"
+Received: from mail-pl1-f201.google.com (mail-pl1-f201.google.com [209.85.214.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD2CE1E481;
-	Wed,  1 May 2024 22:36:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0545A1E481
+	for <linux-kernel@vger.kernel.org>; Wed,  1 May 2024 22:40:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714603003; cv=none; b=qk/UNzOaxgTJ/w2Cv+gSA6irFtFgUQxJjImBpQ/MxVGhTfLuSFIaSxFCBcnSuSAXZeEY1t5lO0lCY5CbDjCc7L+YDVjEHsroWSh4OoGnv6alRnbv0K021UN4ui2XzuuxEusDw81FyibmivENzwDaQJBq6swLXZsFNJV1acc61D4=
+	t=1714603252; cv=none; b=O6YKA68gKhgsDzOV2/Khf99tfKSZZfdAehtSOSocsxjHT6gxCVI3JG5eHnBjeU8iQjIAYNObT4yQyMG+74CDfSiEusq2m49uoEpXm1M1g+YxfMj6uhglc2Oi2I3A8LQojmzKc2i88Pf1hxArnyshIcZ3UhR/Sk+mHlB23Fy7S9c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714603003; c=relaxed/simple;
-	bh=YV/YYgGA9K7WCW33ZoIL8lsNGMgwRz4GdkdRG3dcyvM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=o7LqjVqXj4VrLJa3Cn6hqo0uE1k96M+ooO4ksVBmBbg6Ytz8Cys292Z0m7IamdagMSDuS+t5AV+qpUZPBXioc+k9iL9sc/o1ChUyxzuNkzgJGuotv5cqZSwcrv4WtR8kR58JvmdF1F2DqR3I5WrvCOb4j0xdrRfNUYzGckoirZY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WgGWzdiU; arc=none smtp.client-ip=209.85.208.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f172.google.com with SMTP id 38308e7fff4ca-2db7c6b5598so95151921fa.1;
-        Wed, 01 May 2024 15:36:41 -0700 (PDT)
+	s=arc-20240116; t=1714603252; c=relaxed/simple;
+	bh=IiDcFptLMdgb3/1nfaa19sIHtTalENoDFZQD7gAW9MU=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=lCzBaK7BzlZNLoxPjEXwMMqiAeqjE2u7DPoXF8iJtX44KngiGmLopdJXC7zZ5y4nsClzC7mKNUT2c8BJrkMGKPWr9uc48Fo4mFaq+H77Gt5EV7igf7UYLogz1v+6qaE7mku7zPFp7YtbTJzqdkOIR58dc0rNfXQNdukfwxpTaXM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=2uieFxCE; arc=none smtp.client-ip=209.85.214.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-pl1-f201.google.com with SMTP id d9443c01a7336-1ec3c838579so24423355ad.1
+        for <linux-kernel@vger.kernel.org>; Wed, 01 May 2024 15:40:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714603000; x=1715207800; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=DuaLRdO6Js2gxidW/S+ZrLyYPpQmg/450rRpegKnffI=;
-        b=WgGWzdiUgmd9tsFVfTbWFZISx3VgNUj6+ED0vXDXdnTVCSFFTexWITdCz9tzQTRR6Q
-         4hgXmKr6QOo0wl9BQhOvJNKJlCpy+G7TYzhMgwpN7o5RgThpz04PQ+m7yPP6X4Wr8P1k
-         lHcTpEY6g+7RbXxCTV+1hxtyWR3I4DJ1/hhAav9vN8DuS+x513l8B8lRNUmVMY86T2+0
-         x//hdvKjc+n9+J05IqRRS471kdPhGyCrhuOjpUSVPOpkaJTXslt9P8jLZqw4hOu7dPwx
-         qlDb6WZdXPp2SQJ8VMFsGOgMys/kSRIS/IY9TKYCGT6Ikv9bvA/3VZrQ8ybSCalmYT9M
-         sDAA==
+        d=google.com; s=20230601; t=1714603249; x=1715208049; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Rt/4BZWOrpUOF7PzlC/RN5bc07yVSBXbxiXU6J5bsS8=;
+        b=2uieFxCEAKq3kkU4FtcBLqs/xReEepgsboH4LGXNODOgFgo1D71quaqQQAJpdDT2HJ
+         ses/6JOvgHVBj40u3SrMuM5UGd4VWqvHLUuf/AdnW8YjoWLULoNNjY6l64emadKSp0Ia
+         RAB8OD7QqQfGfL4KfFFG1uk1GJRtY5LIPPzPZsY4TA7Jl+ZcwsnNwumc7EMlG21+DBFg
+         VI0XzCgNzWbwfMKPFmZDvlTF8HAUHEBZJCNkIoUlmES35ouw5kaSnypZChrGAftQAbLz
+         6+PMG20pPx6lR7nWd1Fnt4ErL4lXNO6JM1YwBgc8pYe0qymTlGrMiqPX8QOyVoioEZyu
+         qq7g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714603000; x=1715207800;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=DuaLRdO6Js2gxidW/S+ZrLyYPpQmg/450rRpegKnffI=;
-        b=ERHNGpAs4i+ZygwFjMPHu12z8BVFb6nkir85EPYrLTHttWOwC3qnrVl/cFH4LpkXKf
-         SYeuwpFkMpFzitKNFQQQEuyHcQ/eYCIfg691Zcp89C33bVsDcd5Lqa6PUXIwzWTBxycU
-         ZJbwqs/i/ydH2udcQMKiFAgd8rd3e+wSvNRPwWb9yT3xoXstopjx5KqTIPIVwpE9syrs
-         44Ig8GzJDBYcrCuSzumreAnz0G4tGvDW/J6+EE8v9hs1Y2IBx2SN89mux2G/GqdAwQ0/
-         sK3i7UeWqcuyeRZF+lW1kyOUYGU4kSg/Ry6vN6+N9AQ/ZEHxc1GqU1FfWLQ3xK1jgQhv
-         tylA==
-X-Forwarded-Encrypted: i=1; AJvYcCVk8vw+R/qrKGXmqTmui6ZC5JJaQjjedPEhik8eQv9B9rj+ktQh7Lr/w++7SioQkVYIuATm7iLU774ZwMSn0zt2yDFoMF30lLVp0T74RnBGuL4fzaodyRl7+4zXte9yjlTohvvKlFa/TzDIC76L
-X-Gm-Message-State: AOJu0YxRNYAkdMWRYhOG00A2D/UNnXKQQisPwntzVR7lp3/vEm3/VnEa
-	jdtWaYQPKZmyLdMXuX+a2plqKPU0aI3YeYaM4qnRKANrFrx5gVVNt4p8/h+nzoMOtSyi3QD9zw7
-	UaeEbUBsuLqB6PyU1f3kGpwrGljE=
-X-Google-Smtp-Source: AGHT+IFI6cU2TyISxjTsCefjdE2CQgkkMJ3oJHSpconaHzgOnd8/y0Dk7qw2kqHP9H/1RtQDUIoawNept0jscyUmlzg=
-X-Received: by 2002:a05:651c:212a:b0:2e1:ce2b:a55f with SMTP id
- a42-20020a05651c212a00b002e1ce2ba55fmr229192ljq.53.1714602999525; Wed, 01 May
- 2024 15:36:39 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1714603249; x=1715208049;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Rt/4BZWOrpUOF7PzlC/RN5bc07yVSBXbxiXU6J5bsS8=;
+        b=VS/uU+EiprWbmcJ/rIvfL8CUMeeB50VDe92SEtrs6Aqc8/i8N4X8xn3WXc+VfS/39H
+         IkEUENk2KOlX2GWNrtOsEQcv8/OzI7RfgtdEneOlx4dN7qLNbwAh5Py/qQHOEiUdROAa
+         LMYKGVB5W4YaNkx7ussL9+WaBR5mVl9auINPV7HJEv3zx73QOEPatmtXVHA9SLmtAMqN
+         dtt/J/WCdYYgwYFNQ6c2UlwSQDEESsOyHAhk4jk0UYFpr4n0ApaiH2xWSXBAEK7w23cZ
+         xTSKkPuB+J+VC/cmwWzJZT9NzbRFKWCpYcKOzSCsOq2Zy87hgSTfJw+iVGFEOF4hfe8u
+         X19Q==
+X-Forwarded-Encrypted: i=1; AJvYcCVIIw3QmE8jvFMf8GszpUhE/mkj/IL+ET+TYXg7QTczTB8w99N88o1xILkGli4OG72qwDE39c9yms2q8xlxf3TkPK01Ob9RzGcKs7pN
+X-Gm-Message-State: AOJu0YzPzIYPAgMQREq/2NT2Kloi9oY/fjOjmLly0pVsBMcn2sB0HJyb
+	0KHcwC6O0srorhjnVzKsTvL1+Yufnm7pG1QwBJ7rmz5DsoXogv6OBOqxFFlrsLxY/7rHqj9hD6E
+	vLg==
+X-Google-Smtp-Source: AGHT+IGinMb3eodPjryBPLOEdE6sjayigodRjkxa0Wa/LFaQbbJME9u7v6BfG2AyFp21HLt9Vm2c2BaSg3M=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a17:902:fa0d:b0:1ea:26bd:fd95 with SMTP id
+ la13-20020a170902fa0d00b001ea26bdfd95mr8989plb.11.1714603248688; Wed, 01 May
+ 2024 15:40:48 -0700 (PDT)
+Date: Wed, 1 May 2024 15:40:46 -0700
+In-Reply-To: <20240219074733.122080-18-weijiang.yang@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20240428054307.1178347-1-iam@sung-woo.kim> <CABBYNZKDouOrxG1XcSq2me0WW3A3yAbfdtonw2XJ54VZ8+Nbfg@mail.gmail.com>
- <CAJNyHpKzhFBJ3N0eF1x0icd7O1VkWbTA9k0Gkm8aCMonsagYwg@mail.gmail.com>
-In-Reply-To: <CAJNyHpKzhFBJ3N0eF1x0icd7O1VkWbTA9k0Gkm8aCMonsagYwg@mail.gmail.com>
-From: Luiz Augusto von Dentz <luiz.dentz@gmail.com>
-Date: Wed, 1 May 2024 18:36:26 -0400
-Message-ID: <CABBYNZ+Mr1c7UKa4Vey7Wmh-+WQaFU0P8AifBf7HDEb7G8PTJQ@mail.gmail.com>
-Subject: Re: [PATCH] Bluetooth: L2CAP: Fix div-by-zero in l2cap_le_flowctl_init()
-To: Sungwoo Kim <iam@sung-woo.kim>
-Cc: daveti@purdue.edu, Marcel Holtmann <marcel@holtmann.org>, 
-	Johan Hedberg <johan.hedberg@gmail.com>, linux-bluetooth@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Mime-Version: 1.0
+References: <20240219074733.122080-1-weijiang.yang@intel.com> <20240219074733.122080-18-weijiang.yang@intel.com>
+Message-ID: <ZjLE7giCsEI4Sftp@google.com>
+Subject: Re: [PATCH v10 17/27] KVM: x86: Report KVM supported CET MSRs as to-be-saved
+From: Sean Christopherson <seanjc@google.com>
+To: Yang Weijiang <weijiang.yang@intel.com>
+Cc: pbonzini@redhat.com, dave.hansen@intel.com, x86@kernel.org, 
+	kvm@vger.kernel.org, linux-kernel@vger.kernel.org, peterz@infradead.org, 
+	chao.gao@intel.com, rick.p.edgecombe@intel.com, mlevitsk@redhat.com, 
+	john.allen@amd.com
+Content-Type: text/plain; charset="us-ascii"
 
-Hi Sungwoo,
+On Sun, Feb 18, 2024, Yang Weijiang wrote:
+> Add CET MSRs to the list of MSRs reported to userspace if the feature,
+> i.e. IBT or SHSTK, associated with the MSRs is supported by KVM.
+> 
+> SSP can only be read via RDSSP. Writing even requires destructive and
+> potentially faulting operations such as SAVEPREVSSP/RSTORSSP or
+> SETSSBSY/CLRSSBSY. Let the host use a pseudo-MSR that is just a wrapper
+> for the GUEST_SSP field of the VMCS.
+> 
+> Suggested-by: Chao Gao <chao.gao@intel.com>
+> Signed-off-by: Yang Weijiang <weijiang.yang@intel.com>
+> ---
+>  arch/x86/include/uapi/asm/kvm_para.h |  1 +
+>  arch/x86/kvm/vmx/vmx.c               |  2 ++
+>  arch/x86/kvm/x86.c                   | 18 ++++++++++++++++++
+>  3 files changed, 21 insertions(+)
+> 
+> diff --git a/arch/x86/include/uapi/asm/kvm_para.h b/arch/x86/include/uapi/asm/kvm_para.h
+> index 605899594ebb..9d08c0bec477 100644
+> --- a/arch/x86/include/uapi/asm/kvm_para.h
+> +++ b/arch/x86/include/uapi/asm/kvm_para.h
+> @@ -58,6 +58,7 @@
+>  #define MSR_KVM_ASYNC_PF_INT	0x4b564d06
+>  #define MSR_KVM_ASYNC_PF_ACK	0x4b564d07
+>  #define MSR_KVM_MIGRATION_CONTROL	0x4b564d08
+> +#define MSR_KVM_SSP	0x4b564d09
 
-On Wed, May 1, 2024 at 6:23=E2=80=AFPM Sungwoo Kim <iam@sung-woo.kim> wrote=
-:
->
-> Dear Luiz,
->
-> On Mon, Apr 29, 2024 at 11:15=E2=80=AFAM Luiz Augusto von Dentz
-> <luiz.dentz@gmail.com> wrote:
-> >
-> > Hi Sungwoo,
-> >
-> > On Sun, Apr 28, 2024 at 1:43=E2=80=AFAM Sungwoo Kim <iam@sung-woo.kim> =
-wrote:
-> > >
-> > > Hello, could you review this bug and its patch?
-> > >
-> > > l2cap_le_flowctl_init() can cause both div-by-zero and an integer ove=
-rflow.
-> > >
-> > > l2cap_le_flowctl_init()
-> > >   chan->mps =3D min_t(u16, chan->imtu, chan->conn->mtu - L2CAP_HDR_SI=
-ZE);
-> > >   chan->rx_credits =3D (chan->imtu / chan->mps) + 1;  <- div-by-zero
-> > >
-> > > Here, mtu could be less than or equal to L2CAP_HDR_SIZE (4). If mtu i=
-s 4, it
-> > > causes div-by-zero. If mtu is less than 4, it causes an integer overf=
-low.
-> >
-> > That is because it is not valid to have hdev->le_mtu < 0x001b (the
-> > range is 0x001b to 0xffff), so we should really look into checking
-> > that conn->mtu is actually valid.
-> >
-> > > How mtu could have such low value:
-> > >
-> > > hci_cc_le_read_buffer_size()
-> > >   hdev->le_mtu =3D __le16_to_cpu(rp->le_mtu);
-> > >
-> > > l2cap_conn_add()
-> > >   conn->mtu =3D hcon->hdev->le_mtu;
-> >
-> > Yeah this assignment is incorrect and in fact we don't do that if
-> > le_mtu is zero so we probably should do some checks e.g. le_mtu >
-> > 0x001a, or perhaps we need to move the MTU directly to hci_conn so it
-> > can check there are enough buffers to serve the link so we stop the
-> > connection procedure earlier.
->
-> Let's say we moved MTU directly to hci_conn and already checked enough
-> buffers at the creation of hcon.
-> Then, what should happen if hdev->le_mtu is updated? (by a new
-> le_read_buffer_size cmd)
-> Should hcon->mtu be synced with hdev->le_mtu? Or hcon->mtu can keep
-> its old value?
+We never resolved the conservation from v6[*], but I still agree with Maxim's
+view that defining a synthetic MSR, which "steals" an MSR from KVM's MSR address
+space, is a bad idea.
 
-What now, why would we read it again? These commands are only suppose
-to be send during init phase and if you do this sort of thing as an
-event without a command then it is also against the spec and we shall
-probably just ignore it if there is no command pending.
+And I still also think that KVM_SET_ONE_REG is the best way forward.  Completely
+untested, but I think this is all that is needed to wire up KVM_{G,S}ET_ONE_REG
+to support MSRs, and carve out room for 250+ other register types, plus room for
+more future stuff as needed.
 
-> Best,
-> Sungwoo.
+We'll still need a KVM-defined MSR for SSP, but it can be KVM internal, not uAPI,
+e.g. the "index" exposed to userspace can simply be '0' for a register type of
+KVM_X86_REG_SYNTHETIC_MSR, and then the translated internal index can be any
+value that doesn't conflict.
 
+diff --git a/arch/x86/include/uapi/asm/kvm.h b/arch/x86/include/uapi/asm/kvm.h
+index ef11aa4cab42..ca2a47a85fa1 100644
+--- a/arch/x86/include/uapi/asm/kvm.h
++++ b/arch/x86/include/uapi/asm/kvm.h
+@@ -410,6 +410,16 @@ struct kvm_xcrs {
+        __u64 padding[16];
+ };
+ 
++#define KVM_X86_REG_MSR                        (1 << 2)
++#define KVM_X86_REG_SYNTHETIC_MSR      (1 << 3)
++
++struct kvm_x86_reg_id {
++       __u32 index;
++       __u8 type;
++       __u8 rsvd;
++       __u16 rsvd16;
++};
++
+ #define KVM_SYNC_X86_REGS      (1UL << 0)
+ #define KVM_SYNC_X86_SREGS     (1UL << 1)
+ #define KVM_SYNC_X86_EVENTS    (1UL << 2)
+diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+index 47d9f03b7778..53f2b43b4651 100644
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -2244,6 +2244,30 @@ static int do_set_msr(struct kvm_vcpu *vcpu, unsigned index, u64 *data)
+        return kvm_set_msr_ignored_check(vcpu, index, *data, true);
+ }
+ 
++static int kvm_get_one_msr(struct kvm_vcpu *vcpu, u32 msr, u64 __user *value)
++{
++       u64 val;
++
++       r = do_get_msr(vcpu, reg.index, &val);
++       if (r)
++               return r;
++
++       if (put_user(val, value);
++               return -EFAULT;
++
++       return 0;
++}
++
++static int kvm_set_one_msr(struct kvm_vcpu *vcpu, u32 msr, u64 __user *value)
++{
++       u64 val;
++
++       if (get_user(val, value);
++               return -EFAULT;
++
++       return do_set_msr(vcpu, reg.index, &val);
++}
++
+ #ifdef CONFIG_X86_64
+ struct pvclock_clock {
+        int vclock_mode;
+@@ -5976,6 +6000,39 @@ long kvm_arch_vcpu_ioctl(struct file *filp,
+                srcu_read_unlock(&vcpu->kvm->srcu, idx);
+                break;
+        }
++       case KVM_GET_ONE_REG:
++       case KVM_SET_ONE_REG: {
++               struct kvm_x86_reg_id id;
++               struct kvm_one_reg reg;
++               u64 __user *value;
++
++               r = -EFAULT;
++               if (copy_from_user(&reg, argp, sizeof(reg)))
++                       break;
++
++               r = -EINVAL;
++               id = (struct kvm_x86_reg)reg->id;
++               if (id.rsvd || id.rsvd16)
++                       break;
++
++               if (id.type != KVM_X86_REG_MSR &&
++                   id.type != KVM_X86_REG_SYNTHETIC_MSR)
++                       break;
++
++               if (id.type == KVM_X86_REG_SYNTHETIC_MSR) {
++                       id.type = KVM_X86_REG_MSR;
++                       r = kvm_translate_synthetic_msr(&id.index);
++                       if (r)
++                               break;
++               }
++
++               value = u64_to_user_ptr(reg.addr);
++               if (ioctl == KVM_GET_ONE_REG)
++                       r = kvm_get_one_msr(vcpu, id.index, value);
++               else
++                       r = kvm_set_one_msr(vcpu, id.index, value);
++               break;
++       }
+        case KVM_TPR_ACCESS_REPORTING: {
+                struct kvm_tpr_access_ctl tac;
+ 
 
-
---=20
-Luiz Augusto von Dentz
 
