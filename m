@@ -1,140 +1,215 @@
-Return-Path: <linux-kernel+bounces-165767-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-165768-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E216C8B90FB
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 23:07:00 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B02F28B90FE
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 23:08:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EBD29B21BC8
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 21:06:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 986661C21681
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 21:08:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BCE49165FB6;
-	Wed,  1 May 2024 21:06:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 90426165FBD;
+	Wed,  1 May 2024 21:08:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="ZCxbbEVl"
-Received: from mail-ej1-f54.google.com (mail-ej1-f54.google.com [209.85.218.54])
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="L0Iy4axw"
+Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 20710165FB1
-	for <linux-kernel@vger.kernel.org>; Wed,  1 May 2024 21:06:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0426160785
+	for <linux-kernel@vger.kernel.org>; Wed,  1 May 2024 21:08:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714597611; cv=none; b=JDH2Opqz8aRoB/ILaHtJKHSsLHkKmO0J/ZzBrSXmDoy35eG+mKlUQMQCm79WVBCxFvQ/nNGlk6yJSZ9k9VEI9viFjtaEXtWy3FWi/NBofBKsEmKnJxUV4/GslHSipHII4eCPjmvE1oWr50HD73SqKoJBefLeYh8OPVoSAYWRRnM=
+	t=1714597720; cv=none; b=GAWBXrgmbuF0TtGASISFKy/2E6KOr4o6CDfsL+LSk0/6sNuykuz7bQeiaa2jS1zd3fTS3NuLn0MYgA1qfzCrpKjL7DEpfj6yQcoWyTFb/KjVtTucQyb1IxpZGL5qq6Fqi2zQMs+5yC73mF/vHWcTCg3bgDE2iU3yPP2IVER0PBM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714597611; c=relaxed/simple;
-	bh=Ar/qVvtSowlddZJ7GU3UpoafBU0STOS0g4iNU8zGeqc=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=IHujYS/u02dIffwNYtTU8kgLc973KYRmWp1ZX0IcNMROtc4pkvCWHA4vXWr8Wo/rVpl7ttY3Lyj/pxuwBho4svcrzmZyG0R8BA9iwwd94l0R4Dz4STKh746DBxqpxzXV5hbqFNM5EVf0QI89mZwuoL02IdbU6AqgHnLGWTHp4zA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=ZCxbbEVl; arc=none smtp.client-ip=209.85.218.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-a58ebdd8b64so526584566b.0
-        for <linux-kernel@vger.kernel.org>; Wed, 01 May 2024 14:06:49 -0700 (PDT)
+	s=arc-20240116; t=1714597720; c=relaxed/simple;
+	bh=B7qAGFGI/bxEd5Q1LPU2V/hryghMwy7cXIVEchTKrFc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=tCLNlSGFYlWdfCYdLMdbv7NsjSYTsAT8xSPPBFUcGRmikmEXXUpAfCBALHLN0yY88jj5o3yxA1mzkbeaNSCaYalbAjbvZuaszPnq26gpqL64g4cQmlpspMCTV0zkX4vxbBmVbAHgGaHQ1i2LAzfX69W8MNLxr7TQx3Lhxi02J5s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=L0Iy4axw; arc=none smtp.client-ip=209.85.214.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-1ec69e3dbcfso15836675ad.0
+        for <linux-kernel@vger.kernel.org>; Wed, 01 May 2024 14:08:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1714597608; x=1715202408; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=dEeYJfQKf2FYDJRjHSGwp+n8JlaIpd1XzlOy/wItCMc=;
-        b=ZCxbbEVl1HuafuyG4y+mzyWi5AzIMOQ/TL7hIIelEhAtTqHQQ1ndOG5b9xfKQL7gAp
-         dRUl2eriRgHPFhS02DWA1UZyZziCSsk3hlBZ1iqYoYf2mPPvyCOotYZ2iHjGt+ns6dLA
-         iJ3+5BWthilNTy6OuDQigG3q2fF7yR8SPLWZ8=
+        d=chromium.org; s=google; t=1714597718; x=1715202518; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=WyQVnwnxj7rjRobXy08x57R70AetlsmZRJbnEni1v7A=;
+        b=L0Iy4axw3hWe2hQRN7DiqICWh4G5XMB8OJSlCtRonnVZ25FQH/YtfXkMA+eJLg5KoJ
+         wTmhU9sjk8r4p/7ctN9wKar3PZuIrmxoRgBeyzrNCInssqNPh+anyK507F/woIjJgo2S
+         xtr9aC1GEfwnHS2cenD+UvVxY/crUlkvRFpxc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714597608; x=1715202408;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=dEeYJfQKf2FYDJRjHSGwp+n8JlaIpd1XzlOy/wItCMc=;
-        b=bdq6Jpt6M4ymSwCdspy8XATofD1gI7us8adlAJzYSNtcejV1CVBBKzj2/nmj0d3WEO
-         PxJw+V+rmCA15Hlzhspg7MFPr9fmiaxzxLYLOUMk6qGJZGL+rw6SXVDU0LXFGbbdcnkL
-         W3zqDtLMrSh0RmQkD2Vc12iPwFVcpKDSR/RGf3r9ys3QnDYsXe8Gh5uYoiwHtayiGd63
-         ZYiq24knU4THrdgXXLSIyVsJhZNLIOnZ8J0DABTd1qsfvuRthEAuQTdR3JjhXSozEbVR
-         dHQk1haz4hl6sBrGNCAkJBjs5mwEB793kfgluJIyoHNqe/QUjrgCJdIVudIL1Z490sPv
-         I/KA==
-X-Forwarded-Encrypted: i=1; AJvYcCVR2Jx+yovT++deP2Sp6lZcU4dHcScn03jbc/XzAMoLW+6z+Q7Shlempl35dmsmkMGEpsEL7EW7RL5UtpYDsiJ7FgzlIOwNTzyDEm+N
-X-Gm-Message-State: AOJu0Ywpc9De+Dh2pC3oJnT7IKhIWjp4yDgD28p8vDFVtIr+jiFfE0K0
-	AZWNVXXh/YT7o1jxkS5t3MfTi3dqIu5QXmGeuI+AHi48f9muYXp71yVc17dyF4NlnJ5/TP84bvE
-	BJX2tdA==
-X-Google-Smtp-Source: AGHT+IGuVSy/Dy5uo4CpEzJMo6UfGPyEWpVHsDT2bTmHP7wPh3tWkdIwv3Hc6Ww8/SPPduITprYqfQ==
-X-Received: by 2002:a17:906:e2d1:b0:a58:be32:b454 with SMTP id gr17-20020a170906e2d100b00a58be32b454mr2483550ejb.27.1714597608320;
-        Wed, 01 May 2024 14:06:48 -0700 (PDT)
-Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com. [209.85.218.41])
-        by smtp.gmail.com with ESMTPSA id q10-20020a170906388a00b00a46aba003eesm16682305ejd.215.2024.05.01.14.06.46
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 01 May 2024 14:06:47 -0700 (PDT)
-Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-a51a7d4466bso779437766b.2
-        for <linux-kernel@vger.kernel.org>; Wed, 01 May 2024 14:06:46 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCXyeqWuYzJ5IphOmWtZ+XGZPp/MGTHoak6yRbPS5KOWI4cJHIqoBflp2kxFophPGS70SftQfEzDLRjaR8wOqdkKyot7DlZ0DTuCg7rG
-X-Received: by 2002:a17:906:af85:b0:a58:a1e3:a2cd with SMTP id
- mj5-20020a170906af8500b00a58a1e3a2cdmr2381710ejb.55.1714597606507; Wed, 01
- May 2024 14:06:46 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1714597718; x=1715202518;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=WyQVnwnxj7rjRobXy08x57R70AetlsmZRJbnEni1v7A=;
+        b=EuNQhIjXZGSEWVEt77XN+P3z8SmXSjFLn4k5ufbGsc9KFa5+PgweZSnDdC1rvR6X+f
+         UnWrC2zaAVIqMH2x16fAdcSLtwQTPqjGZAIjQXwBgu5Fnj0RY9Gd/tVNyIegImKLIjUK
+         7hnzUWBVChYzZIIfwhDisOiQoDxTFoEazrvgtNqT/O80vLvwxgeHgZUwwXCEJXTIqPsg
+         UwTOw6t+uDToHhCY50ZHsUtk4ricmHiNJPEGHut22rAnT923+yaQPMuQNqRNrdKXuzE1
+         C8R6Lmresc9ARY+ewtyiR/LyDM4B8J45WClKAipUUunR1oPK4Xr5+RgzrSiRaQgVzXxD
+         xMkA==
+X-Forwarded-Encrypted: i=1; AJvYcCXeK4aY6Pz+iNqrIbx6XAAW63rjcuiO6KCEAZDuLW3KTPWiHSqg4AEoJeeuMni99BXbYWGo1ujdn4bVLkQjbZLKPC8x+pzNOsD0+K+b
+X-Gm-Message-State: AOJu0Yx/EfsW1mEp6moHbVlfOHzjWbKzjuX1CO3B9VqtsSVNQkILk86N
+	YPZ6b9WfdSDYoAGDEzT+fun1cifKLDq8UNeXLPXDpPmNFEz2Ye5iAK3MKQfykcVwvXYbVNccPJA
+	=
+X-Google-Smtp-Source: AGHT+IE9FGOHdmDg44s08H7J/PjssevGbga2XFanboUcNU/a7V5Q37yj0sflqb9URzzrmO06WsW4XQ==
+X-Received: by 2002:a17:903:32c9:b0:1ea:5aff:c8ce with SMTP id i9-20020a17090332c900b001ea5affc8cemr53337plr.29.1714597717980;
+        Wed, 01 May 2024 14:08:37 -0700 (PDT)
+Received: from www.outflux.net ([198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id p5-20020a170902e74500b001eb5a81f688sm8660101plf.221.2024.05.01.14.08.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 01 May 2024 14:08:36 -0700 (PDT)
+Date: Wed, 1 May 2024 14:08:36 -0700
+From: Kees Cook <keescook@chromium.org>
+To: Justin Stitt <justinstitt@google.com>
+Cc: Petr Mladek <pmladek@suse.com>, Steven Rostedt <rostedt@goodmis.org>,
+	John Ogness <john.ogness@linutronix.de>,
+	Sergey Senozhatsky <senozhatsky@chromium.org>,
+	linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH] printk: cleanup deprecated uses of strncpy/strcpy
+Message-ID: <202405011406.E4998CB515@keescook>
+References: <20240429-strncpy-kernel-printk-printk-c-v1-1-4da7926d7b69@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <8edbd558-a05f-c775-4d0c-09367e688682@I-love.SAKURA.ne.jp>
- <2023053048-saved-undated-9adf@gregkh> <18a58415-4aa9-4cba-97d2-b70384407313@I-love.SAKURA.ne.jp>
- <CAHk-=wgSOa_g+bxjNi+HQpC=6sHK2yKeoW-xOhb0-FVGMTDWjg@mail.gmail.com>
- <a3be44f9-64eb-42e8-bf01-8610548a68a7@I-love.SAKURA.ne.jp>
- <CAHk-=wj6HmDetTDhNNUNcAXZzmCv==oHk22_kVW4znfO-HuMnA@mail.gmail.com>
- <CANpmjNN250UCxsWCpUHAvJo28Lzv=DN-BKTmjEpcLFOCA+U+pw@mail.gmail.com>
- <CAHk-=whnQXNVwuf42Sh2ngBGhBqbJjUfq5ux6e7Si_XSPAt05A@mail.gmail.com>
- <d4de136e-c4e0-45c2-b33e-9a819cb3a791@paulmck-laptop> <CAHk-=wi3iondeh_9V2g3Qz5oHTRjLsOpoy83hb58MVh=nRZe0A@mail.gmail.com>
- <892324fc-9b75-4e8a-b3b6-cf3c5b4c3506@paulmck-laptop> <CANpmjNOY=Qpm3hBu-eN4Xk8n-2VXQRvcQ3_PfwPwNw9MmC8ctw@mail.gmail.com>
-In-Reply-To: <CANpmjNOY=Qpm3hBu-eN4Xk8n-2VXQRvcQ3_PfwPwNw9MmC8ctw@mail.gmail.com>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Wed, 1 May 2024 14:06:29 -0700
-X-Gmail-Original-Message-ID: <CAHk-=whTakjVGgBC5OtoZ5Foo=hd4-g+NZ79nkMDVj6Ug7ARKQ@mail.gmail.com>
-Message-ID: <CAHk-=whTakjVGgBC5OtoZ5Foo=hd4-g+NZ79nkMDVj6Ug7ARKQ@mail.gmail.com>
-Subject: Re: [PATCH v3] tty: tty_io: remove hung_up_tty_fops
-To: Marco Elver <elver@google.com>
-Cc: paulmck@kernel.org, Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>, 
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Dmitry Vyukov <dvyukov@google.com>, 
-	syzbot <syzbot+b7c3ba8cdc2f6cf83c21@syzkaller.appspotmail.com>, 
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com, 
-	Nathan Chancellor <nathan@kernel.org>, Arnd Bergmann <arnd@kernel.org>, Al Viro <viro@zeniv.linux.org.uk>, 
-	Jiri Slaby <jirislaby@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240429-strncpy-kernel-printk-printk-c-v1-1-4da7926d7b69@google.com>
 
-On Wed, 1 May 2024 at 13:15, Marco Elver <elver@google.com> wrote:
->
-> This is relatively trivial:
->
-> #ifdef __SANITIZE_THREAD__
-> #define __data_racy volatile
-> #endif
+On Mon, Apr 29, 2024 at 11:06:54PM +0000, Justin Stitt wrote:
+> Cleanup some deprecated uses of strncpy() and strcpy() [1].
+> 
+> There doesn't seem to be any bugs with the current code but the
+> readability of this code could benefit from a quick makeover while
+> removing some deprecated stuff as a benefit.
+> 
+> The most interesting replacement made in this patch involves
+> concatenating "ttyS" with a digit-led user-supplied string. Instead of
+> doing two distinct string copies with carefully managed offsets and
+> lengths, let's use the more robust and self-explanatory scnprintf().
+> scnprintf will 1) respect the bounds of @buf, 2) null-terminate @buf, 3)
+> do the concatenation. This allows us to drop the manual NUL-byte assignment.
+> 
+> Also, since isdigit() is used about a dozen lines after the open-coded
+> version we'll replace it for uniformity's sake.
+> 
+> All the strcpy() --> strscpy() replacements are trivial as the source
+> strings are literals and much smaller than the destination size. No
+> behavioral change here.
+> 
+> Use the new 2-argument version of strscpy() introduced in Commit
+> e6584c3964f2f ("string: Allow 2-argument strscpy()"). However, to make
+> this work fully (since the size must be known at compile time), also
+> update the extern-qualified declaration to have the proper size
+> information.
+> 
+> Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
+> Link: https://github.com/KSPP/linux/issues/90 [2]
+> Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [3]
+> Cc: linux-hardening@vger.kernel.org
+> Signed-off-by: Justin Stitt <justinstitt@google.com>
+> ---
+> ---
+>  include/linux/printk.h |  2 +-
+>  kernel/printk/printk.c | 20 +++++++++-----------
+>  2 files changed, 10 insertions(+), 12 deletions(-)
+> 
+> diff --git a/include/linux/printk.h b/include/linux/printk.h
+> index 955e31860095..b3a29c27abe9 100644
+> --- a/include/linux/printk.h
+> +++ b/include/linux/printk.h
+> @@ -71,7 +71,7 @@ extern void console_verbose(void);
+>  
+>  /* strlen("ratelimit") + 1 */
+>  #define DEVKMSG_STR_MAX_SIZE 10
+> -extern char devkmsg_log_str[];
+> +extern char devkmsg_log_str[DEVKMSG_STR_MAX_SIZE];
+>  struct ctl_table;
+>  
+>  extern int suppress_printk;
+> diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
+> index adf99c05adca..64617bcda070 100644
+> --- a/kernel/printk/printk.c
+> +++ b/kernel/printk/printk.c
+> @@ -178,9 +178,9 @@ static int __init control_devkmsg(char *str)
+>  	 * Set sysctl string accordingly:
+>  	 */
+>  	if (devkmsg_log == DEVKMSG_LOG_MASK_ON)
+> -		strcpy(devkmsg_log_str, "on");
+> +		strscpy(devkmsg_log_str, "on");
+>  	else if (devkmsg_log == DEVKMSG_LOG_MASK_OFF)
+> -		strcpy(devkmsg_log_str, "off");
+> +		strscpy(devkmsg_log_str, "off");
+>  	/* else "ratelimit" which is set by default. */
+>  
+>  	/*
+> @@ -209,7 +209,7 @@ int devkmsg_sysctl_set_loglvl(struct ctl_table *table, int write,
+>  			return -EINVAL;
+>  
+>  		old = devkmsg_log;
+> -		strncpy(old_str, devkmsg_log_str, DEVKMSG_STR_MAX_SIZE);
+> +		strscpy(old_str, devkmsg_log_str);
+>  	}
+>  
+>  	err = proc_dostring(table, write, buffer, lenp, ppos);
+> @@ -227,7 +227,7 @@ int devkmsg_sysctl_set_loglvl(struct ctl_table *table, int write,
+>  
+>  			/* ... and restore old setting. */
+>  			devkmsg_log = old;
+> -			strncpy(devkmsg_log_str, old_str, DEVKMSG_STR_MAX_SIZE);
+> +			strscpy(devkmsg_log_str, old_str);
+>  
+>  			return -EINVAL;
+>  		}
+> @@ -2506,21 +2506,19 @@ static int __init console_setup(char *str)
+>  	/*
+>  	 * Decode str into name, index, options.
+>  	 */
+> -	if (str[0] >= '0' && str[0] <= '9') {
+> -		strcpy(buf, "ttyS");
+> -		strncpy(buf + 4, str, sizeof(buf) - 5);
+> +	if (isdigit(str[0])) {
+> +		scnprintf(buf, sizeof(buf), "ttyS%s", str);
+>  	} else {
+> -		strncpy(buf, str, sizeof(buf) - 1);
+> +		strscpy(buf, str);
+>  	}
+> -	buf[sizeof(buf) - 1] = 0;
+>  	options = strchr(str, ',');
+>  	if (options)
+>  		*(options++) = 0;
+>  #ifdef __sparc__
+>  	if (!strcmp(str, "ttya"))
+> -		strcpy(buf, "ttyS0");
+> +		strscpy(buf, "ttyS0");
+>  	if (!strcmp(str, "ttyb"))
+> -		strcpy(buf, "ttyS1");
+> +		strscpy(buf, "ttyS1");
+>  #endif
+>  	for (s = buf; *s; s++)
+>  		if (isdigit(*s) || *s == ',')
+> 
+> ---
+> base-commit: 9e4bc4bcae012c98964c3c2010debfbd9e5b229f
+> change-id: 20240429-strncpy-kernel-printk-printk-c-6a72fe6d0715
+> 
+> Best regards,
+> --
+> Justin Stitt <justinstitt@google.com>
 
-I really wouldn't want to make a code generation difference, but I
-guess when the sanitizer is on, the compiler generating crap code
-isn't a huge deal.
+Yeah, everything here checks out. I had to read through the sysctl
+handler pretty carefully, but I think this is a nice readability
+improvement. Thanks!
 
-> In some cases it might cause the compiler to complain if converting a
-> volatile pointer to a non-volatile pointer
+-Kees
 
-No. Note that it's not the *pointer* that is volatile, it's the
-structure member.
-
-So it would be something like
-
-        const struct file_operations    * __data_racy f_op;
-
-and only the load of f_op would be volatile - not the pointer itself.
-
-Of course, if somebody then does "&file->f_op" to get a pointer to a
-pointer, *that* would now be a volatile pointer, but I don't see
-people doing that.
-
-So I guess this might be a way forward. Anybody want to verify?
-
-Now, the "hung_up_tty_fops" *do* need to be expanded to have hung up
-ops for every op that is non-NULL in the normal tty ops. That was a
-real bug. We'd also want to add a big comment to the tty fops to make
-sure anybody who adds a new tty f_op member to make sure to populate
-the hung up version too.
-
-                Linus
+-- 
+Kees Cook
 
