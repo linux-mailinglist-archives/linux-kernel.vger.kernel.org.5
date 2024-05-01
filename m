@@ -1,129 +1,153 @@
-Return-Path: <linux-kernel+bounces-165181-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-165182-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id DAB7B8B8928
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 13:21:17 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id C1DED8B892A
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 13:21:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 949C0282A86
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 11:21:16 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 704571F23197
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 11:21:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E00DF770F4;
-	Wed,  1 May 2024 11:21:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13FF360BBE;
+	Wed,  1 May 2024 11:21:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fW2nEUfX"
-Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=tesarici.cz header.i=@tesarici.cz header.b="x7YnD+NQ"
+Received: from bee.tesarici.cz (bee.tesarici.cz [37.205.15.56])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B329D48CE0;
-	Wed,  1 May 2024 11:21:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E373F51012;
+	Wed,  1 May 2024 11:21:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=37.205.15.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714562464; cv=none; b=rFn2NMbh+DBbbJQFRbU3AjONgKFfW/WFX4SD8hTF6NNaa/hn4DoOYLi031YAd1gri31kKbsON6jn8RlRw8ZRoccHk2Je32YFDAlfFWVckg+h77h4L+uwkvBKJstb1QU495MiXcFf81rFvSsHFsvZDO4CTmY3MGjeRPUITdv/BM4=
+	t=1714562502; cv=none; b=Vl82qkRtLq4uH/lMVgVPZsGugvu/T+a3BXPqMio9W5t+a2GQaH1vWF7WiVOXpMN7rwh9YbNDp0zg55fjxrrj8CGoqCgv6xj4oGLw2A7kGk3qijAZZN6wirjBFVI49X1mGgoe9O/DRKk0UZi1IWstlL7BVrvwwGQu0IzJJtfY9kk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714562464; c=relaxed/simple;
-	bh=3M3Wnl/h2raSpsy6VCZxZzdAzQMNJsqJJU3/6NMSVjQ=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=Cj+hdZsmMdFGZYuGzgOZxXe4ulFZn9JC/p52JHpWiHzyOe1VJ07TC3EbBEXZpfVgnfkVOk/z7I9qWBVYu2VQ0asSzZCLIbqUGYIxESrkWMuyFwkkoJ1LEEV6PopbofixDRNltkg3E4J8RjFoytcGg7fbt7/DNns2JxqcPhxcwv8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fW2nEUfX; arc=none smtp.client-ip=209.85.128.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-41b2119da94so51980205e9.0;
-        Wed, 01 May 2024 04:21:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714562461; x=1715167261; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=qq4XqB6hBIbawz6bEQ9yMFUln9F1VDqBqpK6RBvlwPM=;
-        b=fW2nEUfXzIjViKuY77EqD0IqkrAV4DNJZMKaWzvbLU/2Ryw5p6GRCxbrOd/uEcalRE
-         oP9XrSwrCCEZQtUFZko9UL4cZb1rucUCYKjHy0qkj4XU52l5JP3tSG+sLBVdPE0rAfAq
-         Fefen3lHRGy7mhwzctqPcsiDDg8EsUSQx98dMDc5hdBkjZYHRDSb4NkbIuaVyoNTt5Ej
-         k9YiB2/Z8STkO8/CIMqO46J00VanmEPDza0u0mNx3BV2a+2U2vCmZp5HrondkocFqP/0
-         dw1cE1SrNueiuTIwyMWRJrt3+eRyQPVV/qyGW+UD676ZFiZCI8vh8ffTmWEv9Xcd+mC4
-         Qxdw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714562461; x=1715167261;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=qq4XqB6hBIbawz6bEQ9yMFUln9F1VDqBqpK6RBvlwPM=;
-        b=pT/da/WohQ2IGD4KYvWdssTyH4gw4S8JF/qVQ6iS5X0wqPYOY0oBEF1iet9eWPKBVB
-         g/qo5tWlmeYP1OIIRxJLVUZHuoN54wuDn8tJ//khre/PI6pigyEcWIj/wPGl5DxmPBTO
-         PACwA1SaEwjKluElGwOjGGE/fuj4hK8UT+Xbp78QwVY7IW39MQG7UrTjp0ZAgh6jxuTn
-         xcCyDPAlnMfIJW3lUARsDSykWcPeVYLCIPgWF+trHW1V1UdvvN6SHueVyEWh5gv8URmt
-         N/f0kKIW3RqVlKjHP7kWrZoA5pt8Ajkn0WaDbYHSI9TUXpaw7sjL0ApPOGAWwIPYIKwN
-         jAAA==
-X-Forwarded-Encrypted: i=1; AJvYcCXWeCX+hZtczUfY2ZDluHLjfdUt0bKSemT8db7jHVakmK5t3s7Qz6lIb5dGCBqErNhlNLSzBe36FyFXCx2OsEZBLzvgfok3NnsW4XCmSGB92TD2IVFtFdmrp7+HXPgKrgVqhKUigufgtmRVt/SeBF74oKu/coHLYl+5g4uEdfMX65n1
-X-Gm-Message-State: AOJu0Yy7LnE87JOfoHE5SG0U25iYwrH69hZcriM2jovsInSz+N3seNtR
-	bEjIrtVwrOtomty8xzbGFoBZTYhEfI4FSBPdTKRAN8g4pHk4Ip+h
-X-Google-Smtp-Source: AGHT+IH6M5+jC4MHPn/cHXX4xJnlJS7nu6wiILZSJkRaZS8YtKJ8bZOzpCSMaw/rWyJBWAI4FuqZ6g==
-X-Received: by 2002:a05:600c:1e09:b0:41a:7065:430a with SMTP id ay9-20020a05600c1e0900b0041a7065430amr1702106wmb.41.1714562460801;
-        Wed, 01 May 2024 04:21:00 -0700 (PDT)
-Received: from localhost (craw-09-b2-v4wan-169726-cust2117.vm24.cable.virginm.net. [92.238.24.70])
-        by smtp.gmail.com with ESMTPSA id hn25-20020a05600ca39900b00419f419236fsm1864481wmb.41.2024.05.01.04.20.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 01 May 2024 04:20:59 -0700 (PDT)
-From: Colin Ian King <colin.i.king@gmail.com>
-To: Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Song Liu <song@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Mykola Lysenko <mykolal@fb.com>,
-	Shuah Khan <shuah@kernel.org>,
-	bpf@vger.kernel.org,
-	linux-kselftest@vger.kernel.org
-Cc: kernel-janitors@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH][next] selftests/bpf: Fix spelling mistake "{GET|SET}SOCKOP" -> "{GET|SET}SOCKOPT"
-Date: Wed,  1 May 2024 12:20:59 +0100
-Message-Id: <20240501112059.1348423-1-colin.i.king@gmail.com>
-X-Mailer: git-send-email 2.39.2
+	s=arc-20240116; t=1714562502; c=relaxed/simple;
+	bh=aukg8XygoU/tHZmfHQJiWI5+qkxsLkxS+JlmBKyJbLw=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=C8KGjPcF6u0OoJ3MWmDMREX+TC+zp7e40lyrZz0ytN/CB72Mi2M5Km95Xh+m3AueN3J+EwqybbhG0xeHfWEaeZSBjvwlbXhHzru7vSbOjFL5MYHy/mLDX6ERmDmkJ/YBdv5cvmGIFLUwXIdUMHpNjfhVdxs/g/QV4HK8g2pySxI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=tesarici.cz; spf=pass smtp.mailfrom=tesarici.cz; dkim=pass (2048-bit key) header.d=tesarici.cz header.i=@tesarici.cz header.b=x7YnD+NQ; arc=none smtp.client-ip=37.205.15.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=tesarici.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tesarici.cz
+Received: from meshulam.tesarici.cz (dynamic-2a00-1028-83b8-1e7a-4427-cc85-6706-c595.ipv6.o2.cz [IPv6:2a00:1028:83b8:1e7a:4427:cc85:6706:c595])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by bee.tesarici.cz (Postfix) with ESMTPSA id DD01D1B3EAE;
+	Wed,  1 May 2024 13:21:35 +0200 (CEST)
+Authentication-Results: mail.tesarici.cz; dmarc=fail (p=quarantine dis=none) header.from=tesarici.cz
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tesarici.cz; s=mail;
+	t=1714562496; bh=yX5KcB4S/Oqw9I+Le8+2EvUssgBuoEZIsBVsDa++6bQ=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=x7YnD+NQizeLFfIPEfS6HPJcDPqVH2aC1DcJ08dc1CY9Q4vyP9qAmhSFnSQd994ML
+	 ZpfhnGzUJIkWXb3k4B1WaUXanOYriGkWp/fZvYGDJBOeBdfMRlyAqbw/1RXs9UqwQ1
+	 5HlZ8qIEwXz/E7i9EX9QFmQsgg+uosJoFlQAbK7VYH5t/FH5O9+JG2UwuMUyAlxjgn
+	 j2ZVCOftiRUCMuYaYfnhg30eoJ0QgKQBWkQH+E7z+G8DbwCohOJm8XVnMEVmtkRpuX
+	 wY7PPUd5SRtX20Oo6mg/UMQR4RJ8HgNILrjHZU1pwyGudT72UOffIFrqULRqLV5teZ
+	 QyGfXSi9db70A==
+Date: Wed, 1 May 2024 13:21:34 +0200
+From: Petr =?UTF-8?B?VGVzYcWZw61r?= <petr@tesarici.cz>
+To: Christoph Hellwig <hch@lst.de>
+Cc: mhkelley58@gmail.com, mhklinux@outlook.com, robin.murphy@arm.com,
+ joro@8bytes.org, will@kernel.org, m.szyprowski@samsung.com, corbet@lwn.net,
+ iommu@lists.linux.dev, linux-kernel@vger.kernel.org,
+ linux-doc@vger.kernel.org, roberto.sassu@huaweicloud.com
+Subject: Re: [PATCH v3 1/1] Documentation/core-api: Add swiotlb
+ documentation
+Message-ID: <20240501132134.24d3d5d8@meshulam.tesarici.cz>
+In-Reply-To: <20240501044910.GD31252@lst.de>
+References: <20240429151337.1069470-1-mhklinux@outlook.com>
+	<20240430132413.69797af1@mordecai>
+	<20240501044910.GD31252@lst.de>
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-suse-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-There are two spelling mistakes in .descr literal strings. Fix them.
+On Wed, 1 May 2024 06:49:10 +0200
+Christoph Hellwig <hch@lst.de> wrote:
 
-Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
----
- tools/testing/selftests/bpf/prog_tests/sockopt.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+> On Tue, Apr 30, 2024 at 01:24:13PM +0200, Petr Tesa=C5=99=C3=ADk wrote:
+> > > +swiotlb was originally created to handle DMA for devices with addres=
+sing
+> > > +limitations. As physical memory sizes grew beyond 4 GiB, some device=
+s could
+> > > +only provide 32-bit DMA addresses. By allocating bounce buffer memor=
+y below
+> > > +the 4 GiB line, these devices with addressing limitations could stil=
+l work and
+> > > +do DMA. =20
+> >=20
+> > IIRC the origins are even older and bounce buffers were used to
+> > overcome the design flaws inherited all the way from the original IBM
+> > PC. =20
+>=20
+> [correct, but for swiotlb largely irrelevant PC addressing bits snipped]
+>=20
+> swiotlb was added with the merge of the ia64 port to address 32-bit
+> addressing limitations.  The 1MB addressing limitations of the PC did
+> and still do of course exist, but weren't dealt with in any coherent
+> fashion, and still aren't.  Swiotlb isn't related to them.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/sockopt.c b/tools/testing/selftests/bpf/prog_tests/sockopt.c
-index eaac83a7f388..ecf5a7a047a4 100644
---- a/tools/testing/selftests/bpf/prog_tests/sockopt.c
-+++ b/tools/testing/selftests/bpf/prog_tests/sockopt.c
-@@ -933,7 +933,7 @@ static struct sockopt_test {
- 	/* ==================== prog_type ====================  */
- 
- 	{
--		.descr = "can attach only BPF_CGROUP_SETSOCKOP",
-+		.descr = "can attach only BPF_CGROUP_SETSOCKOPT",
- 		.insns = {
- 			/* return 1 */
- 			BPF_MOV64_IMM(BPF_REG_0, 1),
-@@ -947,7 +947,7 @@ static struct sockopt_test {
- 	},
- 
- 	{
--		.descr = "can attach only BPF_CGROUP_GETSOCKOP",
-+		.descr = "can attach only BPF_CGROUP_GETSOCKOPT",
- 		.insns = {
- 			/* return 1 */
- 			BPF_MOV64_IMM(BPF_REG_0, 1),
--- 
-2.39.2
+Thanks for correcting me. Oh, and this is probably why some drivers did
+their own bounce buffering. I was mistaken that swiotlb was supposed to
+clean up the existing mess...
 
+> > > +data to/from the original target memory buffer. The CPU copying brid=
+ges between
+> > > +the unencrypted and the encrypted memory. This use of bounce buffers=
+ allows
+> > > +existing device drivers to "just work" in a CoCo VM, with no modific=
+ations
+> > > +needed to handle the memory encryption complexity. =20
+> >=20
+> > This part might be misleading. It sounds as if SWIOTLB would not be
+> > needed if drivers were smarter. But IIUC that's not the case. SWIOTLB
+> > is used for streaming DMA, where device drivers have little control
+> > over the physical placement of a DMA buffer. For example, when a
+> > process allocates some memory, the kernel cannot know that this memory
+> > will be later passed to a write(2) syscall to do direct I/O of a
+> > properly aligned buffer that can go all the way down to the NVMe driver
+> > with zero copy. =20
+>=20
+> I think the statement in the text is fine and easy to understand.  CoCo
+> drivers could instead always map the memory unencrypted (which would have
+> no so nice security and performance properties) or use fixed ringbuffers
+> in shared unencrypted memory (which would require a different driver
+> architecture).
+>=20
+> > > +block. Hence the default memory pool for swiotlb allocations must be
+> > > +pre-allocated at boot time (but see Dynamic swiotlb below). Because =
+swiotlb
+> > > +allocations must be physically contiguous, the entire default memory=
+ pool is
+> > > +allocated as a single contiguous block. =20
+> >=20
+> > Allocations must be contiguous in target device's DMA address space. In
+> > practice this is achieved by being contiguous in CPU physical address
+> > space (aka "physically contiguous"), but there might be subtle
+> > differences, e.g. in a virtualized environment.
+> >=20
+> > Now that I'm thinking about it, leave the paragraph as is, and I'll
+> > update it if I write the code for it. =20
+>=20
+> Heh.  The only think making cpu non-contiguous address space contiguous
+> for a device is an iommu.  And when we have that we only use swiotlb
+> for unaligned iommu pages, so I'm not sure how we'd ever get there.
+
+Yes, there's no way to make CPU non-contiguous addresses contiguous for
+a device (except with IOMMU), but there are some real-world bus bridges
+that make a CPU contiguous address range non-contiguous for a target
+device, most often by limiting the address width and overflowing at the
+correspondign boundary.
+
+This is moot anyway, because I suggest to leave the paragraph as is.
+
+Petr T
 
