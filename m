@@ -1,169 +1,143 @@
-Return-Path: <linux-kernel+bounces-165769-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-165770-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 66C568B9104
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 23:14:03 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3FD268B910D
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 23:21:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9ED95B2260B
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 21:14:00 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EA4D9283372
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 21:21:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 185C0165FC0;
-	Wed,  1 May 2024 21:13:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B88A165FBA;
+	Wed,  1 May 2024 21:20:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="MhpZH0Bu"
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="c1B8vUXJ"
+Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DFDD2155354;
-	Wed,  1 May 2024 21:13:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E23D4D52F
+	for <linux-kernel@vger.kernel.org>; Wed,  1 May 2024 21:20:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714598032; cv=none; b=djk2G+ROxYJnMH8taim2rffqievnWZBMMTeYTjc1GPiHj9WmA/22PGLvR9u3wFi8oWqYlyWAd3vHGBQKLp5lIM2aETsArW/osiArBCjp2JN65uePsoxP7khUjjhe6upOkHTyCyP5/u4IyNsl/8vlyyQavsfEFSsboO+HkqZ9haQ=
+	t=1714598457; cv=none; b=W7xA84CKBBsiXB42o6w71/Lu7rglJtf+o2Q9PaSbn9oS2GTqyk/Jq/dmwTyuEPlJXNgih0LmqoS0kwBBvKT1gPJtGJWUEr/HJi+andVKl2m8pkJpsDJaXs4AqYsUI1Tgn1Qxli4Jx2mq33Qvt687hXo/Cm+33ZPUGMnMc3z3lmc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714598032; c=relaxed/simple;
-	bh=Fjv5fHYgpvYAi7LV9NlFlvlxokkvAoEPcv+1ofHxJ1I=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=qA3u7rWBv+bbO4Q2Qr+gy0MuRaBE+ZhWPPAnYFsRogecfAjBlgMJAk6ymmrJW5JVu7RQ+ynRNzGG1xYTvt+FIvl8Gt3WQkt3nsP0bMT1yOsn4i+uujMJtiHcX4njC4YmJHdD1uctmqWx+9qSy41M3y1q2IIRod/YMZsUqhRXJ8U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=MhpZH0Bu; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353724.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 441Kwocq000881;
-	Wed, 1 May 2024 21:13:30 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=+WNt8HcbBneSMStXoQNcHoy6yy7Pf5ZoXUsn8QlgbVA=;
- b=MhpZH0BuMfMJseopuxFp/77+8WEWAa7Aeg+UZFvyRdLo8RnO7z/ekElFkYsxLSwPdNqu
- MMx8vgcd0K0Xz0bEFooWyPk0UhYAZYssdYbLyIAKvGONXE2KKbbnYvdMwfOrU29x0SbL
- mDJmDo4+pb4IJK8pJvSikRZqWLvIHzInSW3ZcbjMRUamr0MdhlNMeGDiVicBSh0Bs4ty
- 2X0TxE6NzPDbXbM/VB+1jvbOQAfH3qLj6zMxnHEHObcDMA65O57IcZ65vNMXOzeDGt/g
- BrrmCU9DSxnvaL7REaOx5o4xgCUB4EWCz9snNFDJfu9/Vd8PxNHEEd1RSjV+esML7RyN Vw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xuw80r0w7-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 01 May 2024 21:13:30 +0000
-Received: from m0353724.ppops.net (m0353724.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 441LDTlX021169;
-	Wed, 1 May 2024 21:13:29 GMT
-Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xuw80r0w6-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 01 May 2024 21:13:29 +0000
-Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 441JjaXU002989;
-	Wed, 1 May 2024 21:13:29 GMT
-Received: from smtprelay01.wdc07v.mail.ibm.com ([172.16.1.68])
-	by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3xscppmjbp-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 01 May 2024 21:13:29 +0000
-Received: from smtpav01.dal12v.mail.ibm.com (smtpav01.dal12v.mail.ibm.com [10.241.53.100])
-	by smtprelay01.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 441LDQ4T47448784
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 1 May 2024 21:13:28 GMT
-Received: from smtpav01.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 6829658057;
-	Wed,  1 May 2024 21:13:26 +0000 (GMT)
-Received: from smtpav01.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id D5D6D58059;
-	Wed,  1 May 2024 21:13:25 +0000 (GMT)
-Received: from li-5cd3c5cc-21f9-11b2-a85c-a4381f30c2f3.ibm.com (unknown [9.61.157.98])
-	by smtpav01.dal12v.mail.ibm.com (Postfix) with ESMTP;
-	Wed,  1 May 2024 21:13:25 +0000 (GMT)
-Message-ID: <e1d868f3612f2e3480e84d6489a78337a68cb748.camel@linux.ibm.com>
-Subject: Re: [RFC 2/2] ima: Fix detection of read/write violations on
- stacked filesystems
-From: Mimi Zohar <zohar@linux.ibm.com>
-To: Miklos Szeredi <miklos@szeredi.hu>
-Cc: Stefan Berger <stefanb@linux.ibm.com>,
-        Amir Goldstein
- <amir73il@gmail.com>, linux-integrity@vger.kernel.org,
-        linux-unionfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        roberto.sassu@huawei.com, Christian Brauner <brauner@kernel.org>
-Date: Wed, 01 May 2024 17:13:25 -0400
-In-Reply-To: <CAJfpegtH8z3uRcSPCQ_3kj-XoV9rUnJc5nE+CQSrCuBMajEmeQ@mail.gmail.com>
-References: <20240412140122.2607743-1-stefanb@linux.ibm.com>
-	 <20240412140122.2607743-3-stefanb@linux.ibm.com>
-	 <CAOQ4uxjDQO91cjA0sgyPStkwc_7+NxAOhyve94qUvXSM3ytk1g@mail.gmail.com>
-	 <89b4fb29-5906-4b21-8b5b-6b340701ffe4@linux.ibm.com>
-	 <CAJfpeguctirEYECoigcAsJwpGPCX2NyfMZ8H8GHGW-0UyKfjgg@mail.gmail.com>
-	 <b74a9a3edc52d96a7a34d6ba327fdb2a5a79a80d.camel@linux.ibm.com>
-	 <CAJfpegvPwpS5_S4qrrVbeC1RovP8jeNuDCYLbdcZ_XDFgfgftQ@mail.gmail.com>
-	 <52645fb25b424e10e68f0bde3b80906bbf8b9a37.camel@linux.ibm.com>
-	 <CAJfpegsHJ1JsM3SxNk5gnUM+aucqOqNm3RTrsYgePkcQYR4EEw@mail.gmail.com>
-	 <e052c1b5d2aa29b3a1f3a8086af4fb8a94c4d318.camel@linux.ibm.com>
-	 <CAJfpeguzh6VzhdnwOPf_hM4x0FbsK8hhZp=VK4kWpCYn0xeBCg@mail.gmail.com>
-	 <254ee35d6534089e99f7396582572606f24ff3a2.camel@linux.ibm.com>
-	 <CAJfpegtH8z3uRcSPCQ_3kj-XoV9rUnJc5nE+CQSrCuBMajEmeQ@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5 (3.28.5-25.el8_9) 
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: vaRNOZvMwMH-RosCNAwXxXi3LMYThG4I
-X-Proofpoint-ORIG-GUID: SQXZj7dqipWfHnMks8cJlRrnf_d2rjbO
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+	s=arc-20240116; t=1714598457; c=relaxed/simple;
+	bh=O34grSvAn3ldZ0aHb/U4Q+6zVX17IPoCgaWasx5R/TU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=bxfO1+rbFdOth37Kv5d8syH6/mudvFljOC4f8cCv+xWtg+Ak9Kb3cqVTTjbnAW7Resj1beIRc/1IubFp/gUpBnSExuime+e1gE9Gmys18tKDt8ygIXA2/1sWJmdpt6Pd1DVuWl2OOc/U2ruz4xWOXFFkiHqqlml9ihj7EKqOUAg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=c1B8vUXJ; arc=none smtp.client-ip=209.85.208.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-56e69a51a33so6603830a12.1
+        for <linux-kernel@vger.kernel.org>; Wed, 01 May 2024 14:20:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1714598454; x=1715203254; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=j0f+lrtMA8Tr8cBnaWXK4wxxIlkiIC1fLe265KtbI7g=;
+        b=c1B8vUXJ+Gc6JL1h/iab4RhLdu/i9CoRx4djGzqSPqzTJjjCLkQqaxCm3U1JW9/iou
+         o471sQC4jqirHTn02irdZAYzn7rBmHqEC0c59ejXQ1dQPEq0z7hkLAZiX5zmWQDC19Of
+         QrM3bl+DWqPuItdkYe6sC/Ftyg6nA92I1Y6Cw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714598454; x=1715203254;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=j0f+lrtMA8Tr8cBnaWXK4wxxIlkiIC1fLe265KtbI7g=;
+        b=mVbkc42pIAbmIXyyTP2dXQ0H3igGTmKd5/hWgpsSTDDy06i1RumovrHSOFl2DCrOLA
+         rLAVI62FOqFA6vgNDZ89cJ7Edzbbc2HAQM4lWUN39tooH/vlbfXdUQYYGrqK9euOZe9W
+         S/X8IvBgPAUZYsRa2pCPZgU4vvjtvufu1NIf+jGlUWqUsoz/L6jF+Uuel1ucn/Q2YGfm
+         OJp/aTtJo9zgufhRuO2Kvw/Ew06MdGV3z9IfaAD9pX0tVUN8VgwQr7hLoM1RI8YJTVEt
+         bOSO4rWWuN3ZGY+5CTgV4bdMeHmWo+ixQDW1EOizuBJsTR9t9hZ3woSvKguD8nW+9B77
+         olbg==
+X-Forwarded-Encrypted: i=1; AJvYcCVMGkGUZcT+ebNiJpxXZUmqxBO50F6LBCrAg7Ry9hI2AL3BxbVsz/m6geD797xJnzCJn8lwVW7XsDJG7nXKMZakD2C0tCYpFlZPTViF
+X-Gm-Message-State: AOJu0Yw2gWc1hpcPJA1WULpwZBQXWbu6Z1eZ1b/iOCjFocCwDlcwZWDx
+	Jg9Z142+tN46zDQt+d9aOqdz+iyPRNDjvATsuA5B/04T2W95jsRGwqb06bKgpqxYKvWPGcaR2oE
+	1iYrC8Q==
+X-Google-Smtp-Source: AGHT+IGb7WUaYjODnFI1iueNFB//cAE+dMAW6LLnn3+dZ4+f13PWVLWC5f5bKxUu7SIOjF7A8Uxc2w==
+X-Received: by 2002:a50:f619:0:b0:572:72fc:df54 with SMTP id c25-20020a50f619000000b0057272fcdf54mr149557edn.22.1714598454100;
+        Wed, 01 May 2024 14:20:54 -0700 (PDT)
+Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com. [209.85.218.46])
+        by smtp.gmail.com with ESMTPSA id ec4-20020a0564020d4400b00572accd13dasm1019037edb.80.2024.05.01.14.20.52
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 01 May 2024 14:20:53 -0700 (PDT)
+Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-a519e1b0e2dso955962866b.2
+        for <linux-kernel@vger.kernel.org>; Wed, 01 May 2024 14:20:52 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCWZa3cqOY0AstqDlSvVaS1jGZNzAklJdUWEUwODLe99xziPhEyRBADd9fYQHXNFZJb/cuO/lllzQ9XnxPANWzaqoFArzxks81jDRsH5
+X-Received: by 2002:a17:906:2e87:b0:a55:b581:dca8 with SMTP id
+ o7-20020a1709062e8700b00a55b581dca8mr92670eji.38.1714598452573; Wed, 01 May
+ 2024 14:20:52 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
- definitions=2024-05-01_16,2024-04-30_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999
- lowpriorityscore=0 priorityscore=1501 mlxscore=0 malwarescore=0
- phishscore=0 suspectscore=0 bulkscore=0 clxscore=1011 spamscore=0
- adultscore=0 impostorscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2404010000 definitions=main-2405010149
+References: <8edbd558-a05f-c775-4d0c-09367e688682@I-love.SAKURA.ne.jp>
+ <2023053048-saved-undated-9adf@gregkh> <18a58415-4aa9-4cba-97d2-b70384407313@I-love.SAKURA.ne.jp>
+ <CAHk-=wgSOa_g+bxjNi+HQpC=6sHK2yKeoW-xOhb0-FVGMTDWjg@mail.gmail.com>
+ <a3be44f9-64eb-42e8-bf01-8610548a68a7@I-love.SAKURA.ne.jp>
+ <CAHk-=wj6HmDetTDhNNUNcAXZzmCv==oHk22_kVW4znfO-HuMnA@mail.gmail.com>
+ <CANpmjNN250UCxsWCpUHAvJo28Lzv=DN-BKTmjEpcLFOCA+U+pw@mail.gmail.com>
+ <CAHk-=whnQXNVwuf42Sh2ngBGhBqbJjUfq5ux6e7Si_XSPAt05A@mail.gmail.com>
+ <d4de136e-c4e0-45c2-b33e-9a819cb3a791@paulmck-laptop> <CAHk-=wi3iondeh_9V2g3Qz5oHTRjLsOpoy83hb58MVh=nRZe0A@mail.gmail.com>
+ <892324fc-9b75-4e8a-b3b6-cf3c5b4c3506@paulmck-laptop> <CANpmjNOY=Qpm3hBu-eN4Xk8n-2VXQRvcQ3_PfwPwNw9MmC8ctw@mail.gmail.com>
+ <CAHk-=whTakjVGgBC5OtoZ5Foo=hd4-g+NZ79nkMDVj6Ug7ARKQ@mail.gmail.com>
+In-Reply-To: <CAHk-=whTakjVGgBC5OtoZ5Foo=hd4-g+NZ79nkMDVj6Ug7ARKQ@mail.gmail.com>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Wed, 1 May 2024 14:20:35 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wiGzmJXZwHxCE6P0jVBqU4gHEm=zcfj3v+zM_S_9RF4_Q@mail.gmail.com>
+Message-ID: <CAHk-=wiGzmJXZwHxCE6P0jVBqU4gHEm=zcfj3v+zM_S_9RF4_Q@mail.gmail.com>
+Subject: Re: [PATCH v3] tty: tty_io: remove hung_up_tty_fops
+To: Marco Elver <elver@google.com>
+Cc: paulmck@kernel.org, Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Dmitry Vyukov <dvyukov@google.com>, 
+	syzbot <syzbot+b7c3ba8cdc2f6cf83c21@syzkaller.appspotmail.com>, 
+	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com, 
+	Nathan Chancellor <nathan@kernel.org>, Arnd Bergmann <arnd@kernel.org>, Al Viro <viro@zeniv.linux.org.uk>, 
+	Jiri Slaby <jirislaby@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 
-On Tue, 2024-04-23 at 13:06 +0200, Miklos Szeredi wrote:
-> On Tue, 16 Apr 2024 at 21:06, Mimi Zohar <zohar@linux.ibm.com> wrote:
-> > On Tue, 2024-04-16 at 16:46 +0200, Miklos Szeredi wrote:
-> > > On Tue, 16 Apr 2024 at 14:18, Mimi Zohar <zohar@linux.ibm.com> wrote:
-> > > > Originally there was a single measureent unless the filesystem was mounted with
-> > > > SB_I_VERSION.  With commit a2a2c3c8580a ("ima: Use i_version only when
-> > > > filesystem supports it") this changed to always re-measure the file if the
-> > > > filesystem wasn't mounted with SB_I_VERSION.
-> > > 
-> > > Does the i_version get stored and compared only while the inode is in memory?
-> > > 
-> > > In that case I think it should be possible to support a version number
-> > > for the overlay inode.
-> > 
-> > i_version was insufficient to detect a file change for overlay.  Commit
-> > b836c4d29f27 ("ima: detect changes to the backing overlay") also compares the
-> > i_ino and s_dev as well.  Refer to
-> > https://lore.kernel.org/lkml/20231025143906.133218-1-zohar@linux.ibm.com/.
-> 
-> Which is rather ad-hoc.
-> 
-> I'm talking about returning something in overlay i_version, which
-> really indicates the version of the overlay file calculated from the
-> i_version of the underlying files.  The only issue is making this
-> i_version persistent, AFAICS.  If that's not needed than the overlayfs
-> specific logic in IMA could be moved into overlayfs, where it belongs.
+On Wed, 1 May 2024 at 14:06, Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
+>
+> So it would be something like
+>
+>         const struct file_operations    * __data_racy f_op;
+>
+> and only the load of f_op would be volatile - not the pointer itself.
 
-IMA saves the i_version in order to detect whether or not the file has changed.
-between one access and another. The i_version value, itself, does not need to be
-persistent but needs to be consistent.
+Noe that in reality, we'd actually prefer the compiler to treat that
+"__data_racy" as volatile in the sense of "don't reload this value",
+but at the same time be the opposite of volatile in the sense that
+using one read multiple times is actually a good idea.
 
-> 
-> > Here in this patch set we need to detect IMA read/write violations, based on the
-> > i_readcount/i_writecount.  If an overlay file is opened for read, but the
-> > backing file is already opened for write, the file measurement is
-> > meaningless.  An "open-writers" violation needs to be generated; and the IMA
-> > measurement list needs to be invalidated.
-> 
-> If there's no other way, then let's implement an API to query the
-> writecount that can take overlayfs into account.  This is for the VFS
-> and/or overlayfs to calculate, not for IMA.
+IOW, the problem is rematerialization ("read the value more than once
+when there is just one access in the source"), not strictly a "read
+the value separately each time it is accessed".
 
-Thanks, that will definitely simplify IMA.
+We've actually had that before: it's not that we want each access to
+force a read from memory, we want to avoid a TOCTOU race.
 
-Mimi
+Many of our "READ_ONCE()" uses are of that kind, and using "volatile"
+sadly generates horrible code, but is the only way to tell the
+compiler to not ever rematerialize the value by loading it _twice_.
 
+I'd love to see an extension where "const volatile" basically means
+exactly that: the volatile tells the compiler that it can't
+rematerialize by doing the load multiple times, but the "const" would
+say that if the compiler sees two or more accesses, it can still CSE
+them.
+
+Oh well. Thankfully it's not a hugely common code generation problem.
+It comes up every once in a while, and I think the last time this
+worry came up, I think we had gcc people tell us that they don't
+actually ever rematerialize loads from memory.
+
+Of course, that was an implementation issue, not a guarantee.
+
+                           Linus
 
