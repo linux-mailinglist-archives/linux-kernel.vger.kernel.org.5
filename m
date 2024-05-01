@@ -1,337 +1,113 @@
-Return-Path: <linux-kernel+bounces-165319-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-165321-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 46F918B8B38
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 15:31:35 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 447CC8B8B43
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 15:33:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0357D2823F6
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 13:31:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DA1521F23466
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 13:33:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D45E712E1DE;
-	Wed,  1 May 2024 13:31:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E2FBC12E1E4;
+	Wed,  1 May 2024 13:33:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b="oxCQdFTt"
-Received: from smtp-relay-internal-0.canonical.com (smtp-relay-internal-0.canonical.com [185.125.188.122])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BdNsCGdc"
+Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CCACD5029A
-	for <linux-kernel@vger.kernel.org>; Wed,  1 May 2024 13:31:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.125.188.122
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16DCD12DDB0;
+	Wed,  1 May 2024 13:33:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714570287; cv=none; b=RITmYkAXKUE0FUTI1Ru1dhubqXtgxepDU2hr6pefXL60OqC6y6Gi5OUFoPicfGstz5D6JF88q4GOlm0bxjgp4QNnMLPuQJTH0NB35a2H9+C/j0pdI54DfnwzHRD97dE+JIVq1WrF7Dksrg08/iWCj423M811Uz7/BoamhZf4AhY=
+	t=1714570424; cv=none; b=hBGbWXFD8S4VSaJtUiwRiPbp6AvQ4SujGK9Np716Uu1uMQ6bK8A8nEKN1jnnb2vIA3tGfL8Gz1HS3/aN/vOatuf2s2PHAK5cTvmEvVyiJ/ciNtZNV0OPJ6qGGhU0u+CvG2RxrZ8azV3XDn3y6zAyvg1K6GP6d8k02DtWYmqCs2s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714570287; c=relaxed/simple;
-	bh=GOV9SpBdrbLUHNqrWyub6cb3BrALMYIpAncwmbro2yc=;
-	h=From:In-Reply-To:References:Mime-Version:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=g4LaT+nNnP3Fex+So0G8W4ZPItJEEY1EuNsj6je6+9NMe74NC6Xvn/WLN+jAOiDqfadHiGAWbxLlM4olGzD1K+0ST4ncE16c1kY2BM/WujX4Z3Ai1ffvbxlk7idWSmto53uvN+i6W4JBhlpB37tERq1F6pulySQe7R9N3ZyFdJc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com; spf=pass smtp.mailfrom=canonical.com; dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b=oxCQdFTt; arc=none smtp.client-ip=185.125.188.122
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canonical.com
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com [209.85.218.69])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 536FF410AF
-	for <linux-kernel@vger.kernel.org>; Wed,  1 May 2024 13:31:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-	s=20210705; t=1714570279;
-	bh=c8oK9gFYZNPK8JjkQaEUib/TlJXrHwdRQFsXpehmfQo=;
-	h=From:In-Reply-To:References:Mime-Version:Date:Message-ID:Subject:
-	 To:Cc:Content-Type;
-	b=oxCQdFTtQhG9tOtVfZ7VTu7oupcXNvpxRK91LOOnA3CtloGmCaC15xPhLxDM4Eux/
-	 qhZ5CeTXAN337oRF53S5UJ6uo/fQ2IWXPKIgu0mM69RI6QKHnJbLwtA4zfnpf9Tr8R
-	 EasLBjqltjLiXR8s2xU9cgLuhGFOog5uAufzbICIXkDFhu/v6qTW9QEzCLaFsr5Rkn
-	 RAiwWTzlytxQ4te9a1NwCCGiC36zIf/+5Ligs260ieh/+f7hfnYQ6DxXGkRlMISawx
-	 VTW1BH7f0eH7vbgpqV62FmrO1r0OSbxpuIm5RfxYG8etuAUMcOcj/dOggknPHtktE0
-	 hvkp4TrDFNh3A==
-Received: by mail-ej1-f69.google.com with SMTP id a640c23a62f3a-a58db282330so83876966b.0
-        for <linux-kernel@vger.kernel.org>; Wed, 01 May 2024 06:31:19 -0700 (PDT)
+	s=arc-20240116; t=1714570424; c=relaxed/simple;
+	bh=v1uq+AqyCYjTejfbtW5mvJzoxMflu+kesffuEm3SeEI=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=J1qj5FylZj6DFHkwcgNxyKYj48Y5cdDFvySAEch/CNB2DT+5/nuUbWH3dhWAzf1FbhpGbQMNOkiVGtIe5rQ86Ls1HFdcy72MHYr2HxFlwkU+RcoPiD3awqiA+VeaKjuOjQiMbGObhPoQys6lmM0TI4yYw8fPqWJDnKVrV467t+U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BdNsCGdc; arc=none smtp.client-ip=209.85.214.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-1ec69e3dbe5so12082975ad.0;
+        Wed, 01 May 2024 06:33:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1714570422; x=1715175222; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=RIs2EAnwhy7zwu/YLIZtkKABdkCncOCCKCOVBsGpvIA=;
+        b=BdNsCGdcqgcqVexGQrbg/DJ+fklwWTfkZL7NTPXycG4Om0c9e8VU9TShvK63b/CZdb
+         zMr52VghsyYXzq/rGi9StMvZJBlDGjH8y2cZzaTkYNhfUTTJZLcy/I4xHbi9xnYloO2u
+         jBzdyGpF1bILKMwAkJ9GkUFRmGFz93ZH8YI11vDcQjICsO3TQVIzSrkWQmc1Sa05bdZV
+         OFtXZeV3wBZisXojvoufn5I6emQc8XQPjMwbDCPFVeVrdDgMoGNa8gQQP68ea6rtKDHL
+         YXlPrMaBC2UG4HIVj4hQ4jp+I16hCkzlSaXco57VCJhrNHsFp60afPTnUWKllC5Co4iy
+         TAQA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714570278; x=1715175078;
-        h=cc:to:subject:message-id:date:mime-version:references:in-reply-to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=c8oK9gFYZNPK8JjkQaEUib/TlJXrHwdRQFsXpehmfQo=;
-        b=icyE5O1ll20gUPzP7JsQPH9rVSnwfOvMVpr4xubrRn8q/ADsh8rEU30plodw1KOyCK
-         lFRRcTjAFMuB5OLCgFsY9wDRyIXmGWB0nGBJNCBBk3OogoBFhDp4yJX/W/WIJQgw7sKL
-         XxbrUXPfHo+3v8Eu9ayMVPCEar2gh86APP/e8PBbE8p0cR4mIbrr3HIo9HC7MJBozpDd
-         veG2NPdd4e3MzvuygQEQ1+4AlEIkHBenbwm7Qj++PGortqbxVXWlGpL3lA8TEfSDjKmC
-         FUHfgyrFvxWDf1kspFWqKmeNAxOLwl/mNMvDUdrmbu4ZvcWJrq7UNNglsaOrc0zO+B1W
-         YPaA==
-X-Forwarded-Encrypted: i=1; AJvYcCXxO2ySDzeYyAtwdijp4qHaxoPeocRDxkIh1tHOtDdvgc+sq/BYCboBnaLWo2tOiwbUd6pIhLbcJ2KSs2fuwSTdKZYLJ/XOV5EU8f3T
-X-Gm-Message-State: AOJu0YyLWom5KP2gvkKaziwtBS8G94RQOc3sdkNrld7RT+nnAHd6L2Hg
-	pLh9i4oSu8d0G8qngsokj5QunSS/pPbx3aLDZI6qeuWiCaW272c2M7G3m3KqgBV98j2sE7YdY/6
-	6jhjZjYP+q/vu9HCrlC+aZM+p610zG5N/L7c4MSdTdXGkhgRePC+BR6n+jhOIusxSD7OB7WTnG0
-	+e3BXwD7jMz30PHpp4J9SGwknqdG4NVwtqPRNY6gpgjIcqUjZtgLuI
-X-Received: by 2002:a2e:a7ce:0:b0:2df:8ce6:96cb with SMTP id x14-20020a2ea7ce000000b002df8ce696cbmr955472ljp.8.1714570258155;
-        Wed, 01 May 2024 06:30:58 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEYT+qTSOE1Kr9KmhXevsjrdrGfobx9Pel64hRtY96pMsR8tg00NtEJfiVi5E4mSMS1jyTIKo1grrZjSHhuefw=
-X-Received: by 2002:a2e:a7ce:0:b0:2df:8ce6:96cb with SMTP id
- x14-20020a2ea7ce000000b002df8ce696cbmr955417ljp.8.1714570257684; Wed, 01 May
- 2024 06:30:57 -0700 (PDT)
-Received: from 348282803490 named unknown by gmailapi.google.com with
- HTTPREST; Wed, 1 May 2024 08:30:56 -0500
-From: Emil Renner Berthing <emil.renner.berthing@canonical.com>
-In-Reply-To: <20240501-pinctrl-cleanup-v1-5-797ceca46e5c@nxp.com>
-References: <20240501-pinctrl-cleanup-v1-0-797ceca46e5c@nxp.com> <20240501-pinctrl-cleanup-v1-5-797ceca46e5c@nxp.com>
+        d=1e100.net; s=20230601; t=1714570422; x=1715175222;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=RIs2EAnwhy7zwu/YLIZtkKABdkCncOCCKCOVBsGpvIA=;
+        b=e6P6n+ZfXrbb45DBw60LzcDw2aBcBlVTxEj77cbgeTa9QKRMRZQ/hjf7aSphSn2oeP
+         1WrMP+4gQKleaKAEZtxL2INongZMFSUWuqhyeNeukPD6NpjLg+64qfiiaMoURJrV/Zwk
+         1ZU9VrOi4qD4MxneZEgs9MZQLsbrj5I8YT5FIjEFiAGxbF5UjzrMGWqgvjIvJfP2LYCV
+         g1sUG1HsEHyTcYyne+wdTF37UUr30WFoDaQODt85SCBE/0ZXtL1vLzyMEMjN2vODv41c
+         QwfP7jvgeRCTsOuFnpVjMQuILDawvJ3c17f9jQ26usSEWwpoVjmcQEF6p3uMoxHt1MfH
+         2IqA==
+X-Forwarded-Encrypted: i=1; AJvYcCXjQ7xX2auAqAljn9jp2eW5sWgLC/jLF/pGGvZH0iAuNFSRiRfc6qJZdH9mMcS+tr+qFlXG5Zc7I+jTO/eNWT2kOWru2rDMU84+dONKaG+9kQ66X2lyulTc6HVZ++nZJVVqjnwL97FC
+X-Gm-Message-State: AOJu0Yxx3pp0tuUM0NAjrl20lSuGQgrn0x/y4YbQZj0RFearG7m17jsg
+	o4zZHw3FbPyPiXnVRBki2/8ERpYFzAFHbmx821EUUEQvQl6ahFQ=
+X-Google-Smtp-Source: AGHT+IGoLzo5WXbR9Dq1fTr1Mlwf77nJ95s7iCo/7aejTpbvHOgX2b3snoBNCMj1rdhtryNIvOLIIg==
+X-Received: by 2002:a17:903:191:b0:1e6:7731:80 with SMTP id z17-20020a170903019100b001e677310080mr2959626plg.11.1714570422111;
+        Wed, 01 May 2024 06:33:42 -0700 (PDT)
+Received: from utkarsh-ROG-Zephyrus-G14-GA401II-GA401II.. ([117.203.246.41])
+        by smtp.gmail.com with ESMTPSA id l6-20020a170903244600b001ea963d0d58sm12435926pls.137.2024.05.01.06.33.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 01 May 2024 06:33:41 -0700 (PDT)
+From: Utkarsh Tripathi <utripathi2002@gmail.com>
+To: tj@kernel.org,
+	jiangshanlai@gmail.com,
+	skhan@linuxfoundation.org
+Cc: Utkarsh Tripathi <utripathi2002@gmail.com>,
+	linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] Sphinx error fixed for inline literal end-string in include/linux/workqueue.h
+Date: Wed,  1 May 2024 19:02:40 +0530
+Message-Id: <20240501133240.6003-1-utripathi2002@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Date: Wed, 1 May 2024 08:30:56 -0500
-Message-ID: <CAJM55Z9RuobAMR4EaevhTPRsJe3vuruV7-_DTQYpH_w8_azkcA@mail.gmail.com>
-Subject: Re: [PATCH 05/21] pinctrl: starfive: Use scope based of_node_put() cleanups
-To: "Peng Fan (OSS)" <peng.fan@oss.nxp.com>, Linus Walleij <linus.walleij@linaro.org>, 
-	Thierry Reding <thierry.reding@gmail.com>, Jonathan Hunter <jonathanh@nvidia.com>, 
-	Dvorkin Dmitry <dvorkin@tibbo.com>, Wells Lu <wellslutw@gmail.com>, 
-	Maxime Coquelin <mcoquelin.stm32@gmail.com>, Alexandre Torgue <alexandre.torgue@foss.st.com>, 
-	Emil Renner Berthing <kernel@esmil.dk>, Jianlong Huang <jianlong.huang@starfivetech.com>, 
-	Hal Feng <hal.feng@starfivetech.com>, Orson Zhai <orsonzhai@gmail.com>, 
-	Baolin Wang <baolin.wang@linux.alibaba.com>, Chunyan Zhang <zhang.lyra@gmail.com>, 
-	Viresh Kumar <vireshk@kernel.org>, Shiraz Hashim <shiraz.linux.kernel@gmail.com>, soc@kernel.org, 
-	Krzysztof Kozlowski <krzk@kernel.org>, Sylwester Nawrocki <s.nawrocki@samsung.com>, 
-	Alim Akhtar <alim.akhtar@samsung.com>, Geert Uytterhoeven <geert+renesas@glider.be>, 
-	Patrice Chotard <patrice.chotard@foss.st.com>, Heiko Stuebner <heiko@sntech.de>, 
-	Damien Le Moal <dlemoal@kernel.org>, Ludovic Desroches <ludovic.desroches@microchip.com>, 
-	Nicolas Ferre <nicolas.ferre@microchip.com>, 
-	Alexandre Belloni <alexandre.belloni@bootlin.com>, Claudiu Beznea <claudiu.beznea@tuxon.dev>, 
-	Dong Aisheng <aisheng.dong@nxp.com>, Fabio Estevam <festevam@gmail.com>, 
-	Shawn Guo <shawnguo@kernel.org>, Jacky Bai <ping.bai@nxp.com>, 
-	Pengutronix Kernel Team <kernel@pengutronix.de>, Chester Lin <chester62515@gmail.com>, 
-	Matthias Brugger <mbrugger@suse.com>, Ghennadi Procopciuc <ghennadi.procopciuc@oss.nxp.com>, 
-	Sean Wang <sean.wang@kernel.org>, Matthias Brugger <matthias.bgg@gmail.com>, 
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, 
-	Sascha Hauer <s.hauer@pengutronix.de>, Andrew Jeffery <andrew@codeconstruct.com.au>, 
-	Joel Stanley <joel@jms.id.au>, Dan Carpenter <dan.carpenter@linaro.org>
-Cc: linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-tegra@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
-	linux-stm32@st-md-mailman.stormreply.com, linux-samsung-soc@vger.kernel.org, 
-	linux-renesas-soc@vger.kernel.org, linux-rockchip@lists.infradead.org, 
-	linux-riscv@lists.infradead.org, linux-mediatek@lists.infradead.org, 
-	imx@lists.linux.dev, linux-aspeed@lists.ozlabs.org, openbmc@lists.ozlabs.org, 
-	Peng Fan <peng.fan@nxp.com>
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-Peng Fan (OSS) wrote:
-> From: Peng Fan <peng.fan@nxp.com>
->
-> Use scope based of_node_put() cleanup to simplify code.
->
-> Signed-off-by: Peng Fan <peng.fan@nxp.com>
+Fixed Error in Workqueue Documentation in the kernel-doc comment 
+for alloc_workqueue function in include/linux/workqueue.h, 
+the error was "Inline literal start-string without end-string" 
+which was fixed by removing the inline literal.
+Kernel Version - 6.9.0-rc5
 
-Acked-by: Emil Renner Berthing <emil.renner.berthing@canonical.com>
+Signed-off-by: Utkarsh Tripathi <utripathi2002@gmail.com>
+---
+ include/linux/workqueue.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> ---
->  drivers/pinctrl/starfive/pinctrl-starfive-jh7100.c | 27 +++++++++-------------
->  drivers/pinctrl/starfive/pinctrl-starfive-jh7110.c | 18 +++++++--------
->  2 files changed, 19 insertions(+), 26 deletions(-)
->
-> diff --git a/drivers/pinctrl/starfive/pinctrl-starfive-jh7100.c b/drivers/pinctrl/starfive/pinctrl-starfive-jh7100.c
-> index 6df7a310c7ed..27f99183d994 100644
-> --- a/drivers/pinctrl/starfive/pinctrl-starfive-jh7100.c
-> +++ b/drivers/pinctrl/starfive/pinctrl-starfive-jh7100.c
-> @@ -480,7 +480,6 @@ static int starfive_dt_node_to_map(struct pinctrl_dev *pctldev,
->  {
->  	struct starfive_pinctrl *sfp = pinctrl_dev_get_drvdata(pctldev);
->  	struct device *dev = sfp->gc.parent;
-> -	struct device_node *child;
->  	struct pinctrl_map *map;
->  	const char **pgnames;
->  	const char *grpname;
-> @@ -492,20 +491,18 @@ static int starfive_dt_node_to_map(struct pinctrl_dev *pctldev,
->
->  	nmaps = 0;
->  	ngroups = 0;
-> -	for_each_available_child_of_node(np, child) {
-> +	for_each_available_child_of_node_scoped(np, child) {
->  		int npinmux = of_property_count_u32_elems(child, "pinmux");
->  		int npins   = of_property_count_u32_elems(child, "pins");
->
->  		if (npinmux > 0 && npins > 0) {
->  			dev_err(dev, "invalid pinctrl group %pOFn.%pOFn: both pinmux and pins set\n",
->  				np, child);
-> -			of_node_put(child);
->  			return -EINVAL;
->  		}
->  		if (npinmux == 0 && npins == 0) {
->  			dev_err(dev, "invalid pinctrl group %pOFn.%pOFn: neither pinmux nor pins set\n",
->  				np, child);
-> -			of_node_put(child);
->  			return -EINVAL;
->  		}
->
-> @@ -527,14 +524,14 @@ static int starfive_dt_node_to_map(struct pinctrl_dev *pctldev,
->  	nmaps = 0;
->  	ngroups = 0;
->  	mutex_lock(&sfp->mutex);
-> -	for_each_available_child_of_node(np, child) {
-> +	for_each_available_child_of_node_scoped(np, child) {
->  		int npins;
->  		int i;
->
->  		grpname = devm_kasprintf(dev, GFP_KERNEL, "%pOFn.%pOFn", np, child);
->  		if (!grpname) {
->  			ret = -ENOMEM;
-> -			goto put_child;
-> +			goto free_map;
->  		}
->
->  		pgnames[ngroups++] = grpname;
-> @@ -543,18 +540,18 @@ static int starfive_dt_node_to_map(struct pinctrl_dev *pctldev,
->  			pins = devm_kcalloc(dev, npins, sizeof(*pins), GFP_KERNEL);
->  			if (!pins) {
->  				ret = -ENOMEM;
-> -				goto put_child;
-> +				goto free_map;
->  			}
->
->  			pinmux = devm_kcalloc(dev, npins, sizeof(*pinmux), GFP_KERNEL);
->  			if (!pinmux) {
->  				ret = -ENOMEM;
-> -				goto put_child;
-> +				goto free_map;
->  			}
->
->  			ret = of_property_read_u32_array(child, "pinmux", pinmux, npins);
->  			if (ret)
-> -				goto put_child;
-> +				goto free_map;
->
->  			for (i = 0; i < npins; i++) {
->  				unsigned int gpio = starfive_pinmux_to_gpio(pinmux[i]);
-> @@ -570,7 +567,7 @@ static int starfive_dt_node_to_map(struct pinctrl_dev *pctldev,
->  			pins = devm_kcalloc(dev, npins, sizeof(*pins), GFP_KERNEL);
->  			if (!pins) {
->  				ret = -ENOMEM;
-> -				goto put_child;
-> +				goto free_map;
->  			}
->
->  			pinmux = NULL;
-> @@ -580,18 +577,18 @@ static int starfive_dt_node_to_map(struct pinctrl_dev *pctldev,
->
->  				ret = of_property_read_u32_index(child, "pins", i, &v);
->  				if (ret)
-> -					goto put_child;
-> +					goto free_map;
->  				pins[i] = v;
->  			}
->  		} else {
->  			ret = -EINVAL;
-> -			goto put_child;
-> +			goto free_map;
->  		}
->
->  		ret = pinctrl_generic_add_group(pctldev, grpname, pins, npins, pinmux);
->  		if (ret < 0) {
->  			dev_err(dev, "error adding group %s: %d\n", grpname, ret);
-> -			goto put_child;
-> +			goto free_map;
->  		}
->
->  		ret = pinconf_generic_parse_dt_config(child, pctldev,
-> @@ -600,7 +597,7 @@ static int starfive_dt_node_to_map(struct pinctrl_dev *pctldev,
->  		if (ret) {
->  			dev_err(dev, "error parsing pin config of group %s: %d\n",
->  				grpname, ret);
-> -			goto put_child;
-> +			goto free_map;
->  		}
->
->  		/* don't create a map if there are no pinconf settings */
-> @@ -623,8 +620,6 @@ static int starfive_dt_node_to_map(struct pinctrl_dev *pctldev,
->  	mutex_unlock(&sfp->mutex);
->  	return 0;
->
-> -put_child:
-> -	of_node_put(child);
->  free_map:
->  	pinctrl_utils_free_map(pctldev, map, nmaps);
->  	mutex_unlock(&sfp->mutex);
-> diff --git a/drivers/pinctrl/starfive/pinctrl-starfive-jh7110.c b/drivers/pinctrl/starfive/pinctrl-starfive-jh7110.c
-> index 9609eb1ecc3d..4ce080caa233 100644
-> --- a/drivers/pinctrl/starfive/pinctrl-starfive-jh7110.c
-> +++ b/drivers/pinctrl/starfive/pinctrl-starfive-jh7110.c
-> @@ -150,7 +150,7 @@ static int jh7110_dt_node_to_map(struct pinctrl_dev *pctldev,
->  	nmaps = 0;
->  	ngroups = 0;
->  	mutex_lock(&sfp->mutex);
-> -	for_each_available_child_of_node(np, child) {
-> +	for_each_available_child_of_node_scoped(np, child) {
->  		int npins = of_property_count_u32_elems(child, "pinmux");
->  		int *pins;
->  		u32 *pinmux;
-> @@ -161,13 +161,13 @@ static int jh7110_dt_node_to_map(struct pinctrl_dev *pctldev,
->  				"invalid pinctrl group %pOFn.%pOFn: pinmux not set\n",
->  				np, child);
->  			ret = -EINVAL;
-> -			goto put_child;
-> +			goto free_map;
->  		}
->
->  		grpname = devm_kasprintf(dev, GFP_KERNEL, "%pOFn.%pOFn", np, child);
->  		if (!grpname) {
->  			ret = -ENOMEM;
-> -			goto put_child;
-> +			goto free_map;
->  		}
->
->  		pgnames[ngroups++] = grpname;
-> @@ -175,18 +175,18 @@ static int jh7110_dt_node_to_map(struct pinctrl_dev *pctldev,
->  		pins = devm_kcalloc(dev, npins, sizeof(*pins), GFP_KERNEL);
->  		if (!pins) {
->  			ret = -ENOMEM;
-> -			goto put_child;
-> +			goto free_map;
->  		}
->
->  		pinmux = devm_kcalloc(dev, npins, sizeof(*pinmux), GFP_KERNEL);
->  		if (!pinmux) {
->  			ret = -ENOMEM;
-> -			goto put_child;
-> +			goto free_map;
->  		}
->
->  		ret = of_property_read_u32_array(child, "pinmux", pinmux, npins);
->  		if (ret)
-> -			goto put_child;
-> +			goto free_map;
->
->  		for (i = 0; i < npins; i++)
->  			pins[i] = jh7110_pinmux_pin(pinmux[i]);
-> @@ -200,7 +200,7 @@ static int jh7110_dt_node_to_map(struct pinctrl_dev *pctldev,
->  						pins, npins, pinmux);
->  		if (ret < 0) {
->  			dev_err(dev, "error adding group %s: %d\n", grpname, ret);
-> -			goto put_child;
-> +			goto free_map;
->  		}
->
->  		ret = pinconf_generic_parse_dt_config(child, pctldev,
-> @@ -209,7 +209,7 @@ static int jh7110_dt_node_to_map(struct pinctrl_dev *pctldev,
->  		if (ret) {
->  			dev_err(dev, "error parsing pin config of group %s: %d\n",
->  				grpname, ret);
-> -			goto put_child;
-> +			goto free_map;
->  		}
->
->  		/* don't create a map if there are no pinconf settings */
-> @@ -233,8 +233,6 @@ static int jh7110_dt_node_to_map(struct pinctrl_dev *pctldev,
->  	*num_maps = nmaps;
->  	return 0;
->
-> -put_child:
-> -	of_node_put(child);
->  free_map:
->  	pinctrl_utils_free_map(pctldev, map, nmaps);
->  	mutex_unlock(&sfp->mutex);
->
-> --
-> 2.37.1
->
+diff --git a/include/linux/workqueue.h b/include/linux/workqueue.h
+index 158784dd189a..b4aebd981a23 100644
+--- a/include/linux/workqueue.h
++++ b/include/linux/workqueue.h
+@@ -490,7 +490,7 @@ void workqueue_softirq_dead(unsigned int cpu);
+  * min_active which is set to min(@max_active, %WQ_DFL_MIN_ACTIVE). This means
+  * that the sum of per-node max_active's may be larger than @max_active.
+  *
+- * For detailed information on %WQ_* flags, please refer to
++ * For detailed information on WQ_* flags, please refer to
+  * Documentation/core-api/workqueue.rst.
+  *
+  * RETURNS:
+-- 
+2.34.1
+
 
