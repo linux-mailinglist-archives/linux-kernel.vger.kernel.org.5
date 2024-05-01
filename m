@@ -1,151 +1,209 @@
-Return-Path: <linux-kernel+bounces-165692-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-165693-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EB6B58B8FD9
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 20:46:06 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 15D318B8FDB
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 20:47:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EE76BB216D6
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 18:46:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 605A5283F0B
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 18:47:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C6A313956C;
-	Wed,  1 May 2024 18:45:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B6261607BD;
+	Wed,  1 May 2024 18:46:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ewOhrqTf"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=ndufresne-ca.20230601.gappssmtp.com header.i=@ndufresne-ca.20230601.gappssmtp.com header.b="R2lImR6M"
+Received: from mail-oo1-f46.google.com (mail-oo1-f46.google.com [209.85.161.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A8351607A3
-	for <linux-kernel@vger.kernel.org>; Wed,  1 May 2024 18:45:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD1BB13956C
+	for <linux-kernel@vger.kernel.org>; Wed,  1 May 2024 18:46:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714589156; cv=none; b=co44sHcv3ZTqzUIkz8LqO7D9IrfLXTKDMLrFyjGw13Pzz8IKloA3iad0L8W9vIpMe8ufW9IEQ4+5X/zmQ/fiMxzX2gKueUhOVTeLVelgRW/TpzArRkCTHcARQFFJo7Ii6p94r6jPKbz7QeoVSYeCFzTQuoJ7LXjvz9DsbEd3yZY=
+	t=1714589211; cv=none; b=qK+1FyPNIGfyPkNAPKgt0oTZlHeHr2AMDGRcHWbpL50EI0B0GBrQwpY1I85Oxol0Heu/hAQlt3gNteIZt2xJRjkD9uNiz98fQQg7VOyOUsyezJapbw6umWQ8VWHIlWBVRmEmnZtB38dr3PLqAK345IuKRJv4HVaF9YtTcPk7smk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714589156; c=relaxed/simple;
-	bh=czYdOvcdvRy9Re4Fp1KxwHOqIKvgSIBGT48df6nVEhk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=XpeW1sTDGDSnG8a++lfev83UveTLR/xSuxA1kCpF2BnNGIIHfuyJBhJaQHDvYV84K70uQLLMYH0rbveYGZvi7k7ya4U5Qh+1zKXOU981ZFnGAEIMpxLc1KGz3oUyxDWA+Ekmbj/S/5s37wMNGvgETbKAPpsvKerETTtP+n6kM98=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ewOhrqTf; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 28765C072AA;
-	Wed,  1 May 2024 18:45:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714589156;
-	bh=czYdOvcdvRy9Re4Fp1KxwHOqIKvgSIBGT48df6nVEhk=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=ewOhrqTf4yrqRuloONJ49CBDLrob8MstHsbUadY4p0X3nlblYUtLAW6Px/peMHccy
-	 dYGLwsGbZEQSD/hN5pkt7JKTFqIl9aCnY7/VwJd8EWhcAFzI0gggPvNaSAHjI+kwjg
-	 tndIx3I41DOv2A3zqsKldBW8HgfHVpJYEICEXOWLfBv2rJhkNnGGvoT/UWjH/72LKL
-	 kp8jApHx5EX8eSqEJVJFPvRZqap+g99BR5plyJ9wV6/IW4uUgHslHohWA28N4g5v7V
-	 tJ5eHu0oGbSojchjASmVTXsZJFXEkvMt7CozFFB9sXcDynxciic9QYQORq015ZToT2
-	 9gXu1Nlla2svQ==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id B9D9ECE0C37; Wed,  1 May 2024 11:45:55 -0700 (PDT)
-Date: Wed, 1 May 2024 11:45:55 -0700
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Marco Elver <elver@google.com>,
-	Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Dmitry Vyukov <dvyukov@google.com>,
-	syzbot <syzbot+b7c3ba8cdc2f6cf83c21@syzkaller.appspotmail.com>,
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-	Nathan Chancellor <nathan@kernel.org>,
-	Arnd Bergmann <arnd@kernel.org>, Al Viro <viro@zeniv.linux.org.uk>,
-	Jiri Slaby <jirislaby@kernel.org>
-Subject: Re: [PATCH v3] tty: tty_io: remove hung_up_tty_fops
-Message-ID: <d4de136e-c4e0-45c2-b33e-9a819cb3a791@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <c95c62ba-4f47-b499-623b-05627a81c601@I-love.SAKURA.ne.jp>
- <2023053005-alongside-unvisited-d9af@gregkh>
- <8edbd558-a05f-c775-4d0c-09367e688682@I-love.SAKURA.ne.jp>
- <2023053048-saved-undated-9adf@gregkh>
- <18a58415-4aa9-4cba-97d2-b70384407313@I-love.SAKURA.ne.jp>
- <CAHk-=wgSOa_g+bxjNi+HQpC=6sHK2yKeoW-xOhb0-FVGMTDWjg@mail.gmail.com>
- <a3be44f9-64eb-42e8-bf01-8610548a68a7@I-love.SAKURA.ne.jp>
- <CAHk-=wj6HmDetTDhNNUNcAXZzmCv==oHk22_kVW4znfO-HuMnA@mail.gmail.com>
- <CANpmjNN250UCxsWCpUHAvJo28Lzv=DN-BKTmjEpcLFOCA+U+pw@mail.gmail.com>
- <CAHk-=whnQXNVwuf42Sh2ngBGhBqbJjUfq5ux6e7Si_XSPAt05A@mail.gmail.com>
+	s=arc-20240116; t=1714589211; c=relaxed/simple;
+	bh=ux7+SqAdbRTtDx1gmbLxYGdmF1JS5Qkzy1TZr0bcy/0=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=j7amjiUrZA7ZODk6MuvmILSdl4T4izvWBWn24agQOrA66IBjQ40VJ3bnj2f/MxgNVdiLapFr3LGksItXJ29PhL4tBWrDJP1aNY/Jtfg0uTN0Y5UXFzXZLe3Ho0xmom5h1O7S87Fv3Mv6YmTPMr3sWA77goejKs59ky8+11Pv6Bo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ndufresne.ca; spf=none smtp.mailfrom=ndufresne.ca; dkim=pass (2048-bit key) header.d=ndufresne-ca.20230601.gappssmtp.com header.i=@ndufresne-ca.20230601.gappssmtp.com header.b=R2lImR6M; arc=none smtp.client-ip=209.85.161.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ndufresne.ca
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ndufresne.ca
+Received: by mail-oo1-f46.google.com with SMTP id 006d021491bc7-5aa400b917dso4543389eaf.0
+        for <linux-kernel@vger.kernel.org>; Wed, 01 May 2024 11:46:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ndufresne-ca.20230601.gappssmtp.com; s=20230601; t=1714589209; x=1715194009; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=sjnTK7sX+orTt833c6yQg86g6degsgrMKlZ028YznqA=;
+        b=R2lImR6MPGrOrDw2fHKFuJsmaYTBRngsDKHaFeKg850o1GYMm7Kibf+Z0V1RAhJG78
+         UNfmM7EtZQqKTfBiVAY8oZ1DOkIf+CPWs8Srk34l/WJNU3stQjdYKAUnyDVMqLQt+ria
+         /zp5TzdKUsWQRFdlLPqRX2XpT0x0mtENOVZdV1VqX+P+7rjdIyeOX3EWCeITAKqnX9QW
+         FxweYTCLIe+2K/w02s63sZR5J7U0vd8Vk3Q374AYWDVcwBK/ziBaCqx4Lb9kTEEVEV8b
+         hSpuIytiS0A9s2ikqCWReNbtq3LfQ3FrErEVQH/Ug3Gn+KJoQl9VpwFwCx/IOYs997cs
+         nS/A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714589209; x=1715194009;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=sjnTK7sX+orTt833c6yQg86g6degsgrMKlZ028YznqA=;
+        b=enScwZpfB2VW71sT9u0PTY6UiiKhpCy2qF/SfaPR5VBNx4x7RDbA2bqDcfWPh2OgLv
+         FCEKkbbg/QDbjfXrKVtzVlslN0p2Bj/6CHRCE/ac7jdxVSsjOHPGVq2uStI7HRVS9rMQ
+         K0PZKTAIYulEvbypJxic7Rs5TtMogNkPjepnxdwH/SIzkN+QnvdMeXSiUafZCpDFcVQH
+         Jk+Mftmwz+4Md0MDjHjeHNyw7O3N6asrGtnQz7reJdUk9SemGPOKPwbfQnGIIkc33GC2
+         ltxi/+dDJ7Y4mNLnIa8ZeSsuGBVZpQctQjofY/KEDn/iiXlpcx1e949NKoba36XwEqxn
+         LOxg==
+X-Forwarded-Encrypted: i=1; AJvYcCV/ZgxneZ9C5IW3ogwJBDlurKfRnmJCuS4JUiY9Ga4XYM0IL5SiMbitivekg5aDqOX/7ybLycC9BtijJbcPOmKrLopUfLVet+ATGlX4
+X-Gm-Message-State: AOJu0YyntfPjoZOK9SoRfyU/EhPCUl4VjmMuJMQ6apJEQALVIRqdZm8t
+	wS/oW8IlNq/A4xCpoFgxteqwYBQYE7aotADJ8ROHiNYZxjeOMSBkTd4dpInGAiw=
+X-Google-Smtp-Source: AGHT+IFikq9imwO8d9lct9bJIy4edgbPj9z+SVNTloqiU5wfpCOSN2nB05I6MpwyMp2HWtWuFeBH/w==
+X-Received: by 2002:a05:6358:290b:b0:183:fb12:39f6 with SMTP id y11-20020a056358290b00b00183fb1239f6mr4788968rwb.14.1714589208903;
+        Wed, 01 May 2024 11:46:48 -0700 (PDT)
+Received: from nicolas-tpx395.lan ([2606:6d00:17:6448::7a9])
+        by smtp.gmail.com with ESMTPSA id cs18-20020ad44c52000000b006a0f4d06452sm678689qvb.88.2024.05.01.11.46.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 01 May 2024 11:46:48 -0700 (PDT)
+Message-ID: <c9517c20d094aec91f02dfbc70fd582251338436.camel@ndufresne.ca>
+Subject: Re: [PATCH v3 1/4] media: chips-media: wave5: Support SPS/PPS
+ generation for each IDR
+From: Nicolas Dufresne <nicolas@ndufresne.ca>
+To: Nas Chung <nas.chung@chipsnmedia.com>, mchehab@kernel.org, 
+	sebastian.fricke@collabora.com
+Cc: linux-media@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	hverkuil@xs4all.nl, lafley.kim@chipsnmedia.com, b-brnich@ti.com, 
+	jackson.lee@chipnsmedia.com, "Jackson.lee" <jackson.lee@chipsnmedia.com>
+Date: Wed, 01 May 2024 14:46:47 -0400
+In-Reply-To: <20240430013900.187-2-nas.chung@chipsnmedia.com>
+References: <20240430013900.187-1-nas.chung@chipsnmedia.com>
+	 <20240430013900.187-2-nas.chung@chipsnmedia.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.52.1 (3.52.1-1.fc40) 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=whnQXNVwuf42Sh2ngBGhBqbJjUfq5ux6e7Si_XSPAt05A@mail.gmail.com>
 
-On Mon, Apr 29, 2024 at 08:38:28AM -0700, Linus Torvalds wrote:
-> On Mon, 29 Apr 2024 at 06:56, Marco Elver <elver@google.com> wrote:
-> >
-> > A WRITE_ONCE() / READ_ONCE() pair would do it here. What should we use instead?
-> 
-> Why would we annotate a "any other code generation is insane" issues at all?
-> 
-> When we do chained pointer loads in
-> 
->     file->f_op->op()
-> 
-> and we say "I don't care what value I get for the middle one", I don't
-> see the value in annotating that at all.
+Le mardi 30 avril 2024 =C3=A0 10:38 +0900, Nas Chung a =C3=A9crit=C2=A0:
+> From: "Jackson.lee" <jackson.lee@chipsnmedia.com>
+>=20
+> Provide a control to toggle (0 =3D off / 1 =3D on), whether the SPS and
+> PPS are generated for every IDR.
+>=20
+> Signed-off-by: Jackson.lee <jackson.lee@chipsnmedia.com>
+> Signed-off-by: Nas Chung <nas.chung@chipsnmedia.com>
 
-In code that isn't being actively developed, sticks to known patterns (as
-above), or hides the lockless accesses behind a good API, this can make
-a lot of sense.  And I certainly have talked to a few people who feel
-that KCSAN is nothing but an irritant, and are not willing to make any
-concessions whatsoever to it.  In fact, many of them seem to wish that
-it would disappear completely.  Of course, that wish is their privilege.
+Reviewed-by: Nicolas Dufresne <nicolas.dufresne@collabora.com>
 
-But in RCU, new patterns are often being created, and so I am quite
-happy to give KCSAN additional information in order to help it help me.
-I am also quite happy to run KCSAN with its most aggressive settings,
-also to help it help me.  In my experience, it is way easier having KCSAN
-spot a data-race bug than to have to find it the hard way, but perhaps I
-am just showing my age.  In addition, KCSAN does a tireless and thorough
-(if somewhat simple-minded) code review of the full RCU code base,
-and can easily be persuaded to do so each and every day, if desired.
-Just *you* try doing that manually, whatever your age!  ;-)
+> ---
+>  .../platform/chips-media/wave5/wave5-hw.c     | 19 +++++++++++++++----
+>  .../chips-media/wave5/wave5-vpu-enc.c         |  7 +++++++
+>  .../platform/chips-media/wave5/wave5-vpuapi.h |  1 +
+>  3 files changed, 23 insertions(+), 4 deletions(-)
+>=20
+> diff --git a/drivers/media/platform/chips-media/wave5/wave5-hw.c b/driver=
+s/media/platform/chips-media/wave5/wave5-hw.c
+> index 2d82791f575e..fff6e66b66e4 100644
+> --- a/drivers/media/platform/chips-media/wave5/wave5-hw.c
+> +++ b/drivers/media/platform/chips-media/wave5/wave5-hw.c
+> @@ -23,6 +23,15 @@
+>  #define FEATURE_AVC_ENCODER		BIT(1)
+>  #define FEATURE_HEVC_ENCODER		BIT(0)
+> =20
+> +#define ENC_AVC_INTRA_IDR_PARAM_MASK	0x7ff
+> +#define ENC_AVC_INTRA_PERIOD_SHIFT		6
+> +#define ENC_AVC_IDR_PERIOD_SHIFT		17
+> +#define ENC_AVC_FORCED_IDR_HEADER_SHIFT		28
+> +
+> +#define ENC_HEVC_INTRA_QP_SHIFT			3
+> +#define ENC_HEVC_FORCED_IDR_HEADER_SHIFT	9
+> +#define ENC_HEVC_INTRA_PERIOD_SHIFT		16
+> +
+>  /* Decoder support fields */
+>  #define FEATURE_AVC_DECODER		BIT(3)
+>  #define FEATURE_HEVC_DECODER		BIT(2)
+> @@ -1601,12 +1610,14 @@ int wave5_vpu_enc_init_seq(struct vpu_instance *i=
+nst)
+> =20
+>  	if (inst->std =3D=3D W_AVC_ENC)
+>  		vpu_write_reg(inst->dev, W5_CMD_ENC_SEQ_INTRA_PARAM, p_param->intra_qp=
+ |
+> -				((p_param->intra_period & 0x7ff) << 6) |
+> -				((p_param->avc_idr_period & 0x7ff) << 17));
+> +				((p_param->intra_period & ENC_AVC_INTRA_IDR_PARAM_MASK) << ENC_AVC_I=
+NTRA_PERIOD_SHIFT) |
+> +				((p_param->avc_idr_period & ENC_AVC_INTRA_IDR_PARAM_MASK) << ENC_AVC=
+_IDR_PERIOD_SHIFT) |
+> +				(p_param->forced_idr_header_enable << ENC_AVC_FORCED_IDR_HEADER_SHIF=
+T));
+>  	else if (inst->std =3D=3D W_HEVC_ENC)
+>  		vpu_write_reg(inst->dev, W5_CMD_ENC_SEQ_INTRA_PARAM,
+> -			      p_param->decoding_refresh_type | (p_param->intra_qp << 3) |
+> -				(p_param->intra_period << 16));
+> +			      p_param->decoding_refresh_type | (p_param->intra_qp << ENC_HEVC=
+_INTRA_QP_SHIFT) |
+> +			      (p_param->forced_idr_header_enable << ENC_HEVC_FORCED_IDR_HEADE=
+R_SHIFT) |
+> +			      (p_param->intra_period << ENC_HEVC_INTRA_PERIOD_SHIFT));
+> =20
+>  	reg_val =3D (p_param->rdo_skip << 2) |
+>  		(p_param->lambda_scaling_enable << 3) |
+> diff --git a/drivers/media/platform/chips-media/wave5/wave5-vpu-enc.c b/d=
+rivers/media/platform/chips-media/wave5/wave5-vpu-enc.c
+> index a45a2f699000..a23908011a39 100644
+> --- a/drivers/media/platform/chips-media/wave5/wave5-vpu-enc.c
+> +++ b/drivers/media/platform/chips-media/wave5/wave5-vpu-enc.c
+> @@ -1061,6 +1061,9 @@ static int wave5_vpu_enc_s_ctrl(struct v4l2_ctrl *c=
+trl)
+>  	case V4L2_CID_MPEG_VIDEO_H264_ENTROPY_MODE:
+>  		inst->enc_param.entropy_coding_mode =3D ctrl->val;
+>  		break;
+> +	case V4L2_CID_MPEG_VIDEO_PREPEND_SPSPPS_TO_IDR:
+> +		inst->enc_param.forced_idr_header_enable =3D ctrl->val;
+> +		break;
+>  	case V4L2_CID_MIN_BUFFERS_FOR_OUTPUT:
+>  		break;
+>  	default:
+> @@ -1219,6 +1222,7 @@ static void wave5_set_enc_openparam(struct enc_open=
+_param *open_param,
+>  		else
+>  			open_param->wave_param.intra_refresh_arg =3D num_ctu_row;
+>  	}
+> +	open_param->wave_param.forced_idr_header_enable =3D input.forced_idr_he=
+ader_enable;
+>  }
+> =20
+>  static int initialize_sequence(struct vpu_instance *inst)
+> @@ -1701,6 +1705,9 @@ static int wave5_vpu_open_enc(struct file *filp)
+>  			  0, 1, 1, 0);
+>  	v4l2_ctrl_new_std(v4l2_ctrl_hdl, &wave5_vpu_enc_ctrl_ops,
+>  			  V4L2_CID_MIN_BUFFERS_FOR_OUTPUT, 1, 32, 1, 1);
+> +	v4l2_ctrl_new_std(v4l2_ctrl_hdl, &wave5_vpu_enc_ctrl_ops,
+> +			  V4L2_CID_MPEG_VIDEO_PREPEND_SPSPPS_TO_IDR,
+> +			  0, 1, 1, 0);
+> =20
+>  	if (v4l2_ctrl_hdl->error) {
+>  		ret =3D -ENODEV;
+> diff --git a/drivers/media/platform/chips-media/wave5/wave5-vpuapi.h b/dr=
+ivers/media/platform/chips-media/wave5/wave5-vpuapi.h
+> index edc50450ddb8..554c40b2e002 100644
+> --- a/drivers/media/platform/chips-media/wave5/wave5-vpuapi.h
+> +++ b/drivers/media/platform/chips-media/wave5/wave5-vpuapi.h
+> @@ -566,6 +566,7 @@ struct enc_wave_param {
+>  	u32 lambda_scaling_enable: 1; /* enable lambda scaling using custom GOP=
+ */
+>  	u32 transform8x8_enable: 1; /* enable 8x8 intra prediction and 8x8 tran=
+sform */
+>  	u32 mb_level_rc_enable: 1; /* enable MB-level rate control */
+> +	u32 forced_idr_header_enable: 1; /* enable header encoding before IDR f=
+rame */
+>  };
+> =20
+>  struct enc_open_param {
 
-Plus, the documentation benefits are significant.  "Wait, which of
-these unmarked accesses is to a shared variable?"  In the wee hours of
-the morning while chasing a bug.  Especially if the person doing the
-chasing is an innocent bystander who is not already an expert on the
-code currently being investigated.  :-/
-
-Oddly enough, the simplest concurrency designs also want a maximally
-aggressive KCSAN.  If you are using pure locking with absolutely no
-lockless accesses, then any data race at all is a bug.  Again, it is
-a lot easier for KCSAN to tell you that you forgot to acquire the lock
-than to find out the hard way.
-
-> There is no compiler that will sanely and validly do a pointer chain
-> load by *anything* but a load. And it doesn't matter to us if it then
-> spills and reloads, it will *STILL* be a load.
-> 
-> We're not talking about "extract different bits in separate
-> operations". We're talking about following one pointer that can point
-> to two separate static values.
-> 
-> Reality matters. A *lot* more than some "C standard" that we already
-> have ignored for decades because it's not strong enough.
-
-Agreed, but it also appears that different developers and maintainers in
-different parts of the kernel are looking for different things from KCSAN.
-
-To illustrate my personal concerns, I confess to being a bit disgusted by
-those pontificating on software reliability, especially when they compare
-it unfavorably to things like house construction.  The difference is of
-course that the average house is not under active attack by nation states.
-In contrast, whether we like it or not, the Linux kernel is under active
-attack by nation states, organized crime, and who knows what all else.
-For RCU at least, I will take all the help I can get, even if it requires
-me to do a little bit of work up front.
-
-In short, I for one do greatly value KCSAN's help.  Along with that of
-a great many other tools, none of which are perfect, but all of which
-are helpful.
-
-							Thanx, Paul
 
