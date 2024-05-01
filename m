@@ -1,149 +1,177 @@
-Return-Path: <linux-kernel+bounces-165786-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-165787-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7ABBF8B9192
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 00:13:01 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2D91E8B919C
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 00:23:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 82F531C2358E
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 22:13:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AC0981F224DC
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 22:23:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E5017165FDF;
-	Wed,  1 May 2024 22:12:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 31AE6168AE3;
+	Wed,  1 May 2024 22:23:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gCXCc3OC"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="ZhB1BB6g"
+Received: from mail-ua1-f54.google.com (mail-ua1-f54.google.com [209.85.222.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C6851C68D;
-	Wed,  1 May 2024 22:12:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE43AD52F
+	for <linux-kernel@vger.kernel.org>; Wed,  1 May 2024 22:23:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714601573; cv=none; b=SdOfJG0MkdfcU9mdjZr5yQ4djdPneAPSq5NDGcLlze2mM976v+5Xs2rAEh/aVimFSbKVUsdIk8V42NugTD96mhkqW7z2pZmG78XddDQbiNuR4bS8Qs/mdTf+Gs7+mXa0drP9HavvxOBEtKWgfSGmL1+zPRQELcTebSUPXJeLLRs=
+	t=1714602222; cv=none; b=U8vLpTRfnLyqCkoYu3ccOxdHa4g00e84qfeTs75uwB4KRFYoNax/Hlg8bfzaUNNB6aRPOmB4N7me4k0aERZ3SJ9l8E/5ru8MLpjE9x8RVCtpgcPbLQtN+N3gUzKe+h0kgQXU5iUzKVovYC/PIJTEPZAe392X6jUDtIwDL+wEdSo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714601573; c=relaxed/simple;
-	bh=Ug3FQ7I2qR/RHww0ckNHp2CA4CIPVdT90yjcPc5ds/c=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=fnKuljarPxaeFXl3MREWE5BraBP+1XLccCiTFKz5MyjfJrc2hkf/ScRIE85Yle3O6IkzVGYoSWRchAFosdOa2wud4u20CO8OAy87eBBo3NPQNErgP6Hvp46So45BXT43Z2j4xSsJRIISV38YG6SDBmmbfocG226694vdSU9NjJk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gCXCc3OC; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6C65BC072AA;
-	Wed,  1 May 2024 22:12:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714601572;
-	bh=Ug3FQ7I2qR/RHww0ckNHp2CA4CIPVdT90yjcPc5ds/c=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=gCXCc3OCNyr6+i3h4YTHs9KepSLe6n7aIrtfRjc0yAHqvWeildSuL6MWAYA37i3C5
-	 jRrpQ4zd2eq/p/dpUQkoUYs52Cn4Im+Z+AogwoRh5jxXZityH0Y+8q0v8n0q9b7DsY
-	 JwtpslpDaQW0EehLBq5b435NxyKJe9XNoOg0CeAv+a/YK+jgnMNt5+UwLD66pAQsYv
-	 zMguRGrKKHK6EXaZpRSLWSsDhBTpdvXviFQsLg4/kbtTmDW+iUngl31YDx0HIiBfiR
-	 QMCDcKJz3jXFJJPPTw+X30RCnZC95AFPy88KOwNmF9fciBSSTWyTvN7hCtwCslDzqA
-	 QYxNlRWvDDdYg==
-Date: Wed, 1 May 2024 15:12:51 -0700
-From: Jakub Kicinski <kuba@kernel.org>
-To: Praveen Kumar Kannoju <praveen.kannoju@oracle.com>
-Cc: jhs@mojatatu.com, xiyou.wangcong@gmail.com, jiri@resnulli.us,
- davem@davemloft.net, netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
- rajesh.sivaramasubramaniom@oracle.com, rama.nichanamatlu@oracle.com,
- manjunath.b.patil@oracle.com
-Subject: Re: [PATCH RFC] net/sched: adjust device watchdog timer to detect
- stopped queue at right time
-Message-ID: <20240501151251.2eccb4d0@kernel.org>
-In-Reply-To: <20240430140010.5005-1-praveen.kannoju@oracle.com>
-References: <20240430140010.5005-1-praveen.kannoju@oracle.com>
+	s=arc-20240116; t=1714602222; c=relaxed/simple;
+	bh=a6Br6Qgf43Zr7HQfc21bA4y2YFS7QoVNUXiGClskmmI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=aXGkcxamdy5rlBpK9k3mls49d3FUXn5P0bhO3KMzTpPRyu7oPo/r5gawhNS+cIfZJOKkyAYYfkQY/byvRKB+rcD0Tyqh6JrpojaYK6YbI0YHsbS7V6lJSHcq7BopAsOQ/1aVJOI6OPj0XzZDHIS56WwGNP1kmkpPsUmqUKWDY0Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=ZhB1BB6g; arc=none smtp.client-ip=209.85.222.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-ua1-f54.google.com with SMTP id a1e0cc1a2514c-7ef2a623958so2313290241.1
+        for <linux-kernel@vger.kernel.org>; Wed, 01 May 2024 15:23:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1714602220; x=1715207020; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=NcA8PujdJx3AIVjeyMdiGvd+bHAAf0VX6N1lUIXfRtk=;
+        b=ZhB1BB6g6s799Nel49xSjxrkoi/EE/UEQ+TLiqgjlrBxpMR4Uf0VAPHRpB59AESUHf
+         CdjVClqMwTmvF0BQ/ufqkyOUbuC6Fgckmx+5MPuKHyG3eceS3YuK8yISjfSAfg6TEvtS
+         dbpiAy+kwmS32wjdeYH+CrLUwASY/ddWI2uXk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714602220; x=1715207020;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=NcA8PujdJx3AIVjeyMdiGvd+bHAAf0VX6N1lUIXfRtk=;
+        b=UUCOElSoxgVXoa35axwJXMl3SgrK8jG8NVlD4mFiu0Vtu5cCyfmfc1/ftSXXvdaHl9
+         RuVo5jJ2zVXTFR9eObpOnvlHLAn8tQVNyUogEth6VetuurwsQtlWZv5GgXhkvCJ83yaI
+         fnh0t7xCedgDNElpPxJq2TBMC9xEDtxMbXQ1NFFARooamuvUxxTTspUdnOZtZtAErGKQ
+         aqP0rlYjJB3ZRguCIFyATmsNBclkCgsi2AC7h6bAdS+ATwKT3JNmAcAZ9pX++wI1/cmM
+         BkwsNdOxLVMW3c13k4tJBud1EuW8dXYXc38J7F67TeMgSrIjwKI4+ev/2L4wSEpZs9f+
+         e2lQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWuXR1QZWg/277wt1r3mY3MGeKULYvcOH+yd4hCiPlu52PnbFx4JEeCquNaiPn1s11fB7ftc1HZ4ucP4+6Qf8q7dE9glRph1eQjayjn
+X-Gm-Message-State: AOJu0YzGvXNnRTQwxBPZTrbxqbGo7wKBV0IGMaU7DJ57P6ocfGRurZJa
+	vIoQXVdXsKqxQbyUqpYzWG6mEFCyAQe15Sn3YQn3NnTnHvq77ztBY4gZVYplJ3Gu5bpv1pjhGU7
+	s6KBFjK5e6jG7Mg3V/ksWw2H5mNmk5aP5xx78
+X-Google-Smtp-Source: AGHT+IHeXWxz33/xcGnVkePV51rFzK/abdjdF/55agUgn4EhgTUi2+m2DUpjkSCvi9366+6QQRvBYrU697JmeIHY390=
+X-Received: by 2002:a05:6122:178f:b0:4d3:3846:73bb with SMTP id
+ o15-20020a056122178f00b004d3384673bbmr5088511vkf.7.1714602219739; Wed, 01 May
+ 2024 15:23:39 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <CA+Y6NJGz6f8hE4kRDUTGgCj+jddUyHeD_8ocFBkARr7w90jmBw@mail.gmail.com>
+ <20240416050353.GI112498@black.fi.intel.com> <CA+Y6NJF6+s5zUZeaWtagpMt8Qu0a1oE+3re3c6EsppH+ZsuMRQ@mail.gmail.com>
+ <20240419044945.GR112498@black.fi.intel.com> <CA+Y6NJEpWpfPqHO6=Z1XFCXZDUq1+g6EFryB+Urq1=h0PhT+fg@mail.gmail.com>
+ <7d68a112-0f48-46bf-9f6d-d99b88828761@amd.com> <20240423053312.GY112498@black.fi.intel.com>
+ <7197b2ce-f815-48a1-a78e-9e139de796b7@amd.com> <20240424085608.GE112498@black.fi.intel.com>
+ <CA+Y6NJFyi6e7ype6dTAjxsy5aC80NdVOt+Vg-a0O0y_JsfwSGg@mail.gmail.com> <Zi0VLrvUWH6P1_or@wunner.de>
+In-Reply-To: <Zi0VLrvUWH6P1_or@wunner.de>
+From: Esther Shimanovich <eshimanovich@chromium.org>
+Date: Wed, 1 May 2024 18:23:28 -0400
+Message-ID: <CA+Y6NJE8hA+wt+auW1wJBWA6EGMc6CGpmdExr3475E_Yys-Zdw@mail.gmail.com>
+Subject: Re: [PATCH v4] PCI: Relabel JHL6540 on Lenovo X1 Carbon 7,8
+To: Lukas Wunner <lukas@wunner.de>
+Cc: Mika Westerberg <mika.westerberg@linux.intel.com>, 
+	Mario Limonciello <mario.limonciello@amd.com>, Dmitry Torokhov <dmitry.torokhov@gmail.com>, 
+	Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Rajat Jain <rajatja@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, 30 Apr 2024 19:30:10 +0530 Praveen Kumar Kannoju wrote:
-> Applications are sensitive to long network latency, particularly
-> heartbeat monitoring ones. Longer the tx timeout recovery higher the
-> risk with such applications on a production machines. This patch
-> remedies, yet honoring device set tx timeout.
-> 
-> Modify watchdog next timeout to be shorter than the device specified.
-> Compute the next timeout be equal to device watchdog timeout less the
-> how long ago queue stop had been done. At next watchdog timeout tx
-> timeout handler is called into if still in stopped state. Either called
-> or not called, restore the watchdog timeout back to device specified.
+On Sat, Apr 27, 2024 at 3:17=E2=80=AFAM Lukas Wunner <lukas@wunner.de> wrot=
+e:
+>
+> However that doesn't appear to be sufficient:  I notice that in your
+> patch, you're also clearing the external_facing bit on the Root Port
+> above the discrete host controller.
 
-Idea makes sense, some comments on the code below.
+Rajat (rajatja@google.com) in an internal review had suggested I add
+that, and leave it up to kernel maintainers to decide if it's strictly
+necessary.
 
-> diff --git a/net/sched/sch_generic.c b/net/sched/sch_generic.c
-> index 4a2c763e2d11..64e31f8b4ac1 100644
-> --- a/net/sched/sch_generic.c
-> +++ b/net/sched/sch_generic.c
-> @@ -506,18 +506,25 @@ static void dev_watchdog(struct timer_list *t)
->  			unsigned int timedout_ms = 0;
->  			unsigned int i;
->  			unsigned long trans_start;
-> +			unsigned long next_check = 0;
-> +			unsigned long current_jiffies;
->  
->  			for (i = 0; i < dev->num_tx_queues; i++) {
->  				struct netdev_queue *txq;
-> +				current_jiffies = jiffies;
+> Additionally you're marking the bridges leading to the NHI and XHCI
+> as fixed.  You're also marking the NHI and XHCI themselves as fixed
+> and external_facing.
+>
+> I just want to confirm whether all of this is actually necessary.
+> At least marking the NHI and XHCI as external_facing seems nonsensical.
+> I need to know the *minimal* set of attribute changes to fix the problem.
 
-Not sure why you save current jiffies.
+Labeling the NHI and XHCI external-facing was my mistake as I got the
+ASCII diagram wrong in the beginning. (NHI and XHCI should not be
+shown as connected to the USB-C port).  If you look at my latest draft
+of the patch (included in one of my messages in this email chain), you
+will see that I ended up removing that mistake.
+https://lore.kernel.org/lkml/CA+Y6NJGz6f8hE4kRDUTGgCj+jddUyHeD_8ocFBkARr7w9=
+0jmBw@mail.gmail.com/
 
->  				txq = netdev_get_tx_queue(dev, i);
->  				trans_start = READ_ONCE(txq->trans_start);
-> -				if (netif_xmit_stopped(txq) &&
-> -				    time_after(jiffies, (trans_start +
-> -							 dev->watchdog_timeo))) {
-> -					timedout_ms = jiffies_to_msecs(jiffies - trans_start);
-> -					atomic_long_inc(&txq->trans_timeout);
-> -					break;
-> +				if (netif_xmit_stopped(txq)) {
+I labeled the bridges leading to the NHI and XHCI as fixed because
+they are technically part of the discrete chip, and fixed. I do
+understand that if they were labeled as =E2=80=9Cremovable=E2=80=9D, that *=
+might* not
+affect anything even though that is not technically true. Happy to
+leave that decision up to what you think makes more sense.
 
-please use continue instead of adding another indentation level
+> I also need to know exactly what the user-visible issue is and how
+> it comes about.  Your commit message merely says "the build-in USB-C
+> ports stop working at all".  Does that mean that no driver is bound
+> to the NHI or XHCI?
 
-> +					if (time_after(current_jiffies, (trans_start +
+That is correct, when the user-visible issue occurs, no driver is
+bound to the NHI and XHCI. The discrete JHL chip is not permitted to
+attach to the external-facing root port because of the security
+policy, so the NHI and XHCI are not seen by the computer.
 
-wrap at 80 characters
+When the user connects a non-thunderbolt peripheral to the USB-C port
+that is downstream from the JHL chip, nothing happens in the logs, and
+the computer does not see the peripheral. However, power chargers
+still are able to charge the device through that port.
 
-> +								   dev->watchdog_timeo))) {
-> +						timedout_ms = jiffies_to_msecs(current_jiffies -
-> +										trans_start);
-> +						atomic_long_inc(&txq->trans_timeout);
-> +						break;
-> +					}
-> +					next_check = trans_start + dev->watchdog_timeo -
-> +									current_jiffies;
+> The solution implemented by the above-linked branch hinges on the
+> NHI driver fixing up the device attributes.  But if the NHI driver
+> is not bound, it can't fix up the attributes.
 
-this will give us "next_check" for last queue. Let's instead find the
-oldest trans_start in the loop. Do:
+I could try to experiment with your patch, see what happens, and if I
+can get around that.
 
-		unsigned long oldest_start = jiffies;
+On Sat, Apr 27, 2024 at 11:09=E2=80=AFAM Lukas Wunner <lukas@wunner.de> wro=
+te:
+>
+> On Thu, Apr 25, 2024 at 05:16:24PM -0400, Esther Shimanovich wrote:
+> > I did find one example of a docking station that uses the DSL6540
+> > chip, which has PCI IDs defined in include/linux/pci_ids.h:
+> > #define PCI_DEVICE_ID_INTEL_ALPINE_RIDGE_4C_NHI     0x1577
+> > #define PCI_DEVICE_ID_INTEL_ALPINE_RIDGE_4C_BRIDGE  0x1578
+> > It seems like it has an NHI, despite being in an external, removable
+> > docking station.
+>
+> Could you provide full output of dmesg and lspci -vvv of a machine
+> with this docking station attached?
+>
+> Perhaps open a bug at bugzilla.kernel.org and attach it there?
+>
 
-then in the loop:
+I don=E2=80=99t have this device available at my office. I just saw that
+StarTech sells a universal laptop docking station with chipset-id
+Intel - Alpine Ridge DSL6540. Then I looked up the device, and found
+it here: https://linux-hardware.org/?id=3Dpci:8086-1577-8086-0000
 
-		oldest_start = min(...)
+Therefore, I concluded that the DSL6540 has an NHI component.
 
->  				}
->  			}
->  
-> @@ -530,9 +537,11 @@ static void dev_watchdog(struct timer_list *t)
->  				dev->netdev_ops->ndo_tx_timeout(dev, i);
->  				netif_unfreeze_queues(dev);
->  			}
-> +			if (!next_check)
-> +				next_check = dev->watchdog_timeo;
->  			if (!mod_timer(&dev->watchdog_timer,
->  				       round_jiffies(jiffies +
-> -						     dev->watchdog_timeo)))
-> +						     next_check)))
+If these logs are important, I could probably make a case to purchase
+that docking station and get the info that you need. Please let me
+know!
 
-then here you just need to swap jiffies for oldest_start
+> Could you then try the below patch and see if it prevents the
+> Thunderbolt driver from binding to the hot-plugged device?
 
->  				release = false;
->  		}
->  	}
-
+I could give it a try. Thank you!
 
