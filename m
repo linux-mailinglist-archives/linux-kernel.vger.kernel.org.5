@@ -1,253 +1,103 @@
-Return-Path: <linux-kernel+bounces-164850-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-164851-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BC8F48B83F5
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 03:32:14 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B3FF38B83F9
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 03:35:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AE98E1C21E44
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 01:32:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6FD89284004
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 01:35:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1567522A;
-	Wed,  1 May 2024 01:32:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b="1+OV8jIb"
-Received: from mail-oo1-f41.google.com (mail-oo1-f41.google.com [209.85.161.41])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26829525E;
+	Wed,  1 May 2024 01:35:02 +0000 (UTC)
+Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com [209.85.167.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F5B946BA
-	for <linux-kernel@vger.kernel.org>; Wed,  1 May 2024 01:32:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC20B4A33;
+	Wed,  1 May 2024 01:34:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714527126; cv=none; b=eRfjwfVr4Wz13T64uGxcYo3v0rbzQej7vs2PZdHQj42lbnchmkhLFqLx2ICIbbUcZJHCEiAJ5bcK7pDjno4wjvoa9U23CHjUfFnpc2tTSmb4EwpDA0f9r99ivMqcC3ohRMUlix4hvdR8p+gYZivaGHHcC2ZWNF8PM9cGqTGHEoM=
+	t=1714527301; cv=none; b=eQC1pvu9853HYdf8K4ZaSHoXCZ79RFHPh67lra6adcduVYzpyXH87Ye+NnJAYCtXmdYD+oMuRId9EIpR54c5AkzA3TsZVjwGnwEHs1wQon/8leRLDM1drRkdkkML2+7kooavyUT9ZN66kQPHBegmlnoV/qIlSSZ3Z7D/GfBWNuY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714527126; c=relaxed/simple;
-	bh=nNA/+5lUlX8TZ8Hrv3FoOYIRmlTOzjp/ZOYWxKwxduc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=dB+kgIZXQua8Ng/GpztL6UFXusqxfrU38CsvGTYk/d5/+vRV4TI0+Z85+7MdNuweYshz+oeRr7FHVcebe0YNLUxvxmtTT7baWzPTChNDqHglelTVeeZL8QtwpiYp0hvnSIEiUc232ZqhVX12AUYSOBkg1sf49rxk6uvYVilKujo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com; spf=pass smtp.mailfrom=fromorbit.com; dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b=1+OV8jIb; arc=none smtp.client-ip=209.85.161.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fromorbit.com
-Received: by mail-oo1-f41.google.com with SMTP id 006d021491bc7-5aa400b917dso4121565eaf.0
-        for <linux-kernel@vger.kernel.org>; Tue, 30 Apr 2024 18:32:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1714527124; x=1715131924; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=KM7Hd5zki3USqEbBfz9TXSdoSf1EQG0WzU/UqVvexrQ=;
-        b=1+OV8jIbYG66pZUK2m8IEQwBn5oVX6u5ZhY8tP/EIrnrCsEkWop/7yOIkM/+5SFJ/S
-         N7mJCaNT5/m/VZDZG4VS54WhLNRVYlivJPx0Z9BwmpS+AAOJ1COCJT754NtxTsXJnQ7O
-         8UDilEVIa1VsvMJQvc2Jc71llQj05GbEoq88v3BUjPcLB0Q0q/NfTb7cx+0tqHo0vMKl
-         LZrmUCAi4JnpYnDoRUEKI9x9eEPu0KYY9lOXQA4lq4Y7dXN2xndg+X2BP8YE281XEZ9K
-         BSFbrJbZfweqbjTZKiXc7ZTbqb6kC3kgAW7cygSErGHV0QXj4VDJrhtFNEbZrZNawan/
-         g6HQ==
+	s=arc-20240116; t=1714527301; c=relaxed/simple;
+	bh=ojCK361NApnkeNZEAQMiCCmFYP9p9GCT3zWweDRk2IY=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=hVm8TU5v2xJXgqkmQATwOqv2yXA1aYxXj/tXxifmq7ryZVHnZb+jBGObK0yOVzYWo1s+qlDHPCWGEXGCG+Ml5OJ8KXgO+skZ6V6eyzI28+DxvhVwts30gG5sRHjY+3P6sq5UyANbnK8Ao2v9iJsHN46Dk6D60W4U0p7M1rkDe+o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=sung-woo.kim; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.167.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=sung-woo.kim
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-51ac9c6599bso7020885e87.1;
+        Tue, 30 Apr 2024 18:34:59 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714527124; x=1715131924;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=KM7Hd5zki3USqEbBfz9TXSdoSf1EQG0WzU/UqVvexrQ=;
-        b=MgZfBCwuS63SK1Fpm4932WV9kHcFzGrA4NSGmkFWiKecVXUk071TZSGYyAtBtdMgJS
-         XTdql/Tz9mQa44zQvZ1lYbCef8K0Rs+ioIbzH6LCaWXbQKzYxar8AiTyM75clXbHn7oR
-         UVaaQcGf360LkAmF7m9XXG3O42FaJebTaSEyAgKa/2PeGUKqhVQmHcQ7+bDWxa5j1y1G
-         O6aupzhx8sfae5bj7EssXexh4oKzduqZz9H3OlQzmO1IuAn1992QxO6Kl/1OO+HWt7ax
-         jwejWBwqn++0Yk1X8nJYRdchQdn++cj7gLMq5a5E7TFS82GsAx138RWOplBAsan38LdI
-         H5tA==
-X-Forwarded-Encrypted: i=1; AJvYcCURaCPDuS7Vv/KCI6b+HtE4mmQChGTrweAK5sX0sL+6UKn8jdWFYO2GF2GF0u9AQMXUjFxRsDkm+/roPJ6OgSSAsNl1WJcr5q4N+0IX
-X-Gm-Message-State: AOJu0YzCcHE01NzBpk5NDZQipvteuRbt54VYuUqbsi6r63wSRFKSvpJz
-	DLwDya9VsYb7I2N5kwq4VLs9tbgAP2xN/ps1v0mkws4eLmtwr6L1Jc6MOm6Ly4E=
-X-Google-Smtp-Source: AGHT+IEAQ8njw5Xk9bQwmGDIxl6ZK6d3U3YkxZ7bTcibYCg1oYT8UUm8HvkrTms16QE9uu7PwRaMpA==
-X-Received: by 2002:a05:6358:887:b0:17e:b867:cb99 with SMTP id m7-20020a056358088700b0017eb867cb99mr1868688rwj.1.1714527123767;
-        Tue, 30 Apr 2024 18:32:03 -0700 (PDT)
-Received: from dread.disaster.area (pa49-179-32-121.pa.nsw.optusnet.com.au. [49.179.32.121])
-        by smtp.gmail.com with ESMTPSA id y124-20020a636482000000b006109431806dsm6349949pgb.92.2024.04.30.18.32.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Apr 2024 18:32:03 -0700 (PDT)
-Received: from dave by dread.disaster.area with local (Exim 4.96)
-	(envelope-from <david@fromorbit.com>)
-	id 1s1ypE-00GpU1-0H;
-	Wed, 01 May 2024 11:32:00 +1000
-Date: Wed, 1 May 2024 11:32:00 +1000
-From: Dave Chinner <david@fromorbit.com>
-To: John Garry <john.g.garry@oracle.com>
-Cc: djwong@kernel.org, hch@lst.de, viro@zeniv.linux.org.uk,
-	brauner@kernel.org, jack@suse.cz, chandan.babu@oracle.com,
-	willy@infradead.org, axboe@kernel.dk, martin.petersen@oracle.com,
-	linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	tytso@mit.edu, jbongio@google.com, ojaswin@linux.ibm.com,
-	ritesh.list@gmail.com, mcgrof@kernel.org, p.raghav@samsung.com,
-	linux-xfs@vger.kernel.org, catherine.hoang@oracle.com
-Subject: Re: [PATCH v3 15/21] fs: xfs: iomap: Sub-extent zeroing
-Message-ID: <ZjGbkAuGj0MhXAZ/@dread.disaster.area>
-References: <20240429174746.2132161-1-john.g.garry@oracle.com>
- <20240429174746.2132161-16-john.g.garry@oracle.com>
+        d=1e100.net; s=20230601; t=1714527298; x=1715132098;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ojCK361NApnkeNZEAQMiCCmFYP9p9GCT3zWweDRk2IY=;
+        b=a/ZSZN5h6efT08XN8eXQfEOXqKrx4VyOG35bM/BbJ3vflgC8T7IQV7vsRPnwWa64bd
+         MCeBoEm092UgwFT/SzrMFVh6cb2sn9FX3kQvtwY5hM3fXN1u/HfMobql+NZY0fjYW/zn
+         U1A9HhwxgeZO7Coy7VM49vQtmSmY2cNvo45Q5OlkudO7sh03e/c0nT8QxntKHOsOTR8N
+         ibNeYNo3zMEney2D391AC4nZaNpNpVEsU6rNBH61orrY4wAZh9cUgQuQGfb+UmnbcP3+
+         1bTANttiKM6VC/35aCGUR0GAQhiuEN5RtFu7Xq65fK7FyRv56vWES4KSP/clUIGWAD/N
+         cC9w==
+X-Forwarded-Encrypted: i=1; AJvYcCUuW2EvIx09z0kIkwHJl66tsarqDJTpFjGpyJeHKMsOPmVM5iPujDhjowFTs387hZv2BzRT4otwuETWCy6svkBR+IYHSxshQzBcUS+VrmXuAqcWhVQNT7/FDGpE/QQilMbIAn/5yUwmQw==
+X-Gm-Message-State: AOJu0YxS8KOpBJ7F1mJ7E8L5DVcRLBz3f/NV8Cta/72FUD6gQIMHUtyz
+	yaMnPCed1OhzCMFGoiRbdVqJ7GpURdN0nwcg4kxQHhnwAPWFJgnjX+N9v4+5O6o=
+X-Google-Smtp-Source: AGHT+IEUL15r7ROMr1waQtt658aOX88J27yKxvH8Z9OQCJjKm7LvuATnI5Dm9aLTcehEDi8pa6I7/A==
+X-Received: by 2002:a05:6512:1383:b0:51d:2017:e65 with SMTP id fc3-20020a056512138300b0051d20170e65mr866141lfb.66.1714527297663;
+        Tue, 30 Apr 2024 18:34:57 -0700 (PDT)
+Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com. [209.85.167.41])
+        by smtp.gmail.com with ESMTPSA id 17-20020ac24851000000b00518a01fdf2asm4700183lfy.144.2024.04.30.18.34.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 30 Apr 2024 18:34:57 -0700 (PDT)
+Received: by mail-lf1-f41.google.com with SMTP id 2adb3069b0e04-516d4d80d00so8090760e87.0;
+        Tue, 30 Apr 2024 18:34:57 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCV/6gtfHXMzeI3y08BLHzFh7aU8lme8OBrf2rGFTx+pZgEvOf/MGLU+/0j3ArMy+5AvXuyLcvByYcYGyJz6J9suQPt7pMEDkZSotNYBkatzzp1PUPghvdykeLYAvDVbhTYhhNzpuW4cWw==
+X-Received: by 2002:a05:6512:e8a:b0:51e:9812:b2ae with SMTP id
+ bi10-20020a0565120e8a00b0051e9812b2aemr662647lfb.33.1714527297286; Tue, 30
+ Apr 2024 18:34:57 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240429174746.2132161-16-john.g.garry@oracle.com>
+References: <20240501111917.23e2b0f2@canb.auug.org.au>
+In-Reply-To: <20240501111917.23e2b0f2@canb.auug.org.au>
+From: Sungwoo Kim <iam@sung-woo.kim>
+Date: Tue, 30 Apr 2024 21:34:43 -0400
+X-Gmail-Original-Message-ID: <CAJNyHp+G_zt_SbbGwFZzPyi=HjDs8sv_N0DqjHWih0OKb1EykA@mail.gmail.com>
+Message-ID: <CAJNyHp+G_zt_SbbGwFZzPyi=HjDs8sv_N0DqjHWih0OKb1EykA@mail.gmail.com>
+Subject: Re: linux-next: build failure after merge of the bluetooth tree
+To: Stephen Rothwell <sfr@canb.auug.org.au>
+Cc: Marcel Holtmann <marcel@holtmann.org>, Johan Hedberg <johan.hedberg@gmail.com>, 
+	Luiz Augusto von Dentz <luiz.von.dentz@intel.com>, 
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, 
+	Linux Next Mailing List <linux-next@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Apr 29, 2024 at 05:47:40PM +0000, John Garry wrote:
-> Set iomap->extent_size when sub-extent zeroing is required.
-> 
-> We treat a sub-extent write same as an unaligned write, so we can leverage
-> the existing sub-FSblock unaligned write support, i.e. try a shared lock
-> with IOMAP_DIO_OVERWRITE_ONLY flag, if this fails then try the exclusive
-> lock.
-> 
-> In xfs_iomap_write_unwritten(), FSB calcs are now based on the extsize.
+Hi Stephen, thank you for reporting this.
 
-If forcedalign is set, should we just reject unaligned DIOs?
+On Tue, Apr 30, 2024 at 9:19=E2=80=AFPM Stephen Rothwell <sfr@canb.auug.org=
+au> wrote:
+>
+> Hi all,
+>
+> After merging the bluetooth tree, today's linux-next build (arm
+> multi_v7_defconfig) failed like this:
+>
+> net/bluetooth/hci_core.c: In function 'hci_release_dev':
+> net/bluetooth/hci_core.c:2831:9: error: implicit declaration of function =
+'msft_release'; did you mean 'dst_release'? [-Werror=3Dimplicit-function-de=
+claration]
 
-....
-> Signed-off-by: John Garry <john.g.garry@oracle.com>
-> ---
->  fs/xfs/xfs_file.c  | 35 ++++++++++++++++++++++-------------
->  fs/xfs/xfs_iomap.c | 13 +++++++++++--
->  2 files changed, 33 insertions(+), 15 deletions(-)
-> 
-> diff --git a/fs/xfs/xfs_file.c b/fs/xfs/xfs_file.c
-> index e81e01e6b22b..ee4f94cf6f4e 100644
-> --- a/fs/xfs/xfs_file.c
-> +++ b/fs/xfs/xfs_file.c
-> @@ -620,18 +620,19 @@ xfs_file_dio_write_aligned(
->   * Handle block unaligned direct I/O writes
+The patch was insufficient. If CONFIG_BT_MSFTEXT=3Dn, msft.h does not
+declare msft_release().
+I will send a patch for this.
 
- * Handle unaligned direct IO writes.
-
->   *
->   * In most cases direct I/O writes will be done holding IOLOCK_SHARED, allowing
-> - * them to be done in parallel with reads and other direct I/O writes.  However,
-> - * if the I/O is not aligned to filesystem blocks, the direct I/O layer may need
-> - * to do sub-block zeroing and that requires serialisation against other direct
-> - * I/O to the same block.  In this case we need to serialise the submission of
-> - * the unaligned I/O so that we don't get racing block zeroing in the dio layer.
-> - * In the case where sub-block zeroing is not required, we can do concurrent
-> - * sub-block dios to the same block successfully.
-> + * them to be done in parallel with reads and other direct I/O writes.
-> + * However if the I/O is not aligned to filesystem blocks/extent, the direct
-> + * I/O layer may need to do sub-block/extent zeroing and that requires
-> + * serialisation against other direct I/O to the same block/extent.  In this
-> + * case we need to serialise the submission of the unaligned I/O so that we
-> + * don't get racing block/extent zeroing in the dio layer.
-> + * In the case where sub-block/extent zeroing is not required, we can do
-> + * concurrent sub-block/extent dios to the same block/extent successfully.
->   *
->   * Optimistically submit the I/O using the shared lock first, but use the
->   * IOMAP_DIO_OVERWRITE_ONLY flag to tell the lower layers to return -EAGAIN
-> - * if block allocation or partial block zeroing would be required.  In that case
-> - * we try again with the exclusive lock.
-> + * if block/extent allocation or partial block/extent zeroing would be
-> + * required.  In that case we try again with the exclusive lock.
-
-Rather than changing every "block" to "block/extent", leave the bulk
-of the comment unchanged and add another paragraph to it that says
-something like:
-
- * If forced extent alignment is turned on, then serialisation
- * constraints are extended from filesystem block alignment
- * to extent alignment boundaries. In this case, we treat any
- * non-extent-aligned DIO the same as a sub-block DIO.
-
->   */
->  static noinline ssize_t
->  xfs_file_dio_write_unaligned(
-> @@ -646,9 +647,9 @@ xfs_file_dio_write_unaligned(
->  	ssize_t			ret;
->  
->  	/*
-> -	 * Extending writes need exclusivity because of the sub-block zeroing
-> -	 * that the DIO code always does for partial tail blocks beyond EOF, so
-> -	 * don't even bother trying the fast path in this case.
-> +	 * Extending writes need exclusivity because of the sub-block/extent
-> +	 * zeroing that the DIO code always does for partial tail blocks
-> +	 * beyond EOF, so don't even bother trying the fast path in this case.
->  	 */
->  	if (iocb->ki_pos > isize || iocb->ki_pos + count >= isize) {
->  		if (iocb->ki_flags & IOCB_NOWAIT)
-> @@ -714,11 +715,19 @@ xfs_file_dio_write(
->  	struct xfs_inode	*ip = XFS_I(file_inode(iocb->ki_filp));
->  	struct xfs_buftarg      *target = xfs_inode_buftarg(ip);
->  	size_t			count = iov_iter_count(from);
-> +	struct xfs_mount	*mp = ip->i_mount;
-> +	unsigned int		blockmask;
->  
->  	/* direct I/O must be aligned to device logical sector size */
->  	if ((iocb->ki_pos | count) & target->bt_logical_sectormask)
->  		return -EINVAL;
-> -	if ((iocb->ki_pos | count) & ip->i_mount->m_blockmask)
-> +
-> +	if (xfs_inode_has_forcealign(ip) && ip->i_extsize > 1)
-> +		blockmask = XFS_FSB_TO_B(mp, ip->i_extsize) - 1;
-> +	else
-> +		blockmask = mp->m_blockmask;
-
-	alignmask = XFS_FSB_TO_B(mp, xfs_inode_alignment(ip)) - 1;
-
-Note that this would consider sub rt_extsize IO as unaligned, which
-may be undesirable. In that case, we should define a second helper
-such as xfs_inode_io_alignment() that doesn't take into account RT
-extent sizes because we can still do filesystem block sized
-unwritten extent conversion on those devices. The same IO-specific
-wrapper would be used for the other cases in this patch, too.
-
-> +
-> +	if ((iocb->ki_pos | count) & blockmask)
->  		return xfs_file_dio_write_unaligned(ip, iocb, from);
->  	return xfs_file_dio_write_aligned(ip, iocb, from);
->  }
-> diff --git a/fs/xfs/xfs_iomap.c b/fs/xfs/xfs_iomap.c
-> index 4087af7f3c9f..1a3692bbc84d 100644
-> --- a/fs/xfs/xfs_iomap.c
-> +++ b/fs/xfs/xfs_iomap.c
-> @@ -138,6 +138,8 @@ xfs_bmbt_to_iomap(
->  
->  	iomap->validity_cookie = sequence_cookie;
->  	iomap->folio_ops = &xfs_iomap_folio_ops;
-> +	if (xfs_inode_has_forcealign(ip) && ip->i_extsize > 1)
-> +		iomap->extent_size = XFS_FSB_TO_B(mp, ip->i_extsize);
-
-	iomap->io_block_size = XFS_FSB_TO_B(mp, xfs_inode_alignment(ip));
-
->  	return 0;
->  }
->  
-> @@ -570,8 +572,15 @@ xfs_iomap_write_unwritten(
->  
->  	trace_xfs_unwritten_convert(ip, offset, count);
->  
-> -	offset_fsb = XFS_B_TO_FSBT(mp, offset);
-> -	count_fsb = XFS_B_TO_FSB(mp, (xfs_ufsize_t)offset + count);
-> +	if (xfs_inode_has_forcealign(ip) && ip->i_extsize > 1) {
-> +		xfs_extlen_t extsize_bytes = mp->m_sb.sb_blocksize * ip->i_extsize;
-> +
-> +		offset_fsb = XFS_B_TO_FSBT(mp, round_down(offset, extsize_bytes));
-> +		count_fsb = XFS_B_TO_FSB(mp, round_up(offset + count, extsize_bytes));
-> +	} else {
-> +		offset_fsb = XFS_B_TO_FSBT(mp, offset);
-> +		count_fsb = XFS_B_TO_FSB(mp, (xfs_ufsize_t)offset + count);
-> +	}
-
-More places we can use a xfs_inode_alignment() helper.
-
-	offset_fsb = XFS_B_TO_FSBT(mp, offset);
-	count_fsb = XFS_B_TO_FSB(mp, (xfs_ufsize_t)offset + count);
-	rounding = XFS_FSB_TO_B(mp, xfs_inode_alignment(ip));
-	if (rounding > 1) {
-		 offset_fsb = rounddown_64(offset_fsb, rounding);
-		 count_fsb = roundup_64(count_fsb, rounding);
-	}
-
-Cheers,
-
-Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+Thanks & Regards,
+Sungwoo.
 
