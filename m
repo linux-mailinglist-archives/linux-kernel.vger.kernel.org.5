@@ -1,95 +1,78 @@
-Return-Path: <linux-kernel+bounces-165657-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-165658-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7EA708B8F21
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 19:40:21 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7E51F8B8F23
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 19:41:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 39EE52834A6
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 17:40:20 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8C2AEB21216
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 17:41:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52066130487;
-	Wed,  1 May 2024 17:40:11 +0000 (UTC)
-Received: from secure.elehost.com (secure.elehost.com [185.209.179.11])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5797712FF87;
+	Wed,  1 May 2024 17:41:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lH+mO4SL"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 769D8D2FE;
-	Wed,  1 May 2024 17:40:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.209.179.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9EDC21AAC4
+	for <linux-kernel@vger.kernel.org>; Wed,  1 May 2024 17:41:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714585210; cv=none; b=Bvh7xA7g7Z2wvossY3IzAadGMk8F7P+o6sK+O/fmEMhuBA/eY4IxBuUalO/jCz80mdxKbf5RJVEF+ZZsc7VnBqznYadm7JRGdiy2VUah6UyhSv+KSP2JnuNWtEeoQ0FsYlf8Sm4h9Z5lz33IvgFfLWrmiOgYJWLx/QVNh83yn3A=
+	t=1714585286; cv=none; b=eNwcsjZERGQc4GMNPabFypIWXoGeLofKUNPVnkwnGvQRdiemJ8555x43T/eFwxWfroMZ1XsQRe/aIZMj9I5aDH+K/NwJ4T47zvOXkqLoPIgI7b6iWJCfltECmap6UPbUYMUSr9HqyqahqZ/f9CaJVBSdcK2bFePxnYTy3ogZ3e0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714585210; c=relaxed/simple;
-	bh=M2iwevICI26coArTB8sBeIjerkidsmo8KUM0dh1FZwE=;
-	h=From:To:Cc:References:In-Reply-To:Subject:Date:Message-ID:
-	 MIME-Version:Content-Type; b=f9cXM8s/GX4/y3+w7CNHpflOT6HLHzZhsykMfkyS3GJ2cRLsYoKo2ETi9z6S8IlLVgcEtCJy9NoKOwqm0R2VdrnWLFgqacHRCQt69yrbcTizrsmXcLwPEwRTfmj2/3ZcObBrwpejDlkyfbrx9r5k5kTWhGV0XNfyAJSIeBZNoaA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nexbridge.com; spf=pass smtp.mailfrom=nexbridge.com; arc=none smtp.client-ip=185.209.179.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nexbridge.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nexbridge.com
-X-Virus-Scanned: Debian amavisd-new at secure.elehost.com
-Received: from Mazikeen (pool-99-228-12-196.cpe.net.cable.rogers.com [99.228.12.196])
-	(authenticated bits=0)
-	by secure.elehost.com (8.15.2/8.15.2/Debian-22ubuntu3) with ESMTPSA id 441Hdubw1468678
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 1 May 2024 17:39:57 GMT
-Reply-To: <rsbecker@nexbridge.com>
-From: <rsbecker@nexbridge.com>
-To: "'Junio C Hamano'" <gitster@pobox.com>, <git@vger.kernel.org>
-Cc: "'Linux Kernel'" <linux-kernel@vger.kernel.org>,
-        <git-packagers@googlegroups.com>
-References: <xmqq8r0ww0sj.fsf@gitster.g>
-In-Reply-To: <xmqq8r0ww0sj.fsf@gitster.g>
-Subject: RE: [ANNOUNCE] Git v2.45.0
-Date: Wed, 1 May 2024 13:39:50 -0400
-Organization: Nexbridge Inc.
-Message-ID: <0be901da9bee$950bc830$bf235890$@nexbridge.com>
+	s=arc-20240116; t=1714585286; c=relaxed/simple;
+	bh=fYnlN8922Yzj143QTilX4qUfA8a7dGahSvmYcZLVEgQ=;
+	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=psE/gffCU2qwLeIOWwi6/CzcPUp86qia4KKp5Wpx+f2kXzQNmdQiSKwtBbTT52pT0tFGzwaFNrsuB/E7N8doTh8SIbIGWi26rKBN8yQZxzhiJ8Hyx48zKO3XEkj5H8/QYE/m+q8wkkwoYgAodkicDcb/ybSkb+NnKkmZGPLAARQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lH+mO4SL; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 2F9F7C072AA;
+	Wed,  1 May 2024 17:41:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714585286;
+	bh=fYnlN8922Yzj143QTilX4qUfA8a7dGahSvmYcZLVEgQ=;
+	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+	b=lH+mO4SLI+a9i/hk6GRhjRJX/ahWZb127wGCxXJCJcvHWDxBXVEMR/t9AMZgpmofA
+	 4eAATf7lejQFLfT43NNZNmOxFB9o3S1bKC273CAg8zmQ9TAS/m9k7dKAGoieSUW6Em
+	 dxIozwJtb2MDrXlTiKjGU+fAtDkz9qWKv+V9I4c8uFhJ7YgaKDhnXL5GhcX6o8CPsh
+	 vVdg6DMnMzZ11P4zhgu2doWLi+iQZIDhROpPOvhwHcHz32dN31qfiZC/ayNpmguaoQ
+	 G999zY1C3as8YnvN0mKKMkqF2xZjX6cVjYb+G7ualzhom/4viTzLxN+k+4vl7g7mBK
+	 lWtj3hYWllEYg==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 2374EC433A2;
+	Wed,  1 May 2024 17:41:26 +0000 (UTC)
+Subject: Re: [GIT PULL] regulator fixes for v6.9-rc6
+From: pr-tracker-bot@kernel.org
+In-Reply-To: <0bab863fc734774982e9d6fb4ae70211.broonie@kernel.org>
+References: <0bab863fc734774982e9d6fb4ae70211.broonie@kernel.org>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <0bab863fc734774982e9d6fb4ae70211.broonie@kernel.org>
+X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git tags/regulator-fix-v6.9-rc6
+X-PR-Tracked-Commit-Id: ff33132605c1a0acea59e4c523cb7c6fabe856b2
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 0106679839f7c69632b3b9833c3268c316c0a9fc
+Message-Id: <171458528613.29670.8652472263423820057.pr-tracker-bot@kernel.org>
+Date: Wed, 01 May 2024 17:41:26 +0000
+To: Mark Brown <broonie@kernel.org>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-X-Mailer: Microsoft Outlook 16.0
-Thread-Index: AQLjnmWw6HuMyEOTwKLAihfvlQppS69wn8uA
-Content-Language: en-ca
 
-On Monday, April 29, 2024 1:12 PM, Junio C Hamano wrote:
->The latest feature release Git v2.45.0 is now available at the
->usual places.  It is comprised of 540 non-merge commits since
->v2.44.0, contributed by 96 people, 38 of which are new faces [*].
->
->The tarballs are found at:
->
->    https://www.kernel.org/pub/software/scm/git/
->
->The following public repositories all have a copy of the 'v2.45.0'
->tag and the 'master' branch that the tag points at:
->
->  url =3D https://git.kernel.org/pub/scm/git/git
->  url =3D https://kernel.googlesource.com/pub/scm/git/git
->  url =3D git://repo.or.cz/alt-git.git
->  url =3D https://github.com/gitster/git
+The pull request you sent on Wed, 01 May 2024 23:08:04 +0900:
 
-The HPE NonStop builds for git 2.45.0 are available at the ITUGLIB =
-website at =
-https://ituglib.connect-community.org/apps/Ituglib/SrchOpenSrcLib.xhtml.
+> https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git tags/regulator-fix-v6.9-rc6
 
-Thanks to the entire git and ITUGLIB teams for making these happen.
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/0106679839f7c69632b3b9833c3268c316c0a9fc
 
-Regards,
-Randall
+Thank you!
 
---
-Brief whoami: NonStop&UNIX developer since approximately
-UNIX(421664400)
-NonStop(211288444200000000)
--- In real life, I talk too much.
-
-
-
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
 
