@@ -1,45 +1,45 @@
-Return-Path: <linux-kernel+bounces-165337-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-165338-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A2A848B8B69
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 15:43:24 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id EB2198B8B6A
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 15:43:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DBE86B21FCE
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 13:43:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 001841C22830
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 13:43:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 60D3912EBD3;
-	Wed,  1 May 2024 13:43:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 765B012F367;
+	Wed,  1 May 2024 13:43:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ITWn/E1n"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kjyr9K85"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A05671758D;
-	Wed,  1 May 2024 13:43:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B20C31758D;
+	Wed,  1 May 2024 13:43:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714570993; cv=none; b=sWd+MTrJMECKYugSMgO2f/QHVYboKIff0O38GsaicrLpwpr5bSQmpOPf2+7AIuwQnM6OH/OXFj9TQVcInG68xEs8HhHDyi6IVDXfivfenHHQeddAxD+2Uev+mO49nqIiZHJSiqHvC3XIIKVuuSbMG2tFNIFuhntyR8e53V+Bais=
+	t=1714570997; cv=none; b=KCnjz/ijzXDfddP37QfQBDgIJmu3i5Y30X64uriJLfvcu4L9tKdZV+uNuigFP9S0D8pn/xpFZ0u3Yl1IGwOI7tFS9HUiYIkNG3OBOc8uWs2GArq5nWGEIEEUV3g2wpTIRP6Tk3OWGeXRQiSPbIlvGQlUkZjH83+4xtR+234HBak=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714570993; c=relaxed/simple;
-	bh=9cGe0fO91KEJ6yS3wODvzOfUdBBRbhupeiudrh94mnc=;
+	s=arc-20240116; t=1714570997; c=relaxed/simple;
+	bh=8s5kRpq9v7omz4cTI6onHJBvW1QqzHh21ZT4YSBdF7k=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=HDMnx1ggc9Uwn35AUSvsrWg+w3VOSCWhiG92PBj7xJ3lxBrHajlQnhXWBdniByTFkQyt0CCkKHOIEM9Mr5XPqmQXcDBmRcZGOwOsJ9+TDogqR3sCeufxIwpCT1JTxbaUvdsweaqR8ElNoVXNu9n45iuT9QqT6HxQSrlUNCDVWI8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ITWn/E1n; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DE152C113CC;
-	Wed,  1 May 2024 13:43:08 +0000 (UTC)
+	 MIME-Version:Content-Type; b=TvF03jFyFfFtMRePmAdLZZiQZs6RReqi59Zw+9v/63trKBHQujvIDBdrupjvLEg0rdMOP32SynysE/1BVgABHvK4rISRcCtWvJvkJztFfuLkMirgA+L/Z/9SupnyOaNhTtnvhM3TIYg8wyIqXIEKnzzYVET3MjbCxGIpXvQxHww=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kjyr9K85; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8DD58C4AF19;
+	Wed,  1 May 2024 13:43:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714570993;
-	bh=9cGe0fO91KEJ6yS3wODvzOfUdBBRbhupeiudrh94mnc=;
+	s=k20201202; t=1714570997;
+	bh=8s5kRpq9v7omz4cTI6onHJBvW1QqzHh21ZT4YSBdF7k=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=ITWn/E1nz33/c5D9HMjtgTlHCOKh8uHiSsWlcU7X2vEshClmoQlbx/PgYa84ZDIkS
-	 yq3B4KxtOb898TC/lqnTjDbhiUQ6YgHe9Po5zF8NrCZpjdKlRhjL5rg7gF2At2efQ+
-	 sx/nqhp6glcPOdmuPhlnvqBbuoxqeV0kUcvf92TBFOaMZUfkcP+jcApQ+JB0NIqPsB
-	 vmB/fijPtAZi3Vv06ppSDS7q2v+C3pYe5fwPHiemVQTTUXvP9LmWWbLFzP2UYPqKmK
-	 kaZJtMAlbG846ICqAnbP3RfNjRZpt+U2Ik09fpcxjKJwkQlicDe08Knh3cczjvK1rw
-	 qG3X7TESfD11A==
+	b=kjyr9K85Re6Zf3n9S/Id7kQZR5Yr29JID3fNO4fHNxVk5U08ylMmNTPsEZRIEN0zB
+	 SxbL3nPSGCY272Yx7p2+Nwqx/y/1bJTSuzixrQjfSj+hpzykP+n1SjZ9F5y4iftmZ4
+	 ltLsKFZeF63cRrNzaRiwdNjKz2IU/K9NUNnJJTHIZqOIzbsNnIrDqGVyicTC36n7n+
+	 /0nR5HcPpt3vA1s38/WKQSrMkCUgS9I/XeH1Bu/d77r427FiVlvbpkmePxuIQKgo3w
+	 YNl2GWRMX+kMjg+FRe0vPunEq+eHFK8VH9EZJ7fljw1SxEjKHaogC03pMTHMpAu3ob
+	 RxoZuI1LiqjSA==
 From: Mark Brown <broonie@kernel.org>
 To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, 
  Liam Girdwood <lgirdwood@gmail.com>, 
@@ -58,11 +58,11 @@ To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
 Cc: sound-open-firmware@alsa-project.org, linux-sound@vger.kernel.org, 
  linux-kernel@vger.kernel.org, imx@lists.linux.dev, 
  linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org
-In-Reply-To: <20240414-n-const-ops-var-v1-0-8f53ee5d981c@kernel.org>
-References: <20240414-n-const-ops-var-v1-0-8f53ee5d981c@kernel.org>
-Subject: Re: [PATCH 00/14] ASoC: Constify local snd_sof_dsp_ops
-Message-Id: <171457098826.1888704.13609756563875437820.b4-ty@kernel.org>
-Date: Wed, 01 May 2024 22:43:08 +0900
+In-Reply-To: <20240426-n-const-ops-var-v2-0-e553fe67ae82@kernel.org>
+References: <20240426-n-const-ops-var-v2-0-e553fe67ae82@kernel.org>
+Subject: Re: [PATCH v2 00/14] ASoC: Constify local snd_sof_dsp_ops
+Message-Id: <171457099304.1888704.3710450015978525893.b4-ty@kernel.org>
+Date: Wed, 01 May 2024 22:43:13 +0900
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -73,14 +73,20 @@ Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.14-dev
 
-On Sun, 14 Apr 2024 20:47:25 +0200, Krzysztof Kozlowski wrote:
+On Fri, 26 Apr 2024 11:03:47 +0200, Krzysztof Kozlowski wrote:
+> Changes in v2
+> =============
+> - Only rebase on for-next of broonie/sound.git
+> - Add tags.
+> - Link to v1: https://lore.kernel.org/r/20240414-n-const-ops-var-v1-0-8f53ee5d981c@kernel.org
+> 
+> Description
+> ===========
 > The core code does not modify the 'struct snd_sof_dsp_ops' passed via
-> pointer in various places, so this can be made pointer to const.
-> 
-> All further patches depend on the first four patches.
-> 
-> Best regards,
-> Krzysztof
+> pointer in various places, so this can be made pointer to const in few
+> places.  This in turn allows few drivers to have the local (usually
+> static) 'struct snd_sof_dsp_ops' as const which increased code safety,
+> as it is now part of rodata.
 > 
 > [...]
 
