@@ -1,68 +1,68 @@
-Return-Path: <linux-kernel+bounces-165272-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-165273-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 668DA8B8A5B
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 14:49:42 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B238A8B8A61
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 14:49:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7697EB21E48
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 12:49:39 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B363FB2197D
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 12:49:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 437F88565D;
-	Wed,  1 May 2024 12:49:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF5631EA84;
+	Wed,  1 May 2024 12:49:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=NXP1.onmicrosoft.com header.i=@NXP1.onmicrosoft.com header.b="Kqlxeuda"
-Received: from EUR04-DB3-obe.outbound.protection.outlook.com (mail-db3eur04on2051.outbound.protection.outlook.com [40.107.6.51])
+	dkim=pass (1024-bit key) header.d=NXP1.onmicrosoft.com header.i=@NXP1.onmicrosoft.com header.b="I4jnerqd"
+Received: from EUR04-VI1-obe.outbound.protection.outlook.com (mail-vi1eur04on2084.outbound.protection.outlook.com [40.107.8.84])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D1701EA84;
-	Wed,  1 May 2024 12:49:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.6.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 763327C082;
+	Wed,  1 May 2024 12:49:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.8.84
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714567772; cv=fail; b=QvwOACNGsLbHZRgyWdzQXGvyYd+oh2MyE8NKD2uKH+E2U8UEkqrWgQrIh0n6noi2DlazwMj6hc3EQaIGRPR007Pxk+MjpKEhF/kKaIWvzp0b5wc9FwzKxevrVvPaSI8Nj7rlFLr0HlVdC8xn2oUi43K05ylXe1j6yzgVReKdnZI=
+	t=1714567789; cv=fail; b=j12Wz8GUS2p9JLSgpng854lwNdSa5u9FwhDg/llPgjFm9vqzfIWksuL4bHX/kMM9jgD1syLON240sg4EC/LtKQt1U/ZNLpEG5bn2xb3qBwrNaN6J1RrTjh2pEjJUljFY283KizvtL8F2w8yFW9oRZd4i16i8mQBSKpymyXE92Rk=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714567772; c=relaxed/simple;
-	bh=T8RPCLVB0venRQNxNQUNK7eXrSySPXtqqefcl0oLISg=;
+	s=arc-20240116; t=1714567789; c=relaxed/simple;
+	bh=ZoFezlHrLhNH6VNyCapJyxPF8IHiuhLM60d0IZaK3P0=;
 	h=From:Date:Subject:Content-Type:Message-Id:References:In-Reply-To:
-	 To:Cc:MIME-Version; b=cqcDtdl/WeL4vN1FuUg4ZzJsYDzg/GMYjLZRJEGy7B99VpL3UjHROLLvEuvw7mzZXEDYhFFgcDaC6HeSHmnATVYCwszNrfbfYzJV4P9P2wxIJgSYZWj1cq0jya2ihmy4T2lmtbXWGDVoCa6PmGE9J0goOvBJcsAGoZ93XFmpdmQ=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oss.nxp.com; spf=pass smtp.mailfrom=oss.nxp.com; dkim=pass (1024-bit key) header.d=NXP1.onmicrosoft.com header.i=@NXP1.onmicrosoft.com header.b=Kqlxeuda; arc=fail smtp.client-ip=40.107.6.51
+	 To:Cc:MIME-Version; b=LHePeHmxKTGlYRMFE4WSzGzwkiAwm4MDOktUrY4+kX8FBOW2HKI51MMdTvazn+IBXlrr+TjkGtRdBpm3aq3oX3w0k1R89w3b7VqL1VNewwdWTcVNbx8/AVMLQx74zIG90xoTt1mWO/NKp9rBMS+dE15J7gCRFeLY/inO78fXfOo=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oss.nxp.com; spf=pass smtp.mailfrom=oss.nxp.com; dkim=pass (1024-bit key) header.d=NXP1.onmicrosoft.com header.i=@NXP1.onmicrosoft.com header.b=I4jnerqd; arc=fail smtp.client-ip=40.107.8.84
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oss.nxp.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oss.nxp.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=cd2pkTEpxdjR4zHMJabEAK8ziMtPIJdXtnU2NZKH+0KI12XRklQK+DhQtJrRal59uhMEX9bifoohmvgy5x2EEFMBDYLWc0hreM2/HuKM6hipY4VHs1E5IuP69ZmbdMBk79aTnk43OT4jIiE8RnvutU6tvF8E7xIgMIFu3ISbNh3d2BLLA4gcmr4vSHF9NMRwF+ZP7Pi5hQU1iInfiojmpfDvkRnk8OglpS1yTeP6md24K9RxJ5U8S/Ljzs4qfLmDLU6qXyv+NyB3VmsJclpp+B5DFx4ngrVqzzvLvcsxlnfWODpBLAdlqTHHHUhLf02Y8ZevKWc9/xOmTOHFnk6zvw==
+ b=Ve29h5h8BcMVkb+1Je5Ycjsz2hAQoJQAfcpoCPU02rQDiyi6eMWbgVqmiWH4CRT1p62sO9E19JP4f25oOEsmIHGpAz4ku6WoIq0YUio1YmVW/b5ARmtMuVhdRHK02wVhdfAWpZAK0nJ5DQxIdNYzvXifSpe6KGckHIVHXoB3YNhXRGwHyjAgiHT5gK6lKdqVozw+aJyCK9KvXfjvM8hn4ppfeZyQf2IguSj9M3b7hQZIMw1a8Z67jLJkG49b2FU74tFuugnZa/QV2Ig7BGqdnZf8LQxATKJCYNgEMK4pJBxGfVeyapd8HpLIISzOPdCv+F6QbyvUEysCq8lkLCbeuA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=WgaCub/AVvrWstgRn7NDSa3uLOl1yukaIFVzxzPeW7I=;
- b=EhjlbkSwIpK9p5mi+T8IG4fJMmy3vM2r3qtAH+zO2GV6i1EIR0hj6DvE75r8/pNWdBh8M2gBbUvgvYvRxHqQFwETfJFXyr8NstOe3KlDaIwXGu7BQkNLDITjPC6PqUqqlIEhti7JjZLntybbY+B/96ft3UN3DhmT89ZbintLaW52oZuSNsmWfcOIwwIIL1vby/qgsy2AfbWbiEW1HCac3xC8BMKYhRFoNCqZn5E4ubYaJ0R8B0cFwqshVjIEXN2s4zLpOTI2X7rat+QyxUxL5s3o7fW/XS7Sa/6Q3zVjBeDIQ0pMir+I2ACkYrpmKHI1Gx7IYNX8RXkWZq0XezQ9Ng==
+ bh=d9YUvofIdVB4JzzWI0NRmFDL50mIRPG79od9oDhnF78=;
+ b=PPhfLsW7SuP9/IvAj5c89Hoi0/EXWbKMLgY7B1VIvBQJrSFz+yJ2h3I8OCIEpR9P5B3upMAK7wRGfRw0cFThZvo1dxhwm1ikWlIID7Vu4U6R8qCOHKvZLejQf90xt/PX8uVOPJuK8RcUWMJ5TV6NquI7WSVxAp7yESb3PFHSv5JAH+tBc5DBM7NdNxdFWdE+TkrKQUX4mln/1/8+o5FisgMwQP2BXPm5qEyX0207BsDr9GVsWH60V3unBlYZQtailGffEbkIA4KD/mko7Q+RiBlTDJf3y53dCRWEEgsPRQV0MqmXePiV2RxD/URSZQmE+APkfHC2FSEEek2Bc7y1rA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
  dkim=pass header.d=oss.nxp.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
  s=selector2-NXP1-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=WgaCub/AVvrWstgRn7NDSa3uLOl1yukaIFVzxzPeW7I=;
- b=KqlxeudasMTvhe+KYjUqTRiD3zhIewnGUP/1/6FPzIUOiA7oIwOjMAYneE8FW/eXrC47IYOR5Id2saq1vXi4EVllT7bKTH9SciPp/WSRBpQEhmxx98G8kKyQ8xHo6utAnI+1zI/YiPCeNB4NpGnYXJgg1/3kf6F9AqjO0XWHZAo=
+ bh=d9YUvofIdVB4JzzWI0NRmFDL50mIRPG79od9oDhnF78=;
+ b=I4jnerqdQYo0PtLUHhRdWVFBJn9zKyabdPh2sFHr9ErIfFjM4EJAx/AfwpKuCgOWapMfbTA7kiB2d7vu2v23jbN9ACMwe4V1EEew196pVQLukDvdMKqca8QzxuKP2g8hk3SCMyOwVFL5QxYNdnE1jeZcPCkC20Rc0O7isVHd8n0=
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=oss.nxp.com;
 Received: from DU0PR04MB9417.eurprd04.prod.outlook.com (2603:10a6:10:358::11)
- by DB9PR04MB9284.eurprd04.prod.outlook.com (2603:10a6:10:36c::8) with
+ by DBAPR04MB7448.eurprd04.prod.outlook.com (2603:10a6:10:1a6::6) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7519.36; Wed, 1 May
- 2024 12:49:27 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7519.38; Wed, 1 May
+ 2024 12:49:43 +0000
 Received: from DU0PR04MB9417.eurprd04.prod.outlook.com
  ([fe80::d30b:44e7:e78e:662d]) by DU0PR04MB9417.eurprd04.prod.outlook.com
  ([fe80::d30b:44e7:e78e:662d%4]) with mapi id 15.20.7519.031; Wed, 1 May 2024
- 12:49:27 +0000
+ 12:49:43 +0000
 From: "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
-Date: Wed, 01 May 2024 20:56:02 +0800
-Subject: [PATCH 04/21] pinctrl: stm32: Use scope based of_node_put()
+Date: Wed, 01 May 2024 20:56:03 +0800
+Subject: [PATCH 05/21] pinctrl: starfive: Use scope based of_node_put()
  cleanups
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240501-pinctrl-cleanup-v1-4-797ceca46e5c@nxp.com>
+Message-Id: <20240501-pinctrl-cleanup-v1-5-797ceca46e5c@nxp.com>
 References: <20240501-pinctrl-cleanup-v1-0-797ceca46e5c@nxp.com>
 In-Reply-To: <20240501-pinctrl-cleanup-v1-0-797ceca46e5c@nxp.com>
 To: Linus Walleij <linus.walleij@linaro.org>, 
@@ -104,11 +104,11 @@ Cc: linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
  imx@lists.linux.dev, linux-aspeed@lists.ozlabs.org, 
  openbmc@lists.ozlabs.org, Peng Fan <peng.fan@nxp.com>
 X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1714568179; l=1839;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1714568179; l=6656;
  i=peng.fan@nxp.com; s=20230812; h=from:subject:message-id;
- bh=3dCftRoTOrOimvH/zZhm1znYYmC195eNUPhLJhk2Pd4=;
- b=fEVszNhFmB0ozWSgviQak9c62GVC/GEZgZAP4r8VCKSloHSeg9ffm1vWAQQ+bwWtefd5irQb/
- 3aoJSkKQVp/AVh9+Sc4htbGVlXth84TcdldSRvPA3MnRCqG5c4wNNYL
+ bh=q6W94Hjdjjw7xg0ybaSa/7rYn9TOuVxzheASMuMVWPs=;
+ b=oeYu4Ud4YU5lBztSso/rf0zqe1lgwaHPiuNrD5LA72yGh5Bng1xSawl8uORrM5WFZwafQV+S2
+ Y5SNiNdKNvaCP9Ni25D/AlYfbPj+Btc+9YyZx4MFETYbweNVA8teD7Y
 X-Developer-Key: i=peng.fan@nxp.com; a=ed25519;
  pk=I4sJg7atIT1g63H7bb5lDRGR2gJW14RKDD0wFL8TT1g=
 X-ClientProxiedBy: SG2PR02CA0064.apcprd02.prod.outlook.com
@@ -122,96 +122,96 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DU0PR04MB9417:EE_|DB9PR04MB9284:EE_
-X-MS-Office365-Filtering-Correlation-Id: c222aae5-b13c-4c9e-3bfc-08dc69dd22b9
+X-MS-TrafficTypeDiagnostic: DU0PR04MB9417:EE_|DBAPR04MB7448:EE_
+X-MS-Office365-Filtering-Correlation-Id: a0db37d7-54bf-423e-011b-08dc69dd2c5c
 X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam:
-	BCL:0;ARA:13230031|1800799015|376005|52116005|7416005|366007|38350700005|921011;
+	BCL:0;ARA:13230031|1800799015|376005|7416005|52116005|366007|921011|38350700005;
 X-Microsoft-Antispam-Message-Info:
-	=?utf-8?B?OEVWanQ2OExpeWw0TVFIcFphc0UzV0h3aUxCUHo5ZEM2S3ZkRUdhOXhUQk0y?=
- =?utf-8?B?Y0N2bEdsNXlydlZrUmRyM2FiamJPVUN2YnpUVWw5VS8zR2NRamg5Q1lmVmg2?=
- =?utf-8?B?dytOWUFmd29jRyttemVJMzFPNDExVVFwcmxUUHJySHN4RFNGV0VxN0s0eG8x?=
- =?utf-8?B?Tm1xVCt6VlNmQUtESnhBeGRvbkNCcnBkNVBQeE1Qc0t6R0JOK1BxTzJFZndz?=
- =?utf-8?B?QUs0RlNLTVZZZkdIeGVjWHNtK1kxN3pFN0FiTmVtVzkzcUpqNGVTbGF1SVp0?=
- =?utf-8?B?MVIvTU4rN0ttQXo0Ty85N0h3T0EwOXJuaVFBaGFzZ1YzeWxhckdZaWp0TSsr?=
- =?utf-8?B?akhzQTZ0dlBiWnN0WlBzVm9IQnEyVkxQTEhFNW10UmZxcjdZWWtSV2VGLzZw?=
- =?utf-8?B?bFNHSWRUT083V3N1V2FXVXlydWpRU29Eazg5MWs2VTdFSXRoQVlSamxmdXQ1?=
- =?utf-8?B?Z0wvcHhpTzJ1K0o5enp6dC8wcWxGKytEN3hwb3JKYmFXblZIMXBTYjVwZnZG?=
- =?utf-8?B?L2RlZENtOFUyMXRBcjNhQjgrS0hwb0hWdkEwOG9xL3JIc0dUbjhQZUFzQUo4?=
- =?utf-8?B?VHdBMmp3Q3RkekVLd0V0bnYrNGNBTEhScXBwdUxJblFHeDRvTGRCUjliV2lX?=
- =?utf-8?B?QmhENlp1UjVaKzREVmdXTnNUUUowdkxnd2tYRkNDbXlQd05GYzU1WkQ3eEli?=
- =?utf-8?B?RnNqVXJUUDZJeWExbllldmh6MStNRW1wL1B0WEw3cU9EdGV3Z2VFTllWZUtp?=
- =?utf-8?B?WXRzSDI3dmlLdmtiT1pyeDVOaUx0RTJETUVFZlNlYUMraWt5TmRCWmtmemNI?=
- =?utf-8?B?K24zczNITEVPZG45TVA1Z2JIMXhYelRnaVpmbDlhOVRZVjBGL2RrczI2aXVX?=
- =?utf-8?B?bkphK3UzeU5ob1VuSkI2dm56RGQ0Q3I2LzlQd255VUFlazg4WmR1N2Q3dUtk?=
- =?utf-8?B?Rktic0s3WS9wZjcwUDVIdFlTUnRJR0pnYm0rU0p5WDUxbHNBZVk4b1IyL21X?=
- =?utf-8?B?MXZwMVRHRWI1b0w5dWN2OVlwZzlKdGJiZGVoK3JEYjZkdHZyc20rTWpzbnJZ?=
- =?utf-8?B?WE5KZGpLbEdid2Z2MUVLVGZhM2FrZ0ljTnUwTjNDYjRVS2tPQ2ZIczhZM2h1?=
- =?utf-8?B?dWpqZ05kNEkxYTdOMUFCL1o2a2xGbUppSHlFZ1dDSzhvTm5zZElSWHJGck1C?=
- =?utf-8?B?UHR2a00vWGZ0d1hwZldsTStMOWR3RjZ3QkFENEkxd1I2TTRQUXhhWXVDSVBH?=
- =?utf-8?B?ejAvWkJGWW5MbmxGckhkUnM4K1g2Q3ZIdGlZbXZaZDNLVy9ERzlFUVd3ckp6?=
- =?utf-8?B?MEhOdlh0cVdYZnRvcU5vYklINGZGNHJvUmZkVkF5RzZIazRTRzV6TW51NU0v?=
- =?utf-8?B?UXJVb2xpNElJaVNBRHZ6VElrczJIQVFNeWNmYXRiZExhajVFUDZnSWc1MUtw?=
- =?utf-8?B?YXU4VmQ5UnMyQVh4U0lWREZKRnFQS3kxZmNEdGRCTXpoTW1kYm1mM2FjaEpj?=
- =?utf-8?B?NS95MmhVdFBpcFl0TG90SW5LMlpZN3BwS3pRSHVqRVB2SlZibnRBR1dweG0x?=
- =?utf-8?B?SUltTDRzYTljR05jVFB0dFdTYVV6eU05VjN4c1Q5N3pYaDkrdVc5eUUwRHBz?=
- =?utf-8?B?NDkxVlE1TkpzU3ViUjJmZTloU1pkczg0YzV0akdrUGptYmhFWVF6U1hoci8x?=
- =?utf-8?B?UHA5ME5mSVhOcktPK01VQ2VpL005Sm9xSXNKMlh3L2k4ZnpsODJ3cWd6REpF?=
- =?utf-8?B?TERvTXl5b2FXM3B0NEVUWG9vZEpwbU10bE4wUnM4ZjNpUzNWbG9DZDNWdmhB?=
- =?utf-8?Q?ySOIaCBmcJo2Qfwuys0yy1oKe9MuEFAOI8snE=3D?=
+	=?utf-8?B?b1VDZW5sYlpQUGRDc3VTMFRDNFhzZWNLZExTcnE4VUlDS0ZNWFJPS09vRlha?=
+ =?utf-8?B?bVFOT0h5bkxmWEF3WTRwK01wR1pGVkZvcjJ5Q29zNHpjT2hxZzgrUE1lb1c2?=
+ =?utf-8?B?WDRnenQrWVIyR1g1c0JFUjBiRkFWM3FOaVRLVzAvOWlZREtIRFVJakorTDFJ?=
+ =?utf-8?B?Ritta0RGZnBkQ1BsdkJ6TEFTRXlCR2hlZEJxS1BMWFJ0VGo1R0Y3MGs1b0RP?=
+ =?utf-8?B?bHBsRldoL1VkT1V4VGFOOVZqbCtwMnZIRUZ2KzJqZGlKV3Zad3VIQlFONEpR?=
+ =?utf-8?B?Um4rSHFUZFZCVUF0V2wxbFluUVFDZFVUL0FVVW5ZL25UL1JHZ1hueHdNRXBx?=
+ =?utf-8?B?Q1VleEZYTVdKaHVKSE1XWStEa1huZXV6NlBxanBPK295NzFUZEZJVGhVZlNh?=
+ =?utf-8?B?d0dmbFVMb1R3VzAyNlduNFd2VlkrYmpaTWhXYzc1bW92ZzZlT1kwdzBYNUla?=
+ =?utf-8?B?Y2N3MkswYkVqeFZMVHY3SnlvQUpFeGpmYlNwbUVEUVN5UVJpYlBHWndUQjcx?=
+ =?utf-8?B?MGt4bEtUNlJvRjdqQWRSZURIcXl1Q1N5aE5ITHpHZk4xT1hiSWZFSmlkL3VQ?=
+ =?utf-8?B?cTF6VDlIUi9IdXk2cFo0c1o2NmxCUGtDc0FqdnRGbjgwMzlhZkpFZXZkNVJz?=
+ =?utf-8?B?ZjNoWmVGeVNHU0lmcmhHY3gvdk9JdG5WQkozUGhxREEzYVIwNm8xUGF3QTVl?=
+ =?utf-8?B?SXcxTWtqakwxMWtYNGZBamhuK1VvbTlxSTlvZXY2R0VtNCtOVHVacFJlUkhU?=
+ =?utf-8?B?dVpKMUF1d0VWNjJjTDczdld1dlNRTzlqd1ZUc0NtbDdDeHQrS1VzTEJIMGFO?=
+ =?utf-8?B?UzdKK0NPV0tVTDUxY0t0ejUzT1hxTktTbkFkRzRrdmdrMEp4ZUpIVUtZYkN3?=
+ =?utf-8?B?VDNMQ1NCaUFLc0tPYzJUT1NNRXU3OWhKWndtdWNYSzgwRlFKQTBWanpSVVZu?=
+ =?utf-8?B?SDVtOGhIdS9jaEVsVW1PYUxhTzlkeE16TTlXK2hsN001SDJRUU9FdkZ1SlZX?=
+ =?utf-8?B?dFRjM3IwV0JRbUF5SENDbnkwZTAxQk1nM2pUa0JwanRMS1VWUzlERDI4YSth?=
+ =?utf-8?B?OEV6QnR0OTk2c3JlQlAwanFmYm1BcU53cTlKSXptNERuSGZkaWk4ZlEwRzRs?=
+ =?utf-8?B?WVk5a1MydWRGdlEraXdKK3lqdGoxMEhiWk1QSzA4VHBhTDd5UEd5TTRVa3kw?=
+ =?utf-8?B?aFJyNStzNjBkVXdjVFZtZVdGVmtWSE1uQ1E5U2YrUlc3bi91SmQxbStyUXdP?=
+ =?utf-8?B?RHdYeFlzR1JYbGZIVGthaTNGYys3OFF0VzlxTDhSdlJMZjhGN1IrN1I5WGU5?=
+ =?utf-8?B?cUZxWHZBWmlTZHdxTlVrb0xCbElMY2FzcTJCc2xnOGZXTGNEcG9YbmwvL0g4?=
+ =?utf-8?B?c1ljdEtqQlM4eTFQUGdmb2lTWjc3UGlyZW44UkpHUXRTMVgxc2RxeWNhc0Zu?=
+ =?utf-8?B?em5RMmk3d3VyMkdxdU8wa2I0UTVEU2FIdTJjZWVPRVo3Y05TWjFacVdCQWVE?=
+ =?utf-8?B?RTZyZi80cU1SUnY2RWE5TTlkVWl2Y1k0MnZjRmREd3dvak1weTFEMU5ybkpR?=
+ =?utf-8?B?b2ZVeXpRWFRMakE1bkZ4Ylg4YXQ4OXo1R3l6bkVlOG1EWnFDek91ZUh1RDZR?=
+ =?utf-8?B?UEV3ZUpVVXRmT3ROVklEQnhJUC9tTTRUd2tzU1dubE91WVd5NVlJK0tyMTBZ?=
+ =?utf-8?B?T2luQlh3WWhLWnFkRlFYVVdHNnhGQTdqNGJmMzdBS2NvUEErMFh0RjZqR3JC?=
+ =?utf-8?B?bGdRcmpwcGRMamJHUUZtWU9kak50djdOYUpOWUdHYWh0ZjNZUFB2ZGtDaERW?=
+ =?utf-8?Q?bwWprVTIWVciAvdMeLsq30xVPquA+1HH1LP6o=3D?=
 X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DU0PR04MB9417.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(376005)(52116005)(7416005)(366007)(38350700005)(921011);DIR:OUT;SFP:1101;
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DU0PR04MB9417.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(376005)(7416005)(52116005)(366007)(921011)(38350700005);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?NmFBKzhJVlVFUW1kdkNQVHlGS0Q5cG9saHp4NmFsN1JOMnlmLzdXaU9kR3Bv?=
- =?utf-8?B?RUlpUkdhazlDUHFJcmZqMER0UWJpWGJpSEdyZ1hDaEJ6YTlsRjN0YzQxSXNI?=
- =?utf-8?B?b3NpbzR1b3k1aW5BQkFqNE4wRjNnZmJTUnowWFI0K2ovODRodTZTcXQ3WFpX?=
- =?utf-8?B?eHpHRG03UEhSSjVzUnFsTnRWNTZnNlNRL2h5Qmw2OU81ZFh2ei9ORVRBcTBw?=
- =?utf-8?B?RmI4Njcyd1JqMW5vQ3RWNVQ2cUY2THhlZDRTWGYyY1R6all4OCtDV201R3k5?=
- =?utf-8?B?REoyZHhlV2VOaHRxNHZpL3JuVkExbGhIWEo1RHhqRkgzamE0ZndUUlVwbEFn?=
- =?utf-8?B?WGxHYkpKaWpiZTg1YWtId1NoRlNQOXNpNElNblkrUDk1Z1ZEL0hCWUVBRTJR?=
- =?utf-8?B?bDBuVDJ4WTI5bkNNME5IU2RXYW8wV2FrcHhyczM4SERtRm1kRWVKVHFNazl5?=
- =?utf-8?B?WUl0UTE3SlphZHVxZlNEamtPYS9TWm5DYk8xTzdvTUdiekxuOWhjMk1UK1Rx?=
- =?utf-8?B?eVV6NC9ldGxGQUc4cmFtT3BqUWNxODBoaDV5NjM2emlDS0d4VzkxeDVnNWZX?=
- =?utf-8?B?RFZpWjdoMUhvbVBFTFRadE9xQXI1a3h5dHZTbHRVb1VoTGNBS1VsNUxJZlpK?=
- =?utf-8?B?TkNDVTBXSHFtRTRQUlJ2alpjNnJqNzZnZWI2c0NBSTdoU2ovWk1sQzJENkpz?=
- =?utf-8?B?UldkUk80UE5aOGVkc01XYy9PTEpoeS9SRlc3TTdpd2VTak5UTFZFWjBhZytB?=
- =?utf-8?B?bFBlNmF4ejhqa29DUHJseWh0bXZhWGVQZHZTMHZRMTh0SHdadmlPVHczbWZx?=
- =?utf-8?B?Y3FFSnkzd2VoZXlkemlJQUNIR0J5aTgrOGsrUWZQNnYzV1VyTmpIK1RZQVBj?=
- =?utf-8?B?dkYzc2NFejR2Nk1BYVFGNDdyVUJzVVJlZkEyVE5HZW5lM3dNNkJ3ZlpSUStt?=
- =?utf-8?B?ZElLT2RrbmlOMkJnYU9rMDVwUUlUQytBclJmdHl2SGVJK3haTlFmaWJJb09i?=
- =?utf-8?B?YlVocVI2ZjBJaEhtNEVMQnM2NUEzdXYxNFAxNG9kWityR3h3d1NDMUp2VDBL?=
- =?utf-8?B?YVhQL3p4ekRoQ2V3WitYcEV3K3E1L3VLVncycDkxZXZLZzR4bjk2bGJQS0du?=
- =?utf-8?B?YktQeWdNcXpISnNOTXllWmMrSVREUzdwNUJHaklTaUdOak1xaHNDSk9XeGJ1?=
- =?utf-8?B?QklyRDBtU3ZITk55UTh0b1J4T0E4SmdPczcwVWlKTnpKT2J0azQrZEpTak9l?=
- =?utf-8?B?dHFRY25nTm83SVRTcThmZTBqWERZSyt0VzhPdkNNd05oMkFiVXlWb0M2TFlO?=
- =?utf-8?B?eGwxdHp2dkN1K1pRWmFmeDN3VVlEZDBPZ3VvdU8rc2E1aU5aKzdmb29DUDk5?=
- =?utf-8?B?WE5wb1MraG5YY3M3dUVWRXVwUXVMck1wYkc4dFlQaGNjeWhDc3E1YVluZ2pT?=
- =?utf-8?B?QmRCaEdtODNmZGlVaHBHT2dyQTJ3UjFCNHlUaEgyVVBWaEIrZ05aS25lZ3p1?=
- =?utf-8?B?VS84UWs3UlVjck12OExJRDJuUUx2MjRwd1AyNlg3Ni9SUitFemFCNjVuRUZ5?=
- =?utf-8?B?Y0g1SkJPUmVmZFRqUG54T1pMejJMYW5zQ3kwWVltNzg5T0QzMVhuSXlnOHdY?=
- =?utf-8?B?M1R2L0F2NnRXL09pNy9kOWFBdFNlTGF2NzdicjEwNE5GZXQ5bVozdUswbmhD?=
- =?utf-8?B?ZDk4NityWSsyVmVQVCs0QlNUdzI3NU16cmg3RkVxeC9jNFkvYlVjZjhtMWxG?=
- =?utf-8?B?WkNxQUp1dnJybE1xWG8yV2JUbDNIV0JXVEZvZmdPaEtiek5WeHRXeVAyK05F?=
- =?utf-8?B?ZmNja3V6TGN2OG1Od3NZYU9ZbkJWYU56bmZpUTFmYmJmcXVnVHZVQXdWQXpU?=
- =?utf-8?B?VGp5d29xbU8xMUZ1ZW1QQkxTTW4vRnV0OFlSKzNkVWhoL1hYYUx0cVRvSWgv?=
- =?utf-8?B?SGJaNlgzWDNYV1NMbVBieFg5T2ttWGxRaTIwQWZvQXFDSEtuU1JjZmZCbTk4?=
- =?utf-8?B?Ry9Tb2xDMnA4bzdQdzBVQVJVbFZOZXlxb21aN3YrOXhvK1lWdjB2Y2ZWNTBO?=
- =?utf-8?B?NHIwM0hWbi8zZk1JRHJjR3pIQjNMdjVtcEVBWE5HdWJUblFJWG53QnRoYnFV?=
- =?utf-8?Q?nNSW26EE2r3dBOQn0swugUaaQ?=
+	=?utf-8?B?anR6Vkw2WklJcEpLTVhadzhmOEZaS2ZseUJUd08vZWFPcXRGbTllb3ZxOGV4?=
+ =?utf-8?B?SUovUWczU2dYb1VHMGJqV0dhenVGc1cvT3hBYWFwQmRYbXRrNzFjcDNnZUJV?=
+ =?utf-8?B?NVJFQk01bncwS1lpRmd1Vzg3ZG5CVW9VV2hJQVl2bDd3blh6TzQxU2FRb2Ny?=
+ =?utf-8?B?V0VjeUY0MnVhaHBMbjJGdUNITXY1clYra3NHV090Tk9PQ1hyNjhnanNGTSsw?=
+ =?utf-8?B?YndESTE1elEzc0ZtVDUwZ2Q4NVVaMlZ0WTRkOFJTMXczVksxdVUxTVVtMldo?=
+ =?utf-8?B?SFhuRnBaNWk3OEgrRnR6anBEZDlRZERsd1VVME9ZRm92bTRYbDRiYStPaDNN?=
+ =?utf-8?B?UThSWTlLaUUzTGxndUo4ampvQ21KNFdYM1FOeWJQTDduOWNQc3Z1N3dORnRW?=
+ =?utf-8?B?c2diVWdFVTNzcUdHcDIwZWd3TXl0cVNnL3NYZlFYcFVYTUVmNm5JMDRGYVpp?=
+ =?utf-8?B?b1R4clZkdkVpNC8wZlNkSjZVeXlwalV3cWF1UDMvRmJHRklLZVAyaCs4aWN1?=
+ =?utf-8?B?VTRLUHAxeVI1UDVtRGFqQUY2NVlTakRlbXNjamZMOVZmN1htZzBJQ3dNd3RQ?=
+ =?utf-8?B?L2NzOGM5MUV6dDk2VWJkMUZZdGdKYmZISVdKbU5JZTBDUDdPbk1ZSzZDTWw2?=
+ =?utf-8?B?ejBVV1hmMXlwZGpYME8wUjExeVJrNVpRcnVyeHlmZ1QwNXorOW1hZnFnS3Zy?=
+ =?utf-8?B?TERoVytUQ1k5bkEyT21SSEdPSkdMeWZyM09MVnFJT2Z0WThtcllGMG1SSDFU?=
+ =?utf-8?B?QUl5QU1NSU8rb2hRenZhSktmY0JMdVB2c0V4WHNZekpjby95YlVOTzlNRWx6?=
+ =?utf-8?B?Uy9Kc1hWK0dPNlY3WjFoczl4dWNZNFkrZ1EvVGZKekwrUDJtdm1qYmg1YXh1?=
+ =?utf-8?B?WThtQ0NFeGw5bmxiOU5ueE9HT3lXYkdoZkxqVENFb016TlQ5dmcrZEVCMk1y?=
+ =?utf-8?B?YnFYSmxFN3ZrWHpNWnFlVEdjUlp4YzJ5UXZQQ0hWY3Z4M3dVVVNQMU5pUnJ1?=
+ =?utf-8?B?aC8zbGIwUFdEQzZBUXVIN2NGZklQa0hQQlphMDFXTVpuSFhXS3hwZ1I3TzBD?=
+ =?utf-8?B?bENLV2paRkxMbzk0WWtYK3ZtVDRsSHcxOWR3MWRSNVpRdnJiVjVWQUt6NFpS?=
+ =?utf-8?B?UmkyYmFCRDNsSnZya09YaFVWdzRheDBMVHovdHg5OTVCWnRrQ0ZRWVBiMUgx?=
+ =?utf-8?B?dDVMaStPTVhNUTVqWGwrU29tUHBSV3gwUG1RcDduY0ZzSWlrNmEyT2pJYlhh?=
+ =?utf-8?B?MjE4MXY5b3dXWjk2ZGdpS0JDVjRtdHlFY3RlN1FLQnUyVzR3NjVXYzA3aVV5?=
+ =?utf-8?B?NW1Pbk0yZnl2bDdSR1dxZlpZcGkrL2xOa1VQSnBQWld5K0c0VHdZMUtFdXZN?=
+ =?utf-8?B?ei9PcnJkcUJZSVdtTmVkU1pDNW9KZyszSHY1blRQMzM0QnptTEQzSEUzMEV1?=
+ =?utf-8?B?c2tjejlQQUUxdDY2cHF5Rk5zOFZJVEdKM0tiMGpGZnRRVzdKRDZMdGZPUmp5?=
+ =?utf-8?B?T3FoVkJhRS9KSzZ5WWFOQUIzWTI4czE1UE1IUVZzVDRzM2I1cDBNVzMvZitS?=
+ =?utf-8?B?ck0xK0tHcm5zWnR3a2xaVFk3OU50Z1hmaEpXQmpIb0FxTGNFaHJKQk9uSDRU?=
+ =?utf-8?B?MXdJbE9zbnlkTlhKSzFNTEJueHpCVDNza09iWVRwQVg3cG4xSVZRWHBWQkJX?=
+ =?utf-8?B?b0k0c3ZpYlVuVWNmaXdEa2JScGt2Njh5azhwblBaZ3lacWpERFIyVVU1eE85?=
+ =?utf-8?B?endZdEh2YUIyN0d0Y3gzT0duV1JMQWpZT1BZNXJUTnQyTU51dVluMStZWmJC?=
+ =?utf-8?B?UHAwSnRuaDZWREJkY2FURnZWSEZiRnZ0eFdaeDlyZFNvTHFoRGU0UFRpTmRv?=
+ =?utf-8?B?SFkwbjNkcmdEMU1tSUF6SE83aFl1RTM1TS9OM3oyVTM5SVVSQWVXemYrb096?=
+ =?utf-8?B?SDJ3NThSNy9pcDhWQkpHUkFubDBJQlp5S092MkZzRm03SEt0RDdvaUFRd2dm?=
+ =?utf-8?B?ZndMalVyUU5oZ0NKUFNVNnBFc0lkTzVHTXdGbzR6QWdaSVJIM3h4dEZIZ3ov?=
+ =?utf-8?B?TUdDK3BCR2RQOGIrY3kzUG44dXFtaVI1VUtpVXFTUGFOUElsMXJmYkhPbHFW?=
+ =?utf-8?Q?5bVHTcyqbxmmbCBdje/rEAAlR?=
 X-OriginatorOrg: oss.nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c222aae5-b13c-4c9e-3bfc-08dc69dd22b9
+X-MS-Exchange-CrossTenant-Network-Message-Id: a0db37d7-54bf-423e-011b-08dc69dd2c5c
 X-MS-Exchange-CrossTenant-AuthSource: DU0PR04MB9417.eurprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 May 2024 12:49:27.2054
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 May 2024 12:49:43.3920
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: gYhhvpfni11AYjiQmPbJI7VN9cJiU/58D8H2Bm9JL6Fv8mo+F82kEz2zeToWO4luMT6owRB/C7fRHw0IinuiLw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB9PR04MB9284
+X-MS-Exchange-CrossTenant-UserPrincipalName: a8VMXjN5tnTZbVk5RTJATfV4WVyud8UqeKUIyvYzYSsszFnA3M3VjRSQ8h35vE1kbq/I+796vLW9oWOt6tBpLA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DBAPR04MB7448
 
 From: Peng Fan <peng.fan@nxp.com>
 
@@ -219,52 +219,210 @@ Use scope based of_node_put() cleanup to simplify code.
 
 Signed-off-by: Peng Fan <peng.fan@nxp.com>
 ---
- drivers/pinctrl/stm32/pinctrl-stm32.c | 7 ++-----
- 1 file changed, 2 insertions(+), 5 deletions(-)
+ drivers/pinctrl/starfive/pinctrl-starfive-jh7100.c | 27 +++++++++-------------
+ drivers/pinctrl/starfive/pinctrl-starfive-jh7110.c | 18 +++++++--------
+ 2 files changed, 19 insertions(+), 26 deletions(-)
 
-diff --git a/drivers/pinctrl/stm32/pinctrl-stm32.c b/drivers/pinctrl/stm32/pinctrl-stm32.c
-index 978ccdbaf3d3..ca163a91e724 100644
---- a/drivers/pinctrl/stm32/pinctrl-stm32.c
-+++ b/drivers/pinctrl/stm32/pinctrl-stm32.c
-@@ -670,7 +670,6 @@ static int stm32_pctrl_dt_node_to_map(struct pinctrl_dev *pctldev,
- 				 struct device_node *np_config,
- 				 struct pinctrl_map **map, unsigned *num_maps)
+diff --git a/drivers/pinctrl/starfive/pinctrl-starfive-jh7100.c b/drivers/pinctrl/starfive/pinctrl-starfive-jh7100.c
+index 6df7a310c7ed..27f99183d994 100644
+--- a/drivers/pinctrl/starfive/pinctrl-starfive-jh7100.c
++++ b/drivers/pinctrl/starfive/pinctrl-starfive-jh7100.c
+@@ -480,7 +480,6 @@ static int starfive_dt_node_to_map(struct pinctrl_dev *pctldev,
  {
--	struct device_node *np;
- 	unsigned reserved_maps;
- 	int ret;
+ 	struct starfive_pinctrl *sfp = pinctrl_dev_get_drvdata(pctldev);
+ 	struct device *dev = sfp->gc.parent;
+-	struct device_node *child;
+ 	struct pinctrl_map *map;
+ 	const char **pgnames;
+ 	const char *grpname;
+@@ -492,20 +491,18 @@ static int starfive_dt_node_to_map(struct pinctrl_dev *pctldev,
  
-@@ -678,12 +677,11 @@ static int stm32_pctrl_dt_node_to_map(struct pinctrl_dev *pctldev,
- 	*num_maps = 0;
- 	reserved_maps = 0;
+ 	nmaps = 0;
+ 	ngroups = 0;
+-	for_each_available_child_of_node(np, child) {
++	for_each_available_child_of_node_scoped(np, child) {
+ 		int npinmux = of_property_count_u32_elems(child, "pinmux");
+ 		int npins   = of_property_count_u32_elems(child, "pins");
  
--	for_each_child_of_node(np_config, np) {
-+	for_each_child_of_node_scoped(np_config, np) {
- 		ret = stm32_pctrl_dt_subnode_to_map(pctldev, np, map,
- 				&reserved_maps, num_maps);
- 		if (ret < 0) {
- 			pinctrl_utils_free_map(pctldev, *map, *num_maps);
--			of_node_put(np);
- 			return ret;
+ 		if (npinmux > 0 && npins > 0) {
+ 			dev_err(dev, "invalid pinctrl group %pOFn.%pOFn: both pinmux and pins set\n",
+ 				np, child);
+-			of_node_put(child);
+ 			return -EINVAL;
  		}
- 	}
-@@ -1401,7 +1399,7 @@ static int stm32_gpiolib_register_bank(struct stm32_pinctrl *pctl, struct fwnode
- static struct irq_domain *stm32_pctrl_get_irq_domain(struct platform_device *pdev)
- {
- 	struct device_node *np = pdev->dev.of_node;
--	struct device_node *parent;
-+	struct device_node *parent __free(device_node) = NULL;
- 	struct irq_domain *domain;
+ 		if (npinmux == 0 && npins == 0) {
+ 			dev_err(dev, "invalid pinctrl group %pOFn.%pOFn: neither pinmux nor pins set\n",
+ 				np, child);
+-			of_node_put(child);
+ 			return -EINVAL;
+ 		}
  
- 	if (!of_property_present(np, "interrupt-parent"))
-@@ -1412,7 +1410,6 @@ static struct irq_domain *stm32_pctrl_get_irq_domain(struct platform_device *pde
- 		return ERR_PTR(-ENXIO);
+@@ -527,14 +524,14 @@ static int starfive_dt_node_to_map(struct pinctrl_dev *pctldev,
+ 	nmaps = 0;
+ 	ngroups = 0;
+ 	mutex_lock(&sfp->mutex);
+-	for_each_available_child_of_node(np, child) {
++	for_each_available_child_of_node_scoped(np, child) {
+ 		int npins;
+ 		int i;
  
- 	domain = irq_find_host(parent);
--	of_node_put(parent);
- 	if (!domain)
- 		/* domain not registered yet */
- 		return ERR_PTR(-EPROBE_DEFER);
+ 		grpname = devm_kasprintf(dev, GFP_KERNEL, "%pOFn.%pOFn", np, child);
+ 		if (!grpname) {
+ 			ret = -ENOMEM;
+-			goto put_child;
++			goto free_map;
+ 		}
+ 
+ 		pgnames[ngroups++] = grpname;
+@@ -543,18 +540,18 @@ static int starfive_dt_node_to_map(struct pinctrl_dev *pctldev,
+ 			pins = devm_kcalloc(dev, npins, sizeof(*pins), GFP_KERNEL);
+ 			if (!pins) {
+ 				ret = -ENOMEM;
+-				goto put_child;
++				goto free_map;
+ 			}
+ 
+ 			pinmux = devm_kcalloc(dev, npins, sizeof(*pinmux), GFP_KERNEL);
+ 			if (!pinmux) {
+ 				ret = -ENOMEM;
+-				goto put_child;
++				goto free_map;
+ 			}
+ 
+ 			ret = of_property_read_u32_array(child, "pinmux", pinmux, npins);
+ 			if (ret)
+-				goto put_child;
++				goto free_map;
+ 
+ 			for (i = 0; i < npins; i++) {
+ 				unsigned int gpio = starfive_pinmux_to_gpio(pinmux[i]);
+@@ -570,7 +567,7 @@ static int starfive_dt_node_to_map(struct pinctrl_dev *pctldev,
+ 			pins = devm_kcalloc(dev, npins, sizeof(*pins), GFP_KERNEL);
+ 			if (!pins) {
+ 				ret = -ENOMEM;
+-				goto put_child;
++				goto free_map;
+ 			}
+ 
+ 			pinmux = NULL;
+@@ -580,18 +577,18 @@ static int starfive_dt_node_to_map(struct pinctrl_dev *pctldev,
+ 
+ 				ret = of_property_read_u32_index(child, "pins", i, &v);
+ 				if (ret)
+-					goto put_child;
++					goto free_map;
+ 				pins[i] = v;
+ 			}
+ 		} else {
+ 			ret = -EINVAL;
+-			goto put_child;
++			goto free_map;
+ 		}
+ 
+ 		ret = pinctrl_generic_add_group(pctldev, grpname, pins, npins, pinmux);
+ 		if (ret < 0) {
+ 			dev_err(dev, "error adding group %s: %d\n", grpname, ret);
+-			goto put_child;
++			goto free_map;
+ 		}
+ 
+ 		ret = pinconf_generic_parse_dt_config(child, pctldev,
+@@ -600,7 +597,7 @@ static int starfive_dt_node_to_map(struct pinctrl_dev *pctldev,
+ 		if (ret) {
+ 			dev_err(dev, "error parsing pin config of group %s: %d\n",
+ 				grpname, ret);
+-			goto put_child;
++			goto free_map;
+ 		}
+ 
+ 		/* don't create a map if there are no pinconf settings */
+@@ -623,8 +620,6 @@ static int starfive_dt_node_to_map(struct pinctrl_dev *pctldev,
+ 	mutex_unlock(&sfp->mutex);
+ 	return 0;
+ 
+-put_child:
+-	of_node_put(child);
+ free_map:
+ 	pinctrl_utils_free_map(pctldev, map, nmaps);
+ 	mutex_unlock(&sfp->mutex);
+diff --git a/drivers/pinctrl/starfive/pinctrl-starfive-jh7110.c b/drivers/pinctrl/starfive/pinctrl-starfive-jh7110.c
+index 9609eb1ecc3d..4ce080caa233 100644
+--- a/drivers/pinctrl/starfive/pinctrl-starfive-jh7110.c
++++ b/drivers/pinctrl/starfive/pinctrl-starfive-jh7110.c
+@@ -150,7 +150,7 @@ static int jh7110_dt_node_to_map(struct pinctrl_dev *pctldev,
+ 	nmaps = 0;
+ 	ngroups = 0;
+ 	mutex_lock(&sfp->mutex);
+-	for_each_available_child_of_node(np, child) {
++	for_each_available_child_of_node_scoped(np, child) {
+ 		int npins = of_property_count_u32_elems(child, "pinmux");
+ 		int *pins;
+ 		u32 *pinmux;
+@@ -161,13 +161,13 @@ static int jh7110_dt_node_to_map(struct pinctrl_dev *pctldev,
+ 				"invalid pinctrl group %pOFn.%pOFn: pinmux not set\n",
+ 				np, child);
+ 			ret = -EINVAL;
+-			goto put_child;
++			goto free_map;
+ 		}
+ 
+ 		grpname = devm_kasprintf(dev, GFP_KERNEL, "%pOFn.%pOFn", np, child);
+ 		if (!grpname) {
+ 			ret = -ENOMEM;
+-			goto put_child;
++			goto free_map;
+ 		}
+ 
+ 		pgnames[ngroups++] = grpname;
+@@ -175,18 +175,18 @@ static int jh7110_dt_node_to_map(struct pinctrl_dev *pctldev,
+ 		pins = devm_kcalloc(dev, npins, sizeof(*pins), GFP_KERNEL);
+ 		if (!pins) {
+ 			ret = -ENOMEM;
+-			goto put_child;
++			goto free_map;
+ 		}
+ 
+ 		pinmux = devm_kcalloc(dev, npins, sizeof(*pinmux), GFP_KERNEL);
+ 		if (!pinmux) {
+ 			ret = -ENOMEM;
+-			goto put_child;
++			goto free_map;
+ 		}
+ 
+ 		ret = of_property_read_u32_array(child, "pinmux", pinmux, npins);
+ 		if (ret)
+-			goto put_child;
++			goto free_map;
+ 
+ 		for (i = 0; i < npins; i++)
+ 			pins[i] = jh7110_pinmux_pin(pinmux[i]);
+@@ -200,7 +200,7 @@ static int jh7110_dt_node_to_map(struct pinctrl_dev *pctldev,
+ 						pins, npins, pinmux);
+ 		if (ret < 0) {
+ 			dev_err(dev, "error adding group %s: %d\n", grpname, ret);
+-			goto put_child;
++			goto free_map;
+ 		}
+ 
+ 		ret = pinconf_generic_parse_dt_config(child, pctldev,
+@@ -209,7 +209,7 @@ static int jh7110_dt_node_to_map(struct pinctrl_dev *pctldev,
+ 		if (ret) {
+ 			dev_err(dev, "error parsing pin config of group %s: %d\n",
+ 				grpname, ret);
+-			goto put_child;
++			goto free_map;
+ 		}
+ 
+ 		/* don't create a map if there are no pinconf settings */
+@@ -233,8 +233,6 @@ static int jh7110_dt_node_to_map(struct pinctrl_dev *pctldev,
+ 	*num_maps = nmaps;
+ 	return 0;
+ 
+-put_child:
+-	of_node_put(child);
+ free_map:
+ 	pinctrl_utils_free_map(pctldev, map, nmaps);
+ 	mutex_unlock(&sfp->mutex);
 
 -- 
 2.37.1
