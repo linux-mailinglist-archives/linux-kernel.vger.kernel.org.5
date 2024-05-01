@@ -1,75 +1,76 @@
-Return-Path: <linux-kernel+bounces-165402-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-165404-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E23958B8C50
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 16:57:27 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0E11C8B8C58
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 16:58:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E937D1C20CA3
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 14:57:26 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8F2F51F21101
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 14:58:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 37F99130A4E;
-	Wed,  1 May 2024 14:56:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 72EBA130AE8;
+	Wed,  1 May 2024 14:56:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="Z5a/zJlt"
-Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
+	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="VxX37z4q"
+Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com [209.85.208.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E48412FF98
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1037813048B
 	for <linux-kernel@vger.kernel.org>; Wed,  1 May 2024 14:55:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.45
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714575360; cv=none; b=KqnIazbrOKsiAQTgKB+uRxEIbUOJ/pkTkn+EjDqKVv3QRcNR+ChNAfcwFPnh8fM6IDLrK6lqf5ESbYs+AdtBcDMV6MMZOZjroMLT+JAz1rgaP3DuxX5oBQKsCfGopCuZPCbvhWANgO7SO5QFyX0XG/JofaDpIG0GubcXdaNIV+Y=
+	t=1714575362; cv=none; b=c9vN8h0oi0w2xNVeab14SN1uY4774oT+NaYeSfIBmOuzXitJ3IklbLpH5QSt1xRVBpcb8fYd10yY9Ovkf2yUWny7X6kLbUmf4U4L39yewJX81IK31GMlrD3BXaIuXbDAFVkKdVknp5sWwT+tanYZIzMBm0vmXpXfBuHcgS8xggE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714575360; c=relaxed/simple;
-	bh=VQ4RPFjraeg9QG+WtxUK0LxObNrAlrRgeIFZywlwUq0=;
+	s=arc-20240116; t=1714575362; c=relaxed/simple;
+	bh=ZNQE99beBwoRSVRXgPiuYKEUKZPVmY+MpjIBueQJo5Q=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=bQ/nUSuSsxs8NT6NaEjxl1oQcc2xL1sAZ+xpTg9oZddtI+Rv+Dfin/ASh++uSStnOO0IoSXI4xZVa1kTM1rXeAdAA7jQZYO1HyKARKaFPNJiDG/GBhhN/xcr/JPhYilyXzzunhLiWsK5Ye0N168IPyMlF3ZGUAGyvIV2Ay97DOM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=Z5a/zJlt; arc=none smtp.client-ip=209.85.128.45
+	 In-Reply-To:To:Cc; b=ExfJ58xslkJJph0Cx/WRUUWipRLEdSuSfJ+Y+qhIm8IpXq08tpMcJ6V0UOxp4zKaHueh00vDRWll7pkMID1ZB01PCgSTZCwccc0chRuou3xLXlnAjIkSsL9EQXI2skKOHeeouMnF5hGsRj19sPqIWK4R1BqJjrNX+cvYIHkYJac=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=VxX37z4q; arc=none smtp.client-ip=209.85.208.169
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
-Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-41a1d2a7b81so4729255e9.0
+Received: by mail-lj1-f169.google.com with SMTP id 38308e7fff4ca-2e0933d3b5fso37318921fa.2
         for <linux-kernel@vger.kernel.org>; Wed, 01 May 2024 07:55:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1714575357; x=1715180157; darn=vger.kernel.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=7kVmMiAww/1MNzSxxAk2mzn+IJ9yIpCfeirFaQBWWao=;
-        b=Z5a/zJltr1B/SgV2vz/KZYVsn526i3YYhIjB6xlRCKu2SdmzFSGSwuuCRv0Hb1aPO4
-         kX7xjjCnzrtmezVJ7Dg8vkSV0Aqo9lbTpIGMVitVJq0DnKJjV3YB6s3oKp7ZSJPlVyvJ
-         MxSJsuXYdWjSFmhof7eD///F6dR0CKPwH1n/74O1oQey0w9zAOuLwF8xHdNKuWxqF9eA
-         2eqMRRCqGYBuwwwO7r9J4bjPZEs5rI4mDKgtNMQA9Wu0nZ/Jz+bIUHOdCourH6A/udKo
-         oLj6NQhC9kZySaDsz7UFeXpzX1+SN4z+pXt+DqJskGT4x62dCMWrnwPHIc3Ni05DyU3k
-         Htzw==
+        bh=2SUrAQZGAtrStLGSV72n9ZrFrH3z0Vq+Ea2QpVZsYzA=;
+        b=VxX37z4qwmlW0BReVaadVBfJJ0+OGctDYzNwUb/v5Yjo8yHQxYwE7VQFDbfFyHFrGL
+         FlfxGZVYibs6P5pVpOm09fh2nTC7uAZwzdodfGec4CR97iAQHgPCB/gW9N0IRileSOSS
+         WfpeVX6KhIlpdk8YHROcOmR9/JlKpRKz5uKTK2QsvBCh0F0gwXGHxZoAarksXj1HpP7q
+         9I+Igh2zEQR1+0HmLDOhNA3oDukZRX7UR8kjkmtJ0G8BI1bm5TlWOPrq2Rq0R5X5dPnN
+         px9ZC3lmD2+ik3kqgonjoDH0MJS4BKqpyRjAum5LHENxwGPMjOblqJGWQ2vdDW1pS8jb
+         96zw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20230601; t=1714575357; x=1715180157;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=7kVmMiAww/1MNzSxxAk2mzn+IJ9yIpCfeirFaQBWWao=;
-        b=VLi4PJX004Y7mlmranZEnZLrQw02KCqCcKu0imItyHeFVsTjUa4o6K4KWKmBtuKWHY
-         Z3eyVsW7p41UCH3lvH1q339z81qGaosBdRgci7jAyvID0dtycnzNSVRM8QsutUNwxfuS
-         247ZDTDuYrENJzAZw9maZAa7fbwwASROAcWxXeMeCSXcJtYapNMEZPzwH6nHPYML3QH2
-         Nc+Q0rllNInF3uiwEZBXj4htfyaRjurnCki4bnSs7HCd/FdotO6gnM8mikurVSyIwYBf
-         //Yl+gDf4pEhl5ssEiY/Y6eaMo/3gEdZCUhX8nMLEjWKxEphdn87QAMDfV0noWzRqMz9
-         +8dQ==
-X-Forwarded-Encrypted: i=1; AJvYcCX4BPIbevWYJK784D5xmbVkDIoxT1MlzQ83huYmeiOcttMRwlu+9cR05+KrM+DbY+9XRnkcCdZbpKZWhbE0Qb55bxKk4Ds3Kwpe8lJQ
-X-Gm-Message-State: AOJu0YzksAq+vdnpC/GDH3qbA8QJekf+VHdwQZsZN99sFg0Y5/+k/TzE
-	LMfs6HxaI6piWNuDfGmJnrDaaIkHN9uD9p5ZF6rvw3csxNZXiUyXxBtTYuILTbo=
-X-Google-Smtp-Source: AGHT+IEANloY5ykx9Y8v3SvYudon/zDa72AUor3FRJRdAs2hAmb12iii9rrqR7zhQBrbVBg7l3dLXg==
-X-Received: by 2002:a05:600c:3b10:b0:419:c9e1:70b8 with SMTP id m16-20020a05600c3b1000b00419c9e170b8mr2540608wms.13.1714575356686;
-        Wed, 01 May 2024 07:55:56 -0700 (PDT)
+        bh=2SUrAQZGAtrStLGSV72n9ZrFrH3z0Vq+Ea2QpVZsYzA=;
+        b=TSARyZOMfEs9QmzGhIpcOBIH3IQzfdM4Xoa4dYyiRPALMx19ZuoDxx5jW/qXx07Dfm
+         OTUQJ5JThSKUxQRHKfP18lU2ZEoNkW9R2F1gmsPTbtaY+W3qvEVTb9tUft8Rmsog2wbp
+         LWQ5LukLs/+2SjOaL/gOKDoY+c7b1fJ8IVxzp/oXqN6UrcD6MR3JuoJOPSKbzgPyEZyU
+         x9cNOYkLxgfUHeBB6FetQwjrcblvuWBl3KwhIUljlmUTbHQ231ZTc41iAFhp2ZGHfmkA
+         q9FxqXuJ2fcFwfgy8BTT285j3BSJmQNQX9R6t3HdVEqu1VSjKtHx8Zi8DX21tkUftab3
+         eNBQ==
+X-Forwarded-Encrypted: i=1; AJvYcCW142w8MGfeCJUSjBHXBpgP3dpOfOFs9IFfmeXqiBIy5By3eqFMC+n0jJJbz2lp4Y/ZaCmNd45ipB5u95YP98ePULjZPO8ttBQZemJS
+X-Gm-Message-State: AOJu0YyBdwTBwWFn4zYLEJ9g3l7P4kbN7/zi/dS8ltl/mBuMqBnB1iDn
+	+lFkYvFOVN0sBml2tDTEVfvJiHuYfvky0a+WBWALeBc9NISB4RP9eiULDegWmn+eq3DyapfqqnX
+	4
+X-Google-Smtp-Source: AGHT+IEv9sPD9F1hPTXXzQtVy0YeCQSCcJgq28A1F/hSj8DUSPiVAnVdblnxCwk7HLdQcWPj9V/HWQ==
+X-Received: by 2002:a05:651c:2110:b0:2e1:b0e3:21f with SMTP id a16-20020a05651c211000b002e1b0e3021fmr183264ljq.40.1714575357402;
+        Wed, 01 May 2024 07:55:57 -0700 (PDT)
 Received: from [192.168.1.61] ([2a02:842a:d52e:6101:6fd0:6c4:5d68:f0a5])
-        by smtp.gmail.com with ESMTPSA id o27-20020a05600c511b00b00418a386c17bsm2422999wms.12.2024.05.01.07.55.55
+        by smtp.gmail.com with ESMTPSA id o27-20020a05600c511b00b00418a386c17bsm2422999wms.12.2024.05.01.07.55.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 01 May 2024 07:55:55 -0700 (PDT)
+        Wed, 01 May 2024 07:55:57 -0700 (PDT)
 From: Julien Stephan <jstephan@baylibre.com>
-Date: Wed, 01 May 2024 16:55:39 +0200
-Subject: [PATCH RFC v6 06/10] dt-bindings: iio: adc: ad7380: add support
- for ad738x-4 4 channels variants
+Date: Wed, 01 May 2024 16:55:40 +0200
+Subject: [PATCH RFC v6 07/10] iio: adc: ad7380: add support for ad738x-4 4
+ channels variants
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -78,7 +79,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240501-adding-new-ad738x-driver-v6-6-3c0741154728@baylibre.com>
+Message-Id: <20240501-adding-new-ad738x-driver-v6-7-3c0741154728@baylibre.com>
 References: <20240501-adding-new-ad738x-driver-v6-0-3c0741154728@baylibre.com>
 In-Reply-To: <20240501-adding-new-ad738x-driver-v6-0-3c0741154728@baylibre.com>
 To: Lars-Peter Clausen <lars@metafoo.de>, 
@@ -91,92 +92,168 @@ To: Lars-Peter Clausen <lars@metafoo.de>,
  Mark Brown <broonie@kernel.org>
 Cc: kernel test robot <lkp@intel.com>, linux-iio@vger.kernel.org, 
  devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
- Julien Stephan <jstephan@baylibre.com>, 
- Conor Dooley <conor.dooley@microchip.com>
+ Julien Stephan <jstephan@baylibre.com>
 X-Mailer: b4 0.13.0
 
-Add compatible support for ad7380/1/3/4-4 parts which are 4 channels
-variants from ad7380/1/3/4
+Add support for ad7380/1/2/3-4 parts which are 4 channels
+variants from ad7380/1/2/3
 
 Signed-off-by: Julien Stephan <jstephan@baylibre.com>
-Acked-by: Conor Dooley <conor.dooley@microchip.com>
 ---
- .../devicetree/bindings/iio/adc/adi,ad7380.yaml    | 34 ++++++++++++++++++++++
- 1 file changed, 34 insertions(+)
+ drivers/iio/adc/ad7380.c | 77 ++++++++++++++++++++++++++++++++++++++++++++++--
+ 1 file changed, 75 insertions(+), 2 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/iio/adc/adi,ad7380.yaml b/Documentation/devicetree/bindings/iio/adc/adi,ad7380.yaml
-index de3d28a021ae..899b777017ce 100644
---- a/Documentation/devicetree/bindings/iio/adc/adi,ad7380.yaml
-+++ b/Documentation/devicetree/bindings/iio/adc/adi,ad7380.yaml
-@@ -15,6 +15,10 @@ description: |
-   * https://www.analog.com/en/products/ad7381.html
-   * https://www.analog.com/en/products/ad7383.html
-   * https://www.analog.com/en/products/ad7384.html
-+  * https://www.analog.com/en/products/ad7380-4.html
-+  * https://www.analog.com/en/products/ad7381-4.html
-+  * https://www.analog.com/en/products/ad7383-4.html
-+  * https://www.analog.com/en/products/ad7384-4.html
+diff --git a/drivers/iio/adc/ad7380.c b/drivers/iio/adc/ad7380.c
+index 201006d878f1..020959759170 100644
+--- a/drivers/iio/adc/ad7380.c
++++ b/drivers/iio/adc/ad7380.c
+@@ -8,6 +8,9 @@
+  * Datasheets of supported parts:
+  * ad7380/1 : https://www.analog.com/media/en/technical-documentation/data-sheets/AD7380-7381.pdf
+  * ad7383/4 : https://www.analog.com/media/en/technical-documentation/data-sheets/ad7383-7384.pdf
++ * ad7380-4 : https://www.analog.com/media/en/technical-documentation/data-sheets/ad7380-4.pdf
++ * ad7381-4 : https://www.analog.com/media/en/technical-documentation/data-sheets/ad7381-4.pdf
++ * ad7383/4-4 : https://www.analog.com/media/en/technical-documentation/data-sheets/ad7383-4-ad7384-4.pdf
+  */
  
- $ref: /schemas/spi/spi-peripheral-props.yaml#
+ #include <linux/bitfield.h>
+@@ -29,7 +32,7 @@
+ #include <linux/iio/trigger_consumer.h>
+ #include <linux/iio/triggered_buffer.h>
  
-@@ -25,6 +29,10 @@ properties:
-       - adi,ad7381
-       - adi,ad7383
-       - adi,ad7384
-+      - adi,ad7380-4
-+      - adi,ad7381-4
-+      - adi,ad7383-4
-+      - adi,ad7384-4
+-#define MAX_NUM_CHANNELS		2
++#define MAX_NUM_CHANNELS		4
+ /* 2.5V internal reference voltage */
+ #define AD7380_INTERNAL_REF_MV		2500
  
-   reg:
-     maxItems: 1
-@@ -56,6 +64,16 @@ properties:
-       The common mode voltage supply for the AINB- pin on pseudo-differential
-       chips.
+@@ -106,27 +109,53 @@ static const struct iio_chan_spec name[] = {		\
+ 	IIO_CHAN_SOFT_TIMESTAMP(2),			\
+ }
  
-+  ainc-supply:
-+    description:
-+      The common mode voltage supply for the AINC- pin on pseudo-differential
-+      chips.
++#define DEFINE_AD7380_4_CHANNEL(name, bits, diff)	\
++static const struct iio_chan_spec name[] = {		\
++	AD7380_CHANNEL(0, bits, diff),			\
++	AD7380_CHANNEL(1, bits, diff),			\
++	AD7380_CHANNEL(2, bits, diff),			\
++	AD7380_CHANNEL(3, bits, diff),			\
++	IIO_CHAN_SOFT_TIMESTAMP(4),			\
++}
 +
-+  aind-supply:
-+    description:
-+      The common mode voltage supply for the AIND- pin on pseudo-differential
-+      chips.
-+
-   interrupts:
-     description:
-       When the device is using 1-wire mode, this property is used to optionally
-@@ -79,6 +97,8 @@ allOf:
-           enum:
-             - adi,ad7383
-             - adi,ad7384
-+            - adi,ad7383-4
-+            - adi,ad7384-4
-     then:
-       required:
-         - aina-supply
-@@ -87,6 +107,20 @@ allOf:
-       properties:
-         aina-supply: false
-         ainb-supply: false
-+  - if:
-+      properties:
-+        compatible:
-+          enum:
-+            - adi,ad7383-4
-+            - adi,ad7384-4
-+    then:
-+      required:
-+        - ainc-supply
-+        - aind-supply
-+    else:
-+      properties:
-+        ainc-supply: false
-+        aind-supply: false
+ /* fully differential */
+ DEFINE_AD7380_2_CHANNEL(ad7380_channels, 16, 1);
+ DEFINE_AD7380_2_CHANNEL(ad7381_channels, 14, 1);
++DEFINE_AD7380_4_CHANNEL(ad7380_4_channels, 16, 1);
++DEFINE_AD7380_4_CHANNEL(ad7381_4_channels, 14, 1);
+ /* pseudo differential */
+ DEFINE_AD7380_2_CHANNEL(ad7383_channels, 16, 0);
+ DEFINE_AD7380_2_CHANNEL(ad7384_channels, 14, 0);
++DEFINE_AD7380_4_CHANNEL(ad7383_4_channels, 16, 0);
++DEFINE_AD7380_4_CHANNEL(ad7384_4_channels, 14, 0);
  
- examples:
-   - |
+ static const char * const ad7380_2_channel_vcm_supplies[] = {
+ 	"aina", "ainb",
+ };
+ 
++static const char * const ad7380_4_channel_vcm_supplies[] = {
++	"aina", "ainb", "ainc", "aind",
++};
++
+ /* Since this is simultaneous sampling, we don't allow individual channels. */
+ static const unsigned long ad7380_2_channel_scan_masks[] = {
+ 	GENMASK(1, 0),
+ 	0
+ };
+ 
++static const unsigned long ad7380_4_channel_scan_masks[] = {
++	GENMASK(3, 0),
++	0
++};
++
+ static const struct ad7380_timing_specs ad7380_timing = {
+ 	.t_csh_ns = 10,
+ };
+ 
++static const struct ad7380_timing_specs ad7380_4_timing = {
++	.t_csh_ns = 20,
++};
++
+ static const struct ad7380_chip_info ad7380_chip_info = {
+ 	.name = "ad7380",
+ 	.channels = ad7380_channels,
+@@ -163,6 +192,42 @@ static const struct ad7380_chip_info ad7384_chip_info = {
+ 	.timing_specs = &ad7380_timing,
+ };
+ 
++static const struct ad7380_chip_info ad7380_4_chip_info = {
++	.name = "ad7380-4",
++	.channels = ad7380_4_channels,
++	.num_channels = ARRAY_SIZE(ad7380_4_channels),
++	.available_scan_masks = ad7380_4_channel_scan_masks,
++	.timing_specs = &ad7380_4_timing,
++};
++
++static const struct ad7380_chip_info ad7381_4_chip_info = {
++	.name = "ad7381-4",
++	.channels = ad7381_4_channels,
++	.num_channels = ARRAY_SIZE(ad7381_4_channels),
++	.available_scan_masks = ad7380_4_channel_scan_masks,
++	.timing_specs = &ad7380_4_timing,
++};
++
++static const struct ad7380_chip_info ad7383_4_chip_info = {
++	.name = "ad7383-4",
++	.channels = ad7383_4_channels,
++	.num_channels = ARRAY_SIZE(ad7383_4_channels),
++	.vcm_supplies = ad7380_4_channel_vcm_supplies,
++	.num_vcm_supplies = ARRAY_SIZE(ad7380_4_channel_vcm_supplies),
++	.available_scan_masks = ad7380_4_channel_scan_masks,
++	.timing_specs = &ad7380_4_timing,
++};
++
++static const struct ad7380_chip_info ad7384_4_chip_info = {
++	.name = "ad7384-4",
++	.channels = ad7384_4_channels,
++	.num_channels = ARRAY_SIZE(ad7384_4_channels),
++	.vcm_supplies = ad7380_4_channel_vcm_supplies,
++	.num_vcm_supplies = ARRAY_SIZE(ad7380_4_channel_vcm_supplies),
++	.available_scan_masks = ad7380_4_channel_scan_masks,
++	.timing_specs = &ad7380_4_timing,
++};
++
+ struct ad7380_state {
+ 	const struct ad7380_chip_info *chip_info;
+ 	struct spi_device *spi;
+@@ -174,7 +239,7 @@ struct ad7380_state {
+ 	 * transfer buffers to live in their own cache lines.
+ 	 * Make the buffer large enough for MAX_NUM_CHANNELS 16-bit samples and one 64-bit
+ 	 * aligned 64 bit timestamp.
+-	 * As MAX_NUM_CHANNELS is 2 the layout of the structure is the same for all parts
++	 * As MAX_NUM_CHANNELS is 4 the layout of the structure is the same for all parts
+ 	 */
+ 	struct {
+ 		u16 raw[MAX_NUM_CHANNELS];
+@@ -517,6 +582,10 @@ static const struct of_device_id ad7380_of_match_table[] = {
+ 	{ .compatible = "adi,ad7381", .data = &ad7381_chip_info },
+ 	{ .compatible = "adi,ad7383", .data = &ad7383_chip_info },
+ 	{ .compatible = "adi,ad7384", .data = &ad7384_chip_info },
++	{ .compatible = "adi,ad7380-4", .data = &ad7380_4_chip_info },
++	{ .compatible = "adi,ad7381-4", .data = &ad7381_4_chip_info },
++	{ .compatible = "adi,ad7383-4", .data = &ad7383_4_chip_info },
++	{ .compatible = "adi,ad7384-4", .data = &ad7384_4_chip_info },
+ 	{ }
+ };
+ 
+@@ -525,6 +594,10 @@ static const struct spi_device_id ad7380_id_table[] = {
+ 	{ "ad7381", (kernel_ulong_t)&ad7381_chip_info },
+ 	{ "ad7383", (kernel_ulong_t)&ad7383_chip_info },
+ 	{ "ad7384", (kernel_ulong_t)&ad7384_chip_info },
++	{ "ad7380-4", (kernel_ulong_t)&ad7380_4_chip_info },
++	{ "ad7381-4", (kernel_ulong_t)&ad7381_4_chip_info },
++	{ "ad7383-4", (kernel_ulong_t)&ad7383_4_chip_info },
++	{ "ad7384-4", (kernel_ulong_t)&ad7384_4_chip_info },
+ 	{ }
+ };
+ MODULE_DEVICE_TABLE(spi, ad7380_id_table);
 
 -- 
 2.44.0
