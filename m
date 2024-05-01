@@ -1,107 +1,102 @@
-Return-Path: <linux-kernel+bounces-164936-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-164937-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id AAA698B8539
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 07:10:53 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 433EB8B853E
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 07:13:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D605F1C224EC
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 05:10:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9A19328437F
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 05:13:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B99D5433D2;
-	Wed,  1 May 2024 05:10:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CFF6D433D4;
+	Wed,  1 May 2024 05:13:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="NQxw3065"
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="P4LlReB3"
+Received: from out-175.mta1.migadu.com (out-175.mta1.migadu.com [95.215.58.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C20C91D68F;
-	Wed,  1 May 2024 05:10:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C46C91D68F
+	for <linux-kernel@vger.kernel.org>; Wed,  1 May 2024 05:13:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714540246; cv=none; b=fqCOUuyFsqrhsM+kCqn+bYnQMDqADFE9LXUB9yo/8uzI2TytCTNibYeA3YHeyG3ld9SmtMa3tJZIByFm/kpqZH59nUPb8WoFtqU0WgTXx/ZROZboVBTBt/g5LlzyHKveCWCbFexTHFLCl7VwQkMxe5BvRwg7O4RERI2GhyNQDrA=
+	t=1714540420; cv=none; b=fpl0I2pwiscKU4JQoJs0YO8DI3bE3IMq7TS2xzMol6QD30U1RGsQQqZJTglkTJqV1aSPbIqN+iaUVPLwq9K3hQBJIZqEPRjW67D3UYj+rBJhX8b1L+g6LLhfU67rDLPBgiCIZR8DpJhS49DGQsbOyxY4X0eW9dqIZw1TvG4Pc+E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714540246; c=relaxed/simple;
-	bh=Bv88zmq3RPg/NvCA06fPuh97Gm9jkIZqCFlN99SZZdA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=WwkL/aGCJTfoohRV6x71mOHizkyhoAssKS2+0cGNZgWHY0kyrxyoZvrAf0x0fBOFlQBWn5GTC+p5deodWlc6fn1iJ7OIIfhJQg1qFzuqw5J/FO3ea0Fd/QFj5OwndNUSrTS8rE3NtviG7uHDfADGnLF/DiYyO+2CEzRCKQpPMks=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=NQxw3065; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=ZJnNK/MnEG9qMPL1FuqG5TKlT7E9DMRIpWhLMGe3XgM=; b=NQxw3065lxg4fQI2HFvlgUpYti
-	lzlbrrDiKLvY44vYon3tjNHAtrlrrycj0S6cn1buHgeE4YA6+aVO7FE0Ty02nWJz6ELsuqaPiUlJY
-	Ax5iMe6n526pPWRYCruonTVf47E4t/VzvGghGANyb4GLc4niPnZiqYwsaWpaTSLHGzrfr4I37FIaP
-	uLsA5ovN1PODX9uwAnu/aMBo8ng7dB0VNJeoh2w10EavNCqcKRgCdH6ayCJuoXUhbXyDjkoEkGMcF
-	IH05qXIOpZdukF0sps1voGXIzh0IFAKC8vBZNFGvDSVa2RuZDSCM45D3QRvYucEPD3PfUWnJHbiIN
-	9bbH2Qgw==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1s22Et-00000008apr-1VQ5;
-	Wed, 01 May 2024 05:10:43 +0000
-Date: Tue, 30 Apr 2024 22:10:43 -0700
-From: Christoph Hellwig <hch@infradead.org>
-To: John Hubbard <jhubbard@nvidia.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>,
-	Jason Gunthorpe <jgg@nvidia.com>,
-	LKML <linux-kernel@vger.kernel.org>, linux-rdma@vger.kernel.org,
-	linux-mm@kvack.org, Mike Marciniszyn <mike.marciniszyn@intel.com>,
-	Leon Romanovsky <leon@kernel.org>,
-	Artemy Kovalyov <artemyko@nvidia.com>,
-	Michael Guralnik <michaelgur@nvidia.com>,
-	Alistair Popple <apopple@nvidia.com>,
-	Pak Markthub <pmarkthub@nvidia.com>
-Subject: Re: [RFC] RDMA/umem: pin_user_pages*() can temporarily fail due to
- migration glitches
-Message-ID: <ZjHO04Rb75TIlmkA@infradead.org>
-References: <20240501003117.257735-1-jhubbard@nvidia.com>
+	s=arc-20240116; t=1714540420; c=relaxed/simple;
+	bh=IyHptUUohnW3r093RcnjlP6XPm56w94Pwp2frUOijAI=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=c23mKpyCiyxzyzl+w+5zmJdkcMH40vuMMSjjwv4khUsDY71D2XL0DLwhdjSLyzBacmiBDxNksjANSeDEoPcKXY82PGgQXYUVE9bYGdndOL7jkZIbEcHCKFjx9zQNI1ahy74ugGRz/m5+DZLkicLRCVNrkHjmc/DwVq5e4DXyFfw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=P4LlReB3; arc=none smtp.client-ip=95.215.58.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1714540415;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=05WNzqmqLv1QKE4Y/P8AHkj3HrmEQHj1mc/aw/CiANo=;
+	b=P4LlReB3hNgroqsQTv26mFyfidd8iGuH/1AmYn2a2a+9/AAjaNSHIv/1eduVEhv/qT0Mu1
+	CmWzSBBOMzrQUlXyqtVDQ5eRxj2xmPevcqmh4supYL87m1NFulRvWkIt6O04idgr4BDPuV
+	o+itTgVj/XYKtPLs0TlKOIi3TnzUFOU=
+From: Sui Jingfeng <sui.jingfeng@linux.dev>
+To: Doug Anderson <dianders@chromium.org>
+Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Maxime Ripard <mripard@kernel.org>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	David Airlie <airlied@gmail.com>,
+	Daniel Vetter <daniel@ffwll.ch>,
+	dri-devel@lists.freedesktop.org,
+	linux-kernel@vger.kernel.org,
+	Sui Jingfeng <sui.jingfeng@linux.dev>,
+	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Subject: [PATCH v2] drm/debugfs: Drop conditionals around of_node pointers
+Date: Wed,  1 May 2024 13:13:23 +0800
+Message-Id: <20240501051323.805076-1-sui.jingfeng@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240501003117.257735-1-jhubbard@nvidia.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-> +		pinned = -ENOMEM;
-> +		int attempts = 0;
-> +		/*
-> +		 * pin_user_pages_fast() can return -EAGAIN, due to falling back
-> +		 * to gup-slow and then failing to migrate pages out of
-> +		 * ZONE_MOVABLE due to a transient elevated page refcount.
-> +		 *
-> +		 * One retry is enough to avoid this problem, so far, but let's
-> +		 * use a slightly higher retry count just in case even larger
-> +		 * systems have a longer-lasting transient refcount problem.
-> +		 *
-> +		 */
-> +		static const int MAX_ATTEMPTS = 3;
-> +
-> +		while (pinned == -EAGAIN && attempts < MAX_ATTEMPTS) {
-> +			pinned = pin_user_pages_fast(cur_base,
-> +						     min_t(unsigned long,
-> +							npages, PAGE_SIZE /
-> +							sizeof(struct page *)),
-> +						     gup_flags, page_list);
->  			ret = pinned;
-> -			goto umem_release;
-> +			attempts++;
-> +
-> +			if (pinned == -EAGAIN)
-> +				continue;
->  		}
-> +		if (pinned < 0)
-> +			goto umem_release;
+Having conditional around the of_node pointer of the drm_bridge structure
+is not necessary anymore, since drm_bridge structure always has the of_node
+member since the commit d8dfccde2709 ("drm/bridge: Drop conditionals around
+of_node pointers").
 
-This doesn't make sense.  IFF a blind retry is all that is needed it
-should be done in the core functionality.  I fear it's not that easy,
-though.
+So drop the conditional, please also note that this patch is following the
+convention used by driver core, see commit c9e358dfc4a8 ("driver-core:
+remove conditionals around devicetree pointers").
+
+Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Signed-off-by: Sui Jingfeng <sui.jingfeng@linux.dev>
+---
+v2: Update commit message
+---
+ drivers/gpu/drm/drm_debugfs.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/gpu/drm/drm_debugfs.c b/drivers/gpu/drm/drm_debugfs.c
+index 08fcefd804bc..28a471fe4bc8 100644
+--- a/drivers/gpu/drm/drm_debugfs.c
++++ b/drivers/gpu/drm/drm_debugfs.c
+@@ -597,10 +597,10 @@ static int bridges_show(struct seq_file *m, void *data)
+ 		drm_printf(&p, "\ttype: [%d] %s\n",
+ 			   bridge->type,
+ 			   drm_get_connector_type_name(bridge->type));
+-#ifdef CONFIG_OF
++
+ 		if (bridge->of_node)
+ 			drm_printf(&p, "\tOF: %pOFfc\n", bridge->of_node);
+-#endif
++
+ 		drm_printf(&p, "\tops: [0x%x]", bridge->ops);
+ 		if (bridge->ops & DRM_BRIDGE_OP_DETECT)
+ 			drm_puts(&p, " detect");
+-- 
+2.34.1
 
 
