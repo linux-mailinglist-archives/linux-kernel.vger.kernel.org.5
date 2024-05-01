@@ -1,147 +1,155 @@
-Return-Path: <linux-kernel+bounces-165667-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-165668-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 909C98B8F3F
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 19:55:03 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0B72B8B8F42
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 19:56:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C855C1C209C1
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 17:55:02 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9F2131F221B4
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 17:56:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0DA84146D79;
-	Wed,  1 May 2024 17:54:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 720B21474A2;
+	Wed,  1 May 2024 17:56:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EG2moWyU"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="oCCD4AZV"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4953E748D;
-	Wed,  1 May 2024 17:54:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1416C748D;
+	Wed,  1 May 2024 17:55:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714586093; cv=none; b=nd5ULpp5WoeEMgM37+xe/V7FAOcZBRA7ARlDCuEyT14ffJZHXToQmmWk8KIbne3662MIBc6XUsHwj+dYWLBYIMuBk15w+500GrIuYe6Xl6VVKz428hHdOHq80c231WG7bJ3TdTZ9kLJKs5H6FC05dOl122J1hnNCc7Co1kiY6GY=
+	t=1714586159; cv=none; b=GQ5arNIIaO5/Zqtcogc1N4ru8WuPo5DIfrVVyqo1NjSLm1cUNOS7aLiZ/eBaY4FRXqpCqQe51tLu40CRqo5EU0fSijY4QJOmDTRBQ1Q5UxWKh9lwlwu+o4ANQo2WX8bt1QAVNlYaByuWGK3VfJQmFoCgyv5RtX0hEUZikp7u5N0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714586093; c=relaxed/simple;
-	bh=WFdaQqoj4o2t0Y5iBuDBr4d0ocjoZj27VJCeYzrFM3o=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To; b=nFIpg0jigSGscdoxZpS1B3xQBvn+rODA9x/h/KHMHJsBV/uw+OhD8sOMbajEIPXNA1cH+Kcm3QaGGoWiVL/wOm+CtwFJZeeQQbyWdXz42PhjAMEFVpufgu4jaLUikchEK0B/JLaIA7DHhH5xTkkTMADFywmU9a5pfATY6eafTs0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EG2moWyU; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 912BAC072AA;
-	Wed,  1 May 2024 17:54:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714586092;
-	bh=WFdaQqoj4o2t0Y5iBuDBr4d0ocjoZj27VJCeYzrFM3o=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:From;
-	b=EG2moWyU4kRtW+h2fEn6J4OSulwoGt2Aiom3f5PdgUtIl+GWx3d1k0IYeyAUAXEXP
-	 EKXUyTl1rte6AMXwY3TT41ewi9Yoq52bfSnn2tgi9eNcdhJUDa+FaSAm3iKg57Mg3q
-	 bdeLg901Tjl5f94RnMax2z6uW4wGp6UnHNY95AW4dKh8vFBS6R64USgKgIlftHtAG+
-	 8tT8gJ9n3SsDzE839m19MItQ8E0nOZJo3f6Q1WGJKm6dkpUTczh6o9ewK8DHWbJlSZ
-	 QoykT5amHFBR1UadJ2ZDhTMrJxRxM4JUMb+75FcH7bhfS4E0VrtUVWOApz1FfcobzN
-	 y0YMFK8RK+cJg==
-Date: Wed, 1 May 2024 12:54:50 -0500
-From: Bjorn Helgaas <helgaas@kernel.org>
-To: PJ Waskiewicz <ppwaskie@kernel.org>
-Cc: Dan Williams <dan.j.williams@intel.com>, linux-cxl@vger.kernel.org,
-	linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/1] cxl/acpi.c: Add buggy BIOS hint for CXL ACPI lookup
- failure
-Message-ID: <20240501175450.GA866742@bhelgaas>
+	s=arc-20240116; t=1714586159; c=relaxed/simple;
+	bh=ImsoO37LmIyxcjfq9GfK3cKoACG+YHaB+w+naaUo6Rc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=GcdYb3w1ufVHzaz+XoW7JkksLHYkfADravCF0VITV15A0HCmtr6lB4pAENIOJinl4bFp7+fAGULnXEi/YDiWdBYCgPdFG7ZQ5rxBQ48hbJee+/ZH3oAU6rOHI/W5kU9nXrQDKli6KvzLGRRwpatRW3P92d6NhCDR3HDi08lhd4o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=oCCD4AZV; arc=none smtp.client-ip=192.198.163.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1714586158; x=1746122158;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=ImsoO37LmIyxcjfq9GfK3cKoACG+YHaB+w+naaUo6Rc=;
+  b=oCCD4AZVluDNgtK8Q06y6mGOUX82+UpJWc8Wls3ttzpAAQPz7LXqInbf
+   wvh+cCuVBplvrZhH3ptZOYaNmn9aUh0g3uTY+ArXInmKv5PEBRT68kSFJ
+   MiJrAkrXru0JiHxuYfdC3vW3XKp0ck0Ip64Is4nuwWWxHrMc0prY9AvDo
+   2T7Oh30vCVLPr1WhMth9Z9YKLf7+fV3kcmgx0OTksEN8ZxAb+x1bo0XhZ
+   NFzFped9EblFeyPlYZbZC/24M45FB4TY5BW8BCcymA95aFDwq4ETH4Ofb
+   pkYMUUPJOmRt7ui2ux1a2UWNuBevyOFwaF+o02EoxivUKa+aIObcuMKTG
+   w==;
+X-CSE-ConnectionGUID: jA7c0FJbTJaUZLK8G5Y/0w==
+X-CSE-MsgGUID: xnm3Mn8XRWe1GWyq1ggQ4w==
+X-IronPort-AV: E=McAfee;i="6600,9927,11061"; a="35714918"
+X-IronPort-AV: E=Sophos;i="6.07,246,1708416000"; 
+   d="scan'208";a="35714918"
+Received: from orviesa005.jf.intel.com ([10.64.159.145])
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 May 2024 10:55:45 -0700
+X-CSE-ConnectionGUID: fA5cYtbySBK+URiVZ2UYqQ==
+X-CSE-MsgGUID: sl7aHpoRT0mXP/c6i7u+8w==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,246,1708416000"; 
+   d="scan'208";a="31663564"
+Received: from soc-cp83kr3.jf.intel.com (HELO [10.24.10.57]) ([10.24.10.57])
+  by orviesa005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 May 2024 10:55:44 -0700
+Message-ID: <d788bdab-91b9-4034-a241-ee253ee4fb3e@intel.com>
+Date: Wed, 1 May 2024 10:55:46 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <f5078550384a6b9be5a6d05415ea321332c7fb96.camel@kernel.org>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 15/15] KVM: x86: Factor out kvm_use_master_clock()
+To: David Woodhouse <dwmw2@infradead.org>, kvm@vger.kernel.org
+Cc: Paolo Bonzini <pbonzini@redhat.com>, Jonathan Corbet <corbet@lwn.net>,
+ Sean Christopherson <seanjc@google.com>, Thomas Gleixner
+ <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+ Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
+ x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>, Paul Durrant
+ <paul@xen.org>, Shuah Khan <shuah@kernel.org>, linux-doc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+ Oliver Upton <oliver.upton@linux.dev>, Marcelo Tosatti
+ <mtosatti@redhat.com>, jalliste@amazon.co.uk, sveith@amazon.de,
+ Dongli Zhang <dongli.zhang@oracle.com>
+References: <20240427111929.9600-1-dwmw2@infradead.org>
+ <20240427111929.9600-16-dwmw2@infradead.org>
+Content-Language: en-US
+From: "Chen, Zide" <zide.chen@intel.com>
+In-Reply-To: <20240427111929.9600-16-dwmw2@infradead.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Wed, May 01, 2024 at 08:28:22AM -0700, PJ Waskiewicz wrote:
-> On Mon, 2024-04-29 at 11:35 -0700, Dan Williams wrote:
-> > Bjorn Helgaas wrote:
-> > > On Sun, Apr 28, 2024 at 10:57:13PM -0700, PJ Waskiewicz wrote:
-> > > > On Tue, 2024-04-09 at 08:22 -0500, Bjorn Helgaas wrote:
-> > > > > On Sun, Apr 07, 2024 at 02:05:26PM -0700,
-> > > > > ppwaskie@kernel.org wrote:
-> > > > > > From: PJ Waskiewicz <ppwaskie@kernel.org>
-> > > > > > 
-> > > > > > Currently, Type 3 CXL devices (CXL.mem) can train using
-> > > > > > host CXL drivers on Emerald Rapids systems.  However, on
-> > > > > > some production systems from some vendors, a buggy BIOS
-> > > > > > exists that improperly populates the ACPI => PCI mappings.
-> > > > > 
-> > > > > Can you be more specific about what this ACPI => PCI mapping
-> > > > > is?  If you already know what the problem is, I'm sure this
-> > > > > is obvious, but otherwise it's not.
-> > [..] 
-> > > It's just a buggy BIOS that doesn't supply _UID for an ACPI0016
-> > > object, so you can't locate the corresponding CEDT entry, right?
-> > 
-> > Correct, the problem is 100% contained to ACPI, and PCI is
-> > innocent.  The ACPI bug leads to failures to associate ACPI
-> > host-bridge objects with CEDT.CHBS entries.
+
+
+On 4/27/2024 4:05 AM, David Woodhouse wrote:
+> From: David Woodhouse <dwmw@amazon.co.uk>
 > 
-> Sorry for the confusion here!!  I was definitely not trying to blame
-> PCI.  :)
->
-> > ACPI to PCI association is then typical pci_root lookup, i.e.:
-> > 
-> >         pci_root = acpi_pci_find_root(hb->handle);
-> >         bridge = pci_root->bus->bridge;
+> Both kvm_track_tsc_matching() and pvclock_update_vm_gtod_copy() make a
+> decision about whether the KVM clock should be in master clock mode.
 > 
-> Yes, this here.  In my use case, I'm starting with a PCIe/CXL device.
-> In my driver, I try to discover the host bridge, and then the ACPI _UID
-> so I can look things up in the CEDT.
+> They use *different* criteria for the decision though. This isn't really
+> a problem; it only has the potential to cause unnecessary invocations of
+> KVM_REQ_MASTERCLOCK_UPDATE if the masterclock was disabled due to TSC
+> going backwards, or the guest using the old MSR. But it isn't pretty.
 > 
-> So I'm trying to do the programmatic equivalent of this:
+> Factor the decision out to a single function. And document the historical
+> reason why it's disabled for guests that use the old MSR_KVM_SYSTEM_TIME.
 > 
-> Start here in my PCIe/CXL host driver:
+> Signed-off-by: David Woodhouse <dwmw@amazon.co.uk>
+> ---
+>  arch/x86/kvm/x86.c | 27 +++++++++++++++++++++++----
+>  1 file changed, 23 insertions(+), 4 deletions(-)
 > 
-> /sys/devices/pci0000:37/firmware_node =>
-> ../LNXSYSTM:00/LNXSYBUS:00/ACPI0016:02
-> 
-> Retrieve _UID (uid) from /sys/devices/pci0000:37/firmware_node/uid
-> 
-> Buggy BIOS, that above value resolves to CX02.  In fact, it *should* be
-> 49.  This is very much a bug in the ACPI arena.
-> 
-> The kernel APIs allowing me to walk this path would fail in the
-> acpi_evaluate_object() when trying to pass in the bad _UID (CX02).
-> 
-> Again, sorry for the confusion if it looked like I was trying to
-> implicate PCI in any way.  The whole intent here was to leave some
-> breadcrumbs so anyone else running into this wouldn't be left
-> scratching their heads wondering wtf was going on.
+> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> index d6e4469f531a..680b39f17851 100644
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -2518,6 +2518,27 @@ static inline bool gtod_is_based_on_tsc(int mode)
+>  }
+>  #endif
+>  
+> +static bool kvm_use_master_clock(strut kvm *kvm)
 
+typo: 'strut' -> 'struct'
 
-No worries, I didn't suspect a PCI issue here; I just wasn't clear on
-what ACPI=>PCI mapping was involved.  It sounds like there *is* no
-such mapping in this picture (you find the ACPI object for a PCIe/CXL
-host bridge, evaluate _UID from that object, and get a bogus value).
+> +{
+> +	struct kvm_arch *ka = &kvm->arch;
+> +
+> +	/*
+> +	 * The 'old kvmclock' check is a workaround (from 2015) for a
+> +	 * SUSE 2.6.16 kernel that didn't boot if the system_time in
+> +	 * its kvmclock was too far behind the current time. So the
+> +	 * mode of just setting the reference point and allowing time
+> +	 * to proceed linearly from there makes it fail to boot.
+> +	 * Despite that being kind of the *point* of the way the clock
+> +	 * is exposed to the guest. By coincidence, the offending
+> +	 * kernels used the old MSR_KVM_SYSTEM_TIME, which was moved
+> +	 * only because it resided in the wrong number range. So the
+> +	 * workaround is activated for *all* guests using the old MSR.
+> +	 */
+> +	return ka->all_vcpus_matched_tsc &&
+> +		!ka->backwards_tsc_observed &&
+> +		!ka->boot_vcpu_runs_old_kvmclock;
+> +}
+> +
+>  static void kvm_track_tsc_matching(struct kvm_vcpu *vcpu)
+>  {
+>  #ifdef CONFIG_X86_64
+> @@ -2550,7 +2571,7 @@ static void kvm_track_tsc_matching(struct kvm_vcpu *vcpu)
+>  	 * To use the masterclock, the host clocksource must be based on TSC
+>  	 * and all vCPUs must have matching TSC frequencies.
+>  	 */
+> -	bool use_master_clock = ka->all_vcpus_matched_tsc &&
+> +	bool use_master_clock = kvm_use_master_clock(kvm) &&
 
-So the commit log text:
+'kvm' should be `vcpu->kvm`
 
-  However, on some production systems from some vendors, a buggy BIOS
-  exists that improperly populates the ACPI => PCI mappings.
-
-apparently refers to improper implementation of the _UID, which
-doesn't return anything PCI related.
-
-It also says:
-
-  This leads to the cxl_acpi driver to fail probe when it cannot find
-  the root port's _UID, in order to look up the device's CXL
-  attributes in the CEDT.
-
-I *think* strictly speaking this should refer to the *host bridge's*
-_UID, not the Root Port's, e.g., something like this:
-
-  However, on some production systems from some vendors, a buggy BIOS
-  provides a CXL host bridge _UID that doesn't match anything in the
-  CEDT.
-
-Bjorn
+>  				gtod_is_based_on_tsc(gtod->clock.vclock_mode);
 
