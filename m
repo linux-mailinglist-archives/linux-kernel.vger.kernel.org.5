@@ -1,157 +1,185 @@
-Return-Path: <linux-kernel+bounces-165548-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-165546-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id CB2458B8DD6
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 18:13:53 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3EF008B8DD1
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 18:13:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 854F428389D
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 16:13:52 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2F830B213CE
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 16:13:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A88ED12FF91;
-	Wed,  1 May 2024 16:13:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E128130487;
+	Wed,  1 May 2024 16:12:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SK76njsD"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="buYNGvH8"
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4C1A12FB36;
-	Wed,  1 May 2024 16:13:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3924214012;
+	Wed,  1 May 2024 16:12:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714580012; cv=none; b=vFyEYVw5tVUAwtjGbkO62+HOVLa9u6eWTfzZX1AhLDJpxfMARTVXjBImTLGty+wuccwdRCDIymEp8RMg8BIf9EWlEqzcae9S5CvrYQnmb1dLT1epQCngabyiDr0qN+yozt5iiqceu5phJGaSFSDTI8/oJGN9xiaSsIWtv820vvo=
+	t=1714579977; cv=none; b=blf+af1XvjOcLPJ+0d5kziB1ZqfpnQikGSHEcF1uAPjSU+fJMgpYUyKK8umH+esvjf0FYPKtFGomasKmaJaPaMGpGgL5hKyjUut5Ws9tu9TJmC4SOkXq4vBClVl85a7t+fmm4GuOZN/UhgVl/A4SopmTsGzShR7ZiBRaDe1eKR4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714580012; c=relaxed/simple;
-	bh=dFzfiSp+K+7eC8iqd8lGaatDkcEc0b44t6mRfekFWs0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=S9twhZVkeCqNsk+Zo6dpz9YJSf0uuEPMPZ8BXqvlwg2G1v236yVmXHmy4vNSwoF/1RemRlHqCUgVhYOVIudzIGo3NXM6MrrhsTMT7BI686Epiu4m9UsVEMfwgtYIOD42M16oX4BQH5/aKrSgTPFFEkX7R3yzNWoVmrhy7wy8uWw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SK76njsD; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5FA2DC072AA;
-	Wed,  1 May 2024 16:13:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714580011;
-	bh=dFzfiSp+K+7eC8iqd8lGaatDkcEc0b44t6mRfekFWs0=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=SK76njsD/UbgyWhKEa5gdiXSDYZ7FmYrHbjk4phy4JQ/5y++dgaAoK7dFrTnpbgJm
-	 wWqEsJ5UHazwnyXBq6qImP5pWtHrNCce6zW2vPHGcBPotG1/tWoiJPC2bQ6ETPpuLD
-	 4EzW/uEvNHTm/x3mPEh/1agcO0v6woJRSKhugvfmwXAyGCT3/BtkrU9EYh/7s8n7Yc
-	 WJ4yH29ddvKTUhqJTvKmHJYADF6hgHLpuh5KVdp95Du1ZUbMx2Ry/MJLU/peSJ02Gx
-	 rJdVEZoG89TjPu1YbCz0ASGT8cme30P+XUQHFhwv9omUtihZ90EV6FDEgjt4eNqLjE
-	 7Jutct3+m0Z2Q==
-Date: Wed, 1 May 2024 19:11:58 +0300
-From: Mike Rapoport <rppt@kernel.org>
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: "Guilherme G. Piccoli" <gpiccoli@igalia.com>,
-	"Luck, Tony" <tony.luck@intel.com>,
-	Kees Cook <keescook@chromium.org>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"linux-trace-kernel@vger.kernel.org" <linux-trace-kernel@vger.kernel.org>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	"Liam R. Howlett" <Liam.Howlett@oracle.com>,
-	Vlastimil Babka <vbabka@suse.cz>,
-	Lorenzo Stoakes <lstoakes@gmail.com>,
-	"linux-mm@kvack.org" <linux-mm@kvack.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	"x86@kernel.org" <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	"linux-hardening@vger.kernel.org" <linux-hardening@vger.kernel.org>,
-	Guenter Roeck <linux@roeck-us.net>,
-	Ross Zwisler <zwisler@google.com>,
-	"wklin@google.com" <wklin@google.com>,
-	Vineeth Remanan Pillai <vineeth@bitbyteword.org>,
-	Suleiman Souhlal <suleiman@google.com>,
-	Linus Torvalds <torvalds@linuxfoundation.org>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>
-Subject: Re: [POC][RFC][PATCH 0/2] pstore/mm/x86: Add wildcard memmap to map
- pstore consistently
-Message-ID: <ZjJpzqviUeFnV1A4@kernel.org>
-References: <202404091519.B7B2221@keescook>
- <SJ1PR11MB608317E066B6B3390F55FCB1FC072@SJ1PR11MB6083.namprd11.prod.outlook.com>
- <3391c693-cf54-526b-79a8-d565e7140947@igalia.com>
- <20240411154007.5bdf8d95@gandalf.local.home>
- <fa5fa4c6-2b02-f47e-b9ba-65cfd85f57f8@igalia.com>
- <20240412132243.053ad096@gandalf.local.home>
- <ZjJVnZUX3NZiGW6q@kernel.org>
- <20240501105455.42b78a0b@gandalf.local.home>
- <ZjJgIIOvvEdnisNA@kernel.org>
- <20240501120904.61c7617c@gandalf.local.home>
+	s=arc-20240116; t=1714579977; c=relaxed/simple;
+	bh=14sKNXn+brzb9C+o7JQHqc5qa1LapLYMZXn5YARcRmo=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=rP6P3yEjTYq3RzdEpfUkJo2Tvxu6v8K6Nb245lcv/rs/vs46gXoRh5JPytbQeL9QfWrGXLdeHBDOUo5xoIbBQPcK2eGbVnEQpNBCw992T75xozM6nGTBky1O1tF3biT2rT5nensKh2lNvbcnDWPUfsV1J0RBfo5DdICvuzBE0y0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=buYNGvH8; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353728.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 441G0gmZ030606;
+	Wed, 1 May 2024 16:12:45 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=5bbPujTRIF5gJfZHM8woOcETPm+Qgby910G7hWefVgY=;
+ b=buYNGvH86cHbjGXx72X5Um2OA+E/rbMSUhXBnCKHz9n1+HvKwIGPqxLhi6cON61rFLnT
+ 4sz5Kndy6D80+2ajyDwN2FrQd5L5/XD+hYiOSkmyPs6sr1dzyv67plFATD4XYYw/hgqi
+ HFn3wqKCk0nooP1FqC8aieoWfyaP78zmv511gO1jX82StaPW6RNkaMWmzsBixVE4MMTt
+ MauEHxKkJjUSYKyFetPZNPpe0Pt99ltHY+TKqs7BbO2z73dll9QqE8p5BQn5YoRbY/fh
+ 2kTszAFsYJYJEN8RrFFGg1W9ZNuxnbRU/FWgd9PfwuH5ZfTJfEpH8LLCGt3cqI5AS2S0 4g== 
+Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xurcwr2ps-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 01 May 2024 16:12:44 +0000
+Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 441EPZb6015603;
+	Wed, 1 May 2024 16:12:43 GMT
+Received: from smtprelay07.dal12v.mail.ibm.com ([172.16.1.9])
+	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3xsed32v4a-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 01 May 2024 16:12:43 +0000
+Received: from smtpav01.dal12v.mail.ibm.com (smtpav01.dal12v.mail.ibm.com [10.241.53.100])
+	by smtprelay07.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 441GCftx40305048
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Wed, 1 May 2024 16:12:43 GMT
+Received: from smtpav01.dal12v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 48CD958059;
+	Wed,  1 May 2024 16:12:41 +0000 (GMT)
+Received: from smtpav01.dal12v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id B048A58058;
+	Wed,  1 May 2024 16:12:40 +0000 (GMT)
+Received: from [9.61.151.254] (unknown [9.61.151.254])
+	by smtpav01.dal12v.mail.ibm.com (Postfix) with ESMTP;
+	Wed,  1 May 2024 16:12:40 +0000 (GMT)
+Message-ID: <a7ca71c0-971c-49ab-b9f3-f6e6b32e9567@linux.ibm.com>
+Date: Wed, 1 May 2024 11:12:40 -0500
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 08/17] dt-bindings: fsi: ast2600-fsi-master: Convert to
+ json-schema
+To: Krzysztof Kozlowski <krzk@kernel.org>, linux-aspeed@lists.ozlabs.org
+Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-fsi@lists.ozlabs.org, linux-spi@vger.kernel.org,
+        linux-i2c@vger.kernel.org, lakshmiy@us.ibm.com, robh@kernel.org,
+        krzk+dt@kernel.org, conor+dt@kernel.org, joel@jms.id.au,
+        andrew@codeconstruct.com.au, andi.shyti@kernel.org
+References: <20240429210131.373487-1-eajames@linux.ibm.com>
+ <20240429210131.373487-9-eajames@linux.ibm.com>
+ <af51132f-e4a3-4f45-b066-24b8c348eb28@kernel.org>
+Content-Language: en-US
+From: Eddie James <eajames@linux.ibm.com>
+In-Reply-To: <af51132f-e4a3-4f45-b066-24b8c348eb28@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: yRs-bhhRMfv4oUulsmZlFk-y7Yt3MXP8
+X-Proofpoint-ORIG-GUID: yRs-bhhRMfv4oUulsmZlFk-y7Yt3MXP8
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240501120904.61c7617c@gandalf.local.home>
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
+ definitions=2024-05-01_16,2024-04-30_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 adultscore=0
+ priorityscore=1501 impostorscore=0 phishscore=0 mlxscore=0 spamscore=0
+ suspectscore=0 clxscore=1015 malwarescore=0 mlxlogscore=999
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2404010000 definitions=main-2405010115
 
-On Wed, May 01, 2024 at 12:09:04PM -0400, Steven Rostedt wrote:
-> On Wed, 1 May 2024 18:30:40 +0300
-> Mike Rapoport <rppt@kernel.org> wrote:
-> 
-> > > > /*
-> > > >  * Parse early_reserve_mem=nn:align:name
-> > > >  */
-> > > > static int __init early_reserve_mem(char *p)
-> > > > {
-> > > > 	phys_addr_t start, size, align;
-> > > > 	char *oldp;
-> > > > 	int err;
-> > > > 
-> > > > 	if (!p)
-> > > > 		return -EINVAL;
-> > > > 
-> > > > 	oldp = p;
-> > > > 	size = memparse(p, &p);
-> > > > 	if (p == oldp)
-> > > > 		return -EINVAL;
-> > > > 
-> > > > 	if (*p != ':')
-> > > > 		return -EINVAL;
-> > > > 
-> > > > 	align = memparse(p+1, &p);
-> > > > 	if (*p != ':')
-> > > > 		return -EINVAL;
-> > > > 
-> > > > 	start = memblock_phys_alloc(size, align);  
-> > > 
-> > > So this will allocate the same physical location for every boot, if booting
-> > > the same kernel and having the same physical memory layout?  
-> > 
-> > Up to kaslr that might use that location for the kernel image.
-> > But it's the same as allocating from e820 after kaslr.
-> > 
-> > And, TBH, I don't have good ideas how to ensure the same physical location
-> > with randomization of the physical address of the kernel image.
-> 
-> I'll try it out. Looking at arch/x86/boot/compressed/kaslr.c, if I read the
-> code correctly, it creates up to a 100 slots to store the kernel.
-> 
-> The method I used was to make sure that the allocation was always done at
-> the top address of memory, which I think would in most cases never be
-> assigned by KASLR.
-> 
-> This looks to just grab the next available physical address, which KASLR
-> can most definitely mess with.
 
-On x86 memblock allocates from top of the memory. As this will run later
-than e820, the allocation will be lower than from e820, but still close to
-the top of the memory.
- 
-> I would still like to get the highest address possible.
-> 
-> -- Steve
+On 4/30/24 02:04, Krzysztof Kozlowski wrote:
+> On 29/04/2024 23:01, Eddie James wrote:
+>> Convert to json-schema for the AST2600 FSI master documentation.
+> Please mention all the changes from pure conversion.
 
--- 
-Sincerely yours,
-Mike.
+
+Sure.
+
+
+>
+>> Signed-off-by: Eddie James <eajames@linux.ibm.com>
+>> ---
+>> Changes since v3:
+>>   - Remove quotes around compatible strings
+>>   - Re-order allOf to below required
+>>   - Add child node in the example
+>>   - Change commit message to match similar commits
+>>
+>>   .../fsi/aspeed,ast2600-fsi-master.yaml        | 81 +++++++++++++++++++
+>>   .../bindings/fsi/fsi-master-aspeed.txt        | 36 ---------
+>>   2 files changed, 81 insertions(+), 36 deletions(-)
+>>   create mode 100644 Documentation/devicetree/bindings/fsi/aspeed,ast2600-fsi-master.yaml
+>>   delete mode 100644 Documentation/devicetree/bindings/fsi/fsi-master-aspeed.txt
+>>
+>> diff --git a/Documentation/devicetree/bindings/fsi/aspeed,ast2600-fsi-master.yaml b/Documentation/devicetree/bindings/fsi/aspeed,ast2600-fsi-master.yaml
+>> new file mode 100644
+>> index 000000000000..fcf7c4b93b78
+>> --- /dev/null
+>> +++ b/Documentation/devicetree/bindings/fsi/aspeed,ast2600-fsi-master.yaml
+>> @@ -0,0 +1,81 @@
+>> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+>> +%YAML 1.2
+>> +---
+>> +$id: http://devicetree.org/schemas/fsi/aspeed,ast2600-fsi-master.yaml#
+>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+>> +
+>> +title: Aspeed FSI master
+>> +
+>> +maintainers:
+>> +  - Eddie James <eajames@linux.ibm.com>
+>> +
+>> +description:
+>> +  The AST2600 and later contain two identical FSI masters. They share a
+>> +  clock and have a separate interrupt line and output pins.
+>> +
+>> +properties:
+>> +  compatible:
+>> +    enum:
+>> +      - aspeed,ast2600-fsi-master
+>> +      - aspeed,ast2700-fsi-master
+> There was no such compatible before.
+>
+> How does this even validate? Where is fsi-master? You dropped a
+> compatible without any explanation.
+
+
+I can make it a separate change to add ast2700.
+
+
+I suppose I don't understand having two compatibles... Aspeed master 
+shouldn't use "fsi-master" as that is too generic, right? Why wouldn't 
+it validate? Devicetrees using "fsi-master" also use 
+"aspeed,ast2600-fsi-master" so they should be OK...
+
+
+>
+>> +
+>> +  reg:
+>> +    maxItems: 1
+>> +
+>> +  clocks:
+>> +    maxItems: 1
+>> +
+>
+> Best regards,
+> Krzysztof
+>
 
