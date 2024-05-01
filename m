@@ -1,167 +1,122 @@
-Return-Path: <linux-kernel+bounces-165199-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-165200-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E0AA68B8963
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 13:39:50 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 437058B8967
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 13:40:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 965CA285DE6
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 11:39:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F3FC2285A37
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 11:40:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3436783CC2;
-	Wed,  1 May 2024 11:39:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3873981736;
+	Wed,  1 May 2024 11:40:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="X7d0b+ty"
-Received: from mail-ej1-f54.google.com (mail-ej1-f54.google.com [209.85.218.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FWQrVZmR"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9EEB97CF3A
-	for <linux-kernel@vger.kernel.org>; Wed,  1 May 2024 11:39:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70A9E1758D;
+	Wed,  1 May 2024 11:40:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714563577; cv=none; b=WBuGu+S80WQg2eX0lOp/1C4iCkJDd9It+TOvV7aTNOQxk49N0UQvj2TA8VWLSAQHc0SUTbqNmHB6rZxrIHIqjYC5CP5rIDYZmKsAPfynw8k3No3myYSDuB+16vvrmhig1ttz/XWWuVkZmM6jMrkOxc1eAyO9OKy1Cs/HoPHHR/s=
+	t=1714563645; cv=none; b=JqPe2XeeRF9CbcH64RmW2+g84LRJnsBbbVgXY2OIUvCjfvpS5cbtGGeULs0At+njahcwu+mekpKzW2YAUVkn0yo2nNAYrWHL+aDNBmy+yd41qIIynFYSbIgAmacJoPZQ6jDUxdgim35QIcwo7XRH6JTtCTFJ5Q23aE61uvSNsiw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714563577; c=relaxed/simple;
-	bh=hWiB2IF9/BVtMMyQ4v988Y/lvqGLBwMNOHdlgiN6avs=;
+	s=arc-20240116; t=1714563645; c=relaxed/simple;
+	bh=wjSpgVBA1AYrZcgC5XCgSh0SYSTObA/R2PwB5ny4N2w=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=qwaULk/ELr8Qqaye2heH/bwznlzXp8vtK4NU6u7R0/7MXNN1SCyGClun6kjxe/Q3ZeQc7Gwu+HPdF+ppAm2m9vP59X9V9rI7stpuH7XqhtdUWgPKu9GaAjm62UG3bnM/afHlSB1kekFwGL91DNocC2h1CXu2mutuwqZaEXvsBa0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=X7d0b+ty; arc=none smtp.client-ip=209.85.218.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-a5872b74c44so757282766b.3
-        for <linux-kernel@vger.kernel.org>; Wed, 01 May 2024 04:39:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1714563574; x=1715168374; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=6F17kWFJJgrPWa4fwXbgU8r9m9niISBPH10+pYqanrE=;
-        b=X7d0b+tyOuHKQFEFrwUzA4STFjTPXfaIeFQ2Wts6j9HBqZFAiBgKa5DcbkvRE7b2Gi
-         1q4uTeF5AOJd5zcmPdtgcJXIJDhjt9litgsuRc/m/sAm2n+5mMsLOSmsl2Lm5onswdjZ
-         9fDqGZESWNq4XVU+gtaiBo4U6ERgpFWBa9uhP7JRzP8/gAw6vLQz8+y3bSHJxQUqWaDz
-         quI8boiorD3z6bWCGq4jXwAOmWS47DcTglb9wM7rvWHfR0417VoePcg4qqlG4ao7MZrF
-         SU06JGLyq6YOahFUnL0st50r24MTzsHnbiNvu1WIjNXpWCSx5eXqCsR4dvuOE31XIBdt
-         KrAw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714563574; x=1715168374;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=6F17kWFJJgrPWa4fwXbgU8r9m9niISBPH10+pYqanrE=;
-        b=p1tu2bCY0aVBthlNdA8KhriYhwfBxS0XY3QWiW0bjgCuEIFqo8XLYgq7s6RZo89nZH
-         93qRelcd1L+eF26PlpN5OqGXGk58cjL7xvEvzL9riJpXzsK/Vi0BA5IDVrTxFwfvnQVd
-         go7OzVuu7pIgOJMbfWfu0LAVemvKSiEm/01zszDL2Gh9TWF19RJaUOx+7ooruhf1Ezaf
-         mcJ8ntcJ/+iEeilErbSf0oHSfV5WJ5gSrYXeW+TwI8roqMwK7Wyd7JkqcMvaIyWbkPFo
-         XPPb5JnPeJg8Azv1OoPCRYkCDNAlrOeRcpYn2RYFU2/zW6Brr0Y2idvr4f8lzlO4igh+
-         kzTw==
-X-Forwarded-Encrypted: i=1; AJvYcCWu9bAYZUFBoNXVXxhrDX7v4Psdux2XF0wir9OWM6eYnk6XxzEbQ15S0FSyUvx/ejGKRCvvE0Fh5f/hAyELQ92YffDVtUrqHNWCiGbG
-X-Gm-Message-State: AOJu0YwHuWWeA/fV4BDCoCmN3WCx1CAPlUAtX3dORtwNfP7tyEUM6Dws
-	DnpyObBJ3yoW2c4Ttf7PEL2kPGRJK4wOC/mjPz0nJECSgnQbqjKzRBL3xN3l134=
-X-Google-Smtp-Source: AGHT+IG0gW8AtnHPdOjlgNheHMn3PEoAxQnpTPi2JoQxokArraxLe3iFJHW1+ihQz250D5AqltkHqw==
-X-Received: by 2002:a17:906:af85:b0:a58:a1e3:a2cd with SMTP id mj5-20020a170906af8500b00a58a1e3a2cdmr1578941ejb.55.1714563573542;
-        Wed, 01 May 2024 04:39:33 -0700 (PDT)
-Received: from linaro.org ([62.231.100.236])
-        by smtp.gmail.com with ESMTPSA id f7-20020a170906c08700b00a51a80028e8sm16222894ejz.65.2024.05.01.04.39.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 01 May 2024 04:39:33 -0700 (PDT)
-Date: Wed, 1 May 2024 14:39:31 +0300
-From: Abel Vesa <abel.vesa@linaro.org>
-To: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
-Cc: Abel Vesa <abelvesa@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Marc Kleine-Budde <mkl@pengutronix.de>,
-	Shengjiu Wang <shengjiu.wang@nxp.com>, Peng Fan <peng.fan@nxp.com>,
-	Michael Turquette <mturquette@baylibre.com>,
-	Stephen Boyd <sboyd@kernel.org>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>, linux-clk@vger.kernel.org,
-	imx@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH] clk: imx: imx8mp: Convert to platform remove callback
- returning void
-Message-ID: <ZjIp85IouNtMV7JD@linaro.org>
-References: <20240423071232.463201-2-u.kleine-koenig@pengutronix.de>
+	 Content-Type:Content-Disposition:In-Reply-To; b=jPUo0vlq1bRygDAvNp7OANUViRtR4QCcgjTiZtZWu+wcsBj1Sj8QAJ/rYtIO85iijH6ukoLQAiqp5NG8iTXQuDLUle/LDYJ+GBzyu2VOQKYsdnZGdAGUhuJQsbxUNzHsmXuXbtyMPPfhuU3ilgK1jw98Faeg1mP1BVUWtW5LQd8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FWQrVZmR; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CA9A8C113CC;
+	Wed,  1 May 2024 11:40:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714563645;
+	bh=wjSpgVBA1AYrZcgC5XCgSh0SYSTObA/R2PwB5ny4N2w=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=FWQrVZmRHD6t4l4m9y9InSm/dWTF32vdD7aRGjavVGSSVvdot/XLB32fC9noC9XwH
+	 w+J/4Oat23aTb9B82vofQ22DNvfGaXGWViI6IIKyx8XzeYYtNxaSnfKTrdoEUmDrat
+	 aprayiD8//hPgwZ/HgwXG+GzMNQw2c5vb09Dv8FSJApGEjrF/azhi3sA3j0aZXZT4g
+	 xix/psYZtkm/Ityc67DQeYgmE9DFcLFuUCkvONgQr7nyNUlKXaZsYg/MKmn7EH2J5t
+	 03lQH24dwjGHhRp0t/Jji6+ljB1m1kZeJCXabufwTJmoyHFPw643kpW3V6IOc5CvNW
+	 3+fd64QGmZvLA==
+Date: Wed, 1 May 2024 12:40:38 +0100
+From: Conor Dooley <conor@kernel.org>
+To: Charlie Jenkins <charlie@rivosinc.com>
+Cc: Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>, Guo Ren <guoren@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+	Jernej Skrabec <jernej.skrabec@gmail.com>,
+	Samuel Holland <samuel@sholland.org>,
+	Conor Dooley <conor.dooley@microchip.com>,
+	Evan Green <evan@rivosinc.com>,
+	=?iso-8859-1?Q?Cl=E9ment_L=E9ger?= <cleger@rivosinc.com>,
+	Jonathan Corbet <corbet@lwn.net>, Shuah Khan <shuah@kernel.org>,
+	linux-riscv@lists.infradead.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, Palmer Dabbelt <palmer@rivosinc.com>,
+	linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
+	linux-doc@vger.kernel.org, linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH v4 05/16] riscv: Extend cpufeature.c to detect vendor
+ extensions
+Message-ID: <20240501-drivable-deviation-0a493511770c@spud>
+References: <20240426-dev-charlie-support_thead_vector_6_9-v4-0-b692f3c516ec@rivosinc.com>
+ <20240426-dev-charlie-support_thead_vector_6_9-v4-5-b692f3c516ec@rivosinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="xHWLnBdUePAybcBR"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240423071232.463201-2-u.kleine-koenig@pengutronix.de>
+In-Reply-To: <20240426-dev-charlie-support_thead_vector_6_9-v4-5-b692f3c516ec@rivosinc.com>
 
-On 24-04-23 09:12:31, Uwe Kleine-König wrote:
-> The .remove() callback for a platform driver returns an int which makes
-> many driver authors wrongly assume it's possible to do error handling by
-> returning an error code. However the value returned is ignored (apart
-> from emitting a warning) and this typically results in resource leaks.
-> 
-> To improve here there is a quest to make the remove callback return
-> void. In the first step of this quest all drivers are converted to
-> .remove_new(), which already returns void. Eventually after all drivers
-> are converted, .remove_new() will be renamed to .remove().
-> 
-> Trivially convert this driver from always returning zero in the remove
-> callback to the void returning variant.
-> 
-> Fixes: 1496dd413b2e ("clk: imx: imx8mp: Add pm_runtime support for power saving")
-> Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
 
-LGTM.
+--xHWLnBdUePAybcBR
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Reviewed-by: Abel Vesa <abel.vesa@linaro.org>
-
+On Fri, Apr 26, 2024 at 02:29:19PM -0700, Charlie Jenkins wrote:
+> Separate vendor extensions out into one struct per vendor
+> instead of adding vendor extensions onto riscv_isa_ext.
+>=20
+> Add a hidden config RISCV_ISA_VENDOR_EXT to conditionally include this
+> code.
+>=20
+> The xtheadvector vendor extension is added using these changes.
+>=20
+> Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
 > ---
-> Hello,
-> 
-> after the merge window leading to v6.10-rc1 (assuming Linus has >= 10 fingers
-> this cycle :-) I want to switch the prototype of struct
-> platform_driver::remove to return void. So please either merge this
-> patch together with 1496dd413b2e, or accept me sending this patch
-> together with the patch changing the function's prototype for inclusion
-> to Greg's driver-core tree.
+>  arch/riscv/Kconfig                               |  2 +
+>  arch/riscv/Kconfig.vendor                        | 19 ++++++
+>  arch/riscv/include/asm/cpufeature.h              | 18 ++++++
+>  arch/riscv/include/asm/vendor_extensions.h       | 26 ++++++++
+>  arch/riscv/include/asm/vendor_extensions/thead.h | 19 ++++++
+>  arch/riscv/kernel/Makefile                       |  2 +
+>  arch/riscv/kernel/cpufeature.c                   | 77 ++++++++++++++++++=
+------
+>  arch/riscv/kernel/vendor_extensions.c            | 18 ++++++
+>  arch/riscv/kernel/vendor_extensions/Makefile     |  3 +
+>  arch/riscv/kernel/vendor_extensions/thead.c      | 36 +++++++++++
 
-Sure, will apply it today.
+I see no modifications to cpu.c here, is it intentional that vendor
+stuff isn't gonna show up in /proc/cpuinfo?
 
-> 
-> Thanks
-> Uwe
-> 
->  drivers/clk/imx/clk-imx8mp-audiomix.c | 6 ++----
->  1 file changed, 2 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/clk/imx/clk-imx8mp-audiomix.c b/drivers/clk/imx/clk-imx8mp-audiomix.c
-> index 574a032309c1..be9df93b6adb 100644
-> --- a/drivers/clk/imx/clk-imx8mp-audiomix.c
-> +++ b/drivers/clk/imx/clk-imx8mp-audiomix.c
-> @@ -346,11 +346,9 @@ static int clk_imx8mp_audiomix_probe(struct platform_device *pdev)
->  	return ret;
->  }
->  
-> -static int clk_imx8mp_audiomix_remove(struct platform_device *pdev)
-> +static void clk_imx8mp_audiomix_remove(struct platform_device *pdev)
->  {
->  	pm_runtime_disable(&pdev->dev);
-> -
-> -	return 0;
->  }
->  
->  static int clk_imx8mp_audiomix_runtime_suspend(struct device *dev)
-> @@ -382,7 +380,7 @@ MODULE_DEVICE_TABLE(of, clk_imx8mp_audiomix_of_match);
->  
->  static struct platform_driver clk_imx8mp_audiomix_driver = {
->  	.probe	= clk_imx8mp_audiomix_probe,
-> -	.remove = clk_imx8mp_audiomix_remove,
-> +	.remove_new = clk_imx8mp_audiomix_remove,
->  	.driver = {
->  		.name = "imx8mp-audio-blk-ctrl",
->  		.of_match_table = clk_imx8mp_audiomix_of_match,
-> -- 
-> 2.43.0
-> 
+--xHWLnBdUePAybcBR
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZjIqNgAKCRB4tDGHoIJi
+0tFmAP9+0phfGvQLL4gYc5HwlKNHCFOZaYtAbKHBrc9NrXK7HQEAqAyjuARwXzQt
+BVcKUnRCSkMAcAMLHfb0vHWJR0NQ7QA=
+=qPWD
+-----END PGP SIGNATURE-----
+
+--xHWLnBdUePAybcBR--
 
