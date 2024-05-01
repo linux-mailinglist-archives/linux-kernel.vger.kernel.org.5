@@ -1,148 +1,277 @@
-Return-Path: <linux-kernel+bounces-165308-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-165307-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 89EF88B8B06
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 15:16:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 768F28B8AFA
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 15:16:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3E2341F23236
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 13:16:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 03D0B1F22B32
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 May 2024 13:16:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8817E12E1F7;
-	Wed,  1 May 2024 13:16:19 +0000 (UTC)
-Received: from us-smtp-delivery-44.mimecast.com (us-smtp-delivery-44.mimecast.com [207.211.30.44])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 68CB912DDBB;
+	Wed,  1 May 2024 13:15:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Pm4Q5Ph3"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DBE3312E1DD
-	for <linux-kernel@vger.kernel.org>; Wed,  1 May 2024 13:16:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=207.211.30.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F84912DD8E;
+	Wed,  1 May 2024 13:15:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714569379; cv=none; b=seOY6mnVDuEScfvoLphTcWbfdk08YbqSvRl9DO56HvuY3nXpjHy41yMK7IgTar0uD7sTPKntWajiVn9x24tK7JTRdE3qcK2+otRZPnfCxTQ++j/aRX/fbT45GvSpWAHDmXxgC8fRU8MRh3T6pJ5ovTfGTH0OCyyRhBCzYPx2DNw=
+	t=1714569358; cv=none; b=MpHkeDcEejLK5FMFij9UUKx7rw/t7HDj2a6KdZrT50LG4jck3RfJy79+rIzSoDkcAHmCZOCiiv2ocUbwj0++4ABL6jjCPY9jYFGbaL4p5m1rJf7R0slHhyMCoiC9SUauM7Xj8zSodcIfaXHzUv7qVIrtGVr/N+J4n4QcK7YfO38=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714569379; c=relaxed/simple;
-	bh=juN4Ny8Hm6qA0zsZ9K4+OvOZiB1X0k0WkV7pZSOQMuQ=;
+	s=arc-20240116; t=1714569358; c=relaxed/simple;
+	bh=SMu5/M35r01oC6tcgA4Z1ZBtXBnVinplRgHwFdbOwr0=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=X1EK9wBrrOhpKUjymhhZWo2XrGjzy//TMzNMo3d5IyARaMraAiHJJt6C65zafhUWIfsP1HF9OCcXCqTpFzFMpi7391/f3fDuqOU3+biWd5XkIvwv//W+Dtbd1eAYSvozWWOGvNoXSRpZaTIXJzUOwpVfUuEEC3jSXrk72+WIsUQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=queasysnail.net; spf=none smtp.mailfrom=queasysnail.net; arc=none smtp.client-ip=207.211.30.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=queasysnail.net
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=queasysnail.net
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-531-F3TRqiq5Oo6qB2-P5FKodQ-1; Wed, 01 May 2024 09:16:08 -0400
-X-MC-Unique: F3TRqiq5Oo6qB2-P5FKodQ-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 07D1C802E4D;
-	Wed,  1 May 2024 13:16:06 +0000 (UTC)
-Received: from hog (unknown [10.39.193.137])
-	by smtp.corp.redhat.com (Postfix) with ESMTPS id 0FC61C271A4;
-	Wed,  1 May 2024 13:15:55 +0000 (UTC)
-Date: Wed, 1 May 2024 15:15:54 +0200
-From: Sabrina Dubroca <sd@queasysnail.net>
-To: j.granados@samsung.com
-Cc: "David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Alexander Aring <alex.aring@gmail.com>,
-	Stefan Schmidt <stefan@datenfreihafen.org>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	David Ahern <dsahern@kernel.org>,
-	Steffen Klassert <steffen.klassert@secunet.com>,
-	Herbert Xu <herbert@gondor.apana.org.au>,
-	Matthieu Baerts <matttbe@kernel.org>,
-	Mat Martineau <martineau@kernel.org>,
-	Geliang Tang <geliang@kernel.org>,
-	Remi Denis-Courmont <courmisch@gmail.com>,
-	Allison Henderson <allison.henderson@oracle.com>,
-	David Howells <dhowells@redhat.com>,
-	Marc Dionne <marc.dionne@auristor.com>,
-	Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
-	Xin Long <lucien.xin@gmail.com>,
-	Wenjia Zhang <wenjia@linux.ibm.com>,
-	Jan Karcher <jaka@linux.ibm.com>,
-	"D. Wythe" <alibuda@linux.alibaba.com>,
-	Tony Lu <tonylu@linux.alibaba.com>,
-	Wen Gu <guwen@linux.alibaba.com>,
-	Trond Myklebust <trond.myklebust@hammerspace.com>,
-	Anna Schumaker <anna@kernel.org>,
-	Chuck Lever <chuck.lever@oracle.com>,
-	Jeff Layton <jlayton@kernel.org>, Neil Brown <neilb@suse.de>,
-	Olga Kornievskaia <kolga@netapp.com>, Dai Ngo <Dai.Ngo@oracle.com>,
-	Tom Talpey <tom@talpey.com>, Jon Maloy <jmaloy@redhat.com>,
-	Ying Xue <ying.xue@windriver.com>, Martin Schiller <ms@dev.tdt.de>,
-	Pablo Neira Ayuso <pablo@netfilter.org>,
-	Jozsef Kadlecsik <kadlec@netfilter.org>,
-	Florian Westphal <fw@strlen.de>, Roopa Prabhu <roopa@nvidia.com>,
-	Nikolay Aleksandrov <razor@blackwall.org>,
-	Simon Horman <horms@verge.net.au>, Julian Anastasov <ja@ssi.bg>,
-	Joerg Reuter <jreuter@yaina.de>,
-	Luis Chamberlain <mcgrof@kernel.org>,
-	Kees Cook <keescook@chromium.org>, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org, dccp@vger.kernel.org,
-	linux-wpan@vger.kernel.org, mptcp@lists.linux.dev,
-	linux-hams@vger.kernel.org, linux-rdma@vger.kernel.org,
-	rds-devel@oss.oracle.com, linux-afs@lists.infradead.org,
-	linux-sctp@vger.kernel.org, linux-s390@vger.kernel.org,
-	linux-nfs@vger.kernel.org, tipc-discussion@lists.sourceforge.net,
-	linux-x25@vger.kernel.org, netfilter-devel@vger.kernel.org,
-	coreteam@netfilter.org, bridge@lists.linux.dev,
-	lvs-devel@vger.kernel.org
-Subject: Re: [PATCH net-next v6 8/8] ax.25: x.25: Remove the now superfluous
- sentinel elements from ctl_table array
-Message-ID: <ZjJAikcdWzzaIr1s@hog>
-References: <20240501-jag-sysctl_remset_net-v6-0-370b702b6b4a@samsung.com>
- <20240501-jag-sysctl_remset_net-v6-8-370b702b6b4a@samsung.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=SMnPFyVmaufPGAVbZvBorXwR0PgHDwwKIk9+L5iAyeQJUk1WbbrzUEXkC0LmWi3GSfP8XKK4oTjSi5IAUEJqc5qxNfeWrPI214d67hQxRL5lyLvy2A+cDQU4ofqrEtdZbIhStuZnNoJj2jQmnpzb4fOhU2L+ixnFfqo74aKQnBA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Pm4Q5Ph3; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CB29CC113CC;
+	Wed,  1 May 2024 13:15:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714569358;
+	bh=SMu5/M35r01oC6tcgA4Z1ZBtXBnVinplRgHwFdbOwr0=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Pm4Q5Ph39GLGiVEE/QaDTi0gKuPAeN1O01XoJX9DrPoh2dcDynVlEYEFGEEAky2IJ
+	 +8IyRM5ala3q6kWdwMTZMZIxtkRDAHMA8p7etduck+xjB94Gxpl/vd6SPNWWAzjy7y
+	 +IVTDaPtcTR6A6cQlo7qghD5ImdJQIRcMfHH5exIXa49WToCQ0DRaoWpjke7rgmckT
+	 8F+tL1/aXnzlKttsx7LTYw6N5lzfFHGSmof+YEpD0hkn3pCS7etdkF3VBMXb8lOOdM
+	 lkmXKNZ9nuwa4qvP3uLt0MRt19ovJ4ZA5MYS5ca8rWDSap3x3ie62ODZgoWLbVDJEx
+	 IAwqlVdKFC+1Q==
+Date: Wed, 1 May 2024 08:15:56 -0500
+From: Rob Herring <robh@kernel.org>
+To: Tomasz Jeznach <tjeznach@rivosinc.com>
+Cc: Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+	Robin Murphy <robin.murphy@arm.com>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	Anup Patel <apatel@ventanamicro.com>,
+	Sunil V L <sunilvl@ventanamicro.com>,
+	Nick Kossifidis <mick@ics.forth.gr>,
+	Sebastien Boeuf <seb@rivosinc.com>,
+	Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org,
+	iommu@lists.linux.dev, linux-riscv@lists.infradead.org,
+	linux-kernel@vger.kernel.org, linux@rivosinc.com
+Subject: Re: [PATCH v3 1/7] dt-bindings: iommu: riscv: Add bindings for
+ RISC-V IOMMU
+Message-ID: <20240501131556.GA2931109-robh@kernel.org>
+References: <cover.1714494653.git.tjeznach@rivosinc.com>
+ <ef946892252b18f541986a461fc4d37957cc805e.1714494653.git.tjeznach@rivosinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240501-jag-sysctl_remset_net-v6-8-370b702b6b4a@samsung.com>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.8
+In-Reply-To: <ef946892252b18f541986a461fc4d37957cc805e.1714494653.git.tjeznach@rivosinc.com>
 
-2024-05-01, 11:29:32 +0200, Joel Granados via B4 Relay wrote:
-> From: Joel Granados <j.granados@samsung.com>
+On Tue, Apr 30, 2024 at 01:01:51PM -0700, Tomasz Jeznach wrote:
+> Add bindings for the RISC-V IOMMU device drivers.
 > 
-> This commit comes at the tail end of a greater effort to remove the
-> empty elements at the end of the ctl_table arrays (sentinels) which will
-> reduce the overall build time size of the kernel and run time memory
-> bloat by ~64 bytes per sentinel (further information Link :
-> https://lore.kernel.org/all/ZO5Yx5JFogGi%2FcBo@bombadil.infradead.org/)
+> Co-developed-by: Anup Patel <apatel@ventanamicro.com>
+> Signed-off-by: Anup Patel <apatel@ventanamicro.com>
+> Signed-off-by: Tomasz Jeznach <tjeznach@rivosinc.com>
+> ---
+>  .../bindings/iommu/riscv,iommu.yaml           | 150 ++++++++++++++++++
+>  MAINTAINERS                                   |   7 +
+>  2 files changed, 157 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/iommu/riscv,iommu.yaml
 > 
-> Avoid a buffer overflow when traversing the ctl_table by ensuring that
-> AX25_MAX_VALUES is the same as the size of ax25_param_table. This is
-> done with a BUILD_BUG_ON where ax25_param_table is defined and a
-> CONFIG_AX25_DAMA_SLAVE guard in the unnamed enum definition as well as
-> in the ax25_dev_device_up and ax25_ds_set_timer functions.
-                                ^^
-nit:                            not anymore ;)
-(but not worth a repost IMO)
+> diff --git a/Documentation/devicetree/bindings/iommu/riscv,iommu.yaml b/Documentation/devicetree/bindings/iommu/riscv,iommu.yaml
+> new file mode 100644
+> index 000000000000..16817525e157
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/iommu/riscv,iommu.yaml
+> @@ -0,0 +1,150 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/iommu/riscv,iommu.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: RISC-V IOMMU Architecture Implementation
+> +
+> +maintainers:
+> +  - Tomasz Jeznach <tjeznach@rivosinc.com>
+> +
+> +description: |
+> +  The RISC-V IOMMU provides memory address translation and isolation for
+> +  input and output devices, supporting per-device translation context,
+> +  shared process address spaces including the ATS and PRI components of
+> +  the PCIe specification, two stage address translation and MSI remapping.
+> +  It supports identical translation table format to the RISC-V address
+> +  translation tables with page level access and protection attributes.
+> +  Hardware uses in-memory command and fault reporting queues with wired
+> +  interrupt or MSI notifications.
+> +
+> +  Visit https://github.com/riscv-non-isa/riscv-iommu for more details.
+> +
+> +  For information on assigning RISC-V IOMMU to its peripheral devices,
+> +  see generic IOMMU bindings.
+> +
+> +properties:
+> +  # For PCIe IOMMU hardware compatible property should contain the vendor
+> +  # and device ID according to the PCI Bus Binding specification.
+> +  # Since PCI provides built-in identification methods, compatible is not
+> +  # actually required. For non-PCIe hardware implementations 'riscv,iommu'
+> +  # should be specified along with 'reg' property providing MMIO location.
+> +  compatible:
+> +    oneOf:
+> +      - items:
+> +          - enum:
+> +              - qemu,iommu
+
+'qemu,iommu' is too broad. Could be other QEMU implementations of an 
+IOMMU. So 'qemu,riscv-iommu'.
 
 
-> diff --git a/net/ax25/ax25_ds_timer.c b/net/ax25/ax25_ds_timer.c
-> index c4f8adbf8144..c50a58d9e368 100644
-> --- a/net/ax25/ax25_ds_timer.c
-> +++ b/net/ax25/ax25_ds_timer.c
-> @@ -55,6 +55,7 @@ void ax25_ds_set_timer(ax25_dev *ax25_dev)
->  	ax25_dev->dama.slave_timeout =
->  		msecs_to_jiffies(ax25_dev->values[AX25_VALUES_DS_TIMEOUT]) / 10;
->  	mod_timer(&ax25_dev->dama.slave_timer, jiffies + HZ);
-> +	return;
+> +          - const: riscv,iommu
+> +      - items:
+> +          - enum:
+> +              - pci1efd,edf1
+> +          - const: riscv,pci-iommu
+> +
+> +  reg:
+> +    maxItems: 1
+> +    description:
+> +      For non-PCI devices this represents base address and size of for the
+> +      IOMMU memory mapped registers interface.
+> +      For PCI IOMMU hardware implementation this should represent an address
+> +      of the IOMMU, as defined in the PCI Bus Binding reference. The reg
+> +      property is a five-cell address encoded as (phys.hi phys.mid phys.lo
+> +      size.hi size.lo), where phys.hi should contain the device's BDF as
+> +      0b00000000 bbbbbbbb dddddfff 00000000. The other cells should be zero.
 
-nit: return not needed here since we're already at the bottom of the
-function, but probably not worth a repost of the series.
+No need to describe what the PCI address looks like.
 
->  }
+> +
+> +  '#iommu-cells':
+> +    const: 1
+> +    description:
+> +      Has to be one. The single cell describes the requester id emitted
 
--- 
-Sabrina
+Drop 'Has to be one'. You already said that with the schema.
 
+> +      by a master to the IOMMU.
+> +
+> +  interrupts:
+> +    minItems: 1
+> +    maxItems: 4
+> +    description:
+> +      Wired interrupt vectors available for RISC-V IOMMU to notify the
+> +      RISC-V HARTS. The cause to interrupt vector is software defined
+> +      using IVEC IOMMU register.
+> +
+> +  msi-parent: true
+> +
+> +  power-domains:
+> +    maxItems: 1
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - '#iommu-cells'
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |+
+> +    /* Example 1 (IOMMU device with wired interrupts) */
+> +    #include <dt-bindings/interrupt-controller/irq.h>
+> +
+> +    iommu1: iommu@1bccd000 {
+> +        compatible = "qemu,iommu", "riscv,iommu";
+> +        reg = <0x1bccd000 0x1000>;
+> +        interrupt-parent = <&aplic_smode>;
+> +        interrupts = <32 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <33 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <34 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <35 IRQ_TYPE_LEVEL_HIGH>;
+> +        #iommu-cells = <1>;
+> +    };
+> +
+> +    /* Device with two IOMMU device IDs, 0 and 7 */
+> +    master1 {
+> +        iommus = <&iommu1 0>, <&iommu1 7>;
+> +    };
+> +
+> +  - |+
+> +    /* Example 2 (IOMMU device with shared wired interrupt) */
+> +    #include <dt-bindings/interrupt-controller/irq.h>
+> +
+> +    iommu2: iommu@1bccd000 {
+> +        compatible = "qemu,iommu", "riscv,iommu";
+> +        reg = <0x1bccd000 0x1000>;
+> +        interrupt-parent = <&aplic_smode>;
+> +        interrupts = <32 IRQ_TYPE_LEVEL_HIGH>;
+> +        #iommu-cells = <1>;
+> +    };
+> +
+> +  - |+
+> +    /* Example 3 (IOMMU device with MSIs) */
+> +    iommu3: iommu@1bcdd000 {
+> +        compatible = "qemu,iommu", "riscv,iommu";
+> +        reg = <0x1bccd000 0x1000>;
+> +        msi-parent = <&imsics_smode>;
+> +        #iommu-cells = <1>;
+> +    };
+> +
+> +  - |+
+> +    /* Example 4 (IOMMU PCIe device with MSIs) */
+> +    bus {
+> +        #address-cells = <2>;
+> +        #size-cells = <2>;
+> +
+> +        pcie@30000000 {
+> +            device_type = "pci";
+> +            #address-cells = <3>;
+> +            #size-cells = <2>;
+> +            reg = <0x0 0x30000000  0x0 0x1000000>;
+> +            ranges = <0x02000000 0x0 0x41000000  0x0 0x41000000  0x0 0x0f000000>;
+> +
+> +            /*
+> +             * The IOMMU manages all functions in this PCI domain except
+> +             * itself. Omit BDF 00:01.0.
+> +             */
+> +            iommu-map = <0x0 &iommu0 0x0 0x8
+> +                         0x9 &iommu0 0x9 0xfff7>;
+
+Bracket each entry.
+
+> +
+> +            /* The IOMMU programming interface uses slot 00:01.0 */
+> +            iommu0: iommu@1,0 {
+> +               compatible = "pci1efd,edf1", "riscv,pci-iommu";
+> +               reg = <0x800 0 0 0 0>;
+> +               #iommu-cells = <1>;
+> +            };
+> +        };
+> +    };
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index f6dc90559341..7fcf7c27ef6b 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -18958,6 +18958,13 @@ F:	arch/riscv/
+>  N:	riscv
+>  K:	riscv
+>  
+> +RISC-V IOMMU
+> +M:	Tomasz Jeznach <tjeznach@rivosinc.com>
+> +L:	iommu@lists.linux.dev
+> +L:	linux-riscv@lists.infradead.org
+> +S:	Maintained
+> +F:	Documentation/devicetree/bindings/iommu/riscv,iommu.yaml
+> +
+>  RISC-V MICROCHIP FPGA SUPPORT
+>  M:	Conor Dooley <conor.dooley@microchip.com>
+>  M:	Daire McNamara <daire.mcnamara@microchip.com>
+> -- 
+> 2.34.1
+> 
 
