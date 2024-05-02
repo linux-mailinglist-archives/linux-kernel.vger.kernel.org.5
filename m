@@ -1,62 +1,62 @@
-Return-Path: <linux-kernel+bounces-166358-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-166359-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B37878B9989
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 12:59:55 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id DF3708B998A
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 13:00:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E46561C213D2
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 10:59:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A153F2891E9
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 11:00:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 510EE62A02;
-	Thu,  2 May 2024 10:59:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 71568657AE;
+	Thu,  2 May 2024 10:59:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="nFgW7b4H"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Uy930vu4"
 Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.14])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 216085F84F;
-	Thu,  2 May 2024 10:59:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 086F9629E6;
+	Thu,  2 May 2024 10:59:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.14
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714647564; cv=none; b=ZF48tsexEt4jKrETL8fPnv1VmEF/qdij8sVO6xx+jpWhR5/hQtR+0IuIVw5DVwZaTWOAHYfz8504t2gIcb6uLdP1Kyz802RJvZhPlkoHCTkdLlrAdLBxyi/m2xwHz517RuSODuNjHeKKeZZh8sY4ktcHLxe7SNFh8Z8hId+7VjM=
+	t=1714647565; cv=none; b=kdng8KruhQwY3Zro1YT6tqNO04o5bbHJBDKkoxmA1242StgWV/9PifEBGkjVkBKBYqoifJ+opehAAOZdSSgvaROAsMYF8sxaD5xzgtxPpI4PMNRc04kxxHISrqdQmla5tByJ8a0CqGddge5oPeI/N4YmUvyLkSLBZTvyTawN5b0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714647564; c=relaxed/simple;
-	bh=NNFviughzQ3a6Z7/wNHw2sov/UpBM8nlPRe20s5qNWo=;
+	s=arc-20240116; t=1714647565; c=relaxed/simple;
+	bh=cBsYGDZfunyljiCBijlOcXIYd33xamewtNnJeDe0SZU=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=k23aFsc98p7r34wOlHD4n1l82L2+KC9UQSjsmIXiRkNyS07kJbGDB+k18jgnnTvqf40xXNOkOxedaEAyrIifMMEPoOejkbRYnYq5hhgf40JNiGLEUJVJ/NUsTO+Vq+Jf5A5hKyz5D+HYEmo1A/YzBAQ8eBbYsQ5+azXQQCGyL8Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=nFgW7b4H; arc=none smtp.client-ip=198.175.65.14
+	 MIME-Version; b=Umwc7kBlCL1HL5tCRuMQwkqWB2+YSlGow61BPR2YhdZQkqU7klCsXfPKQiz+ZDUuTVksrnWmECW505MZKbkKjE+l/BAe+o+6hEwfx3RXv9PnwVaoSfOiVwLwfQ+/YUxJEfOgkaWwwdq27N86LilXzdlJwYpSSuQxq/gm5+Kf/OA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Uy930vu4; arc=none smtp.client-ip=198.175.65.14
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1714647561; x=1746183561;
+  t=1714647565; x=1746183565;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=NNFviughzQ3a6Z7/wNHw2sov/UpBM8nlPRe20s5qNWo=;
-  b=nFgW7b4HLSkiR/FMJv+AvmDRmv24qfQ/W4c4Lxf0N4jcWuXBLLWjrSiF
-   vkklqKdMXgEzHnVrw8/a/3Yhdm0jNbFhEn9PYknwLoNcEsujYhKFRWun+
-   EYgP9EX+qCwpBu/AW0phEglTlE/IP5kg7DptHpk18g8Ih/qwSe/ju1G4A
-   97Ua6F4zWnC+bB3HcUhmzVo/DZ0LvdsYQjZw8GFhU91nuXOVWB6ZHjSI7
-   D7wEDYKz6hp7tL+x4QCiUpibBqMos1ZeDxX5/ow/KGPqBO69qlGwxCMe3
-   D22SoN22KXcyrEAjgjpUpnEZhCkvjgb7R6wLCGSDsAJcUGMwVCDvbOmE8
-   A==;
-X-CSE-ConnectionGUID: r7gycx+4Que6Ba3+aFLCkQ==
-X-CSE-MsgGUID: UvtPojLfQDG0/PotcX+amw==
-X-IronPort-AV: E=McAfee;i="6600,9927,11061"; a="14228574"
+  bh=cBsYGDZfunyljiCBijlOcXIYd33xamewtNnJeDe0SZU=;
+  b=Uy930vu4j49g2TGcAQO3HkWX1OOAef/f/nO+9TL9QZLUKi4n8zb8bCfC
+   dleDHcHMNXaxelQhfWcDsPSlB3g2VOlnODJ+7XVpypb6qfJocKBYlBenp
+   jkyf4u9laB+3+gxapBobmNcqAswQuW30vGTFfZ2ms4o68yThYgHuakZD2
+   QQkIbKeaH8pzfYscayNuT3TKt1qC5l7jLQUXW+ug1pSBrqyEpOF+9n+iV
+   RqkSgbRyjo5g6cLHUpB55nS6zryXPRSS8OssMVJb9x72L86Us63LqeMH9
+   OFsedHHSLzBJEG3czarrMgNBWDijVTsNFY447dL9tkuhba5Ab1n/KuMpA
+   w==;
+X-CSE-ConnectionGUID: NpG7RelFQ0WTuQXl8860JA==
+X-CSE-MsgGUID: sQCExj++Q0aDsZaabFh6Uw==
+X-IronPort-AV: E=McAfee;i="6600,9927,11061"; a="14228588"
 X-IronPort-AV: E=Sophos;i="6.07,247,1708416000"; 
-   d="scan'208";a="14228574"
+   d="scan'208";a="14228588"
 Received: from fmviesa002.fm.intel.com ([10.60.135.142])
-  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 May 2024 03:59:20 -0700
-X-CSE-ConnectionGUID: vyxYADehRpu1KKYdXVKmEw==
-X-CSE-MsgGUID: luf//AFfTES2FIa7/yZflQ==
+  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 May 2024 03:59:24 -0700
+X-CSE-ConnectionGUID: kkLCmlEVS+Gb7y5oNAsysg==
+X-CSE-MsgGUID: fgSBcJzNTEGXIvUdGORtsQ==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.07,247,1708416000"; 
-   d="scan'208";a="50278876"
+   d="scan'208";a="50278888"
 Received: from ahunter6-mobl1.ger.corp.intel.com (HELO ahunter-VirtualBox.home\044ger.corp.intel.com) ([10.251.208.210])
-  by fmviesa002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 May 2024 03:59:16 -0700
+  by fmviesa002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 May 2024 03:59:20 -0700
 From: Adrian Hunter <adrian.hunter@intel.com>
 To: linux-kernel@vger.kernel.org
 Cc: "Chang S. Bae" <chang.seok.bae@intel.com>,
@@ -73,9 +73,9 @@ Cc: "Chang S. Bae" <chang.seok.bae@intel.com>,
 	Namhyung Kim <namhyung@kernel.org>,
 	Ian Rogers <irogers@google.com>,
 	linux-perf-users@vger.kernel.org
-Subject: [PATCH 02/10] x86/insn: Fix PUSH instruction in x86 instruction decoder opcode map
-Date: Thu,  2 May 2024 13:58:45 +0300
-Message-Id: <20240502105853.5338-3-adrian.hunter@intel.com>
+Subject: [PATCH 03/10] x86/insn: Add VEX versions of VPDPBUSD, VPDPBUSDS, VPDPWSSD and VPDPWSSDS
+Date: Thu,  2 May 2024 13:58:46 +0300
+Message-Id: <20240502105853.5338-4-adrian.hunter@intel.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240502105853.5338-1-adrian.hunter@intel.com>
 References: <20240502105853.5338-1-adrian.hunter@intel.com>
@@ -93,84 +93,60 @@ instructions. It is also used by perf uprobes (user space probes) and by
 perf tools Intel Processor Trace decoding. Consequently, it needs to
 support instructions executed by user space also.
 
-Opcode 0x68 PUSH instruction is currently defined as 64-bit operand size
-only i.e. (d64). That was based on Intel SDM Opcode Map. However that is
-contradicted by the Instruction Set Reference section for PUSH in the
-same manual.
+Intel Architecture Instruction Set Extensions and Future Features manual
+number 319433-044 of May 2021, documented VEX versions of instructions
+VPDPBUSD, VPDPBUSDS, VPDPWSSD and VPDPWSSDS, but the opcode map has them
+listed as EVEX only.
 
-Remove 64-bit operand size only annotation from opcode 0x68 PUSH
-instruction.
+Remove EVEX-only (ev) annotation from instructions VPDPBUSD, VPDPBUSDS,
+VPDPWSSD and VPDPWSSDS, which allows them to be decoded with either a VEX
+or EVEX prefix.
 
-Example:
-
-  $ cat pushw.s
-  .global  _start
-  .text
-  _start:
-          pushw   $0x1234
-          mov     $0x1,%eax   # system call number (sys_exit)
-          int     $0x80
-  $ as -o pushw.o pushw.s
-  $ ld -s -o pushw pushw.o
-  $ objdump -d pushw | tail -4
-  0000000000401000 <.text>:
-    401000:       66 68 34 12             pushw  $0x1234
-    401004:       b8 01 00 00 00          mov    $0x1,%eax
-    401009:       cd 80                   int    $0x80
-  $ perf record -e intel_pt//u ./pushw
-  [ perf record: Woken up 1 times to write data ]
-  [ perf record: Captured and wrote 0.014 MB perf.data ]
-
- Before:
-
-  $ perf script --insn-trace=disasm
-  Warning:
-  1 instruction trace errors
-           pushw   10349 [000] 10586.869237014:            401000 [unknown] (/home/ahunter/git/misc/rtit-tests/pushw)           pushw $0x1234
-           pushw   10349 [000] 10586.869237014:            401006 [unknown] (/home/ahunter/git/misc/rtit-tests/pushw)           addb %al, (%rax)
-           pushw   10349 [000] 10586.869237014:            401008 [unknown] (/home/ahunter/git/misc/rtit-tests/pushw)           addb %cl, %ch
-           pushw   10349 [000] 10586.869237014:            40100a [unknown] (/home/ahunter/git/misc/rtit-tests/pushw)           addb $0x2e, (%rax)
-   instruction trace error type 1 time 10586.869237224 cpu 0 pid 10349 tid 10349 ip 0x40100d code 6: Trace doesn't match instruction
-
- After:
-
-  $ perf script --insn-trace=disasm
-             pushw   10349 [000] 10586.869237014:            401000 [unknown] (./pushw)           pushw $0x1234
-             pushw   10349 [000] 10586.869237014:            401004 [unknown] (./pushw)           movl $1, %eax
-
-Fixes: eb13296cfaf6 ("x86: Instruction decoder API")
+Fixes: 0153d98f2dd6 ("x86/insn: Add misc instructions to x86 instruction decoder")
 Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
 ---
- arch/x86/lib/x86-opcode-map.txt       | 2 +-
- tools/arch/x86/lib/x86-opcode-map.txt | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ arch/x86/lib/x86-opcode-map.txt       | 8 ++++----
+ tools/arch/x86/lib/x86-opcode-map.txt | 8 ++++----
+ 2 files changed, 8 insertions(+), 8 deletions(-)
 
 diff --git a/arch/x86/lib/x86-opcode-map.txt b/arch/x86/lib/x86-opcode-map.txt
-index c94988d5130d..4ea2e6adb477 100644
+index 4ea2e6adb477..24941b9d4e06 100644
 --- a/arch/x86/lib/x86-opcode-map.txt
 +++ b/arch/x86/lib/x86-opcode-map.txt
-@@ -148,7 +148,7 @@ AVXcode:
- 65: SEG=GS (Prefix)
- 66: Operand-Size (Prefix)
- 67: Address-Size (Prefix)
--68: PUSH Iz (d64)
-+68: PUSH Iz
- 69: IMUL Gv,Ev,Iz
- 6a: PUSH Ib (d64)
- 6b: IMUL Gv,Ev,Ib
+@@ -698,10 +698,10 @@ AVXcode: 2
+ 4d: vrcp14ss/d Vsd,Hpd,Wsd (66),(ev)
+ 4e: vrsqrt14ps/d Vpd,Wpd (66),(ev)
+ 4f: vrsqrt14ss/d Vsd,Hsd,Wsd (66),(ev)
+-50: vpdpbusd Vx,Hx,Wx (66),(ev)
+-51: vpdpbusds Vx,Hx,Wx (66),(ev)
+-52: vdpbf16ps Vx,Hx,Wx (F3),(ev) | vpdpwssd Vx,Hx,Wx (66),(ev) | vp4dpwssd Vdqq,Hdqq,Wdq (F2),(ev)
+-53: vpdpwssds Vx,Hx,Wx (66),(ev) | vp4dpwssds Vdqq,Hdqq,Wdq (F2),(ev)
++50: vpdpbusd Vx,Hx,Wx (66)
++51: vpdpbusds Vx,Hx,Wx (66)
++52: vdpbf16ps Vx,Hx,Wx (F3),(ev) | vpdpwssd Vx,Hx,Wx (66) | vp4dpwssd Vdqq,Hdqq,Wdq (F2),(ev)
++53: vpdpwssds Vx,Hx,Wx (66) | vp4dpwssds Vdqq,Hdqq,Wdq (F2),(ev)
+ 54: vpopcntb/w Vx,Wx (66),(ev)
+ 55: vpopcntd/q Vx,Wx (66),(ev)
+ 58: vpbroadcastd Vx,Wx (66),(v)
 diff --git a/tools/arch/x86/lib/x86-opcode-map.txt b/tools/arch/x86/lib/x86-opcode-map.txt
-index c94988d5130d..4ea2e6adb477 100644
+index 4ea2e6adb477..24941b9d4e06 100644
 --- a/tools/arch/x86/lib/x86-opcode-map.txt
 +++ b/tools/arch/x86/lib/x86-opcode-map.txt
-@@ -148,7 +148,7 @@ AVXcode:
- 65: SEG=GS (Prefix)
- 66: Operand-Size (Prefix)
- 67: Address-Size (Prefix)
--68: PUSH Iz (d64)
-+68: PUSH Iz
- 69: IMUL Gv,Ev,Iz
- 6a: PUSH Ib (d64)
- 6b: IMUL Gv,Ev,Ib
+@@ -698,10 +698,10 @@ AVXcode: 2
+ 4d: vrcp14ss/d Vsd,Hpd,Wsd (66),(ev)
+ 4e: vrsqrt14ps/d Vpd,Wpd (66),(ev)
+ 4f: vrsqrt14ss/d Vsd,Hsd,Wsd (66),(ev)
+-50: vpdpbusd Vx,Hx,Wx (66),(ev)
+-51: vpdpbusds Vx,Hx,Wx (66),(ev)
+-52: vdpbf16ps Vx,Hx,Wx (F3),(ev) | vpdpwssd Vx,Hx,Wx (66),(ev) | vp4dpwssd Vdqq,Hdqq,Wdq (F2),(ev)
+-53: vpdpwssds Vx,Hx,Wx (66),(ev) | vp4dpwssds Vdqq,Hdqq,Wdq (F2),(ev)
++50: vpdpbusd Vx,Hx,Wx (66)
++51: vpdpbusds Vx,Hx,Wx (66)
++52: vdpbf16ps Vx,Hx,Wx (F3),(ev) | vpdpwssd Vx,Hx,Wx (66) | vp4dpwssd Vdqq,Hdqq,Wdq (F2),(ev)
++53: vpdpwssds Vx,Hx,Wx (66) | vp4dpwssds Vdqq,Hdqq,Wdq (F2),(ev)
+ 54: vpopcntb/w Vx,Wx (66),(ev)
+ 55: vpopcntd/q Vx,Wx (66),(ev)
+ 58: vpbroadcastd Vx,Wx (66),(v)
 -- 
 2.34.1
 
