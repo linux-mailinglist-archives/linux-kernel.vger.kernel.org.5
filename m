@@ -1,119 +1,200 @@
-Return-Path: <linux-kernel+bounces-166894-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-166895-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id B0A4D8BA170
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 22:13:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 027948BA174
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 22:13:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 089CEB22F18
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 20:13:28 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 17C81B23154
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 20:13:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 68AE8181308;
-	Thu,  2 May 2024 20:13:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE45D181BB3;
+	Thu,  2 May 2024 20:13:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b="HH7Akq59"
-Received: from smtp.smtpout.orange.fr (smtp-17.smtpout.orange.fr [80.12.242.17])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BYA8wDFB"
+Received: from mail-lj1-f178.google.com (mail-lj1-f178.google.com [209.85.208.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9AC41158845;
-	Thu,  2 May 2024 20:13:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.12.242.17
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 793231802C4;
+	Thu,  2 May 2024 20:13:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714680797; cv=none; b=BWrvYxKZ8Z/ah2SQ2Mrpr+V+1THyiUEUzX1ZBJfiV2+iswfbs42kwONckQNlHEQkEBUUzWSKZ5Kh6qHWqC/qQPeF2rIirL11QrtLv9XPFkdnhjbeRtggAIWS+57tlbBEApJsxWwq/1flaba9YtrU+9jYWEXk350Ey8ZmtxULDwM=
+	t=1714680799; cv=none; b=If2RI4y2im+E8gBd1GveRyqdBcev2QjjLc1LqNWxwytGANXKXcVwu21PexrrL7ZhoCFU88cqgzCW7Ll39PCG6e6bOfjzDuf8Up9omJbWdsb0PqAHmdgxVq9MaKRrMOGkRAfgohIdGcTHBwa9fV5WgGFUKHVA2giJ9GX0hR0sxZw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714680797; c=relaxed/simple;
-	bh=qFIP7k9Gs4vwTcVje7q6elE+MmAusYXcHMvSEBBntAU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=CuOQLWBAyGfkSHgsQDhE32oTK3a86ffyiJ8Pugh/zhtX77Lc4dneNFOmfcuAdrxoTc11AHvMU/h58qWPYXecEuWlWiRLt9C334t1u38xg7jvJ42IBSbxO2BCaZrDncpdluV9X6Qirfjxr70zeMQjY0BPeU5vmeiypO3eqwwpiqo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wanadoo.fr; spf=pass smtp.mailfrom=wanadoo.fr; dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b=HH7Akq59; arc=none smtp.client-ip=80.12.242.17
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wanadoo.fr
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wanadoo.fr
-Received: from [192.168.1.37] ([86.243.17.157])
-	by smtp.orange.fr with ESMTPA
-	id 2cngsZkixUMqY2cngsWQgT; Thu, 02 May 2024 22:13:06 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
-	s=t20230301; t=1714680786;
-	bh=4hGjswma74ozpI6l2DVvyyn31CrL8ZkyXTaEf2lOVKU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:From;
-	b=HH7Akq59Ise5EXDVdE64IqVsm/TLFHUnEWfNQuWaAiDnQobOhuhdZJe705bfi08qb
-	 IHUW6uaodfGEeDngh+D1goA7Kzzdknjt9MQ0G5RMyV6ergnVVDM4FnxuDhXbY4bBUL
-	 4OrsqJacDu67Gn2+ijqPM42G9H3LMC3YN64cPEA3XrL7g+Tn2Gkmfn/9UZ+1M5kjd6
-	 lc52oGB7Pv8/CFDnV4c8vZ+7GpC8dnx6kTVMg+iD4sVkkp/IYVD+ywNT+ZA9o/4rd1
-	 sOW7PYrOpivBJZuPEaGjqqjONA6q2m1auX7WP+0+c3wNiUXbMOqtWr+pgfeA4kqCTl
-	 aLweBxWQddaAg==
-X-ME-Helo: [192.168.1.37]
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Thu, 02 May 2024 22:13:06 +0200
-X-ME-IP: 86.243.17.157
-Message-ID: <1f42371c-2fc9-46e5-b27b-3167e026e772@wanadoo.fr>
-Date: Thu, 2 May 2024 22:13:04 +0200
+	s=arc-20240116; t=1714680799; c=relaxed/simple;
+	bh=jk87aWQc77TF92KtV0+wN3JD3XrihNgxj8GvIBdQSv8=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=hULknYto/TdLmSEMmSj6qZHt3mxy3z2437i2f/kcLInWLjr/FLQEQ6UAcPy1AHTIpD6NlPf/KBpTF33Odct88Au4jEDN7+psg0N+nlp0awd4ZgZ2DgFz3Roex45H9o4BUwrUhgDW5EzYo/JGc/HhPR+yaSP/B00M/ToMvJRcDN8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BYA8wDFB; arc=none smtp.client-ip=209.85.208.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f178.google.com with SMTP id 38308e7fff4ca-2d8b2389e73so100995631fa.3;
+        Thu, 02 May 2024 13:13:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1714680795; x=1715285595; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=A/VFRhG6UVmzgaQgZ92iFW2gF72/w57usEzS+XlOtLM=;
+        b=BYA8wDFByjZGdP/bBWc5vIMKfRxNpUKqFRAuYwdfN6vrCPAhCmx3q4qX7AMTdeuIs9
+         ne/oq5lUFXLsHZQ0BWoV8xVXYebRIaMPsQir6jKalZHjGLTlVNOlu3sg2rce/9rfEN4x
+         AHCCIss0w5z8oFditayaTAU4tVMhn648GFZAYiFt0LdKV98qLwLVoXKc9mDgweF4CtpR
+         dIIYKdt1WaPsZzaq20aR8sSPs9dsOPfTwoiIGF3l5JcXuAoaIEvPvLM1Npno3+D3DPOj
+         4XCt0jOaqXXQsZZumJSk9hJDosm2l8leY2GDrJdPCBTTFNByT+pvc31aCleSS/SdOkiY
+         TEYw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714680795; x=1715285595;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=A/VFRhG6UVmzgaQgZ92iFW2gF72/w57usEzS+XlOtLM=;
+        b=Xx96iigaxcRkFMtyeYxwq3hnrXJsZHi4I6eC9moLH/b1FKA0fF4IcQv7rpalh0fLRi
+         XRyMs4v5QjozUGKow1bTeWQ+ukt1xI194AH9+ec+Md+MJ4pOriEAeLL7CzpQoD9bjnIH
+         21ia8qa+/1l86rclmyz0ggwOmGfYRtas7d72l6bPvaCWfDzLxzdh5pEHxMloRmjTUJrP
+         4O5aKVS9+/Mu0O8kIM44I4rIEXM0GHOILD26NxrExUd/eBX/pVnr7HsnByIe8rpy5Yqn
+         Y2NjtbSQAaI2MvhPfSWJKHlLYpt/VLI9+Ro2RmdhdltkLKZoSJuLOUol+eN7nel2O3T+
+         Grfw==
+X-Forwarded-Encrypted: i=1; AJvYcCVmRCS9u4U800QaLcWY3i4IqbWijkd+Ho/F9RPB9CWyeKT/cLnM3lBorNxHezpVKBZXJwMwa+I27Yj7Mb5J2D88s5umVpV4BkGnq7tdC2Q7PtKHHahfV4ywCp3HpTyS3cnURp5ggGymYXUgaYwACIpqIKgb5g/jmAkWtM8+J+slMFRNnrVHa1FHP3ZsIH1G+aXogxHc/axVF2hXz3ZVOs8diDP28cdrsNWWW+ZsJKegO24++72b40Byx+Ii
+X-Gm-Message-State: AOJu0YyIvaEeZqzHwlB5Gw58KlqT4+aw9BYddOWa2TMfnpbFXdewGDJ1
+	WWx9kakVJcDzQGOjrnyQjzH9b+TwJ84AR++bldl0547UyoKcUD+a
+X-Google-Smtp-Source: AGHT+IFGfNaIMa/U0YcNFPZC/U92e0WGxqwV9yD85i1pkJ8ivQCSt+etW0CCzqk9pKTDT95SYuPUDQ==
+X-Received: by 2002:a2e:b601:0:b0:2de:7cc5:7a27 with SMTP id r1-20020a2eb601000000b002de7cc57a27mr490128ljn.5.1714680795256;
+        Thu, 02 May 2024 13:13:15 -0700 (PDT)
+Received: from krava ([83.240.62.36])
+        by smtp.gmail.com with ESMTPSA id j5-20020aa7c0c5000000b005723bcad44bsm851328edp.41.2024.05.02.13.13.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 02 May 2024 13:13:14 -0700 (PDT)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Thu, 2 May 2024 22:13:12 +0200
+To: Alejandro Colomar <alx@kernel.org>
+Cc: Steven Rostedt <rostedt@goodmis.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Oleg Nesterov <oleg@redhat.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>, linux-kernel@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org, linux-api@vger.kernel.org,
+	linux-man@vger.kernel.org, x86@kernel.org, bpf@vger.kernel.org,
+	Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	"Borislav Petkov (AMD)" <bp@alien8.de>,
+	Ingo Molnar <mingo@redhat.com>, Andy Lutomirski <luto@kernel.org>
+Subject: Re: [PATCHv4 7/7] man2: Add uretprobe syscall page
+Message-ID: <ZjPz2PWrW2BjXxlw@krava>
+References: <20240502122313.1579719-1-jolsa@kernel.org>
+ <20240502122313.1579719-8-jolsa@kernel.org>
+ <ZjOYf_g2qRrhDoQD@debian>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 2/3] leds: sy7802: Add support for Silergy SY7802 flash
- LED controller
-To: git@apitzsch.eu, Pavel Machek <pavel@ucw.cz>, Lee Jones <lee@kernel.org>,
- Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Kees Cook <keescook@chromium.org>,
- "Gustavo A. R. Silva" <gustavoars@kernel.org>,
- Bjorn Andersson <andersson@kernel.org>,
- Konrad Dybcio <konrad.dybcio@linaro.org>
-Cc: linux-leds@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org,
- linux-arm-msm@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht,
- phone-devel@vger.kernel.org
-References: <20240401-sy7802-v2-0-1138190a7448@apitzsch.eu>
- <20240401-sy7802-v2-2-1138190a7448@apitzsch.eu>
-Content-Language: en-MW
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-In-Reply-To: <20240401-sy7802-v2-2-1138190a7448@apitzsch.eu>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <ZjOYf_g2qRrhDoQD@debian>
 
-Le 01/04/2024 à 23:23, André Apitzsch via B4 Relay a écrit :
-> From: André Apitzsch <git@apitzsch.eu>
+On Thu, May 02, 2024 at 03:43:27PM +0200, Alejandro Colomar wrote:
+> Hi Jiri,
 > 
-> Add support for SY7802 flash LED controller. It can support up to 1.8A
-> flash current.
+> On Thu, May 02, 2024 at 02:23:13PM +0200, Jiri Olsa wrote:
+> > Adding man page for new uretprobe syscall.
+> > 
+> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> > ---
+> >  man2/uretprobe.2 | 45 +++++++++++++++++++++++++++++++++++++++++++++
+> >  1 file changed, 45 insertions(+)
+> >  create mode 100644 man2/uretprobe.2
+> > 
+> > diff --git a/man2/uretprobe.2 b/man2/uretprobe.2
+> > new file mode 100644
+> > index 000000000000..08fe6a670430
+> > --- /dev/null
+> > +++ b/man2/uretprobe.2
+> > @@ -0,0 +1,45 @@
+> > +.\" Copyright (C) 2024, Jiri Olsa <jolsa@kernel.org>
+> > +.\"
+> > +.\" SPDX-License-Identifier: Linux-man-pages-copyleft
+> > +.\"
+> > +.TH uretprobe 2 (date) "Linux man-pages (unreleased)"
+> > +.SH NAME
+> > +uretprobe \- execute pending return uprobes
+> > +.SH SYNOPSIS
+> > +.nf
+> > +.B int uretprobe(void)
+> > +.fi
+> > +.SH DESCRIPTION
+> > +Kernel is using
+> > +.BR uretprobe()
+> > +syscall to trigger uprobe return probe consumers instead of using
+> > +standard breakpoint instruction.
+> > +
 > 
-> Signed-off-by: André Apitzsch <git@apitzsch.eu>
-> ---
->   drivers/leds/flash/Kconfig       |  11 +
->   drivers/leds/flash/Makefile      |   1 +
->   drivers/leds/flash/leds-sy7802.c | 532 +++++++++++++++++++++++++++++++++++++++
->   3 files changed, 544 insertions(+)
+> Please use .P instead of a blank.  See man-pages(7):
+> 
+>    Formatting conventions (general)
+>      Paragraphs should be separated by suitable markers (usually either
+>      .P or .IP).  Do not separate paragraphs using blank lines, as this
+>      results in poor rendering in some output formats  (such  as  Post‐
+>      Script and PDF).
 
-..
+ok, will do
 
-> +static int sy7802_led_register(struct device *dev, struct sy7802_led *led,
-> +			       struct device_node *np)
-> +{
-> +	struct led_init_data init_data = {};
-> +	int ret;
-> +
-> +	init_data.fwnode = of_fwnode_handle(np);
-> +
-> +	ret = devm_led_classdev_flash_register_ext(dev, &led->flash, &init_data);
-> +	if (ret) {
-> +		dev_err(dev, "Couldn't register flash %d\n", led->led_no);
-> +		return ret;
-> +	}
-> +
-> +	return ret;
+> 
+> > +The uretprobe syscall is not supposed to be called directly by user, it's allowed
+> 
+> s/by user/by the user/
 
-Hi,
+ok
 
-Nitpick: return 0;
+> 
+> > +to be invoked only through user space trampoline provided by kernel.
+> 
+> s/user space/user-space/
 
-CJ
+ok
 
-> +}
+> 
+> Missing a few 'the' too, here and in the rest of the page.
 
+ok, will check
+
+> 
+> > +When called from outside of this trampoline, the calling process will receive
+> > +.BR SIGILL .
+> > +
+> > +.SH RETURN VALUE
+> > +.BR uretprobe()
+> 
+> You're missing a space here:
+> 
+> .BR uretprobe ()
+
+ok
+
+> 
+> > +return value is specific for given architecture.
+> > +
+> > +.SH VERSIONS
+> > +This syscall is not specified in POSIX,
+> > +and details of its behavior vary across systems.
+> > +.SH STANDARDS
+> > +None.
+> 
+> You could add a HISTORY section.
+
+ok, IIUC for this syscall it should contain just kernel version where
+it got merged, right?
+
+> 
+> Have a lovely day!
+
+thanks for review,
+jirka
 
