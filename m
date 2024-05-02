@@ -1,58 +1,58 @@
-Return-Path: <linux-kernel+bounces-167044-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-167043-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C5D448BA3CE
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id ECFFB8BA3CF
 	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 01:11:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 79AFD2841A8
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 23:11:10 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 12218B213B6
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 23:11:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0498746BA6;
-	Thu,  2 May 2024 23:10:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5C1146B80;
+	Thu,  2 May 2024 23:10:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="x9RqKEks"
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2086.outbound.protection.outlook.com [40.107.223.86])
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="AOLwvAbi"
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2063.outbound.protection.outlook.com [40.107.244.63])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06BFE41A80;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD9F14122C;
 	Thu,  2 May 2024 23:10:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.223.86
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.244.63
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714691443; cv=fail; b=eHFI81NZbQWOi6/s0hlKzNGp6hxXMT2IK3qB2hJuAITgOsvpX5w/qR2G858lKUnZwSwMzZdory0nyZTYKhm1thN36fz/awH3fcqtL4/tHNpI49M+MBKgPzS1eIE2yXMhFCHJk2rR+4xcUvLxuRW3kZXM36BwF7pV6+XqCaRhKp8=
+	t=1714691443; cv=fail; b=q0itmIytwFE5s3A2K8wPimgD1AauQ2GiHC4/1aEYKTwPQGe3FaUtrpmeSgDqPrLws+2Z7yC1j7m1RjJoWTkmq2DjYJKlRzzZsRLNFWpwzVkcC6mftHh4heVTN+0dLcznxNkcT2n3XiN1wRdypLnJk7rkoQ3Vq5x11TrmJbP2jTg=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1714691443; c=relaxed/simple;
-	bh=F7V6/iE0BSEsTNEEdjLbTtarHbL0vN7iMH09ivQU1+0=;
+	bh=PoS7Dha3KGqqwoJ28J/yKk9CJP2itMHj8kNdelGIqZM=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=bhj0dVrhMcL1TL26g4P0bdFb9Rp63k3hezVGBIOn5PtDTXwG2/mYsvxz0EAxGKLwiqaW6/1+EpcA69ooqv4iKYT2jQZOb5/6xWnaKw7xxvfi/FZIll9yXsKDWSdXuKkWJ4C2fUInCjZn9fhsF9ACn9fmN8AjGRZjs9qYH09NNHo=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=x9RqKEks; arc=fail smtp.client-ip=40.107.223.86
+	 MIME-Version:Content-Type; b=CWPiZxQOwYCb7kuZIH4poHKtub+m/avY2pq5mvXKechztZSjVpr0CKp4+CcoDM/69A9ZW6W3TSI2ZlB5fF2MtyH1aOA4lcp+cT2k4/Yaecarpsu8pGzaJji8xUcgU8IKIP8SlmR84d7TQLrKDSF338VtN0BwFdj33gz0sO+1yHs=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=AOLwvAbi; arc=fail smtp.client-ip=40.107.244.63
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=aG73agcNRxQ6kLUhzOtJ6KHDZLNPWJTfZYwOBA3R5JUE1RwX7xi0w+Zp8UBFjN6ACFaz9zWLT7u/KP45EDMaJuUNqaWgwLyD635EPtscHj524fkoRA6M/+p59nOkAHiE2Vyru4st7ZlWgA4eQGZr9BYPY9gjJXyfQhG11crS3kkwfjYF/jCjhO9YkHKBbKLoUWkoKEkgfKJlI6xMFhbkjWE8x8CQgap1pD2hWt+V6liS3i1QPxXwahSwy0YP1w454wZFHstS+A9ncsY8DWGoS8zEjIR19lcFUfmUgGrNS6BSWlK7VR2vWJcL2YP9DIcgBabA1Zd9NwuEuddQ0KtU6Q==
+ b=cp1cNBCWVyMXrbnvz0tWqNiO2J6zZnlEOzv8KpL5+8MdhbF0lCbcfSJ94gnw75RIdMuTSK1tDekWIbPJiL87Q5I/uwA/lm5TtAQZF8N7ZNlNBO4Dc7D8/90M1jeTZgyvahTmz1vDG6J5CuSuzd4mKjSdNvVNcEetYZII1TNUTYrwMBuqYkUs/9EUmBNj7kALfv8VaLqlKvEq5PEt70lbtb8a83h6PSbhI3DnPxIEeHIyNY8zEkC8opztn9BjSGsdCbR2wxgCLG8WLIPpRU7T9Q5FndR2/iXBIXI665KeeKei7UfHUrICu9n9ZQf/PocDCiK7HHDdsGIY1hwl/It4vQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=oxxJRFFiWMrYhO8xyh3Wp1pfR86bOPMFxxUqEuFHLH8=;
- b=oEzqfNDF47h3iWFlmCD0oPAEiWTyjys0fk+0vfdAGh9+/J1+cfi/r2LhuN0Q78AgvzhyDKKf1kv1Fza98b/3nElDjsWkyQ3iD9KCsvFvRZlwTcSZI1N7G3S1PcYyp4dGMlL7dJkJ9Y1jVYvqFARbAwcl/oPfW6HkBgrxAAOj2yU+oyCs0BdnX5qOZgRO+usKb6u1Ex55lU+coBPDFp5aTZd271O4Mw81hbIgIy+Bd+e8Nfygxm9q6dRtDuDCOXAIh1gbF/w5Mm2jPlFxfjZCtYISxUgJcEukWYXX4rub9saiK6BzXms8RSEjzeumT+dg8qj47p0xHuKVvVAO2ZJy7Q==
+ bh=OXDKc6VYEK956MMSSut1fS9rPBAkslup61nuht7fmvY=;
+ b=km3k847J0r9x9lG/Cws3Uj30J5YnvfE/OVU6bjJSc4dfL3aJaXLI960bs896QvDsVpqJbSI7mbMpJVK726sW0JyZp1Jtt4ZNskCX1YJyOHjhvK9jZsEIlyw+DLmVi4efjd0ghVeBbjlPIAY1Mt5WsrKPFxn68lEh1+QBFjlyj0K+hCvZ5T7Au24D4xuAO5IkJLWp8l1FirS5V1lD0FzrhUUvm4n6eTxsiDM2/Ihwy4PPTltw2JgEmkDAUcVOfe3KQ4BCy5SuT9BWeJK3zXbqnl7dcPcQ5CJZ2NR19PUaWo902LQjAgAi2Yl9lPc/GTPPQgtqKtvanfF6i9bJAGvljw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
  165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
  (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
  dkim=none (message not signed); arc=none (0)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=oxxJRFFiWMrYhO8xyh3Wp1pfR86bOPMFxxUqEuFHLH8=;
- b=x9RqKEksOxskcrvy5Pbus1pEul+4w8E17F/jmiOXRuezXCLHpjG7P6xJ0GxHqBrI9ObR16+ociPAnUlrTd+kNskGRT1zJbzS1sRTEcfKJBnTVFEzZg/VN+Y0y8/QB3vuhZvz6fD/teSKhh8ySBsfaJS4u1K49Wk/3mc+pdPJ6HE=
-Received: from BL0PR03CA0033.namprd03.prod.outlook.com (2603:10b6:208:2d::46)
- by CH3PR12MB8936.namprd12.prod.outlook.com (2603:10b6:610:179::17) with
+ bh=OXDKc6VYEK956MMSSut1fS9rPBAkslup61nuht7fmvY=;
+ b=AOLwvAbivu3TWO1ez0ibI48AsyIOvy9eWtb1n3WElKZqGg9PaoZ22a2u9E553tS1OOuhrcFfl7RWAcDDCbVNSu2atL5oBLae4rwD0gecS7To3excAx+jC/ff/8Goo1n6ob0Nsz1f0xWXnaR/Hm89VV8scppF4+vBX4GA6hM+DnI=
+Received: from BL1PR13CA0211.namprd13.prod.outlook.com (2603:10b6:208:2bf::6)
+ by IA1PR12MB6556.namprd12.prod.outlook.com (2603:10b6:208:3a0::14) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7544.29; Thu, 2 May
  2024 23:10:39 +0000
-Received: from BL6PEPF0001AB55.namprd02.prod.outlook.com
- (2603:10b6:208:2d:cafe::83) by BL0PR03CA0033.outlook.office365.com
- (2603:10b6:208:2d::46) with Microsoft SMTP Server (version=TLS1_2,
+Received: from BL02EPF00021F6D.namprd02.prod.outlook.com
+ (2603:10b6:208:2bf:cafe::b4) by BL1PR13CA0211.outlook.office365.com
+ (2603:10b6:208:2bf::6) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7544.30 via Frontend
  Transport; Thu, 2 May 2024 23:10:39 +0000
 X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
@@ -60,25 +60,25 @@ X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
  header.d=none;dmarc=pass action=none header.from=amd.com;
 Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
  165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB03.amd.com; pr=C
-Received: from SATLEXMB03.amd.com (165.204.84.17) by
- BL6PEPF0001AB55.mail.protection.outlook.com (10.167.241.7) with Microsoft
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ BL02EPF00021F6D.mail.protection.outlook.com (10.167.249.9) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
  15.20.7544.18 via Frontend Transport; Thu, 2 May 2024 23:10:39 +0000
-Received: from SATLEXMB04.amd.com (10.181.40.145) by SATLEXMB03.amd.com
- (10.181.40.144) with Microsoft SMTP Server (version=TLS1_2,
+Received: from SATLEXMB04.amd.com (10.181.40.145) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Thu, 2 May
  2024 18:10:38 -0500
 Received: from xsjtanmays50.xilinx.com (10.180.168.240) by SATLEXMB04.amd.com
  (10.181.40.145) with Microsoft SMTP Server id 15.1.2507.35 via Frontend
- Transport; Thu, 2 May 2024 18:10:37 -0500
+ Transport; Thu, 2 May 2024 18:10:38 -0500
 From: Tanmay Shah <tanmay.shah@amd.com>
 To: <andersson@kernel.org>, <mathieu.poirier@linaro.org>
 CC: <linux-remoteproc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
 	"Tanmay Shah" <tanmay.shah@amd.com>
-Subject: [PATCH 1/2] drivers: remoteproc: xlnx: add attach detach support
-Date: Thu, 2 May 2024 16:10:20 -0700
-Message-ID: <20240502231021.370047-2-tanmay.shah@amd.com>
+Subject: [PATCH 2/2] drivers: remoteproc: xlnx: add sram support
+Date: Thu, 2 May 2024 16:10:21 -0700
+Message-ID: <20240502231021.370047-3-tanmay.shah@amd.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20240502231021.370047-1-tanmay.shah@amd.com>
 References: <20240502231021.370047-1-tanmay.shah@amd.com>
@@ -90,295 +90,353 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-Received-SPF: None (SATLEXMB03.amd.com: tanmay.shah@amd.com does not designate
+Received-SPF: None (SATLEXMB04.amd.com: tanmay.shah@amd.com does not designate
  permitted sender hosts)
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BL6PEPF0001AB55:EE_|CH3PR12MB8936:EE_
-X-MS-Office365-Filtering-Correlation-Id: 8b356a5e-72ef-4c6b-3647-08dc6afd14fd
+X-MS-TrafficTypeDiagnostic: BL02EPF00021F6D:EE_|IA1PR12MB6556:EE_
+X-MS-Office365-Filtering-Correlation-Id: 8422600e-e1dd-4658-1ab9-08dc6afd151a
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230031|376005|36860700004|1800799015;
+X-Microsoft-Antispam: BCL:0;ARA:13230031|36860700004|376005|1800799015;
 X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?zPtt7UcQ+t3vD8AKr7sRu0w40o0nJSbNkluZULkR9ytiSOSUqzb6E+fdq80/?=
- =?us-ascii?Q?6vH+mnCuAl/tPpPJHKYyH6w6w7ZwN2JwbRpfhkvUgGS3se3BV9x/3fV7/mTw?=
- =?us-ascii?Q?Z32E37e69FS2plNWx8gzqDXh/gnK1EkdwX8Yoi3ovBHKjiFMNTVnBWlDwjF/?=
- =?us-ascii?Q?9gngrZlKxiVZYlG7HSfUZeyXg+MWNRvzo0zrTxvna4cZmdUKpPfCV95TT5D6?=
- =?us-ascii?Q?hp/RhyFv5NXdV6qhnqm2JrcuJNgqnwxXJN9wEj/oqsuBg0r5EYLVYUdLxBau?=
- =?us-ascii?Q?1IvjeXlahoNZ/bXDt/RtKBuG3aOvqaPArLaoBxYDq7O+/1EnWevIiZoySrh3?=
- =?us-ascii?Q?fFyjTJ4PQDekMcw2KqZu/9pIdN+UXPzcJxpRJGRIVbt/g2T1dg3W8n1EJugg?=
- =?us-ascii?Q?1Fckpjw0lHzdKWh4bYphHCC6Nzu4/pTSrDEVxvkTFfHyRgCoJjE4A1ewWvbd?=
- =?us-ascii?Q?oC+giuEhBDP86WnxAySaRyFqALbzU8kGbbqQdysfhqHqQ2FMbzR1O0IhYNr7?=
- =?us-ascii?Q?IL9se6e17u7fVltEZi7IoUPmAqSUjABvuMKHIalmePyeXDB3gARgh12PllXf?=
- =?us-ascii?Q?t4GC4IESLOSIym4F4sUDtz0reoWutUGKNB+nbj/ueYpCxncaSN/Zd8IaZyjS?=
- =?us-ascii?Q?JF+c/jDe9sCEi/VMk9LE4MdWxa/7qhK2kE4AeD44ITp+66rBMBU+Z9mlJAjp?=
- =?us-ascii?Q?mHctFHPFsYlsc/W0HBfNAHYgnZ+HWS69z5HVeck49s2QZ6s1+0k+HiRFUR/u?=
- =?us-ascii?Q?CrkuBYCxbe0/KjjGJ3shm60sMeAAuTh8/MCiVIg0xeaWaafyC7M8eg2aEgue?=
- =?us-ascii?Q?2SKa09mYgh4c7toOEl0EPd2WAy/L6Jty8fZjYanoTfD0hOQLvvaw7e6EO2yj?=
- =?us-ascii?Q?Uwdn/R90RaP9cyZiTuR6aTT8QAhlLBuHEjwaOEAJmqbR4oW0L8UoMDgWxPD5?=
- =?us-ascii?Q?KVicGP1DUy+E5oO10v9JwkB0LCA35lDdBoPwSF06BZ2e/x2i8dGG9LpHOZh3?=
- =?us-ascii?Q?iXn+g9MskOMp42VpVoOCopvo+mMSU54LIEbnYpXycjhb67oBLplD/CicSR3l?=
- =?us-ascii?Q?uOUJYsrJiRt/QoBRJpYr7WSZudqa5nB1YDbYN8r+n3HgdSNvH0U+A/jmOICR?=
- =?us-ascii?Q?FgfhUrLkR6pxiMOvSJjKLSorvNa38ZD+LieNgYGuxe7nuf2L+2OnpTr74aNK?=
- =?us-ascii?Q?blE/Ql4Uy3XesR3X7FFKsqCC/VUEbLe2jpLMI5AOsSBfSL0UJ9DSU+U4sEA8?=
- =?us-ascii?Q?gA9cXOGT1EGUENEDhvTEc0JmLdjkdkCOAchH+4UT0tTzzzG6TBoofjG67Nu4?=
- =?us-ascii?Q?Hh5CwP7H9Ckq+PzAlQ15nCBo3BssNNUFYAInzCg52wPnYko6mtJm7Hd1FcB5?=
- =?us-ascii?Q?4MZ95MJouw3pvgiMEj5HW/iZTXan?=
+	=?us-ascii?Q?rMf1icVTJMXJkXEYW3QNaqwBMHDT3bWgj2xhSpGLtw0kbfgEFvDVUh8mRhm2?=
+ =?us-ascii?Q?gh8UBP2iT+XtVFzOSc9UeIbbUh8RQ/rwEdF/xADMa8rtW8ijql0A+B1t5j5o?=
+ =?us-ascii?Q?g4QOeJsSsLUm0UV1NZsS+Bo/cDupiLX14uVmxRytJFQ8eAQL4w55XayCGxGc?=
+ =?us-ascii?Q?qyQcAkQxanTwmyxnAcaqyisvyxf/hjJ0F1QQGLCxnbpS3OFpk0HvjGiPhkD0?=
+ =?us-ascii?Q?oID3YNk/gupsbpVPdT85DGWKk1OMbwwl5CCk6FPrf+Q652KMhOOGN9j3LLfG?=
+ =?us-ascii?Q?6MAGmWT6eoTl4OW4Ht7TVRSx+vjJukU3bIy6smwnJVUR+KeLJGVIU83MH4gJ?=
+ =?us-ascii?Q?m9wBysGXhs6UgqQyF8+qFBQY/K7McjuKDh0fjTsxEjGl+Z5b53uuRIhcI2ug?=
+ =?us-ascii?Q?gSq4VumAqUrx8/OhrQqmtqcZHNLYzHjtZBMUpSj0ts4tAYhKCOuvxdI0+eLw?=
+ =?us-ascii?Q?r9LqF0qC2WYAdSo6gLaZR3yJwJyR3ZihaKnLtlXLErdQwB3myDc/sbZjFAT4?=
+ =?us-ascii?Q?q3xlRabLCkGJ1PZaSOuI2vAlyxFGzLGKgXOHwYeYvfKRE6Z57IsTier3vkan?=
+ =?us-ascii?Q?o6r2AJyURJfIwrwSQCAFd9G75rbOxw+AMRsbtfGcLDo+nBA42QzUxpAobP0s?=
+ =?us-ascii?Q?mVluZNTlxsfKWKhG7dxF9Lfxr2dcavQ/Lthig/Jr0gRfjeCE2nOnc83g0Dhn?=
+ =?us-ascii?Q?wRxG+qT/iGTVxIsLyZD/wO/ZOgNE5/8dQkwz0Trfm61RPYtaoVodtoZHhqhB?=
+ =?us-ascii?Q?YdGNgHJ/bS9Lv6oim0ca1RSDXcbq1KaA9YX8t5Yw/sL3g9cWyZ0lRmhx4N/1?=
+ =?us-ascii?Q?g6AcGyHsFbolI3wpN56PtigVM/OOnI21Rbl0kbrTrEB9no1u8CG8yO+U/gll?=
+ =?us-ascii?Q?Uf2H+h2o7u/yb6IxqAyRkSLMB6UOofGe8PzX1Pk1zYaao1pVfRrP6rdLnT4S?=
+ =?us-ascii?Q?fmuEmCw19uU37lU9qgrU1Q2f2lrjH89Yy4335u+pt9LDIv64E6nuNvBe54Yk?=
+ =?us-ascii?Q?4KHBLN5mrO4ZQlWp8cV3T5Vi7/h6pA7zZAsu5edxzCX+nQgofrxYEXWFTFae?=
+ =?us-ascii?Q?lpSG7otHUGMc2ZviF4ElvGdhcog0jiM2WuivlRPudWSzLLVU/cncsEmsVnBY?=
+ =?us-ascii?Q?xcrKJdpq15QQy4vpgjMLHXd5yrkM+CHBhS7EcwlRTIBwOr7qujDV7J2A5N/4?=
+ =?us-ascii?Q?fXg0IWMLM42aTe2+BWNhJKZEbhlFdl/cppBwy1eTDOOvJl0GI9O/O4A963tE?=
+ =?us-ascii?Q?r0Hd7+Zkp3hRrXjEPGUZMVJbkAINqefzV1p+ata4TuZZ+OPVmLzHnWC880In?=
+ =?us-ascii?Q?zxV+c/kwYue2/jOiNqN9Ot/1QBH74HC1ANpIVpDQvt3Tf5TJwtH4GpnfHnGU?=
+ =?us-ascii?Q?aFs71tI1wVuQVLnOB9rzXuqQedFz?=
 X-Forefront-Antispam-Report:
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB03.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(376005)(36860700004)(1800799015);DIR:OUT;SFP:1101;
+	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(36860700004)(376005)(1800799015);DIR:OUT;SFP:1101;
 X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 May 2024 23:10:39.0708
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 May 2024 23:10:39.2445
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8b356a5e-72ef-4c6b-3647-08dc6afd14fd
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8422600e-e1dd-4658-1ab9-08dc6afd151a
 X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB03.amd.com]
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
 X-MS-Exchange-CrossTenant-AuthSource:
-	BL6PEPF0001AB55.namprd02.prod.outlook.com
+	BL02EPF00021F6D.namprd02.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR12MB8936
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR12MB6556
 
-It is possible that remote processor is already running before
-linux boot or remoteproc platform driver probe. Implement required
-remoteproc framework ops to provide resource table address and
-connect or disconnect with remote processor in such case.
+AMD-Xilinx zynqmp platform contains on-chip sram memory (OCM).
+R5 cores can access OCM and access is faster than DDR memory but slower
+than TCM memories available. Sram region can have optional multiple
+power-domains.
 
 Signed-off-by: Tanmay Shah <tanmay.shah@amd.com>
 ---
- drivers/remoteproc/xlnx_r5_remoteproc.c | 164 +++++++++++++++++++++++-
- 1 file changed, 160 insertions(+), 4 deletions(-)
+ drivers/remoteproc/xlnx_r5_remoteproc.c | 221 +++++++++++++++++++++++-
+ 1 file changed, 220 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/remoteproc/xlnx_r5_remoteproc.c b/drivers/remoteproc/xlnx_r5_remoteproc.c
-index 84243d1dff9f..af7aff5e9098 100644
+index af7aff5e9098..47c08b013152 100644
 --- a/drivers/remoteproc/xlnx_r5_remoteproc.c
 +++ b/drivers/remoteproc/xlnx_r5_remoteproc.c
-@@ -25,6 +25,10 @@
- /* RX mailbox client buffer max length */
- #define MBOX_CLIENT_BUF_MAX	(IPI_BUF_LEN_MAX + \
- 				 sizeof(struct zynqmp_ipi_message))
-+
-+#define RSC_TBL_XLNX_MAGIC	((uint32_t)'x' << 24 | (uint32_t)'a' << 16 | \
-+				 (uint32_t)'m' << 8 | (uint32_t)'p')
-+
- /*
-  * settings for RPU cluster mode which
-  * reflects possible values of xlnx,cluster-mode dt-property
-@@ -73,6 +77,15 @@ struct mbox_info {
- 	struct mbox_chan *rx_chan;
+@@ -56,6 +56,21 @@ struct mem_bank_data {
+ 	char *bank_name;
  };
  
-+/* Xilinx Platform specific data structure */
-+struct rsc_tbl_data {
-+	const int version;
-+	const u32 magic_num;
-+	const u32 comp_magic_num;
-+	const u32 rsc_tbl_size;
-+	const uintptr_t rsc_tbl;
-+} __packed;
++/**
++ * struct zynqmp_sram_bank - sram bank description
++ *
++ * @sram_res: sram address region information
++ * @power_domains: Array of pm domain id
++ * @num_pd: total pm domain id count
++ * @da: device address of sram
++ */
++struct zynqmp_sram_bank {
++	struct resource sram_res;
++	int *power_domains;
++	int num_pd;
++	u32 da;
++};
 +
- /*
-  * Hardcoded TCM bank values. This will stay in driver to maintain backward
-  * compatibility with device-tree that does not have TCM information.
-@@ -95,20 +108,24 @@ static const struct mem_bank_data zynqmp_tcm_banks_lockstep[] = {
  /**
+  * struct mbox_info
+  *
+@@ -109,6 +124,8 @@ static const struct mem_bank_data zynqmp_tcm_banks_lockstep[] = {
   * struct zynqmp_r5_core
   *
-+ * @rsc_tbl_va: resource table virtual address
+  * @rsc_tbl_va: resource table virtual address
++ * @sram: Array of sram memories assigned to this core
++ * @num_sram: number of sram for this core
   * @dev: device of RPU instance
   * @np: device node of RPU instance
   * @tcm_bank_count: number TCM banks accessible to this RPU
-  * @tcm_banks: array of each TCM bank data
-  * @rproc: rproc handle
-+ * @rsc_tbl_size: resource table size retrieved from remote
-  * @pm_domain_id: RPU CPU power domain id
-  * @ipi: pointer to mailbox information
+@@ -120,6 +137,8 @@ static const struct mem_bank_data zynqmp_tcm_banks_lockstep[] = {
   */
  struct zynqmp_r5_core {
-+	struct resource_table *rsc_tbl_va;
+ 	struct resource_table *rsc_tbl_va;
++	struct zynqmp_sram_bank **sram;
++	int num_sram;
  	struct device *dev;
  	struct device_node *np;
  	int tcm_bank_count;
- 	struct mem_bank_data **tcm_banks;
- 	struct rproc *rproc;
-+	u32 rsc_tbl_size;
- 	u32 pm_domain_id;
- 	struct mbox_info *ipi;
- };
-@@ -621,10 +638,19 @@ static int zynqmp_r5_rproc_prepare(struct rproc *rproc)
- {
- 	int ret;
- 
--	ret = add_tcm_banks(rproc);
--	if (ret) {
--		dev_err(&rproc->dev, "failed to get TCM banks, err %d\n", ret);
--		return ret;
-+	/**
-+	 * For attach/detach use case, Firmware is already loaded so
-+	 * TCM isn't really needed at all. Also, for security TCM can be
-+	 * locked in such case and linux may not have access at all.
-+	 * So avoid adding TCM banks. TCM power-domains requested during attach
-+	 * callback.
-+	 */
-+	if (rproc->state != RPROC_DETACHED) {
-+		ret = add_tcm_banks(rproc);
-+		if (ret) {
-+			dev_err(&rproc->dev, "failed to get TCM banks, err %d\n", ret);
-+			return ret;
-+		}
- 	}
- 
- 	ret = add_mem_regions_carveout(rproc);
-@@ -662,6 +688,123 @@ static int zynqmp_r5_rproc_unprepare(struct rproc *rproc)
+@@ -483,6 +502,69 @@ static int add_mem_regions_carveout(struct rproc *rproc)
  	return 0;
  }
  
-+static struct resource_table *zynqmp_r5_get_loaded_rsc_table(struct rproc *rproc,
-+							     size_t *size)
-+{
-+	struct zynqmp_r5_core *r5_core;
-+
-+	r5_core = rproc->priv;
-+
-+	*size = r5_core->rsc_tbl_size;
-+
-+	return r5_core->rsc_tbl_va;
-+}
-+
-+static int zynqmp_r5_get_rsc_table_va(struct zynqmp_r5_core *r5_core)
-+{
-+	struct device *dev = r5_core->dev;
-+	struct rsc_tbl_data *rsc_data_va;
-+	struct resource_table *rsc_addr;
-+	struct resource res_mem;
-+	struct device_node *np;
-+	int ret;
-+
-+	/**
-+	 * It is expected from remote processor firmware to provide resource
-+	 * table address via struct rsc_tbl_data data structure.
-+	 * Start address of first entry under "memory-region" property list
-+	 * contains that data structure which holds resource table address, size
-+	 * and some magic number to validate correct resource table entry.
-+	 */
-+	np = of_parse_phandle(r5_core->np, "memory-region", 0);
-+	if (!np) {
-+		dev_err(dev, "failed to get memory region dev node\n");
-+		return -EINVAL;
-+	}
-+
-+	ret = of_address_to_resource(np, 0, &res_mem);
-+	if (ret) {
-+		dev_err(dev, "failed to get memory-region resource addr\n");
-+		return -EINVAL;
-+	}
-+
-+	rsc_data_va = devm_ioremap_wc(dev, res_mem.start,
-+				      sizeof(struct rsc_tbl_data));
-+	if (!rsc_data_va) {
-+		dev_err(dev, "failed to map resource table data address\n");
-+		return -EIO;
-+	}
-+
-+	/**
-+	 * If RSC_TBL_XLNX_MAGIC number and its complement isn't found then
-+	 * do not consider resource table address valid and don't attach
-+	 */
-+	if (rsc_data_va->magic_num != RSC_TBL_XLNX_MAGIC ||
-+	    rsc_data_va->comp_magic_num != ~RSC_TBL_XLNX_MAGIC) {
-+		dev_dbg(dev, "invalid magic number, won't attach\n");
-+		return -EINVAL;
-+	}
-+
-+	rsc_addr = ioremap_wc(rsc_data_va->rsc_tbl,
-+			      rsc_data_va->rsc_tbl_size);
-+	if (!rsc_addr) {
-+		dev_err(dev, "failed to get rsc_addr\n");
-+		return -EINVAL;
-+	}
-+
-+	/**
-+	 * As of now resource table version 1 is expected. Don't fail to attach
-+	 * but warn users about it.
-+	 */
-+	if (rsc_addr->ver != 1)
-+		dev_warn(dev, "unexpected resource table version %d\n",
-+			 rsc_addr->ver);
-+
-+	r5_core->rsc_tbl_size = rsc_data_va->rsc_tbl_size;
-+	r5_core->rsc_tbl_va = rsc_addr;
-+
-+	return 0;
-+}
-+
-+static int zynqmp_r5_attach(struct rproc *rproc)
++static int add_sram_carveouts(struct rproc *rproc)
 +{
 +	struct zynqmp_r5_core *r5_core = rproc->priv;
-+	int i, pm_domain_id, ret;
++	struct rproc_mem_entry *rproc_mem;
++	struct zynqmp_sram_bank *sram;
++	dma_addr_t dma_addr;
++	int da, i, j, ret;
++	size_t len;
 +
-+	/*
-+	 * Firmware is loaded in TCM. Request TCM power domains to notify
-+	 * platform management controller that TCM is in use. This will be
-+	 * released during unprepare callback.
-+	 */
-+	for (i = 0; i < r5_core->tcm_bank_count; i++) {
-+		pm_domain_id = r5_core->tcm_banks[i]->pm_domain_id;
-+		ret = zynqmp_pm_request_node(pm_domain_id,
-+					     ZYNQMP_PM_CAPABILITY_ACCESS, 0,
-+					     ZYNQMP_PM_REQUEST_ACK_BLOCKING);
-+		if (ret < 0)
-+			pr_warn("TCM %d can't be requested\n", i);
++	for (i = 0; i < r5_core->num_sram; i++) {
++		sram = r5_core->sram[i];
++
++		dma_addr = (dma_addr_t)sram->sram_res.start;
++		len = resource_size(&sram->sram_res);
++		da = sram->da;
++
++		for (j = 0; j < sram->num_pd; j++) {
++			ret = zynqmp_pm_request_node(sram->power_domains[j],
++						     ZYNQMP_PM_CAPABILITY_ACCESS, 0,
++						     ZYNQMP_PM_REQUEST_ACK_BLOCKING);
++			if (ret < 0) {
++				dev_err(r5_core->dev,
++					"failed to request on SRAM pd 0x%x",
++					sram->power_domains[j]);
++				goto fail_sram;
++			} else {
++				pr_err("sram pd 0x%x request success\n",
++				       sram->power_domains[j]);
++			}
++		}
++
++		/* Register associated reserved memory regions */
++		rproc_mem = rproc_mem_entry_init(&rproc->dev, NULL,
++						 (dma_addr_t)dma_addr,
++						 len, da,
++						 zynqmp_r5_mem_region_map,
++						 zynqmp_r5_mem_region_unmap,
++						 sram->sram_res.name);
++
++		rproc_add_carveout(rproc, rproc_mem);
++		rproc_coredump_add_segment(rproc, da, len);
++
++		dev_err(&rproc->dev, "sram carveout %s addr=%llx, da=0x%x, size=0x%lx",
++			sram->sram_res.name, dma_addr, da, len);
 +	}
 +
 +	return 0;
++
++fail_sram:
++	/* Release current sram pd. */
++	while (--j >= 0)
++		zynqmp_pm_release_node(sram->power_domains[j]);
++
++	/* Release previously requested sram pd. */
++	while (--i >= 0) {
++		sram = r5_core->sram[i];
++		for (j = 0; j < sram->num_pd; j++)
++			zynqmp_pm_release_node(sram->power_domains[j]);
++	}
++
++	return ret;
 +}
 +
-+static int zynqmp_r5_detach(struct rproc *rproc)
-+{
-+	struct zynqmp_r5_core *r5_core = rproc->priv;
-+
-+	/*
-+	 * Generate last notification to remote after clearing virtio flag.
-+	 * Remote can avoid polling on virtio reset flag if kick is generated
-+	 * during detach by host and check virtio reset flag on kick interrupt.
-+	 */
-+	zynqmp_r5_rproc_kick(rproc, 0);
-+
-+	iounmap(r5_core->rsc_tbl_va);
-+	r5_core->rsc_tbl_va = NULL;
-+
-+	return 0;
-+}
-+
- static const struct rproc_ops zynqmp_r5_rproc_ops = {
- 	.prepare	= zynqmp_r5_rproc_prepare,
- 	.unprepare	= zynqmp_r5_rproc_unprepare,
-@@ -673,6 +816,9 @@ static const struct rproc_ops zynqmp_r5_rproc_ops = {
- 	.sanity_check	= rproc_elf_sanity_check,
- 	.get_boot_addr	= rproc_elf_get_boot_addr,
- 	.kick		= zynqmp_r5_rproc_kick,
-+	.get_loaded_rsc_table = zynqmp_r5_get_loaded_rsc_table,
-+	.attach		= zynqmp_r5_attach,
-+	.detach		= zynqmp_r5_detach,
- };
- 
- /**
-@@ -723,6 +869,16 @@ static struct zynqmp_r5_core *zynqmp_r5_add_rproc_core(struct device *cdev)
- 		goto free_rproc;
+ /*
+  * tcm_mem_unmap()
+  * @rproc: single R5 core's corresponding rproc instance
+@@ -659,6 +741,12 @@ static int zynqmp_r5_rproc_prepare(struct rproc *rproc)
+ 		return ret;
  	}
  
-+	/*
-+	 * Move rproc state to DETACHED to give one time opportunity to attach
-+	 * if firmware is already available in the memory. This can happen if
-+	 * firmware is loaded via debugger or by any other agent in the system.
-+	 * If firmware isn't available in the memory and resource table isn't found,
-+	 * then rproc state stay OFFLINE.
-+	 */
-+	if (!zynqmp_r5_get_rsc_table_va(r5_core))
-+		r5_rproc->state = RPROC_DETACHED;
++	ret = add_sram_carveouts(rproc);
++	if (ret) {
++		dev_err(&rproc->dev, "failed to get sram carveout %d\n", ret);
++		return ret;
++	}
 +
- 	r5_core->rproc = r5_rproc;
- 	return r5_core;
+ 	return 0;
+ }
  
+@@ -673,8 +761,9 @@ static int zynqmp_r5_rproc_prepare(struct rproc *rproc)
+ static int zynqmp_r5_rproc_unprepare(struct rproc *rproc)
+ {
+ 	struct zynqmp_r5_core *r5_core;
++	struct zynqmp_sram_bank *sram;
+ 	u32 pm_domain_id;
+-	int i;
++	int i, j;
+ 
+ 	r5_core = rproc->priv;
+ 
+@@ -685,6 +774,13 @@ static int zynqmp_r5_rproc_unprepare(struct rproc *rproc)
+ 				 "can't turn off TCM bank 0x%x", pm_domain_id);
+ 	}
+ 
++	/* Release sram power-domains. */
++	for (i = 0; i < r5_core->num_sram; i++) {
++		sram = r5_core->sram[i];
++		for (j = 0; j < sram->num_pd; j++)
++			zynqmp_pm_release_node(sram->power_domains[j]);
++	}
++
+ 	return 0;
+ }
+ 
+@@ -887,6 +983,123 @@ static struct zynqmp_r5_core *zynqmp_r5_add_rproc_core(struct device *cdev)
+ 	return ERR_PTR(ret);
+ }
+ 
++static int zynqmp_r5_get_sram_pd(struct device *r5_core_dev,
++				 struct device_node *sram_np, int **power_domains,
++				 int *num_pd)
++{
++	struct of_phandle_args out_args;
++	int pd_count, i, ret;
++	int *pd_list;
++
++	if (!of_find_property(sram_np, "power-domains", NULL)) {
++		num_pd = 0;
++		return 0;
++	}
++
++	pd_count = of_count_phandle_with_args(sram_np, "power-domains",
++					      "#power-domain-cells");
++
++	pd_list = devm_kcalloc(r5_core_dev, pd_count, sizeof(int), GFP_KERNEL);
++	if (!pd_list)
++		return -ENOMEM;
++
++	for (i = 0; i < pd_count; i++) {
++		ret = of_parse_phandle_with_args(sram_np, "power-domains",
++						 "#power-domain-cells",
++						 i, &out_args);
++		if (ret) {
++			dev_err(r5_core_dev, "%s: power-domains idx %d parsing failed\n",
++				sram_np->name, i);
++			return ret;
++		}
++
++		of_node_put(out_args.np);
++		pd_list[i] = out_args.args[0];
++	}
++
++	*power_domains = pd_list;
++	*num_pd = pd_count;
++
++	return 0;
++}
++
++static int zynqmp_r5_get_sram_banks(struct zynqmp_r5_core *r5_core)
++{
++	struct zynqmp_sram_bank **sram, *sram_data;
++	struct device_node *np = r5_core->np;
++	struct device *dev = r5_core->dev;
++	struct device_node *sram_np;
++	int num_sram, i, ret;
++	u64 abs_addr, size;
++
++	num_sram = of_property_count_elems_of_size(np, "sram", sizeof(phandle));
++	if (num_sram <= 0) {
++		dev_err(dev, "Invalid sram property, ret = %d\n",
++			num_sram);
++		return -EINVAL;
++	}
++
++	sram = devm_kcalloc(dev, num_sram,
++			    sizeof(struct zynqmp_sram_bank *), GFP_KERNEL);
++	if (!sram)
++		return -ENOMEM;
++
++	for (i = 0; i < num_sram; i++) {
++		sram_data = devm_kzalloc(dev, sizeof(struct zynqmp_sram_bank),
++					 GFP_KERNEL);
++		if (!sram_data)
++			return -ENOMEM;
++
++		sram_np = of_parse_phandle(np, "sram", i);
++		if (!sram_np) {
++			dev_err(dev, "failed to get sram %d phandle\n", i);
++			return -EINVAL;
++		}
++
++		if (!of_device_is_available(sram_np)) {
++			of_node_put(sram_np);
++			dev_err(dev, "sram device not available\n");
++			return -EINVAL;
++		}
++
++		ret = of_address_to_resource(sram_np, 0, &sram_data->sram_res);
++		of_node_put(sram_np);
++		if (ret) {
++			dev_err(dev, "addr to res failed\n");
++			return ret;
++		}
++
++		/* Get SRAM device address */
++		ret = of_property_read_reg(sram_np, i, &abs_addr, &size);
++		if (ret) {
++			dev_err(dev, "failed to get reg property\n");
++			return ret;
++		}
++
++		sram_data->da = (u32)abs_addr;
++
++		ret = zynqmp_r5_get_sram_pd(r5_core->dev, sram_np,
++					    &sram_data->power_domains,
++					    &sram_data->num_pd);
++		if (ret) {
++			dev_err(dev, "failed to get power-domains for %d sram\n", i);
++			return ret;
++		}
++
++		sram[i] = sram_data;
++
++		dev_dbg(dev, "sram %d: name=%s, addr=0x%llx, da=0x%x, size=0x%llx, num_pd=%d\n",
++			i, sram[i]->sram_res.name, sram[i]->sram_res.start,
++			sram[i]->da, resource_size(&sram[i]->sram_res),
++			sram[i]->num_pd);
++	}
++
++	r5_core->sram = sram;
++	r5_core->num_sram = num_sram;
++
++	return 0;
++}
++
+ static int zynqmp_r5_get_tcm_node_from_dt(struct zynqmp_r5_cluster *cluster)
+ {
+ 	int i, j, tcm_bank_count, ret, tcm_pd_idx, pd_count;
+@@ -1101,6 +1314,12 @@ static int zynqmp_r5_core_init(struct zynqmp_r5_cluster *cluster,
+ 				return ret;
+ 			}
+ 		}
++
++		if (of_find_property(r5_core->np, "sram", NULL)) {
++			ret = zynqmp_r5_get_sram_banks(r5_core);
++			if (ret)
++				return ret;
++		}
+ 	}
+ 
+ 	return 0;
 -- 
 2.25.1
 
