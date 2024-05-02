@@ -1,142 +1,172 @@
-Return-Path: <linux-kernel+bounces-165943-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-165945-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 46BFA8B93AB
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 05:43:19 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 505138B93B0
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 05:52:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 73F5E1C2142A
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 03:43:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CF0A31F22674
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 03:52:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AFF4C1A702;
-	Thu,  2 May 2024 03:43:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8FC801B299;
+	Thu,  2 May 2024 03:52:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="AWCWmjPk"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="c/koTYUH"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.14])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70807171AA;
-	Thu,  2 May 2024 03:43:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F175F18AF4;
+	Thu,  2 May 2024 03:52:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.14
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714621389; cv=none; b=nX/ycGQP8560fJuDS7bjhflOq2fQ1oHJrleqWNszmLEV3XITX/H+iySUFGQPQxkYSl0taoDCcOL/adBxnr1SE+NHFU+pjvMwNYvXJQGTQ9B2DeKNsz4MDEB3tNPk5MfG1fCkhXuFgLorK5kIUQd4gt62FAl/JodR16LP6R7sLOE=
+	t=1714621932; cv=none; b=ASmVqD3O7KKlV2KqAwcWL07vG4mQ+V75qALx82UKjCLfNnT00KaikotQeFY1RlL9f1Nq4mnFeEQu5ugkCSYSSVIMhXQDWbnGdWBeQCTcBw3WVZ9UxpRk7pWRqVceZXy1qyqBA1ZFAB6b11VCamQL9bItF1MkRPBk+jojCX+qaoU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714621389; c=relaxed/simple;
-	bh=tmsjShpqsEq0HAAjahxF2xhs/w2jg75Ng8GplS2wmuM=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=bgBGLndnch9r6a3fX+khphnuOXWhI8MTKtdh5ePeUJGUFqMxIED3JI4AhA8ozAIpEjfaSF4uQnoOnhPGwFtB3jMNOj7jC0PQ94OaHrjxwZoLlr2M3C3cUbchVnqn5y2e5Or/r97TcC1SWUmE0TX81/x+86EmGKovo6KmmwfXLZc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=qualcomm.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=AWCWmjPk; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qualcomm.com
-Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 4423cqWZ024441;
-	Thu, 2 May 2024 03:43:02 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	from:to:cc:subject:date:message-id:mime-version
-	:content-transfer-encoding; s=qcppdkim1; bh=gxdEopZ/Ro0CDr4L5WL6
-	Rzvof/Wduh9C1em6P9/T0vs=; b=AWCWmjPkN7mZOiBLNxh9xZkzEXxlr7/360O7
-	9/yb4HMhHlUk34p2tWHTvwTIXjcgjwHwMsF0W7qIJyugEMoBQoNT3ijQxxgWEwp3
-	VDNO7bBPESngmYUeI3S9H4rU9J2h5VAw9UnV7VUMQPbX18nR5EBK/G4Xz1WasLDL
-	Mj0FMAmrHd8em6GRwRJc1+Vo5HK1atyIyyhiXGbIY7/Yw1Rb/rUQAH7nHo9nS/5c
-	Wud0jcWMu7Jzroe1bkEafJcQNMKbcZOJxeF1v95r8dr5XAha0spxr1U8cbt7NHDO
-	6zHr6gKeYGA2ojNB666aJGUOXOhCcQT3rFXYpTgJul3WLC4aBw==
-Received: from apblrppmta01.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xud76adtw-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 02 May 2024 03:43:02 +0000 (GMT)
-Received: from pps.filterd (APBLRPPMTA01.qualcomm.com [127.0.0.1])
-	by APBLRPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTP id 4423gxGx005872;
-	Thu, 2 May 2024 03:42:59 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-	by APBLRPPMTA01.qualcomm.com (PPS) with ESMTPS id 3xv1t60e4e-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 02 May 2024 03:42:59 +0000
-Received: from APBLRPPMTA01.qualcomm.com (APBLRPPMTA01.qualcomm.com [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 4423gxDU005867;
-	Thu, 2 May 2024 03:42:59 GMT
-Received: from hu-devc-blr-u22-a.qualcomm.com (hu-mdalam-blr.qualcomm.com [10.131.36.157])
-	by APBLRPPMTA01.qualcomm.com (PPS) with ESMTPS id 4423gxA8005862
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 02 May 2024 03:42:59 +0000
-Received: by hu-devc-blr-u22-a.qualcomm.com (Postfix, from userid 466583)
-	id 47C234127E; Thu,  2 May 2024 09:12:58 +0530 (+0530)
-From: Md Sadre Alam <quic_mdalam@quicinc.com>
-To: mturquette@baylibre.com, sboyd@kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
-        quic_srichara@quicinc.com, quic_varada@quicinc.com
-Cc: quic_mdalam@quicinc.com
-Subject: [PATCH] clk: qcom: gcc-ipq9574: Add BRANCH_HALT_VOTED flag
-Date: Thu,  2 May 2024 09:12:47 +0530
-Message-Id: <20240502034247.2621996-1-quic_mdalam@quicinc.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1714621932; c=relaxed/simple;
+	bh=qK6quWd0+fR1tNL6dF/6F94raTQfcmC3+2BRAFGNCVc=;
+	h=Message-ID:Date:MIME-Version:Cc:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=pqcgK1ivSNk2vlMhBylaGPtM8gimaYyBJlx+0mEHQBqQQcX6T0WBXec4i6bB/RyP0aX1H/wg8HDIzi6oNLY46zzaRlNvZxp+qdqGmVJu2QYKEsFkHSxjC0YGKgaQAFaZLyYSikm2wI/RM5+56LU9hJv1PIdGr7BtMKAD4xwG76g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=c/koTYUH; arc=none smtp.client-ip=198.175.65.14
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1714621932; x=1746157932;
+  h=message-id:date:mime-version:cc:subject:to:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=qK6quWd0+fR1tNL6dF/6F94raTQfcmC3+2BRAFGNCVc=;
+  b=c/koTYUHZPPPsqf7TMLACBhFnoIoi4zIYdn39p4uF2vAMOKl3PUaqGup
+   7BiyBtl05QT0IqkeWhO94n6l4eQVBHSydRLwGc4Dx759kX2Xnv3su4umn
+   vsp+Yej1WIyXM7eytxNIld+TAP1lKLjBfrRN9eusdXA6cp2QH9jtwVhXs
+   jCbiBXQ1AqyhT1dTHwyc93zkqgn7tMOpJKKrvio69MCv3DXx9OzazImZZ
+   rFbP55blCDv5OYT36E/cFAKxUD9HmwbZ62tLmNqYbK/7NbV5EcUNJOZPh
+   yOrY5NjshdvWGIsgOH3dp0rnAWbhwz7F5whbrBLg+LzL12KBMo2Ml/Any
+   Q==;
+X-CSE-ConnectionGUID: G2x9X0oLTSSN8v4jan5aHA==
+X-CSE-MsgGUID: T0bXO3oNTJ+PHCAUtyMBcg==
+X-IronPort-AV: E=McAfee;i="6600,9927,11061"; a="14196395"
+X-IronPort-AV: E=Sophos;i="6.07,247,1708416000"; 
+   d="scan'208";a="14196395"
+Received: from orviesa003.jf.intel.com ([10.64.159.143])
+  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 May 2024 20:52:11 -0700
+X-CSE-ConnectionGUID: vGfpbaSWRyeFeHIYwU+aJA==
+X-CSE-MsgGUID: LEuKkd3RTSO3a82B1VFTUQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,247,1708416000"; 
+   d="scan'208";a="31661944"
+Received: from unknown (HELO [10.239.159.127]) ([10.239.159.127])
+  by orviesa003.jf.intel.com with ESMTP; 01 May 2024 20:52:06 -0700
+Message-ID: <7c3fc511-6a3b-44d8-94fa-e4fff54f93b9@linux.intel.com>
+Date: Thu, 2 May 2024 11:50:35 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-QCInternal: smtphost
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: zATVBlhobrCKXkkuarJ1tPcnhUf3XnL6
-X-Proofpoint-GUID: zATVBlhobrCKXkkuarJ1tPcnhUf3XnL6
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
- definitions=2024-05-01_16,2024-04-30_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 suspectscore=0
- malwarescore=0 phishscore=0 spamscore=0 priorityscore=1501 impostorscore=0
- clxscore=1011 bulkscore=0 mlxscore=0 lowpriorityscore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2404010003
- definitions=main-2405020015
+User-Agent: Mozilla Thunderbird
+Cc: baolu.lu@linux.intel.com, Palmer Dabbelt <palmer@dabbelt.com>,
+ Albert Ou <aou@eecs.berkeley.edu>, Anup Patel <apatel@ventanamicro.com>,
+ Sunil V L <sunilvl@ventanamicro.com>, Nick Kossifidis <mick@ics.forth.gr>,
+ Sebastien Boeuf <seb@rivosinc.com>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley
+ <conor+dt@kernel.org>, devicetree@vger.kernel.org, iommu@lists.linux.dev,
+ linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+ linux@rivosinc.com
+Subject: Re: [PATCH v3 7/7] iommu/riscv: Paging domain support
+To: Tomasz Jeznach <tjeznach@rivosinc.com>, Joerg Roedel <joro@8bytes.org>,
+ Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
+ Paul Walmsley <paul.walmsley@sifive.com>
+References: <cover.1714494653.git.tjeznach@rivosinc.com>
+ <b83f81c04d1f3885d860b1eec03761fe63a33183.1714494653.git.tjeznach@rivosinc.com>
+Content-Language: en-US
+From: Baolu Lu <baolu.lu@linux.intel.com>
+In-Reply-To: <b83f81c04d1f3885d860b1eec03761fe63a33183.1714494653.git.tjeznach@rivosinc.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Add BRANCH_HALT_VOTED flag to inform clock framework
-don't check for CLK_OFF bit.
+On 5/1/24 4:01 AM, Tomasz Jeznach wrote:
+> +/*
+> + * Send IOTLB.INVAL for whole address space for ranges larger than 2MB.
+> + * This limit will be replaced with range invalidations, if supported by
+> + * the hardware, when RISC-V IOMMU architecture specification update for
+> + * range invalidations update will be available.
+> + */
+> +#define RISCV_IOMMU_IOTLB_INVAL_LIMIT	(2 << 20)
+> +
+> +static void riscv_iommu_iotlb_inval(struct riscv_iommu_domain *domain,
+> +				    unsigned long start, unsigned long end)
+> +{
+> +	struct riscv_iommu_bond *bond;
+> +	struct riscv_iommu_device *iommu, *prev;
+> +	struct riscv_iommu_command cmd;
+> +	unsigned long len = end - start + 1;
+> +	unsigned long iova;
+> +
+> +	rcu_read_lock();
+> +
+> +	prev = NULL;
+> +	list_for_each_entry_rcu(bond, &domain->bonds, list) {
+> +		iommu = dev_to_iommu(bond->dev);
+> +
+> +		riscv_iommu_cmd_inval_vma(&cmd);
+> +		riscv_iommu_cmd_inval_set_pscid(&cmd, domain->pscid);
+> +		if (len && len >= RISCV_IOMMU_IOTLB_INVAL_LIMIT) {
+> +			for (iova = start; iova < end; iova += PAGE_SIZE) {
+> +				riscv_iommu_cmd_inval_set_addr(&cmd, iova);
+> +				riscv_iommu_cmd_send(iommu, &cmd, 0);
+> +			}
+> +		} else {
+> +			riscv_iommu_cmd_send(iommu, &cmd, 0);
+> +		}
+> +
+> +		/*
+> +		 * IOTLB invalidation request can be safely omitted if already sent
+> +		 * to the IOMMU for the same PSCID, and with domain->bonds list
+> +		 * arranged based on the device's IOMMU, it's sufficient to check
+> +		 * last device the invalidation was sent to.
+> +		 */
+> +		if (iommu == prev)
+> +			continue;
+> +
+> +		prev = iommu;
+> +		riscv_iommu_cmd_send(iommu, &cmd, 0);
+> +	}
 
-CRYPTO_AHB_CLK_ENA and CRYPTO_AXI_CLK_ENA enable bit is
-present in other VOTE registers also, like TZ.
-If anyone else also enabled this clock, even if we turn
-off in GCC_APCS_CLOCK_BRANCH_ENA_VOTE | 0x180B004, it won't
-turn off.
+I don't quite follow why not moving "if (iommu == prev)" check to the
+top and removing the last riscv_iommu_cmd_send(). My understanding is
+that we could make it simply like below:
 
-Signed-off-by: Md Sadre Alam <quic_mdalam@quicinc.com>
----
- drivers/clk/qcom/gcc-ipq9574.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+	prev = NULL;
+	list_for_each_entry_rcu(bond, &domain->bonds, list) {
+		iommu = dev_to_iommu(bond->dev);
+		if (iommu == prev)
+			continue;
 
-diff --git a/drivers/clk/qcom/gcc-ipq9574.c b/drivers/clk/qcom/gcc-ipq9574.c
-index 0a3f846695b8..f8b9a1e93bef 100644
---- a/drivers/clk/qcom/gcc-ipq9574.c
-+++ b/drivers/clk/qcom/gcc-ipq9574.c
-@@ -2140,9 +2140,10 @@ static struct clk_rcg2 pcnoc_bfdcd_clk_src = {
- 
- static struct clk_branch gcc_crypto_axi_clk = {
- 	.halt_reg = 0x16010,
-+	.halt_check = BRANCH_HALT_VOTED,
- 	.clkr = {
--		.enable_reg = 0x16010,
--		.enable_mask = BIT(0),
-+		.enable_reg = 0xb004,
-+		.enable_mask = BIT(15),
- 		.hw.init = &(const struct clk_init_data) {
- 			.name = "gcc_crypto_axi_clk",
- 			.parent_hws = (const struct clk_hw *[]) {
-@@ -2156,9 +2157,10 @@ static struct clk_branch gcc_crypto_axi_clk = {
- 
- static struct clk_branch gcc_crypto_ahb_clk = {
- 	.halt_reg = 0x16014,
-+	.halt_check = BRANCH_HALT_VOTED,
- 	.clkr = {
--		.enable_reg = 0x16014,
--		.enable_mask = BIT(0),
-+		.enable_reg = 0xb004,
-+		.enable_mask = BIT(16),
- 		.hw.init = &(const struct clk_init_data) {
- 			.name = "gcc_crypto_ahb_clk",
- 			.parent_hws = (const struct clk_hw *[]) {
--- 
-2.34.1
+		/*
+		 * Send an invalidation request to the request queue
+		 * without wait.
+		 */
+		... ...
 
+		prev = iommu;
+	}
+
+> +
+> +	prev = NULL;
+> +	list_for_each_entry_rcu(bond, &domain->bonds, list) {
+> +		iommu = dev_to_iommu(bond->dev);
+> +		if (iommu == prev)
+> +			continue;
+> +
+> +		prev = iommu;
+> +		riscv_iommu_cmd_iofence(&cmd);
+> +		riscv_iommu_cmd_send(iommu, &cmd, RISCV_IOMMU_QUEUE_TIMEOUT);
+> +	}
+> +	rcu_read_unlock();
+> +}
+
+Best regards,
+baolu
 
