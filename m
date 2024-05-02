@@ -1,145 +1,312 @@
-Return-Path: <linux-kernel+bounces-166163-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-166188-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 001138B96FC
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 10:57:19 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 253AA8B9756
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 11:14:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 30D731C21A81
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 08:57:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 935471F2108B
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 09:14:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BCB443AB3;
-	Thu,  2 May 2024 08:57:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Ls72qZyf"
-Received: from mail-pg1-f169.google.com (mail-pg1-f169.google.com [209.85.215.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F3055337A;
+	Thu,  2 May 2024 09:14:01 +0000 (UTC)
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1C0625634
-	for <linux-kernel@vger.kernel.org>; Thu,  2 May 2024 08:57:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40F4017591;
+	Thu,  2 May 2024 09:13:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714640235; cv=none; b=gakjqkmxfRk5qmCQ4bCsFZQWQdkBCc5f4u8FeloHvbRD3JPpbnQvgFd/T5WnuaQ/lFf7cYix5J339X4ymuk4IcuSueKrzu2zh9b+qFAZPiig9w1T1s/evVsjnq/A4jHnC/0pZ5Bc5MGfip49/4zpQCuMEYj9xw33MkyWfI1nqww=
+	t=1714641240; cv=none; b=j1PpyYciq532X9Anr9z4Qqkh/bRBecHMN8BzyRCNFaVrYR1jcMtO/T/b5AbFSbIQJZEubmV0dmbn9XnLTtmZuj7hNsi9xa8/N/0OlXEP/wGtHuZBW+8Sl/p3jc+2yXqX4jjLhEgD7u5BAUyhdLOxHEXwxwRKOaMPd0bZXGb/8tg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714640235; c=relaxed/simple;
-	bh=sa/8HDfFL5CFAauNZ2UMFU9u1zkFTrNif2xikpD73u0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=UKCUVlcHtKOnFOhQRQSNYNRUHoDQMJSUVo3iF2c5k8lQIqiSqchuOJCWFfd0GrNy4HrK+BQsW8reaOUcHXoHq9Wf/ycwuSQo0GnSpMA5OaEjWY6B94OMcGFrsF1o0uy5p4ZKIXDwKW6UqV5xaBX0D526BAj5AtRko+2eqIajl30=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Ls72qZyf; arc=none smtp.client-ip=209.85.215.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-pg1-f169.google.com with SMTP id 41be03b00d2f7-5d8b887bb0cso6296322a12.2
-        for <linux-kernel@vger.kernel.org>; Thu, 02 May 2024 01:57:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1714640233; x=1715245033; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=4r1Ogu9VhTDx/tfecsOBWKHykrKbw6y12iAWdXGVaIU=;
-        b=Ls72qZyfwsGai+8Lre/x1zGcIzFegRC6AZy8VMOSBVEy/Pr1WIYAuD345J4NMe6nOF
-         Tphmr2KrIMOm0FAcoTp8Fk/Zbf2jiyvcuECh+TVLTkjN5W93eY6HvP9mHvYVTl8YhHnT
-         glU4qzL2W8Aam+rBQCY4MOnuZ8e9FUF3omy0mK4xEbQlIzDyM93kZwPs2Tv9qhCe0gmz
-         gWRePthVp+gToUIyWZW84IJMPSdCezNpvJ8aoN7TDH9FwkdNkc1ZAAHqkoPJsWq2sKyK
-         VY82dtias30pkNxvbnJ9MdMg9898jKBzaHoMd2eGZpY3cBtrVLlJLQHhOeDK1Jyo/bL1
-         /qIw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714640233; x=1715245033;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=4r1Ogu9VhTDx/tfecsOBWKHykrKbw6y12iAWdXGVaIU=;
-        b=dBjnCi13QGQZ3aridJoh/6cY9OGWAWaGqyeItkjhIi8znMwnGcU4wvlmqayhoL6E0a
-         h0swELPkKezlWlar4L8kLuvL8CCacgabolvTng/6KHWY6jJXNzHADHxO79EHE1BBzhGl
-         TE4KnXlpnGdgE8bcGncCFHvhsqkLlbFw1zcF3BpJKQuTAgHdLn+uHB0i3p/WdYZ3fgp+
-         XuTAIIGHLzGOJRW1qTP+N4PjqyWZh4sv0mWkyXoTVxKir3AWYEU3LWoxAn9Z9rljzUfz
-         p5i88kND2TUYzOVaVFiQOhXnpOJJjDvybRmjg9W1ytG6zsuf4hH3+oXUUPUqykNTThk8
-         qi5w==
-X-Forwarded-Encrypted: i=1; AJvYcCW4xINH4K7TDZL9NPR5ZXlWRXIR5kTdfBgIwIdon7uNTQUnmh7P7raZWnIt57QTH/PWEuBt2YYQufk/PZiYCNJ/vKzrAruqeTwz8B7L
-X-Gm-Message-State: AOJu0YxwXHXdl34t/5Z/5YVoW5fg33R7gLCl35zrRjUUpDb0AHumuETQ
-	6nhnT/V1X8RoVbMllZ4uqnzwew8J+ST6Xpo5S8mhqqIZoWeghfqX88yMagGJX7Tq67KV6S6T8qF
-	KGFaPeTbJVGkJmtNGx/lI6bSRY9Ydz0f8GcrFkw==
-X-Google-Smtp-Source: AGHT+IEe2eAuToBWuTwXa55lTIfNnyP7Y8GQeBJFrOCwkGsAoaPlIj7shcgafUBSRnhEQEvdKszCho278n3qNeY5erA=
-X-Received: by 2002:a17:90a:e549:b0:2b2:7e95:e3ef with SMTP id
- ei9-20020a17090ae54900b002b27e95e3efmr1476669pjb.44.1714640233122; Thu, 02
- May 2024 01:57:13 -0700 (PDT)
+	s=arc-20240116; t=1714641240; c=relaxed/simple;
+	bh=SXEJU1F2gJzibggxU6WUh0B+WRELoNDshkPVumVraHE=;
+	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=daxjKsnT3tdSbm5cRdbf13ArERrABVXWn9mGEHg+WKdxaRXJAdunFXblOe0YQvZVE3xW6TWflQfzri+I5Z7c2iqtzX0ncHu8FHINKr78YTqw8DBIT4LZ+PtSQqz77i++JGbfe27ovsCOBq3Es0eogKlRkUABfL/BjkYI0tyG6cA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.18.186.216])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4VVST13Lmbz67ZRh;
+	Thu,  2 May 2024 16:55:49 +0800 (CST)
+Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
+	by mail.maildlp.com (Postfix) with ESMTPS id E30181408F9;
+	Thu,  2 May 2024 16:58:35 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.39; Thu, 2 May
+ 2024 09:58:35 +0100
+Date: Thu, 2 May 2024 09:58:34 +0100
+From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To: Jean-Baptiste Maneyrol <Jean-Baptiste.Maneyrol@tdk.com>
+CC: Stephen Rothwell <sfr@canb.auug.org.au>, Linux Kernel Mailing List
+	<linux-kernel@vger.kernel.org>, Linux Next Mailing List
+	<linux-next@vger.kernel.org>
+Subject: Re: linux-next: manual merge of the iio tree with the iio-fixes
+ tree
+Message-ID: <20240502095834.00000e7c@Huawei.com>
+In-Reply-To: <FR3P281MB1757A0D3F821CF506D79634ECE182@FR3P281MB1757.DEUP281.PROD.OUTLOOK.COM>
+References: <20240430151510.0f49b40e@canb.auug.org.au>
+	<FR3P281MB1757A0D3F821CF506D79634ECE182@FR3P281MB1757.DEUP281.PROD.OUTLOOK.COM>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240424132438.514720-1-serein.chengyu@huawei.com>
-In-Reply-To: <20240424132438.514720-1-serein.chengyu@huawei.com>
-From: Vincent Guittot <vincent.guittot@linaro.org>
-Date: Thu, 2 May 2024 10:57:01 +0200
-Message-ID: <CAKfTPtAeHeTKnbfE160ChxpVDK5FAS8SHn8TSFMpSWNQrizPVg@mail.gmail.com>
-Subject: Re: [PATCH] sched/core: fix incorrect parameter burst in cpu_max_write()
-To: Cheng Yu <serein.chengyu@huawei.com>
-Cc: mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com, 
-	dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com, 
-	mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com, 
-	changhuaixin@linux.alibaba.com, shanpeic@linux.alibaba.com, 
-	dtcccc@linux.alibaba.com, tj@kernel.org, linux-kernel@vger.kernel.org, 
-	zhangqiao22@huawei.com, judy.chenhui@huawei.com, yusongping@huawei.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: quoted-printable
+X-ClientProxiedBy: lhrpeml100004.china.huawei.com (7.191.162.219) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
 
-On Wed, 24 Apr 2024 at 15:29, Cheng Yu <serein.chengyu@huawei.com> wrote:
->
-> In the cgroup v2 cpu subsystem, assuming we have a
-> cgroup named test, we set cpu.max and cpu.max.burst:
->     # echo 1000000 > /sys/fs/cgroup/test/cpu.max
->     # echo 1000000 > /sys/fs/cgroup/test/cpu.max.burst
-> then we check cpu.max and cpu.max.burst:
->     # cat /sys/fs/cgroup/test/cpu.max
->     1000000 100000
->     # cat /sys/fs/cgroup/test/cpu.max.burst
->     1000000
->
-> Next we set cpu.max again and check cpu.max and
-> cpu.max.burst:
->     # echo 2000000 > /sys/fs/cgroup/test/cpu.max
->     # cat /sys/fs/cgroup/test/cpu.max
->     2000000 100000
->     # cat /sys/fs/cgroup/test/cpu.max.burst
->     1000
-> we found that the cpu.max.burst value changed unexpectedly.
->
-> In cpu_max_write(), the unit of the burst value returned
-> by tg_get_cfs_burst() is microseconds, while in cpu_max_write(),
-> the burst unit used for calculation should be nanoseconds,
-> which leads to the bug.
->
-> To fix it, we get the burst value directly from
-> tg->cfs_bandwidth.burst.
->
-> Reported-by: Qixin Liao <liaoqixin@huawei.com>
-> Fixes: f4183717b370 ("sched/fair: Introduce the burstable CFS controller")
-> Signed-off-by: Cheng Yu <serein.chengyu@huawei.com>
-> Signed-off-by: Zhang Qiao <zhangqiao22@huawei.com>
+=20
 
-Reviewed-by: Vincent Guittot <vincent.guittot@linaro.org>
-Tested-by: Vincent Guittot <vincent.guittot@linaro.org>
+On Thu, 2 May 2024 08:36:21 +0000
+Jean-Baptiste Maneyrol <Jean-Baptiste.Maneyrol@tdk.com> wrote:
 
-> ---
->  kernel/sched/core.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-> index 7019a40457a6..d211d40a2edc 100644
-> --- a/kernel/sched/core.c
-> +++ b/kernel/sched/core.c
-> @@ -11402,7 +11402,7 @@ static ssize_t cpu_max_write(struct kernfs_open_file *of,
->  {
->         struct task_group *tg = css_tg(of_css(of));
->         u64 period = tg_get_cfs_period(tg);
-> -       u64 burst = tg_get_cfs_burst(tg);
-> +       u64 burst = tg->cfs_bandwidth.burst;
->         u64 quota;
->         int ret;
->
+> Hello Stephen and Jonathan,
+>=20
+> sorry for the mess, I should have warned Jonathan about it.
+>=20
+> The manual fix is obviously correct, no problem.
+>=20
+> Thanks and sorry for the inconvenience,
+> JB
+
+This should be sorted today.
+Given timing (and busy week as ever!) I decided I didn't have enough fixes
+to do a separate pull and the merge window is close.  So I dragged
+the fixes across to the branch targeting the merge window and dealt with
+the merge there.  The togreg-fixes branch should no longer have
+thse fixes on it.
+
+Jonathan
+
+
+>=20
+>=20
+> ________________________________________
+> From:=A0Stephen Rothwell
+> Sent:=A0Tuesday, April 30, 2024 07:15
+> To:=A0Jonathan Cameron
+> Cc:=A0Jean-Baptiste Maneyrol; Linux Kernel Mailing List; Linux Next Maili=
+ng List
+> Subject:=A0linux-next: manual merge of the iio tree with the iio-fixes tr=
+ee
+>=20
+>=20
+> Hi all,
+>=20
+>=20
+>=20
+> Today's linux-next merge of the iio tree got a conflict in:
+>=20
+>=20
+>=20
+> =A0 drivers/iio/imu/inv_icm42600/inv_icm42600_buffer.c
+>=20
+>=20
+>=20
+> between commit:
+>=20
+>=20
+>=20
+> =A0 d7230b995246 ("iio: invensense: fix timestamp glitches when switching=
+ frequency")
+>=20
+>=20
+>=20
+> from the iio-fixes tree and commit:
+>=20
+>=20
+>=20
+> =A0 a1432b5b4f4c ("iio: imu: inv_icm42600: add support of ICM-42686-P")
+>=20
+>=20
+>=20
+> from the iio tree.
+>=20
+>=20
+>=20
+> I fixed it up (see below) and can carry the fix as necessary. This
+>=20
+> is now fixed as far as linux-next is concerned, but any non trivial
+>=20
+> conflicts should be mentioned to your upstream maintainer when your tree
+>=20
+> is submitted for merging.=A0 You may also want to consider cooperating
+>=20
+> with the maintainer of the conflicting tree to minimise any particularly
+>=20
+> complex conflicts.
+>=20
+>=20
+>=20
 > --
-> 2.25.1
->
->
+>=20
+> Cheers,
+>=20
+> Stephen Rothwell
+>=20
+>=20
+>=20
+> diff --cc drivers/iio/imu/inv_icm42600/inv_icm42600_buffer.c
+>=20
+> index 9cde9a9337ad,cfb4a41ab7c1..000000000000
+>=20
+> --- a/drivers/iio/imu/inv_icm42600/inv_icm42600_buffer.c
+>=20
+> +++ b/drivers/iio/imu/inv_icm42600/inv_icm42600_buffer.c
+>=20
+> @@@ -509,20 -512,20 +512,20 @@@ int inv_icm42600_buffer_fifo_parse(stru
+>=20
+> =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 return 0;
+>=20
+> =A0
+>=20
+> =A0=A0=A0=A0=A0=A0=A0=A0 /* handle gyroscope timestamp and FIFO data pars=
+ing */
+>=20
+> =A0-=A0=A0=A0=A0=A0=A0 ts =3D &gyro_st->ts;
+>=20
+> =A0-=A0=A0=A0=A0=A0=A0 inv_sensors_timestamp_interrupt(ts, st->fifo.perio=
+d, st->fifo.nb.total,
+>=20
+> =A0-=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 st->fifo.nb.gyro, st->timesta=
+mp.gyro);
+>=20
+> =A0=A0=A0=A0=A0=A0=A0=A0 if (st->fifo.nb.gyro > 0) {
+>=20
+> -=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 ts =3D iio_priv(st->indio_=
+gyro);
+>=20
+> ++=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 ts =3D &gyro_st->ts;
+>=20
+> =A0+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 inv_sensors_timestamp_inte=
+rrupt(ts, st->fifo.nb.gyro,
+>=20
+> =A0+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 st->t=
+imestamp.gyro);
+>=20
+> =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 ret =3D inv_icm42600_gyr=
+o_parse_fifo(st->indio_gyro);
+>=20
+> =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 if (ret)
+>=20
+> =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 =
+return ret;
+>=20
+> =A0=A0=A0=A0=A0=A0=A0=A0 }
+>=20
+> =A0
+>=20
+> =A0=A0=A0=A0=A0=A0=A0=A0 /* handle accelerometer timestamp and FIFO data =
+parsing */
+>=20
+> =A0-=A0=A0=A0=A0=A0=A0 ts =3D &accel_st->ts;
+>=20
+> =A0-=A0=A0=A0=A0=A0=A0 inv_sensors_timestamp_interrupt(ts, st->fifo.perio=
+d, st->fifo.nb.total,
+>=20
+> =A0-=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 st->fifo.nb.accel, st->timest=
+amp.accel);
+>=20
+> =A0=A0=A0=A0=A0=A0=A0=A0 if (st->fifo.nb.accel > 0) {
+>=20
+> -=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 ts =3D iio_priv(st->indio_=
+accel);
+>=20
+> ++=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 ts =3D &accel_st->ts;
+>=20
+> =A0+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 inv_sensors_timestamp_inte=
+rrupt(ts, st->fifo.nb.accel,
+>=20
+> =A0+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 st->t=
+imestamp.accel);
+>=20
+> =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 ret =3D inv_icm42600_acc=
+el_parse_fifo(st->indio_accel);
+>=20
+> =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 if (ret)
+>=20
+> =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 =
+return ret;
+>=20
+> @@@ -549,16 -554,20 +554,16 @@@ int inv_icm42600_buffer_hwfifo_flush(st
+>=20
+> =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 return 0;
+>=20
+> =A0
+>=20
+> =A0=A0=A0=A0=A0=A0=A0=A0 if (st->fifo.nb.gyro > 0) {
+>=20
+> -=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 ts =3D iio_priv(st->indio_=
+gyro);
+>=20
+> +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 ts =3D &gyro_st->ts;
+>=20
+> =A0-=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 inv_sensors_timestamp_inte=
+rrupt(ts, st->fifo.period,
+>=20
+> =A0-=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 st->f=
+ifo.nb.total, st->fifo.nb.gyro,
+>=20
+> =A0-=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 gyro_=
+ts);
+>=20
+> =A0+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 inv_sensors_timestamp_inte=
+rrupt(ts, st->fifo.nb.gyro, gyro_ts);
+>=20
+> =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 ret =3D inv_icm42600_gyr=
+o_parse_fifo(st->indio_gyro);
+>=20
+> =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 if (ret)
+>=20
+> =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 =
+return ret;
+>=20
+> =A0=A0=A0=A0=A0=A0=A0=A0 }
+>=20
+> =A0
+>=20
+> =A0=A0=A0=A0=A0=A0=A0=A0 if (st->fifo.nb.accel > 0) {
+>=20
+> -=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 ts =3D iio_priv(st->indio_=
+accel);
+>=20
+> +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 ts =3D &accel_st->ts;
+>=20
+> =A0-=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 inv_sensors_timestamp_inte=
+rrupt(ts, st->fifo.period,
+>=20
+> =A0-=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 st->f=
+ifo.nb.total, st->fifo.nb.accel,
+>=20
+> =A0-=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 accel=
+_ts);
+>=20
+> =A0+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 inv_sensors_timestamp_inte=
+rrupt(ts, st->fifo.nb.accel, accel_ts);
+>=20
+> =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 ret =3D inv_icm42600_acc=
+el_parse_fifo(st->indio_accel);
+>=20
+> =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 if (ret)
+>=20
+> =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 =
+return ret;
+>=20
+
 
