@@ -1,203 +1,167 @@
-Return-Path: <linux-kernel+bounces-166881-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-166884-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 445168BA152
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 22:04:53 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5611F8BA157
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 22:06:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3B3CFB20EF0
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 20:04:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 095D6285AE1
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 20:06:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DFF64181302;
-	Thu,  2 May 2024 20:04:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7EF98180A9F;
+	Thu,  2 May 2024 20:05:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KcgE78um"
-Received: from mail-ej1-f50.google.com (mail-ej1-f50.google.com [209.85.218.50])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cTzvj6Jb"
+Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78A7017F392;
-	Thu,  2 May 2024 20:04:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A4BC180A96;
+	Thu,  2 May 2024 20:05:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714680280; cv=none; b=LTGMSAfXCJZO92q4fFqbo/xvU+ZEsu25I7WpjCsE3oM1QQTWurs/uLAKhQFqJQ8x2eVa/U/Cj4BJ5kl6QVCWG05eMxkjkwzYscYsP3pYrEk2j1xq0/UfWPS/OmhEPJYMMp3Pu5iJQYKDQnewvTOYe3Mg/SRz4+8VCmh/5VtJodc=
+	t=1714680350; cv=none; b=MiLpCfsMNPwEfCgqCyMvWjQWAof+bvYO/DA0YXHYcFX3iVBl6BzUJd+R116ZRxKlnThSbQgOa+40BV3K3NvisQIrcNfTIJFi9qEusrieFz9esezicn7+4nj6oqnbY3ayXTYiEj+guv32EPS6sVc7xrQsVFF05WRPjDWsOrU9RS4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714680280; c=relaxed/simple;
-	bh=7FCmVIdhb8qFtvDaZmeGrAF1uCcpjSj8SEAZWRsf7kc=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=AguNlnxe3RrBXxGu0CzIPD3pQ/PwBh5LqHZud77cvYRzTwed08WHjo2HtksfGSWmpdRsdsvaWC0WdCse5+NrN1wKnckLcjKt48ZEzapN7MDEIAHE5hbDL7SVM9Szp/Yta03M4AV4J9Kv0HcCXZzw0KqdvS44hmbgs1krg1eaRZI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KcgE78um; arc=none smtp.client-ip=209.85.218.50
+	s=arc-20240116; t=1714680350; c=relaxed/simple;
+	bh=vhlNDUeZIeAKCiYPSLEh2Ii826G2fhUv3y2XiGVPsiw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=CL3C5zHw37K7F6osnkr9ysAUVtA/CfN9hRHS11g4NH1Yrrl4VwcTJJXbIF90Og2xXxdtKNDg4n/TnYGjeTEKxpFb7EQE13pov0XzHB726WPXPXLvU5OPI3peRP9mCJ3L7nOvVm4SIsMz1LV/xly+WAHowbFmMZJcVKtEkfcC12c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cTzvj6Jb; arc=none smtp.client-ip=209.85.128.53
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-a4702457ccbso1201948066b.3;
-        Thu, 02 May 2024 13:04:38 -0700 (PDT)
+Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-41b5e74fa83so56730535e9.0;
+        Thu, 02 May 2024 13:05:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714680277; x=1715285077; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=wKUSJ46i/1gUl3iF4hfQIWgYETEC/EKPdVMoKnC9CT8=;
-        b=KcgE78umrzmF6H/yMKrotZPb7EMXkqZoTHKbstk4/dCP4bQQIR4kq4dvXGeK3h5mLH
-         iG1ZqBEhFVtIcABgPkNob4IVsTMF3ar9/T8oTy4lYTo3pL5bKAd/kaTNjJUqQonZaqwa
-         YAGeUE5rp/5AenddTrXh/wQA05i/nUUyCinaVJtDSAQjxzWsxbp8z+jYIHSWizh2Vu35
-         LibrErWlWILL4kfjmj7yZiv0iO5I85sx/YUd9G0cdpeCHOzP/oB6xGmnO/UvGkD/WgkH
-         Upl+byRX2RVsn4GlTwFU4DoQinjdgpxTLtx3gDjiEwn2XmW1nUSDWZbOuJ1JogVIvo9P
-         yldw==
+        d=gmail.com; s=20230601; t=1714680347; x=1715285147; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=CaQbQJW7qpDa3J1bLEylpyUDiUE+NN+Elta1I7Et/qA=;
+        b=cTzvj6Jb8EMyXW7U5K2cDvdJ5HHNBJxoFYPdYZuYxPpKD1lQ7xnNfPV93/j1hDUeJm
+         8MPtiFSGrNujEtHzpKD6ojJSxnHX7dJjhiTWgknqrIHlZnhoJE6umsJIkd5iwpDLk+wG
+         7hydxfieTx2DPFtCRAjjdmrngkcD4tA186PVoor5bGIC/FOpmiewLN0UiLoEi/+F7mvi
+         351mQgT3XzcKULWY/p5sjrRPGSEVx5MLfmUjOxjQZP/fm2jpjPSeT8n63HmJmUcFQl7Q
+         2B2bbG79poDBGA8CWhPWFhmw/OWv1wokBJQIB0MSgm/2yzRnzAgzBnhMW6Fssk9K/t7e
+         eafA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714680277; x=1715285077;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from
+        d=1e100.net; s=20230601; t=1714680347; x=1715285147;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=wKUSJ46i/1gUl3iF4hfQIWgYETEC/EKPdVMoKnC9CT8=;
-        b=Ne43z3SZPi/icE/4vOe1kvljIQVJTetqcx03y3+1CEKi6IMETDv7j4HJCqw8G+4/dN
-         fZM0K951MQoyfnjoDlBGNLplSGHDIKZfHoxiIPjEMC2K/7uWxGkWkSn8bM9c0vuMbdBM
-         ur2YiQHeJiD0sJhzLaTk5spMp+KlXEv8NjJoLpyjjRdz/HBS6lMpPX1SEDeVcV8OQ/Sm
-         MGwIg6ZVFKfT/O8m7fj2bGtFvWursdf/oNsAXAQKuC7wMHTtSx+cbvqWhtCY9z72obm0
-         VqQmwokLeU/NXpYBiqF0a57PiV4Bee0vNifTtGLQhTAKD11RXGGlaBGUnvIIDl/+533r
-         H5gw==
-X-Forwarded-Encrypted: i=1; AJvYcCW1kGuj1oUSOgp1uTZBI0mTmkHEadlRUrLE41Ozbg9pYh9qMJZtEePH+YKOE2jvmtHLknGaz48YGGZ4KNmI6giXHhSjpT+cd7EAUjTTega6PPIy5Cchqu6RaM5ratJBBjTkAUUmR/AAi/cCTjMebYvt0t9IYuoyMXiP6V9+cWtkbsQvX6ZdOkSRhXdPnZb5rvp+eOSmKWsfveKz8GlvYTM78BEzjU8kUbI+hIg+Vd1g3UbclfZVLBJ91GQl
-X-Gm-Message-State: AOJu0YxIHuHp052Gvg89HeJPWCZeU1nF5uP0dtfo3MyZPbm5fTT5EYzd
-	SdlxWxvzbHzTQw1+N1Apg8mOApFF5l8tx79dvmuoHIndcoXTzZpx
-X-Google-Smtp-Source: AGHT+IF54QP7sxH15mqmjojykVUWN58GonsqCzbbE0qoxSCDVfwCxjsiRGyijzVxmFameQW8rHW24A==
-X-Received: by 2002:a17:906:4aca:b0:a55:5ed2:44d5 with SMTP id u10-20020a1709064aca00b00a555ed244d5mr307287ejt.68.1714680276341;
-        Thu, 02 May 2024 13:04:36 -0700 (PDT)
-Received: from krava ([83.240.62.36])
-        by smtp.gmail.com with ESMTPSA id l27-20020a170906079b00b00a524b33fd9asm885469ejc.68.2024.05.02.13.04.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 May 2024 13:04:36 -0700 (PDT)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Thu, 2 May 2024 22:04:33 +0200
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Steven Rostedt <rostedt@goodmis.org>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Oleg Nesterov <oleg@redhat.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>, linux-kernel@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org, linux-api@vger.kernel.org,
-	linux-man@vger.kernel.org, x86@kernel.org, bpf@vger.kernel.org,
-	Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	"Borislav Petkov (AMD)" <bp@alien8.de>,
-	Ingo Molnar <mingo@redhat.com>, Andy Lutomirski <luto@kernel.org>
-Subject: Re: [PATCHv4 bpf-next 0/7] uprobe: uretprobe speed up
-Message-ID: <ZjPx0fncg-8brFBk@krava>
-References: <20240502122313.1579719-1-jolsa@kernel.org>
- <CAEf4BzYxsRMx9M_AiLavTHFpndSmZqOM8QcYhDTbBviSpv1r+A@mail.gmail.com>
+        bh=CaQbQJW7qpDa3J1bLEylpyUDiUE+NN+Elta1I7Et/qA=;
+        b=WJWx0WNfVV6xiOHUrXWzGiQCJcbIrSUqzJLZomnS+fAswYjIXm5pECCam8CCLIwcx9
+         nec1B4mzds3xCBD9rmnKAAOmN8CflxZ2RkIOQDcbxprfBEg034527adIl+SYLdS5t4n+
+         mY9Rs6HwkaWuNRzO9F3RYdhrhTETj+12b22J+byt5eGL/JFP0fl3vzSSeKYuhn9z+olR
+         o/og/o+ir5BsozyYIPCz+AiZwJnVO/NlSgKdl1M8iAhFQapcnNImKhv73WTYMxW40Jzh
+         4pZMTz5HS5JsfZ/xtYtQiFdiwpgtn5swzwmImTkTcPzycBzZV7K9kFboi3iwPZG2EiMY
+         oLlg==
+X-Forwarded-Encrypted: i=1; AJvYcCWosNMBT03PERQWJWPLqR/n/DPN/oi1JPpwenS8zx8P5OKZtrMK9mHkXfEtg/eEh4ZgR6CaJjuTpLweeOm427KED02ArwG/MJwGuHJuXWXznkGseNYlgoL0xaOsuREAMazlEBYFqaeVtPbWuwwqCoi9OwzQhXhLt7AY6OAC5ntJlxXIC7Q1usKJCTm3nbAd
+X-Gm-Message-State: AOJu0YxzAkoNBtiEKjLkIgP9ayw6fDnfXy7q25CmsnC17G3PbRJOJxoh
+	4IV5lsdjrPONi/ZvPAwdxrud0IQGPcG7mkwJ2vKkkgQVVkdKyfe9
+X-Google-Smtp-Source: AGHT+IERDdLSkd1KZypnKYe4Ok4q7bdJEXZCW/hz4GNoQecQXu9dDSHxZ/8mcrQyyvAGsgBB2HwrcA==
+X-Received: by 2002:a05:600c:4691:b0:41a:141c:e15a with SMTP id p17-20020a05600c469100b0041a141ce15amr590276wmo.16.1714680347215;
+        Thu, 02 May 2024 13:05:47 -0700 (PDT)
+Received: from ?IPV6:2a02:8071:b783:140:927c:82ba:d32d:99c1? ([2a02:8071:b783:140:927c:82ba:d32d:99c1])
+        by smtp.gmail.com with ESMTPSA id r12-20020a05600c458c00b0041bfa2171efsm3010935wmo.40.2024.05.02.13.05.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 02 May 2024 13:05:44 -0700 (PDT)
+Message-ID: <b7d97b2b-8b13-4a02-9235-46ed418c3d81@gmail.com>
+Date: Thu, 2 May 2024 22:05:44 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAEf4BzYxsRMx9M_AiLavTHFpndSmZqOM8QcYhDTbBviSpv1r+A@mail.gmail.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/3] hwmon: surface_temp: Add support for sensor names
+To: Guenter Roeck <linux@roeck-us.net>
+Cc: Jean Delvare <jdelvare@suse.com>,
+ =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+ Hans de Goede <hdegoede@redhat.com>, Ivor Wanders <ivor@iwanders.net>,
+ linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+ linux-hwmon@vger.kernel.org
+References: <20240330112409.3402943-1-luzmaximilian@gmail.com>
+ <20240330112409.3402943-3-luzmaximilian@gmail.com>
+ <43908511-198f-42ee-af21-dad79bdf799a@roeck-us.net>
+ <97d0f68f-63da-4f72-ae8d-89fbf9aadf62@gmail.com>
+ <8d62af9d-281a-44c0-a40c-93ae76827705@roeck-us.net>
+Content-Language: en-US
+From: Maximilian Luz <luzmaximilian@gmail.com>
+In-Reply-To: <8d62af9d-281a-44c0-a40c-93ae76827705@roeck-us.net>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Thu, May 02, 2024 at 09:43:02AM -0700, Andrii Nakryiko wrote:
-> On Thu, May 2, 2024 at 5:23 AM Jiri Olsa <jolsa@kernel.org> wrote:
-> >
-> > hi,
-> > as part of the effort on speeding up the uprobes [0] coming with
-> > return uprobe optimization by using syscall instead of the trap
-> > on the uretprobe trampoline.
-> >
-> > The speed up depends on instruction type that uprobe is installed
-> > and depends on specific HW type, please check patch 1 for details.
-> >
-> > Patches 1-6 are based on bpf-next/master, but path 1 and 2 are
-> > apply-able on linux-trace.git tree probes/for-next branch.
-> > Patch 7 is based on man-pages master.
-> >
-> > v4 changes:
-> >   - added acks [Oleg,Andrii,Masami]
-> >   - reworded the man page and adding more info to NOTE section [Masami]
-> >   - rewrote bpf tests not to use trace_pipe [Andrii]
-> >   - cc-ed linux-man list
-> >
-> > Also available at:
-> >   https://git.kernel.org/pub/scm/linux/kernel/git/jolsa/perf.git
-> >   uretprobe_syscall
-> >
-> 
-> It looks great to me, thanks! Unfortunately BPF CI build is broken,
-> probably due to some of the Makefile additions, please investigate and
-> fix (or we'll need to fix something on BPF CI side), but it looks like
-> you'll need another revision, unfortunately.
-> 
-> pw-bot: cr
-> 
->   [0] https://github.com/kernel-patches/bpf/actions/runs/8923849088/job/24509002194
+Hi,
 
-yes, I think it's missing the 32-bit libc for uprobe_compat binary,
-probably it needs to be added to github.com:libbpf/ci.git setup-build-env/action.yml ?
-hm but I'm not sure how to test it, need to check
+On 4/16/24 11:08 PM, Guenter Roeck wrote:
+> On Tue, Apr 16, 2024 at 09:00:05PM +0200, Maximilian Luz wrote:
+>> On 4/16/24 3:30 PM, Guenter Roeck wrote:
+>>> On Sat, Mar 30, 2024 at 12:24:01PM +0100, Maximilian Luz wrote:
+>>
+>> [...]
+>>
+>>>> +static int ssam_tmp_get_name(struct ssam_device *sdev, u8 iid, char *buf, size_t buf_len)
+>>>> +{
+>>>> +	struct ssam_tmp_get_name_rsp name_rsp;
+>>>> +	int status;
+>>>> +
+>>>> +	status =  __ssam_tmp_get_name(sdev->ctrl, sdev->uid.target, iid, &name_rsp);
+>>>> +	if (status)
+>>>> +		return status;
+>>>> +
+>>>> +	/*
+>>>> +	 * This should not fail unless the name in the returned struct is not
+>>>> +	 * null-terminated or someone changed something in the struct
+>>>> +	 * definitions above, since our buffer and struct have the same
+>>>> +	 * capacity by design. So if this fails blow this up with a warning.
+>>>> +	 * Since the more likely cause is that the returned string isn't
+>>>> +	 * null-terminated, we might have received garbage (as opposed to just
+>>>> +	 * an incomplete string), so also fail the function.
+>>>> +	 */
+>>>> +	status = strscpy(buf, name_rsp.name, buf_len);
+>>>> +	WARN_ON(status < 0);
+>>>
+>>> Not acceptable. From include/asm-generic/bug.h:
+>>>
+>>>    * Do not use these macros when checking for invalid external inputs
+>>>    * (e.g. invalid system call arguments, or invalid data coming from
+>>>    * network/devices), and on transient conditions like ENOMEM or EAGAIN.
+>>>    * These macros should be used for recoverable kernel issues only.
+>>>
+>>
+>> Hmm, I always interpreted that as "do not use for checking user-defined
+>> input", which this is not.
+>>
+> 
+> "invalid data coming from network/devices" is not user-defined input.
+> 
+>> The reason I added/requested it here was to check for "bugs" in how we
+>> think the interface behaves (and our definitions related to it) as the
+>> interface was reverse-engineered. Generally, when this fails I expect
+>> that we made some mistake in our code (or the things we assume about the
+>> interface), which likely causes us to interpret the received data as
+>> "garbage" (and not the EC sending corrupted data, which it is generally
+>> not due to CRC checking and validation in the SAM driver). Hence, I
+>> personally would prefer if this blows up in a big warning with a trace
+>> attached to it, so that an end-user can easily report this to us and
+>> that we can appropriately deal with it. As opposed to some one-line
+>> error message that will likely get overlooked or not taken as seriously.
+>>
+> 
+> I have heard the "This backtrace is absolutely essential" argument before,
+> including the "will be fixed" part. Chromebooks report more than 500,000
+> warning backtraces _every single day_. None of them is getting fixed.
+> 
+>> If you still insist, I could change that to a dev_err() message. Or
+>> maybe make the comment a bit clearer.
+> 
+> dev_err() would be acceptable. WARN() or WARN_ON() are no-go.
 
-> 
-> 
-> 
-> But while we are at it.
-> 
-> Masami, Oleg,
-> 
-> What should be the logistics of landing this? Can/should we route this
-> through the bpf-next tree, given there are lots of BPF-based
-> selftests? Or you want to take this through
-> linux-trace/probes/for-next? In the latter case, it's probably better
-> to apply only the first two patches to probes/for-next and the rest
-> should still go through the bpf-next tree (otherwise we are running
+Sorry for the delayed response. I will change this to a dev_err() then
+and try to re-spin the patches this weekend.
 
-I think this was the plan, previously mentioned in here:
-https://lore.kernel.org/bpf/20240423000943.478ccf1e735a63c6c1b4c66b@kernel.org/
-
-> into conflicts in BPF selftests). Previously we were handling such
-> cross-tree dependencies by creating a named branch or tag, and merging
-> it into bpf-next (so that all SHAs are preserved). It's a bunch of
-> extra work for everyone involved, so the simplest way would be to just
-> land through bpf-next, of course. But let me know your preferences.
-> 
-> Thanks!
-> 
-> > thanks,
-> > jirka
-> >
-> >
-> > Notes to check list items in Documentation/process/adding-syscalls.rst:
-> >
-> > - System Call Alternatives
-> >   New syscall seems like the best way in here, becase we need
-> 
-> typo (thanks, Gmail): because
-
-ok
-
-> 
-> >   just to quickly enter kernel with no extra arguments processing,
-> >   which we'd need to do if we decided to use another syscall.
-> >
-> > - Designing the API: Planning for Extension
-> >   The uretprobe syscall is very specific and most likely won't be
-> >   extended in the future.
-> >
-> >   At the moment it does not take any arguments and even if it does
-> >   in future, it's allowed to be called only from trampoline prepared
-> >   by kernel, so there'll be no broken user.
-> >
-> > - Designing the API: Other Considerations
-> >   N/A because uretprobe syscall does not return reference to kernel
-> >   object.
-> >
-> > - Proposing the API
-> >   Wiring up of the uretprobe system call si in separate change,
-> 
-> typo: is
-
-ok, thanks
-
-jirka
+Best regards,
+Max
 
