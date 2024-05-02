@@ -1,182 +1,130 @@
-Return-Path: <linux-kernel+bounces-166106-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-166108-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 52C118B9645
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 10:20:17 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id F3B998B964A
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 10:21:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6B61F1C21954
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 08:20:16 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A87111F23C83
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 08:21:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4FF703219F;
-	Thu,  2 May 2024 08:20:11 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 339AF1BF54
-	for <linux-kernel@vger.kernel.org>; Thu,  2 May 2024 08:20:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44AEF3B2BD;
+	Thu,  2 May 2024 08:20:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="oi/AB/7b"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0CAF7200A0;
+	Thu,  2 May 2024 08:20:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714638010; cv=none; b=MBYy/mp7k3OYtyeEuy3GTGBUlUzFtUZfaBg5wsrl+uaFAKe7mv72Yd9aOnJxE+scDH4blh0nNxC5vHQa0ME8oEF/cusa8yltIylgxXH/GD8f5Aq7huYwnbP/M6aD7oqbEp/ELojl1cjEnsxzISRjh5UFRcI3WDpCfHkUlM3Gcx0=
+	t=1714638057; cv=none; b=gDqzWJ/s68zaZRcAm4/KstiBuDkg9+Z3r4+07t5hIEoOC/0iRB2f2NYbMdhuXNoVfhpvSyWikwemn9FiZ6xyPBaib0ICIta4ujGvEGPRIcsclXOfu58XeEmjfHGEXSGLXrjV7hQkj/DkBaIWACaSbDBpLMr2n38E/ZWza++SpmQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714638010; c=relaxed/simple;
-	bh=fw0KIOzlehbte2mP913i3LuGFlmrb3tLqg7bZQFpkhI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=q6bsmqEtBGNR9ovrFEW9E/neP54Ai4q61VnuQljBUhzVOuycSrlaZrFZtylZ4MBE0w25oYNeu1Cx7Q4C7C+Mk06BT7rGoxpcTY4EqfTVjCtKSlYPE71aV2PYKuCWs3hi1gk/mM26iObQCHW2eJAsnI6VFjNgvNxLPxxitjmWG2U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1B0292F4;
-	Thu,  2 May 2024 01:20:33 -0700 (PDT)
-Received: from [10.57.65.146] (unknown [10.57.65.146])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id AA3E63F71E;
-	Thu,  2 May 2024 01:20:05 -0700 (PDT)
-Message-ID: <9b2d91ac-3266-4173-a525-bbc7b087a482@arm.com>
-Date: Thu, 2 May 2024 09:20:04 +0100
+	s=arc-20240116; t=1714638057; c=relaxed/simple;
+	bh=JRP1C4tqQlxK4NLWWPLJvI/cQ8Kj8zg8QmQoKw9MykQ=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=Ns1M8JPSsYTkZf7sXkWh5K/2ZPwMEDjQ5ygy83Urs/g9xJ7WoI3NI1zZERkXn2Aobll/TQyZci48TQHiwUzdCDguS9AjRCGacd9KP88PEQSjFYwueZ0VdPrlQTSCDWUCT5seDxwcosFfx3lxxveqePmIhUm0xB4SUwJS8SaG20U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=oi/AB/7b; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 44279je0026169;
+	Thu, 2 May 2024 08:20:42 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	from:to:cc:subject:date:message-id:mime-version
+	:content-transfer-encoding:content-type; s=qcppdkim1; bh=hwjiGiF
+	W4B0QrctQsPizBFbOT8HPimNZ3ywMU1YKCDk=; b=oi/AB/7b6fb3DW7ZfAaUKsy
+	JKVPXwDyE6CvUYt1n3/IAP8Y2IHtxJG0FcIvLdPLWQsUEW6spM9O8bVKfzvhI1Bv
+	XlZkqjjH1uvTJeFMjnHCV6wSYdzcF0lYyCSRPOa5AGdO7jCm6skkutcO7m04zMTl
+	V5xD0T13uMXxUVAKBrRzSmN46Mjgioe07rxk0C1dd2lZhEkM/I56wnjVYR0RvKfn
+	qbJYACk0f0tXnnH0OixtQ1NO2TQVHv0uAOCZA0Gqpkc6M4HCB2pOAZ+pAjAASsGu
+	099lRJFiVKLXUfTua5D2VKKMOBpiWnXh8eOIYzGWYUrCroU1378OKTZH9RonMyA=
+	=
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xu71jbddm-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 02 May 2024 08:20:41 +0000 (GMT)
+Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
+	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 4428KerY007755
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 2 May 2024 08:20:40 GMT
+Received: from hu-kbajaj-hyd.qualcomm.com (10.80.80.8) by
+ nalasex01b.na.qualcomm.com (10.47.209.197) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.9; Thu, 2 May 2024 01:20:34 -0700
+From: Komal Bajaj <quic_kbajaj@quicinc.com>
+To: Vinod Koul <vkoul@kernel.org>, Kishon Vijay Abraham I <kishon@kernel.org>,
+        Rob Herring <robh@kernel.org>,
+        Krzysztof Kozlowski <krzk+dt@kernel.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Greg Kroah-Hartman
+	<gregkh@linuxfoundation.org>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Adrien Thierry <athierry@redhat.com>,
+        Mantas Pucka <mantas@8devices.com>, Abel Vesa <abel.vesa@linaro.org>
+CC: <linux-arm-msm@vger.kernel.org>, <linux-phy@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-usb@vger.kernel.org>,
+        Bjorn Andersson <quic_bjorande@quicinc.com>,
+        Wesley Cheng <quic_wcheng@quicinc.com>, <quic_ppratap@quicinc.com>,
+        Jack Pham
+	<quic_jackp@quicinc.com>,
+        Krishna Kurapati PSSNV <quic_kriskura@quicinc.com>,
+        Komal Bajaj <quic_kbajaj@quicinc.com>
+Subject: [PATCH v3 0/4] Add USB Support on Qualcomm's QDU/QRU1000 Platform
+Date: Thu, 2 May 2024 13:50:13 +0530
+Message-ID: <20240502082017.13777-1-quic_kbajaj@quicinc.com>
+X-Mailer: git-send-email 2.42.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 2/3] arm64/mm: Move PTE_PRESENT_INVALID to overlay
- PTE_NG
-Content-Language: en-GB
-To: Anshuman Khandual <anshuman.khandual@arm.com>,
- Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
- Joey Gouly <joey.gouly@arm.com>, Ard Biesheuvel <ardb@kernel.org>,
- Mark Rutland <mark.rutland@arm.com>, David Hildenbrand <david@redhat.com>,
- Peter Xu <peterx@redhat.com>, Mike Rapoport <rppt@linux.ibm.com>,
- Shivansh Vij <shivanshvij@outlook.com>
-Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20240501145419.1390363-1-ryan.roberts@arm.com>
- <20240501145419.1390363-3-ryan.roberts@arm.com>
- <5ac445b2-5c11-407c-87d2-4ede8e212d71@arm.com>
-From: Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <5ac445b2-5c11-407c-87d2-4ede8e212d71@arm.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01b.na.qualcomm.com (10.47.209.197)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: Alqeo4YeGFiNkuwSa-v7rUG0pV7cr2nM
+X-Proofpoint-ORIG-GUID: Alqeo4YeGFiNkuwSa-v7rUG0pV7cr2nM
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
+ definitions=2024-05-01_16,2024-05-02_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
+ mlxlogscore=589 bulkscore=0 adultscore=0 priorityscore=1501
+ impostorscore=0 phishscore=0 mlxscore=0 lowpriorityscore=0 spamscore=0
+ clxscore=1011 malwarescore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.19.0-2404010003 definitions=main-2405020049
 
-On 02/05/2024 07:12, Anshuman Khandual wrote:
-> 
-> 
-> On 5/1/24 20:24, Ryan Roberts wrote:
->> PTE_PRESENT_INVALID was previously occupying bit 59, which when a PTE is
->> valid can either be IGNORED, PBHA[0] or AttrIndex[3], depending on the
->> HW configuration. In practice this is currently not a problem because
->> PTE_PRESENT_INVALID can only be 1 when PTE_VALID=0 and upstream Linux
->> always requires the bit set to 0 for a valid pte.
->>
->> However, if in future Linux wants to use the field (e.g. AttrIndex[3])
->> then we could end up with confusion when PTE_PRESENT_INVALID comes along
->> and corrupts the field - we would ideally want to preserve it even for
->> an invalid (but present) pte.
->>
->> The other problem with bit 59 is that it prevents the offset field of a
->> swap entry within a swap pte from growing beyond 51 bits. By moving
->> PTE_PRESENT_INVALID to a low bit we can lay the swap pte out so that the
->> offset field could grow to 52 bits in future.
->>
->> So let's move PTE_PRESENT_INVALID to overlay PTE_NG (bit 11).
->>
->> There is no need to persist NG for a present-invalid entry; it is always
->> set for user mappings and is not used by SW to derive any state from the
-> 
-> But the idea of present and invalid state is that all the HW used information
-> should be fetched successfully even though the the entry is not valid and not
-> being walked by the MMU. Setting and clearing PTE SW bits in such state, does
-> not change that, but tampering with HW bits would break the assumption around
-> present and invalid entry ?
+This series adds support of USB3 PHY support for Qualcomm's QDU/QRU1000 Platform.
 
-But we are not changing anything; NG is *always* set in valid-present user
-entries. And it continues to be *always* set in invalid-present user entries,
-because PTE_PRESENT_INVALID is the same bit.
+---------
+Changes in v3:
+* Rebased on linux-next
+* Link to v2: https://lore.kernel.org/linux-arm-msm/20240319090729.14674-1-quic_kbajaj@quicinc.com/
 
-Additionally there are no helpers (that I could find) that read or write the NG
-bit so core-mm can't possibly be accidentally corrupting anything or reading
-back incorrect state.
+Changes in v2:
+* Dropped extra lines
+* Sorted the tables alphabetically
+* Link to v1: https://lore.kernel.org/linux-arm-msm/20240311120215.16845-1-quic_kbajaj@quicinc.com/
 
-> 
->> pte. PTE_NS was considered instead of PTE_NG, but it is RES0 for
->> non-secure SW, so there is a chance that future architecture may
->> allocate the bit and we may therefore need to persist that bit for
->> present-invalid ptes.
-> 
-> If we are being careful around PTE_NS and even for AttrIndex[3] as mentioned
-> earlier to be useful during an invalid state, how can PTE_NG be used without
-> any such consideration.
+Komal Bajaj (4):
+  dt-bindings: phy: qcom,usb-snps-femto-v2: Add bindings for QDU1000
+  dt-bindings: phy: qcom,qmp-usb: Add QDU1000 USB3 PHY
+  dt-bindings: usb: dwc3: Add QDU1000 compatible
+  phy: qcpm-qmp-usb: Add support for QDU1000/QRU1000
 
-Are you suggesting that in future we may want to make global mappings available
-to user space? I think that's unlikely?
+ .../phy/qcom,sc8280xp-qmp-usb3-uni-phy.yaml   |  2 +
+ .../bindings/phy/qcom,usb-snps-femto-v2.yaml  |  1 +
+ .../devicetree/bindings/usb/qcom,dwc3.yaml    |  3 ++
+ drivers/phy/qualcomm/phy-qcom-qmp-usb.c       | 47 +++++++++++++++++++
+ 4 files changed, 53 insertions(+)
 
-The point about NG is that it is already architecturally defined in normal world
-and we are using it - kernel mappings are (usually) global, user mappings are
-not. So a new meaning for that bit can't come along unless we are willing to say
-that *all* mappings (inc kernel mappings) will become implicitly non-global.
-
-So my assertion that this bit can be reused like this (now and in future) is
-predicated on 1) all user mappings are and will continue to be non-global, 2)
-the bit will never be repurposed by the architecture (or if it is, Linux will
-never opt-in because we need per-pte (non-)global control).
-
-> 
->>
->> These are both marginal benefits, but make things a bit tidier in my
->> opinion.
-> 
-> Apart from swap offset field expansion does this change achieve anything else ?
-
-It frees up bit 59 to be used for its architectural purpose in future.
-
-> 
->>
->> Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
->> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
->> ---
->>  arch/arm64/include/asm/pgtable-prot.h |  2 +-
->>  arch/arm64/include/asm/pgtable.h      | 12 ++++++------
->>  2 files changed, 7 insertions(+), 7 deletions(-)
->>
->> diff --git a/arch/arm64/include/asm/pgtable-prot.h b/arch/arm64/include/asm/pgtable-prot.h
->> index cd8c06f5fb02..3047d10987fd 100644
->> --- a/arch/arm64/include/asm/pgtable-prot.h
->> +++ b/arch/arm64/include/asm/pgtable-prot.h
->> @@ -18,7 +18,7 @@
->>  #define PTE_DIRTY		(_AT(pteval_t, 1) << 55)
->>  #define PTE_SPECIAL		(_AT(pteval_t, 1) << 56)
->>  #define PTE_DEVMAP		(_AT(pteval_t, 1) << 57)
->> -#define PTE_PRESENT_INVALID	(_AT(pteval_t, 1) << 59) /* only when !PTE_VALID */
->> +#define PTE_PRESENT_INVALID	(PTE_NG)		 /* only when !PTE_VALID */
->>  
->>  #define _PROT_DEFAULT		(PTE_TYPE_PAGE | PTE_AF | PTE_SHARED)
->>  #define _PROT_SECT_DEFAULT	(PMD_TYPE_SECT | PMD_SECT_AF | PMD_SECT_S)
->> diff --git a/arch/arm64/include/asm/pgtable.h b/arch/arm64/include/asm/pgtable.h
->> index c0f4471423db..7f1ff59c43ed 100644
->> --- a/arch/arm64/include/asm/pgtable.h
->> +++ b/arch/arm64/include/asm/pgtable.h
->> @@ -1254,15 +1254,15 @@ static inline pmd_t pmdp_establish(struct vm_area_struct *vma,
->>   * Encode and decode a swap entry:
->>   *	bits 0-1:	present (must be zero)
->>   *	bits 2:		remember PG_anon_exclusive
->> - *	bits 3-7:	swap type
->> - *	bits 8-57:	swap offset
->> - *	bit  59:	PTE_PRESENT_INVALID (must be zero)
->> + *	bits 6-10:	swap type
->> + *	bit  11:	PTE_PRESENT_INVALID (must be zero)
->> + *	bits 12-61:	swap offset
->>   */
->> -#define __SWP_TYPE_SHIFT	3
->> +#define __SWP_TYPE_SHIFT	6
->>  #define __SWP_TYPE_BITS		5
->> -#define __SWP_OFFSET_BITS	50
->>  #define __SWP_TYPE_MASK		((1 << __SWP_TYPE_BITS) - 1)
->> -#define __SWP_OFFSET_SHIFT	(__SWP_TYPE_BITS + __SWP_TYPE_SHIFT)
->> +#define __SWP_OFFSET_SHIFT	12
->> +#define __SWP_OFFSET_BITS	50
->>  #define __SWP_OFFSET_MASK	((1UL << __SWP_OFFSET_BITS) - 1)
->>  
->>  #define __swp_type(x)		(((x).val >> __SWP_TYPE_SHIFT) & __SWP_TYPE_MASK)
+--
+2.42.0
 
 
