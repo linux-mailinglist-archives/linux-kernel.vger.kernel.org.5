@@ -1,54 +1,47 @@
-Return-Path: <linux-kernel+bounces-166004-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-166005-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 862048B94A7
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 08:29:17 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id F18868B94AA
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 08:30:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3E0DD283B6F
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 06:29:16 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A26F11F229F4
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 06:30:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B320225A2;
-	Thu,  2 May 2024 06:29:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF96F21A1C;
+	Thu,  2 May 2024 06:29:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="L1+Tp8N+"
-Received: from mout.web.de (mout.web.de [212.227.15.4])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rhoOd2u2"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF49721345;
-	Thu,  2 May 2024 06:29:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.4
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D0121C6AE;
+	Thu,  2 May 2024 06:29:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714631347; cv=none; b=hoo3VlKsdbvh91/EDOCIsGj0dEPUdbfWJih0rEBCGxosSTOcGg9uzW93K0mtVkZoUoffrtDVSVtOvwAtBXPSYMINEafoTJF1WFnPyVHT316y0rWxYCtRZVF/0sv0VuXohn1O8wUJAoRS97i/NgO6PKy4AAVVNJ9vPGAK4rlMNbE=
+	t=1714631399; cv=none; b=Wq9YZ+MSHfapLTePHCDMesyy/GoQlaiz+jmcmbQTzBgIxLTe4QsKZgzmiaaSKr353WA+lRGu8JkVVAnRXNrUwNdgLMk6//mG4K59eRlRg5zhkYil/fvwazuTUZOLxGtq3dWXt3WEn+2fmfPTffNa3TBIp8QdMTCHNQqlwKPaksc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714631347; c=relaxed/simple;
-	bh=9FUfT9VaNrtqxQ1YjgvMddICn5YizAP767a8zOUVqPs=;
-	h=Message-ID:Date:MIME-Version:To:Cc:References:Subject:From:
-	 In-Reply-To:Content-Type; b=Z7KuL3QcaeCJ1jiX7qOWQtxti1spUl3+ctriLOtSPC+uRwu6AWTUO3dFFn+5sEIZi85Yd1gW9aI9alvdoixY5MLKZ2P4EcqVlc+r+83ky+OWQ4EKLbwzwWpiqn8XAg5EZ46RbRSexj2JG2koo9f2UA0mXQyqfsxQfGIopFIbG/8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=L1+Tp8N+; arc=none smtp.client-ip=212.227.15.4
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=web.de;
-	s=s29768273; t=1714631317; x=1715236117; i=markus.elfring@web.de;
-	bh=9FUfT9VaNrtqxQ1YjgvMddICn5YizAP767a8zOUVqPs=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:To:Cc:References:
-	 Subject:From:In-Reply-To:Content-Type:Content-Transfer-Encoding:
-	 cc:content-transfer-encoding:content-type:date:from:message-id:
-	 mime-version:reply-to:subject:to;
-	b=L1+Tp8N+2yr3dpPhvozytf5hK2bQj1B5pvBQr30Nji0B20FbHEeeyWk2NWNOyXW5
-	 3INMofiEfQ1aFr1yDNp0rBrnGeJWAhKVs7G8uWU6WzKhvNGZ0JL97+Z/98+TZyiKC
-	 YbnsaGZ4Ih8w9bbSMnCMBn+nuI+qwh+ED3nGmZ4Hpa9uONNxni6CMLHGbJelMIju9
-	 rnpJO6tI8axFYOHTRTgfXRcsTZUwIpEyU764bPHQM2yFHvqqK579RAiC0R6O12tVF
-	 4t6wp53YSPblz2HBP1GY9q+MtLHooLWeFc81twbLIFW6OKNQj64a+yUb2p+nCoT5t
-	 Z/IbAe6rsIiwtOldCQ==
-X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
-Received: from [192.168.178.21] ([94.31.83.95]) by smtp.web.de (mrweb006
- [213.165.67.108]) with ESMTPSA (Nemesis) id 1MjBRZ-1sYAJF426v-00eqn4; Thu, 02
- May 2024 08:28:37 +0200
-Message-ID: <3a7ed58e-4eb3-46ca-ba1e-98c6a3c40c17@web.de>
-Date: Thu, 2 May 2024 08:28:23 +0200
+	s=arc-20240116; t=1714631399; c=relaxed/simple;
+	bh=kRJcCqVAC2kt3w2BiItbrRDn2sLeURUSyGmpuC2oZ0c=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=TjzAAcCpb/a+JLyGv/tf3v5PZoSlWk1uy8OXZQq5Ng2fu4kPFbJZNOUAnODYFDsUMShd2Qvax5h6jZKxW3QcPTNulf97qqsmJHjpZ6ZnuFKAOXS2qmCJkeklKyCFEgtdpMp164g7y7HcnQ9PM83raXll/lHbUkXH4j1rqyIEuPU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rhoOd2u2; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CA6A9C116B1;
+	Thu,  2 May 2024 06:29:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714631398;
+	bh=kRJcCqVAC2kt3w2BiItbrRDn2sLeURUSyGmpuC2oZ0c=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=rhoOd2u2Q3LrM4nCJWpsFR/RbxtoNkJjTlnlPT7l6cLj6pvbMgjFft2zcbkj3C5mu
+	 WbgrJt6WqnXSwZhdhyIoth9k1n2U9Berx+puuIJyLEojwAMKbr3Q7TO5nN5M1gfBjs
+	 mgWC2JBUpw7HSKKSJPLKpCoAONlf6ueBW+IpSquODsWznt/80BVsWk2Job+LOkpR4R
+	 pndHopogGB+jkx1KmSyFTC7lF7D6HLkAyX9MpojptG+T3FJTXIHb9M5Tq4ZxutU/TV
+	 r+tPiyItE9+esKzL0gwaCptaHPYdePI3A/mqgOTeLIeQdT14tkrtZ6RFqfQ9+GuI6u
+	 V2fzxHIni3omw==
+Message-ID: <4abf3853-c29e-4397-9746-45dbdaea9ae7@kernel.org>
+Date: Thu, 2 May 2024 08:29:52 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -56,45 +49,74 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-To: Jules Irenge <jbi.octave@gmail.com>, linux-rdma@vger.kernel.org,
- kernel-janitors@vger.kernel.org, Leon Romanovsky <leon@kernel.org>
-Cc: LKML <linux-kernel@vger.kernel.org>,
- "Gustavo A. R. Silva" <gustavoars@kernel.org>, Jason Gunthorpe
- <jgg@ziepe.ca>, Shifeng Li <lishifeng@sangfor.com.cn>, wenglianfa@huawei.com
-References: <ZjF1Eedxwhn4JSkz@octinomon.home>
-Subject: Re: [PATCH v2] RDMA/core: Remove NULL check before dev_{put, hold}
-Content-Language: en-GB
-From: Markus Elfring <Markus.Elfring@web.de>
-In-Reply-To: <ZjF1Eedxwhn4JSkz@octinomon.home>
+Subject: Re: [PATCH v3 1/3] dt-bindings: trivial-devices: add isil,isl69269
+To: Zev Weiss <zev@bewilderbeest.net>,
+ Andrew Jeffery <andrew@codeconstruct.com.au>,
+ Conor Dooley <conor+dt@kernel.org>, Joel Stanley <joel@jms.id.au>,
+ Krzysztof Kozlowski <krzk+dt@kernel.org>, Rob Herring <robh@kernel.org>
+Cc: Guenter Roeck <linux@roeck-us.net>, devicetree@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-aspeed@lists.ozlabs.org,
+ linux-kernel@vger.kernel.org, openbmc@lists.ozlabs.org
+References: <20240502002836.17862-5-zev@bewilderbeest.net>
+ <20240502002836.17862-6-zev@bewilderbeest.net>
+From: Krzysztof Kozlowski <krzk@kernel.org>
+Content-Language: en-US
+Autocrypt: addr=krzk@kernel.org; keydata=
+ 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 fv0=
+In-Reply-To: <20240502002836.17862-6-zev@bewilderbeest.net>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:DDdubhNHr4n90W0v9i3irF7oQhagbTx+mK/lqZcmJcnKCkxYZGz
- /BDn0izav/8uPpbKv7945o5eCQOt+BnL3yZ+syH8xSoh/L5XlJHhC1qzFuum5fcC6KioL/d
- qOq3whKWMyW4jIQ+czuDISh0dW3nGRfgO44Pw8+y1Yk2qOP570b8TzY9OmAnQhGOoGn3sDJ
- WfzFei555EgLXImDafWpg==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:SmLxQDW2y04=;exhhi93XyXFs6mYkVdZXskZ/17p
- DRs5Muvk/wKmelMa4NZy8wkXaQfwee5B+1E9/JKc4eCifjb6h0nYWGX3uWixLl/4b9Vx/8Bcj
- N1lm7ZLty3SDArJeR+f6QfJE/hUCAfoOq/S2ysSH9F4BlGeYSEAl30NeRhuwOC9E1coeF1x4J
- 1Jok25WDdiolW+pW0RO0hVZl4op7Nv2Am8sISD7INPJp1KXSRuSWaQTysOhmNtbGC8NxIzG/N
- +vbW68TnRGcacQWtEyxJaioc+92gDJGeg4KcAKNMZkcriS7Z/66cGKakX+LPnwKqWGQKoWj3i
- 3oJ7+SxbiBp3p7vbOwbeWNf2NHiFM7QEm8gyCWl8/Pfg3xcJsf7Kz/83roKOtk/ipxPtBBuNc
- FJtjh4kYFu1t7RCbjmE76ADzVl72WfWNstfRDD15iqH9T/rRkp6TDCj6pJDseYoKwjRqSYq/u
- u/UM8m1wi9P76ypzH1o0/lYOy5MyVCSLuGzxEGV4WdFxm/XrOTWU+m1YtFh0sfmdWBNJwgRA7
- kgVtORgPrK2bpbSasZzXkGB1aba17lyhflcYI+eIe12aCMGG1ctoOYXiYJiZf9Uq+Rd7+/rFE
- bRdYGmUUFK552bMmCOxg29iWWy9fTbOFlZxRQDWpj5akqvzppzgzNrwkL5nbdAiFDMwN15wvn
- ld7lljj/ZLiYI3CDnWnqymEoQtwDZgDZsHvRXh58SZpk0sRmkBiSBWPIvQnizMoMw+7ygv9Sk
- KwJM+NCQ5dSwKLh46PyIRwiG0pzUZkYqZ8zpmFLmUBSHqmSBohyP5qBeRlztGUQwlGe7Novdl
- YjQ2hGSIdti3m0/Uffs8OV28P+iFG1lfJkc7Y97sJqXhE=
+Content-Transfer-Encoding: 7bit
 
-=E2=80=A6
-> There is no need to check before using dev_{put, hold}
+On 02/05/2024 02:28, Zev Weiss wrote:
+> The ISL69269 is a PMBus voltage regulator with no configurable
+> parameters.
+> 
+> Signed-off-by: Zev Weiss <zev@bewilderbeest.net>
 
-How do you think about to improve the change description with a correspond=
-ing imperative wording?
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Do=
-cumentation/process/submitting-patches.rst?h=3Dv6.9-rc6#n94
+Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-Regards,
-Markus
+Best regards,
+Krzysztof
+
 
