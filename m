@@ -1,74 +1,74 @@
-Return-Path: <linux-kernel+bounces-166689-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-166688-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 002A28B9E31
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 18:08:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 567C08B9E30
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 18:08:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2BA39B251DA
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 16:08:15 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 93A29B2515A
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 16:08:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C66115E1FB;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 20C4D15E1F0;
 	Thu,  2 May 2024 16:08:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="X6Jbt+4T"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aNmzK4Px"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7880B15AAC5;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B2D3153BEA;
 	Thu,  2 May 2024 16:08:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714666081; cv=none; b=rTig2DP8fC1+qhSWRmKGWueUkcOD8sBuS/x34iS0oRARJ5aSXHbBsOTVJHYjgCxtQdihpWF9a30O97rXt1ZJC+07LHRj2bH5/enqIljcgC497nXeonbQRG1FeZ/pjp3hA5LqgLAlUwqqJvu+6RidqENmjo7IiuevmIJXAaxU31o=
+	t=1714666081; cv=none; b=bFm0L4qcwUqC3NWgNMBFAJvTHJbDD+xtw6mBUFn5pYoZCAsScmevveRKdifAMkVklugNewqN+pNZl3NElSHGCAE3EZzRyjEIRW3FcSyeBVQBQ5shuHWKco0+zdQ/QhJkwpjqkosoFXZNkAnpgqI4XpvdC2Swd7fGJ+7xs6jADno=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1714666081; c=relaxed/simple;
-	bh=ZTrEJzmJG0Qibm5qnkZNxiOBAVOeOGiADzyzLnfBoBw=;
-	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=gR0JkzA1xxlnPKIajLkYCTmbE8AMEoQTsthCnEvfATGJ6pKRH4FmBqncvpVyiTljr0FEgnDwi+GIy/5vSnusjPPesPpvkNiJ8kABlgcgA7iigICf8aSumXMQz2/IoMDLJpsJgW1bFgy07fODJ+MPz/4IcDwk7KLC7/GnAoyRFdI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=X6Jbt+4T; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 52E6CC4AF14;
+	bh=ZwI6nEVR7BqXY36f6C9tL0Zq4+6qkVCiqXA+LQGtIKs=;
+	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=W00iA19dPjdTEJDaTd1TLPX6qZtrkJl9TqRlAqjUU0mPgHxA56zIqJk0+aMjzX0znETPZzvosw69TMp6hLnBoEMeY/c/6za0e6r4EbPMvLGtfB3hTYwjuKtRZHfIXEc0GXBpu/DKXTLw21PCUDF9mwJjV4xO/mNXMAA+GVecVRI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=aNmzK4Px; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 3C124C113CC;
 	Thu,  2 May 2024 16:08:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1714666081;
-	bh=ZTrEJzmJG0Qibm5qnkZNxiOBAVOeOGiADzyzLnfBoBw=;
+	bh=ZwI6nEVR7BqXY36f6C9tL0Zq4+6qkVCiqXA+LQGtIKs=;
 	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-	b=X6Jbt+4TpcVk+EBvGTn6Ujow322PTlPvgDs5wwMmVkf+rRQ0khgCt+rGm4Cvj7vGu
-	 amqC4WnWPolpxUfbw8c9gxTNPJsxdryb/wx8DyfhqfF89tLHxVC/J2NVs0qJhfbBBP
-	 cpd+S71UBkR4vg5xePWtjCZ9Tys/wknY/8V5OhpkaYvVvptUQzjC18hu6lEBH6H+Sw
-	 nD2ZtN8olh1E1Jl4jmBvgF8SRL6tCd1UhzULrzQaV/dYbuY6Qbawtzszk9dzrgu3sL
-	 kW8KlnkTeUf3u/2gdmXUKN5AeM0fKNv/OCG0rlAK/ue+rpcfLs638+NHzEacco+sKK
-	 byGt9p5IiOZdw==
+	b=aNmzK4PxaXsRdn9JWP63ZFE4zz0Bj7PDKTLmIbGJbce/0fNXCxFX8nEoDIb+pzZZv
+	 PSQmLBKB+ZX8evqLvcL0uqERyZ5QCjwLt2gsFaNWMWpI7i/wwJB2cMg2Tw7vNDhX0X
+	 mlc9fLxLYosN0FyX61UTC9XSC32gSk8wzw/J1PD/5Tk6FCeOo1WiyRsZuCRS2IWCFr
+	 TmTLyIpMjqSznIUzNa6lVujgi2lQuo91raLcEE89U4koc5BYYS+zBu0ZfyAgl9zYzZ
+	 6ZAeZizwVaC+Z1UTsxyQtHllFX2wBe4ssrunTmm06dcTSrkBL+vNVSdskXB5DlQ2vS
+	 FpF11wh743ngg==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 43259C43443;
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 244D5C4333B;
 	Thu,  2 May 2024 16:08:01 +0000 (UTC)
-Subject: Re: [GIT PULL] Networking for v6.9-rc7
+Subject: Re: [GIT PULL] Thermal control fixes for v6.9-rc7
 From: pr-tracker-bot@kernel.org
-In-Reply-To: <20240502112326.34463-1-pabeni@redhat.com>
-References: <20240502112326.34463-1-pabeni@redhat.com>
+In-Reply-To: <CAJZ5v0gqRGw3NEOVXH4vwERcy-kO+tihXBmP74UJGEhsTMc_BA@mail.gmail.com>
+References: <CAJZ5v0gqRGw3NEOVXH4vwERcy-kO+tihXBmP74UJGEhsTMc_BA@mail.gmail.com>
 X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20240502112326.34463-1-pabeni@redhat.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net.git tags/net-6.9-rc7
-X-PR-Tracked-Commit-Id: 78cfe547607a83de60cd25304fa2422777634712
+X-PR-Tracked-Message-Id: <CAJZ5v0gqRGw3NEOVXH4vwERcy-kO+tihXBmP74UJGEhsTMc_BA@mail.gmail.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git thermal-6.9-rc7
+X-PR-Tracked-Commit-Id: d351eb0ab04c3e8109895fc33250cebbce9c11da
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 545c494465d24b10a4370545ba213c0916f70b95
-Message-Id: <171466608127.26603.8291380975724582922.pr-tracker-bot@kernel.org>
+X-PR-Merge-Commit-Id: 6aed7b97fc6ec84fd4f86b53199df64a1ab42bab
+Message-Id: <171466608113.26603.5163096004372195114.pr-tracker-bot@kernel.org>
 Date: Thu, 02 May 2024 16:08:01 +0000
-To: Paolo Abeni <pabeni@redhat.com>
-Cc: torvalds@linux-foundation.org, kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+To: "Rafael J. Wysocki" <rafael@kernel.org>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, Linux PM <linux-pm@vger.kernel.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Daniel Lezcano <daniel.lezcano@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 
-The pull request you sent on Thu,  2 May 2024 13:23:26 +0200:
+The pull request you sent on Thu, 2 May 2024 13:08:31 +0200:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net.git tags/net-6.9-rc7
+> git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git thermal-6.9-rc7
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/545c494465d24b10a4370545ba213c0916f70b95
+https://git.kernel.org/torvalds/c/6aed7b97fc6ec84fd4f86b53199df64a1ab42bab
 
 Thank you!
 
