@@ -1,212 +1,119 @@
-Return-Path: <linux-kernel+bounces-166739-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-166741-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6E93B8B9EC5
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 18:40:51 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 00CF58B9ECA
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 18:43:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D356D1F21362
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 16:40:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 322921C2266C
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 16:43:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD94E15E5A9;
-	Thu,  2 May 2024 16:40:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="G7NblL1m"
-Received: from mail-qk1-f174.google.com (mail-qk1-f174.google.com [209.85.222.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 74136664DB;
+	Thu,  2 May 2024 16:43:07 +0000 (UTC)
+Received: from www262.sakura.ne.jp (www262.sakura.ne.jp [202.181.97.72])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3043D155350
-	for <linux-kernel@vger.kernel.org>; Thu,  2 May 2024 16:40:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3FF428FC
+	for <linux-kernel@vger.kernel.org>; Thu,  2 May 2024 16:43:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.181.97.72
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714668043; cv=none; b=i4Q8H6nR8J0DuZnNWdVCw+wYttpPFEZFEaPw/pQlf2Pi3fIDvQNUredrcqqrHLLKU/2zPKQgXibQbAIKv0d71Hg6m2mE+uWhXjO3exURYXmpwpw65VZLACuMpl5xAhVuRiwMve79xzRi70r3NK20TvdCv7+gyCpJR6p4QetT5WI=
+	t=1714668187; cv=none; b=tpTpPjd3ek/PaMsRRBQWugzCPMvtnjGcPpx7zDyljf/1dBdZW1WzTgRXsAR8AQ6NzmJ9ixsuyDnd5gcxbdPYU40hEN5eCT1MdTgSe8is5DAWKWdQl3BggQU9IWIQQwF0iDhe0qQmtYh/KUtnCL5ff+IexwUkMKd0Oz2hxFjZ/KI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714668043; c=relaxed/simple;
-	bh=JJ6xElQROq30eGOr6yoVclASvNmxW6Cqvb72A7j2l2s=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Ze/cJ1VMlLWcLZd7Mv/cqea7XmGmvYb7XwUaMG5ENJFX5mROSrYZ0OrJ2VCJxAatag8YjRaW1zoAqdHKNsEvza15p58EgbL4LXhf8baYGekb0T1eh8zQEG+kySzxZ6D5NDm6IHkb0xowta/IJF406FaAHmjLn/7Ihx32wqU42n4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=G7NblL1m; arc=none smtp.client-ip=209.85.222.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-qk1-f174.google.com with SMTP id af79cd13be357-78ecd752a7cso565346185a.0
-        for <linux-kernel@vger.kernel.org>; Thu, 02 May 2024 09:40:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1714668036; x=1715272836; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=AEnee6ah2poDn5i64PbPAXVhct8y7uUBex4L7IT1hm0=;
-        b=G7NblL1muyRYenc2QU3Nd3UXZQBG8DvJt4TFmpc/A18AgQaekgXwLImYcQ/UsdHppx
-         GnwFanceOOlDOMgPxh08mrzUYuiKmtX2VnMBt9YGfhOImsskFZVnS18slGJHbpDXPmrL
-         VWrZS5HrPXomeLMnorywno/2nR+9+8c8qoIOQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714668036; x=1715272836;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=AEnee6ah2poDn5i64PbPAXVhct8y7uUBex4L7IT1hm0=;
-        b=d8W2026jLfexlrSzTpDbzHCRZjNUje60us93Dv0Qisz/uLhEkweyTG0f7vK3riApHG
-         U0u3lpjwiExDjMMmEdPXo6D66WEs1qQEOQ1CMQPiSO9bora/AZZwyyaGAfeLqwqsbFSr
-         0SFRRf9nngKEVdiWnvBtsGorroAdV/ZzZS6Q9hKjPrdITD4iCM1Bh34PmL6LEwVL0thD
-         cztp8JL1sJahho1Cqyc5BHkB2iXVWkqAb8CnmCZSCwJEJSZbBsdlVQMaquhYLQBcxG2t
-         tnrHOpc3B0cHlY4hnlS+98NyhLBPe5mj1y9P1VBOtTOlL9ohYflixA7TzQVjkmwLHD9R
-         op/g==
-X-Forwarded-Encrypted: i=1; AJvYcCW2iGJPsmlAtzN18nQxQGYUD94avzEUtvhSUW2T9yoL0xb6DoXSQEkZHCAZuUpLLFs2J8uCy5nT4XQWimNnKGar3+9gQEZfywjKG9Kh
-X-Gm-Message-State: AOJu0YzlXHbMjcgHlq/W/k5Qn+lUM/QffAGKhjuBG7psANau3norGKct
-	sOu5F6iB/MouVETcXZZNnlDj7KgVs8CCsLkJbHXJIDNZNogBuI5f+cHFEZnSZ7H/rPe8HT4qZKU
-	=
-X-Google-Smtp-Source: AGHT+IHNMQA3pPiVfLRcNitJbKkUNO6SP0BZCQbwQP6iV8aiwmuNUaWw7zyIyv5qeK8tz154SlwMRg==
-X-Received: by 2002:a05:620a:f93:b0:790:fbaa:55da with SMTP id b19-20020a05620a0f9300b00790fbaa55damr114505qkn.45.1714668035515;
-        Thu, 02 May 2024 09:40:35 -0700 (PDT)
-Received: from mail-qt1-f180.google.com (mail-qt1-f180.google.com. [209.85.160.180])
-        by smtp.gmail.com with ESMTPSA id bi6-20020a05620a318600b00790f74b3814sm490314qkb.82.2024.05.02.09.40.32
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 02 May 2024 09:40:32 -0700 (PDT)
-Received: by mail-qt1-f180.google.com with SMTP id d75a77b69052e-439b1c72676so831cf.1
-        for <linux-kernel@vger.kernel.org>; Thu, 02 May 2024 09:40:32 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCVL9hjBMShx0NUKzHagWD/ItBtVA7JJZY9eLsFCjALxjIWfOCxzSUnqjQjg1KZRizUQq6TMlzOMUtzVNpacJXvJrKQZ/ElO2So48ruE
-X-Received: by 2002:a05:622a:190d:b0:437:b631:b8fb with SMTP id
- d75a77b69052e-43caa5b67b6mr4063341cf.26.1714668032250; Thu, 02 May 2024
- 09:40:32 -0700 (PDT)
+	s=arc-20240116; t=1714668187; c=relaxed/simple;
+	bh=nDCteMAo7TB7jOqFNL8Pl2VdYrsWy9L3aMTAc4Aka7I=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=VSJiVOBdVj9mZNxuj2MTAXeQb5q394MKjFcZpBtaRbgOFTv2sdNOsFkmhfmLVGn6yK/VPZFiZpJcW89AjkK8yD8Erhifoae1RJtgz7qGtsUGNPfxrTbLRxWOxsB+e55RiVRBCZFhuF+2kqz6jWO98eiPQZyZ5YkahK16lKZAYKs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=I-love.SAKURA.ne.jp; spf=pass smtp.mailfrom=I-love.SAKURA.ne.jp; arc=none smtp.client-ip=202.181.97.72
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=I-love.SAKURA.ne.jp
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=I-love.SAKURA.ne.jp
+Received: from fsav116.sakura.ne.jp (fsav116.sakura.ne.jp [27.133.134.243])
+	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 442GgFuK015746;
+	Fri, 3 May 2024 01:42:15 +0900 (JST)
+	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
+Received: from www262.sakura.ne.jp (202.181.97.72)
+ by fsav116.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav116.sakura.ne.jp);
+ Fri, 03 May 2024 01:42:15 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav116.sakura.ne.jp)
+Received: from [192.168.1.6] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
+	(authenticated bits=0)
+	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 442GgFtk015742
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
+	Fri, 3 May 2024 01:42:15 +0900 (JST)
+	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
+Message-ID: <b13ab60e-503a-4c11-8a99-0ccccce33c6c@I-love.SAKURA.ne.jp>
+Date: Fri, 3 May 2024 01:42:12 +0900
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240501154251.3302887-1-dianders@chromium.org>
- <20240501084109.v3.7.Ib5030ab5cd41b4e08b1958bd7e51571725723008@changeid> <CACRpkdYiND3uLAbFqyGEYgi5+ycOTYoncmSYGTsYtTZ7Ox=4DQ@mail.gmail.com>
-In-Reply-To: <CACRpkdYiND3uLAbFqyGEYgi5+ycOTYoncmSYGTsYtTZ7Ox=4DQ@mail.gmail.com>
-From: Doug Anderson <dianders@chromium.org>
-Date: Thu, 2 May 2024 09:40:16 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=U59+au4Sfi5xdxmCAEaAVq7YguM2FjkyF+OYX16ydW4w@mail.gmail.com>
-Message-ID: <CAD=FV=U59+au4Sfi5xdxmCAEaAVq7YguM2FjkyF+OYX16ydW4w@mail.gmail.com>
-Subject: Re: [PATCH v3 7/9] drm/panel: boe-tv101wum-nl6: Don't use a table for
- initting panels
-To: Linus Walleij <linus.walleij@linaro.org>
-Cc: dri-devel@lists.freedesktop.org, Jani Nikula <jani.nikula@linux.intel.com>, 
-	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, 
-	Cong Yang <yangcong5@huaqin.corp-partner.google.com>, Hsin-Yi Wang <hsinyi@google.com>, 
-	Brian Norris <briannorris@chromium.org>, Sam Ravnborg <sam@ravnborg.org>, 
-	Neil Armstrong <neil.armstrong@linaro.org>, Javier Martinez Canillas <javierm@redhat.com>, 
-	Joel Selvaraj <jo@jsfamily.in>, lvzhaoxiong@huaqin.corp-partner.google.com, 
-	Daniel Vetter <daniel@ffwll.ch>, David Airlie <airlied@gmail.com>, 
-	Jessica Zhang <quic_jesszhan@quicinc.com>, 
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, 
-	Thomas Zimmermann <tzimmermann@suse.de>, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3] tty: tty_io: remove hung_up_tty_fops
+To: Marco Elver <elver@google.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Cc: paulmck@kernel.org, Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        syzbot <syzbot+b7c3ba8cdc2f6cf83c21@syzkaller.appspotmail.com>,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        Nathan Chancellor <nathan@kernel.org>, Arnd Bergmann <arnd@kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>, Jiri Slaby <jirislaby@kernel.org>
+References: <8edbd558-a05f-c775-4d0c-09367e688682@I-love.SAKURA.ne.jp>
+ <2023053048-saved-undated-9adf@gregkh>
+ <18a58415-4aa9-4cba-97d2-b70384407313@I-love.SAKURA.ne.jp>
+ <CAHk-=wgSOa_g+bxjNi+HQpC=6sHK2yKeoW-xOhb0-FVGMTDWjg@mail.gmail.com>
+ <a3be44f9-64eb-42e8-bf01-8610548a68a7@I-love.SAKURA.ne.jp>
+ <CAHk-=wj6HmDetTDhNNUNcAXZzmCv==oHk22_kVW4znfO-HuMnA@mail.gmail.com>
+ <CANpmjNN250UCxsWCpUHAvJo28Lzv=DN-BKTmjEpcLFOCA+U+pw@mail.gmail.com>
+ <CAHk-=whnQXNVwuf42Sh2ngBGhBqbJjUfq5ux6e7Si_XSPAt05A@mail.gmail.com>
+ <d4de136e-c4e0-45c2-b33e-9a819cb3a791@paulmck-laptop>
+ <CAHk-=wi3iondeh_9V2g3Qz5oHTRjLsOpoy83hb58MVh=nRZe0A@mail.gmail.com>
+ <892324fc-9b75-4e8a-b3b6-cf3c5b4c3506@paulmck-laptop>
+ <CANpmjNOY=Qpm3hBu-eN4Xk8n-2VXQRvcQ3_PfwPwNw9MmC8ctw@mail.gmail.com>
+ <CAHk-=whTakjVGgBC5OtoZ5Foo=hd4-g+NZ79nkMDVj6Ug7ARKQ@mail.gmail.com>
+ <CANpmjNNo_jyTPrgPVCeSfgvsX-fK8x0H81zbBA6LZMVNodO6GA@mail.gmail.com>
+Content-Language: en-US
+From: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+In-Reply-To: <CANpmjNNo_jyTPrgPVCeSfgvsX-fK8x0H81zbBA6LZMVNodO6GA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Hi,
+On 2024/05/02 23:14, Marco Elver wrote:
+> I sent a patch to add the type qualifier - in a simple test I added it
+> does what we want:
+> https://lore.kernel.org/all/20240502141242.2765090-1-elver@google.com/T/#u
 
-On Thu, May 2, 2024 at 6:42=E2=80=AFAM Linus Walleij <linus.walleij@linaro.=
-org> wrote:
->
-> On Wed, May 1, 2024 at 5:43=E2=80=AFPM Douglas Anderson <dianders@chromiu=
-m.org> wrote:
->
-> > Consensus on the mailing lists is that panels shouldn't use a table of
-> > init commands but should instead use init functions. With the recently
-> > introduced mipi_dsi_dcs_write_seq_multi() this is not only clean/easy
-> > but also saves space. Measuring before/after this change:
-> >
-> > $ scripts/bloat-o-meter \
-> >   .../before/panel-boe-tv101wum-nl6.ko \
-> >   .../after/panel-boe-tv101wum-nl6.ko
-> > add/remove: 14/8 grow/shrink: 0/1 up/down: 27062/-31433 (-4371)
-> > Function                                     old     new   delta
-> > inx_hj110iz_init                               -    7040   +7040
-> > boe_tv110c9m_init                              -    6440   +6440
-> > boe_init                                       -    5916   +5916
-> > starry_qfh032011_53g_init                      -    1944   +1944
-> > starry_himax83102_j02_init                     -    1228   +1228
-> > inx_hj110iz_init.d                             -    1040   +1040
-> > boe_tv110c9m_init.d                            -     982    +982
-> > auo_b101uan08_3_init                           -     944    +944
-> > boe_init.d                                     -     580    +580
-> > starry_himax83102_j02_init.d                   -     512    +512
-> > starry_qfh032011_53g_init.d                    -     180    +180
-> > auo_kd101n80_45na_init                         -     172    +172
-> > auo_b101uan08_3_init.d                         -      82     +82
-> > auo_kd101n80_45na_init.d                       -       2      +2
-> > auo_kd101n80_45na_init_cmd                   144       -    -144
-> > boe_panel_prepare                            592     440    -152
-> > auo_b101uan08_3_init_cmd                    1056       -   -1056
-> > starry_himax83102_j02_init_cmd              1392       -   -1392
-> > starry_qfh032011_53g_init_cmd               2256       -   -2256
-> > .compoundliteral                            3393       -   -3393
-> > boe_init_cmd                                7008       -   -7008
-> > boe_tv110c9m_init_cmd                       7656       -   -7656
-> > inx_hj110iz_init_cmd                        8376       -   -8376
-> > Total: Before=3D37297, After=3D32926, chg -11.72%
-> >
-> > Let's do the conversion.
-> >
-> > Since we're touching all the tables, let's also convert hex numbers to
-> > lower case as per kernel conventions.
-> >
-> > Signed-off-by: Douglas Anderson <dianders@chromium.org>
->
-> Wow that's a *VERY* nice patch.
-> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+Want some updates to Documentation/process/volatile-considered-harmful.rst
+because __data_racy is for patches to add volatile variables ?
 
-Thanks!
+  Patches to remove volatile variables are generally welcome - as long as
+  they come with a justification which shows that the concurrency issues have
+  been properly thought through.
 
+> 
+> I'll leave it to Tetsuo to amend the original patch if __data_racy makes sense.
 
-> The metrics surprisingly reports more compact object code,
-> I wasn't expecting this, but it's nice.
+OK if below change is acceptable.
 
-I think it has to do with the design of the table structure in this
-driver. Each "struct panel_init_cmd" was 24-bytes big. That means that
-to represent one 1-byte sequence we needed 24 bytes + 1 bytes cmd + 1
-byte seq =3D 26 bytes. Lots of overhead for 2 bytes of content. The old
-table stuff could certainly have been made _a lot_ less overhead, but
-since it wasn't then it also wasn't hard to be better than it with it
-via the new style.
+--- a/include/linux/fs.h
++++ b/include/linux/fs.h
+@@ -1012,7 +1012,7 @@ struct file {
+        struct file_ra_state    f_ra;
+        struct path             f_path;
+        struct inode            *f_inode;       /* cached value */
+-       const struct file_operations    *f_op;
++       const __data_racy struct file_operations   *f_op;
 
-FWIW, it also wouldn't be terribly hard to save a tiny bit more space
-with the new style if we wanted. It gets a little ugly, but it doesn't
-affect callers of the macro. Specifically, if you assume people aren't
-going to pass more than 256-byte sequences, you could stuff the length
-in the data:
+        u64                     f_version;
+ #ifdef CONFIG_SECURITY
 
- #define mipi_dsi_dcs_write_seq_multi(ctx, cmd, seq...)                  \
--       do {                                                            \
--               static const u8 d[] =3D { cmd, seq };                     \
--               mipi_dsi_dcs_write_buffer_multi(ctx, d, ARRAY_SIZE(d)); \
-+       do { \
-+               static const u8 d[] =3D { \
-+                       (sizeof((u8[]){seq})/sizeof(u8)) + 1, cmd, seq }; \
-+               mipi_dsi_dcs_write_buffer_multi(ctx, d); \
-        } while (0)
+Hmm, debugfs assumes that f_op does not change?
 
+fs/debugfs/file.c: In function 'full_proxy_release':
+fs/debugfs/file.c:357:45: warning: initialization discards 'volatile' qualifier from pointer target type [-Wdiscarded-qualifiers]
+  const struct file_operations *proxy_fops = filp->f_op;
+                                             ^~~~
 
-..and then snag the length out of the first byte of the data in
-mipi_dsi_dcs_write_buffer_multi(). If you do this, you actually get
-another 10% space savings on this driver. :-P
-
-add/remove: 0/0 grow/shrink: 7/7 up/down: 1140/-4560 (-3420)
-Function                                     old     new   delta
-inx_hj110iz_init.d                          1040    1385    +345
-boe_tv110c9m_init.d                          982    1297    +315
-boe_init.d                                   580     870    +290
-starry_qfh032011_53g_init.d                  180     271     +91
-starry_himax83102_j02_init.d                 512     568     +56
-auo_b101uan08_3_init.d                        82     123     +41
-auo_kd101n80_45na_init.d                       2       4      +2
-auo_kd101n80_45na_init                       172     164      -8
-auo_b101uan08_3_init                         944     780    -164
-starry_himax83102_j02_init                  1228    1004    -224
-starry_qfh032011_53g_init                   1944    1580    -364
-boe_init                                    5916    4756   -1160
-boe_tv110c9m_init                           6440    5180   -1260
-inx_hj110iz_init                            7040    5660   -1380
-Total: Before=3D32906, After=3D29486, chg -10.39%
-
-I feel like people would balk at that, though...
-
--Doug
 
