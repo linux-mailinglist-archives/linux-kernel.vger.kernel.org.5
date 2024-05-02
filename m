@@ -1,167 +1,212 @@
-Return-Path: <linux-kernel+bounces-166738-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-166739-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D34908B9EBB
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 18:37:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6E93B8B9EC5
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 18:40:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 45B211F22566
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 16:37:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D356D1F21362
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 16:40:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 023561553BB;
-	Thu,  2 May 2024 16:37:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD94E15E5A9;
+	Thu,  2 May 2024 16:40:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="T64ldZ+R"
-Received: from mail-qt1-f178.google.com (mail-qt1-f178.google.com [209.85.160.178])
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="G7NblL1m"
+Received: from mail-qk1-f174.google.com (mail-qk1-f174.google.com [209.85.222.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1065155350
-	for <linux-kernel@vger.kernel.org>; Thu,  2 May 2024 16:37:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3043D155350
+	for <linux-kernel@vger.kernel.org>; Thu,  2 May 2024 16:40:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714667872; cv=none; b=I5sDc15Yh+Kip8RX1V7i8m7Xsx4paKsRp4qPC3+srkyI8F7tWWqdrD4dczcPFYPX6qkbTU5HLOOY8j4WQOP/X502yEpui9CEIJtAZNS05ZSOZ1fV22XRbXZgQ4Gst/qXk5bxa86POj5yTssYznkwbZ9naD70mVdTPG+6R7f/RGs=
+	t=1714668043; cv=none; b=i4Q8H6nR8J0DuZnNWdVCw+wYttpPFEZFEaPw/pQlf2Pi3fIDvQNUredrcqqrHLLKU/2zPKQgXibQbAIKv0d71Hg6m2mE+uWhXjO3exURYXmpwpw65VZLACuMpl5xAhVuRiwMve79xzRi70r3NK20TvdCv7+gyCpJR6p4QetT5WI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714667872; c=relaxed/simple;
-	bh=Aw2TZpFf5p2Lk0E/0yZahQlvESUj4IsJOQc9aJKNHXQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=lr5Ea6EOBSgBCSqaui1mqDs0Tw1HSkncta+51FBkJS1hX4WBY2yHOMDZ0Eavh8ZeBAJg2GEdTGts/YG1OELjlEzyAjufL+I6UD81QgqrVD4FXfrZZjgbvcTOL/vhABRGXIq2RXqiorhIHwStVM1hpiC80PxAkaXZMl0+NA2JDxU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=T64ldZ+R; arc=none smtp.client-ip=209.85.160.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qt1-f178.google.com with SMTP id d75a77b69052e-43ca8e1f990so10774581cf.0
-        for <linux-kernel@vger.kernel.org>; Thu, 02 May 2024 09:37:50 -0700 (PDT)
+	s=arc-20240116; t=1714668043; c=relaxed/simple;
+	bh=JJ6xElQROq30eGOr6yoVclASvNmxW6Cqvb72A7j2l2s=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Ze/cJ1VMlLWcLZd7Mv/cqea7XmGmvYb7XwUaMG5ENJFX5mROSrYZ0OrJ2VCJxAatag8YjRaW1zoAqdHKNsEvza15p58EgbL4LXhf8baYGekb0T1eh8zQEG+kySzxZ6D5NDm6IHkb0xowta/IJF406FaAHmjLn/7Ihx32wqU42n4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=G7NblL1m; arc=none smtp.client-ip=209.85.222.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-qk1-f174.google.com with SMTP id af79cd13be357-78ecd752a7cso565346185a.0
+        for <linux-kernel@vger.kernel.org>; Thu, 02 May 2024 09:40:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714667870; x=1715272670; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:feedback-id:from:to:cc:subject:date
+        d=chromium.org; s=google; t=1714668036; x=1715272836; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=2e05O22ZC/rIe8aqzeD563ZAugqnhUbzGJboIi69AQw=;
-        b=T64ldZ+RQ5KqO0UvOloMfqw+rNHWIbIxfbJTbKz604mGWolyrXvO8cG4MPyWq7YYfE
-         I73B9wEXLBkDLG5VYqRP0lcx43fprj60kJ94li9AVBh0NR+6C9dMod5uOoxvUi8ZFhfk
-         vphH1YLotXrRM90Kxrj8OUpKIvXsWEsHR27f4HCT4AJDPTS1v29tCToJbfoCnt9GHclm
-         D3bkqCK1C827iURjTXtxCURbKWkMx58neHg3NtEy2qcJQu1S93v9KLPkuvrvk13Yjytu
-         2Jlzk/rz4847tCiUAsj+Dr9zsHjzWIkZwpLJC9UUEjdeKenJNjlyVizT9u0nr3Ki38L5
-         xxQw==
+        bh=AEnee6ah2poDn5i64PbPAXVhct8y7uUBex4L7IT1hm0=;
+        b=G7NblL1muyRYenc2QU3Nd3UXZQBG8DvJt4TFmpc/A18AgQaekgXwLImYcQ/UsdHppx
+         GnwFanceOOlDOMgPxh08mrzUYuiKmtX2VnMBt9YGfhOImsskFZVnS18slGJHbpDXPmrL
+         VWrZS5HrPXomeLMnorywno/2nR+9+8c8qoIOQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714667870; x=1715272670;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:feedback-id:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1714668036; x=1715272836;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=2e05O22ZC/rIe8aqzeD563ZAugqnhUbzGJboIi69AQw=;
-        b=TffaOxKmAnM4o8Ihs0e2KZCeQFJpyy7AFk9Cu8aoRUWi09OaOBoqnakGUWikNxTiiC
-         g3m1Q2EspDLqLN97Ktt/KCwkdIemhYGQwlp+Y6DFeG5fgrNHWredkPq5zQCV5kuIMDRs
-         o/kyjCpZSycUfrGjdZ61Hhx29/8J5nUlxf3yZx/H7grf6AU8rqnle+UHx0qDwdbOHY0R
-         DVwDEiAJWKK0reY1iSc55ktMRRZmNIrNJiHAIF19PaurS1+cwK1a0azhnP34Pqlhj26j
-         8SQ1d6J64ARgdVCXqBIarEovMXRonWq6XT5/bRvhI5J0pqnAvJXtOxTSnuY4gU4S6k56
-         0Alg==
-X-Forwarded-Encrypted: i=1; AJvYcCU68aguryA6lLc3MR39kxlzRA5BGQdn33WxY+22AGiDzJyxudtkQgo90/NlybvcQ7+T/32UGXBFh9eIQTeIpbHE8YgmHU+82jzk4fjc
-X-Gm-Message-State: AOJu0YzyUp4+11SwTcsexMoP4dXB2Yah6IoLZArxW7UVKVtRyaU1z1BO
-	4Nb56XNxNoa3VWNrMA5sHvd6VAsV//KBTfvionK2HnvWVd2PLiZG
-X-Google-Smtp-Source: AGHT+IE2Gd+gwfBv2+JIL+log/vXbc6WUJU5mPpYv2hMHuqgelHQHMOcA/Nj53eh3WGckyszHx6ZaA==
-X-Received: by 2002:ac8:5f09:0:b0:43a:b8e2:5870 with SMTP id x9-20020ac85f09000000b0043ab8e25870mr539823qta.3.1714667869820;
-        Thu, 02 May 2024 09:37:49 -0700 (PDT)
-Received: from fauth1-smtp.messagingengine.com (fauth1-smtp.messagingengine.com. [103.168.172.200])
-        by smtp.gmail.com with ESMTPSA id f8-20020ac840c8000000b00434c31fa60csm605386qtm.92.2024.05.02.09.37.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 May 2024 09:37:49 -0700 (PDT)
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-	by mailfauth.nyi.internal (Postfix) with ESMTP id 8C8141200069;
-	Thu,  2 May 2024 12:37:48 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute5.internal (MEProxy); Thu, 02 May 2024 12:37:48 -0400
-X-ME-Sender: <xms:XMEzZtNGu0u9rSx19qgJPUPA8jD6Z2TZgwjiv8UByKzk0N7mwGpNPQ>
-    <xme:XMEzZv_V2AzHjN8lxJ8hNI8stNWipOvAoqQKIuWZhBEqlgSvntXiArm0Yl-Z4QkIW
-    2MNRK7Y8VDzEXI8fQ>
-X-ME-Received: <xmr:XMEzZsSPCqldN77UbqfYU5WaLZvPdOhhQs8hJfftlspQcjGG6JX5lYYo70bMdw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrvddukedguddtgecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpeffhffvvefukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpeeuohhq
-    uhhnucfhvghnghcuoegsohhquhhnrdhfvghnghesghhmrghilhdrtghomheqnecuggftrf
-    grthhtvghrnhephedugfduffffteeutddvheeuveelvdfhleelieevtdeguefhgeeuveei
-    udffiedvnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
-    epsghoqhhunhdomhgvshhmthhprghuthhhphgvrhhsohhnrghlihhthidqieelvdeghedt
-    ieegqddujeejkeehheehvddqsghoqhhunhdrfhgvnhhgpeepghhmrghilhdrtghomhesfh
-    higihmvgdrnhgrmhgv
-X-ME-Proxy: <xmx:XMEzZpu6PDzC3LWdViReGithYNMfvDPfeVqKVerOCrkhRfYHof5daA>
-    <xmx:XMEzZld6quLYn6qo8vRrkq-ZMwlA6vWVBQ-nRZXGNfPskJARYOqMmg>
-    <xmx:XMEzZl3dmmcRWJZBExCpgn_1XfTVZgs5GddFrsKtOBpD6cpodkQbXg>
-    <xmx:XMEzZh9gK2qlnsMgnwtsQopQUOCFllIimftEoa-0QcvQrofGSwYRuA>
-    <xmx:XMEzZg-UGLRepwS3szZsX28Q9SEFEdGrHFizzYeH9CfSK_H2QMmvJ3bb>
-Feedback-ID: iad51458e:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 2 May 2024 12:37:47 -0400 (EDT)
-Date: Thu, 2 May 2024 09:37:17 -0700
-From: Boqun Feng <boqun.feng@gmail.com>
-To: "Paul E. McKenney" <paulmck@kernel.org>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>,
-	Marco Elver <elver@google.com>,
-	Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Dmitry Vyukov <dvyukov@google.com>,
-	syzbot <syzbot+b7c3ba8cdc2f6cf83c21@syzkaller.appspotmail.com>,
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-	Nathan Chancellor <nathan@kernel.org>,
-	Arnd Bergmann <arnd@kernel.org>, Al Viro <viro@zeniv.linux.org.uk>,
-	Jiri Slaby <jirislaby@kernel.org>
-Subject: Re: [PATCH v3] tty: tty_io: remove hung_up_tty_fops
-Message-ID: <ZjPBPWSSdE_VcH_V@boqun-archlinux>
-References: <CANpmjNN250UCxsWCpUHAvJo28Lzv=DN-BKTmjEpcLFOCA+U+pw@mail.gmail.com>
- <CAHk-=whnQXNVwuf42Sh2ngBGhBqbJjUfq5ux6e7Si_XSPAt05A@mail.gmail.com>
- <d4de136e-c4e0-45c2-b33e-9a819cb3a791@paulmck-laptop>
- <CAHk-=wi3iondeh_9V2g3Qz5oHTRjLsOpoy83hb58MVh=nRZe0A@mail.gmail.com>
- <892324fc-9b75-4e8a-b3b6-cf3c5b4c3506@paulmck-laptop>
- <CANpmjNOY=Qpm3hBu-eN4Xk8n-2VXQRvcQ3_PfwPwNw9MmC8ctw@mail.gmail.com>
- <CAHk-=whTakjVGgBC5OtoZ5Foo=hd4-g+NZ79nkMDVj6Ug7ARKQ@mail.gmail.com>
- <CAHk-=wiGzmJXZwHxCE6P0jVBqU4gHEm=zcfj3v+zM_S_9RF4_Q@mail.gmail.com>
- <1c886023-ae61-46ba-bb3c-b460c30de937@paulmck-laptop>
- <b3b81374-a19d-4bf5-abb3-15e48c72f01a@paulmck-laptop>
+        bh=AEnee6ah2poDn5i64PbPAXVhct8y7uUBex4L7IT1hm0=;
+        b=d8W2026jLfexlrSzTpDbzHCRZjNUje60us93Dv0Qisz/uLhEkweyTG0f7vK3riApHG
+         U0u3lpjwiExDjMMmEdPXo6D66WEs1qQEOQ1CMQPiSO9bora/AZZwyyaGAfeLqwqsbFSr
+         0SFRRf9nngKEVdiWnvBtsGorroAdV/ZzZS6Q9hKjPrdITD4iCM1Bh34PmL6LEwVL0thD
+         cztp8JL1sJahho1Cqyc5BHkB2iXVWkqAb8CnmCZSCwJEJSZbBsdlVQMaquhYLQBcxG2t
+         tnrHOpc3B0cHlY4hnlS+98NyhLBPe5mj1y9P1VBOtTOlL9ohYflixA7TzQVjkmwLHD9R
+         op/g==
+X-Forwarded-Encrypted: i=1; AJvYcCW2iGJPsmlAtzN18nQxQGYUD94avzEUtvhSUW2T9yoL0xb6DoXSQEkZHCAZuUpLLFs2J8uCy5nT4XQWimNnKGar3+9gQEZfywjKG9Kh
+X-Gm-Message-State: AOJu0YzlXHbMjcgHlq/W/k5Qn+lUM/QffAGKhjuBG7psANau3norGKct
+	sOu5F6iB/MouVETcXZZNnlDj7KgVs8CCsLkJbHXJIDNZNogBuI5f+cHFEZnSZ7H/rPe8HT4qZKU
+	=
+X-Google-Smtp-Source: AGHT+IHNMQA3pPiVfLRcNitJbKkUNO6SP0BZCQbwQP6iV8aiwmuNUaWw7zyIyv5qeK8tz154SlwMRg==
+X-Received: by 2002:a05:620a:f93:b0:790:fbaa:55da with SMTP id b19-20020a05620a0f9300b00790fbaa55damr114505qkn.45.1714668035515;
+        Thu, 02 May 2024 09:40:35 -0700 (PDT)
+Received: from mail-qt1-f180.google.com (mail-qt1-f180.google.com. [209.85.160.180])
+        by smtp.gmail.com with ESMTPSA id bi6-20020a05620a318600b00790f74b3814sm490314qkb.82.2024.05.02.09.40.32
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 02 May 2024 09:40:32 -0700 (PDT)
+Received: by mail-qt1-f180.google.com with SMTP id d75a77b69052e-439b1c72676so831cf.1
+        for <linux-kernel@vger.kernel.org>; Thu, 02 May 2024 09:40:32 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCVL9hjBMShx0NUKzHagWD/ItBtVA7JJZY9eLsFCjALxjIWfOCxzSUnqjQjg1KZRizUQq6TMlzOMUtzVNpacJXvJrKQZ/ElO2So48ruE
+X-Received: by 2002:a05:622a:190d:b0:437:b631:b8fb with SMTP id
+ d75a77b69052e-43caa5b67b6mr4063341cf.26.1714668032250; Thu, 02 May 2024
+ 09:40:32 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b3b81374-a19d-4bf5-abb3-15e48c72f01a@paulmck-laptop>
+References: <20240501154251.3302887-1-dianders@chromium.org>
+ <20240501084109.v3.7.Ib5030ab5cd41b4e08b1958bd7e51571725723008@changeid> <CACRpkdYiND3uLAbFqyGEYgi5+ycOTYoncmSYGTsYtTZ7Ox=4DQ@mail.gmail.com>
+In-Reply-To: <CACRpkdYiND3uLAbFqyGEYgi5+ycOTYoncmSYGTsYtTZ7Ox=4DQ@mail.gmail.com>
+From: Doug Anderson <dianders@chromium.org>
+Date: Thu, 2 May 2024 09:40:16 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=U59+au4Sfi5xdxmCAEaAVq7YguM2FjkyF+OYX16ydW4w@mail.gmail.com>
+Message-ID: <CAD=FV=U59+au4Sfi5xdxmCAEaAVq7YguM2FjkyF+OYX16ydW4w@mail.gmail.com>
+Subject: Re: [PATCH v3 7/9] drm/panel: boe-tv101wum-nl6: Don't use a table for
+ initting panels
+To: Linus Walleij <linus.walleij@linaro.org>
+Cc: dri-devel@lists.freedesktop.org, Jani Nikula <jani.nikula@linux.intel.com>, 
+	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, 
+	Cong Yang <yangcong5@huaqin.corp-partner.google.com>, Hsin-Yi Wang <hsinyi@google.com>, 
+	Brian Norris <briannorris@chromium.org>, Sam Ravnborg <sam@ravnborg.org>, 
+	Neil Armstrong <neil.armstrong@linaro.org>, Javier Martinez Canillas <javierm@redhat.com>, 
+	Joel Selvaraj <jo@jsfamily.in>, lvzhaoxiong@huaqin.corp-partner.google.com, 
+	Daniel Vetter <daniel@ffwll.ch>, David Airlie <airlied@gmail.com>, 
+	Jessica Zhang <quic_jesszhan@quicinc.com>, 
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, 
+	Thomas Zimmermann <tzimmermann@suse.de>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, May 01, 2024 at 03:32:34PM -0700, Paul E. McKenney wrote:
-> On Wed, May 01, 2024 at 02:49:17PM -0700, Paul E. McKenney wrote:
-> > On Wed, May 01, 2024 at 02:20:35PM -0700, Linus Torvalds wrote:
-> > > On Wed, 1 May 2024 at 14:06, Linus Torvalds
-> > > <torvalds@linux-foundation.org> wrote:
-> 
-> [ . . . ]
-> 
-> > > I'd love to see an extension where "const volatile" basically means
-> > > exactly that: the volatile tells the compiler that it can't
-> > > rematerialize by doing the load multiple times, but the "const" would
-> > > say that if the compiler sees two or more accesses, it can still CSE
-> > > them.
-> 
-> Except that "const volatile" already means "you cannot write to it,
-> and reads will not be fused".  :-/
-> 
-> > No promises, other than that if we don't ask, they won't say "yes".
-> > 
-> > Let me see what can be done.
-> 
-> >From a semantics viewpoint __atomic_load_n(&x, __ATOMIC_RELAXED) would
-> work for loading from x.  The compilers that I tried currently do not
-> fuse loads, but they are allowed to do so.
-> 
+Hi,
 
-Yeah, I wonder the same, from what I read, "const volatile" seems to
-be just a (non-volatile) relaxed atomic load.
+On Thu, May 2, 2024 at 6:42=E2=80=AFAM Linus Walleij <linus.walleij@linaro.=
+org> wrote:
+>
+> On Wed, May 1, 2024 at 5:43=E2=80=AFPM Douglas Anderson <dianders@chromiu=
+m.org> wrote:
+>
+> > Consensus on the mailing lists is that panels shouldn't use a table of
+> > init commands but should instead use init functions. With the recently
+> > introduced mipi_dsi_dcs_write_seq_multi() this is not only clean/easy
+> > but also saves space. Measuring before/after this change:
+> >
+> > $ scripts/bloat-o-meter \
+> >   .../before/panel-boe-tv101wum-nl6.ko \
+> >   .../after/panel-boe-tv101wum-nl6.ko
+> > add/remove: 14/8 grow/shrink: 0/1 up/down: 27062/-31433 (-4371)
+> > Function                                     old     new   delta
+> > inx_hj110iz_init                               -    7040   +7040
+> > boe_tv110c9m_init                              -    6440   +6440
+> > boe_init                                       -    5916   +5916
+> > starry_qfh032011_53g_init                      -    1944   +1944
+> > starry_himax83102_j02_init                     -    1228   +1228
+> > inx_hj110iz_init.d                             -    1040   +1040
+> > boe_tv110c9m_init.d                            -     982    +982
+> > auo_b101uan08_3_init                           -     944    +944
+> > boe_init.d                                     -     580    +580
+> > starry_himax83102_j02_init.d                   -     512    +512
+> > starry_qfh032011_53g_init.d                    -     180    +180
+> > auo_kd101n80_45na_init                         -     172    +172
+> > auo_b101uan08_3_init.d                         -      82     +82
+> > auo_kd101n80_45na_init.d                       -       2      +2
+> > auo_kd101n80_45na_init_cmd                   144       -    -144
+> > boe_panel_prepare                            592     440    -152
+> > auo_b101uan08_3_init_cmd                    1056       -   -1056
+> > starry_himax83102_j02_init_cmd              1392       -   -1392
+> > starry_qfh032011_53g_init_cmd               2256       -   -2256
+> > .compoundliteral                            3393       -   -3393
+> > boe_init_cmd                                7008       -   -7008
+> > boe_tv110c9m_init_cmd                       7656       -   -7656
+> > inx_hj110iz_init_cmd                        8376       -   -8376
+> > Total: Before=3D37297, After=3D32926, chg -11.72%
+> >
+> > Let's do the conversion.
+> >
+> > Since we're touching all the tables, let's also convert hex numbers to
+> > lower case as per kernel conventions.
+> >
+> > Signed-off-by: Douglas Anderson <dianders@chromium.org>
+>
+> Wow that's a *VERY* nice patch.
+> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 
-Regards,
-Boqun
+Thanks!
 
-> Or is there something I am missing that would make this not work?
-> Aside from compilers not yet optimizing this case.
-> 
-> 							Thanx, Paul
+
+> The metrics surprisingly reports more compact object code,
+> I wasn't expecting this, but it's nice.
+
+I think it has to do with the design of the table structure in this
+driver. Each "struct panel_init_cmd" was 24-bytes big. That means that
+to represent one 1-byte sequence we needed 24 bytes + 1 bytes cmd + 1
+byte seq =3D 26 bytes. Lots of overhead for 2 bytes of content. The old
+table stuff could certainly have been made _a lot_ less overhead, but
+since it wasn't then it also wasn't hard to be better than it with it
+via the new style.
+
+FWIW, it also wouldn't be terribly hard to save a tiny bit more space
+with the new style if we wanted. It gets a little ugly, but it doesn't
+affect callers of the macro. Specifically, if you assume people aren't
+going to pass more than 256-byte sequences, you could stuff the length
+in the data:
+
+ #define mipi_dsi_dcs_write_seq_multi(ctx, cmd, seq...)                  \
+-       do {                                                            \
+-               static const u8 d[] =3D { cmd, seq };                     \
+-               mipi_dsi_dcs_write_buffer_multi(ctx, d, ARRAY_SIZE(d)); \
++       do { \
++               static const u8 d[] =3D { \
++                       (sizeof((u8[]){seq})/sizeof(u8)) + 1, cmd, seq }; \
++               mipi_dsi_dcs_write_buffer_multi(ctx, d); \
+        } while (0)
+
+
+..and then snag the length out of the first byte of the data in
+mipi_dsi_dcs_write_buffer_multi(). If you do this, you actually get
+another 10% space savings on this driver. :-P
+
+add/remove: 0/0 grow/shrink: 7/7 up/down: 1140/-4560 (-3420)
+Function                                     old     new   delta
+inx_hj110iz_init.d                          1040    1385    +345
+boe_tv110c9m_init.d                          982    1297    +315
+boe_init.d                                   580     870    +290
+starry_qfh032011_53g_init.d                  180     271     +91
+starry_himax83102_j02_init.d                 512     568     +56
+auo_b101uan08_3_init.d                        82     123     +41
+auo_kd101n80_45na_init.d                       2       4      +2
+auo_kd101n80_45na_init                       172     164      -8
+auo_b101uan08_3_init                         944     780    -164
+starry_himax83102_j02_init                  1228    1004    -224
+starry_qfh032011_53g_init                   1944    1580    -364
+boe_init                                    5916    4756   -1160
+boe_tv110c9m_init                           6440    5180   -1260
+inx_hj110iz_init                            7040    5660   -1380
+Total: Before=3D32906, After=3D29486, chg -10.39%
+
+I feel like people would balk at that, though...
+
+-Doug
 
