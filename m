@@ -1,98 +1,120 @@
-Return-Path: <linux-kernel+bounces-166101-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-166102-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DD6FD8B9633
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 10:12:35 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A36048B963C
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 10:15:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 072B2B22B8C
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 08:12:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 42C451F24CC7
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 08:15:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ADADA2D7A8;
-	Thu,  2 May 2024 08:12:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D33022E832;
+	Thu,  2 May 2024 08:15:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="oPCHjVV6"
-Received: from mail-yb1-f172.google.com (mail-yb1-f172.google.com [209.85.219.172])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="kBbCqZEh"
+Received: from mail-yw1-f171.google.com (mail-yw1-f171.google.com [209.85.128.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9DBD728DC9
-	for <linux-kernel@vger.kernel.org>; Thu,  2 May 2024 08:12:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC89128E11
+	for <linux-kernel@vger.kernel.org>; Thu,  2 May 2024 08:15:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714637545; cv=none; b=qZlRS4AUXCji/VXEqVPKBa3LMPLg6x0bPB7O9lZfkD80HoJfl6/OQ93BscRGsagWwtZFPlpjDtwrA95O+U1BOKcWrgSsDOYexmLmC36oXloAjcoYtVXSl++wUxrXzychZzL9RrR2v40CMYAQB8HKldLFsuIgTBni+Y5dB4iAn3Y=
+	t=1714637724; cv=none; b=SziaPzbSLFBIAPtueXamHxRWIcujTzPRGGqO/dr2Aof8bQNOasCq/IZXDILgkKVVq54TV6HQvjNsfqluNsK1oLYeF+tKiB3wsK8rno4mTKL8YSPJGB1b5KU+1sUeNpk7An/ftvbL3ME6mFAX9osSYzRAKVZjZT5AHB/JZjA0JUk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714637545; c=relaxed/simple;
-	bh=wb3LX5vahpx/rd816iu/ui5vqsK5KsZzBjV0cje8jHg=;
+	s=arc-20240116; t=1714637724; c=relaxed/simple;
+	bh=ZtDqgAXYiT02MT1jYbSADdleWVaaJVqj8qyuZIZtBv4=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=oP2xXXdv4fO0+J/tRMZm0922TSZNzlhiiO2ZFKD4GOJFDCR9rCW6St3Sx39Usc4yooTtLXHUgeLj0FOxUbfHYDzP7+TyLl/PGeEQBDA4nIJ56CGINlSJRzLNtGWuQc+EZaq15UmRlYKc0U/WWFGzOJHkYobZTYCZnkrT06PBzAk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=oPCHjVV6; arc=none smtp.client-ip=209.85.219.172
+	 To:Cc:Content-Type; b=LF4m9YLwTITiKSOfOgmixXJsn3gwN89jpWVpSQFLuUH2FE4x2IdFRcmr/prgzfOV6gs6P1DYqx+t0WMkQ2yowEAIKX5rM8REbDyri22b3xJhRvELK5IFj+hPhmawjZTv9Duvu8Q8Q3uO0WR2XPIGEZbmgv9HoS0V+ZSLZ4NJ8Gk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=kBbCqZEh; arc=none smtp.client-ip=209.85.128.171
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yb1-f172.google.com with SMTP id 3f1490d57ef6-de60380c04aso4463196276.2
-        for <linux-kernel@vger.kernel.org>; Thu, 02 May 2024 01:12:23 -0700 (PDT)
+Received: by mail-yw1-f171.google.com with SMTP id 00721157ae682-61be4b98766so36287907b3.3
+        for <linux-kernel@vger.kernel.org>; Thu, 02 May 2024 01:15:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1714637542; x=1715242342; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1714637722; x=1715242522; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=wb3LX5vahpx/rd816iu/ui5vqsK5KsZzBjV0cje8jHg=;
-        b=oPCHjVV6xufvCmOrjd8XH25kzdv2cUfoWJv6QG1k0EKQ0FQZQluIEUwRow9p/u/pa3
-         k9yoNEgf8D2kUtXL6y05tLsteICbRx0DbggyEbByKMPM2oCwCRxJGn07J2A2P5ejKG/e
-         90l3lBSA9qTI04lXSms574toBSgzqkR76588Gtu7eGIh0Rd9c7G0YdYBcygc3JURsQ9y
-         ffQ6jDdUwOuGmqYW/XOBaeWL2cnQpTYQ8XpumXfFPw2rIspOY2OjdIT2Ho4ME87aZv3B
-         +pKPHngNq+oMCvxFAHpT2UWPGWwFj1wKBt6nmBEbLRk9ZDzzEiwdr2UqOnzYOS65VFUY
-         cVcQ==
+        bh=ksrXWA++hq4uo5b14CGOhlwMbP35YcH8qiFN3VUhLdo=;
+        b=kBbCqZEhM0nejAJkj8NYj39JbSxBU4YYdj1UTkMZVMZ3K8fErst+LxSsrEKtXsOTo9
+         ytKMNBqdxiYqXB64azeTE/+J8QV23O3umjFtAzJ3LHQY6jTUwfoetAN8MAJTGJyDIqxa
+         I3MN3HW+b0Jz9t8j6m7j20ZhL75R4ymaHmG2cOyc0asbcYbJBsM2roqk/WBq7Q6H9pFh
+         tKd3G7SplytuMIt3pZyIeDV0EQ8zthG41uAy9UP3tL4CBQzrM8UdXlISITWpNM6g+LNY
+         aDxvOosPgdeXktCnzp0emM+2x31EK4AXx9nkmbofEMs6MeBi3oqgbswh5Lw6Iyhjvl9Q
+         An3w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714637542; x=1715242342;
+        d=1e100.net; s=20230601; t=1714637722; x=1715242522;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=wb3LX5vahpx/rd816iu/ui5vqsK5KsZzBjV0cje8jHg=;
-        b=ovtbi99sTRZO8Ep3c2KEt6ffX69vEyvWD7YqqS9NWvFPTIux/8jRWRF0kAe8Hy0piv
-         rIohhW+qby9xgjeQKJxFt/HtlYl9ebXAezMAERwK3BsSCAcJmXeL8tHnwQ9qj5WFVIPM
-         KrkECPQ+t4G2P+YL6CYWPv+lnvjaLAHLztaiHddKL4r/wuvWNQ+4DXSWTZOz/BWOSEjZ
-         62mnF9o24Udu+vaJfn+TmBYFS6QihF8oFs0Ak17slSdOpN6Q0FFX4QeY2zcGyaxXc2aj
-         96D0QMDbHS+OezERr35J+kd6O8Db7yDKPCMOo6Juoy8UwCx19+dUqH9MkGKCdTQCeVoa
-         kG5g==
-X-Forwarded-Encrypted: i=1; AJvYcCUlzWT4CM+xzQ8hoEpQNlg+xSZo00zSQX8ejrRzoQqWgIRa41ZNhndaSAIf8f65ZYHhdaSl2Qp+S7iECWf5ENyd4V4s194X8gVZMyuK
-X-Gm-Message-State: AOJu0Ywvz8ZdDN2DguzpFOACqZ0DyZQQtbLoES25VDfbr9G3V+CKTLyl
-	haOUWQkmNb++cp+pUjPl/M0IO8QU3Ubekm5k8XWO8gd3I9pETy89c+MGiV3motFOLeE8Fn0pzMU
-	DO1jgYqukJhv6e0WyyQcRttAYMFbQ7h/D8hhgTQ==
-X-Google-Smtp-Source: AGHT+IGLKzyB+YZkE9uQws1DXu7KI6tBzhmXigQBA2PcTyA8yFz1MOY/h5s8kLI1LQHzH2r62g7N6C3hpZhGXaNnsIw=
-X-Received: by 2002:a25:6b01:0:b0:de6:dcd:20ae with SMTP id
- g1-20020a256b01000000b00de60dcd20aemr5048683ybc.27.1714637542546; Thu, 02 May
- 2024 01:12:22 -0700 (PDT)
+        bh=ksrXWA++hq4uo5b14CGOhlwMbP35YcH8qiFN3VUhLdo=;
+        b=eJcZqV2RgNDFZT1p9ILOj3sTIo5UKB8ljZcSkx8e5mAcHqqtlMd8rV78rgZpQIkf7b
+         cwp5p8D4yMaFwzcRo92vPqkdlExJ3AzmEqRcc8MHrZ2tL/CAj4c3tlk+RpDutuO/d02c
+         b9xWyo6djpyZROojZT1PMHdAMNW4/ZSA4IDdN1D5ek7TGpmkSUsZXQRFlBcIb8qFUVdt
+         maxZXRIjs50VYGfs14PdqsCodqafauFxZVTzDgnaDWG6/ZFMgok5NRAcG6etjkTGcMCa
+         O2Fec4/IlM1ZvvHFmo+jxtwBSyHLBuQxNFhxz0hwBCjDPv5YgmWTjbEzkzMJi50omTv+
+         90Zw==
+X-Forwarded-Encrypted: i=1; AJvYcCUvUR7jcfzTSaiG608oRUHyRIDBqa4RmCPwew5wv/Z04nnqQTZj5twXKTMRjJ8LchSC0ALfX34pgPwLe5c2+V0K0q9pzPD0BwJKl9oi
+X-Gm-Message-State: AOJu0YxFqjxH09AMgrvwYfEtggAwZYf02M4GC1Yd6gGkKcOpw/IfVuas
+	oXrUgFmBWJTsPb+/KtfYX7Hs18DPpXtLXKP3dvMdUcwNBQJ50j2ldvM6bHD0gAnel+PgH50Ld8t
+	hRgBdlIwdMDnlQqDNjfmTJN+awIRGUcENlXndRQ==
+X-Google-Smtp-Source: AGHT+IGX8v+8VmddJzrDHjwUwXISt1o62/4S2TF455DujQU9cLxV5tMcWCQoLUuneneXH3ceSHMKHYls/F7UcN1WCOo=
+X-Received: by 2002:a05:690c:6d93:b0:61a:c4a3:8a5c with SMTP id
+ iw19-20020a05690c6d9300b0061ac4a38a5cmr5471921ywb.44.1714637719772; Thu, 02
+ May 2024 01:15:19 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240417110334.2671228-1-andriy.shevchenko@linux.intel.com> <20240417110334.2671228-10-andriy.shevchenko@linux.intel.com>
-In-Reply-To: <20240417110334.2671228-10-andriy.shevchenko@linux.intel.com>
+References: <20240501154251.3302887-1-dianders@chromium.org> <20240501084109.v3.1.I30fa4c8348ea316c886ef8a522a52fed617f930d@changeid>
+In-Reply-To: <20240501084109.v3.1.I30fa4c8348ea316c886ef8a522a52fed617f930d@changeid>
 From: Linus Walleij <linus.walleij@linaro.org>
-Date: Thu, 2 May 2024 10:12:11 +0200
-Message-ID: <CACRpkdaPnO=Xcj-aYwBA3MfdmCk2EEfbvHyy4UJsjxsZbWmWfg@mail.gmail.com>
-Subject: Re: [PATCH v3 9/9] spi: pxa2xx: Don't provide struct chip_data for others
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: Mark Brown <broonie@kernel.org>, linux-spi@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
-	Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>, 
-	Robert Jarzmik <robert.jarzmik@free.fr>, Russell King <linux@armlinux.org.uk>
+Date: Thu, 2 May 2024 10:15:08 +0200
+Message-ID: <CACRpkdZOyK=CSG2C64ELXXiieHUd_BaHBBR=iLrG6moYDUTC4w@mail.gmail.com>
+Subject: Re: [PATCH v3 1/9] drm/mipi-dsi: Fix theoretical int overflow in mipi_dsi_dcs_write_seq()
+To: Douglas Anderson <dianders@chromium.org>
+Cc: dri-devel@lists.freedesktop.org, Jani Nikula <jani.nikula@linux.intel.com>, 
+	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, 
+	Cong Yang <yangcong5@huaqin.corp-partner.google.com>, Hsin-Yi Wang <hsinyi@google.com>, 
+	Brian Norris <briannorris@chromium.org>, Sam Ravnborg <sam@ravnborg.org>, 
+	Neil Armstrong <neil.armstrong@linaro.org>, Javier Martinez Canillas <javierm@redhat.com>, 
+	Joel Selvaraj <jo@jsfamily.in>, lvzhaoxiong@huaqin.corp-partner.google.com, 
+	Daniel Vetter <daniel@ffwll.ch>, David Airlie <airlied@gmail.com>, 
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, 
+	Thomas Zimmermann <tzimmermann@suse.de>, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Apr 17, 2024 at 1:05=E2=80=AFPM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
+On Wed, May 1, 2024 at 5:43=E2=80=AFPM Douglas Anderson <dianders@chromium.=
+org> wrote:
 
-> Now the struct chip_data is local to spi-pxa2xx.c, move
-> its definition to the C file. This will slightly speed up
-> a build and also hide badly named data type (too generic).
+> The mipi_dsi_dcs_write_seq() macro makes a call to
+> mipi_dsi_dcs_write_buffer() which returns a type ssize_t. The macro
+> then stores it in an int and checks to see if it's negative. This
+> could theoretically be a problem if "ssize_t" is larger than "int".
 >
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> To see the issue, imagine that "ssize_t" is 32-bits and "int" is
+> 16-bits, you could see a problem if there was some code out there that
+> looked like:
+>
+>   mipi_dsi_dcs_write_seq(dsi, cmd, <32767 bytes as arguments>);
+>
+> ...since we'd get back that 32768 bytes were transferred and 32768
+> stored in a 16-bit int would look negative.
+>
+> Though there are no callsites where we'd actually hit this (even if
+> "int" was only 16-bit), it's cleaner to make the types match so let's
+> fix it.
+>
+> Fixes: 2a9e9daf7523 ("drm/mipi-dsi: Introduce mipi_dsi_dcs_write_seq macr=
+o")
+> Signed-off-by: Douglas Anderson <dianders@chromium.org>
 
+All right! Nice work.
 Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 
 Yours,
