@@ -1,34 +1,34 @@
-Return-Path: <linux-kernel+bounces-166969-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-166968-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D15AE8BA27C
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 23:41:42 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7409C8BA27D
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 23:41:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 866E51F21945
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 21:41:42 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A00A0B21FFE
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 21:41:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E44F31CB31A;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DEAE31CB318;
 	Thu,  2 May 2024 21:38:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="u0lnJc6O";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="QDGpdx7F"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="yLAB//lY";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="eUdzEyLe"
 Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C9B61C65EC
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2A751C660C
 	for <linux-kernel@vger.kernel.org>; Thu,  2 May 2024 21:38:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714685934; cv=none; b=tjPSwg3iYgoYokrzCmRq3puDAgS3tv9Og0DHP+rypwhUrq28MvIhI3VZJ7aDmzJdVUp2eA+1tSqH3lifjmKAYZNkJh0ld1i3b8eeGjcioOBCjCtAmRgZPw6hiBcHe4FR6Bvw86ktuGGgxL8ufB7SkS4nSM5zSIrr7/YrvaAL548=
+	t=1714685934; cv=none; b=DEJsxzH7M3EfI5QRhHQkebayWnPLnMN0F/r5yw1dTHcj+LOstj36ZPcD3hanzuvlyn0ZBn3PbB+2CCZ31uJugIqF9rFroFcNA58kjbRPMp9PLccv0FTRmJHVTRg5NFnFY7ErOxM3qjPkH/oKVEXfj2nm+LFjSPSiCiOSSQvhagI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1714685934; c=relaxed/simple;
-	bh=SNLZe25NvdawX74sPMNN2b32M9UWDQ0xBcf74EaYUGs=;
+	bh=tOlb55GZsIaT9cynpsyj5UhAczLLhu/zc6LG7enM9MM=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=Ez65Ed11GO0WXismU833mXESueJ+Xmv9hZHXCvsCd84uL0stkie2flCSU7WMhMGE1WRuDb2GsGg6h96jKnemW5SK2lQzBqL8yFQMT8OG7/B4iwz5oVvwl8F3frX6jft96hG1nhLVlFjbeSW5/raoLPRFomXUQ3yskToB+FXZVuA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=u0lnJc6O; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=QDGpdx7F; arc=none smtp.client-ip=193.142.43.55
+	 MIME-Version; b=RsdDEtblRzkSmHOmoWcH48dQeeCkuqGnek8A0IF8+rEgoYgDK7AInxRZ3kJEwSyAIf9LwuCf7okPMuxVzbHYTjVfLgO6FqQAV31/xetEwi4PbNkDMhOBvWfaZsxhN5J8COw3CsdSHlCy9jjSn0jxPNmoX4Umw86poe1atwgSX+M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=yLAB//lY; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=eUdzEyLe; arc=none smtp.client-ip=193.142.43.55
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
 From: John Ogness <john.ogness@linutronix.de>
@@ -38,29 +38,29 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=vHXFQ842EHAesP3cWbIS8s/eD5QSwLsV5qin0yhI+w4=;
-	b=u0lnJc6OtkrxDt5k76e0WVIUprCNBu9MktrVs8rsgDncMTv7pyWfIDOygfzEIHCxiA3m1T
-	mPa+et4CoUVTYN1PcDUbcIk5JpF/qc22Aul5LWW3OrFVCu/nBG5pfsAhkh4+yvhf83BQKr
-	B7p4XvToB31OItxKQmKCD7DWDOzB/terNQw09PVz2YW0yArQ5ls6JYrVxHzHItQZCvDytc
-	HvT2cnAEY+o5fuuakohSvqvBWv9fJGVvH2n219HYVsS1+8rv6oLL0h8PWeHqdX5rkUNmZX
-	coWd1HRN8G/oCyoYYB0GwFLmoH9qbx3vgZ5UWkSW3SEdZ+43IouiNFBOL1sfQw==
+	bh=xZtMTVl1yOdxUwgi1uSJ5RX46gAn8gugProPBvxHrmg=;
+	b=yLAB//lYOLxA2VBr+Fmj4UrmcxxotVzWo6MUxgq9r9uOU5+EB8PBuFZiseZ+Ug6U5CQ39f
+	QlhvNuf+72txiBwIe08ugIsqv+IzCUzYNs+YDW9BH8hGxjHJwLXOWovzY4QXOvvuq6p0xk
+	FaO9+sL4sqtl9qgZg62T8pUWR8mkzR1A5IBhdKp3bSj5NfzPHtZqiKdoh+8tyLY6CML7tQ
+	g76jFSS2AVa6CXROmo6t3gqsIC/l0MDs9wLylZ1r8icHZYrwwFnJoO/knQH2fyvqN3qS2+
+	QoL8C020KapG9y4S9cVohx7dHm39/XUyMHVT0IfRWXHkAATKrGn/Rs+tSWBNtg==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
 	s=2020e; t=1714685931;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=vHXFQ842EHAesP3cWbIS8s/eD5QSwLsV5qin0yhI+w4=;
-	b=QDGpdx7F/MGax+73p1+r2KrWTywkx7Qu89uuyDkRbnj4YFv+60ndkyutIyN2BRzd8rmluK
-	MEYKpLhNGHbIKYBg==
+	bh=xZtMTVl1yOdxUwgi1uSJ5RX46gAn8gugProPBvxHrmg=;
+	b=eUdzEyLepH2X4yDnXVKEbC3+f7t8Wp3naT1xcOCcJAY2ZHMAUqswcFhlm3BDJxnhGsj+5x
+	XzZ/FmwwUzt5HKCA==
 To: Petr Mladek <pmladek@suse.com>
 Cc: Sergey Senozhatsky <senozhatsky@chromium.org>,
 	Steven Rostedt <rostedt@goodmis.org>,
 	Thomas Gleixner <tglx@linutronix.de>,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH printk v5 17/30] printk: Add @flags argument for console_is_usable()
-Date: Thu,  2 May 2024 23:44:26 +0206
-Message-Id: <20240502213839.376636-18-john.ogness@linutronix.de>
+Subject: [PATCH printk v5 18/30] printk: nbcon: Add helper to assign priority based on CPU state
+Date: Thu,  2 May 2024 23:44:27 +0206
+Message-Id: <20240502213839.376636-19-john.ogness@linutronix.de>
 In-Reply-To: <20240502213839.376636-1-john.ogness@linutronix.de>
 References: <20240502213839.376636-1-john.ogness@linutronix.de>
 Precedence: bulk
@@ -71,71 +71,70 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The caller of console_is_usable() usually needs @console->flags
-for its own checks. Rather than having console_is_usable() read
-its own copy, make the caller pass in the @flags. This also
-ensures that the caller saw the same @flags value.
+Add a helper function to use the current state of the CPU to
+determine which priority to assign to the printing context.
+
+The EMERGENCY priority handling is added in a follow-up commit.
+It will use a per-CPU variable.
+
+Note: nbcon_driver_try_acquire(), which is used by console
+      drivers to acquire the nbcon console for non-printing
+      activities, will always use NORMAL priority.
 
 Signed-off-by: John Ogness <john.ogness@linutronix.de>
 Reviewed-by: Petr Mladek <pmladek@suse.com>
 ---
- kernel/printk/internal.h | 8 ++------
- kernel/printk/printk.c   | 5 +++--
- 2 files changed, 5 insertions(+), 8 deletions(-)
+ kernel/printk/internal.h |  2 ++
+ kernel/printk/nbcon.c    | 16 ++++++++++++++++
+ 2 files changed, 18 insertions(+)
 
 diff --git a/kernel/printk/internal.h b/kernel/printk/internal.h
-index 943e8f083609..e2de2d262db4 100644
+index e2de2d262db4..5826cd4eed58 100644
 --- a/kernel/printk/internal.h
 +++ b/kernel/printk/internal.h
-@@ -90,13 +90,9 @@ void nbcon_free(struct console *con);
-  * records. Note that this function does not consider the current context,
-  * which can also play a role in deciding if @con can be used to print
-  * records.
-- *
-- * Requires the console_srcu_read_lock.
-  */
--static inline bool console_is_usable(struct console *con)
-+static inline bool console_is_usable(struct console *con, short flags)
- {
--	short flags = console_srcu_read_flags(con);
--
- 	if (!(flags & CON_ENABLED))
- 		return false;
+@@ -84,6 +84,7 @@ void nbcon_seq_force(struct console *con, u64 seq);
+ bool nbcon_alloc(struct console *con);
+ void nbcon_init(struct console *con, u64 init_seq);
+ void nbcon_free(struct console *con);
++enum nbcon_prio nbcon_get_default_prio(void);
  
-@@ -143,7 +139,7 @@ static inline bool nbcon_alloc(struct console *con) { return false; }
+ /*
+  * Check if the given console is currently capable and allowed to print
+@@ -138,6 +139,7 @@ static inline void nbcon_seq_force(struct console *con, u64 seq) { }
+ static inline bool nbcon_alloc(struct console *con) { return false; }
  static inline void nbcon_init(struct console *con, u64 init_seq) { }
  static inline void nbcon_free(struct console *con) { }
++static inline enum nbcon_prio nbcon_get_default_prio(void) { return NBCON_PRIO_NONE; }
  
--static inline bool console_is_usable(struct console *con) { return false; }
-+static inline bool console_is_usable(struct console *con, short flags) { return false; }
+ static inline bool console_is_usable(struct console *con, short flags) { return false; }
  
- #endif /* CONFIG_PRINTK */
+diff --git a/kernel/printk/nbcon.c b/kernel/printk/nbcon.c
+index c429f4cfbb2d..e37af5c72d38 100644
+--- a/kernel/printk/nbcon.c
++++ b/kernel/printk/nbcon.c
+@@ -937,6 +937,22 @@ static bool nbcon_emit_next_record(struct nbcon_write_context *wctxt)
+ 	return nbcon_context_exit_unsafe(ctxt);
+ }
  
-diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
-index b0e99ee472e1..9cdc110a46a2 100644
---- a/kernel/printk/printk.c
-+++ b/kernel/printk/printk.c
-@@ -2942,9 +2942,10 @@ static bool console_flush_all(bool do_cond_resched, u64 *next_seq, bool *handove
- 
- 		cookie = console_srcu_read_lock();
- 		for_each_console_srcu(con) {
-+			short flags = console_srcu_read_flags(con);
- 			bool progress;
- 
--			if (!console_is_usable(con))
-+			if (!console_is_usable(con, flags))
- 				continue;
- 			any_usable = true;
- 
-@@ -3823,7 +3824,7 @@ static bool __pr_flush(struct console *con, int timeout_ms, bool reset_on_progre
- 			 * that they make forward progress, so only increment
- 			 * @diff for usable consoles.
- 			 */
--			if (!console_is_usable(c))
-+			if (!console_is_usable(c, flags))
- 				continue;
- 
- 			if (flags & CON_NBCON) {
++/**
++ * nbcon_get_default_prio - The appropriate nbcon priority to use for nbcon
++ *				printing on the current CPU
++ *
++ * Context:	Any context which could not be migrated to another CPU.
++ * Return:	The nbcon_prio to use for acquiring an nbcon console in this
++ *		context for printing.
++ */
++enum nbcon_prio nbcon_get_default_prio(void)
++{
++	if (this_cpu_in_panic())
++		return NBCON_PRIO_PANIC;
++
++	return NBCON_PRIO_NORMAL;
++}
++
+ /**
+  * nbcon_alloc - Allocate buffers needed by the nbcon console
+  * @con:	Console to allocate buffers for
 -- 
 2.39.2
 
