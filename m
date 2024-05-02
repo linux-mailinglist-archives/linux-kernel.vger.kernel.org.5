@@ -1,161 +1,172 @@
-Return-Path: <linux-kernel+bounces-165868-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-165893-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 704178B92AF
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 02:10:49 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 221418B930B
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 03:11:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DDAE31F22486
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 00:10:48 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 377D6B21F76
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 01:11:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B8B3320E;
-	Thu,  2 May 2024 00:10:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B00F17997;
+	Thu,  2 May 2024 01:11:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="vUdWpZ4a"
-Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
+	dkim=pass (2048-bit key) header.d=apple.com header.i=@apple.com header.b="O90V67Gd"
+Received: from ma-mailsvcp-mx-lapp02.apple.com (ma-mailsvcp-mx-lapp02.apple.com [17.32.222.23])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06A4B647
-	for <linux-kernel@vger.kernel.org>; Thu,  2 May 2024 00:10:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA78D14AAD
+	for <linux-kernel@vger.kernel.org>; Thu,  2 May 2024 01:11:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=17.32.222.23
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714608638; cv=none; b=YJ9o900ynZCpL4253u/CO1E8DL2lpjcJM7xD6kZpX4GY7V9LkvPGhtEGcUEGzPRjT7jeX0CkYZXYn6VO4yIZlIKqjOgB5vxPVAY7BYMPhheKhbIgzSIz/rCwyH5ICwcQgfYDSvnxzGZ7Qz0cvOQcwmfIK+QbsVGU2MIqphVcliE=
+	t=1714612273; cv=none; b=KWhoE+O0KCDZ81+Ofy3gUgZIzjUv4nGgGyg9ZBjMwlncP0XOYwPsEB42adfYqvdS3B6F8NtSnCH7fBHT00QmYaPBqP0vndwx/q0EiPq3utpLFuHTcRHWOhhHusCcFrrXyBqselSk0ok8Pd60gsyI+6t44/iRYTCKTLOrBjZpUG8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714608638; c=relaxed/simple;
-	bh=ovshN1wx0a96KhMF9SL4r+sZ/ZF7IW6XTXVoM6eCEcU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=UsOi17LcAJ7VFB1CIJMzrLvhkVQYVY/GPzQRVtZVElWz2VLZ5goQ4Mp0Gx2UmVp0bCzhBOn35q/RKiRSiMX/yRMuwf+8+QiwljO0hjWI8uvOoIRFSpjtEPGO4dhvBdRSvtNzOVGFwsJFsLCKSFyycOzRz6mw/uA5XeBu1bP+J8A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=vUdWpZ4a; arc=none smtp.client-ip=209.85.208.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-5724736770cso2484a12.1
-        for <linux-kernel@vger.kernel.org>; Wed, 01 May 2024 17:10:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1714608635; x=1715213435; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=HwZn/EUbFT2DPFnhsId0ig3pCxb4PHt3FC6NZeLlmsQ=;
-        b=vUdWpZ4a8UQBFUrAOStD4Ajn8XzyBJNzDrlovrNNtJx0WQScXzKY8dbr2EFujfWjA2
-         iAuKKnZJkdAuuq6/92NwdGel3JtXBfJj+K4PgVLW6d2HQqpoDeEVxJMfPjgF/QMnV+UR
-         zzc/siVPKn7LjGR1xpUAapcvex8oxEBbs14rnAjTLtSXL/E0j6k9kGhjmZFCpyuCROxE
-         AoKVD/Ko0gEJzlW1UkqWJh+4XbyMGJWzHzZdhFFSZGlsBcYNeLCyxIojAcEwiGvbTQjd
-         u2pkD1G1qMNaYmIrfZYD6e7OI+CocRqX/FA/WGUeWa7UD2T6qWfcnqYb3YmRVHY0Mf4P
-         Tleg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714608635; x=1715213435;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=HwZn/EUbFT2DPFnhsId0ig3pCxb4PHt3FC6NZeLlmsQ=;
-        b=Cudk6Nf+gSdMjlMvLQbEsIVDkAIvFOp0QwV9Khg/yJNU6n8QKgjSywBpvJK9Px+qwm
-         Y2kAvWvdnEuMv3tYD8cwEIOAtXvy7SZIh+LNTSkOOjdTeSJK/K5GXsY9UDnBDU2Viy6E
-         4vJP7HbVuna2AdLkiFjwgo07VqXm/o+cMx0nio5AfKm8rBg6QtszQkSplEgcrvp0OXYt
-         oUXVPJDHvf8Wp2c+h/PuIsJapaoKgeO1yqQ24BY+fiX95XQY8hKAH7CT+ghTAALfHhKs
-         AaS/pj8Z5GTC4U8/xkEIUsvWuQHQGYYdXV1ypEUjdRJd7h6e23bMhk1LyC8cx5Vw5jaX
-         qXCw==
-X-Forwarded-Encrypted: i=1; AJvYcCXrXU2SD1LFRSed09pdOHaEkv5jhoBIwdcryJTzMKtodqE1KydnnGU6Wt0uXFr4PrNeniMfyjYiH7gAfilViom8glOJNtvnv8l7lqd5
-X-Gm-Message-State: AOJu0YytbuwVgeWSEgJ6gQrfJZyxnPG7cL7/OQl69MRNCpIBESpie9WO
-	McXgArDEHkFyiAeqKozEB9SpUeCx9I5iw7MrgG1/fxcgDFXujVxL0xTmxOtaQALF69PDm/JGtRk
-	hLWif7ANaRPYD9VmxXPLB4MZJY0GG6A7TGlk=
-X-Google-Smtp-Source: AGHT+IGXxESh50ssJnC6i1zqM0O1KLj5H6YYS74AtopmqIJoZqReo1GbCyMQD/hmHR26LkVeojEGMSE0nGet60ValFE=
-X-Received: by 2002:a05:6402:1206:b0:572:57d8:4516 with SMTP id
- 4fb4d7f45d1cf-572bb76b9d6mr84865a12.2.1714608635272; Wed, 01 May 2024
- 17:10:35 -0700 (PDT)
+	s=arc-20240116; t=1714612273; c=relaxed/simple;
+	bh=z8MxxiMryaY2KFsttaRStt574gLkrend+EZ69VmURrI=;
+	h=From:To:Cc:Subject:Date:Message-id:In-reply-to:References:
+	 MIME-version; b=D7/lvWHjT+iQVbnvNQouBed4dpyQvx6G6sE4jFXxaZPT8MTq+KJuzi9NU7XdkqNBZ7Ma9IxFwvNftpXnv6SoybtU6PwPUsVucyhNXzMOqa9WITjnpIcaiVHOH6E3r8KgyPv0CJ06UdzqEBPq7wMBue7Lv18Uel+bwGk+wqlg5oI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=apple.com; spf=pass smtp.mailfrom=apple.com; dkim=pass (2048-bit key) header.d=apple.com header.i=@apple.com header.b=O90V67Gd; arc=none smtp.client-ip=17.32.222.23
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=apple.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=apple.com
+Received: from rn-mailsvcp-mta-lapp02.rno.apple.com
+ (rn-mailsvcp-mta-lapp02.rno.apple.com [10.225.203.150])
+ by ma-mailsvcp-mx-lapp02.apple.com
+ (Oracle Communications Messaging Server 8.1.0.23.20230328 64bit (built Mar 28
+ 2023)) with ESMTPS id <0SCU011Z70IERT20@ma-mailsvcp-mx-lapp02.apple.com> for
+ linux-kernel@vger.kernel.org; Wed, 01 May 2024 17:11:05 -0700 (PDT)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
+ definitions=2024-05-01_16,2024-04-30_01,2023-05-22_02
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=apple.com; h=from : to
+ : cc : subject : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding; s=20180706;
+ bh=/VikyMK82iUyB2IpWp8IUQImq+ZjSWX/dOzZjyjp/FA=;
+ b=O90V67GdxdKbpihh2pWmACbVp8kgEwmSH7xlODbZ+WAg4Q4WI+HZIXkHNIeRjEXp3Dq8
+ MXGjejpwFIYiAY5RQHBNB5sfdMkYni9P9zdFN4eOMmqFmCxzUD0PDUvFRfTUTIkpHL5R
+ ti8VTV6MT1Ba3+nWPh0HghfneO+1EX4IeJ57tEUNswn/3+jGqPbycUB0YcWHJA3TA/Jy
+ If4iHpfp2bXHU1Wvw8QmlCnz9tq6jK8IHZlnbmXmE/Awxm519YO2G5U2dvaK0zv1LI7s
+ cGJPEcuHds0tLZ49GqM7bdLLpYjPTuLFUjSBNjvMT2f90/GoyDgqPO/0iQUFEmiEnJVT SA==
+Received: from rn-mailsvcp-mmp-lapp01.rno.apple.com
+ (rn-mailsvcp-mmp-lapp01.rno.apple.com [17.179.253.14])
+ by rn-mailsvcp-mta-lapp02.rno.apple.com
+ (Oracle Communications Messaging Server 8.1.0.23.20230328 64bit (built Mar 28
+ 2023)) with ESMTPS id <0SCU00ITQ0IDULN0@rn-mailsvcp-mta-lapp02.rno.apple.com>;
+ Wed, 01 May 2024 17:11:02 -0700 (PDT)
+Received: from process_milters-daemon.rn-mailsvcp-mmp-lapp01.rno.apple.com by
+ rn-mailsvcp-mmp-lapp01.rno.apple.com
+ (Oracle Communications Messaging Server 8.1.0.23.20230328 64bit (built Mar 28
+ 2023)) id <0SCU00N000GSQI00@rn-mailsvcp-mmp-lapp01.rno.apple.com>; Wed,
+ 01 May 2024 17:11:01 -0700 (PDT)
+X-Va-A:
+X-Va-T-CD: 2a7a9b2cb17ba74c1da13bff19a80214
+X-Va-E-CD: 631f076f6b365e42e06a1df7057e44fb
+X-Va-R-CD: ce6be43db0cce57f85f587e814b9d60f
+X-Va-ID: 40ea895e-85fd-4841-92c4-ffb31f808d49
+X-Va-CD: 0
+X-V-A:
+X-V-T-CD: 2a7a9b2cb17ba74c1da13bff19a80214
+X-V-E-CD: 631f076f6b365e42e06a1df7057e44fb
+X-V-R-CD: ce6be43db0cce57f85f587e814b9d60f
+X-V-ID: 93f68664-015a-42c2-81a7-97fbd29e9574
+X-V-CD: 0
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
+ definitions=2024-05-01_16,2024-04-30_01,2023-05-22_02
+Received: from mr41p01nt-relayp01.apple.com ([100.64.99.124])
+ by rn-mailsvcp-mmp-lapp01.rno.apple.com
+ (Oracle Communications Messaging Server 8.1.0.23.20230328 64bit (built Mar 28
+ 2023))
+ with ESMTPSA id <0SCU0039D0ICJA00@rn-mailsvcp-mmp-lapp01.rno.apple.com>; Wed,
+ 01 May 2024 17:11:00 -0700 (PDT)
+From: Zayd Qumsieh <zayd_qumsieh@apple.com>
+To: Marc Zyngier <maz@kernel.org>
+Cc: Catalin Marinas <catalin.marinas@arm.com>,
+ Mark Rutland <mark.rutland@arm.com>, Zayd Qumsieh <zayd_qumsieh@apple.com>,
+ Justin Lu <ih_justin@apple.com>, Ryan Houdek <Houdek.Ryan@fex-emu.org>,
+ Mark Brown <broonie@kernel.org>, Ard Biesheuvel <ardb@kernel.org>,
+ Mateusz Guzik <mjguzik@gmail.com>,
+ Anshuman Khandual <anshuman.khandual@arm.com>,
+ Oliver Upton <oliver.upton@linux.dev>, Miguel Luis <miguel.luis@oracle.com>,
+ Joey Gouly <joey.gouly@arm.com>, Christoph Paasch <cpaasch@apple.com>,
+ Kees Cook <keescook@chromium.org>, Sami Tolvanen <samitolvanen@google.com>,
+ Baoquan He <bhe@redhat.com>, Joel Granados <j.granados@samsung.com>,
+ Dawei Li <dawei.li@shingroup.cn>, Andrew Morton <akpm@linux-foundation.org>,
+ Florent Revest <revest@chromium.org>, David Hildenbrand <david@redhat.com>,
+ Stefan Roesch <shr@devkernel.io>, Andy Chiu <andy.chiu@sifive.com>,
+ Josh Triplett <josh@joshtriplett.org>, Oleg Nesterov <oleg@redhat.com>,
+ Helge Deller <deller@gmx.de>, Zev Weiss <zev@bewilderbeest.net>,
+ Ondrej Mosnacek <omosnace@redhat.com>, Miguel Ojeda <ojeda@kernel.org>,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ Asahi Linux <asahi@lists.linux.dev>
+Subject: Re: [PATCH 0/4] arm64: Support the TSO memory model
+Date: Wed, 01 May 2024 17:10:35 -0700
+Message-id: <20240502001035.41083-1-zayd_qumsieh@apple.com>
+X-Mailer: git-send-email 2.39.3 (Apple Git-146)
+In-reply-to: <87zftoqn7u.wl-maz@kernel.org>
+References:
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20240425220509.1751260-1-yabinc@google.com> <CAM9d7cjQQ3AU7LFXYHEYukwSB9CvFQPtSzg3anfVg=maCP56AA@mail.gmail.com>
-In-Reply-To: <CAM9d7cjQQ3AU7LFXYHEYukwSB9CvFQPtSzg3anfVg=maCP56AA@mail.gmail.com>
-From: Yabin Cui <yabinc@google.com>
-Date: Wed, 1 May 2024 17:10:23 -0700
-Message-ID: <CALJ9ZPP-6bB4f4UP0Ydtsfty-PMRti_MqjZz5uazDXjuFtQsRQ@mail.gmail.com>
-Subject: Re: [PATCH] perf/core: Trim dyn_size if raw data is absent
-To: Namhyung Kim <namhyung@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Ian Rogers <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>, 
-	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+MIME-version: 1.0
+Content-transfer-encoding: 8bit
 
-Hi Namyung,
-
-Thanks for reviewing the patch! Fixing the callsites is a better idea.
-I have sent a v2 patch with name [PATCH v2] perf/core: Save raw sample
-data conditionally based on sample type.
-Rejecting tracepoint events without PERF_SAMPLE_RAW will break my use
-case in Android. So I hope we don't do that.
-
-Thanks,
-Yabin
-
-
-
-
-
-
-On Mon, Apr 29, 2024 at 2:59=E2=80=AFPM Namhyung Kim <namhyung@kernel.org> =
-wrote:
+> On Fri, 19 Apr 2024 17:58:09 +0100,
+> Will Deacon <will@kernel.org> wrote:
+> > 
+> > On Thu, Apr 11, 2024 at 11:19:13PM +0900, Hector Martin wrote:
+> > > On 2024/04/11 22:28, Will Deacon wrote:
+> > > >   * Some binaries in a distribution exhibit instability which goes away
+> > > >     in TSO mode, so a taskset-like program is used to run them with TSO
+> > > >     enabled.
+> > > 
+> > > Since the flag is cleared on execve, this third one isn't generally
+> > > possible as far as I know.
+> > 
+> > Ah ok, I'd missed that. Thanks.
+> > 
+> > > > In all these cases, we end up with native arm64 applications that will
+> > > > either fail to load or will crash in subtle ways on CPUs without the TSO
+> > > > feature. Assuming that the application cannot be fixed, a better
+> > > > approach would be to recompile using stronger instructions (e.g.
+> > > > LDAR/STLR) so that at least the resulting binary is portable. Now, it's
+> > > > true that some existing CPUs are TSO by design (this is a perfectly
+> > > > valid implementation of the arm64 memory model), but I think there's a
+> > > > big difference between quietly providing more ordering guarantees than
+> > > > software may be relying on and providing a mechanism to discover,
+> > > > request and ultimately rely upon the stronger behaviour.
+> > > 
+> > > The problem is "just" using stronger instructions is much more
+> > > expensive, as emulators have demonstrated. If TSO didn't serve a
+> > > practical purpose I wouldn't be submitting this, but it does. This is
+> > > basically non-negotiable for x86 emulation; if this is rejected
+> > > upstream, it will forever live as a downstream patch used by the entire
+> > > gaming-on-Mac-Linux ecosystem (and this is an ecosystem we are very
+> > > explicitly targeting, given our efforts with microVMs for 4K page size
+> > > support and the upcoming Vulkan drivers).
+> > 
+> > These microVMs sound quite interesting. What exactly are they? Are you
+> > running them under KVM?
+> > 
+> > Ignoring the mechanism for the time being, would it solve your problem
+> > if you were able to run specific microVMs in TSO mode, or do you *really*
+> > need the VM to have finer-grained control than that? If the whole VM is
+> > running in TSO mode, then my concerns largely disappear, as that's
+> > indistinguishable from running on a hardware implementation that happens
+> > to be TSO.
 >
-> Hello Yabin,
+> Since KVM has been mentioned a few times, I'll give my take on this.
 >
-> CC-ing the bpf list.
->
-> On Thu, Apr 25, 2024 at 3:05=E2=80=AFPM Yabin Cui <yabinc@google.com> wro=
-te:
-> >
-> > Currently, perf_tp_event() always allocates space for raw sample data,
-> > even when the PERF_SAMPLE_RAW flag is not set. This leads to unused
-> > spaces within generated sample records.
-> >
-> > This patch reduces dyn_size when PERF_SAMPLE_RAW is not present,
-> > ensuring sample records use only the necessary amount of space.
->
-> Right, it seems bpf-output and tracepoint events set the flags without
-> checking PERF_SAMPLE_RAW.  Can you fix the callsites instead?
-> Or we can add perf_event argument to perf_sample_save_raw_data()
-> and check the flag inside.
->
-> We might reject the output data when it's not opened with the flag.
-> But I'm afraid it might break some existing BPF programs.
->
-> Thanks,
-> Namhyung
->
-> >
-> > Fixes: 0a9081cf0a11 ("perf/core: Add perf_sample_save_raw_data() helper=
-")
-> > Signed-off-by: Yabin Cui <yabinc@google.com>
-> > ---
-> >  kernel/events/core.c | 4 ++++
-> >  1 file changed, 4 insertions(+)
-> >
-> > diff --git a/kernel/events/core.c b/kernel/events/core.c
-> > index 724e6d7e128f..d68ecdc264d3 100644
-> > --- a/kernel/events/core.c
-> > +++ b/kernel/events/core.c
-> > @@ -7688,6 +7688,10 @@ void perf_prepare_sample(struct perf_sample_data=
- *data,
-> >                 data->raw =3D NULL;
-> >                 data->dyn_size +=3D sizeof(u64);
-> >                 data->sample_flags |=3D PERF_SAMPLE_RAW;
-> > +       } else if ((data->sample_flags & ~sample_type) & PERF_SAMPLE_RA=
-W) {
-> > +               data->dyn_size -=3D data->raw->size + sizeof(u32);
-> > +               data->raw =3D NULL;
-> > +               data->sample_flags &=3D ~PERF_SAMPLE_RAW;
-> >         }
-> >
-> >         if (filtered_sample_type & PERF_SAMPLE_BRANCH_STACK) {
-> > --
-> > 2.44.0.769.g3c40516874-goog
-> >
+> Since day 1, it was a conscious decision for KVM/arm64 to emulate the
+> architecture, and only that -- this is complicated enough. Meaning
+> that no implementation-defined features should be explicitly exposed
+> to the guest. So I have no plan to expose any such feature for
+> userspace to configure TSO or anything else of the sort.
+
+Agreed. We do not intend for TSO mode to be used extensively for EL1, the
+intention is for TSO mode to be reserved for userspace applications that
+request it.
 
