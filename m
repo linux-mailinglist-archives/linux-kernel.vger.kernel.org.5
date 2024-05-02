@@ -1,76 +1,96 @@
-Return-Path: <linux-kernel+bounces-166192-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-166193-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 203938B9762
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 11:16:41 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9520D8B9769
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 11:18:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DB950281B7E
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 09:16:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C59AE1C223B1
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 09:18:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A096A53815;
-	Thu,  2 May 2024 09:16:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 72C0253816;
+	Thu,  2 May 2024 09:18:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="VlFbWNta"
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="kbmXp/1B"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52364524D4;
-	Thu,  2 May 2024 09:16:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 054C353365;
+	Thu,  2 May 2024 09:18:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714641387; cv=none; b=UVIl49wCeM72CAUPVSD5cJwdz3T01f8mwdmO2r+c/U606WIHP8GEh2vJa6r4/Ij3g9K/qQ/UMvs/e9nQbghhf7lG6Bm3jlg442dOLaRBMcXI/SUC5mwVZ8VG95vw0DmeSDoTIQhqjmOCVV/eqOdS5LllRVKVvYKdH7AFEI/55RQ=
+	t=1714641505; cv=none; b=A73qrNWhkX1TjCvYciFAJoXhhCA0Fud9ZrBwoLJropFr2Z4bvk/kEN5M1Q/ualTlo8sNQixsONeKqevJHmIILKUDe0cxl1M6Cy6mh7RVCavx8kD8/gL3xTUJ/76VgpJrUifBC3w8jqM59U3zLMNnf0CHCfrvMIsT8wK5T/z6kys=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714641387; c=relaxed/simple;
-	bh=XpgtUboWUY4K6D8ln7r4Kd9Dv08JhYX+E7YkIpI3eo4=;
+	s=arc-20240116; t=1714641505; c=relaxed/simple;
+	bh=a/QufiF272o3DvR0cKkQMFkYPKhS35DQjuKoUIBYmTk=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=oyt4LOdExWE8Avd3+POYrvR/y0GPC41Z3W2GKnpRx7elJRued7kdvymIH7Stm/BTpVxMK4/wC5vDe/lCQyb4eM9dX1cv6wXNxvkoWq6zNETorC5GgVsIa552EqPiQJyBN3rhsfMohRXOFo69hCi7e4z11/92ieJQmCg70T8H18E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=VlFbWNta; arc=none smtp.client-ip=90.155.50.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=zdfrErG2WKK57Kqg0tDJeJKezf1hsqRf679zsJ01Sx8=; b=VlFbWNta+BWffxnbEWRjYv+8ar
-	0mSAZEi/5K7GE5WmbbDT+r4ARA9iQeFFKkzCACPe/gwvSf/LmUcAlJNX/ZoW8bwgnYR9QDAGNKCRl
-	LzUKo6XjLhjBfyI4SmA0ITYpIXJydjEMOIR5DsW+FpCgValTn4WKP1/mCF21xbM9WHcwZgrRyRpU3
-	FiEPtEuWLxgIvsZuc6BZmNuqB9C27xGU6sZ+HHCefx17Ax1NXRdpTkAdW+Lul7YwDGf4y9Ll5M8Pf
-	tKmEV2OKo3OjFdHTXGjEEinxeVzjqku1MmncoJ0aeBuJXe50y5tEKJEF/VvmaENEvgQqxyQgc0DNI
-	6DxwtawA==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-	by casper.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1s2SY5-00000001KYe-3aFr;
-	Thu, 02 May 2024 09:16:18 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-	id 82B8B30057A; Thu,  2 May 2024 11:16:17 +0200 (CEST)
-Date: Thu, 2 May 2024 11:16:17 +0200
-From: Peter Zijlstra <peterz@infradead.org>
-To: "Michael S. Tsirkin" <mst@redhat.com>
-Cc: Tobias Huschle <huschle@linux.ibm.com>,
-	Luis Machado <luis.machado@arm.com>,
-	Jason Wang <jasowang@redhat.com>,
-	Abel Wu <wuyun.abel@bytedance.com>,
-	Linux Kernel <linux-kernel@vger.kernel.org>, kvm@vger.kernel.org,
-	virtualization@lists.linux.dev, netdev@vger.kernel.org,
-	nd <nd@arm.com>, borntraeger@linux.ibm.com,
-	Ingo Molnar <mingo@kernel.org>,
-	Mike Galbraith <umgwanakikbuti@gmail.com>
-Subject: Re: EEVDF/vhost regression (bisected to 86bfbb7ce4f6 sched/fair: Add
- lag based placement)
-Message-ID: <20240502091617.GZ30852@noisy.programming.kicks-ass.net>
-References: <73123.124031407552500165@us-mta-156.us.mimecast.lan>
- <20240314110649-mutt-send-email-mst@kernel.org>
- <84704.124031504335801509@us-mta-515.us.mimecast.lan>
- <20240315062839-mutt-send-email-mst@kernel.org>
- <b3fd680c675208370fc4560bb3b4d5b8@linux.ibm.com>
- <20240319042829-mutt-send-email-mst@kernel.org>
- <4808eab5fc5c85f12fe7d923de697a78@linux.ibm.com>
- <ZjDM3SsZ3NkZuphP@DESKTOP-2CCOB1S.>
- <20240501105151.GG40213@noisy.programming.kicks-ass.net>
- <20240501112830-mutt-send-email-mst@kernel.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=SEKEY2BM4wh8Np0eB9jza57Iv9HdGgCY2grnJRixp5zNox4IRT+j1W1R0gWrphsfD2lfLfdoZsLnJPvSoy5bq/HGgV/ICk75kmBcGNEFxIeHNy7S/1HbD1xWL7XeHke12FTtbKoLM02ey60MfPi5fXKFMT5kY96VPyx8Q12/6/A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=kbmXp/1B; arc=none smtp.client-ip=192.198.163.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1714641504; x=1746177504;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=a/QufiF272o3DvR0cKkQMFkYPKhS35DQjuKoUIBYmTk=;
+  b=kbmXp/1B21yUuwq+qOXE9zjQItJoxrW/2C+eEUrkEy3LQ2lH2jLxIwx+
+   AwSJZ/EJQAarnaf0qoNWS1XruUMeZOcD0Hw4/6e3/SmV462wYdArSITZR
+   uiKAHHtUJOpAgm+8qVYoRLiKG109tgbtt2vW/YKqxVSZY/OSB/0DjxIki
+   ePXmaRk8zCc1diDzeESnQdEb9NqDZx+FEHlC8yL8xX6cKfwAIr2kPzlXG
+   /PsqvqsLBIcrSFDDJ5LHdCZjG1d7XyQZGiBevTx1/u3g595JG7K27FVMy
+   lx1UZI0cnQlpl/NL3DjqXOr11cEKYayYGO4klvuv29rJgVwayr3lRxD9j
+   g==;
+X-CSE-ConnectionGUID: qO8Ei41dSN+87NW0pzD3ow==
+X-CSE-MsgGUID: srmRrpYlQcKNIfeZHPqxwQ==
+X-IronPort-AV: E=McAfee;i="6600,9927,11061"; a="10274161"
+X-IronPort-AV: E=Sophos;i="6.07,247,1708416000"; 
+   d="scan'208";a="10274161"
+Received: from fmviesa010.fm.intel.com ([10.60.135.150])
+  by fmvoesa113.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 May 2024 02:18:10 -0700
+X-CSE-ConnectionGUID: weq2NrOvSyClDOUB0O6Igw==
+X-CSE-MsgGUID: iZzhZm4ZT9S/eDC2HeXt4A==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,247,1708416000"; 
+   d="scan'208";a="27142469"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmviesa010.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 May 2024 02:18:04 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1s2SZk-00000003GCl-0xR0;
+	Thu, 02 May 2024 12:18:00 +0300
+Date: Thu, 2 May 2024 12:17:59 +0300
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Sunil V L <sunilvl@ventanamicro.com>
+Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	linux-riscv@lists.infradead.org, linux-acpi@vger.kernel.org,
+	linux-pci@vger.kernel.org, linux-serial@vger.kernel.org,
+	acpica-devel@lists.linux.dev,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	"Rafael J . Wysocki" <rafael@kernel.org>,
+	Len Brown <lenb@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+	Anup Patel <anup@brainfault.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Samuel Holland <samuel.holland@sifive.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Jiri Slaby <jirislaby@kernel.org>,
+	Robert Moore <robert.moore@intel.com>,
+	Conor Dooley <conor.dooley@microchip.com>,
+	Andrew Jones <ajones@ventanamicro.com>,
+	Marc Zyngier <maz@kernel.org>,
+	Atish Kumar Patra <atishp@rivosinc.com>,
+	Andrei Warkentin <andrei.warkentin@intel.com>,
+	Haibo1 Xu <haibo1.xu@intel.com>,
+	=?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>
+Subject: Re: [PATCH v5 17/17] serial: 8250: Add 8250_acpi driver
+Message-ID: <ZjNaR-YtVTm4pbP7@smile.fi.intel.com>
+References: <20240501121742.1215792-1-sunilvl@ventanamicro.com>
+ <20240501121742.1215792-18-sunilvl@ventanamicro.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -79,30 +99,38 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240501112830-mutt-send-email-mst@kernel.org>
+In-Reply-To: <20240501121742.1215792-18-sunilvl@ventanamicro.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-On Wed, May 01, 2024 at 11:31:02AM -0400, Michael S. Tsirkin wrote:
-> On Wed, May 01, 2024 at 12:51:51PM +0200, Peter Zijlstra wrote:
+On Wed, May 01, 2024 at 05:47:42PM +0530, Sunil V L wrote:
+> RISC-V has non-PNP generic 16550A compatible UART which needs to be
+> enumerated as ACPI platform device. Add driver support for such devices
+> similar to 8250_of.
 
-> > I'm still wondering why exactly it is imperative for t2 to preempt t1.
-> > Is there some unexpressed serialization / spin-waiting ?
-> 
-> 
-> I am not sure but I think the point is that t2 is a kworker. It is
-> much cheaper to run it right now when we are already in the kernel
-> than return to userspace, let it run for a bit then interrupt it
-> and then run t2.
-> Right, Tobias?
+..
 
-So that is fundamentally a consequence of using a kworker.
+> + * This driver is for generic 16550 compatible UART enumerated via ACPI
+> + * platform bus instead of PNP bus like PNP0501. This is not a full
 
-So I tried to have a quick peek at vhost to figure out why you're using
-kworkers... but no luck :/
+This has to be told in the commit message. Anyway, we don't need a duplication
+code, please use 8250_pnp.
 
-Also, when I look at drivers/vhost/ it seems to implement it's own
-worker and not use normal workqueues or even kthread_worker. Did we
-really need yet another copy of all that?
+..
 
-Anyway, I tried to have a quick look at the code, but I can't seem to
-get a handle on what and why it's doing things.
+> +	{ "RSCV0003", 0 },
+
+Does it have _CID to be PNP0501?
+If not, add this ID to the 8250_pnp.
+
+..
+
+P.S.
+The code you submitted has a lot of small style issues, I can comment on them
+if you want, but as I said this code is not needed at all.
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
 
