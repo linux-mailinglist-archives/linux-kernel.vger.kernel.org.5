@@ -1,244 +1,279 @@
-Return-Path: <linux-kernel+bounces-166857-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-166858-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 835C68BA0E5
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 21:14:02 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id EF8CC8BA0E9
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 21:14:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9B6651C20AB0
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 19:14:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7EB4E1F21BF0
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 19:14:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F84F176FDF;
-	Thu,  2 May 2024 19:13:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C44817A93F;
+	Thu,  2 May 2024 19:14:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fEajT4AC"
-Received: from mail-wr1-f43.google.com (mail-wr1-f43.google.com [209.85.221.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Onw5PGyv"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E01CD59B56
-	for <linux-kernel@vger.kernel.org>; Thu,  2 May 2024 19:13:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9DBD315FD0B;
+	Thu,  2 May 2024 19:14:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714677236; cv=none; b=CMO6y07Dv2Ii/rccQYD/xy0he7UQ/6zZo832U0yv0ZSLkzYGqJOEU6wOqWejlezhF0eyWDbjTk4MfrhLHOYvv3wk92wbI1/dfu3sKSAO2CI0mwFcFj5JHayyPLrqfjL2J6/LmfsFZaMBL5iwogoenS3BFU4dX4fa4AHdDtY0DEo=
+	t=1714677286; cv=none; b=Zp4bCxAv1be/W7kqC6aq1URE3V2AeDqVLjAioiMiDiCoog1k92uaotzxzp8ufkqso5B2ElPOahxc2CZWtpDDQfBnbLsijSjFEgm4ec5I7dHHPvCLaBuhqZ0UMrbeWZuat6FLFYu/I9bwyLvnz463Cp5v+wB1zbCk7d5wOIke/uk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714677236; c=relaxed/simple;
-	bh=6KcPMckeF7kYmHTflHMwUGa4UKPLXNsKambdE0p6K68=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=pz8anWYJF4DYpDhPgOTW3cNrCYASqvCpC8XPbM2VuxPJoOkluE68Goqfxc9RV1ZG5EzAKRitVhbFNcFEcj19WoaBKsW2R5yxpCXU9VkTkjEQFROYqHZy/xTvPg1WNcUxB16M130Jl5J5uTS1paecYJBRenPCt6oCZ+VxVJeG8L8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fEajT4AC; arc=none smtp.client-ip=209.85.221.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f43.google.com with SMTP id ffacd0b85a97d-34e28e32ea4so539967f8f.2
-        for <linux-kernel@vger.kernel.org>; Thu, 02 May 2024 12:13:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714677233; x=1715282033; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=v7xERDFuJA/0OWgymjug68y27n1wkoWLTkEYX8JNLw8=;
-        b=fEajT4ACHlEVav7EP4wO0Ls2QTwSrR/VMbmKsVXiF3iDB5aAOHo3cBMPqB7Q7fQXzw
-         GEObIXQIB2WV+vQuuI9TrsTMl63PwhDBzGq0IUm+3XjyNz9TamCZvIgoRrZ4vuFJmch5
-         lKHovAZN3IrEKIuigZiaNpBMagfdmu6zWDh1EUXWGokz1W9I5xkVQkLcObWiOGSR7RvZ
-         qhDOXco4TciSkz5kOPBHC6Qi39+/scQSX+roq2dRKfhIfCyykUFGCFu2+goIjkLm7Jm9
-         NZQp58Ej8LCUceNe2fMG3CHQiRyUv1dFEtlsjj0FbFn3xL57RwDzjlMO9KDN9U0gv2AM
-         HkDA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714677233; x=1715282033;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=v7xERDFuJA/0OWgymjug68y27n1wkoWLTkEYX8JNLw8=;
-        b=eAY9gJqsjW2vjAqLgvxFWe0NrVdTuAOfNhwIhVbEARRdw9VxuEw8s1qy8mIjEjoncE
-         AgSZyxpYLB5ghy5thWJyfSwyARNASpaMeOC/4OAsrZUCPRh7rh3gGzEBjvaWc8JWJQFP
-         0WZUicv7dewN3uDwt+yz1uXADkHJQ/7mWNUYDMZQZN8z/uBG/huJFBNV/+vPytBrt8IC
-         GtQEc73lItKKAudCKe3ScLmWya1/5+Iy9QqyMHbZYZGyp7ddk92KTPt++axfFOQbeflA
-         5jlUxoNLp/lFpXP7ja/8dp4lowJYVljod9nkysYZJThoNakNuPJThzQqOaAP373E/zxO
-         n5HQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVDXBchPcaKE0ZFviECz0cHQEjE8Rm5WCz5mzjp6nehuZzlp7WdOd54OIL24if83rnQk3CV+7r8NUER2ygWllEOiRYwzwfzDJ1ymima
-X-Gm-Message-State: AOJu0Yw8XpnoHJQ0hdkaMicawQt5IjwwvQOZNsnZmVwvO50EkYHz5kVP
-	Py/6AtM8092pNsqge6lsXwTNGTeaSprdG09dLhis/l9lVW0Lvz02
-X-Google-Smtp-Source: AGHT+IG0sXFqYpDGCdmsA4nZVVkTR4Vc9mf/7tEkWAuYoVCeKkTXc/VOSbLpnPcnSqA/IVKlgsESPA==
-X-Received: by 2002:adf:e88f:0:b0:34c:71a0:426c with SMTP id d15-20020adfe88f000000b0034c71a0426cmr490323wrm.37.1714677233059;
-        Thu, 02 May 2024 12:13:53 -0700 (PDT)
-Received: from ?IPV6:2a02:6b6a:b75d:0:64:3301:4710:ec21? ([2a02:6b6a:b75d:0:64:3301:4710:ec21])
-        by smtp.gmail.com with ESMTPSA id cx14-20020a056000092e00b0034a2d0b9a4fsm1927591wrb.17.2024.05.02.12.13.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 02 May 2024 12:13:52 -0700 (PDT)
-Message-ID: <1e9383d8-98a7-4ef4-9c30-4f068fc38db1@gmail.com>
-Date: Thu, 2 May 2024 20:13:51 +0100
+	s=arc-20240116; t=1714677286; c=relaxed/simple;
+	bh=BBlkb84hHXVG3Ve5x+ET9a7uN2YIwLDnxgmQ6QkN5ys=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=K4plhTOKuBOmm4tC9fdnVtLC2M/wrKuyZi5EJA7L65P943PrULEkSLGAvGTBBMqCAG6JMgxnkI8HXxUMlArD9d8yRds/ffW/rr4zePTeRvQfnu88HLcJeYLPilDRogeWck7n8reDb9khUpccZxUiCziPwjAOg/svQh+O4JTZ6Uo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Onw5PGyv; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2CA05C113CC;
+	Thu,  2 May 2024 19:14:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714677286;
+	bh=BBlkb84hHXVG3Ve5x+ET9a7uN2YIwLDnxgmQ6QkN5ys=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=Onw5PGyvJgNNN6dD0D6icj1zLOV0ySF1y6PuCPIQIQBlgjwiHXzEcGkW2I8o1urj+
+	 +naEqlyP7dxBIPVw+06Nsl1E5cg5L8K6z1RI3wy3kl5QLS1hWwn+ZyLXP9CAj+Fhz1
+	 kI+lZI0RWz2W5wRGTpJoviUsiWnOd5U3w42jJo+HI1t2lNXyEZc67nkwlljPy4njwB
+	 yVyh9m9YsT+W3PjLulRGh1mBZ4NoYv8fOjQ2ririNZ2PVzeXvjYor2RJp3kobNN2qE
+	 o2Dtl3XuOCBLjzW49Uk4XNr2WQ37VKb1NwFgZN2MdesVsKdPpHp0JW9xA/JoMG2cfX
+	 p8mUczVQfFw5Q==
+Date: Thu, 2 May 2024 20:14:33 +0100
+From: Jonathan Cameron <jic23@kernel.org>
+To: Nuno =?UTF-8?B?U8Oh?= <noname.nuno@gmail.com>
+Cc: "Gradinariu, Ramona"  <Ramona.Gradinariu@analog.com>, Ramona Gradinariu
+ <ramona.bolboaca13@gmail.com>, "linux-kernel@vger.kernel.org" 
+ <linux-kernel@vger.kernel.org>, "linux-iio@vger.kernel.org" 
+ <linux-iio@vger.kernel.org>, "linux-doc@vger.kernel.org" 
+ <linux-doc@vger.kernel.org>, "devicetree@vger.kernel.org" 
+ <devicetree@vger.kernel.org>, "corbet@lwn.net" <corbet@lwn.net>,
+ "conor+dt@kernel.org"  <conor+dt@kernel.org>,
+ "krzysztof.kozlowski+dt@linaro.org"  <krzysztof.kozlowski+dt@linaro.org>,
+ "robh@kernel.org" <robh@kernel.org>, "Sa, Nuno" <Nuno.Sa@analog.com>
+Subject: Re: [PATCH 4/5] iio: adis16480: add support for adis16545/7
+ families
+Message-ID: <20240502201408.216575e4@jic23-huawei>
+In-Reply-To: <0e13f8b643bb7afcc7c4f0d62741cf9fda66c1e0.camel@gmail.com>
+References: <20240423084210.191987-1-ramona.gradinariu@analog.com>
+	<20240423084210.191987-5-ramona.gradinariu@analog.com>
+	<20240428162555.3ddf31ea@jic23-huawei>
+	<e62f8df4b06abc371b1e9fe3232cb593e468d54c.camel@gmail.com>
+	<BL1PR03MB5992DEBF82C0DB7BDC5EA0FF971B2@BL1PR03MB5992.namprd03.prod.outlook.com>
+	<20240429204027.3e47074a@jic23-huawei>
+	<0e13f8b643bb7afcc7c4f0d62741cf9fda66c1e0.camel@gmail.com>
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] selftests: cgroup: add tests to verify the zswap
- writeback path
-To: Yosry Ahmed <yosryahmed@google.com>
-Cc: akpm@linux-foundation.org, hannes@cmpxchg.org, nphamcs@gmail.com,
- chengming.zhou@linux.dev, linux-mm@kvack.org, linux-kernel@vger.kernel.org,
- kernel-team@meta.com
-References: <20240501100446.1454264-1-usamaarif642@gmail.com>
- <CAJD7tkZ_fmzo8RGGpiH+0uUZCC7Nbnny6iHHfBruk2oa21Pi9Q@mail.gmail.com>
-Content-Language: en-US
-From: Usama Arif <usamaarif642@gmail.com>
-In-Reply-To: <CAJD7tkZ_fmzo8RGGpiH+0uUZCC7Nbnny6iHHfBruk2oa21Pi9Q@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+
+On Thu, 02 May 2024 13:31:55 +0200
+Nuno S=C3=A1 <noname.nuno@gmail.com> wrote:
+
+> On Mon, 2024-04-29 at 20:40 +0100, Jonathan Cameron wrote:
+> > On Mon, 29 Apr 2024 13:17:42 +0000
+> > "Gradinariu, Ramona" <Ramona.Gradinariu@analog.com> wrote:
+> >  =20
+> > > > -----Original Message-----
+> > > > From: Nuno S=C3=A1 <noname.nuno@gmail.com>
+> > > > Sent: Monday, April 29, 2024 10:59 AM
+> > > > To: Jonathan Cameron <jic23@kernel.org>; Ramona Gradinariu
+> > > > <ramona.bolboaca13@gmail.com>
+> > > > Cc: linux-kernel@vger.kernel.org; linux-iio@vger.kernel.org; linux-
+> > > > doc@vger.kernel.org; devicetree@vger.kernel.org; corbet@lwn.net;
+> > > > conor+dt@kernel.org; krzysztof.kozlowski+dt@linaro.org; robh@kernel=
+org;
+> > > > Gradinariu, Ramona <Ramona.Gradinariu@analog.com>; Sa, Nuno
+> > > > <Nuno.Sa@analog.com>
+> > > > Subject: Re: [PATCH 4/5] iio: adis16480: add support for adis16545/=
+7 families
+> > > >=20
+> > > > [External]
+> > > >=20
+> > > > On Sun, 2024-04-28 at 16:25 +0100, Jonathan Cameron wrote:=C2=A0  =
+=20
+> > > > > On Tue, 23 Apr 2024 11:42:09 +0300
+> > > > > Ramona Gradinariu <ramona.bolboaca13@gmail.com> wrote:
+> > > > > =C2=A0 =20
+> > > > > > The ADIS16545 and ADIS16547 are a complete inertial system that
+> > > > > > includes a triaxis gyroscope and a triaxis accelerometer.
+> > > > > > The serial peripheral interface (SPI) and register structure pr=
+ovide a
+> > > > > > simple interface for data collection and configuration control.
+> > > > > >=20
+> > > > > > These devices are similar to the ones already supported in the =
+driver,
+> > > > > > with changes in the scales, timings and the max spi speed in bu=
+rst
+> > > > > > mode.
+> > > > > > Also, they support delta angle and delta velocity readings in b=
+urst
+> > > > > > mode, for which support was added in the trigger handler.
+> > > > > >=20
+> > > > > > Signed-off-by: Nuno S=C3=A1 <nuno.sa@analog.com>=C2=A0  =20
+> > > > >=20
+> > > > > What is Nuno's relationship to this patch?=C2=A0 You are author a=
+nd the sender
+> > > > > which is fine, but in that case you need to make Nuno's involveme=
+nt explicit.
+> > > > > Perhaps a Co-developed-by or similar is appropriate?
+> > > > > =C2=A0 =20
+> > > > > > Signed-off-by: Ramona Gradinariu <ramona.gradinariu@analog.com>=
+=C2=A0  =20
+> > > > > A few comments inline.=C2=A0 Biggest one is I'd like a clear stat=
+ement of why you
+> > > > > can't do a burst of one type, then a burst of other.=C2=A0 My gue=
+ss is that the
+> > > > > transition is very time consuming?=C2=A0 If so, that is fine, but=
+ you should be
+> > > > > able
+> > > > > to let available_scan_masks handle the disjoint channel sets.=C2=
+=A0  =20
+> > > >=20
+> > > > Yeah, the burst message is a special spi transfer that brings you a=
+ll of the
+> > > > channels data at once but for the accel/gyro you need to explicitly=
+ configure
+> > > > the chip to either give you the "normal vs "delta" readings. Re-con=
+figuring the
+> > > > chip and then do another burst would destroy performance I think. W=
+e could
+> > > > do
+> > > > the manual readings as we do in adis16475 for chips not supporting =
+burst32.
+> > > > But
+> > > > in the burst32 case those manual readings should be minimal while i=
+n here we
+> > > > could have to do 6 of them which could also be very time consuming.=
+.
+> > > >=20
+> > > > Now, why we don't use available_scan_masks is something I can't rea=
+lly
+> > > > remember
+> > > > but this implementation goes in line with what we have in the adis1=
+6475
+> > > > driver.
+> > > >=20
+> > > > - Nuno S=C3=A1
+> > > > =C2=A0  =20
+> > >=20
+> > > Thank you Nuno for all the additional explanations.
+> > > Regarding the use of available_scan_masks, the idea is to have any po=
+ssible
+> > > combination for accel, gyro, temp and timestamp channels or delta ang=
+le, delta=20
+> > > velocity, temp and=C2=A0 timestamp channels. There are a lot of combi=
+nations for=20
+> > > this and it does not seem like a good idea to write them all manually=
+ That is=20
+> > > why adis16480_update_scan_mode is used for checking the correct chann=
+els=20
+> > > selection. =20
+> >=20
+> > If you are using bursts, the data is getting read anyway - which is the=
+ main
+> > cost here. The real question becomes what are you actually saving by su=
+pporting all
+> > the combinations of the the two subsets of channels in the pollfunc?
+> > Currently you have to pick the channels out and repack them, if pushing=
+ them all
+> > looks to me like a mempcy and a single value being set (unconditionally=
+). =20
+>=20
+> > Then it's a question of what the overhead of the channel demux in the c=
+ore is.
+> > What you pass out of the driver via iio_push_to_buffers*()
+> > is not what ends up in the buffer if you allow the IIO core to do data =
+demuxing
+> > for you - that is enabled by providing available_scan_masks.=C2=A0 At b=
+uffer
+> > start up the demux code computes a fairly optimal set of copies to repa=
+ck
+> > the incoming data to match with what channels the consumer (here probab=
+ly
+> > the kfifo on the way to userspace) is expecting.
+> >=20
+> > That demux adds a small overhead but it should be small as long
+> > as the channels wanted aren't pathological (i.e. every other one).
+> >=20
+> > Advantage is the driver ends up simpler and in the common case of turn
+> > on all the channels (why else did you buy a device with those measureme=
+nts
+> > if you didn't want them!) the demux is zerocopy so effectively free whi=
+ch
+> > is not going to be the case for the bitmap walk and element copy in the
+> > driver.
+> >  =20
+>=20
+> Maybe my younger me was smarter but reading again the validation of the s=
+can mask
+> code (when available_scan_masks is available), I'm not sure why we're not=
+ using them.
+> I think that having one mask with delta values + temperature and another =
+one with
+> normal + temperature would be enough for what we want in here. The code in
+> adis16480_update_scan_mode() could then be simpler I think.
+>=20
+> Now, what I'm still not following is the straight memcpy(). I may be miss=
+ing
+> something but the demux code only appears to kick in when we have compoun=
+d masks
+> resulting of multiple buffers being enabled. So I'm not seeing how we can=
+ get away
+> without picking the channels and place them correctly in the buffer passe=
+d to IIO?
+
+It runs whenever the enabled mask requested (the channels that are enabled)=
+ is
+different from the active_scan_mask. It only sends channels in one
+direction if there is only one user but it only sends the ones enabled by t=
+hat consumer.
+It's called unconditionally from iio_enable_buffers()
+
+That iterates over all enabled buffers (often there is only 1)
+
+and then checks if the active scan mask is the same as the one for this buf=
+fer.
+https://elixir.bootlin.com/linux/v6.9-rc6/source/drivers/iio/industrialio-b=
+uffer.c#L1006
+
+The setup for whether to find a superset from available_scan_masks is here
+https://elixir.bootlin.com/linux/v6.9-rc6/source/drivers/iio/industrialio-b=
+uffer.c#L928
+
+Key is that if it happens to match, then we don't actually do anything in t=
+he demux.
+It just gets passed straight on through.  That does the fast path you menti=
+on below.
+
+> What we could do in the future (for a similar device) is to maybe have a =
+fastpath in
+> the handler. Something like:
+>=20
+> if (bitmap_full(scan_mask, masklength)) {
+> 	memcpy(iio_buff, burst + data_off, size);
+> 	goto push_to_iio;
+> }
+>=20
+> Right now we would always have to do some "manual" work as the temperatur=
+e scan index
+> does not match the position on the received burst data.
+
+Agreed -that one is needed to shuffle the temperature to the right place.
 
 
-On 01/05/2024 18:15, Yosry Ahmed wrote:
-> Hi Usama,
->
-> On Wed, May 1, 2024 at 3:04 AM Usama Arif <usamaarif642@gmail.com> wrote:
->> The condition for writeback can be triggered by allocating random
->> memory more than memory.high to push memory into zswap, more than
->> zswap.max to trigger writeback if enabled, but less than memory.max
->> so that OOM is not triggered. Both values of memory.zswap.writeback
->> are tested.
-> Thanks for working on this :)
->
->> Signed-off-by: Usama Arif <usamaarif642@gmail.com>
->> ---
->>   tools/testing/selftests/cgroup/test_zswap.c | 83 +++++++++++++++++++++
->>   1 file changed, 83 insertions(+)
->>
->> diff --git a/tools/testing/selftests/cgroup/test_zswap.c b/tools/testing/selftests/cgroup/test_zswap.c
->> index f0e488ed90d8..fe0e7221525c 100644
->> --- a/tools/testing/selftests/cgroup/test_zswap.c
->> +++ b/tools/testing/selftests/cgroup/test_zswap.c
->> @@ -94,6 +94,19 @@ static int allocate_bytes(const char *cgroup, void *arg)
->>          return 0;
->>   }
->>
->> +static int allocate_random_bytes(const char *cgroup, void *arg)
->> +{
->> +       size_t size = (size_t)arg;
->> +       char *mem = (char *)malloc(size);
->> +
->> +       if (!mem)
->> +               return -1;
->> +       for (int i = 0; i < size; i++)
->> +               mem[i] = rand() % 128;
->> +       free(mem);
->> +       return 0;
->> +}
->> +
->>   static char *setup_test_group_1M(const char *root, const char *name)
->>   {
->>          char *group_name = cg_name(root, name);
->> @@ -248,6 +261,74 @@ static int test_zswapin(const char *root)
->>          return ret;
->>   }
->>
->> +/* Test to verify the zswap writeback path */
->> +static int test_zswap_writeback(const char *root, bool wb)
->> +{
->> +       int ret = KSFT_FAIL;
->> +       char *test_group;
->> +       long zswpwb_before, zswpwb_after;
->> +
->> +       test_group = cg_name(root,
->> +               wb ? "zswap_writeback_enabled_test" : "zswap_writeback_disabled_test");
->> +       if (!test_group)
->> +               goto out;
->> +       if (cg_create(test_group))
->> +               goto out;
->> +       if (cg_write(test_group, "memory.max", "8M"))
->> +               goto out;
->> +       if (cg_write(test_group, "memory.high", "2M"))
->> +               goto out;
->> +       if (cg_write(test_group, "memory.zswap.max", "2M"))
->> +               goto out;
->> +       if (cg_write(test_group, "memory.zswap.writeback", wb ? "1" : "0"))
->> +               goto out;
->> +
->> +       zswpwb_before = cg_read_key_long(test_group, "memory.stat", "zswpwb ");
->> +       if (zswpwb_before < 0) {
->> +               ksft_print_msg("failed to get zswpwb_before\n");
->> +               goto out;
->> +       }
->> +
->> +       /*
->> +        * Allocate more than memory.high to push memory into zswap,
->> +        * more than zswap.max to trigger writeback if enabled,
->> +        * but less than memory.max so that OOM is not triggered
->> +        */
->> +       if (cg_run(test_group, allocate_random_bytes, (void *)MB(3)))
->> +               goto out;
-> We set the zswap limit to 2M. So for this to work properly we need to
-> guarantee that the 3M of random data will compress into more than 2M.
-> Is this true for all possible zpool implementations and compression
-> algorithms? How likely for this to break and start producing false
-> negatives if zswap magically becomes more efficient?
->
-> One alternative approach that I used before, although more complex, is
-> to start by compressing the memory (i.e. through reclaim) without a
-> zswap limit, and check the zswap usage. Then, fault the memory back
-> in, set the zswap limit lower than the observed usage, and repeat.
-> This should guarantee writeback AFAICT.
->
-> Also, using memory.reclaim may be easier than memory.high if you
-> follow this approach, as you would need to raise memory.high again to
-> be able to decompress the memory.
->
-Thanks for the review! I have sent a v2 with the method you described. I 
-did like the simplicity of the method in this v1 a lot more, and we 
-could have increased the random memory, which eventhough theoretically 
-would mean it might not trigger a writeback if there was some new magic 
-compression method, in practice it would always trigger it and work. 
-Your suggestion which is in v2 covers both theory and practice :)
+>=20
+> Some devices with the burst32 (which I think do not exist in this driver)=
+ would also
+> make the plain memcpy() harder.
+>=20
+> - Nuno S=C3=A1
+>=20
 
-
->> +
->> +       /* Verify that zswap writeback occurred only if writeback was enabled */
->> +       zswpwb_after = cg_read_key_long(test_group, "memory.stat", "zswpwb ");
->> +       if (wb) {
->> +               if (zswpwb_after <= zswpwb_before) {
->> +                       ksft_print_msg("writeback enabled and zswpwb_after <= zswpwb_before\n");
->> +                       goto out;
->> +               }
->> +       } else {
->> +               if (zswpwb_after != zswpwb_before) {
->> +                       ksft_print_msg("writeback disabled and zswpwb_after != zswpwb_before\n");
->> +                       goto out;
->> +               }
->> +       }
->> +
->> +       ret = KSFT_PASS;
->> +
->> +out:
->> +       cg_destroy(test_group);
->> +       free(test_group);
->> +       return ret;
->> +}
->> +
->> +static int test_zswap_writeback_enabled(const char *root)
->> +{
->> +       return test_zswap_writeback(root, true);
->> +}
->> +
->> +static int test_zswap_writeback_disabled(const char *root)
->> +{
->> +       return test_zswap_writeback(root, false);
->> +}
->> +
->>   /*
->>    * When trying to store a memcg page in zswap, if the memcg hits its memory
->>    * limit in zswap, writeback should affect only the zswapped pages of that
->> @@ -425,6 +506,8 @@ struct zswap_test {
->>          T(test_zswap_usage),
->>          T(test_swapin_nozswap),
->>          T(test_zswapin),
->> +       T(test_zswap_writeback_enabled),
->> +       T(test_zswap_writeback_disabled),
->>          T(test_no_kmem_bypass),
->>          T(test_no_invasive_cgroup_shrink),
->>   };
->> --
->> 2.43.0
->>
 
