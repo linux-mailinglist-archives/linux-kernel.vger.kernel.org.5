@@ -1,245 +1,173 @@
-Return-Path: <linux-kernel+bounces-166898-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-166899-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 031A88BA17A
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 22:17:24 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 31D1F8BA181
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 22:18:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2162C1C20B6A
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 20:17:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DD919282816
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 20:18:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E836540BE3;
-	Thu,  2 May 2024 20:17:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E8A1515E80A;
+	Thu,  2 May 2024 20:18:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="nGbUYAhs"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="LW2Dw2FX"
+Received: from mail-lj1-f173.google.com (mail-lj1-f173.google.com [209.85.208.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34D38180A62
-	for <linux-kernel@vger.kernel.org>; Thu,  2 May 2024 20:17:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AEB8F15D5D6
+	for <linux-kernel@vger.kernel.org>; Thu,  2 May 2024 20:18:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714681039; cv=none; b=lRIaR2dZjKLRi+4/ASk4UtR8icRK3RNAwUTNj+vgEy6SCIoWsjyrYQo0bbyhaNKHXiXJeOgwGrDls9K15KGIM0x55TEdmtQwoDxqVYsQxmIs3iL6DvZspeEkT5ObApv7j2rrks+j/ZGCzl3P2wRq5GF5ELUoa0vLwqT1Erzx7bE=
+	t=1714681093; cv=none; b=CuXwtS3A9JUM6nN8tv3F3hbCwK5OYi1k3P6BhlKbvaCX1IhMRYNj7tl84kk58mT3lZFv1eXqD85N10sVO1gBb2dIBHPSgsPvbQHqg2dQxlUcD/jqjidCpGqBqFSFlFTQz6UjBIIkFMlaQDgu4pXgQ5qC8gx7yyQTWR4+JKKFoD8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714681039; c=relaxed/simple;
-	bh=YL8D7SYvJLhlyjoxnrAyiBceEYkhFu4TTXAedNUKgRU=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-ID:To:CC; b=OB0DtS9PBsxL7DFAzYNuHEVNy1eYFYshxTYeOGOXDtYLXW4LYVL6VVt8ljmpm+HxPftPRloXSSKz8VAFA5WA2J2VswphKp/WtLsBKgkV92l1P190/DibyufR/invDDSWIEQgLxgAQvsuMAuKGerW9roGbIA+t3sebit/gtol+Cw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=nGbUYAhs; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 442Diu4v014399;
-	Thu, 2 May 2024 20:16:58 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	from:date:subject:mime-version:content-type
-	:content-transfer-encoding:message-id:to:cc; s=qcppdkim1; bh=s3c
-	hDQOo+tPipRQL0+QuH7LkgscBLH/TgsRVja2GR4s=; b=nGbUYAhsCuZfzhXlOmf
-	R99NhUyDSFSOzLL58xrPgBVRH8xYFDR8wMKAjJE50hWqgpUkY8wZmWsqYfl8/PNV
-	8kbwzUp146blZdw5T51CuXQschtebA/fF+tsWcq+hAVszqoh/6s2dm4+5RdrnmXC
-	8biA6jeCGO0u1eZ7UEn2hlhbwglynhQbrME7ZX66KFCSm68L+7m9tKk0M6zeL4xx
-	QjBRO6AdNnuz2eDVRT5kA7KA/T/w9zsMXFFEl1S6PK53JecRJ6Sv/jxD+2P/HmRf
-	xZkRtoDwbgaAX9W5YnddmoVDuqUOqGzRcaf41ii+pGTjK1WbRTNtb3Wn9PiMcs/f
-	E+g==
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xv6q0skb0-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 02 May 2024 20:16:58 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 442KGvta027282
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 2 May 2024 20:16:57 GMT
-Received: from [169.254.0.1] (10.49.16.6) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Thu, 2 May 2024
- 13:16:56 -0700
-From: Jeff Johnson <quic_jjohnson@quicinc.com>
-Date: Thu, 2 May 2024 13:16:55 -0700
-Subject: [PATCH] ubifs: fix kernel-doc warnings
+	s=arc-20240116; t=1714681093; c=relaxed/simple;
+	bh=Rr4dZX9hAeT931urBcnwp32IG+pJo2Kj6WSIWSerZyg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=iHlEvF7g7JljyYsXKItVhD4pGxCQN9FPr+fxf/6PTX+6V89Yr32NYWrgqJ6+bxZks4E9NMaapexpJNxhBY17ww86fs52bw30iM+prvMcNPRL4YuoxNfBxYn1as3SvoLxMoHgpxGfslP1YSagr3bicUlpK0Lqgs/Pc0wCiONUe0I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=LW2Dw2FX; arc=none smtp.client-ip=209.85.208.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-lj1-f173.google.com with SMTP id 38308e7fff4ca-2e0a2870bceso60667231fa.2
+        for <linux-kernel@vger.kernel.org>; Thu, 02 May 2024 13:18:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1714681090; x=1715285890; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=5J9A//7ksPM9EBg2Kg92EQBbwDco+eGbfOc1EDd4P10=;
+        b=LW2Dw2FXBMzfsYN8Twp+Tcn7sXvupJHB2qXhIJEcBd1d/umn9XVPTuonCEl7w0IwgR
+         V+oJyLirCK+eO9YVDEP99SWijcQ5/7dSLmO+JIfhWy6CYf6m0GWw9NhJ7SeC+Enw/iZa
+         HjpsomxnsOofZPEXKeY5F/YUXUKj9niGk4B8BfWj+QbOLIg/Ss9vBaKvLaYRs2jbPgri
+         ijJ2AF0g5bUMKmsP3PCYxnra0vUexeeMPF+nnQH81YY81xmwRm/mlo5WfNfPB2kAK61E
+         OawJw++rYmTbe3bE/8/mDsybPWS+qk8HI6tFWAdpytPYTDB+YI9Zsr+U6gCU74QgtHDr
+         dYnQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714681090; x=1715285890;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=5J9A//7ksPM9EBg2Kg92EQBbwDco+eGbfOc1EDd4P10=;
+        b=bp5jgOf+GL0hBLVd2gjtAIEAbcjFGzuLvohI8tglhQZbqVpdd4/c0GjDrBlThsgxX4
+         BzfG6S30tAW4tb4DNja7QBL30LbrUtewj/vegEsJpvurTC1QObl1LRb2Vf/aecQnUqAV
+         gBbSzv+T0ddrTnAU+P9GZB/pkHju/qPKkB6zWYdNgBdrUnBya5i6KUzUMEiSNEQiHOR1
+         fWhP3yBwgoRtZDN9FrZIA5EuFwHPIUG1a5kguR3q+b23/mzEkqaK8hGko9bH1JUC5aqi
+         /ZAD8kNo5rSdE/n25WzuyZTs2XAAs1chXVAS6bJppDOcVo/T1kEP7Z05/P9rAcN5iCP6
+         TAAg==
+X-Forwarded-Encrypted: i=1; AJvYcCVLybg3k9tbhDxQKSGpX84NE7+aCvtfSzs1epzxsJN8dtxk4W7RpTa/Fw96xNsJo/z5cosATW369dUGmxoiyeEsPnuKMpQ0HBNFG38o
+X-Gm-Message-State: AOJu0YzZakbx6qU+QmgPzk7QgKMbNOacxY+1ebtgutnf7nARFCirgw5K
+	QBF8I7Q0BvwRrAFdUIMXVSrWeIEfsZpX7flD5gV42eU4rzpWT2M5Z9NPDMb7SPf99BqeWNlmCGJ
+	4mBuUoDCKzCV2an5BIU7tSDh6UqFbd7KDzCSP
+X-Google-Smtp-Source: AGHT+IGRukZGXwciIPXO8qobGIUxrh2o8K8bdJTMJ8DlMnP7Vb9jYCwkv4woe/YdCrIWX4vKRm0QR0XR06tqfuCJesg=
+X-Received: by 2002:a2e:22c3:0:b0:2dc:b4f7:dad9 with SMTP id
+ i186-20020a2e22c3000000b002dcb4f7dad9mr491137lji.34.1714681089625; Thu, 02
+ May 2024 13:18:09 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-ID: <20240502-ubifs-kdoc-v1-1-59c35a325141@quicinc.com>
-X-B4-Tracking: v=1; b=H4sIALb0M2YC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
- vPSU3UzU4B8JSMDIxMDUwMj3dKkzLRi3eyU/GRdg1QDc4u05DRzS0NzJaCGgqLUtMwKsGHRsbW
- 1AEIrgIpcAAAA
-To: Richard Weinberger <richard@nod.at>,
-        Zhihao Cheng
-	<chengzhihao1@huawei.com>
-CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        "Jeff
- Johnson" <quic_jjohnson@quicinc.com>
-X-Mailer: b4 0.13.0
-X-ClientProxiedBy: nalasex01c.na.qualcomm.com (10.47.97.35) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: RUrIjTeK6LkW3D9-HtP-bizJM07yAN3J
-X-Proofpoint-GUID: RUrIjTeK6LkW3D9-HtP-bizJM07yAN3J
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
- definitions=2024-05-02_12,2024-05-02_03,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
- lowpriorityscore=0 bulkscore=0 priorityscore=1501 spamscore=0
- mlxlogscore=999 malwarescore=0 phishscore=0 adultscore=0 clxscore=1011
- mlxscore=0 suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2404010003 definitions=main-2405020133
+References: <20240127004321.1902477-1-davidai@google.com> <20240127004321.1902477-2-davidai@google.com>
+ <20240131170608.GA1441369-robh@kernel.org> <CAGETcx8S0oS67oMZsPKk6_MGAtygoHEf_LN1gbcNDEBqRJ4PPg@mail.gmail.com>
+ <20240202155352.GA37864-robh@kernel.org> <20240215112626.zfkiq2i2imbqcdof@bogus>
+In-Reply-To: <20240215112626.zfkiq2i2imbqcdof@bogus>
+From: David Dai <davidai@google.com>
+Date: Thu, 2 May 2024 13:17:57 -0700
+Message-ID: <CABN1KCLbhh9Rf9R2J2UoTS+6Dzc8yysOedKgXizPbQvYuG8tqQ@mail.gmail.com>
+Subject: Re: [PATCH v5 1/2] dt-bindings: cpufreq: add virtual cpufreq device
+To: Sudeep Holla <sudeep.holla@arm.com>
+Cc: Saravana Kannan <saravanak@google.com>, Rob Herring <robh@kernel.org>, 
+	"Rafael J. Wysocki" <rafael@kernel.org>, Viresh Kumar <viresh.kumar@linaro.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Quentin Perret <qperret@google.com>, Masami Hiramatsu <mhiramat@google.com>, Will Deacon <will@kernel.org>, 
+	Peter Zijlstra <peterz@infradead.org>, Vincent Guittot <vincent.guittot@linaro.org>, 
+	Marc Zyngier <maz@kernel.org>, Oliver Upton <oliver.upton@linux.dev>, 
+	Dietmar Eggemann <dietmar.eggemann@arm.com>, Pavan Kondeti <quic_pkondeti@quicinc.com>, 
+	Gupta Pankaj <pankaj.gupta@amd.com>, Mel Gorman <mgorman@suse.de>, kernel-team@android.com, 
+	linux-pm@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-make C=1 reports the following kernel-doc warnings:
+On Thu, Feb 15, 2024 at 3:26=E2=80=AFAM Sudeep Holla <sudeep.holla@arm.com>=
+ wrote:
+>
+> On Fri, Feb 02, 2024 at 09:53:52AM -0600, Rob Herring wrote:
+> > On Wed, Jan 31, 2024 at 10:23:03AM -0800, Saravana Kannan wrote:
+> > >
+> > > We also need the OPP tables to indicate which CPUs are part of the
+> > > same cluster, etc. Don't want to invent a new "protocol" and just use
+> > > existing DT bindings.
+> >
+> > Topology binding is for that.
+> >
+> > What about when x86 and other ACPI systems need to do this too? You
+> > define a discoverable interface, then it works regardless of firmware.
+> > KVM, Virtio, VFIO, etc. are all their own protocols.
+> >
+>
+> +1 for the above. I have mentioned the same couple of times but I am told
+> it can be taken up later which I fail to understand. Once we define DT
+> bindings, it must be supported for long time which doesn't provide any
+> motivation to such a discoverable interface which works on any virtual
+> platforms irrespective of the firmware.
+>
 
-fs/ubifs/compress.c:103: warning: Function parameter or struct member 'c' not described in 'ubifs_compress'
-fs/ubifs/compress.c:155: warning: Function parameter or struct member 'c' not described in 'ubifs_decompress'
-fs/ubifs/find.c:353: warning: Excess function parameter 'data' description in 'scan_for_free_cb'
-fs/ubifs/find.c:353: warning: Function parameter or struct member 'arg' not described in 'scan_for_free_cb'
-fs/ubifs/find.c:594: warning: Excess function parameter 'data' description in 'scan_for_idx_cb'
-fs/ubifs/find.c:594: warning: Function parameter or struct member 'arg' not described in 'scan_for_idx_cb'
-fs/ubifs/find.c:786: warning: Excess function parameter 'data' description in 'scan_dirty_idx_cb'
-fs/ubifs/find.c:786: warning: Function parameter or struct member 'arg' not described in 'scan_dirty_idx_cb'
-fs/ubifs/find.c:86: warning: Excess function parameter 'data' description in 'scan_for_dirty_cb'
-fs/ubifs/find.c:86: warning: Function parameter or struct member 'arg' not described in 'scan_for_dirty_cb'
-fs/ubifs/journal.c:369: warning: expecting prototype for wake_up_reservation(). Prototype was for add_or_start_queue() instead
-fs/ubifs/lprops.c:1018: warning: Excess function parameter 'lst' description in 'scan_check_cb'
-fs/ubifs/lprops.c:1018: warning: Function parameter or struct member 'arg' not described in 'scan_check_cb'
-fs/ubifs/lpt.c:1938: warning: Function parameter or struct member 'ptr' not described in 'lpt_scan_node'
-fs/ubifs/replay.c:60: warning: Function parameter or struct member 'hash' not described in 'replay_entry'
+Hi Sudeep,
 
-Fix them.
+We are thinking of a discoverable interface like this, where the
+performance info and performance domain mappings are discoverable
+through the device registers. This should make it more portable across
+firmwares. Would this address your concerns? Also, you asked to
+document this. Where exactly would you want to document this? AFAIK
+the DT bindings documentation is not supposed to include this level of
+detail. Would a comment in the driver be sufficient?
 
-Signed-off-by: Jeff Johnson <quic_jjohnson@quicinc.com>
----
-Note ubifs still has C=1 warnings from smatch that are not addressed:
+CPU0..CPUn
++-------------+-------------------------------+--------+-------+
+| Register    | Description                   | Offset |   Len |
++-------------+-------------------------------+--------+-------+
+| cur_perf    | read this register to get     |    0x0 |   0x4 |
+|             | the current perf (integer val |        |       |
+|             | representing perf relative to |        |       |
+|             | max performance)              |        |       |
+|             | that vCPU is running at       |        |       |
++-------------+-------------------------------+--------+-------+
+| set_perf    | write to this register to set |    0x4 |   0x4 |
+|             | perf value of the vCPU        |        |       |
++-------------+-------------------------------+--------+-------+
+| perftbl_len | number of entries in perf     |    0x8 |   0x4 |
+|             | table. A single entry in the  |        |       |
+|             | perf table denotes no table   |        |       |
+|             | and the entry contains        |        |       |
+|             | the maximum perf value        |        |       |
+|             | that this vCPU supports.      |        |       |
+|             | The guest can request any     |        |       |
+|             | value between 1 and max perf. |        |       |
++---------------------------------------------+--------+-------+
+| perftbl_sel | write to this register to     |    0xc |   0x4 |
+|             | select perf table entry to    |        |       |
+|             | read from                     |        |       |
++---------------------------------------------+--------+-------+
+| perftbl_rd  | read this register to get     |   0x10 |   0x4 |
+|             | perf value of the selected    |        |       |
+|             | entry based on perftbl_sel    |        |       |
++---------------------------------------------+--------+-------+
+| perf_domain | performance domain number     |   0x14 |   0x4 |
+|             | that this vCPU belongs to.    |        |       |
+|             | vCPUs sharing the same perf   |        |       |
+|             | domain number are part of the |        |       |
+|             | same performance domain.      |        |       |
++-------------+-------------------------------+--------+-------+
 
-fs/ubifs/journal.c:307:9: warning: context imbalance in '__queue_and_wait' - unexpected unlock
-fs/ubifs/journal.c:322:13: warning: context imbalance in 'wait_for_reservation' - different lock contexts for basic block
-fs/ubifs/journal.c:368:13: warning: context imbalance in 'add_or_start_queue' - different lock contexts for basic block
----
- fs/ubifs/compress.c | 2 ++
- fs/ubifs/find.c     | 8 ++++----
- fs/ubifs/journal.c  | 2 +-
- fs/ubifs/lprops.c   | 2 +-
- fs/ubifs/lpt.c      | 1 +
- fs/ubifs/replay.c   | 1 +
- 6 files changed, 10 insertions(+), 6 deletions(-)
+Thanks,
+David
 
-diff --git a/fs/ubifs/compress.c b/fs/ubifs/compress.c
-index 75461777c466..0b48cbab8a3d 100644
---- a/fs/ubifs/compress.c
-+++ b/fs/ubifs/compress.c
-@@ -82,6 +82,7 @@ struct ubifs_compressor *ubifs_compressors[UBIFS_COMPR_TYPES_CNT];
- 
- /**
-  * ubifs_compress - compress data.
-+ * @c: UBIFS file-system description object
-  * @in_buf: data to compress
-  * @in_len: length of the data to compress
-  * @out_buf: output buffer where compressed data should be stored
-@@ -140,6 +141,7 @@ void ubifs_compress(const struct ubifs_info *c, const void *in_buf,
- 
- /**
-  * ubifs_decompress - decompress data.
-+ * @c: UBIFS file-system description object
-  * @in_buf: data to decompress
-  * @in_len: length of the data to decompress
-  * @out_buf: output buffer where decompressed data should
-diff --git a/fs/ubifs/find.c b/fs/ubifs/find.c
-index 6ebf3c04ac5f..643718906b9f 100644
---- a/fs/ubifs/find.c
-+++ b/fs/ubifs/find.c
-@@ -73,7 +73,7 @@ static int valuable(struct ubifs_info *c, const struct ubifs_lprops *lprops)
-  * @c: the UBIFS file-system description object
-  * @lprops: LEB properties to scan
-  * @in_tree: whether the LEB properties are in main memory
-- * @data: information passed to and from the caller of the scan
-+ * @arg: information passed to and from the caller of the scan
-  *
-  * This function returns a code that indicates whether the scan should continue
-  * (%LPT_SCAN_CONTINUE), whether the LEB properties should be added to the tree
-@@ -340,7 +340,7 @@ int ubifs_find_dirty_leb(struct ubifs_info *c, struct ubifs_lprops *ret_lp,
-  * @c: the UBIFS file-system description object
-  * @lprops: LEB properties to scan
-  * @in_tree: whether the LEB properties are in main memory
-- * @data: information passed to and from the caller of the scan
-+ * @arg: information passed to and from the caller of the scan
-  *
-  * This function returns a code that indicates whether the scan should continue
-  * (%LPT_SCAN_CONTINUE), whether the LEB properties should be added to the tree
-@@ -581,7 +581,7 @@ int ubifs_find_free_space(struct ubifs_info *c, int min_space, int *offs,
-  * @c: the UBIFS file-system description object
-  * @lprops: LEB properties to scan
-  * @in_tree: whether the LEB properties are in main memory
-- * @data: information passed to and from the caller of the scan
-+ * @arg: information passed to and from the caller of the scan
-  *
-  * This function returns a code that indicates whether the scan should continue
-  * (%LPT_SCAN_CONTINUE), whether the LEB properties should be added to the tree
-@@ -773,7 +773,7 @@ int ubifs_save_dirty_idx_lnums(struct ubifs_info *c)
-  * @c: the UBIFS file-system description object
-  * @lprops: LEB properties to scan
-  * @in_tree: whether the LEB properties are in main memory
-- * @data: information passed to and from the caller of the scan
-+ * @arg: information passed to and from the caller of the scan
-  *
-  * This function returns a code that indicates whether the scan should continue
-  * (%LPT_SCAN_CONTINUE), whether the LEB properties should be added to the tree
-diff --git a/fs/ubifs/journal.c b/fs/ubifs/journal.c
-index 74aee92433d7..f997a85bcdce 100644
---- a/fs/ubifs/journal.c
-+++ b/fs/ubifs/journal.c
-@@ -359,7 +359,7 @@ static void wake_up_reservation(struct ubifs_info *c)
- }
- 
- /**
-- * wake_up_reservation - add current task in queue or start queuing.
-+ * add_or_start_queue - add current task in queue or start queuing.
-  * @c: UBIFS file-system description object
-  *
-  * This function starts queuing if queuing is not started, otherwise adds
-diff --git a/fs/ubifs/lprops.c b/fs/ubifs/lprops.c
-index a11c3dab7e16..8788740ec57f 100644
---- a/fs/ubifs/lprops.c
-+++ b/fs/ubifs/lprops.c
-@@ -1005,7 +1005,7 @@ void dbg_check_heap(struct ubifs_info *c, struct ubifs_lpt_heap *heap, int cat,
-  * @c: the UBIFS file-system description object
-  * @lp: LEB properties to scan
-  * @in_tree: whether the LEB properties are in main memory
-- * @lst: lprops statistics to update
-+ * @arg: lprops statistics to update
-  *
-  * This function returns a code that indicates whether the scan should continue
-  * (%LPT_SCAN_CONTINUE), whether the LEB properties should be added to the tree
-diff --git a/fs/ubifs/lpt.c b/fs/ubifs/lpt.c
-index 778a22bf9a92..441d0beca4cf 100644
---- a/fs/ubifs/lpt.c
-+++ b/fs/ubifs/lpt.c
-@@ -1918,6 +1918,7 @@ int ubifs_lpt_init(struct ubifs_info *c, int rd, int wr)
-  * @pnode: where to keep a pnode
-  * @cnode: where to keep a cnode
-  * @in_tree: is the node in the tree in memory
-+ * @ptr: union of node pointers
-  * @ptr.nnode: pointer to the nnode (if it is an nnode) which may be here or in
-  * the tree
-  * @ptr.pnode: ditto for pnode
-diff --git a/fs/ubifs/replay.c b/fs/ubifs/replay.c
-index 17da28d6247a..a950c5f2560e 100644
---- a/fs/ubifs/replay.c
-+++ b/fs/ubifs/replay.c
-@@ -29,6 +29,7 @@
-  * @lnum: logical eraseblock number of the node
-  * @offs: node offset
-  * @len: node length
-+ * @hash: node hash
-  * @deletion: non-zero if this entry corresponds to a node deletion
-  * @sqnum: node sequence number
-  * @list: links the replay list
 
----
-base-commit: b8a77b9a5f9c2ba313f2beef8440b6f9f69768e7
-change-id: 20240502-ubifs-kdoc-0e078fcf7917
-
+> --
+> Regards,
+> Sudeep
 
