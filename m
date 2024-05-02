@@ -1,127 +1,208 @@
-Return-Path: <linux-kernel+bounces-166600-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-166601-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 989558B9CDE
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 16:52:05 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D51EB8B9CDF
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 16:52:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 53F67289FD0
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 14:52:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8AA4D28AB5E
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 14:52:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE7BC153BC6;
-	Thu,  2 May 2024 14:51:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D3E0153BCF;
+	Thu,  2 May 2024 14:52:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="1uyuAgb+"
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="B1eQ9ouS"
+Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B7DF153800;
-	Thu,  2 May 2024 14:51:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3DE356BB47
+	for <linux-kernel@vger.kernel.org>; Thu,  2 May 2024 14:52:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714661519; cv=none; b=jpYp8hsEXWE106RXpXDuoE/ucDRnUROg7Sx210bkPUdZdzePQrnEwsN8pcV1krRZBjwSJ9pDk8L3RvBXCB05jGPSM9WTVK2MErwpI05maaUPvRFHm6YZ742OioEAGw13OXRlDQjO/HtXq6MJ5zjuBH7342dJBykdSRzp39ISGF8=
+	t=1714661548; cv=none; b=Rr+mPfyANzKJ8NqYViqtIovsOXwVLYeQt5KHYw0+MWKNuox1yCCVCDQ+2/nd+R/ila19X2ur3nVusgdM+AQYXb2DMuNS+VmrKeF//0/HkKQiV05+O/xmsSclMI5WTf1o5Zq0sS4o7Os4pTLw4YXvXOd296CVIly9ZPzXS2w2OU0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714661519; c=relaxed/simple;
-	bh=ST+TZwgCd+nDZ5M4t+lR71k82ZcVIF/RLDpS5hQosys=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=FM50GH5O4tWO9fiEb2Hl3dt5996+6F6Q/6pIFZhJ3ia8OnB+lUwczmKcSx8ORo4Q+0osZxTIKsuihjHGWUJqI1TRpdyf5b0GiJDrZM8hEcmvA+H8UhDDeUve267xDEiLUzjrj63tNX45hvEw2XaRCgL7DlwTbGlg9XUcKP9/dJI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=1uyuAgb+; arc=none smtp.client-ip=156.67.10.101
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-	bh=wqpw/ZGaL/K9oEQyWGG2tvRSaK0AjAGtY128e8n64RA=; b=1uyuAgb+/pJTNrSUOf1oUcENk7
-	ITwsmNWDdS3RtL8SIsOZYzw+yZLbG7Oy864GiNT/xw3Od71t43ADVsmYwBq/PlYJttybj1eeY8oqj
-	0urYbiEHdWsb96/i5cu9N38WdiX+80nYJ2MO7edPMvqMBzowpcb7VW9JSNDJD3qnsnmU=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-	(envelope-from <andrew@lunn.ch>)
-	id 1s2Xmg-00EVgP-Fq; Thu, 02 May 2024 16:51:42 +0200
-Date: Thu, 2 May 2024 16:51:42 +0200
-From: Andrew Lunn <andrew@lunn.ch>
-To: Raju Lakkaraju <Raju.Lakkaraju@microchip.com>
-Cc: netdev@vger.kernel.org, lxu@maxlinear.com, hkallweit1@gmail.com,
-	linux@armlinux.org.uk, davem@davemloft.net, edumazet@google.com,
-	kuba@kernel.org, pabeni@redhat.com, linux-kernel@vger.kernel.org,
-	UNGLinuxDriver@microchip.com
-Subject: Re: [PATCH net-next] net: phy: add wol config options in phy device
-Message-ID: <7fe419b2-fc73-4584-ae12-e9e313d229c3@lunn.ch>
-References: <20240430050635.46319-1-Raju.Lakkaraju@microchip.com>
+	s=arc-20240116; t=1714661548; c=relaxed/simple;
+	bh=zLbS8ODF0z137yrUyr8Axq4iaxcWoLKgEWh3WjjWlz4=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=L+GSeLO7vW4ZmINHMsa1+PaI7H7WGPHz2ITcZEZ41a7yRSkGswKQqtK9yODed3GE6kBhoT8P8WtiCtNQceL/Viv2NE5swMkE7FeGdnMnhIx+fmCV0Vsu+fpgzDqWnikTSB/XRHKyfwsuhnwDtDhqAbDuDYi55tlEoet1pP6ho7o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=B1eQ9ouS; arc=none smtp.client-ip=209.85.214.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-1e4f341330fso74012215ad.0
+        for <linux-kernel@vger.kernel.org>; Thu, 02 May 2024 07:52:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1714661545; x=1715266345; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=cWweKXFrFEkCsPdE7nP0/G3wcxDTmjAB5LxHWc+P9DU=;
+        b=B1eQ9ouSJZoiX54Yb8DKJg9j4EINyOuFmSltlE3wm5g8iQnx9tamU0vTl9AawdGPcz
+         xhpEA54DsVFsqxWSLi+7YgQTWqS3ZJXgJ8juDU3wrQ70OiyKt2m/FWlXxFOenj7RoHrC
+         GU+ni0ZbNC+oTVIeA7brSl6lJejW9cMwMd7LI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714661545; x=1715266345;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=cWweKXFrFEkCsPdE7nP0/G3wcxDTmjAB5LxHWc+P9DU=;
+        b=gt3sedN/IvPFcSs43Wrp3C7sbAsoa3NodWS8zDcoiCDljkRBtrJmvbuAQ+8jIOSr6z
+         5qBSJ0/EMkDXkDWfVLwAPDlYNlMI7PgXBHSU8E7LVE1PEpCFVwQSjB2ZwVxLw65+SJtg
+         QmsRn5xt2QSdSzDNlDLxq5nNCFehwFvYBoIr/dWGh6TrathPQGgeS7iB77frs9TtJea9
+         XBVQCJKWfMx4VfRvoJzWnT0LqroLyArrwdwOsErbK4hFh/UPwb9VHkoBLiw4GbisEajB
+         zaHqcbI+pUWXsUlK4ufR/HCghO2faTTTbDaahDKtUMOFujXrmAua8B/2YhD3k3HXc97b
+         jPaQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVlSsoNSIT31ZzVBPREPFcxp34iPS9VwZP2nW9r+d8doFNOeta79pRL4Uih/zL/DSmQZlpdthjOYF0zfzPUTbva2f7jQ4b+ljO2Cj1e
+X-Gm-Message-State: AOJu0Yxp0jFaNLaqnqUTHBfe+V+5SLPdpglJLRS+WYpKK2THjJHsOgsC
+	NXYbH0QGpBxci1BjXIPw2dMSqOu/tLsuVVErbMn2N5Zm2OXv6dfkXQq3BFo5ww==
+X-Google-Smtp-Source: AGHT+IHVPNhcIilbYRycs9H+6Ov6JMpElqWXMVCfNskH2RvhYuYMOEilYAa/5fUncOtEioHR1Q6A+Q==
+X-Received: by 2002:a17:902:d3d3:b0:1ea:9596:11df with SMTP id w19-20020a170902d3d300b001ea959611dfmr6029699plb.32.1714661545446;
+        Thu, 02 May 2024 07:52:25 -0700 (PDT)
+Received: from www.outflux.net ([198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id qc3-20020a17090b288300b002a46aca870asm3255359pjb.33.2024.05.02.07.52.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 02 May 2024 07:52:25 -0700 (PDT)
+From: Kees Cook <keescook@chromium.org>
+To: Andy Shevchenko <andy@kernel.org>
+Cc: Kees Cook <keescook@chromium.org>,
+	linux-kernel@vger.kernel.org,
+	linux-hardening@vger.kernel.org
+Subject: [PATCH v2] string: Add additional __realloc_size() annotations for "dup" helpers
+Date: Thu,  2 May 2024 07:52:21 -0700
+Message-Id: <20240502145218.it.729-kees@kernel.org>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240430050635.46319-1-Raju.Lakkaraju@microchip.com>
+X-Developer-Signature: v=1; a=openpgp-sha256; l=4499; i=keescook@chromium.org;
+ h=from:subject:message-id; bh=zLbS8ODF0z137yrUyr8Axq4iaxcWoLKgEWh3WjjWlz4=;
+ b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBmM6ilI5lXYV7EB9Om3uCGMQdscNOrpz9iX9JHo
+ hBuJ9ziVhaJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZjOopQAKCRCJcvTf3G3A
+ JuoZD/9xVonPh1Os8i0HOHmdDbzpC1BsWB7Sit1KHrwZQNGkNkFve9Pd+uTE5t+yry5bIhJxESA
+ L30S5XBnG8azcbRX3JYx80Y5TTC5FdvtDRTF6zZbKZeZOV+Zch/dulo6/fjsD7rIbSGlcyh6ja8
+ pyOKmu7Ydc75t65+xRYmNmnBdxo2UdqaQAY0YdyqYmAD6GTz68Xzezhp9jhS6rNgKIGRcJkFsqi
+ C3rr22VLZqrlsin0DwU0MMxf5YHyohWGQgERA8It+DTRaRnBnsrXYqT36Ftl1w8LVQDbM/QyCFT
+ /D0B6LI3XniHkh/uPU69b5hvSw+vBbUg/On5q5C5dGFlkukVIHRy8WC4jBwY/fLQSr8DO5TfGtl
+ 5USIDp8uMjNmTeF2UBES5NbkTLrDPHxWOzSEG0ftNpNXS+gduX5eBhQIajOeD4p/kMnCz38XBIU
+ H/KbLLX1VYyOOSQ89MKVtWCDBlr1DCSKY5QwbLU6VPaoUmR6heFdu/IvDjPOme4jHrMPYl/bIqM
+ +USJvManf+F8SYtWyP8Tx4rnAUwiwDr2HRzP+r5rilPY7DOrhAz57hIE5cd2zmHCQfwCaumOYcY
+ 2h6Q29virxplEzaTzxhB6CtZjnVa9Ym0Kg2dAky7dx2NoC/8CC0jiB1s/AVWeVAd1qMtQW4JIl0
+ I1Q3e9n 84x3YA9w==
+X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
+Content-Transfer-Encoding: 8bit
 
-On Tue, Apr 30, 2024 at 10:36:35AM +0530, Raju Lakkaraju wrote:
-> Introduce a new member named 'wolopts' to the 'phy_device' structure to
-> store the user-specified Wake-on-LAN (WOL) settings. Update this member
-> within the phy driver's 'set_wol()' function whenever the WOL configuration
-> is modified by the user.
-> 
-> Currently, when the system resumes from sleep, the 'phy_init_hw()' function
-> resets the PHY's configuration and interrupts, which leads to problems upon
-> subsequent WOL attempts. By retaining the desired WOL settings in 'wolopts',
-> we can ensure that the PHY's WOL configuration is correctly reapplied
-> through 'phy_ethtool_set_wol()' before a system suspend, thereby resolving
-> the issue
+Several other "dup"-style interfaces could use the __realloc_size()
+attribute. (As a reminder to myself and others: "realloc" is used here
+instead of "alloc" because the "alloc_size" attribute implies that the
+memory contents are uninitialized. Since we're copying contents into the
+resulting allocation, it must use "realloc_size" to avoid confusing the
+compiler's optimization passes.)
 
-Sorry it took a white to review this.
+Add KUnit test coverage where possible. (KUnit still does not have the
+ability to manipulate userspace memory.)
 
-> 
-> Signed-off-by: Raju Lakkaraju <Raju.Lakkaraju@microchip.com>
-> ---
->  drivers/net/phy/mxl-gpy.c    | 5 +++++
->  drivers/net/phy/phy_device.c | 5 +++++
->  include/linux/phy.h          | 2 ++
->  3 files changed, 12 insertions(+)
-> 
-> diff --git a/drivers/net/phy/mxl-gpy.c b/drivers/net/phy/mxl-gpy.c
-> index b2d36a3a96f1..6edb29a1d77e 100644
-> --- a/drivers/net/phy/mxl-gpy.c
-> +++ b/drivers/net/phy/mxl-gpy.c
-> @@ -680,6 +680,7 @@ static int gpy_set_wol(struct phy_device *phydev,
->  	struct net_device *attach_dev = phydev->attached_dev;
->  	int ret;
->  
-> +	phydev->wolopts = 0;
+Reviewed-by: Andy Shevchenko <andy@kernel.org>
+Signed-off-by: Kees Cook <keescook@chromium.org>
+---
+ v2: change variables names to keep added line continuation lengths similar
+ v1: https://lore.kernel.org/r/20240501233201.work.732-kees@kernel.org
+---
+ include/linux/string.h | 13 ++++++++-----
+ lib/fortify_kunit.c    | 26 ++++++++++++++++++++++++++
+ 2 files changed, 34 insertions(+), 5 deletions(-)
 
-Is this specific to mlx-gpy?
+diff --git a/include/linux/string.h b/include/linux/string.h
+index 86aa6cd35167..10e5177bb49c 100644
+--- a/include/linux/string.h
++++ b/include/linux/string.h
+@@ -14,8 +14,8 @@
+ #include <uapi/linux/string.h>
+ 
+ extern char *strndup_user(const char __user *, long);
+-extern void *memdup_user(const void __user *, size_t);
+-extern void *vmemdup_user(const void __user *, size_t);
++extern void *memdup_user(const void __user *, size_t) __realloc_size(2);
++extern void *vmemdup_user(const void __user *, size_t) __realloc_size(2);
+ extern void *memdup_user_nul(const void __user *, size_t);
+ 
+ /**
+@@ -27,7 +27,8 @@ extern void *memdup_user_nul(const void __user *, size_t);
+  * Return: an ERR_PTR() on failure. Result is physically
+  * contiguous, to be freed by kfree().
+  */
+-static inline void *memdup_array_user(const void __user *src, size_t n, size_t size)
++static inline __realloc_size(2, 3)
++void *memdup_array_user(const void __user *src, size_t n, size_t size)
+ {
+ 	size_t nbytes;
+ 
+@@ -46,7 +47,8 @@ static inline void *memdup_array_user(const void __user *src, size_t n, size_t s
+  * Return: an ERR_PTR() on failure. Result may be not
+  * physically contiguous. Use kvfree() to free.
+  */
+-static inline void *vmemdup_array_user(const void __user *src, size_t n, size_t size)
++static inline __realloc_size(2, 3)
++void *vmemdup_array_user(const void __user *src, size_t n, size_t size)
+ {
+ 	size_t nbytes;
+ 
+@@ -285,7 +287,8 @@ extern char *kstrndup(const char *s, size_t len, gfp_t gfp);
+ extern void *kmemdup(const void *src, size_t len, gfp_t gfp) __realloc_size(2);
+ extern void *kvmemdup(const void *src, size_t len, gfp_t gfp) __realloc_size(2);
+ extern char *kmemdup_nul(const char *s, size_t len, gfp_t gfp);
+-extern void *kmemdup_array(const void *src, size_t element_size, size_t count, gfp_t gfp);
++extern void *kmemdup_array(const void *src, size_t element_size, size_t count, gfp_t gfp)
++		__realloc_size(2, 3);
+ 
+ /* lib/argv_split.c */
+ extern char **argv_split(gfp_t gfp, const char *str, int *argcp);
+diff --git a/lib/fortify_kunit.c b/lib/fortify_kunit.c
+index 306522fd0aa2..d2377e00caab 100644
+--- a/lib/fortify_kunit.c
++++ b/lib/fortify_kunit.c
+@@ -363,6 +363,31 @@ DEFINE_ALLOC_SIZE_TEST_PAIR(kvmalloc)
+ } while (0)
+ DEFINE_ALLOC_SIZE_TEST_PAIR(devm_kmalloc)
+ 
++static const char * const test_strs[] = {
++	"",
++	"Hello there",
++	"A longer string, just for variety",
++};
++
++#define TEST_realloc(checker)	do {					\
++	gfp_t gfp = GFP_KERNEL;						\
++	size_t len;							\
++	int i;								\
++									\
++	for (i = 0; i < ARRAY_SIZE(test_strs); i++) {			\
++		len = strlen(test_strs[i]);				\
++		KUNIT_EXPECT_EQ(test, __builtin_constant_p(len), 0);	\
++		checker(len, kmemdup_array(test_strs[i], len, 1, gfp),	\
++			kfree(p));					\
++		checker(len, kmemdup(test_strs[i], len, gfp),		\
++			kfree(p));					\
++	}								\
++} while (0)
++static void fortify_test_realloc_size(struct kunit *test)
++{
++	TEST_realloc(check_dynamic);
++}
++
+ /*
+  * We can't have an array at the end of a structure or else
+  * builds without -fstrict-flex-arrays=3 will report them as
+@@ -1046,6 +1071,7 @@ static struct kunit_case fortify_test_cases[] = {
+ 	KUNIT_CASE(fortify_test_alloc_size_kvmalloc_dynamic),
+ 	KUNIT_CASE(fortify_test_alloc_size_devm_kmalloc_const),
+ 	KUNIT_CASE(fortify_test_alloc_size_devm_kmalloc_dynamic),
++	KUNIT_CASE(fortify_test_realloc_size),
+ 	KUNIT_CASE(fortify_test_strlen),
+ 	KUNIT_CASE(fortify_test_strnlen),
+ 	KUNIT_CASE(fortify_test_strcpy),
+-- 
+2.34.1
 
-You should be trying to solve the problem for all PHYs which support
-WoL. So i expect the core to be doing most of the work. In fact, i
-don't think there is any need for driver specific code.
-
-phy_ethtool_set_wol() can set phydev->wolopts after calling
-phydev->drv->set_wol(). If it returns an error, including -ENOTSUPP,
-set phydev->wolopts to 0, otherwise set it to wolopts.
-
-> @@ -2038,6 +2038,11 @@ int phy_suspend(struct phy_device *phydev)
->  	if (phydev->suspended)
->  		return 0;
->  
-> +	if (phydev->wolopts) {
-> +		wol.wolopts = phydev->wolopts;
-> +		phy_ethtool_set_wol(phydev, &wol);
-> +	}
-
-Why on suspend? I would expect it to be on resume, after the PHY has
-been reset.
-
-I also think you need to save sopass[] in phydev, since some PHYs
-support WAKE_MAGICSECURE. Just because mlx-gpy does not need the
-password does not mean we should ignore it in general. I also think it
-is safe to store in memory. Its is not a highly confidential
-password. I would not be too surprised if some PHYs have the registers
-read/write rather than write only.
-
-	Andrew
 
