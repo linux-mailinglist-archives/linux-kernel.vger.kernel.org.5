@@ -1,218 +1,108 @@
-Return-Path: <linux-kernel+bounces-166074-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-166075-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0494D8B9594
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 09:49:10 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6FF378B9597
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 09:49:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 272991C211B2
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 07:49:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 302FC2822CD
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 07:49:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 79DA024B26;
-	Thu,  2 May 2024 07:48:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5FB042D047;
+	Thu,  2 May 2024 07:49:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="hLYGR6a8"
-Received: from mail-lf1-f46.google.com (mail-lf1-f46.google.com [209.85.167.46])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="lxbMelP/"
+Received: from mail-wr1-f52.google.com (mail-wr1-f52.google.com [209.85.221.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B204225AE
-	for <linux-kernel@vger.kernel.org>; Thu,  2 May 2024 07:48:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21CD8225AE
+	for <linux-kernel@vger.kernel.org>; Thu,  2 May 2024 07:49:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714636137; cv=none; b=G/VRFS9AsMbOvFD4G8r2HReWSUuYxU86dXE4ibdb8nGiWK3+ycU9vwBdDcWn7VCsMhvfLpqtTtciEhhou8c3Id40Hz2yOd8LN+oCOfnPF56plP6UA1pFYfBzaD8GUKoGSPNWh7HJC0MrPkaTSdAiEPRzCcmE/pzblP7pBDrgb6A=
+	t=1714636148; cv=none; b=NbyxfRUfi5sF4NOFMhYr9v5phIxjkQjVWFv9LtbShmz91SRkhFCwnWg3U+Zn9yeykkPBz+cj1TULeLRqh+jdddR5d9V5Etuol0EZUQcqw9hwJa4BUR5lZ5IWDFQ4IAz1RFLboT9GwBRmXLz/nA/g7rJ4PaCPEQjF+jwduzsF37I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714636137; c=relaxed/simple;
-	bh=YnErUF2MNKugI/b9UXB92WK1VSQ9+Td+hA0TBAdfc9A=;
-	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
-	 In-Reply-To:Content-Type; b=KL106Nwavlwz2/QvWspfFYeti6KxkhNbuJsTCPOdbMplhLgsWNbBfZlrOSSizFwrET0Rm1iR2sRsQtWDpfpF3NK3U6M+QsO2FDZ1XSCLmCqq7YQZjXrhXs8J8vHKmaumfsPt2XnfNuc1ME21BRmk4HpE54g/PNhKQUbSh+ImRAo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=hLYGR6a8; arc=none smtp.client-ip=209.85.167.46
+	s=arc-20240116; t=1714636148; c=relaxed/simple;
+	bh=LlOCtF6Zb0rLhYKvh8QwXXI7BdM78hneYXaIqDcRnOs=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=JyciqwXkD5togpFiUrw23JCOqQ4/oQ2Bc+5EVCz+KBLJn1ivOx5fVHe5Ok8NBS4AbkAQtaOVGm9pGIC1DXK7wX7LYya60mFj7SjjFMldm6J8e2/7xurXdqdRFA4TKDnFCSHhWB27Lzk7+Q+ERaFTimel+QvWv0Y1tFGKc9SekB8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=lxbMelP/; arc=none smtp.client-ip=209.85.221.52
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f46.google.com with SMTP id 2adb3069b0e04-51f0feae50fso589501e87.2
-        for <linux-kernel@vger.kernel.org>; Thu, 02 May 2024 00:48:54 -0700 (PDT)
+Received: by mail-wr1-f52.google.com with SMTP id ffacd0b85a97d-34dc129accaso1186917f8f.0
+        for <linux-kernel@vger.kernel.org>; Thu, 02 May 2024 00:49:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1714636133; x=1715240933; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :content-language:references:cc:to:subject:reply-to:from:user-agent
-         :mime-version:date:message-id:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=3BX9W08JmhUFPTdQQggPd87vyyhpP+MKlPGyZ3mfavs=;
-        b=hLYGR6a8/S7BHwOrzCRfJIw+Xx6+R00Y5rY8XGJpExRHThXJm4PHU88Qg9Q1+Cs0Rr
-         RQoS+NOxQYyihgLB5JZom3EHRyimasmSqtX2JBdo8XTeF++A7Y2NUPUbSDb2Zhh4pTRe
-         +FcL2l+o1pXiOqjTl59MJTeNrS6vj3st0IMf9UjDrTbwy01ywA62nHpKfvjCMcqlxX1v
-         Ioqhnfx8nZRTMgpnQiHtbPJ2HjztnGgSClxx61njymoOLk1mF8xJ06KZwhdCv6SZeNfK
-         lFjSDCLcHwZA0xrWLwDewp2XKMgJxqeQri62fpvboM2rbUQ/tHPVUYlJIuqGfvoqsdbf
-         NXrw==
+        d=linaro.org; s=google; t=1714636145; x=1715240945; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=T/L1u1HCFXTpH+7xWuSoYn2EdHiMZmIi7anLXfgHnFc=;
+        b=lxbMelP/o83uF/b5h2rjTmZp7PegUj785BONXddTUFXaUJiko9gf3fUoyw5+++BsoU
+         VBPoGfSu+FXZ7a9B9VK9yO1H8633WKPu2+s6uvuGR72RMk73t5ibTfgfBubSZuEpe2hj
+         j2lWSfIvAHs2YvnB64M9j567LFFTjcFLeOFFNXYnNlIHGb4GueJXLNYUQNeT96KoSqEc
+         kq1Lf5tvoECKvpa2ABbT06asQsQUJtiFCKh5Ffl4DrBrlvqWXqGgZOdHJSVaUP3pEUND
+         K8f4vuXA3OPwW+PLbgcy13366Gldr59dC58yQ7ZTmZacUcoGTjRQrVgfGjz9nUtxc6aO
+         bRFA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714636133; x=1715240933;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :content-language:references:cc:to:subject:reply-to:from:user-agent
-         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=3BX9W08JmhUFPTdQQggPd87vyyhpP+MKlPGyZ3mfavs=;
-        b=hEtPqelVmDsq9kLZJbW/YBn35qgqoBNJg7c/KP0qsU8g711Z/ALIatyMOMzgHjOywM
-         L6G8ldRqyGdMfRQ7z8qKlj7t1SWOGwwJ+mAP57AaB2wANyaIvffxbcYgga/vB2LOMZP5
-         u5pKrL5uaPRxyn1ht1Q8XjeOhfneXLMGEejLHf6y19PQblqhtvWlUNcq+P2G6a5v7eCe
-         1rlkhVLXcr/Xo7WmMPRN32AgVH+cr8UiU2BtXmRI5HbIoQtwojWJcpeRF07hGkIuiVi8
-         XioHhMGY2y8pMynZqcBYVva8ZsOvmYrA39TawSfR+RfbuxCw9M5mFP3z76WfuBeeYRSF
-         TPkA==
-X-Forwarded-Encrypted: i=1; AJvYcCWoBIF1qp4H5G6UV9oKiZQaRXXAtceN9Dzf5gWjPAyUbuoWGmRbHE7AgAPOArXoSlwxdwE7cTytOI5cvHg/idSALEu27FOzZtTny4F7
-X-Gm-Message-State: AOJu0Yy6eH28/0SuX6D8X6ykDl1OqQal44pbVZK2If38P2/53u9Us28D
-	IUS7fuW549HKXKYqCwXuyyCvbcFz4Jsot2pfV/COQ5Qp1I3AZbDH4TEkiq+ADGI=
-X-Google-Smtp-Source: AGHT+IEAX8pf7KqlUWuWWePCAeDLiAG7KikemqzaZtoEPB2JzXIwOySVUHsVe5LhTMlDYzmtVlyuqQ==
-X-Received: by 2002:a05:6512:2144:b0:51d:804a:232 with SMTP id s4-20020a056512214400b0051d804a0232mr782827lfr.11.1714636132970;
-        Thu, 02 May 2024 00:48:52 -0700 (PDT)
-Received: from ?IPV6:2a01:e0a:cad:2140:67e2:5e2:652b:4129? ([2a01:e0a:cad:2140:67e2:5e2:652b:4129])
-        by smtp.gmail.com with ESMTPSA id s20-20020adfa294000000b0034e285d818dsm584976wra.32.2024.05.02.00.48.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 02 May 2024 00:48:52 -0700 (PDT)
-Message-ID: <a8a73fc4-7699-4c47-8970-cd68be0fe1d9@linaro.org>
-Date: Thu, 2 May 2024 09:48:51 +0200
+        d=1e100.net; s=20230601; t=1714636145; x=1715240945;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=T/L1u1HCFXTpH+7xWuSoYn2EdHiMZmIi7anLXfgHnFc=;
+        b=CuOjQiwLgw3ltUhoSOmQ6m3UAKCXAiOK2suiFH3LJY9E8seeh/xZUWIIJJlAs2ehhI
+         q2MyO02a+rFwxXOWoWQ0KC7QaEo6+6GO0imgcHq4xpZ1CGx8kjA4ywUEbgu9KfO+y61q
+         pBDJeIRQmf3s5MaZBQLDhi8y7njpFqaVLh2gBC0KuJGFsufIMHkf8DF3Hfnz70eVOsQB
+         w4bLqqEOrpa07ifbFv56xnA0RMODbkPlRJmlBs00OSkgE3kSMyD9kCUKL2RvRboRCEcg
+         yrB8ii2aGT/OT1D/a0SQVyxMpGG81yr8wP2qW57KgsCwKnKesRFCxZlOTRp9enJo3LUj
+         da6w==
+X-Forwarded-Encrypted: i=1; AJvYcCWxHgdNmubirAMWzS2tejBDSAdDkXMLEjBwrvmkfhYFRNGzpRXCQH8vKRdvlC6iyyLU0iQ6tpu+hDtEYwWJ8sBvnVAGTpx0UZ7KHUIs
+X-Gm-Message-State: AOJu0Yzq9WizapCfkyZ0DPrRgDf+1s8LBODSMiscQDDe7RyAwEtB/HAq
+	Z+asisSRYPhYbFLocK10Rh9eqsgOK/y+KjqLZEHuVybExlMBR60rfbW6ROdOjZ0=
+X-Google-Smtp-Source: AGHT+IHa19D/EzuHCiy5xNLJZqU0x22ckGpuvDaNYuQXOsSvZlKDUAvluaUzlaCZBoMWPT95a/ZuKg==
+X-Received: by 2002:adf:ff8e:0:b0:34d:369a:5add with SMTP id j14-20020adfff8e000000b0034d369a5addmr760296wrr.71.1714636145096;
+        Thu, 02 May 2024 00:49:05 -0700 (PDT)
+Received: from arrakeen.starnux.net ([2a01:e0a:982:cbb0:52eb:f6ff:feb3:451a])
+        by smtp.gmail.com with ESMTPSA id dd22-20020a0560001e9600b0034d829982c5sm584827wrb.5.2024.05.02.00.49.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 02 May 2024 00:49:04 -0700 (PDT)
+From: Neil Armstrong <neil.armstrong@linaro.org>
+To: Sui Jingfeng <sui.jingfeng@linux.dev>
+Cc: Jessica Zhang <quic_jesszhan@quicinc.com>, 
+ Sam Ravnborg <sam@ravnborg.org>, 
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
+ Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, 
+ dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20240501052402.806006-1-sui.jingfeng@linux.dev>
+References: <20240501052402.806006-1-sui.jingfeng@linux.dev>
+Subject: Re: [PATCH v2] drm/panel: ili9341: Remove a superfluous else after
+ return
+Message-Id: <171463614435.3089805.14133558638178506676.b4-ty@linaro.org>
+Date: Thu, 02 May 2024 09:49:04 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From: Neil Armstrong <neil.armstrong@linaro.org>
-Reply-To: neil.armstrong@linaro.org
-Subject: Re: [PATCH v3 0/9] drm/mipi-dsi: Reduce bloat and add funcs for
- cleaner init seqs
-To: Douglas Anderson <dianders@chromium.org>, dri-devel@lists.freedesktop.org
-Cc: Linus Walleij <linus.walleij@linaro.org>,
- Jani Nikula <jani.nikula@linux.intel.com>,
- Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
- Cong Yang <yangcong5@huaqin.corp-partner.google.com>,
- Hsin-Yi Wang <hsinyi@google.com>, Brian Norris <briannorris@chromium.org>,
- Sam Ravnborg <sam@ravnborg.org>,
- Javier Martinez Canillas <javierm@redhat.com>, Joel Selvaraj
- <jo@jsfamily.in>, lvzhaoxiong@huaqin.corp-partner.google.com,
- Daniel Vetter <daniel@ffwll.ch>, David Airlie <airlied@gmail.com>,
- Jessica Zhang <quic_jesszhan@quicinc.com>, Jonathan Corbet <corbet@lwn.net>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
- linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240501154251.3302887-1-dianders@chromium.org>
-Content-Language: en-US, fr
-Autocrypt: addr=neil.armstrong@linaro.org; keydata=
- xsBNBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
- GTjuhvbleoQ5Cxjr+v+1ARGCH46MxFP5DwauzPekwJUD5QKZlaw/bURTLmS2id5wWi3lqVH4
- BVF2WzvGyyeV1o4RTCYDnZ9VLLylJ9bneEaIs/7cjCEbipGGFlfIML3sfqnIvMAxIMZrvcl9
- qPV2k+KQ7q+aXavU5W+yLNn7QtXUB530Zlk/d2ETgzQ5FLYYnUDAaRl+8JUTjc0CNOTpCeik
- 80TZcE6f8M76Xa6yU8VcNko94Ck7iB4vj70q76P/J7kt98hklrr85/3NU3oti3nrIHmHABEB
- AAHNKk5laWwgQXJtc3Ryb25nIDxuZWlsLmFybXN0cm9uZ0BsaW5hcm8ub3JnPsLAkQQTAQoA
- OwIbIwULCQgHAwUVCgkICwUWAgMBAAIeAQIXgBYhBInsPQWERiF0UPIoSBaat7Gkz/iuBQJk
- Q5wSAhkBAAoJEBaat7Gkz/iuyhMIANiD94qDtUTJRfEW6GwXmtKWwl/mvqQtaTtZID2dos04
- YqBbshiJbejgVJjy+HODcNUIKBB3PSLaln4ltdsV73SBcwUNdzebfKspAQunCM22Mn6FBIxQ
- GizsMLcP/0FX4en9NaKGfK6ZdKK6kN1GR9YffMJd2P08EO8mHowmSRe/ExAODhAs9W7XXExw
- UNCY4pVJyRPpEhv373vvff60bHxc1k/FF9WaPscMt7hlkbFLUs85kHtQAmr8pV5Hy9ezsSRa
- GzJmiVclkPc2BY592IGBXRDQ38urXeM4nfhhvqA50b/nAEXc6FzqgXqDkEIwR66/Gbp0t3+r
- yQzpKRyQif3OwE0ETVkGzwEIALyKDN/OGURaHBVzwjgYq+ZtifvekdrSNl8TIDH8g1xicBYp
- QTbPn6bbSZbdvfeQPNCcD4/EhXZuhQXMcoJsQQQnO4vwVULmPGgtGf8PVc7dxKOeta+qUh6+
- SRh3vIcAUFHDT3f/Zdspz+e2E0hPV2hiSvICLk11qO6cyJE13zeNFoeY3ggrKY+IzbFomIZY
- 4yG6xI99NIPEVE9lNBXBKIlewIyVlkOaYvJWSV+p5gdJXOvScNN1epm5YHmf9aE2ZjnqZGoM
- Mtsyw18YoX9BqMFInxqYQQ3j/HpVgTSvmo5ea5qQDDUaCsaTf8UeDcwYOtgI8iL4oHcsGtUX
- oUk33HEAEQEAAcLAXwQYAQIACQUCTVkGzwIbDAAKCRAWmrexpM/4rrXiB/sGbkQ6itMrAIfn
- M7IbRuiSZS1unlySUVYu3SD6YBYnNi3G5EpbwfBNuT3H8//rVvtOFK4OD8cRYkxXRQmTvqa3
- 3eDIHu/zr1HMKErm+2SD6PO9umRef8V82o2oaCLvf4WeIssFjwB0b6a12opuRP7yo3E3gTCS
- KmbUuLv1CtxKQF+fUV1cVaTPMyT25Od+RC1K+iOR0F54oUJvJeq7fUzbn/KdlhA8XPGzwGRy
- 4zcsPWvwnXgfe5tk680fEKZVwOZKIEuJC3v+/yZpQzDvGYJvbyix0lHnrCzq43WefRHI5XTT
- QbM0WUIBIcGmq38+OgUsMYu4NzLu7uZFAcmp6h8g
-Organization: Linaro
-In-Reply-To: <20240501154251.3302887-1-dianders@chromium.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.13.0
 
 Hi,
 
-On 01/05/2024 17:41, Douglas Anderson wrote:
-> The consensus of many DRM folks is that we want to move away from DSI
-> drivers defining tables of init commands. Instead, we want to move to
-> init functions that can use common DRM functions. The issue thus far
-> has been that using the macros mipi_dsi_generic_write_seq() and
-> mipi_dsi_dcs_write_seq() bloats the driver using them.
+On Wed, 01 May 2024 13:24:02 +0800, Sui Jingfeng wrote:
+> Because the else clause after the return clause is not useful, remove it
+> to get a better look.
 > 
-> While trying to solve bloat, we realized that the majority of the it
-> was easy to solve. This series solves the bloat for existing drivers
-> by moving the printout outside of the macro.
 > 
-> During discussion of my v1 patch to fix the bloat [1], we also decided
-> that we really want to change the way that drivers deal with init
-> sequences to make it clearer. In addition to being cleaner, a side
-> effect of moving drivers to the new style reduces bloat _even more_.
-> 
-> This series also contains a few minor fixes / cleanups that I found
-> along the way.
-> 
-> This series converts four drivers over to the new
-> mipi_dsi_dcs_write_seq_multi() function. Not all conversions have been
-> tested, but hopefully they are straightforward enough. I'd appreciate
-> testing.
-> 
-> NOTE: In v3 I tried to incorporate the feedback from v2. I also
-> converted the other two panels I could find that used table-based
-> initialization.
-> 
-> [1] https://lore.kernel.org/r/20240424172017.1.Id15fae80582bc74a0d4f1338987fa375738f45b9@changeid
-> 
-> Changes in v3:
-> - ("mipi_dsi_*_write functions don't need to ratelimit...") moved earlier.
-> - Add a TODO item for cleaning up the deprecated macros/functions.
-> - Fix spacing of init function.
-> - Inline kerneldoc comments for struct mipi_dsi_multi_context.
-> - Rebased upon patch to remove ratelimit of prints.
-> - Remove an unneeded error print.
-> - Squash boe-tv101wum-nl6 lowercase patch into main patch
-> - Use %zd in print instead of casting errors to int.
-> - drm/panel: ili9882t: Don't use a table for initting panels
-> - drm/panel: innolux-p079zca: Don't use a table for initting panels
-> 
-> Changes in v2:
-> - Add some comments to the macros about printing and returning.
-> - Change the way err value is handled in prep for next patch.
-> - Modify commit message now that this is part of a series.
-> - Rebased upon patches to avoid theoretical int overflow.
-> - drm/mipi-dsi: Fix theoretical int overflow in mipi_dsi_dcs_write_seq()
-> - drm/mipi-dsi: Fix theoretical int overflow in mipi_dsi_generic_write_seq()
-> - drm/mipi-dsi: Introduce mipi_dsi_*_write_seq_multi()
-> - drm/mipi-dsi: mipi_dsi_*_write functions don't need to ratelimit prints
-> - drm/panel: boe-tv101wum-nl6: Convert hex to lowercase
-> - drm/panel: boe-tv101wum-nl6: Don't use a table for initting commands
-> - drm/panel: novatek-nt36672e: Switch to mipi_dsi_dcs_write_seq_multi()
-> 
-> Douglas Anderson (9):
->    drm/mipi-dsi: Fix theoretical int overflow in mipi_dsi_dcs_write_seq()
->    drm/mipi-dsi: Fix theoretical int overflow in
->      mipi_dsi_generic_write_seq()
->    drm/mipi-dsi: mipi_dsi_*_write functions don't need to ratelimit
->      prints
->    drm/mipi-dsi: Reduce driver bloat of mipi_dsi_*_write_seq()
->    drm/mipi-dsi: Introduce mipi_dsi_*_write_seq_multi()
->    drm/panel: novatek-nt36672e: Switch to mipi_dsi_dcs_write_seq_multi()
->    drm/panel: boe-tv101wum-nl6: Don't use a table for initting panels
->    drm/panel: ili9882t: Don't use a table for initting panels
->    drm/panel: innolux-p079zca: Don't use a table for initting panels
 
-Thanks Doug!
+Thanks, Applied to https://gitlab.freedesktop.org/drm/misc/kernel.git (drm-misc-next)
 
-I think we all agree on the core changes, now I think we can wait a few weeks
-and try to get some test feedbacks on the indirectly and directly affected
-panels, drm-misc-next won't be merged into linux-next until v6.10-rc1 anyway
-so we have some time to test on our boards.
+[1/1] drm/panel: ili9341: Remove a superfluous else after return
+      https://gitlab.freedesktop.org/drm/misc/kernel/-/commit/e91a36b472862a1d199ea8d1b1ca192a347bf33e
 
+-- 
 Neil
-> 
->   Documentation/gpu/todo.rst                    |   18 +
->   drivers/gpu/drm/drm_mipi_dsi.c                |  112 +
->   .../gpu/drm/panel/panel-boe-tv101wum-nl6.c    | 2792 +++++++++--------
->   drivers/gpu/drm/panel/panel-ilitek-ili9882t.c |  794 +++--
->   drivers/gpu/drm/panel/panel-innolux-p079zca.c |  284 +-
->   .../gpu/drm/panel/panel-novatek-nt36672e.c    |  576 ++--
->   include/drm/drm_mipi_dsi.h                    |  101 +-
->   7 files changed, 2451 insertions(+), 2226 deletions(-)
-> 
 
 
