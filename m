@@ -1,157 +1,113 @@
-Return-Path: <linux-kernel+bounces-166344-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-166345-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7885B8B9956
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 12:46:09 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 45AE78B995C
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 12:46:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 94D96B209E3
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 10:46:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id ED74B1F23A51
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 10:46:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16FA8604B3;
-	Thu,  2 May 2024 10:44:26 +0000 (UTC)
-Received: from mail-io1-f70.google.com (mail-io1-f70.google.com [209.85.166.70])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89A5960EC4;
+	Thu,  2 May 2024 10:44:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="CH+SzfyG"
+Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com [209.85.167.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 009F757871
-	for <linux-kernel@vger.kernel.org>; Thu,  2 May 2024 10:44:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.70
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A2AC5CDE9
+	for <linux-kernel@vger.kernel.org>; Thu,  2 May 2024 10:44:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714646665; cv=none; b=UWSt4rO7LZ8ZLaNqBrLyrn4WM36h81OB0qoy6iwvudmiWtS9iVxAZKDF5MQtZGt5mHsFpgdXpXCqls63Yu3wjDi1Jew87DvoAYoj9j/TeKPffGb7XCerlOUI4bRRXPaL6N6D0CeVUx+0lsFkCFWqazU6Xp5ywjKcKIl6DQ97pLQ=
+	t=1714646682; cv=none; b=OetuSVQJ2n61u4zTXfJe1ggJ84ZDgrrM0h2yP7MmXVlE/5/7DaVE/FqVmUay9u5H9UuECfq7gjlFrCgzCK7t+JqsUEfhGYMZiAlIAvHW97ukV73rBLD4AUO64WlsnIWRfJv6mAnAMrMqNIkPKPMdjZKg9r16cqwvEIfTIopFAw0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714646665; c=relaxed/simple;
-	bh=NOH4Q80i0aHmhlMjpXkQRsNTtB7joD46Fj469GefL1I=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=gdKDqXEhhbWilr8iC0xYJIovGqoXK9y6I3PkGqh2rp6wi2DKXWBzhRVuLjACRHhGMktIZXGUUm5rU1AW02sY4Yu9mnF+1KCJxz8zKAowt+UiSo9h+pMow6D9bQGxKWLzV0/Ss/zZZ/taPRsMe4/LbiiyAJzQkUWpveEJ34B4P28=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.70
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f70.google.com with SMTP id ca18e2360f4ac-7dece1fa472so418002439f.0
-        for <linux-kernel@vger.kernel.org>; Thu, 02 May 2024 03:44:23 -0700 (PDT)
+	s=arc-20240116; t=1714646682; c=relaxed/simple;
+	bh=fi/OCMIqTDub5+jBDReVifYWRIdllR8+TeM638lvtn4=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=ifrTqjZSRJT8glYgIyPmVeG53zRM+v1k2Q1HDMUVLgv9BfeOJofN8H1M3XNpc0iu0kLCnUPbbjO2f6QaLm5PQafWQ0VrSDc5TgOmXcf4cx3kLGaMW1Z2xZcvIFQ/z8XuMZI2eCJrihMlRrFXsb8OsHRouV9dVHM43X3fsi47kfo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=CH+SzfyG; arc=none smtp.client-ip=209.85.167.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lf1-f42.google.com with SMTP id 2adb3069b0e04-5171a529224so9678039e87.0
+        for <linux-kernel@vger.kernel.org>; Thu, 02 May 2024 03:44:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1714646679; x=1715251479; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=fi/OCMIqTDub5+jBDReVifYWRIdllR8+TeM638lvtn4=;
+        b=CH+SzfyGkremMeQfFMfD7LfbYchfqOzp+TsXZyTuHw/fw+dGg0Xx1srmLojULAVS4H
+         3+95urv/DeZp29qsKTzmsXanW9vjXvRS9Rmlm6y6rwYy0VgpsU1uHMqKoNnPlqKc/Ld5
+         PTULzwmA9SFPdeF4DP3vy15/JDG9xg+4MzrNpKdmn5dXAaN+275Mb+zHExctCYCEEdjc
+         1i5kJq1N1yHAjS8/+oVqVUF+krySiT+NbIe+VOBzxy30ABfqljsJAAE2KrEAdJUV09PE
+         2sQ8VWdZakIer9kifYfHej/PS+uGgo1/vwj/2SH+K73dUhqjjNllqp3U9URzjxTnoYxO
+         e9Vw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714646663; x=1715251463;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+        d=1e100.net; s=20230601; t=1714646679; x=1715251479;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=6dl6UnXILKm1BseeObaKJwodV315wbNFh9cCBT8pNe4=;
-        b=UQGMigWAYLtLt6/1BHdh89K1zLurrv1z+NtjpArlspWCrQ6UueeaNrsmgXIDOMCxbM
-         fww8oChDMO+aafBssLMNVmtZJ22YhakMeC3T0hJ5iaxXK1/qSrZXtGcR7DLjvxwZm3Ia
-         6+D3dwwxBDAxrE4bkDOupX1Wd+2o5MkiMJ/ZVTVe99Q0E6w7yCF7Wog6cNcslbJmA2QA
-         woR2PR25nQMBLBao4TCgPqcKUUaTv1dCvfSUzN/CzhGxJV7dOqJEdwSAa5dAskz7QnRl
-         SYz4CCXcQfvBtMc9x9p0aP4YoRjC01gtKdlmBPGuW68ohWuw8Z4++jp6RBAZ/Goa14Kl
-         FcpQ==
-X-Forwarded-Encrypted: i=1; AJvYcCW5xxJnGicqcd2SpPltS2ruJdqBJz7yYU7JGgiJ2MUct7aiBuBY7lqDdCkPHWgnljvbF2sa8Np1BT/KMdvNqWfBspNES3RdAFiYJd3B
-X-Gm-Message-State: AOJu0YwH57BtJwKbQ2zBehEvwzAefNTPmi2JZ+IWlpdG2rm1I++OdqPY
-	BYHdKdpWxtff7Jcaw3ohfAwdjnfUrBiYJsOCWrk28aRxyYDgOZ9VizoKZA/s93p8J6VY43RldVt
-	7HNhxishkjN/No4deY2/5e9sE5cw86qras4I9piwYRaxP3G5+R4r/DYk=
-X-Google-Smtp-Source: AGHT+IHxewD7L+JVk/FKz42jZGn5HicAWf7z/TKYTsW5cpAppB2iyirUg5mS6LexhNlSvadPeYQNqoXay0geZyv011hggP10M8sL
+        bh=fi/OCMIqTDub5+jBDReVifYWRIdllR8+TeM638lvtn4=;
+        b=d+RvJ8T+TNYqSU4EQORr0oAuisxoMMRuS0uM6lCbf8FpcswBYKoXekDKxLXmNIAY8u
+         Ox06LrDnMOX1mybqRlYdZHuAd/yc3M1pOUwOTHwPtsA+dKrW7Q5wZp7Zx1ucLj5Ajbe3
+         6dLH+B6qK6aa7JpHxnNGgPQfGWEOrBSKrJj1NizvEfd352Tqo/cjRDx5KbOGJw3wsBmr
+         hiVBk+/BTKcXCX8g3dLHFZRu4Fl0A2Jg0EExzEe4o44E1ifb1EpcdZ4x5TqiAsNd9a/6
+         BRIMDK2sbNSiRZQ8HDs5+QjoJ8jNYPOeW6eMr2W5V38dAZ91KOH0Xn1YXsRWSg21l/jY
+         qyKw==
+X-Forwarded-Encrypted: i=1; AJvYcCXwfeR1jOsJCRbpbr6Ho3zkXzJQWSOWXUL4H+uvX4zJkwxcLz74JulCvZwUPIfmYNTdX+9x/6Emrx6i/6nFK3B1bWuQZgH1va6Q8oyu
+X-Gm-Message-State: AOJu0Yx+IOKMJMUde4gbounxov0i8PZINESyQe6BrSpBzvw+pKR7kTMP
+	0I3Ej0Hc3TYyfoyxyLSKibdWqNxhMSb9G6kiBc5OrU7ThuB4C7ttgfECzB/eGIM=
+X-Google-Smtp-Source: AGHT+IGaXB09un/P/kSPdKIqcS1n+4fdQZY3B+cI52Hb2XCW+mIX0BHn7LMa6S2DRtHJ1pzX35lO2w==
+X-Received: by 2002:ac2:495d:0:b0:51d:8d56:6b15 with SMTP id o29-20020ac2495d000000b0051d8d566b15mr2868399lfi.1.1714646679369;
+        Thu, 02 May 2024 03:44:39 -0700 (PDT)
+Received: from salami.lan ([80.111.64.44])
+        by smtp.gmail.com with ESMTPSA id r8-20020a5d4988000000b0034cceee9051sm949872wrq.105.2024.05.02.03.44.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 02 May 2024 03:44:38 -0700 (PDT)
+Message-ID: <2287494109b15960db7de6217ebcf4612a8daac2.camel@linaro.org>
+Subject: Re: [PATCH v2 4/4] arm64: dts: exynos: gs101: specify empty clocks
+ for remaining pinctrl
+From: =?ISO-8859-1?Q?Andr=E9?= Draszik <andre.draszik@linaro.org>
+To: Tudor Ambarus <tudor.ambarus@linaro.org>, Peter Griffin
+ <peter.griffin@linaro.org>, Rob Herring <robh@kernel.org>, Krzysztof
+ Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley
+ <conor+dt@kernel.org>,  Alim Akhtar <alim.akhtar@samsung.com>
+Cc: Will McVicker <willmcvicker@google.com>, Sam Protsenko
+	 <semen.protsenko@linaro.org>, kernel-team@android.com, 
+	linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org, 
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Date: Thu, 02 May 2024 11:44:37 +0100
+In-Reply-To: <498ff366-b247-4586-b02e-5cbfba5927ac@linaro.org>
+References: 
+	<20240430-samsung-pinctrl-busclock-dts-v2-0-14fc988139dd@linaro.org>
+	 <20240430-samsung-pinctrl-busclock-dts-v2-4-14fc988139dd@linaro.org>
+	 <498ff366-b247-4586-b02e-5cbfba5927ac@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.3-1 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:31c9:b0:487:30aa:adb6 with SMTP id
- n9-20020a05663831c900b0048730aaadb6mr158463jav.2.1714646663339; Thu, 02 May
- 2024 03:44:23 -0700 (PDT)
-Date: Thu, 02 May 2024 03:44:23 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000048aa8506177649b0@google.com>
-Subject: [syzbot] [iomap?] WARNING in iomap_iter (2)
-From: syzbot <syzbot+0a3683a0a6fecf909244@syzkaller.appspotmail.com>
-To: brauner@kernel.org, djwong@kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
 
-Hello,
+On Thu, 2024-05-02 at 07:51 +0100, Tudor Ambarus wrote:
+>=20
+> All 4 patches could have been squashed in a single patch as they do the
+> same thing, but I'm fine either way:
+>=20
+> Reviewed-by: Tudor Ambarus <tudor.ambarus@linaro.org>
 
-syzbot found the following issue on:
+I guess the patches had accumulated gradually over a period of time while
+more CMU support was being implemented.
 
-HEAD commit:    2c8159388952 Merge tag 'rust-fixes-6.9' of https://github...
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=157da5e8980000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=7edc7330e976610e
-dashboard link: https://syzkaller.appspot.com/bug?extid=0a3683a0a6fecf909244
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14c1a97f180000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1538a228980000
-
-Downloadable assets:
-disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/7bc7510fe41f/non_bootable_disk-2c815938.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/3f7792ed3c5c/vmlinux-2c815938.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/28870b4ff18a/bzImage-2c815938.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/f3da29bab42a/mount_0.gz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+0a3683a0a6fecf909244@syzkaller.appspotmail.com
-
-------------[ cut here ]------------
-WARNING: CPU: 3 PID: 5183 at fs/iomap/iter.c:51 iomap_iter_done fs/iomap/iter.c:51 [inline]
-WARNING: CPU: 3 PID: 5183 at fs/iomap/iter.c:51 iomap_iter+0xe1e/0x10b0 fs/iomap/iter.c:95
-Modules linked in:
-CPU: 3 PID: 5183 Comm: syz-executor200 Not tainted 6.9.0-rc5-syzkaller-00355-g2c8159388952 #0
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
-RIP: 0010:iomap_iter_done fs/iomap/iter.c:51 [inline]
-RIP: 0010:iomap_iter+0xe1e/0x10b0 fs/iomap/iter.c:95
-Code: 0f 0b 90 e9 e2 f8 ff ff e8 5f 42 73 ff 90 0f 0b 90 e9 b1 f7 ff ff e8 51 42 73 ff 90 0f 0b 90 e9 38 f7 ff ff e8 43 42 73 ff 90 <0f> 0b 90 e9 4b f7 ff ff e8 35 42 73 ff 90 0f 0b 90 e9 e5 f6 ff ff
-RSP: 0018:ffffc90003367a38 EFLAGS: 00010293
-RAX: 0000000000000000 RBX: ffffc90003367b60 RCX: ffffffff821a7538
-RDX: ffff888021e1c880 RSI: ffffffff821a7ded RDI: 0000000000000006
-RBP: 0000000000fffc80 R08: 0000000000000006 R09: 0000000000fffc80
-R10: 0000000000fffc80 R11: 0000000000000000 R12: 0000000000fffc80
-R13: ffffc90003367ba2 R14: ffffc90003367b98 R15: 0000000000fffc00
-FS:  00007f52540656c0(0000) GS:ffff88806b500000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000021000000 CR3: 0000000022e6c000 CR4: 0000000000350ef0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- iomap_file_buffered_write+0x202/0x9c0 fs/iomap/buffered-io.c:1014
- blkdev_buffered_write block/fops.c:658 [inline]
- blkdev_write_iter+0x4f3/0xc90 block/fops.c:708
- call_write_iter include/linux/fs.h:2110 [inline]
- new_sync_write fs/read_write.c:497 [inline]
- vfs_write+0x6db/0x1100 fs/read_write.c:590
- ksys_write+0x12f/0x260 fs/read_write.c:643
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xcf/0x260 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7f52540af509
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 81 18 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f5254065168 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
-RAX: ffffffffffffffda RBX: 00007f525413b608 RCX: 00007f52540af509
-RDX: 0000000001670e68 RSI: 0000000020000380 RDI: 0000000000000005
-RBP: 00007f525413b600 R08: 00007f52540656c0 R09: 0000000000000000
-R10: 00007f52540656c0 R11: 0000000000000246 R12: 00007f525413b60c
-R13: 0000000000000006 R14: 00007ffeeef47cd0 R15: 00007ffeeef47db8
- </TASK>
+I'm happy to squash them if that's the preference? Krzysztof?
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+Cheers,
+Andre'
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
 
