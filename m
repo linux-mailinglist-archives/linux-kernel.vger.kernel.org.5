@@ -1,121 +1,125 @@
-Return-Path: <linux-kernel+bounces-166288-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-166287-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4E5008B9896
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 12:11:57 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id EF25B8B9894
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 12:11:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E4F6C1F218F0
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 10:11:56 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 303D0B23B7C
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 10:11:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1496258AA5;
-	Thu,  2 May 2024 10:11:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 900925788E;
+	Thu,  2 May 2024 10:11:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="o1r9EM3J"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="K/AgVljf"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5951C5731F;
-	Thu,  2 May 2024 10:11:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC2B654913;
+	Thu,  2 May 2024 10:11:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714644699; cv=none; b=fZotwVxUM14nenC4npaDHbaZpcAfkflRhEMjQBK7IuTzTwkWHEtXckSWNcCRQVtnynpntb/tgnHdVVuvIA9aZjCDObRQe379tWAncBevXuiSnxykrGn5QgxT0B2ifdri3bjfJxxMpzV8SIyN6K2weqneCZ4C3rY6KqbYLT9FWKQ=
+	t=1714644698; cv=none; b=LS247pIhh0x1HDPLUpNvEtnb9rI792/sOlROVX2FkCvzAO5Xmsfnva2mqbOX6zLcwHvM6ouZ7SJFeO7aaTRnSkvIoe/1u0Wyaw6TSVt/jHJ/VxBgKdeQohPC0TpGG5hX1roucwqVdeC2SothFGwSwI9kCMY8+31mKDymbB7H7d0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714644699; c=relaxed/simple;
-	bh=dAcIeF1zYIZcs4LzSltVRWcQ+tLrYYFfHlx+Gup6U8k=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=OCU+rOKc0kNK8RVP3uVspFiYk6JzWpZMdGkOwr9lllCzE5q4nK+9aESxFtSqguFUsmLsILwFs1vPR/J2+YZMqP0OdVTHvASlydD7dOeLcMdHztbDPHvH16irIoJZFnmguMdKT5NGTj20dYT52UYtVFmU5LF+7fNgI+nXGz2D0LU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=o1r9EM3J; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A3900C113CC;
-	Thu,  2 May 2024 10:11:34 +0000 (UTC)
+	s=arc-20240116; t=1714644698; c=relaxed/simple;
+	bh=ixIk4+Ib9R0B/PKantFlBunF8yD6KgiqU/N/XKxUe/I=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=NrG5YyIx/73tAJaXju3UTx1qUmC/edR5UEupHj2SRgFbWntVndTBBkY8vbRFp5AN/51VHvCkRBBZP9bzFkeRYvgTjthtwAW+2nQWnau7gcRjO00KGj+KIIQd3PfK1NxsAMhe/+yjmuunOnIB/SfoSp3LhhCPwuFEcWIymieg3nU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=K/AgVljf; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 35CDBC116B1;
+	Thu,  2 May 2024 10:11:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1714644698;
-	bh=dAcIeF1zYIZcs4LzSltVRWcQ+tLrYYFfHlx+Gup6U8k=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=o1r9EM3JPsKjyByhcMt6caBtUltI5yojwaPHE60fGGGJlColapnsDivyytTt578jL
-	 Gbq+hu/T0O3txaCK1yZh0p9YgnsFLnEpdPq9ynYCUGSR6s0n/gn4ah5JWNkiN3CkFl
-	 dFMRrgNkL9IEdBNjLpAW6z17jxi8+Wjl0vk6MU2KySe3Y+s+OIc2MupivjTJ5pSQFG
-	 f452+RlewfVoxXQ2diP3N3c8JeI8n6j4fvWCM7kcM68MwKDANeHg3HJeWv9xkCFKmt
-	 M8cCyhtT9vn1COElNWP9oc85JRhHUK4/DI1NrQbH/tUQvUrXcbDO9iaA03xwLsLpVx
-	 4+6cpzZF3kV8w==
-Date: Thu, 2 May 2024 11:11:30 +0100
-From: Mauro Carvalho Chehab <mchehab@kernel.org>
-To: Ricardo Ribalda <ribalda@chromium.org>
-Cc: Florian Fainelli <florian.fainelli@broadcom.com>, Ray Jui
- <rjui@broadcom.com>, Scott Branden <sbranden@broadcom.com>, Broadcom
- internal kernel review list <bcm-kernel-feedback-list@broadcom.com>, Sakari
- Ailus <sakari.ailus@linux.intel.com>, Bingbu Cao <bingbu.cao@intel.com>,
- Tianshu Qiu <tian.shu.qiu@intel.com>, linux-media@vger.kernel.org,
- linux-rpi-kernel@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
- linux-kernel@vger.kernel.org, Hans Verkuil <hverkuil@xs4all.nl>
-Subject: Re: [PATCH v2 1/5] media: bcm2835-unicam: Fix build with !PM
-Message-ID: <20240502111130.769402fa@sal.lan>
-In-Reply-To: <20240501-fix-ipu6-v2-1-a5629a37a0fb@chromium.org>
-References: <20240501-fix-ipu6-v2-0-a5629a37a0fb@chromium.org>
-	<20240501-fix-ipu6-v2-1-a5629a37a0fb@chromium.org>
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-redhat-linux-gnu)
+	bh=ixIk4+Ib9R0B/PKantFlBunF8yD6KgiqU/N/XKxUe/I=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=K/AgVljfod0csCf+106igPRO76SJrX3V/8ZERm1qfozq8tvFdA8/oL5k+kfwJRSEM
+	 2JfbmSVMrqkS73goSP9ITFerrNm1GlxeVbRIZnaYeZWSoUK2ETbRaHPPgVFxuN3mYY
+	 Z4svoIkoXToJl9jejL2GL01hLMWnbjYRCtAdp8mZTbfnKmdLyjou8nVVVOfXwW5AQn
+	 AMwv6DpLdxYhqexPSjsMwklbqPGRzGI3A0FXAERYKjpmO3uT2EGS2FFQog7r/C6sHm
+	 ScKjXi891vuDMvCVafYO5OdABmRxz6mf1ZVifM3VB62ksg0YyzwrlEGfJjsqQK2Ljo
+	 neaO/kuip2Omw==
+Received: from johan by xi.lan with local (Exim 4.97.1)
+	(envelope-from <johan@kernel.org>)
+	id 1s2TPg-000000002y3-1jla;
+	Thu, 02 May 2024 12:11:41 +0200
+Date: Thu, 2 May 2024 12:11:40 +0200
+From: Johan Hovold <johan@kernel.org>
+To: Janaki Ramaiah Thota <quic_janathot@quicinc.com>
+Cc: Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+	Doug Anderson <dianders@chromium.org>,
+	Johan Hovold <johan+linaro@kernel.org>,
+	Marcel Holtmann <marcel@holtmann.org>,
+	linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
+	stable@vger.kernel.org, quic_mohamull@quicinc.com,
+	quic_hbandi@quicinc.com, quic_anubhavg@quicinc.com
+Subject: Re: [PATCH] Bluetooth: qca: generalise device address check
+Message-ID: <ZjNm3OnJ1fdHctaZ@hovoldconsulting.com>
+References: <CAD=FV=V-pG9+5fLonNvydmjS=ziUFUHAyF8T7YTkEHiO405aSA@mail.gmail.com>
+ <ZizKmtcUIYAMpvOQ@hovoldconsulting.com>
+ <dbba45d2-f955-4d3a-aeab-26b0900d5823@quicinc.com>
+ <Zi-ohCWv58d2h5VM@hovoldconsulting.com>
+ <CABBYNZJyqrNKebwPPPqjOAdrkpBJ0fqHyD2iVtypeQKCDcL+AQ@mail.gmail.com>
+ <CABBYNZJyRR9FA7TYN4+aWMtG9FPUBWMvCtMNUfvaEzxVcYOt-g@mail.gmail.com>
+ <ZjCYu2pc8376rjXk@hovoldconsulting.com>
+ <9eebd77b-c070-4260-a979-9b97f14eb5b1@quicinc.com>
+ <ZjDtDRCHT3z-3nHh@hovoldconsulting.com>
+ <a09ab4e3-699b-4eb7-bc64-44c9de6db78d@quicinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a09ab4e3-699b-4eb7-bc64-44c9de6db78d@quicinc.com>
 
-Em Wed, 01 May 2024 13:08:09 +0000
-Ricardo Ribalda <ribalda@chromium.org> escreveu:
+On Thu, May 02, 2024 at 12:35:19PM +0530, Janaki Ramaiah Thota wrote:
+> On 4/30/2024 6:37 PM, Johan Hovold wrote:
 
-> The driver can only match the device vide the DT table, so the table
-> should always be used, of_match_ptr does not make sense here.
->=20
-> Fixes:
-> drivers/media/platform/broadcom/bcm2835-unicam.c:2724:34: warning: =E2=80=
-=98unicam_of_match=E2=80=99 defined but not used [-Wunused-const-variable=
-=3D]
+> > But here we disagree. A non-unique address is not a valid one as it will
+> > cause collisions if you have more than one such controller.
+> > 
+> > I understand that this may be convenient/good enough for developers in
+> > some cases, but this can hurt end users that do not realise why things
+> > break.
+> > 
+> > And a developer can always configure an address manually or patch the
+> > driver as needed for internal use.
+> > 
+> > Are there any other reasons that makes you want to keep the option to
+> > configure the device address through NVM files? I'm assuming you're not
+> > relying on patching NVM files to provision device-specific addresses
+> > after installation on target?
 
-Be careful here: Fixes: <patch> is a tag used by stable people to
-identify if a patch needs to be backported. Using a Fixes: may cause
-such scripts to break.
+> We prefer unique address to be flashed on OTP (persistent) memory of
+> BT-Chip, which is supported by almost all QC BT-chips.
 
-(it caused a problem on my apply patch script, as it does reorder
-fixes tag).
+Yes, that is certainly the best option for everyone.
 
-No need to resend it, as I can fix it when applying, but next time
-please use something like:
+> If someone is not able to do that/ does not prefer that, they still
+> have an option to flash unique address in firmware binary (NVM)file.
+> This does not require setting BD address from user space.
+> 
+> Also until a developer flashes OTP/ keep unique BD-Address in NVM,
+> he should be able to run most of the use cases from Device, that's
+> why we want to make it as configured.
 
-	It fixes this warning:
-	drivers/media/platform/broadcom/bcm2835-unicam.c:2724:34: warning: =E2=80=
-=98unicam_of_match=E2=80=99 defined but not used [-Wunused-const-variable=
-=3D]
+Ok, but a developer can still do this since they can patch the driver to
+disable the check temporarily or, alternatively, just update the
+devicetree with a valid unique address.
 
-(or some other similar word that won't be using a defined meta tag
-with a different meaning).
+> In our opinion this provides best Out of box experience.
 
-Regards,
-Mauro
+You can also look into improving support in user space (e.g. bluez) for
+providing a valid unique address in a simple text-based configuration
+file.
 
->=20
-> Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
-> ---
->  drivers/media/platform/broadcom/bcm2835-unicam.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->=20
-> diff --git a/drivers/media/platform/broadcom/bcm2835-unicam.c b/drivers/m=
-edia/platform/broadcom/bcm2835-unicam.c
-> index bd2bbb53070e..c590e26fe2cf 100644
-> --- a/drivers/media/platform/broadcom/bcm2835-unicam.c
-> +++ b/drivers/media/platform/broadcom/bcm2835-unicam.c
-> @@ -2733,7 +2733,7 @@ static struct platform_driver unicam_driver =3D {
->  	.driver =3D {
->  		.name	=3D UNICAM_MODULE_NAME,
->  		.pm	=3D pm_ptr(&unicam_pm_ops),
-> -		.of_match_table =3D of_match_ptr(unicam_of_match),
-> +		.of_match_table =3D unicam_of_match,
->  	},
->  };
-> =20
->=20
+That would be useful for all Linux users and not require having access
+to Qualcomm specific tools to update the NVM configuration file (which
+could also be in a read-only file system, e.g. on Android).
+
+Johan
 
