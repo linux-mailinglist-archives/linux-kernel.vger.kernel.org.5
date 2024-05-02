@@ -1,209 +1,257 @@
-Return-Path: <linux-kernel+bounces-166429-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-166430-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 97AD58B9A8D
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 14:14:30 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3C9958B9A96
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 14:16:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4ECE7284883
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 12:14:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E852C284A1E
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 12:16:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7849C7BAFF;
-	Thu,  2 May 2024 12:14:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=theobroma-systems.com header.i=@theobroma-systems.com header.b="GF/Z+nGW"
-Received: from EUR04-VI1-obe.outbound.protection.outlook.com (mail-vi1eur04on2101.outbound.protection.outlook.com [40.107.8.101])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7455D77F13;
+	Thu,  2 May 2024 12:15:57 +0000 (UTC)
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A1106341B;
-	Thu,  2 May 2024 12:14:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.8.101
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714652059; cv=fail; b=ne3Hn63XKtRYai82BjR0vyxmNHtME9kbQR+utys/RYJP7QbtpFSsihDf86DUfpyq2xAzSA2QhoK3QSNJvffoQyIlk3ajtlLu+o/bh3g4QIRih5xZTAr9e0TFm0y8/nGwtw7Tot9A/Lgvw0m3L4LiDopyzuJPo6/CfqHMOnBaDmY=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714652059; c=relaxed/simple;
-	bh=LqpXefInW1026pVVLKSbuMNhNjdQcjzGC5FCS13VyyI=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=psU2p8Frui9DXYsHy9U18RtnFr5JxbKdcYgLXroczjwWFyjQvyIdog9Jf+4X51UfDVoSX10yuqJaEzMS0sXzd39vTAo6EFewhrDgzL4ec2bVP0b19nMr2v0BoGp9JzZDPF/2gLF7z7ezYeouo7lsoG4O7VdVjcXwFMOhlDcG8iQ=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=theobroma-systems.com; spf=pass smtp.mailfrom=cherry.de; dkim=pass (2048-bit key) header.d=theobroma-systems.com header.i=@theobroma-systems.com header.b=GF/Z+nGW; arc=fail smtp.client-ip=40.107.8.101
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=theobroma-systems.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cherry.de
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=aDaQqeQOXar9L0OC7PjnwC0qSblEEGOssuHZFCTGlR9PlntEPgMEHGoFSCzFB+FRodiRAsq5zkU374RsgRo+JN0KRFoQ0vour1Xhc6US1jvkXFrhOuiJK9I8dMQ8hnL/ftepffYvYkt3YwGfMOBR7+IkdFFM8v+kTzE5MsUtdZSYi9NQ7RpU5jfOEEEarBe5Vi5uzfe2c6mXC3/Fotue4/7bKCmfBSDcMaNo8COP/85iq/iGuNHTb8I599kupAdRnBLAoqxm1kakWA3SrjcviL0cnclpTYz/NCkzMp3Oyggh4gW8wrTqTe1/+4BsbKKMBNefhLHicONydTsaCPShGg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=qY607RuOjkthsJeGb+4yrZg/ts/is+MS55ycucs5TYM=;
- b=PjpIWaX50HXWtWKI/1JxYkzmwzZk6OVnCx006Ovr/HLxz+il+cT1A+ErCylS5R9RbESw6wVn5zqI8ECiaJRJnqiZ0fRKpwdcOBrgPEmgdWh9QUMZkJsYil+zIXF4VjfiL5gQWLOSY3ze/ETr+V9dwbP3uHpFpkWRY/u3FbzlLtasy4XhenB1qQnamuoKLpeoHEFCL3NsodSl9xvguyWA6cecXzx7FTJV5AvCTpw2yVTuOJ2WjnSVdmicmfGgS/0lpp5DLktLS9yhtsCRMxHoRO7+u8RHmuJTKi+cdQPqHrHZXrY6raZoexDSObJdRONFA0M+6PGp+a+WupkQgadXzQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=cherry.de; dmarc=pass action=none
- header.from=theobroma-systems.com; dkim=pass header.d=theobroma-systems.com;
- arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=theobroma-systems.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=qY607RuOjkthsJeGb+4yrZg/ts/is+MS55ycucs5TYM=;
- b=GF/Z+nGWFRI0mrS26Dla7jydcCvj0PrPoLtdd1CCTZVj2QKXDmShz6usFBFJ3sbYYA/VSRIbnWE6lC/xFkfsBVWBP2aT66ELiZ+InMp+p7xNXgqBMqh7UjhqHms/bU7q4DdendfBFE4TVaeCuVqCO+UlgWHpGBNewpDXBFz7nItEtZxgbY8gE/zhDqZ+2OUR/UHoi4I3uoRWv9VmAFy83YrXgHK/OGSbg9xRIaM8WhmNm+0A85RND3WZ5stfZvAEUEUQRUnvlh7ChRF4CLF/J23LOtfjqSPzhmA3l7XwnWJkcEsh8JyvfTxBtwOg0ihiVMfjaYXWvKz1rkJKYnd46A==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=theobroma-systems.com;
-Received: from VE1PR04MB6382.eurprd04.prod.outlook.com (2603:10a6:803:122::31)
- by AM9PR04MB8305.eurprd04.prod.outlook.com (2603:10a6:20b:3ee::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7519.36; Thu, 2 May
- 2024 12:14:11 +0000
-Received: from VE1PR04MB6382.eurprd04.prod.outlook.com
- ([fe80::59d9:878d:65f0:3936]) by VE1PR04MB6382.eurprd04.prod.outlook.com
- ([fe80::59d9:878d:65f0:3936%4]) with mapi id 15.20.7544.029; Thu, 2 May 2024
- 12:14:11 +0000
-Message-ID: <875763a8-fd58-4759-818c-b36f181ddc44@theobroma-systems.com>
-Date: Thu, 2 May 2024 14:14:02 +0200
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/7] dt-bindings: i2c: mux: mule: add dt-bindings for mule
- i2c multiplexer
-To: Rob Herring <robh@kernel.org>
-Cc: Wolfram Sang <wsa+renesas@sang-engineering.com>,
- Peter Rosin <peda@axentia.se>, Andi Shyti <andi.shyti@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>,
- Quentin Schulz <quentin.schulz@theobroma-systems.com>,
- Heiko Stuebner <heiko@sntech.de>, linux-i2c@vger.kernel.org,
- linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org
-References: <20240426-dev-mule-i2c-mux-v1-0-045a482f6ffb@theobroma-systems.com>
- <20240426-dev-mule-i2c-mux-v1-2-045a482f6ffb@theobroma-systems.com>
- <CAL_JsqJH-wD1BbSK=DmBtftpWT7YDbabmvgy1+PPii-8ziHTiQ@mail.gmail.com>
-Content-Language: en-US
-From: Farouk Bouabid <farouk.bouabid@theobroma-systems.com>
-In-Reply-To: <CAL_JsqJH-wD1BbSK=DmBtftpWT7YDbabmvgy1+PPii-8ziHTiQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: WA2P291CA0031.POLP291.PROD.OUTLOOK.COM
- (2603:10a6:1d0:1f::12) To VE1PR04MB6382.eurprd04.prod.outlook.com
- (2603:10a6:803:122::31)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DABF8D26A
+	for <linux-kernel@vger.kernel.org>; Thu,  2 May 2024 12:15:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1714652156; cv=none; b=CruAyq0Q43ZlJcJY9RlBnTTT+s35/xM4nF80ynBPQspK31pfqmUF4HRoGBYl5yIHcrmgF8QKgPHLiM/QETCkQHALj1h1WQ/JG/krRzL64dkK669Mi/S/Qc1tUsmHHj5o/AqrF90KM15Q+4g34l+Rdd+x7BKmrmPdLMOYutZDe3g=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1714652156; c=relaxed/simple;
+	bh=cCqtpdvGnTVJ9cgtHreh97DKvcxJ895O323AwA3hz60=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=LFqCLB38BBOWTcp2h6BJ5/fHhQVszvOv/1pOto4xpykZEVnbh87FXeeadFAuF8p5YrIVw5rpI2R2WCTYk52fxG8jss3S3ZyoME+bgSQrw1YJqQyRWCJ1xon1vB17vBX1k1UDxjI4Osdje9IPgkNQw2W5rUGyPO/i5VEVA+2Y0v8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 61748C113CC;
+	Thu,  2 May 2024 12:15:55 +0000 (UTC)
+Date: Thu, 2 May 2024 08:16:41 -0400
+From: Steven Rostedt <rostedt@goodmis.org>
+To: LKML <linux-kernel@vger.kernel.org>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, Alex Constantino
+ <dreaming.about.electric.sheep@gmail.com>, Maxime Ripard
+ <mripard@kernel.org>, Timo Lindfors <timo.lindfors@iki.fi>, Dave Airlie
+ <airlied@redhat.com>, Gerd Hoffmann <kraxel@redhat.com>, Maarten Lankhorst
+ <maarten.lankhorst@linux.intel.com>, Thomas Zimmermann
+ <tzimmermann@suse.de>, Daniel Vetter <daniel@ffwll.ch>
+Subject: [BUG][v6.9-rc6] Deadlock with: Revert "drm/qxl: simplify
+ qxl_fence_wait"
+Message-ID: <20240502081641.457aa25f@gandalf.local.home>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: VE1PR04MB6382:EE_|AM9PR04MB8305:EE_
-X-MS-Office365-Filtering-Correlation-Id: 42b2ce7e-b729-4004-2e17-08dc6aa15fce
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230031|376005|7416005|1800799015|366007;
-X-Microsoft-Antispam-Message-Info:
-	=?utf-8?B?VW0wVTFBQmw2WjhLK2Q2UWErdm82OU5KUHF2VGJMYzJwT1ZmUEVGRjhGY2Jt?=
- =?utf-8?B?dm9xSU5nNnR4cVYzWnV4WElydXRkbGRjaW5DY1EvQXdIVDlUSUlUVkZMa2xn?=
- =?utf-8?B?REk4S2tzY2NWUEkzenNKNmt6dXFjWlp0Qi81cEp5MlRHbUlSbTVEdXI1TlFH?=
- =?utf-8?B?Qk1NWERUZlZtNXA2Mmc5VnBNRVZGOVdyc3pTdWVyUDBray9UYWlFUG1JUXVo?=
- =?utf-8?B?NXQya09lWmplZTh1Nm1rQ2FaWmpQMGh6eDgwKzFFLzhGbmZWOXRnOXA5VTNU?=
- =?utf-8?B?TWljZ1JsVjNvVExheGNRSEpvdldtNnpTTEtXbS9uN3ZJOUtQTjllQ0htUHY0?=
- =?utf-8?B?bEl0REY2c1ZkSnFjRE1EaC9NVzFxQkM0WVhKbUZtbTdxeUY3MWFBZms5c1B0?=
- =?utf-8?B?RHp4VnBiUU1IVFhOb1h5alFQSWVweWdoYWRlZUV1c1ZXdGVvVXJ0ZkRmeG1i?=
- =?utf-8?B?Q2huQVc3RUdxUnczRzBwRUlrUXN6M0crWThFeWk4NG5QTENUV3dSWWpWR0RF?=
- =?utf-8?B?R0VFc0U4ZG5CY0dFZW5TL3BxbHpuL2M3cXRwMlBwT2kyeGg1dEhaUHhZYjlU?=
- =?utf-8?B?d3JQQzBERkVQdGErbHM2T0FVYjh1UndwZmc2Qzd1aS9oTnJodS90QmttcEtG?=
- =?utf-8?B?bmFRYUhMSERHTFlNQVJjTDV3SnBGZUs0S1FPYlJTb200cmorVEdROFdSWUtv?=
- =?utf-8?B?REdzVEYvbytGdXlJMVhvdlhzbkt1ZnJLT3YzVnBUdTNTTktvZUFxMHZvMldp?=
- =?utf-8?B?dlRPTG1PckQ1LzIwMHJVOWNHRFo5NWUwci8zTTJLZjdNclViMVBoRXF1TkIv?=
- =?utf-8?B?VDEvVGkrTDVZaVY2U0R0blRwd3c5eDVxNFc5UW16TG9VeElGUitOdXpudDhL?=
- =?utf-8?B?eUgyMXo0bFlTZDlLcnpHUFU1b2tRaEZvQnFwWlJpYjdhTnYvYXB5dVR0WnJJ?=
- =?utf-8?B?OXYwTXZrdVBubDdGTDY5MzFKZ0ZqWkZzbEdOOFg3RmY4NGIvRUdtOUcwVnB5?=
- =?utf-8?B?Q0dDU2lvUHF1K0d2QnpBUWdOSldXVDAwV3VMSVU2N2xEQzliQ1E0VWpYVjNj?=
- =?utf-8?B?Wjl2ZldVSUsxdGRuTmlKZHZxdW5xZE43Zi9jUVJZNTI3aVVjZnRDNVV0b3hP?=
- =?utf-8?B?QkZNUkN6aEhkWWdtNnFIc1pRZ0JJTjlCR3hxUG04MUdtUk8xazhDbzBzVkVs?=
- =?utf-8?B?aHliQmhLQ000UlRBaVZhd2NwSGRaRysrNHF4a3M0Q1VuWmFUa1J3NVgzanNx?=
- =?utf-8?B?TjRaV3pjc1FXUm01VkNRNE12cmVUMzhyeEJMSDZ6Y2hLZmNjS3JvYnhOdXFQ?=
- =?utf-8?B?RmVzeTZlNGs4b0xQK05VQkkrdFpNMFgwMVR5TXFxQUo2aktzZ1hDSWZQZlR2?=
- =?utf-8?B?REc5aVNNUWt3NXhDTE0vQzJxejRPR24yYjhUc3JCQU1vd1hKN1NnUU1yQW1T?=
- =?utf-8?B?c2N2QzRVVm0wWklmdkxHanhkVU0xMlRzMHAxV0VhS3Nka042Sm9HckhkQ2Zn?=
- =?utf-8?B?MndvTVVkU21yWS9oeXg0alJleUVMT0xrdVB2T1FVWnFuZTk2VVl4ZDR6NDF3?=
- =?utf-8?B?RlFremhCMFZZOGxVcCtkQnZUZlNGbzlJdUpGZ21qYWFtOHRoTGFPK1RyN3RG?=
- =?utf-8?B?elpjR0xIbWJMRmJ0MjNPWkFjNXlZMkNXYTlHZFphY25BcGcxQWtBbGNGTlY3?=
- =?utf-8?B?aVAxa1lTa29SS2l0LzNjRjlGaTRCeXR3Vkk2YVQvSStKSitWY0xiMjFRPT0=?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VE1PR04MB6382.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(7416005)(1800799015)(366007);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?NUEyNjUvR1dRRkZMS3ZOOWlJZUlzTUl1cHI2Z1gwMWREUWtIUVBnTU5xMGlI?=
- =?utf-8?B?c3I4d2pCcXpIekU1WldqTDRVNlRhYmxUQzJxckx2NHpZUWZ5RFlRQW8vMGw5?=
- =?utf-8?B?eDBhNWdrSjdNUjZaejRQUVYwL0VvU3RLNkhPSWNTWVI5cVg5TzM1bkFQeVZh?=
- =?utf-8?B?QjR5TVpNOEJhSktlbWFURGliRVlFNFBZNzdBQWN5ZXNBMURtVmxPNnJTdDBl?=
- =?utf-8?B?bVZPbVp3Qkt4K3VwcFJDWjh3TFhSOTB0Z2pTNXZZVm95eC9NSHQyOEtiamNJ?=
- =?utf-8?B?a0lGanl3Q3JlNWN2ZklTTCtPcFlkMnhzV3NLS0VNdlpmODVOU1RIK2RGVEM1?=
- =?utf-8?B?TDZ6NjYxN2FkcHBONjJyRkhrU1ZGRVRwNnBoUkpFQTRDMUtScEVlcEtUSG9T?=
- =?utf-8?B?R3NkWnJnZVVsVC90NkFEWU1pZ3IzWUZYWUlXeFJCTWpjaGRBSEJuM25YaVJ6?=
- =?utf-8?B?ZDdNNy9ZNnMwbGpIdGxhLzhiYS92V2VaR0E4bjJJYjBMenlNR3pOd1IxQjdM?=
- =?utf-8?B?L2JSU01KcFdXOGEwZ3h2WEI1dHFPN2lyOFNiL0NIQUdGWmhTTGx2SE93ZWdy?=
- =?utf-8?B?Z01aMzVoL1hYL2Z1ZXh1RU1RTjlPZEJSR3plbGV0L1BrdXUwY0ExSXZUZWtB?=
- =?utf-8?B?M2wzTmdlNWJidUhZcFhtRE1sLzl4MFU3TXhvSi9jWTkyNXA5WnduQWlqWkVs?=
- =?utf-8?B?VjduRkZiS0FZdVc4eXg1ZElLeUY5RWEzSTZFTGxoUTNablVPNSswSUNsOCtD?=
- =?utf-8?B?QkVnOE0xTDBHdllMMEpOTEZIOVpWK0xGVGs4eWp6eFBtR0hTZkRsdGlka3FO?=
- =?utf-8?B?MG1rZ3JRSTE1QXV5REdIc3hQYU1MTnZvT2E2T0JIRXBSZUtTRUV2c24wanNn?=
- =?utf-8?B?b0NSdWtqNGVMS1JvdFdsSS9Cb3FGVjRIN1VySGs2WW9LYXVUejQxSVM0d1l1?=
- =?utf-8?B?SDd4WVRzNzkwWitJYzBDUDRubzdUWjdFU3BvM3NiV2pYdG81ZklJZ09XK2Zw?=
- =?utf-8?B?Z3AzZWFuRkNQcVB4Z0lPYTFiSTIwYXNEY1pxTmhwMWh4V0F2OFN4TVdRU2U4?=
- =?utf-8?B?MmFnS3R5THRJeEZ1MmJ2Yk1rdFhsZTJLQ25yL3hDdkVVcSthUUpqdXpaVlQ0?=
- =?utf-8?B?bUcyZ09ZbnpqcEFVMkg3TitjNVBRQTFjY2dHOW1pQXRWTkozWnJVRTJ6R29O?=
- =?utf-8?B?V1NCNEJBZHV4LytRMzVDMjNYQm15WjRIbVlPVjNmQVAwTllpMnRiaXBDQ2dR?=
- =?utf-8?B?MXIyaW9wVEdaYXhWdUFmOXJoUUJqY3g2VWNJbjFjQ1FJOXBGQkg3cUpvOFpt?=
- =?utf-8?B?NmNscHM1MmVTMHFaWnFkM3NIQTVvQlU1b1lXeGZoRk5taTVxV2ZweDZ6bU94?=
- =?utf-8?B?djhtUDg0N1Z1OFE0bFQ4ei9QSG9scEwxdFNKanBvMjBNYTZuQ2JrTHFFdXM3?=
- =?utf-8?B?eHp0ZnRhMHFLYnFsTVl4Qk9UcTVDdFV5dTV0RVN6Vm1QV2s0YWE4MlpDY3A2?=
- =?utf-8?B?TVk4WWsxamcwUGdrbDJxaEh1UmMwQXZCZ0I1TTJzeENpV0RvQWpEMDB0aDk3?=
- =?utf-8?B?OXprSEpuTkNOaEMrYUpYRDdLVW95QnNSNTUxVW1DS2drSVBYRDJwWVA1ZURP?=
- =?utf-8?B?c2FMNk5lZUdZRHlXSExmWlBFb1hWaVZJcGx5K2V0eWhxbzVRdUlyNXZTNUZa?=
- =?utf-8?B?RjdwcEk5UmRQa2VrWFRhTlhyS0RJZnpkdWpQeWFyK3ZJdHowTDFERlFxN20r?=
- =?utf-8?B?OFRXQUxZcmhpL3JVaWdBaGNwajhaUjMvakZyYWJBRUErTThPb2NudmYraDQ3?=
- =?utf-8?B?bGJhdlJvSnBuTEZXOVFRYWE4b0ZQbExacEg0UHY3cXhIclNaNnlUMmJ6VDMw?=
- =?utf-8?B?VXQwWGhiTHM5eDRLeFdwbUlCdjlDV2RiSHBMZVBGU0tzRmM0eXZTc3pxWGp5?=
- =?utf-8?B?eXdHdEQ2TmhTdXVPTWx1TFFXR1RFTkdlaG45WXE4Mnc3cGx2TTRJUEdPZDFE?=
- =?utf-8?B?UGR4aEgwQTNUWDNYeUJ5RWdicEtreGUyYTVESTJBL0lGbERFZjRRV25Uc1Br?=
- =?utf-8?B?STQ3cCtHdmhsd2J4TWZVVFordnZNY0RxVVV1YnVnZlhIcWl6c1JrQWdKUzdR?=
- =?utf-8?B?WlhUVklnZEkxcmx6aFA0U2k1emo3VzA4M3ZieTVKRTRXZzY5MVRSbEVxZlBM?=
- =?utf-8?B?MVE9PQ==?=
-X-OriginatorOrg: theobroma-systems.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 42b2ce7e-b729-4004-2e17-08dc6aa15fce
-X-MS-Exchange-CrossTenant-AuthSource: VE1PR04MB6382.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 May 2024 12:14:11.1516
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 5e0e1b52-21b5-4e7b-83bb-514ec460677e
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: YGLzTKIAOTDAPxftheJu7QdoRT8WLG2rzcCwB9fsmKsCpss5ICc2jd/eIYvBCvLbiCItlUsOBkIETj1bJHDGj32keuJ0Q6SKz1X98TnpSzQ=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM9PR04MB8305
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-Hi Rob,
+I went to run my tests on my VMs and the tests hung on boot up.
+Unfortunately, the most I ever got out was:
 
-On 29.04.24 15:56, Rob Herring wrote:
-> On Fri, Apr 26, 2024 at 11:50 AM Farouk Bouabid
-> <farouk.bouabid@theobroma-systems.com> wrote:
->> This patch adds support for the Mule I2C multiplexer.
->>
->> Mule is an mcu that emulates a set of i2c devices which are reacheable
-> MCU
->
-> reachable
->
->> through an i2c-mux.
->>
->> The emulated devices share a single i2c address with the mux itself where
->> the requested register is what determines which logic is executed (mux or
->> device).
-> Just to be sure, we need a complete binding for the MCU. Is this the
-> only thing the MCU does?
+[   93.607888] Testing event system initcall: OK
+[   93.667730] Running tests on all trace events:
+[   93.669757] Testing all events: OK
+[   95.631064] ------------[ cut here ]------------
+Timed out after 60 seconds
 
+I ran a bisect and it came up with:
 
-Currently that is all the MCU does. We plan to add more features to the 
-MCU firmware: Buzzer over i2c, watchdog over i2c ...
+ # first bad commit: [07ed11afb68d94eadd4ffc082b97c2331307c5ea] Revert "drm/qxl: simplify qxl_fence_wait"
 
+I checked out 07ed11afb68d94eadd4ffc082b97c2331307c5ea~1 and it booted
+fine. Added back that commit, it failed to boot. I did this twice, and got
+the same results.
 
-Best regards
+But the last time I ran it, it did trigger this:
 
-Farouk
+ ------------[ cut here ]------------
+ 
+ ======================================================
+ WARNING: possible circular locking dependency detected
+ 6.9.0-rc1-test-00021-g07ed11afb68d #5 Not tainted
+ ------------------------------------------------------
+ kworker/u24:3/119 is trying to acquire lock:
+ ffffffff95aa4600 (console_owner){....}-{0:0}, at: console_flush_all+0x1f5/0x530
+ 
+ but task is already holding lock:
+ ffff93c4bbd37218 (&pool->lock){-.-.}-{2:2}, at: __flush_work+0xc1/0x440
+ 
+ which lock already depends on the new lock.
+ 
+ 
+ the existing dependency chain (in reverse order) is:
+ 
+ -> #1 (&pool->lock){-.-.}-{2:2}:
+        _raw_spin_lock+0x33/0x40
+        __queue_work+0xd6/0x610
+        queue_work_on+0x8a/0x90
+        soft_cursor+0x1a0/0x230
+        bit_cursor+0x386/0x5f0
+        hide_cursor+0x27/0xb0
+        vt_console_print+0x474/0x490
+        console_flush_all+0x22e/0x530
+        console_unlock+0x56/0x160
+        vprintk_emit+0x160/0x390
+        dev_printk_emit+0xa5/0xd0
+        _dev_info+0x79/0xa0
+        __drm_fb_helper_initial_config_and_unlock+0x3a9/0x5f0
+        drm_fbdev_generic_client_hotplug+0x69/0xc0
+        drm_client_register+0x7b/0xc0
+        qxl_pci_probe+0x107/0x1a0
+        local_pci_probe+0x45/0xa0
+        pci_device_probe+0xc7/0x240
+        really_probe+0xd6/0x390
+        __driver_probe_device+0x78/0x150
+        driver_probe_device+0x1f/0x90
+        __driver_attach+0xd6/0x1d0
+        bus_for_each_dev+0x8f/0xe0
+        bus_add_driver+0x119/0x220
+        driver_register+0x59/0x100
+        do_one_initcall+0x76/0x3c0
+        kernel_init_freeable+0x3a5/0x5b0
+        kernel_init+0x1a/0x1c0
+        ret_from_fork+0x34/0x50
+        ret_from_fork_asm+0x1a/0x30
+ 
+ -> #0 (console_owner){....}-{0:0}:
+        __lock_acquire+0x13e7/0x2180
+        lock_acquire+0xd9/0x300
+        console_flush_all+0x212/0x530
+        console_unlock+0x56/0x160
+        vprintk_emit+0x160/0x390
+        _printk+0x64/0x80
+        __warn_printk+0x8e/0x180
+        check_flush_dependency+0xfd/0x120
+        __flush_work+0xfa/0x440
+        qxl_queue_garbage_collect+0x83/0x90
+        qxl_fence_wait+0xa4/0x1a0
+        dma_fence_wait_timeout+0x98/0x1e0
+        dma_resv_wait_timeout+0x7f/0xe0
+        ttm_bo_delayed_delete+0x2b/0x90
+        process_one_work+0x228/0x740
+        worker_thread+0x1dc/0x3c0
+        kthread+0xf2/0x120
+        ret_from_fork+0x34/0x50
+        ret_from_fork_asm+0x1a/0x30
+ 
+ other info that might help us debug this:
+ 
+  Possible unsafe locking scenario:
+ 
+        CPU0                    CPU1
+        ----                    ----
+   lock(&pool->lock);
+                                lock(console_owner);
+                                lock(&pool->lock);
+   lock(console_owner);
+ 
+  *** DEADLOCK ***
+ 
+ 6 locks held by kworker/u24:3/119:
+  #0: ffff93c440245948 ((wq_completion)ttm){+.+.}-{0:0}, at: process_one_work+0x43a/0x740
+  #1: ffffa01380d83e60 ((work_completion)(&bo->delayed_delete)){+.+.}-{0:0}, at: process_one_work+0x1e2/0x740
+  #2: ffffffff95b17880 (rcu_read_lock){....}-{1:2}, at: __flush_work+0x86/0x440
+  #3: ffff93c4bbd37218 (&pool->lock){-.-.}-{2:2}, at: __flush_work+0xc1/0x440
+  #4: ffffffff95b149c0 (console_lock){+.+.}-{0:0}, at: _printk+0x64/0x80
+  #5: ffffffff95b14a10 (console_srcu){....}-{0:0}, at: console_flush_all+0x7b/0x530
+ 
+ stack backtrace:
+ CPU: 2 PID: 119 Comm: kworker/u24:3 Not tainted 6.9.0-rc1-test-00021-g07ed11afb68d #5
+ Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+ Workqueue: ttm ttm_bo_delayed_delete
+ Call Trace:
+  <TASK>
+  dump_stack_lvl+0x77/0xb0
+  check_noncircular+0x148/0x160
+  __lock_acquire+0x13e7/0x2180
+  lock_acquire+0xd9/0x300
+  ? console_flush_all+0x1f5/0x530
+  ? lock_release+0x147/0x2c0
+  ? console_flush_all+0x1f5/0x530
+  console_flush_all+0x212/0x530
+  ? console_flush_all+0x1f5/0x530
+  console_unlock+0x56/0x160
+  vprintk_emit+0x160/0x390
+  _printk+0x64/0x80
+  ? __pfx_ttm_bo_delayed_delete+0x10/0x10
+  ? __pfx_qxl_gc_work+0x10/0x10
+  __warn_printk+0x8e/0x180
+  ? __pfx_ttm_bo_delayed_delete+0x10/0x10
+  ? __pfx_qxl_gc_work+0x10/0x10
+  ? __pfx_qxl_gc_work+0x10/0x10
+  check_flush_dependency+0xfd/0x120
+  __flush_work+0xfa/0x440
+  qxl_queue_garbage_collect+0x83/0x90
+  qxl_fence_wait+0xa4/0x1a0
+  dma_fence_wait_timeout+0x98/0x1e0
+  dma_resv_wait_timeout+0x7f/0xe0
+  ttm_bo_delayed_delete+0x2b/0x90
+  process_one_work+0x228/0x740
+  worker_thread+0x1dc/0x3c0
+  ? __pfx_worker_thread+0x10/0x10
+  kthread+0xf2/0x120
+  ? __pfx_kthread+0x10/0x10
+  ret_from_fork+0x34/0x50
+  ? __pfx_kthread+0x10/0x10
+  ret_from_fork_asm+0x1a/0x30
+  </TASK>
+ workqueue: WQ_MEM_RECLAIM ttm:ttm_bo_delayed_delete is flushing !WQ_MEM_RECLAIM events:qxl_gc_work
+ WARNING: CPU: 2 PID: 119 at kernel/workqueue.c:3728 check_flush_dependency+0xfd/0x120
+ Modules linked in:
+ CPU: 2 PID: 119 Comm: kworker/u24:3 Not tainted 6.9.0-rc1-test-00021-g07ed11afb68d #5
+ Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+ Workqueue: ttm ttm_bo_delayed_delete
+ RIP: 0010:check_flush_dependency+0xfd/0x120
+ Code: 8b 45 18 48 8d b2 70 01 00 00 49 89 e8 48 8d 8b 70 01 00 00 48 c7 c7 60 46 7b 95 c6 05 48 67 d2 01 01 48 89 c2 e8 63 40 fd ff <0f> 0b e9 1e ff ff ff 80 3d 33 67 d2 01 00 75 93 e9 4a ff ff ff 66
+ RSP: 0000:ffffa01380d83c28 EFLAGS: 00010086
+ RAX: 0000000000000000 RBX: ffff93c44004ee00 RCX: 0000000000000000
+ RDX: 0000000080000003 RSI: 00000000ffffefff RDI: 0000000000000001
+ RBP: ffffffff9497b100 R08: 0000000000000000 R09: 0000000000000003
+ R10: ffffa01380d83ab8 R11: ffffffff95b14828 R12: ffff93c443980000
+ R13: ffff93c440fbe300 R14: 0000000000000001 R15: ffff93c44004ee00
+ FS:  0000000000000000(0000) GS:ffff93c4bbd00000(0000) knlGS:0000000000000000
+ CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+ CR2: 0000000000000000 CR3: 000000007c864001 CR4: 0000000000170ef0
+ Call Trace:
+  <TASK>
+  ? __warn+0x8c/0x180
+  ? check_flush_dependency+0xfd/0x120
+  ? report_bug+0x191/0x1c0
+  ? prb_read_valid+0x1b/0x30
+  ? handle_bug+0x3c/0x80
+  ? exc_invalid_op+0x17/0x70
+  ? asm_exc_invalid_op+0x1a/0x20
+  ? __pfx_qxl_gc_work+0x10/0x10
+  ? check_flush_dependency+0xfd/0x120
+  ? check_flush_dependency+0xfd/0x120
+  __flush_work+0xfa/0x440
+  qxl_queue_garbage_collect+0x83/0x90
+  qxl_fence_wait+0xa4/0x1a0
+  dma_fence_wait_timeout+0x98/0x1e0
+  dma_resv_wait_timeout+0x7f/0xe0
+  ttm_bo_delayed_delete+0x2b/0x90
+  process_one_work+0x228/0x740
+  worker_thread+0x1dc/0x3c0
+  ? __pfx_worker_thread+0x10/0x10
+  kthread+0xf2/0x120
+  ? __pfx_kthread+0x10/0x10
+  ret_from_fork+0x34/0x50
+  ? __pfx_kthread+0x10/0x10
+  ret_from_fork_asm+0x1a/0x30
+  </TASK>
+ irq event stamp: 58
+ hardirqs last  enabled at (57): [<ffffffff93fede30>] queue_work_on+0x60/0x90
+ hardirqs last disabled at (58): [<ffffffff94ea7f66>] _raw_spin_lock_irq+0x56/0x60
+ softirqs last  enabled at (0): [<ffffffff93fbae27>] copy_process+0xc07/0x2c60
+ softirqs last disabled at (0): [<0000000000000000>] 0x0
+ ---[ end trace 0000000000000000 ]---
+
+So there's an issue with dma_fence and a workqueue.
+
+-- Steve
 
 
