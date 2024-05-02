@@ -1,141 +1,150 @@
-Return-Path: <linux-kernel+bounces-166830-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-166831-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 365848BA026
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 20:16:07 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 015898BA02A
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 20:17:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4AEE51C223F9
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 18:16:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 922371F23C9D
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 18:17:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95B7A173333;
-	Thu,  2 May 2024 18:16:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D5AD16FF3F;
+	Thu,  2 May 2024 18:17:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="SiQqVago"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
+	dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b="EUyD36SC"
+Received: from mail.zeus03.de (www.zeus03.de [194.117.254.33])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C884171E71;
-	Thu,  2 May 2024 18:15:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF07615B96E
+	for <linux-kernel@vger.kernel.org>; Thu,  2 May 2024 18:17:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=194.117.254.33
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714673759; cv=none; b=B4L3jGarmdYisr+GOnV1bH/KwL17dv2M61IkoQXgoo8NbgV7ncMVMsX3CN6yldvox7VeweLuGrwnuHJJqoX/xVKwaTcHb3LI8TJ6P6oAcwI4y1oL/PzSkUL8pqrQf3OSCUS2Am0rKSZJAWds5aaV0UwjGaLQCxS+twOrREJpi1g=
+	t=1714673861; cv=none; b=hqiRasxjJ7tJRL5HI4dCdaE8VcpC/1rsKY1EMLazvXSjUapJ+SFB2M2Lad/sOxcOrlEFy/c7mMQTesgHg4Gpe4Thb3iGvL9LkLA71YYEMKzalCck+56+jWa0SNdIsG1PAOTdXaIFqnmccjWzNvUUe85CIDZLV3j+/oXMzaTsAvQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714673759; c=relaxed/simple;
-	bh=X7DrFE5tkPNVeoKphzhmBGA84w2IH/LJ5mcMYnCjHuY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=ImO4+xktGNgCTrxwexso/bPq1xz4LUJZuG1dyBilZds7E1wSqvW/trk8cCQrqCiQnlyTRS4LPxpPA4W+vz7EbCYJ+q3Qui4kM3koDT2svAlyxKA4avP1dnFyGBVPNieKhDJGFCfu8TUG+IStPjKrRr+aCDm3rZ0E6DIxLVf5VEs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=SiQqVago; arc=none smtp.client-ip=192.198.163.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1714673759; x=1746209759;
-  h=message-id:date:mime-version:subject:to:references:from:
-   in-reply-to:content-transfer-encoding;
-  bh=X7DrFE5tkPNVeoKphzhmBGA84w2IH/LJ5mcMYnCjHuY=;
-  b=SiQqVagoPHZWbgZkoPeZCvD89OkWQYxgzCgHwMpog0qAtvTwfo5N2Nwm
-   Rd2kFQaR6W9EIF3i1rl/NwLRT7G32/ShOO0Ku5UqirRpuNseRmhdr738Y
-   MoyoHTehBmpPZrElVYlCru5nOWmka/ZYtjOWF+ZZKYa5hjzVAlJ3B4544
-   MxGrG+qc9+SrDDZryxlNEGfUHyhzms1ib5LptfEQ8FytPzNl4AZ9tHsSc
-   n7zCjk8NMCGusBzqAmUq/ZZD1NQrSAzfWEZLgcBEchENXrLwt06gVewrX
-   4Rc9dntXy5Apyrl4eVus0/N5TS7FX2h5mclFWrU/5W6IzoysLwWP/Dq9/
-   w==;
-X-CSE-ConnectionGUID: 1DDYHusATrSUZjVmMIDF1w==
-X-CSE-MsgGUID: 9kcPSfNCQeGbxzd8Gu3cBg==
-X-IronPort-AV: E=McAfee;i="6600,9927,11062"; a="21078434"
-X-IronPort-AV: E=Sophos;i="6.07,247,1708416000"; 
-   d="scan'208";a="21078434"
-Received: from orviesa007.jf.intel.com ([10.64.159.147])
-  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 May 2024 11:15:58 -0700
-X-CSE-ConnectionGUID: 6/TBRK5kSW6Z257tKIDi9g==
-X-CSE-MsgGUID: pMdGUqKIRe6ELbYWmn/Xew==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,247,1708416000"; 
-   d="scan'208";a="27704908"
-Received: from linux.intel.com ([10.54.29.200])
-  by orviesa007.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 May 2024 11:15:57 -0700
-Received: from [10.213.161.211] (kliang2-mobl1.ccr.corp.intel.com [10.213.161.211])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by linux.intel.com (Postfix) with ESMTPS id 87B2D20B5739;
-	Thu,  2 May 2024 11:15:55 -0700 (PDT)
-Message-ID: <78a63434-c7b8-4ada-b59f-b6dd547b5b63@linux.intel.com>
-Date: Thu, 2 May 2024 14:15:54 -0400
+	s=arc-20240116; t=1714673861; c=relaxed/simple;
+	bh=KhdkdyVLO1m1Lp33vPRYarXehHaipcBx459m/LvdYGM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=YUDKuD3m3R0k3WkIdnk1gLsD92GbR8LdBvpngToiyKXrDp/PUkKqhxcQGBWl/Ft9X69DSt4K8EB2Uzj0Or+A+DjuT2YhFxC52iy6y9s1HrarMVLHtvzGQ8Nx5biN+7ULzmFni4xG45vUGjpgc4fyIRehykSlpMfKr1143JEA+Aw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com; spf=pass smtp.mailfrom=sang-engineering.com; dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b=EUyD36SC; arc=none smtp.client-ip=194.117.254.33
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sang-engineering.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	sang-engineering.com; h=date:from:to:cc:subject:message-id
+	:references:mime-version:content-type:in-reply-to; s=k1; bh=ra8p
+	SWsauUgo3TWihYTMQJ5qhlBnHKFupkcSfPmlHL4=; b=EUyD36SC3T6b7DHFxdIV
+	zbkesz6FiHj7eeUDDY+1h4GwM52KL4aaJGReqseJfcBjmxQCw3ga8NAYSeS2heIK
+	/6gpZ3XTLDTIJUfJq3bPFrZD8qcltWPNM3fNaZeGLL9c27EKhdA+pVQgKBEyqQxH
+	4T9PhEHJrfdYE8ga8SYW4Br3jSAQQzPJ/ZgBb5KbBSp/X4deTO6bqHuRwO++pnlG
+	ajN3Ctinf5EZmBuu/G2h30SFZjLH2A0ss0gWF6jrOxjJx9jwTagXAWQWNIZYpNq8
+	j26xX0U8LYwujzJtpb/nqDf5INtFZzDehkQlhs0x5nfD7gCJ+VW2vFrv+Bp8/Mru
+	7Q==
+Received: (qmail 3332279 invoked from network); 2 May 2024 20:17:37 +0200
+Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 2 May 2024 20:17:37 +0200
+X-UD-Smtp-Session: l3s3148p1@BLgvnnwXNKlehhrT
+Date: Thu, 2 May 2024 20:17:37 +0200
+From: Wolfram Sang <wsa+renesas@sang-engineering.com>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: linux-renesas-soc@vger.kernel.org, Dirk Behme <dirk.behme@de.bosch.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Jiri Slaby <jirislaby@kernel.org>,
+	Geert Uytterhoeven <geert+renesas@glider.be>,
+	Aleksandar Mitev <amitev@visteon.com>, linux-kernel@vger.kernel.org,
+	linux-serial@vger.kernel.org
+Subject: Re: [RFC PATCH 2/2] serial: sh-sci: always cancel hrtimer when DMA
+ RX is invalidated
+Message-ID: <20240502181737.b5vvghnwzievvlgj@ninjato>
+Mail-Followup-To: Wolfram Sang <wsa+renesas@sang-engineering.com>,
+	Geert Uytterhoeven <geert@linux-m68k.org>,
+	linux-renesas-soc@vger.kernel.org,
+	Dirk Behme <dirk.behme@de.bosch.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Jiri Slaby <jirislaby@kernel.org>,
+	Geert Uytterhoeven <geert+renesas@glider.be>,
+	Aleksandar Mitev <amitev@visteon.com>, linux-kernel@vger.kernel.org,
+	linux-serial@vger.kernel.org
+References: <20240416123545.7098-4-wsa+renesas@sang-engineering.com>
+ <20240416123545.7098-6-wsa+renesas@sang-engineering.com>
+ <CAMuHMdUEvft0B9WdfZ936ccomZW4Qea8MVNSj-Q-Dyn8EKSUdA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 0/6] Assume sysfs event names are always the same case
-To: Ian Rogers <irogers@google.com>, Thomas Richter <tmricht@linux.ibm.com>,
- Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
- Arnaldo Carvalho de Melo <acme@kernel.org>,
- Namhyung Kim <namhyung@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
- Alexander Shishkin <alexander.shishkin@linux.intel.com>,
- Jiri Olsa <jolsa@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
- Jonathan Corbet <corbet@lwn.net>, Randy Dunlap <rdunlap@infradead.org>,
- Jing Zhang <renyu.zj@linux.alibaba.com>, James Clark <james.clark@arm.com>,
- Ravi Bangoria <ravi.bangoria@amd.com>, linux-kernel@vger.kernel.org,
- linux-perf-users@vger.kernel.org
-References: <20240502040112.2111157-1-irogers@google.com>
-Content-Language: en-US
-From: "Liang, Kan" <kan.liang@linux.intel.com>
-In-Reply-To: <20240502040112.2111157-1-irogers@google.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="h6vetrfs6rdknizx"
+Content-Disposition: inline
+In-Reply-To: <CAMuHMdUEvft0B9WdfZ936ccomZW4Qea8MVNSj-Q-Dyn8EKSUdA@mail.gmail.com>
 
 
+--h6vetrfs6rdknizx
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On 2024-05-02 12:01 a.m., Ian Rogers wrote:
-> By assuming sysfs events are either upper or lower case, the case
-> insensitive event parsing can probe for the existence of files rather
-> then loading all events in a directory. When the event is a json event
-> like inst_retired.any on Intel, this reduces the number of openat
-> calls on a Tigerlake laptop from 325 down to 255.
-> 
-> v1 sent as an RFC:
->     https://lore.kernel.org/lkml/20240413040812.4042051-1-irogers@google.com/
-> 
-> v2: addresses review feedback from Kan Liang, by updating
->     documentation and adding tests.
-> 
-> v3: incorporate feedback from Thomas Richter <tmricht@linux.ibm.com>
->     that s390 event names are all upper case. Do a lower case probe
->     then an upper case probe, make documentation and tests also agree.
-> 
-> v4: add checks to write (kernel test robot) and fix a typo.
-> 
-> Ian Rogers (6):
->   perf test pmu-events: Make it clearer that pmu-events tests json
->     events
->   perf Document: Sysfs event names must be lower or upper case
->   perf test pmu: Refactor format test and exposed test APIs
->   perf test pmu: Add an eagerly loaded event test
->   perf test pmu: Test all sysfs PMU event names are the same case
->   perf pmu: Assume sysfs events are always the same case
-> 
->  .../sysfs-bus-event_source-devices-events     |   6 +
->  tools/perf/tests/pmu-events.c                 |   2 +-
->  tools/perf/tests/pmu.c                        | 468 ++++++++++++------
->  tools/perf/util/parse-events.c                |   2 +-
->  tools/perf/util/parse-events.h                |   2 +-
->  tools/perf/util/pmu.c                         | 111 +++--
->  tools/perf/util/pmu.h                         |   4 +-
->  tools/perf/util/pmus.c                        |  16 +-
->  tools/perf/util/pmus.h                        |   2 +
->  9 files changed, 416 insertions(+), 197 deletions(-)
-> 
+Hi Geert,
 
-Except the warning for the uninitialized 'ret', the rest looks good to me.
+good news, I was able to trigger the DMA rx code path. I dunno what I
+did wrong last time. I started from scratch again and it worked easily
+by dd-ing random data to the second non-console debug port.
 
-Reviewed-by: Kan Liang <kan.liang@linux.intel.com>
+> I do think you need to cancel the timer: even when not restarting
+> the timer in sci_dma_rx_complete() due to a DMA failure, the previous
+> timer may still be running, and will cause a NULL pointer dereference
+> on s->chan_rx on timer expiry.
 
-Thanks,
-Kan
+Taking locking into account, I think this patch is bogus. If we run into
+this NULL-pointer, we have a locking problem and cancelling the timer in
+sci_dma_rx_chan_invalidate() is not going to fix the underlying locking
+problem. sci_dma_rx_chan_invalidate() does not only clear the pointer
+but also the cookie_rx-array. sci_dma_rx_timer_fn() bails out via
+sci_dma_rx_find_active() if that array is cleared. It does so before
+accessing the chan_rx-pointer. So, it looks to me that should work once
+all calls to sci_dma_rx_chan_invalidate() are protected. And there is
+one path where this is not true, namely via sci_dma_rx_release() during
+shutdown. This is why I asked Dirk if the system was about to shutdown.
+Currently, I don't see any other problematic code path.
+
+> > -#ifdef CONFIG_SERIAL_SH_SCI_DMA
+> > -       if (s->chan_rx_saved) {
+> > -               dev_dbg(port->dev, "%s(%d) deleting rx_timer\n", __func__,
+> > -                       port->line);
+> > -               hrtimer_cancel(&s->rx_timer);
+> > -       }
+> > -#endif
+
+Also, this chunk needs to stay. I suggested in patch 1 to cancel the
+timer on successful dma_rx_complete, so the timer only runs when a DMA
+is in progress. Then, of course, we need to cancel it in shutdown.
+
+I hope I am not seeing "no wood for the trees" by now. I am not
+convinced that I actually found Dirk's race condition yet...
+
+All the best,
+
+   Wolfram
+
+
+--h6vetrfs6rdknizx
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmYz2L0ACgkQFA3kzBSg
+KbbZQRAAsQIP51T8nRbMyG0IcszboQuFisobiJLZh/Bshh57hC/j3aIacLk8kpBm
+V3rR1WRUgfMdFlRxxoo3W1kYFZC0O8JXQvM5+5J3VAfvD3+7ukEbmYvBe/6brMf+
+Ji4p9kow5Q6mCaB7aQLmwkFf8NDtbThYX2/jSKug4MPE9ta4KK49XecNfnJHNeD4
+imOH3XWX65wb4qNomiDagbmM8FHeVWq7hNh0ERrlkHWXZQNSO0gRHEUj19FNgLmX
+ctDJNJNZQEe1y6UapsukFQyycJXvOn2WIRbDdqk1ysew8Vol/wF4s9XRbCnT4HDc
+Ga851NbnAP7ke19XRs3PT65PAFVjobknnNFi1Bm0zlCGnS3gcMX+/wJ1yQbU3zot
+mqeLYxzZU/VKzA48dni/pHT2SGTUb9OZOZCTq2LjwnPkEhwFKmZgWzXqixewFqpI
+MhYh41dViiUvPVgVDYgB63Zu3TyAlE0j9L6zGTK9cxrfLiwidObp4N4SchNtf6G2
+UsibHNx4Px3QiCOw17EbWzqTsr35xkOiB1elw+Uzq5Yk6REFgpjx1yy1SrF3XkiW
+1ZbgFr9hHPqWVol8Wb/NGj6vflSqGyDYBbxchfZD6s2Y2LfFopxnsybB3m+SCVV1
+5GfdQrHI6MVQOt+HfpWJaJ1lVgj/ztN7zYkqrCBy+9AgF7u8oUc=
+=PYh5
+-----END PGP SIGNATURE-----
+
+--h6vetrfs6rdknizx--
 
