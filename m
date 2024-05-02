@@ -1,184 +1,127 @@
-Return-Path: <linux-kernel+bounces-166532-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-166533-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 045388B9BE3
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 15:50:26 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8D2788B9BE8
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 15:53:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AF7291F22F29
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 13:50:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 294DC1F22D9C
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 13:53:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58E4913C67D;
-	Thu,  2 May 2024 13:50:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 444FE13C689;
+	Thu,  2 May 2024 13:53:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AcMM+n2H"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="p5kJu7n1"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9AEF1219F6;
-	Thu,  2 May 2024 13:50:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7669A75817;
+	Thu,  2 May 2024 13:53:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714657818; cv=none; b=DddzT/4aXbD9AGTCjFg0B3H3SypnHAZ6st13X8DSVSfHYsVx9J97rfo/lVztxq7fBDb63lD2nsi5NXbKFlSym32+KXi4OBn0RimoHvqbZ+HyOXju/QDwV+Ha5fai52Bkvy3beYoexSsNoB+aAkuVLPtSdmGENP8FIzC1Gv/Mpoc=
+	t=1714657999; cv=none; b=QBs8QT/C+SPP5GKGG0SMG+IY7ZQkttd/M516dVsAvzzAEOg8VeGH/RayAmzg2syEwKlwOF35x0LTUKwkqE4t/BtFfHJvzIKSAPHtwcyDZLsY93jUK+gD1PFQJQUODt/yo464rszM6Ie3DIWO+Z6ao5Tb6BMHYes+cgUYzmdLpjo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714657818; c=relaxed/simple;
-	bh=CnVtUj//jjfGpdXeVZA+hatKTZhYD0wcuPbPNXJPn/Q=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Yp+mqCn4WOXWKcgy9CH3eplBMYb0GK5Ha+x+dAKhQ4jH+AOyh7y6vTtzY6IpGBSLC0pme2wg2ylItl9PV8KCxQ8cMNyo2qZOP8ZSkDrB7edndCIBAxBl+HoMYWk7vbl4Uc3sVA8+w9eewp1fh71DyJXG8avJ/BLxzHJnt0XsH8A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AcMM+n2H; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 791EFC113CC;
-	Thu,  2 May 2024 13:50:17 +0000 (UTC)
+	s=arc-20240116; t=1714657999; c=relaxed/simple;
+	bh=9gO+mtHEd28XVOGV5Nm2eXPpwkTS7kxon3iiI1XLz3k=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Q61hXNM9Insyed96LyRneR3Dqk0fPLQHot0bqNjCrOQPT7oVhVf0nmbnmawYbfv057qD5jZBgv186OLR1eKo9xJLVWa1AU55FdWuo0ZcIB6ZCqOfRrupVoKhkX6P0kMxUPFvt8MJit8NroAnVc/BS118w09JOayPKAq2qbbHTJQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=p5kJu7n1; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 67469C113CC;
+	Thu,  2 May 2024 13:53:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714657818;
-	bh=CnVtUj//jjfGpdXeVZA+hatKTZhYD0wcuPbPNXJPn/Q=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=AcMM+n2HtzRjjLn1JuoPxqNa4/bX+u/BXmbrECRET3J81DWgR/+mJlBRZAx5lp1jJ
-	 ta32APyATg1FnCqBV+Cd8S8AoCKeN9EtaMiYVMsrKCkYV5kd0a42XYeDJCbkqGpG2v
-	 dU9nTBUN1vGlONpfIxVId3PH6g0HJbMkI8PS913/Ol2c0MywNtYTz8/RAyxN6w+ypQ
-	 i0KtGXhdJqxjx0FM3NGQf+oGrHYedqfZr0xxgeL5Cgxf3iiuXLTrGoDUElZNlGl6pB
-	 y7j4oF3mJfpAou0PPmpkwAuFnMWZ4mCGzSQ9G07XxdLZYFEvdae0bZQbObXU0GyrND
-	 CKvWYtmdLhHKQ==
-Date: Thu, 2 May 2024 10:50:13 -0300
-From: Arnaldo Carvalho de Melo <acme@kernel.org>
-To: Namhyung Kim <namhyung@kernel.org>
-Cc: Ian Rogers <irogers@google.com>, Kan Liang <kan.liang@linux.intel.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Ingo Molnar <mingo@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-	linux-perf-users@vger.kernel.org
-Subject: Re: [PATCH 2/6] perf annotate-data: Collect global variables in
- advance
-Message-ID: <ZjOaFS7_vEojFnUZ@x1>
-References: <20240502060011.1838090-1-namhyung@kernel.org>
- <20240502060011.1838090-3-namhyung@kernel.org>
+	s=k20201202; t=1714657999;
+	bh=9gO+mtHEd28XVOGV5Nm2eXPpwkTS7kxon3iiI1XLz3k=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=p5kJu7n1zt0AoaeiV0hp9IPTcUPyhl7rJPwnHb5G9aRffxNAq3JWR8fGWPIcs2bWn
+	 gOyae26RApWJwl17T8Jnrnm/JXcyMWWVFYBRoVJXADUct9H6/bi6+gKx9CbCOmlY/p
+	 SjGev/nyQMymS3NxFEO/wlYkk0vn2kXasTiMCMQpqVZdgIXYVWSNu5KnJRIBsLLBEp
+	 3uarLYWvxRKVIkBNMujonjP0TBkByRgyFVPJ4c9INFn0tUt/5xhWqvGP4Xc7B0aKPr
+	 5XyRSK1JzbeJ1vl3QoM9eYT1pZL3tEA++qP/HrEQ546Fm8ibIxUW7yZS1eviNSu9KV
+	 ScVCvd/Q0BUdg==
+Message-ID: <1379814b-fdd5-48d7-a206-86595e71cc38@kernel.org>
+Date: Thu, 2 May 2024 15:53:14 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240502060011.1838090-3-namhyung@kernel.org>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 2/2] dt-bindings: spi: spi-cadence: Add optional reset
+ control
+To: Ji Sheng Teoh <jisheng.teoh@starfivetech.com>,
+ Mark Brown <broonie@kernel.org>, Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley
+ <conor+dt@kernel.org>, Philipp Zabel <p.zabel@pengutronix.de>,
+ Michal Simek <michal.simek@amd.com>, Lars-Peter Clausen <lars@metafoo.de>
+Cc: Ley Foon Tan <leyfoon.tan@starfivetech.com>, linux-spi@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Eng Lee Teh <englee.teh@starfivetech.com>
+References: <20240502104800.3030486-1-jisheng.teoh@starfivetech.com>
+ <20240502104800.3030486-3-jisheng.teoh@starfivetech.com>
+From: Krzysztof Kozlowski <krzk@kernel.org>
+Content-Language: en-US
+Autocrypt: addr=krzk@kernel.org; keydata=
+ xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
+ cFgcqTTuNHjAvxtUG8pQgGTHAObYs6xeYJtjUH0ZX6ndJ33FJYf5V3yXqqjcZ30FgHzJCFUu
+ JMp7PSyMPzpUXfU12yfcRYVEMQrmplNZssmYhiTeVicuOOypWugZKVLGNm0IweVCaZ/DJDIH
+ gNbpvVwjcKYrx85m9cBVEBUGaQP6AT7qlVCkrf50v8bofSIyVa2xmubbAwwFA1oxoOusjPIE
+ J3iadrwpFvsZjF5uHAKS+7wHLoW9hVzOnLbX6ajk5Hf8Pb1m+VH/E8bPBNNYKkfTtypTDUCj
+ NYcd27tjnXfG+SDs/EXNUAIRefCyvaRG7oRYF3Ec+2RgQDRnmmjCjoQNbFrJvJkFHlPeHaeS
+ BosGY+XWKydnmsfY7SSnjAzLUGAFhLd/XDVpb1Een2XucPpKvt9ORF+48gy12FA5GduRLhQU
+ vK4tU7ojoem/G23PcowM1CwPurC8sAVsQb9KmwTGh7rVz3ks3w/zfGBy3+WmLg++C2Wct6nM
+ Pd8/6CBVjEWqD06/RjI2AnjIq5fSEH/BIfXXfC68nMp9BZoy3So4ZsbOlBmtAPvMYX6U8VwD
+ TNeBxJu5Ex0Izf1NV9CzC3nNaFUYOY8KfN01X5SExAoVTr09ewARAQABzSVLcnp5c3p0b2Yg
+ S296bG93c2tpIDxrcnprQGtlcm5lbC5vcmc+wsGVBBMBCgA/AhsDBgsJCAcDAgYVCAIJCgsE
+ FgIDAQIeAQIXgBYhBJvQfg4MUfjVlne3VBuTQ307QWKbBQJgPO8PBQkUX63hAAoJEBuTQ307
+ QWKbBn8P+QFxwl7pDsAKR1InemMAmuykCHl+XgC0LDqrsWhAH5TYeTVXGSyDsuZjHvj+FRP+
+ gZaEIYSw2Yf0e91U9HXo3RYhEwSmxUQ4Fjhc9qAwGKVPQf6YuQ5yy6pzI8brcKmHHOGrB3tP
+ /MODPt81M1zpograAC2WTDzkICfHKj8LpXp45PylD99J9q0Y+gb04CG5/wXs+1hJy/dz0tYy
+ iua4nCuSRbxnSHKBS5vvjosWWjWQXsRKd+zzXp6kfRHHpzJkhRwF6ArXi4XnQ+REnoTfM5Fk
+ VmVmSQ3yFKKePEzoIriT1b2sXO0g5QXOAvFqB65LZjXG9jGJoVG6ZJrUV1MVK8vamKoVbUEe
+ 0NlLl/tX96HLowHHoKhxEsbFzGzKiFLh7hyboTpy2whdonkDxpnv/H8wE9M3VW/fPgnL2nPe
+ xaBLqyHxy9hA9JrZvxg3IQ61x7rtBWBUQPmEaK0azW+l3ysiNpBhISkZrsW3ZUdknWu87nh6
+ eTB7mR7xBcVxnomxWwJI4B0wuMwCPdgbV6YDUKCuSgRMUEiVry10xd9KLypR9Vfyn1AhROrq
+ AubRPVeJBf9zR5UW1trJNfwVt3XmbHX50HCcHdEdCKiT9O+FiEcahIaWh9lihvO0ci0TtVGZ
+ MCEtaCE80Q3Ma9RdHYB3uVF930jwquplFLNF+IBCn5JRzsFNBFVDXDQBEADNkrQYSREUL4D3
+ Gws46JEoZ9HEQOKtkrwjrzlw/tCmqVzERRPvz2Xg8n7+HRCrgqnodIYoUh5WsU84N03KlLue
+ MNsWLJBvBaubYN4JuJIdRr4dS4oyF1/fQAQPHh8Thpiz0SAZFx6iWKB7Qrz3OrGCjTPcW6ei
+ OMheesVS5hxietSmlin+SilmIAPZHx7n242u6kdHOh+/SyLImKn/dh9RzatVpUKbv34eP1wA
+ GldWsRxbf3WP9pFNObSzI/Bo3kA89Xx2rO2roC+Gq4LeHvo7ptzcLcrqaHUAcZ3CgFG88CnA
+ 6z6lBZn0WyewEcPOPdcUB2Q7D/NiUY+HDiV99rAYPJztjeTrBSTnHeSBPb+qn5ZZGQwIdUW9
+ YegxWKvXXHTwB5eMzo/RB6vffwqcnHDoe0q7VgzRRZJwpi6aMIXLfeWZ5Wrwaw2zldFuO4Dt
+ 91pFzBSOIpeMtfgb/Pfe/a1WJ/GgaIRIBE+NUqckM+3zJHGmVPqJP/h2Iwv6nw8U+7Yyl6gU
+ BLHFTg2hYnLFJI4Xjg+AX1hHFVKmvl3VBHIsBv0oDcsQWXqY+NaFahT0lRPjYtrTa1v3tem/
+ JoFzZ4B0p27K+qQCF2R96hVvuEyjzBmdq2esyE6zIqftdo4MOJho8uctOiWbwNNq2U9pPWmu
+ 4vXVFBYIGmpyNPYzRm0QPwARAQABwsF8BBgBCgAmAhsMFiEEm9B+DgxR+NWWd7dUG5NDfTtB
+ YpsFAmA872oFCRRflLYACgkQG5NDfTtBYpvScw/9GrqBrVLuJoJ52qBBKUBDo4E+5fU1bjt0
+ Gv0nh/hNJuecuRY6aemU6HOPNc2t8QHMSvwbSF+Vp9ZkOvrM36yUOufctoqON+wXrliEY0J4
+ ksR89ZILRRAold9Mh0YDqEJc1HmuxYLJ7lnbLYH1oui8bLbMBM8S2Uo9RKqV2GROLi44enVt
+ vdrDvo+CxKj2K+d4cleCNiz5qbTxPUW/cgkwG0lJc4I4sso7l4XMDKn95c7JtNsuzqKvhEVS
+ oic5by3fbUnuI0cemeizF4QdtX2uQxrP7RwHFBd+YUia7zCcz0//rv6FZmAxWZGy5arNl6Vm
+ lQqNo7/Poh8WWfRS+xegBxc6hBXahpyUKphAKYkah+m+I0QToCfnGKnPqyYIMDEHCS/RfqA5
+ t8F+O56+oyLBAeWX7XcmyM6TGeVfb+OZVMJnZzK0s2VYAuI0Rl87FBFYgULdgqKV7R7WHzwD
+ uZwJCLykjad45hsWcOGk3OcaAGQS6NDlfhM6O9aYNwGL6tGt/6BkRikNOs7VDEa4/HlbaSJo
+ 7FgndGw1kWmkeL6oQh7wBvYll2buKod4qYntmNKEicoHGU+x91Gcan8mCoqhJkbqrL7+nXG2
+ 5Q/GS5M9RFWS+nYyJh+c3OcfKqVcZQNANItt7+ULzdNJuhvTRRdC3g9hmCEuNSr+CLMdnRBY fv0=
+In-Reply-To: <20240502104800.3030486-3-jisheng.teoh@starfivetech.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Wed, May 01, 2024 at 11:00:07PM -0700, Namhyung Kim wrote:
-> Currently it looks up global variables from the current CU using address
-> and name.  But it sometimes fails to find a variable as the variable can
-> come from a different CU - but it's still strange it failed to find a
-> declaration for some reason.
+On 02/05/2024 12:48, Ji Sheng Teoh wrote:
+> Document the optional reset control to SPI.
 > 
-> Anyway, it can collect all global variables from all CU once and then
-> lookup them later on.  This slightly improves the success rate of my
-> test data set.
-
-It would be interesting you could provide examples from your test data
-set, i.e. after this patch these extra global variables were considered
-in the test results, with some tool output, etc.
-
-This would help intersested parties to reproduce your results,
-validate the end result, etc.
-
-- Arnaldo
- 
-> Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+> Signed-off-by: Eng Lee Teh <englee.teh@starfivetech.com>
+> Signed-off-by: Ley Foon Tan <leyfoon.tan@starfivetech.com>
+> Signed-off-by: Ji Sheng Teoh <jisheng.teoh@starfivetech.com>
 > ---
->  tools/perf/util/annotate-data.c | 57 +++++++++++++++++++++++++++++++--
->  1 file changed, 55 insertions(+), 2 deletions(-)
-> 
-> diff --git a/tools/perf/util/annotate-data.c b/tools/perf/util/annotate-data.c
-> index 12d5faff3b7a..4dd0911904f2 100644
-> --- a/tools/perf/util/annotate-data.c
-> +++ b/tools/perf/util/annotate-data.c
-> @@ -28,6 +28,8 @@
->  /* register number of the stack pointer */
->  #define X86_REG_SP 7
->  
-> +static void delete_var_types(struct die_var_type *var_types);
-> +
->  enum type_state_kind {
->  	TSR_KIND_INVALID = 0,
->  	TSR_KIND_TYPE,
-> @@ -557,8 +559,8 @@ static bool global_var__add(struct data_loc_info *dloc, u64 addr,
->  	if (gvar == NULL)
->  		return false;
->  
-> -	gvar->name = strdup(name);
-> -	if (gvar->name == NULL) {
-> +	gvar->name = name ? strdup(name) : NULL;
-> +	if (name && gvar->name == NULL) {
->  		free(gvar);
->  		return false;
->  	}
-> @@ -612,6 +614,53 @@ static bool get_global_var_info(struct data_loc_info *dloc, u64 addr,
->  	return true;
->  }
->  
-> +static void global_var__collect(struct data_loc_info *dloc)
-> +{
-> +	Dwarf *dwarf = dloc->di->dbg;
-> +	Dwarf_Off off, next_off;
-> +	Dwarf_Die cu_die, type_die;
-> +	size_t header_size;
-> +
-> +	/* Iterate all CU and collect global variables that have no location in a register. */
-> +	off = 0;
-> +	while (dwarf_nextcu(dwarf, off, &next_off, &header_size,
-> +			    NULL, NULL, NULL) == 0) {
-> +		struct die_var_type *var_types = NULL;
-> +		struct die_var_type *pos;
-> +
-> +		if (dwarf_offdie(dwarf, off + header_size, &cu_die) == NULL) {
-> +			off = next_off;
-> +			continue;
-> +		}
-> +
-> +		die_collect_global_vars(&cu_die, &var_types);
-> +
-> +		for (pos = var_types; pos; pos = pos->next) {
-> +			const char *var_name = NULL;
-> +			int var_offset = 0;
-> +
-> +			if (pos->reg != -1)
-> +				continue;
-> +
-> +			if (!dwarf_offdie(dwarf, pos->die_off, &type_die))
-> +				continue;
-> +
-> +			if (!get_global_var_info(dloc, pos->addr, &var_name,
-> +						 &var_offset))
-> +				continue;
-> +
-> +			if (var_offset != 0)
-> +				continue;
-> +
-> +			global_var__add(dloc, pos->addr, var_name, &type_die);
-> +		}
-> +
-> +		delete_var_types(var_types);
-> +
-> +		off = next_off;
-> +	}
-> +}
-> +
->  static bool get_global_var_type(Dwarf_Die *cu_die, struct data_loc_info *dloc,
->  				u64 ip, u64 var_addr, int *var_offset,
->  				Dwarf_Die *type_die)
-> @@ -620,8 +669,12 @@ static bool get_global_var_type(Dwarf_Die *cu_die, struct data_loc_info *dloc,
->  	int offset;
->  	const char *var_name = NULL;
->  	struct global_var_entry *gvar;
-> +	struct dso *dso = map__dso(dloc->ms->map);
->  	Dwarf_Die var_die;
->  
-> +	if (RB_EMPTY_ROOT(&dso->global_vars))
-> +		global_var__collect(dloc);
-> +
->  	gvar = global_var__find(dloc, var_addr);
->  	if (gvar) {
->  		if (!dwarf_offdie(dloc->di->dbg, gvar->die_offset, type_die))
-> -- 
-> 2.45.0.rc1.225.g2a3ae87e7f-goog
+
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+
+
+Best regards,
+Krzysztof
+
 
