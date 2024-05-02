@@ -1,539 +1,189 @@
-Return-Path: <linux-kernel+bounces-166981-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-166982-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 802618BA28E
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 23:44:36 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 579338BA293
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 23:45:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 365FC28E33C
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 21:44:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7AF921C20DB7
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 21:45:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 536341836C3;
-	Thu,  2 May 2024 21:39:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E80AE15E5B9;
+	Thu,  2 May 2024 21:43:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="jOznvsx4";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="5F/ur9br"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CvnPyn+E"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 373E11C0DC7
-	for <linux-kernel@vger.kernel.org>; Thu,  2 May 2024 21:38:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 13F1757CB5;
+	Thu,  2 May 2024 21:43:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714685940; cv=none; b=CkY8yShpQv/Dbxqlk+feZk9bj9pvEG2X1lDH0jFfFGs7LaZGSl09/dyCYIlhZec4CsHvCcF3NNe2+Bj+h2q0H+c4eq60bEiKCALzvjg2K6frDlVh3bkdzpxL78tW8vOTc2E1KmJK9gQnv7ux/dBJSvPe8BWcMP6aA+coTCnZ/jc=
+	t=1714686183; cv=none; b=BuJZpFxRZziZsBnou0F/0rGgCYCR047XbSqKj9haho3Xla3BQDgUtSMIC2kJG3RuRG2T+e71GsuUtt+JrbtLg380dKft0/xDuj+vRWLji4Ew8gcYUxpkACoLUR+/4yMQG35v6IawFj9ioLo+k+Jyf6cAbXcv41ODZMFqwMq9rvs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714685940; c=relaxed/simple;
-	bh=K1/lCXHyQpAp0Tu54jz9wFsc8aCz6pDHL8XjkigfS3U=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=ogZeo43k6aJ2Bg5G7EYu2axfKQ3fIPF5rdHz7hEj4jJjfPI5LM3pELAAvnOhtRQ+Qne+zUaGMb+rStpkmqsfm8X3jKO3P8rmFAokqbgIqAkWTCu0TlC4P5zBTN8kSwsxC3UP2dsWvDSq2zKaCYurIGZKeRzGafU5HTv3luSHuoM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=jOznvsx4; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=5F/ur9br; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-From: John Ogness <john.ogness@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1714685936;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ZrVBb0WZqvMLfbSBp664cPAoDOu5ekw1P/3pAX1VS7A=;
-	b=jOznvsx42cx2QWcytV7u68JhqOPr6X0eErznhNZyI6ZMUxOQnUM8VmW652LD/17E6NdwwY
-	MiYr84Gatyw8DV+jGHg9Ml0uKNm5UN6c1+TEY7dRxnuY9OBfVeTjkqFa4C/rZhXHatzaEx
-	rfBWkK8l2c+psRlIOTo2qWLXkp8xyvPjKNj0lI75/32E1SOQ2BguXvAajiyo8XvN+oQIMr
-	YMORKzt2ihT4pzc+jRmeA3g7OIiu7xxXxByUucq38Y9xGbrosdzk3/HHQg+pjKrWKc+KtH
-	E8gKIQGbUf3cXDvtutMR7758jEroO1fFHfoCEIymQTkLV6FIAOi0i9biqhZlZQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1714685936;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ZrVBb0WZqvMLfbSBp664cPAoDOu5ekw1P/3pAX1VS7A=;
-	b=5F/ur9brPUprz3iV/wCUaVZBlqi5yUccBmWAv0IRI+3nnUkkFA9Yi7GfFzJ/KuK8p02KCW
-	thSUIKjgfC7mX4Bw==
-To: Petr Mladek <pmladek@suse.com>
-Cc: Sergey Senozhatsky <senozhatsky@chromium.org>,
-	Steven Rostedt <rostedt@goodmis.org>,
+	s=arc-20240116; t=1714686183; c=relaxed/simple;
+	bh=hU0rwDyItfrpYEKW9APHQwJSc/rZVbSW7HMod3rGJt0=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To; b=EwSA+vn1oIUK6eqnMnmh9zl22lkpkCqAnoiLu416eNwJBt2guohD/EBt9iZkW7vaWcb6wIc1GlV9AtqIdYJrsGeXFqZNXGLOaRzlhBS21FtwkzRqi3qyTzeG56zdujiqpNE+AX4QN18dlXAmlZtIjkl/cZdoDbHBrdSHwoHnZTw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CvnPyn+E; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5FC32C113CC;
+	Thu,  2 May 2024 21:43:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714686182;
+	bh=hU0rwDyItfrpYEKW9APHQwJSc/rZVbSW7HMod3rGJt0=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:From;
+	b=CvnPyn+EX/NmZZdNbjM4BI2Dj6j9krHnP/4y7s7t38FK34ToT1ExioKiJAF5wty7S
+	 eDuI5KsHBDz92OjB4uTIaMNTqbwSj9mpmRdCe85pONeDODTjMmgEUceQwPAv0ehEo7
+	 6LKNDDQMuUGPf3S7B3Roq797esg1ODWseJa1fmJ7qP/a2ihXbXZXn+essmLA3TN/Pd
+	 hjCngZ5RBqgECPah0fCRfDxa1q4mgDuldJi/yiSx1rQ28wIvoVxGj0peHYKt7d8R5x
+	 jryC1p6YtUorrnsDSumPBRRbmm1wPwF9AOIC8j+8HNDoFy/nSNoSZj9KW1lduN/2l2
+	 9woaFVdcsLPBg==
+Date: Thu, 2 May 2024 16:43:00 -0500
+From: Bjorn Helgaas <helgaas@kernel.org>
+To: linux-pci@vger.kernel.org
+Cc: Mateusz Kaduk <mateusz.kaduk@gmail.com>,
 	Thomas Gleixner <tglx@linutronix.de>,
-	linux-kernel@vger.kernel.org,
-	Peter Zijlstra <peterz@infradead.org>,
-	Ingo Molnar <mingo@redhat.com>,
-	Will Deacon <will@kernel.org>,
-	Waiman Long <longman@redhat.com>,
-	Boqun Feng <boqun.feng@gmail.com>
-Subject: [PATCH printk v5 30/30] lockdep: Mark emergency sections in lockdep splats
-Date: Thu,  2 May 2024 23:44:39 +0206
-Message-Id: <20240502213839.376636-31-john.ogness@linutronix.de>
-In-Reply-To: <20240502213839.376636-1-john.ogness@linutronix.de>
-References: <20240502213839.376636-1-john.ogness@linutronix.de>
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>, Tj <linux@iam.tj>,
+	Andy Shevchenko <andy.shevchenko@gmail.com>,
+	Hans de Goede <hdegoede@redhat.com>, x86@kernel.org,
+	linux-kernel@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>,
+	stable@vger.kernel.org
+Subject: Re: [PATCH 1/1] x86/pci: Skip early E820 check for ECAM region
+Message-ID: <20240502214300.GA1547650@bhelgaas>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240417204012.215030-2-helgaas@kernel.org>
 
-Mark emergency sections wherever multiple lines of
-lock debugging output are generated. In an emergency
-section the CPU will not perform console output for the
-printk() calls. Instead, a flushing of the console
-output is triggered when exiting the emergency section.
-This allows the full message block to be stored as
-quickly as possible in the ringbuffer.
+On Wed, Apr 17, 2024 at 03:40:12PM -0500, Bjorn Helgaas wrote:
+> From: Bjorn Helgaas <bhelgaas@google.com>
+> 
+> Arul, Mateusz, Imcarneiro91, and Aman reported a regression caused by
+> 07eab0901ede ("efi/x86: Remove EfiMemoryMappedIO from E820 map").  On the
+> Lenovo Legion 9i laptop, that commit removes the area containing ECAM from
+> E820, which means the early E820 validation started failing, which meant we
+> didn't enable ECAM in the "early MCFG" path
+> 
+> The lack of ECAM caused many ACPI methods to fail, resulting in the
+> embedded controller, PS/2, audio, trackpad, and battery devices not being
+> detected.  The _OSC method also failed, so Linux could not take control of
+> the PCIe hotplug, PME, and AER features:
+> 
+>   # pci_mmcfg_early_init()
+> 
+>   PCI: ECAM [mem 0xc0000000-0xce0fffff] (base 0xc0000000) for domain 0000 [bus 00-e0]
+>   PCI: not using ECAM ([mem 0xc0000000-0xce0fffff] not reserved)
+> 
+>   ACPI Error: AE_ERROR, Returned by Handler for [PCI_Config] (20230628/evregion-300)
+>   ACPI: Interpreter enabled
+>   ACPI: Ignoring error and continuing table load
+>   ACPI BIOS Error (bug): Could not resolve symbol [\_SB.PC00.RP01._SB.PC00], AE_NOT_FOUND (20230628/dswload2-162)
+>   ACPI Error: AE_NOT_FOUND, During name lookup/catalog (20230628/psobject-220)
+>   ACPI: Skipping parse of AML opcode: OpcodeName unavailable (0x0010)
+>   ACPI BIOS Error (bug): Could not resolve symbol [\_SB.PC00.RP01._SB.PC00], AE_NOT_FOUND (20230628/dswload2-162)
+>   ACPI Error: AE_NOT_FOUND, During name lookup/catalog (20230628/psobject-220)
+>   ...
+>   ACPI Error: Aborting method \_SB.PC00._OSC due to previous error (AE_NOT_FOUND) (20230628/psparse-529)
+>   acpi PNP0A08:00: _OSC: platform retains control of PCIe features (AE_NOT_FOUND)
+> 
+>   # pci_mmcfg_late_init()
+> 
+>   PCI: ECAM [mem 0xc0000000-0xce0fffff] (base 0xc0000000) for domain 0000 [bus 00-e0]
+>   PCI: [Firmware Info]: ECAM [mem 0xc0000000-0xce0fffff] not reserved in ACPI motherboard resources
+>   PCI: ECAM [mem 0xc0000000-0xce0fffff] is EfiMemoryMappedIO; assuming valid
+>   PCI: ECAM [mem 0xc0000000-0xce0fffff] reserved to work around lack of ACPI motherboard _CRS
+> 
+> Per PCI Firmware r3.3, sec 4.1.2, ECAM space must be reserved by a PNP0C02
+> resource, but it need not be mentioned in E820, so we shouldn't look at
+> E820 to validate the ECAM space described by MCFG.
+> 
+> 946f2ee5c731 ("[PATCH] i386/x86-64: Check that MCFG points to an e820
+> reserved area") added a sanity check of E820 to work around buggy MCFG
+> tables, but that over-aggressive validation causes failures like this one.
+> 
+> Keep the E820 validation check only for older BIOSes (pre-2016) so the
+> buggy 2006-era machines don't break.  Skip the early E820 check for 2016
+> and newer BIOSes.
+> 
+> Fixes: 07eab0901ede ("efi/x86: Remove EfiMemoryMappedIO from E820 map")
+> Reported-by: Mateusz Kaduk <mateusz.kaduk@gmail.com>
+> Reported-by: Arul <...>
+> Reported-by: Imcarneiro91 <...>
+> Reported-by: Aman <...>
+> Closes: https://bugzilla.kernel.org/show_bug.cgi?id=218444
+> Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+> Tested-by: Mateusz Kaduk <mateusz.kaduk@gmail.com>
+> Cc: stable@vger.kernel.org
 
-Note that debug_show_all_locks() and
-lockdep_print_held_locks() rely on their callers to
-enter the emergency section. This is because these
-functions can also be called in non-emergency
-situations (such as sysrq).
+I applied this to pci/enumeration for v6.10, thanks everybody for
+your testing and review.
 
-Signed-off-by: John Ogness <john.ogness@linutronix.de>
----
- kernel/locking/lockdep.c | 84 +++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 82 insertions(+), 2 deletions(-)
-
-diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
-index 151bd3de5936..c06842e037d8 100644
---- a/kernel/locking/lockdep.c
-+++ b/kernel/locking/lockdep.c
-@@ -56,6 +56,7 @@
- #include <linux/kprobes.h>
- #include <linux/lockdep.h>
- #include <linux/context_tracking.h>
-+#include <linux/console.h>
- 
- #include <asm/sections.h>
- 
-@@ -574,8 +575,10 @@ static struct lock_trace *save_trace(void)
- 		if (!debug_locks_off_graph_unlock())
- 			return NULL;
- 
-+		nbcon_cpu_emergency_enter();
- 		print_lockdep_off("BUG: MAX_STACK_TRACE_ENTRIES too low!");
- 		dump_stack();
-+		nbcon_cpu_emergency_exit();
- 
- 		return NULL;
- 	}
-@@ -888,11 +891,13 @@ look_up_lock_class(const struct lockdep_map *lock, unsigned int subclass)
- 	if (unlikely(subclass >= MAX_LOCKDEP_SUBCLASSES)) {
- 		instrumentation_begin();
- 		debug_locks_off();
-+		nbcon_cpu_emergency_enter();
- 		printk(KERN_ERR
- 			"BUG: looking up invalid subclass: %u\n", subclass);
- 		printk(KERN_ERR
- 			"turning off the locking correctness validator.\n");
- 		dump_stack();
-+		nbcon_cpu_emergency_exit();
- 		instrumentation_end();
- 		return NULL;
- 	}
-@@ -969,11 +974,13 @@ static bool assign_lock_key(struct lockdep_map *lock)
- 	else {
- 		/* Debug-check: all keys must be persistent! */
- 		debug_locks_off();
-+		nbcon_cpu_emergency_enter();
- 		pr_err("INFO: trying to register non-static key.\n");
- 		pr_err("The code is fine but needs lockdep annotation, or maybe\n");
- 		pr_err("you didn't initialize this object before use?\n");
- 		pr_err("turning off the locking correctness validator.\n");
- 		dump_stack();
-+		nbcon_cpu_emergency_exit();
- 		return false;
- 	}
- 
-@@ -1317,8 +1324,10 @@ register_lock_class(struct lockdep_map *lock, unsigned int subclass, int force)
- 			return NULL;
- 		}
- 
-+		nbcon_cpu_emergency_enter();
- 		print_lockdep_off("BUG: MAX_LOCKDEP_KEYS too low!");
- 		dump_stack();
-+		nbcon_cpu_emergency_exit();
- 		return NULL;
- 	}
- 	nr_lock_classes++;
-@@ -1350,11 +1359,13 @@ register_lock_class(struct lockdep_map *lock, unsigned int subclass, int force)
- 	if (verbose(class)) {
- 		graph_unlock();
- 
-+		nbcon_cpu_emergency_enter();
- 		printk("\nnew class %px: %s", class->key, class->name);
- 		if (class->name_version > 1)
- 			printk(KERN_CONT "#%d", class->name_version);
- 		printk(KERN_CONT "\n");
- 		dump_stack();
-+		nbcon_cpu_emergency_exit();
- 
- 		if (!graph_lock()) {
- 			return NULL;
-@@ -1393,8 +1404,10 @@ static struct lock_list *alloc_list_entry(void)
- 		if (!debug_locks_off_graph_unlock())
- 			return NULL;
- 
-+		nbcon_cpu_emergency_enter();
- 		print_lockdep_off("BUG: MAX_LOCKDEP_ENTRIES too low!");
- 		dump_stack();
-+		nbcon_cpu_emergency_exit();
- 		return NULL;
- 	}
- 	nr_list_entries++;
-@@ -2040,6 +2053,8 @@ static noinline void print_circular_bug(struct lock_list *this,
- 
- 	depth = get_lock_depth(target);
- 
-+	nbcon_cpu_emergency_enter();
-+
- 	print_circular_bug_header(target, depth, check_src, check_tgt);
- 
- 	parent = get_lock_parent(target);
-@@ -2058,6 +2073,8 @@ static noinline void print_circular_bug(struct lock_list *this,
- 
- 	printk("\nstack backtrace:\n");
- 	dump_stack();
-+
-+	nbcon_cpu_emergency_exit();
- }
- 
- static noinline void print_bfs_bug(int ret)
-@@ -2570,6 +2587,8 @@ print_bad_irq_dependency(struct task_struct *curr,
- 	if (!debug_locks_off_graph_unlock() || debug_locks_silent)
- 		return;
- 
-+	nbcon_cpu_emergency_enter();
-+
- 	pr_warn("\n");
- 	pr_warn("=====================================================\n");
- 	pr_warn("WARNING: %s-safe -> %s-unsafe lock order detected\n",
-@@ -2619,11 +2638,13 @@ print_bad_irq_dependency(struct task_struct *curr,
- 	pr_warn(" and %s-irq-unsafe lock:\n", irqclass);
- 	next_root->trace = save_trace();
- 	if (!next_root->trace)
--		return;
-+		goto out;
- 	print_shortest_lock_dependencies(forwards_entry, next_root);
- 
- 	pr_warn("\nstack backtrace:\n");
- 	dump_stack();
-+out:
-+	nbcon_cpu_emergency_exit();
- }
- 
- static const char *state_names[] = {
-@@ -2988,6 +3009,8 @@ print_deadlock_bug(struct task_struct *curr, struct held_lock *prev,
- 	if (!debug_locks_off_graph_unlock() || debug_locks_silent)
- 		return;
- 
-+	nbcon_cpu_emergency_enter();
-+
- 	pr_warn("\n");
- 	pr_warn("============================================\n");
- 	pr_warn("WARNING: possible recursive locking detected\n");
-@@ -3010,6 +3033,8 @@ print_deadlock_bug(struct task_struct *curr, struct held_lock *prev,
- 
- 	pr_warn("\nstack backtrace:\n");
- 	dump_stack();
-+
-+	nbcon_cpu_emergency_exit();
- }
- 
- /*
-@@ -3607,6 +3632,8 @@ static void print_collision(struct task_struct *curr,
- 			struct held_lock *hlock_next,
- 			struct lock_chain *chain)
- {
-+	nbcon_cpu_emergency_enter();
-+
- 	pr_warn("\n");
- 	pr_warn("============================\n");
- 	pr_warn("WARNING: chain_key collision\n");
-@@ -3623,6 +3650,8 @@ static void print_collision(struct task_struct *curr,
- 
- 	pr_warn("\nstack backtrace:\n");
- 	dump_stack();
-+
-+	nbcon_cpu_emergency_exit();
- }
- #endif
- 
-@@ -3713,8 +3742,10 @@ static inline int add_chain_cache(struct task_struct *curr,
- 		if (!debug_locks_off_graph_unlock())
- 			return 0;
- 
-+		nbcon_cpu_emergency_enter();
- 		print_lockdep_off("BUG: MAX_LOCKDEP_CHAINS too low!");
- 		dump_stack();
-+		nbcon_cpu_emergency_exit();
- 		return 0;
- 	}
- 	chain->chain_key = chain_key;
-@@ -3731,8 +3762,10 @@ static inline int add_chain_cache(struct task_struct *curr,
- 		if (!debug_locks_off_graph_unlock())
- 			return 0;
- 
-+		nbcon_cpu_emergency_enter();
- 		print_lockdep_off("BUG: MAX_LOCKDEP_CHAIN_HLOCKS too low!");
- 		dump_stack();
-+		nbcon_cpu_emergency_exit();
- 		return 0;
- 	}
- 
-@@ -3971,6 +4004,8 @@ print_usage_bug(struct task_struct *curr, struct held_lock *this,
- 	if (!debug_locks_off() || debug_locks_silent)
- 		return;
- 
-+	nbcon_cpu_emergency_enter();
-+
- 	pr_warn("\n");
- 	pr_warn("================================\n");
- 	pr_warn("WARNING: inconsistent lock state\n");
-@@ -3999,6 +4034,8 @@ print_usage_bug(struct task_struct *curr, struct held_lock *this,
- 
- 	pr_warn("\nstack backtrace:\n");
- 	dump_stack();
-+
-+	nbcon_cpu_emergency_exit();
- }
- 
- /*
-@@ -4033,6 +4070,8 @@ print_irq_inversion_bug(struct task_struct *curr,
- 	if (!debug_locks_off_graph_unlock() || debug_locks_silent)
- 		return;
- 
-+	nbcon_cpu_emergency_enter();
-+
- 	pr_warn("\n");
- 	pr_warn("========================================================\n");
- 	pr_warn("WARNING: possible irq lock inversion dependency detected\n");
-@@ -4073,11 +4112,13 @@ print_irq_inversion_bug(struct task_struct *curr,
- 	pr_warn("\nthe shortest dependencies between 2nd lock and 1st lock:\n");
- 	root->trace = save_trace();
- 	if (!root->trace)
--		return;
-+		goto out;
- 	print_shortest_lock_dependencies(other, root);
- 
- 	pr_warn("\nstack backtrace:\n");
- 	dump_stack();
-+out:
-+	nbcon_cpu_emergency_exit();
- }
- 
- /*
-@@ -4154,6 +4195,8 @@ void print_irqtrace_events(struct task_struct *curr)
- {
- 	const struct irqtrace_events *trace = &curr->irqtrace;
- 
-+	nbcon_cpu_emergency_enter();
-+
- 	printk("irq event stamp: %u\n", trace->irq_events);
- 	printk("hardirqs last  enabled at (%u): [<%px>] %pS\n",
- 		trace->hardirq_enable_event, (void *)trace->hardirq_enable_ip,
-@@ -4167,6 +4210,8 @@ void print_irqtrace_events(struct task_struct *curr)
- 	printk("softirqs last disabled at (%u): [<%px>] %pS\n",
- 		trace->softirq_disable_event, (void *)trace->softirq_disable_ip,
- 		(void *)trace->softirq_disable_ip);
-+
-+	nbcon_cpu_emergency_exit();
- }
- 
- static int HARDIRQ_verbose(struct lock_class *class)
-@@ -4687,10 +4732,12 @@ static int mark_lock(struct task_struct *curr, struct held_lock *this,
- 	 * We must printk outside of the graph_lock:
- 	 */
- 	if (ret == 2) {
-+		nbcon_cpu_emergency_enter();
- 		printk("\nmarked lock as {%s}:\n", usage_str[new_bit]);
- 		print_lock(this);
- 		print_irqtrace_events(curr);
- 		dump_stack();
-+		nbcon_cpu_emergency_exit();
- 	}
- 
- 	return ret;
-@@ -4731,6 +4778,8 @@ print_lock_invalid_wait_context(struct task_struct *curr,
- 	if (debug_locks_silent)
- 		return 0;
- 
-+	nbcon_cpu_emergency_enter();
-+
- 	pr_warn("\n");
- 	pr_warn("=============================\n");
- 	pr_warn("[ BUG: Invalid wait context ]\n");
-@@ -4750,6 +4799,8 @@ print_lock_invalid_wait_context(struct task_struct *curr,
- 	pr_warn("stack backtrace:\n");
- 	dump_stack();
- 
-+	nbcon_cpu_emergency_exit();
-+
- 	return 0;
- }
- 
-@@ -4954,6 +5005,8 @@ print_lock_nested_lock_not_held(struct task_struct *curr,
- 	if (debug_locks_silent)
- 		return;
- 
-+	nbcon_cpu_emergency_enter();
-+
- 	pr_warn("\n");
- 	pr_warn("==================================\n");
- 	pr_warn("WARNING: Nested lock was not taken\n");
-@@ -4974,6 +5027,8 @@ print_lock_nested_lock_not_held(struct task_struct *curr,
- 
- 	pr_warn("\nstack backtrace:\n");
- 	dump_stack();
-+
-+	nbcon_cpu_emergency_exit();
- }
- 
- static int __lock_is_held(const struct lockdep_map *lock, int read);
-@@ -5019,11 +5074,13 @@ static int __lock_acquire(struct lockdep_map *lock, unsigned int subclass,
- 	debug_class_ops_inc(class);
- 
- 	if (very_verbose(class)) {
-+		nbcon_cpu_emergency_enter();
- 		printk("\nacquire class [%px] %s", class->key, class->name);
- 		if (class->name_version > 1)
- 			printk(KERN_CONT "#%d", class->name_version);
- 		printk(KERN_CONT "\n");
- 		dump_stack();
-+		nbcon_cpu_emergency_exit();
- 	}
- 
- 	/*
-@@ -5150,6 +5207,7 @@ static int __lock_acquire(struct lockdep_map *lock, unsigned int subclass,
- #endif
- 	if (unlikely(curr->lockdep_depth >= MAX_LOCK_DEPTH)) {
- 		debug_locks_off();
-+		nbcon_cpu_emergency_enter();
- 		print_lockdep_off("BUG: MAX_LOCK_DEPTH too low!");
- 		printk(KERN_DEBUG "depth: %i  max: %lu!\n",
- 		       curr->lockdep_depth, MAX_LOCK_DEPTH);
-@@ -5157,6 +5215,7 @@ static int __lock_acquire(struct lockdep_map *lock, unsigned int subclass,
- 		lockdep_print_held_locks(current);
- 		debug_show_all_locks();
- 		dump_stack();
-+		nbcon_cpu_emergency_exit();
- 
- 		return 0;
- 	}
-@@ -5176,6 +5235,8 @@ static void print_unlock_imbalance_bug(struct task_struct *curr,
- 	if (debug_locks_silent)
- 		return;
- 
-+	nbcon_cpu_emergency_enter();
-+
- 	pr_warn("\n");
- 	pr_warn("=====================================\n");
- 	pr_warn("WARNING: bad unlock balance detected!\n");
-@@ -5192,6 +5253,8 @@ static void print_unlock_imbalance_bug(struct task_struct *curr,
- 
- 	pr_warn("\nstack backtrace:\n");
- 	dump_stack();
-+
-+	nbcon_cpu_emergency_exit();
- }
- 
- static noinstr int match_held_lock(const struct held_lock *hlock,
-@@ -5895,6 +5958,8 @@ static void print_lock_contention_bug(struct task_struct *curr,
- 	if (debug_locks_silent)
- 		return;
- 
-+	nbcon_cpu_emergency_enter();
-+
- 	pr_warn("\n");
- 	pr_warn("=================================\n");
- 	pr_warn("WARNING: bad contention detected!\n");
-@@ -5911,6 +5976,8 @@ static void print_lock_contention_bug(struct task_struct *curr,
- 
- 	pr_warn("\nstack backtrace:\n");
- 	dump_stack();
-+
-+	nbcon_cpu_emergency_exit();
- }
- 
- static void
-@@ -6524,6 +6591,8 @@ print_freed_lock_bug(struct task_struct *curr, const void *mem_from,
- 	if (debug_locks_silent)
- 		return;
- 
-+	nbcon_cpu_emergency_enter();
-+
- 	pr_warn("\n");
- 	pr_warn("=========================\n");
- 	pr_warn("WARNING: held lock freed!\n");
-@@ -6536,6 +6605,8 @@ print_freed_lock_bug(struct task_struct *curr, const void *mem_from,
- 
- 	pr_warn("\nstack backtrace:\n");
- 	dump_stack();
-+
-+	nbcon_cpu_emergency_exit();
- }
- 
- static inline int not_in_range(const void* mem_from, unsigned long mem_len,
-@@ -6582,6 +6653,8 @@ static void print_held_locks_bug(void)
- 	if (debug_locks_silent)
- 		return;
- 
-+	nbcon_cpu_emergency_enter();
-+
- 	pr_warn("\n");
- 	pr_warn("====================================\n");
- 	pr_warn("WARNING: %s/%d still has locks held!\n",
-@@ -6591,6 +6664,8 @@ static void print_held_locks_bug(void)
- 	lockdep_print_held_locks(current);
- 	pr_warn("\nstack backtrace:\n");
- 	dump_stack();
-+
-+	nbcon_cpu_emergency_exit();
- }
- 
- void debug_check_no_locks_held(void)
-@@ -6616,6 +6691,7 @@ void debug_show_all_locks(void)
- 		if (!p->lockdep_depth)
- 			continue;
- 		lockdep_print_held_locks(p);
-+		nbcon_cpu_emergency_flush();
- 		touch_nmi_watchdog();
- 		touch_all_softlockup_watchdogs();
- 	}
-@@ -6648,6 +6724,7 @@ asmlinkage __visible void lockdep_sys_exit(void)
- 	if (unlikely(curr->lockdep_depth)) {
- 		if (!debug_locks_off())
- 			return;
-+		nbcon_cpu_emergency_enter();
- 		pr_warn("\n");
- 		pr_warn("================================================\n");
- 		pr_warn("WARNING: lock held when returning to user space!\n");
-@@ -6656,6 +6733,7 @@ asmlinkage __visible void lockdep_sys_exit(void)
- 		pr_warn("%s/%d is leaving the kernel with locks still held!\n",
- 				curr->comm, curr->pid);
- 		lockdep_print_held_locks(curr);
-+		nbcon_cpu_emergency_exit();
- 	}
- 
- 	/*
-@@ -6672,6 +6750,7 @@ void lockdep_rcu_suspicious(const char *file, const int line, const char *s)
- 	bool rcu = warn_rcu_enter();
- 
- 	/* Note: the following can be executed concurrently, so be careful. */
-+	nbcon_cpu_emergency_enter();
- 	pr_warn("\n");
- 	pr_warn("=============================\n");
- 	pr_warn("WARNING: suspicious RCU usage\n");
-@@ -6710,6 +6789,7 @@ void lockdep_rcu_suspicious(const char *file, const int line, const char *s)
- 	lockdep_print_held_locks(curr);
- 	pr_warn("\nstack backtrace:\n");
- 	dump_stack();
-+	nbcon_cpu_emergency_exit();
- 	warn_rcu_exit(rcu);
- }
- EXPORT_SYMBOL_GPL(lockdep_rcu_suspicious);
--- 
-2.39.2
-
+> ---
+>  arch/x86/pci/mmconfig-shared.c | 35 +++++++++++++++++++++++++++-------
+>  1 file changed, 28 insertions(+), 7 deletions(-)
+> 
+> diff --git a/arch/x86/pci/mmconfig-shared.c b/arch/x86/pci/mmconfig-shared.c
+> index 0cc9520666ef..53c7afa606c3 100644
+> --- a/arch/x86/pci/mmconfig-shared.c
+> +++ b/arch/x86/pci/mmconfig-shared.c
+> @@ -518,7 +518,34 @@ static bool __ref pci_mmcfg_reserved(struct device *dev,
+>  {
+>  	struct resource *conflict;
+>  
+> -	if (!early && !acpi_disabled) {
+> +	if (early) {
+> +
+> +		/*
+> +		 * Don't try to do this check unless configuration type 1
+> +		 * is available.  How about type 2?
+> +		 */
+> +
+> +		/*
+> +		 * 946f2ee5c731 ("Check that MCFG points to an e820
+> +		 * reserved area") added this E820 check in 2006 to work
+> +		 * around BIOS defects.
+> +		 *
+> +		 * Per PCI Firmware r3.3, sec 4.1.2, ECAM space must be
+> +		 * reserved by a PNP0C02 resource, but it need not be
+> +		 * mentioned in E820.  Before the ACPI interpreter is
+> +		 * available, we can't check for PNP0C02 resources, so
+> +		 * there's no reliable way to verify the region in this
+> +		 * early check.  Keep it only for the old machines that
+> +		 * motivated 946f2ee5c731.
+> +		 */
+> +		if (dmi_get_bios_year() < 2016 && raw_pci_ops)
+> +			return is_mmconf_reserved(e820__mapped_all, cfg, dev,
+> +						  "E820 entry");
+> +
+> +		return true;
+> +	}
+> +
+> +	if (!acpi_disabled) {
+>  		if (is_mmconf_reserved(is_acpi_reserved, cfg, dev,
+>  				       "ACPI motherboard resource"))
+>  			return true;
+> @@ -554,12 +581,6 @@ static bool __ref pci_mmcfg_reserved(struct device *dev,
+>  	if (pci_mmcfg_running_state)
+>  		return true;
+>  
+> -	/* Don't try to do this check unless configuration
+> -	   type 1 is available. how about type 2 ?*/
+> -	if (raw_pci_ops)
+> -		return is_mmconf_reserved(e820__mapped_all, cfg, dev,
+> -					  "E820 entry");
+> -
+>  	return false;
+>  }
+>  
+> -- 
+> 2.34.1
+> 
 
