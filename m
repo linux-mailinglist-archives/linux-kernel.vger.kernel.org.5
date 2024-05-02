@@ -1,188 +1,134 @@
-Return-Path: <linux-kernel+bounces-166174-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-166176-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 217C38B9725
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 11:05:20 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6B8C78B9733
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 11:10:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2F16DB23B08
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 09:05:17 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 91832B20BE2
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 09:10:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EBD2056750;
-	Thu,  2 May 2024 09:04:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4745A52F92;
+	Thu,  2 May 2024 09:09:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="g0vCt9sr"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="fG7qYrNV"
+Received: from mail-yw1-f173.google.com (mail-yw1-f173.google.com [209.85.128.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99EB556766
-	for <linux-kernel@vger.kernel.org>; Thu,  2 May 2024 09:04:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A77B017591
+	for <linux-kernel@vger.kernel.org>; Thu,  2 May 2024 09:09:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714640650; cv=none; b=bSyMrbUtAUUJN9AOluojFpUDvfKK9p6llwySeCppxSz/VSAtW0l59sZYdjqZT1QpRAgHol8VMmxlbQd0IjjJJWgyX0cIG707fTFAjTL5S7Uh82J2qcVshZofqdNPtPM2rBhsF82atv1B1xK6o7UfaGh8OP+x8vhB+cKJ4H1u0AQ=
+	t=1714640996; cv=none; b=twHulnSoZC2kHjAFFAebELTFBk6feLKncfKXozV2ztE3h7OZpLSpIyOFQohh+HfNMVWKE6a1scX/Azy31i1QYE+60uDyvuDNEh9O9rf6feghaoDaqgDrPGUHrTQL5J12hu+R08rggwdPmfsarbWueozpwUeBX8a3XnYfuEJnB2o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714640650; c=relaxed/simple;
-	bh=RBNo7t5IGu2yThFFulb8qCfz4Zt2E7C/FOw15MNEb5o=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=rC6rq9p+TVrdkMVv+DPVwbsWtQ3M4ChEyZNhQ/xU7bHQhqI/PcGNO8MamV/zEiTJrYsz5hSXDuo6Nx+fynBYvKDg0gkREhtztiolCpAqBSTo+oJLNKj9Nv9uyd8gpssGyzGTorMzKOt2WpzSbccQjLbC94ad1465R/J4RlZaY1k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=g0vCt9sr; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1714640647;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=+3z/p7PSnITLar6zjViIxQUZhsvkqQniW+UpUaJYwp0=;
-	b=g0vCt9srzzxgOvDFY+d2VULr8KkstIjMmefgpuGFCDgUFbraaMtD//my2ycW1o095BvQbG
-	F2jMdcsuxNx7/4QRVfFJjQG+olER8NMsC/VjsIfocRFPavK2hl+fqWeLPydbUkkTw3qWn7
-	BW58tygEY/RFewsWfOOnCViK38rLxZo=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-74-shbXHky0Ojewoz46za8lZg-1; Thu, 02 May 2024 05:04:04 -0400
-X-MC-Unique: shbXHky0Ojewoz46za8lZg-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id CC69080E95D;
-	Thu,  2 May 2024 09:04:03 +0000 (UTC)
-Received: from fedora (unknown [10.39.194.153])
-	by smtp.corp.redhat.com (Postfix) with SMTP id 36235EC685;
-	Thu,  2 May 2024 09:04:01 +0000 (UTC)
-Received: by fedora (nbSMTP-1.00) for uid 1000
-	oleg@redhat.com; Thu,  2 May 2024 05:04:03 -0400 (EDT)
-Date: Thu, 2 May 2024 05:04:00 -0400
-From: Oleg Nesterov <oleg@redhat.com>
-To: kernel test robot <lkp@intel.com>
-Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-	Ingo Molnar <mingo@kernel.org>,
-	Thomas Gleixner <tglx@linutronix.de>, Phil Auld <pauld@redhat.com>
-Subject: Re: kernel/sched/isolation.c:143 housekeeping_setup() warn: always
- true condition '(first_cpu >= 0) => (0-u32max >= 0)'
-Message-ID: <ZjNXAEGhAnXX20Xk@redhat.com>
-References: <202404300915.WNvfwBz3-lkp@intel.com>
+	s=arc-20240116; t=1714640996; c=relaxed/simple;
+	bh=n/OhqxALAln0kGe0/36dqPOYiJ+TShHU1w2PGqEKDZM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=iRAwP9SY9GFI49dijFvPFyG4Gc958CQxwNrr83W88Wo5hpPFr79rto27ate2L6SX8PKWtvAvo/Idw8KDZN1Tr6FxTgKJrY3QsdDbOClCAYBojkQl/eTBokZLdM7Y+qV7oPf6Z9pae8tW+8KCVbe9KYuEabQOdZaFH+Fw1x/BrXA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=fG7qYrNV; arc=none smtp.client-ip=209.85.128.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yw1-f173.google.com with SMTP id 00721157ae682-61ab31d63edso13860257b3.1
+        for <linux-kernel@vger.kernel.org>; Thu, 02 May 2024 02:09:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1714640992; x=1715245792; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=1/zatMGpGKtRjuZEjLxtq2F8wzIhvOe+INlmlepdI6U=;
+        b=fG7qYrNVo4jhxhJn6EGd7zD6LWvNhEnriUsTTSjNY9NoUt0pUbtUKIGW5jDj3NZPSQ
+         SFoj0VA5471epbtD9RY3ChUy7blynrmO9Yxxd2ngCCUE3I27xT42odjypMCsltmHoKOX
+         vMj3jQreiwcO/ykhqE2H28Hi1lhC6LCEPVS9x6kqU7rXWVIqg4rpc5twEIDuLfu/6ezE
+         vuCOwIUmXK2UAkyJ0NzVHiiUJxZjs6UZ3XpwDprBOiPXI49kvnfU8SJbho8UT2ENYCUZ
+         G+JFh0NAgYpIc1vMxvbu53x/WVlkJHYjRMq354XvT0gigMmutIlbw6eJ08/HnpqgAM9h
+         aK5Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714640992; x=1715245792;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=1/zatMGpGKtRjuZEjLxtq2F8wzIhvOe+INlmlepdI6U=;
+        b=Pn75SlxbMBQFRjTbBbFUqf+6NO1l3Yr799yiSNI/8PFn2+w+n6mqLtgk7fy2GI8Jn0
+         k23bOkFkI1mEzo7SHGaiztZ3dE42Ci7oo6/JWoSNifCCq6saVGZy3w1yUHvjUDj4LgtV
+         v8Q1qKlMcLV2fsDNBxILAs/7TG5dV54K1SjhaRWwNqPPJWfcq3EBoZpiDLi+azL9U1yO
+         VO3zL8L+9+DBmQd6ZvZ8h+o50VS9is06o1EA0EFNFM7V0EO5db5HiOEUFhNsks9jA5pA
+         KV8Bwq1xgKCCXMKH1zxI+UBrdvU/8BmZtuzEJWIfjAl2NHR3J3hymmxvnjsoBuM6YPTa
+         mGzA==
+X-Forwarded-Encrypted: i=1; AJvYcCXnpGFW3dDM+W87JOoxcXfJIUX15UTbTN8vA3rG729KOfld7H0PzAnGAEMkpjbU3pKx0dzTN1qZ/c5wj5E+1UalaUAH5t2IA5pfqLJ3
+X-Gm-Message-State: AOJu0YwYnu50wEa4LktPVy7Ct7wY4DNdy62SmU6eyr1BFGz/Ltb2oT+v
+	SUTzwCL1x+qNxtAtJIQKX7RAqZ9QQKi4AI8W93Apmauz9m7eMUXCaVw4HsA9iK2mwzKpr9SkWAp
+	5xTfUSH1gfdliwpBDDMXqEVrdCE2wtKyAFPJIag==
+X-Google-Smtp-Source: AGHT+IHTjIcrLiNWiQmOEtS+44C7Ab3xJFK2eL518wA9ilO8nE4pOsFSQKofOwT8IJ+55tNjPRhgz3t+rKUXR6zejYw=
+X-Received: by 2002:a05:690c:398:b0:61b:e1e8:9a2c with SMTP id
+ bh24-20020a05690c039800b0061be1e89a2cmr1840034ywb.1.1714640992635; Thu, 02
+ May 2024 02:09:52 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202404300915.WNvfwBz3-lkp@intel.com>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.5
+References: <20240502090326.21489-1-quic_kbajaj@quicinc.com>
+In-Reply-To: <20240502090326.21489-1-quic_kbajaj@quicinc.com>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date: Thu, 2 May 2024 12:09:41 +0300
+Message-ID: <CAA8EJprPLqj7GQM0vmN25U2+3kDow=NH8=-VC2N-0p92Ub3iCA@mail.gmail.com>
+Subject: Re: [PATCH v3 0/3] Add devicetree support of USB for QDU/QRU1000
+To: Komal Bajaj <quic_kbajaj@quicinc.com>
+Cc: Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
+	Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>, 
+	linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Bjorn Andersson <quic_bjorande@quicinc.com>, 
+	quic_wcheng@quicinc.com, quic_ppratap@quicinc.com, 
+	Jack Pham <quic_jackp@quicinc.com>, Krishna Kurapati PSSNV <quic_kriskura@quicinc.com>
+Content-Type: text/plain; charset="UTF-8"
 
-Hello,
+On Thu, 2 May 2024 at 12:04, Komal Bajaj <quic_kbajaj@quicinc.com> wrote:
+>
+> This series adds devicetree nodes to support interconnects and usb for qdu/qru1000.
+> This is based on previously sent driver series[1].
+>
+> ------
+> Changes in v3:
+> * As per comments on upstream[2], to get role-switch working on QDU/QRU1000, it was recommended to
+>   use the actual TI switch driver. Since driver doesn't have the functionality to provide role-switch
+>   based on gpio, thus reverting back USB dr_mode to peripheral and removed the remote end-point nodes
+>   and usb-conn-gpio based role switch functionality.
 
-I am on PTO till May 9 without my working laptop, can't even read the source code.
-I'll return to this when I'm back. CONFIG_SMP=n I guess.
+This is not correct. The recommendation was to describe hardware properly.
+Which means adding schema description, adding  ti,your-switch
+compatible to the usb-conn-gpio.c driver, etc.
 
-On 04/30, kernel test robot wrote:
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-> head:   98369dccd2f8e16bf4c6621053af7aa4821dcf8e
-> commit: 257bf89d84121280904800acd25cc2c444c717ae sched/isolation: Fix boot crash when maxcpus < first housekeeping CPU
-> date:   2 days ago
-> config: xtensa-randconfig-r081-20240429 (https://download.01.org/0day-ci/archive/20240430/202404300915.WNvfwBz3-lkp@intel.com/config)
-> compiler: xtensa-linux-gcc (GCC) 13.2.0
-> 
-> If you fix the issue in a separate patch/commit (i.e. not just a new version of
-> the same patch/commit), kindly add following tags
-> | Reported-by: kernel test robot <lkp@intel.com>
-> | Closes: https://lore.kernel.org/oe-kbuild-all/202404300915.WNvfwBz3-lkp@intel.com/
-> 
-> New smatch warnings:
-> kernel/sched/isolation.c:143 housekeeping_setup() warn: always true condition '(first_cpu >= 0) => (0-u32max >= 0)'
-> 
-> Old smatch warnings:
-> arch/xtensa/include/asm/thread_info.h:97 current_thread_info() warn: inconsistent indenting
-> 
-> vim +143 kernel/sched/isolation.c
-> 
->    117	
->    118	static int __init housekeeping_setup(char *str, unsigned long flags)
->    119	{
->    120		cpumask_var_t non_housekeeping_mask, housekeeping_staging;
->    121		unsigned int first_cpu;
->    122		int err = 0;
->    123	
->    124		if ((flags & HK_FLAG_TICK) && !(housekeeping.flags & HK_FLAG_TICK)) {
->    125			if (!IS_ENABLED(CONFIG_NO_HZ_FULL)) {
->    126				pr_warn("Housekeeping: nohz unsupported."
->    127					" Build with CONFIG_NO_HZ_FULL\n");
->    128				return 0;
->    129			}
->    130		}
->    131	
->    132		alloc_bootmem_cpumask_var(&non_housekeeping_mask);
->    133		if (cpulist_parse(str, non_housekeeping_mask) < 0) {
->    134			pr_warn("Housekeeping: nohz_full= or isolcpus= incorrect CPU range\n");
->    135			goto free_non_housekeeping_mask;
->    136		}
->    137	
->    138		alloc_bootmem_cpumask_var(&housekeeping_staging);
->    139		cpumask_andnot(housekeeping_staging,
->    140			       cpu_possible_mask, non_housekeeping_mask);
->    141	
->    142		first_cpu = cpumask_first_and(cpu_present_mask, housekeeping_staging);
->  > 143		if (first_cpu >= nr_cpu_ids || first_cpu >= setup_max_cpus) {
->    144			__cpumask_set_cpu(smp_processor_id(), housekeeping_staging);
->    145			__cpumask_clear_cpu(smp_processor_id(), non_housekeeping_mask);
->    146			if (!housekeeping.flags) {
->    147				pr_warn("Housekeeping: must include one present CPU, "
->    148					"using boot CPU:%d\n", smp_processor_id());
->    149			}
->    150		}
->    151	
->    152		if (cpumask_empty(non_housekeeping_mask))
->    153			goto free_housekeeping_staging;
->    154	
->    155		if (!housekeeping.flags) {
->    156			/* First setup call ("nohz_full=" or "isolcpus=") */
->    157			enum hk_type type;
->    158	
->    159			for_each_set_bit(type, &flags, HK_TYPE_MAX)
->    160				housekeeping_setup_type(type, housekeeping_staging);
->    161		} else {
->    162			/* Second setup call ("nohz_full=" after "isolcpus=" or the reverse) */
->    163			enum hk_type type;
->    164			unsigned long iter_flags = flags & housekeeping.flags;
->    165	
->    166			for_each_set_bit(type, &iter_flags, HK_TYPE_MAX) {
->    167				if (!cpumask_equal(housekeeping_staging,
->    168						   housekeeping.cpumasks[type])) {
->    169					pr_warn("Housekeeping: nohz_full= must match isolcpus=\n");
->    170					goto free_housekeeping_staging;
->    171				}
->    172			}
->    173	
->    174			iter_flags = flags & ~housekeeping.flags;
->    175	
->    176			for_each_set_bit(type, &iter_flags, HK_TYPE_MAX)
->    177				housekeeping_setup_type(type, housekeeping_staging);
->    178		}
->    179	
->    180		if ((flags & HK_FLAG_TICK) && !(housekeeping.flags & HK_FLAG_TICK))
->    181			tick_nohz_full_setup(non_housekeeping_mask);
->    182	
->    183		housekeeping.flags |= flags;
->    184		err = 1;
->    185	
->    186	free_housekeeping_staging:
->    187		free_bootmem_cpumask_var(housekeeping_staging);
->    188	free_non_housekeeping_mask:
->    189		free_bootmem_cpumask_var(non_housekeeping_mask);
->    190	
->    191		return err;
->    192	}
->    193	
-> 
-> -- 
-> 0-DAY CI Kernel Test Service
-> https://github.com/intel/lkp-tests/wiki
-> 
+> * Link to v2: https://lore.kernel.org/linux-arm-msm/20240319091020.15137-1-quic_kbajaj@quicinc.com/
+>
+> Changes in v2:
+> * Changes qmpphy node name
+> * Changes dr_mode to otg and added USB-B port USB role switch
+> * Dropped maximum-speed property from usb dwc3 node
+> * Link to v1: https://lore.kernel.org/linux-arm-msm/20240311120859.18489-1-quic_kbajaj@quicinc.com/
+>
+> [1] https://lore.kernel.org/linux-arm-msm/20240502082017.13777-1-quic_kbajaj@quicinc.com/
+> [2] https://lore.kernel.org/all/CAA8EJppNZrLzT=vGS0NXnKJT_wL+bMB9jFhJ9K7b7FPgFQbcig@mail.gmail.com/
+> ------
+>
+> Komal Bajaj (3):
+>   arm64: dts: qcom: qdu1000: Add USB3 and PHY support
+>   arm64: dts: qcom: qdu1000-idp: enable USB nodes
+>   arm64: dts: qcom: qru1000-idp: enable USB nodes
+>
+>  arch/arm64/boot/dts/qcom/qdu1000-idp.dts |  23 +++++
+>  arch/arm64/boot/dts/qcom/qdu1000.dtsi    | 120 +++++++++++++++++++++++
+>  arch/arm64/boot/dts/qcom/qru1000-idp.dts |  23 +++++
+>  3 files changed, 166 insertions(+)
+>
+> --
+> 2.42.0
+>
+>
 
+
+-- 
+With best wishes
+Dmitry
 
