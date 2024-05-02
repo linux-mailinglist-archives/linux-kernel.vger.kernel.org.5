@@ -1,121 +1,128 @@
-Return-Path: <linux-kernel+bounces-167059-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-167060-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id AFE978BA3F6
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 01:28:20 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6A4508BA3F9
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 01:29:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 62171282BA9
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 23:28:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9AE611C21E15
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 23:29:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AAF4520322;
-	Thu,  2 May 2024 23:28:13 +0000 (UTC)
-Received: from mail-pj1-f51.google.com (mail-pj1-f51.google.com [209.85.216.51])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 43BEE347A2;
+	Thu,  2 May 2024 23:29:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YboFN7Ve"
+Received: from mail-vs1-f51.google.com (mail-vs1-f51.google.com [209.85.217.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C2CF1CAA1;
-	Thu,  2 May 2024 23:28:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 408A657C96;
+	Thu,  2 May 2024 23:28:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714692493; cv=none; b=OKqubrttKE6xz/TW5otNEwxuCZ0n6CAhJy8yYc5pUBwNDXwyVIJCymhXLryUmQYl3rMZvhKKOnuz1oyD0B+wd5fhi7MV5JMZ3oq+2hfmtybqYH07TRA/gBuA/2qog5C+68E4PAc2+zkutIiRmYjKOr8ArsLccyfqp9Ng6NTf2mQ=
+	t=1714692541; cv=none; b=hVlMvftEh73peMXYPTyitKbVZRjXsEwVw4BdhpquBylA98vTNCp7PNMstmCyjdSMw+eL9Q8JGgZVyQQ0j9+MDcv4mtvei1EkuDxmU7JEY6LLbwEImZUm1SwsVeizStAh80juhxravx5pXLbyBJ3SXQRZBH57OfzwQ2OzLfa8LL0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714692493; c=relaxed/simple;
-	bh=b6o52TjdzdCt4jSSKwghb4/NyW7Kt0gS4Op5y8cytcc=;
+	s=arc-20240116; t=1714692541; c=relaxed/simple;
+	bh=/eKRH3akLZj+V2vv959Y9O15AqI+kn+kxxDaTeQ19dY=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=dugvBm9HegTD1eOr+2GcN3W4iU7YUZKWR+jPDZvqE7HHTNDHUX/45NwA7GtdtDevXSuLNYLVHe4Uh0/m4m8oi/nTtzLv3UdgWrLdl/3VGzUrCwao6fNrcwMazjLYeamPAPLAsDUbw4lj9ykIk/0pH3Kd8poMa3pxJl/0kcROdQg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.216.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	 To:Cc:Content-Type; b=I9GIGWuQbnezzQ0KiMKidkEuk65MT5PsDZPXXAIXzdzXs09L2H0c7cjuUDmEqHnAjAemMuW0EC7G8MbOUiTjDcNBLDj49iXULZL7NNknBCR9d81tlr362M7/q5/xq1lgvYVjx/EUUg0MtFsDXHhDgsfm+UnD1X7r2a5GEDW0/r4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YboFN7Ve; arc=none smtp.client-ip=209.85.217.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f51.google.com with SMTP id 98e67ed59e1d1-2b43490e0e2so147894a91.2;
-        Thu, 02 May 2024 16:28:11 -0700 (PDT)
+Received: by mail-vs1-f51.google.com with SMTP id ada2fe7eead31-47ef7e85cf0so142427137.1;
+        Thu, 02 May 2024 16:28:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1714692539; x=1715297339; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=C+N7g2LBW/IB22E2qHNEVIcw2Pw/ONc9/v5J07ZgvL0=;
+        b=YboFN7VeFytKBzvYlml5WtAOaBX7nsQR4AogCm9zYcYiDt2cJe2N68wSQoYE2dru4G
+         +1D38q76+n9bOfV5DCojI0zaF9ZtU4q3fpIJ46d+GM87i9AWp6LkQFO5AJwZuSbcR/F+
+         FdHydh01lSkeC63BweszhT/Pj3JyF54wh0DLNtusxwdcSKELUGh3Inu7mmsZQC/u0g0Z
+         Wboe8BWcl0lyVHDeqSd6/zJAeT46ddTIOqxe/TPIsaoJirb/jCe2niInv5cvbUA8XBJ1
+         LNMZ741aiBnCoYvdXSbx1UTeq0M6Ao72xTF6Y0Qf0x2JHD7tMslokO2yuiElSoymyVlS
+         lIaA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714692491; x=1715297291;
+        d=1e100.net; s=20230601; t=1714692539; x=1715297339;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=HPejxyFKU1Zh3kN9Scg088bpLLbAnsYPfIC5g4m7D1E=;
-        b=Ep11gXlMojryXhsHIteQC9ZFW8BgNCeZ+Q3LMydryKQkCx9jY5COasOp61q6weITpe
-         yddrP0lSR4bDv5w64y4QUJNXtSiZ3Lb7FhMU1kmk5uLVBI6Vpuqqgiv24rHHt7k6sO6q
-         WY2qOKgI2UbimkSLaQl/KEuB7sSWYFqgM/CBqds8P40Z0F4oYibM+tZtpuYn8Mlb2VZ0
-         3BV/cqXB53cdhMp7NKeakJkO3veBNY8Z5sclpmZEzi9oBccAVoha1QKjr2Ryu6sDyA9v
-         EdfGxTtX/SmZUza4f+1eEyV6OgSO8jnpmqjngpRMAbzDZkIQImsPs2rvVycikWD1giuT
-         J6vA==
-X-Forwarded-Encrypted: i=1; AJvYcCW0KZ+BXR2aCNI56gzaVAj2oNC8DHq6XMmZVq1sk6rTXUlTbDWtaCLnz5SPysgGZGvhBS1crR02/7QMEeg/8ZPc4XMZX0KF/7Six1IyfoGzK1JQUAdkWf7yql9dR/zwWkT5yYYJHsAIK+VNW15ifg==
-X-Gm-Message-State: AOJu0YyY44FIpUSgZs52LLci6awqp5cS6IisDMdAs4Nz7M2QHGR4GKyS
-	fVK2lIHBwI6DWg1E8hzMs2JaDzN7PlWMPdy016hAOeWyGcdcVwkVGm62tOwOcQsPfjZI2ivDfw6
-	RNwDS0DQWhHL1VutHUk4LXx3GRW4=
-X-Google-Smtp-Source: AGHT+IGCfFayYnMJu50+R6ypYEmLWC90DGrdLB1SJVicZ0gOaO0Ww9JBcpPMRwWuybiMLiWOpNVphhDBzI5/UlBk9GA=
-X-Received: by 2002:a17:90a:ea08:b0:2ae:7f27:82cd with SMTP id
- w8-20020a17090aea0800b002ae7f2782cdmr1274067pjy.7.1714692491345; Thu, 02 May
- 2024 16:28:11 -0700 (PDT)
+        bh=C+N7g2LBW/IB22E2qHNEVIcw2Pw/ONc9/v5J07ZgvL0=;
+        b=XNK9w7bLVf2+ey2DXcnvaiCLxbxlf1FBHE4yzz6CVen1kdhlsAT4eemGX/N9hRfLBJ
+         HMMAzaZqIHanC6w2jizJQjXyp7+zNNfgqd/n+raUlOoVmxFLYzup1w/QN7YhKPDRvp1l
+         1rf+VaDU9vL5QPfetn3sHMjbiXQrBtDyERDkbY8FBSW6CwG02TVqFSGyyjCOh8sWZe+4
+         hIxZjm8SsR0GJ1jLqze0C1kUdNpqV75Xy8bFmijT3F/2QhrYNt09arMe6jEIcWmGfAeW
+         EDsDlcHzjv/0BNc0ck0CjFZNHPURxCrlu6ehRZlm8OyUPMSpjVJhoM5ExYv2Oawq7HbD
+         ljTg==
+X-Forwarded-Encrypted: i=1; AJvYcCVH/YFS7I9SMeuXTJPTfPP/4+wKcMx4/8JLP//15no8Z4mvZ66EPpbN3VXtaTudO97KVnFqrMYpZ+oSLVOdywRZnxLnilRNLpTFwtSjwDx0z8YcZBJyO4pFi4ec4rmJrfdiI7JTpyMR/gpikdmXcFL8NmiVePW9eVOguYyU43KfeA==
+X-Gm-Message-State: AOJu0YzeYTYtEFFL42kCXBmWzX5lTVMDvnoXOx0qGP6Dz9BiGkwIRp2h
+	goXP3L2TV6PDJr5y/akLD1T/3yWawGv7TRb6N58ho6cM2Kq5HY+kKPIQcAze6Xszz4iKBxD5mT1
+	AjPqVXORb1fUN+Gjage3C6EiYiBU=
+X-Google-Smtp-Source: AGHT+IE7gIdmklsBuT97sdlWGZJ9767szbCMEvMzfEJsTje6wDqcsvrqvqKPpnFKgGnVtuMvDfjj2C4QN/obWjQ3RZY=
+X-Received: by 2002:a67:c993:0:b0:47e:eeaa:90af with SMTP id
+ y19-20020a67c993000000b0047eeeaa90afmr1184573vsk.34.1714692539069; Thu, 02
+ May 2024 16:28:59 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240502060011.1838090-1-namhyung@kernel.org> <20240502060011.1838090-3-namhyung@kernel.org>
- <ZjOaFS7_vEojFnUZ@x1> <CAM9d7chGYy9X=3=iRwocUWJurXPGd0WZaE=yr8U1JkrLcaUrow@mail.gmail.com>
-In-Reply-To: <CAM9d7chGYy9X=3=iRwocUWJurXPGd0WZaE=yr8U1JkrLcaUrow@mail.gmail.com>
-From: Namhyung Kim <namhyung@kernel.org>
-Date: Thu, 2 May 2024 16:28:00 -0700
-Message-ID: <CAM9d7cgQn48sq-mF42sqSAkUeO_n=a7Jcs+J1zV+YzCuGLj7uQ@mail.gmail.com>
-Subject: Re: [PATCH 2/6] perf annotate-data: Collect global variables in advance
-To: Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc: Ian Rogers <irogers@google.com>, Kan Liang <kan.liang@linux.intel.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Adrian Hunter <adrian.hunter@intel.com>, 
-	Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@kernel.org>, 
-	LKML <linux-kernel@vger.kernel.org>, linux-perf-users@vger.kernel.org
+References: <20240502185307.3942173-1-usamaarif642@gmail.com> <20240502185307.3942173-2-usamaarif642@gmail.com>
+In-Reply-To: <20240502185307.3942173-2-usamaarif642@gmail.com>
+From: Nhat Pham <nphamcs@gmail.com>
+Date: Thu, 2 May 2024 16:28:46 -0700
+Message-ID: <CAKEwX=OUf6Rd2aEwcEYdO_D3ALrSMCTdO4fdpiqhO-F-ygyLfw@mail.gmail.com>
+Subject: Re: [PATCH v2 1/1] cgroup: Add documentation for missing zswap memory.stat
+To: Usama Arif <usamaarif642@gmail.com>
+Cc: hannes@cmpxchg.org, tj@kernel.org, lizefan.x@bytedance.com, corbet@lwn.net, 
+	linux-mm@kvack.org, cgroups@vger.kernel.org, linux-doc@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, kernel-team@meta.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, May 2, 2024 at 11:23=E2=80=AFAM Namhyung Kim <namhyung@kernel.org> =
-wrote:
+On Thu, May 2, 2024 at 11:53=E2=80=AFAM Usama Arif <usamaarif642@gmail.com>=
+ wrote:
 >
-> On Thu, May 2, 2024 at 6:50=E2=80=AFAM Arnaldo Carvalho de Melo <acme@ker=
-nel.org> wrote:
-> >
-> > On Wed, May 01, 2024 at 11:00:07PM -0700, Namhyung Kim wrote:
-> > > Currently it looks up global variables from the current CU using addr=
-ess
-> > > and name.  But it sometimes fails to find a variable as the variable =
-can
-> > > come from a different CU - but it's still strange it failed to find a
-> > > declaration for some reason.
-> > >
-> > > Anyway, it can collect all global variables from all CU once and then
-> > > lookup them later on.  This slightly improves the success rate of my
-> > > test data set.
-> >
-> > It would be interesting you could provide examples from your test data
-> > set, i.e. after this patch these extra global variables were considered
-> > in the test results, with some tool output, etc.
+> This includes zswpin, zswpout and zswpwb.
+>
+> Signed-off-by: Usama Arif <usamaarif642@gmail.com>
+> ---
+>  Documentation/admin-guide/cgroup-v2.rst | 9 +++++++++
+>  1 file changed, 9 insertions(+)
+>
+> diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admi=
+n-guide/cgroup-v2.rst
+> index 17e6e9565156..eaf9e66e472a 100644
+> --- a/Documentation/admin-guide/cgroup-v2.rst
+> +++ b/Documentation/admin-guide/cgroup-v2.rst
+> @@ -1572,6 +1572,15 @@ PAGE_SIZE multiple when read back.
+>           pglazyfreed (npn)
+>                 Amount of reclaimed lazyfree pages
+>
+> +         zswpin
+> +               Number of pages moved in to memory from zswap.
 
-Here's the example:
+nit: into?
 
-Before
------------------------------------------------------------
-find data type for 0x6014(PC) at entry_SYSCALL_64+0x7
-CU for arch/x86/entry/entry_64.S (die:0x85e1d)
-no variable found
+> +
+> +         zswpout
+> +               Number of pages moved out of memory to zswap.
+> +
+> +         zswpwb
+> +               Number of pages written from zswap to swap.
+> +
+>           thp_fault_alloc (npn)
+>                 Number of transparent hugepages which were allocated to s=
+atisfy
+>                 a page fault. This counter is not present when CONFIG_TRA=
+NSPARENT_HUGEPAGE
+> --
+> 2.43.0
+>
 
-After
------------------------------------------------------------
-find data type for 0x6014(PC) at entry_SYSCALL_64+0x7
-CU for arch/x86/entry/entry_64.S (die:0x85e1d)
-found by addr=3D0x6014 type_offset=3D0x14
- type=3D'struct tss_struct' size=3D0x5000 (die:0x74dbe1)
-
-It was asm code so it doesn't have the type info in the CU.
-With this change it can see the type (from a different CU).
-It seems we have a per-cpu variable called cpu_tss_rw at
-address 0x6000.
-
-  $ nm vmlinux | grep 6000 | grep tss
-  0000000000006000 D cpu_tss_rw
-
-Thanks,
-Namhyung
+That very small nit aside, LGTM. Thanks for completing the documentation.
+Acked-by: Nhat Pham <nphamcs@gmail.com>
 
