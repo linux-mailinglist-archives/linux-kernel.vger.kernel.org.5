@@ -1,235 +1,210 @@
-Return-Path: <linux-kernel+bounces-167007-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-167006-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0E3988BA352
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 00:35:14 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id BAC9C8BA351
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 00:35:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 323D01C20C8E
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 487531F219B5
 	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 22:35:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3728316D4C7;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25121171E71;
 	Thu,  2 May 2024 22:33:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="MHfM2F0L"
-Received: from mail-pj1-f53.google.com (mail-pj1-f53.google.com [209.85.216.53])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KRfn4VTs"
+Received: from mail-lf1-f48.google.com (mail-lf1-f48.google.com [209.85.167.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D649433CF
-	for <linux-kernel@vger.kernel.org>; Thu,  2 May 2024 22:33:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD1C72C1A5;
+	Thu,  2 May 2024 22:33:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714689231; cv=none; b=WcGsu9fmOSnNbFhuVbqWMHkapzAhqEMTSIJMBg45dKtef4WoejY2AIwlGxaegAWvlpYGvNzjJ/o7gKxive1GY0KhEE26EOjxlbY6Sx9tBgHrtXAWOKV+XRuUxPlnRZ8p6olgQsghLNgx8IM8k13vvuOMbu8stJ8XmmmO3f3Yjpc=
+	t=1714689230; cv=none; b=aBRI48WsGZvkmKKbF0LvC3ivsYTg8kM1QOwUGfDq9Tp4y3Cwk+34rGB/NseD/HAN8ELlMcZWTn6hgCmszvC2nZklo3t6Ja9ui0MLRGyLcLXl6Z7dB1RL6POxG8JM0xX4/9i/pqw8GZMi4dkrWZruGkq0DsK2wNrzoR6tSpJn99Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714689231; c=relaxed/simple;
-	bh=aku0Ov6TP/MVYBgFlGuMSUdhnxeal+hPQHrvCM+9JCg=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=SfAw5E71VeFLSfa2Bp8va495MrC0RndU/yOuHGzFwbtms7PM7gTMDpGUiuh+kYdxy2w6wbhXaZ0LMW8T6X3cg9R/xAVjHVBoiWa4RQZWtAqHSAhmwLEpo5ycbViQ3e/zbjBBq4SudV1l6NL/QmYnLOLy7770LusnTtYRoEs31S4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=MHfM2F0L; arc=none smtp.client-ip=209.85.216.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pj1-f53.google.com with SMTP id 98e67ed59e1d1-2b3c1ea9a68so838684a91.1
-        for <linux-kernel@vger.kernel.org>; Thu, 02 May 2024 15:33:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1714689229; x=1715294029; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Nhj8hJv8Nz4SLO0kIrZY8268X0YP9luJWZdcMXgW554=;
-        b=MHfM2F0LjCk+8EUjh9rcul74jhMusbATkG+JI+0vONTQiZ9qLpGT0TMRAX7ifHH5V9
-         F590du9Unm3NlLg7xzMFZLEuDWxbu1FkPvyhG+P0CKXhTTs6ApN15IDTx8D6oZJQptJC
-         XQw8U79NpNamGRkGsbTnsAkDiH+c+c9unS1ks=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714689229; x=1715294029;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Nhj8hJv8Nz4SLO0kIrZY8268X0YP9luJWZdcMXgW554=;
-        b=mCprRvunoQMqYW7wjLHhxAqjLCOjF8nhzSJ3OkRToWBfbfQajS/lSXvK9hdIvE7H3j
-         rsfCwqnRGo06WUt8WAJlctFJJ87O3USstCmOcgcz2aYILCPzWipmyKqrqLRbe5D1FkyP
-         8x9gwA6lva7JC4A0QjkclwRpJJZUwmVsDNVpZMBjAiSFDF8Rp4PUBhYGjGcTqH48eaYP
-         7sbpPQA28smBq2auO/GgR6nruj3wFOiyCBrTcM3QJbClaMOAiZh4C/6sL8Bhz6O6Luuu
-         q548P+Y+XgdfVFORSvbpIyAx4TubKV9FuoBbI+LpDoo+s8do2AoV253hxSZu3PUAr5my
-         NRgA==
-X-Forwarded-Encrypted: i=1; AJvYcCWdGDzO4NqzSodABevf+6RFKWxwFtEm+oA5ksAGrYEHy21eMPf9xOmGT5eCnbVXrU/Dv2knHad0kC1dV8kM1uje6qOmZhimY5wn487d
-X-Gm-Message-State: AOJu0YxP9t7qaTTEa95PdWu/uNZpKBEv0oz890hFzhRZtb97lrwMhMg3
-	6sxY5uIR043xY5sl0/xylvZcF4a4lJF0X3AEyUkizUpOx2HgFAF3BjgyK9aLhw==
-X-Google-Smtp-Source: AGHT+IFc7AO8befqehZXahPHokNXwIeinKWSHFTDAZBc8gTAVzLseerL0chlFu6kgm2QDfWE7mdbeg==
-X-Received: by 2002:a17:90a:ac18:b0:2b2:9783:d0ca with SMTP id o24-20020a17090aac1800b002b29783d0camr1477782pjq.12.1714689228740;
+	s=arc-20240116; t=1714689230; c=relaxed/simple;
+	bh=Un8DsDqzrcHTNchH+A46k/QnEWFZlX9cICUVd/GwMe4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=WTV1skRFI/VgQP/n+X0xDAX04ndtPnDT6elHPMGtjizFyjkEtagxC2TbHxXHfzBoVYSAIYCO9prsV/oepFosVTowGt//Ilec4xMCBcDp6PbxcXQXy44Ky8SXc/UjiXJR+i4RkNSsNQ9ZY9XJFy1uroAlCSPUdjT42PRyBXqjEcA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KRfn4VTs; arc=none smtp.client-ip=209.85.167.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f48.google.com with SMTP id 2adb3069b0e04-51f174e316eso1492043e87.0;
         Thu, 02 May 2024 15:33:48 -0700 (PDT)
-Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id fw14-20020a17090b128e00b002a2d4bf345bsm3698747pjb.55.2024.05.02.15.33.44
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1714689227; x=1715294027; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=OuymcIiJPiemZlanqz0KZDKUioJ+R0OZ4+MGq8AhvEg=;
+        b=KRfn4VTsHPB45VOMZIVR1+JVg6aM2/EbXf5WUL8TvHNNTD6N0xfwGmvl/FF+rhuU13
+         AZ1BUFO85qyniai1+jlaPu4U7So54cy17+N0FpDJKcKARh6Bkx7TiHFiS94rizi8TQjX
+         4jFqntMw5KKq0X8HZnEa/OFiCGYbFTSGYm6lt+SGqtM8E0xEMo+MnnYiEonS3Qx5NhKp
+         DQOLEUZYR8Qr44TYRmZIiL3vSMFyme/WVmhZVRBJBZcmNk0cMpyy7/PPaaTZobgshYMr
+         Hw3o6MXV8H3R7lULoH+sb1chS4w1eKDneXIoYnFdTi9WDQA7A+cZqNsy3kZqoBLFE7LQ
+         0sxQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714689227; x=1715294027;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=OuymcIiJPiemZlanqz0KZDKUioJ+R0OZ4+MGq8AhvEg=;
+        b=dl5Ars9uGmmwd6MB44e3+x/urKdu58SQdqrHMYowcsv27590m91rnuaXfyHwj4+KBi
+         WRZkvQMGXX8ClbvVUhfsvuX7mlTVkhuLEpseMSw1hdR3tD6804/CjoFxLbDU6t7MDeiE
+         FNqTM2TJ4RbRwQd+pFbb4MHSd/4eZHn0rG1utOLpGUvohjQRz6hG+PSGN+aDSuV6Kxvb
+         K6mywzapittwTHJXOF6X5aZw4leYSNX2/t1DglJNQTBu6ewwAZWR82ANqZO/ptQ+PkP0
+         VvECkFBkr0Yur+AMsc9nLLKqE8RSNACDHHbPuQXmae5hma1AOMhugfgLgYm5xHIKXxIw
+         O+Ew==
+X-Forwarded-Encrypted: i=1; AJvYcCU9wKzCo1928ctX8YrWCVvMvhcyU8PznmnprTnr6XYCwcj2LE795uXwSGoH+G2bamjF0Qv4z3kB4+IpPKT3J7275oMwxp4DNm+SPu/WJnzUr8XBN2vyCu/s83DUEwCyDR/VD3wS4YSufBbrLYGjWiUMrcLP1O30bCrPbJAHrATYKrUuOohno8qEx2u0x5J5Gv2n/nr3GKVYJgYNkmJsUoW9pFIl
+X-Gm-Message-State: AOJu0Yz8CmQIXTbBN6KwMFoUg3A8kNnG+vdf9pBnvHapswEjtcs2qFCH
+	qi9c4HOhEqWWFxb6NeLZUVgttXqv7d3iNc/BD75mcLC2901JZJLH
+X-Google-Smtp-Source: AGHT+IGbFfFzXlP47A82vaBo8QSPa7wJ1Xkts6SMGSKXY0Bak5fwBUFDwrThIgMWZJyGR0yaLaiBOQ==
+X-Received: by 2002:ac2:4d97:0:b0:519:2c84:2405 with SMTP id g23-20020ac24d97000000b005192c842405mr643387lfe.44.1714689226346;
+        Thu, 02 May 2024 15:33:46 -0700 (PDT)
+Received: from mobilestation ([95.79.182.53])
+        by smtp.gmail.com with ESMTPSA id y13-20020a19914d000000b0051b59171ba9sm327335lfj.96.2024.05.02.15.33.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 May 2024 15:33:47 -0700 (PDT)
-From: Kees Cook <keescook@chromium.org>
-To: Christian Brauner <brauner@kernel.org>
-Cc: Kees Cook <keescook@chromium.org>,
-	Alexander Viro <viro@zeniv.linux.org.uk>,
-	Jan Kara <jack@suse.cz>,
-	linux-fsdevel@vger.kernel.org,
-	Zack Rusin <zack.rusin@broadcom.com>,
-	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	David Airlie <airlied@gmail.com>,
-	Daniel Vetter <daniel@ffwll.ch>,
-	Jani Nikula <jani.nikula@linux.intel.com>,
-	Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-	Rodrigo Vivi <rodrigo.vivi@intel.com>,
-	Tvrtko Ursulin <tursulin@ursulin.net>,
-	Andi Shyti <andi.shyti@linux.intel.com>,
-	Lucas De Marchi <lucas.demarchi@intel.com>,
-	Matt Atwood <matthew.s.atwood@intel.com>,
-	Matthew Auld <matthew.auld@intel.com>,
-	Nirmoy Das <nirmoy.das@intel.com>,
-	Jonathan Cavitt <jonathan.cavitt@intel.com>,
-	Will Deacon <will@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Kent Overstreet <kent.overstreet@linux.dev>,
-	Masahiro Yamada <masahiroy@kernel.org>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Nicolas Schier <nicolas@fjasle.eu>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	linux-kernel@vger.kernel.org,
-	dri-devel@lists.freedesktop.org,
-	intel-gfx@lists.freedesktop.org,
-	linux-kbuild@vger.kernel.org,
-	linux-hardening@vger.kernel.org
-Subject: [PATCH 5/5] fs: Convert struct file::f_count to refcount_long_t
-Date: Thu,  2 May 2024 15:33:40 -0700
-Message-Id: <20240502223341.1835070-5-keescook@chromium.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240502222252.work.690-kees@kernel.org>
-References: <20240502222252.work.690-kees@kernel.org>
+        Thu, 02 May 2024 15:33:45 -0700 (PDT)
+Date: Fri, 3 May 2024 01:33:43 +0300
+From: Serge Semin <fancer.lancer@gmail.com>
+To: Romain Gantois <romain.gantois@bootlin.com>
+Cc: "David S. Miller" <davem@davemloft.net>, 
+	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
+	Paolo Abeni <pabeni@redhat.com>, Rob Herring <robh@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Geert Uytterhoeven <geert+renesas@glider.be>, Magnus Damm <magnus.damm@gmail.com>, 
+	Alexandre Torgue <alexandre.torgue@foss.st.com>, Jose Abreu <joabreu@synopsys.com>, 
+	Maxime Coquelin <mcoquelin.stm32@gmail.com>, Russell King <linux@armlinux.org.uk>, 
+	=?utf-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <clement.leger@bootlin.com>, Thomas Petazzoni <thomas.petazzoni@bootlin.com>, 
+	netdev@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-renesas-soc@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com, 
+	linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH net-next v5 2/7] net: stmmac: Add dedicated XPCS cleanup
+ method
+Message-ID: <4wdcmcb2yxneynxtppestl6cp25z5xge3hfv7o47bxwpafn4cg@mtvc3ls2cxij>
+References: <20240430-rzn1-gmac1-v5-0-62f65a84f418@bootlin.com>
+ <20240430-rzn1-gmac1-v5-2-62f65a84f418@bootlin.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=3356; i=keescook@chromium.org;
- h=from:subject; bh=aku0Ov6TP/MVYBgFlGuMSUdhnxeal+hPQHrvCM+9JCg=;
- b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBmNBTDsTosM5PigT8MgtAILfCBKJBIs1YpjR+n9
- i4hU3z7b2GJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZjQUwwAKCRCJcvTf3G3A
- JpwAD/47yb9BpbWzPuD0heUR6EIq/XA2DmBYJDN5EAEcjQh8e95gPvrbNsBQnT+lojr4owqsbV7
- yzKXeVQsU4C13GRWVgHZOs4DuQkYYtC0AJVHQ9LrjXn9Rgkfb928ujjbYMNhZpvfGxJ///oDZEx
- SLgxaj8AKWkuPDgKyktn25SCmT7MnZbHQ5h+s3Eu+U0PO1IeAY8qwit7+cWw0KtH0SmVPGyzLSg
- OD7OAFb7j5XoajUhOQcltZOHvQI8FEQQsMvOJxUtioIyuro1Ah2yAhiJ+Gb4IiuzreOOS5mpQY9
- rAeyVw1zgu2gR6iJ7gpPfq40oFIp3yulcggvyRh6GeikDzJhwpr9MIdIEnYpgeyTm/PgomJjyNR
- KVeoluWeWITtKvPSs1kXp33TxqrsjXk2F06HFgRPXqyLP4d/qcZhl7q6Vs8GmNlEbtLMqxJscV2
- o/JWSiqQ4VeQfHwCAZNY9enOk5CCC6Z+YwOof8OUIKsivBxLc7dLGjX+X01ttLx5GWsmPr7/RHY
- jAKBvlDq1GORFiHN/58xNQNqu1fGiicNh5Wyuk7D22DfoO0k+gWAoz/7JKx6Q+N1zM4URIMfePa
- ZwcN0ap5AIn9iwCooiNslmX4gAjKTcV7LO1fvZy8mgzRK2khRr0rpHK6qi52Vq3AMNylI0Nw9qZ qJGKfgmX6LueF0A==
-X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240430-rzn1-gmac1-v5-2-62f65a84f418@bootlin.com>
 
-Underflow of f_count needs to be more carefully detected than it
-currently is. The results of get_file() should be checked, but the
-first step is detection. Redefine f_count from atomic_long_t to
-refcount_long_t.
+Hi Romain
 
-Signed-off-by: Kees Cook <keescook@chromium.org>
----
-Cc: Christian Brauner <brauner@kernel.org>
-Cc: Alexander Viro <viro@zeniv.linux.org.uk>
-Cc: Jan Kara <jack@suse.cz>
-Cc: linux-fsdevel@vger.kernel.org
----
- fs/file.c          | 4 ++--
- fs/file_table.c    | 6 +++---
- include/linux/fs.h | 6 +++---
- 3 files changed, 8 insertions(+), 8 deletions(-)
+On Tue, Apr 30, 2024 at 09:29:42AM +0200, Romain Gantois wrote:
+> From: Serge Semin <fancer.lancer@gmail.com>
+> 
+> Currently the XPCS handler destruction is performed in the
+> stmmac_mdio_unregister() method. It doesn't look good because the handler
+> isn't originally created in the corresponding protagonist
+> stmmac_mdio_unregister(), but in the stmmac_xpcs_setup() function. In
+> order to have more coherent MDIO and XPCS setup/cleanup procedures,
+> let's move the DW XPCS destruction to the dedicated stmmac_pcs_clean()
+> method.
+> 
+> This method will also be used to cleanup PCS hardware using the
+> pcs_exit() callback that will be introduced to stmmac in a subsequent
+> patch.
+> 
+> Signed-off-by: Serge Semin <fancer.lancer@gmail.com>
+> Co-developed-by: Romain Gantois <romain.gantois@bootlin.com>
+> Signed-off-by: Romain Gantois <romain.gantois@bootlin.com>
+> ---
+>  drivers/net/ethernet/stmicro/stmmac/stmmac.h      |  1 +
+>  drivers/net/ethernet/stmicro/stmmac/stmmac_main.c |  6 +++++-
+>  drivers/net/ethernet/stmicro/stmmac/stmmac_mdio.c | 12 +++++++++---
+>  3 files changed, 15 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac.h b/drivers/net/ethernet/stmicro/stmmac/stmmac.h
+> index dddcaa9220cc3..7e0d727ed795b 100644
+> --- a/drivers/net/ethernet/stmicro/stmmac/stmmac.h
+> +++ b/drivers/net/ethernet/stmicro/stmmac/stmmac.h
+> @@ -361,6 +361,7 @@ int stmmac_mdio_unregister(struct net_device *ndev);
+>  int stmmac_mdio_register(struct net_device *ndev);
+>  int stmmac_mdio_reset(struct mii_bus *mii);
+>  int stmmac_xpcs_setup(struct mii_bus *mii);
+> +void stmmac_pcs_clean(struct stmmac_priv *priv);
+>  void stmmac_set_ethtool_ops(struct net_device *netdev);
+>  
+>  int stmmac_init_tstamp_counter(struct stmmac_priv *priv, u32 systime_flags);
+> diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+> index 59bf83904b62d..2a55c5d07f6b8 100644
+> --- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+> +++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+> @@ -7789,8 +7789,9 @@ int stmmac_dvr_probe(struct device *device,
+>  
+>  error_netdev_register:
+>  	phylink_destroy(priv->phylink);
+> -error_xpcs_setup:
+>  error_phy_setup:
+> +	stmmac_pcs_clean(priv);
+> +error_xpcs_setup:
+>  	if (priv->hw->pcs != STMMAC_PCS_TBI &&
+>  	    priv->hw->pcs != STMMAC_PCS_RTBI)
+>  		stmmac_mdio_unregister(ndev);
+> @@ -7832,6 +7833,9 @@ void stmmac_dvr_remove(struct device *dev)
+>  	if (priv->plat->stmmac_rst)
+>  		reset_control_assert(priv->plat->stmmac_rst);
+>  	reset_control_assert(priv->plat->stmmac_ahb_rst);
+> +
+> +	stmmac_pcs_clean(priv);
+> +
+>  	if (priv->hw->pcs != STMMAC_PCS_TBI &&
+>  	    priv->hw->pcs != STMMAC_PCS_RTBI)
+>  		stmmac_mdio_unregister(ndev);
+> diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_mdio.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_mdio.c
+> index 0542cfd1817e6..508bd39cbe2b3 100644
+> --- a/drivers/net/ethernet/stmicro/stmmac/stmmac_mdio.c
+> +++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_mdio.c
+> @@ -523,6 +523,15 @@ int stmmac_xpcs_setup(struct mii_bus *bus)
+>  	return 0;
+>  }
+>  
 
-diff --git a/fs/file.c b/fs/file.c
-index 3b683b9101d8..570424dd634b 100644
---- a/fs/file.c
-+++ b/fs/file.c
-@@ -865,7 +865,7 @@ static struct file *__get_file_rcu(struct file __rcu **f)
- 	if (!file)
- 		return NULL;
- 
--	if (unlikely(!atomic_long_inc_not_zero(&file->f_count)))
-+	if (unlikely(!refcount_long_inc_not_zero(&file->f_count)))
- 		return ERR_PTR(-EAGAIN);
- 
- 	file_reloaded = rcu_dereference_raw(*f);
-@@ -987,7 +987,7 @@ static inline struct file *__fget_files_rcu(struct files_struct *files,
- 		 * barrier. We only really need an 'acquire' one to
- 		 * protect the loads below, but we don't have that.
- 		 */
--		if (unlikely(!atomic_long_inc_not_zero(&file->f_count)))
-+		if (unlikely(!refcount_long_inc_not_zero(&file->f_count)))
- 			continue;
- 
- 		/*
-diff --git a/fs/file_table.c b/fs/file_table.c
-index 4f03beed4737..f29e7b94bca1 100644
---- a/fs/file_table.c
-+++ b/fs/file_table.c
-@@ -167,7 +167,7 @@ static int init_file(struct file *f, int flags, const struct cred *cred)
- 	 * fget-rcu pattern users need to be able to handle spurious
- 	 * refcount bumps we should reinitialize the reused file first.
- 	 */
--	atomic_long_set(&f->f_count, 1);
-+	refcount_long_set(&f->f_count, 1);
- 	return 0;
- }
- 
-@@ -470,7 +470,7 @@ static DECLARE_DELAYED_WORK(delayed_fput_work, delayed_fput);
- 
- void fput(struct file *file)
- {
--	if (atomic_long_dec_and_test(&file->f_count)) {
-+	if (refcount_long_dec_and_test(&file->f_count)) {
- 		struct task_struct *task = current;
- 
- 		if (unlikely(!(file->f_mode & (FMODE_BACKING | FMODE_OPENED)))) {
-@@ -503,7 +503,7 @@ void fput(struct file *file)
-  */
- void __fput_sync(struct file *file)
- {
--	if (atomic_long_dec_and_test(&file->f_count))
-+	if (refcount_long_dec_and_test(&file->f_count))
- 		__fput(file);
- }
- 
-diff --git a/include/linux/fs.h b/include/linux/fs.h
-index 210bbbfe9b83..b8f6cce7c39d 100644
---- a/include/linux/fs.h
-+++ b/include/linux/fs.h
-@@ -1001,7 +1001,7 @@ struct file {
- 	 */
- 	spinlock_t		f_lock;
- 	fmode_t			f_mode;
--	atomic_long_t		f_count;
-+	refcount_long_t		f_count;
- 	struct mutex		f_pos_lock;
- 	loff_t			f_pos;
- 	unsigned int		f_flags;
-@@ -1038,7 +1038,7 @@ struct file_handle {
- 
- static inline struct file *get_file(struct file *f)
- {
--	if (unlikely(!atomic_long_inc_not_zero(&f->f_count)))
-+	if (unlikely(!refcount_long_inc_not_zero(&f->f_count)))
- 		return NULL;
- 	return f;
- }
-@@ -1046,7 +1046,7 @@ static inline struct file *get_file(struct file *f)
- struct file *get_file_rcu(struct file __rcu **f);
- struct file *get_file_active(struct file **f);
- 
--#define file_count(x)	atomic_long_read(&(x)->f_count)
-+#define file_count(x)	refcount_long_read(&(x)->f_count)
- 
- #define	MAX_NON_LFS	((1UL<<31) - 1)
- 
--- 
-2.34.1
+> +void stmmac_pcs_clean(struct stmmac_priv *priv)
 
+Ideally it would have been great to have the entire driver fixed to
+accept the stmmac_priv pointer as the functions argument. But this
+would be too tiresome. Anyway seeing the PCS-setup protagonist method
+has the net_device pointer passed I would implement the same prototype
+for the antagonist even though it would require an additional local
+variable. That will make the MDIO and PCS local interface-functions
+looking alike and as if unified. That is the reason of why I made
+stmmac_xpcs_clean() accepting the net_device pointer. 
+
+Alternatively both stmmac_pcs_setup() and stmmac_pcs_clean() could be
+converted to just accepting a pointer to the stmmac_priv instance.
+
+-Serge(y)
+
+> +{
+> +	if (!priv->hw->xpcs)
+> +		return;
+> +
+> +	xpcs_destroy(priv->hw->xpcs);
+> +	priv->hw->xpcs = NULL;
+> +}
+> +
+>  /**
+>   * stmmac_mdio_register
+>   * @ndev: net device structure
+> @@ -679,9 +688,6 @@ int stmmac_mdio_unregister(struct net_device *ndev)
+>  	if (!priv->mii)
+>  		return 0;
+>  
+> -	if (priv->hw->xpcs)
+> -		xpcs_destroy(priv->hw->xpcs);
+> -
+>  	mdiobus_unregister(priv->mii);
+>  	priv->mii->priv = NULL;
+>  	mdiobus_free(priv->mii);
+> 
+> -- 
+> 2.44.0
+> 
 
