@@ -1,69 +1,86 @@
-Return-Path: <linux-kernel+bounces-166479-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-166481-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3C04C8B9B3F
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 15:03:30 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9766D8B9B44
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 15:04:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EB5A1282B51
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 13:03:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 53F0F282C72
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 13:04:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D7EB883CD0;
-	Thu,  2 May 2024 13:03:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ACB1E84052;
+	Thu,  2 May 2024 13:04:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iC/n65fl"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65D25824AB;
-	Thu,  2 May 2024 13:03:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EADCD32C60;
+	Thu,  2 May 2024 13:04:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714655003; cv=none; b=bBsmZX87NVM1JJJf4sxD3GPhEOg8qnw2f1acG5cSLZnRfhwR3ajMuUTqCRgXlD3nl/zWWCW/tbalHHWaud1ROnPU2Qh7b4k6HtWKt+/ZRMV0NDQtu4Z8f+gjtDhWewOeLx3BG5Z1NDrRUStxAUJYUfs54CtLromChmRgjQLyHU4=
+	t=1714655073; cv=none; b=CMMvVAO1weEEPKIAJjF9bXzfdcO1VchZusAzMfIaVkYMTqKDYvSAni5mV8OfvV0OUoZbzlK1hcc+acfuSxncc3PN0qp/mMKD/YpmOwky2OhRf2Gw/vNLhUCE4jxLDmirIKsv9gQdjaY5sCN+sZD1bX6kfj2qCDycoX2jSbAPn6Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714655003; c=relaxed/simple;
-	bh=BJvqNIJnKQx/QQ1NkDS186Ew7vZ155HdR9WHQJ7ugv0=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=SUX9dz9qwAezze4j7TrkmJfPdcDpBtySQ3QSm3oS/xXGfiS/DxcBZ15iK2tZgxhpIfeaDycm/AhKoMKv6pDFIOWEprok642/No4AyELWOz+qqKptBRXFARh2KByT7+bUFSzyE+mBAE1DAxilGu1td7UapRDaC6hzVRtH/6ZbrXQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 652D3C113CC;
-	Thu,  2 May 2024 13:03:22 +0000 (UTC)
-Date: Thu, 2 May 2024 09:04:08 -0400
-From: Steven Rostedt <rostedt@goodmis.org>
-To: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
-Cc: LKML <linux-kernel@vger.kernel.org>, Linux Trace Kernel
- <linux-trace-kernel@vger.kernel.org>, Mathieu Desnoyers
- <mathieu.desnoyers@efficios.com>, Tze-nan wu <Tze-nan.Wu@mediatek.com>
-Subject: Re: [PATCH] eventfs/tracing: Add callback for release of an
- eventfs_inode
-Message-ID: <20240502090408.19bc5815@gandalf.local.home>
-In-Reply-To: <20240501235626.81178236dc8826c038089c0c@kernel.org>
-References: <20240430142327.7bff81ba@gandalf.local.home>
-	<20240501235626.81178236dc8826c038089c0c@kernel.org>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1714655073; c=relaxed/simple;
+	bh=LxYoy5aryNP2HMhsf2xv0naIvXnZbLmH+o8waQE0UrY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=kWD5SlOC25PN080cxgouhoC8R17s7t+i+foj04XMnt+tuFKfIqQj+BJYAmj/AxzMIhAmnlwr/5ZvWOupH5doRCbGgh+dF/jkP4G0c4EPn59nJBlww7GfE6PIT0Tra3d0ZxihHLETKQm2g86YVwKWYHEIWRgzDH8E5AQzAl1z4so=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=iC/n65fl; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1FFD2C113CC;
+	Thu,  2 May 2024 13:04:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714655072;
+	bh=LxYoy5aryNP2HMhsf2xv0naIvXnZbLmH+o8waQE0UrY=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=iC/n65flUWWkvVzlWCRqHhOK18rapNIuK5TRG/60Hb4VkQXdaXhjcSKi45tYurzXB
+	 QYxWML007PwZWEYaYC5JoKXVbpDce+u5GoYgOZE0SB7ENfrm6za00f8roLirVb1LZ2
+	 Ed5nKsebg88bbdxqn0+wtWQv00XkjpiY3aUBactJVBXkEmZs916WErcTaPTL6ZXc/Y
+	 vLeU2lJk/uHNzbaFk5bqxi0Bj/LKMSfbi5KmylDzMX+PScS9S3Nx7y39QHfXx9U74V
+	 qykma9KTEkX+aTgm91VfnSQOKKwOqen6N6WIBBZyofgr0nbg9NQWQd/khkmpQBBeza
+	 mvfQlsROA9dWg==
+Date: Thu, 2 May 2024 15:04:26 +0200
+From: Christian Brauner <brauner@kernel.org>
+To: Jan Kara <jack@suse.cz>
+Cc: cgzones@googlemail.com, Jan Kara <jack@suse.com>, 
+	Alexander Viro <viro@zeniv.linux.org.uk>, Arnd Bergmann <arnd@arndb.de>, 
+	Thomas Gleixner <tglx@linutronix.de>, Kees Cook <keescook@chromium.org>, 
+	Geert Uytterhoeven <geert@linux-m68k.org>, Casey Schaufler <casey@schaufler-ca.com>, 
+	"peterz@infradead.org" <peterz@infradead.org>, Sohil Mehta <sohil.mehta@intel.com>, 
+	Miklos Szeredi <mszeredi@redhat.com>, Mark Rutland <mark.rutland@arm.com>, 
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, linux-api@vger.kernel.org
+Subject: Re: [PATCH] fs/xattr: unify *at syscalls
+Message-ID: <20240502-wegweisend-hippen-75aae5b9da3f@brauner>
+References: <20240430151917.30036-1-cgoettsche@seltendoof.de>
+ <20240502103716.avdfm6r3ma2wfxjj@quack3>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240502103716.avdfm6r3ma2wfxjj@quack3>
 
-On Wed, 1 May 2024 23:56:26 +0900
-Masami Hiramatsu (Google) <mhiramat@kernel.org> wrote:
-
-> Looks good to me.
+On Thu, May 02, 2024 at 12:37:16PM +0200, Jan Kara wrote:
+> On Tue 30-04-24 17:19:14, Christian Göttsche wrote:
+> > From: Christian Göttsche <cgzones@googlemail.com>
+> > 
+> > Use the same parameter ordering for all four newly added *xattrat
+> > syscalls:
+> > 
+> >     dirfd, pathname, at_flags, ...
+> > 
+> > Also consistently use unsigned int as the type for at_flags.
+> > 
+> > Suggested-by: Jan Kara <jack@suse.com>
+> > Signed-off-by: Christian Göttsche <cgzones@googlemail.com>
 > 
-> Reviewed-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> Thanks! The change looks good to me. Christian, do you plan to fold this
+> into the series you've taken to your tree?
 
-Thanks Masami,
-
-Although Tze-nan pointed out a issue with this patch.
-
-I just published v2, can you review that one too?
-
-Thanks,
-
--- Steve
+Yep, that's the plan.
 
