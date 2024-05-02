@@ -1,163 +1,188 @@
-Return-Path: <linux-kernel+bounces-167009-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-167010-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0BDB98BA35C
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 00:36:04 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B63A78BA35F
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 00:39:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B60372811D1
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 22:36:02 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 258F41F21ED8
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 22:39:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E0D21CD15;
-	Thu,  2 May 2024 22:35:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 330261B949;
+	Thu,  2 May 2024 22:39:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fs5tHHeh"
-Received: from mail-lj1-f179.google.com (mail-lj1-f179.google.com [209.85.208.179])
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="bv/a7IfM"
+Received: from mail-oa1-f52.google.com (mail-oa1-f52.google.com [209.85.160.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 071341B947;
-	Thu,  2 May 2024 22:35:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26A0117BA0
+	for <linux-kernel@vger.kernel.org>; Thu,  2 May 2024 22:39:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714689331; cv=none; b=mdRs31SGAfjYFD9l/wI9fzbZSRThTivjdLmzvPeD8+9XU79Fb2iWRv4nHATp6k4v7fZe7Y31jlS+tc7aTS8l8gOqnvGHViEb98mn3eC5b9KjtCp8C48aZQ3dk3L5lEB/KOeHu9GS2KDPYOYVQivfXYPCDmSbTDfg4J1PyrcIHRo=
+	t=1714689570; cv=none; b=MOEm7OcfosYW6YthQ1qTD9gwdoHUUbyGHBHKAwn+aKyrrACxBlpIq84A2gh9FD6kYwZsSVA3Ob+gExOkeCv69OjRAcrJZ7y4IrCmMUAzR9ubPY2b9BxdLJYZ4u+Cb7lLTRaBc+8UN3b5+PlHjyCjX940mJpX6LhqHuXRtCXUM9M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714689331; c=relaxed/simple;
-	bh=nbBfbJyWw1EHyOJzEU6DhxA0SfnHoP9Tqo8l76+1JoQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=hnS8ZJkJukvj+yvQ8oV/I6GYvL8/t/flFAukNxmaiS7BjFymgMa5ZbKvD6bzfXcdlD/r2wF+Vcdsgi0bSPIct3IQSAxDQdXJI40xmWqXXbIW7UNfjmgRyjNj68gRq8MmykYe8kCZH83EqghLg3n8fyfBXWGLAN70ACct+3vJSS4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fs5tHHeh; arc=none smtp.client-ip=209.85.208.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f179.google.com with SMTP id 38308e7fff4ca-2e1fa824504so14676021fa.0;
-        Thu, 02 May 2024 15:35:29 -0700 (PDT)
+	s=arc-20240116; t=1714689570; c=relaxed/simple;
+	bh=6kgJA6OklOrNUE2Q8TmR1v5wqycP1UenmSnwgIFFV3Y=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=SMMb7SyJIoXi/g2Eo09XqGivxghotb+rtL5A7Rwptxoi8W7xaBJPt5hx2ZM3JgiaToBPaRgULiAgs80vdxmvx20xem2jEt+O62tLxNLrbLHCyXPlYdq0qAydGnk1ZVh6JK23UBStRNnRPLNHoDqkzn8URsfTZGlT11Odv4xCaIY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=bv/a7IfM; arc=none smtp.client-ip=209.85.160.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-oa1-f52.google.com with SMTP id 586e51a60fabf-23db0b5dd28so1069335fac.2
+        for <linux-kernel@vger.kernel.org>; Thu, 02 May 2024 15:39:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714689328; x=1715294128; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=DvheITl3IOmOnUb9pD5ukdBgjTFDZhV45ZiqqHS1lC8=;
-        b=fs5tHHehKgb4pFPhqrYY8pMa8GMKCF8TeeN48DsCpMyTKaEYXZLXABX7hCFhyr+TxR
-         ell+GlNDcBurTgpdo69GhQNDLTHz1ocWzwcQ2gVO4Jk4kz/fnyLNaUOjQjziEg3kp58g
-         wzrAJGgD85VgzAwMRNFUvAZRNlQ5BnGIndjLFQMtId3YO4dD5WQ0ax1HI4r5V+gb53U7
-         Mvt/cSxx4YgiHCPWbechynIZucJIjRHAHS1wcvTvNEA/ly6fCBLLENZKMTY7KGG8rlfd
-         dYMQc5Zm735I8NIeBoE5IflSYiVGu0GBGPl871FlYrKAeymdHtF6eJIHIh22XxDlTonn
-         TX9w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714689328; x=1715294128;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=chromium.org; s=google; t=1714689567; x=1715294367; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=DvheITl3IOmOnUb9pD5ukdBgjTFDZhV45ZiqqHS1lC8=;
-        b=w21MtxCvaTVFHdJrCx7twiyEp2uH4+FyorgKwpxW77sEpM+3Nvabc9Z8cz+GIWvEwU
-         QKlup8FsKmOrJQcHnda4pwglEwFYpBojQId8OR9qkERdrEjiv8T1e8WPTQt+CxZbWOq9
-         Ge4SAQsnlyU3qcPkH0VwnhaqApHpL6OrNRF/Cilhx4MdSXvxgh0MeesxVjhOlV7I861F
-         3DY5YdUdoG+bEv8xuJtJavHL8J6T9hhscna/aMnEK1F440ebvFFFf9KUwpfTiXUFlGTT
-         UCJaBl+DIVGJupPPZp3IV5iAQAzFszxL1DDsZ6r4hhvKq3tWVH88Talc42jQE4VayfrG
-         kyDw==
-X-Forwarded-Encrypted: i=1; AJvYcCX/QwqjV1G9mrczbELKCDiBsLHh6C6gKoAoR2xEEGvUJjxPsE5qmcH4Wz/ThVKGeyuIhGNAFQdps6pfq3VaksS6GEW49iqONRUqhasBZu6DjWRo4BwQxgZMGgoZg9S3BiuP22xPMGcMOGF+HOggHvIQ8w1JiNHsf75CsMF83W9jyejG8Qm+2+elNi+jSrU7N2+83honeeHVWYcqLC2zTnMjMXZz
-X-Gm-Message-State: AOJu0YwN2j7lSspBQlgBlkLIYFB6TVaTWPpC7QRxcyXk+OCrWEInlXxm
-	H6e/U9Cm/I/U+GPjMIGRVpc9ekHad6aoI07lpjrZ8em3VM2TO9iD
-X-Google-Smtp-Source: AGHT+IE+RRNfYrBA3kuTddhvlt5WggN/PhqusvrPB/Y3CSAEVYjC9nt3P4uZkm4BFPRlh+f+nPyCNQ==
-X-Received: by 2002:a05:6512:4886:b0:51f:6132:2803 with SMTP id eq6-20020a056512488600b0051f61322803mr604261lfb.17.1714689327994;
-        Thu, 02 May 2024 15:35:27 -0700 (PDT)
-Received: from mobilestation ([95.79.182.53])
-        by smtp.gmail.com with ESMTPSA id bi5-20020a0565120e8500b0051cb300265dsm320741lfb.109.2024.05.02.15.35.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 May 2024 15:35:27 -0700 (PDT)
-Date: Fri, 3 May 2024 01:35:25 +0300
-From: Serge Semin <fancer.lancer@gmail.com>
-To: Romain Gantois <romain.gantois@bootlin.com>
-Cc: "David S. Miller" <davem@davemloft.net>, 
-	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
-	Paolo Abeni <pabeni@redhat.com>, Rob Herring <robh@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Geert Uytterhoeven <geert+renesas@glider.be>, Magnus Damm <magnus.damm@gmail.com>, 
-	Alexandre Torgue <alexandre.torgue@foss.st.com>, Jose Abreu <joabreu@synopsys.com>, 
-	Maxime Coquelin <mcoquelin.stm32@gmail.com>, Russell King <linux@armlinux.org.uk>, 
-	=?utf-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <clement.leger@bootlin.com>, Thomas Petazzoni <thomas.petazzoni@bootlin.com>, 
-	netdev@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-renesas-soc@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com, 
-	linux-arm-kernel@lists.infradead.org, "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>, 
-	Maxime Chevallier <maxime.chevallier@bootlin.com>
-Subject: Re: [PATCH net-next v5 4/7] net: stmmac: introduce pcs_init/pcs_exit
- stmmac operations
-Message-ID: <jdqitzxy7lymkn2mizkvvycttxb4prxhevoqhwsatikceja5ph@sor2bnlaopre>
-References: <20240430-rzn1-gmac1-v5-0-62f65a84f418@bootlin.com>
- <20240430-rzn1-gmac1-v5-4-62f65a84f418@bootlin.com>
+        bh=qfrJLkNktZfuMB+SoJQ7DumtzHrpuMfMLiSMpOw3O3Y=;
+        b=bv/a7IfMG/7RvZBf/kMwemhEE84GuBdI2TIfn4A57kihfsP7z5aVw059TZB8JGcGqD
+         809i/VUAvaawEZgD6qh3OKcAl4pAoE2foIsDeBRD5/1K+ZuGNWcwF47ciiqz9+bFIHhd
+         PSj1bYMlSKXFVz65LyZrcJLA1QAEPahLK/3wk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714689567; x=1715294367;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=qfrJLkNktZfuMB+SoJQ7DumtzHrpuMfMLiSMpOw3O3Y=;
+        b=OD4rXJp182gSLsBMnwZf7RI3JWGWjK2/eM4V+3dhUbmaptoK9VJ6WCyn5zKNjlW8Nr
+         FjDhv+1ZaI+YxO9j/BmbjHcO9ocdAnTc9IsRctYCEEU3wao9RuYYA5HWG0qXWa+T9ooi
+         do0qqeM1fhepaFvKMJt6Bc6abLlRgFWkw9BuWltY/khk5tU+HrCpqczMgxn21WYfY7t7
+         /4+4O5SB9NEHhVxAs5YQGv6XGXbg7llxhNnLwwNiALCT3zaKhz0W8F20U6o2o5T2YOW0
+         Q+Q9NiQqXolLtw3sNN2lNpbhVi6ELXtBuLvbN/b6EbLX3sGznXF4evI50uj3uv9KKdvb
+         lzcQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWdSNQrkVIg8G5fQXX13wXeLeKje659RJAIYW6pfT3nF259PugFMBrMiVj7cMWa7xCf4CXOKryYkWXGswQyxh/c5ZwFCgyCdYRweS8l
+X-Gm-Message-State: AOJu0YwK4OdtHtcRkGKYlpSg0FFFivlqYwLO8Ozdk0bIUGQjhj6Fquoc
+	VtnwDJWNiV8AACs02iFozhYWHgLVefSEwRR0cg4goNNXN8fAImpifcp9FtqBMnT7FPSjb6a6eit
+	qE+uw/zI1RXMHfmxeJ2qFD/r66SxKv9qYy5jP
+X-Google-Smtp-Source: AGHT+IHVn2dULm2YcxryFkg3yP+dujD1r9smiX0/7F5nF1Oe1nfBMPF+wKK2fs/ZwboCl3pUBrUnaTcaSpGYjnGam7o=
+X-Received: by 2002:a05:6870:911e:b0:23c:a6f8:9362 with SMTP id
+ o30-20020a056870911e00b0023ca6f89362mr1552432oae.13.1714689567324; Thu, 02
+ May 2024 15:39:27 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240430-rzn1-gmac1-v5-4-62f65a84f418@bootlin.com>
+References: <20240415163527.626541-1-jeffxu@chromium.org> <20240415163527.626541-4-jeffxu@chromium.org>
+ <f797fbde-ffb7-44b0-8af6-4ed2ec47eac1@arm.com>
+In-Reply-To: <f797fbde-ffb7-44b0-8af6-4ed2ec47eac1@arm.com>
+From: Jeff Xu <jeffxu@chromium.org>
+Date: Thu, 2 May 2024 15:39:15 -0700
+Message-ID: <CABi2SkXmGR41o8LwM=oD-PCZWvcc5zOie65wvuk5zsAQPymmRA@mail.gmail.com>
+Subject: Re: [PATCH v10 3/5] selftest mm/mseal memory sealing
+To: Ryan Roberts <ryan.roberts@arm.com>
+Cc: akpm@linux-foundation.org, keescook@chromium.org, jannh@google.com, 
+	sroettger@google.com, willy@infradead.org, gregkh@linuxfoundation.org, 
+	torvalds@linux-foundation.org, usama.anjum@collabora.com, corbet@lwn.net, 
+	Liam.Howlett@oracle.com, surenb@google.com, merimus@google.com, 
+	rdunlap@infradead.org, jeffxu@google.com, jorgelo@chromium.org, 
+	groeck@chromium.org, linux-kernel@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org, linux-mm@kvack.org, pedro.falcato@gmail.com, 
+	dave.hansen@intel.com, linux-hardening@vger.kernel.org, deraadt@openbsd.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Apr 30, 2024 at 09:29:44AM +0200, Romain Gantois wrote:
-> From: "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>
-> 
-> Introduce a mechanism whereby platforms can create their PCS instances
-> prior to the network device being published to userspace, but after
-> some of the core stmmac initialisation has been completed. This means
-> that the data structures that platforms need will be available.
-> 
-> Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
-> Reviewed-by: Maxime Chevallier <maxime.chevallier@bootlin.com>
-> Co-developed-by: Romain Gantois <romain.gantois@bootlin.com>
-> Signed-off-by: Romain Gantois <romain.gantois@bootlin.com>
+On Thu, May 2, 2024 at 4:24=E2=80=AFAM Ryan Roberts <ryan.roberts@arm.com> =
+wrote:
+>
+> On 15/04/2024 17:35, jeffxu@chromium.org wrote:
+> > From: Jeff Xu <jeffxu@chromium.org>
+> >
+> > selftest for memory sealing change in mmap() and mseal().
+> >
+> > Signed-off-by: Jeff Xu <jeffxu@chromium.org>
+> > ---
+> >  tools/testing/selftests/mm/.gitignore   |    1 +
+> >  tools/testing/selftests/mm/Makefile     |    1 +
+> >  tools/testing/selftests/mm/mseal_test.c | 1836 +++++++++++++++++++++++
+> >  3 files changed, 1838 insertions(+)
+> >  create mode 100644 tools/testing/selftests/mm/mseal_test.c
+> >
+> > diff --git a/tools/testing/selftests/mm/.gitignore b/tools/testing/self=
+tests/mm/.gitignore
+> > index d26e962f2ac4..98eaa4590f11 100644
+> > --- a/tools/testing/selftests/mm/.gitignore
+> > +++ b/tools/testing/selftests/mm/.gitignore
+> > @@ -47,3 +47,4 @@ mkdirty
+> >  va_high_addr_switch
+> >  hugetlb_fault_after_madv
+> >  hugetlb_madv_vs_map
+> > +mseal_test
+> > diff --git a/tools/testing/selftests/mm/Makefile b/tools/testing/selfte=
+sts/mm/Makefile
+> > index eb5f39a2668b..95d10fe1b3c1 100644
+> > --- a/tools/testing/selftests/mm/Makefile
+> > +++ b/tools/testing/selftests/mm/Makefile
+> > @@ -59,6 +59,7 @@ TEST_GEN_FILES +=3D mlock2-tests
+> >  TEST_GEN_FILES +=3D mrelease_test
+> >  TEST_GEN_FILES +=3D mremap_dontunmap
+> >  TEST_GEN_FILES +=3D mremap_test
+> > +TEST_GEN_FILES +=3D mseal_test
+> >  TEST_GEN_FILES +=3D on-fault-limit
+> >  TEST_GEN_FILES +=3D pagemap_ioctl
+> >  TEST_GEN_FILES +=3D thuge-gen
+> > diff --git a/tools/testing/selftests/mm/mseal_test.c b/tools/testing/se=
+lftests/mm/mseal_test.c
+> > new file mode 100644
+> > index 000000000000..06c780d1d8e5
+> > --- /dev/null
+> > +++ b/tools/testing/selftests/mm/mseal_test.c
+> > @@ -0,0 +1,1836 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +#define _GNU_SOURCE
+> > +#include <sys/mman.h>
+>
+> I'm afraid this is causing a build error on our CI, and as a result we ar=
+e not
+> running any mm selftests currently.
+>
+> The error is here:
+>
+>   CC       mseal_test
+> mseal_test.c: In function =E2=80=98test_seal_mremap_move_dontunmap=E2=80=
+=99:
+> mseal_test.c:1469:50: error: =E2=80=98MREMAP_DONTUNMAP=E2=80=99 undeclare=
+d (first use in this
+> function)
+>  1469 |  ret2 =3D mremap(ptr, size, size, MREMAP_MAYMOVE | MREMAP_DONTUNM=
+AP, 0);
+>       |                                                  ^~~~~~~~~~~~~~~~
+> mseal_test.c:1469:50: note: each undeclared identifier is reported only o=
+nce for
+> each function it appears in
+> mseal_test.c: In function =E2=80=98test_seal_mremap_move_dontunmap_anyadd=
+r=E2=80=99:
+> mseal_test.c:1501:50: error: =E2=80=98MREMAP_DONTUNMAP=E2=80=99 undeclare=
+d (first use in this
+> function)
+>  1501 |  ret2 =3D mremap(ptr, size, size, MREMAP_MAYMOVE | MREMAP_DONTUNM=
+AP,
+>       |                                                  ^~~~~~~~~~~~~~~~
+>
+>
+> And I think the reason is due to our CI's toolchain's sys/mman.h not incl=
+uding
+> linux/mman.h where MREMAP_DONTUNMAP is defined.
+>
+> I think the fix is to explicitly #include <linux/mman.h>, as a number of =
+other
+> mm selftests do.
+>
+When I tried to build with aarch64-linux-gnu-gcc, this passed.
 
-Reviewed-by: Serge Semin <fancer.lancer@gmail.com>
+aarch64-linux-gnu-gcc -I ../../../../usr/include   -DDEBUG -O3
+-DDEBUG -O3 mseal_test.c -o  mseal_test -lm -Wall
 
--Serge(y)
+I don't have the exact environment to repro the issue and verify the fix.
+I will send a patch with  the linux/mman.h.
 
-> ---
->  drivers/net/ethernet/stmicro/stmmac/stmmac_mdio.c | 8 +++++++-
->  include/linux/stmmac.h                            | 2 ++
->  2 files changed, 9 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_mdio.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_mdio.c
-> index af8ad9768da10..1c788caea0cfb 100644
-> --- a/drivers/net/ethernet/stmicro/stmmac/stmmac_mdio.c
-> +++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_mdio.c
-> @@ -505,7 +505,10 @@ int stmmac_pcs_setup(struct net_device *ndev)
->  	priv = netdev_priv(ndev);
->  	mode = priv->plat->phy_interface;
->  
-> -	if (priv->plat->mdio_bus_data && priv->plat->mdio_bus_data->has_xpcs) {
-> +	if (priv->plat->pcs_init) {
-> +		ret = priv->plat->pcs_init(priv);
-> +	} else if (priv->plat->mdio_bus_data &&
-> +		   priv->plat->mdio_bus_data->has_xpcs) {
->  		/* Try to probe the XPCS by scanning all addresses */
->  		for (addr = 0; addr < PHY_MAX_ADDR; addr++) {
->  			xpcs = xpcs_create_mdiodev(priv->mii, addr, mode);
-> @@ -531,6 +534,9 @@ int stmmac_pcs_setup(struct net_device *ndev)
->  
->  void stmmac_pcs_clean(struct stmmac_priv *priv)
->  {
-> +	if (priv->plat->pcs_exit)
-> +		priv->plat->pcs_exit(priv);
-> +
->  	if (!priv->hw->xpcs)
->  		return;
->  
-> diff --git a/include/linux/stmmac.h b/include/linux/stmmac.h
-> index dfa1828cd756a..4a24a246c617d 100644
-> --- a/include/linux/stmmac.h
-> +++ b/include/linux/stmmac.h
-> @@ -285,6 +285,8 @@ struct plat_stmmacenet_data {
->  	int (*crosststamp)(ktime_t *device, struct system_counterval_t *system,
->  			   void *ctx);
->  	void (*dump_debug_regs)(void *priv);
-> +	int (*pcs_init)(struct stmmac_priv *priv);
-> +	void (*pcs_exit)(struct stmmac_priv *priv);
->  	void *bsp_priv;
->  	struct clk *stmmac_clk;
->  	struct clk *pclk;
-> 
-> -- 
-> 2.44.0
-> 
+I will probably need some help to verify the fix on arm build, Ryan,
+could you help with this ?
+
+Thanks
+-Jeff
 
