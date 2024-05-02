@@ -1,47 +1,54 @@
-Return-Path: <linux-kernel+bounces-166006-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-166007-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7AD0C8B94AF
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 08:32:04 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8B6E08B94B3
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 08:33:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A9BF81C217D0
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 06:32:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4C92A283B6F
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 06:33:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99F968F5C;
-	Thu,  2 May 2024 06:31:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B4528C1A;
+	Thu,  2 May 2024 06:33:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="k1PL+zi9"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="qOk0oevP"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D3D8C4A39;
-	Thu,  2 May 2024 06:31:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 44326A48;
+	Thu,  2 May 2024 06:33:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714631516; cv=none; b=MC/x8vgjV2CMkz6WiYACCb2QJQYF4wRQTEhzbkoR/NjCLkWk5YEd/Aj8/9Z67yvDY9K7s4A2JhbCWy5VADURMJ/ybYy9SdzTpwVrxuPIT5wOcbSan+gB28l/XFVl1PiLc1+3HV+rU8tb78P5NCis/uxOoKut1YMfbdTKHTDzwl8=
+	t=1714631581; cv=none; b=XDQE7Lacmi0NSfx59TjgRa825dcbdRddh/VSMkfD8eAnj/JGiaNRxoOfWRpokgsYg4ry8DwHdkwxj1NOC8CRjmJR6A0mUj7cDsUoNljUvyZxPK1XTKRIAiB0nCV5easM7+tnlXS7R/EYjrHmMICSMtKSAc6RPD0guUzcKOE8LQ8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714631516; c=relaxed/simple;
-	bh=3vCbmodypNNFoXzA3cJadoMGHdGeT6Gpix/AbXk9xSU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=CTDw39HfjfB3uAPYjm+vuoK2F5VwcBZr/3nZNFqj5I1CoJxWCnsFOS9AemZIc4yM9vVVdQgXOSErTu3fqNO8cKX87H4p8cVIRuXwV3WEtgSan/N219R/dS8v+2CKntxPn24OjlKexB70p6yLwYPYS9XrfVAryO7k7DuKAHN+41U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=k1PL+zi9; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5DEFFC116B1;
-	Thu,  2 May 2024 06:31:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714631516;
-	bh=3vCbmodypNNFoXzA3cJadoMGHdGeT6Gpix/AbXk9xSU=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=k1PL+zi9JaiwUFU8h54ldNezkUGKkSj54amP7e6zIu7GRXiT/CPecoLappx5eKel3
-	 rSXy4wkWHV6VfjRLMMAEYIgI/1WtDs70zTAGTHhbSVX1xRDo3LJsEra/w6ZOPC8EwB
-	 qhPHWgvavXN2oKppg1chxHNBfWWhQky/dmPSLDAvTijWCXrXdXbJlPzkuCamqLvNDF
-	 yjKKFXUMqPsmUwnoRcQzX3cD/EPKwjo0w7PzJfeq4+/XgBznLyI8Uq5wYksO/TWj4v
-	 BPAOGZRAZutshz2d3wxtwpCkQkDLJRu/+AdvwCu9dW0eRtvh9tvCN+djpRLrtWIPEO
-	 Ce0NZuzgaA9og==
-Message-ID: <2da88dba-36a9-473b-a93f-1c273a7c3c12@kernel.org>
-Date: Thu, 2 May 2024 08:31:51 +0200
+	s=arc-20240116; t=1714631581; c=relaxed/simple;
+	bh=pjIqOJEiOt9KucXTf7b55UJINUUUZE6EEFDyk2OaR6s=;
+	h=Message-ID:Date:MIME-Version:Cc:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=J3K3pvYPn4nhvDY8+tM9bEk1v2d4YaW7PtGezo3necVBMUeAIZdagyKqgdVL2+9Bg7ofXeDME9QFsw5ebW0oguwSdnVLZFbi1dxG4ajNiMwWoT4gA83cpnsepyRrqGUNt2DPSnLaejTfy4bvahP5o2tm5NqprpHwv76CBi+9UIs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=qOk0oevP; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1714631572;
+	bh=pjIqOJEiOt9KucXTf7b55UJINUUUZE6EEFDyk2OaR6s=;
+	h=Date:Cc:Subject:To:References:From:In-Reply-To:From;
+	b=qOk0oevPJe0LgsiOcWVDLXXHzCvIYoiw1Wsitp25al+Np2Df1aAOdnCuCTASWptDo
+	 nan8oK3KXH1jABC8mPxSjHiIBLj9dMW9qebrP1PX7Pk+XXJBNQxaJ1DE6v2xCL6Rda
+	 FuaY7MhnChhcEoZt2qjErybB/Ezp+OFMbtGDzaWo5SJuCPr60IKfSoFa2VTm5KLElk
+	 t24Fx2hliDxtO8PDOk7tf9P0MtzNAHVZyW+vHO8L9+wSK8AD5CVEvWQ5m94Gg9BooL
+	 w5f3uU5JP2RAe+Ac39q5iEiLzQkQrLyP+mfTqXqS2Ow9FzdIKl4EJJbGr7lLUm1dGg
+	 UAjj6nWFVe0mg==
+Received: from [10.193.1.1] (broslavsky.collaboradmins.com [68.183.210.73])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: usama.anjum)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id BE6D3378001E;
+	Thu,  2 May 2024 06:32:47 +0000 (UTC)
+Message-ID: <c9ad463f-cc67-44eb-bf94-449144e3078b@collabora.com>
+Date: Thu, 2 May 2024 11:33:17 +0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -49,82 +56,63 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3] spi: dt-bindings: ti,qspi: convert to dtschema
-To: Kousik Sanagavarapu <five231003@gmail.com>,
- Mark Brown <broonie@kernel.org>, Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>
-Cc: linux-spi@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, Shuah Khan <skhan@linuxfoundation.org>,
- Javier Carrasco <javier.carrasco.cruz@gmail.com>
-References: <20240501165203.13763-1-five231003@gmail.com>
-From: Krzysztof Kozlowski <krzk@kernel.org>
+Cc: Muhammad Usama Anjum <usama.anjum@collabora.com>,
+ Edward Liaw <edliaw@google.com>, oe-lkp@lists.linux.dev, lkp@intel.com,
+ linux-kernel@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>,
+ Andy Lutomirski <luto@amacapital.net>,
+ Axel Rasmussen <axelrasmussen@google.com>, Bill Wendling <morbo@google.com>,
+ David Hildenbrand <david@redhat.com>, Justin Stitt <justinstitt@google.com>,
+ "Mike Rapoport (IBM)" <rppt@kernel.org>,
+ Nathan Chancellor <nathan@kernel.org>,
+ Nick Desaulniers <ndesaulniers@google.com>, Peter Xu <peterx@redhat.com>,
+ Shuah Khan <shuah@kernel.org>, Will Drewry <wad@chromium.org>,
+ linux-kselftest@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [linus:master] [selftests/harness] 8092162335:
+ kernel-selftests.sgx.make.fail
+To: Kees Cook <keescook@chromium.org>,
+ kernel test robot <oliver.sang@intel.com>
+References: <202404301040.3bea5782-oliver.sang@intel.com>
+ <202405011330.85D66871E@keescook>
 Content-Language: en-US
-Autocrypt: addr=krzk@kernel.org; keydata=
- xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
- cFgcqTTuNHjAvxtUG8pQgGTHAObYs6xeYJtjUH0ZX6ndJ33FJYf5V3yXqqjcZ30FgHzJCFUu
- JMp7PSyMPzpUXfU12yfcRYVEMQrmplNZssmYhiTeVicuOOypWugZKVLGNm0IweVCaZ/DJDIH
- gNbpvVwjcKYrx85m9cBVEBUGaQP6AT7qlVCkrf50v8bofSIyVa2xmubbAwwFA1oxoOusjPIE
- J3iadrwpFvsZjF5uHAKS+7wHLoW9hVzOnLbX6ajk5Hf8Pb1m+VH/E8bPBNNYKkfTtypTDUCj
- NYcd27tjnXfG+SDs/EXNUAIRefCyvaRG7oRYF3Ec+2RgQDRnmmjCjoQNbFrJvJkFHlPeHaeS
- BosGY+XWKydnmsfY7SSnjAzLUGAFhLd/XDVpb1Een2XucPpKvt9ORF+48gy12FA5GduRLhQU
- vK4tU7ojoem/G23PcowM1CwPurC8sAVsQb9KmwTGh7rVz3ks3w/zfGBy3+WmLg++C2Wct6nM
- Pd8/6CBVjEWqD06/RjI2AnjIq5fSEH/BIfXXfC68nMp9BZoy3So4ZsbOlBmtAPvMYX6U8VwD
- TNeBxJu5Ex0Izf1NV9CzC3nNaFUYOY8KfN01X5SExAoVTr09ewARAQABzSVLcnp5c3p0b2Yg
- S296bG93c2tpIDxrcnprQGtlcm5lbC5vcmc+wsGVBBMBCgA/AhsDBgsJCAcDAgYVCAIJCgsE
- FgIDAQIeAQIXgBYhBJvQfg4MUfjVlne3VBuTQ307QWKbBQJgPO8PBQkUX63hAAoJEBuTQ307
- QWKbBn8P+QFxwl7pDsAKR1InemMAmuykCHl+XgC0LDqrsWhAH5TYeTVXGSyDsuZjHvj+FRP+
- gZaEIYSw2Yf0e91U9HXo3RYhEwSmxUQ4Fjhc9qAwGKVPQf6YuQ5yy6pzI8brcKmHHOGrB3tP
- /MODPt81M1zpograAC2WTDzkICfHKj8LpXp45PylD99J9q0Y+gb04CG5/wXs+1hJy/dz0tYy
- iua4nCuSRbxnSHKBS5vvjosWWjWQXsRKd+zzXp6kfRHHpzJkhRwF6ArXi4XnQ+REnoTfM5Fk
- VmVmSQ3yFKKePEzoIriT1b2sXO0g5QXOAvFqB65LZjXG9jGJoVG6ZJrUV1MVK8vamKoVbUEe
- 0NlLl/tX96HLowHHoKhxEsbFzGzKiFLh7hyboTpy2whdonkDxpnv/H8wE9M3VW/fPgnL2nPe
- xaBLqyHxy9hA9JrZvxg3IQ61x7rtBWBUQPmEaK0azW+l3ysiNpBhISkZrsW3ZUdknWu87nh6
- eTB7mR7xBcVxnomxWwJI4B0wuMwCPdgbV6YDUKCuSgRMUEiVry10xd9KLypR9Vfyn1AhROrq
- AubRPVeJBf9zR5UW1trJNfwVt3XmbHX50HCcHdEdCKiT9O+FiEcahIaWh9lihvO0ci0TtVGZ
- MCEtaCE80Q3Ma9RdHYB3uVF930jwquplFLNF+IBCn5JRzsFNBFVDXDQBEADNkrQYSREUL4D3
- Gws46JEoZ9HEQOKtkrwjrzlw/tCmqVzERRPvz2Xg8n7+HRCrgqnodIYoUh5WsU84N03KlLue
- MNsWLJBvBaubYN4JuJIdRr4dS4oyF1/fQAQPHh8Thpiz0SAZFx6iWKB7Qrz3OrGCjTPcW6ei
- OMheesVS5hxietSmlin+SilmIAPZHx7n242u6kdHOh+/SyLImKn/dh9RzatVpUKbv34eP1wA
- GldWsRxbf3WP9pFNObSzI/Bo3kA89Xx2rO2roC+Gq4LeHvo7ptzcLcrqaHUAcZ3CgFG88CnA
- 6z6lBZn0WyewEcPOPdcUB2Q7D/NiUY+HDiV99rAYPJztjeTrBSTnHeSBPb+qn5ZZGQwIdUW9
- YegxWKvXXHTwB5eMzo/RB6vffwqcnHDoe0q7VgzRRZJwpi6aMIXLfeWZ5Wrwaw2zldFuO4Dt
- 91pFzBSOIpeMtfgb/Pfe/a1WJ/GgaIRIBE+NUqckM+3zJHGmVPqJP/h2Iwv6nw8U+7Yyl6gU
- BLHFTg2hYnLFJI4Xjg+AX1hHFVKmvl3VBHIsBv0oDcsQWXqY+NaFahT0lRPjYtrTa1v3tem/
- JoFzZ4B0p27K+qQCF2R96hVvuEyjzBmdq2esyE6zIqftdo4MOJho8uctOiWbwNNq2U9pPWmu
- 4vXVFBYIGmpyNPYzRm0QPwARAQABwsF8BBgBCgAmAhsMFiEEm9B+DgxR+NWWd7dUG5NDfTtB
- YpsFAmA872oFCRRflLYACgkQG5NDfTtBYpvScw/9GrqBrVLuJoJ52qBBKUBDo4E+5fU1bjt0
- Gv0nh/hNJuecuRY6aemU6HOPNc2t8QHMSvwbSF+Vp9ZkOvrM36yUOufctoqON+wXrliEY0J4
- ksR89ZILRRAold9Mh0YDqEJc1HmuxYLJ7lnbLYH1oui8bLbMBM8S2Uo9RKqV2GROLi44enVt
- vdrDvo+CxKj2K+d4cleCNiz5qbTxPUW/cgkwG0lJc4I4sso7l4XMDKn95c7JtNsuzqKvhEVS
- oic5by3fbUnuI0cemeizF4QdtX2uQxrP7RwHFBd+YUia7zCcz0//rv6FZmAxWZGy5arNl6Vm
- lQqNo7/Poh8WWfRS+xegBxc6hBXahpyUKphAKYkah+m+I0QToCfnGKnPqyYIMDEHCS/RfqA5
- t8F+O56+oyLBAeWX7XcmyM6TGeVfb+OZVMJnZzK0s2VYAuI0Rl87FBFYgULdgqKV7R7WHzwD
- uZwJCLykjad45hsWcOGk3OcaAGQS6NDlfhM6O9aYNwGL6tGt/6BkRikNOs7VDEa4/HlbaSJo
- 7FgndGw1kWmkeL6oQh7wBvYll2buKod4qYntmNKEicoHGU+x91Gcan8mCoqhJkbqrL7+nXG2
- 5Q/GS5M9RFWS+nYyJh+c3OcfKqVcZQNANItt7+ULzdNJuhvTRRdC3g9hmCEuNSr+CLMdnRBY fv0=
-In-Reply-To: <20240501165203.13763-1-five231003@gmail.com>
+From: Muhammad Usama Anjum <usama.anjum@collabora.com>
+In-Reply-To: <202405011330.85D66871E@keescook>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On 01/05/2024 18:48, Kousik Sanagavarapu wrote:
-> Convert txt binding of TI's qspi controller (found on their omap SoCs) to
-> dtschema to allow for validation.
+On 5/2/24 1:32 AM, Kees Cook wrote:
+> On Tue, Apr 30, 2024 at 11:02:36AM +0800, kernel test robot wrote:
+>> version: kernel-selftests-x86_64-c7864053-1_20240419
+>> [...]
+>> compiler: gcc-13
+>> 2024-04-29 15:02:59 make -j16 -C sgx
+>> [...]
+>> gcc -Wall -Werror -static-pie -nostdlib -ffreestanding -fPIE -fno-stack-protector -mrdrnd -I/usr/src/perf_selftests-x86_64-rhel-8.3-kselftests-8092162335554c8ef5e7f50eff68aa9cfbdbf865/tools/testing/selftests/../../../tools/include test_encl.c test_encl_bootstrap.S -o /usr/src/perf_selftests-x86_64-rhel-8.3-kselftests-8092162335554c8ef5e7f50eff68aa9cfbdbf865/tools/testing/selftests/sgx/test_encl.elf -Wl,-T,test_encl.lds,--build-id=none
+>> /usr/bin/ld: warning: /tmp/lkp/cct4g3SV.o: missing .note.GNU-stack section implies executable stack
+>> /usr/bin/ld: NOTE: This behaviour is deprecated and will be removed in a future version of the linker
+>> In file included from main.c:21:
+>> ../kselftest_harness.h: In function ‘__run_test’:
+>> ../kselftest_harness.h:1166:13: error: implicit declaration of function ‘asprintf’; did you mean ‘vsprintf’? [-Werror=implicit-function-declaration]
+>>  1166 |         if (asprintf(&test_name, "%s%s%s.%s", f->name,
+>>       |             ^~~~~~~~
+>>       |             vsprintf
+>> cc1: all warnings being treated as errors
 > 
-> The changes, w.r.t. the original txt binding, are:
-> 
-> - Introduce "clocks" and "clock-names" which was never mentioned.
-> - Reflect that "ti,hwmods" is deprecated and is not a "required"
->   property anymore.
-> - Introduce "num-cs" which allows for setting the number of chip
->   selects.
-> - Drop "qspi_ctrlmod".
-> 
-> Signed-off-by: Kousik Sanagavarapu <five231003@gmail.com>
+> What environment is this being built in? "asprintf" should be available
+> via stdio.h, and "kselftest_harness.h" includes that (and _GNU_SOURCE).
+Sometimes the order of include is as following:
 
+#inlucde <stdio.h>
+#define _GNU_SOURCE
+#inlucde <stdio.h>
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+The _GNU_SOURCE wasn't defined the first time stdio.h was included hence
+the definition of asprintf isn't present. The second inclusion of stdio.h
+when _GNU_SOURCE is defined is ignored as it was already included.
 
-Best regards,
-Krzysztof
+This is being fixed in following series:
+https://lore.kernel.org/all/20240430235057.1351993-1-edliaw@google.com
 
+-- 
+BR,
+Muhammad Usama Anjum
 
