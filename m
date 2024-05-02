@@ -1,50 +1,72 @@
-Return-Path: <linux-kernel+bounces-166623-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-166625-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A7EEB8B9D28
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 17:16:05 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C74178B9D33
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 17:19:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 64824286CD2
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 15:16:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8349B281DBE
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 15:19:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5137F15B985;
-	Thu,  2 May 2024 15:15:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4285B15B10E;
+	Thu,  2 May 2024 15:19:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uD25S/4F"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F95615B13F;
-	Thu,  2 May 2024 15:15:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 536FF13C676;
+	Thu,  2 May 2024 15:19:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714662934; cv=none; b=d+/pfJvScT963yngEXn7Sx0WtJqc+u42qIYwS7RYCyA+lMBCcjQ0Y+d6IN+7uS0vpeP0ozN0hm/lD6QE0Eb5NssKkfDtq/w2QAWW6qt5TUYBtPrgvBuak3KS0F9c8YAcKLxRnE49i+1X278R0JK0jtNGZUjQ7xXHvkCjqCvNWAg=
+	t=1714663146; cv=none; b=d+xJMWZyS3yzmZIuKkBI/+YxmSsAlvGTNXN4ZjPAWc59dajHEZ9gT36u5pSvtPOg7fAICWuL0DsOZ2pxppySHbcrOVpYWHvN2A0Po1JDGFJYkeQR9vUPqv2S/aVEdAtg12MqoBtL38xl7d5QyYhaKGcK9sMmjCkuqft/GmMC6Qc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714662934; c=relaxed/simple;
-	bh=X3ZZVdZWOdcjoe18hYCSjWceXc6V6boUtWZbJa/y5Us=;
-	h=Message-ID:Date:From:To:Cc:Subject:References:MIME-Version:
-	 Content-Type; b=m0pS0ELkOrw2VjkNr/e6gUbMN1zqvOFm4GybJgeli8HixACoUc4wsUokDq0jcnh92T43Z3cc1JtbZZYy9q1t1PH++F/I0fn+4zXCRlkUQGiDNRdrYPfJzXu2WnTgBXAqkmvwgBsEaFkCV7mouziwKD3R5qxw8duekkd4dJhKsf4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 77929C4AF50;
-	Thu,  2 May 2024 15:15:34 +0000 (UTC)
-Received: from rostedt by gandalf with local (Exim 4.97)
-	(envelope-from <rostedt@goodmis.org>)
-	id 1s2YAX-00000003IUh-0hxq;
-	Thu, 02 May 2024 11:16:21 -0400
-Message-ID: <20240502151621.029168056@goodmis.org>
-User-Agent: quilt/0.67
-Date: Thu, 02 May 2024 11:15:52 -0400
-From: Steven Rostedt <rostedt@goodmis.org>
-To: linux-kernel@vger.kernel.org,
- linux-trace-kernel@vger.kernel.org
-Cc: Masami Hiramatsu <mhiramat@kernel.org>,
- Mark Rutland <mark.rutland@arm.com>,
- Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Andrew Morton <akpm@linux-foundation.org>,
- stable@vger.kernel.org
-Subject: [PATCH v2 5/5] eventfs: Have "events" directory get permissions from its parent
-References: <20240502151547.973653253@goodmis.org>
+	s=arc-20240116; t=1714663146; c=relaxed/simple;
+	bh=7XHyWmwoJgP0UGlglktz7deiDM07JIaBpdoPgHdNioY=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=LcQmoCKR0+WZpt3NPkj3nAQ3HXTZnbXBOoZeeKLTwELfJlTc9KOG6KqPxb48c2t/Emnwu02+iYvYYcJf0VCNxR7hdeOTK9tP+ZQ0/////koO9qIjpuSoGmIjGtQIqqFa+i9syoNJ+hE9yFWBQxw16wEauJ5mQZdwwDZz+Ljtt7I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uD25S/4F; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 835A0C113CC;
+	Thu,  2 May 2024 15:19:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714663145;
+	bh=7XHyWmwoJgP0UGlglktz7deiDM07JIaBpdoPgHdNioY=;
+	h=From:To:Cc:Subject:Date:From;
+	b=uD25S/4F0Y8CK9PidfG+C/jIFZKd0O0JnUKCDBXtFJYGjPPqtYblkB1A2wGLrkfiM
+	 1KI19VGhAwc/zKaRrWD6YuGqBuj/Gz+34lu6Aw575Zo+tZ2thVP1EN1uFe34s7+qEU
+	 YGrOj3Z7ADNaNuvxZWpBM9Nv4k+gFIpTWswbEQxhvUDQcXxmhUCX40zbrr/Q72Axh9
+	 IMBR0vJ/aUObQ3CaDeks+DxP8qoKxPZyCp5zOmtH9XakDVWQfjzBtfYcEXCkeXZNQQ
+	 g5stsY9/Evyeuykc4KSX6Y1QXQclVz2D2rBEFQMKROC8CJnMg2w6iKnXNG/js2mfMD
+	 0JmsGQIwxpPEg==
+From: Puranjay Mohan <puranjay@kernel.org>
+To: Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Zi Shen Lim <zlim.lnx@gmail.com>,
+	Xu Kuohai <xukuohai@huawei.com>,
+	Florent Revest <revest@chromium.org>,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	bpf@vger.kernel.org,
+	Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+	=?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@kernel.org>
+Cc: puranjay12@gmail.com
+Subject: [PATCH bpf-next v6 0/4] bpf: Inline helpers in arm64 and riscv JITs
+Date: Thu,  2 May 2024 15:18:50 +0000
+Message-Id: <20240502151854.9810-1-puranjay@kernel.org>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -52,125 +74,156 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
+Changes in v5 -> v6:
+arm64 v5: https://lore.kernel.org/all/20240430234739.79185-1-puranjay@kernel.org/
+riscv v2: https://lore.kernel.org/all/20240430175834.33152-1-puranjay@kernel.org/
+- Combine riscv and arm64 changes in single series
+- Some coding style fixes
 
-The events directory gets its permissions from the root inode. But this
-can cause an inconsistency if the instances directory changes its
-permissions, as the permissions of the created directories under it should
-inherit the permissions of the instances directory when directories under
-it are created.
+Changes in v4 -> v5:
+v4: https://lore.kernel.org/all/20240429131647.50165-1-puranjay@kernel.org/
+- Implement the inlining of the bpf_get_smp_processor_id() in the JIT.
 
-Currently the behavior is:
+NOTE: This needs to be based on:
+https://lore.kernel.org/all/20240430175834.33152-1-puranjay@kernel.org/
+to be built.
 
- # cd /sys/kernel/tracing
- # chgrp 1002 instances
- # mkdir instances/foo
- # ls -l instances/foo
-[..]
- -r--r-----  1 root lkp  0 May  1 18:55 buffer_total_size_kb
- -rw-r-----  1 root lkp  0 May  1 18:55 current_tracer
- -rw-r-----  1 root lkp  0 May  1 18:55 error_log
- drwxr-xr-x  1 root root 0 May  1 18:55 events
- --w-------  1 root lkp  0 May  1 18:55 free_buffer
- drwxr-x---  2 root lkp  0 May  1 18:55 options
- drwxr-x--- 10 root lkp  0 May  1 18:55 per_cpu
- -rw-r-----  1 root lkp  0 May  1 18:55 set_event
+Manual run of bpf-ci with this series rebased on above:
+https://github.com/kernel-patches/bpf/pull/6929
 
-All the files and directories under "foo" has the "lkp" group except the
-"events" directory. That's because its getting its default value from the
-mount point instead of its parent.
+Changes in v3 -> v4:
+v3: https://lore.kernel.org/all/20240426121349.97651-1-puranjay@kernel.org/
+- Fix coding style issue related to C89 standards.
 
-Have the "events" directory make its default value based on its parent's
-permissions. That now gives:
+Changes in v2 -> v3:
+v2: https://lore.kernel.org/all/20240424173550.16359-1-puranjay@kernel.org/
+- Fixed the xlated dump of percpu mov to "r0 = &(void __percpu *)(r0)"
+- Made ARM64 and x86-64 use the same code for inlining. The only difference
+  that remains is the per-cpu address of the cpu_number.
 
- # ls -l instances/foo
-[..]
- -rw-r-----  1 root lkp 0 May  1 21:16 buffer_subbuf_size_kb
- -r--r-----  1 root lkp 0 May  1 21:16 buffer_total_size_kb
- -rw-r-----  1 root lkp 0 May  1 21:16 current_tracer
- -rw-r-----  1 root lkp 0 May  1 21:16 error_log
- drwxr-xr-x  1 root lkp 0 May  1 21:16 events
- --w-------  1 root lkp 0 May  1 21:16 free_buffer
- drwxr-x---  2 root lkp 0 May  1 21:16 options
- drwxr-x--- 10 root lkp 0 May  1 21:16 per_cpu
- -rw-r-----  1 root lkp 0 May  1 21:16 set_event
+Changes in v1 -> v2:
+v1: https://lore.kernel.org/all/20240405091707.66675-1-puranjay12@gmail.com/
+- Add a patch to inline bpf_get_smp_processor_id()
+- Fix an issue in MRS instruction encoding as pointed out by Will
+- Remove CONFIG_SMP check because arm64 kernel always compiles with CONFIG_SMP
 
-Cc: stable@vger.kernel.org
-Fixes: 8186fff7ab649 ("tracefs/eventfs: Use root and instance inodes as default ownership")
-Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
----
- fs/tracefs/event_inode.c | 30 ++++++++++++++++++++++++------
- 1 file changed, 24 insertions(+), 6 deletions(-)
+This series adds the support of internal only per-CPU instructions and inlines
+the bpf_get_smp_processor_id() helper call for ARM64 and RISC-V BPF JITs.
 
-diff --git a/fs/tracefs/event_inode.c b/fs/tracefs/event_inode.c
-index ff4ee3dad56a..3ea32159d556 100644
---- a/fs/tracefs/event_inode.c
-+++ b/fs/tracefs/event_inode.c
-@@ -37,6 +37,7 @@ static DEFINE_MUTEX(eventfs_mutex);
- 
- struct eventfs_root_inode {
- 	struct eventfs_inode		ei;
-+	struct inode			*parent_inode;
- 	struct dentry			*events_dir;
- };
- 
-@@ -219,12 +220,23 @@ static int eventfs_set_attr(struct mnt_idmap *idmap, struct dentry *dentry,
- 
- static void update_events_attr(struct eventfs_inode *ei, struct super_block *sb)
- {
--	struct inode *root;
-+	struct eventfs_root_inode *rei;
-+	struct inode *parent;
-+
-+	rei = get_root_inode(ei);
-+
-+	/* Use the parent inode permissions unless root set its permissions */
-+	parent = rei->parent_inode;
- 
--	/* Get the tracefs root inode. */
--	root = d_inode(sb->s_root);
--	ei->attr.uid = root->i_uid;
--	ei->attr.gid = root->i_gid;
-+	if (rei->ei.attr.mode & EVENTFS_SAVE_UID)
-+		ei->attr.uid = rei->ei.attr.uid;
-+	else
-+		ei->attr.uid = parent->i_uid;
-+
-+	if (rei->ei.attr.mode & EVENTFS_SAVE_GID)
-+		ei->attr.gid = rei->ei.attr.gid;
-+	else
-+		ei->attr.gid = parent->i_gid;
- }
- 
- static void set_top_events_ownership(struct inode *inode)
-@@ -810,6 +822,7 @@ struct eventfs_inode *eventfs_create_events_dir(const char *name, struct dentry
- 	// Note: we have a ref to the dentry from tracefs_start_creating()
- 	rei = get_root_inode(ei);
- 	rei->events_dir = dentry;
-+	rei->parent_inode = d_inode(dentry->d_sb->s_root);
- 
- 	ei->entries = entries;
- 	ei->nr_entries = size;
-@@ -819,10 +832,15 @@ struct eventfs_inode *eventfs_create_events_dir(const char *name, struct dentry
- 	uid = d_inode(dentry->d_parent)->i_uid;
- 	gid = d_inode(dentry->d_parent)->i_gid;
- 
--	/* This is used as the default ownership of the files and directories */
- 	ei->attr.uid = uid;
- 	ei->attr.gid = gid;
- 
-+	/*
-+	 * When the "events" directory is created, it takes on the
-+	 * permissions of its parent. But can be reset on remount.
-+	 */
-+	ei->attr.mode |= EVENTFS_SAVE_UID | EVENTFS_SAVE_GID;
-+
- 	INIT_LIST_HEAD(&ei->children);
- 	INIT_LIST_HEAD(&ei->list);
- 
+Here is an example of calls to bpf_get_smp_processor_id() and
+percpu_array_map_lookup_elem() before and after this series on ARM64.
+
+                                         BPF
+                                        =====
+              BEFORE                                       AFTER
+             --------                                     -------
+
+int cpu = bpf_get_smp_processor_id();           int cpu = bpf_get_smp_processor_id();
+(85) call bpf_get_smp_processor_id#229032       (85) call bpf_get_smp_processor_id#8
+
+
+p = bpf_map_lookup_elem(map, &zero);            p = bpf_map_lookup_elem(map, &zero);
+(18) r1 = map[id:78]                            (18) r1 = map[id:153]
+(18) r2 = map[id:82][0]+65536                   (18) r2 = map[id:157][0]+65536
+(85) call percpu_array_map_lookup_elem#313512   (07) r1 += 496
+                                                (61) r0 = *(u32 *)(r2 +0)
+                                                (35) if r0 >= 0x1 goto pc+5
+                                                (67) r0 <<= 3
+                                                (0f) r0 += r1
+                                                (79) r0 = *(u64 *)(r0 +0)
+                                                (bf) r0 = &(void __percpu *)(r0)
+                                                (05) goto pc+1
+                                                (b7) r0 = 0
+
+
+                                      ARM64 JIT
+                                     ===========
+
+              BEFORE                                       AFTER
+             --------                                     -------
+
+int cpu = bpf_get_smp_processor_id();           int cpu = bpf_get_smp_processor_id();
+mov     x10, #0xfffffffffffff4d0                mrs     x10, sp_el0
+movk    x10, #0x802b, lsl #16                   ldr     w7, [x10, #24]
+movk    x10, #0x8000, lsl #32
+blr     x10
+add     x7, x0, #0x0
+
+
+p = bpf_map_lookup_elem(map, &zero);            p = bpf_map_lookup_elem(map, &zero);
+mov     x0, #0xffff0003ffffffff                 mov     x0, #0xffff0003ffffffff
+movk    x0, #0xce5c, lsl #16                    movk    x0, #0xe0f3, lsl #16
+movk    x0, #0xca00                             movk    x0, #0x7c00
+mov     x1, #0xffff8000ffffffff                 mov     x1, #0xffff8000ffffffff
+movk    x1, #0x8bdb, lsl #16                    movk    x1, #0xb0c7, lsl #16
+movk    x1, #0x6000                             movk    x1, #0xe000
+mov     x10, #0xffffffffffff3ed0                add     x0, x0, #0x1f0
+movk    x10, #0x802d, lsl #16                   ldr     w7, [x1]
+movk    x10, #0x8000, lsl #32                   cmp     x7, #0x1
+blr     x10                                     b.cs    0x0000000000000090
+add     x7, x0, #0x0                            lsl     x7, x7, #3
+                                                add     x7, x7, x0
+                                                ldr     x7, [x7]
+                                                mrs     x10, tpidr_el1
+                                                add     x7, x7, x10
+                                                b       0x0000000000000094
+                                                mov     x7, #0x0
+
+              Performance improvement found using benchmark[1]
+
+/benchs/run_bench_trigger.sh glob-arr-inc arr-inc hash-inc
+
+  +---------------+-------------------+-------------------+--------------+
+  |      Name     |      Before       |        After      |   % change   |
+  |---------------+-------------------+-------------------+--------------|
+  | glob-arr-inc  | 23.380 ± 1.675M/s | 25.893 ± 0.026M/s |   + 10.74%   |
+  | arr-inc       | 23.928 ± 0.034M/s | 25.213 ± 0.063M/s |   + 5.37%    |
+  | hash-inc      | 12.352 ± 0.005M/s | 12.609 ± 0.013M/s |   + 2.08%    |
+  +---------------+-------------------+-------------------+--------------+
+
+[1] https://github.com/anakryiko/linux/commit/8dec900975ef
+
+             RISCV64 JIT output for `call bpf_get_smp_processor_id`
+            =======================================================
+
+                  Before                           After
+                 --------                         -------
+
+           auipc   t1,0x848c                  ld    a5,32(tp)
+           jalr    604(t1)
+           mv      a5,a0
+
+  Benchmark using [1] on Qemu.
+
+  ./benchs/run_bench_trigger.sh glob-arr-inc arr-inc hash-inc
+
+  +---------------+------------------+------------------+--------------+
+  |      Name     |     Before       |       After      |   % change   |
+  |---------------+------------------+------------------+--------------|
+  | glob-arr-inc  | 1.077 ± 0.006M/s | 1.336 ± 0.010M/s |   + 24.04%   |
+  | arr-inc       | 1.078 ± 0.002M/s | 1.332 ± 0.015M/s |   + 23.56%   |
+  | hash-inc      | 0.494 ± 0.004M/s | 0.653 ± 0.001M/s |   + 32.18%   |
+  +---------------+------------------+------------------+--------------+
+
+Puranjay Mohan (4):
+  riscv, bpf: add internal-only MOV instruction to resolve per-CPU addrs
+  riscv, bpf: inline bpf_get_smp_processor_id()
+  arm64, bpf: add internal-only MOV instruction to resolve per-CPU addrs
+  bpf, arm64: inline bpf_get_smp_processor_id() helper
+
+ arch/arm64/include/asm/insn.h   |  8 ++++++
+ arch/arm64/lib/insn.c           | 11 ++++++++
+ arch/arm64/net/bpf_jit.h        |  8 ++++++
+ arch/arm64/net/bpf_jit_comp.c   | 39 +++++++++++++++++++++++++
+ arch/riscv/net/bpf_jit_comp64.c | 50 +++++++++++++++++++++++++++++++++
+ include/linux/filter.h          |  1 +
+ kernel/bpf/core.c               | 11 ++++++++
+ kernel/bpf/verifier.c           |  4 +++
+ 8 files changed, 132 insertions(+)
+
 -- 
-2.43.0
-
+2.40.1
 
 
