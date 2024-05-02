@@ -1,182 +1,209 @@
-Return-Path: <linux-kernel+bounces-166427-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-166429-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 505B08B9A83
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 14:13:17 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 97AD58B9A8D
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 14:14:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7322F1C20C25
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 12:13:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4ECE7284883
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 12:14:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C8EC57E56B;
-	Thu,  2 May 2024 12:12:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7849C7BAFF;
+	Thu,  2 May 2024 12:14:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=blackwall-org.20230601.gappssmtp.com header.i=@blackwall-org.20230601.gappssmtp.com header.b="bAB/Edq8"
-Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=theobroma-systems.com header.i=@theobroma-systems.com header.b="GF/Z+nGW"
+Received: from EUR04-VI1-obe.outbound.protection.outlook.com (mail-vi1eur04on2101.outbound.protection.outlook.com [40.107.8.101])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6BC1E604B3
-	for <linux-kernel@vger.kernel.org>; Thu,  2 May 2024 12:12:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.43
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714651976; cv=none; b=Wsx/u+I4netkTzPVRd18aOSwKe+zN0QjQKnekiNZfiGWnxyLH/U4trjZS516QYeHbgzv0dYTbOMLHcDMXTHWoeEKbsT3zywUeirI1StTTfRcBynwevdDKxsyS/pArVkubxB08gCZ/gO9zTHtjJHYwAVOle4dwStHNr0JjwcPEn8=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714651976; c=relaxed/simple;
-	bh=U0+9t/DUTI7wv+JhYa4+yvPwHRkQr5ZuSHZ6s20Plk4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=LcO2l+ufy7/flf36ydGuZgPHmIy88o6RUFVyKCZDGk2pjzSH9xu54jUyboCxN738Eus6lR4PlRxoxSwipruEO3KUbg9gv8TeFNDe3JK0SIorWstfTqBGPYbZ0epxm1/z8O8lWQbW6DJqf1oM1e1hrIxWIUbp6Z883ty4fQUEyhU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=blackwall.org; spf=none smtp.mailfrom=blackwall.org; dkim=pass (2048-bit key) header.d=blackwall-org.20230601.gappssmtp.com header.i=@blackwall-org.20230601.gappssmtp.com header.b=bAB/Edq8; arc=none smtp.client-ip=209.85.208.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=blackwall.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=blackwall.org
-Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-572babec735so298444a12.0
-        for <linux-kernel@vger.kernel.org>; Thu, 02 May 2024 05:12:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=blackwall-org.20230601.gappssmtp.com; s=20230601; t=1714651974; x=1715256774; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=672JpQGQxN2adDtGURkG6O93oWu5Ah9pxezBGrFTATk=;
-        b=bAB/Edq82jw0GDpMTAoGjUX/tIU1rWtbBmRWpckZNd2ZUZdYo0opynVSn8aCykSQjp
-         mbH6FOJs9mGQKRFdCc5cLn0OXcrpAZTy6OY91bJ0UL2XMkZaTLBR2/P9eMv2ihtQ56iF
-         1cB6UA5/VnVTPrkHA+9Fx8J2SFEzrETV5f3lkdAA5uvYf3Cm5LXx7MJ2IJGnUk04c2tV
-         u5Sl/ACh8p70Qky96Gohp2SvcHnMM2QaWBkG5a/+bmPRYeAD4HjmzkPoR86TnVybGT4O
-         f6nctDOy+HX2L4rmBpA5rAwXWG/fxYqGeXIT1HbYDy8lwVqK4igdCEUQMCnJHwWTSXpo
-         E06w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714651974; x=1715256774;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=672JpQGQxN2adDtGURkG6O93oWu5Ah9pxezBGrFTATk=;
-        b=k4lpuxpGEJTHGeN6q4IZxBUorMCKR+zHW49S6KYaeYj2xnG6HOsjC3GW1eCfIE0v5L
-         cotYZMDJMtF0eHt8/xXtI/HvloakHvz1gwSBMGymCV2ePt6+/+ScjUO/FHzedj2mXcw8
-         nbzId/dA55WojLERXE5AiIASJLJISOPCOsyaTQW2F1OQnEG5LBuW/oNNP5xtV783xBuj
-         ReLkYcNTeL1R49WJd89JfnIH9n1wvQEWa8IXnl05yon7JVzIUH5VdUcDotNQgDepDrHO
-         Q8KBMSiM89nXBma1foXV9DegqixUC418h8V5eBoTDKIv1Pqfrcjbm4da7RyzVNEWYbB6
-         gDvw==
-X-Forwarded-Encrypted: i=1; AJvYcCW61S4zuhrxSPe3RBkP5NqogWhEpkPKMNeEwMpwHNoQCXI9sIgUdLPq7FIwpL4KnZWV6XdYcNhranRt17Xe3XcogkTP6Szf2FjuGJOd
-X-Gm-Message-State: AOJu0Yx5gwEdf+oug5ccmwCiM2d9i9zC9qBggQ0/7CMrw6meEp6xXTux
-	c8YKZRRY5PmRAaGefP/a43pWNLvd6aOivN/aKM7x1tJmvaHHoC5fRmg92vLD64U=
-X-Google-Smtp-Source: AGHT+IGBveCIDdwRLjqeRHzu8Xwq+nwSoG7CgDOi9YvahOmP7DijvF4W2bSeOpwFts4MR/jGuXktPw==
-X-Received: by 2002:a50:d613:0:b0:572:a198:49ca with SMTP id x19-20020a50d613000000b00572a19849camr1953208edi.20.1714651973540;
-        Thu, 02 May 2024 05:12:53 -0700 (PDT)
-Received: from [192.168.0.161] ([62.73.69.208])
-        by smtp.gmail.com with ESMTPSA id t17-20020a05640203d100b00572c15aba54sm465190edw.17.2024.05.02.05.12.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 02 May 2024 05:12:53 -0700 (PDT)
-Message-ID: <431e1af1-6043-4e3e-bc3b-5998ec366de7@blackwall.org>
-Date: Thu, 2 May 2024 15:12:51 +0300
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A1106341B;
+	Thu,  2 May 2024 12:14:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.8.101
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1714652059; cv=fail; b=ne3Hn63XKtRYai82BjR0vyxmNHtME9kbQR+utys/RYJP7QbtpFSsihDf86DUfpyq2xAzSA2QhoK3QSNJvffoQyIlk3ajtlLu+o/bh3g4QIRih5xZTAr9e0TFm0y8/nGwtw7Tot9A/Lgvw0m3L4LiDopyzuJPo6/CfqHMOnBaDmY=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1714652059; c=relaxed/simple;
+	bh=LqpXefInW1026pVVLKSbuMNhNjdQcjzGC5FCS13VyyI=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=psU2p8Frui9DXYsHy9U18RtnFr5JxbKdcYgLXroczjwWFyjQvyIdog9Jf+4X51UfDVoSX10yuqJaEzMS0sXzd39vTAo6EFewhrDgzL4ec2bVP0b19nMr2v0BoGp9JzZDPF/2gLF7z7ezYeouo7lsoG4O7VdVjcXwFMOhlDcG8iQ=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=theobroma-systems.com; spf=pass smtp.mailfrom=cherry.de; dkim=pass (2048-bit key) header.d=theobroma-systems.com header.i=@theobroma-systems.com header.b=GF/Z+nGW; arc=fail smtp.client-ip=40.107.8.101
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=theobroma-systems.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cherry.de
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=aDaQqeQOXar9L0OC7PjnwC0qSblEEGOssuHZFCTGlR9PlntEPgMEHGoFSCzFB+FRodiRAsq5zkU374RsgRo+JN0KRFoQ0vour1Xhc6US1jvkXFrhOuiJK9I8dMQ8hnL/ftepffYvYkt3YwGfMOBR7+IkdFFM8v+kTzE5MsUtdZSYi9NQ7RpU5jfOEEEarBe5Vi5uzfe2c6mXC3/Fotue4/7bKCmfBSDcMaNo8COP/85iq/iGuNHTb8I599kupAdRnBLAoqxm1kakWA3SrjcviL0cnclpTYz/NCkzMp3Oyggh4gW8wrTqTe1/+4BsbKKMBNefhLHicONydTsaCPShGg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=qY607RuOjkthsJeGb+4yrZg/ts/is+MS55ycucs5TYM=;
+ b=PjpIWaX50HXWtWKI/1JxYkzmwzZk6OVnCx006Ovr/HLxz+il+cT1A+ErCylS5R9RbESw6wVn5zqI8ECiaJRJnqiZ0fRKpwdcOBrgPEmgdWh9QUMZkJsYil+zIXF4VjfiL5gQWLOSY3ze/ETr+V9dwbP3uHpFpkWRY/u3FbzlLtasy4XhenB1qQnamuoKLpeoHEFCL3NsodSl9xvguyWA6cecXzx7FTJV5AvCTpw2yVTuOJ2WjnSVdmicmfGgS/0lpp5DLktLS9yhtsCRMxHoRO7+u8RHmuJTKi+cdQPqHrHZXrY6raZoexDSObJdRONFA0M+6PGp+a+WupkQgadXzQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=cherry.de; dmarc=pass action=none
+ header.from=theobroma-systems.com; dkim=pass header.d=theobroma-systems.com;
+ arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=theobroma-systems.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=qY607RuOjkthsJeGb+4yrZg/ts/is+MS55ycucs5TYM=;
+ b=GF/Z+nGWFRI0mrS26Dla7jydcCvj0PrPoLtdd1CCTZVj2QKXDmShz6usFBFJ3sbYYA/VSRIbnWE6lC/xFkfsBVWBP2aT66ELiZ+InMp+p7xNXgqBMqh7UjhqHms/bU7q4DdendfBFE4TVaeCuVqCO+UlgWHpGBNewpDXBFz7nItEtZxgbY8gE/zhDqZ+2OUR/UHoi4I3uoRWv9VmAFy83YrXgHK/OGSbg9xRIaM8WhmNm+0A85RND3WZ5stfZvAEUEUQRUnvlh7ChRF4CLF/J23LOtfjqSPzhmA3l7XwnWJkcEsh8JyvfTxBtwOg0ihiVMfjaYXWvKz1rkJKYnd46A==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=theobroma-systems.com;
+Received: from VE1PR04MB6382.eurprd04.prod.outlook.com (2603:10a6:803:122::31)
+ by AM9PR04MB8305.eurprd04.prod.outlook.com (2603:10a6:20b:3ee::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7519.36; Thu, 2 May
+ 2024 12:14:11 +0000
+Received: from VE1PR04MB6382.eurprd04.prod.outlook.com
+ ([fe80::59d9:878d:65f0:3936]) by VE1PR04MB6382.eurprd04.prod.outlook.com
+ ([fe80::59d9:878d:65f0:3936%4]) with mapi id 15.20.7544.029; Thu, 2 May 2024
+ 12:14:11 +0000
+Message-ID: <875763a8-fd58-4759-818c-b36f181ddc44@theobroma-systems.com>
+Date: Thu, 2 May 2024 14:14:02 +0200
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/7] dt-bindings: i2c: mux: mule: add dt-bindings for mule
+ i2c multiplexer
+To: Rob Herring <robh@kernel.org>
+Cc: Wolfram Sang <wsa+renesas@sang-engineering.com>,
+ Peter Rosin <peda@axentia.se>, Andi Shyti <andi.shyti@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>,
+ Quentin Schulz <quentin.schulz@theobroma-systems.com>,
+ Heiko Stuebner <heiko@sntech.de>, linux-i2c@vger.kernel.org,
+ linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org
+References: <20240426-dev-mule-i2c-mux-v1-0-045a482f6ffb@theobroma-systems.com>
+ <20240426-dev-mule-i2c-mux-v1-2-045a482f6ffb@theobroma-systems.com>
+ <CAL_JsqJH-wD1BbSK=DmBtftpWT7YDbabmvgy1+PPii-8ziHTiQ@mail.gmail.com>
+Content-Language: en-US
+From: Farouk Bouabid <farouk.bouabid@theobroma-systems.com>
+In-Reply-To: <CAL_JsqJH-wD1BbSK=DmBtftpWT7YDbabmvgy1+PPii-8ziHTiQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: WA2P291CA0031.POLP291.PROD.OUTLOOK.COM
+ (2603:10a6:1d0:1f::12) To VE1PR04MB6382.eurprd04.prod.outlook.com
+ (2603:10a6:803:122::31)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RFC net-next 00/10] MC Flood disable and snooping
-To: Joseph Huang <joseph.huang.2024@gmail.com>,
- Vladimir Oltean <olteanv@gmail.com>
-Cc: Joseph Huang <Joseph.Huang@garmin.com>, netdev@vger.kernel.org,
- Andrew Lunn <andrew@lunn.ch>, Florian Fainelli <f.fainelli@gmail.com>,
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- Roopa Prabhu <roopa@nvidia.com>, =?UTF-8?Q?Linus_L=C3=BCssing?=
- <linus.luessing@c0d3.blue>, linux-kernel@vger.kernel.org,
- bridge@lists.linux.dev
-References: <20240402174348.wosc37adyub5o7xu@skbuf>
- <a8968719-a63b-4969-a971-173c010d708f@blackwall.org>
- <20240402204600.5ep4xlzrhleqzw7k@skbuf>
- <065b803f-14a9-4013-8f11-712bb8d54848@blackwall.org>
- <804b7bf3-1b29-42c4-be42-4c23f1355aaf@gmail.com>
- <20240405102033.vjkkoc3wy2i3vdvg@skbuf>
- <935c18c1-7736-416c-b5c5-13ca42035b1f@blackwall.org>
- <651c87fc-1f21-4153-bade-2dad048eecbd@gmail.com>
- <20240405211502.q5gfwcwyhkm6w7xy@skbuf>
- <1f385946-84d0-499c-9bf6-90ef65918356@gmail.com>
- <20240430012159.rmllu5s5gcdepjnc@skbuf>
- <b90caf5f-fa1e-41e6-a7c2-5af042b0828e@gmail.com>
-Content-Language: en-US
-From: Nikolay Aleksandrov <razor@blackwall.org>
-In-Reply-To: <b90caf5f-fa1e-41e6-a7c2-5af042b0828e@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: VE1PR04MB6382:EE_|AM9PR04MB8305:EE_
+X-MS-Office365-Filtering-Correlation-Id: 42b2ce7e-b729-4004-2e17-08dc6aa15fce
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230031|376005|7416005|1800799015|366007;
+X-Microsoft-Antispam-Message-Info:
+	=?utf-8?B?VW0wVTFBQmw2WjhLK2Q2UWErdm82OU5KUHF2VGJMYzJwT1ZmUEVGRjhGY2Jt?=
+ =?utf-8?B?dm9xSU5nNnR4cVYzWnV4WElydXRkbGRjaW5DY1EvQXdIVDlUSUlUVkZMa2xn?=
+ =?utf-8?B?REk4S2tzY2NWUEkzenNKNmt6dXFjWlp0Qi81cEp5MlRHbUlSbTVEdXI1TlFH?=
+ =?utf-8?B?Qk1NWERUZlZtNXA2Mmc5VnBNRVZGOVdyc3pTdWVyUDBray9UYWlFUG1JUXVo?=
+ =?utf-8?B?NXQya09lWmplZTh1Nm1rQ2FaWmpQMGh6eDgwKzFFLzhGbmZWOXRnOXA5VTNU?=
+ =?utf-8?B?TWljZ1JsVjNvVExheGNRSEpvdldtNnpTTEtXbS9uN3ZJOUtQTjllQ0htUHY0?=
+ =?utf-8?B?bEl0REY2c1ZkSnFjRE1EaC9NVzFxQkM0WVhKbUZtbTdxeUY3MWFBZms5c1B0?=
+ =?utf-8?B?RHp4VnBiUU1IVFhOb1h5alFQSWVweWdoYWRlZUV1c1ZXdGVvVXJ0ZkRmeG1i?=
+ =?utf-8?B?Q2huQVc3RUdxUnczRzBwRUlrUXN6M0crWThFeWk4NG5QTENUV3dSWWpWR0RF?=
+ =?utf-8?B?R0VFc0U4ZG5CY0dFZW5TL3BxbHpuL2M3cXRwMlBwT2kyeGg1dEhaUHhZYjlU?=
+ =?utf-8?B?d3JQQzBERkVQdGErbHM2T0FVYjh1UndwZmc2Qzd1aS9oTnJodS90QmttcEtG?=
+ =?utf-8?B?bmFRYUhMSERHTFlNQVJjTDV3SnBGZUs0S1FPYlJTb200cmorVEdROFdSWUtv?=
+ =?utf-8?B?REdzVEYvbytGdXlJMVhvdlhzbkt1ZnJLT3YzVnBUdTNTTktvZUFxMHZvMldp?=
+ =?utf-8?B?dlRPTG1PckQ1LzIwMHJVOWNHRFo5NWUwci8zTTJLZjdNclViMVBoRXF1TkIv?=
+ =?utf-8?B?VDEvVGkrTDVZaVY2U0R0blRwd3c5eDVxNFc5UW16TG9VeElGUitOdXpudDhL?=
+ =?utf-8?B?eUgyMXo0bFlTZDlLcnpHUFU1b2tRaEZvQnFwWlJpYjdhTnYvYXB5dVR0WnJJ?=
+ =?utf-8?B?OXYwTXZrdVBubDdGTDY5MzFKZ0ZqWkZzbEdOOFg3RmY4NGIvRUdtOUcwVnB5?=
+ =?utf-8?B?Q0dDU2lvUHF1K0d2QnpBUWdOSldXVDAwV3VMSVU2N2xEQzliQ1E0VWpYVjNj?=
+ =?utf-8?B?Wjl2ZldVSUsxdGRuTmlKZHZxdW5xZE43Zi9jUVJZNTI3aVVjZnRDNVV0b3hP?=
+ =?utf-8?B?QkZNUkN6aEhkWWdtNnFIc1pRZ0JJTjlCR3hxUG04MUdtUk8xazhDbzBzVkVs?=
+ =?utf-8?B?aHliQmhLQ000UlRBaVZhd2NwSGRaRysrNHF4a3M0Q1VuWmFUa1J3NVgzanNx?=
+ =?utf-8?B?TjRaV3pjc1FXUm01VkNRNE12cmVUMzhyeEJMSDZ6Y2hLZmNjS3JvYnhOdXFQ?=
+ =?utf-8?B?RmVzeTZlNGs4b0xQK05VQkkrdFpNMFgwMVR5TXFxQUo2aktzZ1hDSWZQZlR2?=
+ =?utf-8?B?REc5aVNNUWt3NXhDTE0vQzJxejRPR24yYjhUc3JCQU1vd1hKN1NnUU1yQW1T?=
+ =?utf-8?B?c2N2QzRVVm0wWklmdkxHanhkVU0xMlRzMHAxV0VhS3Nka042Sm9HckhkQ2Zn?=
+ =?utf-8?B?MndvTVVkU21yWS9oeXg0alJleUVMT0xrdVB2T1FVWnFuZTk2VVl4ZDR6NDF3?=
+ =?utf-8?B?RlFremhCMFZZOGxVcCtkQnZUZlNGbzlJdUpGZ21qYWFtOHRoTGFPK1RyN3RG?=
+ =?utf-8?B?elpjR0xIbWJMRmJ0MjNPWkFjNXlZMkNXYTlHZFphY25BcGcxQWtBbGNGTlY3?=
+ =?utf-8?B?aVAxa1lTa29SS2l0LzNjRjlGaTRCeXR3Vkk2YVQvSStKSitWY0xiMjFRPT0=?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VE1PR04MB6382.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(7416005)(1800799015)(366007);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?NUEyNjUvR1dRRkZMS3ZOOWlJZUlzTUl1cHI2Z1gwMWREUWtIUVBnTU5xMGlI?=
+ =?utf-8?B?c3I4d2pCcXpIekU1WldqTDRVNlRhYmxUQzJxckx2NHpZUWZ5RFlRQW8vMGw5?=
+ =?utf-8?B?eDBhNWdrSjdNUjZaejRQUVYwL0VvU3RLNkhPSWNTWVI5cVg5TzM1bkFQeVZh?=
+ =?utf-8?B?QjR5TVpNOEJhSktlbWFURGliRVlFNFBZNzdBQWN5ZXNBMURtVmxPNnJTdDBl?=
+ =?utf-8?B?bVZPbVp3Qkt4K3VwcFJDWjh3TFhSOTB0Z2pTNXZZVm95eC9NSHQyOEtiamNJ?=
+ =?utf-8?B?a0lGanl3Q3JlNWN2ZklTTCtPcFlkMnhzV3NLS0VNdlpmODVOU1RIK2RGVEM1?=
+ =?utf-8?B?TDZ6NjYxN2FkcHBONjJyRkhrU1ZGRVRwNnBoUkpFQTRDMUtScEVlcEtUSG9T?=
+ =?utf-8?B?R3NkWnJnZVVsVC90NkFEWU1pZ3IzWUZYWUlXeFJCTWpjaGRBSEJuM25YaVJ6?=
+ =?utf-8?B?ZDdNNy9ZNnMwbGpIdGxhLzhiYS92V2VaR0E4bjJJYjBMenlNR3pOd1IxQjdM?=
+ =?utf-8?B?L2JSU01KcFdXOGEwZ3h2WEI1dHFPN2lyOFNiL0NIQUdGWmhTTGx2SE93ZWdy?=
+ =?utf-8?B?Z01aMzVoL1hYL2Z1ZXh1RU1RTjlPZEJSR3plbGV0L1BrdXUwY0ExSXZUZWtB?=
+ =?utf-8?B?M2wzTmdlNWJidUhZcFhtRE1sLzl4MFU3TXhvSi9jWTkyNXA5WnduQWlqWkVs?=
+ =?utf-8?B?VjduRkZiS0FZdVc4eXg1ZElLeUY5RWEzSTZFTGxoUTNablVPNSswSUNsOCtD?=
+ =?utf-8?B?QkVnOE0xTDBHdllMMEpOTEZIOVpWK0xGVGs4eWp6eFBtR0hTZkRsdGlka3FO?=
+ =?utf-8?B?MG1rZ3JRSTE1QXV5REdIc3hQYU1MTnZvT2E2T0JIRXBSZUtTRUV2c24wanNn?=
+ =?utf-8?B?b0NSdWtqNGVMS1JvdFdsSS9Cb3FGVjRIN1VySGs2WW9LYXVUejQxSVM0d1l1?=
+ =?utf-8?B?SDd4WVRzNzkwWitJYzBDUDRubzdUWjdFU3BvM3NiV2pYdG81ZklJZ09XK2Zw?=
+ =?utf-8?B?Z3AzZWFuRkNQcVB4Z0lPYTFiSTIwYXNEY1pxTmhwMWh4V0F2OFN4TVdRU2U4?=
+ =?utf-8?B?MmFnS3R5THRJeEZ1MmJ2Yk1rdFhsZTJLQ25yL3hDdkVVcSthUUpqdXpaVlQ0?=
+ =?utf-8?B?bUcyZ09ZbnpqcEFVMkg3TitjNVBRQTFjY2dHOW1pQXRWTkozWnJVRTJ6R29O?=
+ =?utf-8?B?V1NCNEJBZHV4LytRMzVDMjNYQm15WjRIbVlPVjNmQVAwTllpMnRiaXBDQ2dR?=
+ =?utf-8?B?MXIyaW9wVEdaYXhWdUFmOXJoUUJqY3g2VWNJbjFjQ1FJOXBGQkg3cUpvOFpt?=
+ =?utf-8?B?NmNscHM1MmVTMHFaWnFkM3NIQTVvQlU1b1lXeGZoRk5taTVxV2ZweDZ6bU94?=
+ =?utf-8?B?djhtUDg0N1Z1OFE0bFQ4ei9QSG9scEwxdFNKanBvMjBNYTZuQ2JrTHFFdXM3?=
+ =?utf-8?B?eHp0ZnRhMHFLYnFsTVl4Qk9UcTVDdFV5dTV0RVN6Vm1QV2s0YWE4MlpDY3A2?=
+ =?utf-8?B?TVk4WWsxamcwUGdrbDJxaEh1UmMwQXZCZ0I1TTJzeENpV0RvQWpEMDB0aDk3?=
+ =?utf-8?B?OXprSEpuTkNOaEMrYUpYRDdLVW95QnNSNTUxVW1DS2drSVBYRDJwWVA1ZURP?=
+ =?utf-8?B?c2FMNk5lZUdZRHlXSExmWlBFb1hWaVZJcGx5K2V0eWhxbzVRdUlyNXZTNUZa?=
+ =?utf-8?B?RjdwcEk5UmRQa2VrWFRhTlhyS0RJZnpkdWpQeWFyK3ZJdHowTDFERlFxN20r?=
+ =?utf-8?B?OFRXQUxZcmhpL3JVaWdBaGNwajhaUjMvakZyYWJBRUErTThPb2NudmYraDQ3?=
+ =?utf-8?B?bGJhdlJvSnBuTEZXOVFRYWE4b0ZQbExacEg0UHY3cXhIclNaNnlUMmJ6VDMw?=
+ =?utf-8?B?VXQwWGhiTHM5eDRLeFdwbUlCdjlDV2RiSHBMZVBGU0tzRmM0eXZTc3pxWGp5?=
+ =?utf-8?B?eXdHdEQ2TmhTdXVPTWx1TFFXR1RFTkdlaG45WXE4Mnc3cGx2TTRJUEdPZDFE?=
+ =?utf-8?B?UGR4aEgwQTNUWDNYeUJ5RWdicEtreGUyYTVESTJBL0lGbERFZjRRV25Uc1Br?=
+ =?utf-8?B?STQ3cCtHdmhsd2J4TWZVVFordnZNY0RxVVV1YnVnZlhIcWl6c1JrQWdKUzdR?=
+ =?utf-8?B?WlhUVklnZEkxcmx6aFA0U2k1emo3VzA4M3ZieTVKRTRXZzY5MVRSbEVxZlBM?=
+ =?utf-8?B?MVE9PQ==?=
+X-OriginatorOrg: theobroma-systems.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 42b2ce7e-b729-4004-2e17-08dc6aa15fce
+X-MS-Exchange-CrossTenant-AuthSource: VE1PR04MB6382.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 May 2024 12:14:11.1516
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 5e0e1b52-21b5-4e7b-83bb-514ec460677e
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: YGLzTKIAOTDAPxftheJu7QdoRT8WLG2rzcCwB9fsmKsCpss5ICc2jd/eIYvBCvLbiCItlUsOBkIETj1bJHDGj32keuJ0Q6SKz1X98TnpSzQ=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM9PR04MB8305
 
-On 30/04/2024 20:01, Joseph Huang wrote:
-> On 4/29/2024 9:21 PM, Vladimir Oltean wrote:
->> On Mon, Apr 29, 2024 at 04:14:03PM -0400, Joseph Huang wrote:
->>> How about the following syntax? I think it satisfies all the "not breaking
->>> existing behavior" requirements (new option defaults to off, and missing
->>> user space netlink attributes does not change the existing behavior):
->>>
->>> mcast_flood off
->>>    all off
->>> mcast_flood off mcast_flood_rfc4541 off
->>>    all off
->>> mcast_flood off mcast_flood_rfc4541 on
->>>    224.0.0.X and ff02::1 on, the rest off
->>> mcast_flood on
->>>    all on
->>> mcast_flood on mcast_flood_rfc4541 off
->>>    all on (mcast_flood on overrides mcast_flood_rfc4541)
->>> mcast_flood on mcast_flood_rfc4541 on
->>>    all on
->>> mcast_flood_rfc4541 off
->>>    invalid (mcast_flood_rfc4541 is only valid if mcast_flood [on | off] is
->>> specified first)
->>> mcast_flood_rfc4541 on
->>>    invalid (mcast_flood_rfc4541 is only valid if mcast_flood [on | off] is
->>> specified first)
+Hi Rob,
+
+On 29.04.24 15:56, Rob Herring wrote:
+> On Fri, Apr 26, 2024 at 11:50 AM Farouk Bouabid
+> <farouk.bouabid@theobroma-systems.com> wrote:
+>> This patch adds support for the Mule I2C multiplexer.
 >>
->> A bridge port defaults to having BR_MCAST_FLOOD set - see new_nbp().
->> Netlink attributes are only there to _change_ the state of properties in
->> the kernel. They don't need to be specified by user space if there's
->> nothing to be changed. "Only valid if another netlink attribute comes
->> first" makes no sense. You can alter 2 bridge port flags as part of the
->> same netlink message, or as part of different netlink messages (sent
->> over sockets of other processes).
+>> Mule is an mcu that emulates a set of i2c devices which are reacheable
+> MCU
+>
+> reachable
+>
+>> through an i2c-mux.
 >>
->>>
->>> Think of mcast_flood_rfc4541 like a pet door if you will.
->>
->> Ultimately, as far as I see it, both the OR-based and the AND-based UAPI
->> addition could be made to work in a way that's perhaps similarly backwards
->> compatible. It needs to be worked out with the bridge maintainers. Given
->> that I'm not doing great with my spare time, I will take a back seat on
->> that.
-> 
-> Nik, do you have any objection to the following proposal?
-> 
-> mcast_flood ->          default/    off         on
-> (existing flag)         missing     (specified/ (specified/
->                         (on)        nlmsg)      nlmsg)
-> 
-> mcast_flood_rfc4541
-> (proposed new flag)
->      |
->      v
-> default/                flood all   no flood    flood all
-> missing
-> (off)
-> 
-> off                     flood all   no flood    flood all
-> (specified/nlmsg)
-> 
-> on                      flood all   flood 4541  flood all
-> (specified/nlmsg)                   ^^^^^^^^^^
->                                     only behavior change
-> 
-> 
-> Basically the attributes are OR'ed together to form the final flooding decision.
-> 
-> 
+>> The emulated devices share a single i2c address with the mux itself where
+>> the requested register is what determines which logic is executed (mux or
+>> device).
+> Just to be sure, we need a complete binding for the MCU. Is this the
+> only thing the MCU does?
 
-Looks good to me. Please make use of the boolopt uapi to avoid adding new
-nl attributes.
 
-Thanks,
- Nik
+Currently that is all the MCU does. We plan to add more features to the 
+MCU firmware: Buzzer over i2c, watchdog over i2c ...
 
+
+Best regards
+
+Farouk
 
 
