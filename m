@@ -1,134 +1,147 @@
-Return-Path: <linux-kernel+bounces-166516-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-166517-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id BF5008B9BBF
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 15:41:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3AD988B9BC1
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 15:42:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 714E8284696
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 13:41:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E50B5284181
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 13:42:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B04B13C692;
-	Thu,  2 May 2024 13:41:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 212FE13C3FF;
+	Thu,  2 May 2024 13:42:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Co9U6Tax"
-Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="LPUfs/ob"
+Received: from mail-yb1-f175.google.com (mail-yb1-f175.google.com [209.85.219.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE36613C687;
-	Thu,  2 May 2024 13:41:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C26B041C60
+	for <linux-kernel@vger.kernel.org>; Thu,  2 May 2024 13:42:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714657284; cv=none; b=UNXwmPOMGpspt29/qEzQCGYkO/TyrCftUpVr1kKrse9UeZvv25gEFOj5ouuZD8olfRzTU+oEyvnoecuyDf05K7myNtF+IWP69F8QtOAMz43Py2CCorcSEY4OiwISrsTBJu5HvmDCLS4Z5+ezh89SUkLGeUS3L8B77d/iP6nX0pM=
+	t=1714657323; cv=none; b=EzqMJCJOrK5sGvQQdiljjo4brFUFg2HaF7KfEKcBo8JTgu4+4XaPFxDmzS8haB7fBLgWpwqvhf4C6NDJ8y+e+JhTVptPgmRIxmXAjQh+HRq3JnJQ2FzSPqlwoGiHZ8bS7AQUWf46ZHqpAGYZZ8kLbpCvf9eYdg1w6EyJLMfMiGM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714657284; c=relaxed/simple;
-	bh=i/1dVEqwkmjfInCh6AgBy+Ih1TKNisJ6Cjyzv9iZzCk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=XiRUGcq5SHq3Hc+AYZVY0AUML/OFbVUYuE/rATtZFA4+HNk6Z7N09xULklXq3ziPSEUHnMxIUjJ1xZxsrm9cX1cdkgWPdzdwyxsoEsk9okwbVHtAhcQ4rEc8oXgVa9Zxtsd0s6Inf2AnTs3dIz4E0zD5IvSqalf/AmImyuJc+s8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Co9U6Tax; arc=none smtp.client-ip=209.85.214.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-1ec4b2400b6so25958135ad.3;
-        Thu, 02 May 2024 06:41:22 -0700 (PDT)
+	s=arc-20240116; t=1714657323; c=relaxed/simple;
+	bh=6mNAUPwTXtGNfeXAY0CnFqxe0yDpZcMGNhXVEGvyMYQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Zcdis8qiZMynJmn7cy1FFjYZmO1QV68DrwWwq8WVums4K/xrrF6eCVbR24+WeoekMpLTi5vwUzihYF9cOffyhht1VdJq/NK92HWYshoOzq6qn1Pjib0LycZCC9UBJDgOMWG11swiKArivlKyp6EBZq9ZCS7XzCVpG+0Hlyir1AA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=LPUfs/ob; arc=none smtp.client-ip=209.85.219.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yb1-f175.google.com with SMTP id 3f1490d57ef6-d9b9adaf291so8420392276.1
+        for <linux-kernel@vger.kernel.org>; Thu, 02 May 2024 06:42:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714657282; x=1715262082; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=7nxd33Xi7ZoYSNclbCJAjQlz1BlP19LjGVI5r3OgMdk=;
-        b=Co9U6Taxsh6plbkK2QJqodUVQVlr2hvamdrTO64uuYmEl66X6Ihf5IK1qM5Pdv9G6N
-         OkIlhIhL2j4T05B6uypOBrDPr9QHu8xdoRlgfYHZQuVl2edeappXMX/g6+7HXCJUbsMq
-         BF+JZ5aUbMDK4n7TkZc7qb2scp3fuISEzVNt/v7FG8YeqrK7gGsQjDxsoNzx7DYa+e9j
-         rpy+YpYaNhH6rPCelYWk0OIfQo+A15Mc+QpRH+DjVz67btT0XVSpzrhHvpZo3yshF9EF
-         O5GQg2LxVVbdKb9A7CrZFnT+1UwTAriD/kci/jrQpR4zgVirs9qQMqrZ62FN2OEvMxq4
-         hGog==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714657282; x=1715262082;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=linaro.org; s=google; t=1714657321; x=1715262121; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=7nxd33Xi7ZoYSNclbCJAjQlz1BlP19LjGVI5r3OgMdk=;
-        b=cFavFmbFTKNK2jE0wNqm1UffA6a2KRqlLKC9vKj0z1rlLiO11gUZn9yk0b31T2Y6YJ
-         jmQJoT/TdMdusLgfa6iKe+9PSZomgugTODxAUmGm5T40MSVIoZVEwJFfRwjFEyYzWbpb
-         fUWHvVuNPKZAuIIt3CB8rvXt79y2R8AWmQg5uwrZaGA5aiQZOsYnRz51CdTslYlrlwSJ
-         0d1wJ34tI7dcQn+1bEZ4yyrMu9yuxe9t7XleWUDBsOV+D8bdXKoyqOfO37SIyGPVqGcz
-         HxmmVCtuWu80ZJxc/GSzbDmYTpCEwAMrVNDnNIAtPyNFutRmIZOfUF3oo7Xb4cXGBd6v
-         9ZfQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXHqNngMUwLrCjuhTY8wxkG/DPkNYthHcI7ZrYfU5zVRuuu+aZeaNz9ribHudLQVk7tntP3TIt2mdrDkcVGYY7usvkaH5vTLSeEaHZ54Wh2RtiljCj5nVEMZyQzU6FWNXwEH9hm3h3CYtSE
-X-Gm-Message-State: AOJu0YwAhDuH8Kbv/wAf/64P+MYhuhZ0ADIB4Jnol8Iu+L8bplt9Exvc
-	X40asAFMeu+EoDJlOVTOM/WYJeiV4x2fXnqBqh3L8uA+R8jv52PF
-X-Google-Smtp-Source: AGHT+IEdipkDZCgqRkPVOJitGbl9naK2nUNOobgvnzr6LYchUoycriBULK/4/rlgzTU/+FVwQHsvBQ==
-X-Received: by 2002:a17:902:f610:b0:1ec:28e4:691f with SMTP id n16-20020a170902f61000b001ec28e4691fmr2726025plg.63.1714657282028;
-        Thu, 02 May 2024 06:41:22 -0700 (PDT)
-Received: from hercules ([68.69.165.4])
-        by smtp.gmail.com with ESMTPSA id s8-20020a170902ea0800b001e2ba8605dfsm1267830plg.150.2024.05.02.06.41.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 May 2024 06:41:20 -0700 (PDT)
-Date: Thu, 2 May 2024 07:41:19 -0600
-From: Aaron Toponce <aaron.toponce@gmail.com>
-To: "Jason A. Donenfeld" <Jason@zx2c4.com>
-Cc: Theodore Ts'o <tytso@mit.edu>, Herbert Xu <herbert@gondor.apana.org.au>,
-	"David S. Miller" <davem@davemloft.net>,
-	linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org
-Subject: Re: [PATCH] random: add chacha8_block and swtich the rng to it
-Message-ID: <ZjOX_4aGUoY0msib@hercules>
-References: <20240429134942.2873253-1-aaron.toponce@gmail.com>
- <ZjIzz5Rdkc8kxo4g@zx2c4.com>
+        bh=iSQ9jjwtyIhReugDAg/DErQbocu2WPTjK2mXdU1pXf0=;
+        b=LPUfs/obVIC0p8qEqmAhAXHQi7/2rFcI59Ndda4DexG8R2eQaT5Pgq33Tax6FeGD9U
+         ZM2r/96Zj3/oTl1oCJnjNig38JIfWxsBzplATGe6YNLdGagZIxXqaty2ZlRo4t4TQ9Ei
+         rPVCnOZgrw8Yay74sSLWC7bgZ/7+06HXorTUe2M3Dx4SJvh6r3mHDwCCI2M+KybOnPQV
+         q7brmXKnCX2xyOc1HdduzDkaTuIoUmrJ54tTadoaoH4qi4CvdR+umRHvnxt48LdKl0jf
+         9q8uFvJ+sQenVIHbsiLUDxN3lw1XSMiS8CRXxmrbOe5f2vEQAXI0FV0UAp4SVkxZvzl+
+         gQUA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714657321; x=1715262121;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=iSQ9jjwtyIhReugDAg/DErQbocu2WPTjK2mXdU1pXf0=;
+        b=A+8pP0DxBUigss3S6RAqnc/21FocDcxXLrkJ4rtJdPTt7Axha7ATbdUib3n0j4s+qL
+         OB2jY8pOJBBKJPs5AgfZ2dP7CqmJ1O546dfG1ZyOo85yvuFdVKxrVEmMfnjGCPkJr4SL
+         /Ph1EvF4e47eTa/NUY1lRId6f0r1+zaSQn8yaSWXQFbdvrlIWRr7vd6n+jVX42O6boDF
+         SJNafCjqiFnt0GQBuXzhXv/Zx1tDEkK29BjjRDEjtE0l1rgMEquL97mp5rr3L+ev2IBE
+         xNYnXaLbcLpLGQuMyoKRPRqn5vN3y6QEmHAahsFrnTjlTNyFiguCDvuwdmjJtbDgQqsj
+         iv8w==
+X-Forwarded-Encrypted: i=1; AJvYcCW42XaNnbHHhglcKdYxU85nZoUJZ77DBsxVIB9JkN9jrhL63luCKNhtLbwffRxOhQHdPfr9zSkMQ0hYlTbCcccsDvgLWG1yQLGOL/gs
+X-Gm-Message-State: AOJu0Yw0nVpDxMduDjWyEWujya5JxdkdIwOlioLugv+bsx55GBt8Bk2J
+	t44CaUMThXSZx78VySxoUsfasgio+51UKs2LrStKHAeZB6+PnHqw9t5gjy7R4S6UFBWhMXte8hY
+	OktCstork9s5vMDd50gsjMtQ7dHBsVdxtQX265A==
+X-Google-Smtp-Source: AGHT+IFnyaNOlkzEnYx4fySQeWTRVZOBY9XK6ANMyQKfRl+c5CgqI/KpfwGJX+7xZ2lVwZT21nYQ5vgQh0qY2R92CeE=
+X-Received: by 2002:a25:dc09:0:b0:de6:12ce:abce with SMTP id
+ y9-20020a25dc09000000b00de612ceabcemr5746180ybe.43.1714657320644; Thu, 02 May
+ 2024 06:42:00 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZjIzz5Rdkc8kxo4g@zx2c4.com>
+References: <20240501154251.3302887-1-dianders@chromium.org> <20240501084109.v3.7.Ib5030ab5cd41b4e08b1958bd7e51571725723008@changeid>
+In-Reply-To: <20240501084109.v3.7.Ib5030ab5cd41b4e08b1958bd7e51571725723008@changeid>
+From: Linus Walleij <linus.walleij@linaro.org>
+Date: Thu, 2 May 2024 15:41:49 +0200
+Message-ID: <CACRpkdYiND3uLAbFqyGEYgi5+ycOTYoncmSYGTsYtTZ7Ox=4DQ@mail.gmail.com>
+Subject: Re: [PATCH v3 7/9] drm/panel: boe-tv101wum-nl6: Don't use a table for
+ initting panels
+To: Douglas Anderson <dianders@chromium.org>
+Cc: dri-devel@lists.freedesktop.org, Jani Nikula <jani.nikula@linux.intel.com>, 
+	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, 
+	Cong Yang <yangcong5@huaqin.corp-partner.google.com>, Hsin-Yi Wang <hsinyi@google.com>, 
+	Brian Norris <briannorris@chromium.org>, Sam Ravnborg <sam@ravnborg.org>, 
+	Neil Armstrong <neil.armstrong@linaro.org>, Javier Martinez Canillas <javierm@redhat.com>, 
+	Joel Selvaraj <jo@jsfamily.in>, lvzhaoxiong@huaqin.corp-partner.google.com, 
+	Daniel Vetter <daniel@ffwll.ch>, David Airlie <airlied@gmail.com>, 
+	Jessica Zhang <quic_jesszhan@quicinc.com>, 
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, 
+	Thomas Zimmermann <tzimmermann@suse.de>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, May 01, 2024 at 02:21:35PM +0200, Jason A. Donenfeld wrote:
-> There are probably better ways of speeding this up (e.g. my vDSO work,
-> which should be coming back soon) than just removing rounds and hoping
-> for the best.
-> 
-> The problem is that there's extremely broad consensus that ChaCha20 is
-> good at what it does. There's much less so for ChaCha8. JP's _probably_
-> right, and it all seems like a sensible risk analysis...maybe...but
-> also, why play with fire? Is it really worth it? I don't think there's
-> much harm done in being really conservative about all this.
-> 
-> Another consideration with the RNG is that most everybody else's crypto
-> relies on the RNG being good. If some consumer of the RNG wants to use
-> single DES, so be it. If another consumer wants to use a cascade of
-> ChaCha20 and AES and Serpent and Keccak for something, okay. Those
-> aren't our choices. But we shouldn't prevent those choices by weakening
-> the RNG.
-> 
-> So while it *might* be kinda overkill, there's also broad consensus that
-> what we've got is *definitely* sufficient for all uses. At the same
-> time, it's still pretty darn fast, there exist other ways to make it
-> faster, and I don't think it's /overly/ much.
+On Wed, May 1, 2024 at 5:43=E2=80=AFPM Douglas Anderson <dianders@chromium.=
+org> wrote:
 
-ChaCha20 reminds me of cascading encryption actually. That's a good analogy.
-VeraCrypt offers several cascading options choices, such as AES(Twofish),
-AES(Twofish(Serpent)), Kuzneychik(Serpent(Camellia)), etc. While there isn't
-anything technically wrong with the approach, most security-minded folks would
-agree it's overkill. Using just AES, or just Twofish, or just Serpent is more
-than sufficent. ChaCha20 is kind of like that. It's extra security because "just
-in case".
+> Consensus on the mailing lists is that panels shouldn't use a table of
+> init commands but should instead use init functions. With the recently
+> introduced mipi_dsi_dcs_write_seq_multi() this is not only clean/easy
+> but also saves space. Measuring before/after this change:
+>
+> $ scripts/bloat-o-meter \
+>   .../before/panel-boe-tv101wum-nl6.ko \
+>   .../after/panel-boe-tv101wum-nl6.ko
+> add/remove: 14/8 grow/shrink: 0/1 up/down: 27062/-31433 (-4371)
+> Function                                     old     new   delta
+> inx_hj110iz_init                               -    7040   +7040
+> boe_tv110c9m_init                              -    6440   +6440
+> boe_init                                       -    5916   +5916
+> starry_qfh032011_53g_init                      -    1944   +1944
+> starry_himax83102_j02_init                     -    1228   +1228
+> inx_hj110iz_init.d                             -    1040   +1040
+> boe_tv110c9m_init.d                            -     982    +982
+> auo_b101uan08_3_init                           -     944    +944
+> boe_init.d                                     -     580    +580
+> starry_himax83102_j02_init.d                   -     512    +512
+> starry_qfh032011_53g_init.d                    -     180    +180
+> auo_kd101n80_45na_init                         -     172    +172
+> auo_b101uan08_3_init.d                         -      82     +82
+> auo_kd101n80_45na_init.d                       -       2      +2
+> auo_kd101n80_45na_init_cmd                   144       -    -144
+> boe_panel_prepare                            592     440    -152
+> auo_b101uan08_3_init_cmd                    1056       -   -1056
+> starry_himax83102_j02_init_cmd              1392       -   -1392
+> starry_qfh032011_53g_init_cmd               2256       -   -2256
+> .compoundliteral                            3393       -   -3393
+> boe_init_cmd                                7008       -   -7008
+> boe_tv110c9m_init_cmd                       7656       -   -7656
+> inx_hj110iz_init_cmd                        8376       -   -8376
+> Total: Before=3D37297, After=3D32926, chg -11.72%
+>
+> Let's do the conversion.
+>
+> Since we're touching all the tables, let's also convert hex numbers to
+> lower case as per kernel conventions.
+>
+> Signed-off-by: Douglas Anderson <dianders@chromium.org>
 
-ChaCha8 is certainly aggressive. As another analogy, it's a 10 character random
-password. While a 10 character password hashed with MD5 is *probably* fine at 65
-bits, 13 random characters (80 bits) would definitely be safer. But 20 random
-characters (128 bits) is certainly overkill to protect against even the most
-well-funded orgs with distributed GPU resources cracking password hashes.
+Wow that's a *VERY* nice patch.
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 
-ChaCha12 seems like a good compromise. It's 5 rounds of security away from the
-latest known attack while also providing a solid performance improvement.
+The metrics surprisingly reports more compact object code,
+I wasn't expecting this, but it's nice.
 
-Cheers,
-
--- 
- o .   o . o   . . o   o . .   . o .
- . o   . o o   o . o   . o o   . . o
-o o o   . o .   . o o   o o .   o o o
+Yours,
+Linus Walleij
 
