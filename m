@@ -1,130 +1,100 @@
-Return-Path: <linux-kernel+bounces-166003-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-166004-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id EAEC88B949E
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 08:20:14 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 862048B94A7
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 08:29:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2BBCF1C21472
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 06:20:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3E0DD283B6F
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 06:29:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16407219F6;
-	Thu,  2 May 2024 06:20:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B320225A2;
+	Thu,  2 May 2024 06:29:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BqTVVEol"
-Received: from mail-pf1-f174.google.com (mail-pf1-f174.google.com [209.85.210.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="L1+Tp8N+"
+Received: from mout.web.de (mout.web.de [212.227.15.4])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE646200C1;
-	Thu,  2 May 2024 06:20:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF49721345;
+	Thu,  2 May 2024 06:29:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.4
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714630808; cv=none; b=uzq1uY47CbC6uLvwJdEM23KvLvqMNZDkA1YT5fcn6yqhK9EvY5FiOaXpdDA/nXaSTmjBz9r9vyGOuZGgKVCR3sVS7tbB3K/EOMxcBUKcl5qBNfA5eDKG9nMMCquIXO9AlinDQsKn9QaZJNP8QkOXz/U6XQZGSqol1X9eLrDn78A=
+	t=1714631347; cv=none; b=hoo3VlKsdbvh91/EDOCIsGj0dEPUdbfWJih0rEBCGxosSTOcGg9uzW93K0mtVkZoUoffrtDVSVtOvwAtBXPSYMINEafoTJF1WFnPyVHT316y0rWxYCtRZVF/0sv0VuXohn1O8wUJAoRS97i/NgO6PKy4AAVVNJ9vPGAK4rlMNbE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714630808; c=relaxed/simple;
-	bh=VyEoVuiaYCnu0a/sKyNsC18VH2c5Qw5Z3+UdTP90Fug=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=N93pCgH+jB1PNkl5krLSbN2d/nEes3dYtd0115xLnPLz1oDDCh/lauGRgjKsRq0/rd/cy6hm2dp3Zx3w9feiRb1vv9Q/FmTWzBs6aRCB6gcEo/4rDt5/6AN0F//VEGxKfS7guNnpd9XVEC+cptBMA3y+zgJT6mUV7MH+G4/EYqE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BqTVVEol; arc=none smtp.client-ip=209.85.210.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f174.google.com with SMTP id d2e1a72fcca58-6edb76d83d0so6554148b3a.0;
-        Wed, 01 May 2024 23:20:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714630806; x=1715235606; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=dgakmapef0h80N+jtF51dv68wB35uuo/PTTHrmoZruM=;
-        b=BqTVVEolUJyh/CheLOOPtRpcxVOz9v4F/x4ahStM3onwr9515GZigWIGOedg46Nr7z
-         /CWCbSn58xmjgTiGRnayFpXEdr0zDCnEjAqzfEYhc16UwQX7HOv+wq0xnqxTJoAQE0d+
-         9I9ngQodH6sxLpi6gQU1U9pE8Ha+2xW+2w67DfxXTjFzxwuY8z1WE+Q07INSEkJ7Jpb9
-         kCfKuBdSn8IarYGXAxu7qmqZJfiDCUZOYTgI2YBhp/YWA36UiAHJjbFTpBAwFORcaOGY
-         /jnW9yL6pD4kj01Pmbw8xi4WPgrMtZ/8EjZsHRtf/k2DCG689QohuZQ6PNl0qG9kj9Ia
-         eEYA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714630806; x=1715235606;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=dgakmapef0h80N+jtF51dv68wB35uuo/PTTHrmoZruM=;
-        b=fAGId7FQR6CYotcwNgRa63PJv7AiQmBKNWqNfqB/C9EQVzkm9vfYDMd45xSyFTTlG9
-         zRvZUfpNoywzX/9oRMvJZrGhci5tyK4Hm2rBF4i4K4P0MQzVftb+1amhfsrO92UBZ9/k
-         LtRRvmtSO6PxOXnGYQ1tY8v/Hq9/AgUq3aMREWKzW74pmN/r0A6rU9VY9p4yBJLrDF0V
-         jkynA5O8xHPhra31Nm0ORhjD4r4+bfrds88mooJ92itQh3nHACcggd0Fx32xpADkh3Ja
-         VrfFwBBzxyVnuSUBpsLIiOWkoxGKdYCgGY4a8AGqTrV1VcnxtxEnaN0yEv+KXEX94r7f
-         xa9A==
-X-Forwarded-Encrypted: i=1; AJvYcCWr+AOYa9glw7JPZX1j7VriXbqkYERYM2lsOv0pFHJNmoFglT1zOjlKb9Qhkb5fPZlJeM2x6F7v8w/AQVmxmwDAzYl64G68lozC/iUhxHvW6rwM8Y+TRPibSirkHUt0GVQaRsp+ViI1wKk=
-X-Gm-Message-State: AOJu0YxhdY2rasp0pnEYzA7hODiJ0wOa0tJvpXVDi7eKhmhZP6j2tpRR
-	MGOE6U7tLj2+0dGBQCnUiJYviOavGu95iMFGBX4P7erW03ddBWzyDKYGMOIB3xzWf9DcvJ1E4WV
-	r/m4w4E02K9Z0wUBSvSa225PcAq4=
-X-Google-Smtp-Source: AGHT+IGw7RzP7UzHjMbV/OepNR4EpONmEDOtas5IFiGjBTRnwEvzrxz/pCfwVHCFI9ryiW74MuQPtzxxUTUbsrc7WiM=
-X-Received: by 2002:a05:6a21:6d8b:b0:1a3:ae75:d6f5 with SMTP id
- wl11-20020a056a216d8b00b001a3ae75d6f5mr6426998pzb.20.1714630806165; Wed, 01
- May 2024 23:20:06 -0700 (PDT)
+	s=arc-20240116; t=1714631347; c=relaxed/simple;
+	bh=9FUfT9VaNrtqxQ1YjgvMddICn5YizAP767a8zOUVqPs=;
+	h=Message-ID:Date:MIME-Version:To:Cc:References:Subject:From:
+	 In-Reply-To:Content-Type; b=Z7KuL3QcaeCJ1jiX7qOWQtxti1spUl3+ctriLOtSPC+uRwu6AWTUO3dFFn+5sEIZi85Yd1gW9aI9alvdoixY5MLKZ2P4EcqVlc+r+83ky+OWQ4EKLbwzwWpiqn8XAg5EZ46RbRSexj2JG2koo9f2UA0mXQyqfsxQfGIopFIbG/8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=L1+Tp8N+; arc=none smtp.client-ip=212.227.15.4
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=web.de;
+	s=s29768273; t=1714631317; x=1715236117; i=markus.elfring@web.de;
+	bh=9FUfT9VaNrtqxQ1YjgvMddICn5YizAP767a8zOUVqPs=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:To:Cc:References:
+	 Subject:From:In-Reply-To:Content-Type:Content-Transfer-Encoding:
+	 cc:content-transfer-encoding:content-type:date:from:message-id:
+	 mime-version:reply-to:subject:to;
+	b=L1+Tp8N+2yr3dpPhvozytf5hK2bQj1B5pvBQr30Nji0B20FbHEeeyWk2NWNOyXW5
+	 3INMofiEfQ1aFr1yDNp0rBrnGeJWAhKVs7G8uWU6WzKhvNGZ0JL97+Z/98+TZyiKC
+	 YbnsaGZ4Ih8w9bbSMnCMBn+nuI+qwh+ED3nGmZ4Hpa9uONNxni6CMLHGbJelMIju9
+	 rnpJO6tI8axFYOHTRTgfXRcsTZUwIpEyU764bPHQM2yFHvqqK579RAiC0R6O12tVF
+	 4t6wp53YSPblz2HBP1GY9q+MtLHooLWeFc81twbLIFW6OKNQj64a+yUb2p+nCoT5t
+	 Z/IbAe6rsIiwtOldCQ==
+X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
+Received: from [192.168.178.21] ([94.31.83.95]) by smtp.web.de (mrweb006
+ [213.165.67.108]) with ESMTPSA (Nemesis) id 1MjBRZ-1sYAJF426v-00eqn4; Thu, 02
+ May 2024 08:28:37 +0200
+Message-ID: <3a7ed58e-4eb3-46ca-ba1e-98c6a3c40c17@web.de>
+Date: Thu, 2 May 2024 08:28:23 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240501125146.33648-1-prosunofficial@gmail.com>
- <20240501140144.GA10180@aspen.lan> <alpine.DEB.2.22.394.2405011618351.3278@hadrien>
-In-Reply-To: <alpine.DEB.2.22.394.2405011618351.3278@hadrien>
-From: Shresth Prasad <shresthprasad7@gmail.com>
-Date: Thu, 2 May 2024 11:49:54 +0530
-Message-ID: <CAE8VWiLZvmeMdR5rsJ7vugXPyW6ABMZZwPRhJ=iU-KXqOJZ77w@mail.gmail.com>
-Subject: Re: [PATCH] backlight: sky81452-backlight: replace of_node_put with __free
-To: Julia Lawall <julia.lawall@inria.fr>
-Cc: Daniel Thompson <daniel.thompson@linaro.org>, R Sundar <prosunofficial@gmail.com>, 
-	Lee Jones <lee@kernel.org>, Jingoo Han <jingoohan1@gmail.com>, Helge Deller <deller@gmx.de>, 
-	dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, skhan@linuxfoundation.org, 
-	javier.carrasco.cruz@gmail.com
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+To: Jules Irenge <jbi.octave@gmail.com>, linux-rdma@vger.kernel.org,
+ kernel-janitors@vger.kernel.org, Leon Romanovsky <leon@kernel.org>
+Cc: LKML <linux-kernel@vger.kernel.org>,
+ "Gustavo A. R. Silva" <gustavoars@kernel.org>, Jason Gunthorpe
+ <jgg@ziepe.ca>, Shifeng Li <lishifeng@sangfor.com.cn>, wenglianfa@huawei.com
+References: <ZjF1Eedxwhn4JSkz@octinomon.home>
+Subject: Re: [PATCH v2] RDMA/core: Remove NULL check before dev_{put, hold}
+Content-Language: en-GB
+From: Markus Elfring <Markus.Elfring@web.de>
+In-Reply-To: <ZjF1Eedxwhn4JSkz@octinomon.home>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:DDdubhNHr4n90W0v9i3irF7oQhagbTx+mK/lqZcmJcnKCkxYZGz
+ /BDn0izav/8uPpbKv7945o5eCQOt+BnL3yZ+syH8xSoh/L5XlJHhC1qzFuum5fcC6KioL/d
+ qOq3whKWMyW4jIQ+czuDISh0dW3nGRfgO44Pw8+y1Yk2qOP570b8TzY9OmAnQhGOoGn3sDJ
+ WfzFei555EgLXImDafWpg==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:SmLxQDW2y04=;exhhi93XyXFs6mYkVdZXskZ/17p
+ DRs5Muvk/wKmelMa4NZy8wkXaQfwee5B+1E9/JKc4eCifjb6h0nYWGX3uWixLl/4b9Vx/8Bcj
+ N1lm7ZLty3SDArJeR+f6QfJE/hUCAfoOq/S2ysSH9F4BlGeYSEAl30NeRhuwOC9E1coeF1x4J
+ 1Jok25WDdiolW+pW0RO0hVZl4op7Nv2Am8sISD7INPJp1KXSRuSWaQTysOhmNtbGC8NxIzG/N
+ +vbW68TnRGcacQWtEyxJaioc+92gDJGeg4KcAKNMZkcriS7Z/66cGKakX+LPnwKqWGQKoWj3i
+ 3oJ7+SxbiBp3p7vbOwbeWNf2NHiFM7QEm8gyCWl8/Pfg3xcJsf7Kz/83roKOtk/ipxPtBBuNc
+ FJtjh4kYFu1t7RCbjmE76ADzVl72WfWNstfRDD15iqH9T/rRkp6TDCj6pJDseYoKwjRqSYq/u
+ u/UM8m1wi9P76ypzH1o0/lYOy5MyVCSLuGzxEGV4WdFxm/XrOTWU+m1YtFh0sfmdWBNJwgRA7
+ kgVtORgPrK2bpbSasZzXkGB1aba17lyhflcYI+eIe12aCMGG1ctoOYXiYJiZf9Uq+Rd7+/rFE
+ bRdYGmUUFK552bMmCOxg29iWWy9fTbOFlZxRQDWpj5akqvzppzgzNrwkL5nbdAiFDMwN15wvn
+ ld7lljj/ZLiYI3CDnWnqymEoQtwDZgDZsHvRXh58SZpk0sRmkBiSBWPIvQnizMoMw+7ygv9Sk
+ KwJM+NCQ5dSwKLh46PyIRwiG0pzUZkYqZ8zpmFLmUBSHqmSBohyP5qBeRlztGUQwlGe7Novdl
+ YjQ2hGSIdti3m0/Uffs8OV28P+iFG1lfJkc7Y97sJqXhE=
 
-I'll remove the unnecessary braces and resend the patch.
+=E2=80=A6
+> There is no need to check before using dev_{put, hold}
+
+How do you think about to improve the change description with a correspond=
+ing imperative wording?
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Do=
+cumentation/process/submitting-patches.rst?h=3Dv6.9-rc6#n94
 
 Regards,
-Shresth
-
-On Wed, May 1, 2024 at 7:49=E2=80=AFPM Julia Lawall <julia.lawall@inria.fr>=
- wrote:
->
->
->
-> On Wed, 1 May 2024, Daniel Thompson wrote:
->
-> > On Wed, May 01, 2024 at 06:21:46PM +0530, R Sundar wrote:
-> > > Use the new cleanup magic to replace of_node_put() with
-> > > __free(device_node) marking to auto release when they get out of scop=
-e.
-> > >
-> > > Suggested-by: Julia Lawall <julia.lawall@inria.fr>
-> > > Signed-off-by: R Sundar <prosunofficial@gmail.com>
-> >
-> > Thanks for the patch but I think this one is a more appropriate
-> > solution to this issue:
-> > https://lore.kernel.org/all/20240421104916.312588-2-shresthprasad7@gmai=
-l.com/
->
-> Maybe neither one is perfect?  The one I see at that link has:
->
->         if (!pdata) {
-> -               of_node_put(np);
->                 return ERR_PTR(-ENOMEM);
->         }
->
-> which has unneeded {}
->
-> julia
->
->
-> >
-> >
-> > Daniel.
-> >
+Markus
 
