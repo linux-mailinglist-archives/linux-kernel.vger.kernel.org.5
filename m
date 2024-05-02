@@ -1,177 +1,238 @@
-Return-Path: <linux-kernel+bounces-166612-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-166607-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C88E28B9D0E
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 17:08:29 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 287B78B9CF8
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 17:00:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 687C11F2180A
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 15:08:29 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AA32E1F22D3C
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 15:00:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CDCBC15AABE;
-	Thu,  2 May 2024 15:08:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A7C51553B2;
+	Thu,  2 May 2024 15:00:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="kLpxbUQM"
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC21A1552EE;
-	Thu,  2 May 2024 15:08:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hXMAOQBT"
+Received: from mail-lj1-f174.google.com (mail-lj1-f174.google.com [209.85.208.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36FEA15534B;
+	Thu,  2 May 2024 15:00:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714662498; cv=none; b=c0lwOCXvpnwfxMsdXg3V/G7lkUq3A1NHvBh1TgPrS5SZ8YM3vGrF3CD2KgD3yFfi/HDzfAGcKfZpNx3fpcrL1hwlDmo83E8VYDeCmBf4AtJyyJcFBxHZvWFASRok5uruolq7EtHPWO2G67LuX8mTluxFSWRsxmca/RKwemr1Ro0=
+	t=1714662038; cv=none; b=oUZDAPyE5fqSAk+WTLtumQO/bdaGcyx8wcLDBRn/dSghIC3fC9udC5x6qPWTsDS36HYJgiLlJYA+tJIW8Zrbr5t7KgKaYhXdbvulVpsUfljvSywRfDYoLzPMKosGeWG562kKRIOML2eoOWVb9GxTMYMHVVozXqLcWWphmQ5W8Fw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714662498; c=relaxed/simple;
-	bh=vqe6bqVfksmhA3Dv0sGQ+VBpqTfUtbHpQ4u1lvvVW/k=;
-	h=From:To:Cc:Subject:Date:Message-Id; b=Ch13iceUqkf78i/rzxfNYBXd3JoF+yo4kSMYGHCeWO3Bxs1RWbmqH6CRSZjdhkRIsoZmzj7OF8jptECzuy/Gjqbhn4p0EZXcbiiC8sR+AqvCGanKoUtOoxYTRGD15p2cjaDbESkxp/O0df9tsM5EkUvlkuyAt8nlDLcTmzAOhM8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=kLpxbUQM; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: from apais-vm1.0synte4vioeebbvidf5q0vz2ua.xx.internal.cloudapp.net (unknown [52.183.86.224])
-	by linux.microsoft.com (Postfix) with ESMTPSA id 4E46E20B2C80;
-	Thu,  2 May 2024 07:59:25 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 4E46E20B2C80
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1714661965;
-	bh=emptab7+3YFMG1SQMC0wFEdq7q5l4lpPKpITnuC0zJg=;
-	h=From:To:Cc:Subject:Date:From;
-	b=kLpxbUQM6vgG2iRx6mGF27Bwzlq2ikZH0BIuBoKzsQ0i7ds67Lu5X4A7WWApGpM7I
-	 uXdh2D8hr8mXwvd2AM9XSyAxcCX3NtWB6bQiN+RFltl5adKQ5Ht6BPHpEgj0du8fAX
-	 JEZ8PEm5s2jkhU5eJFIac47yXgch+NYOIJIcwj1E=
-From: Allen Pais <apais@linux.microsoft.com>
-To: linux-fsdevel@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org,
-	linux-mm@kvack.org,
-	viro@zeniv.linux.org.uk,
-	brauner@kernel.org,
-	jack@suse.cz,
-	ebiederm@xmission.com,
-	keescook@chromium.org,
-	mcgrof@kernel.org,
-	j.granados@samsung.com
-Subject: [PATCH v2] fs/coredump: Enable dynamic configuration of max file note size
-Date: Thu,  2 May 2024 14:59:20 +0000
-Message-Id: <20240502145920.5011-1-apais@linux.microsoft.com>
-X-Mailer: git-send-email 2.17.1
+	s=arc-20240116; t=1714662038; c=relaxed/simple;
+	bh=9i89iRnjbop0gjYQp2qlVcMZlLZzhMD7MQgIoE+aPks=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=U8uy2pNxN6tpkHUUQCN7+yHPaPfo4lIIWLRknhxsRzl73NT5xL4+qsb9q+1nnvE/OEQLEwnFbyd2vCqAzyqRwsMChl0+5tkaZYajN01EZ8HuOVklxRtevlx8DOJs4n70+aP+uenSuTNQ6NhmvVA6Fd95ptuqXvqjwoqSnYWk8JM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hXMAOQBT; arc=none smtp.client-ip=209.85.208.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f174.google.com with SMTP id 38308e7fff4ca-2dd6a7ae2dcso132141391fa.1;
+        Thu, 02 May 2024 08:00:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1714662035; x=1715266835; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=wth6UOWV0u78MclXNV5VaVOquIcqMmgS4fouTy/uY7k=;
+        b=hXMAOQBT7y4/O1HoGLa5m74/tv3u53WDlSdpCHvab7GHK1bNS+rQfm+WxJ4sCMoYaw
+         BKRKLqlZLrY8OkPzAp7XJzTUZ0XgjPAjlpqIgWrHu0xrJJOVVbCPhC2TGTaz+jhAuATK
+         T2IMtfNaIZDOx96tX81uKtVOzSlgZ8s3Z/edxLU4q+M5KJpenVG+m5C3WyCF7H/R8aNS
+         wZDGpVw2XW6YDlxCh5VCpJ9e4I0MkRv40oyzcjh1Mw6qFCypdZAcVA0anYloVfA1W4+J
+         hzmxiLtM9RWSsMUqZdLD2tpE98pmjEKdiHwHs0eFs9s7tK5f/EbQjICKBbNiO7LPMsH+
+         nhPg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714662035; x=1715266835;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=wth6UOWV0u78MclXNV5VaVOquIcqMmgS4fouTy/uY7k=;
+        b=LUTeH4Da58ElgClvRmx+Z3oavlX/yETpWnU9CiGpL+j0qblBBXepA2xDOLWMcEiPHz
+         t9+T0+ZD7dExO+YfA+w4IiZrvvEVm8DzeuvS6NYsReVhfU98mkZ+sH8mGfYTf5GIOJlW
+         erES6s9m0knB6HnuIo/V0it/dr5opPFmG3O6pEO/CxQbqHBhYqmUrwgBF/gaMG+LSqY4
+         /W56100o56UmoA1NpemqXH7+yW8CdNjWjZKIq1nwY5LyVyl3OfmSdNmeHX/+bbZD/MwM
+         Z2P5l7rfdh509NUunPjjw+qJfTPPOsK+Y/HIp8RAE5ntOPaqn6yKbtnCN6FzSmEsTILs
+         pjmg==
+X-Forwarded-Encrypted: i=1; AJvYcCXQgNxU/eLNrJyy0Fc8VYqpaNAsEI6Ijc1bb5Jj1c3ydVK8uhBkpMxiHfW86z5pJIeFVGCuZPPfv3hjrlOFbT3FbGY5eFjFMeotP+t0/e00P9R/iaWTMQU7zSdNZ+IWtHefD2KZhIge8+Ez26k2
+X-Gm-Message-State: AOJu0Yx9uVCWmGZ2N2kcsC8sDqWBEw1Lnj+y5wk241O/J/sptohgbDov
+	K1da35Ic+m9QcDSyszbZ//E82RGjDiicBi51IwKlfAJ085ApRnuh1UBqenU7BAV5HqZRmMaAcAR
+	DNDlh7CXVFhxcQ2bREuZCqpGRfnQ=
+X-Google-Smtp-Source: AGHT+IE6WrpRa6ZV58hADd9Jh1SV0I2pEy3c6uP9Ip7bCShs7bFdRltxN+XqVYkrqwF12XRbfUDfG8AUV/BWWV45DBg=
+X-Received: by 2002:a05:651c:2106:b0:2d4:5370:5e8a with SMTP id
+ a6-20020a05651c210600b002d453705e8amr5558471ljq.22.1714662035148; Thu, 02 May
+ 2024 08:00:35 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+References: <20240502141359.89567-1-harry021633@gmail.com>
+In-Reply-To: <20240502141359.89567-1-harry021633@gmail.com>
+From: Andy Shevchenko <andy.shevchenko@gmail.com>
+Date: Thu, 2 May 2024 17:59:58 +0300
+Message-ID: <CAHp75Vd9PibrQA=tgZLHuv-kDXana9rGcu5s_aPqyxW6tDBYGw@mail.gmail.com>
+Subject: Re: [PATCH 2/2] string: improve strlen performance
+To: "Hsin-Yu.Chen" <harry021633@gmail.com>
+Cc: keescook@chromium.org, andy@kernel.org, akpm@linux-foundation.org, 
+	linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Introduce the capability to dynamically configure the maximum file
-note size for ELF core dumps via sysctl. This enhancement removes
-the previous static limit of 4MB, allowing system administrators to
-adjust the size based on system-specific requirements or constraints.
+On Thu, May 2, 2024 at 5:14=E2=80=AFPM Hsin-Yu.Chen <harry021633@gmail.com>=
+ wrote:
+>
+> Port `strlen` in gcc,
 
-- Remove hardcoded `MAX_FILE_NOTE_SIZE` from `fs/binfmt_elf.c`.
-- Define `max_file_note_size` in `fs/coredump.c` with an initial value
-  set to 4MB.
-- Declare `max_file_note_size` as an external variable in
-  `include/linux/coredump.h`.
-- Add a new sysctl entry in `kernel/sysctl.c` to manage this setting
-  at runtime.
+This is the Linux kernel project. What does this mean?
+Also note we refer to the function as strlen() (and no [back]quotes).
 
-$ sysctl -a | grep max_file_note_size
-kernel.max_file_note_size = 4194304
+> which enhance performance over 10 times
 
-$ sysctl -n kernel.max_file_note_size
-4194304
+>
+> Please refer to these following articles
+> 1. [Determine if a word has a byte less than n]
+>    (https://graphics.stanford.edu/~seander/bithacks.html#HasLessInWord)
+> 2. [Determine if a word has a zero byte]
+>    (https://graphics.stanford.edu/~seander/bithacks.html#ZeroInWord)
 
-$echo 519304 > /proc/sys/kernel/max_file_note_size
+Make these proper Link: tags
 
-$sysctl -n kernel.max_file_note_size
-519304
+Link: URL#1 [1]
+Link: URL#2 [2]
 
-Why is this being done?
-We have observed that during a crash when there are more than 65k mmaps
-in memory, the existing fixed limit on the size of the ELF notes section
-becomes a bottleneck. The notes section quickly reaches its capacity,
-leading to incomplete memory segment information in the resulting coredump.
-This truncation compromises the utility of the coredumps, as crucial
-information about the memory state at the time of the crash might be
-omitted.
+..
 
-Signed-off-by: Vijay Nag <nagvijay@microsoft.com>
-Signed-off-by: Allen Pais <apais@linux.microsoft.com>
+> -       const char *sc;
+> +       const char *char_ptr;
 
----
-Changes in v2:
-   - Move new sysctl to fs/coredump.c [Luis & Kees]
-   - rename max_file_note_size to core_file_note_size_max [kees]
-   - Capture "why this is being done?" int he commit message [Luis & Kees]
----
- fs/binfmt_elf.c          |  3 +--
- fs/coredump.c            | 10 ++++++++++
- include/linux/coredump.h |  1 +
- 3 files changed, 12 insertions(+), 2 deletions(-)
+No need to change the var name for this.
 
-diff --git a/fs/binfmt_elf.c b/fs/binfmt_elf.c
-index 5397b552fbeb..6aebd062b92b 100644
---- a/fs/binfmt_elf.c
-+++ b/fs/binfmt_elf.c
-@@ -1564,7 +1564,6 @@ static void fill_siginfo_note(struct memelfnote *note, user_siginfo_t *csigdata,
- 	fill_note(note, "CORE", NT_SIGINFO, sizeof(*csigdata), csigdata);
- }
- 
--#define MAX_FILE_NOTE_SIZE (4*1024*1024)
- /*
-  * Format of NT_FILE note:
-  *
-@@ -1592,7 +1591,7 @@ static int fill_files_note(struct memelfnote *note, struct coredump_params *cprm
- 
- 	names_ofs = (2 + 3 * count) * sizeof(data[0]);
-  alloc:
--	if (size >= MAX_FILE_NOTE_SIZE) /* paranoia check */
-+	if (size >= core_file_note_size_max) /* paranoia check */
- 		return -EINVAL;
- 	size = round_up(size, PAGE_SIZE);
- 	/*
-diff --git a/fs/coredump.c b/fs/coredump.c
-index be6403b4b14b..a312be48030f 100644
---- a/fs/coredump.c
-+++ b/fs/coredump.c
-@@ -56,10 +56,13 @@
- static bool dump_vma_snapshot(struct coredump_params *cprm);
- static void free_vma_snapshot(struct coredump_params *cprm);
- 
-+#define MAX_FILE_NOTE_SIZE (4*1024*1024)
-+
- static int core_uses_pid;
- static unsigned int core_pipe_limit;
- static char core_pattern[CORENAME_MAX_SIZE] = "core";
- static int core_name_size = CORENAME_MAX_SIZE;
-+unsigned int core_file_note_size_max = MAX_FILE_NOTE_SIZE;
- 
- struct core_name {
- 	char *corename;
-@@ -1020,6 +1023,13 @@ static struct ctl_table coredump_sysctls[] = {
- 		.mode		= 0644,
- 		.proc_handler	= proc_dointvec,
- 	},
-+	{
-+		.procname       = "core_file_note_size_max",
-+		.data           = &core_file_note_size_max,
-+		.maxlen         = sizeof(unsigned int),
-+		.mode           = 0644,
-+		.proc_handler   = proc_douintvec,
-+	},
- };
- 
- static int __init init_fs_coredump_sysctls(void)
-diff --git a/include/linux/coredump.h b/include/linux/coredump.h
-index d3eba4360150..14c057643e7f 100644
---- a/include/linux/coredump.h
-+++ b/include/linux/coredump.h
-@@ -46,6 +46,7 @@ static inline void do_coredump(const kernel_siginfo_t *siginfo) {}
- #endif
- 
- #if defined(CONFIG_COREDUMP) && defined(CONFIG_SYSCTL)
-+extern unsigned int core_file_note_size_max;
- extern void validate_coredump_safety(void);
- #else
- static inline void validate_coredump_safety(void) {}
--- 
-2.17.1
+> +       const unsigned long *longword_ptr;
+> +       unsigned long longword, himagic, lomagic;
 
+Keep it in reversed xmas tree order.
+
+..
+
+> +       /* Handle the first few characters by reading one character at a =
+time.
+> +        * Do this until CHAR_PTR is aligned on a longword boundary.
+> +        */
+
+/*
+ * This is the wrong comment style. You may
+ * use this example.
+ */
+
+..
+
+> +       for (char_ptr =3D s; ((unsigned long) char_ptr
+> +               & (sizeof(longword) - 1)) !=3D 0;
+> +               ++char_ptr)
+
+This is too verbose (too many unneeded symbols) and why pre-increment?
+What is special about it?
+
+..
+
+> +       /* All these elucidatory comments refer to 4-byte longwords,
+> +        * but the theory applies equally well to 8-byte longwords.
+> +        */
+
+Use proper style.
+
+> +       longword_ptr =3D (unsigned long *) char_ptr;
+
+No space after casting and why do you need it?
+
+..
+
+> +       /* Bits 31, 24, 16, and 8 of this number are zero.
+> +        * Call these bits the "holes."
+> +        * Note that there is a hole just to the left of
+> +        * each byte, with an extra at the end:
+> +        * bits:  01111110 11111110 11111110 11111111
+> +        * bytes: AAAAAAAA BBBBBBBB CCCCCCCC DDDDDDDD
+> +        * The 1-bits make sure that carries propagate to the next 0-bit.
+> +        * The 0-bits provide holes for carries to fall into.
+> +        */
+
+Use proper style.
+
+..
+
+> +               /* 64-bit version of the magic. */
+> +               /* Do the shift in two steps to avoid a warning if long h=
+as 32 bits.
+> +                */
+
+Ditto.
+
+..
+
+> +       if (sizeof(longword) > 8)
+> +               abort();
+
+Huh?!
+
+..
+
+> +       /* Instead of the traditional loop which tests each character,
+> +        * we will test a longword at a time.  The tricky part is testing
+> +        * if *any of the four* bytes in the longword in question are zer=
+o.
+> +        */
+
+Proper style, please.
+
+..
+
+> +       for (;;) {
+> +               longword =3D *longword_ptr++;
+> +               if (((longword - lomagic) & ~longword & himagic) !=3D 0) =
+{
+> +
+> +                       /* Which of the bytes was the zero?
+> +                        * If none of them were, it was a misfire; contin=
+ue the search.
+> +                        */
+> +                       const char *cp =3D (const char *) (longword_ptr -=
+ 1);
+
+> +                       if (cp[0] =3D=3D 0)
+> +                               return cp - s;
+> +                       else if (cp[1] =3D=3D 0)
+> +                               return cp - s + 1;
+> +                       else if (cp[2] =3D=3D 0)
+> +                               return cp - s + 2;
+> +                       else if (cp[3] =3D=3D 0)
+> +                               return cp - s + 3;
+
+> +                       if (sizeof(longword) > 4) {
+
+  if (... <=3D 4)
+    continue;
+
+> +                               if (cp[4] =3D=3D 0)
+> +                                       return cp - s + 4;
+> +                               else if (cp[5] =3D=3D 0)
+> +                                       return cp - s + 5;
+> +                               else if (cp[6] =3D=3D 0)
+> +                                       return cp - s + 6;
+> +                               else if (cp[7] =3D=3D 0)
+> +                                       return cp - s + 7;
+
+A lot of redundant 'else':s.
+
+> +                       }
+> +               }
+> +       }
+
+--=20
+With Best Regards,
+Andy Shevchenko
 
