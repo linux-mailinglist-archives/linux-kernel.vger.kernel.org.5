@@ -1,104 +1,155 @@
-Return-Path: <linux-kernel+bounces-167018-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-167026-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id AE2008BA377
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 00:48:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id E1DEB8BA391
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 00:57:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 652881F21A22
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 22:48:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 98DE11F22324
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 22:57:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A52561C286;
-	Thu,  2 May 2024 22:47:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 79699347A2;
+	Thu,  2 May 2024 22:57:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Nlqh8cwj"
-Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com [209.85.208.49])
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="vXFR8b+4";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="HNqahZD0";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="vXFR8b+4";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="HNqahZD0"
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B8D81BC3F
-	for <linux-kernel@vger.kernel.org>; Thu,  2 May 2024 22:47:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E3D71C2AD;
+	Thu,  2 May 2024 22:57:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714690077; cv=none; b=mWK6GnEkIW2MY+ZGrCiUReVT/DWe9LLxN5im4RiJSqu8ZAPJk81Wa7//5xhSGmKg3V/0i8LC1GiERH4OB7k4+Neehj2VcV+vUr6S/6e9Bj0N9HB/w+er2S8BCenGneM7lCSgjFn3f3JVc0aqjKCExT3LqmUOqGAmNUOLJR9xzy0=
+	t=1714690646; cv=none; b=iJGP6xGPpgMl5ojVXS0srlWeewAw4xpVjxvHxWZjFlmM5TnnwiIsQPc5j5X7P55/6I2MoSkn2UO0ejEXUCvUUVlFgqF9zxsEWXpjpX5DxYkwmAgNwrcBUKl0D6fd9oCsPvrt9ThDQLimmlR7kVKOvLDjPXilcPuufVY3pjdL2og=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714690077; c=relaxed/simple;
-	bh=ExG1KgVjgCOl88UQQAFgXZUsw2+ya82EI/LQrOPIBOQ=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=cj4ge1KO8N9UKgq4yQFaBJGlStBHMqMqN9JRAFICzIJ4wAGlBuVqwJjVnsQCTHnxbY3Hlszm9MwvRpCp2j41nfQHi9Q8sIBNgYgmespmcljQVBgMKmH+X416J84/EMJiO+gd1mfGhtIPwNV1T0aqhHlFa+9uhzi5kBeWdfq3Wb8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Nlqh8cwj; arc=none smtp.client-ip=209.85.208.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-572a1b3d6baso2453a12.1
-        for <linux-kernel@vger.kernel.org>; Thu, 02 May 2024 15:47:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1714690074; x=1715294874; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=ExG1KgVjgCOl88UQQAFgXZUsw2+ya82EI/LQrOPIBOQ=;
-        b=Nlqh8cwj0jvXh8T1Dr3ar7pvlruAslj8PcTJ6SZGfI++ThcAYVOPLG22hYsvkF+9bD
-         HFcoVULzVKCbjhFOTPdXJwUEjSV7XL31kg7lRB1wMuP92J0r/rWuqNVRzymw5Z07lzbQ
-         QdIahAc/IZS5PRH/5zoflXB8JxfxiIN4OtVLtRbfcVGx5lndTnSYeS8zRWXBmimbPpnD
-         f2caYbgDLdSiB2UWKd+Omdzp6NvRHr+fH4QDRO1GdLVWBx3Jfw1EFocX2jsQpyZnIZ+Q
-         CyNwjwdwWdH2rjOOtHgFp/fVxFABHX68I4a36th5coPQaGiPPdSLWJIzyKCRfREEsQph
-         4nvg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714690074; x=1715294874;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ExG1KgVjgCOl88UQQAFgXZUsw2+ya82EI/LQrOPIBOQ=;
-        b=o76YGqaaXtJ4uImoXu9DPqeaGuA9ceTnzrkuyVeK3K22evtFiM4zdTcJ9As3U0kp2/
-         MX4gix0Z8USjTx2k/g9xh2YLHQP5OP/GKHkzuaWOwtd7A0v/zJhqPHc3nC4a3p5hTFwo
-         5EYMbaAa7jVnFnZwOUrAwdMQ/S/Ixc65uM3TPcIIQLHneS1RaaX8G4joRJMs9U0y8qUM
-         l3wpyLNRpKNQI1jk/HdCsfI215zUvNcd1znStZlck3BXvKNDlB7KPu/vk3UGfBmjdEKD
-         Yfjgkx7oEYg8hTcymKzvCOpZDu8wpOQPoQdxTgP1xEQnXsFqZ6wYxp5rIhnGwwM/v9B3
-         pjlQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXTRRMWyXZ+ATGxFlQwa7uzfpwdVL+beLhRh35ru41kB+IDGxooHgCPXKEz+5QRpkMVSQvmbxegUFJJFfYqzbGJ95p3ts+gvdIr+Zca
-X-Gm-Message-State: AOJu0YyG+7R131gpZZWBCSBBktrwtPn4O5qghyw2dxOWocpykc0D59W1
-	Pl0Lmwdd0ZGEwjyKIZJWkAfnIl1d79jyxPNMyNeof3c/zg5/8Vb+24GA/TSoub1k2Bnnf5zD0/w
-	P+/w7TCu1dlajlXpdnykJabsZ+E0i+fpWtUWe
-X-Google-Smtp-Source: AGHT+IH0mH0uuFK4eo9VqCSk6dbse6pHTLPv0svOXhiAHh6fPUqDd2nzdBnpLjnGCKpRjVOyTQkOdSMLT3gSxWvi9ys=
-X-Received: by 2002:aa7:c44e:0:b0:572:9eec:774f with SMTP id
- 4fb4d7f45d1cf-572ce31e083mr67905a12.0.1714690073746; Thu, 02 May 2024
- 15:47:53 -0700 (PDT)
+	s=arc-20240116; t=1714690646; c=relaxed/simple;
+	bh=KNuj+zPw1itV3KkMBcKodkx4OvddR49LGBRoZuKC0jw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=MAtxZuLuvlYhcytpkBcwSWiWgr8dKLatm7G8A7EmXwEGa+Qevtf1OWoXEEJZIV/EpFwSa13SHfFiDBVN+WGu891d0dejgkrZBpSAITZ29yhwTDrNGS/v20mkx/3ZdpTGFMvgoyKdReSmorHh87HYCvMQzhmryAuOaiH6alUBono=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=vXFR8b+4; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=HNqahZD0; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=vXFR8b+4; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=HNqahZD0; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 4BA8521B6D;
+	Thu,  2 May 2024 22:57:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1714690642;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=YzZUXDPV0PB0GLA7qoIAy85H9S+PZoQXohv8tj76ZUE=;
+	b=vXFR8b+47fVienxCNHPpZEgaFl8IRR1Mv71xdUtU2622Csxiucd04oEJVudXAF/3dZZNOL
+	5qNcdcB9sSojwmpUriiCZRok+GGh4OGmhrQ7fE2dhTP1etELCXv80VumvTxLCy0EOxtpo/
+	H8bcJ9lxrkFjfxAvCydRKS1OSGHKjno=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1714690642;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=YzZUXDPV0PB0GLA7qoIAy85H9S+PZoQXohv8tj76ZUE=;
+	b=HNqahZD0v59hLZv9836klkwGH5Zx+9048K1YzBWruiSenefzAMz0+ei9HFfuJv8vmMbSVh
+	rve/oT7LivploiAQ==
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=vXFR8b+4;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=HNqahZD0
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1714690642;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=YzZUXDPV0PB0GLA7qoIAy85H9S+PZoQXohv8tj76ZUE=;
+	b=vXFR8b+47fVienxCNHPpZEgaFl8IRR1Mv71xdUtU2622Csxiucd04oEJVudXAF/3dZZNOL
+	5qNcdcB9sSojwmpUriiCZRok+GGh4OGmhrQ7fE2dhTP1etELCXv80VumvTxLCy0EOxtpo/
+	H8bcJ9lxrkFjfxAvCydRKS1OSGHKjno=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1714690642;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=YzZUXDPV0PB0GLA7qoIAy85H9S+PZoQXohv8tj76ZUE=;
+	b=HNqahZD0v59hLZv9836klkwGH5Zx+9048K1YzBWruiSenefzAMz0+ei9HFfuJv8vmMbSVh
+	rve/oT7LivploiAQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 2D3EC1386E;
+	Thu,  2 May 2024 22:57:22 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id XE/sClIaNGauegAAD6G6ig
+	(envelope-from <dsterba@suse.cz>); Thu, 02 May 2024 22:57:22 +0000
+Date: Fri, 3 May 2024 00:50:06 +0200
+From: David Sterba <dsterba@suse.cz>
+To: Thorsten Blum <thorsten.blum@toblux.com>
+Cc: Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+	David Sterba <dsterba@suse.com>,
+	David Howells <dhowells@redhat.com>,
+	Jeff Layton <jlayton@kernel.org>,
+	Miklos Szeredi <miklos@szeredi.hu>,
+	Amir Goldstein <amir73il@gmail.com>, Baoquan He <bhe@redhat.com>,
+	Vivek Goyal <vgoyal@redhat.com>, Dave Young <dyoung@redhat.com>,
+	linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+	netfs@lists.linux.dev, linux-fsdevel@vger.kernel.org,
+	linux-unionfs@vger.kernel.org, kexec@lists.infradead.org
+Subject: Re: [PATCH 1/4] btrfs: Remove duplicate included header
+Message-ID: <20240502225006.GU2585@suse.cz>
+Reply-To: dsterba@suse.cz
+References: <20240502212631.110175-1-thorsten.blum@toblux.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240424014821.4154159-1-jthies@google.com> <20240424014821.4154159-2-jthies@google.com>
- <32855f4c-f219-4396-81c3-42cbea9fe4da@moroto.mountain>
-In-Reply-To: <32855f4c-f219-4396-81c3-42cbea9fe4da@moroto.mountain>
-From: Jameson Thies <jthies@google.com>
-Date: Thu, 2 May 2024 15:47:41 -0700
-Message-ID: <CAMFSARc7GPZuvX1wbyvz2uPUeORObuw3=JQ1QwKYRenaofXvBQ@mail.gmail.com>
-Subject: Re: [PATCH v2 1/4] usb: typec: ucsi: Fix null deref in trace
-To: Dan Carpenter <dan.carpenter@linaro.org>
-Cc: heikki.krogerus@linux.intel.com, linux-usb@vger.kernel.org, 
-	pmalani@chromium.org, bleung@google.com, abhishekpandit@chromium.org, 
-	andersson@kernel.org, dmitry.baryshkov@linaro.org, 
-	fabrice.gasnier@foss.st.com, gregkh@linuxfoundation.org, hdegoede@redhat.com, 
-	neil.armstrong@linaro.org, rajaram.regupathy@intel.com, 
-	saranya.gopal@intel.com, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240502212631.110175-1-thorsten.blum@toblux.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Level: 
+X-Spamd-Result: default: False [-4.17 / 50.00];
+	BAYES_HAM(-2.96)[99.83%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	HAS_REPLYTO(0.30)[dsterba@suse.cz];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	ARC_NA(0.00)[];
+	TO_DN_SOME(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[17];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_TLS_ALL(0.00)[];
+	MID_RHS_MATCH_FROM(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	FROM_HAS_DN(0.00)[];
+	FREEMAIL_CC(0.00)[fb.com,toxicpanda.com,suse.com,redhat.com,kernel.org,szeredi.hu,gmail.com,vger.kernel.org,lists.linux.dev,lists.infradead.org];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	FROM_EQ_ENVFROM(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.cz:replyto];
+	REPLYTO_ADDR_EQ_FROM(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DKIM_TRACE(0.00)[suse.cz:+]
+X-Rspamd-Action: no action
+X-Rspamd-Queue-Id: 4BA8521B6D
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spam-Flag: NO
+X-Spam-Score: -4.17
 
-Hi Dan,
-thank you for the reference. In this case I think returning NULL from
-ucsi_register_displayport stub and using a NULL check to prevent a
-NULL pointer dereference won't give us the desired behavior. When
-CONFIG_TYPEC_DP_ALTMODE is not enabled, the function would return NULL
-and the UCSI driver will never end up registering DisplayPort
-alternate mode. I'll update the commit message to note that this patch
-adds a fallback registration for DisplayPort alternate mode in
-addition to simply fixing the NULL pointer dereference caused by
-returning it in the ucsi_register_displayport stub. Separately we
-could add a NULL check, but I don't think it's necessary. Neither the
-non-stub ucsi_register_displayport or typec_port_register_altmode look
-like they will return NULL.
+On Thu, May 02, 2024 at 11:26:28PM +0200, Thorsten Blum wrote:
+> Remove duplicate included header file linux/blkdev.h
+> 
+> Signed-off-by: Thorsten Blum <thorsten.blum@toblux.com>
 
-Thanks,
-Jameson
+Added to for-next, thanks.
 
