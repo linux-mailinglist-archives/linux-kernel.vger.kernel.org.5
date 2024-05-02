@@ -1,153 +1,116 @@
-Return-Path: <linux-kernel+bounces-166128-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-166129-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 544558B969A
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 10:40:59 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D99298B969C
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 10:44:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C3FE21F210E2
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 08:40:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 96A86282682
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 08:44:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE82146525;
-	Thu,  2 May 2024 08:40:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6FDBE4654D;
+	Thu,  2 May 2024 08:44:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HDjswDWi"
-Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="OhHr4/ia"
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7641F4206E
-	for <linux-kernel@vger.kernel.org>; Thu,  2 May 2024 08:40:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F29101B299
+	for <linux-kernel@vger.kernel.org>; Thu,  2 May 2024 08:43:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714639250; cv=none; b=c7JuN9P+GjRIWRh2td6NHBfkDN09tD/VGXymjQVE8u2yIHFg7Si1Y0U1W72Aw+QQf5NaIemUz2iGvDPPh3pYbTm3fTaZuTz+hgkgnP1Wu/mhURqkCEqOZeIYU8EUHVLa49TlUW1zv6xJRyUqfeCvECN9r1zquQvo2taNFoC/2zo=
+	t=1714639441; cv=none; b=gF+VnKHQYbVsunR0ni1/2nSQD9/Eqj1bTPThVRqbDqXkPT8GwfZKTeqd7pu/46dMBQw5rjL88cWBwDYGHcTLlokLXi+WRheBSDxmtRlS33YO+PH6cFiYQKecbJBsSB9ZmyxKV8q89Dhz4tc4ecWWx3A9zwKLPg4AoJ8OuYmRbqE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714639250; c=relaxed/simple;
-	bh=VMLirMjE7AcT2Pt9YizN+gPPnTlDr2S+LO8VpGBJIyg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=TwumSp7/lGEZryXLKVZ7rWuIjZafSF/+oDAjH2wREXsyf9ngUdJpYIzITsKwy9MWy6WVd00vQE3y087AEn8gkx9TIQ4MNll0dCKAkbDj6W6Qo2MU0OFOhWr/6EPFeS7E8Me7FUPiHN+8uutZwMTpRO6c4/LlXwTChnttoUmd4no=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HDjswDWi; arc=none smtp.client-ip=209.85.128.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-41bab13ca81so58661275e9.1
-        for <linux-kernel@vger.kernel.org>; Thu, 02 May 2024 01:40:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714639247; x=1715244047; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=bq3P2Ir5EDp6mbAqX1BN2BAvxEatV8uFmb1a71hk3Cs=;
-        b=HDjswDWiVXR52vQGbP+jW+oRZzgBg8YOMNkYd/CBZipkHpdhMWM3WJRG8niOt5yxuk
-         3whTOa33i4/I4yBZop+RhohhgR1cKN94V9igECAqsmfx34Pru2Zbl03ebRuXGPsYITIp
-         aB8eYRJbxmdKE4w3Pakqwanj1+65j4OnmmYZhNCRV42tjyjiZ1KZ+H8WE1ojZqjIcbq2
-         CcEpLRkUQbK6bQZKjs/w+F5+Ix0bjubOuB3LlOLDCmE0pGg1ZR4MMc1uTG4Uk9BBgJcb
-         LbmqbA/tZrkZi7ecbwqvgxlVptUboDzMQ5xy+RF3dLDe9P+VuIVJ2OS9J16F4r2suc/9
-         1VTw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714639247; x=1715244047;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=bq3P2Ir5EDp6mbAqX1BN2BAvxEatV8uFmb1a71hk3Cs=;
-        b=eIXeOBEqBqOB91xfYGShUcbSjP7IkMkducXjd5j7GV08u0aEeahMiu+/cJTsT/KYoD
-         lXYS9SNW2Z8bBDCJUsfGDaTzK4xzyr8uaClzPfVydjjR9nYWLLp90Hj3U6mXIliG5NqJ
-         WVsttPL9AW0SYDVZhBXeLj3HkHgivRfXVQ4mGwIZaGuSMOwbRd6Ps8mo6OYCbCmDD3Vq
-         UjGXBQn3zv6rgfY/x+xtuFRmkE7PNrAauybhdfeM6YBDeyG+Z446gjl+8f95z3pVnXLq
-         16tQHvLM3EYP2vw86SUhdqmx0wol+F3vvWM2tNU90wEBu8vF0eZiZPJnc1qWQWu3yFbR
-         Rnfw==
-X-Forwarded-Encrypted: i=1; AJvYcCULMr8PSYLDkh+3/f8UhPoI2R2zEugyUFIALRX+Af7MrGg6QrJvPI/0IAkslPQDj4qYV4QNi1hHHKXpx7jYcrMpHdROesaMO6hwCLFL
-X-Gm-Message-State: AOJu0Yxl1idMCdwjy3/IGWzh2+qNAKzqGU0XT9CbFItDJHxZ/5JwUew4
-	y5KfvRIpJ5sMimvxoTciu5u5ZHBn7csJWyTGJOZcGKgDmOoJ/Cpc
-X-Google-Smtp-Source: AGHT+IHJnxzIwf+DgF1c1kiPElsKttyZJqap1UUMMrgC3gCd5mjUoBOTDzblLV9e7t6XE/b8mYxtfA==
-X-Received: by 2002:a05:600c:4e11:b0:41c:8754:8793 with SMTP id b17-20020a05600c4e1100b0041c87548793mr4849943wmq.41.1714639246648;
-        Thu, 02 May 2024 01:40:46 -0700 (PDT)
-Received: from ?IPV6:2a06:c701:737b:ef00:c50a:d96c:6c34:ec52? ([2a06:c701:737b:ef00:c50a:d96c:6c34:ec52])
-        by smtp.gmail.com with ESMTPSA id f8-20020a05600c154800b00418f99170f2sm1160001wmg.32.2024.05.02.01.40.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 02 May 2024 01:40:46 -0700 (PDT)
-Message-ID: <fede8589-dd11-4b0c-aa70-7ec23aed64b1@gmail.com>
-Date: Thu, 2 May 2024 11:40:44 +0300
+	s=arc-20240116; t=1714639441; c=relaxed/simple;
+	bh=pX8ilqARQV2Z90/pSS2jwuMRTtcQmuRJ3mVD8TOf5Kw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Q0FYBAb7ynh+8DvK4WeB/o/ayYOWv7TBtL6RW25c3DERy2m82uUxUJnytiozU++0JpxbDmDmUvUXzIoMKewaZNSLZlXiEM+tWh7ihEpFj31kYYaHDFsZkov2QNinFvH8+1/wMngumM3VZxf2Gxb+df7fiPN++Q2HGPFqPuZ+nL8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=OhHr4/ia; arc=none smtp.client-ip=90.155.50.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=1GXxPgFfTdtpqT+LPQBFDbKrIYQ+i+pi0bFYs+txOK0=; b=OhHr4/iazFgToN2Kpoe2BWf5MU
+	wy/wi6+9AQydxBVB9LIK4vSKpBjxGzaAdLrnAmyx3mx4m+I4/1nDBJN0KjCcuUmEOcy97OuxE5YXU
+	lzfbinsqQ4sfqz//4n6VuFKrg0dfxapMMBXt3SJcMDbbKM/fXYr88ezD6K1MF2MKej7SYRuv61XWq
+	6SMIW2hPbKrTcN9Z+4NFgOquJB8wiUGTOGAT8AF80HJwKErVUtwhwNFTEyE4IvQChGrb2R9Nj/qkV
+	0EDyOo45LxCKnBH1nZTnBMLXQPi5jVyp8xmGLh6XymAaCBMTIlqUhMnldmM4oATBKhh4rvZ+BzWOD
+	VREOb/oQ==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+	by casper.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1s2S2f-00000001HTK-3qWe;
+	Thu, 02 May 2024 08:43:50 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+	id 9084330057A; Thu,  2 May 2024 10:43:49 +0200 (CEST)
+Date: Thu, 2 May 2024 10:43:49 +0200
+From: Peter Zijlstra <peterz@infradead.org>
+To: Yury Norov <yury.norov@gmail.com>
+Cc: Ankit Jain <ankit-aj.jain@broadcom.com>, linux@rasmusvillemoes.dk,
+	akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
+	juri.lelli@redhat.com, pauld@redhat.com, ajay.kaher@broadcom.com,
+	alexey.makhalov@broadcom.com, vasavi.sirnapalli@broadcom.com,
+	Paul Turner <pjt@google.com>, Ingo Molnar <mingo@redhat.com>,
+	Vincent Guittot <vincent.guittot@linaro.org>,
+	Dietmar Eggemann <dietmar.eggemann@arm.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+	Daniel Bristot de Oliveira <bristot@redhat.com>,
+	Valentin Schneider <vschneid@redhat.com>
+Subject: Re: [PATCH] lib/cpumask: Boot option to disable tasks distribution
+ within cpumask
+Message-ID: <20240502084349.GW30852@noisy.programming.kicks-ass.net>
+References: <20240430090431.1619622-1-ankit-aj.jain@broadcom.com>
+ <ZjE3C9UgeZR02Jyy@yury-ThinkPad>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] staging: pi433: Use class_create instead of
- class_register.
-To: Greg KH <gregkh@linuxfoundation.org>
-Cc: hverkuil-cisco@xs4all.nl, andriy.shevchenko@linux.intel.com,
- robh@kernel.org, felixkimbu1@gmail.com, dan.carpenter@linaro.org,
- linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-References: <20240501055820.603272-1-ikobh7@gmail.com>
- <20240501055820.603272-2-ikobh7@gmail.com>
- <2024050109-reward-vision-58e9@gregkh>
-Content-Language: en-US
-From: Shahar Avidar <ikobh7@gmail.com>
-In-Reply-To: <2024050109-reward-vision-58e9@gregkh>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZjE3C9UgeZR02Jyy@yury-ThinkPad>
 
-On 01/05/2024 17:12, Greg KH wrote:
-> On Wed, May 01, 2024 at 08:58:19AM +0300, Shahar Avidar wrote:
->> Make use of a higher level API.
+On Tue, Apr 30, 2024 at 11:23:07AM -0700, Yury Norov wrote:
+> On Tue, Apr 30, 2024 at 02:34:31PM +0530, Ankit Jain wrote:
+> > commit 46a87b3851f0 ("sched/core: Distribute tasks within affinity masks")
+> > and commit 14e292f8d453 ("sched,rt: Use cpumask_any*_distribute()")
+> > introduced the logic to distribute the tasks within cpumask upon initial
+> > wakeup.
 > 
-> What does this mean?
+> So let's add the authors in CC list?
 > 
-By "higher level" I meant a wrapper function that includes the 
-"class_register" call.
-
->> Reduce global memory allocation from struct class to pointer size.
+> > For Telco RAN deployments, isolcpus are a necessity to cater to
+> > the requirement of low latency applications. These isolcpus are generally
+> > tickless so that high priority SCHED_FIFO tasks can execute without any
+> > OS jitter. Since load balancing is disabled on isocpus, any task
+> > which gets placed on these CPUs can not be migrated on its own.
+> > For RT applications to execute on isolcpus, a guaranteed kubernetes pod
+> > with all isolcpus becomes the requirement and these RT applications are
+> > affine to execute on a specific isolcpu within the kubernetes pod.
+> > However, there may be some non-RT tasks which could also schedule in the
+> > same kubernetes pod without being affine to any specific CPU(inherits the
+> > pod cpuset affinity).
 > 
-> No, you increased memory allocation here, why do you think you reduced
-> it?
-> 
-Reducing *global* memory allocation.
-I understand the tradeoff would be allocating in run time the class 
-struct anyway, but than, it could also be freed.
+> OK... It looks like adding scheduler maintainers is also a necessity to
+> cater here...
 
-Since the Pi433 is a RasPi expansion board and can be attached\removed 
-in an asynchronous matter by the user, and only one can be attached at a 
-time, I thought it is best not to statically allocate memory which won't 
-be freed even if the hat is removed.
+So 14e292f8d453 is very specifically only using sched_domain_span(), and
+if you're using partitioned CPUs they should not show up there.
 
-By using the class_create & class_destroy I thought of reducing memory 
-allocated by the RasPi if the pi433 is removed.
+As to 46a87b3851f0, if you're explicitly creating tasks with an affinity
+masks that spans your partition then you're getting what you ask for.
 
-But following your response I now actually see that the class struct 
-will have the same lifespan anyway if allocated statically or 
-dynamically if its alive between the init\exit calls.
+In fact, I already explained this to you earlier, so why are you
+suggesting horrible hacks again? This behaviour toggle you suggest is
+absolutely unacceptable.
 
-> Also, this looks like a revert of commit f267da65bb6b ("staging: pi433:
-> make pi433_class constant"), accepted a few months ago, why not just
-> call it out as an explicit revert if that's what you want to do?
-> 
-I actually saw this commit, but for some reason did not connect the dots 
-when I wrote this patch. My bad.
+I even explained what the problem was and where to look for solutions.
 
-> class_create is going away "soon", why add this back when people are
-> working so hard to remove its usage?  What tutorial did you read that
-> made you want to make this change?
-> 
-It's true, I got it the wrong way I guess. I thought class_create is the 
-preferred API (but now that you mentioned commit f267da65bb6b, I see 
-it's not). I did notice it in many other drivers though, and took them 
-as an example (e.g. gnss).
-
-
-> thanks,
-> 
-> greg k-h
-
-I actually initially thought that the pi433 class should be removed 
-since it doesn't bring any new attributes with it, and that 
-spi_slave_class is more appropriate, but then I saw no other driver 
-using it. Any thoughts about that?
--- 
-Regards,
-
-Shahar
+https://lkml.kernel.org/r/20231011135238.GG6337@noisy.programming.kicks-ass.net
 
 
