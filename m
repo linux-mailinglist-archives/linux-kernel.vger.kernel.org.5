@@ -1,174 +1,251 @@
-Return-Path: <linux-kernel+bounces-165937-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-165939-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 79E2D8B939E
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 05:12:55 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9170B8B93A1
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 05:14:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8FE58B215A4
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 03:12:52 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 997F2B2140C
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 03:14:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 110911B813;
-	Thu,  2 May 2024 03:12:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7BDB71946B;
+	Thu,  2 May 2024 03:14:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b="sOxfjY5Y"
-Received: from mail-pg1-f172.google.com (mail-pg1-f172.google.com [209.85.215.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="e5Qwunhq"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.14])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B912B18054
-	for <linux-kernel@vger.kernel.org>; Thu,  2 May 2024 03:12:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E791D1862F
+	for <linux-kernel@vger.kernel.org>; Thu,  2 May 2024 03:13:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.14
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714619561; cv=none; b=nLqe9cvdtPQwojSsFivCYhC17GexURwT6BUurgzBbRkfiLI4fe9yrwMZ5XhwOD5jywSdoIWI3p1oN2B8zfrDbqhl9dDxCjQcVCjERXjkyWAyq6T3IbsHcEbgBbyIQO05RLUUsQFmHgS9E08g8Hcgm5Tb1ugoxxPQarh4x/MDcok=
+	t=1714619641; cv=none; b=XdCX/ckIyPAjwzPdMhwS0kQD1FBL/+D2A20XuX3XxSUgoDQS4PH6/sTweE/E9PGNxnr5k5cBsn+BAjjICLzZhaWuuyP3xyAXyAUBcsVdTMzOZObPrnKmyFDvXWvOcVUFPRuv7Oc8fPrrllW9j6zhXFOMeABqvt98cQ6nnW4OoMk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714619561; c=relaxed/simple;
-	bh=WgnYev3iL3bTtE7UnbSWD1Q1DqsNg+ZMEji4e1ykjnY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=M2ZBprXUl41WVrnjshejUkydfji7B/dtAPyp9AcWVR8ID0LhBF4t8uqg++7/vRzxMUn/5UeZnn99Bg2Z5zdVvbnIgHi5lYsqWBpw67bba8XUfK4UoVQlS7yPM9mfdPmBCoJuSvKBkqhChs6jjmwelY/G0Jcbr99HF3ngNrs3dOU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com; spf=pass smtp.mailfrom=fromorbit.com; dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b=sOxfjY5Y; arc=none smtp.client-ip=209.85.215.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fromorbit.com
-Received: by mail-pg1-f172.google.com with SMTP id 41be03b00d2f7-5d3907ff128so5874929a12.3
-        for <linux-kernel@vger.kernel.org>; Wed, 01 May 2024 20:12:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1714619557; x=1715224357; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=oxU4uj4hkcp1dLz22ktDIDCqUdqy1TVfUCsqX6hkqK0=;
-        b=sOxfjY5Y6Emew5nkqpEQxXxQ1dUAilUXiA0tcT1h0wYOXyOeoe3JjXm/N/Dk4XjZoK
-         5EqgbPhu6G77A1CPwiCRB7N78vtNNBY022g4npkbAkReQVlQ6b6eKFIfFFxv0Fn9JnT+
-         YHqCbr5KLq60q0sWwwYdNaeD2Yaf1MTjgm3RKo+pRdjhkG/Q4WuhOhyY7pgVK/y77k7J
-         099kxL2oK/rUpyeH0gHJW+Mg2ISQz4rjU1QuosSkqK+lVI690E9mobEycLb/TquHjB+S
-         yUxnlCjbyGBRR4rfWSbNroNgayo3akedthGKquWDXp9B2lXgcg3890gQ0ajO3GTMGrTK
-         fbDg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714619557; x=1715224357;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=oxU4uj4hkcp1dLz22ktDIDCqUdqy1TVfUCsqX6hkqK0=;
-        b=FUJSWVDC/QLnoU1fLbl2MKvBZHoEjAMvSPoh4yyGK6EVABTBn3YD3kc+kS2hYTB+PK
-         uH/UoxTEdUDN/pYvCG0IL71+UY3A3l1h7u/nxQzcarwEinSFOSExiBqg+wc0v4m5fWls
-         vy/27RHw4nA923UzudJyx9pvtXEBeiaGxnIDKeOs/DvgUKLkFm9eACthihanVGssl8r+
-         kuclWWX6wnjR0mbi4Np/u4fhW240OnFRVSacRTQxjcQY+Vlp/0682IWTGsnPGxF7WPDH
-         VGEN0aXlPrk7xpygdXq1R+9TaiiK9xwO+Fl2GVUZzhFXzH/wMOUyXQAwdpp3tueF7qGG
-         mhdw==
-X-Forwarded-Encrypted: i=1; AJvYcCUtzLiLkDNqxNivZzLQ0M+u/dVSgyw0WMX/CswX18k8V6WwSr9ifUbqkdphackNFO/6+XiSVpa+xy8bIHmImindq2TqlYH4Szx5k4tq
-X-Gm-Message-State: AOJu0YwJfiuufDEJAIdrJq02RwArn4svlo3Gjr2/1ifJUFg3jzZTkAFs
-	+AkAvFYJ/qMst+ZFX/3EdxTSB/pkidsn236myrGr4QXInlm9oZPi+DCCO/8aMOqUHJiaKy/IGVl
-	/
-X-Google-Smtp-Source: AGHT+IFk0SsIAhiTdnh8fa+N0OtU/vL7UYnH56mZggyi13eZnYq8j8uY1qc9WZRSbkde1s6/dI0yvA==
-X-Received: by 2002:a05:6a21:498e:b0:1a5:bc5d:3c0a with SMTP id ax14-20020a056a21498e00b001a5bc5d3c0amr870776pzc.61.1714619556914;
-        Wed, 01 May 2024 20:12:36 -0700 (PDT)
-Received: from dread.disaster.area (pa49-179-32-121.pa.nsw.optusnet.com.au. [49.179.32.121])
-        by smtp.gmail.com with ESMTPSA id fu6-20020a056a00610600b006f3f5d3595fsm131849pfb.80.2024.05.01.20.12.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 01 May 2024 20:12:36 -0700 (PDT)
-Received: from dave by dread.disaster.area with local (Exim 4.96)
-	(envelope-from <david@fromorbit.com>)
-	id 1s2Ms5-000T8k-1e;
-	Thu, 02 May 2024 13:12:33 +1000
-Date: Thu, 2 May 2024 13:12:33 +1000
-From: Dave Chinner <david@fromorbit.com>
-To: "Darrick J. Wong" <djwong@kernel.org>
-Cc: John Garry <john.g.garry@oracle.com>, hch@lst.de,
-	viro@zeniv.linux.org.uk, brauner@kernel.org, jack@suse.cz,
-	chandan.babu@oracle.com, willy@infradead.org, axboe@kernel.dk,
-	martin.petersen@oracle.com, linux-kernel@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org, tytso@mit.edu, jbongio@google.com,
-	ojaswin@linux.ibm.com, ritesh.list@gmail.com, mcgrof@kernel.org,
-	p.raghav@samsung.com, linux-xfs@vger.kernel.org,
-	catherine.hoang@oracle.com
-Subject: Re: [PATCH RFC v3 12/21] xfs: Only free full extents for forcealign
-Message-ID: <ZjMEob4s3721orKp@dread.disaster.area>
-References: <20240429174746.2132161-1-john.g.garry@oracle.com>
- <20240429174746.2132161-13-john.g.garry@oracle.com>
- <ZjGSiOt21g5JCOhf@dread.disaster.area>
- <20240501235310.GP360919@frogsfrogsfrogs>
+	s=arc-20240116; t=1714619641; c=relaxed/simple;
+	bh=4LIBJhkVV8BXQFOP75l14jwu7TRyky3fb72S4ZK6q9c=;
+	h=Date:From:To:Cc:Subject:Message-ID; b=VNg7V37CGOLaBtZffOAVL0cP1xO7MOSJyhM2OcrvgzO+ljObTDCKHQhWmANRPKUB2e7gZj9fK61N9TH4IxeQG+WRkAaKajES8+O6cCbUHfCSHRvm3RCJC9DKF7D97vBVWLNcwcAIcWTVtU47x3ygVTkiH03/G+whQuDTTl5s4Go=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=e5Qwunhq; arc=none smtp.client-ip=192.198.163.14
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1714619639; x=1746155639;
+  h=date:from:to:cc:subject:message-id;
+  bh=4LIBJhkVV8BXQFOP75l14jwu7TRyky3fb72S4ZK6q9c=;
+  b=e5QwunhqnQAeyTZofidyqC3Spac9Lf84lIDyaTcERHwBsk4vpmpcnhyP
+   ORhx181JO7+C7i57s5XR2sl/5J7lYSO1dL6VLBdLi9hROP57Pq62IsKOP
+   DmoVDn5HcTBNq91Z5k1S6Pi0dd6ci9XmaFYvpL/VxcxVo+UnYyL3FNtMN
+   NHSM3dkO7hdJwbkJv5yZlZZkgKoRsKrmfEWmaypMW4Zzyu7/E4o0/66Rh
+   9xbLki2Lp4SQ2InPGqwsuI4xGXF2uyQJ3bsx3kTwc6JXp5AmkQ5lB9zTA
+   OVsNhxPOIl568LVHfJk8NF00cdRUCvaf4OWouCjC3NKVIpW4DmSOX9VY3
+   g==;
+X-CSE-ConnectionGUID: VMa9KoovSgK908wSWw7zyA==
+X-CSE-MsgGUID: lLNDabjdTeOwq2c8zFggrw==
+X-IronPort-AV: E=McAfee;i="6600,9927,11061"; a="10591045"
+X-IronPort-AV: E=Sophos;i="6.07,247,1708416000"; 
+   d="scan'208";a="10591045"
+Received: from orviesa002.jf.intel.com ([10.64.159.142])
+  by fmvoesa108.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 May 2024 20:13:58 -0700
+X-CSE-ConnectionGUID: vpgfbyBfRi2+GsWmabrLpA==
+X-CSE-MsgGUID: xd6f6r8qShydqsmNp1fpWA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,247,1708416000"; 
+   d="scan'208";a="57871701"
+Received: from lkp-server01.sh.intel.com (HELO e434dd42e5a1) ([10.239.97.150])
+  by orviesa002.jf.intel.com with ESMTP; 01 May 2024 20:13:56 -0700
+Received: from kbuild by e434dd42e5a1 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1s2MtO-000ALV-0Y;
+	Thu, 02 May 2024 03:13:54 +0000
+Date: Thu, 02 May 2024 11:13:26 +0800
+From: kernel test robot <lkp@intel.com>
+To: "Paul E. McKenney" <paulmck@kernel.org>
+Cc: linux-kernel@vger.kernel.org
+Subject: [paulmck-rcu:dev.2024.04.18a] BUILD SUCCESS WITH WARNING
+ 274af360588db0dafe36ffb5c61799fa77757ce7
+Message-ID: <202405021124.xgrTmorn-lkp@intel.com>
+User-Agent: s-nail v14.9.24
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240501235310.GP360919@frogsfrogsfrogs>
 
-On Wed, May 01, 2024 at 04:53:10PM -0700, Darrick J. Wong wrote:
-> On Wed, May 01, 2024 at 10:53:28AM +1000, Dave Chinner wrote:
-> > On Mon, Apr 29, 2024 at 05:47:37PM +0000, John Garry wrote:
-> > > Like we already do for rtvol, only free full extents for forcealign in
-> > > xfs_free_file_space().
-> > > 
-> > > Signed-off-by: John Garry <john.g.garry@oracle.com>
-> > > ---
-> > >  fs/xfs/xfs_bmap_util.c | 7 +++++--
-> > >  1 file changed, 5 insertions(+), 2 deletions(-)
-> > > 
-> > > diff --git a/fs/xfs/xfs_bmap_util.c b/fs/xfs/xfs_bmap_util.c
-> > > index f26d1570b9bd..1dd45dfb2811 100644
-> > > --- a/fs/xfs/xfs_bmap_util.c
-> > > +++ b/fs/xfs/xfs_bmap_util.c
-> > > @@ -847,8 +847,11 @@ xfs_free_file_space(
-> > >  	startoffset_fsb = XFS_B_TO_FSB(mp, offset);
-> > >  	endoffset_fsb = XFS_B_TO_FSBT(mp, offset + len);
-> > >  
-> > > -	/* We can only free complete realtime extents. */
-> > > -	if (XFS_IS_REALTIME_INODE(ip) && mp->m_sb.sb_rextsize > 1) {
-> > > +	/* Free only complete extents. */
-> > > +	if (xfs_inode_has_forcealign(ip) && ip->i_extsize > 1) {
-> > > +		startoffset_fsb = roundup_64(startoffset_fsb, ip->i_extsize);
-> > > +		endoffset_fsb = rounddown_64(endoffset_fsb, ip->i_extsize);
-> > > +	} else if (XFS_IS_REALTIME_INODE(ip) && mp->m_sb.sb_rextsize > 1) {
-> > >  		startoffset_fsb = xfs_rtb_roundup_rtx(mp, startoffset_fsb);
-> > >  		endoffset_fsb = xfs_rtb_rounddown_rtx(mp, endoffset_fsb);
-> > >  	}
-> > 
-> > When you look at xfs_rtb_roundup_rtx() you'll find it's just a one
-> > line wrapper around roundup_64().
-> 
-> I added this a couple of cycles ago to get ready for realtime
-> modernization.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git dev.2024.04.18a
+branch HEAD: 274af360588db0dafe36ffb5c61799fa77757ce7  fixup! xtensa: Emulate one-byte cmpxchg
 
-Yes, I know. I'm not suggesting that there's anything wrong with
-this code, just pointing out that the RT wrappers are doing the
-exact same conversion as the force-align code is doing. And from
-that observation, a common implementation makes a lot of sense
-because that same logic is repeated in quite a few places....
+Warning reports:
 
-> That will create a bunch *more* churn in my tree just to
-> convert everything *back*.
+https://lore.kernel.org/oe-kbuild-all/202405011801.nWVMOtGS-lkp@intel.com
 
-This doesn't change anything significant in your tree, nor do you
-need to "convert everything back". The RT wrappers are unchanged,
-and the only material difference in your tree vs the upstream
-xfs_free_file_space() this patchset is based on is this:
+Warning: (recently discovered and may have been fixed)
 
--	if (XFS_IS_REALTIME_INODE(ip) && mp->m_sb.sb_rextsize > 1) {
-+	if (xfs_inode_has_bigrtalloc(ip)) {
+arch/arc/include/asm/cmpxchg.h:74:25: warning: assignment to 'long unsigned int' from 'struct bucket_table *' makes integer from pointer without a cast [-Wint-conversion]
+arch/arc/include/asm/cmpxchg.h:74:25: warning: assignment to 'long unsigned int' from 'struct callback_head *' makes integer from pointer without a cast [-Wint-conversion]
+arch/arc/include/asm/cmpxchg.h:74:25: warning: assignment to 'long unsigned int' from 'struct dentry *' makes integer from pointer without a cast [-Wint-conversion]
+arch/arc/include/asm/cmpxchg.h:74:25: warning: assignment to 'long unsigned int' from 'struct epitem *' makes integer from pointer without a cast [-Wint-conversion]
+arch/arc/include/asm/cmpxchg.h:74:25: warning: assignment to 'long unsigned int' from 'struct file_lock_context *' makes integer from pointer without a cast [-Wint-conversion]
+arch/arc/include/asm/cmpxchg.h:74:25: warning: assignment to 'long unsigned int' from 'struct genradix_node *' makes integer from pointer without a cast [-Wint-conversion]
+arch/arc/include/asm/cmpxchg.h:74:25: warning: assignment to 'long unsigned int' from 'struct genradix_root *' makes integer from pointer without a cast [-Wint-conversion]
+arch/arc/include/asm/cmpxchg.h:74:25: warning: assignment to 'long unsigned int' from 'struct list_head *' makes integer from pointer without a cast [-Wint-conversion]
+arch/arc/include/asm/cmpxchg.h:74:25: warning: assignment to 'long unsigned int' from 'struct llist_node *' makes integer from pointer without a cast [-Wint-conversion]
+arch/arc/include/asm/cmpxchg.h:74:25: warning: assignment to 'long unsigned int' from 'struct mm_struct *' makes integer from pointer without a cast [-Wint-conversion]
+arch/arc/include/asm/cmpxchg.h:74:25: warning: assignment to 'long unsigned int' from 'struct request *' makes integer from pointer without a cast [-Wint-conversion]
+arch/arc/include/asm/cmpxchg.h:74:25: warning: assignment to 'long unsigned int' from 'struct task_struct *' makes integer from pointer without a cast [-Wint-conversion]
+arch/arc/include/asm/cmpxchg.h:74:25: warning: assignment to 'long unsigned int' from 'struct wake_q_node *' makes integer from pointer without a cast [-Wint-conversion]
+arch/arc/include/asm/cmpxchg.h:74:25: warning: assignment to 'long unsigned int' from 'struct workqueue_struct *' makes integer from pointer without a cast [-Wint-conversion]
+arch/arc/include/asm/cmpxchg.h:74:25: warning: assignment to 'long unsigned int' from 'union nested_table *' makes integer from pointer without a cast [-Wint-conversion]
 
-That's it.
+Warning ids grouped by kconfigs:
 
-All the suggestion I made does is change where you need to make this
-one line change. It would also remove the need to do this one line
-change in multiple other places, so it would actually -reduce- your
-ongoing rebase pain, not make it worse.
+gcc_recent_errors
+|-- arc-allnoconfig
+|   |-- arch-arc-include-asm-cmpxchg.h:warning:assignment-to-long-unsigned-int-from-struct-bucket_table-makes-integer-from-pointer-without-a-cast
+|   |-- arch-arc-include-asm-cmpxchg.h:warning:assignment-to-long-unsigned-int-from-struct-callback_head-makes-integer-from-pointer-without-a-cast
+|   |-- arch-arc-include-asm-cmpxchg.h:warning:assignment-to-long-unsigned-int-from-struct-dentry-makes-integer-from-pointer-without-a-cast
+|   |-- arch-arc-include-asm-cmpxchg.h:warning:assignment-to-long-unsigned-int-from-struct-epitem-makes-integer-from-pointer-without-a-cast
+|   |-- arch-arc-include-asm-cmpxchg.h:warning:assignment-to-long-unsigned-int-from-struct-file_lock_context-makes-integer-from-pointer-without-a-cast
+|   |-- arch-arc-include-asm-cmpxchg.h:warning:assignment-to-long-unsigned-int-from-struct-genradix_node-makes-integer-from-pointer-without-a-cast
+|   |-- arch-arc-include-asm-cmpxchg.h:warning:assignment-to-long-unsigned-int-from-struct-genradix_root-makes-integer-from-pointer-without-a-cast
+|   |-- arch-arc-include-asm-cmpxchg.h:warning:assignment-to-long-unsigned-int-from-struct-list_head-makes-integer-from-pointer-without-a-cast
+|   |-- arch-arc-include-asm-cmpxchg.h:warning:assignment-to-long-unsigned-int-from-struct-llist_node-makes-integer-from-pointer-without-a-cast
+|   |-- arch-arc-include-asm-cmpxchg.h:warning:assignment-to-long-unsigned-int-from-struct-mm_struct-makes-integer-from-pointer-without-a-cast
+|   |-- arch-arc-include-asm-cmpxchg.h:warning:assignment-to-long-unsigned-int-from-struct-request-makes-integer-from-pointer-without-a-cast
+|   |-- arch-arc-include-asm-cmpxchg.h:warning:assignment-to-long-unsigned-int-from-struct-task_struct-makes-integer-from-pointer-without-a-cast
+|   |-- arch-arc-include-asm-cmpxchg.h:warning:assignment-to-long-unsigned-int-from-struct-wake_q_node-makes-integer-from-pointer-without-a-cast
+|   |-- arch-arc-include-asm-cmpxchg.h:warning:assignment-to-long-unsigned-int-from-struct-workqueue_struct-makes-integer-from-pointer-without-a-cast
+|   `-- arch-arc-include-asm-cmpxchg.h:warning:assignment-to-long-unsigned-int-from-union-nested_table-makes-integer-from-pointer-without-a-cast
+`-- arc-randconfig-001-20240502
+    |-- arch-arc-include-asm-cmpxchg.h:warning:assignment-to-long-unsigned-int-from-struct-bucket_table-makes-integer-from-pointer-without-a-cast
+    |-- arch-arc-include-asm-cmpxchg.h:warning:assignment-to-long-unsigned-int-from-struct-callback_head-makes-integer-from-pointer-without-a-cast
+    |-- arch-arc-include-asm-cmpxchg.h:warning:assignment-to-long-unsigned-int-from-struct-dentry-makes-integer-from-pointer-without-a-cast
+    |-- arch-arc-include-asm-cmpxchg.h:warning:assignment-to-long-unsigned-int-from-struct-epitem-makes-integer-from-pointer-without-a-cast
+    |-- arch-arc-include-asm-cmpxchg.h:warning:assignment-to-long-unsigned-int-from-struct-file_lock_context-makes-integer-from-pointer-without-a-cast
+    |-- arch-arc-include-asm-cmpxchg.h:warning:assignment-to-long-unsigned-int-from-struct-genradix_node-makes-integer-from-pointer-without-a-cast
+    |-- arch-arc-include-asm-cmpxchg.h:warning:assignment-to-long-unsigned-int-from-struct-genradix_root-makes-integer-from-pointer-without-a-cast
+    |-- arch-arc-include-asm-cmpxchg.h:warning:assignment-to-long-unsigned-int-from-struct-list_head-makes-integer-from-pointer-without-a-cast
+    |-- arch-arc-include-asm-cmpxchg.h:warning:assignment-to-long-unsigned-int-from-struct-llist_node-makes-integer-from-pointer-without-a-cast
+    |-- arch-arc-include-asm-cmpxchg.h:warning:assignment-to-long-unsigned-int-from-struct-mm_struct-makes-integer-from-pointer-without-a-cast
+    |-- arch-arc-include-asm-cmpxchg.h:warning:assignment-to-long-unsigned-int-from-struct-request-makes-integer-from-pointer-without-a-cast
+    |-- arch-arc-include-asm-cmpxchg.h:warning:assignment-to-long-unsigned-int-from-struct-task_struct-makes-integer-from-pointer-without-a-cast
+    |-- arch-arc-include-asm-cmpxchg.h:warning:assignment-to-long-unsigned-int-from-struct-wake_q_node-makes-integer-from-pointer-without-a-cast
+    |-- arch-arc-include-asm-cmpxchg.h:warning:assignment-to-long-unsigned-int-from-struct-workqueue_struct-makes-integer-from-pointer-without-a-cast
+    `-- arch-arc-include-asm-cmpxchg.h:warning:assignment-to-long-unsigned-int-from-union-nested_table-makes-integer-from-pointer-without-a-cast
 
-That's a net win for everyone, and it's most definitely not a reason
-to shout at people and threaten to revert any changes they might
-make in this area of the code.
+elapsed time: 1543m
 
-> Where the hell were you when that was being reviewed?!!!
+configs tested: 104
+configs skipped: 3
 
-How is this sort of unhelpful statement in any way relevant to
-improving the forcealign functionality to the point where we can
-actually merge it and start making use of it for atomic writes?
+tested configs:
+alpha                             allnoconfig   gcc  
+alpha                            allyesconfig   gcc  
+alpha                               defconfig   gcc  
+arc                               allnoconfig   gcc  
+arc                                 defconfig   gcc  
+arc                   randconfig-001-20240502   gcc  
+arc                   randconfig-002-20240502   gcc  
+arm                               allnoconfig   clang
+arm                                 defconfig   clang
+arm                   randconfig-001-20240502   gcc  
+arm                   randconfig-002-20240502   gcc  
+arm                   randconfig-003-20240502   gcc  
+arm                   randconfig-004-20240502   gcc  
+arm64                             allnoconfig   gcc  
+arm64                               defconfig   gcc  
+arm64                 randconfig-001-20240502   gcc  
+arm64                 randconfig-002-20240502   clang
+arm64                 randconfig-003-20240502   clang
+arm64                 randconfig-004-20240502   clang
+csky                              allnoconfig   gcc  
+csky                                defconfig   gcc  
+csky                  randconfig-001-20240502   gcc  
+csky                  randconfig-002-20240502   gcc  
+hexagon                          allmodconfig   clang
+hexagon                           allnoconfig   clang
+hexagon                          allyesconfig   clang
+hexagon                             defconfig   clang
+hexagon               randconfig-001-20240502   clang
+hexagon               randconfig-002-20240502   clang
+i386                             allmodconfig   gcc  
+i386                              allnoconfig   gcc  
+i386                             allyesconfig   gcc  
+i386         buildonly-randconfig-001-20240502   gcc  
+i386         buildonly-randconfig-004-20240502   gcc  
+i386                                defconfig   clang
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                           defconfig   gcc  
+loongarch             randconfig-001-20240502   gcc  
+loongarch             randconfig-002-20240502   gcc  
+m68k                             allmodconfig   gcc  
+m68k                              allnoconfig   gcc  
+m68k                             allyesconfig   gcc  
+m68k                                defconfig   gcc  
+microblaze                       allmodconfig   gcc  
+microblaze                        allnoconfig   gcc  
+microblaze                       allyesconfig   gcc  
+microblaze                          defconfig   gcc  
+mips                              allnoconfig   gcc  
+mips                             allyesconfig   gcc  
+nios2                            allmodconfig   gcc  
+nios2                             allnoconfig   gcc  
+nios2                            allyesconfig   gcc  
+nios2                               defconfig   gcc  
+openrisc                          allnoconfig   gcc  
+openrisc                            defconfig   gcc  
+parisc                            allnoconfig   gcc  
+parisc                              defconfig   gcc  
+parisc64                            defconfig   gcc  
+powerpc                           allnoconfig   gcc  
+riscv                             allnoconfig   gcc  
+riscv                               defconfig   clang
+s390                              allnoconfig   clang
+s390                                defconfig   clang
+sh                                allnoconfig   gcc  
+sh                                  defconfig   gcc  
+sparc                             allnoconfig   gcc  
+sparc                               defconfig   gcc  
+sparc64                             defconfig   gcc  
+um                               allmodconfig   clang
+um                                allnoconfig   clang
+um                               allyesconfig   gcc  
+um                                  defconfig   clang
+um                             i386_defconfig   gcc  
+um                           x86_64_defconfig   clang
+x86_64                            allnoconfig   clang
+x86_64                           allyesconfig   clang
+x86_64       buildonly-randconfig-001-20240502   gcc  
+x86_64       buildonly-randconfig-002-20240502   gcc  
+x86_64       buildonly-randconfig-003-20240502   clang
+x86_64       buildonly-randconfig-004-20240502   gcc  
+x86_64       buildonly-randconfig-005-20240502   gcc  
+x86_64       buildonly-randconfig-006-20240502   gcc  
+x86_64                              defconfig   gcc  
+x86_64                randconfig-001-20240502   gcc  
+x86_64                randconfig-002-20240502   clang
+x86_64                randconfig-003-20240502   clang
+x86_64                randconfig-004-20240502   gcc  
+x86_64                randconfig-005-20240502   clang
+x86_64                randconfig-006-20240502   clang
+x86_64                randconfig-011-20240502   clang
+x86_64                randconfig-012-20240502   clang
+x86_64                randconfig-013-20240502   gcc  
+x86_64                randconfig-014-20240502   gcc  
+x86_64                randconfig-015-20240502   gcc  
+x86_64                randconfig-016-20240502   clang
+x86_64                randconfig-071-20240502   gcc  
+x86_64                randconfig-072-20240502   gcc  
+x86_64                randconfig-073-20240502   gcc  
+x86_64                randconfig-074-20240502   clang
+x86_64                randconfig-075-20240502   clang
+x86_64                randconfig-076-20240502   clang
+x86_64                          rhel-8.3-rust   clang
+xtensa                            allnoconfig   gcc  
 
--Dave.
 -- 
-Dave Chinner
-david@fromorbit.com
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
