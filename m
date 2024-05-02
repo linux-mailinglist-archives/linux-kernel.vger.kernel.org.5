@@ -1,112 +1,170 @@
-Return-Path: <linux-kernel+bounces-166664-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-166665-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 815B08B9DC3
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 17:48:36 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 10FED8B9DC7
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 17:50:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3890A1F2246E
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 15:48:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C02942834F0
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 15:50:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EDEA915B968;
-	Thu,  2 May 2024 15:48:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="cWNrz1KP"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 877F52B9AC;
-	Thu,  2 May 2024 15:48:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 71C0315B988;
+	Thu,  2 May 2024 15:49:55 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8404F15574D;
+	Thu,  2 May 2024 15:49:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714664911; cv=none; b=eF+9oWTvPty2C7gJz2q8aHWGbLCNbgLMljLXpY/8bF2FihAb6uj0/7WuyvMPJB7AIw+PdTVwTewFFWZOrtmjoCtV58NdC/pcoMP2DFvNhn0ljZO55Rcs2UhThA/XoyGJomzWSoj458Nlnct57kzyUyAcnJrBOLYRGMk4OV3DL3c=
+	t=1714664995; cv=none; b=Uhhq/N5Mi2gu+ej/Be2c+qVoTAVgpPf/xNVgRFsxWqWYyQxJvjuB6n+W+56G8rwFZXWQaJ3mpRnVR74QUnjq0VNiyvdooJJ2lTMj/Rl2QJfKJAhUzzEBZj9pEb8kPm4O6ibCVNQiBCXzh7e7fynKYsvXoJfYoPtnEp2QqFh1llE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714664911; c=relaxed/simple;
-	bh=l8doLW7JZkb1sxmzvSfab3CJDXy17ExrejxpBzOo1xw=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version; b=l3LPX9n+FRwxw5helPits/XvLI9jjMvERFkibaaOliLYXyvkeDkIhXGW8HdDbc3HonkT/NihVvARVATmu1BpQzqXIE6cgQBv9BfLJjH0dcJJMnWCswe1ENZNDNhp3ED2HGCZmE3umSxTYl1cspcqQ9QVcypWhJ5CnqoWJOl4wpw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=cWNrz1KP; arc=none smtp.client-ip=192.198.163.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1714664909; x=1746200909;
-  h=from:to:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=l8doLW7JZkb1sxmzvSfab3CJDXy17ExrejxpBzOo1xw=;
-  b=cWNrz1KPJMDso+5qKebgowx5zpK9QNQa/wtujgCjokVtL8AgmxDlvhJt
-   V4CkzY1M6PCDZPrzDn/aPCIR4p0pMexqy8BIibZTswHMF+BARq2pjjM4L
-   PUIRlS4He/B2FFWcUMNaC6pbiPj1yWHxx5CuoQ107vTCo4nOi0ObGNq/G
-   +TFRGSnZBWm3TfK0fR/DDKtV7sTQVCGvu4MeT4Zhnvq/Oq0+dpdApnSwf
-   6mB/svv9Y1KyT8PmlH/UnLG9JKEO9vhCm1Sxy3Z1LlU9J6aaCndWqE6Mq
-   zBzOnmSmLly+uIONvjrN2qB1fwt7qqiRQK8qj9cgkM4Wn0jdinc+5ydNG
-   w==;
-X-CSE-ConnectionGUID: Iv1oFcqGTOCbsGOXw3EWhA==
-X-CSE-MsgGUID: MJmHhWyaSpWE7rv1b/TpuQ==
-X-IronPort-AV: E=McAfee;i="6600,9927,11062"; a="21057059"
-X-IronPort-AV: E=Sophos;i="6.07,247,1708416000"; 
-   d="scan'208";a="21057059"
-Received: from orviesa002.jf.intel.com ([10.64.159.142])
-  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 May 2024 08:48:28 -0700
-X-CSE-ConnectionGUID: yr+IKKKyRca2WYTbxD+g8g==
-X-CSE-MsgGUID: fQWcwUbnSLGdVW6ax+8q4Q==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,247,1708416000"; 
-   d="scan'208";a="58043493"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by orviesa002.jf.intel.com with ESMTP; 02 May 2024 08:48:28 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-	id 2BBA2161; Thu,  2 May 2024 18:48:25 +0300 (EEST)
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-	Mark Brown <broonie@kernel.org>,
-	=?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
-	linux-spi@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v1 1/1] spi: bitbang: Use NSEC_PER_*SEC rather than hard coding
-Date: Thu,  2 May 2024 18:48:25 +0300
-Message-ID: <20240502154825.2752464-1-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.43.0.rc1.1336.g36b5255a03ac
+	s=arc-20240116; t=1714664995; c=relaxed/simple;
+	bh=lSLQE7weTxnVqPnhv28TxjpfYwfoIlf4YwWxqRNzmeg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=BwdR4yj6phaQLQz2Aujrw4SBXz1tHs1YnIBHamjd9+3Rupucc8g0eK7ql+LAKPDm5q/lAxAHlZz4VsDBcMk5ZVpQF+//eBUXfX5Kz/e7idlxFI3aFIQAckAXEutb+oXW3+7jN5s+hF1qITdg3leZBMX5DIVcRtIme041n9h3x3o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 458BD2F4;
+	Thu,  2 May 2024 08:50:17 -0700 (PDT)
+Received: from [10.1.196.40] (e121345-lin.cambridge.arm.com [10.1.196.40])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D6C993F793;
+	Thu,  2 May 2024 08:49:49 -0700 (PDT)
+Message-ID: <ac0a09f2-5f05-4317-a1cf-b7135791c639@arm.com>
+Date: Thu, 2 May 2024 16:49:48 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next v4 6/7] page_pool: check for DMA sync shortcut
+ earlier
+To: Alexander Lobakin <aleksander.lobakin@intel.com>,
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>
+Cc: Christoph Hellwig <hch@lst.de>,
+ Marek Szyprowski <m.szyprowski@samsung.com>, Joerg Roedel <joro@8bytes.org>,
+ Will Deacon <will@kernel.org>, "Rafael J. Wysocki" <rafael@kernel.org>,
+ Magnus Karlsson <magnus.karlsson@intel.com>,
+ nex.sw.ncis.osdt.itp.upstreaming@intel.com, bpf@vger.kernel.org,
+ netdev@vger.kernel.org, iommu@lists.linux.dev, linux-kernel@vger.kernel.org
+References: <20240423135832.2271696-1-aleksander.lobakin@intel.com>
+ <20240423135832.2271696-7-aleksander.lobakin@intel.com>
+ <81df4e0f-07f3-40f6-8d71-ffad791ab611@intel.com>
+From: Robin Murphy <robin.murphy@arm.com>
+Content-Language: en-GB
+In-Reply-To: <81df4e0f-07f3-40f6-8d71-ffad791ab611@intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Use NSEC_PER_*SEC rather than the hard coded value of 1000s.
+On 24/04/2024 9:52 am, Alexander Lobakin wrote:
+> From: Alexander Lobakin <aleksander.lobakin@intel.com>
+> Date: Tue, 23 Apr 2024 15:58:31 +0200
+> 
+>> We can save a couple more function calls in the Page Pool code if we
+>> check for dma_need_sync() earlier, just when we test pp->p.dma_sync.
+>> Move both these checks into an inline wrapper and call the PP wrapper
+>> over the generic DMA sync function only when both are true.
+>> You can't cache the result of dma_need_sync() in &page_pool, as it may
+>> change anytime if an SWIOTLB buffer is allocated or mapped.
+>>
+>> Signed-off-by: Alexander Lobakin <aleksander.lobakin@intel.com>
+>> ---
+>>   net/core/page_pool.c | 31 +++++++++++++++++--------------
+>>   1 file changed, 17 insertions(+), 14 deletions(-)
+>>
+>> diff --git a/net/core/page_pool.c b/net/core/page_pool.c
+>> index 6cf26a68fa91..87319c6365e0 100644
+>> --- a/net/core/page_pool.c
+>> +++ b/net/core/page_pool.c
+>> @@ -398,16 +398,24 @@ static struct page *__page_pool_get_cached(struct page_pool *pool)
+>>   	return page;
+>>   }
+>>   
+>> -static void page_pool_dma_sync_for_device(const struct page_pool *pool,
+>> -					  const struct page *page,
+>> -					  unsigned int dma_sync_size)
+>> +static void __page_pool_dma_sync_for_device(const struct page_pool *pool,
+>> +					    const struct page *page,
+>> +					    u32 dma_sync_size)
+>>   {
+>>   	dma_addr_t dma_addr = page_pool_get_dma_addr(page);
+>>   
+>>   	dma_sync_size = min(dma_sync_size, pool->p.max_len);
+>> -	dma_sync_single_range_for_device(pool->p.dev, dma_addr,
+>> -					 pool->p.offset, dma_sync_size,
+>> -					 pool->p.dma_dir);
+>> +	__dma_sync_single_for_device(pool->p.dev, dma_addr + pool->p.offset,
+>> +				     dma_sync_size, pool->p.dma_dir);
+> 
+> Breh, this breaks builds on !DMA_NEED_SYNC systems, as this function
+> isn't defined there, and my CI didn't catch it in time... I'll ifdef
+> this in the next spin after some reviews for this one.
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- drivers/spi/spi-bitbang.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+Hmm, the way things have ended up, do we even need this change? (Other
+than factoring out the pool->dma_sync check, which is clearly nice)
 
-diff --git a/drivers/spi/spi-bitbang.c b/drivers/spi/spi-bitbang.c
-index a0e2204fc039..c11af39c9842 100644
---- a/drivers/spi/spi-bitbang.c
-+++ b/drivers/spi/spi-bitbang.c
-@@ -11,6 +11,7 @@
- #include <linux/errno.h>
- #include <linux/platform_device.h>
- #include <linux/slab.h>
-+#include <linux/time64.h>
- 
- #include <linux/spi/spi.h>
- #include <linux/spi/spi_bitbang.h>
-@@ -168,8 +169,8 @@ int spi_bitbang_setup_transfer(struct spi_device *spi, struct spi_transfer *t)
- 	if (!hz)
- 		hz = spi->max_speed_hz;
- 	if (hz) {
--		cs->nsecs = (1000000000/2) / hz;
--		if (cs->nsecs > (MAX_UDELAY_MS * 1000 * 1000))
-+		cs->nsecs = (NSEC_PER_SEC / 2) / hz;
-+		if (cs->nsecs > (MAX_UDELAY_MS * NSEC_PER_MSEC))
- 			return -EINVAL;
- 	}
- 
--- 
-2.43.0.rc1.1336.g36b5255a03ac
+Since __page_pool_dma_sync_for_device() is never called directly, the
+flow we always get is:
 
+page_pool_dma_sync_for_device()
+     dma_dev_need_sync()
+         __page_pool_dma_sync_for_device()
+             ... // a handful of trivial arithmetic
+             __dma_sync_single_for_device()
+
+i.e. still effectively the same order of
+"if (dma_dev_need_sync()) __dma_sync()" invocations as if we'd just used
+the standard dma_sync(), so referencing the unwrapped internals only
+spreads it out a bit more for no real benefit. As an experiment I tried
+the diff below on top, effectively undoing this problematic part, and it
+doesn't seem to make any appreciable difference in a before-and-after
+comparison of the object code, at least for my arm64 build.
+
+Thanks,
+Robin.
+
+----->8-----
+diff --git a/net/core/page_pool.c b/net/core/page_pool.c
+index 27f3b6db800e..b8ab7d4ca229 100644
+--- a/net/core/page_pool.c
++++ b/net/core/page_pool.c
+@@ -398,24 +398,20 @@ static struct page *__page_pool_get_cached(struct page_pool *pool)
+  	return page;
+  }
+  
+-static void __page_pool_dma_sync_for_device(const struct page_pool *pool,
+-					    const struct page *page,
+-					    u32 dma_sync_size)
+-{
+-	dma_addr_t dma_addr = page_pool_get_dma_addr(page);
+-
+-	dma_sync_size = min(dma_sync_size, pool->p.max_len);
+-	__dma_sync_single_for_device(pool->p.dev, dma_addr + pool->p.offset,
+-				     dma_sync_size, pool->p.dma_dir);
+-}
+-
+  static __always_inline void
+  page_pool_dma_sync_for_device(const struct page_pool *pool,
+  			      const struct page *page,
+  			      u32 dma_sync_size)
+  {
+-	if (pool->dma_sync && dma_dev_need_sync(pool->p.dev))
+-		__page_pool_dma_sync_for_device(pool, page, dma_sync_size);
++	dma_addr_t dma_addr = page_pool_get_dma_addr(page);
++
++	if (!pool->dma_sync)
++		return;
++
++	dma_sync_size = min(dma_sync_size, pool->p.max_len);
++	dma_sync_single_range_for_device(pool->p.dev, dma_addr,
++					 pool->p.offset, dma_sync_size,
++					 pool->p.dma_dir);
+  }
+  
+  static bool page_pool_dma_map(struct page_pool *pool, struct page *page)
 
