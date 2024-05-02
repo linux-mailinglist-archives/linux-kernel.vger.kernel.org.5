@@ -1,114 +1,204 @@
-Return-Path: <linux-kernel+bounces-166113-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-166115-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 874A58B9662
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 10:23:03 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DA6DE8B9669
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 10:24:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 44967287335
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 08:23:02 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F2A131C20C9E
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 08:24:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0DA8E37171;
-	Thu,  2 May 2024 08:22:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D3A43A8D8;
+	Thu,  2 May 2024 08:23:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="f4JUJbMx"
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="HLxyJg+3"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50063171AA;
-	Thu,  2 May 2024 08:22:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.32.30.218
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 356A83219F
+	for <linux-kernel@vger.kernel.org>; Thu,  2 May 2024 08:23:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714638176; cv=none; b=Si6oF4A+YTfY1C3D+6Gd7qnc1To4FtJ1nsJIDqnIxR83hFT9Lh0d5jdCaal+EdqsHO+iKkdKqbdSA++U+hPlQJ5SQt0WSCHpWuQJvFRc1FTGx9JkzqsxunkH9/CuFUITm0SAmsIH4aFYHDbrNmtfejiGxv0kEe3QUYSXGt3Qpmo=
+	t=1714638238; cv=none; b=VcTLvqOU2BKtbR9Xr3vpdWg2luFQDPjd66aEGFAsZeo0xQ6FweY4uesHPnKr9/N0HsOBpxJmpF3DJT9oJZZe+iDpHVsceL1FwdDF+614e7TvyTgBKEPluaC2yWoJFl/WhwWQFrtF9KxPTdwF9uhlbpaHhlzL64wNDMAAN/Sd9Q4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714638176; c=relaxed/simple;
-	bh=E4+DQxHbmRZH8hQLZzYXl+R8ueZIMSIxWR5jTQDKNyw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=TrC4NEGI3Xgb2kjXA7OPpiP7knY9tBSqRd9IPA9SPa1caqMYOdYUJFcv2U5wubjo0L/vlE+XF76ZHPeUWZUUC80h7WpoWIuZn0kBywxyArS6suRvdaCSlWYHDleHsH0qkc37aq0ku6E7zbJBJw3fXgA4lw7azhXn4TuLepKf0kc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk; spf=none smtp.mailfrom=armlinux.org.uk; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=f4JUJbMx; arc=none smtp.client-ip=78.32.30.218
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=8wuGpwnMt9ml6C6oIbM/w/YxYBb9yduCe8wSQiSG0GQ=; b=f4JUJbMxmSflXyYq48u1tWnPvt
-	aMmmKJRDROPXBPhaGI0S6qpebizMuULtoyK5xyJufpkKS0qpvB4FHlVh207NAN//CMwTJDPl0gOSM
-	pCTbpLM6vNKIancWKJhrGeCpCEak9gMfhZx0xUmLKQ1B8YH5+UISpPGIfLxWlTHcZP/k2Rl+j9zjw
-	jLdumkt6Ylz0zy32CZbnffN9JyuZpojxsbFCw9qbhWoKUqlzjauhTw8R1fnJnP7VMEiEEUVmxRDJJ
-	uOvEzvq1YjTAclb0at1KqqQOnHC4NytwxruVjw2BdpwLQ7qR/+GfHd9pzODR8URGrxhCt1HMslTUz
-	O2Lj1oIQ==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:52706)
-	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <linux@armlinux.org.uk>)
-	id 1s2RiD-00072I-1g;
-	Thu, 02 May 2024 09:22:41 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-	(envelope-from <linux@shell.armlinux.org.uk>)
-	id 1s2RiC-0003Vo-1X; Thu, 02 May 2024 09:22:40 +0100
-Date: Thu, 2 May 2024 09:22:39 +0100
-From: "Russell King (Oracle)" <linux@armlinux.org.uk>
-To: Stephen Boyd <sboyd@kernel.org>
-Cc: linux-arm-kernel@lists.infradead.org,
-	Duanqiang Wen <duanqiangwen@net-swift.com>, mturquette@baylibre.com,
-	linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] clkdev: report over-sized strings when creating clkdev
- entries
-Message-ID: <ZjNNT+KBNpQL+U3b@shell.armlinux.org.uk>
-References: <E1rl62V-004UFh-Te@rmk-PC.armlinux.org.uk>
- <e15b8a1165a5437ab1fa868ccd0b629c.sboyd@kernel.org>
- <560549ed7db5da2f2727dc053a5d196d.sboyd@kernel.org>
- <ZjNIiDeXIjXhJlT4@shell.armlinux.org.uk>
+	s=arc-20240116; t=1714638238; c=relaxed/simple;
+	bh=zWIpRnRxEy9l3LsNyh3F/3Wo3GYUb9ZiflzKXUfyORg=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=HtLtrEZw/EEO6IiO68WPF2da2fYJorKG4V9bC4yLCyIEVl9/K0s034BEiMNbBGkQ5b40wFXT2p7E3zLAE8Nb1X86L1bEAtTphxqztdbHiTawYPyDlXhyi0vY4E/aBbtHvmnZ2agpwzgl4ewW1jsl3TPX4B3N7SvMEq9sfxtqKSI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=HLxyJg+3; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1714638236;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=X7dwuOjw1abAFiF1m2v6AVjHJ1TjRsupxojkzVCFJds=;
+	b=HLxyJg+3dP5eoYXUZFfMis/nt8vlCPzqgu97T7dhKq+yz+njbPvvRZMqzOj2oRZTdSLHkU
+	NTTz4Nem4Pa1EM9+NPPU+cudHk665GJUzgS7jLcVfTrJWESPGVUnNn4xvcWqiw/SXz7N8h
+	azQlMwxnWfDX00d29lQmvMuIgg1JoZw=
+Received: from mail-pf1-f199.google.com (mail-pf1-f199.google.com
+ [209.85.210.199]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-118-3w-xGCmrOnuZOdW_HR3bhA-1; Thu, 02 May 2024 04:23:54 -0400
+X-MC-Unique: 3w-xGCmrOnuZOdW_HR3bhA-1
+Received: by mail-pf1-f199.google.com with SMTP id d2e1a72fcca58-6f441afba80so68485b3a.3
+        for <linux-kernel@vger.kernel.org>; Thu, 02 May 2024 01:23:54 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714638234; x=1715243034;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=X7dwuOjw1abAFiF1m2v6AVjHJ1TjRsupxojkzVCFJds=;
+        b=CBi1X1Ge4VuUZButQ5MI5c4IU9e2tUijM8TebeBbojOoJ3/Q1sLKEqCvKUeDkTE8wA
+         Wmh7jqE32sJb3ymkpyWbH/2Q0V9V+NkKjHenRkurUAH0W6HdvYv0eX//8z9XZ95bGkTJ
+         Fd0du1BEsTzvSR4dyP/Vqaiej+n3K3naalHZoSPKFQuJRh+04ylj1oS0XvM3hrsvd7I6
+         p6ECCyoaNd/HL8B8IG6jhxpeIlf5SH+BlshmTu6rjppjTysGJVcgI9K2PEvHivKIliy+
+         nF0Bi7IpdGjMO+nYt7D5Y/VQ4X4GSFL1AiD74tmvY2eVcPswnakfpWKOryv3WgJhxzsW
+         HGgQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXDUIPh8QwCYW/BZKZUTpeX2855y5iw72eFoNazHbfvM0wouQVloa4MSaRqo4CsTHwiE2POgHg3f3YhZY5n372kuP9sB7F+N6qIhh/Q
+X-Gm-Message-State: AOJu0Yz5Ok4Po+uuA0FtpFYQom9ixKQ+FoS1ARqn7idUY/irO7yP5cdI
+	qBGjY864oHbM2DzSq4ZURoKQLcf49F93oPuwcJplH9LJaD70BQxUvsp8qikSlOZT85XTSR6SpkV
+	xs5IN0aJ30mXrZq3uZtQF5eXiNv+g06BzVG5gkrvLlj65TgpiqpH9enx5sPmIdw==
+X-Received: by 2002:a05:6a20:f39a:b0:1aa:927d:75f1 with SMTP id qr26-20020a056a20f39a00b001aa927d75f1mr4763681pzb.10.1714638233676;
+        Thu, 02 May 2024 01:23:53 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGr+Y5EURRxol+AnlNW0Nbu2NhQmMcabDe55lXJsfh4Z2ooxH1uEgrJlL9EaAXW8kf5yGTvUA==
+X-Received: by 2002:a05:6a20:f39a:b0:1aa:927d:75f1 with SMTP id qr26-20020a056a20f39a00b001aa927d75f1mr4763612pzb.10.1714638231312;
+        Thu, 02 May 2024 01:23:51 -0700 (PDT)
+Received: from zeus.elecom ([240b:10:83a2:bd00:6e35:f2f5:2e21:ae3a])
+        by smtp.gmail.com with ESMTPSA id d3-20020a056a0010c300b006ecfd0bf326sm686984pfu.99.2024.05.02.01.23.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 02 May 2024 01:23:50 -0700 (PDT)
+From: Ryosuke Yasuoka <ryasuoka@redhat.com>
+To: krzk@kernel.org,
+	davem@davemloft.net,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	horms@kernel.org
+Cc: Ryosuke Yasuoka <ryasuoka@redhat.com>,
+	netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	syoshida@redhat.com,
+	syzbot+d7b4dc6cd50410152534@syzkaller.appspotmail.com
+Subject: [PATCH net v3] nfc: nci: Fix uninit-value in nci_rx_work
+Date: Thu,  2 May 2024 17:22:40 +0900
+Message-ID: <20240502082323.250739-1-ryasuoka@redhat.com>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZjNIiDeXIjXhJlT4@shell.armlinux.org.uk>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+Content-Transfer-Encoding: 8bit
 
-On Thu, May 02, 2024 at 09:02:16AM +0100, Russell King (Oracle) wrote:
-> On Wed, May 01, 2024 at 06:02:54PM -0700, Stephen Boyd wrote:
-> > Quoting Stephen Boyd (2024-05-01 17:59:16)
-> > > Quoting Russell King (Oracle) (2024-03-15 04:47:55)
-> > > > Report an error when an attempt to register a clkdev entry results in a
-> > > > truncated string so the problem can be easily spotted.
-> > > > 
-> > > > Reported by: Duanqiang Wen <duanqiangwen@net-swift.com>
-> > > > Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
-> > > > ---
-> > > 
-> > > Applied to clk-next
-> > > 
-> > 
-> > And backed out because I get a compilation failure
-> > 
-> > drivers/clk/clkdev.c: In function 'vclkdev_alloc':
-> > drivers/clk/clkdev.c:182:17: error: function 'vclkdev_alloc' might be a candidate for 'gnu_printf' format attribute [-Werror=suggest-attribute=format]
-> >   182 |                 res = vsnprintf(cla->dev_id, sizeof(cla->dev_id), dev_fmt, ap);
-> >       |                 ^~~
-> > cc1: all warnings being treated as errors
-> > make[5]: *** [scripts/Makefile.build:244: drivers/clk/clkdev.o] Error 1
-> > make[4]: *** [scripts/Makefile.build:485: drivers/clk] Error 2
-> 
-> It builds fine for me. I don't get this _error_, and it's really no
-> different from what it originally was - instead of using vcsnprintf()
-> we're now using vsnprintf(). That should make no difference what so
-> ever.
+syzbot reported the following uninit-value access issue [1]
 
-.. and I've just checked, and it builds entirely cleanly for me.
+nci_rx_work() parses received packet from ndev->rx_q. It should be
+validated header size, payload size and total packet size before
+processing the packet. If an invalid packet is detected, it should be
+silently discarded.
 
-I'll merge it.
+Fixes: d24b03535e5e ("nfc: nci: Fix uninit-value in nci_dev_up and nci_ntf_packet")
+Reported-and-tested-by: syzbot+d7b4dc6cd50410152534@syzkaller.appspotmail.com
+Closes: https://syzkaller.appspot.com/bug?extid=d7b4dc6cd50410152534 [1]
+Signed-off-by: Ryosuke Yasuoka <ryasuoka@redhat.com>
+---
 
+v3
+- As Simon pointed out, the valid packets will reach invalid_pkt_free
+and kfree_skb(skb) after being handled correctly in switch statement.
+It can lead to double free issues, which is not intended. So this patch
+uses "continue" instead of "break" in switch statement.
+
+- In the current implementation, once zero payload size is detected, the
+for statement exits. It should continue processing subsequent packets. 
+So this patch just frees skb in invalid_pkt_free when the invalid 
+packets are detected.
+
+v2
+https://lore.kernel.org/lkml/20240428134525.GW516117@kernel.org/T/
+
+- The v1 patch only checked whether skb->len is zero. This patch also
+  checks header size, payload size and total packet size.
+
+
+v1
+https://lore.kernel.org/linux-kernel/CANn89iJrQevxPFLCj2P=U+XSisYD0jqrUQpa=zWMXTjj5+RriA@mail.gmail.com/T/
+
+
+ net/nfc/nci/core.c | 33 ++++++++++++++++++++++++---------
+ 1 file changed, 24 insertions(+), 9 deletions(-)
+
+diff --git a/net/nfc/nci/core.c b/net/nfc/nci/core.c
+index 0d26c8ec9993..e4f92a090022 100644
+--- a/net/nfc/nci/core.c
++++ b/net/nfc/nci/core.c
+@@ -1463,6 +1463,16 @@ int nci_core_ntf_packet(struct nci_dev *ndev, __u16 opcode,
+ 				 ndev->ops->n_core_ops);
+ }
+ 
++static bool nci_valid_size(struct sk_buff *skb, unsigned int header_size)
++{
++	if (skb->len < header_size ||
++	    !nci_plen(skb->data) ||
++	    skb->len < header_size + nci_plen(skb->data)) {
++		return false;
++	}
++	return true;
++}
++
+ /* ---- NCI TX Data worker thread ---- */
+ 
+ static void nci_tx_work(struct work_struct *work)
+@@ -1516,30 +1526,35 @@ static void nci_rx_work(struct work_struct *work)
+ 		nfc_send_to_raw_sock(ndev->nfc_dev, skb,
+ 				     RAW_PAYLOAD_NCI, NFC_DIRECTION_RX);
+ 
+-		if (!nci_plen(skb->data)) {
+-			kfree_skb(skb);
+-			break;
+-		}
++		if (!skb->len)
++			goto invalid_pkt_free;
+ 
+ 		/* Process frame */
+ 		switch (nci_mt(skb->data)) {
+ 		case NCI_MT_RSP_PKT:
++			if (!nci_valid_size(skb, NCI_CTRL_HDR_SIZE))
++				goto invalid_pkt_free;
+ 			nci_rsp_packet(ndev, skb);
+-			break;
++			continue;
+ 
+ 		case NCI_MT_NTF_PKT:
++			if (!nci_valid_size(skb, NCI_CTRL_HDR_SIZE))
++				goto invalid_pkt_free;
+ 			nci_ntf_packet(ndev, skb);
+-			break;
++			continue;
+ 
+ 		case NCI_MT_DATA_PKT:
++			if (!nci_valid_size(skb, NCI_DATA_HDR_SIZE))
++				goto invalid_pkt_free;
+ 			nci_rx_data_packet(ndev, skb);
+-			break;
++			continue;
+ 
+ 		default:
+ 			pr_err("unknown MT 0x%x\n", nci_mt(skb->data));
+-			kfree_skb(skb);
+-			break;
++			goto invalid_pkt_free;
+ 		}
++invalid_pkt_free:
++		kfree_skb(skb);
+ 	}
+ 
+ 	/* check if a data exchange timeout has occurred */
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+2.44.0
+
 
