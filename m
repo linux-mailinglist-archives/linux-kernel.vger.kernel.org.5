@@ -1,45 +1,45 @@
-Return-Path: <linux-kernel+bounces-165998-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-165999-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6A9E88B947A
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 08:01:20 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 85CA98B9479
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 08:01:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2679D283BA9
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 06:01:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 41BFE28415D
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 06:01:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4CB694205B;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44FCD42056;
 	Thu,  2 May 2024 06:00:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KcVhjvN2"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Hs5/Y1gp"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE58E2E85A;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42A9C36AFE;
 	Thu,  2 May 2024 06:00:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714629616; cv=none; b=QiCxMvYyjpUypR2kJ9jCh+hIj3LJUmSkB/kzKMxP0nt0A2EsH3MAtLPjoNJ9/y6bfWqfO7TmdDEl0vpP1oHV5skaj4yV3hKt3FymRcDn2LIHNp5SpvmYgWqcVdDBlyuN64iQl07rPu1EiTgRQjXnZikQwnvClIzV3V7JZdBEAW4=
+	t=1714629616; cv=none; b=XRQywEQcnbZcTlY+BnwepoJZFxpt6qYd3qDwmI9zhmbn5A9N/nLQRTTwSooIlHHaPmKY6Q/paqEXQDcU5mT0RUt1DQ+YwRpTyjviuZojyhboKeMcXGhwXUBcUa4k6YszaNEOJ7qyWksGMLWM2MMHnZWRnHtVVesU5557Hw5KW+w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1714629616; c=relaxed/simple;
-	bh=bBO0Iqelj8fza63egsoXJuy9RT4wZZVSdAOcjGFLV54=;
+	bh=wBhNx/ENJ3dtDGzKbOpBhB0k32mIboB/9iNKvY4VhfM=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=paoekKwzETUW5bQdITTdUx6dEwEbXB+s+REXMX71wrh8u16Lson5nREFpzgfSS6YSsEujeDXp8T1DY2z5aGc8HVMg8XCFhRUaL2K85/Qxdx0UDuN9ZjAcmEOxa5vFGB3SvFnsPe7Fh9NGYZzw+WIGozLCBkyjS5kxx+GfR/HovM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KcVhjvN2; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 05AD4C4AF61;
-	Thu,  2 May 2024 06:00:14 +0000 (UTC)
+	 MIME-Version; b=cM1Ow5beb7dNMbXmVOtzdWG+ju13aoggIW+wunG7cF2BPdj8ffHdcK7csp/mgs78mNHvm4uhOtj2460/VRhhvmGMsiEoDweV3+SfTugYaqtNyMQs95yr4ngMyv+OtOOiVp4nNQl8/roGzBw/4ehLOGdIDNl1WbjZP/PT0e7iyyU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Hs5/Y1gp; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7E0E4C4AF51;
+	Thu,  2 May 2024 06:00:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1714629615;
-	bh=bBO0Iqelj8fza63egsoXJuy9RT4wZZVSdAOcjGFLV54=;
+	bh=wBhNx/ENJ3dtDGzKbOpBhB0k32mIboB/9iNKvY4VhfM=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=KcVhjvN2Q/IIksoC2T2K7yei0Za/gHqV7wMwhTWBGaCBSyeoaG57Ii30mBmJ9WbwV
-	 Y4Y16Sazd9ilTIic/WJW3Gyfxoc3iU4pnXI8R4WRVDMkXwVUQpRw456ILHTP2PsL/S
-	 3L4I5LA3SmBEJF+aC+ifJZUsUArPtf3Nia4Ye8ITNgvvJ0T/UsuQnWWS1+kVkTtz96
-	 T6Pvq5XBxjDzCYombLd5K6dzK2Gklq45Ah7JhUV0uZ3pfT91/2tB8RGv6QQEfzMuBK
-	 n+HbjKb6VbbkMgO8PoFiN5vE4q/G0MMmu4rEm4ELFRd/yULipOt3soCKtmYsVhjM6Y
-	 TveN+kZdfXZuA==
+	b=Hs5/Y1gpP3uEtaJBKNPkmeW54B0HZW29fmbLYQfgRdTIzAlU7pwW5SYG/ob3egHyH
+	 gXmEt7gK/0KqbWJZuWM5FFiglpXX4ajDpzzhlJI976gdpCh8LZGKxYCyu+3qFb53Ah
+	 GNCOSziTp/RR80ifewaD9o6rjkLPzZvr0UGYeUVus9lMv5jOSNowvgTwI9WDNgtIL8
+	 OfU16zQwbIkxo0WpKdQ/W9axKErlQyoGuinKDK63TOyLLqgQArVx9UOpA8UXqJf1qy
+	 bkYuz4uSF9hfUBEjXKd5v0+18n6SQIkMFNaFud5kOXFGx/vk9aKHqQY9Hij/5Zols8
+	 KFv90TiSXgUfg==
 From: Namhyung Kim <namhyung@kernel.org>
 To: Arnaldo Carvalho de Melo <acme@kernel.org>,
 	Ian Rogers <irogers@google.com>,
@@ -50,9 +50,9 @@ Cc: Jiri Olsa <jolsa@kernel.org>,
 	Ingo Molnar <mingo@kernel.org>,
 	LKML <linux-kernel@vger.kernel.org>,
 	linux-perf-users@vger.kernel.org
-Subject: [PATCH 5/6] perf annotate-data: Handle multi regs in find_data_type_block()
-Date: Wed,  1 May 2024 23:00:10 -0700
-Message-ID: <20240502060011.1838090-6-namhyung@kernel.org>
+Subject: [PATCH 6/6] perf annotate-data: Check kind of stack variables
+Date: Wed,  1 May 2024 23:00:11 -0700
+Message-ID: <20240502060011.1838090-7-namhyung@kernel.org>
 X-Mailer: git-send-email 2.45.0.rc1.225.g2a3ae87e7f-goog
 In-Reply-To: <20240502060011.1838090-1-namhyung@kernel.org>
 References: <20240502060011.1838090-1-namhyung@kernel.org>
@@ -64,98 +64,73 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The instruction tracking should be the same for the both registers.
-Just do it once and compare the result with multi regs as with the
-previous patches.  Then we don't need to call find_data_type_block()
-separately for each reg.  Let's remove the 'reg' argument from the
-relevant functions.
+I sometimes see ("unknown type") in the result and it was because it
+didn't check the type of stack variables properly during the instruction
+tracking.  The stack can carry constant values (without type info) and
+if the target instruction is accessing the stack location, it resulted
+in the "unknown type".
+
+Maybe we could pick one of integer types for the constant, but it
+doesn't really mean anything useful.  Let's just drop the stack slot if
+it doesn't have a valid type info.
+
+Here's an example how it got the unknown type.
+Note that 0xffffff48 = -0xb8.
+  -----------------------------------------------------------
+  find data type for 0xffffff48(reg6) at ...
+  CU for ...
+  frame base: cfa=0 fbreg=6
+  scope: [2/2] (die:11cb97f)
+  bb: [37 - 3a]
+  var [37] reg15 type='int' size=0x4 (die:0x1180633)
+  bb: [40 - 4b]
+  mov [40] imm=0x1 -> reg13
+  var [45] reg8 type='sigset_t*' size=0x8 (die:0x11a39ee)
+  mov [45] imm=0x1 -> reg2                     <---  here reg2 has a constant
+  bb: [215 - 237]
+  mov [218] reg2 -> -0xb8(stack) constant      <---  and save it to the stack
+  mov [225] reg13 -> -0xc4(stack) constant
+  call [22f] find_task_by_vgpid
+  call [22f] return -> reg0 type='struct task_struct*' size=0x8 (die:0x11881e8)
+  bb: [5c8 - 5cf]
+  bb: [2fb - 302]
+  mov [2fb] -0xc4(stack) -> reg13 constant
+  bb: [13b - 14d]
+  mov [143] 0xd50(reg3) -> reg5 type='struct task_struct*' size=0x8 (die:0xa31f3c)
+  bb: [153 - 153]
+  chk [153] reg6 offset=0xffffff48 ok=0 kind=0 fbreg    <--- access here
+  found by insn track: 0xffffff48(reg6) type-offset=0
+   type='G<EF>^K<F6><AF>U' size=0 (die:0xffffffffffffffff)
 
 Signed-off-by: Namhyung Kim <namhyung@kernel.org>
 ---
- tools/perf/util/annotate-data.c | 23 ++++++++++++-----------
- 1 file changed, 12 insertions(+), 11 deletions(-)
+ tools/perf/util/annotate-data.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
 diff --git a/tools/perf/util/annotate-data.c b/tools/perf/util/annotate-data.c
-index 245e3ef3e2ff..68fe7999f033 100644
+index 68fe7999f033..2c98813f95cd 100644
 --- a/tools/perf/util/annotate-data.c
 +++ b/tools/perf/util/annotate-data.c
-@@ -1258,11 +1258,12 @@ static void setup_stack_canary(struct data_loc_info *dloc)
-  * are similar to global variables and no additional info is needed.
-  */
- static int check_matching_type(struct type_state *state,
--			       struct data_loc_info *dloc, int reg,
-+			       struct data_loc_info *dloc,
- 			       Dwarf_Die *cu_die, Dwarf_Die *type_die)
- {
- 	Dwarf_Word size;
- 	u32 insn_offset = dloc->ip - dloc->ms->sym->start;
-+	int reg = dloc->op->reg1;
- 
- 	pr_debug_dtp("chk [%x] reg%d offset=%#x ok=%d kind=%d",
- 		     insn_offset, reg, dloc->op->offset,
-@@ -1448,7 +1449,7 @@ static int check_matching_type(struct type_state *state,
- }
- 
- /* Iterate instructions in basic blocks and update type table */
--static int find_data_type_insn(struct data_loc_info *dloc, int reg,
-+static int find_data_type_insn(struct data_loc_info *dloc,
- 			       struct list_head *basic_blocks,
- 			       struct die_var_type *var_types,
- 			       Dwarf_Die *cu_die, Dwarf_Die *type_die)
-@@ -1481,7 +1482,7 @@ static int find_data_type_insn(struct data_loc_info *dloc, int reg,
- 			update_var_state(&state, dloc, addr, dl->al.offset, var_types);
- 
- 			if (this_ip == dloc->ip) {
--				ret = check_matching_type(&state, dloc, reg,
-+				ret = check_matching_type(&state, dloc,
- 							  cu_die, type_die);
- 				goto out;
- 			}
-@@ -1502,7 +1503,7 @@ static int find_data_type_insn(struct data_loc_info *dloc, int reg,
-  * Construct a list of basic blocks for each scope with variables and try to find
-  * the data type by updating a type state table through instructions.
-  */
--static int find_data_type_block(struct data_loc_info *dloc, int reg,
-+static int find_data_type_block(struct data_loc_info *dloc,
- 				Dwarf_Die *cu_die, Dwarf_Die *scopes,
- 				int nr_scopes, Dwarf_Die *type_die)
- {
-@@ -1550,7 +1551,7 @@ static int find_data_type_block(struct data_loc_info *dloc, int reg,
- 		fixup_var_address(var_types, start);
- 
- 		/* Find from start of this scope to the target instruction */
--		found = find_data_type_insn(dloc, reg, &basic_blocks, var_types,
-+		found = find_data_type_insn(dloc, &basic_blocks, var_types,
- 					    cu_die, type_die);
- 		if (found > 0) {
- 			char buf[64];
-@@ -1716,8 +1717,13 @@ static int find_data_type_die(struct data_loc_info *dloc, Dwarf_Die *type_die)
- 		goto out;
- 	}
- 
-+	if (loc->multi_regs && reg == loc->reg1 && loc->reg1 != loc->reg2) {
-+		reg = loc->reg2;
-+		goto retry;
-+	}
-+
- 	if (reg != DWARF_REG_PC) {
--		ret = find_data_type_block(dloc, reg, &cu_die, scopes,
-+		ret = find_data_type_block(dloc, &cu_die, scopes,
- 					   nr_scopes, type_die);
- 		if (ret == 0) {
- 			ann_data_stat.insn_track++;
-@@ -1725,11 +1731,6 @@ static int find_data_type_die(struct data_loc_info *dloc, Dwarf_Die *type_die)
+@@ -1314,6 +1314,9 @@ static int check_matching_type(struct type_state *state,
+ 			return -1;
  		}
- 	}
  
--	if (loc->multi_regs && reg == loc->reg1 && loc->reg1 != loc->reg2) {
--		reg = loc->reg2;
--		goto retry;
--	}
--
- 	if (ret < 0) {
- 		pr_debug_dtp("no variable found\n");
- 		ann_data_stat.no_var++;
++		if (stack->kind != TSR_KIND_TYPE)
++			return 0;
++
+ 		*type_die = stack->type;
+ 		/* Update the type offset from the start of slot */
+ 		dloc->type_offset -= stack->offset;
+@@ -1343,6 +1346,9 @@ static int check_matching_type(struct type_state *state,
+ 			return -1;
+ 		}
+ 
++		if (stack->kind != TSR_KIND_TYPE)
++			return 0;
++
+ 		*type_die = stack->type;
+ 		/* Update the type offset from the start of slot */
+ 		dloc->type_offset -= fboff + stack->offset;
 -- 
 2.45.0.rc1.225.g2a3ae87e7f-goog
 
