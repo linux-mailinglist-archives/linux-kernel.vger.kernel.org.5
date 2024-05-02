@@ -1,152 +1,144 @@
-Return-Path: <linux-kernel+bounces-166217-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-166219-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B40E88B97A5
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 11:26:21 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D83588B97AD
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 11:27:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6B0861F26C21
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 09:26:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 71A731F27111
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 09:27:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6CC759B71;
-	Thu,  2 May 2024 09:24:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 280F554FAD;
+	Thu,  2 May 2024 09:25:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XX8keK1D"
-Received: from mail-pj1-f53.google.com (mail-pj1-f53.google.com [209.85.216.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="V6dnYg4B"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.19])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6AEB5915A
-	for <linux-kernel@vger.kernel.org>; Thu,  2 May 2024 09:24:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 314BD44374;
+	Thu,  2 May 2024 09:25:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714641898; cv=none; b=hQ4wcXrs7EL5B+TxrId65/ib0sorGZ2v5GcvQ1GWdOThSwmvvs79kyoc9FGODpTW687fW7K8AtYLbdoskx8fyel8iPfCKM2tKx3RCfRVBU3V4OxaG2XNpykKqnLnSEY6a+PlBh2OUnjDvQ1on5gCo5cNqpKAaj4v1x4BsWphqXQ=
+	t=1714641948; cv=none; b=QRP3VqI0HRa0in+S486691EH6rp0MSBS//Vurhlf8QqL9MpgLcfXGexv7vz5f7+U/sicF2dVz+CTDWojmeAekIAWx0iGQmM1TVf01NLf6/HZAibC7ZBZ747SicnCS0+EhfVIanxFyeJLjmUeuC4fvzIZPqAoasxsgo5iZyEHSew=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714641898; c=relaxed/simple;
-	bh=IWMavLt3kFulGzQxZIoWZWxUM2RWdm2WOTlumZ3O1yY=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=PrzUbaKpnUEv7h6DW4i6mF0LNx2rfwFrXFZNmu7a22bhGPdgVcJ5z9Wug9/0Zaa7KrjQfn/pQXSRTmUu5JbEiL3wh1mr2E9b3KGPOSgNl/FTt6L1DYOGBBsx87OjoTTTiOIwPGYOLaYCNJte7RSjWFzimY37F8oWERuKAlAsA9o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XX8keK1D; arc=none smtp.client-ip=209.85.216.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f53.google.com with SMTP id 98e67ed59e1d1-2ab48c1c007so1967083a91.2
-        for <linux-kernel@vger.kernel.org>; Thu, 02 May 2024 02:24:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714641896; x=1715246696; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=8Vtuu8T9epphwTtTuu3lp/GQ6ElIGl8lBIMHX4TrsJc=;
-        b=XX8keK1DzMtknkUI07aQY63yogE6jBIurP9xTWVm9DS7/IbyjzBAVLwY6n5gGj8lgR
-         l02gjwMT380wUxOJPTLoVwAEmwMZGgANXDk/JvYU0svz19Lb/0ybzjtCURCWXcb451rc
-         6AskaOvu9Mpq/kAcJlgIwwpPRMEuVlAFxTQd7Au4HVRyocJZorld0Ky4YPN5WKCMelFo
-         xl9lsHg9zZNwEJp5lyDbGH0BrtggJU8UZIPzd86VjhSw3R40zl6txD+L0UK2JzaM/S5I
-         W/TnLDVkXuspONzCkkCc7IoDS3VnfB+Xr3wVfBPfbuwgcXp1QN5eiPUy6EVENiTNItkw
-         MmpA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714641896; x=1715246696;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=8Vtuu8T9epphwTtTuu3lp/GQ6ElIGl8lBIMHX4TrsJc=;
-        b=R8QIbOMDtj/g+X1IHB0t6g/3vTOzrohcd1Cw/j6HPsEgQfVOzreHdTVkZhqjPfLTfI
-         ZtCVMvcscDgyHHtZnPPxX+4fSNSx8x02p0b6OL8UpIRHFVwDAcHoMJzT4MyIEBM+aRXc
-         XKjeh1n6LgenqFEfOglAsGKSiP5aTOdblu0x58YAQRIPqnSAUW7RBCL9B9Wax/AW9/uv
-         aS6eG/b6kQlSmTiat+TrjUOkk7n+D3T1KbBvlU3A0QAVMle8Xq3JqNGkdO5x2g/sccGC
-         mb4V6ExsBvOtUwUuSuNabZmaorTY4CpiZWyCONn4SVOMOa8jqVnGmF7YWljP9njp11iA
-         ruZQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXkZcYQDotkDl6lEoyE0jqmlr6yDeJjMh4V6HtQ4gHsDt1HmM6ydHhxopxpHMYx0bdt58a9nlNnmJ3MUrJM1XmryQbzwOjVsJ0ljdJD
-X-Gm-Message-State: AOJu0YzeSbR+PNgfZmmr80lDsxkY9TgZpXk7I2DI3qoz5fqdHyttQWJv
-	cWETxwxBoJuJKyds5hUNARfZf15SZnpX6wH6+p6L+4IKhcQpfYvbsfIWQJTz
-X-Google-Smtp-Source: AGHT+IHKNU0etU7+knP43TQ0jsaxdSCdUU2aisVlh1h0CtI+thkwDQ6wADoLeaIEi+DFGWe4rwH/fA==
-X-Received: by 2002:a05:6a20:f388:b0:1ae:42c8:4f69 with SMTP id qr8-20020a056a20f38800b001ae42c84f69mr5799654pzb.0.1714641895964;
-        Thu, 02 May 2024 02:24:55 -0700 (PDT)
-Received: from visitorckw-System-Product-Name.. ([140.113.216.168])
-        by smtp.gmail.com with ESMTPSA id bk15-20020a17090b080f00b002a51dcecc49sm746836pjb.38.2024.05.02.02.24.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 May 2024 02:24:55 -0700 (PDT)
-From: Kuan-Wei Chiu <visitorckw@gmail.com>
-To: akpm@linux-foundation.org,
-	yury.norov@gmail.com
-Cc: linux@rasmusvillemoes.dk,
-	n26122115@gs.ncku.edu.tw,
-	jserv@ccns.ncku.edu.tw,
-	linux-kernel@vger.kernel.org,
-	Kuan-Wei Chiu <visitorckw@gmail.com>
-Subject: [PATCH v5 2/2] bitops: Optimize fns() for improved performance
-Date: Thu,  2 May 2024 17:24:43 +0800
-Message-Id: <20240502092443.6845-3-visitorckw@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240502092443.6845-1-visitorckw@gmail.com>
-References: <20240502092443.6845-1-visitorckw@gmail.com>
+	s=arc-20240116; t=1714641948; c=relaxed/simple;
+	bh=orCRNPEGAfKwIw6UvvJyK2arZHKNDah7xC0rf7Z7J6s=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=gwVF7J6U4Gp2594kDucLKJGSVv4ONQaNWGmS5xVNn66RAzyPE9EtrXQgw2y6kgtEY8HO+ZnQvrd8tKzNXFf3iNhs2Rk+g90RiJMAjjcguMDwgpiwnTXjRPMiZ5R08qEqu1+XTLhYMjRwfYw+XbaZ5lQzSKVDniO3rj+JLsdSxro=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=V6dnYg4B; arc=none smtp.client-ip=198.175.65.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1714641947; x=1746177947;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=orCRNPEGAfKwIw6UvvJyK2arZHKNDah7xC0rf7Z7J6s=;
+  b=V6dnYg4B9UEz6gdTQ/uKhWauHh9BtDAznDSvrU3J17Pft1BpfI/2KmOH
+   pApUte/7Ztl1v8W/W3xgNzMBRGrYGNiO0djHYy3+PcYyISn1U+uGoMtuH
+   zWIfwWx9JFdSqVz6Q+TcVTZ9B7QxnMijb55BFDX7/V5vUwpUyrhK92cS2
+   mx/mZ1MjZQD6CzCc2jLtGugo5NhhfHv/wXs+6krxTAKOj8BzCjdGWFH5Y
+   hg7BaX0T830cHU8PGFihyVvKY0fBz+3LDamXWnStttAOgw+zy3T9WJwVa
+   QxBMV8YuqPTz7+q6zQ9gk4fvd4F6QpZY9COIVmqqSWOZwckkDQXpGRl/j
+   Q==;
+X-CSE-ConnectionGUID: JGFFjM++ScW3Lsc7GC25lw==
+X-CSE-MsgGUID: SfQibMlUQaOo6YAk52UzOw==
+X-IronPort-AV: E=McAfee;i="6600,9927,11061"; a="10259498"
+X-IronPort-AV: E=Sophos;i="6.07,247,1708416000"; 
+   d="scan'208";a="10259498"
+Received: from fmviesa001.fm.intel.com ([10.60.135.141])
+  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 May 2024 02:25:46 -0700
+X-CSE-ConnectionGUID: yWLUxasgQhKC0pOq8PsOKA==
+X-CSE-MsgGUID: kfSrOKcPQKK7QxLmkg/vWw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,247,1708416000"; 
+   d="scan'208";a="58264038"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmviesa001.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 May 2024 02:25:39 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1s2Sh6-00000003GJd-0vLh;
+	Thu, 02 May 2024 12:25:36 +0300
+Date: Thu, 2 May 2024 12:25:35 +0300
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Bjorn Helgaas <helgaas@kernel.org>
+Cc: Sunil V L <sunilvl@ventanamicro.com>,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	linux-riscv@lists.infradead.org, linux-acpi@vger.kernel.org,
+	linux-pci@vger.kernel.org, linux-serial@vger.kernel.org,
+	acpica-devel@lists.linux.dev,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	"Rafael J . Wysocki" <rafael@kernel.org>,
+	Len Brown <lenb@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+	Anup Patel <anup@brainfault.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Samuel Holland <samuel.holland@sifive.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Jiri Slaby <jirislaby@kernel.org>,
+	Robert Moore <robert.moore@intel.com>,
+	Conor Dooley <conor.dooley@microchip.com>,
+	Andrew Jones <ajones@ventanamicro.com>,
+	Marc Zyngier <maz@kernel.org>,
+	Atish Kumar Patra <atishp@rivosinc.com>,
+	Andrei Warkentin <andrei.warkentin@intel.com>,
+	Haibo1 Xu <haibo1.xu@intel.com>,
+	=?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>
+Subject: Re: [PATCH v5 08/17] ACPI: pci_link: Clear the dependencies after
+ probe
+Message-ID: <ZjNcDyLRm9c7BAi3@smile.fi.intel.com>
+References: <20240501121742.1215792-9-sunilvl@ventanamicro.com>
+ <20240501165615.GA758227@bhelgaas>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240501165615.GA758227@bhelgaas>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-The current fns() repeatedly uses __ffs() to find the index of the
-least significant bit and then clears the corresponding bit using
-__clear_bit(). The method for clearing the least significant bit can be
-optimized by using word &= word - 1 instead.
+On Wed, May 01, 2024 at 11:56:15AM -0500, Bjorn Helgaas wrote:
+> On Wed, May 01, 2024 at 05:47:33PM +0530, Sunil V L wrote:
+> > RISC-V platforms need to use dependencies between PCI host bridge, Link
+> > devices and the interrupt controllers to ensure probe order. The
+> > dependency is like below.
+> > 
+> > Interrupt controller <-- Link Device <-- PCI Host bridge.
+> > 
+> > If there is no dependency added between Link device and PCI Host Bridge,
+> > then the PCI end points can get probed prior to link device, unable to
+> > get mapping for INTx.
+> > 
+> > So, add the link device's HID to dependency honor list and also clear it
+> > after its probe.
+> > 
+> > Since this is required only for architectures like RISC-V, enable this
+> > code under a new config option and set this only in RISC-V.
 
-Typically, the execution time of one __ffs() plus one __clear_bit() is
-longer than that of a bitwise AND operation and a subtraction. To
-improve performance, the loop for clearing the least significant bit
-has been replaced with word &= word - 1, followed by a single __ffs()
-operation to obtain the answer. This change reduces the number of
-__ffs() iterations from n to just one, enhancing overall performance.
+..
 
-This modification significantly accelerates the fns() function in the
-test_bitops benchmark, improving its speed by approximately 7.6 times.
-Additionally, it enhances the performance of find_nth_bit() in the
-find_bit benchmark by approximately 26%.
+> > +	if (IS_ENABLED(CONFIG_ARCH_ACPI_DEFERRED_GSI))
+> > +		acpi_dev_clear_dependencies(device);
+> 
+> This is really a question for Rafael, but it doesn't seem right that
+> this completely depends on a config option.
 
-Before:
-test_bitops: fns:            58033164 ns
-find_nth_bit:                  4254313 ns,  16525 iterations
++1 here, fells like a hack and looks like a hack.
 
-After:
-test_bitops: fns:             7637268 ns
-find_nth_bit:                  3362863 ns,  16501 iterations
+> Is there a reason this wouldn't work for all architectures, i.e., what
+> would happen if you just called acpi_dev_clear_dependencies()
+> unconditionally?
 
-Signed-off-by: Kuan-Wei Chiu <visitorckw@gmail.com>
----
-
-Changes in v5:
-- Update benchmark results in the commit message.
-
- include/linux/bitops.h | 12 +++---------
- 1 file changed, 3 insertions(+), 9 deletions(-)
-
-diff --git a/include/linux/bitops.h b/include/linux/bitops.h
-index 2ba557e067fe..57ecef354f47 100644
---- a/include/linux/bitops.h
-+++ b/include/linux/bitops.h
-@@ -254,16 +254,10 @@ static inline unsigned long __ffs64(u64 word)
-  */
- static inline unsigned long fns(unsigned long word, unsigned int n)
- {
--	unsigned int bit;
-+	while (word && n--)
-+		word &= word - 1;
- 
--	while (word) {
--		bit = __ffs(word);
--		if (n-- == 0)
--			return bit;
--		__clear_bit(bit, &word);
--	}
--
--	return BITS_PER_LONG;
-+	return word ? __ffs(word) : BITS_PER_LONG;
- }
- 
- /**
 -- 
-2.34.1
+With Best Regards,
+Andy Shevchenko
+
 
 
