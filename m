@@ -1,54 +1,54 @@
-Return-Path: <linux-kernel+bounces-166595-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-166596-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3711C8B9CCC
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 16:50:04 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A0F8A8B9CCE
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 16:50:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E08501F24862
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 14:50:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D18FB1C22F6D
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 14:50:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D30C515FA8B;
-	Thu,  2 May 2024 14:47:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 43D98160797;
+	Thu,  2 May 2024 14:47:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mixePdvr"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="n5sk7yNa"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36405160781;
-	Thu,  2 May 2024 14:46:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E108168B0A;
+	Thu,  2 May 2024 14:47:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714661219; cv=none; b=oOETRNa9y5VWKGvSXm2uZaQm8tkIf4EPe91LbWO82j+n+dpDM5LvTmFnUasFyHziRstEJVKua41lIqfcLXePb1mmq9WlC6TeNrdfQAtIHsSaaxddJ/hJfPE6sX8Jj/j+HPplhtdUr4gmlxutBGkaROlKgvBXFpfJh9LQP7rtnjo=
+	t=1714661225; cv=none; b=cDwF5QiHEq+g6cmGSkweZMZwe3Y/5KDpIRJmaHFEbW1Z+X1h2bC1Ak1S/56nD6OTtmFpPaRemuIcIqZOnaCN9QGsglMDYaLUfbSoGHApKGxrvBZgxmvO7eq2BLN0w+mNwbJOoqDmdu269o8jXuYF2+PjX1SO9iLWEiYj4uuH4Wo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714661219; c=relaxed/simple;
-	bh=V5gXs6TvijArdQBXrnEsdGKdWOcmg2X3CXITyzJl0/A=;
+	s=arc-20240116; t=1714661225; c=relaxed/simple;
+	bh=s7LdIf3gAy6GtEyM8AH+1cJ5Qw5xyeE8/ifqYJCP/6Q=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=NhAt7O/LB6o/Cv80Rk63HeXngEVMYSRxmChRoAGtopzvDT8ErSQVLIpxS90jOQ97S18TXQLntnqITYzS0WDWyxQfsUBm1qxgfHS76k4kxoLTd8aNV+kpaE43DR4cxm59HEGzV1qBuNW5rBoiipDY+a8SDp9Go2M+53nG6JyhQzE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mixePdvr; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CABFEC113CC;
-	Thu,  2 May 2024 14:46:57 +0000 (UTC)
+	 MIME-Version:Content-Type; b=bP8n9v/4dS8n2cNIJBIa+RDM+hoE4Y/A9Spm1e0ON1Dynp98DHY1wbDChfnzgHIU92SWyStxE/iPBTJ9gJs5v6Ox91AWQmlm3b5ZKWhbO9CSBc50BXVHddQ9eTY4LtWo8smW4ZpL3JzOeHdyx37FBeHBNY94qVLwGqStsFu1fAY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=n5sk7yNa; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E1FD8C113CC;
+	Thu,  2 May 2024 14:47:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714661218;
-	bh=V5gXs6TvijArdQBXrnEsdGKdWOcmg2X3CXITyzJl0/A=;
+	s=k20201202; t=1714661224;
+	bh=s7LdIf3gAy6GtEyM8AH+1cJ5Qw5xyeE8/ifqYJCP/6Q=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=mixePdvr2FIBmbXuS5uAXeHQHbtcWJ0ks9Wj4YukUtFztdOUN9Ab3UJisIMLXvw3i
-	 YTsl7GF6WAlS7s9FEnw23EMjfGKMtrzpR0dBaRrsMSdmkhAph0Z+wOKj508ZVDCOfe
-	 wEjWSOR32YUWCoJpP5ZQYXLLk+8FWOI1oA7/q1g4K3qtSzMctk/3PQZKzltvYZ/5pu
-	 ttP13Bf/8VN1mHE0Dq6Tjgzko90UQMlrNtt3w9oQYZiPodwhlJrPYQI/GMy3kxYyeB
-	 O1qsIgDafkSOz4JUwSaOdKUB26RdrHfVl+EJEO7E5eTANqALz1eUdJuG8oDblPtcNM
-	 uiX8iIXzCkSmw==
+	b=n5sk7yNa+nqPYBbADu1mOEHvvzCVrQUhBcaHppjwIXcWrRrwEBxIJgXz8Hg8KQQxk
+	 y71FOwwGJwyKBf17ze4UfKp86Jm0EPX4Za4DsTi6u9wJMANSIY8wUB9WbEzs7Aygy9
+	 CnI/QJfX24h/IXMvYIlcwvKolqOqM389www0q+Z5yXfv1bJUhZbiFO4wUJ8PdayOVO
+	 mHqvCqjZZMdoQtxwOLiEvZaGbOr+XpwY3Ri30XRXYpZVsboVL94hsLiFiWdT/x5Ng1
+	 Er9y4LuSX2LDaJOyNVbfIR3UurDIaN6RQO1LAYbTCpMSs7ex+iuU2n378IGX5q/Vje
+	 pvMBxhVKtRXcA==
 From: Leon Romanovsky <leon@kernel.org>
 To: Jules Irenge <jbi.octave@gmail.com>
 Cc: jgg@ziepe.ca, linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org, 
  lishifeng@sangfor.com.cn, gustavoars@kernel.org
-In-Reply-To: <ZjGC4qXrOwZE0aHi@octinomon.home>
-References: <ZjGC4qXrOwZE0aHi@octinomon.home>
-Subject: Re: [PATCH] RDMA/mlx5: Remove NULL check before dev_{put, hold}
-Message-Id: <171466121283.1638184.16945329377468449493.b4-ty@kernel.org>
-Date: Thu, 02 May 2024 17:46:52 +0300
+In-Reply-To: <ZjGDFatHRMI6Eg7M@octinomon.home>
+References: <ZjGDFatHRMI6Eg7M@octinomon.home>
+Subject: Re: [PATCH] RDMA/ipoib: Remove NULL check before dev_{put, hold}
+Message-Id: <171466121936.1638184.643798566433434250.b4-ty@kernel.org>
+Date: Thu, 02 May 2024 17:46:59 +0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -60,7 +60,7 @@ Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.14-dev
 
 
-On Wed, 01 May 2024 00:46:42 +0100, Jules Irenge wrote:
+On Wed, 01 May 2024 00:47:33 +0100, Jules Irenge wrote:
 > Coccinelle reports a warning
 > 
 > WARNING: NULL check before dev_{put, hold} functions is not needed
@@ -72,8 +72,8 @@ On Wed, 01 May 2024 00:46:42 +0100, Jules Irenge wrote:
 
 Applied, thanks!
 
-[1/1] RDMA/mlx5: Remove NULL check before dev_{put, hold}
-      https://git.kernel.org/rdma/rdma/c/82e966130ddd67
+[1/1] RDMA/ipoib: Remove NULL check before dev_{put, hold}
+      https://git.kernel.org/rdma/rdma/c/e4e40a87024c50
 
 Best regards,
 -- 
