@@ -1,117 +1,103 @@
-Return-Path: <linux-kernel+bounces-166693-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-166723-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D54F18B9E3E
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 18:09:23 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5772A8B9E8D
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 18:28:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 080181C221C1
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 16:09:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8921F1C20AD7
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 16:28:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4579215F300;
-	Thu,  2 May 2024 16:08:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="B91kLkBm"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7418D15E7FF;
+	Thu,  2 May 2024 16:28:09 +0000 (UTC)
+Received: from mail-qk1-f179.google.com (mail-qk1-f179.google.com [209.85.222.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 818D515D5D1;
-	Thu,  2 May 2024 16:08:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 747D315E1EF;
+	Thu,  2 May 2024 16:28:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714666127; cv=none; b=oc9AB4Y1KxH9Z4dg1citUMA26xf0wgIywOQmPUmLInTBpRuCgkKKUA2Z7tsjYYWqFb/WlibZXAx9PwvPjYRsRcZ2HPcmT4HkooXdCpheqq6+oXQJlTcraueErhM/xXXAOeyUuUZe0FzM4i8CmkmnelinCJ0sw9LABAoFhaUHoh8=
+	t=1714667289; cv=none; b=IyXxZ3agVpeLCP46Dz/tbUBUJHy8/DwHBHRw25MCGx/U8Xd+/rJ7ADeZxcyhr76J+6/ocvtsTsnrYaI8USY0AWs9mBZr+G7QGMmDS4lAkJnA23E4T4MGbNj5dNXn5y5oPj41tPM6LKA3vuL4AOsgVH9tYr3o1tgPVG/P957iZCQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714666127; c=relaxed/simple;
-	bh=gl9O2WwztfOm6npo/1+WfKL5nQmCth7iyvHkJ0RH9c4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=m/Mw2p9Dy2sc5qqne5oU/kv2898vIGjd2asxV8zhKatGv2EScb1cPFMQBVGivqNhOsfq6XU98o09KeVS9+veng4UhKBuEzbJaQU7ewUtwRzHr9ADQmMTOovOfcRLGuJJltdUVipPEwBrd0J/GtbWXmYQQaFqCXQmodoFws2U2p8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=B91kLkBm; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0F317C113CC;
-	Thu,  2 May 2024 16:08:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714666127;
-	bh=gl9O2WwztfOm6npo/1+WfKL5nQmCth7iyvHkJ0RH9c4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=B91kLkBmHQ5lgyqltlx+5+JcepgXeFHd3/LFM+sal1nWhA7JX0Ujg5q1mMDQmkYyH
-	 nJNFtQ4OGjCHSRHBADn4BsNG+VSlxgi9/cuXEPy/2yeMt10fXlf9RHyWU72p6zOjGB
-	 FfHypT2i/vlMF+7mS6Kj13RThJegMsFp7bGVdPuBA+Dcv+rHNg526bxxcdz6zB6O0P
-	 upi0HTJTDinSBNItRssW3+t5zxldFhnkyfKTNYsWPZkBEeRH58SZC+GjHWYbbgjYod
-	 UwQqBq3OyxOBsd1RExxWOf7Az07+GijsHDWq5RPPlO4Gp2dhsZ8K8XSA/35viCc+N7
-	 yl0v1d/V+lRuw==
-Date: Thu, 2 May 2024 09:08:45 -0700
-From: Nathan Chancellor <nathan@kernel.org>
-To: Tomasz =?utf-8?Q?K=C5=82oczko?= <kloczko.tomasz@gmail.com>
-Cc: llvm@lists.linux.dev, linux-kernel@vger.kernel.org, conor@kernel.org,
-	ojeda@kernel.org
-Subject: Re: Prebuilt LLVM 18.1.5 uploaded
-Message-ID: <20240502160845.GA3193908@dev-arch.thelio-3990X>
-References: <20240502152416.GA3178126@dev-arch.thelio-3990X>
- <CABB28Cwu3CMeBNch+snX8LG_g2oaYRDboVK4prwc3jp7MHyQWg@mail.gmail.com>
+	s=arc-20240116; t=1714667289; c=relaxed/simple;
+	bh=8CN60vsDhsaBYBw8dNPoZqC4vHRsiqNxpPf+1mCw9fI=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Cxh08/JO/vSjmWGIS97KCos6V2U5WbfRjmPvcOssbLFCY056N37tRdnpTmpgzwwEYHhqXdlN/5QCMTxokUbFxfqQXAe6DXAboVhJiYzH2xa0aYna2j7lBYCR/Uf42oU+aKRoaZZ+M1QEre1wTVG4tIKStidQa+NvvehTQgo4CS4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=sung-woo.kim; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.222.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=sung-woo.kim
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qk1-f179.google.com with SMTP id af79cd13be357-79100a90868so335646185a.2;
+        Thu, 02 May 2024 09:28:07 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714667286; x=1715272086;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=sLr63wSRKN1zYIcrCH+ZmDq9lvkzTwxbqszK/XM362s=;
+        b=StTiWlY1ifL8W0YXYqLBwXk8/elJJQdpP3f9tdRUAFu7742SFvmYkAkT5nKdQgmXR2
+         Tq590Djp2oNQ2RMsNY5UV0lHY1VVl+MX1EsScRErGQG7XND1kOJVErJiGVuo2zjzM4Iy
+         gZLSm8xeL2vz8mkQmet4Zo0Fvu7PMiKvKgbgZ2lEaSojWBhh93q9hHjCEyX+jJ9djFqR
+         nfWnbK4X528Q8Yejh6vqriwNy1zBpYxSWsmEpqCl4Y2UizznCxdHIlIHyUHE7ze5A+U+
+         QsjlmRu88PAYIIFcO4y6tNj/m9CECphgDnNm7IjFvNAVrBOT5PJxYMYnqOLfdz68+KOm
+         UUfw==
+X-Forwarded-Encrypted: i=1; AJvYcCWYmt4ZdYS11gRuwXBauSY1p1trBf7PMnInIDJDgd+AkfpVSk8J4XZ+UiOoeKQyP+TuMUArO1rXXundUN6CI2Fv0V/riG/kGHTanaMwZveuHihIC+cT1GjK3Pdz+o2lrEPY5N7fwb1X8KNpj7z5
+X-Gm-Message-State: AOJu0Yylv4+as6tV5A7h+tm0FHzmLdYWtVZCY/RTjwvneUfd7gPaCq0F
+	2bgSFCd8GinTknABBXRyidBMiXgpv4uAD48Nfl1ZDUgFXmaY0A6cJBJdiqtxSPs=
+X-Google-Smtp-Source: AGHT+IE8O/JMsKuYSwWcU2BZsRBaUrLuaKL/7Li1OU1jCXzWkSXo3VNANI02MVjKmhk+yuspNLJFvw==
+X-Received: by 2002:ae9:f510:0:b0:78d:5c65:f2a0 with SMTP id o16-20020ae9f510000000b0078d5c65f2a0mr91478qkg.21.1714667286493;
+        Thu, 02 May 2024 09:28:06 -0700 (PDT)
+Received: from tofu.cs.purdue.edu ([128.210.0.165])
+        by smtp.gmail.com with ESMTPSA id v12-20020a05620a0a8c00b0078f1ae252c6sm483349qkg.49.2024.05.02.09.28.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 02 May 2024 09:28:06 -0700 (PDT)
+From: Sungwoo Kim <iam@sung-woo.kim>
+To: luiz.dentz@gmail.com
+Cc: daveti@purdue.edu,
+	benquike@gmail.com,
+	Sungwoo Kim <iam@sung-woo.kim>,
+	Marcel Holtmann <marcel@holtmann.org>,
+	Johan Hedberg <johan.hedberg@gmail.com>,
+	linux-bluetooth@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v2] Bluetooth: HCI: Fix potential null-ptr-deref
+Date: Thu,  2 May 2024 12:09:31 -0400
+Message-Id: <20240502160931.1135175-1-iam@sung-woo.kim>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CABB28Cwu3CMeBNch+snX8LG_g2oaYRDboVK4prwc3jp7MHyQWg@mail.gmail.com>
 
-On Thu, May 02, 2024 at 04:33:32PM +0100, Tomasz Kłoczko wrote:
-> On Thu, 2 May 2024 at 16:25, Nathan Chancellor <nathan@kernel.org> wrote:
-> 
-> > Hi all,
-> >
-> > I have built and uploaded LLVM 18.1.5 to
-> > https://mirrors.edge.kernel.org/pub/tools/llvm/.
-> >
-> 
-> Is it known when dist tar balls will be uploaded as gh assets to
-> https://github.com/llvm/llvm-project/releases/tag/llvmorg-18.1.5 ? 🤔
+Fix potential null-ptr-deref in hci_le_big_sync_established_evt().
 
-Not sure. It seems like there was a 24 hour delay for 18.1.4 if I am
-reading GitHub's release JSON correctly:
+Fixes: f777d8827817 (Bluetooth: ISO: Notify user space about failed bis connections)
+Signed-off-by: Sungwoo Kim <iam@sung-woo.kim>
+---
+v1 -> v2:
+- add a Fixes tag
+- make the commit message concise
 
-$ gh -R llvm/llvm-project release view --json assets,createdAt,tagName llvmorg-18.1.4 | python3 -c "import json, sys
+ net/bluetooth/hci_event.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-llvm_json = json.load(sys.stdin)
+diff --git a/net/bluetooth/hci_event.c b/net/bluetooth/hci_event.c
+index 4a27e4a17..d72d238c1 100644
+--- a/net/bluetooth/hci_event.c
++++ b/net/bluetooth/hci_event.c
+@@ -7037,6 +7037,8 @@ static void hci_le_big_sync_established_evt(struct hci_dev *hdev, void *data,
+ 			u16 handle = le16_to_cpu(ev->bis[i]);
+ 
+ 			bis = hci_conn_hash_lookup_handle(hdev, handle);
++			if (!bis)
++				continue;
+ 
+ 			set_bit(HCI_CONN_BIG_SYNC_FAILED, &bis->flags);
+ 			hci_connect_cfm(bis, ev->status);
+-- 
+2.34.1
 
-llvm_tag_date = llvm_json['createdAt']
-llvm_tag_name = llvm_json['tagName']
-
-print(f'\n{llvm_tag_name} was made at {llvm_tag_date}\n')
-
-for asset in llvm_json['assets']:
-    if (asset_name := asset['name']).endswith('.src.tar.xz'):
-        asset_upload_date = asset['createdAt']
-        print(f'{asset_name} was uploaded at {asset_upload_date}')"
-
-llvmorg-18.1.4 was made at 2024-04-17T00:26:56Z
-
-bolt-18.1.4.src.tar.xz was uploaded at 2024-04-18T00:13:08Z
-clang-18.1.4.src.tar.xz was uploaded at 2024-04-18T00:13:09Z
-clang-tools-extra-18.1.4.src.tar.xz was uploaded at 2024-04-18T00:13:10Z
-cmake-18.1.4.src.tar.xz was uploaded at 2024-04-18T00:13:11Z
-compiler-rt-18.1.4.src.tar.xz was uploaded at 2024-04-18T00:13:12Z
-flang-18.1.4.src.tar.xz was uploaded at 2024-04-18T00:13:12Z
-libclc-18.1.4.src.tar.xz was uploaded at 2024-04-18T00:13:13Z
-libcxx-18.1.4.src.tar.xz was uploaded at 2024-04-18T00:13:14Z
-libcxxabi-18.1.4.src.tar.xz was uploaded at 2024-04-18T00:13:15Z
-libunwind-18.1.4.src.tar.xz was uploaded at 2024-04-18T00:13:16Z
-lld-18.1.4.src.tar.xz was uploaded at 2024-04-18T00:13:16Z
-lldb-18.1.4.src.tar.xz was uploaded at 2024-04-18T00:13:17Z
-llvm-18.1.4.src.tar.xz was uploaded at 2024-04-18T00:13:18Z
-llvm-project-18.1.4.src.tar.xz was uploaded at 2024-04-18T00:13:20Z
-mlir-18.1.4.src.tar.xz was uploaded at 2024-04-18T00:13:24Z
-openmp-18.1.4.src.tar.xz was uploaded at 2024-04-18T00:13:25Z
-polly-18.1.4.src.tar.xz was uploaded at 2024-04-18T00:13:26Z
-runtimes-18.1.4.src.tar.xz was uploaded at 2024-04-18T00:13:26Z
-test-suite-18.1.4.src.tar.xz was uploaded at 2024-04-18T00:13:27Z
-third-party-18.1.4.src.tar.xz was uploaded at 2024-04-18T00:13:32Z
-
-Cheers,
-Nathan
 
