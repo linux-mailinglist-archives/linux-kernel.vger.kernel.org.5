@@ -1,105 +1,79 @@
-Return-Path: <linux-kernel+bounces-166736-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-166737-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 847F78B9EB7
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 18:37:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 931958B9EB9
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 18:37:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A8EC61C23779
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 16:37:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C494D1C227C7
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 16:37:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0FF9716D4FC;
-	Thu,  2 May 2024 16:37:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51C1D16C875;
+	Thu,  2 May 2024 16:37:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mxRP799+"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="M9WbHyzb"
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F7797E578;
-	Thu,  2 May 2024 16:37:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D648077107;
+	Thu,  2 May 2024 16:37:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714667826; cv=none; b=q2WIxJkPEG3qtjWOC/ODad9l26aUCvcUv9GX47L2quHk8VOjtdeDutwDyFOONbMomz3pQW5KgC6dv358N0Ftk9FYmojd1KUkbBgZ7qCGp6wU4nbAYsDHs5qiv1hSk1JhrTyffinSWJ5ita51S9jyADOXVTcIQcUou7CkyBjQzac=
+	t=1714667854; cv=none; b=QbLYofyE+Mql50YPh+3txBnEswWTudRfhhHHOk9W9MMO8rwrL3GW2/HWu2A7+mI9TmKl7W1LlJNvvN0gJ7ejNO+3N66rRk0CwmLtCSYnSn4M/rjsUG8gXDO4xHfAEeWpvt4DS2yqn+jyoRI/hndPzSWiAXxteoyaxw6Ep22O0d4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714667826; c=relaxed/simple;
-	bh=elIj2maOPCIQ9r6zUCBezHlRHkxdKHhoo2W0GlqZyBM=;
+	s=arc-20240116; t=1714667854; c=relaxed/simple;
+	bh=F1YLlJn4ghUxf3VvFW+cV0y/RFheiAs4J4SwsgQNjDU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=K6qTHzcWPUtNNNb6ojgUl2frqQOzPf7RRz5YuHYHy5Qqe/DXD3eCnaQEFX+azJxcJzdi/RqV0jzgEJJDhge4vYiu7iHzG3z/6qyUlvcy6HUu6ce+qRQ7P29yHyjj5KgDUnUNA+zcvGUqPVMwFPv/DgKqlG/ghjh1xxkfIoWjefw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mxRP799+; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6D95DC4AF18;
-	Thu,  2 May 2024 16:37:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714667825;
-	bh=elIj2maOPCIQ9r6zUCBezHlRHkxdKHhoo2W0GlqZyBM=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=mxRP799+NKBOnBmJSVVkzJV2QPQxCkVIYNJcjkfAJ75fLz2G/4x69DOChbxxDKWu0
-	 phwy483uBgXYWJ2E22vdf7f1iwHB799cpMVZmS7PJVmR3Z9Zm7SEKPh1aZYmCBcjxw
-	 AoYPhvEL47d/IquhZvRLTpsWUxzgzjZYTG0XC5T7UEPncG37oy7HWEP8uXsv+QTVaq
-	 qf8/7iUARN3BKNveOCo34fVoY/zqHyrN0J0yYiNIy4uxUEOMcdnCDiqCKe0dGIbBrn
-	 j1rxYOE+TyDcrsUhK1wqTh1kCbY96IoasRh/WYKZNkxMrtg0LrKkF2q0Ih0OoZIDO6
-	 4y9PT+rJxos9w==
-Date: Thu, 2 May 2024 17:37:00 +0100
-From: Conor Dooley <conor@kernel.org>
-To: Yunhui Cui <cuiyunhui@bytedance.com>
-Cc: rafael@kernel.org, lenb@kernel.org, linux-acpi@vger.kernel.org,
-	linux-kernel@vger.kernel.org, paul.walmsley@sifive.com,
-	palmer@dabbelt.com, aou@eecs.berkeley.edu,
-	linux-riscv@lists.infradead.org, bhelgaas@google.com,
-	james.morse@arm.com, jhugo@codeaurora.org, jeremy.linton@arm.com,
-	john.garry@huawei.com, Jonathan.Cameron@huawei.com,
-	pierre.gondois@arm.com, sudeep.holla@arm.com, tiantao6@huawei.com
-Subject: Re: [PATCH v4 2/3] riscv: cacheinfo: initialize cacheinfo's level
- and type from ACPI PPTT
-Message-ID: <20240502-herald-catty-a03eafc4e6b1@spud>
-References: <20240418034330.84721-1-cuiyunhui@bytedance.com>
- <20240418034330.84721-2-cuiyunhui@bytedance.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=KZjY6kdpnQfIJ2gb4l+GDZtHGoPb7OvwlxL37dV7GItbiXwms6UcWOfj/1/Nf/vpd2HJvIY3Ha9bNUiBTjzCeT9++S9fv1Ofx4vYb/qcVeSu9raT0HGfKQw5YtS6KAzus2Zbq1/iAihrSmLn0sQ76HKqLLqU3Zda9zWPz15rAkA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=M9WbHyzb; arc=none smtp.client-ip=156.67.10.101
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+	bh=cR2BES9hb/9eWknORmLmkMiLggM9fLX/h5/4WiQzZw0=; b=M9WbHyzbbqjJ2MMfasdwEe3KUr
+	6CsVGoHhssHKruk4KXuBHEMEMrg0fHrh62HHLxPb+0nExUPAWVNXKD6ItyXreBFdSiwGmTCBoWowz
+	5M2g+QemOllH9M/9iMff6XXqbqkJgs2DZSdF0gAleptlbmqIWTVz41EAA5elZEidOLYU=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+	(envelope-from <andrew@lunn.ch>)
+	id 1s2ZQh-00EW3e-Iz; Thu, 02 May 2024 18:37:07 +0200
+Date: Thu, 2 May 2024 18:37:07 +0200
+From: Andrew Lunn <andrew@lunn.ch>
+To: "Russell King (Oracle)" <linux@armlinux.org.uk>
+Cc: Raju Lakkaraju <Raju.Lakkaraju@microchip.com>, netdev@vger.kernel.org,
+	lxu@maxlinear.com, hkallweit1@gmail.com, davem@davemloft.net,
+	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+	linux-kernel@vger.kernel.org, UNGLinuxDriver@microchip.com
+Subject: Re: [PATCH net-next] net: phy: add wol config options in phy device
+Message-ID: <1ee9ee17-6582-4cb1-9a17-072be7d2b2c0@lunn.ch>
+References: <20240430050635.46319-1-Raju.Lakkaraju@microchip.com>
+ <7fe419b2-fc73-4584-ae12-e9e313d229c3@lunn.ch>
+ <ZjO4VrYR+FCGMMSp@shell.armlinux.org.uk>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="yO7HUsK9PhhdPt6D"
-Content-Disposition: inline
-In-Reply-To: <20240418034330.84721-2-cuiyunhui@bytedance.com>
-
-
---yO7HUsK9PhhdPt6D
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <ZjO4VrYR+FCGMMSp@shell.armlinux.org.uk>
 
-On Thu, Apr 18, 2024 at 11:43:29AM +0800, Yunhui Cui wrote:
-> Before cacheinfo can be built correctly, we need to initialize level
-> and type. Since RSIC-V currently does not have a register group that
-> describes cache-related attributes like ARM64, we cannot obtain them
-> directly, so now we obtain cache leaves from the ACPI PPTT table
-> (acpi_get_cache_info()) and set the cache type through split_levels.
->=20
-> Suggested-by: Jeremy Linton <jeremy.linton@arm.com>
-> Suggested-by: Sudeep Holla <sudeep.holla@arm.com>
-: Signed-off-by: Yunhui Cui <cuiyunhui@bytedance.com>
+> It would be good to hear exactly why its necessary for phylib to track
+> this state, and why the PHY isn't retaining it.
 
-I'm not an ACPI head, so whether or not the table is valid on RISC-V or
-w/e I do not know, but the code here looks sane to me, so
-Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
+I _think_ it is a hardware reset. The call path is probably:
 
-Cheers,
-Conor.
+mdio_bus_phy_resume():
+  phy_init_hw():
+    phy_device_reset()
+      mdio_device_reset()
 
---yO7HUsK9PhhdPt6D
-Content-Type: application/pgp-signature; name="signature.asc"
+But it would be good to get this confirmed.
 
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZjPBLAAKCRB4tDGHoIJi
-0u7BAQDbJjVUjdxBuIPXpCPVp0rGN0S1orbltdlb/onG2hq2YgD+PpvigMyAnAWw
-3yi6hMJHbgpBnXDIv2UKS2a6xsBjxAI=
-=LkPp
------END PGP SIGNATURE-----
-
---yO7HUsK9PhhdPt6D--
+	Andrew
 
