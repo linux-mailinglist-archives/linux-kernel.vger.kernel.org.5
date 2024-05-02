@@ -1,62 +1,62 @@
-Return-Path: <linux-kernel+bounces-166361-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-166362-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 392708B998C
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 13:00:37 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6B2B68B998D
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 13:01:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 41CCF1C21227
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 11:00:36 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7992BB2256B
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 11:00:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 46FEA7D3E6;
-	Thu,  2 May 2024 10:59:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C2477E579;
+	Thu,  2 May 2024 10:59:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="EdaF7g2X"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="JLQMysAf"
 Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.14])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 305F2762EB;
-	Thu,  2 May 2024 10:59:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57DB25FDDC;
+	Thu,  2 May 2024 10:59:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.14
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714647574; cv=none; b=SFG/Rv1I3uy419DEOvVVnVvYwbmAoce4EE8Bw9i7scPG2Rxx+g4cnapPajZv0EDuG+7EehiLHXn1EioUIwLBZ7E4TLLDybpoXNZ8hkEBwz4AIUx9AihYb5gFBk7RdtoiVg+qzDFKzJwBVWRvcIltPU9k3L1WmyzAR5VaUSiP8KQ=
+	t=1714647578; cv=none; b=sh5T5JNB5P822O/PD6qBUIVpi/IMokuvuu5HRJaL3TNzaRDv9TrqarMH1Fve64GGrTnHKcvf3/y+mHW2XsNQe5LYXCEDcOWlaB/5CJMvfHQpnif+bx6eLg4oz4VZ9q5+ekmAHizma4Q7svTFMzUNI8GmD4vmzoJSapUdq+0MT38=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714647574; c=relaxed/simple;
-	bh=mV+n5MG9l/FbXuAY+u7dP+zP8ZoU++ImRy4X2JJABcU=;
+	s=arc-20240116; t=1714647578; c=relaxed/simple;
+	bh=AQhM1MxPOigcJQBRO/cbOJQYibM4B34myV2uhMgYQwg=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=ma+9aJsLLoUqelIBGbJAr/zPFjnMHTS/t5XFvQk63NGY8LbqMYyxD3UU5SqsrXCNboUL39NnJDeZ4BOUKwd91hOWZlUoJqEcojsnQ2NG0U0F3PUa0wkOA82p8AsBpdV8Po5GxS3yvBT/xzA+9f2gjMDIr5lp0k2k5VpRjeney98=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=EdaF7g2X; arc=none smtp.client-ip=198.175.65.14
+	 MIME-Version; b=ac+IVn+YjR9ehcDZcYIa0V9RHFsg9mgOcyNueoMzyAtoFSoGKy+BYl+e6NKavr7TZrsHPjNbV8KjjE4snFCMPKCc+9FFM0J43O/fvA6EfbhEimXb4yQUBnNuKZzKJPLuiSAfs7BGlG7EhQlLN5gNPTXALCLBGsFh3ATzZsezGVs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=JLQMysAf; arc=none smtp.client-ip=198.175.65.14
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1714647573; x=1746183573;
+  t=1714647577; x=1746183577;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=mV+n5MG9l/FbXuAY+u7dP+zP8ZoU++ImRy4X2JJABcU=;
-  b=EdaF7g2XY4w88dk8lCmG6rnfeGDAlOzK2CBwl9OZ6Pne6/VX8KwwWuYB
-   SnBpZhaQrDOpTY+W110Em7yKq3r1WbBlVDGmffiElFZLf6AwP3JljZ4Vg
-   UgOFBep1USglc6UPnsyEOFWZqpa2HPe7mlEyMY2Dy8OIvGPwvvIS7ha8c
-   C7muPYJ+beBXyuyK6wLhFLCRefmohGBolgPAje+ulrl7lTwD36dm5IXn4
-   blJMb+Iyipmf/+5bX+1qZwNiKd9dDRfWWADnesCFgLRjRzlrQVIeIcilq
-   giHuDOMNhVaNziR5ICmRwfPgkC29ucAg7S5SrBhFlY6HrMb4sVq0ZZrfg
-   A==;
-X-CSE-ConnectionGUID: N9VIsJp2SPeQ0Ua+0RSiog==
-X-CSE-MsgGUID: 2gwGh5/zQC+CH1VwD/sErA==
-X-IronPort-AV: E=McAfee;i="6600,9927,11061"; a="14228639"
+  bh=AQhM1MxPOigcJQBRO/cbOJQYibM4B34myV2uhMgYQwg=;
+  b=JLQMysAfe2kcaWAwLbc+52rbPf6Oyfcplh6BZ+zy7HVP5m1unWTdyh8N
+   J1rt7leamp9UGyjzHBt63BfWDiB9ByNZEfvmymCJNTakGakF0ZFbPr2ME
+   hCTCC7J/K1ws0+4312xK9fZndQGF4Uko4VQVgTWOcx6ul9QeZzuWJnYrM
+   LwBgvmpE1APFDWspSQYGdr8DUsKOcm995po4mbxrs/lPAnOgPcYJqX/qP
+   G+Ee7dpNGvGZcUsG3uHG8NkjawcYDuLYvJ+lXEX8k44neZIqhTwVWNUU7
+   ON/XZclP57QwiiPyS0w8IJqODRuAvJseEVK+cp5Z7PF78S7XCBIZVIpIQ
+   w==;
+X-CSE-ConnectionGUID: 7FDJhy8OQJqee+taG3Vssw==
+X-CSE-MsgGUID: KWx8/USOQC2DuQ1P1bMb1A==
+X-IronPort-AV: E=McAfee;i="6600,9927,11061"; a="14228651"
 X-IronPort-AV: E=Sophos;i="6.07,247,1708416000"; 
-   d="scan'208";a="14228639"
+   d="scan'208";a="14228651"
 Received: from fmviesa002.fm.intel.com ([10.60.135.142])
-  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 May 2024 03:59:33 -0700
-X-CSE-ConnectionGUID: ApHPEHJsSZiF/69WW4Zrsw==
-X-CSE-MsgGUID: Z+SyjFwlTOKK8S/G7wtmLQ==
+  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 May 2024 03:59:37 -0700
+X-CSE-ConnectionGUID: HPSV3YY3S/WGrs8fAH6RBw==
+X-CSE-MsgGUID: at6pwDcwTiyHWQY33fu3gQ==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.07,247,1708416000"; 
-   d="scan'208";a="50278909"
+   d="scan'208";a="50278928"
 Received: from ahunter6-mobl1.ger.corp.intel.com (HELO ahunter-VirtualBox.home\044ger.corp.intel.com) ([10.251.208.210])
-  by fmviesa002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 May 2024 03:59:28 -0700
+  by fmviesa002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 May 2024 03:59:32 -0700
 From: Adrian Hunter <adrian.hunter@intel.com>
 To: linux-kernel@vger.kernel.org
 Cc: "Chang S. Bae" <chang.seok.bae@intel.com>,
@@ -73,9 +73,9 @@ Cc: "Chang S. Bae" <chang.seok.bae@intel.com>,
 	Namhyung Kim <namhyung@kernel.org>,
 	Ian Rogers <irogers@google.com>,
 	linux-perf-users@vger.kernel.org
-Subject: [PATCH 05/10] x86/insn: Add support for REX2 prefix to the instruction decoder logic
-Date: Thu,  2 May 2024 13:58:48 +0300
-Message-Id: <20240502105853.5338-6-adrian.hunter@intel.com>
+Subject: [PATCH 06/10] x86/insn: x86/insn: Add support for REX2 prefix to the instruction decoder opcode map
+Date: Thu,  2 May 2024 13:58:49 +0300
+Message-Id: <20240502105853.5338-7-adrian.hunter@intel.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240502105853.5338-1-adrian.hunter@intel.com>
 References: <20240502105853.5338-1-adrian.hunter@intel.com>
@@ -88,392 +88,440 @@ MIME-Version: 1.0
 Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki, Business Identity Code: 0357606 - 4, Domiciled in Helsinki
 Content-Transfer-Encoding: 8bit
 
-Intel Advanced Performance Extensions (APX) uses a new 2-byte prefix named
-REX2 to select extended general purpose registers (EGPRs) i.e. r16 to r31.
+Support for REX2 has been added to the instruction decoder logic and the
+awk script that generates the attribute tables from the opcode map.
 
-The REX2 prefix is effectively an extended version of the REX prefix.
+Add REX2 prefix byte (0xD5) to the opcode map.
 
-REX2 and EVEX are also used with PUSH/POP instructions to provide a
-Push-Pop Acceleration (PPX) hint. With PPX hints, a CPU will attempt to
-fast-forward register data between matching PUSH and POP instructions.
+Add annotation (!REX2) for map 0/1 opcodes that are reserved under REX2.
 
-REX2 is valid only with opcodes in maps 0 and 1. Similar extension for
-other maps is provided by the EVEX prefix, covered in a separate patch.
-
-Some opcodes in maps 0 and 1 are reserved under REX2. One of these is used
-for a new 64-bit absolute direct jump instruction JMPABS.
-
-Refer to the Intel Advanced Performance Extensions (Intel APX) Architecture
-Specification for details.
-
-Define a code value for the REX2 prefix (INAT_PFX_REX2), and add attribute
-flags for opcodes reserved under REX2 (INAT_NO_REX2) and to identify
-opcodes (only JMPABS) that require a mandatory REX2 prefix
-(INAT_REX2_VARIANT).
-
-Amend logic to read the REX2 prefix and get the opcode attribute for the
-map number (0 or 1) encoded in the REX2 prefix.
-
-Amend the awk script that generates the attribute tables from the opcode
-map, to recognise "REX2" as attribute INAT_PFX_REX2, and "(!REX2)"
-as attribute INAT_NO_REX2, and "(REX2)" as attribute INAT_REX2_VARIANT.
+Add JMPABS to the opcode map and add annotation (REX2) to identify that it
+has a mandatory REX2 prefix. A separate opcode attribute table is not
+needed at this time because JMPABS has the same attribute encoding as the
+MOV instruction that it shares an opcode with i.e. INAT_MOFFSET.
 
 Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
 ---
- arch/x86/include/asm/inat.h                | 11 +++++++++-
- arch/x86/include/asm/insn.h                | 25 ++++++++++++++++++----
- arch/x86/lib/insn.c                        | 25 ++++++++++++++++++++++
- arch/x86/tools/gen-insn-attr-x86.awk       | 11 +++++++++-
- tools/arch/x86/include/asm/inat.h          | 11 +++++++++-
- tools/arch/x86/include/asm/insn.h          | 25 ++++++++++++++++++----
- tools/arch/x86/lib/insn.c                  | 25 ++++++++++++++++++++++
- tools/arch/x86/tools/gen-insn-attr-x86.awk | 11 +++++++++-
- 8 files changed, 132 insertions(+), 12 deletions(-)
+ arch/x86/lib/x86-opcode-map.txt       | 148 +++++++++++++-------------
+ tools/arch/x86/lib/x86-opcode-map.txt | 148 +++++++++++++-------------
+ 2 files changed, 152 insertions(+), 144 deletions(-)
 
-diff --git a/arch/x86/include/asm/inat.h b/arch/x86/include/asm/inat.h
-index b56c5741581a..1331bdd39a23 100644
---- a/arch/x86/include/asm/inat.h
-+++ b/arch/x86/include/asm/inat.h
-@@ -35,6 +35,8 @@
- #define INAT_PFX_VEX2	13	/* 2-bytes VEX prefix */
- #define INAT_PFX_VEX3	14	/* 3-bytes VEX prefix */
- #define INAT_PFX_EVEX	15	/* EVEX prefix */
-+/* x86-64 REX2 prefix */
-+#define INAT_PFX_REX2	16	/* 0xD5 */
+diff --git a/arch/x86/lib/x86-opcode-map.txt b/arch/x86/lib/x86-opcode-map.txt
+index 4e9f53581b58..240ef714b64f 100644
+--- a/arch/x86/lib/x86-opcode-map.txt
++++ b/arch/x86/lib/x86-opcode-map.txt
+@@ -33,6 +33,10 @@
+ #  - (F2): the last prefix is 0xF2
+ #  - (!F3) : the last prefix is not 0xF3 (including non-last prefix case)
+ #  - (66&F2): Both 0x66 and 0xF2 prefixes are specified.
++#
++# REX2 Prefix
++#  - (!REX2): REX2 is not allowed
++#  - (REX2): REX2 variant e.g. JMPABS
  
- #define INAT_LSTPFX_MAX	3
- #define INAT_LGCPFX_MAX	11
-@@ -50,7 +52,7 @@
+ Table: one byte opcode
+ Referrer:
+@@ -157,22 +161,22 @@ AVXcode:
+ 6e: OUTS/OUTSB DX,Xb
+ 6f: OUTS/OUTSW/OUTSD DX,Xz
+ # 0x70 - 0x7f
+-70: JO Jb
+-71: JNO Jb
+-72: JB/JNAE/JC Jb
+-73: JNB/JAE/JNC Jb
+-74: JZ/JE Jb
+-75: JNZ/JNE Jb
+-76: JBE/JNA Jb
+-77: JNBE/JA Jb
+-78: JS Jb
+-79: JNS Jb
+-7a: JP/JPE Jb
+-7b: JNP/JPO Jb
+-7c: JL/JNGE Jb
+-7d: JNL/JGE Jb
+-7e: JLE/JNG Jb
+-7f: JNLE/JG Jb
++70: JO Jb (!REX2)
++71: JNO Jb (!REX2)
++72: JB/JNAE/JC Jb (!REX2)
++73: JNB/JAE/JNC Jb (!REX2)
++74: JZ/JE Jb (!REX2)
++75: JNZ/JNE Jb (!REX2)
++76: JBE/JNA Jb (!REX2)
++77: JNBE/JA Jb (!REX2)
++78: JS Jb (!REX2)
++79: JNS Jb (!REX2)
++7a: JP/JPE Jb (!REX2)
++7b: JNP/JPO Jb (!REX2)
++7c: JL/JNGE Jb (!REX2)
++7d: JNL/JGE Jb (!REX2)
++7e: JLE/JNG Jb (!REX2)
++7f: JNLE/JG Jb (!REX2)
+ # 0x80 - 0x8f
+ 80: Grp1 Eb,Ib (1A)
+ 81: Grp1 Ev,Iz (1A)
+@@ -208,24 +212,24 @@ AVXcode:
+ 9e: SAHF
+ 9f: LAHF
+ # 0xa0 - 0xaf
+-a0: MOV AL,Ob
+-a1: MOV rAX,Ov
+-a2: MOV Ob,AL
+-a3: MOV Ov,rAX
+-a4: MOVS/B Yb,Xb
+-a5: MOVS/W/D/Q Yv,Xv
+-a6: CMPS/B Xb,Yb
+-a7: CMPS/W/D Xv,Yv
+-a8: TEST AL,Ib
+-a9: TEST rAX,Iz
+-aa: STOS/B Yb,AL
+-ab: STOS/W/D/Q Yv,rAX
+-ac: LODS/B AL,Xb
+-ad: LODS/W/D/Q rAX,Xv
+-ae: SCAS/B AL,Yb
++a0: MOV AL,Ob (!REX2)
++a1: MOV rAX,Ov (!REX2) | JMPABS O (REX2),(o64)
++a2: MOV Ob,AL (!REX2)
++a3: MOV Ov,rAX (!REX2)
++a4: MOVS/B Yb,Xb (!REX2)
++a5: MOVS/W/D/Q Yv,Xv (!REX2)
++a6: CMPS/B Xb,Yb (!REX2)
++a7: CMPS/W/D Xv,Yv (!REX2)
++a8: TEST AL,Ib (!REX2)
++a9: TEST rAX,Iz (!REX2)
++aa: STOS/B Yb,AL (!REX2)
++ab: STOS/W/D/Q Yv,rAX (!REX2)
++ac: LODS/B AL,Xb (!REX2)
++ad: LODS/W/D/Q rAX,Xv (!REX2)
++ae: SCAS/B AL,Yb (!REX2)
+ # Note: The May 2011 Intel manual shows Xv for the second parameter of the
+ # next instruction but Yv is correct
+-af: SCAS/W/D/Q rAX,Yv
++af: SCAS/W/D/Q rAX,Yv (!REX2)
+ # 0xb0 - 0xbf
+ b0: MOV AL/R8L,Ib
+ b1: MOV CL/R9L,Ib
+@@ -266,7 +270,7 @@ d1: Grp2 Ev,1 (1A)
+ d2: Grp2 Eb,CL (1A)
+ d3: Grp2 Ev,CL (1A)
+ d4: AAM Ib (i64)
+-d5: AAD Ib (i64)
++d5: AAD Ib (i64) | REX2 (Prefix),(o64)
+ d6:
+ d7: XLAT/XLATB
+ d8: ESC
+@@ -281,26 +285,26 @@ df: ESC
+ # Note: "forced64" is Intel CPU behavior: they ignore 0x66 prefix
+ # in 64-bit mode. AMD CPUs accept 0x66 prefix, it causes RIP truncation
+ # to 16 bits. In 32-bit mode, 0x66 is accepted by both Intel and AMD.
+-e0: LOOPNE/LOOPNZ Jb (f64)
+-e1: LOOPE/LOOPZ Jb (f64)
+-e2: LOOP Jb (f64)
+-e3: JrCXZ Jb (f64)
+-e4: IN AL,Ib
+-e5: IN eAX,Ib
+-e6: OUT Ib,AL
+-e7: OUT Ib,eAX
++e0: LOOPNE/LOOPNZ Jb (f64) (!REX2)
++e1: LOOPE/LOOPZ Jb (f64) (!REX2)
++e2: LOOP Jb (f64) (!REX2)
++e3: JrCXZ Jb (f64) (!REX2)
++e4: IN AL,Ib (!REX2)
++e5: IN eAX,Ib (!REX2)
++e6: OUT Ib,AL (!REX2)
++e7: OUT Ib,eAX (!REX2)
+ # With 0x66 prefix in 64-bit mode, for AMD CPUs immediate offset
+ # in "near" jumps and calls is 16-bit. For CALL,
+ # push of return address is 16-bit wide, RSP is decremented by 2
+ # but is not truncated to 16 bits, unlike RIP.
+-e8: CALL Jz (f64)
+-e9: JMP-near Jz (f64)
+-ea: JMP-far Ap (i64)
+-eb: JMP-short Jb (f64)
+-ec: IN AL,DX
+-ed: IN eAX,DX
+-ee: OUT DX,AL
+-ef: OUT DX,eAX
++e8: CALL Jz (f64) (!REX2)
++e9: JMP-near Jz (f64) (!REX2)
++ea: JMP-far Ap (i64) (!REX2)
++eb: JMP-short Jb (f64) (!REX2)
++ec: IN AL,DX (!REX2)
++ed: IN eAX,DX (!REX2)
++ee: OUT DX,AL (!REX2)
++ef: OUT DX,eAX (!REX2)
+ # 0xf0 - 0xff
+ f0: LOCK (Prefix)
+ f1:
+@@ -386,14 +390,14 @@ AVXcode: 1
+ 2e: vucomiss Vss,Wss (v1) | vucomisd  Vsd,Wsd (66),(v1)
+ 2f: vcomiss Vss,Wss (v1) | vcomisd  Vsd,Wsd (66),(v1)
+ # 0x0f 0x30-0x3f
+-30: WRMSR
+-31: RDTSC
+-32: RDMSR
+-33: RDPMC
+-34: SYSENTER
+-35: SYSEXIT
++30: WRMSR (!REX2)
++31: RDTSC (!REX2)
++32: RDMSR (!REX2)
++33: RDPMC (!REX2)
++34: SYSENTER (!REX2)
++35: SYSEXIT (!REX2)
+ 36:
+-37: GETSEC
++37: GETSEC (!REX2)
+ 38: escape # 3-byte escape 1
+ 39:
+ 3a: escape # 3-byte escape 2
+@@ -473,22 +477,22 @@ AVXcode: 1
+ 7f: movq Qq,Pq | vmovdqa Wx,Vx (66) | vmovdqa32/64 Wx,Vx (66),(evo) | vmovdqu Wx,Vx (F3) | vmovdqu32/64 Wx,Vx (F3),(evo) | vmovdqu8/16 Wx,Vx (F2),(ev)
+ # 0x0f 0x80-0x8f
+ # Note: "forced64" is Intel CPU behavior (see comment about CALL insn).
+-80: JO Jz (f64)
+-81: JNO Jz (f64)
+-82: JB/JC/JNAE Jz (f64)
+-83: JAE/JNB/JNC Jz (f64)
+-84: JE/JZ Jz (f64)
+-85: JNE/JNZ Jz (f64)
+-86: JBE/JNA Jz (f64)
+-87: JA/JNBE Jz (f64)
+-88: JS Jz (f64)
+-89: JNS Jz (f64)
+-8a: JP/JPE Jz (f64)
+-8b: JNP/JPO Jz (f64)
+-8c: JL/JNGE Jz (f64)
+-8d: JNL/JGE Jz (f64)
+-8e: JLE/JNG Jz (f64)
+-8f: JNLE/JG Jz (f64)
++80: JO Jz (f64) (!REX2)
++81: JNO Jz (f64) (!REX2)
++82: JB/JC/JNAE Jz (f64) (!REX2)
++83: JAE/JNB/JNC Jz (f64) (!REX2)
++84: JE/JZ Jz (f64) (!REX2)
++85: JNE/JNZ Jz (f64) (!REX2)
++86: JBE/JNA Jz (f64) (!REX2)
++87: JA/JNBE Jz (f64) (!REX2)
++88: JS Jz (f64) (!REX2)
++89: JNS Jz (f64) (!REX2)
++8a: JP/JPE Jz (f64) (!REX2)
++8b: JNP/JPO Jz (f64) (!REX2)
++8c: JL/JNGE Jz (f64) (!REX2)
++8d: JNL/JGE Jz (f64) (!REX2)
++8e: JLE/JNG Jz (f64) (!REX2)
++8f: JNLE/JG Jz (f64) (!REX2)
+ # 0x0f 0x90-0x9f
+ 90: SETO Eb | kmovw/q Vk,Wk | kmovb/d Vk,Wk (66)
+ 91: SETNO Eb | kmovw/q Mv,Vk | kmovb/d Mv,Vk (66)
+diff --git a/tools/arch/x86/lib/x86-opcode-map.txt b/tools/arch/x86/lib/x86-opcode-map.txt
+index 4e9f53581b58..240ef714b64f 100644
+--- a/tools/arch/x86/lib/x86-opcode-map.txt
++++ b/tools/arch/x86/lib/x86-opcode-map.txt
+@@ -33,6 +33,10 @@
+ #  - (F2): the last prefix is 0xF2
+ #  - (!F3) : the last prefix is not 0xF3 (including non-last prefix case)
+ #  - (66&F2): Both 0x66 and 0xF2 prefixes are specified.
++#
++# REX2 Prefix
++#  - (!REX2): REX2 is not allowed
++#  - (REX2): REX2 variant e.g. JMPABS
  
- /* Legacy prefix */
- #define INAT_PFX_OFFS	0
--#define INAT_PFX_BITS	4
-+#define INAT_PFX_BITS	5
- #define INAT_PFX_MAX    ((1 << INAT_PFX_BITS) - 1)
- #define INAT_PFX_MASK	(INAT_PFX_MAX << INAT_PFX_OFFS)
- /* Escape opcodes */
-@@ -77,6 +79,8 @@
- #define INAT_VEXOK	(1 << (INAT_FLAG_OFFS + 5))
- #define INAT_VEXONLY	(1 << (INAT_FLAG_OFFS + 6))
- #define INAT_EVEXONLY	(1 << (INAT_FLAG_OFFS + 7))
-+#define INAT_NO_REX2	(1 << (INAT_FLAG_OFFS + 8))
-+#define INAT_REX2_VARIANT	(1 << (INAT_FLAG_OFFS + 9))
- /* Attribute making macros for attribute tables */
- #define INAT_MAKE_PREFIX(pfx)	(pfx << INAT_PFX_OFFS)
- #define INAT_MAKE_ESCAPE(esc)	(esc << INAT_ESC_OFFS)
-@@ -128,6 +132,11 @@ static inline int inat_is_rex_prefix(insn_attr_t attr)
- 	return (attr & INAT_PFX_MASK) == INAT_PFX_REX;
- }
- 
-+static inline int inat_is_rex2_prefix(insn_attr_t attr)
-+{
-+	return (attr & INAT_PFX_MASK) == INAT_PFX_REX2;
-+}
-+
- static inline int inat_last_prefix_id(insn_attr_t attr)
- {
- 	if ((attr & INAT_PFX_MASK) > INAT_LSTPFX_MAX)
-diff --git a/arch/x86/include/asm/insn.h b/arch/x86/include/asm/insn.h
-index 1b29f58f730f..95249ec1f24e 100644
---- a/arch/x86/include/asm/insn.h
-+++ b/arch/x86/include/asm/insn.h
-@@ -112,10 +112,15 @@ struct insn {
- #define X86_SIB_INDEX(sib) (((sib) & 0x38) >> 3)
- #define X86_SIB_BASE(sib) ((sib) & 0x07)
- 
--#define X86_REX_W(rex) ((rex) & 8)
--#define X86_REX_R(rex) ((rex) & 4)
--#define X86_REX_X(rex) ((rex) & 2)
--#define X86_REX_B(rex) ((rex) & 1)
-+#define X86_REX2_M(rex) ((rex) & 0x80)	/* REX2 M0 */
-+#define X86_REX2_R(rex) ((rex) & 0x40)	/* REX2 R4 */
-+#define X86_REX2_X(rex) ((rex) & 0x20)	/* REX2 X4 */
-+#define X86_REX2_B(rex) ((rex) & 0x10)	/* REX2 B4 */
-+
-+#define X86_REX_W(rex) ((rex) & 8)	/* REX or REX2 W */
-+#define X86_REX_R(rex) ((rex) & 4)	/* REX or REX2 R3 */
-+#define X86_REX_X(rex) ((rex) & 2)	/* REX or REX2 X3 */
-+#define X86_REX_B(rex) ((rex) & 1)	/* REX or REX2 B3 */
- 
- /* VEX bit flags  */
- #define X86_VEX_W(vex)	((vex) & 0x80)	/* VEX3 Byte2 */
-@@ -161,6 +166,18 @@ static inline void insn_get_attribute(struct insn *insn)
- /* Instruction uses RIP-relative addressing */
- extern int insn_rip_relative(struct insn *insn);
- 
-+static inline int insn_is_rex2(struct insn *insn)
-+{
-+	if (!insn->prefixes.got)
-+		insn_get_prefixes(insn);
-+	return insn->rex_prefix.nbytes == 2;
-+}
-+
-+static inline insn_byte_t insn_rex2_m_bit(struct insn *insn)
-+{
-+	return X86_REX2_M(insn->rex_prefix.bytes[1]);
-+}
-+
- static inline int insn_is_avx(struct insn *insn)
- {
- 	if (!insn->prefixes.got)
-diff --git a/arch/x86/lib/insn.c b/arch/x86/lib/insn.c
-index 1bb155a0955b..6126ddc6e5f5 100644
---- a/arch/x86/lib/insn.c
-+++ b/arch/x86/lib/insn.c
-@@ -185,6 +185,17 @@ int insn_get_prefixes(struct insn *insn)
- 			if (X86_REX_W(b))
- 				/* REX.W overrides opnd_size */
- 				insn->opnd_bytes = 8;
-+		} else if (inat_is_rex2_prefix(attr)) {
-+			insn_set_byte(&insn->rex_prefix, 0, b);
-+			b = peek_nbyte_next(insn_byte_t, insn, 1);
-+			insn_set_byte(&insn->rex_prefix, 1, b);
-+			insn->rex_prefix.nbytes = 2;
-+			insn->next_byte += 2;
-+			if (X86_REX_W(b))
-+				/* REX.W overrides opnd_size */
-+				insn->opnd_bytes = 8;
-+			insn->rex_prefix.got = 1;
-+			goto vex_end;
- 		}
- 	}
- 	insn->rex_prefix.got = 1;
-@@ -294,6 +305,20 @@ int insn_get_opcode(struct insn *insn)
- 		goto end;
- 	}
- 
-+	/* Check if there is REX2 prefix or not */
-+	if (insn_is_rex2(insn)) {
-+		if (insn_rex2_m_bit(insn)) {
-+			/* map 1 is escape 0x0f */
-+			insn_attr_t esc_attr = inat_get_opcode_attribute(0x0f);
-+
-+			pfx_id = insn_last_prefix_id(insn);
-+			insn->attr = inat_get_escape_attribute(op, pfx_id, esc_attr);
-+		} else {
-+			insn->attr = inat_get_opcode_attribute(op);
-+		}
-+		goto end;
-+	}
-+
- 	insn->attr = inat_get_opcode_attribute(op);
- 	while (inat_is_escape(insn->attr)) {
- 		/* Get escaped opcode */
-diff --git a/arch/x86/tools/gen-insn-attr-x86.awk b/arch/x86/tools/gen-insn-attr-x86.awk
-index af38469afd14..3f43aa7d8fef 100644
---- a/arch/x86/tools/gen-insn-attr-x86.awk
-+++ b/arch/x86/tools/gen-insn-attr-x86.awk
-@@ -64,7 +64,9 @@ BEGIN {
- 
- 	modrm_expr = "^([CDEGMNPQRSUVW/][a-z]+|NTA|T[012])"
- 	force64_expr = "\\([df]64\\)"
--	rex_expr = "^REX(\\.[XRWB]+)*"
-+	rex_expr = "^((REX(\\.[XRWB]+)+)|(REX$))"
-+	rex2_expr = "\\(REX2\\)"
-+	no_rex2_expr = "\\(!REX2\\)"
- 	fpu_expr = "^ESC" # TODO
- 
- 	lprefix1_expr = "\\((66|!F3)\\)"
-@@ -99,6 +101,7 @@ BEGIN {
- 	prefix_num["VEX+1byte"] = "INAT_PFX_VEX2"
- 	prefix_num["VEX+2byte"] = "INAT_PFX_VEX3"
- 	prefix_num["EVEX"] = "INAT_PFX_EVEX"
-+	prefix_num["REX2"] = "INAT_PFX_REX2"
- 
- 	clear_vars()
- }
-@@ -314,6 +317,10 @@ function convert_operands(count,opnd,       i,j,imm,mod)
- 		if (match(ext, force64_expr))
- 			flags = add_flags(flags, "INAT_FORCE64")
- 
-+		# check REX2 not allowed
-+		if (match(ext, no_rex2_expr))
-+			flags = add_flags(flags, "INAT_NO_REX2")
-+
- 		# check REX prefix
- 		if (match(opcode, rex_expr))
- 			flags = add_flags(flags, "INAT_MAKE_PREFIX(INAT_PFX_REX)")
-@@ -351,6 +358,8 @@ function convert_operands(count,opnd,       i,j,imm,mod)
- 			lptable3[idx] = add_flags(lptable3[idx],flags)
- 			variant = "INAT_VARIANT"
- 		}
-+		if (match(ext, rex2_expr))
-+			table[idx] = add_flags(table[idx], "INAT_REX2_VARIANT")
- 		if (!match(ext, lprefix_expr)){
- 			table[idx] = add_flags(table[idx],flags)
- 		}
-diff --git a/tools/arch/x86/include/asm/inat.h b/tools/arch/x86/include/asm/inat.h
-index a61051400311..2e65312cae52 100644
---- a/tools/arch/x86/include/asm/inat.h
-+++ b/tools/arch/x86/include/asm/inat.h
-@@ -35,6 +35,8 @@
- #define INAT_PFX_VEX2	13	/* 2-bytes VEX prefix */
- #define INAT_PFX_VEX3	14	/* 3-bytes VEX prefix */
- #define INAT_PFX_EVEX	15	/* EVEX prefix */
-+/* x86-64 REX2 prefix */
-+#define INAT_PFX_REX2	16	/* 0xD5 */
- 
- #define INAT_LSTPFX_MAX	3
- #define INAT_LGCPFX_MAX	11
-@@ -50,7 +52,7 @@
- 
- /* Legacy prefix */
- #define INAT_PFX_OFFS	0
--#define INAT_PFX_BITS	4
-+#define INAT_PFX_BITS	5
- #define INAT_PFX_MAX    ((1 << INAT_PFX_BITS) - 1)
- #define INAT_PFX_MASK	(INAT_PFX_MAX << INAT_PFX_OFFS)
- /* Escape opcodes */
-@@ -77,6 +79,8 @@
- #define INAT_VEXOK	(1 << (INAT_FLAG_OFFS + 5))
- #define INAT_VEXONLY	(1 << (INAT_FLAG_OFFS + 6))
- #define INAT_EVEXONLY	(1 << (INAT_FLAG_OFFS + 7))
-+#define INAT_NO_REX2	(1 << (INAT_FLAG_OFFS + 8))
-+#define INAT_REX2_VARIANT	(1 << (INAT_FLAG_OFFS + 9))
- /* Attribute making macros for attribute tables */
- #define INAT_MAKE_PREFIX(pfx)	(pfx << INAT_PFX_OFFS)
- #define INAT_MAKE_ESCAPE(esc)	(esc << INAT_ESC_OFFS)
-@@ -128,6 +132,11 @@ static inline int inat_is_rex_prefix(insn_attr_t attr)
- 	return (attr & INAT_PFX_MASK) == INAT_PFX_REX;
- }
- 
-+static inline int inat_is_rex2_prefix(insn_attr_t attr)
-+{
-+	return (attr & INAT_PFX_MASK) == INAT_PFX_REX2;
-+}
-+
- static inline int inat_last_prefix_id(insn_attr_t attr)
- {
- 	if ((attr & INAT_PFX_MASK) > INAT_LSTPFX_MAX)
-diff --git a/tools/arch/x86/include/asm/insn.h b/tools/arch/x86/include/asm/insn.h
-index 65c0d9ce1e29..1a7e8fc4d75a 100644
---- a/tools/arch/x86/include/asm/insn.h
-+++ b/tools/arch/x86/include/asm/insn.h
-@@ -112,10 +112,15 @@ struct insn {
- #define X86_SIB_INDEX(sib) (((sib) & 0x38) >> 3)
- #define X86_SIB_BASE(sib) ((sib) & 0x07)
- 
--#define X86_REX_W(rex) ((rex) & 8)
--#define X86_REX_R(rex) ((rex) & 4)
--#define X86_REX_X(rex) ((rex) & 2)
--#define X86_REX_B(rex) ((rex) & 1)
-+#define X86_REX2_M(rex) ((rex) & 0x80)	/* REX2 M0 */
-+#define X86_REX2_R(rex) ((rex) & 0x40)	/* REX2 R4 */
-+#define X86_REX2_X(rex) ((rex) & 0x20)	/* REX2 X4 */
-+#define X86_REX2_B(rex) ((rex) & 0x10)	/* REX2 B4 */
-+
-+#define X86_REX_W(rex) ((rex) & 8)	/* REX or REX2 W */
-+#define X86_REX_R(rex) ((rex) & 4)	/* REX or REX2 R3 */
-+#define X86_REX_X(rex) ((rex) & 2)	/* REX or REX2 X3 */
-+#define X86_REX_B(rex) ((rex) & 1)	/* REX or REX2 B3 */
- 
- /* VEX bit flags  */
- #define X86_VEX_W(vex)	((vex) & 0x80)	/* VEX3 Byte2 */
-@@ -161,6 +166,18 @@ static inline void insn_get_attribute(struct insn *insn)
- /* Instruction uses RIP-relative addressing */
- extern int insn_rip_relative(struct insn *insn);
- 
-+static inline int insn_is_rex2(struct insn *insn)
-+{
-+	if (!insn->prefixes.got)
-+		insn_get_prefixes(insn);
-+	return insn->rex_prefix.nbytes == 2;
-+}
-+
-+static inline insn_byte_t insn_rex2_m_bit(struct insn *insn)
-+{
-+	return X86_REX2_M(insn->rex_prefix.bytes[1]);
-+}
-+
- static inline int insn_is_avx(struct insn *insn)
- {
- 	if (!insn->prefixes.got)
-diff --git a/tools/arch/x86/lib/insn.c b/tools/arch/x86/lib/insn.c
-index ada4b4a79dd4..f761adeb8e8c 100644
---- a/tools/arch/x86/lib/insn.c
-+++ b/tools/arch/x86/lib/insn.c
-@@ -185,6 +185,17 @@ int insn_get_prefixes(struct insn *insn)
- 			if (X86_REX_W(b))
- 				/* REX.W overrides opnd_size */
- 				insn->opnd_bytes = 8;
-+		} else if (inat_is_rex2_prefix(attr)) {
-+			insn_set_byte(&insn->rex_prefix, 0, b);
-+			b = peek_nbyte_next(insn_byte_t, insn, 1);
-+			insn_set_byte(&insn->rex_prefix, 1, b);
-+			insn->rex_prefix.nbytes = 2;
-+			insn->next_byte += 2;
-+			if (X86_REX_W(b))
-+				/* REX.W overrides opnd_size */
-+				insn->opnd_bytes = 8;
-+			insn->rex_prefix.got = 1;
-+			goto vex_end;
- 		}
- 	}
- 	insn->rex_prefix.got = 1;
-@@ -294,6 +305,20 @@ int insn_get_opcode(struct insn *insn)
- 		goto end;
- 	}
- 
-+	/* Check if there is REX2 prefix or not */
-+	if (insn_is_rex2(insn)) {
-+		if (insn_rex2_m_bit(insn)) {
-+			/* map 1 is escape 0x0f */
-+			insn_attr_t esc_attr = inat_get_opcode_attribute(0x0f);
-+
-+			pfx_id = insn_last_prefix_id(insn);
-+			insn->attr = inat_get_escape_attribute(op, pfx_id, esc_attr);
-+		} else {
-+			insn->attr = inat_get_opcode_attribute(op);
-+		}
-+		goto end;
-+	}
-+
- 	insn->attr = inat_get_opcode_attribute(op);
- 	while (inat_is_escape(insn->attr)) {
- 		/* Get escaped opcode */
-diff --git a/tools/arch/x86/tools/gen-insn-attr-x86.awk b/tools/arch/x86/tools/gen-insn-attr-x86.awk
-index af38469afd14..3f43aa7d8fef 100644
---- a/tools/arch/x86/tools/gen-insn-attr-x86.awk
-+++ b/tools/arch/x86/tools/gen-insn-attr-x86.awk
-@@ -64,7 +64,9 @@ BEGIN {
- 
- 	modrm_expr = "^([CDEGMNPQRSUVW/][a-z]+|NTA|T[012])"
- 	force64_expr = "\\([df]64\\)"
--	rex_expr = "^REX(\\.[XRWB]+)*"
-+	rex_expr = "^((REX(\\.[XRWB]+)+)|(REX$))"
-+	rex2_expr = "\\(REX2\\)"
-+	no_rex2_expr = "\\(!REX2\\)"
- 	fpu_expr = "^ESC" # TODO
- 
- 	lprefix1_expr = "\\((66|!F3)\\)"
-@@ -99,6 +101,7 @@ BEGIN {
- 	prefix_num["VEX+1byte"] = "INAT_PFX_VEX2"
- 	prefix_num["VEX+2byte"] = "INAT_PFX_VEX3"
- 	prefix_num["EVEX"] = "INAT_PFX_EVEX"
-+	prefix_num["REX2"] = "INAT_PFX_REX2"
- 
- 	clear_vars()
- }
-@@ -314,6 +317,10 @@ function convert_operands(count,opnd,       i,j,imm,mod)
- 		if (match(ext, force64_expr))
- 			flags = add_flags(flags, "INAT_FORCE64")
- 
-+		# check REX2 not allowed
-+		if (match(ext, no_rex2_expr))
-+			flags = add_flags(flags, "INAT_NO_REX2")
-+
- 		# check REX prefix
- 		if (match(opcode, rex_expr))
- 			flags = add_flags(flags, "INAT_MAKE_PREFIX(INAT_PFX_REX)")
-@@ -351,6 +358,8 @@ function convert_operands(count,opnd,       i,j,imm,mod)
- 			lptable3[idx] = add_flags(lptable3[idx],flags)
- 			variant = "INAT_VARIANT"
- 		}
-+		if (match(ext, rex2_expr))
-+			table[idx] = add_flags(table[idx], "INAT_REX2_VARIANT")
- 		if (!match(ext, lprefix_expr)){
- 			table[idx] = add_flags(table[idx],flags)
- 		}
+ Table: one byte opcode
+ Referrer:
+@@ -157,22 +161,22 @@ AVXcode:
+ 6e: OUTS/OUTSB DX,Xb
+ 6f: OUTS/OUTSW/OUTSD DX,Xz
+ # 0x70 - 0x7f
+-70: JO Jb
+-71: JNO Jb
+-72: JB/JNAE/JC Jb
+-73: JNB/JAE/JNC Jb
+-74: JZ/JE Jb
+-75: JNZ/JNE Jb
+-76: JBE/JNA Jb
+-77: JNBE/JA Jb
+-78: JS Jb
+-79: JNS Jb
+-7a: JP/JPE Jb
+-7b: JNP/JPO Jb
+-7c: JL/JNGE Jb
+-7d: JNL/JGE Jb
+-7e: JLE/JNG Jb
+-7f: JNLE/JG Jb
++70: JO Jb (!REX2)
++71: JNO Jb (!REX2)
++72: JB/JNAE/JC Jb (!REX2)
++73: JNB/JAE/JNC Jb (!REX2)
++74: JZ/JE Jb (!REX2)
++75: JNZ/JNE Jb (!REX2)
++76: JBE/JNA Jb (!REX2)
++77: JNBE/JA Jb (!REX2)
++78: JS Jb (!REX2)
++79: JNS Jb (!REX2)
++7a: JP/JPE Jb (!REX2)
++7b: JNP/JPO Jb (!REX2)
++7c: JL/JNGE Jb (!REX2)
++7d: JNL/JGE Jb (!REX2)
++7e: JLE/JNG Jb (!REX2)
++7f: JNLE/JG Jb (!REX2)
+ # 0x80 - 0x8f
+ 80: Grp1 Eb,Ib (1A)
+ 81: Grp1 Ev,Iz (1A)
+@@ -208,24 +212,24 @@ AVXcode:
+ 9e: SAHF
+ 9f: LAHF
+ # 0xa0 - 0xaf
+-a0: MOV AL,Ob
+-a1: MOV rAX,Ov
+-a2: MOV Ob,AL
+-a3: MOV Ov,rAX
+-a4: MOVS/B Yb,Xb
+-a5: MOVS/W/D/Q Yv,Xv
+-a6: CMPS/B Xb,Yb
+-a7: CMPS/W/D Xv,Yv
+-a8: TEST AL,Ib
+-a9: TEST rAX,Iz
+-aa: STOS/B Yb,AL
+-ab: STOS/W/D/Q Yv,rAX
+-ac: LODS/B AL,Xb
+-ad: LODS/W/D/Q rAX,Xv
+-ae: SCAS/B AL,Yb
++a0: MOV AL,Ob (!REX2)
++a1: MOV rAX,Ov (!REX2) | JMPABS O (REX2),(o64)
++a2: MOV Ob,AL (!REX2)
++a3: MOV Ov,rAX (!REX2)
++a4: MOVS/B Yb,Xb (!REX2)
++a5: MOVS/W/D/Q Yv,Xv (!REX2)
++a6: CMPS/B Xb,Yb (!REX2)
++a7: CMPS/W/D Xv,Yv (!REX2)
++a8: TEST AL,Ib (!REX2)
++a9: TEST rAX,Iz (!REX2)
++aa: STOS/B Yb,AL (!REX2)
++ab: STOS/W/D/Q Yv,rAX (!REX2)
++ac: LODS/B AL,Xb (!REX2)
++ad: LODS/W/D/Q rAX,Xv (!REX2)
++ae: SCAS/B AL,Yb (!REX2)
+ # Note: The May 2011 Intel manual shows Xv for the second parameter of the
+ # next instruction but Yv is correct
+-af: SCAS/W/D/Q rAX,Yv
++af: SCAS/W/D/Q rAX,Yv (!REX2)
+ # 0xb0 - 0xbf
+ b0: MOV AL/R8L,Ib
+ b1: MOV CL/R9L,Ib
+@@ -266,7 +270,7 @@ d1: Grp2 Ev,1 (1A)
+ d2: Grp2 Eb,CL (1A)
+ d3: Grp2 Ev,CL (1A)
+ d4: AAM Ib (i64)
+-d5: AAD Ib (i64)
++d5: AAD Ib (i64) | REX2 (Prefix),(o64)
+ d6:
+ d7: XLAT/XLATB
+ d8: ESC
+@@ -281,26 +285,26 @@ df: ESC
+ # Note: "forced64" is Intel CPU behavior: they ignore 0x66 prefix
+ # in 64-bit mode. AMD CPUs accept 0x66 prefix, it causes RIP truncation
+ # to 16 bits. In 32-bit mode, 0x66 is accepted by both Intel and AMD.
+-e0: LOOPNE/LOOPNZ Jb (f64)
+-e1: LOOPE/LOOPZ Jb (f64)
+-e2: LOOP Jb (f64)
+-e3: JrCXZ Jb (f64)
+-e4: IN AL,Ib
+-e5: IN eAX,Ib
+-e6: OUT Ib,AL
+-e7: OUT Ib,eAX
++e0: LOOPNE/LOOPNZ Jb (f64) (!REX2)
++e1: LOOPE/LOOPZ Jb (f64) (!REX2)
++e2: LOOP Jb (f64) (!REX2)
++e3: JrCXZ Jb (f64) (!REX2)
++e4: IN AL,Ib (!REX2)
++e5: IN eAX,Ib (!REX2)
++e6: OUT Ib,AL (!REX2)
++e7: OUT Ib,eAX (!REX2)
+ # With 0x66 prefix in 64-bit mode, for AMD CPUs immediate offset
+ # in "near" jumps and calls is 16-bit. For CALL,
+ # push of return address is 16-bit wide, RSP is decremented by 2
+ # but is not truncated to 16 bits, unlike RIP.
+-e8: CALL Jz (f64)
+-e9: JMP-near Jz (f64)
+-ea: JMP-far Ap (i64)
+-eb: JMP-short Jb (f64)
+-ec: IN AL,DX
+-ed: IN eAX,DX
+-ee: OUT DX,AL
+-ef: OUT DX,eAX
++e8: CALL Jz (f64) (!REX2)
++e9: JMP-near Jz (f64) (!REX2)
++ea: JMP-far Ap (i64) (!REX2)
++eb: JMP-short Jb (f64) (!REX2)
++ec: IN AL,DX (!REX2)
++ed: IN eAX,DX (!REX2)
++ee: OUT DX,AL (!REX2)
++ef: OUT DX,eAX (!REX2)
+ # 0xf0 - 0xff
+ f0: LOCK (Prefix)
+ f1:
+@@ -386,14 +390,14 @@ AVXcode: 1
+ 2e: vucomiss Vss,Wss (v1) | vucomisd  Vsd,Wsd (66),(v1)
+ 2f: vcomiss Vss,Wss (v1) | vcomisd  Vsd,Wsd (66),(v1)
+ # 0x0f 0x30-0x3f
+-30: WRMSR
+-31: RDTSC
+-32: RDMSR
+-33: RDPMC
+-34: SYSENTER
+-35: SYSEXIT
++30: WRMSR (!REX2)
++31: RDTSC (!REX2)
++32: RDMSR (!REX2)
++33: RDPMC (!REX2)
++34: SYSENTER (!REX2)
++35: SYSEXIT (!REX2)
+ 36:
+-37: GETSEC
++37: GETSEC (!REX2)
+ 38: escape # 3-byte escape 1
+ 39:
+ 3a: escape # 3-byte escape 2
+@@ -473,22 +477,22 @@ AVXcode: 1
+ 7f: movq Qq,Pq | vmovdqa Wx,Vx (66) | vmovdqa32/64 Wx,Vx (66),(evo) | vmovdqu Wx,Vx (F3) | vmovdqu32/64 Wx,Vx (F3),(evo) | vmovdqu8/16 Wx,Vx (F2),(ev)
+ # 0x0f 0x80-0x8f
+ # Note: "forced64" is Intel CPU behavior (see comment about CALL insn).
+-80: JO Jz (f64)
+-81: JNO Jz (f64)
+-82: JB/JC/JNAE Jz (f64)
+-83: JAE/JNB/JNC Jz (f64)
+-84: JE/JZ Jz (f64)
+-85: JNE/JNZ Jz (f64)
+-86: JBE/JNA Jz (f64)
+-87: JA/JNBE Jz (f64)
+-88: JS Jz (f64)
+-89: JNS Jz (f64)
+-8a: JP/JPE Jz (f64)
+-8b: JNP/JPO Jz (f64)
+-8c: JL/JNGE Jz (f64)
+-8d: JNL/JGE Jz (f64)
+-8e: JLE/JNG Jz (f64)
+-8f: JNLE/JG Jz (f64)
++80: JO Jz (f64) (!REX2)
++81: JNO Jz (f64) (!REX2)
++82: JB/JC/JNAE Jz (f64) (!REX2)
++83: JAE/JNB/JNC Jz (f64) (!REX2)
++84: JE/JZ Jz (f64) (!REX2)
++85: JNE/JNZ Jz (f64) (!REX2)
++86: JBE/JNA Jz (f64) (!REX2)
++87: JA/JNBE Jz (f64) (!REX2)
++88: JS Jz (f64) (!REX2)
++89: JNS Jz (f64) (!REX2)
++8a: JP/JPE Jz (f64) (!REX2)
++8b: JNP/JPO Jz (f64) (!REX2)
++8c: JL/JNGE Jz (f64) (!REX2)
++8d: JNL/JGE Jz (f64) (!REX2)
++8e: JLE/JNG Jz (f64) (!REX2)
++8f: JNLE/JG Jz (f64) (!REX2)
+ # 0x0f 0x90-0x9f
+ 90: SETO Eb | kmovw/q Vk,Wk | kmovb/d Vk,Wk (66)
+ 91: SETNO Eb | kmovw/q Mv,Vk | kmovb/d Mv,Vk (66)
 -- 
 2.34.1
 
