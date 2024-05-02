@@ -1,158 +1,148 @@
-Return-Path: <linux-kernel+bounces-166775-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-166778-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4F4EC8B9F5F
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 19:21:17 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B2C9D8B9F68
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 19:24:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 71A231C21785
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 17:21:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6ED6B286C66
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 17:24:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D342316FF4B;
-	Thu,  2 May 2024 17:21:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3004016FF41;
+	Thu,  2 May 2024 17:24:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="FevljIVB"
-Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com [209.85.167.41])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hOwoRAri"
+Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A0B815E5A9
-	for <linux-kernel@vger.kernel.org>; Thu,  2 May 2024 17:21:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B87616FF38;
+	Thu,  2 May 2024 17:23:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714670470; cv=none; b=ix7qXKaYqsKIpDETqASb9j+W3ZGNCtDJBSdLYWg05IHlGCscTkmJabIWUGysliQgv/YfWc5CPlN2xua4pzYhA2vS2QXGrryJJZZ5aaaGez+oc9cYbiRupUsOaw6C/DTG7mIm4KJCc3VQHNogkAgkno64bGZUVzXam1OGOExPSQM=
+	t=1714670640; cv=none; b=NIZyHdjgFPV5nrtugjebqJDE1azLMHvDq1P48A/oZdLhZll5wn8r6TbRULhpPtjjm1DPhfbi7pt4oo2f2c3OcRbOfmGL7ugLtFswwRl8v537Gy+pVBboBmXv9T4jN2lZ+ew4p06kkfCCUK0xPaIJm8nteaQUR2bBgjXs/Y5exrk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714670470; c=relaxed/simple;
-	bh=oxNcBWQxmMinnuPRCnHgfU+zEqGKyyng8T4qsAL+ufM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=TbbgQr8olaxNtxKIrDdW8XZZ66yZKTp//P4oovlAicLXr546U27F0V0UHR1Ik1t13GRZ3r/LhCjC5M7KI2vMqGzQmUfYjOq5m2K8xrDih3rfCgxCIbXrkW710iu0riVD5XZJMCZUnBW/946fVcXmIEBS+rCge4Xnl+OOKyiL/tk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=FevljIVB; arc=none smtp.client-ip=209.85.167.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-lf1-f41.google.com with SMTP id 2adb3069b0e04-51ae2e37a87so9965325e87.2
-        for <linux-kernel@vger.kernel.org>; Thu, 02 May 2024 10:21:07 -0700 (PDT)
+	s=arc-20240116; t=1714670640; c=relaxed/simple;
+	bh=+AGde7ihoVL37RNfwg2ChkKnBeZbRb8zV7vZfOgq33c=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=JFRgwvY4uBN9/u4qREd8Zja+owqPC4qzzCKasaJ0gR24aXr4vQLyMHhOOhzR44r0nqgzcrq9s6m6QAgTe7YOP+02c4lXaZaov2rbk3Gh/Tq/+nYP6SZ0dHQdwE3LCVp7cWuWVlELNs2aUF9xYF64lubMgOGN4vb+LhHjTuavj6g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hOwoRAri; arc=none smtp.client-ip=209.85.214.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-1ec69e3dbe5so25319805ad.0;
+        Thu, 02 May 2024 10:23:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1714670466; x=1715275266; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=IAFt7eBKKgungDlgXUVM9S/K1MsryQKKIBA2KVjr1YE=;
-        b=FevljIVBtNzae+cu+q/wb+BEoyzpC2aKX1GW1S4aE+9l8bQPMb7oE2HB96HHze05bX
-         4PHq1SDn0EMgpqsDhMvWYyTQ3fqBuGxwns+9pIThO8JI9rm1UKcxYs9ralH6N3E8DYgr
-         Ve75NXkwUzbFQTRi6KXqq3g75/1lOsWfISCU3gnU8UPCrdnTmknXS226jnKnLW+MNwYR
-         9rfY2an8JUXXiSd/Zk9S8ec9zTLwrdgaT9jD8KZ3C4O/pmJWnxTJVoEhN9gHMG+zrKJ8
-         EUjlXZy9mGCfsJSTSX3oxHKl1EUgBZt1cw9vfeProEu0YMM+MQhgMBHEUyq/Cyr12mDp
-         I3oQ==
+        d=gmail.com; s=20230601; t=1714670638; x=1715275438; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=BoLV4NBTi5WshpxXLizBmf79HWwJfptg7//iRnwuPL0=;
+        b=hOwoRArihruWh461sb14KUBy2pt34t0m5KO4CDcaWWdHjmV92ae9UQ7+QtCjaRYlDw
+         uys/S8AAbO1h8bCZi/yfsueSpNWTsRUOjSxVovIgNqNDTAFPWZ+q/809wLL4E7vkfi9G
+         OVcDYeZzoszbF+KcXxN8zhdQfdFTwrgImXknLKc1nUXprrBjczODuZkfY1M7FNeJxEmo
+         xjF91PxwHSOJeDKed4+mBmcEPj16KHsyIEVSdlHImvu4yo+k6Ii7tgx+omEIIdSETd9q
+         TCt87muL7qOBUfHMSjMjl7Ur4C8Be4oHWpf5CqxnEfXy+j/u9BL5O046CvYV4o875dbA
+         dO6g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714670466; x=1715275266;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20230601; t=1714670638; x=1715275438;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=IAFt7eBKKgungDlgXUVM9S/K1MsryQKKIBA2KVjr1YE=;
-        b=HXp+5+l3svEGq26rbRsHaWysU/50XQuyLFdG2Kgh/O/rueZHdJtA9tFbAcUGaBL1gJ
-         lVCJmGj1sTJ5QNJUZUXtFSO5ClLpltbxyx9As2b2lWMooyJcMVKbktQxQq5TcV9cSeHh
-         bkV/m+KLo38bqTABtZ/DmCdlhwzLL/85Qr/Sb7QV+a8zvtBENJkiPn0Q2357tZno/ynp
-         SRLc1yiGeq+as9m3y9sSvvbXZxV8qaydgndalfuOZX73ke6lvNvszqtQtVye/xvkuqFS
-         eCRohM+jaYsjw+i14nFIkj+h9Z4Hl4Ts+cGD9ZgXY14Fts0LZpMErvjbJ8vCUNmSK6g2
-         HaMw==
-X-Forwarded-Encrypted: i=1; AJvYcCUMONDlqpD1uNvt3gHHj/XAeezTQrzfjCGVBjOy6U26yDEWz/RPjFJVp+9uVEn5HzLiBp2kjPvMENTM11z+JxiVb3p3x0cS3YJMp2oA
-X-Gm-Message-State: AOJu0YwppwJ/Vo17tz5UtwLcIJVxATNpHkUd+Py0cdXL5lNrkTNcPvQg
-	+6rrWyfbhQeFZi5KE5Z67ZQLobkta0que+eFB+3w9g4JZrU3D7EOqKfkUgmVtCqVxBFhbc1EdfN
-	lNAQ4dBFhAVXj3JSGkjOJVfjeh7Qe7cKrRX9a
-X-Google-Smtp-Source: AGHT+IFpNRlTHWJL6HXai3hmJK+GuIw3YYYOL/DrnOSaXBdoOfBi4Z5FJUy9J23o3mfrfAr4AkX4h3xDsLMrq2uwIYs=
-X-Received: by 2002:a05:6512:3f1a:b0:51d:4473:48eb with SMTP id
- y26-20020a0565123f1a00b0051d447348ebmr423118lfa.38.1714670466174; Thu, 02 May
- 2024 10:21:06 -0700 (PDT)
+        bh=BoLV4NBTi5WshpxXLizBmf79HWwJfptg7//iRnwuPL0=;
+        b=ajfmtpJTftrnNYPLUx5tD1Ir4ThRR9chrCzt8st+Aj2/0h9FLsnMbTY2FnIAnM+0xb
+         5+sOlm8w9xakReHena2feVTWZyQTmFY75mAlBOX8fpDDMsdSlZP7jZj/PqcedwRlRccC
+         w+2/8XYxnuEdMJ49m//sFtVltppT4u3ArLtDh922P1+rTYJDmnPE3162PNX6Q4X/3DfT
+         U9AKJHcNMR9ftOiq/ifa+1mlnaL/ywQichGZm5Dc2U+fI2md24o9h2x9MWuetpAELLiQ
+         SOGEf1/xZWoybFIpn9BAm3gjnsbqb6eeVwfBER6zlfsR3Tp/ka0/3Jxl1GJqdYbNo1Zz
+         31sw==
+X-Forwarded-Encrypted: i=1; AJvYcCVBbkIQucZVsWGzE78woDhBUsClhJdR4UAQ3vZYRq1aubpvxBvhj6g4AyD7nk0wRTMPJc7WTUEyl+75/pwzijlQZlIx1y4ps37AusLRoN75PdsOvmPhBwfMPen1ntKoejtpRUUfNsSy7/A=
+X-Gm-Message-State: AOJu0Yzcp9x6vOXhc4mxqDsuWiOfq6oLh343AEFiPz/RNKGQyyp0FlDO
+	lhWjpOuTirHzs1JPJlKXtIl0FIVzVqJOJXahbCjGfYzVPRHLIvkY
+X-Google-Smtp-Source: AGHT+IEyeN+w/2GKnAAXaO0iG1dRQeaeYXXU53saYgxjY5324IkOkLk95/QiEGVAl7Bnc0yRghOx1w==
+X-Received: by 2002:a17:902:da8d:b0:1e9:cf94:5bea with SMTP id j13-20020a170902da8d00b001e9cf945beamr433078plx.35.1714670638524;
+        Thu, 02 May 2024 10:23:58 -0700 (PDT)
+Received: from localhost.localdomain ([2401:4900:5fc9:c3c6:40e7:b56b:5c47:4a78])
+        by smtp.gmail.com with ESMTPSA id t12-20020a170902bc4c00b001e4565a2596sm1568513plz.92.2024.05.02.10.23.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 02 May 2024 10:23:58 -0700 (PDT)
+From: Shresth Prasad <shresthprasad7@gmail.com>
+To: lee@kernel.org,
+	daniel.thompson@linaro.org,
+	jingoohan1@gmail.com,
+	deller@gmx.de
+Cc: dri-devel@lists.freedesktop.org,
+	linux-fbdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	javier.carrasco.cruz@gmail.com,
+	skhan@linuxfoundation.org,
+	julia.lawall@inria.fr,
+	Shresth Prasad <shresthprasad7@gmail.com>
+Subject: [RESEND][PATCH v3][next] backlight: sky81452-backlight: Remove unnecessary call to of_node_get
+Date: Thu,  2 May 2024 22:51:21 +0530
+Message-ID: <20240502172121.8695-2-shresthprasad7@gmail.com>
+X-Mailer: git-send-email 2.45.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <8edbd558-a05f-c775-4d0c-09367e688682@I-love.SAKURA.ne.jp>
- <2023053048-saved-undated-9adf@gregkh> <18a58415-4aa9-4cba-97d2-b70384407313@I-love.SAKURA.ne.jp>
- <CAHk-=wgSOa_g+bxjNi+HQpC=6sHK2yKeoW-xOhb0-FVGMTDWjg@mail.gmail.com>
- <a3be44f9-64eb-42e8-bf01-8610548a68a7@I-love.SAKURA.ne.jp>
- <CAHk-=wj6HmDetTDhNNUNcAXZzmCv==oHk22_kVW4znfO-HuMnA@mail.gmail.com>
- <CANpmjNN250UCxsWCpUHAvJo28Lzv=DN-BKTmjEpcLFOCA+U+pw@mail.gmail.com>
- <CAHk-=whnQXNVwuf42Sh2ngBGhBqbJjUfq5ux6e7Si_XSPAt05A@mail.gmail.com>
- <d4de136e-c4e0-45c2-b33e-9a819cb3a791@paulmck-laptop> <CAHk-=wi3iondeh_9V2g3Qz5oHTRjLsOpoy83hb58MVh=nRZe0A@mail.gmail.com>
- <892324fc-9b75-4e8a-b3b6-cf3c5b4c3506@paulmck-laptop> <CANpmjNOY=Qpm3hBu-eN4Xk8n-2VXQRvcQ3_PfwPwNw9MmC8ctw@mail.gmail.com>
- <CAHk-=whTakjVGgBC5OtoZ5Foo=hd4-g+NZ79nkMDVj6Ug7ARKQ@mail.gmail.com>
- <CANpmjNNo_jyTPrgPVCeSfgvsX-fK8x0H81zbBA6LZMVNodO6GA@mail.gmail.com> <b13ab60e-503a-4c11-8a99-0ccccce33c6c@I-love.SAKURA.ne.jp>
-In-Reply-To: <b13ab60e-503a-4c11-8a99-0ccccce33c6c@I-love.SAKURA.ne.jp>
-From: Marco Elver <elver@google.com>
-Date: Thu, 2 May 2024 19:20:25 +0200
-Message-ID: <CANpmjNPtoKf1ysbKd=E8o753JT0DzBanzFBP234VBsazfufVAQ@mail.gmail.com>
-Subject: Re: [PATCH v3] tty: tty_io: remove hung_up_tty_fops
-To: Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>, paulmck@kernel.org, 
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Dmitry Vyukov <dvyukov@google.com>, 
-	syzbot <syzbot+b7c3ba8cdc2f6cf83c21@syzkaller.appspotmail.com>, 
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com, 
-	Nathan Chancellor <nathan@kernel.org>, Arnd Bergmann <arnd@kernel.org>, Al Viro <viro@zeniv.linux.org.uk>, 
-	Jiri Slaby <jirislaby@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 
-On Thu, 2 May 2024 at 18:42, Tetsuo Handa
-<penguin-kernel@i-love.sakura.ne.jp> wrote:
->
-> On 2024/05/02 23:14, Marco Elver wrote:
-> > I sent a patch to add the type qualifier - in a simple test I added it
-> > does what we want:
-> > https://lore.kernel.org/all/20240502141242.2765090-1-elver@google.com/T/#u
->
-> Want some updates to Documentation/process/volatile-considered-harmful.rst
-> because __data_racy is for patches to add volatile variables ?
+`dev->of_node` already has a reference to the device_node and calling
+of_node_get on it is unnecessary. All conresponding calls to
+of_node_put are also removed.
 
-This has nothing to do with volatile. It's merely an implementation
-artifact that in CONFIG_KCSAN builds __data_racy translates to
-"volatile": the compiler will emit special instrumentation for
-volatile accesses so that KCSAN thinks they are "marked". However,
-volatile is and has been an implementation detail of certain
-primitives like READ_ONCE()/WRITE_ONCE(), although as a developer
-using this interface we should not be concerned with the fact that
-there's volatile underneath. In a perfect world the compiler would
-give us a better "tool" than volatile, but we have to make do with the
-tools we have at our disposal today.
+Reviewed-by: Daniel Thompson <daniel.thompson@linaro.org>
+Signed-off-by: Shresth Prasad <shresthprasad7@gmail.com>
+---
+Changes in v3:
+    - Remove unnecessary braces
 
->   Patches to remove volatile variables are generally welcome - as long as
->   they come with a justification which shows that the concurrency issues have
->   been properly thought through.
+ drivers/video/backlight/sky81452-backlight.c | 8 ++------
+ 1 file changed, 2 insertions(+), 6 deletions(-)
 
-My suggestion is to forget about "volatile" and simply pretend it's
-data_race() but as a type qualifier, like the bit of documentation I
-added to Documentation/dev-tools/kcsan.rst in the patch.
+diff --git a/drivers/video/backlight/sky81452-backlight.c b/drivers/video/backlight/sky81452-backlight.c
+index eb18c6eb0ff0..19f9f84a9fd6 100644
+--- a/drivers/video/backlight/sky81452-backlight.c
++++ b/drivers/video/backlight/sky81452-backlight.c
+@@ -182,7 +182,7 @@ static const struct attribute_group sky81452_bl_attr_group = {
+ static struct sky81452_bl_platform_data *sky81452_bl_parse_dt(
+ 							struct device *dev)
+ {
+-	struct device_node *np = of_node_get(dev->of_node);
++	struct device_node *np = dev->of_node;
+ 	struct sky81452_bl_platform_data *pdata;
+ 	int num_entry;
+ 	unsigned int sources[6];
+@@ -194,10 +194,8 @@ static struct sky81452_bl_platform_data *sky81452_bl_parse_dt(
+ 	}
+ 
+ 	pdata = devm_kzalloc(dev, sizeof(*pdata), GFP_KERNEL);
+-	if (!pdata) {
+-		of_node_put(np);
++	if (!pdata)
+ 		return ERR_PTR(-ENOMEM);
+-	}
+ 
+ 	of_property_read_string(np, "name", &pdata->name);
+ 	pdata->ignore_pwm = of_property_read_bool(np, "skyworks,ignore-pwm");
+@@ -217,7 +215,6 @@ static struct sky81452_bl_platform_data *sky81452_bl_parse_dt(
+ 					num_entry);
+ 		if (ret < 0) {
+ 			dev_err(dev, "led-sources node is invalid.\n");
+-			of_node_put(np);
+ 			return ERR_PTR(-EINVAL);
+ 		}
+ 
+@@ -237,7 +234,6 @@ static struct sky81452_bl_platform_data *sky81452_bl_parse_dt(
+ 	if (ret < 0)
+ 		pdata->boost_current_limit = 2750;
+ 
+-	of_node_put(np);
+ 	return pdata;
+ }
+ #else
+-- 
+2.45.0
 
-> >
-> > I'll leave it to Tetsuo to amend the original patch if __data_racy makes sense.
->
-> OK if below change is acceptable.
->
-> --- a/include/linux/fs.h
-> +++ b/include/linux/fs.h
-> @@ -1012,7 +1012,7 @@ struct file {
->         struct file_ra_state    f_ra;
->         struct path             f_path;
->         struct inode            *f_inode;       /* cached value */
-> -       const struct file_operations    *f_op;
-> +       const __data_racy struct file_operations   *f_op;
->
->         u64                     f_version;
->  #ifdef CONFIG_SECURITY
->
-> Hmm, debugfs assumes that f_op does not change?
->
-> fs/debugfs/file.c: In function 'full_proxy_release':
-> fs/debugfs/file.c:357:45: warning: initialization discards 'volatile' qualifier from pointer target type [-Wdiscarded-qualifiers]
->   const struct file_operations *proxy_fops = filp->f_op;
->                                              ^~~~
-
-Exactly as I pointed out elsewhere: pointers to __data_racy fields now
-have to become __data_racy as well:
-
-  const struct file_operations __data_racy *proxy_fops = filp->f_op;
-
-should be what you want there. The type system is in fact helping us
-here as intended. :-)
 
