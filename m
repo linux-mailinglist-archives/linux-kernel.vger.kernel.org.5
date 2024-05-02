@@ -1,117 +1,99 @@
-Return-Path: <linux-kernel+bounces-165933-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-165934-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 77A568B9393
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 05:05:30 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 80FEB8B9396
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 05:09:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 191A71F20F6E
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 03:05:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2D6181F222A2
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 03:09:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1F8B18E06;
-	Thu,  2 May 2024 03:05:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A94F18E28;
+	Thu,  2 May 2024 03:09:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="dJM0hy9F"
-Received: from mail-io1-f51.google.com (mail-io1-f51.google.com [209.85.166.51])
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="l2BrBpXw"
+Received: from mail-ot1-f53.google.com (mail-ot1-f53.google.com [209.85.210.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE67718054
-	for <linux-kernel@vger.kernel.org>; Thu,  2 May 2024 03:05:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8024D14292
+	for <linux-kernel@vger.kernel.org>; Thu,  2 May 2024 03:09:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714619123; cv=none; b=hOpsK6PIIuC62WAtOe6hSBZEtXoHXN+en/SglAOdn6uKFEX5+n6nMHtepEVkeAUe+sswOfhcLdTyhDPKkLhPGjtBwKpSThqdqKRufX2j84JozqhWiVlwSwQzEl0MuuE2RqCXf7Kw77UKOHeqbVl5qfIj+lsb+7vTgG3yVcwcK6Q=
+	t=1714619375; cv=none; b=Y9kI8yq3KHZpZeC/pxlFc7VUDl2PsNuW5va+HQJboTiw0tZ5micu1gdTpVAdj5K6/ra7Lu2WKe8xY4ZsVMSd59WGaq1lim0TjDmN/3r8gwOCbnHYy64T+n8LKatLTzt5DRKf+04J4EgO+WIMXqvMmVbB/NCwc5OHL9n7yuJ6wT4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714619123; c=relaxed/simple;
-	bh=nfmYTsnX3AMaJEe/kqKIfKQICnp0SW1m5dBH5gihgn4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=eu60IzkspEgyrRcg2XhM6BD3oxBuEt7qHCllz5xulY6VbP9vOU2CmY7ek+0pJcaYlyVN8JiY1j23fIszpUxr3+1NIerID3ywjw6BfYr5UzYyNP6gi8ix4rn2mg8D7XD+jznuilD+Nnqo9N5QrHZTU4VCPIr8GbeYOMZ9EbU5Jxo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=dJM0hy9F; arc=none smtp.client-ip=209.85.166.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-io1-f51.google.com with SMTP id ca18e2360f4ac-7dedd08a6eeso20194639f.3
-        for <linux-kernel@vger.kernel.org>; Wed, 01 May 2024 20:05:21 -0700 (PDT)
+	s=arc-20240116; t=1714619375; c=relaxed/simple;
+	bh=ObnqFPVJOTz/epn03UheMK7LRvxMU5jZn7hFT/Hpy60=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=GvnqI6rn/8BrHWIwPYdLA8N1VfVLmXrOQVykdS2HlM2juoJujVUyR7zyVAMo6xPUc9BdYsBrdDMgTzWuoyiTyIHy3LqWfDdbPRXsoiqzS5z9APw8GUpW4491p4PtEcUYyDqPolsYwAbbguWH1Mh8uMWjB7PV6Ph+XmBZq5KTDPI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=l2BrBpXw; arc=none smtp.client-ip=209.85.210.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-ot1-f53.google.com with SMTP id 46e09a7af769-6ee3a7cb9f1so2029611a34.1
+        for <linux-kernel@vger.kernel.org>; Wed, 01 May 2024 20:09:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google; t=1714619121; x=1715223921; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=DS+1zXzwuR6V2/P2D9232/ZCNuYtFHvtaRPFbRgTEm8=;
-        b=dJM0hy9FjODFbgX/wsR/Jw8VhflV0T22+2n43jv41KhCZ8XPOzKiA2uvNN8u+7k1LR
-         E/J2iispKY2RdLpU7p2q0wonEGGKOf3VNRV2kGwhsnz8tE+dyn3zk2DzTmY0Y6pipEFU
-         qHOzX/82qkV3o1y9BWNCNescwVN9W/Kg6PqkE=
+        d=chromium.org; s=google; t=1714619373; x=1715224173; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=EKgwrwTMRQLSvRu8Y+P7h6K1IEMLBlHp60PU8wkB+Tc=;
+        b=l2BrBpXw99T0OxKVhwO4ObGOYxbOMQTp/p/8kX2aFnb3TBH+1OAebl3jhB/K6tkrqS
+         JKH3YuHNX4Y9g9LeRcXRZ77UvyGg2A+FazA+ruEyJBxZhdMT7B89/yAHsoa9UwAhT4BJ
+         FE3cZWFeqitKje5HfKBqRxmW9FEmmvyMWa2Qg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714619121; x=1715223921;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=DS+1zXzwuR6V2/P2D9232/ZCNuYtFHvtaRPFbRgTEm8=;
-        b=I6hKuRF9HY2tJ4/JDpSG9XQlpwU1ln+sutzMgII8BDJ48xqPq4P6hwdBgW9zZ13epH
-         8nM9OTZnQDS894GKhB9mVA2MrvaeIbsM/MNsjCwZunCeO0RRthgSTXwuB40vkXVUZpmi
-         1gbmlm4NxEPRw3K3Q2b9OmhGUPWxeMTWoDgdfmSY7sREpjKvwVmT7lBiuWFXQpsx3NlI
-         VhGCGGaKErBKplbmt4NhvXMOmIPm7XdpP0/kmAmvFJZw+7QbOGNVckkzU96mqdKk2/pF
-         PmtdLRa5uG8/uhNjSdmdEZV0NFET6hg4YALoVbjYZWFIjhJcwkpA7dL/BfZFVtzdTIlY
-         caVw==
-X-Forwarded-Encrypted: i=1; AJvYcCVpyDCCW/BrBAG0WhQ+cceK4Y5Ajz7BmScd2mekDc9vrFRNOd4bWRXFzA+AQ4g8wETFPDMn18+/lXhUCjArC6BP6zglVkmiEKzb9b7n
-X-Gm-Message-State: AOJu0YxVqDVMoNBhUa4ARSNLLsMAgJXOpq4XBUjbjR0H85LmMkax1Cii
-	KJpIvFcpc1+lhCIh6LkMsCu59yzG7TVZl+zM76bINPNpRE/dR1FEKdlG3Zea8MI=
-X-Google-Smtp-Source: AGHT+IHYtm+/PoEdKYe9tO6lc/PTgVluvUMmOJC2EdNkzkzCTQuyCCgqVcyWjO7QO4uKTaJEj3Phjw==
-X-Received: by 2002:a05:6602:6002:b0:7de:f48e:36c3 with SMTP id fr2-20020a056602600200b007def48e36c3mr1740127iob.0.1714619121131;
-        Wed, 01 May 2024 20:05:21 -0700 (PDT)
-Received: from [192.168.1.128] ([38.175.170.29])
-        by smtp.gmail.com with ESMTPSA id im15-20020a0566026d0f00b007dee04738d1sm11732iob.23.2024.05.01.20.05.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 01 May 2024 20:05:20 -0700 (PDT)
-Message-ID: <159ac07f-610c-4f49-acef-c67d981e3a56@linuxfoundation.org>
-Date: Wed, 1 May 2024 21:05:20 -0600
+        d=1e100.net; s=20230601; t=1714619373; x=1715224173;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=EKgwrwTMRQLSvRu8Y+P7h6K1IEMLBlHp60PU8wkB+Tc=;
+        b=ldC5RozU5/Ag+6vSS4lgvjOvAbCFJDGVbpRoI6TvmXlFIVLqDp0v/LHFZDGqVeSq4b
+         ORF8lDCIkHGdw6lxqPvMdMqV8gmOOCr6VtXffcCkEFWVCh05d2dIKXduvGt9G/jwpAw+
+         r7wAghbGtyTaxJm2g2QRKWhFx/VsHS0H/MEk53IRmHcMCH6qA+DZaYg6s+RqKvhkRtyH
+         X7jOEDH9DwijaN0GnHwEAD5UvWD2TFDakK61zMOcHONO1Kz/YGZIXQNt+JSmUiHzRuYk
+         rGfQSB7d4YIf94bsodXEni/Wcl7iK1ZZe8ulLw8a9A5Nu1Q2YkxrBsnu4sjn/P9Wc/a2
+         emvw==
+X-Forwarded-Encrypted: i=1; AJvYcCX3OI7/ayZpjUrBSEa9UaQF9j6XX2q7F5vuiqBjaeS+vKdrSdZPZp/Ao/AQcHwdlO4FwUt2ZN1f79hjx6klTQYl/yNULGG8465C82ho
+X-Gm-Message-State: AOJu0YzuaXU1a/CW+GGH4POSDcv4I9WGe60qxN8tFSVJBGVVS1EVEJQi
+	9B6cSZsR5FH7aEv1QZSNOtrmoEPgDL+6yuEr5zkWzKfNdu/hiLQJ2UsQHMIDeY/6fvdl2TeYm48
+	=
+X-Google-Smtp-Source: AGHT+IF6cchS2nf9nvU4tH6sibgafgLKaNFYJ0b+TDZI9sKzN9Y5depOzEmZDH9tk2s/8AQg1mmTyQ==
+X-Received: by 2002:a05:6871:d283:b0:22e:b736:7c18 with SMTP id pl3-20020a056871d28300b0022eb7367c18mr1224381oac.27.1714619373630;
+        Wed, 01 May 2024 20:09:33 -0700 (PDT)
+Received: from www.outflux.net ([198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id u33-20020a634721000000b0060ec09873fbsm102002pga.7.2024.05.01.20.09.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 01 May 2024 20:09:32 -0700 (PDT)
+Date: Wed, 1 May 2024 20:09:31 -0700
+From: Kees Cook <keescook@chromium.org>
+To: "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc: Ping-Ke Shih <pkshih@realtek.com>, Kalle Valo <kvalo@kernel.org>,
+	linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-hardening@vger.kernel.org
+Subject: Re: [PATCH][next] wifi: rtlwifi: Remove unused structs and avoid
+ multiple -Wfamnae warnings
+Message-ID: <202405012008.38A5EB34F@keescook>
+References: <ZjLFIa31BGPVCGh1@neat>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 5.15 00/80] 5.15.158-rc1 review
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org
-Cc: patches@lists.linux.dev, linux-kernel@vger.kernel.org,
- torvalds@linux-foundation.org, akpm@linux-foundation.org,
- linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
- lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
- f.fainelli@gmail.com, sudipm.mukherjee@gmail.com, srw@sladewatkins.net,
- rwarsow@gmx.de, conor@kernel.org, allen.lkml@gmail.com, broonie@kernel.org,
- Shuah Khan <skhan@linuxfoundation.org>
-References: <20240430103043.397234724@linuxfoundation.org>
-Content-Language: en-US
-From: Shuah Khan <skhan@linuxfoundation.org>
-In-Reply-To: <20240430103043.397234724@linuxfoundation.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZjLFIa31BGPVCGh1@neat>
 
-On 4/30/24 04:39, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.15.158 release.
-> There are 80 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On Wed, May 01, 2024 at 04:41:37PM -0600, Gustavo A. R. Silva wrote:
+> Wflex-array-member-not-at-end is coming in GCC-14, and we are getting
+> ready to enable it globally.
 > 
-> Responses should be made by Thu, 02 May 2024 10:30:27 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.15.158-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.15.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-> 
+> So, remove unused structs and fix the following
+> -Wflex-array-member-not-at-end warnings:
 
-Compiled and booted on my test system. No dmesg regressions.
+Heh. Yes! Very effective. :)
 
-Tested-by: Shuah Khan <skhan@linuxfoundation.org>
+Reviewed-by: Kees Cook <keescook@chromium.org>
 
-thanks,
--- Shuah
+-- 
+Kees Cook
 
