@@ -1,351 +1,129 @@
-Return-Path: <linux-kernel+bounces-165949-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-165950-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1B5C58B93BA
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 06:00:16 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2FB318B93BC
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 06:01:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CA2A3284004
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 04:00:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 575781C20EEA
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 04:01:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 86AAD1B813;
-	Thu,  2 May 2024 04:00:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3AA7D1B7E9;
+	Thu,  2 May 2024 04:01:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=morinfr.org header.i=@morinfr.org header.b="pssXSrFJ"
-Received: from smtp2-g21.free.fr (smtp2-g21.free.fr [212.27.42.2])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="y0ubfWNj"
+Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 019D9D527;
-	Thu,  2 May 2024 04:00:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.27.42.2
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A288D527
+	for <linux-kernel@vger.kernel.org>; Thu,  2 May 2024 04:01:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714622408; cv=none; b=LLrHGc5U4EQibMC4e1pUJK1IkaOJBcigonQEFeC35HPdJVv7bhTSp5WTqzMHxpTJuAE25+lQ7N5LDHsQF6c8NJQNhHk/ZLUlqzWAswpiesPXfZCO1E5Oww6pDTP8VjsV6xKQ7nPVeDRrimLV40oUgg+MIONtLUIkj2e3xv1y8lY=
+	t=1714622493; cv=none; b=KGGUsF2xoaxDrnZvwg/gXNR5lQhZAU+fDJ5khtWreOjJXMbDDeR3uj5bwzt2ZaGy3Z6GcIANnb9ULmgKoAXFBJPNytGkibu/FUCCPkQbm9HvTV35/M3CraA5hw6rVWv68egHaEOmdkBzLlniJ5sGijmddVBVXx2ihntxQJ59Eds=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714622408; c=relaxed/simple;
-	bh=gyjGn7kCm3lE1xA8rN1K4cFmxnP8VfK+E7RaMCYkQd0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=OkGXdjqS28elK4N+fl4s5d7iaoDgyeKQ75EGJYoXpwNjiPvHqVdcLZHO5c0qt3IH98oaNXLEsVEIydjrnKpDRhF07kQWNQEexn5ka7XcMIXMCHTn2HF5tzKpJy6rliqbl7WiahjqV+ncRi7hn6vfUpjZgPb6OYqWXHajfm38rUg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=morinfr.org; spf=pass smtp.mailfrom=morinfr.org; dkim=pass (1024-bit key) header.d=morinfr.org header.i=@morinfr.org header.b=pssXSrFJ; arc=none smtp.client-ip=212.27.42.2
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=morinfr.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=morinfr.org
-Received: from bender.morinfr.org (unknown [82.66.66.112])
-	by smtp2-g21.free.fr (Postfix) with ESMTPS id 9209920039F;
-	Thu,  2 May 2024 05:59:51 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=morinfr.org
-	; s=20170427; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
-	Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-	List-Post:List-Owner:List-Archive;
-	bh=FaVXZERQHuk+FInxg4by/ZUzUIlPzZXFaJJ+IiLvxFU=; b=pssXSrFJzzoqVOVAPVzkhgjPqG
-	GRp3ij/s/axw0G/UoRI4Zre/F1ussKFHRfI5Xcwxvlg4/KXLCAKSU1XJeW2iVIylQpW+hZFlA3V1B
-	R9lwKF/yZUy1EoO1rxgz2S/lUM0sOyEwlrRVrjpzE514UWrd0K58Kj1p4Jr6K8giyS04=;
-Received: from guillaum by bender.morinfr.org with local (Exim 4.96)
-	(envelope-from <guillaume@morinfr.org>)
-	id 1s2Nbq-005Zo2-2B;
-	Thu, 02 May 2024 05:59:50 +0200
-Date: Thu, 2 May 2024 05:59:50 +0200
-From: Guillaume Morin <guillaume@morinfr.org>
-To: David Hildenbrand <david@redhat.com>
-Cc: Guillaume Morin <guillaume@morinfr.org>, oleg@redhat.com,
-	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-	muchun.song@linux.dev
-Subject: Re: [RFC][PATCH] uprobe: support for private hugetlb mappings
-Message-ID: <ZjMPtrsrUi8-QJ0G@bender.morinfr.org>
-References: <ZibOQI9kwzE98n12@bender.morinfr.org>
- <8d5314ac-5afe-41d4-9d27-9512cd96d21c@redhat.com>
- <ZilvOi7ceSXmwkNq@bender.morinfr.org>
- <b1cf78f8-8480-4451-bbf8-78694ebd0438@redhat.com>
- <Zip0fEliGeL0qmID@bender.morinfr.org>
- <e84a82b8-b788-499c-be79-e6dcb64ac969@redhat.com>
- <Zirw0uINbP6GxFiK@bender.morinfr.org>
- <385d3516-95bb-4ff9-9d60-ac4e46104130@redhat.com>
- <ZiwGovSHiVCF7z6y@bender.morinfr.org>
- <8a7b9e65-b073-4132-9680-efc2b3af6af0@redhat.com>
+	s=arc-20240116; t=1714622493; c=relaxed/simple;
+	bh=37j/Z0B+XnloIjgIcP2R6qgOY6ShZO2LUmAQ9rdLv7o=;
+	h=Date:Message-Id:Mime-Version:Subject:From:To:Cc:Content-Type; b=kyiQzQxmUWwYzc4hMwChFOQ42siuQpes7ckhPPM842MkJSTtCyciQWvUm5rxFjqyz76FrzaXnJiNcB/Qe2kvq/rrQMHndZ33e8G3ClG6ldQ8dfWuhoQFLe4/3J81riapeYHP6fCVcRVP1SUR6tkydpcNDVDRynHrwkwL2GRJW0Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=y0ubfWNj; arc=none smtp.client-ip=209.85.128.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com
+Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-61be8f7ed6eso18840907b3.0
+        for <linux-kernel@vger.kernel.org>; Wed, 01 May 2024 21:01:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1714622491; x=1715227291; darn=vger.kernel.org;
+        h=cc:to:from:subject:mime-version:message-id:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=m4VDeNJAoZaS4Xs4WRhklAjJjfZZqn8kn9XarE54odw=;
+        b=y0ubfWNjASQagDitG6ZmkKZKJiEMKJN2enAWLPpxtC01j/6S1yhZBWchJqszM+v7j4
+         C/cXg33D+E1f4//yci8cjs7khMifiCMfHI29Xtq6b+ZTV4VqM18DsjlZKkTOiwo2NPpL
+         ZEdSC0/0Tf0hprL9slYyd2YUU7qwe3Lshd1BwquGH80RA6Iz15aWee7ecTgtKg47B09V
+         FvrwuCFldzgKpd/wcPNIMJXv4SnNlDfl8mnw/t9Kqy41GKt+eBpOfboVfIIPtd6ULswk
+         IS7s8J5X8FOTGYIP5bWpV1c7sPhLYKF7/p7ckIlCECEcqh2zRVha97DSHqE5lNLTKWd8
+         ztHA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714622491; x=1715227291;
+        h=cc:to:from:subject:mime-version:message-id:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=m4VDeNJAoZaS4Xs4WRhklAjJjfZZqn8kn9XarE54odw=;
+        b=A+oxNrZY4veAR7Cvk63YkG1l3x5ecRRSrG0aLWPD+2KMVYODOuQNnMRh88QXu0Z4Xq
+         t76cGrjpNt6I9hYAZWzQgz+P6tQ83wOnkWuwSE/3J0Qr0MPmgZ4ZdImPt5gq7l7isznx
+         vC4gdV3X6YJD7dUDZ7NSv6+sUbgoNq6Qd/da4Aek9769x5IFdwHv5vlXWl6Hm5u5KHUn
+         UsWIcFOgH++PmDbAm/wgUT1jJQdMzUSvlT/MugDEFyCwk9zhD87qyVPqn4mnTWvWSbUa
+         n1Ec8/ucM97is1AO4Zo4pUcLSOSREBrW7yuSFmdHw0wgLYUatvyV58jKhv3uh1nsBZ7w
+         5baQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVEGw7vOKfxD9cC6VPbDxKV5D/+yT6G4kQLGpGX4HZXlHjIBDATW4axXRSAFb6XJhHAkmtscKThbUwLgDb9ZddAnzXvqomBlsKQ9Uiu
+X-Gm-Message-State: AOJu0Yypfj2m415QBgo3Uj+nCo0K9J7m7wo7q02oH6JIwX3ozUMcvjgy
+	UlTYkqmRo/kTidwa+MEGUEWbIH88ZaBrK0k8O4Mc7JwlHqx2ecSIGXaHQttzPH4lrV2r+nTRp/R
+	QDsQObw==
+X-Google-Smtp-Source: AGHT+IFq47a1+HUIL9gjy9nk8sbcRRxfuJtc3btqJfIm+Yz6izu0eLOiC4O5aefoRZdX/lBTLZYP+14GruPQ
+X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:53b9:bbda:1daa:17d3])
+ (user=irogers job=sendgmr) by 2002:a0d:ea0d:0:b0:61b:32dc:881d with SMTP id
+ t13-20020a0dea0d000000b0061b32dc881dmr414597ywe.3.1714622490822; Wed, 01 May
+ 2024 21:01:30 -0700 (PDT)
+Date: Wed,  1 May 2024 21:01:06 -0700
+Message-Id: <20240502040112.2111157-1-irogers@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <8a7b9e65-b073-4132-9680-efc2b3af6af0@redhat.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.45.0.rc0.197.gbae5840b3b-goog
+Subject: [PATCH v4 0/6] Assume sysfs event names are always the same case
+From: Ian Rogers <irogers@google.com>
+To: Kan Liang <kan.liang@linux.intel.com>, Thomas Richter <tmricht@linux.ibm.com>, 
+	Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
+	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
+	Mark Rutland <mark.rutland@arm.com>, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Bjorn Helgaas <bhelgaas@google.com>, Jonathan Corbet <corbet@lwn.net>, 
+	Randy Dunlap <rdunlap@infradead.org>, Jing Zhang <renyu.zj@linux.alibaba.com>, 
+	James Clark <james.clark@arm.com>, Ravi Bangoria <ravi.bangoria@amd.com>, 
+	linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org
+Cc: Ian Rogers <irogers@google.com>
+Content-Type: text/plain; charset="UTF-8"
 
-On 30 Apr 21:25, David Hildenbrand wrote:
-> > I tried to get the hugepd stuff right but this was the first I heard
-> > about it :-) Afaict follow_huge_pmd and friends were already DTRT
-> 
-> I'll have to have a closer look at some details (the hugepd writability
-> check looks a bit odd), but it's mostly what I would have expected!
+By assuming sysfs events are either upper or lower case, the case
+insensitive event parsing can probe for the existence of files rather
+then loading all events in a directory. When the event is a json event
+like inst_retired.any on Intel, this reduces the number of openat
+calls on a Tigerlake laptop from 325 down to 255.
 
-Ok in the meantime, here is the uprobe change on your current
-uprobes_cow trying to address the comments you made in your previous
-message. Some of them were not 100% clear to me, so it's a best effort
-patch :-) Again lightly tested
+v1 sent as an RFC:
+    https://lore.kernel.org/lkml/20240413040812.4042051-1-irogers@google.com/
 
-diff --git a/fs/hugetlbfs/inode.c b/fs/hugetlbfs/inode.c
---- a/fs/hugetlbfs/inode.c
-+++ b/fs/hugetlbfs/inode.c
-@@ -83,6 +83,10 @@ static const struct fs_parameter_spec hugetlb_fs_parameters[] = {
- 	{}
- };
- 
-+bool hugetlbfs_mapping(struct address_space *mapping) {
-+	return mapping->a_ops == &hugetlbfs_aops;
-+}
-+
- /*
-  * Mask used when checking the page offset value passed in via system
-  * calls.  This value will be converted to a loff_t which is signed.
-diff --git a/include/linux/hugetlb.h b/include/linux/hugetlb.h
---- a/include/linux/hugetlb.h
-+++ b/include/linux/hugetlb.h
-@@ -511,6 +511,8 @@ struct hugetlbfs_sb_info {
- 	umode_t mode;
- };
- 
-+bool hugetlbfs_mapping(struct address_space *mapping);
-+
- static inline struct hugetlbfs_sb_info *HUGETLBFS_SB(struct super_block *sb)
- {
- 	return sb->s_fs_info;
-@@ -557,6 +559,8 @@ static inline struct hstate *hstate_inode(struct inode *i)
- {
- 	return NULL;
- }
-+
-+static inline bool hugetlbfs_mapping(struct address_space *mapping) { return false; }
- #endif /* !CONFIG_HUGETLBFS */
- 
- #ifdef HAVE_ARCH_HUGETLB_UNMAPPED_AREA
-diff --git a/kernel/events/uprobes.c b/kernel/events/uprobes.c
---- a/kernel/events/uprobes.c
-+++ b/kernel/events/uprobes.c
-@@ -11,6 +11,7 @@
- 
- #include <linux/kernel.h>
- #include <linux/highmem.h>
-+#include <linux/hugetlb.h>
- #include <linux/pagemap.h>	/* read_mapping_page */
- #include <linux/slab.h>
- #include <linux/sched.h>
-@@ -120,7 +121,7 @@ struct xol_area {
-  */
- static bool valid_vma(struct vm_area_struct *vma, bool is_register)
- {
--	vm_flags_t flags = VM_HUGETLB | VM_MAYEXEC | VM_MAYSHARE;
-+	vm_flags_t flags = VM_MAYEXEC | VM_MAYSHARE;
- 
- 	if (is_register)
- 		flags |= VM_WRITE;
-@@ -177,6 +178,19 @@ static void copy_to_page(struct page *page, unsigned long vaddr, const void *src
- 	kunmap_atomic(kaddr);
- }
- 
-+static bool compare_pages(struct page *page1, struct page *page2, unsigned long page_size)
-+{
-+	char *addr1, *addr2;
-+	int ret;
-+
-+	addr1 = kmap_local_page(page1);
-+	addr2 = kmap_local_page(page2);
-+	ret = memcmp(addr1, addr2, page_size);
-+	kunmap_local(addr2);
-+	kunmap_local(addr1);
-+	return ret == 0;
-+}
-+
- static int verify_opcode(struct page *page, unsigned long vaddr, uprobe_opcode_t *new_opcode)
- {
- 	uprobe_opcode_t old_opcode;
-@@ -366,7 +380,9 @@ static int update_ref_ctr(struct uprobe *uprobe, struct mm_struct *mm,
- }
- 
- static bool orig_page_is_identical(struct vm_area_struct *vma,
--		unsigned long vaddr, struct page *page, bool *large)
-+		unsigned long vaddr, struct page *page,
-+		unsigned long page_size,
-+		bool *large)
- {
- 	const pgoff_t index = vaddr_to_offset(vma, vaddr) >> PAGE_SHIFT;
- 	struct page *orig_page = find_get_page(vma->vm_file->f_inode->i_mapping,
-@@ -380,7 +396,7 @@ static bool orig_page_is_identical(struct vm_area_struct *vma,
- 
- 	*large = folio_test_large(orig_folio);
- 	identical = folio_test_uptodate(orig_folio) &&
--		    pages_identical(page, orig_page);
-+		    compare_pages(page, orig_page, page_size);
- 	folio_put(orig_folio);
- 	return identical;
- }
-@@ -396,6 +412,81 @@ struct uwo_data {
- 	uprobe_opcode_t opcode;
- };
- 
-+static int __write_opcode_hugetlb(pte_t *ptep, unsigned long page_mask,
-+				  unsigned long vaddr,
-+				  unsigned long next, struct mm_walk *walk)
-+{
-+	struct uwo_data *data = walk->private;
-+	const bool is_register = !!is_swbp_insn(&data->opcode);
-+	pte_t pte = huge_ptep_get(ptep);
-+	struct folio *folio;
-+	struct page *page;
-+	bool large;
-+	struct hstate *h = hstate_vma(walk->vma);
-+	unsigned subpage_index = (vaddr & (huge_page_size(h) - 1)) >>
-+		PAGE_SHIFT;
-+
-+	if (!pte_present(pte))
-+		return UWO_RETRY;
-+	page = vm_normal_page(walk->vma, vaddr, pte);
-+	if (!page)
-+		return UWO_RETRY;
-+	folio = page_folio(page);
-+
-+	/* When unregistering and there is no anon folio anymore, we're done. */
-+	if (!folio_test_anon(folio))
-+		return is_register ? UWO_RETRY_WRITE_FAULT : UWO_DONE;
-+
-+	/*
-+	 * See can_follow_write_pte(): we'd actually prefer requiring a
-+	 * writable PTE here, but when unregistering we might no longer have
-+	 * VM_WRITE ...
-+	 */
-+	if (!huge_pte_write(pte)) {
-+		if (!PageAnonExclusive(page))
-+			return UWO_RETRY_WRITE_FAULT;
-+		if (unlikely(userfaultfd_wp(walk->vma) && huge_pte_uffd_wp(pte)))
-+			return UWO_RETRY_WRITE_FAULT;
-+		/* SOFTDIRTY is handled via pte_mkdirty() below. */
-+	}
-+
-+	/* Unmap + flush the TLB, such that we can write atomically .*/
-+	flush_cache_page(walk->vma, vaddr & page_mask, pte_pfn(pte));
-+	pte = huge_ptep_clear_flush(walk->vma, vaddr & page_mask, ptep);
-+	copy_to_page(nth_page(page, subpage_index), data->opcode_vaddr,
-+		     &data->opcode, UPROBE_SWBP_INSN_SIZE);
-+
-+	/*
-+	 * When unregistering, we may only zap a PTE if uffd is disabled and
-+	 * the folio is not pinned ...
-+	 */
-+	if (is_register || userfaultfd_missing(walk->vma) ||
-+	    folio_maybe_dma_pinned(folio))
-+		goto remap;
-+
-+	/*
-+	 * ... the mapped anon page is identical to the original page (that
-+	 * will get faulted in on next access), and we don't have GUP pins.
-+	 */
-+	if (!orig_page_is_identical(walk->vma, vaddr & page_mask, page,
-+				    huge_page_size(h), &large))
-+		goto remap;
-+
-+	hugetlb_remove_rmap(folio);
-+	folio_put(folio);
-+	return UWO_DONE;
-+remap:
-+	/*
-+	 * Make sure that our copy_to_page() changes become visible before the
-+	 * set_huge_pte_at() write.
-+	 */
-+	smp_wmb();
-+	/* We modified the page. Make sure to mark the PTE dirty. */
-+	set_huge_pte_at(walk->mm , vaddr & page_mask, ptep,
-+			huge_pte_mkdirty(pte), huge_page_size(h));
-+	return UWO_DONE;
-+}
-+
- static int __write_opcode_pte(pte_t *ptep, unsigned long vaddr,
- 		unsigned long next, struct mm_walk *walk)
- {
-@@ -447,7 +538,7 @@ static int __write_opcode_pte(pte_t *ptep, unsigned long vaddr,
- 	 * ... the mapped anon page is identical to the original page (that
- 	 * will get faulted in on next access), and we don't have GUP pins.
- 	 */
--	if (!orig_page_is_identical(walk->vma, vaddr, page, &large))
-+	if (!orig_page_is_identical(walk->vma, vaddr, page, PAGE_SIZE, &large))
- 		goto remap;
- 
- 	/* Zap it and try to reclaim swap space. */
-@@ -473,6 +564,7 @@ static int __write_opcode_pte(pte_t *ptep, unsigned long vaddr,
- }
- 
- static const struct mm_walk_ops write_opcode_ops = {
-+	.hugetlb_entry		= __write_opcode_hugetlb,
- 	.pte_entry		= __write_opcode_pte,
- 	.walk_lock		= PGWALK_WRLOCK,
- };
-@@ -510,6 +602,8 @@ int uprobe_write_opcode(struct arch_uprobe *auprobe, struct vm_area_struct *vma,
- 	struct mmu_notifier_range range;
- 	int ret, ref_ctr_updated = 0;
- 	struct page *page;
-+	unsigned long page_size = PAGE_SIZE;
-+	unsigned long page_mask = PAGE_MASK;
- 
- 	if (WARN_ON_ONCE(!is_cow_mapping(vma->vm_flags)))
- 		return -EINVAL;
-@@ -528,6 +622,11 @@ int uprobe_write_opcode(struct arch_uprobe *auprobe, struct vm_area_struct *vma,
- 	if (ret != 1)
- 		goto out;
- 
-+	if (is_vm_hugetlb_page(vma)) {
-+		struct hstate *h = hstate_vma(vma);
-+		page_size = huge_page_size(h);
-+		page_mask = huge_page_mask(h);
-+	}
- 	ret = verify_opcode(page, opcode_vaddr, &opcode);
- 	put_page(page);
- 	if (ret <= 0)
-@@ -547,8 +646,9 @@ int uprobe_write_opcode(struct arch_uprobe *auprobe, struct vm_area_struct *vma,
- 		 * unregistering. So trigger MMU notifiers now, as we won't
- 		 * be able to do it under PTL.
- 		 */
-+		const unsigned long start = vaddr & page_mask;
- 		mmu_notifier_range_init(&range, MMU_NOTIFY_CLEAR, 0, mm,
--					vaddr, vaddr + PAGE_SIZE);
-+					start, start + page_size);
- 		mmu_notifier_invalidate_range_start(&range);
- 	}
- 
-@@ -830,8 +930,16 @@ static int __copy_insn(struct address_space *mapping, struct file *filp,
- 	 */
- 	if (mapping->a_ops->read_folio)
- 		page = read_mapping_page(mapping, offset >> PAGE_SHIFT, filp);
--	else
-+	else if (!is_file_hugepages(filp))
- 		page = shmem_read_mapping_page(mapping, offset >> PAGE_SHIFT);
-+	else {
-+		struct hstate *h = hstate_file(filp);
-+		unsigned long mask = huge_page_mask(h);
-+		page = find_get_page(mapping, (offset & mask) >> PAGE_SHIFT);
-+		if (IS_ERR(page))
-+			return PTR_ERR(page);
-+		page = nth_page(page, (offset & (huge_page_size(h) - 1)) >> PAGE_SHIFT);
-+	}
- 	if (IS_ERR(page))
- 		return PTR_ERR(page);
- 
-@@ -1182,9 +1290,12 @@ static int __uprobe_register(struct inode *inode, loff_t offset,
- 	if (!uc->handler && !uc->ret_handler)
- 		return -EINVAL;
- 
--	/* copy_insn() uses read_mapping_page() or shmem_read_mapping_page() */
-+	/* copy_insn() uses read_mapping_page() or shmem/hugetlbfs specific
-+	 * logic
-+	 */
- 	if (!inode->i_mapping->a_ops->read_folio &&
--	    !shmem_mapping(inode->i_mapping))
-+	    !shmem_mapping(inode->i_mapping) &&
-+	    !hugetlbfs_mapping(inode->i_mapping))
- 		return -EIO;
- 	/* Racy, just to catch the obvious mistakes */
- 	if (offset > i_size_read(inode))
+v2: addresses review feedback from Kan Liang, by updating
+    documentation and adding tests.
+
+v3: incorporate feedback from Thomas Richter <tmricht@linux.ibm.com>
+    that s390 event names are all upper case. Do a lower case probe
+    then an upper case probe, make documentation and tests also agree.
+
+v4: add checks to write (kernel test robot) and fix a typo.
+
+Ian Rogers (6):
+  perf test pmu-events: Make it clearer that pmu-events tests json
+    events
+  perf Document: Sysfs event names must be lower or upper case
+  perf test pmu: Refactor format test and exposed test APIs
+  perf test pmu: Add an eagerly loaded event test
+  perf test pmu: Test all sysfs PMU event names are the same case
+  perf pmu: Assume sysfs events are always the same case
+
+ .../sysfs-bus-event_source-devices-events     |   6 +
+ tools/perf/tests/pmu-events.c                 |   2 +-
+ tools/perf/tests/pmu.c                        | 468 ++++++++++++------
+ tools/perf/util/parse-events.c                |   2 +-
+ tools/perf/util/parse-events.h                |   2 +-
+ tools/perf/util/pmu.c                         | 111 +++--
+ tools/perf/util/pmu.h                         |   4 +-
+ tools/perf/util/pmus.c                        |  16 +-
+ tools/perf/util/pmus.h                        |   2 +
+ 9 files changed, 416 insertions(+), 197 deletions(-)
 
 -- 
-Guillaume Morin <guillaume@morinfr.org>
+2.45.0.rc0.197.gbae5840b3b-goog
+
 
