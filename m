@@ -1,161 +1,148 @@
-Return-Path: <linux-kernel+bounces-167049-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-167050-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1054D8BA3DD
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 01:14:08 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6AEEB8BA3E1
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 01:20:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 41D061C2302C
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 23:14:07 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 85337B235AF
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 23:20:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27E0D1CD2A;
-	Thu,  2 May 2024 23:14:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="q5ndd+Jw"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 21E6F1D69E;
+	Thu,  2 May 2024 23:20:30 +0000 (UTC)
+Received: from sonata.ens-lyon.org (domu-toccata.ens-lyon.fr [140.77.166.138])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6895C57C8D;
-	Thu,  2 May 2024 23:14:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4EDE57C91;
+	Thu,  2 May 2024 23:20:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=140.77.166.138
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714691640; cv=none; b=Nomv8Nzsh9X9qYuIdEAh8uTxYx93xMCeXrqCPmI4jM5IUYlAM5xqcBGmthOqvifMwfk656tt0m5ZoLSmK6nGmSIeBCNX3WdHFgeSJO0mdIOMyIQNCoCc+1rYfHt/kEi76usjSQ9yIN5G/NekxtnqhwFhgKJRumgGxkFzHppyTWY=
+	t=1714692029; cv=none; b=f4DblNArMWx6Lt60PsB1GO3ndxM2/evMozKR4C8ertqABezdOGFQNuGiHzdgfI1EYLyAaMlwSGNaR/kPOySORJW9gjwUh+uEj4FVAjN5RLPZSaVAt+d0PZAQbp8bp9ErXNDni2gHW0WUoGaLDaVSc3EnNQNb3isU3jHwH2VaHFY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714691640; c=relaxed/simple;
-	bh=wiCkGMkZFCPY7COhhD+uOxIgwVixxh6eb67wr+gtu7w=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=R1cdA/fCSBjGeLoAybvkMP6IhXP8j3J1OtTFPwutMDoKxoYLOwPFkNDjSan7fDy+3KGxiXRL6C3PyyBzTpgI3krgJY1e7XXycHzWJ98eKSREWDwkGuTCtMF2e8kQBJdfeoFqM2Kejexg23HQINg0bmCzRqMjqoEvGeHqRIsKAig=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=q5ndd+Jw; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 01A6EC113CC;
-	Thu,  2 May 2024 23:14:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714691640;
-	bh=wiCkGMkZFCPY7COhhD+uOxIgwVixxh6eb67wr+gtu7w=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=q5ndd+JwBcbC6EKT0ZPbC5WvglT2Pwi44cxl+JNRKy9OqcsiSJaaLjwyAk+BgRriZ
-	 GHZZawpoiLGRwS6W1lp3mEoyHl2OtDmyVlMD2Pt3mEqlZg0vU8ZPiyDgy0rgsqiE4k
-	 2Qpb8+c6L8+8NUsSWGll422q/4DWNgJJ1kNeJcT0vHCEdLPG+q0oLQQRCv6h1Fbwm3
-	 38WmU8utWI2LsIGIBIivXqBC+Ddw0LJpFnCobDbX3bYjWzlPyRB4l6r/7V/ir+zQTJ
-	 0oe06PII+JaMaOJ4196VygiDipZ7FFkBRl4E/vzmVT7dthtDVqVbeE9wK4Qy2koRYY
-	 b0hTZeBEgpjYw==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id AA906CE0991; Thu,  2 May 2024 16:13:59 -0700 (PDT)
-Date: Thu, 2 May 2024 16:13:59 -0700
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: Masami Hiramatsu <mhiramat@kernel.org>, linux-kernel@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org, kuba@kernel.org, ast@kernel.org,
-	clm@fb.com, mark.rutland@arm.com, mathieu.desnoyers@efficios.com
-Subject: Re: [PATCH resend ftrace] Asynchronous grace period for
- register_ftrace_direct()
-Message-ID: <135a21d0-1622-418a-b49f-8338a4230ff4@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <ac05be77-2972-475b-9b57-56bef15aa00a@paulmck-laptop>
- <20240502110501.772941f7fdbc1650a9a3bea4@kernel.org>
- <82ae8a24-f9cf-4730-b0d7-43fb3bca2917@paulmck-laptop>
- <20240502173100.42c8a3f7@gandalf.local.home>
+	s=arc-20240116; t=1714692029; c=relaxed/simple;
+	bh=qSzC0oiYTVV82GdoLnMNIv8MQ1QTk/aV9rcuITMmS/Y=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=SIXPU1LY8lQAITeSOKn3nGw5vPBLVEoZ8d09Zjb1zDXe0GXiNs9uXnodTgXY6MSDgy90XuqIm+CvYxUaiwggbjcSmTmgaFNxfmDUASdIw1R//Xg2MSE1oNoegcU4A3sVM7X12PutOFwwDILnTCFk4nznxoL2igoXC2Oi9sVwF0M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ens-lyon.org; spf=pass smtp.mailfrom=bounce.ens-lyon.org; arc=none smtp.client-ip=140.77.166.138
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ens-lyon.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bounce.ens-lyon.org
+Received: from localhost (localhost [127.0.0.1])
+	by sonata.ens-lyon.org (Postfix) with ESMTP id F1358A0361;
+	Fri,  3 May 2024 01:14:19 +0200 (CEST)
+Received: from sonata.ens-lyon.org ([127.0.0.1])
+	by localhost (sonata.ens-lyon.org [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id plRL_BNJxDKg; Fri,  3 May 2024 01:14:19 +0200 (CEST)
+Received: from begin (aamiens-653-1-111-57.w83-192.abo.wanadoo.fr [83.192.234.57])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by sonata.ens-lyon.org (Postfix) with ESMTPSA id C8A42A0360;
+	Fri,  3 May 2024 01:14:19 +0200 (CEST)
+Received: from samy by begin with local (Exim 4.97)
+	(envelope-from <samuel.thibault@ens-lyon.org>)
+	id 1s2fd5-0000000CJFV-15bS;
+	Fri, 03 May 2024 01:14:19 +0200
+From: Samuel Thibault <samuel.thibault@ens-lyon.org>
+To: Tom Parkin <tparkin@katalix.com>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	James Chapman <jchapman@katalix.com>
+Cc: Samuel Thibault <samuel.thibault@ens-lyon.org>,
+	linux-kernel@vger.kernel.org,
+	netdev@vger.kernel.org
+Subject: [PATCH] l2tp: Support several sockets with same IP/port quadruple
+Date: Fri,  3 May 2024 01:14:18 +0200
+Message-ID: <20240502231418.2933925-1-samuel.thibault@ens-lyon.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240502173100.42c8a3f7@gandalf.local.home>
+Content-Transfer-Encoding: 8bit
 
-On Thu, May 02, 2024 at 05:31:00PM -0400, Steven Rostedt wrote:
-> On Wed, 1 May 2024 20:31:06 -0700
-> "Paul E. McKenney" <paulmck@kernel.org> wrote:
-> 
-> > On Thu, May 02, 2024 at 11:05:01AM +0900, Masami Hiramatsu wrote:
-> > > On Wed, 1 May 2024 16:12:37 -0700
-> > > "Paul E. McKenney" <paulmck@kernel.org> wrote:
-> > >   
-> > > > Note that the immediate pressure for this patch should be relieved by the
-> > > > NAPI patch series [1], but this sort of problem could easily arise again.
-> > > > 
-> > > > When running heavy test workloads with KASAN enabled, RCU Tasks grace
-> > > > periods can extend for many tens of seconds, significantly slowing
-> > > > trace registration.  Therefore, make the registration-side RCU Tasks
-> > > > grace period be asynchronous via call_rcu_tasks().  
-> > > 
-> > > Good catch! AFAICS, there is no reason to wait for synchronization
-> > > when adding a new direct trampoline.
-> > > This looks good to me.
-> > > 
-> > > Reviewed-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>  
-> > 
-> > Thank you very much!  I will apply this on my next rebase.
-> 
-> I can take it.
-> 
-> It's not a bug fix but just an performance improvement, so it can go into
-> the next merge window.
+Some l2tp providers will use 1701 as origin port and open several
+tunnels for the same origin and target. On the Linux side, this
+may mean opening several sockets, but then trafic will go to only
+one of them, losing the trafic for the tunnel of the other socket
+(or leaving it up to userland, consuming a lot of cpu%).
 
-Very good, and thank you!
+This can also happen when the l2tp provider uses a cluster, and
+load-balancing happens to migrate from one origin IP to another one,
+for which a socket was already established. Managing reassigning
+tunnels from one socket to another would be very hairy for userland.
 
-I will drop it from RCU as soon as it shows up in either -next or in
-mainline.
+Lastly, as documented in l2tpconfig(1), as client it may be necessary
+to use 1701 as origin port for odd firewalls reasons, which could
+prevent from establishing several tunnels to a l2tp server, for the
+same reason: trafic would get only on one of the two sockets.
 
-							Thanx, Paul
+With the V2 protocol it is however easy to route trafic to the proper
+tunnel, by looking up the tunnel number in the network namespace. This
+fixes the three cases altogether.
 
-> -- Steve
-> 
-> 
-> 
-> > 
-> > > Thank you,
-> > >   
-> > > > [1]
-> > > > https://lore.kernel.org/all/cover.1710877680.git.yan@cloudflare.com/
-> > > > 
-> > > > Reported-by: Jakub Kicinski <kuba@kernel.org>
-> > > > Reported-by: Alexei Starovoitov <ast@kernel.org>
-> > > > Reported-by: Chris Mason <clm@fb.com>
-> > > > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> > > > Cc: Steven Rostedt <rostedt@goodmis.org>
-> > > > Cc: Masami Hiramatsu <mhiramat@kernel.org>
-> > > > Cc: Mark Rutland <mark.rutland@arm.com>
-> > > > Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-> > > > Cc: <linux-trace-kernel@vger.kernel.org>
-> > > > 
-> > > > diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
-> > > > index 6c96b30f3d63b..32ea92934268c 100644
-> > > > --- a/kernel/trace/ftrace.c
-> > > > +++ b/kernel/trace/ftrace.c
-> > > > @@ -5365,6 +5365,13 @@ static void
-> > > > remove_direct_functions_hash(struct ftrace_hash *hash, unsigned long }
-> > > >  }
-> > > >  
-> > > > +static void register_ftrace_direct_cb(struct rcu_head *rhp)
-> > > > +{
-> > > > +	struct ftrace_hash *fhp = container_of(rhp, struct
-> > > > ftrace_hash, rcu); +
-> > > > +	free_ftrace_hash(fhp);
-> > > > +}
-> > > > +
-> > > >  /**
-> > > >   * register_ftrace_direct - Call a custom trampoline directly
-> > > >   * for multiple functions registered in @ops
-> > > > @@ -5463,10 +5470,8 @@ int register_ftrace_direct(struct ftrace_ops
-> > > > *ops, unsigned long addr) out_unlock:
-> > > >  	mutex_unlock(&direct_mutex);
-> > > >  
-> > > > -	if (free_hash && free_hash != EMPTY_HASH) {
-> > > > -		synchronize_rcu_tasks();
-> > > > -		free_ftrace_hash(free_hash);
-> > > > -	}
-> > > > +	if (free_hash && free_hash != EMPTY_HASH)
-> > > > +		call_rcu_tasks(&free_hash->rcu,
-> > > > register_ftrace_direct_cb); 
-> > > >  	if (new_hash)
-> > > >  		free_ftrace_hash(new_hash);  
-> > > 
-> > > 
-> > > -- 
-> > > Masami Hiramatsu (Google) <mhiramat@kernel.org>  
-> 
+Signed-off-by: Samuel Thibault <samuel.thibault@ens-lyon.org>
+---
+ net/l2tp/l2tp_core.c | 21 +++++++++++++++++++++
+ 1 file changed, 21 insertions(+)
+
+diff --git a/net/l2tp/l2tp_core.c b/net/l2tp/l2tp_core.c
+index 8d21ff25f160..128f1146c135 100644
+--- a/net/l2tp/l2tp_core.c
++++ b/net/l2tp/l2tp_core.c
+@@ -794,6 +794,7 @@ static void l2tp_session_queue_purge(struct l2tp_session *session)
+ static int l2tp_udp_recv_core(struct l2tp_tunnel *tunnel, struct sk_buff *skb)
+ {
+ 	struct l2tp_session *session = NULL;
++	struct l2tp_tunnel *orig_tunnel = tunnel;
+ 	unsigned char *ptr, *optr;
+ 	u16 hdrflags;
+ 	u32 tunnel_id, session_id;
+@@ -845,6 +846,20 @@ static int l2tp_udp_recv_core(struct l2tp_tunnel *tunnel, struct sk_buff *skb)
+ 		/* Extract tunnel and session ID */
+ 		tunnel_id = ntohs(*(__be16 *)ptr);
+ 		ptr += 2;
++
++		if (tunnel_id != tunnel->tunnel_id && tunnel->l2tp_net) {
++			/* We are receiving trafic for another tunnel, probably
++			 * because we have several tunnels between the same
++			 * IP/port quadruple, look it up.
++			 */
++			struct l2tp_tunnel *alt_tunnel;
++
++			alt_tunnel = l2tp_tunnel_get(tunnel->l2tp_net, tunnel_id);
++			if (!alt_tunnel)
++				goto pass;
++			tunnel = alt_tunnel;
++		}
++
+ 		session_id = ntohs(*(__be16 *)ptr);
+ 		ptr += 2;
+ 	} else {
+@@ -875,6 +890,9 @@ static int l2tp_udp_recv_core(struct l2tp_tunnel *tunnel, struct sk_buff *skb)
+ 	l2tp_recv_common(session, skb, ptr, optr, hdrflags, length);
+ 	l2tp_session_dec_refcount(session);
+ 
++	if (tunnel != orig_tunnel)
++		l2tp_tunnel_dec_refcount(tunnel);
++
+ 	return 0;
+ 
+ invalid:
+@@ -884,6 +902,9 @@ static int l2tp_udp_recv_core(struct l2tp_tunnel *tunnel, struct sk_buff *skb)
+ 	/* Put UDP header back */
+ 	__skb_push(skb, sizeof(struct udphdr));
+ 
++	if (tunnel != orig_tunnel)
++		l2tp_tunnel_dec_refcount(tunnel);
++
+ 	return 1;
+ }
+ 
+-- 
+2.43.0
+
 
