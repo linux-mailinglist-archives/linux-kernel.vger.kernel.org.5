@@ -1,148 +1,103 @@
-Return-Path: <linux-kernel+bounces-166371-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-166373-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D43898B99B5
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 13:06:11 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2F4B68B99BD
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 13:08:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8B41D1F23D5D
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 11:06:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C4B6A1F243BA
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 11:08:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 451CD6CDCC;
-	Thu,  2 May 2024 11:05:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A12F604C8;
+	Thu,  2 May 2024 11:08:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ftuPKS2c"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Xch1aCry"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED8F65FEF2;
-	Thu,  2 May 2024 11:05:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.10
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B7735D903;
+	Thu,  2 May 2024 11:08:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714647941; cv=none; b=QHIcBTsMeRKPjzg2cR9KiBWyHeRIURKzkC7qdzLyhRXml0ebE36uYfo4ojmdK59CXVBNuW56CQ19lVglD4aMjnaU0eoGw4BZVgFImSTgkuRmObRdFNjVlEYfli4h1jXWxXW0pNB8W5A8/QGUszOEBGEx2jt4wPGpN8BVqnZuzOA=
+	t=1714648126; cv=none; b=rxraOPvDiYPxmAAehG7Nfl0sV1YokpkZU9/3zuGXaXVYE/Nt3js0AM7GhafP1tIrSVfcJi0ioWvOdB5iL5e/K01f9fk96+z1gLu5dQDzoDvKJCieBbctfr0SNCqxicZj1PKmTcilwG5zbe//crPDxCqUit6H6LvtqTIwPzMVMQQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714647941; c=relaxed/simple;
-	bh=EluTdDMIMNhKZ/EkpupaemH1PZsrZoO5k/Ow1fEItns=;
-	h=Message-ID:Date:MIME-Version:To:Cc:References:From:Subject:
-	 In-Reply-To:Content-Type; b=hgudez0EHh1lSeBgMrnyQ6P9F1uXbbhzXjgkjErC+XGidjJggXOQuOFhqRUe7FScZ8oNkbb02EnlTlY+cm7+T82zHuDJ80hmIVfNQhBMV3G7jIVcFvVruLygQHSbb62YEZhXn/LmQvsAYnwhp/T+Vv1L5n2kCBDEoxzyzvXvEe4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ftuPKS2c; arc=none smtp.client-ip=192.198.163.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1714647940; x=1746183940;
-  h=message-id:date:mime-version:to:cc:references:from:
-   subject:in-reply-to:content-transfer-encoding;
-  bh=EluTdDMIMNhKZ/EkpupaemH1PZsrZoO5k/Ow1fEItns=;
-  b=ftuPKS2c6s6Q6BcO03FR5MvmaWT642aql9qTd4VwhhM615excS1TAHcF
-   c9zmc2rp/d0eBS0bjC/PpknfcH5DXWZ9MzCAskdkPdyMLUx+W88fFRv8A
-   GNrGBdEeB3YFR5ywBb8QUnjYDV7ylN+kCa+mErnVhsnOAOeTw9f6dfkou
-   T8LVGsgHgUnIYaEeN/yyJMYy3wfWIO1wtlVVs5LCPc3W1CVfFTsIc2AYj
-   yj3f4C0tAdSo09qyIPsEnNGI4e+qnKQBawITc/+WQpVfk3sMjS/+7sMgL
-   SzPA72pIQdUBhv1bfnYw1btn3TkEE/U/AnrehM2eNl4AW99WmaXG1oPuC
-   Q==;
-X-CSE-ConnectionGUID: oUmZip18Tjm7AxchHOyvjA==
-X-CSE-MsgGUID: QnUiwb2NQxGOBAcRY3am0g==
-X-IronPort-AV: E=McAfee;i="6600,9927,11061"; a="21813489"
-X-IronPort-AV: E=Sophos;i="6.07,247,1708416000"; 
-   d="scan'208";a="21813489"
-Received: from fmviesa002.fm.intel.com ([10.60.135.142])
-  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 May 2024 04:05:39 -0700
-X-CSE-ConnectionGUID: RNrykgpXQNOhcPL/BW4gnA==
-X-CSE-MsgGUID: 8wdqEQM1TVOscvvgR0xz0w==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,247,1708416000"; 
-   d="scan'208";a="50280954"
-Received: from mattu-haswell.fi.intel.com (HELO [10.237.72.199]) ([10.237.72.199])
-  by fmviesa002.fm.intel.com with ESMTP; 02 May 2024 04:05:34 -0700
-Message-ID: <ddd682da-5cfd-db09-e316-3c54939caf90@linux.intel.com>
-Date: Thu, 2 May 2024 14:07:26 +0300
+	s=arc-20240116; t=1714648126; c=relaxed/simple;
+	bh=8K4ujeYhTAhKF8D1gB1WkqlDa8ad4YIK/nV9mxb+ubU=;
+	h=MIME-Version:From:Date:Message-ID:Subject:To:Cc:Content-Type; b=JXuPCBAnnFszEOC/c4P70DAOaTaj2k4e7+hdXzff29wKII+LmbAm8VA3TF/pMcgLD2Sg/bUxnbN+owzARNVTUfze27KRuah18ejAi5eTv9sEMaW0HM90h3WhQKzwF+83+UcijKXft7YtjOPWZz/ZUouK5eCYZbidncoVnsEITOE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Xch1aCry; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 09FB1C32789;
+	Thu,  2 May 2024 11:08:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714648126;
+	bh=8K4ujeYhTAhKF8D1gB1WkqlDa8ad4YIK/nV9mxb+ubU=;
+	h=From:Date:Subject:To:Cc:From;
+	b=Xch1aCryETzgJNn5QhGZcIl+hrYm/8q+8iGpMNSEadG8jdgXj4l8beI0Va8LK+za9
+	 6u6n51Xrji4oNk7v3xY3Hrhvpj/otTcmucJnfftr2ct+s1X2pJSEHYLD7dMUOsCo7j
+	 Yfd3vs6csyzFhdyStor7UThIuuDtW5Mrcs6hLguygfULpyP61PMrwkA0lbbl9dYBY9
+	 7woK1SdHk0yguXtN6Z1jW1tAanAuWmWT/rQo04Q9bUdlv6xIxaR78YJmA86EoZh0PM
+	 PQIPy36ZfU+tTcDO3iesTFsILknaLAV5FVeAjuVZ/XI3p5rsnvcnAuU5WUNg5FcD68
+	 RFZrW7SqGo7DA==
+Received: by mail-oo1-f47.google.com with SMTP id 006d021491bc7-5afbcf21abdso853346eaf.1;
+        Thu, 02 May 2024 04:08:46 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCWCqKJSiIehH6/vLGJtFAFkB5A4eMzh8+vL2WarH5Xwzl/V+Rs88lOhGnkHd3AY9ECYc2wlb3rpCrQ+6ZkRH+8zGguhl7Om2UD8p7yY
+X-Gm-Message-State: AOJu0YykXYEZ9HBVXEc6qEhHBXdE7H8Yxad+dgW994WidueBDCVu8kdH
+	VQXozpiMy8qwemtCL06efqnVPFWUxbAEesuDg53sGA9PnwrDy6sYC4kOwj8ArbjzCjXStyy34dx
+	4mTINwam63UYASkn2rg4FruDlEPM=
+X-Google-Smtp-Source: AGHT+IF/nIdqFeA4jayC/Sos9U+g1FOb02A/CEFxDNMAhuoOi3HEctyS0uDfUx3Fc/O8DvAf6b84Dou4PbdImKnUN4s=
+X-Received: by 2002:a4a:9887:0:b0:5aa:3e4f:f01e with SMTP id
+ a7-20020a4a9887000000b005aa3e4ff01emr5105162ooj.1.1714648125193; Thu, 02 May
+ 2024 04:08:45 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Firefox/102.0 Thunderbird/102.13.0
-Content-Language: en-US
-To: Wesley Cheng <quic_wcheng@quicinc.com>, srinivas.kandagatla@linaro.org,
- mathias.nyman@intel.com, perex@perex.cz, conor+dt@kernel.org,
- corbet@lwn.net, lgirdwood@gmail.com, andersson@kernel.org,
- krzysztof.kozlowski+dt@linaro.org, gregkh@linuxfoundation.org,
- Thinh.Nguyen@synopsys.com, broonie@kernel.org, bgoswami@quicinc.com,
- tiwai@suse.com, robh@kernel.org, konrad.dybcio@linaro.org
-Cc: linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
- linux-sound@vger.kernel.org, linux-usb@vger.kernel.org,
- linux-arm-msm@vger.kernel.org, linux-doc@vger.kernel.org,
- alsa-devel@alsa-project.org
-References: <20240425215125.29761-1-quic_wcheng@quicinc.com>
- <20240425215125.29761-7-quic_wcheng@quicinc.com>
-From: Mathias Nyman <mathias.nyman@linux.intel.com>
-Subject: Re: [PATCH v20 06/41] usb: host: xhci-sideband: Expose a sideband
- interrupter enable API
-In-Reply-To: <20240425215125.29761-7-quic_wcheng@quicinc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Date: Thu, 2 May 2024 13:08:31 +0200
+X-Gmail-Original-Message-ID: <CAJZ5v0gqRGw3NEOVXH4vwERcy-kO+tihXBmP74UJGEhsTMc_BA@mail.gmail.com>
+Message-ID: <CAJZ5v0gqRGw3NEOVXH4vwERcy-kO+tihXBmP74UJGEhsTMc_BA@mail.gmail.com>
+Subject: [GIT PULL] Thermal control fixes for v6.9-rc7
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Linux PM <linux-pm@vger.kernel.org>, 
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Daniel Lezcano <daniel.lezcano@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 
-On 26.4.2024 0.50, Wesley Cheng wrote:
-> Some use cases maybe require that the secondary interrupter's events to
-> be handled by the OS.  In this case, configure the IMOD and the
-> skip_events property to enable the interrupter's events.  By default,
-> assume that the secondary interrupter doesn't want to enable OS event
-> handling.
-> 
-> Signed-off-by: Wesley Cheng <quic_wcheng@quicinc.com>
-> ---
->   drivers/usb/host/xhci-sideband.c  | 28 ++++++++++++++++++++++++++++
->   include/linux/usb/xhci-sideband.h |  2 ++
->   2 files changed, 30 insertions(+)
-> 
-> diff --git a/drivers/usb/host/xhci-sideband.c b/drivers/usb/host/xhci-sideband.c
-> index 255feae33c6e..6fdae9840c11 100644
-> --- a/drivers/usb/host/xhci-sideband.c
-> +++ b/drivers/usb/host/xhci-sideband.c
-> @@ -237,6 +237,30 @@ xhci_sideband_get_event_buffer(struct xhci_sideband *sb)
->   }
->   EXPORT_SYMBOL_GPL(xhci_sideband_get_event_buffer);
->   
-> +/**
-> + * xhci_sideband_enable_interrupt - enable interrupt for secondary interrupter
-> + * @sb: sideband instance for this usb device
-> + * @imod_interval: number of event ring segments to allocate
-> + *
-> + * Enables OS owned event handling for a particular interrupter if client
-> + * requests for it.  In addition, set the IMOD interval for this particular
-> + * interrupter.
-> + *
-> + * Returns 0 on success, negative error otherwise
-> + */
-> +int xhci_sideband_enable_interrupt(struct xhci_sideband *sb, u32 imod_interval)
-> +{
-> +	if (!sb || !sb->ir)
-> +		return -ENODEV;
-> +
-> +	xhci_set_interrupter_moderation(sb->ir, imod_interval);
+Hi Linus,
 
-Is there a need to adjust the moderation after initial setup?
+Please pull from the tag
 
-If not then maybe we could pass the imod_interval as a parameter to
-xhci_create_secondary_interrupter(), and avoid exporting
-xhci_set_interrupter_moderation()
+ git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git \
+ thermal-6.9-rc7
+
+with top-most commit d351eb0ab04c3e8109895fc33250cebbce9c11da
+
+ thermal/debugfs: Prevent use-after-free from occurring after cdev removal
+
+on top of commit ed30a4a51bb196781c8058073ea720133a65596f
+
+ Linux 6.9-rc5
+
+to receive thermal control fixes for 6.9-rc7.
+
+These fix a memory leak and a few locking issues (that may cause the
+kernel to crash in principle if all goes wrong) in the thermal debug
+code introduced during the 6.8 development cycle.
+
+Thanks!
 
 
-> +	sb->ir->skip_events = false;
-> +	xhci_enable_interrupter(sb->ir);
-> +
-> +	return 0;
-> +}
-> +EXPORT_SYMBOL_GPL(xhci_sideband_enable_interrupt);
+---------------
 
-I can't find the place where xhci_sideband_enable_interrupt() is called in
-this series. How is it planned to be used?
+Rafael J. Wysocki (3):
+      thermal/debugfs: Free all thermal zone debug memory on zone removal
+      thermal/debugfs: Fix two locking issues with thermal zone debug
+      thermal/debugfs: Prevent use-after-free from occurring after cdev removal
 
-Thanks
-Mathias
+---------------
+
+ drivers/thermal/thermal_debugfs.c | 59 +++++++++++++++++++++++++++++----------
+ 1 file changed, 45 insertions(+), 14 deletions(-)
 
