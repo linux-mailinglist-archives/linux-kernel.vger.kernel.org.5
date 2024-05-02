@@ -1,106 +1,237 @@
-Return-Path: <linux-kernel+bounces-166478-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-166477-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B73768B9B3E
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 15:03:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 603738B9B3B
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 15:02:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E79DE1C20FBE
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 13:03:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 80A781C21CDE
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 13:02:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 30A6883CD7;
-	Thu,  2 May 2024 13:03:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dGfl1koh"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE87483CD0;
+	Thu,  2 May 2024 13:02:32 +0000 (UTC)
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6448182498;
-	Thu,  2 May 2024 13:03:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 55106824A7;
+	Thu,  2 May 2024 13:02:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714654981; cv=none; b=Tj4y7oPGEZGyeIsTUsE31a+CXO0QuyYfWSimmj1QsNZi4R1bXknbdTG8Zp4vx9CQUuoYsaHfYX3gjhj7q+g8d48TxWE9YdpIgU9RhQtE0K+WNV0j/uimHtm+3QLUcYwODF9PUpJGoHliYNTHkzi/ZfDXsZnpewtlS0wZXno36R0=
+	t=1714654952; cv=none; b=N0W8oesObY5Xlk5b5vngpnC7qkbEu5WHRlG840haVl7NrUZ7q9+PQnUgy80WO2O3oPmAs2vEglOqICA1tU23JzCwMA/fXHCGqB+rDDNezaO5JFbEg3xIAyg0OeKAPLXnPlgyNT+idZD3qORitO0y1X91TWHnHRhd7oqz3LiUCac=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714654981; c=relaxed/simple;
-	bh=3owJXZqQKDlXM66fGaGPZa02w52uxImomYF9LMzgu3U=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Z2VwANajyowWk39A/X3wTtHCt6RRtVMmXyeaY29+vuBDAihjqWA2cwVLdOnhxHEkBhLwiXXsUTKKAHdp6nhAkvssdX5y8P9+/2imyV1348ljgbA4kvW2d6O11WZMpV9boGfytgfSRoLXH2A8rC1/g7Yrv4mDfQ3PFOGrCUGKZ48=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dGfl1koh; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D5EA2C113CC;
-	Thu,  2 May 2024 13:02:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714654981;
-	bh=3owJXZqQKDlXM66fGaGPZa02w52uxImomYF9LMzgu3U=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=dGfl1koh6Y7gdMSVQbhEOifZUKx3KCVuEOMk4QSZwo6EGVpnsvBYbzXNQ3RrhPKHF
-	 gTtVKsJ/SBShnz5kt0UynrqEf5oK8gNabqpzKUXbSEoKGWm6sBaAn2eMvNemWyQD49
-	 EIuK1xJTQ/aDKXzsqlpJL+B4EB/cjMXoUPWIU0U/pI4YHdGZsXQ0wKYTEH5Pf6T4Gk
-	 WMI6VlyjgOF7G/+tA68fLLdapkmJ1LtkPhPsuw8EDSzuUMGPhaRqUqmrHLXtQ23qGh
-	 bDjoU4jVQ2GTc3Co5UPzoXZiweLtquwjbbootjM6vNyjpkLy6WVV061JdZUCzBZZhX
-	 KeQymeCCKG1aA==
-From: Christian Brauner <brauner@kernel.org>
-To: Christian Goettsche <cgoettsche@seltendoof.de>
-Cc: Christian Brauner <brauner@kernel.org>,
-	Christian Goettsche <cgzones@googlemail.com>,
-	Jan Kara <jack@suse.com>,
-	Alexander Viro <viro@zeniv.linux.org.uk>,
-	Jan Kara <jack@suse.cz>,
-	Arnd Bergmann <arnd@arndb.de>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Kees Cook <keescook@chromium.org>,
-	Geert Uytterhoeven <geert@linux-m68k.org>,
-	Casey Schaufler <casey@schaufler-ca.com>,
-	peterz@infradead.org,
-	Sohil Mehta <sohil.mehta@intel.com>,
-	Miklos Szeredi <mszeredi@redhat.com>,
-	Mark Rutland <mark.rutland@arm.com>,
-	linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-api@vger.kernel.org
-Subject: Re: [PATCH] fs/xattr: unify *at syscalls
-Date: Thu,  2 May 2024 15:02:32 +0200
-Message-ID: <20240502-nagel-geschirr-33c262989d99@brauner>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240430151917.30036-1-cgoettsche@seltendoof.de>
-References: <20240430151917.30036-1-cgoettsche@seltendoof.de>
+	s=arc-20240116; t=1714654952; c=relaxed/simple;
+	bh=XuDqN2clZKE8rpRfrTJJLt2NhYMUnJTCnv3AGJMBtO8=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=nrTKqmDN4MWSQ10zbyM8ydPtFbHgJ7gZKFNxIiHWfdylC6yST7qLa9Rk2Fgs+1tAhlM+dJrTtSocUJTqkag3FVsl4viLyS4WnhHBbbungZ0qxOWzqKdlMRq6D1fusDoUJoe/q9+a/qHtSSg/4tGyIcBScc3nTOgXkwdRhFJDUl0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 36D7AC113CC;
+	Thu,  2 May 2024 13:02:30 +0000 (UTC)
+Date: Thu, 2 May 2024 09:03:15 -0400
+From: Steven Rostedt <rostedt@goodmis.org>
+To: LKML <linux-kernel@vger.kernel.org>, Linux Trace Kernel
+ <linux-trace-kernel@vger.kernel.org>
+Cc: Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers
+ <mathieu.desnoyers@efficios.com>, Tze-nan wu <Tze-nan.Wu@mediatek.com>
+Subject: [PATCH v2] eventfs/tracing: Add callback for release of an
+ eventfs_inode
+Message-ID: <20240502090315.448cba46@gandalf.local.home>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1012; i=brauner@kernel.org; h=from:subject:message-id; bh=3owJXZqQKDlXM66fGaGPZa02w52uxImomYF9LMzgu3U=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMaQZ9/3+rJRo8l5+5hvv6R9i3GeXzFk4N/pT4gfLzWe8g 1UPSLSydJSyMIhxMciKKbI4tJuEyy3nqdhslKkBM4eVCWQIAxenAEwkqY7hr2xTsuBW11WaJRoM EWK6z47bf/b77y2o2//qawSv0d7HFowMf7u3XqjUnnEzdfKGX5U7Ei49vvWJMYPx7bPQ2eeT51T fYQUA
-X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Tue, 30 Apr 2024 17:19:14 +0200, Christian Göttsche wrote:
-> Use the same parameter ordering for all four newly added *xattrat
-> syscalls:
-> 
->     dirfd, pathname, at_flags, ...
-> 
-> Also consistently use unsigned int as the type for at_flags.
-> 
-> [...]
+From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-Applied to the vfs.xattr branch of the vfs/vfs.git tree.
-Patches in the vfs.xattr branch should appear in linux-next soon.
+Synthetic events create and destroy tracefs files when they are created
+and removed. The tracing subsystem has its own file descriptor
+representing the state of the events attached to the tracefs files.
+There's a race between the eventfs files and this file descriptor of the
+tracing system where the following can cause an issue:
 
-Please report any outstanding bugs that were missed during review in a
-new review to the original patch series allowing us to drop it.
+With two scripts 'A' and 'B' doing:
 
-It's encouraged to provide Acked-bys and Reviewed-bys even though the
-patch has now been applied. If possible patch trailers will be updated.
+  Script 'A':
+    echo "hello int aaa" > /sys/kernel/tracing/synthetic_events
+    while :
+    do
+      echo 0 > /sys/kernel/tracing/events/synthetic/hello/enable
+    done
 
-Note that commit hashes shown below are subject to change due to rebase,
-trailer updates or similar. If in doubt, please check the listed branch.
+  Script 'B':
+    echo > /sys/kernel/tracing/synthetic_events
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git
-branch: vfs.xattr
+Script 'A' creates a synthetic event "hello" and then just writes zero
+into its enable file.
 
-[1/1] fs/xattr: unify *at syscalls
-      https://git.kernel.org/vfs/vfs/c/1d5e73c8c531
+Script 'B' removes all synthetic events (including the newly created
+"hello" event).
+
+What happens is that the opening of the "enable" file has:
+
+ {
+	struct trace_event_file *file = inode->i_private;
+	int ret;
+
+	ret = tracing_check_open_get_tr(file->tr);
+ [..]
+
+But deleting the events frees the "file" descriptor, and a "use after
+free" happens with the dereference at "file->tr".
+
+The file descriptor does have a reference counter, but there needs to be a
+way to decrement it from the eventfs when the eventfs_inode is removed
+that represents this file descriptor.
+
+Add an optional "release" callback to the eventfs_entry array structure,
+that gets called when the eventfs file is about to be removed. This allows
+for the creating on the eventfs file to increment the tracing file
+descriptor ref counter. When the eventfs file is deleted, it can call the
+release function that will call the put function for the tracing file
+descriptor.
+
+This will protect the tracing file from being freed while a eventfs file
+that references it is being opened.
+
+Link: https://lore.kernel.org/linux-trace-kernel/20240426073410.17154-1-Tze-nan.Wu@mediatek.com/
+
+Cc: stable@vger.kernel.org
+Fixes: 5790b1fb3d672 ("eventfs: Remove eventfs_file and just use eventfs_inode")
+Reported-by: Tze-nan wu <Tze-nan.Wu@mediatek.com>
+Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+---
+Changes since v1: https://lore.kernel.org/linux-trace-kernel/20240430142327.7bff81ba@gandalf.local.home/
+
+- Do not call release function on error creating the eventfs_inode
+
+ fs/tracefs/event_inode.c    | 23 +++++++++++++++++++++--
+ include/linux/tracefs.h     |  3 +++
+ kernel/trace/trace_events.c | 12 ++++++++++++
+ 3 files changed, 36 insertions(+), 2 deletions(-)
+
+diff --git a/fs/tracefs/event_inode.c b/fs/tracefs/event_inode.c
+index 894c6ca1e500..f5510e26f0f6 100644
+--- a/fs/tracefs/event_inode.c
++++ b/fs/tracefs/event_inode.c
+@@ -84,10 +84,17 @@ enum {
+ static void release_ei(struct kref *ref)
+ {
+ 	struct eventfs_inode *ei = container_of(ref, struct eventfs_inode, kref);
++	const struct eventfs_entry *entry;
+ 	struct eventfs_root_inode *rei;
+ 
+ 	WARN_ON_ONCE(!ei->is_freed);
+ 
++	for (int i = 0; i < ei->nr_entries; i++) {
++		entry = &ei->entries[i];
++		if (entry->release)
++			entry->release(entry->name, ei->data);
++	}
++
+ 	kfree(ei->entry_attrs);
+ 	kfree_const(ei->name);
+ 	if (ei->is_events) {
+@@ -112,6 +119,18 @@ static inline void free_ei(struct eventfs_inode *ei)
+ 	}
+ }
+ 
++/*
++ * Called when creation of an ei fails, do not call release() functions.
++ */
++static inline void cleanup_ei(struct eventfs_inode *ei)
++{
++	if (ei) {
++		/* Set nr_entries to 0 to prevent release() function being called */
++		ei->nr_entries = 0;
++		free_ei(ei);
++	}
++}
++
+ static inline struct eventfs_inode *get_ei(struct eventfs_inode *ei)
+ {
+ 	if (ei)
+@@ -734,7 +753,7 @@ struct eventfs_inode *eventfs_create_dir(const char *name, struct eventfs_inode
+ 
+ 	/* Was the parent freed? */
+ 	if (list_empty(&ei->list)) {
+-		free_ei(ei);
++		cleanup_ei(ei);
+ 		ei = NULL;
+ 	}
+ 	return ei;
+@@ -835,7 +854,7 @@ struct eventfs_inode *eventfs_create_events_dir(const char *name, struct dentry
+ 	return ei;
+ 
+  fail:
+-	free_ei(ei);
++	cleanup_ei(ei);
+ 	tracefs_failed_creating(dentry);
+ 	return ERR_PTR(-ENOMEM);
+ }
+diff --git a/include/linux/tracefs.h b/include/linux/tracefs.h
+index 7a5fe17b6bf9..d03f74658716 100644
+--- a/include/linux/tracefs.h
++++ b/include/linux/tracefs.h
+@@ -62,6 +62,8 @@ struct eventfs_file;
+ typedef int (*eventfs_callback)(const char *name, umode_t *mode, void **data,
+ 				const struct file_operations **fops);
+ 
++typedef void (*eventfs_release)(const char *name, void *data);
++
+ /**
+  * struct eventfs_entry - dynamically created eventfs file call back handler
+  * @name:	Then name of the dynamic file in an eventfs directory
+@@ -72,6 +74,7 @@ typedef int (*eventfs_callback)(const char *name, umode_t *mode, void **data,
+ struct eventfs_entry {
+ 	const char			*name;
+ 	eventfs_callback		callback;
++	eventfs_release			release;
+ };
+ 
+ struct eventfs_inode;
+diff --git a/kernel/trace/trace_events.c b/kernel/trace/trace_events.c
+index 52f75c36bbca..6ef29eba90ce 100644
+--- a/kernel/trace/trace_events.c
++++ b/kernel/trace/trace_events.c
+@@ -2552,6 +2552,14 @@ static int event_callback(const char *name, umode_t *mode, void **data,
+ 	return 0;
+ }
+ 
++/* The file is incremented on creation and freeing the enable file decrements it */
++static void event_release(const char *name, void *data)
++{
++	struct trace_event_file *file = data;
++
++	event_file_put(file);
++}
++
+ static int
+ event_create_dir(struct eventfs_inode *parent, struct trace_event_file *file)
+ {
+@@ -2566,6 +2574,7 @@ event_create_dir(struct eventfs_inode *parent, struct trace_event_file *file)
+ 		{
+ 			.name		= "enable",
+ 			.callback	= event_callback,
++			.release	= event_release,
+ 		},
+ 		{
+ 			.name		= "filter",
+@@ -2634,6 +2643,9 @@ event_create_dir(struct eventfs_inode *parent, struct trace_event_file *file)
+ 		return ret;
+ 	}
+ 
++	/* Gets decremented on freeing of the "enable" file */
++	event_file_get(file);
++
+ 	return 0;
+ }
+ 
+-- 
+2.43.0
+
 
