@@ -1,223 +1,194 @@
-Return-Path: <linux-kernel+bounces-166406-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-166407-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EDF408B9A34
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 13:43:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id AA7028B9A36
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 13:44:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 083371C21015
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 11:43:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CABD61C20F95
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 11:44:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3856175817;
-	Thu,  2 May 2024 11:43:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 74E686A8AC;
+	Thu,  2 May 2024 11:44:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="VQERwyiQ";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="m/zKBDVi"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="En+nyEsU"
+Received: from mail-yb1-f172.google.com (mail-yb1-f172.google.com [209.85.219.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B39FC60DE9;
-	Thu,  2 May 2024 11:43:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0DC3263417
+	for <linux-kernel@vger.kernel.org>; Thu,  2 May 2024 11:44:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714650189; cv=none; b=Ce4vhSk4O0jIVcimX0N4P42WUkWb9wUlpnKCMX4rLha5wz0/2bkl21zrT4xSR+sQ/JAuPP/hLyJdiBZkawFlxWN4q70ZhRz3OLdNRi+BQ3POPhBWoKc4ei7qDwjbg+chG39WYP9yAxP9ZMCBq8eEg8wCE09E0MGSecJ6byuYqr8=
+	t=1714650278; cv=none; b=nR+hzAIjDS4OOmeYchHBCOBrh8Zgy70NIM9hKUKa+BpddqiSSEhOhEQtc5ZPRB/z8LWwOC/jM0Q0HggkKPIlMIerGBm9qN5/AoyWL1FHGthWLnoWOiAWWBHBrSI0/ShHk0Bkl9tKuZVQIIjtkDPH6zNvbpa+nV6k2Zolkc24hRc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714650189; c=relaxed/simple;
-	bh=c5POMlepPRVoF1s5Ffqtb5y0sEw0/bvEI/jA+bNF9EM=;
-	h=Date:From:To:Subject:Cc:In-Reply-To:References:MIME-Version:
-	 Message-ID:Content-Type; b=NwSfuoFwFa1ccHyAZjC/TNDobtX0x2hU/wR6rXeC6NDhqandRwNgUCv+K7FioopoSRWymcl5ADmVXpJyACOB87fI8UIxg7oKqwHa4u3bJAl0y+Q/A4Ltt0ZwN6LBR3z7J4m73TEeaiczBaEyQei5Z97C5ejJbZzDCPZ4u5DHvmA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=VQERwyiQ; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=m/zKBDVi; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Thu, 02 May 2024 11:43:04 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1714650185;
-	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=8WmSmEVUnGOCD2Zf9f9N8l2nvmwjYFBRuFodFEopZsE=;
-	b=VQERwyiQjAlU+0TInsUtxVQtJv0FieqiUarPLmqIPpxowt2Xi5LzmHyIg4XWOQ9Vuyee+g
-	K1YEydiZbyO4U1FAZVTmxli5B0KAMM43kLF/lKCohB6dRYPOimUWz16bDjubvzWZ8RSPKb
-	0sX1yKiO71Bjt73Z210RuJsynHahmclYwabdZ/EJ8GFhWidoHfQN7FE78Le6MpoPbPBoqN
-	IX4u5ck70qBW0+ZG6MgIfR/D1G96nuVoxB4ILO4KrXLAETlHwVyVaSigYUEv2+8Jj0UiYn
-	zhGkEprpvx7gsT2TvAOFE9S8Yeio2ivXgCrwDstgi5XIDti9/dgHz3VyMwsz8g==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1714650185;
-	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=8WmSmEVUnGOCD2Zf9f9N8l2nvmwjYFBRuFodFEopZsE=;
-	b=m/zKBDVi8steFp9ml8YT/LkalkrJgF+QB570UQCOinXvQqA0keUwAkq8ifytAdV0h+wDlF
-	0OT/e53zun6bPBDQ==
-From: "tip-bot2 for Dhananjay Ugwekar" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To: linux-tip-commits@vger.kernel.org
-Subject: [tip: perf/core] perf/x86/rapl: Fix the energy-pkg event for AMD CPUs
-Cc: Dhananjay Ugwekar <Dhananjay.Ugwekar@amd.com>,
- Ingo Molnar <mingo@kernel.org>, x86@kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20240502095115.177713-3-Dhananjay.Ugwekar@amd.com>
-References: <20240502095115.177713-3-Dhananjay.Ugwekar@amd.com>
+	s=arc-20240116; t=1714650278; c=relaxed/simple;
+	bh=3B5U1op7r0DTmrEG2HdH2GbKAb31+8iCOdD7rSVpnX0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=LLnCaWN3DYjZIx2pCcZ/T8JKFEZXYiyDmhGeNSPwbhWAax8KDV5X2TP6Re8eJMFvhAkQSHOnyJLiyppeF7z6gpomLV8y5FiVp+qhIT7osRNsZd3lgyjd5JaijQfAGAqc834iM1vGuTdGX+INGRQsZgZL7r1Ach93EwNN60ED/Jo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=En+nyEsU; arc=none smtp.client-ip=209.85.219.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yb1-f172.google.com with SMTP id 3f1490d57ef6-de54b28c41eso8784423276.0
+        for <linux-kernel@vger.kernel.org>; Thu, 02 May 2024 04:44:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1714650276; x=1715255076; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=hs0Nc0RqDY6OiurlpPpTgb9tgJy9jZNX1Jp6pCKzxxM=;
+        b=En+nyEsUPc1JwEzc2k+SXZw9ecO8ayict3LYiA2Zoqb4JPZAPhgWobwBFAXXiCX/+4
+         nDBldw62lP9U/O0o6/7VVHSp++1CfC5j8+cTYD9cL/x+GirTXyAjbpSxqUU0rI3Hhp4S
+         zUy4vP+5/aAXlCRMVGpGCwWC1KEwCgyiZy3IST6S/YBDwQuJDagdpqppxct8nQw4dXra
+         lO+aMKeIcPAXRMWs/oWrKnOXykg3k46r8ZkDUbWgV9J2kT6n4D2OqRCZsbl4nopYFGNJ
+         IEjROQEVwzkGzqUyl3vdCxPzuYh/2J6JDO3DVACT2SQdz5dVezziZoZzVWYJ7RwJcDc7
+         GATA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714650276; x=1715255076;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=hs0Nc0RqDY6OiurlpPpTgb9tgJy9jZNX1Jp6pCKzxxM=;
+        b=E/89836WSocx7GujdzdFtg7IZWuaRvH0eWiuX9u3zbyiIqXjilHa30w8dhclkeMQZl
+         eOLZXiK9xaak+0Dge7HoSySjxsN28edYisyDJpYNtEDS/+PKfT3n7Qf5FnCYoz2iY+VG
+         z9Yn8/3oIGen/k6bYd8+FFF4d4+UN6dMDR7zGaUUXi/mxJvHKtSubw27q8JitUdFJP3O
+         Zpe15xz2GAuADcl6McYEAZkfFDCxONzBFB5TvDYNiBkws5ex8JKkaz5iFdFko+2Jqxwh
+         OHZItICZ9SlpfN8IxW5Q3ruMk5PtEBjxl7/h7UfuCGZHKbhoDVJONMnFek7+aP8eV218
+         Q4kw==
+X-Forwarded-Encrypted: i=1; AJvYcCXgFYd14ReiZntyZoUFCf/BTGeZ62o5RUGzNpJkLMVwD8PFclgZnSyUW7PeSrZ6jabIeTjl4/HQdV74eVwb8v8skJDrkAipdnR3pUnB
+X-Gm-Message-State: AOJu0YxsIQcudO2kX3f4G0d7ZlRHTN/pvoBhBBmoz+DYnckuHxpWG4VP
+	evVk5P6SZmHP2ygG5Hs8G5jTcv9lFJ6dawbALm+2260pb8eUf3d2NfCOnsdGaLd9lJ34R0BzMrl
+	GPZjcMpjLsEs7Us8bnE8OX/1Kb+7B0GDoc0TsSQ==
+X-Google-Smtp-Source: AGHT+IEFG+Ydm81rpI162xZeCq5BDZoBPUrt3LS/LIQol86OfQuy68hn7gucOlNacue4gvj7osvZue/EPKC5+EStroY=
+X-Received: by 2002:a5b:52:0:b0:de4:738b:c2ea with SMTP id e18-20020a5b0052000000b00de4738bc2eamr5728494ybp.24.1714650275853;
+ Thu, 02 May 2024 04:44:35 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <171465018456.10875.10497808495496531229.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe:
- Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Precedence: bulk
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+References: <20240502090326.21489-1-quic_kbajaj@quicinc.com>
+ <CAA8EJprPLqj7GQM0vmN25U2+3kDow=NH8=-VC2N-0p92Ub3iCA@mail.gmail.com> <5134c012-60b1-4c07-9e1f-c48c3d88d404@quicinc.com>
+In-Reply-To: <5134c012-60b1-4c07-9e1f-c48c3d88d404@quicinc.com>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date: Thu, 2 May 2024 14:44:24 +0300
+Message-ID: <CAA8EJppK7fMmX_cePhaK4Xy-+gfZfYZSWJDbEnVvq_60B32Rig@mail.gmail.com>
+Subject: Re: [PATCH v3 0/3] Add devicetree support of USB for QDU/QRU1000
+To: Krishna Kurapati PSSNV <quic_kriskura@quicinc.com>
+Cc: Komal Bajaj <quic_kbajaj@quicinc.com>, Bjorn Andersson <andersson@kernel.org>, 
+	Konrad Dybcio <konrad.dybcio@linaro.org>, Rob Herring <robh@kernel.org>, 
+	Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>, linux-arm-msm@vger.kernel.org, 
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Bjorn Andersson <quic_bjorande@quicinc.com>, quic_wcheng@quicinc.com, 
+	quic_ppratap@quicinc.com, Jack Pham <quic_jackp@quicinc.com>
+Content-Type: text/plain; charset="UTF-8"
 
-The following commit has been merged into the perf/core branch of tip:
+On Thu, 2 May 2024 at 12:48, Krishna Kurapati PSSNV
+<quic_kriskura@quicinc.com> wrote:
+>
+>
+>
+> On 5/2/2024 2:39 PM, Dmitry Baryshkov wrote:
+> > On Thu, 2 May 2024 at 12:04, Komal Bajaj <quic_kbajaj@quicinc.com> wrote:
+> >>
+> >> This series adds devicetree nodes to support interconnects and usb for qdu/qru1000.
+> >> This is based on previously sent driver series[1].
+> >>
+> >> ------
+> >> Changes in v3:
+> >> * As per comments on upstream[2], to get role-switch working on QDU/QRU1000, it was recommended to
+> >>    use the actual TI switch driver. Since driver doesn't have the functionality to provide role-switch
+> >>    based on gpio, thus reverting back USB dr_mode to peripheral and removed the remote end-point nodes
+> >>    and usb-conn-gpio based role switch functionality.
+> >
+> > This is not correct. The recommendation was to describe hardware properly.
+> > Which means adding schema description, adding  ti,your-switch
+> > compatible to the usb-conn-gpio.c driver, etc.
+> >
+>
+> Hi Dmitry,
+>
+>   Sorry for the confusion. In the comments [1],
+>
+> "So the compatible string should be "ti,hd3ss3220". Which is fine to be
+> used in the platform driver. Just describe the differences in the
+> schema."
+>
+> The compatible "ti,hd3ss3220" is already associated with a TI switch
+> driver [2]. But it works based on I2C. So we assumed you wanted us to
+> make changes to [2] by adding GPIO functionality (which usb-conn-gpio
+> exactly does), since the compatible you suggested matched with the TI
+> driver.
 
-Commit-ID:     5d4d0283c0546559600dee7e9a4d87e402f3f4d9
-Gitweb:        https://git.kernel.org/tip/5d4d0283c0546559600dee7e9a4d87e402f3f4d9
-Author:        Dhananjay Ugwekar <Dhananjay.Ugwekar@amd.com>
-AuthorDate:    Thu, 02 May 2024 15:21:15 +05:30
-Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Thu, 02 May 2024 13:32:22 +02:00
+First of all, please don't make assumptions. It's better to ask rather
+than making assumptions which turn up to be incorrect.
 
-perf/x86/rapl: Fix the energy-pkg event for AMD CPUs
+Compatibles describe hardware. DT describes hardware. There are no
+drivers in question (yet).
+You have TI switch on your board, so you have to use "ti,hd3ss3220" to
+describe it.
 
-After:
+Existing schema describes it as an I2C device. You have to extend the
+schema to allow non-i2c attachment. Describe GPIOs, make reg optional.
+Make this description purely from the datasheet and usb-c-connector
+point of view.
 
-  63edbaa48a57 ("x86/cpu/topology: Add support for the AMD 0x80000026 leaf")
+> If it was to add compatible in usb-conn-gpio, then we can support OTG
+> functionality with no schema changes I believe, but the compatible
+> string might need a different name to avoid clashing with the name in [2].
 
-on AMD processors that support extended CPUID leaf 0x80000026, the
-topology_die_cpumask() and topology_logical_die_id() macros, no longer
-return the package cpumask and package id, instead they return the CCD
-(Core Complex Die) mask and id respectively. This leads to the energy-pkg
-event scope to be modified to CCD instead of package.
+And this is the second, largely independent question. The
+usb-conn-gpio driver is a platform driver.The existing hd3ss3220.c
+driver is an I2C one. There is no clash between them.
 
-Replacing these macros with their package counterparts fixes the
-energy-pkg event for AMD CPUs.
+Note, unlike plain gpio-b-connector, the switch supports more pins and
+actually provides USB-C information to the host even when used in the
+dumb mode. Thus it might be better to add a separate driver that
+registers typec port and reports USB-C events.
 
-However due to the difference between the scope of energy-pkg event for
-Intel and AMD CPUs, we have to replace these macros conditionally only for
-AMD CPUs.
+>
+> [1]:
+> https://lore.kernel.org/all/CAA8EJppNZrLzT=vGS0NXnKJT_wL+bMB9jFhJ9K7b7FPgFQbcig@mail.gmail.com/
+>
+> [2]:
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/usb/typec/hd3ss3220.c?h=v6.9-rc2
+>
+> Regards,
+> Krishna,
+>
+> >> * Link to v2: https://lore.kernel.org/linux-arm-msm/20240319091020.15137-1-quic_kbajaj@quicinc.com/
+> >>
+> >> Changes in v2:
+> >> * Changes qmpphy node name
+> >> * Changes dr_mode to otg and added USB-B port USB role switch
+> >> * Dropped maximum-speed property from usb dwc3 node
+> >> * Link to v1: https://lore.kernel.org/linux-arm-msm/20240311120859.18489-1-quic_kbajaj@quicinc.com/
+> >>
+> >> [1] https://lore.kernel.org/linux-arm-msm/20240502082017.13777-1-quic_kbajaj@quicinc.com/
+> >> [2] https://lore.kernel.org/all/CAA8EJppNZrLzT=vGS0NXnKJT_wL+bMB9jFhJ9K7b7FPgFQbcig@mail.gmail.com/
+> >> ------
+> >>
+> >> Komal Bajaj (3):
+> >>    arm64: dts: qcom: qdu1000: Add USB3 and PHY support
+> >>    arm64: dts: qcom: qdu1000-idp: enable USB nodes
+> >>    arm64: dts: qcom: qru1000-idp: enable USB nodes
+> >>
+> >>   arch/arm64/boot/dts/qcom/qdu1000-idp.dts |  23 +++++
+> >>   arch/arm64/boot/dts/qcom/qdu1000.dtsi    | 120 +++++++++++++++++++++++
+> >>   arch/arm64/boot/dts/qcom/qru1000-idp.dts |  23 +++++
+> >>   3 files changed, 166 insertions(+)
+> >>
+> >> --
+> >> 2.42.0
+> >>
+> >>
+> >
+> >
 
-On a 12 CCD 1 Package AMD Zen4 Genoa machine:
 
-Before:
 
-  $ cat /sys/devices/power/cpumask
-  0,8,16,24,32,40,48,56,64,72,80,88.
-
-The expected cpumask here is supposed to be just "0", as it is a package
-scope event, only one CPU will be collecting the event for all the CPUs in
-the package.
-
-  After:
-  $ cat /sys/devices/power/cpumask
-  0
-
-Fixes: 63edbaa48a57 ("x86/cpu/topology: Add support for the AMD 0x80000026 leaf")
-Signed-off-by: Dhananjay Ugwekar <Dhananjay.Ugwekar@amd.com>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Link: https://lore.kernel.org/r/20240502095115.177713-3-Dhananjay.Ugwekar@amd.com
----
- arch/x86/events/rapl.c | 30 ++++++++++++++++++++++++++----
- 1 file changed, 26 insertions(+), 4 deletions(-)
-
-diff --git a/arch/x86/events/rapl.c b/arch/x86/events/rapl.c
-index 46e6735..c3897f5 100644
---- a/arch/x86/events/rapl.c
-+++ b/arch/x86/events/rapl.c
-@@ -102,6 +102,10 @@ static struct perf_pmu_events_attr event_attr_##v = {				\
- 	.event_str	= str,							\
- };
- 
-+#define rapl_pmu_is_pkg_scope()				\
-+	(boot_cpu_data.x86_vendor == X86_VENDOR_AMD ||	\
-+	 boot_cpu_data.x86_vendor == X86_VENDOR_HYGON)
-+
- struct rapl_pmu {
- 	raw_spinlock_t		lock;
- 	int			n_active;
-@@ -139,9 +143,21 @@ static unsigned int rapl_cntr_mask;
- static u64 rapl_timer_ms;
- static struct perf_msr *rapl_msrs;
- 
-+static inline unsigned int get_rapl_pmu_idx(int cpu)
-+{
-+	return rapl_pmu_is_pkg_scope() ? topology_logical_package_id(cpu) :
-+					 topology_logical_die_id(cpu);
-+}
-+
-+static inline cpumask_t *get_rapl_pmu_cpumask(int cpu)
-+{
-+	return rapl_pmu_is_pkg_scope() ? topology_core_cpumask(cpu) :
-+					 topology_die_cpumask(cpu);
-+}
-+
- static inline struct rapl_pmu *cpu_to_rapl_pmu(unsigned int cpu)
- {
--	unsigned int rapl_pmu_idx = topology_logical_die_id(cpu);
-+	unsigned int rapl_pmu_idx = get_rapl_pmu_idx(cpu);
- 
- 	/*
- 	 * The unsigned check also catches the '-1' return value for non
-@@ -542,6 +558,7 @@ static struct perf_msr amd_rapl_msrs[] = {
- 
- static int rapl_cpu_offline(unsigned int cpu)
- {
-+	cpumask_t *cpumask = get_rapl_pmu_cpumask(cpu);
- 	struct rapl_pmu *pmu = cpu_to_rapl_pmu(cpu);
- 	int target;
- 
-@@ -551,7 +568,7 @@ static int rapl_cpu_offline(unsigned int cpu)
- 
- 	pmu->cpu = -1;
- 	/* Find a new cpu to collect rapl events */
--	target = cpumask_any_but(topology_die_cpumask(cpu), cpu);
-+	target = cpumask_any_but(cpumask, cpu);
- 
- 	/* Migrate rapl events to the new target */
- 	if (target < nr_cpu_ids) {
-@@ -564,6 +581,8 @@ static int rapl_cpu_offline(unsigned int cpu)
- 
- static int rapl_cpu_online(unsigned int cpu)
- {
-+	unsigned int rapl_pmu_idx = get_rapl_pmu_idx(cpu);
-+	cpumask_t *cpumask = get_rapl_pmu_cpumask(cpu);
- 	struct rapl_pmu *pmu = cpu_to_rapl_pmu(cpu);
- 	int target;
- 
-@@ -578,14 +597,14 @@ static int rapl_cpu_online(unsigned int cpu)
- 		pmu->timer_interval = ms_to_ktime(rapl_timer_ms);
- 		rapl_hrtimer_init(pmu);
- 
--		rapl_pmus->pmus[topology_logical_die_id(cpu)] = pmu;
-+		rapl_pmus->pmus[rapl_pmu_idx] = pmu;
- 	}
- 
- 	/*
- 	 * Check if there is an online cpu in the package which collects rapl
- 	 * events already.
- 	 */
--	target = cpumask_any_and(&rapl_cpu_mask, topology_die_cpumask(cpu));
-+	target = cpumask_any_and(&rapl_cpu_mask, cpumask);
- 	if (target < nr_cpu_ids)
- 		return 0;
- 
-@@ -676,6 +695,9 @@ static int __init init_rapl_pmus(void)
- {
- 	int nr_rapl_pmu = topology_max_packages() * topology_max_dies_per_package();
- 
-+	if (rapl_pmu_is_pkg_scope())
-+		nr_rapl_pmu = topology_max_packages();
-+
- 	rapl_pmus = kzalloc(struct_size(rapl_pmus, pmus, nr_rapl_pmu), GFP_KERNEL);
- 	if (!rapl_pmus)
- 		return -ENOMEM;
+-- 
+With best wishes
+Dmitry
 
