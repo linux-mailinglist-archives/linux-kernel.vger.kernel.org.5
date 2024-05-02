@@ -1,119 +1,135 @@
-Return-Path: <linux-kernel+bounces-166741-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-166740-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 00CF58B9ECA
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 18:43:20 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4AB5E8B9EC9
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 18:43:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 322921C2266C
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 16:43:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7C4A41C2266E
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 16:43:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 74136664DB;
-	Thu,  2 May 2024 16:43:07 +0000 (UTC)
-Received: from www262.sakura.ne.jp (www262.sakura.ne.jp [202.181.97.72])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0818816D337;
+	Thu,  2 May 2024 16:42:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TRjOtlaG"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3FF428FC
-	for <linux-kernel@vger.kernel.org>; Thu,  2 May 2024 16:43:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.181.97.72
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4481928FC;
+	Thu,  2 May 2024 16:42:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714668187; cv=none; b=tpTpPjd3ek/PaMsRRBQWugzCPMvtnjGcPpx7zDyljf/1dBdZW1WzTgRXsAR8AQ6NzmJ9ixsuyDnd5gcxbdPYU40hEN5eCT1MdTgSe8is5DAWKWdQl3BggQU9IWIQQwF0iDhe0qQmtYh/KUtnCL5ff+IexwUkMKd0Oz2hxFjZ/KI=
+	t=1714668172; cv=none; b=Indq6ERGFZufeRx+7fKN/LVrnGQDPiiGSTGzhAdlsXIePIUCQYGJKHVzR8YID/SD8q+MTk/GiVqtG2oH9b0AFIbfyz2TRQ685AfwyhZtXhzH3iI27yFYmrcQAgWtA0xTus8aoB5ID2IBNgPEa6jXKU3C72wS1v8SoliLodUW7lA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714668187; c=relaxed/simple;
-	bh=nDCteMAo7TB7jOqFNL8Pl2VdYrsWy9L3aMTAc4Aka7I=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=VSJiVOBdVj9mZNxuj2MTAXeQb5q394MKjFcZpBtaRbgOFTv2sdNOsFkmhfmLVGn6yK/VPZFiZpJcW89AjkK8yD8Erhifoae1RJtgz7qGtsUGNPfxrTbLRxWOxsB+e55RiVRBCZFhuF+2kqz6jWO98eiPQZyZ5YkahK16lKZAYKs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=I-love.SAKURA.ne.jp; spf=pass smtp.mailfrom=I-love.SAKURA.ne.jp; arc=none smtp.client-ip=202.181.97.72
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=I-love.SAKURA.ne.jp
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=I-love.SAKURA.ne.jp
-Received: from fsav116.sakura.ne.jp (fsav116.sakura.ne.jp [27.133.134.243])
-	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 442GgFuK015746;
-	Fri, 3 May 2024 01:42:15 +0900 (JST)
-	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
-Received: from www262.sakura.ne.jp (202.181.97.72)
- by fsav116.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav116.sakura.ne.jp);
- Fri, 03 May 2024 01:42:15 +0900 (JST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav116.sakura.ne.jp)
-Received: from [192.168.1.6] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
-	(authenticated bits=0)
-	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 442GgFtk015742
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
-	Fri, 3 May 2024 01:42:15 +0900 (JST)
-	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
-Message-ID: <b13ab60e-503a-4c11-8a99-0ccccce33c6c@I-love.SAKURA.ne.jp>
-Date: Fri, 3 May 2024 01:42:12 +0900
+	s=arc-20240116; t=1714668172; c=relaxed/simple;
+	bh=cj5bYAt98fbHNpOz6Lk3FAQsG3zOEVkQQT9pOnQDzFE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=V8895zxvNclFezriu1CEhxGdL+QF/MnQ1z7aoRPzYHMI9lIsOvNHvxDlHfUo00mqngwazPU+aWL0pjcumvUV72rGLNAFYQkX9PX8+sjEBBBidXLaXIUE+f+3fzDI4GB2vjZ2qQtt9Ei2jluHJbOLpIuGfhVhNgGrM94h1QrdVsI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TRjOtlaG; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DA074C32789;
+	Thu,  2 May 2024 16:42:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714668171;
+	bh=cj5bYAt98fbHNpOz6Lk3FAQsG3zOEVkQQT9pOnQDzFE=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=TRjOtlaGF85tupGTKMBErbPBlfCZuvG+Nh2mzE7TWe4Bt5pvoN7vV2n6UboqGVGKH
+	 eqEK7yZtuGkH4lj5/US2yL9YCV10cJgn+Z4NEBngdaonz5aLmJ2kdKyVrnbtC0WgXd
+	 +glMCl04Yw4Rt4hfOoQTUCc/lSIDy6LCnIA432+0wAxrjVHFooZxsg+kXa18YQCOL3
+	 BDrCR54yV2qZj5B90JJ+UL1uk/HlQUgwTLRyzIMkpt2V/FbiS+u5Pw7WUDSw0ZhD+1
+	 vofVfAIvFf8n/BTeDKSM7GcPlT/lIqptFrtrfjM1qPWFd8lg1UiJvG/RmINGiEzty6
+	 XnMZzUYpA+pSw==
+Date: Thu, 2 May 2024 17:42:44 +0100
+From: Lee Jones <lee@kernel.org>
+To: Florian Fainelli <florian.fainelli@broadcom.com>
+Cc: Andy Shevchenko <andy.shevchenko@gmail.com>,
+	linux-kernel@vger.kernel.org,
+	Jarkko Nikula <jarkko.nikula@linux.intel.com>,
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+	Mika Westerberg <mika.westerberg@linux.intel.com>,
+	Jan Dabros <jsd@semihalf.com>, Andi Shyti <andi.shyti@kernel.org>,
+	Jiawen Wu <jiawenwu@trustnetic.com>,
+	Mengyuan Lou <mengyuanlou@net-swift.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+	Andrew Lunn <andrew@lunn.ch>,
+	Duanqiang Wen <duanqiangwen@net-swift.com>,
+	"open list:SYNOPSYS DESIGNWARE I2C DRIVER" <linux-i2c@vger.kernel.org>,
+	"open list:WANGXUN ETHERNET DRIVER" <netdev@vger.kernel.org>
+Subject: Re: [PATCH 2/4] mfd: intel-lpss: Utilize i2c-designware.h
+Message-ID: <20240502164244.GA1200070@google.com>
+References: <20240423233622.1494708-1-florian.fainelli@broadcom.com>
+ <20240423233622.1494708-3-florian.fainelli@broadcom.com>
+ <ZihLhl8eLC1ntJZK@surfacebook.localdomain>
+ <1d1467d1-b57b-4cc6-a995-4068d6741a73@broadcom.com>
+ <20240502071751.GA5338@google.com>
+ <6646b690-7b05-4a0e-a524-375b389ad591@broadcom.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3] tty: tty_io: remove hung_up_tty_fops
-To: Marco Elver <elver@google.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Cc: paulmck@kernel.org, Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        syzbot <syzbot+b7c3ba8cdc2f6cf83c21@syzkaller.appspotmail.com>,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        Nathan Chancellor <nathan@kernel.org>, Arnd Bergmann <arnd@kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>, Jiri Slaby <jirislaby@kernel.org>
-References: <8edbd558-a05f-c775-4d0c-09367e688682@I-love.SAKURA.ne.jp>
- <2023053048-saved-undated-9adf@gregkh>
- <18a58415-4aa9-4cba-97d2-b70384407313@I-love.SAKURA.ne.jp>
- <CAHk-=wgSOa_g+bxjNi+HQpC=6sHK2yKeoW-xOhb0-FVGMTDWjg@mail.gmail.com>
- <a3be44f9-64eb-42e8-bf01-8610548a68a7@I-love.SAKURA.ne.jp>
- <CAHk-=wj6HmDetTDhNNUNcAXZzmCv==oHk22_kVW4znfO-HuMnA@mail.gmail.com>
- <CANpmjNN250UCxsWCpUHAvJo28Lzv=DN-BKTmjEpcLFOCA+U+pw@mail.gmail.com>
- <CAHk-=whnQXNVwuf42Sh2ngBGhBqbJjUfq5ux6e7Si_XSPAt05A@mail.gmail.com>
- <d4de136e-c4e0-45c2-b33e-9a819cb3a791@paulmck-laptop>
- <CAHk-=wi3iondeh_9V2g3Qz5oHTRjLsOpoy83hb58MVh=nRZe0A@mail.gmail.com>
- <892324fc-9b75-4e8a-b3b6-cf3c5b4c3506@paulmck-laptop>
- <CANpmjNOY=Qpm3hBu-eN4Xk8n-2VXQRvcQ3_PfwPwNw9MmC8ctw@mail.gmail.com>
- <CAHk-=whTakjVGgBC5OtoZ5Foo=hd4-g+NZ79nkMDVj6Ug7ARKQ@mail.gmail.com>
- <CANpmjNNo_jyTPrgPVCeSfgvsX-fK8x0H81zbBA6LZMVNodO6GA@mail.gmail.com>
-Content-Language: en-US
-From: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-In-Reply-To: <CANpmjNNo_jyTPrgPVCeSfgvsX-fK8x0H81zbBA6LZMVNodO6GA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <6646b690-7b05-4a0e-a524-375b389ad591@broadcom.com>
 
-On 2024/05/02 23:14, Marco Elver wrote:
-> I sent a patch to add the type qualifier - in a simple test I added it
-> does what we want:
-> https://lore.kernel.org/all/20240502141242.2765090-1-elver@google.com/T/#u
+On Thu, 02 May 2024, Florian Fainelli wrote:
 
-Want some updates to Documentation/process/volatile-considered-harmful.rst
-because __data_racy is for patches to add volatile variables ?
-
-  Patches to remove volatile variables are generally welcome - as long as
-  they come with a justification which shows that the concurrency issues have
-  been properly thought through.
-
+> On 5/2/24 00:17, Lee Jones wrote:
+> > On Tue, 23 Apr 2024, Florian Fainelli wrote:
+> > 
+> > > 
+> > > 
+> > > On 4/23/2024 5:00 PM, Andy Shevchenko wrote:
+> > > > Tue, Apr 23, 2024 at 04:36:20PM -0700, Florian Fainelli kirjoitti:
+> > > > > Rather than open code the i2c_designware string, utilize the newly
+> > > > > defined constant in i2c-designware.h.
+> > > > 
+> > > > ...
+> > > > 
+> > > > >    static const struct mfd_cell intel_lpss_i2c_cell = {
+> > > > > -	.name = "i2c_designware",
+> > > > > +	.name = I2C_DESIGNWARE_NAME,
+> > > > >    	.num_resources = ARRAY_SIZE(intel_lpss_dev_resources),
+> > > > >    	.resources = intel_lpss_dev_resources,
+> > > > >    };
+> > > > 
+> > > > We have tons of drivers that are using explicit naming, why is this case
+> > > > special?
+> > > > 
+> > > 
+> > > It is not special, just one of the 3 cases outside of drivers/i2c/busses
+> > > that reference a driver living under drivers/i2c/busses, as I replied in the
+> > > cover letter, this is a contract between the various device drivers and
+> > > their users, so we should have a central place where it is defined, not
+> > > repeated.
+> > 
+> > I have always held the opinion that replacing user-facing strings with
+> > defines harms debugability, since grepping becomes a multi-stage
+> > process, often with ambiguous results (in the case of multiple
+> > definitions with the same name.  Please keep the string in-place.
 > 
-> I'll leave it to Tetsuo to amend the original patch if __data_racy makes sense.
+> I am not buying into that argument and the fact that Duangiang was able to
+> trip over the lack of an explicit contract between drivers seems like a
+> bigger obstacle than doing a multi-stage grep. Anyway, I have no skin in
+> this game, I just don't like seeing repetition and not stating contracts
+> between drivers more explicitly.
 
-OK if below change is acceptable.
+Good thing no one is asking you to buy into it then. :)
 
---- a/include/linux/fs.h
-+++ b/include/linux/fs.h
-@@ -1012,7 +1012,7 @@ struct file {
-        struct file_ra_state    f_ra;
-        struct path             f_path;
-        struct inode            *f_inode;       /* cached value */
--       const struct file_operations    *f_op;
-+       const __data_racy struct file_operations   *f_op;
+I'm not sure how or if the code that failed to match was tested or what
+went wrong exactly and I'm pleased that the bug was caught and fixed.
 
-        u64                     f_version;
- #ifdef CONFIG_SECURITY
+However, swapping out matching strings with a define is a regression
+from a development perspective.  One which I've felt the pain of
+personally in the past.  I've pushed back on it before and I'm pushing
+back again.  We're not swapping out matching strings for defines.
 
-Hmm, debugfs assumes that f_op does not change?
-
-fs/debugfs/file.c: In function 'full_proxy_release':
-fs/debugfs/file.c:357:45: warning: initialization discards 'volatile' qualifier from pointer target type [-Wdiscarded-qualifiers]
-  const struct file_operations *proxy_fops = filp->f_op;
-                                             ^~~~
-
+-- 
+Lee Jones [李琼斯]
 
