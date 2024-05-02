@@ -1,67 +1,66 @@
-Return-Path: <linux-kernel+bounces-166274-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-166277-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F20C68B985B
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 12:02:28 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4E0098B9862
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 12:03:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 275B0B20AF0
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 10:02:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D60542874E0
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 10:03:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C719A57877;
-	Thu,  2 May 2024 10:00:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0806658AA1;
+	Thu,  2 May 2024 10:01:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gY5wmHPm"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nUrsD7Gz"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0976D5676F;
-	Thu,  2 May 2024 10:00:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 493424F88C;
+	Thu,  2 May 2024 10:01:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714644013; cv=none; b=bpLE96tveE+mMjXjcFsCA+y7NZ6ecnusL9oIJN784G6BKBck8/v8zrQ5IUQkahOjGPKuiT7EdGa9TSfOer3VQdUO6NrhaPY0MokO6xvQ/Yjk4ZRP4AWuH7YqcuzYepgWo0YSyAtpYk33XRj7CqcZHj4rColpPKOPKZ9VB2JQt4A=
+	t=1714644117; cv=none; b=WITuCgF9porVedvEPFOEjitsqqsX8BGdfvRvR1HvUqYvHlTcpeddnREnOP4UdNMQZY+m8PeLA59r8o6KkeLdXykJ0etzVXgDw1nUD4Fx5Uf+SCnirAIHpb9xpuNP7BNY1HWgqfMGx2AdMdRClmYUj1yN/4YcR6zj68m74gbAuk0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714644013; c=relaxed/simple;
-	bh=htKiubxGZ19836bcnvnjwCBea7ZpQE+zL7IN1ToMNkM=;
+	s=arc-20240116; t=1714644117; c=relaxed/simple;
+	bh=5MizojhZapYDNM1cW8qYSQdLAZLpGpHIYNcukdk2XZk=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=iK/UMAQjRR273TCmdYCLOQyu6XWWcxmHd4FqYYd09RW/7/YBcfLEoxBYAzDyV5+3bqU3qUcXJHsU9Oj1RyFQbXCIo7/LeRJx3gQErSpH/FTm0fweDKUNC48tYAHDu84MRN1xj67QeVTN5nJF+WxH8rIPJhCty8+B14MQduBQKKE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gY5wmHPm; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1D1A9C113CC;
-	Thu,  2 May 2024 10:00:08 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=sswoO3Mf0iQqdHTRYFKUkbUufcAlkoGzIF+ezDVdPt1Td8+UaAF08BzY0AvJEgZyVrbvq0ZhI80rGm909+qgtM2WUrprWkaDiYJ1eCGo1pPZMeKv7eCq4AnvlfxUo89RQcBsLn4M+7fySYiu5tWKosbKQFdxdhIbvgYIgjih7Ko=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nUrsD7Gz; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B55CFC113CC;
+	Thu,  2 May 2024 10:01:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714644012;
-	bh=htKiubxGZ19836bcnvnjwCBea7ZpQE+zL7IN1ToMNkM=;
+	s=k20201202; t=1714644116;
+	bh=5MizojhZapYDNM1cW8qYSQdLAZLpGpHIYNcukdk2XZk=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=gY5wmHPmIq/ogWfrSyBfa7PQpRCTHpwKmP0tgGjLQOE3rKwzQewgxGgwoVpxvoGxw
-	 8pWnrrkHRBBtMFlOBDsDuAKKSalqx2fQ8oXXHbciNfp1KkZ/dh9TOwlDBpWO2ChKUS
-	 hxwqKBd6Epex7XZ/He6fEDMl+DhIIeVCtTxtsyw46sVgvRyHd0eyVRAF3z/IlZ7idr
-	 SVqQnicPYaw2gM08BctkvMi0HJOr/0xXP5ntwVbGmLR+6mHuDPuLlofC6uTPYHbFJH
-	 7jF/Ck9IWRhbabsvH5Kqa0nNJJeHLdMGIjFSjEIbJ6SmTrIwP012smiMZQY5QqweSr
-	 oSQk8f0hrurmQ==
-Date: Thu, 2 May 2024 11:00:06 +0100
+	b=nUrsD7Gzg7Qyu4uWYHmseDBExKYVTRp1n7NMo5YAFtalh0+cMrKvuEIHRPQoQadmY
+	 aPHnaGt3H9Vslgnnmj43hG/vbD6s0RkI2Rvoag4ahpMm7Gxn8+dL10eaqD3T53HEjz
+	 zIop6nbnCsKQa+0p0/5TmxbH6roAR9wHUqgPSodCs2S45hQu1nFj7kyYi7NLGudAob
+	 ZiFW/r6lwnZorO8lCrIABixM4QXACvqLPg+YzOPq+ibD5tyTosds9pYyDl/F+R6tfJ
+	 feiOMO0A6FqUBAx1d0zD2CK+rmWdULNziws6Df3O5DhNCaEA+8v0knkVo0ou7mYkz8
+	 rhg/zHdbz+gDQ==
+Date: Thu, 2 May 2024 11:01:51 +0100
 From: Lee Jones <lee@kernel.org>
-To: Florian Fainelli <florian.fainelli@broadcom.com>
-Cc: linux-kernel@vger.kernel.org,
-	Jarkko Nikula <jarkko.nikula@linux.intel.com>,
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-	Mika Westerberg <mika.westerberg@linux.intel.com>,
-	Jan Dabros <jsd@semihalf.com>, Andi Shyti <andi.shyti@kernel.org>,
-	Jiawen Wu <jiawenwu@trustnetic.com>,
-	Mengyuan Lou <mengyuanlou@net-swift.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-	Andrew Lunn <andrew@lunn.ch>,
-	Duanqiang Wen <duanqiangwen@net-swift.com>,
-	"open list:SYNOPSYS DESIGNWARE I2C DRIVER" <linux-i2c@vger.kernel.org>,
-	"open list:WANGXUN ETHERNET DRIVER" <netdev@vger.kernel.org>
-Subject: Re: [PATCH v2 2/4] mfd: intel-lpss: Utilize i2c-designware.h
-Message-ID: <20240502100006.GQ5338@google.com>
-References: <20240425002642.2053657-1-florian.fainelli@broadcom.com>
- <20240425002642.2053657-3-florian.fainelli@broadcom.com>
+To: Siddharth Vadapalli <s-vadapalli@ti.com>
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+	Krzysztof Kozlowski <krzk@kernel.org>, robh@kernel.org,
+	krzk+dt@kernel.org, conor+dt@kernel.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	srk@ti.com
+Subject: Re: [PATCH] dt-bindings: mfd: syscon: Add ti,am62p-cpsw-mac-efuse
+ compatible
+Message-ID: <20240502100151.GR5338@google.com>
+References: <4b1380a8-0136-4395-ba42-9bcff2e1bdb0@kernel.org>
+ <aabea385-16e0-4116-a12b-3ce1e06574e3@ti.com>
+ <eb7a0d5c-c197-44b9-baea-e9b54792b447@kernel.org>
+ <af61424e-7006-49f5-b614-3caa3674685a@ti.com>
+ <083e50de-1c99-4a58-8b55-4dec26d97c1b@kernel.org>
+ <9bca7d94-142e-4717-aea7-437805717a00@ti.com>
+ <a895ddc8-5c18-49d7-86c4-b995bb946914@ti.com>
+ <94bae793-ba4f-467f-917d-213fa3cd6faa@ti.com>
+ <20489a1e-51d1-42b3-9014-fc1c00b087db@linaro.org>
+ <8a64294a-df1e-4331-aca5-0b23b637b9e1@ti.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -71,42 +70,35 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240425002642.2053657-3-florian.fainelli@broadcom.com>
+In-Reply-To: <8a64294a-df1e-4331-aca5-0b23b637b9e1@ti.com>
 
-On Wed, 24 Apr 2024, Florian Fainelli wrote:
+On Thu, 25 Apr 2024, Siddharth Vadapalli wrote:
 
-> Rather than open code the i2c_designware string, utilize the newly
-> defined constant in i2c-designware.h.
+> On Fri, Apr 05, 2024 at 08:55:18AM +0200, Krzysztof Kozlowski wrote:
+> > On 05/04/2024 07:21, Siddharth Vadapalli wrote:
+> > >>>> bindings in the changelog or cover letter.
+> > >>>
+> > >>> Thank you for clarifying. I will post the DTS patches corresponding to
+> > >>> this patch and reference this patch in the DTS patch series.
+> > >>
+> > >> I have posted the DTS patch at:
+> > >> https://patchwork.kernel.org/project/linux-arm-kernel/patch/20240404081845.622707-1-s-vadapalli@ti.com/
+> > >> indicating the dependency on this bindings patch.
+> > > 
+> > > Hello Krzysztof,
+> > > 
+> > > Do I have to post a v2 for this patch? You had Acked it initially but I
+> > 
+> > No, I acked it. All this unnecessary talk was because you did not post a
+> > user, but it is not a requirement, at least when we expect such user.
 > 
-> Signed-off-by: Florian Fainelli <florian.fainelli@broadcom.com>
-> ---
->  drivers/mfd/intel-lpss.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
+> Lee,
 > 
-> diff --git a/drivers/mfd/intel-lpss.c b/drivers/mfd/intel-lpss.c
-> index 2a9018112dfc..551560beff7b 100644
-> --- a/drivers/mfd/intel-lpss.c
-> +++ b/drivers/mfd/intel-lpss.c
-> @@ -24,6 +24,7 @@
->  #include <linux/ioport.h>
->  #include <linux/mfd/core.h>
->  #include <linux/module.h>
-> +#include <linux/platform_data/i2c-designware.h>
->  #include <linux/pm.h>
->  #include <linux/pm_qos.h>
->  #include <linux/pm_runtime.h>
-> @@ -116,7 +117,7 @@ static const struct mfd_cell intel_lpss_idma64_cell = {
->  };
->  
->  static const struct mfd_cell intel_lpss_i2c_cell = {
-> -	.name = "i2c_designware",
-> +	.name = I2C_DESIGNWARE_NAME,
->  	.num_resources = ARRAY_SIZE(intel_lpss_dev_resources),
->  	.resources = intel_lpss_dev_resources,
+> Could you please merge this patch? It applies cleanly on the latest
+> linux-next tagged next-20240424.
 
-I explained why I don't like this in v1 this morning.
-
-Please take a look.
+I ignored it due to the length of discussion that appeared to be
+on-going.
 
 -- 
 Lee Jones [李琼斯]
