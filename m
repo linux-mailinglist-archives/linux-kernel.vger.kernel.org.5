@@ -1,149 +1,179 @@
-Return-Path: <linux-kernel+bounces-165871-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-165872-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id DA97D8B92B5
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 02:16:57 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8372B8B92BA
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 02:20:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 62AB61F21CB8
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 00:16:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A20A91C2146F
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 00:20:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E47329A0;
-	Thu,  2 May 2024 00:16:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E416EA921;
+	Thu,  2 May 2024 00:20:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=apple.com header.i=@apple.com header.b="NhiCBDJp"
-Received: from ma-mailsvcp-mx-lapp02.apple.com (ma-mailsvcp-mx-lapp02.apple.com [17.32.222.23])
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="bugOooDb"
+Received: from mail-qv1-f42.google.com (mail-qv1-f42.google.com [209.85.219.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38D04632
-	for <linux-kernel@vger.kernel.org>; Thu,  2 May 2024 00:16:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=17.32.222.23
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C697322B
+	for <linux-kernel@vger.kernel.org>; Thu,  2 May 2024 00:20:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714609010; cv=none; b=eb1TL/4L2KDrRZQ1My/T1xgVsOKbF6+sfdVyiaqa/otiicaBVwFvJjCoO4gVi2jM2Ok26sPaEjBDfQyJ2Y59lKmzvgIq18Zmqy03gICRKzvg6UBkULvr0C0BZuLzs4NLR8+FQBtrbJmhQectXT4dlgOB1bX9eKGrEpAMcAlB0Ow=
+	t=1714609222; cv=none; b=eiw+l+uRVKg3Mp8xZ/g1Nv4JT+Vu5Ki/0rTV7PbsSzp57ic4zB5+vxQ3J6tjx144NXsndZIZrJk+lqugX4S5Ruz9G2zah6Izpx4zAyheXscueFpDocz+0PuMaaXvqa4S/mXz7Xl2T7eHsc6OSYcmN+kuUkuxj7xLs7ZXsSPtHk0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714609010; c=relaxed/simple;
-	bh=FttjLP2RMELHyklUWIQJDa+KTsHTslmnMvr+Q/filAg=;
-	h=From:To:Cc:Subject:Date:Message-id:In-reply-to:References:
-	 MIME-version; b=mbSh+5adhyPezQARNrOKWUtq4vWfkZtpTHPmpoftPuxG8IKlBjJdPTULQSsspkncTE3Oxzb7vJ8NBK1qa3XhY/PI86Y+kirpaOppethhdB3bjq9XqYXkvJrPKRPuvDzlgxIcaRCl6J+3QBkxpHZUxyzYczgvn/g/Fz0uopMcnFY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=apple.com; spf=pass smtp.mailfrom=apple.com; dkim=pass (2048-bit key) header.d=apple.com header.i=@apple.com header.b=NhiCBDJp; arc=none smtp.client-ip=17.32.222.23
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=apple.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=apple.com
-Received: from rn-mailsvcp-mta-lapp03.rno.apple.com
- (rn-mailsvcp-mta-lapp03.rno.apple.com [10.225.203.151])
- by ma-mailsvcp-mx-lapp02.apple.com
- (Oracle Communications Messaging Server 8.1.0.23.20230328 64bit (built Mar 28
- 2023)) with ESMTPS id <0SCU00YM70RLZ000@ma-mailsvcp-mx-lapp02.apple.com> for
- linux-kernel@vger.kernel.org; Wed, 01 May 2024 17:16:48 -0700 (PDT)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
- definitions=2024-05-01_16,2024-04-30_01,2023-05-22_02
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=apple.com; h=from : to
- : cc : subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=20180706;
- bh=NkY47ufs8kucjQXAyO31Twlr+ZWbr4oDpHiSLaMsAnU=;
- b=NhiCBDJpC/oMt1AxUm6xa80yXZvaGfnxeIIrSCMUW5aWGtAD0dWHMwmnbBazZh1NjW4Q
- NEOhtyeoJtRFlH3UKdpAPCPtfyBkZEYfB6nnCtCeZwfHU9Qe4sVFg261uvgku4yQPVpr
- 0bQw8Rc9bFZen52eT6uRnglxcDM+WPPWrtNIaDIxqxwsBqTQ5uc8yvNIeyulqHXsuZle
- MdkYjzCFseEoGBrjiy1ySZghDFYFvKriquLSxRdeVtcW2FSgWGS1HbqJZz93jBF/ZnnZ
- 0RuIuRAlV7eoDyR71dAZCW8EeX8NJV7bA/B6Jo6qDXTZFkQhIuzxYCZUCWCqv9035sOg JQ==
-Received: from rn-mailsvcp-mmp-lapp01.rno.apple.com
- (rn-mailsvcp-mmp-lapp01.rno.apple.com [17.179.253.14])
- by rn-mailsvcp-mta-lapp03.rno.apple.com
- (Oracle Communications Messaging Server 8.1.0.23.20230328 64bit (built Mar 28
- 2023)) with ESMTPS id <0SCU00KQ60RVUM00@rn-mailsvcp-mta-lapp03.rno.apple.com>;
- Wed, 01 May 2024 17:16:43 -0700 (PDT)
-Received: from process_milters-daemon.rn-mailsvcp-mmp-lapp01.rno.apple.com by
- rn-mailsvcp-mmp-lapp01.rno.apple.com
- (Oracle Communications Messaging Server 8.1.0.23.20230328 64bit (built Mar 28
- 2023)) id <0SCU00N000GSQI00@rn-mailsvcp-mmp-lapp01.rno.apple.com>; Wed,
- 01 May 2024 17:16:43 -0700 (PDT)
-X-Va-A:
-X-Va-T-CD: cbf7380921e8e2f9db5ea993b70cea12
-X-Va-E-CD: 631f076f6b365e42e06a1df7057e44fb
-X-Va-R-CD: ce6be43db0cce57f85f587e814b9d60f
-X-Va-ID: 0f36f4da-c23d-4baa-a49e-f113311040b5
-X-Va-CD: 0
-X-V-A:
-X-V-T-CD: cbf7380921e8e2f9db5ea993b70cea12
-X-V-E-CD: 631f076f6b365e42e06a1df7057e44fb
-X-V-R-CD: ce6be43db0cce57f85f587e814b9d60f
-X-V-ID: c8542c07-c203-4592-b250-b9207167abc0
-X-V-CD: 0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
- definitions=2024-05-01_16,2024-04-30_01,2023-05-22_02
-Received: from mr41p01nt-relayp01.apple.com ([100.64.99.124])
- by rn-mailsvcp-mmp-lapp01.rno.apple.com
- (Oracle Communications Messaging Server 8.1.0.23.20230328 64bit (built Mar 28
- 2023))
- with ESMTPSA id <0SCU003GI0RTJA00@rn-mailsvcp-mmp-lapp01.rno.apple.com>; Wed,
- 01 May 2024 17:16:42 -0700 (PDT)
-From: Zayd Qumsieh <zayd_qumsieh@apple.com>
-To: Will Deacon <will@kernel.org>
-Cc: Catalin Marinas <catalin.marinas@arm.com>, Marc Zyngier <maz@kernel.org>,
- Mark Rutland <mark.rutland@arm.com>, Zayd Qumsieh <zayd_qumsieh@apple.com>,
- Justin Lu <ih_justin@apple.com>, Ryan Houdek <Houdek.Ryan@fex-emu.org>,
- Mark Brown <broonie@kernel.org>, Ard Biesheuvel <ardb@kernel.org>,
- Mateusz Guzik <mjguzik@gmail.com>,
- Anshuman Khandual <anshuman.khandual@arm.com>,
- Oliver Upton <oliver.upton@linux.dev>, Miguel Luis <miguel.luis@oracle.com>,
- Joey Gouly <joey.gouly@arm.com>, Christoph Paasch <cpaasch@apple.com>,
- Kees Cook <keescook@chromium.org>, Sami Tolvanen <samitolvanen@google.com>,
- Baoquan He <bhe@redhat.com>, Joel Granados <j.granados@samsung.com>,
- Dawei Li <dawei.li@shingroup.cn>, Andrew Morton <akpm@linux-foundation.org>,
- Florent Revest <revest@chromium.org>, David Hildenbrand <david@redhat.com>,
- Stefan Roesch <shr@devkernel.io>, Andy Chiu <andy.chiu@sifive.com>,
- Josh Triplett <josh@joshtriplett.org>, Oleg Nesterov <oleg@redhat.com>,
- Helge Deller <deller@gmx.de>, Zev Weiss <zev@bewilderbeest.net>,
- Ondrej Mosnacek <omosnace@redhat.com>, Miguel Ojeda <ojeda@kernel.org>,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- Asahi Linux <asahi@lists.linux.dev>
-Subject: Re: [PATCH 0/4] arm64: Support the TSO memory model
-Date: Wed, 01 May 2024 17:16:32 -0700
-Message-id: <20240502001632.41289-1-zayd_qumsieh@apple.com>
-X-Mailer: git-send-email 2.39.3 (Apple Git-146)
-In-reply-to: <20240411132853.GA26481@willie-the-truck>
-References:
+	s=arc-20240116; t=1714609222; c=relaxed/simple;
+	bh=u41EwqRKzoIPMnwx3uJD5HnTN0ef2JtTmKQdCY/Erwc=;
+	h=MIME-Version:In-Reply-To:References:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=kyv76VG5x/6IU2yAR1TK1tuA87f1QZmL8U+umjDLqGpyVA+VJCh3hr1NOCwFp/Fna7yFz58bhliQR9fjwor1xfva1L3M9KCf6E72e7Dkt4yJfXE5rJlfxe01o3ZHbzDXtL7LgCUJF73f3bk8tR1wscG+pYdfgyZvnf8AelAlESc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=bugOooDb; arc=none smtp.client-ip=209.85.219.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-qv1-f42.google.com with SMTP id 6a1803df08f44-69b514d3cf4so80599696d6.0
+        for <linux-kernel@vger.kernel.org>; Wed, 01 May 2024 17:20:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1714609219; x=1715214019; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:user-agent:from:references
+         :in-reply-to:mime-version:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=u41EwqRKzoIPMnwx3uJD5HnTN0ef2JtTmKQdCY/Erwc=;
+        b=bugOooDbNCoejEADieRSHfp+9g6wkP/WY5N81ay1vzvGoq9aDajmDDrc4ebJcA7tpO
+         xqIBRAA74ziMGHE6IaKSd1sj/mPgs75ZJslJq9k3nI59loWl7hpzCBET6TrcqCndATp0
+         Lbk1EQfNSufBOQlfVmf7Lb0BrTUMmJmp03A+c=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714609219; x=1715214019;
+        h=cc:to:subject:message-id:date:user-agent:from:references
+         :in-reply-to:mime-version:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=u41EwqRKzoIPMnwx3uJD5HnTN0ef2JtTmKQdCY/Erwc=;
+        b=F5m2Zo0iilQtV8YeEvAoBavVEXntjgS5tO3VtAf/oXsJceox12rh6sJ5w7ZJs2FHbT
+         NKuS8iJfrtMBxOZpuvIQ0E7AohroX7QWqhdbElyvV5bhenK3naYoRro7Y/FRevuE/cEb
+         HSgUcP29Ck7j7SnitHqkaaPwUcoAQ9THd6DFHtQpy7k2wiFWZA8fIiVEGdpY/Gd3jonP
+         ykHHDWpUcMez8Q340EaSqg+N1xIsBM2UL4N2D7HeCyrno2ZLmO8/snGTh8HBGQfwwTXp
+         YlKGHhudG2/JRf32wUWsQCcAbTnMAr9fhNY/J1EJ9CtrHqlsh3wyQALZQ5+oHDmLKzXH
+         G7rQ==
+X-Forwarded-Encrypted: i=1; AJvYcCV1ahlKod9odlrQlDTt+6Zdou8eBMnVGxmD0WgZM6xlFRXaCeaLtMY5egEFB+NYFrZ/AhgX4FN3h9aFrEMPhZ0vwEfUDbLXGRGXEeeV
+X-Gm-Message-State: AOJu0Ywa3un/TkFUAE4HH5LT0vQDNJa9I0v529s17lnu+g7Wj1C7Ys0l
+	IKwGLQ3Ne0FYVO7I1EYwjutIA2gx69O6Pcjd7jalj253o8PevsXBReAeAhPcH2Sm9Fi9AlHifYj
+	j4TUhZB3lLEK0cqagwSwLv5I1fpakbQcKiFRj
+X-Google-Smtp-Source: AGHT+IEc1eTRsFE6XeEVTYHiMbtnza7LGG/rlt3ScVq6rOvZPlhWc3Y03+hhqJKXzOZ75M3+vGyimImWhMVDRjS2H9g=
+X-Received: by 2002:ad4:5baa:0:b0:6a0:8511:98e0 with SMTP id
+ 10-20020ad45baa000000b006a0851198e0mr443958qvq.22.1714609219471; Wed, 01 May
+ 2024 17:20:19 -0700 (PDT)
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Wed, 1 May 2024 17:20:18 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-version: 1.0
-Content-transfer-encoding: 8bit
+MIME-Version: 1.0
+In-Reply-To: <CAA8EJpqVGHqufKo1kV52RzQCNL5D92mmnCzUwKZn4o+5=wF9pQ@mail.gmail.com>
+References: <20240327202740.3075378-1-swboyd@chromium.org> <CAD=FV=VLwa0AFsrXXxKGG+hcyW+h7u7-tyg3uoDB8M_XdPti_Q@mail.gmail.com>
+ <CAE-0n51osUcpqqh6o9OhURLbRKjcWbRZT-5oHLi_mwfJsUngEw@mail.gmail.com> <CAA8EJpqVGHqufKo1kV52RzQCNL5D92mmnCzUwKZn4o+5=wF9pQ@mail.gmail.com>
+From: Stephen Boyd <swboyd@chromium.org>
+User-Agent: alot/0.10
+Date: Wed, 1 May 2024 17:20:18 -0700
+Message-ID: <CAE-0n52knCL3DP35jg8UhTJP6wxQ5Fueq9Qa796O9hKuEFPRQg@mail.gmail.com>
+Subject: Re: [PATCH 0/2] Fix a black screen on sc7180 Trogdor devices
+To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc: Doug Anderson <dianders@chromium.org>, Michael Turquette <mturquette@baylibre.com>, 
+	Stephen Boyd <sboyd@kernel.org>, Bjorn Andersson <andersson@kernel.org>, linux-kernel@vger.kernel.org, 
+	linux-clk@vger.kernel.org, patches@lists.linux.dev, 
+	linux-arm-msm@vger.kernel.org, Taniya Das <quic_tdas@quicinc.com>, 
+	Laura Nao <laura.nao@collabora.com>
+Content-Type: text/plain; charset="UTF-8"
 
-On Thu, 11 Apr 2024 14:28:54 +0100,
-Will Deacon <will@kernel.org> wrote:
-> P.S. I briefly pondered the idea of the kernel toggling the bit in the
-> ELF loader when e.g. it sees an x86 machine type but I suspect that
-> doesn't really help with existing emulators and you'd still need a way
-> to tell the emulator whether or not it was enabled.
+Quoting Dmitry Baryshkov (2024-05-01 11:11:14)
+> On Wed, 1 May 2024 at 03:17, Stephen Boyd <swboyd@chromium.org> wrote:
+> >
+> > Quoting Doug Anderson (2024-03-28 09:39:54)
+> > >
+> > > I spent a bunch of time discussing this offline with Stephen and I'll
+> > > try to summarize. Hopefully this isn't too much nonsense...
+> > >
+> > > 1. We'll likely land the patches downstream in ChromeOS for now while
+> > > we're figuring things out since we're seeing actual breakages. Whether
+> > > to land upstream is a question. The first patch is a bit of a hack but
+> > > unlikely to cause any real problems. The second patch seems correct
+> > > but it also feels like it's going to cause stuck clocks for a pile of
+> > > other SoCs because we're not adding hacks similar to the sc7180 hack
+> > > for all the other SoCs. I guess we could hope we get lucky or play
+> > > whack-a-mole? ...or we try to find a more generic solution... Dunno
+> > > what others think.
+> >
+> > I think we should hope to get lucky or play whack-a-mole and merge
+> > something like this series. If we have to we can similarly turn off RCGs
+> > or branches during driver probe that are using shared parents like we
+> > have on sc7180.
+> >
+> > Put simply, the shared RCG implementation is broken because it reports
+> > the wrong parent for clk_ops::get_parent() and doesn't clear the force
+> > enable bit. With the current code we're switching the parent to XO when
+> > the clk is enabled the first time. That's an obvious bug that we should
+> > fix regardless of implementing proper clk handoff. We haven't
+> > implemented handoff in over a decade. Blocking this bug fix on
+> > implementing handoff isn't practical.
+>
+> Yes, that needs to be fixed. My approach was to drop the XO parent and
+> consider the clock to be off if it is fed by the XO.
+>
+> > Furthermore, we're relying on clk
+> > consumers to clear that force enable bit by enabling the clk once. That
+> > doesn't make any sense, although we could use that force enable bit to
+> > consider the RCG as enabled for clk_disable_unused.
+>
+> That patch seems fine to me. Will it work if we take the force-enable
+> bit into account when considering the clock to be on or off?
 
-This seems promising to me. What do people think of adding an opt-in argument,
-option, or similar to binfmt that allows users to mark certain file formats as
-"must run under TSO"? And then, the kernel would set the TSO bit when invoking
-the interpreter for those file formats. If an emulator decides to create a
-non-CPU-emulation thread, then it can use a prctl to disable TSO and switch to
-the default ARM memory model. Note that this prctl wouldn't be allowed to
-enable TSO - it would only disable it. This way, it is much harder for a
-faulty application to be made that relies on TSO, since enabling of TSO is
-only done via a binfmt handler that the user must explicitly opt into.
+What is "that patch"?
 
-It is true that existing emulators wouldn't be able to benefit from this, but
-that's the case no matter the activation mechanism. We can, however, expose a
-prctl to get the memory model, so emulators can detect if TSO was enabled for
-their threads.
+It would work to consider the rcg clk as on or off. During rcg clk
+registration if a branch child is found to be enabled we would go and
+write the force enable bit in the parent rcg. And similarly we would
+modify the rcg clk_ops to set that bit whenever the clk is enabled and
+clear it whenever it is disabled. This avoids the feedback mechanism
+from confusing us about the enable state of the rcg, at the cost of
+writing the register.
 
-To summarize, I propose two prctls (similar to the ones in the current revision
-of the patch series). One to switch from the TSO memory model to the default
-ARM one (this is a one-way street). And another to query the current memory
-model.
+It wouldn't fix the problem that we have on Trogdor though. That's
+because the display GDSC is turned off when the rotator clk is enabled
+and parented to the display PLL, which is also turned off. We have to
+either turn off the rotator clk, or switch the parent to something that
+is always on, XO, or keep the display GDSC on until the rotator clk can
+be turned off. On other SoCs we may need to turn off even more clks
+depending on which ones the display GDSC is controlling.
 
-Thanks,
-Zayd
+>
+> >
+> > An alternative approach to this series would be to force all shared RCGs
+> > to be parented to XO at clk registration time, and continue to clear
+> > that RCG force enable bit. That's sort of what Dmitry was going for
+> > earlier. Doing this would break anything that's relying on the clks
+> > staying enabled at some frequency through boot, but that isn't supported
+> > anyway because clk handoff isn't implemented. It avoids the problem that
+> > the first patch is for too because XO doesn't turn off causing a clk to
+> > get stuck on. I can certainly craft this patch up if folks think that's
+> > better.
+>
+> I think this approach makes sense too (and might be preferable to
+> boot-time hacks).
+> On most of the platforms we are already resetting the MDSS as soon as
+> the mdss (root device) is being probed. Then the display is going to
+> be broken until DPU collects all the coonectors and outpus and finally
+> creates the DRM device.
 
-P.S. I forgot to CC you in my most recent email to Marc Zyngier just now. 
-Sorry, I'm quite new to using mailing lists.
+Ok. I'm leaning towards this approach now because it seems like keeping
+the clk at whatever it was set at boot isn't useful. If it becomes
+useful at some point we can implement a better handoff mechanism. I have
+some idea how to do that by using the 'clocks' DT property to find child
+clks that haven't probed yet. I'll test out this alternate approach to
+park shared clks at probe and send the patch.
+
+>
+> But I think we should fix the get_parent() too irrespectively of this.
+>
+
+Sure, but it becomes sorta moot if we force the parent to be XO.
 
