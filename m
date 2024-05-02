@@ -1,102 +1,127 @@
-Return-Path: <linux-kernel+bounces-166599-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-166600-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B05A88B9CD9
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 16:51:02 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 989558B9CDE
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 16:52:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E19901C22D7F
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 14:51:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 53F67289FD0
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 14:52:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 520B8154443;
-	Thu,  2 May 2024 14:50:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE7BC153BC6;
+	Thu,  2 May 2024 14:51:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VwDde+BR"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="1uyuAgb+"
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8240B153800;
-	Thu,  2 May 2024 14:50:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B7DF153800;
+	Thu,  2 May 2024 14:51:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714661433; cv=none; b=jpLkXoBs9qnPUGwJL7QNIidXg7kkX6RN/krguHK5P25DLMd3hb8QLJk7sZqtr+IfszimTqB8Bc0I+j4nLNkGWB6fcoMThi67dm3OjlyxlwfNq9oTv7EQCID/hNZ9OELizeyxJJzbiSFWg4hmc4OkRSek1bRZMrP/uRjjcT+idEU=
+	t=1714661519; cv=none; b=jpYp8hsEXWE106RXpXDuoE/ucDRnUROg7Sx210bkPUdZdzePQrnEwsN8pcV1krRZBjwSJ9pDk8L3RvBXCB05jGPSM9WTVK2MErwpI05maaUPvRFHm6YZ742OioEAGw13OXRlDQjO/HtXq6MJ5zjuBH7342dJBykdSRzp39ISGF8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714661433; c=relaxed/simple;
-	bh=VLCdT8S8RHn0J5m1d4S8joxMLvrBRQKRrINYgfmKubA=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=Yi4G9lIoQ2zJ/QTk5uJb4OGRKphSaFjlq/53bnf+YGZJ5PF5Du87ougX8Mmai4AP8LSepP13S8xjeaMYEoimuGp9Pwr/nObWPzz5///DiRaK2jks7vwegdCy6wCIYRjkSSQWoowrzbG1c16aiB3sCuJSmFfoHfLYAA0sOvJz+Vk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VwDde+BR; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 21E65C4AF14;
-	Thu,  2 May 2024 14:50:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714661433;
-	bh=VLCdT8S8RHn0J5m1d4S8joxMLvrBRQKRrINYgfmKubA=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=VwDde+BRMnQvir5Tx8KN74Mo3z9lrZG+Q1cUDRAAdnxbR9bpwHEHWfP9YKhwnVE7e
-	 qKgp1hAwOKtleGVsUjiLAhIXRg6xSdXINvfnc7IVqYKEmhnLOVY5Ky8IG2buan2y7A
-	 chBN/rm527LAuKkPsNMJCP/lHEm0ZnMbvQI1Zn4ChPPv+86gmeDL7OWPvfzUR8g7Lm
-	 3Ja4oyTe6k4qndhm6ys0a8sQekapqPS+l/Wz5q9XqRFWa470pUrcotMN1xMidcG3SE
-	 KHpYlVuRcyI1AtjxZOErGrofdGv5HnbJfgM5JaC7AL4+uoiLKuXhG6khUBr7VNpsHX
-	 TC2k7QWM2yvNw==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 0916CC4333B;
-	Thu,  2 May 2024 14:50:33 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1714661519; c=relaxed/simple;
+	bh=ST+TZwgCd+nDZ5M4t+lR71k82ZcVIF/RLDpS5hQosys=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=FM50GH5O4tWO9fiEb2Hl3dt5996+6F6Q/6pIFZhJ3ia8OnB+lUwczmKcSx8ORo4Q+0osZxTIKsuihjHGWUJqI1TRpdyf5b0GiJDrZM8hEcmvA+H8UhDDeUve267xDEiLUzjrj63tNX45hvEw2XaRCgL7DlwTbGlg9XUcKP9/dJI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=1uyuAgb+; arc=none smtp.client-ip=156.67.10.101
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+	bh=wqpw/ZGaL/K9oEQyWGG2tvRSaK0AjAGtY128e8n64RA=; b=1uyuAgb+/pJTNrSUOf1oUcENk7
+	ITwsmNWDdS3RtL8SIsOZYzw+yZLbG7Oy864GiNT/xw3Od71t43ADVsmYwBq/PlYJttybj1eeY8oqj
+	0urYbiEHdWsb96/i5cu9N38WdiX+80nYJ2MO7edPMvqMBzowpcb7VW9JSNDJD3qnsnmU=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+	(envelope-from <andrew@lunn.ch>)
+	id 1s2Xmg-00EVgP-Fq; Thu, 02 May 2024 16:51:42 +0200
+Date: Thu, 2 May 2024 16:51:42 +0200
+From: Andrew Lunn <andrew@lunn.ch>
+To: Raju Lakkaraju <Raju.Lakkaraju@microchip.com>
+Cc: netdev@vger.kernel.org, lxu@maxlinear.com, hkallweit1@gmail.com,
+	linux@armlinux.org.uk, davem@davemloft.net, edumazet@google.com,
+	kuba@kernel.org, pabeni@redhat.com, linux-kernel@vger.kernel.org,
+	UNGLinuxDriver@microchip.com
+Subject: Re: [PATCH net-next] net: phy: add wol config options in phy device
+Message-ID: <7fe419b2-fc73-4584-ae12-e9e313d229c3@lunn.ch>
+References: <20240430050635.46319-1-Raju.Lakkaraju@microchip.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v3 0/2] bluetooth: mt7921s: Add binding and fixup existing dts
-From: patchwork-bot+bluetooth@kernel.org
-Message-Id: 
- <171466143303.15417.16267391359658685037.git-patchwork-notify@kernel.org>
-Date: Thu, 02 May 2024 14:50:33 +0000
-References: <20240412073046.1192744-1-wenst@chromium.org>
-In-Reply-To: <20240412073046.1192744-1-wenst@chromium.org>
-To: Chen-Yu Tsai <wenst@chromium.org>
-Cc: marcel@holtmann.org, luiz.dentz@gmail.com, robh+dt@kernel.org,
- krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
- matthias.bgg@gmail.com, angelogioacchino.delregno@collabora.com,
- sean.wang@mediatek.com, linux-bluetooth@vger.kernel.org,
- netdev@vger.kernel.org, linux-mediatek@lists.infradead.org,
- devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240430050635.46319-1-Raju.Lakkaraju@microchip.com>
 
-Hello:
-
-This series was applied to bluetooth/bluetooth-next.git (master)
-by Luiz Augusto von Dentz <luiz.von.dentz@intel.com>:
-
-On Fri, 12 Apr 2024 15:30:41 +0800 you wrote:
-> Hi everyone,
+On Tue, Apr 30, 2024 at 10:36:35AM +0530, Raju Lakkaraju wrote:
+> Introduce a new member named 'wolopts' to the 'phy_device' structure to
+> store the user-specified Wake-on-LAN (WOL) settings. Update this member
+> within the phy driver's 'set_wol()' function whenever the WOL configuration
+> is modified by the user.
 > 
-> This is v3 of my MT7921S Bluetooth binding series.
+> Currently, when the system resumes from sleep, the 'phy_init_hw()' function
+> resets the PHY's configuration and interrupts, which leads to problems upon
+> subsequent WOL attempts. By retaining the desired WOL settings in 'wolopts',
+> we can ensure that the PHY's WOL configuration is correctly reapplied
+> through 'phy_ethtool_set_wol()' before a system suspend, thereby resolving
+> the issue
+
+Sorry it took a white to review this.
+
 > 
-> Changes since v2:
-> - Expand description and commit message to clearly state that WiFi and
->   Bluetooth are separate SDIO functions, and that each function should
->   be a separate device node, as specified by the MMC binding.
-> - Change 'additionalProperties' to 'unevaluatedProperties'
-> - Add missing separating new line
-> - s/ot/to/
+> Signed-off-by: Raju Lakkaraju <Raju.Lakkaraju@microchip.com>
+> ---
+>  drivers/net/phy/mxl-gpy.c    | 5 +++++
+>  drivers/net/phy/phy_device.c | 5 +++++
+>  include/linux/phy.h          | 2 ++
+>  3 files changed, 12 insertions(+)
 > 
-> [...]
+> diff --git a/drivers/net/phy/mxl-gpy.c b/drivers/net/phy/mxl-gpy.c
+> index b2d36a3a96f1..6edb29a1d77e 100644
+> --- a/drivers/net/phy/mxl-gpy.c
+> +++ b/drivers/net/phy/mxl-gpy.c
+> @@ -680,6 +680,7 @@ static int gpy_set_wol(struct phy_device *phydev,
+>  	struct net_device *attach_dev = phydev->attached_dev;
+>  	int ret;
+>  
+> +	phydev->wolopts = 0;
 
-Here is the summary with links:
-  - [v3,1/2] dt-bindings: net: bluetooth: Add MediaTek MT7921S SDIO Bluetooth
-    https://git.kernel.org/bluetooth/bluetooth-next/c/556511c33388
-  - [v3,2/2] arm64: dts: mediatek: mt8183-pico6: Fix bluetooth node
-    https://git.kernel.org/bluetooth/bluetooth-next/c/f90ac18d01cd
+Is this specific to mlx-gpy?
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+You should be trying to solve the problem for all PHYs which support
+WoL. So i expect the core to be doing most of the work. In fact, i
+don't think there is any need for driver specific code.
 
+phy_ethtool_set_wol() can set phydev->wolopts after calling
+phydev->drv->set_wol(). If it returns an error, including -ENOTSUPP,
+set phydev->wolopts to 0, otherwise set it to wolopts.
 
+> @@ -2038,6 +2038,11 @@ int phy_suspend(struct phy_device *phydev)
+>  	if (phydev->suspended)
+>  		return 0;
+>  
+> +	if (phydev->wolopts) {
+> +		wol.wolopts = phydev->wolopts;
+> +		phy_ethtool_set_wol(phydev, &wol);
+> +	}
+
+Why on suspend? I would expect it to be on resume, after the PHY has
+been reset.
+
+I also think you need to save sopass[] in phydev, since some PHYs
+support WAKE_MAGICSECURE. Just because mlx-gpy does not need the
+password does not mean we should ignore it in general. I also think it
+is safe to store in memory. Its is not a highly confidential
+password. I would not be too surprised if some PHYs have the registers
+read/write rather than write only.
+
+	Andrew
 
