@@ -1,176 +1,107 @@
-Return-Path: <linux-kernel+bounces-166890-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-166893-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 698988BA165
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 22:09:25 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 276518BA16B
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 22:12:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9AA031C213AF
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 20:09:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D699D288025
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 20:12:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F8FA1BF6DF;
-	Thu,  2 May 2024 20:08:21 +0000 (UTC)
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A16C180A95;
+	Thu,  2 May 2024 20:12:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ge2W1nD5"
+Received: from mail-pf1-f169.google.com (mail-pf1-f169.google.com [209.85.210.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53589181BAA;
-	Thu,  2 May 2024 20:08:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA773158845;
+	Thu,  2 May 2024 20:12:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714680499; cv=none; b=bjzLh+5nMlt3dpDX5lp4FCzhTO3ZM/EJH+WW4zGaxV/9FWHzU2JrU25+MiCwEtCP+QTI5/IpfJFd2Kkm8TfsQI4cl8hCsrHlpzot99wCug6KeCUIv+WBsgb7lJVTycM9JkH1/fKRrgGij74w0f3q3LRpSbRO5yw1k0awvtKypD0=
+	t=1714680750; cv=none; b=XhCRHhFjs84sfkwawz0n8uLB12TQmLWEOpI1m6/C5yLVzdlqae5XnhphDOmQ+UVnWHqbxwgLyxtS5B2DURV515CSvOi0BB9g7XjutWWbL/b6pHsFphyS53/8PGWp9ZfxHldpLUjNpV1mVZuOi6EdQ7UmWz/0PsCqus90zlvZa3k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714680499; c=relaxed/simple;
-	bh=rxMqV71humHqtFXm6yRvythtULUic6ZGWZAjWEIS5Jo=;
-	h=Message-ID:Date:From:To:Cc:Subject:References:MIME-Version:
-	 Content-Type; b=IaPivQMgU3RgOpTOnbzRFua/BvLXGonvzuD+pCVBjumP2sK4FOClOOqCbkWoI3P5jtbFi1RmnPI1WIlSEMU/8MEqvIDoIF9TkWDMoc3y7kdR901xxbHiNWZp42NqlVZ7TW5XNrfnCLc+AlH5vCTun7xIDSnixQS8I4AhTMdrCvU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1C4E2C4AF52;
-	Thu,  2 May 2024 20:08:19 +0000 (UTC)
-Received: from rostedt by gandalf with local (Exim 4.97)
-	(envelope-from <rostedt@goodmis.org>)
-	id 1s2cjq-00000003M6A-1G6Y;
-	Thu, 02 May 2024 16:09:06 -0400
-Message-ID: <20240502200906.161887248@goodmis.org>
-User-Agent: quilt/0.67
-Date: Thu, 02 May 2024 16:08:27 -0400
-From: Steven Rostedt <rostedt@goodmis.org>
-To: linux-kernel@vger.kernel.org,
- linux-trace-kernel@vger.kernel.org
-Cc: Masami Hiramatsu <mhiramat@kernel.org>,
- Mark Rutland <mark.rutland@arm.com>,
- Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Andrew Morton <akpm@linux-foundation.org>,
- stable@vger.kernel.org
-Subject: [PATCH v3 6/6] eventfs: Have "events" directory get permissions from its parent
-References: <20240502200821.125580570@goodmis.org>
+	s=arc-20240116; t=1714680750; c=relaxed/simple;
+	bh=m2RT8PC4x1UCnE8lG23iBCFVaGRGa4zOXUVtHgndTQs=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=OLsefs2xNQb20FRi08FEETe5Av8pPP80F5Gz12TJUHqfEfMA6E6OM7bWde+pKA6NBB+97woyoPAmtd+EYAqxHlBvAuoh9M3FSIBNa8gAUEcAVJdCv0MkKLJ4knufnO7rspSu2e+QgyxntnysOPjdinAB2ZPNiL37dGw3VfLQMkA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ge2W1nD5; arc=none smtp.client-ip=209.85.210.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f169.google.com with SMTP id d2e1a72fcca58-6f44b390d5fso23653b3a.3;
+        Thu, 02 May 2024 13:12:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1714680747; x=1715285547; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=6meDpwIFn6POwM0GTM589VI6wgTQh6ljoPgnNTkMk6k=;
+        b=ge2W1nD5TdeklGBzFFoI0zcQEingoFhN2BdeS75r+QyfIFedSal+b+zYkC3ddjHrdg
+         +BSZg+DYtPZJ31lsgSMXfg10hiJPFxTBNSDgEo3TQwG75cEks87ydVr8bX+mLnfISWDN
+         wLzObveYakL0LM0x1ge95ML8W4f8OcuVGPEZri9o1q/slyEwFT7VnczTvLzahr61Izw4
+         DkM1ELFCw6IV9OL4X41wH1glcgO1u0dHn4kIfgXqh+18Pn4gd2Ki49sIerztgHFAS1AM
+         zfXO54FExQ1hF26XvYxwdPy47fvJPw2hBMygFke2kph/HkgtxxuI9u2wX3KHcebKPpm3
+         Mofw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714680747; x=1715285547;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=6meDpwIFn6POwM0GTM589VI6wgTQh6ljoPgnNTkMk6k=;
+        b=muGUPWBIdek1TYfGUK7ppc0onSskbJll9dPPOAAjOGgL8L7iuGa+WwXM8LJtRMlHVr
+         sKBmx+lamLiPzRU1Zz6esQxOHC15wq8e5LlMMvSixt073NH37WkGkPx03xbKzno7VuPk
+         CN38pwEvGHZUakZHQxlohDWWE+v+rpfOY1JfpwZDxv8QVPVQWk5x0Cua7SodCoBtoQz6
+         iid26/LG/5GSJO2QoJcSfgAEL9p21ixedyT1vfzNAue0jUVwehflmjeqMS2AYUmhbTAV
+         gaeGw0a7ijzgmiPZfk0TUjMe7SnAN0sYteUAOxgnFLNT/fARZjy2M0RWR4iQlvadSxyy
+         ElpA==
+X-Forwarded-Encrypted: i=1; AJvYcCXU7Y05rFJi9ar9AVrrJzC5XQViL4iZ+6bYKTV+7ro53JoIMXCRBO76Q+wURcoybFk2Ekt7kEp1L2bmAvbI8d/LXbzH0OW2t1bSVKh4zlv4Jiw7m0dZ/stb3sgV4MYs0Qygaic/+bZ4
+X-Gm-Message-State: AOJu0YwQJ5ua5cygl6pSyZ+jPeqoy6vRTqphZg1Xf0ZK0wVHsibOx9gc
+	fMaNbWcvkKw4FxAOqpGqAFIpeJihypJkB66yhSAMI5n1pIM9yrPMObcW6m+H
+X-Google-Smtp-Source: AGHT+IEkeV0ZW1vAReZH/O25DndzDOP7OdAvbWnDjw0Mc3J2E3onwOJi72SjnZxcb1iqBZb/Ax44sA==
+X-Received: by 2002:a05:6a00:2290:b0:6f0:b53c:dfb4 with SMTP id f16-20020a056a00229000b006f0b53cdfb4mr736947pfe.22.1714680747237;
+        Thu, 02 May 2024 13:12:27 -0700 (PDT)
+Received: from localhost ([115.96.207.161])
+        by smtp.gmail.com with ESMTPSA id k1-20020a632401000000b0061ca8fac008sm84332pgk.22.2024.05.02.13.12.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 02 May 2024 13:12:26 -0700 (PDT)
+Date: Fri, 3 May 2024 01:41:21 +0530
+From: Aryabhatta Dey <aryabhattadey35@gmail.com>
+To: linux-leds@vger.kernel.org, linux-doc@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Cc: pavel@ucw.cz, lee@kernel.org, corbet@lwn.net, 
+	skhan@linuxfoundation.org, javier.carrasco.cruz@gmail.com
+Subject: [PATCH] Fix typo
+Message-ID: <y5bqy3p7deaemny5sczd33zy2dwtbqvucgrq6wxqs7ibf4omwb@kpd2gwfve2ax>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
+Change 'dasy-chain' to 'daisy-chain'.
 
-The events directory gets its permissions from the root inode. But this
-can cause an inconsistency if the instances directory changes its
-permissions, as the permissions of the created directories under it should
-inherit the permissions of the instances directory when directories under
-it are created.
-
-Currently the behavior is:
-
- # cd /sys/kernel/tracing
- # chgrp 1002 instances
- # mkdir instances/foo
- # ls -l instances/foo
-[..]
- -r--r-----  1 root lkp  0 May  1 18:55 buffer_total_size_kb
- -rw-r-----  1 root lkp  0 May  1 18:55 current_tracer
- -rw-r-----  1 root lkp  0 May  1 18:55 error_log
- drwxr-xr-x  1 root root 0 May  1 18:55 events
- --w-------  1 root lkp  0 May  1 18:55 free_buffer
- drwxr-x---  2 root lkp  0 May  1 18:55 options
- drwxr-x--- 10 root lkp  0 May  1 18:55 per_cpu
- -rw-r-----  1 root lkp  0 May  1 18:55 set_event
-
-All the files and directories under "foo" has the "lkp" group except the
-"events" directory. That's because its getting its default value from the
-mount point instead of its parent.
-
-Have the "events" directory make its default value based on its parent's
-permissions. That now gives:
-
- # ls -l instances/foo
-[..]
- -rw-r-----  1 root lkp 0 May  1 21:16 buffer_subbuf_size_kb
- -r--r-----  1 root lkp 0 May  1 21:16 buffer_total_size_kb
- -rw-r-----  1 root lkp 0 May  1 21:16 current_tracer
- -rw-r-----  1 root lkp 0 May  1 21:16 error_log
- drwxr-xr-x  1 root lkp 0 May  1 21:16 events
- --w-------  1 root lkp 0 May  1 21:16 free_buffer
- drwxr-x---  2 root lkp 0 May  1 21:16 options
- drwxr-x--- 10 root lkp 0 May  1 21:16 per_cpu
- -rw-r-----  1 root lkp 0 May  1 21:16 set_event
-
-Cc: stable@vger.kernel.org
-Fixes: 8186fff7ab649 ("tracefs/eventfs: Use root and instance inodes as default ownership")
-Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+Signed-off-by: Aryabhatta Dey <aryabhattadey35@gmail.com>
 ---
- fs/tracefs/event_inode.c | 30 ++++++++++++++++++++++++------
- 1 file changed, 24 insertions(+), 6 deletions(-)
+ Documentation/leds/leds-blinkm.rst | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/tracefs/event_inode.c b/fs/tracefs/event_inode.c
-index 6e08405892ae..a878cea70f4c 100644
---- a/fs/tracefs/event_inode.c
-+++ b/fs/tracefs/event_inode.c
-@@ -37,6 +37,7 @@ static DEFINE_MUTEX(eventfs_mutex);
+diff --git a/Documentation/leds/leds-blinkm.rst b/Documentation/leds/leds-blinkm.rst
+index c74b5bc877b1..2d3c226a371a 100644
+--- a/Documentation/leds/leds-blinkm.rst
++++ b/Documentation/leds/leds-blinkm.rst
+@@ -7,7 +7,7 @@ The leds-blinkm driver supports the devices of the BlinkM family.
+ They are RGB-LED modules driven by a (AT)tiny microcontroller and
+ communicate through I2C. The default address of these modules is
+ 0x09 but this can be changed through a command. By this you could
+-dasy-chain up to 127 BlinkMs on an I2C bus.
++daisy-chain up to 127 BlinkMs on an I2C bus.
  
- struct eventfs_root_inode {
- 	struct eventfs_inode		ei;
-+	struct inode			*parent_inode;
- 	struct dentry			*events_dir;
- };
- 
-@@ -226,12 +227,23 @@ static int eventfs_set_attr(struct mnt_idmap *idmap, struct dentry *dentry,
- 
- static void update_events_attr(struct eventfs_inode *ei, struct super_block *sb)
- {
--	struct inode *root;
-+	struct eventfs_root_inode *rei;
-+	struct inode *parent;
-+
-+	rei = get_root_inode(ei);
-+
-+	/* Use the parent inode permissions unless root set its permissions */
-+	parent = rei->parent_inode;
- 
--	/* Get the tracefs root inode. */
--	root = d_inode(sb->s_root);
--	ei->attr.uid = root->i_uid;
--	ei->attr.gid = root->i_gid;
-+	if (rei->ei.attr.mode & EVENTFS_SAVE_UID)
-+		ei->attr.uid = rei->ei.attr.uid;
-+	else
-+		ei->attr.uid = parent->i_uid;
-+
-+	if (rei->ei.attr.mode & EVENTFS_SAVE_GID)
-+		ei->attr.gid = rei->ei.attr.gid;
-+	else
-+		ei->attr.gid = parent->i_gid;
- }
- 
- static void set_top_events_ownership(struct inode *inode)
-@@ -817,6 +829,7 @@ struct eventfs_inode *eventfs_create_events_dir(const char *name, struct dentry
- 	// Note: we have a ref to the dentry from tracefs_start_creating()
- 	rei = get_root_inode(ei);
- 	rei->events_dir = dentry;
-+	rei->parent_inode = d_inode(dentry->d_sb->s_root);
- 
- 	ei->entries = entries;
- 	ei->nr_entries = size;
-@@ -826,10 +839,15 @@ struct eventfs_inode *eventfs_create_events_dir(const char *name, struct dentry
- 	uid = d_inode(dentry->d_parent)->i_uid;
- 	gid = d_inode(dentry->d_parent)->i_gid;
- 
--	/* This is used as the default ownership of the files and directories */
- 	ei->attr.uid = uid;
- 	ei->attr.gid = gid;
- 
-+	/*
-+	 * When the "events" directory is created, it takes on the
-+	 * permissions of its parent. But can be reset on remount.
-+	 */
-+	ei->attr.mode |= EVENTFS_SAVE_UID | EVENTFS_SAVE_GID;
-+
- 	INIT_LIST_HEAD(&ei->children);
- 	INIT_LIST_HEAD(&ei->list);
- 
+ The device accepts RGB and HSB color values through separate commands.
+ Also you can store blinking sequences as "scripts" in
 -- 
-2.43.0
-
+2.44.0
 
 
