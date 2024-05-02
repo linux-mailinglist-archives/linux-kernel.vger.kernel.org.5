@@ -1,130 +1,103 @@
-Return-Path: <linux-kernel+bounces-166617-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-166618-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id C2F118B9D19
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 17:14:26 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 027B88B9D1D
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 17:15:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1B356B249DB
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 15:14:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AC8091F22969
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 15:15:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 988DF15AADA;
-	Thu,  2 May 2024 15:14:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B525E15AD99;
+	Thu,  2 May 2024 15:15:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="EYtytLqM"
-Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cdGtJqcd"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E6831159583
-	for <linux-kernel@vger.kernel.org>; Thu,  2 May 2024 15:14:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE10B15AACA;
+	Thu,  2 May 2024 15:15:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714662856; cv=none; b=U25Pg8OP80k1HYsL6cEVBN7Owi2EEChVmVMfBSbqTA7EQc4dPly3wBbUBxGEKFraP/iNzSL1i2tqoVLyN32fckpkpMAEQ5NEkXn+0BbgSSYnp/iyURdcQImRYtQn+QMPYcCoh4ary6VWcv8XsNGVBGzMLhbMALQxnXh9K8U/uyU=
+	t=1714662921; cv=none; b=iPsPwPH8Feh2JNbd5m/KqK7aT0meEHaucNk+At2irDEiZr48wZ8OIvzdRFDpY9gOvSBAHW7D4RkWEcjXTGbGJ6aVbqa8KDEr4vvnIIyOYxPE2UEpVKBdMOQODZo2iIlmay+V4Gfs8RLap0G2P0ZVHrw7Lrsoy8KaLhBcjsPdI30=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714662856; c=relaxed/simple;
-	bh=VDm/f33gMRZJn1IEH8M+iEGbrAW/USVPxcL7qJhNNmA=;
+	s=arc-20240116; t=1714662921; c=relaxed/simple;
+	bh=FisbOIvpsVFit1c3nYfm8hroZ9Szugxt6WvcPdNmDXo=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=DQvyOheEmTYQcKNXdqOjHz0CjXgLfQT0s17FDCQu0QDK2ymqEbHSR3cJtTk2LZSRmhHBBwzGHwxRUWfB9UuUzuTCFdsOQ29fde4zgOf/TDjts4zlOQdTTD7A2RLvoD+5z2Q6RycGBI+75LRYPyh6QcGzeLjbsuWo5itDBEojabw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=EYtytLqM; arc=none smtp.client-ip=209.85.128.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-41bab13ca81so62239025e9.1
-        for <linux-kernel@vger.kernel.org>; Thu, 02 May 2024 08:14:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1714662853; x=1715267653; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=cbY/VcBLbuHrSNodrdRFjHRQXR5diN61KT/KCDRPbos=;
-        b=EYtytLqMVZ76YsJjd0Vx7l2qi2ja/HdQ6nR2lFOW5doo++NiLxvXvIPqcIK1cJACs6
-         THV2zuxjlG+z3JXCw2hE6oYKk+7Gc2nKiwAJMlZHnlZ3rndtiyk+aZjR/MdDf6ajIsXy
-         UaysEipjVj73PznDKS6d46yOnUcUxT5fxjObkPTogyCtG72wTmXptUUJUjwWU/dEOuZ2
-         JOfR5qBGTEb1KnVK1QtDj170tzoma5NZ66hm96/BoBhYLC0mdWj+rOrVRBf80SVM2g/Y
-         Cb5nQsw71X1yDFpYTYbee2XEWYC7HP3zAE5DHhL+lv6vWWA5uBzeIRRR3L7+M8zXyCFe
-         ++VA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714662853; x=1715267653;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=cbY/VcBLbuHrSNodrdRFjHRQXR5diN61KT/KCDRPbos=;
-        b=gk32lLr6+r9yvgBxFKeLh+88z5vktXqGwFzUOKvxBytI14WZ6A+hBuKMVxxXWtoD5d
-         HxGlLsEBQacV/ujWFbWag/SJZseTdZC6xXl9NRBdPape5QB1ApbvAvGiW223xRddsx/N
-         DHTRQTPc9LPOcHvrj85I/AU81HDhc+5w3G7OvCjj8DigG3Rfbw/UehSU4pMaqER23P6S
-         +A3HPGSRm5BNYV2IqzsGg7U9UlQGgsKC5jARyCkGIbu7hEoK71fUTpnG6daaR1d4pmO3
-         7cvPHz4WaKBO6yojfJfXdukyVTBiKaRSCvMct/2n5ZSzkdeEs5i33A9ISTyHlVww8b65
-         G4yg==
-X-Forwarded-Encrypted: i=1; AJvYcCUA0FakDWNIDjHUB9+slf4by//cZGMghlEcq/2kkC6mpIETd1VNJCPD/d0pCtiXdCxN74NZgA8Km+1DseF1PgZRfHR7WPjUQwnL1R2c
-X-Gm-Message-State: AOJu0YyTq3oNhm9Gk1eYdxhsKOWdQb3Jrs4aBL4dD6EWtIeWa4j+YBo2
-	FbW2A0+8OuEnCIzj0YWLHWclJ19SR2fIm+xEc9Ls4MaivFENWBJtdCyG6yrlYmSbfBytvkDrWtk
-	n
-X-Google-Smtp-Source: AGHT+IFlsoRLNMn3LkTjImslFRW1koUYMMOKLDCsUquNVjPgESRcsDbCgtsLIfRPeZxiBfMILNOLUA==
-X-Received: by 2002:a05:600c:450e:b0:41b:edf4:4071 with SMTP id t14-20020a05600c450e00b0041bedf44071mr23404wmo.35.1714662853248;
-        Thu, 02 May 2024 08:14:13 -0700 (PDT)
-Received: from pathway.suse.cz ([176.114.240.50])
-        by smtp.gmail.com with ESMTPSA id z5-20020a05600c0a0500b0041bd85cd3f2sm2256509wmp.19.2024.05.02.08.14.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 May 2024 08:14:13 -0700 (PDT)
-Date: Thu, 2 May 2024 17:14:11 +0200
-From: Petr Mladek <pmladek@suse.com>
-To: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc: Justin Stitt <justinstitt@google.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	John Ogness <john.ogness@linutronix.de>,
-	Sergey Senozhatsky <senozhatsky@chromium.org>,
-	linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH] printk: cleanup deprecated uses of strncpy/strcpy
-Message-ID: <ZjOtw-ov-GXxG-dv@pathway.suse.cz>
-References: <20240429-strncpy-kernel-printk-printk-c-v1-1-4da7926d7b69@google.com>
- <7cdc63b3-31cc-442c-8c2e-75adb2c76b52@wanadoo.fr>
- <CAFhGd8rO=-DYvXi0YHvQqnhTteV+Hgeuou0X3USx61oTobj0kw@mail.gmail.com>
- <289aa316-5067-446e-96d8-7b318fa367a9@wanadoo.fr>
+	 Content-Type:Content-Disposition:In-Reply-To; b=uOzarQXgmLrCpB37ubL54mbooIWPdUgQv+CiAK7pAmB65TH7CcK31Yer7/rDw9Mz01Wkq5pAbClqzV6SdFERlgS6HI6FugHZW+9VKmP4o2t7jEzKeUYDC6jHFF0Dr8O28hL+AXPh/Z5R5Mu487+Vs8RLKSbmUhVrgdIxMzgX25g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cdGtJqcd; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E55E1C113CC;
+	Thu,  2 May 2024 15:15:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714662920;
+	bh=FisbOIvpsVFit1c3nYfm8hroZ9Szugxt6WvcPdNmDXo=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=cdGtJqcd5fVh7bj9oZhXSfqR81kQ8rxg8zX7EWRjtJ2fxwk0Q8JMCPPJyxpom/Fth
+	 QVE5kX7tB6l6erQl2nFTBv4NO1aJ5S3wpPlZeOdRf8s+IqzeorbY/hvGx6a3z2x7us
+	 krVANv49x9ACe1fcgByZlVCWbCZol5pQ53pw717SHj3KoFDXmdpFMXCQ8P84PmQT7R
+	 FNyEuNwPptKypEI+EBm/bKAYrlj0GrfSgsoLs0HMb3SJQdV8BuzQRyBkD7DglZnmuj
+	 M69io1YoV9YM+0892j61PF87j+WVVeLu5pv2c3hrC5R2GgMq252AYIUgytHmyNY5bP
+	 bDXqfXj230J2g==
+Date: Thu, 2 May 2024 16:15:14 +0100
+From: Conor Dooley <conor@kernel.org>
+To: Tomasz Jeznach <tjeznach@rivosinc.com>
+Cc: Rob Herring <robh@kernel.org>, Joerg Roedel <joro@8bytes.org>,
+	Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	Anup Patel <apatel@ventanamicro.com>,
+	Sunil V L <sunilvl@ventanamicro.com>,
+	Nick Kossifidis <mick@ics.forth.gr>,
+	Sebastien Boeuf <seb@rivosinc.com>,
+	Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org,
+	iommu@lists.linux.dev, linux-riscv@lists.infradead.org,
+	linux-kernel@vger.kernel.org, linux@rivosinc.com
+Subject: Re: [PATCH v3 1/7] dt-bindings: iommu: riscv: Add bindings for
+ RISC-V IOMMU
+Message-ID: <20240502-gains-finless-1168f9f0622f@spud>
+References: <cover.1714494653.git.tjeznach@rivosinc.com>
+ <ef946892252b18f541986a461fc4d37957cc805e.1714494653.git.tjeznach@rivosinc.com>
+ <20240501131556.GA2931109-robh@kernel.org>
+ <CAH2o1u5OYORHNuBC17DHkRFm6D6b8qaQVep8vX4kVzJAkk36HA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="SXPzoaVNzsHbB3bu"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <289aa316-5067-446e-96d8-7b318fa367a9@wanadoo.fr>
+In-Reply-To: <CAH2o1u5OYORHNuBC17DHkRFm6D6b8qaQVep8vX4kVzJAkk36HA@mail.gmail.com>
 
-On Thu 2024-05-02 07:06:21, Christophe JAILLET wrote:
-> Le 02/05/2024 à 01:18, Justin Stitt a écrit :
-> > On Wed, May 1, 2024 at 2:39 PM Christophe JAILLET
-> > <christophe.jaillet@wanadoo.fr> wrote:
-> > > Hi,
-> > > 
-> > > Nit: The { } around each branch can now also be removed.
-> > 
-> > There was one line before and there's one line now.
-> 
-> In the block after the "else", yes, but now the block after the "if" is only
-> 1 line. (it was 2 before).
-> 
-> So, {} should now be omitted on both branches.
-> 
-> -    if (str[0] >= '0' && str[0] <= '9') {
-> -        strcpy(buf, "ttyS");
-> -        strncpy(buf + 4, str, sizeof(buf) - 5);
-> +    if (isdigit(str[0])) {
-> +        scnprintf(buf, sizeof(buf), "ttyS%s", str);
->       } else {
-> -        strncpy(buf, str, sizeof(buf) - 1);
-> +        strscpy(buf, str);
->       }
-> 
-> This is a really minor nitpick. Not sure you need to repost if there is no
-> other comment.
 
-I could remove the brackets when pushing the patch. But feel free to
-send v2.
+--SXPzoaVNzsHbB3bu
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-I am going to push it the following week if nobody complains.
+On Wed, May 01, 2024 at 07:47:41PM -0700, Tomasz Jeznach wrote:
+> >
+> > 'qemu,iommu' is too broad. Could be other QEMU implementations of an
+> > IOMMU. So 'qemu,riscv-iommu'.
+> >
+> I'm ok with that. Any objections from others?
 
-Best Regards,
-Petr
+None here, you can keep my tag with the things Rob noticed.
+
+--SXPzoaVNzsHbB3bu
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZjOuAgAKCRB4tDGHoIJi
+0g/XAP49wf/9XIdSLHOzXM2XNwC6zzNqel9e+7K0mLiSKhi7IQEA7aVbXkabNtlR
+W/eULVth2tAgbe5pRhdFwJFXa3pR7Qo=
+=z6Kf
+-----END PGP SIGNATURE-----
+
+--SXPzoaVNzsHbB3bu--
 
