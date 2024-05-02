@@ -1,91 +1,83 @@
-Return-Path: <linux-kernel+bounces-166695-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-166696-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1F7548B9E42
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 18:10:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id E79368B9E46
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 18:12:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A27DB2874B3
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 16:10:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A39E928689E
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 16:12:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 230EC15D5AE;
-	Thu,  2 May 2024 16:10:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2FD7215D5D1;
+	Thu,  2 May 2024 16:12:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=weissschuh.net header.i=@weissschuh.net header.b="jD42/wP2"
-Received: from todd.t-8ch.de (todd.t-8ch.de [159.69.126.157])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Tt33j9UN"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B26915359A;
-	Thu,  2 May 2024 16:10:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=159.69.126.157
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68D1115B984;
+	Thu,  2 May 2024 16:12:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714666217; cv=none; b=oE4VsO4XhmH27fhRzuUt5D0QB53CQfBWmvEW7RWdh7tNh7iZY9gBhZ1aq2zjslU8zDSQ39xRNnZADIvrseJAdWz6OWrLhqvbkQNJSLmRjJm2mc2GNGnrDQAvdjPAo7ZJzMOW45uSOZOQ7TIKc+FZw4NyhHlm8/akfAFboFKWzsk=
+	t=1714666334; cv=none; b=lW9n5x+7XOxBatbXViLI9DvFu7MkyEWXz7KMVNZb3IEyCXyVENI2Wglw4klaFu4BJr2OoyNuCFhvjVkmBxbLp+MQhJrCb+E2S5RUMT2by/2IJV5yEWgJIXAfjYaCJFLVOAq54WmD2YJWxvgywMJbEEmn1S8jSJLDNvEkSX6WGl8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714666217; c=relaxed/simple;
-	bh=nSiUt7xwVlxTcuHrvcBkg8GU3oAdtaKupJT4g91MCd4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ILl831nksGkaJ4L3Qi3EfDhv6voB09rX4JiJCQZaE0qWrYZAn9qmniICZwXijksK77YfV7Zhk2u6F7MZ4BgxfYDOx81CD02V81TnF1t5ieCDCM5Qq3dkKnDsoXRYJrvojJOD/lRbxrURfBRSDdS+xBqVdkPFx0+CNYtkg5VLFB8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=weissschuh.net; spf=pass smtp.mailfrom=weissschuh.net; dkim=pass (1024-bit key) header.d=weissschuh.net header.i=@weissschuh.net header.b=jD42/wP2; arc=none smtp.client-ip=159.69.126.157
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=weissschuh.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=weissschuh.net
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
-	s=mail; t=1714666204;
-	bh=nSiUt7xwVlxTcuHrvcBkg8GU3oAdtaKupJT4g91MCd4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=jD42/wP2BxcQNqEeEkX+91KAntJBS9ck+Uq6haO83td82UzBoPMXaGf7YmpteVkZH
-	 lzjL1bNTSmWXjwLN2cy7pxZ0Dxpw9M2J9VpFGZvNmveAFY38Y1vkrmDSH/iMLorL4w
-	 RtdlpSIG4ni9zM49Q0P3JdJSCy7xmVM7B/XoUVoM=
-Date: Thu, 2 May 2024 18:10:03 +0200
-From: Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>
-To: Shuah Khan <shuah@kernel.org>
-Cc: linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Willy Tarreau <w@1wt.eu>
-Subject: Re: [PATCH 0/3] tools/nolibc: implement strerror()
-Message-ID: <d6021c7c-271a-4aaa-82af-5a8ac7aac60b@t-8ch.de>
-References: <20240426-nolibc-strerror-v1-0-76a4c9c5271d@weissschuh.net>
+	s=arc-20240116; t=1714666334; c=relaxed/simple;
+	bh=fTdWNLWguxqx1+6cG3H0uL6VLl/ZYaZcqOAQFQE5u7o=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=mky+Ry4Ua22/D+cxNE+WwHp/105yTE8JLB3ti5CebMtxV6+RHHiaOZmO4BYMp5HN8cJuEdtEhSwRWO6/EfEeGi3AgC+w89tgGGtz1SsTJIT476UhP6/w2pu+h82qAt45T7rouplzGxWskEoiGVi8kc8mx7mAPcmbgVh6CuaM9OI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Tt33j9UN; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 157A9C113CC;
+	Thu,  2 May 2024 16:12:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714666334;
+	bh=fTdWNLWguxqx1+6cG3H0uL6VLl/ZYaZcqOAQFQE5u7o=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=Tt33j9UNaytVc/IkZzKn3kqACrEeVzjLs30io9rzvQPbk7NHF2iUuhp1D6sK9s2dQ
+	 PJHi379tXC2+rnb6XdaiCX6CaVku1VJFTP9s9zN+3GZ2QizddZ6f7qn8pycw8GqbDt
+	 OZpUKxQSvVByXUr0LDCIdeenmI5s5in2dk+27+wAt4HeyDg9R6GLAat2q/zC8J5/z4
+	 EpyehNuKQm0cUyWu1wcMSQkLZvkKldcTPaxN9l0CsEoO+lvw/8kQWq4FvmMRb6qp1v
+	 ERSPScgOJ/dnaQ/WW3HvBxWcrf8QZS+6NmURyodPBij7r07ClhtZzo0/+7rCffBI9q
+	 bzIAWThw4wiag==
+From: Lee Jones <lee@kernel.org>
+To: Bjorn Andersson <andersson@kernel.org>, 
+ Konrad Dybcio <konrad.dybcio@linaro.org>, Lee Jones <lee@kernel.org>, 
+ Rob Herring <robh@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>, Stephen Boyd <sboyd@kernel.org>, 
+ Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, 
+ Luca Weiss <luca.weiss@fairphone.com>
+Cc: ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org, 
+ linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+In-Reply-To: <20240412-pmi632-ppg-v2-1-8ac892b1bb61@fairphone.com>
+References: <20240412-pmi632-ppg-v2-1-8ac892b1bb61@fairphone.com>
+Subject: Re: (subset) [PATCH v2] dt-bindings: mfd: qcom,spmi-pmic: Add pbs
+ to SPMI device types
+Message-Id: <171466633082.1186272.3467645518364735829.b4-ty@kernel.org>
+Date: Thu, 02 May 2024 17:12:10 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240426-nolibc-strerror-v1-0-76a4c9c5271d@weissschuh.net>
+X-Mailer: b4 0.12.4
 
-Hi Shuah,
-
-On 2024-04-26 13:08:55+0000, Thomas Weißschuh wrote:
-> Adds a simple implementation of strerror() and makes use of it in
-> kselftests.
+On Fri, 12 Apr 2024 16:22:53 +0200, Luca Weiss wrote:
+> Add the PBS (Programmable Boot Sequencer) to the list of devices.
 > 
-> Shuah, could you Ack patch 3?
-
-Friendly ping for an Ack of patch 3 of this series.
-
-After that I'd like to submit an updated nolibc pull request to you for 6.10.
-
-> Willy, this should work *without* your Ack.
 > 
-> Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
-> ---
-> Thomas Weißschuh (3):
->       selftests/nolibc: introduce condition to run tests only on nolibc
->       tools/nolibc: implement strerror()
->       selftests: kselftest: also use strerror() on nolibc
-> 
->  tools/include/nolibc/stdio.h                 | 10 ++++++++
->  tools/testing/selftests/kselftest.h          |  8 -------
->  tools/testing/selftests/nolibc/nolibc-test.c | 36 ++++++++++++++++++----------
->  3 files changed, 33 insertions(+), 21 deletions(-)
-> ---
-> base-commit: a3063ba97f31e0364379a3ffc567203e3f79e877
-> change-id: 20240425-nolibc-strerror-67f4bfa03035
-> 
-> Best regards,
-> -- 
-> Thomas Weißschuh <linux@weissschuh.net>
+
+Applied, thanks!
+
+[1/1] dt-bindings: mfd: qcom,spmi-pmic: Add pbs to SPMI device types
+      commit: a1f3b5edaf18b1c71a537032c4a6537bde2ad5e9
+
+--
+Lee Jones [李琼斯]
+
 
