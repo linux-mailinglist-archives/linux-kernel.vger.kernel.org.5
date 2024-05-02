@@ -1,120 +1,136 @@
-Return-Path: <linux-kernel+bounces-166214-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-166215-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4A7E68B97A1
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 11:25:40 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 859AF8B97A2
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 11:25:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0230A1F2604C
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 09:25:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 902DB2898C5
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 09:25:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B722556750;
-	Thu,  2 May 2024 09:24:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6ACAF55C26;
+	Thu,  2 May 2024 09:24:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="cSA76uxS"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iQmNT1Ia"
+Received: from mail-pj1-f46.google.com (mail-pj1-f46.google.com [209.85.216.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B922535BF;
-	Thu,  2 May 2024 09:24:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.9
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A26953816
+	for <linux-kernel@vger.kernel.org>; Thu,  2 May 2024 09:24:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714641867; cv=none; b=a+UsxLWtY067WzHfSTZMmWeAHPr+4yCkab9jN+U7KES6nomG/l1veG6rjFEvn2fxpUSQLwyEYevAKt1t5U7JuKZyZYTu0uZslM/hTh/D/55h7py4MsGUWcaHj6tCHKk8YKoOQEM+hiHz1IoynchNZAFcGgKC/Oh/eGQZgbBnN4E=
+	t=1714641891; cv=none; b=cYg85kFNaZ3sy0oCH32F6ULAdGS1zgF4Xhsgd2BKt+VqM26Gh7GklJA9Xhu30vW5PWxAHPCWPIAyq1i0oNU9dZ68otG0wIkYr10VVmHjE936c4zHF/15x+/W2K17kja7M6AYckZV/7X4kiFbbr2G4PldYOUrXv7+hloYbcV0z7Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714641867; c=relaxed/simple;
-	bh=Vob8HwvNIBqShNlkC5WdH3AbXBzht4hKUtEPIm9WJPo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=EBmHJShCQVwmPS3saHTpmuuxc1DQyp2o6Z0D3UbUC3WuxPg5bMhZmTfcyb3/V2lmBMJ2j2WlZyiMWbszKispS6w57hnMUQciRd3WG3dB5/xn1JbT0etXX1KTqtm3w2KUtObx6KnCg8J9vu0wYDAkOWcPsZUvezgN/o7Y0KBmr8M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=cSA76uxS; arc=none smtp.client-ip=192.198.163.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1714641866; x=1746177866;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=Vob8HwvNIBqShNlkC5WdH3AbXBzht4hKUtEPIm9WJPo=;
-  b=cSA76uxSr2TNyH5be6ZCAMY4i7jf0HB/FmRv7uzthWP+9KsA9I8Hp4pM
-   9UmVugW3+Hv/MlapLKRsuC6sTa28TslJHYQTfF8EjNfDgdfMxQ/qI45OO
-   uyFlscYBIKuhLkhsU1X3KfBjf0e7+AILpfjWk2iZXgKbtQCuwhRBl70NH
-   CxNPRxBUjQEvqA+5w+4jRRyk/4PSMigwKr5znSGHQM/3DEKhNfBrsXXmj
-   A3FtaHg7s7ZbE2mWT2Z6BG51hhYR/HDYn0GRNdtq8BQgUs/hBxtBXfk0d
-   g5ZC3FAL1VWSvxrkP8qgAF0ocYTuSCFZFuHmVjyEettowu22Sr4dzLAZo
-   A==;
-X-CSE-ConnectionGUID: +loGE1mCQCaOVKe375xkCw==
-X-CSE-MsgGUID: sniRQSk4TAW8sXoLAEiYLg==
-X-IronPort-AV: E=McAfee;i="6600,9927,11061"; a="21090211"
-X-IronPort-AV: E=Sophos;i="6.07,247,1708416000"; 
-   d="scan'208";a="21090211"
-Received: from orviesa006.jf.intel.com ([10.64.159.146])
-  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 May 2024 02:24:25 -0700
-X-CSE-ConnectionGUID: FEKRVKUMRuKOBCq34jlVbQ==
-X-CSE-MsgGUID: dEi7c3UlRCKUTgL7Jf9ogQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,247,1708416000"; 
-   d="scan'208";a="27466047"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orviesa006.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 May 2024 02:24:19 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1s2Sfm-00000003GIa-3iCp;
-	Thu, 02 May 2024 12:24:14 +0300
-Date: Thu, 2 May 2024 12:24:14 +0300
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Sunil V L <sunilvl@ventanamicro.com>
-Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	linux-riscv@lists.infradead.org, linux-acpi@vger.kernel.org,
-	linux-pci@vger.kernel.org, linux-serial@vger.kernel.org,
-	acpica-devel@lists.linux.dev,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Albert Ou <aou@eecs.berkeley.edu>,
-	"Rafael J . Wysocki" <rafael@kernel.org>,
-	Len Brown <lenb@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-	Anup Patel <anup@brainfault.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Samuel Holland <samuel.holland@sifive.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Jiri Slaby <jirislaby@kernel.org>,
-	Robert Moore <robert.moore@intel.com>,
-	Conor Dooley <conor.dooley@microchip.com>,
-	Andrew Jones <ajones@ventanamicro.com>,
-	Marc Zyngier <maz@kernel.org>,
-	Atish Kumar Patra <atishp@rivosinc.com>,
-	Andrei Warkentin <andrei.warkentin@intel.com>,
-	Haibo1 Xu <haibo1.xu@intel.com>,
-	=?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>
-Subject: Re: [PATCH v5 03/17] ACPI: bus: Add acpi_riscv_init function
-Message-ID: <ZjNbvlUoCfa5UUHF@smile.fi.intel.com>
-References: <20240501121742.1215792-1-sunilvl@ventanamicro.com>
- <20240501121742.1215792-4-sunilvl@ventanamicro.com>
+	s=arc-20240116; t=1714641891; c=relaxed/simple;
+	bh=cKInVC5T4I3HaxUrrsdmRZ5sx+HsrlLpLX/flkMO0iE=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=UC02sdj5wcS5RfMAY6trsahYhT+5tFA2YcEt/xqRsTCtd+na8v+89F76pqfS2U5jdvE0C1RK7WVWPC4vuB2Cg5epUdDkzmpaTxbxIidE2DQiAw6v+skWD7lC4P9gmL+7F+BupsU8yO4Z4kpEITZhZpMZlbMbZ9NGAiqEXF7jkrk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iQmNT1Ia; arc=none smtp.client-ip=209.85.216.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f46.google.com with SMTP id 98e67ed59e1d1-2b3e2d3d05cso28420a91.3
+        for <linux-kernel@vger.kernel.org>; Thu, 02 May 2024 02:24:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1714641890; x=1715246690; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=X2Vn6MUWYq052ee8OD6labzPW3pLyYdDuIFE4s71etM=;
+        b=iQmNT1IaSNprRohC2fkW+yQfUqzIPh3I8xlApeMstosk6GUOWZaEvJCez2BX6FP89u
+         r9OzjnGAN5Ke/xIY6cUZsSCk6m9UQ7CxBTB0XB1BjmTFOFMkfKfb9lylzicKa2kqy710
+         Xmy8z+QIqaWxIq1HFpEUH8SHk6ACAVddDZevNJd86P5mQCLtJuN8GOBgMm9BbttOVJ5m
+         76zHrOmCigYobGvd7Nvbw8N3qtyX88V/CukUvZihZ+foUnyYB9alk1xmRqK1/TubPdTi
+         XkA3bwKFA0iG+FeGaw5STUDTZ6m9IKbETb3Uu9avKLvHMQ8cdiVt9OxkIyoWSB0Sn5uU
+         Pd6g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714641890; x=1715246690;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=X2Vn6MUWYq052ee8OD6labzPW3pLyYdDuIFE4s71etM=;
+        b=DZo5JX4zpWALn5Rt84bMxj0OwHCtYul3ZiK/DYvATzTxIj5xCtCRe6woHXAPcG8S/s
+         c33ixNtkuWAixgYTg12Otu+6Cmv+cOA+aDIc/OiF+qppflAX/2XX5dDdcB4zUD9O1A7N
+         2aWH3J0OW98YScuMUrw+xafpy25ZpHWtLF4QetABZOug+tDghA+MQHofohg6ANIBohIr
+         RA1HZwFAYIJILJh91N4emNKIcKBENiI8+5vSfx1bAgn3RcmuJMidFc6CxdbCkK+Mteyl
+         NlmGnnh3HtsIQJpP22Z8zXLpm6kOBN0u03nRiXA7acPpmw6mhhpLaJA326J/d000uW/O
+         UaZQ==
+X-Forwarded-Encrypted: i=1; AJvYcCV3W4tmlMmERBk3S9/WJAZ3qLNK4yBqW463OaYSGmylxeAPKvoN3ClbxVooTKvm8ogamRR3AOyGZ8I6hlZXCrdIvqaXMn0swyUSQFMe
+X-Gm-Message-State: AOJu0YxsPK93OaPtJTxLeulV3b1FtXqBc7+P5Ws8/pnf5OjkDntfuFGP
+	nRoSI+hkmTX+Gy1YXyYIiPnVLZS/dvakoVVs9c4n/EipyS/7Lflpp0lxqFP3
+X-Google-Smtp-Source: AGHT+IFKmWdR/Ceayt7BlKUetWLuFEgvrkXK/cYSmIy7d3R4IuXgwH6fVZZp0cqI9U4XCBiH7DXrRA==
+X-Received: by 2002:a17:90a:fe86:b0:2b2:760d:9507 with SMTP id co6-20020a17090afe8600b002b2760d9507mr5241959pjb.0.1714641889612;
+        Thu, 02 May 2024 02:24:49 -0700 (PDT)
+Received: from visitorckw-System-Product-Name.. ([140.113.216.168])
+        by smtp.gmail.com with ESMTPSA id bk15-20020a17090b080f00b002a51dcecc49sm746836pjb.38.2024.05.02.02.24.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 02 May 2024 02:24:49 -0700 (PDT)
+From: Kuan-Wei Chiu <visitorckw@gmail.com>
+To: akpm@linux-foundation.org,
+	yury.norov@gmail.com
+Cc: linux@rasmusvillemoes.dk,
+	n26122115@gs.ncku.edu.tw,
+	jserv@ccns.ncku.edu.tw,
+	linux-kernel@vger.kernel.org,
+	Kuan-Wei Chiu <visitorckw@gmail.com>
+Subject: [PATCH v5 0/2] bitops: Optimize fns() for improved performance
+Date: Thu,  2 May 2024 17:24:41 +0800
+Message-Id: <20240502092443.6845-1-visitorckw@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240501121742.1215792-4-sunilvl@ventanamicro.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Transfer-Encoding: 8bit
 
-On Wed, May 01, 2024 at 05:47:28PM +0530, Sunil V L wrote:
-> Add a new function for RISC-V to do any architecture specific
-> initialization. This function will be used to create platform devices
-> like APLIC, PLIC, RISC-V IOMMU etc. This is similar to acpi_arm_init().
+Hello,
 
-What is the special about this architecture that it requires a separate
-initialization that is _not_ going to be in other cases?
-Please, elaborate.
+This patch series optimizes the fns() function by avoiding repeated
+calls to __ffs(). Additionally, tests for fns() have been added in
+lib/test_bitops.c.
 
+Changes in v5:
+- Reduce testing iterations from 1000000 to 10000 to decrease testing
+  time.
+- Move 'buf' inside the function.
+- Mark 'buf' as __initdata.
+- Assign the results of fns() to a volatile variable to prevent
+  compiler optimization.
+- Remove the iteration count from the benchmark result.
+- Update benchmark results in the commit message.
+
+Changes in v4:
+- Correct get_random_long() -> get_random_bytes() in the commit
+  message.
+
+Changes in v3:
+- Move the benchmark test for fns() to lib/test_bitops.c.
+- Exclude the overhead of random number generation from the benchmark
+  result.
+- Change the output to print only a total gross instead of each n in
+  the benchmark result.
+- Update the commit message in the second patch.
+
+Changes in v2:
+- Add benchmark test for fns() in lib/find_bit_benchmark.c.
+- Change the loop in fns() by counting down from n to 0.
+- Add find_bit benchmark result for find_nth_bit in commit message.
+
+Link to v4: https://lkml.kernel.org/20240501132047.14536-1-visitorckw@gmail.com
+Link to v3: https://lkml.kernel.org/20240501071647.10228-1-visitorckw@gmail.com
+Link to v2: https://lkml.kernel.org/20240430054912.124237-1-visitorckw@gmail.com
+Link to v1: https://lkml.kernel.org/20240426035152.956702-1-visitorckw@gmail.com
+
+Kuan-Wei Chiu (2):
+  lib/test_bitops: Add benchmark test for fns()
+  bitops: Optimize fns() for improved performance
+
+ include/linux/bitops.h | 12 +++---------
+ lib/test_bitops.c      | 22 ++++++++++++++++++++++
+ 2 files changed, 25 insertions(+), 9 deletions(-)
 
 -- 
-With Best Regards,
-Andy Shevchenko
-
+2.34.1
 
 
