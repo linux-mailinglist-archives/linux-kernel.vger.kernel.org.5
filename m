@@ -1,47 +1,47 @@
-Return-Path: <linux-kernel+bounces-166005-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-166006-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id F18868B94AA
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 08:30:05 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7AD0C8B94AF
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 08:32:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A26F11F229F4
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 06:30:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A9BF81C217D0
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 06:32:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF96F21A1C;
-	Thu,  2 May 2024 06:29:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99F968F5C;
+	Thu,  2 May 2024 06:31:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rhoOd2u2"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="k1PL+zi9"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D0121C6AE;
-	Thu,  2 May 2024 06:29:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D3D8C4A39;
+	Thu,  2 May 2024 06:31:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714631399; cv=none; b=Wq9YZ+MSHfapLTePHCDMesyy/GoQlaiz+jmcmbQTzBgIxLTe4QsKZgzmiaaSKr353WA+lRGu8JkVVAnRXNrUwNdgLMk6//mG4K59eRlRg5zhkYil/fvwazuTUZOLxGtq3dWXt3WEn+2fmfPTffNa3TBIp8QdMTCHNQqlwKPaksc=
+	t=1714631516; cv=none; b=MC/x8vgjV2CMkz6WiYACCb2QJQYF4wRQTEhzbkoR/NjCLkWk5YEd/Aj8/9Z67yvDY9K7s4A2JhbCWy5VADURMJ/ybYy9SdzTpwVrxuPIT5wOcbSan+gB28l/XFVl1PiLc1+3HV+rU8tb78P5NCis/uxOoKut1YMfbdTKHTDzwl8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714631399; c=relaxed/simple;
-	bh=kRJcCqVAC2kt3w2BiItbrRDn2sLeURUSyGmpuC2oZ0c=;
+	s=arc-20240116; t=1714631516; c=relaxed/simple;
+	bh=3vCbmodypNNFoXzA3cJadoMGHdGeT6Gpix/AbXk9xSU=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=TjzAAcCpb/a+JLyGv/tf3v5PZoSlWk1uy8OXZQq5Ng2fu4kPFbJZNOUAnODYFDsUMShd2Qvax5h6jZKxW3QcPTNulf97qqsmJHjpZ6ZnuFKAOXS2qmCJkeklKyCFEgtdpMp164g7y7HcnQ9PM83raXll/lHbUkXH4j1rqyIEuPU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rhoOd2u2; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CA6A9C116B1;
-	Thu,  2 May 2024 06:29:54 +0000 (UTC)
+	 In-Reply-To:Content-Type; b=CTDw39HfjfB3uAPYjm+vuoK2F5VwcBZr/3nZNFqj5I1CoJxWCnsFOS9AemZIc4yM9vVVdQgXOSErTu3fqNO8cKX87H4p8cVIRuXwV3WEtgSan/N219R/dS8v+2CKntxPn24OjlKexB70p6yLwYPYS9XrfVAryO7k7DuKAHN+41U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=k1PL+zi9; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5DEFFC116B1;
+	Thu,  2 May 2024 06:31:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714631398;
-	bh=kRJcCqVAC2kt3w2BiItbrRDn2sLeURUSyGmpuC2oZ0c=;
+	s=k20201202; t=1714631516;
+	bh=3vCbmodypNNFoXzA3cJadoMGHdGeT6Gpix/AbXk9xSU=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=rhoOd2u2Q3LrM4nCJWpsFR/RbxtoNkJjTlnlPT7l6cLj6pvbMgjFft2zcbkj3C5mu
-	 WbgrJt6WqnXSwZhdhyIoth9k1n2U9Berx+puuIJyLEojwAMKbr3Q7TO5nN5M1gfBjs
-	 mgWC2JBUpw7HSKKSJPLKpCoAONlf6ueBW+IpSquODsWznt/80BVsWk2Job+LOkpR4R
-	 pndHopogGB+jkx1KmSyFTC7lF7D6HLkAyX9MpojptG+T3FJTXIHb9M5Tq4ZxutU/TV
-	 r+tPiyItE9+esKzL0gwaCptaHPYdePI3A/mqgOTeLIeQdT14tkrtZ6RFqfQ9+GuI6u
-	 V2fzxHIni3omw==
-Message-ID: <4abf3853-c29e-4397-9746-45dbdaea9ae7@kernel.org>
-Date: Thu, 2 May 2024 08:29:52 +0200
+	b=k1PL+zi9JaiwUFU8h54ldNezkUGKkSj54amP7e6zIu7GRXiT/CPecoLappx5eKel3
+	 rSXy4wkWHV6VfjRLMMAEYIgI/1WtDs70zTAGTHhbSVX1xRDo3LJsEra/w6ZOPC8EwB
+	 qhPHWgvavXN2oKppg1chxHNBfWWhQky/dmPSLDAvTijWCXrXdXbJlPzkuCamqLvNDF
+	 yjKKFXUMqPsmUwnoRcQzX3cD/EPKwjo0w7PzJfeq4+/XgBznLyI8Uq5wYksO/TWj4v
+	 BPAOGZRAZutshz2d3wxtwpCkQkDLJRu/+AdvwCu9dW0eRtvh9tvCN+djpRLrtWIPEO
+	 Ce0NZuzgaA9og==
+Message-ID: <2da88dba-36a9-473b-a93f-1c273a7c3c12@kernel.org>
+Date: Thu, 2 May 2024 08:31:51 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -49,16 +49,14 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 1/3] dt-bindings: trivial-devices: add isil,isl69269
-To: Zev Weiss <zev@bewilderbeest.net>,
- Andrew Jeffery <andrew@codeconstruct.com.au>,
- Conor Dooley <conor+dt@kernel.org>, Joel Stanley <joel@jms.id.au>,
- Krzysztof Kozlowski <krzk+dt@kernel.org>, Rob Herring <robh@kernel.org>
-Cc: Guenter Roeck <linux@roeck-us.net>, devicetree@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-aspeed@lists.ozlabs.org,
- linux-kernel@vger.kernel.org, openbmc@lists.ozlabs.org
-References: <20240502002836.17862-5-zev@bewilderbeest.net>
- <20240502002836.17862-6-zev@bewilderbeest.net>
+Subject: Re: [PATCH v3] spi: dt-bindings: ti,qspi: convert to dtschema
+To: Kousik Sanagavarapu <five231003@gmail.com>,
+ Mark Brown <broonie@kernel.org>, Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>
+Cc: linux-spi@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Shuah Khan <skhan@linuxfoundation.org>,
+ Javier Carrasco <javier.carrasco.cruz@gmail.com>
+References: <20240501165203.13763-1-five231003@gmail.com>
 From: Krzysztof Kozlowski <krzk@kernel.org>
 Content-Language: en-US
 Autocrypt: addr=krzk@kernel.org; keydata=
@@ -104,17 +102,27 @@ Autocrypt: addr=krzk@kernel.org; keydata=
  uZwJCLykjad45hsWcOGk3OcaAGQS6NDlfhM6O9aYNwGL6tGt/6BkRikNOs7VDEa4/HlbaSJo
  7FgndGw1kWmkeL6oQh7wBvYll2buKod4qYntmNKEicoHGU+x91Gcan8mCoqhJkbqrL7+nXG2
  5Q/GS5M9RFWS+nYyJh+c3OcfKqVcZQNANItt7+ULzdNJuhvTRRdC3g9hmCEuNSr+CLMdnRBY fv0=
-In-Reply-To: <20240502002836.17862-6-zev@bewilderbeest.net>
+In-Reply-To: <20240501165203.13763-1-five231003@gmail.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On 02/05/2024 02:28, Zev Weiss wrote:
-> The ISL69269 is a PMBus voltage regulator with no configurable
-> parameters.
+On 01/05/2024 18:48, Kousik Sanagavarapu wrote:
+> Convert txt binding of TI's qspi controller (found on their omap SoCs) to
+> dtschema to allow for validation.
 > 
-> Signed-off-by: Zev Weiss <zev@bewilderbeest.net>
+> The changes, w.r.t. the original txt binding, are:
+> 
+> - Introduce "clocks" and "clock-names" which was never mentioned.
+> - Reflect that "ti,hwmods" is deprecated and is not a "required"
+>   property anymore.
+> - Introduce "num-cs" which allows for setting the number of chip
+>   selects.
+> - Drop "qspi_ctrlmod".
+> 
+> Signed-off-by: Kousik Sanagavarapu <five231003@gmail.com>
 
-Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
 Best regards,
 Krzysztof
