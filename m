@@ -1,196 +1,106 @@
-Return-Path: <linux-kernel+bounces-166615-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-166616-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B44058B9D14
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 17:09:55 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 791648B9D15
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 17:10:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6B0AA1F217E0
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 15:09:55 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B83C1B23953
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 15:10:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62AFF15AAB8;
-	Thu,  2 May 2024 15:09:47 +0000 (UTC)
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D53D315AACA;
+	Thu,  2 May 2024 15:10:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="h2Eqjfjz"
+Received: from mail-pf1-f175.google.com (mail-pf1-f175.google.com [209.85.210.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7B411EB37;
-	Thu,  2 May 2024 15:09:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E140215686F
+	for <linux-kernel@vger.kernel.org>; Thu,  2 May 2024 15:10:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714662587; cv=none; b=uMawTX/QAWTE0tNjn2rb3d2u+7tfE7dnCe7quVpJA53HjzOcupzCUW/8R2ZXm4QymvJk+BL7GOmOb+/wsGDv354Uew5fuuX2ySSZlN6qTH2nvF8nj3Wi1Z8ZG6xPqzo8PVP2ssT+QgP0qE1WHT2M1E90Sb3k0ib6jrM8LUdjkIs=
+	t=1714662635; cv=none; b=Je7hOf5MHZzL136uha0fFgMLgBsihputW2Ux5y26RNYVbhFiXt7xQDBZcBA0nO2JhG9KwG8tOT1QpEYlHQPA7GZvfeC/DlxPAEmuqOFJDlEtDb5o7qT0ZFAooDfqtVaSEAL6PUYDcsq1PoDTuIyYUSPDYO2P2snQ9+WPU3s4rsU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714662587; c=relaxed/simple;
-	bh=APDCBbNTDHP0gxMNaAlwd0W5R4UUIyeqEqB4+Qh8MY0=;
-	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=jRqQX2aTSivaQxusZe2vBGZJ2YS0V/ve3abK1bnMRYoY67H8E34GC48VpKaTtvSniIXgCXMkYtWpW3wXQcqpt6l4LEmVlBJIWKJHUMi7k7Q/wASbcsoop33S6X/GJnusv6WYwppwrr5xrPmjU23Gz51lDHmOhbPyu3nNvwo404w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.18.186.231])
-	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4VVcj92v0Jz6J6YS;
-	Thu,  2 May 2024 23:06:53 +0800 (CST)
-Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
-	by mail.maildlp.com (Postfix) with ESMTPS id ADDE214065C;
-	Thu,  2 May 2024 23:09:40 +0800 (CST)
-Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.39; Thu, 2 May
- 2024 16:09:40 +0100
-Date: Thu, 2 May 2024 16:09:38 +0100
-From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To: Peter Rosin <peda@axentia.se>
-CC: =?ISO-8859-1?Q?Jo=E3o?= Paulo =?ISO-8859-1?Q?Gon=E7alves?=
-	<jpaulo.silvagoncalves@gmail.com>, <linux-iio@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <joao.goncalves@toradex.com>
-Subject: Re: Supporting a Device with Switchable Current/Voltage Measurement
-Message-ID: <20240502160938.00007691@Huawei.com>
-In-Reply-To: <ad190ae3-48d2-a5db-dd36-d52b1c4cf460@axentia.se>
-References: <20240501233853.32y4ev7jvas5ahdz@joaog-nb>
-	<20240502133623.0000463e@Huawei.com>
-	<44f47927-52aa-5248-6ae4-21028076fd51@axentia.se>
-	<ad190ae3-48d2-a5db-dd36-d52b1c4cf460@axentia.se>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+	s=arc-20240116; t=1714662635; c=relaxed/simple;
+	bh=Syf2VkK9OhG0FGm9QolyXfqpQVipkFzlmRdO+Bf9ENk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=kea0a3YBspJaYYpNf3TYpfNaR8oGfb5J0rAGuUzbn0turJRuhBYGK6JQeJv0et6Jrwr/K8mfAacWv18v1ishN4YI4CSD9ArNTvjpQEhl3BL79CFgqeoT8avhUdZpE0tKaC3QKMsHmeu0vtWFn2dbKXdoonu9VChLwnzX3no1v80=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=h2Eqjfjz; arc=none smtp.client-ip=209.85.210.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pf1-f175.google.com with SMTP id d2e1a72fcca58-6f4472561f1so182688b3a.0
+        for <linux-kernel@vger.kernel.org>; Thu, 02 May 2024 08:10:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1714662633; x=1715267433; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=xXVdsaSQZG3q3BjeEnlUXi15uZTx4OzcFDhBo6L16Js=;
+        b=h2EqjfjzYM3XOGhILe6haVIG3Yi6d6XW1bPfW9ScggCVjhapfmiIYyQmgB3c82WuHT
+         Clsa8rm5TZ7A94hMlTBzdXIT/nrV4ehH9omp7EAvXBlNgNIr/71Rm9DZDK90DtH/fFji
+         w2ExWKQW4tTfC83C/XBY0DVR5p24sWm4TsiOM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714662633; x=1715267433;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=xXVdsaSQZG3q3BjeEnlUXi15uZTx4OzcFDhBo6L16Js=;
+        b=od5tGy+xkQyRFtDFe5BD38scvG2M5f+Oc1tJh4wCmT31ZxZhF9aB3N+UEae8FarZgV
+         ejuJwkpVzqmUtGUiVOlUfDkDfXlroj7dVb2FgTJ7bj7xkTH1Y1shr/TdTVomuSSFljRV
+         cQ9bHBxZ0fKBl6CqvLbfON7Nj4SciZC2Bi+zyulLTi80BREUdM/Gfm0hDTv3U+aaUXVw
+         LcHGOUDWlZQ9dCS9ux5CZ6n+VOl6Jw2g2PYE6P+7V51wZHXAuhqVSJjJ/TJ5sPjWYE82
+         6cj5pYq4l2U3svkqBYXfAPoRrN2ASnJPqHYu2Pb7YgGaPv1Jv0GqLyOfq0WA2eW89y76
+         hlhQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXmlIoSr6cYFMCMHV2HvfS0rIXB363oinscPpQ7ZYpGZzUfWuSYsOYhUr/UXKfCAJycgsqIwAoLtXrR/fIPQRRxaI2Dzn3czKaiemGW
+X-Gm-Message-State: AOJu0Yz1aSW31jC3Z6SQNa6ogMyXJdCWwpNBpImODH4v+D7CrqmJbhjr
+	X9NVprX1TaGuXPQpCd+kXl6cGkXZHzpnNIiLAUb5SKfzaz5uhLg6YDvu2bCIiw==
+X-Google-Smtp-Source: AGHT+IEDevyNghnvP0FJS9e6/4jOvzu/SE7p8PlLOxCCPwL7t0qLUaejFyjl7i0fpqziyW0FaHiZcA==
+X-Received: by 2002:a05:6a00:4646:b0:6e7:29dd:84db with SMTP id kp6-20020a056a00464600b006e729dd84dbmr3422934pfb.31.1714662633150;
+        Thu, 02 May 2024 08:10:33 -0700 (PDT)
+Received: from www.outflux.net ([198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id y63-20020a633242000000b005f806498270sm1340442pgy.9.2024.05.02.08.10.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 02 May 2024 08:10:32 -0700 (PDT)
+Date: Thu, 2 May 2024 08:10:32 -0700
+From: Kees Cook <keescook@chromium.org>
+To: Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc: "Hsin-Yu.Chen" <harry021633@gmail.com>, andy@kernel.org,
+	akpm@linux-foundation.org, linux-hardening@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] string: improve strlen performance
+Message-ID: <202405020809.C8973634BF@keescook>
+References: <20240502141359.89567-1-harry021633@gmail.com>
+ <CAHp75Vd9PibrQA=tgZLHuv-kDXana9rGcu5s_aPqyxW6tDBYGw@mail.gmail.com>
+ <CAHp75Ve4BV7+C+XsNmmjCSupcL6PXe_9ZNMGAQXg9nqdMBFrqg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: lhrpeml100003.china.huawei.com (7.191.160.210) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAHp75Ve4BV7+C+XsNmmjCSupcL6PXe_9ZNMGAQXg9nqdMBFrqg@mail.gmail.com>
 
-On Thu, 2 May 2024 16:05:45 +0200
-Peter Rosin <peda@axentia.se> wrote:
+On Thu, May 02, 2024 at 06:03:04PM +0300, Andy Shevchenko wrote:
+> On Thu, May 2, 2024 at 5:59 PM Andy Shevchenko
+> <andy.shevchenko@gmail.com> wrote:
+> > On Thu, May 2, 2024 at 5:14 PM Hsin-Yu.Chen <harry021633@gmail.com> wrote:
+> 
+> And on top of that, check what this code will do on the architectures
+> that do not support unaligned access. If everything is fine, mention
+> this in the commit message. Btw, your commit message needs
+> elaboration, e.g., pointing to the test case (which is absent in this
+> patch, I assume it's already in the kernel?) and step-by-step
+> instructions on how you got the mentioned results with details of the
+> hardware you used for that.
 
-> 2024-05-02 at 15:49, Peter Rosin wrote:
-> > Since you appear to need to change both the gpio pin and the io-channel, the
-> > mux isn't a perfect fit. The closest you can get with the current code is to
-> > create a gpio mux, I think. You would then use that mux twice to fan out both
-> > io-channels, but only expose the "left leg" on the first fan-out and only the
-> > "right leg" on the other. Something like this (untested, probably riddled with
-> > errors, use salt etc etc):
-> > 
-> > rcs: raw-current-sense {
-> > 	compatible = "current-sense-shunt";
-> > 	io-channels = <&adc 0>;
-> > 	io-channel-name = "raw-current";
-> > 	#io-channel-cells = <1>;
-> > 
-> > 	shunt-resistor-micro-ohms = <3300000>;
-> > };
-> > 
-> > rvs: raw-voltage-sense {
-> > 	compatible = "voltage-divider";
-> > 	io-channels = <&adc 1>;
-> > 	io-channel-name = "raw-voltage";
-> > 	#io-channel-cells = <1>;
-> > 
-> > 	output-ohms = <22>;
-> > 	full-ohms = <222>;
-> > };
-> > 
-> > mux: gpio-mux {
-> > 	compatible = "gpio-mux";
-> > 	#mux-control-cells = <0>;
-> > 
-> > 	gpios-mux = <&main_gpio0 29 GPIO_ACTIVE_HIGH>;
-> > };
-> > 
-> > current-sense {
-> > 	compatible = "io-channel-mux";
-> > 	io-channels = <&rcs 0>;
-> > 	io-channel-names = "parent";
-> > 
-> > 	mux-controls = <&mux>;
-> > 
-> > 	channels = "current", "";
-> > };
-> > 
-> > voltage-sense {
-> > 	compatible = "io-channel-mux";
-> > 	io-channels = <&rvs 0>;
-> > 	io-channel-names = "parent";
-> > 
-> > 	mux-controls = <&mux>;
-> > 
-> > 	channels = "", "voltage";
-> > };
-> > 
-> > What the mux solves is exclusion, so that the gpio pin is locked while
-> > measurement is made on either current-sense or voltage-sense.
-> > 
-> > However, the channels from the raw-{current,voltage}-sense nodes are exposed
-> > to user space, and it will be possible to make "raw" measurements without
-> > regard to how the gpio pin is set. That will of course not yield the desired
-> > results, but is also a user error and might not be a big problem?  
-> 
-> I just realized that it's also possible to do this "the other way around". Maybe
-> that makes more sense?
-Ah, I'd failed to realize that this is about routing a single wire
-through two different analog circuits that end on 'different' ADC inputs.
+I might be worth looking at the implementation of strscpy(), which is
+doing similar multi-byte steps and handles unaligned access.
 
-Pictures would help me out btw!  Everyone loves ascii art.
-
-Anyhow, I 'think' what you have here should work.
-
-Jonathan
-
-> 
-> Cheers,
-> Peter
-> 
-> mux: gpio-mux {
-> 	compatible = "gpio-mux";
-> 	#mux-control-cells = <0>;
-> 
-> 	gpios-mux = <&main_gpio0 29 GPIO_ACTIVE_HIGH>;
-> };
-> 
-> rcs: raw-current-sense {
-> 	compatible = "io-channel-mux";
-> 	io-channels = <&adc 0>;
-> 	io-channel-names = "parent";
-> 	#io-channel-cells = <1>;
-> 
-> 	mux-controls = <&mux>;
-> 
-> 	channels = "raw-current", "";
-> };
-> 
-> rvs: raw-voltage-sense {
-> 	compatible = "io-channel-mux";
-> 	io-channels = <&adc 1>;
-> 	io-channel-names = "parent";
-> 	#io-channel-cells = <1>;
-> 
-> 	mux-controls = <&mux>;
-> 
-> 	channels = "", "raw-voltage";
-> };
-> 
-> current-sense {
-> 	compatible = "current-sense-shunt";
-> 	io-channels = <&rcs 0>;
-> 	io-channel-name = "current";
-> 
-> 	shunt-resistor-micro-ohms = <3300000>;
-> };
-> 
-> voltage-sense {
-> 	compatible = "voltage-divider";
-> 	io-channels = <&rvs 1>;
-> 	io-channel-name = "voltage";
-> 
-> 	output-ohms = <22>;
-> 	full-ohms = <222>;
-> };
-> 
-> Cheers,
-> Peter
-
+-- 
+Kees Cook
 
