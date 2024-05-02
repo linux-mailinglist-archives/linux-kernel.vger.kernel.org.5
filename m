@@ -1,103 +1,71 @@
-Return-Path: <linux-kernel+bounces-166385-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-166386-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 575618B99EB
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 13:21:26 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id C54428B99EE
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 13:21:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C3C121F21F09
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 11:21:25 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 21ADDB22610
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 11:21:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 237AE6311D;
-	Thu,  2 May 2024 11:21:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4863364CE9;
+	Thu,  2 May 2024 11:21:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b="Rwm3SAUl"
-Received: from mail-yw1-f177.google.com (mail-yw1-f177.google.com [209.85.128.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oEKEViO8"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED928605CD
-	for <linux-kernel@vger.kernel.org>; Thu,  2 May 2024 11:21:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71A14605CE;
+	Thu,  2 May 2024 11:21:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714648876; cv=none; b=NiyEzKmn1EXS2u2gXGTJFhe9fDYgpuhDmJcD/6/UP6KPnfJ73ppO06OZ36rO2/duokTa4Ubx/6cykXBk24J6EOK2HyWEEHff9wXelIWUp6Q+9hy6Oh+xqsoz59H7ntdep4YYLbuWEKI2nxZ9MRIYWWCh6PpPrkhEv97GrM+nGF4=
+	t=1714648897; cv=none; b=XZqnYYs7K7c79g1FjMzyhuhLWLBwFAT4CsP84mbbr8ffifYBGDwdUogyUNXzF44secsfRWLQcbv08BmNVQH6Hgsp2bu9z1v9Wb4tegXZ0QmdNwxO+Xf9aKOJgwm+Gro8nvqjTU/ON4TWHVduiguMkqpjbx0VA92pasgd956FFbs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714648876; c=relaxed/simple;
-	bh=oyv2s2+UJW+8uzUyt2wKXdhw0Bt0e8jLiqgVDuivZtc=;
+	s=arc-20240116; t=1714648897; c=relaxed/simple;
+	bh=0ln9TXID18gsJMnDENXiItJGRtQ3Til5tzw9qOWE/sc=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=WUebFcGXFG09u/8BiwKaetKvTHZlMOx6v3PwJRagADCSUQRl/Dwyx+KoXMNHhTH3c9WW3JNUPYjikKSqjaFIBXKDlPUIgl35qqENGoA2Tf4K4/JoJN2h4tE8freFGql0nF4jkWYsNSntQhOajKYn+CvA3w6iZEg7MPotHe27xww=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com; spf=pass smtp.mailfrom=ventanamicro.com; dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b=Rwm3SAUl; arc=none smtp.client-ip=209.85.128.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ventanamicro.com
-Received: by mail-yw1-f177.google.com with SMTP id 00721157ae682-6181d032bf9so75930017b3.3
-        for <linux-kernel@vger.kernel.org>; Thu, 02 May 2024 04:21:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1714648874; x=1715253674; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=9rhZwyyx5fhbpC3BrgW8PW9voWjesLYpxFqigfVNmtY=;
-        b=Rwm3SAUlka6pR0PqNs2jsyTsxIHLXOv1LjuNvZ3LpnRTjSq9y37h911NDbDogNOUB8
-         CwAauG+ZZecLq+lz5jHXAbMv9vvNTu4cF8sBXDrs7KQhYFahj3Lylnhy2cGz3loD2e50
-         mVp85JqcS9u2gpG5gfAMVRgciNffAA6JD2ILxnQ/11KUKRnoPtjF1Bjisy6mmlpML3pa
-         dd5oXYGa2Vu924hUS4W8yQvLfolk8qURGT24OtbMvSDsCqjJakWDU1XHjcK5w18mNllN
-         o0GItQdvcnDaEoky3qaduemvzPpPBFfwFNJ24vD76Y3YrWHV3jJok4b9wMVrGxLKq8Sh
-         SIiw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714648874; x=1715253674;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=9rhZwyyx5fhbpC3BrgW8PW9voWjesLYpxFqigfVNmtY=;
-        b=Ajwj8i1TZ2pwX7xY6qP6Ov4ab/Ov15fp+/i4XDA8E33TMOCkASLARTGXtggSGPRAhd
-         hfLTzdaP3NNJyslfEyn8XyuAmkZbsM4K3sdfrLBX4q6x7zyMn9gZLe7EdfhbvfeYVi3O
-         Tkpm+ZxaRsAEGV1dRKfvD1wIurnu0HwPjE7YHKRc3QhA0NoazTl3+i/rVDQ0OYxP8+eg
-         eb6JTEldv2Hq0iqKvv+rxZuesR/cUNPTzMlGoZYgR84s0C/iR1jiVlcpMlEkWR7TeO23
-         pGmp3Kmix/vNGCl9Tz0jQmL+UfovoUGEbJuZfJ9xsjTJ3xt0IIdQ/SpgfWP67s2N/dSu
-         EBdg==
-X-Forwarded-Encrypted: i=1; AJvYcCUMQ04cP+qToE6KjtJ8VEpJNHyYZrEQT4xpfEDTW2mdQdyzRNo46OPWLId+HT+maFLJ1S5//2WLjxlkqFKZaq4820fyd3Ji9xxiLf8o
-X-Gm-Message-State: AOJu0Yx2WyeJZZqUE8dKWEY7QEemKIYHCEzNTRVBGOeG06FyAg/Hw/LE
-	O4Ib70s2pNHyTHxd5Op5W36Zo5lnnNNaXRNv1RBonymBUmvHUIX1QHZ5KE0Egrk=
-X-Google-Smtp-Source: AGHT+IGdb1BqZxt9QFOczg0KUBkNrWvHSOjTP2hFKx0LDlEWOPANBNbI5rvucoOu4m97AQfAwJklfQ==
-X-Received: by 2002:a05:690c:6d11:b0:61b:330e:3fec with SMTP id iv17-20020a05690c6d1100b0061b330e3fecmr1843234ywb.45.1714648872054;
-        Thu, 02 May 2024 04:21:12 -0700 (PDT)
-Received: from sunil-laptop ([106.51.190.19])
-        by smtp.gmail.com with ESMTPSA id m24-20020a81ae18000000b0061bec8ccb67sm155149ywh.76.2024.05.02.04.21.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 May 2024 04:21:11 -0700 (PDT)
-Date: Thu, 2 May 2024 16:50:57 +0530
-From: Sunil V L <sunilvl@ventanamicro.com>
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	linux-riscv@lists.infradead.org, linux-acpi@vger.kernel.org,
-	linux-pci@vger.kernel.org, linux-serial@vger.kernel.org,
-	acpica-devel@lists.linux.dev,
+	 Content-Type:Content-Disposition:In-Reply-To; b=ri+CVDNOo1jI28yXf34FJsPTKbqHucNCdUMUiLDmKTHJDkNL5PPBTBecK6+U7+gX33oBiHUSCTSikj047KAEaKvykKOrXHuYHx1xlyTIZ9POiA8dY9zNWZYPfrRdAkthpZJJUGMFD2NhQPQXGLcMyVUMqLIKzRVnC41+Yft4tPk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oEKEViO8; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 307A2C4AF18;
+	Thu,  2 May 2024 11:21:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714648897;
+	bh=0ln9TXID18gsJMnDENXiItJGRtQ3Til5tzw9qOWE/sc=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=oEKEViO8AxOjXR6iIdgwCu7M9Gy8KOg7xF4nyGPC+Q6kiqWHLioCWc+TKN1O1xGFU
+	 R5r916favQUmXsHYwF3hhP1H4QIqQhlQ5wBll2sEvQCjHIUs30q9p6EEUJISyRnuoX
+	 PHUjcgdQN9lWXGwzx/xhDdXqpWVdoLEkQ1youg+dV29CHaL49sDwtdB0b1hRj6Eg69
+	 lcXC8doU0yUE99/DKUCyscpgTShpcBrE9CN7lHget3Yx3haAYwZdFxiJdtAF84yIlo
+	 C6EgORkHpFEimOrGiEho7ncdyeWM6rlP3wOVXAEfpup/tHM7MZKMUzUJzKk2OPSgFw
+	 Ug3evdCl5UR1w==
+Date: Thu, 2 May 2024 12:21:28 +0100
+From: Will Deacon <will@kernel.org>
+To: Kees Cook <keescook@chromium.org>
+Cc: Mark Rutland <mark.rutland@arm.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Boqun Feng <boqun.feng@gmail.com>,
 	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Albert Ou <aou@eecs.berkeley.edu>,
-	"Rafael J . Wysocki" <rafael@kernel.org>,
-	Len Brown <lenb@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-	Anup Patel <anup@brainfault.org>,
+	linux-arm-kernel@lists.infradead.org,
+	Jakub Kicinski <kuba@kernel.org>,
 	Thomas Gleixner <tglx@linutronix.de>,
-	Samuel Holland <samuel.holland@sifive.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Jiri Slaby <jirislaby@kernel.org>,
-	Robert Moore <robert.moore@intel.com>,
-	Conor Dooley <conor.dooley@microchip.com>,
-	Andrew Jones <ajones@ventanamicro.com>,
-	Marc Zyngier <maz@kernel.org>,
-	Atish Kumar Patra <atishp@rivosinc.com>,
-	Andrei Warkentin <andrei.warkentin@intel.com>,
-	Haibo1 Xu <haibo1.xu@intel.com>,
-	=?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
-Subject: Re: [PATCH v5 17/17] serial: 8250: Add 8250_acpi driver
-Message-ID: <ZjN3GQI3gegYOIgS@sunil-laptop>
-References: <20240501121742.1215792-1-sunilvl@ventanamicro.com>
- <20240501121742.1215792-18-sunilvl@ventanamicro.com>
- <ZjNaR-YtVTm4pbP7@smile.fi.intel.com>
- <ZjNh0Llcx+0VHevy@sunil-laptop>
- <ZjNmdfR2J6hNnYle@smile.fi.intel.com>
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	"H. Peter Anvin" <hpa@zytor.com>, Arnd Bergmann <arnd@arndb.de>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	"David S. Miller" <davem@davemloft.net>,
+	David Ahern <dsahern@kernel.org>,
+	Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	Uros Bizjak <ubizjak@gmail.com>, linux-kernel@vger.kernel.org,
+	x86@kernel.org, linux-arch@vger.kernel.org, netdev@vger.kernel.org,
+	linux-hardening@vger.kernel.org
+Subject: Re: [PATCH 2/4] arm64: atomics: lse: Silence intentional wrapping
+ addition
+Message-ID: <20240502112127.GA17013@willie-the-truck>
+References: <20240424191225.work.780-kees@kernel.org>
+ <20240424191740.3088894-2-keescook@chromium.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -106,54 +74,28 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZjNmdfR2J6hNnYle@smile.fi.intel.com>
+In-Reply-To: <20240424191740.3088894-2-keescook@chromium.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 
-On Thu, May 02, 2024 at 01:09:57PM +0300, Andy Shevchenko wrote:
-> On Thu, May 02, 2024 at 03:20:08PM +0530, Sunil V L wrote:
-> > On Thu, May 02, 2024 at 12:17:59PM +0300, Andy Shevchenko wrote:
-> > > On Wed, May 01, 2024 at 05:47:42PM +0530, Sunil V L wrote:
+On Wed, Apr 24, 2024 at 12:17:35PM -0700, Kees Cook wrote:
+> Annotate atomic_add_return() and atomic_sub_return() to avoid signed
+> overflow instrumentation. They are expected to wrap around.
 > 
-> ...
-> 
-> > > > + * This driver is for generic 16550 compatible UART enumerated via ACPI
-> > > > + * platform bus instead of PNP bus like PNP0501. This is not a full
-> > > 
-> > > This has to be told in the commit message. Anyway, we don't need a duplication
-> > > code, please use 8250_pnp.
-> > 
-> > Thank you for the review!. Major issue with PNP0501 is, it gets enumerated
-> > in a different way which causes issue to get _DEP to work.
-> > pnpacpi_init() creates PNP data structures which gets skipped if the
-> > UART puts _DEP on the GSI provider (interrupt controller). In that case,
-> > we need to somehow reinitialize such PNP devices after interrupt
-> > controller gets probed.
-> 
-> Then fix that code, we don't want a hack driver on top of the existing one for
-> the same.
-> 
-> What I might think out of head is that used IRQ core for your case should
-> return a deferred probe error code when it's not ready, then 8250_pnp will
-> get reprobed.
-> 
-Deferred probe was ruled out in prior discussion. Also, deferred probe
-will not work with _DEP approach. The reason is, PNP devices itself are
-not getting created from the ACPI name space when they have _DEP. Hence,
-serial_pnp_probe() will not be called at all.
+> Signed-off-by: Kees Cook <keescook@chromium.org>
+> ---
+> Cc: Will Deacon <will@kernel.org>
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> Cc: Boqun Feng <boqun.feng@gmail.com>
+> Cc: Mark Rutland <mark.rutland@arm.com>
+> Cc: Catalin Marinas <catalin.marinas@arm.com>
+> Cc: linux-arm-kernel@lists.infradead.org
+> ---
+>  arch/arm64/include/asm/atomic_lse.h | 10 ++++++----
+>  1 file changed, 6 insertions(+), 4 deletions(-)
 
-> > I tried a solution [1] but it required several
-> > functions to be moved out of __init. 
-> 
-> > This driver is not a duplicate of 8250_pnp. It just relies on UART
-> > enumerated as platform device instead of using PNP interfaces.
-> > Isn't it better and simple to have an option to enumerate as platform
-> > device instead of PNP? 
-> 
-> Ah, then extract platform driver first from 8250_core.c.
-> 
-Let me know if I understand your suggestion correctly. Do you mean call
-something like serial8250_acpi_init() from serial8250_init() and
-register the driver directly in serial8250_acpi_init()?
+How come the ll/sc routines (in atomic_ll_sc.h) don't need the same
+treatment? If that's just an oversight, then maybe it's better to
+instrument the higher-level wrappers in asm/atomic.h?
 
-Thanks,
-Sunil
+Will
 
