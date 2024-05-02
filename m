@@ -1,141 +1,126 @@
-Return-Path: <linux-kernel+bounces-166295-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-166296-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0A8D38B98B2
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 12:20:20 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E23E58B98B4
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 12:21:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C54A5280EE2
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 10:20:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 07D7D1C22526
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 10:21:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 23BB35820A;
-	Thu,  2 May 2024 10:20:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7307A58228;
+	Thu,  2 May 2024 10:21:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="eR8KkMxA"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.17])
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="RfLdXnh0"
+Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F253356B73;
-	Thu,  2 May 2024 10:20:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.17
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C10EB56B73;
+	Thu,  2 May 2024 10:21:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.248
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714645207; cv=none; b=EYxOtFqeqfAG43P369zAg/5gMFWsPg3QCthUZsL2apHNdq6MPzRrp1rVbRISnGOAyb5WVrDkuArde+gWggfiFh3XsxU9oMhJkmpm4HKwR7IDi+uToN9JDx+M/G92G65uxEdCs09+6lD6Sf64SOIJkyIvwv0y3KFa7/7+ej/coB0=
+	t=1714645284; cv=none; b=RLGgId0ZxsswH1W6ICLXGqdCMlVgir95dwDqvhDTV4lPbjRChHDWKdfd98h15KsPCRHZSu8yzioI+4+riwCRIWQAdiDnlsTCt+5+I7/NBPk37/BspBmDbYl0LuWgGh3CF7+ejVIDyhwoiHXVbKoQhex1+ZEd6DFH2v6kUsPfBsY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714645207; c=relaxed/simple;
-	bh=UBlJgz5xG7D/qPa02aoxxcu20LLe8O6olWTsYyH24Fs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Us1dGavvep9YLzW52aPyud78wvTcI4/KRiacFr1OWMjgSiA+oyuU0soRLVNLTUpmQfMV19DIKTj4T4TKXZyXQ0EbMc4UETUTxFEG103d5qaFap+Qc2lLLAcxtU4vzspV6zbUrm33sd/HBGBN8EYHgzZdPp2a3pcPl5YLJVRSfRs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=eR8KkMxA; arc=none smtp.client-ip=192.198.163.17
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1714645206; x=1746181206;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=UBlJgz5xG7D/qPa02aoxxcu20LLe8O6olWTsYyH24Fs=;
-  b=eR8KkMxAtUNk6oNpSb+R2gKKPNp1+VrqSKx+kVed7+dMqBgW3q9dGvM5
-   2OKN75juDi7EV7ABiBU0ur8esTG3OlE3ivdzehkZX6ksvnYmQtHqflHet
-   TksBoF57soSkcZC4qslTkn1v6HzFd3OqQS4RfIqLEh9rcLfcNFjaMywJJ
-   7ywasKlEOpl2S16+ZaG8sbPg75Jp6ZJp4pWaC4wFxEGdhC6t9b4VSd6wW
-   TBBSKsGXHV+0HiZTXAsR5ub8RDzbQcuIwadTj0IeNENHqVXi6Ov7W2TvP
-   XT3fgoGZtDoEvHacexiT8KsBLT6UCIEnLpcIKwPq2hPL+fUQZaIoKbJSO
-   A==;
-X-CSE-ConnectionGUID: ZjVvLZInTRO6plmMaaq+eg==
-X-CSE-MsgGUID: mryL4ml3RtaO2nDKvqsxKQ==
-X-IronPort-AV: E=McAfee;i="6600,9927,11061"; a="10278806"
-X-IronPort-AV: E=Sophos;i="6.07,247,1708416000"; 
-   d="scan'208";a="10278806"
-Received: from fmviesa010.fm.intel.com ([10.60.135.150])
-  by fmvoesa111.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 May 2024 03:20:05 -0700
-X-CSE-ConnectionGUID: aiX0mY4vQSeFpVaHn0EPsg==
-X-CSE-MsgGUID: Z4pRODJ+R8ebvjkfa5L59g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,247,1708416000"; 
-   d="scan'208";a="27156971"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmviesa010.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 May 2024 03:20:00 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1s2TXf-00000003HNp-2W6n;
-	Thu, 02 May 2024 13:19:55 +0300
-Date: Thu, 2 May 2024 13:19:55 +0300
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Sudeep Holla <sudeep.holla@arm.com>
-Cc: Sunil V L <sunilvl@ventanamicro.com>,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	linux-riscv@lists.infradead.org, linux-acpi@vger.kernel.org,
-	linux-pci@vger.kernel.org, linux-serial@vger.kernel.org,
-	acpica-devel@lists.linux.dev,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Albert Ou <aou@eecs.berkeley.edu>,
-	"Rafael J . Wysocki" <rafael@kernel.org>,
-	Len Brown <lenb@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-	Anup Patel <anup@brainfault.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Samuel Holland <samuel.holland@sifive.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Jiri Slaby <jirislaby@kernel.org>,
-	Robert Moore <robert.moore@intel.com>,
-	Conor Dooley <conor.dooley@microchip.com>,
-	Andrew Jones <ajones@ventanamicro.com>,
-	Marc Zyngier <maz@kernel.org>,
-	Atish Kumar Patra <atishp@rivosinc.com>,
-	Andrei Warkentin <andrei.warkentin@intel.com>,
-	Haibo1 Xu <haibo1.xu@intel.com>,
-	=?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>
-Subject: Re: [PATCH v5 03/17] ACPI: bus: Add acpi_riscv_init function
-Message-ID: <ZjNoy6KLtOCTe52q@smile.fi.intel.com>
-References: <20240501121742.1215792-1-sunilvl@ventanamicro.com>
- <20240501121742.1215792-4-sunilvl@ventanamicro.com>
- <ZjNbvlUoCfa5UUHF@smile.fi.intel.com>
- <ZjNksbTQF1lMQ0k0@sunil-laptop>
- <ZjNnG6JqFCZGj1qv@bogus>
+	s=arc-20240116; t=1714645284; c=relaxed/simple;
+	bh=Uu8k1Y2EqX4OzuTvC+/1Fe63HhtOPHkpZYGeEgvWJ44=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=ZLQIsh1dknQ+1xKloHw6qYZwCahPiNV3YC7VDsKV4GqHalqdnTbShluW+w81154WxKXuxyLq1VatXiCqOSoKjittxJ8MRmV/oXCdONCZn4QEj5ZR9RzPjeFzJJPZo0mMtq/InS0V4siwfAEm2FuteaByvdBix4Z2VeU9So31kPc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=RfLdXnh0; arc=none smtp.client-ip=198.47.23.248
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+	by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 442AKoMU112356;
+	Thu, 2 May 2024 05:20:50 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1714645250;
+	bh=frYcCDaItIA9BuawKlzNsoAiSO+Svo4MUn6Yuai0x7A=;
+	h=Date:Subject:To:CC:References:From:In-Reply-To;
+	b=RfLdXnh0NZo7iAYvStFvR0Tsb3fpuOtinvVHsYBn1ugyvK270RTbJvBASBqYm10NC
+	 egB1o2FiuX5xsBFRAIkRpWzf5wPwIUphftZlTbv5RHIqpexeHuSFTI4OnV3MfN9zez
+	 N3E5ZVr2FCX/DC1qk5PGKdpthmFOxDnJEdG0ZF80=
+Received: from DLEE101.ent.ti.com (dlee101.ent.ti.com [157.170.170.31])
+	by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 442AKomr028630
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Thu, 2 May 2024 05:20:50 -0500
+Received: from DLEE105.ent.ti.com (157.170.170.35) by DLEE101.ent.ti.com
+ (157.170.170.31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 2
+ May 2024 05:20:50 -0500
+Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DLEE105.ent.ti.com
+ (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Thu, 2 May 2024 05:20:50 -0500
+Received: from [10.249.141.75] ([10.249.141.75])
+	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 442AKi08019243;
+	Thu, 2 May 2024 05:20:45 -0500
+Message-ID: <c420b47b-acb9-4055-9e5f-78deee1b575f@ti.com>
+Date: Thu, 2 May 2024 15:50:44 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZjNnG6JqFCZGj1qv@bogus>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 0/3] Fix reg ranges for main_pktdma dma-controller node
+To: Jayesh Choudhary <j-choudhary@ti.com>, <nm@ti.com>, <vigneshr@ti.com>,
+        <bb@ti.com>, <devicetree@vger.kernel.org>
+CC: <kristo@kernel.org>, <robh@kernel.org>, <krzk+dt@kernel.org>,
+        <conor+dt@kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <u-kumar1@ti.com>
+References: <20240430105253.203750-1-j-choudhary@ti.com>
+Content-Language: en-US
+From: "Kumar, Udit" <u-kumar1@ti.com>
+In-Reply-To: <20240430105253.203750-1-j-choudhary@ti.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-On Thu, May 02, 2024 at 11:12:43AM +0100, Sudeep Holla wrote:
-> On Thu, May 02, 2024 at 03:32:25PM +0530, Sunil V L wrote:
-> > On Thu, May 02, 2024 at 12:24:14PM +0300, Andy Shevchenko wrote:
-> > > On Wed, May 01, 2024 at 05:47:28PM +0530, Sunil V L wrote:
-> > > > Add a new function for RISC-V to do any architecture specific
-> > > > initialization. This function will be used to create platform devices
-> > > > like APLIC, PLIC, RISC-V IOMMU etc. This is similar to acpi_arm_init().
-> > >
-> > > What is the special about this architecture that it requires a separate
-> > > initialization that is _not_ going to be in other cases?
-> > > Please, elaborate.
-> > >
-> > This init function will be used to create GSI mapping structures and in
-> > future may be others like iommu. Like I mentioned, ARM already has
-> > similar function acpi_arm_init(). So, it is not new right?
-> 
-> Just to add:
-> 
-> This is to initialise everything around all the arch specific tables
-> which you will not have on any other architectures. We could execute
-> on all architectures but the tables will never be found. The main point
-> is why do we want to do that if we can optimise and skip on all other
-> archs.
+Thanks Jayesh
 
-You need to carefully write the commit messages. Some kind of the above
-paragraphs has to be in there.
-
--- 
-With Best Regards,
-Andy Shevchenko
+On 4/30/2024 4:22 PM, Jayesh Choudhary wrote:
+> The dma-controller node 'main_pktdma' has few memory regions with
+> wrong sizes.
+>
+> DMASS0_PKTDMA_RINGRT is marked as 4MB region when it is actually a 2MB
+> region. Similarly, DMASS0_PKTDMA_TCHANRT is marked as 256KB region but
+> the actual size is 128KB as shown in TRM in the section for Main Memory
+> Map (Table 2-1)
+>
+> Fix these region across AM62, AM62A and AM62P (which is also used in
+> J722S)
+>
+> TRM:
 
 
+For series
+
+Reviewed-by: Udit Kumar <u-kumar1@ti.com>
+
+
+>
+> AM625: <https://www.ti.com/lit/pdf/spruiv7>
+> AM62A7: <https://www.ti.com/lit/pdf/spruj16>
+> AM62P: <https://www.ti.com/lit/pdf/spruj83>
+> J722S: <https://www.ti.com/lit/zip/sprujb3>
+>
+> Changelog v1->v2:
+> - Add main_pktdma node name in commit message for more clarity about the
+>    dma-controller and mention the table for memory map in TRM in each patch.
+>
+> v1 patch:
+> <https://lore.kernel.org/all/20240405085208.32227-1-j-choudhary@ti.com/>
+>
+> Jayesh Choudhary (3):
+>    arm64: dts: ti: k3-am62-main: Fix the reg-range for main_pktdma
+>    arm64: dts: ti: k3-am62a-main: Fix the reg-range for main_pktdma
+>    arm64: dts: ti: k3-am62p-main: Fix the reg-range for main_pktdma
+>
+>   arch/arm64/boot/dts/ti/k3-am62-main.dtsi  | 4 ++--
+>   arch/arm64/boot/dts/ti/k3-am62a-main.dtsi | 4 ++--
+>   arch/arm64/boot/dts/ti/k3-am62p-main.dtsi | 4 ++--
+>   3 files changed, 6 insertions(+), 6 deletions(-)
+>
 
