@@ -1,268 +1,164 @@
-Return-Path: <linux-kernel+bounces-166036-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-166037-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2D89C8B950F
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 09:06:40 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 396CC8B9510
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 09:06:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4F9DA1C20F3E
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 07:06:39 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 53521B213E8
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 07:06:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F9C4224EF;
-	Thu,  2 May 2024 07:06:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B07F28DC3;
+	Thu,  2 May 2024 07:06:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="B8j1f5Uu"
-Received: from relay9-d.mail.gandi.net (relay9-d.mail.gandi.net [217.70.183.199])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="dJzRc3BI"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2F413D0D5;
-	Thu,  2 May 2024 07:06:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.199
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0761224A0E
+	for <linux-kernel@vger.kernel.org>; Thu,  2 May 2024 07:06:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714633567; cv=none; b=XbdNTRJ2X86H7vQkwYaE0ZS1moCPSUwDToem5hmlzT2vk40LNtKuHBHuUl/QZxUewwg5j+D4/Ej89tgZd4F7p9uTFu1Rrklh8Ion+9xNW6SkOPt+x8xXlklan9m9YagcX0RISSzFyRqYDmHfuhueeAdXrMWAWgwlxgGAnxIYa8w=
+	t=1714633571; cv=none; b=r8WOqnnLWnMkPCexBNkSgjqMNq7tSzHqMf++a7vsEkY0cfiIn1QRkA7MQyOC0caHk7mTHI2cDhy4vjvhmxIkglecsXq+FPuFAlfjGc+hfbU6vuq/QDm7ICBuZHbtEF/cbK36ot0GJZ1mx4HrVSU0edp2KOOkQt3uQZZe1wO+UVU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714633567; c=relaxed/simple;
-	bh=VCJpFTyWHDVtl37lStzlxQlOOcbZwfJtBV574sUGtMg=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=IpLAfynZbU35jTEgtrwek4kXkBTA0+ss4j1Glm3Mr/bjvN7x1pkylZvsjxphsaldUsLyyO0vaT1gWa3qmoOPbwLjgGiAkYRnv9Q7WLBWEk7Z7NN0HpasKVM9hnnS0Ti3z3ILlXlw3KUOSKpff7yKy8XMRfuYNO0C1pwiMPedsas=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=B8j1f5Uu; arc=none smtp.client-ip=217.70.183.199
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id E4106FF80D;
-	Thu,  2 May 2024 07:05:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1714633557;
+	s=arc-20240116; t=1714633571; c=relaxed/simple;
+	bh=SB62APbq3iH0ch9xM+8WuyA+92QlwsDLbgFkacggKmY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=ZB2v5cYUcD7XJvXJdH/lQ83hEzdoOOc9pGSk1BhXTMbelRHxWwC0aQEy2q4z/sABSLv2dSWxBNjveXzJ8OP0BmzX1mv6jy9RYttYhdFR2/kakvs3tw8+j2r+Ww181w/g4KBOhXllIXItKECvE0mSb7KlrcyO6HEDqYmPUDTCMzM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=dJzRc3BI; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1714633569;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 to:to:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Sik2Srpo/NMXeuyqGPdiEfnhnvExYt+wCnwEMFyOk40=;
-	b=B8j1f5UuQ+vnS71+EkEfNv+tOaeI+G68TJyKlaSdEUr0+GqduZ45SWwDpOX7X4irVbzNS7
-	a4LaDpYPb7Jg8J3QlefxyiaPGvJsx8zgrXU5WnqTYAiKEf0KBI0DM4gbsaXEO5pqZbkmeB
-	3Rn3nZcsmy20kDJ+0AOPvKop4Pyu7Jg5CuCPsMNrRBhwFAo395d0n9BtC8da9mxa6kCq03
-	VdCexfNiKI7V0TYnqpbWJRLr6L0YiwNdVw8RHR+bGV6snnXZlCOfw9vvdO9cuqPbYwdQLx
-	N3kQO+6SagPNJ0JLlsU4WG07zz2n5Eipa7j+1TRwajgFBFYld3xtZKV/SGhUkQ==
-Date: Thu, 2 May 2024 09:05:53 +0200
-From: Maxime Chevallier <maxime.chevallier@bootlin.com>
-To: Heiner Kallweit <hkallweit1@gmail.com>
-Cc: davem@davemloft.net, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, thomas.petazzoni@bootlin.com, Andrew Lunn
- <andrew@lunn.ch>, Jakub Kicinski <kuba@kernel.org>, Eric Dumazet
- <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, Russell King
- <linux@armlinux.org.uk>, linux-arm-kernel@lists.infradead.org, Christophe
- Leroy <christophe.leroy@csgroup.eu>, Herve Codina
- <herve.codina@bootlin.com>, Florian Fainelli <f.fainelli@gmail.com>,
- Vladimir Oltean <vladimir.oltean@nxp.com>, =?UTF-8?B?S8O2cnk=?= Maincent
- <kory.maincent@bootlin.com>, Jesse Brandeburg <jesse.brandeburg@intel.com>,
- Marek =?UTF-8?B?QmVow7pu?= <kabel@kernel.org>, Piergiorgio Beruto
- <piergiorgio.beruto@gmail.com>, Oleksij Rempel <o.rempel@pengutronix.de>,
- =?UTF-8?B?Tmljb2zDsg==?= Veronese <nicveronese@gmail.com>, Simon Horman
- <horms@kernel.org>, mwojtas@chromium.org, Nathan Chancellor
- <nathan@kernel.org>, Antoine Tenart <atenart@kernel.org>
-Subject: Re: [PATCH net-next] net: phy: Don't conditionally compile the
- phy_link_topology creation
-Message-ID: <20240502090553.485bf36b@device-28.home>
-In-Reply-To: <2422613d-0f9c-4485-bad3-5aa7cf12c0b1@gmail.com>
-References: <20240429131008.439231-1-maxime.chevallier@bootlin.com>
-	<1ed5b8cb-c79b-44b9-8dbe-f78d7505b3b4@gmail.com>
-	<20240430135734.503f51a2@device-28.home>
-	<2422613d-0f9c-4485-bad3-5aa7cf12c0b1@gmail.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-redhat-linux-gnu)
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=Y/d4yuyVkisorATTW5TLptiRR8w+kLvhe+ZUaPi7E/w=;
+	b=dJzRc3BIVh9/vbibuU8ep1TjgmbWFwthUTyaroH9AilrvXvjiAK1GbXAfy3A+5tgdHoIMD
+	2etLCAYqHtafAcO519Cjv+R3Q713XZR6olRzme4oyI5Yb9iITNGUFlrbtv3CwFVE1Pcf3r
+	qrH6JAQ+GroDhfW8g7so26BmBWwovtM=
+Received: from mail-lf1-f69.google.com (mail-lf1-f69.google.com
+ [209.85.167.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-691-pL0N7yA8OSKN9zVTZM6xFg-1; Thu, 02 May 2024 03:06:07 -0400
+X-MC-Unique: pL0N7yA8OSKN9zVTZM6xFg-1
+Received: by mail-lf1-f69.google.com with SMTP id 2adb3069b0e04-51d9e84986bso3350089e87.3
+        for <linux-kernel@vger.kernel.org>; Thu, 02 May 2024 00:06:07 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714633566; x=1715238366;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
+         :content-language:references:to:subject:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Y/d4yuyVkisorATTW5TLptiRR8w+kLvhe+ZUaPi7E/w=;
+        b=FpioYiXYN600G7/2ExNihs1dnhZAT/ZFS6A5nSTQ87yLgALL/gcEvpJkXtIJwLLo7u
+         oHofQkHVdnMjMpPIygfe82qXFMh2HmKRjQdOTZxEZCSTMPRHXomxxrVcXmoAaZQRTaoV
+         wjcOW3OaON0gDN1KSL25v5Um01b3D9RgUr5MyRgXNGkFF58gtWpK2ueZFioByvjEco/S
+         sSzOgy3Ol/NQXrxRSnRuJwsTfguSraR1e1b2yHZnlMBZc9IMBXb63IvOqWRQ8zMJ33SI
+         R6zhPByQiFWUGCVWxtUqNWMoMvQrypD+p9Le/CR1R+r6KRyDxqDUtJvugJOaJToaZSuh
+         Imjg==
+X-Forwarded-Encrypted: i=1; AJvYcCWASXWX0R3sar7M+Gbuv7lQc+zuM0FrZQWMtcPQim/WpILKy+CqSrxp31Mm1GnTr9aHYcmBSTBOfwzxwlV5wazek8fpTZJgxq7GruVX
+X-Gm-Message-State: AOJu0Yz4MBu9g/8UDasioj8c/nCMQwm+7pXoIyFP/RGah4vZgD5hbJmH
+	q50/5vQoLvrjMGVgkrq0fyXNoLUf3La49LHVRDmJkWrDQeuTKBVhCJGHn78lSAS7pEa1UmPykLB
+	Y9Dm0wUQvEK77S1l+dImK4CalRV6q0cIsss3/tpobBr50XZxwhxvIVFg0Dcfsvw==
+X-Received: by 2002:ac2:5bc7:0:b0:51c:b47b:31a2 with SMTP id u7-20020ac25bc7000000b0051cb47b31a2mr528113lfn.60.1714633566472;
+        Thu, 02 May 2024 00:06:06 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IE5JnK9oLZpoyYve9PjlgsaPu5zW1OGd6EtGAeV1NYEpEuuB65NwNf4RokoCTPAkGcquhv+mg==
+X-Received: by 2002:ac2:5bc7:0:b0:51c:b47b:31a2 with SMTP id u7-20020ac25bc7000000b0051cb47b31a2mr528079lfn.60.1714633565720;
+        Thu, 02 May 2024 00:06:05 -0700 (PDT)
+Received: from ?IPV6:2003:cb:c71e:bf00:eba1:3ab9:ab0f:d676? (p200300cbc71ebf00eba13ab9ab0fd676.dip0.t-ipconnect.de. [2003:cb:c71e:bf00:eba1:3ab9:ab0f:d676])
+        by smtp.gmail.com with ESMTPSA id d18-20020adfef92000000b0034c71090653sm486732wro.57.2024.05.02.00.06.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 02 May 2024 00:06:05 -0700 (PDT)
+Message-ID: <2ff54327-b387-4ede-9858-049b20ca8118@redhat.com>
+Date: Thu, 2 May 2024 09:06:04 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 1/2] hv_balloon: Use kernel macros to simplify open
+ coded sequences
+To: mhklinux@outlook.com, haiyangz@microsoft.com, wei.liu@kernel.org,
+ decui@microsoft.com, linux-kernel@vger.kernel.org,
+ linux-hyperv@vger.kernel.org
+References: <20240501151458.2807-1-mhklinux@outlook.com>
+Content-Language: en-US
+From: David Hildenbrand <david@redhat.com>
+Autocrypt: addr=david@redhat.com; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat
+In-Reply-To: <20240501151458.2807-1-mhklinux@outlook.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-GND-Sasl: maxime.chevallier@bootlin.com
 
-Hi,
-
-On Tue, 30 Apr 2024 23:29:37 +0200
-Heiner Kallweit <hkallweit1@gmail.com> wrote:
-
-> On 30.04.2024 13:57, Maxime Chevallier wrote:
-> > Hello Heiner,
-> > 
-> > On Tue, 30 Apr 2024 10:17:31 +0200
-> > Heiner Kallweit <hkallweit1@gmail.com> wrote:
-> >   
-> >> On 29.04.2024 15:10, Maxime Chevallier wrote:  
-> >>> The core of the phy_link_topology isn't directly tied to phylib, and at
-> >>> the moment it's initialized, phylib might not be loaded yet. Move the
-> >>> initialization of the topology to the phy_link_topology_core header,
-> >>> which contains the bare minimum so that we can initialize it at netdev
-> >>> creation.
-> >>>     
-> >>
-> >> The change fixes the issue for me, but according to my personal taste
-> >> the code isn't intuitive and still error-prone. Also there's no good
-> >> reason to inline a function like phy_link_topo_create() and make it
-> >> publicly available. Do you expect it to be ever used outside net core?
-> >> In general it may make sense to add a config symbol for the topology
-> >> extension, there seem to be very few, specialized use cases for it.  
-> > 
-> > I think I'm missing the point here then. Do you mean adding a Kconfig
-> > option to explicitely turn phy_link_topology on ? or build it as a
-> > dedicated kernel module ?
-> > 
-> > Or do you see something such as "if phylib is M or Y, then build the
-> > topology stuff and make sure it's allocated when a netdev gets created
-> > ?"
-> > 
-> > Thanks,
-> > 
-> > Maxime
-> >   
-> >>  
-> >>> Signed-off-by: Maxime Chevallier <maxime.chevallier@bootlin.com>
-> >>> Closes: https://lore.kernel.org/netdev/2e11b89d-100f-49e7-9c9a-834cc0b82f97@gmail.com/
-> >>> Closes: https://lore.kernel.org/netdev/20240409201553.GA4124869@dev-arch.thelio-3990X/
-> >>> ---
-> >>>  drivers/net/phy/phy_link_topology.c    | 23 --------------------
-> >>>  include/linux/phy_link_topology.h      |  5 -----
-> >>>  include/linux/phy_link_topology_core.h | 30 +++++++++++++++++---------
-> >>>  3 files changed, 20 insertions(+), 38 deletions(-)
-> >>>
-> >>> diff --git a/drivers/net/phy/phy_link_topology.c b/drivers/net/phy/phy_link_topology.c
-> >>> index 985941c5c558..960aedd73308 100644
-> >>> --- a/drivers/net/phy/phy_link_topology.c
-> >>> +++ b/drivers/net/phy/phy_link_topology.c
-> >>> @@ -12,29 +12,6 @@
-> >>>  #include <linux/rtnetlink.h>
-> >>>  #include <linux/xarray.h>
-> >>>  
-> >>> -struct phy_link_topology *phy_link_topo_create(struct net_device *dev)
-> >>> -{
-> >>> -	struct phy_link_topology *topo;
-> >>> -
-> >>> -	topo = kzalloc(sizeof(*topo), GFP_KERNEL);
-> >>> -	if (!topo)
-> >>> -		return ERR_PTR(-ENOMEM);
-> >>> -
-> >>> -	xa_init_flags(&topo->phys, XA_FLAGS_ALLOC1);
-> >>> -	topo->next_phy_index = 1;
-> >>> -
-> >>> -	return topo;
-> >>> -}
-> >>> -
-> >>> -void phy_link_topo_destroy(struct phy_link_topology *topo)
-> >>> -{
-> >>> -	if (!topo)
-> >>> -		return;
-> >>> -
-> >>> -	xa_destroy(&topo->phys);
-> >>> -	kfree(topo);
-> >>> -}
-> >>> -
-> >>>  int phy_link_topo_add_phy(struct phy_link_topology *topo,
-> >>>  			  struct phy_device *phy,
-> >>>  			  enum phy_upstream upt, void *upstream)
-> >>> diff --git a/include/linux/phy_link_topology.h b/include/linux/phy_link_topology.h
-> >>> index 6b79feb607e7..ad72d7881257 100644
-> >>> --- a/include/linux/phy_link_topology.h
-> >>> +++ b/include/linux/phy_link_topology.h
-> >>> @@ -32,11 +32,6 @@ struct phy_device_node {
-> >>>  	struct phy_device *phy;
-> >>>  };
-> >>>  
-> >>> -struct phy_link_topology {
-> >>> -	struct xarray phys;
-> >>> -	u32 next_phy_index;
-> >>> -};
-> >>> -
-> >>>  static inline struct phy_device *
-> >>>  phy_link_topo_get_phy(struct phy_link_topology *topo, u32 phyindex)
-> >>>  {
-> >>> diff --git a/include/linux/phy_link_topology_core.h b/include/linux/phy_link_topology_core.h
-> >>> index 0a6479055745..0116ec49cd1b 100644
-> >>> --- a/include/linux/phy_link_topology_core.h
-> >>> +++ b/include/linux/phy_link_topology_core.h
-> >>> @@ -2,24 +2,34 @@
-> >>>  #ifndef __PHY_LINK_TOPOLOGY_CORE_H
-> >>>  #define __PHY_LINK_TOPOLOGY_CORE_H
-> >>>  
-> >>> -struct phy_link_topology;
-> >>> +#include <linux/xarray.h>
-> >>>  
-> >>> -#if IS_REACHABLE(CONFIG_PHYLIB)
-> >>> -
-> >>> -struct phy_link_topology *phy_link_topo_create(struct net_device *dev);
-> >>> -void phy_link_topo_destroy(struct phy_link_topology *topo);
-> >>> -
-> >>> -#else
-> >>> +struct phy_link_topology {
-> >>> +	struct xarray phys;
-> >>> +	u32 next_phy_index;
-> >>> +};
-> >>>  
-> >>>  static inline struct phy_link_topology *phy_link_topo_create(struct net_device *dev)
-> >>>  {
-> >>> -	return NULL;
-> >>> +	struct phy_link_topology *topo;
-> >>> +
-> >>> +	topo = kzalloc(sizeof(*topo), GFP_KERNEL);
-> >>> +	if (!topo)
-> >>> +		return ERR_PTR(-ENOMEM);
-> >>> +
-> >>> +	xa_init_flags(&topo->phys, XA_FLAGS_ALLOC1);
-> >>> +	topo->next_phy_index = 1;
-> >>> +
-> >>> +	return topo;
-> >>>  }
-> >>>  
-> >>>  static inline void phy_link_topo_destroy(struct phy_link_topology *topo)
-> >>>  {
-> >>> -}
-> >>> +	if (!topo)
-> >>> +		return;
-> >>>  
-> >>> -#endif
-> >>> +	xa_destroy(&topo->phys);
-> >>> +	kfree(topo);
-> >>> +}
-> >>>  
-> >>>  #endif /* __PHY_LINK_TOPOLOGY_CORE_H */    
-> >>  
-> >   
+On 01.05.24 17:14, mhkelley58@gmail.com wrote:
+> From: Michael Kelley <mhklinux@outlook.com>
 > 
-> To go a little bit more into detail:
+> Code sequences equivalent to ALIGN(), ALIGN_DOWN(), and umin() are
+> currently open coded. Change these to use the kernel macro to
+> improve code clarity. ALIGN() and ALIGN_DOWN() require the
+> alignment value to be a power of 2, which is the case here.
 > 
-> phy_link_topo_create() and phy_link_topo_destroy() are used in net/core/dev.c
-> only. Do you expect them to be ever used by other callers?
-> If not, their functionality could be moved to net/core/dev.c.
-> Supposedly guarded by IS_ENABLED(CONFIG_PHYLIB), alternatively a new config
-> symbol for link_topo support.
+> Signed-off-by: Michael Kelley <mhklinux@outlook.com>
+> ---
+> Changes in v2:
+> * No changes. This is a new patch that goes with v2 of patch 2 of this series.
 > 
-> To get rid of the dependency you could also lazy-inizialize
-> netdev->link_topo. For this phy_link_topo_add_phy() would have
-> to take the netdev as first argument, not the topo.
-> Then the first call to phy_link_topo_add_phy() would initialize
-> netdev->link_topo.
-> 
-> I think functions like phy_link_topo_get_phy() should also check for
-> topo != NULL first, maybe combined with a WARN_ON().
-> They are exported and you have no control over its use.
 
-Thanks Heiner for the explanations. I'll rework based on that. The
-original reason I didn't directly include the netdev as a parameter for
-these function, or didn't put any helper in net/core/dev.c is because I
-wanted to avoid too strong of a link between the topology and netdev.
+Reviewed-by: David Hildenbrand <david@redhat.com>
 
-There are some PHYs for which we can't assign any netdev (PHYs that
-would sit in-between 2 chained DSA switches is the only example I have
-in mind though), but TBH the code in its actual shape doesn't address
-these either, so it's a useless design constraint.
 
-So, let me indeed do that, it will probably make for a simpler and more
-straightforward design.
+-- 
+Cheers,
 
-Thanks for the input,
+David / dhildenb
 
-Maxime
 
