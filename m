@@ -1,113 +1,116 @@
-Return-Path: <linux-kernel+bounces-166726-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-166704-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 496728B9E92
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 18:29:15 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id B591F8B9E5E
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 18:19:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 03B1828574B
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 16:29:14 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DE9BDB25214
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 16:19:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA03915EFC4;
-	Thu,  2 May 2024 16:29:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78A0D15E1EE;
+	Thu,  2 May 2024 16:19:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ispras.ru header.i=@ispras.ru header.b="oPsYETrx"
-Received: from mail.ispras.ru (mail.ispras.ru [83.149.199.84])
-	(using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iznJJ4qb"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5DEB915E1EF
-	for <linux-kernel@vger.kernel.org>; Thu,  2 May 2024 16:29:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=83.149.199.84
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B914D15AAC5;
+	Thu,  2 May 2024 16:19:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714667344; cv=none; b=LyaS3M1RLE1eKGbFEeq7DdtfZU+FGeOYbHKjRw7k5/8zC9QA5bA3WwWJf5gy3vIkBk/M1lr6GWmCl0XRqCLQU18hRNF3+nhxpzmWfeL0nCtX0N2Df711Q4uhdyqkdpKh2SZMpJY14CdZRHM3gw4TizZDI1G8dYGRAD+wAFsgNMM=
+	t=1714666747; cv=none; b=apm2c7KdiTuLQZH1kRWyBGmf7oeybKYytl10KFChb1QIpj3lGKwxY/rdziHWKv9Q6c3w1/3s73C+GacZHtk2oXQ34CGFTleUPXObLBvfFlT+6T1LU7VLTOOQiNJd7vWMQW1pc8gcnK7Ngw9f4Mc1setsotluDiiI9k4hOjKSmVM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714667344; c=relaxed/simple;
-	bh=V8KxA8VqpVmR+Zyu7dFeYSpT9k2Uk/1WVAAjXNpTZGw=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Y89NMpy/hNyLyuOcVf6rbX6Vbb+DXBsFLwzaJVtgEJyMnFvMEQVlsoHQsP220th2d/5m3jB4NDP2PMjue6IgWECPcJsfAMdkPC7NC1XunkkYXWbIqa3iKo0XzBfP9SGc7dOAaUzIcPhZbLL301naokH0mxOKhjYb2phPGTrUMBs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ispras.ru; spf=pass smtp.mailfrom=ispras.ru; dkim=pass (1024-bit key) header.d=ispras.ru header.i=@ispras.ru header.b=oPsYETrx; arc=none smtp.client-ip=83.149.199.84
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ispras.ru
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ispras.ru
-Received: from fedor-21d0.intra.ispras.ru (unknown [10.10.165.8])
-	by mail.ispras.ru (Postfix) with ESMTPSA id DF41840762D9;
-	Thu,  2 May 2024 16:18:53 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail.ispras.ru DF41840762D9
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ispras.ru;
-	s=default; t=1714666734;
-	bh=pGaAAC7U9OSU8oqKj4HdqFvQw4E0L+KuLXciIaLFu0k=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=oPsYETrx1ZfxJcu5C//ePVQphhcDlzwZ5xiraGXybrLmid6kjpkmyKg/z9mi0STX+
-	 +XK5DIZVh+QVfgdUIQIPkWPEqnTgwrPZtJjRltIw3k7XM0Cx4Kbql4/m0CPPXx4AaM
-	 DiGSV3v9OyUcMCJm2J+UhfV/UW235QEb8aKhArxU=
-From: Fedor Pchelkin <pchelkin@ispras.ru>
-To: Xiang Chen <chenxiang66@hisilicon.com>
-Cc: Fedor Pchelkin <pchelkin@ispras.ru>,
-	Christoph Hellwig <hch@lst.de>,
-	Marek Szyprowski <m.szyprowski@samsung.com>,
-	Robin Murphy <robin.murphy@arm.com>,
-	Barry Song <song.bao.hua@hisilicon.com>,
-	iommu@lists.linux.dev,
-	linux-kernel@vger.kernel.org,
-	Alexey Khoroshilov <khoroshilov@ispras.ru>,
-	lvc-project@linuxtesting.org
-Subject: [PATCH 2/2] dma-mapping: benchmark: prevent potential kthread hang
-Date: Thu,  2 May 2024 19:18:26 +0300
-Message-ID: <20240502161827.403338-3-pchelkin@ispras.ru>
-X-Mailer: git-send-email 2.45.0
-In-Reply-To: <20240502161827.403338-1-pchelkin@ispras.ru>
-References: <20240502161827.403338-1-pchelkin@ispras.ru>
+	s=arc-20240116; t=1714666747; c=relaxed/simple;
+	bh=cfpd7jyzmkAweaa0hD3uTqGADQ0i4iCKVXcnU1BPD5c=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=lEPNx2a9VFEKbq9MFGlVfX4vZPu7pHMttIiYmJwVfdzO75dP70usI3GJaD3shktR4d6YLLiWqgOziPtYK7dAHgevmc2zrZt/D/Hi93dEqBkFBHFv7Xab3q1fk+by3CqBdrZ9UlDUfOupcVFtQZHlvtsJy2wUuIVxOJVsWtPPYLc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=iznJJ4qb; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 20565C113CC;
+	Thu,  2 May 2024 16:19:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714666747;
+	bh=cfpd7jyzmkAweaa0hD3uTqGADQ0i4iCKVXcnU1BPD5c=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=iznJJ4qbBWR7NpsLRpKzCXcgRKLWAZYR171nJcG3Nespiw1EWNbUbDk87RXO15exq
+	 QWyNqSgjM5+PIbIa2LpqoJdaumaWvVXIKuOm+d/vOR63qEsvpXRDS/27rFY6rdrWj/
+	 VO2P/mcatsHtq9y+T7efokkMSu8CdwHGDVScWM+fdNFUgE7c/hOE1xBLfdcxPfBNHr
+	 oKZQtD57RNlxH4L6Sgd+61BJzHbqPKocp+1+shNYIi1ufyJg2Ght67OrjYpfqFCGUu
+	 +5azFcRRYEtKDPT8nGPqgaZRWIfMctYvcVwa+TBhT7egp6kFM8Q9KciRdKnySwQe2m
+	 D+1lx2W9khUxA==
+From: =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
+To: Puranjay Mohan <puranjay@kernel.org>, Alexei Starovoitov
+ <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko
+ <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Eduard
+ Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, Yonghong Song
+ <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, KP
+ Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo
+ <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, Paul Walmsley
+ <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou
+ <aou@eecs.berkeley.edu>, bpf@vger.kernel.org,
+ linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org, Pu Lehui
+ <pulehui@huawei.com>
+Cc: puranjay12@gmail.com
+Subject: Re: [PATCH bpf-next v2 2/2] riscv, bpf: inline
+ bpf_get_smp_processor_id()
+In-Reply-To: <20240430175834.33152-3-puranjay@kernel.org>
+References: <20240430175834.33152-1-puranjay@kernel.org>
+ <20240430175834.33152-3-puranjay@kernel.org>
+Date: Thu, 02 May 2024 18:19:04 +0200
+Message-ID: <87edakw5jb.fsf@all.your.base.are.belong.to.us>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-If some of kthreads executing map_benchmark_thread() return with an error
-code (e.g. due to a memory allocation failure), then the next kthreads in
-the array are not stopped and potentially loop for indefinite time.
+Puranjay Mohan <puranjay@kernel.org> writes:
 
-Call kthread_stop() for each started thread as map_benchmark_thread()
-expects that happening in order to exit.
+> Inline the calls to bpf_get_smp_processor_id() in the riscv bpf jit.
+>
+> RISCV saves the pointer to the CPU's task_struct in the TP (thread
+> pointer) register. This makes it trivial to get the CPU's processor id.
+> As thread_info is the first member of task_struct, we can read the
+> processor id from TP + offsetof(struct thread_info, cpu).
+>
+>           RISCV64 JIT output for `call bpf_get_smp_processor_id`
+> 	  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D
+>
+>                 Before                           After
+>                --------                         -------
+>
+>          auipc   t1,0x848c                  ld    a5,32(tp)
+>          jalr    604(t1)
+>          mv      a5,a0
+>
+> Benchmark using [1] on Qemu.
+>
+> ./benchs/run_bench_trigger.sh glob-arr-inc arr-inc hash-inc
+>
+> +---------------+------------------+------------------+--------------+
+> |      Name     |     Before       |       After      |   % change   |
+> |---------------+------------------+------------------+--------------|
+> | glob-arr-inc  | 1.077 =C2=B1 0.006M/s | 1.336 =C2=B1 0.010M/s |   + 24.=
+04%   |
+> | arr-inc       | 1.078 =C2=B1 0.002M/s | 1.332 =C2=B1 0.015M/s |   + 23.=
+56%   |
+> | hash-inc      | 0.494 =C2=B1 0.004M/s | 0.653 =C2=B1 0.001M/s |   + 32.=
+18%   |
+> +---------------+------------------+------------------+--------------+
+>
+> NOTE: This benchmark includes changes from this patch and the previous
+>       patch that implemented the per-cpu insn.
+>
+> [1] https://github.com/anakryiko/linux/commit/8dec900975ef
+>
+> Signed-off-by: Puranjay Mohan <puranjay@kernel.org>
 
-Found by Linux Verification Center (linuxtesting.org).
-
-Fixes: 65789daa8087 ("dma-mapping: add benchmark support for streaming DMA APIs")
-Signed-off-by: Fedor Pchelkin <pchelkin@ispras.ru>
----
- kernel/dma/map_benchmark.c | 12 ++++++++----
- 1 file changed, 8 insertions(+), 4 deletions(-)
-
-diff --git a/kernel/dma/map_benchmark.c b/kernel/dma/map_benchmark.c
-index ea938bc6c7e3..7e39a4690331 100644
---- a/kernel/dma/map_benchmark.c
-+++ b/kernel/dma/map_benchmark.c
-@@ -140,13 +140,17 @@ static int do_map_benchmark(struct map_benchmark_data *map)
- 
- 	msleep_interruptible(map->bparam.seconds * 1000);
- 
--	/* wait for the completion of benchmark threads */
-+	/* wait for the completion of all started benchmark threads */
- 	for (i = 0; i < threads; i++) {
--		ret = kthread_stop(tsk[i]);
--		if (ret)
--			goto out;
-+		int kthread_ret = kthread_stop(tsk[i]);
-+
-+		if (kthread_ret)
-+			ret = kthread_ret;
- 	}
- 
-+	if (ret)
-+		goto out;
-+
- 	loops = atomic64_read(&map->loops);
- 	if (likely(loops > 0)) {
- 		u64 map_variance, unmap_variance;
--- 
-2.45.0
-
+Acked-by: Bj=C3=B6rn T=C3=B6pel <bjorn@kernel.org>
 
