@@ -1,53 +1,54 @@
-Return-Path: <linux-kernel+bounces-166754-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-166755-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5D2EE8B9F0C
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 18:56:13 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5F0288B9F13
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 18:57:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 10EC028911D
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 16:56:12 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 819A1B20E91
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 16:57:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07C6B16D9D4;
-	Thu,  2 May 2024 16:56:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D1E0216D9D1;
+	Thu,  2 May 2024 16:57:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mrPS97wP"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="C/pqJab+"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 49BE31E894
-	for <linux-kernel@vger.kernel.org>; Thu,  2 May 2024 16:56:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 23CBF1E894
+	for <linux-kernel@vger.kernel.org>; Thu,  2 May 2024 16:57:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714668966; cv=none; b=TsaDxEtRmT+5ZF5mHfGZAwDTyInFgTJ678BfYG9j7Ce5u2pQLEJuu/OdWZN3McMc7ZLCELHUfcqGqE1jthsqrWSFq7nuRs0vjHmh+SuE5TjkDu1F8zECVctpB1awRDZd7ZJ8m3xNuiIzaaLg4nUxT8FHU89ZonEI0A/b9GQ4DI8=
+	t=1714669063; cv=none; b=f2dROv/mrs2NrK8it2lRIKt8QREK/rr+yigdNOGJ0Y2VZzUF1E4bC36hBGJeSFJ4BncZqqHbd2h06I7w6+IxDaHSZXTS58sUZCknVttea7BChEq8AeAvBnSwAWJ/UescSDu4MKSqlAXCw3sHwiTLLazCqRZtyeI20YuBFgcBjKs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714668966; c=relaxed/simple;
-	bh=CCE+p8QPFzPjKxcbKudSLOdb5kuut2ZESRmGtopMcE0=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=CO7OxxX22fZLhpVrjvq4vf7bADRBVnIMcD5k36GEQL0p7j5SXbVX0dEeBgZ34cpliIC1m7lGQLISYFiw5MZ06AQE4O8OtCjzLWZy5ISDxzkr7GErIG1F2uJk2NPByLF0+rYSESL31wV6wPtAInpB/vm60EKuuK25Wwf0oCDcyys=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mrPS97wP; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E5A68C113CC;
-	Thu,  2 May 2024 16:56:04 +0000 (UTC)
+	s=arc-20240116; t=1714669063; c=relaxed/simple;
+	bh=MeJONHaaVCoCJfQ52r8DqXIO1ZH1QEMXI3EQ/dVa0hI=;
+	h=From:To:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=fciBjQC/mdfOSplu4JDrphOGO2m1Lu/ZR+MNc79qsxzKgIZVgwLf3t5qCey2aY6I92QUmkHdd9jEZTfZ9SaE9e8hwPhhkJ4MI++kT/we1i6Nu7FA55YPdl0DBIqbcm/WHj0ntzvhayYkPUThLto/14TAkmUpytvNzvng8/teAAI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=C/pqJab+; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 42E65C113CC;
+	Thu,  2 May 2024 16:57:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714668965;
-	bh=CCE+p8QPFzPjKxcbKudSLOdb5kuut2ZESRmGtopMcE0=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=mrPS97wP7w0fOp5WLOBUtGbXE2vJI1NwDaH7q72ZM1gvbRQpqyyzFdVWCJgkTmsTM
-	 5xD5+9vTMLL5nQezjEU+OWSqGHY2LK5cpSSFpG6TkujNDay+8ugA034J2DLZuZk0se
-	 Yc1AmLAPBXmvwlIzaDvwAWBRkhu6lqGznKBqc4B0By3xFgqq8DzZygH+CkNFVFLzkl
-	 CyNPg7zbvtjKJHvgrN+ZQBvFYG+pEgU1fmGIbr7qlv9ht5/dFUg+UMCqsFbdN8kDYa
-	 pXU0X9G+6fTY/O/jfnfJ9bAECvr0ubpFx4Dwxvy+v7Pc6XXeuhf6qYtI4IjrJPyXE+
-	 +SWucAE5ye8oA==
+	s=k20201202; t=1714669063;
+	bh=MeJONHaaVCoCJfQ52r8DqXIO1ZH1QEMXI3EQ/dVa0hI=;
+	h=From:To:In-Reply-To:References:Subject:Date:From;
+	b=C/pqJab+p+69JAoSaqocoMRCMRGS/VLUNsc03gB01YQLDzUC+wpqlVjhQM1F64xgh
+	 TftLAJHg1sl1SpSASxSShUEpo3fwkaUbsd0VdjIebPcGd2cCG3kFMsp9IQa/kNoqGw
+	 L7IxVQIjVlhd5yu7rhv/DAu+9WkzBd688EqWMqzcqZF0bT3RTwraHJ7qO05YgUSdYD
+	 a1xWrwXRcxeeCCD0a4Q/4ORiJfAV1qbWeKdlj1rbfmPm3yWpNWR10+6FzW2gr/rNkn
+	 GU9Dg/qccCVPknPRrdV11RFCDM8Vy1I3WsL/YVM0DsezQIOAD7UsYVdDJfbOcWFu99
+	 15Oc2bTuIdiCw==
 From: Lee Jones <lee@kernel.org>
-To: lee@kernel.org, Charles Keepax <ckeepax@opensource.cirrus.com>
-Cc: linux-kernel@vger.kernel.org, patches@opensource.cirrus.com
-In-Reply-To: <20240423102339.2363400-1-ckeepax@opensource.cirrus.com>
-References: <20240423102339.2363400-1-ckeepax@opensource.cirrus.com>
-Subject: Re: (subset) [PATCH] mfd: cs42l43: Update patching revision check
-Message-Id: <171466896468.1210371.3867323121604554888.b4-ty@kernel.org>
-Date: Thu, 02 May 2024 17:56:04 +0100
+To: Lee Jones <lee@kernel.org>, linux-kernel@vger.kernel.org, 
+ Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+In-Reply-To: <20240423210706.3709568-1-andriy.shevchenko@linux.intel.com>
+References: <20240423210706.3709568-1-andriy.shevchenko@linux.intel.com>
+Subject: Re: (subset) [PATCH v2 1/1] mfd: kempld: Remove custom DMI
+ matching code
+Message-Id: <171466906202.1211312.2246725106963631975.b4-ty@kernel.org>
+Date: Thu, 02 May 2024 17:57:42 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -58,20 +59,17 @@ Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 X-Mailer: b4 0.12.4
 
-On Tue, 23 Apr 2024 11:23:39 +0100, Charles Keepax wrote:
-> The firmware can only be patched once. The current code checks if the
-> firmware supports the features required by the driver and then patches
-> if it does not. This could lead to the device being patched twice if
-> the device was patched before the driver took control, but with a
-> firmware that doesn't support the features the driver requires. This
-> would fail but potentially in unpredictable ways.
+On Wed, 24 Apr 2024 00:06:44 +0300, Andy Shevchenko wrote:
+> The ->init() open codes the functionality of DMI matching code.
+> Moreover, all DMI quirks are using the same callback and driver_data.
+> With this in mind, refactor the DMI matching code.
 > 
-> [...]
+> 
 
 Applied, thanks!
 
-[1/1] mfd: cs42l43: Update patching revision check
-      commit: 4dd91a9a49825e727e93aca8483eb90e6a9894e5
+[1/1] mfd: kempld: Remove custom DMI matching code
+      commit: cc1d9001f1de0856bdd1ea04b6cfce06a81a077d
 
 --
 Lee Jones [李琼斯]
