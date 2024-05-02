@@ -1,81 +1,191 @@
-Return-Path: <linux-kernel+bounces-166298-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-166299-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8D4828B98B9
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 12:23:43 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2216B8B98BB
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 12:25:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 415581F2426B
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 10:23:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C9E34284623
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 10:25:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 948CE58ABC;
-	Thu,  2 May 2024 10:23:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1FC2858236;
+	Thu,  2 May 2024 10:25:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dnuNz5js"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="wtklsYGQ";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="8PRz+hei";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="wtklsYGQ";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="8PRz+hei"
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5EF256B73;
-	Thu,  2 May 2024 10:23:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D00953373;
+	Thu,  2 May 2024 10:25:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714645413; cv=none; b=Oy0xhTQQGlSwcES+3DD+eaAXS1F6BuaJFQhMgxjSzLALkVBWZVM/rOCl0Vd4uELnu3iSXhgPynVxCZ1DHp/HpdU4Cldfh82ILHhgwcZqxHOO5ywTjWPeNhaDevIWQZZrS1gXnD/FxqMDU/AcYCYAgYLHsDOJZ5TZjERic/c+cYg=
+	t=1714645542; cv=none; b=EZPLJEblAa4gt42UHWXGhccx7cp4xNjqfxdfC5ySX+j4gH1+9j70UB+NeFbXCnBu9b/OSVTNHu2wmoYEGOww5yIDWef9dkDorbgfAzIkuuN47JGOWfjevYRjvXhmfsurxYlZegGopiFm9mPeOZRKue3q8QagHW5H4O67DmcPkIU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714645413; c=relaxed/simple;
-	bh=ja1UKESxKdgu0FF/YiYOmlaHU6Vp8rntl7jZYGmKZGA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=mivVtEhZTNpiadP28WXb5vA2jr10EKbepqmCwObYjCrbDP6NH24GxY1rcAlO4CQnZp25I0PHfw0i2lJJLwb+aLVUmqjqtjs71uNxZzVmb4+1HR+6OBHROe2p1oAI2ErlY0Dre++Lc+ntPInH6z3BL/m1DuqLBTa94uef/7lVpOs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dnuNz5js; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 09163C113CC;
-	Thu,  2 May 2024 10:23:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714645413;
-	bh=ja1UKESxKdgu0FF/YiYOmlaHU6Vp8rntl7jZYGmKZGA=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=dnuNz5jsnatTwFNi4IVOtuH0wWzX1fVo7aDRidBjhyBXlKyGE1JsqZut4icuvbMMh
-	 +24lRzkfr3DjxhFaYONrKiW1bi5zndwkRI3c7ri88qGa/ovuZEwkmaiEc2NUV0Zorq
-	 FTC73oiRU7BWAXY14EYnuLm1CX7N429bPF/z1PguYRXp45sDtaaoFVBrXDtfSwRuf3
-	 a0He7vSLURF8tzxH/0WtQ0kjQOqpuE1It+8KdSh3P3SWhl1fkxfA3CmBh1BGqRbpPJ
-	 Fy6uDKB+6soKmkmgEnTJoETAF+9u/llEQMkmEAIu9rP9hlW7AoAeTVYmtV4vhdmZU0
-	 DHHk5tGHKHDSw==
-Date: Thu, 2 May 2024 11:23:28 +0100
-From: Simon Horman <horms@kernel.org>
-To: Justin Lai <justinlai0215@realtek.com>
-Cc: kuba@kernel.org, davem@davemloft.net, edumazet@google.com,
-	pabeni@redhat.com, linux-kernel@vger.kernel.org,
-	netdev@vger.kernel.org, andrew@lunn.ch, jiri@resnulli.us,
-	pkshih@realtek.com, larry.chiu@realtek.com
-Subject: Re: [PATCH net-next v17 00/13] Add Realtek automotive PCIe driver
-Message-ID: <20240502102328.GK2821784@kernel.org>
-References: <20240502091847.65181-1-justinlai0215@realtek.com>
+	s=arc-20240116; t=1714645542; c=relaxed/simple;
+	bh=9TkTZ57YAAxNkPWthAJ9DpDRSGTHMSlyYmnHgN70MRQ=;
+	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=tJqfetCmssahrIofnKYQm/V/rQUd7iLba4caWyNEebH7TYjEoGXgggYV8W92JvnB61NNSnaxmaew2A0tQ06pF/Vfns4VF2ORHhDjvcNsAoGq1qKZ10W41PVHyZjcto+QrKLHHIfp4LZHC1SYICSO1S8+7DGFBBvuLLe3HOCI+oM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=wtklsYGQ; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=8PRz+hei; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=wtklsYGQ; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=8PRz+hei; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id B4BA3351D9;
+	Thu,  2 May 2024 10:25:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1714645538; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=nRNsEWuTL5AgiSXgw65Rfs9x849N3wWjfMiLj4+bsbA=;
+	b=wtklsYGQzF6Cm63lDgSKIu0L0JY8LoTvP/AoFzxBCbF7xkEdqOu8IoVjaVNhcRDeNdrioN
+	bJJwrfzuegzGjd6bTgMHDhQxVEuMAadiuII9QGkOkzPzgTTF3C8/QIxw6uIcFTG1O18LZQ
+	NbJy+b+lmDtrQE9wqfFV9McxLM7uqm0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1714645538;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=nRNsEWuTL5AgiSXgw65Rfs9x849N3wWjfMiLj4+bsbA=;
+	b=8PRz+heicRrv7NM8CC8qiY3ggk0EhJQwXI5W/UqEXFvRTSNhVMPZlK9eW2jHn+gOV+C63V
+	/UhLosmJ02y38vBw==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1714645538; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=nRNsEWuTL5AgiSXgw65Rfs9x849N3wWjfMiLj4+bsbA=;
+	b=wtklsYGQzF6Cm63lDgSKIu0L0JY8LoTvP/AoFzxBCbF7xkEdqOu8IoVjaVNhcRDeNdrioN
+	bJJwrfzuegzGjd6bTgMHDhQxVEuMAadiuII9QGkOkzPzgTTF3C8/QIxw6uIcFTG1O18LZQ
+	NbJy+b+lmDtrQE9wqfFV9McxLM7uqm0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1714645538;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=nRNsEWuTL5AgiSXgw65Rfs9x849N3wWjfMiLj4+bsbA=;
+	b=8PRz+heicRrv7NM8CC8qiY3ggk0EhJQwXI5W/UqEXFvRTSNhVMPZlK9eW2jHn+gOV+C63V
+	/UhLosmJ02y38vBw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 7080B1386E;
+	Thu,  2 May 2024 10:25:38 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id xj3uGSJqM2bfDgAAD6G6ig
+	(envelope-from <tiwai@suse.de>); Thu, 02 May 2024 10:25:38 +0000
+Date: Thu, 02 May 2024 12:25:51 +0200
+Message-ID: <87edakjys0.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Simon Trimmer <simont@opensource.cirrus.com>
+Cc: 'Richard Fitzgerald'
+	<rf@opensource.cirrus.com>,
+	<tiwai@suse.com>,
+	<linux-sound@vger.kernel.org>,
+	<alsa-devel@alsa-project.org>,
+	<linux-kernel@vger.kernel.org>,
+	<patches@opensource.cirrus.com>
+Subject: Re: [PATCH] ALSA: hda: cs35l56: Perform firmware download in the background
+In-Reply-To: <001401da9c79$fb9f2de0$f2dd89a0$@opensource.cirrus.com>
+References: <20240501111755.21231-1-simont@opensource.cirrus.com>
+	<87ttjgk6ph.wl-tiwai@suse.de>
+	<a9345d24-af36-42b4-9139-0701a0dbe1a3@opensource.cirrus.com>
+	<87h6fgk0ba.wl-tiwai@suse.de>
+	<001401da9c79$fb9f2de0$f2dd89a0$@opensource.cirrus.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240502091847.65181-1-justinlai0215@realtek.com>
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Level: 
+X-Spamd-Result: default: False [-3.30 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	MID_CONTAINS_FROM(1.00)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	ARC_NA(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	RCPT_COUNT_SEVEN(0.00)[7];
+	RCVD_TLS_ALL(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	TO_DN_SOME(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	FROM_EQ_ENVFROM(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.de:email,cirrus.com:email,alsa-project.org:email]
+X-Spam-Score: -3.30
+X-Spam-Flag: NO
 
-On Thu, May 02, 2024 at 05:18:34PM +0800, Justin Lai wrote:
-> This series includes adding realtek automotive ethernet driver
-> and adding rtase ethernet driver entry in MAINTAINERS file.
+On Thu, 02 May 2024 12:17:48 +0200,
+Simon Trimmer wrote:
 > 
-> This ethernet device driver for the PCIe interface of 
-> Realtek Automotive Ethernet Switch,applicable to 
-> RTL9054, RTL9068, RTL9072, RTL9075, RTL9068, RTL9071.
+> > -----Original Message-----
+> > From: Takashi Iwai <tiwai@suse.de>
+> > Sent: Thursday, May 2, 2024 10:53 AM
+> > To: Richard Fitzgerald <rf@opensource.cirrus.com>
+> > Cc: Simon Trimmer <simont@opensource.cirrus.com>; tiwai@suse.com; linux-
+> > sound@vger.kernel.org; alsa-devel@alsa-project.org; linux-
+> > kernel@vger.kernel.org; patches@opensource.cirrus.com
+> > Subject: Re: [PATCH] ALSA: hda: cs35l56: Perform firmware download in the
+> > background
+> > 
+> > On Thu, 02 May 2024 11:21:36 +0200,
+> > Richard Fitzgerald wrote:
+> > >
+> > > On 02/05/2024 08:34, Takashi Iwai wrote:
+> > > > On Wed, 01 May 2024 13:17:55 +0200,
+> > > > Simon Trimmer wrote:
+> > > >> @@ -964,6 +1011,14 @@ int cs35l56_hda_common_probe(struct
+> > cs35l56_hda *cs35l56, int hid, int id)
+> > > >>   	mutex_init(&cs35l56->base.irq_lock);
+> > > >>   	dev_set_drvdata(cs35l56->base.dev, cs35l56);
+> > > >>   +	cs35l56->dsp_wq =
+> > > >> create_singlethread_workqueue("cs35l56-dsp");
+> > > >> +	if (!cs35l56->dsp_wq) {
+> > > >> +		ret = -ENOMEM;
+> > > >> +		goto err;
+> > > >> +	}
+> > > >
+> > > > Do we really need a dedicated workqueue?  In most usages, simple
+> > > > schedule_work*() works fine and is recommended.
+> > > >
+> > >
+> > > On a slow I2C bus with 4 amps this work could take over 2 seconds.
+> > > That seems too long to be blocking a global system queue. We use a
+> > > dedicated queue in the ASoC driver.
+> > >
+> > > Also if we queue work on an ordered (single-threaded) system queue the
+> > > firmware won't be downloaded to multiple amps in parallel, so we don't
+> > > get the best use of the available bus bandwidth.
+> > 
+> > OK, that sounds like a sensible argument.
+> > 
+> > But the patch has no call of a queue destructor.  Won't it leak
+> > resources?
+> 
+> Oops that's a good spot - I missed that and will send a v2
 
-Hi Justin,
+If you submit a newer version, it'd be appreciated to explain about
+the workqueue usage in the patch description, too.
 
-Unfortunately this patch-set does not seem to apply cleanly to net-next.
-Please rebase and repost.
 
-Please wait the standard 24h before reposting.
-Link: https://docs.kernel.org/process/maintainer-netdev.html
+thanks,
 
--- 
-pw-bot: changes-requested
+Takashi
 
