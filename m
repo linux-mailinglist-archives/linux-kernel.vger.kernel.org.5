@@ -1,157 +1,118 @@
-Return-Path: <linux-kernel+bounces-166306-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-166307-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id EF74A8B98D7
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 12:31:43 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B44698B98DB
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 12:32:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4AE2EB236A8
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 10:31:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E0D3E1C21E48
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 10:32:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B3625D903;
-	Thu,  2 May 2024 10:31:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD49A59167;
+	Thu,  2 May 2024 10:32:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="ptnzpBEE"
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=fu-berlin.de header.i=@fu-berlin.de header.b="bpT9eH6W"
+Received: from outpost1.zedat.fu-berlin.de (outpost1.zedat.fu-berlin.de [130.133.4.66])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67A0463C7;
-	Thu,  2 May 2024 10:31:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.153.233
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D91835A0F8;
+	Thu,  2 May 2024 10:31:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=130.133.4.66
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714645891; cv=none; b=FgHRbwGc6btYm95n5yFfMTjPPiVvQ/RIBe7HVLK/CTg38dOJbrJRSqck5abjHtaJQ+ZWs+A2KYHG0Bbk4CsfpJ5ZeaGEAMNEGtpK5glpmGPpsuDnJJ9lByhwqEhAeGoHoy2JLwt+zV1Q3I6Ccuj7dJrxKK3SM2Fd3kzAo/9R8IU=
+	t=1714645922; cv=none; b=Yee6NkDGm/zuAm2IXF4M2/VUkssoMdn2deqn55aQ1YaantHBZ/ckhePeF7fX9LmXTwJHatc/D55hH6QP+IO7JXkoOv4eq1MsHVx8fBpR4C/gKPOK8p+hjFr/dPjXVzSzndDpRfR5VUsfZGuKdXAZ+mmK5xWvmjO1D3B5w6uqsIM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714645891; c=relaxed/simple;
-	bh=3dHMTEpx+RjhmY6hvsHHM+apJyEPXU7sJbM2hOdVHVs=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=mFXzGVp9GI4V4WJlcD/KD522VoWu1C5VD9sEqtRAjsk5G7K+3VFigxa4pL8O8kC6YoC0eAl4c9kbSkwzMTfhbvVBzGUYGCC+AeGuvEmQ6C5/BHBzQ7BpLM9rGvoRig0O+HpU8J8WxXWBCvkacHcrVyFlJboVF1Du708wQR8ANrM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=ptnzpBEE; arc=none smtp.client-ip=68.232.153.233
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microchip.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1714645889; x=1746181889;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=3dHMTEpx+RjhmY6hvsHHM+apJyEPXU7sJbM2hOdVHVs=;
-  b=ptnzpBEE69P8Yzc+sD6xwsWOEIxSkYHpM4R7/C9rhTxuNr2VP5MHFNDo
-   omeBtIRsDv8pnPQE9MZLyJMqO9YWfVO6oe5N/lQb5Z1wIlH3rH27ByIKP
-   0GjQsIt/7cZZF0pGPlAKUwOfefSfDmenVlbdoJYB7r7XlKDMIDeJFI27K
-   XG73aCaRwj/iMj8kEqS8FCvlfxab+eqXjLHTAh+Lpg29iU3KUQ91aVU61
-   ehp4ACXrKunWHdaBZfBypZ0H0H8sHOz8Z9/w66pPYBroPwMhpRNqHwMVE
-   zKTYDp5swaCA2t0vdN69xT749thwq7FDHoN5eYCDPFOWLa5BuP5M7JZZN
-   w==;
-X-CSE-ConnectionGUID: j7YMYpQzS2Gpi/aU2WdzxA==
-X-CSE-MsgGUID: 9DOz9USjTpSELk8k6vmCKw==
-X-IronPort-AV: E=Sophos;i="6.07,247,1708412400"; 
-   d="asc'?scan'208";a="25515845"
-X-Amp-Result: UNKNOWN
-X-Amp-Original-Verdict: FILE UNKNOWN
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa1.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 02 May 2024 03:31:26 -0700
-Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Thu, 2 May 2024 03:31:22 -0700
-Received: from wendy (10.10.85.11) by chn-vm-ex04.mchp-main.com (10.10.85.152)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35 via Frontend
- Transport; Thu, 2 May 2024 03:31:17 -0700
-Date: Thu, 2 May 2024 11:31:00 +0100
-From: Conor Dooley <conor.dooley@microchip.com>
-To: Herve Codina <herve.codina@bootlin.com>
-CC: Andrew Lunn <andrew@lunn.ch>, Thomas Gleixner <tglx@linutronix.de>, "Rob
- Herring" <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>, "Conor
- Dooley" <conor+dt@kernel.org>, "David S. Miller" <davem@davemloft.net>, "Eric
- Dumazet" <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni
-	<pabeni@redhat.com>, Lee Jones <lee@kernel.org>, Arnd Bergmann
-	<arnd@arndb.de>, Horatiu Vultur <horatiu.vultur@microchip.com>,
-	<UNGLinuxDriver@microchip.com>, Heiner Kallweit <hkallweit1@gmail.com>,
-	Russell King <linux@armlinux.org.uk>, Saravana Kannan <saravanak@google.com>,
-	Bjorn Helgaas <bhelgaas@google.com>, Philipp Zabel <p.zabel@pengutronix.de>,
-	Lars Povlsen <lars.povlsen@microchip.com>, Steen Hegelund
-	<Steen.Hegelund@microchip.com>, Daniel Machon <daniel.machon@microchip.com>,
-	Alexandre Belloni <alexandre.belloni@bootlin.com>,
-	<linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-	<netdev@vger.kernel.org>, <linux-pci@vger.kernel.org>,
-	<linux-arm-kernel@lists.infradead.org>, Allan Nielsen
-	<allan.nielsen@microchip.com>, Luca Ceresoli <luca.ceresoli@bootlin.com>,
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: Re: [PATCH 06/17] dt-bindings: net: mscc-miim: Add resets property
-Message-ID: <20240502-petted-dork-20eb02e5a8e3@wendy>
-References: <20240430083730.134918-1-herve.codina@bootlin.com>
- <20240430083730.134918-7-herve.codina@bootlin.com>
- <5d899584-38ed-4eee-9ba5-befdedbc5734@lunn.ch>
- <20240430174023.4d15a8a4@bootlin.com>
- <2b01ed8a-1169-4928-952e-1645935aca2f@lunn.ch>
- <20240502115043.37a1a33a@bootlin.com>
+	s=arc-20240116; t=1714645922; c=relaxed/simple;
+	bh=Da4+eR7XE6IbAMa48VcRB0SaIiLrNv/1XK4YaJFKaDE=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=u3UbeOada9X7iuwjWhJM5CqwSQGf9zEMeT4yF2skrmcnvaObcZSlO8BMXlKyGgrq3dwHI84gGnvsesAAEbAp4XALQuYCXeRMJflLx3wNJY0o5Al50khgbybHwyGXbwDi9j7frZU2aiBxOevNGesz9fx39RVCj3wQkkHj+y70vBY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=physik.fu-berlin.de; spf=pass smtp.mailfrom=zedat.fu-berlin.de; dkim=pass (2048-bit key) header.d=fu-berlin.de header.i=@fu-berlin.de header.b=bpT9eH6W; arc=none smtp.client-ip=130.133.4.66
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=physik.fu-berlin.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zedat.fu-berlin.de
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=fu-berlin.de; s=fub01; h=MIME-Version:Content-Transfer-Encoding:
+	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+	List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=hr8bu2LObnNnEnBECK9K132QleQOiYq/S4hpvwrzk8Q=; t=1714645918; x=1715250718; 
+	b=bpT9eH6WEhi9Vi/NL4VqxAFRcOBYPdOitkssTHyog2ir8/zBZfUs87iK1s/kEWc7s9GmsX5Dh45
+	GvS1bahrgHdG3L4PgtmvE8f3E/6Zmio789+3bn4VUJEgV8szNz+SaRhRxUwHrMcy5V7wNdTandT2D
+	QxZ2YuBAC1jB+EGPANGuzpNOBiISmhh0YZheM0jS13t4PYfvKqBFIEv450RJDChJ3t3DbmgHaM7AD
+	AMWxXk1JIeaDjbpNxzGtoFvvIU3NO+TmiJopFwRigQuPRGLnvVbZgcZ9yiikAi8pmlvcYQyzFC9ge
+	l69AOWMCknuYZ51xHFS/f7IaMhdQt05XFRcg==;
+Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
+          by outpost.zedat.fu-berlin.de (Exim 4.97)
+          with esmtps (TLS1.3)
+          tls TLS_AES_256_GCM_SHA384
+          (envelope-from <glaubitz@zedat.fu-berlin.de>)
+          id 1s2TjH-000000020K0-2jRF; Thu, 02 May 2024 12:31:55 +0200
+Received: from p57bd90e8.dip0.t-ipconnect.de ([87.189.144.232] helo=[192.168.178.20])
+          by inpost2.zedat.fu-berlin.de (Exim 4.97)
+          with esmtpsa (TLS1.3)
+          tls TLS_AES_256_GCM_SHA384
+          (envelope-from <glaubitz@physik.fu-berlin.de>)
+          id 1s2TjH-0000000082Q-1rpx; Thu, 02 May 2024 12:31:55 +0200
+Message-ID: <98810f30345bff398b23f61ffcf5ecb874402c0a.camel@physik.fu-berlin.de>
+Subject: Re: [PATCH -next] dma: Add dev_id parameter description in
+ request_dma_bycap
+From: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+To: Yang Li <yang.lee@linux.alibaba.com>, ysato@users.sourceforge.jp, 
+	dalias@libc.org
+Cc: linux-sh@vger.kernel.org, linux-kernel@vger.kernel.org
+Date: Thu, 02 May 2024 12:31:54 +0200
+In-Reply-To: <20240419090259.39542-1-yang.lee@linux.alibaba.com>
+References: <20240419090259.39542-1-yang.lee@linux.alibaba.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.52.0 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="oR2zK1enCDCWfwar"
-Content-Disposition: inline
-In-Reply-To: <20240502115043.37a1a33a@bootlin.com>
+X-Original-Sender: glaubitz@physik.fu-berlin.de
+X-ZEDAT-Hint: PO
 
---oR2zK1enCDCWfwar
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Hi Yang,
 
-On Thu, May 02, 2024 at 11:50:43AM +0200, Herve Codina wrote:
-> Hi Andrew,
+On Fri, 2024-04-19 at 17:02 +0800, Yang Li wrote:
+> This patch adds the missing description for the dev_id parameter in the
+> kernel documentation for the request_dma_bycap function.
 >=20
-> On Tue, 30 Apr 2024 18:31:46 +0200
-> Andrew Lunn <andrew@lunn.ch> wrote:
+> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+> ---
+>  arch/sh/drivers/dma/dma-api.c | 1 +
+>  1 file changed, 1 insertion(+)
 >=20
-> > > We have the same construction with the pinctrl driver used in the LAN=
-966x
-> > >   Documentation/devicetree/bindings/pinctrl/mscc,ocelot-pinctrl.yaml
-> > >=20
-> > > The reset name is 'switch' in the pinctrl binding.
-> > > I can use the same description here as the one present in the pinctrl=
- binding:
-> > >   description: Optional shared switch reset.
-> > > and keep 'switch' as reset name here (consistent with pinctrl reset n=
-ame).
-> > >=20
-> > > What do you think about that ? =20
-> >=20
-> > It would be good to document what it is shared with. So it seems to be
-> > the switch itself, pinctl and MDIO? Anything else?
-> >=20
->=20
-> To be honest, I know that the GPIO controller (microchip,sparx5-sgpio) is
-> impacted but I don't know if anything else is impacted by this reset.
-> I can update the description with:
->   description:
->     Optional shared switch reset.
->     This reset is shared with at least pinctrl, GPIO, MDIO and the switch
->     itself.
->=20
-> Does it sound better ?
+> diff --git a/arch/sh/drivers/dma/dma-api.c b/arch/sh/drivers/dma/dma-api.=
+c
+> index 89cd4a3b4cca..65005d348877 100644
+> --- a/arch/sh/drivers/dma/dma-api.c
+> +++ b/arch/sh/drivers/dma/dma-api.c
+> @@ -116,6 +116,7 @@ static int search_cap(const char **haystack, const ch=
+ar *needle)
+>   * request_dma_bycap - Allocate a DMA channel based on its capabilities
+>   * @dmac: List of DMA controllers to search
+>   * @caps: List of capabilities
+> + * @dev_id: Unique identifier for the device that is requesting a DMA ch=
+annel
+>   *
+>   * Search all channels of all DMA controllers to find a channel which
+>   * matches the requested capabilities. The result is the channel
 
-$dayjob hat off, bindings hat on: If you don't know, can we get someone
-=66rom Microchip (there's some and a list in CC) to figure it out?
+This patch is now obsolete since search_cap() was removed in for-next by Ge=
+ert
+Uytterhoven in 89256d73 ("sh: dma: Remove unused functionality").
 
-Cheers,
-Conor.
+Thanks,
+Adrian
 
---oR2zK1enCDCWfwar
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZjNrYwAKCRB4tDGHoIJi
-0pEQAQCt7WPpck+AFuGS12oVa1N8yGCSfuKXJm4Od9Da8tlaPgD/aFOJjFeQYVzV
-6qqMPyJPVrPFYPKTQXVXJGXs/c3Crwg=
-=iWhj
------END PGP SIGNATURE-----
-
---oR2zK1enCDCWfwar--
+--=20
+ .''`.  John Paul Adrian Glaubitz
+: :' :  Debian Developer
+`. `'   Physicist
+  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
 
