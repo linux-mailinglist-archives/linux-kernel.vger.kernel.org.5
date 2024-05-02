@@ -1,106 +1,121 @@
-Return-Path: <linux-kernel+bounces-166234-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-166235-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0B6178B97DF
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 11:37:08 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 53C2C8B97E2
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 11:37:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3CAA21C22EB7
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 09:37:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 846611C23379
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 09:37:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE52054FA1;
-	Thu,  2 May 2024 09:37:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6AEA355C29;
+	Thu,  2 May 2024 09:37:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mfRbClCN"
-Received: from mail-wr1-f50.google.com (mail-wr1-f50.google.com [209.85.221.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Fyfe5fbM"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AAE793399F;
-	Thu,  2 May 2024 09:36:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8AEA171AA;
+	Thu,  2 May 2024 09:37:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714642620; cv=none; b=NgCTwoU1o2iHd3p2pf2LTIgPCT3YR9whh1XSbL7yipxYTH7XoTXu1SsEXp3qLOvfeDD+L4heHwZTN8QWfGc4oTGaBDuUEveqnHLp9v9R1zkgoDTJGtt6GKatNl20jhh82zRBlgNZ4Q7FQW9/tY9BFeJCoEgn+eUxlW8EDa7MHsI=
+	t=1714642650; cv=none; b=QupKBFNN0BcH1vsOoq92Tkfg5y+xX9eF+BR2KSWqOTyOLQ0fjUYdiR8H9KCJzDpPy+oyeUzCASDa2XSt+x4xqkfhjvs1oxlxswXxXLwJn4dG83RtO9ZdCq2uiVxKME7b6pqRMWtjj68vhiKrpxSSUt2jrVvUL9E+BVVDVti2Wf0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714642620; c=relaxed/simple;
-	bh=FIzeZJYnZscgqBQf6sx7BpTt08i8y139B79afV1c+Dc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=QXwe9Uqd2ds/XIB+HmOzLSH0HWPpMnnOrwx9kMWYLqXz9KirU+LHChidUJH2jmIDjlvVp7Ae2yi/eyTVuJC+4XRsXo7pezX+O94PBD6zAccfFLh36G7bFv1X67K51qgFeGBMTc0Cjo8BNVG7a6Hhl12wU07OHe7bm51ywcf51es=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mfRbClCN; arc=none smtp.client-ip=209.85.221.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f50.google.com with SMTP id ffacd0b85a97d-347e635b1fcso5807900f8f.1;
-        Thu, 02 May 2024 02:36:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714642617; x=1715247417; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=/c84BgCk6s/7DORneUPqXXNJ43ZSe5m+K4sWZwg6XVk=;
-        b=mfRbClCNPE9NQCecoF20TkUyIbiVlK+rl2L2pLlQlMTDWIAhP5r+8dtLMbC2DIN5ty
-         KqqD6ltn4wz460ayM4MP2T1cztXvj1bcvz2OckEACluWo4SGuFAxI7EXWG4sx5X4ME0J
-         oRwoPCZdqgkui8yjXAsWiB10zlIdukwc9i0taIIvYZFkuAx3L1UUXl1OegmI2ueW+ZMz
-         DxoScAfcxC+Azbe3MPBy96ubdizlfFo7GfkUjrgPA0VvWfGiKjDeQcSPc5khpdEzcMnL
-         XdUtAOK1K4RX68yMK3S70ntMGmWlBEWS8bje6xkHG66+VieDH9+DpJffQAIq24E+7nYV
-         tpxg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714642617; x=1715247417;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=/c84BgCk6s/7DORneUPqXXNJ43ZSe5m+K4sWZwg6XVk=;
-        b=MTblwTTy/79vmWha/fcSer/7R5VMvLlpIAMd3ftC3uROX6BLYdnfX0HzBZDOS3FMeS
-         NBvJ3cTtAu5JyS5OGTKLKduEVzGdkELgtOgIAdE1tgkrZL8Zpx2Zc1j2j1ckJcuPN+46
-         O769q/22d7EP5RGsqNcnCk4yF0f/odjb0abmhk9qKN9XECY02PT4v6k3bUUsY/PJbXA6
-         tkyYL/YpGiZxWhla3ly7REFaLYFfoJx41NhSH+gntqg3fQKj+g35fDdidEkX6l3rrO7N
-         86ObKw09tYuXJK8sKtfaSS2z4eWReySuKdJWXbcVXLowr35d6y/HlW43VzI8WyKKRgIS
-         T/0g==
-X-Forwarded-Encrypted: i=1; AJvYcCXRmDTA05u420zZoWxb+2MgPq0iAtI4nWvVEf+3hc+3Ij4ILmdoQ8tvIr9dQHu8ZxaqRbW8ra1M+aUx4a5n/l2om4yHWCGHpTC14Q==
-X-Gm-Message-State: AOJu0YxSY0KAO10c2C2H300FTGObT66IXVINLn7uS40RC5Iz8zk08cSQ
-	Twgx3/B84DAqniI5HC7ivtIZv7Jyf8/aWLauRfMD/6CvA8xkRkvU
-X-Google-Smtp-Source: AGHT+IG3Ex/f5wt3guow043GN7wXhJQVBgWdDO9AFUKjm3q9KqLPK3WtKbd+9lCoMI+hqXXms70XiQ==
-X-Received: by 2002:a5d:4686:0:b0:347:d352:d5c2 with SMTP id u6-20020a5d4686000000b00347d352d5c2mr3584683wrq.13.1714642616367;
-        Thu, 02 May 2024 02:36:56 -0700 (PDT)
-Received: from andrea ([31.189.114.81])
-        by smtp.gmail.com with ESMTPSA id p13-20020a5d638d000000b0034de69bb4bcsm814990wru.85.2024.05.02.02.36.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 May 2024 02:36:56 -0700 (PDT)
-Date: Thu, 2 May 2024 11:36:51 +0200
-From: Andrea Parri <parri.andrea@gmail.com>
-To: "Paul E. McKenney" <paulmck@kernel.org>
-Cc: linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
-	kernel-team@meta.com, mingo@kernel.org, stern@rowland.harvard.edu,
-	will@kernel.org, peterz@infradead.org, boqun.feng@gmail.com,
-	npiggin@gmail.com, dhowells@redhat.com, j.alglave@ucl.ac.uk,
-	luc.maranget@inria.fr, akiyks@gmail.com
-Subject: Re: [PATCH v2 memory-model 0/3] LKMM updates for v6.10
-Message-ID: <ZjNes3y88guG2vZc@andrea>
-References: <8550daf1-4bfd-4607-8325-bfb7c1e2d8c7@paulmck-laptop>
- <42a43181-a431-44bd-8aff-6b305f8111ba@paulmck-laptop>
+	s=arc-20240116; t=1714642650; c=relaxed/simple;
+	bh=3zvGW/fNYeFraVxsq2aoI463CmBHv/uMIxo/dy6oEV8=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=oHMP6dIjeOnFtudOcBhw13Cy2hwXkfkMk96C/ItE22P+J7dWijKtubPkCfq2f+OudlsJoC+Ja9Gfo0KQtUicg6Jg1TXvEBP/FHbV8j+vZ6d3/AzPvnp8rmDszsmGw3qebtZFsqMV4zXCquneWGxpaty8Smkmx8HfdT12aUD+/A4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Fyfe5fbM; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3F417C113CC;
+	Thu,  2 May 2024 09:37:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714642650;
+	bh=3zvGW/fNYeFraVxsq2aoI463CmBHv/uMIxo/dy6oEV8=;
+	h=From:To:Cc:Subject:Date:From;
+	b=Fyfe5fbM19OSri66B9sGMaAwpNh+ZUkWsWPakeoxNMlTW8c5X9T/sQj6De+JKfKTH
+	 2+XzU2Erujkt0iMuR3IWRYF7gwRrnzXp/fsNumvzLglSuffCPvoBhgzjUv6z0QucXp
+	 0y1bKrCIObrtHzJz5zIR3kdb8+hUHjSDhYZCORdzbZ8bf8cSgCFaMLV1eMZHle8Da6
+	 9TFANNA9BRYTuU7N/Sx+6UmbIhc2i8+e7kNYjjacp/6QGfIr+g+621kAFR7tqm4JSB
+	 q+Bp2WP5NDi2x+5iGNfn8pzQkfX8RBNeAyYoqHOsASy7upUrubdgL9YmUJZhuuJ5Zb
+	 lZ0V4h8x9wQzg==
+From: Will Deacon <will@kernel.org>
+To: linux-kernel@vger.kernel.org
+Cc: iommu@lists.linux.dev,
+	Will Deacon <will@kernel.org>,
+	Christoph Hellwig <hch@lst.de>,
+	Marek Szyprowski <m.szyprowski@samsung.com>,
+	Robin Murphy <robin.murphy@arm.com>,
+	=?UTF-8?q?Petr=20Tesa=C5=99=C3=ADk?= <petr@tesarici.cz>,
+	Michael Kelley <mhkelley58@gmail.com>,
+	Nikita Ioffe <ioffe@google.com>
+Subject: [PATCH] swiotlb: Initialise restricted pool list_head when SWIOTLB_DYNAMIC=y
+Date: Thu,  2 May 2024 10:37:23 +0100
+Message-Id: <20240502093723.16820-1-will@kernel.org>
+X-Mailer: git-send-email 2.20.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <42a43181-a431-44bd-8aff-6b305f8111ba@paulmck-laptop>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-> This series contains LKMM documentation updates:
-> 
-> 1.	Documentation/litmus-tests: Add locking tests to README.
-> 
-> 2.	Documentation/litmus-tests: Demonstrate unordered failing cmpxchg.
-> 
-> 3.	Documentation/atomic_t: Emphasize that failed atomic operations
-> 	give no ordering.
-> 
-> 4.	Documentation/litmus-tests: Make cmpxchg() tests safe for klitmus.
+Using restricted DMA pools (CONFIG_DMA_RESTRICTED_POOL=y) in conjunction
+with dynamic SWIOTLB (CONFIG_SWIOTLB_DYNAMIC=y) leads to the following
+crash when initialising the restricted pools at boot-time:
 
-For the series,
+  | Unable to handle kernel NULL pointer dereference at virtual address 0000000000000008
+  | Internal error: Oops: 0000000096000005 [#1] PREEMPT SMP
+  | pc : rmem_swiotlb_device_init+0xfc/0x1ec
+  | lr : rmem_swiotlb_device_init+0xf0/0x1ec
+  | Call trace:
+  |  rmem_swiotlb_device_init+0xfc/0x1ec
+  |  of_reserved_mem_device_init_by_idx+0x18c/0x238
+  |  of_dma_configure_id+0x31c/0x33c
+  |  platform_dma_configure+0x34/0x80
 
-Acked-by: Andrea Parri <parri.andrea@gmail.com>
+faddr2line reveals that the crash is in the list validation code:
 
-  Andrea
+  include/linux/list.h:83
+  include/linux/rculist.h:79
+  include/linux/rculist.h:106
+  kernel/dma/swiotlb.c:306
+  kernel/dma/swiotlb.c:1695
+
+because add_mem_pool() is trying to list_add_rcu() to a NULL
+'mem->pools'.
+
+Fix the crash by initialising the 'mem->pools' list_head in
+rmem_swiotlb_device_init() before calling add_mem_pool().
+
+Cc: Christoph Hellwig <hch@lst.de>
+Cc: Marek Szyprowski <m.szyprowski@samsung.com>
+Cc: Robin Murphy <robin.murphy@arm.com>
+Cc: Petr Tesařík <petr@tesarici.cz>
+Cc: Michael Kelley <mhkelley58@gmail.com>
+Reported-by: Nikita Ioffe <ioffe@google.com>
+Tested-by: Nikita Ioffe <ioffe@google.com>
+Fixes: 1aaa736815eb ("swiotlb: allocate a new memory pool when existing pools are full")
+Signed-off-by: Will Deacon <will@kernel.org>
+---
+ kernel/dma/swiotlb.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/kernel/dma/swiotlb.c b/kernel/dma/swiotlb.c
+index 86fe172b5958..87dd3301dde3 100644
+--- a/kernel/dma/swiotlb.c
++++ b/kernel/dma/swiotlb.c
+@@ -1773,6 +1773,7 @@ static int rmem_swiotlb_device_init(struct reserved_mem *rmem,
+ 		mem->for_alloc = true;
+ #ifdef CONFIG_SWIOTLB_DYNAMIC
+ 		spin_lock_init(&mem->lock);
++		INIT_LIST_HEAD_RCU(&mem->pools);
+ #endif
+ 		add_mem_pool(mem, pool);
+ 
+-- 
+2.45.0.rc1.225.g2a3ae87e7f-goog
+
 
