@@ -1,117 +1,171 @@
-Return-Path: <linux-kernel+bounces-166721-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-166747-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 31EE88B9E89
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 18:26:49 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6CED28B9EDC
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 18:48:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 633291C236E3
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 16:26:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 21A911F22ABC
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 16:48:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F27A15E5D4;
-	Thu,  2 May 2024 16:26:43 +0000 (UTC)
-Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED1B216D32C;
+	Thu,  2 May 2024 16:48:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="qY2x1TSb"
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E6861553BB
-	for <linux-kernel@vger.kernel.org>; Thu,  2 May 2024 16:26:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.58.86.151
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB4B816D4D4;
+	Thu,  2 May 2024 16:48:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714667202; cv=none; b=LquU/ZivsyF0WBRBetTU1xLQkDLTNX5fHeShfRCfMyjc/vc+xZAXNf+OB05P8y1ieOf8C2AfX38dk1Zksz3ElCvc+MIITY1gXlmGZGqV0jy4b0njv3RMoA6XC8UaFnX0oar+qtK41Z02pZNBLZadZeh/iLocYDElsCcARpFs8DU=
+	t=1714668514; cv=none; b=jnvTh93MxrYN6M0lflz1vZ/rEKp8ulpHtbmjeHByqJsqanQpZdtuuZA9sYL08KvDuEfs7pX+ZgWvj+rHLOeGLqSPG05Epu0vD3ZEU6K9t/vnl0p1OPSlTqIwQRSOgOnt7QyDRPC5J+q2rSOIdNh+wVwuOJiJbMrYTdzNXXbl/aI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714667202; c=relaxed/simple;
-	bh=U3YldxXJcGf7WG0ecgFb0yY6/sPYuvXH992nRZL34Aw=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 MIME-Version:Content-Type; b=oPlz9sfr/fb7Orlw0H9WPKqHkWZSzh2W1mfyYoGVGoOmCQYtBibpn12x2OupPfuO6pDZhx5dJ9Ad5tykFTFFN/i/NgXHYljhHjoALfEC0/HFnWMK/1z6/ilFB9O8PWxpTTzIW6aRk8ORlFT6XTiBW2Jmh+H1zQEhkOcVMyEPXD0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM; spf=pass smtp.mailfrom=aculab.com; arc=none smtp.client-ip=185.58.86.151
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=aculab.com
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mta-319-8JfQbD0yNe2epfzRFaAXmw-1; Thu, 02 May 2024 17:26:28 +0100
-X-MC-Unique: 8JfQbD0yNe2epfzRFaAXmw-1
-Received: from AcuMS.Aculab.com (10.202.163.4) by AcuMS.aculab.com
- (10.202.163.4) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Thu, 2 May
- 2024 17:25:58 +0100
-Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
- id 15.00.1497.048; Thu, 2 May 2024 17:25:58 +0100
-From: David Laight <David.Laight@ACULAB.COM>
-To: 'Jules Irenge' <jbi.octave@gmail.com>, "mark.rutland@arm.com"
-	<mark.rutland@arm.com>
-CC: "alexander.shishkin@linux.intel.com" <alexander.shishkin@linux.intel.com>,
-	"jolsa@kernel.org" <jolsa@kernel.org>, "irogers@google.com"
-	<irogers@google.com>, "adrian.hunter@intel.com" <adrian.hunter@intel.com>,
-	"bp@alien8.de" <bp@alien8.de>, "dave.hansen@linux.intel.com"
-	<dave.hansen@linux.intel.com>, "x86@kernel.org" <x86@kernel.org>,
-	"hpa@zytor.com" <hpa@zytor.com>, "linux-perf-users@vger.kernel.org"
-	<linux-perf-users@vger.kernel.org>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH] perf/x86/amd/power: Use div64_u64 onstead of do_div()
-Thread-Topic: [PATCH] perf/x86/amd/power: Use div64_u64 onstead of do_div()
-Thread-Index: AQHamYq9w5OrjuroEEyWIm0jPSXs6bGEJ7/A
-Date: Thu, 2 May 2024 16:25:58 +0000
-Message-ID: <41180245c6e94a06b789cd44b8aebd62@AcuMS.aculab.com>
-References: <Zi57-TMgU19puaQM@octinomon.home>
-In-Reply-To: <Zi57-TMgU19puaQM@octinomon.home>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
+	s=arc-20240116; t=1714668514; c=relaxed/simple;
+	bh=vpRit49nMUXS5YYOwQxWvJtcED38KA4sT4n9NimhVQk=;
+	h=Date:From:To:Cc:Subject:Message-ID:Content-Type:
+	 Content-Disposition:MIME-Version; b=UhbFrjaJ8ygNpqKWWjtmzJBFX2Gw8yMAf9fJHuesKTYssUsJY9zG2nKUaZkumkEp1LBBs9h01J9+6bUF2SmPO4wdP/vwCHHs8BXI6JIyVdwi8EouaY5rshgvsy9gaIvAw3gQmh4bK+RKQhWhxhBxIY9kRJmlfR1HFGIS4h1Msqo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=qY2x1TSb; arc=none smtp.client-ip=148.163.158.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353724.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 442GmCJQ029674;
+	Thu, 2 May 2024 16:48:29 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : content-type : mime-version; s=pp1;
+ bh=k03M/v2D1jWj6cdDUaQmzNG1EN8GKUvDWuy3bRQrFAg=;
+ b=qY2x1TSbErYL61mD9sfZsHAuYmLwVc+lDRmgocvHofP9TmL4SfW6kywU7eB08O5yW95I
+ PhqzJ5nncBKapnIOIuEQbkwJDZxeCHo85ZhnNsMduRwMWydVigLpxWzkzTak7YawOE/T
+ V9uunx4bm3/Tn9u1Sem5K1LarNOCQQj1EyhyFYwh437X8olo6azzkO4s08swwM73HU53
+ vdOPJx6dCE6axEfTli1ZkNI6qYJn7aXVBWmwzIlADKUkdGNGL9Aud/16oVYa9VQeoT3J
+ HrJC8xklTo/Sh7qv4PnvQQEMLE4uUupy/ICZRKFUqLSdcC26RdDBB6ziHQKFmZroM5pZ EA== 
+Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xvenw002g-3
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 02 May 2024 16:48:28 +0000
+Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 442EsJKB027556;
+	Thu, 2 May 2024 16:26:22 GMT
+Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
+	by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3xsc30s2s5-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 02 May 2024 16:26:22 +0000
+Received: from smtpav01.fra02v.mail.ibm.com (smtpav01.fra02v.mail.ibm.com [10.20.54.100])
+	by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 442GQGCl50266614
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Thu, 2 May 2024 16:26:18 GMT
+Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 842B920043;
+	Thu,  2 May 2024 16:26:16 +0000 (GMT)
+Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 5F40D20040;
+	Thu,  2 May 2024 16:26:16 +0000 (GMT)
+Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
+	by smtpav01.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+	Thu,  2 May 2024 16:26:16 +0000 (GMT)
+Date: Thu, 2 May 2024 18:26:15 +0200
+From: Alexander Gordeev <agordeev@linux.ibm.com>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Vasily Gorbik <gor@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>,
+        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [GIT PULL] s390 fixes for 6.9-rc7
+Message-ID: <ZjO+p5wo9s16F+hU@tuxmaker.boeblingen.de.ibm.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: tdvYAohF_PcunzoIRMpqdmw0heAuLn8w
+X-Proofpoint-GUID: tdvYAohF_PcunzoIRMpqdmw0heAuLn8w
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
+ definitions=2024-05-02_08,2024-05-02_03,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 priorityscore=1501
+ mlxlogscore=999 malwarescore=0 impostorscore=0 clxscore=1015
+ lowpriorityscore=0 phishscore=0 suspectscore=0 spamscore=0 adultscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2404010000 definitions=main-2405020111
 
-From: Jules Irenge <jbi.octave@gmail.com>
-> Sent: 28 April 2024 17:40
->=20
-> do_div() truncates a u64 divisor to 32 bit.
-> This can lead to non-zero being truncated to zero for division.
->=20
-> Fix coccinelle warning
-> WARNING: do_div() does a 64-by-32 division, please consider using div64_u=
-64 instead
->=20
-> Signed-off-by: Jules Irenge <jbi.octave@gmail.com>
-> ---
->  arch/x86/events/amd/power.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->=20
-> diff --git a/arch/x86/events/amd/power.c b/arch/x86/events/amd/power.c
-> index 37d5b380516e..ff003c1a645b 100644
-> --- a/arch/x86/events/amd/power.c
-> +++ b/arch/x86/events/amd/power.c
-> @@ -64,7 +64,7 @@ static void event_update(struct perf_event *event)
->  =09delta *=3D cpu_pwr_sample_ratio * 1000;
->  =09tdelta =3D new_ptsc - prev_ptsc;
->=20
-> -=09do_div(delta, tdelta);
-> +=09div64_u64(delta, tdelta);
+Hi Linus,
 
-Nak - you've not tested it.
+please pull s390 fixes for 6.9-rc7.
 
-=09David
+Thanks,
+Alexander
 
->  =09local64_add(delta, &event->count);
->  }
->=20
-> --
-> 2.43.2
->=20
+The following changes since commit d111855ab7ffffc552f6a475259dc392f2319b6d:
 
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1=
-PT, UK
-Registration No: 1397386 (Wales)
+  s390/mm: Fix NULL pointer dereference (2024-04-17 17:26:34 +0200)
 
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/s390/linux.git tags/s390-6.9-6
+
+for you to fetch changes up to 7bbe449d0bdb68892cc67e9f5f1bfa106a3588d5:
+
+  s390/paes: Reestablish retry loop in paes (2024-05-01 11:52:54 +0200)
+
+----------------------------------------------------------------
+s390 updates for 6.9-rc7
+
+- The function __storage_key_init_range() expects the end address to be
+  the first byte outside the range to be initialized. Fix the callers
+  that provide the last byte within the range instead.
+
+- 3270 Channel Command Word (CCW) may contain zero data address in case
+  there is no data in the request. Add data availability check to avoid
+  erroneous non-zero value as result of virt_to_dma32(NULL) application
+  in cases there is no data
+
+- Add missing CFI directives for an unwinder to restore the return
+  address in the vDSO assembler code
+
+- NUL-terminate kernel buffer when duplicating user space memory region
+  on Channel IO (CIO) debugfs write inject
+
+- Fix wrong format string in zcrypt debug output
+
+- Return -EBUSY code when a CCA card is temporarily unavailabile
+
+- Restore a loop that retries derivation of a protected key from a
+  secure key in cases the low level reports temporarily unavailability
+  with -EBUSY code
+
+----------------------------------------------------------------
+Bui Quang Minh (1):
+      s390/cio: Ensure the copied buf is NUL terminated
+
+Claudio Imbrenda (2):
+      s390/mm: Fix storage key clearing for guest huge pages
+      s390/mm: Fix clearing storage keys for huge pages
+
+Harald Freudenberger (4):
+      s390/zcrypt: Fix wrong format string in debug feature printout
+      s390/zcrypt: Handle ep11 cprb return code
+      s390/zcrypt: Use EBUSY to indicate temp unavailability
+      s390/paes: Reestablish retry loop in paes
+
+Jens Remus (1):
+      s390/vdso: Add CFI for RA register to asm macro vdso_func
+
+Sven Schnelle (1):
+      s390/3270: Fix buffer assignment
+
+ arch/s390/crypto/paes_s390.c                | 15 +++++++--
+ arch/s390/include/asm/dwarf.h               |  1 +
+ arch/s390/kernel/vdso64/vdso_user_wrapper.S |  2 ++
+ arch/s390/mm/gmap.c                         |  2 +-
+ arch/s390/mm/hugetlbpage.c                  |  2 +-
+ drivers/s390/char/raw3270.c                 |  6 ++--
+ drivers/s390/cio/cio_inject.c               |  2 +-
+ drivers/s390/crypto/zcrypt_ccamisc.c        |  6 ++--
+ drivers/s390/crypto/zcrypt_ep11misc.c       | 48 ++++++++++++++++++++++++++++-
+ 9 files changed, 73 insertions(+), 11 deletions(-)
 
