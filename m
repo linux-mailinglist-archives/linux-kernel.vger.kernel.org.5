@@ -1,172 +1,260 @@
-Return-Path: <linux-kernel+bounces-165945-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-165944-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 505138B93B0
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 05:52:21 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id EC3398B93AD
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 05:50:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CF0A31F22674
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 03:52:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 52E051F2255B
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 03:50:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8FC801B299;
-	Thu,  2 May 2024 03:52:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="c/koTYUH"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.14])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B40D219470;
+	Thu,  2 May 2024 03:50:01 +0000 (UTC)
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F175F18AF4;
-	Thu,  2 May 2024 03:52:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.14
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 338D917BAF;
+	Thu,  2 May 2024 03:50:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714621932; cv=none; b=ASmVqD3O7KKlV2KqAwcWL07vG4mQ+V75qALx82UKjCLfNnT00KaikotQeFY1RlL9f1Nq4mnFeEQu5ugkCSYSSVIMhXQDWbnGdWBeQCTcBw3WVZ9UxpRk7pWRqVceZXy1qyqBA1ZFAB6b11VCamQL9bItF1MkRPBk+jojCX+qaoU=
+	t=1714621801; cv=none; b=SO91jcJg1nNCMtwLgNoyzIPbOtuPpPIfkCPBuvZrb9Jb1cM75m149cfz/eRvjo/+xRWHUa07SGzdquiWzRXpxZy50sRHNcIMYo5qBoJSm1Mnv1PEl2SpR6oydAr1DSc800qjeFnCEttCVkyrqksaG5qh/C7TRbWpjrgBwYxWlHQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714621932; c=relaxed/simple;
-	bh=qK6quWd0+fR1tNL6dF/6F94raTQfcmC3+2BRAFGNCVc=;
-	h=Message-ID:Date:MIME-Version:Cc:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=pqcgK1ivSNk2vlMhBylaGPtM8gimaYyBJlx+0mEHQBqQQcX6T0WBXec4i6bB/RyP0aX1H/wg8HDIzi6oNLY46zzaRlNvZxp+qdqGmVJu2QYKEsFkHSxjC0YGKgaQAFaZLyYSikm2wI/RM5+56LU9hJv1PIdGr7BtMKAD4xwG76g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=c/koTYUH; arc=none smtp.client-ip=198.175.65.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1714621932; x=1746157932;
-  h=message-id:date:mime-version:cc:subject:to:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=qK6quWd0+fR1tNL6dF/6F94raTQfcmC3+2BRAFGNCVc=;
-  b=c/koTYUHZPPPsqf7TMLACBhFnoIoi4zIYdn39p4uF2vAMOKl3PUaqGup
-   7BiyBtl05QT0IqkeWhO94n6l4eQVBHSydRLwGc4Dx759kX2Xnv3su4umn
-   vsp+Yej1WIyXM7eytxNIld+TAP1lKLjBfrRN9eusdXA6cp2QH9jtwVhXs
-   jCbiBXQ1AqyhT1dTHwyc93zkqgn7tMOpJKKrvio69MCv3DXx9OzazImZZ
-   rFbP55blCDv5OYT36E/cFAKxUD9HmwbZ62tLmNqYbK/7NbV5EcUNJOZPh
-   yOrY5NjshdvWGIsgOH3dp0rnAWbhwz7F5whbrBLg+LzL12KBMo2Ml/Any
-   Q==;
-X-CSE-ConnectionGUID: G2x9X0oLTSSN8v4jan5aHA==
-X-CSE-MsgGUID: T0bXO3oNTJ+PHCAUtyMBcg==
-X-IronPort-AV: E=McAfee;i="6600,9927,11061"; a="14196395"
-X-IronPort-AV: E=Sophos;i="6.07,247,1708416000"; 
-   d="scan'208";a="14196395"
-Received: from orviesa003.jf.intel.com ([10.64.159.143])
-  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 May 2024 20:52:11 -0700
-X-CSE-ConnectionGUID: vGfpbaSWRyeFeHIYwU+aJA==
-X-CSE-MsgGUID: LEuKkd3RTSO3a82B1VFTUQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,247,1708416000"; 
-   d="scan'208";a="31661944"
-Received: from unknown (HELO [10.239.159.127]) ([10.239.159.127])
-  by orviesa003.jf.intel.com with ESMTP; 01 May 2024 20:52:06 -0700
-Message-ID: <7c3fc511-6a3b-44d8-94fa-e4fff54f93b9@linux.intel.com>
-Date: Thu, 2 May 2024 11:50:35 +0800
+	s=arc-20240116; t=1714621801; c=relaxed/simple;
+	bh=0iW6LRA2O9QJ4ENmDbEx2S85lUIoCamAAIRwWXqkVHw=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=Il3dJTmyXTvnV+5VEhbhWGSlHxVDXYWEwIlscu+x8nrDfI8WAp90fYulYteDR34ResEm1RBh6u0ImHXGGTphfnxdr5niIXlmP1cde69H76ME/j3WMtkX60OLkH+iUty1g40Kh7PynY98mlquHUjlE818RsRnbf/tjK96AYrOBf4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 87CB8C116B1;
+	Thu,  2 May 2024 03:49:59 +0000 (UTC)
+Date: Wed, 1 May 2024 23:50:44 -0400
+From: Steven Rostedt <rostedt@goodmis.org>
+To: "Tze-nan Wu (=?UTF-8?B?5ZCz5r6k5Y2X?=)" <Tze-nan.Wu@mediatek.com>
+Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-trace-kernel@vger.kernel.org" <linux-trace-kernel@vger.kernel.org>,
+ "linux-mediatek@lists.infradead.org" <linux-mediatek@lists.infradead.org>,
+ "Cheng-Jui Wang (=?UTF-8?B?546L5q2j552/?=)" <Cheng-Jui.Wang@mediatek.com>,
+ wsd_upstream <wsd_upstream@mediatek.com>, "Bobule Chang (=?UTF-8?B?5by1?=
+ =?UTF-8?B?5byY576p?=)" <bobule.chang@mediatek.com>,
+ "linux-arm-kernel@lists.infradead.org"
+ <linux-arm-kernel@lists.infradead.org>, "mhiramat@kernel.org"
+ <mhiramat@kernel.org>, "mathieu.desnoyers@efficios.com"
+ <mathieu.desnoyers@efficios.com>
+Subject: Re: [PATCH] tracing: Fix uaf issue in tracing_open_file_tr
+Message-ID: <20240501235044.12fa3297@gandalf.local.home>
+In-Reply-To: <661f101456506db945ccbd94700a0f47b95f91e5.camel@mediatek.com>
+References: <20240426073410.17154-1-Tze-nan.Wu@mediatek.com>
+	<20240428202837.0cabca17@rorschach.local.home>
+	<20240429144626.7d868ad3@gandalf.local.home>
+	<661f101456506db945ccbd94700a0f47b95f91e5.camel@mediatek.com>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Cc: baolu.lu@linux.intel.com, Palmer Dabbelt <palmer@dabbelt.com>,
- Albert Ou <aou@eecs.berkeley.edu>, Anup Patel <apatel@ventanamicro.com>,
- Sunil V L <sunilvl@ventanamicro.com>, Nick Kossifidis <mick@ics.forth.gr>,
- Sebastien Boeuf <seb@rivosinc.com>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley
- <conor+dt@kernel.org>, devicetree@vger.kernel.org, iommu@lists.linux.dev,
- linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
- linux@rivosinc.com
-Subject: Re: [PATCH v3 7/7] iommu/riscv: Paging domain support
-To: Tomasz Jeznach <tjeznach@rivosinc.com>, Joerg Roedel <joro@8bytes.org>,
- Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
- Paul Walmsley <paul.walmsley@sifive.com>
-References: <cover.1714494653.git.tjeznach@rivosinc.com>
- <b83f81c04d1f3885d860b1eec03761fe63a33183.1714494653.git.tjeznach@rivosinc.com>
-Content-Language: en-US
-From: Baolu Lu <baolu.lu@linux.intel.com>
-In-Reply-To: <b83f81c04d1f3885d860b1eec03761fe63a33183.1714494653.git.tjeznach@rivosinc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-On 5/1/24 4:01 AM, Tomasz Jeznach wrote:
-> +/*
-> + * Send IOTLB.INVAL for whole address space for ranges larger than 2MB.
-> + * This limit will be replaced with range invalidations, if supported by
-> + * the hardware, when RISC-V IOMMU architecture specification update for
-> + * range invalidations update will be available.
-> + */
-> +#define RISCV_IOMMU_IOTLB_INVAL_LIMIT	(2 << 20)
-> +
-> +static void riscv_iommu_iotlb_inval(struct riscv_iommu_domain *domain,
-> +				    unsigned long start, unsigned long end)
-> +{
-> +	struct riscv_iommu_bond *bond;
-> +	struct riscv_iommu_device *iommu, *prev;
-> +	struct riscv_iommu_command cmd;
-> +	unsigned long len = end - start + 1;
-> +	unsigned long iova;
-> +
-> +	rcu_read_lock();
-> +
-> +	prev = NULL;
-> +	list_for_each_entry_rcu(bond, &domain->bonds, list) {
-> +		iommu = dev_to_iommu(bond->dev);
-> +
-> +		riscv_iommu_cmd_inval_vma(&cmd);
-> +		riscv_iommu_cmd_inval_set_pscid(&cmd, domain->pscid);
-> +		if (len && len >= RISCV_IOMMU_IOTLB_INVAL_LIMIT) {
-> +			for (iova = start; iova < end; iova += PAGE_SIZE) {
-> +				riscv_iommu_cmd_inval_set_addr(&cmd, iova);
-> +				riscv_iommu_cmd_send(iommu, &cmd, 0);
-> +			}
-> +		} else {
-> +			riscv_iommu_cmd_send(iommu, &cmd, 0);
-> +		}
-> +
-> +		/*
-> +		 * IOTLB invalidation request can be safely omitted if already sent
-> +		 * to the IOMMU for the same PSCID, and with domain->bonds list
-> +		 * arranged based on the device's IOMMU, it's sufficient to check
-> +		 * last device the invalidation was sent to.
-> +		 */
-> +		if (iommu == prev)
-> +			continue;
-> +
-> +		prev = iommu;
-> +		riscv_iommu_cmd_send(iommu, &cmd, 0);
-> +	}
+On Thu, 2 May 2024 03:10:24 +0000
+Tze-nan Wu (=E5=90=B3=E6=BE=A4=E5=8D=97) <Tze-nan.Wu@mediatek.com> wrote:
 
-I don't quite follow why not moving "if (iommu == prev)" check to the
-top and removing the last riscv_iommu_cmd_send(). My understanding is
-that we could make it simply like below:
+> >  =20
+> Sorry for my late reply, I'm testing the patch on my machine now.=20
+> Test will be done in four hours.
+>=20
+> There's something I'm worrying about in the patch,
+> what I'm worrying about is commented in the code below.
+>=20
+> /kernel/trace/trace_events.c:
+>   static int
+>   event_create_dir(struct eventfs_inode *parent,=20
+>   struct trace_event_file *file)=20
+>   {
+>         ...
+>         ...
+>         ...
+>         nr_entries =3D ARRAY_SIZE(event_entries);
+>=20
+>         name =3D trace_event_name(call);
+>=20
+>         +event_file_get(file);        // Line A
+>             ^^^^^^^^^^^^^
+>         // Should we move the "event_file_get" to here, instead =20
+>         // of calling it at line C?
+>         // Due to Line B could eventually invoke "event_file_put".
+>         //   eventfs_create_dir -> free_ei ->put_ei -> kref_put=20
+>         //  -> release_ei -> event_release -> event_file_put
+>         // Not sure if this is a potential risk? If Line B do call  =20
+>         // event_file_put,"event_file_put" will be called prior to
+>         // "event_file_get", could corrupt the reference of the file.
 
-	prev = NULL;
-	list_for_each_entry_rcu(bond, &domain->bonds, list) {
-		iommu = dev_to_iommu(bond->dev);
-		if (iommu == prev)
-			continue;
+No, but you do bring up a good point. The release should not be called on
+error, but it looks like it possibly can be.
 
-		/*
-		 * Send an invalidation request to the request queue
-		 * without wait.
-		 */
-		... ...
+>=20
+>         ei =3D eventfs_create_dir(name, e_events,    // Line B=20
+>              event_entries, nr_entries, file);
+>         if (IS_ERR(ei)) {
+>                 pr_warn("Could not create tracefs '%s' directory\n",=20
+>                 name);
+>                 return -1;
+>         }
+>         file->ei =3D ei;
+>=20
+>         ret =3D event_define_fields(call);
+>         if (ret < 0) {
+>                 pr_warn("Could not initialize trace point events/%s\n",
+> name);
+>                 return ret;
+>                    ^^^^^^^^^         =20
+>        // Maybe we chould have similar concern if we return here.
+>        // Due to the event_inode had been created, but we did not call=20
+>        // event_file_get.=20
+>        // Could it lead to some issues in the future while freeing=20
+>        // event_indoe?
+>         }
+>=20
+>=20
+>         -event_file_get(file);       //Line C
+>         return 0;
+>   }
 
-		prev = iommu;
-	}
+This prevents the release() function from being called on failure of
+creating the ei.
 
-> +
-> +	prev = NULL;
-> +	list_for_each_entry_rcu(bond, &domain->bonds, list) {
-> +		iommu = dev_to_iommu(bond->dev);
-> +		if (iommu == prev)
-> +			continue;
-> +
-> +		prev = iommu;
-> +		riscv_iommu_cmd_iofence(&cmd);
-> +		riscv_iommu_cmd_send(iommu, &cmd, RISCV_IOMMU_QUEUE_TIMEOUT);
-> +	}
-> +	rcu_read_unlock();
-> +}
+Can you try this patch instead?
 
-Best regards,
-baolu
+-- Steve
+
+diff --git a/fs/tracefs/event_inode.c b/fs/tracefs/event_inode.c
+index 894c6ca1e500..f5510e26f0f6 100644
+--- a/fs/tracefs/event_inode.c
++++ b/fs/tracefs/event_inode.c
+@@ -84,10 +84,17 @@ enum {
+ static void release_ei(struct kref *ref)
+ {
+ 	struct eventfs_inode *ei =3D container_of(ref, struct eventfs_inode, kref=
+);
++	const struct eventfs_entry *entry;
+ 	struct eventfs_root_inode *rei;
+=20
+ 	WARN_ON_ONCE(!ei->is_freed);
+=20
++	for (int i =3D 0; i < ei->nr_entries; i++) {
++		entry =3D &ei->entries[i];
++		if (entry->release)
++			entry->release(entry->name, ei->data);
++	}
++
+ 	kfree(ei->entry_attrs);
+ 	kfree_const(ei->name);
+ 	if (ei->is_events) {
+@@ -112,6 +119,18 @@ static inline void free_ei(struct eventfs_inode *ei)
+ 	}
+ }
+=20
++/*
++ * Called when creation of an ei fails, do not call release() functions.
++ */
++static inline void cleanup_ei(struct eventfs_inode *ei)
++{
++	if (ei) {
++		/* Set nr_entries to 0 to prevent release() function being called */
++		ei->nr_entries =3D 0;
++		free_ei(ei);
++	}
++}
++
+ static inline struct eventfs_inode *get_ei(struct eventfs_inode *ei)
+ {
+ 	if (ei)
+@@ -734,7 +753,7 @@ struct eventfs_inode *eventfs_create_dir(const char *na=
+me, struct eventfs_inode
+=20
+ 	/* Was the parent freed? */
+ 	if (list_empty(&ei->list)) {
+-		free_ei(ei);
++		cleanup_ei(ei);
+ 		ei =3D NULL;
+ 	}
+ 	return ei;
+@@ -835,7 +854,7 @@ struct eventfs_inode *eventfs_create_events_dir(const c=
+har *name, struct dentry
+ 	return ei;
+=20
+  fail:
+-	free_ei(ei);
++	cleanup_ei(ei);
+ 	tracefs_failed_creating(dentry);
+ 	return ERR_PTR(-ENOMEM);
+ }
+diff --git a/include/linux/tracefs.h b/include/linux/tracefs.h
+index 7a5fe17b6bf9..d03f74658716 100644
+--- a/include/linux/tracefs.h
++++ b/include/linux/tracefs.h
+@@ -62,6 +62,8 @@ struct eventfs_file;
+ typedef int (*eventfs_callback)(const char *name, umode_t *mode, void **da=
+ta,
+ 				const struct file_operations **fops);
+=20
++typedef void (*eventfs_release)(const char *name, void *data);
++
+ /**
+  * struct eventfs_entry - dynamically created eventfs file call back handl=
+er
+  * @name:	Then name of the dynamic file in an eventfs directory
+@@ -72,6 +74,7 @@ typedef int (*eventfs_callback)(const char *name, umode_t=
+ *mode, void **data,
+ struct eventfs_entry {
+ 	const char			*name;
+ 	eventfs_callback		callback;
++	eventfs_release			release;
+ };
+=20
+ struct eventfs_inode;
+diff --git a/kernel/trace/trace_events.c b/kernel/trace/trace_events.c
+index 52f75c36bbca..6ef29eba90ce 100644
+--- a/kernel/trace/trace_events.c
++++ b/kernel/trace/trace_events.c
+@@ -2552,6 +2552,14 @@ static int event_callback(const char *name, umode_t =
+*mode, void **data,
+ 	return 0;
+ }
+=20
++/* The file is incremented on creation and freeing the enable file decreme=
+nts it */
++static void event_release(const char *name, void *data)
++{
++	struct trace_event_file *file =3D data;
++
++	event_file_put(file);
++}
++
+ static int
+ event_create_dir(struct eventfs_inode *parent, struct trace_event_file *fi=
+le)
+ {
+@@ -2566,6 +2574,7 @@ event_create_dir(struct eventfs_inode *parent, struct=
+ trace_event_file *file)
+ 		{
+ 			.name		=3D "enable",
+ 			.callback	=3D event_callback,
++			.release	=3D event_release,
+ 		},
+ 		{
+ 			.name		=3D "filter",
+@@ -2634,6 +2643,9 @@ event_create_dir(struct eventfs_inode *parent, struct=
+ trace_event_file *file)
+ 		return ret;
+ 	}
+=20
++	/* Gets decremented on freeing of the "enable" file */
++	event_file_get(file);
++
+ 	return 0;
+ }
+=20
 
