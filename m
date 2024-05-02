@@ -1,146 +1,191 @@
-Return-Path: <linux-kernel+bounces-166482-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-166476-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 77A168B9B45
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 15:04:58 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 785BD8B9B35
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 14:59:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 297661F219E8
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 13:04:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E48AE1F2127E
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 12:59:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 518FA84FAC;
-	Thu,  2 May 2024 13:04:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="Gr7HgnwT";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="Gr7HgnwT"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5D6480025;
-	Thu,  2 May 2024 13:04:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA1BC83CCE;
+	Thu,  2 May 2024 12:59:09 +0000 (UTC)
+Received: from zg8tmja2lje4os43os4xodqa.icoremail.net (zg8tmja2lje4os43os4xodqa.icoremail.net [206.189.79.184])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CFFF882498;
+	Thu,  2 May 2024 12:59:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=206.189.79.184
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714655080; cv=none; b=Zx1v2eBxMy4CAXdG/Gn6QMTsi+PoOUpsIsWaxHSKZgYm3TzhfKcD235RXgWDrhHku/JOPIzLgwgjbXeQhjsl7jKL3R4N3TVy7bSa61n+iBL1/0dPiqpydPKo+14nY+EVVQ1AQgoSs1cUK3PbRM+T7+6u6Tfr3hU0rZE59Cib/n4=
+	t=1714654749; cv=none; b=tjJh/zaA8YdfseeJa1HShfRaJuxmDIz9KbxIKVx9NCWURvo39A7mLdwynH9jG+9uwbEmzyC3nM7zyfKJHWkDbhNn1feNIgNJkoASrVRoiKYZp5ipb++LoCOZBQdOIueGMh2HzW14BSp0O8oOSWxALRHsOhbIIeERT+g0qrLwIh0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714655080; c=relaxed/simple;
-	bh=9Sytb0R/juyLCsyWpjAt6xK7NUX0YzbFi7AcUjRnJxk=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=GRfO4J7R1RMGIqq2WfvOjpHjASWYvwvolHiqda48y9rkj+TYvWwaZBdsA72FrmsIe5KanA64siEzNlzqWL/fS/09NKMmV5uIA1w/MfqgrZ5eEUOrLZpYW06xVpsaPDnovm2yQsWVNyr5782BHy5N7JQg37FnLMxoxW/FH7XIz+w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=Gr7HgnwT; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=Gr7HgnwT; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 3063F1FC05;
-	Thu,  2 May 2024 13:04:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1714655077; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=Fas0eFkeRGK0Fm3A4e9li8djyPi6sXuaWV6aGsjK1qA=;
-	b=Gr7HgnwT1hJPi/+NQZEpdqh5N00lxrV92xt9md83nJ9HXKPd+2BOtK28MjP3LG8N2PaM+4
-	eoo2j2CJZEl7FxSu5eEzbXHZw7jQugy7xcx5mSI8ma5u4iHOvamUG/EiAU7RrJBLX/a5cY
-	86uDfDLQQBIGijQWaAeDncqCrqPpRIU=
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1714655077; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=Fas0eFkeRGK0Fm3A4e9li8djyPi6sXuaWV6aGsjK1qA=;
-	b=Gr7HgnwT1hJPi/+NQZEpdqh5N00lxrV92xt9md83nJ9HXKPd+2BOtK28MjP3LG8N2PaM+4
-	eoo2j2CJZEl7FxSu5eEzbXHZw7jQugy7xcx5mSI8ma5u4iHOvamUG/EiAU7RrJBLX/a5cY
-	86uDfDLQQBIGijQWaAeDncqCrqPpRIU=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 26FDC13957;
-	Thu,  2 May 2024 13:04:37 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id Sy6CCWWPM2b/RgAAD6G6ig
-	(envelope-from <dsterba@suse.com>); Thu, 02 May 2024 13:04:37 +0000
-From: David Sterba <dsterba@suse.com>
-To: torvalds@linux-foundation.org
-Cc: David Sterba <dsterba@suse.com>,
-	linux-btrfs@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [GIT PULL] Btrfs fixes for 6.9-rc7
-Date: Thu,  2 May 2024 14:57:18 +0200
-Message-ID: <cover.1714654371.git.dsterba@suse.com>
-X-Mailer: git-send-email 2.44.0
+	s=arc-20240116; t=1714654749; c=relaxed/simple;
+	bh=pS/I1kzqFrQdM3EmoRnGcLpZmqdgt3T3j/097XUIV2w=;
+	h=From:To:Cc:Subject:Date:Message-Id; b=dEna8y5ymcPRRA3RxHq9PQ9/PCdDNwycOvwypXvkzq4AnWjdzH4a8TB9JF8KL57Y2O+u0zKh95XWV5Fh5GQgtKRyaJo3TvAiQ20aQfg348XcKuDfMzQQ99ss5FqPbTeJugi07IhI2Ek6jJdhyzu3DHrPZTLUOSymKsto8IbPz+c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zju.edu.cn; spf=pass smtp.mailfrom=zju.edu.cn; arc=none smtp.client-ip=206.189.79.184
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zju.edu.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zju.edu.cn
+Received: from ubuntu.localdomain (unknown [221.192.181.50])
+	by mail-app3 (Coremail) with SMTP id cC_KCgBXCOrDjTNmWJG9AQ--.60971S2;
+	Thu, 02 May 2024 20:58:01 +0800 (CST)
+From: Duoming Zhou <duoming@zju.edu.cn>
+To: linux-bluetooth@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org,
+	luiz.dentz@gmail.com,
+	johan.hedberg@gmail.com,
+	marcel@holtmann.org,
+	Duoming Zhou <duoming@zju.edu.cn>
+Subject: [PATCH] Bluetooth: l2cap: fix null-ptr-deref in l2cap_chan_timeout
+Date: Thu,  2 May 2024 20:57:36 +0800
+Message-Id: <20240502125736.28034-1-duoming@zju.edu.cn>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID:cC_KCgBXCOrDjTNmWJG9AQ--.60971S2
+X-Coremail-Antispam: 1UD129KBjvJXoW3JF15Kr13CF18Jw1ftw17trb_yoWxWFy5pr
+	sxKrWSkrs5Jas5JF45Cr17Ja4DZ347AF4DWry8Ar1fJ3W8Xw1DAr1DAryUCrnrGrnrAFy3
+	t3s8Xr10kr17Gw7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUvv14x267AKxVWUJVW8JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+	1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
+	6r4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
+	Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
+	I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
+	4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCY1x0262kKe7AKxVWU
+	AVWUtwCY02Avz4vE14v_Xr1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr
+	1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE
+	14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7
+	IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E
+	87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73Uj
+	IFyTuYvjfUn_-PUUUUU
+X-CM-SenderInfo: qssqjiasttq6lmxovvfxof0/1tbiAwIJAWYySJ0M6ABBst
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Flag: NO
-X-Spam-Score: -2.80
-X-Spam-Level: 
-X-Spamd-Result: default: False [-2.80 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_CONTAINS_FROM(1.00)[];
-	R_MISSING_CHARSET(0.50)[];
-	NEURAL_HAM_SHORT(-0.20)[-0.999];
-	MIME_GOOD(-0.10)[text/plain];
-	MIME_TRACE(0.00)[0:+];
-	TO_DN_SOME(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	ARC_NA(0.00)[];
-	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	RCPT_COUNT_THREE(0.00)[4];
-	RCVD_COUNT_TWO(0.00)[2];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns];
-	RCVD_TLS_ALL(0.00)[]
 
-Hi,
+There is a race condition between l2cap_chan_timeout() and
+l2cap_chan_del(). When we use l2cap_chan_del() to delete the
+channel, the chan->conn will be set to null. But the conn could
+be dereferenced again in the mutex_lock() of l2cap_chan_timeout().
+As a result the null pointer dereference bug will happen. The
+KASAN report triggered by POC is shown below:
 
-please pull a few more fixes, thanks.
+[  472.074580] ==================================================================
+[  472.075284] BUG: KASAN: null-ptr-deref in mutex_lock+0x68/0xc0
+[  472.075308] Write of size 8 at addr 0000000000000158 by task kworker/0:0/7
+[  472.075308]
+[  472.075308] CPU: 0 PID: 7 Comm: kworker/0:0 Not tainted 6.9.0-rc5-00356-g78c0094a146b #36
+[  472.075308] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.14.0-0-g155821a1990b-prebuilt.qemu4
+[  472.075308] Workqueue: events l2cap_chan_timeout
+[  472.075308] Call Trace:
+[  472.075308]  <TASK>
+[  472.075308]  dump_stack_lvl+0x137/0x1a0
+[  472.075308]  print_report+0x101/0x250
+[  472.075308]  ? __virt_addr_valid+0x77/0x160
+[  472.075308]  ? mutex_lock+0x68/0xc0
+[  472.075308]  kasan_report+0x139/0x170
+[  472.075308]  ? mutex_lock+0x68/0xc0
+[  472.075308]  kasan_check_range+0x2c3/0x2e0
+[  472.075308]  mutex_lock+0x68/0xc0
+[  472.075308]  l2cap_chan_timeout+0x181/0x300
+[  472.075308]  process_one_work+0x5d2/0xe00
+[  472.075308]  worker_thread+0xe1d/0x1660
+[  472.075308]  ? pr_cont_work+0x5e0/0x5e0
+[  472.075308]  kthread+0x2b7/0x350
+[  472.075308]  ? pr_cont_work+0x5e0/0x5e0
+[  472.075308]  ? kthread_blkcg+0xd0/0xd0
+[  472.075308]  ret_from_fork+0x4d/0x80
+[  472.075308]  ? kthread_blkcg+0xd0/0xd0
+[  472.075308]  ret_from_fork_asm+0x11/0x20
+[  472.075308]  </TASK>
+[  472.075308] ==================================================================
+[  472.094860] Disabling lock debugging due to kernel taint
+[  472.096136] BUG: kernel NULL pointer dereference, address: 0000000000000158
+[  472.096136] #PF: supervisor write access in kernel mode
+[  472.096136] #PF: error_code(0x0002) - not-present page
+[  472.096136] PGD 0 P4D 0
+[  472.096136] Oops: 0002 [#1] PREEMPT SMP KASAN NOPTI
+[  472.096136] CPU: 0 PID: 7 Comm: kworker/0:0 Tainted: G    B              6.9.0-rc5-00356-g78c0094a146b #36
+[  472.096136] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.14.0-0-g155821a1990b-prebuilt.qemu4
+[  472.096136] Workqueue: events l2cap_chan_timeout
+[  472.096136] RIP: 0010:mutex_lock+0x88/0xc0
+[  472.096136] Code: be 08 00 00 00 e8 f8 23 1f fd 4c 89 f7 be 08 00 00 00 e8 eb 23 1f fd 42 80 3c 23 00 74 08 48 88
+[  472.096136] RSP: 0018:ffff88800744fc78 EFLAGS: 00000246
+[  472.096136] RAX: 0000000000000000 RBX: 1ffff11000e89f8f RCX: ffffffff8457c865
+[  472.096136] RDX: 0000000000000001 RSI: 0000000000000008 RDI: ffff88800744fc78
+[  472.096136] RBP: 0000000000000158 R08: ffff88800744fc7f R09: 1ffff11000e89f8f
+[  472.096136] R10: dffffc0000000000 R11: ffffed1000e89f90 R12: dffffc0000000000
+[  472.096136] R13: 0000000000000158 R14: ffff88800744fc78 R15: ffff888007405a00
+[  472.096136] FS:  0000000000000000(0000) GS:ffff88806d200000(0000) knlGS:0000000000000000
+[  472.096136] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[  472.096136] CR2: 0000000000000158 CR3: 000000000da32000 CR4: 00000000000006f0
+[  472.096136] Call Trace:
+[  472.096136]  <TASK>
+[  472.096136]  ? __die_body+0x8d/0xe0
+[  472.096136]  ? page_fault_oops+0x6b8/0x9a0
+[  472.096136]  ? kernelmode_fixup_or_oops+0x20c/0x2a0
+[  472.096136]  ? do_user_addr_fault+0x1027/0x1340
+[  472.096136]  ? _printk+0x7a/0xa0
+[  472.096136]  ? mutex_lock+0x68/0xc0
+[  472.096136]  ? add_taint+0x42/0xd0
+[  472.096136]  ? exc_page_fault+0x6a/0x1b0
+[  472.096136]  ? asm_exc_page_fault+0x26/0x30
+[  472.096136]  ? mutex_lock+0x75/0xc0
+[  472.096136]  ? mutex_lock+0x88/0xc0
+[  472.096136]  ? mutex_lock+0x75/0xc0
+[  472.096136]  l2cap_chan_timeout+0x181/0x300
+[  472.096136]  process_one_work+0x5d2/0xe00
+[  472.096136]  worker_thread+0xe1d/0x1660
+[  472.096136]  ? pr_cont_work+0x5e0/0x5e0
+[  472.096136]  kthread+0x2b7/0x350
+[  472.096136]  ? pr_cont_work+0x5e0/0x5e0
+[  472.096136]  ? kthread_blkcg+0xd0/0xd0
+[  472.096136]  ret_from_fork+0x4d/0x80
+[  472.096136]  ? kthread_blkcg+0xd0/0xd0
+[  472.096136]  ret_from_fork_asm+0x11/0x20
+[  472.096136]  </TASK>
+[  472.096136] Modules linked in:
+[  472.096136] CR2: 0000000000000158
+[  472.096136] ---[ end trace 0000000000000000 ]---
+[  472.096136] RIP: 0010:mutex_lock+0x88/0xc0
+[  472.096136] Code: be 08 00 00 00 e8 f8 23 1f fd 4c 89 f7 be 08 00 00 00 e8 eb 23 1f fd 42 80 3c 23 00 74 08 48 88
+[  472.096136] RSP: 0018:ffff88800744fc78 EFLAGS: 00000246
+[  472.096136] RAX: 0000000000000000 RBX: 1ffff11000e89f8f RCX: ffffffff8457c865
+[  472.096136] RDX: 0000000000000001 RSI: 0000000000000008 RDI: ffff88800744fc78
+[  472.096136] RBP: 0000000000000158 R08: ffff88800744fc7f R09: 1ffff11000e89f8f
+[  472.132932] R10: dffffc0000000000 R11: ffffed1000e89f90 R12: dffffc0000000000
+[  472.132932] R13: 0000000000000158 R14: ffff88800744fc78 R15: ffff888007405a00
+[  472.132932] FS:  0000000000000000(0000) GS:ffff88806d200000(0000) knlGS:0000000000000000
+[  472.132932] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[  472.132932] CR2: 0000000000000158 CR3: 000000000da32000 CR4: 00000000000006f0
+[  472.132932] Kernel panic - not syncing: Fatal exception
+[  472.132932] Kernel Offset: disabled
+[  472.132932] ---[ end Kernel panic - not syncing: Fatal exception ]---
 
-- set correct ram_bytes when splitting ordered extent, this is
-  can be inconsistent on-disk but harmless as it's not used for
-  calculations and it's only advisory for compression
+Add a check to judge whether the conn is null in l2cap_chan_timeout()
+in order to mitigate the bug.
 
-- fix lockdep splat when taking cleaner mutex in qgroups disable ioctl
+Fixes: 3df91ea20e74 ("Bluetooth: Revert to mutexes from RCU list")
+Signed-off-by: Duoming Zhou <duoming@zju.edu.cn>
+---
+ net/bluetooth/l2cap_core.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-- fix missing mutex unlock on error path when looking up sys chunk for
-  relocation
+diff --git a/net/bluetooth/l2cap_core.c b/net/bluetooth/l2cap_core.c
+index 84fc70862d7..5761d37c553 100644
+--- a/net/bluetooth/l2cap_core.c
++++ b/net/bluetooth/l2cap_core.c
+@@ -415,6 +415,9 @@ static void l2cap_chan_timeout(struct work_struct *work)
+ 
+ 	BT_DBG("chan %p state %s", chan, state_to_string(chan->state));
+ 
++	if (!conn)
++		return;
++
+ 	mutex_lock(&conn->chan_lock);
+ 	/* __set_chan_timer() calls l2cap_chan_hold(chan) while scheduling
+ 	 * this work. No need to call l2cap_chan_hold(chan) here again.
+-- 
+2.17.1
 
-----------------------------------------------------------------
-The following changes since commit fe1c6c7acce10baf9521d6dccc17268d91ee2305:
-
-  btrfs: fix wrong block_start calculation for btrfs_drop_extent_map_range() (2024-04-18 18:18:50 +0200)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git tags/for-6.9-rc6-tag
-
-for you to fetch changes up to 63a6ce5a1a6261e4c70bad2b55c4e0de8da4762e:
-
-  btrfs: set correct ram_bytes when splitting ordered extent (2024-04-30 12:03:44 +0200)
-
-----------------------------------------------------------------
-Dominique Martinet (1):
-      btrfs: add missing mutex_unlock in btrfs_relocate_sys_chunks()
-
-Josef Bacik (1):
-      btrfs: take the cleaner_mutex earlier in qgroup disable
-
-Qu Wenruo (1):
-      btrfs: set correct ram_bytes when splitting ordered extent
-
- fs/btrfs/ioctl.c        | 33 ++++++++++++++++++++++++++++++---
- fs/btrfs/ordered-data.c |  1 +
- fs/btrfs/qgroup.c       | 21 ++++++++-------------
- fs/btrfs/volumes.c      |  1 +
- 4 files changed, 40 insertions(+), 16 deletions(-)
 
