@@ -1,304 +1,181 @@
-Return-Path: <linux-kernel+bounces-166491-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-166493-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C29DF8B9B60
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 15:12:43 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1455E8B9B69
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 15:16:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4C5821F2108E
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 13:12:43 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0BE1FB20DDC
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 13:16:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D816283CD7;
-	Thu,  2 May 2024 13:12:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C44D084A24;
+	Thu,  2 May 2024 13:16:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="pq0FcFFd"
-Received: from mail-yb1-f181.google.com (mail-yb1-f181.google.com [209.85.219.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="C+dMKvAM"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A4A643158
-	for <linux-kernel@vger.kernel.org>; Thu,  2 May 2024 13:12:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 816427580A
+	for <linux-kernel@vger.kernel.org>; Thu,  2 May 2024 13:15:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714655553; cv=none; b=ddtwLebziprOWeP4MljCo2HesfK6xy/jIe5ARtLUASyrAa5AMGFkK1WagAprl+ODdxHDPtZOBujV4u9WmQZPgSZHzA0AXmYYxiF/lDGatOFhBedyHbv4BzEIm155IYcdv34JGK5y2RzZm2NH41IaM2wA1IpO5BY322OnlOIedNs=
+	t=1714655761; cv=none; b=nWOWgpp7DfdhsLXodoTtMgvlFGEUZY0GWKyDzCUnlA2YArmgKyvLuTZnAJgQXavPZnEpcQGG+eRsoTT28CClFPokR++4Y7vG5KLXWnotVdEgak0DuifzhLUx4yFk2pzSJeZrVmi7J3c7M3Q2YJA9kqlLp0vB5/3dEb9tajgFIoA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714655553; c=relaxed/simple;
-	bh=w36A9qNTkHew7BT2vRvvyNspByFD2CNRYwskOpKFMNY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=G5dTkK+KM6K3Hjb5AMj4ugmf0Rf8L0iocRDXOQ8KQtttOt1U+ZumGy4Jcksl7Wn7UIutzfWD3sz7/DrCNiKo+jx8PU1+uGkDE4Qv3CQp/M0LaIGQ5aRc7aAD8eRce9KKqMcYMkP1KB3AmHK/ezEtJY81NMbd853dLwe5sSwvK2Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=pq0FcFFd; arc=none smtp.client-ip=209.85.219.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yb1-f181.google.com with SMTP id 3f1490d57ef6-ddda842c399so8146524276.3
-        for <linux-kernel@vger.kernel.org>; Thu, 02 May 2024 06:12:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1714655551; x=1715260351; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=e9IfF2XRrC1/or05aEZt3Pgg1CS/l8eHWqh1tFVKZN4=;
-        b=pq0FcFFdFyslHFHmW4iDwTqhNMjI0Wh4AibrlCf4ipmtVjIjnYVOtFEx6iTp/NHEUT
-         aDweGprtPI6uW1sFtvp9lL1iWFibsYbLvZF8d1rkGCTwF5UwpqB5EaUv6Z8K91HJdd6T
-         WsNfJ8lZKuHcX1EVeYLgQsAxyltsXipHtgW3hFiBe2esvPEw39UbzopxfT+NAyfRt1Wf
-         LKEQQyYtdCdrITo8RIreOGb1qzRE5ev4YZDz7TnodKFOFKz6luibL7eoEcNt9FUBF5oH
-         qItPSV7p8nnPY6VM88twrhz3mDUB0+F80g+zqDnSZbEEcbvChgxhGdow+iwFeZAdQd9b
-         4+NA==
+	s=arc-20240116; t=1714655761; c=relaxed/simple;
+	bh=c8ZZ9d64RbEWyQ6Kk0VKbXdMhQLFT49iGgzs/AfSJQw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=uPAcBYOcCf4iadhIfw/Aei4M6X6qibG7XfIguy4zM/fc00gDlVshWUElvSiYlzB74PHwenzY3ZriF9Bhw+1jdOcnR5iFrd3SM/0vtaW/RLFrp6EaRwua6kHobSioCUXqoycIlTTTx2gPH6xbSKbcSpflTCkKufWmTjz1M+Jpla8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=C+dMKvAM; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1714655758;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=yJRM9yLGjCQ3X2KTtow0XulnnmVUDuYuBv4ldY/21BM=;
+	b=C+dMKvAMruldzeBkCJz+VP994VvXuVhVe6oRkQ+7JwMGv0Nesno72yEixe6zh9e5mlyqqC
+	BZ7R7vX1Os3oJqnQAxl0d+pjntSaP7UXV9PJ56fY/vAb93bSw87ENylGkea/HDvaqLI0+a
+	ekHmooOAYktqeifKZ/ULc9k/xS8DdHg=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-106-zyvSBYc4OmeffEq1JG3m9g-1; Thu, 02 May 2024 09:15:57 -0400
+X-MC-Unique: zyvSBYc4OmeffEq1JG3m9g-1
+Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-418df23b51cso35402925e9.1
+        for <linux-kernel@vger.kernel.org>; Thu, 02 May 2024 06:15:56 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714655551; x=1715260351;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=e9IfF2XRrC1/or05aEZt3Pgg1CS/l8eHWqh1tFVKZN4=;
-        b=TxJGUenC1rgeXSzKwPGG/BXp9trjbN+jXUG/3pxAyesztFp5U9wzluakQt70Py1paW
-         dcLAEn23G3ARZAa27kB/TsHjqfOU5stdg4K/DYG+D1yE+8rg0B2W/HWEXRh5WSCXRQ7Y
-         mIQsOA554s+9bvnUSyj3542z+dJH3QuSUXHqSuGtyHikw1TfeWcS727WI6qStAqEW8rS
-         ovpjmeL8+K1cjCLPCaDGjy8cTvqLWkZ+Z/WVrvacFmcqVENUpsDRceYsdUSEfDIvdHtX
-         E25L83IGZUZillosrpJ6vDzKZ4YIAQzmiWANRLMKw3Bj9xdInu48N+64LStlygvNahV1
-         UwEw==
-X-Forwarded-Encrypted: i=1; AJvYcCXb1OlGS8Wqefiica2mk494fVox5iQC6IxW24KUm9n+12I4MLiHt87BKeeoGBYafgPQgJjCbVQBa0u6joOk0iKFhDVok3wjfJ5Ei1p5
-X-Gm-Message-State: AOJu0YzFs4H7++cbG803y7Xe3rgchx1k61nAPk0AbYTX7Oqt+36MUB1f
-	OvRvWccq6HvTZIk7S2BAH+zOKWdBh2U0aBCAF1f4YzR5F97PbAzMzXIQg3w9Ojf8V/ZNAAlJaww
-	K3TaYLnI+20cT4UG6BWBCUM1Kng91ORWaY9qwoA==
-X-Google-Smtp-Source: AGHT+IEmkdUGj5jxW8y/dVl1d+EP/OPmo0I1J+BrgLeQOzwiCRVJgZVKxM+VVh8ViBEG0rKvwXQFvcvTYJR/P/usunM=
-X-Received: by 2002:a25:db8e:0:b0:dca:a3e8:a25a with SMTP id
- g136-20020a25db8e000000b00dcaa3e8a25amr2216795ybf.62.1714655551232; Thu, 02
- May 2024 06:12:31 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1714655755; x=1715260555;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=yJRM9yLGjCQ3X2KTtow0XulnnmVUDuYuBv4ldY/21BM=;
+        b=ne0uTuC0HwqIduvFa3wEbUSVbVKLhWU9o+vDaFIWqYDG0MXOaf3HVxn1XnDMciWPse
+         d+62z3bj/7xq85fNRDngt3PUr9zIaeo9XufOfnpvoKRB3lNcH2ijpRoi+2rQ7DHtfB80
+         I8hxb0NeQHE3KfsRmb6/J3+kYdrqDTgo88o6JCzN4g2zIptlwWzZh1RoJtEnyRfotZ/z
+         69C+JcJw/lDKuRpb8m37mJGAxzpUSBNc9KwjS90kgJ6Za4eSt80EirU7bPCuZY0EE4HP
+         Vgubn5ADe70t5Xfjup5aMpZzzpMHKmjG6/wBQCVqLb3vGaY0STxjP07AcsLP3Xx50+pS
+         O5WA==
+X-Gm-Message-State: AOJu0Yytl3iCofzDPdKbBC6+XdS+t7FhZg6/oqkDlibM/LN0TxOg0SUv
+	ARyBV6f9K71V2q4nc+OpzasfGp6UVebUSQUYBHqfLuVA2p3OP0E5AFn0/zvgN/1UnGkY3uj4H/h
+	35bdGE0Tp5E6zVIQfsd26oxwhJ8JPdLaVTdbJHZ94bVT428OuBqU0gCJ4duXi3A==
+X-Received: by 2002:a05:600c:5347:b0:41a:f9db:88ac with SMTP id hi7-20020a05600c534700b0041af9db88acmr4205373wmb.14.1714655755539;
+        Thu, 02 May 2024 06:15:55 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHIdIVLBhB+0aie2kvkajxvjiyhxiVZplyKjASYKUxI+SOW9NeCEQX4xWLxZvFVP3TIfqcaow==
+X-Received: by 2002:a05:600c:5347:b0:41a:f9db:88ac with SMTP id hi7-20020a05600c534700b0041af9db88acmr4205355wmb.14.1714655755077;
+        Thu, 02 May 2024 06:15:55 -0700 (PDT)
+Received: from ?IPV6:2003:cb:c71e:bf00:eba1:3ab9:ab0f:d676? (p200300cbc71ebf00eba13ab9ab0fd676.dip0.t-ipconnect.de. [2003:cb:c71e:bf00:eba1:3ab9:ab0f:d676])
+        by smtp.gmail.com with ESMTPSA id s7-20020a05600c384700b0041c12324eb6sm5728258wmr.22.2024.05.02.06.15.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 02 May 2024 06:15:54 -0700 (PDT)
+Message-ID: <f44e3b1b-d8f7-4b5c-a66b-13ae3f3d53bd@redhat.com>
+Date: Thu, 2 May 2024 15:15:53 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240502123312.31083-1-quic_ugoswami@quicinc.com>
-In-Reply-To: <20240502123312.31083-1-quic_ugoswami@quicinc.com>
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Thu, 2 May 2024 16:12:20 +0300
-Message-ID: <CAA8EJppeQTadmny=hcs4xCQDXHwXEBHXjeecvZCUVcSXmwBTgg@mail.gmail.com>
-Subject: Re: [PATCH] phy: qcom-snps-femto-v2: Add load and voltage setting for
- LDO's used
-To: Udipto Goswami <quic_ugoswami@quicinc.com>
-Cc: Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
-	Vinod Koul <vkoul@kernel.org>, Kishon Vijay Abraham I <kishon@kernel.org>, linux-arm-msm@vger.kernel.org, 
-	linux-phy@lists.infradead.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] mm/hugetlb: align cma on allocation order, not demotion
+ order
+To: Frank van der Linden <fvdl@google.com>, linux-mm@kvack.org,
+ muchun.song@linux.dev, akpm@linux-foundation.org
+Cc: linux-kernel@vger.kernel.org, Roman Gushchin <roman.gushchin@linux.dev>
+References: <20240430161437.2100295-1-fvdl@google.com>
+Content-Language: en-US
+From: David Hildenbrand <david@redhat.com>
+Autocrypt: addr=david@redhat.com; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat
+In-Reply-To: <20240430161437.2100295-1-fvdl@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Thu, 2 May 2024 at 15:33, Udipto Goswami <quic_ugoswami@quicinc.com> wrote:
->
-> The Femto phy depends on 0.88/ 1.8/ 3.3V regulators for its operation.
-> If one of the regulators is not voted to the required minimum voltage
-> for phy to operate, then High speed mode of operation will fail.
->
-> On certain targets like (qcm6490_rb3gen2) where the minimum voltage
-> of the regulator is lower than the operating voltage of the phy.
-> If not voted properly, the phy supply would be limited to the min value
-> of the LDO thereby rendering the phy non-operational.
->
-> The current implementation of the regulators in the Femto PHY is not
-> setting the load and voltage for each LDO. The appropriate voltages and
-> loads required for the PHY to operate should be set.
-
-Please move min/max voltages to the DTS. There is no need to set them
-from the driver.
-
-Also, is there any reason why you can't use `regulator-initial-mode =
-<RPMH_REGULATOR_MODE_HPM>;` like other boards do?
-
->
-> Implement a bulk operation api to set load & voltages before doing bulk
-> enable. This will ensure that the PHY remains operational under all
-> conditions.
->
-> Signed-off-by: Udipto Goswami <quic_ugoswami@quicinc.com>
+On 30.04.24 18:14, Frank van der Linden wrote:
+> Align the CMA area for hugetlb gigantic pages to their size, not the
+> size that they can be demoted to. Otherwise there might be misaligned
+> sections at the start and end of the CMA area that will never be used
+> for hugetlb page allocations.
+> 
+> Signed-off-by: Frank van der Linden <fvdl@google.com>
+> Cc: Roman Gushchin <roman.gushchin@linux.dev>
+> Fixes: a01f43901cfb ("hugetlb: be sure to free demoted CMA pages to CMA")
 > ---
->  drivers/phy/qualcomm/phy-qcom-snps-femto-v2.c | 121 +++++++++++++++++-
->  1 file changed, 114 insertions(+), 7 deletions(-)
->
-> diff --git a/drivers/phy/qualcomm/phy-qcom-snps-femto-v2.c b/drivers/phy/qualcomm/phy-qcom-snps-femto-v2.c
-> index eb0b0f61d98e..cbe9cdaa6849 100644
-> --- a/drivers/phy/qualcomm/phy-qcom-snps-femto-v2.c
-> +++ b/drivers/phy/qualcomm/phy-qcom-snps-femto-v2.c
-> @@ -78,11 +78,39 @@
->
->  #define LS_FS_OUTPUT_IMPEDANCE_MASK            GENMASK(3, 0)
->
-> -static const char * const qcom_snps_hsphy_vreg_names[] = {
-> -       "vdda-pll", "vdda33", "vdda18",
-> +
-> +struct qcom_snps_hsphy_regulator_data {
-> +       const char *name;
-> +       unsigned int enable_load;
-> +       unsigned int min_voltage;
-> +       unsigned int max_voltage;
-> +};
-> +
-> +static const struct qcom_snps_hsphy_regulator_data hsphy_vreg_l[] = {
-> +       {
-> +               .name = "vdda-pll",
-> +               .enable_load = 30000,
-> +               .min_voltage = 825000,
-> +               .max_voltage = 925000,
-> +       },
-> +
-> +       {
-> +               .name = "vdda18",
-> +               .enable_load = 19000,
-> +               .min_voltage = 1704000,
-> +               .max_voltage = 1800000
-> +       },
-> +
-> +       {
-> +               .name = "vdda33",
-> +               .enable_load = 16000,
-> +               .min_voltage = 3050000,
-> +               .max_voltage = 3300000
-> +       },
-> +
->  };
->
-> -#define SNPS_HS_NUM_VREGS              ARRAY_SIZE(qcom_snps_hsphy_vreg_names)
-> +#define SNPS_HS_NUM_VREGS              ARRAY_SIZE(hsphy_vreg_l)
->
->  struct override_param {
->         s32     value;
-> @@ -132,12 +160,90 @@ struct qcom_snps_hsphy {
->         struct clk_bulk_data *clks;
->         struct reset_control *phy_reset;
->         struct regulator_bulk_data vregs[SNPS_HS_NUM_VREGS];
-> +       const struct qcom_snps_hsphy_regulator_data *vreg_list;
->
->         bool phy_initialized;
->         enum phy_mode mode;
->         struct phy_override_seq update_seq_cfg[NUM_HSPHY_TUNING_PARAMS];
->  };
->
-> +static int __vdda_phy_bulk_enable_disable(struct qcom_snps_hsphy *hsphy, bool on)
+>   mm/hugetlb.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+> index 5dc3f5ea3a2e..cfe7b025c576 100644
+> --- a/mm/hugetlb.c
+> +++ b/mm/hugetlb.c
+> @@ -7794,7 +7794,7 @@ void __init hugetlb_cma_reserve(int order)
+>   		 * huge page demotion.
+>   		 */
+>   		res = cma_declare_contiguous_nid(0, size, 0,
+> -					PAGE_SIZE << HUGETLB_PAGE_ORDER,
+> +					PAGE_SIZE << order,
+>   					HUGETLB_PAGE_ORDER, false, name,
+>   					&hugetlb_cma[nid], nid);
+>   		if (res) {
 
-Separate functions, please.
+I was wondering how that worked when reviewing your other patch. 
+Wondering why we never got a BUG report, maybe we were always lucky 
+about the alignment we actually got?
 
-> +{
-> +       int ret = 0;
-> +       int i;
-> +
-> +       if (!on)
-> +               goto disable_vdd;
-> +
-> +       for (i = 0; i < SNPS_HS_NUM_VREGS; i++) {
-> +
-> +               ret = regulator_set_load(hsphy->vregs[i].consumer,
-> +                                        hsphy->vreg_list[i].enable_load);
-> +
-> +               if (ret < 0) {
-> +                       dev_err(hsphy->dev, "unable to set HPM of %s %d\n",
-> +                                               hsphy->vregs[i].supply, ret);
-> +                       goto err_vdd;
-> +               }
-> +       }
-> +
-> +       for (i = 0; i < SNPS_HS_NUM_VREGS; i++) {
-> +               ret = regulator_set_voltage(hsphy->vregs[i].consumer,
-> +                                           hsphy->vreg_list[i].min_voltage,
-> +                                           hsphy->vreg_list[i].max_voltage);
-> +               if (ret) {
-> +                       dev_err(hsphy->dev,
-> +                               "unable to set voltage of regulator %s %d\n",
-> +                                               hsphy->vregs[i].supply, ret);
-> +                       goto put_vdd_lpm;
-> +               }
-> +       }
-> +
-> +       ret = regulator_bulk_enable(ARRAY_SIZE(hsphy->vregs), hsphy->vregs);
-> +       if (ret)
-> +               goto unconfig_vdd;
-> +
-> +       return ret;
-> +
-> +disable_vdd:
-> +       regulator_bulk_disable(ARRAY_SIZE(hsphy->vregs), hsphy->vregs);
-> +
-> +unconfig_vdd:
-> +       for (i = 0; i < SNPS_HS_NUM_VREGS; i++) {
-> +               ret = regulator_set_voltage(hsphy->vregs[i].consumer, 0,
-> +                                           hsphy->vreg_list[i].max_voltage);
-> +               if (ret) {
-> +                       dev_err(hsphy->dev,
-> +                       "unable to set voltage of regulator %s %d\n",
-> +                                       hsphy->vregs[i].supply, ret);
-> +               }
-> +       }
-> +
-> +put_vdd_lpm:
-> +       for (i = 0; i < SNPS_HS_NUM_VREGS; i++) {
-> +               ret = regulator_set_load(hsphy->vregs[i].consumer, 0);
-> +
-> +               if (ret < 0) {
-> +                       dev_err(hsphy->dev, "unable to set LPM of %s %d\n",
-> +                                               hsphy->vregs[i].supply, ret);
-> +               }
-> +       }
-> +
-> +err_vdd:
-> +       return ret;
-> +
-> +}
-> +
-> +static int vdda_phy_bulk_enable(struct qcom_snps_hsphy *hsphy)
-> +{
-> +       return __vdda_phy_bulk_enable_disable(hsphy, true);
-> +}
-> +
-> +static int vdda_phy_bulk_disable(struct qcom_snps_hsphy *hsphy)
-> +{
-> +       return __vdda_phy_bulk_enable_disable(hsphy, false);
-> +}
-> +
->  static int qcom_snps_hsphy_clk_init(struct qcom_snps_hsphy *hsphy)
->  {
->         struct device *dev = hsphy->dev;
-> @@ -390,7 +496,7 @@ static int qcom_snps_hsphy_init(struct phy *phy)
->
->         dev_vdbg(&phy->dev, "%s(): Initializing SNPS HS phy\n", __func__);
->
-> -       ret = regulator_bulk_enable(ARRAY_SIZE(hsphy->vregs), hsphy->vregs);
-> +       ret = vdda_phy_bulk_enable(hsphy);
->         if (ret)
->                 return ret;
->
-> @@ -471,7 +577,7 @@ static int qcom_snps_hsphy_init(struct phy *phy)
->  disable_clks:
->         clk_bulk_disable_unprepare(hsphy->num_clks, hsphy->clks);
->  poweroff_phy:
-> -       regulator_bulk_disable(ARRAY_SIZE(hsphy->vregs), hsphy->vregs);
-> +       ret = vdda_phy_bulk_disable(hsphy);
->
->         return ret;
->  }
-> @@ -482,7 +588,7 @@ static int qcom_snps_hsphy_exit(struct phy *phy)
->
->         reset_control_assert(hsphy->phy_reset);
->         clk_bulk_disable_unprepare(hsphy->num_clks, hsphy->clks);
-> -       regulator_bulk_disable(ARRAY_SIZE(hsphy->vregs), hsphy->vregs);
-> +       vdda_phy_bulk_disable(hsphy);
->         hsphy->phy_initialized = false;
->
->         return 0;
-> @@ -592,8 +698,9 @@ static int qcom_snps_hsphy_probe(struct platform_device *pdev)
->
->         num = ARRAY_SIZE(hsphy->vregs);
->         for (i = 0; i < num; i++)
-> -               hsphy->vregs[i].supply = qcom_snps_hsphy_vreg_names[i];
-> +               hsphy->vregs[i].supply = hsphy_vreg_l[i].name;
->
-> +       hsphy->vreg_list  = hsphy_vreg_l;
->         ret = devm_regulator_bulk_get(dev, num, hsphy->vregs);
->         if (ret)
->                 return dev_err_probe(dev, ret,
-> --
-> 2.17.1
->
->
+We round up size to PAGE_SIZE << order, so that's the alignment we need.
 
+Reviewed-by: David Hildenbrand <david@redhat.com>
 
 -- 
-With best wishes
-Dmitry
+Cheers,
+
+David / dhildenb
+
 
