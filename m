@@ -1,203 +1,163 @@
-Return-Path: <linux-kernel+bounces-166932-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-166933-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8649C8BA237
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 23:26:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id B71A68BA23A
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 23:26:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 13CDA1F22B38
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 21:26:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6A2EA1F216B6
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 21:26:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 173BC181BBE;
-	Thu,  2 May 2024 21:26:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ABAD91836F0;
+	Thu,  2 May 2024 21:26:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QhqRAMZ7"
-Received: from mail-lf1-f46.google.com (mail-lf1-f46.google.com [209.85.167.46])
+	dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b="hR+Cs+f1"
+Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 995821802AC;
-	Thu,  2 May 2024 21:26:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77B5A181B9A
+	for <linux-kernel@vger.kernel.org>; Thu,  2 May 2024 21:26:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714685179; cv=none; b=F06EJokKvcF6zqUfVYLX5xeIWCAiIzOiSLendA5faiwhlAGd1EKSfhnFpDNxw3CXWhw0i7OD7z7INMa1Vw/yicEx1IAiUaWHj5rCkBLA+WBfP+Sx3U1uMhKcBA/iUFRHGXPvjkJ+Tc16QPtaTBOmQJ5zAZM6EPT5Unn7Kqnv1bU=
+	t=1714685196; cv=none; b=AILdAE0K3YifgqKa5vc/Vu13Iumejopm0oXP0Ajv30olS7YVTLXpiJkw6DDPSJCUME29s0BB9WN64PQC8Ia+csxMhb4EKMYdi8lyVk0GoB/eSl1laEFmhgo9H2phss92KnAcPqgrwPdGmLL9vPnLvWAFOQd2xwMeOj3pdA/BvlM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714685179; c=relaxed/simple;
-	bh=SyYOWZZG048c51JaV/kv91NhpeoEJdnZstAiYLX9hXA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=pOpNICvo9U1z9KhgvmYSpiM2Sebm7+K66KqgpfFACuhLbVQXInzDJBtkJ9CUDTvYHS9nF2XrJALvZCCVqUV5tbHHUfYjXHRlXoS3HU8k0YAFGm57ERH9zwovrHW227vi2tYOX5H3nEetiTROtD8O6NaVxn+JaTgy4ME3QNalcgY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QhqRAMZ7; arc=none smtp.client-ip=209.85.167.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f46.google.com with SMTP id 2adb3069b0e04-51f60817e34so875666e87.2;
-        Thu, 02 May 2024 14:26:17 -0700 (PDT)
+	s=arc-20240116; t=1714685196; c=relaxed/simple;
+	bh=kD5voEcYDKeRwwIfHjfK9GYE6UqmYhrOC5if/+3GjEE=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=mdYBn6AwsxdPMeilxtlBu0O25MU87knB5oBPpf7BGSqnpmxj15NVELVpZb3RDOittwmcInQbqp+o1pRELrNicQ8u9LC5JnIgBJjWMU4cKH5JY+cAgUVpAtoESDSIqMB5Wt8q+nvoorzf52MYaYwB7cUp6Z571dTa0FkrmycQwy4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com; spf=pass smtp.mailfrom=fastly.com; dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b=hR+Cs+f1; arc=none smtp.client-ip=209.85.210.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fastly.com
+Received: by mail-pf1-f176.google.com with SMTP id d2e1a72fcca58-6f0aeee172dso1740071b3a.1
+        for <linux-kernel@vger.kernel.org>; Thu, 02 May 2024 14:26:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714685176; x=1715289976; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=C1gB8YjsPz4rQpEmCzwrb8+wB0LWmO1Pmfg0vfLQCl8=;
-        b=QhqRAMZ7bqHiiOwjeGHbLE9lhi3mc41LcWVHn09zBDv/pNxCdbHVzncnhuVUqQIcD7
-         l/iyDm5FVv59VQZNrjN2MIbpMfuuu8In9Ayt2X5X4G2cfsnhxszt1PsEdrZd9GfMaMN8
-         uTzkn47dou5TMBGys0ovJQrFQX7t3MvGBwbpkpyPC0oy2kdRE1KC5XZI/HcSKUSta+En
-         EPXePLpCojd5TvGIVVehbs+hBbtSEH9hxf96yKWatjavAB0veNI1advTbjdy/L6+bKRM
-         G3pKkYibigUv/R5Ye3f4cKJtGKYxs6YGHK3snyp/22Y865Q4Lok8CAev72hjOjmMxEMs
-         uwUg==
+        d=fastly.com; s=google; t=1714685194; x=1715289994; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=dBH2WIOsVEMLuO8Ph2GPnS+rofvmn8ajCB1benluZQ8=;
+        b=hR+Cs+f1//HxGo2Vomr737KGNwBPZBAlD2EOHBZ2QNcnW1bL/K06sBIyKuZWvDXET7
+         i3v2aQQpvfshG1oIp3+FyvjuF6t0rzWW1bQdm4Ja4GLdZyEcEYEGOjvYafgkqZKvPSIB
+         lMMWhE3UI8x5UKxq1pAVbDpUzIOCzW0pIbADE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714685176; x=1715289976;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=C1gB8YjsPz4rQpEmCzwrb8+wB0LWmO1Pmfg0vfLQCl8=;
-        b=WDTiuAN+rmm5TyrsEJ2XQ4olgdIe7NeTZw0NJeQjX6bLK4caApeB4y9JWvi3dA6HpW
-         8TQNdZISOcsHrXO0YkKcvUM8tE+L63Iv0LcxHsUPKXJ35FC2xKidNEx449IWU2f2JTvy
-         Vp0fDs8eg/xHu++P+cpR/aviU4tCOCbmofVm4La+Qvj3KplhHyTkNcv23vlUeqvTSmoy
-         susl3WKHARQgoxtBQx3fOIpT7iiuyS8TYjK/q6E+9rAZqdKhy3nUQyyBb2pKrg3oo+r8
-         /AmT45V0BHJ9fyu5r9fPfJgQosjEXILl+mAYR+Rb0kpHZ+SxRFnVRozHq7TaGDJJcrWM
-         67yw==
-X-Forwarded-Encrypted: i=1; AJvYcCVkST4hEVo190JeUykDqZtX2gbLsI+qUusOkqvBY3sSCtDUk8f4MHDkkiAVb3WwA33jUOHiO/3N7KH8pnJGT0RsmbmYkOkj
-X-Gm-Message-State: AOJu0YyytA63YRYtE1yA+PJzA3LhFu0NR1NMtHY4H3Gro37mOGGgOsFz
-	5CkuwPKMLvs/oRAxldGpCloZcAVhnqyrMoo3GB3lT9/ke3nJLz0Y
-X-Google-Smtp-Source: AGHT+IGAOdvGGIhOITqF96Naz8xBqcBwgssy/49bKxqTCGIDKIoeJMyFV6DuUxugWQXBUhdk06ALbg==
-X-Received: by 2002:a19:5219:0:b0:51c:b8ec:c46f with SMTP id m25-20020a195219000000b0051cb8ecc46fmr584721lfb.22.1714685175418;
-        Thu, 02 May 2024 14:26:15 -0700 (PDT)
-Received: from mobilestation ([95.79.182.53])
-        by smtp.gmail.com with ESMTPSA id p25-20020ac246d9000000b0051b41844048sm301735lfo.285.2024.05.02.14.26.14
+        d=1e100.net; s=20230601; t=1714685194; x=1715289994;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=dBH2WIOsVEMLuO8Ph2GPnS+rofvmn8ajCB1benluZQ8=;
+        b=lpXXqIyZnaZarWzRbTGR5J8LeKth3Vv5rQj8f3l9k4Zxh8D5J+2j1mnBjr7gMLfspe
+         LyAz+YmpuxAPrqqg3UtCwHzj3Ng30F0Mk0JdSMwZZOJ/s+yAyth5MjekXkLbGr5HI0X9
+         fMq6HbGjhU2gHl0REKAQvJiDnUNEO5KRolBTYuxbHOmN10LKN8bKNnwAt1YgRjpQQ1yU
+         9PlBOpqIE7vw8CJJuV28JvKHdH1JoOfEmvIsYETEiV5mIm3in3k3pv3Z+rgKkmRnnWob
+         9cVWAw9UIa06BeBksGPOYn1YGPv+tYm0WCGSbNtqAW5VU/xly9OkHhSJun4h7HO9h4UL
+         6agg==
+X-Gm-Message-State: AOJu0YyfX6S+SDzGAsWDpOqrGoGeYo9wkS5f9XYKeurKiCGO/XeUV/l3
+	ZpW/Tb2Ifq2tHcKbwQmJEDji8t/NeBoAq2D0vy+BNJK1emfothXnWecVuYoCxgai6O4zE+Jsoke
+	KnkHvmlakHs4ZDB9vhLJDbyqej6SE18rDd4skkP+u0sokog9Xfm7S5nopJ71KwmZwZ70RQBbJEA
+	W076v9YarwweA1qPkHvDUYFNG3gE3cz1aQCJr2ChJsgf4=
+X-Google-Smtp-Source: AGHT+IHg1FzHqLJMYICia+FqpK9OERKO+x4bmt7KbcQjQqkhJUSlY1pTT9+EKqOtK8PT4GIa+8neSw==
+X-Received: by 2002:a05:6a00:2d92:b0:6ec:f869:34c with SMTP id fb18-20020a056a002d9200b006ecf869034cmr5741219pfb.16.1714685194306;
+        Thu, 02 May 2024 14:26:34 -0700 (PDT)
+Received: from localhost.localdomain ([2620:11a:c019:0:65e:3115:2f58:c5fd])
+        by smtp.gmail.com with ESMTPSA id it21-20020a056a00459500b006f4401df6c9sm1371345pfb.113.2024.05.02.14.26.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 May 2024 14:26:14 -0700 (PDT)
-Date: Fri, 3 May 2024 00:26:12 +0300
-From: Serge Semin <fancer.lancer@gmail.com>
-To: Andrew Halaney <ahalaney@redhat.com>, 
-	"Russell King (Oracle)" <linux@armlinux.org.uk>, Andrew Lunn <andrew@lunn.ch>
-Cc: linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
-	linux-stm32@st-md-mailman.stormreply.com, netdev@vger.kernel.org, alexandre.torgue@foss.st.com, 
-	joabreu@synopsys.com, davem@davemloft.net, edumazet@google.com, kuba@kernel.org, 
-	pabeni@redhat.com, mcoquelin.stm32@gmail.com, hkallweit1@gmail.com
-Subject: Re: racing ndo_open()/phylink*connect() with phy_probe()
-Message-ID: <7723d4l2kqgrez3yfauvp2ueu6awbizkrq4otqpsqpytzp45q2@rju2nxmqu4ew>
-References: <uz66kbjbxieof6vkliuwgpzhlrbcmeb2f5aeuourw2vqcoc4hv@2adpvba3zszx>
- <ZjFl4rql0UgsHp97@shell.armlinux.org.uk>
- <ykdqxnky7shebbhtucoiokbews2be5bml6raqafsfn4x6bp6h3@nqsn6akpajvp>
+        Thu, 02 May 2024 14:26:33 -0700 (PDT)
+From: Joe Damato <jdamato@fastly.com>
+To: linux-kernel@vger.kernel.org,
+	netdev@vger.kernel.org,
+	tariqt@nvidia.com,
+	saeedm@nvidia.com
+Cc: mkarsten@uwaterloo.ca,
+	gal@nvidia.com,
+	nalramli@fastly.com,
+	Joe Damato <jdamato@fastly.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	linux-rdma@vger.kernel.org (open list:MELLANOX MLX4 core VPI driver),
+	Paolo Abeni <pabeni@redhat.com>
+Subject: [PATCH net-next v3 0/3] mlx4: Add support for netdev-genl API
+Date: Thu,  2 May 2024 21:26:24 +0000
+Message-Id: <20240502212628.381069-1-jdamato@fastly.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ykdqxnky7shebbhtucoiokbews2be5bml6raqafsfn4x6bp6h3@nqsn6akpajvp>
+Content-Transfer-Encoding: 8bit
 
-Hi all
+Greetings:
 
-On Thu, May 02, 2024 at 12:43:27PM -0500, Andrew Halaney wrote:
-> On Tue, Apr 30, 2024 at 10:42:58PM +0100, Russell King (Oracle) wrote:
-> > On Tue, Apr 30, 2024 at 04:02:19PM -0500, Andrew Halaney wrote:
-> > > Basically, NetworkManager is setting both interfaces to up, and end1's
-> > > phy doesn't seem to be ready when ndo_open() runs, returning
-> > > -ENODEV in phylink_fwnode_phy_connect() and bubbling that back up. This doesn't
-> > 
-> > Let's get something clear - you're attributing phylink to this, but this
-> > is not the case. phylink doesn't deal directly with PHYs, it makes use
-> > of phylib for that, and merely passes back to its caller whatever status
-> > it gets from phylib. It's also not fair to attribute this to phylib as
-> > we will see later...
-> 
-> Sorry for the delay, I wanted to try and test with some extra logs in
-> the legit setup (not my "simulate via EPROBE_DEFER delays" approach)
-> which is tedious with the initramfs (plus I wasted time failing to
-> ftrace some stuff :P) to reconvince me of old notes. Thanks for the
-> explanation above on the nuances between phylink and phylib, I really
-> appreciate it.
-> 
-> > 
-> > There are a few reasons for phylink_fwnode_phy_connect() would return
-> > -ENODEV:
-> > 
-> > 1) fwnode_get_phy_node() (a phylib function) returning an error,
-> > basically meaning the phy node isn't found. This would be a persistent
-> > error, so unlikely to be your issue.
-> > 
-> > 2) fwnode_phy_find_device() (another phylib function) not finding the
-> > PHY device corresponding to the fwnode returned by the above on the
-> > MDIO bus. This is possible if the PHY has not been detected on the
-> > MDIO bus, but I suspect this is not the cause of your issue.
-> 
-> So I think we're in this case. I added some extra logs to see which
-> of the cases we were hitting, as well as some extra logs in phy creation
-> code etc to come to that conclusion:
-> 
->     # end1 probe start (and finish)
->     [    1.424099] qcom-ethqos 23000000.ethernet: Adding to iommu group 2
->     ...
->     [    1.431267] qcom-ethqos 23000000.ethernet: Using 40/40 bits DMA host/device width
-> 
->     # end0 probe start
->     [    1.440517] qcom-ethqos 23040000.ethernet: Adding to iommu group 3
->     ...
->     [    1.443502] qcom-ethqos 23040000.ethernet: Using 40/40 bits DMA host/device width
-> 
->     # end0 starts making the mdio bus, and phy devices
->     [    1.443537] qcom-ethqos 23040000.ethernet: Before of_mdiobus_reg
-> 
->     # create phy at addr 0x8, end0's phy
->     [    1.450118] Starting phy_create_device for addr: 8
-> 
->     # NetworkManager up'ed end1! and again. But the device we're needing
->     # (0xa) isn't created yet
->     [    1.459743] qcom-ethqos 23000000.ethernet end1: Register MEM_TYPE_PAGE_POOL RxQ-0
->     ...
->     [    1.465168] Failed at fwnode_phy_find_device
->     [    1.465174] qcom-ethqos 23000000.ethernet end1: __stmmac_open: Cannot attach to PHY (error: -19)
->     [    1.473687] qcom-ethqos 23000000.ethernet end1: Register MEM_TYPE_PAGE_POOL RxQ-0
->     ...
->     [    1.477637] Failed at fwnode_phy_find_device
->     [    1.477643] qcom-ethqos 23000000.ethernet end1: __stmmac_open: Cannot attach to PHY (error: -19)
-> 
->     # device created for 0x8, probe it
->     [    1.531617] Ending phy_create_device for addr: 8
->     [    1.627462] Marvell 88E1510 stmmac-0:08: Starting probe
->     [    1.627644] hwmon hwmon0: temp1_input not attached to any thermal zone
->     [    1.627650] Marvell 88E1510 stmmac-0:08: Ending probe
-> 
->     # device created for 0xa, probe it
->     [    1.628992] Starting phy_create_device for addr: a
->     [    1.632615] Ending phy_create_device for addr: a
->     [    1.731552] Marvell 88E1510 stmmac-0:0a: Starting probe
->     [    1.731732] hwmon hwmon1: temp1_input not attached to any thermal zone
->     [    1.731738] Marvell 88E1510 stmmac-0:0a: Ending probe
-> 
->     # end0 is done probing now
->     [    1.732804] qcom-ethqos 23040000.ethernet: After of_mdiobus_reg
->     [    1.820725] qcom-ethqos 23040000.ethernet end0: renamed from eth0
-> 
->     # NetworkManager up's end0
->     [    1.851805] qcom-ethqos 23040000.ethernet end0: Register MEM_TYPE_PAGE_POOL RxQ-0
->     ...
->     [    1.914980] qcom-ethqos 23040000.ethernet end0: PHY [stmmac-0:08] driver [Marvell 88E1510] (irq=233)
->     ...
->     [    1.939432] qcom-ethqos 23040000.ethernet end0: configuring for phy/sgmii link mode
->     ...
->     [    4.451765] qcom-ethqos 23040000.ethernet end0: Link is Up - 1Gbps/Full - flow control rx/tx
-> 
-> So end1 is up'ed before end0 can finish making its mdio bus / phy
-> devices, and therefore we fail to find it. I can easily simulate this
-> situation as well by -EPROBE_DEFER'ing end0 for say 10 seconds.
+Welcome to v3.
 
-AFAICS the problem is in the race between the end0 and end1 device
-probes. Right?
-If so then can't the order be fixed by adding the links between the
-OF-devices?  As it's already done for various phandle-based references
-like "clocks", "gpios", "phys", etc?
+This series adds support to mlx4 for the netdev-genl API which makes it
+much easier for users and user programs to map NAPI IDs back to
+ifindexes, queues, and IRQs. This is extremely useful for a number of
+use cases, including epoll-based busy poll.
 
-* Before this topic was raised I had thought it was working for any
-phandle-based dependencies, but apparently it wasn't and the
-supplier/consumer linkage was supposed to be implemented for each
-particular case. The "phy-handle" property lacks that feature support
-(see drivers/of/property.c:of_supplier_bindings and
-of_fwnode_add_links() for details).
+In addition, this series includes a patch to generate per-queue
+statistics using the netlink API, as well.
 
--Serge(y)
+To facilitate the stats, patch 1/3 makes use of an existing field,
+"dropped" which was already being exported in the ethtool stats by the
+driver, but was never incremented. As of patch 1/3, it is now being
+incremented by the driver in an appropriate place and used in patch 3/3
+as alloc_fail.
 
-> [...]
+Please note: I do not have access to mlx4 hardware, but I've been
+working closely with Martin Karsten from University of Waterloo (CC'd)
+who has very graciously tested my patches on their mlx4 hardware (hence
+his Tested-by attribution in each commit). His latest research work is
+particularly interesting [1] and this series helps to support that (and
+future) work.
+
+Martin re-tested v2 using Jakub's tool [2] and the stats.pkt_byte_sum
+and stats.qstat_by_ifindex tests passed. The v3 is only a very minor
+change from v2 and was not re-tested.
+
+[1]: https://dl.acm.org/doi/pdf/10.1145/3626780
+[2]: https://lore.kernel.org/lkml/20240423175718.4ad4dc5a@kernel.org/
+
+Thanks,
+Joe
+
+v2 -> v3:
+ - Patch 1/3 no longer sets rx_missed_errors. dropped is still
+   incremented on -ENOMEM, though, and reported as alloc_fail in the
+   stats API introduced in patch 3/3.
+ - Patch 2/3: Added Jakub's Acked-by to the commit message, no
+   functional changes.
+ - Patch 3/3: Added Jakub's Reviewed-by to the commit message, no
+   functional changes.
+
+v1 -> v2:
+ - Patch 1/3 now initializes dropped to 0.
+ - Patch 2/3 fix use of uninitialized qtype warning.
+ - Patch 3/3 includes several changes:
+   - mlx4_get_queue_stats_rx and mlx4_get_queue_stats_tx check if i is
+     valid before proceeding.
+   - All initialization to 0xff for stats fields has been omit. The
+     network stack does this before calling into the driver functions, so
+     I've adjusted the driver functions to only set values if there is
+     data to set, leaving the network stack's 0xff in place if not.
+   - mlx4_get_base_stats set all stat fields to 0 individually if there
+     are RX and TX queues.
+
+
+Joe Damato (3):
+  net/mlx4: Track RX allocation failures in a stat
+  net/mlx4: link NAPI instances to queues and IRQs
+  net/mlx4: support per-queue statistics via netlink
+
+ drivers/net/ethernet/mellanox/mlx4/en_cq.c    | 14 ++++
+ .../net/ethernet/mellanox/mlx4/en_netdev.c    | 79 +++++++++++++++++++
+ drivers/net/ethernet/mellanox/mlx4/en_rx.c    |  4 +-
+ drivers/net/ethernet/mellanox/mlx4/mlx4_en.h  |  1 +
+ 4 files changed, 97 insertions(+), 1 deletion(-)
+
+-- 
+2.25.1
+
 
