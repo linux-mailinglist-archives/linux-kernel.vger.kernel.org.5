@@ -1,146 +1,145 @@
-Return-Path: <linux-kernel+bounces-166159-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-166160-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 77DEE8B96E9
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 10:55:10 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id E9ACB8B96ED
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 10:55:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 354FD2818F2
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 08:55:09 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 23862B23689
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 08:55:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C74B47A57;
-	Thu,  2 May 2024 08:55:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 74D4947A7A;
+	Thu,  2 May 2024 08:55:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="WbFo1kEP"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="T27ZpsYG"
+Received: from mail-pj1-f52.google.com (mail-pj1-f52.google.com [209.85.216.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C6AD22F00;
-	Thu,  2 May 2024 08:55:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 491C353362;
+	Thu,  2 May 2024 08:55:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714640103; cv=none; b=gZOHuz3qafMO4+yTKnLAtCy9tLNehn4lD0hat2JkFKqDolU/XUJjJ5679GaneVaOtKrh4q4YgIDpeUymkrVIi+2ejoodZ0TKGiInR/MRuV0xwZQXYE8TOZaR42Gh+15EgOjnV9RiPYTlLfzqGAgEOWfsN4IRMpKFvt9joWhkmMk=
+	t=1714640127; cv=none; b=Tcx+8xBk8Tf0qR412AxVfMvt1Ib8vm6QWi72hX4bWCQLyer+6G3mIzIXil9qZCFF7IkbW7gZz/4fqbqqNcZdH3WUFRVJb2b/F2UDpcKF9vIJ03//l2TMEOAJg5rOx2EI+Bzaq8crco7VUtfbLrDjQXJ4nl1jx08JxgpZxYho9u4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714640103; c=relaxed/simple;
-	bh=vnXVC6Kf8epv7ASZX8DY9VCJSTt9HM5ceyAQKMp9tvk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=HMBeAvJo2ZbhbkVJ6MLRBV5b1zWpm/qwM8BhbRVTnHZ8mGowQFdwaAj4XrZ7l0Et749wyBoD9ZlAx+dOc/Jf3ilE9T7opy8pXB7+p4gJfxs95aV6tZhc0GFvYswyiEalCHKkdK0bN28dI5in1pfLuWiqslCm2bAJJxiunVEE3CI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=WbFo1kEP; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E6060C113CC;
-	Thu,  2 May 2024 08:55:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1714640102;
-	bh=vnXVC6Kf8epv7ASZX8DY9VCJSTt9HM5ceyAQKMp9tvk=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=WbFo1kEPVZa9bGX8IcbyRTGRoHKpjjVVZYdL+zmDwAhPKa9gTvNSejgWEmWYSSGIB
-	 nOJc5VEmoxh8f8EZF9mn+GF/SAgEROR49CaNr6tO6l4jH6rFXANEkls7d0Ja4ff4BF
-	 AOnkOqLfvOmGTtVS4eYGt4ojXEopX4byW0dsEHco=
-Date: Thu, 2 May 2024 10:54:59 +0200
-From: Greg KH <gregkh@linuxfoundation.org>
-To: Shahar Avidar <ikobh7@gmail.com>
-Cc: hverkuil-cisco@xs4all.nl, andriy.shevchenko@linux.intel.com,
-	robh@kernel.org, felixkimbu1@gmail.com, dan.carpenter@linaro.org,
-	linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] staging: pi433: Use class_create instead of
- class_register.
-Message-ID: <2024050257-gong-issue-ec40@gregkh>
-References: <20240501055820.603272-1-ikobh7@gmail.com>
- <20240501055820.603272-2-ikobh7@gmail.com>
- <2024050109-reward-vision-58e9@gregkh>
- <fede8589-dd11-4b0c-aa70-7ec23aed64b1@gmail.com>
+	s=arc-20240116; t=1714640127; c=relaxed/simple;
+	bh=Yg56ikL/SLLyAKrOTSpxjb8Cuea3ldNSUoH4sMs7lUY=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Rj2kvHKi+SH8JZFvEePmJAl9fFjJljKLjl7zyWuCf8NlSkb+knt5/T0T0JODx6xRebYZrnjt3voZ76GB2uxWyiL3sk3bG1YbEsyQ1D/AG3+qvwf83KGx1E6n7RL24+6CP8HuH0rIw/YJYAaq4v8Tjx1FMkyqLEzzFp91ZaE+duY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=T27ZpsYG; arc=none smtp.client-ip=209.85.216.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f52.google.com with SMTP id 98e67ed59e1d1-2b2769f017aso2137171a91.3;
+        Thu, 02 May 2024 01:55:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1714640125; x=1715244925; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=/1qq9S2aGRtwilUT9y/lJAq9N983piKfJAV7Zk6wN1M=;
+        b=T27ZpsYGSC7AbRT+wZE/mkfPjogsK6azZcYHQPSVZKANx6/oKrXKY+ciWtjhu5Nj7P
+         o5Y/N46pZAaxK2KAiByFLMsvFIWDjyt7a/tkqg7ofoW0GqSXN4l0bKhwK0+x3URbURuw
+         9SarYhRl6QaV066W1juPTjleDk0EHG9bGvb0wjLufx5o75suZnRm2KLq8+xnaakHKxNb
+         EDIR7dBGnPJI1nsvFSbCzSDv1jWITySGTtp6/JV7PmLNY0U0DdQUwEnpL0lMARc3czaE
+         DTRtiWV2IXDfGaLOgmFqq+bY3dwvJXmkoLxXjAw9NJDM8+P0n/3yZKvH+mvaXkSH1CTn
+         9Z1A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714640125; x=1715244925;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=/1qq9S2aGRtwilUT9y/lJAq9N983piKfJAV7Zk6wN1M=;
+        b=ResGPgoYyEIOCP/KivnxakmQAiydH79flPtqRxn5niNqs/JivK/CnuDp+olgXYT1XF
+         6Vpx5WI+lqTgt9aX10hadRHLAwt0GVLImh39mMe6N3oFTZ+Y0wKJsdvo4WbJAVobE1F4
+         G/S+C/TRg0j/XpkZMJ5utc2XDJ4uGBzYLrG2EN30zLBX0edCmsHNu6X3IAIIybXCGkbl
+         WAWOkJRyBaeqvg6qcitx/IorQkVyrNynAv16hDMQgqQmcXUW6K9Q0H3lx1vXje1Rh4Uv
+         YmtQXf7sYtLtCDCgJmIX7nbbuMfChZhUr9kGqqYmHNXrPlf3SB8vxfJtzHiufkc+MYTc
+         D41Q==
+X-Forwarded-Encrypted: i=1; AJvYcCV+JLEC6UwcoRlSXyc0YATCtm4tN/1llRHi8Ohlu79ReX9nMn8VuKQxdCoNB4JWzJI8jJSCEkcLoDJbX+5SHXT8KF7d5ylJOAVEA2L2nvK3CIYms1W5V2iUIDFPTScnk7agVqL/9xWy3JBtHo+W7XdgkjASSl9dY4LVDsIj3/3lnfvci4a52g==
+X-Gm-Message-State: AOJu0Ywzntgfqq0UjMpQg9bHcKK0ivoGDL/0qy6JTyyg5n5EueoGfftQ
+	D+jViVQNWGUn9dpAbYWcrsNg5BRJKyG1DNet0F6KdzkAzZV1LmkUIE9yqp4Pe4UMV4KqF1iOJne
+	HedyzM/HNBrZSNwec8klCWI4ds/8=
+X-Google-Smtp-Source: AGHT+IEWHFfdPOAuzI1wYhBzIMGfNagBvY1J9P+TQuJFavD+2hsjIBw0Rk4R/Vs2x7OpvMNZ1kKU7tqxZIW8TeHH/vE=
+X-Received: by 2002:a17:90a:e68b:b0:2b0:8497:1c57 with SMTP id
+ s11-20020a17090ae68b00b002b084971c57mr4710346pjy.27.1714640125591; Thu, 02
+ May 2024 01:55:25 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <fede8589-dd11-4b0c-aa70-7ec23aed64b1@gmail.com>
+References: <20240501084110.4165-2-shresthprasad7@gmail.com> <01cbcdf5-8a7a-4b47-a2aa-05c041e3cab2@kernel.org>
+In-Reply-To: <01cbcdf5-8a7a-4b47-a2aa-05c041e3cab2@kernel.org>
+From: Shresth Prasad <shresthprasad7@gmail.com>
+Date: Thu, 2 May 2024 14:25:14 +0530
+Message-ID: <CAE8VWiKqnM0BGnSDxT5+ZjD67UXxjY3PZAyNwsxbD0nZs3cJ4A@mail.gmail.com>
+Subject: Re: [PATCH v2][next] tty: sunsu: Simplify device_node cleanup by
+ using __free
+To: Jiri Slaby <jirislaby@kernel.org>
+Cc: davem@davemloft.net, gregkh@linuxfoundation.org, 
+	sparclinux@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-serial@vger.kernel.org, javier.carrasco.cruz@gmail.com, 
+	skhan@linuxfoundation.org, Julia Lawall <julia.lawall@inria.fr>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, May 02, 2024 at 11:40:44AM +0300, Shahar Avidar wrote:
-> On 01/05/2024 17:12, Greg KH wrote:
-> > On Wed, May 01, 2024 at 08:58:19AM +0300, Shahar Avidar wrote:
-> > > Make use of a higher level API.
-> > 
-> > What does this mean?
-> > 
-> By "higher level" I meant a wrapper function that includes the
-> "class_register" call.
-> 
-> > > Reduce global memory allocation from struct class to pointer size.
-> > 
-> > No, you increased memory allocation here, why do you think you reduced
-> > it?
-> > 
-> Reducing *global* memory allocation.
+On Thu, May 2, 2024 at 1:26=E2=80=AFPM Jiri Slaby <jirislaby@kernel.org> wr=
+ote:
+>
+> On 01. 05. 24, 10:41, Shresth Prasad wrote:
+> > Add `__free` function attribute to `ap` and `match` pointer
+> > initialisations which ensure that the pointers are freed as soon as the=
+y
+> > go out of scope, thus removing the need to manually free them using
+> > `of_node_put`.
+> >
+> > This also removes the need for the `goto` statement and the `rc`
+> > variable.
+> >
+> > Tested using a qemu x86_64 virtual machine.
+> >
+> > Suggested-by: Julia Lawall <julia.lawall@inria.fr>
+> > Signed-off-by: Shresth Prasad <shresthprasad7@gmail.com>
+> > ---
+> > Changes in v2:
+> >      - Specify how the patch was tested
+> >
+> >   drivers/tty/serial/sunsu.c | 37 +++++++++++--------------------------
+> >   1 file changed, 11 insertions(+), 26 deletions(-)
+>
+> Nice cleanup.
 
-And again, you *increased* memory allocation by making this be
-dynamically created instead of the current code which is a static and
-can be placed into read-only memory with no padding required unlike a
-dynamic memory chunk is.  You also removed the read-only markings of the
-structure for no reason, in a way, making the code a tad be more
-insecure as well as increasing memory usage.
+Thanks :)
 
-So be careful please.
+>
+> > --- a/drivers/tty/serial/sunsu.c
+> > +++ b/drivers/tty/serial/sunsu.c
+> > @@ -1382,44 +1382,29 @@ static inline struct console *SUNSU_CONSOLE(voi=
+d)
+> >
+> >   static enum su_type su_get_type(struct device_node *dp)
+> >   {
+> > -     struct device_node *ap =3D of_find_node_by_path("/aliases");
+> > -     enum su_type rc =3D SU_PORT_PORT;
+> > +     struct device_node *ap __free(device_node) =3D
+> > +                         of_find_node_by_path("/aliases");
+>
+> If we used c++, that would be even nicer; like:
+> Destroyer ap(of_find_node_by_path("/aliases"));
+>
+> But we don't :P. OTOH. can't we achieve that with macro-fu and typeof()
+> magic? Perhaps not really exactly the above, but something like
+>    Destroyer(ap, of_find_node_by_path("/aliases"));
+> maybe?
 
-> I understand the tradeoff would be allocating in run time the class struct
-> anyway, but than, it could also be freed.
+Hmm, a macro like that could probably be written but it's more convenient
+to use the GCC attribute like in the current implementation, IMO.
 
-When is it freed that the current code is not also freed?
+Jonathan Corbert, who introduced this, wrote about it here:
+https://lwn.net/Articles/934679/
 
-> Since the Pi433 is a RasPi expansion board and can be attached\removed in an
-> asynchronous matter by the user, and only one can be attached at a time, I
-> thought it is best not to statically allocate memory which won't be freed
-> even if the hat is removed.
-
-Is that what happens in the code?
-
-> By using the class_create & class_destroy I thought of reducing memory
-> allocated by the RasPi if the pi433 is removed.
-
-Try it and see :)
-
-> But following your response I now actually see that the class struct will
-> have the same lifespan anyway if allocated statically or dynamically if its
-> alive between the init\exit calls.
-
-Yes.
-
-> > Also, this looks like a revert of commit f267da65bb6b ("staging: pi433:
-> > make pi433_class constant"), accepted a few months ago, why not just
-> > call it out as an explicit revert if that's what you want to do?
-> > 
-> I actually saw this commit, but for some reason did not connect the dots
-> when I wrote this patch. My bad.
-> 
-> > class_create is going away "soon", why add this back when people are
-> > working so hard to remove its usage?  What tutorial did you read that
-> > made you want to make this change?
-> > 
-> It's true, I got it the wrong way I guess. I thought class_create is the
-> preferred API (but now that you mentioned commit f267da65bb6b, I see it's
-> not). I did notice it in many other drivers though, and took them as an
-> example (e.g. gnss).
-
-There are patches out that replace almost all users of class_create()
-such that it should be almost gone from the tree.
-
-> > thanks,
-> > 
-> > greg k-h
-> 
-> I actually initially thought that the pi433 class should be removed since it
-> doesn't bring any new attributes with it, and that spi_slave_class is more
-> appropriate, but then I saw no other driver using it. Any thoughts about
-> that?
-
-The whole driver is going to be removed soon, please see the mailing
-list archives for the details.
-
-thanks,
-
-greg k-h
+Regards,
+Shresth
 
