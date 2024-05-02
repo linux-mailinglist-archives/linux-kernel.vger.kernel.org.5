@@ -1,218 +1,157 @@
-Return-Path: <linux-kernel+bounces-166343-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-166344-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id F172C8B994E
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 12:45:48 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7885B8B9956
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 12:46:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6BA681F21415
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 10:45:48 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 94D96B209E3
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 10:46:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26E925FDA6;
-	Thu,  2 May 2024 10:43:00 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D9225D903;
-	Thu,  2 May 2024 10:42:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16FA8604B3;
+	Thu,  2 May 2024 10:44:26 +0000 (UTC)
+Received: from mail-io1-f70.google.com (mail-io1-f70.google.com [209.85.166.70])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 009F757871
+	for <linux-kernel@vger.kernel.org>; Thu,  2 May 2024 10:44:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.70
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714646579; cv=none; b=M4INnz3pOsHaY3RMlKxjruD+EyhGO9hcKTM4j4lmFeQco744/Ae/4bjEK80s9lFwGSc7WJVng1cuMrTkqsVOR0uuBwyJm/autyNN1H1M/fNLLi73olHFzWpjEITKsNem41j6j1G4XeKY2kd5fCQt83s1TuoGJo6ri4dC2JH5LH0=
+	t=1714646665; cv=none; b=UWSt4rO7LZ8ZLaNqBrLyrn4WM36h81OB0qoy6iwvudmiWtS9iVxAZKDF5MQtZGt5mHsFpgdXpXCqls63Yu3wjDi1Jew87DvoAYoj9j/TeKPffGb7XCerlOUI4bRRXPaL6N6D0CeVUx+0lsFkCFWqazU6Xp5ywjKcKIl6DQ97pLQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714646579; c=relaxed/simple;
-	bh=mWltd/gOE5XsQz1QXZSwePIgn+C1/IEfeyFxSyG5sPE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=gPNk4ILcPRX9X5nLEJBsbvt37VUXzHUpojDIClvPRrG20S6Xxn01FkTYHIEfBFDIZFHDPc5KX/L2Bz4Y1Y23LVpQsLWtbOrqNozZB7/vvfdTsT2B+kkdiFX7zokjTU1/FvZvyGolxUzsITxhG9XmS6vIOg8Zhcj40mZdSO8G858=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 886882F4;
-	Thu,  2 May 2024 03:43:22 -0700 (PDT)
-Received: from [192.168.2.88] (usa-sjc-mx-foss1.foss.arm.com [172.31.20.19])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4F5AB3F793;
-	Thu,  2 May 2024 03:42:55 -0700 (PDT)
-Message-ID: <050c561c-487e-4e89-a7b2-9752cebc9f46@arm.com>
-Date: Thu, 2 May 2024 12:42:54 +0200
+	s=arc-20240116; t=1714646665; c=relaxed/simple;
+	bh=NOH4Q80i0aHmhlMjpXkQRsNTtB7joD46Fj469GefL1I=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=gdKDqXEhhbWilr8iC0xYJIovGqoXK9y6I3PkGqh2rp6wi2DKXWBzhRVuLjACRHhGMktIZXGUUm5rU1AW02sY4Yu9mnF+1KCJxz8zKAowt+UiSo9h+pMow6D9bQGxKWLzV0/Ss/zZZ/taPRsMe4/LbiiyAJzQkUWpveEJ34B4P28=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.70
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f70.google.com with SMTP id ca18e2360f4ac-7dece1fa472so418002439f.0
+        for <linux-kernel@vger.kernel.org>; Thu, 02 May 2024 03:44:23 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714646663; x=1715251463;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=6dl6UnXILKm1BseeObaKJwodV315wbNFh9cCBT8pNe4=;
+        b=UQGMigWAYLtLt6/1BHdh89K1zLurrv1z+NtjpArlspWCrQ6UueeaNrsmgXIDOMCxbM
+         fww8oChDMO+aafBssLMNVmtZJ22YhakMeC3T0hJ5iaxXK1/qSrZXtGcR7DLjvxwZm3Ia
+         6+D3dwwxBDAxrE4bkDOupX1Wd+2o5MkiMJ/ZVTVe99Q0E6w7yCF7Wog6cNcslbJmA2QA
+         woR2PR25nQMBLBao4TCgPqcKUUaTv1dCvfSUzN/CzhGxJV7dOqJEdwSAa5dAskz7QnRl
+         SYz4CCXcQfvBtMc9x9p0aP4YoRjC01gtKdlmBPGuW68ohWuw8Z4++jp6RBAZ/Goa14Kl
+         FcpQ==
+X-Forwarded-Encrypted: i=1; AJvYcCW5xxJnGicqcd2SpPltS2ruJdqBJz7yYU7JGgiJ2MUct7aiBuBY7lqDdCkPHWgnljvbF2sa8Np1BT/KMdvNqWfBspNES3RdAFiYJd3B
+X-Gm-Message-State: AOJu0YwH57BtJwKbQ2zBehEvwzAefNTPmi2JZ+IWlpdG2rm1I++OdqPY
+	BYHdKdpWxtff7Jcaw3ohfAwdjnfUrBiYJsOCWrk28aRxyYDgOZ9VizoKZA/s93p8J6VY43RldVt
+	7HNhxishkjN/No4deY2/5e9sE5cw86qras4I9piwYRaxP3G5+R4r/DYk=
+X-Google-Smtp-Source: AGHT+IHxewD7L+JVk/FKz42jZGn5HicAWf7z/TKYTsW5cpAppB2iyirUg5mS6LexhNlSvadPeYQNqoXay0geZyv011hggP10M8sL
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC][PATCH v1 3/3] cpufreq: intel_pstate: Set asymmetric CPU
- capacity on hybrid systems
-To: "Rafael J. Wysocki" <rjw@rjwysocki.net>, x86 Maintainers <x86@kernel.org>
-Cc: LKML <linux-kernel@vger.kernel.org>, Linux PM <linux-pm@vger.kernel.org>,
- Thomas Gleixner <tglx@linutronix.de>, Peter Zijlstra <peterz@infradead.org>,
- Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
- "Rafael J. Wysocki" <rafael@kernel.org>,
- Ricardo Neri <ricardo.neri@intel.com>, Tim Chen <tim.c.chen@intel.com>
-References: <7663799.EvYhyI6sBW@kreacher> <1799046.VLH7GnMWUR@kreacher>
-From: Dietmar Eggemann <dietmar.eggemann@arm.com>
-Content-Language: en-US
-In-Reply-To: <1799046.VLH7GnMWUR@kreacher>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+X-Received: by 2002:a05:6638:31c9:b0:487:30aa:adb6 with SMTP id
+ n9-20020a05663831c900b0048730aaadb6mr158463jav.2.1714646663339; Thu, 02 May
+ 2024 03:44:23 -0700 (PDT)
+Date: Thu, 02 May 2024 03:44:23 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000048aa8506177649b0@google.com>
+Subject: [syzbot] [iomap?] WARNING in iomap_iter (2)
+From: syzbot <syzbot+0a3683a0a6fecf909244@syzkaller.appspotmail.com>
+To: brauner@kernel.org, djwong@kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-On 25/04/2024 21:06, Rafael J. Wysocki wrote:
-> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> 
-> Make intel_pstate use the HWP_HIGHEST_PERF values from
-> MSR_HWP_CAPABILITIES to set asymmetric CPU capacity information
-> via the previously introduced arch_set_cpu_capacity() on hybrid
-> systems without SMT.
+Hello,
 
-Are there such systems around? My i7-13700K has P-cores (CPU0..CPU15)
-with SMT.
+syzbot found the following issue on:
 
-> Setting asymmetric CPU capacity is generally necessary to allow the
-> scheduler to compute task sizes in a consistent way across all CPUs
-> in a system where they differ by capacity.  That, in turn, should help
-> to improve task placement and load balancing decisions.  It is also
-> necessary for the schedutil cpufreq governor to operate as expected
-> on hybrid systems where tasks migrate between CPUs of different
-> capacities.
-> 
-> The underlying observation is that intel_pstate already uses
-> MSR_HWP_CAPABILITIES to get CPU performance information which is
-> exposed by it via sysfs and CPU performance scaling is based on it.
-> Thus using this information for setting asymmetric CPU capacity is
-> consistent with what the driver has been doing already.  Moreover,
-> HWP_HIGHEST_PERF reflects the maximum capacity of a given CPU including
-> both the instructions-per-cycle (IPC) factor and the maximum turbo
-> frequency and the units in which that value is expressed are the same
-> for all CPUs in the system, so the maximum capacity ratio between two
-> CPUs can be obtained by computing the ratio of their HWP_HIGHEST_PERF
-> values.  Of course, in principle that capacity ratio need not be
-> directly applicable at lower frequencies, so using it for providing the
-> asymmetric CPU capacity information to the scheduler is a rough
-> approximation, but it is as good as it gets.  Also, measurements
-> indicate that this approximation is not too bad in practice.
+HEAD commit:    2c8159388952 Merge tag 'rust-fixes-6.9' of https://github...
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=157da5e8980000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=7edc7330e976610e
+dashboard link: https://syzkaller.appspot.com/bug?extid=0a3683a0a6fecf909244
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14c1a97f180000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1538a228980000
 
-So cpu_capacity has a direct mapping to itmt prio. cpu_capacity is itmt
-prio with max itmt prio scaled to 1024.
+Downloadable assets:
+disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/7bc7510fe41f/non_bootable_disk-2c815938.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/3f7792ed3c5c/vmlinux-2c815938.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/28870b4ff18a/bzImage-2c815938.xz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/f3da29bab42a/mount_0.gz
 
-Running it on i7-13700K (while allowing SMT) gives:
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+0a3683a0a6fecf909244@syzkaller.appspotmail.com
 
-root@gulliver:~# dmesg | grep sched_set_itmt_core_prio
-[    3.957826] sched_set_itmt_core_prio() cpu=0 prio=68
-[    3.990401] sched_set_itmt_core_prio() cpu=1 prio=68
-[    4.015551] sched_set_itmt_core_prio() cpu=2 prio=68
-[    4.040720] sched_set_itmt_core_prio() cpu=3 prio=68
-[    4.065871] sched_set_itmt_core_prio() cpu=4 prio=68
-[    4.091018] sched_set_itmt_core_prio() cpu=5 prio=68
-[    4.116175] sched_set_itmt_core_prio() cpu=6 prio=68
-[    4.141374] sched_set_itmt_core_prio() cpu=7 prio=68
-[    4.166543] sched_set_itmt_core_prio() cpu=8 prio=69
-[    4.196289] sched_set_itmt_core_prio() cpu=9 prio=69
-[    4.214964] sched_set_itmt_core_prio() cpu=10 prio=69
-[    4.239281] sched_set_itmt_core_prio() cpu=11 prio=69
-[    4.263438] sched_set_itmt_core_prio() cpu=12 prio=68
-[    4.283790] sched_set_itmt_core_prio() cpu=13 prio=68
-[    4.308905] sched_set_itmt_core_prio() cpu=14 prio=68
-[    4.331751] sched_set_itmt_core_prio() cpu=15 prio=68
-[    4.356002] sched_set_itmt_core_prio() cpu=16 prio=42
-[    4.381639] sched_set_itmt_core_prio() cpu=17 prio=42
-[    4.395175] sched_set_itmt_core_prio() cpu=18 prio=42
-[    4.425625] sched_set_itmt_core_prio() cpu=19 prio=42
-[    4.449670] sched_set_itmt_core_prio() cpu=20 prio=42
-[    4.479681] sched_set_itmt_core_prio() cpu=21 prio=42
-[    4.506319] sched_set_itmt_core_prio() cpu=22 prio=42
-[    4.523774] sched_set_itmt_core_prio() cpu=23 prio=42
+------------[ cut here ]------------
+WARNING: CPU: 3 PID: 5183 at fs/iomap/iter.c:51 iomap_iter_done fs/iomap/iter.c:51 [inline]
+WARNING: CPU: 3 PID: 5183 at fs/iomap/iter.c:51 iomap_iter+0xe1e/0x10b0 fs/iomap/iter.c:95
+Modules linked in:
+CPU: 3 PID: 5183 Comm: syz-executor200 Not tainted 6.9.0-rc5-syzkaller-00355-g2c8159388952 #0
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
+RIP: 0010:iomap_iter_done fs/iomap/iter.c:51 [inline]
+RIP: 0010:iomap_iter+0xe1e/0x10b0 fs/iomap/iter.c:95
+Code: 0f 0b 90 e9 e2 f8 ff ff e8 5f 42 73 ff 90 0f 0b 90 e9 b1 f7 ff ff e8 51 42 73 ff 90 0f 0b 90 e9 38 f7 ff ff e8 43 42 73 ff 90 <0f> 0b 90 e9 4b f7 ff ff e8 35 42 73 ff 90 0f 0b 90 e9 e5 f6 ff ff
+RSP: 0018:ffffc90003367a38 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: ffffc90003367b60 RCX: ffffffff821a7538
+RDX: ffff888021e1c880 RSI: ffffffff821a7ded RDI: 0000000000000006
+RBP: 0000000000fffc80 R08: 0000000000000006 R09: 0000000000fffc80
+R10: 0000000000fffc80 R11: 0000000000000000 R12: 0000000000fffc80
+R13: ffffc90003367ba2 R14: ffffc90003367b98 R15: 0000000000fffc00
+FS:  00007f52540656c0(0000) GS:ffff88806b500000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000021000000 CR3: 0000000022e6c000 CR4: 0000000000350ef0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ iomap_file_buffered_write+0x202/0x9c0 fs/iomap/buffered-io.c:1014
+ blkdev_buffered_write block/fops.c:658 [inline]
+ blkdev_write_iter+0x4f3/0xc90 block/fops.c:708
+ call_write_iter include/linux/fs.h:2110 [inline]
+ new_sync_write fs/read_write.c:497 [inline]
+ vfs_write+0x6db/0x1100 fs/read_write.c:590
+ ksys_write+0x12f/0x260 fs/read_write.c:643
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0xcf/0x260 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+RIP: 0033:0x7f52540af509
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 81 18 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f5254065168 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
+RAX: ffffffffffffffda RBX: 00007f525413b608 RCX: 00007f52540af509
+RDX: 0000000001670e68 RSI: 0000000020000380 RDI: 0000000000000005
+RBP: 00007f525413b600 R08: 00007f52540656c0 R09: 0000000000000000
+R10: 00007f52540656c0 R11: 0000000000000246 R12: 00007f525413b60c
+R13: 0000000000000006 R14: 00007ffeeef47cd0 R15: 00007ffeeef47db8
+ </TASK>
 
-root@gulliver:~# dmesg | grep hybrid_set_cpu_capacity
-[    4.450883] hybrid_set_cpu_capacity() cpu=0 cap=1009
-[    4.455846] hybrid_set_cpu_capacity() cpu=1 cap=1009
-[    4.460806] hybrid_set_cpu_capacity() cpu=2 cap=1009
-[    4.465766] hybrid_set_cpu_capacity() cpu=3 cap=1009
-[    4.470730] hybrid_set_cpu_capacity() cpu=4 cap=1009
-[    4.475699] hybrid_set_cpu_capacity() cpu=5 cap=1009
-[    4.480664] hybrid_set_cpu_capacity() cpu=6 cap=1009
-[    4.485626] hybrid_set_cpu_capacity() cpu=7 cap=1009
-[    4.490588] hybrid_set_cpu_capacity() cpu=9 cap=1024
-[    4.495550] hybrid_set_cpu_capacity() cpu=10 cap=1024
-[    4.500598] hybrid_set_cpu_capacity() cpu=11 cap=1024
-[    4.505649] hybrid_set_cpu_capacity() cpu=12 cap=1009
-[    4.510701] hybrid_set_cpu_capacity() cpu=13 cap=1009
-[    4.515749] hybrid_set_cpu_capacity() cpu=14 cap=1009
-[    4.520802] hybrid_set_cpu_capacity() cpu=15 cap=1009
-[    4.525846] hybrid_set_cpu_capacity() cpu=16 cap=623
-[    4.530810] hybrid_set_cpu_capacity() cpu=17 cap=623
-[    4.535772] hybrid_set_cpu_capacity() cpu=18 cap=623
-[    4.540732] hybrid_set_cpu_capacity() cpu=19 cap=623
-[    4.545690] hybrid_set_cpu_capacity() cpu=20 cap=623
-[    4.550651] hybrid_set_cpu_capacity() cpu=21 cap=623
-[    4.555612] hybrid_set_cpu_capacity() cpu=22 cap=623
-[    4.560571] hybrid_set_cpu_capacity() cpu=23 cap=623
 
-> If the given system is hybrid and non-SMT, the new code disables ITMT
-> support in the scheduler (because it may get in the way of asymmetric CPU
-> capacity code in the scheduler that automatically gets enabled by setting
-> asymmetric CPU capacity) after initializing all online CPUs and finds
-> the one with the maximum HWP_HIGHEST_PERF value.  Next, it computes the
-> capacity number for each (online) CPU by dividing the product of its
-> HWP_HIGHEST_PERF and SCHED_CAPACITY_SCALE by the maximum HWP_HIGHEST_PERF.
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-SO either CAS at wakeup and in load_balance or SIS at wakeup and ITMT in
-load balance.
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
-> When a CPU goes offline, its capacity is reset to SCHED_CAPACITY_SCALE
-> and if it is the one with the maximum HWP_HIGHEST_PERF value, the
-> capacity numbers for all of the other online CPUs are recomputed.  This
-> also takes care of a cleanup during driver operation mode changes.
-> 
-> Analogously, when a new CPU goes online, its capacity number is updated
-> and if its HWP_HIGHEST_PERF value is greater than the current maximum
-> one, the capacity numbers for all of the other online CPUs are
-> recomputed.
-> 
-> The case when the driver is notified of a CPU capacity change, either
-> through the HWP interrupt or through an ACPI notification, is handled
-> similarly to the CPU online case above, except that if the target CPU
-> is the current highest-capacity one and its capacity is reduced, the
-> capacity numbers for all of the other online CPUs need to be recomputed
-> either.
-> 
-> If the driver's "no_trubo" sysfs attribute is updated, all of the CPU
-> capacity information is computed from scratch to reflect the new turbo
-> status.
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
 
-So if I do:
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
 
-echo 1 > /sys/devices/system/cpu/intel_pstate/no_turbo
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
 
-I get:
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
 
-[ 1692.801368] hybrid_update_cpu_scaling() called
-[ 1692.801381] hybrid_update_cpu_scaling() max_cap_perf=44, max_perf_cpu=0
-[ 1692.801389] hybrid_set_cpu_capacity() cpu=1 cap=1024
-[ 1692.801395] hybrid_set_cpu_capacity() cpu=2 cap=1024
-[ 1692.801399] hybrid_set_cpu_capacity() cpu=3 cap=1024
-[ 1692.801402] hybrid_set_cpu_capacity() cpu=4 cap=1024
-[ 1692.801405] hybrid_set_cpu_capacity() cpu=5 cap=1024
-[ 1692.801408] hybrid_set_cpu_capacity() cpu=6 cap=1024
-[ 1692.801410] hybrid_set_cpu_capacity() cpu=7 cap=1024
-[ 1692.801413] hybrid_set_cpu_capacity() cpu=8 cap=1024
-[ 1692.801416] hybrid_set_cpu_capacity() cpu=9 cap=1024
-[ 1692.801419] hybrid_set_cpu_capacity() cpu=10 cap=1024
-[ 1692.801422] hybrid_set_cpu_capacity() cpu=11 cap=1024
-[ 1692.801425] hybrid_set_cpu_capacity() cpu=12 cap=1024
-[ 1692.801428] hybrid_set_cpu_capacity() cpu=13 cap=1024
-[ 1692.801431] hybrid_set_cpu_capacity() cpu=14 cap=1024
-[ 1692.801433] hybrid_set_cpu_capacity() cpu=15 cap=1024
-[ 1692.801436] hybrid_set_cpu_capacity() cpu=16 cap=605
-[ 1692.801439] hybrid_set_cpu_capacity() cpu=17 cap=605
-[ 1692.801442] hybrid_set_cpu_capacity() cpu=18 cap=605
-[ 1692.801445] hybrid_set_cpu_capacity() cpu=19 cap=605
-[ 1692.801448] hybrid_set_cpu_capacity() cpu=20 cap=605
-[ 1692.801451] hybrid_set_cpu_capacity() cpu=21 cap=605
-[ 1692.801453] hybrid_set_cpu_capacity() cpu=22 cap=605
-[ 1692.801456] hybrid_set_cpu_capacity() cpu=23 cap=605
-
-Turbo on this machine stands only for the cpu_capacity diff 1009 vs 1024?
-
-[...]
-
+If you want to undo deduplication, reply with:
+#syz undup
 
