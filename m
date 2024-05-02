@@ -1,242 +1,304 @@
-Return-Path: <linux-kernel+bounces-166488-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-166491-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 95CFC8B9B5A
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 15:11:24 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id C29DF8B9B60
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 15:12:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B7D201C2214F
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 13:11:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4C5821F2108E
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 13:12:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7922484A54;
-	Thu,  2 May 2024 13:10:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D816283CD7;
+	Thu,  2 May 2024 13:12:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="YYNPtAB6"
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2085.outbound.protection.outlook.com [40.107.236.85])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="pq0FcFFd"
+Received: from mail-yb1-f181.google.com (mail-yb1-f181.google.com [209.85.219.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F28B983CD7;
-	Thu,  2 May 2024 13:10:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.236.85
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714655452; cv=fail; b=Ih/nBN9Sd95zyYecWpEu79x3ALd9YXnBEtsycb/FCNvh1pgmBmVdN/WseAYWvYxD8IxHJGt9k9ebt1J3OlxEooKX2CbT1CrDtrcz+wLcR1IXt9d7E1LG42ZLLe0egMNwpGhTaEt2T36dFuA7+8N+Sfyjj/FQnfhipgtcfvI5Ahc=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714655452; c=relaxed/simple;
-	bh=HeKeVI6KpygkIb8BFBFE+pakQXHevgTfaW1U1phxRZU=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=ebiC3Mo7OzXT+7lxMlK6kyO5w7UNVmkj5Iu7b3YQAnJjhJvu64cBCh0b8y36gT+hs0NetEs8J5DwK0sRBxR8pl3iqMkXb6b6UL5bm2kj5PesibKOfepmch725fTJKFveIoICaE1vXGo5YEHIcZvPPYq0gcbbBhSdYH/SwIPLZiM=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=YYNPtAB6; arc=fail smtp.client-ip=40.107.236.85
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=hP/diH3W/LDgV2umxGzDsQCLhMHppxFzbkXke9VlmpvpvL3Y7DONfdEzQ2DkymwZv5PrbLT5pBSkImIiOpGJ2AZ70EG3nfSKBONfdTmba5ovwrpqN0WZftNk6PQxH9npFZSeyNngaGV9vc1OMA+18QPEGHYcX3GoFEy9wQ61yCE1yF2iws+HTAoozvWnY4KKTqzS4i4MJdzHlmn1+54ffPMvBllbCDkLTiI/298G+sSfj6V54f2fR3LNXhQgEUFecRbjVEJpRIVe2vNehfLpcasA6OvQaZqW/2MqyeLQTJ/9BrYvOSX9MuckaAwHArnCphxD3QzW2H/BCUN5HdgLMA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=79LEzeQ+aNXmEq7qPbfwWsE0OxP0u8FWNga/WfXvwpg=;
- b=RVZxeuqx+PcfLDsgMV6A5GE7ZveLYgFQUSObcCvp3yPWNQUQXgOki6HYDzM8KeIi+7b4k0wmCDcjxT/EGjxfYpvo97O1oBxEqZJHL7pWxYg6j2C7DiJ3D6vD9FPcMCjQNOu1OJqarJJknarw3o2NTt4AyDQRGPXqTv91tQjav2mVyIQyPjvbxrXFWIxw5TZe505SwPty4AjLlhOHtHbluKLEdbnRbDMMvqxk0ZyNNKEJgjO84zi4mF3qeU4Q0f7BEgWQds7ekBbUZQHTnBthq9zjxDe9e60eRg6ZPBaPfULL7qGEjr9/fHvG8kPxUclA+7j5sTpm9liV/ehtKnTgug==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=79LEzeQ+aNXmEq7qPbfwWsE0OxP0u8FWNga/WfXvwpg=;
- b=YYNPtAB6GhSFF40ZFrp9F0a2kXxEAKSKyUhqm6a9lYRVqclD+tVFJJuqRl83uYVdzaMuVpsHgbFdDc9Qe4NQS+HetZ156f9Qy6GK3dAUm3Acc8QmdhW9XmkZ7INF3UTQE2WzJsNqZ+GRJjwZWGrHMEKNv/EnzbuhyZCShNMZRVw=
-Received: from CH2PR05CA0004.namprd05.prod.outlook.com (2603:10b6:610::17) by
- LV2PR12MB5919.namprd12.prod.outlook.com (2603:10b6:408:173::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7519.35; Thu, 2 May
- 2024 13:10:47 +0000
-Received: from CH2PEPF0000009E.namprd02.prod.outlook.com
- (2603:10b6:610:0:cafe::d4) by CH2PR05CA0004.outlook.office365.com
- (2603:10b6:610::17) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7544.29 via Frontend
- Transport; Thu, 2 May 2024 13:10:46 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- CH2PEPF0000009E.mail.protection.outlook.com (10.167.244.27) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7544.18 via Frontend Transport; Thu, 2 May 2024 13:10:46 +0000
-Received: from rric.localdomain (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Thu, 2 May
- 2024 08:10:44 -0500
-From: Robert Richter <rrichter@amd.com>
-To: "Rafael J. Wysocki" <rafael@kernel.org>
-CC: Dave Hansen <dave.hansen@linux.intel.com>, Dan Williams
-	<dan.j.williams@intel.com>, Alison Schofield <alison.schofield@intel.com>,
-	<linux-acpi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<linux-cxl@vger.kernel.org>, Robert Richter <rrichter@amd.com>, "kernel test
- robot" <oliver.sang@intel.com>, Jonathan Cameron
-	<Jonathan.Cameron@huawei.com>, Len Brown <lenb@kernel.org>
-Subject: [PATCH v7 4/4] ACPI/NUMA: Squash acpi_numa_memory_affinity_init() into acpi_parse_memory_affinity()
-Date: Thu, 2 May 2024 15:10:12 +0200
-Message-ID: <20240502131012.2385725-5-rrichter@amd.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20240502131012.2385725-1-rrichter@amd.com>
-References: <20240502131012.2385725-1-rrichter@amd.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A4A643158
+	for <linux-kernel@vger.kernel.org>; Thu,  2 May 2024 13:12:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.181
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1714655553; cv=none; b=ddtwLebziprOWeP4MljCo2HesfK6xy/jIe5ARtLUASyrAa5AMGFkK1WagAprl+ODdxHDPtZOBujV4u9WmQZPgSZHzA0AXmYYxiF/lDGatOFhBedyHbv4BzEIm155IYcdv34JGK5y2RzZm2NH41IaM2wA1IpO5BY322OnlOIedNs=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1714655553; c=relaxed/simple;
+	bh=w36A9qNTkHew7BT2vRvvyNspByFD2CNRYwskOpKFMNY=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=G5dTkK+KM6K3Hjb5AMj4ugmf0Rf8L0iocRDXOQ8KQtttOt1U+ZumGy4Jcksl7Wn7UIutzfWD3sz7/DrCNiKo+jx8PU1+uGkDE4Qv3CQp/M0LaIGQ5aRc7aAD8eRce9KKqMcYMkP1KB3AmHK/ezEtJY81NMbd853dLwe5sSwvK2Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=pq0FcFFd; arc=none smtp.client-ip=209.85.219.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yb1-f181.google.com with SMTP id 3f1490d57ef6-ddda842c399so8146524276.3
+        for <linux-kernel@vger.kernel.org>; Thu, 02 May 2024 06:12:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1714655551; x=1715260351; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=e9IfF2XRrC1/or05aEZt3Pgg1CS/l8eHWqh1tFVKZN4=;
+        b=pq0FcFFdFyslHFHmW4iDwTqhNMjI0Wh4AibrlCf4ipmtVjIjnYVOtFEx6iTp/NHEUT
+         aDweGprtPI6uW1sFtvp9lL1iWFibsYbLvZF8d1rkGCTwF5UwpqB5EaUv6Z8K91HJdd6T
+         WsNfJ8lZKuHcX1EVeYLgQsAxyltsXipHtgW3hFiBe2esvPEw39UbzopxfT+NAyfRt1Wf
+         LKEQQyYtdCdrITo8RIreOGb1qzRE5ev4YZDz7TnodKFOFKz6luibL7eoEcNt9FUBF5oH
+         qItPSV7p8nnPY6VM88twrhz3mDUB0+F80g+zqDnSZbEEcbvChgxhGdow+iwFeZAdQd9b
+         4+NA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714655551; x=1715260351;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=e9IfF2XRrC1/or05aEZt3Pgg1CS/l8eHWqh1tFVKZN4=;
+        b=TxJGUenC1rgeXSzKwPGG/BXp9trjbN+jXUG/3pxAyesztFp5U9wzluakQt70Py1paW
+         dcLAEn23G3ARZAa27kB/TsHjqfOU5stdg4K/DYG+D1yE+8rg0B2W/HWEXRh5WSCXRQ7Y
+         mIQsOA554s+9bvnUSyj3542z+dJH3QuSUXHqSuGtyHikw1TfeWcS727WI6qStAqEW8rS
+         ovpjmeL8+K1cjCLPCaDGjy8cTvqLWkZ+Z/WVrvacFmcqVENUpsDRceYsdUSEfDIvdHtX
+         E25L83IGZUZillosrpJ6vDzKZ4YIAQzmiWANRLMKw3Bj9xdInu48N+64LStlygvNahV1
+         UwEw==
+X-Forwarded-Encrypted: i=1; AJvYcCXb1OlGS8Wqefiica2mk494fVox5iQC6IxW24KUm9n+12I4MLiHt87BKeeoGBYafgPQgJjCbVQBa0u6joOk0iKFhDVok3wjfJ5Ei1p5
+X-Gm-Message-State: AOJu0YzFs4H7++cbG803y7Xe3rgchx1k61nAPk0AbYTX7Oqt+36MUB1f
+	OvRvWccq6HvTZIk7S2BAH+zOKWdBh2U0aBCAF1f4YzR5F97PbAzMzXIQg3w9Ojf8V/ZNAAlJaww
+	K3TaYLnI+20cT4UG6BWBCUM1Kng91ORWaY9qwoA==
+X-Google-Smtp-Source: AGHT+IEmkdUGj5jxW8y/dVl1d+EP/OPmo0I1J+BrgLeQOzwiCRVJgZVKxM+VVh8ViBEG0rKvwXQFvcvTYJR/P/usunM=
+X-Received: by 2002:a25:db8e:0:b0:dca:a3e8:a25a with SMTP id
+ g136-20020a25db8e000000b00dcaa3e8a25amr2216795ybf.62.1714655551232; Thu, 02
+ May 2024 06:12:31 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CH2PEPF0000009E:EE_|LV2PR12MB5919:EE_
-X-MS-Office365-Filtering-Correlation-Id: 0bbd913b-954a-43bc-9c55-08dc6aa947ff
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230031|1800799015|36860700004|376005|7416005;
-X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?6iVJr7Z50oNixksMslMzAQXGvnFuTg0gOW8Ybr27eM3US2hcjJR/MpM5q0mv?=
- =?us-ascii?Q?l7kaOt8z5bbLVBd1BKBCLj3tr4RWnkakXCEHrTHSMSPkB79xLzepqg/Pe2Le?=
- =?us-ascii?Q?DaTCtxQKC/02abthEDWnx2Ok8Enx7ZwoLJ7B/N0LuigL8QAOxayAdQbjV1Sa?=
- =?us-ascii?Q?DGBGyuFaDASgSrOn1de+SaMB9dPDqzBq98PqfCxWqw8GBWkUVUM2gNiGxJjN?=
- =?us-ascii?Q?AtKjd6nGyVcl8msYNsrIy9eLZXVuoKVNWot+XivPXVLcAfgZ9F4f1Cl1Rq5L?=
- =?us-ascii?Q?RyIlv0+ijhhTcZpc82+cR+mODWYBZu+0qYlHgHSx90MrXGJ1XUYT5UtZ9URK?=
- =?us-ascii?Q?Cy+SEc5UvPd4jNYdO+YHOLyj47pZAS07qxKTXeMjtYyOvgarRg2DiDv/RKlw?=
- =?us-ascii?Q?Cqkqu7CXfyUPLlBCmrN8rGuyeYH7FR07DoVbEwSWlWoieb7zWUQfc2m5lyQo?=
- =?us-ascii?Q?YGb6YJLA0R7kI5HUy2Kqrv8G4o3p8jNtOLqZYIihSKgVzdR7NvaneBS++Vww?=
- =?us-ascii?Q?otCv7VKkyao6Km1MFGsoO3DPjtq7Z5vItXlLQUsb2HlnJ7EaLwa8F55KDIOx?=
- =?us-ascii?Q?EWok3n9PWXBubbq28J2boDf/rWLyw6jy8p/YHP+A19MFbmQkeBYHGTMSKvRY?=
- =?us-ascii?Q?WD7a4BnM7fpylWomc2gCadPVpgN4AO4HNQiawHfmQUUwrBBiiWa/gV3yE7ha?=
- =?us-ascii?Q?FBP/hhg4gF0F2YE6PVXCtCgyceM0TaHzpuEXl6fI7By8/cHf7CmLtPrWLQNh?=
- =?us-ascii?Q?x1UkytOkZfoF/JQYlOPEQlgvGTXBZk9tobF3r5dZQlVimdEizCyRbG8fj9Cw?=
- =?us-ascii?Q?cGK8cnYwv4EbjKVCT8pok1It6NdEua0fMbgGUG6m/GVjYpNInND9PWZq/i1f?=
- =?us-ascii?Q?h0YP8rq31n/m0FigjQC6u3n3yC/HS1DEcHXnr8qlk6emKa/YjLxGsKbKGPZA?=
- =?us-ascii?Q?p4CSRz3sKhrc6bG+0e/313fc/b28vzxVpbJBVUvDUF8wW1Ner+oM/Qb4OD7V?=
- =?us-ascii?Q?Ulb1xRn6CeGga/pLacg88+lHV94U8gSobWVcvHq7FmHkiX3ZbjXKw6Agl3hY?=
- =?us-ascii?Q?CIy0KuTJStswz3CZpar8VrPgbu3Z6e1FcarbI/OSaghzaz8l6AvqqsKX22Is?=
- =?us-ascii?Q?+jQGum/MOq3SRyaxIMS47Ha2X7gG8HFk70PaHcKbRJffwFDp4V5WPca6Gus5?=
- =?us-ascii?Q?O7otTSZSwm42tbCld6tMt6Pmor6YZKhROTL64nN7VAzZjpX2cOHRp9gSls5m?=
- =?us-ascii?Q?qEoi66z9efebfrdnKdwWu9e85Ap1upEg0bIcvqjxfOTmhCfYLUdPJox4Qhxh?=
- =?us-ascii?Q?RHr9+snBGxFJ6u8FB6NOZ11j?=
-X-Forefront-Antispam-Report:
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(1800799015)(36860700004)(376005)(7416005);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 May 2024 13:10:46.9094
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0bbd913b-954a-43bc-9c55-08dc6aa947ff
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	CH2PEPF0000009E.namprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV2PR12MB5919
+References: <20240502123312.31083-1-quic_ugoswami@quicinc.com>
+In-Reply-To: <20240502123312.31083-1-quic_ugoswami@quicinc.com>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date: Thu, 2 May 2024 16:12:20 +0300
+Message-ID: <CAA8EJppeQTadmny=hcs4xCQDXHwXEBHXjeecvZCUVcSXmwBTgg@mail.gmail.com>
+Subject: Re: [PATCH] phy: qcom-snps-femto-v2: Add load and voltage setting for
+ LDO's used
+To: Udipto Goswami <quic_ugoswami@quicinc.com>
+Cc: Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
+	Vinod Koul <vkoul@kernel.org>, Kishon Vijay Abraham I <kishon@kernel.org>, linux-arm-msm@vger.kernel.org, 
+	linux-phy@lists.infradead.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-After removing architectural code the helper function
-acpi_numa_memory_affinity_init() is no longer needed. Squash it into
-acpi_parse_memory_affinity(). No functional changes intended.
+On Thu, 2 May 2024 at 15:33, Udipto Goswami <quic_ugoswami@quicinc.com> wrote:
+>
+> The Femto phy depends on 0.88/ 1.8/ 3.3V regulators for its operation.
+> If one of the regulators is not voted to the required minimum voltage
+> for phy to operate, then High speed mode of operation will fail.
+>
+> On certain targets like (qcm6490_rb3gen2) where the minimum voltage
+> of the regulator is lower than the operating voltage of the phy.
+> If not voted properly, the phy supply would be limited to the min value
+> of the LDO thereby rendering the phy non-operational.
+>
+> The current implementation of the regulators in the Femto PHY is not
+> setting the load and voltage for each LDO. The appropriate voltages and
+> loads required for the PHY to operate should be set.
 
-While at it, fixing checkpatch complaints in code moved.
+Please move min/max voltages to the DTS. There is no need to set them
+from the driver.
 
-Reported-by: kernel test robot <oliver.sang@intel.com>
-Closes: https://lore.kernel.org/oe-lkp/202403220943.96dde419-oliver.sang@intel.com
-Reviewed-by: Dan Williams <dan.j.williams@intel.com>
-Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Reviewed-by: Alison Schofield <alison.schofield@intel.com>
-Signed-off-by: Robert Richter <rrichter@amd.com>
----
- drivers/acpi/numa/srat.c | 40 +++++++++++++++++-----------------------
- 1 file changed, 17 insertions(+), 23 deletions(-)
+Also, is there any reason why you can't use `regulator-initial-mode =
+<RPMH_REGULATOR_MODE_HPM>;` like other boards do?
 
-diff --git a/drivers/acpi/numa/srat.c b/drivers/acpi/numa/srat.c
-index 430ddcfb8312..e3f26e71637a 100644
---- a/drivers/acpi/numa/srat.c
-+++ b/drivers/acpi/numa/srat.c
-@@ -248,22 +248,30 @@ static int __init acpi_parse_slit(struct acpi_table_header *table)
- 	return 0;
- }
- 
-+static int parsed_numa_memblks __initdata;
-+
- static int __init
--acpi_numa_memory_affinity_init(struct acpi_srat_mem_affinity *ma)
-+acpi_parse_memory_affinity(union acpi_subtable_headers *header,
-+			   const unsigned long table_end)
- {
-+	struct acpi_srat_mem_affinity *ma;
- 	u64 start, end;
- 	u32 hotpluggable;
- 	int node, pxm;
- 
-+	ma = (struct acpi_srat_mem_affinity *)header;
-+
-+	acpi_table_print_srat_entry(&header->common);
-+
- 	if (srat_disabled())
--		goto out_err;
-+		return 0;
- 	if (ma->header.length < sizeof(struct acpi_srat_mem_affinity)) {
- 		pr_err("SRAT: Unexpected header length: %d\n",
- 		       ma->header.length);
- 		goto out_err_bad_srat;
- 	}
- 	if ((ma->flags & ACPI_SRAT_MEM_ENABLED) == 0)
--		goto out_err;
-+		return 0;
- 	hotpluggable = IS_ENABLED(CONFIG_MEMORY_HOTPLUG) &&
- 		(ma->flags & ACPI_SRAT_MEM_HOT_PLUGGABLE);
- 
-@@ -301,11 +309,15 @@ acpi_numa_memory_affinity_init(struct acpi_srat_mem_affinity *ma)
- 
- 	max_possible_pfn = max(max_possible_pfn, PFN_UP(end - 1));
- 
-+	parsed_numa_memblks++;
-+
- 	return 0;
-+
- out_err_bad_srat:
-+	/* Just disable SRAT, but do not fail and ignore errors. */
- 	bad_srat();
--out_err:
--	return -EINVAL;
-+
-+	return 0;
- }
- 
- static int __init acpi_parse_cfmws(union acpi_subtable_headers *header,
-@@ -438,24 +450,6 @@ acpi_parse_gi_affinity(union acpi_subtable_headers *header,
- }
- #endif /* defined(CONFIG_X86) || defined (CONFIG_ARM64) */
- 
--static int __initdata parsed_numa_memblks;
--
--static int __init
--acpi_parse_memory_affinity(union acpi_subtable_headers * header,
--			   const unsigned long end)
--{
--	struct acpi_srat_mem_affinity *memory_affinity;
--
--	memory_affinity = (struct acpi_srat_mem_affinity *)header;
--
--	acpi_table_print_srat_entry(&header->common);
--
--	/* let architecture-dependent part to do it */
--	if (!acpi_numa_memory_affinity_init(memory_affinity))
--		parsed_numa_memblks++;
--	return 0;
--}
--
- static int __init acpi_parse_srat(struct acpi_table_header *table)
- {
- 	struct acpi_table_srat *srat = (struct acpi_table_srat *)table;
+>
+> Implement a bulk operation api to set load & voltages before doing bulk
+> enable. This will ensure that the PHY remains operational under all
+> conditions.
+>
+> Signed-off-by: Udipto Goswami <quic_ugoswami@quicinc.com>
+> ---
+>  drivers/phy/qualcomm/phy-qcom-snps-femto-v2.c | 121 +++++++++++++++++-
+>  1 file changed, 114 insertions(+), 7 deletions(-)
+>
+> diff --git a/drivers/phy/qualcomm/phy-qcom-snps-femto-v2.c b/drivers/phy/qualcomm/phy-qcom-snps-femto-v2.c
+> index eb0b0f61d98e..cbe9cdaa6849 100644
+> --- a/drivers/phy/qualcomm/phy-qcom-snps-femto-v2.c
+> +++ b/drivers/phy/qualcomm/phy-qcom-snps-femto-v2.c
+> @@ -78,11 +78,39 @@
+>
+>  #define LS_FS_OUTPUT_IMPEDANCE_MASK            GENMASK(3, 0)
+>
+> -static const char * const qcom_snps_hsphy_vreg_names[] = {
+> -       "vdda-pll", "vdda33", "vdda18",
+> +
+> +struct qcom_snps_hsphy_regulator_data {
+> +       const char *name;
+> +       unsigned int enable_load;
+> +       unsigned int min_voltage;
+> +       unsigned int max_voltage;
+> +};
+> +
+> +static const struct qcom_snps_hsphy_regulator_data hsphy_vreg_l[] = {
+> +       {
+> +               .name = "vdda-pll",
+> +               .enable_load = 30000,
+> +               .min_voltage = 825000,
+> +               .max_voltage = 925000,
+> +       },
+> +
+> +       {
+> +               .name = "vdda18",
+> +               .enable_load = 19000,
+> +               .min_voltage = 1704000,
+> +               .max_voltage = 1800000
+> +       },
+> +
+> +       {
+> +               .name = "vdda33",
+> +               .enable_load = 16000,
+> +               .min_voltage = 3050000,
+> +               .max_voltage = 3300000
+> +       },
+> +
+>  };
+>
+> -#define SNPS_HS_NUM_VREGS              ARRAY_SIZE(qcom_snps_hsphy_vreg_names)
+> +#define SNPS_HS_NUM_VREGS              ARRAY_SIZE(hsphy_vreg_l)
+>
+>  struct override_param {
+>         s32     value;
+> @@ -132,12 +160,90 @@ struct qcom_snps_hsphy {
+>         struct clk_bulk_data *clks;
+>         struct reset_control *phy_reset;
+>         struct regulator_bulk_data vregs[SNPS_HS_NUM_VREGS];
+> +       const struct qcom_snps_hsphy_regulator_data *vreg_list;
+>
+>         bool phy_initialized;
+>         enum phy_mode mode;
+>         struct phy_override_seq update_seq_cfg[NUM_HSPHY_TUNING_PARAMS];
+>  };
+>
+> +static int __vdda_phy_bulk_enable_disable(struct qcom_snps_hsphy *hsphy, bool on)
+
+Separate functions, please.
+
+> +{
+> +       int ret = 0;
+> +       int i;
+> +
+> +       if (!on)
+> +               goto disable_vdd;
+> +
+> +       for (i = 0; i < SNPS_HS_NUM_VREGS; i++) {
+> +
+> +               ret = regulator_set_load(hsphy->vregs[i].consumer,
+> +                                        hsphy->vreg_list[i].enable_load);
+> +
+> +               if (ret < 0) {
+> +                       dev_err(hsphy->dev, "unable to set HPM of %s %d\n",
+> +                                               hsphy->vregs[i].supply, ret);
+> +                       goto err_vdd;
+> +               }
+> +       }
+> +
+> +       for (i = 0; i < SNPS_HS_NUM_VREGS; i++) {
+> +               ret = regulator_set_voltage(hsphy->vregs[i].consumer,
+> +                                           hsphy->vreg_list[i].min_voltage,
+> +                                           hsphy->vreg_list[i].max_voltage);
+> +               if (ret) {
+> +                       dev_err(hsphy->dev,
+> +                               "unable to set voltage of regulator %s %d\n",
+> +                                               hsphy->vregs[i].supply, ret);
+> +                       goto put_vdd_lpm;
+> +               }
+> +       }
+> +
+> +       ret = regulator_bulk_enable(ARRAY_SIZE(hsphy->vregs), hsphy->vregs);
+> +       if (ret)
+> +               goto unconfig_vdd;
+> +
+> +       return ret;
+> +
+> +disable_vdd:
+> +       regulator_bulk_disable(ARRAY_SIZE(hsphy->vregs), hsphy->vregs);
+> +
+> +unconfig_vdd:
+> +       for (i = 0; i < SNPS_HS_NUM_VREGS; i++) {
+> +               ret = regulator_set_voltage(hsphy->vregs[i].consumer, 0,
+> +                                           hsphy->vreg_list[i].max_voltage);
+> +               if (ret) {
+> +                       dev_err(hsphy->dev,
+> +                       "unable to set voltage of regulator %s %d\n",
+> +                                       hsphy->vregs[i].supply, ret);
+> +               }
+> +       }
+> +
+> +put_vdd_lpm:
+> +       for (i = 0; i < SNPS_HS_NUM_VREGS; i++) {
+> +               ret = regulator_set_load(hsphy->vregs[i].consumer, 0);
+> +
+> +               if (ret < 0) {
+> +                       dev_err(hsphy->dev, "unable to set LPM of %s %d\n",
+> +                                               hsphy->vregs[i].supply, ret);
+> +               }
+> +       }
+> +
+> +err_vdd:
+> +       return ret;
+> +
+> +}
+> +
+> +static int vdda_phy_bulk_enable(struct qcom_snps_hsphy *hsphy)
+> +{
+> +       return __vdda_phy_bulk_enable_disable(hsphy, true);
+> +}
+> +
+> +static int vdda_phy_bulk_disable(struct qcom_snps_hsphy *hsphy)
+> +{
+> +       return __vdda_phy_bulk_enable_disable(hsphy, false);
+> +}
+> +
+>  static int qcom_snps_hsphy_clk_init(struct qcom_snps_hsphy *hsphy)
+>  {
+>         struct device *dev = hsphy->dev;
+> @@ -390,7 +496,7 @@ static int qcom_snps_hsphy_init(struct phy *phy)
+>
+>         dev_vdbg(&phy->dev, "%s(): Initializing SNPS HS phy\n", __func__);
+>
+> -       ret = regulator_bulk_enable(ARRAY_SIZE(hsphy->vregs), hsphy->vregs);
+> +       ret = vdda_phy_bulk_enable(hsphy);
+>         if (ret)
+>                 return ret;
+>
+> @@ -471,7 +577,7 @@ static int qcom_snps_hsphy_init(struct phy *phy)
+>  disable_clks:
+>         clk_bulk_disable_unprepare(hsphy->num_clks, hsphy->clks);
+>  poweroff_phy:
+> -       regulator_bulk_disable(ARRAY_SIZE(hsphy->vregs), hsphy->vregs);
+> +       ret = vdda_phy_bulk_disable(hsphy);
+>
+>         return ret;
+>  }
+> @@ -482,7 +588,7 @@ static int qcom_snps_hsphy_exit(struct phy *phy)
+>
+>         reset_control_assert(hsphy->phy_reset);
+>         clk_bulk_disable_unprepare(hsphy->num_clks, hsphy->clks);
+> -       regulator_bulk_disable(ARRAY_SIZE(hsphy->vregs), hsphy->vregs);
+> +       vdda_phy_bulk_disable(hsphy);
+>         hsphy->phy_initialized = false;
+>
+>         return 0;
+> @@ -592,8 +698,9 @@ static int qcom_snps_hsphy_probe(struct platform_device *pdev)
+>
+>         num = ARRAY_SIZE(hsphy->vregs);
+>         for (i = 0; i < num; i++)
+> -               hsphy->vregs[i].supply = qcom_snps_hsphy_vreg_names[i];
+> +               hsphy->vregs[i].supply = hsphy_vreg_l[i].name;
+>
+> +       hsphy->vreg_list  = hsphy_vreg_l;
+>         ret = devm_regulator_bulk_get(dev, num, hsphy->vregs);
+>         if (ret)
+>                 return dev_err_probe(dev, ret,
+> --
+> 2.17.1
+>
+>
+
+
 -- 
-2.39.2
-
+With best wishes
+Dmitry
 
