@@ -1,122 +1,154 @@
-Return-Path: <linux-kernel+bounces-166822-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-166823-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 184A38B9FFF
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 20:04:53 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C8A288BA005
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 20:08:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 40E08B225D6
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 18:04:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 694A51F22918
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 18:08:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 130FF17167B;
-	Thu,  2 May 2024 18:04:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="QqYTELYs"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.21])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DAC17171E71;
+	Thu,  2 May 2024 18:08:17 +0000 (UTC)
+Received: from mailout06.t-online.de (mailout06.t-online.de [194.25.134.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E59EA1553BB;
-	Thu,  2 May 2024 18:04:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B134D16FF2B;
+	Thu,  2 May 2024 18:08:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=194.25.134.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714673083; cv=none; b=mmk6wHtEIZ67cmTs4L8QcicmHbLYxjSWnr586eluPkiRtSWqoEgTx4ogGmmIUjSxoXHmh13s4vPu+P+GkXgaEl52cw2yuQckCaVSwyzBU66viNd7xTB6gWrhBgVmdwwDJvMooaRzZjVIm43nUJWiDxaDYcaZAwjJIGBU2QvO5vU=
+	t=1714673297; cv=none; b=IyDyDswhaUtYcqL/njMfk1xYNm/TibufLoUcG2KRQRRRfgWdZUbOb2//wSEuFy+aNd2T0r9qc/pcSwR+15uTHJxjMfPEExtVi1K6tVnMxqZ0CesJZepoN7sbw5dX1gRoeo3gKI5KAsafzgFzW3yto8UGGU6huUg9VGDeRfnraDw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714673083; c=relaxed/simple;
-	bh=5/V5S7wrzoPy8oKMzOoDT2O7s5J/iVanuW6/BCcg29I=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=QZGvsVxo1Y9L0vgXQLnODDVy5xHjnSYhnsNFJLegw1Gu16txCdckmVRN+axsd3tIxI6wfL/k6N4iafrdhhfiHctgSiG+TN0XShk3S5KsViqzOkNl60Q7PvynGxcd41bfhcszNlLlXFVpny3SDvuCqFTzq5xWJ4Od6DWcnrJiZzs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=QqYTELYs; arc=none smtp.client-ip=198.175.65.21
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1714673082; x=1746209082;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=5/V5S7wrzoPy8oKMzOoDT2O7s5J/iVanuW6/BCcg29I=;
-  b=QqYTELYsoJ1SNO5HP7iKukJ9+HpQfmO3P+DT5N3ybFkLqCZd1ToHM9Zy
-   vfqroK8TXGkIampZz0CEcK2dQBboBmbFhXoK9sKWWuxRcCVbphtmSiFKg
-   6R/Cf4CWLWkFaYhqFdrA/IvIZoUrDYgAzQJglHBAmoL1VJx3z47kBZoMH
-   B7qZaGTyiKWUFJ8Vvo3oYLylq6UN0pUkJDCBhGZsYRlYeclSdYm++NKqe
-   IPTJHZHqpCpBLQZc581NIkU9wMr4rfpv759BSA2+VRDUcTqOa0Tje2pdE
-   xstIbN0i3nNElJE5C2HTYh2u993bfFB6Z6qauUcU6Vck0VE+csz64tZci
-   Q==;
-X-CSE-ConnectionGUID: rcMnLXLATQqqpX0W3MGiaw==
-X-CSE-MsgGUID: mvoHL0JlTcmJOIBgpTlntQ==
-X-IronPort-AV: E=McAfee;i="6600,9927,11062"; a="10392507"
-X-IronPort-AV: E=Sophos;i="6.07,247,1708416000"; 
-   d="scan'208";a="10392507"
-Received: from fmviesa009.fm.intel.com ([10.60.135.149])
-  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 May 2024 11:04:41 -0700
-X-CSE-ConnectionGUID: ZE+KgaoXRZKNW+PlDxac9w==
-X-CSE-MsgGUID: f+h2FOWAShiH0+3Od4MrAQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,247,1708416000"; 
-   d="scan'208";a="27179982"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmviesa009.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 May 2024 11:04:38 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1s2anL-00000003PQx-32bI;
-	Thu, 02 May 2024 21:04:35 +0300
-Date: Thu, 2 May 2024 21:04:35 +0300
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Javier Carrasco <javier.carrasco@wolfvision.net>,
-	Jonathan Cameron <jic23@kernel.org>
-Cc: Daniel Scally <djrscally@gmail.com>,
-	Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-	Sakari Ailus <sakari.ailus@linux.intel.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	"Rafael J. Wysocki" <rafael@kernel.org>, linux-acpi@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] device property: introduce
- fwnode_for_each_child_node_scoped()
-Message-ID: <ZjPVs5NJzlMzHYn0@smile.fi.intel.com>
-References: <20240502-fwnode_for_each_child_node_scoped-v1-1-868a2b168fa8@wolfvision.net>
- <ZjOybob3wJjisuBL@smile.fi.intel.com>
- <6b5571e0-1463-4dd9-9bd8-459d456a6932@wolfvision.net>
- <ZjPVXW9tr0RLp7Jn@smile.fi.intel.com>
+	s=arc-20240116; t=1714673297; c=relaxed/simple;
+	bh=e3YLMIQIvdxhBBSMKk4ioEXXnAYqSPIZQKGl0Ph+Nps=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=WrCv22k2WkZkBF0erBXog0RXPJdXMR/NcQF5LLVNg/HEshNp6uxRfQL0RNuFmIt+ok2mH+uhbVmIV7ggRiz4sBIolIm+1RfRKWv4EtUb+Omkcm3igcKkd/F/iMesiWJwZ7X/UMw2mrgVaHFOnD3TNjYweUBr5TmGv6XYRpl271M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=t-online.de; spf=pass smtp.mailfrom=t-online.de; arc=none smtp.client-ip=194.25.134.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=t-online.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=t-online.de
+Received: from fwd79.aul.t-online.de (fwd79.aul.t-online.de [10.223.144.105])
+	by mailout06.t-online.de (Postfix) with SMTP id BFCDAF41E;
+	Thu,  2 May 2024 20:08:07 +0200 (CEST)
+Received: from dino2.dhome ([77.47.123.226]) by fwd79.t-online.de
+	with (TLSv1.3:TLS_AES_256_GCM_SHA384 encrypted)
+	esmtp id 1s2aqk-1HSaDx0; Thu, 2 May 2024 20:08:06 +0200
+From: Alois Fertl <a.fertl@t-online.de>
+To: a.zummo@towertech.it
+Cc: alexandre.belloni@bootlin.com,
+	wens@csie.org,
+	jernej.skrabec@gmail.com,
+	samuel@sholland.org,
+	linux-rtc@vger.kernel.org,
+	linux-sunxi@lists.linux.dev,
+	linux-kernel@vger.kernel.org,
+	Alois Fertl <a.fertl@t-online.de>
+Subject: [PATCH v3 1/1] drivers/rtc: rtc-sun6i: AutoCal Internal OSC Clock
+Date: Thu,  2 May 2024 20:07:36 +0200
+Message-Id: <20240502180736.7330-1-a.fertl@t-online.de>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZjPVXW9tr0RLp7Jn@smile.fi.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Transfer-Encoding: 8bit
+X-TOI-EXPURGATEID: 150726::1714673287-68D8B3C7-D18CE117/0/0 CLEAN NORMAL
+X-TOI-MSGID: 0047e4c5-c64c-4673-96e8-5d78ab731061
 
-On Thu, May 02, 2024 at 09:03:09PM +0300, Andy Shevchenko wrote:
-> On Thu, May 02, 2024 at 07:58:26PM +0200, Javier Carrasco wrote:
-> > On 5/2/24 17:34, Andy Shevchenko wrote:
-> > > On Thu, May 02, 2024 at 12:55:40PM +0200, Javier Carrasco wrote:
+I have a M98-8K PLUS Magcubic TV-Box based on the Allwinner H618 SOC.
+On board is a Sp6330 wifi/bt module that requires a 32kHz clock to
+operate correctly. Without this change the clock from the SOC is
+~29kHz and BT module does not start up. The patch enables the Internal
+OSC Clock Auto Calibration of the H616/H618 which than provides the
+necessary 32kHz and the BT module initializes successfully.
+Add a flag and set it for H6 AND H616. The H618 is the same as H616
+regarding rtc.
 
-..
+Signed-off-by: Alois Fertl <a.fertl@t-online.de>
+---
 
-> > >> This macro has been tested with a patch series that has not been
-> > >> applied yet and is under discussion in input [1], which makes use of the
-> > >> non-scoped version of the loop.
-> > > 
-> > > So, why should we apply a dead code?
-> > 
-> > I will add this patch to the series I mentioned, so there is a first use
-> > case.
-> 
-> Sounds like a good plan.
+v1->v2
+- add flag and activate for H6 AND H616
 
-Ah, note that IIO has already some patches against device property APIs. Maybe
-it's already done by Jonathan.
-Cc'ed to him.
+v2->v3
+- correct findings from review
 
-> > Even if the _available variant is preferred, the other one is more
-> > widely used, and having a scoped version will allow for safer code.
+I was hoping to get some feedback regarding the situation on H6,
+where an external 32k crystal can be present.
+From what I understand from the H6 manual there should be no
+conflict as one can select which souce will drive the output.
+Should certainly be tested but I don`t have H6 hardware.
 
+ drivers/rtc/rtc-sun6i.c | 17 ++++++++++++++++-
+
+ 1 file changed, 16 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/rtc/rtc-sun6i.c b/drivers/rtc/rtc-sun6i.c
+index e0b85a0d5645..20e81ccdef29 100644
+--- a/drivers/rtc/rtc-sun6i.c
++++ b/drivers/rtc/rtc-sun6i.c
+@@ -42,6 +42,11 @@
+ 
+ #define SUN6I_LOSC_CLK_PRESCAL			0x0008
+ 
++#define SUN6I_LOSC_CLK_AUTO_CAL			0x000c
++#define SUN6I_LOSC_CLK_AUTO_CAL_16MS		BIT(2)
++#define SUN6I_LOSC_CLK_AUTO_CAL_ENABLE		BIT(1)
++#define SUN6I_LOSC_CLK_AUTO_CAL_SEL_CAL		BIT(0)
++
+ /* RTC */
+ #define SUN6I_RTC_YMD				0x0010
+ #define SUN6I_RTC_HMS				0x0014
+@@ -126,7 +131,6 @@
+  *     registers (R40, H6)
+  *   - SYS power domain controls (R40)
+  *   - DCXO controls (H6)
+- *   - RC oscillator calibration (H6)
+  *
+  * These functions are not covered by this driver.
+  */
+@@ -138,6 +142,7 @@ struct sun6i_rtc_clk_data {
+ 	unsigned int has_losc_en : 1;
+ 	unsigned int has_auto_swt : 1;
+ 	unsigned int no_ext_losc : 1;
++	unsigned int has_auto_cal : 1;
+ };
+ 
+ #define RTC_LINEAR_DAY	BIT(0)
+@@ -268,6 +273,14 @@ static void __init sun6i_rtc_clk_init(struct device_node *node,
+ 	}
+ 	writel(reg, rtc->base + SUN6I_LOSC_CTRL);
+ 
++	if (rtc->data->has_auto_cal) {
++		/* Enable internal OSC clock auto calibration */
++		reg = SUN6I_LOSC_CLK_AUTO_CAL_16MS |
++			SUN6I_LOSC_CLK_AUTO_CAL_ENABLE |
++			SUN6I_LOSC_CLK_AUTO_CAL_SEL_CAL;
++		writel(reg, rtc->base + SUN6I_LOSC_CLK_AUTO_CAL);
++	}
++
+ 	/* Yes, I know, this is ugly. */
+ 	sun6i_rtc = rtc;
+ 
+@@ -380,6 +393,7 @@ static const struct sun6i_rtc_clk_data sun50i_h6_rtc_data = {
+ 	.has_out_clk = 1,
+ 	.has_losc_en = 1,
+ 	.has_auto_swt = 1,
++	.has_auto_cal = 1,
+ };
+ 
+ static void __init sun50i_h6_rtc_clk_init(struct device_node *node)
+@@ -395,6 +409,7 @@ static const struct sun6i_rtc_clk_data sun50i_h616_rtc_data = {
+ 	.has_prescaler = 1,
+ 	.has_out_clk = 1,
+ 	.no_ext_losc = 1,
++	.has_auto_cal = 1,
+ };
+ 
+ static void __init sun50i_h616_rtc_clk_init(struct device_node *node)
 -- 
-With Best Regards,
-Andy Shevchenko
-
+2.39.2
 
 
