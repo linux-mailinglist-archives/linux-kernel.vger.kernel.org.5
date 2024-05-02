@@ -1,114 +1,88 @@
-Return-Path: <linux-kernel+bounces-166042-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-166043-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 323498B9524
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 09:19:24 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 411968B9526
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 09:20:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 877DFB2173C
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 07:19:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 71EB31C20FE8
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 07:20:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8036224D7;
-	Thu,  2 May 2024 07:19:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1AA84224F2;
+	Thu,  2 May 2024 07:20:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DtQGw/LL"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kfOXBzm1"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0649B1CD31;
-	Thu,  2 May 2024 07:19:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5EAF71CD31;
+	Thu,  2 May 2024 07:20:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714634354; cv=none; b=Z2n7fuDzeEsFDRGCUoue8LRQZSqoCzylp5hxsPOcP98/oLlkN3CVr74JtzBupDxla2l/5Ir2JSadrVGfOVZ44Pz5IS6waeXSds0+OY/PqqzndAkMsszEEaJ8p6JdfAPbwKNXc9B6uLVYSLzm9dyx+wbCGZEakC8u1+s2LsxwmFo=
+	t=1714634421; cv=none; b=p4EF/QaTJMOvZIBAlh5knYPz4dlgY/NDtNlH8DPAz1Z5WxSF/p4gbKGKTzVuOuBeF8h7RxIvOGgMI2xIeHNhEaokuIUBB2DD3bM3eMqPCEDsnQwvNbKteE86mo/I1YRjlSIDw00M5Uj2fLO+JdJWP52cOdWm1RG7qByrgIhGenU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714634354; c=relaxed/simple;
-	bh=zALCxj2dHl0R1ke1uEMhAsdh4MJrggXSzHoN73Ahv2k=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=SnzmExubvKwW4E2Lk3036mixYKTa+MHiSvBgFapWgzZwIzluMh+JuXJV7+nDdoYdOrY6mnx0I1wKNE5KubEkLf735MZCl/AepidhZtFpQ9Kc9YHU10t8RzNUZKmCLHhvF1MnmJClNG3KlsRLPaZZbEQ0oTws1KazzzAW5VkZ9TM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DtQGw/LL; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D4720C113CC;
-	Thu,  2 May 2024 07:19:11 +0000 (UTC)
+	s=arc-20240116; t=1714634421; c=relaxed/simple;
+	bh=rmi6yDiKY+uXbvXqTuAMlm4djrOSk3mD/x4+OI3EoyQ=;
+	h=Content-Type:MIME-Version:Subject:From:In-Reply-To:References:To:
+	 Cc:Message-ID:Date; b=enfqsA6MQCdShBF4XueS+JVqx4FuQH38QsIZ6hxnsuTvhjDngDttGoYhneWjkuRBXVIDdNWYE5TY3cmFx3LYahznTKhwhhqdadfJPpS5YKaNLioXtETZb2Z4bEL38PJcC1/uwwYDZctXkg46jmwlagGez1ZLeduY7Q4kpSuDojI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kfOXBzm1; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 499C1C113CC;
+	Thu,  2 May 2024 07:20:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714634353;
-	bh=zALCxj2dHl0R1ke1uEMhAsdh4MJrggXSzHoN73Ahv2k=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=DtQGw/LL6N92zholDO0yvdVLq9E/E8yKefM8ynrnE43UROhtlCKWbayZHrcn9PLT3
-	 UYY8170XWK752rJh8QdjoSTx5FMzlDI7Sdsz/AMhdyyEvGcGKW8vS5IF0XIbASds5Y
-	 aXK8dF9sJpjftkpNuSaA+W2Ev6BkI6+vjXO9Sg09qhf3n6KbVGQB3kHETuYjTrwYe3
-	 g4xNknVopV4U8x/MavnAu6OJRRPC8yuMx4bnE/AfjKUIYkCLJXluVpM8tKDaI1/2VO
-	 bDhNJn/9YfUkSImCxu0o56YHT0pS/ZZSI79EQ0QlG6Ay/CEuXh5DnV5l2SQFeKhAxt
-	 sf6mPD9TmephQ==
-Date: Thu, 2 May 2024 08:19:08 +0100
-From: Lee Jones <lee@kernel.org>
-To: "Linux regression tracking (Thorsten Leemhuis)" <regressions@leemhuis.info>
-Cc: Ben Greear <greearb@candelatech.com>,
-	LKML <linux-kernel@vger.kernel.org>, linux-leds@vger.kernel.org,
-	Miri Korenblit <miriam.rachel.korenblit@intel.com>,
-	Johannes Berg <johannes@sipsolutions.net>,
-	Linux regressions mailing list <regressions@lists.linux.dev>
-Subject: Re: 6.9.0-rc2+ kernel hangs on boot (bisected, maybe LED related)
-Message-ID: <20240502071908.GB5338@google.com>
-References: <30f757e3-73c5-5473-c1f8-328bab98fd7d@candelatech.com>
- <30819e01-43ce-638f-0cc6-067d6a8d03c7@candelatech.com>
- <89a9eec3-337f-3c9f-6bbe-00a26a15287c@candelatech.com>
- <20240411070718.GD6194@google.com>
- <de43c7e1-7e8c-bdbe-f59e-7632c21da24a@candelatech.com>
- <8736ebc8881e1e0cabfbbf033725a3123a5e8e90.camel@sipsolutions.net>
- <bc420f3a-5809-4c4a-80ad-ccd8a46853b6@leemhuis.info>
- <8ab88be5de30bcbd0d1cac3cfde6b2085dcfc8fb.camel@sipsolutions.net>
- <0197efe8-828b-43ae-85c9-5d521913a289@leemhuis.info>
+	s=k20201202; t=1714634420;
+	bh=rmi6yDiKY+uXbvXqTuAMlm4djrOSk3mD/x4+OI3EoyQ=;
+	h=Subject:From:In-Reply-To:References:To:Cc:Date:From;
+	b=kfOXBzm12EeXozTfsx5PJPVf0pwieTDiPBP/ASVjUNhw4aa/xvvXrbZSnh624AkRL
+	 2MpqjUJETo9jOQag/F9m3u0MzeGxt779RIncCBJ/DvUgOs5Ct9vVi0o6qCoHNxfpRO
+	 2VAqeKo0Vg0nqLHU7s9JgF4V1AQFaBVA05s8II2HaZGwocv7ZLBBAmh23I8UnXDKVX
+	 Y6rYHl7NVJXEjg+6mj3d1hY7AiYaeCSqVtOUsqvn45hZVXPCRuv8Jzthx9KFNAtdIv
+	 EF16QSwr2RHB6AbdhotuP2zRu8AdCmVmaoazAcJaMXkSqwKhWh8mVXp9r9H3ypb3Sk
+	 eAWX8U2C8iYog==
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <0197efe8-828b-43ae-85c9-5d521913a289@leemhuis.info>
+Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH wireless 1/2] wifi: qtnfmac: Move stats allocation to core
+From: Kalle Valo <kvalo@kernel.org>
+In-Reply-To: <20240426093156.2002258-1-leitao@debian.org>
+References: <20240426093156.2002258-1-leitao@debian.org>
+To: Breno Leitao <leitao@debian.org>
+Cc: Igor Mitsyanko <imitsyanko@quantenna.com>,
+ Sergey Matyukevich <geomatsi@gmail.com>, linux-wireless@vger.kernel.org,
+ kuba@kernel.org, Johannes Berg <johannes.berg@intel.com>,
+ linux-kernel@vger.kernel.org (open list)
+User-Agent: pwcli/0.1.1-git (https://github.com/kvalo/pwcli/) Python/3.11.2
+Message-ID: <171463441751.470469.18121247610025881237.kvalo@kernel.org>
+Date: Thu,  2 May 2024 07:20:19 +0000 (UTC)
 
-On Tue, 23 Apr 2024, Linux regression tracking (Thorsten Leemhuis) wrote:
+Breno Leitao <leitao@debian.org> wrote:
 
-> On 23.04.24 11:06, Johannes Berg wrote:
-> > On Tue, 2024-04-23 at 11:00 +0200, Linux regression tracking (Thorsten
-> > Leemhuis) wrote:
-> >> On 16.04.24 08:17, Johannes Berg wrote:
-> >>> On Mon, 2024-04-15 at 13:37 -0700, Ben Greear wrote:
-> >>>>
-> >>>> Johannes, you had another suggestion: changing iwlwifi's request_module() to request_module_nowait() in
-> >>>> iwl_req_fw_callback()
-> >>>>
-> >>>> Is that still best thing to try in your opinion?
-> >>>
-> >>> I guess so, I don't have any better ideas so far anyway ...
-> >>
-> >> [adding the iwlwifi maintainer; thread starts here:
-> >> https://lore.kernel.org/lkml/30f757e3-73c5-5473-c1f8-328bab98fd7d@candelatech.com/
-> >>
-> >> ]
-> >>
-> >> Johannes, Miri, what's the status wrt to this regression? From here
-> >> things look somewhat stalled -- but maybe there was progress and I just
-> >> missed it.
-> > 
-> > What do you want? It got bisected to an LED merge, but you ping _us_?
-> > Way to go ...
+> With commit 34d21de99cea9 ("net: Move {l,t,d}stats allocation to core and
+> convert veth & vrf"), stats allocation could be done on net core instead
+> of this driver.
 > 
-> Sorry, to me it sounded a bit like you had an idea for a fix and were
-> going to give it a try -- similar to how the maintainers for a r8169
-> driver and the igc driver provided fixes for bugs recent LED changes
-> exposed.
+> With this new approach, the driver doesn't have to bother with error
+> handling (allocation failure checking, making sure free happens in the
+> right spot, etc). This is core responsibility now.
 > 
-> But sure, you are right, in the end some LED change seems to have cause
-> this, so the duty to fix it lies in that field. Therefore:
+> Move qtnfmac driver to leverage the core allocation.
 > 
-> Lee, what's the status here to get this fixed before the final?
+> Signed-off-by: Breno Leitao <leitao@debian.org>
 
-No idea.  Did you send a fix?
+2 patches applied to wireless-next.git, thanks.
+
+3d1a6e573bb1 wifi: qtnfmac: Move stats allocation to core
+8886b6d681f2 wifi: qtnfmac: Remove generic .ndo_get_stats64
 
 -- 
-Lee Jones [李琼斯]
+https://patchwork.kernel.org/project/linux-wireless/patch/20240426093156.2002258-1-leitao@debian.org/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+
 
