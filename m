@@ -1,80 +1,80 @@
-Return-Path: <linux-kernel+bounces-166382-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-166384-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 69D288B99E1
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 13:16:41 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id CCBA28B99E4
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 13:17:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 07A76284537
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 11:16:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 09AA91C21E08
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 11:17:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4949B65194;
-	Thu,  2 May 2024 11:16:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 46E6E78276;
+	Thu,  2 May 2024 11:16:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b="XBPQRvcj"
+	dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b="UBCxu639"
 Received: from smtp-relay-internal-1.canonical.com (smtp-relay-internal-1.canonical.com [185.125.188.123])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2968A64CE1
-	for <linux-kernel@vger.kernel.org>; Thu,  2 May 2024 11:16:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ECC4669959
+	for <linux-kernel@vger.kernel.org>; Thu,  2 May 2024 11:16:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.125.188.123
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714648587; cv=none; b=Ge9UCPUETQredf5M0TUocn8DSMEbAT2QOdTeCALJVmRESWPBJ50pR7qdmxgg0XifB+geQbcZw6CDzHkRV0/tKK8lWpM3oezo0garRTK+2LAF+4g1qMenPr+nmygB4wUeQbcdaDXSB6SpMNUlR4OpemQ1ohhANV1Ow631jorVia4=
+	t=1714648590; cv=none; b=aGBPunSN4WpXhmHkbTK99+tVS+EM9gju8FGmP6B5RIIP4UqWfAqGvZ+SWSoerRVA+tj+WTQUROfVQWOqJBQIDLsP78hz2CIaZlenSO7EkY8CaczBkyf2xl4dVmnULaVMVkTnDs9B9CSJyFSMvS1NcKdVgzRxM0uQBn/4MxWwcLI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714648587; c=relaxed/simple;
-	bh=jAfPxDaZQf+Z3EoMBa2T7YQWg15qnOSgj0+XC4k/BRE=;
+	s=arc-20240116; t=1714648590; c=relaxed/simple;
+	bh=YBmIuvux2Nz3WQf1dIIQ6Ld9PE8PDzjfaHfR7DKWMGc=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=e88ayRY37bElMAQpF918kr3fbmJNoA7Cs+VeGm2F6JuvzqXgLxkFCVRSp+vz3xP5lvFxJSPw9k8MTQOe23uHTt5v6Iq3l/NZtMI+Iackrad0yevCfEkz7QEouBzy2ybzTT4htd1QhBXEjq51T20V0CfyZdXMUlxsp9U49DasVfk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com; spf=pass smtp.mailfrom=canonical.com; dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b=XBPQRvcj; arc=none smtp.client-ip=185.125.188.123
+	 MIME-Version; b=LRyaq+pXhVNLO6KpvhDxqXgPD591PWejbohZlqJhwv8a28R40hIZBbDprPjPfDvXpYGr7762t+adY3DoMRMTZQgoNkXkMm3IJQAl4MvmUYxlTXyjiRxRLEuF49wA6r41TcjUlSi0zfDwJ758KE1h40NtgV2G0RJOqQzlIUOshhc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com; spf=pass smtp.mailfrom=canonical.com; dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b=UBCxu639; arc=none smtp.client-ip=185.125.188.123
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canonical.com
 Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com [209.85.218.72])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id BAD223FE64
-	for <linux-kernel@vger.kernel.org>; Thu,  2 May 2024 11:16:22 +0000 (UTC)
+	by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 1352A3FE6D
+	for <linux-kernel@vger.kernel.org>; Thu,  2 May 2024 11:16:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-	s=20210705; t=1714648582;
-	bh=9viCGe21wce589SPhaLpq63lHm2lNcUSGMl+Cs89goo=;
+	s=20210705; t=1714648585;
+	bh=alIA34WXYkmJHYDf9JzzyaPI80jtTP1Uaq24imH+xTg=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
 	 MIME-Version;
-	b=XBPQRvcjxx+qiYmBQ0T4dv8RbPvuHEe3jYPS5UXX9VLELwIHEbzpt6n+TVjYVvYz2
-	 owovTOpuv8Fp3V0WZeY8gyuHgGh+s6mFwMOVVDkPCeCvYqA41XagmpRksS/yQTdc6c
-	 0zYhlDX3fZFw7cCYImGYZnkWl+ZoFSJ5Kp4JSGNrtd+Ki1YuVnDngB9dTq+MNoNnB4
-	 xHzAu1pZ3FysTrvQkkmsCNT6Em8D6shv3EFMWPnoOCvQKhWGCynSqpAINRa5O965Ij
-	 Bq9bX7/LpUnO9p4V+31Fzw8CEShG0juj8P9h+2V8fb29BT3baDc2nEGaiJyJidZZvS
-	 h9NOPNd69qJDw==
-Received: by mail-ej1-f72.google.com with SMTP id a640c23a62f3a-a4455ae71fcso420270466b.3
-        for <linux-kernel@vger.kernel.org>; Thu, 02 May 2024 04:16:22 -0700 (PDT)
+	b=UBCxu639vQImDUVx8mVJ+0buLHcnoIlizToRJF6V+F3NGQqODsY+JS2MTHkdXffh7
+	 5pEjooilSH7SoCD+0rW4nCFrtS1xv4HHSwtaZJRS60Ow8gp5N6M/GoiWvZ3WneZcAD
+	 fJu+w12nCormA2hCgWnwAx3uEhMFCgG5P1vrpsDE/rjH8cNV57jCXlHt7EEfQbv/R+
+	 Y2J1stqLvtGkHHsrcklkAzPCey4uEDG0wqM6OdPWHcCCnhFWKep37wA2qW0IsmABnt
+	 ss9arEIPpKga/RqVw53VxxWRmaHAUvg+gKab/1SXY/5oDRlWqsgENX5SuG8a/FFP5E
+	 MYzxD/C6KwbAQ==
+Received: by mail-ej1-f72.google.com with SMTP id a640c23a62f3a-a558739aaf4so467131766b.0
+        for <linux-kernel@vger.kernel.org>; Thu, 02 May 2024 04:16:24 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714648577; x=1715253377;
+        d=1e100.net; s=20230601; t=1714648579; x=1715253379;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=9viCGe21wce589SPhaLpq63lHm2lNcUSGMl+Cs89goo=;
-        b=uMgPWNQBHnEGJyyj7eWrux4RIiueoJ84fIWH+rfUgEwGSWH8T8ch3RcPtwynAUoegz
-         tK3Jnnikqx22J9Ig3M5UPlp5Wkl8TFB4RlLH4QA1ezzqj42NIazYC3lKT6cAIrW+2+B4
-         yysHvp/hirJfA1Br/UHLs/d+Ze/8LF7eqj8cJdjwWY4/aj3cwqKzXFc6lX7oHf7TFvUF
-         QE8uECJkyni9w7ND8AkIYd63Uxuy4nm/6AG16Rf7z3O+romI9sv9EVjs8hwVLwJEn1BA
-         nsA4cBoOtGdWtbaXs3r5MXdGtc9TAhxQLGj/4zk1AkG9G2LFkEy0dGrKT0QRN4v5uXsi
-         5IjA==
-X-Forwarded-Encrypted: i=1; AJvYcCXOCGHShCPjSQGJImjF3QdH0DTG8bro3PR10PGnpdkZpohebqfT4shtSl1ejIa9hBJJ05v5wxlDpy+/0UdBh3b2eN0u2yw6ohPUtpSg
-X-Gm-Message-State: AOJu0YzmlMjxZOjSf2G8RK1ABifNxhAM2Pt+CPsIIA7Ij+tTSWm1ILQq
-	x8RonGZkW6iX8+Kjj+ZN5t/zCrfqqAB0EKja2R4hI/pEgyzP8wexgVbDL/KLSvjrn9gE9dHDAey
-	TZxP26H6zKVnOh4p54U2bkI6Hxm6YOeAQQbF/1lUjvnHIuYQJFYvZO8OqoDwqVK3Imr2yKcV1ot
-	tPHg==
-X-Received: by 2002:a17:906:2555:b0:a52:19ea:8df0 with SMTP id j21-20020a170906255500b00a5219ea8df0mr1225322ejb.66.1714648577763;
-        Thu, 02 May 2024 04:16:17 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IH0Myo75XOgrFJPJUQRXhMKXEEwYehp1jVRMzzcbJCBYoh68rOqDmHMkFSk+66SPyDzmCEKDA==
-X-Received: by 2002:a17:906:2555:b0:a52:19ea:8df0 with SMTP id j21-20020a170906255500b00a5219ea8df0mr1225308ejb.66.1714648577553;
-        Thu, 02 May 2024 04:16:17 -0700 (PDT)
+        bh=alIA34WXYkmJHYDf9JzzyaPI80jtTP1Uaq24imH+xTg=;
+        b=uKS41Po78JLl2FB++tXWW1cVwjC8FOjwAwCZ8jvlS5sQY7wRLI6I2cp1n90DDSotWy
+         OUIhXXNJ6Ku98MdYXMQGWuDQrDUW8qTlSqhCDxbNH/mATqOpTtLiYc8nIQPvj6dFBt6l
+         W4CibKL7fhr34oJ2lVEWpi7oJJY6dTLj6Z36rRHFz46KYTjxy9KXkkumrQJ0MwELzKg+
+         CYwXNlURqm3OL2Mo+64I2LSua0O04MPdV9cCZCB7UQsnTuJhtYDRPDAoXczvTJ0SGSBO
+         IxlSgQsXvXVCjMTkIoqEGa6CxNWeyn+GIH+RS/sYbJNTVIm7GCgVceeT05yH97Hupnd2
+         SUeA==
+X-Forwarded-Encrypted: i=1; AJvYcCVlCCxKodgItWPa8Q82zp8Z77egp547Gc8J2Cg5HmcFBw53oRXNbhms6jDrWloADQSJWWqLv+OEWK5g79xducMjxwRW5am7sX4hXYGr
+X-Gm-Message-State: AOJu0YzF36ojcKgsj5n3PcXozDtC4ennut/35fpmhYILnw7tGRn974TV
+	4WovrEEfxscmY+Y1k8tSS75aRQmG8mMGWfv/SB3UPwcuwVzWYimCfkDuUBPIdHS51mSueQkgR6X
+	qiIurqMBUh+i9jMEisl3bvSMMt1MWanW7jBbrZ9Lb/m9rs5wJHG6sACGR4m2QhASDgF2Q+Vt+x2
+	rmSQ==
+X-Received: by 2002:a17:906:11db:b0:a52:351f:5694 with SMTP id o27-20020a17090611db00b00a52351f5694mr1517621eja.14.1714648578861;
+        Thu, 02 May 2024 04:16:18 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IG86D9hK+ydkPVXUK/QjxllUq0XEakTYgairpW0wG9EVGdit8WtuOux1Y7bI6aIK7GFaVI/kg==
+X-Received: by 2002:a17:906:11db:b0:a52:351f:5694 with SMTP id o27-20020a17090611db00b00a52351f5694mr1517596eja.14.1714648578551;
+        Thu, 02 May 2024 04:16:18 -0700 (PDT)
 Received: from stitch.. ([80.71.142.166])
-        by smtp.gmail.com with ESMTPSA id gs23-20020a170906f19700b00a4739efd7cesm437278ejb.60.2024.05.02.04.16.16
+        by smtp.gmail.com with ESMTPSA id gs23-20020a170906f19700b00a4739efd7cesm437278ejb.60.2024.05.02.04.16.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 May 2024 04:16:17 -0700 (PDT)
+        Thu, 02 May 2024 04:16:18 -0700 (PDT)
 From: Emil Renner Berthing <emil.renner.berthing@canonical.com>
 To: linux-riscv@lists.infradead.org,
 	linux-kernel@vger.kernel.org,
@@ -85,9 +85,9 @@ Cc: Paul Walmsley <paul.walmsley@sifive.com>,
 	Nathan Chancellor <nathan@kernel.org>,
 	Nicolas Schier <nicolas@fjasle.eu>,
 	Nick Terrell <terrelln@fb.com>
-Subject: [PATCH v1 2/3] riscv: show help string for riscv-specific targets
-Date: Thu,  2 May 2024 13:16:07 +0200
-Message-ID: <20240502111613.1380453-3-emil.renner.berthing@canonical.com>
+Subject: [PATCH v1 3/3] kbuild: buildtar: install riscv compressed images as vmlinuz
+Date: Thu,  2 May 2024 13:16:08 +0200
+Message-ID: <20240502111613.1380453-4-emil.renner.berthing@canonical.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240502111613.1380453-1-emil.renner.berthing@canonical.com>
 References: <20240502111613.1380453-1-emil.renner.berthing@canonical.com>
@@ -99,40 +99,54 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Define the archhelp variable so that 'make ACRH=riscv help' will show
-the targets specific to building a RISC-V kernel like other
-architectures.
+Use the KBUILD_IMAGE variable to determine the right kernel image to
+install and install compressed images to /boot/vmlinuz-$version like the
+'make install' target already does.
 
 Signed-off-by: Emil Renner Berthing <emil.renner.berthing@canonical.com>
 ---
- arch/riscv/Makefile | 17 +++++++++++++++++
- 1 file changed, 17 insertions(+)
+This patch depends on Masahiro's patch at
+https://lore.kernel.org/r/20240414174139.3001175-1-masahiroy@kernel.org
+---
+ scripts/package/buildtar | 18 ++++++++----------
+ 1 file changed, 8 insertions(+), 10 deletions(-)
 
-diff --git a/arch/riscv/Makefile b/arch/riscv/Makefile
-index 29be676415d6..024482c68835 100644
---- a/arch/riscv/Makefile
-+++ b/arch/riscv/Makefile
-@@ -202,3 +202,20 @@ rv32_defconfig:
- PHONY += rv32_nommu_virt_defconfig
- rv32_nommu_virt_defconfig:
- 	$(Q)$(MAKE) -f $(srctree)/Makefile nommu_virt_defconfig 32-bit.config
-+
-+define archhelp
-+  echo  '  Image		- Uncompressed kernel image (arch/riscv/boot/Image)'
-+  echo  '  Image.gz	- Compressed kernel image (arch/riscv/boot/Image.gz)'
-+  echo  '  Image.bz2	- Compressed kernel image (arch/riscv/boot/Image.bz2)'
-+  echo  '  Image.lz4	- Compressed kernel image (arch/riscv/boot/Image.lz4)'
-+  echo  '  Image.lzma	- Compressed kernel image (arch/riscv/boot/Image.lzma)'
-+  echo  '  Image.lzo	- Compressed kernel image (arch/riscv/boot/Image.lzo)'
-+  echo  '  Image.zst	- Compressed kernel image (arch/riscv/boot/Image.zst)'
-+  echo  '  vmlinuz.efi	- Compressed EFI kernel image (arch/riscv/boot/vmlinuz.efi)'
-+  echo  '		  Default when CONFIG_EFI_ZBOOT=y'
-+  echo  '  xipImage	- Execute-in-place kernel image (arch/riscv/boot/xipImage)'
-+  echo  '		  Default when CONFIG_XIP_KERNEL=y'
-+  echo  '  install	- Install kernel using (your) ~/bin/$(INSTALLKERNEL) or'
-+  echo  '		  (distribution) /sbin/$(INSTALLKERNEL) or install to '
-+  echo  '		  $$(INSTALL_PATH)'
-+endef
+diff --git a/scripts/package/buildtar b/scripts/package/buildtar
+index ed8d9b496305..fa9bd0795d22 100755
+--- a/scripts/package/buildtar
++++ b/scripts/package/buildtar
+@@ -54,9 +54,8 @@ cp -v -- "${objtree}/vmlinux" "${tmpdir}/boot/vmlinux-${KERNELRELEASE}"
+ # Install arch-specific kernel image(s)
+ #
+ # Note:
+-#   mips, arm64, and riscv copy the first image found. This may not produce
+-#   the desired outcome because it may pick up a stale file remaining in the
+-#   build tree.
++#   mips and arm64 copy the first image found. This may not produce the desired
++#   outcome because it may pick up a stale file remaining in the build tree.
+ #
+ case "${ARCH}" in
+ 	x86|i386|x86_64)
+@@ -101,13 +100,12 @@ case "${ARCH}" in
+ 		done
+ 		;;
+ 	riscv)
+-		# Please note the following code may copy a stale file.
+-		for i in Image.bz2 Image.gz Image; do
+-			if [ -f "${objtree}/arch/riscv/boot/${i}" ] ; then
+-				cp -v -- "${objtree}/arch/riscv/boot/${i}" "${tmpdir}/boot/vmlinux-${KERNELRELEASE}"
+-				break
+-			fi
+-		done
++		case "${KBUILD_IMAGE##*/}" in
++			Image.*|vmlinuz.efi)
++				cp -v -- "$KBUILD_IMAGE" "${tmpdir}/boot/vmlinuz-${KERNELRELEASE}";;
++			*)
++				cp -v -- "$KBUILD_IMAGE" "${tmpdir}/boot/vmlinux-${KERNELRELEASE}";;
++		esac
+ 		;;
+ 	*)
+ 		cp -v -- "${KBUILD_IMAGE}" "${tmpdir}/boot/vmlinux-kbuild-${KERNELRELEASE}"
 -- 
 2.43.0
 
