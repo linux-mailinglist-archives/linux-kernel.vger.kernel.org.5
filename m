@@ -1,150 +1,82 @@
-Return-Path: <linux-kernel+bounces-167053-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-167056-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D72EB8BA3EC
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 01:22:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 253AD8BA3F0
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 01:23:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 05D5CB23A15
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 23:21:58 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6ED04B23469
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 23:23:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07E591C2AD;
-	Thu,  2 May 2024 23:21:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="EMJVd0MR"
-Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 79E691D55D;
+	Thu,  2 May 2024 23:23:43 +0000 (UTC)
+Received: from mail115-76.sinamail.sina.com.cn (mail115-76.sinamail.sina.com.cn [218.30.115.76])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1CB821CD0C
-	for <linux-kernel@vger.kernel.org>; Thu,  2 May 2024 23:21:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D3DE1C2AD
+	for <linux-kernel@vger.kernel.org>; Thu,  2 May 2024 23:23:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=218.30.115.76
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714692104; cv=none; b=XqKaT9U4nW96KCzTxlJAnKkohIwBJwwS1TUJr6IENtDwjdOa2aGKIGSWdG06qvN8sfSYAyfuTu8ToSa3WwOplQEtBoEhx1AlS2AAlAqaO9CNdlX14yYXVY2DYecD0Yqk0utotBbBrUII495QCLagotKtrqGE1x+JmrBFlId4hJw=
+	t=1714692223; cv=none; b=LJbsmUuGx+oD+rS7AlfHsgWinb94XqxKifA84xsuOkTTrDCsnOPSskBuLQEALUcoTOtGOzbUx1gY+19OtuUbIcfJqwKIZtLstmZbmHHWiHl2xUNfDS9aszpzZkf17ZTgPL3GptHD2YbSOP25vnwXzLViZyO6MyGJusz8MUTN6H0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714692104; c=relaxed/simple;
-	bh=t0ocJHvY73hrUFCV06uFlb3wGHL2RVlZU9n1KTZ7hPY=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=jgMmtPzl816wY9wj3Lw1Rt5gCP0g8BS7I/dkmrU3/KmB3UlUPL19Xl4L/FLn1xNSh6gkBFECaMMBPsTKFwonhay7j07MHNNbHRfJzWmGrzH/yUiQ0nMq4BrR97ujrNM8ruwAOBtQDRinapZkU5aumOO0SSkszBX1j3wPk9J1u+o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=EMJVd0MR; arc=none smtp.client-ip=209.85.219.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-de603db5d6aso8337492276.2
-        for <linux-kernel@vger.kernel.org>; Thu, 02 May 2024 16:21:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1714692101; x=1715296901; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=s0bl+EXjP+FAcnnealSKe+UO8h20s3Bb2rwaSYi0ocI=;
-        b=EMJVd0MRiJqm3UnPJGEkLl6LrggKvvFrfdAGX8rmY3ImBqu474OjktOA/hjEjlrmCX
-         fmrBXGeIY2skkftEbxpfawAbf/qosKiXfyPX647e79Rokt/VDVig5oMnYAtx0DIBbmiq
-         MAYNy63TJwTdOY/scvKX/Bdvb1imxiSiSVESqh18pD0oH2u8yVUjjFTHA+FXRO3dW7Et
-         vjGPn4NKb3kblBfRW+R80b6viy+KWjyQ6GeRa/tgxL5WATN0l7C+m+BHHS4XHonnPKDX
-         LnFxrp9LNrzPsERkfVyIvpbL0v4qGpL5O7qsjGnu++R9octd9DZ/21MQUrdEsmveCjMs
-         s9yg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714692101; x=1715296901;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=s0bl+EXjP+FAcnnealSKe+UO8h20s3Bb2rwaSYi0ocI=;
-        b=cXAn9MIDGuq/Yg0i7M7KZUAg1phcOOOlGh782LNkDtfSKlVrlVGZvoWUb5MvSuiKrB
-         fsYLmgpENNFE8Ef6QO4CQW+J8+sL16Dtwv+1YY+HLVYi5GYQO6BaYumOm5dbKKn8Ouv6
-         XfDo4itRFdALORhl5DZcUJ7ilQZOPC1mW1EYV4mU96rPltv2RomlStgNjwdGcersFuHs
-         uNN6ao0dFv3qXQ5G3V2KC2ZihQyXAiVedVrJV3KWn8AC0y41tXi/R2jK/rd+Hpei4LS1
-         Fys21x/tot7JU+jsC9WK7Op5RHnCXyFFHHyNJleqixuekM2qLeLPWJfiewnNTr/5yWV1
-         oB+w==
-X-Forwarded-Encrypted: i=1; AJvYcCXkPMdjlGUVz5GeOJIDmMazKoPvUc8AQITy5oNy1rfrNaY9LrAmTY/lJm3efL8g3mxXY13Cw6SZwwKcJQt92R+HvSa0AGiZkm0TRwbS
-X-Gm-Message-State: AOJu0YxxiBX1HZ0bkrVhDX8BPmq6CEuFivbH/G9pmSU7O0iCboRl0clh
-	yXV9dCbfIUcVgPccxtveaOkTAmNn5cUf4SGqV0r9fOJCf1nEyAoEnklofz2vjO8E/VebVkosXcu
-	2aw==
-X-Google-Smtp-Source: AGHT+IHjDGmpaXVSoAwTIzLen1vuSbxCgrToQC/Icn+sgd/CbVo8NnwSTKIPPZRYPCvB6poyTUeH1apk8qc=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:6902:2b83:b0:dd1:390a:51e8 with SMTP id
- fj3-20020a0569022b8300b00dd1390a51e8mr368460ybb.10.1714692101128; Thu, 02 May
- 2024 16:21:41 -0700 (PDT)
-Date: Thu, 2 May 2024 16:21:39 -0700
-In-Reply-To: <20240418021823.1275276-2-alejandro.j.jimenez@oracle.com>
+	s=arc-20240116; t=1714692223; c=relaxed/simple;
+	bh=qxv6eLTXJ08RHAn4M74hEmlNHmGTF7pZkSb0aNw1mBI=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=dQulmHqTWjH5Z6IXb39wIMavdQc35odwlu3vDq+khQhg5NfCkgzXePIrDCGiYI8ytCj6lSkTkYZDuNgOqo3expyEZSxkCRWPaT5qhaTg2pWaMEwe89yCEJM5B4ObP8qwrG5fBBBs02Kt4SBCzp93gVvhqGh8b/engnQzFMvKthU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sina.com; spf=pass smtp.mailfrom=sina.com; arc=none smtp.client-ip=218.30.115.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sina.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sina.com
+X-SMAIL-HELO: localhost.localdomain
+Received: from unknown (HELO localhost.localdomain)([113.118.64.31])
+	by sina.com (10.75.12.45) with ESMTP
+	id 6634205100005E4F; Thu, 3 May 2024 07:22:59 +0800 (CST)
+X-Sender: hdanton@sina.com
+X-Auth-ID: hdanton@sina.com
+Authentication-Results: sina.com;
+	 spf=none smtp.mailfrom=hdanton@sina.com;
+	 dkim=none header.i=none;
+	 dmarc=none action=none header.from=hdanton@sina.com
+X-SMAIL-MID: 65011531457717
+X-SMAIL-UIID: D436D9FE715F47DC8A982E0EA16D3A41-20240503-072259-1
+From: Hillf Danton <hdanton@sina.com>
+To: syzbot <syzbot+9e39ac154d8781441e60@syzkaller.appspotmail.com>
+Cc: linux-kernel@vger.kernel.org,
+	syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] [btrfs?] kernel BUG in folio_unlock (2)
+Date: Fri,  3 May 2024 07:22:47 +0800
+Message-Id: <20240502232247.1845-1-hdanton@sina.com>
+In-Reply-To: <0000000000009e614206177b0968@google.com>
+References: 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240418021823.1275276-1-alejandro.j.jimenez@oracle.com> <20240418021823.1275276-2-alejandro.j.jimenez@oracle.com>
-Message-ID: <ZjQgA0ml4-mRJC-e@google.com>
-Subject: Re: [PATCH v2 1/2] KVM: x86: Only set APICV_INHIBIT_REASON_ABSENT if
- APICv is enabled
-From: Sean Christopherson <seanjc@google.com>
-To: Alejandro Jimenez <alejandro.j.jimenez@oracle.com>
-Cc: kvm@vger.kernel.org, pbonzini@redhat.com, linux-kernel@vger.kernel.org, 
-	joao.m.martins@oracle.com, boris.ostrovsky@oracle.com, 
-	suravee.suthikulpanit@amd.com, mlevitsk@redhat.com
-Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-On Thu, Apr 18, 2024, Alejandro Jimenez wrote:
-> Use the APICv enablement status to determine if APICV_INHIBIT_REASON_ABSENT
-> needs to be set, instead of unconditionally setting the reason during
-> initialization.
+On Thu, 02 May 2024 09:24:30 -0700
+> syzbot found the following issue on:
 > 
-> Specifically, in cases where AVIC is disabled via module parameter or lack
-> of hardware support, unconditionally setting an inhibit reason due to the
-> absence of an in-kernel local APIC can lead to a scenario where the reason
-> incorrectly remains set after a local APIC has been created by either
-> KVM_CREATE_IRQCHIP or the enabling of KVM_CAP_IRQCHIP_SPLIT. This is
-> because the helpers in charge of removing the inhibit return early if
-> enable_apicv is not true, and therefore the bit remains set.
-> 
-> This leads to confusion as to the cause why APICv is not active, since an
-> incorrect reason will be reported by tracepoints and/or a debugging tool
-> that examines the currently set inhibit reasons.
-> 
-> Fixes: ef8b4b720368 ("KVM: ensure APICv is considered inactive if there is no APIC")
-> Co-developed-by: Sean Christopherson <seanjc@google.com>
+> HEAD commit:    9c6ecb3cb6e2 Add linux-next specific files for 20240502
+> git tree:       linux-next
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=10efe5f8980000
 
-Heh, no need, I just provided review feedback.
+#syz test https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git  9c6ecb3cb6e2
 
-> Signed-off-by: Alejandro Jimenez <alejandro.j.jimenez@oracle.com>
-> ---
->  arch/x86/kvm/x86.c | 13 ++++++-------
->  1 file changed, 6 insertions(+), 7 deletions(-)
-> 
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index 26288ca05364..09052ff5a9a0 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -9995,15 +9995,14 @@ static void set_or_clear_apicv_inhibit(unsigned long *inhibits,
->  
->  static void kvm_apicv_init(struct kvm *kvm)
->  {
-> -	unsigned long *inhibits = &kvm->arch.apicv_inhibit_reasons;
-> +	enum kvm_apicv_inhibit reason = enable_apicv ?
-> +						APICV_INHIBIT_REASON_ABSENT :
-> +						APICV_INHIBIT_REASON_DISABLE;
-
-Just let this poke out, the 80 char limit is a soft limit, where "soft" is fairly
-"hard" in KVM", but there are still legitimate situations where running past 80
-is yields more readable code, and IMO this is one of them.
-
-> -	init_rwsem(&kvm->arch.apicv_update_lock);
-> -
-> -	set_or_clear_apicv_inhibit(inhibits, APICV_INHIBIT_REASON_ABSENT, true);
-> +	set_or_clear_apicv_inhibit(&kvm->arch.apicv_inhibit_reasons, reason,
-> +				   true);
-
-Same here.
-
-No need for a v3, I'll fixup when applying.
-
->  
-> -	if (!enable_apicv)
-> -		set_or_clear_apicv_inhibit(inhibits,
-> -					   APICV_INHIBIT_REASON_DISABLE, true);
-> +	init_rwsem(&kvm->arch.apicv_update_lock);
->  }
->  
->  static void kvm_sched_yield(struct kvm_vcpu *vcpu, unsigned long dest_id)
-> -- 
-> 2.39.3
-> 
+--- x/fs/btrfs/extent_io.c
++++ y/fs/btrfs/extent_io.c
+@@ -1516,7 +1516,8 @@ done:
+ 					       PAGE_SIZE, !ret);
+ 		mapping_set_error(page->mapping, ret);
+ 	}
+-	unlock_page(page);
++	if (PageLocked(page))
++		unlock_page(page);
+ 	ASSERT(ret <= 0);
+ 	return ret;
+ }
+--
 
