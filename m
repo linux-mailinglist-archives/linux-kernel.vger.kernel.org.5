@@ -1,54 +1,74 @@
-Return-Path: <linux-kernel+bounces-166007-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-166008-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8B6E08B94B3
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 08:33:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id C9B678B94BA
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 08:34:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4C92A283B6F
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 06:33:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7F7FE28165B
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 06:34:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B4528C1A;
-	Thu,  2 May 2024 06:33:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB7818F6D;
+	Thu,  2 May 2024 06:34:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="qOk0oevP"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="GCqJZCke"
+Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 44326A48;
-	Thu,  2 May 2024 06:33:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 88227819
+	for <linux-kernel@vger.kernel.org>; Thu,  2 May 2024 06:34:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714631581; cv=none; b=XDQE7Lacmi0NSfx59TjgRa825dcbdRddh/VSMkfD8eAnj/JGiaNRxoOfWRpokgsYg4ry8DwHdkwxj1NOC8CRjmJR6A0mUj7cDsUoNljUvyZxPK1XTKRIAiB0nCV5easM7+tnlXS7R/EYjrHmMICSMtKSAc6RPD0guUzcKOE8LQ8=
+	t=1714631681; cv=none; b=I921vKejGvmfunx58d6+GW9AFUTdRhajVZhIxpnHYcoJpY1/0Y0hOMevQky4+liFJUFiR09cdNBrXrRhm84Ur1QyeG0APBDTf64uDApDlBMlodq+pR3EccrmT19ZEg4y56Uwg3NIwBFkB3KyxmmzWx4D+Q0fxF3NGNt5QgJnwFY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714631581; c=relaxed/simple;
-	bh=pjIqOJEiOt9KucXTf7b55UJINUUUZE6EEFDyk2OaR6s=;
-	h=Message-ID:Date:MIME-Version:Cc:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=J3K3pvYPn4nhvDY8+tM9bEk1v2d4YaW7PtGezo3necVBMUeAIZdagyKqgdVL2+9Bg7ofXeDME9QFsw5ebW0oguwSdnVLZFbi1dxG4ajNiMwWoT4gA83cpnsepyRrqGUNt2DPSnLaejTfy4bvahP5o2tm5NqprpHwv76CBi+9UIs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=qOk0oevP; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1714631572;
-	bh=pjIqOJEiOt9KucXTf7b55UJINUUUZE6EEFDyk2OaR6s=;
-	h=Date:Cc:Subject:To:References:From:In-Reply-To:From;
-	b=qOk0oevPJe0LgsiOcWVDLXXHzCvIYoiw1Wsitp25al+Np2Df1aAOdnCuCTASWptDo
-	 nan8oK3KXH1jABC8mPxSjHiIBLj9dMW9qebrP1PX7Pk+XXJBNQxaJ1DE6v2xCL6Rda
-	 FuaY7MhnChhcEoZt2qjErybB/Ezp+OFMbtGDzaWo5SJuCPr60IKfSoFa2VTm5KLElk
-	 t24Fx2hliDxtO8PDOk7tf9P0MtzNAHVZyW+vHO8L9+wSK8AD5CVEvWQ5m94Gg9BooL
-	 w5f3uU5JP2RAe+Ac39q5iEiLzQkQrLyP+mfTqXqS2Ow9FzdIKl4EJJbGr7lLUm1dGg
-	 UAjj6nWFVe0mg==
-Received: from [10.193.1.1] (broslavsky.collaboradmins.com [68.183.210.73])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: usama.anjum)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id BE6D3378001E;
-	Thu,  2 May 2024 06:32:47 +0000 (UTC)
-Message-ID: <c9ad463f-cc67-44eb-bf94-449144e3078b@collabora.com>
-Date: Thu, 2 May 2024 11:33:17 +0500
+	s=arc-20240116; t=1714631681; c=relaxed/simple;
+	bh=r766gijTfzKORP0fGYzJOcc+6YkKNgMITMmiaY/8hHc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Lupkm3sanoCH8oSz2NjsOoWs7UcA0ZaRO4ZwwjRJhiOJxShsF05xLR9Ms4ErdeOfCgQhJ2rD1Hz+Lh89aqakT3ckF/iBFkQJVG9QUidT2dMkNh17oD73/zPVUuZr2ZubovfN7RCz7e1fJAkTJrrKYfzeTjJOVjmIyDBRLcH4gPc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=GCqJZCke; arc=none smtp.client-ip=209.85.128.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-41b794510cdso49574215e9.2
+        for <linux-kernel@vger.kernel.org>; Wed, 01 May 2024 23:34:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1714631678; x=1715236478; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
+         :from:references:cc:to:subject:user-agent:mime-version:date
+         :message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=OwBEpKOxiDmHz555+eMw68PeiQOB/aRAXLhEW/merXc=;
+        b=GCqJZCkemN5QA4DikQVogWWswbcXb6gl2km/3YRrswtWcq22OLO+p2wftpM3H7RBJn
+         WjpP7SEFieDiGmMr3apnhHcFI2r5ra1G5LDcRsFP1/UjIUDmYzhnZfyC02qQWpAd8qtT
+         x79cDVwlYiBkCb2WpAB1c0VRdTU0ykakHFCOCsEKvMgOqUGBbjJqawxOC7x6okIuQT7Q
+         mhjSjRglINsKQqVKIojYuQQCu4mBf8MdhqhgPvnF8Qd2btE+OlMr/Ea6HREiLo1Nprbo
+         Lv6IehBQvzhCFgz+rRzAk2kT3wGnQlKSooAcPwzujGMEJjbuxImJzpHpzDAt+FBHkIkW
+         oCEw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714631678; x=1715236478;
+        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
+         :from:references:cc:to:subject:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=OwBEpKOxiDmHz555+eMw68PeiQOB/aRAXLhEW/merXc=;
+        b=eJc7Fr0zU21PM5dzk8ibAK17hYWB5mFbpQBQyvDPJzTpN7ZYnRvHNM9uiA/9L++COX
+         sJim2lKedNrXLGcfOecjzTa9LqMqDhRgaYYzSnRWVNhKaiAlXm6cxiOepH3ntdT37wxq
+         jjsohnreNcnEtcLtGm/XLI5vslppJfxqJ23UQnSA4eXBFiJF1MMhzV0wb8T1YX8Mm8jc
+         hh4Cn39dfarQdEWIdYluwI2oEONdIUVrY68EB01Io6YBlTinCBwsSEJkdItVkti5u+jh
+         PrAmdaFrMjMUXkEbEw0DzaBGtQWdiMKD4Ed0JS2dR5koKft8lFsqW928oKXaf3QnaJW4
+         M2yw==
+X-Forwarded-Encrypted: i=1; AJvYcCWUuAXm6rZEdmtdil+bU/ekjZDrsJFpRaPnm1rvo0Htsy/37d3yCq9/SwXT9RpzKbu8aedcK3jabPSuQp22N1kqGPdiKX2N8vmXj6sb
+X-Gm-Message-State: AOJu0Yy40Q8CFZeVvSeVC+spod+1WX/K6iEn0XYk6jOiFLHrUFovpwQl
+	Rb+5nxEqEMZXJ4iKlSurFZljpG7Xt+a9fLyis80jj9qQIX2hKOm77hzuqhjp69k=
+X-Google-Smtp-Source: AGHT+IGh2cZAcBu9wU1R4xgr22ePON7wM5cJdwEJ5IfChdLf6AFLnPNO1ZSm534399SoH50vIm/hBQ==
+X-Received: by 2002:a5d:474e:0:b0:34a:cc2:1a34 with SMTP id o14-20020a5d474e000000b0034a0cc21a34mr2510665wrs.42.1714631677911;
+        Wed, 01 May 2024 23:34:37 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.223.16])
+        by smtp.gmail.com with ESMTPSA id g21-20020adfa495000000b003437a76565asm429416wrb.25.2024.05.01.23.34.35
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 01 May 2024 23:34:37 -0700 (PDT)
+Message-ID: <2aa5cb1c-295f-4900-a794-daa36bc192aa@linaro.org>
+Date: Thu, 2 May 2024 08:34:34 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -56,63 +76,97 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Cc: Muhammad Usama Anjum <usama.anjum@collabora.com>,
- Edward Liaw <edliaw@google.com>, oe-lkp@lists.linux.dev, lkp@intel.com,
- linux-kernel@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>,
- Andy Lutomirski <luto@amacapital.net>,
- Axel Rasmussen <axelrasmussen@google.com>, Bill Wendling <morbo@google.com>,
- David Hildenbrand <david@redhat.com>, Justin Stitt <justinstitt@google.com>,
- "Mike Rapoport (IBM)" <rppt@kernel.org>,
- Nathan Chancellor <nathan@kernel.org>,
- Nick Desaulniers <ndesaulniers@google.com>, Peter Xu <peterx@redhat.com>,
- Shuah Khan <shuah@kernel.org>, Will Drewry <wad@chromium.org>,
- linux-kselftest@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [linus:master] [selftests/harness] 8092162335:
- kernel-selftests.sgx.make.fail
-To: Kees Cook <keescook@chromium.org>,
- kernel test robot <oliver.sang@intel.com>
-References: <202404301040.3bea5782-oliver.sang@intel.com>
- <202405011330.85D66871E@keescook>
+Subject: Re: [PATCH] arm64: dts: Add/fix /memory node unit-addresses
+To: "Rob Herring (Arm)" <robh@kernel.org>, soc@kernel.org,
+ =?UTF-8?Q?Andreas_F=C3=A4rber?= <afaerber@suse.de>,
+ Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>,
+ Khuong Dinh <khuong@os.amperecomputing.com>, Ray Jui <rjui@broadcom.com>,
+ Scott Branden <sbranden@broadcom.com>,
+ Broadcom internal kernel review list
+ <bcm-kernel-feedback-list@broadcom.com>, Robert Richter <rric@kernel.org>,
+ Chanho Min <chanho.min@lge.com>, Avi Fishman <avifishman70@gmail.com>,
+ Tomer Maimon <tmaimon77@gmail.com>, Tali Perry <tali.perry1@gmail.com>,
+ Patrick Venture <venture@google.com>, Nancy Yuen <yuenn@google.com>,
+ Benjamin Fair <benjaminfair@google.com>,
+ Thierry Reding <thierry.reding@gmail.com>,
+ Jonathan Hunter <jonathanh@nvidia.com>,
+ Bjorn Andersson <andersson@kernel.org>,
+ Konrad Dybcio <konrad.dybcio@linaro.org>, Heiko Stuebner <heiko@sntech.de>,
+ Orson Zhai <orsonzhai@gmail.com>, Baolin Wang
+ <baolin.wang@linux.alibaba.com>, Chunyan Zhang <zhang.lyra@gmail.com>
+Cc: linux-arm-kernel@lists.infradead.org, linux-actions@lists.infradead.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ openbmc@lists.ozlabs.org, linux-tegra@vger.kernel.org,
+ linux-arm-msm@vger.kernel.org, linux-rockchip@lists.infradead.org
+References: <20240430191856.874600-2-robh@kernel.org>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Content-Language: en-US
-From: Muhammad Usama Anjum <usama.anjum@collabora.com>
-In-Reply-To: <202405011330.85D66871E@keescook>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
+ cFgcqTTuNHjAvxtUG8pQgGTHAObYs6xeYJtjUH0ZX6ndJ33FJYf5V3yXqqjcZ30FgHzJCFUu
+ JMp7PSyMPzpUXfU12yfcRYVEMQrmplNZssmYhiTeVicuOOypWugZKVLGNm0IweVCaZ/DJDIH
+ gNbpvVwjcKYrx85m9cBVEBUGaQP6AT7qlVCkrf50v8bofSIyVa2xmubbAwwFA1oxoOusjPIE
+ J3iadrwpFvsZjF5uHAKS+7wHLoW9hVzOnLbX6ajk5Hf8Pb1m+VH/E8bPBNNYKkfTtypTDUCj
+ NYcd27tjnXfG+SDs/EXNUAIRefCyvaRG7oRYF3Ec+2RgQDRnmmjCjoQNbFrJvJkFHlPeHaeS
+ BosGY+XWKydnmsfY7SSnjAzLUGAFhLd/XDVpb1Een2XucPpKvt9ORF+48gy12FA5GduRLhQU
+ vK4tU7ojoem/G23PcowM1CwPurC8sAVsQb9KmwTGh7rVz3ks3w/zfGBy3+WmLg++C2Wct6nM
+ Pd8/6CBVjEWqD06/RjI2AnjIq5fSEH/BIfXXfC68nMp9BZoy3So4ZsbOlBmtAPvMYX6U8VwD
+ TNeBxJu5Ex0Izf1NV9CzC3nNaFUYOY8KfN01X5SExAoVTr09ewARAQABzTRLcnp5c3p0b2Yg
+ S296bG93c2tpIDxrcnp5c3p0b2Yua296bG93c2tpQGxpbmFyby5vcmc+wsGUBBMBCgA+FiEE
+ m9B+DgxR+NWWd7dUG5NDfTtBYpsFAmI+BxMCGwMFCRRfreEFCwkIBwIGFQoJCAsCBBYCAwEC
+ HgECF4AACgkQG5NDfTtBYptgbhAAjAGunRoOTduBeC7V6GGOQMYIT5n3OuDSzG1oZyM4kyvO
+ XeodvvYv49/ng473E8ZFhXfrre+c1olbr1A8pnz9vKVQs9JGVa6wwr/6ddH7/yvcaCQnHRPK
+ mnXyP2BViBlyDWQ71UC3N12YCoHE2cVmfrn4JeyK/gHCvcW3hUW4i5rMd5M5WZAeiJj3rvYh
+ v8WMKDJOtZFXxwaYGbvFJNDdvdTHc2x2fGaWwmXMJn2xs1ZyFAeHQvrp49mS6PBQZzcx0XL5
+ cU9ZjhzOZDn6Apv45/C/lUJvPc3lo/pr5cmlOvPq1AsP6/xRXsEFX/SdvdxJ8w9KtGaxdJuf
+ rpzLQ8Ht+H0lY2On1duYhmro8WglOypHy+TusYrDEry2qDNlc/bApQKtd9uqyDZ+rx8bGxyY
+ qBP6bvsQx5YACI4p8R0J43tSqWwJTP/R5oPRQW2O1Ye1DEcdeyzZfifrQz58aoZrVQq+innR
+ aDwu8qDB5UgmMQ7cjDSeAQABdghq7pqrA4P8lkA7qTG+aw8Z21OoAyZdUNm8NWJoQy8m4nUP
+ gmeeQPRc0vjp5JkYPgTqwf08cluqO6vQuYL2YmwVBIbO7cE7LNGkPDA3RYMu+zPY9UUi/ln5
+ dcKuEStFZ5eqVyqVoZ9eu3RTCGIXAHe1NcfcMT9HT0DPp3+ieTxFx6RjY3kYTGLOwU0EVUNc
+ NAEQAM2StBhJERQvgPcbCzjokShn0cRA4q2SvCOvOXD+0KapXMRFE+/PZeDyfv4dEKuCqeh0
+ hihSHlaxTzg3TcqUu54w2xYskG8Fq5tg3gm4kh1Gvh1LijIXX99ABA8eHxOGmLPRIBkXHqJY
+ oHtCvPc6sYKNM9xbp6I4yF56xVLmHGJ61KaWKf5KKWYgA9kfHufbja7qR0c6H79LIsiYqf92
+ H1HNq1WlQpu/fh4/XAAaV1axHFt/dY/2kU05tLMj8GjeQDz1fHas7augL4argt4e+jum3Nwt
+ yupodQBxncKAUbzwKcDrPqUFmfRbJ7ARw8491xQHZDsP82JRj4cOJX32sBg8nO2N5OsFJOcd
+ 5IE9v6qfllkZDAh1Rb1h6DFYq9dcdPAHl4zOj9EHq99/CpyccOh7SrtWDNFFknCmLpowhct9
+ 5ZnlavBrDbOV0W47gO33WkXMFI4il4y1+Bv89979rVYn8aBohEgET41SpyQz7fMkcaZU+ok/
+ +HYjC/qfDxT7tjKXqBQEscVODaFicsUkjheOD4BfWEcVUqa+XdUEciwG/SgNyxBZepj41oVq
+ FPSVE+Ni2tNrW/e16b8mgXNngHSnbsr6pAIXZH3qFW+4TKPMGZ2rZ6zITrMip+12jgw4mGjy
+ 5y06JZvA02rZT2k9aa7i9dUUFggaanI09jNGbRA/ABEBAAHCwXwEGAEKACYCGwwWIQSb0H4O
+ DFH41ZZ3t1Qbk0N9O0FimwUCYDzvagUJFF+UtgAKCRAbk0N9O0Fim9JzD/0auoGtUu4mgnna
+ oEEpQEOjgT7l9TVuO3Qa/SeH+E0m55y5Fjpp6ZToc481za3xAcxK/BtIX5Wn1mQ6+szfrJQ6
+ 59y2io437BeuWIRjQniSxHz1kgtFECiV30yHRgOoQlzUea7FgsnuWdstgfWi6LxstswEzxLZ
+ Sj1EqpXYZE4uLjh6dW292sO+j4LEqPYr53hyV4I2LPmptPE9Rb9yCTAbSUlzgjiyyjuXhcwM
+ qf3lzsm02y7Ooq+ERVKiJzlvLd9tSe4jRx6Z6LMXhB21fa5DGs/tHAcUF35hSJrvMJzPT/+u
+ /oVmYDFZkbLlqs2XpWaVCo2jv8+iHxZZ9FL7F6AHFzqEFdqGnJQqmEApiRqH6b4jRBOgJ+cY
+ qc+rJggwMQcJL9F+oDm3wX47nr6jIsEB5ZftdybIzpMZ5V9v45lUwmdnMrSzZVgC4jRGXzsU
+ EViBQt2CopXtHtYfPAO5nAkIvKSNp3jmGxZw4aTc5xoAZBLo0OV+Ezo71pg3AYvq0a3/oGRG
+ KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
+ fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20240430191856.874600-2-robh@kernel.org>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 
-On 5/2/24 1:32 AM, Kees Cook wrote:
-> On Tue, Apr 30, 2024 at 11:02:36AM +0800, kernel test robot wrote:
->> version: kernel-selftests-x86_64-c7864053-1_20240419
->> [...]
->> compiler: gcc-13
->> 2024-04-29 15:02:59 make -j16 -C sgx
->> [...]
->> gcc -Wall -Werror -static-pie -nostdlib -ffreestanding -fPIE -fno-stack-protector -mrdrnd -I/usr/src/perf_selftests-x86_64-rhel-8.3-kselftests-8092162335554c8ef5e7f50eff68aa9cfbdbf865/tools/testing/selftests/../../../tools/include test_encl.c test_encl_bootstrap.S -o /usr/src/perf_selftests-x86_64-rhel-8.3-kselftests-8092162335554c8ef5e7f50eff68aa9cfbdbf865/tools/testing/selftests/sgx/test_encl.elf -Wl,-T,test_encl.lds,--build-id=none
->> /usr/bin/ld: warning: /tmp/lkp/cct4g3SV.o: missing .note.GNU-stack section implies executable stack
->> /usr/bin/ld: NOTE: This behaviour is deprecated and will be removed in a future version of the linker
->> In file included from main.c:21:
->> ../kselftest_harness.h: In function ‘__run_test’:
->> ../kselftest_harness.h:1166:13: error: implicit declaration of function ‘asprintf’; did you mean ‘vsprintf’? [-Werror=implicit-function-declaration]
->>  1166 |         if (asprintf(&test_name, "%s%s%s.%s", f->name,
->>       |             ^~~~~~~~
->>       |             vsprintf
->> cc1: all warnings being treated as errors
+On 30/04/2024 21:18, Rob Herring (Arm) wrote:
+> '/memory' nodes always have a 'reg' property, and therefore should have
+> a unit-address with just plain hex (i.e. no commas). Fix all the arm64
+> '/memory' nodes.
 > 
-> What environment is this being built in? "asprintf" should be available
-> via stdio.h, and "kselftest_harness.h" includes that (and _GNU_SOURCE).
-Sometimes the order of include is as following:
+> It's possible that some bootloader depends on /memory (arm32 ATAG to DT
+> code does for example). If so, the memory node should be commented with
+> that requirement.
+> 
+> Signed-off-by: Rob Herring (Arm) <robh@kernel.org>
+> ---
+> SoC maintainers, please take this directly.
 
-#inlucde <stdio.h>
-#define _GNU_SOURCE
-#inlucde <stdio.h>
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-The _GNU_SOURCE wasn't defined the first time stdio.h was included hence
-the definition of asprintf isn't present. The second inclusion of stdio.h
-when _GNU_SOURCE is defined is ignored as it was already included.
+Best regards,
+Krzysztof
 
-This is being fixed in following series:
-https://lore.kernel.org/all/20240430235057.1351993-1-edliaw@google.com
-
--- 
-BR,
-Muhammad Usama Anjum
 
