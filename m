@@ -1,63 +1,60 @@
-Return-Path: <linux-kernel+bounces-165975-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-165976-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DAFDD8B941E
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 07:07:09 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9837C8B9420
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 07:07:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1A1D8B210DF
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 05:07:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A83B31C21465
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 05:07:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8AB7D200A0;
-	Thu,  2 May 2024 05:07:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 764231F95A;
+	Thu,  2 May 2024 05:07:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gnSMxQW8"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="PAwC3HGz"
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C07C41CD2D;
-	Thu,  2 May 2024 05:06:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A54451CD2D;
+	Thu,  2 May 2024 05:07:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714626419; cv=none; b=DsLN3TTxL/aRY6Lg6V18CxvxqoeX/qEKEaxXb/jZWaBcjiPZNu1qvOwJVURBI20t+FsKU3RAsVKUUVkCoLgjHA6vZwhn5hH39WKS8wXZMbAnAvS7X0pf4rBFffOjTe9rVSwBNSkOiWSbGI3WGGFZyMejWWQO6mgrKCcQotAWLiQ=
+	t=1714626460; cv=none; b=t4XmXykYh1fdk64f9sqksl4SEqJwSOJauhMwIcfFMOtqZO3PIpWjMVDRM2ZM2pNIZ96umh+zPpSNHz071XM3sMtYuyMnz1YTkWGHpBJIxwQ4rRvQ8zsll7Kiin/ca962FWaHcXeJA2amkysOU+eI+qcABqwxuFS8jqINkyGPonk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714626419; c=relaxed/simple;
-	bh=E7hJC5ZIIkCJLDzLl6XTgvU7+hlkT0mW1ai+1Wl/Kn8=;
+	s=arc-20240116; t=1714626460; c=relaxed/simple;
+	bh=5amkvJXIOOx9Ih8Muv99+02q4fS2kw8BvMZGGjfEC+g=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=S4TLOFHRZBmpoKLtSbb+S1ajD2YXzmV873Z3zvC9NX7VKIaGIsPnNsFCJ/U0jifacVd0CiNt/cOOaXCNfmpswNgKh/C0+eyhwEQ7JL8K5L+V+kVfPzeJ9oEd6pHlR+Vfl3lKEsQkX8j0rA2R/7Ixd+eIh6rsG/GU2GWZrb1jGBk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gnSMxQW8; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4AFE6C116B1;
-	Thu,  2 May 2024 05:06:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714626419;
-	bh=E7hJC5ZIIkCJLDzLl6XTgvU7+hlkT0mW1ai+1Wl/Kn8=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=gnSMxQW86lyw4bC7kidm+imxxPMXM7NAPf1aq6G8F8jnGqmif128wIocH4fc4QXln
-	 VWivrS8So+wiASlffzJe+PYqSBv+fVtOv4QOAMPjubNtH4QQRPAxaV9pEttbssJc6C
-	 QiMtWbPVSORwiVXRkcaoLueNOf7JqQ9GhsjPMRvHoWxf7hZ99Egf2/3TZD517OAPHg
-	 YsB1wEhn6JLAc+F8R+N7XCFiXzbUW1y4j/4D0iD7ueyrypVnaWoYPS8Yj/FDgx0sjC
-	 vKaCgQqlarO/3/MZ/3vTPbePj+SLt84VWdzgWrIfL5YtQ4otJBjN6qBdYPDgcRkQDE
-	 lcc9eSBfjwF3w==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id DBC29CE1073; Wed,  1 May 2024 22:06:58 -0700 (PDT)
-Date: Wed, 1 May 2024 22:06:58 -0700
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Cc: linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
-	elver@google.com, akpm@linux-foundation.org, tglx@linutronix.de,
-	peterz@infradead.org, dianders@chromium.org, pmladek@suse.com,
-	arnd@arndb.de, torvalds@linux-foundation.org, kernel-team@meta.com,
-	Andi Shyti <andi.shyti@linux.intel.com>,
-	Palmer Dabbelt <palmer@rivosinc.com>,
-	Masami Hiramatsu <mhiramat@kernel.org>, linux-sh@vger.kernel.org
-Subject: Re: [PATCH v2 cmpxchg 12/13] sh: Emulate one-byte cmpxchg
-Message-ID: <b7ae0feb-d401-43ee-8d5f-ce62ca224638@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <b67e79d4-06cb-4a45-a906-b9e0fbae22c5@paulmck-laptop>
- <20240501230130.1111603-12-paulmck@kernel.org>
- <1376850f47279e3a3f4f40e3de2784ae3ac30414.camel@physik.fu-berlin.de>
+	 Content-Type:Content-Disposition:In-Reply-To; b=oDtOc49hCopIN17HIhpENpSjJckt06YrTg3ywnzdlXaQx/aVZkJL1pVwrK4Y/axIwsGO5mFrwNMlS7FxlpnU13w5dC/cDD3ATTnFsVsD0hJuDD0pgwXV/dYDLQgqH3/vCb/UspuJhWASC+meET5p92ydyb6sth0h0bH+iv9WsfM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=PAwC3HGz; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=5amkvJXIOOx9Ih8Muv99+02q4fS2kw8BvMZGGjfEC+g=; b=PAwC3HGzIePWCQ0yHyz8Bb+PhF
+	FqB2JAjzpMjOl51lbRLUYcHVwT+HzhbkR5zgW7jgdslvznS6S/gC1rnNBbMP6OTIjDXrFJmYYImtA
+	FU9OhWDPruICJEBrU008uW+W5j0mhCVn6O2XxRULjN1pn7+wPyQt2eenzsiSTZZ8CW4jDJhMORiwQ
+	Izq/NNYzoXIjkwU6Ut0yDfTr/n+kpFw07YmATMN4qcD+18wOkiQ8dyeams8en1F9ElCFTR8k4Tvef
+	T2umHYKSjWnHTSnHFTgQHJLNWmCWsjrpY49PeFyd36XgkJa4pfIQY+xMhRtQvzVU9zGhvpB14zvpV
+	BH6dDqXg==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1s2OfP-0000000BUUU-36bi;
+	Thu, 02 May 2024 05:07:35 +0000
+Date: Wed, 1 May 2024 22:07:35 -0700
+From: Christoph Hellwig <hch@infradead.org>
+To: "T.J. Mercier" <tjmercier@google.com>
+Cc: Robin Murphy <robin.murphy@arm.com>, Joerg Roedel <joro@8bytes.org>,
+	Will Deacon <will@kernel.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	isaacmanjarres@google.com, iommu@lists.linux.dev,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] iommu/dma: Respect SWIOTLB force_bounce
+Message-ID: <ZjMfl2G377qexhi-@infradead.org>
+References: <20240501201319.586289-1-tjmercier@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -66,77 +63,16 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1376850f47279e3a3f4f40e3de2784ae3ac30414.camel@physik.fu-berlin.de>
+In-Reply-To: <20240501201319.586289-1-tjmercier@google.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 
-On Thu, May 02, 2024 at 06:52:53AM +0200, John Paul Adrian Glaubitz wrote:
-> Hi Paul,
-> 
-> On Wed, 2024-05-01 at 16:01 -0700, Paul E. McKenney wrote:
-> > Use the new cmpxchg_emu_u8() to emulate one-byte cmpxchg() on sh.
-> > 
-> > [ paulmck: Drop two-byte support per Arnd Bergmann feedback. ]
-> > [ paulmck: Apply feedback from Naresh Kamboju. ]
-> > [ Apply Geert Uytterhoeven feedback. ]
-> > 
-> > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> > Cc: Andi Shyti <andi.shyti@linux.intel.com>
-> > Cc: Palmer Dabbelt <palmer@rivosinc.com>
-> > Cc: Masami Hiramatsu <mhiramat@kernel.org>
-> > Cc: Arnd Bergmann <arnd@arndb.de>
-> > Cc: <linux-sh@vger.kernel.org>
-> > ---
-> >  arch/sh/Kconfig               | 1 +
-> >  arch/sh/include/asm/cmpxchg.h | 3 +++
-> >  2 files changed, 4 insertions(+)
-> > 
-> > diff --git a/arch/sh/Kconfig b/arch/sh/Kconfig
-> > index 2ad3e29f0ebec..f47e9ccf4efd2 100644
-> > --- a/arch/sh/Kconfig
-> > +++ b/arch/sh/Kconfig
-> > @@ -16,6 +16,7 @@ config SUPERH
-> >  	select ARCH_HIBERNATION_POSSIBLE if MMU
-> >  	select ARCH_MIGHT_HAVE_PC_PARPORT
-> >  	select ARCH_WANT_IPC_PARSE_VERSION
-> > +	select ARCH_NEED_CMPXCHG_1_EMU
-> >  	select CPU_NO_EFFICIENT_FFS
-> >  	select DMA_DECLARE_COHERENT
-> >  	select GENERIC_ATOMIC64
-> > diff --git a/arch/sh/include/asm/cmpxchg.h b/arch/sh/include/asm/cmpxchg.h
-> > index 5d617b3ef78f7..1e5dc5ccf7bf5 100644
-> > --- a/arch/sh/include/asm/cmpxchg.h
-> > +++ b/arch/sh/include/asm/cmpxchg.h
-> > @@ -9,6 +9,7 @@
-> >  
-> >  #include <linux/compiler.h>
-> >  #include <linux/types.h>
-> > +#include <linux/cmpxchg-emu.h>
-> >  
-> >  #if defined(CONFIG_GUSA_RB)
-> >  #include <asm/cmpxchg-grb.h>
-> > @@ -56,6 +57,8 @@ static inline unsigned long __cmpxchg(volatile void * ptr, unsigned long old,
-> >  		unsigned long new, int size)
-> >  {
-> >  	switch (size) {
-> > +	case 1:
-> > +		return cmpxchg_emu_u8(ptr, old, new);
-> >  	case 4:
-> >  		return __cmpxchg_u32(ptr, old, new);
-> >  	}
-> 
-> Thanks for the patch. However, I don't quite understand its purpose.
-> 
-> There is already a case for 8-byte cmpxchg in the switch statement below:
-> 
->         case 1:                                         \
->                 __xchg__res = xchg_u8(__xchg_ptr, x);   \
->                 break;
-> 
-> Does cmpxchg_emu_u8() have any advantages over the native xchg_u8()?
+On Wed, May 01, 2024 at 08:13:18PM +0000, T.J. Mercier wrote:
+> iommu_dma_map_page and iommu_dma_map_sg conditionally use SWIOTLB, but
+> checking if force_bounce is set for the device is not part of that
+> condition. Check if devices have requested to force SWIOTLB use as part
+> of deciding to take the existing SWIOTLB paths.
 
-That would be 8-bit xchg() rather than 8-byte cmpxchg(), correct?
+This fails to explain why you'd want this somewhat surprising behavior,
+and why you consider it a bug fix.
 
-Or am I missing something subtle here that makes sh also support one-byte
-(8-bit) cmpxchg()?
-
-							Thanx, Paul
 
