@@ -1,222 +1,155 @@
-Return-Path: <linux-kernel+bounces-166553-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-166552-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1E2B08B9C43
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 16:28:55 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id ABABB8B9C41
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 16:28:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CCA1F281A5B
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 14:28:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CECFB1C21579
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 14:28:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8AC6613C808;
-	Thu,  2 May 2024 14:28:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D870113C80A;
+	Thu,  2 May 2024 14:28:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="A5m2LHZo"
-Received: from mail-qk1-f169.google.com (mail-qk1-f169.google.com [209.85.222.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="QhXI1vzm"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0AD47152788
-	for <linux-kernel@vger.kernel.org>; Thu,  2 May 2024 14:28:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99E1D152788
+	for <linux-kernel@vger.kernel.org>; Thu,  2 May 2024 14:28:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714660120; cv=none; b=fmuPWeCq0uHk7HQsCAcMKby24gyZrRQBI1oQzc37oWQJFInzOMUNBFzlqqEJJRZBXixlOQhrPjJL2S7tdaRCTOeSfg8N+vFDBZfnMIR0g8YnmqfjjW8rAXdp/mdoYba4A6pb5kUZA8YzSMxS4IUB0p19lPIclllf05L3b3unswc=
+	t=1714660115; cv=none; b=MM84vhMUWYZw5dn0KHXgJS83SPJa8VyUQqQBLy2VJe/Pswr0OuyivsR+gvUOHoNqTKViVgJgXrsQVBiF4DHr1TyV4a1ndJZnrS21NclbWc6SlWc54x4ZJNFokFIoAnBvHMpKilgPglQsW4WVgoaaxcSY+HAkg4JTGWKpdCac7nw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714660120; c=relaxed/simple;
-	bh=CBoc+VmcBDwqKZezMaonoli64pzbejkHNhDkpIw3seQ=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=FaV0mU3enSLprj5egdTcKObgNc88HeuPPX6wJ4eWEWgAqZUODh6Wwheuw7Rr7v5wm3zF8kxbJKhcUugzQ6+raBtTZ01ralqmni2K/aFXI6dpKl3THlQpP/dpZJp6KWK2vJkq4jlGi/rvHrlxd/p59CLA7y5Cd+fdZHQqQngS68E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=A5m2LHZo; arc=none smtp.client-ip=209.85.222.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-qk1-f169.google.com with SMTP id af79cd13be357-790ff1fa7b3so351994985a.2
-        for <linux-kernel@vger.kernel.org>; Thu, 02 May 2024 07:28:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1714660117; x=1715264917; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=MYJ66txjYnvZgvCB5h7LBuLGmwmjeh/xVp4SvQlr1p0=;
-        b=A5m2LHZo171wF6GeTVRACsKrA/tRn368OLsglXepmbqSd8ODewWbFiUPJGXHny8wTt
-         McKAlsB3UMQPR6HXuLmmLrM2ciU/qa2BiXjtUw2F3Lsj5XZZ5/1lSFr7ULTswghAUjXS
-         gpKn7Ma3WL0MLkd9nPx9m16UcT3gSw8Owsagw=
+	s=arc-20240116; t=1714660115; c=relaxed/simple;
+	bh=xrvi/XNbujJMaV8uWdtME/cTUAf+3r2xBYiOeWywrt8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=OpmpeV1mKNIWNaYLNKDFDw73/T8kXVB0RRfSEJzCwMcH5T5yObMjLlyBvK/IJJT6o0m+8uZhcwHx799GQhgVi+6MIq4hPxuJq9Wk2DQvYnVXscF6RweRWcpeqzgUKNwsnwnTmzYVvwgcwp/KzPfLHV78NScP4wDc/iSi5W7cwCE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=QhXI1vzm; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1714660112;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=g+ivPoi6ke+3px410keu+dd6owA+zUKCHd3sR9ExU08=;
+	b=QhXI1vzm2ybnJuPrefYvKK9fSe6P4uipJflm3pRgpEI/MNddgTER/WcneLGCeEz3UlvJ2n
+	NcC3SU2Bczfqvjqg4yt4Y8hcrWD3D8fzFZ2Fpy4XtDxwVqDg4qhj+1IvHdrkP2i0dn9jU1
+	AIqr9AhfaihNLNwDrRR8DpnUQkE5BVM=
+Received: from mail-qt1-f199.google.com (mail-qt1-f199.google.com
+ [209.85.160.199]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-250-m8D2y8uSOoqeaC1kJ7r1YQ-1; Thu, 02 May 2024 10:28:31 -0400
+X-MC-Unique: m8D2y8uSOoqeaC1kJ7r1YQ-1
+Received: by mail-qt1-f199.google.com with SMTP id d75a77b69052e-437972269edso6584651cf.3
+        for <linux-kernel@vger.kernel.org>; Thu, 02 May 2024 07:28:31 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714660117; x=1715264917;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=MYJ66txjYnvZgvCB5h7LBuLGmwmjeh/xVp4SvQlr1p0=;
-        b=URIO+lSXvFqy1mbi1cyQvfubk4SDchLN8oNvEJibP0diehehGONW3L34jvsrv4DSLM
-         cclLvrFSkptnBNhi0rNpo213vxEj7A3G/ShoHlRSEdnXD+7Z20GE/rn6WmI8b1Q/cKUf
-         EK7FFRhaBUNGuFwIw/oGOhhVJXrwdxjKQIliX9XRqoDopldfgKOfNF97nRpMPQQxfO4f
-         FEkcTIaDKJXyNE4sTrrHPAdNq10Hg9vFqVo7xRN52PiHEH+qIyLNiD/Y/RK2Xtr6nkKt
-         fIOjumwc1+pVSBJJumfz3gnjVC4hshmw4m3nB6v/ts8v3kWXwV0wBjGHuf+g7732GpOi
-         A/BA==
-X-Forwarded-Encrypted: i=1; AJvYcCWnuJh8AwQvCDMMclBpsOPANPlcB2IBTClukUuRYDDqVQ6uc3EOC/06EMIQGDVoixMHt8THPiIxcn3CiuVzMqtjH+FWlZ7vy5o5EZpy
-X-Gm-Message-State: AOJu0YzCOYX2hb6zEiAkmNOsRlJqMBAJawS/3K1SWaS14E3yOYOnqdtO
-	RjRjknlW0I5zFYLMOyQkM1Pq+IrCLl4ez2ngBLTV88bYpEcstbMg2Cq5ms5duPsmyiT+uFYJDEA
-	=
-X-Google-Smtp-Source: AGHT+IHyltMzxnVBPTDT0D1Ss6i9ikImtAJny1xpykYzDIGCdKg7ikbbBpbrCA+zyr/3yoozaFmmYw==
-X-Received: by 2002:a05:6214:40a:b0:6a0:e6a6:773f with SMTP id z10-20020a056214040a00b006a0e6a6773fmr6374178qvx.52.1714660117418;
-        Thu, 02 May 2024 07:28:37 -0700 (PDT)
-Received: from mail-qt1-f170.google.com (mail-qt1-f170.google.com. [209.85.160.170])
-        by smtp.gmail.com with ESMTPSA id ml11-20020a056214584b00b006a0e5cb0254sm392370qvb.55.2024.05.02.07.28.37
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 02 May 2024 07:28:37 -0700 (PDT)
-Received: by mail-qt1-f170.google.com with SMTP id d75a77b69052e-43989e6ca42so464751cf.0
-        for <linux-kernel@vger.kernel.org>; Thu, 02 May 2024 07:28:37 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCWV72jXtoEMm8KQcWQg9nXtXOvbr3xeLGBufdDK0fJ9OZURL7qAiOVUNAlnJ8PMm7pEs90sVebebjFGG8jRpUwkXgUoi//V4b1AT6HO
-X-Received: by 2002:ac8:59c9:0:b0:43b:af4:d3a with SMTP id d75a77b69052e-43caf9ca7d8mr2729291cf.19.1714660095878;
- Thu, 02 May 2024 07:28:15 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1714660111; x=1715264911;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=g+ivPoi6ke+3px410keu+dd6owA+zUKCHd3sR9ExU08=;
+        b=tGEyxrTA80X7LBUp5WW5hL2LujDL6t9FmRISw8lKQvU+luvhwf40gH2mMKZCj2rCcG
+         niI30yoXhznNqbB3cOKXZ684LK7QuUZ+0OvZWnPhwAbULcCbGc/tF/Pf/PjL2yrHYBtg
+         C8crzm1nnOxkcVLWNAxm31CvFCj0I+B9QPj9ugUdcZmj0sPPwvotHoxfZC5Q+qWuvgAK
+         rnO1+sZe6s3fccaOFH3X+Jyq4sMLon5JHn7p0iUZw/KMCunrRzF1cuxzqkjRfK2GOW6t
+         0To+b6GOiqhFEbIOOFUpKLo1+ufTp/NoppGsie5HpD0zqIBAtdmQfsW8cBP8D+P9TyD3
+         Z81g==
+X-Gm-Message-State: AOJu0YzsWWHfCq9/+F9PRqpkt5kJiUAIELNiSwgr6WWWUm8LMVRrE4qN
+	lLETKrkGk8UaeTnwirRw6OKbagVLyQXlhrCNHplXrxaKgE9ml45QfDuTNbNDJng/pSGemioh9Qj
+	GNpRLCxBtIqTtNidnwGs9KYk/iPayQKI7wU7KfrD+GoFtaqLAi9UbPfuc1DZ3GA==
+X-Received: by 2002:a05:620a:2552:b0:790:8c20:e281 with SMTP id s18-20020a05620a255200b007908c20e281mr6180824qko.4.1714660110318;
+        Thu, 02 May 2024 07:28:30 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHzEHkYGvVezmJhlmRGMyVZvZwOyDVQMnlBj4RTlQm3Y1h6k6uZy2NH5X5lS7CqgbZdnDaBww==
+X-Received: by 2002:a05:620a:2552:b0:790:8c20:e281 with SMTP id s18-20020a05620a255200b007908c20e281mr6180786qko.4.1714660109594;
+        Thu, 02 May 2024 07:28:29 -0700 (PDT)
+Received: from x1n (pool-99-254-121-117.cpe.net.cable.rogers.com. [99.254.121.117])
+        by smtp.gmail.com with ESMTPSA id j16-20020a05620a001000b0078ede0c25b5sm406909qki.23.2024.05.02.07.28.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 02 May 2024 07:28:29 -0700 (PDT)
+Date: Thu, 2 May 2024 10:28:27 -0400
+From: Peter Xu <peterx@redhat.com>
+To: David Hildenbrand <david@redhat.com>
+Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+	linux-kselftest@vger.kernel.org,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Muchun Song <muchun.song@linux.dev>, Shuah Khan <shuah@kernel.org>
+Subject: Re: [PATCH v1 2/2] mm/hugetlb: document why hugetlb uses
+ folio_mapcount() for COW reuse decisions
+Message-ID: <ZjOjCwrWg-Fd9gtI@x1n>
+References: <20240502085259.103784-1-david@redhat.com>
+ <20240502085259.103784-3-david@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240501154251.3302887-1-dianders@chromium.org> <a8a73fc4-7699-4c47-8970-cd68be0fe1d9@linaro.org>
-In-Reply-To: <a8a73fc4-7699-4c47-8970-cd68be0fe1d9@linaro.org>
-From: Doug Anderson <dianders@chromium.org>
-Date: Thu, 2 May 2024 07:27:59 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=VciR5UEQpvizrUNYR7mhE2P4ESvM2T7v4mUT3UpdX3bg@mail.gmail.com>
-Message-ID: <CAD=FV=VciR5UEQpvizrUNYR7mhE2P4ESvM2T7v4mUT3UpdX3bg@mail.gmail.com>
-Subject: Re: [PATCH v3 0/9] drm/mipi-dsi: Reduce bloat and add funcs for
- cleaner init seqs
-To: neil.armstrong@linaro.org
-Cc: dri-devel@lists.freedesktop.org, Linus Walleij <linus.walleij@linaro.org>, 
-	Jani Nikula <jani.nikula@linux.intel.com>, 
-	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, 
-	Cong Yang <yangcong5@huaqin.corp-partner.google.com>, Hsin-Yi Wang <hsinyi@google.com>, 
-	Brian Norris <briannorris@chromium.org>, Sam Ravnborg <sam@ravnborg.org>, 
-	Javier Martinez Canillas <javierm@redhat.com>, Joel Selvaraj <jo@jsfamily.in>, 
-	lvzhaoxiong@huaqin.corp-partner.google.com, Daniel Vetter <daniel@ffwll.ch>, 
-	David Airlie <airlied@gmail.com>, Jessica Zhang <quic_jesszhan@quicinc.com>, 
-	Jonathan Corbet <corbet@lwn.net>, Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
-	Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, linux-doc@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20240502085259.103784-3-david@redhat.com>
 
-Hi,
+On Thu, May 02, 2024 at 10:52:59AM +0200, David Hildenbrand wrote:
+> Let's document why hugetlb still uses folio_mapcount() and is prone to
+> leaking memory between processes, for example using vmsplice() that
+> still uses FOLL_GET.
+> 
+> More details can be found in [1], especially around how hugetlb pages
+> cannot really be overcommitted, and why we don't particularly care about
+> these vmsplice() leaks for hugetlb -- in contrast to ordinary memory.
+> 
+> [1] https://lore.kernel.org/all/8b42a24d-caf0-46ef-9e15-0f88d47d2f21@redhat.com/
+> 
+> Suggested-by: Peter Xu <peterx@redhat.com>
+> Signed-off-by: David Hildenbrand <david@redhat.com>
+> ---
+>  mm/hugetlb.c | 7 +++++++
+>  1 file changed, 7 insertions(+)
+> 
+> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+> index 417fc5cdb6eeb..a7efb350f5d07 100644
+> --- a/mm/hugetlb.c
+> +++ b/mm/hugetlb.c
+> @@ -5963,6 +5963,13 @@ static vm_fault_t hugetlb_wp(struct folio *pagecache_folio,
+>  	/*
+>  	 * If no-one else is actually using this page, we're the exclusive
+>  	 * owner and can reuse this page.
+> +	 *
+> +	 * Note that we don't rely on the (safer) folio refcount here, because
+> +	 * copying the hugetlb folio when there are unexpected (temporary)
+> +	 * folio references could harm simple fork()+exit() users when
+> +	 * we run out of free hugetlb folios: we would have to kill processes
+> +	 * in scenarios that used to work. As a side effect, there can still
+> +	 * be leaks between processes, for example, with FOLL_GET users.
+>  	 */
+>  	if (folio_mapcount(old_folio) == 1 && folio_test_anon(old_folio)) {
+>  		if (!PageAnonExclusive(&old_folio->page)) {
 
-On Thu, May 2, 2024 at 12:48=E2=80=AFAM Neil Armstrong
-<neil.armstrong@linaro.org> wrote:
->
-> Hi,
->
-> On 01/05/2024 17:41, Douglas Anderson wrote:
-> > The consensus of many DRM folks is that we want to move away from DSI
-> > drivers defining tables of init commands. Instead, we want to move to
-> > init functions that can use common DRM functions. The issue thus far
-> > has been that using the macros mipi_dsi_generic_write_seq() and
-> > mipi_dsi_dcs_write_seq() bloats the driver using them.
-> >
-> > While trying to solve bloat, we realized that the majority of the it
-> > was easy to solve. This series solves the bloat for existing drivers
-> > by moving the printout outside of the macro.
-> >
-> > During discussion of my v1 patch to fix the bloat [1], we also decided
-> > that we really want to change the way that drivers deal with init
-> > sequences to make it clearer. In addition to being cleaner, a side
-> > effect of moving drivers to the new style reduces bloat _even more_.
-> >
-> > This series also contains a few minor fixes / cleanups that I found
-> > along the way.
-> >
-> > This series converts four drivers over to the new
-> > mipi_dsi_dcs_write_seq_multi() function. Not all conversions have been
-> > tested, but hopefully they are straightforward enough. I'd appreciate
-> > testing.
-> >
-> > NOTE: In v3 I tried to incorporate the feedback from v2. I also
-> > converted the other two panels I could find that used table-based
-> > initialization.
-> >
-> > [1] https://lore.kernel.org/r/20240424172017.1.Id15fae80582bc74a0d4f133=
-8987fa375738f45b9@changeid
-> >
-> > Changes in v3:
-> > - ("mipi_dsi_*_write functions don't need to ratelimit...") moved earli=
-er.
-> > - Add a TODO item for cleaning up the deprecated macros/functions.
-> > - Fix spacing of init function.
-> > - Inline kerneldoc comments for struct mipi_dsi_multi_context.
-> > - Rebased upon patch to remove ratelimit of prints.
-> > - Remove an unneeded error print.
-> > - Squash boe-tv101wum-nl6 lowercase patch into main patch
-> > - Use %zd in print instead of casting errors to int.
-> > - drm/panel: ili9882t: Don't use a table for initting panels
-> > - drm/panel: innolux-p079zca: Don't use a table for initting panels
-> >
-> > Changes in v2:
-> > - Add some comments to the macros about printing and returning.
-> > - Change the way err value is handled in prep for next patch.
-> > - Modify commit message now that this is part of a series.
-> > - Rebased upon patches to avoid theoretical int overflow.
-> > - drm/mipi-dsi: Fix theoretical int overflow in mipi_dsi_dcs_write_seq(=
-)
-> > - drm/mipi-dsi: Fix theoretical int overflow in mipi_dsi_generic_write_=
-seq()
-> > - drm/mipi-dsi: Introduce mipi_dsi_*_write_seq_multi()
-> > - drm/mipi-dsi: mipi_dsi_*_write functions don't need to ratelimit prin=
-ts
-> > - drm/panel: boe-tv101wum-nl6: Convert hex to lowercase
-> > - drm/panel: boe-tv101wum-nl6: Don't use a table for initting commands
-> > - drm/panel: novatek-nt36672e: Switch to mipi_dsi_dcs_write_seq_multi()
-> >
-> > Douglas Anderson (9):
-> >    drm/mipi-dsi: Fix theoretical int overflow in mipi_dsi_dcs_write_seq=
-()
-> >    drm/mipi-dsi: Fix theoretical int overflow in
-> >      mipi_dsi_generic_write_seq()
-> >    drm/mipi-dsi: mipi_dsi_*_write functions don't need to ratelimit
-> >      prints
-> >    drm/mipi-dsi: Reduce driver bloat of mipi_dsi_*_write_seq()
-> >    drm/mipi-dsi: Introduce mipi_dsi_*_write_seq_multi()
-> >    drm/panel: novatek-nt36672e: Switch to mipi_dsi_dcs_write_seq_multi(=
-)
-> >    drm/panel: boe-tv101wum-nl6: Don't use a table for initting panels
-> >    drm/panel: ili9882t: Don't use a table for initting panels
-> >    drm/panel: innolux-p079zca: Don't use a table for initting panels
->
-> Thanks Doug!
->
-> I think we all agree on the core changes, now I think we can wait a few w=
-eeks
-> and try to get some test feedbacks on the indirectly and directly affecte=
-d
-> panels, drm-misc-next won't be merged into linux-next until v6.10-rc1 any=
-way
-> so we have some time to test on our boards.
+Thanks for preparing such updates, David.
 
-Great!
+However is fork+exit the real problem?  E.g. if a child simply fork, do
+something, then exit, I don't see a major issue even if we follow refcount
+here (despite the "check against 1 or 2 or 3" issue, where hugetlb_fault
+can take one already).  As long as the child quits, all ref / map counts
+will be released then.  If the child needs to write to ANON|PRIV it needs
+to manage hugetlb reservations anyways.
 
-Just to be clear, are you suggesting that we leave these patches on
-the lists for a few weeks before landing in drm-misc-next, or are you
-suggesting that it's safe to land them in drm-misc-next because it
-won't make it to linuxnext for a while anyway? I assume the former
-(AKA leave it on the lists for a while) but just want to be clear. ;-)
+In the case of vmsplice it's kind of malicious, and holding that refcount
+(with 0 mapcount) doesn't sound the common scenario to me.
 
-There's nothing terribly urgent about these patches except that they
-are blocking Cong Yang's patch series [0] and lvzhaoxiong's patch
-series [1]. I think it would be fine for them to send out their patch
-series with mine marked as a dependency so we can finish reviewing
-their series and then when mine lands theirs will be good to go too.
+IIUC if we need to keep this, it was more about the case where (as you
+correctly mentioned in another follow up reply) hugetlb isn't that flexible
+to memory overcommits, and in many cases it won't have extra pages floating
+around to allow adhoc CoWs?  While random refcount boost is easy to happen,
+and here the problem is we simply cannot identify that v.s. vmsplice()
+malicious takers.
 
-Maybe we can aim for 2 weeks of stewing on the list if there are no
-issues during that time? I know landing in drm-misc during this time
-won't help get into mainline faster, but with ChromeOS's "upstream
-first" policy it saves us a bunch of headache if we can land things in
-our tree from a maintainer tree with stable git hashes (like
-drm-misc-next) instead of landing from a mailing list. Certainly that
-doesn't mean we want to rush patches in before they're ready, but I
-just want to say that there is still some benefit in getting the
-patches landed sooner rather than later. :-)
+Thanks,
 
-[0] https://lore.kernel.org/r/20240424023010.2099949-1-yangcong5@huaqin.cor=
-p-partner.google.com
-[1] https://lore.kernel.org/r/20240418081548.12160-3-lvzhaoxiong@huaqin.cor=
-p-partner.google.com
+-- 
+Peter Xu
+
 
