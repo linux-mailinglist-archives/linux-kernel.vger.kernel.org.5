@@ -1,125 +1,116 @@
-Return-Path: <linux-kernel+bounces-166651-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-166650-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6D32D8B9D94
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 17:35:11 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DC9AF8B9D93
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 17:34:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9A1EB1C22215
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 15:35:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 19DAA1C2099B
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 15:34:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83BCF1598E9;
-	Thu,  2 May 2024 15:35:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 282ED15B54A;
+	Thu,  2 May 2024 15:34:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=toblux-com.20230601.gappssmtp.com header.i=@toblux-com.20230601.gappssmtp.com header.b="yScL0wg9"
-Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com [209.85.208.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="VBVRUb4L"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C732115AACC
-	for <linux-kernel@vger.kernel.org>; Thu,  2 May 2024 15:35:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A71F7159583;
+	Thu,  2 May 2024 15:34:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714664103; cv=none; b=j7Qs35lB7yAljkl91thhd1BpSUtjJpn5aZURMK8xZCxcPoymdlovCUtTtl8+JGb78DGJDBEBPm1b76n5O3GL2wrDCPHtJ8wzMfIe6Xgp9+KxN35d/rBIZDTUl6Y4zJxFy+WE6vCRZXeGoBmqMhGC/sJt5242+VB1/w4zPz89Dw4=
+	t=1714664054; cv=none; b=QMKgOpkz2DFozqxCdBj11cd9inMpHBV84jq+eG3fPLsJh2o3fzXYNlktNDhMLFoQ+hwWyX7Nhrm1jgzGi45jzXW2Vc9y3osCllm321/bkaGHKVCWXGifwui76c/+xYcUyHpWi1+Jdxf+w6OitCfV1rGj6hunxo86NV2LQuIpXXY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714664103; c=relaxed/simple;
-	bh=R+pJmmxpNrZ/XJxigie9GtGPdSpA3KgFHVA0wipAK7E=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ux4JuYY2QidN20twapzV4KMnqJIO+bjYERWNNTcIoNpcPp+lnTWAJ8VVXjJovx0yF8AMBAcXpO2pHyepmDtbaQDo96ugXI91C52HSaSZSlqX8ALIMH6h/LsS+DQZngPfw10pWag31ka25+09cINH0C6JP1DkOOWX6Hx2iNnKiS0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toblux.com; spf=none smtp.mailfrom=toblux.com; dkim=pass (2048-bit key) header.d=toblux-com.20230601.gappssmtp.com header.i=@toblux-com.20230601.gappssmtp.com header.b=yScL0wg9; arc=none smtp.client-ip=209.85.208.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toblux.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toblux.com
-Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-572babec735so760586a12.0
-        for <linux-kernel@vger.kernel.org>; Thu, 02 May 2024 08:35:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toblux-com.20230601.gappssmtp.com; s=20230601; t=1714664100; x=1715268900; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=Ce5FXE5idr82jeqevYO8YWeQ0hM+JzLoZr03p3rxaCE=;
-        b=yScL0wg9qUChw1cmaZ3tDo4DHELgq6gUPBj5+tZ7W/eKXER+BT9WKBfsuWTWWDXL/d
-         tkBSsxbh7S/DxXRT/a+KuLYpv54ihMRiljBcSetSqEZqGCoO3MSF5CB9BxIaDZl88Jet
-         pP8aTSfeZioalHZ2rAohCiVBBoJ+mOovAXk52PwCh5/lLbi3eIfGHwZRgZDsBdrNcCgC
-         CmeSqjp1YhEG3XQAO1QJJq2rPpY6H+j6EDIWLdW6A3JbPkANaPWtsLkeolS7Lu162gLU
-         2/Y4znvNX42IofJg7tBbZZpgkWHHmSnwTeSu1LMPtFxibFRskkyfpb6TBTAnI6aFPibC
-         Cpmg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714664100; x=1715268900;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Ce5FXE5idr82jeqevYO8YWeQ0hM+JzLoZr03p3rxaCE=;
-        b=XKfDhJ8DBX6RTmjZGK90GJGXoOvnBArPt1SMxYrWKzeKv7cDjXdZjBV/lVJGnkMkR3
-         nCsRgyl0lg6yP/KumPqkz3pMooYMiVMsC0olDqqp0etkRC1J0pOfB06Q/6huOFaHp8yW
-         qxWDEs9CFGvsdTmypMj6DLB+kKzuFfP2cr64w1KmGFQeQhjzY1WoqBCaTvJ8N7vyS/vC
-         /Ogx8VZuNUHvYMqWsf6MET2HXsImLMrATUe/rub2E5A4PuLJXMt1yfVQyp1DMxR2mpHs
-         ZfveeIt87SKqJTUqfDeSn4K01aVuoMKNlIYzpbIMb+OazeEQZNrNocCBoTBIDIA/1h7J
-         vrpA==
-X-Forwarded-Encrypted: i=1; AJvYcCU81ylHNCAzQDhAoQiwFoeg2gpvXHxTgP7rpxhgZkGD3zC8s+eM8v6drUDwLlfnvAwvjxAiBb4BA8qUEP1M9ZfUIRBRRRvh6JJbUx6q
-X-Gm-Message-State: AOJu0YxujNN0y1mCp/eDWpE/atviO88iDFbXs407ff6JHFOBUPGSxJsg
-	zJVhFkVgi9rYeZJ+CzFeEvUICOjjDxT/zSsfEJTZSQQIsQAmuRUQmQ710iMwuLo=
-X-Google-Smtp-Source: AGHT+IEQfs59rIUKVTrOCgSJ3jKTTUJ2JzRMpQm4fmKS62RfKZlGAhSLcI0NsdYjXVyyfSKA9TdCqA==
-X-Received: by 2002:a17:906:6a05:b0:a58:7ddf:1805 with SMTP id qw5-20020a1709066a0500b00a587ddf1805mr3302521ejc.7.1714664100017;
-        Thu, 02 May 2024 08:35:00 -0700 (PDT)
-Received: from fedora.fritz.box (aftr-62-216-208-100.dynamic.mnet-online.de. [62.216.208.100])
-        by smtp.gmail.com with ESMTPSA id j21-20020a170906279500b00a5587038aefsm675107ejc.156.2024.05.02.08.34.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 May 2024 08:34:59 -0700 (PDT)
-From: Thorsten Blum <thorsten.blum@toblux.com>
-To: Tom Zanussi <tom.zanussi@linux.intel.com>,
-	Herbert Xu <herbert@gondor.apana.org.au>,
-	"David S. Miller" <davem@davemloft.net>
-Cc: linux-crypto@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Thorsten Blum <thorsten.blum@toblux.com>
-Subject: [PATCH] crypto: iaa - Use kmemdup() instead of kzalloc() and memcpy()
-Date: Thu,  2 May 2024 17:33:39 +0200
-Message-ID: <20240502153338.6945-2-thorsten.blum@toblux.com>
-X-Mailer: git-send-email 2.44.0
+	s=arc-20240116; t=1714664054; c=relaxed/simple;
+	bh=i+b3Gt10kxEMdODqZYe9qCRHgRMb4d1gFMn0AhNw93o=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=KB8EFaTwKwb7hzSPzeR6bOgRG0qNdJKJupeR96hbXbqTY6r1v6FJxMwgohbYsbflyjyu0gfezsvzAtNmEDXHk7dAa6Xp6Y513msyi0RwY4yAa+UHTEQTZfIfhKXWf5zY7N1weTpRma15LuPUjdoMXuDFK/tarPsbH/8N11UxT+4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=VBVRUb4L; arc=none smtp.client-ip=192.198.163.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1714664053; x=1746200053;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=i+b3Gt10kxEMdODqZYe9qCRHgRMb4d1gFMn0AhNw93o=;
+  b=VBVRUb4LNZ9vLvGlnAfx6ymRrCqoQcI8vl0oYqUoVwZxJhfmjzhQNeq6
+   JXVgODZdGe1tTyinC6vxKj2FMpg6sRcNGZ3/z+qYLsg7yd5dS7RHUKmwa
+   IqkVX2sS1UpoTyAemAkS2BHIEsfBD6CXxWnID+roW7GanyLXYS7LpQ8p6
+   uRhxN6DSHLXEOIvrf31FvvAnd+iEsinxNLFuG+jWUocel9NBHMWKELnAU
+   VCQZr9XbkVO3DPD3KDC1jQ2nOziXB0GxatBi29AjFR5GHnAhljMIbbeLA
+   JYnDDEtMC00JL8e5XeKo0kEznx/vaAgh7XWvFUe/S/716/2iL252gRerb
+   w==;
+X-CSE-ConnectionGUID: nqJ+E6gCRPCvGoOsKpm9kg==
+X-CSE-MsgGUID: nmM3j2wuQh6HOUUdsbO6aA==
+X-IronPort-AV: E=McAfee;i="6600,9927,11062"; a="35824304"
+X-IronPort-AV: E=Sophos;i="6.07,247,1708416000"; 
+   d="scan'208";a="35824304"
+Received: from orviesa006.jf.intel.com ([10.64.159.146])
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 May 2024 08:34:12 -0700
+X-CSE-ConnectionGUID: 3ZasYOLJSyyn9x6P5Gn+JA==
+X-CSE-MsgGUID: GCMedEbbTBey4+Yd55h0eg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,247,1708416000"; 
+   d="scan'208";a="27556591"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by orviesa006.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 May 2024 08:34:10 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1s2YRi-00000003McI-3T96;
+	Thu, 02 May 2024 18:34:06 +0300
+Date: Thu, 2 May 2024 18:34:06 +0300
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Javier Carrasco <javier.carrasco@wolfvision.net>
+Cc: Daniel Scally <djrscally@gmail.com>,
+	Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+	Sakari Ailus <sakari.ailus@linux.intel.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	"Rafael J. Wysocki" <rafael@kernel.org>, linux-acpi@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] device property: introduce
+ fwnode_for_each_child_node_scoped()
+Message-ID: <ZjOybob3wJjisuBL@smile.fi.intel.com>
+References: <20240502-fwnode_for_each_child_node_scoped-v1-1-868a2b168fa8@wolfvision.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240502-fwnode_for_each_child_node_scoped-v1-1-868a2b168fa8@wolfvision.net>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-Fixes the following two Coccinelle/coccicheck warnings reported by
-memdup.cocci:
+On Thu, May 02, 2024 at 12:55:40PM +0200, Javier Carrasco wrote:
+> Add a scoped version of fwnode_for_each_child_node() following
+> the approach recently taken for other loops that handle child nodes like
+> for_each_child_of_node_scoped() or device_for_each_child_node_scoped(),
+> which are based on the __free() auto cleanup handler to remove the need
+> for fwnode_handle_put() on early loop exits.
 
-	iaa_crypto_main.c:350:19-26: WARNING opportunity for kmemdup
-	iaa_crypto_main.c:358:18-25: WARNING opportunity for kmemdup
+Why not _available variant? I believe most of the code should use that.
 
-Signed-off-by: Thorsten Blum <thorsten.blum@toblux.com>
----
- drivers/crypto/intel/iaa/iaa_crypto_main.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+> Signed-off-by: Javier Carrasco <javier.carrasco@wolfvision.net>
+> ---
+> This macro has been tested with a patch series that has not been
+> applied yet and is under discussion in input [1], which makes use of the
+> non-scoped version of the loop.
 
-diff --git a/drivers/crypto/intel/iaa/iaa_crypto_main.c b/drivers/crypto/intel/iaa/iaa_crypto_main.c
-index b2191ade9011..7635fbebe52f 100644
---- a/drivers/crypto/intel/iaa/iaa_crypto_main.c
-+++ b/drivers/crypto/intel/iaa/iaa_crypto_main.c
-@@ -347,18 +347,16 @@ int add_iaa_compression_mode(const char *name,
- 		goto free;
- 
- 	if (ll_table) {
--		mode->ll_table = kzalloc(ll_table_size, GFP_KERNEL);
-+		mode->ll_table = kmemdup(ll_table, ll_table_size, GFP_KERNEL);
- 		if (!mode->ll_table)
- 			goto free;
--		memcpy(mode->ll_table, ll_table, ll_table_size);
- 		mode->ll_table_size = ll_table_size;
- 	}
- 
- 	if (d_table) {
--		mode->d_table = kzalloc(d_table_size, GFP_KERNEL);
-+		mode->d_table = kmemdup(d_table, d_table_size, GFP_KERNEL);
- 		if (!mode->d_table)
- 			goto free;
--		memcpy(mode->d_table, d_table, d_table_size);
- 		mode->d_table_size = d_table_size;
- 	}
- 
+So, why should we apply a dead code?
+
+> Based on linux-next (next-20240502).
+
+Use --base instead of this. Ah, and you do, so no need to have this comment.
+
+> Link: https://lore.kernel.org/linux-input/20240422-feature-ts_virtobj_patch-v9-0-acf118d12a8a@wolfvision.net/ [1]
+
 -- 
-2.44.0
+With Best Regards,
+Andy Shevchenko
+
 
 
