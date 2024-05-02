@@ -1,167 +1,120 @@
-Return-Path: <linux-kernel+bounces-166309-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-166310-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 79F4E8B98E1
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 12:34:01 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EB0118B98E3
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 12:36:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 86504B21AAF
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 10:33:58 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 218B91C21FFE
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 10:36:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 888275DF3B;
-	Thu,  2 May 2024 10:33:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 08BDD5A0F8;
+	Thu,  2 May 2024 10:35:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="XG2/C8is";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="1w5dX4mr";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="XG2/C8is";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="1w5dX4mr"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cb3nqeBe"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 198D3481B4;
-	Thu,  2 May 2024 10:33:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4994610958;
+	Thu,  2 May 2024 10:35:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714646029; cv=none; b=b/sOZH8yI//Ct9sFjnNFPs8+FS/4ZFNgrHvV3RuD1Up7NBgdjDMwV4PN1+F7P0ldQymDeMnC+ZEhuay7ttD/QlXYACP+E5VyJzrFS1el28Mnme02M27Avq7PVVWxBJde1sTmmk5Jse5ChFTk7pnX1J/UwQwpGjweL24Swmr/vog=
+	t=1714646154; cv=none; b=uhn0ATdvyZ28RCy/NCW9AubU8d1/KRLaxq8VMoC6NVZ9J7Dm9qgCE0qbPeWIiTxUJbpMLqNGt4JxHA6lK/0FxssCwYhOn5LD3X55Do/p+EAswZhXbJvMyfELO8YuCb0q5fhV1xevXxvzka9SNKHUV7AMQxzYyTZPh58SbnXiIEs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714646029; c=relaxed/simple;
-	bh=EQQ99YE7OxJ6vOQGM7fUFPYPqfcuzIEmwb1JAZWHaGI=;
+	s=arc-20240116; t=1714646154; c=relaxed/simple;
+	bh=hK4ov6ylR1Ugfedc+gAwxkAdNe5nyfrosMJJf2M9fIY=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=UAEC2rB/8q0DTW+WlZ8pFVYiOxEuNSZ0ENlnFEhcwXoFp5EwEDpBWspWjm1gVPLYuZn6Rb4V+GbrL8iJ1jq+kTY/cAdNfPyc9Q502t/XIE9Tu9eZyFnPzL1I+Jh1wZyYU5epj/BarQdXLZjz0p2OJiUUvm+qi8K1H1ETTHEfnFk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=XG2/C8is; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=1w5dX4mr; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=XG2/C8is; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=1w5dX4mr; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 62C9D351FB;
-	Thu,  2 May 2024 10:33:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1714646026; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=MrT7ys5O03eVstXNY3hNHVI99bxMNGAg8kCVM0pzqZA=;
-	b=XG2/C8isIOS9e2s/hKolz7lDDao1uYkFE6YPq3ewQY3z3BpZNOaQ9j2iEGgY4au2ebplNt
-	asLC9y4StKnTAJT30z8PpRzLMdOwRoHhgUXlloLR41UmHsgwJC6UShalYYGsnO+qP8u1Gh
-	kmdhOWPD5re8oe3c/eFf4EeJruy9DWM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1714646026;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=MrT7ys5O03eVstXNY3hNHVI99bxMNGAg8kCVM0pzqZA=;
-	b=1w5dX4mr09CtJmjmIXVzf43YZ9+flNo6dh/R6KkBSyGJyGEpHgQR8mdDT8VTw7TF7FRB2r
-	kOK1KV2r80gQy9Dw==
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1714646026; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=MrT7ys5O03eVstXNY3hNHVI99bxMNGAg8kCVM0pzqZA=;
-	b=XG2/C8isIOS9e2s/hKolz7lDDao1uYkFE6YPq3ewQY3z3BpZNOaQ9j2iEGgY4au2ebplNt
-	asLC9y4StKnTAJT30z8PpRzLMdOwRoHhgUXlloLR41UmHsgwJC6UShalYYGsnO+qP8u1Gh
-	kmdhOWPD5re8oe3c/eFf4EeJruy9DWM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1714646026;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=MrT7ys5O03eVstXNY3hNHVI99bxMNGAg8kCVM0pzqZA=;
-	b=1w5dX4mr09CtJmjmIXVzf43YZ9+flNo6dh/R6KkBSyGJyGEpHgQR8mdDT8VTw7TF7FRB2r
-	kOK1KV2r80gQy9Dw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 466F51386E;
-	Thu,  2 May 2024 10:33:46 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id TSHqEApsM2aBEQAAD6G6ig
-	(envelope-from <jack@suse.cz>); Thu, 02 May 2024 10:33:46 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id D0288A06D4; Thu,  2 May 2024 12:33:41 +0200 (CEST)
-Date: Thu, 2 May 2024 12:33:41 +0200
-From: Jan Kara <jack@suse.cz>
-To: syzbot <syzbot+dd43bd0f7474512edc47@syzkaller.appspotmail.com>
-Cc: adilger.kernel@dilger.ca, jack@suse.cz, libaokun1@huawei.com,
-	linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
-	nathan@kernel.org, ndesaulniers@google.com, ritesh.list@gmail.com,
-	syzkaller-bugs@googlegroups.com, trix@redhat.com, tytso@mit.edu
-Subject: Re: [syzbot] [ext4?] WARNING in mb_cache_destroy
-Message-ID: <20240502103341.t53u6ya7ujbzkkxo@quack3>
-References: <00000000000072c6ba06174b30b7@google.com>
- <0000000000003bf5be061751ae70@google.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=u6j4VqjPGN4yYZ60TIFadf5N3DFJ4ulVV34jZbgJg1rVoNwcN6dSq6Qpy5jpqcyc5cPZYbOLqbWir6zEGdG9lwwcQ7fZgXDASJBsPjUvI8GYtFsPwlj5C3lTZNXqAfTVh+b6wB7ZdEtcu3OPChJiQGXGc0A3/qkIuNLAPYl5bUY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cb3nqeBe; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A26A2C113CC;
+	Thu,  2 May 2024 10:35:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714646153;
+	bh=hK4ov6ylR1Ugfedc+gAwxkAdNe5nyfrosMJJf2M9fIY=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=cb3nqeBeoHrI93ndU1+kejrXRKY7tNaPbqH2m3ypYfQt0F/4BTck0UMCuoIeHgYzO
+	 L+k6qhX8BRSRJz68WWe2Z0jNKC4qFtCKrGox2WZjYASmRLNimgWfseXSZL4ZOhwY+I
+	 KqmXiUErpbUR91g/quYjA+Fno7sL06owszJxxZJmmok9aqu4MqTFzFXb7Hnv51TK2p
+	 5hElv0wJwHgqUJ2lm2zfjTotqInc38Tej28qhJrDZApzFJ2EFuMWhRnj6mFpPS+hhT
+	 h/iyHayqWeoFjCn5gzDi/BbSL7cmZcfetiU0OZj0y0XUvgNNCxZAs3fujWxvKFJONz
+	 Um35B46skZ3sw==
+Date: Thu, 2 May 2024 11:35:48 +0100
+From: Lee Jones <lee@kernel.org>
+To: Shresth Prasad <shresthprasad7@gmail.com>
+Cc: daniel.thompson@linaro.org, jingoohan1@gmail.com, deller@gmx.de,
+	dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, javier.carrasco.cruz@gmail.com,
+	skhan@linuxfoundation.org, julia.lawall@inria.fr
+Subject: Re: [PATCH v3][next] backlight: sky81452-backlight: Remove
+ unnecessary call to of_node_get
+Message-ID: <20240502103548.GU5338@google.com>
+References: <20240502063621.65687-2-shresthprasad7@gmail.com>
+ <20240502093623.GJ5338@google.com>
+ <CAE8VWiLP-QR_KaHBPYjA=UVJ8SShpKseB5Xp9Hpkd1RMcvt-qw@mail.gmail.com>
+ <20240502100822.GS5338@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <0000000000003bf5be061751ae70@google.com>
-X-Spam-Flag: NO
-X-Spam-Score: -2.02
-X-Spam-Level: 
-X-Spamd-Result: default: False [-2.02 / 50.00];
-	BAYES_HAM(-2.72)[98.79%];
-	SUSPICIOUS_RECIPS(1.50)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_RHS_NOT_FQDN(0.50)[];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	TAGGED_RCPT(0.00)[dd43bd0f7474512edc47];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	ARC_NA(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	MISSING_XM_UA(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[14];
-	RCVD_COUNT_THREE(0.00)[3];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	FREEMAIL_CC(0.00)[dilger.ca,suse.cz,huawei.com,vger.kernel.org,lists.linux.dev,kernel.org,google.com,gmail.com,googlegroups.com,redhat.com,mit.edu];
-	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.com:email];
-	RCVD_TLS_LAST(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	SUBJECT_HAS_QUESTION(0.00)[]
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240502100822.GS5338@google.com>
 
-On Tue 30-04-24 08:04:03, syzbot wrote:
-> syzbot has bisected this issue to:
+On Thu, 02 May 2024, Lee Jones wrote:
+
+> On Thu, 02 May 2024, Shresth Prasad wrote:
 > 
-> commit 67d7d8ad99beccd9fe92d585b87f1760dc9018e3
-> Author: Baokun Li <libaokun1@huawei.com>
-> Date:   Thu Jun 16 02:13:56 2022 +0000
+> > On Thu, May 2, 2024 at 3:06 PM Lee Jones <lee@kernel.org> wrote:
+> > >
+> > > On Thu, 02 May 2024, Shresth Prasad wrote:
+> > >
+> > > > `dev->of_node` already has a reference to the device_node and calling
+> > > > of_node_get on it is unnecessary. All conresponding calls to
+> > > > of_node_put are also removed.
+> > > >
+> > > > Reviewed-by: Daniel Thompson <daniel.thompson@linaro.org>
+> > > > Signed-off-by: Shresth Prasad <shresthprasad7@gmail.com>
+> > > > ---
+> > > > Changes in v3:
+> > > >     - Remove unnecessary braces
+> > > >
+> > > >  drivers/video/backlight/sky81452-backlight.c | 8 ++------
+> > > >  1 file changed, 2 insertions(+), 6 deletions(-)
+> > >
+> > > No idea what you're talking about.
+> > >
+> > > This patch/version doesn't exist in either my inbox or LORE:
+> > >
+> > >   https://lore.kernel.org/all/?q=%22%5BPATCH+v3%5D%5Bnext%5D+backlight%3A+sky81452-backlight%3A+Remove+unnecessary+call+to+of_node_get%22
+> > >
+> > > --
+> > > Lee Jones [李琼斯]
+> > 
+> > I'm not sure what you mean.
+> > The patches show up just fine:
+> > https://lore.kernel.org/all/?q=backlight%3A+sky81452-backlight%3A+Remove+unnecessary+call+to+of_node_get
+> > 
+> > If you mean that the first version doesn't show up, it's because the
+> > commit message
+> > was changed to better reflect changes.
 > 
->     ext4: fix use-after-free in ext4_xattr_set_entry
+> Those are v2
+> 
+> You replied to a non-existent v3 which started a new thread.
 
-So I'm not sure the bisect is correct since the change is looking harmless.
-But it is sufficiently related that there indeed may be some relationship.
-Anyway, the kernel log has:
+Something funky is going on.  Your pokey emails are coming through
+disconnected from the patches which is causing confusion.
 
-[   44.932900][ T1063] EXT4-fs warning (device loop0): ext4_evict_inode:297: xattr delete (err -12)
-[   44.943316][ T1063] EXT4-fs (loop0): unmounting filesystem.
-[   44.949531][ T1063] ------------[ cut here ]------------
-[   44.955050][ T1063] WARNING: CPU: 0 PID: 1063 at fs/mbcache.c:409 mb_cache_destroy+0xda/0x110
+The best thing going forward is to submit [RESEND]s instead of
+contentless pokes.
 
-So ext4_xattr_delete_inode() called when removing inode has failed with
-ENOMEM and later mb_cache_destroy() was eventually complaining about having
-mbcache entry with increased refcount. So likely some error cleanup path is
-forgetting to drop mbcache entry reference somewhere but at this point I
-cannot find where. We'll likely need to play with the reproducer to debug
-that. Baokun, any chance for looking into this?
+Please submit a [RESEND] for v3 and we can start again.
 
-								Honza
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Lee Jones [李琼斯]
 
