@@ -1,129 +1,155 @@
-Return-Path: <linux-kernel+bounces-166245-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-166246-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 831788B97FB
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 11:43:47 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 930FE8B9802
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 11:45:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1C6551F24B84
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 09:43:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5281D282A26
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 09:45:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D77385647B;
-	Thu,  2 May 2024 09:43:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 118FE56448;
+	Thu,  2 May 2024 09:45:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=edgeble-ai.20230601.gappssmtp.com header.i=@edgeble-ai.20230601.gappssmtp.com header.b="1yPZyLqD"
-Received: from mail-pg1-f175.google.com (mail-pg1-f175.google.com [209.85.215.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oAfQwcFE"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3BD3339AC
-	for <linux-kernel@vger.kernel.org>; Thu,  2 May 2024 09:43:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37B7355783;
+	Thu,  2 May 2024 09:45:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714643009; cv=none; b=mYPmXpGW0hiAkgux6ya3nFE2fj39KIAGJuqnNdk0aNfEGnY0FDPQfKa4lKezUWeNDXx80JzF5D8RN8V5PFIIXlvGXQkpnN8u5exCozch5mF4dhrXhkU9VLa/Ld7f49gJSfASBDkJgozMZlZV+npJWge1k7YIcGudKRp11YthpAo=
+	t=1714643120; cv=none; b=JmONAqOM+RmrQMLnu5V9vT6CZaWNXunjfR5TobAWdrmvMrgFKTyVJU6tipS8736IKVYlRVtuRegIwHpmYiR0sDiCs+IoyXOyGgcuGBEhMEDueMUDGINC2uDfYGZdU9fBdXdOrqfKkGRWX626c+/p3h10CCXcRS9KWWxjYRToi/I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714643009; c=relaxed/simple;
-	bh=ethnIDgbeKT4bwsEjRaQnPGNO0sDowUNV8Yot0tnI5c=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=r3FTWPimSIRHyAeDecrHV/DKbGfE2Y4dWJHh4PgbdQK+VeKf+8N2QO8kDvFut7MxADweVh1zGocIeveX/hKmjlhywIM9DxGfZgPx/EE3gJNTO48lqThGHF+RSvEz5lt7VzbSS2QshRBqzPIDaiCdiHp6GFqxq0VPMlX4xoLBPfg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=edgeble.ai; spf=pass smtp.mailfrom=edgeble.ai; dkim=pass (2048-bit key) header.d=edgeble-ai.20230601.gappssmtp.com header.i=@edgeble-ai.20230601.gappssmtp.com header.b=1yPZyLqD; arc=none smtp.client-ip=209.85.215.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=edgeble.ai
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=edgeble.ai
-Received: by mail-pg1-f175.google.com with SMTP id 41be03b00d2f7-5d8b519e438so6063526a12.1
-        for <linux-kernel@vger.kernel.org>; Thu, 02 May 2024 02:43:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=edgeble-ai.20230601.gappssmtp.com; s=20230601; t=1714643007; x=1715247807; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=NafZmSgbMWHkPxYUCANWhCGG1sZpE0RVMkcek4g8Q64=;
-        b=1yPZyLqDnrklS/D6cGLKAZ7JWh/gYSXg6n4Cs4UDoShmTZ5lfri46qB9tzbSWJQTNp
-         OxKc+nwzK1vUZp4bj/Hp3UIKL+05LIm7aBhVf8KU4hA47vxX4k9OGMq6oYJcz5m6pcl1
-         LI/En1ni6XtF8kwWJdRvzlh2bdJJZn6RSQv1vHU6FzK2NpX24XtoT9rBYDw8sGbKE4gM
-         nbUbQLRn49YOK1objbZD/7xqeAriW75Vm9qUtD32PS5y4cghSw0poee2YiiEX30O+y5w
-         /Q8UtsT51YItL4IzvCGjgP3EG9e8x24bbLKP6OUTe6orE7AkznuvCQkodld95znJhjlU
-         jY3g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714643007; x=1715247807;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=NafZmSgbMWHkPxYUCANWhCGG1sZpE0RVMkcek4g8Q64=;
-        b=ITCXDYtAp4wAEqEPbjjg/w8p9yT5q+eYabPljSQiSlMFnbLN4Lppj6IkBKjsLoULIZ
-         4TNyBP4zsLuqcC6R/d/cvHW/uVsF3r+WFyMp7x/MHLu3Noj0nU3C2jNtj7z9yESYM5t7
-         Bg2/lbVi8ZDX+yr7GbPnfWLrCJQaSVVf/sDj6sSBsHhePq+AjPYvc9xpOvQlUUf2HuZp
-         ubf9QGKnpOw2ZR3UHkNv2p9O67lgjfLo7fsYlpZfbH0BibRQyu3bFJbf5uE+w+/9BhUv
-         7HgsO+mhjkgZ7fJIUgXinqGr3+2XojbNizwKfzAQwCAKJWCSa7+u+XRMkpXRadKsKljT
-         6aRA==
-X-Forwarded-Encrypted: i=1; AJvYcCW1ygLL11IF/mkS59xFtITFfx49mG6XHyA81+0rLA5x6EBrxGGGaMVt/PbwwpxItjSu4p136u6RHnde3rbu4ItdXd71Cg2Cs5wGkJ2y
-X-Gm-Message-State: AOJu0YxyvVaSPtKka3n925FYyy9f134gqAKc+q0OiFfayVkd9laKX/44
-	nSg+IsJBYWKR8vUv8mxTnwlFG01BUjpl0NAVlwU0cqAnErScQy2cvmWixXE60MI=
-X-Google-Smtp-Source: AGHT+IHvUulvyLLuIR2ixjTdxZDCwMu9zOKpV98sFsG+9Kb5SZEbV1Ur8C3Ke6fQgfW3uB1Cl9G0qg==
-X-Received: by 2002:a17:90b:690:b0:29c:582d:bade with SMTP id m16-20020a17090b069000b0029c582dbademr4530071pjz.2.1714643007228;
-        Thu, 02 May 2024 02:43:27 -0700 (PDT)
-Received: from localhost.localdomain ([113.30.217.222])
-        by smtp.gmail.com with ESMTPSA id p11-20020a17090a428b00b002a42d247a93sm782603pjg.36.2024.05.02.02.43.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 May 2024 02:43:26 -0700 (PDT)
-From: Anand Moon <anand@edgeble.ai>
-To: Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzk+dt@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Heiko Stuebner <heiko@sntech.de>
-Cc: Anand Moon <anand@edgeble.ai>,
-	Jagan Teki <jagan@edgeble.ai>,
-	devicetree@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-rockchip@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v1 2/2] arm64: dts: rockchip: Add USB3 on Edgeble NCM6A-IO board
-Date: Thu,  2 May 2024 09:42:38 +0000
-Message-ID: <20240502094246.4695-2-anand@edgeble.ai>
-X-Mailer: git-send-email 2.44.0
-In-Reply-To: <20240502094246.4695-1-anand@edgeble.ai>
-References: <20240502094246.4695-1-anand@edgeble.ai>
+	s=arc-20240116; t=1714643120; c=relaxed/simple;
+	bh=KMKmbjNxDjaQW/0y4bty5ahkkoXZGQdtL8KqJYUhwyE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=jye0JU9wZma8jHPfRlVCgkwzVu6n+DQpIxCY9sZDFapxY2O6jRUBoSSr1MbvX33rsWrxPV5dYCjw+Qb+Ya3lHsFLcRo3AhkW9g0w6h++bd4VEcLxeJn4TpIV4BCkgT1S7Cgp4OASuPm+0D5g311Urw6qX2rif6Ri0Qz3CVRAUB4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oAfQwcFE; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CC6A9C113CC;
+	Thu,  2 May 2024 09:45:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714643119;
+	bh=KMKmbjNxDjaQW/0y4bty5ahkkoXZGQdtL8KqJYUhwyE=;
+	h=Date:Subject:List-Id:To:Cc:References:From:In-Reply-To:From;
+	b=oAfQwcFEFQ4YSvMqY1Xbh/lsc5LPNSzumgD/oGqD14ngGgVPaEs7MibpgzzKx9oki
+	 Zagn8sEO8gj46WZhp4lLi4tBXFTB+pnYiA73nYZaFmp60rxFnqFwc6JU+DjWzL67dG
+	 /MZ0o36PB32nJVFZyZuANe63Rb2438n1oBk0vqlifHQrplthsktdyd/SJ9MqUjTqSh
+	 S4MhcJVVnSWRNuZQtI579Q7AgypadRVel2Bn/9DPwLpuM9kooXWaDgrnlLnFOcgFi9
+	 WcmGesxwuIsoxe8I2o27QKIei0xaWcNAItuJ4mp51iYpDI3BxfZTFiHOR9LfE7YUv9
+	 8qqWoV1TVGUXg==
+Message-ID: <dfde41a3-9d7d-4253-8297-c7684372f6f0@kernel.org>
+Date: Thu, 2 May 2024 18:45:09 +0900
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 12/21] pinctrl: k210: Use scope based of_node_put()
+ cleanups
+To: "Peng Fan (OSS)" <peng.fan@oss.nxp.com>,
+ Linus Walleij <linus.walleij@linaro.org>,
+ Thierry Reding <thierry.reding@gmail.com>,
+ Jonathan Hunter <jonathanh@nvidia.com>, Dvorkin Dmitry <dvorkin@tibbo.com>,
+ Wells Lu <wellslutw@gmail.com>, Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+ Alexandre Torgue <alexandre.torgue@foss.st.com>,
+ Emil Renner Berthing <kernel@esmil.dk>,
+ Jianlong Huang <jianlong.huang@starfivetech.com>,
+ Hal Feng <hal.feng@starfivetech.com>, Orson Zhai <orsonzhai@gmail.com>,
+ Baolin Wang <baolin.wang@linux.alibaba.com>,
+ Chunyan Zhang <zhang.lyra@gmail.com>, Viresh Kumar <vireshk@kernel.org>,
+ Shiraz Hashim <shiraz.linux.kernel@gmail.com>, soc@kernel.org,
+ Krzysztof Kozlowski <krzk@kernel.org>,
+ Sylwester Nawrocki <s.nawrocki@samsung.com>,
+ Alim Akhtar <alim.akhtar@samsung.com>,
+ Geert Uytterhoeven <geert+renesas@glider.be>,
+ Patrice Chotard <patrice.chotard@foss.st.com>,
+ Heiko Stuebner <heiko@sntech.de>,
+ Ludovic Desroches <ludovic.desroches@microchip.com>,
+ Nicolas Ferre <nicolas.ferre@microchip.com>,
+ Alexandre Belloni <alexandre.belloni@bootlin.com>,
+ Claudiu Beznea <claudiu.beznea@tuxon.dev>,
+ Dong Aisheng <aisheng.dong@nxp.com>, Fabio Estevam <festevam@gmail.com>,
+ Shawn Guo <shawnguo@kernel.org>, Jacky Bai <ping.bai@nxp.com>,
+ Pengutronix Kernel Team <kernel@pengutronix.de>,
+ Chester Lin <chester62515@gmail.com>, Matthias Brugger <mbrugger@suse.com>,
+ Ghennadi Procopciuc <ghennadi.procopciuc@oss.nxp.com>,
+ Sean Wang <sean.wang@kernel.org>, Matthias Brugger <matthias.bgg@gmail.com>,
+ AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+ Sascha Hauer <s.hauer@pengutronix.de>,
+ Andrew Jeffery <andrew@codeconstruct.com.au>, Joel Stanley <joel@jms.id.au>,
+ Dan Carpenter <dan.carpenter@linaro.org>
+Cc: linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-tegra@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-stm32@st-md-mailman.stormreply.com, linux-samsung-soc@vger.kernel.org,
+ linux-renesas-soc@vger.kernel.org, linux-rockchip@lists.infradead.org,
+ linux-riscv@lists.infradead.org, linux-mediatek@lists.infradead.org,
+ imx@lists.linux.dev, linux-aspeed@lists.ozlabs.org,
+ openbmc@lists.ozlabs.org, Peng Fan <peng.fan@nxp.com>
+References: <20240501-pinctrl-cleanup-v1-0-797ceca46e5c@nxp.com>
+ <20240501-pinctrl-cleanup-v1-12-797ceca46e5c@nxp.com>
+From: Damien Le Moal <dlemoal@kernel.org>
+Content-Language: en-US
+Organization: Western Digital Research
+In-Reply-To: <20240501-pinctrl-cleanup-v1-12-797ceca46e5c@nxp.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Add the proper nodes to activate the USB 3.0 ports on the
-Edgeble NCM6A-IO board.
+On 5/1/24 21:56, Peng Fan (OSS) wrote:
+> From: Peng Fan <peng.fan@nxp.com>
+> 
+> Use scope based of_node_put() cleanup to simplify code.
+> 
+> Signed-off-by: Peng Fan <peng.fan@nxp.com>
+> ---
+>  drivers/pinctrl/pinctrl-k210.c | 7 ++-----
+>  1 file changed, 2 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/pinctrl/pinctrl-k210.c b/drivers/pinctrl/pinctrl-k210.c
+> index b6d1ed9ec9a3..2753e14c3e38 100644
+> --- a/drivers/pinctrl/pinctrl-k210.c
+> +++ b/drivers/pinctrl/pinctrl-k210.c
+> @@ -849,7 +849,6 @@ static int k210_pinctrl_dt_node_to_map(struct pinctrl_dev *pctldev,
+>  				       unsigned int *num_maps)
+>  {
+>  	unsigned int reserved_maps;
+> -	struct device_node *np;
+>  	int ret;
+>  
+>  	reserved_maps = 0;
+> @@ -861,13 +860,11 @@ static int k210_pinctrl_dt_node_to_map(struct pinctrl_dev *pctldev,
+>  	if (ret < 0)
+>  		goto err;
+>  
+> -	for_each_available_child_of_node(np_config, np) {
+> +	for_each_available_child_of_node_scoped(np_config, np) {
+>  		ret = k210_pinctrl_dt_subnode_to_map(pctldev, np, map,
+>  						     &reserved_maps, num_maps);
+> -		if (ret < 0) {
+> -			of_node_put(np);
 
-Cc: Jagan Teki <jagan@edgeble.ai>
-Signed-off-by: Anand Moon <anand@edgeble.ai>
----
- arch/arm64/boot/dts/rockchip/rk3588-edgeble-neu6a-io.dtsi | 8 ++++++++
- 1 file changed, 8 insertions(+)
+Personally, I am really not a fan of things that hide code like that scoped
+thing... If I want a language that hides code, I would be doing C++ :)
+That said, I am not opposed to this so I will let Linus (Walleij) decide.
 
-diff --git a/arch/arm64/boot/dts/rockchip/rk3588-edgeble-neu6a-io.dtsi b/arch/arm64/boot/dts/rockchip/rk3588-edgeble-neu6a-io.dtsi
-index 963e880ccc12..7b1317898358 100644
---- a/arch/arm64/boot/dts/rockchip/rk3588-edgeble-neu6a-io.dtsi
-+++ b/arch/arm64/boot/dts/rockchip/rk3588-edgeble-neu6a-io.dtsi
-@@ -68,6 +68,10 @@ &combphy1_ps {
- 	status = "okay";
- };
- 
-+&combphy2_psu {
-+	status = "okay";
-+};
-+
- &i2c6 {
- 	status = "okay";
- 
-@@ -230,3 +234,7 @@ &usb_host1_ehci {
- &usb_host1_ohci {
- 	status = "okay";
- };
-+
-+&usb_host2_xhci {
-+	status = "okay";
-+};
+Also, I think that "for_each_available_child_of_node" is a bad name... It really
+should be something like for_each_available_child_of_node_get() to make it clear
+that a of_node_put() is needed.
+
+> +		if (ret < 0)
+>  			goto err;
+> -		}
+>  	}
+>  	return 0;
+>  
+> 
+
 -- 
-2.44.0
+Damien Le Moal
+Western Digital Research
 
 
