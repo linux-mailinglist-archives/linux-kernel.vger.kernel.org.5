@@ -1,313 +1,168 @@
-Return-Path: <linux-kernel+bounces-166404-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-166405-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3EEE18B9A2F
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 13:42:10 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8A1738B9A33
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 13:43:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6D63E28498E
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 11:42:08 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C2305B22A5D
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 11:43:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1676667A0D;
-	Thu,  2 May 2024 11:42:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0343D69944;
+	Thu,  2 May 2024 11:43:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="I5DitpM+"
-Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="e5e+D3+Y";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="Pwuz9xKk"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8887660DE9;
-	Thu,  2 May 2024 11:41:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E430E64CE9;
+	Thu,  2 May 2024 11:43:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714650120; cv=none; b=UTVXzJcty21LCLBCeY+z0CDlSe84mDg9Zm5AhTFO/YAffL00byLTKG9FJhsXb9ZRJnBOWCz97kHl2O99qMWliV3kh0PBFJa/PuMbMUNzNOP99gZUyMpzs1YgAR/V+BMaU7mHOjHRHka/FMtz0Y27/iH4RHQuZUudjDmqC4JoF58=
+	t=1714650188; cv=none; b=DnqPwVjx7yYBPBVjB6Su6Sd22zSZCa6ZEqE0wTwaZgEp8FpuTj5t+8NIVxYeyJFx/aCnCy5DJFWGV9s8d3st42XSZV8zVBH+6fAerlX/5uYMJWXRXR+E2gQUV1Mk/YO1XhYNYustMB6vIfu9+Mns+3Rv1QHCdMd5pIIqSLhJROo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714650120; c=relaxed/simple;
-	bh=a53mRzwAOyKcbxdwi3xsgaA7yY1VrAOPGAEHF2b3qGk=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=E8Pw3yQuI16XBjx7+JqkLDyWSWEvQPl87JjHi02IQ+d3p4H/Vbsr+W96rKLkFIRGfZ5UWBy556bGJq7IDCCHw5kJ8Q0KmKZhFo1tNVYtnwPRTpj/m/1oeZKb0jM1btUhjOKH5OEcgw+Sfch05y1cXvpB/Kcbwpl2xI7PLvfaEi0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=I5DitpM+; arc=none smtp.client-ip=209.85.221.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-34d8d11a523so1526955f8f.2;
-        Thu, 02 May 2024 04:41:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714650117; x=1715254917; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=BoSB8lfuYBvvj4IntonrIUHbkv3t+PG07XYEr0YSDLc=;
-        b=I5DitpM+tdfAXNsiQ/CdHVKF7Pa4qrLEs/ciyYSdBKyxCCSuXgAaYmCG8Vt6jkjxmr
-         D3mu92XioJzHP9QGA9KLGUI6mOoaqT/t+G0wfAejeiE2CNsO7ZoWYXeWEji3KVPr4oKz
-         P6QBo4BFZ2SeqsB3vHuUBRWnzjU+168sccArxzfKmgTEmI/mor1EAXlMo4HTbnoxXwA/
-         O4Mcy5ln8tM19sos92ZBDu1ZycHOwW4kzA3hfjRw0bMlWCoL6XVsi8JZx4h1D0S38xQI
-         E04PAyTzgUyvckZ82vehE+3x73DjFYKJA7YESpEwgJmW5DDtI+mOjKe3CRMxmjNglNVs
-         iP9g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714650117; x=1715254917;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=BoSB8lfuYBvvj4IntonrIUHbkv3t+PG07XYEr0YSDLc=;
-        b=UDyf336nKfujRaFyo1iVNZDvRlP9ry/I5AY/sZwOoHT7tMRhojAhKpUrNNeyU3tyhX
-         ZC4VUxMr/3dd1KqAT4YbNNNL+LKtXSJLSNdwUkHhYYqeJHyLHBm67vgfQ9s+n90nQhbB
-         dHxn4CDebX+swRP5Gt61GUHF5s6PV8u+IJST3Hn1z/SmNBYrjOseUWQ2wmUK2ahf2RhO
-         p9PFgMuP7OVir+Gp5kg3vWTmfknAnJ0yX/FDImPihaZsU33k0hJZfPdzpYnnpPkZXk28
-         VK6xrWv7B4Cfhg2isSrlhMy30ohbFloBdrteZUzelhhEDKrwGBHETjKedXEsN4DCjBIz
-         oKPg==
-X-Forwarded-Encrypted: i=1; AJvYcCU6zQNb0yAeTeoVdoJEC3cwVH0jAQjKs90HsYz37KQFoyGGso6Pc1eItptcgLZ/ojOlR6Ecg0E7Ke6LTfqTw7Wcm6u6VPiUjA//dV9Gx3nCW92r4b2BzPt9qyBLM/gyBlagWypzXPlg
-X-Gm-Message-State: AOJu0Yw6I2XSIj4LSQXQdH9dhwfqbpBMf9FwiVFxbRneqCVhSksph9p7
-	Fb2e0fJ/YJPmA1nA5DyWHbssj72nD1kI6/LsunebCs6736vTYJhw
-X-Google-Smtp-Source: AGHT+IFsyvN/dHzEvWULmlelGfmsdwZOGykDcBwbrDlTrKEV1khnLb50gc3FL377pMiU8G+t1VX0Bg==
-X-Received: by 2002:a5d:6051:0:b0:34b:5afb:f10d with SMTP id j17-20020a5d6051000000b0034b5afbf10dmr3591341wrt.38.1714650116713;
-        Thu, 02 May 2024 04:41:56 -0700 (PDT)
-Received: from ?IPv6:2001:a61:35f9:9001:40df:88bb:5090:7ab6? ([2001:a61:35f9:9001:40df:88bb:5090:7ab6])
-        by smtp.gmail.com with ESMTPSA id u9-20020adfa189000000b0034bc5934bf8sm1077688wru.31.2024.05.02.04.41.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 May 2024 04:41:56 -0700 (PDT)
-Message-ID: <adb68427a410afc07733ae0f05af1cbefc57a288.camel@gmail.com>
-Subject: Re: [PATCH v2 2/4] iio: temperature: ltc2983: convert to
- dev_err_probe()
-From: Nuno =?ISO-8859-1?Q?S=E1?= <noname.nuno@gmail.com>
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>, nuno.sa@analog.com
-Cc: Petr Mladek <pmladek@suse.com>, Chris Down <chris@chrisdown.name>, John
- Ogness <john.ogness@linutronix.de>, Greg Kroah-Hartman
- <gregkh@linuxfoundation.org>,  Jonathan Cameron <jic23@kernel.org>,
- Lars-Peter Clausen <lars@metafoo.de>, Olivier Moysan
- <olivier.moysan@foss.st.com>, Andi Shyti <andi.shyti@kernel.org>, Jyoti
- Bhayana <jbhayana@google.com>, linux-kernel@vger.kernel.org,
- linux-iio@vger.kernel.org
-Date: Thu, 02 May 2024 13:41:55 +0200
-In-Reply-To: <ZifW_fUVcdIpfOWO@smile.fi.intel.com>
-References: <20240423-dev-add_dev_errp_probe-v2-0-12f43c5d8b0d@analog.com>
-	 <20240423-dev-add_dev_errp_probe-v2-2-12f43c5d8b0d@analog.com>
-	 <ZifW_fUVcdIpfOWO@smile.fi.intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.4 (3.50.4-1.fc39) 
+	s=arc-20240116; t=1714650188; c=relaxed/simple;
+	bh=segDebKFJR58OLMOPDzjbchamkQ/rfMYFmAiqWN9efY=;
+	h=Date:From:To:Subject:Cc:In-Reply-To:References:MIME-Version:
+	 Message-ID:Content-Type; b=cbB2p5oKnRP2ou7Zy4h+AwLjl+j/7OwO48paMMaHcLfaVaNv5CSY8mBnAmB0gH5RatjEiEwVTCnbSamKW4nPyzyEOlug/8XiAauG0UD3thhfvsPFTCVdK+Hpfn+TVk4zD0aVXsahMtofYt1UcQZ2jK62ZKQNWGegR8r6zQs0mxY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=e5e+D3+Y; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=Pwuz9xKk; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+Date: Thu, 02 May 2024 11:43:04 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1714650185;
+	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Jzm6wh+gmO7OWFLqLVXLXzyQDUBZhRRXpOWIf8kUSMY=;
+	b=e5e+D3+Yy5ih6PZmtlmef6WzaGfK+WRmEMhqGTE/kNPjBarZWgwUg8jjylwWejPHwO91Qm
+	JBhicVgHw4qZZ4Yj9zltW53QdS5lwopAjnCPt7Su/Y1jF3S534E4VAyLeLlp+TP0F98/yI
+	LggoYGjuXHV+3z+K695J28ZB2/P2HLsyqLnurqtSL2CYvFpK/ANDYYFM61M3D26uDAyGyJ
+	bzEAK+W1aqlzcKGKZStpFlH/Jfz45A091OMWclwt/KIvKi/qhH7W9xo5ZybY5smQiCg8hh
+	H5WkncxM1R7NslSfmwYvP2JeJ9/D1v6aJfIjzVRQKw7BXN3tMPdNmCXe/6a2AA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1714650185;
+	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Jzm6wh+gmO7OWFLqLVXLXzyQDUBZhRRXpOWIf8kUSMY=;
+	b=Pwuz9xKktbmJCv9AgpVvW8xlCurduDBRopKkU08T97CT5yXgyoiSIKTAlaqr5uu/AN29pU
+	gu8gbVN/JwpVkmCQ==
+From: "tip-bot2 for Dhananjay Ugwekar" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To: linux-tip-commits@vger.kernel.org
+Subject: [tip: perf/core] perf/x86/rapl: Rename 'maxdie' to nr_rapl_pmu and
+ 'dieid' to rapl_pmu_idx
+Cc: Dhananjay Ugwekar <Dhananjay.Ugwekar@amd.com>,
+ Ingo Molnar <mingo@kernel.org>, K Prateek Nayak <kprateek.nayak@amd.com>,
+ x86@kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20240502095115.177713-2-Dhananjay.Ugwekar@amd.com>
+References: <20240502095115.177713-2-Dhananjay.Ugwekar@amd.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Message-ID: <171465018490.10875.7721607041690178507.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe:
+ Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Precedence: bulk
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 
-On Tue, 2024-04-23 at 18:42 +0300, Andy Shevchenko wrote:
-> On Tue, Apr 23, 2024 at 05:20:31PM +0200, Nuno Sa via B4 Relay wrote:
-> > From: Nuno Sa <nuno.sa@analog.com>
-> >=20
-> > Use dev_err_probe() in the probe() path. While at it, made some simple
-> > improvements:
-> > =C2=A0* Declare a struct device *dev helper. This also makes the style =
-more
-> > =C2=A0=C2=A0 consistent (some places the helper was used and not in oth=
-er places);
-> > =C2=A0* Explicitly included the err.h and errno.h headers;
-> > =C2=A0* Removed an useless else if();
-> > =C2=A0* Removed some unnecessary line breaks.
->=20
-> ...
->=20
-> > =C2=A0	/* Check space on the table. */
-> > =C2=A0	if (st->custom_table_size + new_custom->size >
-> > -	=C2=A0=C2=A0=C2=A0 (LTC2983_CUST_SENS_TBL_END_REG -
-> > -	=C2=A0=C2=A0=C2=A0=C2=A0 LTC2983_CUST_SENS_TBL_START_REG) + 1) {
->=20
-> > +	=C2=A0=C2=A0=C2=A0 (LTC2983_CUST_SENS_TBL_END_REG - LTC2983_CUST_SENS=
-_TBL_START_REG) +
-> > 1)
->=20
-> Semi-unrelated change?
+The following commit has been merged into the perf/core branch of tip:
 
+Commit-ID:     626c5acf39ba929a0d82d37e72072e21492a958e
+Gitweb:        https://git.kernel.org/tip/626c5acf39ba929a0d82d37e72072e21492a958e
+Author:        Dhananjay Ugwekar <Dhananjay.Ugwekar@amd.com>
+AuthorDate:    Thu, 02 May 2024 15:21:14 +05:30
+Committer:     Ingo Molnar <mingo@kernel.org>
+CommitterDate: Thu, 02 May 2024 13:32:21 +02:00
 
-Yeah, indeed. One of those cases where the old limit does hurt readability =
-(IMO)
+perf/x86/rapl: Rename 'maxdie' to nr_rapl_pmu and 'dieid' to rapl_pmu_idx
 
->=20
-> ...
->=20
-> > +		return dev_err_ptr_probe(dev, -EINVAL,
-> > +				=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 "Invalid chann:%d for differential
-> > thermocouple",
->=20
-> While at it, add missing \n.
+AMD CPUs have the scope of RAPL energy-pkg event as package, whereas
+Intel Cascade Lake CPUs have the scope as die.
 
-Will do for all the places...
+To account for the difference in the energy-pkg event scope between AMD
+and Intel CPUs, give more generic and semantically correct names to the
+maxdie and dieid variables.
 
->=20
-> > +				=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 sensor->chan);
->=20
-> ...
->=20
-> > +		return dev_err_cast_probe(dev, ref,
-> > +					=C2=A0 "Property adi,rsense-handle missing or
-> > invalid");
->=20
-> Ditto.
->=20
-> ...
->=20
-> > +			return dev_err_ptr_probe(dev, -EINVAL,
-> > +					=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 "Invalid number of wires:%u\n",
-> > +					=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 n_wires);
->=20
-> Can be compressed in terms of LoCs?
->=20
-> ...
->=20
-> > +				return dev_err_ptr_probe(dev, -EINVAL,
-> > +						=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 "Rotation not allowed for
-> > 2/3 Wire RTDs");
->=20
-> \n
->=20
-> ...
->=20
-> > +			return dev_err_ptr_probe(dev, -EINVAL,
-> > +					=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 "Invalid rsense chann:%d to use in
-> > kelvin rsense",
-> > +					=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 rtd->r_sense_chan);
->=20
-> Ditto.
->=20
-> ...
->=20
-> > +			return dev_err_ptr_probe(dev, -EINVAL,
-> > +					=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 "Invalid chann:%d for the rtd
-> > config",
->=20
-> Ditto.
->=20
-> > +					=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 sensor->chan);
->=20
-> ...
->=20
-> > +			return dev_err_ptr_probe(dev, -EINVAL,
-> > +					=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 "Invalid chann:%d for RTD",
->=20
-> Ditto.
->=20
-> > +					=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 sensor->chan);
->=20
-> ...
->=20
-> > +			return dev_err_ptr_probe(dev, -EINVAL,
-> > +					=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 "Invalid value for excitation
-> > current(%u)",
->=20
-> Ditto.
->=20
-> > +					=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 excitation_current);
->=20
-> ...
->=20
-> > +	if (IS_ERR(ref))
-> > +		return dev_err_cast_probe(dev, ref,
-> > +					=C2=A0 "Property adi,rsense-handle missing or
-> > invalid");
->=20
-> Ditto.
->=20
-> ...
->=20
-> > +		return dev_err_ptr_probe(dev, -EINVAL,
-> > +				=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 "Invalid chann:%d for differential
-> > thermistor",
-> > +				=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 sensor->chan);
->=20
->=20
-> Ditto.
->=20
-> ...
->=20
-> > +			return dev_err_ptr_probe(dev, -EINVAL,
-> > +					=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 "Invalid value for excitation
-> > current(%u)",
-> > +					=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 excitation_current);
->=20
-> Ditto.
->=20
-> ...
->=20
-> > +		return dev_err_ptr_probe(dev, -EINVAL,
-> > +				=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 "Invalid chann:%d for differential
-> > thermistor",
-> > +				=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 sensor->chan);
->=20
-> Ditto.
->=20
-> ...
->=20
-> > +			return dev_err_ptr_probe(dev, -EINVAL,
-> > +					=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 "Invalid value for excitation
-> > current(%u)",
-> > +					=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 excitation_current);
->=20
-> Ditto.
->=20
-> ...
->=20
-> > +		return dev_err_ptr_probe(dev, -EINVAL,
-> > +				=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 "Invalid chann:%d for r_sense",
-> > +				=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 sensor->chan);
->=20
-> Ditto.
->=20
-> ...
->=20
-> > +	if (!st->num_channels)
-> > +		return dev_err_probe(dev, -EINVAL,
-> > +				=C2=A0=C2=A0=C2=A0=C2=A0 "At least one channel must be given!");
->=20
-> Ditto.
->=20
-> ...
->=20
-> > +		return dev_err_probe(dev, -EINVAL,
-> > +				=C2=A0=C2=A0=C2=A0=C2=A0 "EEPROM command failed: 0x%02X\n", val);
->=20
-> One line?
->=20
-> ...
->=20
-> > +	if (IS_ERR(st->regmap))
-> > +		return dev_err_probe(dev, PTR_ERR(st->regmap),
-> > +				=C2=A0=C2=A0=C2=A0=C2=A0 "Failed to initialize regmap\n");
->=20
-> Wondering about Andi's proposal in conjunction with %pe to be in use
->=20
-> 		return dev_???(dev, st->regmap, "Failed to initialize regmap\n");
->=20
-> where it returns an int and uses const void * as an error pointer for %pe=
-.
+No functional change.
 
-Yeah, I would like to avoid including that variation in this series (unless=
- everyone
-agrees and requires it now). We already have tons of cases where we do
-dev_err_probe(dev, PTR_ERR(), ...). Do we want to change all of them or not=
- having
-more? Personally, I'm not seeing as a big deal to have to do the PTR_ERR().=
- Yes,
-internally we will go back to ERR_PTR() but still...
+Signed-off-by: Dhananjay Ugwekar <Dhananjay.Ugwekar@amd.com>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Tested-by: K Prateek Nayak <kprateek.nayak@amd.com>
+Link: https://lore.kernel.org/r/20240502095115.177713-2-Dhananjay.Ugwekar@amd.com
+---
+ arch/x86/events/rapl.c | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
->=20
->=20
->=20
-> > -	st->iio_chan =3D devm_kzalloc(&spi->dev,
-> > +	st->iio_chan =3D devm_kzalloc(dev,
-> > =C2=A0				=C2=A0=C2=A0=C2=A0 st->iio_channels * sizeof(*st->iio_chan),
-> > =C2=A0				=C2=A0=C2=A0=C2=A0 GFP_KERNEL);
->=20
-> Separate change to devm_kzalloc() before this patch?
-> In that patch you may also introduce a temporary struct device *dev.
->=20
-
-If the introduction of the temporary struct device *dev is too much to be i=
-ncluded in
-here I may just remove it and send a patch afterwards.. (note I'm adding mo=
-re
-temporary *dev in other places to be consistent throughout the driver.
->=20
-
+diff --git a/arch/x86/events/rapl.c b/arch/x86/events/rapl.c
+index ca5f687..46e6735 100644
+--- a/arch/x86/events/rapl.c
++++ b/arch/x86/events/rapl.c
+@@ -114,8 +114,8 @@ struct rapl_pmu {
+ 
+ struct rapl_pmus {
+ 	struct pmu		pmu;
+-	unsigned int		maxdie;
+-	struct rapl_pmu		*pmus[] __counted_by(maxdie);
++	unsigned int		nr_rapl_pmu;
++	struct rapl_pmu		*pmus[] __counted_by(nr_rapl_pmu);
+ };
+ 
+ enum rapl_unit_quirk {
+@@ -141,13 +141,13 @@ static struct perf_msr *rapl_msrs;
+ 
+ static inline struct rapl_pmu *cpu_to_rapl_pmu(unsigned int cpu)
+ {
+-	unsigned int dieid = topology_logical_die_id(cpu);
++	unsigned int rapl_pmu_idx = topology_logical_die_id(cpu);
+ 
+ 	/*
+ 	 * The unsigned check also catches the '-1' return value for non
+ 	 * existent mappings in the topology map.
+ 	 */
+-	return dieid < rapl_pmus->maxdie ? rapl_pmus->pmus[dieid] : NULL;
++	return rapl_pmu_idx < rapl_pmus->nr_rapl_pmu ? rapl_pmus->pmus[rapl_pmu_idx] : NULL;
+ }
+ 
+ static inline u64 rapl_read_counter(struct perf_event *event)
+@@ -658,7 +658,7 @@ static void cleanup_rapl_pmus(void)
+ {
+ 	int i;
+ 
+-	for (i = 0; i < rapl_pmus->maxdie; i++)
++	for (i = 0; i < rapl_pmus->nr_rapl_pmu; i++)
+ 		kfree(rapl_pmus->pmus[i]);
+ 	kfree(rapl_pmus);
+ }
+@@ -674,13 +674,13 @@ static const struct attribute_group *rapl_attr_update[] = {
+ 
+ static int __init init_rapl_pmus(void)
+ {
+-	int maxdie = topology_max_packages() * topology_max_dies_per_package();
++	int nr_rapl_pmu = topology_max_packages() * topology_max_dies_per_package();
+ 
+-	rapl_pmus = kzalloc(struct_size(rapl_pmus, pmus, maxdie), GFP_KERNEL);
++	rapl_pmus = kzalloc(struct_size(rapl_pmus, pmus, nr_rapl_pmu), GFP_KERNEL);
+ 	if (!rapl_pmus)
+ 		return -ENOMEM;
+ 
+-	rapl_pmus->maxdie		= maxdie;
++	rapl_pmus->nr_rapl_pmu		= nr_rapl_pmu;
+ 	rapl_pmus->pmu.attr_groups	= rapl_attr_groups;
+ 	rapl_pmus->pmu.attr_update	= rapl_attr_update;
+ 	rapl_pmus->pmu.task_ctx_nr	= perf_invalid_context;
 
