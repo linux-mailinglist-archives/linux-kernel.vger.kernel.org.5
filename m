@@ -1,334 +1,214 @@
-Return-Path: <linux-kernel+bounces-166433-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-166434-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E16488B9AA4
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 14:21:16 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8FE848B9AA7
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 14:21:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 98B7928301C
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 12:21:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4617C282241
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 12:21:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8CE767E10B;
-	Thu,  2 May 2024 12:21:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 183717BB19;
+	Thu,  2 May 2024 12:21:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="BOHEXwog"
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+	dkim=pass (2048-bit key) header.d=theobroma-systems.com header.i=@theobroma-systems.com header.b="eVUQ0q0V"
+Received: from EUR02-VI1-obe.outbound.protection.outlook.com (mail-vi1eur02on2109.outbound.protection.outlook.com [40.107.241.109])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F95CD26A;
-	Thu,  2 May 2024 12:20:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714652459; cv=none; b=ly/tYmOoa0oYH+oFsRyHKvONNoQ5BRc14oWNnhb/2i4qIYCFLKTg2nw+Xntys2MsroSbOVB407eyfHgoElwDRCwvEInJpVbLIYXgl9rXiqmEjIs3Jjmvz7D7lQfNhCdFIezX3nz1xV9DhsUk/n5fEwRRVtDlJxTZIceroGHC+YQ=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714652459; c=relaxed/simple;
-	bh=caLWVw04WK/JE26bBYnuJz21yJ840Pmi22WQGNs/7xk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=SaPPbI3NYV16ja9YXtqE4py9yf4k30h2B9XaNgYa2LcjeN2TcSMkot6ohZrxkXsWAKh/glWnQNmBi1MvB2/fx4bl2ScVyAIdxkiMSyI5IHyRAmAXBAvaWqhSE1ptZfjYFFYwIESUUgug4AKcI+jPyRCXodlhIF+jbFw/AOvbp2Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=BOHEXwog; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 442C3JZW032581;
-	Thu, 2 May 2024 12:20:27 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=pp1; bh=Wo3GS11pbbmlNLoZSjznIa+Hpvyvrhk+tFLJDOiqAuM=;
- b=BOHEXwogDwQovUUQ9Sa//oh7G3jSuQphLWj1Cpv+xRUq0wZvpvNONTi2hJ/3cHEmXime
- afeNEv0hljtp5vNk3mnCEI1q/RJntGDzvnaN89N0nfCmgW3ApZNUVbuEaJEbNgaomSfz
- N/YTUkv9QOMGw3n5TgwKhfmYCd0xH/47N/lhsa1seqyxggE3l+X2A19vFE40ehDC4BFt
- wqrP+qtaa3w7v7zwhU5Yx+jojWJPCSxfiTZAsxmgtF0CPba6Pyf2zIQuqh/dS/fP2AFY
- BKzacHzbNvTYIbL003DlCh3+DMHP76fKdbtVWrtcs8wVtshGseqXRxoszmOefrq2VM0p nA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xvagb81gs-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 02 May 2024 12:20:27 +0000
-Received: from m0356516.ppops.net (m0356516.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 442CKQTC025837;
-	Thu, 2 May 2024 12:20:26 GMT
-Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xvagb81gp-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 02 May 2024 12:20:26 +0000
-Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 442AxwEC027546;
-	Thu, 2 May 2024 12:20:26 GMT
-Received: from smtprelay03.fra02v.mail.ibm.com ([9.218.2.224])
-	by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3xsc30r22v-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 02 May 2024 12:20:26 +0000
-Received: from smtpav06.fra02v.mail.ibm.com (smtpav06.fra02v.mail.ibm.com [10.20.54.105])
-	by smtprelay03.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 442CKKSh57278854
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Thu, 2 May 2024 12:20:22 GMT
-Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 6E21B2004E;
-	Thu,  2 May 2024 12:20:20 +0000 (GMT)
-Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 2DC902004B;
-	Thu,  2 May 2024 12:20:20 +0000 (GMT)
-Received: from DESKTOP-2CCOB1S. (unknown [9.171.162.63])
-	by smtpav06.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-	Thu,  2 May 2024 12:20:20 +0000 (GMT)
-Date: Thu, 2 May 2024 14:20:19 +0200
-From: Tobias Huschle <huschle@linux.ibm.com>
-To: Peter Zijlstra <peterz@infradead.org>
-Cc: "Michael S. Tsirkin" <mst@redhat.com>, Luis Machado <luis.machado@arm.com>,
-        Jason Wang <jasowang@redhat.com>, Abel Wu <wuyun.abel@bytedance.com>,
-        Linux Kernel <linux-kernel@vger.kernel.org>, kvm@vger.kernel.org,
-        virtualization@lists.linux.dev, netdev@vger.kernel.org,
-        nd <nd@arm.com>, borntraeger@linux.ibm.com,
-        Ingo Molnar <mingo@kernel.org>,
-        Mike Galbraith <umgwanakikbuti@gmail.com>
-Subject: Re: EEVDF/vhost regression (bisected to 86bfbb7ce4f6 sched/fair: Add
- lag based placement)
-Message-ID: <ZjOFA8TdyM7OYjWb@DESKTOP-2CCOB1S.>
-References: <cf813f92-9806-4449-b099-1bb2bd492b3c@arm.com>
- <73123.124031407552500165@us-mta-156.us.mimecast.lan>
- <20240314110649-mutt-send-email-mst@kernel.org>
- <84704.124031504335801509@us-mta-515.us.mimecast.lan>
- <20240315062839-mutt-send-email-mst@kernel.org>
- <b3fd680c675208370fc4560bb3b4d5b8@linux.ibm.com>
- <20240319042829-mutt-send-email-mst@kernel.org>
- <4808eab5fc5c85f12fe7d923de697a78@linux.ibm.com>
- <ZjDM3SsZ3NkZuphP@DESKTOP-2CCOB1S.>
- <20240501105151.GG40213@noisy.programming.kicks-ass.net>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240501105151.GG40213@noisy.programming.kicks-ass.net>
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: qTXMKVePHO5cXzBnzK2DJDbDAJMUha_l
-X-Proofpoint-ORIG-GUID: Sv6HeXPs2DFI-nKMGaDHEjlL5hwTn4rD
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83A1767A0D;
+	Thu,  2 May 2024 12:21:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.241.109
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1714652471; cv=fail; b=Xtsd/9oizjBBTxyQJYuwWNgYiXlScH8frppZCYrGNHVz8sze970nd/rFMsq7o96hCxU136E/G/4dP77B+QyfDbLT/rVNZUUqLdHyfkMjcCGgrnv9msRmBltVGZ7W9pHHT1stqXf3srn6Rjyv/64zUhi//L4VvRqC2Mz0GVaXolk=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1714652471; c=relaxed/simple;
+	bh=6Fd+0klCFg9CRBJ5do29BsPdiC98ajqLjUkSe+3cl34=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=IvzLSnVBhlaQooAssm8K/0sCI1+IKYcSPE4Qu9DGYqFRD8TuZTaYIFQFfwTCNQ/FvckfXjT55hlqyme1WpWWLOC5KK65bm63fgDxiDQxqOyv2wYLR8ni4l6oNMDP80v0XVYahn8NW1Fbg0QBA6MEFq+nCXtQUAZiEZpB7I1ENbg=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=theobroma-systems.com; spf=pass smtp.mailfrom=cherry.de; dkim=pass (2048-bit key) header.d=theobroma-systems.com header.i=@theobroma-systems.com header.b=eVUQ0q0V; arc=fail smtp.client-ip=40.107.241.109
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=theobroma-systems.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cherry.de
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=LgLQhTvjgbU/g0BmdamdF05t+V8i01SIpgtIto14IA+qZVN1r+BDR/+hTCqKbW1+3KRZosiz9EzFoPZDwT1cggDgXALwHa9Ov723TbHd0hTERGRm4FjQInnC6vEWZUHBYCsL7+ufRDpVtlPV9qTW+5coQGJS54/ip3iPfpJzELOxJ5EfJ5EcrZThEz8zhHvMjlQwUKpZXsMv1d7THrzPOEHJrITsFhVjXy2nhp41J5OQXNyvsC6+rxiQ5VIHQSnjb5g/ZcBTM0K7uNg9/XtTHiPJ+G26TfuhE70Kh5BEJvEQkpaGYmNz7C544wkRJeHY2Zf9CwXDLTjOSrIiIoRaoA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=pSHqiEwcAVAz5IAf6JRYG7Vtfasp2y8V9jU7UO4cHLc=;
+ b=l9yCLo4ueyMAOQU+wr3s49QeHwP/4b9eS9+LWE0dkFXMYQJ2rDiE+sO9LJ/dbIQGftNqP2YDR+FzY/hiCJhpAOqz3h5MEViJBud3APgx+BdOfq8dYvBqK/N7l6raL0hrjRmqX/tRPWTbyXv5mA+u26A8eirSjgREBBTCLmzlDdvEGp4LctAbTyu+S2Ye8se5NNLcYszQYQ22KiKPOTfLByO2BR3GL2yG/2h5q6/laVCZXULX4Pkep5jWfxSyjf5qhgP3zd8RrJCcwPBcRDdbSmMpGXcQI/jxR7IXmWyNWm4OD0JvmGMYETtyWpc7iWwwBgqRhNj6vQi7gtkUdxqtXQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=cherry.de; dmarc=pass action=none
+ header.from=theobroma-systems.com; dkim=pass header.d=theobroma-systems.com;
+ arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=theobroma-systems.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=pSHqiEwcAVAz5IAf6JRYG7Vtfasp2y8V9jU7UO4cHLc=;
+ b=eVUQ0q0VqAmORcORVbnUo+zBLs6/GBapIdfcwCfGeDUnNEqIqbTsaF02grGHRc/RdL1mjstARFwCwgKmEx9y4NAYq/Uu34qBrN8CLnVcaGRO7ancDhp0nCpmS/Zo+YR6chCamVSL0+bog4l8n8ieqqczR+zCVbo3as94ROirE8wuwWafChRI/uI9euRlTqUrC0ZtjNc25NK7aZ6yD7Ym1qgTfc9MUBkzu4kcHIUwgYlxoVHXSYfw9HieJHFBHaP1oj/bjebxSR7RVRBCHdn3+g6HwLHhSaE1t2QmQUK3iigX94CqJYxfPF8a8/Y7Qm/uKVVuXssXohhCtvRWY77qAw==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=theobroma-systems.com;
+Received: from VE1PR04MB6382.eurprd04.prod.outlook.com (2603:10a6:803:122::31)
+ by DU4PR04MB10404.eurprd04.prod.outlook.com (2603:10a6:10:566::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7544.25; Thu, 2 May
+ 2024 12:21:04 +0000
+Received: from VE1PR04MB6382.eurprd04.prod.outlook.com
+ ([fe80::59d9:878d:65f0:3936]) by VE1PR04MB6382.eurprd04.prod.outlook.com
+ ([fe80::59d9:878d:65f0:3936%4]) with mapi id 15.20.7544.029; Thu, 2 May 2024
+ 12:21:04 +0000
+Message-ID: <a3720150-e920-48b2-85f4-8b99abdd274e@theobroma-systems.com>
+Date: Thu, 2 May 2024 14:21:02 +0200
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/7] dt-bindings: i2c: mux: mule: add dt-bindings for mule
+ i2c multiplexer
+To: Rob Herring <robh@kernel.org>
+Cc: Andi Shyti <andi.shyti@kernel.org>, linux-rockchip@lists.infradead.org,
+ Wolfram Sang <wsa+renesas@sang-engineering.com>,
+ Quentin Schulz <quentin.schulz@theobroma-systems.com>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Heiko Stuebner <heiko@sntech.de>, linux-i2c@vger.kernel.org,
+ devicetree@vger.kernel.org, Peter Rosin <peda@axentia.se>,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ Conor Dooley <conor+dt@kernel.org>
+References: <20240426-dev-mule-i2c-mux-v1-0-045a482f6ffb@theobroma-systems.com>
+ <20240426-dev-mule-i2c-mux-v1-2-045a482f6ffb@theobroma-systems.com>
+ <171415576010.2476476.2469508869846775606.robh@kernel.org>
+Content-Language: en-US
+From: Farouk Bouabid <farouk.bouabid@theobroma-systems.com>
+In-Reply-To: <171415576010.2476476.2469508869846775606.robh@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: WA2P291CA0025.POLP291.PROD.OUTLOOK.COM
+ (2603:10a6:1d0:1f::6) To VE1PR04MB6382.eurprd04.prod.outlook.com
+ (2603:10a6:803:122::31)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
- definitions=2024-05-02_01,2024-05-02_02,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 adultscore=0
- priorityscore=1501 lowpriorityscore=0 mlxscore=0 phishscore=0 spamscore=0
- suspectscore=0 bulkscore=0 impostorscore=0 clxscore=1011 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2404010000
- definitions=main-2405020078
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: VE1PR04MB6382:EE_|DU4PR04MB10404:EE_
+X-MS-Office365-Filtering-Correlation-Id: 3720f838-f3a0-44e3-dc0b-08dc6aa25643
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230031|376005|366007|1800799015|7416005;
+X-Microsoft-Antispam-Message-Info:
+	=?utf-8?B?MWtucit0VGxLVG5QaDFLQmpRckhnYmg1czd1MVlvM245WjAvSWJFL2R1cmZK?=
+ =?utf-8?B?RWZFSmgyaVJYNEFEU0FuRm9TTmkrNUdyWm40K2JZUVo2WXZVZ0NxVlJYNGps?=
+ =?utf-8?B?WFVpUnFjUm02N3FOUlloczI5eXNPQWp6blVTTXFuYkpnSmdOZ3BhanJnSnRK?=
+ =?utf-8?B?NldrWW1lZS9yOTVubEJSWG44TmZ2T1dyTmJYTEhnTkVlei9NNHhEdHRFNjR0?=
+ =?utf-8?B?UkprTXdmVWNNY2Y3THFDVEFvdTBHV2h4UktDRFVtWTR0MnVLMDlSUnV5VnFJ?=
+ =?utf-8?B?cHdRVXBBZFpGTFFka0RVQ1U0b0ZyS3FBcEZETFV3aEtYYUpZL1pLbFIwMVZF?=
+ =?utf-8?B?Z0lZblNibUdpdkVOU05RdER3QUZQN2dNUEZ4OFgvcTdadzNSSUtIYXFkSCtl?=
+ =?utf-8?B?bDhtSVlNTFQ2ZnorMmo0MjFJUndXM2poa3hMUkQvVjI1UGFlQVJ6YkV5NmEv?=
+ =?utf-8?B?SE8ra3czNDBhUHVUOEFHZVhzTjZJQ2QzMjhxTVhlU3NtZVExeS9KdWxlUHp3?=
+ =?utf-8?B?SUd0SU5hNG5QZ0o4Z2V2cFNjcWpFNFVqdDQ5dGtYQkIxK2kzN0Y5MlltY1JK?=
+ =?utf-8?B?Vnk1Q3hQRXV3Q0ViR2pwTlRISjYzY1ZEc3VXY042MU9YRzlPS1VMN2xwK2tV?=
+ =?utf-8?B?SUxpQmhDb1hMcEVsMkxxd3BJY2JPTGtxaDZPeU0wbElmZmNrVXFBb05MUWpo?=
+ =?utf-8?B?cmFlMWFjdFR5MTBrYldYdXJjS2dHaFY1b2RRTWNJT040N3BtL3BkZ3pDa1V0?=
+ =?utf-8?B?TnBQRE9VcDBzdHN2Wmo5aklxZjFIYzJWZWxRVGpZZEtFS1JpcW5XVGVjdVh0?=
+ =?utf-8?B?MXlyYVdianBoa2VGQ2dGcHM5NXAwSWYzTjdkVTliWmdmNndhMHIyTE0yS2ow?=
+ =?utf-8?B?SkpRVUUzUzlJZ1VTMjR3ZEN6eTN3VEV1Kzh5LzlDUHVCekFnWGwwSXJvQXhR?=
+ =?utf-8?B?SEVyMzdYQ1M1OGtqZXhLamZWYW5BeUk3emJvcU1LL1M3cFFyRENiUWh4VDUx?=
+ =?utf-8?B?Rys2VUVscnM4ZzkzZ0hsY0RRWUtFbnJacUdoT0Y5VHpJQVBFR2xHSjdWY1NY?=
+ =?utf-8?B?aFJoaVMrenovbW9RUG9ZRklxR2pGazN3V1psNUNXVElIMXBVbWtOOWk5NDJn?=
+ =?utf-8?B?RU9JV3FUbnVEWk0yNnRLOHNWRFpYdnQ3ZzRjQ1dyalUrYzhQWXQ2bmV2bDky?=
+ =?utf-8?B?NnJ1MU10MjZqWnpBN3VDUStEYll6Vkl0cTc2OURVODVENkhoWk1OL3NKZ2FJ?=
+ =?utf-8?B?bHJ3VFlhUzZCeDRjQmpjWktNV0N4YU1ReHNKc2VFcWQrUXVSMGRCMEt2T1ha?=
+ =?utf-8?B?a1A2MW5mTnd3RktGWnRZZFB2RUp5c0YrcG5TUkJReVMxOEFQSER4aStZVnYy?=
+ =?utf-8?B?Zlc4ZWZpc2VCQzg0OEFCaVo1d1I5YXRWUjYrUHlKaTlGOUNYU3dYenhWK2RM?=
+ =?utf-8?B?dGhzaUpJdHdEYVQzYWtWeko3MEFEeFVrSzlLcDVkblVFcHdNLzduY3Aya1Ju?=
+ =?utf-8?B?b1cyRGR2WjlNZVVjOU9Ca2N6ckw3dGZMZFg4TDRpOGpqdDBrTUdsOG1EZ2cv?=
+ =?utf-8?B?b1J6WERHakoyT2k1MzJHVnZ2VU1scGUwYkdkNDMvNVhRd1lSVnRNdmlOUEJv?=
+ =?utf-8?B?NEZwZjhjYTJlTVNmaUtjTFk4WWRnRXNBUE9qM3A3MXJOcHVDOVNkdkFhVEYy?=
+ =?utf-8?B?WWxYUEtNbUkybmpaaWFMRU9UYTNZc093YUpDRUNneS9VSG45L1VaSDZRPT0=?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VE1PR04MB6382.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(366007)(1800799015)(7416005);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?b0M1bU1jaElzc3hTUHFzMmg4VzFBS0JCeEVCb3BOMjdsNCtlR1dBMzFITUtT?=
+ =?utf-8?B?WEJ3M2c1N25EVFVJNVIwQ0hBY0JEQWZ5N25wcUFmWHJFaTNvSUpxK2o1Y0tJ?=
+ =?utf-8?B?SkRDeU1oczlkeHNjdCsyeHB4WjcwKzRiWlhyMUh4V2xEaDM3TTc3VVRGY3M4?=
+ =?utf-8?B?alQwTjB6clNGTU5Ra3ZrWGc2WURJVFczNlA4S3dqVkl2Um93Z3FORmtFazg2?=
+ =?utf-8?B?dkhqSlNxcjJzaGJFZG5ESlp6NW5TckFUcUJyZis4b0QyV2NNV252cFl1NHd5?=
+ =?utf-8?B?N3RPeHdOUUtSRlkzdytRUFNoWWhWdERXTkt3U3hZMXh5MHNLakRURnNMenBq?=
+ =?utf-8?B?NkdRckl4Mm0zOHA4bGJxMU9NVXd4QXgvQVRhWVNDaUpEMDU5cFNlRjI0Q2FY?=
+ =?utf-8?B?R2dmQUQzeCsrTXA4OGg2eWdPZWdCNlFkTm5KRkFaQnpzS3lhRFBQZDNGUmxT?=
+ =?utf-8?B?K1A4RllpUzAvRWJ1SnhwZ0w2UWlNLzVwWUlkSFIzaU44QWxJWGp2VGx6VlN2?=
+ =?utf-8?B?UmZsdzFTK1hFWkJPMWpKbWpBTEVKZXlKUTVYVlA3UXBtR1dxVmdXMXZnMUlt?=
+ =?utf-8?B?RXgyYmc2ai9uRWVBOWFBQThsQkw0K2l6MWRlU2VmNUV1aHFEdVQyQTY4UEo4?=
+ =?utf-8?B?NnUrR0ZDcmY0SUQ2VGtURy91eG03MklrTHZ4WVdEZkRFdGl5SXlEZ3hBRnZX?=
+ =?utf-8?B?V09QVW5UK1ZnQkdwdjcxYXZkVERPOUgxRzhkcGhqT1o5cDdLS0h1RTd5bk1K?=
+ =?utf-8?B?ZTZkRTdUakZweGlIWlkybkR3Rno1MTBaMTdka3hGUlg5MUVqNzZ3WXc2NVdR?=
+ =?utf-8?B?cEZsRDhyUDZ2Q3VseHF1RzIrMFI3TkNmQkZmYkYrdVl1TjBYaVlHUnNpMGNv?=
+ =?utf-8?B?YU9TZDFZUkxOTUV5SEtZSjcvWi9RKzZSNm0wbDVBRENzUVBLcXU4Wm9mNnRS?=
+ =?utf-8?B?OHowOWdCWXo1Z3BORzYzc2IreC9iNUxvTnVxdXE4d1h1MGhzOWVPeXdMNVR3?=
+ =?utf-8?B?WDFCNzNGZ0hvRUF3RW5HOHhrTFF0YTYxTXhyYnpudk55cmYyOWIzeEYyaGw5?=
+ =?utf-8?B?RXVtSkY1akZCUHNxOFZya000VEl5NU44MHdJMkhFMVpGRzdPZFRtejFKa1Fr?=
+ =?utf-8?B?dlMwQWhPODV2NjViSEtxdG94akFNMGR6NUNjTW0yelNtS201NFY1Ky9LSk1S?=
+ =?utf-8?B?a1hwWS9XWG41K0c2TCtYcm1YOUJoLzFGOXU0UXVZYXdwTnB4WjRRZnh0T292?=
+ =?utf-8?B?UXZZZkRvMDRvVUlWMkhCd0JacVp6blRHSzA0L0gvVTdCZTNTYXNHVHpPUWww?=
+ =?utf-8?B?WGFKOHZsNHdpcFQ5L1hzZDE0UGhsdFEyS3k2M2QzemRna21wY09hN0N0YVVy?=
+ =?utf-8?B?NTFSR2s4SzRsekFSM215L1YzQi9EamZ4MUlReWl1alZRaSs1NlJIS0lwR1Vu?=
+ =?utf-8?B?RzdOcVZoQ05Qc21NMDJsb3pVWEEwSGtMbG12OEczUVI0Qy8yY0pGTThadzFM?=
+ =?utf-8?B?UjFIcWJMTXZod1pUVGZnTWNPTnNWWTk1MVRiaVVPQXpma2Z5a3g2N2h3ZTBk?=
+ =?utf-8?B?RDEwanArQVlOM2ExK1Q4YmtDVDExUTc3QzVWMjNCajZVM0QwbVpNNmlYYW9m?=
+ =?utf-8?B?aTIxRW5aelg4VXF0VG1oNnVHNlFld09pVFBrMHkxNk9yaS9Ec0VSb251dUk2?=
+ =?utf-8?B?UXdDZjZJYjdCZFFtaVhkK1lBaXpsMisvcW96T09od3RlaE1TTWJXM1NsL3Ny?=
+ =?utf-8?B?MWhpZ1FFakRqUmNWVENZU0hIUytKK0p4WlpDS05JbXMvb3hybTJyVTA4ajhu?=
+ =?utf-8?B?RmJpR2JMQ2N5bWtmdURRM0tCMDI2enF1UlUzT1BxdFQ1N2dxZkxNQjk5Vmgz?=
+ =?utf-8?B?M2hQRSszbUN2bFVtL0JPaUQwcjJ0cVZ5aXFDbURsRGdRMFBnbGFzajJtWWF3?=
+ =?utf-8?B?QlcwSHdiKzRvS1FRZ1U2Z0hxSE5ueTRTdWxGYjJtQjRZTy8yRC9MTXpldUF3?=
+ =?utf-8?B?TFdxT2RmdTNuRHlWeTRiZnNvWWdObmJ6bmhtNHRPRkY1WmU3MlJIaEdiYzA4?=
+ =?utf-8?B?SkVjNGQyazViME1SNllOMWlvNjR5V0hHR3Vkc3JIekVJQ1l0bHF3UFdqVk9L?=
+ =?utf-8?B?OFB2cG1CeGNnZjliWTY5bHRWUzZJQjVoOHFqOVRjaDRGNm1saDl3WUNNSmVY?=
+ =?utf-8?B?TEE9PQ==?=
+X-OriginatorOrg: theobroma-systems.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3720f838-f3a0-44e3-dc0b-08dc6aa25643
+X-MS-Exchange-CrossTenant-AuthSource: VE1PR04MB6382.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 May 2024 12:21:04.5258
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 5e0e1b52-21b5-4e7b-83bb-514ec460677e
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: qq/7BQlpi+mcmRd+nVllhvnBElCmZMzk1JTEIxeDoPYRfnUSMkr/PXEFZNueicxNHTo1KbEBCxaEJJO/1DS4rOBPRx8qKG3IQnvvQi2sPas=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DU4PR04MB10404
 
-On Wed, May 01, 2024 at 12:51:51PM +0200, Peter Zijlstra wrote:
-> On Tue, Apr 30, 2024 at 12:50:05PM +0200, Tobias Huschle wrote:
-<...>
-> > 
-> > Let's now assume, that ocassionally, task 2 runs a little bit longer than
-> > task 1. In CFS, this means, that task 2 can close the vruntime gap by a
-> > bit, but, it can easily remain below the value of task 1. Task 2 would 
-> > still get picked on wake up.
-> > With EEVDF, in its current form, task 2 will now get a negative lag, which
-> > in turn, will cause it not being picked on the next wake up.
-> 
-> Right, so I've been working on changes where tasks will be able to
-> 'earn' credit when sleeping. Specifically, keeping dequeued tasks on the
-> runqueue will allow them to burn off negative lag. Once they get picked
-> again they are guaranteed to have zero (or more) lag. If by that time
-> they've not been woken up again, they get dequeued with 0-lag.
-> 
-> (placement with 0-lag will ensure eligibility doesn't inhibit the pick,
-> but is not sufficient to ensure a pick)
-> 
-> However, this alone will not be sufficient to get the behaviour you
-> want. Notably, even at 0-lag the virtual deadline will still be after
-> the virtual deadline of the already running task -- assuming they have
-> equal request sizes.
-> 
-> That is, IIUC, you want your task 2 (kworker) to always preempt task 1
-> (vhost), right? So even if tsak 2 were to have 0-lag, placing it would
-> be something like:
-> 
-> t1      |---------<    
-> t2        |---------<
-> V    -----|-----------------------------
+Hi Rob,
 
-Exactly, the kworker should be picked. I experimented with that a bit as
-well and forced all tasks to have 0-lag on wake-up but got the results
-you are mentioning here. Only if I would give the kworker (in general all
-woken up tasks) a lag >0, with 1 being already sufficient, the kworker 
-would be picked consistently.
+On 26.04.24 20:22, Rob Herring wrote:
+> On Fri, 26 Apr 2024 18:49:33 +0200, Farouk Bouabid wrote:
+>> This patch adds support for the Mule I2C multiplexer.
+>>
+>> Mule is an mcu that emulates a set of i2c devices which are reacheable
+>> through an i2c-mux.
+>>
+>> The emulated devices share a single i2c address with the mux itself where
+>> the requested register is what determines which logic is executed (mux or
+>> device).
+>>
+>> Signed-off-by: Farouk Bouabid <farouk.bouabid@theobroma-systems.com>
+>> ---
+>>   .../devicetree/bindings/i2c/i2c-mux-mule.yaml      | 80 ++++++++++++++++++++++
+>>   1 file changed, 80 insertions(+)
+>>
+> My bot found errors running 'make dt_binding_check' on your patch:
+>
+> yamllint warnings/errors:
+>
+> dtschema/dtc warnings/errors:
+> /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/i2c/i2c-mux-mule.example.dtb: fan@18: '#cooling-cells' does not match any of the regexes: 'pinctrl-[0-9]+'
 
-> 
-> So t1 has started at | with a virtual deadline at <. Then a short
-> while later -- V will have advanced a little -- it wakes t2 with 0-lag,
-> but as you can observe, its virtual deadline will be later than t1's and
-> as such it will never get picked, even though they're both eligible.
-> 
-> > So, it seems we have a change in the level of how far the both variants look 
-> > into the past. CFS being willing to take more history into account, whereas
-> > EEVDF does not (with update_entity_lag setting the lag value from scratch, 
-> > and place_entity not taking the original vruntime into account).
-> >
-> > All of this can be seen as correct by design, a task consumes more time
-> > than the others, so it has to give way to others. The big difference
-> > is now, that CFS allowed a task to collect some bonus by constantly using 
-> > less CPU time than others and trading that time against ocassionally taking
-> > more CPU time. EEVDF could do the same thing, by allowing the accumulation
-> > of positive lag, which can then be traded against the one time the task
-> > would get negative lag. This might clash with other EEVDF assumptions though.
-> 
-> Right, so CFS was a pure virtual runtime based scheduler, while EEVDF
-> considers both virtual runtime (for eligibility, which ties to fairness)
-> but primarily virtual deadline (for timeliness).
-> 
-> If you want to make EEVDF force pick a task by modifying vruntime you
-> have to place it with lag > request (slice) such that the virtual
-> deadline of the newly placed task is before the already running task,
-> yielding both eligibility and earliest deadline.
-> 
-> Consistently placing tasks with such large (positive) lag will affect
-> fairness though, they're basically always runnable, so barring external
-> throttling, they'll starve you.
 
-I was concerned about that as well. Tampering with the lag value will help
-in this particular scenario but might cause problems with others.
+Currently ti,amc6821 uses trivial devices dt-bindings which does not 
+support "#cooling-cells". We can fix this in a different patch though.
 
-> 
-> > The patch below fixes the degredation, but is not at all aligned with what 
-> > EEVDF wants to achieve, but it helps as an indicator that my hypothesis is
-> > correct.
-> > 
-> > So, what does this now mean for the vhost regression we were discussing?
-> > 
-> > 1. The behavior of the scheduler changed with regard to wake-up scenarios.
-> > 2. vhost in its current form relies on the way how CFS works by assuming 
-> >    that the kworker always gets scheduled.
-> 
-> How does it assume this? Also, this is a performance issue, not a
-> correctness issue, right?
 
-vhost runs a while(true) loop to go over its queues. After each iteration it 
-runs cond_resched to give other tasks a chance to run. So, it will never be
-pre-empted by the kworker, since the kworker has no handle to do so since vhost
-is running in kernel space. This means, that the wake up path is the only
-chance for the kworker to get selected.
+Best regards
 
-So that assumption is of a very implicit nature.
+Farouk
 
-In fact, vhost will run forever until migration hits due do an issue that I 
-assume in the cgroup context. See here:
-https://lore.kernel.org/all/20240228161023.14310-1-huschle@linux.ibm.com/
-Fixing this issue still lets the vhost consume its full time slice which 
-still causes significant performance degredation though.
-
-> 
-> > I would like to argue that it therefore makes sense to reconsider the vhost
-> > implementation to make it less dependent on the internals of the scheduler.
-> 
-> I think I'll propose the opposite :-) Much of the problems we have are
-> because the scheduler simply doesn't know anything and we're playing a
-> mutual guessing game.
-> 
-> The trick is finding things to tell the scheduler it can actually do
-> something with though..
-
-I appreciate to hear that adjusting the scheduler might be an option here.
-Nevertheless, the implicit assumption mentioned above seems something to keep
-an eye on to me.
-
-> 
-> > As proposed earlier in this thread, I see two options:
-> > 
-> > 1. Do an explicit schedule() after every iteration across the vhost queues
-> > 2. Set the need_resched flag after writing to the socket that would trigger
-> >    eventfd and the underlying kworker
-> 
-> Neither of these options will get you what you want. Specifically in the
-> example above, t1 doing an explicit reschedule will result in t1 being
-> picked.
-> 
-
-In this particular scenario it actually helped. I had two patches for both
-variants and they eliminated the degredation. Maybe the schedule was enough
-to equalize the lag values again, can't spot the actual code that would do
-that right now though.
-Nevertheless both versions fixed the degredation consistently.
-
-> > Both options would make sure that the vhost gives up the CPU as it cannot
-> > continue anyway without the kworker handling the event. Option 1 will give
-> > up the CPU regardless of whether something was found in the queues, whereas
-> > option 2 would only give up the CPU if there is.
-> 
-> Incorrect, neither schedule() nor marking things with TIF_NEED_RESCHED
-> (which has more issues) will make t2 run. In that scenario you have to
-> make t1 block, such that t2 is the only possible choice. As long as you
-> keep t1 on the runqueue, it will be the most eligible pick at that time.
-> 
-
-That makes sense, but does not match the results I was seeing, I might have to
-give this a closer look to figure out why this works in this particular 
-scenario.
-
-> Now, there is an easy option... but I hate to mention it because I've
-> spend a lifetime telling people not to use it (for really good reasons):
-> yield().
-> With EEVDF yield() will move the virtual deadline ahead by one request.
-> That is, given the above scenario:
-> 
-> t1      |---------<    
-> t2        |---------<
-> V    -----|-----------------------------
-> 
-> t1 doing yield(), would result in:
-> 
-> t1      |-------------------<    
-> t2        |---------<
-> V    -----|-----------------------------
-> 
-> And at that point, you'll find that all of a sudden t2 will be picked.
-> On the flip side, you might find that when t2 completes another task is
-> more likely to run than return to t1 -- because of that elongated
-> deadline. Ofc. if t1 and t2 are the only tasks on the CPU this doesn't
-> matter.
-
-Which would fix the degradation in this particular benchmark scenario.
-But I could see this having some unwanted side effects. This would require
-a yield_to() which only passes control to the target task and then returns
-to the caller consistently. Which might allow to bypass all considerartions
-on fairness.
-
-> 
-> > It shall be noted, that we encountered similar behavior when running some
-> > fio benchmarks. From a brief glance at the code, I was seeing similar
-> > intentions: Loop over queues, then trigger an action through some event
-> > mechanism. Applying the same patch as mentioned above also fixes this issue.
-> > 
-> > It could be argued, that this is still something that needs to be somehow
-> > addressed by the scheduler since it might affect others as well and there 
-> > are in fact patches coming in. Will they address our issue here? Not sure yet.
-> 
-> > On the other hand, it might just be beneficial to make vhost more resilient
-> > towards the scheduler's algorithm by not relying on a certain behavior in
-> > the wakeup path.
-> 
-> So the 'advantage' of EEVDF over CFS is that it has 2 parameters to play
-> with: weight and slice. Slice being the new toy in town.
-> 
-> Specifically in your example you would ideally have task 2 have a
-> shorter slice. Except of course its a kworker and you can't very well
-> set a kworker with a short slice because you never know wth it will end
-> up doing.
-> 
-> I'm still wondering why exactly it is imperative for t2 to preempt t1.
-> Is there some unexpressed serialization / spin-waiting ?
-> 
-
-I spent some time crawling through the vhost code, and to me it looks like
-vhost is writing data to a socket file which has an eventfd handler attached
-which is ran by the kworker. Said handler does the actual memory interaction.
-So without the kworker running, the transaction is not completed. The 
-counterpart keeps waiting for that message while the local vhost expects some
-reply from the counterpart. So we're in a deadlock until the kworker gets to
-run.
-
-Which could be technically true for more components which use such a loop+event
-construction. We saw the same, although less severe, issue with fio.
 
