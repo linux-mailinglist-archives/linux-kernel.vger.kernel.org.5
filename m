@@ -1,110 +1,189 @@
-Return-Path: <linux-kernel+bounces-167073-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-167075-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 61CAA8BA41B
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 01:37:10 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 78BF28BA423
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 01:37:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 16B8C281DD4
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 23:37:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9B6901C21C63
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 23:37:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD9ED18130B;
-	Thu,  2 May 2024 23:36:51 +0000 (UTC)
-Received: from sgoci-sdnproxy-4.icoremail.net (sgoci-sdnproxy-4.icoremail.net [129.150.39.64])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A8CB4CDE0;
-	Thu,  2 May 2024 23:36:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=129.150.39.64
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55AA9158A33;
+	Thu,  2 May 2024 23:37:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="O2/n/1nn"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB98615358F;
+	Thu,  2 May 2024 23:37:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714693011; cv=none; b=MivoRU4yCbYSxIcokDEVmGkspRBUL7iDZSgVoOt24rncZfX84Dmc6zS0ak0TSBCreY+MdXzU4aJ1Bu6ETh6TpKM2mVe8YKlVm2fnW3oyFkDggt2c5Cjzk8SMiOXhrv1mrYMoAOUP5WnovRYV8tx8ZGBmne0xzXhEae4BSFGtLPU=
+	t=1714693065; cv=none; b=uhF/maXTh/bfPMXgY9etLh/poCzmCKeinXElNVaBjl0ayA+DEsBfmutHvN65bedRitP3IqLU5e+el/PMSN06qhaxs4DV5y6lO7/wVrmTwaiGwhtQgLJnXlIhRm5SMRQStrlkKK0KqjRsGlJk/JrfioQm6NiFxxQWyjkDpHHV33o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714693011; c=relaxed/simple;
-	bh=Fjn0sWcJSSpaNhOq3cT/DmSa0Heykx1LsFKm4zCLDGg=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 In-Reply-To:References; b=hgvwzWqroqzZSiaMC8XvKoOQ6C3yhymT39WQplQouS3jU61UfnZHN2n3GGhq9/19ZJrwXVXg0bxlztKtQlz8YwHopYs4fxTFcMNIxQrOLqcCbi3QJq3ND3IB3MW22NE7FM9RVZHac+GP+od6DnDhffxxEgIVwMePLHHEZM7HcXE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zju.edu.cn; spf=pass smtp.mailfrom=zju.edu.cn; arc=none smtp.client-ip=129.150.39.64
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zju.edu.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zju.edu.cn
-Received: from ubuntu.localdomain (unknown [221.192.179.227])
-	by mail-app2 (Coremail) with SMTP id by_KCgC3ZqZwIzRm7PwDAA--.6463S4;
-	Fri, 03 May 2024 07:36:26 +0800 (CST)
-From: Duoming Zhou <duoming@zju.edu.cn>
-To: netdev@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org,
-	linux-hams@vger.kernel.org,
-	pabeni@redhat.com,
-	kuba@kernel.org,
-	edumazet@google.com,
-	davem@davemloft.net,
-	jreuter@yaina.de,
-	horms@kernel.org,
-	Markus.Elfring@web.de,
-	dan.carpenter@linaro.org,
-	lars@oddbit.com,
-	Duoming Zhou <duoming@zju.edu.cn>
-Subject: [PATCH net v2 2/2] ax25: fix potential reference counting leak in ax25_addr_ax25dev
-Date: Fri,  3 May 2024 07:36:16 +0800
-Message-Id: <74e840d98f2bfc79c6059993b2fc1ed3888faba4.1714690906.git.duoming@zju.edu.cn>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <cover.1714690906.git.duoming@zju.edu.cn>
-References: <cover.1714690906.git.duoming@zju.edu.cn>
-In-Reply-To: <cover.1714690906.git.duoming@zju.edu.cn>
-References: <cover.1714690906.git.duoming@zju.edu.cn>
-X-CM-TRANSID:by_KCgC3ZqZwIzRm7PwDAA--.6463S4
-X-Coremail-Antispam: 1UD129KBjvdXoW7GrWrAF18GFyrZw17XF45GFg_yoWDZFc_ua
-	s7ury7Ww1DJr1jkw1rXF48Jry7Zw1vgwn7Ar1ayFZ7trWYqa47JrWkJwn8XFyUWFy7Cr4S
-	qF1rGrW3Cw4SkjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-	9fnUUIcSsGvfJTRUUUbl8FF20E14v26rWj6s0DM7CY07I20VC2zVCF04k26cxKx2IYs7xG
-	6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUXwA2048vs2IY02
-	0Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xv
-	wVC0I7IYx2IY67AKxVW5JVW7JwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVWxJVW8Jr1l84
-	ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1le2I2
-	62IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcV
-	AFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG
-	0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2ka0xkIwI
-	1lc7CjxVAaw2AFwI0_Jw0_GFylc2xSY4AK67AK6FWl42xK82IYc2Ij64vIr41l4c8EcI0E
-	c7CjxVAaw2AFwI0_Jw0_GFyl4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxV
-	WUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI
-	7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r
-	4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI
-	42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfUbE_MUUUUU
-X-CM-SenderInfo: qssqjiasttq6lmxovvfxof0/1tbiAwUJAWYztgkCSgAMsg
+	s=arc-20240116; t=1714693065; c=relaxed/simple;
+	bh=ScmNimVD55HCJMpU1ZPTM6tr5t4G+wAg/gscjQhbxFA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=WSivMeyunEo7vEOE5+cCG4sLDze6/9zRMcT+UIymclU58t0PQNbZzez5atj9uleEdgu1NAtECYAJ+g1lJIcY67TUib+DQoamdOVtdQk5qS98pZO9DorFqlk1RlgJHybpZujtpZRI4GnbkJzGGDbS53pf1FJ4JXyNZNlNKG+coAA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=O2/n/1nn; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 442NKMxO019950;
+	Thu, 2 May 2024 23:37:17 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=yRahZediyJwd+8tFnCwYNOlw++FRljCtETICqi0KlLs=; b=O2
+	/n/1nnkgzSroG5Sq+vOV2/J4HinUGZrLvxhaAONmKDPAQOgn9WUHzYJPDSt0QYpA
+	EFUBbWzML+H3epFcUwj3FPH+XY3XjvGnlqYZZUdT05ll8lkzvQkzcQdbtVJvhIcQ
+	YJqojw/vXeRHVRMBF4PLrTuWePYkHVoANXOTSTHaHMSJBazzvDgUYC6aRbwUI5kQ
+	Wt1zKVXPuZct2q7KHJ2bBtEgVwdE5ymRVmlm+HadKZxLHG5/x+o+bsf7vNaLJzn8
+	2aNjbYa+m2DaOOVxzlxaM+jxAL9qlvYSUmeePIy/D5uN5iKmvR3EcsIgRPeTWIyT
+	qfyHgkPnafCjNKbG+rUw==
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xvawbhapu-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 02 May 2024 23:37:17 +0000 (GMT)
+Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
+	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 442NbGor013135
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 2 May 2024 23:37:16 GMT
+Received: from [10.71.112.114] (10.80.80.8) by nalasex01b.na.qualcomm.com
+ (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Thu, 2 May 2024
+ 16:37:15 -0700
+Message-ID: <a88b41f4-7e53-e162-5a6a-2d470e29c0bb@quicinc.com>
+Date: Thu, 2 May 2024 16:37:15 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v20 06/41] usb: host: xhci-sideband: Expose a sideband
+ interrupter enable API
+Content-Language: en-US
+To: Mathias Nyman <mathias.nyman@linux.intel.com>,
+        <srinivas.kandagatla@linaro.org>, <mathias.nyman@intel.com>,
+        <perex@perex.cz>, <conor+dt@kernel.org>, <corbet@lwn.net>,
+        <lgirdwood@gmail.com>, <andersson@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <gregkh@linuxfoundation.org>,
+        <Thinh.Nguyen@synopsys.com>, <broonie@kernel.org>,
+        <bgoswami@quicinc.com>, <tiwai@suse.com>, <robh@kernel.org>,
+        <konrad.dybcio@linaro.org>
+CC: <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-sound@vger.kernel.org>, <linux-usb@vger.kernel.org>,
+        <linux-arm-msm@vger.kernel.org>, <linux-doc@vger.kernel.org>,
+        <alsa-devel@alsa-project.org>
+References: <20240425215125.29761-1-quic_wcheng@quicinc.com>
+ <20240425215125.29761-7-quic_wcheng@quicinc.com>
+ <ddd682da-5cfd-db09-e316-3c54939caf90@linux.intel.com>
+From: Wesley Cheng <quic_wcheng@quicinc.com>
+In-Reply-To: <ddd682da-5cfd-db09-e316-3c54939caf90@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01b.na.qualcomm.com (10.47.209.197)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: RmyOpgti89lDhFfWlfBLnFZdjZ9mBcru
+X-Proofpoint-ORIG-GUID: RmyOpgti89lDhFfWlfBLnFZdjZ9mBcru
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
+ definitions=2024-05-02_14,2024-05-02_03,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 phishscore=0
+ malwarescore=0 bulkscore=0 suspectscore=0 priorityscore=1501
+ impostorscore=0 lowpriorityscore=0 spamscore=0 clxscore=1015 adultscore=0
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2404010003 definitions=main-2405020159
 
-The reference counting of ax25_dev potentially increase more
-than once in ax25_addr_ax25dev(), which will cause memory leak.
+Hi Mathias,
 
-In order to fix the above issue, only increase the reference
-counting of ax25_dev once, when the res is not null.
+On 5/2/2024 4:07 AM, Mathias Nyman wrote:
+> On 26.4.2024 0.50, Wesley Cheng wrote:
+>> Some use cases maybe require that the secondary interrupter's events to
+>> be handled by the OS.  In this case, configure the IMOD and the
+>> skip_events property to enable the interrupter's events.  By default,
+>> assume that the secondary interrupter doesn't want to enable OS event
+>> handling.
+>>
+>> Signed-off-by: Wesley Cheng <quic_wcheng@quicinc.com>
+>> ---
+>>   drivers/usb/host/xhci-sideband.c  | 28 ++++++++++++++++++++++++++++
+>>   include/linux/usb/xhci-sideband.h |  2 ++
+>>   2 files changed, 30 insertions(+)
+>>
+>> diff --git a/drivers/usb/host/xhci-sideband.c 
+>> b/drivers/usb/host/xhci-sideband.c
+>> index 255feae33c6e..6fdae9840c11 100644
+>> --- a/drivers/usb/host/xhci-sideband.c
+>> +++ b/drivers/usb/host/xhci-sideband.c
+>> @@ -237,6 +237,30 @@ xhci_sideband_get_event_buffer(struct 
+>> xhci_sideband *sb)
+>>   }
+>>   EXPORT_SYMBOL_GPL(xhci_sideband_get_event_buffer);
+>> +/**
+>> + * xhci_sideband_enable_interrupt - enable interrupt for secondary 
+>> interrupter
+>> + * @sb: sideband instance for this usb device
+>> + * @imod_interval: number of event ring segments to allocate
+>> + *
+>> + * Enables OS owned event handling for a particular interrupter if 
+>> client
+>> + * requests for it.  In addition, set the IMOD interval for this 
+>> particular
+>> + * interrupter.
+>> + *
+>> + * Returns 0 on success, negative error otherwise
+>> + */
+>> +int xhci_sideband_enable_interrupt(struct xhci_sideband *sb, u32 
+>> imod_interval)
+>> +{
+>> +    if (!sb || !sb->ir)
+>> +        return -ENODEV;
+>> +
+>> +    xhci_set_interrupter_moderation(sb->ir, imod_interval);
+> 
+> Is there a need to adjust the moderation after initial setup?
+> 
+> If not then maybe we could pass the imod_interval as a parameter to
+> xhci_create_secondary_interrupter(), and avoid exporting
+> xhci_set_interrupter_moderation()
+> 
+> 
 
-Fixes: d01ffb9eee4a ("ax25: add refcount in ax25_dev to avoid UAF bugs")
-Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
-Signed-off-by: Duoming Zhou <duoming@zju.edu.cn>
----
- net/ax25/ax25_dev.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+Let me preface my comments by saying that I was trying to include some 
+aspects of enabling the secondary interrupter line within the main apps 
+proc.  If this gets too confusing, I can remove these mechanisms for 
+now.  For example, as you mentioned below 
+xhci_sideband_enable_interrupt() isn't going to be used in the offload path.
 
-diff --git a/net/ax25/ax25_dev.c b/net/ax25/ax25_dev.c
-index 07723095c60..7c2ea7309b0 100644
---- a/net/ax25/ax25_dev.c
-+++ b/net/ax25/ax25_dev.c
-@@ -37,8 +37,9 @@ ax25_dev *ax25_addr_ax25dev(ax25_address *addr)
- 	for (ax25_dev = ax25_dev_list; ax25_dev != NULL; ax25_dev = ax25_dev->next)
- 		if (ax25cmp(addr, (const ax25_address *)ax25_dev->dev->dev_addr) == 0) {
- 			res = ax25_dev;
--			ax25_dev_hold(ax25_dev);
- 		}
-+	if (res)
-+		ax25_dev_hold(res);
- 	spin_unlock_bh(&ax25_dev_lock);
- 
- 	return res;
--- 
-2.17.1
+However, I decided to add it so we can have some corresponding function 
+that will utilize/set skip_events = false. (as it is "true" by default) 
+Again, I can remove this part and revisit later when we actually have a 
+use case to handle secondary interrupts on apps.
 
+As for the IMOD setting, depending on what you think, I can add it as 
+part of xhci_create_secondary_interrupter()
+
+>> +    sb->ir->skip_events = false;
+>> +    xhci_enable_interrupter(sb->ir);
+>> +
+>> +    return 0;
+>> +}
+>> +EXPORT_SYMBOL_GPL(xhci_sideband_enable_interrupt);
+> 
+> I can't find the place where xhci_sideband_enable_interrupt() is called in
+> this series. How is it planned to be used?
+> 
+> Thanks
+> Mathias
+
+Thanks
+Wesley Cheng
 
