@@ -1,212 +1,126 @@
-Return-Path: <linux-kernel+bounces-166396-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-166397-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BA30B8B9A07
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 13:27:25 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id CB2DF8B9A0E
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 13:29:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DD15B1C21E48
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 11:27:24 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0F75AB20A40
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 11:29:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2FD5D83CCB;
-	Thu,  2 May 2024 11:26:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67BE465189;
+	Thu,  2 May 2024 11:29:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="Nax2Iv5W";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="JZHNfCeU"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ESlSRyPf"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 971676CDCC;
-	Thu,  2 May 2024 11:26:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8695040BF5;
+	Thu,  2 May 2024 11:29:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714649179; cv=none; b=UMSliqSPFJqR88OozpkAs8HMO/R6OHLxImYqmvWzymFAXmupeezlRfWhHxpog/8smeR5QNtaeUC78g7mcqHaA3d7WmeBJrtiYLbKOAYStwtpX6NT2cnW/TCbdBZ7awrXLc1zFmiQ7OARZyPP6aosw2OS5WEmrjb5FhMaT8FsaQc=
+	t=1714649382; cv=none; b=BUQ2P+3TG7qJqpvHCYfZe04PGMGEKXgPXqLf2+0im6WbGkpATIY3EctSRdhnKwEZ5KdgJ4UCD9z5SKZ6AQ6SEd/I0CSALptSfnt72CFyJL0jGKTN69JzUXWNJvT1+skald+UY86dmbWetx3X4seAT90aKz9B/invZj8axBqvSQ0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714649179; c=relaxed/simple;
-	bh=JW2zkSNbgHf1VXOQdioPvmmkc6+qswPswIdkjjp8c0g=;
-	h=Date:From:To:Subject:Cc:In-Reply-To:References:MIME-Version:
-	 Message-ID:Content-Type; b=RTmetDiE9oau9l9Qx4qwwahD0CW75zIrgYq2qCrqEt4u3D6Av7E9q2dzcYVELAqLIWya6lSauWOGCxYgl84iyRXhIdG8yyr3fuw4+Gro4w4umNMvR6qDyRO765v2zDkqtDFRtZWQvAJlZdxH5PEX7v/FTDI03EJaWWYljil4tIw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=Nax2Iv5W; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=JZHNfCeU; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Thu, 02 May 2024 11:26:13 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1714649173;
-	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=kz4s3r+jO7Rk2SAq7H7SG5vHxaNY9tvOJsZqI1saFgs=;
-	b=Nax2Iv5WwSSrr4aFj27TLjOONFGeercpPHAqB26tCx1GpQ5kafSa28jFekIWahQYTHVqX8
-	epoO3HPBZ6u2JhtMtNuuuvZN9So3eWVY+tcSIU569unBgmFZsc5P5z65Jca3swJYttpoa+
-	TyUp2CG8Jhc1u6h9Yb6y9wKj19OWk5o2Qim/f6dwhomg367kRxMqwsF5PTeXai/AAA5w48
-	it4eL+KCqalnbQK9bHu1N6C/ZeincFKfnMvyStWu8OXiGGPQwQIdoYWyyuP0xPgds9kr+H
-	B/aS/cF/lGpbkwTH8HFqbjhcJdZjfWbKIypxeQL5/L/d9BQ6AVluDlY0LtULGw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1714649173;
-	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=kz4s3r+jO7Rk2SAq7H7SG5vHxaNY9tvOJsZqI1saFgs=;
-	b=JZHNfCeUdoriJoWFk2yIkamjVH/G5U9kRWHVbWdW17OjSUr5APhKJvgI+o2DlZ0DggeMNL
-	9M4vUrEJe3LCS+Bg==
-From: "tip-bot2 for Chang S. Bae" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To: linux-tip-commits@vger.kernel.org
-Subject:
- [tip: perf/core] x86/insn: Add Key Locker instructions to the opcode map
-Cc: "Chang S. Bae" <chang.seok.bae@intel.com>,
- Adrian Hunter <adrian.hunter@intel.com>, Ingo Molnar <mingo@kernel.org>,
- Dan Williams <dan.j.williams@intel.com>, x86@kernel.org,
- linux-kernel@vger.kernel.org
-In-Reply-To: <20240502105853.5338-2-adrian.hunter@intel.com>
-References: <20240502105853.5338-2-adrian.hunter@intel.com>
+	s=arc-20240116; t=1714649382; c=relaxed/simple;
+	bh=sFaNlOmGEeVD3nYHw0uf/YVM65vnE+n2alDOQR8Xux8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=taEJxZau7LUk6HvMkVI6mwDSUcZg6y3kj1BRc+ERTT1NZVF+3vXu31vuTA4GjrMJYiSJSKY9x0YMp/HjLkdpTN0tjiViVhPQjTAKElBsVOa/RB8f2Ric7OAIzGMZwt5gvFMzld0YGzZHgBoVws7JT72j2JdFd6NBdzXj8vxhntw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ESlSRyPf; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8390CC113CC;
+	Thu,  2 May 2024 11:29:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714649382;
+	bh=sFaNlOmGEeVD3nYHw0uf/YVM65vnE+n2alDOQR8Xux8=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=ESlSRyPfuggpHlVgObOH64jFR9a8f9GIZCEhVT8gPmkobRlLYwAUiNRPfLbKhZwzW
+	 v7ynMJzCeC3YDHZQGy1Q/mS6f3TG5Qn8hnFAIHQSm32cuRdykxx6YOM7yco+HfAKf4
+	 SHaKiTPRAfmytRm0NPO+SKEUr04uz4iJG4jgPSVoxiiZTOrGtBPL9YTrVMvZjbNoNA
+	 hpfZSUbfu5x4dgJf3pv98nxFDT5uDOnpz3xK1za+KYGS+AiHdyoHiFFSauA8N8KIVL
+	 WWTfVYzc0t6o6VrvByrKuloKxF38CiRBT0qqJVhTi3bXJyhPvG5z1dB5AGwXshKh5j
+	 kw6XFUPZ5oEXg==
+Date: Thu, 2 May 2024 13:29:38 +0200
+From: Andi Shyti <andi.shyti@kernel.org>
+To: Wolfram Sang <wsa+renesas@sang-engineering.com>
+Cc: linux-i2c@vger.kernel.org, imx@lists.linux.dev, 
+	linux-arm-kernel@lists.infradead.org, linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-mips@vger.kernel.org, linux-omap@vger.kernel.org, linux-rockchip@lists.infradead.org, 
+	linux-samsung-soc@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com
+Subject: Re: [PATCH 00/15] i2c: use 'time_left' with wait_for_*
+Message-ID: <6zrly2hk2vqljiuo3niehym74pqdgfv77fzjb63shgg4iiwhnt@zcnrqrke663b>
+References: <20240427203611.3750-1-wsa+renesas@sang-engineering.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <171464917332.10875.16504274959451249472.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe:
- Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Precedence: bulk
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240427203611.3750-1-wsa+renesas@sang-engineering.com>
 
-The following commit has been merged into the perf/core branch of tip:
+Hi Wolfram,
 
-Commit-ID:     a5dd673ab7d269e4a5b6565fc2b5c6295a079605
-Gitweb:        https://git.kernel.org/tip/a5dd673ab7d269e4a5b6565fc2b5c6295a079605
-Author:        Chang S. Bae <chang.seok.bae@intel.com>
-AuthorDate:    Thu, 02 May 2024 13:58:44 +03:00
-Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Thu, 02 May 2024 13:13:41 +02:00
+On Sat, Apr 27, 2024 at 10:35:52PM +0200, Wolfram Sang wrote:
+> There is a confusing pattern in the kernel to use a variable named 'timeout' to
 
-x86/insn: Add Key Locker instructions to the opcode map
+there was a little checkpatch warning here for the line being
+over 75 characters, but I went ahead anyway and pushed the whole
+series to i2c/i2c-host.
 
-The x86 instruction decoder needs to know these new instructions that
-are going to be used in the crypto library as well as the x86 core
-code. Add the following:
+Thanks,
+Andi
 
-LOADIWKEY:
-	Load a CPU-internal wrapping key.
-
-ENCODEKEY128:
-	Wrap a 128-bit AES key to a key handle.
-
-ENCODEKEY256:
-	Wrap a 256-bit AES key to a key handle.
-
-AESENC128KL:
-	Encrypt a 128-bit block of data using a 128-bit AES key
-	indicated by a key handle.
-
-AESENC256KL:
-	Encrypt a 128-bit block of data using a 256-bit AES key
-	indicated by a key handle.
-
-AESDEC128KL:
-	Decrypt a 128-bit block of data using a 128-bit AES key
-	indicated by a key handle.
-
-AESDEC256KL:
-	Decrypt a 128-bit block of data using a 256-bit AES key
-	indicated by a key handle.
-
-AESENCWIDE128KL:
-	Encrypt 8 128-bit blocks of data using a 128-bit AES key
-	indicated by a key handle.
-
-AESENCWIDE256KL:
-	Encrypt 8 128-bit blocks of data using a 256-bit AES key
-	indicated by a key handle.
-
-AESDECWIDE128KL:
-	Decrypt 8 128-bit blocks of data using a 128-bit AES key
-	indicated by a key handle.
-
-AESDECWIDE256KL:
-	Decrypt 8 128-bit blocks of data using a 256-bit AES key
-	indicated by a key handle.
-
-The detail can be found in Intel Software Developer Manual.
-
-Signed-off-by: Chang S. Bae <chang.seok.bae@intel.com>
-Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Reviewed-by: Dan Williams <dan.j.williams@intel.com>
-Link: https://lore.kernel.org/r/20240502105853.5338-2-adrian.hunter@intel.com
----
- arch/x86/lib/x86-opcode-map.txt       | 11 +++++++----
- tools/arch/x86/lib/x86-opcode-map.txt | 11 +++++++----
- 2 files changed, 14 insertions(+), 8 deletions(-)
-
-diff --git a/arch/x86/lib/x86-opcode-map.txt b/arch/x86/lib/x86-opcode-map.txt
-index 12af572..c94988d 100644
---- a/arch/x86/lib/x86-opcode-map.txt
-+++ b/arch/x86/lib/x86-opcode-map.txt
-@@ -800,11 +800,12 @@ cb: sha256rnds2 Vdq,Wdq | vrcp28ss/d Vx,Hx,Wx (66),(ev)
- cc: sha256msg1 Vdq,Wdq | vrsqrt28ps/d Vx,Wx (66),(ev)
- cd: sha256msg2 Vdq,Wdq | vrsqrt28ss/d Vx,Hx,Wx (66),(ev)
- cf: vgf2p8mulb Vx,Wx (66)
-+d8: AESENCWIDE128KL Qpi (F3),(000),(00B) | AESENCWIDE256KL Qpi (F3),(000),(10B) | AESDECWIDE128KL Qpi (F3),(000),(01B) | AESDECWIDE256KL Qpi (F3),(000),(11B)
- db: VAESIMC Vdq,Wdq (66),(v1)
--dc: vaesenc Vx,Hx,Wx (66)
--dd: vaesenclast Vx,Hx,Wx (66)
--de: vaesdec Vx,Hx,Wx (66)
--df: vaesdeclast Vx,Hx,Wx (66)
-+dc: vaesenc Vx,Hx,Wx (66) | LOADIWKEY Vx,Hx (F3) | AESENC128KL Vpd,Qpi (F3)
-+dd: vaesenclast Vx,Hx,Wx (66) | AESDEC128KL Vpd,Qpi (F3)
-+de: vaesdec Vx,Hx,Wx (66) | AESENC256KL Vpd,Qpi (F3)
-+df: vaesdeclast Vx,Hx,Wx (66) | AESDEC256KL Vpd,Qpi (F3)
- f0: MOVBE Gy,My | MOVBE Gw,Mw (66) | CRC32 Gd,Eb (F2) | CRC32 Gd,Eb (66&F2)
- f1: MOVBE My,Gy | MOVBE Mw,Gw (66) | CRC32 Gd,Ey (F2) | CRC32 Gd,Ew (66&F2)
- f2: ANDN Gy,By,Ey (v)
-@@ -814,6 +815,8 @@ f6: ADCX Gy,Ey (66) | ADOX Gy,Ey (F3) | MULX By,Gy,rDX,Ey (F2),(v) | WRSSD/Q My,
- f7: BEXTR Gy,Ey,By (v) | SHLX Gy,Ey,By (66),(v) | SARX Gy,Ey,By (F3),(v) | SHRX Gy,Ey,By (F2),(v)
- f8: MOVDIR64B Gv,Mdqq (66) | ENQCMD Gv,Mdqq (F2) | ENQCMDS Gv,Mdqq (F3)
- f9: MOVDIRI My,Gy
-+fa: ENCODEKEY128 Ew,Ew (F3)
-+fb: ENCODEKEY256 Ew,Ew (F3)
- EndTable
- 
- Table: 3-byte opcode 2 (0x0f 0x3a)
-diff --git a/tools/arch/x86/lib/x86-opcode-map.txt b/tools/arch/x86/lib/x86-opcode-map.txt
-index 12af572..c94988d 100644
---- a/tools/arch/x86/lib/x86-opcode-map.txt
-+++ b/tools/arch/x86/lib/x86-opcode-map.txt
-@@ -800,11 +800,12 @@ cb: sha256rnds2 Vdq,Wdq | vrcp28ss/d Vx,Hx,Wx (66),(ev)
- cc: sha256msg1 Vdq,Wdq | vrsqrt28ps/d Vx,Wx (66),(ev)
- cd: sha256msg2 Vdq,Wdq | vrsqrt28ss/d Vx,Hx,Wx (66),(ev)
- cf: vgf2p8mulb Vx,Wx (66)
-+d8: AESENCWIDE128KL Qpi (F3),(000),(00B) | AESENCWIDE256KL Qpi (F3),(000),(10B) | AESDECWIDE128KL Qpi (F3),(000),(01B) | AESDECWIDE256KL Qpi (F3),(000),(11B)
- db: VAESIMC Vdq,Wdq (66),(v1)
--dc: vaesenc Vx,Hx,Wx (66)
--dd: vaesenclast Vx,Hx,Wx (66)
--de: vaesdec Vx,Hx,Wx (66)
--df: vaesdeclast Vx,Hx,Wx (66)
-+dc: vaesenc Vx,Hx,Wx (66) | LOADIWKEY Vx,Hx (F3) | AESENC128KL Vpd,Qpi (F3)
-+dd: vaesenclast Vx,Hx,Wx (66) | AESDEC128KL Vpd,Qpi (F3)
-+de: vaesdec Vx,Hx,Wx (66) | AESENC256KL Vpd,Qpi (F3)
-+df: vaesdeclast Vx,Hx,Wx (66) | AESDEC256KL Vpd,Qpi (F3)
- f0: MOVBE Gy,My | MOVBE Gw,Mw (66) | CRC32 Gd,Eb (F2) | CRC32 Gd,Eb (66&F2)
- f1: MOVBE My,Gy | MOVBE Mw,Gw (66) | CRC32 Gd,Ey (F2) | CRC32 Gd,Ew (66&F2)
- f2: ANDN Gy,By,Ey (v)
-@@ -814,6 +815,8 @@ f6: ADCX Gy,Ey (66) | ADOX Gy,Ey (F3) | MULX By,Gy,rDX,Ey (F2),(v) | WRSSD/Q My,
- f7: BEXTR Gy,Ey,By (v) | SHLX Gy,Ey,By (66),(v) | SARX Gy,Ey,By (F3),(v) | SHRX Gy,Ey,By (F2),(v)
- f8: MOVDIR64B Gv,Mdqq (66) | ENQCMD Gv,Mdqq (F2) | ENQCMDS Gv,Mdqq (F3)
- f9: MOVDIRI My,Gy
-+fa: ENCODEKEY128 Ew,Ew (F3)
-+fb: ENCODEKEY256 Ew,Ew (F3)
- EndTable
- 
- Table: 3-byte opcode 2 (0x0f 0x3a)
+> store the result of wait_for_*() causing patterns like:
+> 
+>         timeout = wait_for_completion_timeout(...)
+>         if (!timeout) return -ETIMEDOUT;
+> 
+> with all kinds of permutations. Use 'time_left' as a variable to make the code
+> self explaining.
+> 
+> This is the I2C part of a tree-wide series. The rest of the patches can
+> be found here (slightly WIP):
+> 
+> git://git.kernel.org/pub/scm/linux/kernel/git/wsa/linux.git i2c/time_left
+> 
+> Because these patches are generated, they need manual audit. So, I will
+> send them step by step. This is part 1 and also a call for opinions if
+> this is a desirable change. But at least in the I2C realm, I really want
+> to have it proper.
+> 
+> Build bot is happy with these patches and I also compile tested them
+> (except two). No functional changes intended.
+> 
+> Wolfram Sang (15):
+>   i2c: amd-mp2-plat: use 'time_left' variable with
+>     wait_for_completion_timeout()
+>   i2c: digicolor: use 'time_left' variable with
+>     wait_for_completion_timeout()
+>   i2c: exynos5: use 'time_left' variable with
+>     wait_for_completion_timeout()
+>   i2c: hix5hd2: use 'time_left' variable with
+>     wait_for_completion_timeout()
+>   i2c: imx-lpi2c: use 'time_left' variable with
+>     wait_for_completion_timeout()
+>   i2c: omap: use 'time_left' variable with wait_for_completion_timeout()
+>   i2c: st: use 'time_left' variable with wait_for_completion_timeout()
+>   i2c: stm32f4: use 'time_left' variable with
+>     wait_for_completion_timeout()
+>   i2c: stm32f7: use 'time_left' variable with
+>     wait_for_completion_timeout()
+>   i2c: synquacer: use 'time_left' variable with
+>     wait_for_completion_timeout()
+>   i2c: jz4780: use 'time_left' variable with
+>     wait_for_completion_timeout()
+>   i2c: qcom-geni: use 'time_left' variable with
+>     wait_for_completion_timeout()
+>   i2c: rk3x: use 'time_left' variable with wait_event_timeout()
+>   i2c: s3c2410: use 'time_left' variable with wait_event_timeout()
+>   i2c: pxa: use 'time_left' variable with wait_event_timeout()
+> 
+> -- 
+> 2.43.0
+> 
 
