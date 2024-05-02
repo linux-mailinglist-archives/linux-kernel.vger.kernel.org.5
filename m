@@ -1,138 +1,148 @@
-Return-Path: <linux-kernel+bounces-165941-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-165942-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AE87D8B93A6
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 05:31:14 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 719708B93A8
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 05:41:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D547F1C213AB
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 03:31:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F04671F22670
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 03:41:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D782B1946B;
-	Thu,  2 May 2024 03:31:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WdREWHjU"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E7B1F19470;
+	Thu,  2 May 2024 03:41:01 +0000 (UTC)
+Received: from mail-lj1-f178.google.com (mail-lj1-f178.google.com [209.85.208.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1DC6F171AD;
-	Thu,  2 May 2024 03:31:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC678171AD
+	for <linux-kernel@vger.kernel.org>; Thu,  2 May 2024 03:40:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714620667; cv=none; b=eA5YeshmiLulMeBD1LviwGyDlKXNxz3GK9BzwYqrDEQiG+O7vM1giKpo5xvvNM9D+aPtnVe2rmPqrHYPy8LUGL7QjVeeztqt0+a2DHySmByJeSqP83Wydeu7D0sqLP+mXFNQQI2KELOeNgwv9fPmrJvJyp4AvGT5+FWmZJiGBuc=
+	t=1714621261; cv=none; b=hODr+R6G7jOoXr6uTCeED43M6n8nPDt94ZyOJNy/ybiHZWNAIxRl07EHBujZMu/4jQWP+7QZbMvLvLDYewLnydYVutZBtiuynZxhfxntecj6FqZIaEXoHQmVbyCvW/JAq44SS6RCJ7P46W3SgJngryWFxWCPEt6dgPfKKpHgavs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714620667; c=relaxed/simple;
-	bh=1pcYCGFTZPhmKtuBQy/NDYNn/zlgy79xvowqUsG8gJQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=H+fray4+EtxWnFNNKUtX/PLSSC0e9hkpRPSivflMsuGa2x2NWBJtk3MCzXABC4w2IE51G1Xpkw7uHvJhk4Vw3Zrt/1Cj7cKjDonDypghfoQ/n4Kv1UWewbSl8PvS/sGGs5IJL8JBXgMHP/n26Jh3zaN5rmVbnVaVGjV89DkhqKw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WdREWHjU; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 984A4C116B1;
-	Thu,  2 May 2024 03:31:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714620666;
-	bh=1pcYCGFTZPhmKtuBQy/NDYNn/zlgy79xvowqUsG8gJQ=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=WdREWHjU7LQyW8Ra/u7WtJnRzEA0n7dCU9hhZ5bW8bIJP3F9R7mcxAdhA6YosP/w4
-	 i+jwJZdSTeZI/bcoYrTaiZcLT3aHRHbfUThKpbR5khnKpqlIcY0wxvCqE3zJlpFAnT
-	 wGYTHkqySN1OQEPQBjDJuXWUopR191jOdA2iOhGOGwAVN+6trmjhy6WdkCg6GQXl+1
-	 /uX3DiI/Wx5OCYZ7IWy5BUg3We4nZgEBAvxSqHWLL6dkGH15JqF6J114QM9A2kjF9H
-	 r7I/mkRsiAW4m/KaotKruOHrbABY0GEkQlKlLsRSs5vL+fNOrdRYNjEnS/suZWk6p2
-	 +byeGLI1FEv8Q==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 3687ACE1073; Wed,  1 May 2024 20:31:06 -0700 (PDT)
-Date: Wed, 1 May 2024 20:31:06 -0700
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Masami Hiramatsu <mhiramat@kernel.org>
-Cc: linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-	kuba@kernel.org, ast@kernel.org, clm@fb.com, rostedt@goodmis.org,
-	mark.rutland@arm.com, mathieu.desnoyers@efficios.com
-Subject: Re: [PATCH resend ftrace] Asynchronous grace period for
- register_ftrace_direct()
-Message-ID: <82ae8a24-f9cf-4730-b0d7-43fb3bca2917@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <ac05be77-2972-475b-9b57-56bef15aa00a@paulmck-laptop>
- <20240502110501.772941f7fdbc1650a9a3bea4@kernel.org>
+	s=arc-20240116; t=1714621261; c=relaxed/simple;
+	bh=XRqNXEpahaUKXI6jw1HamILuyXH8geeeaQFQyQE+IP0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=DgDfzy9hP9gmMvs9HJ5x4Dhj3Lzf8TbGR2lELZbtwQW8yfqXOiXidAyapfQLUdOoH+PKRr3jsaj2cTkmVVJy3pl0zknYVTksy1cBNCwkNmretnTIe5rhzGufwqPOOKhVfWM73fFi9gD3Twjb2hW/iQIiNBfVl1B1MbnKVXhokLU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.208.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f178.google.com with SMTP id 38308e7fff4ca-2db13ca0363so119686771fa.3
+        for <linux-kernel@vger.kernel.org>; Wed, 01 May 2024 20:40:59 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714621258; x=1715226058;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :reply-to:in-reply-to:references:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=jjbdI7aA0VFa2ZjYKTzan8ccV6sWkCqg04GHpcz08yA=;
+        b=bP/TZzUEgiKHeWu7bL/vP9WlpkK6eJc33LA3KSp7HawS5KciCy7theCJSmqa2bEurs
+         tb84UfrjyMJOU3e0TOZRlBtZn+41EB6WYPcPVyV5Qpl8DemzIN8uJdEP7Ps3O7jCtGe9
+         aftxmqsiXwAGGp6g0w8z8c8Wt6ANdV0DcavN2a04y1rHdWukqC8xqY4MLvGTw16M2WPO
+         Sqxb67+LWmTYLin8p6UZ3wFeGMYfRUFBsRRK55az9X7LTU7mLpY6CySq89Oh3nsZqSBq
+         qZL9ooT6ka0zNQIecu9x6AXiSDIvcw8fFqVhc2FEUT+WkqQ3iOfglC7ME4Nqj5+uzoW6
+         U8Cg==
+X-Forwarded-Encrypted: i=1; AJvYcCV7ZQWKmSBTqwWDwmMhFhIqbbaDOmhiL7i8M6pAdhy2UDiDDPtUu8ufyrkwt7KXWUXU1yS4jFfILJc2zqbomqlr0/kyXGldYE2VDO22
+X-Gm-Message-State: AOJu0YzkeO9Mv7G5sGNLclM8mJMVJXsTw2Gh/+CdSspy9G9UFrkPmasO
+	Y2sBIouRgtsvX1hXWP9pBLDTmkZDp9F4jJN6eFlolPA1IiDoXUJLZg8p8ipI
+X-Google-Smtp-Source: AGHT+IGG/1M4BJnC5vTYFz59VTL0tINRlCqGdmZDnOz6KG4TpC8nNVTr6FRN2lnVNsEibavg5wz1tg==
+X-Received: by 2002:a2e:9050:0:b0:2e0:5d7:a3a6 with SMTP id n16-20020a2e9050000000b002e005d7a3a6mr3428085ljg.9.1714621255501;
+        Wed, 01 May 2024 20:40:55 -0700 (PDT)
+Received: from mail-ed1-f51.google.com (mail-ed1-f51.google.com. [209.85.208.51])
+        by smtp.gmail.com with ESMTPSA id g21-20020a170906595500b00a55662919c1sm21971ejr.172.2024.05.01.20.40.55
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 01 May 2024 20:40:55 -0700 (PDT)
+Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-57230faeb81so4513108a12.0
+        for <linux-kernel@vger.kernel.org>; Wed, 01 May 2024 20:40:55 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCVKDH8Ts8BVR/zARqWBu1fHHP2ST14vitY3r+Z8GJIe43man48o975pyQoVCSKbMp8UODeySghq1fKt6AaBehUgG+IBUdncdW9HUDZc
+X-Received: by 2002:a50:d6da:0:b0:56c:d35:1775 with SMTP id
+ l26-20020a50d6da000000b0056c0d351775mr3426349edj.35.1714621255210; Wed, 01
+ May 2024 20:40:55 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240502110501.772941f7fdbc1650a9a3bea4@kernel.org>
+References: <cover.1713974291.git.thomas.lendacky@amd.com> <e3143c1f3d0b26fcd8884c6f75644b634a7138e8.1713974291.git.thomas.lendacky@amd.com>
+ <CAC41dw-g2=jKkevGOJUqnzYTpxQ8+Z_JxnNNuoLR+CM_yqfRzA@mail.gmail.com> <6632a2e0738d_1384629442@dwillia2-mobl3.amr.corp.intel.com.notmuch>
+In-Reply-To: <6632a2e0738d_1384629442@dwillia2-mobl3.amr.corp.intel.com.notmuch>
+Reply-To: sathyanarayanan.kuppuswamy@linux.intel.com
+From: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+Date: Wed, 1 May 2024 20:40:43 -0700
+X-Gmail-Original-Message-ID: <CAC41dw_Dnm=suyue+jFx2z8f+YT1K_aWfQEijrU=WH4OLWpOqQ@mail.gmail.com>
+Message-ID: <CAC41dw_Dnm=suyue+jFx2z8f+YT1K_aWfQEijrU=WH4OLWpOqQ@mail.gmail.com>
+Subject: Re: [PATCH v4 13/15] x86/sev: Take advantage of configfs visibility
+ support in TSM
+To: Dan Williams <dan.j.williams@intel.com>
+Cc: Tom Lendacky <thomas.lendacky@amd.com>, linux-kernel@vger.kernel.org, x86@kernel.org, 
+	linux-coco@lists.linux.dev, svsm-devel@coconut-svsm.dev, 
+	Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
+	Dave Hansen <dave.hansen@linux.intel.com>, "H. Peter Anvin" <hpa@zytor.com>, 
+	Andy Lutomirski <luto@kernel.org>, Peter Zijlstra <peterz@infradead.org>, 
+	Michael Roth <michael.roth@amd.com>, Ashish Kalra <ashish.kalra@amd.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, May 02, 2024 at 11:05:01AM +0900, Masami Hiramatsu wrote:
-> On Wed, 1 May 2024 16:12:37 -0700
-> "Paul E. McKenney" <paulmck@kernel.org> wrote:
-> 
-> > Note that the immediate pressure for this patch should be relieved by the
-> > NAPI patch series [1], but this sort of problem could easily arise again.
-> > 
-> > When running heavy test workloads with KASAN enabled, RCU Tasks grace
-> > periods can extend for many tens of seconds, significantly slowing
-> > trace registration.  Therefore, make the registration-side RCU Tasks
-> > grace period be asynchronous via call_rcu_tasks().
-> 
-> Good catch! AFAICS, there is no reason to wait for synchronization
-> when adding a new direct trampoline.
-> This looks good to me.
-> 
-> Reviewed-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+On Wed, May 1, 2024 at 1:15=E2=80=AFPM Dan Williams <dan.j.williams@intel.c=
+om> wrote:
+>
+> Kuppuswamy Sathyanarayanan wrote:
+> > On Wed, Apr 24, 2024 at 9:00=E2=80=AFAM Tom Lendacky <thomas.lendacky@a=
+md.com> wrote:
+> > >
+> > > The TSM attestation report support provides multiple configfs attribu=
+te
+> > > types (both for standard and binary attributes) to allow for addition=
+al
+> > > attributes to be displayed for SNP as compared to TDX. With the abili=
+ty
+> > > to hide attributes via configfs, consoldate the multiple attribute gr=
+oups
+> > > into a single standard attribute group and a single binary attribute
+> > > group. Modify the TDX support to hide the attributes that were previo=
+usly
+> > > "hidden" as a result of registering the selective attribute groups.
+> > >
+> > > Co-developed-by: Dan Williams <dan.j.williams@intel.com>
+> > > Signed-off-by: Dan Williams <dan.j.williams@intel.com>
+> > > Signed-off-by: Tom Lendacky <thomas.lendacky@amd.com>
+> [..]
+> > > + */
+> > > +enum tsm_attr_index {
+> > > +       TSM_REPORT_GENERATION,
+> >
+> > Do we need an index for the generation attribute ? Since it is a core
+> > function, we can allow it by default.
+>
+> That is up to the is_visible() callback to decide the declaration of
+> which index corresponds to which attribute is just static information.
+>
+> >
+> > > +       TSM_REPORT_PROVIDER,
+> >
+> > Same as above.
+>
+> These numbers need to match the array indices of tsm_report_attrs.
+>
+> Your suggestion makes the declaration of tsm_report_attrs more
+> difficult:
+>
+>  static struct configfs_attribute *tsm_report_attrs[] =3D {
+>     [TSM_REPORT_GENERATION] =3D &tsm_report_attr_generation,
+>     [TSM_REPORT_PROVIDER] =3D &tsm_report_attr_provider,
+>     [TSM_REPORT_PRIVLEVEL] =3D &tsm_report_attr_privlevel,
+>     [TSM_REPORT_PRIVLEVEL_FLOOR] =3D &tsm_report_attr_privlevel_floor,
+>     NULL,
+>  };
+>
+> ...because then the definition of TSM_REPORT_PRIVLEVEL would need to
+> know how many attributes precede it in the array. So, defining it this
+> way makes it more robust against future changes that want to
+> add/delete/reorder attributes in the array.
 
-Thank you very much!  I will apply this on my next rebase.
-
-							Thanx, Paul
-
-> Thank you,
-> 
-> > [1] https://lore.kernel.org/all/cover.1710877680.git.yan@cloudflare.com/
-> > 
-> > Reported-by: Jakub Kicinski <kuba@kernel.org>
-> > Reported-by: Alexei Starovoitov <ast@kernel.org>
-> > Reported-by: Chris Mason <clm@fb.com>
-> > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> > Cc: Steven Rostedt <rostedt@goodmis.org>
-> > Cc: Masami Hiramatsu <mhiramat@kernel.org>
-> > Cc: Mark Rutland <mark.rutland@arm.com>
-> > Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-> > Cc: <linux-trace-kernel@vger.kernel.org>
-> > 
-> > diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
-> > index 6c96b30f3d63b..32ea92934268c 100644
-> > --- a/kernel/trace/ftrace.c
-> > +++ b/kernel/trace/ftrace.c
-> > @@ -5365,6 +5365,13 @@ static void remove_direct_functions_hash(struct ftrace_hash *hash, unsigned long
-> >  	}
-> >  }
-> >  
-> > +static void register_ftrace_direct_cb(struct rcu_head *rhp)
-> > +{
-> > +	struct ftrace_hash *fhp = container_of(rhp, struct ftrace_hash, rcu);
-> > +
-> > +	free_ftrace_hash(fhp);
-> > +}
-> > +
-> >  /**
-> >   * register_ftrace_direct - Call a custom trampoline directly
-> >   * for multiple functions registered in @ops
-> > @@ -5463,10 +5470,8 @@ int register_ftrace_direct(struct ftrace_ops *ops, unsigned long addr)
-> >   out_unlock:
-> >  	mutex_unlock(&direct_mutex);
-> >  
-> > -	if (free_hash && free_hash != EMPTY_HASH) {
-> > -		synchronize_rcu_tasks();
-> > -		free_ftrace_hash(free_hash);
-> > -	}
-> > +	if (free_hash && free_hash != EMPTY_HASH)
-> > +		call_rcu_tasks(&free_hash->rcu, register_ftrace_direct_cb);
-> >  
-> >  	if (new_hash)
-> >  		free_ftrace_hash(new_hash);
-> 
-> 
-> -- 
-> Masami Hiramatsu (Google) <mhiramat@kernel.org>
+Got it. Makes sense. It is simpler to do it this way. I am just
+worried that the vendor driver might mistakenly disable some core
+attributes like inblob, outblob, provider and generation.
 
