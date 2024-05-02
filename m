@@ -1,153 +1,124 @@
-Return-Path: <linux-kernel+bounces-166001-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-166002-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BE9338B9489
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 08:12:45 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id F1E908B9493
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 08:15:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7B9F5283E23
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 06:12:44 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A7F331F22B5E
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 06:15:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DCC46210E4;
-	Thu,  2 May 2024 06:12:38 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3819C19BBA
-	for <linux-kernel@vger.kernel.org>; Thu,  2 May 2024 06:12:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3CB5A219F6;
+	Thu,  2 May 2024 06:15:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Ibq/Lpip"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.13])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9116619BBA;
+	Thu,  2 May 2024 06:15:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714630358; cv=none; b=BD4Yg6Se02fy0wg7jHBAD9jLVL4N7ih4oQKKNuyn6xXGAQL+7fBIOpss4lfcEKTFo0DWX6A1q/giEB3i72Orz57xUVUBgUwVUCg64Off4BRVuZOoA2oKj3P8rETmeMmZypEbjcRpbEXfjrkpLDtbpi4KK/0v9USnDhIOERyen54=
+	t=1714630543; cv=none; b=TeHinKu3+6w24VsVF4TdR9SI1/EcUA2b846Aw/gzIaRw4vSMb14xRj/pAS5x3qoodJsUgStJ4/tbnFVHCA1fsRp2WRj5bLmY9H45c/Mo7G/aNhU2lX1HRx67nL7ycXBQUwuvGQMX0T8QKkwVOEL0Ngbco1aGFKYuyMU5jncmzi8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714630358; c=relaxed/simple;
-	bh=UULBv2BxVKz+UmwhwPOHf0UTfCrQN6WX9604a7i/PFA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=fe6FYgxJpKEBxxRfmJcpvl22EGXAnz1QOTi2o0o6cKQRZSIl13+fvKjJt8Dg509jtwN9Jg19tY0FJUdi2TVV78n/PtuMQmoukn99Ln21fGJL/llmbWpyT5j5A1WNZ2Eqn4W7/dLMfBSitRWiFrU4ZSMdx1uPRAbJ8ut7IdGCedA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1D3842F4;
-	Wed,  1 May 2024 23:13:00 -0700 (PDT)
-Received: from [10.162.42.72] (a077893.blr.arm.com [10.162.42.72])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 419103F793;
-	Wed,  1 May 2024 23:12:29 -0700 (PDT)
-Message-ID: <5ac445b2-5c11-407c-87d2-4ede8e212d71@arm.com>
-Date: Thu, 2 May 2024 11:42:27 +0530
+	s=arc-20240116; t=1714630543; c=relaxed/simple;
+	bh=4OgiMeMFFqfMsPzrtCht/2JBkbW1O58CRe7NPSDmh+U=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=mb6YGsT1jqV0OifFRRBNtLsTpIfNTHKqlaQn7LWUqjzXFN1bj+6ZSj0lzRnDfZQoJU+0mERccFpupWmN620szJqq+7tD188Rs5pVZM/0Do43sFwuJdZWtBwvGnrRsvZGn0GB7W5Dyd34Z4Px5K6uA5lNSLOVDGc6kjNxjULTy3Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Ibq/Lpip; arc=none smtp.client-ip=192.198.163.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1714630542; x=1746166542;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=4OgiMeMFFqfMsPzrtCht/2JBkbW1O58CRe7NPSDmh+U=;
+  b=Ibq/LpipuH9KToD/uFMiUft6VR3fFC5xRFw1fCwJrzn+kj2qwRKskftZ
+   kw++U2ltAPSdrk18e6pXbGrCpLl968TsfhYxy85/eL1GjmkL2cxoOQeUe
+   ecD6YCG7sML0JHpoEQmOowjx1EcQcRu6DIuJDc8a3IMSOBuxhOCQXatP8
+   NznMrBil8x2ORYnXcyAw1pZ7UUrC1t7YOtAjIkcfdcDmw/AmdO3mr+2NP
+   WKp6VC+s1Y5uBxWpHbTbyHhGNdKhGBvLiIMCibARlXqk3Kh9zXz6iz4K9
+   9krE505xKwzncThnR7N7YBdw/txnTxf3jt8m3qN9oQ4/RKs5P7z/X1xIx
+   w==;
+X-CSE-ConnectionGUID: tmx7j/DFQWOt/inZjo9rLA==
+X-CSE-MsgGUID: xGDy3gdTRdimTW7wJNizMg==
+X-IronPort-AV: E=McAfee;i="6600,9927,11061"; a="13333199"
+X-IronPort-AV: E=Sophos;i="6.07,247,1708416000"; 
+   d="scan'208";a="13333199"
+Received: from orviesa002.jf.intel.com ([10.64.159.142])
+  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 May 2024 23:15:40 -0700
+X-CSE-ConnectionGUID: 93d5PMZfTOq6WRvhHrvH6g==
+X-CSE-MsgGUID: gQZcZkbQSsKuRt+L5bZjLA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,247,1708416000"; 
+   d="scan'208";a="57910016"
+Received: from turnipsi.fi.intel.com (HELO kekkonen.fi.intel.com) ([10.237.72.44])
+  by orviesa002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 May 2024 23:15:38 -0700
+Received: from punajuuri.localdomain (punajuuri.localdomain [192.168.240.130])
+	by kekkonen.fi.intel.com (Postfix) with ESMTP id 1AEE911F832;
+	Thu,  2 May 2024 09:15:36 +0300 (EEST)
+Received: from sailus by punajuuri.localdomain with local (Exim 4.96)
+	(envelope-from <sakari.ailus@linux.intel.com>)
+	id 1s2PjE-004DC2-06;
+	Thu, 02 May 2024 09:15:36 +0300
+From: Sakari Ailus <sakari.ailus@linux.intel.com>
+To: Stephen Rothwell <sfr@canb.auug.org.au>,
+	linux-media@vger.kernel.org
+Cc: Mauro Carvalho Chehab <mchehab@kernel.org>,
+	Bingbu Cao <bingbu.cao@intel.com>,
+	Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+	Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: [PATCH 1/1] media: ipu6: Fix vmalloc memory allocation
+Date: Thu,  2 May 2024 09:15:25 +0300
+Message-Id: <20240502061525.1004018-1-sakari.ailus@linux.intel.com>
+X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20240501102236.3b2585d1@canb.auug.org.au>
+References: <20240501102236.3b2585d1@canb.auug.org.au>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 2/3] arm64/mm: Move PTE_PRESENT_INVALID to overlay
- PTE_NG
-Content-Language: en-US
-To: Ryan Roberts <ryan.roberts@arm.com>,
- Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
- Joey Gouly <joey.gouly@arm.com>, Ard Biesheuvel <ardb@kernel.org>,
- Mark Rutland <mark.rutland@arm.com>, David Hildenbrand <david@redhat.com>,
- Peter Xu <peterx@redhat.com>, Mike Rapoport <rppt@linux.ibm.com>,
- Shivansh Vij <shivanshvij@outlook.com>
-Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20240501145419.1390363-1-ryan.roberts@arm.com>
- <20240501145419.1390363-3-ryan.roberts@arm.com>
-From: Anshuman Khandual <anshuman.khandual@arm.com>
-In-Reply-To: <20240501145419.1390363-3-ryan.roberts@arm.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
+The driver was calling vmalloc() to allocate memory, something which isn't
+available except when particular Kconfig settings are enabled.
 
+Use kvmalloc() instead.
 
-On 5/1/24 20:24, Ryan Roberts wrote:
-> PTE_PRESENT_INVALID was previously occupying bit 59, which when a PTE is
-> valid can either be IGNORED, PBHA[0] or AttrIndex[3], depending on the
-> HW configuration. In practice this is currently not a problem because
-> PTE_PRESENT_INVALID can only be 1 when PTE_VALID=0 and upstream Linux
-> always requires the bit set to 0 for a valid pte.
-> 
-> However, if in future Linux wants to use the field (e.g. AttrIndex[3])
-> then we could end up with confusion when PTE_PRESENT_INVALID comes along
-> and corrupts the field - we would ideally want to preserve it even for
-> an invalid (but present) pte.
-> 
-> The other problem with bit 59 is that it prevents the offset field of a
-> swap entry within a swap pte from growing beyond 51 bits. By moving
-> PTE_PRESENT_INVALID to a low bit we can lay the swap pte out so that the
-> offset field could grow to 52 bits in future.
-> 
-> So let's move PTE_PRESENT_INVALID to overlay PTE_NG (bit 11).
-> 
-> There is no need to persist NG for a present-invalid entry; it is always
-> set for user mappings and is not used by SW to derive any state from the
+Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+Fixes: 25fedc021985 ("media: intel/ipu6: add Intel IPU6 PCI device driver")
+Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
+---
+Hi Stephen,
 
-But the idea of present and invalid state is that all the HW used information
-should be fetched successfully even though the the entry is not valid and not
-being walked by the MMU. Setting and clearing PTE SW bits in such state, does
-not change that, but tampering with HW bits would break the assumption around
-present and invalid entry ?
+Thanks for reporting this. I'm a bit surprised this wasn't catched
+earlier. But it seems vmalloc() is defined in some configuration.
 
-> pte. PTE_NS was considered instead of PTE_NG, but it is RES0 for
-> non-secure SW, so there is a chance that future architecture may
-> allocate the bit and we may therefore need to persist that bit for
-> present-invalid ptes.
+- Sakari
 
-If we are being careful around PTE_NS and even for AttrIndex[3] as mentioned
-earlier to be useful during an invalid state, how can PTE_NG be used without
-any such consideration.
+ drivers/media/pci/intel/ipu6/ipu6.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> 
-> These are both marginal benefits, but make things a bit tidier in my
-> opinion.
+diff --git a/drivers/media/pci/intel/ipu6/ipu6.c b/drivers/media/pci/intel/ipu6/ipu6.c
+index 4b1f69d14d71..082b1d6196be 100644
+--- a/drivers/media/pci/intel/ipu6/ipu6.c
++++ b/drivers/media/pci/intel/ipu6/ipu6.c
+@@ -526,7 +526,7 @@ static int request_cpd_fw(const struct firmware **firmware_p, const char *name,
+ 	}
+ 
+ 	dst->size = fw->size;
+-	dst->data = vmalloc(fw->size);
++	dst->data = kvmalloc(fw->size, GFP_KERNEL);
+ 	if (!dst->data) {
+ 		kfree(dst);
+ 		ret = -ENOMEM;
+-- 
+2.39.2
 
-Apart from swap offset field expansion does this change achieve anything else ?
-
-> 
-> Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
-> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
-> ---
->  arch/arm64/include/asm/pgtable-prot.h |  2 +-
->  arch/arm64/include/asm/pgtable.h      | 12 ++++++------
->  2 files changed, 7 insertions(+), 7 deletions(-)
-> 
-> diff --git a/arch/arm64/include/asm/pgtable-prot.h b/arch/arm64/include/asm/pgtable-prot.h
-> index cd8c06f5fb02..3047d10987fd 100644
-> --- a/arch/arm64/include/asm/pgtable-prot.h
-> +++ b/arch/arm64/include/asm/pgtable-prot.h
-> @@ -18,7 +18,7 @@
->  #define PTE_DIRTY		(_AT(pteval_t, 1) << 55)
->  #define PTE_SPECIAL		(_AT(pteval_t, 1) << 56)
->  #define PTE_DEVMAP		(_AT(pteval_t, 1) << 57)
-> -#define PTE_PRESENT_INVALID	(_AT(pteval_t, 1) << 59) /* only when !PTE_VALID */
-> +#define PTE_PRESENT_INVALID	(PTE_NG)		 /* only when !PTE_VALID */
->  
->  #define _PROT_DEFAULT		(PTE_TYPE_PAGE | PTE_AF | PTE_SHARED)
->  #define _PROT_SECT_DEFAULT	(PMD_TYPE_SECT | PMD_SECT_AF | PMD_SECT_S)
-> diff --git a/arch/arm64/include/asm/pgtable.h b/arch/arm64/include/asm/pgtable.h
-> index c0f4471423db..7f1ff59c43ed 100644
-> --- a/arch/arm64/include/asm/pgtable.h
-> +++ b/arch/arm64/include/asm/pgtable.h
-> @@ -1254,15 +1254,15 @@ static inline pmd_t pmdp_establish(struct vm_area_struct *vma,
->   * Encode and decode a swap entry:
->   *	bits 0-1:	present (must be zero)
->   *	bits 2:		remember PG_anon_exclusive
-> - *	bits 3-7:	swap type
-> - *	bits 8-57:	swap offset
-> - *	bit  59:	PTE_PRESENT_INVALID (must be zero)
-> + *	bits 6-10:	swap type
-> + *	bit  11:	PTE_PRESENT_INVALID (must be zero)
-> + *	bits 12-61:	swap offset
->   */
-> -#define __SWP_TYPE_SHIFT	3
-> +#define __SWP_TYPE_SHIFT	6
->  #define __SWP_TYPE_BITS		5
-> -#define __SWP_OFFSET_BITS	50
->  #define __SWP_TYPE_MASK		((1 << __SWP_TYPE_BITS) - 1)
-> -#define __SWP_OFFSET_SHIFT	(__SWP_TYPE_BITS + __SWP_TYPE_SHIFT)
-> +#define __SWP_OFFSET_SHIFT	12
-> +#define __SWP_OFFSET_BITS	50
->  #define __SWP_OFFSET_MASK	((1UL << __SWP_OFFSET_BITS) - 1)
->  
->  #define __swp_type(x)		(((x).val >> __SWP_TYPE_SHIFT) & __SWP_TYPE_MASK)
 
