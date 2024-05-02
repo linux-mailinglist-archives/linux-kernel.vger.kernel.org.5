@@ -1,122 +1,91 @@
-Return-Path: <linux-kernel+bounces-166839-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-166840-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id EEEF08BA095
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 20:34:48 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 74AF88BA097
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 20:35:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2C1AA1C22350
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 18:34:48 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AF1A2B212A2
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 18:35:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A38A174EDF;
-	Thu,  2 May 2024 18:34:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D3D3178CC0;
+	Thu,  2 May 2024 18:34:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=9elements.com header.i=@9elements.com header.b="CGXQvnFq"
-Received: from mail-pj1-f53.google.com (mail-pj1-f53.google.com [209.85.216.53])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="L/KBlq/q"
+Received: from mail-pf1-f201.google.com (mail-pf1-f201.google.com [209.85.210.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5DE5A174EC6
-	for <linux-kernel@vger.kernel.org>; Thu,  2 May 2024 18:34:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C15BE174EFA
+	for <linux-kernel@vger.kernel.org>; Thu,  2 May 2024 18:34:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714674882; cv=none; b=l25BTUlCEnvkOjZRlIAO5AW1D2m1hWHRGIqNIZ3zpbFYBONrVbXtSN11Wt9zHYClFvlfLsqTv+4FQADCJA14gFhMsA1KrVRsy4unUrlrJNIh94xpoo1qp2U8UpumOeb7xbxms9BwHwY5W7MFg2FFTTk+RWIcp8949LyznRjeI84=
+	t=1714674894; cv=none; b=YEWcXWdbSNuJincUxEFkcoScmNYqHcR6aQO6zkZsYcQOiUkexSiYHruUdWgSude4l91kAXHO6QpP4jJ2KKdk5+xFgoSZv5chbBlJMIj1wjCN3R7UioR3hKBkw1CeAHOk1KqD/2yTh5aR4RnkZ8GFZQCPcgfQp7V7gZRHtRNrt4s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714674882; c=relaxed/simple;
-	bh=hkUdLfPttpQ9Uizzjig3dHmfdmmvYzwn26n5H3T3jCw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=mJ3s5BDZmP3Nxr+4jVNT1/THGS10xR+XxmWEwL3LAi7/jrXzUB1oOIPmZQ1KAKtV6Asx+q0mbnSCUiJ23H9Fz4d4+E4RR7UMSwKbmRTc6ZxvPwfEj8VrXoo3nzcF8Yyl7zLisvdhSDu2T0Vh41+Ryb1tNBLTuGKDklymFv3LWrA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=9elements.com; spf=pass smtp.mailfrom=9elements.com; dkim=pass (2048-bit key) header.d=9elements.com header.i=@9elements.com header.b=CGXQvnFq; arc=none smtp.client-ip=209.85.216.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=9elements.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=9elements.com
-Received: by mail-pj1-f53.google.com with SMTP id 98e67ed59e1d1-2b346712919so1299882a91.2
-        for <linux-kernel@vger.kernel.org>; Thu, 02 May 2024 11:34:40 -0700 (PDT)
+	s=arc-20240116; t=1714674894; c=relaxed/simple;
+	bh=jytgknmHYWTrXv1GAauTxUQg2j1Ex2jV+8u8ch/uEp4=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=II0UXXT9n6mNn0CN7G4rSEdCI8YCq8c43oPW0cxfPotxaMIpOPzyOapk0z11piZK7LgWNG7liqz89FQD4HcX5uEUw3j6U0NuQno83X4A1Sc19Ia6z65TRM172+phE56cIUvioCcD4tCUPFGEPB47c6DYF/iSa3i5ayhBnjOKiU4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=L/KBlq/q; arc=none smtp.client-ip=209.85.210.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-pf1-f201.google.com with SMTP id d2e1a72fcca58-6f3844500a5so8098837b3a.3
+        for <linux-kernel@vger.kernel.org>; Thu, 02 May 2024 11:34:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=9elements.com; s=google; t=1714674880; x=1715279680; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=+25HyXOoGfU3yjmqt9OUckjepNjR3C/KJDAxWQF5ZQM=;
-        b=CGXQvnFqZsvP5ZzwsDHTs5ZFXeMn7t0PGgM+nEv7urTzHdMq7FcX+6grEIM5pjPa5a
-         mPJbK6mvkArrCxE372YstWSkK3XmvGAoRdQ7wtnI2Et8sqdnkWcWhTWorweh6rv3rXLp
-         OnDsbBKYD6Nd+R1Trb4zRreMHBnLbVgMqIPUd6WX5yf7QubfrfLLMfDSdscTcoSAZFgC
-         11x89bt4AqLNhsJOXSsvIKPpwLw1nfmDXxK6t2zK47IJKmtW6dRSv84ySUeR937NUsNW
-         9JCIQQFxV0HU8h7WjV7DfwrXTfn1VIZwAlme7s0HDC7q37c9Wpsrde4gT5TOuULP9Pdx
-         ecnQ==
+        d=google.com; s=20230601; t=1714674892; x=1715279692; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=jytgknmHYWTrXv1GAauTxUQg2j1Ex2jV+8u8ch/uEp4=;
+        b=L/KBlq/qMeOxxcs6qukbEQgikZ2Wg6YAfdIwExebOHi8w4tdERla2XU+0nLJQa3FVa
+         DMjtQRPHCH1RJBX+SIf+j70Fu2rzx1xeh6DMFGpbqjjmJu0SXf6mOnfriGje7YtirNLf
+         Q6+4in3rss3/6YmzYKVb+xqB2La4Ba6u+6x7Zew8Hbto5wixo3/0NENjWS3pkSLPDfu6
+         FUZxiWsh8Rtd+UrZCbY5O9ymfYAfJKnq57GvJYxWT3cP04HQ1JzZfA7KU/A7KzhipQ5M
+         IDNr/yw1ge31SuvJ05DE2dZDAaSRq1mwikcgQ9yl7zbPsgNZ58jSTLBY1mZ7s43n+htJ
+         3llg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714674880; x=1715279680;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=+25HyXOoGfU3yjmqt9OUckjepNjR3C/KJDAxWQF5ZQM=;
-        b=YBHT22pRIqBuhG+374Jn2wYdoFych7fBjtrOedzEihdXnO0RT+JOuEglGd+J7uPyDj
-         QGWYbbhYAjAqG6FG06sC7b0kIMD0uH3vrNtgoyR1ly0UTWS5CW1/+sf93hmMLy6Je70L
-         dmsApXWWZHKMbFNJgJxiwpnADEbD3OBwcOjCWCg/x85iHPtqcK8neFP1fy4One4MBW5X
-         EXBuxQ2u3ChZhSIjf0wJ/C2OeK1foysIpP0y5f5u+j8rFw79ys/pnp7Wai0dYZ/Airi/
-         fzVv9nDy/Y91VwkNGfB+zWY368c/7yul4L8qAg3WklPkGY/1Xe4IUKYcqrmVl4xJRj+I
-         YvzQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXUFMWaNctBxAETBMyiEyRV+eKLHTXmf2SAk7MARLWsjMwV2dy5eoOmgGazq3ybrDXg965Rqnw5E9hpnydZgqlLVi8GbYGTn1ONVpBz
-X-Gm-Message-State: AOJu0YzkFBMlPUfxvgEXzeaa9P+2xDM4w3ucl4RalVLWD6rhYWKK9GBV
-	93P1m29zxuQ6ntiCoSh+nq1f1vKWNh09v6gI31cmczyp5lQB6qzV0Vz0KIJWf8cH+wGyEFd0Y5y
-	hhIHzkXR2h94vOS9OIBsJwlRVmLH+YJnjgTw2Dw==
-X-Google-Smtp-Source: AGHT+IF5E4mgToLIMVVlH/f2iwR1VecRyVXaYV+aFS7iLb6nTGbXf4HJT0JlfGzSaOychD89ASCLwngz5CgMoxT3z+E=
-X-Received: by 2002:a17:90b:4388:b0:2a6:9c5f:828e with SMTP id
- in8-20020a17090b438800b002a69c5f828emr700244pjb.22.1714674880502; Thu, 02 May
- 2024 11:34:40 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1714674892; x=1715279692;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=jytgknmHYWTrXv1GAauTxUQg2j1Ex2jV+8u8ch/uEp4=;
+        b=rvTUqFOKLlZpWQvBcnZ3D3jWSqC/oHK7RNxA5g7cWE8BmMXG4sr+tFFtHr6UaayPxp
+         MTOgsF9hJXHzSYxshcNxrB7V786XAffBD8Hnaj9ymaeDoRx/GOrQfTyeiIJHtO8+PklL
+         ZjYiCd6GS7bcuu6oyyrGTsIBm1etwdjn/UVxb2K4ERlCEEX+9LiO6HvNmFp8xA4Eh9Nz
+         gTN2zWqRW7HwpwKS9fSwyDhERZ3RWlwnlP+SCoRAOwrb+bEB/Lt5Sa1EeIEfQTry8v4T
+         revo64BT/qKjN4bmzPWPMsq6Z65ZKZWnbE61b9DDVglgAq7zA3ejieMZzWmF/Kj23mSA
+         +Yfg==
+X-Forwarded-Encrypted: i=1; AJvYcCV9OUqXx7RY2+rIGMTxAd01TKCtOPUq2jBX2Ydlg/NoSlNhS0KppKC1Lh8kN9YWAK/BvEzy9B+L90zkrQa0EoIlaMmxhUNon37LXjl6
+X-Gm-Message-State: AOJu0YxIOOCbHjb94ZioQa7G728uWzD2s1EArlA1guqGUauDaZd9Cu78
+	Zx/3K5KOI7hudzGe0m+2nCIBh6IPbIaXWyU+vMZRTR1/z5fumHEZgyktLoyPOm3n9hjLKUBxphl
+	zrQ==
+X-Google-Smtp-Source: AGHT+IHWL5Bv8mTDqw5PQCUQ3Ma17xnc0OOcCgLDrt0pU0GynYuPCW7ysv0HOkzIsyoIRHjZ3DtUj8iHTnI=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a05:6a00:3982:b0:6e5:b5e8:e076 with SMTP id
+ fi2-20020a056a00398200b006e5b5e8e076mr11141pfb.3.1714674892052; Thu, 02 May
+ 2024 11:34:52 -0700 (PDT)
+Date: Thu, 2 May 2024 11:34:50 -0700
+In-Reply-To: <9b05e2d7-ac1c-e60f-0f6e-f4befea06334@amd.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20240430210539.935040-1-naresh.solanki@9elements.com>
- <52e7692c-abaa-4201-8248-3f42bb250335@roeck-us.net> <CABqG17j2kMEK98T90eudb_ZWftaV2L4_MdA8ML+v_cm3MHFs1w@mail.gmail.com>
- <af66ac87-32ff-48a6-bf1c-d7ac578ceb4c@roeck-us.net>
-In-Reply-To: <af66ac87-32ff-48a6-bf1c-d7ac578ceb4c@roeck-us.net>
-From: Naresh Solanki <naresh.solanki@9elements.com>
-Date: Fri, 3 May 2024 00:04:29 +0530
-Message-ID: <CABqG17hE+2F9y1=JZFRuJtLecFtx0XJBzt-a0HSyE3VRoqdzCQ@mail.gmail.com>
-Subject: Re: [PATCH v2] hwmon (max6639): Use regmap
-To: Guenter Roeck <linux@roeck-us.net>
-Cc: Jean Delvare <jdelvare@suse.com>, linux-hwmon@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+References: <20240226213244.18441-1-john.allen@amd.com> <20240226213244.18441-7-john.allen@amd.com>
+ <ZjLTr0n0nwBrZW36@google.com> <9b05e2d7-ac1c-e60f-0f6e-f4befea06334@amd.com>
+Message-ID: <ZjPcytxDWHKLYNsU@google.com>
+Subject: Re: [PATCH v2 6/9] KVM: SVM: Add MSR_IA32_XSS to the GHCB for
+ hypervisor kernel
+From: Sean Christopherson <seanjc@google.com>
+To: Tom Lendacky <thomas.lendacky@amd.com>
+Cc: John Allen <john.allen@amd.com>, kvm@vger.kernel.org, weijiang.yang@intel.com, 
+	rick.p.edgecombe@intel.com, bp@alien8.de, pbonzini@redhat.com, 
+	mlevitsk@redhat.com, linux-kernel@vger.kernel.org, x86@kernel.org
+Content-Type: text/plain; charset="us-ascii"
 
-Hi Guenter,
+On Thu, May 02, 2024, Tom Lendacky wrote:
+> The hypervisor side could be optimized to compare the value and only update
+> the CPUID runtime if those values are different.
 
-On Thu, 2 May 2024 at 23:52, Guenter Roeck <linux@roeck-us.net> wrote:
->
-> On 5/2/24 10:25, Naresh Solanki wrote:
-> [ ... ]
->
-> >>> +     u8 pwm[MAX6639_NDEV];           /* Register value: Duty cycle 0..120 */
-> >>
-> >> pwm caching needs to be dropped as well. It is no longer initialized in
-> >> max6639_init_client(), but updated and later used in pwm_store() and
-> >> pwm_show(). Looking at the datasheet, the pwm registers are volatile
-> >> and should not be cached in the first place.
-> > Yes. I did that but found that the register is write only. i.e.,
->
-> Odd. The datasheet says that it is r/w or, rather, that reading it returns
-> the _current_ pwm value and writing it sets the target pwm value in pwm mode.
->
-> What happens when the register is read ?
-Upon revisiting the datasheet and conducting further testing, it appears that
-my previous response was inaccurate.
-After testing, it's clear that it reads what is being written & hence
-it's perfectly
-fine to remove variable pwm[] from local caching.
-Verified using below command:
-----
-i2cset -f -y 130 0x2e 0x26 0x10; i2cget -f -y 130 0x2e 0x26
-0x10
-----
-
-Regards,
-Naresh
-
->
-> Thanks,
-> Guenter
->
+Heh, this is exactly the thought I had around dinner time yesterday :-)
 
