@@ -1,46 +1,46 @@
-Return-Path: <linux-kernel+bounces-165912-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-165913-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 695808B934B
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 04:09:42 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id ED5208B934E
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 04:10:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 184B8B22B92
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 02:09:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A94722841B8
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 02:10:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B324179BD;
-	Thu,  2 May 2024 02:09:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0577B17BA8;
+	Thu,  2 May 2024 02:10:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZAFgY1D+"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fEwDVHr4"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C69D817543;
-	Thu,  2 May 2024 02:09:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C6DC10A24;
+	Thu,  2 May 2024 02:10:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714615768; cv=none; b=NQfEhpZUjAIu6SdG125JvirmYc64qAjqfo5zZubWKIG/ckHmwLtz1aRFw3lYsPFDdtRDgANEadOfVE3H3/S3lS4gCJD1LEwNMmVWxtyzfjA4NSh1k154i4fdIkU/RNoQ0GTFf7Bl5b21HMGwUfp4o9AJs9GHhuZKAbv/KFMez74=
+	t=1714615819; cv=none; b=BZZnDqNkkfjYbbc7xZBfqTyF3ciQSUwyzDsL9DVMZnP5irNTNV4nNaIDDuGuQsPOv3rUko9tdaz+v5YoUwEQOjJ/0NZcnTaHBr4Uhc5GsK1ArLHPxVOYTgBh4/EvC84bwHlfNSBqh95Ifi0mhQ03GyCLs6dY1SnEI28MauCf1c0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714615768; c=relaxed/simple;
-	bh=gdObBBGhWXQFFeenVvWJpJgDsGdn/fzETCpIOEIRmGw=;
+	s=arc-20240116; t=1714615819; c=relaxed/simple;
+	bh=UwkbNJ/LhEqQDshzKbZr9srvN+VwiPAypEJ5b7aSen0=;
 	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=qc01+DICC4A73KQ3FrAaTajaF+JqTDSfTVjb3qfExNLUIlYssPpn5SinnR70aoqCdf6UtEDkqxcZ+Jgpf3QxvadbLzc6Ght3IaKHPcCmvm8YgQzSZmvVsPxMKaFoc4Y6mMsjt/7EETjrDQTnAAN0aQLwWLh7ByT3AO3/pwiAkrw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZAFgY1D+; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 06F37C072AA;
-	Thu,  2 May 2024 02:09:26 +0000 (UTC)
+	 MIME-Version:Content-Type; b=Orf9YucxefwtnJeOJxkxHBHj7GUAZ1KhDpmOmh62LAKbuOYwyQp1+BT9ROER6qqr51mxHVXLX60CQ3QdMrjGEUKjqAfOZ1CToO/gjeCo2pt7fiMcq/pXxBC9McfwUpxeelCRS+sTDfeiIKTF9EbVFWbr57sOQ+ggoTVC13ccOwk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fEwDVHr4; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9A0FFC072AA;
+	Thu,  2 May 2024 02:10:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714615768;
-	bh=gdObBBGhWXQFFeenVvWJpJgDsGdn/fzETCpIOEIRmGw=;
+	s=k20201202; t=1714615818;
+	bh=UwkbNJ/LhEqQDshzKbZr9srvN+VwiPAypEJ5b7aSen0=;
 	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=ZAFgY1D+Weh0f6lq5gzwdcChgv7XcXWC1iYIYuBiTjHqaOQGQQJ5DGbQNrY7z7xFF
-	 CMCSU/o+kgffMwYcA2qHXG9J6X8qBviZpPv8d9N0PijN+wrRKatNnjXy+nTK8CKEkK
-	 /xsIZU50NxCz5Knwrm2XoiwmWVS5UNNJkHiqwWbL9Lo3tm9K/k3SRccBbZsxP4xwTp
-	 y4F25ymE/QiZayIcbP80ve/OAe7HZmzh1UZowscUaO19f92h3ofdbY7UzIHJGOd12U
-	 0inOGPT/vADwCHTOJZnK4pQgnHsk69rjrdb6z3gQNaiMfEw3TtvhI+8dvLTjf4Ymf5
-	 nxHe2ZEIfW4qg==
-Date: Wed, 1 May 2024 19:09:25 -0700
+	b=fEwDVHr4+Ss+Eh04xyBCaN8FBaK72OHECX0VAB9ibAy8X3pmCSx8ak9Xxf2qZy1nW
+	 Yh5wtqCh4h8DSUD8wr4I+l90PHvY8VLVOzAEsgzTbmqiX0/pCfTLK/pSOT/13aHIen
+	 NHRSQMnDSGzaseIyCd6EY266KB+ziaYK5JN0lPCqgyBfVtfEKoeF/EhsAj3au3IbVy
+	 rEStbASdHIy5Ptm6jxJXiF4JIN6kmHI2SQHUDmPxGMZgbWPAWXeWahnsD4WMgNfpHr
+	 iX8si+GSgLfPxRR9GUKWR9GWYLcIK3MQuMXh8+9IB/IaP29iu81CoVlVkiwA+Bly2x
+	 oTvPnQKJBEj0A==
+Date: Wed, 1 May 2024 19:10:16 -0700
 From: Jakub Kicinski <kuba@kernel.org>
 To: Kory Maincent <kory.maincent@bootlin.com>
 Cc: Florian Fainelli <florian.fainelli@broadcom.com>, Broadcom internal
@@ -58,13 +58,13 @@ Cc: Florian Fainelli <florian.fainelli@broadcom.com>, Broadcom internal
  Oltean <vladimir.oltean@nxp.com>, Thomas Petazzoni
  <thomas.petazzoni@bootlin.com>, netdev@vger.kernel.org,
  linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org, Maxime Chevallier
- <maxime.chevallier@bootlin.com>, Rahul Rameshbabu <rrameshbabu@nvidia.com>,
- Willem de Bruijn <willemb@google.com>, Alexandra Winter
- <wintera@linux.ibm.com>
-Subject: Re: [PATCH net-next v12 00/13] net: Make timestamping selectable
-Message-ID: <20240501190925.34c76ada@kernel.org>
-In-Reply-To: <20240430-feature_ptp_netnext-v12-0-2c5f24b6a914@bootlin.com>
+ <maxime.chevallier@bootlin.com>, Rahul Rameshbabu <rrameshbabu@nvidia.com>
+Subject: Re: [PATCH net-next v12 09/13] net: Add the possibility to support
+ a selected hwtstamp in netdevice
+Message-ID: <20240501191016.52b5c92f@kernel.org>
+In-Reply-To: <20240430-feature_ptp_netnext-v12-9-2c5f24b6a914@bootlin.com>
 References: <20240430-feature_ptp_netnext-v12-0-2c5f24b6a914@bootlin.com>
+	<20240430-feature_ptp_netnext-v12-9-2c5f24b6a914@bootlin.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -74,16 +74,39 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 
-On Tue, 30 Apr 2024 17:49:43 +0200 Kory Maincent wrote:
-> Up until now, there was no way to let the user select the hardware
-> PTP provider at which time stamping occurs. The stack assumed that PHY time
-> stamping is always preferred, but some MAC/PHY combinations were buggy.
-> 
-> This series updates the default MAC/PHY default timestamping and aims to
-> allow the user to select the desired hwtstamp provider administratively.
+On Tue, 30 Apr 2024 17:49:52 +0200 Kory Maincent wrote:
+>  static inline void hwtstamp_config_to_kernel(struct kernel_hwtstamp_config *kernel_cfg,
+> diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
+> index f0e4572cdad5..f6333b8a630d 100644
+> --- a/include/linux/netdevice.h
+> +++ b/include/linux/netdevice.h
+> @@ -46,6 +46,7 @@
+>  #include <uapi/linux/if_bonding.h>
+>  #include <uapi/linux/pkt_cls.h>
+>  #include <uapi/linux/netdev.h>
+> +#include <linux/net_tstamp.h>
+>  #include <linux/hashtable.h>
+>  #include <linux/rbtree.h>
+>  #include <net/net_trackers.h>
+> @@ -2026,6 +2027,8 @@ enum netdev_reg_state {
+>   *	@dpll_pin: Pointer to the SyncE source pin of a DPLL subsystem,
+>   *		   where the clock is recovered.
+>   *
+> + *	@hwtstamp: Tracks which PTP performs hardware packet time stamping.
+> + *
+>   *	FIXME: cleanup struct net_device such that network protocol info
+>   *	moves out.
+>   */
+> @@ -2400,6 +2403,8 @@ struct net_device {
+>  	/** @page_pools: page pools created for this netdevice */
+>  	struct hlist_head	page_pools;
+>  #endif
+> +
+> +	struct hwtstamp_provider	*hwtstamp;
+>  };
+>  #define to_net_dev(d) container_of(d, struct net_device, dev)
 
-Looks like there's a linking problem starting with patch 9. On a quick
-look the functions from a module are now called by build-in code.
--- 
-pw-bot: cr
+Please avoid adding includes to netdevice.h.
+IDK if you have more dependencies in later patches but for a pointer
+member you don't even need a forward declaration, let alone include.
 
