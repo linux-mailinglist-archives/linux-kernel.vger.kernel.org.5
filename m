@@ -1,127 +1,157 @@
-Return-Path: <linux-kernel+bounces-166997-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-166999-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 439388BA324
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 00:27:01 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 22F168BA32D
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 00:32:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F3975283097
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 22:26:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 459221C209F2
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 22:32:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 563DC181CFE;
-	Thu,  2 May 2024 22:26:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 409F2168DA;
+	Thu,  2 May 2024 22:31:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="NhCrLKdI"
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B8A357CB9;
-	Thu,  2 May 2024 22:26:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Zco1UODU"
+Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4811812E47
+	for <linux-kernel@vger.kernel.org>; Thu,  2 May 2024 22:31:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714688799; cv=none; b=H5rOr9VvlIH0qj8R+JOubV1FpIeriGGTzNSfUeTJkazkTtayuA0DGwBNbTz/O8WXJwGpUO+e8tBQWdV+wXj0SY31WgLjrD7ZEO8EyF5IFNKz6UVzCX0FF+iZadums8CxAYK2CL5oo+RaTUkt3I9LEheAjlDPrMa3WZNR/1HhFjA=
+	t=1714689112; cv=none; b=cdm6ZQF7CJ1ieJCTsnaJ9f5JwoZy8VGKHSrGGI8F0slL966vtZKTXRn2cUaHTQcrRkN8OJu61e1W1Msbyrj4UTazLTavkAGzYJZrpBJxm8LjAL3EKo4ZlFQEBHwqobOwUki7lpSwWskCYlcl38mlNZSMCiZBmmuQcHO3RZATQCg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714688799; c=relaxed/simple;
-	bh=tzRQzMAo0KYbIQARBspopH2O28PH5OzJsS1h1UoNqJY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Ap3bR+Dkdqxe3KCEwbaZs0diB3yVgDVwhorh/DhDVGgLLnDmGvAR3ZH+CBUyEkWRkM1e9//NZ6wpQmkbksDYdSFhT5lZ9TUOtL1bJkbvoFz8jccpDA66HuWGb7VuH7Mn3TgER4tgwPe4z3SiK9QwF0m10X0Nsmtws90z3nxXgiI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=NhCrLKdI; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: from [100.64.232.195] (unknown [20.29.225.195])
-	by linux.microsoft.com (Postfix) with ESMTPSA id 518C5206B4FD;
-	Thu,  2 May 2024 15:26:37 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 518C5206B4FD
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1714688797;
-	bh=NzMrFwSnELsNTouka86zwY4xBu0HDKLPheXHNRlf/UY=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=NhCrLKdI/ZqOMxIi0x/9IcKVE1fu8SJgV6IOu9yOzA4/X9AoPavE5e5S65Ugw3uBC
-	 sulaSRBperkkDcIDt2jCnwInTZEDOTYmaUAyGGeCvlgfS23LBxyBkoeXTUrIdi6qwD
-	 4F+b4DUgYEKEoHW556opdVdEoci1DJoGsON85j90=
-Message-ID: <076e0a0d-ad26-490e-9784-300ed52637ca@linux.microsoft.com>
-Date: Thu, 2 May 2024 15:26:36 -0700
+	s=arc-20240116; t=1714689112; c=relaxed/simple;
+	bh=mVhefkMKYAgbzew8H9zwdvpcck6nt+d0ii0oo+fk8MY=;
+	h=Date:Message-Id:Mime-Version:Subject:From:To:Content-Type; b=jin4TzqfgN1msZKzRMV4mxfiVi9+pvz16cOPkL6vSZ/pEgPi466HMSA7sNsG89zjqMyDw6kndzRd+BVpFoi4rtlRAQuFmGe/yWMsO/e2OMp/WfevhopcfAPBcV9xgVHrxWKBabFEfO1qKlLGwrY73OXKy6kJq/BFdKQoJQATLRc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Zco1UODU; arc=none smtp.client-ip=209.85.128.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com
+Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-61510f72bb3so174204247b3.0
+        for <linux-kernel@vger.kernel.org>; Thu, 02 May 2024 15:31:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1714689109; x=1715293909; darn=vger.kernel.org;
+        h=to:from:subject:mime-version:message-id:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=D9BlVLjpP7oToPEloTg+EP74LvtZdSlc3EOCbIFaf28=;
+        b=Zco1UODUtmQjINKK1ayFk5w/Lz6/sySujiFOSzaSGo5O/GNlzjoFEshkRtoxrm8T9b
+         fFq2M+6a3Iw2CVuGmcjrdil/RNq8XueAPc0wthWV949fDEDTfhin12XPejRiASPPXqL0
+         VSgs7YyNun1/0SMYwzspfDhXEUnzECfW7b1KCWiPo+LMQH7T14yfXZNg2K94afGsvY/8
+         Nd/w/vmadayaEbuk2GIKOJDTnZJJdb/HHVmbikq0Q357C7EKKVWLbCO8O9nn6Q4+5TEN
+         CsxqKhrBVOvULerUJ/hAqIcmmWKCm6OVZTjJy98RtLFHqun9Dxw2EZnAHEZuemxazg8j
+         1xqQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714689109; x=1715293909;
+        h=to:from:subject:mime-version:message-id:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=D9BlVLjpP7oToPEloTg+EP74LvtZdSlc3EOCbIFaf28=;
+        b=pZ6iNQx9uAYfPVvQnMz2bx15X6lpgxIfqtbARttVgB9f/V/7cbGGMcnoed6al88th7
+         K++AqaHLNuXCCU9hd4F70w6zr8WljTfwQ7k2iPXauI4jUZOsjVF/l5VAe/r92Yqlv7iK
+         qMg1VBqWa7Ce+xoJfFU1OsktORPTB1eoh+u8J3yiT4wUWJid5qgv1INpGs/TFaHZ3JRJ
+         EWESWeR10rsAcMXhmZ16CL2/SoXuSAYKymebbVS0O6dZbADLDszmMxp2yVVkUx9MbnLT
+         bk2H6ZGgWxELOy8P2FYiUjS46/jQiGAmmeNulG2//3NJv+QD32HiBg72VSBuMYHMhWU/
+         QqsA==
+X-Forwarded-Encrypted: i=1; AJvYcCVfKunKtz60Fvyy4qQqry4Utg41Rd1za9KC3b2qq40ZuJZJWzNcQ2qMRhm6+kxOSJHPaVfmceBNS2kW4eFur5M07eaidmZ7ZrC+39nq
+X-Gm-Message-State: AOJu0YzLRHvECca4omSe2gsI2EiQVQYgBqbZczHl2M605IoA33q2V/px
+	cekiJCdl4x/DNMXkhCRpEFZUP52KCzGLHZTMMvNv8bJqQaXitdluqH/AevnF4PfdyfTjhvebz5l
+	ObnIinQ==
+X-Google-Smtp-Source: AGHT+IF4e2VbqkN2jjNWKDDm3Gcln7ovSliebeDlmk9dm6IpKVCKWNcrpc6+GmqKSfIrd1hZK2lR4tHdmIyq
+X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:deba:378d:2d3a:2641])
+ (user=irogers job=sendgmr) by 2002:a0d:d78b:0:b0:61b:e15c:2b84 with SMTP id
+ z133-20020a0dd78b000000b0061be15c2b84mr187197ywd.6.1714689109242; Thu, 02 May
+ 2024 15:31:49 -0700 (PDT)
+Date: Thu,  2 May 2024 15:31:15 -0700
+Message-Id: <20240502223115.2357499-1-irogers@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 12/12] fbdev/viafb: Make I2C terminology more inclusive
-To: Thomas Zimmermann <tzimmermann@suse.de>,
- Florian Tobias Schandinat <FlorianSchandinat@gmx.de>,
- Helge Deller <deller@gmx.de>,
- "open list:VIA UNICHROME(PRO)/CHROME9 FRAMEBUFFER DRIVER"
- <linux-fbdev@vger.kernel.org>,
- "open list:FRAMEBUFFER LAYER" <dri-devel@lists.freedesktop.org>,
- open list <linux-kernel@vger.kernel.org>
-Cc: Wolfram Sang <wsa+renesas@sang-engineering.com>,
- "open list:RADEON and AMDGPU DRM DRIVERS" <amd-gfx@lists.freedesktop.org>,
- "open list:INTEL DRM DISPLAY FOR XE AND I915 DRIVERS"
- <intel-gfx@lists.freedesktop.org>,
- "open list:INTEL DRM DISPLAY FOR XE AND I915 DRIVERS"
- <intel-xe@lists.freedesktop.org>,
- "open list:DRM DRIVER FOR NVIDIA GEFORCE/QUADRO GPUS"
- <nouveau@lists.freedesktop.org>,
- "open list:I2C SUBSYSTEM HOST DRIVERS" <linux-i2c@vger.kernel.org>,
- "open list:BTTV VIDEO4LINUX DRIVER" <linux-media@vger.kernel.org>
-References: <20240430173812.1423757-1-eahariha@linux.microsoft.com>
- <20240430173812.1423757-13-eahariha@linux.microsoft.com>
- <271ad513-0ea1-45df-ba0f-51582474ff34@suse.de>
-Content-Language: en-CA
-From: Easwar Hariharan <eahariha@linux.microsoft.com>
-In-Reply-To: <271ad513-0ea1-45df-ba0f-51582474ff34@suse.de>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.45.0.rc1.225.g2a3ae87e7f-goog
+Subject: [PATCH v2] perf test: Be more tolerant of metricgroup failures
+From: Ian Rogers <irogers@google.com>
+To: Veronika Molnarova <vmolnaro@redhat.com>, Peter Zijlstra <peterz@infradead.org>, 
+	Ingo Molnar <mingo@redhat.com>, Arnaldo Carvalho de Melo <acme@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Namhyung Kim <namhyung@kernel.org>, Ian Rogers <irogers@google.com>, 
+	Adrian Hunter <adrian.hunter@intel.com>, Athira Rajeev <atrajeev@linux.vnet.ibm.com>, 
+	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On 5/2/2024 3:46 AM, Thomas Zimmermann wrote:
-> 
-> 
-> Am 30.04.24 um 19:38 schrieb Easwar Hariharan:
->> I2C v7, SMBus 3.2, and I3C 1.1.1 specifications have replaced "master/slave"
->> with more appropriate terms. Inspired by and following on to Wolfram's
->> series to fix drivers/i2c/[1], fix the terminology for users of
->> I2C_ALGOBIT bitbanging interface, now that the approved verbiage exists
->> in the specification.
->>
->> Compile tested, no functionality changes intended
->>
->> [1]: https://lore.kernel.org/all/20240322132619.6389-1-wsa+renesas@sang-engineering.com/
->>
->> Signed-off-by: Easwar Hariharan <eahariha@linux.microsoft.com>
-> 
-> Acked-by: Thomas Zimmermann <tzimmermann@suse.de>
-> 
+Previously "set -e" meant any non-zero exit code from perf stat would
+cause a test failure. As a non-zero exit happens when there aren't
+sufficient permissions, check for this case and make the exit code
+2/skip for it.
 
-Thanks for the ack! I had been addressing feedback as I got it on the v0 series, and it seems
-I missed out on updating viafb and smscufx to spec-compliant controller/target terminology like
-the v0->v1 changelog calls out before posting v1.
+Acked-by: Namhyung Kim <namhyung@kernel.org>
+Signed-off-by: Ian Rogers <irogers@google.com>
+---
+v2. Add skip if event mode isn't valid in per-thread mode. Suggested
+    by Veronika Molnarova <vmolnaro@redhat.com>.
+---
+ .../perf/tests/shell/stat_all_metricgroups.sh | 36 +++++++++++++++----
+ 1 file changed, 30 insertions(+), 6 deletions(-)
 
-For smscufx, I feel phrasing the following line (as an example)
+diff --git a/tools/perf/tests/shell/stat_all_metricgroups.sh b/tools/perf/tests/shell/stat_all_metricgroups.sh
+index 55ef9c9ded2d..c6d61a4ac3e7 100755
+--- a/tools/perf/tests/shell/stat_all_metricgroups.sh
++++ b/tools/perf/tests/shell/stat_all_metricgroups.sh
+@@ -1,9 +1,7 @@
+-#!/bin/sh
++#!/bin/bash
+ # perf all metricgroups test
+ # SPDX-License-Identifier: GPL-2.0
+ 
+-set -e
+-
+ ParanoidAndNotRoot()
+ {
+   [ "$(id -u)" != 0 ] && [ "$(cat /proc/sys/kernel/perf_event_paranoid)" -gt $1 ]
+@@ -14,11 +12,37 @@ if ParanoidAndNotRoot 0
+ then
+   system_wide_flag=""
+ fi
+-
++err=0
+ for m in $(perf list --raw-dump metricgroups)
+ do
+   echo "Testing $m"
+-  perf stat -M "$m" $system_wide_flag sleep 0.01
++  result=$(perf stat -M "$m" $system_wide_flag sleep 0.01 2>&1)
++  result_err=$?
++  if [[ $result_err -gt 0 ]]
++  then
++    if [[ "$result" =~ \
++          "Access to performance monitoring and observability operations is limited" ]]
++    then
++      echo "Permission failure"
++      echo $result
++      if [[ $err -eq 0 ]]
++      then
++        err=2 # Skip
++      fi
++    elif [[ "$result" =~ "in per-thread mode, enable system wide" ]]
++    then
++      echo "Permissions - need system wide mode"
++      echo $result
++      if [[ $err -eq 0 ]]
++      then
++        err=2 # Skip
++      fi
++    else
++      echo "Metric group $m failed"
++      echo $result
++      err=1 # Fail
++    fi
++  fi
+ done
+ 
+-exit 0
++exit $err
+-- 
+2.45.0.rc1.225.g2a3ae87e7f-goog
 
-> -/* sets up I2C Controller for 100 Kbps, std. speed, 7-bit addr, host, 
-> +/* sets up I2C Controller for 100 Kbps, std. speed, 7-bit addr, *controller*, 
-
-would actually impact readability negatively, so I propose to leave smscufx as is.
-
-For viafb, I propose making it compliant with the spec using the controller/target terminology and
-posting a v2 respin (which I can send out as soon as you say) and ask you to review again.
-
-What do you think?
-
-Thanks,
-Easwar
-
->> ---
->>   drivers/video/fbdev/via/chip.h    |  8 ++++----
->>   drivers/video/fbdev/via/dvi.c     | 24 ++++++++++++------------
->>   drivers/video/fbdev/via/lcd.c     |  6 +++---
->>   drivers/video/fbdev/via/via_aux.h |  2 +-
->>   drivers/video/fbdev/via/via_i2c.c | 12 ++++++------
->>   drivers/video/fbdev/via/vt1636.c  |  6 +++---
->>   6 files changed, 29 insertions(+), 29 deletions(-)
->>
-
-<snip>
 
