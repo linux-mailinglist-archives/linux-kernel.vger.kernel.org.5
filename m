@@ -1,83 +1,79 @@
-Return-Path: <linux-kernel+bounces-166696-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-166697-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E79368B9E46
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 18:12:24 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2D80C8B9E48
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 18:13:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A39E928689E
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 16:12:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5B5521C20506
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 16:13:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2FD7215D5D1;
-	Thu,  2 May 2024 16:12:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1351115D5D6;
+	Thu,  2 May 2024 16:13:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Tt33j9UN"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=lwn.net header.i=@lwn.net header.b="kaAaIGbU"
+Received: from ms.lwn.net (ms.lwn.net [45.79.88.28])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68D1115B984;
-	Thu,  2 May 2024 16:12:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 44A9215359A;
+	Thu,  2 May 2024 16:13:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.79.88.28
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714666334; cv=none; b=lW9n5x+7XOxBatbXViLI9DvFu7MkyEWXz7KMVNZb3IEyCXyVENI2Wglw4klaFu4BJr2OoyNuCFhvjVkmBxbLp+MQhJrCb+E2S5RUMT2by/2IJV5yEWgJIXAfjYaCJFLVOAq54WmD2YJWxvgywMJbEEmn1S8jSJLDNvEkSX6WGl8=
+	t=1714666391; cv=none; b=bt7XuG5yohVYeRH/o7Ty4sI657roZ2oZx02C1h9tFCOZfDM5fzC6zxfC7BcrJ0zcyb1OEAAJOEhoeZ3pqY/yk7vsqsvw/0YkUYnkWZ7y9ntLe9CsOtlGVUCmLTYYJsYeB9ZFLqR70qWVvWO5r4r+GgS2JL4eDW/oneoB61mHlko=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714666334; c=relaxed/simple;
-	bh=fTdWNLWguxqx1+6cG3H0uL6VLl/ZYaZcqOAQFQE5u7o=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=mky+Ry4Ua22/D+cxNE+WwHp/105yTE8JLB3ti5CebMtxV6+RHHiaOZmO4BYMp5HN8cJuEdtEhSwRWO6/EfEeGi3AgC+w89tgGGtz1SsTJIT476UhP6/w2pu+h82qAt45T7rouplzGxWskEoiGVi8kc8mx7mAPcmbgVh6CuaM9OI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Tt33j9UN; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 157A9C113CC;
-	Thu,  2 May 2024 16:12:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714666334;
-	bh=fTdWNLWguxqx1+6cG3H0uL6VLl/ZYaZcqOAQFQE5u7o=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=Tt33j9UNaytVc/IkZzKn3kqACrEeVzjLs30io9rzvQPbk7NHF2iUuhp1D6sK9s2dQ
-	 PJHi379tXC2+rnb6XdaiCX6CaVku1VJFTP9s9zN+3GZ2QizddZ6f7qn8pycw8GqbDt
-	 OZpUKxQSvVByXUr0LDCIdeenmI5s5in2dk+27+wAt4HeyDg9R6GLAat2q/zC8J5/z4
-	 EpyehNuKQm0cUyWu1wcMSQkLZvkKldcTPaxN9l0CsEoO+lvw/8kQWq4FvmMRb6qp1v
-	 ERSPScgOJ/dnaQ/WW3HvBxWcrf8QZS+6NmURyodPBij7r07ClhtZzo0/+7rCffBI9q
-	 bzIAWThw4wiag==
-From: Lee Jones <lee@kernel.org>
-To: Bjorn Andersson <andersson@kernel.org>, 
- Konrad Dybcio <konrad.dybcio@linaro.org>, Lee Jones <lee@kernel.org>, 
- Rob Herring <robh@kernel.org>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Conor Dooley <conor+dt@kernel.org>, Stephen Boyd <sboyd@kernel.org>, 
- Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, 
- Luca Weiss <luca.weiss@fairphone.com>
-Cc: ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org, 
- linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, 
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-In-Reply-To: <20240412-pmi632-ppg-v2-1-8ac892b1bb61@fairphone.com>
-References: <20240412-pmi632-ppg-v2-1-8ac892b1bb61@fairphone.com>
-Subject: Re: (subset) [PATCH v2] dt-bindings: mfd: qcom,spmi-pmic: Add pbs
- to SPMI device types
-Message-Id: <171466633082.1186272.3467645518364735829.b4-ty@kernel.org>
-Date: Thu, 02 May 2024 17:12:10 +0100
+	s=arc-20240116; t=1714666391; c=relaxed/simple;
+	bh=3ftJAFzteXGUrfe+KMXY35rqWKZoRTdjLJlVvybiFH0=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=sLJtkghzRaaNsUXZIiWwE0nFk8ZXzntVow3OtWa+MPkcBNc20GPjNrwXKRBgogThx1cPHeYR0Pt1DG7UtYEtoNdUlSv6m8F+NFepRClm5RvxtjYEycXwW2TWDajQG7LpQVOaoZeaFsBlnzSNOidO6cpntojNuit9DTqOmvopdoY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lwn.net; spf=pass smtp.mailfrom=lwn.net; dkim=pass (2048-bit key) header.d=lwn.net header.i=@lwn.net header.b=kaAaIGbU; arc=none smtp.client-ip=45.79.88.28
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lwn.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lwn.net
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 5C7F247C39
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
+	t=1714666389; bh=3ftJAFzteXGUrfe+KMXY35rqWKZoRTdjLJlVvybiFH0=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=kaAaIGbUKdWbTUuTDlsr4IdH4JxM8p8ceGS2+/5tPCabcecisXJUCTNeg16WuPYtN
+	 CSnbMKnoc6WwU+WCxpHQPbYM5rPV8fKWf+n/aM24icKhqC2dH5TyrqLqa9YkFo0fPw
+	 7b10BXa+Yw3Zty59Y1tSup/KN1HZSkISMejiVSjBAC355it6HngZUiASHuoL/R1/Jy
+	 TMhxyu4JbobQ0PloddCM5asvKLXEo5oyg+Ept3fJl8cn90wfu/zUZxgcMWErI86Bsw
+	 OAImw71TfOzeL5278AKJe5c73e7JViCHUMG4XQi83SJWZJizSvzCs1VhCRi4gwGrSc
+	 dJN8z3KSSXGSA==
+Received: from localhost (unknown [IPv6:2601:280:5e00:625::1fe])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by ms.lwn.net (Postfix) with ESMTPSA id 5C7F247C39;
+	Thu,  2 May 2024 16:13:09 +0000 (UTC)
+From: Jonathan Corbet <corbet@lwn.net>
+To: Thorsten Leemhuis <linux@leemhuis.info>, Greg Kroah-Hartman
+ <gregkh@linuxfoundation.org>, Sasha Levin <sashal@kernel.org>
+Cc: stable@vger.kernel.org, workflows@vger.kernel.org,
+ linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 0/5] docs: stable-kernel-rules: fine-tuning and 'no
+ stable backport' tag
+In-Reply-To: <cover.1714367921.git.linux@leemhuis.info>
+References: <cover.1714367921.git.linux@leemhuis.info>
+Date: Thu, 02 May 2024 10:13:08 -0600
+Message-ID: <87jzkc6vl7.fsf@meer.lwn.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Mailer: b4 0.12.4
+Content-Type: text/plain
 
-On Fri, 12 Apr 2024 16:22:53 +0200, Luca Weiss wrote:
-> Add the PBS (Programmable Boot Sequencer) to the list of devices.
-> 
-> 
+Thorsten Leemhuis <linux@leemhuis.info> writes:
 
-Applied, thanks!
+> After a recent discussion regarding "do we need a 'nobackport' tag" I
+> set out to create one change for stable-kernel-rules.rst. This is now
+> the last patch in the series, which links to that discussion with
+> all the details; the other stuff is fine-tuning that happened along the
+> way.
 
-[1/1] dt-bindings: mfd: qcom,spmi-pmic: Add pbs to SPMI device types
-      commit: a1f3b5edaf18b1c71a537032c4a6537bde2ad5e9
+I've applied the set, thanks.
 
---
-Lee Jones [李琼斯]
-
+jon
 
