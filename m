@@ -1,131 +1,83 @@
-Return-Path: <linux-kernel+bounces-166550-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-166551-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 99EBE8B9C2B
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 16:16:58 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id C3C9E8B9C39
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 16:25:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D32FAB21459
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 14:16:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 774E71F21364
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 14:25:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49F6713C808;
-	Thu,  2 May 2024 14:16:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 24E3613C80D;
+	Thu,  2 May 2024 14:25:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EqTJTRH5"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dAzJalcK"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8376413C687;
-	Thu,  2 May 2024 14:16:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67DC4152788;
+	Thu,  2 May 2024 14:25:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714659406; cv=none; b=SjFkkO28eG2Mx0DLFRA7Dj/W7hm0hbxMT2Ybg7Mh4n5zWfwWWajK7fFh61PRNIpjG2W6BVLtBDZapmmv1R+KWhEjY6RjmkDYPf9qhTCn2YUibfnlDIUYNK7mskSs/OW2OKSEHzX4vhrrLy7eMEhhb9lbqDnzGT7qKCqRYoIfvSk=
+	t=1714659943; cv=none; b=oDp9MMl5pYqqlkxaXM4809a96sslEckD5/tSokn3GOmiSRfVIXb7NecPBIYlU0OSQwRqfdEj5Uxd6uc+a5iTV4yAR/GmvqGLfHFDwzDnznukxWElb2Mykm71LuqTN8Au88AjQdjZxOfTLa0I/QmStlS+FNgD+4Ko0rpbSoPcyeE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714659406; c=relaxed/simple;
-	bh=3RBBOW+rshzFs1S3SAZzaRZ3GGcmNPFboYktTF3HBj4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ooUbex0A/FUOPVz+d6o/JE4t2xpdf6pBwRijaChrfVMiHCMqcWjENlQCX3i5na7AeWHU2XWi+Q3PSyMrB22NolW1rXTt1YUT+7rewei79UPPcHKJ0ADwDmdzq4Eh0N/IxMZrpRFjsEifTDkWW9sjKO/Xkm78hY5LpCgrfxjfl3M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EqTJTRH5; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 263BBC113CC;
-	Thu,  2 May 2024 14:16:42 +0000 (UTC)
+	s=arc-20240116; t=1714659943; c=relaxed/simple;
+	bh=oiao4TXlXK5TsFP1Fh+N2TWYYYhrR0A4blK5ja4oXvk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=TqqeLERteZL5AqXYL1DihDlA56+3aX/nnX5eMG8wzNYTKXvr9cXEvxL6HXHqysmHJeVp0tjWJqNlTZ/CQRKaSQxPcS7cI2DpfdO34OSEtEfkZk0MaSudmtpbOlsqP3xSfu4tR1jswNcpPGFdZXRRGamLmiU5xAQPgEagzr6y9iI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dAzJalcK; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F0328C113CC;
+	Thu,  2 May 2024 14:25:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714659406;
-	bh=3RBBOW+rshzFs1S3SAZzaRZ3GGcmNPFboYktTF3HBj4=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=EqTJTRH5D7Xwct54c7wXhOGl6mIORyt9dYdzyFTzjsNRBhNN6K7hwxn6ENfiFWxBh
-	 A+0h4J2DIzSO6O9hPblsM4jUGVTfTVawxnJB96G3DVjW2soPc070qxDvvnGTuJ5B2C
-	 +1fQ+abMQ6nUd4iXXyBNdJJ7tRnsLtU6aO1OSGXQ/6piKfwNI+VocTeKwGofnCqF06
-	 RYeBqrmg3cgGFMtbzGm73uIZKc/GGPeMiuXNajZM0ooWsETueeVEetXdr+mSgORUqO
-	 JX4T6W5SGtYp3bumSRbw1tdUyRObERvmrAbgQ4cp0hcEBDoU5NiyOmVoEHfzDobhSB
-	 /3coG9WF5D7gw==
-Message-ID: <b0c9aa87-ae84-4979-b26b-8fd0579c5f08@kernel.org>
-Date: Thu, 2 May 2024 16:16:41 +0200
+	s=k20201202; t=1714659942;
+	bh=oiao4TXlXK5TsFP1Fh+N2TWYYYhrR0A4blK5ja4oXvk=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=dAzJalcKX4diwfIOgGoLZvmrhpPg0IYEPC0w/F+BK6OHlU2xuKBZqICiytS/PgQaX
+	 UmIjttq9jGIBz6gmTZvawJNepUOFJZ17+y0NnBtY4t8NvDaDV9MxQnsJIfDdfsBXjo
+	 X4GqzZMDd1iOQ8dP8kOi1K/s00Va4mSurxUjHkZ70WdAFRHBIHHC7H75p1N1vzwfin
+	 4TPfyRfbRYB8QoG1eclrKybT3XkzX/9m7Brc2Z+lkUUte0PgIpxqq16VjnjY++YiFs
+	 dJogNYqj2dPInoMbtmon+ivHmao9sByS9CrOAsKihIMzbt4eb1IcavbH8nTv90/hmM
+	 3JLC4AgclnWBw==
+Date: Thu, 2 May 2024 11:25:38 -0300
+From: Arnaldo Carvalho de Melo <acme@kernel.org>
+To: Namhyung Kim <namhyung@kernel.org>
+Cc: Ian Rogers <irogers@google.com>, Kan Liang <kan.liang@linux.intel.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+	linux-perf-users@vger.kernel.org
+Subject: Re: [PATCHSET 0/6] perf annotate-data: Small updates in the data
+ type profiling (v1)
+Message-ID: <ZjOiYjxrdxnw5CuM@x1>
+References: <20240502060011.1838090-1-namhyung@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/2] spi: spi-cadence: Add optional reset control
- support
-To: Ji Sheng Teoh <jisheng.teoh@starfivetech.com>,
- Mark Brown <broonie@kernel.org>, Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley
- <conor+dt@kernel.org>, Philipp Zabel <p.zabel@pengutronix.de>,
- Michal Simek <michal.simek@amd.com>, Lars-Peter Clausen <lars@metafoo.de>
-Cc: Ley Foon Tan <leyfoon.tan@starfivetech.com>, linux-spi@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- Eng Lee Teh <englee.teh@starfivetech.com>
-References: <20240502104800.3030486-1-jisheng.teoh@starfivetech.com>
- <20240502104800.3030486-2-jisheng.teoh@starfivetech.com>
-From: Krzysztof Kozlowski <krzk@kernel.org>
-Content-Language: en-US
-Autocrypt: addr=krzk@kernel.org; keydata=
- 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 fv0=
-In-Reply-To: <20240502104800.3030486-2-jisheng.teoh@starfivetech.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240502060011.1838090-1-namhyung@kernel.org>
 
-On 02/05/2024 12:47, Ji Sheng Teoh wrote:
->  
->  /* Macros for the SPI controller read/write */
-> @@ -588,6 +591,16 @@ static int cdns_spi_probe(struct platform_device *pdev)
->  		goto remove_ctlr;
->  	}
->  
-> +	xspi->rstc = devm_reset_control_get_optional_exclusive(&pdev->dev, "spi");
-> +	if (IS_ERR(xspi->rstc)) {
-> +		ret = PTR_ERR(xspi->rstc);
-> +		dev_err(&pdev->dev, "Cannot get SPI reset.\n");
+On Wed, May 01, 2024 at 11:00:05PM -0700, Namhyung Kim wrote:
+> Hello,
+> 
+> This is a mix of bug fixes and optimization in the data type profiling.
+> 
+> Firstly it now caches global variables and looks them up by address later.
+> This will be good for performance as well as improves the success rates
+> because some variables are defined in a separate file (compile unit) and
+> has no info in the call site for some reason.
+> 
+> Also it properly checks instructions that use more than one register for
+> a memory access like x86 SIB addressing.  And check the type of stack
+> variables correctly and discard constant values (without type info).
 
-Please switch to:
-ret = dev_err_probe()
+Applied locally, doing build tests.
 
-Best regards,
-Krzysztof
-
+- Arnaldo
 
