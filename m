@@ -1,124 +1,156 @@
-Return-Path: <linux-kernel+bounces-166227-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-166229-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DE34D8B97CC
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 11:32:36 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E85308B97D1
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 11:33:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1B0971C224F9
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 09:32:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A01DF286432
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 09:33:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F12554FA1;
-	Thu,  2 May 2024 09:32:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52A7756459;
+	Thu,  2 May 2024 09:32:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="K8xJ0qLi"
-Received: from mail-lj1-f180.google.com (mail-lj1-f180.google.com [209.85.208.180])
+	dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b="DwXyx+W+"
+Received: from mail-ot1-f50.google.com (mail-ot1-f50.google.com [209.85.210.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09CD7537FF;
-	Thu,  2 May 2024 09:32:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 275E456440
+	for <linux-kernel@vger.kernel.org>; Thu,  2 May 2024 09:32:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714642347; cv=none; b=SysyLWEwOm1vbw3yXNUARi7GcrvaBmdDHMlG5qyzJX8nboBnlGM00p/C1V9DJOVAR4B683YkK+ZlrnWqq4MBEYJGVkT91R/t3jNrjtFtOhfIO/xwm+76PbZAYeIlpXauc2b/WGMO+U3z/nbqYkLQMLoFukEwX6Wx5MqMGTxGekQ=
+	t=1714642369; cv=none; b=SgbgNxlaqwbI1Qs/EGpXeaMlB2GNJzeaQ1uWQcQOHvz7QpiHXmcKRUlBP5zbLRYeW/IQiFHAkBDIBJIeY1xG3Dd9tNqSVnW47rUSY7UK/09xlV2Y9zvzk8Mx2O8liZ8upOFhMCKtOYre514dMw/150o6gm8Z6zYIK/NvZxOSDlE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714642347; c=relaxed/simple;
-	bh=Z3lZtPpMKSUcjo/JnGTaHgDn+jnpLLkH19fhzoM/SDs=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Pj+Tv8Tsdkli5KaTdqtrc5RpFdj76xYnuJUxbUUVFvR8VuiOiw3zi/TuHee5/3ILVzcw/QrpHd5yzMEIugX1O4JUy3o1YqnVOuoCuiLG25R2RQNQbzL0H04L1UPHEpDrMBRcIrZf0F4r1UidZQ6zyPtlnZZJ17vILHenJfaqb84=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=K8xJ0qLi; arc=none smtp.client-ip=209.85.208.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f180.google.com with SMTP id 38308e7fff4ca-2db7c6b5598so100166761fa.1;
-        Thu, 02 May 2024 02:32:25 -0700 (PDT)
+	s=arc-20240116; t=1714642369; c=relaxed/simple;
+	bh=+KdPWEN16wQ9Tm9ok2b58EnczYYvk8kPtRWjVxLHs/Y=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=H1uStz136EMRsjEHwR6JV5GT63arkfBcFww0cc9ajm4kY0NgYPw/Wyvy+uRPwCbN4SnNSd2TvT9KSkBrQ81stAVaMeczYGdVMI80H3f0a+n+gMQfdqpGJ+e+qL1+N+d4kX4ygmcLRJZIDdFGi0FzXog2+eRU3Gc7jJSFmo1k08M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com; spf=pass smtp.mailfrom=ventanamicro.com; dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b=DwXyx+W+; arc=none smtp.client-ip=209.85.210.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ventanamicro.com
+Received: by mail-ot1-f50.google.com with SMTP id 46e09a7af769-6ee4dcc4567so2188327a34.3
+        for <linux-kernel@vger.kernel.org>; Thu, 02 May 2024 02:32:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714642344; x=1715247144; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Z3lZtPpMKSUcjo/JnGTaHgDn+jnpLLkH19fhzoM/SDs=;
-        b=K8xJ0qLiDX2qerX84o7tbYH3MY6PiJtLpQcTYpOf14FFoWHUbYQvUzdXFPW/rDk6wm
-         lcY99v7Le15UG+6DTT0AMz6YB8ki/wLcPruRoSBOflueI6IDADnPQmaJrX14reWxcLe5
-         Wwvaf11k6b/D3y0qS+FYGgrP9rjbw5ZE/LO9+ZAw1vWcKEH+9rCGkXR1Xx8p0iTZdwvg
-         FATorODRVm7uypaiYwcdjepeGlolvmUigVatdvyOg/Gn8aWVO9uoUSCqbpDOX5kjyRog
-         05VD8lTufIe3uMrdX9cLitJbTeamSTRhj+4Q3TpJd2twviiyLccJmLGJRAczD94Xyafo
-         fXiw==
+        d=ventanamicro.com; s=google; t=1714642367; x=1715247167; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=FvW/lnO7fBno/xaBzZIt3Emz2T8DvtxIkgq7/bGwou8=;
+        b=DwXyx+W+pWfnM9wYHa72GjpVprpdBGam9RpvSG9+9kkamynTrgG5bloqc3+pk9W2tq
+         sskWEAHuVKxFm0TbNw1gMKZM91SNaivjTutAcvLnPpj/Ss9Bc+LVEpKrwvGv7ZKG0W1v
+         eNFVjAonGFfNW4CsybtnpF7Bs4L2e6P0cQHH24bP6kcWwDjugSA6nAUkDh2AmFilv7JA
+         nDaST58oFc5APPG4Ej5fWXalQCqYdfKjYvXb3SqgY7sNR0+Ho1OpfO2XdLsCAHGkXtAC
+         UIo29DH2UbgWh17At3cNeflKxUomjy9j0peZjL5/x2l3ms4dd3gY7SzNLtwT1zOMVUhb
+         Ii5Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714642344; x=1715247144;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Z3lZtPpMKSUcjo/JnGTaHgDn+jnpLLkH19fhzoM/SDs=;
-        b=oi0xAE+mxUITTNO2ejNqY7AyVQW9GlPyXFi7BCblsDHXPYmIw3KZpbMPPiQ0rCXGyl
-         wQ/dgo+HpNkDUccXkEKBhvp0FLCFsUde71RJSJLOYkyeS0uuxBH6qsIQQ8XJ9v/UXsqJ
-         Xo5/GBFehEZInZtGhTNj+zs2Sj5HkwwI6mGCKxGaMKWdTQ8e8QvBxl+eo2TF7L495Wfx
-         DRzHIGoqOrnCeUyXB0LV0KH4oJDh5BX8V0J6brEYT/Tqv5UD3ieliREagywrCcsv8PTK
-         uC+Z5dPyhKO3WqEBJV/20SaxD3N+JbxZGHR+ESNyfEzncMO4hWYm0j1AdmgTh0BKCYmj
-         mMRA==
-X-Forwarded-Encrypted: i=1; AJvYcCXdUvSNoJoS4lZoutAhOhWP9qR0E0ql/vYguNV9kqumjr86UbFrZ7gsJ2RhP9+MAG9TinjMNK2Fk6VgXuwxrZHoKZYEp85FYWM+01qrfk82UYwJBmLr1hYttpL5A4lU2sfYso9yGrO5EtGj6Q==
-X-Gm-Message-State: AOJu0YyMp5oZhbTwkbcHTuwSTlbfL2UkjaoX6IpW+Zl1owDWJyIlj9Jw
-	rpyrskRdJ2TIIJJytTQlC07HGsVJ95MqyUQvyZCBrh1iIU383rGXjS45BlkZGFTi7QTU9aNCZrH
-	BTRjNN53dMVqcPUbfurIhYNd6F7o=
-X-Google-Smtp-Source: AGHT+IGCzOhkTfJRi4C5pjOm7iTIkpXmJVWJcWAimRSBIoNi/DSth1zP+hvlFVbxsvIwktZfamO0hBQVH3TYe+RbVkk=
-X-Received: by 2002:a2e:950e:0:b0:2d8:57a4:968d with SMTP id
- f14-20020a2e950e000000b002d857a4968dmr2959202ljh.12.1714642343841; Thu, 02
- May 2024 02:32:23 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1714642367; x=1715247167;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=FvW/lnO7fBno/xaBzZIt3Emz2T8DvtxIkgq7/bGwou8=;
+        b=X7RO/KZL7pm4YxmVVtQhyXlRRaEHGxhqccXDvCah6TIiGywn41+x3H3/+JqXWnRWh1
+         2V/9+JOkMEfuNLIaXVJQeRVCdMuSOKuhvaZ95TAJAWrn8qmoOb8QOr/oe1MVcToJ2p14
+         gB4ADSaGTOxtQiKjZn7OHvrJzA1X2d09I94uiLJJZfgKiJKkzL1lPRqkwp2NdKZpFkEp
+         P2eKUaW0/u3/rKstmr6EU0IwA8WB6wuOxpMQEuobQn3IYVNwWPRaHiL/nENf4/IedH5P
+         x1fjpGN5CVIjQ7Iv+i7DVSzQBl4Ss7urmFomMCqPfR5S1k7bVTqVyETdBulpJ6uINhJC
+         64vQ==
+X-Forwarded-Encrypted: i=1; AJvYcCV0rw3KPqQ7MNj5aqIAu4ofPeOlrX0ctL70Ykar1+I9Ws/CyHqtnAP1by/Y+2h0DAkz1eOZwfqIRZj7+cn8k++SAOVCFQeJxNM7Zub6
+X-Gm-Message-State: AOJu0Yw6c2TsN7u6RIl16l8ESFl0kw3OSknB7b8vaJFsGZ6Dv0+X72z7
+	RtIN2mCEoyElrZvIPe8w4yd6qlm9BGt04+Ww24HZz4Rsg1HznXaib+UbiTxcrnk=
+X-Google-Smtp-Source: AGHT+IF4b+lPGskb1gHK2IpUgfNkpEMYBXho2rUofukPTZVb0za3mVEu5Rsh7KTHfVzjAbIKdeiEtg==
+X-Received: by 2002:a05:6359:4c9e:b0:18f:673e:fce2 with SMTP id kk30-20020a0563594c9e00b0018f673efce2mr6283164rwc.6.1714642367069;
+        Thu, 02 May 2024 02:32:47 -0700 (PDT)
+Received: from sunil-laptop ([106.51.190.19])
+        by smtp.gmail.com with ESMTPSA id l25-20020a63ba59000000b0060795a08227sm692025pgu.37.2024.05.02.02.32.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 02 May 2024 02:32:46 -0700 (PDT)
+Date: Thu, 2 May 2024 15:02:33 +0530
+From: Sunil V L <sunilvl@ventanamicro.com>
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Bjorn Helgaas <helgaas@kernel.org>,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	linux-riscv@lists.infradead.org, linux-acpi@vger.kernel.org,
+	linux-pci@vger.kernel.org, linux-serial@vger.kernel.org,
+	acpica-devel@lists.linux.dev,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	"Rafael J . Wysocki" <rafael@kernel.org>,
+	Len Brown <lenb@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+	Anup Patel <anup@brainfault.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Samuel Holland <samuel.holland@sifive.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Jiri Slaby <jirislaby@kernel.org>,
+	Robert Moore <robert.moore@intel.com>,
+	Conor Dooley <conor.dooley@microchip.com>,
+	Andrew Jones <ajones@ventanamicro.com>,
+	Marc Zyngier <maz@kernel.org>,
+	Atish Kumar Patra <atishp@rivosinc.com>,
+	Andrei Warkentin <andrei.warkentin@intel.com>,
+	Haibo1 Xu <haibo1.xu@intel.com>,
+	=?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
+Subject: Re: [PATCH v5 08/17] ACPI: pci_link: Clear the dependencies after
+ probe
+Message-ID: <ZjNdsWP46su9drAK@sunil-laptop>
+References: <20240501121742.1215792-9-sunilvl@ventanamicro.com>
+ <20240501165615.GA758227@bhelgaas>
+ <ZjNcDyLRm9c7BAi3@smile.fi.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240502084609.28376-1-ryncsn@gmail.com> <20240502084939.30250-4-ryncsn@gmail.com>
- <7636ada9-fdf0-4796-ab83-9ac60a213465@redhat.com>
-In-Reply-To: <7636ada9-fdf0-4796-ab83-9ac60a213465@redhat.com>
-From: Kairui Song <ryncsn@gmail.com>
-Date: Thu, 2 May 2024 17:32:07 +0800
-Message-ID: <CAMgjq7CD=r9TP4PSe2MqR=r-+PnMB-N6yYbFRr9U=B5ZBvTPtA@mail.gmail.com>
-Subject: Re: [PATCH v4 11/12] mm: drop page_index and convert folio_index to
- use folio
-To: David Hildenbrand <david@redhat.com>
-Cc: linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>, 
-	"Huang, Ying" <ying.huang@intel.com>, Matthew Wilcox <willy@infradead.org>, Chris Li <chrisl@kernel.org>, 
-	Barry Song <v-songbaohua@oppo.com>, Ryan Roberts <ryan.roberts@arm.com>, Neil Brown <neilb@suse.de>, 
-	Minchan Kim <minchan@kernel.org>, Hugh Dickins <hughd@google.com>, 
-	Yosry Ahmed <yosryahmed@google.com>, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZjNcDyLRm9c7BAi3@smile.fi.intel.com>
 
-On Thu, May 2, 2024 at 5:12=E2=80=AFPM David Hildenbrand <david@redhat.com>=
- wrote:
->
-> On 02.05.24 10:49, Kairui Song wrote:
-> > From: Kairui Song <kasong@tencent.com>
-> >
-> > There are two helpers for retrieving the index within address space
-> > for mixed usage of swap cache and page cache:
-> >
-> > - page_index
-> > - folio_index (wrapper of page_index)
-> >
-> > This commit drops page_index, as we have eliminated all users, and
-> > converts folio_index to use folio internally.
->
-> The latter does not make sense. folio_index() already is using a folio
-> internally. Maybe a leftover from reshuffling/reworking patches?
+On Thu, May 02, 2024 at 12:25:35PM +0300, Andy Shevchenko wrote:
+> On Wed, May 01, 2024 at 11:56:15AM -0500, Bjorn Helgaas wrote:
+> > On Wed, May 01, 2024 at 05:47:33PM +0530, Sunil V L wrote:
+> > > RISC-V platforms need to use dependencies between PCI host bridge, Link
+> > > devices and the interrupt controllers to ensure probe order. The
+> > > dependency is like below.
+> > > 
+> > > Interrupt controller <-- Link Device <-- PCI Host bridge.
+> > > 
+> > > If there is no dependency added between Link device and PCI Host Bridge,
+> > > then the PCI end points can get probed prior to link device, unable to
+> > > get mapping for INTx.
+> > > 
+> > > So, add the link device's HID to dependency honor list and also clear it
+> > > after its probe.
+> > > 
+> > > Since this is required only for architectures like RISC-V, enable this
+> > > code under a new config option and set this only in RISC-V.
+> 
+> ...
+> 
+> > > +	if (IS_ENABLED(CONFIG_ARCH_ACPI_DEFERRED_GSI))
+> > > +		acpi_dev_clear_dependencies(device);
+> > 
+> > This is really a question for Rafael, but it doesn't seem right that
+> > this completely depends on a config option.
+> 
+> +1 here, fells like a hack and looks like a hack.
+> 
+I can remove the config option. I just thought this would probably never
+required to be called on other architectures.
 
-Hi, David,
+Unless there is an objection, I will remove it in next version.
 
-folio_index calls swapcache_index, and swapcache_index is defined as:
-
-#define swapcache_index(folio) __page_file_index(&(folio)->page)
-
-Where it casts the folio to page first, then call __page_file_index,
-__page_file_index is a function and works on pages.
-
-After this commit __page_file_index is converted to
-__folio_swap_cache_index. This change is a bit of trivial but we get
-rid of the internal page conversion.
-
-I can simplify the commit message, just say drop page_index to make
-the code cleaner, if this is confusing.
+Thanks!
+Sunil
+> > Is there a reason this wouldn't work for all architectures, i.e., what
+> > would happen if you just called acpi_dev_clear_dependencies()
+> > unconditionally?
+> 
+> -- 
+> With Best Regards,
+> Andy Shevchenko
+> 
+> 
 
