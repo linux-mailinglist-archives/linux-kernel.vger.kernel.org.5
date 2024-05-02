@@ -1,85 +1,73 @@
-Return-Path: <linux-kernel+bounces-166663-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-166664-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 939D58B9DC1
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 17:48:20 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 815B08B9DC3
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 17:48:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 345FC1F226AB
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 15:48:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3890A1F2246E
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 15:48:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0EFAC15B96A;
-	Thu,  2 May 2024 15:48:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EDEA915B968;
+	Thu,  2 May 2024 15:48:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DaWTB9xc"
-Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="cWNrz1KP"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 24A372B9AC;
-	Thu,  2 May 2024 15:48:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 877F52B9AC;
+	Thu,  2 May 2024 15:48:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714664891; cv=none; b=tNtHmU+4PnOrF756zJQLhV+V8VSOKTXaJ973aAAXTR4rkZNOnpNZOwx2QDddtGNursPRp6SCMjMk+0bybghBUPouJKo9Z6+1HozyFMLIcU6sMFv9dV2q1q5icU6GqYIvYcD3j2E+ecBNzCa1ryXR3ERRCmvlVwAz7sdCt1WS/0Q=
+	t=1714664911; cv=none; b=eF+9oWTvPty2C7gJz2q8aHWGbLCNbgLMljLXpY/8bF2FihAb6uj0/7WuyvMPJB7AIw+PdTVwTewFFWZOrtmjoCtV58NdC/pcoMP2DFvNhn0ljZO55Rcs2UhThA/XoyGJomzWSoj458Nlnct57kzyUyAcnJrBOLYRGMk4OV3DL3c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714664891; c=relaxed/simple;
-	bh=qbKd3LLCI57a+tE0ERwDo29E4IaS4mh82bdDEQ7k2N8=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=TwiyC+PoOcplLed8eZmrLosHfSGE2uUvHE3hbSU63pgu28MAlUDcHlRhA5MhIx3Ie1yZKOgGVT7SDrPcpKyrzS30iEbm4a15x75NgNqjUna6GMUI9V57fCgrVOAzGs2q7pa1B+liN6oi9FqWz+/bpAdZVUAmLh4KvRpnUV1KThU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DaWTB9xc; arc=none smtp.client-ip=209.85.214.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-1eab16c8d83so66498265ad.3;
-        Thu, 02 May 2024 08:48:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714664888; x=1715269688; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=aTAQjbijSTWQEIaV5ybn91TeLBRSNY5y14qQhGJREA4=;
-        b=DaWTB9xcMnxlwKwvdCUk952Ugr6rbPu95alzA/vT2ifYRHZ1uqk32eZxb9zRRg3TE0
-         i/sv2cVgT5pDHKU0k98n9isADdTpBGq/UHZOL6Nbtp1fT8qQK8jgIoW8LWkr3WBVWP0a
-         50M3hWSDNcBfMJSzG3AIp7WZztY/raBKqezr5B9MwhMr/ZQzikIb8G5y72FDDc6XoTzx
-         6zOOOmNX6ASJAtU0WKQiqtc8xv3q/C6hVIgHe7c6pSsYTYlzsnCxxEq3AlFi0t1KXJdJ
-         0zZCaRUqZrWxw1QVZf22eoyZLuL3B9M8qEta11IbSA1AtPlrOuE7HnMObnGIqqbJYljU
-         wjfg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714664888; x=1715269688;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=aTAQjbijSTWQEIaV5ybn91TeLBRSNY5y14qQhGJREA4=;
-        b=nSuTtFTAE16/E+hmdol21fDsHHWTS9XRL0odZNXraKsSUKtiIbC+dVxGfR7Oi/miPh
-         80NQ84SvMVzDi/KN9mo56V99PzMQb8kAdP3Hz9xYGMOFn8DC7vwXObKJk3rx0RTUpaKE
-         pFSczpGABgwz6UAayOdB6q9f/N/S7jwtaxqdVyy9SZEwbvSvU5a1zSiqGhU8A8vni/j+
-         /3MvWoX0c7bytpML2P2zO+O1jZfDlwI5M7+vgETytPHuhPojpHneHo+rZACADgkiZcJi
-         pbshm1L/TaHzwn9LzrhDbzFmgdAlvtraRYKUwpWG4NbcChNH09laKY1fiyjJbujK8w3m
-         zCFA==
-X-Forwarded-Encrypted: i=1; AJvYcCWDAXfGBUnl/sG4+M1iRKhM1YoXXaFeWXWUokeZ8x/deLUQIoHhg0oNGzTOzo1pj6imcj5Re2GOWRCHd2eowEDUWGCOFIcihfU3FZ0XDxyZGMEvnzDqZ80GITJWVyuyGSCTdBH/
-X-Gm-Message-State: AOJu0Yyjz9T7nfzLEdlGFacqu4aqWl47hTARhzPGcRRjbDKvHhek4qOI
-	JIiw5ZK0GgzOLwA1HR/wRnbAy8tsj+wJptLb3ODc8mU05AafhicjrEU5gUaP
-X-Google-Smtp-Source: AGHT+IHFKR+2377FgewQ5mX0wr3nAgIqcgoXRyZhHHK8o9Fxa/Hv0+zZZzctwgGBp5i17PRvQ2SUVQ==
-X-Received: by 2002:a17:902:b706:b0:1e4:346e:74d8 with SMTP id d6-20020a170902b70600b001e4346e74d8mr19930pls.61.1714664888380;
-        Thu, 02 May 2024 08:48:08 -0700 (PDT)
-Received: from fourcolor-Home.. ([203.121.254.74])
-        by smtp.gmail.com with ESMTPSA id jv13-20020a170903058d00b001eb5a81f688sm1456502plb.221.2024.05.02.08.48.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 May 2024 08:48:08 -0700 (PDT)
-From: Shi-Sheng Yang <fourcolor4c@gmail.com>
-To: matttbe@kernel.org,
-	martineau@kernel.org,
-	davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com
-Cc: geliang@kernel.org,
-	netdev@vger.kernel.org,
-	mptcp@lists.linux.dev,
-	linux-kernel@vger.kernel.org,
-	Shi-Sheng Yang <fourcolor4c@gmail.com>
-Subject: [PATCH] [PATCH v2 net-next] mptcp: fix typos in comments
-Date: Thu,  2 May 2024 23:47:40 +0800
-Message-Id: <20240502154740.249839-1-fourcolor4c@gmail.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1714664911; c=relaxed/simple;
+	bh=l8doLW7JZkb1sxmzvSfab3CJDXy17ExrejxpBzOo1xw=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=l3LPX9n+FRwxw5helPits/XvLI9jjMvERFkibaaOliLYXyvkeDkIhXGW8HdDbc3HonkT/NihVvARVATmu1BpQzqXIE6cgQBv9BfLJjH0dcJJMnWCswe1ENZNDNhp3ED2HGCZmE3umSxTYl1cspcqQ9QVcypWhJ5CnqoWJOl4wpw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=cWNrz1KP; arc=none smtp.client-ip=192.198.163.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1714664909; x=1746200909;
+  h=from:to:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=l8doLW7JZkb1sxmzvSfab3CJDXy17ExrejxpBzOo1xw=;
+  b=cWNrz1KPJMDso+5qKebgowx5zpK9QNQa/wtujgCjokVtL8AgmxDlvhJt
+   V4CkzY1M6PCDZPrzDn/aPCIR4p0pMexqy8BIibZTswHMF+BARq2pjjM4L
+   PUIRlS4He/B2FFWcUMNaC6pbiPj1yWHxx5CuoQ107vTCo4nOi0ObGNq/G
+   +TFRGSnZBWm3TfK0fR/DDKtV7sTQVCGvu4MeT4Zhnvq/Oq0+dpdApnSwf
+   6mB/svv9Y1KyT8PmlH/UnLG9JKEO9vhCm1Sxy3Z1LlU9J6aaCndWqE6Mq
+   zBzOnmSmLly+uIONvjrN2qB1fwt7qqiRQK8qj9cgkM4Wn0jdinc+5ydNG
+   w==;
+X-CSE-ConnectionGUID: Iv1oFcqGTOCbsGOXw3EWhA==
+X-CSE-MsgGUID: MJmHhWyaSpWE7rv1b/TpuQ==
+X-IronPort-AV: E=McAfee;i="6600,9927,11062"; a="21057059"
+X-IronPort-AV: E=Sophos;i="6.07,247,1708416000"; 
+   d="scan'208";a="21057059"
+Received: from orviesa002.jf.intel.com ([10.64.159.142])
+  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 May 2024 08:48:28 -0700
+X-CSE-ConnectionGUID: yr+IKKKyRca2WYTbxD+g8g==
+X-CSE-MsgGUID: fQWcwUbnSLGdVW6ax+8q4Q==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,247,1708416000"; 
+   d="scan'208";a="58043493"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by orviesa002.jf.intel.com with ESMTP; 02 May 2024 08:48:28 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+	id 2BBA2161; Thu,  2 May 2024 18:48:25 +0300 (EEST)
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+	Mark Brown <broonie@kernel.org>,
+	=?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
+	linux-spi@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v1 1/1] spi: bitbang: Use NSEC_PER_*SEC rather than hard coding
+Date: Thu,  2 May 2024 18:48:25 +0300
+Message-ID: <20240502154825.2752464-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.43.0.rc1.1336.g36b5255a03ac
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -88,40 +76,37 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-This patch fixes the spelling mistakes in comments.
-The changes were generated using codespell and reviewed manually.
+Use NSEC_PER_*SEC rather than the hard coded value of 1000s.
 
-eariler -> earlier
-greceful -> graceful
-
-Signed-off-by: Shi-Sheng Yang <fourcolor4c@gmail.com>
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
- net/mptcp/subflow.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/spi/spi-bitbang.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/net/mptcp/subflow.c b/net/mptcp/subflow.c
-index 97ec44d1df30..0ac8d4850751 100644
---- a/net/mptcp/subflow.c
-+++ b/net/mptcp/subflow.c
-@@ -911,7 +911,7 @@ static struct sock *subflow_syn_recv_sock(const struct sock *sk,
+diff --git a/drivers/spi/spi-bitbang.c b/drivers/spi/spi-bitbang.c
+index a0e2204fc039..c11af39c9842 100644
+--- a/drivers/spi/spi-bitbang.c
++++ b/drivers/spi/spi-bitbang.c
+@@ -11,6 +11,7 @@
+ #include <linux/errno.h>
+ #include <linux/platform_device.h>
+ #include <linux/slab.h>
++#include <linux/time64.h>
+ 
+ #include <linux/spi/spi.h>
+ #include <linux/spi/spi_bitbang.h>
+@@ -168,8 +169,8 @@ int spi_bitbang_setup_transfer(struct spi_device *spi, struct spi_transfer *t)
+ 	if (!hz)
+ 		hz = spi->max_speed_hz;
+ 	if (hz) {
+-		cs->nsecs = (1000000000/2) / hz;
+-		if (cs->nsecs > (MAX_UDELAY_MS * 1000 * 1000))
++		cs->nsecs = (NSEC_PER_SEC / 2) / hz;
++		if (cs->nsecs > (MAX_UDELAY_MS * NSEC_PER_MSEC))
+ 			return -EINVAL;
  	}
  
- 	/* check for expected invariant - should never trigger, just help
--	 * catching eariler subtle bugs
-+	 * catching earlier subtle bugs
- 	 */
- 	WARN_ON_ONCE(child && *own_req && tcp_sk(child)->is_mptcp &&
- 		     (!mptcp_subflow_ctx(child) ||
-@@ -1259,7 +1259,7 @@ static void mptcp_subflow_fail(struct mptcp_sock *msk, struct sock *ssk)
- 	struct mptcp_subflow_context *subflow = mptcp_subflow_ctx(ssk);
- 	unsigned long fail_tout;
- 
--	/* greceful failure can happen only on the MPC subflow */
-+	/* graceful failure can happen only on the MPC subflow */
- 	if (WARN_ON_ONCE(ssk != READ_ONCE(msk->first)))
- 		return;
- 
 -- 
-2.34.1
+2.43.0.rc1.1336.g36b5255a03ac
 
 
