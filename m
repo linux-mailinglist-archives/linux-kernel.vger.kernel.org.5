@@ -1,194 +1,150 @@
-Return-Path: <linux-kernel+bounces-166407-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-166408-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AA7028B9A36
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 13:44:46 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C94F98B9A38
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 13:45:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CABD61C20F95
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 11:44:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8F95B2811CB
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 11:45:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 74E686A8AC;
-	Thu,  2 May 2024 11:44:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 990C4664DD;
+	Thu,  2 May 2024 11:45:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="En+nyEsU"
-Received: from mail-yb1-f172.google.com (mail-yb1-f172.google.com [209.85.219.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="fPeBQVcr"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0DC3263417
-	for <linux-kernel@vger.kernel.org>; Thu,  2 May 2024 11:44:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F2AE63C7
+	for <linux-kernel@vger.kernel.org>; Thu,  2 May 2024 11:45:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714650278; cv=none; b=nR+hzAIjDS4OOmeYchHBCOBrh8Zgy70NIM9hKUKa+BpddqiSSEhOhEQtc5ZPRB/z8LWwOC/jM0Q0HggkKPIlMIerGBm9qN5/AoyWL1FHGthWLnoWOiAWWBHBrSI0/ShHk0Bkl9tKuZVQIIjtkDPH6zNvbpa+nV6k2Zolkc24hRc=
+	t=1714650345; cv=none; b=c7FWedD9X+xjx6bZhYavdkywPLPI4YQQxHIxmyO+g/g5JUnQMUmq1jssxcyJZoUbZeYXJYA93YT4V4z8wk068c5sj+rj8XLi0T0DQ2ps+xB2bz0Q342+eHJkCQgBsiTQY2wCqbFP2sAW2MqaqsYnF2nOovRwmilXg/lzq55SsFQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714650278; c=relaxed/simple;
-	bh=3B5U1op7r0DTmrEG2HdH2GbKAb31+8iCOdD7rSVpnX0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=LLnCaWN3DYjZIx2pCcZ/T8JKFEZXYiyDmhGeNSPwbhWAax8KDV5X2TP6Re8eJMFvhAkQSHOnyJLiyppeF7z6gpomLV8y5FiVp+qhIT7osRNsZd3lgyjd5JaijQfAGAqc834iM1vGuTdGX+INGRQsZgZL7r1Ach93EwNN60ED/Jo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=En+nyEsU; arc=none smtp.client-ip=209.85.219.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yb1-f172.google.com with SMTP id 3f1490d57ef6-de54b28c41eso8784423276.0
-        for <linux-kernel@vger.kernel.org>; Thu, 02 May 2024 04:44:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1714650276; x=1715255076; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=hs0Nc0RqDY6OiurlpPpTgb9tgJy9jZNX1Jp6pCKzxxM=;
-        b=En+nyEsUPc1JwEzc2k+SXZw9ecO8ayict3LYiA2Zoqb4JPZAPhgWobwBFAXXiCX/+4
-         nDBldw62lP9U/O0o6/7VVHSp++1CfC5j8+cTYD9cL/x+GirTXyAjbpSxqUU0rI3Hhp4S
-         zUy4vP+5/aAXlCRMVGpGCwWC1KEwCgyiZy3IST6S/YBDwQuJDagdpqppxct8nQw4dXra
-         lO+aMKeIcPAXRMWs/oWrKnOXykg3k46r8ZkDUbWgV9J2kT6n4D2OqRCZsbl4nopYFGNJ
-         IEjROQEVwzkGzqUyl3vdCxPzuYh/2J6JDO3DVACT2SQdz5dVezziZoZzVWYJ7RwJcDc7
-         GATA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714650276; x=1715255076;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=hs0Nc0RqDY6OiurlpPpTgb9tgJy9jZNX1Jp6pCKzxxM=;
-        b=E/89836WSocx7GujdzdFtg7IZWuaRvH0eWiuX9u3zbyiIqXjilHa30w8dhclkeMQZl
-         eOLZXiK9xaak+0Dge7HoSySjxsN28edYisyDJpYNtEDS/+PKfT3n7Qf5FnCYoz2iY+VG
-         z9Yn8/3oIGen/k6bYd8+FFF4d4+UN6dMDR7zGaUUXi/mxJvHKtSubw27q8JitUdFJP3O
-         Zpe15xz2GAuADcl6McYEAZkfFDCxONzBFB5TvDYNiBkws5ex8JKkaz5iFdFko+2Jqxwh
-         OHZItICZ9SlpfN8IxW5Q3ruMk5PtEBjxl7/h7UfuCGZHKbhoDVJONMnFek7+aP8eV218
-         Q4kw==
-X-Forwarded-Encrypted: i=1; AJvYcCXgFYd14ReiZntyZoUFCf/BTGeZ62o5RUGzNpJkLMVwD8PFclgZnSyUW7PeSrZ6jabIeTjl4/HQdV74eVwb8v8skJDrkAipdnR3pUnB
-X-Gm-Message-State: AOJu0YxsIQcudO2kX3f4G0d7ZlRHTN/pvoBhBBmoz+DYnckuHxpWG4VP
-	evVk5P6SZmHP2ygG5Hs8G5jTcv9lFJ6dawbALm+2260pb8eUf3d2NfCOnsdGaLd9lJ34R0BzMrl
-	GPZjcMpjLsEs7Us8bnE8OX/1Kb+7B0GDoc0TsSQ==
-X-Google-Smtp-Source: AGHT+IEFG+Ydm81rpI162xZeCq5BDZoBPUrt3LS/LIQol86OfQuy68hn7gucOlNacue4gvj7osvZue/EPKC5+EStroY=
-X-Received: by 2002:a5b:52:0:b0:de4:738b:c2ea with SMTP id e18-20020a5b0052000000b00de4738bc2eamr5728494ybp.24.1714650275853;
- Thu, 02 May 2024 04:44:35 -0700 (PDT)
+	s=arc-20240116; t=1714650345; c=relaxed/simple;
+	bh=s2tUSZPBGC8x+4ifPMESmhlbdPvFWhRJ+en/QLgU7hU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=BgJkQhM1mL7d6ihaA4mvb58XmgscGpbZUNrAqLsxAmfWu05cXVsZzl5laF2Zjg8TeGsq3KGGerybk025flEjcxuovSB2bTiwcOZPM9Ts2KwWlYs0MoFR6gIyb+Alm0j88lTLMlvDLtlwp1tdluulDBdKSJILtZ304mWa3mhqWGg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=fPeBQVcr; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1714650343;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=blUl2qJx9ram7fhnnzGyThINz/XZwJLDlyy9nK5U8pQ=;
+	b=fPeBQVcrIPU4wy4hHAKdZimByaPt12BUBrt8NnZfiidAhkVIlZxiMihUmdUcOiYLk9ORAe
+	bCOfeesrODLoCcYi+016kIgiV+4n6XA8ukf7D3YwUXy6+HsT5++D0LR5j0EM/LKPhZRr5H
+	OlggIj2g20WuYHTJqnf1hP5iLRFIXxs=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-253-7B9D8zc4MuKTdsKUOSz43Q-1; Thu,
+ 02 May 2024 07:45:40 -0400
+X-MC-Unique: 7B9D8zc4MuKTdsKUOSz43Q-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 28A67299E753;
+	Thu,  2 May 2024 11:45:39 +0000 (UTC)
+Received: from lorien.usersys.redhat.com (unknown [10.22.16.169])
+	by smtp.corp.redhat.com (Postfix) with ESMTPS id C21C81C0654E;
+	Thu,  2 May 2024 11:45:37 +0000 (UTC)
+Date: Thu, 2 May 2024 07:45:35 -0400
+From: Phil Auld <pauld@redhat.com>
+To: Peter Zijlstra <peterz@infradead.org>
+Cc: Yury Norov <yury.norov@gmail.com>,
+	Ankit Jain <ankit-aj.jain@broadcom.com>, linux@rasmusvillemoes.dk,
+	akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
+	juri.lelli@redhat.com, ajay.kaher@broadcom.com,
+	alexey.makhalov@broadcom.com, vasavi.sirnapalli@broadcom.com,
+	Paul Turner <pjt@google.com>, Ingo Molnar <mingo@redhat.com>,
+	Vincent Guittot <vincent.guittot@linaro.org>,
+	Dietmar Eggemann <dietmar.eggemann@arm.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+	Daniel Bristot de Oliveira <bristot@redhat.com>,
+	Valentin Schneider <vschneid@redhat.com>
+Subject: Re: [PATCH] lib/cpumask: Boot option to disable tasks distribution
+ within cpumask
+Message-ID: <20240502114535.GA86496@lorien.usersys.redhat.com>
+References: <20240430090431.1619622-1-ankit-aj.jain@broadcom.com>
+ <ZjE3C9UgeZR02Jyy@yury-ThinkPad>
+ <20240502084349.GW30852@noisy.programming.kicks-ass.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240502090326.21489-1-quic_kbajaj@quicinc.com>
- <CAA8EJprPLqj7GQM0vmN25U2+3kDow=NH8=-VC2N-0p92Ub3iCA@mail.gmail.com> <5134c012-60b1-4c07-9e1f-c48c3d88d404@quicinc.com>
-In-Reply-To: <5134c012-60b1-4c07-9e1f-c48c3d88d404@quicinc.com>
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Thu, 2 May 2024 14:44:24 +0300
-Message-ID: <CAA8EJppK7fMmX_cePhaK4Xy-+gfZfYZSWJDbEnVvq_60B32Rig@mail.gmail.com>
-Subject: Re: [PATCH v3 0/3] Add devicetree support of USB for QDU/QRU1000
-To: Krishna Kurapati PSSNV <quic_kriskura@quicinc.com>
-Cc: Komal Bajaj <quic_kbajaj@quicinc.com>, Bjorn Andersson <andersson@kernel.org>, 
-	Konrad Dybcio <konrad.dybcio@linaro.org>, Rob Herring <robh@kernel.org>, 
-	Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>, linux-arm-msm@vger.kernel.org, 
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Bjorn Andersson <quic_bjorande@quicinc.com>, quic_wcheng@quicinc.com, 
-	quic_ppratap@quicinc.com, Jack Pham <quic_jackp@quicinc.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240502084349.GW30852@noisy.programming.kicks-ass.net>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.7
 
-On Thu, 2 May 2024 at 12:48, Krishna Kurapati PSSNV
-<quic_kriskura@quicinc.com> wrote:
->
->
->
-> On 5/2/2024 2:39 PM, Dmitry Baryshkov wrote:
-> > On Thu, 2 May 2024 at 12:04, Komal Bajaj <quic_kbajaj@quicinc.com> wrote:
-> >>
-> >> This series adds devicetree nodes to support interconnects and usb for qdu/qru1000.
-> >> This is based on previously sent driver series[1].
-> >>
-> >> ------
-> >> Changes in v3:
-> >> * As per comments on upstream[2], to get role-switch working on QDU/QRU1000, it was recommended to
-> >>    use the actual TI switch driver. Since driver doesn't have the functionality to provide role-switch
-> >>    based on gpio, thus reverting back USB dr_mode to peripheral and removed the remote end-point nodes
-> >>    and usb-conn-gpio based role switch functionality.
-> >
-> > This is not correct. The recommendation was to describe hardware properly.
-> > Which means adding schema description, adding  ti,your-switch
-> > compatible to the usb-conn-gpio.c driver, etc.
-> >
->
-> Hi Dmitry,
->
->   Sorry for the confusion. In the comments [1],
->
-> "So the compatible string should be "ti,hd3ss3220". Which is fine to be
-> used in the platform driver. Just describe the differences in the
-> schema."
->
-> The compatible "ti,hd3ss3220" is already associated with a TI switch
-> driver [2]. But it works based on I2C. So we assumed you wanted us to
-> make changes to [2] by adding GPIO functionality (which usb-conn-gpio
-> exactly does), since the compatible you suggested matched with the TI
-> driver.
+Hi Peter,
 
-First of all, please don't make assumptions. It's better to ask rather
-than making assumptions which turn up to be incorrect.
+On Thu, May 02, 2024 at 10:43:49AM +0200 Peter Zijlstra wrote:
+> On Tue, Apr 30, 2024 at 11:23:07AM -0700, Yury Norov wrote:
+> > On Tue, Apr 30, 2024 at 02:34:31PM +0530, Ankit Jain wrote:
+> > > commit 46a87b3851f0 ("sched/core: Distribute tasks within affinity masks")
+> > > and commit 14e292f8d453 ("sched,rt: Use cpumask_any*_distribute()")
+> > > introduced the logic to distribute the tasks within cpumask upon initial
+> > > wakeup.
+> > 
+> > So let's add the authors in CC list?
+> > 
+> > > For Telco RAN deployments, isolcpus are a necessity to cater to
+> > > the requirement of low latency applications. These isolcpus are generally
+> > > tickless so that high priority SCHED_FIFO tasks can execute without any
+> > > OS jitter. Since load balancing is disabled on isocpus, any task
+> > > which gets placed on these CPUs can not be migrated on its own.
+> > > For RT applications to execute on isolcpus, a guaranteed kubernetes pod
+> > > with all isolcpus becomes the requirement and these RT applications are
+> > > affine to execute on a specific isolcpu within the kubernetes pod.
+> > > However, there may be some non-RT tasks which could also schedule in the
+> > > same kubernetes pod without being affine to any specific CPU(inherits the
+> > > pod cpuset affinity).
+> > 
+> > OK... It looks like adding scheduler maintainers is also a necessity to
+> > cater here...
+> 
+> So 14e292f8d453 is very specifically only using sched_domain_span(), and
+> if you're using partitioned CPUs they should not show up there.
+> 
+> As to 46a87b3851f0, if you're explicitly creating tasks with an affinity
+> masks that spans your partition then you're getting what you ask for.
 
-Compatibles describe hardware. DT describes hardware. There are no
-drivers in question (yet).
-You have TI switch on your board, so you have to use "ti,hd3ss3220" to
-describe it.
+I think you are skipping some details. We've also asked for no load
+balancing and this spreading is a form of load balancing. So that's
+not getting what was asked for.
 
-Existing schema describes it as an I2C device. You have to extend the
-schema to allow non-i2c attachment. Describe GPIOs, make reg optional.
-Make this description purely from the datasheet and usb-c-connector
-point of view.
+And the tasks being created with this affinity are not being explicitly
+created thusly. It's implicit. Anything exec'd into the container
+(==cgroup with cpuset set) gets the cpu affinity spanning the cpus in
+the container. There are layers. It's not someone using "taskset bash"
+at a command prompt.
 
-> If it was to add compatible in usb-conn-gpio, then we can support OTG
-> functionality with no schema changes I believe, but the compatible
-> string might need a different name to avoid clashing with the name in [2].
-
-And this is the second, largely independent question. The
-usb-conn-gpio driver is a platform driver.The existing hd3ss3220.c
-driver is an I2C one. There is no clash between them.
-
-Note, unlike plain gpio-b-connector, the switch supports more pins and
-actually provides USB-C information to the host even when used in the
-dumb mode. Thus it might be better to add a separate driver that
-registers typec port and reports USB-C events.
-
+> 
+> In fact, I already explained this to you earlier, so why are you
+> suggesting horrible hacks again? This behaviour toggle you suggest is
+> absolutely unacceptable.
+> 
+> I even explained what the problem was and where to look for solutions.
+> 
+> https://lkml.kernel.org/r/20231011135238.GG6337@noisy.programming.kicks-ass.net
 >
-> [1]:
-> https://lore.kernel.org/all/CAA8EJppNZrLzT=vGS0NXnKJT_wL+bMB9jFhJ9K7b7FPgFQbcig@mail.gmail.com/
->
-> [2]:
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/usb/typec/hd3ss3220.c?h=v6.9-rc2
->
-> Regards,
-> Krishna,
->
-> >> * Link to v2: https://lore.kernel.org/linux-arm-msm/20240319091020.15137-1-quic_kbajaj@quicinc.com/
-> >>
-> >> Changes in v2:
-> >> * Changes qmpphy node name
-> >> * Changes dr_mode to otg and added USB-B port USB role switch
-> >> * Dropped maximum-speed property from usb dwc3 node
-> >> * Link to v1: https://lore.kernel.org/linux-arm-msm/20240311120859.18489-1-quic_kbajaj@quicinc.com/
-> >>
-> >> [1] https://lore.kernel.org/linux-arm-msm/20240502082017.13777-1-quic_kbajaj@quicinc.com/
-> >> [2] https://lore.kernel.org/all/CAA8EJppNZrLzT=vGS0NXnKJT_wL+bMB9jFhJ9K7b7FPgFQbcig@mail.gmail.com/
-> >> ------
-> >>
-> >> Komal Bajaj (3):
-> >>    arm64: dts: qcom: qdu1000: Add USB3 and PHY support
-> >>    arm64: dts: qcom: qdu1000-idp: enable USB nodes
-> >>    arm64: dts: qcom: qru1000-idp: enable USB nodes
-> >>
-> >>   arch/arm64/boot/dts/qcom/qdu1000-idp.dts |  23 +++++
-> >>   arch/arm64/boot/dts/qcom/qdu1000.dtsi    | 120 +++++++++++++++++++++++
-> >>   arch/arm64/boot/dts/qcom/qru1000-idp.dts |  23 +++++
-> >>   3 files changed, 166 insertions(+)
-> >>
-> >> --
-> >> 2.42.0
-> >>
-> >>
-> >
-> >
+
+I was not aware of the history here. Thanks. I'll look into that. At
+first blush it's not obvious how that helps but I've been wrong before...
 
 
+Cheers,
+Phil
 
 -- 
-With best wishes
-Dmitry
+
 
