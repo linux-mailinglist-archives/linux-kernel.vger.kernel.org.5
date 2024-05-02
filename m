@@ -1,148 +1,258 @@
-Return-Path: <linux-kernel+bounces-166060-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-166061-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B5E278B9561
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 09:38:26 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 73A648B9563
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 09:39:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2D3691F223E7
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 07:38:26 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F05261F2229D
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 07:39:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A667B225A2;
-	Thu,  2 May 2024 07:38:19 +0000 (UTC)
-Received: from CHN02-SH0-obe.outbound.protection.partner.outlook.cn (mail-sh0chn02on2095.outbound.protection.partner.outlook.cn [139.219.146.95])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 413BF225D7;
+	Thu,  2 May 2024 07:38:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="N9UmGY3w"
+Received: from mail-vk1-f181.google.com (mail-vk1-f181.google.com [209.85.221.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70FAF1D531
-	for <linux-kernel@vger.kernel.org>; Thu,  2 May 2024 07:38:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=139.219.146.95
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714635499; cv=fail; b=AcQpsaDtvg7zpFX5AngbwK7IJHrtnvDfgDErRNqlbEflKmBqbgd+VezFvSuUNfrgu3B9pp1NRoiyAT/hZAMCcSlnwJq9Qp27GCNDYdNvo1tL3tkPB90xSVbDzHRdFwqnxwgJju5n58didGNWbeyqXzJ6i+D6Fnq8EWedyjpy8Rc=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714635499; c=relaxed/simple;
-	bh=xxbFnJLsgRXCxNGS6JvQYSydhdpSpHaWsuE7JdzmGfY=;
-	h=From:To:Cc:Subject:Date:Message-Id:Content-Type:MIME-Version; b=c26X/SMjfKm9nWkw+UdBz5QNsA6k7q2NJs//HwpLDDI/17tgXqEeXTuzeK+GO1+6cPvSreTBXmnNw64YfnZXxl0Y6F4MnhGBDON9suOkPXhnxMd81OKZ0gsUDZNNLr6rqQY2mEof4GstDaHXZKr638gwVtA9LpxZRtW4SrSUUT0=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=starfivetech.com; spf=pass smtp.mailfrom=starfivetech.com; arc=fail smtp.client-ip=139.219.146.95
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=starfivetech.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=starfivetech.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=iwnj0oc8QC1sTuH0pFPfl9dIX0WSKoJ9dY7of9otOlXXw/JdONXV44VnK6vUZKAl9kR4I6qNnu9NWzp8l0VYx9qxC5YninwChjQIfJTScenqdcp+mrq+436kjBQcH/eAdmZ8uEKfdXYsxJCGfr2Bggq/fy3YKjV1eKGFO/e6AqpgNIesBJz1tKE7gFpPb8u2r47/ilgeL/ZrarhswLr9XTPvqKS/3ZQuYTUOR3oIm6ZUY8iZ9nThOpFM+Ml2d1VTJPHnGurQV3MZWQBEEY/q/ZVaIy5YXn1+6IoMCJH0UihYgy8UpUw54aMSJ2gxHnKI9es0aJimWyZWfPmexN4Qeg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=DuTlWwi81pHFeVK3IuwwlQThbgfc4vp2pRGYl9Ui4B4=;
- b=oIU3XviZoiaXwGKkZ8bmdE8wO7rsKWUS0czm248u6ZUQ56MzNvtmQ8pWaM5MPSz0jAiXHjWfTWIZ1ltPDXzmGdpmug10DEwAjj/5Vw3mTJl1oVHQu/nK7wUAz9cHhIKv2ncYCICIDT9JtxiPLJHs3lq+B7XjrNgFGBun7MdA2enSKC5Bjy4yL5K9XeGSD849esjPQoPDY6IOZz1Q6V4M+ACzKktu9ngoQS1248lOKM50RU/s5TQj/asv0yT3L/YRqmzPFIBTqpIW/WbFEw5CamuzUM+C93d1lI+YX6dpGMdm/MvSZGPNtvLFKGH3tRy4JNOernPUDmFZx07kyYBPkw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=starfivetech.com; dmarc=pass action=none
- header.from=starfivetech.com; dkim=pass header.d=starfivetech.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=starfivetech.com;
-Received: from NT0PR01MB1278.CHNPR01.prod.partner.outlook.cn
- (2406:e500:c510:12::10) by NT0PR01MB1294.CHNPR01.prod.partner.outlook.cn
- (2406:e500:c510:10::7) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7472.44; Thu, 2 May
- 2024 07:38:02 +0000
-Received: from NT0PR01MB1278.CHNPR01.prod.partner.outlook.cn
- ([fe80::e604:661e:e939:4c87]) by
- NT0PR01MB1278.CHNPR01.prod.partner.outlook.cn ([fe80::e604:661e:e939:4c87%4])
- with mapi id 15.20.7472.044; Thu, 2 May 2024 07:38:02 +0000
-From: Sia Jee Heng <jeeheng.sia@starfivetech.com>
-To: linux-kernel@vger.kernel.org,
-	linux-riscv@lists.infradead.org
-Cc: rafael.j.wysocki@intel.com,
-	ajones@ventanamicro.com,
-	conor.dooley@microchip.com,
-	sunilvl@ventanamicro.com,
-	jeeheng.sia@starfivetech.com,
-	aou@eecs.berkeley.edu,
-	palmer@dabbelt.com,
-	paul.walmsley@sifive.com
-Subject: [PATCH v2 0/1] Enable SPCR table for console output on RISC-V
-Date: Thu,  2 May 2024 00:37:50 -0700
-Message-Id: <20240502073751.102093-1-jeeheng.sia@starfivetech.com>
-X-Mailer: git-send-email 2.34.1
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: ZQ0PR01CA0006.CHNPR01.prod.partner.outlook.cn
- (2406:e500:c550:5::16) To NT0PR01MB1278.CHNPR01.prod.partner.outlook.cn
- (2406:e500:c510:12::10)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9EE911CBD
+	for <linux-kernel@vger.kernel.org>; Thu,  2 May 2024 07:38:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.181
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1714635533; cv=none; b=uCJPrx9fPejagVZxKzEzxffregAwsMJ6HmT6pyl2tIMoY09x33DUZ8Sp7+ZJ90hJ+c4R+D+Qm6MPd6yP6zv9r5xwqo0XVqONgZ4X29vQiygQTChoBWx4L+aOkQC/iMFl1tpnrojl3qwnl21yCZCN79uEBm/yXJmuHqFCGjO6ZWQ=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1714635533; c=relaxed/simple;
+	bh=ZRq/wv3Q/D7MfozoZ6kI8+huj26C6rzpsmkMBmsTlB0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=hBDwYnk/uWE1Kg9Mxj45PbxMl5B02EgaosBiFP6fbqYjU9P31RlzelDlsF8oyb9sIQEa2rSa0q0cQBd1ntqGbh/6ZzyUFUfdaL8fXLbjJmKhXDhCP+AoRHIeU6y8stWUnGsVKvKRvu5o39jzJKx5M0gxy282z76Px6MVHaqOFpY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=N9UmGY3w; arc=none smtp.client-ip=209.85.221.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-vk1-f181.google.com with SMTP id 71dfb90a1353d-4df1ec345f6so49612e0c.0
+        for <linux-kernel@vger.kernel.org>; Thu, 02 May 2024 00:38:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1714635531; x=1715240331; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=9gKu9rH10ssNrFu1YAE+gIyQ9AxIDQwijoSSwpqBnts=;
+        b=N9UmGY3wC4IR20zQIn1E4rrBNHFWUBnoI5aznZmxh32SJJL05pUokTzKN+VeoSmods
+         j9t2DSrFlgN9c0YfiAAfIPHMfMkhMmGAvojcmCOIa4Ct2EPYE3303RoFlwbI2b6Hghao
+         k9HAQIMI+PugCQMjAe09EVwVFk7bSkA0mnU0L3v72S2UcRxsKtspF6dzrY6KYwfdmZ/x
+         mceRz0ckLyRZ+MSkgXd1nxidcJ6lDzKyGDIYPDVngxKlp6dU8nrVIARYep1j/cmafpAZ
+         lWOJt1O4HxpmEnV5ZaZxBVU8G+wq0/5y4Pb75CJMjK2Tm5GttLLeG3nTn4MdU69rSowV
+         TJkg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714635531; x=1715240331;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=9gKu9rH10ssNrFu1YAE+gIyQ9AxIDQwijoSSwpqBnts=;
+        b=VExavoViT6uNTEzgRQ0EFpXXzENiT16b4LizgjKfK3F7hMjunq3INSdcr7h5/JDASf
+         zQjE2pQwoGmGfAGO87AvUnPNTkHFZmR0a4EcUb36nZ87uU1efG4sZTNa5/T/vG77b0WC
+         o69t0NS2BJ8SZb1tCKxrNR90gy5OWCcCDLm3+q6gXA1rKcDp7kXkZZjQu6dfIvkHtI5L
+         hSa4EHEc1XgeejP0ixN7C8zYfoB7gZ7kXIPIQ9sgXZeTERVGJojjWv37gyYFTRfdzekF
+         HhLCk6ZktYLrd9wc/8wovpMelFfdMzWQebXRbghKFLSbOprrSi3VbYZsb/8T+DmGemoe
+         E94w==
+X-Forwarded-Encrypted: i=1; AJvYcCUbEBXEgsAfQUnOilK8s5EsKBWuTo/PewqSNH7ApUFqi1A8wsJQcmmYbMkm+IxcS3cGQJZsk6Cy5HJYqEypgRQ5unEV5akqmqtWBBWN
+X-Gm-Message-State: AOJu0YyqEC9GxxsdhtGWNyWGhCMvmtUPwMQfy+ojgTp9O9gzje8kqpCd
+	ETuY8PrD1T2e+OtfcbraH5v7C6dZrCxy2rywopxRa29h3S4URRY0BLf1SZLICKBvfEiIF6CBGpa
+	NalLbqDKJSuqcOfAFL6AKlZwBvSjKIANr2wr7vQ==
+X-Google-Smtp-Source: AGHT+IGawJOdMBNjBvqeWFMmff2S/95Drr+AoqQWZc+2rNhKUWNrUsC16OO4+ymmP/tQQldwWLiszKL3kA96Jda8Q/Q=
+X-Received: by 2002:a05:6122:2a45:b0:4d3:3878:a523 with SMTP id
+ fx5-20020a0561222a4500b004d33878a523mr4927594vkb.12.1714635529283; Thu, 02
+ May 2024 00:38:49 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: NT0PR01MB1278:EE_|NT0PR01MB1294:EE_
-X-MS-Office365-Filtering-Correlation-Id: 199109fa-0abb-43e4-de1e-08dc6a7acc2c
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	6efoeUH4gU9kDRqaE5fkjGYAFzngf2bDOKX3iWin5anL5pjOoQVwzZmqvVYPzkO13AtawcAfUtobtJkdxPJ5qMT0Sua2eNlQcZVS8V93OZ0H4m9KM1wAO/nh3AMbDasT1YXzQtnDh80sjYQHuADVAihT+f89+prbpXsR5yA2f2RDpv07iOpzdpAtp3hcMXu6wXrSovjjvSuHYn0H271UdAUUDfrEn9LuLhzk3LTgXtCal6wAkIBImddoKSCopiWzfFTzPAynZZMoITskQSqZfengm4iyD+XV1eY3i8k2kyPoOoc3iDZceU/1NbBiAjFXzOMKao5Jqp4OP5+VjLVDE/y8ViFm5q5jxghakH9jPAFOHVFpa3dfNxBxUNyRTh1V+nXR1AId2sNcftK50ZcSg3P4Nb/fGDIqKIuk5IjUHRZ+i0OtONLUENKpdALS3NiPeOKWJys0X3LSHfRELXQ4N2mTTxqG/yxpsZcSFwkfGKQiIA5YrPucTX2Q/3wO4CpYOtvSlCmDHFRdLELCCmSwOR1xnhxwnxu6qxqGWtYgbWZZdCGcs9ke6NiekhOq7cmGbX8VPH4ms7r/z5fm9syVTWLS/6Kbe2LRTQQBgANUwXq8n4fsBg1AYhqGRIMDNnAw
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:NT0PR01MB1278.CHNPR01.prod.partner.outlook.cn;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(366007)(52116005)(41320700004)(38350700005);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?gcU6q3NxuSzyCLZNT5Nmykj83qfb8HfLMQ7k+FGJlBfMCdfFW1cDaixZpQS8?=
- =?us-ascii?Q?WbOh4jNSFznWwCObMc8du3LUVOiX7tWwyCB+9caF/a2uB1pdK1Jj+g/16MTX?=
- =?us-ascii?Q?dKG479ZK3b4VkAc+F9BXo/d7gaEuonEP3dmNnc9TUa8ieqTuJBGMwhzfQwwy?=
- =?us-ascii?Q?BOhC6X+O/Jx211VRQ0h3eAewtIVA7UfMiaXXL95zQ87+//DeCo5xZHfnCcUD?=
- =?us-ascii?Q?gbLVb9eAYJuHbzJkM9SIjG7bcLtvwFjeWFuz0KYQtnGnN7fh9d933JKJH2IN?=
- =?us-ascii?Q?DuELiWEaxoPfD9Y6cB1sJxIDbQ7JpStIFW73mf8u0e6QA2MUK6gViLPzmL5b?=
- =?us-ascii?Q?GRuump8ubOUQAuKaFzHJrje4NZ1o+cxX4sKwfaEbc12ZutiWZRDf2zswIIQH?=
- =?us-ascii?Q?55kFcnSKzI6dxxGs1Z24IT3DTqBI6F2OvnmAZo5eZQ7xDL14mg445K0XHXMn?=
- =?us-ascii?Q?P1k4WRHY5pmGyrErHCdjymyA39lQhi62Lm+UG7T8MIWpyykQEPhc2bvpgcpw?=
- =?us-ascii?Q?hThHTtd10BKLRXsi+L05a4AgKfmHnUzhnU9RT7hWLGDxekDcgIZfop2/IX4y?=
- =?us-ascii?Q?v5wIEECW325tdQlVjTCFpo9wcRKYyjaH01CiKYZoWYrK0qcEI1LDRe03mgqz?=
- =?us-ascii?Q?eoaxUZdMNe9XGdQkx90hpmbW0AE1I5UrIGO9P86dYajQkmwJNOv3EWSqE3CJ?=
- =?us-ascii?Q?VS/zpMeQR7BAiVREx8rD/IayrxBmNAPVrFFE13ejm/H9aqgEFT9U4vv/i712?=
- =?us-ascii?Q?ziVrAJKlG5FWlHygoAl/eHWSypbCFhyleNS8wpg64Uqvb/ecZAvTS2ChrJ7f?=
- =?us-ascii?Q?bwtJ2UN6lw6U8EK8La9HgtYqpQEeU+wCPx1QdMe7jZWgvK1uKcEo5uT0FP0e?=
- =?us-ascii?Q?Z+zgdqSNFWoQUPBgM6aX1rgdNWDEROZK3kOBqN9pMAm3EAEoK5sxJ+8dHADA?=
- =?us-ascii?Q?wEhhuVyzJSLA3KfC8QbEkv7tjWU5zdMfaw9TGExKr1Kb1lFegjG9csKoeDB1?=
- =?us-ascii?Q?MxRx5rED49VbT1PRueCKnL8s7Gzv1r0R1eZzxBpC4UOxU9fV1XFcddZHirFk?=
- =?us-ascii?Q?aSkU3iy5jHcGyd3I4epreQSX3/oNHBhqgsj80yTr+kw9zzrm5IqXrPCWS6Ue?=
- =?us-ascii?Q?y9W/ak+n4Sen/bkFG19K8ES6488co2wAg7fdN/ZXqhaHQLUe5TWG4VKjOrG/?=
- =?us-ascii?Q?6t1ST/No36kHXDbiLMksiwwMBDIISTMWLoFoq3SD9h1jzKwjxQVI7GbvYcdO?=
- =?us-ascii?Q?Cp09k0HYmOXwhcja5SS76SyzZKbJZD3xxHWk7fCJpgbscU13GHfrTF+KfMqQ?=
- =?us-ascii?Q?ieZyKZ5au9WWcaMYNrqcTPleUCyzh2Uh3pIeTE9JloBtdHmx6gQLZf7598sJ?=
- =?us-ascii?Q?q1ucGcvFNryudDapzSkjv5B2wh/Hh1dKcfpHFbLz95K2VjJU97igHCjvA8yt?=
- =?us-ascii?Q?X+C9BLJB9ya93Bmk5zXapfHFSUXCQijhb7RBGA30Du5DERADf/J9y6EQBo3T?=
- =?us-ascii?Q?0zlrJVXVRhUboIyjmyA8O1IrMMP9EEq0A06DKzhb5c+3WxsDn6ga/KXlQqHD?=
- =?us-ascii?Q?6Zhc1zghcUHaGl1dg+Oemi+i+cpx3FJAd1O+p4AuzXAmGLR2OkY40ts9DxSy?=
- =?us-ascii?Q?Gg=3D=3D?=
-X-OriginatorOrg: starfivetech.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 199109fa-0abb-43e4-de1e-08dc6a7acc2c
-X-MS-Exchange-CrossTenant-AuthSource: NT0PR01MB1278.CHNPR01.prod.partner.outlook.cn
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 May 2024 07:38:02.6073
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 06fe3fa3-1221-43d3-861b-5a4ee687a85c
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Q7PDO+PFR/I1bB2PjWX7/tGM7MMNESjmWjmwZBECf1tb/sfVJ/8R2JXd88n90aCDp72hvNjzPQpLofOSblhjmQ+7kwkrz6HKFBMTeQkPaB4=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: NT0PR01MB1294
+References: <20240430134024.771744897@linuxfoundation.org>
+In-Reply-To: <20240430134024.771744897@linuxfoundation.org>
+From: Naresh Kamboju <naresh.kamboju@linaro.org>
+Date: Thu, 2 May 2024 13:08:37 +0530
+Message-ID: <CA+G9fYsWVqKe=6AoDzo6gcLYWVnojmT0QFtcXw9T-WoQzr7eQw@mail.gmail.com>
+Subject: Re: [PATCH 5.10 000/137] 5.10.216-rc2 review
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: stable@vger.kernel.org, patches@lists.linux.dev, 
+	linux-kernel@vger.kernel.org, torvalds@linux-foundation.org, 
+	akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org, 
+	patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de, 
+	jonathanh@nvidia.com, f.fainelli@gmail.com, sudipm.mukherjee@gmail.com, 
+	srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org, allen.lkml@gmail.com, 
+	broonie@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-The ACPI SPCR code has been used to enable console output for ARM64 and
-X86. The same code can be reused for RISC-V. Furthermore, SPCR table is
-mandated for headless system as outlined in the RISC-V BRS
-Specification, chapter 6.
-
-Changes in v2:
-- Added code to handle early_init_dt_scan_chosen_stdout().
-
-Sia Jee Heng (1):
-  RISC-V: ACPI: Enable SPCR table for console output on RISC-V
-
- arch/riscv/Kconfig       |  1 +
- arch/riscv/kernel/acpi.c | 12 +++++++++++-
- 2 files changed, 12 insertions(+), 1 deletion(-)
+On Tue, 30 Apr 2024 at 19:13, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 5.10.216 release.
+> There are 137 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Thu, 02 May 2024 13:40:03 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
+5.10.216-rc2.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-5.10.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
 
-base-commit: 0106679839f7c69632b3b9833c3268c316c0a9fc
--- 
-2.34.1
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+
+## Build
+* kernel: 5.10.216-rc2
+* git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
+* git branch: linux-5.10.y
+* git commit: 4d39cb0f1c9c5f76a76b47182cb4ae20fa4a9e0f
+* git describe: v5.10.215-138-g4d39cb0f1c9c
+* test details:
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.10.y/build/v5.10=
+215-138-g4d39cb0f1c9c
+
+## Test Regressions (compared to v5.10.213-237-gbbdc0ccf6f16)
+
+## Metric Regressions (compared to v5.10.213-237-gbbdc0ccf6f16)
+
+## Test Fixes (compared to v5.10.213-237-gbbdc0ccf6f16)
+
+## Metric Fixes (compared to v5.10.213-237-gbbdc0ccf6f16)
+
+## Test result summary
+total: 96933, pass: 75646, fail: 3919, skip: 17306, xfail: 62
+
+## Build Summary
+* arc: 5 total, 5 passed, 0 failed
+* arm: 104 total, 104 passed, 0 failed
+* arm64: 31 total, 31 passed, 0 failed
+* i386: 25 total, 25 passed, 0 failed
+* mips: 22 total, 22 passed, 0 failed
+* parisc: 3 total, 0 passed, 3 failed
+* powerpc: 23 total, 23 passed, 0 failed
+* riscv: 9 total, 9 passed, 0 failed
+* s390: 9 total, 9 passed, 0 failed
+* sh: 10 total, 10 passed, 0 failed
+* sparc: 6 total, 6 passed, 0 failed
+* x86_64: 27 total, 27 passed, 0 failed
+
+## Test suites summary
+* boot
+* kselftest-android
+* kselftest-arm64
+* kselftest-breakpoints
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-drivers-dma-buf
+* kselftest-efivarfs
+* kselftest-exec
+* kselftest-filesystems
+* kselftest-filesystems-binderfs
+* kselftest-filesystems-epoll
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-ftrace
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kexec
+* kselftest-kvm
+* kselftest-lib
+* kselftest-livepatch
+* kselftest-membarrier
+* kselftest-memfd
+* kselftest-memory-hotplug
+* kselftest-mincore
+* kselftest-mm
+* kselftest-mount
+* kselftest-mqueue
+* kselftest-net
+* kselftest-net-forwarding
+* kselftest-net-mptcp
+* kselftest-netfilter
+* kselftest-nsfs
+* kselftest-openat2
+* kselftest-pid_namespace
+* kselftest-pidfd
+* kselftest-proc
+* kselftest-pstore
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-tc-testing
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-user_events
+* kselftest-vDSO
+* kselftest-watchdog
+* kselftest-x86
+* kselftest-zram
+* kunit
+* kvm-unit-tests
+* libgpiod
+* log-parser-boot
+* log-parser-test
+* ltp-cap_bounds
+* ltp-commands
+* ltp-containers
+* ltp-controllers
+* ltp-cpuhotplug
+* ltp-crypto
+* ltp-cve
+* ltp-dio
+* ltp-fcntl-locktests
+* ltp-filecaps
+* ltp-fs
+* ltp-fs_bind
+* ltp-fs_perms_simple
+* ltp-hugetlb
+* ltp-io
+* ltp-ipc
+* ltp-math
+* ltp-mm
+* ltp-nptl
+* ltp-pty
+* ltp-sched
+* ltp-securebits
+* ltp-smoke
+* ltp-smoketest
+* ltp-syscalls
+* ltp-tracing
+* perf
+* rcutorture
+
+--
+Linaro LKFT
+https://lkft.linaro.org
 
