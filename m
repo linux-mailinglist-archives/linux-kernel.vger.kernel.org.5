@@ -1,79 +1,79 @@
-Return-Path: <linux-kernel+bounces-167066-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-167067-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4AC958BA3FF
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 01:32:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id D7CA48BA400
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 01:33:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 059C42816ED
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 23:32:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9357C2816CD
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 23:33:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 155094D5BF;
-	Thu,  2 May 2024 23:32:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 641F4433CF;
+	Thu,  2 May 2024 23:32:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FovkIkSu"
-Received: from mail-yw1-f177.google.com (mail-yw1-f177.google.com [209.85.128.177])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="f0e+nUee"
+Received: from mail-yw1-f182.google.com (mail-yw1-f182.google.com [209.85.128.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC62046B80
-	for <linux-kernel@vger.kernel.org>; Thu,  2 May 2024 23:32:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53F8E4AEE0
+	for <linux-kernel@vger.kernel.org>; Thu,  2 May 2024 23:32:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714692737; cv=none; b=O7crce+CHYmPJoOT2Z+z4h/lVYR+LeDqzBk6WzDEPr3A+W+DVJdoaULGKEwFTEcFoUC1WWGh+yNd/K0/oilZM6PR4qHMfuosV9MiVEHmE3WgAWq6lVm2EdScXh4fN0BsI7fUsD+cgyYyst8jP7v3HMF/apXUH4St0XV3GUmAY/I=
+	t=1714692738; cv=none; b=UqirBTztmJy3INMhtJz6W2PJWLZjgQopEJi32sI9i8ZzC1ApSShEbryk2W8nJ0EyuAT7czPq5N/s6Gjln64tLNn3ekZRJDVeytsLRqn53j1X0312tgNE/8+Vp7zaVDJu1uvItnLElv/MmWpsJhBGGViUXxaQKVt2dYPtz1++dy0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714692737; c=relaxed/simple;
-	bh=JjG9zTh3YcEGevq2mGu1lapQZDi6ixXR4kkaGkiUikM=;
+	s=arc-20240116; t=1714692738; c=relaxed/simple;
+	bh=vGxye/FU6337p1UzT7aFBq/KUA2R8rfM3m6vHhGjdT4=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=TlPE4er0/5wEXKcn1+SlldVeWWW4alcfFhx5IcKv18tFFMLUcN9aYshR6hGQUSN8L8goTanGXw6ZP3SyY7v5FQ/05M6Qc6IOEHzonLRTvi5TdfnM6fKMAET4dYY7BrZ60bUC+2/jKvBR6t1S2ABJM2itdOSpxY+jV1Esy3kvQh0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FovkIkSu; arc=none smtp.client-ip=209.85.128.177
+	 MIME-Version; b=OXdk2kqpw5uimH9OKoXoDSdpVEaN2pCDzqfIrCm81e1Rq3dmJ9S89q0NPwQSJIdvIizshGlmaIYFTFJVjDrTfGBFEk4KiM01iGoi/lD6ehPBZe1iG7OGgokTb0FKZKCQjrXwOD1uD8jFk5Inmfo5uPe6nPbAIbB5clR1ieNg7x4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=f0e+nUee; arc=none smtp.client-ip=209.85.128.182
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f177.google.com with SMTP id 00721157ae682-61bee45d035so38695817b3.1
-        for <linux-kernel@vger.kernel.org>; Thu, 02 May 2024 16:32:15 -0700 (PDT)
+Received: by mail-yw1-f182.google.com with SMTP id 00721157ae682-61e01d5ea74so22828167b3.2
+        for <linux-kernel@vger.kernel.org>; Thu, 02 May 2024 16:32:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714692735; x=1715297535; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1714692736; x=1715297536; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=xwV1HZVleW01thm7cKmWmN1euQJwSchKow0lguZfgFs=;
-        b=FovkIkSuwpRyRsoZTvFnqnVfc2SiM8x8HEbO/pnTc5uEHyyiAdeMFzSFrLt/e3XgtI
-         38L4AAT09UtcF9PvA24dzbopMKwSr4UDi7vACrxmU/IJJpdDp0BDmkOWpzEBJspY9I69
-         5ZvoqCkIN/yfPK953BJwShB1LdLZJvTf8rFBPv1YFVQerkPuY4naIyO5Wh8nI8SnF7dy
-         UuzufOS0/uUPefcA8J584XzfuQxkUBZy7kVWxCHYdxRPNz56ZyAFV+TOvyFsTkjm/z7H
-         ehtFSWM0no8MkMQkC8Q7oEHvTlj2gZpI0a2hg3QGfmNhBasUt0pmCCoCjcf701P/UfyL
-         OotQ==
+        bh=7EMydeMYAoD8bLiiOASQ2pN3/O7edcAgllopuW/8Dwk=;
+        b=f0e+nUeeDVoWGpV9kXreQFIS46ksrNKtVYOXF/0INPwG8VAIRa8ceItCY0Ld7ZS21H
+         pgmNB/8c0mebyO61m8L9DJhUXUf9pv/LEDOm15nxwIlUOQAvkUf707H860P0DLU71To+
+         g1h1hvTDSGxqrBs0zbryXFzKllG1hMzRq4wp89fnK2d+gwjjpnxny8jcQyaxbqXv+KLn
+         PbBqsZOZ/ogkEci1Poj+SxKW+ThPxgm7PKKRyNmQ8FhgsKm6rrEmU89emlKtwX6+ay3F
+         yfkaI+nGSM6khBrqm/Jjs+al4KhniQaLqdCtlNderuBV8mL8GG2WWbrhbnNagL1AM1qR
+         QAjA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714692735; x=1715297535;
+        d=1e100.net; s=20230601; t=1714692736; x=1715297536;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=xwV1HZVleW01thm7cKmWmN1euQJwSchKow0lguZfgFs=;
-        b=iTxf9fHuRK2iBKcnCZdsco1t6+2iC/9gxkynqGDk+i9Rb/NR6zSOKh7s+u1ocDrAjz
-         tCYcJaBJjx/228MaI70SkDSkVZ9TzQ8bsTGz9xrAg3kpJi1+epMlXsaMGoSiEVrgteAz
-         h+SzfQPEnKspawXD2G35TPHWcSAJRYOEZe0GOdpmXom810eUILTgI40gderHyXULwQvY
-         VNqfYWNINzntRMw7xxum+3NYv6FZWyrxafReKHE/CxzbctdghCMdHcCjKu2HW2PzMXmk
-         PTnm+Faud2/9Kg21vUkO1k3vJLNxhk7+UhusB8JYcHpfNTIZZb5tZ91o5LL4WKSVFd3f
-         u/7g==
-X-Gm-Message-State: AOJu0Yw3Izi/iKpnjdoAxxyc0oYFd3LWHiW1O1rPtyH8mpGTIVUvIGXd
-	yhGqYTSZ4wYmaVOZzCD082H3ug5eYnRcQ1Ai3S5fF8zuguWLSZJV/OeK0g==
-X-Google-Smtp-Source: AGHT+IEfIyTCFtIJsgR5/4dFaKx64FgUX3BiK43cMG6jgpNDd+rdbywqtcN3n4X3qgws0YGbJKmeDg==
-X-Received: by 2002:a81:4882:0:b0:61b:1f0d:838b with SMTP id v124-20020a814882000000b0061b1f0d838bmr1103567ywa.14.1714692734769;
-        Thu, 02 May 2024 16:32:14 -0700 (PDT)
+        bh=7EMydeMYAoD8bLiiOASQ2pN3/O7edcAgllopuW/8Dwk=;
+        b=L5RXTiokM9pR6hMbFld4Jt3yWOchFL8DIF5rTxPtqcnj0UgEjxNhKwqNxzE6O33Vdp
+         Df+Yoc/25RuV2GugmjNG/a1reKjviLdSp0oXQf4TTSXs144Rv8BRjWUQJ6D6qAjOhe27
+         GyAS1WW10gEANLGELNN7a9Jb/hVvyZei8Nnda/qzyXnG9ASoIQ5ZyMYfoOERYQrgomgF
+         tiihBdpNQaAT+al1xLDSfxaYA1a0VVqpBcRI4uW8lAUEU+ZYe+F28sj2NI/WpUVe05SY
+         lFhAq3AkPcgd56Lv/ccaxf9dQ3Q07XCudbqjsPqaiaymPul0ME24oWq6+pMabQSiCn93
+         +m2Q==
+X-Gm-Message-State: AOJu0YwrLHf6g+Lu15oKaZRgFtqd+XV3o3ojAzgpChjziTIL7fLxRIoK
+	YXhz7YwXMsx4gqbV7gCNiQFBbF4UTSZUBKHr+XzGWraSZBBwmHnlr9Aj5Q==
+X-Google-Smtp-Source: AGHT+IErSjtSElCwfJ4YRpT9SrZC2anGphCNOMBDxAltaBhPPmPCh7iSjcPAOwt3nq5wjcgBaCVFlQ==
+X-Received: by 2002:a0d:e2d2:0:b0:61a:ced3:2574 with SMTP id l201-20020a0de2d2000000b0061aced32574mr1071205ywe.13.1714692736209;
+        Thu, 02 May 2024 16:32:16 -0700 (PDT)
 Received: from localhost ([69.73.66.55])
-        by smtp.gmail.com with ESMTPSA id s20-20020a819f14000000b006152af6131dsm420052ywn.119.2024.05.02.16.32.14
+        by smtp.gmail.com with ESMTPSA id ck25-20020a05690c0b9900b0061ad5c52d23sm412698ywb.69.2024.05.02.16.32.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 May 2024 16:32:14 -0700 (PDT)
+        Thu, 02 May 2024 16:32:15 -0700 (PDT)
 From: Yury Norov <yury.norov@gmail.com>
 To: linux-kernel@vger.kernel.org
 Cc: Yury Norov <yury.norov@gmail.com>,
 	Rasmus Villemoes <linux@rasmusvillemoes.dk>,
 	Andrew Morton <akpm@linux-foundation.org>,
 	Kuan-Wei Chiu <visitorckw@gmail.com>
-Subject: [PATCH 3/4] bitops: squeeze even more out of fns()
-Date: Thu,  2 May 2024 16:32:03 -0700
-Message-Id: <20240502233204.2255158-4-yury.norov@gmail.com>
+Subject: [PATCH 4/4] MAINTAINERS: add BITOPS API record
+Date: Thu,  2 May 2024 16:32:04 -0700
+Message-Id: <20240502233204.2255158-5-yury.norov@gmail.com>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20240502233204.2255158-1-yury.norov@gmail.com>
 References: <20240502233204.2255158-1-yury.norov@gmail.com>
@@ -85,88 +85,47 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The function clears N-1 first set bits to find the N'th one with:
+Bitops API is the very basic, and it's widely used by the kernel. But
+corresponding files are not maintained.
 
-	while (word && n--)
-		word &= word - 1;
+Bitmaps actively use bit operations, and big share of bitops material
+already moves through the bitmap branch.
 
-In the worst case, it would take 63 iterations.
+I would like to take a closer look to bitops.
 
-Instead of linear walk through the set bits, we can do a binary search
-by using hweight(). This would work even better on platforms supporting
-hardware-assisted hweight() - pretty much every modern arch.
-
-On my Ryzen 9 5900X, the test_fns() benchmark runs binary fns() twice
-faster, comparing to linear one.
-
-The fns8() returns 64 to make sure that in case of no bit found, the
-return value will be greater than the bit capacity of arguments of all
-fnsXX() functions up to fns64().
+This patch creates a BITOPS API record in the MAINTAINERS, and adds
+Rasmus as a reviewer, and myself as a maintainer of those files.
 
 Signed-off-by: Yury Norov <yury.norov@gmail.com>
 ---
- include/linux/bitops.h | 42 +++++++++++++++++++++++++++++++++++++-----
- 1 file changed, 37 insertions(+), 5 deletions(-)
+ MAINTAINERS | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
 
-diff --git a/include/linux/bitops.h b/include/linux/bitops.h
-index 57ecef354f47..1c4773db56e0 100644
---- a/include/linux/bitops.h
-+++ b/include/linux/bitops.h
-@@ -247,17 +247,49 @@ static inline unsigned long __ffs64(u64 word)
- 	return __ffs((unsigned long)word);
- }
+diff --git a/MAINTAINERS b/MAINTAINERS
+index c23fda1aa1f0..0cfd2c5d9086 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -3638,6 +3638,20 @@ F:	tools/include/vdso/bits.h
+ F:	tools/lib/bitmap.c
+ F:	tools/lib/find_bit.c
  
-+static inline unsigned long fns8(u8 word, unsigned int n)
-+{
-+	while (word && n--)
-+		word &= word - 1;
++BITOPS API
++M:	Yury Norov <yury.norov@gmail.com>
++R:	Rasmus Villemoes <linux@rasmusvillemoes.dk>
++S:	Maintained
++F:	arch/*/include/asm/bitops.h
++F:	arch/*/include/asm/bitops_32.h
++F:	arch/*/include/asm/bitops_64.h
++F:	arch/*/lib/bitops.c
++F:	include/asm-generic/bitops
++F:	include/asm-generic/bitops.h
++F:	include/linux/bitops.h
++F:	lib/test_bitops.c
++F:	tools/*/bitops*
 +
-+	return word ? __ffs(word) : 64;
-+}
-+
-+static inline unsigned long fns16(u16 word, unsigned int n)
-+{
-+	unsigned int w = hweight8((u8)word);
-+
-+	return n < w ? fns8((u8)word, n) : 8 + fns8((u8)(word >> 8), n - w);
-+}
-+
-+static inline unsigned long fns32(u32 word, unsigned int n)
-+{
-+	unsigned int w = hweight16((u16)word);
-+
-+	return n < w ? fns16((u16)word, n) : 16 + fns16((u16)(word >> 16), n - w);
-+}
-+
-+static inline unsigned long fns64(u64 word, unsigned int n)
-+{
-+	unsigned int w = hweight32((u32)word);
-+
-+	return n < w ? fns32((u32)word, n) : 32 + fns32((u32)(word >> 32), n - w);
-+}
-+
- /**
-  * fns - find N'th set bit in a word
-  * @word: The word to search
-- * @n: Bit to find
-+ * @n: Bit to find, counting from 0
-+ *
-+ * Returns N'th set bit. If no such bit found, returns >= BITS_PER_LONG
-  */
- static inline unsigned long fns(unsigned long word, unsigned int n)
- {
--	while (word && n--)
--		word &= word - 1;
--
--	return word ? __ffs(word) : BITS_PER_LONG;
-+#if BITS_PER_LONG == 64
-+	return fns64(word, n);
-+#else
-+	return fns32(word, n);
-+#endif
- }
- 
- /**
+ BLINKM RGB LED DRIVER
+ M:	Jan-Simon Moeller <jansimon.moeller@gmx.de>
+ S:	Maintained
 -- 
 2.40.1
 
