@@ -1,171 +1,95 @@
-Return-Path: <linux-kernel+bounces-166792-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-166795-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8D5A68B9F86
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 19:30:40 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DD7668B9F8B
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 19:31:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8EE6EB21D35
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 17:30:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1A1C31C221F1
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 17:31:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07CC316FF4F;
-	Thu,  2 May 2024 17:30:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F21E16FF47;
+	Thu,  2 May 2024 17:31:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fsEbyuAV"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="flSK4eO0"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3EA9A16FF3E;
-	Thu,  2 May 2024 17:30:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 347D416F914
+	for <linux-kernel@vger.kernel.org>; Thu,  2 May 2024 17:31:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714671030; cv=none; b=SuwEqY1iQ3jv6FMUv7wFoka3X1tGkzkrHDzOe1OoP1MRQAU3zOE8aODWrf5bAOPBelPC0jlK66Igga6m50s6v9DNk2DvkQrkAPAb3uhMCXRWdTUM2xTE+sENYOln4SCFtRw8S+SbFaBTk+i1BLwOo5iy9dZSBrc8ghGY4/RE2go=
+	t=1714671099; cv=none; b=OnFPcOjBmCU1esEgt3kPovAyOnG7hQls7H0gWUH7M43LfI328PAqE3F3zCyriEng0upQbMtVrTypeePZxkfbnDD99LJrZlU+MeOjdY5D5rbcWXPcPtoaOTmIZsB+C3Qoxc2uB2XpCMEzEcvONlbB0QcmFeVwGm85Uz4jfc237T0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714671030; c=relaxed/simple;
-	bh=y+jHwDvpRAz2vaEvZfsK5o22xGqUR1Wi7cLiOTAt3TQ=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=jkX3ZFHjhr+3kwjMLmt1vbWuiORlYUe72oHDn+Wh+BZDiOPzMQeLmEI4qOXKyHk19DYv6L2+rhKKHg5SZwavVBFjFIhG7fGgsPPggfKbUG0ho1CUQoH0ABaOAJPmNFzYRkWVicylQf8KxwXy4nqkDqeX7b24TbI3hHgl/1795Mg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fsEbyuAV; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 870B6C4AF14;
-	Thu,  2 May 2024 17:30:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714671029;
-	bh=y+jHwDvpRAz2vaEvZfsK5o22xGqUR1Wi7cLiOTAt3TQ=;
-	h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-	b=fsEbyuAVHq5v4vjlD4TvDi6GWsT6/CdfoFwikoDAR9MIXbcxLGksKJvBsoJHFW/b+
-	 qE6cAijXc6dylBrNARy9MVyEOq5S9J8dM4yzaFOX9+CSMaECxJXVBfbEJrUIV6mu3e
-	 /Wmarjd8+m6AHOmh+3NBJwJ00q92X6WST9n3h2C2RaLQ2LB9Y/L4IecMhcc8+/B4Fo
-	 gK2nWBpVsNq3czKacFTmvtpEEx9rjNshAnw+962/HFfifgxWka2P9JIdU+whw3viSD
-	 9D8KHcoXYDijHUyw7X2BXxIOPdKeFzK/uAxOk42rEijQMuDig4gLfsJpzbGc6LcS7e
-	 V5qpE+i4OYpzg==
-Message-ID: <a1f794140c0a3540a4fe9cdfe6a8d75d10eb5f5c.camel@kernel.org>
-Subject: Re: [PATCH 1/1] cxl/acpi.c: Add buggy BIOS hint for CXL ACPI lookup
- failure
-From: PJ Waskiewicz <ppwaskie@kernel.org>
-To: Bjorn Helgaas <helgaas@kernel.org>
-Cc: Dan Williams <dan.j.williams@intel.com>, linux-cxl@vger.kernel.org, 
-	linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
-Date: Thu, 02 May 2024 10:30:28 -0700
-In-Reply-To: <20240501175450.GA866742@bhelgaas>
-References: <20240501175450.GA866742@bhelgaas>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.0-1 
+	s=arc-20240116; t=1714671099; c=relaxed/simple;
+	bh=7zGK+CxCEqMsn8UIbCCcUkJMqdwExUdxpOZvoZ4zcFg=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=nwGBEQRj51sZCrHhigkb9xZb0quuwTQOqBP8Mvt/khxQoKphNSmSBejNHateEDvdrNJqbq6mwY7bIQFXJv/zrC1CiuigHOB0EPR4D791jhM4WBWxa4RUvZFiXcHMb/G4KlI912bChYcJtFozGDnlPgWUJrgLNxU9gznA1Eh1ctY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=flSK4eO0; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1714671096;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=sB91QKrP49e1+jKYA7HCeRe5RMkZyONEHjmLnHX1yds=;
+	b=flSK4eO0cDw/LiU5XlhLKjT5s8mfIrf6TDdA0itSZl/pndxYwOudAWba//tgOo/LdSYmSu
+	JDWW6GvGt/Og32pLNHzzQ2neTCWM6rREghHUY1rwVlI3whCxT7XeaqCahYrFR3L4WNq/KY
+	qZi1RgIkS/CzUmk3dbFinqqOGZZSXFU=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-669-rijvY694PW6aJwZ0J9v_HA-1; Thu, 02 May 2024 13:31:35 -0400
+X-MC-Unique: rijvY694PW6aJwZ0J9v_HA-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id F04EA80017B;
+	Thu,  2 May 2024 17:31:34 +0000 (UTC)
+Received: from thuth-p1g4.redhat.com (unknown [10.39.192.54])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id 9E314203397D;
+	Thu,  2 May 2024 17:31:33 +0000 (UTC)
+From: Thomas Huth <thuth@redhat.com>
+To: Michal Simek <monstr@monstr.eu>
+Cc: linux-kernel@vger.kernel.org,
+	Arnd Bergmann <arnd@arndb.de>,
+	linux-arch@vger.kernel.org
+Subject: [PATCH] microblaze: Remove empty #ifndef __ASSEMBLY__ statement
+Date: Thu,  2 May 2024 19:31:32 +0200
+Message-ID: <20240502173132.57098-1-thuth@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.4
 
-On Wed, 2024-05-01 at 12:54 -0500, Bjorn Helgaas wrote:
-> On Wed, May 01, 2024 at 08:28:22AM -0700, PJ Waskiewicz wrote:
-> > On Mon, 2024-04-29 at 11:35 -0700, Dan Williams wrote:
-> > > Bjorn Helgaas wrote:
-> > > > On Sun, Apr 28, 2024 at 10:57:13PM -0700, PJ Waskiewicz wrote:
-> > > > > On Tue, 2024-04-09 at 08:22 -0500, Bjorn Helgaas wrote:
-> > > > > > On Sun, Apr 07, 2024 at 02:05:26PM -0700,
-> > > > > > ppwaskie@kernel.org=C2=A0wrote:
-> > > > > > > From: PJ Waskiewicz <ppwaskie@kernel.org>
-> > > > > > >=20
-> > > > > > > Currently, Type 3 CXL devices (CXL.mem) can train using
-> > > > > > > host CXL drivers on Emerald Rapids systems.=C2=A0 However, on
-> > > > > > > some production systems from some vendors, a buggy BIOS
-> > > > > > > exists that improperly populates the ACPI =3D> PCI
-> > > > > > > mappings.
-> > > > > >=20
-> > > > > > Can you be more specific about what this ACPI =3D> PCI
-> > > > > > mapping
-> > > > > > is?=C2=A0 If you already know what the problem is, I'm sure thi=
-s
-> > > > > > is obvious, but otherwise it's not.
-> > > [..]=20
-> > > > It's just a buggy BIOS that doesn't supply _UID for an ACPI0016
-> > > > object, so you can't locate the corresponding CEDT entry,
-> > > > right?
-> > >=20
-> > > Correct, the problem is 100% contained to ACPI, and PCI is
-> > > innocent.=C2=A0 The ACPI bug leads to failures to associate ACPI
-> > > host-bridge objects with CEDT.CHBS entries.
-> >=20
-> > Sorry for the confusion here!!=C2=A0 I was definitely not trying to
-> > blame
-> > PCI.=C2=A0 :)
-> >=20
-> > > ACPI to PCI association is then typical pci_root lookup, i.e.:
-> > >=20
-> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 pci_root =3D acpi_pci_find=
-_root(hb->handle);
-> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 bridge =3D pci_root->bus->=
-bridge;
-> >=20
-> > Yes, this here.=C2=A0 In my use case, I'm starting with a PCIe/CXL
-> > device.
-> > In my driver, I try to discover the host bridge, and then the ACPI
-> > _UID
-> > so I can look things up in the CEDT.
-> >=20
-> > So I'm trying to do the programmatic equivalent of this:
-> >=20
-> > Start here in my PCIe/CXL host driver:
-> >=20
-> > /sys/devices/pci0000:37/firmware_node =3D>
-> > ../LNXSYSTM:00/LNXSYBUS:00/ACPI0016:02
-> >=20
-> > Retrieve _UID (uid) from /sys/devices/pci0000:37/firmware_node/uid
-> >=20
-> > Buggy BIOS, that above value resolves to CX02.=C2=A0 In fact, it
-> > *should* be
-> > 49.=C2=A0 This is very much a bug in the ACPI arena.
-> >=20
-> > The kernel APIs allowing me to walk this path would fail in the
-> > acpi_evaluate_object() when trying to pass in the bad _UID (CX02).
-> >=20
-> > Again, sorry for the confusion if it looked like I was trying to
-> > implicate PCI in any way.=C2=A0 The whole intent here was to leave some
-> > breadcrumbs so anyone else running into this wouldn't be left
-> > scratching their heads wondering wtf was going on.
->=20
->=20
-> No worries, I didn't suspect a PCI issue here; I just wasn't clear on
-> what ACPI=3D>PCI mapping was involved.=C2=A0 It sounds like there *is* no
-> such mapping in this picture (you find the ACPI object for a PCIe/CXL
-> host bridge, evaluate _UID from that object, and get a bogus value).
->=20
-> So the commit log text:
->=20
-> =C2=A0 However, on some production systems from some vendors, a buggy BIO=
-S
-> =C2=A0 exists that improperly populates the ACPI =3D> PCI mappings.
->=20
-> apparently refers to improper implementation of the _UID, which
-> doesn't return anything PCI related.
+Likely an unnecessary remainder of the scripted UAPI cleanup that
+happened long ago...
 
-Agreed.  I'm happy to fix the commit message to be more accurate, if we
-move forward with rolling this or Dan's (better) approach to handling
-this.
+Signed-off-by: Thomas Huth <thuth@redhat.com>
+---
+ arch/microblaze/include/uapi/asm/setup.h | 3 ---
+ 1 file changed, 3 deletions(-)
 
->=20
-> It also says:
->=20
-> =C2=A0 This leads to the cxl_acpi driver to fail probe when it cannot fin=
-d
-> =C2=A0 the root port's _UID, in order to look up the device's CXL
-> =C2=A0 attributes in the CEDT.
->=20
-> I *think* strictly speaking this should refer to the *host bridge's*
-> _UID, not the Root Port's, e.g., something like this:
->=20
-> =C2=A0 However, on some production systems from some vendors, a buggy BIO=
-S
-> =C2=A0 provides a CXL host bridge _UID that doesn't match anything in the
-> =C2=A0 CEDT.
+diff --git a/arch/microblaze/include/uapi/asm/setup.h b/arch/microblaze/include/uapi/asm/setup.h
+index 6831794e6f2c..16c56807f86a 100644
+--- a/arch/microblaze/include/uapi/asm/setup.h
++++ b/arch/microblaze/include/uapi/asm/setup.h
+@@ -14,7 +14,4 @@
+ 
+ #define COMMAND_LINE_SIZE	256
+ 
+-# ifndef __ASSEMBLY__
+-
+-# endif /* __ASSEMBLY__ */
+ #endif /* _UAPI_ASM_MICROBLAZE_SETUP_H */
+-- 
+2.44.0
 
-Much better description.  I'll roll it in.
-
-I appreciate the look-over and inputs!
-
--PJ
 
