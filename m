@@ -1,127 +1,113 @@
-Return-Path: <linux-kernel+bounces-166506-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-166507-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E83438B9B97
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 15:25:52 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5EDAE8B9B9B
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 15:26:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2509A1C211BD
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 13:25:52 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 004FF1F22814
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 13:26:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 42A2884DF5;
-	Thu,  2 May 2024 13:25:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6FC2A84FDA;
+	Thu,  2 May 2024 13:26:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PEdNcM2I"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="XVNmndqb"
+Received: from relay3-d.mail.gandi.net (relay3-d.mail.gandi.net [217.70.183.195])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 840DC83CC5;
-	Thu,  2 May 2024 13:25:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B67C56443;
+	Thu,  2 May 2024 13:26:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.195
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714656344; cv=none; b=Nm7lUq51pP1+3aoMTxLTJx6ktFy3oDeGyEdn2wcpUEstQhz7nGjPiDEOVj0byMeJZ/f5KvuaBlLuN5clBQb1Z+VLCK86ahy/kBOPAMHALGFIrTAtFAgbP2qrdDEmqZznWZmqrDiYsdZoYJTxRzN2dvz4ZJh3FZGm1cX+jiRNQQQ=
+	t=1714656407; cv=none; b=JMixkO4ntRiGg1R0anxpTfbwR6XDL48cNBzsL7vGhZBlh9bj+3u3dm4cUNeqpvzikaNfFkXI7bbChdGu8NcxxXYwBnffsnmjoWuNjbXUtXQa+W/JF2zYfh4XQCicneLI3bxV3f5t7ij7dKNJJqbXhvPnmy3+2nqe+N2lm98pUYA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714656344; c=relaxed/simple;
-	bh=DvfYRYHvgsxTSZyqjmlAyayx/56nh7hHtnI5bpCN+2A=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=om4UT7KPRNBE4HiU9RPZBwBMsoTCf3lgvsUXnxs7gBnnY6lNc3k+UUIbowazaXtFjrRG76iAUi6KkYkifhAGsKZqsx8aHGjj5T7eiLbSH7+73i+FLAiXyHGp/NW+ubAf+xo14siJEJeZ2tUvaoOFGB3+EPNjcvuzOzFaOfNR+ug=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PEdNcM2I; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0D8FEC113CC;
-	Thu,  2 May 2024 13:25:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714656344;
-	bh=DvfYRYHvgsxTSZyqjmlAyayx/56nh7hHtnI5bpCN+2A=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=PEdNcM2I17MtW0rDVTMcO7IfhLLuPazC6GauJKMHdiAZqQBcSdFA0skf2gOaS/nas
-	 EUorKlh9C5JHh/w5eoEaoMM7/ANVHSZPSJH9veMQexzc7AAzpiVyeHXUoNv05x4m+U
-	 q/FCWWHMN8L/Ma9G/u9zlAsjtYiJspcrk7d5/lxPvA4gs39JjX/2Til1w2860sKdZJ
-	 7HBCWrq6lMlgLoaLyBsE/gxxZO+igJca3I/9kv7Op3gOb//YsoCR2YCLXu4HAVkOli
-	 1AtStUb1lm/u8uEUPSU90pX561aJJmodtpt97uIC4it8HeFUs4WxKfIhQsA9z0Vbi6
-	 QkH6DHAjqLRmQ==
-Received: from johan by xi.lan with local (Exim 4.97.1)
-	(envelope-from <johan@kernel.org>)
-	id 1s2WRW-000000005WP-3Swo;
-	Thu, 02 May 2024 15:25:47 +0200
-Date: Thu, 2 May 2024 15:25:46 +0200
-From: Johan Hovold <johan@kernel.org>
-To: quic_zijuhu <quic_zijuhu@quicinc.com>
-Cc: Tim Jiang <quic_tjiang@quicinc.com>,
-	Janaki Ramaiah Thota <quic_janathot@quicinc.com>,
-	linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: QCA NVM file for the X13s (WCN6855)
-Message-ID: <ZjOUWqor4q1Efy0W@hovoldconsulting.com>
-References: <ZjNxfFJmCgIyq8J6@hovoldconsulting.com>
- <5aea3149-ba44-400f-acc6-1a3eca8a7e72@quicinc.com>
+	s=arc-20240116; t=1714656407; c=relaxed/simple;
+	bh=c6EM1tMgmBGcGpom67ECrDo8FCaPc9M8RA3swMVce/4=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=UVdIUq9VXSAT2MbBkVOAFJbfgF8Dzsmv9hQr8KunDzai16RMRWsUuBvuf9MISOfmScqMWR+qJugHkBQ960wguc6l5EP4U3L7DrpGitUuhgRUGqk9jOqa72JljeGdnaKkkiLpLA3PYRqgPwMP13aZPSgaiaBnv6A/Z+LRKq5UTsM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=XVNmndqb; arc=none smtp.client-ip=217.70.183.195
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id A68C560002;
+	Thu,  2 May 2024 13:26:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1714656397;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Suweh1wFgszqifVDaAEkxYOgy+dULTJAN3r6qeEYhaA=;
+	b=XVNmndqbx0Ms5LAbzP/pgCn3MNdyu+87Ayr5Dpvlk4LNbRc8MvDjARSfsg/zVOVOi8QKVf
+	/MYcEgzLyFvl8cA5bpB8mr0VyD5nyQoDEIZpPsIFwLRXILqU1y3xztL3EMmLcctR8Nchh/
+	ktPL2p1xyRd69ptkd+PcFDucW62HuP/mETcUIg3XWp4hxAtU3AoPzGc2IlWUhyUOM/o11K
+	2poIowEp6vSTyyuUqWHp2Pex8y7q78pNYewdUnx+Qzi3COzdoKhtoTreRxOW006wu+tnlG
+	y1BswqSLi4Eq2ICWMj3wMDJ5uRPauBLbKP07ryS975wgBU3teix+aBctWg7mFg==
+Date: Thu, 2 May 2024 15:26:34 +0200
+From: Herve Codina <herve.codina@bootlin.com>
+To: Sai Krishna Gajula <saikrishnag@marvell.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>, Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley
+ <conor+dt@kernel.org>, "David S. Miller" <davem@davemloft.net>, Eric
+ Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo
+ Abeni <pabeni@redhat.com>, Lee Jones <lee@kernel.org>, Arnd Bergmann
+ <arnd@arndb.de>, Horatiu Vultur <horatiu.vultur@microchip.com>,
+ "UNGLinuxDriver@microchip.com" <UNGLinuxDriver@microchip.com>, Andrew Lunn
+ <andrew@lunn.ch>, Heiner Kallweit <hkallweit1@gmail.com>, Russell King
+ <linux@armlinux.org.uk>, Saravana Kannan <saravanak@google.com>, Bjorn
+ Helgaas <bhelgaas@google.com>, Philipp Zabel <p.zabel@pengutronix.de>, Lars
+ Povlsen <lars.povlsen@microchip.com>, Steen Hegelund
+ <Steen.Hegelund@microchip.com>, Daniel Machon
+ <daniel.machon@microchip.com>, Alexandre Belloni
+ <alexandre.belloni@bootlin.com>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>, "devicetree@vger.kernel.org"
+ <devicetree@vger.kernel.org>, "netdev@vger.kernel.org"
+ <netdev@vger.kernel.org>, "linux-pci@vger.kernel.org"
+ <linux-pci@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org"
+ <linux-arm-kernel@lists.infradead.org>, Allan Nielsen
+ <allan.nielsen@microchip.com>, Luca Ceresoli <luca.ceresoli@bootlin.com>,
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Subject: Re: [PATCH 07/17] net: mdio: mscc-miim: Handle the switch reset
+Message-ID: <20240502152634.546f66d3@bootlin.com>
+In-Reply-To: <BY3PR18MB4707BE42247B0A418EFEE35EA01A2@BY3PR18MB4707.namprd18.prod.outlook.com>
+References: <20240430083730.134918-1-herve.codina@bootlin.com>
+	<20240430083730.134918-8-herve.codina@bootlin.com>
+	<BY3PR18MB4707BE42247B0A418EFEE35EA01A2@BY3PR18MB4707.namprd18.prod.outlook.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-redhat-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5aea3149-ba44-400f-acc6-1a3eca8a7e72@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-GND-Sasl: herve.codina@bootlin.com
 
-On Thu, May 02, 2024 at 08:56:12PM +0800, quic_zijuhu wrote:
-> On 5/2/2024 6:57 PM, Johan Hovold wrote:
+Hi Sai,
 
-> > I noticed that you have both submitted firmware and NVM files for
-> > QCA2066 to linux-firmware. [1][2]
-> > 
-> > I'm working on Linux support for the Lenovo ThinkPad X13s (Windows on
-> > Arm, Snapdragon), which has the related WCN6855 controller that uses the
-> > same firmware (hpbtfw21.tlv).
+On Tue, 30 Apr 2024 09:21:57 +0000
+Sai Krishna Gajula <saikrishnag@marvell.com> wrote:
 
-> which SOC type does the machine use?  WCN6855 or QCA2066?
-
-It's WCN6855 but the Linux driver currently uses the firmware you pushed
-for QCA2066.
-
-> > The current Linux driver is using the generic NVM file (hpnv21.bin) for
-> > WCN6855, but connectivity is quite bad and I only get 2-3 meters of
-> > range.
-
-> > > Switching to the board-specific NVM configuration (hpnv21b.b8c) that
-> it seems hpnv21b.b8c is a wrong NVM name.
-> is it hpnv21g.b8c?
-
-I've only tested with the NVM file without the "g" infix, but there
-indeed also is a 'hpnv21g.b8c' in the Windows installation.
-
-What is the difference between those two?
-
-> > came with the Windows driver make all issues go away and the range is
-> > really good, but I'm not sure if that file is fully compatible with the
-> > firmware used by the Linux driver.
-> > 
-> > Could you help us submit an NVM configuration file for the controller
-> > with board id 0x008c to linux-firmware?
-> > 
-> For Windows OS, there are relevant channel to deliver BT firmware.
-> For Linux OS, we normally upload relevant BT firmware to linux-firmware.
+..
+> > @@ -270,11 +271,18 @@ static int mscc_miim_probe(struct platform_device
+> > *pdev)  {
+> >  	struct device_node *np = pdev->dev.of_node;
+> >  	struct regmap *mii_regmap, *phy_regmap;
+> > +	struct reset_control *reset;  
 > 
-> it seems customer would like to use Linux OS instead of preinstalled
-> Windows OS for the machine.
-> right?
+> Please follow reverse x-mass tree order
+> 
 
-Exactly. It's a Lenovo machine that comes with Windows pre-installed and
-we're working on enabling Linux on it with some help from Lenovo.
+Sure, this will be fixed in the next iteration.
 
-> need customer to make a request for their requirements if the answer is
-> yes for above question.
+Best regards,
+Hervé
 
-Lenovo has made requests for X13s firmware from Qualcomm and pushed it
-to linux-firmware [1], but they have not yet been able to get Qualcomm
-to provide an NVM configuration file for Bluetooth (I think the problem
-may be finding the right person to talk to inside Qualcomm).
-
-So I was hoping maybe you could help us with this since the difference
-between 'hpnv21.bin' that you pushed to linux-firmware and what came
-with Windows appears to be really small (e.g. just a few bytes).
-
-Johan
-
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/firmware/linux-firmware.git/commit/qcom?id=4ae4ae88918928e15006eb129ad981aa58216b59
+-- 
+Hervé Codina, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
 
