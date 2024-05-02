@@ -1,155 +1,193 @@
-Return-Path: <linux-kernel+bounces-166504-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-166505-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6BBC68B9B90
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 15:24:28 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B7F728B9B94
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 15:25:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1DBB31F227A0
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 13:24:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2FB031F22581
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 13:25:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E15F984FAC;
-	Thu,  2 May 2024 13:24:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A3DE184D03;
+	Thu,  2 May 2024 13:25:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="NPkP0GCu"
-Received: from relay9-d.mail.gandi.net (relay9-d.mail.gandi.net [217.70.183.199])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LnvSCM5r"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4216556B8B;
-	Thu,  2 May 2024 13:24:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.199
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2A4CC8F3;
+	Thu,  2 May 2024 13:25:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714656257; cv=none; b=iq+5DlvLWwCMi9Rt0rIDDixf0CTApVQeYjiKpiGH6cEymkXFtqh/nGE3xoqDcOEDtgLzyUVb19/solNrsRiSmozNUvyTMoIyXBSfvV4nHfMQiccNfKPt5Z746ZU8pd6/6e1/QJ3t9KeoOff99NJ+e2LoCmqvUnxRQ9PWHBKw1ng=
+	t=1714656318; cv=none; b=hEIf5/2TvTcDZ72ipMDphWkvfaE0x1jDeLDnWJbsfEfFA1espxP+UPd/p4aQErCB66LGGYmdoHIE74L9Ls/j1ZtPXmm1Rye5xCXs6a+c15oskPymKzBFXdkuGOyS4Pz2hrxW7w3FihQQ7XZngKY3VzdX8qZQ0aSEYDoK4BtVkPE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714656257; c=relaxed/simple;
-	bh=+xxCO+Xf/1cD5/co4TyZWT75lYmYABg2lLKlawfo68E=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=XX1AynHGAKSeiN2CJXwLtEUlR8FQbZUnobqFuvBQCMgU5c8OVmCWnKAbWop9EB99n7gt6rSvHJrvxJ1ERJNym807wtKpNB76pLFPk3aNDPiGy8Z6lxEnLRe/pBlhpgT41nV9xQymoTrr0P6hrfH6YU6V6uXNbascQN3xvY+Gymw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=NPkP0GCu; arc=none smtp.client-ip=217.70.183.199
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 75EF9FF808;
-	Thu,  2 May 2024 13:24:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1714656252;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=CpTPdiBa1OIGqNkEL6fPrCzTcfq7rb6C3wl4aQp+dcE=;
-	b=NPkP0GCumBTB70ynwkVX+XDO1XNVFTfvKLUT+5OWkYYJaNp8AJ76z1vAsGpmJg0N4r3Tk+
-	FQIxTPvPtsQ8tOlwx+qCvG5y1/4xi9k1myhBDuV5idzjf/12FH8pjfab79m6uA31VSRdWn
-	WPf3VGoVsxqvZNHqQ+FWJs+AVyZYGPBRey4ipNJMXXZpuSZXQbC833xBbFigo2Ajok9sjM
-	xxMNlmIAGc4X7SLAa8VmBs/B+Z4UQ2z6DJvwMiZt8BXY0BKRpgjTubPlHXbGzr57cy96d6
-	RnDbMHO/5by3VKF5YESRk+lRHpsYhPqTRVzNc+9M+9TohLszr/A2mK0q4K63LQ==
-Date: Thu, 2 May 2024 15:24:09 +0200
-From: Herve Codina <herve.codina@bootlin.com>
-To: Simon Horman <horms@kernel.org>
-Cc: Thomas Gleixner <tglx@linutronix.de>, Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley
- <conor+dt@kernel.org>, "David S. Miller" <davem@davemloft.net>, Eric
- Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo
- Abeni <pabeni@redhat.com>, Lee Jones <lee@kernel.org>, Arnd Bergmann
- <arnd@arndb.de>, Horatiu Vultur <horatiu.vultur@microchip.com>,
- UNGLinuxDriver@microchip.com, Andrew Lunn <andrew@lunn.ch>, Heiner Kallweit
- <hkallweit1@gmail.com>, Russell King <linux@armlinux.org.uk>, Saravana
- Kannan <saravanak@google.com>, Bjorn Helgaas <bhelgaas@google.com>, Philipp
- Zabel <p.zabel@pengutronix.de>, Lars Povlsen <lars.povlsen@microchip.com>,
- Steen Hegelund <Steen.Hegelund@microchip.com>, Daniel Machon
- <daniel.machon@microchip.com>, Alexandre Belloni
- <alexandre.belloni@bootlin.com>, linux-kernel@vger.kernel.org,
- devicetree@vger.kernel.org, netdev@vger.kernel.org,
- linux-pci@vger.kernel.org, linux-arm-kernel@lists.infradead.org, Allan
- Nielsen <allan.nielsen@microchip.com>, Luca Ceresoli
- <luca.ceresoli@bootlin.com>, Thomas Petazzoni
- <thomas.petazzoni@bootlin.com>
-Subject: Re: [PATCH 12/17] irqchip: Add support for LAN966x OIC
-Message-ID: <20240502152409.70a85339@bootlin.com>
-In-Reply-To: <20240430202451.GF2575892@kernel.org>
-References: <20240430083730.134918-1-herve.codina@bootlin.com>
-	<20240430083730.134918-13-herve.codina@bootlin.com>
-	<20240430202451.GF2575892@kernel.org>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-redhat-linux-gnu)
+	s=arc-20240116; t=1714656318; c=relaxed/simple;
+	bh=VHGDRaEUyUAYEKWtMh0zoRqWCqssfCu3JEMu5EWUUak=;
+	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=dPlz2b8y8tLz3dF6SckptGr6BzdKgfCHlZ8II2smPXZuB9qtNuo+joSTUwdsC/8R+R3ZGSnwAls+oHuxzYV/cPCUJPgPY2p5XQeCmZx9+aaI9Iw7vh+OVu8DjqZnBS5OVEBu9JDiJ7ZepBXM/G06E8y4PUDD0DoYaTJxDlL3m80=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LnvSCM5r; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3A926C113CC;
+	Thu,  2 May 2024 13:25:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714656318;
+	bh=VHGDRaEUyUAYEKWtMh0zoRqWCqssfCu3JEMu5EWUUak=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=LnvSCM5rZcc5DCMiNUN51DnrFBNFgZQLzh7cL9LK8dqkytPnEpCubvjmywMZZMscE
+	 EQVry4op6mSahi8OIUw7JsSXkkWjzvOMbK+jYiNvn8MSDFz92By3q+YF22Wcv56OIY
+	 5XGbB4OZy7UWahllCBEG1A8JcbqIyIT7+HJb2oGiCAbKxVNkQQU3bbQw6FjEN5XAPR
+	 3MnMNjPqi/cVxA/N5Wg06+6D44PKume0NEvtEb6R8GSb0ejHJb3I6+tYnt9i7BlMpk
+	 ZSontZCfqflBoxTCzCRpYki03X49kBlvZswxqTJhRzMTbndkcU/yv6aof9bHDddoaX
+	 306aFAIfhpYUQ==
+Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
+	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.95)
+	(envelope-from <maz@kernel.org>)
+	id 1s2WR1-00A0qE-L2;
+	Thu, 02 May 2024 14:25:15 +0100
+Date: Thu, 02 May 2024 14:25:14 +0100
+Message-ID: <867cgcqrb9.wl-maz@kernel.org>
+From: Marc Zyngier <maz@kernel.org>
+To: Zayd Qumsieh <zayd_qumsieh@apple.com>
+Cc: Catalin Marinas <catalin.marinas@arm.com>,
+    Will Deacon <will@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Justin Lu <ih_justin@apple.com>,
+	Ryan Houdek <Houdek.Ryan@fex-emu.org>,
+	Mark Brown <broonie@kernel.org>,
+	Ard Biesheuvel <ardb@kernel.org>,
+	Mateusz Guzik <mjguzik@gmail.com>,
+	Anshuman Khandual <anshuman.khandual@arm.com>,
+	Oliver Upton <oliver.upton@linux.dev>,
+	Miguel Luis <miguel.luis@oracle.com>,
+	Joey Gouly <joey.gouly@arm.com>,
+	Christoph Paasch <cpaasch@apple.com>,
+	Kees Cook <keescook@chromium.org>,
+	Sami Tolvanen <samitolvanen@google.com>,
+	Baoquan He <bhe@redhat.com>,
+	Joel Granados <j.granados@samsung.com>,
+	Dawei Li <dawei.li@shingroup.cn>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Florent Revest <revest@chromium.org>,
+	David Hildenbrand <david@redhat.com>,
+	Stefan Roesch <shr@devkernel.io>,
+	Andy Chiu <andy.chiu@sifive.com>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Oleg Nesterov <oleg@redhat.com>,
+	Helge Deller <deller@gmx.de>,
+	Zev Weiss <zev@bewilderbeest.net>,
+	Ondrej Mosnacek <omosnace@redhat.com>,
+	Miguel Ojeda <ojeda@kernel.org>,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	Asahi Linux <asahi@lists.linux.dev>
+Subject: Re: [PATCH 0/4] arm64: Support the TSO memory model
+In-Reply-To: <20240502001035.41083-1-zayd_qumsieh@apple.com>
+References: <87zftoqn7u.wl-maz@kernel.org>
+	<20240502001035.41083-1-zayd_qumsieh@apple.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/29.2
+ (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-GND-Sasl: herve.codina@bootlin.com
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: zayd_qumsieh@apple.com, catalin.marinas@arm.com, will@kernel.org, mark.rutland@arm.com, ih_justin@apple.com, Houdek.Ryan@fex-emu.org, broonie@kernel.org, ardb@kernel.org, mjguzik@gmail.com, anshuman.khandual@arm.com, oliver.upton@linux.dev, miguel.luis@oracle.com, joey.gouly@arm.com, cpaasch@apple.com, keescook@chromium.org, samitolvanen@google.com, bhe@redhat.com, j.granados@samsung.com, dawei.li@shingroup.cn, akpm@linux-foundation.org, revest@chromium.org, david@redhat.com, shr@devkernel.io, andy.chiu@sifive.com, josh@joshtriplett.org, oleg@redhat.com, deller@gmx.de, zev@bewilderbeest.net, omosnace@redhat.com, ojeda@kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, asahi@lists.linux.dev
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 
-Hi Simon,
+[adding Will back to the thread]
 
-On Tue, 30 Apr 2024 21:24:51 +0100
-Simon Horman <horms@kernel.org> wrote:
+On Thu, 02 May 2024 01:10:35 +0100,
+Zayd Qumsieh <zayd_qumsieh@apple.com> wrote:
+> 
+> > On Fri, 19 Apr 2024 17:58:09 +0100,
+> > Will Deacon <will@kernel.org> wrote:
+> > > 
+> > > On Thu, Apr 11, 2024 at 11:19:13PM +0900, Hector Martin wrote:
+> > > > On 2024/04/11 22:28, Will Deacon wrote:
+> > > > >   * Some binaries in a distribution exhibit instability which goes away
+> > > > >     in TSO mode, so a taskset-like program is used to run them with TSO
+> > > > >     enabled.
+> > > > 
+> > > > Since the flag is cleared on execve, this third one isn't generally
+> > > > possible as far as I know.
+> > > 
+> > > Ah ok, I'd missed that. Thanks.
+> > > 
+> > > > > In all these cases, we end up with native arm64 applications that will
+> > > > > either fail to load or will crash in subtle ways on CPUs without the TSO
+> > > > > feature. Assuming that the application cannot be fixed, a better
+> > > > > approach would be to recompile using stronger instructions (e.g.
+> > > > > LDAR/STLR) so that at least the resulting binary is portable. Now, it's
+> > > > > true that some existing CPUs are TSO by design (this is a perfectly
+> > > > > valid implementation of the arm64 memory model), but I think there's a
+> > > > > big difference between quietly providing more ordering guarantees than
+> > > > > software may be relying on and providing a mechanism to discover,
+> > > > > request and ultimately rely upon the stronger behaviour.
+> > > > 
+> > > > The problem is "just" using stronger instructions is much more
+> > > > expensive, as emulators have demonstrated. If TSO didn't serve a
+> > > > practical purpose I wouldn't be submitting this, but it does. This is
+> > > > basically non-negotiable for x86 emulation; if this is rejected
+> > > > upstream, it will forever live as a downstream patch used by the entire
+> > > > gaming-on-Mac-Linux ecosystem (and this is an ecosystem we are very
+> > > > explicitly targeting, given our efforts with microVMs for 4K page size
+> > > > support and the upcoming Vulkan drivers).
+> > > 
+> > > These microVMs sound quite interesting. What exactly are they? Are you
+> > > running them under KVM?
+> > > 
+> > > Ignoring the mechanism for the time being, would it solve your problem
+> > > if you were able to run specific microVMs in TSO mode, or do you *really*
+> > > need the VM to have finer-grained control than that? If the whole VM is
+> > > running in TSO mode, then my concerns largely disappear, as that's
+> > > indistinguishable from running on a hardware implementation that happens
+> > > to be TSO.
+> >
+> > Since KVM has been mentioned a few times, I'll give my take on this.
+> >
+> > Since day 1, it was a conscious decision for KVM/arm64 to emulate the
+> > architecture, and only that -- this is complicated enough. Meaning
+> > that no implementation-defined features should be explicitly exposed
+> > to the guest. So I have no plan to expose any such feature for
+> > userspace to configure TSO or anything else of the sort.
+> 
+> Agreed. We do not intend for TSO mode to be used extensively for EL1, the
+> intention is for TSO mode to be reserved for userspace applications that
+> request it.
 
-> On Tue, Apr 30, 2024 at 10:37:21AM +0200, Herve Codina wrote:
-> > The Microchip LAN966x outband interrupt controller (OIC) maps the
-> > internal interrupt sources of the LAN966x device to an external
-> > interrupt.
-> > When the LAN966x device is used as a PCI device, the external interrupt
-> > is routed to the PCI interrupt.
-> > 
-> > Signed-off-by: Herve Codina <herve.codina@bootlin.com>  
-> 
-> Hi Herve,
-> 
-> > +static int lan966x_oic_probe(struct platform_device *pdev)
-> > +{
-> > +	struct device_node *node = pdev->dev.of_node;
-> > +	struct lan966x_oic_data *lan966x_oic;
-> > +	struct device *dev = &pdev->dev;
-> > +	struct irq_chip_generic *gc;
-> > +	int ret;
-> > +	int i;
-> > +
-> > +	lan966x_oic = devm_kmalloc(dev, sizeof(*lan966x_oic), GFP_KERNEL);
-> > +	if (!lan966x_oic)
-> > +		return -ENOMEM;
-> > +
-> > +	lan966x_oic->regs = devm_platform_ioremap_resource(pdev, 0);
-> > +	if (IS_ERR(lan966x_oic->regs))
-> > +		return dev_err_probe(dev, PTR_ERR(lan966x_oic->regs),
-> > +				     "failed to map resource\n");
-> > +
-> > +	lan966x_oic->domain = irq_domain_alloc_linear(of_node_to_fwnode(node),
-> > +						      LAN966X_OIC_NR_IRQ,
-> > +						      &irq_generic_chip_ops, NULL);  
-> 
-> nit: Please consider limiting lines to 80 columns wide in Networking code.
+But that's the same thing for a hypervisor.
 
-This will be done in the next iteration.
+For usersoace in a VM to make use of any feature, it must be exposed
+to the VM as a whole by the host VMM (QEMU, kvmtool, whatever). Which
+means having a new userspace ABI, specific to KVM, exposing a feature
+for which there is no spec whatsoever. Even worse, you cannot discover
+whether the instruction you must use to context switch the ACTLR_EL1
+register is implemented. Isn't that great?
 
-> 
-> > +	if (!lan966x_oic->domain) {
-> > +		dev_err(dev, "failed to create an IRQ domain\n");
-> > +		return -EINVAL;
-> > +	}
-> > +
-> > +	lan966x_oic->irq = platform_get_irq(pdev, 0);
-> > +	if (lan966x_oic->irq < 0) {
-> > +		dev_err_probe(dev, lan966x_oic->irq, "failed to get the IRQ\n");
-> > +		goto err_domain_free;  
-> 
-> Hi,
-> 
-> This will result in the function returning ret.
-> However, ret is uninitialised here.
-> 
-> Flagged by W=1 builds with clang-18, and Smatch.
+And I'm not even talking about the joys of migrating such a VM,
+because we have no clue what this bit means on other implementations.
+For all we know it causes another CPU to catch fire (or go PDP-endian,
+which is basically the same).
 
-Indeed, this fill be fixed in the next iteration.
+Which is why my proposal is for this bit to be set statically for
+*all* VMs, and leave the kernel (and KVM) out of the picture
+altogether. At least that is something we can reason about (although
+someone would need to start thinking of how this particular TSO
+implementation composes with the relaxed memory ordering used outside
+of the VM and show that they actually lead to correct results for
+something such as virtio, for example).
 
-Best regards,
-Hervé
+Thanks,
+
+	M.
 
 -- 
-Hervé Codina, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+Without deviation from the norm, progress is not possible.
 
