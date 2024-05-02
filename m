@@ -1,166 +1,287 @@
-Return-Path: <linux-kernel+bounces-166039-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-166040-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CEBAF8B9517
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 09:09:50 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id BBC168B951E
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 09:17:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F14171C20C3D
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 07:09:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2F2121F21CEC
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 07:17:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA555224EF;
-	Thu,  2 May 2024 07:09:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 17D7F21A0B;
+	Thu,  2 May 2024 07:17:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="jaUGu14h"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="fRR2/yJX"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 76B6C1CA96;
-	Thu,  2 May 2024 07:09:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68B20224D7
+	for <linux-kernel@vger.kernel.org>; Thu,  2 May 2024 07:17:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714633782; cv=none; b=ftSBidOLG8vhi4Vy5uMJG4MjGNIIkuKbnpnNWC5gc5uy6jt+SdNQVugWVGI80YLK1Ut5Lg0DWLsTlzB5Hb/AYpE8gfP1jr6MeNAYUEsZaAXhsBOcOaT068dIDcvFOtyu2813ejlDYRXiqb0n0ydUaZQiIOxFqPcnrrTHkUFBC6Q=
+	t=1714634234; cv=none; b=LZMdiOmDngarBnJcrNhlfRJnttboJmI+XU9ecArs4cvdJXthdVIIj2eleBEHYOs2z7Z5Uo7AxbYWgVlhhhm2xVmgQ7omuU/BfUflMhA9FUU06vKP5PpN5oqREbIjL5W3gnDaNKsRl1rF5JxVjAWy1NsU7kyfRGs6IawAA22P8Sg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714633782; c=relaxed/simple;
-	bh=ADRmS8f5vU4gR759YBeJrW1kSqxBWwnLaBbxtr3BdyI=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=qKESVSHqzfGrDvP1CqluW0d3QTudALD3n+3ICBODuZrbWNzIQ/VayPS1bF7fmr3a7YU2DQOReNL7RXwq2uE80GYs2OzIzMs0wYMwRcHN1dlkdnmFqKMOiMAq/mgeKlfH6Jk/O9AWiZnOzTGybp7YQ9mueJjsYrCGzvmDD1eNubs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=jaUGu14h; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1714633778;
-	bh=ADRmS8f5vU4gR759YBeJrW1kSqxBWwnLaBbxtr3BdyI=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=jaUGu14hawcP302lr4k1pmDYsIMtScgmJrmTM3oV8z5BRSe5xRJX5ocGShY45do0k
-	 gDq9AFrNCJYrXfYKal5XGxtqL0lFFBmgc4pUSoaGA74WFb/XiQRDDAtIgZt1Wqvo6t
-	 Qapry2plpOfsZoof4zhQBV2CUi5Xgz3tJe+eeZeyuxfuMtI/Qeiop+8KmISga7Rij2
-	 X09JNsTZQx1/GCWEmcazxIKbS7+Xt2Vy9IAV+8oZ0qMGR8BV3dYVj4UJUyx+VJAGLh
-	 rWvlWtAV0chkeUQM3MWiMX4nIgTbwMaR9G+TQxLm5iSr9WpszLnEAQXrPHb5Qxz5po
-	 yB9XQVTPTvfKA==
-Received: from localhost (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: bbrezillon)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 67BD3378001E;
-	Thu,  2 May 2024 07:09:37 +0000 (UTC)
-Date: Thu, 2 May 2024 09:09:36 +0200
-From: Boris Brezillon <boris.brezillon@collabora.com>
-To: =?UTF-8?B?QWRyacOhbg==?= Larumbe <adrian.larumbe@collabora.com>
-Cc: Qiang Yu <yuq825@gmail.com>, Maarten Lankhorst
- <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>,
- Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>,
- Daniel Vetter <daniel@ffwll.ch>, Rob Herring <robh@kernel.org>, Steven
- Price <steven.price@arm.com>, Sumit Semwal <sumit.semwal@linaro.org>,
- Christian Koenig= <christian.koenig@amd.com>, Dmitry Osipenko
- <dmitry.osipenko@collabora.com>, Zack Rusin <zack.rusin@broadcom.com>,
- kernel@collabora.com, dri-devel@lists.freedesktop.org,
- lima@lists.freedesktop.org, linux-kernel@vger.kernel.org,
- linux-media@vger.kernel.org, linaro-mm-sig@lists.linaro.org
-Subject: Re: [PATCH v3 1/2] drm/panfrost: Fix dma_resv deadlock at drm
- object pin time
-Message-ID: <20240502090936.2156c025@collabora.com>
-In-Reply-To: <20240501065650.2809530-2-adrian.larumbe@collabora.com>
-References: <20240501065650.2809530-1-adrian.larumbe@collabora.com>
-	<20240501065650.2809530-2-adrian.larumbe@collabora.com>
-Organization: Collabora
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-redhat-linux-gnu)
+	s=arc-20240116; t=1714634234; c=relaxed/simple;
+	bh=7TpwHRC8mNhefr1Z9wG9HCEWGdaojPeMn62/wY12xTI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=HcthqovfpVG/VJmzZaswpK5L6R1/2UKvGFVLXFsloGr/xEsHjQ1lXL1nwWNWq8N9QxD3VtKwhbXlN4tYXxluUM9tYNb6wiMRoL9ONPKWjXsR/BlXhTDZKdrlkBlgqjFGX5GY16K0O7H+CfMy/raH6rd0ZWu19Isfp/NpN+RS+/4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=fRR2/yJX; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1714634231;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=OIDhyH20/Kg5nJwECZysNFVnVnJydF4EiDXJ0DvvH0A=;
+	b=fRR2/yJXEPym3jxHi0Pvjfs2itTUuoaq76aL7hmL6a8hGvGLBEJXZ4dNdTvN2Ps9l/Ir0o
+	+N9ZKiU7Zla+0VX+4PL+DgSPEbZTd2yMisray87h6cx9rqQiu5G2qTDLkpU2ZpL29yxqUV
+	tFC7tYelkad2i/wqYMhcCrWAgLRVe3g=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-461-NBAIsUF2NHG_pggmILh4gw-1; Thu, 02 May 2024 03:17:08 -0400
+X-MC-Unique: NBAIsUF2NHG_pggmILh4gw-1
+Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-416e58bdc0eso34107355e9.0
+        for <linux-kernel@vger.kernel.org>; Thu, 02 May 2024 00:17:08 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714634227; x=1715239027;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
+         :content-language:references:to:subject:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=OIDhyH20/Kg5nJwECZysNFVnVnJydF4EiDXJ0DvvH0A=;
+        b=RpHjdHdrSo5J7I5ONZgAHdOb8IrSnMlcO03f5J/2nONU5XOpRfV0MoYDFkT6m31NSi
+         r9M8cVLjLvLSM/t8H6coZDrcSnTla5jHj8NCKzGjiQf6P50WIe245mj9DuTiRFdliXzh
+         A77grLz+6uALSFaQQidxetVR/X9P0YVPUoF197t3Q084kFgWOaQJ+CSmIdkx9tX27W+2
+         v1YDid9DCZWcePRGABy/Fzssj3ufEp6gV7LIsZ4i2nMootWAkGN7W3ufDHV3cohX002p
+         4v+BVZhaH54Qexr4cGbXCXpcq7qxccSLxgtzPOtuWHuKLeNhfhfBYLOCpwESD3HWOWrP
+         fsdA==
+X-Forwarded-Encrypted: i=1; AJvYcCWBRmGPB2jutRtV62b+4Qenl2x20xUsx2XihqIJh7u5eLepUXKecH3VpzEtGDTsHdRVbihero3DYXlh2kDdKqN4UXxRz6Iw5yF20nsy
+X-Gm-Message-State: AOJu0YzqtYJ84R2lqSfVyXZVIANVAodKEqgqPN65WTIxSmEyIN5OLVpw
+	4oo0C1xrpBiXnpalkg78UffUCvu4lVfd8dmsBShmcCHJ5AYfMoGLnJ+KJqFTy5tknnlM2pCSEQ/
+	OAl0zy0JfO8ApS8FZY55Xn9C8GM7QbT8f+e57zeyF5KkErXd67EEXfB6KY/MtOg==
+X-Received: by 2002:a05:600c:28f:b0:41a:5958:d6ac with SMTP id 15-20020a05600c028f00b0041a5958d6acmr3324885wmk.21.1714634227174;
+        Thu, 02 May 2024 00:17:07 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IF07gI3S4azoLNp9q3O2vtJeRnV5wS6cxOWEbtkm5Hj9oe2Cb4AiFxdx1hXKm+bYVrxjlVctA==
+X-Received: by 2002:a05:600c:28f:b0:41a:5958:d6ac with SMTP id 15-20020a05600c028f00b0041a5958d6acmr3324864wmk.21.1714634226701;
+        Thu, 02 May 2024 00:17:06 -0700 (PDT)
+Received: from ?IPV6:2003:cb:c71e:bf00:eba1:3ab9:ab0f:d676? (p200300cbc71ebf00eba13ab9ab0fd676.dip0.t-ipconnect.de. [2003:cb:c71e:bf00:eba1:3ab9:ab0f:d676])
+        by smtp.gmail.com with ESMTPSA id g19-20020a05600c311300b0041496734318sm4660626wmo.24.2024.05.02.00.17.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 02 May 2024 00:17:06 -0700 (PDT)
+Message-ID: <d320cf89-768f-4ae8-8a32-dff4e5699f0a@redhat.com>
+Date: Thu, 2 May 2024 09:17:05 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 2/2] hv_balloon: Enable hot-add for memblock sizes >
+ 128 MiB
+To: mhklinux@outlook.com, haiyangz@microsoft.com, wei.liu@kernel.org,
+ decui@microsoft.com, linux-kernel@vger.kernel.org,
+ linux-hyperv@vger.kernel.org
+References: <20240501151458.2807-1-mhklinux@outlook.com>
+ <20240501151458.2807-2-mhklinux@outlook.com>
+Content-Language: en-US
+From: David Hildenbrand <david@redhat.com>
+Autocrypt: addr=david@redhat.com; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat
+In-Reply-To: <20240501151458.2807-2-mhklinux@outlook.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Wed,  1 May 2024 07:55:59 +0100
-Adri=C3=A1n Larumbe <adrian.larumbe@collabora.com> wrote:
-
-> When Panfrost must pin an object that is being prepared a dma-buf
-> attachment for on behalf of another driver, the core drm gem object pinni=
-ng
-> code already takes a lock on the object's dma reservation.
->=20
-> However, Panfrost GEM object's pinning callback would eventually try taki=
-ng
-> the lock on the same dma reservation when delegating pinning of the object
-> onto the shmem subsystem, which led to a deadlock.
->=20
-> This can be shown by enabling CONFIG_DEBUG_WW_MUTEX_SLOWPATH, which throws
-> the following recursive locking situation:
->=20
-> weston/3440 is trying to acquire lock:
-> ffff000000e235a0 (reservation_ww_class_mutex){+.+.}-{3:3}, at: drm_gem_sh=
-mem_pin+0x34/0xb8 [drm_shmem_helper]
-> but task is already holding lock:
-> ffff000000e235a0 (reservation_ww_class_mutex){+.+.}-{3:3}, at: drm_gem_pi=
-n+0x2c/0x80 [drm]
->=20
-> Fix it by assuming the object's reservation had already been locked by the
-> time we reach panfrost_gem_pin.
-
-You should probably mention that drm_gem_shmem_object_pin() assumes the
-lock to be held, thus explaining the drm_gem_shmem_pin() ->
-drm_gem_shmem_object_pin() transition.
-
-Oh, and the commit message refers explicitly to Panfrost in a few places
-even though you're fixing Lima as well.
-
->=20
-> Do the same thing for the Lima driver, as it most likely suffers from the
-> same issue.
->=20
-> Cc: Thomas Zimmermann <tzimmermann@suse.de>
-> Cc: Dmitry Osipenko <dmitry.osipenko@collabora.com>
-> Cc: Boris Brezillon <boris.brezillon@collabora.com>
-> Cc: Steven Price <steven.price@arm.com>
-> Fixes: a78027847226 ("drm/gem: Acquire reservation lock in drm_gem_{pin/u=
-npin}()")
-> Signed-off-by: Adri=C3=A1n Larumbe <adrian.larumbe@collabora.com>
-
-With the commit message adjusted as suggested,
-
-Reviewed-by: Boris Brezillon <boris.brezillon@collabora.com>
-
+On 01.05.24 17:14, mhkelley58@gmail.com wrote:
+> From: Michael Kelley <mhklinux@outlook.com>
+> 
+> The Hyper-V balloon driver supports hot-add of memory in addition
+> to ballooning. Current code hot-adds in fixed size chunks of
+> 128 MiB (fixed constant HA_CHUNK in the code). While this works
+> in Hyper-V VMs with 64 GiB or less or memory where the Linux
+> memblock size is 128 MiB, the hot-add fails for larger memblock
+> sizes because add_memory() expects memory to be added in chunks
+> that match the memblock size. Messages like the following are
+> reported when Linux has a 256 MiB memblock size:
+> 
+> [  312.668859] Block size [0x10000000] unaligned hotplug range:
+>                 start 0x310000000, size 0x8000000
+> [  312.668880] hv_balloon: hot_add memory failed error is -22
+> [  312.668984] hv_balloon: Memory hot add failed
+> 
+> Larger memblock sizes are usually used in VMs with more than
+> 64 GiB of memory, depending on the alignment of the VM's
+> physical address space.
+> 
+> Fix this problem by having the Hyper-V balloon driver determine
+> the Linux memblock size, and process hot-add requests in that
+> chunk size instead of a fixed 128 MiB. Also update the hot-add
+> alignment requested of the Hyper-V host to match the memblock
+> size.
+> 
+> The code changes look significant, but in fact are just a
+> simple text substitution of a new global variable for the
+> previous HA_CHUNK constant. No algorithms are changed except
+> to initialize the new global variable and to calculate the
+> alignment value to pass to Hyper-V. Testing with memblock
+> sizes of 256 MiB and 2 GiB shows correct operation.
+> 
+> Signed-off-by: Michael Kelley <mhklinux@outlook.com>
 > ---
->  drivers/gpu/drm/lima/lima_gem.c         | 2 +-
->  drivers/gpu/drm/panfrost/panfrost_gem.c | 2 +-
->  2 files changed, 2 insertions(+), 2 deletions(-)
->=20
-> diff --git a/drivers/gpu/drm/lima/lima_gem.c b/drivers/gpu/drm/lima/lima_=
-gem.c
-> index 7ea244d876ca..c4e0f9faaa47 100644
-> --- a/drivers/gpu/drm/lima/lima_gem.c
-> +++ b/drivers/gpu/drm/lima/lima_gem.c
-> @@ -185,7 +185,7 @@ static int lima_gem_pin(struct drm_gem_object *obj)
->  	if (bo->heap_size)
->  		return -EINVAL;
-> =20
-> -	return drm_gem_shmem_pin(&bo->base);
-> +	return drm_gem_shmem_object_pin(obj);
->  }
-> =20
->  static int lima_gem_vmap(struct drm_gem_object *obj, struct iosys_map *m=
-ap)
-> diff --git a/drivers/gpu/drm/panfrost/panfrost_gem.c b/drivers/gpu/drm/pa=
-nfrost/panfrost_gem.c
-> index d47b40b82b0b..f268bd5c2884 100644
-> --- a/drivers/gpu/drm/panfrost/panfrost_gem.c
-> +++ b/drivers/gpu/drm/panfrost/panfrost_gem.c
-> @@ -192,7 +192,7 @@ static int panfrost_gem_pin(struct drm_gem_object *ob=
-j)
->  	if (bo->is_heap)
->  		return -EINVAL;
-> =20
-> -	return drm_gem_shmem_pin(&bo->base);
-> +	return drm_gem_shmem_object_pin(obj);
->  }
-> =20
->  static enum drm_gem_object_status panfrost_gem_status(struct drm_gem_obj=
-ect *obj)
+> Changes in v2:
+> * Change new global variable name from ha_chunk_pgs to
+>    ha_pages_in_chunk [David Hildenbrand]
+> * Use kernel macros ALIGN(), ALIGN_DOWN(), and umin()
+>    to simplify code and reduce references to HA_CHUNK. For
+>    ease of review, this is done in a new patch preceeding
+>    this one. [David Hildenbrand]
+> 
+>   drivers/hv/hv_balloon.c | 55 +++++++++++++++++++++++++----------------
+>   1 file changed, 34 insertions(+), 21 deletions(-)
+> 
+> diff --git a/drivers/hv/hv_balloon.c b/drivers/hv/hv_balloon.c
+> index 9f45b8a6762c..e0a1a18041ca 100644
+> --- a/drivers/hv/hv_balloon.c
+> +++ b/drivers/hv/hv_balloon.c
+> @@ -425,11 +425,11 @@ struct dm_info_msg {
+>    * The range start_pfn : end_pfn specifies the range
+>    * that the host has asked us to hot add. The range
+>    * start_pfn : ha_end_pfn specifies the range that we have
+> - * currently hot added. We hot add in multiples of 128M
+> - * chunks; it is possible that we may not be able to bring
+> - * online all the pages in the region. The range
+> + * currently hot added. We hot add in chunks equal to the
+> + * memory block size; it is possible that we may not be able
+> + * to bring online all the pages in the region. The range
+>    * covered_start_pfn:covered_end_pfn defines the pages that can
+> - * be brough online.
+> + * be brought online.
+>    */
+>   
+>   struct hv_hotadd_state {
+> @@ -505,8 +505,9 @@ enum hv_dm_state {
+>   
+>   static __u8 recv_buffer[HV_HYP_PAGE_SIZE];
+>   static __u8 balloon_up_send_buffer[HV_HYP_PAGE_SIZE];
+> +static unsigned long ha_pages_in_chunk;
+> +
+>   #define PAGES_IN_2M (2 * 1024 * 1024 / PAGE_SIZE)
+> -#define HA_CHUNK (128 * 1024 * 1024 / PAGE_SIZE)
+>   
+>   struct hv_dynmem_device {
+>   	struct hv_device *dev;
+> @@ -724,21 +725,21 @@ static void hv_mem_hot_add(unsigned long start, unsigned long size,
+>   	unsigned long processed_pfn;
+>   	unsigned long total_pfn = pfn_count;
+>   
+> -	for (i = 0; i < (size/HA_CHUNK); i++) {
+> -		start_pfn = start + (i * HA_CHUNK);
+> +	for (i = 0; i < (size/ha_pages_in_chunk); i++) {
+> +		start_pfn = start + (i * ha_pages_in_chunk);
+>   
+>   		scoped_guard(spinlock_irqsave, &dm_device.ha_lock) {
+> -			has->ha_end_pfn +=  HA_CHUNK;
+> -			processed_pfn = umin(total_pfn, HA_CHUNK);
+> +			has->ha_end_pfn += ha_pages_in_chunk;
+> +			processed_pfn = umin(total_pfn, ha_pages_in_chunk);
+>   			total_pfn -= processed_pfn;
+> -			has->covered_end_pfn +=  processed_pfn;
+> +			has->covered_end_pfn += processed_pfn;
+>   		}
+>   
+>   		reinit_completion(&dm_device.ol_waitevent);
+>   
+>   		nid = memory_add_physaddr_to_nid(PFN_PHYS(start_pfn));
+>   		ret = add_memory(nid, PFN_PHYS((start_pfn)),
+> -				(HA_CHUNK << PAGE_SHIFT), MHP_MERGE_RESOURCE);
+> +				(ha_pages_in_chunk << PAGE_SHIFT), MHP_MERGE_RESOURCE);
+>   
+
+HA_BYTES_IN_CHUNK might be reasonable to have (see below)
+
+>   	if (do_hot_add)
+> @@ -1807,10 +1808,13 @@ static int balloon_connect_vsp(struct hv_device *dev)
+>   	cap_msg.caps.cap_bits.hot_add = hot_add_enabled();
+>   
+>   	/*
+> -	 * Specify our alignment requirements as it relates
+> -	 * memory hot-add. Specify 128MB alignment.
+> +	 * Specify our alignment requirements for memory hot-add. The value is
+> +	 * the log base 2 of the number of megabytes in a chunk. For example,
+> +	 * with 256 MiB chunks, the value is 8. The number of MiB in a chunk
+> +	 * must be a power of 2.
+>   	 */
+> -	cap_msg.caps.cap_bits.hot_add_alignment = 7;
+> +	cap_msg.caps.cap_bits.hot_add_alignment =
+> +			ilog2(ha_pages_in_chunk >> (20 - PAGE_SHIFT));
+
+I was wondering if we can remove some of the magic here. Something along 
+the lines of:
+
+ilog2(ha_pages_in_chunk / (SZ_1M >> PAGE_SHIFT))
+
+or simply
+
+#define HA_BYTES_IN_CHUNK (ha_pages_in_chunk << PAGE_SHIFT)
+
+ilog2(HA_BYTES_IN_CHUNK / SZ_1M)
+
+
+Apart from that nothing jumped at me; looks much cleaner.
+
+Reviewed-by: David Hildenbrand <david@redhat.com>
+
+-- 
+Cheers,
+
+David / dhildenb
 
 
