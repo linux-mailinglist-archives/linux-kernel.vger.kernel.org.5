@@ -1,80 +1,80 @@
-Return-Path: <linux-kernel+bounces-166383-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-166382-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D44918B99E2
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 13:16:44 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 69D288B99E1
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 13:16:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6542F1F2450E
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 11:16:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 07A76284537
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 11:16:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC1A469944;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4949B65194;
 	Thu,  2 May 2024 11:16:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b="fKx7hk+U"
+	dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b="XBPQRvcj"
 Received: from smtp-relay-internal-1.canonical.com (smtp-relay-internal-1.canonical.com [185.125.188.123])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5DA8264CFC
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2968A64CE1
 	for <linux-kernel@vger.kernel.org>; Thu,  2 May 2024 11:16:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.125.188.123
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714648588; cv=none; b=dngQmLG9zDWgFyjAiBjblfxpJXxGptKCaoYn2llKe4393/hpDNhS1JFuES9JXE1BbPwsCFoci/xVcbkkC1MLmkxpCItt753rRMkWvNrXWmb+9N5ixSHDVNaOpFN/H0iS21PZ6uHyCricSX2hgG0ek7Xl+3Xph2oAsuzfLNzHcBY=
+	t=1714648587; cv=none; b=Ge9UCPUETQredf5M0TUocn8DSMEbAT2QOdTeCALJVmRESWPBJ50pR7qdmxgg0XifB+geQbcZw6CDzHkRV0/tKK8lWpM3oezo0garRTK+2LAF+4g1qMenPr+nmygB4wUeQbcdaDXSB6SpMNUlR4OpemQ1ohhANV1Ow631jorVia4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714648588; c=relaxed/simple;
-	bh=7s1M5OYDc+LWVWpSbYQemQMh9geLdoxMPq2vKB3i6UI=;
+	s=arc-20240116; t=1714648587; c=relaxed/simple;
+	bh=jAfPxDaZQf+Z3EoMBa2T7YQWg15qnOSgj0+XC4k/BRE=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=DNT7v+tAFj4OEmTl/vBQHHyVX7E1n5g19zq4yeh0mW4lui/eu6vVGMdshYSO1a+iEjqQ27U6hOqBKwrNV3N6e9VpyN7kolU1XA/KWEQfsW2c2Ey1GwgH/91kwxUbSIz5mCchrN4/SZUYFKEWVfyan2btb44H/h1/xkjMFTVPL5Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com; spf=pass smtp.mailfrom=canonical.com; dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b=fKx7hk+U; arc=none smtp.client-ip=185.125.188.123
+	 MIME-Version; b=e88ayRY37bElMAQpF918kr3fbmJNoA7Cs+VeGm2F6JuvzqXgLxkFCVRSp+vz3xP5lvFxJSPw9k8MTQOe23uHTt5v6Iq3l/NZtMI+Iackrad0yevCfEkz7QEouBzy2ybzTT4htd1QhBXEjq51T20V0CfyZdXMUlxsp9U49DasVfk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com; spf=pass smtp.mailfrom=canonical.com; dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b=XBPQRvcj; arc=none smtp.client-ip=185.125.188.123
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canonical.com
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com [209.85.218.71])
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com [209.85.218.72])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 8C5833FE62
+	by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id BAD223FE64
 	for <linux-kernel@vger.kernel.org>; Thu,  2 May 2024 11:16:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
 	s=20210705; t=1714648582;
-	bh=MK9pS8zh0OAd8/YKYBCNbvjlHmkQLgxQ6JtcNKhjMOU=;
+	bh=9viCGe21wce589SPhaLpq63lHm2lNcUSGMl+Cs89goo=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
 	 MIME-Version;
-	b=fKx7hk+UP9wGhEJgc+atiCRs7VgqD6FAHc/fv84q906/2uvB4SbdXpSK+RzgTvT51
-	 ewdZg5HwPENzu9rAxG3cvC+20HJ/zr6KreI64U62lPHKzA+JSB3DQPlACbQerVe39n
-	 uu8in9WvBW2gvTcaayYcyPnCoR2COMVYoWCLxhIIp9OaMoQk+0rDHhPTLp32rVgVTQ
-	 wocEYaKZXa2VnDzg+tNJekvnJezWcjMqYJB9AKB488Ffqz9SRv6HPZdncLIkDSuUA6
-	 Fo9tPNd3y7bB17M4j0HKqNMyrxredb5d6L9nmGFGKafsyZRv2ZF+h+kmQ0fLj0a5B2
-	 FH5wZN5fktWTg==
-Received: by mail-ej1-f71.google.com with SMTP id a640c23a62f3a-a592c35ac06so180905966b.0
+	b=XBPQRvcjxx+qiYmBQ0T4dv8RbPvuHEe3jYPS5UXX9VLELwIHEbzpt6n+TVjYVvYz2
+	 owovTOpuv8Fp3V0WZeY8gyuHgGh+s6mFwMOVVDkPCeCvYqA41XagmpRksS/yQTdc6c
+	 0zYhlDX3fZFw7cCYImGYZnkWl+ZoFSJ5Kp4JSGNrtd+Ki1YuVnDngB9dTq+MNoNnB4
+	 xHzAu1pZ3FysTrvQkkmsCNT6Em8D6shv3EFMWPnoOCvQKhWGCynSqpAINRa5O965Ij
+	 Bq9bX7/LpUnO9p4V+31Fzw8CEShG0juj8P9h+2V8fb29BT3baDc2nEGaiJyJidZZvS
+	 h9NOPNd69qJDw==
+Received: by mail-ej1-f72.google.com with SMTP id a640c23a62f3a-a4455ae71fcso420270466b.3
         for <linux-kernel@vger.kernel.org>; Thu, 02 May 2024 04:16:22 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20230601; t=1714648577; x=1715253377;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=MK9pS8zh0OAd8/YKYBCNbvjlHmkQLgxQ6JtcNKhjMOU=;
-        b=KyW28zlPe9x0aQNX/VtxRKZ0vNVnFjbZ6JnSFLqDqz7iFQno89LQWYVY1h1Ln0SROH
-         Q65givqbSEYyp7euSditKFHRIvxEra6PuRoxUS3bOmyL+lcCerLfiij2uHa/sMe5dwiw
-         opey1Ol6a+nQmccIF4Voej8sV2+gz73tz9atAfq3SRJ+6Zb03WntZ9BaucH7PYGFbELQ
-         oLl4lwEH+5OoiWT4M9hQnoiL2NGktNVoVfN1/61tyd3LOZlG9RobBjJ6do22ilmwQuD0
-         M8piXPPpEDz6bXueBU8E4WOd4m8ciawwy9PgdDN8m7iHe2MGqiYK7hlxUcTyCHtBdQxN
-         +ABg==
-X-Forwarded-Encrypted: i=1; AJvYcCWiipVDof0W01bALntyt1toSV6KAj8rWtrB4MMgBWo7r59A6jVnC+YffwaiXwL5/w9+CB2o4ZRgd7frT3h9xpkDs1LfL45bodIdKmmE
-X-Gm-Message-State: AOJu0YyRg0FGlDrav94sEBFhYrP68PBTB/Kytjg90SjAA9yghDv14HxK
-	1jjS+KD00eg/yt1X3wa4lnNaSw4i3At+PZaAh4Tq5yAZ42mfbvIVJoh1QZDxPtO1iPLhGysRNbT
-	MuWLcrxSt4rzHXhFK48q0mF7877ilq+jRnb89JRfVdIjK3NVvZrCp9rpCdoyUCcmM24k0MuQ0mm
-	wbI0rwDYnd+w==
-X-Received: by 2002:a17:906:248b:b0:a58:eb0d:f2a6 with SMTP id e11-20020a170906248b00b00a58eb0df2a6mr1882989ejb.31.1714648576859;
-        Thu, 02 May 2024 04:16:16 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IF7LnYqMf09AgSTE93ChylTc81npf1nJHpjVmGmIFbInD5oUeTRsn+ecAVqhExu0Tv8wF6tLQ==
-X-Received: by 2002:a17:906:248b:b0:a58:eb0d:f2a6 with SMTP id e11-20020a170906248b00b00a58eb0df2a6mr1882976ejb.31.1714648576542;
-        Thu, 02 May 2024 04:16:16 -0700 (PDT)
+        bh=9viCGe21wce589SPhaLpq63lHm2lNcUSGMl+Cs89goo=;
+        b=uMgPWNQBHnEGJyyj7eWrux4RIiueoJ84fIWH+rfUgEwGSWH8T8ch3RcPtwynAUoegz
+         tK3Jnnikqx22J9Ig3M5UPlp5Wkl8TFB4RlLH4QA1ezzqj42NIazYC3lKT6cAIrW+2+B4
+         yysHvp/hirJfA1Br/UHLs/d+Ze/8LF7eqj8cJdjwWY4/aj3cwqKzXFc6lX7oHf7TFvUF
+         QE8uECJkyni9w7ND8AkIYd63Uxuy4nm/6AG16Rf7z3O+romI9sv9EVjs8hwVLwJEn1BA
+         nsA4cBoOtGdWtbaXs3r5MXdGtc9TAhxQLGj/4zk1AkG9G2LFkEy0dGrKT0QRN4v5uXsi
+         5IjA==
+X-Forwarded-Encrypted: i=1; AJvYcCXOCGHShCPjSQGJImjF3QdH0DTG8bro3PR10PGnpdkZpohebqfT4shtSl1ejIa9hBJJ05v5wxlDpy+/0UdBh3b2eN0u2yw6ohPUtpSg
+X-Gm-Message-State: AOJu0YzmlMjxZOjSf2G8RK1ABifNxhAM2Pt+CPsIIA7Ij+tTSWm1ILQq
+	x8RonGZkW6iX8+Kjj+ZN5t/zCrfqqAB0EKja2R4hI/pEgyzP8wexgVbDL/KLSvjrn9gE9dHDAey
+	TZxP26H6zKVnOh4p54U2bkI6Hxm6YOeAQQbF/1lUjvnHIuYQJFYvZO8OqoDwqVK3Imr2yKcV1ot
+	tPHg==
+X-Received: by 2002:a17:906:2555:b0:a52:19ea:8df0 with SMTP id j21-20020a170906255500b00a5219ea8df0mr1225322ejb.66.1714648577763;
+        Thu, 02 May 2024 04:16:17 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IH0Myo75XOgrFJPJUQRXhMKXEEwYehp1jVRMzzcbJCBYoh68rOqDmHMkFSk+66SPyDzmCEKDA==
+X-Received: by 2002:a17:906:2555:b0:a52:19ea:8df0 with SMTP id j21-20020a170906255500b00a5219ea8df0mr1225308ejb.66.1714648577553;
+        Thu, 02 May 2024 04:16:17 -0700 (PDT)
 Received: from stitch.. ([80.71.142.166])
-        by smtp.gmail.com with ESMTPSA id gs23-20020a170906f19700b00a4739efd7cesm437278ejb.60.2024.05.02.04.16.15
+        by smtp.gmail.com with ESMTPSA id gs23-20020a170906f19700b00a4739efd7cesm437278ejb.60.2024.05.02.04.16.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 May 2024 04:16:15 -0700 (PDT)
+        Thu, 02 May 2024 04:16:17 -0700 (PDT)
 From: Emil Renner Berthing <emil.renner.berthing@canonical.com>
 To: linux-riscv@lists.infradead.org,
 	linux-kernel@vger.kernel.org,
@@ -85,9 +85,9 @@ Cc: Paul Walmsley <paul.walmsley@sifive.com>,
 	Nathan Chancellor <nathan@kernel.org>,
 	Nicolas Schier <nicolas@fjasle.eu>,
 	Nick Terrell <terrelln@fb.com>
-Subject: [PATCH v1 1/3] riscv: make image compression configurable
-Date: Thu,  2 May 2024 13:16:06 +0200
-Message-ID: <20240502111613.1380453-2-emil.renner.berthing@canonical.com>
+Subject: [PATCH v1 2/3] riscv: show help string for riscv-specific targets
+Date: Thu,  2 May 2024 13:16:07 +0200
+Message-ID: <20240502111613.1380453-3-emil.renner.berthing@canonical.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240502111613.1380453-1-emil.renner.berthing@canonical.com>
 References: <20240502111613.1380453-1-emil.renner.berthing@canonical.com>
@@ -99,137 +99,40 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Previously the build process would always set KBUILD_IMAGE to the
-uncompressed Image file (unless XIP_KERNEL or EFI_ZBOOT was enabled) and
-unconditionally compress it into Image.gz. However there are already
-build targets for Image.bz2, Image.lz4, Image.lzma, Image.lzo and
-Image.zstd, so let's make use of those, make the compression method
-configurable and set KBUILD_IMAGE accordingly so that targets like
-'make install' and 'make bindeb-pkg' will use the chosen image.
+Define the archhelp variable so that 'make ACRH=riscv help' will show
+the targets specific to building a RISC-V kernel like other
+architectures.
 
 Signed-off-by: Emil Renner Berthing <emil.renner.berthing@canonical.com>
 ---
- arch/riscv/Kconfig         |  7 +++++++
- arch/riscv/Makefile        | 43 ++++++++++++++++++++------------------
- arch/riscv/boot/install.sh |  9 +++++---
- 3 files changed, 36 insertions(+), 23 deletions(-)
+ arch/riscv/Makefile | 17 +++++++++++++++++
+ 1 file changed, 17 insertions(+)
 
-diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-index be09c8836d56..6c092d1ea7db 100644
---- a/arch/riscv/Kconfig
-+++ b/arch/riscv/Kconfig
-@@ -138,6 +138,13 @@ config RISCV
- 	select HAVE_GCC_PLUGINS
- 	select HAVE_GENERIC_VDSO if MMU && 64BIT
- 	select HAVE_IRQ_TIME_ACCOUNTING
-+	select HAVE_KERNEL_BZIP2 if !XIP_KERNEL && !EFI_ZBOOT
-+	select HAVE_KERNEL_GZIP if !XIP_KERNEL && !EFI_ZBOOT
-+	select HAVE_KERNEL_LZ4 if !XIP_KERNEL && !EFI_ZBOOT
-+	select HAVE_KERNEL_LZMA if !XIP_KERNEL && !EFI_ZBOOT
-+	select HAVE_KERNEL_LZO if !XIP_KERNEL && !EFI_ZBOOT
-+	select HAVE_KERNEL_UNCOMPRESSED if !XIP_KERNEL && !EFI_ZBOOT
-+	select HAVE_KERNEL_ZSTD if !XIP_KERNEL && !EFI_ZBOOT
- 	select HAVE_KPROBES if !XIP_KERNEL
- 	select HAVE_KPROBES_ON_FTRACE if !XIP_KERNEL
- 	select HAVE_KRETPROBES if !XIP_KERNEL
 diff --git a/arch/riscv/Makefile b/arch/riscv/Makefile
-index 5b3115a19852..29be676415d6 100644
+index 29be676415d6..024482c68835 100644
 --- a/arch/riscv/Makefile
 +++ b/arch/riscv/Makefile
-@@ -129,11 +129,27 @@ endif
- CHECKFLAGS += -D__riscv -D__riscv_xlen=$(BITS)
- 
- # Default target when executing plain make
--boot		:= arch/riscv/boot
-+boot := arch/riscv/boot
- ifeq ($(CONFIG_XIP_KERNEL),y)
- KBUILD_IMAGE := $(boot)/xipImage
-+else ifeq ($(CONFIG_RISCV_M_MODE)$(CONFIG_ARCH_CANAAN),yy)
-+KBUILD_IMAGE := $(boot)/loader.bin
-+else ifeq ($(CONFIG_EFI_ZBOOT),y)
-+KBUILD_IMAGE := $(boot)/vmlinuz.efi
-+else ifeq ($(CONFIG_KERNEL_GZIP),y)
-+KBUILD_IMAGE := $(boot)/Image.gz
-+else ifeq ($(CONFIG_KERNEL_BZIP2),y)
-+KBUILD_IMAGE := $(boot)/Image.bz2
-+else ifeq ($(CONFIG_KERNEL_LZ4),y)
-+KBUILD_IMAGE := $(boot)/Image.lz4
-+else ifeq ($(CONFIG_KERNEL_LZMA),y)
-+KBUILD_IMAGE := $(boot)/Image.lzma
-+else ifeq ($(CONFIG_KERNEL_LZO),y)
-+KBUILD_IMAGE := $(boot)/Image.lzo
-+else ifeq ($(CONFIG_KERNEL_ZSTD),y)
-+KBUILD_IMAGE := $(boot)/Image.zst
- else
--KBUILD_IMAGE	:= $(boot)/Image.gz
-+KBUILD_IMAGE := $(boot)/Image
- endif
- 
- libs-y += arch/riscv/lib/
-@@ -153,32 +169,19 @@ endif
- vdso-install-y			+= arch/riscv/kernel/vdso/vdso.so.dbg
- vdso-install-$(CONFIG_COMPAT)	+= arch/riscv/kernel/compat_vdso/compat_vdso.so.dbg
- 
--ifneq ($(CONFIG_XIP_KERNEL),y)
--ifeq ($(CONFIG_RISCV_M_MODE)$(CONFIG_ARCH_CANAAN),yy)
--KBUILD_IMAGE := $(boot)/loader.bin
--else
--ifeq ($(CONFIG_EFI_ZBOOT),)
--KBUILD_IMAGE := $(boot)/Image.gz
--else
--KBUILD_IMAGE := $(boot)/vmlinuz.efi
--endif
--endif
--endif
--BOOT_TARGETS := Image Image.gz loader loader.bin xipImage vmlinuz.efi
-+BOOT_TARGETS := Image Image.gz Image.bz2 Image.lz4 Image.lzma Image.lzo Image.zst loader loader.bin xipImage vmlinuz.efi
- 
- all:	$(notdir $(KBUILD_IMAGE))
- 
- loader.bin: loader
--Image.gz loader vmlinuz.efi: Image
-+Image.gz Image.bz2 Image.lz4 Image.lzma Image.lzo Image.zst loader xipImage vmlinuz.efi: Image
+@@ -202,3 +202,20 @@ rv32_defconfig:
+ PHONY += rv32_nommu_virt_defconfig
+ rv32_nommu_virt_defconfig:
+ 	$(Q)$(MAKE) -f $(srctree)/Makefile nommu_virt_defconfig 32-bit.config
 +
- $(BOOT_TARGETS): vmlinux
- 	$(Q)$(MAKE) $(build)=$(boot) $(boot)/$@
- 	@$(kecho) '  Kernel: $(boot)/$@ is ready'
- 
--Image.%: Image
--	$(Q)$(MAKE) $(build)=$(boot) $(boot)/$@
--
--install: KBUILD_IMAGE := $(boot)/Image
--zinstall: KBUILD_IMAGE := $(boot)/Image.gz
-+# the install target always installs KBUILD_IMAGE (which may be compressed)
-+# but keep the zinstall target for compatibility with older releases
- install zinstall:
- 	$(call cmd,install)
- 
-diff --git a/arch/riscv/boot/install.sh b/arch/riscv/boot/install.sh
-index 4c63f3f0643d..a8df7591513a 100755
---- a/arch/riscv/boot/install.sh
-+++ b/arch/riscv/boot/install.sh
-@@ -17,15 +17,18 @@
- #   $3 - kernel map file
- #   $4 - default install path (blank if root directory)
- 
--if [ "$(basename $2)" = "Image.gz" ]; then
-+case "${2##*/}" in
- # Compressed install
-+Image.*|vmlinuz.efi)
-   echo "Installing compressed kernel"
-   base=vmlinuz
--else
-+  ;;
- # Normal install
-+*)
-   echo "Installing normal kernel"
-   base=vmlinux
--fi
-+  ;;
-+esac
- 
- if [ -f $4/$base-$1 ]; then
-   mv $4/$base-$1 $4/$base-$1.old
++define archhelp
++  echo  '  Image		- Uncompressed kernel image (arch/riscv/boot/Image)'
++  echo  '  Image.gz	- Compressed kernel image (arch/riscv/boot/Image.gz)'
++  echo  '  Image.bz2	- Compressed kernel image (arch/riscv/boot/Image.bz2)'
++  echo  '  Image.lz4	- Compressed kernel image (arch/riscv/boot/Image.lz4)'
++  echo  '  Image.lzma	- Compressed kernel image (arch/riscv/boot/Image.lzma)'
++  echo  '  Image.lzo	- Compressed kernel image (arch/riscv/boot/Image.lzo)'
++  echo  '  Image.zst	- Compressed kernel image (arch/riscv/boot/Image.zst)'
++  echo  '  vmlinuz.efi	- Compressed EFI kernel image (arch/riscv/boot/vmlinuz.efi)'
++  echo  '		  Default when CONFIG_EFI_ZBOOT=y'
++  echo  '  xipImage	- Execute-in-place kernel image (arch/riscv/boot/xipImage)'
++  echo  '		  Default when CONFIG_XIP_KERNEL=y'
++  echo  '  install	- Install kernel using (your) ~/bin/$(INSTALLKERNEL) or'
++  echo  '		  (distribution) /sbin/$(INSTALLKERNEL) or install to '
++  echo  '		  $$(INSTALL_PATH)'
++endef
 -- 
 2.43.0
 
