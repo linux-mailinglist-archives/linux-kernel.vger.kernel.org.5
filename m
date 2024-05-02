@@ -1,151 +1,163 @@
-Return-Path: <linux-kernel+bounces-166047-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-166048-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3AD1F8B9536
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 09:23:51 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A73888B9539
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 09:25:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E581F1F21F82
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 07:23:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 478E31F21C41
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 07:25:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C6FF224EF;
-	Thu,  2 May 2024 07:23:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4580224F6;
+	Thu,  2 May 2024 07:25:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=fu-berlin.de header.i=@fu-berlin.de header.b="dDbvuils"
-Received: from outpost1.zedat.fu-berlin.de (outpost1.zedat.fu-berlin.de [130.133.4.66])
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=phytec.de header.i=@phytec.de header.b="o+3EJRTj"
+Received: from mickerik.phytec.de (mickerik.phytec.de [91.26.50.163])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 312D5224DD;
-	Thu,  2 May 2024 07:23:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=130.133.4.66
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 998B32230F
+	for <linux-kernel@vger.kernel.org>; Thu,  2 May 2024 07:25:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.26.50.163
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714634622; cv=none; b=VMWt9A217yXSqser3qlrmA/R00ysF8ojDwCoyiwDrlul0cUJGXCL4qws1swkFCPNQeHVTIO7h2jtnPjowqbwEHHOWKlPzRw1muP6TPIiM2WexTkYbUDzc6E/9fb14KE1wNe3f7IPhSXKaO36ZozwOKII+zAk9usQJ0Oap2a4I7g=
+	t=1714634712; cv=none; b=nPcDQaLVNVVGkLuLwUa+iqSWUi+of0IpI6/MXzJidREyMx68+ZEk4OxC1s7yB6DlBStk3qPbDpGn5oQxtESkYWuf+wNzVIkYhr4OTkWo2PPCUTryJiiyClvRMW0a/dnr7/WiIqanGKcJW1a7b1phOQAtvUqFQroeE95c6WqXrR8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714634622; c=relaxed/simple;
-	bh=OAPu2d3tsahOzOfqL2nij3yfKpurUG7VkdlPTEnOS5A=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=gnVCiFHk7P9hfpQYGOi5bq6tNk4myT53Ns9UTl1o8qk163MG7XSPFMkSUQAGkqbT+AmCh+IaVXNPUOjj1ur+29+OcA3sdeWtIJQrFrXMcRsAZQiukKPfQfbR5knfuCqcVHpoNkYCJUHAlhgZRoo49VtejFHnXQ+/gIXZRgPdH+E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=physik.fu-berlin.de; spf=pass smtp.mailfrom=zedat.fu-berlin.de; dkim=pass (2048-bit key) header.d=fu-berlin.de header.i=@fu-berlin.de header.b=dDbvuils; arc=none smtp.client-ip=130.133.4.66
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=physik.fu-berlin.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zedat.fu-berlin.de
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=fu-berlin.de; s=fub01; h=MIME-Version:Content-Transfer-Encoding:
-	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-	List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=vbRJF07hlrUuCJ+609sJCuNQGmpKq/+/IBXqo+OmWKM=; t=1714634620; x=1715239420; 
-	b=dDbvuilsgl0xmsg8eoHrAi6TBOWwO0Hue7waH1u69Phk4cpjqtkogI9ls5oIMvixqjTnL8THPq6
-	OrpG2Djv29YN+6k4pMNhOmc9DKfdXId4aMStb6ewr7ZxkjKL+MRVo63qmJ89UqohTLoWYWrCF9WSm
-	sU3QnW+cKN04Z0Q9s0T+dVnlZ81p/0YhYFroaqUBWBhIBv+l4bV+hlMz0bXMOOoXL6G4Fj4ICDuNS
-	DYJpejoH/MdW/smQQQzVuFn8rRhVU+WS1p7dwRZmSGhmU160HzVRZ1L6xZYRrB2ssyBMTWKGMOmMy
-	StdwJ5VQnfHSesHUZH+PDSlJLXffx0SBULkw==;
-Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
-          by outpost.zedat.fu-berlin.de (Exim 4.97)
-          with esmtps (TLS1.3)
-          tls TLS_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@zedat.fu-berlin.de>)
-          id 1s2Qn2-00000000PtR-11CU; Thu, 02 May 2024 09:23:36 +0200
-Received: from p57bd90e8.dip0.t-ipconnect.de ([87.189.144.232] helo=[192.168.178.20])
-          by inpost2.zedat.fu-berlin.de (Exim 4.97)
-          with esmtpsa (TLS1.3)
-          tls TLS_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@physik.fu-berlin.de>)
-          id 1s2Qn2-00000003dnj-05J7; Thu, 02 May 2024 09:23:36 +0200
-Message-ID: <87b7b7a99b8addc82ac7ce229801b744c9ef838e.camel@physik.fu-berlin.de>
-Subject: Re: [PATCH] Revert "sh: Handle calling csum_partial with misaligned
- data"
-From: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Guenter Roeck <linux@roeck-us.net>, Yoshinori Sato
-	 <ysato@users.sourceforge.jp>, Rich Felker <dalias@libc.org>, 
-	linux-sh@vger.kernel.org, linux-kernel@vger.kernel.org
-Date: Thu, 02 May 2024 09:23:35 +0200
-In-Reply-To: <CAMuHMdVcE79i0RPQHJBJjpXY6U-M-AQ2gh+C25u_777PZgPxXQ@mail.gmail.com>
-References: <20240324231804.841099-1-linux@roeck-us.net>
-	 <059d03a5da257660fa0bc188c6cc8d0152e97704.camel@physik.fu-berlin.de>
-	 <a9ac59cd-82db-45a0-9f85-ec3880c54dbf@roeck-us.net>
-	 <cb8d3d2a-b843-49d5-a219-10a29b5877d0@roeck-us.net>
-	 <1e77ade4fb1d924ffaf226cb946ba3314ba59a1d.camel@physik.fu-berlin.de>
-	 <fb0293d85dbf82341c6b7e4d56fe8f1d23f7768a.camel@physik.fu-berlin.de>
-	 <CAMuHMdVcE79i0RPQHJBJjpXY6U-M-AQ2gh+C25u_777PZgPxXQ@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.52.0 
+	s=arc-20240116; t=1714634712; c=relaxed/simple;
+	bh=KwmzZzoDnQqA2MyGh7jqFo5MjjJemNuYSwzxF2nnuDU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=i+CA0TdxOUq+JZsQGKaDONRVpJgeO7dkSaMjveDAVZ/7s4g83vfZuqmhIb9s9w4p4nzR/RPicf1m9YEEyxttNLqiXXLu1cZuKc4KIyqoMIfPF0bQKNMTRb6mwteylaCrzmb+UV3uf7WKvlPxpgs69rTSKxzc3lqcLucV963Sr/k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=phytec.de; spf=pass smtp.mailfrom=phytec.de; dkim=pass (1024-bit key) header.d=phytec.de header.i=@phytec.de header.b=o+3EJRTj; arc=none smtp.client-ip=91.26.50.163
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=phytec.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=phytec.de
+DKIM-Signature: v=1; a=rsa-sha256; d=phytec.de; s=a4; c=relaxed/simple;
+	q=dns/txt; i=@phytec.de; t=1714634705; x=1717226705;
+	h=From:Sender:Reply-To:Subject:Date:Message-ID:To:CC:MIME-Version:Content-Type:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
+	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=KwmzZzoDnQqA2MyGh7jqFo5MjjJemNuYSwzxF2nnuDU=;
+	b=o+3EJRTjqpBR4958wAJFtlHf5KFrcmaPH3Zx4/C0qeMzncujG8+soce9okooApUx
+	Cp6iw/cjp43Uyz27LJ5dy9GZ0OqO0eKBBVKSxDxjsUldTqdJ+BCNVYw5AhbxVyhr
+	6QA9V8ZxpKJIi/wfppMZkkhz/vqfsfwL0bR/Xvfk4/8=;
+X-AuditID: ac14000a-fbefe7000000290d-a4-66333fd04e18
+Received: from berlix.phytec.de (Unknown_Domain [172.25.0.12])
+	(using TLS with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(Client did not present a certificate)
+	by mickerik.phytec.de (PHYTEC Mail Gateway) with SMTP id EC.E6.10509.0DF33366; Thu,  2 May 2024 09:25:04 +0200 (CEST)
+Received: from [172.25.39.28] (172.25.0.11) by Berlix.phytec.de (172.25.0.12)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.6; Thu, 2 May 2024
+ 09:25:03 +0200
+Message-ID: <aac6a41f-a384-43c5-8eb0-722cda74b4ea@phytec.de>
+Date: Thu, 2 May 2024 09:25:02 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Original-Sender: glaubitz@physik.fu-berlin.de
-X-ZEDAT-Hint: PO
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 2/2] arm64: dts: ti: phycore-am64: Add PMIC
+To: Nathan Morrisson <nmorrisson@phytec.com>, <lee@kernel.org>,
+	<robh@kernel.org>, <krzk+dt@kernel.org>, <conor+dt@kernel.org>, <nm@ti.com>,
+	<vigneshr@ti.com>, <kristo@kernel.org>, <j-keerthy@ti.com>
+CC: <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<linux-arm-kernel@lists.infradead.org>, <upstream@lists.phytec.de>
+References: <20240429195830.4027250-1-nmorrisson@phytec.com>
+ <20240429195830.4027250-2-nmorrisson@phytec.com>
+Content-Language: en-US
+From: Wadim Egorov <w.egorov@phytec.de>
+In-Reply-To: <20240429195830.4027250-2-nmorrisson@phytec.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: Berlix.phytec.de (172.25.0.12) To Berlix.phytec.de
+ (172.25.0.12)
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprHIsWRmVeSWpSXmKPExsWyRpKBR/eCvXGawa1JlhZr9p5jsph/5Byr
+	xantTUwWyz/PZrd4Oesem8WOtoUsFpseX2O1uLxrDpvFmx9nmSw+NG5ms/i/Zwe7Rfc7dYv/
+	Zz+wO/B6bFrVyeaxeUm9R393C6vHn4vvWD2O39jO5PF5k1wAWxSXTUpqTmZZapG+XQJXxtrj
+	VxgLegUqPvzfwtjAuJ+ni5GTQ0LAROLWyvmMXYxcHEICS5gkHu6aCeXcYZR4dO0FO0gVr4CN
+	xLzJf1lAbBYBFYkDS95BxQUlTs58AhYXFZCXuH9rBlhcWMBJ4uGWnywgg0QETjNK/Lm/ghnE
+	YRZoY5SYOuENG0iVkEC+xIsFPUwgNrOAuMStJ/PBbDYBdYk7G76xgticArYS1y69YoSosZBY
+	/OYgO4QtL7H97RxmiDnyEi8uLWeB+EdeYtq518wQdqjE1i/bmSYwCs9CcuwsJOtmIRk7C8nY
+	BYwsqxiFcjOTs1OLMrP1CjIqS1KT9VJSNzGC4lCEgWsHY98cj0OMTByMhxglOJiVRHinLNRP
+	E+JNSaysSi3Kjy8qzUktPsQozcGiJM67uiM4VUggPbEkNTs1tSC1CCbLxMEp1cAo3THXbsfM
+	HI+WZNPdgj6GE1u/NG46/UV+zYfw1zstMpLDD736/3Xxhy+KWx0NNQ/OZqr6nzR5o/znH880
+	4xUP1tye5bbtM8Px2D+Bdse2JMku4LYt/PcxdgYbr5B5xUnVdvszOXcvWjRNk9o+7/jJKPV1
+	+Tcd767PNalP/v5grnr7zYeTjxo8VWIpzkg01GIuKk4EAPx30T6xAgAA
 
-Hi Geert,
+Hi,
 
-On Thu, 2024-05-02 at 09:21 +0200, Geert Uytterhoeven wrote:
-> On landisk:
->=20
->  KTAP version 1
->  1..1
->      KTAP version 1
->      # Subtest: checksum
->      # module: checksum_kunit
->      1..5
-> -    # test_csum_fixed_random_inputs: ASSERTION FAILED at
-> lib/checksum_kunit.c:500
-> -    Expected ( u64)result =3D=3D ( u64)expec, but
-> -        ( u64)result =3D=3D 53378 (0xd082)
-> -        ( u64)expec =3D=3D 33488 (0x82d0)
-> -    not ok 1 test_csum_fixed_random_inputs
-> -    # test_csum_all_carry_inputs: ASSERTION FAILED at lib/checksum_kunit=
-c:525
-> -    Expected ( u64)result =3D=3D ( u64)expec, but
-> -        ( u64)result =3D=3D 65281 (0xff01)
-> -        ( u64)expec =3D=3D 65280 (0xff00)
-> -    not ok 2 test_csum_all_carry_inputs
-> -    # test_csum_no_carry_inputs: ASSERTION FAILED at lib/checksum_kunit.=
-c:573
-> -    Expected ( u64)result =3D=3D ( u64)expec, but
-> -        ( u64)result =3D=3D 65535 (0xffff)
-> -        ( u64)expec =3D=3D 65534 (0xfffe)
-> -    not ok 3 test_csum_no_carry_inputs
-> +    # test_csum_fixed_random_inputs: Test should be marked slow
-> (runtime: 9.814991070s)
-> +    ok 1 test_csum_fixed_random_inputs
-> +    # test_csum_all_carry_inputs: Test should be marked slow
-> (runtime: 19.621274580s)
-> +    ok 2 test_csum_all_carry_inputs
-> +    # test_csum_no_carry_inputs: Test should be marked slow (runtime:
-> 19.614096540s)
-> +    ok 3 test_csum_no_carry_inputs
->      ok 4 test_ip_fast_csum
->      ok 5 test_csum_ipv6_magic
-> -# checksum: pass:2 fail:3 skip:0 total:5
-> -# Totals: pass:2 fail:3 skip:0 total:5
-> -not ok 1 checksum
-> +# checksum: pass:5 fail:0 skip:0 total:5
-> +# Totals: pass:5 fail:0 skip:0 total:5
-> +ok 1 checksum
->=20
-> As we aim for correctness over performance:
-> Tested-by: Geert Uytterhoeven <geert+renesas@glider.be>
->=20
-> However, given the big impact on performance, it would be great if
-> someone could find out what's wrong with the optimized version.
+Am 29.04.24 um 21:58 schrieb Nathan Morrisson:
+> Add a PMIC node to the phycore-am64 device tree.
+> 
+> Signed-off-by: Nathan Morrisson <nmorrisson@phytec.com>
 
-Thanks for testing this. I will pick this up then since it actually fixes a=
- bug.
+Reviewed-by: Wadim Egorov <w.egorov@phytec.de>
 
-Reviewed-by: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Please enable the PMIC driver in the arm64 defconfig.
 
-Adrian
+REGULATOR_LP873X & CONFIG_MFD_TI_LP873X
 
---=20
- .''`.  John Paul Adrian Glaubitz
-: :' :  Debian Developer
-`. `'   Physicist
-  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
+> ---
+> v2: No change
+> 
+>   .../boot/dts/ti/k3-am64-phycore-som.dtsi      | 44 +++++++++++++++++++
+>   1 file changed, 44 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/ti/k3-am64-phycore-som.dtsi b/arch/arm64/boot/dts/ti/k3-am64-phycore-som.dtsi
+> index 125e507966fb..2c3b20ddfb8b 100644
+> --- a/arch/arm64/boot/dts/ti/k3-am64-phycore-som.dtsi
+> +++ b/arch/arm64/boot/dts/ti/k3-am64-phycore-som.dtsi
+> @@ -265,6 +265,50 @@ i2c_som_rtc: rtc@52 {
+>   		interrupts = <70 IRQ_TYPE_EDGE_FALLING>;
+>   		wakeup-source;
+>   	};
+> +
+> +	pmic@61 {
+> +		compatible = "ti,lp8733";
+> +		reg = <0x61>;
+> +
+> +		buck0-in-supply = <&vcc_5v0_som>;
+> +		buck1-in-supply = <&vcc_5v0_som>;
+> +		ldo0-in-supply = <&vdd_3v3>;
+> +		ldo1-in-supply = <&vdd_3v3>;
+> +
+> +		regulators {
+> +			vdd_core: buck0 {
+> +				regulator-name = "VDD_CORE";
+> +				regulator-min-microvolt = <750000>;
+> +				regulator-max-microvolt = <750000>;
+> +				regulator-always-on;
+> +				regulator-boot-on;
+> +			};
+> +
+> +			vdd_3v3: buck1 {
+> +				regulator-name = "VDD_3V3";
+> +				regulator-min-microvolt = <3300000>;
+> +				regulator-max-microvolt = <3300000>;
+> +				regulator-always-on;
+> +				regulator-boot-on;
+> +			};
+> +
+> +			vdd_1v8_ldo0: ldo0 {
+> +				regulator-name = "VDD_1V8_LDO0";
+> +				regulator-min-microvolt = <1800000>;
+> +				regulator-max-microvolt = <1800000>;
+> +				regulator-always-on;
+> +				regulator-boot-on;
+> +			};
+> +
+> +			vdda_1v8: ldo1 {
+> +				regulator-name = "VDDA_1V8";
+> +				regulator-min-microvolt = <1800000>;
+> +				regulator-max-microvolt = <1800000>;
+> +				regulator-always-on;
+> +				regulator-boot-on;
+> +			};
+> +		};
+> +	};
+>   };
+>   
+>   &main_r5fss0_core0 {
 
