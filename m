@@ -1,62 +1,62 @@
-Return-Path: <linux-kernel+bounces-166556-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-166559-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id F27448B9C5F
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 16:35:10 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C5B6E8B9C68
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 16:35:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5F4A8B209EF
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 14:35:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 03C8E1C21A61
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 14:35:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53CEE153509;
-	Thu,  2 May 2024 14:35:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EEC4F153501;
+	Thu,  2 May 2024 14:35:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="hrArQcUn"
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
+	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="tl5dugvB"
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A8E75FEE6;
-	Thu,  2 May 2024 14:34:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.153.233
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 826A4153519;
+	Thu,  2 May 2024 14:35:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.154.123
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714660499; cv=none; b=XNyvn4EYFzy0NboE67XwjMrGMG8Y1gcysYZh6ZG/F/S/Ik4G8fO9rXvuFGlSCAQCaPupVtK1hchixkrVFHO2Kr3Tm6MI0fqhb3j+2GTIfIxUBuUt9zW7qH/P9KYmc0g/YDH9gbBXw9HbOxYM36lbgGdSb/PBvGJCNVAf4inOq6U=
+	t=1714660535; cv=none; b=GXDvuPJBwHslLa9QTIl92xY0T0agNcE3VvWW0EU+/i7ygRxcN9wzusbU00ZhDdLE/sT9WTnj9n6uSSisZM89ynVCNOof222XfRFi/dd67XG/rihz01iQC/ZDntf1KHAvBe4lJqZCrGErVPGq9bl6MvkOQ5pjJmAJBktfNTCMcgs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714660499; c=relaxed/simple;
-	bh=v9aRfS2wsTb+7Z0gnOhNLJHtPwt86gf3YphRSYDX72k=;
+	s=arc-20240116; t=1714660535; c=relaxed/simple;
+	bh=srvRpnt+6CmvKsyLXphEyCpMECe+q0Va3JX9d0EkVVw=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=oLBYeaFAxC5V6iwOAUYULI3PFy4fENtIJfGauEofIHPwpVmTKa1o74rLs5Nw/LGM7io1G9LcfPt+JV6LAwzIX/SJSH6xNNJ6xVcDvE/svkB6BrxJDYaxoU2G/Pz//N5Fz0xZjN2grANXHXt14pmDI1VGWIJQHnKEvjbs+P3jeQY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=hrArQcUn; arc=none smtp.client-ip=68.232.153.233
+	 MIME-Version:Content-Type; b=MDxUj3H/lLKiwQPdlIK8HecUiz8tJ49MCF+mTLqsH3BLTISwONSn4iF2FlXuBjGxK9scUx6EnzZyQHXSepPQtgOGZxuOAYuh2DYsejzgTP/cQ6PO6/RKSt0RIkb4ubZOeThtuwhig/flmwmBrrqQBz8V7yxjrYCJS7a/n0VPFoc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=tl5dugvB; arc=none smtp.client-ip=68.232.154.123
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microchip.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1714660497; x=1746196497;
+  t=1714660533; x=1746196533;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=v9aRfS2wsTb+7Z0gnOhNLJHtPwt86gf3YphRSYDX72k=;
-  b=hrArQcUnYZRjQiMM4SsGOczSSysqUbit7X2n7aouoXxi91gPXA6qVQsh
-   xfz05YgfbSqj+5N0Ntke1KLx/68fiy0F+Eaqf5IN3X6bhwaQbdEY9HS5Z
-   KKNESu9sT3UidQS9xpJon8Kzgm1rj4mePenj2tiZ0WxGP055pazhZb4/w
-   6m/bU9oX7XxoZuvviKeewD/LiICUeO90WgsIQGyVHGiRUF30JowOZb9p0
-   QcGqavoPJJyijsMc6pqd19zOdiFhizLaPqoPmCNyDFqAXJPJxXYU+d0n+
-   0d58HoHWs1+broo68P4fFNHHIPBGiAu20xRut8utXeVDTU+UrW2vjnvdm
+  bh=srvRpnt+6CmvKsyLXphEyCpMECe+q0Va3JX9d0EkVVw=;
+  b=tl5dugvBHtPU7IgnDwpgN4Jm/cTciRgIcwq28m8M895Ja52pelkpvubu
+   kqwXfOcGDJCbQL2XVJXH3FtK3g3x0nTK7PNc0Yl/e1zqOH6QA//XBEwy/
+   JQ91a6CtQQmNROn4FEn7tA/16rNtPnOzJlUwEBc1JfP3mvluWPSWI5Jit
+   fPxoeDGGaKFAYNgFCiWofiFx1o0TWCw5Lx4hQXSYTmuyh9Ihgzo6C1OfU
+   aX/YT8ok3ZRXWBfL+e3Z2cvSwbbg7WVQ3EOkLT3g1Kd1eFe6RgbNOqDZX
+   H+V9TlCB1xvZiV1eDsn52+D5teQ9WdQ5uBIC/mATjKGG7ybg6CPRISgJ/
    g==;
-X-CSE-ConnectionGUID: 6Y5bhyOoSXq5FFQlA0lIog==
-X-CSE-MsgGUID: yXfQee23ReykRQVaYGMsQg==
+X-CSE-ConnectionGUID: F9keJgHaQq6ZBD0kgjKFCA==
+X-CSE-MsgGUID: 2p2e97gBSBSzumW7E9JOdA==
 X-IronPort-AV: E=Sophos;i="6.07,247,1708412400"; 
-   d="scan'208";a="23394531"
+   d="scan'208";a="190725994"
 X-Amp-Result: SKIPPED(no attachment in message)
 Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa3.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 02 May 2024 07:34:56 -0700
+  by esa6.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 02 May 2024 07:35:32 -0700
 Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Thu, 2 May 2024 07:34:46 -0700
+ 15.1.2507.35; Thu, 2 May 2024 07:34:52 -0700
 Received: from Lily.microchip.com (10.10.85.11) by chn-vm-ex04.mchp-main.com
  (10.10.85.152) with Microsoft SMTP Server id 15.1.2507.35 via Frontend
- Transport; Thu, 2 May 2024 07:34:44 -0700
+ Transport; Thu, 2 May 2024 07:34:50 -0700
 From: Prajna Rajendra Kumar <prajna.rajendrakumar@microchip.com>
 To: Mark Brown <broonie@kernel.org>
 CC: Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>,
@@ -65,9 +65,9 @@ CC: Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>,
 	<conor.dooley@microchip.com>, Daire McNamara <daire.mcnamara@microchip.com>,
 	<valentina.fernandezalanis@microchip.com>, Prajna Rajendra Kumar
 	<prajna.rajendrakumar@microchip.com>
-Subject: [PATCH 1/3] spi: spi-microchip-core: Add support for GPIO based CS
-Date: Thu, 2 May 2024 15:34:08 +0100
-Message-ID: <20240502143410.12629-2-prajna.rajendrakumar@microchip.com>
+Subject: [PATCH 2/3] spi: dt-bindings: Add num-cs property for mpfs-spi
+Date: Thu, 2 May 2024 15:34:09 +0100
+Message-ID: <20240502143410.12629-3-prajna.rajendrakumar@microchip.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20240502143410.12629-1-prajna.rajendrakumar@microchip.com>
 References: <20240502143410.12629-1-prajna.rajendrakumar@microchip.com>
@@ -80,37 +80,55 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
 
-The SPI controller within the PolarFire SoC is capable of handling
-multiple CS, but only one CS line is wired in the MSS. Therefore,
-use GPIO descriptors to configure additional CS lines.
+The PolarFire SoC SPI controller supports multiple chip selects,but in
+the MSS, only one CS line is physically wired. To reflect this hardware
+limitation in the device tree, the binding enforces that the 'num-cs'
+property defaults to 1 and cannot exceed 1 unless additional
+chip select lines are explicitly defined using GPIO descriptors.
 
+Fixes: 2da187304e55 ("spi: add bindings for microchip mpfs spi")
 Signed-off-by: Prajna Rajendra Kumar <prajna.rajendrakumar@microchip.com>
 ---
- drivers/spi/spi-microchip-core.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ .../bindings/spi/microchip,mpfs-spi.yaml      | 19 ++++++++++++++++---
+ 1 file changed, 16 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/spi/spi-microchip-core.c b/drivers/spi/spi-microchip-core.c
-index 634364c7cfe6..71886c27bca3 100644
---- a/drivers/spi/spi-microchip-core.c
-+++ b/drivers/spi/spi-microchip-core.c
-@@ -258,6 +258,9 @@ static int mchp_corespi_setup(struct spi_device *spi)
- 	struct mchp_corespi *corespi = spi_controller_get_devdata(spi->controller);
- 	u32 reg;
+diff --git a/Documentation/devicetree/bindings/spi/microchip,mpfs-spi.yaml b/Documentation/devicetree/bindings/spi/microchip,mpfs-spi.yaml
+index 74a817cc7d94..19951951fdd6 100644
+--- a/Documentation/devicetree/bindings/spi/microchip,mpfs-spi.yaml
++++ b/Documentation/devicetree/bindings/spi/microchip,mpfs-spi.yaml
+@@ -13,9 +13,6 @@ description:
+ maintainers:
+   - Conor Dooley <conor.dooley@microchip.com>
  
-+	if (spi->cs_gpiod)
-+		return 0;
+-allOf:
+-  - $ref: spi-controller.yaml#
+-
+ properties:
+   compatible:
+     oneOf:
+@@ -43,6 +40,22 @@ required:
+   - interrupts
+   - clocks
+ 
++allOf:
++  - $ref: spi-controller.yaml#
++  - if:
++      properties:
++        compatible:
++          contains:
++            const: microchip,mpfs-spi
++      not:
++        required:
++          - cs-gpios
++    then:
++      properties:
++        num-cs:
++          default: 1
++          maximum: 1
 +
- 	/*
- 	 * Active high targets need to be specifically set to their inactive
- 	 * states during probe by adding them to the "control group" & thus
-@@ -516,6 +519,7 @@ static int mchp_corespi_probe(struct platform_device *pdev)
+ unevaluatedProperties: false
  
- 	host->num_chipselect = num_cs;
- 	host->mode_bits = SPI_CPOL | SPI_CPHA | SPI_CS_HIGH;
-+	host->use_gpio_descriptors = true;
- 	host->setup = mchp_corespi_setup;
- 	host->bits_per_word_mask = SPI_BPW_MASK(8);
- 	host->transfer_one = mchp_corespi_transfer_one;
+ examples:
 -- 
 2.25.1
 
