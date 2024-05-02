@@ -1,123 +1,195 @@
-Return-Path: <linux-kernel+bounces-167024-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-167025-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0A5098BA389
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 00:55:52 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 24C718BA38E
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 00:57:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D2482B21FC7
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 22:55:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 485121C2209D
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 22:57:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED2EF1C683;
-	Thu,  2 May 2024 22:55:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD5CA1CAAE;
+	Thu,  2 May 2024 22:57:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="Lbq9Zoo5"
-Received: from mail-pf1-f169.google.com (mail-pf1-f169.google.com [209.85.210.169])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="F0FXAMxQ"
+Received: from mail-lj1-f179.google.com (mail-lj1-f179.google.com [209.85.208.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1435C1B947
-	for <linux-kernel@vger.kernel.org>; Thu,  2 May 2024 22:55:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 204748F5C;
+	Thu,  2 May 2024 22:57:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714690539; cv=none; b=bEfdnWHp19GPu1AlajzR3+ze0QwCAtFgljQQenHwdOFpUI9Rjrr35b5HOmzv8jO7kTJceZPMyLMQcotYM2Spf85K+JNtPNmK087ZHkjTzIY/vBVM1KabMKrqU4FFLvUIpYHE7C8be1EJERDPLi6IbznKzHUZyuZ0vNtOToCzAPk=
+	t=1714690643; cv=none; b=Mkjye+gNDGJiPKi0inYIoVvs9u8G/VC+nuZnnpCav1L+1R3uIeLHMPX/tyTxnr1QvOnqNUq6EZj4rVxWSAN32vL7apzCZBH7zh8cltnYXx84ZUE+yz0a1DTPPpr+oVHrh5L/SstnCddQyfAIVNLIzFaGKkvcNy3CHAu6Kwb23ss=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714690539; c=relaxed/simple;
-	bh=jdAiCkqZVm00u5Mpkujq7LizhSxkgvjQSLxjSmd+0FA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=NNk98A+vgfFcde99wJo/bX3QsIE5Vgjxhekpcp3xa2dAyMlCfixmCQ5mB41fXGhnQ+vTg++rAJi4QXrMeKW+h+YDo819nG7xfO0bBdVs+NzrqZIR/aUoGEM86q4gbLscBqFmxzfZbECzGo47lgcwsaGcwM2xFJK29pzgcoXYA/c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=Lbq9Zoo5; arc=none smtp.client-ip=209.85.210.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pf1-f169.google.com with SMTP id d2e1a72fcca58-6f43015b763so894162b3a.0
-        for <linux-kernel@vger.kernel.org>; Thu, 02 May 2024 15:55:37 -0700 (PDT)
+	s=arc-20240116; t=1714690643; c=relaxed/simple;
+	bh=Fmg57uEE4v11WR+5GNCzdhB87E5dXr1jA5UC3iRCnZI=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=dcsdrmN45v5ziw9w50nQfYVpRiJmYkN/PrMjQaQLman+XAQEJVUi4Q/My4sHCbFEvZmRnn69e6U3LtGeYSWVgt7lC2AN+bWzBtE/nGQDw/vKmsRoAZ5zwVmVpiywF1ikZyRWN23SQgu+oo4eI3wYlHgmlL/rCyygWUJkNpUCu9Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=F0FXAMxQ; arc=none smtp.client-ip=209.85.208.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f179.google.com with SMTP id 38308e7fff4ca-2e242b1df60so1622951fa.1;
+        Thu, 02 May 2024 15:57:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1714690537; x=1715295337; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=CVZTpe/CdBBd4zno1lRIevv+TY5Lijp2ynWtx6BFty4=;
-        b=Lbq9Zoo5ADuUvFCZS6aZyFRnbZNe/xhaxiwCetCzf+SPd6d0pcGtz3C5AdBpBU500c
-         zYVHM3DDMHk/OzmdJrYJ3hGkN02AzUwbE1v/2qiR9ynwW1HbxohOZuyC+0TsERKI1Eb1
-         Bz1xkH9ygggoGOh6zCdmBFE4zpmB5vZ31od50=
+        d=gmail.com; s=20230601; t=1714690640; x=1715295440; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=Fmg57uEE4v11WR+5GNCzdhB87E5dXr1jA5UC3iRCnZI=;
+        b=F0FXAMxQggnuJFMfoQz8sCHhLTxBMnJl5EokxSZ78TdxCXMJ8dSMo9Qovu64mA5X9R
+         gxIk453dyBXKQPOkZWFcMwb8qqBiCPiHaRADcU6oEvOtxaPtGyK4i5DVGb6fcAyteS3z
+         JG4Fx5fCN2PypoPvuRBH7JVmzwEQmKdvG1fELRXlNoYZ4zheFyFmna+eKCVqRtQtOQOz
+         FJ1e86w5mVZUnQTvjb2+wfGI4O54W1rwx655Z5LCeAfmteEO/bysiI8jV1hIzFdczndj
+         jbFs6C0wAbKiC7OXvK3z1KzRxO+Zg2pl+A5q7MZiVqkRSOw9ZnWeZ9ChEt7KU5hl82em
+         cUnQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714690537; x=1715295337;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=CVZTpe/CdBBd4zno1lRIevv+TY5Lijp2ynWtx6BFty4=;
-        b=bpsASZS5xKR2Uq4KUJ4mW129CfWdwk2W8AonNOxRbNVBiF/D0IeLtsxkf9Owb8tgYq
-         c5vVuTfJOCe7saFHwmXGcf6r/OaETpWOVqhf3GsZS5Zb7I4me/InbSX0lNyC/DP0Fzh1
-         tSpcuru1RlGEhLpX0y/6j2S6pxDQS9a0wgYzYV7oKrZ9zKcTpa7mcaXwBTvjCI08lRG3
-         eVp5+WzxoiAMLZCZkRYQABxxNHyhIx9ks1/HJ0tV7vt9tFcNfRUkha0SwK7uf50wjoYN
-         BlRbj3Wk5y4l9lOU3fZsUFwvVkMfafdR/WDfUhoxrFRRQ4/N4lmonYWn01bXR1FE6hgW
-         EB+g==
-X-Forwarded-Encrypted: i=1; AJvYcCWQsQeHI4xolTKouodY98QR6mgTP8AZ1dh2A47vOdEaAEWc2z2UJAiOgzM2r3+Asd71hFXfMyep3ZALTYY58YoBSGTDJR88dIYEyPvI
-X-Gm-Message-State: AOJu0YzZ+9M/N0zL07T37ioqoIiu/rP3BR8KV+u6bpTPo/4hByCaa4N7
-	g7rSC3qMXhPucaZxFUTf3BTNEgMhWD6opWkYuX6iMDl03qF2d3ThoPqRRMhR3A==
-X-Google-Smtp-Source: AGHT+IE3eOeOzKAoJovEuP0RnaA3tq2hqa/aT1L12pQ6aR7WKuRKsLt1bl+kuCC94IGtD86XBl1D8w==
-X-Received: by 2002:a17:902:fd50:b0:1e0:c0b9:589e with SMTP id mq16-20020a170902fd5000b001e0c0b9589emr4838945plb.25.1714690537346;
-        Thu, 02 May 2024 15:55:37 -0700 (PDT)
-Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id z14-20020a170903018e00b001ecb2179da6sm1877090plg.56.2024.05.02.15.55.36
+        d=1e100.net; s=20230601; t=1714690640; x=1715295440;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Fmg57uEE4v11WR+5GNCzdhB87E5dXr1jA5UC3iRCnZI=;
+        b=QBzXo7R9vKaGE8Id5polBkxgLulynWvrKVX1Eevuk7rltHea4Qvgc5j140nFVoMZa8
+         iFHTDOYdtI8PcfM3QEehYgve2E7vU6z927krHuSV8sf+nZ0aaCRVeyPWi7YlkVQlnDMB
+         L2v33jwilI3t6Zro2axAem7g51T8DiIZCq7hk0+4wZBHvJTATCk/esgIFAwcheQPxwAm
+         gg9MbJaz7Z7OAXfeUQS7JGzv4AhQh5HiFX9ZQQAXJ7Z3T9uM35Kxgq2sb4QwvAzLtMKf
+         EQtfgl1BupjZgO2AU+eFxMdxG1+P2N997nFBI8sPBFMwDlL7vGn0SMqaLJX61rvU9UX/
+         9njA==
+X-Forwarded-Encrypted: i=1; AJvYcCXMe4ntv/4shepNZlJ0IAedkJtGRbUSvLcTxi67ZnfrY7jT5fi8g55EHakrZUvczBFur8F0TF4TQsx5VruJRC5bXF9Jv1AD2T3fz1PxzAUyzFW5uZ2V290sbtid0UneKSyw4bE/CKWIkLuiEJzMrph4lY90wEPcv6B7193EzlZyG0x7kX0vqCsPsBvfnL44+Mxmca17IR5T
+X-Gm-Message-State: AOJu0Yy0QHc/s0k2gMypn6YjVRKFViXhFpiwWMecRqXGjNNLkVVrOJ0O
+	72NxEGOp9UU2R2V7sQL2YYKNcdkc/7gV8JwNmdtwEJavSBhYYXRJI5yeYehX
+X-Google-Smtp-Source: AGHT+IGz2WXlMsuHP46rBYigVBAkKsVg1u7pbr6yf+o0r7Xce8qU4Ipgphj697TJ9RVIDJHMdo8Dxg==
+X-Received: by 2002:a2e:9602:0:b0:2d9:fb60:9afa with SMTP id v2-20020a2e9602000000b002d9fb609afamr676609ljh.40.1714690640007;
+        Thu, 02 May 2024 15:57:20 -0700 (PDT)
+Received: from ?IPv6:2001:8a0:e622:f700:1ccc:88aa:cfeb:dfd7? ([2001:8a0:e622:f700:1ccc:88aa:cfeb:dfd7])
+        by smtp.gmail.com with ESMTPSA id t9-20020a05600c450900b0041bd920d41csm3402462wmo.1.2024.05.02.15.57.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 May 2024 15:55:37 -0700 (PDT)
-Date: Thu, 2 May 2024 15:55:36 -0700
-From: Kees Cook <keescook@chromium.org>
-To: Peter Zijlstra <peterz@infradead.org>
-Cc: Erick Archer <erick.archer@outlook.com>, Ingo Molnar <mingo@redhat.com>,
-	Arnaldo Carvalho de Melo <acme@kernel.org>,
-	Namhyung Kim <namhyung@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-	Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	"Liang, Kan" <kan.liang@linux.intel.com>,
-	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
-	Justin Stitt <justinstitt@google.com>,
-	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-hardening@vger.kernel.org
-Subject: Re: [PATCH] perf/ring_buffer: Prefer struct_size over open coded
- arithmetic
-Message-ID: <202405021552.5C000EA@keescook>
-References: <AS8PR02MB72372AB065EA8340D960CCC48B1B2@AS8PR02MB7237.eurprd02.prod.outlook.com>
- <20240430091504.GC40213@noisy.programming.kicks-ass.net>
- <202405011317.AF41B94B@keescook>
- <20240502091837.GA30852@noisy.programming.kicks-ass.net>
+        Thu, 02 May 2024 15:57:19 -0700 (PDT)
+Message-ID: <5d5073766f20f9fd5c88d09a710def6e84904838.camel@gmail.com>
+Subject: Re: [PATCH v3] can: mcp251xfd: fix infinite loop when xmit fails
+From: Vitor Soares <ivitro@gmail.com>
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>, Thomas Kopp
+ <thomas.kopp@microchip.com>, Wolfgang Grandegger <wg@grandegger.com>,
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet
+ <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,  Paolo Abeni
+ <pabeni@redhat.com>, Vitor Soares <vitor.soares@toradex.com>,
+ linux-can@vger.kernel.org,  netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Date: Thu, 02 May 2024 23:57:17 +0100
+In-Reply-To: <20240430-curassow-of-improbable-poetry-1611f8-mkl@pengutronix.de>
+References: <20240311121143.306403-1-ivitro@gmail.com>
+	 <20240430-curassow-of-improbable-poetry-1611f8-mkl@pengutronix.de>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: base64
+User-Agent: Evolution 3.44.4-0ubuntu2 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240502091837.GA30852@noisy.programming.kicks-ass.net>
 
-On Thu, May 02, 2024 at 11:18:37AM +0200, Peter Zijlstra wrote:
-> On Wed, May 01, 2024 at 01:21:42PM -0700, Kees Cook wrote:
-> > On Tue, Apr 30, 2024 at 11:15:04AM +0200, Peter Zijlstra wrote:
-> > > On Mon, Apr 29, 2024 at 07:40:58PM +0200, Erick Archer wrote:
-> > > > This is an effort to get rid of all multiplications from allocation
-> > > > functions in order to prevent integer overflows [1][2].
-> > > 
-> > > So personally I detest struct_size() because I can never remember wtf it
-> > > does, whereas the code it replaces is simple and straight forward :/
-> > 
-> > Sure, new APIs can involved a learning curve. If we can all handle
-> > container_of(), we can deal with struct_size(). :)
-> 
-> containre_of() is actually *much* shorter than typing it all out. Which
-> is a benefit.
-> 
-> struct_size() not so much. That's just obfuscation for obfuscation's
-> sake.
+SGVsbG8gTWFyYywKCgpUaGFua3MgZm9yIHlvdXIgZmVlZGJhY2suCgpPbiBUdWUsIDIwMjQtMDQt
+MzAgYXQgMTE6MTAgKzAyMDAsIE1hcmMgS2xlaW5lLUJ1ZGRlIHdyb3RlOgo+IE9uIDExLjAzLjIw
+MjQgMTI6MTE6NDMsIFZpdG9yIFNvYXJlcyB3cm90ZToKPiA+IEZyb206IFZpdG9yIFNvYXJlcyA8
+dml0b3Iuc29hcmVzQHRvcmFkZXguY29tPgo+ID4gCj4gPiBXaGVuIHRoZSBtY3AyNTF4ZmRfc3Rh
+cnRfeG1pdCgpIGZ1bmN0aW9uIGZhaWxzLCB0aGUgZHJpdmVyIHN0b3BzCj4gPiBwcm9jZXNzaW5n
+IG1lc3NhZ2VzLCBhbmQgdGhlIGludGVycnVwdCByb3V0aW5lIGRvZXMgbm90IHJldHVybiwKPiA+
+IHJ1bm5pbmcgaW5kZWZpbml0ZWx5IGV2ZW4gYWZ0ZXIga2lsbGluZyB0aGUgcnVubmluZyBhcHBs
+aWNhdGlvbi4KPiA+IAo+ID4gRXJyb3IgbWVzc2FnZXM6Cj4gPiBbwqAgNDQxLjI5ODgxOV0gbWNw
+MjUxeGZkIHNwaTIuMCBjYW4wOiBFUlJPUiBpbiBtY3AyNTF4ZmRfc3RhcnRfeG1pdDogLTE2Cj4g
+PiBbwqAgNDQxLjMwNjQ5OF0gbWNwMjUxeGZkIHNwaTIuMCBjYW4wOiBUcmFuc21pdCBFdmVudCBG
+SUZPIGJ1ZmZlciBub3QgZW1wdHkuIChzZXE9MHgwMDAwMTdjNywKPiA+IHRlZl90YWlsPTB4MDAw
+MDE3Y2YsIHRlZl9oZWFkPTB4MDAwMDE3ZDAsIHR4X2hlYWQ9MHgwMDAwMTdkMykuCj4gPiAuLi4g
+YW5kIHJlcGVhdCBmb3JldmVyLgo+ID4gCj4gPiBUaGUgaXNzdWUgY2FuIGJlIHRyaWdnZXJlZCB3
+aGVuIG11bHRpcGxlIGRldmljZXMgc2hhcmUgdGhlIHNhbWUKPiA+IFNQSSBpbnRlcmZhY2UuIEFu
+ZCB0aGVyZSBpcyBjb25jdXJyZW50IGFjY2VzcyB0byB0aGUgYnVzLgo+ID4gCj4gPiBUaGUgcHJv
+YmxlbSBvY2N1cnMgYmVjYXVzZSB0eF9yaW5nLT5oZWFkIGluY3JlbWVudHMgZXZlbiBpZgo+ID4g
+bWNwMjUxeGZkX3N0YXJ0X3htaXQoKSBmYWlscy4gQ29uc2VxdWVudGx5LCB0aGUgZHJpdmVyIHNr
+aXBzIG9uZQo+ID4gVFggcGFja2FnZSB3aGlsZSBzdGlsbCBleHBlY3RpbmcgYSByZXNwb25zZSBp
+bgo+ID4gbWNwMjUxeGZkX2hhbmRsZV90ZWZpZl9vbmUoKS4KPiA+IAo+ID4gVGhpcyBwYXRjaCBy
+ZXNvbHZlcyB0aGUgaXNzdWUgYnkgZGVjcmVhc2luZyB0eF9yaW5nLT5oZWFkIGlmCj4gPiBtY3Ay
+NTF4ZmRfc3RhcnRfeG1pdCgpIGZhaWxzLiBXaXRoIHRoZSBmaXgsIGlmIHdlIHRyaWdnZXIgdGhl
+IGlzc3VlIGFuZAo+ID4gdGhlIGVyciA9IC1FQlVTWSwgdGhlIGRyaXZlciByZXR1cm5zIE5FVERF
+Vl9UWF9CVVNZLiBUaGUgbmV0d29yayBzdGFjawo+ID4gcmV0cmllcyB0byB0cmFuc21pdCB0aGUg
+bWVzc2FnZS4KPiA+IE90aGVyd2lzZSwgaXQgcHJpbnRzIGFuIGVycm9yIGFuZCBkaXNjYXJkcyB0
+aGUgbWVzc2FnZS4KPiA+IAo+ID4gRml4ZXM6IDU1ZTViOTdmMDAzZSAoImNhbjogbWNwMjV4eGZk
+OiBhZGQgZHJpdmVyIGZvciBNaWNyb2NoaXAgTUNQMjV4eEZEIFNQSSBDQU4iKQo+ID4gQ2M6IHN0
+YWJsZUB2Z2VyLmtlcm5lbC5vcmcKPiA+IFNpZ25lZC1vZmYtYnk6IFZpdG9yIFNvYXJlcyA8dml0
+b3Iuc29hcmVzQHRvcmFkZXguY29tPgo+ID4gLS0tCj4gPiAKPiA+IFYyLT5WMzoKPiA+IMKgIC0g
+QWRkIHR4X2Ryb3BwZWQgc3RhdHMuCj4gPiDCoCAtIG5ldGRldl9zZW50X3F1ZXVlKCkgb25seSBp
+ZiBjYW5fcHV0X2VjaG9fc2tiKCkgc3VjY2VlZC4KPiA+IAo+ID4gVjEtPlYyOgo+ID4gwqAgLSBS
+ZXR1cm4gTkVUREVWX1RYX0JVU1kgaWYgbWNwMjUxeGZkX3R4X29ial93cml0ZSgpID09IC1FQlVT
+WS4KPiA+IMKgIC0gUmV3b3JrIHRoZSBjb21taXQgbWVzc2FnZSB0byBhZGRyZXNzIHRoZSBjaGFu
+Z2UgYWJvdmUuCj4gPiDCoCAtIENoYW5nZSBjYW5fcHV0X2VjaG9fc2tiKCkgdG8gYmUgY2FsbGVk
+IGFmdGVyIG1jcDI1MXhmZF90eF9vYmpfd3JpdGUoKSBzdWNjZWVkLgo+ID4gwqDCoMKgIE90aGVy
+d2lzZSwgd2UgZ2V0IEtlcm5lbCBOVUxMIHBvaW50ZXIgZGVyZWZlcmVuY2UgZXJyb3IuCj4gPiAK
+PiA+IMKgZHJpdmVycy9uZXQvY2FuL3NwaS9tY3AyNTF4ZmQvbWNwMjUxeGZkLXR4LmMgfCAzNCAr
+KysrKysrKysrKystLS0tLS0tLQo+ID4gwqAxIGZpbGUgY2hhbmdlZCwgMjEgaW5zZXJ0aW9ucygr
+KSwgMTMgZGVsZXRpb25zKC0pCj4gPiAKPiA+IGRpZmYgLS1naXQgYS9kcml2ZXJzL25ldC9jYW4v
+c3BpL21jcDI1MXhmZC9tY3AyNTF4ZmQtdHguYwo+ID4gYi9kcml2ZXJzL25ldC9jYW4vc3BpL21j
+cDI1MXhmZC9tY3AyNTF4ZmQtdHguYwo+ID4gaW5kZXggMTYwNTI4ZDNjYzI2Li4xNDZjNDRlNDdj
+NjAgMTAwNjQ0Cj4gPiAtLS0gYS9kcml2ZXJzL25ldC9jYW4vc3BpL21jcDI1MXhmZC9tY3AyNTF4
+ZmQtdHguYwo+ID4gKysrIGIvZHJpdmVycy9uZXQvY2FuL3NwaS9tY3AyNTF4ZmQvbWNwMjUxeGZk
+LXR4LmMKPiA+IEBAIC0xNjYsNiArMTY2LDcgQEAgbmV0ZGV2X3R4X3QgbWNwMjUxeGZkX3N0YXJ0
+X3htaXQoc3RydWN0IHNrX2J1ZmYgKnNrYiwKPiA+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgc3RydWN0IG5ldF9kZXZpY2Ug
+Km5kZXYpCj4gPiDCoHsKPiA+IMKgwqDCoMKgwqDCoMKgwqBzdHJ1Y3QgbWNwMjUxeGZkX3ByaXYg
+KnByaXYgPSBuZXRkZXZfcHJpdihuZGV2KTsKPiA+ICvCoMKgwqDCoMKgwqDCoHN0cnVjdCBuZXRf
+ZGV2aWNlX3N0YXRzICpzdGF0cyA9ICZuZGV2LT5zdGF0czsKPiA+IMKgwqDCoMKgwqDCoMKgwqBz
+dHJ1Y3QgbWNwMjUxeGZkX3R4X3JpbmcgKnR4X3JpbmcgPSBwcml2LT50eDsKPiA+IMKgwqDCoMKg
+wqDCoMKgwqBzdHJ1Y3QgbWNwMjUxeGZkX3R4X29iaiAqdHhfb2JqOwo+ID4gwqDCoMKgwqDCoMKg
+wqDCoHVuc2lnbmVkIGludCBmcmFtZV9sZW47Cj4gPiBAQCAtMTgxLDI1ICsxODIsMzIgQEAgbmV0
+ZGV2X3R4X3QgbWNwMjUxeGZkX3N0YXJ0X3htaXQoc3RydWN0IHNrX2J1ZmYgKnNrYiwKPiA+IMKg
+wqDCoMKgwqDCoMKgwqB0eF9vYmogPSBtY3AyNTF4ZmRfZ2V0X3R4X29ial9uZXh0KHR4X3Jpbmcp
+Owo+ID4gwqDCoMKgwqDCoMKgwqDCoG1jcDI1MXhmZF90eF9vYmpfZnJvbV9za2IocHJpdiwgdHhf
+b2JqLCBza2IsIHR4X3JpbmctPmhlYWQpOwo+ID4gwqAKPiA+IC3CoMKgwqDCoMKgwqDCoC8qIFN0
+b3AgcXVldWUgaWYgd2Ugb2NjdXB5IHRoZSBjb21wbGV0ZSBUWCBGSUZPICovCj4gPiDCoMKgwqDC
+oMKgwqDCoMKgdHhfaGVhZCA9IG1jcDI1MXhmZF9nZXRfdHhfaGVhZCh0eF9yaW5nKTsKPiA+IC3C
+oMKgwqDCoMKgwqDCoHR4X3JpbmctPmhlYWQrKzsKPiA+IC3CoMKgwqDCoMKgwqDCoGlmIChtY3Ay
+NTF4ZmRfZ2V0X3R4X2ZyZWUodHhfcmluZykgPT0gMCkKPiA+IC3CoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqBuZXRpZl9zdG9wX3F1ZXVlKG5kZXYpOwo+ID4gLQo+ID4gwqDCoMKgwqDCoMKg
+wqDCoGZyYW1lX2xlbiA9IGNhbl9za2JfZ2V0X2ZyYW1lX2xlbihza2IpOwo+ID4gLcKgwqDCoMKg
+wqDCoMKgZXJyID0gY2FuX3B1dF9lY2hvX3NrYihza2IsIG5kZXYsIHR4X2hlYWQsIGZyYW1lX2xl
+bik7Cj4gPiAtwqDCoMKgwqDCoMKgwqBpZiAoIWVycikKPiA+IC3CoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqBuZXRkZXZfc2VudF9xdWV1ZShwcml2LT5uZGV2LCBmcmFtZV9sZW4pOwo+ID4g
+Kwo+ID4gK8KgwqDCoMKgwqDCoMKgdHhfcmluZy0+aGVhZCsrOwo+ID4gwqAKPiA+IMKgwqDCoMKg
+wqDCoMKgwqBlcnIgPSBtY3AyNTF4ZmRfdHhfb2JqX3dyaXRlKHByaXYsIHR4X29iaik7Cj4gPiAt
+wqDCoMKgwqDCoMKgwqBpZiAoZXJyKQo+ID4gLcKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oGdvdG8gb3V0X2VycjsKPiA+ICvCoMKgwqDCoMKgwqDCoGlmIChlcnIpIHsKPiA+ICvCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqB0eF9yaW5nLT5oZWFkLS07Cj4gPiDCoAo+ID4gLcKgwqDC
+oMKgwqDCoMKgcmV0dXJuIE5FVERFVl9UWF9PSzsKPiA+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqBpZiAoZXJyID09IC1FQlVTWSkKPiA+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgcmV0dXJuIE5FVERFVl9UWF9CVVNZOwo+ID4gwqAKPiA+IC0g
+b3V0X2VycjoKPiA+IC3CoMKgwqDCoMKgwqDCoG5ldGRldl9lcnIocHJpdi0+bmRldiwgIkVSUk9S
+IGluICVzOiAlZFxuIiwgX19mdW5jX18sIGVycik7Cj4gPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgc3RhdHMtPnR4X2Ryb3BwZWQrKzsKPiA+ICsKPiA+ICvCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqBpZiAobmV0X3JhdGVsaW1pdCgpKQo+ID4gK8KgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBuZXRkZXZfZXJyKHByaXYtPm5kZXYsCj4gPiAr
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgICJFUlJPUiBpbiAlczogJWRcbiIsIF9fZnVuY19fLCBlcnIpOwo+ID4gK8KgwqDC
+oMKgwqDCoMKgfSBlbHNlIHsKPiA+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBlcnIg
+PSBjYW5fcHV0X2VjaG9fc2tiKHNrYiwgbmRldiwgdHhfaGVhZCwgZnJhbWVfbGVuKTsKPiA+ICvC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBpZiAoIWVycikKPiA+ICvCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgbmV0ZGV2X3NlbnRfcXVldWUocHJpdi0+
+bmRldiwgZnJhbWVfbGVuKTsKPiA+ICsKPiA+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqAvKiBTdG9wIHF1ZXVlIGlmIHdlIG9jY3VweSB0aGUgY29tcGxldGUgVFggRklGTyAqLwo+ID4g
+K8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoGlmIChtY3AyNTF4ZmRfZ2V0X3R4X2ZyZWUo
+dHhfcmluZykgPT0gMCkKPiA+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgbmV0aWZfc3RvcF9xdWV1ZShuZGV2KTsKPiA+ICvCoMKgwqDCoMKgwqDCoH0KPiAK
+PiBPbmNlIHlvdSBoYXZlIHNlbnQgdGhlIFRYIG9iamVjdHMgdG8gdGhlIGNoaXAsIGl0IGNhbiB0
+cmlnZ2VyIGEgVFgKPiBjb21wbGV0ZSBJUlEuIFRoaXMgaXMgbm90IHZlcnkgbGlrZWx5IGFzIHRo
+ZSBTUEkgc2VuZHMgYXN5bmNocm9ub3VzbHkKPiBhbmQgdGhlIHhtaXQgaGFuZGxlciBjYW5ub3Qg
+c2xlZXAuCj4gCj4gVGhpcyBtZWFucyB5b3UgaGF2ZSB0byBjYWxsIGNhbl9wdXRfZWNob19za2Io
+KSBhbmQgc3RvcCB0aGUgcXVldWUgaWYKPiBuZWVkZWQsIF9iZWZvcmVfIHlvdSBjYWxsIG1jcDI1
+MXhmZF90eF9vYmpfd3JpdGUoKS4gSW4gY2FzZSBvZiBhbiBlcnJvciwKPiB5b3UgaGF2ZSB0byBy
+b2xsLWJhY2sgdGhlc2UuCgpEb2luZyB0aGlzIHdheSwgSSBoYXZlIHRvIGNhbl9mcmVlX2VjaG9f
+c2tiKCkgYW5kIGl0IHdvbid0IGJlIHBvc3NpYmxlCnRvIHJldHVybiBORVRERVZfVFhfQlVTWS4K
+CkRvIHlvdSBrbm93IGhvdyBjYW4gd2UgcmV0dXJuIE5FVERFVl9UWF9CVVNZIHdoZW4gc3BpX2Fz
+eW5jKCkgPT0gRUJVU1kKdG8gYWxsb3cgdGhlIG5ldHdvcmsgc3RhY2sgdG8gcmV0cnkgdG8gdHJh
+bnNtaXQgdGhlIHBhY2thZ2U/CgpCZXN0IHJlZ2FyZHMsClZpdG9yIFNvYXJlcwoKPiAKPiByZWdh
+cmRzLAo+IE1hcmMKPiAKCg==
 
-It's really not -- it's making sure that the calculation is semantically
-sane: all the right things are being used for the struct size calculation
-and things can't "drift", if types change, flex array changes, etc. It's
-both a code robustness improvement and a wrap-around stopping improvement.
-
--- 
-Kees Cook
 
