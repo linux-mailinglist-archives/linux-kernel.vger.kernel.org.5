@@ -1,115 +1,118 @@
-Return-Path: <linux-kernel+bounces-165946-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-165947-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DA75B8B93B2
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 05:53:09 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1973B8B93B4
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 05:57:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 22D23B2207F
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 03:53:07 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 577AAB22589
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 03:57:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 84B761B815;
-	Thu,  2 May 2024 03:52:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D29F1B815;
+	Thu,  2 May 2024 03:57:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="PxQ4M5vl"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.14])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BHSqB5GW"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B65617740;
-	Thu,  2 May 2024 03:52:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.14
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C8B3D527;
+	Thu,  2 May 2024 03:57:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714621978; cv=none; b=TZGzycUhDueDNFtpvfH4pgKE0ZBEWQFjowVt8Eg/psAFNoSZofhWWEmBaZGMMeFBCC2wxulZXexYu2VWInbJae7As9ORRjvmS4/GHUO85NHfVjxx030Cr8aklnwqigZ/nQIvl4hKG7w3swrISSLZvP9A8JTgyJ3V07LYYOeQf+Y=
+	t=1714622223; cv=none; b=rKvqvgb2GEG+gjnTwIVjZlP21NMbQ6rl0/opvQmBWoZHjBHFblyp7AlDJiZBQ6HpdGZmMGfmFzQntWKQofcbf36ZOGiH5Qclyk/ezxicoPqynNRbuQ7mSelZu7+sdOmtKtNwKX6VEJ3KTBWysRSMVB39eRTSm0hXejUKeXN4XDM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714621978; c=relaxed/simple;
-	bh=ufokDlLyeYAEJkn0qhb3kYYK+asNA6o0QGc5jorczJE=;
-	h=Message-ID:Date:MIME-Version:Cc:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=YRt0gNrVTrZ7qRvqJ+JdN+VIV2+p5e9/w+CJWRl2j+bDXPdp9Rl+8X3XQI0yc+aYapDiDQFUGHd5Zm0c7jFsKNbPVvLQ3+U946TD2giQMRXrAjJgZr/ftrC/R1QLlUcyw389NFFolIPOg1eIJZnCOZfi038S0dI+SZKxdc6miJE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=PxQ4M5vl; arc=none smtp.client-ip=198.175.65.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1714621978; x=1746157978;
-  h=message-id:date:mime-version:cc:subject:to:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=ufokDlLyeYAEJkn0qhb3kYYK+asNA6o0QGc5jorczJE=;
-  b=PxQ4M5vlmg032yFN/ZqCFNCZiSAer7DavAsizPaLbQOwU9DWYX808ASb
-   wL2wwWbcbtbPW90v/5XmQozx1Y2jMgPY6vSdkcEz1m08b6v3a3LyB7gX6
-   dT0JC6T7oDWGna43cur5zxTgWMcQdjTCJALkR1plMwnVS8G2i4qUyDERn
-   Z9SYnrq1sUSBEfxLbIq6QBE9aMMU36odlbyMs6EPZ4Lfumacuah7wiT4w
-   LtV8Rblb5QITBZls46d+IsOgVM/g5ab4gpakiUCfOOOOrpC8rGkjy9SE/
-   JNZPwpvDReSKX2fbewcchxi734Kof+T98akHDiJmeaHguJXGwsGT0p9CX
-   A==;
-X-CSE-ConnectionGUID: 1TUz9uPjQpS7Enz4sftN6Q==
-X-CSE-MsgGUID: xlHlqSr1RVSB/e6A7AgzpA==
-X-IronPort-AV: E=McAfee;i="6600,9927,11061"; a="14196421"
-X-IronPort-AV: E=Sophos;i="6.07,247,1708416000"; 
-   d="scan'208";a="14196421"
-Received: from orviesa003.jf.intel.com ([10.64.159.143])
-  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 May 2024 20:52:58 -0700
-X-CSE-ConnectionGUID: FFGWb+U4Q4Sbss+D92Yhvg==
-X-CSE-MsgGUID: kuy6D+XUTs6pBANWIhlM7g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,247,1708416000"; 
-   d="scan'208";a="31662031"
-Received: from unknown (HELO [10.239.159.127]) ([10.239.159.127])
-  by orviesa003.jf.intel.com with ESMTP; 01 May 2024 20:52:52 -0700
-Message-ID: <1eeed328-fd6c-4740-b1f5-339aad559997@linux.intel.com>
-Date: Thu, 2 May 2024 11:51:22 +0800
+	s=arc-20240116; t=1714622223; c=relaxed/simple;
+	bh=av6cRvs/KdC58mw6iPdJqlAqSCE0u9jK5NqajQSe7AE=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=qmzTEx35Gv2pice9JWWOJP7Oaq4lAzxwPDquhOhj6HSRwBTNEu6z8jhP1tQtj9gFmFObdiK9K2fcoIcBlUHtjyBvi+ERUgoHXs/Z3IFIlZUNJDltegWG79cq9YFLEtD1EXb2Pd95Rf1ehgqpIx8j3ekINHRReD+4BLEzWVMAoOU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BHSqB5GW; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 65D87C116B1;
+	Thu,  2 May 2024 03:57:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714622222;
+	bh=av6cRvs/KdC58mw6iPdJqlAqSCE0u9jK5NqajQSe7AE=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=BHSqB5GWTTS3H4MRAe1L87Pd8arWNCTpAZVxcJBElbJJgX8TRkg+FzdrbjNg5NeST
+	 sB2UBk/Z7D6aUNcRxnXCze3G+Zl/oUlTU8yw9d/XF5Mfaa4EQcdu535TNVP+6fkGSq
+	 5cE2RbcCd6NMXRZLzLV1ujLeGNfywAW2D5Kug/r7pJYMIBueIRa3fcEt+cbokJgU2F
+	 49RW+nLO31PTekd9eGShH34TV4fBKDPfIuhqdwNERlizvZ+9fprKg+bZROIfqJdh0q
+	 dHb7ae6oIJKKzoOUoFFyE9pywyzetPIwgMYtJBYqeqFxVPHjbX090BUdq96pwOYHot
+	 USejzBTTl8wzg==
+From: Mark Brown <broonie@kernel.org>
+To: linux-spi@vger.kernel.org, 
+ Wolfram Sang <wsa+renesas@sang-engineering.com>
+Cc: imx@lists.linux.dev, linux-arm-kernel@lists.infradead.org, 
+ linux-kernel@vger.kernel.org, linux-sunxi@lists.linux.dev
+In-Reply-To: <20240429112843.67628-1-wsa+renesas@sang-engineering.com>
+References: <20240429112843.67628-1-wsa+renesas@sang-engineering.com>
+Subject: Re: [PATCH 0/8] spi: use 'time_left' instead of 'timeout' with
+ wait_for_*() functions
+Message-Id: <171462222116.1904471.13111668910715356522.b4-ty@kernel.org>
+Date: Thu, 02 May 2024 12:57:01 +0900
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Cc: baolu.lu@linux.intel.com, Palmer Dabbelt <palmer@dabbelt.com>,
- Albert Ou <aou@eecs.berkeley.edu>, Anup Patel <apatel@ventanamicro.com>,
- Sunil V L <sunilvl@ventanamicro.com>, Nick Kossifidis <mick@ics.forth.gr>,
- Sebastien Boeuf <seb@rivosinc.com>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley
- <conor+dt@kernel.org>, devicetree@vger.kernel.org, iommu@lists.linux.dev,
- linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
- linux@rivosinc.com
-Subject: Re: [PATCH v3 6/7] iommu/riscv: Command and fault queue support
-To: Tomasz Jeznach <tjeznach@rivosinc.com>, Joerg Roedel <joro@8bytes.org>,
- Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
- Paul Walmsley <paul.walmsley@sifive.com>
-References: <cover.1714494653.git.tjeznach@rivosinc.com>
- <fbf49cba213b03d42aae398c1b48da06e3f6e1b7.1714494653.git.tjeznach@rivosinc.com>
-Content-Language: en-US
-From: Baolu Lu <baolu.lu@linux.intel.com>
-In-Reply-To: <fbf49cba213b03d42aae398c1b48da06e3f6e1b7.1714494653.git.tjeznach@rivosinc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.14-dev
 
-On 5/1/24 4:01 AM, Tomasz Jeznach wrote:
-> Introduce device command submission and fault reporting queues,
-> as described in Chapter 3.1 and 3.2 of the RISC-V IOMMU Architecture
-> Specification.
+On Mon, 29 Apr 2024 13:28:33 +0200, Wolfram Sang wrote:
+> There is a confusing pattern in the kernel to use a variable named 'timeout' to
+> store the result of wait_for_*() functions causing patterns like:
 > 
-> Command and fault queues are instantiated in contiguous system memory
-> local to IOMMU device domain, or mapped from fixed I/O space provided
-> by the hardware implementation. Detection of the location and maximum
-> allowed size of the queue utilize WARL properties of queue base control
-> register. Driver implementation will try to allocate up to 128KB of
-> system memory, while respecting hardware supported maximum queue size.
+>         timeout = wait_for_completion_timeout(...)
+>         if (!timeout) return -ETIMEDOUT;
 > 
-> Interrupts allocation is based on interrupt vectors availability and
-> distributed to all queues in simple round-robin fashion. For hardware
-> Implementation with fixed event type to interrupt vector assignment
-> IVEC WARL property is used to discover such mappings.
+> with all kinds of permutations. Use 'time_left' as a variable to make the code
+> obvious and self explaining.
 > 
-> Address translation, command and queue fault handling in this change
-> is limited to simple fault reporting without taking any action.
-> 
-> Signed-off-by: Tomasz Jeznach<tjeznach@rivosinc.com>
+> [...]
 
-Reviewed-by: Lu Baolu <baolu.lu@linux.intel.com>
+Applied to
 
-Best regards,
-baolu
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
+
+Thanks!
+
+[1/8] spi: armada-3700: use 'time_left' variable with wait_for_completion_timeout()
+      commit: 7dbbbb1206dd0b695b9a76d3b758c8a689f1aa52
+[2/8] spi: fsl-lpspi: use 'time_left' variable with wait_for_completion_timeout()
+      commit: eef51e99f7b9ecc903a3a9ad9e7ca84dc35c3f52
+[3/8] spi: imx: use 'time_left' variable with wait_for_completion_timeout()
+      commit: eaeac043ab842d2e84616ff0412eec0121c1758c
+[4/8] spi: pic32-sqi: use 'time_left' variable with wait_for_completion_timeout()
+      commit: a7c79e50a26cb619400ccc6294dbd7d8c24a0341
+[5/8] spi: pic32: use 'time_left' variable with wait_for_completion_timeout()
+      commit: e66480aed4a194f278da1e46ec45221b3983216f
+[6/8] spi: sun4i: use 'time_left' variable with wait_for_completion_timeout()
+      commit: 34bed8a33f3a4f69b0ef584ef49f04a671a4a5c2
+[7/8] spi: sun6i: use 'time_left' variable with wait_for_completion_timeout()
+      commit: 83a3f1ba60d6e2f73c9dd2627a8ce41867dbc46b
+[8/8] spi: xlp: use 'time_left' variable with wait_for_completion_timeout()
+      commit: 594aa75d6bdda85b5fd027a5056d8cd1345c1db3
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
 
