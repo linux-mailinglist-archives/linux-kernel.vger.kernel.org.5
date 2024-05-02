@@ -1,144 +1,254 @@
-Return-Path: <linux-kernel+bounces-166063-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-166064-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 96DA58B9569
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 09:41:23 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EFEC78B9570
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 09:43:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4C9A81F223E9
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 07:41:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1E78F1C21121
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 07:43:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B763B22EF2;
-	Thu,  2 May 2024 07:41:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C49522EF2;
+	Thu,  2 May 2024 07:43:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="hEvfHznr"
-Received: from mail-ej1-f54.google.com (mail-ej1-f54.google.com [209.85.218.54])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="vZXuSNQU"
+Received: from mail-vk1-f169.google.com (mail-vk1-f169.google.com [209.85.221.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F2202209F
-	for <linux-kernel@vger.kernel.org>; Thu,  2 May 2024 07:41:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 400D9225A2
+	for <linux-kernel@vger.kernel.org>; Thu,  2 May 2024 07:43:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714635675; cv=none; b=DEh9hVIZiDiLO6IUYtbiNIXO6RE4OF0w394ID4Repir948P0nXMZP2ITF5IKcC9zjLHKRCW486CJDRG3Ix86fWBeEaQwOMRY5tvowdir6BVPhZEEQwz47wroumEZcGepF4IhCJ9ZatUheLiqtUIpUM0QS9Se1rsYNxBBNNS6X08=
+	t=1714635817; cv=none; b=Fcry+6NHUMbw07GCjInEnm6+ZwFk4Llm7u4pLDDbSSA1qigzAMFukFDlRBFIj4FpGEsFjVTHim7PRlkqXRjitOpyn6/5eLOzgQuQiOqwh9Cqt+lgyiXmAzrzq+bhWMfaIzvSs0gGyq9I5y+R6S+9NktYOH7ChQZUn1xAHrWWK7k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714635675; c=relaxed/simple;
-	bh=zABtKC+Rtoh7jI4D99cudXvLlTLkH2cSA0Kfdm54lQw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=IRmMDoXUgsU92DxlhdlbU6GOyWWhq5L5ZaPDekkRNSX4dGYffSggRRrejFQcc9zGnAWj2xPulAntwInEir+cvnGsGqADAAqxstkwx1D+J2hOU5LNtWX6WOb1E+vrQpdK6FZtJFYPfEGylZRGNlUJ4b4284MATjwKKFaaUZ6yil4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=hEvfHznr; arc=none smtp.client-ip=209.85.218.54
+	s=arc-20240116; t=1714635817; c=relaxed/simple;
+	bh=rDono9JDP3oaHl15CED3BRbCQJ6twVEr8Ie1x16gH/8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=SRbcF5bmwSCN+qiU27sfMQLGIZDwpj6wnp96Zg5wsoD7lK1UrxYiYpuNzp0uf2cj5OChz6sghVHZ3zXdk41KkdAJ7A5ovj8uxHXJilNNd/9CuaDceZmPghDQlAho2P5EpIbfXUppCIWDAiUVAWZJ5Hrwc+TB1qa9tvwmN1Ut/yU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=vZXuSNQU; arc=none smtp.client-ip=209.85.221.169
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-a5557e3ebcaso267075566b.1
-        for <linux-kernel@vger.kernel.org>; Thu, 02 May 2024 00:41:13 -0700 (PDT)
+Received: by mail-vk1-f169.google.com with SMTP id 71dfb90a1353d-4dac3cbc8fdso2238948e0c.0
+        for <linux-kernel@vger.kernel.org>; Thu, 02 May 2024 00:43:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1714635672; x=1715240472; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=9Q2C006YjdfPOCf5/2sNCH0MuBR/EBBXkcEnDcvy0KM=;
-        b=hEvfHznrQGIHw6Oxw9hqIYbiE0jrtzkUrHvwH/Bs1QQfvC0tpoE7hK5Pp4h6u2jizY
-         UGBQKK/ZOlrl898RWELZOVPaQBN/zjzx38781a7nhMKWN3z+dfRvr4DtuAZ6l2phrSvE
-         G2hTa/TyNCIlGQKRhjNQ0onh33cjCSmczsv5V88S6RphNblHRL1i0PGASYUQSwcRQJSI
-         OLQCERFG6re06EYXcEZRAMqBIYisN0lrKscrgpfqTHi/lE8juzLG37fh9raW2OIhBl2g
-         FnWIJue+9lhbAr3hp4IvfVq8SzYCKKzfdThf++a/oHYvrc/lwqDaMUGnV1nlpGgBSwFn
-         OVHg==
+        d=linaro.org; s=google; t=1714635815; x=1715240615; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Rcob1TfnhXb+bEn5tF/RI3RqQrQ53a9U7OzbM4Ax2nE=;
+        b=vZXuSNQU25AfnWQXy32SreNO8BVNkhpi8kiD163g4yfWeh5M7nPp9Bx2VNd1ZvFN76
+         a1xK3KW1p1zTTaokXlQhF6JbEFRpKSnRr10ceacvPHQgtdJagUghGHP5nHc2D1S5Nj/p
+         W1HDg5alMMUJ4t/lThZE0/0c4vHEiO0n+QuIij90wMMNUI3FWoaz9qCfoZoxKJCG/8GP
+         bZbWQ5y15bBDgAK7/w5HCOmiDpLDCanhcwSZVjQDJkC+zwI8lkvkpoQrFiHLK787BVzn
+         lJuCKnST7U2A2Nv0ThoQbWQJTdrDhE+Yz9e8bEOi2fXQk4s65UNsA+V7IZEkk8rtn5Qf
+         Qv6A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714635672; x=1715240472;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=9Q2C006YjdfPOCf5/2sNCH0MuBR/EBBXkcEnDcvy0KM=;
-        b=qfP7DEOABy6mEfZRq7hxHA0CE/81yEocfUMhrdfHRCzDqjq9kRwQaHsSr7j28eC8LY
-         OqYmZdCUbkNb963LkGH0tVyK94HzqBOgAyE0AL+qBqtc306miDhAL3unXk30NQ9DWm2Z
-         myoGoLPlioUcsfQFgCXHJ7UF1h9Lzgq0j0SUwR7z4V4D4ptf0O3ldsZo1+TuAgGZiWzf
-         wGQsUWe0qknXlIUGimTl7R0Mp5JslumS6lnG1cCJH9DeihJg26QUL+05DBfWHvSo9BKD
-         zTk9p44dIoaILTevjHwXJtYPucplOQACP18gathjFxmuNC2U1aBnn5bHOA+FoxTaoqKa
-         fsdw==
-X-Forwarded-Encrypted: i=1; AJvYcCVye2eLSPrPY9t3tB2HIkLsfUK9a+CWmETeEtbIqDtHiFEAU4psbNbAQZlA7anTLbZbdOfWa1Rb8Hm4Yti2cOtygYjk+HhHyWz2hd4k
-X-Gm-Message-State: AOJu0YzZiyEReySO4Q0REnC/fZ53UGlQeootfLQTkRpd9hNGb2vFG1hw
-	0vdEUm4fWPdEeXM8MAEDvRxoBp8yP81PnHNJoajVBS+CmEF07BkAXihDhulON0g=
-X-Google-Smtp-Source: AGHT+IFP6c4sujTOMTIqEmlCFgQb9BiI3UfyLMTVFf3tUx1jI6Xp+ozJDDd4kk44gM2ZM9XkX8ZcNg==
-X-Received: by 2002:a17:907:7d94:b0:a59:5693:d709 with SMTP id oz20-20020a1709077d9400b00a595693d709mr1777751ejc.30.1714635671861;
-        Thu, 02 May 2024 00:41:11 -0700 (PDT)
-Received: from [172.20.10.10] ([213.233.85.172])
-        by smtp.gmail.com with ESMTPSA id n26-20020a170906089a00b00a587868c5d2sm229664eje.195.2024.05.02.00.41.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 02 May 2024 00:41:11 -0700 (PDT)
-Message-ID: <ea6f17d7-49bf-4a1e-ba3b-757e29221590@linaro.org>
-Date: Thu, 2 May 2024 08:41:06 +0100
+        d=1e100.net; s=20230601; t=1714635815; x=1715240615;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Rcob1TfnhXb+bEn5tF/RI3RqQrQ53a9U7OzbM4Ax2nE=;
+        b=liPvUwHt3kb8nLNKHGiDhkBA6ELJ4wz2aBLHqx+HOj3u8XzRFpf6RdcH8jo87re0cW
+         fYzikmrPxAlylNU8Q2CUNVSLVIRVEyUpjEfI864/hMtNc3O5ZiRaSdmErDd8CfPerSlr
+         57XtJyS/oXQKWKYr3jgcgXTOvnzts8pEA+dIBSE6VnEkf4jNu5GV8oKAgiCYOKiiIqVH
+         sneW8od7k6Q1cH24jwXvJqX8ve5GQD7ZUZ1+fZXeNmMBHX/4wcnixZagQh76caRTHmx1
+         7UmhjC5kfzedtqW2+DniDFsMP/L4ovu49ySJ/ZNnAhLivK3kue2nWDH9996jrKHY/4/u
+         LHbA==
+X-Forwarded-Encrypted: i=1; AJvYcCWC9p8o53AcNJnRkYHkBjtivwZo14ugMteTl0OvCoPeVFpEp5WwPdxVEz6kZEMeDcph9wMS8bhcWdmIn0XlC9VTC7Hm7E66BKR/S9UR
+X-Gm-Message-State: AOJu0Yzh7KHcIwvaSyx31xFi177/ZcfXVA5B+a8C5BPzDkgNwl/5JPfd
+	wBWXP8A8k64a2UyFUNUlQ0Sb0p3lD8nPqR46rj27oXXEmioojiYhCzexRyXdmgNOQaC1FeG8HbZ
+	4hQfh66/xWyWYXbDiubXtZSnD1fG6QK2TDoz6Aw==
+X-Google-Smtp-Source: AGHT+IFvrUNNJeORwF7RJ0RFDFEgsKfOtCpFP/WQu6feSafNZETbA70DvepwWypWctu3kv/IkSZEjHNYdd4gxCFiJvI=
+X-Received: by 2002:a05:6122:3d12:b0:4da:e6ee:5533 with SMTP id
+ ga18-20020a0561223d1200b004dae6ee5533mr5611768vkb.16.1714635813741; Thu, 02
+ May 2024 00:43:33 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 2/2] pinctrl: samsung: support a bus clock
-To: =?UTF-8?Q?Andr=C3=A9_Draszik?= <andre.draszik@linaro.org>,
- Krzysztof Kozlowski <krzk@kernel.org>,
- Sylwester Nawrocki <s.nawrocki@samsung.com>,
- Alim Akhtar <alim.akhtar@samsung.com>,
- Linus Walleij <linus.walleij@linaro.org>, Rob Herring <robh@kernel.org>,
- Conor Dooley <conor+dt@kernel.org>, Tomasz Figa <tomasz.figa@gmail.com>,
- Peter Griffin <peter.griffin@linaro.org>
-Cc: Will McVicker <willmcvicker@google.com>,
- Sam Protsenko <semen.protsenko@linaro.org>, kernel-team@android.com,
- linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org,
- linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20240426-samsung-pinctrl-busclock-v3-0-adb8664b8a7e@linaro.org>
- <20240426-samsung-pinctrl-busclock-v3-2-adb8664b8a7e@linaro.org>
-Content-Language: en-US
-From: Tudor Ambarus <tudor.ambarus@linaro.org>
-In-Reply-To: <20240426-samsung-pinctrl-busclock-v3-2-adb8664b8a7e@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20240430134021.555330198@linuxfoundation.org>
+In-Reply-To: <20240430134021.555330198@linuxfoundation.org>
+From: Naresh Kamboju <naresh.kamboju@linaro.org>
+Date: Thu, 2 May 2024 13:13:22 +0530
+Message-ID: <CA+G9fYuX5H_jwpYCr+vS2W1G7J+mG67M=D2DYwj7L9MN3=89GQ@mail.gmail.com>
+Subject: Re: [PATCH 5.4 000/106] 5.4.275-rc2 review
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: stable@vger.kernel.org, patches@lists.linux.dev, 
+	linux-kernel@vger.kernel.org, torvalds@linux-foundation.org, 
+	akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org, 
+	patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de, 
+	jonathanh@nvidia.com, f.fainelli@gmail.com, sudipm.mukherjee@gmail.com, 
+	srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org, allen.lkml@gmail.com, 
+	broonie@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi, André!
+On Tue, 30 Apr 2024 at 19:13, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 5.4.275 release.
+> There are 106 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Thu, 02 May 2024 13:40:04 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
+5.4.275-rc2.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-5.4.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-On 4/26/24 14:25, André Draszik wrote:
-> @@ -200,6 +235,14 @@ static int exynos_irq_request_resources(struct irq_data *irqd)
->  	shift = irqd->hwirq * bank_type->fld_width[PINCFG_TYPE_FUNC];
->  	mask = (1 << bank_type->fld_width[PINCFG_TYPE_FUNC]) - 1;
->  
-> +	ret = clk_enable(bank->drvdata->pclk);
-> +	if (ret) {
-> +		dev_err(bank->gpio_chip.parent,
-> +			"unable to enable clock for configuring pin %s-%lu\n",
-> +			bank->name, irqd->hwirq);
-> +		return ret;
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-here we return an error
-> +	}
-> +
->  	raw_spin_lock_irqsave(&bank->slock, flags);
->  
->  	con = readl(bank->pctl_base + reg_con);
-> @@ -209,6 +252,8 @@ static int exynos_irq_request_resources(struct irq_data *irqd)
->  
->  	raw_spin_unlock_irqrestore(&bank->slock, flags);
->  
-> +	clk_disable(bank->drvdata->pclk);
-> +
->  	return 0;
->  }
->  
-> @@ -223,6 +268,13 @@ static void exynos_irq_release_resources(struct irq_data *irqd)
->  	shift = irqd->hwirq * bank_type->fld_width[PINCFG_TYPE_FUNC];
->  	mask = (1 << bank_type->fld_width[PINCFG_TYPE_FUNC]) - 1;
->  
-> +	if (clk_enable(bank->drvdata->pclk)) {
-> +		dev_err(bank->gpio_chip.parent,
-> +			"unable to enable clock for deconfiguring pin %s-%lu\n",
-> +			bank->name, irqd->hwirq);
-> +		return;
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-but here we just print an error. I guess that for consistency reasons it
-would be good to follow up with a patch and change the return types of
-these methods and return the error too when the clock enable fails.
+## Build
+* kernel: 5.4.275-rc2
+* git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
+* git branch: linux-5.4.y
+* git commit: 6c530794f59e8e3bb37b90d4bc14a70ec7d657dd
+* git describe: v5.4.274-107-g6c530794f59e
+* test details:
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.4.y/build/v5.4.2=
+74-107-g6c530794f59e
 
-Cheers,
-ta
+## Test Regressions (compared to v5.4.272-183-gc3a33bc34a87)
+
+## Metric Regressions (compared to v5.4.272-183-gc3a33bc34a87)
+
+## Test Fixes (compared to v5.4.272-183-gc3a33bc34a87)
+
+## Metric Fixes (compared to v5.4.272-183-gc3a33bc34a87)
+
+## Test result summary
+total: 104581, pass: 83299, fail: 2741, skip: 18467, xfail: 74
+
+## Build Summary
+* arc: 5 total, 5 passed, 0 failed
+* arm: 135 total, 135 passed, 0 failed
+* arm64: 35 total, 33 passed, 2 failed
+* i386: 23 total, 17 passed, 6 failed
+* mips: 25 total, 25 passed, 0 failed
+* parisc: 3 total, 0 passed, 3 failed
+* powerpc: 30 total, 30 passed, 0 failed
+* riscv: 9 total, 9 passed, 0 failed
+* s390: 6 total, 6 passed, 0 failed
+* sh: 10 total, 10 passed, 0 failed
+* sparc: 6 total, 6 passed, 0 failed
+* x86_64: 31 total, 31 passed, 0 failed
+
+## Test suites summary
+* boot
+* kselftest-android
+* kselftest-arm64
+* kselftest-breakpoints
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-drivers-dma-buf
+* kselftest-efivarfs
+* kselftest-exec
+* kselftest-filesystems
+* kselftest-filesystems-binderfs
+* kselftest-filesystems-epoll
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-ftrace
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kexec
+* kselftest-lib
+* kselftest-livepatch
+* kselftest-membarrier
+* kselftest-memfd
+* kselftest-memory-hotplug
+* kselftest-mincore
+* kselftest-mm
+* kselftest-mount
+* kselftest-mqueue
+* kselftest-net
+* kselftest-net-forwarding
+* kselftest-net-mptcp
+* kselftest-netfilter
+* kselftest-nsfs
+* kselftest-openat2
+* kselftest-pid_namespace
+* kselftest-pidfd
+* kselftest-proc
+* kselftest-pstore
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-tc-testing
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-user_events
+* kselftest-vDSO
+* kselftest-watchdog
+* kselftest-x86
+* kselftest-zram
+* kunit
+* log-parser-boot
+* log-parser-test
+* ltp-cap_bounds
+* ltp-commands
+* ltp-containers
+* ltp-controllers
+* ltp-cpuhotplug
+* ltp-crypto
+* ltp-cve
+* ltp-dio
+* ltp-fcntl-locktests
+* ltp-filecaps
+* ltp-fs
+* ltp-fs_bind
+* ltp-fs_perms_simple
+* ltp-hugetlb
+* ltp-io
+* ltp-ipc
+* ltp-math
+* ltp-mm
+* ltp-nptl
+* ltp-pty
+* ltp-sched
+* ltp-securebits
+* ltp-smoke
+* ltp-smoketest
+* ltp-syscalls
+* ltp-tracing
+* perf
+* rcutorture
+
+--
+Linaro LKFT
+https://lkft.linaro.org
 
