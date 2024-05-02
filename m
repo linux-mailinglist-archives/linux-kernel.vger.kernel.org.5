@@ -1,69 +1,69 @@
-Return-Path: <linux-kernel+bounces-166934-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-166935-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4F80B8BA23D
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 23:27:07 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 085838BA240
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 23:27:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CCB091F2196C
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 21:27:06 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1EDDAB21656
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 21:27:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA2DA19DF72;
-	Thu,  2 May 2024 21:26:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B5501BF6F2;
+	Thu,  2 May 2024 21:26:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b="DAANplb8"
-Received: from mail-pf1-f170.google.com (mail-pf1-f170.google.com [209.85.210.170])
+	dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b="L3pSwvEk"
+Received: from mail-pf1-f179.google.com (mail-pf1-f179.google.com [209.85.210.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E656F181312
-	for <linux-kernel@vger.kernel.org>; Thu,  2 May 2024 21:26:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 81B89199E90
+	for <linux-kernel@vger.kernel.org>; Thu,  2 May 2024 21:26:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714685198; cv=none; b=b77BHQn4S2pHzwaaypa0t9WUbJ98CH1Bv8afMVVLHY+h/xO8e/IlIK1RrC8h8n/UOjxH0ZCQahKxHfxmwbNW1IRgaFfp3X6matyxBKfCaOhdDNPclQAAIRXmHOp6tE2nO0WFVBtrm9mE0M3mjxwqzUqoZJ3Tdw0tiz4hfAF24BQ=
+	t=1714685199; cv=none; b=avg1x0/A7SaH3N48ByJuDp5S8dcoHp2A+xIuGmn0qnp9k/f0vqjQu5R2xTgAh1j4D0+5kYSr7NbbkJZvV0ftfNDxwbxKaYZcNd1rp/4G4dU4GSn++nNRLLEkC2hDciV7oGmSTt3mPk3rcW9xmcsr2mHO+dQFM12ec/30yz4ze3U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714685198; c=relaxed/simple;
-	bh=FXv+vJcBCmEgOu5jScWUmm7QGv45QW6i+T+dLFjv6OY=;
+	s=arc-20240116; t=1714685199; c=relaxed/simple;
+	bh=dJS8q1yCszBZ+lLPCiQajxvq+UjKIhzIwbPdmSX7BF0=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=NY2Bw3VWhrC49Y6GuS0CAiFaNrMSCK/F0Q6pW7rH6HcEjPNnDqsN4GiDtC//eDFTJjWhnfqjuftNo1XSmL49CIvPrghhUYWp57QTkDBMkcsUjB7AhGQFYJmjEs4QuHreoEhhuwRAt9B11CCEJLmgJ51G1tuOQvOtUR6V+VTlNgQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com; spf=pass smtp.mailfrom=fastly.com; dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b=DAANplb8; arc=none smtp.client-ip=209.85.210.170
+	 MIME-Version; b=U+APohftu6zt4qD0Li1TnYVhLrJRLljg08qlry/oxlLH5YfAYYOoEaQs7IjjLzQmGAJCEHVdFPnGHSHZuTHMx2PId5eYDR25CaeeiymMspR4l6p/x6CWbWUcO/1qOkE2rkNsPoSs7NzuFw7+lZ1ByihisbQMpnb1aN/9OQkmREc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com; spf=pass smtp.mailfrom=fastly.com; dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b=L3pSwvEk; arc=none smtp.client-ip=209.85.210.179
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fastly.com
-Received: by mail-pf1-f170.google.com with SMTP id d2e1a72fcca58-6f42e9221bbso1688946b3a.2
-        for <linux-kernel@vger.kernel.org>; Thu, 02 May 2024 14:26:36 -0700 (PDT)
+Received: by mail-pf1-f179.google.com with SMTP id d2e1a72fcca58-6ed5109d924so7257793b3a.0
+        for <linux-kernel@vger.kernel.org>; Thu, 02 May 2024 14:26:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fastly.com; s=google; t=1714685196; x=1715289996; darn=vger.kernel.org;
+        d=fastly.com; s=google; t=1714685197; x=1715289997; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=/jgR8JD3oQd88EH8HKGjA3Az+hSDzBJU5y5/SDxJYdM=;
-        b=DAANplb8T8epsb7QiagB9494a98DfQ2G1zai+CmFE/BJ8x/eMqVrLKjRHIqjQX2O+v
-         NrUQk4UPZkwKJUDoSfhOZx4KzHdh8Vt0kePRQiBoISWV7SmCvfHdL2WfuAzB68TCWciq
-         xKDILOO6d1/zqZQ0fBpHQ9AXWw3e/xew+qfMM=
+        bh=6/C+cLYdosM3H4Yw3Y6aWJybg0yb2tSDMEje896YPBQ=;
+        b=L3pSwvEks/wXn9+4l6jb37/RVGMraaMhpG/24C5YjkLbkNJ3x7VIh020iE3uQjkFRp
+         MOI0eJu9/UGFMwtjpRi1y+DfDOjux2/TDDvN1R5kA9ZApV54N4VGaOMVvZTJ2LTLvnpb
+         TUazWCsqiIGQtz3kENyff8vx5eHyH3HoRWwdU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714685196; x=1715289996;
+        d=1e100.net; s=20230601; t=1714685197; x=1715289997;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=/jgR8JD3oQd88EH8HKGjA3Az+hSDzBJU5y5/SDxJYdM=;
-        b=FJ8YZ2cdxDdWYgqnbsXrKLX6IQU9cLd2RvJNOJeI3uc/P16YLFrGMdLyWLNSLApc3k
-         IxSiuXygMecUJEJQsVn0PqITMj6+HBuz1hKzqpAeSzqDaEbMIwtPbXMFBEwg2zu6cycD
-         9j8CJ6OP0+krNf18R8yHHEVfjxgaWjv//i9WzhfpOxMFck+M21++Q/6mwtxIsNXu0PdH
-         1e97LSNXwliQwPGXJsQsXFU7NBOkaO3gpYMIwpQqJjSOQk9fmUqP/hMSinzOJf4vAsny
-         eD8WD65aqRr7kcvYBRYe5RETPqRVK2SlBOrzns1t/QbQRcNyGeRMyDknNdZGWybxOs3P
-         q93g==
-X-Gm-Message-State: AOJu0YzlTDOaLlqCs/1Jhru2Iq9JlFdvxdZg+ftOvNkxx6uyM/zU1aD/
-	45tFi4NFw8XaaR2eP37/e99VEEYhKMH526J6nC/tftVFqdJX87Y2KxL12EjaqVy13kwO2+VdUbd
-	TCHkMterLuOsYEBzadbPK/dqf7Q0iwDC0Y7MPCRmlozIbaR/R7Onc48B1phBduDcvdKNLOFdJNP
-	X9TVvCX3H1FiDUAwuZ6j5Wgde9HGIxKxcRhFhUlLK5ED0=
-X-Google-Smtp-Source: AGHT+IHJviS1wozqDADgp5NssiZSlqz3RTUpOU3MNs7wdW2gVo+a7TIkffxM2G6uXIzsaRMwMWuSKg==
-X-Received: by 2002:a05:6a00:1305:b0:6ed:416d:e9a with SMTP id j5-20020a056a00130500b006ed416d0e9amr1014030pfu.7.1714685195864;
-        Thu, 02 May 2024 14:26:35 -0700 (PDT)
+        bh=6/C+cLYdosM3H4Yw3Y6aWJybg0yb2tSDMEje896YPBQ=;
+        b=V+0UYbFfg5hnKPAp7D5yxXtNr8VWwhOPQAi7pxc6nEX5r4sLAJKXHxVs/jDfQYTBLo
+         OLepqkZXcIEvz/QDEx2dJrRTwphptuOactNJqm9F5u3oRn+anvRsWkt1eVnhoVlrtWB5
+         b2dkoem6mx4ikrd9mfcu5HB3P1uoC2JcvVx+dScW08t3tyJwRZpxT1o9pbxgNM1hlMKD
+         fmuZEhokkXJl7Cn3v42NnsLCG6DMLHax2ochdPso/3Dqv8fkYvn0j3mMR5F4iRzs2UmK
+         pvz+McC23lVZw4+FinhNK596TjKHl4jhpMEv2jtFUh68U8KFfc/0+KKnGhejI6Ry/ww+
+         IGHg==
+X-Gm-Message-State: AOJu0YwSA2+zleZpVw3N2J+VxoYaB3G+YhE/KiW93WPEAhkQvlsNz4DI
+	0DXp3TFVVOgDBJdIG1GbI3DpreOLh1BBEgqvzuTp4S1Ld0dS5rxIS+rIHbu4Rf6IUtKC2H0AIft
+	m3LhT4LOPG8I/whuIGHglm/jCXqtCIsbUzwxKkxM53ozvtR3X1deM4z6QA5m800eojddJB3c8Fs
+	LH138njUaOfsKFZQaV9UH86QD2MIgrnCk+8NO/iQp0jCI=
+X-Google-Smtp-Source: AGHT+IGnlpaC8zumkTxRpITcudE8g/yTTc8ly55djHSXPMF/0o0TmlF6310u5p0ntLwX43jWKgQQ2Q==
+X-Received: by 2002:a05:6a21:9990:b0:1af:66aa:f968 with SMTP id ve16-20020a056a21999000b001af66aaf968mr1170798pzb.20.1714685197492;
+        Thu, 02 May 2024 14:26:37 -0700 (PDT)
 Received: from localhost.localdomain ([2620:11a:c019:0:65e:3115:2f58:c5fd])
-        by smtp.gmail.com with ESMTPSA id it21-20020a056a00459500b006f4401df6c9sm1371345pfb.113.2024.05.02.14.26.34
+        by smtp.gmail.com with ESMTPSA id it21-20020a056a00459500b006f4401df6c9sm1371345pfb.113.2024.05.02.14.26.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 May 2024 14:26:35 -0700 (PDT)
+        Thu, 02 May 2024 14:26:37 -0700 (PDT)
 From: Joe Damato <jdamato@fastly.com>
 To: linux-kernel@vger.kernel.org,
 	netdev@vger.kernel.org,
@@ -73,14 +73,14 @@ Cc: mkarsten@uwaterloo.ca,
 	gal@nvidia.com,
 	nalramli@fastly.com,
 	Joe Damato <jdamato@fastly.com>,
+	Jakub Kicinski <kuba@kernel.org>,
 	"David S. Miller" <davem@davemloft.net>,
 	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
 	Paolo Abeni <pabeni@redhat.com>,
 	linux-rdma@vger.kernel.org (open list:MELLANOX MLX4 core VPI driver)
-Subject: [PATCH net-next v3 1/3] net/mlx4: Track RX allocation failures in a stat
-Date: Thu,  2 May 2024 21:26:25 +0000
-Message-Id: <20240502212628.381069-2-jdamato@fastly.com>
+Subject: [PATCH net-next v3 2/3] net/mlx4: link NAPI instances to queues and IRQs
+Date: Thu,  2 May 2024 21:26:26 +0000
+Message-Id: <20240502212628.381069-3-jdamato@fastly.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20240502212628.381069-1-jdamato@fastly.com>
 References: <20240502212628.381069-1-jdamato@fastly.com>
@@ -92,37 +92,79 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-mlx4_en_alloc_frags currently returns -ENOMEM when mlx4_alloc_page
-fails but does not increment a stat field when this occurs.
-
-struct mlx4_en_rx_ring has a dropped field which is tabulated in
-mlx4_en_DUMP_ETH_STATS, but never incremented by the driver.
-
-This change modifies mlx4_en_alloc_frags to increment mlx4_en_rx_ring's
-dropped field for the -ENOMEM case.
+Make mlx4 compatible with the newly added netlink queue GET APIs.
 
 Signed-off-by: Joe Damato <jdamato@fastly.com>
 Tested-by: Martin Karsten <mkarsten@uwaterloo.ca>
+Acked-by: Jakub Kicinski <kuba@kernel.org>
 ---
- drivers/net/ethernet/mellanox/mlx4/en_rx.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/net/ethernet/mellanox/mlx4/en_cq.c   | 14 ++++++++++++++
+ drivers/net/ethernet/mellanox/mlx4/mlx4_en.h |  1 +
+ 2 files changed, 15 insertions(+)
 
-diff --git a/drivers/net/ethernet/mellanox/mlx4/en_rx.c b/drivers/net/ethernet/mellanox/mlx4/en_rx.c
-index 8328df8645d5..573ae10300c7 100644
---- a/drivers/net/ethernet/mellanox/mlx4/en_rx.c
-+++ b/drivers/net/ethernet/mellanox/mlx4/en_rx.c
-@@ -82,8 +82,10 @@ static int mlx4_en_alloc_frags(struct mlx4_en_priv *priv,
+diff --git a/drivers/net/ethernet/mellanox/mlx4/en_cq.c b/drivers/net/ethernet/mellanox/mlx4/en_cq.c
+index 1184ac5751e1..461cc2c79c71 100644
+--- a/drivers/net/ethernet/mellanox/mlx4/en_cq.c
++++ b/drivers/net/ethernet/mellanox/mlx4/en_cq.c
+@@ -126,6 +126,7 @@ int mlx4_en_activate_cq(struct mlx4_en_priv *priv, struct mlx4_en_cq *cq,
+ 		cq_idx = cq_idx % priv->rx_ring_num;
+ 		rx_cq = priv->rx_cq[cq_idx];
+ 		cq->vector = rx_cq->vector;
++		irq = mlx4_eq_get_irq(mdev->dev, cq->vector);
+ 	}
  
- 	for (i = 0; i < priv->num_frags; i++, frags++) {
- 		if (!frags->page) {
--			if (mlx4_alloc_page(priv, frags, gfp))
-+			if (mlx4_alloc_page(priv, frags, gfp)) {
-+				ring->dropped++;
- 				return -ENOMEM;
-+			}
- 			ring->rx_alloc_pages++;
- 		}
- 		rx_desc->data[i].addr = cpu_to_be64(frags->dma +
+ 	if (cq->type == RX)
+@@ -142,18 +143,23 @@ int mlx4_en_activate_cq(struct mlx4_en_priv *priv, struct mlx4_en_cq *cq,
+ 	if (err)
+ 		goto free_eq;
+ 
++	cq->cq_idx = cq_idx;
+ 	cq->mcq.event = mlx4_en_cq_event;
+ 
+ 	switch (cq->type) {
+ 	case TX:
+ 		cq->mcq.comp = mlx4_en_tx_irq;
+ 		netif_napi_add_tx(cq->dev, &cq->napi, mlx4_en_poll_tx_cq);
++		netif_napi_set_irq(&cq->napi, irq);
+ 		napi_enable(&cq->napi);
++		netif_queue_set_napi(cq->dev, cq_idx, NETDEV_QUEUE_TYPE_TX, &cq->napi);
+ 		break;
+ 	case RX:
+ 		cq->mcq.comp = mlx4_en_rx_irq;
+ 		netif_napi_add(cq->dev, &cq->napi, mlx4_en_poll_rx_cq);
++		netif_napi_set_irq(&cq->napi, irq);
+ 		napi_enable(&cq->napi);
++		netif_queue_set_napi(cq->dev, cq_idx, NETDEV_QUEUE_TYPE_RX, &cq->napi);
+ 		break;
+ 	case TX_XDP:
+ 		/* nothing regarding napi, it's shared with rx ring */
+@@ -189,6 +195,14 @@ void mlx4_en_destroy_cq(struct mlx4_en_priv *priv, struct mlx4_en_cq **pcq)
+ void mlx4_en_deactivate_cq(struct mlx4_en_priv *priv, struct mlx4_en_cq *cq)
+ {
+ 	if (cq->type != TX_XDP) {
++		enum netdev_queue_type qtype;
++
++		if (cq->type == RX)
++			qtype = NETDEV_QUEUE_TYPE_RX;
++		else
++			qtype = NETDEV_QUEUE_TYPE_TX;
++
++		netif_queue_set_napi(cq->dev, cq->cq_idx, qtype, NULL);
+ 		napi_disable(&cq->napi);
+ 		netif_napi_del(&cq->napi);
+ 	}
+diff --git a/drivers/net/ethernet/mellanox/mlx4/mlx4_en.h b/drivers/net/ethernet/mellanox/mlx4/mlx4_en.h
+index efe3f97b874f..896f985549a4 100644
+--- a/drivers/net/ethernet/mellanox/mlx4/mlx4_en.h
++++ b/drivers/net/ethernet/mellanox/mlx4/mlx4_en.h
+@@ -379,6 +379,7 @@ struct mlx4_en_cq {
+ #define MLX4_EN_OPCODE_ERROR	0x1e
+ 
+ 	const struct cpumask *aff_mask;
++	int cq_idx;
+ };
+ 
+ struct mlx4_en_port_profile {
 -- 
 2.25.1
 
