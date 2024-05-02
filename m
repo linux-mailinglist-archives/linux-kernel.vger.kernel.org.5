@@ -1,122 +1,108 @@
-Return-Path: <linux-kernel+bounces-166671-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-166672-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id CA6D48B9DF3
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 17:58:07 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E3FDC8B9DF4
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 17:58:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6AFA01F222C4
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 15:58:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 967511F2202B
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 15:58:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9454615B972;
-	Thu,  2 May 2024 15:58:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="dL+nMW+7"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4FDD615B969
-	for <linux-kernel@vger.kernel.org>; Thu,  2 May 2024 15:57:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9091015B96E;
+	Thu,  2 May 2024 15:58:46 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A25F1F5F6
+	for <linux-kernel@vger.kernel.org>; Thu,  2 May 2024 15:58:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714665480; cv=none; b=n2qjWUPuDR1QEKBrJiETp5v2q7sgKiGk2M5PrixBm3a19G9QsP4hwknEgBFwXo4pZ26qMK56HkQ+Z8shrbcsTSIMGlEgH5atwzszlvM5uJtB5VaI9AaKbogE9CNu2LaeL4rdwvFLpnZzKZV74apGkzhiPZmiihR6+vWdk672ZiI=
+	t=1714665526; cv=none; b=q9DolCLkr5pVVSzIwKJXWvoXXRMCql48znmip7sD4bzAkbPQ5ugT1Dgn7VqwFiBctMxkFSc+SkYAT86U1H3z2KR4FIFdLueGu6tq/bjTt3miMRSL0QXIZLEgR8wupj3clKscczft4q5YdtZEXM4uH9HY1aNhgVAeN/1QlVemmUQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714665480; c=relaxed/simple;
-	bh=RMF1iDACZjV0hcRbGCfWVq/3XQXFlMSv68uJ+vPjxt4=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=OsafnkEisx2dB3qRfQHuxNv1UnRkModvQPpsAQqLlaRjlllBldWpxRJR5loLpa/MV9426GA01LgeRaEuVF0uwD8sDjbQI5IYzAdJkfOZmAUDmCySh5Nfs665V5h1nYzJ1Mjd4Cs0Z9R0T+TfSpdW7ZQhwIHdjLQFixR4qI6MAIU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=dL+nMW+7; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1714665478;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=z2QWCAWoe9RfmRGkQtfD5xor166vDzpcOxvA7W0znVI=;
-	b=dL+nMW+7qhB7WHpHkdksep4+LiBVjKsVJ5sZfz4vxNOaqHInsR/JNBPeped88OjCU5jAwn
-	FsW2ooOWwTmNIyoHX68AIYK0TMSscXakyn/Qa5E3xzRm5H+ol/oefqPdeSa78sDD7IrzQ5
-	0i90hprwBu2vgfya6+a405PtywT675o=
-Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
- [209.85.222.198]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-75-mS0GLFexMCWEzCR3g0ADdQ-1; Thu, 02 May 2024 11:57:57 -0400
-X-MC-Unique: mS0GLFexMCWEzCR3g0ADdQ-1
-Received: by mail-qk1-f198.google.com with SMTP id af79cd13be357-790eaf8fc79so440368685a.1
-        for <linux-kernel@vger.kernel.org>; Thu, 02 May 2024 08:57:57 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714665475; x=1715270275;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=z2QWCAWoe9RfmRGkQtfD5xor166vDzpcOxvA7W0znVI=;
-        b=Mbip5B4WffXTEnLGfe9nW123BYXCNW9kx0nJov3K7k0HyIp+czENpBJm81z6a1mqqU
-         s33Lstk6jOIWLyzPwjd6zQOc/KMTwKqzQBvbTPCsFqjo3f7YN37j1ArI+aOkrM/1qVOZ
-         2ZG+/zhQ1dnsAz8syk2yllQ2Kb9giEyYCsPlrZ7nY0bmCO1bdV94sgtFMBbE52wEiC2i
-         5kpAni5oEGMVZ0kEe6MdQ7NkIXeGr9dI2LZkGkBt7QA9DHKXQ89kRGdLUdp1HBqWl9s8
-         2YTsDsQ2UvVSR27gAhdf5T4RDitxoQ0teiU8U3kbCF0ZVIFdemNdcvBzDUrz/wBCuzQy
-         BtoA==
-X-Forwarded-Encrypted: i=1; AJvYcCVXHpRtTCWeoK5x5G6yULgIqktySl6R3ag1DxizjKuHKRcHMi5r8kYyMUoII48zixWhI74hiJ9Ti+/oQr/nkhucAIMYyY10J6+1Vh8U
-X-Gm-Message-State: AOJu0YyRzB5JDG87Qssq1MTJyqjHSrUxxqy2IwHfqBavnGYPiLt5bpP5
-	2A54C3L57yTPk9Ba5qx8taiV8NV+HYX1aTyjqCgr0dj59y1iQ9AuNu3AwqoBZJEQrZuADdv7Oql
-	VPxFKFPqPVbQpR653nT71ANyu9oBjEyWgnUufIhZB16ig5xL/cQvuMmFvQkXvHMCsNZw6wBf9PU
-	q6BRgqGEPn4ZhKFhRbPlku36P6iOGr76QOFTuBhCRqc406gg==
-X-Received: by 2002:ad4:4ea7:0:b0:69b:7f0e:bdc with SMTP id ed7-20020ad44ea7000000b0069b7f0e0bdcmr2999618qvb.30.1714665475486;
-        Thu, 02 May 2024 08:57:55 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IG97JAqVOACow1rDFS27Mb+spd1vooExZ6DFMMGuLsIWG1E/USjXHhA0smMG6ip97v2EJA8fQ==
-X-Received: by 2002:ad4:4ea7:0:b0:69b:7f0e:bdc with SMTP id ed7-20020ad44ea7000000b0069b7f0e0bdcmr2999522qvb.30.1714665474017;
-        Thu, 02 May 2024 08:57:54 -0700 (PDT)
-Received: from vschneid-thinkpadt14sgen2i.remote.csb (213-44-141-166.abo.bbox.fr. [213.44.141.166])
-        by smtp.gmail.com with ESMTPSA id o14-20020a0cfa8e000000b006a0f63bcea6sm449908qvn.29.2024.05.02.08.57.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 May 2024 08:57:53 -0700 (PDT)
-From: Valentin Schneider <vschneid@redhat.com>
-To: Sven Schnelle <svens@linux.ibm.com>, Ingo Molnar <mingo@redhat.com>,
- Peter Zijlstra <peterz@infradead.org>, Juri Lelli <juri.lelli@redhat.com>,
- Vincent Guittot <vincent.guittot@linaro.org>, Dietmar Eggemann
- <dietmar.eggemann@arm.com>, Steven Rostedt <rostedt@goodmis.org>, Ben
- Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>, Daniel Bristot
- de Oliveira <bristot@redhat.com>
-Cc: Heiko Carstens <hca@linux.ibm.com>, linux-s390@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] sched/core: Test online status in available_idle_cpu()
-In-Reply-To: <20240429055415.3278672-1-svens@linux.ibm.com>
-References: <20240429055415.3278672-1-svens@linux.ibm.com>
-Date: Thu, 02 May 2024 17:57:50 +0200
-Message-ID: <xhsmhzft86wap.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
+	s=arc-20240116; t=1714665526; c=relaxed/simple;
+	bh=yyE+ZEdf8UN5xDxOi4JLEeKVEqMHLM/n9v4wAEl/cFA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=jjCQ9b8WR92Ki+t1gLhalmxbDy4K96wi6M99lVKZANcsI6PE/ni1HpO/xDpToshmPt7TG6l0SjM3LP1jKctyrtvJZj1hcqHxq0MAKiPaiSP0eKdCjrbrMB3VQJ7PHFD/aESI9Al6EdbKEF/moHFkYJBFKABnF9cbW+qoaClL3lw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 56CC22F4;
+	Thu,  2 May 2024 08:59:08 -0700 (PDT)
+Received: from e133380.arm.com (e133380.arm.com [10.1.197.52])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E72533F793;
+	Thu,  2 May 2024 08:58:39 -0700 (PDT)
+Date: Thu, 2 May 2024 16:58:37 +0100
+From: Dave Martin <Dave.Martin@arm.com>
+To: Amit Singh Tomar <amitsinght@marvell.com>
+Cc: Reinette Chatre <reinette.chatre@intel.com>,
+	James Morse <james.morse@arm.com>, x86@kernel.org,
+	linux-kernel@vger.kernel.org, Fenghua Yu <fenghua.yu@intel.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+	H Peter Anvin <hpa@zytor.com>, Babu Moger <Babu.Moger@amd.com>,
+	shameerali.kolothum.thodi@huawei.com,
+	D Scott Phillips OS <scott@os.amperecomputing.com>,
+	carl@os.amperecomputing.com, lcherian@marvell.com,
+	bobo.shaobowang@huawei.com, tan.shaopeng@fujitsu.com,
+	baolin.wang@linux.alibaba.com, Jamie Iles <quic_jiles@quicinc.com>,
+	Xin Hao <xhao@linux.alibaba.com>, peternewman@google.com,
+	dfustini@baylibre.com, David Hildenbrand <david@redhat.com>,
+	Rex Nie <rex.nie@jaguarmicro.com>
+Subject: Re: [PATCH v1 28/31] x86/resctrl: Drop __init/__exit on assorted
+ symbols
+Message-ID: <ZjO4LXqGcy4bwsn4@e133380.arm.com>
+References: <20240321165106.31602-1-james.morse@arm.com>
+ <20240321165106.31602-29-james.morse@arm.com>
+ <c27c7813-5744-4363-bb7b-f9fbe80fd549@intel.com>
+ <ZhfzF8L6w1pgJJ1r@e133380.arm.com>
+ <47af4fef-35d3-4d88-9afa-42c1a99fbe07@marvell.com>
+ <ZhlfQKMg4xeA53SD@e133380.arm.com>
+ <b87653fa-34e3-4124-a96f-f5d2b9730f10@marvell.com>
+ <ZjEaA+YRPA+p9msM@e133380.arm.com>
+ <cb40c3e6-f678-45c7-b8e7-a6f337b51dfb@marvell.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cb40c3e6-f678-45c7-b8e7-a6f337b51dfb@marvell.com>
 
-On 29/04/24 07:54, Sven Schnelle wrote:
-> The current implementation of available_idle_cpu() doesn't test
-> whether a possible cpu is offline. On s390 this dereferences a
-> NULL pointer in arch_vcpu_is_preempted() because lowcore is not
-> allocated for offline cpus. On x86, tracing also shows calls to
-> available_idle_cpu() after a cpu is disabled, but it looks like
-> this isn't causing any (obvious) issue. Nevertheless, add a check
-> and return early if the cpu isn't online.
->
-> Signed-off-by: Sven Schnelle <svens@linux.ibm.com>
+On Wed, May 01, 2024 at 09:51:51PM +0530, Amit Singh Tomar wrote:
+> 
+> > > > I think James will need to comment on this, but I think that yes, it
+> > > > is probably appropriate to require a reboot.  I think an MPAM error
+> > > > interrupt should only happen if the software did something wrong, so
+> > > > it's a bit like hitting a BUG(): we don't promise that everything works
+> > > > 100% properly until the system is restarted.  Misbehaviour should be
+> > > > contained to MPAM though.
+> > > > 
+> > > if "resctrl" is nonfunctional in this state, then this comment[1] here does
+> > > *not* make sense.
+> > > 
+> > > "restore any modified controls to their reset values."
+> > 
+> > Can you clarify what you mean here?
+> 
+> What I meant was, What's the rationale behind restoring the modified
+> controls, if user is going to restart the system anyways (in order to use
+> MPAM again), but later realized that it is needed so that *non* MPAM loads
+> (user may still want to run other things even after MPAM error interrupt)
+> would not have any adverse effect with modified controls.
+> 
+> Therefore, taking my statement back.
 
+Ack: we can't force the system to restart without losing data.  Really,
+the decision about when and whether to attempt a graceful shutdown or
+reboot should be left to userspace.  But until userspace does shut down
+the system, we do our best to behave as if the broken part of the system
+(MPAM) were not present at all.
 
-So most of the uses of that function is in wakeup task placement.
-o find_idlest_cpu() works on the sched_domain spans, so shouldn't deal with
-  offline CPUs.
-o select_idle_sibling() may issue an available_idle_cpu(prev) with an
-  offline previous, which would trigger your issue.
+[...]
 
-Currently, even if select_idle_sibling() picks an offline CPU, this will
-get corrected by select_fallback_rq() at the end of
-select_task_rq(). However, it would make sense to realize @prev isn't a
-suitable pick before making it to the fallback machinery, in which case
-your patch makes sense beyond just fixing s390.
-
-Reviewed-by: Valentin Schneider <vschneid@redhat.com>
-
+Cheers
+---Dave
 
