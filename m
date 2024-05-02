@@ -1,98 +1,125 @@
-Return-Path: <linux-kernel+bounces-166649-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-166651-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 22EA08B9D91
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 17:34:13 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6D32D8B9D94
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 17:35:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 544731C21954
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 15:34:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9A1EB1C22215
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 15:35:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE71B15F308;
-	Thu,  2 May 2024 15:33:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83BCF1598E9;
+	Thu,  2 May 2024 15:35:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PRTbwY9/"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=toblux-com.20230601.gappssmtp.com header.i=@toblux-com.20230601.gappssmtp.com header.b="yScL0wg9"
+Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com [209.85.208.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA76D15E7F6;
-	Thu,  2 May 2024 15:33:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C732115AACC
+	for <linux-kernel@vger.kernel.org>; Thu,  2 May 2024 15:35:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714663986; cv=none; b=nJrV4/YsMhj6hCsFgjotgOJk/suUWtBav1DndgnT6w30UN0tre76W6Ikjc0Ov8h6fL85jzxEZHNYSZovaPfe/3SJr/QB2tBQok312J9Z0F3sAiXjZ0rQdrmk6gI4roA73qv/RQVy9TKDGInP/Nlx1k/3Qt6NfsJpfCnhBWjHdLA=
+	t=1714664103; cv=none; b=j7Qs35lB7yAljkl91thhd1BpSUtjJpn5aZURMK8xZCxcPoymdlovCUtTtl8+JGb78DGJDBEBPm1b76n5O3GL2wrDCPHtJ8wzMfIe6Xgp9+KxN35d/rBIZDTUl6Y4zJxFy+WE6vCRZXeGoBmqMhGC/sJt5242+VB1/w4zPz89Dw4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714663986; c=relaxed/simple;
-	bh=GvjJgiAM3PUJapyMwa4WtNG7VdzKsQguOtRnheGULpk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=oAOgQWlFFlBQ+5ZDcgR6FTuodwC3+CnkQ6CNQvo0r8IglSjU79XVfFlYhdfHoGK0czqDt4GmmaDP3LfRdt1wOnQcr+XU8AvY2aEoXryrRlQajJn3TN4rmthNTfVHo+Fa0SWXEGKr3BqgxhkgfOQ9ppnCjZ9krWPzNmz/Ib1sknE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PRTbwY9/; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5C156C4AF1A;
-	Thu,  2 May 2024 15:33:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714663985;
-	bh=GvjJgiAM3PUJapyMwa4WtNG7VdzKsQguOtRnheGULpk=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=PRTbwY9/laPMmo4/eJgvpC1MR9yVbDQjxF1Mfl7rbouHnYlCno/3dno+gS4seGYi8
-	 Kkh/weVxtWoZQKhKakqwh5CywcMaIO69Zfsha1hAZCtOZQDdYK12buBF9zlq8MpJjW
-	 KBiaXE47ncu8pienmBVvUaP8UANvRQMyv8T3LfEqK8Q00ScwXKj8v7nkhDrqOB5zzf
-	 /t7D9agL9nGnTpyTuzFy7wcodUn0j8vM1nUQOzQkIshd8qbpoFBnxGvObCEp+9X6J9
-	 TppmB1xArqn6JV/gna7K/d7SXYsyQZSX6RB70l03/QmK6CdueBH7CQ/wUqsfBzTNGb
-	 yTEHyJncC1vrQ==
-Message-ID: <d35c96ca-3c28-4745-a323-949365f5033a@kernel.org>
-Date: Thu, 2 May 2024 09:33:05 -0600
+	s=arc-20240116; t=1714664103; c=relaxed/simple;
+	bh=R+pJmmxpNrZ/XJxigie9GtGPdSpA3KgFHVA0wipAK7E=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ux4JuYY2QidN20twapzV4KMnqJIO+bjYERWNNTcIoNpcPp+lnTWAJ8VVXjJovx0yF8AMBAcXpO2pHyepmDtbaQDo96ugXI91C52HSaSZSlqX8ALIMH6h/LsS+DQZngPfw10pWag31ka25+09cINH0C6JP1DkOOWX6Hx2iNnKiS0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toblux.com; spf=none smtp.mailfrom=toblux.com; dkim=pass (2048-bit key) header.d=toblux-com.20230601.gappssmtp.com header.i=@toblux-com.20230601.gappssmtp.com header.b=yScL0wg9; arc=none smtp.client-ip=209.85.208.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toblux.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toblux.com
+Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-572babec735so760586a12.0
+        for <linux-kernel@vger.kernel.org>; Thu, 02 May 2024 08:35:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toblux-com.20230601.gappssmtp.com; s=20230601; t=1714664100; x=1715268900; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Ce5FXE5idr82jeqevYO8YWeQ0hM+JzLoZr03p3rxaCE=;
+        b=yScL0wg9qUChw1cmaZ3tDo4DHELgq6gUPBj5+tZ7W/eKXER+BT9WKBfsuWTWWDXL/d
+         tkBSsxbh7S/DxXRT/a+KuLYpv54ihMRiljBcSetSqEZqGCoO3MSF5CB9BxIaDZl88Jet
+         pP8aTSfeZioalHZ2rAohCiVBBoJ+mOovAXk52PwCh5/lLbi3eIfGHwZRgZDsBdrNcCgC
+         CmeSqjp1YhEG3XQAO1QJJq2rPpY6H+j6EDIWLdW6A3JbPkANaPWtsLkeolS7Lu162gLU
+         2/Y4znvNX42IofJg7tBbZZpgkWHHmSnwTeSu1LMPtFxibFRskkyfpb6TBTAnI6aFPibC
+         Cpmg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714664100; x=1715268900;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Ce5FXE5idr82jeqevYO8YWeQ0hM+JzLoZr03p3rxaCE=;
+        b=XKfDhJ8DBX6RTmjZGK90GJGXoOvnBArPt1SMxYrWKzeKv7cDjXdZjBV/lVJGnkMkR3
+         nCsRgyl0lg6yP/KumPqkz3pMooYMiVMsC0olDqqp0etkRC1J0pOfB06Q/6huOFaHp8yW
+         qxWDEs9CFGvsdTmypMj6DLB+kKzuFfP2cr64w1KmGFQeQhjzY1WoqBCaTvJ8N7vyS/vC
+         /Ogx8VZuNUHvYMqWsf6MET2HXsImLMrATUe/rub2E5A4PuLJXMt1yfVQyp1DMxR2mpHs
+         ZfveeIt87SKqJTUqfDeSn4K01aVuoMKNlIYzpbIMb+OazeEQZNrNocCBoTBIDIA/1h7J
+         vrpA==
+X-Forwarded-Encrypted: i=1; AJvYcCU81ylHNCAzQDhAoQiwFoeg2gpvXHxTgP7rpxhgZkGD3zC8s+eM8v6drUDwLlfnvAwvjxAiBb4BA8qUEP1M9ZfUIRBRRRvh6JJbUx6q
+X-Gm-Message-State: AOJu0YxujNN0y1mCp/eDWpE/atviO88iDFbXs407ff6JHFOBUPGSxJsg
+	zJVhFkVgi9rYeZJ+CzFeEvUICOjjDxT/zSsfEJTZSQQIsQAmuRUQmQ710iMwuLo=
+X-Google-Smtp-Source: AGHT+IEQfs59rIUKVTrOCgSJ3jKTTUJ2JzRMpQm4fmKS62RfKZlGAhSLcI0NsdYjXVyyfSKA9TdCqA==
+X-Received: by 2002:a17:906:6a05:b0:a58:7ddf:1805 with SMTP id qw5-20020a1709066a0500b00a587ddf1805mr3302521ejc.7.1714664100017;
+        Thu, 02 May 2024 08:35:00 -0700 (PDT)
+Received: from fedora.fritz.box (aftr-62-216-208-100.dynamic.mnet-online.de. [62.216.208.100])
+        by smtp.gmail.com with ESMTPSA id j21-20020a170906279500b00a5587038aefsm675107ejc.156.2024.05.02.08.34.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 02 May 2024 08:34:59 -0700 (PDT)
+From: Thorsten Blum <thorsten.blum@toblux.com>
+To: Tom Zanussi <tom.zanussi@linux.intel.com>,
+	Herbert Xu <herbert@gondor.apana.org.au>,
+	"David S. Miller" <davem@davemloft.net>
+Cc: linux-crypto@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Thorsten Blum <thorsten.blum@toblux.com>
+Subject: [PATCH] crypto: iaa - Use kmemdup() instead of kzalloc() and memcpy()
+Date: Thu,  2 May 2024 17:33:39 +0200
+Message-ID: <20240502153338.6945-2-thorsten.blum@toblux.com>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 net-next v5 6/6] net: add heuristic for enabling TCP
- fraglist GRO
-Content-Language: en-US
-To: Felix Fietkau <nbd@nbd.name>, netdev@vger.kernel.org,
- Eric Dumazet <edumazet@google.com>, "David S. Miller" <davem@davemloft.net>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>
-Cc: willemdebruijn.kernel@gmail.com, linux-kernel@vger.kernel.org
-References: <20240502084450.44009-1-nbd@nbd.name>
- <20240502084450.44009-7-nbd@nbd.name>
-From: David Ahern <dsahern@kernel.org>
-In-Reply-To: <20240502084450.44009-7-nbd@nbd.name>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On 5/2/24 2:44 AM, Felix Fietkau wrote:
-> When forwarding TCP after GRO, software segmentation is very expensive,
-> especially when the checksum needs to be recalculated.
-> One case where that's currently unavoidable is when routing packets over
-> PPPoE. Performance improves significantly when using fraglist GRO
-> implemented in the same way as for UDP.
-> 
-> When NETIF_F_GRO_FRAGLIST is enabled, perform a lookup for an established
-> socket in the same netns as the receiving device. While this may not
-> cover all relevant use cases in multi-netns configurations, it should be
-> good enough for most configurations that need this.
-> 
-> Here's a measurement of running 2 TCP streams through a MediaTek MT7622
-> device (2-core Cortex-A53), which runs NAT with flow offload enabled from
-> one ethernet port to PPPoE on another ethernet port + cake qdisc set to
-> 1Gbps.
-> 
-> rx-gro-list off: 630 Mbit/s, CPU 35% idle
-> rx-gro-list on:  770 Mbit/s, CPU 40% idle
-> 
-> Acked-by: Paolo Abeni <pabeni@redhat.com>
-> Reviewed-by: Eric Dumazet <edumazet@google.com>
-> Signed-off-by: Felix Fietkau <nbd@nbd.name>
-> ---
->  net/ipv4/tcp_offload.c   | 32 ++++++++++++++++++++++++++++++++
->  net/ipv6/tcpv6_offload.c | 35 +++++++++++++++++++++++++++++++++++
->  2 files changed, 67 insertions(+)
-> 
+Fixes the following two Coccinelle/coccicheck warnings reported by
+memdup.cocci:
 
-Reviewed-by: David Ahern <dsahern@kernel.org>
+	iaa_crypto_main.c:350:19-26: WARNING opportunity for kmemdup
+	iaa_crypto_main.c:358:18-25: WARNING opportunity for kmemdup
 
+Signed-off-by: Thorsten Blum <thorsten.blum@toblux.com>
+---
+ drivers/crypto/intel/iaa/iaa_crypto_main.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/crypto/intel/iaa/iaa_crypto_main.c b/drivers/crypto/intel/iaa/iaa_crypto_main.c
+index b2191ade9011..7635fbebe52f 100644
+--- a/drivers/crypto/intel/iaa/iaa_crypto_main.c
++++ b/drivers/crypto/intel/iaa/iaa_crypto_main.c
+@@ -347,18 +347,16 @@ int add_iaa_compression_mode(const char *name,
+ 		goto free;
+ 
+ 	if (ll_table) {
+-		mode->ll_table = kzalloc(ll_table_size, GFP_KERNEL);
++		mode->ll_table = kmemdup(ll_table, ll_table_size, GFP_KERNEL);
+ 		if (!mode->ll_table)
+ 			goto free;
+-		memcpy(mode->ll_table, ll_table, ll_table_size);
+ 		mode->ll_table_size = ll_table_size;
+ 	}
+ 
+ 	if (d_table) {
+-		mode->d_table = kzalloc(d_table_size, GFP_KERNEL);
++		mode->d_table = kmemdup(d_table, d_table_size, GFP_KERNEL);
+ 		if (!mode->d_table)
+ 			goto free;
+-		memcpy(mode->d_table, d_table, d_table_size);
+ 		mode->d_table_size = d_table_size;
+ 	}
+ 
+-- 
+2.44.0
 
 
