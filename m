@@ -1,96 +1,100 @@
-Return-Path: <linux-kernel+bounces-166294-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-166295-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 40BC68B98AE
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 12:19:44 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0A8D38B98B2
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 12:20:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D4E7F1F21045
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 10:19:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C54A5280EE2
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 10:20:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 184D958236;
-	Thu,  2 May 2024 10:19:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 23BB35820A;
+	Thu,  2 May 2024 10:20:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ferroamp-se.20230601.gappssmtp.com header.i=@ferroamp-se.20230601.gappssmtp.com header.b="EX49FeXO"
-Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com [209.85.167.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="eR8KkMxA"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.17])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D010A56B7B
-	for <linux-kernel@vger.kernel.org>; Thu,  2 May 2024 10:19:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F253356B73;
+	Thu,  2 May 2024 10:20:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.17
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714645170; cv=none; b=YsGJRP5stkw53LUkzaPkLyfMzmKpLAuc+HCAwMYm1B+9MSeJ+QQL5MAQDRyzsPLyfBiRmsktZaErPuxe9KmO4UxUY+I+yLCZsPAtJlikh245tFEKuDedL/bY4ZTkSPM2aDRSsmErrwsA6JkIc4IBF4cpDmMEMb4xLvSzk6TKZSA=
+	t=1714645207; cv=none; b=EYxOtFqeqfAG43P369zAg/5gMFWsPg3QCthUZsL2apHNdq6MPzRrp1rVbRISnGOAyb5WVrDkuArde+gWggfiFh3XsxU9oMhJkmpm4HKwR7IDi+uToN9JDx+M/G92G65uxEdCs09+6lD6Sf64SOIJkyIvwv0y3KFa7/7+ej/coB0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714645170; c=relaxed/simple;
-	bh=SzdfhFNmfbY0akJ1pT0827xvNbVlgz999vdKmYWFqO0=;
+	s=arc-20240116; t=1714645207; c=relaxed/simple;
+	bh=UBlJgz5xG7D/qPa02aoxxcu20LLe8O6olWTsYyH24Fs=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=awhKvdt6crvyKQEREKDwn6RInx2U6g4mXB5VJomWCehJ3TWI34akwbSWJrWTNCIzIZ6ovI0bFhFv75yxatUcsmKj8Xf3X6V0flbV1lWcGLiLWYIibIznOzxLZq7uLBNtRy2aLymWRrt+5qwF8f8mtT3lPjLy7SAtqbJdc+TaTpk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ferroamp.se; spf=pass smtp.mailfrom=ferroamp.se; dkim=pass (2048-bit key) header.d=ferroamp-se.20230601.gappssmtp.com header.i=@ferroamp-se.20230601.gappssmtp.com header.b=EX49FeXO; arc=none smtp.client-ip=209.85.167.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ferroamp.se
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ferroamp.se
-Received: by mail-lf1-f42.google.com with SMTP id 2adb3069b0e04-51ca95db667so7951520e87.0
-        for <linux-kernel@vger.kernel.org>; Thu, 02 May 2024 03:19:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ferroamp-se.20230601.gappssmtp.com; s=20230601; t=1714645167; x=1715249967; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=naga1w1FW0PSOrZMYV5n9h8B1yzg3KgoDWK1Ah84GPI=;
-        b=EX49FeXO26Px115TokDePYAsAFEO9EfWC3zhXAX6jfWbpocKOXECchwZVvPvSoHNW4
-         7e0lozhYd0pPgl1G43FRFh+wJQg9znq666F3KQPbHdwGa8qrGgEYXZZ9uQX2NzA8gyq4
-         TGk8V0kN8j+6iMay/Z2LaMOMLtDOixbE1IAKTYbUjGLoG0sIZZtGb458xnBj7GxsKFsf
-         fplWcHV/CxhJvK2wcaPqd4TsgKECBO7q+gc0sU/tbGR2wAcdxrUccSTpvol4HPADL03O
-         cO9Qd7kczVSO2WuPd2sfSM775y1yii2aO1Orv8p0A6Z2lM/PWnOrXP30VviPDspKV9md
-         XBzQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714645167; x=1715249967;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=naga1w1FW0PSOrZMYV5n9h8B1yzg3KgoDWK1Ah84GPI=;
-        b=bopn/1VhfD9qxqNUHAdS61yHdbgL+i+DwLuC5EXoFdUeHIAbHjD3wLR/u9H1sFiQiw
-         9xgPIgU12aytQPmJuAEdRp7RSkkL/E/c6se1IhnNRSn1kB6EPoaQon/tlN6jqPIGaLct
-         RqNd64AWBx9e/p5HsKqMdCSrMJSo+fjQMjZ4kBQRCGBJ/yYOircLL5TCK4j1CHAV4SGQ
-         d40AMUxwzE7PCMf5Yu6CQR+M72FLnC5cpOAN1fxjQ/KA68HfgQUZGejc/e84NFUb70ki
-         LAdiHrRmUqR4/VFLYzzlgcdsWN+HnzVnQwmV+5Lvl27GkeIuMhLu7Y6ofsjeQKbB3d0o
-         S8sw==
-X-Forwarded-Encrypted: i=1; AJvYcCXor0KmzkLwbCBW76WoBSVkwbXP0ieJRiTpzY3e2nyM4UlDaFljtHHshdVv5SpWP3x8kb9Y9vcry3j9ftA5OTNef+XImQrQ2KxRC6Of
-X-Gm-Message-State: AOJu0Yys4p253apL2dICkGMM43Hh1Tp7VboEn6MQGVhIf2MA5MpF/8D6
-	h1t+jbCjVB125q+gj/sJHakyp3vrd0eV7zh9xX4xmFhLFQZ+nJbL2wpTxk6B4WA=
-X-Google-Smtp-Source: AGHT+IHCRdtXtGwWe0SqeTDND706jHkPF0K9+vbhrHzYQePwLL8tTiJLxENACnvGP+66WD2/+CI3pQ==
-X-Received: by 2002:a05:6512:281c:b0:51d:a541:733 with SMTP id cf28-20020a056512281c00b0051da5410733mr1641872lfb.66.1714645166991;
-        Thu, 02 May 2024 03:19:26 -0700 (PDT)
-Received: from builder (c188-149-135-220.bredband.tele2.se. [188.149.135.220])
-        by smtp.gmail.com with ESMTPSA id o25-20020a056512053900b0051956ad1b03sm125138lfc.14.2024.05.02.03.19.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 May 2024 03:19:26 -0700 (PDT)
-Date: Thu, 2 May 2024 12:19:25 +0200
-From: =?iso-8859-1?Q?Ram=F3n?= Nordin Rodriguez <ramon.nordin.rodriguez@ferroamp.se>
-To: Parthiban.Veerasooran@microchip.com
-Cc: andrew@lunn.ch, davem@davemloft.net, edumazet@google.com,
-	kuba@kernel.org, pabeni@redhat.com, horms@kernel.org,
-	saeedm@nvidia.com, anthony.l.nguyen@intel.com,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-	corbet@lwn.net, linux-doc@vger.kernel.org, robh+dt@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-	devicetree@vger.kernel.org, Horatiu.Vultur@microchip.com,
-	ruanjinjie@huawei.com, Steen.Hegelund@microchip.com,
-	vladimir.oltean@nxp.com, UNGLinuxDriver@microchip.com,
-	Thorsten.Kummermehr@microchip.com, Pier.Beruto@onsemi.com,
-	Selvamani.Rajagopal@onsemi.com, Nicolas.Ferre@microchip.com,
-	benjamin.bigler@bernformulastudent.ch
-Subject: Re: [PATCH net-next v4 05/12] net: ethernet: oa_tc6: implement error
- interrupts unmasking
-Message-ID: <ZjNorUP-sEyMCTG0@builder>
-References: <20240418125648.372526-1-Parthiban.Veerasooran@microchip.com>
- <20240418125648.372526-6-Parthiban.Veerasooran@microchip.com>
- <Zi1Xbz7ARLm3HkqW@builder>
- <77d7d190-0847-4dc9-8fc5-4e33308ce7c8@lunn.ch>
- <Zi4czGX8jlqSdNrr@builder>
- <874654d4-3c52-4b0e-944a-dc5822f54a5d@lunn.ch>
- <ZjKJ93uPjSgoMOM7@builder>
- <b7c7aad7-3e93-4c57-82e9-cb3f9e7adf64@microchip.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=Us1dGavvep9YLzW52aPyud78wvTcI4/KRiacFr1OWMjgSiA+oyuU0soRLVNLTUpmQfMV19DIKTj4T4TKXZyXQ0EbMc4UETUTxFEG103d5qaFap+Qc2lLLAcxtU4vzspV6zbUrm33sd/HBGBN8EYHgzZdPp2a3pcPl5YLJVRSfRs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=eR8KkMxA; arc=none smtp.client-ip=192.198.163.17
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1714645206; x=1746181206;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=UBlJgz5xG7D/qPa02aoxxcu20LLe8O6olWTsYyH24Fs=;
+  b=eR8KkMxAtUNk6oNpSb+R2gKKPNp1+VrqSKx+kVed7+dMqBgW3q9dGvM5
+   2OKN75juDi7EV7ABiBU0ur8esTG3OlE3ivdzehkZX6ksvnYmQtHqflHet
+   TksBoF57soSkcZC4qslTkn1v6HzFd3OqQS4RfIqLEh9rcLfcNFjaMywJJ
+   7ywasKlEOpl2S16+ZaG8sbPg75Jp6ZJp4pWaC4wFxEGdhC6t9b4VSd6wW
+   TBBSKsGXHV+0HiZTXAsR5ub8RDzbQcuIwadTj0IeNENHqVXi6Ov7W2TvP
+   XT3fgoGZtDoEvHacexiT8KsBLT6UCIEnLpcIKwPq2hPL+fUQZaIoKbJSO
+   A==;
+X-CSE-ConnectionGUID: ZjVvLZInTRO6plmMaaq+eg==
+X-CSE-MsgGUID: mryL4ml3RtaO2nDKvqsxKQ==
+X-IronPort-AV: E=McAfee;i="6600,9927,11061"; a="10278806"
+X-IronPort-AV: E=Sophos;i="6.07,247,1708416000"; 
+   d="scan'208";a="10278806"
+Received: from fmviesa010.fm.intel.com ([10.60.135.150])
+  by fmvoesa111.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 May 2024 03:20:05 -0700
+X-CSE-ConnectionGUID: aiX0mY4vQSeFpVaHn0EPsg==
+X-CSE-MsgGUID: Z4pRODJ+R8ebvjkfa5L59g==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,247,1708416000"; 
+   d="scan'208";a="27156971"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmviesa010.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 May 2024 03:20:00 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1s2TXf-00000003HNp-2W6n;
+	Thu, 02 May 2024 13:19:55 +0300
+Date: Thu, 2 May 2024 13:19:55 +0300
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Sudeep Holla <sudeep.holla@arm.com>
+Cc: Sunil V L <sunilvl@ventanamicro.com>,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	linux-riscv@lists.infradead.org, linux-acpi@vger.kernel.org,
+	linux-pci@vger.kernel.org, linux-serial@vger.kernel.org,
+	acpica-devel@lists.linux.dev,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	"Rafael J . Wysocki" <rafael@kernel.org>,
+	Len Brown <lenb@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+	Anup Patel <anup@brainfault.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Samuel Holland <samuel.holland@sifive.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Jiri Slaby <jirislaby@kernel.org>,
+	Robert Moore <robert.moore@intel.com>,
+	Conor Dooley <conor.dooley@microchip.com>,
+	Andrew Jones <ajones@ventanamicro.com>,
+	Marc Zyngier <maz@kernel.org>,
+	Atish Kumar Patra <atishp@rivosinc.com>,
+	Andrei Warkentin <andrei.warkentin@intel.com>,
+	Haibo1 Xu <haibo1.xu@intel.com>,
+	=?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>
+Subject: Re: [PATCH v5 03/17] ACPI: bus: Add acpi_riscv_init function
+Message-ID: <ZjNoy6KLtOCTe52q@smile.fi.intel.com>
+References: <20240501121742.1215792-1-sunilvl@ventanamicro.com>
+ <20240501121742.1215792-4-sunilvl@ventanamicro.com>
+ <ZjNbvlUoCfa5UUHF@smile.fi.intel.com>
+ <ZjNksbTQF1lMQ0k0@sunil-laptop>
+ <ZjNnG6JqFCZGj1qv@bogus>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -99,22 +103,39 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <b7c7aad7-3e93-4c57-82e9-cb3f9e7adf64@microchip.com>
+In-Reply-To: <ZjNnG6JqFCZGj1qv@bogus>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-> I tried to reproduce the issue in my setup with your above applications.
-> But surprisingly I couldn't reproduce the issue you are facing.
+On Thu, May 02, 2024 at 11:12:43AM +0100, Sudeep Holla wrote:
+> On Thu, May 02, 2024 at 03:32:25PM +0530, Sunil V L wrote:
+> > On Thu, May 02, 2024 at 12:24:14PM +0300, Andy Shevchenko wrote:
+> > > On Wed, May 01, 2024 at 05:47:28PM +0530, Sunil V L wrote:
+> > > > Add a new function for RISC-V to do any architecture specific
+> > > > initialization. This function will be used to create platform devices
+> > > > like APLIC, PLIC, RISC-V IOMMU etc. This is similar to acpi_arm_init().
+> > >
+> > > What is the special about this architecture that it requires a separate
+> > > initialization that is _not_ going to be in other cases?
+> > > Please, elaborate.
+> > >
+> > This init function will be used to create GSI mapping structures and in
+> > future may be others like iommu. Like I mentioned, ARM already has
+> > similar function acpi_arm_init(). So, it is not new right?
 > 
-> One end is Raspberry Pi 4 with lan8651 MAC-PHY and the other end is 
-> Raspberry Pi 4 with EVB-LAN8670-USB Stick.
+> Just to add:
 > 
-> lan8651 MAC-PHY side:
-> ---------------------
-> 
+> This is to initialise everything around all the arch specific tables
+> which you will not have on any other architectures. We could execute
+> on all architectures but the tables will never be found. The main point
+> is why do we want to do that if we can optimise and skip on all other
+> archs.
 
-Did you run both client and server on both ends? The previous tests I
-have done have only sent traffic in one direction, which did not lead to
-a live lock.
-But both sending and receiving as fast as possible in both directions
-trigger the problems on my end.
-R
+You need to carefully write the commit messages. Some kind of the above
+paragraphs has to be in there.
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
 
