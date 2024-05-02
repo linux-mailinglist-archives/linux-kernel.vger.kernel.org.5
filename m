@@ -1,54 +1,73 @@
-Return-Path: <linux-kernel+bounces-166154-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-166155-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E4C4C8B96DF
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 10:51:56 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id ED6DB8B96E0
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 10:52:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 977A82849CE
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 08:51:55 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2FA09B2327C
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 08:52:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AEFF35337A;
-	Thu,  2 May 2024 08:50:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E48B4F88C;
+	Thu,  2 May 2024 08:51:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="ASzglJyC"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="b9qnWCa2"
+Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C06E51C52;
-	Thu,  2 May 2024 08:50:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E25C3A1A2
+	for <linux-kernel@vger.kernel.org>; Thu,  2 May 2024 08:51:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714639857; cv=none; b=qcjTIqsoqcJqG0PpwU9DwltLa2JoFh3oQCZaNLduEnT70aCy0vXjVzmn83JKWWCPpZGLPNUMYcUFZXeaolsoSIt3Yb0CHNWsVVQVfXF50zuQJja+w2PiARYirJ0hSh2TPkZrdyA7CR5fgv2X2kaud/kCrwl2UbvckRqz7Z1S7rc=
+	t=1714639898; cv=none; b=gdbfE93gzvIPk2qBCBeRTM0oDsiz3Gxq6io3U9VxHZFJ+aO+1C/+bWtWxqtsI2MzPMH7yVZ5qiI3pd6EeTONfiUEfr7uCJVKE3IlXIDGSbBOo7RxGS30gSx/67yskJrQLMAkRdO0rO61bB9l11C/zThw3IDMMonztbV4a/AHzcQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714639857; c=relaxed/simple;
-	bh=+Lb7J1gmlvIpsXKmJHjaAl2BUALuNXoInVJs8yhviak=;
+	s=arc-20240116; t=1714639898; c=relaxed/simple;
+	bh=eo+3NUMxM2jwT1dw4HDbrVXtIRxpRTga71y+Fj/DEjA=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=OtpQWcreK8Qhr/pdjv+Afpa6RRaGHC453+9i6HjoD6s+wfpRCUbhAcGrEXQ736aoTuK6Wh1l3nP5kZqp2OtOdk9jw2YdXrrOv9BD6AOKZIRiePXQIQPUuM7AcDRWnFXj4nvkKNd37ii3DnWlT+3Z7ihNpQ/pA1gi91LsNxqGihM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=ASzglJyC; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1714639854;
-	bh=+Lb7J1gmlvIpsXKmJHjaAl2BUALuNXoInVJs8yhviak=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=ASzglJyCUneV4xe5N8g29/uZljb8ODoTyebr/uFYbBkUljBsgxkIely3MH0C4GHsH
-	 TLWRcvz1bWUXgO9S108/DbZB51kkrUC9IFBjvgGmytwCMUuWYNwOCUafbgJUliqKtK
-	 po54belYQIctldmUvYi6C0To9PoVwgJjYX5srxPVazkiAWpf3jCLHVfJzGNVqEpBLm
-	 5U/sVQj3HN9tXekw0Lrhl/h8kLoDt5Kz9Ru2US+pBKLLVUXm1FUQhMMQ+JZgdG7wPU
-	 TdV6j4REC+tJwtXHyx/LbBt8hsaHWU/m7WycT0eif8ZSzSPxy6nxFvu8/PV/ucemGQ
-	 6mlcsx7MCpyLA==
-Received: from [100.113.186.2] (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: kholk11)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id A3E953781013;
-	Thu,  2 May 2024 08:50:52 +0000 (UTC)
-Message-ID: <becdc2e5-4a1d-4280-b6f8-78d4903be283@collabora.com>
-Date: Thu, 2 May 2024 10:50:51 +0200
+	 In-Reply-To:Content-Type; b=FO0RsBoM4KTyyokDpAdxFuKOtH3VqK1gPt6sA4en+iWzG19XomNNAp5xiJpyItLvYEava8nCFCnZerEG/o9F+OsE3MJUAFxTpqr4tpzgP7z1pg8v75E3QYq3rfs+Nmt4MhTqIstm84LNBGKszuYw5ypJnZk3NlMEuLdvzhMFSuw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=b9qnWCa2; arc=none smtp.client-ip=209.85.128.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-41b782405bbso45933595e9.1
+        for <linux-kernel@vger.kernel.org>; Thu, 02 May 2024 01:51:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1714639895; x=1715244695; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=rLLjzZnv4Z0/yLvYvsBEsvnw8lYsK6i6fPPd17AXon8=;
+        b=b9qnWCa2FXzhcQLuMAt5JLzKncLI+jQVam7WMoUH1NpmcVysrzW4rIWF4k74kVWv9+
+         JpGXT79/H10sJzAZes81yYoEu6FcDxOMuuPYK/xAFjjj1PbfRg7k+yw9hB6tnWyMtnNl
+         OsT0L0xe60riGoBGNMnA6+HEJIKVc6xNeLPIXcbrRv1lwP5KfxwT5b8LiZrjlfnYAByE
+         wulRJ6XexG6+TIooZh4tdsS3HmA7ccsPrvD14l2g+zA3nQq1fgrl4curiVZNL5T3pieo
+         S9JDGnoI1rPMX499SdrU3DvCDYQSMN0aehCaW373Dt8D1s2lT/l58IgOhjhEBmZ2N0ml
+         EtTQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714639895; x=1715244695;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=rLLjzZnv4Z0/yLvYvsBEsvnw8lYsK6i6fPPd17AXon8=;
+        b=RU79vZsDUYAkak+S93PiFgfIBrrwusxO+jmkQf+KvwU2hNtSd4Cvpm0JZwT/kHZRQd
+         Wx6OeUZs1CqlCIPpCQ9UOyoF68KleFhYt8hxxBMN2garqNBymvfsbt4JAu4uBrdrlKub
+         v91HcYucOVdBKswvEBABjHY5Duhuo1X1s1TX8inBxQFARU7aEju8FnwiM16v6JBaMU26
+         o7hSsOHZbeBijmQTMVOOEmsOgMPVtsr64yKeXlnDEaHW9BBExD0fU8Y2NTGAFduOKKhY
+         ojBO99PFPUxYW/iaJpFAL9fg2gn7zkz0UFoOTtuWQAIuGWT3btskGEjbG46REoFLBlTt
+         EzlA==
+X-Forwarded-Encrypted: i=1; AJvYcCVCrB+qVge14P477ChMDKFem1KjRh5MUJdvLT8OGpnfhfzQj8jcW98UBh2g5QcJg1mMDCB5sVBNcucNk2nQNTdyTYQ8e1bHtDflFqcs
+X-Gm-Message-State: AOJu0YzLdaF9DD7yP+hika5cZDX0I/PSLDFlJWqzC98Z13sYRzj9yeWs
+	9o+k/sjdAGITldIaCZ3Q2FUcXzFEOpELPg29henwLs0mo+dWedsI
+X-Google-Smtp-Source: AGHT+IHg1TRsUmwzWfbbGWlDaGt5SXUjJQMhVaOHCQTAnZ8ouQQ2/fxEkCt5liCywQBohpEhFZF5gA==
+X-Received: by 2002:a05:600c:1d8e:b0:41b:dafe:ff78 with SMTP id p14-20020a05600c1d8e00b0041bdafeff78mr1165549wms.20.1714639895570;
+        Thu, 02 May 2024 01:51:35 -0700 (PDT)
+Received: from ?IPV6:2a06:c701:737b:ef00:c50a:d96c:6c34:ec52? ([2a06:c701:737b:ef00:c50a:d96c:6c34:ec52])
+        by smtp.gmail.com with ESMTPSA id w6-20020a05600c474600b004182b87aaacsm1195572wmo.14.2024.05.02.01.51.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 02 May 2024 01:51:35 -0700 (PDT)
+Message-ID: <9efb9bdf-6f79-486b-ac18-3cf501aeef82@gmail.com>
+Date: Thu, 2 May 2024 11:51:33 +0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -56,140 +75,44 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 2/3] dt-bindings: arm: mediatek: mmsys: Add OF graph
- support for board path
-To: =?UTF-8?B?Q0sgSHUgKOiDoeS/iuWFiSk=?= <ck.hu@mediatek.com>,
- "chunkuang.hu@kernel.org" <chunkuang.hu@kernel.org>
-Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-mediatek@lists.infradead.org" <linux-mediatek@lists.infradead.org>,
- "wenst@chromium.org" <wenst@chromium.org>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- "tzimmermann@suse.de" <tzimmermann@suse.de>,
- =?UTF-8?B?U2hhd24gU3VuZyAo5a6L5a2d6KyZKQ==?= <Shawn.Sung@mediatek.com>,
- "mripard@kernel.org" <mripard@kernel.org>,
- =?UTF-8?B?Sml0YW8gU2hpICjnn7PorrDmtpsp?= <jitao.shi@mediatek.com>,
- "daniel@ffwll.ch" <daniel@ffwll.ch>,
- "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>,
- "conor+dt@kernel.org" <conor+dt@kernel.org>,
- "maarten.lankhorst@linux.intel.com" <maarten.lankhorst@linux.intel.com>,
- "robh@kernel.org" <robh@kernel.org>,
- "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
- "airlied@gmail.com" <airlied@gmail.com>,
- "krzysztof.kozlowski+dt@linaro.org" <krzysztof.kozlowski+dt@linaro.org>,
- "kernel@collabora.com" <kernel@collabora.com>,
- "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
- =?UTF-8?B?WXUtY2hhbmcgTGVlICjmnY7nprnnkosp?= <Yu-chang.Lee@mediatek.com>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
-References: <20240409120211.321153-1-angelogioacchino.delregno@collabora.com>
- <20240409120211.321153-3-angelogioacchino.delregno@collabora.com>
- <aa7e3bcf70383e563a65919f924ec2e5e4cd778c.camel@mediatek.com>
-From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Subject: Re: [PATCH 1/2] staging: pi433: Use class_create instead of
+ class_register.
+To: Greg KH <gregkh@linuxfoundation.org>,
+ Dan Carpenter <dan.carpenter@linaro.org>
+Cc: hverkuil-cisco@xs4all.nl, andriy.shevchenko@linux.intel.com,
+ robh@kernel.org, felixkimbu1@gmail.com, linux-staging@lists.linux.dev,
+ linux-kernel@vger.kernel.org
+References: <20240501055820.603272-1-ikobh7@gmail.com>
+ <20240501055820.603272-2-ikobh7@gmail.com>
+ <cc00ea68-0ec9-40af-a147-e8f67f7f29d0@moroto.mountain>
+ <2024050158-mutilated-zero-13b0@gregkh>
 Content-Language: en-US
-In-Reply-To: <aa7e3bcf70383e563a65919f924ec2e5e4cd778c.camel@mediatek.com>
+From: Shahar Avidar <ikobh7@gmail.com>
+In-Reply-To: <2024050158-mutilated-zero-13b0@gregkh>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 
-Il 25/04/24 04:23, CK Hu (胡俊光) ha scritto:
-> Hi, Angelo:
-> 
-> On Tue, 2024-04-09 at 14:02 +0200, AngeloGioacchino Del Regno wrote:
->> Document OF graph on MMSYS/VDOSYS: this supports up to three DDP
->> paths
->> per HW instance (so potentially up to six displays for multi-vdo
->> SoCs).
+On 01/05/2024 17:14, Greg KH wrote:
+> On Wed, May 01, 2024 at 05:00:44PM +0300, Dan Carpenter wrote:
+>> On Wed, May 01, 2024 at 08:58:19AM +0300, Shahar Avidar wrote:
+>>> Make use of a higher level API.
+>>> Reduce global memory allocation from struct class to pointer size.
 >>
->> The MMSYS or VDOSYS is always the first component in the DDP
->> pipeline,
->> so it only supports an output port with multiple endpoints - where
->> each
->> endpoint defines the starting point for one of the (currently three)
->> possible hardware paths.
->>
->> Signed-off-by: AngeloGioacchino Del Regno <
->> angelogioacchino.delregno@collabora.com>
->> ---
->>   .../bindings/arm/mediatek/mediatek,mmsys.yaml | 23
->> +++++++++++++++++++
->>   1 file changed, 23 insertions(+)
->>
->> diff --git
->> a/Documentation/devicetree/bindings/arm/mediatek/mediatek,mmsys.yaml
->> b/Documentation/devicetree/bindings/arm/mediatek/mediatek,mmsys.yaml
->> index b3c6888c1457..4e9acd966aa5 100644
->> ---
->> a/Documentation/devicetree/bindings/arm/mediatek/mediatek,mmsys.yaml
->> +++
->> b/Documentation/devicetree/bindings/arm/mediatek/mediatek,mmsys.yaml
->> @@ -93,6 +93,29 @@ properties:
->>     '#reset-cells':
->>       const: 1
->>   
->> +  port:
->> +    $ref: /schemas/graph.yaml#/properties/port
->> +    description:
->> +      Output port node. This port connects the MMSYS/VDOSYS output
->> to
->> +      the first component of one display pipeline, for example one
->> of
->> +      the available OVL or RDMA blocks.
->> +      Some MediaTek SoCs support up to three display outputs per
->> MMSYS.
->> +    properties:
->> +      endpoint@0:
->> +        $ref: /schemas/graph.yaml#/properties/endpoint
->> +        description: Output to the primary display pipeline
->> +
->> +      endpoint@1:
->> +        $ref: /schemas/graph.yaml#/properties/endpoint
->> +        description: Output to the secondary display pipeline
->> +
->> +      endpoint@2:
->> +        $ref: /schemas/graph.yaml#/properties/endpoint
->> +        description: Output to the tertiary display pipeline
->> +
->> +    required:
->> +      - endpoint@0
->> +
+>> Doesn't this move the memory in the opposite direction from what we
+>> want?  Originally, it's static const.  Isn't that the simplest best
+>> kind of memory?
 > 
-> mmsys/vdosys does not output data to the first component of display
-> pipeline, so this connection looks 'virtual'. Shall we add something
-> virtual in device tree? You add this in order to decide which pipeline
-> is 1st, 2nd, 3rd, but for device it don't care which one is first. In
-> computer, software could change which display is the primary display.
-> I'm not sure it's good to decide display order in device tree?
+> Our reviews just crossed...  This is just a revert (in 2 steps oddly),
+> of a previous commit that changed this api call, and for that reason
+> alone we can't take it :)
 > 
+Thank you for your input.
+I replied to Greg's review on another thread.
+I won't pursue this change.
 
-Devicetree describes hardware, so nothing virtual can be present - and in any case,
-the primary/secondary/tertiary pipeline is in relation to MM/VDO SYS, not referred
-to software.
+-- 
+Regards,
 
-Better explaining, the primary pipeline is not necessarily the primary display in
-DRM terms: that's a concept that is completely detached from the scope of this
-series and this graph - and it's something that shall be managed solely by the
-driver (mediatek-drm in this case).
-
-Coming back to the connection looking, but *not* being virtual: the sense here is
-that the MM/VDOSYS blocks are used in the display pipeline to "stitch" together
-the various display pipeline hardware blocks, or, said differently, setting up the
-routing between all of those (P.S.: mmsys_mtxxxx_routing_table!) through the VDO
-Input Selection (VDOx_SEL_IN) or Output Selection (VDOx_SEL_OUT) and with the
-assistance of the VDO Multiple Output Mask (VDOx_MOUT) for the multiple outputs
-usecase, both of which, are described by this graph.
-
-This means that the VDOSYS is really the "master" of the display pipeline since
-everything gets enabled, mixed and matched from there - and that's in the sense
-of hardware operation, so we are *really* (and not virtually!) flipping switches.
-
-
-Cheers,
-Angelo
-
-> Regards,
-> CK
-> 
-> 
->>   required:
->>     - compatible
->>     - reg
+Shahar
 
 
