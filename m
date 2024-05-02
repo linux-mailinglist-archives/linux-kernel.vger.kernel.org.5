@@ -1,217 +1,130 @@
-Return-Path: <linux-kernel+bounces-166460-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-166461-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A35EE8B9AF7
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 14:35:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7C6508B9AF8
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 14:36:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 44E6E1F237A0
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 12:35:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1D9521F23465
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 12:36:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 538EC7E766;
-	Thu,  2 May 2024 12:35:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Q0oA7urD"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 87F2962171;
+	Thu,  2 May 2024 12:36:37 +0000 (UTC)
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 84CCA1EA8D;
-	Thu,  2 May 2024 12:35:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 608851CAB8;
+	Thu,  2 May 2024 12:36:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714653332; cv=none; b=XRYkzOAhsQd61saFEilv8qc5AoEpTxWGene+/mgQ9gR8/yuKwYcJx8PKk/sn+Me1h9u9UBFTGLMgAtrUka3WXJy7jRqoCRu82Yjy+ZfFUeMJezpiywAZnI0TAh3V3HKkSyRMkcASCSBeik6FpEfY5PxZDtROPsgg8sxyLpSxQ9Y=
+	t=1714653397; cv=none; b=D6ZORrPioDufrOrPN1CXlYUcimFACB9YWvAmcXgRnN3r0wc8yr9INpM0r3RIdW1tXF8riQ6uwXQZzHfzjFSVT2v9yvWlsEFPaWySzNj0E7pB5uC+wktMpQVsXf7UhLoAvweARwkU70ndKT3+LZg0tsAsQW/SS20tAX/BwA13Yqg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714653332; c=relaxed/simple;
-	bh=1iCPxTYI/pWQqAi8vVdqGnub1dSEJs9IuaXYhwyCwuE=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=u+HywJWOKlpTUXVRaTANxroG/wGVju5BHpvXW7BxNZQ/40rBiwNLi4FXtFFITNQzzQ3IMhc3Nj3ds7joMA1Bsy3/9HCruzSW8D38dM/kSH46juFk6gjcv8AVDcRRwoTeTCVFbbjjWW8zzgybRpe+p4zxzqgc0vOH8sky39xn1Lg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Q0oA7urD; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B7696C4AF1A;
-	Thu,  2 May 2024 12:35:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714653332;
-	bh=1iCPxTYI/pWQqAi8vVdqGnub1dSEJs9IuaXYhwyCwuE=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Q0oA7urDCD13K1L0cCU8HeM+7YcjiTjuyh+c7i/+Td/1fhozuvdP/0d9ryRRMIlGh
-	 Fxnwe7dUXuAZSkCRGPojYpvJtAqj2goIyyNIoKAg5s7N7LegK+Q0ig0yTzXidmoOMA
-	 u9VPCndHJ4wPVDdV6WP+64NtQTNgV05kLXr94d+XZQ//2xD5N9B9z1wpz8fJLgYfSt
-	 oZTyFYstifkOarSaNm57faFrAHZnmIDyCXYJxAf02Ht6H1FxJvk8HrfhVCjKo9bhlD
-	 wILsHliajdkrMhQnycBmDqOyEFW7wMGKLAYbztTTZd8hoaFAOFEr1KLQMqc98ebK8I
-	 /8vnC+E3XaceQ==
-From: Puranjay Mohan <puranjay@kernel.org>
-To: Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>,
-	Sumit Garg <sumit.garg@linaro.org>,
-	Stephen Boyd <swboyd@chromium.org>,
-	Douglas Anderson <dianders@chromium.org>,
-	"Peter Zijlstra (Intel)" <peterz@infradead.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Mark Rutland <mark.rutland@arm.com>,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	bpf@vger.kernel.org
-Cc: puranjay12@gmail.com
-Subject: [PATCH v2 2/2] arm64: implement raw_smp_processor_id() using thread_info
-Date: Thu,  2 May 2024 12:34:49 +0000
-Message-Id: <20240502123449.2690-2-puranjay@kernel.org>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20240502123449.2690-1-puranjay@kernel.org>
-References: <20240502123449.2690-1-puranjay@kernel.org>
+	s=arc-20240116; t=1714653397; c=relaxed/simple;
+	bh=g8yoyySYQucAfTxisyM9kmbm4UKX0YvUAmEQNAgg6zM=;
+	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=EyRBFkL4jktSz/ZO/imKMja0A+ixDCVSUifvwn6XfnBd5q3LHOMBY1QKVRkcpB2u2wKgb1b8f81/H94EnRPcUm0cyAx4ei5J0CNFoehIzsebBcQ9Mu7RxcRBRzaTWlCa1x/BAvm7ooGwJqt6Tg0I1Dzq96+eBOZoTcXwRuxYSdA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.18.186.216])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4VVYJQ3DXXz6GD3H;
+	Thu,  2 May 2024 20:33:42 +0800 (CST)
+Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
+	by mail.maildlp.com (Postfix) with ESMTPS id 2F6DE1408F9;
+	Thu,  2 May 2024 20:36:25 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.39; Thu, 2 May
+ 2024 13:36:24 +0100
+Date: Thu, 2 May 2024 13:36:23 +0100
+From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To: =?ISO-8859-1?Q?Jo=E3o?= Paulo =?ISO-8859-1?Q?Gon=E7alves?=
+	<jpaulo.silvagoncalves@gmail.com>
+CC: <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<joao.goncalves@toradex.com>, Peter Rosin <peda@axentia.se>
+Subject: Re: Supporting a Device with Switchable Current/Voltage Measurement
+Message-ID: <20240502133623.0000463e@Huawei.com>
+In-Reply-To: <20240501233853.32y4ev7jvas5ahdz@joaog-nb>
+References: <20240501233853.32y4ev7jvas5ahdz@joaog-nb>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: quoted-printable
+X-ClientProxiedBy: lhrpeml500004.china.huawei.com (7.191.163.9) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
 
-Historically, arm64 implemented raw_smp_processor_id() as a read of
-current_thread_info()->cpu. This changed when arm64 moved thread_info
-into task struct, as at the time CONFIG_THREAD_INFO_IN_TASK made core
-code use thread_struct::cpu for the cpu number, and due to header
-dependencies prevented using this in raw_smp_processor_id(). As a
-workaround, we moved to using a percpu variable in commit:
+On Wed, 1 May 2024 20:38:53 -0300
+Jo=E3o Paulo Gon=E7alves <jpaulo.silvagoncalves@gmail.com> wrote:
 
-commit 57c82954e77f ("arm64: make cpu number a percpu variable")
+> Hello all,
+>=20
+> We need to support a hardware that can measure current and voltage on
+> the same differential analog input, similar to a multimeter. The mode
+> of measurement is controlled by a GPIO switch and goes to different
+> ADC inputs depending on the mode. If the switch is enabled, a current
+> loop with a shunt is enabled for current measurement; otherwise, voltage
+> is measured. From the software point of view, we are considering using
+> the iio-rescale driver as a consumer of an ADC IIO parent device. One
+> of the problems is that we need to change the mode of measurement at
+> runtime, but we are trying to avoid using some userspace "hack". The
+> other is that for a minimal solution to enable the mode from boot, we
+> can use a gpio-hog and control it with overlays. However,
+> still would be better that this was done by the kernel. Do you know
+> or have some guidance on how to properly support this in the kernel?
+>=20
+> For the in kernel gpio solution, this is a draft of DT we are thinking:
+>=20
+> current-sense {
+>       compatible =3D "current-sense-shunt";
+>       io-channels =3D <&adc 0>;
+>       gpio =3D <&main_gpio0 29 GPIO_ACTIVE_HIGH>;
+>       shunt-resistor-micro-ohms =3D <3300000>;     =20
+> };
+>=20
+> voltage-sense {
+>         compatible =3D "voltage-divider";
+>         io-channels =3D <&adc 1>;
+>         gpio =3D <&main_gpio0 29 GPIO_ACTIVE_LOW>;
+>         output-ohms =3D <22>;
+>         full-ohms =3D <222>;
+> };
+>=20
+> Regards,
+> Jo=E3o Paulo Gon=E7alves
+>=20
++CC Peter Rosin who wrote all the relevant parts you need I think.
+>=20
 
-Since then, thread_info::cpu was reintroduced, and core code was made to
-use this in commits:
+Superficially sounds like you want a mixture of appropriate analog front en=
+ds
+and a Mux.  I haven't tried the combination but it should be possible to do
+something like this with=20
 
-commit 001430c1910d ("arm64: add CPU field to struct thread_info")
-commit bcf9033e5449 ("sched: move CPU field back into thread_info if
-THREAD_INFO_IN_TASK=y")
+An IIO mux via this binding
+https://elixir.bootlin.com/linux/v6.9-rc6/source/Documentation/devicetree/b=
+indings/iio/multiplexer/io-channel-mux.yaml
+(that includes a gpio-mux example).
 
-Consequently it is possible to use current_thread_info()->cpu again.
+Consumed in turn by a pair of AFE devices.
 
-This decreases the number of emitted instructions like in the following
-example:
+Then you should be able to just read from which ever of the AFE device you =
+want.
+A sysfs read from
+/sys/bus/iio/devices/iio\:deviceA/in_voltage_raw
+will switch the mux to appropriate place then request the
+voltage from the iio-mux, which in turn requests it from the ADC IIO driver.
 
-Dump of assembler code for function bpf_get_smp_processor_id:
-   0xffff8000802cd608 <+0>:     nop
-   0xffff8000802cd60c <+4>:     nop
-   0xffff8000802cd610 <+8>:     adrp    x0, 0xffff800082138000
-   0xffff8000802cd614 <+12>:    mrs     x1, tpidr_el1
-   0xffff8000802cd618 <+16>:    add     x0, x0, #0x8
-   0xffff8000802cd61c <+20>:    ldrsw   x0, [x0, x1]
-   0xffff8000802cd620 <+24>:    ret
+/sys/bus/iio/devices/iio\:deviceB/in_current_raw
+switches the mux the other way and otherwise the flow as above.
 
-After this patch:
-
-Dump of assembler code for function bpf_get_smp_processor_id:
-   0xffff8000802c9130 <+0>:     nop
-   0xffff8000802c9134 <+4>:     nop
-   0xffff8000802c9138 <+8>:     mrs     x0, sp_el0
-   0xffff8000802c913c <+12>:    ldr     w0, [x0, #24]
-   0xffff8000802c9140 <+16>:    ret
-
-A microbenchmark[1] was built to measure the performance improvement
-provided by this change. It calls the following function given number of
-times and finds the runtime overhead:
-
-static noinline int get_cpu_id(void)
-{
-	return smp_processor_id();
-}
-
-Run the benchmark like:
- modprobe smp_processor_id nr_function_calls=1000000000
-
-      +--------------------------+------------------------+
-      |        | Number of Calls |    Time taken          |
-      +--------+-----------------+------------------------+
-      | Before |   1000000000    |   1602888401ns         |
-      +--------+-----------------+------------------------+
-      | After  |   1000000000    |   1206212658ns         |
-      +--------+-----------------+------------------------+
-      |  Difference (decrease)   |   396675743ns (24.74%) |
-      +---------------------------------------------------+
-
-Remove the percpu variable cpu_number as it is used only in
-set_smp_ipi_range() as a dummy variable to be passed to ipi_handler().
-Use irq_stat in place of cpu_number here.
-
-[1] https://github.com/puranjaymohan/linux/commit/77d3fdd
-
-Signed-off-by: Puranjay Mohan <puranjay@kernel.org>
----
-Changes in v1 -> v2:
-v1: https://lore.kernel.org/all/20240501154236.10236-1-puranjay@kernel.org/
-- Remove the percpu variable cpu_number
-- Add more information to the commit message.
----
- arch/arm64/include/asm/smp.h | 13 +------------
- arch/arm64/kernel/smp.c      |  9 ++-------
- 2 files changed, 3 insertions(+), 19 deletions(-)
-
-diff --git a/arch/arm64/include/asm/smp.h b/arch/arm64/include/asm/smp.h
-index efb13112b408..2510eec026f7 100644
---- a/arch/arm64/include/asm/smp.h
-+++ b/arch/arm64/include/asm/smp.h
-@@ -25,22 +25,11 @@
- 
- #ifndef __ASSEMBLY__
- 
--#include <asm/percpu.h>
--
- #include <linux/threads.h>
- #include <linux/cpumask.h>
- #include <linux/thread_info.h>
- 
--DECLARE_PER_CPU_READ_MOSTLY(int, cpu_number);
--
--/*
-- * We don't use this_cpu_read(cpu_number) as that has implicit writes to
-- * preempt_count, and associated (compiler) barriers, that we'd like to avoid
-- * the expense of. If we're preemptible, the value can be stale at use anyway.
-- * And we can't use this_cpu_ptr() either, as that winds up recursing back
-- * here under CONFIG_DEBUG_PREEMPT=y.
-- */
--#define raw_smp_processor_id() (*raw_cpu_ptr(&cpu_number))
-+#define raw_smp_processor_id() (current_thread_info()->cpu)
- 
- /*
-  * Logical CPU mapping.
-diff --git a/arch/arm64/kernel/smp.c b/arch/arm64/kernel/smp.c
-index 4ced34f62dab..98d4e352c3d0 100644
---- a/arch/arm64/kernel/smp.c
-+++ b/arch/arm64/kernel/smp.c
-@@ -55,9 +55,6 @@
- 
- #include <trace/events/ipi.h>
- 
--DEFINE_PER_CPU_READ_MOSTLY(int, cpu_number);
--EXPORT_PER_CPU_SYMBOL(cpu_number);
--
- /*
-  * as from 2.5, kernels no longer have an init_tasks structure
-  * so we need some other way of telling a new secondary core
-@@ -742,8 +739,6 @@ void __init smp_prepare_cpus(unsigned int max_cpus)
- 	 */
- 	for_each_possible_cpu(cpu) {
- 
--		per_cpu(cpu_number, cpu) = cpu;
--
- 		if (cpu == smp_processor_id())
- 			continue;
- 
-@@ -1021,12 +1016,12 @@ void __init set_smp_ipi_range(int ipi_base, int n)
- 
- 		if (ipi_should_be_nmi(i)) {
- 			err = request_percpu_nmi(ipi_base + i, ipi_handler,
--						 "IPI", &cpu_number);
-+						 "IPI", &irq_stat);
- 			WARN(err, "Could not request IPI %d as NMI, err=%d\n",
- 			     i, err);
- 		} else {
- 			err = request_percpu_irq(ipi_base + i, ipi_handler,
--						 "IPI", &cpu_number);
-+						 "IPI", &irq_stat);
- 			WARN(err, "Could not request IPI %d as IRQ, err=%d\n",
- 			     i, err);
- 		}
--- 
-2.40.1
+Jonathan
 
 
