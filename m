@@ -1,138 +1,131 @@
-Return-Path: <linux-kernel+bounces-166941-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-166942-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9A84F8BA257
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 23:30:23 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4701D8BA259
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 23:35:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3C1281F24ED4
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 21:30:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AE883286990
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 21:35:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3FCD4181BB2;
-	Thu,  2 May 2024 21:30:16 +0000 (UTC)
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C6A2181CF9;
+	Thu,  2 May 2024 21:35:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="1XTZgOrN"
+Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA83A15B971;
-	Thu,  2 May 2024 21:30:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 752C1172BCB
+	for <linux-kernel@vger.kernel.org>; Thu,  2 May 2024 21:35:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714685415; cv=none; b=Ayp9VkcJdk25x0R+U42DtsLN5du1l/ky1l47NLw+yzrAfZM3LnfIxKqL+y/rSQKrThicp4u8fuQGp1QbzFvw4i2ZRrsmhVhdMTfoxKnLdd3VtLZyysVWW7v2pKNXYiCnP0ihRsyF+2KKMtPNwGUG8dj5MOKPzv7+xTpHloWnbKw=
+	t=1714685712; cv=none; b=DGP4knukaiQ6ydkb0ioBMD7LDlaKYUz5zKxcumoMAHboFkqIlpMLyi4Xlx6fgJNJWbw6koJUawkYX5A2VQAcL2irXUmNg7xQrQWDU4WVW4hwMXIRT4P/fiobIUEiyg9o+hmIegq7WYKdVkxdf194eMIzvx/s8TY1kI0B3agiQgU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714685415; c=relaxed/simple;
-	bh=bcr0gKy5E9J7hxWXCHjgabXQssBB8UXIM4ou5rtgVsI=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=qQ8QEIJWYVYopV85V//k5v06TNWhesruEd1GcvyOCgVlKAZewJ6yAw9DGvppYia2eBuCwsKfHK8f7EvlBP2w6sZ3FkP6osVTmDW+0XX5fmCG/owKVuz7LDMxk1I75teFZue64AMKPwKllnVel83eC2+PU4wi83MUXxHd0VQAsfM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 668AAC4AF14;
-	Thu,  2 May 2024 21:30:14 +0000 (UTC)
-Date: Thu, 2 May 2024 17:31:00 -0400
-From: Steven Rostedt <rostedt@goodmis.org>
-To: "Paul E. McKenney" <paulmck@kernel.org>
-Cc: Masami Hiramatsu <mhiramat@kernel.org>, linux-kernel@vger.kernel.org,
- linux-trace-kernel@vger.kernel.org, kuba@kernel.org, ast@kernel.org,
- clm@fb.com, mark.rutland@arm.com, mathieu.desnoyers@efficios.com
-Subject: Re: [PATCH resend ftrace] Asynchronous grace period for
- register_ftrace_direct()
-Message-ID: <20240502173100.42c8a3f7@gandalf.local.home>
-In-Reply-To: <82ae8a24-f9cf-4730-b0d7-43fb3bca2917@paulmck-laptop>
-References: <ac05be77-2972-475b-9b57-56bef15aa00a@paulmck-laptop>
-	<20240502110501.772941f7fdbc1650a9a3bea4@kernel.org>
-	<82ae8a24-f9cf-4730-b0d7-43fb3bca2917@paulmck-laptop>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1714685712; c=relaxed/simple;
+	bh=qOgLBJE0LE1Qr7V8zbAlCdL72iO5CLfA0xy5a53x4LI=;
+	h=Date:Message-Id:Mime-Version:Subject:From:To:Cc:Content-Type; b=ssOVhQLDejVjAcWhFXyM5ZLWcLp70hvns+Lo7Kwg26ZCfaMFA5BUlYU0YPUGSylWyckfALKhiZvCffsoHk/9veLCLGBPLsnHaNtgQtuSreO1L0U+9zjqqQCAYV2dioUDM2ZZju7uaOpr8cbHUyqnUCPSwvZ/oqMg2+UBmXQD+to=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=1XTZgOrN; arc=none smtp.client-ip=209.85.128.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com
+Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-61be5d44307so74016147b3.0
+        for <linux-kernel@vger.kernel.org>; Thu, 02 May 2024 14:35:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1714685710; x=1715290510; darn=vger.kernel.org;
+        h=cc:to:from:subject:mime-version:message-id:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=qhcKEmyfJmzka3bwh2Qr09m8V19zJ3Gs286JpGC5N+o=;
+        b=1XTZgOrNjFUvpVRbHLdEX7DGDSuxZcwzf/5IOHccKUyJNkeoyOWwMljyhlm8UYK+SV
+         7vUif011PsTC8oNFa4ETVazH9Q9902SV6opuCFLvLWvRFSceoV21tnSMpdD5I5QkV83i
+         yfvV/BMWOz3Q2xVTOc7D1E53RoQ81yJReVxDGmwJzOWm3Ir95v9dArQOqnvhxVZqCzvA
+         IkydHz6Qbf61jMS2g1ip+fje4ZBmBqHL9IYxpc7k3wMbXELxPvcVnl1ARM6BHGG3NLtK
+         SNxTChTBwmwQT62PSym3b/n6SUCyXCHmxI+VoAaaCxkyUz9JzC8VOeWhg1CAYD9h2ckH
+         lsuQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714685710; x=1715290510;
+        h=cc:to:from:subject:mime-version:message-id:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=qhcKEmyfJmzka3bwh2Qr09m8V19zJ3Gs286JpGC5N+o=;
+        b=uCZxXiYLNL+CxTLFDXQimKb5Y22tlFVGz2nhgtvmxL2unjKhnbAdb4AOpVL2oX09hT
+         9iPoQHXMd16RS5h34UizRmhlWqqKq+koHF86vEGnmwccdwP1jfucHQE8rXZPYYemLDpD
+         TGhhKYWeJ5cEvdK8Y+a8da8F/TUCVNz4JJemyP73zrVgduWxaS8cr9hJ9zQXXUAATo0Y
+         QWHBPOLVVGy597YaQj3LuMr5+MEBcWVTCCl3CrR5ISFtdnX9+9vFTT4UVxKWQwaEYGrN
+         q1RfNe4PLJmTRMGDb5MHIGVCo5lT9KAdB1kYVq7tTdKiS66/tYETe+H71A3yaApB1kc/
+         bPEA==
+X-Forwarded-Encrypted: i=1; AJvYcCXFM09e/YcuZBCa/Jh17QSMLs8QOTEOBspzelb/F1gcmhnfpasbfD/RsSIugKXB3NvuXgUKI08XpGZQNqeZzaoqWaGA7ckvn48VPgRL
+X-Gm-Message-State: AOJu0YwVFFeL3LcrvCqRQyy6uVtxp8YGa0JF1dtJ+tChXK5v/QalI2cs
+	HPXjcy8VUc+l8MdQJj/oUc3y+wc1yr9498gVGTd0irk/11X2knp66dowtIyUuXldsKcDzkeDr+I
+	YmgA48A==
+X-Google-Smtp-Source: AGHT+IHipT/3I7TZPtQNOU5cK7w6gazz2EG7ggZtHX90TFERJA9kLwPfsnpZ/IISO+pyZI7y6ke7invIO6vO
+X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:deba:378d:2d3a:2641])
+ (user=irogers job=sendgmr) by 2002:a0d:d84b:0:b0:611:2c40:e8d0 with SMTP id
+ a72-20020a0dd84b000000b006112c40e8d0mr156843ywe.3.1714685710542; Thu, 02 May
+ 2024 14:35:10 -0700 (PDT)
+Date: Thu,  2 May 2024 14:35:01 -0700
+Message-Id: <20240502213507.2339733-1-irogers@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.45.0.rc1.225.g2a3ae87e7f-goog
+Subject: [PATCH v5 0/6] Assume sysfs event names are always the same case
+From: Ian Rogers <irogers@google.com>
+To: Kan Liang <kan.liang@linux.intel.com>, Thomas Richter <tmricht@linux.ibm.com>, 
+	Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
+	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
+	Mark Rutland <mark.rutland@arm.com>, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Bjorn Helgaas <bhelgaas@google.com>, Jonathan Corbet <corbet@lwn.net>, 
+	Randy Dunlap <rdunlap@infradead.org>, Jing Zhang <renyu.zj@linux.alibaba.com>, 
+	James Clark <james.clark@arm.com>, Ravi Bangoria <ravi.bangoria@amd.com>, 
+	linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org
+Cc: Ian Rogers <irogers@google.com>
+Content-Type: text/plain; charset="UTF-8"
 
-On Wed, 1 May 2024 20:31:06 -0700
-"Paul E. McKenney" <paulmck@kernel.org> wrote:
+By assuming sysfs events are either upper or lower case, the case
+insensitive event parsing can probe for the existence of files rather
+then loading all events in a directory. When the event is a json event
+like inst_retired.any on Intel, this reduces the number of openat
+calls on a Tigerlake laptop from 325 down to 255.
 
-> On Thu, May 02, 2024 at 11:05:01AM +0900, Masami Hiramatsu wrote:
-> > On Wed, 1 May 2024 16:12:37 -0700
-> > "Paul E. McKenney" <paulmck@kernel.org> wrote:
-> >   
-> > > Note that the immediate pressure for this patch should be relieved by the
-> > > NAPI patch series [1], but this sort of problem could easily arise again.
-> > > 
-> > > When running heavy test workloads with KASAN enabled, RCU Tasks grace
-> > > periods can extend for many tens of seconds, significantly slowing
-> > > trace registration.  Therefore, make the registration-side RCU Tasks
-> > > grace period be asynchronous via call_rcu_tasks().  
-> > 
-> > Good catch! AFAICS, there is no reason to wait for synchronization
-> > when adding a new direct trampoline.
-> > This looks good to me.
-> > 
-> > Reviewed-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>  
-> 
-> Thank you very much!  I will apply this on my next rebase.
+v1 sent as an RFC:
+    https://lore.kernel.org/lkml/20240413040812.4042051-1-irogers@google.com/
 
-I can take it.
+v2: addresses review feedback from Kan Liang, by updating
+    documentation and adding tests.
 
-It's not a bug fix but just an performance improvement, so it can go into
-the next merge window.
+v3: incorporate feedback from Thomas Richter <tmricht@linux.ibm.com>
+    that s390 event names are all upper case. Do a lower case probe
+    then an upper case probe, make documentation and tests also agree.
 
--- Steve
+v4: add checks to write (kernel test robot) and fix a typo.
 
+v5: Add reviewed-by: Kan Liang and fix potential uninitialized use.
 
+Ian Rogers (6):
+  perf test pmu-events: Make it clearer that pmu-events tests json
+    events
+  perf Document: Sysfs event names must be lower or upper case
+  perf test pmu: Refactor format test and exposed test APIs
+  perf test pmu: Add an eagerly loaded event test
+  perf test pmu: Test all sysfs PMU event names are the same case
+  perf pmu: Assume sysfs events are always the same case
 
-> 
-> > Thank you,
-> >   
-> > > [1]
-> > > https://lore.kernel.org/all/cover.1710877680.git.yan@cloudflare.com/
-> > > 
-> > > Reported-by: Jakub Kicinski <kuba@kernel.org>
-> > > Reported-by: Alexei Starovoitov <ast@kernel.org>
-> > > Reported-by: Chris Mason <clm@fb.com>
-> > > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> > > Cc: Steven Rostedt <rostedt@goodmis.org>
-> > > Cc: Masami Hiramatsu <mhiramat@kernel.org>
-> > > Cc: Mark Rutland <mark.rutland@arm.com>
-> > > Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-> > > Cc: <linux-trace-kernel@vger.kernel.org>
-> > > 
-> > > diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
-> > > index 6c96b30f3d63b..32ea92934268c 100644
-> > > --- a/kernel/trace/ftrace.c
-> > > +++ b/kernel/trace/ftrace.c
-> > > @@ -5365,6 +5365,13 @@ static void
-> > > remove_direct_functions_hash(struct ftrace_hash *hash, unsigned long }
-> > >  }
-> > >  
-> > > +static void register_ftrace_direct_cb(struct rcu_head *rhp)
-> > > +{
-> > > +	struct ftrace_hash *fhp = container_of(rhp, struct
-> > > ftrace_hash, rcu); +
-> > > +	free_ftrace_hash(fhp);
-> > > +}
-> > > +
-> > >  /**
-> > >   * register_ftrace_direct - Call a custom trampoline directly
-> > >   * for multiple functions registered in @ops
-> > > @@ -5463,10 +5470,8 @@ int register_ftrace_direct(struct ftrace_ops
-> > > *ops, unsigned long addr) out_unlock:
-> > >  	mutex_unlock(&direct_mutex);
-> > >  
-> > > -	if (free_hash && free_hash != EMPTY_HASH) {
-> > > -		synchronize_rcu_tasks();
-> > > -		free_ftrace_hash(free_hash);
-> > > -	}
-> > > +	if (free_hash && free_hash != EMPTY_HASH)
-> > > +		call_rcu_tasks(&free_hash->rcu,
-> > > register_ftrace_direct_cb); 
-> > >  	if (new_hash)
-> > >  		free_ftrace_hash(new_hash);  
-> > 
-> > 
-> > -- 
-> > Masami Hiramatsu (Google) <mhiramat@kernel.org>  
+ .../sysfs-bus-event_source-devices-events     |   6 +
+ tools/perf/tests/pmu-events.c                 |   2 +-
+ tools/perf/tests/pmu.c                        | 467 ++++++++++++------
+ tools/perf/util/parse-events.c                |   2 +-
+ tools/perf/util/parse-events.h                |   2 +-
+ tools/perf/util/pmu.c                         | 111 +++--
+ tools/perf/util/pmu.h                         |   4 +-
+ tools/perf/util/pmus.c                        |  16 +-
+ tools/perf/util/pmus.h                        |   2 +
+ 9 files changed, 415 insertions(+), 197 deletions(-)
+
+-- 
+2.45.0.rc1.225.g2a3ae87e7f-goog
 
 
