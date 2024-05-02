@@ -1,165 +1,99 @@
-Return-Path: <linux-kernel+bounces-166351-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-166352-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B51878B9978
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 12:54:17 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A28988B997C
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 12:55:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 61FAD1F22456
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 10:54:17 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BC504B20BC8
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 10:54:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A20915DF3B;
-	Thu,  2 May 2024 10:54:11 +0000 (UTC)
-Received: from emcscan.emc.com.tw (emcscan.emc.com.tw [192.72.220.5])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3FAB356B7B
-	for <linux-kernel@vger.kernel.org>; Thu,  2 May 2024 10:54:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.72.220.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A126E5FB94;
+	Thu,  2 May 2024 10:54:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ADc83FN/"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D94C856B7B;
+	Thu,  2 May 2024 10:54:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714647251; cv=none; b=ltqafqN0SaOqQoQ0jkQXP/Pvyw6bvhNF1Po336XytnK6LX0cEbDJ7CNryefkyzlODOt4Ja3U0dKsv139E7C0kAT1zWgYSN5IgFhivu2hFfpHhaR7as2FwGdPZvtl/7/epxH1lo0Eo3MRcoJEXxDpkVMKVmAysaPmgQuCr03tQUE=
+	t=1714647292; cv=none; b=a5VnU6Ilvb5xM73UlvCx+6MhF6Nx80QgL9wQZ9CRNTYmXqlD5oVfg2u9IKPt421PJ7HzwikTZkq5o7cRSDmshmBe6pcS4Tk/O6eXX3ssmyUEIelekcuogNjBbQJn/qgUQ3gmCE4Ldj+bvesZADiIvgyVyzXDxXagc9XUbbu3cW4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714647251; c=relaxed/simple;
-	bh=+GRRN+lxAgTpny0qBHzOZB5GQipSuGqI3AqbrrFpiTE=;
-	h=From:To:Cc:References:In-Reply-To:Subject:Date:Message-ID:
-	 MIME-Version:Content-Type; b=B0iW7wvirFPOBc8MVcWiMul/Ifk9xbKDGOAgSGyEc03aNQL4GK7LeJbFlbYdBq080XqvLAynVs3qlBH0oZdzo4euo2dzzcrmrgUALUGDbsKv3SCcrzrZ0dmc8xxAvyCG6n6IiWOXix8ZkGdQQDfzmTnYYZmDMJQBrVcUspxFheo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=emc.com.tw; spf=pass smtp.mailfrom=emc.com.tw; arc=none smtp.client-ip=192.72.220.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=emc.com.tw
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=emc.com.tw
-X-IronPort-AV: E=Sophos;i="6.07,247,1708358400"; 
-   d="scan'208";a="6849212"
-Received: from unknown (HELO webmail.emc.com.tw) ([192.168.10.1])
-  by emcscan.emc.com.tw with ESMTP; 02 May 2024 18:52:58 +0800
-Received: from 192.168.10.23
-	by webmail.emc.com.tw with MailAudit ESMTP Server V5.0(195294:0:AUTH_RELAY)
-	(envelope-from <phoenix@emc.com.tw>); Thu, 02 May 2024 18:52:56 +0800 (CST)
-Received: from 192.168.33.24
-	by webmail.emc.com.tw with Mail2000 ESMTP Server V7.00(2472:0:AUTH_RELAY)
-	(envelope-from <phoenix@emc.com.tw>); Thu, 02 May 2024 18:52:54 +0800 (CST)
-From: "Phoenix" <phoenix@emc.com.tw>
-To: "'Dmitry Torokhov'" <dmitry.torokhov@gmail.com>,
-	"'Jonathan Denose'" <jdenose@google.com>
-Cc: "'LKML'" <linux-kernel@vger.kernel.org>,
-	<linux-input@vger.kernel.org>,
-	"'Greg Kroah-Hartman'" <gregkh@linuxfoundation.org>,
-	"'Jeffery Miller'" <jefferymiller@google.com>,
-	"'Hans de Goede'" <hdegoede@redhat.com>,
-	"'Josh.Chen'" <josh.chen@emc.com.tw>,
-	<jingle.wu@emc.com.tw>
-References: <20240501140231.1.Ifa0e25ebf968d8f307f58d678036944141ab17e6@changeid> <ZjKV44wZWH4MBCrF@google.com>
-In-Reply-To: <ZjKV44wZWH4MBCrF@google.com>
-Subject: RE: [PATCH] Input: elantech - fix touchpad state on resume for Lenovo N24
-Date: Thu, 2 May 2024 18:52:54 +0800
-Message-ID: <003301da9c7e$e28cedb0$a7a6c910$@emc.com.tw>
+	s=arc-20240116; t=1714647292; c=relaxed/simple;
+	bh=2zMMgDtblAfRMoupiInjzu+rYzRFbq4eE1vS2UNSkZc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=flq1GG2oDWzpLyEMCpUzYgISR++kOw8iNArFN+8qQNNUueZlekGpJMLtohk4qSPAVzdUePeLcYHRhWr0QDSmXw+FAjF1knaR+S6SoK+B5BFvDloDBc9bXQw7KKCiaOY9h/YiK18ZQKx5P1bSaTlD7JhAw9W6GRytWNwrs+T0580=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ADc83FN/; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5C37EC4AF1A;
+	Thu,  2 May 2024 10:54:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714647291;
+	bh=2zMMgDtblAfRMoupiInjzu+rYzRFbq4eE1vS2UNSkZc=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=ADc83FN/7InmE8+BsUu87A58zfvwNkMsrp3wz4s0jkj9Bz8Y8xvZgmBG+08zIOZ7m
+	 apI9BXdYfadpsKqS9kGAYRY3vRb7rTc+4ZSgiQGBccNjEoaW8vKZ+vNUujHPv8K/gu
+	 D4q0jywmG4+9Q9TL7+AuPq6WAy8blcKI9si5MqOfOQ8iz5AW6eu0eH2n1htpW9PtTg
+	 i1BwW1nJbstqeGLpLBgutAn6vxi8UgImcIwHVjMZy4Njw7eiNANPc0kkd/Xu7JFNgj
+	 hOccUKBDaVyusO8+zX2qKw/qOWq6gyBKBLsunuSyPUXVe0xjDPfFmpvb5MPyr8bH1H
+	 qCSFx28P7c02w==
+Received: by mail-oo1-f53.google.com with SMTP id 006d021491bc7-5b1b03dc01dso360797eaf.3;
+        Thu, 02 May 2024 03:54:51 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCUiE4h9xxTsIrpL7lcjDPDbwbGLrEH6m856cdTxkTpbqlaNuNfBAYN6wWI4OGrtVrsuMnZvXKtZWbGXQlokXOz0BAUl4ILC4fd2TfegEpvS3X8NQtkZzdC2XideX2/WXFuUdN04F40=
+X-Gm-Message-State: AOJu0YxGzZ0QwJ3SW/LghhjYNUQoiOuAsoQX48dqEljz1zZJG9SPes1k
+	5+phfGxcg/1Xg24cqVTWZSGS/wBUQAwBpwrxUx4FJmlF+fuWQ6i5RtgdAxM+xAgm/fCPNQDHZd4
+	irTxuL0ah8KZmRzZcjZvP63TgwBY=
+X-Google-Smtp-Source: AGHT+IHTtFLtzAIcPI232H9S3+Qt/XcskxoU14vG/wR76VMfYJzsf+zXY7sqUfPW8wjwo2SXQlV+LiNaIfbgSTg+7og=
+X-Received: by 2002:a4a:2546:0:b0:5a7:db56:915c with SMTP id
+ v6-20020a4a2546000000b005a7db56915cmr5724735ooe.1.1714647290569; Thu, 02 May
+ 2024 03:54:50 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-X-Mailer: Microsoft Outlook 16.0
-Thread-Index: AQNl6RFy0XqrrreO5MtCRWC09GhC+wHH6cKKrl7rqjA=
-Content-Language: zh-tw
-x-dg-ref: PG1ldGE+PGF0IGFpPSIwIiBubT0iYm9keS50eHQiIHA9ImM6XHVzZXJzXDg4MDUxXGFwcGRhdGFccm9hbWluZ1wwOWQ4NDliNi0zMmQzLTRhNDAtODVlZS02Yjg0YmEyOWUzNWJcbXNnc1xtc2ctMjAxMGNhZWEtMDg3Mi0xMWVmLWE4OTAtMDhiZmI4ZDdiOWIxXGFtZS10ZXN0XDIwMTBjYWVjLTA4NzItMTFlZi1hODkwLTA4YmZiOGQ3YjliMWJvZHkudHh0IiBzej0iNTkwNiIgdD0iMTMzNTkxMjA3NzM5MjIwMzE5IiBoPSIwakp4bGxMYTlYUEhzcldsRUk4TWpJRXRyRWc9IiBpZD0iIiBibD0iMCIgYm89IjEiLz48L21ldGE+
-x-dg-rorf: true
+References: <20240430225826.65289-1-srinivas.pandruvada@linux.intel.com> <ZjNdILvlyei-_Z7A@smile.fi.intel.com>
+In-Reply-To: <ZjNdILvlyei-_Z7A@smile.fi.intel.com>
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Date: Thu, 2 May 2024 12:54:36 +0200
+X-Gmail-Original-Message-ID: <CAJZ5v0gYbn5jGE21RyzfOXCP7onhJSB5_D4fTJKW=Zf=K8zLxA@mail.gmail.com>
+Message-ID: <CAJZ5v0gYbn5jGE21RyzfOXCP7onhJSB5_D4fTJKW=Zf=K8zLxA@mail.gmail.com>
+Subject: Re: [PATCH] thermal: intel: Add missing module description
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>, 
+	Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+Cc: daniel.lezcano@linaro.org, rui.zhang@intel.com, lukasz.luba@arm.com, 
+	linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Loop Josh, Jingle
+On Thu, May 2, 2024 at 11:30=E2=80=AFAM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
+>
+> On Tue, Apr 30, 2024 at 03:58:25PM -0700, Srinivas Pandruvada wrote:
+> > Fix warnings displayed by "make W=3D1" build:
+> >
+> > WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/thermal/intel=
+/intel_soc_dts_iosf.o
+> > WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/thermal/intel=
+/int340x_thermal/processor_thermal_rapl.o
+> > WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/thermal/intel=
+/int340x_thermal/processor_thermal_rfim.o
+> > WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/thermal/intel=
+/int340x_thermal/processor_thermal_mbox.o
+> > WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/thermal/intel=
+/int340x_thermal/processor_thermal_wt_req.o
+> > WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/thermal/intel=
+/int340x_thermal/processor_thermal_wt_hint.o
+> > WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/thermal/intel=
+/int340x_thermal/processor_thermal_power_floor
+>
+> Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+>
+> Thank you!
 
------Original Message-----
-From: Dmitry Torokhov <dmitry.torokhov@gmail.com> 
-Sent: Thursday, May 2, 2024 3:20 AM
-To: Jonathan Denose <jdenose@google.com>
-Cc: LKML <linux-kernel@vger.kernel.org>; linux-input@vger.kernel.org; Greg
-Kroah-Hartman <gregkh@linuxfoundation.org>; Jeffery Miller
-<jefferymiller@google.com>; Phoenix Huang <phoenix@emc.com.tw>; Hans de
-Goede <hdegoede@redhat.com>
-Subject: Re: [PATCH] Input: elantech - fix touchpad state on resume for
-Lenovo N24
-
-On Wed, May 01, 2024 at 02:02:32PM +0000, Jonathan Denose wrote:
-> The Lenovo N24 on resume becomes stuck in a state where it sends 
-> incorrect packets, causing elantech_packet_check_v4 to fail.
-> The only way for the device to resume sending the correct packets is 
-> for it to be disabled and then re-enabled.
-> 
-> This change adds a dmi check to trigger this behavior on resume.
-> Signed-off-by: Jonathan Denose <jdenose@google.com>
-
-Adding a couple more folks to take a look at this...
-
-> ---
-> 
->  drivers/input/mouse/elantech.c | 33 +++++++++++++++++++++++++++++++++
->  1 file changed, 33 insertions(+)
-> 
-> diff --git a/drivers/input/mouse/elantech.c 
-> b/drivers/input/mouse/elantech.c index 4e38229404b4b..e0f3095b4227e 
-> 100644
-> --- a/drivers/input/mouse/elantech.c
-> +++ b/drivers/input/mouse/elantech.c
-> @@ -1476,6 +1476,23 @@ static void elantech_disconnect(struct psmouse
-*psmouse)
->  	psmouse->private = NULL;
->  }
->  
-> +/*
-> + * Some hw_version 4 models fail to properly activate absolute mode 
-> +on
-> + * resume without going through disable/enable cycle.
-> + */
-> +static const struct dmi_system_id elantech_needs_reenable[] = { #if 
-> +defined(CONFIG_DMI) && defined(CONFIG_X86)
-> +	{
-> +		/* Lenovo N24 */
-> +		.matches = {
-> +			DMI_MATCH(DMI_SYS_VENDOR, "LENOVO"),
-> +			DMI_MATCH(DMI_PRODUCT_NAME, "81AF"),
-> +		},
-> +	},
-> +#endif
-> +	{ }
-> +};
-> +
->  /*
->   * Put the touchpad back into absolute mode when reconnecting
->   */
-> @@ -1486,6 +1503,22 @@ static int elantech_reconnect(struct psmouse
-*psmouse)
->  	if (elantech_detect(psmouse, 0))
->  		return -1;
->  
-> +	if (dmi_check_system(elantech_needs_reenable)) {
-> +		int err;
-> +
-> +		err = ps2_sendbyte(&psmouse->ps2dev, PSMOUSE_CMD_DISABLE,
-NULL);
-> +
-> +		if (err)
-> +			psmouse_warn(psmouse, "Failed to deactivate mouse on
-%s: %d\n",
-> +					psmouse->ps2dev.serio->phys, err);
-> +
-> +		err = ps2_sendbyte(&psmouse->ps2dev, PSMOUSE_CMD_ENABLE,
-NULL);
-> +
-> +		if (err)
-> +			psmouse_warn(psmouse, "Failed to reactivate mouse on
-%s: %d\n",
-> +					psmouse->ps2dev.serio->phys, err);
-> +	}
-> +
->  	if (elantech_set_absolute_mode(psmouse)) {
->  		psmouse_err(psmouse,
->  			    "failed to put touchpad back into absolute
-mode.\n");
-> --
-> 2.45.0.rc0.197.gbae5840b3b-goog
-> 
-
--- 
-Dmitry
-
+Applied as 6.10 material, thank you!
 
