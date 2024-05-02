@@ -1,62 +1,62 @@
-Return-Path: <linux-kernel+bounces-166363-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-166364-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 91D768B998E
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 13:01:13 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9E9E48B998F
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 13:01:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BE0B51C2119B
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 11:01:12 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B3AE9B20F28
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 11:01:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0809A8004E;
-	Thu,  2 May 2024 10:59:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 77C86612D0;
+	Thu,  2 May 2024 10:59:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="YllihD5f"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="JcSALBB2"
 Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.14])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 639C77E792;
-	Thu,  2 May 2024 10:59:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 827B18002E;
+	Thu,  2 May 2024 10:59:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.14
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714647582; cv=none; b=kflmD5RMPRmhkYgxYZsMUoHj8QeRtQRbDkGWBziJa2VGU+FSB/dKkhFYhNss/geB16F6eGggi7MLcPOJs79eYd0kEddveTWr1xJ7jH9miBz27+r51SzdN8QpxQKqnnm1NGgTiCDD4oXhsklyyk/AK2DqdFQMUigIl8N3P8u+9cA=
+	t=1714647586; cv=none; b=COCw7gIgVZ2ydk8PbFVWoqUnCRf/naQjpcugG7fH0wTYIh+FmM2p8BW08dyT1mRsVZddzkhqdceni2EfWcTrAZPdyOQt5LAla+8DajeFyo+ehOgbaQLYCHkwLNnRCQcH+gfbE4HuiW1qN/pPszvLxqA1A0Cd34v634jRNXzKm9M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714647582; c=relaxed/simple;
-	bh=j0jIdLZ1QSZWN0tNXwU+IAzzOzVCKGDIqO33CuafnFQ=;
+	s=arc-20240116; t=1714647586; c=relaxed/simple;
+	bh=XE7FebSe9Jp9h4d01VbviJZtlRJLlzDOK4yhV+1/fTs=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=U1L2t3CaNmWCWJegCgnx3fuS35LaS+caKI0+b7+rV6aFUKEICx6FdORUM6INUt9AxZyOcvt6qZHN/1lvxAZ6/2Zolf72Szi0nesq0CbqrIppxFW2W6XDKS2BnOq/k+WCOU+nByuTHYjwlQ9SO/LAIYKvsUsYwmKw4vMNXFcMdW0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=YllihD5f; arc=none smtp.client-ip=198.175.65.14
+	 MIME-Version; b=HtxaKrKqoCg3qitT5r6RmM1TkyfLCEfu0biSPiq4Vl8PEZcDzI7byafRqpBEUenvrPxtzPilS783GSWJChmb4Nyi6M1FV99SXqk5+y7fjx06bBBYHJMLfEZrhc+dqPsKMa6JT04QOkMDInP+DnNp+c6gs2euroaOXbut4MVEpC4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=JcSALBB2; arc=none smtp.client-ip=198.175.65.14
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1714647580; x=1746183580;
+  t=1714647584; x=1746183584;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=j0jIdLZ1QSZWN0tNXwU+IAzzOzVCKGDIqO33CuafnFQ=;
-  b=YllihD5fGb7lN1qBhK6rQAeb2rTAnrBA0wyAa3e1MKLZ36Q4VyE67ciT
-   Ye/DbW5koe6u87eYWzqeQ1t6UeBLY0Hqbv44paM1JYyg0PH4U+vxo4RGB
-   r/YR/CbVFA2KuJVwiqzkTGsqZe/9f/NJbvFoKLnaWoWzL7Mkb6gLa5WtQ
-   cN8WLwrbRJ/YAbLqKWBTUmLYulkxyQeoUUhhgnvzaHuTs3XhXjJ2OqZc6
-   n6LcpX6kMx+Gm/lJLea7FzfNHMvIE4VBBu9QAi5kvy4JhGjisH5F5pPPi
-   +sxYipUjv++fzZWc4uIHUA+mXMG5lmklD3wkTWbgKUygfG6zxSCqiKw0l
+  bh=XE7FebSe9Jp9h4d01VbviJZtlRJLlzDOK4yhV+1/fTs=;
+  b=JcSALBB2Z4mRM7kqlV/aRa1rxatU3OPewoHGZIAPuSb2T9drs8LDTi4K
+   PbIfJ3MegvOF7vmg+fi54bjiF+axocj+pB8Kny/8mKW22IvpR/o5DrzC8
+   sUn1bgc4dTnLYsARqF8UVZiF2EoA0bJi77gZXjkHqRK2WITOeQu2EWvvt
+   0ppdNa9Y6qeqUSNWtG9i95+c1tThf+hcuwLhYTRrn3HuJKdtno3n2yeBp
+   cmiWW01MSgYFo6TelT+Xfy3B3o2WLqx+haLLIMzbHPfoH72E1quZ0VYN1
+   8WHwA5cHKJ2GjJU8LT20WQuiIurWKzqTU0qm9lAuVcuQzg41s8uTRInsk
    w==;
-X-CSE-ConnectionGUID: p9sXrKdnTEmtKhID7UZwpQ==
-X-CSE-MsgGUID: Se4afvrBT+CkPDnxJ2jAFw==
-X-IronPort-AV: E=McAfee;i="6600,9927,11061"; a="14228662"
+X-CSE-ConnectionGUID: 3Vyd50jjQrqC0qfIvhxazQ==
+X-CSE-MsgGUID: f+Rzfk27Qu2Mdxl6WoH25A==
+X-IronPort-AV: E=McAfee;i="6600,9927,11061"; a="14228672"
 X-IronPort-AV: E=Sophos;i="6.07,247,1708416000"; 
-   d="scan'208";a="14228662"
+   d="scan'208";a="14228672"
 Received: from fmviesa002.fm.intel.com ([10.60.135.142])
-  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 May 2024 03:59:40 -0700
-X-CSE-ConnectionGUID: qwr+9mF2Sp+COxi/JgXqYA==
-X-CSE-MsgGUID: FMGz8uXyTx6a2jRgiJZcTA==
+  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 May 2024 03:59:44 -0700
+X-CSE-ConnectionGUID: edPyH6z3TyqgzPdWBliONQ==
+X-CSE-MsgGUID: 9/psS4M1Qw2gLtVsILLxbA==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.07,247,1708416000"; 
-   d="scan'208";a="50278956"
+   d="scan'208";a="50278981"
 Received: from ahunter6-mobl1.ger.corp.intel.com (HELO ahunter-VirtualBox.home\044ger.corp.intel.com) ([10.251.208.210])
-  by fmviesa002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 May 2024 03:59:36 -0700
+  by fmviesa002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 May 2024 03:59:40 -0700
 From: Adrian Hunter <adrian.hunter@intel.com>
 To: linux-kernel@vger.kernel.org
 Cc: "Chang S. Bae" <chang.seok.bae@intel.com>,
@@ -73,9 +73,9 @@ Cc: "Chang S. Bae" <chang.seok.bae@intel.com>,
 	Namhyung Kim <namhyung@kernel.org>,
 	Ian Rogers <irogers@google.com>,
 	linux-perf-users@vger.kernel.org
-Subject: [PATCH 07/10] x86/insn: Add support for APX EVEX to the instruction decoder logic
-Date: Thu,  2 May 2024 13:58:50 +0300
-Message-Id: <20240502105853.5338-8-adrian.hunter@intel.com>
+Subject: [PATCH 08/10] x86/insn: Add support for APX EVEX instructions to the opcode map
+Date: Thu,  2 May 2024 13:58:51 +0300
+Message-Id: <20240502105853.5338-9-adrian.hunter@intel.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240502105853.5338-1-adrian.hunter@intel.com>
 References: <20240502105853.5338-1-adrian.hunter@intel.com>
@@ -88,197 +88,253 @@ MIME-Version: 1.0
 Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki, Business Identity Code: 0357606 - 4, Domiciled in Helsinki
 Content-Transfer-Encoding: 8bit
 
-Intel Advanced Performance Extensions (APX) extends the EVEX prefix to
-support:
- - extended general purpose registers (EGPRs) i.e. r16 to r31
- - Push-Pop Acceleration (PPX) hints
- - new data destination (NDD) register
- - suppress status flags writes (NF) of common instructions
- - new instructions
+To support APX functionality, the EVEX prefix is used to:
+ - promote legacy instructions
+ - promote VEX instructions
+ - add new instructions
 
-Refer to the Intel Advanced Performance Extensions (Intel APX) Architecture
-Specification for details.
+Promoted VEX instructions require no extra annotation because the opcodes
+do not change and the permissive nature of the instruction decoder already
+allows them to have an EVEX prefix.
 
-The extended EVEX prefix does not need amended instruction decoder logic,
-except in one area. Some instructions are defined as SCALABLE which means
-the EVEX.W bit and EVEX.pp bits are used to determine operand size.
-Specifically, if an instruction is SCALABLE and EVEX.W is zero, then
-EVEX.pp value 0 (representing no prefix NP) means default operand size,
-whereas EVEX.pp value 1 (representing 66 prefix) means operand size
-override i.e. 16 bits
+Promoted legacy instructions and new instructions are placed in map 4 which
+has not been used before.
 
-Add an attribute (INAT_EVEX_SCALABLE) to identify such instructions, and
-amend the logic appropriately.
+Create a new table for map 4 and add APX instructions.
 
-Amend the awk script that generates the attribute tables from the opcode
-map, to recognise "(es)" as attribute INAT_EVEX_SCALABLE.
+Annotate SCALABLE instructions with "(es)" - refer to patch "x86/insn: Add
+support for APX EVEX to the instruction decoder logic". SCALABLE
+instructions must be represented in both no-prefix (NP) and 66 prefix
+forms.
 
 Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
 ---
- arch/x86/include/asm/inat.h                | 6 ++++++
- arch/x86/include/asm/insn.h                | 7 +++++++
- arch/x86/lib/insn.c                        | 4 ++++
- arch/x86/tools/gen-insn-attr-x86.awk       | 4 ++++
- tools/arch/x86/include/asm/inat.h          | 6 ++++++
- tools/arch/x86/include/asm/insn.h          | 7 +++++++
- tools/arch/x86/lib/insn.c                  | 4 ++++
- tools/arch/x86/tools/gen-insn-attr-x86.awk | 4 ++++
- 8 files changed, 42 insertions(+)
+ arch/x86/lib/x86-opcode-map.txt       | 93 +++++++++++++++++++++++++++
+ tools/arch/x86/lib/x86-opcode-map.txt | 93 +++++++++++++++++++++++++++
+ 2 files changed, 186 insertions(+)
 
-diff --git a/arch/x86/include/asm/inat.h b/arch/x86/include/asm/inat.h
-index 1331bdd39a23..53e4015242b4 100644
---- a/arch/x86/include/asm/inat.h
-+++ b/arch/x86/include/asm/inat.h
-@@ -81,6 +81,7 @@
- #define INAT_EVEXONLY	(1 << (INAT_FLAG_OFFS + 7))
- #define INAT_NO_REX2	(1 << (INAT_FLAG_OFFS + 8))
- #define INAT_REX2_VARIANT	(1 << (INAT_FLAG_OFFS + 9))
-+#define INAT_EVEX_SCALABLE	(1 << (INAT_FLAG_OFFS + 10))
- /* Attribute making macros for attribute tables */
- #define INAT_MAKE_PREFIX(pfx)	(pfx << INAT_PFX_OFFS)
- #define INAT_MAKE_ESCAPE(esc)	(esc << INAT_ESC_OFFS)
-@@ -236,4 +237,9 @@ static inline int inat_must_evex(insn_attr_t attr)
- {
- 	return attr & INAT_EVEXONLY;
- }
-+
-+static inline int inat_evex_scalable(insn_attr_t attr)
-+{
-+	return attr & INAT_EVEX_SCALABLE;
-+}
- #endif
-diff --git a/arch/x86/include/asm/insn.h b/arch/x86/include/asm/insn.h
-index 95249ec1f24e..7152ea809e6a 100644
---- a/arch/x86/include/asm/insn.h
-+++ b/arch/x86/include/asm/insn.h
-@@ -215,6 +215,13 @@ static inline insn_byte_t insn_vex_p_bits(struct insn *insn)
- 		return X86_VEX_P(insn->vex_prefix.bytes[2]);
- }
+diff --git a/arch/x86/lib/x86-opcode-map.txt b/arch/x86/lib/x86-opcode-map.txt
+index 240ef714b64f..caedb3ef6688 100644
+--- a/arch/x86/lib/x86-opcode-map.txt
++++ b/arch/x86/lib/x86-opcode-map.txt
+@@ -23,6 +23,7 @@
+ #
+ # AVX Superscripts
+ #  (ev): this opcode requires EVEX prefix.
++#  (es): this opcode requires EVEX prefix and is SCALABALE.
+ #  (evo): this opcode is changed by EVEX prefix (EVEX opcode)
+ #  (v): this opcode requires VEX prefix.
+ #  (v1): this opcode only supports 128bit VEX.
+@@ -929,6 +930,98 @@ df: VAESKEYGEN Vdq,Wdq,Ib (66),(v1)
+ f0: RORX Gy,Ey,Ib (F2),(v) | HRESET Gv,Ib (F3),(000),(11B)
+ EndTable
  
-+static inline insn_byte_t insn_vex_w_bit(struct insn *insn)
-+{
-+	if (insn->vex_prefix.nbytes < 3)
-+		return 0;
-+	return X86_VEX_W(insn->vex_prefix.bytes[2]);
-+}
++Table: EVEX map 4
++Referrer:
++AVXcode: 4
++00: ADD Eb,Gb (ev)
++01: ADD Ev,Gv (es) | ADD Ev,Gv (66),(es)
++02: ADD Gb,Eb (ev)
++03: ADD Gv,Ev (es) | ADD Gv,Ev (66),(es)
++08: OR Eb,Gb (ev)
++09: OR Ev,Gv (es) | OR Ev,Gv (66),(es)
++0a: OR Gb,Eb (ev)
++0b: OR Gv,Ev (es) | OR Gv,Ev (66),(es)
++10: ADC Eb,Gb (ev)
++11: ADC Ev,Gv (es) | ADC Ev,Gv (66),(es)
++12: ADC Gb,Eb (ev)
++13: ADC Gv,Ev (es) | ADC Gv,Ev (66),(es)
++18: SBB Eb,Gb (ev)
++19: SBB Ev,Gv (es) | SBB Ev,Gv (66),(es)
++1a: SBB Gb,Eb (ev)
++1b: SBB Gv,Ev (es) | SBB Gv,Ev (66),(es)
++20: AND Eb,Gb (ev)
++21: AND Ev,Gv (es) | AND Ev,Gv (66),(es)
++22: AND Gb,Eb (ev)
++23: AND Gv,Ev (es) | AND Gv,Ev (66),(es)
++24: SHLD Ev,Gv,Ib (es) | SHLD Ev,Gv,Ib (66),(es)
++28: SUB Eb,Gb (ev)
++29: SUB Ev,Gv (es) | SUB Ev,Gv (66),(es)
++2a: SUB Gb,Eb (ev)
++2b: SUB Gv,Ev (es) | SUB Gv,Ev (66),(es)
++2c: SHRD Ev,Gv,Ib (es) | SHRD Ev,Gv,Ib (66),(es)
++30: XOR Eb,Gb (ev)
++31: XOR Ev,Gv (es) | XOR Ev,Gv (66),(es)
++32: XOR Gb,Eb (ev)
++33: XOR Gv,Ev (es) | XOR Gv,Ev (66),(es)
++# CCMPSCC instructions are: CCOMB, CCOMBE, CCOMF, CCOML, CCOMLE, CCOMNB, CCOMNBE, CCOMNL, CCOMNLE,
++#			    CCOMNO, CCOMNS, CCOMNZ, CCOMO, CCOMS, CCOMT, CCOMZ
++38: CCMPSCC Eb,Gb (ev)
++39: CCMPSCC Ev,Gv (es) | CCMPSCC Ev,Gv (66),(es)
++3a: CCMPSCC Gv,Ev (ev)
++3b: CCMPSCC Gv,Ev (es) | CCMPSCC Gv,Ev (66),(es)
++40: CMOVO   Gv,Ev (es) | CMOVO   Gv,Ev (66),(es) | CFCMOVO   Ev,Ev (es) | CFCMOVO   Ev,Ev (66),(es) | SETO   Eb (F2),(ev)
++41: CMOVNO  Gv,Ev (es) | CMOVNO  Gv,Ev (66),(es) | CFCMOVNO  Ev,Ev (es) | CFCMOVNO  Ev,Ev (66),(es) | SETNO  Eb (F2),(ev)
++42: CMOVB   Gv,Ev (es) | CMOVB   Gv,Ev (66),(es) | CFCMOVB   Ev,Ev (es) | CFCMOVB   Ev,Ev (66),(es) | SETB   Eb (F2),(ev)
++43: CMOVNB  Gv,Ev (es) | CMOVNB  Gv,Ev (66),(es) | CFCMOVNB  Ev,Ev (es) | CFCMOVNB  Ev,Ev (66),(es) | SETNB  Eb (F2),(ev)
++44: CMOVZ   Gv,Ev (es) | CMOVZ   Gv,Ev (66),(es) | CFCMOVZ   Ev,Ev (es) | CFCMOVZ   Ev,Ev (66),(es) | SETZ   Eb (F2),(ev)
++45: CMOVNZ  Gv,Ev (es) | CMOVNZ  Gv,Ev (66),(es) | CFCMOVNZ  Ev,Ev (es) | CFCMOVNZ  Ev,Ev (66),(es) | SETNZ  Eb (F2),(ev)
++46: CMOVBE  Gv,Ev (es) | CMOVBE  Gv,Ev (66),(es) | CFCMOVBE  Ev,Ev (es) | CFCMOVBE  Ev,Ev (66),(es) | SETBE  Eb (F2),(ev)
++47: CMOVNBE Gv,Ev (es) | CMOVNBE Gv,Ev (66),(es) | CFCMOVNBE Ev,Ev (es) | CFCMOVNBE Ev,Ev (66),(es) | SETNBE Eb (F2),(ev)
++48: CMOVS   Gv,Ev (es) | CMOVS   Gv,Ev (66),(es) | CFCMOVS   Ev,Ev (es) | CFCMOVS   Ev,Ev (66),(es) | SETS   Eb (F2),(ev)
++49: CMOVNS  Gv,Ev (es) | CMOVNS  Gv,Ev (66),(es) | CFCMOVNS  Ev,Ev (es) | CFCMOVNS  Ev,Ev (66),(es) | SETNS  Eb (F2),(ev)
++4a: CMOVP   Gv,Ev (es) | CMOVP   Gv,Ev (66),(es) | CFCMOVP   Ev,Ev (es) | CFCMOVP   Ev,Ev (66),(es) | SETP   Eb (F2),(ev)
++4b: CMOVNP  Gv,Ev (es) | CMOVNP  Gv,Ev (66),(es) | CFCMOVNP  Ev,Ev (es) | CFCMOVNP  Ev,Ev (66),(es) | SETNP  Eb (F2),(ev)
++4c: CMOVL   Gv,Ev (es) | CMOVL   Gv,Ev (66),(es) | CFCMOVL   Ev,Ev (es) | CFCMOVL   Ev,Ev (66),(es) | SETL   Eb (F2),(ev)
++4d: CMOVNL  Gv,Ev (es) | CMOVNL  Gv,Ev (66),(es) | CFCMOVNL  Ev,Ev (es) | CFCMOVNL  Ev,Ev (66),(es) | SETNL  Eb (F2),(ev)
++4e: CMOVLE  Gv,Ev (es) | CMOVLE  Gv,Ev (66),(es) | CFCMOVLE  Ev,Ev (es) | CFCMOVLE  Ev,Ev (66),(es) | SETLE  Eb (F2),(ev)
++4f: CMOVNLE Gv,Ev (es) | CMOVNLE Gv,Ev (66),(es) | CFCMOVNLE Ev,Ev (es) | CFCMOVNLE Ev,Ev (66),(es) | SETNLE Eb (F2),(ev)
++60: MOVBE Gv,Ev (es) | MOVBE Gv,Ev (66),(es)
++61: MOVBE Ev,Gv (es) | MOVBE Ev,Gv (66),(es)
++65: WRUSSD Md,Gd (66),(ev) | WRUSSQ Mq,Gq (66),(ev)
++66: ADCX Gy,Ey (66),(ev) | ADOX Gy,Ey (F3),(ev) | WRSSD Md,Gd (ev) | WRSSQ Mq,Gq (66),(ev)
++69: IMUL Gv,Ev,Iz (es) | IMUL Gv,Ev,Iz (66),(es)
++6b: IMUL Gv,Ev,Ib (es) | IMUL Gv,Ev,Ib (66),(es)
++80: Grp1 Eb,Ib (1A),(ev)
++81: Grp1 Ev,Iz (1A),(es)
++83: Grp1 Ev,Ib (1A),(es)
++# CTESTSCC instructions are: CTESTB, CTESTBE, CTESTF, CTESTL, CTESTLE, CTESTNB, CTESTNBE, CTESTNL,
++#			     CTESTNLE, CTESTNO, CTESTNS, CTESTNZ, CTESTO, CTESTS, CTESTT, CTESTZ
++84: CTESTSCC (ev)
++85: CTESTSCC (es) | CTESTSCC (66),(es)
++88: POPCNT Gv,Ev (es) | POPCNT Gv,Ev (66),(es)
++8f: POP2 Bq,Rq (000),(11B),(ev)
++a5: SHLD Ev,Gv,CL (es) | SHLD Ev,Gv,CL (66),(es)
++ad: SHRD Ev,Gv,CL (es) | SHRD Ev,Gv,CL (66),(es)
++af: IMUL Gv,Ev (es) | IMUL Gv,Ev (66),(es)
++c0: Grp2 Eb,Ib (1A),(ev)
++c1: Grp2 Ev,Ib (1A),(es)
++d0: Grp2 Eb,1 (1A),(ev)
++d1: Grp2 Ev,1 (1A),(es)
++d2: Grp2 Eb,CL (1A),(ev)
++d3: Grp2 Ev,CL (1A),(es)
++f0: CRC32 Gy,Eb (es) | INVEPT Gq,Mdq (F3),(ev)
++f1: CRC32 Gy,Ey (es) | CRC32 Gy,Ey (66),(es) | INVVPID Gy,Mdq (F3),(ev)
++f2: INVPCID Gy,Mdq (F3),(ev)
++f4: TZCNT Gv,Ev (es) | TZCNT Gv,Ev (66),(es)
++f5: LZCNT Gv,Ev (es) | LZCNT Gv,Ev (66),(es)
++f6: Grp3_1 Eb (1A),(ev)
++f7: Grp3_2 Ev (1A),(es)
++f8: MOVDIR64B Gv,Mdqq (66),(ev) | ENQCMD Gv,Mdqq (F2),(ev) | ENQCMDS Gv,Mdqq (F3),(ev) | URDMSR Rq,Gq (F2),(11B),(ev) | UWRMSR Gq,Rq (F3),(11B),(ev)
++f9: MOVDIRI My,Gy (ev)
++fe: Grp4 (1A),(ev)
++ff: Grp5 (1A),(es) | PUSH2 Bq,Rq (110),(11B),(ev)
++EndTable
 +
- /* Get the last prefix id from last prefix or VEX prefix */
- static inline int insn_last_prefix_id(struct insn *insn)
- {
-diff --git a/arch/x86/lib/insn.c b/arch/x86/lib/insn.c
-index 6126ddc6e5f5..5952ab41c60f 100644
---- a/arch/x86/lib/insn.c
-+++ b/arch/x86/lib/insn.c
-@@ -294,6 +294,10 @@ int insn_get_opcode(struct insn *insn)
- 		m = insn_vex_m_bits(insn);
- 		p = insn_vex_p_bits(insn);
- 		insn->attr = inat_get_avx_attribute(op, m, p);
-+		/* SCALABLE EVEX uses p bits to encode operand size */
-+		if (inat_evex_scalable(insn->attr) && !insn_vex_w_bit(insn) &&
-+		    p == INAT_PFX_OPNDSZ)
-+			insn->opnd_bytes = 2;
- 		if ((inat_must_evex(insn->attr) && !insn_is_evex(insn)) ||
- 		    (!inat_accept_vex(insn->attr) &&
- 		     !inat_is_group(insn->attr))) {
-diff --git a/arch/x86/tools/gen-insn-attr-x86.awk b/arch/x86/tools/gen-insn-attr-x86.awk
-index 3f43aa7d8fef..5770c8097f32 100644
---- a/arch/x86/tools/gen-insn-attr-x86.awk
-+++ b/arch/x86/tools/gen-insn-attr-x86.awk
-@@ -83,6 +83,8 @@ BEGIN {
- 	vexonly_expr = "\\(v\\)"
- 	# All opcodes with (ev) superscript supports *only* EVEX prefix
- 	evexonly_expr = "\\(ev\\)"
-+	# (es) is the same as (ev) but also "SCALABLE" i.e. W and pp determine operand size
-+	evex_scalable_expr = "\\(es\\)"
+ Table: EVEX map 5
+ Referrer:
+ AVXcode: 5
+diff --git a/tools/arch/x86/lib/x86-opcode-map.txt b/tools/arch/x86/lib/x86-opcode-map.txt
+index 240ef714b64f..caedb3ef6688 100644
+--- a/tools/arch/x86/lib/x86-opcode-map.txt
++++ b/tools/arch/x86/lib/x86-opcode-map.txt
+@@ -23,6 +23,7 @@
+ #
+ # AVX Superscripts
+ #  (ev): this opcode requires EVEX prefix.
++#  (es): this opcode requires EVEX prefix and is SCALABALE.
+ #  (evo): this opcode is changed by EVEX prefix (EVEX opcode)
+ #  (v): this opcode requires VEX prefix.
+ #  (v1): this opcode only supports 128bit VEX.
+@@ -929,6 +930,98 @@ df: VAESKEYGEN Vdq,Wdq,Ib (66),(v1)
+ f0: RORX Gy,Ey,Ib (F2),(v) | HRESET Gv,Ib (F3),(000),(11B)
+ EndTable
  
- 	prefix_expr = "\\(Prefix\\)"
- 	prefix_num["Operand-Size"] = "INAT_PFX_OPNDSZ"
-@@ -332,6 +334,8 @@ function convert_operands(count,opnd,       i,j,imm,mod)
- 		# check VEX codes
- 		if (match(ext, evexonly_expr))
- 			flags = add_flags(flags, "INAT_VEXOK | INAT_EVEXONLY")
-+		else if (match(ext, evex_scalable_expr))
-+			flags = add_flags(flags, "INAT_VEXOK | INAT_EVEXONLY | INAT_EVEX_SCALABLE")
- 		else if (match(ext, vexonly_expr))
- 			flags = add_flags(flags, "INAT_VEXOK | INAT_VEXONLY")
- 		else if (match(ext, vexok_expr) || match(opcode, vexok_opcode_expr))
-diff --git a/tools/arch/x86/include/asm/inat.h b/tools/arch/x86/include/asm/inat.h
-index 2e65312cae52..253690eb3c26 100644
---- a/tools/arch/x86/include/asm/inat.h
-+++ b/tools/arch/x86/include/asm/inat.h
-@@ -81,6 +81,7 @@
- #define INAT_EVEXONLY	(1 << (INAT_FLAG_OFFS + 7))
- #define INAT_NO_REX2	(1 << (INAT_FLAG_OFFS + 8))
- #define INAT_REX2_VARIANT	(1 << (INAT_FLAG_OFFS + 9))
-+#define INAT_EVEX_SCALABLE	(1 << (INAT_FLAG_OFFS + 10))
- /* Attribute making macros for attribute tables */
- #define INAT_MAKE_PREFIX(pfx)	(pfx << INAT_PFX_OFFS)
- #define INAT_MAKE_ESCAPE(esc)	(esc << INAT_ESC_OFFS)
-@@ -236,4 +237,9 @@ static inline int inat_must_evex(insn_attr_t attr)
- {
- 	return attr & INAT_EVEXONLY;
- }
++Table: EVEX map 4
++Referrer:
++AVXcode: 4
++00: ADD Eb,Gb (ev)
++01: ADD Ev,Gv (es) | ADD Ev,Gv (66),(es)
++02: ADD Gb,Eb (ev)
++03: ADD Gv,Ev (es) | ADD Gv,Ev (66),(es)
++08: OR Eb,Gb (ev)
++09: OR Ev,Gv (es) | OR Ev,Gv (66),(es)
++0a: OR Gb,Eb (ev)
++0b: OR Gv,Ev (es) | OR Gv,Ev (66),(es)
++10: ADC Eb,Gb (ev)
++11: ADC Ev,Gv (es) | ADC Ev,Gv (66),(es)
++12: ADC Gb,Eb (ev)
++13: ADC Gv,Ev (es) | ADC Gv,Ev (66),(es)
++18: SBB Eb,Gb (ev)
++19: SBB Ev,Gv (es) | SBB Ev,Gv (66),(es)
++1a: SBB Gb,Eb (ev)
++1b: SBB Gv,Ev (es) | SBB Gv,Ev (66),(es)
++20: AND Eb,Gb (ev)
++21: AND Ev,Gv (es) | AND Ev,Gv (66),(es)
++22: AND Gb,Eb (ev)
++23: AND Gv,Ev (es) | AND Gv,Ev (66),(es)
++24: SHLD Ev,Gv,Ib (es) | SHLD Ev,Gv,Ib (66),(es)
++28: SUB Eb,Gb (ev)
++29: SUB Ev,Gv (es) | SUB Ev,Gv (66),(es)
++2a: SUB Gb,Eb (ev)
++2b: SUB Gv,Ev (es) | SUB Gv,Ev (66),(es)
++2c: SHRD Ev,Gv,Ib (es) | SHRD Ev,Gv,Ib (66),(es)
++30: XOR Eb,Gb (ev)
++31: XOR Ev,Gv (es) | XOR Ev,Gv (66),(es)
++32: XOR Gb,Eb (ev)
++33: XOR Gv,Ev (es) | XOR Gv,Ev (66),(es)
++# CCMPSCC instructions are: CCOMB, CCOMBE, CCOMF, CCOML, CCOMLE, CCOMNB, CCOMNBE, CCOMNL, CCOMNLE,
++#			    CCOMNO, CCOMNS, CCOMNZ, CCOMO, CCOMS, CCOMT, CCOMZ
++38: CCMPSCC Eb,Gb (ev)
++39: CCMPSCC Ev,Gv (es) | CCMPSCC Ev,Gv (66),(es)
++3a: CCMPSCC Gv,Ev (ev)
++3b: CCMPSCC Gv,Ev (es) | CCMPSCC Gv,Ev (66),(es)
++40: CMOVO   Gv,Ev (es) | CMOVO   Gv,Ev (66),(es) | CFCMOVO   Ev,Ev (es) | CFCMOVO   Ev,Ev (66),(es) | SETO   Eb (F2),(ev)
++41: CMOVNO  Gv,Ev (es) | CMOVNO  Gv,Ev (66),(es) | CFCMOVNO  Ev,Ev (es) | CFCMOVNO  Ev,Ev (66),(es) | SETNO  Eb (F2),(ev)
++42: CMOVB   Gv,Ev (es) | CMOVB   Gv,Ev (66),(es) | CFCMOVB   Ev,Ev (es) | CFCMOVB   Ev,Ev (66),(es) | SETB   Eb (F2),(ev)
++43: CMOVNB  Gv,Ev (es) | CMOVNB  Gv,Ev (66),(es) | CFCMOVNB  Ev,Ev (es) | CFCMOVNB  Ev,Ev (66),(es) | SETNB  Eb (F2),(ev)
++44: CMOVZ   Gv,Ev (es) | CMOVZ   Gv,Ev (66),(es) | CFCMOVZ   Ev,Ev (es) | CFCMOVZ   Ev,Ev (66),(es) | SETZ   Eb (F2),(ev)
++45: CMOVNZ  Gv,Ev (es) | CMOVNZ  Gv,Ev (66),(es) | CFCMOVNZ  Ev,Ev (es) | CFCMOVNZ  Ev,Ev (66),(es) | SETNZ  Eb (F2),(ev)
++46: CMOVBE  Gv,Ev (es) | CMOVBE  Gv,Ev (66),(es) | CFCMOVBE  Ev,Ev (es) | CFCMOVBE  Ev,Ev (66),(es) | SETBE  Eb (F2),(ev)
++47: CMOVNBE Gv,Ev (es) | CMOVNBE Gv,Ev (66),(es) | CFCMOVNBE Ev,Ev (es) | CFCMOVNBE Ev,Ev (66),(es) | SETNBE Eb (F2),(ev)
++48: CMOVS   Gv,Ev (es) | CMOVS   Gv,Ev (66),(es) | CFCMOVS   Ev,Ev (es) | CFCMOVS   Ev,Ev (66),(es) | SETS   Eb (F2),(ev)
++49: CMOVNS  Gv,Ev (es) | CMOVNS  Gv,Ev (66),(es) | CFCMOVNS  Ev,Ev (es) | CFCMOVNS  Ev,Ev (66),(es) | SETNS  Eb (F2),(ev)
++4a: CMOVP   Gv,Ev (es) | CMOVP   Gv,Ev (66),(es) | CFCMOVP   Ev,Ev (es) | CFCMOVP   Ev,Ev (66),(es) | SETP   Eb (F2),(ev)
++4b: CMOVNP  Gv,Ev (es) | CMOVNP  Gv,Ev (66),(es) | CFCMOVNP  Ev,Ev (es) | CFCMOVNP  Ev,Ev (66),(es) | SETNP  Eb (F2),(ev)
++4c: CMOVL   Gv,Ev (es) | CMOVL   Gv,Ev (66),(es) | CFCMOVL   Ev,Ev (es) | CFCMOVL   Ev,Ev (66),(es) | SETL   Eb (F2),(ev)
++4d: CMOVNL  Gv,Ev (es) | CMOVNL  Gv,Ev (66),(es) | CFCMOVNL  Ev,Ev (es) | CFCMOVNL  Ev,Ev (66),(es) | SETNL  Eb (F2),(ev)
++4e: CMOVLE  Gv,Ev (es) | CMOVLE  Gv,Ev (66),(es) | CFCMOVLE  Ev,Ev (es) | CFCMOVLE  Ev,Ev (66),(es) | SETLE  Eb (F2),(ev)
++4f: CMOVNLE Gv,Ev (es) | CMOVNLE Gv,Ev (66),(es) | CFCMOVNLE Ev,Ev (es) | CFCMOVNLE Ev,Ev (66),(es) | SETNLE Eb (F2),(ev)
++60: MOVBE Gv,Ev (es) | MOVBE Gv,Ev (66),(es)
++61: MOVBE Ev,Gv (es) | MOVBE Ev,Gv (66),(es)
++65: WRUSSD Md,Gd (66),(ev) | WRUSSQ Mq,Gq (66),(ev)
++66: ADCX Gy,Ey (66),(ev) | ADOX Gy,Ey (F3),(ev) | WRSSD Md,Gd (ev) | WRSSQ Mq,Gq (66),(ev)
++69: IMUL Gv,Ev,Iz (es) | IMUL Gv,Ev,Iz (66),(es)
++6b: IMUL Gv,Ev,Ib (es) | IMUL Gv,Ev,Ib (66),(es)
++80: Grp1 Eb,Ib (1A),(ev)
++81: Grp1 Ev,Iz (1A),(es)
++83: Grp1 Ev,Ib (1A),(es)
++# CTESTSCC instructions are: CTESTB, CTESTBE, CTESTF, CTESTL, CTESTLE, CTESTNB, CTESTNBE, CTESTNL,
++#			     CTESTNLE, CTESTNO, CTESTNS, CTESTNZ, CTESTO, CTESTS, CTESTT, CTESTZ
++84: CTESTSCC (ev)
++85: CTESTSCC (es) | CTESTSCC (66),(es)
++88: POPCNT Gv,Ev (es) | POPCNT Gv,Ev (66),(es)
++8f: POP2 Bq,Rq (000),(11B),(ev)
++a5: SHLD Ev,Gv,CL (es) | SHLD Ev,Gv,CL (66),(es)
++ad: SHRD Ev,Gv,CL (es) | SHRD Ev,Gv,CL (66),(es)
++af: IMUL Gv,Ev (es) | IMUL Gv,Ev (66),(es)
++c0: Grp2 Eb,Ib (1A),(ev)
++c1: Grp2 Ev,Ib (1A),(es)
++d0: Grp2 Eb,1 (1A),(ev)
++d1: Grp2 Ev,1 (1A),(es)
++d2: Grp2 Eb,CL (1A),(ev)
++d3: Grp2 Ev,CL (1A),(es)
++f0: CRC32 Gy,Eb (es) | INVEPT Gq,Mdq (F3),(ev)
++f1: CRC32 Gy,Ey (es) | CRC32 Gy,Ey (66),(es) | INVVPID Gy,Mdq (F3),(ev)
++f2: INVPCID Gy,Mdq (F3),(ev)
++f4: TZCNT Gv,Ev (es) | TZCNT Gv,Ev (66),(es)
++f5: LZCNT Gv,Ev (es) | LZCNT Gv,Ev (66),(es)
++f6: Grp3_1 Eb (1A),(ev)
++f7: Grp3_2 Ev (1A),(es)
++f8: MOVDIR64B Gv,Mdqq (66),(ev) | ENQCMD Gv,Mdqq (F2),(ev) | ENQCMDS Gv,Mdqq (F3),(ev) | URDMSR Rq,Gq (F2),(11B),(ev) | UWRMSR Gq,Rq (F3),(11B),(ev)
++f9: MOVDIRI My,Gy (ev)
++fe: Grp4 (1A),(ev)
++ff: Grp5 (1A),(es) | PUSH2 Bq,Rq (110),(11B),(ev)
++EndTable
 +
-+static inline int inat_evex_scalable(insn_attr_t attr)
-+{
-+	return attr & INAT_EVEX_SCALABLE;
-+}
- #endif
-diff --git a/tools/arch/x86/include/asm/insn.h b/tools/arch/x86/include/asm/insn.h
-index 1a7e8fc4d75a..0e5abd896ad4 100644
---- a/tools/arch/x86/include/asm/insn.h
-+++ b/tools/arch/x86/include/asm/insn.h
-@@ -215,6 +215,13 @@ static inline insn_byte_t insn_vex_p_bits(struct insn *insn)
- 		return X86_VEX_P(insn->vex_prefix.bytes[2]);
- }
- 
-+static inline insn_byte_t insn_vex_w_bit(struct insn *insn)
-+{
-+	if (insn->vex_prefix.nbytes < 3)
-+		return 0;
-+	return X86_VEX_W(insn->vex_prefix.bytes[2]);
-+}
-+
- /* Get the last prefix id from last prefix or VEX prefix */
- static inline int insn_last_prefix_id(struct insn *insn)
- {
-diff --git a/tools/arch/x86/lib/insn.c b/tools/arch/x86/lib/insn.c
-index f761adeb8e8c..a43b37346a22 100644
---- a/tools/arch/x86/lib/insn.c
-+++ b/tools/arch/x86/lib/insn.c
-@@ -294,6 +294,10 @@ int insn_get_opcode(struct insn *insn)
- 		m = insn_vex_m_bits(insn);
- 		p = insn_vex_p_bits(insn);
- 		insn->attr = inat_get_avx_attribute(op, m, p);
-+		/* SCALABLE EVEX uses p bits to encode operand size */
-+		if (inat_evex_scalable(insn->attr) && !insn_vex_w_bit(insn) &&
-+		    p == INAT_PFX_OPNDSZ)
-+			insn->opnd_bytes = 2;
- 		if ((inat_must_evex(insn->attr) && !insn_is_evex(insn)) ||
- 		    (!inat_accept_vex(insn->attr) &&
- 		     !inat_is_group(insn->attr))) {
-diff --git a/tools/arch/x86/tools/gen-insn-attr-x86.awk b/tools/arch/x86/tools/gen-insn-attr-x86.awk
-index 3f43aa7d8fef..5770c8097f32 100644
---- a/tools/arch/x86/tools/gen-insn-attr-x86.awk
-+++ b/tools/arch/x86/tools/gen-insn-attr-x86.awk
-@@ -83,6 +83,8 @@ BEGIN {
- 	vexonly_expr = "\\(v\\)"
- 	# All opcodes with (ev) superscript supports *only* EVEX prefix
- 	evexonly_expr = "\\(ev\\)"
-+	# (es) is the same as (ev) but also "SCALABLE" i.e. W and pp determine operand size
-+	evex_scalable_expr = "\\(es\\)"
- 
- 	prefix_expr = "\\(Prefix\\)"
- 	prefix_num["Operand-Size"] = "INAT_PFX_OPNDSZ"
-@@ -332,6 +334,8 @@ function convert_operands(count,opnd,       i,j,imm,mod)
- 		# check VEX codes
- 		if (match(ext, evexonly_expr))
- 			flags = add_flags(flags, "INAT_VEXOK | INAT_EVEXONLY")
-+		else if (match(ext, evex_scalable_expr))
-+			flags = add_flags(flags, "INAT_VEXOK | INAT_EVEXONLY | INAT_EVEX_SCALABLE")
- 		else if (match(ext, vexonly_expr))
- 			flags = add_flags(flags, "INAT_VEXOK | INAT_VEXONLY")
- 		else if (match(ext, vexok_expr) || match(opcode, vexok_opcode_expr))
+ Table: EVEX map 5
+ Referrer:
+ AVXcode: 5
 -- 
 2.34.1
 
