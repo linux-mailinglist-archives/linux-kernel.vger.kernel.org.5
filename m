@@ -1,106 +1,195 @@
-Return-Path: <linux-kernel+bounces-165964-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-165965-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B54638B93E9
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 06:39:06 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6A1C98B93EB
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 06:39:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EE1E6B21516
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 04:39:03 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6FB6CB228F5
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 04:39:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E6EB2032B;
-	Thu,  2 May 2024 04:38:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58BBE1CA82;
+	Thu,  2 May 2024 04:39:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="JKrfFa6b"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="nsiYtqnN"
+Received: from mail-pg1-f180.google.com (mail-pg1-f180.google.com [209.85.215.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BBA821CA96;
-	Thu,  2 May 2024 04:38:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.9
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B8931CA9E
+	for <linux-kernel@vger.kernel.org>; Thu,  2 May 2024 04:39:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714624718; cv=none; b=O45YQv7hEWFgnriPRQjzc/0NhJYX9eIn80njRBLbfNnQZ1DPEVoXxxhTHRIH/j/N3WPcmJFgZI2TAT6K1TWLQnzMs2MFbGda4M54NNPjEtyA8JqipI+YD1R6GVycKMFSZWBYvvUT/IlcHnM0kR7h4fFmjCxHk/6ePSpat/z3K78=
+	t=1714624781; cv=none; b=poEjkYZsDqZKGElvzoa3W4FVDpWYh/SJxxChh3i3S/ZoiLBv8KHrzdvHmT13XMC4/dwVjNJsb6ceffsNQL4TMh5LNsj3G9bF5pCQzHewLa35Ln6o3E+0CCPSseFE53lbJVkKxsP950kLKu7uceKcy6aShe89zJxxdBNZuz5Lo4I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714624718; c=relaxed/simple;
-	bh=iqDPL/4+3LZeCAyWrv8v8742qWzwRO2nfQRrK3+TVkY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=SZfO1EtVFYMjFyM6S/pSM53ERRI+tam7Attlo1uq3PX0xV17UfvicQwESem6tmM3zb2xWE0e0ycdL5NHfgz9OfLlyTHTuR4nYbx9/5iYFdGFmQq1t4OwPYc5EhrNB+/zqklt75PWY9vJROSJFwLI/elYXE4Ml69Y5tJP4nGjYBI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=JKrfFa6b; arc=none smtp.client-ip=192.198.163.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1714624716; x=1746160716;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=iqDPL/4+3LZeCAyWrv8v8742qWzwRO2nfQRrK3+TVkY=;
-  b=JKrfFa6bRmtLoMUyeG1MiENYg3KCUnjOIczt3m54EzziXsEq4w4TbNM9
-   KvovhxTIBnU6w2QCLQSz8s6i6nQiXvQbJHZ1hGgel3FrZp1GficTohMn8
-   44XSO2aeAy7bXVLqH45cReRkZiF7DtHcUEGE30c5eT+/MPR50dnOrie6e
-   Z95khGbQrNnoxTcHIzo4jy09c9PkD0tXtNIeMSJVk/B7LNHZMle0uVgCZ
-   hLs8CYvgsId0ldDYsZV59kvDhHV/Xuvi/WVZVbQpLUfm3Ibvp+8SzZJo7
-   WDl2SfAOOZVYKhPjP1z9l/JWTOeolLydyKTlmUk02aWHvTOT/oKdqNNhp
-   A==;
-X-CSE-ConnectionGUID: 3PYstz8XQ3+fNvkWxboPVw==
-X-CSE-MsgGUID: 2SL9dtROQLq6nFnjsyq3Sg==
-X-IronPort-AV: E=McAfee;i="6600,9927,11061"; a="21064277"
-X-IronPort-AV: E=Sophos;i="6.07,247,1708416000"; 
-   d="scan'208";a="21064277"
-Received: from orviesa002.jf.intel.com ([10.64.159.142])
-  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 May 2024 21:38:36 -0700
-X-CSE-ConnectionGUID: smqUURnxRgWqfQsD8/ndeQ==
-X-CSE-MsgGUID: D0zolZSVTVq7v4YePvXBjQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,247,1708416000"; 
-   d="scan'208";a="57887937"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by orviesa002.jf.intel.com with ESMTP; 01 May 2024 21:38:34 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1001)
-	id 7F602161; Thu,  2 May 2024 07:38:32 +0300 (EEST)
-Date: Thu, 2 May 2024 07:38:32 +0300
-From: Mika Westerberg <mika.westerberg@linux.intel.com>
-To: Esther Shimanovich <eshimanovich@chromium.org>
-Cc: Lukas Wunner <lukas@wunner.de>,
-	Mario Limonciello <mario.limonciello@amd.com>,
-	Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-	Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
-	linux-kernel@vger.kernel.org, Rajat Jain <rajatja@google.com>
-Subject: Re: [PATCH v4] PCI: Relabel JHL6540 on Lenovo X1 Carbon 7,8
-Message-ID: <20240502043832.GG3969176@black.fi.intel.com>
-References: <CA+Y6NJF6+s5zUZeaWtagpMt8Qu0a1oE+3re3c6EsppH+ZsuMRQ@mail.gmail.com>
- <20240419044945.GR112498@black.fi.intel.com>
- <CA+Y6NJEpWpfPqHO6=Z1XFCXZDUq1+g6EFryB+Urq1=h0PhT+fg@mail.gmail.com>
- <7d68a112-0f48-46bf-9f6d-d99b88828761@amd.com>
- <20240423053312.GY112498@black.fi.intel.com>
- <7197b2ce-f815-48a1-a78e-9e139de796b7@amd.com>
- <20240424085608.GE112498@black.fi.intel.com>
- <CA+Y6NJFyi6e7ype6dTAjxsy5aC80NdVOt+Vg-a0O0y_JsfwSGg@mail.gmail.com>
- <Zi0VLrvUWH6P1_or@wunner.de>
- <CA+Y6NJE8hA+wt+auW1wJBWA6EGMc6CGpmdExr3475E_Yys-Zdw@mail.gmail.com>
+	s=arc-20240116; t=1714624781; c=relaxed/simple;
+	bh=NKq8vrxCem9objWV3C+MOFnpbo85KhNs4PiXk/R07Vw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=rqRi0Lwk9yC7wxnuxxPbSyrS81T7qo9ZZACxvRNHPOpCALChhjee/84G/yN6agWgj5BskVshO9KsRtnIny936CUMBfrCVVugXAlDGVl3Xh0B5lCGvAAurboNImp+ElmpVSGLn+wvLbSbLhO7JCWvuLeNCtSp8JeVldZ59AxqH4o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=nsiYtqnN; arc=none smtp.client-ip=209.85.215.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
+Received: by mail-pg1-f180.google.com with SMTP id 41be03b00d2f7-5f415fd71f8so5917413a12.3
+        for <linux-kernel@vger.kernel.org>; Wed, 01 May 2024 21:39:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1714624779; x=1715229579; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=dYwMNtU5ISKi/pHw0Eotzjxo72T7kdIEeid7s5bFFZU=;
+        b=nsiYtqnNmzgzAqSTXGk6VDMjRRLsqcUCg9LTnZT/wuJKQg6uDDzrtYpvzYR2FNnIEo
+         bigW51SfSeuEq9okrjtryEUtK7XtjSCynQTSi8EqFjMGbss7RxX+x95d9MGS9nYXXPqR
+         QYbUmWGWZivJ7aj90JZ0YjteOSQ9qIwsCB/22L4eXa5Nr89i7eBpoLRIK/BYtX6viOlg
+         9vFiGz3aR+JXMw+Hd+KcP2orE/elFOWRhQ18MWs6/hLtTnP1rk72T9e5hQZUbsV7fkXK
+         rkyp9hVsQP2A9yIwP8UqWsWRziD587Aiu0AOPnj1xFUboSIZ61kD5XvHWHOT26qu/dZz
+         2wbQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714624779; x=1715229579;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=dYwMNtU5ISKi/pHw0Eotzjxo72T7kdIEeid7s5bFFZU=;
+        b=U9jzwnCDR06+L0A0nalVoERM6NgU/ihJC0LRSGSEv+sdDyBAra/56E16Awj7vjORdC
+         pCcO2CRtx4qRV+qLf/L+9gz8SS1nEHmy2ePD21danh0G/2M4SCdrX9hLoq8ddbszwFKT
+         VeZZIXZml9FCWZtxnR4XZTQWcbfEt+UDCsIsaqzTNBoXlkrRBczmX8YjosTwFvhTSwHx
+         yWSQSG1aE18SLvt9OiPHshy8vIREe7kBZlTtKoz3coXNGwC1Zn3mb3jpQE3w9l7CNUDi
+         VKE0nVzx/PwhvK8C7MEsO9RFDRMb+uxsDKdwpKaY9xJVKOlFZy2ExJsnZ5KYk7g6FwMO
+         DEuA==
+X-Forwarded-Encrypted: i=1; AJvYcCVKs5pawPSn3VcHGEqESPYjWh6TEcfDC57beHnPIc1j3y2cWsu/3hhngsYvghXzD0FoMh95FY8+N6zVFxABqgnj6HDAxrDPD3qGG7wA
+X-Gm-Message-State: AOJu0Yw1lSOW1nuYL754ZAwpz2OMZ+FsCGW3jLLAC1uFkji2jyuA3tTx
+	H2eFiAui/oHMMJJF5EWBgpmUppGpakFtPX4VxmUqqFchnrbp1BsSJRvXdjUcvQDPxef8Ogxbjtj
+	oRd4CSHkqDipVwTUc/HXWOaeLX6lZ+GdvCB2NCQ==
+X-Google-Smtp-Source: AGHT+IFGOZPSbOG+7q08BpoKEAwkSMY5N4r9BG/M6xWabJ6xt9Bfuyl68UiysrvQmviAyEuWdMP6+zF6WYqEShpC7Aw=
+X-Received: by 2002:a05:6a21:150b:b0:1a9:a31a:1b67 with SMTP id
+ nq11-20020a056a21150b00b001a9a31a1b67mr1221119pzb.47.1714624779299; Wed, 01
+ May 2024 21:39:39 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CA+Y6NJE8hA+wt+auW1wJBWA6EGMc6CGpmdExr3475E_Yys-Zdw@mail.gmail.com>
+References: <cover.1714494653.git.tjeznach@rivosinc.com> <b83f81c04d1f3885d860b1eec03761fe63a33183.1714494653.git.tjeznach@rivosinc.com>
+ <7c3fc511-6a3b-44d8-94fa-e4fff54f93b9@linux.intel.com>
+In-Reply-To: <7c3fc511-6a3b-44d8-94fa-e4fff54f93b9@linux.intel.com>
+From: Tomasz Jeznach <tjeznach@rivosinc.com>
+Date: Wed, 1 May 2024 21:39:28 -0700
+Message-ID: <CAH2o1u6Vh55E=jn7ytp7s6VSQaZ+BqKLY1adz2AA0=OsLm21dw@mail.gmail.com>
+Subject: Re: [PATCH v3 7/7] iommu/riscv: Paging domain support
+To: Baolu Lu <baolu.lu@linux.intel.com>
+Cc: Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>, 
+	Robin Murphy <robin.murphy@arm.com>, Paul Walmsley <paul.walmsley@sifive.com>, 
+	Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, 
+	Anup Patel <apatel@ventanamicro.com>, Sunil V L <sunilvl@ventanamicro.com>, 
+	Nick Kossifidis <mick@ics.forth.gr>, Sebastien Boeuf <seb@rivosinc.com>, Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org, 
+	iommu@lists.linux.dev, linux-riscv@lists.infradead.org, 
+	linux-kernel@vger.kernel.org, linux@rivosinc.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi,
+On Wed, May 1, 2024 at 8:52=E2=80=AFPM Baolu Lu <baolu.lu@linux.intel.com> =
+wrote:
+>
+> On 5/1/24 4:01 AM, Tomasz Jeznach wrote:
+> > +/*
+> > + * Send IOTLB.INVAL for whole address space for ranges larger than 2MB=
+.
+> > + * This limit will be replaced with range invalidations, if supported =
+by
+> > + * the hardware, when RISC-V IOMMU architecture specification update f=
+or
+> > + * range invalidations update will be available.
+> > + */
+> > +#define RISCV_IOMMU_IOTLB_INVAL_LIMIT        (2 << 20)
+> > +
+> > +static void riscv_iommu_iotlb_inval(struct riscv_iommu_domain *domain,
+> > +                                 unsigned long start, unsigned long en=
+d)
+> > +{
+> > +     struct riscv_iommu_bond *bond;
+> > +     struct riscv_iommu_device *iommu, *prev;
+> > +     struct riscv_iommu_command cmd;
+> > +     unsigned long len =3D end - start + 1;
+> > +     unsigned long iova;
+> > +
+> > +     rcu_read_lock();
+> > +
+> > +     prev =3D NULL;
+> > +     list_for_each_entry_rcu(bond, &domain->bonds, list) {
+> > +             iommu =3D dev_to_iommu(bond->dev);
+> > +
+> > +             riscv_iommu_cmd_inval_vma(&cmd);
+> > +             riscv_iommu_cmd_inval_set_pscid(&cmd, domain->pscid);
+> > +             if (len && len >=3D RISCV_IOMMU_IOTLB_INVAL_LIMIT) {
+> > +                     for (iova =3D start; iova < end; iova +=3D PAGE_S=
+IZE) {
+> > +                             riscv_iommu_cmd_inval_set_addr(&cmd, iova=
+);
+> > +                             riscv_iommu_cmd_send(iommu, &cmd, 0);
+> > +                     }
+> > +             } else {
+> > +                     riscv_iommu_cmd_send(iommu, &cmd, 0);
+> > +             }
+> > +
+> > +             /*
+> > +              * IOTLB invalidation request can be safely omitted if al=
+ready sent
+> > +              * to the IOMMU for the same PSCID, and with domain->bond=
+s list
+> > +              * arranged based on the device's IOMMU, it's sufficient =
+to check
+> > +              * last device the invalidation was sent to.
+> > +              */
+> > +             if (iommu =3D=3D prev)
+> > +                     continue;
+> > +
+> > +             prev =3D iommu;
+> > +             riscv_iommu_cmd_send(iommu, &cmd, 0);
+> > +     }
+>
+> I don't quite follow why not moving "if (iommu =3D=3D prev)" check to the
+> top and removing the last riscv_iommu_cmd_send(). My understanding is
+> that we could make it simply like below:
+>
+>         prev =3D NULL;
+>         list_for_each_entry_rcu(bond, &domain->bonds, list) {
+>                 iommu =3D dev_to_iommu(bond->dev);
+>                 if (iommu =3D=3D prev)
+>                         continue;
+>
+>                 /*
+>                  * Send an invalidation request to the request queue
+>                  * without wait.
+>                  */
+>                 ... ...
+>
+>                 prev =3D iommu;
+>         }
+>
 
-On Wed, May 01, 2024 at 06:23:28PM -0400, Esther Shimanovich wrote:
-> I don’t have this device available at my office. I just saw that
-> StarTech sells a universal laptop docking station with chipset-id
-> Intel - Alpine Ridge DSL6540. Then I looked up the device, and found
-> it here: https://linux-hardware.org/?id=pci:8086-1577-8086-0000
-> 
-> Therefore, I concluded that the DSL6540 has an NHI component.
+Oh. Thanks for spotting that.
+Code section reordered very likely during rebasing patches...
 
-Okay understood. Yes Alpine Ridge can be both host and device router. In
-device configuration such as the above it does not expose NHI. If it is
-host as in the above list you shared then it includes one.
+> > +
+> > +     prev =3D NULL;
+> > +     list_for_each_entry_rcu(bond, &domain->bonds, list) {
+> > +             iommu =3D dev_to_iommu(bond->dev);
+> > +             if (iommu =3D=3D prev)
+> > +                     continue;
+> > +
+> > +             prev =3D iommu;
+> > +             riscv_iommu_cmd_iofence(&cmd);
+> > +             riscv_iommu_cmd_send(iommu, &cmd, RISCV_IOMMU_QUEUE_TIMEO=
+UT);
+> > +     }
+> > +     rcu_read_unlock();
+> > +}
+>
+> Best regards,
+> baolu
+
+Best regards,
+- Tomasz
 
