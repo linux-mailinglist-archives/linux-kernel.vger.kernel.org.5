@@ -1,211 +1,227 @@
-Return-Path: <linux-kernel+bounces-166807-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-166808-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BC9D78B9FCC
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 19:50:46 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id DEA8F8B9FCD
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 19:51:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A5944B223CA
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 17:50:43 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 98FBCB227CB
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 17:50:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A5EEA17107D;
-	Thu,  2 May 2024 17:50:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A783417106F;
+	Thu,  2 May 2024 17:50:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="DXJEhgiw"
-Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="LrVzlPHg"
+Received: from mail-pg1-f169.google.com (mail-pg1-f169.google.com [209.85.215.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67FCB171074
-	for <linux-kernel@vger.kernel.org>; Thu,  2 May 2024 17:50:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E21C16FF58
+	for <linux-kernel@vger.kernel.org>; Thu,  2 May 2024 17:50:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714672229; cv=none; b=mzd+f/jnFJHdlJ2OT1P5iLqYB10duVodbeFdbEN2Vhkb8C7ddD5RYRMOOiBlGzE7T/5TPm4bAv6Dl/cMCsnAoFs94Bg/KXhIhehwrLDZH/Jylf1DmMLkoF+75wdhvQVfx9XZGa8VxoxxJm5S56ywgw9NcVs9GCHqviS8MsjfUps=
+	t=1714672242; cv=none; b=f7YOMn7zfFubYtwhOfFGtCocBb8/uwnaS9ckOSOis68Uxjh9WD0Qd6bWyYSp+64e4TwyRziIIPJBWt6LP2OOEc7Jj3SIJesZAMx4z+RX5dEGnYVAtw8B81JxQs3x/OemQ4FUbBLLIU69b7AD2r8Nm0W18rm9snkDyUyX4yD3cyQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714672229; c=relaxed/simple;
-	bh=+YG8bU5lpRebP0zKL7QeY6YwFGqmbmUhx1xqVfMM9QA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Zfcp9YAy3vPk6KZnofR2cxykiADD4y9YHWpUP61akO8kMn5CsNfnKQzATbJYug+IFXYIYbWTYQ/9qOTg8wGNQGbY/lbJ4YDzdM9TsdmEu+DIstW2/EXKcYSLjn0zwQiIhnfV90GPT2xmdRz0qfyeC8MQ81KoyeSiUji8PPKdy98=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=DXJEhgiw; arc=none smtp.client-ip=209.85.214.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-1ec76185c0fso17145ad.1
-        for <linux-kernel@vger.kernel.org>; Thu, 02 May 2024 10:50:28 -0700 (PDT)
+	s=arc-20240116; t=1714672242; c=relaxed/simple;
+	bh=HrgFyTGrENLhznRwHqGjk8BqKyptnIBvF/Bip8ApHXg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=iLOKqJxUDdJV9hk1xhYd73ladzrK9uoHXL0XZ3hRdtd6amUNeYMYlgQ9caoqzzg+UHcp59B1ixJ8+J1ZrwQtNJrHmx3jTmNo2AOatpJz3tcrRoFuCABiZCgAHQdsEbUtcQcHeS6xpNkks47jV/JnHUUYuYdCRW03KHYpddmA27U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=LrVzlPHg; arc=none smtp.client-ip=209.85.215.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pg1-f169.google.com with SMTP id 41be03b00d2f7-5ff57410ebbso6118159a12.1
+        for <linux-kernel@vger.kernel.org>; Thu, 02 May 2024 10:50:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1714672228; x=1715277028; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=+YG8bU5lpRebP0zKL7QeY6YwFGqmbmUhx1xqVfMM9QA=;
-        b=DXJEhgiwYwJf3U1CbCZ3XeA88ZbKHm/fHFLTHbPlZ53oGZqdISPasmjmDjV64VsjI4
-         5DehUPyKaHzD6VRBReqXpucxaYf3j0Yblwiek+TB1G6uFrxVxDmrtL0RYFhadtagT/Ip
-         jmNvFJmw336d55pa2xxwdEFoVXTCqJe8vovY2TgbF+JKg8MYMLmi1+4FKcsl/i9W0fxX
-         io2ewcWpTm4WdPDa807lgQ893yFFsCEMVNIVJ3pzTx690AH1icFl6D450lyx9O6sRRHO
-         dyAlztWQ343/HX/1KE2WxpBMnQ7H/cY5PtO2OuoQa9k+IEZ4vxseg/Da+MnxyNW1tP1Y
-         /w2w==
+        d=chromium.org; s=google; t=1714672241; x=1715277041; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=+uaF0GOsku/Enw0IBZ0DNja/DdL69X77dW5yUv4AwZo=;
+        b=LrVzlPHgfYp6e1p7pVOzsYrKD3NT0Vn+qteZ8ecmIrn9eUMcJd3Kc8m7oqsI9BXkVo
+         4sQE8NUd+FgckbKNS2A4VNSVkhgf2p7WHC42gPv2cc7PSeZhfXWkMGwnZGyNXavs3qsG
+         8zrgj9tmPdP4s8gBWqB5PhJcghAkSF/dudQRg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714672228; x=1715277028;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=+YG8bU5lpRebP0zKL7QeY6YwFGqmbmUhx1xqVfMM9QA=;
-        b=Zx8HztdpmVQ0t1akTEyO6jgX66U305MXHYTDbjvqNBcQeIQ9Q1ziOHqu9BheraoxSg
-         mRpkdG9dfvhe8xBFjHwV1GVh5c1U8SwY5WLbNWbl8eLYOVlQBmkNl2qDhqJsp0/sGWq9
-         a7jddGQO1JdUNbjNiv8aZu271ky0s4BXKUSSMNMufjHM0wKffdr7mwp0oXxyg9gfEMZA
-         dyussl4ycXMFtyUs1U0a7uiE4D+fin4OLeADkkSPOogizYviAaUOL6F1Fglg3v9l+Krx
-         pA2Dzjr1BrjphWTX+e/ZJeQqyUwCeWgviUMvczQfhzBA6ByC+H1yQqc/hU6Py+GmCpOQ
-         M8Xw==
-X-Forwarded-Encrypted: i=1; AJvYcCXriq+0EjJ/0ITiav3zDZotCGOgrC02sHdsKccD492G8eiBYjf22VA//9k0vWbSThIT/sVCrCwckU1kQ4EZ03opSg5Igypk3Pj3MMKj
-X-Gm-Message-State: AOJu0YzGMtwkmNSAc+ZOhzQyI4EfzKgk94PUI0vz0PsStnvHTz3sYlt0
-	TDXU3S4m8GqFkMjO3zKV4mzlk2+5YBIWS1oSsyOei8QhENlf93dB648ATCzctmrk7vf2sd3GO32
-	MjEslAKe3AGcVpqQrbNfZuE+09m2RxEWiwDUL
-X-Google-Smtp-Source: AGHT+IHIHO4ZxblGoxzXV30a1efcpuRtS16EH+6J55Oor1UygSWON6PEJUUlMNkboiyBx5keJ/YZIzYFrU9aNLdwfO0=
-X-Received: by 2002:a17:903:90c:b0:1eb:1663:c80b with SMTP id
- d9443c01a7336-1ece5b3cb55mr2560225ad.11.1714672227326; Thu, 02 May 2024
- 10:50:27 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1714672241; x=1715277041;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=+uaF0GOsku/Enw0IBZ0DNja/DdL69X77dW5yUv4AwZo=;
+        b=HyPDJpJiNZr+kZhFt+zTs3NAFa29HhUY8WdcIzE0j5ZxS/PVojd4SIsGuPckEcr4RH
+         IJBjgAsg2hR1d9ffk07IoMXw45F76bRwYsG7FFyV5E8hO/NyKudcQhoV3d0OUl3isg1g
+         wn5wrcZjnRIoUy1aKrkKj5ZMenH8NhxdCtv7rcjq4vQTlzIf9kXAdSmdWxARkLy0b+7h
+         ErVKftvXBhxr7nYMNH+526O7oQp7B4HOjBEBlC+95XVJE4Zv7W3fPpKkxOeTh9XhQRlC
+         yM1U1gED8+2CMIn9MGeBbWYg/uW+Kd8ZEGewzxyAVXWRaba3SDKYEVePT86W0eYzak/r
+         Tvbg==
+X-Forwarded-Encrypted: i=1; AJvYcCXEpQOAckXx59nFSMsTi8vjfzjHpKuRQz+2Oo8+Vo2LzDJ2eY1mjmlorO+4X1t54IWnLAjMvvacrPC8yU/GHC1u/0EnruMHHr/ij29Z
+X-Gm-Message-State: AOJu0Yy6BzwB30D5Pzc5u8C9MUMnDyQPNfxEnMGvcsjkU68xVJYw7WCa
+	AZzv2d+/a+oyTATSnbtEb9hoWj+e0AwscnDuqlL3hU21ovwsQ/pvExGzIoBwiA==
+X-Google-Smtp-Source: AGHT+IEopB5Z+Ot/+/0juPZG0PnqSIGb9G/R6G3qibniQnQojE/g26Yasy+fM+manPwub9pyTkHN6Q==
+X-Received: by 2002:a17:90a:890d:b0:2af:8fa4:40e with SMTP id u13-20020a17090a890d00b002af8fa4040emr559066pjn.1.1714672240673;
+        Thu, 02 May 2024 10:50:40 -0700 (PDT)
+Received: from www.outflux.net ([198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id g5-20020a17090a828500b0029df9355e79sm1540941pjn.13.2024.05.02.10.50.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 02 May 2024 10:50:40 -0700 (PDT)
+Date: Thu, 2 May 2024 10:50:39 -0700
+From: Kees Cook <keescook@chromium.org>
+To: Allen Pais <apais@linux.microsoft.com>
+Cc: linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-mm@kvack.org, viro@zeniv.linux.org.uk, brauner@kernel.org,
+	jack@suse.cz, ebiederm@xmission.com, mcgrof@kernel.org,
+	j.granados@samsung.com
+Subject: Re: [PATCH v2] fs/coredump: Enable dynamic configuration of max file
+ note size
+Message-ID: <202405021045.360F5313EA@keescook>
+References: <20240502145920.5011-1-apais@linux.microsoft.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1711674410.git.babu.moger@amd.com> <CALPaoCjZ3oLdKymJjASt0aqtd0GGOme7LavvYOtPYTb_rA-mYQ@mail.gmail.com>
- <b35dc4e9-7e8b-42ed-9a51-ae50d521cf4b@amd.com>
-In-Reply-To: <b35dc4e9-7e8b-42ed-9a51-ae50d521cf4b@amd.com>
-From: Peter Newman <peternewman@google.com>
-Date: Thu, 2 May 2024 10:50:15 -0700
-Message-ID: <CALPaoChxYoJx8eR48EkSKf-hu2p2myQJLZEhj_Pq6O4R15-=5A@mail.gmail.com>
-Subject: Re: [RFC PATCH v3 00/17] x86/resctrl : Support AMD Assignable
- Bandwidth Monitoring Counters (ABMC)
-To: babu.moger@amd.com
-Cc: corbet@lwn.net, fenghua.yu@intel.com, reinette.chatre@intel.com, 
-	tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, 
-	dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com, 
-	paulmck@kernel.org, rdunlap@infradead.org, tj@kernel.org, 
-	peterz@infradead.org, yanjiewtw@gmail.com, kim.phillips@amd.com, 
-	lukas.bulwahn@gmail.com, seanjc@google.com, jmattson@google.com, 
-	leitao@debian.org, jpoimboe@kernel.org, rick.p.edgecombe@intel.com, 
-	kirill.shutemov@linux.intel.com, jithu.joseph@intel.com, kai.huang@intel.com, 
-	kan.liang@linux.intel.com, daniel.sneddon@linux.intel.com, 
-	pbonzini@redhat.com, sandipan.das@amd.com, ilpo.jarvinen@linux.intel.com, 
-	maciej.wieczor-retman@intel.com, linux-doc@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, eranian@google.com, james.morse@arm.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240502145920.5011-1-apais@linux.microsoft.com>
 
-Hi Babu,
+On Thu, May 02, 2024 at 02:59:20PM +0000, Allen Pais wrote:
+> Introduce the capability to dynamically configure the maximum file
+> note size for ELF core dumps via sysctl. This enhancement removes
+> the previous static limit of 4MB, allowing system administrators to
+> adjust the size based on system-specific requirements or constraints.
+> 
+> - Remove hardcoded `MAX_FILE_NOTE_SIZE` from `fs/binfmt_elf.c`.
+> - Define `max_file_note_size` in `fs/coredump.c` with an initial value
+>   set to 4MB.
+> - Declare `max_file_note_size` as an external variable in
+>   `include/linux/coredump.h`.
+> - Add a new sysctl entry in `kernel/sysctl.c` to manage this setting
+>   at runtime.
+> 
+> $ sysctl -a | grep max_file_note_size
+> kernel.max_file_note_size = 4194304
+> 
+> $ sysctl -n kernel.max_file_note_size
+> 4194304
+> 
+> $echo 519304 > /proc/sys/kernel/max_file_note_size
+> 
+> $sysctl -n kernel.max_file_note_size
+> 519304
 
-On Thu, May 2, 2024 at 9:25=E2=80=AFAM Moger, Babu <babu.moger@amd.com> wro=
-te:
-> On 5/1/24 12:48, Peter Newman wrote:
-> > The FS layer is informed by the arch layer (through rdt_resource
-> > fields) how many assignable monitors are available and whether a
-> > monitor is assigned to an entire group or a single event in a group.
-> > Also, the FS layer can assume that monitors are indexed contiguously,
-> > allowing it to host the data structures managing FS-level view of
-> > monitor usage.
-> >
-> > I used the following resctrl_arch-interfaces to propagate assignments
-> > to the implementation:
-> >
-> > void resctrl_arch_assign_monitor(struct rdt_domain *d, u32 mon_id, u32
-> > closid, u32 rmid, int evtid);
->
-> Sure. I can add these in next version.
->
-> Few comments..
->
-> AMD does not need closid for assignment. I assume ARM requires closid.
+The names and paths in the commit log need a refresh here, since they've
+changed.
 
-Correct, MPAM needs a CLOSID+RMID (PARTID+PMG) to identify a
-monitoring group. The CLOSID parameter is ignored on x86.
+> 
+> Why is this being done?
+> We have observed that during a crash when there are more than 65k mmaps
+> in memory, the existing fixed limit on the size of the ELF notes section
+> becomes a bottleneck. The notes section quickly reaches its capacity,
+> leading to incomplete memory segment information in the resulting coredump.
+> This truncation compromises the utility of the coredumps, as crucial
+> information about the memory state at the time of the crash might be
+> omitted.
 
->
-> What is mon_id here?
+Thanks for adding this!
 
-On ABMC, the value is programmed into L3_QOS_ABMC_CFG.CtrID
+> 
+> Signed-off-by: Vijay Nag <nagvijay@microsoft.com>
+> Signed-off-by: Allen Pais <apais@linux.microsoft.com>
+> 
+> ---
+> Changes in v2:
+>    - Move new sysctl to fs/coredump.c [Luis & Kees]
+>    - rename max_file_note_size to core_file_note_size_max [kees]
+>    - Capture "why this is being done?" int he commit message [Luis & Kees]
+> ---
+>  fs/binfmt_elf.c          |  3 +--
+>  fs/coredump.c            | 10 ++++++++++
+>  include/linux/coredump.h |  1 +
+>  3 files changed, 12 insertions(+), 2 deletions(-)
+> 
+> diff --git a/fs/binfmt_elf.c b/fs/binfmt_elf.c
+> index 5397b552fbeb..6aebd062b92b 100644
+> --- a/fs/binfmt_elf.c
+> +++ b/fs/binfmt_elf.c
+> @@ -1564,7 +1564,6 @@ static void fill_siginfo_note(struct memelfnote *note, user_siginfo_t *csigdata,
+>  	fill_note(note, "CORE", NT_SIGINFO, sizeof(*csigdata), csigdata);
+>  }
+>  
+> -#define MAX_FILE_NOTE_SIZE (4*1024*1024)
+>  /*
+>   * Format of NT_FILE note:
+>   *
+> @@ -1592,7 +1591,7 @@ static int fill_files_note(struct memelfnote *note, struct coredump_params *cprm
+>  
+>  	names_ofs = (2 + 3 * count) * sizeof(data[0]);
+>   alloc:
+> -	if (size >= MAX_FILE_NOTE_SIZE) /* paranoia check */
+> +	if (size >= core_file_note_size_max) /* paranoia check */
+>  		return -EINVAL;
 
+I wonder, given the purpose of this sysctl, if it would be a
+discoverability improvement to include a pr_warn_once() before the
+EINVAL? Like:
 
->
-> > void resctrl_arch_unassign_monitor(struct rdt_domain *d, u32 mon_id);
->
-> We need rmid and evtid for unassign interface here.
+	/* paranoia check */
+	if (size >= core_file_note_size_max) {
+		pr_warn_once("coredump Note size too large: %zu (does kernel.core_file_note_size_max sysctl need adjustment?\n", size);
+  		return -EINVAL;
+	}
 
-From my reading of the ABMC specification, it does not look necessary
-to program BwSrc or BwType when changing L3_QOS_ABMC_CFG.CtrEn to 0
-for a particular CtrID. This interface only disables a counter, so it
-should not need to know about how it was previously used when assign
-is able to reassign, as assign will always reset the arch_mbm data.
+What do folks think? (I can't imagine tracking down this problem
+originally was much fun, for example.)
 
-I do not see any harm in the arch_mbm data being stale while the
-counter is unassigned, because the data is not accessed when reading
-the hardware counter fails. In general, resctrl_arch_rmid_read()
-cannot return any information if the hardware counter is not readable
-at the time it is called.
+>  	size = round_up(size, PAGE_SIZE);
+>  	/*
+> diff --git a/fs/coredump.c b/fs/coredump.c
+> index be6403b4b14b..a312be48030f 100644
+> --- a/fs/coredump.c
+> +++ b/fs/coredump.c
+> @@ -56,10 +56,13 @@
+>  static bool dump_vma_snapshot(struct coredump_params *cprm);
+>  static void free_vma_snapshot(struct coredump_params *cprm);
+>  
+> +#define MAX_FILE_NOTE_SIZE (4*1024*1024)
+> +
+>  static int core_uses_pid;
+>  static unsigned int core_pipe_limit;
+>  static char core_pattern[CORENAME_MAX_SIZE] = "core";
+>  static int core_name_size = CORENAME_MAX_SIZE;
+> +unsigned int core_file_note_size_max = MAX_FILE_NOTE_SIZE;
+>  
+>  struct core_name {
+>  	char *corename;
+> @@ -1020,6 +1023,13 @@ static struct ctl_table coredump_sysctls[] = {
+>  		.mode		= 0644,
+>  		.proc_handler	= proc_dointvec,
+>  	},
+> +	{
+> +		.procname       = "core_file_note_size_max",
+> +		.data           = &core_file_note_size_max,
+> +		.maxlen         = sizeof(unsigned int),
+> +		.mode           = 0644,
+> +		.proc_handler   = proc_douintvec,
+> +	},
+>  };
+>  
+>  static int __init init_fs_coredump_sysctls(void)
+> diff --git a/include/linux/coredump.h b/include/linux/coredump.h
+> index d3eba4360150..14c057643e7f 100644
+> --- a/include/linux/coredump.h
+> +++ b/include/linux/coredump.h
+> @@ -46,6 +46,7 @@ static inline void do_coredump(const kernel_siginfo_t *siginfo) {}
+>  #endif
+>  
+>  #if defined(CONFIG_COREDUMP) && defined(CONFIG_SYSCTL)
+> +extern unsigned int core_file_note_size_max;
+>  extern void validate_coredump_safety(void);
+>  #else
+>  static inline void validate_coredump_safety(void) {}
+> -- 
+> 2.17.1
 
->
->
-> >
-> > I chose to allow reassigning an assigned monitor without calling
-> > unassign first. This is important when monitors are unassigned and
-> > assigned in a single write to mbm_assign_control, as it allows all
-> > updates to be performed in a single round of parallel IPIs to the
-> > domains.
->
-> Yes. It is not required to call unassign before assign. Hardware(AMD)
-> supports it.
->
-> But, we only have 32 counters. We need to know which counter we are going
-> to use for assignment. If all the counters already assigned, then we can'=
-t
-> figure out the counter id without calling unassigm first. Using the rando=
-m
-> counter will overwrite the already assigned counter.
+Otherwise, yes, this looks good to me.
 
-I made the caller of resctrl_arch_assign_monitor() responsible for
-selecting which monitor to assign. As long as the user orders the
-unassign operations before the assign operations in a write to
-mbm_assign_control, the FS code will be able to find an available
-monitor ID.
-
-
-> > I chose to make this a mount option to simplify the management of the
-> > monitor tracking data structures. They are simply allocated at mount
-> > time and deallocated and unmount.
->
-> Initially I added it as an mount option.
-> Based on our earlier discussion, we decided to use the assign feature by
-> default if hardware supports it. Users don't have to worry about the deta=
-ils.
-> >
-> > I called the option "mon_assign": The mount option parser calls
-> > resctrl_arch_mon_assign_enable() to determine whether the
-> > implementation supports assignment in some form. If it returns an
-> > error, the mount fails. When successful, the assignable monitor count
-> > is made non-zero in the appropriate rdt_resource, triggering the
-> > behavior change in the FS layer.
-> >
-> > I'm still not sure if it's a good idea to enable monitor assignment by
-> > default. This would be a major disruption in the MBM usage model
-> > triggered by moving software between AMD CPU models. I thought the
->
-> Why will it be a disruption? Why do you think mount option will solve the
-> problem? As always, there will be option to go back to legacy mode. right=
-?
->
-> > safest option was to disallow creating more monitoring groups than
-> > monitors unless the option is selected. Given that nobody else
->
-> Current code allows to create more groups, but it will report "Monitor
-> assignment failed" when it runs out of monitors.
-
-Ok that should be fine then.
-
-However, I don't think it's necessary to support dynamically changing
-the usage model of monitoring groups without remounting. I believe it
-makes it more difficult for the FS code to generically manage monitor
-assignment.
-
--Peter
+-- 
+Kees Cook
 
