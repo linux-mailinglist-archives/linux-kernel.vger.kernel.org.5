@@ -1,197 +1,105 @@
-Return-Path: <linux-kernel+bounces-165899-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-165904-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1CFD68B931F
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 03:29:51 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1F92A8B932D
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 03:45:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 40F4F1C21301
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 01:29:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CA7CB1F22168
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 01:45:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3539E18036;
-	Thu,  2 May 2024 01:29:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D986171A4;
+	Thu,  2 May 2024 01:45:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=oddbit.com header.i=@oddbit.com header.b="QAshCVDo"
-Received: from smtp95.iad3a.emailsrvr.com (smtp95.iad3a.emailsrvr.com [173.203.187.95])
+	dkim=pass (1024-bit key) header.d=gentwo.org header.i=@gentwo.org header.b="EZAY33JE"
+Received: from gentwo.org (gentwo.org [62.72.0.81])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B1038168DE
-	for <linux-kernel@vger.kernel.org>; Thu,  2 May 2024 01:29:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=173.203.187.95
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 474733207;
+	Thu,  2 May 2024 01:44:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.72.0.81
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714613365; cv=none; b=raBY5wcYIY+QMZs0hTGlvYM5ESfHAmI3omCdp2e18teqRz0PabpbriyW9ldlDLQOkJc2Qq3HF1rH/yuIJZOWu5Pjj775QyUGeihANjDcg6oGR2FCQ1+YoipFu8AHhrspCIVlpFrQyLKTNzIklUlqZwVBVWCngzaBjAR1W6xV3wo=
+	t=1714614300; cv=none; b=X6OxVT8M5GzmKZlZXfyILrYQdxR7vtCqLVbQrXUeNJ2GNuBb9SScbxENsODQoXZUZU0BuJz9Kb2IIUN64j7Z6leF+/mdSEr9giJEerNnqFhROhgjV5cmRciVq4VzzQNaCOknytLerM06VMfQl3QvkG8/X5sCM1qJx8Dg3lwBfn0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714613365; c=relaxed/simple;
-	bh=WGSyM/4CiIMkm9hEyvJ3yVSuSPYcuGcmPHUWkohwB5Y=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=jgPm0n5Tj2ywbgXVltyKkLY8b68gijGsOtdCls+iF2UZ+TVpUiPIrBRjbp77riCxen9mpf6YLRJPjkks7L+ci+VXvTZPVnWI92qnHgoi6lZHasD0l7piEPEr+r5bwYXUSufa7OY58bI3KGmD/4lLhKLQn2KjRBGKheCw89sezVQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=oddbit.com; spf=pass smtp.mailfrom=oddbit.com; dkim=pass (1024-bit key) header.d=oddbit.com header.i=@oddbit.com header.b=QAshCVDo; arc=none smtp.client-ip=173.203.187.95
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=oddbit.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oddbit.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=oddbit.com;
-	s=20180920-g2b7aziw; t=1714613357;
-	bh=WGSyM/4CiIMkm9hEyvJ3yVSuSPYcuGcmPHUWkohwB5Y=;
-	h=Date:From:To:Subject:From;
-	b=QAshCVDo2Osp8lK+3FSZovXHrjJZX3BwGgK//GheKXXX7r8a4kr5k4t4Gfg+YH5rs
-	 cXUJwsqs7fxbdH36tYB3cjuEmuXI34wC5nOnf/LIeLipWafQEli1r8T0YZqcDWKBMw
-	 9MCAPCRz8wyJebKdeOM+3F9pRoCFDE3YUBvwaS4Y=
-X-Auth-ID: lars@oddbit.com
-Received: by smtp36.relay.iad3a.emailsrvr.com (Authenticated sender: lars-AT-oddbit.com) with ESMTPSA id E7FC35484;
-	Wed,  1 May 2024 21:29:16 -0400 (EDT)
-Date: Wed, 1 May 2024 21:29:16 -0400
-From: Lars Kellogg-Stedman <lars@oddbit.com>
-To: Duoming Zhou <duoming@zju.edu.cn>
-Cc: linux-hams@vger.kernel.org, netdev@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, pabeni@redhat.com, kuba@kernel.org, edumazet@google.com, 
-	davem@davemloft.net, jreuter@yaina.de, dan.carpenter@linaro.org
-Subject: Re: [PATCH net] ax25: Fix refcount leak issues of ax25_dev
-Message-ID: <my4l7ljo35dnwxl33maqhyvw7666dmuwtduwtyhnzdlb6bbf5m@5sbp4tvg246f>
-References: <20240501060218.32898-1-duoming@zju.edu.cn>
+	s=arc-20240116; t=1714614300; c=relaxed/simple;
+	bh=4/6ccF66M6jfy4na42oviYshr2LOBPT25Dm7w4642t4=;
+	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=RINtBZzi5mDN6/hWe4eGwUXSNAQ25/oe2pnfYNpguijOedhyIIdEtvPtN0rkuY3yDPjNpY5rAkGUV5FxTijrcaleBiESzoUpbsn/Dq/Iom5oprk3J1a65yNMJz3GS7VlVuFXdOaifU9KOOd4SLiM1ktz0Y9z47uPSRoKEPxjfXI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=gentwo.org; spf=pass smtp.mailfrom=gentwo.org; dkim=pass (1024-bit key) header.d=gentwo.org header.i=@gentwo.org header.b=EZAY33JE; arc=none smtp.client-ip=62.72.0.81
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=gentwo.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gentwo.org
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gentwo.org;
+	s=default; t=1714613623;
+	bh=4/6ccF66M6jfy4na42oviYshr2LOBPT25Dm7w4642t4=;
+	h=Date:From:To:cc:Subject:In-Reply-To:References:From;
+	b=EZAY33JEALU8XVl7KTq3DxYg/uHLFyAMRvc4XqzUNE64PUsUG/nI+FirEx7DByHNF
+	 ZbpTx75v9UJMxP/IMChibVgFYJup586biteVaVOAQar6SqFbC+LrFD0f4TQQ86BH94
+	 3Uu9sInK+nne4DE4ugGPvNsR2M36BSUVqMBcoPeI=
+Received: by gentwo.org (Postfix, from userid 1003)
+	id F07EF401D5; Wed,  1 May 2024 18:33:42 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+	by gentwo.org (Postfix) with ESMTP id ECB50401C3;
+	Wed,  1 May 2024 18:33:42 -0700 (PDT)
+Date: Wed, 1 May 2024 18:33:42 -0700 (PDT)
+From: "Christoph Lameter (Ampere)" <cl@gentwo.org>
+To: Ankur Arora <ankur.a.arora@oracle.com>
+cc: linux-pm@vger.kernel.org, kvm@vger.kernel.org, 
+    linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, 
+    catalin.marinas@arm.com, will@kernel.org, tglx@linutronix.de, 
+    mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com, 
+    pbonzini@redhat.com, wanpengli@tencent.com, vkuznets@redhat.com, 
+    rafael@kernel.org, daniel.lezcano@linaro.org, peterz@infradead.org, 
+    arnd@arndb.de, lenb@kernel.org, mark.rutland@arm.com, harisokn@amazon.com, 
+    joao.m.martins@oracle.com, boris.ostrovsky@oracle.com, 
+    konrad.wilk@oracle.com
+Subject: Re: [PATCH 1/9] cpuidle: rename ARCH_HAS_CPU_RELAX to
+ ARCH_HAS_OPTIMIZED_POLL
+In-Reply-To: <20240430183730.561960-2-ankur.a.arora@oracle.com>
+Message-ID: <7473bd3d-f812-e039-24cf-501502206dc9@gentwo.org>
+References: <20240430183730.561960-1-ankur.a.arora@oracle.com> <20240430183730.561960-2-ankur.a.arora@oracle.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240501060218.32898-1-duoming@zju.edu.cn>
-X-Classification-ID: 65a8466f-308e-4519-ba13-d0b67ecdb47f-1-1
+Content-Type: text/plain; charset=US-ASCII; format=flowed
 
-On Wed, May 01, 2024 at 02:02:18PM +0800, Duoming Zhou wrote:
-> There are two scenarios that might cause refcount leak
-> issues of ax25_dev.
+On Tue, 30 Apr 2024, Ankur Arora wrote:
 
-This patch doesn't address the refcount leaks I reported earlier and
-resolved in the patch I posted [1] last week.
+> ARCH_HAS_CPU_RELAX is a bit of a misnomer since all architectures
+> define cpu_relax(). Not all, however, have a performant version, with
+> some only implementing it as a compiler barrier.
+>
+> In contexts that this config option is used, it is expected to provide
+> an architectural primitive that can be used as part of a polling
+> mechanism -- one that would be cheaper than spinning in a tight loop.
 
-Assume we have the following two interfaces configured on a system:
+The intend of cpu_relax() is not a polling mechanism. Initial AFAICT it 
+was introduced on x86 as the REP NOP instruction. Aka as PAUSE. And it was 
+part of a spin loop. So there was no connection to polling anything.
 
-    $ cat /etc/ax25/axports
-    udp0 test0-0 9600 255 2 axudp0
-    udp1 test0-1 9600 255 2 axudp1
+The intend was to make the processor aware that we are in a spin loop. 
+Various processors have different actions that they take upon encountering 
+such a cpu relax operation.
 
-And we have ax25d listening on both interfaces:
+The polling (WFE/WFI) available on ARM (and potentially other platforms) 
+is a different mechanism that is actually intended to reduce the power 
+requirement of the processor until a certain condition is met and that 
+check is done in hardware.
 
-    [udp0]
-    default  * * * * * *  - root  /usr/sbin/axwrapper axwrapper -- /bin/sh sh /etc/ax25/example-output.sh
-    [udp1]
-    default  * * * * * *  - root  /usr/sbin/axwrapper axwrapper -- /bin/sh sh /etc/ax25/example-output.sh
+These are not the same and I think we need both config options.
 
-Using the 'ax-devs' and 'ax-sockets' gdb commands shown at the end of
-this message, we start with:
+The issues that you have with WFET later in the patchset arise from not 
+making this distinction.
 
-    (gdb) ax-devs
-    ax1 ax_refcnt:2 dev_refcnt:9 dev_untracked:1 dev_notrack:1
-    ax0 ax_refcnt:2 dev_refcnt:9 dev_untracked:1 dev_notrack:1
-    (gdb) ax-sockets
-    0xffff8881002b6800 if:ax1 state:0 refcnt:2 dev_tracker:0xffff888100ded200
-    0xffff888101ac4e00 if:ax0 state:0 refcnt:2 dev_tracker:0xffff888100dec4c0
+The polling (waiting for an event) could be implemented for a 
+processor not supporting that in hardware by using a loop that 
+checks for the condition and then does a cpu_relax().
 
-We initiate a connection from ax0 to ax1:
+With that you could f.e. support the existing cpu_relax() and also have 
+some form of cpu_poll() interface.
 
-    call -r udp0 test0-1
-
-When we first enter ax25_rcv, we have:
-
-    (gdb) ax-devs
-    ax1 ax_refcnt:2 dev_refcnt:9 dev_untracked:1 dev_notrack:1
-    ax0 ax_refcnt:3 dev_refcnt:10 dev_untracked:1 dev_notrack:1
-    (gdb) ax-sockets
-    0xffff888101ac8000 if:ax0 state:1 refcnt:2 dev_tracker:0xffff888100dedb80
-    0xffff8881002b6800 if:ax1 state:0 refcnt:2 dev_tracker:0xffff888100ded200
-    0xffff888101ac4e00 if:ax0 state:0 refcnt:2 dev_tracker:0xffff888100dec4c0
-
-After we reach line 413 (in net/ax25/ax25_in.c) and add a new control
-block:
-
-    ax25_cb_add(ax25)
-
-We have:
-
-    (gdb) ax-devs
-    ax1 ax_refcnt:2 dev_refcnt:9 dev_untracked:1 dev_notrack:1
-    ax0 ax_refcnt:3 dev_refcnt:10 dev_untracked:1 dev_notrack:1
-    (gdb) ax-sockets
-    0xffff88810245ac00 if:ax1 state:3 refcnt:2 dev_tracker:0x0 <fixed_percpu_data>
-    0xffff88810245ba00 if:ax0 state:1 refcnt:2 dev_tracker:0xffff88810136c800
-    0xffff888100c79e00 if:ax1 state:0 refcnt:2 dev_tracker:0xffff88810136c6e0
-    0xffff8881018e9800 if:ax0 state:0 refcnt:2 dev_tracker:0xffff88810170c860
-
-Note that (a) ax25->dev_tracker is NULL, and (b) we have incremeted the
-refcount on ax0 (the source interface), but not on ax1 (the destination
-interface). When we call ax25_release for this control block, we get to:
-
-    netdev_put(ax25_dev->dev, &ax25->dev_tracker);
-    ax25_dev_put(ax25_dev);
-
-With:
-
-    (gdb) ax-devs
-    ax1 ax_refcnt:2 dev_refcnt:9 dev_untracked:1 dev_notrack:1
-    ax0 ax_refcnt:3 dev_refcnt:10 dev_untracked:1 dev_notrack:1
-
-After the calls to netdev_put() and ax25_dev_put(), we have:
-
-    (gdb) ax-devs
-    ax1 ax_refcnt:1 dev_refcnt:8 dev_untracked:-1073741824 dev_notrack:1
-    ax0 ax_refcnt:2 dev_refcnt:9 dev_untracked:1 dev_notrack:1
-
-You can see that (a) ax25_dev->dev->refcnt_tracker->untracked is now
-invalid, and ax25_dev->dev->dev_refcnt is in trouble: it decrements by
-one for each closed connection, even though it was never incremented
-when we accepted the connection. The underflow in
-..refcnt_tracker->untracked yields the traceback with:
-
-    refcount_t: decrement hit 0; leaking memory.
-
-Additional connections will eventually trigger more problems; we will
-ultimately underflow ax25_dev->dev->dev_refcnt, but we may also run into
-memory corruption because of the invalid tracker data, resulting in:
-
-    BUG: unable to handle page fault for address: 00000010000003b0
-
-The patch I submitted last week resolves all of the above issues and has
-no refcount leaks for this particular code path. In order to avoid the
-refcount leaks, those _put() calls in ax25_release need to be balanced
-by _hold() calls when accepting a new connection (or we need to wrap
-them in a conditional so that they're not called when ax25->dev_tracker
-is NULL).
-
-GDB commands:
-
-    define ax-devs
-      set $x = ax25_dev_list
-      while ($x != 0)
-        printf "%s ax_refcnt:%d dev_refcnt:%d dev_untracked:%d dev_notrack:%d\n", $x->dev->name, \
-          $x->refcount->refs->counter, \
-          $x->dev->dev_refcnt->refs->counter, \
-          $x->dev->refcnt_tracker->untracked->refs->counter, \
-          $x->dev->refcnt_tracker->no_tracker->refs->counter
-        set $x = $x->next
-      end
-    end
-
-    define ax-sockets
-      set $x = ax25_list->first
-      while ($x != 0)
-        set $cb = (ax25_cb *)($x)
-
-        printf "%s if:%s state:%d refcnt:%d dev_tracker:%s\n", \
-          $_as_string($cb), \
-          $cb->ax25_dev->dev->name, \
-          $cb->state, \
-          $cb->refcount->refs->counter, \
-          $_as_string($cb->dev_tracker)
-        set $x = $x->next
-      end
-    end
-
-[1]: https://marc.info/?l=linux-hams&m=171447153903965&w=2
-
---
-Lars Kellogg-Stedman <lars@oddbit.com> | larsks @ {irc,twitter,github}
-http://blog.oddbit.com/                | N1LKS
 
