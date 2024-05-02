@@ -1,98 +1,115 @@
-Return-Path: <linux-kernel+bounces-166462-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-166463-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id E67568B9AFD
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 14:38:41 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id ADD8D8B9B00
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 14:39:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 84A0BB21C4B
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 12:38:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6A1332868F6
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 12:39:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E86AE823CB;
-	Thu,  2 May 2024 12:38:27 +0000 (UTC)
-Received: from mail-io1-f72.google.com (mail-io1-f72.google.com [209.85.166.72])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A8AF81AC7;
+	Thu,  2 May 2024 12:39:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="OHY0BSt3"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3306D59148
-	for <linux-kernel@vger.kernel.org>; Thu,  2 May 2024 12:38:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.72
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6185662171;
+	Thu,  2 May 2024 12:38:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714653507; cv=none; b=mZVAcmHDrOpwgoFBMwqiK4KpTVa67nXsZIuxULI80H3TjJvwYVYjs4TWghbn9vd0wylYTpL3J5TragSlDQVs7PVGbEubIte8pJqawJBdnMII5cDPVKDq+gwqF7+3jPQQ3kOXWRQhM+n2dhJShUyibey234h9Y8FSGvbfg0AU8XE=
+	t=1714653541; cv=none; b=mTYZ61nTxi5PCEElNaJY4/U11wbAGf6tnGPSOncqZn/37Uf7HMBCoCz3h8wJ6aq87qb/bohvoZS2zZB2zpzn+bKoIqhP6BqnFo1siQCdOjf1JixUuB249aqj2rmcwzMmOwDGu+97UhA7KiEaU98P+3ynRPQRkccdFe/Uc3DsOHE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714653507; c=relaxed/simple;
-	bh=D2nNSFE0GzhFOBu5BVbzRL/gL4zvbHJrs8eRk+GfaAs=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=jS7CymljQ2Royav4p2twVKnSxjMRmXo0UjtYyrmBA+3ZYodYvmhhKqQk0eXsnGHr8BxZ4q+f23Fs7J7eVmRD5sZvF1NSqSgZIdtwqcKntxMoGLy58gCYV06T/a+B39W2t//0D/EKuKjeqaPRedmP+IM0aiFkz1SXBdd/FwPYQXw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.72
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f72.google.com with SMTP id ca18e2360f4ac-7decb47ceebso498927139f.2
-        for <linux-kernel@vger.kernel.org>; Thu, 02 May 2024 05:38:26 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714653505; x=1715258305;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=F/8KyUbi4Pj7yz3Rv0CBXW74l59ObuU0YwVCbxEM8D0=;
-        b=KohIkhm3Bwneo/t+J8padJNwrWV1pVs16Hv1ykRXlYjrb9pNS9vz0kzmdbLgkqPM80
-         LujT8nlb4fEV8lEt/+7kkyy9C0xosEjurJ0vXR1lHzstLSHdC1QTx/dF/pmCO3UOkN07
-         DmWVEtrYPRdLGGDw7X7FTWd9zYnY17jfVWQUopX8s6RbMJxOFTQbcNJsG0Ml9w989DgN
-         IHnoq7Fl8TSuojjYSQYz5xE6wFOlHIT4r/x1qYNorhKYFi6w8LqoQK5AKgQOTDIFQUiL
-         d14oOnmyC70KNy7tacBWRSOxx1XarEWwhKQpoFz28MXw3TmMP5jjIvTTusL2Fz9F2k/z
-         4Z4g==
-X-Forwarded-Encrypted: i=1; AJvYcCVwMXx0U+2a154ag9yUvgAt1TBCeXV8SnciY0lUXI8etbIjhX5sxM9X45gYwHP5FjlVvJfvV3N0mJXUyfYKQcql2nEYkEP+fM0jWIl7
-X-Gm-Message-State: AOJu0YzCDeqwuCZQ0sdcwL2oLYCbum2qMI5pNQH8WDvojRUcgzEThxrU
-	r/4j6LiRZxU3iSyVrfFHWDz8n57WJ5EXFbhzA3s57tS/4HfSff6Z1euzpSjYFac5BA4GoPr5+G4
-	Wi69N4FUcyWvKZi7nYssONnQxU/U4XC8q/T4VahqaNjRcA7Y7ZQmRGtA=
-X-Google-Smtp-Source: AGHT+IEizWOs2nvSEGGx8eJbCmEYpesqO999HC9/7yfeOUOjG3N8S5stcbzSboBiOmCGDOvdbP1z7jEJgbHslwXpAQAPvtUEDpdv
+	s=arc-20240116; t=1714653541; c=relaxed/simple;
+	bh=oDcRiPW3R8/rc8oPvXX15ddS2eU2agTCmVL3kfXdKHQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=SHY46GcrPE73hacA/Z26f7THyrrogWut7RS5YeTsep6Zspud9gi3yOoEye6EBECF2uLzmGzU36s5KBpb8Iq3UxNHYDV9SC9sc1OcJaVzDJHpkFIolvzdNsUln9qbF3psAFreQg/5Al6Z95bmsNN/KdO1hEWWPc/MO4nf8T6bdBw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=OHY0BSt3; arc=none smtp.client-ip=198.175.65.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1714653538; x=1746189538;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=oDcRiPW3R8/rc8oPvXX15ddS2eU2agTCmVL3kfXdKHQ=;
+  b=OHY0BSt3rvkRg/7yXsq9PU4OcQYk+uYWU7lEQ03Rn/OV4//cOO6gSrK2
+   xgG1iSUIZrV2doWq5U+F5RZYs1LPQBzlY/CemjT5QErTAH0uPFbKRqnbn
+   8XVowZ6SedJiSAV7trh21QlUVFSIT1P/eRpacUu74gEzqUymEv9mwSFcG
+   Gx8rDWOM6mTqH5saYUlUpMjBSw7pKNk2FHUfjoFrIt5tVQysAZYl8aTKd
+   /rOrwrLr6XWeFOLTonISvM0/ztQ7hZpDw1xokrJQrEKksLtyaDIFJuHkJ
+   arHf1Dmr+6VC0wmKLoz8QRNuN6FDE967Z3lh0yWdZ/jG09/O9jDFUOytS
+   g==;
+X-CSE-ConnectionGUID: Usvmq1+XTOiV+oUXlv8jsQ==
+X-CSE-MsgGUID: 2eWlZNfTQNCyjJi8KOj8jA==
+X-IronPort-AV: E=McAfee;i="6600,9927,11061"; a="21831222"
+X-IronPort-AV: E=Sophos;i="6.07,247,1708416000"; 
+   d="scan'208";a="21831222"
+Received: from orviesa004.jf.intel.com ([10.64.159.144])
+  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 May 2024 05:38:57 -0700
+X-CSE-ConnectionGUID: GVfqGcjjS42MzhEwiWbN9Q==
+X-CSE-MsgGUID: YM54t4dfTLat4O0HTk9EEg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,247,1708416000"; 
+   d="scan'208";a="31908012"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by orviesa004.jf.intel.com with ESMTP; 02 May 2024 05:38:56 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+	id 18FE221A; Thu,  2 May 2024 15:38:55 +0300 (EEST)
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+	linux-can@vger.kernel.org,
+	netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: Marc Kleine-Budde <mkl@pengutronix.de>,
+	Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>
+Subject: [PATCH net-next v1 1/1] can: sja1000: plx_pci: Reuse predefined CTI subvendor ID
+Date: Thu,  2 May 2024 15:38:52 +0300
+Message-ID: <20240502123852.2631577-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.43.0.rc1.1336.g36b5255a03ac
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:8c1a:b0:488:1050:6a2f with SMTP id
- jl26-20020a0566388c1a00b0048810506a2fmr26697jab.5.1714653505498; Thu, 02 May
- 2024 05:38:25 -0700 (PDT)
-Date: Thu, 02 May 2024 05:38:25 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000001bc267061777e143@google.com>
-Subject: [syzbot] Monthly wireguard report (May 2024)
-From: syzbot <syzbot+listc4826f4184213affe703@syzkaller.appspotmail.com>
-To: Jason@zx2c4.com, linux-kernel@vger.kernel.org, netdev@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com, wireguard@lists.zx2c4.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 
-Hello wireguard maintainers/developers,
+There is predefined PCI_SUBVENDOR_ID_CONNECT_TECH, use it in the driver.
 
-This is a 31-day syzbot report for the wireguard subsystem.
-All related reports/information can be found at:
-https://syzkaller.appspot.com/upstream/s/wireguard
-
-During the period, 2 new issues were detected and 0 were fixed.
-In total, 4 issues are still open and 16 have been fixed so far.
-
-Some of the still happening issues:
-
-Ref Crashes Repro Title
-<1> 939     No    KCSAN: data-race in wg_packet_send_staged_packets / wg_packet_send_staged_packets (3)
-                  https://syzkaller.appspot.com/bug?extid=6ba34f16b98fe40daef1
-<2> 1       No    WARNING in __kthread_bind_mask (2)
-                  https://syzkaller.appspot.com/bug?extid=36466e0ea21862240631
-<3> 1       No    WARNING in wg_packet_send_staged_packets
-                  https://syzkaller.appspot.com/bug?extid=c369d311130fba58211b
-
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+ drivers/net/can/sja1000/plx_pci.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-To disable reminders for individual bugs, reply with the following command:
-#syz set <Ref> no-reminders
+diff --git a/drivers/net/can/sja1000/plx_pci.c b/drivers/net/can/sja1000/plx_pci.c
+index 5de1ebb0c6f0..67e5316c6372 100644
+--- a/drivers/net/can/sja1000/plx_pci.c
++++ b/drivers/net/can/sja1000/plx_pci.c
+@@ -122,7 +122,6 @@ struct plx_pci_card {
+ #define TEWS_PCI_VENDOR_ID		0x1498
+ #define TEWS_PCI_DEVICE_ID_TMPC810	0x032A
+ 
+-#define CTI_PCI_VENDOR_ID		0x12c4
+ #define CTI_PCI_DEVICE_ID_CRG001	0x0900
+ 
+ #define MOXA_PCI_VENDOR_ID		0x1393
+@@ -358,7 +357,7 @@ static const struct pci_device_id plx_pci_tbl[] = {
+ 	{
+ 		/* Connect Tech Inc. CANpro/104-Plus Opto (CRG001) card */
+ 		PCI_VENDOR_ID_PLX, PCI_DEVICE_ID_PLX_9030,
+-		CTI_PCI_VENDOR_ID, CTI_PCI_DEVICE_ID_CRG001,
++		PCI_SUBVENDOR_ID_CONNECT_TECH, CTI_PCI_DEVICE_ID_CRG001,
+ 		0, 0,
+ 		(kernel_ulong_t)&plx_pci_card_info_cti
+ 	},
+-- 
+2.43.0.rc1.1336.g36b5255a03ac
 
-To change bug's subsystems, reply with:
-#syz set <Ref> subsystems: new-subsystem
-
-You may send multiple commands in a single email message.
 
