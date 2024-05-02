@@ -1,45 +1,45 @@
-Return-Path: <linux-kernel+bounces-165995-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-165996-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6D6848B9476
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 08:00:36 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E5DCA8B9477
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 08:00:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 878A01C21254
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 06:00:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A17F228400E
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 06:00:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D95024211;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4AA89286BD;
 	Thu,  2 May 2024 06:00:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="adJBniXS"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BldDkGuw"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3611E21A04;
-	Thu,  2 May 2024 06:00:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8401E224F2;
+	Thu,  2 May 2024 06:00:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714629614; cv=none; b=i/K0PLBrQ0DpmvuQUogUPZNbuPx0R57MrzmhzBKj1/5is3sEueX9YoXggRu5cA/fNV1EgEST5MclTS0kwt2QlGAVwR+nKLuUt7wufFf4bJVxWRQxtCmXr0GxuykuvrJH5ErqJkwH+EEkLlCZljPBGKblkHs8JY5qErCU03J4pOY=
+	t=1714629614; cv=none; b=gQun2ZmXeew5thr/XJtJfmCrcCWIZfcWpUyyiO12fdMXdIqOLIqHIHnN0X7eog3jJEKsAr9uGL5ewaPgJReCY7VPPZ0ltnwsnwlpPoG9OZcT9IJTY/gUksaG66nftOaG4CzsflCp1R5bjHdKv2jXfbI+KhCLIz3I5IFOoU6Y1dc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1714629614; c=relaxed/simple;
-	bh=h6exK3w1cm8ykwfB731qAJf7BoUGS3DGiwQPGvQefUI=;
+	bh=SSyYuDfAIqFwr0E0S0Wr/ukwLpvby2PoPSUWIQ8hahY=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=u5FXmSt5nGmF0wtDnkV4XdAYHBn8JbDC/H8m1YPevHyu/aRvd52JEuLzWpeQUD/WRLokGAlYYEv9kGIRbjf9EMec9Jmp3Ys4TkOUHQnCOUffTUcp1mZkvd+ka+R3lA+QMH2ntxcsF7VNuDdLytdOr/Bpovb4MwY9XtZCRrW9IfU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=adJBniXS; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7A06CC4AF1D;
-	Thu,  2 May 2024 06:00:13 +0000 (UTC)
+	 MIME-Version; b=tlX4QOvqQw8HKhLAeg6HopJoEjJ7lIE9yZL+4Qx3nHclZJMe/jyKKFt+oz3xLRc0PbNOMDVtpZmo9IR/LUkGnNJuuwwU2DIetmJfymxblaog8mNFTM5mfejcsBAmmiyuj3tdmmV8hxBOvhBU1cKlYxAGsgx1+OBWLFHy2IRP+Uk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BldDkGuw; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 09099C4AF49;
+	Thu,  2 May 2024 06:00:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714629613;
-	bh=h6exK3w1cm8ykwfB731qAJf7BoUGS3DGiwQPGvQefUI=;
+	s=k20201202; t=1714629614;
+	bh=SSyYuDfAIqFwr0E0S0Wr/ukwLpvby2PoPSUWIQ8hahY=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=adJBniXSqe9CqNaEDowdyCnnQxX74cujjSFodDuirMe2YrAtlbg8rZpzuaubIz4VZ
-	 QwmdKxU2WrCOCtKVEqVChvXrcODU0FJBupEylSxdIFXs4Yhm7xNXr9wpNxjlaQ8rBB
-	 PHWRgs1D+C9R4R8kksySAbGVo6lRl1JeJTaQjHgOWgPf2lOj/ZA8N3HtFN24CRtO/t
-	 zimC6Fv0Oz8zRVsyVX6RlcNZexBeIsPpeLB2K7PdUuLRdkIGPDHBTqbaP66A+3xZ8P
-	 RvAI4KvrDnXHKlmD816XHICJsviqG621fud7QRWXz6eQ7Vk1g2CP1wViXKiDLCgoVE
-	 CZG7/tN062ycQ==
+	b=BldDkGuwbfyaEA5Fxssr4aaABm0kVEWzAu8kv5Y2r8J/bvNwhvx4Eohi0O0wCcWr7
+	 Dtymvpr3xI1XO7qki2JuNYMcT0ZNEXPjjHUsrbIy78bcXpxSZ+iOInr8TXXAbMddEU
+	 sF31DmxWeRjlsUMZRsfB34LvJhgnUW/uGaCS5w1jieRnUUgs1kImZyjRYdH1j4gR2S
+	 U9TZwG+xFL8WNKLspg0nyWUY1luxvEWs9sK41dj/4GUR/hysVKVsTznxDzxA8ZO5AI
+	 3Xx1h4E1T6pyABWHxQ7XP920YTnJSUQxM6mKrUsKlkM4GQv4r7Y82kqxEcIl+VUW3+
+	 GFLhzH0US3UsQ==
 From: Namhyung Kim <namhyung@kernel.org>
 To: Arnaldo Carvalho de Melo <acme@kernel.org>,
 	Ian Rogers <irogers@google.com>,
@@ -50,9 +50,9 @@ Cc: Jiri Olsa <jolsa@kernel.org>,
 	Ingo Molnar <mingo@kernel.org>,
 	LKML <linux-kernel@vger.kernel.org>,
 	linux-perf-users@vger.kernel.org
-Subject: [PATCH 2/6] perf annotate-data: Collect global variables in advance
-Date: Wed,  1 May 2024 23:00:07 -0700
-Message-ID: <20240502060011.1838090-3-namhyung@kernel.org>
+Subject: [PATCH 3/6] perf annotate-data: Handle direct global variable access
+Date: Wed,  1 May 2024 23:00:08 -0700
+Message-ID: <20240502060011.1838090-4-namhyung@kernel.org>
 X-Mailer: git-send-email 2.45.0.rc1.225.g2a3ae87e7f-goog
 In-Reply-To: <20240502060011.1838090-1-namhyung@kernel.org>
 References: <20240502060011.1838090-1-namhyung@kernel.org>
@@ -64,111 +64,88 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Currently it looks up global variables from the current CU using address
-and name.  But it sometimes fails to find a variable as the variable can
-come from a different CU - but it's still strange it failed to find a
-declaration for some reason.
+Like per-cpu base offset array, sometimes it accesses the global
+variable directly using the offset.  Allow this type of instructions as
+long as it finds a global variable for the address.
 
-Anyway, it can collect all global variables from all CU once and then
-lookup them later on.  This slightly improves the success rate of my
-test data set.
+  movslq  %edi, %rcx
+  mov     -0x7dc94ae0(,%rcx,8), %rcx   <<<--- here
+
+As %rcx has a valid type (i.e. array index) from the first instruction,
+it will be checked by the first case in check_matching_type().  But as
+it's not a pointer type, the match will fail.  But in this case, it
+should check if it accesses the kernel global array variable.
 
 Signed-off-by: Namhyung Kim <namhyung@kernel.org>
 ---
- tools/perf/util/annotate-data.c | 57 +++++++++++++++++++++++++++++++--
- 1 file changed, 55 insertions(+), 2 deletions(-)
+ tools/perf/util/annotate-data.c | 27 +++++++++++++++------------
+ 1 file changed, 15 insertions(+), 12 deletions(-)
 
 diff --git a/tools/perf/util/annotate-data.c b/tools/perf/util/annotate-data.c
-index 12d5faff3b7a..4dd0911904f2 100644
+index 4dd0911904f2..f1e52a531563 100644
 --- a/tools/perf/util/annotate-data.c
 +++ b/tools/perf/util/annotate-data.c
-@@ -28,6 +28,8 @@
- /* register number of the stack pointer */
- #define X86_REG_SP 7
+@@ -1256,14 +1256,19 @@ static int check_matching_type(struct type_state *state,
+ 	if (state->regs[reg].ok && state->regs[reg].kind == TSR_KIND_TYPE) {
+ 		int tag = dwarf_tag(&state->regs[reg].type);
  
-+static void delete_var_types(struct die_var_type *var_types);
+-		pr_debug_dtp("\n");
+-
+ 		/*
+ 		 * Normal registers should hold a pointer (or array) to
+ 		 * dereference a memory location.
+ 		 */
+-		if (tag != DW_TAG_pointer_type && tag != DW_TAG_array_type)
++		if (tag != DW_TAG_pointer_type && tag != DW_TAG_array_type) {
++			if (dloc->op->offset < 0 && reg != state->stack_reg)
++				goto check_kernel;
 +
- enum type_state_kind {
- 	TSR_KIND_INVALID = 0,
- 	TSR_KIND_TYPE,
-@@ -557,8 +559,8 @@ static bool global_var__add(struct data_loc_info *dloc, u64 addr,
- 	if (gvar == NULL)
- 		return false;
++			pr_debug_dtp("\n");
+ 			return -1;
++		}
++
++		pr_debug_dtp("\n");
  
--	gvar->name = strdup(name);
--	if (gvar->name == NULL) {
-+	gvar->name = name ? strdup(name) : NULL;
-+	if (name && gvar->name == NULL) {
- 		free(gvar);
- 		return false;
+ 		/* Remove the pointer and get the target type */
+ 		if (die_get_real_type(&state->regs[reg].type, type_die) == NULL)
+@@ -1376,12 +1381,14 @@ static int check_matching_type(struct type_state *state,
+ 		return -1;
  	}
-@@ -612,6 +614,53 @@ static bool get_global_var_info(struct data_loc_info *dloc, u64 addr,
- 	return true;
- }
  
-+static void global_var__collect(struct data_loc_info *dloc)
-+{
-+	Dwarf *dwarf = dloc->di->dbg;
-+	Dwarf_Off off, next_off;
-+	Dwarf_Die cu_die, type_die;
-+	size_t header_size;
-+
-+	/* Iterate all CU and collect global variables that have no location in a register. */
-+	off = 0;
-+	while (dwarf_nextcu(dwarf, off, &next_off, &header_size,
-+			    NULL, NULL, NULL) == 0) {
-+		struct die_var_type *var_types = NULL;
-+		struct die_var_type *pos;
-+
-+		if (dwarf_offdie(dwarf, off + header_size, &cu_die) == NULL) {
-+			off = next_off;
-+			continue;
-+		}
-+
-+		die_collect_global_vars(&cu_die, &var_types);
-+
-+		for (pos = var_types; pos; pos = pos->next) {
-+			const char *var_name = NULL;
-+			int var_offset = 0;
-+
-+			if (pos->reg != -1)
-+				continue;
-+
-+			if (!dwarf_offdie(dwarf, pos->die_off, &type_die))
-+				continue;
-+
-+			if (!get_global_var_info(dloc, pos->addr, &var_name,
-+						 &var_offset))
-+				continue;
-+
-+			if (var_offset != 0)
-+				continue;
-+
-+			global_var__add(dloc, pos->addr, var_name, &type_die);
-+		}
-+
-+		delete_var_types(var_types);
-+
-+		off = next_off;
-+	}
-+}
-+
- static bool get_global_var_type(Dwarf_Die *cu_die, struct data_loc_info *dloc,
- 				u64 ip, u64 var_addr, int *var_offset,
- 				Dwarf_Die *type_die)
-@@ -620,8 +669,12 @@ static bool get_global_var_type(Dwarf_Die *cu_die, struct data_loc_info *dloc,
- 	int offset;
- 	const char *var_name = NULL;
- 	struct global_var_entry *gvar;
-+	struct dso *dso = map__dso(dloc->ms->map);
- 	Dwarf_Die var_die;
+-	if (map__dso(dloc->ms->map)->kernel && arch__is(dloc->arch, "x86")) {
++check_kernel:
++	if (map__dso(dloc->ms->map)->kernel) {
+ 		u64 addr;
+ 		int offset;
  
-+	if (RB_EMPTY_ROOT(&dso->global_vars))
-+		global_var__collect(dloc);
-+
- 	gvar = global_var__find(dloc, var_addr);
- 	if (gvar) {
- 		if (!dwarf_offdie(dloc->di->dbg, gvar->die_offset, type_die))
+ 		/* Direct this-cpu access like "%gs:0x34740" */
+-		if (dloc->op->segment == INSN_SEG_X86_GS && dloc->op->imm) {
++		if (dloc->op->segment == INSN_SEG_X86_GS && dloc->op->imm &&
++		    arch__is(dloc->arch, "x86")) {
+ 			pr_debug_dtp(" this-cpu var\n");
+ 
+ 			addr = dloc->op->offset;
+@@ -1394,17 +1401,13 @@ static int check_matching_type(struct type_state *state,
+ 			return -1;
+ 		}
+ 
+-		/* Access to per-cpu base like "-0x7dcf0500(,%rdx,8)" */
++		/* Access to global variable like "-0x7dcf0500(,%rdx,8)" */
+ 		if (dloc->op->offset < 0 && reg != state->stack_reg) {
+-			const char *var_name = NULL;
+-
+ 			addr = (s64) dloc->op->offset;
+ 
+-			if (get_global_var_info(dloc, addr, &var_name, &offset) &&
+-			    !strcmp(var_name, "__per_cpu_offset") && offset == 0 &&
+-			    get_global_var_type(cu_die, dloc, dloc->ip, addr,
++			if (get_global_var_type(cu_die, dloc, dloc->ip, addr,
+ 						&offset, type_die)) {
+-				pr_debug_dtp(" percpu base\n");
++				pr_debug_dtp(" global var\n");
+ 
+ 				dloc->type_offset = offset;
+ 				return 1;
 -- 
 2.45.0.rc1.225.g2a3ae87e7f-goog
 
