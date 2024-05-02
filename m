@@ -1,47 +1,79 @@
-Return-Path: <linux-kernel+bounces-166067-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-166068-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B945E8B957D
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 09:46:51 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3095E8B9580
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 09:47:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 55A9A1F22443
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 07:46:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4E0701C20F91
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 07:47:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 234302421D;
-	Thu,  2 May 2024 07:46:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7E0B22EF2;
+	Thu,  2 May 2024 07:46:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SR2mCp3s"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="bbZdTmuM"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A5E5225AE;
-	Thu,  2 May 2024 07:46:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F71B2C190
+	for <linux-kernel@vger.kernel.org>; Thu,  2 May 2024 07:46:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714636002; cv=none; b=qSIgTowmFLNUy+EECZSJZhTIBPAGy2G/m3enHv3XQMGVdY+svF5hfOnx7jhkQ+zutja8vXiVO7FumiYUsA1aBy4Xu7clKo99dZu0DX3hViYnWnR64GeQWmplyI41Ipk4YWBzmdW4x6A60pwofMEKXZymtVbb54tAUlsHEmJFoDs=
+	t=1714636014; cv=none; b=Cz41P+92Gs6qGN3jofZ+rYT6xBTdvyJATdDwuKaVQPsxQJwuVeGlm6c8dF+sftRMYLuOmNh0+I/lF+9OMdS0yAfYhwPN2TbQf8oZr/rJjdCau3s3tNxwduOHUzNADv3TkHtYX5/FuDKzdNZMBn5BkIXbDCIR/OZDosM+2KFj0P0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714636002; c=relaxed/simple;
-	bh=51OpcgVVRLpo30BsMQIvjTqnAxBAwx6Vvn/ZEENsG0A=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=KpWL+ukCedUHUTwhf+QtrOjTOLnmDFOXVq9qNpTI0owjc2x4zlcz4pIgFhF2VUg0QqpqKN7u9GuFZOc1OtBluDPc6W44Ud2FHPGP7x/vVqBGXZzos05Nwg8cuVdfc9c6peesdY+dtjzrjMUB/H466kFPWgxJmHuKqAR6BxnWQdE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SR2mCp3s; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 68726C113CC;
-	Thu,  2 May 2024 07:46:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714636001;
-	bh=51OpcgVVRLpo30BsMQIvjTqnAxBAwx6Vvn/ZEENsG0A=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=SR2mCp3sCShgNeqyqia0ej5cXOBh5f1/unNiRm+Y8gLXd/SV/HcrnRsdL/wPanEau
-	 TG5sF3JddlIvTst8MOCY3+zVEY0u33sB7tF2ZM0s55tMYKz2GzNm+rKbBmlJ0zaECK
-	 /b61gxM+oj5uRh5g+eOgRGznSS8yLzRVQSj4f/LS1nqEpKvCMujxxaeS6BXU5Lz/5Q
-	 uU1us66L0QkAcQ6WCWfQlMq4QvKS9XattzWqoMTFpUzommjio/RndVx1hjS/BLZr/3
-	 pSTAvqUdXwlILYiA8hztNuv6qkj29EA8oavsS+ldAIYzyhwjFjBglREQKArZkdqnK9
-	 cBzOrTMLeV8VA==
-Message-ID: <9a960401-f41f-4902-bcbd-8f30f318ba98@kernel.org>
-Date: Thu, 2 May 2024 09:46:34 +0200
+	s=arc-20240116; t=1714636014; c=relaxed/simple;
+	bh=N95+O0jw+DKKcOQdQTjfPVq85yBnmLUJcQUgaLzBfvU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=Xfun/dbbh2jxaw6AnE09cfpz+KhxY2WtUPcDBsZZsAwhHjYNkvLQUgmRLZSZ+9EDot2JOKvEJxX35vz3Wb7wC4Pz7engViE6CuPhqlb0NraJcdaEIW5zrd1RSjTyOR6nX6AtcUWVlae9/2Q9mvE/oKOiPDWt6WcUtwyaUqo0TAw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=bbZdTmuM; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1714636010;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=KLfXyxdn+htGKj1W83h8kMfmozy37Oi55cUhUW9WKn8=;
+	b=bbZdTmuM089ERPsUL7eKgnIjCUv4h2WPM5wUybpJa2AkmbmHLe7HyncreHwyFkHcFUG60Q
+	5nCOwD6HwJwbzRYgJCsJKIt0PZkD6MbykkfK89czvOjgR3J03oFCGOgKrO7pQFFLHco41/
+	mBqDFS9ZwuLxPy/5UrJ0GBIjA1P8nxQ=
+Received: from mail-lj1-f200.google.com (mail-lj1-f200.google.com
+ [209.85.208.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-58-jBGH1rXJOZu0nhd1hjpDxg-1; Thu, 02 May 2024 03:46:48 -0400
+X-MC-Unique: jBGH1rXJOZu0nhd1hjpDxg-1
+Received: by mail-lj1-f200.google.com with SMTP id 38308e7fff4ca-2decc7026a9so69755211fa.3
+        for <linux-kernel@vger.kernel.org>; Thu, 02 May 2024 00:46:48 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714636007; x=1715240807;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=KLfXyxdn+htGKj1W83h8kMfmozy37Oi55cUhUW9WKn8=;
+        b=TYGctM6zAr7e7fRo2je300NZrVGqDMWdkpofSIlyGL73OWaDOWWfP4qsCSu1q9NP+x
+         BZu5YFEDpbOpG5IidjPJyEDc85FXpUceKmbFrFYJHaKK+iT4ArX46wAlpaBFYnsQcNpz
+         yAyBw06FqTn4f18jZ6I8ODCxf2iRMhxuvGZHyQixqHbf1J4Qxz1Uo9dKahrUruCfAhEG
+         0WkMH/xJWsSk0UFpYmlKU1wO3appj7rwwMpIxzSDp0dKTS4cCBSvy1tBMDnvyX2A0dh+
+         sHhmNBff4UkUli643Vi1o0V8eNOXD+PaVUrOcJqskNzROgzoy3yGDBVUYcOZLMde2ZDP
+         9+Dg==
+X-Forwarded-Encrypted: i=1; AJvYcCWLUAIeILn96AzMDJqH45k2dfJh9wDwyjKkfiEGLnNSK0AKzexj5mkEm/TxAEE0CDngqOsa68EACMpalsinmvFsEhv1AnGytUeTo1xv
+X-Gm-Message-State: AOJu0Yz4jowIbjT/kwpqqZufQ9spJ/qQA29j16UYH/5FODq3yLYv02Cj
+	T1h/NpgtoXZpLDyjKiN0MzpBfafZ++yG14giTpejLGHEo7Mv6BN6rZ4T4WOB6vJZQmXNZyjZVIt
+	FIKig2f96ve1k0YtBF/ZPBV37c26vDiglO3O5ra7iL+e2IBTBt1ngQfm5j7O5og==
+X-Received: by 2002:a2e:a9a9:0:b0:2df:b63:a8 with SMTP id x41-20020a2ea9a9000000b002df0b6300a8mr1045309ljq.50.1714636007158;
+        Thu, 02 May 2024 00:46:47 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFPv1gqwEi7hn3q3bVgyzxoZH/WK6ToHFIzGURBsrAI0k8zW5swrTa2yO+i/Nbc/ha9gUBKUQ==
+X-Received: by 2002:a2e:a9a9:0:b0:2df:b63:a8 with SMTP id x41-20020a2ea9a9000000b002df0b6300a8mr1045287ljq.50.1714636006638;
+        Thu, 02 May 2024 00:46:46 -0700 (PDT)
+Received: from ?IPV6:2a01:e0a:c:37e0:ced3:55bd:f454:e722? ([2a01:e0a:c:37e0:ced3:55bd:f454:e722])
+        by smtp.gmail.com with ESMTPSA id j3-20020a05600c1c0300b004186f979543sm4785753wms.33.2024.05.02.00.46.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 02 May 2024 00:46:46 -0700 (PDT)
+Message-ID: <61eb03bc-b594-49ec-81c3-d91bf97e6704@redhat.com>
+Date: Thu, 2 May 2024 09:46:45 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -49,95 +81,143 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 2/2] pinctrl: samsung: support a bus clock
-To: Tudor Ambarus <tudor.ambarus@linaro.org>,
- =?UTF-8?Q?Andr=C3=A9_Draszik?= <andre.draszik@linaro.org>,
- Sylwester Nawrocki <s.nawrocki@samsung.com>,
- Alim Akhtar <alim.akhtar@samsung.com>,
- Linus Walleij <linus.walleij@linaro.org>, Rob Herring <robh@kernel.org>,
- Conor Dooley <conor+dt@kernel.org>, Tomasz Figa <tomasz.figa@gmail.com>,
- Peter Griffin <peter.griffin@linaro.org>
-Cc: Will McVicker <willmcvicker@google.com>,
- Sam Protsenko <semen.protsenko@linaro.org>, kernel-team@android.com,
- linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org,
- linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20240426-samsung-pinctrl-busclock-v3-0-adb8664b8a7e@linaro.org>
- <20240426-samsung-pinctrl-busclock-v3-2-adb8664b8a7e@linaro.org>
- <ea6f17d7-49bf-4a1e-ba3b-757e29221590@linaro.org>
-From: Krzysztof Kozlowski <krzk@kernel.org>
-Content-Language: en-US
-Autocrypt: addr=krzk@kernel.org; keydata=
- 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 fv0=
-In-Reply-To: <ea6f17d7-49bf-4a1e-ba3b-757e29221590@linaro.org>
-Content-Type: text/plain; charset=UTF-8
+Subject: Re: [PATCH] lib/fonts: Allow to select fonts for drm_panic
+To: tzimmermann@suse.de, airlied@redhat.com, deller@gmx.de,
+ geert@linux-m68k.org, linux-kernel@vger.kernel.org,
+ dri-devel@lists.freedesktop.org
+References: <20240419132243.154466-1-jfalempe@redhat.com>
+ <ZjDq_1t8iRf40dRa@phenom.ffwll.local>
+Content-Language: en-US, fr
+From: Jocelyn Falempe <jfalempe@redhat.com>
+In-Reply-To: <ZjDq_1t8iRf40dRa@phenom.ffwll.local>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
-On 02/05/2024 09:41, Tudor Ambarus wrote:
->>  
->> @@ -223,6 +268,13 @@ static void exynos_irq_release_resources(struct irq_data *irqd)
->>  	shift = irqd->hwirq * bank_type->fld_width[PINCFG_TYPE_FUNC];
->>  	mask = (1 << bank_type->fld_width[PINCFG_TYPE_FUNC]) - 1;
->>  
->> +	if (clk_enable(bank->drvdata->pclk)) {
->> +		dev_err(bank->gpio_chip.parent,
->> +			"unable to enable clock for deconfiguring pin %s-%lu\n",
->> +			bank->name, irqd->hwirq);
->> +		return;
+
+
+On 30/04/2024 14:58, Daniel Vetter wrote:
+> On Fri, Apr 19, 2024 at 03:20:19PM +0200, Jocelyn Falempe wrote:
+>> drm_panic has been introduced recently, and uses the same fonts as
+>> FRAMEBUFFER_CONSOLE.
+>>
+>> Signed-off-by: Jocelyn Falempe <jfalempe@redhat.com>
 > 
-> but here we just print an error. I guess that for consistency reasons it
-> would be good to follow up with a patch and change the return types of
-> these methods and return the error too when the clock enable fails.
+> Acked-by: Daniel Vetter <daniel.vetter@ffwll.ch>
+> 
+> lib/fonts/ doesn't seem to have a designated maintainer, so please push
+> this through drm-misc.
 
-That's a release, so usually void callback. The true issue is that we
-expect release to always succeed, I think.
+Thanks for the review, I just merged it to drm-misc-next.
 
-This points to issue with this patchset: looks like some patchwork all
-around the places having register accesses. But how do you even expect
-interrupts and pins to work if entire pinctrl block is clock gated?
+-- 
 
-Best regards,
-Krzysztof
+Jocelyn
+
+> 
+> Thanks, Sima
+>> ---
+>>   lib/fonts/Kconfig | 20 ++++++++++----------
+>>   1 file changed, 10 insertions(+), 10 deletions(-)
+>>
+>> diff --git a/lib/fonts/Kconfig b/lib/fonts/Kconfig
+>> index 7e945fdcbf11..befcb463f738 100644
+>> --- a/lib/fonts/Kconfig
+>> +++ b/lib/fonts/Kconfig
+>> @@ -10,7 +10,7 @@ if FONT_SUPPORT
+>>   
+>>   config FONTS
+>>   	bool "Select compiled-in fonts"
+>> -	depends on FRAMEBUFFER_CONSOLE || STI_CONSOLE
+>> +	depends on FRAMEBUFFER_CONSOLE || STI_CONSOLE || DRM_PANIC
+>>   	help
+>>   	  Say Y here if you would like to use fonts other than the default
+>>   	  your frame buffer console usually use.
+>> @@ -23,7 +23,7 @@ config FONTS
+>>   
+>>   config FONT_8x8
+>>   	bool "VGA 8x8 font" if FONTS
+>> -	depends on FRAMEBUFFER_CONSOLE || STI_CONSOLE
+>> +	depends on FRAMEBUFFER_CONSOLE || STI_CONSOLE || DRM_PANIC
+>>   	default y if !SPARC && !FONTS
+>>   	help
+>>   	  This is the "high resolution" font for the VGA frame buffer (the one
+>> @@ -46,7 +46,7 @@ config FONT_8x16
+>>   
+>>   config FONT_6x11
+>>   	bool "Mac console 6x11 font (not supported by all drivers)" if FONTS
+>> -	depends on FRAMEBUFFER_CONSOLE || STI_CONSOLE
+>> +	depends on FRAMEBUFFER_CONSOLE || STI_CONSOLE || DRM_PANIC
+>>   	default y if !SPARC && !FONTS && MAC
+>>   	help
+>>   	  Small console font with Macintosh-style high-half glyphs.  Some Mac
+>> @@ -54,7 +54,7 @@ config FONT_6x11
+>>   
+>>   config FONT_7x14
+>>   	bool "console 7x14 font (not supported by all drivers)" if FONTS
+>> -	depends on FRAMEBUFFER_CONSOLE
+>> +	depends on FRAMEBUFFER_CONSOLE || DRM_PANIC
+>>   	help
+>>   	  Console font with characters just a bit smaller than the default.
+>>   	  If the standard 8x16 font is a little too big for you, say Y.
+>> @@ -62,7 +62,7 @@ config FONT_7x14
+>>   
+>>   config FONT_PEARL_8x8
+>>   	bool "Pearl (old m68k) console 8x8 font" if FONTS
+>> -	depends on FRAMEBUFFER_CONSOLE
+>> +	depends on FRAMEBUFFER_CONSOLE || DRM_PANIC
+>>   	default y if !SPARC && !FONTS && AMIGA
+>>   	help
+>>   	  Small console font with PC-style control-character and high-half
+>> @@ -70,7 +70,7 @@ config FONT_PEARL_8x8
+>>   
+>>   config FONT_ACORN_8x8
+>>   	bool "Acorn console 8x8 font" if FONTS
+>> -	depends on FRAMEBUFFER_CONSOLE
+>> +	depends on FRAMEBUFFER_CONSOLE || DRM_PANIC
+>>   	default y if !SPARC && !FONTS && ARM && ARCH_ACORN
+>>   	help
+>>   	  Small console font with PC-style control characters and high-half
+>> @@ -90,7 +90,7 @@ config FONT_6x10
+>>   
+>>   config FONT_10x18
+>>   	bool "console 10x18 font (not supported by all drivers)" if FONTS
+>> -	depends on FRAMEBUFFER_CONSOLE
+>> +	depends on FRAMEBUFFER_CONSOLE || DRM_PANIC
+>>   	help
+>>   	  This is a high resolution console font for machines with very
+>>   	  big letters. It fits between the sun 12x22 and the normal 8x16 font.
+>> @@ -105,7 +105,7 @@ config FONT_SUN8x16
+>>   
+>>   config FONT_SUN12x22
+>>   	bool "Sparc console 12x22 font (not supported by all drivers)"
+>> -	depends on FRAMEBUFFER_CONSOLE && (!SPARC && FONTS || SPARC)
+>> +	depends on (FRAMEBUFFER_CONSOLE && (!SPARC && FONTS || SPARC)) || DRM_PANIC
+>>   	help
+>>   	  This is the high resolution console font for Sun machines with very
+>>   	  big letters (like the letters used in the SPARC PROM). If the
+>> @@ -113,7 +113,7 @@ config FONT_SUN12x22
+>>   
+>>   config FONT_TER16x32
+>>   	bool "Terminus 16x32 font (not supported by all drivers)"
+>> -	depends on FRAMEBUFFER_CONSOLE && (!SPARC && FONTS || SPARC)
+>> +	depends on (FRAMEBUFFER_CONSOLE && (!SPARC && FONTS || SPARC)) || DRM_PANIC
+>>   	help
+>>   	  Terminus Font is a clean, fixed width bitmap font, designed
+>>   	  for long (8 and more hours per day) work with computers.
+>> @@ -122,7 +122,7 @@ config FONT_TER16x32
+>>   
+>>   config FONT_6x8
+>>   	bool "OLED 6x8 font" if FONTS
+>> -	depends on FRAMEBUFFER_CONSOLE
+>> +	depends on FRAMEBUFFER_CONSOLE || DRM_PANIC
+>>   	help
+>>   	  This font is useful for small displays (OLED).
+>>   
+>>
+>> base-commit: a35e92ef04c07bd473404b9b73d489aea19a60a8
+>> -- 
+>> 2.44.0
+>>
+> 
 
 
