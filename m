@@ -1,80 +1,61 @@
-Return-Path: <linux-kernel+bounces-167048-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-167049-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3388D8BA3DC
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 01:13:37 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1054D8BA3DD
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 01:14:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 64EAB1C22F61
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 23:13:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 41D061C2302C
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 23:14:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 710DC1CD2F;
-	Thu,  2 May 2024 23:13:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27E0D1CD2A;
+	Thu,  2 May 2024 23:14:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MhUYLwQ+"
-Received: from mail-oa1-f50.google.com (mail-oa1-f50.google.com [209.85.160.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="q5ndd+Jw"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 610B057C8D;
-	Thu,  2 May 2024 23:13:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6895C57C8D;
+	Thu,  2 May 2024 23:14:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714691608; cv=none; b=UY/UZV5uIkLH3yLl9kAe7k8ruZVnqmEM8ixfoNKDBN12sTdKD0tRevztvkaQKnLGxIeTJ/di6U43hm6viP72AxgPFdchsL3W/tGeDmPzbrua+XaZAFl0DDFq/TaFpAJ+k0VJ5uhkhdMlqa20xwEoPZQdVcs9Qd85QjXERTy17n0=
+	t=1714691640; cv=none; b=Nomv8Nzsh9X9qYuIdEAh8uTxYx93xMCeXrqCPmI4jM5IUYlAM5xqcBGmthOqvifMwfk656tt0m5ZoLSmK6nGmSIeBCNX3WdHFgeSJO0mdIOMyIQNCoCc+1rYfHt/kEi76usjSQ9yIN5G/NekxtnqhwFhgKJRumgGxkFzHppyTWY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714691608; c=relaxed/simple;
-	bh=u+yd1qxTMtqyA0JN8HqFvSkRkn69QG4mf+5MR06MfZU=;
+	s=arc-20240116; t=1714691640; c=relaxed/simple;
+	bh=wiCkGMkZFCPY7COhhD+uOxIgwVixxh6eb67wr+gtu7w=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=unrR3lpUa0lhcNco1PwKV3eHBcDix/J0B+kOaTMvX4OAFL1RLVcvb1SzhGETq3WJBbyYnD1zKmMxDNnhhDHhYdCtUFne/DN0LXwTkTWXR5SM0eq+f66sezDjXBhw0fUevSduif0SeUOEGYG0H4phF08AExxb27E3e5dltao+2ek=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MhUYLwQ+; arc=none smtp.client-ip=209.85.160.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oa1-f50.google.com with SMTP id 586e51a60fabf-23df05526a5so568055fac.3;
-        Thu, 02 May 2024 16:13:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714691606; x=1715296406; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=hZTQ8b08ADcpplkiE8GEsQC5kR1xohUpTi1jp5L+avM=;
-        b=MhUYLwQ+r9V1T7culMTpfxTNmjmt62gx3klk4GK80g/kF2PKmcHaf3wAZq8JMmHmr1
-         4dQiFNwPn4cqTschLbreu7TQKL8Hq8j5JtvJOfUvPPHFyBFLwiau5htiWWwzhex1nvAR
-         0+y+2SAq9uSMJJHBcvIFpPM2eEWHZWZ7cBQzdiahiSBLbo1/ZSUnvJKYkzt1ql9Ml1hj
-         29wWqK9gFa5OBmuWhqxvrVTjTMLQINj8hcFuWqFG+vxy4YMrS48KQQlAq7kAtYITZqwL
-         Zwnw77iS+gsP1IHlYhkhj3zTeikpie7FxwooYdb0WNoaejDFQF0xKC8B0lFxKimUy7ZG
-         Cc3w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714691606; x=1715296406;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=hZTQ8b08ADcpplkiE8GEsQC5kR1xohUpTi1jp5L+avM=;
-        b=GzYuzpjpTzjQpnofN8hB12d5Xy6XhHLnMXbn0zk0AHmKammqNw7A+RzBw83vMMQNoT
-         Gzaeqx7V5IJ8aKHGZtFW3SQcCHD6WbfNZ1EqrKrVi+jCaL/yAU5t4vfZMxfiNK+wfJf8
-         HBNu+3KeoJV2tzbTFZoMZingBCdn/afdRDbsEsgrJTGC9qJz2bSV68gmlg2AtMyr5gyf
-         eSAQlyS6eugu6o1xTzbCvt75g17Bhpur1BAwfbUja3WetHDPSd1NmRGJoHg6hSnpfg68
-         YIIW4q8ZSlqKbC6+2J+hT6eQjSDWaHZwgo428fHu1zFWcwbSiEs1A3ULEVjlReD+fsJa
-         HrPQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVJsmvl4zX2xBHmR3YQlwMzIxq3lxhNgxDICdXVisx4OpXXp5jdE/7nJuavsquxfoptJLLqBzPQPJd20XxF1CCxcImBH8UxnEGER+4=
-X-Gm-Message-State: AOJu0YwqsDZyOVL0HTneBnLvxLAZkSshfHfW+I70apvxBUrOC7trIzq8
-	vNnZR+XvxsZATifFGlz5ROg0eH5xAKo4Qzvn8pYKWqZnepzh2gQbilVO1w==
-X-Google-Smtp-Source: AGHT+IFPBPJQrhErzDfBkYnMLmaOKoyKcpLCyvu335M9CCXRZwkhQig1ifTf6ImNfUkQgjTpsiSaGg==
-X-Received: by 2002:a05:6870:a790:b0:239:8e67:6f10 with SMTP id x16-20020a056870a79000b002398e676f10mr1518423oao.30.1714691606271;
-        Thu, 02 May 2024 16:13:26 -0700 (PDT)
-Received: from google.com ([2620:15c:9d:2:e24:7949:ee02:ebf8])
-        by smtp.gmail.com with ESMTPSA id fi7-20020a056a00398700b006ed007b3596sm1820221pfb.69.2024.05.02.16.13.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 May 2024 16:13:25 -0700 (PDT)
-Date: Thu, 2 May 2024 16:13:23 -0700
-From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To: Jonathan Denose <jdenose@google.com>
-Cc: LKML <linux-kernel@vger.kernel.org>, linux-input@vger.kernel.org,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Jeffery Miller <jefferymiller@google.com>
-Subject: Re: [PATCH] Input: elantech - fix touchpad state on resume for
- Lenovo N24
-Message-ID: <ZjQeE643YAbK1hq5@google.com>
-References: <20240501140231.1.Ifa0e25ebf968d8f307f58d678036944141ab17e6@changeid>
+	 Content-Type:Content-Disposition:In-Reply-To; b=R1cdA/fCSBjGeLoAybvkMP6IhXP8j3J1OtTFPwutMDoKxoYLOwPFkNDjSan7fDy+3KGxiXRL6C3PyyBzTpgI3krgJY1e7XXycHzWJ98eKSREWDwkGuTCtMF2e8kQBJdfeoFqM2Kejexg23HQINg0bmCzRqMjqoEvGeHqRIsKAig=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=q5ndd+Jw; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 01A6EC113CC;
+	Thu,  2 May 2024 23:14:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714691640;
+	bh=wiCkGMkZFCPY7COhhD+uOxIgwVixxh6eb67wr+gtu7w=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=q5ndd+JwBcbC6EKT0ZPbC5WvglT2Pwi44cxl+JNRKy9OqcsiSJaaLjwyAk+BgRriZ
+	 GHZZawpoiLGRwS6W1lp3mEoyHl2OtDmyVlMD2Pt3mEqlZg0vU8ZPiyDgy0rgsqiE4k
+	 2Qpb8+c6L8+8NUsSWGll422q/4DWNgJJ1kNeJcT0vHCEdLPG+q0oLQQRCv6h1Fbwm3
+	 38WmU8utWI2LsIGIBIivXqBC+Ddw0LJpFnCobDbX3bYjWzlPyRB4l6r/7V/ir+zQTJ
+	 0oe06PII+JaMaOJ4196VygiDipZ7FFkBRl4E/vzmVT7dthtDVqVbeE9wK4Qy2koRYY
+	 b0hTZeBEgpjYw==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id AA906CE0991; Thu,  2 May 2024 16:13:59 -0700 (PDT)
+Date: Thu, 2 May 2024 16:13:59 -0700
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: Masami Hiramatsu <mhiramat@kernel.org>, linux-kernel@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org, kuba@kernel.org, ast@kernel.org,
+	clm@fb.com, mark.rutland@arm.com, mathieu.desnoyers@efficios.com
+Subject: Re: [PATCH resend ftrace] Asynchronous grace period for
+ register_ftrace_direct()
+Message-ID: <135a21d0-1622-418a-b49f-8338a4230ff4@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <ac05be77-2972-475b-9b57-56bef15aa00a@paulmck-laptop>
+ <20240502110501.772941f7fdbc1650a9a3bea4@kernel.org>
+ <82ae8a24-f9cf-4730-b0d7-43fb3bca2917@paulmck-laptop>
+ <20240502173100.42c8a3f7@gandalf.local.home>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -83,81 +64,98 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240501140231.1.Ifa0e25ebf968d8f307f58d678036944141ab17e6@changeid>
+In-Reply-To: <20240502173100.42c8a3f7@gandalf.local.home>
 
-On Wed, May 01, 2024 at 02:02:32PM +0000, Jonathan Denose wrote:
-> The Lenovo N24 on resume becomes stuck in a state where it
-> sends incorrect packets, causing elantech_packet_check_v4 to fail.
-> The only way for the device to resume sending the correct packets is for
-> it to be disabled and then re-enabled.
+On Thu, May 02, 2024 at 05:31:00PM -0400, Steven Rostedt wrote:
+> On Wed, 1 May 2024 20:31:06 -0700
+> "Paul E. McKenney" <paulmck@kernel.org> wrote:
 > 
-> This change adds a dmi check to trigger this behavior on resume.
-> Signed-off-by: Jonathan Denose <jdenose@google.com>
-> ---
+> > On Thu, May 02, 2024 at 11:05:01AM +0900, Masami Hiramatsu wrote:
+> > > On Wed, 1 May 2024 16:12:37 -0700
+> > > "Paul E. McKenney" <paulmck@kernel.org> wrote:
+> > >   
+> > > > Note that the immediate pressure for this patch should be relieved by the
+> > > > NAPI patch series [1], but this sort of problem could easily arise again.
+> > > > 
+> > > > When running heavy test workloads with KASAN enabled, RCU Tasks grace
+> > > > periods can extend for many tens of seconds, significantly slowing
+> > > > trace registration.  Therefore, make the registration-side RCU Tasks
+> > > > grace period be asynchronous via call_rcu_tasks().  
+> > > 
+> > > Good catch! AFAICS, there is no reason to wait for synchronization
+> > > when adding a new direct trampoline.
+> > > This looks good to me.
+> > > 
+> > > Reviewed-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>  
+> > 
+> > Thank you very much!  I will apply this on my next rebase.
 > 
->  drivers/input/mouse/elantech.c | 33 +++++++++++++++++++++++++++++++++
->  1 file changed, 33 insertions(+)
+> I can take it.
 > 
-> diff --git a/drivers/input/mouse/elantech.c b/drivers/input/mouse/elantech.c
-> index 4e38229404b4b..e0f3095b4227e 100644
-> --- a/drivers/input/mouse/elantech.c
-> +++ b/drivers/input/mouse/elantech.c
-> @@ -1476,6 +1476,23 @@ static void elantech_disconnect(struct psmouse *psmouse)
->  	psmouse->private = NULL;
->  }
->  
-> +/*
-> + * Some hw_version 4 models fail to properly activate absolute mode on
-> + * resume without going through disable/enable cycle.
-> + */
-> +static const struct dmi_system_id elantech_needs_reenable[] = {
-> +#if defined(CONFIG_DMI) && defined(CONFIG_X86)
-> +	{
-> +		/* Lenovo N24 */
-> +		.matches = {
-> +			DMI_MATCH(DMI_SYS_VENDOR, "LENOVO"),
-> +			DMI_MATCH(DMI_PRODUCT_NAME, "81AF"),
-> +		},
-> +	},
-> +#endif
-> +	{ }
-> +};
-> +
->  /*
->   * Put the touchpad back into absolute mode when reconnecting
->   */
-> @@ -1486,6 +1503,22 @@ static int elantech_reconnect(struct psmouse *psmouse)
->  	if (elantech_detect(psmouse, 0))
->  		return -1;
->  
-> +	if (dmi_check_system(elantech_needs_reenable)) {
-> +		int err;
-> +
-> +		err = ps2_sendbyte(&psmouse->ps2dev, PSMOUSE_CMD_DISABLE, NULL);
+> It's not a bug fix but just an performance improvement, so it can go into
+> the next merge window.
 
-This and below should be ps2_command().
+Very good, and thank you!
 
-> +
-> +		if (err)
-> +			psmouse_warn(psmouse, "Failed to deactivate mouse on %s: %d\n",
-> +					psmouse->ps2dev.serio->phys, err);
-> +
-> +		err = ps2_sendbyte(&psmouse->ps2dev, PSMOUSE_CMD_ENABLE, NULL);
-> +
-> +		if (err)
-> +			psmouse_warn(psmouse, "Failed to reactivate mouse on %s: %d\n",
-> +					psmouse->ps2dev.serio->phys, err);
-> +	}
-> +
->  	if (elantech_set_absolute_mode(psmouse)) {
->  		psmouse_err(psmouse,
->  			    "failed to put touchpad back into absolute mode.\n");
-> -- 
-> 2.45.0.rc0.197.gbae5840b3b-goog
+I will drop it from RCU as soon as it shows up in either -next or in
+mainline.
+
+							Thanx, Paul
+
+> -- Steve
 > 
-
-Thanks.
-
--- 
-Dmitry
+> 
+> 
+> > 
+> > > Thank you,
+> > >   
+> > > > [1]
+> > > > https://lore.kernel.org/all/cover.1710877680.git.yan@cloudflare.com/
+> > > > 
+> > > > Reported-by: Jakub Kicinski <kuba@kernel.org>
+> > > > Reported-by: Alexei Starovoitov <ast@kernel.org>
+> > > > Reported-by: Chris Mason <clm@fb.com>
+> > > > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> > > > Cc: Steven Rostedt <rostedt@goodmis.org>
+> > > > Cc: Masami Hiramatsu <mhiramat@kernel.org>
+> > > > Cc: Mark Rutland <mark.rutland@arm.com>
+> > > > Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+> > > > Cc: <linux-trace-kernel@vger.kernel.org>
+> > > > 
+> > > > diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
+> > > > index 6c96b30f3d63b..32ea92934268c 100644
+> > > > --- a/kernel/trace/ftrace.c
+> > > > +++ b/kernel/trace/ftrace.c
+> > > > @@ -5365,6 +5365,13 @@ static void
+> > > > remove_direct_functions_hash(struct ftrace_hash *hash, unsigned long }
+> > > >  }
+> > > >  
+> > > > +static void register_ftrace_direct_cb(struct rcu_head *rhp)
+> > > > +{
+> > > > +	struct ftrace_hash *fhp = container_of(rhp, struct
+> > > > ftrace_hash, rcu); +
+> > > > +	free_ftrace_hash(fhp);
+> > > > +}
+> > > > +
+> > > >  /**
+> > > >   * register_ftrace_direct - Call a custom trampoline directly
+> > > >   * for multiple functions registered in @ops
+> > > > @@ -5463,10 +5470,8 @@ int register_ftrace_direct(struct ftrace_ops
+> > > > *ops, unsigned long addr) out_unlock:
+> > > >  	mutex_unlock(&direct_mutex);
+> > > >  
+> > > > -	if (free_hash && free_hash != EMPTY_HASH) {
+> > > > -		synchronize_rcu_tasks();
+> > > > -		free_ftrace_hash(free_hash);
+> > > > -	}
+> > > > +	if (free_hash && free_hash != EMPTY_HASH)
+> > > > +		call_rcu_tasks(&free_hash->rcu,
+> > > > register_ftrace_direct_cb); 
+> > > >  	if (new_hash)
+> > > >  		free_ftrace_hash(new_hash);  
+> > > 
+> > > 
+> > > -- 
+> > > Masami Hiramatsu (Google) <mhiramat@kernel.org>  
+> 
 
