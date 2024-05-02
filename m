@@ -1,103 +1,96 @@
-Return-Path: <linux-kernel+bounces-166354-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-166355-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id CDD388B9980
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 12:57:13 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5A4558B9985
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 12:58:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8773A28817B
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 10:57:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0F8A21F2235F
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 10:58:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 94BA35FB9C;
-	Thu,  2 May 2024 10:57:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E4035FBA9;
+	Thu,  2 May 2024 10:58:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pIrOzg5l"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="pq962d+e"
+Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com [209.85.208.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D47D85E091;
-	Thu,  2 May 2024 10:57:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 334D0224DD
+	for <linux-kernel@vger.kernel.org>; Thu,  2 May 2024 10:58:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714647424; cv=none; b=iuYIHZs37/uNAF0+xuxNw82YVbxou4cap2U6HPNnAjp+Xol80t8Z5cPcL+KvdbQUmJ4V0iqpPjg0IHlSXiC/N+pYq4Cxp+kbNdvQVeliNjUt57FrInlHg4WgBnAQwi5FtigxWgsQ0r6R9PxBFzDp3rUFBl72sZaGYq6pt36hPtU=
+	t=1714647525; cv=none; b=JS/ybJRGMWNwFf9jLazl7YwIdbq+RfHfxvNzHVol5Mj9reTwYrvp4JOQpCUb4HulTunBi5GspkRXR0I6WfYDxMrILaHpemAZ4q9HCT7WL1FStZelg2yzq9vofaPioz5l04+Y4m7/4q+onksDlF79G3LxmEMby75npoBQQCadnBY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714647424; c=relaxed/simple;
-	bh=GjJ6YPDCURvgqRp0kcZpR8S7PNcGHx6ACJsFfmIkVFU=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=DA/XX4D3lBVfsYI0UMpmKkTRMysCLaK9P6oVUyD3DXay2GMYpofIzMzduQukMDJDuDDNbeLlq1FfvKMrQitjrp1694nrW71L+DjODPpCNFAB6WAg1o7COjQACTCD+GOuZXEKwSQ4c95pc7lee7Nh4XCMJZhFF9Yj+2XJS4lrNHY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pIrOzg5l; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 66221C113CC;
-	Thu,  2 May 2024 10:57:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714647424;
-	bh=GjJ6YPDCURvgqRp0kcZpR8S7PNcGHx6ACJsFfmIkVFU=;
-	h=Date:From:To:Cc:Subject:From;
-	b=pIrOzg5lVuQgx7K0RpgqKVe9iRRkUjmWtvBs7ic7sPKfZegD7zPDdd7wxhIXBmDTG
-	 wVLTD8n7ZJ1YTtPBxmg4eTRzaAogeXXk1LwHuMwYA6GBGypAOFZcrSLgvp/DTCehyc
-	 flaawFhJZkUGQO/XkYh3wKXiOdZmrtqLf703LsSUQ/ZpK6Grtj5zIp10ZXTzYnTwl9
-	 A3tCO1a6UVpsDgAgzghPTy3zAHD1iLisZ9NauAFVw4VF1hurFbn7kHZUzGBDsrKLyl
-	 j/64HLhybBd5kLpUQ81cbIBUR6oR2ekVj8yVmEDL6zHbiFiQXOPs5B7GUjEuKNzIKj
-	 I7FMt7yArLFig==
-Received: from johan by xi.lan with local (Exim 4.97.1)
-	(envelope-from <johan@kernel.org>)
-	id 1s2U7Y-000000003uu-3ByM;
-	Thu, 02 May 2024 12:57:01 +0200
-Date: Thu, 2 May 2024 12:57:00 +0200
-From: Johan Hovold <johan@kernel.org>
-To: Zijun Hu <quic_zijuhu@quicinc.com>, Tim Jiang <quic_tjiang@quicinc.com>
-Cc: Janaki Ramaiah Thota <quic_janathot@quicinc.com>,
-	linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: QCA NVM file for the X13s (WCN6855)
-Message-ID: <ZjNxfFJmCgIyq8J6@hovoldconsulting.com>
+	s=arc-20240116; t=1714647525; c=relaxed/simple;
+	bh=ti0ouWJHAwbLC+g6TCd2UFHI7N7nD8Gd/HgwX3mScTk=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=aVEba1WeYoHrM3cZbpB8mmw7GDbfGVcucUNVUB4Sni9FY8f8xtkRGGhtbAdyk7DzTSvaEQrST+OKgLECxDdCXK5YSwy8CnIdeGe10fja3vCZcX1LOw62X6cW+fRUh/st599xuVd763a/iRZmU0lk1tv+wvnEsjXuwSaLDpNElMU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=pq962d+e; arc=none smtp.client-ip=209.85.208.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-572afdee2a8so1322a12.0
+        for <linux-kernel@vger.kernel.org>; Thu, 02 May 2024 03:58:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1714647522; x=1715252322; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ti0ouWJHAwbLC+g6TCd2UFHI7N7nD8Gd/HgwX3mScTk=;
+        b=pq962d+ewTILyCP2bKQX3Gvm2a+0V1X7IiYPX4MDvDaxXqRv06R7sKL9mq7f8HZ4xD
+         MMm3Jazisuie1XxAwv9HMOfBgGraedgKz2Mxm35pCBDB8+TmbtMyK56+Vb6ePQN3d5V9
+         HxJ+E0Vg9+CKOhcA26RQ6M3EJtAGsYc2qTADjF33Qi8JH5ppnTGRlHkkFAEjhjJ4vgcy
+         2dPeq9vKzph9Kb9SQm12SHt8t82BihQBBNUZ3q1QspXcl0+JEm2Taaie5LUhe7NL5jxD
+         cA2Ja6aCELyymNIb4Q2DEz/fstUR7ZhiO3qjJHnfFzLn4PwnwWZkIIDo5cEXAzz1kSrq
+         kybA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714647522; x=1715252322;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ti0ouWJHAwbLC+g6TCd2UFHI7N7nD8Gd/HgwX3mScTk=;
+        b=Bwd+kVY7PLAf4ZkiaLvgXv0qeSDiJGyT2PUwGgQF++uqd2GrL/mogatH4T/RFrjryE
+         +BZdz6DtxSEvM3GP8bIhl/J1lV48Or0S8eyjGq0pRyWEk1i2f9SWNOtcrL24mYPZTwIJ
+         oRPn+rN3oqgrMAsXvs6oxqjj6wWI7vbzJcYQrZvNHfHStLe3To9Nb0reA3+QZkkmisuw
+         gp63rxRUNK9Q2ck8rg5JXPaQ4PyZQYQtZimXNqyJlaKVD8RK+L9Ig3JsT0/hdca9UZoq
+         Qf4wA+htrgnOw2uvt6HZ1oqtj/BHFZLHuYDNp4f7zYwfTZtCXzAOYtD/IxqUJDvTnOHQ
+         EhYQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWf1HdAiA5lvB8E91UFl+C8m1/LXVyT0cnJ5uLXDPM2KkymdY8jI3Tac8S9hKFWO+q2kjvK4KeNJMKNRB7wdJ8vpiqRTBZML9Qw5RWR
+X-Gm-Message-State: AOJu0YwFKYAh4gmv+2HbrV/2VDmjWxKSxZqJ2aKGsTqXKvehyu+020Nh
+	Ea9udD9A1o4wggsm/pCe5cz7F05v2K9mrKULWdrxIQxFjHHf3qgXb5AeEPcqWabnVLFeUrWY0Wd
+	8rcgNQRy6jPKEM/asRIaN4stR11AguHduQqzIWzc72Dj9tvLRXg==
+X-Google-Smtp-Source: AGHT+IFRSe4PucIslK+BGM9vZ9APHFpXULwivi+bdtDezpxEzGPf3xkvdjfQ3WN2cF+wpM/yvRzgtwL6OOEjqvLZdls=
+X-Received: by 2002:a50:a6ce:0:b0:572:a1b1:1f99 with SMTP id
+ 4fb4d7f45d1cf-572bdb3ae19mr112653a12.1.1714647522208; Thu, 02 May 2024
+ 03:58:42 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+References: <20240502084450.44009-1-nbd@nbd.name> <20240502084450.44009-4-nbd@nbd.name>
+In-Reply-To: <20240502084450.44009-4-nbd@nbd.name>
+From: Eric Dumazet <edumazet@google.com>
+Date: Thu, 2 May 2024 12:58:28 +0200
+Message-ID: <CANn89iL_=fn8TuH_LL8u1empT30PV25zoe0+dSaTumAEYF+s3w@mail.gmail.com>
+Subject: Re: [PATCH v5 net-next v5 3/6] net: add code for TCP fraglist GRO
+To: Felix Fietkau <nbd@nbd.name>
+Cc: netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, 
+	David Ahern <dsahern@kernel.org>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	willemdebruijn.kernel@gmail.com, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Zijun and Tim,
+On Thu, May 2, 2024 at 10:44=E2=80=AFAM Felix Fietkau <nbd@nbd.name> wrote:
+>
+> This implements fraglist GRO similar to how it's handled in UDP, however
+> no functional changes are added yet. The next change adds a heuristic for
+> using fraglist GRO instead of regular GRO.
+>
+> Acked-by: Paolo Abeni <pabeni@redhat.com>
+> Signed-off-by: Felix Fietkau <nbd@nbd.name>
 
-I noticed that you have both submitted firmware and NVM files for
-QCA2066 to linux-firmware. [1][2]
-
-I'm working on Linux support for the Lenovo ThinkPad X13s (Windows on
-Arm, Snapdragon), which has the related WCN6855 controller that uses the
-same firmware (hpbtfw21.tlv).
-
-The current Linux driver is using the generic NVM file (hpnv21.bin) for
-WCN6855, but connectivity is quite bad and I only get 2-3 meters of
-range.
-
-Switching to the board-specific NVM configuration (hpnv21b.b8c) that
-came with the Windows driver make all issues go away and the range is
-really good, but I'm not sure if that file is fully compatible with the
-firmware used by the Linux driver.
-
-Could you help us submit an NVM configuration file for the controller
-with board id 0x008c to linux-firmware?
-
-	Bluetooth: hci0: setting up wcn6855
-	Bluetooth: hci0: QCA Product ID   :0x00000013
-	Bluetooth: hci0: QCA SOC Version  :0x400c1211
-	Bluetooth: hci0: QCA ROM Version  :0x00000201
-	Bluetooth: hci0: QCA Patch Version:0x000038e6
-	Bluetooth: hci0: QCA controller version 0x12110201
-	Bluetooth: hci0: QCA Downloading qca/hpbtfw21.tlv
-	Bluetooth: hci0: qca_read_fw_board_id: bid = 8c
-	Bluetooth: hci0: QCA Downloading qca/hpnv21.bin
-
-It looks like the NVM files should be updated in lockstep with the
-firmware so if you could include that board in any future firmware
-updates too that would be really helpful.
-
-Johan
-
-
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/firmware/linux-firmware.git/commit/qca?id=2ba1beaae0c649ce8a50baecc8df9e81cd524e65
-[2] https://git.kernel.org/pub/scm/linux/kernel/git/firmware/linux-firmware.git/commit/qca?id=598f5bd22361d7e92eebe8452d1f8013a1d35b9a
+Reviewed-by: Eric Dumazet <edumazet@google.com>
 
