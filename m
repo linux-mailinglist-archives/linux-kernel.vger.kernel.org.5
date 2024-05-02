@@ -1,110 +1,150 @@
-Return-Path: <linux-kernel+bounces-167019-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-167030-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7278F8BA379
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 00:50:27 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2265A8BA3A1
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 01:00:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C9F45284ADC
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 22:50:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B44741F2215E
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 23:00:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B03501BC57;
-	Thu,  2 May 2024 22:50:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="DMka/n/c"
-Received: from mail.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3256E3D994;
+	Thu,  2 May 2024 23:00:32 +0000 (UTC)
+Received: from smtp.dudau.co.uk (dliviu.plus.com [80.229.23.120])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 333631B947;
-	Thu,  2 May 2024 22:50:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6DC341C6A7;
+	Thu,  2 May 2024 23:00:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.229.23.120
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714690218; cv=none; b=npo9/xRnygNVteyK/tRPo6oKm60uGfhZuffmF6Jk0zy9Ic6XNrqEYLyKjAGzfo5WbUIN2y6g5TiH73Zma9CXIJpb+h/Sezr9e8bI1/bkZv8xkvPvjrkYiez7/qjjyA2SaHFpU3iPsA8/5fNmStEPq+Xs7XQ8YG656/xUAATecC0=
+	t=1714690831; cv=none; b=MEPtpvDWf7s26QV4qi3UG6Yb3HPMrj3kQwkS2sKU1ctEjTEQ4PjDOUjmQAlQinX+k7Da7PMcbj+ejHm2pn7noKYCI+sFVKtnfZ9fn8O0mW8c5nBNQ7swkiaLqBy56f1/c3TNGPMbUaaM8jvVDf4HpL7aWAOyHLt681uQ+CzBwe8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714690218; c=relaxed/simple;
-	bh=pSM2vhex3VBgefl7WQTUvMktZ2mdr9pHWUp1yBiwejY=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=t+Pjx1+EcFx+8h/0c+S4nFfdsMb/1Mfbs7Mh8EBnVFm/JeYPvJHBSkRPAyffOaur/DjxcBsMsYqiOV52UTL5WWQvyVxpbtjSr+TUiBFKw8NAG1WxcRD3nAbzSINUVjFIWeri/sSwIspjxvjRHZuwz814VrJ02cWhbjPWLe6njG8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=DMka/n/c; arc=none smtp.client-ip=150.107.74.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-	s=201702; t=1714690213;
-	bh=uI5hGZzVwSZENNno+sCdAGJoMSDIrNofVkrglPrzHVE=;
-	h=Date:From:To:Cc:Subject:From;
-	b=DMka/n/cv+gZXOT+WT6ZMYgCjoESv/fXNWk82LPZ5V/eOtfbHZPQ4AdL2JCVZCssP
-	 4q+XXA25I7lySPDml83cXmfihghcBE0zPZMTw1G0wH6qbZEzEH9DEz2OuqyUlHTJJO
-	 bBWBxf0cQMlx4cGMqSdXsSgx+1I3/apBFa/8v4d0/xitI56rwqtfzp3AowrUlhMv2Q
-	 ZXgvjm4CvOnUF/xyACSpmDQz28vkvqymzf6yoCNIiPWdLcnfc5R0cjLaXKkjJrS0+b
-	 JHo6bTenXw+TaazSOHZGvsxxT58hPtz0aRxQ3o+njGnwtxu+dzEK5JgD/3hSxb2i3V
-	 4g3TIjLFvKetQ==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4VVpzn4jFpz4wcr;
-	Fri,  3 May 2024 08:50:13 +1000 (AEST)
-Date: Fri, 3 May 2024 08:50:11 +1000
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-To: Alex Deucher <alexdeucher@gmail.com>
-Cc: Alex Hung <alex.hung@amd.com>, Linux Kernel Mailing List
- <linux-kernel@vger.kernel.org>, Linux Next Mailing List
- <linux-next@vger.kernel.org>
-Subject: linux-next: Fixes tag needs some work in the amdgpu tree
-Message-ID: <20240503085011.1a0cb036@canb.auug.org.au>
+	s=arc-20240116; t=1714690831; c=relaxed/simple;
+	bh=RHdXinQzCxW7+a0qagt11WYAo+XBPVjylUdFscA6mww=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=A/OYe4MMAIuuc2PCNBkOIUadGm7kp9nWv566E9aEYEH5MHHTbX4fD+lZaZyf4kslCsCeSK1wuqXgGIyGR63jGo+2diDTfQs3pQDdDYgJa7cAgJ8OC/86iID/eAz0mdyx4KHz0CAyiNWs5wk85f+IQ+TYdXONA8+BttvakZwHnyw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dudau.co.uk; spf=pass smtp.mailfrom=dudau.co.uk; arc=none smtp.client-ip=80.229.23.120
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dudau.co.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dudau.co.uk
+Received: from mail.dudau.co.uk (bart.dudau.co.uk [192.168.14.2])
+	by smtp.dudau.co.uk (Postfix) with SMTP id 557B041D12F3;
+	Thu, 02 May 2024 23:50:36 +0100 (BST)
+Received: by mail.dudau.co.uk (sSMTP sendmail emulation); Thu, 02 May 2024 23:50:36 +0100
+Date: Thu, 2 May 2024 23:50:36 +0100
+From: Liviu Dudau <liviu@dudau.co.uk>
+To: Luis Chamberlain <mcgrof@kernel.org>
+Cc: Mike Rapoport <rppt@kernel.org>, linux-kernel@vger.kernel.org,
+	Alexandre Ghiti <alexghiti@rivosinc.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	=?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	"David S. Miller" <davem@davemloft.net>,
+	Dinh Nguyen <dinguyen@kernel.org>,
+	Donald Dutile <ddutile@redhat.com>,
+	Eric Chanudet <echanude@redhat.com>,
+	Heiko Carstens <hca@linux.ibm.com>, Helge Deller <deller@gmx.de>,
+	Huacai Chen <chenhuacai@kernel.org>,
+	Kent Overstreet <kent.overstreet@linux.dev>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Nadav Amit <nadav.amit@gmail.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Philippe =?utf-8?Q?Mathieu-Daud=C3=A9?= <philmd@linaro.org>,
+	Rick Edgecombe <rick.p.edgecombe@intel.com>,
+	Russell King <linux@armlinux.org.uk>,
+	Sam Ravnborg <sam@ravnborg.org>, Song Liu <song@kernel.org>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	Thomas Gleixner <tglx@linutronix.de>, Will Deacon <will@kernel.org>,
+	bpf@vger.kernel.org, linux-arch@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
+	linux-mm@kvack.org, linux-modules@vger.kernel.org,
+	linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org,
+	linux-s390@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev,
+	netdev@vger.kernel.org, sparclinux@vger.kernel.org, x86@kernel.org
+Subject: Re: [PATCH v7 00/16] mm: jit/text allocator
+Message-ID: <ZjQYvOYgURx9/+d0@bart.dudau.co.uk>
+References: <20240429121620.1186447-1-rppt@kernel.org>
+ <Zi_K4K-j-VB_WI4i@bombadil.infradead.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/Pq.zhqxELbMZUKJUJo9fX_k";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <Zi_K4K-j-VB_WI4i@bombadil.infradead.org>
 
---Sig_/Pq.zhqxELbMZUKJUJo9fX_k
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Mon, Apr 29, 2024 at 09:29:20AM -0700, Luis Chamberlain wrote:
+> On Mon, Apr 29, 2024 at 03:16:04PM +0300, Mike Rapoport wrote:
+> > From: "Mike Rapoport (IBM)" <rppt@kernel.org>
+> > 
+> > Hi,
+> > 
+> > The patches are also available in git:
+> > https://git.kernel.org/pub/scm/linux/kernel/git/rppt/linux.git/log/?h=execmem/v7
+> > 
+> > v7 changes:
+> > * define MODULE_{VADDR,END} for riscv32 to fix the build and avoid
+> >   #ifdefs in a function body
+> > * add Acks, thanks everybody
+> 
+> Thanks, I've pushed this to modules-next for further exposure / testing.
+> Given the status of testing so far with prior revisions, in that only a
+> few issues were found and that those were fixed, and the status of
+> reviews, this just might be ripe for v6.10.
 
-Hi all,
+Looks like there is still some work needed. I've picked up next-20240501
+and on arch/mips with CONFIG_MODULE_COMPRESS_XZ=y and CONFIG_MODULE_DECOMPRESS=y
+I fail to load any module:
 
-In commit
+# modprobe rfkill
+[11746.539090] Invalid ELF header magic: != ELF
+[11746.587149] execmem: unable to allocate memory
+modprobe: can't load module rfkill (kernel/net/rfkill/rfkill.ko.xz): Out of memory
 
-  8891fd6cb2cf ("drm/amd/display: Assign disp_cfg_index_max when dml21")
+The (hopefully) relevant parts of my .config:
 
-Fixes tag
+CONFIG_HAVE_KERNEL_XZ=y
+CONFIG_MIPS=y
+CONFIG_RALINK=y
+CONFIG_SOC_MT7621=y
+CONFIG_EXECMEM=y
+CONFIG_MODULES_USE_ELF_REL=y
+CONFIG_MODULES=y
+# CONFIG_MODULE_DEBUG is not set
+# CONFIG_MODULE_FORCE_LOAD is not set
+CONFIG_MODULE_UNLOAD=y
+# CONFIG_MODULE_FORCE_UNLOAD is not set
+# CONFIG_MODULE_UNLOAD_TAINT_TRACKING is not set
+# CONFIG_MODULE_SRCVERSION_ALL is not set
+# CONFIG_MODULE_SIG is not set
+# CONFIG_MODULE_COMPRESS_NONE is not set
+# CONFIG_MODULE_COMPRESS_GZIP is not set
+CONFIG_MODULE_COMPRESS_XZ=y
+# CONFIG_MODULE_COMPRESS_ZSTD is not set
+CONFIG_MODULE_DECOMPRESS=y
+# CONFIG_MODULE_ALLOW_MISSING_NAMESPACE_IMPORTS is not set
+CONFIG_MODULES_TREE_LOOKUP=y
 
-  Fixes: 03e611b7b65b ("drm/amd/display: Limit array index according to arc=
-hitecture")
 
-has these problem(s):
+Best regards,
+Liviu
 
-  - Target SHA1 does not exist
 
-Maybe you meant
+> 
+>   Luis
+> 
 
-Fixes: 55ec7679e6a5 ("drm/amd/display: Limit array index according to archi=
-tecture")
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/Pq.zhqxELbMZUKJUJo9fX_k
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmY0GKMACgkQAVBC80lX
-0GxV3gf+LkGWYMBMHIhZA5r99WsPgMSJ8561orAd6F6gGTxZPFms+jwjrPWk959b
-UTghOfet1YlGx7Ke3e5saQAm2i9WB4Knruyu6CJItKYC/0SPHGpAIxWYtLdLGQ+K
-8NkdGhLrLqZrt+8twgSLkFx/JiVBwqLdytqbg5tnhWx3moIGRTavYRWyuw9gZd7F
-oDD/NDtdNKh9iJBMdNjNjyF6GIluxe0WnNvWDVQ2FTG2wzrPVU9n9TblJZNAPlDE
-etXowlpqMxIEN5IOMu3Bq2VtJIFqDb2o01UabUVRoMTYXrmZDw4agzHYlQ9zl1Uo
-roO/hsaP70cnc9s7nFLSCGdsfDoO0A==
-=rD0J
------END PGP SIGNATURE-----
-
---Sig_/Pq.zhqxELbMZUKJUJo9fX_k--
+-- 
+Everyone who uses computers frequently has had, from time to time,
+a mad desire to attack the precocious abacus with an axe.
+       	   	      	     	  -- John D. Clark, Ignition!
 
