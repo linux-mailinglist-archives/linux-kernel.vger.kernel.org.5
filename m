@@ -1,117 +1,146 @@
-Return-Path: <linux-kernel+bounces-166158-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-166159-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 440F18B96E6
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 10:53:37 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 77DEE8B96E9
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 10:55:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 752D81C218BB
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 08:53:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 354FD2818F2
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 08:55:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1F4346556;
-	Thu,  2 May 2024 08:53:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C74B47A57;
+	Thu,  2 May 2024 08:55:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="bDgTxs/P"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="WbFo1kEP"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4DABF524A6
-	for <linux-kernel@vger.kernel.org>; Thu,  2 May 2024 08:53:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C6AD22F00;
+	Thu,  2 May 2024 08:55:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714639994; cv=none; b=gF5x8GWNfc5wTslZnb8Ul2ZPbOFosL13P/3XaM7hp5Ithl3s9wQZ1EAEkcg+ZZ+RajKppjvz/dUkjr3l6fPOkC4AJTwLZKIn2fISwThYW/iUTaQpuvqZ3GWY2IfAQvSZiMFDjWq8kkENNnllC108DwhsOniv/XL+X9vIXCP1sRA=
+	t=1714640103; cv=none; b=gZOHuz3qafMO4+yTKnLAtCy9tLNehn4lD0hat2JkFKqDolU/XUJjJ5679GaneVaOtKrh4q4YgIDpeUymkrVIi+2ejoodZ0TKGiInR/MRuV0xwZQXYE8TOZaR42Gh+15EgOjnV9RiPYTlLfzqGAgEOWfsN4IRMpKFvt9joWhkmMk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714639994; c=relaxed/simple;
-	bh=2P0XQ3f/nErLPEazYra6MFwog6B2HmsLDNWBea6YiYQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=QIaVHqX9dUdgV/cJLkbz0Q6kWUGLZSMFVefKAKjwZ3wEcYuEJ6bPGvxLfZ+pK9ooVyWbF1jkVVlcxgj6KZagtzFx9coXGwyUtYBAoBLTcvgpX9cHIOHVi4L2W2LFxYrIyYW2QYsJODqbSMurzXayj0E4pwcqeP1w8U5vrewN3yM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=bDgTxs/P; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1714639990;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=T0uhogWZMK2FCWUvbV0NVhLRqNmBD8nexNysXl5gy1w=;
-	b=bDgTxs/P2/76qrH/X++uUJ8cvSOdBxWxNU03Xk2kOBUNGlN4PcyekdWuBgWopvrtsTUkFq
-	TLaXXxjICKFN+x+v94bL+nqjw2iz7vfCmWQ4DZkH/91qsgHkkotXX4td97pQxw/4nZW2pe
-	EmdzUj3Sc35Y38FNX//UE/jidCs6u7E=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-681-rpnWT_B-O0-ApCVzbzjOLA-1; Thu, 02 May 2024 04:53:07 -0400
-X-MC-Unique: rpnWT_B-O0-ApCVzbzjOLA-1
-Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 8D9B6811029;
-	Thu,  2 May 2024 08:53:06 +0000 (UTC)
-Received: from t14s.redhat.com (unknown [10.39.193.224])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 8ED1A40ED2F;
-	Thu,  2 May 2024 08:53:04 +0000 (UTC)
-From: David Hildenbrand <david@redhat.com>
-To: linux-kernel@vger.kernel.org
-Cc: linux-mm@kvack.org,
-	linux-kselftest@vger.kernel.org,
-	David Hildenbrand <david@redhat.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Muchun Song <muchun.song@linux.dev>,
-	Shuah Khan <shuah@kernel.org>,
-	Peter Xu <peterx@redhat.com>
-Subject: [PATCH v1 2/2] mm/hugetlb: document why hugetlb uses folio_mapcount() for COW reuse decisions
-Date: Thu,  2 May 2024 10:52:59 +0200
-Message-ID: <20240502085259.103784-3-david@redhat.com>
-In-Reply-To: <20240502085259.103784-1-david@redhat.com>
-References: <20240502085259.103784-1-david@redhat.com>
+	s=arc-20240116; t=1714640103; c=relaxed/simple;
+	bh=vnXVC6Kf8epv7ASZX8DY9VCJSTt9HM5ceyAQKMp9tvk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=HMBeAvJo2ZbhbkVJ6MLRBV5b1zWpm/qwM8BhbRVTnHZ8mGowQFdwaAj4XrZ7l0Et749wyBoD9ZlAx+dOc/Jf3ilE9T7opy8pXB7+p4gJfxs95aV6tZhc0GFvYswyiEalCHKkdK0bN28dI5in1pfLuWiqslCm2bAJJxiunVEE3CI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=WbFo1kEP; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E6060C113CC;
+	Thu,  2 May 2024 08:55:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1714640102;
+	bh=vnXVC6Kf8epv7ASZX8DY9VCJSTt9HM5ceyAQKMp9tvk=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=WbFo1kEPVZa9bGX8IcbyRTGRoHKpjjVVZYdL+zmDwAhPKa9gTvNSejgWEmWYSSGIB
+	 nOJc5VEmoxh8f8EZF9mn+GF/SAgEROR49CaNr6tO6l4jH6rFXANEkls7d0Ja4ff4BF
+	 AOnkOqLfvOmGTtVS4eYGt4ojXEopX4byW0dsEHco=
+Date: Thu, 2 May 2024 10:54:59 +0200
+From: Greg KH <gregkh@linuxfoundation.org>
+To: Shahar Avidar <ikobh7@gmail.com>
+Cc: hverkuil-cisco@xs4all.nl, andriy.shevchenko@linux.intel.com,
+	robh@kernel.org, felixkimbu1@gmail.com, dan.carpenter@linaro.org,
+	linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] staging: pi433: Use class_create instead of
+ class_register.
+Message-ID: <2024050257-gong-issue-ec40@gregkh>
+References: <20240501055820.603272-1-ikobh7@gmail.com>
+ <20240501055820.603272-2-ikobh7@gmail.com>
+ <2024050109-reward-vision-58e9@gregkh>
+ <fede8589-dd11-4b0c-aa70-7ec23aed64b1@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <fede8589-dd11-4b0c-aa70-7ec23aed64b1@gmail.com>
 
-Let's document why hugetlb still uses folio_mapcount() and is prone to
-leaking memory between processes, for example using vmsplice() that
-still uses FOLL_GET.
+On Thu, May 02, 2024 at 11:40:44AM +0300, Shahar Avidar wrote:
+> On 01/05/2024 17:12, Greg KH wrote:
+> > On Wed, May 01, 2024 at 08:58:19AM +0300, Shahar Avidar wrote:
+> > > Make use of a higher level API.
+> > 
+> > What does this mean?
+> > 
+> By "higher level" I meant a wrapper function that includes the
+> "class_register" call.
+> 
+> > > Reduce global memory allocation from struct class to pointer size.
+> > 
+> > No, you increased memory allocation here, why do you think you reduced
+> > it?
+> > 
+> Reducing *global* memory allocation.
 
-More details can be found in [1], especially around how hugetlb pages
-cannot really be overcommitted, and why we don't particularly care about
-these vmsplice() leaks for hugetlb -- in contrast to ordinary memory.
+And again, you *increased* memory allocation by making this be
+dynamically created instead of the current code which is a static and
+can be placed into read-only memory with no padding required unlike a
+dynamic memory chunk is.  You also removed the read-only markings of the
+structure for no reason, in a way, making the code a tad be more
+insecure as well as increasing memory usage.
 
-[1] https://lore.kernel.org/all/8b42a24d-caf0-46ef-9e15-0f88d47d2f21@redhat.com/
+So be careful please.
 
-Suggested-by: Peter Xu <peterx@redhat.com>
-Signed-off-by: David Hildenbrand <david@redhat.com>
----
- mm/hugetlb.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+> I understand the tradeoff would be allocating in run time the class struct
+> anyway, but than, it could also be freed.
 
-diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-index 417fc5cdb6eeb..a7efb350f5d07 100644
---- a/mm/hugetlb.c
-+++ b/mm/hugetlb.c
-@@ -5963,6 +5963,13 @@ static vm_fault_t hugetlb_wp(struct folio *pagecache_folio,
- 	/*
- 	 * If no-one else is actually using this page, we're the exclusive
- 	 * owner and can reuse this page.
-+	 *
-+	 * Note that we don't rely on the (safer) folio refcount here, because
-+	 * copying the hugetlb folio when there are unexpected (temporary)
-+	 * folio references could harm simple fork()+exit() users when
-+	 * we run out of free hugetlb folios: we would have to kill processes
-+	 * in scenarios that used to work. As a side effect, there can still
-+	 * be leaks between processes, for example, with FOLL_GET users.
- 	 */
- 	if (folio_mapcount(old_folio) == 1 && folio_test_anon(old_folio)) {
- 		if (!PageAnonExclusive(&old_folio->page)) {
--- 
-2.44.0
+When is it freed that the current code is not also freed?
 
+> Since the Pi433 is a RasPi expansion board and can be attached\removed in an
+> asynchronous matter by the user, and only one can be attached at a time, I
+> thought it is best not to statically allocate memory which won't be freed
+> even if the hat is removed.
+
+Is that what happens in the code?
+
+> By using the class_create & class_destroy I thought of reducing memory
+> allocated by the RasPi if the pi433 is removed.
+
+Try it and see :)
+
+> But following your response I now actually see that the class struct will
+> have the same lifespan anyway if allocated statically or dynamically if its
+> alive between the init\exit calls.
+
+Yes.
+
+> > Also, this looks like a revert of commit f267da65bb6b ("staging: pi433:
+> > make pi433_class constant"), accepted a few months ago, why not just
+> > call it out as an explicit revert if that's what you want to do?
+> > 
+> I actually saw this commit, but for some reason did not connect the dots
+> when I wrote this patch. My bad.
+> 
+> > class_create is going away "soon", why add this back when people are
+> > working so hard to remove its usage?  What tutorial did you read that
+> > made you want to make this change?
+> > 
+> It's true, I got it the wrong way I guess. I thought class_create is the
+> preferred API (but now that you mentioned commit f267da65bb6b, I see it's
+> not). I did notice it in many other drivers though, and took them as an
+> example (e.g. gnss).
+
+There are patches out that replace almost all users of class_create()
+such that it should be almost gone from the tree.
+
+> > thanks,
+> > 
+> > greg k-h
+> 
+> I actually initially thought that the pi433 class should be removed since it
+> doesn't bring any new attributes with it, and that spi_slave_class is more
+> appropriate, but then I saw no other driver using it. Any thoughts about
+> that?
+
+The whole driver is going to be removed soon, please see the mailing
+list archives for the details.
+
+thanks,
+
+greg k-h
 
