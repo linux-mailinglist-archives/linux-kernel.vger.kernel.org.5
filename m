@@ -1,33 +1,33 @@
-Return-Path: <linux-kernel+bounces-166136-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-166133-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id CE94F8B96AF
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 10:46:25 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 89DB18B96AB
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 10:45:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 30315B2266B
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 08:46:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 94E6F1C21252
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 08:45:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 79DA95674D;
-	Thu,  2 May 2024 08:45:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE11F54646;
+	Thu,  2 May 2024 08:45:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=nbd.name header.i=@nbd.name header.b="dDIlppcj"
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=nbd.name header.i=@nbd.name header.b="ZADqazz9"
 Received: from nbd.name (nbd.name [46.4.11.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7FFA74D5BD;
-	Thu,  2 May 2024 08:45:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 406964655F;
+	Thu,  2 May 2024 08:45:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.4.11.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714639505; cv=none; b=mw4fwBRcdVOz/3GOzmUL7BIU+Zq9FgBeMS6jHmEAWEsEdq0a9fZOt1cFeOvHlbwruj46VvDlwNws4Z0p4sGPComZ0yNrbYIyF6StGsa5ymnpcVZroaHOsU0kD6IfzzyjrwMImEpVHKWPFhHxgbqaHBLLrtcaNFagsbwYXInlYno=
+	t=1714639504; cv=none; b=dk24hXMf/nOlNbGvzC7M5vkDmwnro6fCeAaxQj35RJooxWk8SUb3qHdumwdTedkn+AVx1g1lVVVn8Xbs5eD7CeX24vJXXYnmoa9H9rdN5GIV5+KT/0IwjKLpY3P8pNZK6Zc49I5A35/WPWE0tR/2K2xY3WM+IPvCzA4CkXrS12k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714639505; c=relaxed/simple;
-	bh=em95ThCxyRDDBjSTJDqTAFCT1a5qtEljt9DPevZNmjo=;
+	s=arc-20240116; t=1714639504; c=relaxed/simple;
+	bh=v00X4mi1QPHASjXDB1BqcufjMuYUrjWt9eIQHw9CO04=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=oVfLR3Aw65gu4+FmIGpd4R9fZNi5hftcEk9HLVfi79yZk6p7IjxtzPGlif7cqsU5Liiwp+4r+1ey1rX668nhwgVfvKJJ5qAz3BSDvHEcZUOVcQ5bVvonovpfn0TA/xlaWfUB8bAByg+qgVHjMJMRYlSDzMfzSy9mNX6JRwt4GcI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nbd.name; spf=none smtp.mailfrom=nbd.name; dkim=pass (1024-bit key) header.d=nbd.name header.i=@nbd.name header.b=dDIlppcj; arc=none smtp.client-ip=46.4.11.11
+	 MIME-Version; b=SA2IP82fwahRn/kBKMV1Wd2HST3kcwdmpo1ZlgqTpsYU6zYk970MNMt6rwbN51wwzz23MeHDhmRQd336qAJnL/4AjK89fE2GwF4goj15bs82eVTdwNf8eUe6s7Q+AXAwTPPWiHWeGtZZBWMnISuydgWsvt4kXIBPd6Yy1ICFlQU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nbd.name; spf=none smtp.mailfrom=nbd.name; dkim=pass (1024-bit key) header.d=nbd.name header.i=@nbd.name header.b=ZADqazz9; arc=none smtp.client-ip=46.4.11.11
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nbd.name
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=nbd.name
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nbd.name;
@@ -36,15 +36,15 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nbd.name;
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
 	List-Post:List-Owner:List-Archive;
-	bh=ClxvxZbCCOupReIkBBj/RqjhghV22QirKfocqVO5EBo=; b=dDIlppcjXom0blgcUvN0bpCdHU
-	XaVwoil79CsD2lbRS5Ob5CKxDeQTIDCNg/CkZcjJF8se3h2nzRDE2Hbe8tcfXro6NPnfIzmfe4enV
-	w43KgA2ZlIOC1oVe2Nrk1dfMZDklJNcTTvlZrQNck025kh4C253gxviBd/AvMVpa8ryE=;
+	bh=dITqPmiMLPj0X8efqXc4rgGYL4SH3v8L9fqRS39+8H0=; b=ZADqazz91RPknCSIV3yOjA7r2m
+	aWTRkXD+pbpnDuInM4yPTZroyVPrFVNVEMNErDwU8VHQ2Oh/uOwU9Z+bKk1082bE0+7Vl77eLhnDd
+	0rP3h09kN/0xedO3c1jWnWlwtrB2oCCh42ASID++AmS9p6E5hSTGqRtCB5JJsnKPIBkc=;
 Received: from p54ae9c93.dip0.t-ipconnect.de ([84.174.156.147] helo=localhost.localdomain)
 	by ds12 with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256
 	(Exim 4.96)
 	(envelope-from <nbd@nbd.name>)
-	id 1s2S3i-00BKKn-1O;
-	Thu, 02 May 2024 10:44:54 +0200
+	id 1s2S3j-00BKKn-0u;
+	Thu, 02 May 2024 10:44:55 +0200
 From: Felix Fietkau <nbd@nbd.name>
 To: netdev@vger.kernel.org,
 	Eric Dumazet <edumazet@google.com>,
@@ -54,9 +54,9 @@ To: netdev@vger.kernel.org,
 	David Ahern <dsahern@kernel.org>
 Cc: willemdebruijn.kernel@gmail.com,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH v5 net-next v5 4/6] net: create tcp_gro_lookup helper function
-Date: Thu,  2 May 2024 10:44:45 +0200
-Message-ID: <20240502084450.44009-5-nbd@nbd.name>
+Subject: [PATCH v5 net-next v5 5/6] net: create tcp_gro_header_pull helper function
+Date: Thu,  2 May 2024 10:44:46 +0200
+Message-ID: <20240502084450.44009-6-nbd@nbd.name>
 X-Mailer: git-send-email 2.44.0
 In-Reply-To: <20240502084450.44009-1-nbd@nbd.name>
 References: <20240502084450.44009-1-nbd@nbd.name>
@@ -68,90 +68,170 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-This pulls the flow port matching out of tcp_gro_receive, so that it can be
-reused for the next change, which adds the TCP fraglist GRO heuristic.
+Pull the code out of tcp_gro_receive in order to access the tcp header
+from tcp4/6_gro_receive.
 
 Acked-by: Paolo Abeni <pabeni@redhat.com>
 Reviewed-by: Eric Dumazet <edumazet@google.com>
 Signed-off-by: Felix Fietkau <nbd@nbd.name>
 ---
- include/net/tcp.h      |  1 +
- net/ipv4/tcp_offload.c | 41 +++++++++++++++++++++++++----------------
- 2 files changed, 26 insertions(+), 16 deletions(-)
+ include/net/tcp.h        |  4 ++-
+ net/ipv4/tcp_offload.c   | 55 +++++++++++++++++++++++++---------------
+ net/ipv6/tcpv6_offload.c | 18 +++++++++----
+ 3 files changed, 50 insertions(+), 27 deletions(-)
 
 diff --git a/include/net/tcp.h b/include/net/tcp.h
-index a9eb21251195..9f08ecab26e0 100644
+index 9f08ecab26e0..bf392c1fbadc 100644
 --- a/include/net/tcp.h
 +++ b/include/net/tcp.h
-@@ -2199,6 +2199,7 @@ void tcp_v4_destroy_sock(struct sock *sk);
+@@ -2199,8 +2199,10 @@ void tcp_v4_destroy_sock(struct sock *sk);
  
  struct sk_buff *tcp_gso_segment(struct sk_buff *skb,
  				netdev_features_t features);
-+struct sk_buff *tcp_gro_lookup(struct list_head *head, struct tcphdr *th);
- struct sk_buff *tcp_gro_receive(struct list_head *head, struct sk_buff *skb);
++struct tcphdr *tcp_gro_pull_header(struct sk_buff *skb);
+ struct sk_buff *tcp_gro_lookup(struct list_head *head, struct tcphdr *th);
+-struct sk_buff *tcp_gro_receive(struct list_head *head, struct sk_buff *skb);
++struct sk_buff *tcp_gro_receive(struct list_head *head, struct sk_buff *skb,
++				struct tcphdr *th);
  INDIRECT_CALLABLE_DECLARE(int tcp4_gro_complete(struct sk_buff *skb, int thoff));
  INDIRECT_CALLABLE_DECLARE(struct sk_buff *tcp4_gro_receive(struct list_head *head, struct sk_buff *skb));
+ INDIRECT_CALLABLE_DECLARE(int tcp6_gro_complete(struct sk_buff *skb, int thoff));
 diff --git a/net/ipv4/tcp_offload.c b/net/ipv4/tcp_offload.c
-index aa7508676315..4a194a9d36cd 100644
+index 4a194a9d36cd..87ae9808e260 100644
 --- a/net/ipv4/tcp_offload.c
 +++ b/net/ipv4/tcp_offload.c
-@@ -245,6 +245,27 @@ struct sk_buff *tcp_gso_segment(struct sk_buff *skb,
- 	return segs;
+@@ -266,40 +266,46 @@ struct sk_buff *tcp_gro_lookup(struct list_head *head, struct tcphdr *th)
+ 	return NULL;
  }
  
-+struct sk_buff *tcp_gro_lookup(struct list_head *head, struct tcphdr *th)
-+{
-+	struct tcphdr *th2;
-+	struct sk_buff *p;
-+
-+	list_for_each_entry(p, head, list) {
-+		if (!NAPI_GRO_CB(p)->same_flow)
-+			continue;
-+
-+		th2 = tcp_hdr(p);
-+		if (*(u32 *)&th->source ^ *(u32 *)&th2->source) {
-+			NAPI_GRO_CB(p)->same_flow = 0;
-+			continue;
-+		}
-+
-+		return p;
-+	}
-+
-+	return NULL;
+-struct sk_buff *tcp_gro_receive(struct list_head *head, struct sk_buff *skb)
++struct tcphdr *tcp_gro_pull_header(struct sk_buff *skb)
+ {
+-	struct sk_buff *pp = NULL;
+-	struct sk_buff *p;
++	unsigned int thlen, hlen, off;
+ 	struct tcphdr *th;
+-	struct tcphdr *th2;
+-	unsigned int len;
+-	unsigned int thlen;
+-	__be32 flags;
+-	unsigned int mss = 1;
+-	unsigned int hlen;
+-	unsigned int off;
+-	int flush = 1;
+-	int i;
+ 
+ 	off = skb_gro_offset(skb);
+ 	hlen = off + sizeof(*th);
+ 	th = skb_gro_header(skb, hlen, off);
+ 	if (unlikely(!th))
+-		goto out;
++		return NULL;
+ 
+ 	thlen = th->doff * 4;
+ 	if (thlen < sizeof(*th))
+-		goto out;
++		return NULL;
+ 
+ 	hlen = off + thlen;
+ 	if (!skb_gro_may_pull(skb, hlen)) {
+ 		th = skb_gro_header_slow(skb, hlen, off);
+ 		if (unlikely(!th))
+-			goto out;
++			return NULL;
+ 	}
+ 
+ 	skb_gro_pull(skb, thlen);
+ 
++	return th;
 +}
 +
- struct sk_buff *tcp_gro_receive(struct list_head *head, struct sk_buff *skb)
- {
- 	struct sk_buff *pp = NULL;
-@@ -282,24 +303,12 @@ struct sk_buff *tcp_gro_receive(struct list_head *head, struct sk_buff *skb)
++struct sk_buff *tcp_gro_receive(struct list_head *head, struct sk_buff *skb,
++				struct tcphdr *th)
++{
++	unsigned int thlen = th->doff * 4;
++	struct sk_buff *pp = NULL;
++	struct sk_buff *p;
++	struct tcphdr *th2;
++	unsigned int len;
++	__be32 flags;
++	unsigned int mss = 1;
++	int flush = 1;
++	int i;
++
  	len = skb_gro_len(skb);
  	flags = tcp_flag_word(th);
  
--	list_for_each_entry(p, head, list) {
--		if (!NAPI_GRO_CB(p)->same_flow)
--			continue;
--
--		th2 = tcp_hdr(p);
--
--		if (*(u32 *)&th->source ^ *(u32 *)&th2->source) {
--			NAPI_GRO_CB(p)->same_flow = 0;
--			continue;
--		}
--
--		goto found;
--	}
--	p = NULL;
--	goto out_check_final;
-+	p = tcp_gro_lookup(head, th);
-+	if (!p)
-+		goto out_check_final;
+@@ -376,7 +382,6 @@ struct sk_buff *tcp_gro_receive(struct list_head *head, struct sk_buff *skb)
+ 	if (p && (!NAPI_GRO_CB(skb)->same_flow || flush))
+ 		pp = p;
  
--found:
- 	/* Include the IP ID check below from the inner most IP hdr */
-+	th2 = tcp_hdr(p);
- 	flush = NAPI_GRO_CB(p)->flush;
- 	flush |= (__force int)(flags & TCP_FLAG_CWR);
- 	flush |= (__force int)((flags ^ tcp_flag_word(th2)) &
+-out:
+ 	NAPI_GRO_CB(skb)->flush |= (flush != 0);
+ 
+ 	return pp;
+@@ -405,15 +410,23 @@ EXPORT_SYMBOL(tcp_gro_complete);
+ INDIRECT_CALLABLE_SCOPE
+ struct sk_buff *tcp4_gro_receive(struct list_head *head, struct sk_buff *skb)
+ {
++	struct tcphdr *th;
++
+ 	/* Don't bother verifying checksum if we're going to flush anyway. */
+ 	if (!NAPI_GRO_CB(skb)->flush &&
+ 	    skb_gro_checksum_validate(skb, IPPROTO_TCP,
+-				      inet_gro_compute_pseudo)) {
+-		NAPI_GRO_CB(skb)->flush = 1;
+-		return NULL;
+-	}
++				      inet_gro_compute_pseudo))
++		goto flush;
++
++	th = tcp_gro_pull_header(skb);
++	if (!th)
++		goto flush;
+ 
+-	return tcp_gro_receive(head, skb);
++	return tcp_gro_receive(head, skb, th);
++
++flush:
++	NAPI_GRO_CB(skb)->flush = 1;
++	return NULL;
+ }
+ 
+ INDIRECT_CALLABLE_SCOPE int tcp4_gro_complete(struct sk_buff *skb, int thoff)
+diff --git a/net/ipv6/tcpv6_offload.c b/net/ipv6/tcpv6_offload.c
+index 575e2743e331..e73a4f74fd96 100644
+--- a/net/ipv6/tcpv6_offload.c
++++ b/net/ipv6/tcpv6_offload.c
+@@ -16,15 +16,23 @@
+ INDIRECT_CALLABLE_SCOPE
+ struct sk_buff *tcp6_gro_receive(struct list_head *head, struct sk_buff *skb)
+ {
++	struct tcphdr *th;
++
+ 	/* Don't bother verifying checksum if we're going to flush anyway. */
+ 	if (!NAPI_GRO_CB(skb)->flush &&
+ 	    skb_gro_checksum_validate(skb, IPPROTO_TCP,
+-				      ip6_gro_compute_pseudo)) {
+-		NAPI_GRO_CB(skb)->flush = 1;
+-		return NULL;
+-	}
++				      ip6_gro_compute_pseudo))
++		goto flush;
++
++	th = tcp_gro_pull_header(skb);
++	if (!th)
++		goto flush;
++
++	return tcp_gro_receive(head, skb, th);
+ 
+-	return tcp_gro_receive(head, skb);
++flush:
++	NAPI_GRO_CB(skb)->flush = 1;
++	return NULL;
+ }
+ 
+ INDIRECT_CALLABLE_SCOPE int tcp6_gro_complete(struct sk_buff *skb, int thoff)
 -- 
 2.44.0
 
