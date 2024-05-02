@@ -1,153 +1,93 @@
-Return-Path: <linux-kernel+bounces-166842-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-166843-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id EAB7A8BA0B2
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 20:42:53 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2E4A48BA0B7
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 20:45:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 89F721F228F0
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 18:42:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DDB612863BF
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 18:45:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5D2A175571;
-	Thu,  2 May 2024 18:42:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 577F3175579;
+	Thu,  2 May 2024 18:45:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="jISvnzMT"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.15])
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="bHjgbdAO"
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 03007174EF7;
-	Thu,  2 May 2024 18:42:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6FD79FBF6;
+	Thu,  2 May 2024 18:45:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714675362; cv=none; b=jHeO+vSzrFOU4H8z95pk6ipRJ5H0x38MxwuUU9Ftoxjxax2AKT4NnZ7gHRAsGuv7tV46w4KkrwMmQMw/R4ePIkXLQnGCVi7gxxp2Gp9KFEF48zLaDCUQFzYfioGEEkz7y4ulP5QAs4NBPUjqvTYf13/MqnMu9YHFxU6FwBa0s28=
+	t=1714675513; cv=none; b=i1qseFC/D1FLkU8kQVhOv6CE0KH9ymmDk/LW+LM9gWJLQdrAspPUES+UPx0YeW5Ao62xCGWKHCHc9GgMQs0x5HUpZpST27bjHyKB6xDA12sL6G2hGKe8TxY4Oh4/VhYLVUVDb8EQ3ZLprQtVpMRo4ObtjJuomWwz+dh3yfXGRFs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714675362; c=relaxed/simple;
-	bh=+UPGxVtzvoqafoqDKCEmP/fdTBdI91Yv9oTxTOAU6Sw=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=uTV7bgqjb9i1ThUeERSnl5vpD4l+Pz7iFcSRkXZDv+Vep8+9w5cZ9tdtWDJjZOnxMSUbVzoHpvLG4xIodLa7oOq0HGHl2TcJDYl4m+/eNHjLSsQEx3Zip86VN0MfRzb192oqM9O/1rlhwKi6ClTx66Q7t+HrPirNpe06B/RfB9M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=jISvnzMT; arc=none smtp.client-ip=192.198.163.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1714675360; x=1746211360;
-  h=from:date:subject:mime-version:content-transfer-encoding:
-   message-id:to:cc;
-  bh=+UPGxVtzvoqafoqDKCEmP/fdTBdI91Yv9oTxTOAU6Sw=;
-  b=jISvnzMT4xzmZVVqArs5fyROS5D78aEM+fp0k47aA32IIBIblixXRAtb
-   YSs7vvBT3vvWYdxnBEfsVu4rUBv/xFNomcAraynCMRAZbXGFDC+3j4N0L
-   gLDz7Dx1JfOqVAMAP1+jQdN12F+T/j5JE7cVlrs1+0OjOur9EMeRCBzcs
-   7qizgtjG+7nK1L+EwGswEvMHD1aiHMeWMTUOO2EEKnAfBNA/kTbbjm8ic
-   xqpmHO15Z2PZMS9O0Bs+QoC+ir23V4n/8xbUGd1vYRBRcOGcvF8l+k2SK
-   L9rcoYIOutTlUkOxStCi8DLYjToSb4gyv9HkW8xlUbIkzTQr+Ie0Z/AGF
-   w==;
-X-CSE-ConnectionGUID: 7zt7sKWiRfKePkFezQacJw==
-X-CSE-MsgGUID: o/VPEqVUScueCP918Y8yKw==
-X-IronPort-AV: E=McAfee;i="6600,9927,11062"; a="10625118"
-X-IronPort-AV: E=Sophos;i="6.07,247,1708416000"; 
-   d="scan'208";a="10625118"
-Received: from fmviesa005.fm.intel.com ([10.60.135.145])
-  by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 May 2024 11:42:39 -0700
-X-CSE-ConnectionGUID: luAIiTWMQxiBPLfGFSxplA==
-X-CSE-MsgGUID: RpcBD7o2SI2H3ESmJxkWiQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,247,1708416000"; 
-   d="scan'208";a="31680682"
-Received: from iweiny-mobl.sc.intel.com (HELO localhost) ([10.144.162.136])
-  by fmviesa005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 May 2024 11:42:39 -0700
-From: Ira Weiny <ira.weiny@intel.com>
-Date: Thu, 02 May 2024 11:42:34 -0700
-Subject: [PATCH] cxl/cper: Remove duplicated GUID defines
+	s=arc-20240116; t=1714675513; c=relaxed/simple;
+	bh=FWuYteWtRFhnZWyLGHxZuWlcSYRlHBcV1uBe1wn/qeA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=AGV5fk549COC6msk6YSC6Nca90PfK4Y3gOz75QfNOThn/3lB6U6BWS/mFFGmpSjL4zEs/+UbdSqWTj9Wjl33mVsRJRk5wltexkZFiG8n0uZcfl+7+JXhYa4tvbIZGJqKAlWyuwi9vDdo8pog8lXn0xjES4MRKpOekz1L1ndIc3k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=bHjgbdAO; arc=none smtp.client-ip=90.155.50.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=ChA4JiEO8+pzbEqPjZaxipmruWijlKLZwUNT6NFeTP4=; b=bHjgbdAO2OtVI/QsIEAZ+xE7sA
+	piqclsNY80fgYK6rkYvkCmKZ3W0yraJRf1lRVTQq9A/vuaburmAoHPkGeD/72zEo1oxBmIQSxd2pQ
+	bLKa9/ENfAW7x2Mfv0zF7UR0yfahZ4B2cEF0yh1+Zc6ZevwLc98DeQMrbKKeYSg0xSh+dzZpvT1Cl
+	P6Hjb+YNg8nguEe2VUCajZmwTK6ocR9Zbkl2Kb4pDiHMyJ5eOyJFhdMqLzDw5sKu4B+fVjtSf7AP7
+	67itKBXCrbv3RO7mu2GsaUu8rI1xV7wiTwjS+NcwgqBzvqfPvuJHgIppQBjg0UePiR0Fe6SzwQsM4
+	6VKgpgWw==;
+Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1s2bQQ-00000002Ezr-38HW;
+	Thu, 02 May 2024 18:44:58 +0000
+Date: Thu, 2 May 2024 19:44:58 +0100
+From: Matthew Wilcox <willy@infradead.org>
+To: Jason Gunthorpe <jgg@nvidia.com>
+Cc: John Hubbard <jhubbard@nvidia.com>,
+	David Hildenbrand <david@redhat.com>,
+	Alistair Popple <apopple@nvidia.com>,
+	Christoph Hellwig <hch@infradead.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	LKML <linux-kernel@vger.kernel.org>, linux-rdma@vger.kernel.org,
+	linux-mm@kvack.org, Mike Marciniszyn <mike.marciniszyn@intel.com>,
+	Leon Romanovsky <leon@kernel.org>,
+	Artemy Kovalyov <artemyko@nvidia.com>,
+	Michael Guralnik <michaelgur@nvidia.com>,
+	Pak Markthub <pmarkthub@nvidia.com>
+Subject: Re: [RFC] RDMA/umem: pin_user_pages*() can temporarily fail due to
+ migration glitches
+Message-ID: <ZjPfKqMJYU71iCV9@casper.infradead.org>
+References: <20240501003117.257735-1-jhubbard@nvidia.com>
+ <ZjHO04Rb75TIlmkA@infradead.org>
+ <20240501121032.GA941030@nvidia.com>
+ <87r0el3tfi.fsf@nvdebian.thelocal>
+ <92289167-5655-4c51-8dfc-df7ae53fdb7b@redhat.com>
+ <a2032a79-744d-4c00-a286-7d6fed3a1bdb@nvidia.com>
+ <20240502183408.GC3341011@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240502-cper-fix-dup-guid-v1-1-283cc447c7bf@intel.com>
-X-B4-Tracking: v=1; b=H4sIAJneM2YC/x2MQQqAIBAAvxJ7bkElI/tKdAhdbS8mihGEf086D
- sPMC4UyU4F1eCHTzYWv2EGOA9jziIGQXWdQQk1CC4U2UUbPD7qaMFR26Cc7a20WaYSH3qVM3f/
- PbW/tA94HXABjAAAA
-To: Dave Jiang <dave.jiang@intel.com>, Tony Luck <tony.luck@intel.com>, 
- "Rafael J. Wysocki" <rafael@kernel.org>
-Cc: linux-cxl@vger.kernel.org, linux-acpi@vger.kernel.org, 
- linux-kernel@vger.kernel.org, Ira Weiny <ira.weiny@intel.com>
-X-Mailer: b4 0.13-dev-2d940
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1714675358; l=2192;
- i=ira.weiny@intel.com; s=20221211; h=from:subject:message-id;
- bh=+UPGxVtzvoqafoqDKCEmP/fdTBdI91Yv9oTxTOAU6Sw=;
- b=ZfOUibA0BaV1p864RZSecPD9M/hDDUwzMQYyMBzut/PH0axj4QAqExKK8IX/HGQ/LjjM7nxR1
- q8eJ57kSdEXCaE8BYVBbpc9dWyRPxdSn8ycdGB0j/SrpfzS5Wp3Efyz
-X-Developer-Key: i=ira.weiny@intel.com; a=ed25519;
- pk=noldbkG+Wp1qXRrrkfY1QJpDf7QsOEthbOT7vm0PqsE=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240502183408.GC3341011@nvidia.com>
 
-Commit 54ce1927eb78 ("cxl/cper: Fix errant CPER prints for CXL events")
-moved the CXL CPER section defines to include/linux/cper.h from ghes.c
+On Thu, May 02, 2024 at 03:34:08PM -0300, Jason Gunthorpe wrote:
+> IMHO pin_user_pages() should sleep and spin in an interruptable sleep
 
-When the latest cxl/cper series was reworked those defines were kept in
-ghes.c by accident.  Thus they were duplicated.
+killable, not interruptible.  Otherwise SIGWINCH and SIGALRM can
+result an early return.
 
-Delete the duplicate defines keeping them in the header to be shared
-between efi and apei.
+> until we get all the migrations done. Not sure how hard it would be to
+> add some kind of proper waiting event sleep?
 
-Suggested-by: De Francesco, Fabio <fabio.maria.de.francesco@intel.com>
-Signed-off-by: Ira Weiny <ira.weiny@intel.com>
----
-No fixes tag because the change is only in linux-next.
-
-Tony can I get a quick ack?  I think this should go through the CXL tree
-and picked up by Dave.
----
- drivers/acpi/apei/ghes.c | 26 --------------------------
- 1 file changed, 26 deletions(-)
-
-diff --git a/drivers/acpi/apei/ghes.c b/drivers/acpi/apei/ghes.c
-index 2247a1535b52..623cc0cb4a65 100644
---- a/drivers/acpi/apei/ghes.c
-+++ b/drivers/acpi/apei/ghes.c
-@@ -676,32 +676,6 @@ static void ghes_defer_non_standard_event(struct acpi_hest_generic_data *gdata,
- 	schedule_work(&entry->work);
- }
- 
--/* CXL Event record UUIDs are formated as GUIDs and reported in section type */
--
--/*
-- * General Media Event Record
-- * CXL rev 3.0 Section 8.2.9.2.1.1; Table 8-43
-- */
--#define CPER_SEC_CXL_GEN_MEDIA_GUID					\
--	GUID_INIT(0xfbcd0a77, 0xc260, 0x417f,				\
--		  0x85, 0xa9, 0x08, 0x8b, 0x16, 0x21, 0xeb, 0xa6)
--
--/*
-- * DRAM Event Record
-- * CXL rev 3.0 section 8.2.9.2.1.2; Table 8-44
-- */
--#define CPER_SEC_CXL_DRAM_GUID						\
--	GUID_INIT(0x601dcbb3, 0x9c06, 0x4eab,				\
--		  0xb8, 0xaf, 0x4e, 0x9b, 0xfb, 0x5c, 0x96, 0x24)
--
--/*
-- * Memory Module Event Record
-- * CXL rev 3.0 section 8.2.9.2.1.3; Table 8-45
-- */
--#define CPER_SEC_CXL_MEM_MODULE_GUID					\
--	GUID_INIT(0xfe927475, 0xdd59, 0x4339,				\
--		  0xa5, 0x86, 0x79, 0xba, 0xb1, 0x13, 0xb7, 0x74)
--
- /* Room for 8 entries for each of the 4 event log queues */
- #define CXL_CPER_FIFO_DEPTH 32
- DEFINE_KFIFO(cxl_cper_fifo, struct cxl_cper_work_data, CXL_CPER_FIFO_DEPTH);
-
----
-base-commit: eedb1dd62a7e7471cef18de55d3794cb64adb818
-change-id: 20240502-cper-fix-dup-guid-f4c65598190f
-
-Best regards,
--- 
-Ira Weiny <ira.weiny@intel.com>
-
+ummmmm.  We have a "has waiters" bit in the folio.  So on every call to
+folio_put(), we could check that bit and wake up any waiters.  I need to
+think about that; right now, we only use it for unlock and end_writeback.
+Making folio_put() heavier is, well, quite a lot of call-sites.
 
