@@ -1,272 +1,248 @@
-Return-Path: <linux-kernel+bounces-166256-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-166252-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9C0FD8B981F
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 11:53:12 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 316B18B981A
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 11:52:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 90878B246F8
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 09:53:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B57FC1F24F04
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 09:52:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8FD6156771;
-	Thu,  2 May 2024 09:52:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 362BD56B6B;
+	Thu,  2 May 2024 09:51:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="zZsYLufi"
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2071.outbound.protection.outlook.com [40.107.237.71])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="ov5vC8kL"
+Received: from mail-lf1-f51.google.com (mail-lf1-f51.google.com [209.85.167.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0CD55644E;
-	Thu,  2 May 2024 09:52:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.237.71
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714643571; cv=fail; b=QHlLPsyQkxAreqPXJ7AJKfNKAsxN1bLFwVfuRgC1ArO9a7alau0RwGVeufubb7Yzse2KMLUGi+epLu3kio7QtYV3HTM+M2vZAYWW4skHpqwPwWmWXPkIFKAFn+W8fWX6oFSp9+JeXyLvPDM4FzZ/VKCXa4H305Z7SR4wVjpUdWI=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714643571; c=relaxed/simple;
-	bh=6iwEzhG4bHX5ibXXMGL4mKfx8uDicQXRxcQguXZghrI=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Hif5dHztysjguHH5NhAARsmshxTw6cELIinoqZUt9IHbjFPnh0YbaOhe37oAWZTvi0tDEPvk3jZYotYCVoX/gH3Bpl4ptAthpMN7EzKVUxvSKdIOlyZT0YMGnbjI215LFHxHcNy9EdOry3Q4Dq66vNGry8a+Gh5SWyZ/a+VNX/E=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=zZsYLufi; arc=fail smtp.client-ip=40.107.237.71
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=mxuiRq8VhyyWsc4uC2uPtHYpKjeFKdyLYrfYcjgzw0MwDNAJmrGl2zZr9GebxtObwMJv0AlY5d5aw04stsZyOtWlTM8MRY5aY/szRWp5uZ2KMYKWukMRqXT1xh36RcEXbplBZx3ya6x+Ol0aJaAHEpLd5qBOC9JabIc6+1cQFfQvfQsI5l1eN9BqcjjCirRc4fvnx6MjO4Le98TmPylXuqoa4v3m+ScM/icfG+A326RFQ/SFNRJaaWgRlyQYAQvXZOzSrBFNAUHMr+vIjaBe20pnGmEA3ZLJQT5wg6px55rS9W/iCk+ouXDOPY/mwOE1//ayWNdqAYUetbU1Gj00XA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=MxRSNwTJiVNU/sNkdfqTJok2Wf9CF8PyX1ph712TswU=;
- b=nBfyu7qMi5Acqi+PbKILD3TJl2EwCS2NFvOFqVu/+iS1b3fM9ZilFf+lVCO8RSKUetd6wXT3DNJN+5UiKrpQ1UA/67J/uhQv1EipudJn6c/yRKD+4aOPauWeEFNqZvaLay81OU256o3KUct+Zx50KL3u2pWXadLXKRfsoiHPBHS9AzcT53eHx14r1n4NT0mENgHN1qMGUFJBbaJb0GvODAJjHH89SvCs0fGmuQd/kOS538TJQJLTSrGM8flB8G88/X6x0A0qakVml3vA1jgaBCAKAlNy6ClQJkdtF+7k7W8cKupj1+Q5bc6EEM/IAgSkgQRywQDX7yivFk6EASVmXg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=linutronix.de smtp.mailfrom=amd.com;
- dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
- header.from=amd.com; dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=MxRSNwTJiVNU/sNkdfqTJok2Wf9CF8PyX1ph712TswU=;
- b=zZsYLufiafxUZLvg8K61ncO684FbdBKhuto5uRSvJAOqG0c2dwB2+1YivBX95GCvsbiSib6nL0EkAOz32XDs7HZi1hRJ1LH43jirIgKdLW0P4hwVL1PFLKoebN7oAOSrQT0YAyZ/+dV+wdD3zv7RSOQydU8QjdtvSTsf8i4qpJE=
-Received: from DM6PR07CA0114.namprd07.prod.outlook.com (2603:10b6:5:330::29)
- by MW4PR12MB7438.namprd12.prod.outlook.com (2603:10b6:303:219::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7544.28; Thu, 2 May
- 2024 09:52:44 +0000
-Received: from DS3PEPF000099DE.namprd04.prod.outlook.com
- (2603:10b6:5:330:cafe::72) by DM6PR07CA0114.outlook.office365.com
- (2603:10b6:5:330::29) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7544.30 via Frontend
- Transport; Thu, 2 May 2024 09:52:43 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- DS3PEPF000099DE.mail.protection.outlook.com (10.167.17.200) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7544.18 via Frontend Transport; Thu, 2 May 2024 09:52:43 +0000
-Received: from BLR-L-DUGWEKAR.amd.com (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Thu, 2 May
- 2024 04:52:37 -0500
-From: Dhananjay Ugwekar <Dhananjay.Ugwekar@amd.com>
-To: <tglx@linutronix.de>, <bp@alien8.de>, <dave.hansen@linux.intel.com>,
-	<x86@kernel.org>
-CC: <peterz@infradead.org>, <mingo@redhat.com>, <ananth.narayan@amd.com>,
-	<gautham.shenoy@amd.com>, <linux-perf-users@vger.kernel.org>,
-	<linux-hardening@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<sandipan.das@amd.com>, <alexander.shishkin@linux.intel.com>,
-	<irogers@google.com>, <gustavoars@kernel.org>, <kprateek.nayak@amd.com>,
-	<ravi.bangoria@amd.com>, Dhananjay Ugwekar <Dhananjay.Ugwekar@amd.com>
-Subject: [PATCH 2/2] perf/x86/rapl: Fix the energy-pkg event for AMD CPUs
-Date: Thu, 2 May 2024 15:21:15 +0530
-Message-ID: <20240502095115.177713-3-Dhananjay.Ugwekar@amd.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240502095115.177713-1-Dhananjay.Ugwekar@amd.com>
-References: <20240502095115.177713-1-Dhananjay.Ugwekar@amd.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A6BF56444
+	for <linux-kernel@vger.kernel.org>; Thu,  2 May 2024 09:51:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.51
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1714643515; cv=none; b=T4u1sJrR3GjepgEVApwujF/tw9O1NNCt0DZUDmLejqlG4zIVjlF81HC59BfPqZWFRUuZOXpKbZVUrd3OkbiVtch+ABxBJiS9//NqqZ0Wf9icZ5Oj+bLxDx7LJG1MVInQXx61Cv37oT9AAW3/3+lcLA8yWpgXCzg6VEOV7tjuM5I=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1714643515; c=relaxed/simple;
+	bh=/TCOrrZIziWIoZHm680VfmeZr4x/v7De8uT3VCYEd4w=;
+	h=Message-ID:Date:MIME-Version:To:Cc:From:Subject:Content-Type; b=ItNVrAGlheiTW+UQqxo7iCzPiFdih5FL+6f8TRJdp4MpV7LE92oMDWqejToMw+sZO8JIaRu5J7zDiZNwpvJw1VzQ7cEn5u2kHbXBxfGGGMBUD3u3f5DgABMNHZJJnj92+4VZmg5W14lEHdYRt5QLDNH6F19yj8ouWZJ6dhO4ClM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=ov5vC8kL; arc=none smtp.client-ip=209.85.167.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lf1-f51.google.com with SMTP id 2adb3069b0e04-51ab4ee9df8so9658281e87.1
+        for <linux-kernel@vger.kernel.org>; Thu, 02 May 2024 02:51:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1714643511; x=1715248311; darn=vger.kernel.org;
+        h=content-transfer-encoding:subject:from:cc:to:content-language
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=cwHJ9SUvvvu/eTS+n+2CuD+oluv5OCbi0dkOhie1vG0=;
+        b=ov5vC8kLHU03jsPjcPGzh0PYkxy6g2a8BzI3o35ehUjpylQ7l+OeX1GCb7Nm7nVBy8
+         MbNrEPopopm1QAq618+w6crjfAuZH4Fm1rtyzhfoCo9gU9MlI13M8OvADGtV9b4egWMm
+         1hxyjc2Er/bOkHkTYwgh2wxOph5dqB9NMxG0fmpsaqSmpHXF+B22zsuXFD8NOUMj837d
+         awo4egPiSXVWaTJr5QGdSxEYoLip+xSLvBDo4R+K+72h7SF0trOQZG7jKEAOaCFMCbgt
+         w7lk0CHNK5y63ofGQ1PbnaooaNl/lv+wlKOwbQGOBJNXDM0nei2jBcH6Ru4yIi8YUK5M
+         zIHg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714643511; x=1715248311;
+        h=content-transfer-encoding:subject:from:cc:to:content-language
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=cwHJ9SUvvvu/eTS+n+2CuD+oluv5OCbi0dkOhie1vG0=;
+        b=hp6X3UjgHXSdj/Pzwlk2+M463mRYATpYd3ZiJNGhn11kHchzcam5qK2534RxVNJMXe
+         ghdAewer9kZwpNi5CNx1e+yskbDI1DJJ/FFQFOTvifCaCZeUUDOwamtJgiLD8DA/USWL
+         a8IbQlxcHi2jJSy0/qcSbcBAu7LOwIhTaE3uK+ERykUOIwveD3jcsevSGcwleXUDgB0Z
+         8969a+/quOrjRCFEPEK4ZNkwe9yUDMnNwIB4IXKGc4rHED2ObB2kz8mw0NzuxjOQpTFG
+         lFlNX+44ozVpSY/6/u/InOeRUIdyPG7D99KkoMarZVrzN0P84jYXTVQMjJQOfknRQSKV
+         8iSw==
+X-Gm-Message-State: AOJu0Yzx0zPrGZD/WQ8VEdLKD4nkeQLEe/0gqMmM3TxAPWMiaXW/WRwd
+	jz0qFZVLUNPlfSEuPeiVFqC9uOGhjpH/pxm+Pv0SCxYIJ86BmSYtsUwEExIIYeQ=
+X-Google-Smtp-Source: AGHT+IH2nAedYmYkm09WVVnEdOPLPX/GEHT4/F0CjpiidPPF5MGNtDslJvDE/ZPiN6HaEr0YLxtgEA==
+X-Received: by 2002:a05:6512:3d24:b0:512:cc50:c3e0 with SMTP id d36-20020a0565123d2400b00512cc50c3e0mr4374971lfv.52.1714643509112;
+        Thu, 02 May 2024 02:51:49 -0700 (PDT)
+Received: from [192.168.10.46] (146725694.box.freepro.com. [130.180.211.218])
+        by smtp.googlemail.com with ESMTPSA id i14-20020a05600c354e00b004169836bf9asm5103376wmq.23.2024.05.02.02.51.48
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 02 May 2024 02:51:48 -0700 (PDT)
+Message-ID: <89a02410-87c8-47c6-aa50-04dad5b4e585@linaro.org>
+Date: Thu, 2 May 2024 11:51:47 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Content-Language: en-US
+To: "Rafael J. Wysocki" <rafael@kernel.org>
+Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Linux PM mailing list <linux-pm@vger.kernel.org>,
+ Lukasz Luba <Lukasz.Luba@arm.com>, Konrad Dybcio <konrad.dybcio@linaro.org>,
+ Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+ Raphael Gallais-Pou <rgallaispou@gmail.com>,
+ Priyansh Jain <quic_priyjain@quicinc.com>,
+ Dmitry Rokosov <ddrokosov@salutedevices.com>,
+ =?UTF-8?Q?Niklas_S=C3=B6derlund?= <niklas.soderlund+renesas@ragnatech.se>,
+ Hsin-Te Yuan <yuanhsinte@chromium.org>, Aleksandr Mishin
+ <amishin@t-argos.ru>, Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+ Nicolas Pitre <nicolas.pitre@linaro.org>,
+ Binbin Zhou <zhoubinbin@loongson.cn>
+From: Daniel Lezcano <daniel.lezcano@linaro.org>
+Subject: [GIT PULL] thermal drivers for v6.10-rc1
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS3PEPF000099DE:EE_|MW4PR12MB7438:EE_
-X-MS-Office365-Filtering-Correlation-Id: 121484b4-eb5c-4528-0ac6-08dc6a8d9d25
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230031|376005|36860700004|7416005|1800799015;
-X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?Wm8mXC1mtYTCPpXYDL6HKXMHrrmK/KLHmN7BAcOzC+GB1LLZbCdqWNMn20lC?=
- =?us-ascii?Q?RAwkM6acE5dA9Smk83egBVRejqwdn7fyObPMGK6Iaxksb8qXBxN0m/Socgzo?=
- =?us-ascii?Q?zfD8Pjm4tbrKMIzPjAASCeN2WQ1UykSrPaYkc9VYBnDnARgAr13NfiHImYsc?=
- =?us-ascii?Q?UIEuDsh4ocz3S+tX7WneRY9sXNnFsMqWroJmF3tDSlYsIqm5KnsHkJ8KKSSr?=
- =?us-ascii?Q?TavRKdLD++KzvhffynVXGflGy7MJSQOgqvAS3Kr3ytEzAxRdheuoqpoeo093?=
- =?us-ascii?Q?r7P1Ohg7SHsTgfIA5cI7opwpcFtcPazp5gMlXu0uUWDz35sa9404LpRV6ZG9?=
- =?us-ascii?Q?ARSWnFdQniSRnRilOEgg6OnwcsBijd15Hiz5ZUbZc75ietJeO/WkZ752befd?=
- =?us-ascii?Q?omXjzNET1OjbtgMRhf6LokAmvuoDIT/cq1K50xVl0ULAyIckeUMePzCPNrDz?=
- =?us-ascii?Q?PiP9urVSZ8gjwYmlpWnNHCgOIMk/zJDwthcWIp4kz9m48cYZ67939ftTR4nA?=
- =?us-ascii?Q?1TgbqLRcC8efdmvoABUYbPCVmJBcFWlZ774vtVrusG7kdPRwyoFtqYlZpJtD?=
- =?us-ascii?Q?sx54JfxTG5tEkrueSBSaaacakJ+yoNeseS34GQ2Bp0yfikH+qnF3KNTqnofK?=
- =?us-ascii?Q?UEtH6q5LedRopn65VVi8eyhkD/hXtpHybquY8uF+RTPf0CHkBzFZ0VKd5s3d?=
- =?us-ascii?Q?SAadv2UHLAa1we6u290twR1HISznueSwJV486BEh9Fa+J3IV9qYRCWACbHpM?=
- =?us-ascii?Q?8MquvRtCxNWEo1d4yB9bB80/AhhdM+YVeSMtOR6S+UG7mbyRbdX7n1J2PLzF?=
- =?us-ascii?Q?ipqG7Nf8wmiX7/J7aDuqYaLf/PBQ2ti/KaGRUgPOThC5bacSylhlCXRCTqaX?=
- =?us-ascii?Q?REquj7BMkR1T3hyS9THlIFw8fxLG3ce7R2ut+cQYOpoqr8IRhhvc//TXN9MI?=
- =?us-ascii?Q?QEBH4vfjBO9VsHf5ow9BihqjtM0+Kn6dlF9S2JiUPI9pFrhDB45GNDZyI5b7?=
- =?us-ascii?Q?ZZrwxmMow2mtC3QENknNRjgD649/et8Y2tPuYD3XarAHGt04vKk0Hby7NjXE?=
- =?us-ascii?Q?SEyu20MR6Pq0PMSW8brg6eldoL2MGhjOLzYr7Xj/D1CGTQ8cVKwRp+96hyG9?=
- =?us-ascii?Q?N94x2Fv3a5WNWy17sr0nFDJmWz/KQndxIBsPrAa67/UDj2mttWCigeQnhsfc?=
- =?us-ascii?Q?L1+4FnAFq1XcQe1B1mbIM1DRTIsk25suRZULUzfXwh6oaGS6SLbVzM2FEnaS?=
- =?us-ascii?Q?QjRk0txzOHw1MnGP+yPMOLTWE7zeQ8EZYD4KT8HXhPBvZ8hPwuO9iN2WH+on?=
- =?us-ascii?Q?3fJ9hlj2syQ0r2VQowPi7Hdt9eWd/1YS7mZXlYtSNZwn8TBZ5UAp5hl6NM0Q?=
- =?us-ascii?Q?eYxX50Mb1tV8fMUxgXvZke+QswsB?=
-X-Forefront-Antispam-Report:
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(376005)(36860700004)(7416005)(1800799015);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 May 2024 09:52:43.8370
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 121484b4-eb5c-4528-0ac6-08dc6a8d9d25
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	DS3PEPF000099DE.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR12MB7438
 
-After commit ("x86/cpu/topology: Add support for the AMD 0x80000026 leaf"),
-on AMD processors that support extended CPUID leaf 0x80000026, the
-topology_die_cpumask() and topology_logical_die_id() macros, no longer 
-return the package cpumask and package id, instead they return the CCD 
-(Core Complex Die) mask and id respectively. This leads to the energy-pkg 
-event scope to be modified to CCD instead of package.
+Hi Rafael,
 
-Replacing these macros with their package counterparts fixes the
-energy-pkg event for AMD CPUs.
+please consider this pull request for v6.10-rc1
 
-However due to the difference between the scope of energy-pkg event for 
-Intel and AMD CPUs, we have to replace these macros conditionally only for
-AMD CPUs.
+The following changes since commit 5c897a9a1237155822183b8979005d06c14a996a:
 
-On a 12 CCD 1 Package AMD Zen4 Genoa machine:
+   Merge back earlier thermal control material for v6.10. (2024-04-19 
+15:17:21 +0200)
 
-Before:
-$ cat /sys/devices/power/cpumask
-0,8,16,24,32,40,48,56,64,72,80,88.
+are available in the Git repository at:
 
-The expected cpumask here is supposed to be just "0", as it is a package 
-scope event, only one CPU will be collecting the event for all the CPUs in 
-the package.
+ 
+ssh://git@gitolite.kernel.org/pub/scm/linux/kernel/git/thermal/linux.git 
+tags/thermal-v6.10-rc1
 
-After:
-$ cat /sys/devices/power/cpumask
-0
+for you to fetch changes up to 734b5def91b594d3aa1147d60c45eded139ce2eb:
 
-Signed-off-by: Dhananjay Ugwekar <Dhananjay.Ugwekar@amd.com>
-Fixes: 63edbaa48a57 ("x86/cpu/topology: Add support for the AMD 0x80000026 leaf")
----
- arch/x86/events/rapl.c | 30 ++++++++++++++++++++++++++----
- 1 file changed, 26 insertions(+), 4 deletions(-)
+   thermal/drivers/loongson2: Add Loongson-2K2000 support (2024-04-23 
+12:40:30 +0200)
 
-diff --git a/arch/x86/events/rapl.c b/arch/x86/events/rapl.c
-index 46e673585560..d77bf7959a43 100644
---- a/arch/x86/events/rapl.c
-+++ b/arch/x86/events/rapl.c
-@@ -102,6 +102,10 @@ static struct perf_pmu_events_attr event_attr_##v = {				\
- 	.event_str	= str,							\
- };
- 
-+#define rapl_pmu_is_pkg_scope()				\
-+	(boot_cpu_data.x86_vendor == X86_VENDOR_AMD ||	\
-+	 boot_cpu_data.x86_vendor == X86_VENDOR_HYGON)
-+
- struct rapl_pmu {
- 	raw_spinlock_t		lock;
- 	int			n_active;
-@@ -139,9 +143,21 @@ static unsigned int rapl_cntr_mask;
- static u64 rapl_timer_ms;
- static struct perf_msr *rapl_msrs;
- 
-+static inline unsigned int get_rapl_pmu_idx(int cpu)
-+{
-+	return rapl_pmu_is_pkg_scope() ? topology_logical_package_id(cpu) :
-+					 topology_logical_die_id(cpu);
-+}
-+
-+static inline cpumask_t *get_rapl_pmu_cpumask(int cpu)
-+{
-+	return rapl_pmu_is_pkg_scope() ? topology_core_cpumask(cpu) :
-+					 topology_die_cpumask(cpu);
-+}
-+
- static inline struct rapl_pmu *cpu_to_rapl_pmu(unsigned int cpu)
- {
--	unsigned int rapl_pmu_idx = topology_logical_die_id(cpu);
-+	unsigned int rapl_pmu_idx = get_rapl_pmu_idx(cpu);
- 
- 	/*
- 	 * The unsigned check also catches the '-1' return value for non
-@@ -542,6 +558,7 @@ static struct perf_msr amd_rapl_msrs[] = {
- 
- static int rapl_cpu_offline(unsigned int cpu)
- {
-+	cpumask_t *cpumask = get_rapl_pmu_cpumask(cpu);
- 	struct rapl_pmu *pmu = cpu_to_rapl_pmu(cpu);
- 	int target;
- 
-@@ -551,7 +568,7 @@ static int rapl_cpu_offline(unsigned int cpu)
- 
- 	pmu->cpu = -1;
- 	/* Find a new cpu to collect rapl events */
--	target = cpumask_any_but(topology_die_cpumask(cpu), cpu);
-+	target = cpumask_any_but(cpumask, cpu);
- 
- 	/* Migrate rapl events to the new target */
- 	if (target < nr_cpu_ids) {
-@@ -564,6 +581,8 @@ static int rapl_cpu_offline(unsigned int cpu)
- 
- static int rapl_cpu_online(unsigned int cpu)
- {
-+	unsigned int rapl_pmu_idx = get_rapl_pmu_idx(cpu);
-+	cpumask_t *cpumask = get_rapl_pmu_cpumask(cpu);
- 	struct rapl_pmu *pmu = cpu_to_rapl_pmu(cpu);
- 	int target;
- 
-@@ -578,14 +597,14 @@ static int rapl_cpu_online(unsigned int cpu)
- 		pmu->timer_interval = ms_to_ktime(rapl_timer_ms);
- 		rapl_hrtimer_init(pmu);
- 
--		rapl_pmus->pmus[topology_logical_die_id(cpu)] = pmu;
-+		rapl_pmus->pmus[rapl_pmu_idx] = pmu;
- 	}
- 
- 	/*
- 	 * Check if there is an online cpu in the package which collects rapl
- 	 * events already.
- 	 */
--	target = cpumask_any_and(&rapl_cpu_mask, topology_die_cpumask(cpu));
-+	target = cpumask_any_and(&rapl_cpu_mask, cpumask);
- 	if (target < nr_cpu_ids)
- 		return 0;
- 
-@@ -676,6 +695,9 @@ static int __init init_rapl_pmus(void)
- {
- 	int nr_rapl_pmu = topology_max_packages() * topology_max_dies_per_package();
- 
-+	if (rapl_pmu_is_pkg_scope())
-+		nr_rapl_pmu = topology_max_packages();
-+
- 	rapl_pmus = kzalloc(struct_size(rapl_pmus, pmus, nr_rapl_pmu), GFP_KERNEL);
- 	if (!rapl_pmus)
- 		return -ENOMEM;
+----------------------------------------------------------------
+- Add QCM2290 compatible DT bindings for Lmh and fix a null pointer
+   dereference in the lmh driver in case the SCM is not present (Konrad
+   Dybcio)
+
+- Use the strreplace() function instead of doing it manually in the
+   Armada driver (Rasmus Villemoes)
+
+- Convert st,stih407-thermal to DT schema and fix up missing
+   properties (Raphael Gallais-Pou)
+
+- Add suspend/resume by restoring the context of the tsens sensor
+   (Priyansh Jain)
+
+- Support A1 SoC family Thermal Sensor controller and add the DT
+   bindings (Dmitry Rokosov)
+
+- Improve the temperature approximation calculation and consolidate
+   the Tj constant into a shared area of the structure instead of
+   duplicating it on the Rcar Gen3 (Niklas Söderlund)
+
+- Fix the Mediatek LVTS sensor coefficient for the MT8192 in order to 
+support
+   it correctly (Hsin-Te Yuan)
+
+- Fix a null pointer dereference on the tsens driver when the function
+   compute_intercept_slope() is called with a null parameter (Aleksandr
+   Mishin)
+
+- Remove some unused fields in struct qpnp_tm_chip and k3_bandgap
+   (Christophe Jaillet)
+
+- Fixup calibration efuse data decoding, consolidate the code by
+   checking boundaries and refactor some part of the LVTS Mediatek
+   driver. After setting the scene, add MT8186 and MT8188 along with
+   the DT bindings (Nicolas Pitre)
+
+- Add Loongson-2K2000 support after some minor code adjustements and
+   providing the DT bindings definition (Binbin Zhou)
+
+----------------------------------------------------------------
+Aleksandr Mishin (1):
+       thermal/drivers/tsens: Fix null pointer dereference
+
+Binbin Zhou (4):
+       thermal/drivers/loongson2: Trivial code style adjustment
+       dt-bindings: thermal: loongson,ls2k-thermal: Add Loongson-2K0500 
+compatible
+       dt-bindings: thermal: loongson,ls2k-thermal: Fix incorrect 
+compatible definition
+       thermal/drivers/loongson2: Add Loongson-2K2000 support
+
+Christophe JAILLET (2):
+       thermal/drivers/qcom: Remove some unused fields in struct 
+qpnp_tm_chip
+       thermal/drivers/k3_bandgap: Remove some unused fields in struct 
+k3_bandgap
+
+Dmitry Rokosov (2):
+       dt-bindings: thermal: amlogic: add support for A1 thermal sensor
+       thermal/drivers/amlogic: Support A1 SoC family Thermal Sensor 
+controller
+
+Hsin-Te Yuan (1):
+       thermal/drivers/mediatek/lvts_thermal: Add coeff for mt8192
+
+Konrad Dybcio (2):
+       dt-bindings: thermal: lmh: Add QCM2290 compatible
+       thermal/drivers/qcom/lmh: Check for SCM availability at probe
+
+Nicolas Pitre (11):
+       thermal/drivers/mediatek/lvts_thermal: Retrieve all calibration bytes
+       thermal/drivers/mediatek/lvts_thermal: Move comment
+       thermal/drivers/mediatek/lvts_thermal: Remove .hw_tshut_temp
+       thermal/drivers/mediatek/lvts_thermal: Use offsets for every 
+calibration byte
+       thermal/drivers/mediatek/lvts_thermal: Guard against efuse data 
+buffer overflow
+       dt-bindings: thermal: mediatek: Add LVTS thermal controller 
+definition for MT8186
+       thermal/drivers/mediatek/lvts_thermal: Add MT8186 support
+       thermal/drivers/mediatek/lvts_thermal: Provision for gt variable 
+location
+       thermal/drivers/mediatek/lvts_thermal: Allow early empty sensor slots
+       dt-bindings: thermal: mediatek: Add LVTS thermal controller 
+definition for MT8188
+       thermal/drivers/mediatek/lvts_thermal: Add MT8188 support
+
+Niklas Söderlund (2):
+       thermal/drivers/rcar_gen3: Move Tj_T storage to shared private data
+       thermal/drivers/rcar_gen3: Update temperature approximation 
+calculation
+
+Priyansh Jain (1):
+       thermal/drivers/tsens: Add suspend to RAM support for tsens
+
+Raphael Gallais-Pou (1):
+       dt-bindings: thermal: convert st,stih407-thermal to DT schema
+
+Rasmus Villemoes (1):
+       thermal/drivers/armada: Simplify name sanitization
+
+  .../bindings/thermal/amlogic,thermal.yaml          |  12 +-
+  .../bindings/thermal/loongson,ls2k-thermal.yaml    |  24 +-
+  .../bindings/thermal/mediatek,lvts-thermal.yaml    |   6 +
+  .../devicetree/bindings/thermal/qcom-lmh.yaml      |  12 +-
+  .../bindings/thermal/st,stih407-thermal.yaml       |  58 +++
+  .../devicetree/bindings/thermal/st-thermal.txt     |  32 --
+  drivers/thermal/amlogic_thermal.c                  |  10 +
+  drivers/thermal/armada_thermal.c                   |   9 +-
+  drivers/thermal/k3_bandgap.c                       |   1 -
+  drivers/thermal/loongson2_thermal.c                | 117 ++++--
+  drivers/thermal/mediatek/lvts_thermal.c            | 438 
++++++++++++++++------
+  drivers/thermal/qcom/lmh.c                         |   3 +
+  drivers/thermal/qcom/qcom-spmi-temp-alarm.c        |   1 -
+  drivers/thermal/qcom/tsens-v2.c                    |   1 +
+  drivers/thermal/qcom/tsens.c                       |  33 +-
+  drivers/thermal/qcom/tsens.h                       |   5 +
+  drivers/thermal/rcar_gen3_thermal.c                | 165 ++++----
+  .../dt-bindings/thermal/mediatek,lvts-thermal.h    |  26 ++
+  18 files changed, 667 insertions(+), 286 deletions(-)
+  create mode 100644 
+Documentation/devicetree/bindings/thermal/st,stih407-thermal.yaml
+  delete mode 100644 
+Documentation/devicetree/bindings/thermal/st-thermal.txt
+
 -- 
-2.34.1
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
 
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
 
