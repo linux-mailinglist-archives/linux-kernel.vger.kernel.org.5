@@ -1,148 +1,116 @@
-Return-Path: <linux-kernel+bounces-166175-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-166168-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4B2A28B9728
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 11:05:33 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6DD338B9714
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 11:03:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 12D1B28354D
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 09:05:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F3ABF1F21014
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 09:03:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 60DEF54646;
-	Thu,  2 May 2024 09:04:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B22F951016;
+	Thu,  2 May 2024 09:03:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="D2qoC6O7"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="QFFgRJJk"
+Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46E455466C;
-	Thu,  2 May 2024 09:04:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0C9547772
+	for <linux-kernel@vger.kernel.org>; Thu,  2 May 2024 09:03:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714640657; cv=none; b=Z66PODFKfzr5CLwFX07AGgAQcW3khvqRy8aM6WnN5pxvT5QNOdDvHUBoXcIrvVL/Nnz1r/wYO3+6xMxv5Pq3Um1zrSpIOzWi1GZbjnvJEBqGpZ5hVEpqyjKATIUbaAoHp13MfpVmK9AJW21/sflJiqE9xDuYggMve6231eRAFDg=
+	t=1714640620; cv=none; b=OK0bFKY3gh3tji5lNeE3XjBmYhoKZnQ/7skek0ye4N7dB629oerHjnR1LDIDaQcOgjcD7oIl8YKJ9OaBl7CgJEqg5soWnFhQQU9Qg1SXBjm05QsS81MKIOoS62b/P+RPXU9PbYVYBgMdjwiCkRMDhi/VkzFZCCv7Vfr7zpTjv20=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714640657; c=relaxed/simple;
-	bh=6ybnRSgzmwgQhvj2h0wA5WBI6u0bsgXxQhPo6NKgvDA=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=oRZbSpe+G5tfqYW+O38Y6NRLKIpANPjJu5XQG4EyP10+WTWgzNaCg8IIr12oTUm6b5fnASD1ojQFXnKH1RnlvVVWbXCbEk4muhiUP5hCyxk8C87RqtDVNeUsUwPdnsO+ooUsHdRPk8Jua97z7XJekfHLWX3dxrPAKDXBhvyjbUY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=D2qoC6O7; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 4428uIDQ024281;
-	Thu, 2 May 2024 09:04:07 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	from:to:cc:subject:date:message-id:in-reply-to:references
-	:mime-version:content-transfer-encoding:content-type; s=
-	qcppdkim1; bh=56YwCakw/N/Wc/uAVUqHrPlre6xDW45zzKL9YBLI5ZE=; b=D2
-	qoC6O7FH4Ul09kIEB4WfbywXfx4/A03nZ51YBBbTwCReLsE5/8xepl4faDbN/DxT
-	Ok6bWrylq9jewUheUWEIuq2jfQtV/6vKCxr5jvjEjK+ohVdmlTzVuWgTqDqiUWVr
-	WlJonHAWDqyduSeZ7XCdvO/EWFm593hKkmP29n4F3DhIgnsjw8bV49MuWLx4wKRF
-	cCF2MUkYKatsphC7fb+mSfOIhFgeJnQD5vFIcoNt/qgggdSZHUh0Vg11ym4NXpu5
-	MjryeN/lw8IPSo2TVnRjhmJ2DwcEY5cYnGlv2AanpyjUmXCYGstRneMnMhUaYFaE
-	7rY4Wzf0axDQYLJ25PUg==
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xud76axmh-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 02 May 2024 09:04:06 +0000 (GMT)
-Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
-	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 442945EU004937
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 2 May 2024 09:04:05 GMT
-Received: from hu-kbajaj-hyd.qualcomm.com (10.80.80.8) by
- nalasex01b.na.qualcomm.com (10.47.209.197) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.9; Thu, 2 May 2024 02:04:00 -0700
-From: Komal Bajaj <quic_kbajaj@quicinc.com>
-To: Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio
-	<konrad.dybcio@linaro.org>,
-        Rob Herring <robh@kernel.org>,
-        "Krzysztof
- Kozlowski" <krzk+dt@kernel.org>,
-        Conor Dooley <conor+dt@kernel.org>
-CC: <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        Bjorn Andersson <quic_bjorande@quicinc.com>, <quic_wcheng@quicinc.com>,
-        <quic_ppratap@quicinc.com>, Jack Pham
-	<quic_jackp@quicinc.com>,
-        Krishna Kurapati PSSNV <quic_kriskura@quicinc.com>,
-        Komal Bajaj <quic_kbajaj@quicinc.com>,
-        Amrit Anand
-	<quic_amrianan@quicinc.com>
-Subject: [PATCH v3 3/3] arm64: dts: qcom: qru1000-idp: enable USB nodes
-Date: Thu, 2 May 2024 14:33:26 +0530
-Message-ID: <20240502090326.21489-4-quic_kbajaj@quicinc.com>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20240502090326.21489-1-quic_kbajaj@quicinc.com>
-References: <20240502090326.21489-1-quic_kbajaj@quicinc.com>
+	s=arc-20240116; t=1714640620; c=relaxed/simple;
+	bh=Jglfs2pABPclxQGT7zvsJ9j6EY5ovQg0Zvjn16T8gxU=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=S67j5osCZ2I9STEEb4/TzpWwZGJZTv5/HelyRUZkCubgMx21/jQrVx90l/RlSrdXc6d/aYrf3TNDbsqYDIIvPDZQO6SUfLdo2iWRMP2vqX1AHLsDsVcmHZ/U0itoJBhr4/0Bv5TxzLvxl6Ysuf52HlZrSD+7s36zgGVcd/GcB78=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=QFFgRJJk; arc=none smtp.client-ip=209.85.214.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-1ec5387aed9so22520355ad.3
+        for <linux-kernel@vger.kernel.org>; Thu, 02 May 2024 02:03:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1714640618; x=1715245418; darn=vger.kernel.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=f4N8GU+d1mV2wTgjb+Tth4J8cXkQOLnlslwrqaEwJL4=;
+        b=QFFgRJJkdpLiP3RVHcGXvHk9QNuYI4he1m9nc8qUwlb2+uNEEaLXgjakYIUJNFIEOW
+         DWGTcNbvxWbN5LYTZXyKS0KgkWn21E1WYzZmihSKWZjM8CYc5nnKcHfRtJVpDbMw7ZIV
+         VY9TrsZlVe1DYxQ3UIBTb3/rDSG8uY4bCYJgE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714640618; x=1715245418;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=f4N8GU+d1mV2wTgjb+Tth4J8cXkQOLnlslwrqaEwJL4=;
+        b=CDVnjOex8yhk3JqJR5xpUQqnr576wquB+JekBa9ycCgGSfIiAL1DWfH8YK1eVuXkmL
+         8eP9vC/hLkioJgNGlZwOszksL2uWaiXIcG1IFaPX12y+mFoLt6sBFcvHq/qck61yKEo3
+         GyFKqrJwYU+5vLs0fjOr6vmN/Bl9l3g6AZH3vPmkESVodxfsraMGxfrQkGHtVsXON5YN
+         ZCfNp0akiBAMT10rwVT1GcxBKsztYGaueRLK5CUpilfmlsWmIpXUQxc7qkKhfN1P68Js
+         wUTFsd6yQB3gZi5qb/brmqOV4v10QmPwOmetYRLTRrjM8QgTWFymgoo28IxkwelEf9ct
+         jRmw==
+X-Forwarded-Encrypted: i=1; AJvYcCUwYU7XHZcCJpWq4HrddfNL9yN2wmp8BZlMStpCl6L9jzbeyC0I3THB4DFr1kLPpwASnMQpoSnUzUBBxSp2EaYzUWvtMoXMa0UOhDoh
+X-Gm-Message-State: AOJu0YxbUh6hzd60yWK3lb62i9WfO9kp/WBpVzhCpEnsacW/f3LD1s4z
+	kR01MyhuZXYGgDrDQTTFdMCk5q7FUECuw5fOjOmV/uRiWgXiwxDrhluz3JKmoA==
+X-Google-Smtp-Source: AGHT+IFRnWDNjDH+SOdNczIrPriuznm+C9bqK1WVko8EGJDcbadaa3IFubaLd6ulXbchx0tVQ9aiWQ==
+X-Received: by 2002:a17:902:e551:b0:1dd:bf6a:2b97 with SMTP id n17-20020a170902e55100b001ddbf6a2b97mr5140711plf.60.1714640618092;
+        Thu, 02 May 2024 02:03:38 -0700 (PDT)
+Received: from yuanhsinte1.c.googlers.com (150.221.124.34.bc.googleusercontent.com. [34.124.221.150])
+        by smtp.gmail.com with ESMTPSA id c17-20020a170902d49100b001ebd73f61fcsm764983plg.121.2024.05.02.02.03.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 02 May 2024 02:03:37 -0700 (PDT)
+From: Hsin-Te Yuan <yuanhsinte@chromium.org>
+Subject: [PATCH 0/2] Add TDM setting support
+Date: Thu, 02 May 2024 09:03:30 +0000
+Message-Id: <20240502-anx-tdm-v1-0-894a9f634f44@chromium.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01b.na.qualcomm.com (10.47.209.197)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: qruT8GfQ36aZWrjg0pEqTNA5jdVeS7Yc
-X-Proofpoint-GUID: qruT8GfQ36aZWrjg0pEqTNA5jdVeS7Yc
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
- definitions=2024-05-01_16,2024-05-02_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 suspectscore=0
- malwarescore=0 phishscore=0 spamscore=0 priorityscore=1501 impostorscore=0
- clxscore=1015 bulkscore=0 mlxscore=0 lowpriorityscore=0 mlxlogscore=388
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2404010003
- definitions=main-2405020053
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAOJWM2YC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
+ vPSU3UzU4B8JSMDIxMDE2MD3cS8Ct2SlFxd8+RUE8NEg0RLA8MUJaDqgqLUtMwKsEnRsbW1AER
+ 23e1ZAAAA
+To: Andrzej Hajda <andrzej.hajda@intel.com>, 
+ Neil Armstrong <neil.armstrong@linaro.org>, Robert Foss <rfoss@kernel.org>, 
+ Laurent Pinchart <Laurent.pinchart@ideasonboard.com>, 
+ Jonas Karlman <jonas@kwiboo.se>, Jernej Skrabec <jernej.skrabec@gmail.com>, 
+ David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
+ Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, 
+ Rob Herring <robh+dt@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>, Xin Ji <xji@analogixsemi.com>
+Cc: dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, Hsin-Te Yuan <yuanhsinte@chromium.org>
+X-Mailer: b4 0.12.4
 
-Enable both USB controllers and associated hsphy and qmp phy
-nodes on QRU1000 IDP.
+The anx7625 supports two different TDM settings, which determine whether
+or not the first audio data bit should be shifted. This series adds the
+support for configuring TDM setting through a property in the device
+tree.
 
-Co-developed-by: Amrit Anand <quic_amrianan@quicinc.com>
-Signed-off-by: Amrit Anand <quic_amrianan@quicinc.com>
-Signed-off-by: Komal Bajaj <quic_kbajaj@quicinc.com>
+Signed-off-by: Hsin-Te Yuan <yuanhsinte@chromium.org>
 ---
- arch/arm64/boot/dts/qcom/qru1000-idp.dts | 23 +++++++++++++++++++++++
- 1 file changed, 23 insertions(+)
+Hsin-Te Yuan (2):
+      dt-bindings: drm/bridge: anx7625: Add a perporty to change TDM setting
+      drm/bridge: anx7625: Change TDM setting accroding to dt property
 
-diff --git a/arch/arm64/boot/dts/qcom/qru1000-idp.dts b/arch/arm64/boot/dts/qcom/qru1000-idp.dts
-index 2a862c83309e..1c781d9e24cf 100644
---- a/arch/arm64/boot/dts/qcom/qru1000-idp.dts
-+++ b/arch/arm64/boot/dts/qcom/qru1000-idp.dts
-@@ -467,3 +467,26 @@ &tlmm {
- &uart7 {
- 	status = "okay";
- };
-+
-+&usb_1 {
-+	status = "okay";
-+};
-+
-+&usb_1_dwc3 {
-+	dr_mode = "peripheral";
-+};
-+
-+&usb_1_hsphy {
-+	vdda-pll-supply = <&vreg_l8a_0p91>;
-+	vdda18-supply = <&vreg_l14a_1p8>;
-+	vdda33-supply = <&vreg_l2a_2p3>;
-+
-+	status = "okay";
-+};
-+
-+&usb_1_qmpphy {
-+	vdda-phy-supply = <&vreg_l8a_0p91>;
-+	vdda-pll-supply = <&vreg_l3a_1p2>;
-+
-+	status = "okay";
-+};
---
-2.42.0
+ .../devicetree/bindings/display/bridge/analogix,anx7625.yaml      | 4 ++++
+ drivers/gpu/drm/bridge/analogix/anx7625.c                         | 8 ++++++++
+ drivers/gpu/drm/bridge/analogix/anx7625.h                         | 1 +
+ 3 files changed, 13 insertions(+)
+---
+base-commit: 90d35da658da8cff0d4ecbb5113f5fac9d00eb72
+change-id: 20240430-anx-tdm-7ce41a0a901d
+
+Best regards,
+-- 
+Hsin-Te Yuan <yuanhsinte@chromium.org>
 
 
