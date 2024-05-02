@@ -1,177 +1,148 @@
-Return-Path: <linux-kernel+bounces-166602-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-166603-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A7BD98B9CE2
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 16:53:18 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 122458B9CE4
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 16:53:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D70C51C22EBB
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 14:53:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 430651C22EDB
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 14:53:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9973D153BD3;
-	Thu,  2 May 2024 14:53:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 966C6153BDC;
+	Thu,  2 May 2024 14:53:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="E4Mdz8AG"
-Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LUopLDHJ"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9928E64CFC;
-	Thu,  2 May 2024 14:53:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD81B15359A;
+	Thu,  2 May 2024 14:53:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714661591; cv=none; b=XBIMJ56KT/h/VFb4yRiY6q6oA4uOYAvx8Bhc2dUTTdKwxSdjPboi3r9X9/yiClvk7N7cA3HLUdWTflAqfKiweblXqhuln4QfpSPZvo+3XTtsJmL9BOv7z42Jqn23Cny+1NW9yXhDLP98PNS7bLPc/DU0BkQzGFNRt2cAkSnQT+k=
+	t=1714661624; cv=none; b=BFhU6BwaRWdBDWOkFybM6tlAlYQs7nk0hp5HbCreX9KEKy8V69nI8SEK/2XtEBd8wR4jMZIAci/iKL0ruOBtmE1pkdMI0ln5SCJ09cm67c86vJ+UVThd8Th7wigwvErAKokJ4S01axm4f+bXr/X6zWUqCpRhm+sx6MgIks3pEPQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714661591; c=relaxed/simple;
-	bh=FF8pGx2dc2VHiYDV2eOwyg5Y9rGCqFzWeMGJrclJdV8=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To; b=luvm5WCSzkaJB/N8m0rso+qWkB6P//a/PBvAs8SpBNxlMxmc1eZ7o1oc4424KJCQVPrf0pe4rZaMsjGHYqUgvkmdxd1GERK3dzHPQb2nf1TRerm/hmS4rehK0/5sUkdIwNIVzIyrZ4GDVi0H93jrvdnT5CBRpd2wS8niyUMrWOo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=E4Mdz8AG; arc=none smtp.client-ip=209.85.210.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f176.google.com with SMTP id d2e1a72fcca58-6f3e3d789cdso5715962b3a.1;
-        Thu, 02 May 2024 07:53:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714661590; x=1715266390; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:fro:message-id:subject:cc:to:from:date:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=jCOWJIVfBcfY82OF9T/y3rT+6DOMii/cJscVtNS5GEQ=;
-        b=E4Mdz8AGrnYqypCIu4r6J6tKhy4oTHhBaneZbz0JRX7f81AYNDJzOA6bI2IvHr6U/1
-         GwXTkK/ZheVgoVUxFPaRpjLobinweMD5an8vuM6MhCgr+Y0ibzcJsM7kcvfZ8Y0EMvI3
-         0T3heV+H1WOhvaZ2Fhfhj6HfAaKqyXO0L7VWCILpiNPxQM9kF81Elqt2aqBR75YOeJgR
-         Og5Qv978aq3IebVViOBQVypczJuZrillWDLe6YGnCBMds5tGSuGBFjbqUHmfY4rrYUhq
-         AlwhF+HKBkx4a/JtAM9YhZT+ZUtHPc+oIJWN09uLWXcka65L9J/1WW8Nc0GkCAF/MR98
-         96Gw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714661590; x=1715266390;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:fro:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=jCOWJIVfBcfY82OF9T/y3rT+6DOMii/cJscVtNS5GEQ=;
-        b=d6O4E4lY5WidJI2E+YjXxNKlpOeA1ZamEtj7Lqsvvp6ZHXeEs0es9G4fqtzTQO1HGh
-         R9p07+eWtJmRiZVeDOLMRAoMx8H+RmZrkKN71EC+ow7hYwD8KT9bFAWh8iyKWoYQVBCQ
-         7v90apDyR6eTV7ul/460Abb4+LePQnnjzBvWXGN2hfhOy8c2y6h85qhu2C7zZ9GUMJZ4
-         xTkwbEKLKlYZ+jjvgQsgCIWj9jaNCOptNhvct3hfCQQNdcSa8V9uHFryBzAuqpWSBYW1
-         0xG3F7iUMv33CHfJvJAbR3ZABwM+4djfsR40o2aNmANfvx3fA9MGGhr1MGdvslzvjkxe
-         Ijzw==
-X-Forwarded-Encrypted: i=1; AJvYcCXdzESG7czGl8LUfAdE+dScyQQT8bmih7vgnJUS5BuTduygUrJzkcg9favYJaag31QDy+cLp2jq3wsMdbnQsgpnSgqGn/huAHAKgcHkX2nrv2Vn0neU0+Bzys9uryEBE4wrYj5WTvJq
-X-Gm-Message-State: AOJu0Yy/21nrryzKRNKUnqAzNZxtXqz75p7LK0eXFEeA/WdQQ9w06+40
-	crbtd9c6H3Im1bZd3mlwAdx0l+vK8SHco7ps6d9U/khfsmD3uX5kqapDgP0M
-X-Google-Smtp-Source: AGHT+IEf1VjqnsKtnij6yS611bfK2RwYScjpoAkUWveSbz7Xzjj0VYoEaWw8Bwto3HGnS7cpGs9qMw==
-X-Received: by 2002:a05:6a00:93a3:b0:6ea:749c:7849 with SMTP id ka35-20020a056a0093a300b006ea749c7849mr3025976pfb.13.1714661589849;
-        Thu, 02 May 2024 07:53:09 -0700 (PDT)
-Received: from joaog-nb ([189.78.25.116])
-        by smtp.gmail.com with ESMTPSA id h1-20020a056a00230100b006ecf00c1dd5sm1304275pfh.120.2024.05.02.07.53.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 May 2024 07:53:09 -0700 (PDT)
-Date: Thu, 2 May 2024 11:53:04 -0300
-From: jpaulo.silvagoncalves@gmail.com
-To: Jonathan Cameron <Jonathan.Cameron@Huawei.com>,
-	Peter Rosin <peda@axentia.se>
-Cc: =?utf-8?Q?Jo=C3=A3o_Paulo_Gon=C3=A7alves?= <jpaulo.silvagoncalves@gmail.com>,
-	linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: Supporting a Device with Switchable Current/Voltage Measurement
-Message-ID: <20240502145228.qgocejdzjaaxt2zq@joaog-nb>
-Fro: =?utf-8?Q?Jo=C3=A3o_Paulo_Silva_Gon=C3=A7alves?= <jpgoncalves@joaog-nb>
+	s=arc-20240116; t=1714661624; c=relaxed/simple;
+	bh=rJbbTuAZzjxMG+bRiSasrkimovfkjL8WGmjN73xspck=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=qQQl7ZRhOzj9nTFgAqB1tJL+Y30joHLp9IKIXhy1rm9LzE0eyt+ZBVp7Zbv3xtI/1GTrVFynaqXOKKCb8vvx3jidMM9sw8GaceA8o4dgLD2JDwxD4nBg6rp5zFi2+v2MBF/q2cRGBu4VBVdnsiH3XvPVE5fZ5q+wD6mH9b0nrMc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LUopLDHJ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0F167C113CC;
+	Thu,  2 May 2024 14:53:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714661624;
+	bh=rJbbTuAZzjxMG+bRiSasrkimovfkjL8WGmjN73xspck=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=LUopLDHJi+VYHbdfaSLa1+8Sp9pPtyhbTbWLUSBVYhaQ89TNFZx2BcpROzbwBJxdN
+	 hJQiTDyOaqeSorCOUo1GYkrGipDQfyaNtcnNHJKRbOS1rcagJ1DtpENWjXBvGn+zmY
+	 bpE6AZyicxf80K+pYCGUW5kI3qTzc+K2CNcWpcuOOsU6jcUPeMRb0gjkquCskQP+t0
+	 Do6M/4RPsA71UH/J2Ii/GVqxZHzXpn9c5JGwO+vt3XZuLzHRBUz1On/OJNICjSCoJ1
+	 acsOJpbgWsc5LcJgv3dMndwzjosI4MsUhPp1NJM5sBOahj8ctRO7t4VMhaIIhcz9Sp
+	 uNAVzo6RJu+Hw==
+Message-ID: <10671947-f418-4520-a29f-4ce129770e65@kernel.org>
+Date: Thu, 2 May 2024 16:53:40 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240502133623.0000463e@Huawei.com>
- <44f47927-52aa-5248-6ae4-21028076fd51@axentia.se>
- <ad190ae3-48d2-a5db-dd36-d52b1c4cf460@axentia.se>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/3] spi: dt-bindings: Add num-cs property for mpfs-spi
+To: Prajna Rajendra Kumar <prajna.rajendrakumar@microchip.com>,
+ Mark Brown <broonie@kernel.org>
+Cc: Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>,
+ linux-riscv@lists.infradead.org, linux-spi@vger.kernel.org,
+ linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+ Conor Dooley <conor.dooley@microchip.com>,
+ Daire McNamara <daire.mcnamara@microchip.com>,
+ valentina.fernandezalanis@microchip.com
+References: <20240502143410.12629-1-prajna.rajendrakumar@microchip.com>
+ <20240502143410.12629-3-prajna.rajendrakumar@microchip.com>
+From: Krzysztof Kozlowski <krzk@kernel.org>
+Content-Language: en-US
+Autocrypt: addr=krzk@kernel.org; keydata=
+ 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 fv0=
+In-Reply-To: <20240502143410.12629-3-prajna.rajendrakumar@microchip.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Thu, May 02, 2024 at 01:36:23PM +0100, Jonathan Cameron wrote:
-> Superficially sounds like you want a mixture of appropriate analog front ends
-> and a Mux.  I haven't tried the combination but it should be possible to do
-> something like this with 
-> 
-> An IIO mux via this binding
-> https://elixir.bootlin.com/linux/v6.9-rc6/source/Documentation/devicetree/bindings/iio/multiplexer/io-channel-mux.yaml
-> (that includes a gpio-mux example).
-> 
-> Consumed in turn by a pair of AFE devices.
-> 
-> Then you should be able to just read from which ever of the AFE device you want.
-> A sysfs read from
-> /sys/bus/iio/devices/iio\:deviceA/in_voltage_raw
-> will switch the mux to appropriate place then request the
-> voltage from the iio-mux, which in turn requests it from the ADC IIO driver.
-> 
-> /sys/bus/iio/devices/iio\:deviceB/in_current_raw
-> switches the mux the other way and otherwise the flow as above.
-> 
-> Jonathan
+On 02/05/2024 16:34, Prajna Rajendra Kumar wrote:
+> The PolarFire SoC SPI controller supports multiple chip selects,but in
+> the MSS, only one CS line is physically wired. To reflect this hardware
+> limitation in the device tree, the binding enforces that the 'num-cs'
+> property defaults to 1 and cannot exceed 1 unless additional
+> chip select lines are explicitly defined using GPIO descriptors.
 > 
 
-On Thu, May 02, 2024 at 03:49:03PM +0200, Peter Rosin wrote:
-> I just realized that it's also possible to do this "the other way around". Maybe
-> that makes more sense?
-> 
-> Cheers,
-> Peter
-> 
-> mux: gpio-mux {
-> 	compatible = "gpio-mux";
-> 	#mux-control-cells = <0>;
-> 
-> 	gpios-mux = <&main_gpio0 29 GPIO_ACTIVE_HIGH>;
-> };
-> 
-> rcs: raw-current-sense {
-> 	compatible = "io-channel-mux";
-> 	io-channels = <&adc 0>;
-> 	io-channel-names = "parent";
-> 	#io-channel-cells = <1>;
-> 
-> 	mux-controls = <&mux>;
-> 
-> 	channels = "raw-current", "";
-> };
-> 
-> rvs: raw-voltage-sense {
-> 	compatible = "io-channel-mux";
-> 	io-channels = <&adc 1>;
-> 	io-channel-names = "parent";
-> 	#io-channel-cells = <1>;
-> 
-> 	mux-controls = <&mux>;
-> 
-> 	channels = "", "raw-voltage";
-> };
-> 
-> current-sense {
-> 	compatible = "current-sense-shunt";
-> 	io-channels = <&rcs 0>;
-> 	io-channel-name = "current";
-> 
-> 	shunt-resistor-micro-ohms = <3300000>;
-> };
-> 
-> voltage-sense {
-> 	compatible = "voltage-divider";
-> 	io-channels = <&rvs 1>;
-> 	io-channel-name = "voltage";
-> 
-> 	output-ohms = <22>;
-> 	full-ohms = <222>;
-> };
-> 
-> Cheers,
-> Peter
+You marked it as Fix for bug, but I don't understand where the bug is.
+Do you describe above the issue or the solution?
 
-A lot of good information. I didn't know about the iio-mux. It might 
-solve our problem, and I will do some testing with it.
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          contains:
+> +            const: microchip,mpfs-spi
+> +      not:
+> +        required:
+> +          - cs-gpios
 
-Thanks a lot for the help! 
+I don't understand what you are expressing here. Did you actually
+validate it that it achieves exactly what you want?
 
-Regards,
-João Paulo Gonçalves
+> +    then:
+> +      properties:
+> +        num-cs:
+> +          default: 1
+> +          maximum: 1
+> +
+>  unevaluatedProperties: false
+>  
+>  examples:
+
+Best regards,
+Krzysztof
+
 
