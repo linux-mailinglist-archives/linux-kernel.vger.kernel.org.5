@@ -1,76 +1,149 @@
-Return-Path: <linux-kernel+bounces-166987-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-166988-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E54168BA2F5
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 00:04:17 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3AADB8BA2FB
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 00:06:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1D4B21C227CE
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 22:04:17 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4C878B20EC5
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 22:06:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C88457C9F;
-	Thu,  2 May 2024 22:04:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DEE241DDF8;
+	Thu,  2 May 2024 22:06:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MJGW4XTo"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Xz2nzq1s"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F1B557C94;
-	Thu,  2 May 2024 22:04:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E74157C94;
+	Thu,  2 May 2024 22:06:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714687450; cv=none; b=LYpVkGMdsnrrWt00xE5quZN/AbX3JukEW99vbpe9448PZlbhzP5uVRsioP0eThRJkYqGq4FHzel3x5xWE+rDBrX0iHaf/Vq3bjcRufc/hY++S0jMSzFT9ZuDIFD897wPpQ8rWi1XCUg/VRHKCDvw0jWcAZ0tn+127FtijGPWH08=
+	t=1714687593; cv=none; b=Q/d6tevbaxQ0RXEaOW6r+aEgMkMCl41WkP8JnRlk+6LIPgb02Q+m7raqHLL39hyyahSnbPJUuivUDIM7Iqucu8O4tNmRECMc638u9KVv1gWNbSV9Ltrn0hBbcxlkoMK/BJTfMqco07CLnmbU83+nIY/0yID4SoYet+6y4PmYucw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714687450; c=relaxed/simple;
-	bh=oHvGfGYBKi9expgIezTfEAK+vl5W/y1ZMPNDJv9bhyU=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To; b=RNPjxSUpNKpXoxL8/qGEyfNbvypGjoPnT4vSJvavwOg5I2rqHyJokKJBK8mWF1Zlfk29idlKenSzny3zZzp+jF0l/i0J0aZ/BiMDm9AP89grUBeHsXPD20337qzzFoJR/IWQ+t0Ft5X3jjN/G5S8vJliNUsoGcfOROKlroDyTrM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MJGW4XTo; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 02645C113CC;
-	Thu,  2 May 2024 22:04:09 +0000 (UTC)
+	s=arc-20240116; t=1714687593; c=relaxed/simple;
+	bh=syfFdI9oig8Vhc/96bXStdHXCWO+OS9oOsgISmm950E=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=EZNboEo6gPpuGSJ0GI07n5TB3/gMmO5mRAWIcqAllAR3BnJVg3J8Y7oPhbnmAIZ8BxhxE3xYHVIAwq7qHUiNyZouf7tToxWhWUjQiyfP3cyiMpVxzdBshcN5tAuP52VJS/9VGLNGHS4puJoVOTtyzD2N2UWslaxt1dcAfrHSu2E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Xz2nzq1s; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5895EC113CC;
+	Thu,  2 May 2024 22:06:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714687450;
-	bh=oHvGfGYBKi9expgIezTfEAK+vl5W/y1ZMPNDJv9bhyU=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:From;
-	b=MJGW4XToVN7/89xYTYpGk4IA1uz6UNAlPZJHM5aHXlkTIsmn1rRTPEjsSUOGFL3qh
-	 b0YpO2QYkZVF9tkBTfNUAV3yZj5nlidSfLqaeRCCSd8LgH39gDtflV4F4SZMJrSyx8
-	 jSp59aGPgc1e1pm5SXGERBHMsSVnnLEDIooGIHeHh96DvKCHBeWPbBWCZlM4pcSfYQ
-	 IymendFlOClF7PkFGca9YuwtLQJCStzoeGX+BmuQ0/erjbK/WJTuGVoc5OHpS/mML0
-	 K/35wxjpcWTdwR2zWIHd2zQywotmeYi0H7Waisj6MtiCWcH9oX0JJqTgiCi/HwZ2c4
-	 yZH+ybgN2w5fg==
-Date: Thu, 2 May 2024 17:04:08 -0500
-From: Bjorn Helgaas <helgaas@kernel.org>
-To: Ilpo =?utf-8?B?SsOkcnZpbmVu?= <ilpo.jarvinen@linux.intel.com>
-Cc: Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/2] PCI/ASPM: Define consolidation
-Message-ID: <20240502220408.GA1550497@bhelgaas>
+	s=k20201202; t=1714687592;
+	bh=syfFdI9oig8Vhc/96bXStdHXCWO+OS9oOsgISmm950E=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Xz2nzq1sLtikjGzD9kfULQLCNfapBQ+334N2Mm/AFOaoamdMN2HE2QKlgZF/Wy+aT
+	 A/6U4lFq4IFUwavZDkYghfgGykoX53x59pA38cbOKR3R3aE+73sZhDo7L2TA2WBA4c
+	 bLWkewleSRnC6e9iqv+nQ2MOILQD7sJ/rIadgVMoAXVVcC33HT0aktQCDr3IP1+/V8
+	 d7ytvO0sTGgQAqf2efFbjURfKbL0Zx7Veh0mgaTC/c4uatQrYN9TVWgegbVNNd8r9n
+	 BQ4UiOPNAEWdC2HZ/7rp2nF6VslyRk3IjgU4gjNz5K95oLKWli62UUwDrfZsb4DPnk
+	 Do6N+MA5bQwDQ==
+Date: Fri, 3 May 2024 00:06:25 +0200
+From: Alejandro Colomar <alx@kernel.org>
+To: Jiri Olsa <olsajiri@gmail.com>
+Cc: Steven Rostedt <rostedt@goodmis.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Oleg Nesterov <oleg@redhat.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>, linux-kernel@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org, linux-api@vger.kernel.org,
+	linux-man@vger.kernel.org, x86@kernel.org, bpf@vger.kernel.org,
+	Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	"Borislav Petkov (AMD)" <bp@alien8.de>,
+	Ingo Molnar <mingo@redhat.com>, Andy Lutomirski <luto@kernel.org>
+Subject: Re: [PATCHv4 7/7] man2: Add uretprobe syscall page
+Message-ID: <ZjQOYplF4EbsfQ0v@debian>
+References: <20240502122313.1579719-1-jolsa@kernel.org>
+ <20240502122313.1579719-8-jolsa@kernel.org>
+ <ZjOYf_g2qRrhDoQD@debian>
+ <ZjPz2PWrW2BjXxlw@krava>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="Ek6osrwvrJr1a4yE"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240322123952.6384-1-ilpo.jarvinen@linux.intel.com>
+In-Reply-To: <ZjPz2PWrW2BjXxlw@krava>
 
-On Fri, Mar 22, 2024 at 02:39:50PM +0200, Ilpo Järvinen wrote:
-> This series consolidates ASPM related defines into the ones in
-> linux/pci.h and eliminates the almost duplicate ones from aspm.c. This
-> allows using the input without mapping between the defines so the state
-> mapping code to focus on the special cases.
-> 
-> Ilpo Järvinen (2):
->   PCI/ASPM: Consolidate link state defines
->   PCI/ASPM: Cleanup ASPM disable/enable mask calculation
-> 
->  drivers/pci/pcie/aspm.c | 180 ++++++++++++++++++++--------------------
->  include/linux/pci.h     |  22 ++---
->  2 files changed, 100 insertions(+), 102 deletions(-)
 
-Applied to pci/aspm for v6.10, thanks!
+--Ek6osrwvrJr1a4yE
+Content-Type: text/plain; protected-headers=v1; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+Date: Fri, 3 May 2024 00:06:25 +0200
+From: Alejandro Colomar <alx@kernel.org>
+To: Jiri Olsa <olsajiri@gmail.com>
+Cc: Steven Rostedt <rostedt@goodmis.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Oleg Nesterov <oleg@redhat.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>, linux-kernel@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org, linux-api@vger.kernel.org,
+	linux-man@vger.kernel.org, x86@kernel.org, bpf@vger.kernel.org,
+	Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	"Borislav Petkov (AMD)" <bp@alien8.de>,
+	Ingo Molnar <mingo@redhat.com>, Andy Lutomirski <luto@kernel.org>
+Subject: Re: [PATCHv4 7/7] man2: Add uretprobe syscall page
+
+Hi Jiri,
+
+On Thu, May 02, 2024 at 10:13:12PM +0200, Jiri Olsa wrote:
+> > You could add a HISTORY section.
+>=20
+> ok, IIUC for this syscall it should contain just kernel version where
+> it got merged, right?
+
+Yep.
+
+>=20
+> >=20
+> > Have a lovely day!
+>=20
+> thanks for review,
+> jirka
+
+Thanks for the page.
+
+Have a lovely night!
+Alex
+
+--=20
+<https://www.alejandro-colomar.es/>
+A client is hiring kernel driver, mm, and/or crypto developers;
+contact me if interested.
+
+--Ek6osrwvrJr1a4yE
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEE6jqH8KTroDDkXfJAnowa+77/2zIFAmY0DmEACgkQnowa+77/
+2zJBMg/+PU0T3fJzB+wZdvQff5c7oLjdndWW+DkZtasvCkeVOUiqBI7ePfBI7DXT
+VRFsrYMOoYnlTLS2suag2r0O/zf+QzvyRM83sp2l2/PqLBwHRWBVaDv2VEa/JBXf
+FrMaSI1BeRPpsdIJdOchHPzfbOB5Hlmqqyfc6tMJlffECGkcLIceZ1sE3U1lUWv5
+CBMOlzoWyB4wTUqUuHtgsxk2nChoH+oQ0xD00oY7GLHVkgjKIfTJGx78wsyBnFI6
+1kZ0xRoHKWBOzy/UHuR1A4vbcND0B2BxDPmgEUibAI4rrjsw1rpeDyXaamJA5HlT
+A33e4OVbJYXKl9lZjzBroY0knpZVpXltDCCAYcKGAtHeD1TDDF1581M7BZqDGTnQ
+o4MUIml7+pQQlFmwYKFiEIoHDpijlhf8m9rHI/kSrwtQO4t5ajyc3y86L4XzkYiG
+ENyMJ/VWE82qvv1WIW81xpsjA+3RA6cGLaLt8p6dEw5dD9PHDDl5KNHkypgviJEo
+oB3mN/1cNijOJ5I0vs5F2Wwm8CP1VGQQuCyeSanGeKcSBUksKvdQHuEMzcu2CRKP
+jqUYYbyqqGyrimuEeibJBqWGB3PtfMJNk6FNURQh8sKkJlrFzN7P3zhvWXViwzTJ
+oY2Bdz5wczHpsnj+9uqwvc0KTMW1GJHyXRHX79ztNxJIz9cFbjE=
+=Nvto
+-----END PGP SIGNATURE-----
+
+--Ek6osrwvrJr1a4yE--
 
