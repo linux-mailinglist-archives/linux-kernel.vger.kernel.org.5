@@ -1,85 +1,153 @@
-Return-Path: <linux-kernel+bounces-166000-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-166001-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 227898B947D
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 08:04:11 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BE9338B9489
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 08:12:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3F8EF1C214EF
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 06:04:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7B9F5283E23
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 06:12:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EBD2020DE7;
-	Thu,  2 May 2024 06:04:04 +0000 (UTC)
-Received: from mail-io1-f69.google.com (mail-io1-f69.google.com [209.85.166.69])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D28A1C6AE
-	for <linux-kernel@vger.kernel.org>; Thu,  2 May 2024 06:04:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.69
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DCC46210E4;
+	Thu,  2 May 2024 06:12:38 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3819C19BBA
+	for <linux-kernel@vger.kernel.org>; Thu,  2 May 2024 06:12:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714629844; cv=none; b=DUUKtetxMIbUpYzI6y4jE75KkGuiW6kpxY1aKw9/UJrHyFpL4q7gqICLu4mDqVMzr9wjhD3ERdnk3a9bT4kn0FQ/NqN9hnIHlUj0eflgVR4dDFfmo8r+DjKjUZrqSXoAvvFhA3BZs1kpyDxxV54v0ai5+8oILbVs8fjI5+uYWdg=
+	t=1714630358; cv=none; b=BD4Yg6Se02fy0wg7jHBAD9jLVL4N7ih4oQKKNuyn6xXGAQL+7fBIOpss4lfcEKTFo0DWX6A1q/giEB3i72Orz57xUVUBgUwVUCg64Off4BRVuZOoA2oKj3P8rETmeMmZypEbjcRpbEXfjrkpLDtbpi4KK/0v9USnDhIOERyen54=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714629844; c=relaxed/simple;
-	bh=lI+zYYhwfdiozaRC5irM1Z9SGyZ7PZ1GJTG4/ppi83A=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=Uz2Fi6w7tgThvDDf0yoAcweJCDBSx6YfmgoPOz3Ifh6giKO2zEtTTzJ/+SVamMZoXNc4WiUszQmiEVIuv/fTjPZlgp7TqMweGKn/XE5W+3uK6lbU6Hcuhzol9WWf7RJM815aoEJRcJmmQJf3/jPdUosLtxkIRCLwiJlnE1nTe5I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.69
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f69.google.com with SMTP id ca18e2360f4ac-7d9d0936d6aso860625939f.0
-        for <linux-kernel@vger.kernel.org>; Wed, 01 May 2024 23:04:03 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714629842; x=1715234642;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=zGOj66+WzT3abwAJPa/hUYebqscE1cEduzWpvyCpWPA=;
-        b=dbWDDmiEFL3X/1y1wL2VKbQ0/9kqzXMAhlxTnmw6rYTv8Z8aF1OP8+UMgdojUuoTE7
-         vssot9+QD3VpJZe1LM57INkLY6P5qi6hPF2PBCjVTOFPZGdHNm/X+602WV/Dx8mlKbq/
-         gZLDkR0XXLYtPHNNMDtQTrDGK/bhUvyEqCrfquSYEdlWrgmzkBCr+hM2JmBKCxb+a6cL
-         Kt77A2OmJ5swJpaz/QZ4cOA8oo5VC4bF+XCy/xM4X/EJmrlePXwuxpT1YHwAu5ioLZ+0
-         64Lygdc5S2ATt1gbjwlZpEzTEAhne9BotNml0ulYSrIZ+bOSZewi7sFlDE5qdR1h/fiW
-         UCww==
-X-Gm-Message-State: AOJu0Yx+A7kuPCx7ibCzLXbcNdKX9E/DdMVXPBjhJMzM30dRMsDu7CeV
-	aCbL7aA5h+nQ5/Y2Ob3LC9p7v9omNVLJnt6L8PO0nMPAHM+p/lpAgqb8unzdGdl/dfxrriOmrdX
-	DXql2BhFWrCu/ozUmPDxTiiIbdKyqlk1aJs2pzaKadR42rWNB/90uSRA=
-X-Google-Smtp-Source: AGHT+IH0zCVUIBY6sDcixsmAoK1ZKjmwCKA1Wx+965sYUy8p2WK/VRYQnlRIJcculiUrPEIc6Wrobl6ARmQS4tjaeuNduDAAyDk2
+	s=arc-20240116; t=1714630358; c=relaxed/simple;
+	bh=UULBv2BxVKz+UmwhwPOHf0UTfCrQN6WX9604a7i/PFA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=fe6FYgxJpKEBxxRfmJcpvl22EGXAnz1QOTi2o0o6cKQRZSIl13+fvKjJt8Dg509jtwN9Jg19tY0FJUdi2TVV78n/PtuMQmoukn99Ln21fGJL/llmbWpyT5j5A1WNZ2Eqn4W7/dLMfBSitRWiFrU4ZSMdx1uPRAbJ8ut7IdGCedA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1D3842F4;
+	Wed,  1 May 2024 23:13:00 -0700 (PDT)
+Received: from [10.162.42.72] (a077893.blr.arm.com [10.162.42.72])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 419103F793;
+	Wed,  1 May 2024 23:12:29 -0700 (PDT)
+Message-ID: <5ac445b2-5c11-407c-87d2-4ede8e212d71@arm.com>
+Date: Thu, 2 May 2024 11:42:27 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:20ed:b0:36c:5f85:6979 with SMTP id
- q13-20020a056e0220ed00b0036c5f856979mr83307ilv.0.1714629842488; Wed, 01 May
- 2024 23:04:02 -0700 (PDT)
-Date: Wed, 01 May 2024 23:04:02 -0700
-In-Reply-To: <ZjMkFLuOdNVQVCl6@zeus>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000aee1800617725e64@google.com>
-Subject: Re: [syzbot] [net?] [nfc?] KMSAN: uninit-value in nci_rx_work
-From: syzbot <syzbot+d7b4dc6cd50410152534@syzkaller.appspotmail.com>
-To: linux-kernel@vger.kernel.org, ryasuoka@redhat.com, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 2/3] arm64/mm: Move PTE_PRESENT_INVALID to overlay
+ PTE_NG
+Content-Language: en-US
+To: Ryan Roberts <ryan.roberts@arm.com>,
+ Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
+ Joey Gouly <joey.gouly@arm.com>, Ard Biesheuvel <ardb@kernel.org>,
+ Mark Rutland <mark.rutland@arm.com>, David Hildenbrand <david@redhat.com>,
+ Peter Xu <peterx@redhat.com>, Mike Rapoport <rppt@linux.ibm.com>,
+ Shivansh Vij <shivanshvij@outlook.com>
+Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20240501145419.1390363-1-ryan.roberts@arm.com>
+ <20240501145419.1390363-3-ryan.roberts@arm.com>
+From: Anshuman Khandual <anshuman.khandual@arm.com>
+In-Reply-To: <20240501145419.1390363-3-ryan.roberts@arm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Hello,
 
-syzbot has tested the proposed patch and the reproducer did not trigger any issue:
 
-Reported-and-tested-by: syzbot+d7b4dc6cd50410152534@syzkaller.appspotmail.com
+On 5/1/24 20:24, Ryan Roberts wrote:
+> PTE_PRESENT_INVALID was previously occupying bit 59, which when a PTE is
+> valid can either be IGNORED, PBHA[0] or AttrIndex[3], depending on the
+> HW configuration. In practice this is currently not a problem because
+> PTE_PRESENT_INVALID can only be 1 when PTE_VALID=0 and upstream Linux
+> always requires the bit set to 0 for a valid pte.
+> 
+> However, if in future Linux wants to use the field (e.g. AttrIndex[3])
+> then we could end up with confusion when PTE_PRESENT_INVALID comes along
+> and corrupts the field - we would ideally want to preserve it even for
+> an invalid (but present) pte.
+> 
+> The other problem with bit 59 is that it prevents the offset field of a
+> swap entry within a swap pte from growing beyond 51 bits. By moving
+> PTE_PRESENT_INVALID to a low bit we can lay the swap pte out so that the
+> offset field could grow to 52 bits in future.
+> 
+> So let's move PTE_PRESENT_INVALID to overlay PTE_NG (bit 11).
+> 
+> There is no need to persist NG for a present-invalid entry; it is always
+> set for user mappings and is not used by SW to derive any state from the
 
-Tested on:
+But the idea of present and invalid state is that all the HW used information
+should be fetched successfully even though the the entry is not valid and not
+being walked by the MMU. Setting and clearing PTE SW bits in such state, does
+not change that, but tampering with HW bits would break the assumption around
+present and invalid entry ?
 
-commit:         e88c4cfc Merge tag 'for-6.9-rc5-tag' of git://git.kern..
-git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-console output: https://syzkaller.appspot.com/x/log.txt?x=15d07a28980000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=b43eff4125d4e9fe
-dashboard link: https://syzkaller.appspot.com/bug?extid=d7b4dc6cd50410152534
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=14fadc90980000
+> pte. PTE_NS was considered instead of PTE_NG, but it is RES0 for
+> non-secure SW, so there is a chance that future architecture may
+> allocate the bit and we may therefore need to persist that bit for
+> present-invalid ptes.
 
-Note: testing is done by a robot and is best-effort only.
+If we are being careful around PTE_NS and even for AttrIndex[3] as mentioned
+earlier to be useful during an invalid state, how can PTE_NG be used without
+any such consideration.
+
+> 
+> These are both marginal benefits, but make things a bit tidier in my
+> opinion.
+
+Apart from swap offset field expansion does this change achieve anything else ?
+
+> 
+> Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
+> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
+> ---
+>  arch/arm64/include/asm/pgtable-prot.h |  2 +-
+>  arch/arm64/include/asm/pgtable.h      | 12 ++++++------
+>  2 files changed, 7 insertions(+), 7 deletions(-)
+> 
+> diff --git a/arch/arm64/include/asm/pgtable-prot.h b/arch/arm64/include/asm/pgtable-prot.h
+> index cd8c06f5fb02..3047d10987fd 100644
+> --- a/arch/arm64/include/asm/pgtable-prot.h
+> +++ b/arch/arm64/include/asm/pgtable-prot.h
+> @@ -18,7 +18,7 @@
+>  #define PTE_DIRTY		(_AT(pteval_t, 1) << 55)
+>  #define PTE_SPECIAL		(_AT(pteval_t, 1) << 56)
+>  #define PTE_DEVMAP		(_AT(pteval_t, 1) << 57)
+> -#define PTE_PRESENT_INVALID	(_AT(pteval_t, 1) << 59) /* only when !PTE_VALID */
+> +#define PTE_PRESENT_INVALID	(PTE_NG)		 /* only when !PTE_VALID */
+>  
+>  #define _PROT_DEFAULT		(PTE_TYPE_PAGE | PTE_AF | PTE_SHARED)
+>  #define _PROT_SECT_DEFAULT	(PMD_TYPE_SECT | PMD_SECT_AF | PMD_SECT_S)
+> diff --git a/arch/arm64/include/asm/pgtable.h b/arch/arm64/include/asm/pgtable.h
+> index c0f4471423db..7f1ff59c43ed 100644
+> --- a/arch/arm64/include/asm/pgtable.h
+> +++ b/arch/arm64/include/asm/pgtable.h
+> @@ -1254,15 +1254,15 @@ static inline pmd_t pmdp_establish(struct vm_area_struct *vma,
+>   * Encode and decode a swap entry:
+>   *	bits 0-1:	present (must be zero)
+>   *	bits 2:		remember PG_anon_exclusive
+> - *	bits 3-7:	swap type
+> - *	bits 8-57:	swap offset
+> - *	bit  59:	PTE_PRESENT_INVALID (must be zero)
+> + *	bits 6-10:	swap type
+> + *	bit  11:	PTE_PRESENT_INVALID (must be zero)
+> + *	bits 12-61:	swap offset
+>   */
+> -#define __SWP_TYPE_SHIFT	3
+> +#define __SWP_TYPE_SHIFT	6
+>  #define __SWP_TYPE_BITS		5
+> -#define __SWP_OFFSET_BITS	50
+>  #define __SWP_TYPE_MASK		((1 << __SWP_TYPE_BITS) - 1)
+> -#define __SWP_OFFSET_SHIFT	(__SWP_TYPE_BITS + __SWP_TYPE_SHIFT)
+> +#define __SWP_OFFSET_SHIFT	12
+> +#define __SWP_OFFSET_BITS	50
+>  #define __SWP_OFFSET_MASK	((1UL << __SWP_OFFSET_BITS) - 1)
+>  
+>  #define __swp_type(x)		(((x).val >> __SWP_TYPE_SHIFT) & __SWP_TYPE_MASK)
 
