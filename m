@@ -1,85 +1,83 @@
-Return-Path: <linux-kernel+bounces-166539-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-166540-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 842608B9C0B
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 16:08:38 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0BC6F8B9C13
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 16:10:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1A2AD1F22314
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 14:08:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3C84C1C216D5
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 14:10:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4FE3813C693;
-	Thu,  2 May 2024 14:08:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A33B13C696;
+	Thu,  2 May 2024 14:10:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NVWidDft"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D7808C8F3;
-	Thu,  2 May 2024 14:08:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A78C12DDBF;
+	Thu,  2 May 2024 14:10:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714658911; cv=none; b=SsV3ghMZg/2b/T5uAwinjN7QDPyQasztNJEKEkPm6nGOLor+OGbEevtAFnGfj0/rGb160ObBVOPFKAnF3kmhznyT26I1VzJstL9n2kW5bmWxEgL+DoBbVW/VkJLRtLuTvYTH4/HWb8LqPq6qz+svlEZatOjw6v+80NE1enBVNNA=
+	t=1714659041; cv=none; b=Kk3Xqe60rOSgr2ymd6SqqQI0iu93Weio4LVXaQh9LcEJHlRq1II3QxGVFheIg8RWO+jgqY/6/mdSIeF6raqt1DkdH1fk2XFqgSEkD593PszqRvChwHlHfRQQEpbQpZ3mNsuNDQP7RtDBQk2Z0HWRecEnrlwjID2FBUobP59dYl4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714658911; c=relaxed/simple;
-	bh=XuMKQ2Qkm26WTw4+HWU8N2CzQg4t42/Hg1SnHVp9fLE=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=ib6D5tVcIpSV5VOpNFXGF+0Pgq/I85LXnQ+3PZjcpUNKMdy+n1A+NDZ1tT+dbNreB+rYjPr2t57VHdfjt5brQAktJAaYhW7j664DyHhVseGku6in3Vs1ng83y6LxUZKSw4uNtmToVAty3tulqRGvW5Y+sjVOPGeDggPfDs0EgtQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E7EBCC113CC;
-	Thu,  2 May 2024 14:08:28 +0000 (UTC)
-Date: Thu, 2 May 2024 10:09:14 -0400
-From: Steven Rostedt <rostedt@goodmis.org>
-To: "Tze-nan Wu (=?UTF-8?B?5ZCz5r6k5Y2X?=)" <Tze-nan.Wu@mediatek.com>
-Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-trace-kernel@vger.kernel.org" <linux-trace-kernel@vger.kernel.org>,
- "linux-mediatek@lists.infradead.org" <linux-mediatek@lists.infradead.org>,
- "Cheng-Jui Wang (=?UTF-8?B?546L5q2j552/?=)" <Cheng-Jui.Wang@mediatek.com>,
- wsd_upstream <wsd_upstream@mediatek.com>, "Bobule Chang (=?UTF-8?B?5by1?=
- =?UTF-8?B?5byY576p?=)" <bobule.chang@mediatek.com>,
- "linux-arm-kernel@lists.infradead.org"
- <linux-arm-kernel@lists.infradead.org>, "mhiramat@kernel.org"
- <mhiramat@kernel.org>, "mathieu.desnoyers@efficios.com"
- <mathieu.desnoyers@efficios.com>
-Subject: Re: [PATCH] tracing: Fix uaf issue in tracing_open_file_tr
-Message-ID: <20240502100914.33d6aa83@gandalf.local.home>
-In-Reply-To: <aac0a4cc0a12fc9593ab7de6c34836757e6814f3.camel@mediatek.com>
-References: <20240426073410.17154-1-Tze-nan.Wu@mediatek.com>
-	<20240428202837.0cabca17@rorschach.local.home>
-	<20240429144626.7d868ad3@gandalf.local.home>
-	<661f101456506db945ccbd94700a0f47b95f91e5.camel@mediatek.com>
-	<20240501235044.12fa3297@gandalf.local.home>
-	<aac0a4cc0a12fc9593ab7de6c34836757e6814f3.camel@mediatek.com>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1714659041; c=relaxed/simple;
+	bh=4OIcci68PgoLEQFpUS/m3wwXBwN0nXbzzXVzy2A+aiw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=QxFNmfKs9x2sFSZ0ecTxLQA/xm62ffKuhUGpnOYboJYHsONnugxKD1UD27fkcGvpGR6Jf5b2T50JENdFh1O5CLR/49vgzBFYom1ryQ050vH62F54H5wlt+EZSqWjsp9t5usS6anp0tG3EzL4AoEWTMHvVCwaeJs6xwf6uSsqOrY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NVWidDft; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C898EC113CC;
+	Thu,  2 May 2024 14:10:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714659040;
+	bh=4OIcci68PgoLEQFpUS/m3wwXBwN0nXbzzXVzy2A+aiw=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=NVWidDftw05jfkQ9hjJNktUXWAp3LfBKGwXK56zDCOf7foRg4Ko31oj2XnZvy/QI3
+	 yIevRo/G+YOGxFYseYjduzxRV/X64DG9k11+rQfxZqWWxoi+Atig5K8i2PsjceP/jO
+	 yR/9VeWKEf4f9wS1KqOEc+EW0OqT1MGPaUtse7WjFxJil1CpCgghTwt88SagVxC8FM
+	 /3ceLAxzcosPeNZwoW6OUrAggj19b0oAacl/x0Du0SlIg+tdUGZm/Vp9PpSIdkOVYn
+	 k2RgCmq3AjmavVdNWBeTaWEppZmX4oQobSkEd5smpQmgGvegi/fTm4BmYFajcmgeGz
+	 y4+gyKnE/QsFg==
+Date: Thu, 2 May 2024 16:10:35 +0200
+From: Christian Brauner <brauner@kernel.org>
+To: =?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>
+Cc: Jakub Kicinski <kuba@kernel.org>, Kees Cook <keescook@chromium.org>, 
+	Mark Brown <broonie@kernel.org>, Shengyu Li <shengyu.li.evgeny@gmail.com>, 
+	Shuah Khan <shuah@kernel.org>, "David S . Miller" <davem@davemloft.net>, 
+	=?utf-8?Q?G=C3=BCnther?= Noack <gnoack@google.com>, Will Drewry <wad@chromium.org>, 
+	kernel test robot <oliver.sang@intel.com>, linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org, 
+	Shuah Khan <skhan@linuxfoundation.org>
+Subject: Re: [PATCH v3 1/9] selftests/pidfd: Fix config for pidfd_setns_test
+Message-ID: <20240502-ankam-suggerieren-b3ae553b9c63@brauner>
+References: <20240429191911.2552580-1-mic@digikod.net>
+ <20240429191911.2552580-2-mic@digikod.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240429191911.2552580-2-mic@digikod.net>
 
-On Thu, 2 May 2024 06:49:18 +0000
-Tze-nan Wu (=E5=90=B3=E6=BE=A4=E5=8D=97) <Tze-nan.Wu@mediatek.com> wrote:
+On Mon, Apr 29, 2024 at 09:19:03PM +0200, Mickaël Salaün wrote:
+> Required by switch_timens() to open /proc/self/ns/time_for_children.
+> 
+> CONFIG_GENERIC_VDSO_TIME_NS is not available on UML, so pidfd_setns_test
+> cannot be run successfully on this architecture.
+> 
+> Cc: Christian Brauner <brauner@kernel.org>
+> Cc: Shuah Khan <skhan@linuxfoundation.org>
+> Fixes: 2b40c5db73e2 ("selftests/pidfd: add pidfd setns tests")
+> Reviewed-by: Kees Cook <keescook@chromium.org>
+> Signed-off-by: Mickaël Salaün <mic@digikod.net>
+> Link: https://lore.kernel.org/r/20240429191911.2552580-2-mic@digikod.net
+> ---
 
-> Good news, this patch works, the test has passed, no more Kasan report
-> in my environment.
-
-Great to hear!
-
->=20
-> my environment:
->  arm64 + kasan + swtag based kasan + kernel-6.6.18
->=20
-> Really appreciate, and learn a lot from the patch.
-
-Can I add:
-
-Tested-by: Tze-nan Wu (=E5=90=B3=E6=BE=A4=E5=8D=97) <Tze-nan.Wu@mediatek.co=
-m>
-
-?
-
--- Steve
+Looks good to me,
+Reviewed-by: Christian Brauner <brauner@kernel.org>
 
