@@ -1,108 +1,109 @@
-Return-Path: <linux-kernel+bounces-166594-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-166580-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id EB9858B9CCA
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 16:49:46 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4C7F08B9CA9
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 16:46:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8BC9F1F24889
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 14:49:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F13381F21B84
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 14:46:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9AF9A15F30D;
-	Thu,  2 May 2024 14:46:50 +0000 (UTC)
-Received: from zg8tmja2lje4os4yms4ymjma.icoremail.net (zg8tmja2lje4os4yms4ymjma.icoremail.net [206.189.21.223])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC71815B148;
-	Thu,  2 May 2024 14:46:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=206.189.21.223
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B3AA215359C;
+	Thu,  2 May 2024 14:46:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="TzbQefYl"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.19])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3CC5913C68D;
+	Thu,  2 May 2024 14:46:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714661209; cv=none; b=fHDbngFDABVJBFGeRi0nS2hIw0KDu4HdAqMsOQmQi/byElr7op6aQ/XBXthWlcoNavVDesmTYsnRYsotFtuHsf9j6rrJ7R52ix+xcwDB4OWgcj0gYXwWxVSZJhwEg6NktObjxcZfxlkx1AmbSvjZtrb8b/YSEMXl563Hkzgqgxg=
+	t=1714661195; cv=none; b=blSy5BuKTPjIPosOqgjXkSaQKwGGKR2WY19K2XX8Jc2ZWJKxlwrPFmORoUZ9oi1fyIYAp9c5QHi/PFnDf4y8I+YzLDg2lyoLkDLOHzkz5aQrxfQN4lj4WKfm92Ha0tL5NSObTMwGXV9nxWktcQkriFv2HfQXSAIGz1PsBcekIf0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714661209; c=relaxed/simple;
-	bh=EhzWsTWACEjCUnlwxHyfabgFLKuatNS81iZvkVCsVyM=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 In-Reply-To:References; b=elYo9coXkeKauVObgcGoR/AtJOVzoOSEMNdQ7Dvg3ngMyEbaRx6/JbwiGlS/yQ/UXykf3uApbr6jzlBytZ4P29W+Ary/J9+2mAWGfyv8i+yuYe17sE1yhqiZi9IyoIkuU+Sbv0XrkUh4UwoOqnEpHG2JbZhrjNcnvoP6cKhAWTc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zju.edu.cn; spf=pass smtp.mailfrom=zju.edu.cn; arc=none smtp.client-ip=206.189.21.223
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zju.edu.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zju.edu.cn
-Received: from ubuntu.localdomain (unknown [221.192.181.50])
-	by mail-app2 (Coremail) with SMTP id by_KCgA3L4GZpjNmnigDAg--.28S4;
-	Thu, 02 May 2024 22:44:51 +0800 (CST)
-From: Duoming Zhou <duoming@zju.edu.cn>
-To: linux-hams@vger.kernel.org
-Cc: netdev@vger.kernel.org,
+	s=arc-20240116; t=1714661195; c=relaxed/simple;
+	bh=XptqbUg5xNIQKmQKuni+sa4YXQiyH4WIn+t4Dt1W1MA=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=K2OWXSetx1RnLpe/7/uZFr5v4p+XqOSPbYO4LDLv7LwQBQL3sU0sIgiP61XWsv5dNC3B5EcdFp65jdQevRRpQM/tqd8EAFQJ2+KFdVbsZ2ywFiC110yKhfjckxxlKP+ZJGSPLqbkJW/5wREkV3MKYeWFsxMiuYjmx2AUKvVLRi0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=TzbQefYl; arc=none smtp.client-ip=192.198.163.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1714661194; x=1746197194;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=XptqbUg5xNIQKmQKuni+sa4YXQiyH4WIn+t4Dt1W1MA=;
+  b=TzbQefYlZfoO4Ied6SJD86PSCr3VjWq7dCi0jyiB1DRZ+/lnwP84omaB
+   YYWJycfkECXnbxhoMywYIN+8d+fL7B3DNsn50ZoaT8uTp4kaD+q1863mI
+   C7/kCQKWSsGJWR0PCfEPWBKB6yoQ0MXnunv7wluKcc5XdQtSgPe3Ilfw3
+   OB6BocLi+VDgs6e8wqQKv2EPT8991g+ahVRP6apSRcyjpUcj7NHB/ENa1
+   nkV4qCC8zmDrvVfv0jzo9yPz9NFW4SLu/NaTJ4+kslF9wiCF8CdlUIMXo
+   Cy/mYfmpPV21VhESmJxDQVc/vGIwvy7IA6auJsxeN/h3hH4xgoNd3B2tu
+   g==;
+X-CSE-ConnectionGUID: vHCHbcF2Tti5eRWqocDCGQ==
+X-CSE-MsgGUID: Hx/Ip/E3QcqrTQeqT/oNvA==
+X-IronPort-AV: E=McAfee;i="6600,9927,11062"; a="10306065"
+X-IronPort-AV: E=Sophos;i="6.07,247,1708416000"; 
+   d="scan'208";a="10306065"
+Received: from fmviesa003.fm.intel.com ([10.60.135.143])
+  by fmvoesa113.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 May 2024 07:46:33 -0700
+X-CSE-ConnectionGUID: qIjp9/dATeyAA7Ij6nuAeA==
+X-CSE-MsgGUID: ivJ0cS98Tg2/N32pmd+ugQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,247,1708416000"; 
+   d="scan'208";a="31632823"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmviesa003.fm.intel.com with ESMTP; 02 May 2024 07:46:32 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+	id B087817E; Thu,  2 May 2024 17:46:30 +0300 (EEST)
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Parker Newman <pnewman@connecttech.com>,
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
 	linux-kernel@vger.kernel.org,
-	jreuter@yaina.de,
-	davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	dan.carpenter@linaro.org,
-	Duoming Zhou <duoming@zju.edu.cn>
-Subject: [PATCH net 2/2] ax25: fix potential reference counting leak in ax25_addr_ax25dev
-Date: Thu,  2 May 2024 22:43:38 +0800
-Message-Id: <cb44ea91c0b7084079c3086d6d75e7984505cec7.1714660565.git.duoming@zju.edu.cn>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <cover.1714660565.git.duoming@zju.edu.cn>
-References: <cover.1714660565.git.duoming@zju.edu.cn>
-In-Reply-To: <cover.1714660565.git.duoming@zju.edu.cn>
-References: <cover.1714660565.git.duoming@zju.edu.cn>
-X-CM-TRANSID:by_KCgA3L4GZpjNmnigDAg--.28S4
-X-Coremail-Antispam: 1UD129KBjvdXoW7GrWrAF18GFyrZw17XF45GFg_yoWDurb_uF
-	97ury7Ww1DJr1UCw1rXF48Jry7Zw10gwnrJr1ayFZ7trW5ta47JrWkJw1UXr1UXa47Cr4F
-	qF1rGrW3Aw4IkjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-	9fnUUIcSsGvfJTRUUUblkFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k26cxKx2IYs7xG
-	6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUXwA2048vs2IY02
-	0Ec7CjxVAFwI0_Gr0_Xr1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xv
-	wVC0I7IYx2IY67AKxVW7JVWDJwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVW8Jr0_Cr1UM2
-	8EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s0DM2AI
-	xVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20x
-	vE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xv
-	r2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7M4IIrI8v6xkF7I0E8cxan2IY04
-	v7MxkF7I0En4kS14v26r1q6r43MxkIecxEwVAFwVW5XwCF04k20xvY0x0EwIxGrwCF54CY
-	xVCY1x0262kKe7AKxVWUtVW8ZwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14
-	v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkG
-	c2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI
-	0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4U
-	MIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUwAwsUUU
-	UU=
-X-CM-SenderInfo: qssqjiasttq6lmxovvfxof0/1tbiAwIJAWYySJ0M6ABgsM
+	linux-serial@vger.kernel.org
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Jiri Slaby <jirislaby@kernel.org>
+Subject: [PATCH v1 00/13] serial: 8250_exar: Clean up the driver
+Date: Thu,  2 May 2024 17:43:54 +0300
+Message-ID: <20240502144626.2716994-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.43.0.rc1.1336.g36b5255a03ac
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-The reference counting of ax25_dev potentially increase more
-than once in ax25_addr_ax25dev(), which will cause memory leak.
+After a rework for CONNTECH was done, the driver may need a bit of
+love in order to become less verbose (in terms of indentation and
+code duplication) and hence easier to read.
 
-In order to fix the above issue, only increase the reference
-counting of ax25_dev once, when the res is not null.
+This clean up series fixes a couple of (not so critical) issues and
+cleans up the recently added code. No functional change indented by
+the cleaning up part.
 
-Fixes: d01ffb9eee4a ("ax25: add refcount in ax25_dev to avoid UAF bugs")
-Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
-Signed-off-by: Duoming Zhou <duoming@zju.edu.cn>
----
- net/ax25/ax25_dev.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+Andy Shevchenko (13):
+  serial: 8250_exar: Don't return positive values as error codes
+  serial: 8250_exar: Describe all parameters in kernel doc
+  serial: 8250_exar: Kill CTI_PCI_DEVICE()
+  serial: 8250_exar: Use PCI_SUBVENDOR_ID_IBM for subvendor ID
+  serial: 8250_exar: Trivia typo fixes
+  serial: 8250_exar: Extract cti_board_init_osc_freq() helper
+  serial: 8250_exar: Kill unneeded ->board_init()
+  serial: 8250_exar: Decrease indentation level
+  serial: 8250_exar: Return directly from switch-cases
+  serial: 8250_exar: Switch to use dev_err_probe()
+  serial: 8250_exar: Use BIT() in exar_ee_read()
+  serial: 8250_exar: Make type of bit the same in exar_ee_*_bit()
+  serial: 8250_exar: Keep the includes sorted
 
-diff --git a/net/ax25/ax25_dev.c b/net/ax25/ax25_dev.c
-index 07723095c60..945af92a7b6 100644
---- a/net/ax25/ax25_dev.c
-+++ b/net/ax25/ax25_dev.c
-@@ -37,8 +37,9 @@ ax25_dev *ax25_addr_ax25dev(ax25_address *addr)
- 	for (ax25_dev = ax25_dev_list; ax25_dev != NULL; ax25_dev = ax25_dev->next)
- 		if (ax25cmp(addr, (const ax25_address *)ax25_dev->dev->dev_addr) == 0) {
- 			res = ax25_dev;
--			ax25_dev_hold(ax25_dev);
- 		}
-+	if (res)
-+		ax25_dev_hold(ax25_dev);
- 	spin_unlock_bh(&ax25_dev_lock);
- 
- 	return res;
+ drivers/tty/serial/8250/8250_exar.c | 454 ++++++++++++----------------
+ 1 file changed, 200 insertions(+), 254 deletions(-)
+
 -- 
-2.17.1
+2.43.0.rc1.1336.g36b5255a03ac
 
 
