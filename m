@@ -1,45 +1,45 @@
-Return-Path: <linux-kernel+bounces-165996-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-165997-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E5DCA8B9477
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 08:00:41 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C00DD8B9478
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 08:00:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A17F228400E
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 06:00:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E355E1C20FB3
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 06:00:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4AA89286BD;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD6612E64B;
 	Thu,  2 May 2024 06:00:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BldDkGuw"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rHZFhw/W"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8401E224F2;
-	Thu,  2 May 2024 06:00:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 055C823775;
+	Thu,  2 May 2024 06:00:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714629614; cv=none; b=gQun2ZmXeew5thr/XJtJfmCrcCWIZfcWpUyyiO12fdMXdIqOLIqHIHnN0X7eog3jJEKsAr9uGL5ewaPgJReCY7VPPZ0ltnwsnwlpPoG9OZcT9IJTY/gUksaG66nftOaG4CzsflCp1R5bjHdKv2jXfbI+KhCLIz3I5IFOoU6Y1dc=
+	t=1714629615; cv=none; b=lfAiPHirvpjOGLRwTE8C5YYFc3aOh223xlCgd/d7tf6WVnQWEHxIPSNX1b+lkgJ1pBYbT4O7Pyw7v54WD3++9OMwOOVj8sl00w8/y7Zu8DbdJhqK87uQstEJoBihFUjknBIRIrOduar6L24aEkcL9cBLXRlRBmZGNsTql6N5oMo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714629614; c=relaxed/simple;
-	bh=SSyYuDfAIqFwr0E0S0Wr/ukwLpvby2PoPSUWIQ8hahY=;
+	s=arc-20240116; t=1714629615; c=relaxed/simple;
+	bh=FD83vOLGqIEiapuFz0V+SOOdVptlx7pB58xGzLzESqw=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=tlX4QOvqQw8HKhLAeg6HopJoEjJ7lIE9yZL+4Qx3nHclZJMe/jyKKFt+oz3xLRc0PbNOMDVtpZmo9IR/LUkGnNJuuwwU2DIetmJfymxblaog8mNFTM5mfejcsBAmmiyuj3tdmmV8hxBOvhBU1cKlYxAGsgx1+OBWLFHy2IRP+Uk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BldDkGuw; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 09099C4AF49;
+	 MIME-Version; b=NFPgEoPQLam8N9Ba/4J2FiMfm6qHuATgb11nKLsiveNCFd3WDy70cRelXOB2+k39Fwq+LMzaOqdI8HUKZZ9bceEHcPLTk0ERR6X1IWMX3LIljM+uyu9fn5Ptkf0pdUj3xuMF4fwRKe1qeioyn0sYLwOoLr+2KPTxW4WgZtj75iE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rHZFhw/W; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 82139C4AF50;
 	Thu,  2 May 2024 06:00:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1714629614;
-	bh=SSyYuDfAIqFwr0E0S0Wr/ukwLpvby2PoPSUWIQ8hahY=;
+	bh=FD83vOLGqIEiapuFz0V+SOOdVptlx7pB58xGzLzESqw=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=BldDkGuwbfyaEA5Fxssr4aaABm0kVEWzAu8kv5Y2r8J/bvNwhvx4Eohi0O0wCcWr7
-	 Dtymvpr3xI1XO7qki2JuNYMcT0ZNEXPjjHUsrbIy78bcXpxSZ+iOInr8TXXAbMddEU
-	 sF31DmxWeRjlsUMZRsfB34LvJhgnUW/uGaCS5w1jieRnUUgs1kImZyjRYdH1j4gR2S
-	 U9TZwG+xFL8WNKLspg0nyWUY1luxvEWs9sK41dj/4GUR/hysVKVsTznxDzxA8ZO5AI
-	 3Xx1h4E1T6pyABWHxQ7XP920YTnJSUQxM6mKrUsKlkM4GQv4r7Y82kqxEcIl+VUW3+
-	 GFLhzH0US3UsQ==
+	b=rHZFhw/WFZWr/010GbTf+vBwDGHAWj5xhRUIq/VH4Il3w2dgRjA56xG6KjqNz0oBH
+	 ftDTLJCYVInzFIKFhRvuQ9FIvDt/y2D03TYyh1ApemaDCdpv16e051gQqe34K84I7E
+	 x4O5WQX+/N/7Z9aLYfJmDZ7mvGMQYXxzKjKq89UKvuGjq0h5LfRvGIxFDy6yYsBOA8
+	 TJN0Q/Re+wd4V/GhaknVD19obidf60RkkPDYEQ3E2x6fJV15sMC/hwnkjT7DM55O7u
+	 YG6qA5ETnadqEwLwbF8sYZfAkKBM42T5xdraDPKWyM69pTyrJID6TkR4aScJ6DRpTU
+	 fd51LCLJkhzJQ==
 From: Namhyung Kim <namhyung@kernel.org>
 To: Arnaldo Carvalho de Melo <acme@kernel.org>,
 	Ian Rogers <irogers@google.com>,
@@ -50,9 +50,9 @@ Cc: Jiri Olsa <jolsa@kernel.org>,
 	Ingo Molnar <mingo@kernel.org>,
 	LKML <linux-kernel@vger.kernel.org>,
 	linux-perf-users@vger.kernel.org
-Subject: [PATCH 3/6] perf annotate-data: Handle direct global variable access
-Date: Wed,  1 May 2024 23:00:08 -0700
-Message-ID: <20240502060011.1838090-4-namhyung@kernel.org>
+Subject: [PATCH 4/6] perf annotate-data: Check memory access with two registers
+Date: Wed,  1 May 2024 23:00:09 -0700
+Message-ID: <20240502060011.1838090-5-namhyung@kernel.org>
 X-Mailer: git-send-email 2.45.0.rc1.225.g2a3ae87e7f-goog
 In-Reply-To: <20240502060011.1838090-1-namhyung@kernel.org>
 References: <20240502060011.1838090-1-namhyung@kernel.org>
@@ -64,88 +64,106 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Like per-cpu base offset array, sometimes it accesses the global
-variable directly using the offset.  Allow this type of instructions as
-long as it finds a global variable for the address.
+The following instruction pattern is used to access a global variable.
 
-  movslq  %edi, %rcx
-  mov     -0x7dc94ae0(,%rcx,8), %rcx   <<<--- here
+  mov     $0x231c0, %rax
+  movsql  %edi, %rcx
+  mov     -0x7dc94ae0(,%rcx,8), %rcx
+  cmpl    $0x0, 0xa60(%rcx,%rax,1)     <<<--- here
 
-As %rcx has a valid type (i.e. array index) from the first instruction,
-it will be checked by the first case in check_matching_type().  But as
-it's not a pointer type, the match will fail.  But in this case, it
-should check if it accesses the kernel global array variable.
+The first instruction set the address of the per-cpu variable (here, it
+is 'runqueus' of struct rq).  The second instruction seems like a cpu
+number of the per-cpu base.  The third instruction get the base offset
+of per-cpu area for that cpu.  The last instruction compares the value
+of the per-cpu variable at the offset of 0xa60.
 
 Signed-off-by: Namhyung Kim <namhyung@kernel.org>
 ---
- tools/perf/util/annotate-data.c | 27 +++++++++++++++------------
- 1 file changed, 15 insertions(+), 12 deletions(-)
+ tools/perf/util/annotate-data.c | 44 +++++++++++++++++++++++++++++----
+ 1 file changed, 39 insertions(+), 5 deletions(-)
 
 diff --git a/tools/perf/util/annotate-data.c b/tools/perf/util/annotate-data.c
-index 4dd0911904f2..f1e52a531563 100644
+index f1e52a531563..245e3ef3e2ff 100644
 --- a/tools/perf/util/annotate-data.c
 +++ b/tools/perf/util/annotate-data.c
-@@ -1256,14 +1256,19 @@ static int check_matching_type(struct type_state *state,
- 	if (state->regs[reg].ok && state->regs[reg].kind == TSR_KIND_TYPE) {
- 		int tag = dwarf_tag(&state->regs[reg].type);
+@@ -1031,22 +1031,37 @@ static void update_insn_state_x86(struct type_state *state,
+ 		else if (has_reg_type(state, sreg) &&
+ 			 state->regs[sreg].kind == TSR_KIND_PERCPU_BASE) {
+ 			u64 ip = dloc->ms->sym->start + dl->al.offset;
++			u64 var_addr = src->offset;
+ 			int offset;
  
--		pr_debug_dtp("\n");
--
- 		/*
- 		 * Normal registers should hold a pointer (or array) to
- 		 * dereference a memory location.
- 		 */
--		if (tag != DW_TAG_pointer_type && tag != DW_TAG_array_type)
-+		if (tag != DW_TAG_pointer_type && tag != DW_TAG_array_type) {
-+			if (dloc->op->offset < 0 && reg != state->stack_reg)
-+				goto check_kernel;
++			if (src->multi_regs) {
++				int reg2 = (sreg == src->reg1) ? src->reg2 : src->reg1;
 +
-+			pr_debug_dtp("\n");
- 			return -1;
++				if (has_reg_type(state, reg2) && state->regs[reg2].ok &&
++				    state->regs[reg2].kind == TSR_KIND_CONST)
++					var_addr += state->regs[reg2].imm_value;
++			}
++
+ 			/*
+ 			 * In kernel, %gs points to a per-cpu region for the
+ 			 * current CPU.  Access with a constant offset should
+ 			 * be treated as a global variable access.
+ 			 */
+-			if (get_global_var_type(cu_die, dloc, ip, src->offset,
++			if (get_global_var_type(cu_die, dloc, ip, var_addr,
+ 						&offset, &type_die) &&
+ 			    die_get_member_type(&type_die, offset, &type_die)) {
+ 				tsr->type = type_die;
+ 				tsr->kind = TSR_KIND_TYPE;
+ 				tsr->ok = true;
+ 
+-				pr_debug_dtp("mov [%x] percpu %#x(reg%d) -> reg%d",
+-					     insn_offset, src->offset, sreg, dst->reg1);
++				if (src->multi_regs) {
++					pr_debug_dtp("mov [%x] percpu %#x(reg%d,reg%d) -> reg%d",
++						     insn_offset, src->offset, src->reg1,
++						     src->reg2, dst->reg1);
++				} else {
++					pr_debug_dtp("mov [%x] percpu %#x(reg%d) -> reg%d",
++						     insn_offset, src->offset, sreg, dst->reg1);
++				}
+ 				pr_debug_type_name(&tsr->type, tsr->kind);
+ 			} else {
+ 				tsr->ok = false;
+@@ -1340,6 +1355,17 @@ static int check_matching_type(struct type_state *state,
+ 
+ 		pr_debug_dtp(" percpu var\n");
+ 
++		if (dloc->op->multi_regs) {
++			int reg2 = dloc->op->reg2;
++
++			if (dloc->op->reg2 == reg)
++				reg2 = dloc->op->reg1;
++
++			if (has_reg_type(state, reg2) && state->regs[reg2].ok &&
++			    state->regs[reg2].kind == TSR_KIND_CONST)
++				var_addr += state->regs[reg2].imm_value;
 +		}
 +
-+		pr_debug_dtp("\n");
- 
- 		/* Remove the pointer and get the target type */
- 		if (die_get_real_type(&state->regs[reg].type, type_die) == NULL)
-@@ -1376,12 +1381,14 @@ static int check_matching_type(struct type_state *state,
- 		return -1;
- 	}
- 
--	if (map__dso(dloc->ms->map)->kernel && arch__is(dloc->arch, "x86")) {
-+check_kernel:
-+	if (map__dso(dloc->ms->map)->kernel) {
- 		u64 addr;
- 		int offset;
- 
- 		/* Direct this-cpu access like "%gs:0x34740" */
--		if (dloc->op->segment == INSN_SEG_X86_GS && dloc->op->imm) {
-+		if (dloc->op->segment == INSN_SEG_X86_GS && dloc->op->imm &&
-+		    arch__is(dloc->arch, "x86")) {
- 			pr_debug_dtp(" this-cpu var\n");
- 
- 			addr = dloc->op->offset;
-@@ -1394,17 +1401,13 @@ static int check_matching_type(struct type_state *state,
- 			return -1;
- 		}
- 
--		/* Access to per-cpu base like "-0x7dcf0500(,%rdx,8)" */
-+		/* Access to global variable like "-0x7dcf0500(,%rdx,8)" */
- 		if (dloc->op->offset < 0 && reg != state->stack_reg) {
--			const char *var_name = NULL;
--
- 			addr = (s64) dloc->op->offset;
- 
--			if (get_global_var_info(dloc, addr, &var_name, &offset) &&
--			    !strcmp(var_name, "__per_cpu_offset") && offset == 0 &&
--			    get_global_var_type(cu_die, dloc, dloc->ip, addr,
-+			if (get_global_var_type(cu_die, dloc, dloc->ip, addr,
- 						&offset, type_die)) {
--				pr_debug_dtp(" percpu base\n");
-+				pr_debug_dtp(" global var\n");
- 
- 				dloc->type_offset = offset;
- 				return 1;
+ 		if (get_global_var_type(cu_die, dloc, dloc->ip, var_addr,
+ 					&var_offset, type_die)) {
+ 			dloc->type_offset = var_offset;
+@@ -1527,8 +1553,16 @@ static int find_data_type_block(struct data_loc_info *dloc, int reg,
+ 		found = find_data_type_insn(dloc, reg, &basic_blocks, var_types,
+ 					    cu_die, type_die);
+ 		if (found > 0) {
+-			pr_debug_dtp("found by insn track: %#x(reg%d) type-offset=%#x\n",
+-				     dloc->op->offset, reg, dloc->type_offset);
++			char buf[64];
++
++			if (dloc->op->multi_regs)
++				snprintf(buf, sizeof(buf), "reg%d, reg%d",
++					 dloc->op->reg1, dloc->op->reg2);
++			else
++				snprintf(buf, sizeof(buf), "reg%d", dloc->op->reg1);
++
++			pr_debug_dtp("found by insn track: %#x(%s) type-offset=%#x\n",
++				     dloc->op->offset, buf, dloc->type_offset);
+ 			pr_debug_type_name(type_die, TSR_KIND_TYPE);
+ 			ret = 0;
+ 			break;
 -- 
 2.45.0.rc1.225.g2a3ae87e7f-goog
 
