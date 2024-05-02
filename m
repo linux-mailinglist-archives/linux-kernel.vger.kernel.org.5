@@ -1,168 +1,161 @@
-Return-Path: <linux-kernel+bounces-166185-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-166184-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D47288B974D
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 11:12:50 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6D26A8B974B
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 11:12:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 651711F21425
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 09:12:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9013A1C21657
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 09:12:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58518548E7;
-	Thu,  2 May 2024 09:12:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 879E252F92;
+	Thu,  2 May 2024 09:12:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ecbL09G5"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="Hl9WobmC"
+Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com [209.85.218.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1DA6D53819
-	for <linux-kernel@vger.kernel.org>; Thu,  2 May 2024 09:12:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A845953362
+	for <linux-kernel@vger.kernel.org>; Thu,  2 May 2024 09:12:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714641130; cv=none; b=SX/+YMgeew9aio52hquerLZnpGl11oWs6vrQLbRiHjOmdVxf1V4aOuO7UMFmyYGLj6Mh6m7mCxw97g/B0DzYeHzPk5plgAxa84jUnV2HHITdHHnzrRqTSpp1bJBzbfqG3WIkgN8IimqsO5wWBa34VEkgeTjp3oi92s72SIaaLto=
+	t=1714641126; cv=none; b=mo5eI9QSUpcIYqbGNGMSSqO5df9LK9FXbudS8QhZFdJoFNU6W3ymvjGzlIR2RAROXbsCx2Szyz8p5eSzqsWiYQOsTzI56jt6ABtvk6KK9qCDJn0DN07vj3bfnd/iqbWRJHflbL7UpfhFfYg0Xmm8BqSfguhoZ97E7wiQ5gyqKRg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714641130; c=relaxed/simple;
-	bh=vdDTn+uzLBQCtp9MtS2N+CK5sg1wRO8wkuGtNHpBns8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=PlZ/PDZoQ/KKgMUvhkDIaDS4M3NKqQhyeWqN/hgoM4Il53UKII2SOWC7+2KD16AQtBepmMCtLItM+if8EgazzHLY8EL1AyxGYVJhgYR4NLNjXYJwW0ZgOaM/QuPu4jdTE2GLc3uET4Ey10PfZKOibtfPsmByXRh0WSzbvRcCE0E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=ecbL09G5; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1714641128;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=gV0JLASkbNm/r4o94+gUkgK/LyrTAh8D8GAsALQ3hO4=;
-	b=ecbL09G5AU5u9ALikbTRED5/IRJg5XP9DJVZ5unMu6VXEPVWcBEtB2/tDmldFO3boxTVht
-	uan9K+ZoWoLpVMsw58LNaJSlPcfl9yd7ygZmWB2RANP1caYbNWjWNggRk7/moBob/T+nLr
-	peV1PSJIlKv6TLlex7zI7hh6qMRWt0E=
-Received: from mail-lj1-f197.google.com (mail-lj1-f197.google.com
- [209.85.208.197]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-634-Gv4zYplpPsmCYJXbcmding-1; Thu, 02 May 2024 05:12:06 -0400
-X-MC-Unique: Gv4zYplpPsmCYJXbcmding-1
-Received: by mail-lj1-f197.google.com with SMTP id 38308e7fff4ca-2e1e8860a00so3185221fa.0
-        for <linux-kernel@vger.kernel.org>; Thu, 02 May 2024 02:12:06 -0700 (PDT)
+	s=arc-20240116; t=1714641126; c=relaxed/simple;
+	bh=QQDvn6Q8TkCbmjMUDI4cHKI+ospj5DHXLnkdPbN4GLU=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=EyRxbi0ww6iSGsMt0P7VytkUruBsyyb8em4ooP+vKThnmk+sy4Q4cSJJsroZgtAgsFkt/NEfqEVrE85QskAN9H2C1v6buVYxIH5BgpLHWfXxNmrtXkdObvtfCF9hHg37s8B5dFix6nqWNEl32bm032/X4LjpdbX021mpYrcn/ZQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=Hl9WobmC; arc=none smtp.client-ip=209.85.218.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-a58772187d8so898233566b.3
+        for <linux-kernel@vger.kernel.org>; Thu, 02 May 2024 02:12:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1714641123; x=1715245923; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references
+         :mail-followup-to:message-id:subject:cc:to:date:from:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=XKBISEz5hivbFgsL9sOrWIy+M0J+RrEQV3Dl9y05i9U=;
+        b=Hl9WobmCJjmT63XPi8Rvic4HP5QhuB+fDVcGezn8lySClSevvmwl4pm1uz0CXYhdzg
+         gnYheJ2ua+kxAngBZOqyXsPXxqmMtNbX9ND9IsR09C3Od4WTzQNCN4v5HhgNDPMYdh/2
+         CWCVH/tvbsk6Am86OEhXcsiZkVRHemNPg6Fgbz4Z5p0jy1flwof4Py1B2ic35vnKbl5q
+         RRVTUz4cDXlG957Cta+czzr8h9Uodw0AAvTdlZbCciuod3BqoQ8URap7rYgutkBm+A7u
+         GRQeH6H3ieW3j7L1ZPiHsi5R+oZkEk3XoD7kyMIk/AARjoeRMHWUnmZENU7E7BsFHEjR
+         uatQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714641125; x=1715245925;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :content-language:from:references:cc:to:subject:user-agent
-         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=gV0JLASkbNm/r4o94+gUkgK/LyrTAh8D8GAsALQ3hO4=;
-        b=ANO78xAhkfbyMLVvUIlPH3CwTviXmcAWKzeLzoD8Z0RlXU2Ph+4HfcRod6TUwLdxOM
-         /E+AxyEbJokPq5R9IL3JtB1gSqO8A61VUOlxspAyGMGQrhTnenYCWtkWH30XYR0TI3TV
-         Kn7QNAb7JwDRrrAmk0SyulKz77ze8BfBXzwXAtmL5czEIqrJmBbs9pwQcp8oZPD5o+Ot
-         09TsT0uYRXSd74aUMhxSqMdbnFjZINXV1kmqqRkXLq+29AyBc1OgcFVWdBjEyV4+1rsr
-         puN2USBEV3dJbci3+cHPmLQZjocFTIt1zWbW5ipImBBQMl6BWI56MVesEDrdCec59Rcl
-         OvhA==
-X-Forwarded-Encrypted: i=1; AJvYcCXOLulBT3ZgLron84/2sV/erxQy9JPrjwNMjnaRF4ZJA5gO5z6srd5ZDRCaqmdw6KqW04j87gAusKhUsLfh2hGxkZKzTiI/KmGSINaC
-X-Gm-Message-State: AOJu0YwRPlmm+F/S3nzrRrO47/XAMTOQOF+xegar/TApmSOACVtrLsix
-	oEsSiwaUgiGxv42SuUqjRAlXb0s3wbQC+4vfzIo6mC+/C2boy/oWfUzTt0xxL22RbrmVTHKb44m
-	z5Zr0P50Di77pfaI2vXTmgnzBKhFoEObvjRwkbICMgOyW/1YSZL7TgfdXosdLkA==
-X-Received: by 2002:a2e:98d2:0:b0:2e1:aa94:cf48 with SMTP id s18-20020a2e98d2000000b002e1aa94cf48mr1695978ljj.20.1714641124940;
-        Thu, 02 May 2024 02:12:04 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IErgcByOHy+AIHA0eM4pOiZsesKtX7bynjcsLAXR0MLhdKJ3N3hzCMGCZ0RallQlu2bCwPw7A==
-X-Received: by 2002:a2e:98d2:0:b0:2e1:aa94:cf48 with SMTP id s18-20020a2e98d2000000b002e1aa94cf48mr1695939ljj.20.1714641124299;
-        Thu, 02 May 2024 02:12:04 -0700 (PDT)
-Received: from ?IPV6:2003:cb:c71e:bf00:eba1:3ab9:ab0f:d676? (p200300cbc71ebf00eba13ab9ab0fd676.dip0.t-ipconnect.de. [2003:cb:c71e:bf00:eba1:3ab9:ab0f:d676])
-        by smtp.gmail.com with ESMTPSA id i14-20020a05600c354e00b004169836bf9asm4995291wmq.23.2024.05.02.02.12.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 02 May 2024 02:12:03 -0700 (PDT)
-Message-ID: <7636ada9-fdf0-4796-ab83-9ac60a213465@redhat.com>
-Date: Thu, 2 May 2024 11:12:02 +0200
+        d=1e100.net; s=20230601; t=1714641123; x=1715245923;
+        h=in-reply-to:content-disposition:mime-version:references
+         :mail-followup-to:message-id:subject:cc:to:date:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=XKBISEz5hivbFgsL9sOrWIy+M0J+RrEQV3Dl9y05i9U=;
+        b=UO5wNGdhJGuwzor4IdrV14d3aOqx/Xs64Zms8QUAXcBLLyrc+LadpEQD7sqMuZTO2f
+         oyeIsj8TE4NutnZ28/1S/0dNiywfMqkIapDL/edvdVzYF+c6WvE6K1PBKCR3fmaK65fl
+         mcttxNJtRChY7aiHbqiP3+3y4OGfpQJhK7ceSTBOTWlM/lfVXt9BlxObQS0Zz147bhmn
+         8OXSOO3ShzAPYmdXUuCRtRELELERQEOUXBCJk/Hfsi3osopkAeETQfTnT1iQqhgzl/5h
+         S0yxQJIwuH6Syftv5Kyz8Ygutyu6LKSe/eaWolgJCpvOyxEudB4DFRgpJE5hhqsyxA9R
+         Pkgw==
+X-Forwarded-Encrypted: i=1; AJvYcCUae7b6KVEO9hZlj7OG/BZsGi0exYbFrff/jubRfWeQBTWHWAYBj26PX23YIfEtPZtnhUfWgpAlAu5w6s8u+9m9h5zxNa+9sDBN6/ep
+X-Gm-Message-State: AOJu0YyixSgeDhdZbEsGz3HD4um2sN33OqGuxKSr6zhJnkoYcpt6HPtY
+	gDAfOUh3NvgTVqvipRgpWXwANh46dOQ1BUxXkpbjHzSbzKo/c/w5q4vjMm11wOA=
+X-Google-Smtp-Source: AGHT+IHQ6L475JtRROpjybMx/lyDKdF98v0PWXkxGP7wEay+2VSkVed/s8BZXiNF9X43dqxWFA0H2w==
+X-Received: by 2002:a17:906:79c3:b0:a58:9707:685b with SMTP id m3-20020a17090679c300b00a589707685bmr1128611ejo.16.1714641122948;
+        Thu, 02 May 2024 02:12:02 -0700 (PDT)
+Received: from localhost (host-87-1-234-99.retail.telecomitalia.it. [87.1.234.99])
+        by smtp.gmail.com with ESMTPSA id p22-20020a1709060e9600b00a5887833da8sm315074ejf.81.2024.05.02.02.12.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 02 May 2024 02:12:02 -0700 (PDT)
+From: Andrea della Porta <andrea.porta@suse.com>
+X-Google-Original-From: Andrea della Porta <aporta@suse.de>
+Date: Thu, 2 May 2024 11:12:06 +0200
+To: Stefan Wahren <wahrenst@gmx.net>
+Cc: Andrea della Porta <andrea.porta@suse.com>,
+	Ulf Hansson <ulf.hansson@linaro.org>, Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Florian Fainelli <florian.fainelli@broadcom.com>,
+	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>,
+	Linus Walleij <linus.walleij@linaro.org>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	Kamal Dasu <kamal.dasu@broadcom.com>,
+	Al Cooper <alcooperx@gmail.com>, linux-mmc@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
+	Jonathan Bell <jonathan@raspberrypi.com>,
+	Phil Elwell <phil@raspberrypi.com>
+Subject: Re: [PATCH 0/6] Add support for BCM2712 SD card controller
+Message-ID: <ZjNY5qY4ABOB3lv2@apocalypse>
+Mail-Followup-To: Stefan Wahren <wahrenst@gmx.net>,
+	Andrea della Porta <andrea.porta@suse.com>,
+	Ulf Hansson <ulf.hansson@linaro.org>, Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Florian Fainelli <florian.fainelli@broadcom.com>,
+	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>,
+	Linus Walleij <linus.walleij@linaro.org>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	Kamal Dasu <kamal.dasu@broadcom.com>,
+	Al Cooper <alcooperx@gmail.com>, linux-mmc@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
+	Jonathan Bell <jonathan@raspberrypi.com>,
+	Phil Elwell <phil@raspberrypi.com>
+References: <cover.1713036964.git.andrea.porta@suse.com>
+ <fd77cfa2-9bd8-4393-95bd-eced676bf6d2@gmx.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 11/12] mm: drop page_index and convert folio_index to
- use folio
-To: Kairui Song <kasong@tencent.com>, linux-mm@kvack.org
-Cc: Andrew Morton <akpm@linux-foundation.org>,
- "Huang, Ying" <ying.huang@intel.com>, Matthew Wilcox <willy@infradead.org>,
- Chris Li <chrisl@kernel.org>, Barry Song <v-songbaohua@oppo.com>,
- Ryan Roberts <ryan.roberts@arm.com>, Neil Brown <neilb@suse.de>,
- Minchan Kim <minchan@kernel.org>, Hugh Dickins <hughd@google.com>,
- Yosry Ahmed <yosryahmed@google.com>, linux-fsdevel@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20240502084609.28376-1-ryncsn@gmail.com>
- <20240502084939.30250-4-ryncsn@gmail.com>
-From: David Hildenbrand <david@redhat.com>
-Content-Language: en-US
-Autocrypt: addr=david@redhat.com; keydata=
- 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
- WNyWQQ==
-Organization: Red Hat
-In-Reply-To: <20240502084939.30250-4-ryncsn@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <fd77cfa2-9bd8-4393-95bd-eced676bf6d2@gmx.net>
 
-On 02.05.24 10:49, Kairui Song wrote:
-> From: Kairui Song <kasong@tencent.com>
+On 12:07 Sun 14 Apr     , Stefan Wahren wrote:
+> Hi Andrea,
 > 
-> There are two helpers for retrieving the index within address space
-> for mixed usage of swap cache and page cache:
-> 
-> - page_index
-> - folio_index (wrapper of page_index)
-> 
-> This commit drops page_index, as we have eliminated all users, and
-> converts folio_index to use folio internally.
+> Am 14.04.24 um 00:14 schrieb Andrea della Porta:
+> > Hi,
+> > 
+> > This patchset adds support for the SDHCI controller on Broadcom BCM2712
+> > SoC in order to make it possible to boot (particularly) Raspberry Pi 5
+> > from SD card. This work is heavily based on downstream contributions.
+> since your goal is minimal Raspberry Pi 5 support, i suggest to use this
+> as the subject for this patch.
+> > Patch #1 and 2: introduce the dt binding definitions for, respectively,
+> > the new pin cfg/mux controller and the SD host controller as a preparatory
+> > step for the upcoming dts.
+> > 
+> > Patch #3: add a somewhat reasonable (*almost* bare-minimum) dts to be used
+> > to boot Rpi5 boards. Since till now there was no support at all for any
+> > 2712 based chipset, both the SoC and board dts plus definitions for the
+> > new Pin and SD host controller have been added.
+> The patch still seems to contain a lot unnecessary stuff (Wifi, BT,
+> SPI), please try to remove as much as possible for the minimal support
+> (just boot via debug UART & SD card) in order to make review easier. Btw
+> this patch must be after pinctrl & SDHCI support.
+> > Patch #4: the driver supporting the pin controller. Based on [1] and
+> > successive fix commits.
+> > 
+> > Patch #5: add SDHCI support. Based on [2] and the next 2 fix commits.
+> > Drop the SD Express implementation for now, that will be added by patch
+> > #6.
+> > 
+> > Patch #6: this patch offers SD Express support and can be considered totally
+> > optional. The callback plumbing is slightly different w.r.t. the downstream
+> > approach (see [3]), as explained in the patch comment. Not sure what is the best,
+> > any comment is highly appreciated.
+> I don't think this should be necessary for minimal Raspberry Pi 5
+> support. Maybe this should be addressed later.
 
-The latter does not make sense. folio_index() already is using a folio 
-internally. Maybe a leftover from reshuffling/reworking patches?
+Thanks for all the feedback. Just a quick note to let you know that
+I'm working on V2 patchset that will fix all coding-style and dts/binding
+issues. The new patchset will be significantly smaller and I managed
+to remove everything that is not strictly needed in order to be able to
+boot an rpi5 from sd card.
 
--- 
-Cheers,
-
-David / dhildenb
-
+Best regards,
+Andrea
 
