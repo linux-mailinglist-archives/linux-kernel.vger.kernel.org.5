@@ -1,261 +1,183 @@
-Return-Path: <linux-kernel+bounces-166632-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-166634-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8DD998B9D47
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 17:21:08 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C224C8B9D50
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 17:24:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 055191F2250D
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 15:21:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E5B0D1C21222
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 15:24:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A9F315AADA;
-	Thu,  2 May 2024 15:20:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C912F15B972;
+	Thu,  2 May 2024 15:24:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TgNYcedM"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="1F3t/Ktg"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7EE2C15ADBB;
-	Thu,  2 May 2024 15:20:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 645421552EE;
+	Thu,  2 May 2024 15:24:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714663214; cv=none; b=hKNsLMWgHD3Yr65DGOTjCU8cq5HAGJ1eTSlPw7taO8BbZwj4Od0J3bJM8n8QRLJyunLz2izObG9I7XWFTa6DEk1PD0S8cujSb/CSi2CYgQ79+wdEEwlIcv3jo0BVB91B27gkiDRqrcqJJmky0taW1yKJY+FiQdPwllsL51yR8Ms=
+	t=1714663445; cv=none; b=TAjJSmdPw8CQxtEOQFkHxWfCljDSoSiq/ph5JY5F8AO/Wh3AgFSBjGfigDhCKatFA4n6YpVh3bPw6lbsEolRIOhYWuzcKxO54wRCpT+0LGIwu7faMYZwwEMX3bqzXCax8TLqu+jDTOemdmMZx32l8d4HQEixyA5poFWufdBvYbE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714663214; c=relaxed/simple;
-	bh=v43W+Id+SXUtihys+FO7PLR0yrpaTn3IG+fuSXsqDIc=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=W/F8RTg6lBG8VZol1BsMfz2EZ6p63aDZXigHO2RNcIqFCIb8xlruaPx1N4s7/eAEJHOvQZOCBDGCk/9KsxqvXUQ9dDdmu3jYdZHIKZ/DSQxNfyzoDUAmrso88A2VtACiLhOmshXCdrNGoI244k9KtE0bIfgR8AzCwV5Q9CcPbS0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TgNYcedM; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5DA06C4AF18;
-	Thu,  2 May 2024 15:20:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714663214;
-	bh=v43W+Id+SXUtihys+FO7PLR0yrpaTn3IG+fuSXsqDIc=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=TgNYcedMxaD4k6VPuq7dn8PKamcNNPczEUHy+GJo5drCXRZuKq2klRzGjeCJVEagH
-	 Cx7gh+5a7r76340F7e3Ix1Eg3orvrOI6JnfRzXRSMWEPhz6uY4hUn2D8pljYBMF73P
-	 9ZHE9UviIlA8uRuYveUbFTpKcEzFWin1eLIRyhMPkmTT9w0PpRhNVr3JmWbGPZ5hhe
-	 LGb7ePRKjYo4I4YGUY9s0lFFNlVxqvrIx9YKWzoekI8MDrn90NGhe+n8k9Sgkhm8Gk
-	 Ja8FOlTdWFXuxeX53Xui0Q7KKAClZsiUZRULCIAB5zuuq3fIkXfNQCcfYQjCnBW8Aw
-	 J3/jwR/ktRg/A==
-Received: by mail-lj1-f177.google.com with SMTP id 38308e7fff4ca-2db13ca0363so130830541fa.3;
-        Thu, 02 May 2024 08:20:14 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCWU4RVc1H1cq06c0oKoZnZwchUsNTJwi5cdCw8Htvk34EQMM/jmPp+PDWkeYMmjBJApMm6Lkrn4lJ6XirgsYCpgq1KA/ZzWTXTdxw6TbeIZrBBtmED7YSbPYGzpNMuyTQOnwLzOTVKyiA==
-X-Gm-Message-State: AOJu0YxoWaURn4dqJQYI/VcCAxH2z0lh5WC9LvQsUdGwv4W7ElUhN0Vu
-	8B7HeiOu9ReGXKf4HD82JRmikXf0rjR5Ac3xt+K2TxY0QVlPlMnmz6L8mLh3xRppNjgTR+RiTls
-	TvPjEVIGUQ40eCEVw6aKtMmBvjg==
-X-Google-Smtp-Source: AGHT+IFYPLBrsPHkwfF2ym7/pTS0ke11sSjNYp2kGQEbKDVGn/xOHGJXiBE4zQef1aSD2qe+gbHxLu5hbl6ifTcF8cc=
-X-Received: by 2002:a2e:9652:0:b0:2e1:a504:f9ec with SMTP id
- z18-20020a2e9652000000b002e1a504f9ecmr48825ljh.23.1714663212706; Thu, 02 May
- 2024 08:20:12 -0700 (PDT)
+	s=arc-20240116; t=1714663445; c=relaxed/simple;
+	bh=FMM3UnDTD2ByyP54LzZrE/Xw0svJa2P8ocjjbGkC5tQ=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=IOpN2BkL6SXumnvR5VIs4qZBFmC87F/jPelrJtXpU0mz4QVVVxb0MLyeG3F7FnaOc2Gr+oUipX1LpEMngjdgFTf0efswlF5faqOUaXJHQ20+8L8MxxAr1JQAZJGyQmyzLzBzKxU1vfZ9zoOyNOUr1Mj+iiWvwPOa8HD89lZAZpg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=1F3t/Ktg; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1714663441;
+	bh=FMM3UnDTD2ByyP54LzZrE/Xw0svJa2P8ocjjbGkC5tQ=;
+	h=From:Subject:Date:To:Cc:From;
+	b=1F3t/KtgV/3O9jHY4rDBPoqhFXyGhrx/P+SuFnKtrChJD4vL3dDMJuR9lGl3WDNZ+
+	 3EMc1sBEJhIkXVe0NDhNOYtShppc+aC2Lnv2fg/bDa5nJL8KVwMIud9UsFfT3/G9tA
+	 rmzgWBRetUvyukCLhc4fk1SWdRhHGyFAqjnrlygrrJucGimBH/dPh8O3rSWIRDicGS
+	 ndFwKOAjAAAF0SMjaI8n1d/p28PnRRiDrUneRZA/T9MFeunvmh5PYJQbNLA2CKnHht
+	 sstAzJ1ImRhhWHbHHkBYNTDGVtf8SCs61U6zgASibtszi697ta4syUIwqniy/LC/Ph
+	 O3CNWTGM3qOdQ==
+Received: from apertis.home (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: jmassot)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id DA9A4378148F;
+	Thu,  2 May 2024 15:23:57 +0000 (UTC)
+From: Julien Massot <julien.massot@collabora.com>
+Subject: [PATCH 0/2] Introduce v4l2_async_nf_unregister_cleanup
+Date: Thu, 02 May 2024 17:22:20 +0200
+Message-Id: <20240502-master-v1-0-8bd109c6a3ba@collabora.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240502-cn9130-som-v4-0-0a2e2f1c70d8@solid-run.com> <20240502-cn9130-som-v4-4-0a2e2f1c70d8@solid-run.com>
-In-Reply-To: <20240502-cn9130-som-v4-4-0a2e2f1c70d8@solid-run.com>
-From: Rob Herring <robh@kernel.org>
-Date: Thu, 2 May 2024 10:20:00 -0500
-X-Gmail-Original-Message-ID: <CAL_JsqJGO9W5ysX_OWhP--8TGXiY19d5TeDL7Ne8rmj+GgWCcQ@mail.gmail.com>
-Message-ID: <CAL_JsqJGO9W5ysX_OWhP--8TGXiY19d5TeDL7Ne8rmj+GgWCcQ@mail.gmail.com>
-Subject: Re: [PATCH v4 4/4] arm64: dts: add description for solidrun cn9131
- solidwan board
-To: Josua Mayer <josua@solid-run.com>
-Cc: Andrew Lunn <andrew@lunn.ch>, Gregory Clement <gregory.clement@bootlin.com>, 
-	Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Yazan Shhady <yazan.shhady@solid-run.com>, linux-arm-kernel@lists.infradead.org, 
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAKyvM2YC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
+ vPSU3UzU4B8JSMDIxMDUwMj3dzE4pLUIl3TlNTUVENj4ySTNFMloOKCotS0zAqwQdGxtbUARbQ
+ EZVgAAAA=
+To: Sakari Ailus <sakari.ailus@linux.intel.com>, 
+ Mauro Carvalho Chehab <mchehab@kernel.org>, 
+ Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>, 
+ Jacopo Mondi <jacopo+renesas@jmondi.org>, 
+ Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>, 
+ Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>, 
+ =?utf-8?q?Niklas_S=C3=B6derlund?= <niklas.soderlund+renesas@ragnatech.se>, 
+ Benjamin Mugnier <benjamin.mugnier@foss.st.com>, 
+ Sylvain Petinot <sylvain.petinot@foss.st.com>, 
+ Yong Zhi <yong.zhi@intel.com>, Bingbu Cao <bingbu.cao@intel.com>, 
+ Dan Scally <djrscally@gmail.com>, Tianshu Qiu <tian.shu.qiu@intel.com>, 
+ Eugen Hristev <eugen.hristev@collabora.com>, 
+ Nicolas Ferre <nicolas.ferre@microchip.com>, 
+ Alexandre Belloni <alexandre.belloni@bootlin.com>, 
+ Claudiu Beznea <claudiu.beznea@tuxon.dev>, 
+ Maxime Ripard <mripard@kernel.org>, Rui Miguel Silva <rmfrfs@gmail.com>, 
+ Martin Kepplinger <martink@posteo.de>, Purism Kernel Team <kernel@puri.sm>, 
+ Shawn Guo <shawnguo@kernel.org>, Sascha Hauer <s.hauer@pengutronix.de>, 
+ Pengutronix Kernel Team <kernel@pengutronix.de>, 
+ Fabio Estevam <festevam@gmail.com>, Robert Foss <rfoss@kernel.org>, 
+ Todor Tomov <todor.too@gmail.com>, 
+ Bryan O'Donoghue <bryan.odonoghue@linaro.org>, 
+ Bjorn Andersson <andersson@kernel.org>, 
+ Konrad Dybcio <konrad.dybcio@linaro.org>, 
+ Fabrizio Castro <fabrizio.castro.jz@renesas.com>, 
+ Dafna Hirschfeld <dafna@fastmail.com>, Heiko Stuebner <heiko@sntech.de>, 
+ Sylwester Nawrocki <s.nawrocki@samsung.com>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, 
+ Alim Akhtar <alim.akhtar@samsung.com>, 
+ Hugues Fruchet <hugues.fruchet@foss.st.com>, 
+ Alain Volmat <alain.volmat@foss.st.com>, 
+ Maxime Coquelin <mcoquelin.stm32@gmail.com>, 
+ Alexandre Torgue <alexandre.torgue@foss.st.com>, 
+ Chen-Yu Tsai <wens@csie.org>, Jernej Skrabec <jernej.skrabec@gmail.com>, 
+ Samuel Holland <samuel@sholland.org>, Yong Deng <yong.deng@magewell.com>, 
+ Paul Kocialkowski <paul.kocialkowski@bootlin.com>, 
+ Benoit Parrot <bparrot@ti.com>, Jai Luthra <j-luthra@ti.com>, 
+ Philipp Zabel <p.zabel@pengutronix.de>, Michal Simek <michal.simek@amd.com>, 
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+ Thierry Reding <thierry.reding@gmail.com>, 
+ Jonathan Hunter <jonathanh@nvidia.com>, 
+ Sowjanya Komatineni <skomatineni@nvidia.com>, 
+ Luca Ceresoli <luca.ceresoli@bootlin.com>
+Cc: linux-media@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ linux-arm-kernel@lists.infradead.org, imx@lists.linux.dev, 
+ linux-arm-msm@vger.kernel.org, linux-renesas-soc@vger.kernel.org, 
+ linux-rockchip@lists.infradead.org, linux-samsung-soc@vger.kernel.org, 
+ linux-stm32@st-md-mailman.stormreply.com, linux-sunxi@lists.linux.dev, 
+ linux-staging@lists.linux.dev, linux-tegra@vger.kernel.org, 
+ Julien Massot <julien.massot@collabora.com>, 
+ Sakari Ailus <sakari.ailus@linux.intel.com>
+X-Mailer: b4 0.13.0
 
-On Thu, May 2, 2024 at 7:32=E2=80=AFAM Josua Mayer <josua@solid-run.com> wr=
-ote:
->
-> Add description for the SolidRun CN9131 SolidWAN, based on CN9130 SoM
-> with an extra communication  processor on the carrier board.
->
-> This board differentiates itself from CN9130 Clearfog by providing
-> additional SoC native network interfaces and pci buses:
-> 2x 10Gbps SFP+
-> 4x 1Gbps RJ45
-> 1x miniPCI-E
-> 1x m.2 b-key with sata, usb-2.0 and usb-3.0
-> 1x m.2 m-key with pcie and usb-2.0
-> 1x m.2 b-key with pcie, usb-2.0, usb-3.0 and 2x sim slots
-> 1x mpcie with pcie only
-> 2x type-a usb-2.0/3.0
->
-> Signed-off-by: Josua Mayer <josua@solid-run.com>
-> ---
->  arch/arm64/boot/dts/marvell/Makefile               |   1 +
->  arch/arm64/boot/dts/marvell/cn9131-cf-solidwan.dts | 643 +++++++++++++++=
-++++++
->  2 files changed, 644 insertions(+)
->
-> diff --git a/arch/arm64/boot/dts/marvell/Makefile b/arch/arm64/boot/dts/m=
-arvell/Makefile
-> index 019f2251d696..16f9d7156d9f 100644
-> --- a/arch/arm64/boot/dts/marvell/Makefile
-> +++ b/arch/arm64/boot/dts/marvell/Makefile
-> @@ -30,3 +30,4 @@ dtb-$(CONFIG_ARCH_MVEBU) +=3D ac5x-rd-carrier-cn9131.dt=
-b
->  dtb-$(CONFIG_ARCH_MVEBU) +=3D ac5-98dx35xx-rd.dtb
->  dtb-$(CONFIG_ARCH_MVEBU) +=3D cn9130-cf-base.dtb
->  dtb-$(CONFIG_ARCH_MVEBU) +=3D cn9130-cf-pro.dtb
-> +dtb-$(CONFIG_ARCH_MVEBU) +=3D cn9131-cf-solidwan.dtb
-> diff --git a/arch/arm64/boot/dts/marvell/cn9131-cf-solidwan.dts b/arch/ar=
-m64/boot/dts/marvell/cn9131-cf-solidwan.dts
-> new file mode 100644
-> index 000000000000..a63a8961bad0
-> --- /dev/null
-> +++ b/arch/arm64/boot/dts/marvell/cn9131-cf-solidwan.dts
-> @@ -0,0 +1,643 @@
-> +// SPDX-License-Identifier: GPL-2.0+
-> +/*
-> + * Copyright (C) 2024 Josua Mayer <josua@solid-run.com>
-> + *
-> + * DTS for SolidRun CN9130 Clearfog Base.
-> + *
-> + */
-> +
-> +/dts-v1/;
-> +
-> +#include <dt-bindings/input/input.h>
-> +#include <dt-bindings/leds/common.h>
-> +
-> +#include "cn9130.dtsi"
-> +#include "cn9130-sr-som.dtsi"
-> +
-> +/*
-> + * Instantiate the external CP115
-> + */
-> +
-> +#define CP11X_NAME             cp1
-> +#define CP11X_BASE             f4000000
-> +#define CP11X_PCIEx_MEM_BASE(iface) (0xe2000000 + (iface * 0x1000000))
-> +#define CP11X_PCIEx_MEM_SIZE(iface) 0xf00000
-> +#define CP11X_PCIE0_BASE       f4600000
-> +#define CP11X_PCIE1_BASE       f4620000
-> +#define CP11X_PCIE2_BASE       f4640000
-> +
-> +#include "armada-cp115.dtsi"
-> +
-> +#undef CP11X_NAME
-> +#undef CP11X_BASE
-> +#undef CP11X_PCIEx_MEM_BASE
-> +#undef CP11X_PCIEx_MEM_SIZE
-> +#undef CP11X_PCIE0_BASE
-> +#undef CP11X_PCIE1_BASE
-> +#undef CP11X_PCIE2_BASE
-> +
-> +/ {
-> +       model =3D "SolidRun CN9131 SolidWAN";
-> +       compatible =3D "solidrun,cn9131-solidwan",
-> +                    "solidrun,cn9130-sr-som", "marvell,cn9130";
-> +
-> +       aliases {
-> +               ethernet0 =3D &cp1_eth1;
-> +               ethernet1 =3D &cp1_eth2;
-> +               ethernet2 =3D &cp0_eth1;
-> +               ethernet3 =3D &cp0_eth2;
-> +               ethernet4 =3D &cp0_eth0;
-> +               ethernet5 =3D &cp1_eth0;
-> +               gpio0 =3D &ap_gpio;
-> +               gpio1 =3D &cp0_gpio1;
-> +               gpio2 =3D &cp0_gpio2;
-> +               gpio3 =3D &cp1_gpio1;
-> +               gpio4 =3D &cp1_gpio2;
-> +               gpio5 =3D &expander0;
-> +               i2c0 =3D &cp0_i2c0;
-> +               i2c1 =3D &cp0_i2c1;
-> +               i2c2 =3D &cp1_i2c1;
-> +               mmc0 =3D &ap_sdhci0;
-> +               mmc1 =3D &cp0_sdhci0;
-> +               rtc0 =3D &cp0_rtc;
-> +               rtc1 =3D &carrier_rtc;
-> +       };
-> +
-> +       leds {
-> +               compatible =3D "gpio-leds";
-> +               pinctrl-names =3D "default";
-> +               pinctrl-0 =3D <&cp0_led_pins &cp1_led_pins>;
-> +
-> +               /* for sfp-1 (J42) */
-> +               led-sfp1-activity {
-> +                       label =3D "sfp1:green";
-> +                       gpios =3D <&cp0_gpio1 7 GPIO_ACTIVE_HIGH>;
-> +               };
-> +
-> +               /* for sfp-1 (J42) */
-> +               led-sfp1-link {
-> +                       label =3D "sfp1:yellow";
-> +                       gpios =3D <&cp0_gpio1 4 GPIO_ACTIVE_HIGH>;
-> +               };
-> +
-> +               /* (J28) */
-> +               led-sfp0-activity {
-> +                       label =3D "sfp0:green";
-> +                       gpios =3D <&cp1_gpio2 22 GPIO_ACTIVE_HIGH>;
-> +               };
-> +
-> +               /* (J28) */
-> +               led-sfp0-link {
-> +                       label =3D "sfp0:yellow";
-> +                       gpios =3D <&cp1_gpio2 23 GPIO_ACTIVE_HIGH>;
-> +               };
-> +       };
-> +
-> +       /* Type-A port on J53 */
-> +       reg_usb_a_vbus0: regulator-usb-a-vbus0 {
-> +               compatible =3D "regulator-fixed";
-> +               pinctrl-0 =3D <&cp0_reg_usb_a_vbus0_pins>;
-> +               pinctrl-names =3D "default";
-> +               regulator-name =3D "vbus0";
-> +               regulator-min-microvolt =3D <5000000>;
-> +               regulator-max-microvolt =3D <5000000>;
-> +               regulator-oc-protection-microamp =3D <1000000>;
-> +               gpio =3D <&cp0_gpio1 27 GPIO_ACTIVE_HIGH>;
+Many drivers has
+  v4l2_async_nf_unregister(&notifier);
+  v4l2_async_nf_cleanup(&notifier);
 
-"gpio" is deprecated.
+Introduce a helper function to call both functions in one line.
 
-> +               enable-active-high;
-> +               regulator-always-on;
-> +       };
-> +
-> +       reg_usb_a_vbus1: regulator-usb-a-vbus1 {
-> +               compatible =3D "regulator-fixed";
-> +               pinctrl-0 =3D <&cp0_reg_usb_a_vbus1_pins>;
-> +               pinctrl-names =3D "default";
-> +               regulator-name =3D "vbus1";
-> +               regulator-min-microvolt =3D <5000000>;
-> +               regulator-max-microvolt =3D <5000000>;
-> +               regulator-oc-protection-microamp =3D <1000000>;
-> +               gpio =3D <&cp0_gpio1 28 GPIO_ACTIVE_HIGH>;
-> +               enable-active-high;
-> +               regulator-always-on;
-> +       };
-> +
-> +       sfp0: sfp-0 {
-> +               compatible =3D "sff,sfp";
-> +               pinctrl-0 =3D <&cp0_sfp0_pins>;
-> +               pinctrl-names =3D "default";
-> +               i2c-bus =3D <&cp0_i2c1>;
-> +               los-gpio =3D <&cp0_gpio2 2 GPIO_ACTIVE_HIGH>;
-> +               mod-def0-gpio =3D <&cp0_gpio2 0 GPIO_ACTIVE_LOW>;
-> +               tx-disable-gpio =3D <&cp0_gpio2 1 GPIO_ACTIVE_HIGH>;
-> +               tx-fault-gpio =3D <&cp0_gpio1 31 GPIO_ACTIVE_HIGH>;
+---
+Julien Massot (2):
+      media: v4l: async: Add v4l2_async_nf_unregister_cleanup
+      media: convert all drivers to use v4l2_async_nf_unregister_cleanup
 
-As is "-gpio" suffix.  These are all pointed out with 'dtbs_check'
-which I sent a report on v3. I haven't checked what else from that you
-ignored... I don't expect warnings inherited from the SoC .dtsi to be
-fixed in this series, but certainly the board level ones. Yes, it's
-hard to pick out those, but that's the Marvell folks fault for not
-fixing SoC level warnings.
+ drivers/media/i2c/ds90ub913.c                           | 10 ++--------
+ drivers/media/i2c/ds90ub953.c                           | 10 ++--------
+ drivers/media/i2c/ds90ub960.c                           | 10 ++--------
+ drivers/media/i2c/max9286.c                             |  3 +--
+ drivers/media/i2c/st-mipid02.c                          |  6 ++----
+ drivers/media/i2c/tc358746.c                            |  3 +--
+ drivers/media/pci/intel/ipu3/ipu3-cio2.c                |  6 ++----
+ drivers/media/pci/intel/ipu6/ipu6-isys.c                |  8 +-------
+ drivers/media/pci/intel/ivsc/mei_csi.c                  |  6 ++----
+ drivers/media/platform/atmel/atmel-isi.c                |  3 +--
+ drivers/media/platform/cadence/cdns-csi2rx.c            |  6 ++----
+ drivers/media/platform/intel/pxa_camera.c               |  3 +--
+ drivers/media/platform/marvell/mcam-core.c              |  6 ++----
+ drivers/media/platform/microchip/microchip-csi2dc.c     |  3 +--
+ drivers/media/platform/microchip/microchip-isc-base.c   |  6 ++----
+ drivers/media/platform/nxp/imx-mipi-csis.c              |  6 ++----
+ drivers/media/platform/nxp/imx7-media-csi.c             |  3 +--
+ drivers/media/platform/nxp/imx8-isi/imx8-isi-core.c     |  3 +--
+ drivers/media/platform/nxp/imx8mq-mipi-csi2.c           |  6 ++----
+ drivers/media/platform/qcom/camss/camss.c               |  3 +--
+ drivers/media/platform/renesas/rcar-csi2.c              |  6 ++----
+ drivers/media/platform/renesas/rcar-isp.c               |  6 ++----
+ drivers/media/platform/renesas/rcar-vin/rcar-core.c     |  9 +++------
+ drivers/media/platform/renesas/rcar_drif.c              |  3 +--
+ drivers/media/platform/renesas/renesas-ceu.c            |  4 +---
+ drivers/media/platform/renesas/rzg2l-cru/rzg2l-core.c   |  3 +--
+ drivers/media/platform/renesas/rzg2l-cru/rzg2l-csi2.c   |  6 ++----
+ drivers/media/platform/rockchip/rkisp1/rkisp1-dev.c     |  3 +--
+ drivers/media/platform/samsung/exynos4-is/media-dev.c   |  3 +--
+ drivers/media/platform/st/stm32/stm32-dcmi.c            |  3 +--
+ .../media/platform/st/stm32/stm32-dcmipp/dcmipp-core.c  |  3 +--
+ drivers/media/platform/sunxi/sun4i-csi/sun4i_csi.c      |  3 +--
+ .../media/platform/sunxi/sun6i-csi/sun6i_csi_bridge.c   |  3 +--
+ .../platform/sunxi/sun6i-mipi-csi2/sun6i_mipi_csi2.c    |  3 +--
+ .../sunxi/sun8i-a83t-mipi-csi2/sun8i_a83t_mipi_csi2.c   |  3 +--
+ drivers/media/platform/ti/am437x/am437x-vpfe.c          |  3 +--
+ drivers/media/platform/ti/cal/cal.c                     |  8 +-------
+ drivers/media/platform/ti/davinci/vpif_capture.c        |  3 +--
+ drivers/media/platform/ti/j721e-csi2rx/j721e-csi2rx.c   | 10 ++--------
+ drivers/media/platform/ti/omap3isp/isp.c                |  3 +--
+ drivers/media/platform/video-mux.c                      |  3 +--
+ drivers/media/platform/xilinx/xilinx-vipp.c             |  3 +--
+ drivers/staging/media/deprecated/atmel/atmel-isc-base.c |  6 ++----
+ drivers/staging/media/sunxi/sun6i-isp/sun6i_isp_proc.c  |  3 +--
+ drivers/staging/media/tegra-video/vi.c                  |  3 +--
+ include/media/v4l2-async.h                              | 17 +++++++++++++++++
+ 46 files changed, 80 insertions(+), 153 deletions(-)
+---
+base-commit: 843a9f4a7a85988f2f3af98adf21797c2fd05ab1
+change-id: 20240502-master-5deee133b4f5
 
-Rob
+Best regards,
+-- 
+Julien Massot <julien.massot@collabora.com>
+
 
