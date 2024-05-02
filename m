@@ -1,191 +1,160 @@
-Return-Path: <linux-kernel+bounces-166476-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-166492-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 785BD8B9B35
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 14:59:19 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7FD438B9B64
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 15:13:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E48AE1F2127E
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 12:59:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 34EA1282C9F
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 13:13:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA1BC83CCE;
-	Thu,  2 May 2024 12:59:09 +0000 (UTC)
-Received: from zg8tmja2lje4os43os4xodqa.icoremail.net (zg8tmja2lje4os43os4xodqa.icoremail.net [206.189.79.184])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CFFF882498;
-	Thu,  2 May 2024 12:59:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=206.189.79.184
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714654749; cv=none; b=tjJh/zaA8YdfseeJa1HShfRaJuxmDIz9KbxIKVx9NCWURvo39A7mLdwynH9jG+9uwbEmzyC3nM7zyfKJHWkDbhNn1feNIgNJkoASrVRoiKYZp5ipb++LoCOZBQdOIueGMh2HzW14BSp0O8oOSWxALRHsOhbIIeERT+g0qrLwIh0=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714654749; c=relaxed/simple;
-	bh=pS/I1kzqFrQdM3EmoRnGcLpZmqdgt3T3j/097XUIV2w=;
-	h=From:To:Cc:Subject:Date:Message-Id; b=dEna8y5ymcPRRA3RxHq9PQ9/PCdDNwycOvwypXvkzq4AnWjdzH4a8TB9JF8KL57Y2O+u0zKh95XWV5Fh5GQgtKRyaJo3TvAiQ20aQfg348XcKuDfMzQQ99ss5FqPbTeJugi07IhI2Ek6jJdhyzu3DHrPZTLUOSymKsto8IbPz+c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zju.edu.cn; spf=pass smtp.mailfrom=zju.edu.cn; arc=none smtp.client-ip=206.189.79.184
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zju.edu.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zju.edu.cn
-Received: from ubuntu.localdomain (unknown [221.192.181.50])
-	by mail-app3 (Coremail) with SMTP id cC_KCgBXCOrDjTNmWJG9AQ--.60971S2;
-	Thu, 02 May 2024 20:58:01 +0800 (CST)
-From: Duoming Zhou <duoming@zju.edu.cn>
-To: linux-bluetooth@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org,
-	luiz.dentz@gmail.com,
-	johan.hedberg@gmail.com,
-	marcel@holtmann.org,
-	Duoming Zhou <duoming@zju.edu.cn>
-Subject: [PATCH] Bluetooth: l2cap: fix null-ptr-deref in l2cap_chan_timeout
-Date: Thu,  2 May 2024 20:57:36 +0800
-Message-Id: <20240502125736.28034-1-duoming@zju.edu.cn>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID:cC_KCgBXCOrDjTNmWJG9AQ--.60971S2
-X-Coremail-Antispam: 1UD129KBjvJXoW3JF15Kr13CF18Jw1ftw17trb_yoWxWFy5pr
-	sxKrWSkrs5Jas5JF45Cr17Ja4DZ347AF4DWry8Ar1fJ3W8Xw1DAr1DAryUCrnrGrnrAFy3
-	t3s8Xr10kr17Gw7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUvv14x267AKxVWUJVW8JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-	1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
-	6r4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
-	Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
-	I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
-	4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCY1x0262kKe7AKxVWU
-	AVWUtwCY02Avz4vE14v_Xr1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr
-	1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE
-	14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7
-	IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E
-	87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73Uj
-	IFyTuYvjfUn_-PUUUUU
-X-CM-SenderInfo: qssqjiasttq6lmxovvfxof0/1tbiAwIJAWYySJ0M6ABBst
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A09584A3F;
+	Thu,  2 May 2024 13:13:45 +0000 (UTC)
+Received: from CHN02-BJS-obe.outbound.protection.partner.outlook.cn (mail-bjschn02on2119.outbound.protection.partner.outlook.cn [139.219.17.119])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32994824AC;
+	Thu,  2 May 2024 13:13:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=139.219.17.119
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1714655624; cv=fail; b=d5dY2xxQ/a78IMKX1fI1msYXQZ4FzQTg7jDU2/K3tXVnb4QWdYHOdvhCf/P0N/B9SYHjI8Px94yHanD+nJSh1mNQt3gDATtpFcUYLju1cfs/O/Rf35jm/U99jNrqUhfyF1Fa3h1EKLPOGFZ6J0LUHgunGjCpSloZxfOJ+zqWVps=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1714655624; c=relaxed/simple;
+	bh=Y+t4jh9ItlV5uG63DXPLk7KpWeg2fgmI3UZxxYPuXes=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=ubwhmWI4TD+wvPLCWdlTwXqLoruJUJUfZTkqX25c1c6/KsUDrqMo5FC/HqRz9VSxaCcvQ1RloSD7AyEgrSzRBRC6phLM8IOH8wx1wRwm2+RsP05Rrk1wUfjBRY5LjDMwQi8heG7rwSjndMXUzw+IEK9A3w9n5DkkMq5/l50c3f4=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=starfivetech.com; spf=pass smtp.mailfrom=starfivetech.com; arc=fail smtp.client-ip=139.219.17.119
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=starfivetech.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=starfivetech.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=j1lpFNapH0PKYfGa/lHFalqL0Flceh1eMXthgruSZ5elSQFjJvs0MGlQyq6EUaMPKw2bGM401QHfavUwblX0Qa3ZkCU7pKSGULEWaHAAHOk19EeVas3QeDzjeU5UhojOE3mgothSjNe1TO751SkC0QY+xGfr7Gx3xJ9BHiGJQySHnBIhJTNihDX+UksbSwmM4nPPnzXIZPxplUySk6W34+yIgI+wchBRvcFdmIedVmU2szxvnGc7LrVtPyZujB9FePYKf8w4OapfJvsljKyzMYavo9QYo8UgnG6Q4Qs8+JL+J3bFPuyqjix6lqGqd09COfeNZsSOgfCeoGr4Tp8l/w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Y+t4jh9ItlV5uG63DXPLk7KpWeg2fgmI3UZxxYPuXes=;
+ b=QjyNMtqEpWv+Uz/0X7dk7dxdnv7E9FWMUtjITbU4w55YB9Jk/WcfRAGgFikWj3BdFkjHeO7QKf0o2H8whVf+paY8B9plQhBXI2uSPFtcYqU4zaAPCKwjTyydCQjZbGCnojQFXZ1oUgd4skrFWQb2gvsn08mNVLAkuBsE6PFudui7g/D55LXPlgHcfILmTsL6MPexNkqDGM/qwnxQJBl3e87RYdK1JvZ5n2zKvYbv1tLKMsHQ5p7Yz3RKeiWOGE8NIrquVCpGUT9MTFDfw30xGHwwdykavScudXZd2Tegxpk636AbTh7wlyj1j0PQn/SXxjYxGUqQe5q7vw+mn2uHxw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=starfivetech.com; dmarc=pass action=none
+ header.from=starfivetech.com; dkim=pass header.d=starfivetech.com; arc=none
+Received: from ZQ4PR01MB1154.CHNPR01.prod.partner.outlook.cn
+ (2406:e500:c550:17::9) by ZQ4PR01MB1235.CHNPR01.prod.partner.outlook.cn
+ (2406:e500:c550:15::12) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7472.44; Thu, 2 May
+ 2024 12:58:13 +0000
+Received: from ZQ4PR01MB1154.CHNPR01.prod.partner.outlook.cn
+ ([fe80::301e:ec80:4356:8b14]) by
+ ZQ4PR01MB1154.CHNPR01.prod.partner.outlook.cn ([fe80::301e:ec80:4356:8b14%6])
+ with mapi id 15.20.7472.044; Thu, 2 May 2024 12:58:13 +0000
+From: JiSheng Teoh <jisheng.teoh@starfivetech.com>
+To: Krzysztof Kozlowski <krzk@kernel.org>, Mark Brown <broonie@kernel.org>,
+	Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>, Philipp Zabel <p.zabel@pengutronix.de>,
+	Michal Simek <michal.simek@amd.com>, Lars-Peter Clausen <lars@metafoo.de>
+CC: Leyfoon Tan <leyfoon.tan@starfivetech.com>, "linux-spi@vger.kernel.org"
+	<linux-spi@vger.kernel.org>, "devicetree@vger.kernel.org"
+	<devicetree@vger.kernel.org>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>, EngLee Teh <englee.teh@starfivetech.com>
+Subject: RE: [PATCH v2 2/2] dt-bindings: spi: spi-cadence: Add optional reset
+ control
+Thread-Topic: [PATCH v2 2/2] dt-bindings: spi: spi-cadence: Add optional reset
+ control
+Thread-Index: AQHanH5J1xo3ta2QXkGkfo2fF/uLg7GD3ZcAgAADf9CAAAQVgIAAAXwQ
+Date: Thu, 2 May 2024 12:58:13 +0000
+Message-ID:
+ <ZQ4PR01MB1154491D456521284B3BACFBEB18A@ZQ4PR01MB1154.CHNPR01.prod.partner.outlook.cn>
+References: <20240502104800.3030486-1-jisheng.teoh@starfivetech.com>
+ <20240502104800.3030486-3-jisheng.teoh@starfivetech.com>
+ <89f96e06-1966-43c2-b4c4-17e1669c2566@kernel.org>
+ <ZQ4PR01MB1154B6FBA361C503AC10E6B6EB18A@ZQ4PR01MB1154.CHNPR01.prod.partner.outlook.cn>
+ <ea96eb15-2cd0-4f0a-8bba-8bd7f37cbbc2@kernel.org>
+In-Reply-To: <ea96eb15-2cd0-4f0a-8bba-8bd7f37cbbc2@kernel.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=starfivetech.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: ZQ4PR01MB1154:EE_|ZQ4PR01MB1235:EE_
+x-ms-office365-filtering-correlation-id: 60ba3ba4-991c-4b3e-17cd-08dc6aa786e7
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info:
+ e6e6ZNDmKCx5RyxCtrl1+saN3SEHZo7oL8PRHJCcKAXIcHrJT4o+9g1JiJs9LMyl5s3a3F37i8KYy7tiOsiSkGYYue1mNQY4NydoLb0B0Max7omNNHYRKjsPMTso6HT6HBo5S2AUYJt0GpX4HALrhHlYLzv4jSUzTb43cLjutBEyO2cj88g4Igu4nh+LuON8iEH38XkTLTKSIcU19ZjRCTUjT1RcSnZw0nLIqrKWtMMX/wgn4OXFTMiahlb2C2RClAiipO2Mvr0obsYB2XgqwFK07/lzP68bpWxqcWHUAaGiIkS5QaiAe3KkWobG3U5Po/kgZ95Lctgd61Z0LRoGIukQ8p2S7veixR0p1sK42Q++aYY8xzk9BCySnl0y0ty/o7P/2oshroMrTIL1tTMbuSt2BU1RMI500qPSt/1TC9geyVUpWzToMYtiibXNwjAOYb/+RVVcqqGxx517tQ0nNG0cqgn7QnfW407rFeUiWE7BlVVLvGU48qRRUk9rkpRLOlo+UScyJnuC5LNh/Q0X6OxBOcBcwExKDaQfP8pQrfrG/KkGV4DS9HuiEir68bbRq/QpVIyQHBlq1bGR9OUSesVG628MGdAlv9svQ/hPwTFpbDiFNOMnfPdzNsB/Jt9N
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:ZQ4PR01MB1154.CHNPR01.prod.partner.outlook.cn;PTR:;CAT:NONE;SFS:(13230031)(41320700004)(1800799015)(7416005)(366007)(38070700009);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?utf-8?B?WHRKc2NEZjMya1hub282TllnY2FZcTF0cmI4L3ovaDlDb3VtMXYxb0k5dHBq?=
+ =?utf-8?B?VDdMMGZ6Y2M5S2pBVTJoMDg4ODJvWllCZFB0MG9Na0Y4YU56Q1pQcTlscnBh?=
+ =?utf-8?B?Ym1oMGtkcWEwODAyVUh5K2JHSGRmVWVBMjA4UGpIMXJWVHZxOTZsSEsrZkVu?=
+ =?utf-8?B?SERGNnBWQmlWWlprSDkxSGQ1U1lSeHppQVkraWFKWlRSSXdNY01UZ0JJdmZ5?=
+ =?utf-8?B?SjlDeGRDRkdnd3Z6cm1keEYrWFBIbTdrbzhQb256K3NTVTJCNWJUQ2JVNWJt?=
+ =?utf-8?B?TWZIeW5RakdQb05XaHFndUdMbjIzWnRVQ1NDMnlVOUZncjUxWTdycituUFo2?=
+ =?utf-8?B?MmpRYkNiRmZvSzZXZ2V0NElISVo5VjREQzNCS3JwY1RKdjFtQllLQmtiaTcr?=
+ =?utf-8?B?NGZHZXUxcm1zSVR4angwaXRLMUNieFgwZzA0bEdrdFpuR0toZnlVVEFhRElq?=
+ =?utf-8?B?dXNPOWZRbUhMejlnQlJmN1dhdzd6M0ZrWVR0RE56c1ZRTTZDdFEwRTJhek55?=
+ =?utf-8?B?QkJKSFFOU1dBT0ZBZ2tzMTcwN1JmOEs4RE5POXFGVis0WHp5QkdOcWRoRHJG?=
+ =?utf-8?B?YzlzMWhZMldYOG4zaVd6MTJNOFlTTEw5OGFlSWFqN1NpcU5mQnkzZ0VoTWpC?=
+ =?utf-8?B?VzdKNDZxMlp5WERzYUw2aFNLcEtiZGtwZW9GVk8yWDk5Vk1FanpJU3RVN1lQ?=
+ =?utf-8?B?WEM2cVkzejc1eng4YUNuMXFIT05DSllhTWxLdVE4VkIvbWRBemlCTVNidjZ5?=
+ =?utf-8?B?RnhvVnB4eGUwa05NK01OKzhJZ0FmT0N4SHJwMnA1TDVTYW15TFZTdktPMDl2?=
+ =?utf-8?B?ZHNHemJFUzFRNkE4QTJlQnZKNHhIcm4rcFVmdkRyQ0g5Yjd0bklRbjJBc25i?=
+ =?utf-8?B?ZFVxSXV0TUR6NzZwQk1hR0ZQU3RwRlhhNnk5VUgxQmxFTGo1bkg3Yk5UNitE?=
+ =?utf-8?B?QmU4UUFDaWdEYStnemFlelE0Z1BZL3RVbjFGUmFqd2N2cW1RNUdkdHdnMWxJ?=
+ =?utf-8?B?UXdnbThzYlh2bmcvWFBIdldXeEpZbWxLc1NteThPK1lOSWhVWXhNaE8rWlZw?=
+ =?utf-8?B?WFZ0U1lHNUtuVW40dkRBQTc2VnI3YlBuc2NFT2FBYTRLL3NDbjA0K3lZN0dr?=
+ =?utf-8?B?UGlZS3dpT0FwOWQ2Sml6dlljUmI4YXF6QzBnZm5LLzNhNXptUlNRY2Y3WDFJ?=
+ =?utf-8?B?NFRZU2tzUW5sK3hNTjBINzRUQkFud3hJVHExSGhzQUNJSEV3ZURWcXowN1pa?=
+ =?utf-8?B?eWg5T2pGeGNXQWNoeno5cjFOMGJFTGkvSlh6YithNEVXV3NTeFl0NWdyN1FS?=
+ =?utf-8?B?YVZmWndZRHIwSjZSazZjQmhYQWdpTThCSk9vZWhUdmVXN2ZOZE5uMXg2WDBo?=
+ =?utf-8?B?YkVRc1FkYUk1clJLWUxsclZUZ0lURkZ5Zkx5dXEwQWd5S3pxMjRmT0FtdDZX?=
+ =?utf-8?B?VE9BODhJa3Ezd1F2bGEvL0c5VXg3OWVic3hjbkZRS1FKcFArYlVRd0xVQ2pJ?=
+ =?utf-8?B?NkZQRi9nMnphelhNQWV5MjVRWjNyUElMZnZZZlNzaWF1ZWdYRytwKzFqUWh6?=
+ =?utf-8?B?RGRQdVEyYUcvWTlDSURPWXA5U2MzalJDUTBJYTR0cWtEUUVpSVpucmI1UHA0?=
+ =?utf-8?B?TFZiODhLK2FPeVdoOE4yUFhoWGR5U1JIaDBmVXpBc1c1M3poMnNJdzRjRDVq?=
+ =?utf-8?B?M3AzL3kvSUw0UzdSMVBhdUtScXViczNMRFJnVTc0SVZTQkcyRHRUOUZqVUtW?=
+ =?utf-8?B?VlpaSTJqb3E2d1FkbkZ1VXVPbmF4Rmo3RVhHdHppRkF4M3FObnpKUTFkbHds?=
+ =?utf-8?B?dGFPc21QZ2MwMmFnSzNVbFJoMUJTclRqdUtuQlpJRGdiU1RMSlAxL1QzOTNM?=
+ =?utf-8?B?QlJRTjYrTmVnK1pWYzNHK3pYQldCdnd2YUc0K3JYVEl4VUZvQ04xQVp4TERZ?=
+ =?utf-8?B?azBrVFYwV2IvOXBlUnZWQWNsQVVtamE4blBkOHNvY2xlQVRsZHk1VmdFb040?=
+ =?utf-8?B?ZnZETmxTVXFxVXBXc0UxUnJPcVRQR1ZpMUUvREF3MHZkNjNBUHUwT0JDU2xH?=
+ =?utf-8?B?eG5Mb0tOdjU1czc1NEllOFRMa0h5Wk9mUnZsTTA0RWtJcjRyOEcwMkllQksy?=
+ =?utf-8?B?cEdKYTFNd294S1h1Mm04dFBpNGdvMmdzK2JNZ0xrWEdITGNmeU5UTm9mNjVK?=
+ =?utf-8?B?MVE9PQ==?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+X-OriginatorOrg: starfivetech.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: ZQ4PR01MB1154.CHNPR01.prod.partner.outlook.cn
+X-MS-Exchange-CrossTenant-Network-Message-Id: 60ba3ba4-991c-4b3e-17cd-08dc6aa786e7
+X-MS-Exchange-CrossTenant-originalarrivaltime: 02 May 2024 12:58:13.4807
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 06fe3fa3-1221-43d3-861b-5a4ee687a85c
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: WsqAAvMNrbtKCr5rS9opy3EfQDDRYTjHtSrz7kSNnmGlXE2F08dKCSf3KZO9El501AUykJjSWMT+eeP23NLXjoizn6C1Qrq2rwNrJmJSaTw=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: ZQ4PR01MB1235
 
-There is a race condition between l2cap_chan_timeout() and
-l2cap_chan_del(). When we use l2cap_chan_del() to delete the
-channel, the chan->conn will be set to null. But the conn could
-be dereferenced again in the mutex_lock() of l2cap_chan_timeout().
-As a result the null pointer dereference bug will happen. The
-KASAN report triggered by POC is shown below:
-
-[  472.074580] ==================================================================
-[  472.075284] BUG: KASAN: null-ptr-deref in mutex_lock+0x68/0xc0
-[  472.075308] Write of size 8 at addr 0000000000000158 by task kworker/0:0/7
-[  472.075308]
-[  472.075308] CPU: 0 PID: 7 Comm: kworker/0:0 Not tainted 6.9.0-rc5-00356-g78c0094a146b #36
-[  472.075308] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.14.0-0-g155821a1990b-prebuilt.qemu4
-[  472.075308] Workqueue: events l2cap_chan_timeout
-[  472.075308] Call Trace:
-[  472.075308]  <TASK>
-[  472.075308]  dump_stack_lvl+0x137/0x1a0
-[  472.075308]  print_report+0x101/0x250
-[  472.075308]  ? __virt_addr_valid+0x77/0x160
-[  472.075308]  ? mutex_lock+0x68/0xc0
-[  472.075308]  kasan_report+0x139/0x170
-[  472.075308]  ? mutex_lock+0x68/0xc0
-[  472.075308]  kasan_check_range+0x2c3/0x2e0
-[  472.075308]  mutex_lock+0x68/0xc0
-[  472.075308]  l2cap_chan_timeout+0x181/0x300
-[  472.075308]  process_one_work+0x5d2/0xe00
-[  472.075308]  worker_thread+0xe1d/0x1660
-[  472.075308]  ? pr_cont_work+0x5e0/0x5e0
-[  472.075308]  kthread+0x2b7/0x350
-[  472.075308]  ? pr_cont_work+0x5e0/0x5e0
-[  472.075308]  ? kthread_blkcg+0xd0/0xd0
-[  472.075308]  ret_from_fork+0x4d/0x80
-[  472.075308]  ? kthread_blkcg+0xd0/0xd0
-[  472.075308]  ret_from_fork_asm+0x11/0x20
-[  472.075308]  </TASK>
-[  472.075308] ==================================================================
-[  472.094860] Disabling lock debugging due to kernel taint
-[  472.096136] BUG: kernel NULL pointer dereference, address: 0000000000000158
-[  472.096136] #PF: supervisor write access in kernel mode
-[  472.096136] #PF: error_code(0x0002) - not-present page
-[  472.096136] PGD 0 P4D 0
-[  472.096136] Oops: 0002 [#1] PREEMPT SMP KASAN NOPTI
-[  472.096136] CPU: 0 PID: 7 Comm: kworker/0:0 Tainted: G    B              6.9.0-rc5-00356-g78c0094a146b #36
-[  472.096136] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.14.0-0-g155821a1990b-prebuilt.qemu4
-[  472.096136] Workqueue: events l2cap_chan_timeout
-[  472.096136] RIP: 0010:mutex_lock+0x88/0xc0
-[  472.096136] Code: be 08 00 00 00 e8 f8 23 1f fd 4c 89 f7 be 08 00 00 00 e8 eb 23 1f fd 42 80 3c 23 00 74 08 48 88
-[  472.096136] RSP: 0018:ffff88800744fc78 EFLAGS: 00000246
-[  472.096136] RAX: 0000000000000000 RBX: 1ffff11000e89f8f RCX: ffffffff8457c865
-[  472.096136] RDX: 0000000000000001 RSI: 0000000000000008 RDI: ffff88800744fc78
-[  472.096136] RBP: 0000000000000158 R08: ffff88800744fc7f R09: 1ffff11000e89f8f
-[  472.096136] R10: dffffc0000000000 R11: ffffed1000e89f90 R12: dffffc0000000000
-[  472.096136] R13: 0000000000000158 R14: ffff88800744fc78 R15: ffff888007405a00
-[  472.096136] FS:  0000000000000000(0000) GS:ffff88806d200000(0000) knlGS:0000000000000000
-[  472.096136] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[  472.096136] CR2: 0000000000000158 CR3: 000000000da32000 CR4: 00000000000006f0
-[  472.096136] Call Trace:
-[  472.096136]  <TASK>
-[  472.096136]  ? __die_body+0x8d/0xe0
-[  472.096136]  ? page_fault_oops+0x6b8/0x9a0
-[  472.096136]  ? kernelmode_fixup_or_oops+0x20c/0x2a0
-[  472.096136]  ? do_user_addr_fault+0x1027/0x1340
-[  472.096136]  ? _printk+0x7a/0xa0
-[  472.096136]  ? mutex_lock+0x68/0xc0
-[  472.096136]  ? add_taint+0x42/0xd0
-[  472.096136]  ? exc_page_fault+0x6a/0x1b0
-[  472.096136]  ? asm_exc_page_fault+0x26/0x30
-[  472.096136]  ? mutex_lock+0x75/0xc0
-[  472.096136]  ? mutex_lock+0x88/0xc0
-[  472.096136]  ? mutex_lock+0x75/0xc0
-[  472.096136]  l2cap_chan_timeout+0x181/0x300
-[  472.096136]  process_one_work+0x5d2/0xe00
-[  472.096136]  worker_thread+0xe1d/0x1660
-[  472.096136]  ? pr_cont_work+0x5e0/0x5e0
-[  472.096136]  kthread+0x2b7/0x350
-[  472.096136]  ? pr_cont_work+0x5e0/0x5e0
-[  472.096136]  ? kthread_blkcg+0xd0/0xd0
-[  472.096136]  ret_from_fork+0x4d/0x80
-[  472.096136]  ? kthread_blkcg+0xd0/0xd0
-[  472.096136]  ret_from_fork_asm+0x11/0x20
-[  472.096136]  </TASK>
-[  472.096136] Modules linked in:
-[  472.096136] CR2: 0000000000000158
-[  472.096136] ---[ end trace 0000000000000000 ]---
-[  472.096136] RIP: 0010:mutex_lock+0x88/0xc0
-[  472.096136] Code: be 08 00 00 00 e8 f8 23 1f fd 4c 89 f7 be 08 00 00 00 e8 eb 23 1f fd 42 80 3c 23 00 74 08 48 88
-[  472.096136] RSP: 0018:ffff88800744fc78 EFLAGS: 00000246
-[  472.096136] RAX: 0000000000000000 RBX: 1ffff11000e89f8f RCX: ffffffff8457c865
-[  472.096136] RDX: 0000000000000001 RSI: 0000000000000008 RDI: ffff88800744fc78
-[  472.096136] RBP: 0000000000000158 R08: ffff88800744fc7f R09: 1ffff11000e89f8f
-[  472.132932] R10: dffffc0000000000 R11: ffffed1000e89f90 R12: dffffc0000000000
-[  472.132932] R13: 0000000000000158 R14: ffff88800744fc78 R15: ffff888007405a00
-[  472.132932] FS:  0000000000000000(0000) GS:ffff88806d200000(0000) knlGS:0000000000000000
-[  472.132932] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[  472.132932] CR2: 0000000000000158 CR3: 000000000da32000 CR4: 00000000000006f0
-[  472.132932] Kernel panic - not syncing: Fatal exception
-[  472.132932] Kernel Offset: disabled
-[  472.132932] ---[ end Kernel panic - not syncing: Fatal exception ]---
-
-Add a check to judge whether the conn is null in l2cap_chan_timeout()
-in order to mitigate the bug.
-
-Fixes: 3df91ea20e74 ("Bluetooth: Revert to mutexes from RCU list")
-Signed-off-by: Duoming Zhou <duoming@zju.edu.cn>
----
- net/bluetooth/l2cap_core.c | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/net/bluetooth/l2cap_core.c b/net/bluetooth/l2cap_core.c
-index 84fc70862d7..5761d37c553 100644
---- a/net/bluetooth/l2cap_core.c
-+++ b/net/bluetooth/l2cap_core.c
-@@ -415,6 +415,9 @@ static void l2cap_chan_timeout(struct work_struct *work)
- 
- 	BT_DBG("chan %p state %s", chan, state_to_string(chan->state));
- 
-+	if (!conn)
-+		return;
-+
- 	mutex_lock(&conn->chan_lock);
- 	/* __set_chan_timer() calls l2cap_chan_hold(chan) while scheduling
- 	 * this work. No need to call l2cap_chan_hold(chan) here again.
--- 
-2.17.1
-
+PiBPbiAwMi8wNS8yMDI0IDE0OjQ1LCBKaVNoZW5nIFRlb2ggd3JvdGU6DQo+ID4+IE9uIDAyLzA1
+LzIwMjQgMTI6NDgsIEppIFNoZW5nIFRlb2ggd3JvdGU6DQo+ID4+PiBEb2N1bWVudCB0aGUgb3B0
+aW9uYWwgcmVzZXQgY29udHJvbCB0byBTUEkuDQo+ID4+Pg0KPiA+Pj4gU2lnbmVkLW9mZi1ieTog
+RW5nIExlZSBUZWggPGVuZ2xlZS50ZWhAc3RhcmZpdmV0ZWNoLmNvbT4NCj4gPj4+IFNpZ25lZC1v
+ZmYtYnk6IExleSBGb29uIFRhbiA8bGV5Zm9vbi50YW5Ac3RhcmZpdmV0ZWNoLmNvbT4NCj4gPj4+
+IFNpZ25lZC1vZmYtYnk6IEppIFNoZW5nIFRlb2ggPGppc2hlbmcudGVvaEBzdGFyZml2ZXRlY2gu
+Y29tPg0KPiA+Pg0KPiA+PiBXaG8gaXMgdGhlIGF1dGhvciBoZXJlPyBXaGF0IGFyZSB0aGVzZSB0
+aHJlZSBTb0JzIGV4cHJlc3Npbmc/IFJvYiBhc2tlZCBmb3IgdGhpcyBsYXN0IHRpbWUuDQo+ID4N
+Cj4gPiBGaXJzdCBTb0Igd2FzIHRoZSBvcmlnaW5hbCBhdXRob3IsIHRoZSBzdWJzZXF1ZW50IFNv
+QiBtYWRlIGNoYW5nZXMgdG8gdGhlIG9yaWdpbmFsIHBhdGNoLg0KPiA+IElmIGludGVuZCB0byBv
+bmx5IGtlZXAgdGhlIGF1dGhvciwgdGhlbiBwbGVhc2UgdGFrZSB0aGUgZmlyc3QgU29CLiBTb3Jy
+eSBmb3IgdGhlIG5vaXNlLg0KPiANCj4gVGhlbiB5b3UgbWlzcyBDby1kZXZlbG9wZWQtYnkgdGFn
+cy4NCg0KVGhhbmtzLCBJIHdpbGwgZml4IHRoZSB0YWdzIGluIHRoZSBuZXh0IHJldmlzaW9uLg0K
 
