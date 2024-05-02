@@ -1,128 +1,122 @@
-Return-Path: <linux-kernel+bounces-167060-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-167061-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6A4508BA3F9
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 01:29:10 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id CFF6E8BA3FA
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 01:30:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9AE611C21E15
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 23:29:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0CE4A1C21ABC
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 23:30:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 43BEE347A2;
-	Thu,  2 May 2024 23:29:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E4FB1CFBE;
+	Thu,  2 May 2024 23:30:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YboFN7Ve"
-Received: from mail-vs1-f51.google.com (mail-vs1-f51.google.com [209.85.217.51])
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="bo8YN3pV"
+Received: from mail-pg1-f181.google.com (mail-pg1-f181.google.com [209.85.215.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 408A657C96;
-	Thu,  2 May 2024 23:28:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7EC21CAA1
+	for <linux-kernel@vger.kernel.org>; Thu,  2 May 2024 23:30:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714692541; cv=none; b=hVlMvftEh73peMXYPTyitKbVZRjXsEwVw4BdhpquBylA98vTNCp7PNMstmCyjdSMw+eL9Q8JGgZVyQQ0j9+MDcv4mtvei1EkuDxmU7JEY6LLbwEImZUm1SwsVeizStAh80juhxravx5pXLbyBJ3SXQRZBH57OfzwQ2OzLfa8LL0=
+	t=1714692621; cv=none; b=WfOjjoJyJOiH8onaCJbpdCJcdgiBjroALzs0chmV0N92n6MxlQusbYbNmGRYjZ79FTRcR8Uavaz+ojfHKINI0bnoPYsn2x4xmaZaHipBomkprWuy4u5WHq/+lVJthyu5+gVJbbb/m5PObSslQZ6jeJqjYoQYoPkBNFKquK3H52Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714692541; c=relaxed/simple;
-	bh=/eKRH3akLZj+V2vv959Y9O15AqI+kn+kxxDaTeQ19dY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=I9GIGWuQbnezzQ0KiMKidkEuk65MT5PsDZPXXAIXzdzXs09L2H0c7cjuUDmEqHnAjAemMuW0EC7G8MbOUiTjDcNBLDj49iXULZL7NNknBCR9d81tlr362M7/q5/xq1lgvYVjx/EUUg0MtFsDXHhDgsfm+UnD1X7r2a5GEDW0/r4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YboFN7Ve; arc=none smtp.client-ip=209.85.217.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-vs1-f51.google.com with SMTP id ada2fe7eead31-47ef7e85cf0so142427137.1;
-        Thu, 02 May 2024 16:28:59 -0700 (PDT)
+	s=arc-20240116; t=1714692621; c=relaxed/simple;
+	bh=ieLJkhs2QHRkxAuQ7oeBN/5dxz1NuU1GS5D6U1nGO3Y=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=SfVx6E95x4BQ23CJXDEfkfpFI3dRc2PPcFqQTQP1oXGihZCPldwQBlZs3QzNtkv0AXPKAEwXQ6iuFSk0IPcaHgJd22cZn1mTtBoLTERRXSPnKciCbxh1MIbz04HTM3+Px8QeUDpoOS+JSszmgsvFCMMpLBVkVIE71DAHB4kEULo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=bo8YN3pV; arc=none smtp.client-ip=209.85.215.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pg1-f181.google.com with SMTP id 41be03b00d2f7-5d8b519e438so6747069a12.1
+        for <linux-kernel@vger.kernel.org>; Thu, 02 May 2024 16:30:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714692539; x=1715297339; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=C+N7g2LBW/IB22E2qHNEVIcw2Pw/ONc9/v5J07ZgvL0=;
-        b=YboFN7VeFytKBzvYlml5WtAOaBX7nsQR4AogCm9zYcYiDt2cJe2N68wSQoYE2dru4G
-         +1D38q76+n9bOfV5DCojI0zaF9ZtU4q3fpIJ46d+GM87i9AWp6LkQFO5AJwZuSbcR/F+
-         FdHydh01lSkeC63BweszhT/Pj3JyF54wh0DLNtusxwdcSKELUGh3Inu7mmsZQC/u0g0Z
-         Wboe8BWcl0lyVHDeqSd6/zJAeT46ddTIOqxe/TPIsaoJirb/jCe2niInv5cvbUA8XBJ1
-         LNMZ741aiBnCoYvdXSbx1UTeq0M6Ao72xTF6Y0Qf0x2JHD7tMslokO2yuiElSoymyVlS
-         lIaA==
+        d=chromium.org; s=google; t=1714692619; x=1715297419; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=4aHlRU+lYNz9FFM2hjk7x/6oGNEaOSMbIgLXm8XygnI=;
+        b=bo8YN3pVTQgiSIhjithYRVqdmkLKzkDLM1mu3IUFhDQdG/n9qpvNOTgpGbxSaM6IOY
+         ZPIwLYXCjexCeficbfEWERV0JNFjIM3p/qQKKli69KP88SbODeXioUJfihKqtg1S1ytI
+         9GZ8DLkZ3PzECBpmy2yJgy14wMD2+TA6ruysI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714692539; x=1715297339;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=C+N7g2LBW/IB22E2qHNEVIcw2Pw/ONc9/v5J07ZgvL0=;
-        b=XNK9w7bLVf2+ey2DXcnvaiCLxbxlf1FBHE4yzz6CVen1kdhlsAT4eemGX/N9hRfLBJ
-         HMMAzaZqIHanC6w2jizJQjXyp7+zNNfgqd/n+raUlOoVmxFLYzup1w/QN7YhKPDRvp1l
-         1rf+VaDU9vL5QPfetn3sHMjbiXQrBtDyERDkbY8FBSW6CwG02TVqFSGyyjCOh8sWZe+4
-         hIxZjm8SsR0GJ1jLqze0C1kUdNpqV75Xy8bFmijT3F/2QhrYNt09arMe6jEIcWmGfAeW
-         EDsDlcHzjv/0BNc0ck0CjFZNHPURxCrlu6ehRZlm8OyUPMSpjVJhoM5ExYv2Oawq7HbD
-         ljTg==
-X-Forwarded-Encrypted: i=1; AJvYcCVH/YFS7I9SMeuXTJPTfPP/4+wKcMx4/8JLP//15no8Z4mvZ66EPpbN3VXtaTudO97KVnFqrMYpZ+oSLVOdywRZnxLnilRNLpTFwtSjwDx0z8YcZBJyO4pFi4ec4rmJrfdiI7JTpyMR/gpikdmXcFL8NmiVePW9eVOguYyU43KfeA==
-X-Gm-Message-State: AOJu0YzeYTYtEFFL42kCXBmWzX5lTVMDvnoXOx0qGP6Dz9BiGkwIRp2h
-	goXP3L2TV6PDJr5y/akLD1T/3yWawGv7TRb6N58ho6cM2Kq5HY+kKPIQcAze6Xszz4iKBxD5mT1
-	AjPqVXORb1fUN+Gjage3C6EiYiBU=
-X-Google-Smtp-Source: AGHT+IE7gIdmklsBuT97sdlWGZJ9767szbCMEvMzfEJsTje6wDqcsvrqvqKPpnFKgGnVtuMvDfjj2C4QN/obWjQ3RZY=
-X-Received: by 2002:a67:c993:0:b0:47e:eeaa:90af with SMTP id
- y19-20020a67c993000000b0047eeeaa90afmr1184573vsk.34.1714692539069; Thu, 02
- May 2024 16:28:59 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1714692619; x=1715297419;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=4aHlRU+lYNz9FFM2hjk7x/6oGNEaOSMbIgLXm8XygnI=;
+        b=uOIMMB9TcpeAeoUmkcAtYWS8FUDSGDpb+Wby+FROqrkTlYBOM/53unSEK7PTmMAdAt
+         uH1kSeQJyXU63hwRokuCoSwJsoDXWPTvFYIgmuqEghzsoh5e3htXvEMV0Izid7M/Pf2G
+         PSnvzAvZB0BS7psvxID+7/lkg+G+DJ2WCmBxPqK+U4dKhVd2Ptqm48zKysVC7pKqKFYC
+         xDCY57JAW2oC9l7Q8p/PyZLyH+0gi099Um8cmHPBMWN+BJHdP7FocgeBXVwcNsDfR2Ii
+         txrvGI+oWkKL6mlBzPOzL25tGR2kzoqxPw/Z8Nd//xjIEVFEa8PeydNRTh7mPgV2sofv
+         qE9Q==
+X-Gm-Message-State: AOJu0Ywqg/XHHfeejVTXfX3ArCfe24yCqZsDrWuTGXHmSmhfRmW00jfD
+	S2G6JlRHX0sKHNfHF372zjI/MYezjHRDvq6qsRjHH5/MwI1YBfB7sWuE5JEP2wDmymmMcJKfV8Y
+	=
+X-Google-Smtp-Source: AGHT+IHKrfn8+eXI8IWJ2Tfq/Z+DpLDHoUndaSRPdcyF4wNGAdIV5FDxV8ykztx/38ibgvf4U9YTJw==
+X-Received: by 2002:a05:6a21:329e:b0:1a9:fe63:90f0 with SMTP id yt30-20020a056a21329e00b001a9fe6390f0mr1553336pzb.53.1714692618977;
+        Thu, 02 May 2024 16:30:18 -0700 (PDT)
+Received: from localhost (4.198.125.34.bc.googleusercontent.com. [34.125.198.4])
+        by smtp.gmail.com with UTF8SMTPSA id j4-20020a056a00130400b006ed2709ada6sm1825666pfu.65.2024.05.02.16.30.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 02 May 2024 16:30:18 -0700 (PDT)
+From: Stephen Boyd <swboyd@chromium.org>
+To: Daniel Lezcano <daniel.lezcano@linaro.org>,
+	Thomas Gleixner <tglx@linutronix.de>
+Cc: linux-kernel@vger.kernel.org,
+	patches@lists.linux.dev,
+	linux-arm-kernel@lists.infradead.org,
+	Jisheng Zhang <jszhang@kernel.org>,
+	Ionela Voinescu <ionela.voinescu@arm.com>,
+	Marc Zyngier <maz@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>
+Subject: [PATCH] clocksource/drivers/arm_arch_timer: Mark validate_timer_rate() init
+Date: Thu,  2 May 2024 16:30:15 -0700
+Message-ID: <20240502233017.419365-1-swboyd@chromium.org>
+X-Mailer: git-send-email 2.45.0.rc1.225.g2a3ae87e7f-goog
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240502185307.3942173-1-usamaarif642@gmail.com> <20240502185307.3942173-2-usamaarif642@gmail.com>
-In-Reply-To: <20240502185307.3942173-2-usamaarif642@gmail.com>
-From: Nhat Pham <nphamcs@gmail.com>
-Date: Thu, 2 May 2024 16:28:46 -0700
-Message-ID: <CAKEwX=OUf6Rd2aEwcEYdO_D3ALrSMCTdO4fdpiqhO-F-ygyLfw@mail.gmail.com>
-Subject: Re: [PATCH v2 1/1] cgroup: Add documentation for missing zswap memory.stat
-To: Usama Arif <usamaarif642@gmail.com>
-Cc: hannes@cmpxchg.org, tj@kernel.org, lizefan.x@bytedance.com, corbet@lwn.net, 
-	linux-mm@kvack.org, cgroups@vger.kernel.org, linux-doc@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, kernel-team@meta.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Thu, May 2, 2024 at 11:53=E2=80=AFAM Usama Arif <usamaarif642@gmail.com>=
- wrote:
->
-> This includes zswpin, zswpout and zswpwb.
->
-> Signed-off-by: Usama Arif <usamaarif642@gmail.com>
-> ---
->  Documentation/admin-guide/cgroup-v2.rst | 9 +++++++++
->  1 file changed, 9 insertions(+)
->
-> diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admi=
-n-guide/cgroup-v2.rst
-> index 17e6e9565156..eaf9e66e472a 100644
-> --- a/Documentation/admin-guide/cgroup-v2.rst
-> +++ b/Documentation/admin-guide/cgroup-v2.rst
-> @@ -1572,6 +1572,15 @@ PAGE_SIZE multiple when read back.
->           pglazyfreed (npn)
->                 Amount of reclaimed lazyfree pages
->
-> +         zswpin
-> +               Number of pages moved in to memory from zswap.
+Add the __init marking to validate_timer_rate() so that it gets
+discarded after init.
 
-nit: into?
+  $ ./scripts/bloat-o-meter vmlinux.before vmlinux.after
+  add/remove: 0/0 grow/shrink: 0/1 up/down: 0/-8 (-8)
+  Function                                     old     new   delta
+  arch_timer_register                         1724    1716      -8
+  Total: Before=69177808, After=69177800, chg -0.00%
 
-> +
-> +         zswpout
-> +               Number of pages moved out of memory to zswap.
-> +
-> +         zswpwb
-> +               Number of pages written from zswap to swap.
-> +
->           thp_fault_alloc (npn)
->                 Number of transparent hugepages which were allocated to s=
-atisfy
->                 a page fault. This counter is not present when CONFIG_TRA=
-NSPARENT_HUGEPAGE
-> --
-> 2.43.0
->
+Cc: Jisheng Zhang <jszhang@kernel.org>
+Cc: Ionela Voinescu <ionela.voinescu@arm.com>
+Cc: Marc Zyngier <maz@kernel.org>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Signed-off-by: Stephen Boyd <swboyd@chromium.org>
+---
+ drivers/clocksource/arm_arch_timer.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-That very small nit aside, LGTM. Thanks for completing the documentation.
-Acked-by: Nhat Pham <nphamcs@gmail.com>
+diff --git a/drivers/clocksource/arm_arch_timer.c b/drivers/clocksource/arm_arch_timer.c
+index 8d4a52056684..9c4a4af25d2c 100644
+--- a/drivers/clocksource/arm_arch_timer.c
++++ b/drivers/clocksource/arm_arch_timer.c
+@@ -1045,7 +1045,7 @@ static int arch_timer_starting_cpu(unsigned int cpu)
+ 	return 0;
+ }
+ 
+-static int validate_timer_rate(void)
++static int __init validate_timer_rate(void)
+ {
+ 	if (!arch_timer_rate)
+ 		return -EINVAL;
+
+base-commit: 4cece764965020c22cff7665b18a012006359095
+-- 
+https://chromeos.dev
+
 
