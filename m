@@ -1,113 +1,179 @@
-Return-Path: <linux-kernel+bounces-166253-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-166255-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5A8338B981C
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 11:52:25 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4982F8B981E
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 11:52:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 889261C20D49
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 09:52:24 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2A961B244D1
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 09:52:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91C645645B;
-	Thu,  2 May 2024 09:52:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07CBF5730D;
+	Thu,  2 May 2024 09:52:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="PFZ6JWoF"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="LUnS+/TV";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="g79upUkd";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="LUnS+/TV";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="g79upUkd"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 88B2456448
-	for <linux-kernel@vger.kernel.org>; Thu,  2 May 2024 09:52:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE3DB56766;
+	Thu,  2 May 2024 09:52:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714643534; cv=none; b=OwvxMx4+e25i+2HMz862EPIIsb1GuaCdfQKhLxPcmUgzHT4xjYtdBHCk05l9SK5i+MHIRbJLykZsCq6l3qBs0S+iYXmn0HUmsiiUXzSdqTECBpB9uZo1wNgVttQe3ylmuOy4uNLoqR6nl1VbjlFtHFe6xWwzY1j7B6OZnP6RaFc=
+	t=1714643552; cv=none; b=qB06eNuh/hhFqD1REYa+zZx0Ac1zFOMmbP2R1wX6+kiEHNquURfU11eNuVAxiT8xo7lWaH9t0AHYHpWY2YN1WtQOrkx9y1LWJSy8ASfNbIY2CnSJqO2nOMO5M9mCQ8v7RM2XDn27g+T9Y7UbmEiDVy0xW1rkfgWp1DeseMnJ//o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714643534; c=relaxed/simple;
-	bh=1K2m1ZK4jkv/p2zkpmXkXg4nPfMK7vRZ98Av3byv4fM=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=m7TM6r0+XgUVTjk9z9EMpGv5D5dkS4k/qzkdMH6s6LoaOyAAvIYpCMS26Gzh5XIo0zn5NclYplHJbXCRL/w8nQuY1xapSRqhcg3t9gEt9QSQcUKa49I4zXL6ckM8EdG27c8zJlKF8s+FrJwZFaEphfemd1uxkO4yBCALgwP7P/w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=PFZ6JWoF; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1714643532;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=tstmt5L3lDWDwvbX2UANesO3SfpQYRIvnhHG8+Nwf7U=;
-	b=PFZ6JWoFMcvr7xoxMbEPJ+GyX/8IQSJi+RdpBrTo5+aS/YM8lV75CZkjtdPw37ryxjTdR7
-	XG0CQ1GSIkC43dPeFr8xGG7z5bZ9AxQJgN2L+tpTIHkHwk/iBQuQtQFuaLUOCdhxMQXFTv
-	39LKlGJpwYmwZLmpT5/IYnL9mayMJ50=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-638-r9Oadj5OMiu_itETd4b5Kg-1; Thu,
- 02 May 2024 05:52:06 -0400
-X-MC-Unique: r9Oadj5OMiu_itETd4b5Kg-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
+	s=arc-20240116; t=1714643552; c=relaxed/simple;
+	bh=vITXKoMtPN6CljACjRovE4Q9eiO6CiuoWCW2T4ojjQU=;
+	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=Mdxr8vmRteN+D3WbnPxIuKZgndLjpvXyMpdLqBdALSSArb3SX9+xO5yvtDiknq4zUf9917sQ13mzYiA6E7Taohc2FZl5r7W8MUeiw0b6S5t2gH9MAOlLs+baf0DiJWAEhoYlp3mSLEBEwK41kwy/KLdrW8+5N4VJjCurv/i6+Fg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=LUnS+/TV; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=g79upUkd; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=LUnS+/TV; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=g79upUkd; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 2F3DF1C05149;
-	Thu,  2 May 2024 09:52:05 +0000 (UTC)
-Received: from oldenburg.str.redhat.com (unknown [10.39.193.188])
-	by smtp.corp.redhat.com (Postfix) with ESMTPS id AF688C271A9;
-	Thu,  2 May 2024 09:51:58 +0000 (UTC)
-From: Florian Weimer <fweimer@redhat.com>
-To: Christian Brauner <brauner@kernel.org>
-Cc: =?utf-8?Q?Andr=C3=A9?= Almeida <andrealmeid@igalia.com>,  Mathieu
- Desnoyers
- <mathieu.desnoyers@efficios.com>,  Peter Zijlstra <peterz@infradead.org>,
-  Thomas Gleixner <tglx@linutronix.de>,  linux-kernel@vger.kernel.org,
-  "Paul E . McKenney" <paulmck@kernel.org>,  Boqun Feng
- <boqun.feng@gmail.com>,  "H . Peter Anvin" <hpa@zytor.com>,  Paul Turner
- <pjt@google.com>,  linux-api@vger.kernel.org,  David.Laight@aculab.com,
-  carlos@redhat.com,  Peter Oskolkov <posk@posk.io>,  Alexander Mikhalitsyn
- <alexander@mihalicyn.com>,  Chris Kennelly <ckennelly@google.com>,  Ingo
- Molnar <mingo@redhat.com>,  Darren Hart <dvhart@infradead.org>,  Davidlohr
- Bueso <dave@stgolabs.net>,  libc-alpha@sourceware.org,  Steven Rostedt
- <rostedt@goodmis.org>,  Jonathan Corbet <corbet@lwn.net>,  Noah Goldstein
- <goldstein.w.n@gmail.com>,  Daniel Colascione <dancol@google.com>,
-  longman@redhat.com,  kernel-dev@igalia.com
-Subject: Re: [RFC PATCH 0/1] Add FUTEX_SPIN operation
-In-Reply-To: <20240502-gezeichnet-besonderen-d277879cd669@brauner> (Christian
-	Brauner's message of "Thu, 2 May 2024 10:45:41 +0200")
-References: <20240425204332.221162-1-andrealmeid@igalia.com>
-	<20240426-gaumen-zweibeinig-3490b06e86c2@brauner>
-	<f052ff72-72c9-4b83-9285-2cd9d52e5f72@igalia.com>
-	<20240502-gezeichnet-besonderen-d277879cd669@brauner>
-Date: Thu, 02 May 2024 11:51:56 +0200
-Message-ID: <8734r0o81v.fsf@oldenburg.str.redhat.com>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id C76D21FB79;
+	Thu,  2 May 2024 09:52:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1714643548; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=4eGmpuaeDMzhLfyJ1oPJc4iz3E5Oauzqw7fHW9MAvVU=;
+	b=LUnS+/TVSf5LwASnqw0/CLTNtkxsRKWb8pZZPOLXhfRBePYDzUjhoVGfctSCo3wKVmqlKj
+	qq0XTuaWQXHoY41HPXctervNoTKfgrrFjP8IFxxyvD9hQa6WLAHIBSUV3R54iJL4ZF0AU7
+	JC4W6IYA/f/p47iXIMX9YypJQkK9SA8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1714643548;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=4eGmpuaeDMzhLfyJ1oPJc4iz3E5Oauzqw7fHW9MAvVU=;
+	b=g79upUkdIzPMIzIFCPogoZ30i5uuKqxIsOiDKBcSRozI6Mzg9HcrxXP4P2y0JYgPLg6UyD
+	j2xkcQRUc4OD3IBA==
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.de header.s=susede2_rsa header.b="LUnS+/TV";
+	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=g79upUkd
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1714643548; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=4eGmpuaeDMzhLfyJ1oPJc4iz3E5Oauzqw7fHW9MAvVU=;
+	b=LUnS+/TVSf5LwASnqw0/CLTNtkxsRKWb8pZZPOLXhfRBePYDzUjhoVGfctSCo3wKVmqlKj
+	qq0XTuaWQXHoY41HPXctervNoTKfgrrFjP8IFxxyvD9hQa6WLAHIBSUV3R54iJL4ZF0AU7
+	JC4W6IYA/f/p47iXIMX9YypJQkK9SA8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1714643548;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=4eGmpuaeDMzhLfyJ1oPJc4iz3E5Oauzqw7fHW9MAvVU=;
+	b=g79upUkdIzPMIzIFCPogoZ30i5uuKqxIsOiDKBcSRozI6Mzg9HcrxXP4P2y0JYgPLg6UyD
+	j2xkcQRUc4OD3IBA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 9354D13957;
+	Thu,  2 May 2024 09:52:28 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id U81mIlxiM2aIAgAAD6G6ig
+	(envelope-from <tiwai@suse.de>); Thu, 02 May 2024 09:52:28 +0000
+Date: Thu, 02 May 2024 11:52:41 +0200
+Message-ID: <87h6fgk0ba.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Richard Fitzgerald <rf@opensource.cirrus.com>
+Cc: Simon Trimmer <simont@opensource.cirrus.com>,
+	<tiwai@suse.com>,
+	<linux-sound@vger.kernel.org>,
+	<alsa-devel@alsa-project.org>,
+	<linux-kernel@vger.kernel.org>,
+	<patches@opensource.cirrus.com>
+Subject: Re: [PATCH] ALSA: hda: cs35l56: Perform firmware download in the background
+In-Reply-To: <a9345d24-af36-42b4-9139-0701a0dbe1a3@opensource.cirrus.com>
+References: <20240501111755.21231-1-simont@opensource.cirrus.com>
+	<87ttjgk6ph.wl-tiwai@suse.de>
+	<a9345d24-af36-42b4-9139-0701a0dbe1a3@opensource.cirrus.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.8
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Flag: NO
+X-Spam-Score: -5.51
+X-Rspamd-Action: no action
+X-Rspamd-Queue-Id: C76D21FB79
+X-Spam-Level: 
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-5.51 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	DWL_DNSWL_MED(-2.00)[suse.de:dkim];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_CONTAINS_FROM(1.00)[];
+	R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	MIME_TRACE(0.00)[0:+];
+	TO_DN_SOME(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	ARC_NA(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	RCVD_COUNT_TWO(0.00)[2];
+	FROM_EQ_ENVFROM(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	RCPT_COUNT_SEVEN(0.00)[7];
+	DKIM_TRACE(0.00)[suse.de:+];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns]
 
-* Christian Brauner:
+On Thu, 02 May 2024 11:21:36 +0200,
+Richard Fitzgerald wrote:
+> 
+> On 02/05/2024 08:34, Takashi Iwai wrote:
+> > On Wed, 01 May 2024 13:17:55 +0200,
+> > Simon Trimmer wrote:
+> >> @@ -964,6 +1011,14 @@ int cs35l56_hda_common_probe(struct cs35l56_hda *cs35l56, int hid, int id)
+> >>   	mutex_init(&cs35l56->base.irq_lock);
+> >>   	dev_set_drvdata(cs35l56->base.dev, cs35l56);
+> >>   +	cs35l56->dsp_wq =
+> >> create_singlethread_workqueue("cs35l56-dsp");
+> >> +	if (!cs35l56->dsp_wq) {
+> >> +		ret = -ENOMEM;
+> >> +		goto err;
+> >> +	}
+> > 
+> > Do we really need a dedicated workqueue?  In most usages, simple
+> > schedule_work*() works fine and is recommended.
+> > 
+> 
+> On a slow I2C bus with 4 amps this work could take over 2 seconds.
+> That seems too long to be blocking a global system queue. We use a
+> dedicated queue in the ASoC driver.
+> 
+> Also if we queue work on an ordered (single-threaded) system queue the
+> firmware won't be downloaded to multiple amps in parallel, so we don't
+> get the best use of the available bus bandwidth.
 
-> Unless I'm missing something the question here is PID (as in TGID aka
-> thread-group leader id gotten via getpid()) vs TID (thread specific id
-> gotten via gettid()). You want the thread-specific id as you want to
-> interact with the futex state of a specific thread not the thread-group
-> leader.
->
-> Aside from that TIDs are subject to the same race conditions that PIDs
-> are. They are allocated from the same pool (see alloc_pid()).
+OK, that sounds like a sensible argument.
 
-For most mutex types (but not robust mutexes), it is undefined in
-userspace if a thread exits while it has locked a mutex.  Such a usage
-condition would ensure that the race doesn't happen, I believe.
+But the patch has no call of a queue destructor.  Won't it leak
+resources?
 
-From a glibc perspective, we typically cannot use long-term file
-descriptors (that are kept open across function calls) because some
-applications do not expect them, or even close them behind our back.
 
-Thanks,
-Florian
+thanks,
 
+Takashi
 
