@@ -1,101 +1,116 @@
-Return-Path: <linux-kernel+bounces-166377-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-166378-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5599C8B99C8
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 13:10:29 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 471D48B99D2
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 13:13:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 86C931C21FB9
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 11:10:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 73A5A1C22CBD
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 11:13:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DAF12657AE;
-	Thu,  2 May 2024 11:10:11 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 881B45C8EF;
-	Thu,  2 May 2024 11:10:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 090D3604B3;
+	Thu,  2 May 2024 11:13:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=tq-group.com header.i=@tq-group.com header.b="LMwzycgt";
+	dkim=fail reason="key not found in DNS" (0-bit key) header.d=ew.tq-group.com header.i=@ew.tq-group.com header.b="ZX2MdgFB"
+Received: from mx1.tq-group.com (mx1.tq-group.com [93.104.207.81])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE6525EE78;
+	Thu,  2 May 2024 11:13:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=93.104.207.81
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714648211; cv=none; b=g/0bu0jDLTBwMQCCg8PNAJ3+yieyWhvTDZvcuzhf/seD52Fwm4kkuvbohSZsE8G3hHo2DtpKW6UkS52zRHlebSOtNrCC4VHBns+q/I+coUtNDIjIB3+mrUtO1vPQZdnM0deYWvxC3r+PKafbxm9kVDX2gaRYsa6HbGHFSeXyb9s=
+	t=1714648416; cv=none; b=Cp94ht9zYdgjDMYowRPECSddPuu0E9UT+4makhMaDR6t4oBZl1+8X+fO4IbCIVLITPtdZoKb8OE1R0TneSMlS+PZx48siY8fLFY+mkXh+bvjUKb29jCtf9bsViOjew3F5B0tEgf7K9YDExDLHrKoq13anSDYrIxYgIbD6c1xHaE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714648211; c=relaxed/simple;
-	bh=eRD7S5ev4HwAFKwLfJ4FGx6RKatqYxUYAdjtfKK0Ekk=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=B3++t2tSnhZHyeAPrejk6CKYyF7dyI/QBOUUTH/TX+vascNSLkLOsm4XJ/ALUSdTwmFgMHWrtRcX2geSMBmE03rsqyt/PwlbagvPxx+pLRrS4LPY2hmFUXO7PygTLyCLlK5xy1X/ZJhO4ifC9GoKUafLZp/4E0X+EnPTZDWlA5M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 235272F4;
-	Thu,  2 May 2024 04:10:29 -0700 (PDT)
-Received: from ewhatever.cambridge.arm.com (ewhatever.cambridge.arm.com [10.1.197.1])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 241AA3F793;
-	Thu,  2 May 2024 04:10:00 -0700 (PDT)
-From: Suzuki K Poulose <suzuki.poulose@arm.com>
-To: Ingo Molnar <mingo@redhat.com>,
-	Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-	gregkh@linuxfoundation.org,
+	s=arc-20240116; t=1714648416; c=relaxed/simple;
+	bh=aEuGJn6C2hjQqBv7yfjTEeMXV7bZQW48JcGE/PzMBbo=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=bFJ5JtWPC+SdUF8duL2mAKW0Mfzs1sH2KbBqP0f2ga0Bu4J53MAT4l0/LGaVk8uCJEr+RaNyz8U48+DkyLAnmF1dcoDkHfzY+BEt0QfOCdImM/dNyTOgVcr18mk2IwFYNm3zFGLl82CLX7ih56Zh06hQiOFwniTH4LrfxWODBh0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ew.tq-group.com; spf=pass smtp.mailfrom=ew.tq-group.com; dkim=pass (2048-bit key) header.d=tq-group.com header.i=@tq-group.com header.b=LMwzycgt; dkim=fail (0-bit key) header.d=ew.tq-group.com header.i=@ew.tq-group.com header.b=ZX2MdgFB reason="key not found in DNS"; arc=none smtp.client-ip=93.104.207.81
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ew.tq-group.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ew.tq-group.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
+  t=1714648412; x=1746184412;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=53pHXiAdsvwKPhY16IoTwzigk+Wig4043dPMtgU7Yoo=;
+  b=LMwzycgt317JxrgboHiAf8R11hnLgIE+F+68MQiDmBir68ISPVrdvFdH
+   JsedkKMqktReXqVoN4jg1qTWhFAHH2Aldm9J6LSP7p3XBCS3TpXqbdkv2
+   NXBvAIzNWJJifL/Zcgo3c7O+Yk9qaS5BayrYxgtUsBRO5o3zRbJgkMK5k
+   XQR5dpt+pBi6HtJQXaXo0mz2WSUk1/BXcHuUPO7XqsaTbrKWHveZYtSQR
+   GAZq01YXe3tVggb7IbEzmeXkjOjovE/lto5DcDpKhpZY+/bq2oHi2mpVq
+   PtunXFKfW74Dl4qxHH6FLtm/8UErOX85G9iJPbvsAq9+YboN8lybeD1Sw
+   A==;
+X-IronPort-AV: E=Sophos;i="6.07,247,1708383600"; 
+   d="scan'208";a="36716023"
+Received: from vmailcow01.tq-net.de ([10.150.86.48])
+  by mx1.tq-group.com with ESMTP; 02 May 2024 13:13:23 +0200
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id A3D7816E1FA;
+	Thu,  2 May 2024 13:13:17 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ew.tq-group.com;
+	s=dkim; t=1714648399;
+	h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	 content-transfer-encoding; bh=53pHXiAdsvwKPhY16IoTwzigk+Wig4043dPMtgU7Yoo=;
+	b=ZX2MdgFBttEkrDWIv8wZMczVxO4zmIWtUCopSkPQLieGUlyXH0uvTCzBUgfq1VfnBZhe/f
+	Bm+evIUDxSke0tB22HU+Rp+l8ERNQPtHWHukwNdjqgxjyNasLX42jC7PRnWVAuj7z82JAj
+	tKyEJmQuBLhLNEdxJqJC1rTWS2M+FFjuPPGaYO0A0TpiA/+PZAkh6CkQk9upCcpAAbATL4
+	cMci5I3NK439pVgKsK+FHk43s+utYkZph8lUZ7koq6iJiEPASNeFrzm9U2MJKE8h8rERLJ
+	0AOsIWldHXH3su9cbPzYTkARDLsTTb0VdWOsCWVQdY99Uhr0cOzTsEEG0c1jdg==
+From: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
+To: Andrew Lunn <andrew@lunn.ch>,
+	Heiner Kallweit <hkallweit1@gmail.com>,
+	Russell King <linux@armlinux.org.uk>
+Cc: "David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	netdev@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
-	Mark Rutland <mark.rutland@arm.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Arnaldo Carvalho de Melo <acme@kernel.org>,
-	linux-arm-kernel@lists.infradead.org,
-	Will Deacon <will@kernel.org>
-Cc: Suzuki K Poulose <suzuki.poulose@arm.com>,
-	Khuong Dinh <khuong@os.amperecomputing.com>,
-	Bjorn Andersson <andersson@kernel.org>,
-	Andy Gross <agross@kernel.org>,
-	Liang Kan <kan.liang@linux.intel.com>,
-	Tom Rix <trix@redhat.com>,
-	Dave Jiang <dave.jiang@intel.com>,
-	Shuai Xue <xueshuai@linux.alibaba.com>,
-	Atish Patra <atishp@atishpatra.org>,
-	Frank Li <Frank.li@nxp.com>,
-	linuxarm@huawei.com,
-	Fenghua Yu <fenghua.yu@intel.com>,
-	Vineet Gupta <vgupta@kernel.org>,
-	Jiucheng Xu <jiucheng.xu@amlogic.com>,
-	Anup Patel <anup@brainfault.org>,
-	Wu Hao <hao.wu@intel.com>,
-	Shawn Guo <shawnguo@kernel.org>,
-	Shaokun Zhang <zhangshaokun@hisilicon.com>,
-	linux-fpga@vger.kernel.org,
-	Yicong Yang <yangyicong@hisilicon.com>
-Subject: Re: [PATCH v2 00/30] (subset) Add parents to struct pmu -> dev
-Date: Thu,  2 May 2024 12:09:52 +0100
-Message-Id: <171464809867.45069.16014660164973351494.b4-ty@arm.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240412161057.14099-1-Jonathan.Cameron@huawei.com>
-References: <20240412161057.14099-1-Jonathan.Cameron@huawei.com>
+	linux@ew.tq-group.com,
+	Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
+Subject: [PATCH net-next v2 1/2] net: phy: marvell: constify marvell_hw_stats
+Date: Thu,  2 May 2024 13:13:00 +0200
+Message-ID: <24d7a2f39e0c4c94466e8ad43228fdd798053f3a.1714643285.git.matthias.schiffer@ew.tq-group.com>
+X-Mailer: git-send-email 2.43.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+X-Last-TLS-Session-Version: TLSv1.3
 
-On Fri, 12 Apr 2024 17:10:27 +0100, Jonathan Cameron wrote:
-> Robin posted a patch for the cmn and that reminded me that I never
-> sent a v2.
-> 
-> v2: Drop first patch that added a parent to struct pmu as that has been
->     upstream for a year.
->     Drop the arm-cmn change as Robin has dealt with that one.
->     Gathered tags.
-> 
-> [...]
+The list of stat registers is read-only, so we can declare it as const.
 
-Applied, subset of patches to coresight/next. thanks!
+Signed-off-by: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
+---
 
-[29/30] Documentation: ABI + trace: hisi_ptt: update paths to bus/event_source
-        https://git.kernel.org/coresight/c/1f82d58ddbe21ed75c04d04403d8268a95e0190a
-[30/30] hwtracing: hisi_ptt: Assign parent for event_source device
-        https://git.kernel.org/coresight/c/9b47d9982d1de5adf0abcb8f1a400e51d68cca1f
+v2: New patch
 
-Best regards,
+ drivers/net/phy/marvell.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/net/phy/marvell.c b/drivers/net/phy/marvell.c
+index 860dc4001d415..a57ad53cd09cb 100644
+--- a/drivers/net/phy/marvell.c
++++ b/drivers/net/phy/marvell.c
+@@ -313,7 +313,7 @@ struct marvell_hw_stat {
+ 	u8 bits;
+ };
+ 
+-static struct marvell_hw_stat marvell_hw_stats[] = {
++static const struct marvell_hw_stat marvell_hw_stats[] = {
+ 	{ "phy_receive_errors_copper", 0, 21, 16},
+ 	{ "phy_idle_errors", 0, 10, 8 },
+ 	{ "phy_receive_errors_fiber", 1, 21, 16},
 -- 
-Suzuki K Poulose <suzuki.poulose@arm.com>
+TQ-Systems GmbH | Mühlstraße 2, Gut Delling | 82229 Seefeld, Germany
+Amtsgericht München, HRB 105018
+Geschäftsführer: Detlef Schneider, Rüdiger Stahl, Stefan Schneider
+https://www.tq-group.com/
+
 
