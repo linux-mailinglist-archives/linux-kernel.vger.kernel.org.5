@@ -1,141 +1,165 @@
-Return-Path: <linux-kernel+bounces-166827-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-166828-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DC0418BA01F
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 20:15:03 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AEB988BA020
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 20:15:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6A71B28857B
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 18:15:02 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DFF081C223BA
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 18:15:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F17AE172BC1;
-	Thu,  2 May 2024 18:14:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b="lRMm4d8O"
-Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [62.89.141.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E7925172BCE;
+	Thu,  2 May 2024 18:15:05 +0000 (UTC)
+Received: from mail-pj1-f49.google.com (mail-pj1-f49.google.com [209.85.216.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF04B16FF2B
-	for <linux-kernel@vger.kernel.org>; Thu,  2 May 2024 18:14:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.89.141.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 33F6016FF2B;
+	Thu,  2 May 2024 18:15:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714673697; cv=none; b=qjl+Nh8mLe6Sq3OeA+880HpmuTfEaRBgb/FlhI67oHRz+APcF+PqYRxWeFF7taDcW4crTNVCJsXLyYmgrd1dibk0k9eFH0mqU+/x5Tt2KdA4tZ61v65n1RF0OPSVPIxb5FTkofk1FDs2awRjsndropKlyRo7jaByjUJEsA0/2Fc=
+	t=1714673705; cv=none; b=gBLHwoOd9sumAw0v35mcTLHEEct21/YdYzFg1mn568gKFY71fHtWGjiZLPjNTfG5asNoeGhrwxkf6FxAb7L26/w7yX7zPE02YpYYdevjiq3zyEDZGk6v2b6ReRmWuu6ljmgCmp3YtmGPn+r8UAVI6B3e6jcKBzUri9eeuXNUOPo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714673697; c=relaxed/simple;
-	bh=YoJFzgY7p1NKm94W467Kl9UkLkc4xTsT4UF50wV/ekY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=iKymClVvTHLAKDO0BND46eaeEV4U2HTa8xNFmtRUWDNRvSiT3DVFmJHuTXmghJ/VIGbMB8NxDgoQJYCF55KjgyzAMo+PfLK133RU1YsnZ384rn1POyLVETrDqPhPRGlJmkwrtarVzHwsX2pLgBjB5yWKM2fSbfnUI2PMnKXfWDU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk; spf=none smtp.mailfrom=ftp.linux.org.uk; dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b=lRMm4d8O; arc=none smtp.client-ip=62.89.141.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ftp.linux.org.uk
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=QZy81ykq8OJZJBea1Ve4W5aphIuVf2I+J1Ov16wYfZA=; b=lRMm4d8OjpyCEjRGZXYGHj+dLM
-	wACF3cLWIzB/G2qm4snoeoStB+uqqOCwx7AfD4xVG46dwtyR2MjTdz4E+A1VV8EjtFQwYMtlB8Jn5
-	ujOAr1WE6lxuY+IJB4r2s8lXC/uyWny/lp/DRYkX58vx/pm8dVuqh7xLaWFaiJiXwNftG1Xn/6wWs
-	d7AblKGmlOGbgrhgPKR81uzRC5zFzDplNYrG5NA2hTA9JJxx9hcOdgvSU6RtHcKneKgFAXCczU3l6
-	2UUCqZWSLtRkkj0RcyEQwrQQYKflgDkBkk4lsNpRjGadv7+9ec8Q1MjM1LC0959WE/3rCoG13/wS+
-	a3AU1o/g==;
-Received: from viro by zeniv.linux.org.uk with local (Exim 4.96 #2 (Red Hat Linux))
-	id 1s2axB-009clW-01;
-	Thu, 02 May 2024 18:14:45 +0000
-Date: Thu, 2 May 2024 19:14:44 +0100
-From: Al Viro <viro@zeniv.linux.org.uk>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-	Marco Elver <elver@google.com>, paulmck@kernel.org,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Dmitry Vyukov <dvyukov@google.com>,
-	syzbot <syzbot+b7c3ba8cdc2f6cf83c21@syzkaller.appspotmail.com>,
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-	Nathan Chancellor <nathan@kernel.org>,
-	Arnd Bergmann <arnd@kernel.org>, Jiri Slaby <jirislaby@kernel.org>
-Subject: Re: [PATCH v3] tty: tty_io: remove hung_up_tty_fops
-Message-ID: <20240502181444.GF2118490@ZenIV>
-References: <CANpmjNN250UCxsWCpUHAvJo28Lzv=DN-BKTmjEpcLFOCA+U+pw@mail.gmail.com>
- <CAHk-=whnQXNVwuf42Sh2ngBGhBqbJjUfq5ux6e7Si_XSPAt05A@mail.gmail.com>
- <d4de136e-c4e0-45c2-b33e-9a819cb3a791@paulmck-laptop>
- <CAHk-=wi3iondeh_9V2g3Qz5oHTRjLsOpoy83hb58MVh=nRZe0A@mail.gmail.com>
- <892324fc-9b75-4e8a-b3b6-cf3c5b4c3506@paulmck-laptop>
- <CANpmjNOY=Qpm3hBu-eN4Xk8n-2VXQRvcQ3_PfwPwNw9MmC8ctw@mail.gmail.com>
- <CAHk-=whTakjVGgBC5OtoZ5Foo=hd4-g+NZ79nkMDVj6Ug7ARKQ@mail.gmail.com>
- <CANpmjNNo_jyTPrgPVCeSfgvsX-fK8x0H81zbBA6LZMVNodO6GA@mail.gmail.com>
- <b13ab60e-503a-4c11-8a99-0ccccce33c6c@I-love.SAKURA.ne.jp>
- <CAHk-=wi_QBG68QshO1e-xK-jt0ZFsMpZczEJe4nQMu+U7q_7EQ@mail.gmail.com>
+	s=arc-20240116; t=1714673705; c=relaxed/simple;
+	bh=ZA92IXsc0X3IgFWFWIxdK48Y8F36zabbvP6VZiHZCog=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=AsYIMekkiDmPtItxkeLHK2udJeI8olDZMmOQTPmeuOymHUnv476TcTuw+VnNFMHQzaSTHV0a6sdOf9MEBuhHp5Td+CmTUfmkBm2iLFXroaJujYKUWzLwHNb5ZBmzvCo5j/cw5MZvbgm/vI1bzQPs5pi9Fzd5Vy9ONiIwXYUJnPs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.216.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f49.google.com with SMTP id 98e67ed59e1d1-2ad8fb779d2so6652876a91.0;
+        Thu, 02 May 2024 11:15:02 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714673702; x=1715278502;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=jX8aKvbafhGbnZvdnKVSz/mpn0msgf30qB56G9DbOhQ=;
+        b=m4AjLkZwcMEUaEJbiLcPW1I+HhN0n2AOr6yG+CcY3vfEVAdEzRmE8mEZ8mVxH8U0YK
+         k0nFWjZwjBP3E6zM7tV8paMAjsqphVwLMms1USEZEPG1/124N+WPznxmUQzSi/CJYcHo
+         oyj0JDJaSXiU1/myBStaFnvsdvLnELwJ9A3PuYI7FeTzzAARtmAQNp1T3Z7vopjAHO8v
+         ieuEd+9zvc9Zx0IMgfpabOQN6GazsHmV9O5ly2GfWe9IWmBKa2cuykoXkWyF385VL5tc
+         KcUXnGHUHIqjF41fcdnprcnxWxiPn/+2nMubKzzuYTLeSps2eAavs2y+pU4bo8EzNEmA
+         2XvA==
+X-Forwarded-Encrypted: i=1; AJvYcCWo27RR0zZTWIScnoaM3ytUsXFWFvsJRQxreKCm9LN71b0xHjd0wZBvLLuMkVgW+EXb7Tx+sDl8kAbZ7KIbAaPM+jq5m5XE9ZoFzkC0JoweyB9iSN9r9XgZ/dIGcBGW/pfhfOZFuz1EjHnOdMlKgQ==
+X-Gm-Message-State: AOJu0YyJTxM0pWx6gbb9PmgcPc3nxFK9VYup92Bjct1Xt4M+VRbF1Rl7
+	qc0cCxQDVOM2ge52daL2325wIu4Kqs+66HhpRk9dVl0SdTRwvChXJNvyMXK0Fxdh1bCs6B07LdZ
+	mIIiN6p6bedzfpHFzbMHtw/HVxdI=
+X-Google-Smtp-Source: AGHT+IHavTkVVIrzDWL1qUo+gBIJUOmiH9xgSYf34ilpJN5TlE5NU3ymJCXRyeLNnhZFgJIIC6yItiB9cR3pPMlffSQ=
+X-Received: by 2002:a17:90a:c697:b0:2b2:32c2:44b4 with SMTP id
+ n23-20020a17090ac69700b002b232c244b4mr635207pjt.10.1714673702312; Thu, 02 May
+ 2024 11:15:02 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wi_QBG68QshO1e-xK-jt0ZFsMpZczEJe4nQMu+U7q_7EQ@mail.gmail.com>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+References: <20240502060011.1838090-1-namhyung@kernel.org> <20240502060011.1838090-5-namhyung@kernel.org>
+ <ZjOdkHraWXZIuSy_@x1>
+In-Reply-To: <ZjOdkHraWXZIuSy_@x1>
+From: Namhyung Kim <namhyung@kernel.org>
+Date: Thu, 2 May 2024 11:14:50 -0700
+Message-ID: <CAM9d7cg_YL1x8YfJ5+7+o+0dccFJJxUye8L_FLrgdGeAh81LBA@mail.gmail.com>
+Subject: Re: [PATCH 4/6] perf annotate-data: Check memory access with two registers
+To: Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc: Ian Rogers <irogers@google.com>, Kan Liang <kan.liang@linux.intel.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Adrian Hunter <adrian.hunter@intel.com>, 
+	Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@kernel.org>, 
+	LKML <linux-kernel@vger.kernel.org>, linux-perf-users@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, May 02, 2024 at 10:29:52AM -0700, Linus Torvalds wrote:
+On Thu, May 2, 2024 at 7:05=E2=80=AFAM Arnaldo Carvalho de Melo <acme@kerne=
+l.org> wrote:
+>
+> On Wed, May 01, 2024 at 11:00:09PM -0700, Namhyung Kim wrote:
+> > The following instruction pattern is used to access a global variable.
+> >
+> >   mov     $0x231c0, %rax
+> >   movsql  %edi, %rcx
+> >   mov     -0x7dc94ae0(,%rcx,8), %rcx
+> >   cmpl    $0x0, 0xa60(%rcx,%rax,1)     <<<--- here
+> >
+> > The first instruction set the address of the per-cpu variable (here, it
+> > is 'runqueus' of struct rq).  The second instruction seems like a cpu
+>
+> You mean 'runqueues', i.e. this one:
+>
+> kernel/sched/core.c
+> DEFINE_PER_CPU_SHARED_ALIGNED(struct rq, runqueues);
+>
+> ?
 
-> Yes, this is unusual. The *common* thing is to mark pointers as being
-> volatile. But this really is something entirely different from that.
+Right, sorry for the typo.
 
-The common thing is to mark pointers are pointers to volatile;
-calling them "volatile pointers" is common and incorrect, and the only
-reason why that sloppy turn of phrase persists is that real "volatile
-pointers" are rare...
+>
+> But that 0xa60 would be in an alignment hole, at least in:
+>
+> $ pahole --hex rq | egrep 0xa40 -A12
+>         struct mm_struct *         prev_mm;              /* 0xa40   0x8 *=
+/
+>         unsigned int               clock_update_flags;   /* 0xa48   0x4 *=
+/
+>
+>         /* XXX 4 bytes hole, try to pack */
+>
+>         u64                        clock;                /* 0xa50   0x8 *=
+/
+>
+>         /* XXX 40 bytes hole, try to pack */
+>
+>         /* --- cacheline 42 boundary (2688 bytes) --- */
+>         u64                        clock_task __attribute__((__aligned__(=
+64))); /* 0xa80   0x8 */
+>         u64                        clock_pelt;           /* 0xa88   0x8 *=
+/
+>         long unsigned int          lost_idle_time;       /* 0xa90   0x8 *=
+/
+> $ uname -a
+> Linux toolbox 6.7.11-200.fc39.x86_64 #1 SMP PREEMPT_DYNAMIC Wed Mar 27 16=
+:50:39 UTC 2024 x86_64 GNU/Linux
+> $
 
-Marco,
-	struct foo volatile *p;
-declares p as a (non-volatile) pointer to volatile struct foo.
-	struct foo * volatile p;
-declares p as volatile pointer to (non-volatile) struct foo.
+This would be different on kernel version, config and
+other changes like backports or local modifications.
 
-The former is a statement about the objects whose addresses might
-be stored in p; the latter is a statement about the object p itself.
+On my system, it was cpu_stop_work.arg.
 
-Replace volatile with const and it becomes easier to experiment with:
-	char const *p;
-	char s[] = "barf";
-	char * const q = s;
-	...
-	p = "yuck"; 	- fine, p itself can be modified
-	*p = 'a';	- error *p can not be modified, it's an l-value of type const char
-	q = s + 1;	- error, can't modify q
-	*q = 'a';	- fine, *q is l-value of type char
-	p = q;		- fine, right-hand side of assignment loses the top
-			  qualifier, so q (const pointer to char as l-value)
-			  becomes a plain pointer to char, which can be
-			  converted to pointer to const char, and stored in
-			  p (l-value of type pointer to const char)
-	strlen(q);	- almost the same story, except that it's passing
-			  an argument rather than assignment; they act the
-			  same way.
-	strcpy(q, "s");	- almost the same, except that here the type of
-			  argument is pointer to char rather than pointer to
-			  const char (strlen() promises not to modify the
-			  string passed to it, strcpy() obviously doesn't)
-	strcpy(p, "s");	- error; pointer to char converts to a pointer
-			  to const char, but not the other way round.
+$ pahole --hex rq | grep 0xa40 -C1
+    /* --- cacheline 41 boundary (2624 bytes) --- */
+    struct cpu_stop_work       active_balance_work;  /* 0xa40  0x30 */
+    int                        cpu;                  /* 0xa70   0x4 */
 
-The situations where you want a const (or volatile) pointer (as opposed to
-pointer to const or volatile object) are rare, but this is exactly what
-you are asking for - you want to say that the value of 'f_op' member
-in any struct file can change at any time.  That value is an address of
-some instance of struct file_operations and what you want to express is
-the property of f_op member itself, not that of the objects whose addresses
-might end up stored there.
+$ pahole --hex cpu_stop_work
+struct cpu_stop_work {
+    struct list_head           list;                 /*     0  0x10 */
+    cpu_stop_fn_t              fn;                   /*  0x10   0x8 */
+    long unsigned int          caller;               /*  0x18   0x8 */
+    void *                     arg;                  /*  0x20   0x8 */
+    struct cpu_stop_done *     done;                 /*  0x28   0x8 */
 
-So having a driver do
-	const struct file_operations *ops = file->f_op;
-is fine - it's basically "take the value of 'file'; it will be an address
-of some struct file instance.  Fetch 'f_op' from that instance, without
-any assumptions of the stability of that member.  Use whatever value
-you find there as initial value of 'ops'".
+    /* size: 48, cachelines: 1, members: 5 */
+    /* last cacheline: 48 bytes */
+};
 
-That's fine, and since nobody is going to change 'ops' itself behind your
-back, you don't need any qualifiers on it.  The type of 'ops' here is
-"(unqualified) pointer to const struct file_operations".
+
+>
+> The paragraph then reads:
+>
+> ----
+> The first instruction set the address of the per-cpu variable (here, it
+> is 'runqueues' of type 'struct rq').  The second instruction seems like
+> a cpu number of the per-cpu base.  The third instruction get the base
+> offset of per-cpu area for that cpu.  The last instruction compares the
+> value of the per-cpu variable at the offset of 0xa60.
+> ----
+>
+> Ok?
+
+Yep, looks good.
+
+Thanks,
+Namhyung
 
