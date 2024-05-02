@@ -1,135 +1,117 @@
-Return-Path: <linux-kernel+bounces-166698-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-166693-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F40D58B9E4B
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 18:14:26 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D54F18B9E3E
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 18:09:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A935B287701
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 16:14:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 080181C221C1
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 16:09:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E939915D5B7;
-	Thu,  2 May 2024 16:14:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4579215F300;
+	Thu,  2 May 2024 16:08:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=finest.io header.i=parker@finest.io header.b="AiMtJSxM"
-Received: from mout.perfora.net (mout.perfora.net [74.208.4.197])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="B91kLkBm"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9287460BB6;
-	Thu,  2 May 2024 16:14:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.208.4.197
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 818D515D5D1;
+	Thu,  2 May 2024 16:08:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714666458; cv=none; b=kfQUITt5yb5Q2AaO1BgSwQxZT0sZJVJUmw6D8JbzzyC13JuoK3bVUFX9L4tyUYsBS9YaskUchvZQv7Pp/EdDqz0NWd4s6DBDgDSA0W74zRSouVZYuy6CBAHRVZ2jzeag8BQxQhrEOviZyhTfEPMkJpmMj58qMB0NHbrulLR2UqU=
+	t=1714666127; cv=none; b=oc9AB4Y1KxH9Z4dg1citUMA26xf0wgIywOQmPUmLInTBpRuCgkKKUA2Z7tsjYYWqFb/WlibZXAx9PwvPjYRsRcZ2HPcmT4HkooXdCpheqq6+oXQJlTcraueErhM/xXXAOeyUuUZe0FzM4i8CmkmnelinCJ0sw9LABAoFhaUHoh8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714666458; c=relaxed/simple;
-	bh=EYyBIpXtLbrojJ0gwTNmKNe8NZCDfNPHVGhDJtgJFL4=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=JUL30wiflJi+rftvnzMcIvpQYinozrNNQMxfA0sZfNMjMUVO/xQeQlWSXL+XggEmadHpJ47K0/Ly3PK8p6uSgnygwuWxrOacbvVaVlEsRlqKsIRgn2Xd2JOES0qp/atencdO7WiX97AicW0WJF8S2K+OaWsN4FWAiIsaOYs7EWg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=finest.io; spf=pass smtp.mailfrom=finest.io; dkim=pass (2048-bit key) header.d=finest.io header.i=parker@finest.io header.b=AiMtJSxM; arc=none smtp.client-ip=74.208.4.197
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=finest.io
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=finest.io
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=finest.io;
-	s=s1-ionos; t=1714666452; x=1715271252; i=parker@finest.io;
-	bh=F1Ux9cZrOuJh9vuypt4bqQwJFsHtjYpAaryxJnzC8UU=;
-	h=X-UI-Sender-Class:Date:From:To:Cc:Subject:Message-ID:In-Reply-To:
-	 References:MIME-Version:Content-Type:Content-Transfer-Encoding:cc:
-	 content-transfer-encoding:content-type:date:from:message-id:
-	 mime-version:reply-to:subject:to;
-	b=AiMtJSxMjCb+kfDU2A/JPuN5r3PE1QqXY10l88NeBVQF0PAXqKDa2MwZtZpKshhN
-	 PnEPGikcO1ZX5rmLRufde5ecl2HnXURqQZUz44/hKK/m+InG+FuYJ1WqTOD+Q8tCr
-	 8saN3QuXY+W4cWq2ReaC/CU70YgImhhOlCFIBl115upW9Gz/X3j8pjBB05Posyeb/
-	 2UByhCmoOy2IRfKU+TJORwY3LyE2IG540b8ikdE9/SYUtZ4+p2xq/y0J3ftJCkHqD
-	 IvkSht3zcLKRoCYcYTF33BMRdqnPfb+ljxaBGfSXEUIdwANSCIC1tRIFcwcm8JtKT
-	 Yy9d1sxO5RsLZI2viA==
-X-UI-Sender-Class: 55c96926-9e95-11ee-ae09-1f7a4046a0f6
-Received: from SWDEV2.connecttech.local ([98.159.241.229]) by
- mrelay.perfora.net (mreueus002 [74.208.5.2]) with ESMTPSA (Nemesis) id
- 0MNa9c-1rzmlW1OiQ-001dPt; Thu, 02 May 2024 18:08:48 +0200
-Date: Thu, 2 May 2024 12:08:40 -0400
-From: Parker Newman <parker@finest.io>
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: Parker Newman <pnewman@connecttech.com>, linux-kernel@vger.kernel.org,
- linux-serial@vger.kernel.org, Greg Kroah-Hartman
- <gregkh@linuxfoundation.org>, Jiri Slaby <jirislaby@kernel.org>
-Subject: Re: [PATCH v1 00/13] serial: 8250_exar: Clean up the driver
-Message-ID: <20240502120840.02c65f30@SWDEV2.connecttech.local>
-In-Reply-To: <ZjO4vYEBzxU3fpzC@smile.fi.intel.com>
-References: <20240502144626.2716994-1-andriy.shevchenko@linux.intel.com>
-	<20240502114645.4445b3da@SWDEV2.connecttech.local>
-	<ZjO4vYEBzxU3fpzC@smile.fi.intel.com>
-Organization: Connect Tech Inc.
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1714666127; c=relaxed/simple;
+	bh=gl9O2WwztfOm6npo/1+WfKL5nQmCth7iyvHkJ0RH9c4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=m/Mw2p9Dy2sc5qqne5oU/kv2898vIGjd2asxV8zhKatGv2EScb1cPFMQBVGivqNhOsfq6XU98o09KeVS9+veng4UhKBuEzbJaQU7ewUtwRzHr9ADQmMTOovOfcRLGuJJltdUVipPEwBrd0J/GtbWXmYQQaFqCXQmodoFws2U2p8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=B91kLkBm; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0F317C113CC;
+	Thu,  2 May 2024 16:08:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714666127;
+	bh=gl9O2WwztfOm6npo/1+WfKL5nQmCth7iyvHkJ0RH9c4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=B91kLkBmHQ5lgyqltlx+5+JcepgXeFHd3/LFM+sal1nWhA7JX0Ujg5q1mMDQmkYyH
+	 nJNFtQ4OGjCHSRHBADn4BsNG+VSlxgi9/cuXEPy/2yeMt10fXlf9RHyWU72p6zOjGB
+	 FfHypT2i/vlMF+7mS6Kj13RThJegMsFp7bGVdPuBA+Dcv+rHNg526bxxcdz6zB6O0P
+	 upi0HTJTDinSBNItRssW3+t5zxldFhnkyfKTNYsWPZkBEeRH58SZC+GjHWYbbgjYod
+	 UwQqBq3OyxOBsd1RExxWOf7Az07+GijsHDWq5RPPlO4Gp2dhsZ8K8XSA/35viCc+N7
+	 yl0v1d/V+lRuw==
+Date: Thu, 2 May 2024 09:08:45 -0700
+From: Nathan Chancellor <nathan@kernel.org>
+To: Tomasz =?utf-8?Q?K=C5=82oczko?= <kloczko.tomasz@gmail.com>
+Cc: llvm@lists.linux.dev, linux-kernel@vger.kernel.org, conor@kernel.org,
+	ojeda@kernel.org
+Subject: Re: Prebuilt LLVM 18.1.5 uploaded
+Message-ID: <20240502160845.GA3193908@dev-arch.thelio-3990X>
+References: <20240502152416.GA3178126@dev-arch.thelio-3990X>
+ <CABB28Cwu3CMeBNch+snX8LG_g2oaYRDboVK4prwc3jp7MHyQWg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:wQQFg7JqXeyMc7J73yaQ3i6/8bCsSfUwf0eyYZhDGpSV4C2Mv2x
- JTendR9EQupIO/Pd9qAVsd5yJShMGZ8QXCgqhinFWqRPUwGI0rs5phSJZ2QzJ5Nf6qfJNUB
- V9pSo9Xm7tTTzNBK90bs7WZN+q2Y6qHhlQ9hWlpOopnhoE30t8rHvdjl/rDnPVvJCjmnJgu
- V4wtVuG/m/6Dzm91mmp9Q==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:s0b9kt01wnY=;NqVlvOczYkO9YsE+8ETmlKaC1Zx
- RckKbwJGmHeqMNlH6eJsN2Kllaw9z36miib9msAcsG1svYihv8ITSlLGeeUK0HUv3xOU0cmO6
- GpWVh80Q2uhCOzwylw1/6zAkCHrQHvmcbREydYiVhDb8gcUZhgc3jM1ObTqUrx1sU1WCCOEwh
- Y6Y4OC74tRozI8LWRE090MIZ8pj3O8HDO5BJkcU4FqoNSDTM4SSfc+pSbA+X92SUanqNmfBz0
- z3VVX5aCst+d4NGwh75IRMOuOAOzUNxUlrdQo9OOrYrCeDDdkc12r5xWRrjkpMX97McvOjw1i
- 2xvTGO4ty+/wYFJE4jtaBzB6GYYpj2KSym+LwP4jcYT9kCS802GqHs3wtjvX/NtCump+5kWnH
- RRiU30o/CihhCeScbNHvPUVd0ZXRCc/2F1GFi1vdNpk8m8bxrEfWUWtsjLT94dp8EUbTBQzwS
- 1ghS+If3FsRmpcZ2//g+dPgLBhbFsxj0rcsgJtxgJNOzWQJWMlecNwuu0gMZ8HvlpAWxskDwf
- +LzeZEzqF8zhezgAM9K0T5lkRexY+106+XxSwIq41+iSyzLIAhRhBqVV397jDiLyJMaFlq9PZ
- am6SHL3ufrLaoJbIrlNHJGzhvJAkqE3ffIPW3TpqI5+vL21Zj1WxaQycHm3Z6v11GFigra0uE
- XRg1hCwh48ETNB9k2o4hfEc8HNvM5IaayZvD7UMk4iJ6V9KQDVXlpZvRaY49UDpDXHVOorExg
- 1P8S4u+aHqc5FiyYfBokzztxV7CZPrLYinY+C1LAfrgIMkuZ84ssNs=
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CABB28Cwu3CMeBNch+snX8LG_g2oaYRDboVK4prwc3jp7MHyQWg@mail.gmail.com>
 
-On Thu, 2 May 2024 19:01:01 +0300
-Andy Shevchenko <andriy.shevchenko@linux.intel.com> wrote:
-
-> On Thu, May 02, 2024 at 11:46:45AM -0400, Parker Newman wrote:
-> > On Thu,  2 May 2024 17:43:54 +0300
-> > Andy Shevchenko <andriy.shevchenko@linux.intel.com> wrote:
+On Thu, May 02, 2024 at 04:33:32PM +0100, Tomasz Kłoczko wrote:
+> On Thu, 2 May 2024 at 16:25, Nathan Chancellor <nathan@kernel.org> wrote:
+> 
+> > Hi all,
 > >
-> > > After a rework for CONNTECH was done, the driver may need a bit of
-> > > love in order to become less verbose (in terms of indentation and
-> > > code duplication) and hence easier to read.
-> > >
-> > > This clean up series fixes a couple of (not so critical) issues and
-> > > cleans up the recently added code. No functional change indented by
-> > > the cleaning up part.
-> > >
+> > I have built and uploaded LLVM 18.1.5 to
+> > https://mirrors.edge.kernel.org/pub/tools/llvm/.
 > >
-> > Just an FYI I submitted a patch series that fixed several of these iss=
-ues but I
-> > think it fell through the cracks (I know everyone is very busy!).
-> >
-> > Link: https://lore.kernel.org/linux-serial/cover.1713533298.git.pnewma=
-n@connecttech.com/
-> >
-> > I believe my previous patch series is no longer required. This one fix=
-es
-> > everything.
->
-> I haven't noticed that, if it contains duplicated patches, I may replace=
- mine
-> with yours if you insist.
->
-> In any case it's better to reply there that you prefer this series to be
-> applied, so Greg will not pick it up.
->
+> 
+> Is it known when dist tar balls will be uploaded as gh assets to
+> https://github.com/llvm/llvm-project/releases/tag/llvmorg-18.1.5 ? 🤔
 
-I do not have a preference. I am fine with using yours if it is easier on
-the maintainers.
+Not sure. It seems like there was a 24 hour delay for 18.1.4 if I am
+reading GitHub's release JSON correctly:
 
-I will send a reply on my previous series that it is not needed and link
-to this. I am new to the mailing lists so I didn't know what the procedure
-is for this situation.
+$ gh -R llvm/llvm-project release view --json assets,createdAt,tagName llvmorg-18.1.4 | python3 -c "import json, sys
 
-Thanks for the fixes :),
-Parker
+llvm_json = json.load(sys.stdin)
 
+llvm_tag_date = llvm_json['createdAt']
+llvm_tag_name = llvm_json['tagName']
+
+print(f'\n{llvm_tag_name} was made at {llvm_tag_date}\n')
+
+for asset in llvm_json['assets']:
+    if (asset_name := asset['name']).endswith('.src.tar.xz'):
+        asset_upload_date = asset['createdAt']
+        print(f'{asset_name} was uploaded at {asset_upload_date}')"
+
+llvmorg-18.1.4 was made at 2024-04-17T00:26:56Z
+
+bolt-18.1.4.src.tar.xz was uploaded at 2024-04-18T00:13:08Z
+clang-18.1.4.src.tar.xz was uploaded at 2024-04-18T00:13:09Z
+clang-tools-extra-18.1.4.src.tar.xz was uploaded at 2024-04-18T00:13:10Z
+cmake-18.1.4.src.tar.xz was uploaded at 2024-04-18T00:13:11Z
+compiler-rt-18.1.4.src.tar.xz was uploaded at 2024-04-18T00:13:12Z
+flang-18.1.4.src.tar.xz was uploaded at 2024-04-18T00:13:12Z
+libclc-18.1.4.src.tar.xz was uploaded at 2024-04-18T00:13:13Z
+libcxx-18.1.4.src.tar.xz was uploaded at 2024-04-18T00:13:14Z
+libcxxabi-18.1.4.src.tar.xz was uploaded at 2024-04-18T00:13:15Z
+libunwind-18.1.4.src.tar.xz was uploaded at 2024-04-18T00:13:16Z
+lld-18.1.4.src.tar.xz was uploaded at 2024-04-18T00:13:16Z
+lldb-18.1.4.src.tar.xz was uploaded at 2024-04-18T00:13:17Z
+llvm-18.1.4.src.tar.xz was uploaded at 2024-04-18T00:13:18Z
+llvm-project-18.1.4.src.tar.xz was uploaded at 2024-04-18T00:13:20Z
+mlir-18.1.4.src.tar.xz was uploaded at 2024-04-18T00:13:24Z
+openmp-18.1.4.src.tar.xz was uploaded at 2024-04-18T00:13:25Z
+polly-18.1.4.src.tar.xz was uploaded at 2024-04-18T00:13:26Z
+runtimes-18.1.4.src.tar.xz was uploaded at 2024-04-18T00:13:26Z
+test-suite-18.1.4.src.tar.xz was uploaded at 2024-04-18T00:13:27Z
+third-party-18.1.4.src.tar.xz was uploaded at 2024-04-18T00:13:32Z
+
+Cheers,
+Nathan
 
