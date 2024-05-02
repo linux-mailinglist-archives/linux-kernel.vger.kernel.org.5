@@ -1,114 +1,138 @@
-Return-Path: <linux-kernel+bounces-166332-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-166333-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E3F0F8B9921
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 12:42:59 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7A9E48B9923
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 12:43:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 858001F20CEA
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 10:42:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3C42D285FE5
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 10:43:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 293BE56B8C;
-	Thu,  2 May 2024 10:39:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 39F3460BBF;
+	Thu,  2 May 2024 10:39:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Gm/EWYj4"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IAJdWk1l"
+Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E993C5F874
-	for <linux-kernel@vger.kernel.org>; Thu,  2 May 2024 10:39:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 337915F874;
+	Thu,  2 May 2024 10:39:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714646390; cv=none; b=oZ7FxGAYA3vYk05iaESMl2aS5T7FKYjWppU9Fts0X/whgks9Ly2S2udkKXJtU0F9itmEfJmYRaLN0mY15JemM958jBks7H8oaVr/paUg0TdDyymbc5cAeIcMHO5BGU2ufJdWjYrgmxWJXLLwcWP9OJVzu+ZfWCPwXRd5bzCxsKQ=
+	t=1714646395; cv=none; b=LIZ1KuvbkIz63T7D7N/Ezq0ZMqc6N8104AQ9dMi8my/c8yDu0drHqBD9v37rD5NkrMbMPoUqvSz9A7/z7GYwZ8FQQSY6dESa5Ota6PGTZ3Je5qec1VBdMgBFecg/FjREntKMJSzdZg8mOA/YhRGfORbv3zBS5GL+xc8tw7L+QD8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714646390; c=relaxed/simple;
-	bh=s6FKwE54UFYNcw1jeMV5GJo5kZugtlV25ulBqGrd9nE=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=F6ZxWRaq1ISs0BZ97oczIGhhk9QlfUhMhVkvJAu+5jm4hszTRjf5upCvUqLdfvwJqFmOwQ5hOLnrbte0A/BCyoldZ7jhAZRvbnwTtFe0mRI6kiNjeWVmSLeXf40S2rhbALn8MAJuNMpu97rk06/5dc9tyEYZC8XqA2fVSz/0hMk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Gm/EWYj4; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1714646387;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ORypNU4Jg7o5BAaBkjAQJMzFWJt5/boPJ1mc2TGpTGY=;
-	b=Gm/EWYj4JH8R9WuxhgVF1/G1LvcF+npJ7okR66uA9qdLn0pxXBB9o+cpXYQqKEJ/ClaQvF
-	ZYpsU7pmKfXuOpI87lq7JL6bCKXWaGGPme0OnRjXhlmaPDfcBWajEQARStfYGBM71x/uRc
-	k8NN5RqXBtyTcD46NAzpt3I+B7Ho5lI=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-101-Wr_bK_1HPduzif-IY4Kl-w-1; Thu,
- 02 May 2024 06:39:42 -0400
-X-MC-Unique: Wr_bK_1HPduzif-IY4Kl-w-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 4C0363820EA9;
-	Thu,  2 May 2024 10:39:41 +0000 (UTC)
-Received: from oldenburg.str.redhat.com (unknown [10.39.193.188])
-	by smtp.corp.redhat.com (Postfix) with ESMTPS id C1D6AC13FA6;
-	Thu,  2 May 2024 10:39:35 +0000 (UTC)
-From: Florian Weimer <fweimer@redhat.com>
-To: Christian Brauner <brauner@kernel.org>
-Cc: =?utf-8?Q?Andr=C3=A9?= Almeida <andrealmeid@igalia.com>,  Mathieu
- Desnoyers
- <mathieu.desnoyers@efficios.com>,  Peter Zijlstra <peterz@infradead.org>,
-  Thomas Gleixner <tglx@linutronix.de>,  linux-kernel@vger.kernel.org,
-  "Paul E . McKenney" <paulmck@kernel.org>,  Boqun Feng
- <boqun.feng@gmail.com>,  "H . Peter Anvin" <hpa@zytor.com>,  Paul Turner
- <pjt@google.com>,  linux-api@vger.kernel.org,  David.Laight@aculab.com,
-  carlos@redhat.com,  Peter Oskolkov <posk@posk.io>,  Alexander Mikhalitsyn
- <alexander@mihalicyn.com>,  Chris Kennelly <ckennelly@google.com>,  Ingo
- Molnar <mingo@redhat.com>,  Darren Hart <dvhart@infradead.org>,  Davidlohr
- Bueso <dave@stgolabs.net>,  libc-alpha@sourceware.org,  Steven Rostedt
- <rostedt@goodmis.org>,  Jonathan Corbet <corbet@lwn.net>,  Noah Goldstein
- <goldstein.w.n@gmail.com>,  Daniel Colascione <dancol@google.com>,
-  longman@redhat.com,  kernel-dev@igalia.com
-Subject: Re: [RFC PATCH 0/1] Add FUTEX_SPIN operation
-In-Reply-To: <20240502-sporen-pirschen-039688cd9efe@brauner> (Christian
-	Brauner's message of "Thu, 2 May 2024 12:14:11 +0200")
-References: <20240425204332.221162-1-andrealmeid@igalia.com>
-	<20240426-gaumen-zweibeinig-3490b06e86c2@brauner>
-	<f052ff72-72c9-4b83-9285-2cd9d52e5f72@igalia.com>
-	<20240502-gezeichnet-besonderen-d277879cd669@brauner>
-	<8734r0o81v.fsf@oldenburg.str.redhat.com>
-	<20240502-sporen-pirschen-039688cd9efe@brauner>
-Date: Thu, 02 May 2024 12:39:34 +0200
-Message-ID: <871q6kmra1.fsf@oldenburg.str.redhat.com>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+	s=arc-20240116; t=1714646395; c=relaxed/simple;
+	bh=t5g00IGuHelGRldg6cVwXrUENnvsckikhiMzyAUt2X0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Acud2VEX2ZoMqDUpavpz4IZjQE7+WegJKFRF/bJjJOOFy91EJMi3Px8rVtiZeD4oa+8WzRJavO4o1A/jzKMTm6grO/vROqulNUhykUfbQDAd824t8OhyoBgRjXd2KYpKIrOf928glZpLW9TFdowbbqY7sACNQnN2IkJv6eJLwmA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IAJdWk1l; arc=none smtp.client-ip=209.85.214.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-1e4bf0b3e06so76981685ad.1;
+        Thu, 02 May 2024 03:39:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1714646393; x=1715251193; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=t4GOnPYyyWwnP1/8TVXg36vGNLqaRGbyUqOh/xHsbXg=;
+        b=IAJdWk1lv35dZEdIhCbTqm6TNz5VVezmq/fURr7yT9vYC0+qzqxJhpfcoZujOyhLgf
+         FiYT6WYD7/IbS6pTwLVZQw/wGR5jr4wN3uem61TDcNCMhxqBwd7zPLTu9XPLFfAZn1Vp
+         bfFC+mSv/jz67/qzAvZajs6CncmvVbfMBAw486jhrsYze/Rv62RzercXHxusaanVQjqt
+         5Ex2LpYXWSagirCyebCkhoSTazyxDfUtNLk2DzE6vE9Q//8Wz8507bnVvfMFEcyXodRr
+         YFtboxgBJPtC8gsZI8RLBJineu2L1f1taFuZ8Qm50TN0EutAzVc2HmCrOuOkJ87EGhcb
+         LjdQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714646393; x=1715251193;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=t4GOnPYyyWwnP1/8TVXg36vGNLqaRGbyUqOh/xHsbXg=;
+        b=RGwf4cCBpPuvrDWGdM63RDcsr/aKFI0htbAax+3pZE07yEeLn3qP467qQvsMksYkEX
+         G3MED5A/H3zVpyRJ09NQaU2Bigbkg85oSERV22k4+3rO/ZkBDtMHm/8XwVSN/751Fj60
+         hO6s41yaW3bwCyI2Cb8xV4yIUos3X8Vk5v8APWHSMbbo+K8r0KoJiGUJLgU8EOvDdVYu
+         LC2Be9bHNpZ2B+TALve9HrhnEb2v7dA2xbHNopWtwyhikZpnYZ0Ca1HNafJZomB8dZei
+         D+uGl5aQb8Q53kO0x/UuyBg408CcYnhijL/6R65UDMD83jHhePKOgmz/ffxBiZCmB19h
+         kuKA==
+X-Forwarded-Encrypted: i=1; AJvYcCUrGaHOheKv3YwqmiuCXzOmvjgMLK4m3txqOtvMe6YwJMJJ0NUtvh7v/Jwy0JB5WWQuRM9t5epCS47B1pcROybGoTu0kZFTTg1PAkMH
+X-Gm-Message-State: AOJu0YzWOwygwX2jb1bkQV6ngFEIC5aAQlrI2xGxYJZiY/9Ia/UCtkXS
+	d8y2Wbh3EljLgJatZy+BcwXhlwVhlag47BxTUNzBp58Wt/Dnx2hGqnNvpw==
+X-Google-Smtp-Source: AGHT+IFqR9Gkj344QonOI/YaQd5ZGgXVxI22fmuDMyiLr1wujioqvrX9hCDlBQudXht6mXr5poqAMw==
+X-Received: by 2002:a17:90a:d446:b0:2b2:af15:f948 with SMTP id cz6-20020a17090ad44600b002b2af15f948mr5891627pjb.38.1714646393420;
+        Thu, 02 May 2024 03:39:53 -0700 (PDT)
+Received: from [10.0.2.15] (KD106167171201.ppp-bb.dion.ne.jp. [106.167.171.201])
+        by smtp.gmail.com with ESMTPSA id t22-20020a17090a5d9600b002b16d9ab430sm879121pji.3.2024.05.02.03.39.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 02 May 2024 03:39:53 -0700 (PDT)
+Message-ID: <640114d2-5780-48c3-a294-c0eba230f984@gmail.com>
+Date: Thu, 2 May 2024 19:39:48 +0900
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.8
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] Sphinx error fixed for inline literal end-string by
+ changing $type_constant2 in kernel-doc script to include "*" unicode
+ character in highlights_rst.
+To: Utkarsh Tripathi <utripathi2002@gmail.com>, corbet@lwn.net
+Cc: linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+ skhan@linuxfoundation.org, Akira Yokosawa <akiyks@gmail.com>
+References: <b9e4bedb-6678-42ed-9ac1-c10179be5b69@gmail.com>
+ <20240501175730.23326-1-utripathi2002@gmail.com>
+Content-Language: en-US
+From: Akira Yokosawa <akiyks@gmail.com>
+In-Reply-To: <20240501175730.23326-1-utripathi2002@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-* Christian Brauner:
+Hi Utkarsh,
 
->> From a glibc perspective, we typically cannot use long-term file
->> descriptors (that are kept open across function calls) because some
->> applications do not expect them, or even close them behind our back.
->
-> Yeah, good point. Note, I suggested it as an extension not as a
-> replacement for the TID. I still think it would be a useful extension in
-> general.
+First of all, thank you for taking the time!
 
-Applications will need a way to determine when it is safe to close the
-pidfd, though.  If we automate this in glibc (in the same way we handle
-thread stack deallocation for example), I think we are essentially back
-to square one, except that pidfd collisions are much more likely than
-TID collisions, especially on systems that have adjusted kernel.pid_max.
-(File descriptor allocation is designed to maximize collisions, after
-all.)
+Besides Jon's comments on the summary and changelog, please find my
+suggestion below.
 
-Thanks,
-Florian
+On Wed,  1 May 2024 23:27:30 +0530, Utkarsh Tripathi wrote:
+> The kernel-doc script uses the $type_constant2 variable to match
+> expressions used to find embedded type information. The current
+> implementation of $type_constant2 does not include the "*" unicode
+> character, which is used to highlight inline literals in the
+> documentation. This causes a Sphinx error when the inline literal
+> end-string is used in the documentation.
+
+I'm afraid your description of what is wrong is not clear enough ...
+Let me talk using some examples.
+
+Current kernel-doc (script) conversion to reST:
+
+    %WQ_* -->  ``WQ_``*
+
+Against which Sphinx complains:
+
+    WARNING: Inline literal start-string without end-string.
+
+, because ``* is not recognized as end-string (of inline literal).
+
+With your change applied, conversion to reST becomes:
+
+    %WQ_* --> ``WQ_*``
+
+, and it is a proper inline literal.
+
+Please update the changelog accordingly.
+
+This is not urgent at all.  Please take your time and read through
+Documentation/process/submitting-patches.rst (among others) before
+submitting v3.
+
+Feel free to add (in v3):
+
+Reviewed-by: Akira Yokosawa <akiyks@gmail.com>
+
+    Thanks, Akira
 
 
