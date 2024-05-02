@@ -1,166 +1,128 @@
-Return-Path: <linux-kernel+bounces-166702-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-166703-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 074028B9E59
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 18:18:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9790C8B9E5B
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 18:18:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5C053B23946
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 16:18:29 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C6782B25253
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 16:18:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E2C015E5B4;
-	Thu,  2 May 2024 16:18:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 80A8515E20D;
+	Thu,  2 May 2024 16:18:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DVaarcyh"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=finest.io header.i=parker@finest.io header.b="0qShFYzd"
+Received: from mout.perfora.net (mout.perfora.net [74.208.4.197])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AEDBA1586D5;
-	Thu,  2 May 2024 16:18:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 64D391586D5;
+	Thu,  2 May 2024 16:18:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.208.4.197
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714666690; cv=none; b=T5D+1JYx/6oSpkfewmj4dpZRlsN4p1eTD5ZOkbMp0jW778rKvVghAi0MTKzCxajiaslVQh16335TxoTdR0Mg98JqFl77zvamXLrwbucEKeUpBWilcQUbmDVjkB5IKC0ITNWjxkNdvoyT9oSqAIRXaMfHLSaC9UaSER/+2Si82Mw=
+	t=1714666699; cv=none; b=ptzukVU7CSl/IzMdfV4Qo8ADAxCbTnC4uyeUKsyiaqwFBXTzZNPlGix0S3+e5frR7ne3SArxWSGSAHnuIc1O/NMonXf/uH0xXsv0An0HMeLBNLCGF7Yk9wfwZzQimsYNrdBL45dP7qrq737yEBM5xcKztASZLeQpd/FAtnl2SrE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714666690; c=relaxed/simple;
-	bh=6NQhuMcNkmpWazM0HHYky5tZ2j68IK0b4aybNOPTBRY=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=NDbCq2WaNR2SrJk8hc3plMcHa79Gu4mt39KOJXfNp9NMwRdRpG1FSGG1OBHaYSUJaQy0TomJf6CgeIxqS8Xy3JUqYgA1i72FOATD7INZyhmvHUmchnJR8G+S5X1e5WvLgebfia5AIlGDphSBq3Bnn0Rgd+xTsFvrV6TGUjZYloA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DVaarcyh; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9CE04C113CC;
-	Thu,  2 May 2024 16:18:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714666690;
-	bh=6NQhuMcNkmpWazM0HHYky5tZ2j68IK0b4aybNOPTBRY=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=DVaarcyhyqTPFst4peTVuc9ArbfOqACLBdPeQH2p0+rqkOhyOVV9Xh7OIoX4FknVF
-	 Sn7+gecM7Sz2oICS+8bVUzPW07FGUfDKOPvxD8TmgTuEA5XZEG81KISdQ20CO4ZomE
-	 M41E8o8MPBSi10WXCPXPdoqB3wxlXwYidlLSQFevLud01ck5Q34NJdqluekPKBsAmO
-	 LgNBL0JWTFWd+X3yljpjs2+pQscTMvQ1icWonnkskJYDbFHVjHM7xGVzJwo8bqmkV9
-	 nwtSs7vru4n/aufQYAj5IYbSkIEykr+3lvf/Em5TCttCsNh5CvAJLZ6F8X72dNCbZk
-	 nSwTGsVhdrjuQ==
-From: =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>, Puranjay Mohan
- <puranjay@kernel.org>
-Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
- <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, Martin KaFai
- Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu
- <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, John Fastabend
- <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, Stanislav
- Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa
- <jolsa@kernel.org>, Paul Walmsley <paul.walmsley@sifive.com>, Palmer
- Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
- bpf@vger.kernel.org, linux-riscv@lists.infradead.org,
- linux-kernel@vger.kernel.org, Pu Lehui <pulehui@huawei.com>,
- puranjay12@gmail.com
-Subject: Re: [PATCH bpf-next v2 1/2] riscv, bpf: add internal-only MOV
- instruction to resolve per-CPU addrs
-In-Reply-To: <CAEf4Bzb2NY+wuK159Xb8F9Nu4CuVoYJ6WWR3_0LeTAi+zONewQ@mail.gmail.com>
-References: <20240430175834.33152-1-puranjay@kernel.org>
- <20240430175834.33152-2-puranjay@kernel.org>
- <CAEf4Bzb2NY+wuK159Xb8F9Nu4CuVoYJ6WWR3_0LeTAi+zONewQ@mail.gmail.com>
-Date: Thu, 02 May 2024 18:18:06 +0200
-Message-ID: <87jzkcw5kx.fsf@all.your.base.are.belong.to.us>
+	s=arc-20240116; t=1714666699; c=relaxed/simple;
+	bh=PXiRo4w2E0/4qzbSWCaMbbfTifqyV+g9KZhxk0A5rDY=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=mdkljCIARI6QLcfRRDx/wTt9WhZRsz14PRrVeahNbKRzNGCVYUht7LqTDcWgoD3Hk4+0sFRL12XkM9hNYV/RsszNB/F2M1r2TO6F6TqzJhMgyFLjTvfY3n8yeEu9PUEnvWotmiQjgAPs/kMSE9QqshSvrYJunOgB/2k4lqYxSh0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=finest.io; spf=pass smtp.mailfrom=finest.io; dkim=pass (2048-bit key) header.d=finest.io header.i=parker@finest.io header.b=0qShFYzd; arc=none smtp.client-ip=74.208.4.197
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=finest.io
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=finest.io
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=finest.io;
+	s=s1-ionos; t=1714666691; x=1715271491; i=parker@finest.io;
+	bh=LKoyu6h7KDiFRhiij4H8trRflZZKdIgkV1s5K2caVw4=;
+	h=X-UI-Sender-Class:Date:From:To:Cc:Subject:Message-ID:In-Reply-To:
+	 References:MIME-Version:Content-Type:Content-Transfer-Encoding:cc:
+	 content-transfer-encoding:content-type:date:from:message-id:
+	 mime-version:reply-to:subject:to;
+	b=0qShFYzdeOFnC7PRxHcpNziw9g1XxHTEvbdm6NJM5ZRZaaR2rR9SQyzO8caCq7CV
+	 QyLjYvrB/JWwl+QJkTCtWaGT1VbcYamyO2lHpIWdcz57nt6NEmZhsAtJzgcl7MFA1
+	 bak5RcA9ivrrwbykj/uMhxNjOpjDceHMw0wN2qfrHZouOwK0FHillWCiVZpROjWON
+	 CEtW/lmENGXxAbKK2hBzfczCvnYwcnpengSCDFqIUN+UbYNnzGvTlNNGTvuhmMd3Y
+	 c0/dv0xjrg5u446vL02T5vDOIDJgHGkjfWywRSwe2AZqJsvVe41pBGm2973eNa+fy
+	 /pfAKs70CFd0jVpWFg==
+X-UI-Sender-Class: 55c96926-9e95-11ee-ae09-1f7a4046a0f6
+Received: from SWDEV2.connecttech.local ([98.159.241.229]) by
+ mrelay.perfora.net (mreueus004 [74.208.5.2]) with ESMTPSA (Nemesis) id
+ 1N7AIq-1sjKTH2Eii-017S1k; Thu, 02 May 2024 18:18:11 +0200
+Date: Thu, 2 May 2024 12:18:09 -0400
+From: Parker Newman <parker@finest.io>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Jiri Slaby
+ <jirislaby@kernel.org>, linux-kernel@vger.kernel.org,
+ linux-serial@vger.kernel.org
+Cc: Ilpo =?UTF-8?B?SsOkcnZpbmVu?= <ilpo.jarvinen@linux.intel.com>, Parker
+ Newman <pnewman@connecttech.com>
+Subject: Re: [PATCH v2 0/4] serial: exar: fix kbuild warnings and code style
+Message-ID: <20240502121809.30491a67@SWDEV2.connecttech.local>
+In-Reply-To: <cover.1713533298.git.pnewman@connecttech.com>
+References: <cover.1713533298.git.pnewman@connecttech.com>
+Organization: Connect Tech Inc.
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:McQlekSsgghGBLIcmt0S/h4x/zjxzWYi8l3YZYVrmqTi0lS/ikz
+ 73RvGTSS59v1dbZQTjNvArFEmt1hl85dLfOVFANO0uJpvjbK6ZfQW0S1axCrEtDjdaVpyvV
+ +FKcfhbQoJWc3p/G3vTdv/kmYFIabNEHWsulRFYy470zGj1ame8vGJpw6ctVAU83mMHB+lr
+ qlwJG7tvdBkkVN5NtewjQ==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:WpY9wamyheo=;EI1vgfvixcJRoW+SJ+tLi4qspYU
+ 9wZoI9rxxAskBXqHg7xHEUEjHbIluDv3NAX9SgiJzUpLRt30R+02DB40gdanCo2eiSblt9uDi
+ KrY0WWE9GylBA30Gt5+IOUljerf143Uv61QHpQehSwUFW84OO/Y09imLa7nu+kdJNBl00fEJ2
+ GCxabS8IPSt9qlu+T6Tp00g4M325aIClz6GQsfMHkV4wNZzjuUIblF5CGKPqtXuVOeZApbRDf
+ zGPURMV0oI8dAcSb0Lo8gOS8cV9fPobSmbGIDCkymNQhdO7CgL490zBje/UrxZSNqLCEkbVAW
+ ws6j7YhqNdmEpOhksCFpoGUm4N0V59PSy9AMq3k6Y5Rtphapx3obC9+ZPtyjmkz3iJJLTJVzv
+ KjCfY7DnrujAVSt2qp2Nd8lrB206bQZuuGe6neIEDE1pX8eu2rVbOJnJmu+gX2yVXjttPGyNe
+ 7EJnXWwcBehOuFXxX8cmnZkJJxDgkHu5MRLjVmBq2HDrYSsxusKjMBNNJ1xCf17in9IdQSo0S
+ wF94KBx1n8FwhDBV2xXjl1atdoTNuH2aB9xCH0M8EEblED0wFiR47S+meBRZ+ZCiG6keTuQgR
+ qBjziAxL0zPAvmG2mGQ9HzVOHRc9t/tAKJenpKI/5bs793xkjOKJi+ujlNStzzE/pQREtUHPL
+ gf9hWhG3R/rP1efE3v9jGThVjTMLxHJqpD/wIbZbtZBiw6OEViUo13Shy9Q+9A/GqJwzzX5Dw
+ GZDhN7qPrc5vsJbQCywc9KLJCBT+CjB33QegqPtDPuYdtb7l6Zwz90=
 
-Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
+On Fri, 19 Apr 2024 10:17:00 -0400
+Parker Newman <parker@finest.io> wrote:
 
-> On Tue, Apr 30, 2024 at 10:58=E2=80=AFAM Puranjay Mohan <puranjay@kernel.=
-org> wrote:
->>
->> Support an instruction for resolving absolute addresses of per-CPU
->> data from their per-CPU offsets. This instruction is internal-only and
->> users are not allowed to use them directly. They will only be used for
->> internal inlining optimizations for now between BPF verifier and BPF
->> JITs.
->>
->> RISC-V uses generic per-cpu implementation where the offsets for CPUs
->> are kept in an array called __per_cpu_offset[cpu_number]. RISCV stores
->> the address of the task_struct in TP register. The first element in
->> task_struct is struct thread_info, and we can get the cpu number by
->> reading from the TP register + offsetof(struct thread_info, cpu).
->>
->> Once we have the cpu number in a register we read the offset for that
->> cpu from address: &__per_cpu_offset + cpu_number << 3. Then we add this
->> offset to the destination register.
->>
->> To measure the improvement from this change, the benchmark in [1] was
->> used on Qemu:
->>
->> Before:
->> glob-arr-inc   :    1.127 =C2=B1 0.013M/s
->> arr-inc        :    1.121 =C2=B1 0.004M/s
->> hash-inc       :    0.681 =C2=B1 0.052M/s
->>
->> After:
->> glob-arr-inc   :    1.138 =C2=B1 0.011M/s
->> arr-inc        :    1.366 =C2=B1 0.006M/s
->> hash-inc       :    0.676 =C2=B1 0.001M/s
->>
->> [1] https://github.com/anakryiko/linux/commit/8dec900975ef
->>
->> Signed-off-by: Puranjay Mohan <puranjay@kernel.org>
->> ---
->>  arch/riscv/net/bpf_jit_comp64.c | 24 ++++++++++++++++++++++++
->>  1 file changed, 24 insertions(+)
->>
->> diff --git a/arch/riscv/net/bpf_jit_comp64.c b/arch/riscv/net/bpf_jit_co=
-mp64.c
->> index 15e482f2c657..99d7006f1420 100644
->> --- a/arch/riscv/net/bpf_jit_comp64.c
->> +++ b/arch/riscv/net/bpf_jit_comp64.c
->> @@ -12,6 +12,7 @@
->>  #include <linux/stop_machine.h>
->>  #include <asm/patch.h>
->>  #include <asm/cfi.h>
->> +#include <asm/percpu.h>
->>  #include "bpf_jit.h"
->>
->>  #define RV_FENTRY_NINSNS 2
->> @@ -1089,6 +1090,24 @@ int bpf_jit_emit_insn(const struct bpf_insn *insn=
-, struct rv_jit_context *ctx,
->>                         emit_or(RV_REG_T1, rd, RV_REG_T1, ctx);
->>                         emit_mv(rd, RV_REG_T1, ctx);
->>                         break;
->> +               } else if (insn_is_mov_percpu_addr(insn)) {
->> +                       if (rd !=3D rs)
->> +                               emit_mv(rd, rs, ctx);
-
-No biggie, but you did not fold this check into emit_mv().
-
->> +#ifdef CONFIG_SMP
->> +                               /* Load current CPU number in T1 */
->> +                               emit_ld(RV_REG_T1, offsetof(struct threa=
-d_info, cpu),
->> +                                       RV_REG_TP, ctx);
->> +                               /* << 3 because offsets are 8 bytes */
->> +                               emit_slli(RV_REG_T1, RV_REG_T1, 3, ctx);
->> +                               /* Load address of __per_cpu_offset arra=
-y in T2 */
->> +                               emit_addr(RV_REG_T2, (u64)&__per_cpu_off=
-set, extra_pass, ctx);
->> +                               /* Add offset of current CPU to  __per_c=
-pu_offset */
->> +                               emit_add(RV_REG_T1, RV_REG_T2, RV_REG_T1=
-, ctx);
->> +                               /* Load __per_cpu_offset[cpu] in T1 */
->> +                               emit_ld(RV_REG_T1, 0, RV_REG_T1, ctx);
->> +                               /* Add the offset to Rd */
->> +                               emit_add(rd, rd, RV_REG_T1, ctx);
+> From: Parker Newman <pnewman@connecttech.com>
 >
-> is this the right level of code indentation?
+> This is a series of small patches fixing kbuilds error and code style
+> issues based on feedback during review of main patches.
+>
+> Original patches thread:
+> Link: https://lore.kernel.org/linux-serial/cover.1713382717.git.pnewman@=
+connecttech.com/
+>
 
-Looks wrong.
+These patches should not be required anymore. Andy Shevchenko has
+submitted a more comprehensive clean up patch set that makes this
+set unneeded.
 
-When the indent is fixed, feel free to add:
+Link: https://lore.kernel.org/linux-serial/20240502144626.2716994-1-andriy=
+shevchenko@linux.intel.com/
 
-Acked-by: Bj=C3=B6rn T=C3=B6pel <bjorn@kernel.org>
+Thanks,
+Parker
+
+> Parker Newman (4):
+>   serial: exar: add missing kernel doc function parameters
+>   serial: exar: use return dev_err_probe instead of returning error code
+>   serial: exar: return bool from exar_ee_read_bit()
+>   serial: exar: remove ternaries from
+>     cti_get_port_type_xr17c15x_xr17v25x()
+>
+>  drivers/tty/serial/8250/8250_exar.c | 36 ++++++++++++++---------------
+>  1 file changed, 18 insertions(+), 18 deletions(-)
+>
+>
+> base-commit: c6795fbffc4547b40933ec368200bd4926a41b44
+> --
+> 2.43.2
+>
+
 
