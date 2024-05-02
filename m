@@ -1,118 +1,210 @@
-Return-Path: <linux-kernel+bounces-166065-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-166066-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 69A728B9573
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 09:44:05 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 798618B9577
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 09:46:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 08E621F224ED
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 07:44:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2F46628572E
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 07:46:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DBAB62C190;
-	Thu,  2 May 2024 07:43:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3F0023769;
+	Thu,  2 May 2024 07:46:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="YvlGJWM5"
-Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="0kCiASM+";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="3PxaclT8";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="0kCiASM+";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="3PxaclT8"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BFD4728DBC
-	for <linux-kernel@vger.kernel.org>; Thu,  2 May 2024 07:43:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09EEA1527BD;
+	Thu,  2 May 2024 07:46:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714635826; cv=none; b=R2LSYAv9+wk8m9LesIJKNGZs9d/5UM9+sCZgVfwvMGlA0oKBjUcJMeIBhLR6kK3hjflddQFOmudTMn/O+0uVgPyiRhZ4TJBtTwt5mRv9+Ycdwa37f4KxV0FRmY3dbTICHKXm+OyoK8kKbQL3aH0Z4bt7ohTzsrG9nLUq0JPvAxk=
+	t=1714635971; cv=none; b=iqrskZAowPeks46uMCtwI9YfSWHJxgXGrvn03P9Ubgg5Fxpq+kQFxxNuiduPw9Ef6Js1CBEtrhKjOTJNyjbhA3reKbXUDY7+lUymNScwUiG1C8syGZ9QyOXUkfutVnEODAB9ISJ7JSi448FbCxI0qRza5t64KNyMtiwEnDGNTBY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714635826; c=relaxed/simple;
-	bh=QuBrZiydi3IzL6rvcoA5ChHszds1aw7fAYJAAMco0OE=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=HSO6DmnR6q7+Tvr+99o30MYaiyHojMiozCcUp/GQ6G5GZ0n2EOZ5aH+IVZtNe7oVUZ81UESU8Wlu1FA8L5iTpsM5G1q6MpvMmjVwbahen43RSd8Yb0/aIMIpKuaolWyar/1xfV7h1t2j76Trh0FotggH+6qbE2uyxpXP7dcHJhA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=YvlGJWM5; arc=none smtp.client-ip=209.85.128.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-41dc9f98e8dso2931245e9.1
-        for <linux-kernel@vger.kernel.org>; Thu, 02 May 2024 00:43:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1714635823; x=1715240623; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=oGgotSGp9gsuipLMYd1ZWIVlu9K3yF2blE80Dn0oYuM=;
-        b=YvlGJWM5dggSfndWded9OukiME5ceFQi++LI4Kow3z7r7Pl+lO6r54kYwdfzNldodH
-         ufB7m0ITfUFHPhakvPN3R7TLIwRxOpnyHtiZq6oG00l2mOMjxIm3yiMDWkEfN0J769sB
-         MMvylsw0s01k2kNf7Y00dfqY4ddKwLesg754ltWGD8J30D0TLk6hV4x1Z6TZKECDyRs0
-         fyHNcbhG+zPx8J+zSYSNaIYywDahJc5CZ7NQSB9egGDILRYYLlunX52ojGNbIBpmgjeF
-         15OfTRrdbovFK/FyFLxYCANPo9aEFnP16Ih3v4do4kI4r8b5/U6zNlTVuFMFwuAWxO/y
-         H79w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714635823; x=1715240623;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=oGgotSGp9gsuipLMYd1ZWIVlu9K3yF2blE80Dn0oYuM=;
-        b=G2bqLDmAiqWuf7nys80ld/pcBXtTuGdqjvGTX0zcpS6mWT2Zde/jLuzQSCBHhtuMQy
-         5gL+56Xf/qgOd24lirfzwJFlzBrUfn58Z9yORbVnweulhPHgsmWzjVrZZA8X5y4wOf1o
-         2FSgnYkMaWjMEDPJIWtIuQcYZ4xvUDbIWyvGbIgXO9LuxTz6bxmNlc0Q2yyo8fYlTDG9
-         Ip8IOUfk8LEFCahafYoPSwd2IfmEVA0tQYDQvOFbbO2NtIfVuRIiZqCPc1GP+Qk18/jp
-         lkCpjud7K+fvDS7J/hYHCjoFfL/D3Wb4Y+zbi3pogq6FiW5sBZQ65/86JMIBamrOqQfL
-         qZVg==
-X-Forwarded-Encrypted: i=1; AJvYcCWqc4G9Bxqzs3JWlkicy+aao6QUMdmwmdPdEjgvuZ2hP6h6J+E5gFE5qadkREO6Gyz0mnWSgqyuYwiJ+a5IfMLbDA4SS/xsULYP63wE
-X-Gm-Message-State: AOJu0YwE0SrcKPrpXDj302dKSFyiehSGedLU+zwayg30HBzl/DJIksdl
-	xjEMx5XV9drcU4pWJLcBf+VYAY/+IVSpRY8a1jI0kegwJhUYWk0fNe1+40KnZTGrEm7JrO+JaaS
-	rNIk=
-X-Google-Smtp-Source: AGHT+IHBvi5rUF5z4sbErHKgeUt1U8sqlRkmtV1aGTApGe5CPviRWujQqws9zO9M7mkcLfw0+m7IbQ==
-X-Received: by 2002:a5d:64ca:0:b0:34c:769e:d9a0 with SMTP id f10-20020a5d64ca000000b0034c769ed9a0mr1877617wri.26.1714635822953;
-        Thu, 02 May 2024 00:43:42 -0700 (PDT)
-Received: from arrakeen.starnux.net ([2a01:e0a:982:cbb0:52eb:f6ff:feb3:451a])
-        by smtp.gmail.com with ESMTPSA id u17-20020a5d4691000000b0034da966c3d8sm567903wrq.16.2024.05.02.00.43.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 May 2024 00:43:42 -0700 (PDT)
-From: Neil Armstrong <neil.armstrong@linaro.org>
-To: Randy Dunlap <rdunlap@infradead.org>, dri-devel@lists.freedesktop.org, 
- linux-kernel@vger.kernel.org, 
- Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: Jessica Zhang <quic_jesszhan@quicinc.com>, 
- Sam Ravnborg <sam@ravnborg.org>, 
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
- Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, 
- David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>
-In-Reply-To: <20240425142706.2440113-1-andriy.shevchenko@linux.intel.com>
-References: <20240425142706.2440113-1-andriy.shevchenko@linux.intel.com>
-Subject: Re: [PATCH v1 0/3] drm/panel: ili9341: Obvious fixes
-Message-Id: <171463582219.3069182.3806050898196009292.b4-ty@linaro.org>
-Date: Thu, 02 May 2024 09:43:42 +0200
+	s=arc-20240116; t=1714635971; c=relaxed/simple;
+	bh=G2F+pRuroYRYP/lwNUvpjm4eUMZYODI68gnHdFvmk5A=;
+	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=EvJZDs3zqja9x4e61PemjArrc0mNS51ENPgVgS0+/V6UilT3ULrX+rrevq/VWKeoqOI0rR4az4nRj0iDuTWIo+KVjnf/7Nz77CNWcqMe+Pe7JDv/oCDgSRJAjCKYnExuxlYUB7HWfE6Gl5gdXOFPQHZ+5wyW6gDj/MY6fOqMaeU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=0kCiASM+; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=3PxaclT8; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=0kCiASM+; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=3PxaclT8; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 1B2CD1FBAF;
+	Thu,  2 May 2024 07:46:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1714635962; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=grBrX5v5BMK7IiisGU8WUSwT0CHWzdkb4PZ4mBQewnU=;
+	b=0kCiASM+3jGMhAqvGONuClyTbpR7p5db0zoU56cfzvj8ZLM1TibUzz1w1xMxYaPoEj0nk6
+	6zO1slhkluZbunRsjK6LWnAoTDdxAEpLlgdWt82+iXrCk6ut27P3+9mux6/YtGiRHsPce0
+	Q8WT8XRSSoZkls9WDZVKmlEqOdAX5gg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1714635962;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=grBrX5v5BMK7IiisGU8WUSwT0CHWzdkb4PZ4mBQewnU=;
+	b=3PxaclT8gno2WpuhwwnPIbk2kacgToaytnBHEwFzPUF+xZlvTtA4HU3gxAeJNZNwsBPr8W
+	2eKgWDE02MgRsmCg==
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=0kCiASM+;
+	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=3PxaclT8
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1714635962; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=grBrX5v5BMK7IiisGU8WUSwT0CHWzdkb4PZ4mBQewnU=;
+	b=0kCiASM+3jGMhAqvGONuClyTbpR7p5db0zoU56cfzvj8ZLM1TibUzz1w1xMxYaPoEj0nk6
+	6zO1slhkluZbunRsjK6LWnAoTDdxAEpLlgdWt82+iXrCk6ut27P3+9mux6/YtGiRHsPce0
+	Q8WT8XRSSoZkls9WDZVKmlEqOdAX5gg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1714635962;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=grBrX5v5BMK7IiisGU8WUSwT0CHWzdkb4PZ4mBQewnU=;
+	b=3PxaclT8gno2WpuhwwnPIbk2kacgToaytnBHEwFzPUF+xZlvTtA4HU3gxAeJNZNwsBPr8W
+	2eKgWDE02MgRsmCg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 9AA6B13957;
+	Thu,  2 May 2024 07:46:01 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id hL2KJLlEM2biUwAAD6G6ig
+	(envelope-from <tiwai@suse.de>); Thu, 02 May 2024 07:46:01 +0000
+Date: Thu, 02 May 2024 09:46:14 +0200
+Message-ID: <87sez0k661.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Mark Brown <broonie@kernel.org>
+Cc: Mauro Carvalho Chehab <mchehab@kernel.org>,
+	Sebastian Fricke <sebastian.fricke@collabora.com>,
+	Shengjiu Wang <shengjiu.wang@nxp.com>,
+	hverkuil@xs4all.nl,
+	sakari.ailus@iki.fi,
+	tfiga@chromium.org,
+	m.szyprowski@samsung.com,
+	linux-media@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	shengjiu.wang@gmail.com,
+	Xiubo.Lee@gmail.com,
+	festevam@gmail.com,
+	nicoleotsuka@gmail.com,
+	lgirdwood@gmail.com,
+	perex@perex.cz,
+	tiwai@suse.com,
+	alsa-devel@alsa-project.org,
+	linuxppc-dev@lists.ozlabs.org
+Subject: Re: [PATCH v15 00/16] Add audio support in v4l2 framework
+In-Reply-To: <ZjGhPz-bokg6ZbDJ@finisterre.sirena.org.uk>
+References: <1710834674-3285-1-git-send-email-shengjiu.wang@nxp.com>
+	<20240430082112.jrovosb6lgblgpfg@basti-XPS-13-9310>
+	<ZjEEKyvb02CWz3l4@finisterre.sirena.org.uk>
+	<20240430172752.20ffcd56@sal.lan>
+	<ZjGhPz-bokg6ZbDJ@finisterre.sirena.org.uk>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.13.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Flag: NO
+X-Spam-Score: -2.01
+X-Rspamd-Action: no action
+X-Rspamd-Queue-Id: 1B2CD1FBAF
+X-Spam-Level: 
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-2.01 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	SUSPICIOUS_RECIPS(1.50)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_CONTAINS_FROM(1.00)[];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	TAGGED_RCPT(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	ARC_NA(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[19];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_TLS_ALL(0.00)[];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com,xs4all.nl];
+	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	FROM_HAS_DN(0.00)[];
+	FREEMAIL_CC(0.00)[kernel.org,collabora.com,nxp.com,xs4all.nl,iki.fi,chromium.org,samsung.com,vger.kernel.org,gmail.com,perex.cz,suse.com,alsa-project.org,lists.ozlabs.org];
+	TO_DN_SOME(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim];
+	RCVD_COUNT_TWO(0.00)[2];
+	DKIM_TRACE(0.00)[suse.de:+]
 
-Hi,
-
-On Thu, 25 Apr 2024 17:26:16 +0300, Andy Shevchenko wrote:
-> A few obvious fixes to the driver.
+On Wed, 01 May 2024 03:56:15 +0200,
+Mark Brown wrote:
 > 
-> Andy Shevchenko (3):
->   drm/panel: ili9341: Correct use of device property APIs
->   drm/panel: ili9341: Respect deferred probe
->   drm/panel: ili9341: Use predefined error codes
+> On Tue, Apr 30, 2024 at 05:27:52PM +0100, Mauro Carvalho Chehab wrote:
+> > Mark Brown <broonie@kernel.org> escreveu:
+> > > On Tue, Apr 30, 2024 at 10:21:12AM +0200, Sebastian Fricke wrote:
 > 
-> [...]
+> > > The discussion around this originally was that all the audio APIs are
+> > > very much centered around real time operations rather than completely
+> 
+> > The media subsystem is also centered around real time. Without real
+> > time, you can't have a decent video conference system. Having
+> > mem2mem transfers actually help reducing real time delays, as it 
+> > avoids extra latency due to CPU congestion and/or data transfers
+> > from/to userspace.
+> 
+> Real time means strongly tied to wall clock times rather than fast - the
+> issue was that all the ALSA APIs are based around pushing data through
+> the system based on a clock.
+> 
+> > > That doesn't sound like an immediate solution to maintainer overload
+> > > issues...  if something like this is going to happen the DRM solution
+> > > does seem more general but I'm not sure the amount of stop energy is
+> > > proportionate.
+> 
+> > I don't think maintainer overload is the issue here. The main
+> > point is to avoid a fork at the audio uAPI, plus the burden
+> > of re-inventing the wheel with new codes for audio formats,
+> > new documentation for them, etc.
+> 
+> I thought that discussion had been had already at one of the earlier
+> versions?  TBH I've not really been paying attention to this since the
+> very early versions where I raised some similar "why is this in media"
+> points and I thought everyone had decided that this did actually make
+> sense.
 
-Thanks, Applied to https://gitlab.freedesktop.org/drm/misc/kernel.git (drm-misc-fixes)
+Yeah, it was discussed in v1 and v2 threads, e.g.
+  https://patchwork.kernel.org/project/linux-media/cover/1690265540-25999-1-git-send-email-shengjiu.wang@nxp.com/#25485573
 
-[1/3] drm/panel: ili9341: Correct use of device property APIs
-      https://gitlab.freedesktop.org/drm/misc/kernel/-/commit/d43cd48ef1791801c61a54fade4a88d294dedf77
-[2/3] drm/panel: ili9341: Respect deferred probe
-      https://gitlab.freedesktop.org/drm/misc/kernel/-/commit/740fc1e0509be3f7e2207e89125b06119ed62943
-[3/3] drm/panel: ili9341: Use predefined error codes
-      https://gitlab.freedesktop.org/drm/misc/kernel/-/commit/da85f0aaa9f21999753b01d45c0343f885a8f905
+My argument at that time was how the operation would be, and the point
+was that it'd be a "batch-like" operation via M2M without any timing
+control.  It'd be a very special usage for for ALSA, and if any, it'd
+be hwdep -- that is a very hardware-specific API implementation -- or
+try compress-offload API, which looks dubious.
 
--- 
-Neil
+OTOH, the argument was that there is already a framework for M2M in
+media API and that also fits for the batch-like operation, too.  So
+was the thread evolved until now.
 
+
+thanks,
+
+Takashi
 
