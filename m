@@ -1,176 +1,204 @@
-Return-Path: <linux-kernel+bounces-166150-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-166148-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 14C7D8B96D5
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 10:50:50 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 440E68B96D0
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 10:50:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C14491F2434E
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 08:50:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 66D901C21DD1
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 08:50:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B3B1653388;
-	Thu,  2 May 2024 08:50:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3584B47A7A;
+	Thu,  2 May 2024 08:49:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nf18YyF8"
-Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Zq0M/7of"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4905524C9;
-	Thu,  2 May 2024 08:50:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF41046544
+	for <linux-kernel@vger.kernel.org>; Thu,  2 May 2024 08:49:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714639827; cv=none; b=mdsU8sn5VvVf4AcKxIQ09lP/duK0rJpyV0qyWP81uuz5zUJgTi4gRTDOTutdswZkEtKHj7cvq2ADe5m2C2n2EyRqrFIXhXcb4RdllnBYym/7xhLw6mDFfXcH37LfKhWITbi2dhmwNqxoxgVl3ha9/LoD8FB0wBpFymPQnJ3Lz8w=
+	t=1714639784; cv=none; b=Ms2fxbeFii09+kkgWaimYNjI7xNB9wmrVarRz8KtVeMwptnFb9G48+lf2FjyAvqC4sT4/G8sOw4JlF7stenqtK95p4vKAPy8XpTMGwtIC/D84+M36TdU1iJ8CNOrnHWadSprCS7H8ZWMdlpyIMOppc1eDkYpTFwo1KuaOMM+1fc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714639827; c=relaxed/simple;
-	bh=A16ESRJnqrffQYANB/rT6hqA8dSEkAter6OElqoTxSY=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=bL37oCRylR6SkX+xH2W8ZoTG9CuGeR+i+oKHLMkiErbo47wVaka7D8YAPqN8jrwKGzBtdRtjnEH1/L0sXXqIYUYUZNXX+mVEovE7Roq+eifb9fmZrB45LKR86sYZrlS0Y9r5asNwbwu39TGZOClpnNfxUIdh5jpfUhJdqkcDbyE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nf18YyF8; arc=none smtp.client-ip=209.85.214.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-1eab16c8d83so62453105ad.3;
-        Thu, 02 May 2024 01:50:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714639825; x=1715244625; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:reply-to:references
-         :in-reply-to:message-id:date:subject:cc:to:from:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=6hBewYHOfG4Y6OYspQ+5fYKJoHCclq56Vlvet/Fbb20=;
-        b=nf18YyF82XQUXhDPk7BAkVJU7SxRpwM4pQysIqgLE5RXdygcaFZfdiVsHKMcHit0k1
-         NTktnu5qgIs2DGa3IvcsC/rR3ncV6kB8OxwibF2+wFxMXfG87sIsFBCDAi5V785wTawp
-         YSUBmzmBpvHu0tJ9R5pK/jc7NwVr24Ag1DHMilWdsCTGYX6rxRjbjzCvA6/nOVJjmSiD
-         GvHMTUaGykV7EZ7cdq0ipsJSKJ5chs82UC7pyoQ2Nr+ec6Knh4FbAU9Dvd6iXRqJa+rK
-         teVB2h7Vgf40yj/J2a/ucNaQFFy1/6vKzG+iI286hARLNQUTe8eUB05m6mJErPH42scV
-         sXHQ==
+	s=arc-20240116; t=1714639784; c=relaxed/simple;
+	bh=RBNo7t5IGu2yThFFulb8qCfz4Zt2E7C/FOw15MNEb5o=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=mXGZw7ne3ZkybvZbwpNhvXiAxapVWKmPg9oXjila151fTYrQo9ND3m9nsXm0jdLF4cq6deFqIagucHmGVnRfhyr/2bLq08GgI67/wFivbCjSf5viGk0Eh+/ROjXdNLVn67nCGeUj1n0SbkVkSyqAgguXANbbuKWMo1plueeU8WM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Zq0M/7of; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1714639781;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=+3z/p7PSnITLar6zjViIxQUZhsvkqQniW+UpUaJYwp0=;
+	b=Zq0M/7of5/OP0hNH2g+d1yGXXvqySUvhJI0Jz+A9lbvjHwKXZEdOQUUGWtc5o1Jwuiv+lR
+	ejxXSXDLjvo2AAjxcdJNBsqVMZVe77QyPWHYIsgJLYEBRHJeSSCtRrw8rjvdV2nqGUwS8j
+	wzhdythemOjYYFbjCVVDTINQBAIP7Ig=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-167--go6KHMWP8WnbZ4LLKnQ6w-1; Thu, 02 May 2024 04:49:40 -0400
+X-MC-Unique: -go6KHMWP8WnbZ4LLKnQ6w-1
+Received: by mail-wr1-f71.google.com with SMTP id ffacd0b85a97d-34da8f1bf7cso1580904f8f.2
+        for <linux-kernel@vger.kernel.org>; Thu, 02 May 2024 01:49:40 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714639825; x=1715244625;
-        h=content-transfer-encoding:mime-version:reply-to:references
-         :in-reply-to:message-id:date:subject:cc:to:from:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=6hBewYHOfG4Y6OYspQ+5fYKJoHCclq56Vlvet/Fbb20=;
-        b=p01DpRynRMgMJ/nRPTQl6zp69K6IN5LeCc4ED0Ftt7v51YKeHPYAnei5Op/8gnUOXf
-         wKR5jWXTG9g5RFoYVYibcR0fklAYwavf5gBJOyIi0WxhciRiNGmK3hp1VmGBvOFuveeT
-         5+PS5kdkbONueHU2sKq5HcFTxakdeLujqC91pG+ZHt7iAOSwAAFW5Ec1Qvi14SAYwZ75
-         xpC/7vKcd+DwQ4qwp7vnBftvzyZftaSIU6mYymgxoVpJQSpmg6KXFw+HXhrfMnMsp/L3
-         7gFqUL2MDP8jZ3cnJq86okqQGpqdx9I5q3jftn6kXQaSQYfl64gIfeMOhYamwVtxvDax
-         0L6A==
-X-Forwarded-Encrypted: i=1; AJvYcCXK5aPHzH2MJ+WOp+SZJ4JBqs4TVlQvXx7JvwUAnJS3Bnafx0gMUOJSI6oh/Tg632POcUmP/UqmI5L2QCiI0/LeEBHf62r801SDHB1CascafQ5je33xhwKC5zgNLWoFEKx9wkEepls4WrAcug==
-X-Gm-Message-State: AOJu0YwgCIQkqg2YBJ9Vy8RQvlU55VQ9M7devt1GEJHbmYaBBoOYR2K5
-	XKhOK4hG7RJhMMohqAcYtdpiAo1PVG67NtXvLkrrwwSXJzrdn7KV
-X-Google-Smtp-Source: AGHT+IFwlpgfcGprAqZdcSgM1C0FcJW03lvq1L6XneBaZZ8VDethVtsd8vo2+hwdnNRHKZqs7qydvw==
-X-Received: by 2002:a17:903:298f:b0:1e6:40f1:93be with SMTP id lm15-20020a170903298f00b001e640f193bemr1586793plb.27.1714639824889;
-        Thu, 02 May 2024 01:50:24 -0700 (PDT)
-Received: from KASONG-MB2.tencent.com ([1.203.116.31])
-        by smtp.gmail.com with ESMTPSA id j12-20020a170903024c00b001e43576a7a1sm737712plh.222.2024.05.02.01.50.20
-        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Thu, 02 May 2024 01:50:24 -0700 (PDT)
-From: Kairui Song <ryncsn@gmail.com>
-To: linux-mm@kvack.org
-Cc: Andrew Morton <akpm@linux-foundation.org>,
-	"Huang, Ying" <ying.huang@intel.com>,
-	Matthew Wilcox <willy@infradead.org>,
-	Chris Li <chrisl@kernel.org>,
-	Barry Song <v-songbaohua@oppo.com>,
-	Ryan Roberts <ryan.roberts@arm.com>,
-	Neil Brown <neilb@suse.de>,
-	Minchan Kim <minchan@kernel.org>,
-	Hugh Dickins <hughd@google.com>,
-	David Hildenbrand <david@redhat.com>,
-	Yosry Ahmed <yosryahmed@google.com>,
-	linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Kairui Song <kasong@tencent.com>
-Subject: [PATCH v4 09/12] mm/swap: get the swap device offset directly
-Date: Thu,  2 May 2024 16:49:36 +0800
-Message-ID: <20240502084939.30250-2-ryncsn@gmail.com>
-X-Mailer: git-send-email 2.44.0
-In-Reply-To: <20240502084609.28376-1-ryncsn@gmail.com>
-References: <20240502084609.28376-1-ryncsn@gmail.com>
-Reply-To: Kairui Song <kasong@tencent.com>
+        d=1e100.net; s=20230601; t=1714639778; x=1715244578;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=+3z/p7PSnITLar6zjViIxQUZhsvkqQniW+UpUaJYwp0=;
+        b=HFsvDZDMDwju76fju0Zysbp6x7z8Fr1rm6X5rMesatnaxdpnceHUjPuNK/zQUbIceb
+         7bllys4b0NdbtAQZkQl9BYSLANENRiAmBrVZe77td8sEhQvaVKWhRc3ajPizU4Dz3cH5
+         ZQxMAdoCoQV/MZRbkY1pzUoaVzncJh8JlGHABfFfBt/Vh5ojQKmR6LE2wqgUdKhtHILG
+         S/X5BtaZdpP/jiG9G/G93uEyoj2coPjjHExvy9/fdakcd/KI4ihD2yZQbNJKPWv2y9n4
+         iCRsmTyWKVGCDfU4P7OmUk9rGOQrBa6fg5I7QhMQsJxx3ln8X43jQ884jzfe9wpKx5U3
+         UHYQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVJtVcb9FqxYfr/oNAtr5ARCPhJX9l6DGVeVEVI95MluQdU30XC0OoA6RpoYoWqE1bR+eNTiqfQKwd3ErNKoiyfuOJVnAiv7cvBsSlj
+X-Gm-Message-State: AOJu0Yxgo+TRfPxAIrBFpypewgZN35aRWXq1FWrKoM7cTod4bFnmtOBf
+	cQgWa0QdMYecBH4VFIkYJHIgwnNXf+bo3+Sf9NQ6XE7DXT1R2QR6gRk9vor7/Jw070J5VyHfCnI
+	Zor4cL1e4Aew6GoiT53qZlonsjUPptWb3vgB7/5LR45UDEcI3x4yIPvqXEz4fVNvjCp1rTA==
+X-Received: by 2002:a5d:4d42:0:b0:34d:b43d:6e24 with SMTP id a2-20020a5d4d42000000b0034db43d6e24mr4206252wru.32.1714639778645;
+        Thu, 02 May 2024 01:49:38 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFVOHj8C2dd7Bt2GMvMzFkmfLMNHv/OiubjKl8vg1gno+Z4uyreVz7F2PF/KvPDgRwuVCzitg==
+X-Received: by 2002:a5d:4d42:0:b0:34d:b43d:6e24 with SMTP id a2-20020a5d4d42000000b0034db43d6e24mr4206236wru.32.1714639778208;
+        Thu, 02 May 2024 01:49:38 -0700 (PDT)
+Received: from redhat.com ([84.33.125.84])
+        by smtp.gmail.com with ESMTPSA id dd3-20020a0560001e8300b0034c9f060a14sm716299wrb.11.2024.05.02.01.49.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 02 May 2024 01:49:37 -0700 (PDT)
+From: Oleg Nesterov <onestero@redhat.com>
+X-Google-Original-From: Oleg Nesterov <oleg@redhat.com>
+Date: Thu, 2 May 2024 04:49:36 -0400
+To: kernel test robot <lkp@intel.com>
+Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+	Ingo Molnar <mingo@kernel.org>,
+	Thomas Gleixner <tglx@linutronix.de>, Phil Auld <pauld@redhat.com>
+Subject: Re: kernel/sched/isolation.c:143 housekeeping_setup() warn: always
+ true condition '(first_cpu >= 0) => (0-u32max >= 0)'
+Message-ID: <ZjNToL7ARe_vfJch@redhat.com>
+References: <202404300915.WNvfwBz3-lkp@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <202404300915.WNvfwBz3-lkp@intel.com>
 
-From: Kairui Song <kasong@tencent.com>
+Hello,
 
-folio_file_pos and page_file_offset are for mixed usage of swap cache
-and page cache, it can't be page cache here, so introduce a new helper
-to get the swap offset in swap device directly.
+I am on PTO till May 9 without my working laptop, can't even read the source code.
+I'll return to this when I'm back. CONFIG_SMP=n I guess.
 
-Need to include swapops.h in mm/swap.h to ensure swp_offset is always
-defined before use.
-
-Signed-off-by: Kairui Song <kasong@tencent.com>
----
- mm/page_io.c | 6 +++---
- mm/swap.h    | 9 +++++++++
- 2 files changed, 12 insertions(+), 3 deletions(-)
-
-diff --git a/mm/page_io.c b/mm/page_io.c
-index 46c603dddf04..a360857cf75d 100644
---- a/mm/page_io.c
-+++ b/mm/page_io.c
-@@ -280,7 +280,7 @@ static void sio_write_complete(struct kiocb *iocb, long ret)
- 		 * be temporary.
- 		 */
- 		pr_err_ratelimited("Write error %ld on dio swapfile (%llu)\n",
--				   ret, page_file_offset(page));
-+				   ret, swap_dev_pos(page_swap_entry(page)));
- 		for (p = 0; p < sio->pages; p++) {
- 			page = sio->bvec[p].bv_page;
- 			set_page_dirty(page);
-@@ -299,7 +299,7 @@ static void swap_writepage_fs(struct folio *folio, struct writeback_control *wbc
- 	struct swap_iocb *sio = NULL;
- 	struct swap_info_struct *sis = swp_swap_info(folio->swap);
- 	struct file *swap_file = sis->swap_file;
--	loff_t pos = folio_file_pos(folio);
-+	loff_t pos = swap_dev_pos(folio->swap);
- 
- 	count_swpout_vm_event(folio);
- 	folio_start_writeback(folio);
-@@ -430,7 +430,7 @@ static void swap_read_folio_fs(struct folio *folio, struct swap_iocb **plug)
- {
- 	struct swap_info_struct *sis = swp_swap_info(folio->swap);
- 	struct swap_iocb *sio = NULL;
--	loff_t pos = folio_file_pos(folio);
-+	loff_t pos = swap_dev_pos(folio->swap);
- 
- 	if (plug)
- 		sio = *plug;
-diff --git a/mm/swap.h b/mm/swap.h
-index fc2f6ade7f80..82023ab93205 100644
---- a/mm/swap.h
-+++ b/mm/swap.h
-@@ -5,6 +5,7 @@
- struct mempolicy;
- 
- #ifdef CONFIG_SWAP
-+#include <linux/swapops.h> /* for swp_offset */
- #include <linux/blk_types.h> /* for bio_end_io_t */
- 
- /* linux/mm/page_io.c */
-@@ -31,6 +32,14 @@ extern struct address_space *swapper_spaces[];
- 	(&swapper_spaces[swp_type(entry)][swp_offset(entry) \
- 		>> SWAP_ADDRESS_SPACE_SHIFT])
- 
-+/*
-+ * Return the swap device position of the swap entry.
-+ */
-+static inline loff_t swap_dev_pos(swp_entry_t entry)
-+{
-+	return ((loff_t)swp_offset(entry)) << PAGE_SHIFT;
-+}
-+
- void show_swap_cache_info(void);
- bool add_to_swap(struct folio *folio);
- void *get_shadow_from_swap_cache(swp_entry_t entry);
--- 
-2.44.0
+On 04/30, kernel test robot wrote:
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+> head:   98369dccd2f8e16bf4c6621053af7aa4821dcf8e
+> commit: 257bf89d84121280904800acd25cc2c444c717ae sched/isolation: Fix boot crash when maxcpus < first housekeeping CPU
+> date:   2 days ago
+> config: xtensa-randconfig-r081-20240429 (https://download.01.org/0day-ci/archive/20240430/202404300915.WNvfwBz3-lkp@intel.com/config)
+> compiler: xtensa-linux-gcc (GCC) 13.2.0
+> 
+> If you fix the issue in a separate patch/commit (i.e. not just a new version of
+> the same patch/commit), kindly add following tags
+> | Reported-by: kernel test robot <lkp@intel.com>
+> | Closes: https://lore.kernel.org/oe-kbuild-all/202404300915.WNvfwBz3-lkp@intel.com/
+> 
+> New smatch warnings:
+> kernel/sched/isolation.c:143 housekeeping_setup() warn: always true condition '(first_cpu >= 0) => (0-u32max >= 0)'
+> 
+> Old smatch warnings:
+> arch/xtensa/include/asm/thread_info.h:97 current_thread_info() warn: inconsistent indenting
+> 
+> vim +143 kernel/sched/isolation.c
+> 
+>    117	
+>    118	static int __init housekeeping_setup(char *str, unsigned long flags)
+>    119	{
+>    120		cpumask_var_t non_housekeeping_mask, housekeeping_staging;
+>    121		unsigned int first_cpu;
+>    122		int err = 0;
+>    123	
+>    124		if ((flags & HK_FLAG_TICK) && !(housekeeping.flags & HK_FLAG_TICK)) {
+>    125			if (!IS_ENABLED(CONFIG_NO_HZ_FULL)) {
+>    126				pr_warn("Housekeeping: nohz unsupported."
+>    127					" Build with CONFIG_NO_HZ_FULL\n");
+>    128				return 0;
+>    129			}
+>    130		}
+>    131	
+>    132		alloc_bootmem_cpumask_var(&non_housekeeping_mask);
+>    133		if (cpulist_parse(str, non_housekeeping_mask) < 0) {
+>    134			pr_warn("Housekeeping: nohz_full= or isolcpus= incorrect CPU range\n");
+>    135			goto free_non_housekeeping_mask;
+>    136		}
+>    137	
+>    138		alloc_bootmem_cpumask_var(&housekeeping_staging);
+>    139		cpumask_andnot(housekeeping_staging,
+>    140			       cpu_possible_mask, non_housekeeping_mask);
+>    141	
+>    142		first_cpu = cpumask_first_and(cpu_present_mask, housekeeping_staging);
+>  > 143		if (first_cpu >= nr_cpu_ids || first_cpu >= setup_max_cpus) {
+>    144			__cpumask_set_cpu(smp_processor_id(), housekeeping_staging);
+>    145			__cpumask_clear_cpu(smp_processor_id(), non_housekeeping_mask);
+>    146			if (!housekeeping.flags) {
+>    147				pr_warn("Housekeeping: must include one present CPU, "
+>    148					"using boot CPU:%d\n", smp_processor_id());
+>    149			}
+>    150		}
+>    151	
+>    152		if (cpumask_empty(non_housekeeping_mask))
+>    153			goto free_housekeeping_staging;
+>    154	
+>    155		if (!housekeeping.flags) {
+>    156			/* First setup call ("nohz_full=" or "isolcpus=") */
+>    157			enum hk_type type;
+>    158	
+>    159			for_each_set_bit(type, &flags, HK_TYPE_MAX)
+>    160				housekeeping_setup_type(type, housekeeping_staging);
+>    161		} else {
+>    162			/* Second setup call ("nohz_full=" after "isolcpus=" or the reverse) */
+>    163			enum hk_type type;
+>    164			unsigned long iter_flags = flags & housekeeping.flags;
+>    165	
+>    166			for_each_set_bit(type, &iter_flags, HK_TYPE_MAX) {
+>    167				if (!cpumask_equal(housekeeping_staging,
+>    168						   housekeeping.cpumasks[type])) {
+>    169					pr_warn("Housekeeping: nohz_full= must match isolcpus=\n");
+>    170					goto free_housekeeping_staging;
+>    171				}
+>    172			}
+>    173	
+>    174			iter_flags = flags & ~housekeeping.flags;
+>    175	
+>    176			for_each_set_bit(type, &iter_flags, HK_TYPE_MAX)
+>    177				housekeeping_setup_type(type, housekeeping_staging);
+>    178		}
+>    179	
+>    180		if ((flags & HK_FLAG_TICK) && !(housekeeping.flags & HK_FLAG_TICK))
+>    181			tick_nohz_full_setup(non_housekeeping_mask);
+>    182	
+>    183		housekeeping.flags |= flags;
+>    184		err = 1;
+>    185	
+>    186	free_housekeeping_staging:
+>    187		free_bootmem_cpumask_var(housekeeping_staging);
+>    188	free_non_housekeeping_mask:
+>    189		free_bootmem_cpumask_var(non_housekeeping_mask);
+>    190	
+>    191		return err;
+>    192	}
+>    193	
+> 
+> -- 
+> 0-DAY CI Kernel Test Service
+> https://github.com/intel/lkp-tests/wiki
+> 
 
 
