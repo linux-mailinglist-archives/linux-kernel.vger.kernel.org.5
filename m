@@ -1,172 +1,149 @@
-Return-Path: <linux-kernel+bounces-165893-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-165869-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 221418B930B
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 03:11:40 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 785378B92B1
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 02:12:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 377D6B21F76
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 01:11:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 038F7282886
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 00:12:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B00F17997;
-	Thu,  2 May 2024 01:11:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7DB1928FA;
+	Thu,  2 May 2024 00:12:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=apple.com header.i=@apple.com header.b="O90V67Gd"
-Received: from ma-mailsvcp-mx-lapp02.apple.com (ma-mailsvcp-mx-lapp02.apple.com [17.32.222.23])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GbP9yuea"
+Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA78D14AAD
-	for <linux-kernel@vger.kernel.org>; Thu,  2 May 2024 01:11:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=17.32.222.23
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25464632;
+	Thu,  2 May 2024 00:12:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714612273; cv=none; b=KWhoE+O0KCDZ81+Ofy3gUgZIzjUv4nGgGyg9ZBjMwlncP0XOYwPsEB42adfYqvdS3B6F8NtSnCH7fBHT00QmYaPBqP0vndwx/q0EiPq3utpLFuHTcRHWOhhHusCcFrrXyBqselSk0ok8Pd60gsyI+6t44/iRYTCKTLOrBjZpUG8=
+	t=1714608731; cv=none; b=kIV4rwaYAiOOM6EQgV7aUwMRm+KlEbYIjH8wvI9al+WTyA4JphqlODKENTJ35RF5GJqEO5j0OAZo93InZ0BgXoC1o2AtnyB6wJ6NlP0t+dhFW6hU6h0vgwNNqydP29EpBUVbpbZdFad+Fv+wCApNVKnvdshFtJ9fxLfy9fTdSKs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714612273; c=relaxed/simple;
-	bh=z8MxxiMryaY2KFsttaRStt574gLkrend+EZ69VmURrI=;
-	h=From:To:Cc:Subject:Date:Message-id:In-reply-to:References:
-	 MIME-version; b=D7/lvWHjT+iQVbnvNQouBed4dpyQvx6G6sE4jFXxaZPT8MTq+KJuzi9NU7XdkqNBZ7Ma9IxFwvNftpXnv6SoybtU6PwPUsVucyhNXzMOqa9WITjnpIcaiVHOH6E3r8KgyPv0CJ06UdzqEBPq7wMBue7Lv18Uel+bwGk+wqlg5oI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=apple.com; spf=pass smtp.mailfrom=apple.com; dkim=pass (2048-bit key) header.d=apple.com header.i=@apple.com header.b=O90V67Gd; arc=none smtp.client-ip=17.32.222.23
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=apple.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=apple.com
-Received: from rn-mailsvcp-mta-lapp02.rno.apple.com
- (rn-mailsvcp-mta-lapp02.rno.apple.com [10.225.203.150])
- by ma-mailsvcp-mx-lapp02.apple.com
- (Oracle Communications Messaging Server 8.1.0.23.20230328 64bit (built Mar 28
- 2023)) with ESMTPS id <0SCU011Z70IERT20@ma-mailsvcp-mx-lapp02.apple.com> for
- linux-kernel@vger.kernel.org; Wed, 01 May 2024 17:11:05 -0700 (PDT)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
- definitions=2024-05-01_16,2024-04-30_01,2023-05-22_02
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=apple.com; h=from : to
- : cc : subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=20180706;
- bh=/VikyMK82iUyB2IpWp8IUQImq+ZjSWX/dOzZjyjp/FA=;
- b=O90V67GdxdKbpihh2pWmACbVp8kgEwmSH7xlODbZ+WAg4Q4WI+HZIXkHNIeRjEXp3Dq8
- MXGjejpwFIYiAY5RQHBNB5sfdMkYni9P9zdFN4eOMmqFmCxzUD0PDUvFRfTUTIkpHL5R
- ti8VTV6MT1Ba3+nWPh0HghfneO+1EX4IeJ57tEUNswn/3+jGqPbycUB0YcWHJA3TA/Jy
- If4iHpfp2bXHU1Wvw8QmlCnz9tq6jK8IHZlnbmXmE/Awxm519YO2G5U2dvaK0zv1LI7s
- cGJPEcuHds0tLZ49GqM7bdLLpYjPTuLFUjSBNjvMT2f90/GoyDgqPO/0iQUFEmiEnJVT SA==
-Received: from rn-mailsvcp-mmp-lapp01.rno.apple.com
- (rn-mailsvcp-mmp-lapp01.rno.apple.com [17.179.253.14])
- by rn-mailsvcp-mta-lapp02.rno.apple.com
- (Oracle Communications Messaging Server 8.1.0.23.20230328 64bit (built Mar 28
- 2023)) with ESMTPS id <0SCU00ITQ0IDULN0@rn-mailsvcp-mta-lapp02.rno.apple.com>;
- Wed, 01 May 2024 17:11:02 -0700 (PDT)
-Received: from process_milters-daemon.rn-mailsvcp-mmp-lapp01.rno.apple.com by
- rn-mailsvcp-mmp-lapp01.rno.apple.com
- (Oracle Communications Messaging Server 8.1.0.23.20230328 64bit (built Mar 28
- 2023)) id <0SCU00N000GSQI00@rn-mailsvcp-mmp-lapp01.rno.apple.com>; Wed,
- 01 May 2024 17:11:01 -0700 (PDT)
-X-Va-A:
-X-Va-T-CD: 2a7a9b2cb17ba74c1da13bff19a80214
-X-Va-E-CD: 631f076f6b365e42e06a1df7057e44fb
-X-Va-R-CD: ce6be43db0cce57f85f587e814b9d60f
-X-Va-ID: 40ea895e-85fd-4841-92c4-ffb31f808d49
-X-Va-CD: 0
-X-V-A:
-X-V-T-CD: 2a7a9b2cb17ba74c1da13bff19a80214
-X-V-E-CD: 631f076f6b365e42e06a1df7057e44fb
-X-V-R-CD: ce6be43db0cce57f85f587e814b9d60f
-X-V-ID: 93f68664-015a-42c2-81a7-97fbd29e9574
-X-V-CD: 0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
- definitions=2024-05-01_16,2024-04-30_01,2023-05-22_02
-Received: from mr41p01nt-relayp01.apple.com ([100.64.99.124])
- by rn-mailsvcp-mmp-lapp01.rno.apple.com
- (Oracle Communications Messaging Server 8.1.0.23.20230328 64bit (built Mar 28
- 2023))
- with ESMTPSA id <0SCU0039D0ICJA00@rn-mailsvcp-mmp-lapp01.rno.apple.com>; Wed,
- 01 May 2024 17:11:00 -0700 (PDT)
-From: Zayd Qumsieh <zayd_qumsieh@apple.com>
-To: Marc Zyngier <maz@kernel.org>
-Cc: Catalin Marinas <catalin.marinas@arm.com>,
- Mark Rutland <mark.rutland@arm.com>, Zayd Qumsieh <zayd_qumsieh@apple.com>,
- Justin Lu <ih_justin@apple.com>, Ryan Houdek <Houdek.Ryan@fex-emu.org>,
- Mark Brown <broonie@kernel.org>, Ard Biesheuvel <ardb@kernel.org>,
- Mateusz Guzik <mjguzik@gmail.com>,
- Anshuman Khandual <anshuman.khandual@arm.com>,
- Oliver Upton <oliver.upton@linux.dev>, Miguel Luis <miguel.luis@oracle.com>,
- Joey Gouly <joey.gouly@arm.com>, Christoph Paasch <cpaasch@apple.com>,
- Kees Cook <keescook@chromium.org>, Sami Tolvanen <samitolvanen@google.com>,
- Baoquan He <bhe@redhat.com>, Joel Granados <j.granados@samsung.com>,
- Dawei Li <dawei.li@shingroup.cn>, Andrew Morton <akpm@linux-foundation.org>,
- Florent Revest <revest@chromium.org>, David Hildenbrand <david@redhat.com>,
- Stefan Roesch <shr@devkernel.io>, Andy Chiu <andy.chiu@sifive.com>,
- Josh Triplett <josh@joshtriplett.org>, Oleg Nesterov <oleg@redhat.com>,
- Helge Deller <deller@gmx.de>, Zev Weiss <zev@bewilderbeest.net>,
- Ondrej Mosnacek <omosnace@redhat.com>, Miguel Ojeda <ojeda@kernel.org>,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- Asahi Linux <asahi@lists.linux.dev>
-Subject: Re: [PATCH 0/4] arm64: Support the TSO memory model
-Date: Wed, 01 May 2024 17:10:35 -0700
-Message-id: <20240502001035.41083-1-zayd_qumsieh@apple.com>
-X-Mailer: git-send-email 2.39.3 (Apple Git-146)
-In-reply-to: <87zftoqn7u.wl-maz@kernel.org>
-References:
+	s=arc-20240116; t=1714608731; c=relaxed/simple;
+	bh=bECK87npZVbuZG5ZXL7WvoOTyXcE7lCaC0NfdLC2g9c=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Ud8qa0rX4p3fcW0bcUsD71kemQgNfHaGY5vTxeqmYeQ6wqaNsU+sifswsbfQCWAR/x7hR6lWkjv4qfQYK7hvJeQw4h56sDJQkQBXkZiPJHXF5TNrvQ64+zzwBNqg8E2l6DCV+mE9CNln3xzZf7kvDCrA5UMUeGc6dvIUgwmLJ/U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GbP9yuea; arc=none smtp.client-ip=209.85.214.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-1e9ffd3f96eso59926875ad.3;
+        Wed, 01 May 2024 17:12:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1714608729; x=1715213529; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=Qb2U8h1Yi2ovdnDt+Xys7SbynARb2UyzdqOp8qJa1Ok=;
+        b=GbP9yueaA0yNPm9pMZ5afDta3FCQJVxjO2cnBuLACNCCr2J1vnYe3hdWiEhsQfAY2x
+         +Of1T9DoQYBBUyXtl9CRVZaUIXuxg43CFfnKG9uhRIdx5lz7DJYtQZEMspJjP4VEjnpA
+         5Ernp+R6uKuc1M8IIm2o7Wp4q4KUB9Z+rAMlwBR3O593f/YTGH6moYv94WPPPWhdWVzw
+         pw/60JmGv27w1KdW+Tql/wera1Wg3iyNdiwTiRCUty0y4HFfDLB/wukH/BNQEO0x7N0n
+         ZvqUvID0AORnbYMP9Oz+XJxbq5OuOZqd7qWOxGkizsaDsw1HBJxLyqFA/EAOP2N/JpBb
+         kmnQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714608729; x=1715213529;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:sender:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Qb2U8h1Yi2ovdnDt+Xys7SbynARb2UyzdqOp8qJa1Ok=;
+        b=QIujZpOweBiNvXbU7tjTxkew67S78b1zM9NxoEP/JO1zcQ7dfx6TN1B/4DC6czhZGA
+         BJUV6/ahBqRKUo7zhG5vNKPrOPtAjQQiVvy+zB4FlTDUDg6BQcuZlDquwRHwHn5NC516
+         3S6lazcEEg1y+MzDEIXml1ZLPdvc3OFcdAP5PAcXOz2zLOv80frTt16A2v8KKobUaKCh
+         sDYZhXk7n2mBt4iwiebNgITXtmyQrrdz/7deBPydAmHH1i1V1oJo/A4NhZ8B9cXNhYU8
+         0vlu5nj6kTgks9W0dpiNjcWiwrh/ys/bjM0vTjjRzd2K5698vrcZpmEQx7cJc2JEgcVS
+         m9fw==
+X-Gm-Message-State: AOJu0YwV8QkuJkZEkSFKET7k8NE/CXh86aEeUVE3kKCE+UXAbo80Lv0T
+	zOnAuaFPnxJDqLzuENf48SG6SjdiVz9MhTqnkt/6NbBsyks82AMEdh7H2Q==
+X-Google-Smtp-Source: AGHT+IGlLrWNDc8SzHf8rHqQYzjvOQrpK3FjHprboC5UvLTmWXXmcQ5cah+Yn0n8LAXbyBR8d2h0JQ==
+X-Received: by 2002:a17:902:f807:b0:1ec:2977:d934 with SMTP id ix7-20020a170902f80700b001ec2977d934mr3623298plb.62.1714608726707;
+        Wed, 01 May 2024 17:12:06 -0700 (PDT)
+Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id n6-20020a170902d2c600b001ecc6bd414dsm803635plc.145.2024.05.01.17.12.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 01 May 2024 17:12:05 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Message-ID: <521c0829-95de-4cc4-894b-6167c4f943a6@roeck-us.net>
+Date: Wed, 1 May 2024 17:12:04 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-version: 1.0
-Content-transfer-encoding: 8bit
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RTF PATCH] hwmon: (emc1403) Convert to with_info API
+To: linux-hwmon@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org,
+ Lars Petter Mostad <lars.petter.mostad@appear.net>
+References: <20240501224447.735869-1-linux@roeck-us.net>
+Content-Language: en-US
+From: Guenter Roeck <linux@roeck-us.net>
+Autocrypt: addr=linux@roeck-us.net; keydata=
+ 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
+ mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
+In-Reply-To: <20240501224447.735869-1-linux@roeck-us.net>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-> On Fri, 19 Apr 2024 17:58:09 +0100,
-> Will Deacon <will@kernel.org> wrote:
-> > 
-> > On Thu, Apr 11, 2024 at 11:19:13PM +0900, Hector Martin wrote:
-> > > On 2024/04/11 22:28, Will Deacon wrote:
-> > > >   * Some binaries in a distribution exhibit instability which goes away
-> > > >     in TSO mode, so a taskset-like program is used to run them with TSO
-> > > >     enabled.
-> > > 
-> > > Since the flag is cleared on execve, this third one isn't generally
-> > > possible as far as I know.
-> > 
-> > Ah ok, I'd missed that. Thanks.
-> > 
-> > > > In all these cases, we end up with native arm64 applications that will
-> > > > either fail to load or will crash in subtle ways on CPUs without the TSO
-> > > > feature. Assuming that the application cannot be fixed, a better
-> > > > approach would be to recompile using stronger instructions (e.g.
-> > > > LDAR/STLR) so that at least the resulting binary is portable. Now, it's
-> > > > true that some existing CPUs are TSO by design (this is a perfectly
-> > > > valid implementation of the arm64 memory model), but I think there's a
-> > > > big difference between quietly providing more ordering guarantees than
-> > > > software may be relying on and providing a mechanism to discover,
-> > > > request and ultimately rely upon the stronger behaviour.
-> > > 
-> > > The problem is "just" using stronger instructions is much more
-> > > expensive, as emulators have demonstrated. If TSO didn't serve a
-> > > practical purpose I wouldn't be submitting this, but it does. This is
-> > > basically non-negotiable for x86 emulation; if this is rejected
-> > > upstream, it will forever live as a downstream patch used by the entire
-> > > gaming-on-Mac-Linux ecosystem (and this is an ecosystem we are very
-> > > explicitly targeting, given our efforts with microVMs for 4K page size
-> > > support and the upcoming Vulkan drivers).
-> > 
-> > These microVMs sound quite interesting. What exactly are they? Are you
-> > running them under KVM?
-> > 
-> > Ignoring the mechanism for the time being, would it solve your problem
-> > if you were able to run specific microVMs in TSO mode, or do you *really*
-> > need the VM to have finer-grained control than that? If the whole VM is
-> > running in TSO mode, then my concerns largely disappear, as that's
-> > indistinguishable from running on a hardware implementation that happens
-> > to be TSO.
->
-> Since KVM has been mentioned a few times, I'll give my take on this.
->
-> Since day 1, it was a conscious decision for KVM/arm64 to emulate the
-> architecture, and only that -- this is complicated enough. Meaning
-> that no implementation-defined features should be explicitly exposed
-> to the guest. So I have no plan to expose any such feature for
-> userspace to configure TSO or anything else of the sort.
+On 5/1/24 15:44, Guenter Roeck wrote:
+> Convert driver to register with the hwmon subsystem using
+> devm_hwmon_device_register_with_info() instead of
+> devm_hwmon_device_register_with_groups() to simplify the code
+> and to reduce its size. As side effect, this also fixes a couple
+> of overflow problems when writing limit and hysteresis registers.
+> 
+> Cc: Lars Petter Mostad <lars.petter.mostad@appear.net>
+> Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+> ---
+> RFT: Module tested only.
 
-Agreed. We do not intend for TSO mode to be used extensively for EL1, the
-intention is for TSO mode to be reserved for userspace applications that
-request it.
+Oops. Obviously the subject was supposed to start with RFT as well :-)
+
+Guenter
+
 
