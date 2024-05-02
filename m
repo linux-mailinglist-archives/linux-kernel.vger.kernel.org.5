@@ -1,75 +1,75 @@
-Return-Path: <linux-kernel+bounces-166049-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-166050-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id EB9048B9540
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 09:26:59 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C48C88B9542
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 09:27:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1BD74B2199E
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 07:26:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F16381C20B39
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 07:27:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8CDDE224DD;
-	Thu,  2 May 2024 07:26:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3815224D7;
+	Thu,  2 May 2024 07:27:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="xNSxH5AS"
-Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="S4xPHixy"
+Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8AC31CAB8
-	for <linux-kernel@vger.kernel.org>; Thu,  2 May 2024 07:26:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3FC8E24B26
+	for <linux-kernel@vger.kernel.org>; Thu,  2 May 2024 07:26:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714634808; cv=none; b=VWJu+JsxkYFfllp0zII4HZYZT3n/lH9417UJBU/X9Je8SWUKEYzyPjiBwx4Vv18ER+hdKWjR9Aufo07Bt2XeKaNAAdpjgJBA8PNtvnoF39hJnE9SFGaSaHaLFWJ49LvU8NVkO3fCg2p5ePjvN0AoZRwdRP3da+ikb7lsRXgNcw0=
+	t=1714634821; cv=none; b=M662VJisYPHoGJKM/x6Ig2lwYjhAFig54MorVcwSsdblB67grNqymPyVelpDUXzmcmwYUUbREkjfuUquvt7a5ulCYZnV9e8c1HM2GGs1TCAucPD+M3RE3hxu4y6Nt3V2IhSU3sPMXa97ocB7OaMoGEgYlAlMZa2u9mQ/0oalc1w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714634808; c=relaxed/simple;
-	bh=PN7hgWQS3lcUlZXwAZXzYtVHPl2b4m3n19FkeSciVSI=;
+	s=arc-20240116; t=1714634821; c=relaxed/simple;
+	bh=L7SVb7JKg6MdYQnReM+ocl0tKbD6Lr9/R1UWpzpmF/8=;
 	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
-	 In-Reply-To:Content-Type; b=OhUnjM+sv/SMNVnipYzfSvBZcXy3LYKmC+GIOMKDgQUFo4IYWiUr8P0o2ohCiNqBWWNGjSNoREwm64Fe9+9RuyKHRIMNiMYhDo1XnZT6buAxMmgIRuytrj3GcPb+1JIsFdV+MxBHJRSznyTS9TYtI7wK8fn2Lnu6+knXjdKX1vE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=xNSxH5AS; arc=none smtp.client-ip=209.85.128.43
+	 In-Reply-To:Content-Type; b=IbjKLvOqqg5iVS1EqUbYQy9hb1Qtnz/2h0hhvy4lhnFGUPsFHQRBLIvwsFVSHSBJhRrGwFgprs86fkfqCWxnJmdMy+pG31FIaxpVrziSwf0o3RzwAF5KKoEayi7qHMZYVtbpOGZr3pgx0+uaXi5NvYRcWnwCBdbFAyXjh/I0e1s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=S4xPHixy; arc=none smtp.client-ip=209.85.221.42
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-41dc9c83e57so2848825e9.0
-        for <linux-kernel@vger.kernel.org>; Thu, 02 May 2024 00:26:46 -0700 (PDT)
+Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-34db6a29a1eso1265338f8f.1
+        for <linux-kernel@vger.kernel.org>; Thu, 02 May 2024 00:26:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1714634805; x=1715239605; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1714634817; x=1715239617; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:organization:autocrypt
          :content-language:references:cc:to:subject:reply-to:from:user-agent
          :mime-version:date:message-id:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=mjdQzJy2V/Q1bUVqpj1pVEcq/z2P7zwJKAsgjhZLMPc=;
-        b=xNSxH5ASxBWVM67x/mtu8ab/UVFGLVVE8XFsXmQ18qyp3M5/tHoub0N/LSRQzYK8sb
-         4eApjjO2JMvIBReqo0ctEH+XVUdoxRSAe4jMwGK8Wy/3pBlpIKY/WXvkEp4bRCsF6s93
-         PGfa1YPlC3tW42Q8122PTNUOAu4IFwLnto2HPmo5fDz1SCWD2GdKog6gbaGnyfZBeKTN
-         RxE6nzFjbMqS6g46PMJqWDb5BCgvLZLnfi5OWp16KvgipgJDNkv/h5jhBPBGoP0yVY3f
-         mJrOPXna+Q19qzjXmvrHapYhiBeeZsn2R9zNiNBZpf0nFdyBkJil5pUUFzATyTBspVEY
-         C0cw==
+        bh=8dbcRFL3bbaSJtF8rDYaaiQD+vlLekDK6bfj3XLa4Qk=;
+        b=S4xPHixy1jaFw8jVTAFHDHoWDPQvjZ7HVdwZK09hKA1z4l9dbGzv1ZoFBshWMYgVpf
+         lafcLA7VRxXhF4qjR3n9XhDUa2Ld1PaQjFCwcV74OA4Bsvz9GwFAHjSIO6DReJw2DO+q
+         /uEXbzCBGKskGrhlvr2muzfqQYyLwKI6eQqxNTB1l5HqFaht1w244qNh9v4/c0RBqUi+
+         sD5VV4eK8idfLBDD6e3rC0+Xt6WbshDZYQRUE/xc0cuj+OOMCHgCEQO3BTp5g0MOHSSg
+         LcX+D04ZPFZ/tbSwCxNtBjvoNVSEYte+87p7IuFXF14BldhoPxuJfzifRv+fxBzg+Ymz
+         CnSA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714634805; x=1715239605;
+        d=1e100.net; s=20230601; t=1714634817; x=1715239617;
         h=content-transfer-encoding:in-reply-to:organization:autocrypt
          :content-language:references:cc:to:subject:reply-to:from:user-agent
          :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=mjdQzJy2V/Q1bUVqpj1pVEcq/z2P7zwJKAsgjhZLMPc=;
-        b=EgM+nlskeO9cQzw3n2/5dsSSKDUPeXdfVmyTCttD+0TWcieGmqNmAVzvu/nT2ItSiv
-         xI1OkKWoazq8/cQTRLeCBZvsjQq3VxThOpS5UzAktvgnWdG0UAk0OqIpm+1q9zuQR+mJ
-         x5NvYQl4+qYizc/t2AuqUs7kNVKF/lHeimmT37lQrKDrlkYEYTSS/QkOY/21LJOzLErS
-         J612HtElRSj1NJ0G03UVz2cw7/wF3nS1bxZ1TFNCKDWGw2dvISc36CPI+h+rKKKHyQXx
-         jwBr1bWVtO4RB90iegCSmPbmloJZcTYkznJaWv2rfw6J+f97x2YCoBYIJrmyAW7/ZfYe
-         0vrQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXM29pGS03xlrxyBOkrF2WaN3tZtTHSw/DvwmLceOhdZxK2PRyyj49P3Jz300hpdh1THuLxoJw3CJucb4u8A34Nr1G6XqoHi42KXqRs
-X-Gm-Message-State: AOJu0YwzhOU7z0No9jzLgn1ybf0GbaOIBWSkxATrnAEravx4BKg8bCdU
-	Iz4szdRXgU7+H6VhBNO1o3SpFGIwZggyEbpKlWXxba2Q8ZJPHsHc45IrUDK8RwM=
-X-Google-Smtp-Source: AGHT+IEuGpDRuktlv4mA7YsG01SP6YdHxz2XyVX05/QChJona79IChxesgyQS2TZSsexDwYXuHLHGA==
-X-Received: by 2002:a5d:440b:0:b0:343:8485:4edd with SMTP id z11-20020a5d440b000000b0034384854eddmr1281995wrq.23.1714634805121;
-        Thu, 02 May 2024 00:26:45 -0700 (PDT)
+        bh=8dbcRFL3bbaSJtF8rDYaaiQD+vlLekDK6bfj3XLa4Qk=;
+        b=M3eSy9hGU3EIegMvh54OTMCzGjiMg+zHT5FQt+MzChzTxqyCkqqKo4uoR+CkSLh8BV
+         tm7UkjbUbTEpania18erLA3OksLmgkBV5XecoqkefJcmc96UxoGLFigDy9HfLdcmJNrE
+         bx5dixyEtT/fBW05E3hh7268ZJABVVCqnTgXlh+GF8PH7FwoCiSpnQeYBX4NTI35Lz1Z
+         MpkyX/kvdk1OGwmrllsaoYLcyIQm2NXCZVAnL3c5uN2zMSy5iDfkGH497O0AMXDnAyhr
+         pleecHvSsZIeKYRUNcNkeVz1MPvCqfyzM6Rr6bZ+zuMcqO0H75JqvEyEMNszuOr7Q/u1
+         nmjw==
+X-Forwarded-Encrypted: i=1; AJvYcCUiHdZYnRhlUMEmHY1Z075hrdaqZ6bGesR+GeExNA+QDxJbHJOd/LH/WSNkRa/sTRIT7I6mGmdLWh4pL0JnEZCN+qwYSw3T3qyCmUuX
+X-Gm-Message-State: AOJu0YzneBqY513UcyK8oCuitBs46tEtGGL3dpDfHTJcrOo/Yg4aV8Mf
+	NzVbVB6RtdWvWC65LFbnnvBHlS35N2cpN7Frf3rbWcY0GpHlwKbU9TtKzf7IUWg=
+X-Google-Smtp-Source: AGHT+IHrqrsPqXn+fEJXHMqDV+NDZYVzMhuGrszsQCr1pQWz3/5/O9PvQG/wPbf+n4hEZT/y4GCa3A==
+X-Received: by 2002:a5d:474e:0:b0:34a:cc2:1a34 with SMTP id o14-20020a5d474e000000b0034a0cc21a34mr2585855wrs.42.1714634817574;
+        Thu, 02 May 2024 00:26:57 -0700 (PDT)
 Received: from ?IPV6:2a01:e0a:cad:2140:67e2:5e2:652b:4129? ([2a01:e0a:cad:2140:67e2:5e2:652b:4129])
-        by smtp.gmail.com with ESMTPSA id h4-20020adff4c4000000b0034cee43238fsm531872wrp.27.2024.05.02.00.26.42
+        by smtp.gmail.com with ESMTPSA id e3-20020adff343000000b0034cf50704a9sm535576wrp.24.2024.05.02.00.26.56
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 02 May 2024 00:26:44 -0700 (PDT)
-Message-ID: <ffce0bd4-6bd2-4197-9f89-b312ad7eabe7@linaro.org>
-Date: Thu, 2 May 2024 09:26:40 +0200
+        Thu, 02 May 2024 00:26:57 -0700 (PDT)
+Message-ID: <f9adb530-89e6-40f4-af00-c6b407908817@linaro.org>
+Date: Thu, 2 May 2024 09:26:56 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -79,8 +79,8 @@ MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
 From: Neil Armstrong <neil.armstrong@linaro.org>
 Reply-To: neil.armstrong@linaro.org
-Subject: Re: [PATCH v3 1/9] drm/mipi-dsi: Fix theoretical int overflow in
- mipi_dsi_dcs_write_seq()
+Subject: Re: [PATCH v3 2/9] drm/mipi-dsi: Fix theoretical int overflow in
+ mipi_dsi_generic_write_seq()
 To: Douglas Anderson <dianders@chromium.org>, dri-devel@lists.freedesktop.org
 Cc: Linus Walleij <linus.walleij@linaro.org>,
  Jani Nikula <jani.nikula@linux.intel.com>,
@@ -95,7 +95,7 @@ Cc: Linus Walleij <linus.walleij@linaro.org>,
  Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
  linux-kernel@vger.kernel.org
 References: <20240501154251.3302887-1-dianders@chromium.org>
- <20240501084109.v3.1.I30fa4c8348ea316c886ef8a522a52fed617f930d@changeid>
+ <20240501084109.v3.2.Iadb65b8add19ed3ae3ed6425011beb97e380a912@changeid>
 Content-Language: en-US, fr
 Autocrypt: addr=neil.armstrong@linaro.org; keydata=
  xsBNBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
@@ -122,21 +122,21 @@ Autocrypt: addr=neil.armstrong@linaro.org; keydata=
  4zcsPWvwnXgfe5tk680fEKZVwOZKIEuJC3v+/yZpQzDvGYJvbyix0lHnrCzq43WefRHI5XTT
  QbM0WUIBIcGmq38+OgUsMYu4NzLu7uZFAcmp6h8g
 Organization: Linaro
-In-Reply-To: <20240501084109.v3.1.I30fa4c8348ea316c886ef8a522a52fed617f930d@changeid>
+In-Reply-To: <20240501084109.v3.2.Iadb65b8add19ed3ae3ed6425011beb97e380a912@changeid>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
 On 01/05/2024 17:41, Douglas Anderson wrote:
-> The mipi_dsi_dcs_write_seq() macro makes a call to
-> mipi_dsi_dcs_write_buffer() which returns a type ssize_t. The macro
-> then stores it in an int and checks to see if it's negative. This
-> could theoretically be a problem if "ssize_t" is larger than "int".
+> The mipi_dsi_generic_write_seq() macro makes a call to
+> mipi_dsi_generic_write() which returns a type ssize_t. The macro then
+> stores it in an int and checks to see if it's negative. This could
+> theoretically be a problem if "ssize_t" is larger than "int".
 > 
 > To see the issue, imagine that "ssize_t" is 32-bits and "int" is
 > 16-bits, you could see a problem if there was some code out there that
 > looked like:
 > 
->    mipi_dsi_dcs_write_seq(dsi, cmd, <32767 bytes as arguments>);
+>    mipi_dsi_generic_write_seq(dsi, <32768 bytes as arguments>);
 > 
 > ...since we'd get back that 32768 bytes were transferred and 32768
 > stored in a 16-bit int would look negative.
@@ -145,7 +145,7 @@ On 01/05/2024 17:41, Douglas Anderson wrote:
 > "int" was only 16-bit), it's cleaner to make the types match so let's
 > fix it.
 > 
-> Fixes: 2a9e9daf7523 ("drm/mipi-dsi: Introduce mipi_dsi_dcs_write_seq macro")
+> Fixes: a9015ce59320 ("drm/mipi-dsi: Add a mipi_dsi_dcs_write_seq() macro")
 > Signed-off-by: Douglas Anderson <dianders@chromium.org>
 > ---
 > 
@@ -155,41 +155,39 @@ On 01/05/2024 17:41, Douglas Anderson wrote:
 > Changes in v2:
 > - New
 > 
->   include/drm/drm_mipi_dsi.h | 24 ++++++++++++------------
->   1 file changed, 12 insertions(+), 12 deletions(-)
+>   include/drm/drm_mipi_dsi.h | 22 +++++++++++-----------
+>   1 file changed, 11 insertions(+), 11 deletions(-)
 > 
 > diff --git a/include/drm/drm_mipi_dsi.h b/include/drm/drm_mipi_dsi.h
-> index 82b1cc434ea3..70ce0b8cbc68 100644
+> index 70ce0b8cbc68..e0f56564bf97 100644
 > --- a/include/drm/drm_mipi_dsi.h
 > +++ b/include/drm/drm_mipi_dsi.h
-> @@ -333,18 +333,18 @@ int mipi_dsi_dcs_get_display_brightness_large(struct mipi_dsi_device *dsi,
->    * @cmd: Command
->    * @seq: buffer containing data to be transmitted
+> @@ -314,17 +314,17 @@ int mipi_dsi_dcs_get_display_brightness_large(struct mipi_dsi_device *dsi,
+>    * @dsi: DSI peripheral device
+>    * @seq: buffer containing the payload
 >    */
-> -#define mipi_dsi_dcs_write_seq(dsi, cmd, seq...)                           \
-> -	do {                                                               \
-> -		static const u8 d[] = { cmd, seq };                        \
-> -		struct device *dev = &dsi->dev;                            \
-> -		int ret;                                                   \
-> -		ret = mipi_dsi_dcs_write_buffer(dsi, d, ARRAY_SIZE(d));    \
-> -		if (ret < 0) {                                             \
-> -			dev_err_ratelimited(                               \
-> -				dev, "sending command %#02x failed: %d\n", \
-> -				cmd, ret);                                 \
-> -			return ret;                                        \
-> -		}                                                          \
-> +#define mipi_dsi_dcs_write_seq(dsi, cmd, seq...)                            \
-> +	do {                                                                \
-> +		static const u8 d[] = { cmd, seq };                         \
-> +		struct device *dev = &dsi->dev;                             \
-> +		ssize_t ret;                                                \
-> +		ret = mipi_dsi_dcs_write_buffer(dsi, d, ARRAY_SIZE(d));     \
-> +		if (ret < 0) {                                              \
-> +			dev_err_ratelimited(                                \
-> +				dev, "sending command %#02x failed: %zd\n", \
-> +				cmd, ret);                                  \
-> +			return ret;                                         \
-> +		}                                                           \
+> -#define mipi_dsi_generic_write_seq(dsi, seq...)                                \
+> -	do {                                                                   \
+> -		static const u8 d[] = { seq };                                 \
+> -		struct device *dev = &dsi->dev;                                \
+> -		int ret;                                                       \
+> -		ret = mipi_dsi_generic_write(dsi, d, ARRAY_SIZE(d));           \
+> -		if (ret < 0) {                                                 \
+> -			dev_err_ratelimited(dev, "transmit data failed: %d\n", \
+> -					    ret);                              \
+> -			return ret;                                            \
+> -		}                                                              \
+> +#define mipi_dsi_generic_write_seq(dsi, seq...)                                 \
+> +	do {                                                                    \
+> +		static const u8 d[] = { seq };                                  \
+> +		struct device *dev = &dsi->dev;                                 \
+> +		ssize_t ret;                                                    \
+> +		ret = mipi_dsi_generic_write(dsi, d, ARRAY_SIZE(d));            \
+> +		if (ret < 0) {                                                  \
+> +			dev_err_ratelimited(dev, "transmit data failed: %zd\n", \
+> +					    ret);                               \
+> +			return ret;                                             \
+> +		}                                                               \
 >   	} while (0)
 >   
 >   /**
