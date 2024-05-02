@@ -1,173 +1,151 @@
-Return-Path: <linux-kernel+bounces-165917-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-165920-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9C5F58B935E
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 04:21:45 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 08AA78B9364
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 04:25:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 151BD1F2319E
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 02:21:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3952B1C21D99
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 02:25:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 750D117C67;
-	Thu,  2 May 2024 02:21:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6DC8018049;
+	Thu,  2 May 2024 02:25:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="LOtZw5en"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="GaVjSVDy"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE7A414F98;
-	Thu,  2 May 2024 02:21:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 556FD175AA;
+	Thu,  2 May 2024 02:25:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714616496; cv=none; b=C1aV8gA2ElvLsEqUp5vYPP3scHKmGZAvoedi7Y4McOEefM3iTmsiPxY6abMB8ULGYPbgZOS9r2xdZZL47Of+3Dl8+J3gpJEqghVEL0zV79M2oB6oeVhsDWNZu3e3jH22MND/F3tyIq43ifHt2f97LvMMSVRDQUV5LeM9NlSyWHA=
+	t=1714616702; cv=none; b=iX1/Q3DGRK5hSEVP0tCMpx55QICusv20ZtcbEyQAtk1h24FRnopkstqwGJGNAMVKA5kuCi56c4OHaKETeOuYXjsQp3f0PD1rE0Pltox+hNMkWNd/KY539sNABl7ihwFkTXGHb7hLDFyMR8mp1RJKk0BW6hG5KIKe4RcPjlm0OE8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714616496; c=relaxed/simple;
-	bh=0SkoUc/gj2ccBJpeBBjFbDOe8ESeYkfD46hLfmF3o7s=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=EHivfB5qeYrRxLNHG7tZ/+IfjhR3jkBTck5Zp4wHo9Lev/x577AoZVmAE182uV5JoIyf3vxbnONRrNTfjgm60/QtsVSxqUvJliAIHaEis0q8nEHhdpeSRnIcxdtEXVe0/OxVEWXuJco7s0KDVLyquAjSi2FlJDYckZ7sXvjYNPw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=LOtZw5en; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 4420xbLm002676;
-	Thu, 2 May 2024 02:21:18 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	date:from:to:cc:subject:message-id:references:mime-version
-	:content-type:in-reply-to; s=qcppdkim1; bh=XkgoEJf0wa4jbau0oH/37
-	Shhuh12JPc5AkUPCGbmRJQ=; b=LOtZw5en/66GLjJAShz6IQXkS8+/lZ6x2vXJr
-	21dPuXEWaoJ8wRn6BIsMuTBj5nw+JKodiac26w5DI6SspNWDYgxZ2C6oSwSdrLZj
-	KhzdWcLcO9iCGO6wnwncnnX7OgxCJYINB6yO05zeSPGFwn5w5Lihu3/eC12BOnfI
-	5/R6QGt/9snFeBi+tpzqgrsT/+8Ew5YH/TARMEDcGgJvQW/KIiegVKLMu6JxyGNN
-	M0X2P5Z4qSQs8l63cgwPCriacZA8kQ+h9rZG1hKXCYdHVTxfT2zXfjX4Mjns2Zy/
-	I4dmF1K009GMdvaz5iRyFgeHbVPlFWJNo8ljGLz8AVysQaCSw==
-Received: from nasanppmta02.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xu71jauy5-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 02 May 2024 02:21:17 +0000 (GMT)
-Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
-	by NASANPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 4422LHSh029273
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 2 May 2024 02:21:17 GMT
-Received: from hu-eberman-lv.qualcomm.com (10.49.16.6) by
- nasanex01b.na.qualcomm.com (10.46.141.250) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.9; Wed, 1 May 2024 19:21:16 -0700
-Date: Wed, 1 May 2024 19:21:16 -0700
-From: Elliot Berman <quic_eberman@quicinc.com>
-To: Sudeep Holla <sudeep.holla@arm.com>
-CC: Florian Fainelli <florian.fainelli@broadcom.com>,
-        Bjorn Andersson
-	<andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        "Sebastian
- Reichel" <sre@kernel.org>, Rob Herring <robh@kernel.org>,
-        Krzysztof Kozlowski
-	<krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, Vinod Koul <vkoul@kernel.org>,
-        Andy Yan <andy.yan@rock-chips.com>,
-        "Lorenzo
- Pieralisi" <lpieralisi@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
-        "Satya Durga Srinivasu
- Prabhala" <quic_satyap@quicinc.com>,
-        Melody Olvera
-	<quic_molvera@quicinc.com>,
-        Shivendra Pratap <quic_spratap@quicinc.com>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <linux-pm@vger.kernel.org>
-Subject: Re: [PATCH v2 0/4] Implement vendor resets for PSCI SYSTEM_RESET2
-Message-ID: <20240501190823313-0700.eberman@hu-eberman-lv.qualcomm.com>
-References: <20240414-arm-psci-system_reset2-vendor-reboots-v2-0-da9a055a648f@quicinc.com>
- <Zh5GWqt2oCNHdF_h@bogus>
- <48f366f5-4a17-474c-a8e3-6d79c9092d62@broadcom.com>
- <20240419123847.ica22nft3sejqnm7@bogus>
+	s=arc-20240116; t=1714616702; c=relaxed/simple;
+	bh=jpSeGAw3fd3r1otijxAAN8h2zXrCijx9qZbvcF0BXXo=;
+	h=Message-ID:Date:MIME-Version:Cc:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=eQxxCFrHcKMEpUfkWRPfAe8TJ1Mg9B2OoXeZHo38xxwfhvJyTpzDONtMaqcy75mxdvD7JaYKLShijhDNh5cd4Xkl5B3cmbuKMT9riIqn5c3b86UAPujpaAEUY8a0ksZ8VKNDIPKJHKHlYioQCqFdXzGsQme4tDtU+1VDyhQsIME=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=GaVjSVDy; arc=none smtp.client-ip=198.175.65.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1714616701; x=1746152701;
+  h=message-id:date:mime-version:cc:subject:to:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=jpSeGAw3fd3r1otijxAAN8h2zXrCijx9qZbvcF0BXXo=;
+  b=GaVjSVDyZS26mmcJ+nv4ms1kN2K3mfhBwq53HB6kDcMfA13DNz5rAbmf
+   XdI7axsMH0MNCkYY/ri2L/dqgQMy5z3Zq8mcBKNMlR3U75UNXzLyV7phA
+   mnaSylIfgWFhvU7avEVDasdywbSMFWJv8hrpgEeJr0rRBr1IN2mAujk2z
+   SUj/Aex08SQmOPZ6S4YxQlH958eWzfWwCWww7tU+joUwoy6/JU4iLO2il
+   gLbgDslhDCgRIh2kkeVJ2QhSF1skNm/Jag2qgHijpWwuQ8si5nBo86maX
+   QtkSh7wLYqhYTcIpm4srKrL0q6kh8chIH06T+lyOX1yLGh1g9u4AtFfnX
+   w==;
+X-CSE-ConnectionGUID: qALUQGLZTAWm5PQPNY+TVg==
+X-CSE-MsgGUID: bmSD6cjDQGCHjoPyCkaAcg==
+X-IronPort-AV: E=McAfee;i="6600,9927,11061"; a="10229994"
+X-IronPort-AV: E=Sophos;i="6.07,247,1708416000"; 
+   d="scan'208";a="10229994"
+Received: from orviesa003.jf.intel.com ([10.64.159.143])
+  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 May 2024 19:25:00 -0700
+X-CSE-ConnectionGUID: bBj1T5ZZTtSmAr7cLpiTxQ==
+X-CSE-MsgGUID: 4FL4oJo5TpWw3ZKRJrJjPQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,247,1708416000"; 
+   d="scan'208";a="31650464"
+Received: from unknown (HELO [10.239.159.127]) ([10.239.159.127])
+  by orviesa003.jf.intel.com with ESMTP; 01 May 2024 19:24:56 -0700
+Message-ID: <3972c041-d5dd-4b02-9a0d-4541f7adc6d0@linux.intel.com>
+Date: Thu, 2 May 2024 10:23:25 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20240419123847.ica22nft3sejqnm7@bogus>
-X-ClientProxiedBy: nalasex01a.na.qualcomm.com (10.47.209.196) To
- nasanex01b.na.qualcomm.com (10.46.141.250)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: V901gX_zoIsSIZykcHNca33lKpbonAM7
-X-Proofpoint-ORIG-GUID: V901gX_zoIsSIZykcHNca33lKpbonAM7
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
- definitions=2024-05-01_16,2024-04-30_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
- mlxlogscore=999 bulkscore=0 adultscore=0 priorityscore=1501
- impostorscore=0 phishscore=0 mlxscore=0 lowpriorityscore=0 spamscore=0
- clxscore=1015 malwarescore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.19.0-2404010003 definitions=main-2405020008
+User-Agent: Mozilla Thunderbird
+Cc: baolu.lu@linux.intel.com, Tomasz Jeznach <tjeznach@rivosinc.com>,
+ Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+ Robin Murphy <robin.murphy@arm.com>, Paul Walmsley
+ <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>,
+ Albert Ou <aou@eecs.berkeley.edu>, Anup Patel <apatel@ventanamicro.com>,
+ Sunil V L <sunilvl@ventanamicro.com>, Nick Kossifidis <mick@ics.forth.gr>,
+ Sebastien Boeuf <seb@rivosinc.com>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley
+ <conor+dt@kernel.org>, devicetree@vger.kernel.org, iommu@lists.linux.dev,
+ linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+ linux@rivosinc.com
+Subject: Re: [PATCH v3 2/7] iommu/riscv: Add RISC-V IOMMU platform device
+ driver
+To: Jason Gunthorpe <jgg@ziepe.ca>
+References: <cover.1714494653.git.tjeznach@rivosinc.com>
+ <aa5592da66fe72acd4d4730f544882042e7b5293.1714494653.git.tjeznach@rivosinc.com>
+ <6b4a4dc0-ac9e-43cd-bd84-447df2370dde@linux.intel.com>
+ <20240501142037.GC1723318@ziepe.ca>
+Content-Language: en-US
+From: Baolu Lu <baolu.lu@linux.intel.com>
+In-Reply-To: <20240501142037.GC1723318@ziepe.ca>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Fri, Apr 19, 2024 at 01:38:47PM +0100, Sudeep Holla wrote:
-> On Wed, Apr 17, 2024 at 10:50:07AM -0700, Florian Fainelli wrote:
-> > On 4/16/24 02:35, Sudeep Holla wrote:
-> > > On Sun, Apr 14, 2024 at 12:30:23PM -0700, Elliot Berman wrote:
-> > > > The PSCI SYSTEM_RESET2 call allows vendor firmware to define additional
-> > > > reset types which could be mapped to the reboot argument.
-> > > >
-> > > > Setting up reboot on Qualcomm devices can be inconsistent from chipset
-> > > > to chipset.
-> > >
-> > > That doesn't sound good. Do you mean PSCI SYSTEM_RESET doesn't work as
-> > > expected ? Does it mean it is not conformant to the specification ?
-> > >
-> > > > Generally, there is a PMIC register that gets written to
-> > > > decide the reboot type. There is also sometimes a cookie that can be
-> > > > written to indicate that the bootloader should behave differently than a
-> > > > regular boot. These knobs evolve over product generations and require
-> > > > more drivers. Qualcomm firmwares are beginning to expose vendor
-> > > > SYSTEM_RESET2 types to simplify driver requirements from Linux.
-> > > >
-> > >
-> > > Why can't this be fully userspace driven ? What is the need to keep the
-> > > cookie in the DT ?
-> > >
-> > >
-> >
-> > Using the second example in the Device Tree:
-> >
-> > mode-bootloader = <1 2>;
-> >
-> > are you suggesting that within psci_vendor_sys_reset2() we would look at the
-> > data argument and assume that we have something like this in memory:
-> >
-> > const char *cmd = data;
-> >
-> > cmd[] = "bootloader 2"
-> >
-> > where "bootloader" is the reboot command, and "2" is the cookie? From an
-> > util-linux, busybox, toybox, etc. we would have to concatenate those
-> > arguments with a space, but I suppose that would be doable.
-> >
+On 5/1/24 10:20 PM, Jason Gunthorpe wrote:
+> On Wed, May 01, 2024 at 06:26:20PM +0800, Baolu Lu wrote:
+>> On 2024/5/1 4:01, Tomasz Jeznach wrote:
+>>> +static int riscv_iommu_init_check(struct riscv_iommu_device *iommu)
+>>> +{
+>>> +	u64 ddtp;
+>>> +
+>>> +	/*
+>>> +	 * Make sure the IOMMU is switched off or in pass-through mode during regular
+>>> +	 * boot flow and disable translation when we boot into a kexec kernel and the
+>>> +	 * previous kernel left them enabled.
+>>> +	 */
+>>> +	ddtp = riscv_iommu_readq(iommu, RISCV_IOMMU_REG_DDTP);
+>>> +	if (ddtp & RISCV_IOMMU_DDTP_BUSY)
+>>> +		return -EBUSY;
+>>> +
+>>> +	if (FIELD_GET(RISCV_IOMMU_DDTP_MODE, ddtp) > RISCV_IOMMU_DDTP_MODE_BARE) {
+>>> +		if (!is_kdump_kernel())
+>> Is kdump supported for RISC-V architectures?  If so, the documentation
+>> in Documentation/admin-guide/kdump/kdump.rst might need an update.
+>>
+>> There is a possibility of ongoing DMAs during the boot process of the
+>> kdump capture kernel because there's a small chance of legacy DMA setups
+>> targeting any memory location. Kdump typically allows these ongoing DMA
+>> transfers to complete, assuming they were intended for valid memory
+>> regions.
+>>
+>> The IOMMU subsystem implements a default domain deferred attachment
+>> mechanism for this. In the kdump capture kernel, the whole device
+>> context tables are copied from the original kernel and will be
+>> overridden once the device driver calls the kernel DMA interface for the
+>> first time. This assumes that all old DMA transfers are completed after
+>> the driver's takeover.
+>>
+>> Will you consider this for RISC-V architecture as well?
+> It seems we decided not to do that mess in ARM..
 > 
-> Yes that was my thought when I wrote the email. But since I have looked at
-> existing bindings and support in the kernel in little more detail I would say.
-> So I am not sure what would be the better choice for PSCI SYSTEM_RESET2
-> especially when there is some ground support to build.
-> 
-> So I am open for alternatives including this approach.
+> New architectures doing kdump should put the iommu in a full blocking
+> state before handing over the next kernel, and this implies that
+> devices drivers need to cleanly suspend their DMAs before going into
+> the next kernel.
 
-If we can't go with the DT approach, my preference would be to go with a
-bootconfig and sysfs for controlling the mappings, although I don't
-think userspace need/should control the mappings of cmd -> cookies.
+Glad to hear that. :-)
 
-I wanted to check if you are okay with proceeding with the reboot-mode
-DT bindings approach unless we have some other better standard? If yes,
-do you have any preference based on Konrad's comment [1]? I can send out
-v3 with the couple comments from Dmitry and Krzysztof's addressed.
+With the above consideration, the driver should consider it an error
+case where the iommu is not in the blocking state, and it's in the kdump
+kernel, right?
 
-Thanks,
-Elliot
+If so, probably the iommu driver should always return failure when the
+iommu is not in the blocking state. However, the RISC-V's logic is:
 
-[1]: https://lore.kernel.org/all/20240419123847.ica22nft3sejqnm7@bogus/
+  - if this is a kdump kernel, just disable iommu;
+  - otherwise, failure case.
+
+This logic seems problematic.
+
+Best regards,
+baolu
 
