@@ -1,222 +1,516 @@
-Return-Path: <linux-kernel+bounces-166824-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-166825-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D3EAF8BA00A
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 20:10:22 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id BCFB18BA011
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 20:10:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DDE931C21DA5
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 18:10:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 496341F22AED
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 18:10:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 84395172BC4;
-	Thu,  2 May 2024 18:10:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 115F5172767;
+	Thu,  2 May 2024 18:10:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="CVslog0L"
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2042.outbound.protection.outlook.com [40.107.223.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="b+1iyiT8"
+Received: from mail-qt1-f178.google.com (mail-qt1-f178.google.com [209.85.160.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6DA6E154457;
-	Thu,  2 May 2024 18:10:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.223.42
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714673414; cv=fail; b=Ot7mFjj0uhSqsUtidSKvPmMu7yDSSYM+yXaVlbO143rpL8XkJb15dkl0Ef1AKwe75PbLt2xvPCu8XHkFZhPG99vHfU8wN0cW4bPSxsd00P8IbAIxTxIQAOYprd+qKgn7Z8BHi6vuQbpeo6aWnzf87MdSXhVwWq/78xHn+ZS6bWI=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714673414; c=relaxed/simple;
-	bh=5QtRTQ0scGxqEhIO+PSdmZrQAFwzwPsLP1B4Yjkz07I=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=NxyPwV5e4zkFI+VRpEKhNdftmy9782JaT/s+cO1QTV76Iw6qqpzTowPHOgHMgyAyujOGyIWRQQzpl7Yt6PunaRoMTHCqC+sh5hVB4EdXNa05rSFjaOR0btebMBNZyXR0TDaQ6O6KoAQ9WBnDkcnGDUjt8uVB6z1o1T47mgb9xnM=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=CVslog0L; arc=fail smtp.client-ip=40.107.223.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=c5Jlvd16ATVE2IogmpWovKZyy+LDk8cyLOi3ZmxUN4BrRRkYtzefUXusO00Ac/Qo9nRhhAg7isnR00qK5RTXOir/DXRz4kDE2YTnitbt9y3Y/W6AoWD2RkO/YKwuyqPnIEDtOYPSAExgp/q/F+Kng/PXtBttxZLFcj4Aa7s/6oEUrDrL6PjRu5MKAGg2vHxyaVXJ/6AVdwlVguXyRmwKDOaDmRAUGbW7x61FBRHRy/BS+JCGvWnXg/qgcx66w7+7WpwpAVuXgkiB0KSSE+yFwe0VFD9kzS9D0IVdzIoeCOkw7rlviZKIGNXmZiz775Fej48FZpT8txWmBec7tdkM6A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=0eirA0iNMGhwyVtxUETrgNyLgDZDhEPGp2ccY/n9rFg=;
- b=EOFGqTD+Ol00qKLgID664nGzOIoFeuZlexcq41+SGPIlNdgaXzNWbAX1eGqANyFyYOQnvRrjeUhH0KJ8sGIcdM5uGWrvv1JpBaEwO/fiXfbp6c1f120W6k4LUzmxr9rLQReG70WX/Q2DOMgxkQhlxfqT0iTzLlwjqVvtfaDxol+6eYNeIaTXBjPhMg1CtmCWLkmsGhsDwVn0J8JsRkPu8mYXFYJrdPbPO+aoADH65xSRo5Wxq9RzGglHvZfyqw36W1PLkx+UDgjyT4e6GF9iLDAXB0QzXXmp/ARydOq4MR3TA3ebsoK4oXTQfAOHBeKVwZ9849S8b9le6WSakXfxRg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=0eirA0iNMGhwyVtxUETrgNyLgDZDhEPGp2ccY/n9rFg=;
- b=CVslog0LXMPi3Wgvk5m3Ebz23xeqCaWBBq7EovhytRDd+JOTNDUdUxgBipTryU2ziwAGGJa/9Z5mGFk2E7fQKoo8pzemy8nv9zUpDF582ixylCPX3TsKF9TAFG61v/GdWhXad/XjrHsSBrfcuAdFA56kxw+Zt44pX3Fs380dsBDesLdLwWySEdRl7NRrTsANsRHfNouISigm3zkiiEnUOO1iSkWVyV4T5f7Tf7yp98kf5F4Im5ZwvOTsj4zV+QvquPrXIp34ig73lHkqzm/ry44/7QzCzbfv2fjkQ+mcexjbjb5K//pGJYQS/jCHovEnvUeuwivrZ/tPjVPWf2D3Ug==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from BY5PR12MB4130.namprd12.prod.outlook.com (2603:10b6:a03:20b::16)
- by PH7PR12MB5903.namprd12.prod.outlook.com (2603:10b6:510:1d7::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7544.28; Thu, 2 May
- 2024 18:10:08 +0000
-Received: from BY5PR12MB4130.namprd12.prod.outlook.com
- ([fe80::2cf4:5198:354a:cd07]) by BY5PR12MB4130.namprd12.prod.outlook.com
- ([fe80::2cf4:5198:354a:cd07%4]) with mapi id 15.20.7519.035; Thu, 2 May 2024
- 18:10:08 +0000
-Message-ID: <a2032a79-744d-4c00-a286-7d6fed3a1bdb@nvidia.com>
-Date: Thu, 2 May 2024 11:10:05 -0700
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC] RDMA/umem: pin_user_pages*() can temporarily fail due to
- migration glitches
-To: David Hildenbrand <david@redhat.com>, Alistair Popple
- <apopple@nvidia.com>, Jason Gunthorpe <jgg@nvidia.com>
-Cc: Christoph Hellwig <hch@infradead.org>,
- Andrew Morton <akpm@linux-foundation.org>,
- LKML <linux-kernel@vger.kernel.org>, linux-rdma@vger.kernel.org,
- linux-mm@kvack.org, Mike Marciniszyn <mike.marciniszyn@intel.com>,
- Leon Romanovsky <leon@kernel.org>, Artemy Kovalyov <artemyko@nvidia.com>,
- Michael Guralnik <michaelgur@nvidia.com>, Pak Markthub <pmarkthub@nvidia.com>
-References: <20240501003117.257735-1-jhubbard@nvidia.com>
- <ZjHO04Rb75TIlmkA@infradead.org> <20240501121032.GA941030@nvidia.com>
- <87r0el3tfi.fsf@nvdebian.thelocal>
- <92289167-5655-4c51-8dfc-df7ae53fdb7b@redhat.com>
-Content-Language: en-US
-From: John Hubbard <jhubbard@nvidia.com>
-In-Reply-To: <92289167-5655-4c51-8dfc-df7ae53fdb7b@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: SJ0PR13CA0140.namprd13.prod.outlook.com
- (2603:10b6:a03:2c6::25) To BY5PR12MB4130.namprd12.prod.outlook.com
- (2603:10b6:a03:20b::16)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C79A016FF2B
+	for <linux-kernel@vger.kernel.org>; Thu,  2 May 2024 18:10:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.178
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1714673440; cv=none; b=oWxUT5odr2k1CGSKBnPhxT5gnj6czCKG+iPJpPle44+92C7hkfEf2/WIrcyt9bR//E6tEDDs20aZQda+F8AeE3fEsZLIr/MgdhHryF18Xl0FkQaKzuY2uBalxIhtpP6PpYCGt6mdD3aQtwxSaEcmXEBqZJp8gbfAFEn+gUuJ0gU=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1714673440; c=relaxed/simple;
+	bh=AcnmsWUVf9xLPrnw47a0KF7R6rwSZZwi3yfcAeEYBoM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=KG41NuYQafRcbDRKHnomU1M3KMSarT7TaUzcgrHICGzqS7i4J4ezervadyq5CkCan8KbU8BXRFEzLHhxpHCfWvgME2aoRVn93H7oQmxoEe5urkkRFGpCns/LxahI38zVCTSZuIKZo6+R7rdPtGW0vlGLsYAEndEbedJKgYwVXlc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=b+1iyiT8; arc=none smtp.client-ip=209.85.160.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-qt1-f178.google.com with SMTP id d75a77b69052e-439b1c72676so64111cf.1
+        for <linux-kernel@vger.kernel.org>; Thu, 02 May 2024 11:10:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1714673437; x=1715278237; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Op4gNRXry59h7+j/49DFpIw3hUOH2bKFP8OCK+0oJVg=;
+        b=b+1iyiT8D2C1byUzQVaPpbUtGFt873eNI1SpIHglxfbXcSY/FRXTJJ6aKZKQ932WOO
+         A03jK6zM787itHBjZ1QZQRGc1K7+OIP8qKpbf/Jrzuyst4a3y5fWLQhSUhxqV8zeNff7
+         TA+L9BjVt2mLxGsmbL6K9wDQ/1kzf9BVVihHizEULoLqgRyDg3kyVDPJcHgc5MhOlsfl
+         raLASO9BwtHXCm5OfrqRlIHPYVsgg8teW4h0cn2H+alLoFb3F884djglGBfRqaSlV9lU
+         2Ffd4z1WvWiCHo9u5rVgqWZNZF3B5c2dtZ8iFZ5QLwk/AjE2QLa3MxIyeCE6pZCsAWcz
+         Am/g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714673437; x=1715278237;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Op4gNRXry59h7+j/49DFpIw3hUOH2bKFP8OCK+0oJVg=;
+        b=W4iwWUSxS3Z464FuFUp6801GgCgxbxWZLbwEfAPZUCx8uknG0dcz7RFUEZ3sLjnCFE
+         ZP/LRhZP8g4UXSuleTpLBeINkK+KYn8yBrYajquFUCK+xQLA/izjQsM2wHENI8VFcOOq
+         8gf0KyvhWkBJCp9gr/YFg2UR1gDznUI0qgXbUH75GNfhf1/Md0YaWMGrUx1r82lRA99n
+         L17LMYBC+v+GoXO5aJPnz2eCLuQqj98JF/vTURtnCgHkjC3mgXp5P3KXYDVdaaT0WRnC
+         NADSbGUFsfSbYlxH/pHldjIj8wjmYhlrBk/qV1Il3jevS9Db2WCdIk4HUeKQ9kWVDdyT
+         Kl5Q==
+X-Gm-Message-State: AOJu0YydnlpmtdUHRkiuqV+HSMGwEU0R4reqSUl+dErZXLXT9vYt4c5M
+	yPyO4YaTwBxqPePhjNNm09FPHcfpUNSncFCFyoUazN1FXbCCmuIR2zJGf1GQrVKYwkjxYF4vUlX
+	Glg3veE+pFufQZYnWySCqHoOLakqdeOsJXW0q
+X-Google-Smtp-Source: AGHT+IEOmEYefU1KrK/38Dg4v//I6kIhkNaNjJ5s7D/q1f0E3fn55QC6u3qit4RAHuumrO5p+JDaANRIeHLszPs4ZYI=
+X-Received: by 2002:ac8:594b:0:b0:43a:bcee:eaa2 with SMTP id
+ d75a77b69052e-43cd71b0f37mr178961cf.20.1714673437396; Thu, 02 May 2024
+ 11:10:37 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BY5PR12MB4130:EE_|PH7PR12MB5903:EE_
-X-MS-Office365-Filtering-Correlation-Id: 7cf5450e-62a5-4206-1ac9-08dc6ad319e8
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230031|376005|366007|1800799015;
-X-Microsoft-Antispam-Message-Info:
-	=?utf-8?B?MDZiVFBpTytRY3dYUnVzVjVkSk9RUE43cHVBQVcyRUowODk5czRGRERacXVH?=
- =?utf-8?B?b2ZJUHhVMy9Yd3JOYVJiTUNvSllvY3htckxObnNFR1VRTU5EUWpCdW5BdlVx?=
- =?utf-8?B?dC9PajZjTWQ4Q3NiM0ZTbnJqQ0VGRzYxdXVhdkI5cy8razdKOUQwS1pYOTNU?=
- =?utf-8?B?RjFSYkdDQkR3SVZqK1V0QlFTbWVBam16cEF0MGNZUm5ob2hSbVQ2c3FTMmVD?=
- =?utf-8?B?VWp4SmJrS2VjV1ZiaGsvSlRjQXcxalN5N0xRbFpGVG45SWZJcUMxaFVlaVQ1?=
- =?utf-8?B?YWo5eTZZY0Jsa1RvZm1XT3g1c3k1ZE9pM2xmNDlmaElXcjlKM0pITHlvdDdI?=
- =?utf-8?B?L2VjRnBKSkRnYTFUQWM2WDA4WXRReEVpMk9JY25pTkRObnlYVmQ0OG1LWjdD?=
- =?utf-8?B?dHMxU1Fuc29TT3RkTGNxWkptRERjeWVUeFJPRGdNRFlPZnBEWG1IQUZ3OVp3?=
- =?utf-8?B?TWhBdFE2emRCOHM2cWdpaTdSdWdKOW9XQndiVDFITmZZQXR5UkFvV0RzTkJC?=
- =?utf-8?B?WFhyZFdNWHlYQ2JqUkJCLytWbDV1eXhBb2J0RjZwaHNRY0VzV3VoR3VWUElX?=
- =?utf-8?B?Y2o1UUM4cFgxZWNwbUtPRWZ6R2pTMGp2VVhQeU9yd205cm0xN2doM2dPeS9F?=
- =?utf-8?B?K0ZRWTFPNEhFVytKblJYZC9tdVpadzY1VzNsekc0Z2tDWTFTc0M5cGJiTzh2?=
- =?utf-8?B?aXpMOVlIb2w2SlpYQ0swV3VMVjVvcHlZOS9RL280eFVtUTNqN2ZuZGpvN2Z6?=
- =?utf-8?B?bjBUUk9oNDZGbEt2azhLTDJ1Rll4TGRoUkx3MzdCeEtBbDdZdFFhUmFnYXVt?=
- =?utf-8?B?YytKSWhSVmpIZVVBRmJ6RzA1YUxYM3BMQ0ZwaC9xUis1OWRUZ3ZoL0hCV2My?=
- =?utf-8?B?VHBoRk10azZvdmVPcWl3T0JPd0Y3cUdWZkUxZEIzZEdyRU1QZnpyWnR5NGJK?=
- =?utf-8?B?Q1dDTThpY3haNCtJRjJMcFNib3cvcHN1QjRSVzlSNVV3ZWtLQXI5NkxsVG4x?=
- =?utf-8?B?OXhlSmVzSHl2VWRPRytzSXpDNHBoVEFrUXNzZWdMYjhseThnZGJhdEgzQno0?=
- =?utf-8?B?U3l5YjNSczhKYVBheHN3azJTVU9uaWEwRk16QUY5SCt6aG92QVAwK2pJNG1E?=
- =?utf-8?B?REo3YmRWMXBWQk9hU1hLRXVWVWRjYm43MWlUR1hYbXBiVW9KdHpkUXRaaU1K?=
- =?utf-8?B?OGpGRFB3UkJCSitvSDVSSmlEZEZrU0dZYkJHRVA5MHZqelNzYWsxbHJNZDhW?=
- =?utf-8?B?OFhVNFRLcUxnWE1tS3VqMTRMRkZldmtibVNyZGZncGRSbHpXMzdQN1prSEhz?=
- =?utf-8?B?RTFqdHVzbjU3M2k5MngveXFVaXZncEliRnhzTTl6YkxSRm5wWWtxME1OQW1G?=
- =?utf-8?B?d0VMS25yLzdxcS9nSDhMc0lpUkIyb0lmdUZpZXB2a1lMRkNoQTV4bGxxeWNa?=
- =?utf-8?B?eTdPajdWWVZRckpuZFVJK044U0o1T1dEYUVieGIvYStaMDVmZ1FOazhPWEQr?=
- =?utf-8?B?ZzFMeXhmV1A0VGQ2eDFtRGdPUXMrUHFLNlh4a29hQmg3Mnczd0pmY2RZQUJF?=
- =?utf-8?B?MER2OER4QnFQVzVEUFNwWEM4a0pjQkg4MmRtdDlucHMwT3RST0tPTVFVSXlW?=
- =?utf-8?B?T0oyc01OMTE0WXZnamx0SVNoUGNUMjZJcG14U3ZobmNLQkZ4TnVHM3VNaEMy?=
- =?utf-8?B?WUpoZnlML25aaEdpU2JpZVJvUHpCT0lOWHNFK2lnLzhtZzRyM01JNE9nPT0=?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR12MB4130.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(366007)(1800799015);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?U3ZmL1ExQk5NWXpVMFpGWXFYWkZoZE8wMTRWZDhmNW0wMEtBUU16L2x6QTRu?=
- =?utf-8?B?VVQrZVhxMGorQldHYi82dlBWY1Nwc0prZE1peVFETlpJazl5QUQxUzZzajZS?=
- =?utf-8?B?QkhwcDVWVHJjcmdMenhlSVVwYjloSjJpdWsxeXRvRTJjTVZob1dlYUFCcTRE?=
- =?utf-8?B?RUdyTzZiVzY0enRpZmVMZ2FDMXY5MEs2NVZTVW1GdzZaU2xJSzVkN1ZJNThP?=
- =?utf-8?B?OWtjVDhLTVVWTDU5ak5CdXNQVnVTbm5LY3BNa2hOQ1lob2FUQ2R3bjg1MitS?=
- =?utf-8?B?bG5HaU9wL0JoSGl6ejZqQ1FnUVJmMWh2SDh4ZU1TTHpRd2dTb25UT1hCTGxD?=
- =?utf-8?B?TDBCb0tZQ0w4MUszVFNvSGU1eGc0Q3FXcy9EdzhITDRsQnJKa3ZWY2pZVkFv?=
- =?utf-8?B?MU5CanB0NFdON3hta0tTRStqdXcxUTczeDdEcmp4M0l4UjlRV1dkTGl5TS9D?=
- =?utf-8?B?ekd2UWdKMWx5WHVmbFhzQXZVd05ONDVHNStjUW1kTzRoSXVqZ1FLUG1xWW41?=
- =?utf-8?B?MEliN25oNU9qRXhwK0dUVHpEcklFZDRSUGVHeGNnWm0zWng1SnQ3d1NRNFMx?=
- =?utf-8?B?UXJlZGJ1cXRqYjJXWTRocHBXbW02Y0E5Yy92NTRtUXZKWWUxU3BsYk9RVWhT?=
- =?utf-8?B?b3hpbFlkd0V5Y3lNTUIwRjM2aXZXVDRiczdNeUJab0RnOWZFcGgrVjNpdktC?=
- =?utf-8?B?bGZQRXlwMkU5SjRRcFc4cnBEcEo4Q3RucnN4N2xETy81WEJvbmZmK1N1VUVu?=
- =?utf-8?B?L0E1M0F3ZFFsK0NZRmp5YitqaWhKKzBLUTFhTUpnb3BpaXFiVVJabVpHK3Rl?=
- =?utf-8?B?M2svYy9rck1BcURsWHNycnlLTmN3NmREQ29USmZYKzdMM2Y3U2ZjSm5nK2N6?=
- =?utf-8?B?Z3Uxb2ZQWFh2akcyelpmMGpWeUx3cDVrdnkwT1RRQ1Y1MGsxV0I0d3FITlUx?=
- =?utf-8?B?S1ZYckxuSEVpVGVuRjhaejBUSlluUUh1WGFYeXg2UUp0MkJLc1kyc2NzRWFs?=
- =?utf-8?B?bWpHSE91bzBVTzh5SCtLREc0NDBaYzBVaUI4Z3ZuVEQzUVk5VUo2VDV1eFhZ?=
- =?utf-8?B?cE8vNFdQbUcvZmkrR0VrT1F0K1dqelJyOG93MXhEdy8zZC93bjl4ZzE5bGFO?=
- =?utf-8?B?RDMxaGdnZzlUOFJXVy82UEdDUm9sUWRBZVR2OVduOWRKOWpkKzFMZWpoSmhr?=
- =?utf-8?B?TVc4Y3hpMzJmdXRJa1A4dWgvMHNkeDdWaldLcVVGZ2VxR0NKQnk0QS8xMThj?=
- =?utf-8?B?UlNQWDl4cnBCajd5TG1sbW5DVFhIeVorRjNsbXIrT3c4dnNxRitpYUpvMUpI?=
- =?utf-8?B?Nzc3Y2VrdEpvYmlMaU9wUmdDN2ZPdWZBLzRkSk1YYWpmYTcrQytQMzJ0Lzlp?=
- =?utf-8?B?a3dXL0N5YUtieThZVmpIbnptUzZpb25JRG5vbCt4ZUV1YXFJaEhyMExLdERW?=
- =?utf-8?B?VnZZM0dyQTIzWWx3Wmd4YzV5SGJtUnF2Y3pZYWVQYWpNTU5KMm1IY1BHTjBv?=
- =?utf-8?B?Z29Wa09vMFpoTy9uOE5UZGt3eksycENHcmJTYnBwODV6TFVJU2g5K3hBWFBs?=
- =?utf-8?B?UmVZUDJESjB3bThNYkVjU3A5aFpRU2g3a1lZK1M3U1VhSWFoaE5OcnI1OU04?=
- =?utf-8?B?WWdEOXFZSjg2NDFzclhxaStpMjZuZ0RpdnlQQWlSSzA1MlBHVFJWQTcyMFhz?=
- =?utf-8?B?UllwTkFoaXJaZ3dEeTNmS2ZKN2RwUk1LRFczYVh5UXRCcExCZ2xEdC8vZEQr?=
- =?utf-8?B?WVRZbmlNTUM0cGpmNWIwT1RGaVRSYkxCZk1sNkNkdEJUTDZRcUlPQUFDbWtH?=
- =?utf-8?B?TDVIanJScUpWblozUmd6MXl1ek9lam8rWXRHQ2hBOFNZSFpWQUhjaUFzUUY1?=
- =?utf-8?B?c1hCWllTT2F0ajAyY2lWeFBTNXV1ZXp3RUN3aFdoYXN6SW5CcFQ2Sks0SWJ6?=
- =?utf-8?B?SEdTL1pYd09FaXdpWC9LVnJNV1A2SFFEbS8raVBESWRyRmpWRjhnUUd5RHg4?=
- =?utf-8?B?aEErUnlmckFZayt1dFk4SFJySURvZzRyUE9ISFczTGhETHBIQUtja2w2L2oz?=
- =?utf-8?B?eDhtVnY5VHUyZlZ6SUtoWE5ER1R1U1BQSmVCL3U0a2wrOW1yN3FIZnhCOG9R?=
- =?utf-8?Q?JANIjSs7Ga/49AWOOzx5UHmx9?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7cf5450e-62a5-4206-1ac9-08dc6ad319e8
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR12MB4130.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 May 2024 18:10:08.6465
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: lIIMVVrHEzq/04dW4qVcDsCI8yTmkoIwbB/6LnmX7TUIm82TvfHHw73cP4fCkbI7pUdlg5tG69qabDnhClDLcA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB5903
+References: <20240502105853.5338-1-adrian.hunter@intel.com> <20240502105853.5338-6-adrian.hunter@intel.com>
+In-Reply-To: <20240502105853.5338-6-adrian.hunter@intel.com>
+From: Ian Rogers <irogers@google.com>
+Date: Thu, 2 May 2024 11:10:25 -0700
+Message-ID: <CAP-5=fX4UxekyxkaX8EH8UcAXe-JAdXRTCguWmTJ8mARg64h-Q@mail.gmail.com>
+Subject: Re: [PATCH 05/10] x86/insn: Add support for REX2 prefix to the
+ instruction decoder logic
+To: Adrian Hunter <adrian.hunter@intel.com>
+Cc: linux-kernel@vger.kernel.org, "Chang S. Bae" <chang.seok.bae@intel.com>, 
+	Masami Hiramatsu <mhiramat@kernel.org>, Nikolay Borisov <nik.borisov@suse.com>, 
+	Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>, 
+	Dave Hansen <dave.hansen@linux.intel.com>, Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org, 
+	Arnaldo Carvalho de Melo <acme@kernel.org>, Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
+	linux-perf-users@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 5/1/24 11:56 PM, David Hildenbrand wrote:
-> On 02.05.24 03:05, Alistair Popple wrote:
->> Jason Gunthorpe <jgg@nvidia.com> writes:
-..
->>>> This doesn't make sense.  IFF a blind retry is all that is needed it
->>>> should be done in the core functionality.  I fear it's not that easy,
->>>> though.
->>>
->>> +1
->>>
->>> This migration retry weirdness is a GUP issue, it needs to be solved
->>> in the mm not exposed to every pin_user_pages caller.
->>>
->>> If it turns out ZONE_MOVEABLE pages can't actually be reliably moved
->>> then it is pretty broken..
->>
->> I wonder if we should remove the arbitrary retry limit in
->> migrate_pages() entirely for ZONE_MOVEABLE pages and just loop until
->> they migrate? By definition there should only be transient references on
->> these pages so why do we need to limit the number of retries in the
->> first place?
-> 
-> There are some weird things that still needs fixing: vmsplice() is the 
-> example that doesn't use FOLL_LONGTERM.
-> 
+On Thu, May 2, 2024 at 3:59=E2=80=AFAM Adrian Hunter <adrian.hunter@intel.c=
+om> wrote:
+>
+> Intel Advanced Performance Extensions (APX) uses a new 2-byte prefix name=
+d
+> REX2 to select extended general purpose registers (EGPRs) i.e. r16 to r31=
+.
+>
+> The REX2 prefix is effectively an extended version of the REX prefix.
+>
+> REX2 and EVEX are also used with PUSH/POP instructions to provide a
+> Push-Pop Acceleration (PPX) hint. With PPX hints, a CPU will attempt to
+> fast-forward register data between matching PUSH and POP instructions.
+>
+> REX2 is valid only with opcodes in maps 0 and 1. Similar extension for
+> other maps is provided by the EVEX prefix, covered in a separate patch.
+>
+> Some opcodes in maps 0 and 1 are reserved under REX2. One of these is use=
+d
+> for a new 64-bit absolute direct jump instruction JMPABS.
+>
+> Refer to the Intel Advanced Performance Extensions (Intel APX) Architectu=
+re
+> Specification for details.
+>
+> Define a code value for the REX2 prefix (INAT_PFX_REX2), and add attribut=
+e
+> flags for opcodes reserved under REX2 (INAT_NO_REX2) and to identify
+> opcodes (only JMPABS) that require a mandatory REX2 prefix
+> (INAT_REX2_VARIANT).
+>
+> Amend logic to read the REX2 prefix and get the opcode attribute for the
+> map number (0 or 1) encoded in the REX2 prefix.
+>
+> Amend the awk script that generates the attribute tables from the opcode
+> map, to recognise "REX2" as attribute INAT_PFX_REX2, and "(!REX2)"
+> as attribute INAT_NO_REX2, and "(REX2)" as attribute INAT_REX2_VARIANT.
+>
+> Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
+> ---
+>  arch/x86/include/asm/inat.h                | 11 +++++++++-
+>  arch/x86/include/asm/insn.h                | 25 ++++++++++++++++++----
+>  arch/x86/lib/insn.c                        | 25 ++++++++++++++++++++++
+>  arch/x86/tools/gen-insn-attr-x86.awk       | 11 +++++++++-
+>  tools/arch/x86/include/asm/inat.h          | 11 +++++++++-
+>  tools/arch/x86/include/asm/insn.h          | 25 ++++++++++++++++++----
+>  tools/arch/x86/lib/insn.c                  | 25 ++++++++++++++++++++++
+>  tools/arch/x86/tools/gen-insn-attr-x86.awk | 11 +++++++++-
+>  8 files changed, 132 insertions(+), 12 deletions(-)
+>
+> diff --git a/arch/x86/include/asm/inat.h b/arch/x86/include/asm/inat.h
+> index b56c5741581a..1331bdd39a23 100644
+> --- a/arch/x86/include/asm/inat.h
+> +++ b/arch/x86/include/asm/inat.h
+> @@ -35,6 +35,8 @@
+>  #define INAT_PFX_VEX2  13      /* 2-bytes VEX prefix */
+>  #define INAT_PFX_VEX3  14      /* 3-bytes VEX prefix */
+>  #define INAT_PFX_EVEX  15      /* EVEX prefix */
+> +/* x86-64 REX2 prefix */
+> +#define INAT_PFX_REX2  16      /* 0xD5 */
+>
+>  #define INAT_LSTPFX_MAX        3
+>  #define INAT_LGCPFX_MAX        11
+> @@ -50,7 +52,7 @@
+>
+>  /* Legacy prefix */
+>  #define INAT_PFX_OFFS  0
+> -#define INAT_PFX_BITS  4
+> +#define INAT_PFX_BITS  5
+>  #define INAT_PFX_MAX    ((1 << INAT_PFX_BITS) - 1)
+>  #define INAT_PFX_MASK  (INAT_PFX_MAX << INAT_PFX_OFFS)
+>  /* Escape opcodes */
+> @@ -77,6 +79,8 @@
+>  #define INAT_VEXOK     (1 << (INAT_FLAG_OFFS + 5))
+>  #define INAT_VEXONLY   (1 << (INAT_FLAG_OFFS + 6))
+>  #define INAT_EVEXONLY  (1 << (INAT_FLAG_OFFS + 7))
+> +#define INAT_NO_REX2   (1 << (INAT_FLAG_OFFS + 8))
+> +#define INAT_REX2_VARIANT      (1 << (INAT_FLAG_OFFS + 9))
+>  /* Attribute making macros for attribute tables */
+>  #define INAT_MAKE_PREFIX(pfx)  (pfx << INAT_PFX_OFFS)
+>  #define INAT_MAKE_ESCAPE(esc)  (esc << INAT_ESC_OFFS)
+> @@ -128,6 +132,11 @@ static inline int inat_is_rex_prefix(insn_attr_t att=
+r)
+>         return (attr & INAT_PFX_MASK) =3D=3D INAT_PFX_REX;
+>  }
+>
+> +static inline int inat_is_rex2_prefix(insn_attr_t attr)
+> +{
+> +       return (attr & INAT_PFX_MASK) =3D=3D INAT_PFX_REX2;
+> +}
+> +
+>  static inline int inat_last_prefix_id(insn_attr_t attr)
+>  {
+>         if ((attr & INAT_PFX_MASK) > INAT_LSTPFX_MAX)
+> diff --git a/arch/x86/include/asm/insn.h b/arch/x86/include/asm/insn.h
+> index 1b29f58f730f..95249ec1f24e 100644
+> --- a/arch/x86/include/asm/insn.h
+> +++ b/arch/x86/include/asm/insn.h
+> @@ -112,10 +112,15 @@ struct insn {
+>  #define X86_SIB_INDEX(sib) (((sib) & 0x38) >> 3)
+>  #define X86_SIB_BASE(sib) ((sib) & 0x07)
+>
+> -#define X86_REX_W(rex) ((rex) & 8)
+> -#define X86_REX_R(rex) ((rex) & 4)
+> -#define X86_REX_X(rex) ((rex) & 2)
+> -#define X86_REX_B(rex) ((rex) & 1)
+> +#define X86_REX2_M(rex) ((rex) & 0x80) /* REX2 M0 */
+> +#define X86_REX2_R(rex) ((rex) & 0x40) /* REX2 R4 */
+> +#define X86_REX2_X(rex) ((rex) & 0x20) /* REX2 X4 */
+> +#define X86_REX2_B(rex) ((rex) & 0x10) /* REX2 B4 */
+> +
+> +#define X86_REX_W(rex) ((rex) & 8)     /* REX or REX2 W */
+> +#define X86_REX_R(rex) ((rex) & 4)     /* REX or REX2 R3 */
+> +#define X86_REX_X(rex) ((rex) & 2)     /* REX or REX2 X3 */
+> +#define X86_REX_B(rex) ((rex) & 1)     /* REX or REX2 B3 */
+>
+>  /* VEX bit flags  */
+>  #define X86_VEX_W(vex) ((vex) & 0x80)  /* VEX3 Byte2 */
+> @@ -161,6 +166,18 @@ static inline void insn_get_attribute(struct insn *i=
+nsn)
+>  /* Instruction uses RIP-relative addressing */
+>  extern int insn_rip_relative(struct insn *insn);
+>
+> +static inline int insn_is_rex2(struct insn *insn)
+> +{
+> +       if (!insn->prefixes.got)
+> +               insn_get_prefixes(insn);
+> +       return insn->rex_prefix.nbytes =3D=3D 2;
 
-Hi David!
+It'd be nice to capture that a rex2 prefix is by definition 2 bytes.
+Playing devil's advocate, if there were a REX and a REX2 prefix,
+couldn't rex_prefix.nbytes be 3? I'm wondering about other prefix
+combinations that may confuse this logic, maybe someone dreams up
+doing this for say alignment reasons like "rep ret".
 
-Do you have any other call sites in mind? It sounds like one way forward
-is to fix each call site...
+Thanks,
+Ian
 
-This is an unhappy story right now: the pin_user_pages*() APIs are
-significantly worse than before the "migrate pages away automatically"
-upgrade, from a user point of view. Because now, the APIs fail
-intermittently for callers who follow the rules--because
-pin_user_pages() is not fully working yet, basically.
-
-Other ideas, large or small, about how to approach a fix?
-
-thanks,
-
--- 
-John Hubbard
-NVIDIA
+> +}
+> +
+> +static inline insn_byte_t insn_rex2_m_bit(struct insn *insn)
+> +{
+> +       return X86_REX2_M(insn->rex_prefix.bytes[1]);
+> +}
+> +
+>  static inline int insn_is_avx(struct insn *insn)
+>  {
+>         if (!insn->prefixes.got)
+> diff --git a/arch/x86/lib/insn.c b/arch/x86/lib/insn.c
+> index 1bb155a0955b..6126ddc6e5f5 100644
+> --- a/arch/x86/lib/insn.c
+> +++ b/arch/x86/lib/insn.c
+> @@ -185,6 +185,17 @@ int insn_get_prefixes(struct insn *insn)
+>                         if (X86_REX_W(b))
+>                                 /* REX.W overrides opnd_size */
+>                                 insn->opnd_bytes =3D 8;
+> +               } else if (inat_is_rex2_prefix(attr)) {
+> +                       insn_set_byte(&insn->rex_prefix, 0, b);
+> +                       b =3D peek_nbyte_next(insn_byte_t, insn, 1);
+> +                       insn_set_byte(&insn->rex_prefix, 1, b);
+> +                       insn->rex_prefix.nbytes =3D 2;
+> +                       insn->next_byte +=3D 2;
+> +                       if (X86_REX_W(b))
+> +                               /* REX.W overrides opnd_size */
+> +                               insn->opnd_bytes =3D 8;
+> +                       insn->rex_prefix.got =3D 1;
+> +                       goto vex_end;
+>                 }
+>         }
+>         insn->rex_prefix.got =3D 1;
+> @@ -294,6 +305,20 @@ int insn_get_opcode(struct insn *insn)
+>                 goto end;
+>         }
+>
+> +       /* Check if there is REX2 prefix or not */
+> +       if (insn_is_rex2(insn)) {
+> +               if (insn_rex2_m_bit(insn)) {
+> +                       /* map 1 is escape 0x0f */
+> +                       insn_attr_t esc_attr =3D inat_get_opcode_attribut=
+e(0x0f);
+> +
+> +                       pfx_id =3D insn_last_prefix_id(insn);
+> +                       insn->attr =3D inat_get_escape_attribute(op, pfx_=
+id, esc_attr);
+> +               } else {
+> +                       insn->attr =3D inat_get_opcode_attribute(op);
+> +               }
+> +               goto end;
+> +       }
+> +
+>         insn->attr =3D inat_get_opcode_attribute(op);
+>         while (inat_is_escape(insn->attr)) {
+>                 /* Get escaped opcode */
+> diff --git a/arch/x86/tools/gen-insn-attr-x86.awk b/arch/x86/tools/gen-in=
+sn-attr-x86.awk
+> index af38469afd14..3f43aa7d8fef 100644
+> --- a/arch/x86/tools/gen-insn-attr-x86.awk
+> +++ b/arch/x86/tools/gen-insn-attr-x86.awk
+> @@ -64,7 +64,9 @@ BEGIN {
+>
+>         modrm_expr =3D "^([CDEGMNPQRSUVW/][a-z]+|NTA|T[012])"
+>         force64_expr =3D "\\([df]64\\)"
+> -       rex_expr =3D "^REX(\\.[XRWB]+)*"
+> +       rex_expr =3D "^((REX(\\.[XRWB]+)+)|(REX$))"
+> +       rex2_expr =3D "\\(REX2\\)"
+> +       no_rex2_expr =3D "\\(!REX2\\)"
+>         fpu_expr =3D "^ESC" # TODO
+>
+>         lprefix1_expr =3D "\\((66|!F3)\\)"
+> @@ -99,6 +101,7 @@ BEGIN {
+>         prefix_num["VEX+1byte"] =3D "INAT_PFX_VEX2"
+>         prefix_num["VEX+2byte"] =3D "INAT_PFX_VEX3"
+>         prefix_num["EVEX"] =3D "INAT_PFX_EVEX"
+> +       prefix_num["REX2"] =3D "INAT_PFX_REX2"
+>
+>         clear_vars()
+>  }
+> @@ -314,6 +317,10 @@ function convert_operands(count,opnd,       i,j,imm,=
+mod)
+>                 if (match(ext, force64_expr))
+>                         flags =3D add_flags(flags, "INAT_FORCE64")
+>
+> +               # check REX2 not allowed
+> +               if (match(ext, no_rex2_expr))
+> +                       flags =3D add_flags(flags, "INAT_NO_REX2")
+> +
+>                 # check REX prefix
+>                 if (match(opcode, rex_expr))
+>                         flags =3D add_flags(flags, "INAT_MAKE_PREFIX(INAT=
+_PFX_REX)")
+> @@ -351,6 +358,8 @@ function convert_operands(count,opnd,       i,j,imm,m=
+od)
+>                         lptable3[idx] =3D add_flags(lptable3[idx],flags)
+>                         variant =3D "INAT_VARIANT"
+>                 }
+> +               if (match(ext, rex2_expr))
+> +                       table[idx] =3D add_flags(table[idx], "INAT_REX2_V=
+ARIANT")
+>                 if (!match(ext, lprefix_expr)){
+>                         table[idx] =3D add_flags(table[idx],flags)
+>                 }
+> diff --git a/tools/arch/x86/include/asm/inat.h b/tools/arch/x86/include/a=
+sm/inat.h
+> index a61051400311..2e65312cae52 100644
+> --- a/tools/arch/x86/include/asm/inat.h
+> +++ b/tools/arch/x86/include/asm/inat.h
+> @@ -35,6 +35,8 @@
+>  #define INAT_PFX_VEX2  13      /* 2-bytes VEX prefix */
+>  #define INAT_PFX_VEX3  14      /* 3-bytes VEX prefix */
+>  #define INAT_PFX_EVEX  15      /* EVEX prefix */
+> +/* x86-64 REX2 prefix */
+> +#define INAT_PFX_REX2  16      /* 0xD5 */
+>
+>  #define INAT_LSTPFX_MAX        3
+>  #define INAT_LGCPFX_MAX        11
+> @@ -50,7 +52,7 @@
+>
+>  /* Legacy prefix */
+>  #define INAT_PFX_OFFS  0
+> -#define INAT_PFX_BITS  4
+> +#define INAT_PFX_BITS  5
+>  #define INAT_PFX_MAX    ((1 << INAT_PFX_BITS) - 1)
+>  #define INAT_PFX_MASK  (INAT_PFX_MAX << INAT_PFX_OFFS)
+>  /* Escape opcodes */
+> @@ -77,6 +79,8 @@
+>  #define INAT_VEXOK     (1 << (INAT_FLAG_OFFS + 5))
+>  #define INAT_VEXONLY   (1 << (INAT_FLAG_OFFS + 6))
+>  #define INAT_EVEXONLY  (1 << (INAT_FLAG_OFFS + 7))
+> +#define INAT_NO_REX2   (1 << (INAT_FLAG_OFFS + 8))
+> +#define INAT_REX2_VARIANT      (1 << (INAT_FLAG_OFFS + 9))
+>  /* Attribute making macros for attribute tables */
+>  #define INAT_MAKE_PREFIX(pfx)  (pfx << INAT_PFX_OFFS)
+>  #define INAT_MAKE_ESCAPE(esc)  (esc << INAT_ESC_OFFS)
+> @@ -128,6 +132,11 @@ static inline int inat_is_rex_prefix(insn_attr_t att=
+r)
+>         return (attr & INAT_PFX_MASK) =3D=3D INAT_PFX_REX;
+>  }
+>
+> +static inline int inat_is_rex2_prefix(insn_attr_t attr)
+> +{
+> +       return (attr & INAT_PFX_MASK) =3D=3D INAT_PFX_REX2;
+> +}
+> +
+>  static inline int inat_last_prefix_id(insn_attr_t attr)
+>  {
+>         if ((attr & INAT_PFX_MASK) > INAT_LSTPFX_MAX)
+> diff --git a/tools/arch/x86/include/asm/insn.h b/tools/arch/x86/include/a=
+sm/insn.h
+> index 65c0d9ce1e29..1a7e8fc4d75a 100644
+> --- a/tools/arch/x86/include/asm/insn.h
+> +++ b/tools/arch/x86/include/asm/insn.h
+> @@ -112,10 +112,15 @@ struct insn {
+>  #define X86_SIB_INDEX(sib) (((sib) & 0x38) >> 3)
+>  #define X86_SIB_BASE(sib) ((sib) & 0x07)
+>
+> -#define X86_REX_W(rex) ((rex) & 8)
+> -#define X86_REX_R(rex) ((rex) & 4)
+> -#define X86_REX_X(rex) ((rex) & 2)
+> -#define X86_REX_B(rex) ((rex) & 1)
+> +#define X86_REX2_M(rex) ((rex) & 0x80) /* REX2 M0 */
+> +#define X86_REX2_R(rex) ((rex) & 0x40) /* REX2 R4 */
+> +#define X86_REX2_X(rex) ((rex) & 0x20) /* REX2 X4 */
+> +#define X86_REX2_B(rex) ((rex) & 0x10) /* REX2 B4 */
+> +
+> +#define X86_REX_W(rex) ((rex) & 8)     /* REX or REX2 W */
+> +#define X86_REX_R(rex) ((rex) & 4)     /* REX or REX2 R3 */
+> +#define X86_REX_X(rex) ((rex) & 2)     /* REX or REX2 X3 */
+> +#define X86_REX_B(rex) ((rex) & 1)     /* REX or REX2 B3 */
+>
+>  /* VEX bit flags  */
+>  #define X86_VEX_W(vex) ((vex) & 0x80)  /* VEX3 Byte2 */
+> @@ -161,6 +166,18 @@ static inline void insn_get_attribute(struct insn *i=
+nsn)
+>  /* Instruction uses RIP-relative addressing */
+>  extern int insn_rip_relative(struct insn *insn);
+>
+> +static inline int insn_is_rex2(struct insn *insn)
+> +{
+> +       if (!insn->prefixes.got)
+> +               insn_get_prefixes(insn);
+> +       return insn->rex_prefix.nbytes =3D=3D 2;
+> +}
+> +
+> +static inline insn_byte_t insn_rex2_m_bit(struct insn *insn)
+> +{
+> +       return X86_REX2_M(insn->rex_prefix.bytes[1]);
+> +}
+> +
+>  static inline int insn_is_avx(struct insn *insn)
+>  {
+>         if (!insn->prefixes.got)
+> diff --git a/tools/arch/x86/lib/insn.c b/tools/arch/x86/lib/insn.c
+> index ada4b4a79dd4..f761adeb8e8c 100644
+> --- a/tools/arch/x86/lib/insn.c
+> +++ b/tools/arch/x86/lib/insn.c
+> @@ -185,6 +185,17 @@ int insn_get_prefixes(struct insn *insn)
+>                         if (X86_REX_W(b))
+>                                 /* REX.W overrides opnd_size */
+>                                 insn->opnd_bytes =3D 8;
+> +               } else if (inat_is_rex2_prefix(attr)) {
+> +                       insn_set_byte(&insn->rex_prefix, 0, b);
+> +                       b =3D peek_nbyte_next(insn_byte_t, insn, 1);
+> +                       insn_set_byte(&insn->rex_prefix, 1, b);
+> +                       insn->rex_prefix.nbytes =3D 2;
+> +                       insn->next_byte +=3D 2;
+> +                       if (X86_REX_W(b))
+> +                               /* REX.W overrides opnd_size */
+> +                               insn->opnd_bytes =3D 8;
+> +                       insn->rex_prefix.got =3D 1;
+> +                       goto vex_end;
+>                 }
+>         }
+>         insn->rex_prefix.got =3D 1;
+> @@ -294,6 +305,20 @@ int insn_get_opcode(struct insn *insn)
+>                 goto end;
+>         }
+>
+> +       /* Check if there is REX2 prefix or not */
+> +       if (insn_is_rex2(insn)) {
+> +               if (insn_rex2_m_bit(insn)) {
+> +                       /* map 1 is escape 0x0f */
+> +                       insn_attr_t esc_attr =3D inat_get_opcode_attribut=
+e(0x0f);
+> +
+> +                       pfx_id =3D insn_last_prefix_id(insn);
+> +                       insn->attr =3D inat_get_escape_attribute(op, pfx_=
+id, esc_attr);
+> +               } else {
+> +                       insn->attr =3D inat_get_opcode_attribute(op);
+> +               }
+> +               goto end;
+> +       }
+> +
+>         insn->attr =3D inat_get_opcode_attribute(op);
+>         while (inat_is_escape(insn->attr)) {
+>                 /* Get escaped opcode */
+> diff --git a/tools/arch/x86/tools/gen-insn-attr-x86.awk b/tools/arch/x86/=
+tools/gen-insn-attr-x86.awk
+> index af38469afd14..3f43aa7d8fef 100644
+> --- a/tools/arch/x86/tools/gen-insn-attr-x86.awk
+> +++ b/tools/arch/x86/tools/gen-insn-attr-x86.awk
+> @@ -64,7 +64,9 @@ BEGIN {
+>
+>         modrm_expr =3D "^([CDEGMNPQRSUVW/][a-z]+|NTA|T[012])"
+>         force64_expr =3D "\\([df]64\\)"
+> -       rex_expr =3D "^REX(\\.[XRWB]+)*"
+> +       rex_expr =3D "^((REX(\\.[XRWB]+)+)|(REX$))"
+> +       rex2_expr =3D "\\(REX2\\)"
+> +       no_rex2_expr =3D "\\(!REX2\\)"
+>         fpu_expr =3D "^ESC" # TODO
+>
+>         lprefix1_expr =3D "\\((66|!F3)\\)"
+> @@ -99,6 +101,7 @@ BEGIN {
+>         prefix_num["VEX+1byte"] =3D "INAT_PFX_VEX2"
+>         prefix_num["VEX+2byte"] =3D "INAT_PFX_VEX3"
+>         prefix_num["EVEX"] =3D "INAT_PFX_EVEX"
+> +       prefix_num["REX2"] =3D "INAT_PFX_REX2"
+>
+>         clear_vars()
+>  }
+> @@ -314,6 +317,10 @@ function convert_operands(count,opnd,       i,j,imm,=
+mod)
+>                 if (match(ext, force64_expr))
+>                         flags =3D add_flags(flags, "INAT_FORCE64")
+>
+> +               # check REX2 not allowed
+> +               if (match(ext, no_rex2_expr))
+> +                       flags =3D add_flags(flags, "INAT_NO_REX2")
+> +
+>                 # check REX prefix
+>                 if (match(opcode, rex_expr))
+>                         flags =3D add_flags(flags, "INAT_MAKE_PREFIX(INAT=
+_PFX_REX)")
+> @@ -351,6 +358,8 @@ function convert_operands(count,opnd,       i,j,imm,m=
+od)
+>                         lptable3[idx] =3D add_flags(lptable3[idx],flags)
+>                         variant =3D "INAT_VARIANT"
+>                 }
+> +               if (match(ext, rex2_expr))
+> +                       table[idx] =3D add_flags(table[idx], "INAT_REX2_V=
+ARIANT")
+>                 if (!match(ext, lprefix_expr)){
+>                         table[idx] =3D add_flags(table[idx],flags)
+>                 }
+> --
+> 2.34.1
+>
 
