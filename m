@@ -1,285 +1,152 @@
-Return-Path: <linux-kernel+bounces-166788-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-166789-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 048A98B9F80
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 19:28:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id C8AAC8B9F82
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 19:29:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E92EAB24160
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 17:28:46 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0838AB20BAD
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 May 2024 17:29:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D7D516FF45;
-	Thu,  2 May 2024 17:28:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7800416FF4A;
+	Thu,  2 May 2024 17:29:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="TY+1eBHJ"
-Received: from out-183.mta0.migadu.com (out-183.mta0.migadu.com [91.218.175.183])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="jiZfa1AR"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E79B16FF39
-	for <linux-kernel@vger.kernel.org>; Thu,  2 May 2024 17:28:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.183
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A61216FF45
+	for <linux-kernel@vger.kernel.org>; Thu,  2 May 2024 17:29:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714670919; cv=none; b=rqx5MpjXNnuqqC/JwmHSJKatYbcSN77MWMtkeDBjSGaXDMRg3UAmgVPwQpuYe2BJjf8etyyaOjaOe84cGoHVOk/1xfOq9xHusRvo5/hkteHc1AHi6hfqqnjeaaC72/ScADBQNF/VPLUfdHD0vNacMH7v4UJvZIdglL63ovezVMw=
+	t=1714670943; cv=none; b=NtgzUbTWIdbGz6DVChOeNIqXvNvkM5O76o1RBmmzGSFScv4UxJhjdeefK6/hf1GTLoHbULwNksXQPJJLr48MUGCLguJ0eT3dg5gG8+LuhOGATJR3tmpvXF/WDMqgLjWYXIcEJwSFIoe0McFsfeE4d2HtY9u3ighDhMHHDRSBSLk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714670919; c=relaxed/simple;
-	bh=JeyIzra834kL04Fwq8oEWCsEM8ID05t+DKwAq1EhS2k=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=fbi5/QVmZdeFqVQfpZRBbsHJFvDg2sj1Ki0EyanxD1cKCBQLzJg3S+NfyBwiVQE4AleKnv+7QUdy6LTBzsCO7BhVvoTpkGGwDJYPZt+bFD+wUrZDw2gKZJULtwThzZgcePSmYbp4blLb6fW1wbtagBg869nk4mRSMA7B0alo5lw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=TY+1eBHJ; arc=none smtp.client-ip=91.218.175.183
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <1509ec3a-be84-42b0-a704-51c10482f406@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1714670915;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=/FwuBkMV1cz8K2OmSfCwl9zAuP6IPiKH3Gc8CY+nxQ0=;
-	b=TY+1eBHJkEXh56ZoCWlox1HoT5FhPyibcX4FI3MzR74YRIO3GcOO00t1dB392XcrY+WRYa
-	wk2y23ajiPmJoUFpky4rHqONw9IcNsHeNxVm/4uSsWJxi3zPBfE62WXfC70usU0CFUw96c
-	hgNBa0j6JRJx8itTBOT2wzsJy706u2Q=
-Date: Fri, 3 May 2024 01:28:26 +0800
+	s=arc-20240116; t=1714670943; c=relaxed/simple;
+	bh=W3wEH25DHJLHiCPlwZANF0yYSmqELTFyIGYQeEpRKmA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=KLNJ9ff0tw5f7t59FhvTj/k+peHNa7Gzuy70lOtkCc4AjHOopRTz0lFa3k1Wa7oxku9i7NMTviwo1T+EX9nn26jv/sBWOW7qfNNPwAxQLO2Dmk08D7JeoUPJc8vXppQhW1FPHobJqOED5k6De/l30aWVI0iotbY/RGy1IfJX7Rc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=jiZfa1AR; arc=none smtp.client-ip=192.198.163.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1714670942; x=1746206942;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=W3wEH25DHJLHiCPlwZANF0yYSmqELTFyIGYQeEpRKmA=;
+  b=jiZfa1ARf0jy0two926KYQ11golknejWfHzu3Tmxav/v1ClQUH2m0Pf0
+   40HI0YNgTGdbQR90h83k9fA99mGON3pUZqor1kKodEg+WGuHJcqauhPZ+
+   cT3dqdc0+F8HAMSZSjFWOGBFONk8FgHXur1ZCi19cDgglbVeZV89Ig/2s
+   6dChBwTbYs2ssWnmarreW2CcMeChMhHcQsuk4vIPulhblCky1kkhIqG4V
+   7S5N2LnTPmp45sGkPY08j68sTfVLf2DEDuZsfKdHrt9B9iTYslNMKcRzz
+   CClrfs7B7ibi0LMPdcPphkdC9huu0OMlImhHN1P9OCxxYRRL71R+MhyFa
+   w==;
+X-CSE-ConnectionGUID: 3chX9iwQSiy/hENRbh+UwA==
+X-CSE-MsgGUID: V9vomwF9ROGTrRAeWm9pVg==
+X-IronPort-AV: E=McAfee;i="6600,9927,11062"; a="13402595"
+X-IronPort-AV: E=Sophos;i="6.07,247,1708416000"; 
+   d="scan'208";a="13402595"
+Received: from orviesa004.jf.intel.com ([10.64.159.144])
+  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 May 2024 10:29:01 -0700
+X-CSE-ConnectionGUID: aCYIlScVTP2S9e6aZ/C8ew==
+X-CSE-MsgGUID: lJ7oDaAsSfmEpLVMgls8yA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,247,1708416000"; 
+   d="scan'208";a="31987099"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by orviesa004.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 May 2024 10:28:56 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1s2aEl-00000003Op1-3di1;
+	Thu, 02 May 2024 20:28:51 +0300
+Date: Thu, 2 May 2024 20:28:51 +0300
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Sui Jingfeng <sui.jingfeng@linux.dev>
+Cc: Neil Armstrong <neil.armstrong@linaro.org>,
+	Randy Dunlap <rdunlap@infradead.org>,
+	dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+	Jessica Zhang <quic_jesszhan@quicinc.com>,
+	Sam Ravnborg <sam@ravnborg.org>,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Maxime Ripard <mripard@kernel.org>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>
+Subject: Re: [v1,1/3] drm/panel: ili9341: Correct use of device property APIs
+Message-ID: <ZjPNU24ZJIzGFDNg@smile.fi.intel.com>
+References: <20240425142706.2440113-2-andriy.shevchenko@linux.intel.com>
+ <c2d41916-0b6c-43b5-98eb-514eb0511f84@linux.dev>
+ <ce6a480d-80b3-46b0-a32d-26bc6480d02f@linux.dev>
+ <ZiqrLfezhns4UycR@smile.fi.intel.com>
+ <b5ffd984-4031-4a8a-adbc-75a1e1dfe765@linux.dev>
+ <ZjD8eoO3TmuCUj-a@smile.fi.intel.com>
+ <9e69b129-7539-4403-a621-bf3775aab995@linux.dev>
+ <ZjNPiBvLF3WcBftn@smile.fi.intel.com>
+ <e1d01191-fd96-4b17-b223-7147eb427315@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [v1,1/3] drm/panel: ili9341: Correct use of device property APIs
-To: neil.armstrong@linaro.org, Maxime Ripard <mripard@kernel.org>
-Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
- Randy Dunlap <rdunlap@infradead.org>, dri-devel@lists.freedesktop.org,
- linux-kernel@vger.kernel.org, Jessica Zhang <quic_jesszhan@quicinc.com>,
- Sam Ravnborg <sam@ravnborg.org>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>,
- Daniel Vetter <daniel@ffwll.ch>
-References: <20240425142706.2440113-2-andriy.shevchenko@linux.intel.com>
- <c2d41916-0b6c-43b5-98eb-514eb0511f84@linux.dev>
- <ZiqqiAztCaiAgI8e@smile.fi.intel.com>
- <2599705c-0a64-4742-b1d7-330e9fde6e7a@linux.dev>
- <20240426-married-augmented-mantis-ff7edd@penduick>
- <509b3822-dcf6-45eb-9516-ba8ff2cc4382@linux.dev>
- <20240429-bouncy-attentive-vole-9964f1@houat>
- <795bec5d-c7ba-4fc2-9be9-78c4063743d9@linux.dev>
- <20240430-unnatural-steel-spaniel-dbacef@houat>
- <75a89efb-f653-4185-a451-ef496dffd804@linaro.org>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Sui Jingfeng <sui.jingfeng@linux.dev>
-In-Reply-To: <75a89efb-f653-4185-a451-ef496dffd804@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e1d01191-fd96-4b17-b223-7147eb427315@linux.dev>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-Hi,
+On Fri, May 03, 2024 at 12:25:17AM +0800, Sui Jingfeng wrote:
+> On 2024/5/2 16:32, Andy Shevchenko wrote:
+> > On Wed, May 01, 2024 at 12:27:14AM +0800, Sui Jingfeng wrote:
+> > > On 2024/4/30 22:13, Andy Shevchenko wrote:
+> > > > On Fri, Apr 26, 2024 at 05:13:43AM +0800, Sui Jingfeng wrote:
 
+..
 
-On 2024/5/2 15:34, Neil Armstrong wrote:
-> On 30/04/2024 11:34, Maxime Ripard wrote:
->> On Tue, Apr 30, 2024 at 12:54:39AM +0800, Sui Jingfeng wrote:
->>> On 2024/4/29 19:55, Maxime Ripard wrote:
->>>> On Sat, Apr 27, 2024 at 01:57:46PM +0800, Sui Jingfeng wrote:
->>>>> On 2024/4/26 14:23, Maxime Ripard wrote:
->>>>>> On Fri, Apr 26, 2024 at 04:43:18AM +0800, Sui Jingfeng wrote:
->>>>>>> On 2024/4/26 03:10, Andy Shevchenko wrote:
->>>>>>>> On Fri, Apr 26, 2024 at 02:08:16AM +0800, Sui Jingfeng wrote:
->>>>>>>>> On 2024/4/25 22:26, Andy Shevchenko wrote:
->>>>>>>>>> It seems driver missed the point of proper use of device 
->>>>>>>>>> property APIs.
->>>>>>>>>> Correct this by updating headers and calls respectively.
->>>>>>>>> You are using the 'seems' here exactly saying that you are not 
->>>>>>>>> 100% sure.
->>>>>>>>>
->>>>>>>>> Please allow me to tell you the truth: This patch again has 
->>>>>>>>> ZERO effect.
->>>>>>>>> It fix nothing. And this patch is has the risks to be wrong.
->>>>>>>> Huh?! Really, stop commenting the stuff you do not understand.
->>>>>>> I'm actually a professional display drivers developer at the 
->>>>>>> downstream
->>>>>>> in the past, despite my contribution to upstream is less. But I 
->>>>>>> believe
->>>>>>> that all panel driver developers know what I'm talking about. So 
->>>>>>> please
->>>>>>> have take a look at my replies.
->>>>>> Most of the interactions you had in this series has been uncalled 
->>>>>> for.
->>>>>> You might be against a patch, but there's no need to go to such 
->>>>>> length.
->>>>>>
->>>>>> As far as I'm concerned, this patch is fine to me in itself, and 
->>>>>> I don't
->>>>>> see anything that would prevent us from merging it.
->>>>> No one is preventing you, as long as don't misunderstanding what 
->>>>> other
->>>>> people's technical replies intentionally. I'm just a usual and normal
->>>>> contributor, I hope the world will better than yesterday.
->>>> You should seriously consider your tone when replying then.
->>>>
->>>>> Saying such thing to me may not proper, I guess you may want to talk
->>>>> to peoples who has the push rights
->>>> I think you misunderstood me. My point was that your several rants 
->>>> were
->>>> uncalled for and aren't the kind of things we're doing here.
->>>>
->>>> I know very well how to get a patch merged, thanks.
->>>>
->>>>> just make sure it isn't a insult to the professionalism of drm bridge
->>>>> community itself though.
->>>> I'm not sure why you're bringing the bridge community or its
->>>> professionalism. It's a panel, not a bridge, and I never doubted the
->>>> professionalism of anyone.
->>>
->>>
->>> I means that the code itself could be adopted, as newer and younger
->>> programmer (like Andy) need to be encouraged to contribute.
->>
->> Andy has thousands of commits in Linux. He's *very* far from being a new
->> contributor.
->>
->>> I express no obvious objections, just hints him that something else
->>> probably should also be taken into consideration as well.
->>
->> That might be what you wanted to express, but you definitely didn't
->> express it that way.
->>
->>> On the other hand, we probably should allow other people participate
->>> in discussion so that it is sufficient discussed and ensure that it
->>> won't be reverted by someone in the future for some reasons. Backing
->>> to out case happens here, we may need to move things forward. 
->>> Therefore,
->>> it definitely deserve to have a try. It is not a big deal even though
->>> it gets reverted someday.
->>>
->>> In the end, I don't mind if you think there is nothing that could
->>> prevent you from merge it, but I still suggest you have a glance at
->>> peoples siting at the Cc list. I'm busy now and I have a lot of other
->>> tasks to do, and may not be able to reply you emails on time. So it up
->>> to you and other maintainers to decide.
->>> Thank you.
->>
->> So far, you're the only one who reviewed those patches. I'm not sure
->> what you're talking about here.
->
-> Well I (as drm-panel maintainer) did review them positively
+> > > > the former might be subdivided to "is it swnode backed or real fwnode one?"
+> > > > 
+> > > Yeah,
+> > > On non-DT cases, it can be subdivided to swnode backed case and ACPI fwnode backed case.
+> > > 
+> > >   - For swnode backed case: the device_get_match_data() don't has a implemented backend.
+> > >   - For ACPI fwnode backed case: the device_get_match_data() has a implemented backend.
+> > > 
+> > > But the driver has *neither* software node support
+> > True.
+> > 
+> > > nor ACPI support,
+> > Not true.
+> 
+> Why this is not true? Are you means that the panel-ilitek-ili9341 driver has ACPI support?
 
+That's the idea (as far as I see the copy of the code from tinyDRM),
+but broken over the copy'n'paste. This patch rectifies that to be
+in align with the original code, which *does* support ACPI.
 
-[...]
+> I'm asking because I don't see struct acpi_device_id related stuff in that source file,
+> am I miss something?
 
+Yes, you are. I leave it for you to research.
 
-> because the patches looked perfectly correct in regards of the commit 
-> message 
+> > So, slow down and take your time to get into the code and understand how it works.
+> > 
+> > > so that the rotation property can not get and ili9341_dpi_probe() will fails.
+> > > So in total, this is not a 100% correct use of device property APIs.
+> > > 
+> > > But I'm fine that if you want to leave(ignore) those less frequent use cases temporarily,
+> > > there may have programmers want to post patches, to complete the missing in the future.
+> > > 
+> > > So, there do have some gains on non-DT cases.
+> > > 
+> > >   - As you make it be able to compiled on X86 with the drm-misc-defconfig.
+> > >   - You cleanup the code up (at least patch 2 in this series is no obvious problem).
+> > >   - You allow people to modprobe it, and maybe half right and half undefined.
+> > > 
+> > > But you do helps moving something forward, so congratulations for the wake up.
 
-The point is the 'fixes' tag.
-
-Then, can I ask what's the issue it fixes? I'm asking because I see the
-submitting-patches.html [1] documentation told us that a fixes tag indicates
-that the patch fixes an issue in a previous commit.
-
-Previously, the driver only meant to be used on the DT systems, so what's issue?
-
-[1] https://www.kernel.org/doc/html/latest/process/submitting-patches.html#reviewer-s-statement-of-oversight
-
-I copy & paste the paragraph from link [1] for easier to read. See below:
-
-
-"A Fixes: tag indicates that the patch fixes an issue in a previous commit. It
-is used to make it easy to determine where a bug originated, which can help
-review a bug fix. This tag also assists the stable kernel team in determining
-which stable kernel versions should receive your fix. This is the preferred
-method for indicating a bug fixed by the patch."
-
-> and the patchset motivation and
-
-
-OK, the motivation is good, I agree and I admit.
-
-
-> because I trust Andy being a long time contributor with a lot of 
-> expertise.
->
-
-Does this means that you are going to merge patches from the experts without have a glance and
-reject or ignore novice's patches unconditionally?
-
-I'm asking because I see there still have a lot of other panel drivers use of_device_get_match_data()
-function to get a match, and most of them has the 'OF' guard. However, in theory, panel should be
-able to use on any CPU architecture if necessary. Does the remains has the similar issue? or Do we
-need to fixed them together?
-
-
-$ find . -name "*.c" -type f | xargs grep "of_device_get_match_data"
-
-/panel-ilitek-ili9882t.c:    desc = of_device_get_match_data(&dsi->dev);
-/panel-innolux-p079zca.c:    desc = of_device_get_match_data(&dsi->dev);
-/panel-simple.c:    desc = of_device_get_match_data(&pdev->dev);
-/panel-simple.c:    desc = of_device_get_match_data(&dsi->dev);
-/panel-novatek-nt39016.c:    panel->panel_info = 
-of_device_get_match_data(dev);
-/panel-novatek-nt35950.c:    nt->desc = of_device_get_match_data(dev);
-/panel-boe-himax8279d.c:    desc = of_device_get_match_data(&dsi->dev);
-/panel-sitronix-st7703.c:    ctx->desc = of_device_get_match_data(dev);
-/panel-sony-td4353-jdi.c:    ctx->type = 
-(uintptr_t)of_device_get_match_data(dev);
-/panel-samsung-sofef00.c:    ctx->mode = of_device_get_match_data(dev);
-/panel-synaptics-r63353.c:    panel->pdata = (struct r63353_desc 
-*)of_device_get_match_data(dev);
-/panel-abt-y030xx067a.c:    priv->panel_info = 
-of_device_get_match_data(dev);
-/panel-ilitek-ili9881c.c:    ctx->desc = 
-of_device_get_match_data(&dsi->dev);
-/panel-newvision-nv3052c.c:    priv->panel_info = 
-of_device_get_match_data(dev);
-/panel-mantix-mlaf057we51.c:    ctx->default_mode = 
-of_device_get_match_data(dev);
-/panel-himax-hx8394.c:    ctx->desc = of_device_get_match_data(dev);
-/panel-ilitek-ili9805.c:    ctx->desc = 
-of_device_get_match_data(&dsi->dev);
-/panel-boe-tv101wum-nl6.c:    desc = of_device_get_match_data(&dsi->dev);
-/panel-samsung-s6d7aa0.c:    ctx->desc = of_device_get_match_data(dev);
-/panel-novatek-nt36523.c:    pinfo->desc = of_device_get_match_data(dev);
-/panel-novatek-nt35510.c:    nt->conf = of_device_get_match_data(dev);
-/panel-newvision-nv3051d.c:    ctx->panel_info = 
-of_device_get_match_data(dev);
-/panel-khadas-ts050.c:    const void *data = 
-of_device_get_match_data(&dsi->dev);
-/panel-leadtek-ltk500hd1829.c:    ctx->panel_desc = 
-of_device_get_match_data(dev);
-/panel-truly-nt35597.c:    ctx->config = of_device_get_match_data(dev);
-/panel-innolux-ej030na.c:    priv->panel_info = 
-of_device_get_match_data(dev);
-/panel-magnachip-d53e6ea8966.c:    db->panel_info = 
-of_device_get_match_data(dev);
-/panel-novatek-nt36672e.c:    ctx->desc = of_device_get_match_data(dev);
-/panel-sitronix-st7701.c:    desc = of_device_get_match_data(&dsi->dev);
-/panel-dsi-cm.c:    ddata->panel_data = of_device_get_match_data(dev);
-/panel-novatek-nt36672a.c:    desc = of_device_get_match_data(&dsi->dev);
-/panel-novatek-nt35560.c:    nt->conf = of_device_get_match_data(dev);
-/panel-ilitek-ili9341.c:    ili->conf = of_device_get_match_data(dev);
-/panel-jadard-jd9365da-h3.c:    desc = of_device_get_match_data(dev);
-/panel-leadtek-ltk050h3146w.c:    ctx->panel_desc = 
-of_device_get_match_data(dev);
-/panel-ilitek-ili9322.c:    ili->conf = of_device_get_match_data(dev);
-/panel-samsung-s6e3ha2.c:    ctx->desc = of_device_get_match_data(dev);
-
-
-> Anyway since the rant is finished I'll land the patches.
->
-
-It's just *comments* or *remarks*, there really no need to use the 'rant'
-to insult and/or devalue other peoples, as it make no sense.
-
-
-> Neil
->
->>
->> Maxime
->
 -- 
-Best regards,
-Sui
+With Best Regards,
+Andy Shevchenko
+
 
 
