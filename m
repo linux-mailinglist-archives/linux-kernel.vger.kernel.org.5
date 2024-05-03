@@ -1,145 +1,215 @@
-Return-Path: <linux-kernel+bounces-167940-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-167893-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A53A58BB160
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 19:01:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2507F8BB0C4
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 18:21:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5B924284FF5
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 17:01:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D0C33286D79
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 16:21:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9CBA9157E7A;
-	Fri,  3 May 2024 17:00:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0FC91553B3;
+	Fri,  3 May 2024 16:21:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=yahoo.com header.i=@yahoo.com header.b="h/XuJOfP"
-Received: from sonic309-21.consmr.mail.ne1.yahoo.com (sonic309-21.consmr.mail.ne1.yahoo.com [66.163.184.147])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VJct072P"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B4AD157E69
-	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 17:00:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=66.163.184.147
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1826155389;
+	Fri,  3 May 2024 16:21:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714755655; cv=none; b=cJanXD234YdG1V92j9nm0qyl/e+PBBU8fej6YiSqqGvoLviChya+eChTzOk6pkWICeaxCjWe9Z8DNDsSeYtKKsF3sHUqpDv16HY8z2XcuYE374g/Dz77+/bk0ZyoqTAz9xmkusR246L7fBLvfR9ax0aj9/5CbOPk1+RO9eQf9sU=
+	t=1714753281; cv=none; b=W1MvsG2anzaXWDAMFMaJn5QfHOjsQzPxLtaNPwwgr2EfgePRLmD6LhXqpcV77AIlz+ShcBFrVTOkjJZUb7cNQfJU77GXEHnOOPEwAh5gUJO6qISUbJLbKkiZjyD9Et9BvJkxME2OE8b3ZuIMw8H7kx2rCo1S7owRlyTdszxPziI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714755655; c=relaxed/simple;
-	bh=OpuBHTwhnfArlf2PsQ6g2wnS/DKkhtNrSqNbd0Cd8cY=;
-	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
-	 MIME-Version:Content-Type; b=gXl+yf7mKywFkKcjif2mNkSCuQJOI49IyjapsvEVBqtJpYUrcrdAUVJA+lErWMCBNrpAVXp4B7BgGeAzvvGOXOkWyDgUaCuEtlJXwRQAw6Ms5Yb8nxSTX6lbBHykiLlSkcfEW3ohBAziO6Xy8qWlt7fZtACnTL83piWp1fDO9lE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=yahoo.com; spf=pass smtp.mailfrom=yahoo.com; dkim=pass (2048-bit key) header.d=yahoo.com header.i=@yahoo.com header.b=h/XuJOfP; arc=none smtp.client-ip=66.163.184.147
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=yahoo.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=yahoo.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1714755652; bh=OpuBHTwhnfArlf2PsQ6g2wnS/DKkhtNrSqNbd0Cd8cY=; h=Date:From:To:Cc:In-Reply-To:References:Subject:From:Subject:Reply-To; b=h/XuJOfP4qeWJeJUfu9XI2dvEgzygtrC4CQkQr52hHqL+u5d0EZKbP2COHmnzEf/JrOcrHLPnb3WKJ8WKv7KYu67zkNNbxwbMhHZAkfXWXsOApW31dy8X39SKCTp7/aUnyM+SkluOIU1tReyUEiYIPp83FqHP+7BHFnLBWjlh7AoF8bnulEyF2VKqInpLbYgAM31rUm5IpaFK88Qmb+Xm/jPTZSkNBXqogko/W5N6AuBT0PRrH9mWkBQHSH0zAL5AE/2EeQWUS9lvCZNTpQK4mFb07RYgGwHL6cgc0kaJnLvM27Za+5x+X2Sv32SB53OshVlWVpage6SsD2T8PfCkg==
-X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1714755652; bh=0roRuDy5zj7FoPPBMx4pCT5IazAPisE/VYX4kM5YcgX=; h=X-Sonic-MF:Date:From:To:Subject:From:Subject; b=HN77FixkNFiIjdzTyPTCglXSTr73Q8fEfEGAbRTRYzo88nHJQOH9TKg/z4eTL0k0WD3sJsnOenB0QLHcY3ttLXCvw5wHfeI/hEKOSz98IlZbow//bKIscA0ODOnBLYW7eCiszIyiiWVu1vNVc1EMtvLrIcrYubuC5EFu/EhKyDv33/ckazLlFjDjQDgtt0Sxn7EnoGSATXzRlDKsVelY2A0ReFSC0ZWlkpF7JDYCnJ1vd9+pXt+22hCXMVFdFpOKcMfRuVBGaPqG2WDmGV4vzfhJ9e+dNQqL6bCLtudkdhmYIYD21igDk1HidLAYyb5l75+V0av8B0W9KVv1kkDMlQ==
-X-YMail-OSG: u7CikhkVM1mEMBJgRhgeFfykAxEVELBK2D8SuCjgxXEHVfhg2Mh1jCun.7euP4n
- YuKTaefJTFGNeHA6y0GKN8r5o3pt6uZ4L7fJsdR9huBW4xI._HbSxGmtwL7Q.r.q2HNLUhrxNcqJ
- iQk0clfL4rJB7emk22t.djOQDkv.3brzpvxYm7mD76etPxjsHtjznB4tUyLYzXFO.6IDvqV7cuVU
- s7YU8V1I5QXnD2RY954jhO_zWBG1FHHEhnmc2lafLzGClMxUD1sSeuRmEUnPzd9UJb1XvnNuPzoR
- HDhGIP5Qbmk9vsiiNBfzez4x4g8KFg3M.G5Uk5n2WX7L_k6B9_ZGCVtrDh348xQOjY1Y_1Cd81b4
- noQswoJiZsryvGYbOrdRyqJAQrn1NxglYFDVVQ8ihsj3JFsAg8idJ57wbS4lW1zJR0z2hwX0D5L8
- Ah9_5UWH5vGNxPLESZLBXSsL8X91UjsCxu6TnFw7uhzNds6_ofPqhWISo6wokWtoHo4s5i_Dd1g1
- pgusS5pHJ1PX8KPBpv1fMxnUGbma5Mq06lphYU_SSXY4i5qCBUK37DNnJIV5AgXDEbpreAvPY5KN
- vR8Tb6Q2yF6axmhLYw2qwsfnAUr0vA_Jzc2pUUzAeDxF6I0UPkjLA7a7yiaDIczakKX6dwdSJ.mG
- 58OM_lkjw52d71AdkfrDJUX2MksGHq1K63WSXuFurdzA3S18AlusvV.5PFProfYCIRztn0BDISD2
- Qa0GpFEiFwlzby4x0fgGxV8dJZ7Xq5ugd4xBCV.6.A2dnjy26PjzG0jwSLH9GPjFaJGaVk9uUasX
- Ix6sSXmG_K_jm3KYote_PDn6JLIa0hbq_HNpR__3cjgTP1plr_6Akyd1GFihjkHF_mscqbk6S76Q
- jpIhhLUmyHcsZ.NWMfj678JphFYyxPaOOxLXXAMfL_zhiEjNUJvyW4VexTTgNZ3xy4unuIoacAoJ
- i65ljO1IAGxShzOLanEqKFAMguiVBBN84wbYDBpr0kbG1lU32E1cGTIczqgW2w82DRV0zMHp7_sk
- RkIuj5k_JzxlnN5zNfGNQ27h3I4gVCCP9gOc5wekqRwLV8ifLYRb0bPkd8tD7JmD2LZ4W42b5344
- HsLeoU48IJJDVr0YJZVirumWrxsKvF2I3o7_KXaVyliAP25U_deLjmT.BBE1UONAftNh2kNMOZhG
- ak5IKdiwLyK6_12ip8oazaBJj_0W2q_gqrvjiq4bKG6iI._HycRHunW22uHeF9wvQrk5tc_APutn
- ySnbWQ9ziXxvaBWtboypHwNZUDPR.1KsQgcqJSY2RL3r9XfaUo845YNVfdFuXJRnWkIvdttDKler
- fyJKbvSmeSCJKhNzvxBHRQYh5n.3NYvEikv_TsZJacJhbUnWXZUvXasP37MGyoQ7GLT5da687ovE
- MPDnTVH5iJuFgVqg.nx3oyRUA1nTBGBfvFZYSiKFVAvWHa4stTt3NH3SSaTDdTBWfIGRsYGhkvLA
- dGy3Z7XijAEEDsjVV7IcaVpLVWIbJ5jIIBJ13eYMxWVJ5f4A4lIZrv_SZBpvByB1sfv.DS7gSonq
- 1VNOutIuK8hijTa9otiRaFsP5_Q0XVFGUteywvHokJuiKc9VgRr3JHFzTPQ4VicD_5wUtc5IFJ1G
- Whv.16lmZ496l.ekC09_B7nK3cP4JcBG1bvLevBfXuZGDgqGnk69NAcG7XfInLZXd.siTtH_j2Hu
- Um8ryul1Tv18C0USqxm8iwpFTlN8Nnzyfmboy0o0wiQplgRXpa.HUUaRAp_Q1evqftIW2KXhIQd.
- PgvidYsIBtF.XIaFWMsLdcMg1GvBlnp_6PRqwXVoLM2PAqh5VqVkQQTOfaBeMPEn8jtbd6qNLLqP
- 0LUJpjXA1La1EIPftMu6oPuaNY5s2vCt4KwXJcivqOm8eJpB7YSB6SjubeIV9IqXdILqqdTIJ5I1
- loXhSfvkPvTocCDcdoz7FvbKaejGqeAjQjG8RIM0v82Pdtw0DCF.8aCwGPn7CiVmUwVA3AB8L30S
- N_n9FCd6TcDBPoK5HwRSX..z0kdfVosVSs6SS2qsrOs3jY06vlXP0PhNz2EG_YmgI7YvRoqKxbY7
- PKcwpvJsXvM7YBuftOiseBjk3I_KzychmFW.f.Ls34I5eM8XzWMW0LfYeBAwTIprJKhvL6V_Vrms
- tgESrkIU7v9UtaRwWh7DKRHDJUDHgqExo6lBS0mqHPrUKy.hVNgkJlB2PDa_Qv4JSP3Rf1VmTgvH
- Fcv96CSp4tjyCAXFkI47vWUo4VCWan1qd7NG.JaBVJ1kVaf_Z0uiLr9CVPVJD6A.o_UxUDqo-
-X-Sonic-MF: <ashokemailat@yahoo.com>
-X-Sonic-ID: b20f7dc0-ce88-4f67-8215-c25d657d58b6
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic309.consmr.mail.ne1.yahoo.com with HTTP; Fri, 3 May 2024 17:00:52 +0000
-Date: Fri, 3 May 2024 16:20:24 +0000 (UTC)
-From: Ashok Kumar <ashokemailat@yahoo.com>
-To: Julia Lawall <julia.lawall@inria.fr>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
-	"dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>, 
-	"linux-fbdev@vger.kernel.org" <linux-fbdev@vger.kernel.org>, 
-	"linux-staging@lists.linux.dev" <linux-staging@lists.linux.dev>, 
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
-	"outreachy@lists.linux.dev" <outreachy@lists.linux.dev>
-Message-ID: <1389558595.6771301.1714753224419@mail.yahoo.com>
-In-Reply-To: <c8d24241-1763-f7b7-4491-2e5aa3ea3be@inria.fr>
-References: <ZjRDUO6/M+RDCcQJ.ref@c> <ZjRDUO6/M+RDCcQJ@c> <c8d24241-1763-f7b7-4491-2e5aa3ea3be@inria.fr>
-Subject: Re: [PATCH] staging: fb_tinylcd Alignment to open parenthesis
+	s=arc-20240116; t=1714753281; c=relaxed/simple;
+	bh=Lz8Dfx2dl/7yUWkxrmyt1Th6CVmp9ESvVhwFYnUUsZE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=rG5PS0pnmojxhhEsXS82AeFSubgRTP5fzrqiQAqZzR5hoRDmnvcPdwfQ9bJnpmPAFtz+VRhPm6R3cbWBk3/4KXWzABbajIASMSMKygl3lNZ0VglXNgHArYLMiqJr9iCdTktu85m4w8XKwMqVZ1UuSHj7ZtVid8QlCBqfAJRX3RI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VJct072P; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 20578C116B1;
+	Fri,  3 May 2024 16:21:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714753281;
+	bh=Lz8Dfx2dl/7yUWkxrmyt1Th6CVmp9ESvVhwFYnUUsZE=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=VJct072PuFfEVWjF1jCII4plYNJ/fIbCmlYCxh/t2nihXtGekEqxlX7bI0Xy0MHUF
+	 9ZJrKu38VCQXhbzw2fbtNQoJZvvgC9AxUlcpodNXFzGh0w0H+HlZLBS0p7ed5sE0jB
+	 qleNWtSdyB131RYfPM5Sn7wLgkr9lZnkJfTz0URGe6GFk6da1L4NG7jNu+vOKr1XpK
+	 5BXclFM1A6A98kdSnlx5zAPOTG43PerMRXouWHkqGF4G0uMKvJjuM1sXm48vKhJD6w
+	 dnJI+yxofuEsGA51vYA5dGKJAMxxy+IG8oBkzapTZErm5N99LqN2psikYqiY8OoZu2
+	 UYqtSvNSZD2Qw==
+Date: Fri, 3 May 2024 17:21:14 +0100
+From: Will Deacon <will@kernel.org>
+To: Sebastian Ene <sebastianene@google.com>
+Cc: catalin.marinas@arm.com, james.morse@arm.com, jean-philippe@linaro.org,
+	maz@kernel.org, oliver.upton@linux.dev, qperret@google.com,
+	qwandor@google.com, sudeep.holla@arm.com, suzuki.poulose@arm.com,
+	tabba@google.com, yuzenghui@huawei.com, lpieralisi@kernel.org,
+	kvmarm@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org, kernel-team@android.com
+Subject: Re: [PATCH 1/4] KVM: arm64: Trap FFA_VERSION host call in pKVM
+Message-ID: <20240503162114.GA18789@willie-the-truck>
+References: <20240418163025.1193763-2-sebastianene@google.com>
+ <20240418163025.1193763-3-sebastianene@google.com>
+ <20240503143937.GA18656@willie-the-truck>
+ <ZjUCyGoptCcIoGpU@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Mailer: WebService/1.1.22256 YMailNorrin
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZjUCyGoptCcIoGpU@google.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 
+On Fri, May 03, 2024 at 03:29:12PM +0000, Sebastian Ene wrote:
+> On Fri, May 03, 2024 at 03:39:38PM +0100, Will Deacon wrote:
+> > On Thu, Apr 18, 2024 at 04:30:23PM +0000, Sebastian Ene wrote:
+> > > The pKVM hypervisor initializes with FF-A version 1.0. Keep the
+> > > supported version inside the host structure and prevent the host
+> > > drivers from overwriting the FF-A version with an increased version.
+> > > Without trapping the call, the host drivers can negotiate a higher
+> > > version number with TEE which can result in a different memory layout
+> > > described during the memory sharing calls.
+> > > 
+> > > Signed-off-by: Sebastian Ene <sebastianene@google.com>
+> > > ---
+> > >  arch/arm64/kvm/hyp/nvhe/ffa.c | 43 ++++++++++++++++++++++++++++++++---
+> > >  1 file changed, 40 insertions(+), 3 deletions(-)
+> > > 
+> > > diff --git a/arch/arm64/kvm/hyp/nvhe/ffa.c b/arch/arm64/kvm/hyp/nvhe/ffa.c
+> > > index 320f2eaa14a9..023712e8beeb 100644
+> > > --- a/arch/arm64/kvm/hyp/nvhe/ffa.c
+> > > +++ b/arch/arm64/kvm/hyp/nvhe/ffa.c
+> > > @@ -58,6 +58,7 @@ struct kvm_ffa_buffers {
+> > >  	hyp_spinlock_t lock;
+> > >  	void *tx;
+> > >  	void *rx;
+> > > +	u32 ffa_version;
+> > >  };
+> > 
+> > Why should this be part of 'struct kvm_ffa_buffers'? The host, proxy and
+> > Secure side will end up using the same version, so a simple global
+> > variable would suffice, no?
+> > 
+> I prefer keeping it here as we will have more clients in the future /
+> different VMs and each one of them will have its own version and its own
+> pair of buffers.
 
-On Thursday, May 2, 2024 at 11:54:58 PM PDT, Julia Lawall <julia.lawall@inr=
-ia.fr> wrote:=20
+We can add that when we need to. Let's keep it simple for now, as the
+idea of the proxy having to support multiple versions of the spec at
+once sounds terrifying to me. I don't think we're going to want to
+re-marshall the data structures between the 1.0 and 1.1 formats, are we?
 
+> > > @@ -640,6 +641,39 @@ static bool do_ffa_features(struct arm_smccc_res *res,
+> > >  	return true;
+> > >  }
+> > >  
+> > > +static void do_ffa_version(struct arm_smccc_res *res,
+> > > +			   struct kvm_cpu_context *ctxt)
+> > > +{
+> > > +	DECLARE_REG(u32, ffa_req_version, ctxt, 1);
+> > > +	u32 current_version;
+> > > +
+> > > +	hyp_spin_lock(&host_buffers.lock);
+> > 
+> > Why do you need to take the lock for this?
+> > 
+> 
+> Because we interpret the host buffer content based on the version that we
+> end up setting here and each time we are accessing these buffers we are
+> protected by this lock.
 
+I think that's indicative of a broader issue, though, which is that you
+allow for the version to be re-negotiated at runtime. The spec doesn't
+allow that and I don't think we should either.
 
+> > > +	/*
+> > > +	 * If the client driver tries to downgrade the version, we need to ask
+> > > +	 * first if TEE supports it.
+> > > +	 */
+> > > +	if (FFA_MINOR_VERSION(ffa_req_version) < FFA_MINOR_VERSION(current_version)) {
+> > 
+> > Similarly here, I don't think 'current_version' is what we should expose.
+> > Rather, we should be returning the highest version that the proxy
+> > supports in the host, which is 1.0 at this point in the patch series.
+> 
+> We already report the highest version that the proxy supports on line:
+> `res->a0 = current_version;`
+> 
+> 'current_version' is assigned during proxy initialization.
+> This check allows us to downgrade the supported ffa_version if the Host
+> requested it and only if TF-A supports it.
 
+I don't think we want the host negotiating directly with the Secure side,
+though, do we? 'current_version' is initialised to whatever the Secure
+side gives us, so if we had something like:
 
+  1. Proxy initialises, issues FFA_VERSION(1.0)
+  2. Secure implements 1.2 and so returns 1.2 but remains in 1.0
+     compatability mode for the data structure formats.
+  3. The host issues FFA_VERSION(1.1)
+  4. The code above then issues FFA_VERSION(1.1) to Secure and it
+     switches over to the 1.1 data structures
 
+Did I get that right?
 
-On Thu, 2 May 2024, Ashok Kumar wrote:
+I really think we need to settle on a single version for the host,
+hypervisor and Secure and then stick with it following a single
+negotiation stage.
 
-> Corrected coding style CHECK: Alignment should match open parenthesis
+> > > +		arm_smccc_1_1_smc(FFA_VERSION, ffa_req_version, 0,
+> > > +				  0, 0, 0, 0, 0,
+> > > +				  res);
+> > 
+> > Hmm, I'm struggling to see how this is supposed to work per the spec.
+> > The FF-A spec says:
+> > 
+> >   | ... negotiation of the version must happen before an invocation of
+> >   | any other FF-A ABI.
+> 
+> I think that is a bit vague in my opinion but what I get is that the first call
+> executed should always be the get version ff-a call.
+> 
+> > 
+> > and:
+> > 
+> >   | Once the caller invokes any FF-A ABI other than FFA_VERSION, the
+> >   | version negotiation phase is complete.
+> >   |
+> >   | Once an FF-A version has been negotiated between a caller and a
+> >   | callee, the version may not be changed for the lifetime of the
+> >   | calling component. The callee must treat the negotiated version as
+> >   | the only supported version for any subsequent interactions with the
+> >   | caller.> 
+> > So by the time we get here, we've already settled on our version with
+> > the Secure side and the host cannot downgrade.
+> 
+> At this stage I think the spec didn't take into account that there can be a hypervisor
+> in between.
 
-Ashok, I think the code is nicer as is, because it has all the constant
-numbers lined up.
+Well, that's what the spec says and I think we need to follow it. I can
+well imagine that the Secure side won't allow the version to be
+re-negotiated on the fly and I don't think we'd want that in the proxy,
+either.
 
-julia
+> > That's a bit rubbish if you ask me, but I think it means we'll have to
+> > defer some of the proxy initialisation until the host calls FFA_VERSION,
+> > at which point we'll need to negotiate a common version between the host,
+> > the proxy and Secure. Once we've done that, our FFA_VERSION handler will
+> > just return that negotiated version.
+> 
+> We are already doing this when the ARM driver is built as an external
+> module. If it is not as an external module and is builtin we have a
+> bigger issue because it loads before pKVM at subsys_initcall. This means
+> that we won't trap FFA_MAP* and other setup calls.
 
-Thanks for the update I will ignore this change.=C2=A0
+Sorry, I don't follow. hyp_ffa_init() issues FFA_FEATURES immediately
+after FFA_VERSION, so we terminate the negotiation right away.
 
-Is there a list of exceptions to the checkpatch information that we can ign=
-ore in general.
-
-
->
-> Signed-off-by: Ashok Kumar <ashokemailat@yahoo.com>
-> ---
->=C2=A0 drivers/staging/fbtft/fb_tinylcd.c | 2 +-
->=C2=A0 1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/staging/fbtft/fb_tinylcd.c b/drivers/staging/fbtft/f=
-b_tinylcd.c
-> index 9469248f2c50..60cda57bcb33 100644
-> --- a/drivers/staging/fbtft/fb_tinylcd.c
-> +++ b/drivers/staging/fbtft/fb_tinylcd.c
-> @@ -38,7 +38,7 @@ static int init_display(struct fbtft_par *par)
->=C2=A0 =C2=A0=C2=A0=C2=A0 write_reg(par, 0xE5, 0x00);
->=C2=A0 =C2=A0=C2=A0=C2=A0 write_reg(par, 0xF0, 0x36, 0xA5, 0x53);
->=C2=A0 =C2=A0=C2=A0=C2=A0 write_reg(par, 0xE0, 0x00, 0x35, 0x33, 0x00, 0x0=
-0, 0x00,
-> -=C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 =C2=A0 =C2=A0 =C2=A0 0x00, 0x35, 0=
-x33, 0x00, 0x00, 0x00);
-> +=C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 =C2=A0 0x00, 0x35, 0x33, 0x00, 0x0=
-0, 0x00);
->=C2=A0 =C2=A0=C2=A0=C2=A0 write_reg(par, MIPI_DCS_SET_PIXEL_FORMAT, 0x55);
->=C2=A0 =C2=A0=C2=A0=C2=A0 write_reg(par, MIPI_DCS_EXIT_SLEEP_MODE);
->=C2=A0 =C2=A0=C2=A0=C2=A0 udelay(250);
-> --
-> 2.34.1
->
->
->
+Will
 
