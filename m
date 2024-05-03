@@ -1,183 +1,176 @@
-Return-Path: <linux-kernel+bounces-167754-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-167751-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 35F998BAEAB
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 16:17:48 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 769EB8BAE9F
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 16:15:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A24811F24578
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 14:17:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D2F30284442
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 14:15:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A6F4155309;
-	Fri,  3 May 2024 14:17:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="MTnG/V4G"
-Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D853154BEF
-	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 14:17:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 30322154BEE;
+	Fri,  3 May 2024 14:14:56 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6EBF153584
+	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 14:14:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714745841; cv=none; b=HsedwOZrG641KMLkKCTrh9XtoE4+jqoD5KLov6ewvrMzZJoLMmXyVSI0IZugzagUvzIjO3tSUixTPTx8f6u/lBovNs/Rbhpq4juUf/25cDbGE0xSHStL9VrPpfbe6gbO/Ux8BWhGIt26dmG6hYv5Du/7K5KrYXHRj7/ZJMZ/aGA=
+	t=1714745695; cv=none; b=f4t3yqTgeoGI+valZ9Jw3Ce55Y5Ac0bXNHNoEP4PsxPEvGld5k52Usp8dWmIWuZMGrlsIz4AMFcGEqRuNq2QmjC7pOH/GQY9J1eSaYFcLa28hBDxq0oH7jFgZ5jleIR0O96puIlEhE0PfJjuOerd9WAEitkDnFQRxYlW4Hrp9mc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714745841; c=relaxed/simple;
-	bh=HLNnngZtVS6/xr3NuvGsRGtSiLzoXBl1xah47pEzPZI=;
-	h=References:From:To:Cc:Subject:Date:In-reply-to:Message-ID:
-	 MIME-Version:Content-Type; b=GaqJAtagPQxxrjSbVi1U59zjoio31DXCSRbVPzhutG+BiQKymb1eh5f3wDAx10W18rLceJWc3al2mhZkxpobNkq0QVMHPLZWU6giGWsQqplW5H6kTUIIqP47WFjwAsnzX6PNRNzweiRIgTPJq9If8i1lh88GacRek5jTRqAuM4g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=MTnG/V4G; arc=none smtp.client-ip=209.85.128.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
-Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-41b5e74fa2fso60834245e9.1
-        for <linux-kernel@vger.kernel.org>; Fri, 03 May 2024 07:17:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1714745838; x=1715350638; darn=vger.kernel.org;
-        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
-         :user-agent:references:from:to:cc:subject:date:message-id:reply-to;
-        bh=mi/mhU22fI9RIiTkHOJlpI4wXPcoOgAYplYoLc68pRk=;
-        b=MTnG/V4GfEwxnz6XzmWaSRJFCh9rgeuoYuNfuF+3FNf4EM9eNrLbUt3E+pz/uW7fzr
-         WuBktsanSuC+04gOm4ES/4Wk/7paT+BwVqyb8Q8R0neestq6jt2KFEf/PTgSaQ0YEsrj
-         PHelwMoPaEfj0F8SauB6KyuTWGJcEbStaI7iWEfnxXZSwF31sDC1UgcyRqq7QlbwBJjD
-         qPEMEtOXZVaKnaJELQSaC96XRE8cGDyr93bHF6G7M+4HCz4roDnrcbWihoet0jSrvg78
-         hbKFUZZC/1qX6gaSBiAzixROJzjnVTVkK5i4JAFuCoj049kY9J/jtrn6TiiS/nt/2mdC
-         PpNQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714745838; x=1715350638;
-        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
-         :user-agent:references:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=mi/mhU22fI9RIiTkHOJlpI4wXPcoOgAYplYoLc68pRk=;
-        b=UZ0Hr6dtQ3q3Eq3RC5h0Sb3lDseenJqX8VwISRoVlrLn3YS4D/2K2ghRKeEG/CsaVv
-         t6HqwXTu7/qJznQ4LA0tr4FEZlGk9rY5IEA+VkQrS/jvC4FzfnQkYHjWlmyeFdmPKd9e
-         OoQUTtIis8ettEbAkChp6hENNsh+OqEqA6YP10xbqby1Ld0ECejdmAu4KtN7M37+D1hY
-         70+eqhG8JlAVGxzY+aaUxQOIs0o+4UToAzSvmFt9bD9arX81gj44MegiOgV84uvCe8/I
-         sKunkQGy3Qk4J2+RHajerR0/BcepKwlVNJLr7SkUa1yoMf+y1ADxQ5beXeVJjwEGCibF
-         /WVg==
-X-Forwarded-Encrypted: i=1; AJvYcCWD515fLkz/wjLEaeF+oLmCWnagoG3DwyBGVfkqGvUCyOTBLfpwmf6B4iVQy8rafXC/AsPvLUjhqQZBHlUCKu+MdR4BHcdomJjMmlNk
-X-Gm-Message-State: AOJu0YwSXuy0AYwDmIw8XFvVQiWs2mo43UYiLzwp8a7oE1g0fFfj8Lx6
-	49rFkO5vlKaNQzslIjtWiVL013a9u2RbM9EAU1KgrtDVwB4+n5lgo+TBPayDYJI=
-X-Google-Smtp-Source: AGHT+IGl8A3CNGIOXabjv5H9Oz2zuPwg61o4PRCCpsIbyOo0AUsxBa9pb1Pfsk4BzFD31YbUj0yF7g==
-X-Received: by 2002:a05:600c:4706:b0:41a:b56c:2929 with SMTP id v6-20020a05600c470600b0041ab56c2929mr2348971wmo.34.1714745837574;
-        Fri, 03 May 2024 07:17:17 -0700 (PDT)
-Received: from localhost ([2a01:e0a:3c5:5fb1:1b85:e590:355b:9957])
-        by smtp.gmail.com with ESMTPSA id r12-20020a05600c458c00b0041bfa2171efsm5781969wmo.40.2024.05.03.07.17.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 03 May 2024 07:17:17 -0700 (PDT)
-References: <20240430064438.2094701-1-xianwei.zhao@amlogic.com>
-User-agent: mu4e 1.10.8; emacs 29.2
-From: Jerome Brunet <jbrunet@baylibre.com>
-To: Xianwei Zhao <xianwei.zhao@amlogic.com>
-Cc: linux-amlogic@lists.infradead.org, linux-clk@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, Neil Armstrong
- <neil.armstrong@linaro.org>, Jerome Brunet <jbrunet@baylibre.com>, Michael
- Turquette <mturquette@baylibre.com>, Stephen  Boyd <sboyd@kernel.org>, Rob
- Herring <robh@kernel.org>, Krzysztof Kozlowski
- <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
- Kevin Hilman <khilman@baylibre.com>
-Subject: Re: [PATCH v8 0/5] Add C3 SoC PLLs and Peripheral clock
-Date: Fri, 03 May 2024 16:12:34 +0200
-In-reply-to: <20240430064438.2094701-1-xianwei.zhao@amlogic.com>
-Message-ID: <1jv83v2d5f.fsf@starbuckisacylon.baylibre.com>
+	s=arc-20240116; t=1714745695; c=relaxed/simple;
+	bh=a0miZy6BtS8WlF2l8C6m1AYEuvdLqwVJZpR40YaIV6s=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=CEn2xA21qKGEtFk7DAIDcPCdaxwJ/gZCHw3Sg9vZFYG0GMpsM/v0WCwO9p6Z+23SPLPQBg7KA0MFijA50vrcOsmtUDT3JILULAEOA/4PZjRpYDl8c7Sjm/VUnbh2PSNgqYNecLRd7nJybfoNGxSqFTRTT/4aX6BJJM5ckK3ewTI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 45C7513D5;
+	Fri,  3 May 2024 07:15:17 -0700 (PDT)
+Received: from [10.57.67.51] (unknown [10.57.67.51])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B180F3F73F;
+	Fri,  3 May 2024 07:14:50 -0700 (PDT)
+Message-ID: <9d390017-f1c4-44db-864f-cb95b8fd3a9b@arm.com>
+Date: Fri, 3 May 2024 15:14:49 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] mm/vmstat: sum up all possible CPUs instead of using
+ vm_events_fold_cpu
+Content-Language: en-GB
+To: Vlastimil Babka <vbabka@suse.cz>, Barry Song <21cnbao@gmail.com>,
+ akpm@linux-foundation.org, linux-mm@kvack.org
+Cc: hannes@cmpxchg.org, linux-kernel@vger.kernel.org, david@redhat.com,
+ v-songbaohua@oppo.com, willy@infradead.org
+References: <20240503020924.208431-1-21cnbao@gmail.com>
+ <c055203a-4365-4f5e-8276-5c57634abe73@arm.com>
+ <d855af59-be1f-40e0-b5db-840ca1b23cdd@suse.cz>
+From: Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <d855af59-be1f-40e0-b5db-840ca1b23cdd@suse.cz>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
+On 03/05/2024 14:45, Vlastimil Babka wrote:
+> On 5/3/24 11:16 AM, Ryan Roberts wrote:
+>> On 03/05/2024 03:09, Barry Song wrote:
+>>> @@ -83,8 +83,6 @@ static inline void count_vm_events(enum vm_event_item item, long delta)
+>>>  
+>>>  extern void all_vm_events(unsigned long *);
+>>>  
+>>> -extern void vm_events_fold_cpu(int cpu);
+>>> -
+>>>  #else
+>>>  
+>>>  /* Disable counters */
+>>> @@ -103,9 +101,6 @@ static inline void __count_vm_events(enum vm_event_item item, long delta)
+>>>  static inline void all_vm_events(unsigned long *ret)
+>>>  {
+>>>  }
+>>> -static inline void vm_events_fold_cpu(int cpu)
+>>> -{
+>>> -}
+>>>  
+>>>  #endif /* CONFIG_VM_EVENT_COUNTERS */
+>>>  
+>>> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+>>> index cd584aace6bf..8b56d785d587 100644
+>>> --- a/mm/page_alloc.c
+>>> +++ b/mm/page_alloc.c
+>>> @@ -5826,14 +5826,6 @@ static int page_alloc_cpu_dead(unsigned int cpu)
+>>>  	mlock_drain_remote(cpu);
+>>>  	drain_pages(cpu);
+>>>  
+>>> -	/*
+>>> -	 * Spill the event counters of the dead processor
+>>> -	 * into the current processors event counters.
+>>> -	 * This artificially elevates the count of the current
+>>> -	 * processor.
+>>> -	 */
+>>> -	vm_events_fold_cpu(cpu);
+>>> -
+>>>  	/*
+>>>  	 * Zero the differential counters of the dead processor
+>>>  	 * so that the vm statistics are consistent.
+>>> diff --git a/mm/vmstat.c b/mm/vmstat.c
+>>> index db79935e4a54..aaa32418652e 100644
+>>> --- a/mm/vmstat.c
+>>> +++ b/mm/vmstat.c
+>>> @@ -114,7 +114,7 @@ static void sum_vm_events(unsigned long *ret)
+>>>  
+>>>  	memset(ret, 0, NR_VM_EVENT_ITEMS * sizeof(unsigned long));
+>>>  
+>>> -	for_each_online_cpu(cpu) {
+>>> +	for_each_possible_cpu(cpu) {
+>>
+>> One thought comes to mind (due to my lack of understanding exactly what
+>> "possible" means): Linux is compiled with a max number of cpus - NR_CPUS - 512
+>> for arm64's defconfig. Does all possible cpus include all 512? On an 8 CPU
+>> system that would be increasing the number of loops by 64 times.
+>>
+>> Or perhaps possible just means CPUs that have ever been online?
+> 
+> IIRC on x86 it comes from some BIOS tables, and some bioses might be not
+> providing very realistic numbers, so it can be unnecessary large.
 
-On Tue 30 Apr 2024 at 14:44, Xianwei Zhao <xianwei.zhao@amlogic.com> wrote:
+OK thanks for the info.
 
-> Changes since V7 [1]:
->  - Remove included head file not used.
->  - Link to v7: https://lore.kernel.org/all/20240424050928.1997820-1-xianwei.zhao@amlogic.com
->
+> 
+>> Either way, I guess it's not considered a performance bottleneck because, from
+>> memory, the scheduler and many other places are iterating over all possible cpus.
+> 
+> I doubt anything does it in a fastpath. But this affects only reading
+> /proc/vmstat, right? Which is not a fastpath. Also update_balloon_stats()
+> which is probably ok as well?
 
-Overall this v8 looks good. Please address the remaining comments.
+Yep agreed.
 
-There is no need to rush sending a v9. Please allow some time for other
-to review this. I will not apply a v9 until the -rc1 is out anyway.
+> 
+> Either way I don't see a clear advantage nor disadvantage of this.
 
-> Changes since V6 [12]:
->  - Add pad src for rtc clock.
->  - Add SCMI clock controller support, move some clock node in SCMI,such as GP1 PLL DDR USB etc.
->  - Fix some spelling mistake.
->  - Use lower case for bindings and update some input clocks desc.
->  - Update some clock comments.
->  - Delete prefix "AML_" for macro definition.
->  - Addd some clock annotation and some clock flag CRITICAL.
->  - Add maximum for regmap_config.
->  - Delete some unused register definition and unused clock inputs. 
->  - Drop patch subject redundant "bindings". Suggested by Krzysztof.
->  - Not reference header file "clk.h" and replace comment. Suggested by Jerome.
->  - Modify description about board in Kconfig file help item. Suggested by Jerome.
->  - Link to v6: https://lore.kernel.org/all/20231106085554.3237511-1-xianwei.zhao@amlogic.com
->
-> Changes since V5 [3]:
->  - Fix some typo and modify formart for MARCO. Suggested by Jerome.
->  - Add pad clock for peripheral input clock in bindings.
->  - Add some description for explaining why ddr_dpll_pt_clk and cts_msr_clk are out of tree.
-> Changes since V4 [10]:
->  - Change some fw_name of clocks. Suggested by Jerome.
->  - Delete minItem of clocks.
->  - Add CLk_GET_RATE_NOCACHE flags for gp1_pll
->  - Fix some format. and fix width as 8 for mclk_pll_dco.
->  - exchange gate and divder for fclk_50m clock.
->  - add CLK_SET_RATE_PARENT for axi_a_divder & axi_b_divder.
->  - add CLK_IS_CRITICAL for axi_clk
->  - Optimized macro define for pwm clk.
->  - add cts_oscin_clk mux between 24M and 32k
->  - add some missing gate clock, such as ddr_pll.
-> Changes since V3 [7]:
->  - Modify Kconfig desc and PLL yaml clk desc.
->  - Fix some format.Suggested by Yixun and Jerome.
->  - Add flag CLK_GET_RATE_NOCACHE for sys_clk.
->  - Optimized macro define for pwm clk.
->  - Use flag CLK_IS_CRITICAL for axi_clk.
->  - Add some description for some clocks.
->  - Use FCLK_50M instead of FCLK_DIV40.
-> Changes since V2 [4]:
->  - Modify some format, include clk name & inline, and so on.
->  - Define marco for pwm clock.
->  - Add GP1_PLL clock.
->  - Modify yaml use raw instead of macro.
-> Changes since V1 [2]:
->  - Fix errors when check binding by using "make dt_binding_check".
->  - Delete macro definition.
->
-> Xianwei Zhao (5):
->   dt-bindings: clock: add Amlogic C3 PLL clock controller
->   dt-bindings: clock: add Amlogic C3 SCMI clock controller support
->   dt-bindings: clock: add Amlogic C3 peripherals clock controller
->   clk: meson: c3: add support for the C3 SoC PLL clock
->   clk: meson: c3: add c3 clock peripherals controller driver
->
->  .../clock/amlogic,c3-peripherals-clkc.yaml    |  120 +
->  .../bindings/clock/amlogic,c3-pll-clkc.yaml   |   59 +
->  drivers/clk/meson/Kconfig                     |   29 +
->  drivers/clk/meson/Makefile                    |    2 +
->  drivers/clk/meson/c3-peripherals.c            | 2365 +++++++++++++++++
->  drivers/clk/meson/c3-pll.c                    |  746 ++++++
->  .../clock/amlogic,c3-peripherals-clkc.h       |  212 ++
->  .../dt-bindings/clock/amlogic,c3-pll-clkc.h   |   40 +
->  .../dt-bindings/clock/amlogic,c3-scmi-clkc.h  |   27 +
->  9 files changed, 3600 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/clock/amlogic,c3-peripherals-clkc.yaml
->  create mode 100644 Documentation/devicetree/bindings/clock/amlogic,c3-pll-clkc.yaml
->  create mode 100644 drivers/clk/meson/c3-peripherals.c
->  create mode 100644 drivers/clk/meson/c3-pll.c
->  create mode 100644 include/dt-bindings/clock/amlogic,c3-peripherals-clkc.h
->  create mode 100644 include/dt-bindings/clock/amlogic,c3-pll-clkc.h
->  create mode 100644 include/dt-bindings/clock/amlogic,c3-scmi-clkc.h
->
->
-> base-commit: ba535bce57e71463a86f8b33a0ea88c26e3a6418
+The advantage is just that it deletes 32 lines of code and makes it easier to
+understand.
 
+> 
+>>>  		struct vm_event_state *this = &per_cpu(vm_event_states, cpu);
+>>>  
+>>>  		for (i = 0; i < NR_VM_EVENT_ITEMS; i++)
+>>> @@ -129,29 +129,10 @@ static void sum_vm_events(unsigned long *ret)
+>>>  */
+>>>  void all_vm_events(unsigned long *ret)
+>>>  {
+>>> -	cpus_read_lock();
+>>>  	sum_vm_events(ret);
+>>> -	cpus_read_unlock();
+>>>  }
+>>>  EXPORT_SYMBOL_GPL(all_vm_events);
+>>>  
+>>> -/*
+>>> - * Fold the foreign cpu events into our own.
+>>> - *
+>>> - * This is adding to the events on one processor
+>>> - * but keeps the global counts constant.
+>>> - */
+>>> -void vm_events_fold_cpu(int cpu)
+>>> -{
+>>> -	struct vm_event_state *fold_state = &per_cpu(vm_event_states, cpu);
+>>> -	int i;
+>>> -
+>>> -	for (i = 0; i < NR_VM_EVENT_ITEMS; i++) {
+>>> -		count_vm_events(i, fold_state->event[i]);
+>>> -		fold_state->event[i] = 0;
+>>> -	}
+>>> -}
+>>> -
+>>>  #endif /* CONFIG_VM_EVENT_COUNTERS */
+>>>  
+>>>  /*
+>>
+> 
 
--- 
-Jerome
 
