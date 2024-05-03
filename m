@@ -1,112 +1,228 @@
-Return-Path: <linux-kernel+bounces-167457-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-167458-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 58C2E8BA9D3
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 11:23:08 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 887AF8BA9D5
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 11:23:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1291028627B
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 09:23:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A85631C2198A
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 09:23:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 66DC414F9C2;
-	Fri,  3 May 2024 09:20:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NxjknMmh"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 77F9A1514EF;
+	Fri,  3 May 2024 09:20:59 +0000 (UTC)
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F4FF14F13D;
-	Fri,  3 May 2024 09:20:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80A8E14D2BC;
+	Fri,  3 May 2024 09:20:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714728028; cv=none; b=VJUujmS6MEkfhsD2udSs5NEnCRSXMQv+RJlJWZHgm9LAeMTd6LK9ZyBcLI5nvYFozq1xWFZ23vR4YyTBoBYofwHCdrf7nEKKuY2lETAnW8T+5sZIYil5MHtbXuEXJWIPXCSVjwvk86jdcy2L9VRYO/w84x2EXj91Zw6gq1WJCZA=
+	t=1714728058; cv=none; b=FYUyPiX+sWUSRGkUcAs2gytwftYaz46lvHRMk7Odb/6+sMGvyTY9A/UWq54OVsKd7rxwZa25aUer+xijeFHMg9BZqNBy5jcesU44/rnbVihKluyE5Ywz8vtRm/N6DOcYQdz54uS7FiWuz4jJYu+8RJ97fDyzEKk09+pPXOAdMcU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714728028; c=relaxed/simple;
-	bh=fy6FxSu0cqTQvWDYYzdNQibPVZfADLl8MbYVCyUvbWc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=QeNMAyHPXG+A7B1O5Rax5QdvE8O61vjEhcXOvpLENECZOpy1vfrKiM8ABK1aeA9AEIsKC6LhZ/55FW7NCmKaD8t6urkZBt/yP72YJYj33ds6dEItqvd/w2eMYjv5gnCknKRymsOCx22l8SpYlVuOPlj7wuirwLrfQYmJyVHiiiQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NxjknMmh; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 44B3EC116B1;
-	Fri,  3 May 2024 09:20:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714728028;
-	bh=fy6FxSu0cqTQvWDYYzdNQibPVZfADLl8MbYVCyUvbWc=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=NxjknMmh5vUI+1ocScunvSswB4eol9lkhUhyulij3YNu0byBPWZp339PixNbydQ9q
-	 V7Ujm4OI7JX+OfXQAvRR+nlevC1H/h/Z+YwVeeAo9V+zx85kVmIKt3sQNt5rO5Pzfs
-	 E44nEsjU37MEETJ5W8AFIY5t/oa8Hk0eG+Z0rDowi50ZlOkTpgmGuPfSALc9R+bKMh
-	 24VKquRSjNNj3j4tzCmvVSWFg1T0NhsMVjig3rksNuXTUvEwS0VukELyFx2nv9JHc4
-	 NqbiwlDQsIgkY4bqZFhZmu9R1c+8lg6H3JhxQQZLtsutJ2NO/qJxBYjPJmX4nRP5ve
-	 lrnETyKMq2CKw==
-Date: Fri, 3 May 2024 10:20:21 +0100
-From: Lee Jones <lee@kernel.org>
-To: linux-kernel@vger.kernel.org, Bhargav Raviprakash <bhargav.r@ltts.com>
-Cc: m.nirmaladevi@ltts.com, robh+dt@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-	jpanis@baylibre.com, devicetree@vger.kernel.org, arnd@arndb.de,
-	gregkh@linuxfoundation.org, lgirdwood@gmail.com, broonie@kernel.org,
-	linus.walleij@linaro.org, linux-gpio@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, nm@ti.com, vigneshr@ti.com,
-	kristo@kernel.org, eblanc@baylibre.com
-Subject: Re: (subset) [PATCH v8 00/10] Add support for TI TPS65224 PMIC
-Message-ID: <20240503092021.GM1227636@google.com>
-References: <0109018f2f24c15e-c50bfc29-5f1d-4368-a4b8-2c9f1d398abb-000000@ap-south-1.amazonses.com>
- <171472796178.1311350.4406575677999610125.b4-ty@kernel.org>
+	s=arc-20240116; t=1714728058; c=relaxed/simple;
+	bh=b/BN+fNuxRuORWf9+ySA1VDQ+emZr+DHAxB7JhCbPC8=;
+	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=tZlZqThgacuwhfTsJyiGegkY9zGfycdnSxonmYwnWUVrzpPQpBGOH7IhXMxYNbPzVglUJOLgGgbAMk74L6jeUcMUz25zR/DwcAlFvnNuaLzb8FR92zDk/MnlqIjpWuSr1nAAvZi0uP9Upthm/EceSBaS1Qi6QwWSoF/odwX3oPU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.18.186.216])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4VW4z25zRKz6D92V;
+	Fri,  3 May 2024 17:20:30 +0800 (CST)
+Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
+	by mail.maildlp.com (Postfix) with ESMTPS id 0020F140B39;
+	Fri,  3 May 2024 17:20:53 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.39; Fri, 3 May
+ 2024 10:20:52 +0100
+Date: Fri, 3 May 2024 10:20:51 +0100
+From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To: Ira Weiny <ira.weiny@intel.com>
+CC: Dave Jiang <dave.jiang@intel.com>, Fan Ni <fan.ni@samsung.com>, "Navneet
+ Singh" <navneet.singh@intel.com>, Dan Williams <dan.j.williams@intel.com>,
+	Davidlohr Bueso <dave@stgolabs.net>, Alison Schofield
+	<alison.schofield@intel.com>, Vishal Verma <vishal.l.verma@intel.com>,
+	<linux-btrfs@vger.kernel.org>, <linux-cxl@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, Chris Mason <clm@fb.com>, Josef Bacik
+	<josef@toxicpanda.com>, David Sterba <dsterba@suse.com>
+Subject: Re: [PATCH 00/26] DCD: Add support for Dynamic Capacity Devices
+ (DCD)
+Message-ID: <20240503102051.00004a99@Huawei.com>
+In-Reply-To: <6632d503f3ae5_e1f58294df@iweiny-mobl.notmuch>
+References: <20240324-dcd-type2-upstream-v1-0-b7b00d623625@intel.com>
+	<20240404184901.00002104@Huawei.com>
+	<6632d503f3ae5_e1f58294df@iweiny-mobl.notmuch>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <171472796178.1311350.4406575677999610125.b4-ty@kernel.org>
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: lhrpeml500005.china.huawei.com (7.191.163.240) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
 
-On Fri, 03 May 2024, Lee Jones wrote:
+On Wed, 1 May 2024 16:49:24 -0700
+Ira Weiny <ira.weiny@intel.com> wrote:
 
-> On Tue, 30 Apr 2024 13:14:49 +0000, Bhargav Raviprakash wrote:
-> > This series modifies the existing TPS6594 drivers to add support for the
-> > TPS65224 PMIC device that is a derivative of TPS6594. TPS65224 has a
-> > similar register map to TPS6594 with a few differences. SPI, I2C, ESM,
-> > PFSM, Regulators and GPIO features overlap between the two devices.
+> Jonathan Cameron wrote:
+> >   
+> > > 
+> > > Fan Ni's latest v5 of Qemu DCD was used for testing.[2]  
+> > Hi Ira, Navneet.  
+> > > 
+> > > Remaining work:
+> > > 
+> > > 	1) Integrate the QoS work from Dave Jiang
+> > > 	2) Interleave support  
 > > 
-> > TPS65224 is a Power Management IC (PMIC) which provides regulators and
-> > other features like GPIOs, Watchdog, Error Signal Monitor (ESM) and
-> > Pre-configurable Finite State Machine (PFSM). The SoC and the PMIC can
-> > communicate through the I2C or SPI interfaces. The PMIC TPS65224
-> > additionally has a 12-bit ADC.
-> > Data Sheet for TPS65224: https://www.ti.com/product/TPS65224-Q1
 > > 
-> > [...]
+> > More flag.  This one I think is potentially important and don't
+> > see any handling in here.  
 > 
-> Applied, thanks!
+> Nope I admit I missed the spec requirement.
 > 
-> [01/10] mfd: tps6594: Add register definitions for TI TPS65224 PMIC
->         commit: 84ccfaee29fe46e305244a69c4471e83629ad5d1
-> [02/10] mfd: tps6594: use volatile_table instead of volatile_reg
->         commit: 436250638b6d8e6cf8dceed82cdbbfc90ce3a775
-> [03/10] dt-bindings: mfd: ti,tps6594: Add TI TPS65224 PMIC
->         commit: 91fbd800649f62bcc6a002ae9e0c0b6b5bb3f0d0
-> [04/10] mfd: tps6594-i2c: Add TI TPS65224 PMIC I2C
->         commit: f8e5fc60e6666b46ce113b6b6de221ebba88668f
-> [05/10] mfd: tps6594-spi: Add TI TPS65224 PMIC SPI
->         commit: 02716864fd5a53e057dcecdb36c807be6494120c
-> [06/10] mfd: tps6594-core: Add TI TPS65224 PMIC core
->         commit: 9d855b8144e6016357eecdd9b3fe7cf8c61a1de3
-> [07/10] misc: tps6594-pfsm: Add TI TPS65224 PMIC PFSM
->         commit: 91020aecc8136174429d41a6dae3de7cf39f8000
-> [08/10] regulator: tps6594-regulator: Add TI TPS65224 PMIC regulators
->         commit: 00c826525fbae0230f6c3e9879e56d50267deb42
-> [09/10] pinctrl: pinctrl-tps6594: Add TPS65224 PMIC pinctrl and GPIO
->         commit: 2088297159178ffc7c695fa34a7a88707371927d
+> > 
+> > Whilst an FM could in theory be careful to avoid sending a
+> > sparse set of extents, if the device is managing the memory range
+> > (which is possible all it supports) and the FM issues an Initiate Dynamic
+> > Capacity Add with Free (again may be all device supports) then we
+> > can't stop the device issuing a bunch of sparse extents.
+> > 
+> > Now it won't be broken as such without this, but every time we
+> > accept the first extent that will implicitly reject the rest.
+> > That will look very ugly to an FM which has to poke potentially many
+> > times to successfully allocate memory to a host.  
+> 
+> This helps me to see see why the more bit is useful.
+> 
+> > 
+> > I also don't think it will be that hard to support, but maybe I'm
+> > missing something?   
+> 
+> Just a bunch of code and refactoring busy work.  ;-)  It's not rocket
+> science but does fundamentally change the arch again.
+> 
+> > 
+> > My first thought is it's just a loop in cxl_handle_dcd_add_extent()
+> > over a list of extents passed in then slightly more complex response
+> > generation.  
+> 
+> Not exactly 'just a loop'.  No matter how I work this out there is the
+> possibility that some extents get surfaced and then the kernel tries to
+> remove them because it should not have.
 
-Submitted for build testing.
+Lets consider why it might need to back out.
+1) Device sends an invalid set of extents - so maybe one in a later message
+   overlaps with an already allocated extent.   Device bug, handling can
+   be extremely inelegant - up to crashing the kernel.  Worst that happens
+   due to race is probably a poison storm / machine check fun?  Not our
+   responsibility to deal with something that broken (in my view!) Best effort
+   only.
 
-If it passes, I'll send out a PR for other maintainers to pull from.
+2) Host can't handle the extent for some reason and didn't know that until
+   later - can just reject the ones it can't handle. 
 
--- 
-Lee Jones [李琼斯]
+> 
+> To be most safe the cxl core is going to have to make 2 round trips to the
+> cxl region layer for each extent.  The first determines if the extent is
+> valid and creates the extent as much as possible.  The second actually
+> surfaces the extents.  However, if the surface fails then you might not
+> get the extents back.  So now we are in an invalid state.  :-/  WARN and
+> continue I guess?!??!
+
+Yes. Orchestrator can decide how to handle - probably reboot server in as
+gentle a fashion as possible.
+
+
+> 
+> I think the safest way to handle this is add a new kernel notify event
+> called 'extent create' which stops short of surfacing the extent.  [I'm
+> not 100% sure how this is going to affect interleave.]
+> 
+> I think the safest logic for add is something like:
+> 
+> 	cxl_handle_dcd_add_event()
+> 		add_extent(squirl_list, extent);
+> 
+> 		if (more bit) /* wait for more */
+> 			return;
+> 
+> 		/* Create extents to hedge the bets against failure */
+> 		for_each(squirl_list)
+> 			if (notify 'extent create' != ok)
+> 				send_response(fail);
+> 				return;
+> 		
+> 		for_each(squirl_list)
+> 			if (notify 'surface' != ok)
+> 				/*
+> 				 * If the more bit was set, some extents
+> 				 * have been surfaced and now need to be
+> 				 * removed...
+> 				 *
+> 				 * Try to remove them and hope...
+> 				 */
+
+If we failed to surface them all another option is just tell the device
+that.   Responds with the extents that successfully surfaced and reject
+all others (or all after the one that failed?)  So for the lower layers
+send the device a response that says "thanks but I only took these ones"
+and for the upper layers pretend "I was only offered these ones"
+
+> 				WARN_ON('surface extents failed');
+> 				for_each(squirl_list)
+> 					notify 'remove without response'
+> 				send_response(fail);
+> 				return;
+> 
+> 		send_response(squirl_list, accept);
+> 
+> The logic for remove is not changed AFAICS because the device must allow
+> for memory to be released at any time so the host is free to release each
+> of the extents individually despite the 'more' bit???
+
+Yes, but only after it accepted them - which needs to be done in one go.
+So you can't just send releases before that (the device will return an
+error and keep them in the pending list I think...)
+
+> 
+> > 
+> > I don't want this to block getting initial DCD support in but it
+> > will be a bit ugly if we quickly support the more flag and then end
+> > up with just one kernel that an FM has to be careful with...  
+> 
+> I'm not sure which is worse.  Given your use case above it seems like the
+> more bit may be more important for 'dumb' devices which want to add
+> extents in blocks before responding to the FM.  Thus complicating the FM.
+> 
+> It seems 'smarter' devices which could figure this out (not requiring the
+> more bit) are the ones which will be developed later.  So it seems the use
+> case time line is the opposite of what we need right now.
+
+Once we hit shareable capacity (which the smarter devices will use) then
+this become the dominant approach to non contiguous allocations because
+you can't add extents with a given tag in multiple goes.
+
+So I'd expect the more flag to be more common not less over time.
+> 
+> For that reason I'm inclined to try and get this in.
+> 
+
+Great - but I'd not worry too much about bad effects if you get invalid
+lists from the device.  If the only option is shout and panic, then fine
+though I'd imagine we can do slightly better than that, so maybe warn
+extensively and don't let the region be used.
+
+Jonathan
+
+> Ira
+> 
+
 
