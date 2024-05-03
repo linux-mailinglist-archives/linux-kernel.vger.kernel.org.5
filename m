@@ -1,142 +1,143 @@
-Return-Path: <linux-kernel+bounces-167773-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-167772-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id D9F018BAEFD
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 16:28:04 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A7CCF8BAEF9
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 16:26:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3186FB21C72
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 14:28:02 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C32461C216FB
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 14:26:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F249154C16;
-	Fri,  3 May 2024 14:27:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DEF25154BF3;
+	Fri,  3 May 2024 14:26:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="fGYJU+jX"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
+	dkim=pass (2048-bit key) header.d=finest.io header.i=parker@finest.io header.b="CEICGNm3"
+Received: from mout.perfora.net (mout.perfora.net [74.208.4.196])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 142AE152193;
-	Fri,  3 May 2024 14:27:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8E1618C3D;
+	Fri,  3 May 2024 14:26:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.208.4.196
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714746472; cv=none; b=hXxXjvgZUjFnur09iU10k4/pBWhgK3w/meBAVHVCeCA8x7VzNSlLO47NOagqxfgiUJDaJmnMqP7dtzroTr1pDfdhAjykweHgYQs19O7bbZGnJQyguFgMvkU5StpCgxUboN8JcRoKuPHMmollEDvZCVTriijKsSk3+I6taLjNo+w=
+	t=1714746405; cv=none; b=l2ug0QkFqBUUgdsKpPBehs4+0fCDO5op58fEoLishst8KLTuyBjK+25RfsSqJrvzbMCb21F+WmmprHCwdOVg0aJkIP+sdMXqqQ2BtYybjnP+QJHYFXIuL6p7RtKpN1LcLNpdsIwLlXLNx6IKomr+UgeJYS1Jcu+PaLxogqDNIgc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714746472; c=relaxed/simple;
-	bh=DrBGLgX8Lrjw7dwGYbKIReB5FXtCr5ZSrbTwUaBz7Xg=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=u3psqTRWijvp3+lgX6dQLYreGMW46DDn6KWelAk0JEeFbdBaa+LG5r1HGz5W/9rve/AqCHg+pou55zPCqRgo/v7pVZOdi4DuKAL2rlzwT7xS2mmHAZ2HgGh/pJfy/Ku1i3waHnqfnR6blZS5ai4CKUQK0iw9IM8cWaJZMOi3hhs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=fGYJU+jX; arc=none smtp.client-ip=198.175.65.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1714746471; x=1746282471;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=DrBGLgX8Lrjw7dwGYbKIReB5FXtCr5ZSrbTwUaBz7Xg=;
-  b=fGYJU+jXcQYXyHStZtKCMnpH73tEmvdbzTOmKvYHVUAiBtrYyFbrJTzC
-   a8isyt+L2Fvv+kHkNxezx2FxewGIRyyV9vqvwgbJqrgFRUAtoIG7L9P4H
-   U++zfIGS/Bk9HCju/uL40ydfJgNK216yoGxBvUuslPjffpqWyqGBLKemb
-   qX/YgjmhB5GM6kTsy9e3/mrcaO9mVTjuR2XoZ6+IbH5PPSVfxep5OL/fe
-   G/OcJEraFf/zHcs5P4cAQZ2RFU518G1fXwspi9rm/2GWyw4FOn+TzRktR
-   gjO7yETlVZjshy+/X6VOZ9RkuAR0TLwkRPIAcUkZFnpkTCXDeVuDOx8ER
-   Q==;
-X-CSE-ConnectionGUID: HSrbAGk/QUyjKQRr9BYDHQ==
-X-CSE-MsgGUID: F5bHBC9CSHuspS5aZhEtSQ==
-X-IronPort-AV: E=McAfee;i="6600,9927,11063"; a="10680766"
-X-IronPort-AV: E=Sophos;i="6.07,251,1708416000"; 
-   d="scan'208";a="10680766"
-Received: from orviesa008.jf.intel.com ([10.64.159.148])
-  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 May 2024 07:25:55 -0700
-X-CSE-ConnectionGUID: UB+JpBRVSh+jzT1Od1MP2g==
-X-CSE-MsgGUID: zisVq0q/R1+YvZZzSPoPoQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,251,1708416000"; 
-   d="scan'208";a="28055180"
-Received: from tdx-lm.sh.intel.com ([10.239.53.27])
-  by orviesa008.jf.intel.com with ESMTP; 03 May 2024 07:25:50 -0700
-From: Wei Wang <wei.w.wang@intel.com>
-To: seanjc@google.com,
-	pbonzini@redhat.com
-Cc: kvm@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Wei Wang <wei.w.wang@intel.com>
-Subject: [PATCH v1] KVM: x86: 0-initialize kvm_caps.supported_xss on definition
-Date: Fri,  3 May 2024 22:25:48 +0800
-Message-Id: <20240503142548.194585-1-wei.w.wang@intel.com>
-X-Mailer: git-send-email 2.27.0
+	s=arc-20240116; t=1714746405; c=relaxed/simple;
+	bh=VRjQzG8TQv5gV0C3Rxv5HRYKNeCIuch5dLMNR1+wUgY=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=XSPDj15hRSyhL5WczCh3jbhj+kK5u149yGH2Rep9VirxG0GvE/D9Cn4LpcDZsyFMarzUUeaQeVSX+D+Qwwa9PBhGZeIgO9Peaq9ihbp+jG2HbmrWhcgrC2jD4xVjYcmKNXD6xJepIQEq+PXbOvCBkwCKUKI+fMWzIFOOzMF2dHQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=finest.io; spf=pass smtp.mailfrom=finest.io; dkim=pass (2048-bit key) header.d=finest.io header.i=parker@finest.io header.b=CEICGNm3; arc=none smtp.client-ip=74.208.4.196
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=finest.io
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=finest.io
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=finest.io;
+	s=s1-ionos; t=1714746395; x=1715351195; i=parker@finest.io;
+	bh=qUfNnCg79Uktap5ZMBiA0j0ZtbeQ48ApVbCwVGMRNWU=;
+	h=X-UI-Sender-Class:Date:From:To:Cc:Subject:Message-ID:In-Reply-To:
+	 References:MIME-Version:Content-Type:Content-Transfer-Encoding:cc:
+	 content-transfer-encoding:content-type:date:from:message-id:
+	 mime-version:reply-to:subject:to;
+	b=CEICGNm3L6S7psFtqiPdUDY0X5qoDjmKTqFlHUrakkKb196KClhQKiUwxM3nJPnO
+	 tNcGMxp8zqscuhnhF5KpDA5Qv+SS+IRwPXuFqTQ7vBNY6wJ0YBzZS0qCr8uJ/iE8k
+	 WMkbbf3wXCxTtnOZhW4nbndg4DF80ShJY4GVmhAAUH664zdFZQcnqpVZqSnGGiY57
+	 sQ+dhRH3eexL9XnMaIFdbWCPLYAlbV37b4pesX3FE7YE/oniFp5zF+pUJjd5cCEFI
+	 kmObEeepqhiFiEioMtM82dD+ZxGmFvwytBOH0IL/RXoeIGDhf6cJ875DiTZG0hKDs
+	 5Fpu6nkPi8fCnh3MLg==
+X-UI-Sender-Class: 55c96926-9e95-11ee-ae09-1f7a4046a0f6
+Received: from SWDEV2.connecttech.local ([98.159.241.229]) by
+ mrelay.perfora.net (mreueus003 [74.208.5.2]) with ESMTPSA (Nemesis) id
+ 0MCKl5-1ruLIR3F45-0097wH; Fri, 03 May 2024 16:26:34 +0200
+Date: Fri, 3 May 2024 10:26:32 -0400
+From: Parker Newman <parker@finest.io>
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Ilpo =?UTF-8?B?SsOkcnZpbmVu?= <ilpo.jarvinen@linux.intel.com>, Parker
+ Newman <pnewman@connecttech.com>, LKML <linux-kernel@vger.kernel.org>,
+ linux-serial <linux-serial@vger.kernel.org>, Greg Kroah-Hartman
+ <gregkh@linuxfoundation.org>, Jiri Slaby <jirislaby@kernel.org>
+Subject: Re: [PATCH v1 11/13] serial: 8250_exar: Use BIT() in exar_ee_read()
+Message-ID: <20240503102632.112a34bd@SWDEV2.connecttech.local>
+In-Reply-To: <ZjPLQeTEKvt7B3mj@smile.fi.intel.com>
+References: <20240502144626.2716994-1-andriy.shevchenko@linux.intel.com>
+	<20240502144626.2716994-12-andriy.shevchenko@linux.intel.com>
+	<702a9145-5bc1-c765-a1fa-278702741637@linux.intel.com>
+	<ZjPLQeTEKvt7B3mj@smile.fi.intel.com>
+Organization: Connect Tech Inc.
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:BZqodeJrrjLNWsR+BGJEWQCKDTJkZYkEqljtAekrB2HHvKhc3Lj
+ +l4I2D+Sc/oPvLN7mD9XzJFLY4c3hYClJLkvhRakkg9WfD+LtMomRsFfUvbYyZBAlxIfE0b
+ Prxx0Kgr8nigkDqIvhFsVI4iGRBxquobU5LleKgFQBdgdBbud9qDv2tCIfpYfr3VIrjWpxl
+ luj7x67xNlbzGAvbkRgtA==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:hw/IaLlh8sI=;BvyzJB1ag/J7juyaFuRSiqM2srX
+ 1Fvy9ykiwlh0bHBqoxdRlkaVJsuVVBI2VIcZ+ist/JeCBXH2YkmAC2pM/5x12HGboxi5r46dp
+ XZcSexsbCbY+5TPmE5UPzJSn41DEOYddYwm9UPNK9OWg2Dprpd0GGCjjJAg/wE7RsR16WKWt8
+ NkhhDvHz8GYgn5RqBpSHiQ0b9zwRSt1RA3oiDvBEWmIKXbrszKddaGY1kHoFCWpFOK/Rzmjak
+ dMGzEjbC7LISFY/xTyC5m+zIxrwp6NYMe0fzw/Y6Or4aceVndQZo1h2MOKhvy+Je+IF/wvfd4
+ eCQIEeBBaU4rJCOPGW9cislu9syUDeEDzATxnoiNarqGoY6YiLcRtn+tD3PMy9umrhhsIdcQx
+ HgC1SyZZhyK1t2xYx+bomuFSAK3q3YfeuNVwRmvYi4xvwT7bqNrgmodS8aTthKoEBSr5ucTzw
+ wKV9AJOcdlV59BaSR75B85J6eePeXqrmApxDQrAJpp+FC5txB4v88NFgUomFiEGHu4RJ1rNEI
+ LNG6hx4NiEi9GKbjWH9yas23UE1aDHw93wyFw/BYgQ4Rgt9oQs/uxCCuptYiH4wCh8NQ4jxC3
+ 2xYADNW6faz3uLZEtq3mk1knFElVd7GknnXegYmDqQMIAMEdh+JheqOUDe9jagsRhS3qTSeQR
+ pEDE8hQtC/sp5rJOSgsys2l61hWtP92150EuhBRtpb1hA4V4rokOj9qOzK5xKP/mWbuEyM1Ol
+ b2O1tfvhV86nZ05oq9rzmIDJ5+VN8UaeIi/sMuAD2zMqP08V2s/9do=
 
-0-initialize kvm_caps.supported_xss on definition, so that it doesn't
-need to be explicitly zero-ed either in the common x86 or VMX/SVM
-initialization paths. This simplifies the code and reduces LOCs.
+On Thu, 2 May 2024 20:20:01 +0300
+Andy Shevchenko <andriy.shevchenko@linux.intel.com> wrote:
 
-No functional changes intended.
+> On Thu, May 02, 2024 at 07:08:21PM +0300, Ilpo J=C3=A4rvinen wrote:
+> > On Thu, 2 May 2024, Andy Shevchenko wrote: =20
+>=20
+> ...
+>=20
+> > >  	// Send address to read from
+> > > -	for (i =3D 1 << (UART_EXAR_REGB_EE_ADDR_SIZE - 1); i; i >>=3D 1)
+> > > -		exar_ee_write_bit(priv, (ee_addr & i));
+> > > +	for (i =3D UART_EXAR_REGB_EE_ADDR_SIZE - 1; i >=3D 0; i--)
+> > > +		exar_ee_write_bit(priv, ee_addr & BIT(i));
+> > > =20
+> > >  	// Read data 1 bit at a time
+> > >  	for (i =3D 0; i <=3D UART_EXAR_REGB_EE_DATA_SIZE; i++) {
+> > > -		data <<=3D 1;
+> > > -		data |=3D exar_ee_read_bit(priv);
+> > > +		if (exar_ee_read_bit(priv))
+> > > +			data |=3D BIT(i); =20
+> >=20
+> > Does this end up reversing the order of bits? In the original, data was=
+ left
+> > shifted which moved the existing bits and added the lsb but the replace=
+ment
+> > adds highest bit on each iteration? =20
+>=20
+> Oh, seems a good catch!
+>=20
+> I was also wondering, but missed this somehow. Seems the EEPROM is in BE =
+mode,
+> so two loops has to be aligned.
+>=20
 
-Signed-off-by: Wei Wang <wei.w.wang@intel.com>
----
- arch/x86/kvm/svm/svm.c | 1 -
- arch/x86/kvm/vmx/vmx.c | 2 --
- arch/x86/kvm/x86.c     | 4 +---
- 3 files changed, 1 insertion(+), 6 deletions(-)
+I just tested this and Ilpo is correct, the read loop portion is backwards =
+as=20
+expected. This is the corrected loop:
 
-diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-index 9aaf83c8d57d..8105e5383b62 100644
---- a/arch/x86/kvm/svm/svm.c
-+++ b/arch/x86/kvm/svm/svm.c
-@@ -5092,7 +5092,6 @@ static __init void svm_set_cpu_caps(void)
- 	kvm_set_cpu_caps();
- 
- 	kvm_caps.supported_perf_cap = 0;
--	kvm_caps.supported_xss = 0;
- 
- 	/* CPUID 0x80000001 and 0x8000000A (SVM features) */
- 	if (nested) {
-diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-index 22411f4aff53..495125723c15 100644
---- a/arch/x86/kvm/vmx/vmx.c
-+++ b/arch/x86/kvm/vmx/vmx.c
-@@ -7952,8 +7952,6 @@ static __init void vmx_set_cpu_caps(void)
- 	if (vmx_umip_emulated())
- 		kvm_cpu_cap_set(X86_FEATURE_UMIP);
- 
--	/* CPUID 0xD.1 */
--	kvm_caps.supported_xss = 0;
- 	if (!cpu_has_vmx_xsaves())
- 		kvm_cpu_cap_clear(X86_FEATURE_XSAVES);
- 
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index 91478b769af0..6a97592950ff 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -94,6 +94,7 @@
- 
- struct kvm_caps kvm_caps __read_mostly = {
- 	.supported_mce_cap = MCG_CTL_P | MCG_SER_P,
-+	.supported_xss = 0,
- };
- EXPORT_SYMBOL_GPL(kvm_caps);
- 
-@@ -9795,9 +9796,6 @@ int kvm_x86_vendor_init(struct kvm_x86_init_ops *ops)
- 
- 	kvm_register_perf_callbacks(ops->handle_intel_pt_intr);
- 
--	if (!kvm_cpu_cap_has(X86_FEATURE_XSAVES))
--		kvm_caps.supported_xss = 0;
--
- #define __kvm_cpu_cap_has(UNUSED_, f) kvm_cpu_cap_has(f)
- 	cr4_reserved_bits = __cr4_reserved_bits(__kvm_cpu_cap_has, UNUSED_);
- #undef __kvm_cpu_cap_has
+    // Read data 1 bit at a time
+    for (i =3D UART_EXAR_REGB_EE_DATA_SIZE; i >=3D 0; i--) {
+        if (exar_ee_read_bit(priv))
+            data |=3D BIT(i);
+    }
 
-base-commit: 16c20208b9c2fff73015ad4e609072feafbf81ad
--- 
-2.27.0
+I know this looks wrong because its looping from 16->0 rather than the=20
+more intuitive 15->0 for a 16bit value. This is actually correct however=20
+because according to the AT93C46D datasheet there is always dummy 0 bit
+before the actual 16 bits of data.
 
+I hope that helps,
+-Parker
 
