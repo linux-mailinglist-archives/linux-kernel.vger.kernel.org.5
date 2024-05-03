@@ -1,102 +1,217 @@
-Return-Path: <linux-kernel+bounces-168005-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-168006-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 75AC58BB21C
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 20:05:45 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 47B358BB222
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 20:06:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0DA2D1F230AA
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 18:05:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CA58E1F234B3
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 18:06:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 92376159213;
-	Fri,  3 May 2024 18:03:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52466159588;
+	Fri,  3 May 2024 18:03:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MpCAjq/P"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="T2KjVBTL"
+Received: from mail-pj1-f41.google.com (mail-pj1-f41.google.com [209.85.216.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA9E41591ED;
-	Fri,  3 May 2024 18:03:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0BE31586C3;
+	Fri,  3 May 2024 18:03:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714759409; cv=none; b=UeUEzfaCihg0KkujZtn3NI4XEjYueWlKpr1E0bXpx3PVe35aBNVufMm+TWSBL7cMAp91YHNPulwZJjpjf6g/+Zb9MyvYnzgiGRwHYwZPSI+pheXHAH2Ebb0JGIQ5Gkjlvg+FCplOUQan9jd2YFZgbz57uFAnaovy9fXaUs4gpcI=
+	t=1714759420; cv=none; b=B4E2TAHFWrGM9wzVU+O89lnncmu44BD7WZd1JQg6V0B06c6bZQyornyh4oDL29Ll+u2s12lh/lnnPlqAeIqW7BRJDWhqc6n6Te6CrLW8SqP5zN9yE0aLi9SxE2DcJ71lXVg9F9IMl6Y3hzqPEa11W/VUrdPJDyO6XPVWvH97vlw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714759409; c=relaxed/simple;
-	bh=a02Zh+VsvTrK6WKXPgaeuspiXlSro+oRgLJGLtu2svs=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=AXbD8W5l2Aga47ow1plg5V0kijHX6KuTj1/WfYWx9EpPyZPBEcdvqmC36C3keyahWLSgZlqkJuGdPnIXW8CpxswO8lx8V6H+kV+4NO0bDVgFCF+2Jf8/Ye6+RWFbFD6xG10zDJnCvQXvl3m19YYqkuYVbdx9/XSaU5eXjhYPZTM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MpCAjq/P; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D96B5C4AF50;
-	Fri,  3 May 2024 18:03:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714759409;
-	bh=a02Zh+VsvTrK6WKXPgaeuspiXlSro+oRgLJGLtu2svs=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=MpCAjq/PwjGAnPgFL65cPmH9OKC2XvO5cfrU8CelwHa2IjOGwUR0spNoneoQ+JHve
-	 ZgAe/EcGmV3QJyTq7sRJvcm8P2lyZIS8GBZmaKK3gefvVc8Isf5nGB7VqWBWT5rQcm
-	 qMgn/KlZTV8pXq45eCEn1+waj4K/7iJwm7zKZ9Ap36o/OUKs0+rnoBrw10EFWI6kRO
-	 4RwdQluz00sczmBT4/baD9TMPZvHAm786k1iPaJSNeYuiMTTGeFCn+nYOaWhQKV+SG
-	 H8ijK9qv6VG1m2OaOebzIHIAH93JhcP6CiPt2596d0bRT6b8/msyRk7yaZ43MSEOLz
-	 NYCe7Utr+bpzA==
-From: SeongJae Park <sj@kernel.org>
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: SeongJae Park <sj@kernel.org>,
-	Jonathan Corbet <corbet@lwn.net>,
-	damon@lists.linux.dev,
-	linux-mm@kvack.org,
-	linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH 10/10] Docs/mm/damon/maintainer-profile: allow posting patches based on damon/next tree
-Date: Fri,  3 May 2024 11:03:18 -0700
-Message-Id: <20240503180318.72798-11-sj@kernel.org>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20240503180318.72798-1-sj@kernel.org>
-References: <20240503180318.72798-1-sj@kernel.org>
+	s=arc-20240116; t=1714759420; c=relaxed/simple;
+	bh=ybBnohGJ7OCPoSTxetQTUQLupbXJ1oRN8/fNm62kyjs=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=DMTr/Bw4NRvCuMJMYbFW5Gr557LTWKX3VUeyHwKtwVrANHhaeTKbwwzBHQfSahyOhDh1yTn8mONM7gzS9iERzQu5RZTx9bgdjfz/sQX/x3VWcGXMkFKDnyJYrkWpgOHmqrYALcKMQ2xk07KxlGGzmxjTN6VCldZBYCkUiP+Ff8g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=T2KjVBTL; arc=none smtp.client-ip=209.85.216.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f41.google.com with SMTP id 98e67ed59e1d1-2b2bc7b37bcso3326512a91.2;
+        Fri, 03 May 2024 11:03:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1714759417; x=1715364217; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=FJBP6tJNRliKd9d9ij7Yg8o1fHkwrBen/j2P4vsQ2FA=;
+        b=T2KjVBTL9ReFjdG0/E40kovejNXoegh5Vk1pQPJCBcf+bqBYJ8hlaC8BF8vecNEjnE
+         qPL0ocjPb4HZYwOGPtNfIrPhCNXqCbceZs2yUxFE3fiChRDKne4fhcYLnAdC/LT9FItQ
+         8X24X5PZYLXA6iYybafkB9RGEaWRh+USb3VxsX2N9snE4L0cx8SScovErk50lJO9a/Lh
+         mpqLf3gqYU5AR/ZayBP69rAclid7cKQ8/uExWEsnHzyzApUD2l25jqyMWQXG7dxyO+EQ
+         wjIZE2X465LLuEOM4mR20ATrneGmPKOQzM1ZEsKJpLEN42kRP65zT3vuE1z33AGrH5Jk
+         gLOQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714759417; x=1715364217;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=FJBP6tJNRliKd9d9ij7Yg8o1fHkwrBen/j2P4vsQ2FA=;
+        b=XU/578osZCzLa0VrdJd2oGmy48I3gTG2g3ypM7PBqFY4e0MJoGRtSQznWZ2vx+izuK
+         9r5BQevFm3z1Ohy4simTbBRC5QDHosODN2ieafqsbYPLzYJny8Ksh95h55r6tkwvxWIN
+         6Z/ySuVnVRLsJKXq+eSUTu5RDgoNhrRZMbWJ5VWRJl1dD2UCc10jf9mghTdrerBumvQu
+         yFpSek+CeVD1C+ksH84rw+BWfncejWN4uwc3MHrUPD7jVymmWNk0s/YnTjq0mzyIdI8Y
+         P5sjsmxXZca6dkJbzFOl20eg+DPt/yACG2BaUU3sXmclnSFVo5/+8H8TWpWFyeyb7P3W
+         YhFA==
+X-Forwarded-Encrypted: i=1; AJvYcCWyN46Sv/hZptaxwX1RDiQpNQgknnWo7FjNZ1qx/T6C4AYQAudVN8aL7+am6EiOmtgfeThc5fx2GaY+QzJ5HgWrBl+SiWK7n5garZ46JT/tAKzc/fF/2z56w3nAH8W0I8jriL2LStp7hX86PpyFaZDbkXNc5hx4rEQQMIyEro2WvCHPl+mdqKBkY3NQ2CndMIx57bwIu090NynqLEhIZsdODyIqtAzYKRV7enXUlH+dZC7ZVIdcz67Fx6Ge
+X-Gm-Message-State: AOJu0YyCuEdR4OLYsLQF+X5wvQDf+KKlNHTnI0nNWzWvQRQ83vkykWul
+	1JbVcj5IMikeP2o39exjcky1yCGc4xgxlien5ua9uLXs0ei3/TbvCmt/Zzf/G8iGckvyJ+ts0+W
+	EymyAMCoH22ehecvBgjtUcBJo0+s=
+X-Google-Smtp-Source: AGHT+IHGv2AfdGlWnLUJO3nFJ39n5eguagCUVgfAL/9b1Z8ZReC8l08QWuqFwk87+N9AlG6CBDQe1aHE2ylNhbCRhIw=
+X-Received: by 2002:a17:90b:158:b0:2a0:9b18:daf with SMTP id
+ em24-20020a17090b015800b002a09b180dafmr4011307pjb.42.1714759417151; Fri, 03
+ May 2024 11:03:37 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240502122313.1579719-1-jolsa@kernel.org> <CAEf4BzYxsRMx9M_AiLavTHFpndSmZqOM8QcYhDTbBviSpv1r+A@mail.gmail.com>
+ <ZjPx0fncg-8brFBk@krava>
+In-Reply-To: <ZjPx0fncg-8brFBk@krava>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Fri, 3 May 2024 11:03:24 -0700
+Message-ID: <CAEf4Bzb-dM+464JvW96KuxwOTfRQA1pxZRWM+pA7AfSWtWwqZw@mail.gmail.com>
+Subject: Re: [PATCHv4 bpf-next 0/7] uprobe: uretprobe speed up
+To: Jiri Olsa <olsajiri@gmail.com>
+Cc: Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>, 
+	Oleg Nesterov <oleg@redhat.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, linux-kernel@vger.kernel.org, 
+	linux-trace-kernel@vger.kernel.org, linux-api@vger.kernel.org, 
+	linux-man@vger.kernel.org, x86@kernel.org, bpf@vger.kernel.org, 
+	Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>, 
+	John Fastabend <john.fastabend@gmail.com>, Peter Zijlstra <peterz@infradead.org>, 
+	Thomas Gleixner <tglx@linutronix.de>, "Borislav Petkov (AMD)" <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>, 
+	Andy Lutomirski <luto@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-The document mentions any patches for review should based on mm-unstable
-instead of damon/next.  It should be the recommended process, but
-sometimes patches based on damon/next could be posted for some reasons.
-Actually, the DAMON-based tiered memory management patchset[1] was
-written on top of 'young page' DAMOS filter patchset, which was in
-damon/next tree as of the writing.
+On Thu, May 2, 2024 at 1:04=E2=80=AFPM Jiri Olsa <olsajiri@gmail.com> wrote=
+:
+>
+> On Thu, May 02, 2024 at 09:43:02AM -0700, Andrii Nakryiko wrote:
+> > On Thu, May 2, 2024 at 5:23=E2=80=AFAM Jiri Olsa <jolsa@kernel.org> wro=
+te:
+> > >
+> > > hi,
+> > > as part of the effort on speeding up the uprobes [0] coming with
+> > > return uprobe optimization by using syscall instead of the trap
+> > > on the uretprobe trampoline.
+> > >
+> > > The speed up depends on instruction type that uprobe is installed
+> > > and depends on specific HW type, please check patch 1 for details.
+> > >
+> > > Patches 1-6 are based on bpf-next/master, but path 1 and 2 are
+> > > apply-able on linux-trace.git tree probes/for-next branch.
+> > > Patch 7 is based on man-pages master.
+> > >
+> > > v4 changes:
+> > >   - added acks [Oleg,Andrii,Masami]
+> > >   - reworded the man page and adding more info to NOTE section [Masam=
+i]
+> > >   - rewrote bpf tests not to use trace_pipe [Andrii]
+> > >   - cc-ed linux-man list
+> > >
+> > > Also available at:
+> > >   https://git.kernel.org/pub/scm/linux/kernel/git/jolsa/perf.git
+> > >   uretprobe_syscall
+> > >
+> >
+> > It looks great to me, thanks! Unfortunately BPF CI build is broken,
+> > probably due to some of the Makefile additions, please investigate and
+> > fix (or we'll need to fix something on BPF CI side), but it looks like
+> > you'll need another revision, unfortunately.
+> >
+> > pw-bot: cr
+> >
+> >   [0] https://github.com/kernel-patches/bpf/actions/runs/8923849088/job=
+/24509002194
+>
+> yes, I think it's missing the 32-bit libc for uprobe_compat binary,
+> probably it needs to be added to github.com:libbpf/ci.git setup-build-env=
+/action.yml ?
+> hm but I'm not sure how to test it, need to check
 
-Allow such case and just ask such things to be clearly specified.
+You can create a custom PR directly against Github repo
+(kernel-patches/bpf) and BPF CI will run all the tests on your custom
+code. This way you can iterate without spamming the mailing list.
 
-[1] https://lore.kernel.org/20240405060858.2818-1-honggyu.kim@sk.com
+But I'm just wondering if it's worth complicating setup just for
+testing this x32 compat mode. So maybe just dropping one of those
+patches would be better?
 
-Signed-off-by: SeongJae Park <sj@kernel.org>
----
- Documentation/mm/damon/maintainer-profile.rst | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+>
+> >
+> >
+> >
+> > But while we are at it.
+> >
+> > Masami, Oleg,
+> >
+> > What should be the logistics of landing this? Can/should we route this
+> > through the bpf-next tree, given there are lots of BPF-based
+> > selftests? Or you want to take this through
+> > linux-trace/probes/for-next? In the latter case, it's probably better
+> > to apply only the first two patches to probes/for-next and the rest
+> > should still go through the bpf-next tree (otherwise we are running
+>
+> I think this was the plan, previously mentioned in here:
+> https://lore.kernel.org/bpf/20240423000943.478ccf1e735a63c6c1b4c66b@kerne=
+l.org/
+>
 
-diff --git a/Documentation/mm/damon/maintainer-profile.rst b/Documentation/mm/damon/maintainer-profile.rst
-index ea42f57cf9dc..8213cf61d38a 100644
---- a/Documentation/mm/damon/maintainer-profile.rst
-+++ b/Documentation/mm/damon/maintainer-profile.rst
-@@ -20,9 +20,10 @@ management subsystem maintainer.  After more sufficient tests, the patches will
- be queued in mm-stable [3]_ , and finally pull-requested to the mainline by the
- memory management subsystem maintainer.
- 
--Note again the patches for review should be made against the mm-unstable
--tree [1]_ whenever possible.  damon/next is only for preview of others' works
--in progress.
-+Note again the patches for mm-unstable tree [1]_ are queued by the memory
-+management subsystem maintainer.  If the patches requires some patches in
-+damon/next tree [2]_ which not yet merged in mm-unstable, please make sure the
-+requirement is clearly specified.
- 
- Submit checklist addendum
- -------------------------
--- 
-2.39.2
+Ok, then we'll have to land this patch set as two separate ones. It's
+fine, let's figure out if you need to do anything for shadow stacks
+and try to land it soon.
 
+> > into conflicts in BPF selftests). Previously we were handling such
+> > cross-tree dependencies by creating a named branch or tag, and merging
+> > it into bpf-next (so that all SHAs are preserved). It's a bunch of
+> > extra work for everyone involved, so the simplest way would be to just
+> > land through bpf-next, of course. But let me know your preferences.
+> >
+> > Thanks!
+> >
+> > > thanks,
+> > > jirka
+> > >
+> > >
+> > > Notes to check list items in Documentation/process/adding-syscalls.rs=
+t:
+> > >
+> > > - System Call Alternatives
+> > >   New syscall seems like the best way in here, becase we need
+> >
+> > typo (thanks, Gmail): because
+>
+> ok
+>
+> >
+> > >   just to quickly enter kernel with no extra arguments processing,
+> > >   which we'd need to do if we decided to use another syscall.
+> > >
+> > > - Designing the API: Planning for Extension
+> > >   The uretprobe syscall is very specific and most likely won't be
+> > >   extended in the future.
+> > >
+> > >   At the moment it does not take any arguments and even if it does
+> > >   in future, it's allowed to be called only from trampoline prepared
+> > >   by kernel, so there'll be no broken user.
+> > >
+> > > - Designing the API: Other Considerations
+> > >   N/A because uretprobe syscall does not return reference to kernel
+> > >   object.
+> > >
+> > > - Proposing the API
+> > >   Wiring up of the uretprobe system call si in separate change,
+> >
+> > typo: is
+>
+> ok, thanks
+>
+> jirka
 
