@@ -1,70 +1,128 @@
-Return-Path: <linux-kernel+bounces-167519-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-167520-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 809378BAABE
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 12:31:25 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B946E8BAAC0
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 12:31:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ABF511C215D0
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 10:31:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E4C191C2138A
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 10:31:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D6A01509B7;
-	Fri,  3 May 2024 10:31:17 +0000 (UTC)
-Received: from abb.hmeau.com (abb.hmeau.com [144.6.53.87])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 354EB1509B6;
+	Fri,  3 May 2024 10:31:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WUjOY8R0"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2AE8C2AD02;
-	Fri,  3 May 2024 10:31:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=144.6.53.87
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77B96C2E9;
+	Fri,  3 May 2024 10:31:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714732277; cv=none; b=NlkoxWwEU0HMEygeT9ItdvHdMNEp8l8yMW8zF9DwyvvIY3YAi4QlDedURDhcePu/b2ynf9WmZQCnVUAXOluVlOyrsUsVviiJgJEB0TfKi4tWbldi4P9K/0mZSIGvYh+LiDsbuMLYzdew3T8T2KVG/w0xvgzeH2jnQ0V1KY5VSJY=
+	t=1714732286; cv=none; b=cUmu1qKdYZ7UltxzsoqHYhFP2hxOn+Hpb5NjH8LvTbIn4KsbFbBFTlZMnlqdbFqf0ABC+FeY892M5M/T5tT4sJ936MKS7BmjNECuvlqN0RTW97k7RDDvPUqufSTumFxaqYQ7gOUEcA8j0bPhrFYP0i1OrFbF0afIEoMV1S04nMM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714732277; c=relaxed/simple;
-	bh=6AYkgxrwSkcmi+C/w8z7/QWz4EAoBp+7V4Et2BTlEg4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=YaEOu4Rn6qY2zown+Oqhifb9D09xxmOY1522L6VYvWOiGX4tq4/3iNYy0BV9o1BgTd576F06bx2wwNATu6880qkpvDoDHoz5Mk476pXKQPzrfaLuaa7pj/Mvz4NuLjT9O2m5BmuhX5y0E+/KYTQ/8N7E1T8U1QDuk/tNXYmEJE0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; arc=none smtp.client-ip=144.6.53.87
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gondor.apana.org.au
-Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
-	by formenos.hmeau.com with smtp (Exim 4.96 #2 (Debian))
-	id 1s2qBo-009v7u-2Y;
-	Fri, 03 May 2024 18:30:53 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Fri, 03 May 2024 18:30:53 +0800
-Date: Fri, 3 May 2024 18:30:53 +0800
-From: Herbert Xu <herbert@gondor.apana.org.au>
-To: Jarkko Sakkinen <jarkko@kernel.org>
-Cc: Lukas Wunner <lukas@wunner.de>, Stefan Berger <stefanb@linux.ibm.com>,
-	keyrings@vger.kernel.org, linux-crypto@vger.kernel.org,
-	davem@davemloft.net, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] crypto: ecc - Protect ecc_digits_from_bytes from reading
- too many bytes
-Message-ID: <ZjS83WIPglXiUH3n@gondor.apana.org.au>
-References: <20240426225553.3038070-1-stefanb@linux.ibm.com>
- <D0W3MTR0CY08.Q2UIYE4N274L@kernel.org>
- <Zi8UXS1MD5V58dnN@wunner.de>
- <D0WIZTMRKHSJ.1Z4ZV54DLVWAB@kernel.org>
+	s=arc-20240116; t=1714732286; c=relaxed/simple;
+	bh=nc6rjh+82Q/1R41FiW6o6l8t57/kihiXaaePxvwXWbI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=CKelovyrWEVZufkX3iEKEupOhJd2gvjZeVlbm/ozi5oEcdcSEl6HehZSU6mPpvpJD3oUjHa3t9JO1XeOxMSq/5cQhs55Aiq22g9sEnZVJVM5i05yCPIoAe+8xNUWRqHkLaBNqcsF3q5XQJdpX2QxrONdJ/ThOFaeQFPSmWK5bIM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WUjOY8R0; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1714CC4AF14;
+	Fri,  3 May 2024 10:31:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714732286;
+	bh=nc6rjh+82Q/1R41FiW6o6l8t57/kihiXaaePxvwXWbI=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=WUjOY8R0riCUpqevZNqBlpaVexrXrd2SqhJV/cXhQ6QJzVNBQiXfnhq7sgMuEzk6o
+	 iQYY68ZIbaVFBws38gwir7lz+bnEUI/kXvvDFiDX8p6HLY7EYIcr64WR9ecyr3BnxW
+	 Vu38RtrGRKOJD87kDRRj6wEzidnuDDBYtlEkonhifFEqLkvP57/aCuE3xZNMzupOjN
+	 7y3hAzH3ZXwqQvtBqBjwdLrS1JTCMOr+4pqrIsljkusRxzJgnx1jp6+yArzGHo2XHD
+	 Y/Cdm4T+rvwD4/3dRZ5kEP8zq4u6/3nqcUp1cWIP/BxQx0UJ34XsXpDBZD/qZ8qM1R
+	 Cjbpji9TTCRoQ==
+Received: by mail-lj1-f182.google.com with SMTP id 38308e7fff4ca-2df9af57b5eso91029771fa.2;
+        Fri, 03 May 2024 03:31:25 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCWF7EZ0RvWh/orDrOrgRczuZe1bjrAlNpOs2r0MH0H9cdAQWSsXyZq1agVRLH3OpcBNE+JJDR8JSNkuilndSbnK/bnCrlCcgzM03j6g
+X-Gm-Message-State: AOJu0YyErBjLwmBocti4u6rICulTL3auMzBR6j9sNXhs0rWlg42kGmYF
+	91TIXshAqiyxCEjsS2/P5k84+Hz9594OTWRnnjRB4TJQhY9JXM7h7cLxOfotF7WqR0/T2YvLSCJ
+	XlHCPcAoQuviBX9B5XBpsJpHgMiY=
+X-Google-Smtp-Source: AGHT+IHtel9Xf2xd1QPpAHkRvwx0va3yjkn+x43uAJYWhhh3bC1oZRJaFxoQq+jcdpqxM7m8YUbDzS+sVjB94J5lqZw=
+X-Received: by 2002:a05:651c:d5:b0:2e2:466b:1a67 with SMTP id
+ 21-20020a05651c00d500b002e2466b1a67mr1351512ljr.46.1714732284413; Fri, 03 May
+ 2024 03:31:24 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <D0WIZTMRKHSJ.1Z4ZV54DLVWAB@kernel.org>
+References: <20240411004907.649394-1-yu.c.chen@intel.com> <ZiZ2yUI09QIrYr/4@chenyu5-mobl2>
+ <CAMj1kXGdRkiLh+3DePZuejaqEphyP=gN6bnK6v08ueP3MP40EA@mail.gmail.com>
+In-Reply-To: <CAMj1kXGdRkiLh+3DePZuejaqEphyP=gN6bnK6v08ueP3MP40EA@mail.gmail.com>
+From: Ard Biesheuvel <ardb@kernel.org>
+Date: Fri, 3 May 2024 12:31:12 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXHLGMXtD-Ad_1TKPmkrvppeNNtKUn-G5q4jr8ZKOab18Q@mail.gmail.com>
+Message-ID: <CAMj1kXHLGMXtD-Ad_1TKPmkrvppeNNtKUn-G5q4jr8ZKOab18Q@mail.gmail.com>
+Subject: Re: [PATCH v2] efi/unaccepted: touch soft lockup during memory accept
+To: Chen Yu <yu.c.chen@intel.com>
+Cc: linux-efi@vger.kernel.org, 
+	"Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>, Vlastimil Babka <vbabka@suse.cz>, 
+	Nikolay Borisov <nik.borisov@suse.com>, Chao Gao <chao.gao@intel.com>, linux-kernel@vger.kernel.org, 
+	"Hossain, Md Iqbal" <md.iqbal.hossain@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 
-On Mon, Apr 29, 2024 at 01:14:15PM +0300, Jarkko Sakkinen wrote:
-> 
-> Yeah, sure, that would be even better, or even memzero_explicit()?
+On Wed, 24 Apr 2024 at 19:12, Ard Biesheuvel <ardb@kernel.org> wrote:
+>
+> On Mon, 22 Apr 2024 at 16:40, Chen Yu <yu.c.chen@intel.com> wrote:
+> >
+> > On 2024-04-11 at 08:49:07 +0800, Chen Yu wrote:
+> > > Commit 50e782a86c98 ("efi/unaccepted: Fix soft lockups caused
+> > > by parallel memory acceptance") has released the spinlock so
+> > > other CPUs can do memory acceptance in parallel and not
+> > > triggers softlockup on other CPUs.
+> > >
+> > > However the softlock up was intermittent shown up if the memory
+> > > of the TD guest is large, and the timeout of softlockup is set
+> > > to 1 second.
+> > >
+> > > The symptom is:
+> > > When the local irq is enabled at the end of accept_memory(),
+> > > the softlockup detects that the watchdog on single CPU has
+> > > not been fed for a while. That is to say, even other CPUs
+> > > will not be blocked by spinlock, the current CPU might be
+> > > stunk with local irq disabled for a while, which hurts not
+> > > only nmi watchdog but also softlockup.
+> > >
+> > > Chao Gao pointed out that the memory accept could be time
+> > > costly and there was similar report before. Thus to avoid
+> > > any softlocup detection during this stage, give the
+> > > softlockup a flag to skip the timeout check at the end of
+> > > accept_memory(), by invoking touch_softlockup_watchdog().
+> > >
+> > > Fixes: 50e782a86c98 ("efi/unaccepted: Fix soft lockups caused by parallel memory acceptance")
+> > > Reported-by: "Hossain, Md Iqbal" <md.iqbal.hossain@intel.com>
+> > > Reviewed-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+> > > Signed-off-by: Chen Yu <yu.c.chen@intel.com>
+> > > ---
+> > > v1 -> v2:
+> > >        Refine the commit log and add fixes tag/reviewed-by tag from Kirill.
+> >
+> > Gently pinging about this patch.
+> >
+>
+> Queued up in efi/urgent now, thanks.
 
-memzero_explicit should only be used for stack memory.
+OK, I was about to send this patch to Linus (and I am still going to).
 
-Cheers,
--- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+However, I do wonder if sprinkling touch_softlockup_watchdog() left
+and right is really the right solution here.
+
+Looking at the backtrace, this is a page fault originating in user
+space. So why do we end up calling into the hypervisor to accept a
+chunk of memory large enough to trigger the softlockup watchdog? Or is
+the hypercall simply taking a disproportionate amount of time?
+
+And AIUI, touch_softlockup_watchdog() hides the fact that we are
+hogging the CPU for way too long - is there any way we can at least
+yield the CPU on this condition?
 
