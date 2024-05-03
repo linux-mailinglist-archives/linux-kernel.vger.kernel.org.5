@@ -1,55 +1,80 @@
-Return-Path: <linux-kernel+bounces-167325-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-167319-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3297C8BA7E7
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 09:36:52 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C1EE68BA7CC
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 09:31:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6402A1C21756
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 07:36:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 77AAC280E62
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 07:31:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D291A1474C4;
-	Fri,  3 May 2024 07:36:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9926F1474BF;
+	Fri,  3 May 2024 07:31:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="ZV92GoCD"
-Received: from mout.web.de (mout.web.de [212.227.17.11])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="IlqJNhKQ"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8CC5D139D12;
-	Fri,  3 May 2024 07:36:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC3FE1465BC
+	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 07:31:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714721795; cv=none; b=VxFK8KAkx8Guki0LofM695QO7+BRTIuvUGURf5001hc2yDiexvCrxzjzYV3TD5R5EwLpe4UM1UoLTBj0OFGaeBL3i7D3yWlyYtW7iu22LtXK9wVwuhMIv+F3L4wscSW5CXcmF8zWsDXIYt8WncLEABE4e8RdmMPAKeft6d1crDY=
+	t=1714721467; cv=none; b=F+OYbyQSKQhYB/7Euc4IAUoQCpEvOPDW4aaZ+jGE6phCRksuwB8nla4SFFG7OMo/+VqRe3uvBr0kpB9stK3dCplEO8Ad0xbmRQ+518flNDrBcgC8IE/7EDSWlgzviBtNIFXuNRSJ/+DTV4zJEXDqIK6EgNv5wlmb0C+/38sdM9s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714721795; c=relaxed/simple;
-	bh=7KoCLlZBSOFASgSu6MYjnBmP3h1VL0xbXZBQuWHgi5U=;
+	s=arc-20240116; t=1714721467; c=relaxed/simple;
+	bh=LHo8e5MgzEpABxZMmyiDu+cre42cy1wLl6f0BueObXA=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=B4p9yA2hSnt+XixkVLMGnX/Otdu6eLNFRGOEpr5ZkXhHDLmKqbmb8fzVfgtZjZDYykSdFl0Pb8LBuuSAoUR+fsvO4tedyUeZWK9sXr8w5G968qj5L69rHKV5ygE/sa/aAzQ8OhS05AcrBAHlD+mRGBdamElP6DzLEBlDR0SfYxY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=ZV92GoCD; arc=none smtp.client-ip=212.227.17.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=web.de;
-	s=s29768273; t=1714721789; x=1715326589; i=markus.elfring@web.de;
-	bh=tTc56wSSVJv4iZDOZUEc20yuwRleSTjh1lHhSpz3Qng=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
-	 References:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding:cc:content-transfer-encoding:
-	 content-type:date:from:message-id:mime-version:reply-to:subject:
-	 to;
-	b=ZV92GoCDhbobZP4TPyEUBx8zDd41Ia5ocGweYzqZ6eV6ITNBiodnpQuAftw+umMn
-	 Megw/dceTCuiMpWGfbBW+M4UzNCwsHrQ3Q7DqVCZQEav2z6JoJCO2VF3EYoiK9xas
-	 niyH1SKv4nX69HKarMxLThK7k9JhaKRm/kYiEYhlNiEioG8B5MQqhPO/vfxmhJRAf
-	 pJDyJ0rp61GvRFcNscB1DP/TwG1SvBPy6JjdS+gPwmX/pWzzf0W4bSbB0mDEfpV9J
-	 PCKzZY1V2CD/jaV7y3pIiQy/ImIuJ72ZtlqJ9+SMgPUdlCFwUKDWBPYwRAunc8DTS
-	 1DTfFM+XTdxItegOeQ==
-X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
-Received: from [192.168.178.21] ([94.31.83.95]) by smtp.web.de (mrweb105
- [213.165.67.124]) with ESMTPSA (Nemesis) id 1MnpGi-1sRQga3uzi-00prNa; Fri, 03
- May 2024 09:30:35 +0200
-Message-ID: <6eac7fc4-9ade-41bb-a861-d7f339b388f6@web.de>
-Date: Fri, 3 May 2024 09:30:33 +0200
+	 In-Reply-To:Content-Type; b=daluXd+L/pWz9NMiIWo8DPeEVcgN+79BbrGLJ+Xtz/0SqC37uu55b5l6fNqY221zWEuUhD07R1KZGgtALN6wEpzbMhPlHTlgcVSrbazKyzHWDgA3FcRZqgyvAnOjLF1JB/zLP8v1CDCccDJ24drtFWcb/yTCeNoRnzjHWHT8ZdA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=IlqJNhKQ; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1714721464;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=kay3G1XsLA4JleZx3Fv2uRt6GLaRElqrFFYQVMsBqFo=;
+	b=IlqJNhKQnCNUy25FTyNh6xcep3n/i8dsTab/3RAX+GYM8Vw+QHmkImzzlnp8ZkVEXc/4le
+	RnDRDV2Nmr/fnkWXdBfxqgk9pTA7Re017ntVNkR2/kHsqTcqJNw/NUwssR6A/UUSr+yqRS
+	wFRWGltItMS8+k/gqEdEQ8+wl/kaDgw=
+Received: from mail-ot1-f71.google.com (mail-ot1-f71.google.com
+ [209.85.210.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-589-hyyHWYFfPJWIv2U21Cf7eg-1; Fri, 03 May 2024 03:31:03 -0400
+X-MC-Unique: hyyHWYFfPJWIv2U21Cf7eg-1
+Received: by mail-ot1-f71.google.com with SMTP id 46e09a7af769-6ee64e5576eso4780640a34.1
+        for <linux-kernel@vger.kernel.org>; Fri, 03 May 2024 00:31:02 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714721462; x=1715326262;
+        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
+         :from:references:cc:to:subject:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=kay3G1XsLA4JleZx3Fv2uRt6GLaRElqrFFYQVMsBqFo=;
+        b=s4C7EaHqn5aH4sDoZ3QkRhucbhkUNor3W+omYfa5+pXXXiSFixjvN3/3Sw7JGwVPf9
+         izJX+Jb/0Ea8RmfYLe3yv/cWqfKxtmDS/TQJn4YuPzmq276aavAcIIIJBjWnojlodGAk
+         /Phb9lJrPm8XNNyjbtOUSI0hvKGc0+AVOYJXfgWq7M6vx2D3XvcCb+O91oA4rL5GhUQg
+         EqGJuJ96Xy490I7iM7f0jLNUZQUIDYbbf503LPq2g2OB3lQJqa5Oi3YYzSrt6en1fvs7
+         fIuYa98h0u4frGyDM2yYDz7Y5E9F7u3Ds63/+8uVEwtJdwkS2GT2rru8H27+DFFUz3E0
+         RkLA==
+X-Forwarded-Encrypted: i=1; AJvYcCWt973CcGr/9iJ/ZUwDKPEn0jcIVYX7clJ4hn8iN+QmsrqctzN21b7nBCz/XUh5oyA6/6mF9eE9glm7KS+OmzqkvKz9GD3OBJmaTwKf
+X-Gm-Message-State: AOJu0YzIk3vBuWqte1WsKbEKVABkcgLLIALAf3vbwRhOmWn8V6yyB0is
+	69CFJeGX7dQLfRLQkUhrpxm0P0ocipi5zYwUtB77TugvwrIaPTLsXqRk3qIyO5UyoifyAv5bq+t
+	LVlg9wJF/iJqPr4uOzA3MhVLBVydUOTtwyfNuItwbIll8e6cbfkqPYrY0gmvDAQ==
+X-Received: by 2002:a05:6830:3149:b0:6ee:5560:4031 with SMTP id c9-20020a056830314900b006ee55604031mr2614739ots.38.1714721462107;
+        Fri, 03 May 2024 00:31:02 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGGxYIIkxGIgyH8aktHNZwF1zguXlgnaHiw5tGDmBHmpDDHgKQ6H7EwBYU2hX/95eHSN7chVg==
+X-Received: by 2002:a05:6830:3149:b0:6ee:5560:4031 with SMTP id c9-20020a056830314900b006ee55604031mr2614728ots.38.1714721461701;
+        Fri, 03 May 2024 00:31:01 -0700 (PDT)
+Received: from [192.168.0.9] (ip-109-43-179-34.web.vodafone.de. [109.43.179.34])
+        by smtp.gmail.com with ESMTPSA id c23-20020ae9e217000000b0078d5fdc929fsm1013411qkc.104.2024.05.03.00.30.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 03 May 2024 00:31:01 -0700 (PDT)
+Message-ID: <25cc89b7-822f-4735-bec5-59458ec18a49@redhat.com>
+Date: Fri, 3 May 2024 09:30:57 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -57,72 +82,168 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net v2 2/2] ax25: fix potential reference counting leak in
- ax25_addr_ax25dev
-To: Duoming Zhou <duoming@zju.edu.cn>, linux-hams@vger.kernel.org,
- netdev@vger.kernel.org, kernel-janitors@vger.kernel.org,
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, =?UTF-8?Q?J=C3=B6rg_Reuter?=
- <jreuter@yaina.de>, Paolo Abeni <pabeni@redhat.com>
-Cc: LKML <linux-kernel@vger.kernel.org>,
- Dan Carpenter <dan.carpenter@linaro.org>,
- Lars Kellogg-Stedman <lars@oddbit.com>, Simon Horman <horms@kernel.org>
-References: <cover.1714690906.git.duoming@zju.edu.cn>
- <74e840d98f2bfc79c6059993b2fc1ed3888faba4.1714690906.git.duoming@zju.edu.cn>
-Content-Language: en-GB
-From: Markus Elfring <Markus.Elfring@web.de>
-In-Reply-To: <74e840d98f2bfc79c6059993b2fc1ed3888faba4.1714690906.git.duoming@zju.edu.cn>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:fyEaMnRrnNvXcfnnCsy95pUZQYP6d4iTVya14Y35u0lKhfCNXWH
- sjb6AoMx6a27q2adKg/1eQDvJH4aHEKwGTLhXARxvdWUG1+Ud1cPRv7HqZNzk315/VCUaBH
- B91xSUcToLX2iOdINlQXl363NaB6E3QUXOI/4HnkqX0auYxz3xCuwBUdF71kTsNpqYfz5Hp
- e6E4An+24Z58olqplCVMA==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:Y5nGvnd2AQM=;6gXhRfyb2lyixwSuZj9IZk9twB1
- yaS9x+tAjWeLsKgigaBdAMOnu7CQw9oTJ2zLqZzkiyOP93jpx8cEar+yIs+dxrqcsgfB9aosE
- TXs57fmqKJU7fzaMVBHMn48VfyoDNoGm4JXXNUObpIjxwUP2vaADn52hsKhpzfwTZf18Sg33d
- sTJrmZinGVUs86bSXIZdnnXfAz4pBzYRYNLF8ogyhm8otvbZnOJXp4raC/Mqe5Xau2s3TmLdX
- 5NhB38usJFQvpfw1eXfsZ0JQFpTLF+tAufKwC9YFosWeUcaFRkipcQ43AqcHlt6WP/JEL61tB
- /qTDumEVGpBo8JoFZD2pg6lthpteWyUMSJClT0PpGcHtNCTxMlpKqLw8q7Eva9Bxx5XFSAjrv
- y6OHMlhfBfyE4hjg8hzQLzEsoYHErPm2TC3cQ5MbGREywOdM1aXA29ForvQWt4gdpHJz7pcvb
- ecVIhgUHcgiMq9lSVL/D304oh7c/oAolEZNrEnvqyv0Xd5kuXEJgPwkiKB7YMhYXupOQqc5js
- qqGXnyx7jrPGmTjpinQ3p0XR+/qK3RbQ7esOGW/xrtJQHONuvlywwU8yKfZsghYWfQvN8+JjL
- kd00PZFFPQcA0aoVCELJr1Mw5fm3FFZkAepmqRpl8N8698N6pFmr1V5f0yj3thkkiGBoInDQF
- Spo/BwBp15xl2dw3tlwNwJYENun6rFshOOGJ9O+t9f1RpiFFzWKQF7njcdk5tw076WtggnUP9
- IRRvHGzQnPdgnICzHlhw08snhc7/fqRihSFDEkNy6vCk6RyfU3XQ1FizJePmev87v7NAENo8m
- YEJ3671Am7umulyDXa5HwHHvLhZm5sGy9VVemku8REUBnD630OOdxqeyYLk94bFJ4r
+Subject: Re: [PATCH v2] KVM: selftests: Use TAP interface in the
+ set_memory_region test
+To: Sean Christopherson <seanjc@google.com>
+Cc: kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
+ linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Shuah Khan <shuah@kernel.org>,
+ Muhammad Usama Anjum <usama.anjum@collabora.com>
+References: <20240426114552.667346-1-thuth@redhat.com>
+ <ZjPrlLNNGNh2mOmW@google.com>
+From: Thomas Huth <thuth@redhat.com>
+Content-Language: en-US
+Autocrypt: addr=thuth@redhat.com; keydata=
+ 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
+In-Reply-To: <ZjPrlLNNGNh2mOmW@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-How do you think about to append parentheses to the function name
-in the summary phrase?
+On 02/05/2024 21.37, Sean Christopherson wrote:
+> On Fri, Apr 26, 2024, Thomas Huth wrote:
+>> Use the kselftest_harness.h interface in this test to get TAP
+>> output, so that it is easier for the user to see what the test
+>> is doing. (Note: We are not using the KVM_ONE_VCPU_TEST_SUITE()
+>> macro here since these tests are creating their VMs with the
+>> vm_create_barebones() function, not with vm_create_with_one_vcpu())
+>>
+>> Reviewed-by: Andrew Jones <ajones@ventanamicro.com>
+>> Signed-off-by: Thomas Huth <thuth@redhat.com>
+>> ---
+>>   v2:
+>>   - Rebase to linux-next branch
+>>   - Make "loops" variable static
+>>   - Added Andrew's Reviewed-by
+>>
+>>   .../selftests/kvm/set_memory_region_test.c    | 86 +++++++++----------
+>>   1 file changed, 42 insertions(+), 44 deletions(-)
+>>
+>> diff --git a/tools/testing/selftests/kvm/set_memory_region_test.c b/tools/testing/selftests/kvm/set_memory_region_test.c
+>> index 68c899d27561..a5c9bee5235a 100644
+>> --- a/tools/testing/selftests/kvm/set_memory_region_test.c
+>> +++ b/tools/testing/selftests/kvm/set_memory_region_test.c
+>> @@ -16,6 +16,7 @@
+>>   #include <test_util.h>
+>>   #include <kvm_util.h>
+>>   #include <processor.h>
+>> +#include "kselftest_harness.h"
+>>   
+>>   /*
+>>    * s390x needs at least 1MB alignment, and the x86_64 MOVE/DELETE tests need a
+>> @@ -38,6 +39,8 @@ extern const uint64_t final_rip_end;
+>>   
+>>   static sem_t vcpu_ready;
+>>   
+>> +static int loops;
+> 
+> ...
+> 
+>> -static void test_add_overlapping_private_memory_regions(void)
+>> +TEST(add_overlapping_private_memory_regions)
+>>   {
+>>   	struct kvm_vm *vm;
+>>   	int memfd;
+>>   	int r;
+>>   
+>> -	pr_info("Testing ADD of overlapping KVM_MEM_GUEST_MEMFD memory regions\n");
+>> +	if (!has_cap_guest_memfd())
+>> +		SKIP(return, "Missing KVM_MEM_GUEST_MEMFD / KVM_X86_SW_PROTECTED_VM");
+> 
+> I like that we can actually report sub-tests as being skipped, but I don't like
+> having multiple ways to express requirements.  And IMO, this is much less readable
+> than TEST_REQUIRE(has_cap_guest_memfd());
+> 
+> AIUI, each test runs in a child process, so TEST_REQUIRE() can simply exit(), it
+> just needs to avoid ksft_exit_skip() so that a sub-test doesn't spit out the full
+> test summary.
+> 
+> And if using exit() isn't an option, setjmp()+longjmp() will do the trick (I got
+> that working for KVM_ONE_VCPU_TEST() before I realized tests run as a child).
+> 
+> The below is lightly tested, but I think it does what we want?
 
+Not quite ... for example, if I force vmx_pmu_caps_test to skip the last 
+test, I get:
 
-> The reference counting of ax25_dev potentially increase more
-> than once in ax25_addr_ax25dev(), which will cause memory leak.
->
-> In order to fix the above issue, only increase the reference
-> counting of ax25_dev once, when the res is not null.
+TAP version 13
+1..5
+# Starting 5 tests from 1 test cases.
+#  RUN           vmx_pmu_caps.guest_wrmsr_perf_capabilities ...
+#            OK  vmx_pmu_caps.guest_wrmsr_perf_capabilities
+ok 1 vmx_pmu_caps.guest_wrmsr_perf_capabilities
+#  RUN           vmx_pmu_caps.basic_perf_capabilities ...
+#            OK  vmx_pmu_caps.basic_perf_capabilities
+ok 2 vmx_pmu_caps.basic_perf_capabilities
+#  RUN           vmx_pmu_caps.fungible_perf_capabilities ...
+#            OK  vmx_pmu_caps.fungible_perf_capabilities
+ok 3 vmx_pmu_caps.fungible_perf_capabilities
+#  RUN           vmx_pmu_caps.immutable_perf_capabilities ...
+#            OK  vmx_pmu_caps.immutable_perf_capabilities
+ok 4 vmx_pmu_caps.immutable_perf_capabilities
+#  RUN           vmx_pmu_caps.lbr_perf_capabilities ...
+ok 5 # SKIP - Requirement not met: host_cap.lbr_format && 0
+#            OK  vmx_pmu_caps.lbr_perf_capabilities
+ok 5 vmx_pmu_caps.lbr_perf_capabilities
+# PASSED: 5 / 5 tests passed.
+# Totals: pass:5 fail:0 xfail:0 xpass:0 skip:0 error:0
 
-Would you find the following change description a bit nicer?
+As you can see, the "ok 5" line is duplicated now, once marked with "# SKIP" 
+and once as successfull. I don't think that this is valid TAP anymore?
 
-   The reference counter of the object =E2=80=9Cax25_dev=E2=80=9D can be i=
-ncreased multiple times
-   in ax25_addr_ax25dev(). This will cause a memory leak so far.
+> I also think we would effectively forbid direct use of TEST().  Partly because
+> it's effectively necessary to use TEST_REQUIRE(), but also so that all tests will
+> have an existing single point of contact if we need/want to make similar changes
+> in the future.
 
-   Thus move a needed function call behind a for loop
-   and increase the reference counter only when the local variable =E2=80=
-=9Cres=E2=80=9D
-   is not a null pointer.
+Ok, but I wrote in the patch description, KVM_ONE_VCPU_TEST_SUITE() does not 
+work for the set_memory_region test since it does not like to have a 
+pre-defined vcpu ... so if we want to forbid TEST(), I assume we'd need 
+another macro like KVM_BAREBONE_TEST_SUITE() ?
 
+Not sure whether I really like it, though, since I'd prefer if we could keep 
+the possibility to use the original selftest macros (for people who are 
+already used to those macros from other selftests).
 
-=E2=80=A6
-> +++ b/net/ax25/ax25_dev.c
-> @@ -37,8 +37,9 @@ ax25_dev *ax25_addr_ax25dev(ax25_address *addr)
-=E2=80=A6
+  Thomas
 
-Would you like to omit curly brackets in the affected function implementat=
-ion?
-
-Regards,
-Markus
 
