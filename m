@@ -1,46 +1,46 @@
-Return-Path: <linux-kernel+bounces-168123-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-168124-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A945E8BB402
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 21:29:52 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 672F38BB406
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 21:30:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 444421F257C2
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 19:29:52 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 986FA1C21647
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 19:30:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 63EB8158D64;
-	Fri,  3 May 2024 19:29:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E5317158DAA;
+	Fri,  3 May 2024 19:29:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="ox4P8tfi"
-Received: from out-187.mta1.migadu.com (out-187.mta1.migadu.com [95.215.58.187])
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="mVTrx/ik"
+Received: from out-186.mta1.migadu.com (out-186.mta1.migadu.com [95.215.58.186])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21CF215884C
-	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 19:29:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.187
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1778158D67
+	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 19:29:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.186
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714764574; cv=none; b=gBucXxAqzk9sSLxSyv6UAIjj0jyRgiu2e0U3qx1JVNdi3cuaZIRmIWThtR3ut+8OIuNnv+7uSoxUMFDIlTBNV9x7G+jODdap0WkIH4kDRiYq3TftbEG6T/Koo7Sz6fyKkeAadjI6LX6DrgOcbiIi2ge/bLyNVNQUtTqyPi+2Zsw=
+	t=1714764577; cv=none; b=RFpmnFN5Fgc1nO2vw0DX1YIhMqgecbxDIBeq+jpYwWEZc/0c4zQ0FZpH5mg4G7/4F7RbUNiUruTVP9rqb1EzkWXuxrAfnEQkArVXbPzxLMu2BxWlpXZJQh/ni4lYFpNfOUVMK6IoSbseEvVcxDa3bA39An6nDVZfix61dozBIUM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714764574; c=relaxed/simple;
-	bh=sCcuwPgsubwyvq5INWC3rtyH9ttsfwPVllVxyHV7pHo=;
+	s=arc-20240116; t=1714764577; c=relaxed/simple;
+	bh=NJxnVi08whsfcF8Fiov15N74TeOxpeiPHKcpUCUPy0c=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=tr+QmDzKtsNa6morONkfaESXWFPmAQuD3ploG2tL7UPmezggPMQ2LbBf4xsbrll5EdeE/hBatojxhJSSe2RY5RLajamd+ZknH4wpF6vmKuOFWClohAdOq4oubXTtV7bzRQJfHmZqS9mIeqds3/3fdtmz5aXOO5Q6jkt5Ge7zj9w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=ox4P8tfi; arc=none smtp.client-ip=95.215.58.187
+	 MIME-Version; b=PNd/zkVL4RiiKbkXtgtijZdU3Jt8w5WY9aVOo6oE2MWNi1kMWUick1hiJIzfqLWlNBkB+OaZVHTcB2jPZjVYtQn5zw03okbDZYQ6d0LdeU6yNbPx7AcDRjgZUDf8VqSDQpuYbyjYpM8QY5sMmIHZdkwEkSoZeaBGC6gYCbnDn10=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=mVTrx/ik; arc=none smtp.client-ip=95.215.58.186
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1714764571;
+	t=1714764573;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=cQ2e8hgiGDZBXEW1L5MiD7LSuS/VPNYQnMQFa72oN6c=;
-	b=ox4P8tfisHwN1tQ6Q/03B6cky9MCK1VFIh6qZjp1uggchco53uKdIr3RxIB4GnJSRDjen8
-	g+NgWLVuHX2kgEegdW8767YapfzGdPLJbJV/b48B+NhhlcUVLRpM4t/vcVPIX4OYCVRNSX
-	tQ5z+2V8oBStQHHd7l0vbnPFsyaVpTc=
+	bh=4uW0i6eKUrBGaUvxjIkM6lg53QGjldQQ1lSdwdv3i8U=;
+	b=mVTrx/ikZydOv8ki7W+nLR4D9MohHoKt3cfOtgZgT4xSPbmf3TbSjKCsubg/g0PEnPlnKk
+	jp84fh9eZoLimWGUTqDNIAdmGg8ECbdRKDJlhgktLvT1JFc27UllVs8ufGEf9pwnHUz1Yb
+	dGPP/ywuHRfutJ96NkWzDRUq42cguFk=
 From: Sean Anderson <sean.anderson@linux.dev>
 To: Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
 	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
@@ -54,9 +54,9 @@ Cc: linux-arm-kernel@lists.infradead.org,
 	Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
 	Michal Simek <michal.simek@amd.com>,
 	Sean Anderson <sean.anderson@linux.dev>
-Subject: [PATCH v5 01/10] drm: zynqmp_kms: Fix AUX bus not getting unregistered
-Date: Fri,  3 May 2024 15:29:13 -0400
-Message-Id: <20240503192922.2172314-2-sean.anderson@linux.dev>
+Subject: [PATCH v5 02/10] drm: zynqmp_dp: Rearrange zynqmp_dp for better padding
+Date: Fri,  3 May 2024 15:29:14 -0400
+Message-Id: <20240503192922.2172314-3-sean.anderson@linux.dev>
 In-Reply-To: <20240503192922.2172314-1-sean.anderson@linux.dev>
 References: <20240503192922.2172314-1-sean.anderson@linux.dev>
 Precedence: bulk
@@ -68,73 +68,77 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
-drm_encoder_cleanup is responsible for calling drm_bridge_detach for
-each bridge attached to the encoder. zynqmp_dp_bridge_detach is in turn
-responsible for unregistering the AUX bus. However, we never ended up
-calling drm_encoder_cleanup in the remove or error paths, so the AUX bus
-would stick around after the rest of the driver had been removed.
+Sort the members of struct zynqmp_dp to reduce padding necessary for
+alignment.
 
-I don't really understand why drm_mode_config_cleanup doesn't call
-drm_encoder_cleanup for us. It will call destroy (which for
-simple_encoder is drm_encoder_cleanup) on encoders in the mode_config's
-encoder_list.
-
-Should drm_encoder_cleanup get called before or after
-drm_atomic_helper_shutdown?
-
-Fixes: 2dfd045c8435 ("drm: xlnx: zynqmp_dpsub: Register AUX bus at bridge attach time")
 Signed-off-by: Sean Anderson <sean.anderson@linux.dev>
 ---
 
-Changes in v5:
+(no changes since v2)
+
+Changes in v2:
 - New
 
- drivers/gpu/drm/xlnx/zynqmp_kms.c | 12 +++++++++---
- 1 file changed, 9 insertions(+), 3 deletions(-)
+ drivers/gpu/drm/xlnx/zynqmp_dp.c | 28 ++++++++++++++--------------
+ 1 file changed, 14 insertions(+), 14 deletions(-)
 
-diff --git a/drivers/gpu/drm/xlnx/zynqmp_kms.c b/drivers/gpu/drm/xlnx/zynqmp_kms.c
-index 43bf416b33d5..f25583ce92e6 100644
---- a/drivers/gpu/drm/xlnx/zynqmp_kms.c
-+++ b/drivers/gpu/drm/xlnx/zynqmp_kms.c
-@@ -433,23 +433,28 @@ static int zynqmp_dpsub_kms_init(struct zynqmp_dpsub *dpsub)
- 				DRM_BRIDGE_ATTACH_NO_CONNECTOR);
- 	if (ret) {
- 		dev_err(dpsub->dev, "failed to attach bridge to encoder\n");
--		return ret;
-+		goto err_encoder;
- 	}
+diff --git a/drivers/gpu/drm/xlnx/zynqmp_dp.c b/drivers/gpu/drm/xlnx/zynqmp_dp.c
+index 9df068a413f3..12a8248ed125 100644
+--- a/drivers/gpu/drm/xlnx/zynqmp_dp.c
++++ b/drivers/gpu/drm/xlnx/zynqmp_dp.c
+@@ -256,10 +256,10 @@ struct zynqmp_dp_link_config {
+  * @fmt: format identifier string
+  */
+ struct zynqmp_dp_mode {
+-	u8 bw_code;
+-	u8 lane_cnt;
+-	int pclock;
+ 	const char *fmt;
++	int pclock;
++	u8 bw_code;
++	u8 lane_cnt;
+ };
  
- 	/* Create the connector for the chain of bridges. */
- 	connector = drm_bridge_connector_init(&dpsub->drm->dev, encoder);
- 	if (IS_ERR(connector)) {
- 		dev_err(dpsub->dev, "failed to created connector\n");
--		return PTR_ERR(connector);
-+		ret = PTR_ERR(connector);
-+		goto err_encoder;
- 	}
- 
- 	ret = drm_connector_attach_encoder(connector, encoder);
- 	if (ret < 0) {
- 		dev_err(dpsub->dev, "failed to attach connector to encoder\n");
--		return ret;
-+		goto err_encoder;
- 	}
- 
- 	return 0;
+ /**
+@@ -296,27 +296,27 @@ struct zynqmp_dp_config {
+  * @train_set: set of training data
+  */
+ struct zynqmp_dp {
++	struct drm_dp_aux aux;
++	struct drm_bridge bridge;
++	struct delayed_work hpd_work;
 +
-+err_encoder:
-+	drm_encoder_cleanup(encoder);
-+	return ret;
- }
++	struct drm_bridge *next_bridge;
+ 	struct device *dev;
+ 	struct zynqmp_dpsub *dpsub;
+ 	void __iomem *iomem;
+ 	struct reset_control *reset;
+-	int irq;
+-
+-	struct drm_bridge bridge;
+-	struct drm_bridge *next_bridge;
+-
+-	struct zynqmp_dp_config config;
+-	struct drm_dp_aux aux;
+ 	struct phy *phy[ZYNQMP_DP_MAX_LANES];
+-	u8 num_lanes;
+-	struct delayed_work hpd_work;
++
+ 	enum drm_connector_status status;
++	int irq;
+ 	bool enabled;
  
- static void zynqmp_dpsub_drm_release(struct drm_device *drm, void *res)
-@@ -529,5 +534,6 @@ void zynqmp_dpsub_drm_cleanup(struct zynqmp_dpsub *dpsub)
+-	u8 dpcd[DP_RECEIVER_CAP_SIZE];
+-	struct zynqmp_dp_link_config link_config;
+ 	struct zynqmp_dp_mode mode;
++	struct zynqmp_dp_link_config link_config;
++	struct zynqmp_dp_config config;
++	u8 dpcd[DP_RECEIVER_CAP_SIZE];
+ 	u8 train_set[ZYNQMP_DP_MAX_LANES];
++	u8 num_lanes;
+ };
  
- 	drm_dev_unregister(drm);
- 	drm_atomic_helper_shutdown(drm);
-+	drm_encoder_cleanup(&dpsub->drm->encoder);
- 	drm_kms_helper_poll_fini(drm);
- }
+ static inline struct zynqmp_dp *bridge_to_dp(struct drm_bridge *bridge)
 -- 
 2.35.1.1320.gc452695387.dirty
 
