@@ -1,130 +1,120 @@
-Return-Path: <linux-kernel+bounces-167831-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-167836-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 15BDF8BAFFC
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 17:35:40 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BE8F28BB008
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 17:37:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BF80E1F235D0
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 15:35:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 77F202844AC
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 15:37:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 23C60150988;
-	Fri,  3 May 2024 15:35:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 41DB315533D;
+	Fri,  3 May 2024 15:36:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="s7BvhLUZ"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="vtP14qu2"
+Received: from mout.web.de (mout.web.de [212.227.17.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5726C154BF3;
-	Fri,  3 May 2024 15:35:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4FEC2153816;
+	Fri,  3 May 2024 15:36:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714750518; cv=none; b=E7VCWQkw1IbyTFgWEJIClydswKF+W11xEmfQTyH+1z+t8urn0esANoFSamYDa3Da0UqmtURPUSebpJVyaYTqu4m8Hu8xLm46GR1w2P8/8fot/LQWvToIyK9QiqlyoyWTrVu3jmYGDmRL3xsYBIRoG/L0KFbQEYCyD2KykXEdm+g=
+	t=1714750569; cv=none; b=AgkP1qx6RueuyJZCl6SrSHT93k1H5emX2w6Cal5IBeoZU1QYNSLXoJHvc/xZF351/8IKgQyNIBW+/WN+xGWNqnQaKTOnh7jtQ4GxUbIxT68LNjswOGtK8CMbE2HgbpFvePceHGeLSTWXC04TuSBVZwZkRlzRP6MMfJADoKuigv4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714750518; c=relaxed/simple;
-	bh=W7CM22NmLViaaQ1ZuNAixQADGaivdjs2l0TCTx40bMc=;
-	h=Date:Content-Type:MIME-Version:From:To:Cc:In-Reply-To:References:
-	 Message-Id:Subject; b=KIIzREB6kmAfCjGV0QbCKk3epOF4Uiv75OFLjls/w0PNRoCj7VUY8eYlgD4v0PN1I9TWglkvYgF2iJmolD10BXmsKx+o12FuFFGdD+G8g/pnQLuQsNPCvZhX+GZv/ZioILd1ZYlhhLY8ZUHJk/ZMIcricPXQaIw7MxudK54dcVM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=s7BvhLUZ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E7CAFC4AF1B;
-	Fri,  3 May 2024 15:35:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714750518;
-	bh=W7CM22NmLViaaQ1ZuNAixQADGaivdjs2l0TCTx40bMc=;
-	h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-	b=s7BvhLUZSfr3XzknFD3wulbSHm6QGC/tEMM6sjgOJNrZpbU6yXn2vtj0UEnHgMLSd
-	 2vfgIrSwV/Ak2y9XhkEROe9REmMjZSlwo1TVT/jrPrvod3ULXb0bko+6uMfHtE4xH/
-	 GwAN/05ETdSK0K+aZF7ZzAmOGlkSbYEHVcBav6HtAadqxPUn62jGOvF/4tEATn8kvB
-	 R1UeUEjSTg85+cvVe1Dl7EiKuVs5zGc1hPZsG4SCDtaTCHeJ2dpwPJ2OqquXuyLNH+
-	 VL+Ob08t4YqsA7x0DeSdk+EA3GTDTQwsf0Sf+825Vbb/Pb5fiq3l3tB7JcFrlj6ezD
-	 SQkNvlYmEzJ2w==
-Date: Fri, 03 May 2024 10:35:16 -0500
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+	s=arc-20240116; t=1714750569; c=relaxed/simple;
+	bh=NC+ejQiD1SuZYzI3BW/e8K3TbPUaN9KZRtfAdV7jXM4=;
+	h=Message-ID:Date:MIME-Version:To:Cc:References:Subject:From:
+	 In-Reply-To:Content-Type; b=sYdXhdwjFOYR9Hxhbn2oDba93yAd9sccH0Eu2FGue4E+kA3Cr73nJrO9kx/1wQqIlhDlUJ+yWYLNxX9lRxxSB++j/npQrUHfWn0SUFIw9ZhfqNa3XTp6Wq9JtW1ABa7Q7g6h50HKPP3ukq3wQDZczmEn1R5HmeC8bztY6es18Ss=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=vtP14qu2; arc=none smtp.client-ip=212.227.17.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=web.de;
+	s=s29768273; t=1714750542; x=1715355342; i=markus.elfring@web.de;
+	bh=IW4IvyC+ChUZFc2mEHb0vBR9MWXWnvhfDjc74j+oTc0=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:To:Cc:References:
+	 Subject:From:In-Reply-To:Content-Type:Content-Transfer-Encoding:
+	 cc:content-transfer-encoding:content-type:date:from:message-id:
+	 mime-version:reply-to:subject:to;
+	b=vtP14qu2Z2nObc+Vmx09k8RQnk0Y745Z6dNGLWr6eQ9M/iM02vvaAiB1B0Cnmh4O
+	 csNI3mxKLngtduSN/PxBclFbmyq1wfryDz1oNmJhoRG+HviMEbfljmcRx/1W3Six8
+	 Q+pq4OO/jgZ8CeyREt2Gyop8xJaUohClUFsZ12vdk/kM0E2ZuHD4dgYfUynM3qAl0
+	 Lcw6ldsc85ugJdgkFuiqM2IJuKjCd8iW6cOwQsivZzTDR+tWgXynRwnqfxg0cPc/3
+	 T+XEKYDnYR/5p03SRsXHqdYNPmD5SxWBUbtU08mVaMab1Be19Ti2CFaztr9f8eMVr
+	 YEVd73+PEpytdo6oaA==
+X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
+Received: from [192.168.178.21] ([94.31.83.95]) by smtp.web.de (mrweb105
+ [213.165.67.124]) with ESMTPSA (Nemesis) id 1MALiL-1rwdgz0XuN-00COD1; Fri, 03
+ May 2024 17:35:42 +0200
+Message-ID: <96d63b0b-3258-4bf6-b75a-06eb4f4253bb@web.de>
+Date: Fri, 3 May 2024 17:35:39 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: "Rob Herring (Arm)" <robh@kernel.org>
-To: =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
-Cc: linux-gpio@vger.kernel.org, 
- Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
- "Rafael J. Wysocki" <rafael@kernel.org>, Conor Dooley <conor+dt@kernel.org>, 
- linux-mips@vger.kernel.org, Philipp Zabel <p.zabel@pengutronix.de>, 
- linux-clk@vger.kernel.org, Lee Jones <lee@kernel.org>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Gregory CLEMENT <gregory.clement@bootlin.com>, 
- Michael Turquette <mturquette@baylibre.com>, 
- Stephen Boyd <sboyd@kernel.org>, 
- Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>, 
- devicetree@vger.kernel.org, Tawfik Bayouk <tawfik.bayouk@mobileye.com>, 
- Linus Walleij <linus.walleij@linaro.org>, linux-kernel@vger.kernel.org, 
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-In-Reply-To: <20240503-mbly-olb-v2-3-95ce5a1e18fe@bootlin.com>
-References: <20240503-mbly-olb-v2-0-95ce5a1e18fe@bootlin.com>
- <20240503-mbly-olb-v2-3-95ce5a1e18fe@bootlin.com>
-Message-Id: <171475051550.955578.14266002492616876772.robh@kernel.org>
-Subject: Re: [PATCH v2 03/11] dt-bindings: soc: mobileye: add EyeQ OLB
- system controller
+User-Agent: Mozilla Thunderbird
+To: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>,
+ linux-usb@vger.kernel.org, kernel-janitors@vger.kernel.org,
+ Benson Leung <bleung@google.com>,
+ Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+ Jameson Thies <jthies@google.com>
+Cc: LKML <linux-kernel@vger.kernel.org>,
+ Bjorn Andersson <andersson@kernel.org>,
+ Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+ Fabrice Gasnier <fabrice.gasnier@foss.st.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Hans de Goede <hdegoede@redhat.com>,
+ Neil Armstrong <neil.armstrong@linaro.org>,
+ Prashant Malani <pmalani@chromium.org>,
+ Rajaram Regupathy <rajaram.regupathy@intel.com>,
+ Saranya Gopal <saranya.gopal@intel.com>,
+ =?UTF-8?Q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+References: <20240503003920.1482447-2-jthies@google.com>
+Subject: Re: [PATCH v3 1/4] usb: typec: ucsi: Fix null pointer dereference in
+ trace
+Content-Language: en-GB
+From: Markus Elfring <Markus.Elfring@web.de>
+In-Reply-To: <20240503003920.1482447-2-jthies@google.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:Yj/YW07USmuBV9MjkhzGBia+bcNaIJntKJXu9vumv+qYPlcJymr
+ ZoqrvdMMkgwaHsRgTLO2/eTcDaZ8YbCbnHlTel4ERyla/sZ64tgqjOkp8yoUmvAuJJLnKk5
+ OxZOFQhw3BPnPeNxZyz7yQciu0VkWvkorpyre/ySvGHlz1jAEFqC1frtvT5EG8X387V+4Px
+ ZEwznUUpjHUfDWRbjRqFw==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:iGCIxF3wQgg=;hsLjBZes9cVDUUiMSLTqZpV6b9d
+ gg/rh1d/+tk1whg20rdA6HbtmbrGb3/j0hNyygr9DxJL5fu8p5bt5LVcJzKvNDtVy+FVV8j+9
+ yIbxTTLw3BTS3lOIWpIZOJI+ZfruxLKsjctvs6Vld3dXi0WHAe/yWr8P10KVAq5vHTJlL4TEj
+ d7WR+zzz4SwEYVHo23FrSDRqyBnpJyV1EoXWexCKUn2dC9ShiDdZzuvZesJMY8rRu26R0wQVV
+ xuWD/Ui8NePxHyFdA0sBhm13f1e7P/51obmyip06R9qhDxxU+H4tOcQnejgiuO+DdEayh177i
+ 3+/MC73evmrqMTvaBuHPWxHs2foyeFbsBXgbMfeTMulFvois1V32A91nR4Fir/TwEi9x2Wge8
+ ApnriYcK6sTkJtI2882nIzV1v41CuEnf1Xmogadg4CJ1Wj+ZcJeVAfg2PsyKGLfxK5TgJtQkL
+ /d7YRIOMcFdooKFXGxA2KnFgmQKRLK04nTNp9/V8mp94ZbNsUsjGj+XC9xhoMkHN8eAHYRGD+
+ wXF5WQaZuz2LSUz8GK4vu6bBURsV026oHa2qIGMjCRqTnpS6x8a2Sw+Bck9M/BsmDa8kFrBfZ
+ sLrOebq5BhJqnQ+HolMfQzz3cP/X2QaadhzRr1bmNgMv8qUwr8XMhZ6UH2o+tPVNc3eEw1JzD
+ QcOWGT2cI25IP1wcg39FeFuW8Dzad95L4zdCoZbujxWSEr7/ZgMnxnpPgTDXdVDB1cdJFGmGv
+ 8WQ7PZYXKnwbZkpZW2YHpUAPB5Lw0UvmKHmQ7WS2IRtrWUyOOuaVxnVvKKuwFqzDKDXhZMnFU
+ m2v6CsbhidYaGCP5UDW5Z23f3zSt6TI8/TdebQUQARQJpQMNIBYIckjz5lpKR7r1Lj
+
+>                                      =E2=80=A6 which causese a NULL poin=
+ter
+=E2=80=A6
+
+I hope that a typo will be avoided in the change description for the final=
+ commit.
 
 
-On Fri, 03 May 2024 16:20:48 +0200, Théo Lebrun wrote:
-> Add documentation to describe the "Other Logic Block" system-controller.
-> It deals with three platforms: EyeQ5, EyeQ6L and EyeQ6H. First two have
-> a single instance, whereas EyeQ6H has seven named instances.
-> 
-> Features provided are:
->  - Clocks, children to main crystal. Some PLLs and divider clocks.
->  - Resets. EyeQ6H central, south, DDR0 and DDR1 do not have resets.
->  - Pinctrl. Only EyeQ5 has such feature.
-> 
-> Those are NOT the only registers exposed in OLB system-controllers! Many
-> individual registers, related to IP block integration, can be found.
-> 
-> We simplify devicetree references to OLB in two ways:
->  - Compatibles exposing a single clock do not ask for a index argument.
->  - Compatibles exposing a single reset domain do not ask for a domain
->    index, only a reset index.
-> 
-> About pinctrl subnodes: all pins have two functionality, either GPIO or
-> something-else. The latter is pin dependent, we express constraints
-> using many if-then.
-> 
-> Signed-off-by: Théo Lebrun <theo.lebrun@bootlin.com>
+=E2=80=A6
 > ---
->  .../bindings/soc/mobileye/mobileye,eyeq5-olb.yaml  | 375 +++++++++++++++++++++
->  MAINTAINERS                                        |   2 +
->  include/dt-bindings/clock/mobileye,eyeq5-clk.h     |  21 ++
->  3 files changed, 398 insertions(+)
-> 
+> Changes in V3:
+=E2=80=A6
 
-My bot found errors running 'make dt_binding_check' on your patch:
+How do you think about to mention also adjustments for the commit message =
+here?
 
-yamllint warnings/errors:
-
-dtschema/dtc warnings/errors:
-/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/net/snps,dwmac.yaml: mac-mode: missing type definition
-
-doc reference errors (make refcheckdocs):
-
-See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20240503-mbly-olb-v2-3-95ce5a1e18fe@bootlin.com
-
-The base for the series is generally the latest rc1. A different dependency
-should be noted in *this* patch.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit after running the above command yourself. Note
-that DT_SCHEMA_FILES can be set to your schema file to speed up checking
-your schema. However, it must be unset to test all examples with your schema.
-
+Regards,
+Markus
 
