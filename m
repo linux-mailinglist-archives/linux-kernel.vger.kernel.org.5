@@ -1,102 +1,127 @@
-Return-Path: <linux-kernel+bounces-167701-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-167702-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 895DD8BADAB
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 15:23:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 440498BADAE
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 15:24:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BAA3B1C22070
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 13:23:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 750D61C21900
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 13:24:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F08F153BEE;
-	Fri,  3 May 2024 13:22:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B2BB153808;
+	Fri,  3 May 2024 13:24:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="H3uby9WS"
-Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YAAMtZka"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D46D153BED
-	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 13:22:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BFAB214A0AB;
+	Fri,  3 May 2024 13:24:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714742557; cv=none; b=i7qxEPxHQzo2a8GdQsABlQilOGB5UDZ/1pJuV/h9kSfiZAkR2n/SoLX2vKweKR6jN+YMgdROvFXDIo6r8KbvaK2OQtaTHP4eI7qwO9Pslz+M2yiWiwlt/FRFNFj4BTFjO4rrcCW3zAi0Hy/IwNVOHMoQ2PH0Wmk73vIjjxMfMZs=
+	t=1714742679; cv=none; b=k091JboE2Vb3n8XBVgmblCSeOngc7ZodygozSmFpe7zqiI4pzbK1Zieg0QYnN9fQCQNErqAGkmbKNeKrGXCtmXTqLp3umeTMIQQbxgi0LT4/cEJdSxD8SQjbo4g0jPe2qaKHK1AluiEoghY3p9aov7yzj6OoIvF9Bcet11OQMtg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714742557; c=relaxed/simple;
-	bh=E+SpOVvHGi3ykjwFD60zMDyQU3xXnUCfecCHq2pmGR0=;
-	h=From:To:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=JvJdIQx5NlPCDYbdGi3kPJeeYXz3mGACwT0TyifebY6uiCA7P6G35EITOYZuWZ1H9gqDbMOgTk3UDgyzilF5ljlBq+8YPU3jx3Vz/AKvp/yp++CNglnZWnLzl8ag6eq1egtPoBXTCv0/xRYyAPaqflpez2g5Gvfd4yDlFRXKMaU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=H3uby9WS; arc=none smtp.client-ip=209.85.128.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
-Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-41b5e74fa2fso60396675e9.1
-        for <linux-kernel@vger.kernel.org>; Fri, 03 May 2024 06:22:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1714742554; x=1715347354; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:to:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Kit1TBFVgyt1sxkCYLtPtBHsm3h3unJNtgT/eeVBYto=;
-        b=H3uby9WSHlqYlQsoj89ksCUdZ+ObButx0Sdz5iNADIH1ssb+HHRxyD6JK4itoqGrAd
-         iGBlJ4rRQNB8BmCAC1/CiNxRfVc7A2Ae7isOgPJmi3poR4f4tu0reVcOWAiLJkMiZzXP
-         KLo8XMatacuH3XEbOTpE9FRCPccJwJlPmQTgQGOOrU2r1PjtozpDf2henbS2QBRJiCRs
-         knGXpjmIlsc68t3twNRPciWlCeyvmmxVIfGOjDMDrdtiTzBs5O20tgRfJ10CohHrWBx3
-         mH+ptt4vz/aGQTd19R8W9rNWE/ah79wCIx4pIelU43f2zGw9J1RDIBayo9x5aBID3tK/
-         jSVA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714742554; x=1715347354;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Kit1TBFVgyt1sxkCYLtPtBHsm3h3unJNtgT/eeVBYto=;
-        b=uwhvNZ4htipTbea33xsDXQ8sDYVUubN5y8I56pWq/eoaJkSnDY21CB6BOJfGJNWfsi
-         ZNkJz/azx4VDgHeaCnsvrsgLvDx0+czbtF8b/k8tQJS6HJ9sv/Le+SC0jzQR+HgHMksT
-         cmV5VK19mytEgoeb/K+PpBCMD9u+4+tz0uGw8/q1/kWhudlAUjOZgO0xe2lIbnPQ8Y0Z
-         loaDN5+yb+AGqM2czTbDxA2VfdTglSthL4rUESvw59LacCCRsLNeeKdio/LJTAh7QVTG
-         biVDo9jhTOQMAlhVAKijoN8QkGSH959dnvH0ZMkBSmhc5RAUTiJbRs4WRG/C6we4bX7A
-         uTuw==
-X-Forwarded-Encrypted: i=1; AJvYcCXiy79+OTQ5HT1ivWM5ki2p+23tbQmW7yc3P6wDwEktfoRHXEgBOMZczq23mzZmpgIwZIuZPC1YBhrSyEJZ1yxbKP34Sy4OQlkfzEbT
-X-Gm-Message-State: AOJu0Yz8jCBg/akiLIjUZYKvcQichcsn2mfk1EIW5l6KFFQbVM6tVBqj
-	/pTnjFuhCF7j6gbV8EDa1LKhYK33Wg4vl0hu9gw0VIOiMEEIEKnZ0E/z9n32TJc2axDdN577BHC
-	V
-X-Google-Smtp-Source: AGHT+IFMN7kbGVdBfJ7UT+4XcxNE33ol941/vCrMnxSahE6k9NpvMQZvsFEr8R/ZH3PzSShRqGZkew==
-X-Received: by 2002:a05:600c:4e8a:b0:419:f088:249c with SMTP id f10-20020a05600c4e8a00b00419f088249cmr2174709wmq.12.1714742553772;
-        Fri, 03 May 2024 06:22:33 -0700 (PDT)
-Received: from toaster.baylibre.com ([2a01:e0a:3c5:5fb1:1b85:e590:355b:9957])
-        by smtp.googlemail.com with ESMTPSA id g21-20020adfa495000000b003437a76565asm3803713wrb.25.2024.05.03.06.22.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 03 May 2024 06:22:33 -0700 (PDT)
-From: Jerome Brunet <jbrunet@baylibre.com>
-To: Neil Armstrong <neil.armstrong@linaro.org>, 
- Michael Turquette <mturquette@baylibre.com>, 
- Stephen Boyd <sboyd@kernel.org>, Kevin Hilman <khilman@baylibre.com>, 
- Martin Blumenstingl <martin.blumenstingl@googlemail.com>, 
- linux-amlogic@lists.infradead.org, linux-clk@vger.kernel.org, 
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, 
- Krzysztof Kozlowski <krzk@kernel.org>
-In-Reply-To: <20240410155406.224128-1-krzk@kernel.org>
-References: <20240410155406.224128-1-krzk@kernel.org>
-Subject: Re: [PATCH] clk: meson: s4: fix module autoloading
-Message-Id: <171474255291.1335139.15327121235218632635.b4-ty@baylibre.com>
-Date: Fri, 03 May 2024 15:22:32 +0200
+	s=arc-20240116; t=1714742679; c=relaxed/simple;
+	bh=vBejc4y26BCn3jsVAONmf4WH+VOYO6P0hxMPw087VT0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=lYx2TDEtQY8sUMvqFdEopnalYPdKcn108xnVJAIH5liLUGwJAaygdmrpiBc/IL1kxJuJQscwzFFZ24hBtCSQG6sabKMfcrHPNajCkJE2jF87vEQRBS8WeAJEgPLzy6k7XfBfDyi+/aBiUUQ84DdjXvlVq5iLM2CcdrE7kLFELi4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YAAMtZka; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1172FC116B1;
+	Fri,  3 May 2024 13:24:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714742679;
+	bh=vBejc4y26BCn3jsVAONmf4WH+VOYO6P0hxMPw087VT0=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=YAAMtZkaKaPmLIMMrzKy1xRAU9cA+SRW0uBiMhQw8xje/Yr3ZK0z7KC0jht54W2JL
+	 XZC8RfTVVrk3/1JMgs3RPDVIwmFEo5YTKI0iBMIng6dAPFXO7Icv3gjqDV19ewqjPa
+	 PVaF5CcsBVvmhf7pxREDdCvFGAMWTTaGc0/PBXx4EP3k3ksP53vOt0ejW5+ZXBjKIF
+	 wxkBbAHveeNqepoBEzwvbHRkX9GSrnZaufLn0d0e18xsNnWhVjKvdXYKAfn50xqbZD
+	 FdkPm770QijZ6/pRNvnar5RYKZ1/LEzhsRUlm3xoIfBdWufXjyY+iybWdgwHuVjAeQ
+	 Y0Rkk35uiMRiA==
+Date: Fri, 3 May 2024 08:24:38 -0500
+From: Rob Herring <robh@kernel.org>
+To: Josua Mayer <josua@solid-run.com>
+Cc: Andrew Lunn <andrew@lunn.ch>,
+	Gregory Clement <gregory.clement@bootlin.com>,
+	Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Yazan Shhady <yazan.shhady@solid-run.com>,
+	"linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
+	"devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v4 4/4] arm64: dts: add description for solidrun cn9131
+ solidwan board
+Message-ID: <20240503132438.GA460984-robh@kernel.org>
+References: <20240502-cn9130-som-v4-0-0a2e2f1c70d8@solid-run.com>
+ <20240502-cn9130-som-v4-4-0a2e2f1c70d8@solid-run.com>
+ <d72c7637-e59f-4104-93e9-6faab2da0836@solid-run.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.13.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d72c7637-e59f-4104-93e9-6faab2da0836@solid-run.com>
 
-Applied to clk-meson (v6.10/drivers), thanks!
+On Thu, May 02, 2024 at 05:35:44PM +0000, Josua Mayer wrote:
+> Am 02.05.24 um 14:32 schrieb Josua Mayer:
+> > Add description for the SolidRun CN9131 SolidWAN, based on CN9130 SoM
+> > with an extra communication  processor on the carrier board.
+> >
+> > This board differentiates itself from CN9130 Clearfog by providing
+> > additional SoC native network interfaces and pci buses:
+> > 2x 10Gbps SFP+
+> > 4x 1Gbps RJ45
+> > 1x miniPCI-E
+> > 1x m.2 b-key with sata, usb-2.0 and usb-3.0
+> > 1x m.2 m-key with pcie and usb-2.0
+> > 1x m.2 b-key with pcie, usb-2.0, usb-3.0 and 2x sim slots
+> > 1x mpcie with pcie only
+> > 2x type-a usb-2.0/3.0
+> >
+> > Signed-off-by: Josua Mayer <josua@solid-run.com>
+> > ---
+> >  arch/arm64/boot/dts/marvell/Makefile               |   1 +
+> >  arch/arm64/boot/dts/marvell/cn9131-cf-solidwan.dts | 643 +++++++++++++++++++++
+> >  2 files changed, 644 insertions(+)
+> >
+> cut
+> > +	/* Type-A port on J53 */
+> > +	reg_usb_a_vbus0: regulator-usb-a-vbus0 {
+> > +		compatible = "regulator-fixed";
+> > +		pinctrl-0 = <&cp0_reg_usb_a_vbus0_pins>;
+> > +		pinctrl-names = "default";
+> > +		regulator-name = "vbus0";
+> > +		regulator-min-microvolt = <5000000>;
+> > +		regulator-max-microvolt = <5000000>;
+> > +		regulator-oc-protection-microamp = <1000000>;
+> 
+> Is it correct to specify over-current protection for a 
+> regulator-fixed? It causes kernel messages:
+> 
+> [ 7.988337] vbus0: IC does not support requested over-current limits 
+> [ 7.994756] vbus0: IC does not support requested over voltage limits 
+> [ 7.998796] vbus1: IC does not support requested over-current limits
+> ...
 
-[1/1] clk: meson: s4: fix module autoloading
-      https://github.com/BayLibre/clk-meson/commit/11981485e27c
+Seems like you have your answer...
 
-Best regards,
---
-Jerome
+>
+> The reason I put the property was that the 1A limit is a property of 
+> the regulator component (NCP380-1.0A). Maybe that is the wrong property?
+> 
+> It also generates an interrupt for which I found no suitable description.
+
+Then you should describe the actual device because it is not just a 
+regulator-fixed. I suppose we could consider adding an interrupt to 
+regulator-fixed, but then its function can only be for (presumably) 
+over-current. Even details on how to handle it could vary as well.
+
+Rob
 
 
