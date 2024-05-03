@@ -1,169 +1,94 @@
-Return-Path: <linux-kernel+bounces-167467-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-167468-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 582118BA9ED
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 11:32:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id B1E388BA9EE
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 11:32:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EE1771F22859
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 09:32:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5133F1F215F4
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 09:32:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF51F14F9D4;
-	Fri,  3 May 2024 09:31:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 400F314F12A;
+	Fri,  3 May 2024 09:32:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="KWs22mke";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="zgTS9KJj";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="KWs22mke";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="zgTS9KJj"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eixsxYDm"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 625BF14F13D;
-	Fri,  3 May 2024 09:31:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 85A8814A0AC
+	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 09:32:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714728694; cv=none; b=cQs1iebt6GfhNg74UwlqK2Jsu81o8uCun+Q14grMVxSTCfADk+NKKlHQy0c4ttGu1cgsd0Dt9fl2Lf27nlAOlhI3bS4B+2gmqVRUFFYuSYtLd78o8E4B7ZG08VmAGOKJKwjLGbCRwnHmMiKVqO3UrL8EzDf+na86fmtQGQ9AuIU=
+	t=1714728752; cv=none; b=b8YDVP1nNgmwZfmXgXK8a8HwEcetjQC/s9XFNMyhxrmgNZeGYrqy0lL2a8y5j0Gz9J838AecYslmL4/19IUbIvvdkecu5iAfg5XjZWv4Vn5TQxTykGbs997EdWoLVQ98bWSbvLV90TpWEvuaRnMVEM3UOYBgc2OmLwXDLPSvCSs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714728694; c=relaxed/simple;
-	bh=E8PY2B1wxIN5xa8VCdlxWFkp+3+YoCtDnoiZN05+rcI=;
+	s=arc-20240116; t=1714728752; c=relaxed/simple;
+	bh=J9VY1YOreLWaho6RPq8dqFZ6OxZ/GwblA2TicCmxOgE=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=JVhT0DKm8FeEfRyFvqyjTnftERL3XWMvOavu4B+ctUZ/epmF23YawjD51B0d7NDPJWE1Ht7l5K+7RWQyYrCh1BgFHSZyGpEIQmIdpLe/O1215YWzE5GkWNM9BXAQog9EIfylcB/GK+0KTD5hPOWbgAQwAafJSooGQh+bD9CPMsc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=KWs22mke; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=zgTS9KJj; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=KWs22mke; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=zgTS9KJj; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 75E24336D0;
-	Fri,  3 May 2024 09:31:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1714728690; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=T1ZkI43ouhbZimT/6Sz/nQ9W4boKtYozaB6hBMysMKE=;
-	b=KWs22mke9uaE7QySPC4EkPDeE+dueH0WTYyUZMx4GAiNIzNsHy9KKRBDwslrT8TLMm1HxD
-	zeapumC745oRo9QQyEMD+j8x/YV+Vq5r+eYH3O2DxD/7/jvtNyXQCUbCpPaPsCtANRGJTm
-	FEQylR04QxJBiFPdfaZ/+OGtlsMap4k=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1714728690;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=T1ZkI43ouhbZimT/6Sz/nQ9W4boKtYozaB6hBMysMKE=;
-	b=zgTS9KJjYD1/sY6qc8iUMd4jwopzfuHTIKYMrcU5kR63QesMiyBb9gtJdB6F5c2KQYvaiG
-	nxIviKrSk5y0eNAw==
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1714728690; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=T1ZkI43ouhbZimT/6Sz/nQ9W4boKtYozaB6hBMysMKE=;
-	b=KWs22mke9uaE7QySPC4EkPDeE+dueH0WTYyUZMx4GAiNIzNsHy9KKRBDwslrT8TLMm1HxD
-	zeapumC745oRo9QQyEMD+j8x/YV+Vq5r+eYH3O2DxD/7/jvtNyXQCUbCpPaPsCtANRGJTm
-	FEQylR04QxJBiFPdfaZ/+OGtlsMap4k=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1714728690;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=T1ZkI43ouhbZimT/6Sz/nQ9W4boKtYozaB6hBMysMKE=;
-	b=zgTS9KJjYD1/sY6qc8iUMd4jwopzfuHTIKYMrcU5kR63QesMiyBb9gtJdB6F5c2KQYvaiG
-	nxIviKrSk5y0eNAw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 6C6E9139CB;
-	Fri,  3 May 2024 09:31:30 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id aB53GvKuNGaqMgAAD6G6ig
-	(envelope-from <jack@suse.cz>); Fri, 03 May 2024 09:31:30 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 365ECA0A12; Fri,  3 May 2024 11:31:30 +0200 (CEST)
-Date: Fri, 3 May 2024 11:31:30 +0200
-From: Jan Kara <jack@suse.cz>
-To: Kemeng Shi <shikemeng@huaweicloud.com>
-Cc: willy@infradead.org, akpm@linux-foundation.org, tj@kernel.org,
-	jack@suse.cz, hcochran@kernelspring.com, axboe@kernel.dk,
-	mszeredi@redhat.com, linux-fsdevel@vger.kernel.org,
-	linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 4/4] mm: remove stale comment __folio_mark_dirty
-Message-ID: <20240503093130.kxbolkashbezb2sx@quack3>
-References: <20240425131724.36778-1-shikemeng@huaweicloud.com>
- <20240425131724.36778-5-shikemeng@huaweicloud.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=bPkTVFtO+aVzxshTJcui4YrOgYif/CKdwfbNLGJJP7yalgedtUFPa3+mszMbAV5lbSVTXY2i2Ry2d130c26SG89dzoBkuU9Og2Y0Jhboqq7J7/UAuczPSfOhqrI3XAfTJ3luGmmusMz0+VcMLyEm9dSd6MsOx5BK07ndiP3lrEc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eixsxYDm; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 32379C116B1;
+	Fri,  3 May 2024 09:32:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714728751;
+	bh=J9VY1YOreLWaho6RPq8dqFZ6OxZ/GwblA2TicCmxOgE=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=eixsxYDm8U9Vs9CktRtwS0jhqIEdRpaWLno9WZHku8GC5S4t74ZgqYCTAt3lfuThZ
+	 2LJpRoamPQsO+lySdTeinMqe8ooTYlMMsL4bd7UlNjiqCHIqj1oLk3JRbeHCM+qxJR
+	 N2Woj2wzmx+m4FcOD5TmZPQQb3WTJ9HT8x615nZY4OQAzyxHJhoB79Rv4+IErmQA1R
+	 pQXUZHN/QJ/FNmgNDHusVGk/h/dRobyCvmqJ0mkYPIxdQThFEDwPj/ZqJv8aMofnyA
+	 x35w8sy0lbutCkmUITQMU4VOYhxooV7T+4Iq4VK5I0gJvFi6OKS1Q7SEhj755ycCK/
+	 hR4th835Q5YFQ==
+Date: Fri, 3 May 2024 10:32:27 +0100
+From: Lee Jones <lee@kernel.org>
+To: Min Li <lnimi@hotmail.com>
+Cc: linux-kernel@vger.kernel.org, Min Li <min.li.xe@renesas.com>
+Subject: Re: [PATCH mfd v2 1/2] mfd: rsmu: support I2C SMBus access
+Message-ID: <20240503093227.GN1227636@google.com>
+References: <20240501163256.28463-1-lnimi@hotmail.com>
+ <LV3P220MB12021342F302AADEB6C1601CA0192@LV3P220MB1202.NAMP220.PROD.OUTLOOK.COM>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240425131724.36778-5-shikemeng@huaweicloud.com>
-X-Spam-Level: 
-X-Spamd-Result: default: False [-3.68 / 50.00];
-	BAYES_HAM(-2.88)[99.50%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_RHS_NOT_FQDN(0.50)[];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	RCVD_COUNT_THREE(0.00)[3];
-	ARC_NA(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	MIME_TRACE(0.00)[0:+];
-	FROM_HAS_DN(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	TO_DN_SOME(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	RCVD_TLS_LAST(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[11];
-	MISSING_XM_UA(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[infradead.org:email,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,huaweicloud.com:email,suse.com:email,suse.cz:email]
-X-Spam-Score: -3.68
-X-Spam-Flag: NO
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <LV3P220MB12021342F302AADEB6C1601CA0192@LV3P220MB1202.NAMP220.PROD.OUTLOOK.COM>
 
-On Thu 25-04-24 21:17:24, Kemeng Shi wrote:
-> The __folio_mark_dirty will not mark inode dirty any longer. Remove the
-> stale comment of it.
+On Wed, 01 May 2024, Min Li wrote:
+
+> From: Min Li <min.li.xe@renesas.com>
 > 
-> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
-> Reviewed-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-
-Looks good. Feel free to add:
-
-Reviewed-by: Jan Kara <jack@suse.cz>
-
-								Honza
-
+> 8a3400x device implements its own reg_read and reg_write,
+> which only supports I2C bus access. This patch adds support
+> for SMBus access.
+> 
+> Signed-off-by: Min Li <min.li.xe@renesas.com>
 > ---
->  mm/page-writeback.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
+> - Provide cover-letter suggested by Lee
 > 
-> diff --git a/mm/page-writeback.c b/mm/page-writeback.c
-> index 22e1acec899e..692c0da04cbd 100644
-> --- a/mm/page-writeback.c
-> +++ b/mm/page-writeback.c
-> @@ -2721,8 +2721,7 @@ void folio_account_cleaned(struct folio *folio, struct bdi_writeback *wb)
->  }
+>  drivers/mfd/rsmu_i2c.c | 107 +++++++++++++++++++++++++++++++++++------
+>  drivers/mfd/rsmu_spi.c |   8 +--
+>  2 files changed, 97 insertions(+), 18 deletions(-)
+> 
+> diff --git a/drivers/mfd/rsmu_i2c.c b/drivers/mfd/rsmu_i2c.c
+> index 5711e512b..cba64f107 100644
+> --- a/drivers/mfd/rsmu_i2c.c
+> +++ b/drivers/mfd/rsmu_i2c.c
+> @@ -32,6 +32,8 @@
+>  #define	RSMU_SABRE_PAGE_ADDR		0x7F
+>  #define	RSMU_SABRE_PAGE_WINDOW		128
 >  
->  /*
-> - * Mark the folio dirty, and set it dirty in the page cache, and mark
-> - * the inode dirty.
-> + * Mark the folio dirty, and set it dirty in the page cache.
->   *
->   * If warn is true, then emit a warning if the folio is not uptodate and has
->   * not been truncated.
-> -- 
-> 2.30.0
-> 
+> +typedef int (*rsmu_rw_device)(struct rsmu_ddata *rsmu, u8 reg, u8 *buf, u8 bytes);
+
+We're not going to start passing around function points all over the
+place.  Use a variable 'bool smbus'(?) instead and call the correct
+helper based on that instead.
+
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Lee Jones [李琼斯]
 
