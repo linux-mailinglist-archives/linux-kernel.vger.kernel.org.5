@@ -1,99 +1,126 @@
-Return-Path: <linux-kernel+bounces-168049-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-168050-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8408B8BB30B
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 20:27:06 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 650EC8BB30D
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 20:27:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3ECCC28142A
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 18:27:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 969F81C21F8C
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 18:27:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ABC47158866;
-	Fri,  3 May 2024 18:26:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16439158860;
+	Fri,  3 May 2024 18:27:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LJf22kax"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XQLo/8Ym"
+Received: from mail-pg1-f174.google.com (mail-pg1-f174.google.com [209.85.215.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E45B4157E86;
-	Fri,  3 May 2024 18:26:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1466C15821F;
+	Fri,  3 May 2024 18:27:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714760811; cv=none; b=NDThuHtJDuCsWQqZy7NALWU3kZzabej4Fi2WfHYCdFfVhHGu0rDqYJVzKC5etJg+dIMsF0fVr4eEAWGJCBLPDrwgk689gbK0WtwczQy6JP3NW7i62EcizjD1hbsyGdIoJctND9aO/kdhAa04EF3ip7GxV41+S+vT7nz9I/sVvGI=
+	t=1714760828; cv=none; b=h94BbhPW5d0cvJQI1o0DnrA3cFyHmIRsJ/mSeFLz7TgX0LsTlhGm5o/Oi3StiLqPPK32GbqgO/9iGu21XeT2G5XiSm69xBkpMz1vCC+KM/pgPLNq8zRoT1raAGDfKBdF9dxmi/FMb10iqPA9Xp89fa+G2MSSowKSqe+Fh4exK3o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714760811; c=relaxed/simple;
-	bh=SOG7o9z18SvGYvQ66OwqhJa+YPPtSLT6stc3mlthlIY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=rYEkkbnMNIUSvPQfH+Krv8WLE97i6Z6ahhNwhqpsZJfIRJg2krJ6x2hFC5QRwtBU4SojTDvJvH7U+n/15QpwoX9NEY8iKHLtFHOG5t3hpr97dWC6sdiO5U7MUmox4NHtWqqMclDbGPbgdXQv6JH8a/0+65dzawyvDmEtKz407DQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LJf22kax; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AED91C116B1;
-	Fri,  3 May 2024 18:26:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714760810;
-	bh=SOG7o9z18SvGYvQ66OwqhJa+YPPtSLT6stc3mlthlIY=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=LJf22kaxjIu7FgXMpv3xeFug/s7siQ6f+B/Us04bYRsqibsthOYfxwOGRyreOz0+y
-	 grs27ZjifFEOwwQmYRVS/zOrxg8u8Lj1KVm6t0OX8y1Hiej7Gzigbdrn8IrK1tL0Jt
-	 lZXUmRwDxgRDsSIEWjPphKpiuXUf6ZlvSPHMFKxWZB9TH0Nse5KZ8/g2OibEzsc88X
-	 N5KNG/pTUSTl/kcojTR8ZUnPZFWyNCN4SjDhZ0pSvq4eqyYhKSwnpvyTrjrZwH7ZSj
-	 jKgJ046GdUJmL++tGhsT/ak34WTHtpld5ALEVD5Ph9l3S1JLgrXKusgdbnV2xZ10KR
-	 W508gCESMtfrA==
-Date: Fri, 3 May 2024 20:26:46 +0200
-From: Andi Shyti <andi.shyti@kernel.org>
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: Jarkko Nikula <jarkko.nikula@linux.intel.com>, 
-	linux-kernel@vger.kernel.org, Florian Fainelli <florian.fainelli@broadcom.com>, 
-	Mika Westerberg <mika.westerberg@linux.intel.com>, Jan Dabros <jsd@semihalf.com>, Lee Jones <lee@kernel.org>, 
-	Jiawen Wu <jiawenwu@trustnetic.com>, Mengyuan Lou <mengyuanlou@net-swift.com>, 
-	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	Maciej Fijalkowski <maciej.fijalkowski@intel.com>, Andrew Lunn <andrew@lunn.ch>, 
-	Duanqiang Wen <duanqiangwen@net-swift.com>, linux-i2c@vger.kernel.org, netdev@vger.kernel.org
-Subject: Re: (subset) [PATCH v3 0/5] Define i2c_designware in a header file
-Message-ID: <ehnondviupey33ekumcizrbcptujdutum7asaaaryaxwte76ws@vjqgp2lkxhtd>
-References: <20240425214438.2100534-1-florian.fainelli@broadcom.com>
- <171469134545.1016503.10207141192762647093.b4-ty@kernel.org>
- <ae872161-d725-4604-9d03-a36a426d0d1b@linux.intel.com>
- <ZjUE2fYc7AV93is-@smile.fi.intel.com>
+	s=arc-20240116; t=1714760828; c=relaxed/simple;
+	bh=WvFiEgSn5tehEIbWr+zhin/2jQzVVpQ3np0oFT3uzlw=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=YQ2dLRqJSHABHcskh9cwVCXpeOE/tnB78JjSbEoyv6Ldbug9cRpZ51KwrmMkx4IwgQTGNoZaI6m4BtSeaOMXqUIriqs0hGWcYS0BzXmywpQcyZKjiPkF0+TfaLmGTWWE01TxtQzDm0pwQCwUZfurZ/pvnaFj7tMaHy6yw+xUwLQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XQLo/8Ym; arc=none smtp.client-ip=209.85.215.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f174.google.com with SMTP id 41be03b00d2f7-5bdbe2de25fso7102879a12.3;
+        Fri, 03 May 2024 11:27:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1714760826; x=1715365626; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=nUAg0BUuViiOSxOWE5HryQfapyhwir/j1sSAHZ5ssT0=;
+        b=XQLo/8YmYEGhNZ7eOSs9915KxBKjNfQXus5/sdV6yQEhbNUaIEh++ILRIMWVeo6ZzX
+         k1MOZM1FC4nSult6wJqcrJ8J5DXMPzrI2Iam+u18c8++xsTjuB5ikr8fX2K9qHiLIRVV
+         cr5Zakz+Fv9JYvLgqEwNkuCLr9FH37+/iiPVZAJqhMzNtuEyDsDH+JKBGyIcc618k9cZ
+         X+C+ZBgAOepJMdJ2ONPqnxS+bTkV0kOhhb/VBNm+i/3/16Q52opmybAOuKT953kY4yCw
+         JrHtLZLBi601WoRNzSUVL8PzFOuITXxQ3UXg8GvX/DTuBWbDt91uCKRd4vMfkRg7wuTu
+         pyxQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714760826; x=1715365626;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=nUAg0BUuViiOSxOWE5HryQfapyhwir/j1sSAHZ5ssT0=;
+        b=OgIxZ5uxkGuw7iY6d1/crK6XU41kH55qm+y6exbxIaV6ObEyswLGTgx77ZM6kzeQat
+         f0KruBAC+Rj8ybR9Ot1WGvplbtWUFglZC37rtkHUzFOiciaKAgV41AZVuUEpTZikdWb4
+         /2NFKrl4jP8AQwwAIYh7ggWsv7R5/u0kgWsljTGsXUuF5gCv3ifNzzKdiWPkyStg5Du5
+         2VkZR92mhnPaiOpu89kXSDcUaP2C8wcvioyLOL0NNJSH5bq09f/KkStzAAqCcttjnzIN
+         g7TMgc8qijpidzGQaAMl2c36miUBdeZhaGqu2HRJwWCcXjOlUKP3XtqmW4Z7qvc6B7JR
+         Cd6Q==
+X-Forwarded-Encrypted: i=1; AJvYcCUkJZRSdL4ZSawhhXwVtTKdQFiF2PxX77rFJ1/1UCRYRfhOlIqFjFxnoK3j2v5WWyLV7r5rlYSKfyvM1+dk5R/O6Hmve3kkytB2Wea3y6raZEwv4YI2JvEbdulWG0N0wRmG8y5jWHNK
+X-Gm-Message-State: AOJu0YxhZTk6pco81ANUKT57TSz70zdvLw9knnj24fGT2SCeRjArIq1A
+	gOLy7zM7mjMYLCEVNCLU+5s7MjDdWCLqA5r4Ytxv/7L06XDLkjg=
+X-Google-Smtp-Source: AGHT+IHiNrNGmhkW8ShVHf9mwUaDtVgLfy7j4uBv+iYDxtWyIYCzifz25q4kdnSA/BwWkbtwihWXMw==
+X-Received: by 2002:a05:6a20:8429:b0:1a7:3b4a:3e8 with SMTP id c41-20020a056a20842900b001a73b4a03e8mr4346044pzd.7.1714760826221;
+        Fri, 03 May 2024 11:27:06 -0700 (PDT)
+Received: from utkarsh-ROG-Zephyrus-G14-GA401II-GA401II.. ([112.196.126.3])
+        by smtp.gmail.com with ESMTPSA id gx8-20020a056a001e0800b006edec30bbc2sm3359796pfb.49.2024.05.03.11.27.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 03 May 2024 11:27:05 -0700 (PDT)
+From: Utkarsh Tripathi <utripathi2002@gmail.com>
+To: corbet@lwn.net,
+	akiyks@gmail.com
+Cc: Utkarsh Tripathi <utripathi2002@gmail.com>,
+	linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	skhan@linuxfoundation.org
+Subject: [PATCH v3] kernel-doc: Added "*" in $type_constants2 to fix 'make htmldocs' warning.
+Date: Fri,  3 May 2024 23:56:50 +0530
+Message-Id: <20240503182650.7761-1-utripathi2002@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZjUE2fYc7AV93is-@smile.fi.intel.com>
+Content-Transfer-Encoding: 8bit
 
-Hi,
+Fixed: WARNING: Inline literal start-string without end-string in 
+Documentation/core-api/workqueue.rst
 
-On Fri, May 03, 2024 at 06:38:01PM +0300, Andy Shevchenko wrote:
-> On Fri, May 03, 2024 at 09:30:39AM +0300, Jarkko Nikula wrote:
-> > On 5/3/24 2:09 AM, Andi Shyti wrote:
-> > > Applied to i2c/i2c-host on
-> > > 
-> > > git://git.kernel.org/pub/scm/linux/kernel/git/andi.shyti/linux.git
-> > > 
-> > > Thank you,
-> > > Andi
-> > > 
-> > > Patches applied
-> > > ===============
-> > > [1/5] i2c: designware: Replace MODULE_ALIAS() with MODULE_DEVICE_TABLE()
-> > >        commit: 91647e64f0f5677ace84165dc25dc99579147b8f
-> > > [2/5] i2c: designware: Create shared header hosting driver name
-> > >        commit: 856cd5f13de7cebca44db5ff4bc2ca73490dd8d7
-> > > 
-> > Was the second patch applied accidentally?
-> 
-> +1 here, asked the same in private communication.
+Added "*" in $type_constants2 in kernel-doc script to include "*" in the
+conversion to hightlights.
+Previously: %WQ_* -->  ``WQ_``*
+After Changes: %WQ_* -->  ``WQ_*``
+Need for the fix: ``* is not recognized as a valid end-string for inline literal.
 
-yes, it is, I had this applied in my branch before reviving the
-thread. I then pushed and thanked for everything.
+> The kernel-doc script uses the $type_constant2 variable to match
+> expressions used to find embedded type information.
 
-Thanks for your prompt reaction :-)
+v1 and v2 discussions: https://lore.kernel.org/linux-doc/640114d2-5780-48c3-a294-c0eba230f984@gmail.com
+Signed-off-by: Utkarsh Tripathi <utripathi2002@gmail.com>
+Suggested-by: Akira Yokosawa <akiyks@gmail.com>
+Reviewed-by: Akira Yokosawa <akiyks@gmail.com>
+---
+v2->v3:  Updated the changelog of patch.
 
-Andi
+ scripts/kernel-doc | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/scripts/kernel-doc b/scripts/kernel-doc
+index cb1be22afc65..58129b1cf3f4 100755
+--- a/scripts/kernel-doc
++++ b/scripts/kernel-doc
+@@ -62,7 +62,7 @@ my $anon_struct_union = 0;
+ 
+ # match expressions used to find embedded type information
+ my $type_constant = '\b``([^\`]+)``\b';
+-my $type_constant2 = '\%([-_\w]+)';
++my $type_constant2 = '\%([-_*\w]+)';
+ my $type_func = '(\w+)\(\)';
+ my $type_param = '\@(\w*((\.\w+)|(->\w+))*(\.\.\.)?)';
+ my $type_param_ref = '([\!~\*]?)\@(\w*((\.\w+)|(->\w+))*(\.\.\.)?)';
+
+base-commit: 4d2008430ce87061c9cefd4f83daf2d5bb323a96
+-- 
+2.34.1
+
 
