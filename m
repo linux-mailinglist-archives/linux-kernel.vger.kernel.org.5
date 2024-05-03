@@ -1,89 +1,90 @@
-Return-Path: <linux-kernel+bounces-167655-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-167656-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 74D658BACD6
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 14:53:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id E325F8BACD9
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 14:54:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A01B41C21994
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 12:53:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 20AC21C216DD
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 12:54:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E6A5153580;
-	Fri,  3 May 2024 12:53:16 +0000 (UTC)
-Received: from gloria.sntech.de (gloria.sntech.de [185.11.138.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5753A14267;
-	Fri,  3 May 2024 12:53:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.11.138.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 34AF215357B;
+	Fri,  3 May 2024 12:54:05 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 852D714267
+	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 12:54:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714740795; cv=none; b=BMkQOUayaN0FU8nqhbkKSspSpg9RNJXs2KvKpywyGqpnz3rsXhXBEhzskBOQMExamiS105lOhXPji1osOV49LPfvHcr1U+lp6c2zMRoKekZrbnEGcN7UeR7WHWWuHLXG1eMDS9K+1zgeH0ygzKwV6vaVWr9MdmV/hXMRGGr0JAA=
+	t=1714740844; cv=none; b=Rs8fSCNEsQr7JzCH+4rRlfHjosH6eL35KAkcb90HWVDjivEOLND6VYL2jqIoObHXPDPjO+lobBh04859+Gi3BpIyhnJOEcuWZAUN6z27CbL3SHO2K+Q/v6sXCXnbG8H/msHiTMd+fzeqDGyMhvDe/mKChG/LObas5B6UzLbeIRk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714740795; c=relaxed/simple;
-	bh=83h6SpBSPjYfy0/mQXm1ihvyDTeo+XyvUt4VfNZyGT0=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=qhoO431E5+aA3wNe6nBX9W2lM3Qrirni9ZOgY9z0Wl4h2c/S//J+gfG8j5EFGcpNlJJ2c6je1uMgZRUBELKe9Ae/Z1Z0wUuZ/gp4XOYF63L0cDD3rf/FrAUq2YHxb1qNwVGJ3JfEeFZmI4B+FduHQ3Pf1zB47jKJ+fX2ql5eXNY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sntech.de; spf=pass smtp.mailfrom=sntech.de; arc=none smtp.client-ip=185.11.138.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sntech.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sntech.de
-Received: from i53875b01.versanet.de ([83.135.91.1] helo=diego.localnet)
-	by gloria.sntech.de with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <heiko@sntech.de>)
-	id 1s2sPR-0000tz-Kq; Fri, 03 May 2024 14:53:05 +0200
-From: Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
-To: Chukun Pan <amadeus@jmu.edu.cn>
-Cc: linux-rockchip@lists.infradead.org,
- Krzysztof Kozlowski <krzk+dt@kernel.org>, Rob Herring <robh@kernel.org>,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- devicetree@vger.kernel.org, Conor Dooley <conor+dt@kernel.org>
-Subject: Re: [PATCH v2 0/2] arm64: dts: rockchip: Add Radxa ROCK 3C
-Date: Fri, 03 May 2024 14:53:04 +0200
-Message-ID: <15481689.tv2OnDr8pf@diego>
-In-Reply-To: <171473602992.3469033.3176474743011728197.b4-ty@sntech.de>
-References:
- <20240428123618.72170-1-amadeus@jmu.edu.cn>
- <171473602992.3469033.3176474743011728197.b4-ty@sntech.de>
+	s=arc-20240116; t=1714740844; c=relaxed/simple;
+	bh=+6EYlFhVT+kjGVbBnNFDCmPqWr5uEiMz55mkta0KrdA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=j/ii3Ax9ve3L2pt96W6cEwSO4iiVzKA2AuFlUuku3w1pKVwgwEJHJ+I5qn/fIF1scPEIl2lhM5kv4GYrBuOucdbZ+u5F9TnXf8cUc9ANEOWWqT8ksoWlS/GaEMPPg3dfkUN3s1Bj3yMN71KbIE39EAAQaNaxlSnQTIlUwySUs5M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 38B5F13D5;
+	Fri,  3 May 2024 05:54:28 -0700 (PDT)
+Received: from [10.57.67.51] (unknown [10.57.67.51])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4EE3A3F73F;
+	Fri,  3 May 2024 05:54:01 -0700 (PDT)
+Message-ID: <345b3d66-9c18-4a25-8b1f-a84aafac5156@arm.com>
+Date: Fri, 3 May 2024 13:53:59 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 0/3] arm64/mm: Enable userfaultfd write-protect
+Content-Language: en-GB
+To: Will Deacon <will@kernel.org>
+Cc: Catalin Marinas <catalin.marinas@arm.com>, Joey Gouly
+ <joey.gouly@arm.com>, Ard Biesheuvel <ardb@kernel.org>,
+ Mark Rutland <mark.rutland@arm.com>,
+ Anshuman Khandual <anshuman.khandual@arm.com>,
+ David Hildenbrand <david@redhat.com>, Peter Xu <peterx@redhat.com>,
+ Mike Rapoport <rppt@linux.ibm.com>, Shivansh Vij <shivanshvij@outlook.com>,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20240501145419.1390363-1-ryan.roberts@arm.com>
+ <20240503120104.GA18156@willie-the-truck>
+From: Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <20240503120104.GA18156@willie-the-truck>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Am Freitag, 3. Mai 2024, 13:38:19 CEST schrieb Heiko Stuebner:
-> On Sun, 28 Apr 2024 20:36:16 +0800, Chukun Pan wrote:
-> > Changes in v2:
-> >   Collected Acked-by.
-> >   Drop cd-gpios for sdhci.
-> >   Add mmc-hs200-1_8v to eMMC.
-> >   Correct the spi max frequency.
-> >   Update model name and compatible.
-> >   Update regulator according to the schematic.
-> > 
-> > [...]
+On 03/05/2024 13:01, Will Deacon wrote:
+> Hi Ryan,
 > 
-> Applied, thanks!
+> On Wed, May 01, 2024 at 03:54:16PM +0100, Ryan Roberts wrote:
+>> This series adds uffd write-protect support for arm64.
+>>
+>> Previous attempts to add uffd-wp (and soft-dirty) have failed because of a
+>> perceived lack of available PTE SW bits. However it actually turns out that
+>> there are 2 available but they are hidden. PTE_PROT_NONE was previously
+>> occupying a SW bit, but can be moved, freeing up the SW bit. Bit 63 is marked as
+>> "IGNORED" in the Arm ARM, but it does not currently indicate "reserved for SW
+>> use" like it does for the other SW bits. I've confirmed with the spec owner that
+>> this is an oversight; the bit is intended to be reserved for SW use and the spec
+>> will clarify this in a future update.
+>>
+>> So now we have two spare bits; patch 3 enables uffd-wp on arm64, using the SW
+>> bit freed up by moving PTE_PROT_NONE. This leaves bit 63 spare for future use
+>> (e.g. soft-dirty - see RFC at [3] - or some other usage).
 > 
-> [1/2] dt-bindings: arm: rockchip: add Radxa ROCK 3C
->       commit: c0c153e341d2a82241bf0a0b78117ceeb29be3eb
-> [2/2] arm64: dts: rockchip: Add Radxa ROCK 3C
->       commit: ee219017ddb50be14c60d3cbe3e51ac0b2008d40
+> Thanks, I think this series looks really good now.
+> 
+> From your discussion with Anshuman, it sounds like you're going to post
+> a new version with the first patch split up so I'll wait for that.
 
-Forgot to add, I've dropped the rk809-sound node, as well as the sound-related
-properties from the rk809 pmic that got flagged by the binding check
-and which I could reproduce here too.
+Yep, I'll try to get that out this afternoon. Thanks!
 
-So please submit these as follow up patches, once the necessary changes
-to the pmic to allow its codec use are merged.
-
-
-Thanks
-Heiko
-
+> 
+> Will
 
 
