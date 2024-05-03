@@ -1,90 +1,204 @@
-Return-Path: <linux-kernel+bounces-168332-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-168333-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 511808BB6DF
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 May 2024 00:08:12 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 815B28BB6E0
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 May 2024 00:08:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 66492B21839
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 22:08:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2EDD6282F63
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 22:08:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 43FCE5C614;
-	Fri,  3 May 2024 22:07:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C55775B5D3;
+	Fri,  3 May 2024 22:08:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b="THwtsig7"
-Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [62.89.141.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="puxVyU7p"
+Received: from mail-pg1-f201.google.com (mail-pg1-f201.google.com [209.85.215.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 14332537E9;
-	Fri,  3 May 2024 22:07:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.89.141.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6AB1537E9
+	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 22:08:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714774075; cv=none; b=RjQiPjpRWt+6e53oQ+9DtBfGrsABGT39gBrn8XoUqJFMi/mx+EOLDlEwCVpvAaTD9wYOGlI2Goe+3oycuwhUzsOsGrcOCE9uEwa3cF8FNYuPBcVZ6MgnT8UQ8wwlrX9gUbelHsBDUDEaUUr3/wZ4zkbK9Ew39tYv1KbvznpDIy8=
+	t=1714774110; cv=none; b=cHZvLbqXvm6+Kh9jjV9/pV6arSlOiqHYEHDbirph6y8PoCHWxCsW7OuohOv3gKbugSVrxFWIsEJdTAxnW2nQyMpY4h7uhME6UCFhR9SeJ7zqcmHgHHqUYaVi6cN2c5xOBPlf9ECsJb87AQZwLfO9EWWSVcOZplX8U8i0AXEGDwQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714774075; c=relaxed/simple;
-	bh=E6hdO7SCZY8q59Do/GPMTxkc90wKH/Eit3OmFw/NAvM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=RaqSs0BlTbCNy3by+zUyUT/s5KdOpoXsFT4oCgNH6Mim8l2+efAWDRESo6wOKca0BY0XcNx4uVFLr8hDyai8MwhC8PcyvuM7Jtlvkf/nS6BsusBUmFcmUtBRCVk/jYtSSodsp3WloBSN8WE4LtCaGB/EHOOkp5M7997+4BHvFEk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk; spf=none smtp.mailfrom=ftp.linux.org.uk; dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b=THwtsig7; arc=none smtp.client-ip=62.89.141.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ftp.linux.org.uk
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=9IJ94F6D0hpL++k4cqV+mmpX37sPSJD4rkpmP5mQjAo=; b=THwtsig7+WAGUxhmJpiJpR9PpS
-	dM05ePoKzCIBs8+7lHyp2MYwmUH+LkQoxFyS7J8MCf3nIVV6rhZHD+yoHk0cBUbKkW/VwL9wGwSlH
-	FIiDgOtzJmmMBhSn+6zSf5+4VLvUrVDD1OA1Xvwarz4ztGra7C11jwxp9soa7j9BITqTMU01S/hN9
-	bHOKJmd/37v/eZ5fAcBjKRLO3qSZI7TUi41kh6kFaPjPKQDwUBIJ0vhiYAKp3NVN7RHtNTas5JdV4
-	xLWmh4Pxfnvbotxd93o72B8taYfTfsq9oNE8cs24NFEfZi6QMXsVXGTFetDToWXKjyc9lEN+MyX+L
-	aeB8WzRQ==;
-Received: from viro by zeniv.linux.org.uk with local (Exim 4.96 #2 (Red Hat Linux))
-	id 1s314C-00BAkU-39;
-	Fri, 03 May 2024 22:07:45 +0000
-Date: Fri, 3 May 2024 23:07:44 +0100
-From: Al Viro <viro@zeniv.linux.org.uk>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: keescook@chromium.org, axboe@kernel.dk, brauner@kernel.org,
-	christian.koenig@amd.com, dri-devel@lists.freedesktop.org,
-	io-uring@vger.kernel.org, jack@suse.cz, laura@labbott.name,
-	linaro-mm-sig@lists.linaro.org, linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-	minhquangbui99@gmail.com, sumit.semwal@linaro.org,
-	syzbot+045b454ab35fd82a35fb@syzkaller.appspotmail.com,
-	syzkaller-bugs@googlegroups.com
-Subject: Re: [PATCH] epoll: try to be a _bit_ better about file lifetimes
-Message-ID: <20240503220744.GE2118490@ZenIV>
-References: <202405031110.6F47982593@keescook>
- <20240503211129.679762-2-torvalds@linux-foundation.org>
- <20240503212428.GY2118490@ZenIV>
- <CAHk-=wjpsTEkHgo1uev3xGJ2bQXYShaRf3GPEqDWNgUuKx0JFw@mail.gmail.com>
- <20240503214531.GB2118490@ZenIV>
- <CAHk-=wgC+QpveKCJpeqsaORu7htoNNKA8mp+d9mvJEXmSKjhbw@mail.gmail.com>
- <20240503220145.GD2118490@ZenIV>
+	s=arc-20240116; t=1714774110; c=relaxed/simple;
+	bh=A6jfGpt5EXKwXCAL1hqPBBb2Pa8wWg1lk91tDEEpOts=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=XBV+AxXUtiZPYZMH/eCUDVoCOSwoOmzEh/xJhbg6PcDme3kXnDlPLyJxAV8RyapqQgSq1MQGF47FyOXB4xFhMZs48Y3Uozgv8EBOKY5/G3kJ1mWIwUN+CLlbljjBfaLjlmlkVp6oQkwZnUtiLsQe7Xqv8tFHWyXXzmbm/soEfgE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=puxVyU7p; arc=none smtp.client-ip=209.85.215.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-pg1-f201.google.com with SMTP id 41be03b00d2f7-5cf35636346so116372a12.3
+        for <linux-kernel@vger.kernel.org>; Fri, 03 May 2024 15:08:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1714774108; x=1715378908; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=ckpfH3TSd67b3OSfhynVSXxzSMXIc0DSB6D80LvHG50=;
+        b=puxVyU7pfTfwfPf8OVy3syZfjCunKkG5RKbo7t0ZXQPu2LnbSPVJMhA0q4uZ6OLAb7
+         bhTXT5wT7EqqoY83J1TbgL2PHVdCvHmA0ByQ7d1Vkf0aiz6yjPZ5vIj6tiVz0YjTuaMh
+         9+/dRK3CU2vBGW4UN/at36gI6P1P8u+FgAvO/mD0UVgxdbP9vYr9X9cbmxZN6Vk+4F8e
+         20c5NIAjxVB4az5LtUsakGmQ+6KNZ1ffTIMOF9TVIdrFJxH8OgZvTRpFl10eSGg8Cqi8
+         iBiR+UIwsjesAjND0pqrXi7zG/Y6tGeJqfZMi0lt3JgwDJJxoWWdvjo8gW+lo60PFgXj
+         XbLQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714774108; x=1715378908;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ckpfH3TSd67b3OSfhynVSXxzSMXIc0DSB6D80LvHG50=;
+        b=ipRAjQQJynRNPJrMD+Pug8BHDaZIk8fjbo9bPIqr/JQc0dM+L3NOMoOGpjFMlzySzf
+         dwd8iA4S40HxzkJa9gLuzNTnQLASXQxzc3ogX2M+6Nu0XnyVVF6o0oWpQ160+uNpRc+Q
+         8VGOqrb2TqQo1EPc2MqwEcvs7IEPARW3xTbMblir6Ab6wj0h62Y6+M8AiLXYqQFN9lwX
+         R+wAJAymLXnjT6fe58aeY45xFsv2mejrVCLld8/2+FnN5n3b/OtKXwb4wnBkFxSigFF9
+         XYSpFRXXHAopn8HMoY/INHolWyH1Z1FFduXnsgaGvgEMymCvnBat93MVpbX06tQxcPKh
+         MahA==
+X-Forwarded-Encrypted: i=1; AJvYcCVfQpBEoi9GYtVgl5dNzz8JfPZu/0DpItMEtB0wKg9SGIvHaNxrHIcdSlrXYTiqRVZOmRyT6/J7o70UuP+KT3Mc0g4IGfV0xODQ4w2z
+X-Gm-Message-State: AOJu0YzYfoKUGheNQXiCy4q9CdfNpRfLjIVq2VO+m4V11nntiye4FS+K
+	GFjso+5Ct54Q3tsxqcCKo0Sjn2+5Nx69kkspbuXGP0j2RbWCE0dX0la5VxOnX7JiiO0MIzZrU1X
+	ipQ==
+X-Google-Smtp-Source: AGHT+IEFdrePC6jrLSxMCygJbktCPsMWiSl/LWI6oM30L+7vw4xa5OxhWDTaaP8A8BzveH9E5qNZgrCJqhE=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a63:56:0:b0:61b:2c4c:30e6 with SMTP id
+ 83-20020a630056000000b0061b2c4c30e6mr10162pga.1.1714774107972; Fri, 03 May
+ 2024 15:08:27 -0700 (PDT)
+Date: Fri, 3 May 2024 15:08:26 -0700
+In-Reply-To: <20240426041559.3717884-2-foxywang@tencent.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240503220145.GD2118490@ZenIV>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+Mime-Version: 1.0
+References: <20240426041559.3717884-1-foxywang@tencent.com> <20240426041559.3717884-2-foxywang@tencent.com>
+Message-ID: <ZjVgWvrXyyVYXoxj@google.com>
+Subject: Re: [v4 RESEND 1/3] KVM: setup empty irq routing when create vm
+From: Sean Christopherson <seanjc@google.com>
+To: Yi Wang <up2wing@gmail.com>
+Cc: pbonzini@redhat.com, tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, 
+	dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com, 
+	kvm@vger.kernel.org, linux-kernel@vger.kernel.org, wanpengli@tencent.com, 
+	foxywang@tencent.com, oliver.upton@linux.dev, maz@kernel.org, 
+	anup@brainfault.org, atishp@atishpatra.org, borntraeger@linux.ibm.com, 
+	frankja@linux.ibm.com, imbrenda@linux.ibm.com, weijiang.yang@intel.com
+Content-Type: text/plain; charset="us-ascii"
 
-On Fri, May 03, 2024 at 11:01:45PM +0100, Al Viro wrote:
+On Fri, Apr 26, 2024, Yi Wang wrote:
+> From: Yi Wang <foxywang@tencent.com>
+> 
+> Add a new function to setup empty irq routing in kvm path, which
+> can be invoded in non-architecture-specific functions. The difference
+> compared to the kvm_setup_empty_irq_routing() is this function just
+> alloc the empty irq routing and does not need synchronize srcu, as
+> we will call it in kvm_create_vm().
+> 
+> Using the new adding function, we can setup empty irq routing when
+> kvm_create_vm(), so that x86 and s390 no longer need to set
+> empty/dummy irq routing when creating an IRQCHIP 'cause it avoid
+> an synchronize_srcu.
+> 
+> Signed-off-by: Yi Wang <foxywang@tencent.com>
+> ---
+>  include/linux/kvm_host.h |  1 +
+>  virt/kvm/irqchip.c       | 19 +++++++++++++++++++
+>  virt/kvm/kvm_main.c      |  4 ++++
+>  3 files changed, 24 insertions(+)
+> 
+> diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
+> index 48f31dcd318a..9256539139ef 100644
+> --- a/include/linux/kvm_host.h
+> +++ b/include/linux/kvm_host.h
+> @@ -2100,6 +2100,7 @@ int kvm_set_irq_routing(struct kvm *kvm,
+>  			const struct kvm_irq_routing_entry *entries,
+>  			unsigned nr,
+>  			unsigned flags);
+> +int kvm_setup_empty_irq_routing_lockless(struct kvm *kvm);
 
-> Having ->poll() instance itself grab reference is really asking for problem,
-> even on the boxen that have CONFIG_EPOLL turned off.  select(2) is enough;
-> it will take care of references grabbed by __pollwait(), but it doesn't
-> know anything about the references driver has stashed hell knows where for
-> hell knows how long.
+This is in an #ifdef, the #else needs a stub (for MIPS).
 
-Suppose your program calls select() on a pipe and dmabuf, sees data to be read
-from pipe, reads it, closes both pipe and dmabuf and exits.
+>  int kvm_set_routing_entry(struct kvm *kvm,
+>  			  struct kvm_kernel_irq_routing_entry *e,
+>  			  const struct kvm_irq_routing_entry *ue);
+> diff --git a/virt/kvm/irqchip.c b/virt/kvm/irqchip.c
+> index 1e567d1f6d3d..266bab99a8a8 100644
+> --- a/virt/kvm/irqchip.c
+> +++ b/virt/kvm/irqchip.c
+> @@ -237,3 +237,22 @@ int kvm_set_irq_routing(struct kvm *kvm,
+>  
+>  	return r;
+>  }
+> +
+> +int kvm_setup_empty_irq_routing_lockless(struct kvm *kvm)
 
-Would you expect that dmabuf file would stick around for hell knows how long
-after that?  I would certainly be very surprised by running into that...
+I vote for kvm_init_irq_routing() to make it more obvious that the API is purely
+for initializing the routing, i.e. only to be used at VM creation.  Then the
+"lockless" tag is largely redundant.  And then maybe add a comment about how this
+creates an empty routing table?  Because every time I look at this code, it takes
+me a few seconds to remember how this is actually an empty table.
+
+> +{
+> +	struct kvm_irq_routing_table *new;
+> +	int chip_size;
+> +
+> +	new = kzalloc(struct_size(new, map, 1), GFP_KERNEL_ACCOUNT);
+> +	if (!new)
+> +		return -ENOMEM;
+> +
+> +	new->nr_rt_entries = 1;
+> +
+> +	chip_size = sizeof(int) * KVM_NR_IRQCHIPS * KVM_IRQCHIP_NUM_PINS;
+> +	memset(new->chip, -1, chip_size);
+> +
+> +	RCU_INIT_POINTER(kvm->irq_routing, new);
+> +
+> +	return 0;
+> +}
+> diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+> index ff0a20565f90..b5f4fa9d050d 100644
+> --- a/virt/kvm/kvm_main.c
+> +++ b/virt/kvm/kvm_main.c
+> @@ -1285,6 +1285,10 @@ static struct kvm *kvm_create_vm(unsigned long type, const char *fdname)
+>  	if (r)
+>  		goto out_err;
+>  
+> +	r = kvm_setup_empty_irq_routing_lockless(kvm);
+> +	if (r)
+> +		goto out_err;
+
+This is too late.  It might not matter in practice, but the call before this is
+to kvm_arch_post_init_vm(), which quite strongly suggests that *all* common setup
+is done before that arch hook is invoked.
+
+Calling this right before kvm_arch_init_vm() seems like the best/easiest fit, e.g.
+
+diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+index 2e388972d856..ab607441686f 100644
+--- a/virt/kvm/kvm_main.c
++++ b/virt/kvm/kvm_main.c
+@@ -1197,9 +1197,13 @@ static struct kvm *kvm_create_vm(unsigned long type, const char *fdname)
+                rcu_assign_pointer(kvm->buses[i],
+                        kzalloc(sizeof(struct kvm_io_bus), GFP_KERNEL_ACCOUNT));
+                if (!kvm->buses[i])
+-                       goto out_err_no_arch_destroy_vm;
++                       goto out_err_no_irq_routing;
+        }
+ 
++       r = kvm_init_irq_routing(kvm);
++       if (r)
++               goto out_err_no_irq_routing;
++
+        r = kvm_arch_init_vm(kvm, type);
+        if (r)
+                goto out_err_no_arch_destroy_vm;
+@@ -1254,6 +1258,8 @@ static struct kvm *kvm_create_vm(unsigned long type, const char *fdname)
+        WARN_ON_ONCE(!refcount_dec_and_test(&kvm->users_count));
+        for (i = 0; i < KVM_NR_BUSES; i++)
+                kfree(kvm_get_bus(kvm, i));
++       kvm_free_irq_routing(kvm);
++out_err_no_irq_routing:
+        cleanup_srcu_struct(&kvm->irq_srcu);
+ out_err_no_irq_srcu:
+        cleanup_srcu_struct(&kvm->srcu);
+
 
