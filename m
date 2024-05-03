@@ -1,484 +1,247 @@
-Return-Path: <linux-kernel+bounces-168109-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-168110-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 00C7A8BB3C7
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 21:16:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 174FB8BB3CF
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 21:18:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1F80C1C238FB
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 19:16:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 37F141C2372D
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 19:18:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18BA7158201;
-	Fri,  3 May 2024 19:15:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A7B7158876;
+	Fri,  3 May 2024 19:18:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="enb1JtDr"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JKvL27KE"
+Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com [209.85.218.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0A0157CBE;
-	Fri,  3 May 2024 19:15:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70AC1156F2A;
+	Fri,  3 May 2024 19:18:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714763752; cv=none; b=EHBc6osCnxlK2DpegCcF9C0tE7eNKqHF6ECNf+qQBtCMq7x5C4VuR14U7y88eTfj/vxIV0zBbYmX2k/XTXIs/8f+KsUWtDu645Sav5cAwNPriMNvhsOE2vYF99eR7G1ejlXLQNa86CXixYlahuouuXr+bZrw1DsGrg5TjxWsfDQ=
+	t=1714763912; cv=none; b=GWh4xyXLoX5n3UzBQ1GPZtSdql1Y2eJS5hBQ/gnKmuwPx3pJ5RpkBXkeoyGLpz2GDp7SyKH0dxysIcSXaLzmzNZde8c7dtb2JufGW2TI6kanbestIlhnZf7idRdABV1lv1PA453jkOfRZ+T+70qtqaVMdfij9eVoLS98hewGy2A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714763752; c=relaxed/simple;
-	bh=Kq0M35849WHIrXka8iBDrQj42o6265+q1sdkdJ0TUic=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=H1nDxuZuV/OWgWh/PPSmrTLYszyL81DR3kGk5KLD2HO9YCqmgBKss0Ab60fZGeIUP1hvrprT/pFbNlng87faY7I6n4VAWucSw0wOZkdbXUgwCP77ahBSgk1CAvC7+s19RFdroZ2cI2J8LzCwTpBqM3VuyAonxp82x0vqN2J+hTM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=enb1JtDr; arc=none smtp.client-ip=198.175.65.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1714763751; x=1746299751;
-  h=message-id:subject:from:reply-to:to:cc:date:in-reply-to:
-   references:content-transfer-encoding:mime-version;
-  bh=Kq0M35849WHIrXka8iBDrQj42o6265+q1sdkdJ0TUic=;
-  b=enb1JtDrAKKmdZsJoHjQI2Kn0b2WQRUi/APlxd9ex+nWInnMWckhYuc3
-   NsVv0Da2byC2vGDWupwaRb1pXhsoBkQYe29yT7ASFt3XoJljxb9CBCntO
-   xrlifBWct4Y6aO1jEqdpO2B9fGys87mOODMDpUehvy8nfCaaIjHhTX5eP
-   5AfRnrg8SEsM60c6bxmplVneMnG8klaMpfu2knQjLQpcC9LoCVYUnOaWe
-   IH9mTqW2QCdDc5V5n1uPcksdt9glkZ2QLEtwHvi6TsUNC8OBSr3/ShZvD
-   ttey5cZ5k0kmY0Y3CxySrQ1hTCOOEOIj+7ap8AZzBCHOzPsaABs6s+mSk
-   w==;
-X-CSE-ConnectionGUID: mx6lWhN7TjGUXVGMv20fOg==
-X-CSE-MsgGUID: Duy0XwYYTEa8FPucG8pNZw==
-X-IronPort-AV: E=McAfee;i="6600,9927,11063"; a="14370855"
-X-IronPort-AV: E=Sophos;i="6.07,251,1708416000"; 
-   d="scan'208";a="14370855"
-Received: from orviesa010.jf.intel.com ([10.64.159.150])
-  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 May 2024 12:15:50 -0700
-X-CSE-ConnectionGUID: zmOj6CXuT/SgrIzNLCYBzw==
-X-CSE-MsgGUID: bQHzKLdPSd+c0ABLEs63Qw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,251,1708416000"; 
-   d="scan'208";a="27417521"
-Received: from leiwei-mobl.amr.corp.intel.com ([10.212.224.247])
-  by orviesa010-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 May 2024 12:15:49 -0700
-Message-ID: <876d19b7702dc16010b56bce049e2ab60bf68e3b.camel@linux.intel.com>
-Subject: Re: [PATCH v5 4/4] PCI/ASPM: Fix L1.2 parameters when enable link
- state
-From: "David E. Box" <david.e.box@linux.intel.com>
-Reply-To: david.e.box@linux.intel.com
-To: Jian-Hong Pan <jhp@endlessos.org>, Nirmal Patel
-	 <nirmal.patel@linux.intel.com>, Bjorn Helgaas <helgaas@kernel.org>
-Cc: Johan Hovold <johan@kernel.org>, Ilpo =?ISO-8859-1?Q?J=E4rvinen?=
- <ilpo.jarvinen@linux.intel.com>, Kuppuswamy Sathyanarayanan
- <sathyanarayanan.kuppuswamy@linux.intel.com>, Mika Westerberg
- <mika.westerberg@linux.intel.com>, Damien Le Moal <dlemoal@kernel.org>, 
- Jonathan Derrick <jonathan.derrick@linux.dev>, linux-pci@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Date: Fri, 03 May 2024 12:15:49 -0700
-In-Reply-To: <CAPpJ_efYWWxGBopbSQHB=Y2+1RrXFR2XWeqEhGTgdiw3XX0Jmw@mail.gmail.com>
-References: <20240424110223.21799-2-jhp@endlessos.org>
-	 <f111371300624b6f94f0746dbae66bd49f405eea.camel@linux.intel.com>
-	 <CAPpJ_ecOah=gYfYJVX-TypRiK8+oons3rKOVOATb4epm6sGZaw@mail.gmail.com>
-	 <af74b8d4f1f7072ffebc8a7f5cf392140da73dc7.camel@linux.intel.com>
-	 <CAPpJ_efYWWxGBopbSQHB=Y2+1RrXFR2XWeqEhGTgdiw3XX0Jmw@mail.gmail.com>
-Organization: David E. Box
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4-0ubuntu2 
+	s=arc-20240116; t=1714763912; c=relaxed/simple;
+	bh=Cf9LoRUpPjAh+yLyJB4d5K3369qJcbMglaMH7KY/O5I=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=R6dvo/0RlTIO+RlFBLpLX3jtcuzM5dtA7ux0pf+PlYAYIiAxoSr+nUo7HCIFT5Sh4Q8L2dWHbx/ff2mktOVb16Fnq6tvdZHAoXTh7EWdklUSJMA0/7OYlqGdMAtsm00qpd2hI3GWQAgcmoMqG230vKuL9Md4Tgti4RmJ8j4jGhw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JKvL27KE; arc=none smtp.client-ip=209.85.218.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-a5544fd07easo1465701066b.0;
+        Fri, 03 May 2024 12:18:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1714763909; x=1715368709; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=6aq4UQcdpcKwckp57zb2we9p40MZ5pzcBeJbE0PaEe8=;
+        b=JKvL27KE2qSmFTbHT3DnJk19eRmc8tYNVLIn9YU8X8PHBQY8wr+OTwPnUvu8SqFEwO
+         Fsl55q2iBrbqxPwtCjEMe5Qq6dbVLMs1XHUc2u0t1avjjNNKrCOQ1RpmQKCkFL1vEuK4
+         5qohQiAxOjScYix4+Sn1JbXJy5esXQGaKiBU+LxUgW5oce2CoLQxDhgvmgvFfDYVxmVV
+         MBLX7R5op/LIkvoALgG7YF/biubKWnDdj0otdO+zkPY6epQmpbqXUTJMkrVSIOMvlqJ8
+         2Mad6loI+QVpJcmyLkyUgCrpEBwQtA8oBBgyo6LkbPSd9WGVItsL352VAkEW+Yq23Yxz
+         IsOQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714763909; x=1715368709;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=6aq4UQcdpcKwckp57zb2we9p40MZ5pzcBeJbE0PaEe8=;
+        b=NH7UWAIP1jO0w5s9zPT2mxfbBxbUrDOtYUUo/UtslBKTM24yT9rGMh95ZkePh+12db
+         5Wv7dCJJBpVfd0Qmr5A9yJTBVsP7m3Jm3N36bwb4W5NbvnMoevh2/srOeJzDFfp1DzS5
+         BcYQtNawAynqIYKAhDb5A6Od1V9FfCQHFd67nYnZQOeFKu3X/FmG3PH4ZwGNxThNMiQe
+         udKEGVPpUg16eP0qhlcu+TQonjLqHQgMA5JOr5aIEtImNNYPZ/rcCSPYH+RlHTFQnDa5
+         rJU6N8m7tCaD7it+XS3HIZ9HioPcJ1PBc1KBO2HQMMR61RY5z65PVW9WoVLUUIUFGgn3
+         phug==
+X-Forwarded-Encrypted: i=1; AJvYcCUF8uU+Cf5fglxcldK2PPkjBXJZRZ5sSw/F7bIJE+OpAg08YJrYiEhSxU8PnhCnd8Kcdif2Y4WI5y50OLowInF+eXGu9uQDPD5geK57SSupWawySRftdaYBUkhcsanu+Myi8RwBUPiFBGKXQoeW4ePLDrZmvTLQ+QUo6AeoOgZjvEcr/bJgRJFpZ6HjcEmFd3GUVogTPW802CaWA4p6EkyvpkgqCfmOmjlkVg4FwlscbzAsev9BTo8ShQxk
+X-Gm-Message-State: AOJu0YzTnx/MLXyp4ijHlhB1lwcx/8pkCdRS1UuquTCPbzaNt21VFOKN
+	GeBY2R1zk/FLmN5kg63HzcQFZnUW+4PeSM/3k8J6g4iVQpZEpBql
+X-Google-Smtp-Source: AGHT+IH3PC/LlW/jHmTN85qf2LBTbgiAMP6Up8zHTigpFCHasVU/hv3IlOZVVnIm5jTFS2fJ/94rdQ==
+X-Received: by 2002:a50:9993:0:b0:570:5e7f:62cb with SMTP id m19-20020a509993000000b005705e7f62cbmr2156480edb.29.1714763908575;
+        Fri, 03 May 2024 12:18:28 -0700 (PDT)
+Received: from krava ([83.240.62.36])
+        by smtp.gmail.com with ESMTPSA id d17-20020a056402517100b0056fe755f1e6sm1978876ede.91.2024.05.03.12.18.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 03 May 2024 12:18:28 -0700 (PDT)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Fri, 3 May 2024 21:18:25 +0200
+To: "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
+Cc: "olsajiri@gmail.com" <olsajiri@gmail.com>,
+	"peterz@infradead.org" <peterz@infradead.org>,
+	"songliubraving@fb.com" <songliubraving@fb.com>,
+	"luto@kernel.org" <luto@kernel.org>,
+	"mhiramat@kernel.org" <mhiramat@kernel.org>,
+	"andrii@kernel.org" <andrii@kernel.org>,
+	"linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
+	"john.fastabend@gmail.com" <john.fastabend@gmail.com>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"mingo@redhat.com" <mingo@redhat.com>,
+	"rostedt@goodmis.org" <rostedt@goodmis.org>,
+	"ast@kernel.org" <ast@kernel.org>,
+	"tglx@linutronix.de" <tglx@linutronix.de>,
+	"yhs@fb.com" <yhs@fb.com>,
+	"linux-man@vger.kernel.org" <linux-man@vger.kernel.org>,
+	"oleg@redhat.com" <oleg@redhat.com>,
+	"daniel@iogearbox.net" <daniel@iogearbox.net>,
+	"linux-trace-kernel@vger.kernel.org" <linux-trace-kernel@vger.kernel.org>,
+	"bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+	"bp@alien8.de" <bp@alien8.de>, "x86@kernel.org" <x86@kernel.org>
+Subject: Re: [PATCHv4 bpf-next 2/7] uprobe: Add uretprobe syscall to speed up
+ return probe
+Message-ID: <ZjU4ganRF1Cbiug6@krava>
+References: <20240502122313.1579719-1-jolsa@kernel.org>
+ <20240502122313.1579719-3-jolsa@kernel.org>
+ <20240503113453.GK40213@noisy.programming.kicks-ass.net>
+ <ZjTg2cunShA6VbpY@krava>
+ <725e2000dc56d55da4097cface4109c17fe5ad1a.camel@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <725e2000dc56d55da4097cface4109c17fe5ad1a.camel@intel.com>
 
-+Nirmal,
+On Fri, May 03, 2024 at 03:53:15PM +0000, Edgecombe, Rick P wrote:
+> On Fri, 2024-05-03 at 15:04 +0200, Jiri Olsa wrote:
+> > On Fri, May 03, 2024 at 01:34:53PM +0200, Peter Zijlstra wrote:
+> > > On Thu, May 02, 2024 at 02:23:08PM +0200, Jiri Olsa wrote:
+> > > > Adding uretprobe syscall instead of trap to speed up return probe.
+> > > > 
+> > > > At the moment the uretprobe setup/path is:
+> > > > 
+> > > >    - install entry uprobe
+> > > > 
+> > > >    - when the uprobe is hit, it overwrites probed function's return
+> > > > address
+> > > >      on stack with address of the trampoline that contains breakpoint
+> > > >      instruction
+> > > > 
+> > > >    - the breakpoint trap code handles the uretprobe consumers execution
+> > > > and
+> > > >      jumps back to original return address
+> 
+> Hi,
+> 
+> I worked on the x86 shadow stack support.
+> 
+> I didn't know uprobes did anything like this. In hindsight I should have looked
+> more closely. The current upstream behavior is to overwrite the return address
+> on the stack?
+> 
+> Stupid uprobes question - what is actually overwriting the return address on the
+> stack? Is it the kernel? If so perhaps the kernel could just update the shadow
+> stack at the same time.
 
-Thanks Jian-Hong. This is a good find.
+yes, it's in kernel - arch_uretprobe_hijack_return_addr .. so I guess
+we need to update the shadow stack with the new return value as well
 
-On Fri, 2024-05-03 at 17:45 +0800, Jian-Hong Pan wrote:
-> David E. Box <david.e.box@linux.intel.com> =E6=96=BC 2024=E5=B9=B45=E6=9C=
-=881=E6=97=A5 =E9=80=B1=E4=B8=89 =E4=B8=8A=E5=8D=882:26=E5=AF=AB=E9=81=93=
-=EF=BC=9A
-> >=20
-> > On Tue, 2024-04-30 at 15:46 +0800, Jian-Hong Pan wrote:
-> > > David E. Box <david.e.box@linux.intel.com> =E6=96=BC 2024=E5=B9=B44=
-=E6=9C=8827=E6=97=A5 =E9=80=B1=E5=85=AD =E4=B8=8A=E5=8D=888:03=E5=AF=AB=E9=
-=81=93=EF=BC=9A
-> > > >=20
-> > > > Hi Jian-Hong,
-> > > >=20
-> > > > On Wed, 2024-04-24 at 19:02 +0800, Jian-Hong Pan wrote:
-> > > > > Currently, when enable link's L1.2 features with
-> > > > > __pci_enable_link_state(),
-> > > > > it configs the link directly without ensuring related L1.2 parame=
-ters,
-> > > > > such
-> > > > > as T_POWER_ON, Common_Mode_Restore_Time, and LTR_L1.2_THRESHOLD h=
-ave
-> > > > > been
-> > > > > programmed.
-> > > > >=20
-> > > > > This leads the link's L1.2 between PCIe Root Port and child devic=
-e
-> > > > > gets
-> > > > > wrong configs when a caller tries to enabled it.
-> > > > >=20
-> > > > > Here is a failed example on ASUS B1400CEAE with enabled VMD:
-> > > > >=20
-> > > > > 10000:e0:06.0 PCI bridge: Intel Corporation 11th Gen Core Process=
-or
-> > > > > PCIe
-> > > > > Controller (rev 01) (prog-if 00 [Normal decode])
-> > > > > =C2=A0=C2=A0=C2=A0 ...
-> > > > > =C2=A0=C2=A0=C2=A0 Capabilities: [200 v1] L1 PM Substates
-> > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 L1SubCap: PCI-PM_L1.2+=
- PCI-PM_L1.1+ ASPM_L1.2+ ASPM_L1.1+
-> > > > > L1_PM_Substates+
-> > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 PortCommonModeRestoreTime=3D45us Po=
-rtTPowerOnTime=3D50us
-> > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 L1SubCtl1: PCI-PM_L1.2=
-- PCI-PM_L1.1- ASPM_L1.2+ ASPM_L1.1-
-> > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 T_CommonMode=3D45us LTR1.2_Th=
-reshold=3D101376ns
-> > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 L1SubCtl2: T_PwrOn=3D5=
-0us
-> > > > >=20
-> > > > > 10000:e1:00.0 Non-Volatile memory controller: Sandisk Corp WD Blu=
-e
-> > > > > SN550
-> > > > > NVMe
-> > > > > SSD (rev 01) (prog-if 02 [NVM Express])
-> > > > > =C2=A0=C2=A0=C2=A0 ...
-> > > > > =C2=A0=C2=A0=C2=A0 Capabilities: [900 v1] L1 PM Substates
-> > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 L1SubCap: PCI-PM_L1.2+=
- PCI-PM_L1.1- ASPM_L1.2+ ASPM_L1.1-
-> > > > > L1_PM_Substates+
-> > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 PortCommonModeRestoreTime=3D32us Po=
-rtTPowerOnTime=3D10us
-> > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 L1SubCtl1: PCI-PM_L1.2=
-- PCI-PM_L1.1- ASPM_L1.2+ ASPM_L1.1-
-> > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 T_CommonMode=3D0us LTR1.2_Thr=
-eshold=3D0ns
-> > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 L1SubCtl2: T_PwrOn=3D1=
-0us
-> > > > >=20
-> > > > > According to "PCIe r6.0, sec 5.5.4", before enabling ASPM L1.2 on=
- the
-> > > > > PCIe
-> > > > > Root Port and the child NVMe, they should be programmed with the =
-same
-> > > > > LTR1.2_Threshold value. However, they have different values in th=
-is
-> > > > > case.
-> > > > >=20
-> > > > > Invoke aspm_calc_l12_info() to program the L1.2 parameters proper=
-ly
-> > > > > before
-> > > > > enable L1.2 bits of L1 PM Substates Control Register in
-> > > > > __pci_enable_link_state().
-> > > > >=20
-> > > > > Link: https://bugzilla.kernel.org/show_bug.cgi?id=3D218394
-> > > > > Signed-off-by: Jian-Hong Pan <jhp@endlessos.org>
-> > > > > ---
-> > > > > v2:
-> > > > > - Prepare the PCIe LTR parameters before enable L1 Substates
-> > > > >=20
-> > > > > v3:
-> > > > > - Only enable supported features for the L1 Substates part
-> > > > >=20
-> > > > > v4:
-> > > > > - Focus on fixing L1.2 parameters, instead of re-initializing who=
-le
-> > > > > L1SS
-> > > > >=20
-> > > > > v5:
-> > > > > - Fix typo and commit message
-> > > > > - Split introducing aspm_get_l1ss_cap() to "PCI/ASPM: Introduce
-> > > > > =C2=A0 aspm_get_l1ss_cap()"
-> > > > >=20
-> > > > > =C2=A0drivers/pci/pcie/aspm.c | 12 ++++++++++++
-> > > > > =C2=A01 file changed, 12 insertions(+)
-> > > > >=20
-> > > > > diff --git a/drivers/pci/pcie/aspm.c b/drivers/pci/pcie/aspm.c
-> > > > > index c55ac11faa73..553327dee991 100644
-> > > > > --- a/drivers/pci/pcie/aspm.c
-> > > > > +++ b/drivers/pci/pcie/aspm.c
-> > > > > @@ -1402,6 +1402,8 @@ EXPORT_SYMBOL(pci_disable_link_state);
-> > > > > =C2=A0static int __pci_enable_link_state(struct pci_dev *pdev, in=
-t state,
-> > > > > bool
-> > > > > locked)
-> > > > > =C2=A0{
-> > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct pcie_link_state=
- *link =3D pcie_aspm_get_link(pdev);
-> > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct pci_dev *child =3D l=
-ink->downstream, *parent =3D link-
-> > > > > >pdev;
-> > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 u32 parent_l1ss_cap, child_=
-l1ss_cap;
-> > > > >=20
-> > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (!link)
-> > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0 return -EINVAL;
-> > > > > @@ -1433,6 +1435,16 @@ static int __pci_enable_link_state(struct
-> > > > > pci_dev
-> > > > > *pdev, int state, bool locked)
-> > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0 link->aspm_default |=3D ASPM_STATE_L1_1_PCIPM |
-> > > > > ASPM_STATE_L1;
-> > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (state & PCIE_LINK_=
-STATE_L1_2_PCIPM)
-> > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0 link->aspm_default |=3D ASPM_STATE_L1_2_PCIPM |
-> > > > > ASPM_STATE_L1;
-> > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /*
-> > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * Ensure L1.2 paramet=
-ers: Common_Mode_Restore_Times,
-> > > > > T_POWER_ON
-> > > > > and
-> > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * LTR_L1.2_THRESHOLD =
-are programmed properly before enable
-> > > > > bits
-> > > > > for
-> > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * L1.2, per PCIe r6.0=
-, sec 5.5.4.
-> > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 */
-> > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (state & link->aspm_capa=
-ble & ASPM_STATE_L1_2_MASK) {
-> > > >=20
-> > > > This is still mixing PCIE_LINK_STATE flags with ASPM_STATE flags.
-> > >=20
-> > > Thanks for your review, but I notice some description in PCIe spec,
-> > > 5.5.4 L1 PM Substates Configuration:
-> > > "Prior to setting either or both of the enable bits for L1.2, the
-> > > values for TPOWER_ON, Common_Mode_Restore_Time, and, if the ASPM L1.2
-> > > Enable bit is to be Set, the LTR_L1.2_THRESHOLD (both Value and Scale
-> > > fields) must be programmed." =3D> I think this includes both "ASPM L1=
-2
-> > > Enable" and "PCI-PM L1.2 Enable" bits.
-> >=20
-> > That's fine. While the spec clearly calls out the ASPM L1.2 Enable bit =
-here,
-> > I
-> > see no harm in including PCI-PM L1.2 in that check. This is what the co=
-de
-> > already does in aspm_l1ss_init().
-> >=20
-> > The issue is the mixed used of two different types of flags that don't =
-have
-> > the
-> > same meaning. 'state' contains PCIE_LINK_STATE flags which are part of =
-the
-> > caller API to the pci_<enabled/disable>_link_state() functions. The
-> > ASPM_STATE
-> > flags are used internally to aspm.c to track all states and their meani=
-ngful
-> > combinations such as ASPM_STATE_L1_2_MASK which includes ASPM L1.2 and =
-PCI-
-> > PM
-> > L1.2. You should not do bit operations between them.
-> >=20
-> > Also, you should not require that the timings be calculated only if L1_=
-2 is
-> > enabled. You should calculate the timings as long as it's capable. This=
- is
-> > also
-> > what aspm_l1ss_init() does.
-> >=20
-> > The confusion might be over the fact that you are having
-> > __pci_enable_link_state() call aspm_calc_l12_info(). This should have b=
-een
-> > handled during initialization of the link in aspm_l1ss_init() and I'm n=
-ot
-> > sure
-> > why it didn't. Maybe it's because, for VMD, ASPM default state would ha=
-ve
-> > started out all disabled and this somehow led to aspm_l1ss_init() not
-> > getting
-> > called. But looking through the code I don't see it. It would be great =
-if
-> > you
-> > can confirm why they weren't calculated before.
->=20
-> I debug it again.=C2=A0 If I delete the pci_reset_bus() in vmd controller=
- like:
->=20
-> diff --git a/drivers/pci/controller/vmd.c b/drivers/pci/controller/vmd.c
-> index 87b7856f375a..39bfda4350bf 100644
-> --- a/drivers/pci/controller/vmd.c
-> +++ b/drivers/pci/controller/vmd.c
-> @@ -930,25 +930,6 @@ static int vmd_enable_domain(struct vmd_dev *vmd,
-> unsigned long features)
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 pci_scan_child_bus(vmd->bus);
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 vmd_domain_reset(vmd);
->=20
-> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /* When Intel VMD is enabled, the O=
-S does not discover the Root Ports
-> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * owned by Intel VMD within t=
-he MMCFG space. pci_reset_bus() applies
-> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * a reset to the parent of th=
-e PCI device supplied as argument. This
-> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * is why we pass a child devi=
-ce, so the reset can be triggered at
-> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * the Intel bridge level and =
-propagated to all the children in the
-> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * hierarchy.
-> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 */
-> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 list_for_each_entry(child, &vmd->bu=
-s->children, node) {
-> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0 if (!list_empty(&child->devices)) {
-> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 dev =3D list_f=
-irst_entry(&child->devices,
-> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct pci_dev, bus_list);
-> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ret =3D pci_re=
-set_bus(dev);
+> 
+> > > > 
+> > > > This patch replaces the above trampoline's breakpoint instruction with new
+> > > > ureprobe syscall call. This syscall does exactly the same job as the trap
+> > > > with some more extra work:
+> > > > 
+> > > >    - syscall trampoline must save original value for rax/r11/rcx registers
+> > > >      on stack - rax is set to syscall number and r11/rcx are changed and
+> > > >      used by syscall instruction
+> > > > 
+> > > >    - the syscall code reads the original values of those registers and
+> > > >      restore those values in task's pt_regs area
+> > > > 
+> > > >    - only caller from trampoline exposed in '[uprobes]' is allowed,
+> > > >      the process will receive SIGILL signal otherwise
+> > > > 
+> > > 
+> > > Did you consider shadow stacks? IIRC we currently have userspace shadow
+> > > stack support available, and that will utterly break all of this.
+> > 
+> > nope.. I guess it's the extra ret instruction in the trampoline that would
+> > make it crash?
+> 
+> The original behavior seems problematic for shadow stack IIUC. I'm not sure of
+> the additional breakage with the new behavior.
 
-Hi Nirmal. It's not clear to me from the comment why there's a need to do a=
- bus
-reset. It looks like it is causing misconfiguration of the ASPM L1.2 timing=
-s
-which would have been done above in pci_scan_child_bus(). Jian-Hong discove=
-red
-that without the above reset code, the timings are correct.
+I can see it's broken also for current uprobes
 
-This patch recalculates the timings during the call to pci_enable_link_stat=
-e()
-which is called during pci_bus_walk() below. Originally I thought the
-recalculation might have been needed by all callers to pci_enabled_link_sta=
-te()
-since it changes the default BIOS configuration. But it looks like the rese=
-t is
-the cause and only the VMD driver would need the recalculation as a result.=
- I
-don't see qcom doing a reset.
+> 
+> Roughly, how shadow stack works is there is an additional protected stack for
+> the app thread. The HW pushes to from the shadow stack with CALL, and pops from
+> it with RET. But it also continues to push and pop from the normal stack. On
+> pop, if the values don't match between the two stacks, an exception is
+> generated. The whole point is to prevent the app from overwriting its stack
+> return address to return to random places.
+> 
+> Userspace cannot (normally) write to the shadow stack, but the kernel can do
+> this or adust the SSP (shadow stack pointer). So in the kernel (for things like
+> sigreturn) there is an ability to do what is needed. Ptracers also can do things
+> like this.
 
-Jian-Hong, given this (and assuming the reset is needed) I would not call
-aspm_calc_l12_info() from pci_enable_link_state() but instead try redoing t=
-he
-whole ASPM initialization right after the resets are done, maybe by calling
-pci_scan_child_bus() again. What do you think Bjorn?
+hack below seems to fix it for the current uprobe setup,
+we need similar fix for the uretprobe syscall trampoline setup
 
-David
+jirka
 
-> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (ret)
-> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 pci_warn(dev, "can't reset device: %d\n",
-> ret);
-> -
-> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 break;
-> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0 }
-> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
-> -
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 pci_assign_unassigned_bus_reso=
-urces(vmd->bus);
->=20
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 pci_walk_bus(vmd->bus, vmd_pm_=
-enable_quirk, &features);
->=20
-> Although PCI-PM_L1.2 is disabled, both PCI bridge and the NVMe's
-> LTR1.2_Threshold are configured as 101376ns:
->=20
-> 10000:e0:06.0 PCI bridge [0604]: Intel Corporation 11th Gen Core
-> Processor PCIe Controller [8086:9a09] (rev 01) (prog-if 00 [Normal
-> decode])
-> ...
-> =C2=A0 Capabilities: [200 v1] L1 PM Substates
-> =C2=A0 L1SubCap: PCI-PM_L1.2+ PCI-PM_L1.1+ ASPM_L1.2+ ASPM_L1.1+ L1_PM_Su=
-bstates+
-> =C2=A0=C2=A0=C2=A0 PortCommonModeRestoreTime=3D45us PortTPowerOnTime=3D50=
-us
-> =C2=A0 L1SubCtl1: PCI-PM_L1.2- PCI-PM_L1.1- ASPM_L1.2+ ASPM_L1.1-
-> =C2=A0=C2=A0=C2=A0=C2=A0 T_CommonMode=3D45us LTR1.2_Threshold=3D101376ns
-> =C2=A0 L1SubCtl2: T_PwrOn=3D50us
->=20
-> 10000:e1:00.0 Non-Volatile memory controller [0108]: Sandisk Corp WD
-> Blue SN550 NVMe SSD [15b7:5009] (rev 01) (prog-if 02 [NVM Express])
-> ...
-> =C2=A0 Capabilities: [900 v1] L1 PM Substates
-> =C2=A0 L1SubCap: PCI-PM_L1.2+ PCI-PM_L1.1- ASPM_L1.2+ ASPM_L1.1- L1_PM_Su=
-bstates+
-> =C2=A0=C2=A0=C2=A0 PortCommonModeRestoreTime=3D32us PortTPowerOnTime=3D10=
-us
-> =C2=A0 L1SubCtl1: PCI-PM_L1.2- PCI-PM_L1.1- ASPM_L1.2+ ASPM_L1.1-
-> =C2=A0=C2=A0=C2=A0=C2=A0 T_CommonMode=3D0us LTR1.2_Threshold=3D101376ns
-> =C2=A0 L1SubCtl2: T_PwrOn=3D50us
->=20
-> Then, I apply the patch "PCI: vmd: Set PCI devices to D0 before enable
-> PCI PM's L1 substates".=C2=A0 Both PCI bridge and the NVMe's PCI-PM_L1.2 =
-is
-> enabled and LTR1.2_Threshold is configured as 101376ns.
->=20
-> 10000:e0:06.0 PCI bridge [0604]: Intel Corporation 11th Gen Core
-> Processor PCIe Controller [8086:9a09] (rev 01) (prog-if 00 [Normal
-> decode])
-> ...
-> =C2=A0 Capabilities: [200 v1] L1 PM Substates
-> =C2=A0 L1SubCap: PCI-PM_L1.2+ PCI-PM_L1.1+ ASPM_L1.2+ ASPM_L1.1+ L1_PM_Su=
-bstates+
-> =C2=A0=C2=A0=C2=A0 PortCommonModeRestoreTime=3D45us PortTPowerOnTime=3D50=
-us
-> =C2=A0 L1SubCtl1: PCI-PM_L1.2+ PCI-PM_L1.1- ASPM_L1.2+ ASPM_L1.1-
-> =C2=A0=C2=A0=C2=A0=C2=A0 T_CommonMode=3D45us LTR1.2_Threshold=3D101376ns
-> =C2=A0 L1SubCtl2: T_PwrOn=3D50us
->=20
-> 10000:e1:00.0 Non-Volatile memory controller [0108]: Sandisk Corp WD
-> Blue SN550 NVMe SSD [15b7:5009] (rev 01) (prog-if 02 [NVM Express])
-> ...
-> =C2=A0 Capabilities: [900 v1] L1 PM Substates
-> =C2=A0 L1SubCap: PCI-PM_L1.2+ PCI-PM_L1.1- ASPM_L1.2+ ASPM_L1.1- L1_PM_Su=
-bstates+
-> =C2=A0=C2=A0=C2=A0 PortCommonModeRestoreTime=3D32us PortTPowerOnTime=3D10=
-us
-> =C2=A0 L1SubCtl1: PCI-PM_L1.2+ PCI-PM_L1.1- ASPM_L1.2+ ASPM_L1.1-
-> =C2=A0=C2=A0=C2=A0=C2=A0 T_CommonMode=3D0us LTR1.2_Threshold=3D101376ns
-> =C2=A0 L1SubCtl2: T_PwrOn=3D50us
->=20
-> I do not know VMD very much.=C2=A0 However, from the test result, it look=
-s
-> like LTR1.2_Threshold has been configured properly originally.=C2=A0 But,
-> LTR1.2_Threshold is misconfigured by 'pci_reset_bus()'.
->=20
-> Jian-Hong Pan
->=20
->=20
->=20
-> > >=20
-> > > Jain-Hong Pan
-> > >=20
-> > > > 'state' should not even matter.
-> > > > The timings should always be calculated and programmed as long
-> > > > as L1_2 is capable. That way the timings are ready even if L1_2 isn=
-'t
-> > > > being
-> > > > enabled now (in case the user enables it later).
-> > > >=20
-> > > > David
-> > > >=20
-> > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0 parent_l1ss_cap =3D aspm_get_l1ss_cap(parent);
-> > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0 child_l1ss_cap =3D aspm_get_l1ss_cap(child);
-> > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0 aspm_calc_l12_info(link, parent_l1ss_cap,
-> > > > > child_l1ss_cap);
-> > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
-> > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 pcie_config_aspm_link(=
-link, policy_to_aspm_state(link));
-> > > > >=20
-> > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 link->clkpm_default =
-=3D (state & PCIE_LINK_STATE_CLKPM) ? 1 : 0;
-> > > >=20
-> >=20
 
+---
+diff --git a/arch/x86/include/asm/shstk.h b/arch/x86/include/asm/shstk.h
+index 42fee8959df7..99a0948a3b79 100644
+--- a/arch/x86/include/asm/shstk.h
++++ b/arch/x86/include/asm/shstk.h
+@@ -21,6 +21,7 @@ unsigned long shstk_alloc_thread_stack(struct task_struct *p, unsigned long clon
+ void shstk_free(struct task_struct *p);
+ int setup_signal_shadow_stack(struct ksignal *ksig);
+ int restore_signal_shadow_stack(void);
++void uprobe_change_stack(unsigned long addr);
+ #else
+ static inline long shstk_prctl(struct task_struct *task, int option,
+ 			       unsigned long arg2) { return -EINVAL; }
+diff --git a/arch/x86/kernel/shstk.c b/arch/x86/kernel/shstk.c
+index 59e15dd8d0f8..d2c4dbe5843c 100644
+--- a/arch/x86/kernel/shstk.c
++++ b/arch/x86/kernel/shstk.c
+@@ -577,3 +577,11 @@ long shstk_prctl(struct task_struct *task, int option, unsigned long arg2)
+ 		return wrss_control(true);
+ 	return -EINVAL;
+ }
++
++void uprobe_change_stack(unsigned long addr)
++{
++	unsigned long ssp;
++
++	ssp = get_user_shstk_addr();
++	write_user_shstk_64((u64 __user *)ssp, (u64)addr);
++}
+diff --git a/arch/x86/kernel/uprobes.c b/arch/x86/kernel/uprobes.c
+index 81e6ee95784d..88afbeaacb8f 100644
+--- a/arch/x86/kernel/uprobes.c
++++ b/arch/x86/kernel/uprobes.c
+@@ -348,7 +348,7 @@ void *arch_uprobe_trampoline(unsigned long *psize)
+ 	 * only for native 64-bit process, the compat process still uses
+ 	 * standard breakpoint.
+ 	 */
+-	if (user_64bit_mode(regs)) {
++	if (0 && user_64bit_mode(regs)) {
+ 		*psize = uretprobe_syscall_end - uretprobe_syscall_entry;
+ 		return uretprobe_syscall_entry;
+ 	}
+@@ -1191,8 +1191,10 @@ arch_uretprobe_hijack_return_addr(unsigned long trampoline_vaddr, struct pt_regs
+ 		return orig_ret_vaddr;
+ 
+ 	nleft = copy_to_user((void __user *)regs->sp, &trampoline_vaddr, rasize);
+-	if (likely(!nleft))
++	if (likely(!nleft)) {
++		uprobe_change_stack(trampoline_vaddr);
+ 		return orig_ret_vaddr;
++	}
+ 
+ 	if (nleft != rasize) {
+ 		pr_err("return address clobbered: pid=%d, %%sp=%#lx, %%ip=%#lx\n",
 
