@@ -1,81 +1,142 @@
-Return-Path: <linux-kernel+bounces-168009-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-168008-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 29D848BB22D
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 20:10:01 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3FC238BB22B
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 20:08:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6379AB23B2C
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 18:09:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EEF85282DA9
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 18:08:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C8BD51586D3;
-	Fri,  3 May 2024 18:09:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3300B1586C1;
+	Fri,  3 May 2024 18:08:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b="R105vteL"
-Received: from smtp-relay-canonical-0.canonical.com (smtp-relay-canonical-0.canonical.com [185.125.188.120])
+	dkim=pass (2048-bit key) header.d=fiberby.net header.i=@fiberby.net header.b="Nm2drleW"
+Received: from mail1.fiberby.net (mail1.fiberby.net [193.104.135.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E188158210;
-	Fri,  3 May 2024 18:09:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.125.188.120
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 378B715820E;
+	Fri,  3 May 2024 18:08:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.104.135.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714759789; cv=none; b=GFu5ynbj2MgRYkY5qkrRompZwgw4gsl+gBsinl3bNDll/JxfH4+FqQvmKj3htrC1izCsTXxkYgGb1Jz7KHamNHRWOfyJt/RKXhzrAoWbU7mpijevnxBgFm6l77BELu6dLDygU+U7ARWsPuhH17nDRPILkZ34t9POfRgXTBWv1XQ=
+	t=1714759707; cv=none; b=F5yQUq6QIznQlENvf1pEm1TTgg8XOvqjuAez80178ExRpUNNlfDDeQt3XVZoE1shcamvLwEcCns9GT+j6AXABMsbMEYmjHzBhFDLoY1gtG9xe7TDzFharg1/XDNPVuKPQzUB7I7hrV6jN49o031EGwWapNPSE8e3mvdE0SJTTZA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714759789; c=relaxed/simple;
-	bh=KTQbo88HL9DMqt/voiTSmZpfkoFSYoSSyH8bMCHFzSE=;
-	h=From:Subject:Date:Message-ID:To; b=JJtvc7PgpELdPr5iTL/JBx/Xe8JE0ljAD5Y8bMyPV4qBWECNFJsoO6q9hhNbYAOO0/a7NJ+HyUCehUyp9KTUilA/Mabg6Jc57YCTxvk2xkYAb7Z43EjvaADiHWeXP/zrjZaWkwwrQF9JgrjFdFA+5wcN05gFW91bdqQmXLFGOfM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com; spf=pass smtp.mailfrom=canonical.com; dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b=R105vteL; arc=none smtp.client-ip=185.125.188.120
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canonical.com
-Received: from canonical.com (1.general.jsalisbury.us.vpn [10.172.66.188])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id 1AE073F6D2;
-	Fri,  3 May 2024 18:09:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-	s=20210705; t=1714759779;
-	bh=JpzLh643eu4d1Q70R2e1LKtn4Ak4f3w0HOVexQRqJxk=;
-	h=From:Subject:Date:Message-ID:To;
-	b=R105vteLOJR7CDHnqx22BQcOPZs5NDXscUmIY2/FupSwUTvKNszB7/JzecZWh+sKE
-	 HPbkvizsdw2wuekWDh81k6NtQ6U53QyVWZOfCj8ymH4P+R+110PskgogRyEwENY1Ms
-	 CMRKPxEsW8WPDXiadmwZS5EbIZ/5k3Q55h5uGEMLDcGPBkP7hb98tH9Fl1N+SoI+JE
-	 EZ1Zwzd/5sYB4joQCI6JDPR9s3uoa4Seu+RhM7IH0fB1NxnU0HRDp6JtpB+zYqdJc1
-	 NYchc3HaHqqxt8M1ajYvEkXbVuaUr0XCZ+Ul16hWdhYOqVnAymGqJzA9hgdQYjFm+0
-	 u3A/o0kDQ/Mfw==
-From: Joseph Salisbury <joseph.salisbury@canonical.com>
-Subject: [ANNOUNCE] 5.15.158-rt76
-Date: Fri, 03 May 2024 18:07:39 -0000
-Message-ID: <171475965938.1184573.6478662190940634586@jupiter.home.arpa>
-To: LKML <linux-kernel@vger.kernel.org>,linux-rt-users <linux-rt-users@vger.kernel.org>,Steven Rostedt <rostedt@goodmis.org>,Thomas Gleixner <tglx@linutronix.de>,Carsten Emde <C.Emde@osadl.org>,John Kacur <jkacur@redhat.com>,Sebastian Andrzej Siewior <bigeasy@linutronix.de>,Daniel Wagner <daniel.wagner@suse.com>,Tom Zanussi <tom.zanussi@linux.intel.com>,Clark Williams <williams@redhat.com>,Pavel Machek <pavel@denx.de>,Joseph Salisbury <joseph.salisbury@canonical.com>
+	s=arc-20240116; t=1714759707; c=relaxed/simple;
+	bh=lpjffUs0KsD4f1OIdu+oOs418PzFZ7RJRguA69+8Ufg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=pyN/TCJki3tQVdoIVIe8kfqiqyaHcXkpDIJRvVQwV6DtJfVus5H4IP8Fesb6PWdi8Lq7CiwmG7+030zTTHZ2wbewvtF8G5xx02D7RVlMbVNyMEcXf17wApE1OeE1OIceZFc7N5NMBSny7oikuzpre3ByjHDb8/Vw+ShhiZuMNkE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fiberby.net; spf=pass smtp.mailfrom=fiberby.net; dkim=pass (2048-bit key) header.d=fiberby.net header.i=@fiberby.net header.b=Nm2drleW; arc=none smtp.client-ip=193.104.135.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fiberby.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fiberby.net
+Received: from x201s (193-104-135-243.ip4.fiberby.net [193.104.135.243])
+	by mail1.fiberby.net (Postfix) with ESMTPSA id C234D600A2;
+	Fri,  3 May 2024 18:08:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=fiberby.net;
+	s=202008; t=1714759701;
+	bh=lpjffUs0KsD4f1OIdu+oOs418PzFZ7RJRguA69+8Ufg=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=Nm2drleWzUli4rPVRzHIxWXPNsM1P7Lh/mZEVcqcpPgnUhoWJdBr/p0F7y3LbVz+a
+	 4T3o8u8ds+dMOu9SiMtVXNN6U1M/8dna+PH56Vj/GFcwvHK5HmU8BAxhDVnR0/pfg3
+	 77htbJMnUJyvVyvAKBaAgzTaohiq+SZDxHhec75OsZ2QVs+MOxOZTBCwCG/yknxwT6
+	 xwemhYv+LxkMeCbLbtVa3UO/P+L0/M+1foLt37LqEcfu4p4YZG/99PZ+hHWt/1M+/2
+	 sqVqoRuDnKJMkAkDzHfP3hf2Zj6pDZmpquWoDm3YwcjjXAP3UbzdzYu8qDDqhXssLG
+	 5uQpZiVHj2voQ==
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+	by x201s (Postfix) with ESMTP id 5823420146D;
+	Fri, 03 May 2024 18:08:04 +0000 (UTC)
+Message-ID: <80089193-33e8-4601-bdbc-71d10ff1ab58@fiberby.net>
+Date: Fri, 3 May 2024 18:08:04 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [Intel-wired-lan] [PATCH iwl-next] ice: flower: validate control
+ flags
+To: "Buvaneswaran, Sujai" <sujai.buvaneswaran@intel.com>
+Cc: "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ Eric Dumazet <edumazet@google.com>,
+ "Nguyen, Anthony L" <anthony.l.nguyen@intel.com>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+ "David S. Miller" <davem@davemloft.net>,
+ "intel-wired-lan@lists.osuosl.org" <intel-wired-lan@lists.osuosl.org>
+References: <20240416144331.15336-1-ast@fiberby.net>
+ <PH0PR11MB50139E3BE2709C5BE7F4AC78961F2@PH0PR11MB5013.namprd11.prod.outlook.com>
+Content-Language: en-US
+From: =?UTF-8?Q?Asbj=C3=B8rn_Sloth_T=C3=B8nnesen?= <ast@fiberby.net>
+In-Reply-To: <PH0PR11MB50139E3BE2709C5BE7F4AC78961F2@PH0PR11MB5013.namprd11.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-Hello RT-list!
+Hi Sujai,
 
-I'm pleased to announce the 5.15.158-rt76 stable release.
+On 5/3/24 5:57 AM, Buvaneswaran, Sujai wrote:
+>> -----Original Message-----
+>> From: Intel-wired-lan <intel-wired-lan-bounces@osuosl.org> On Behalf Of
+>> Asbjørn Sloth Tønnesen
+>> Sent: Tuesday, April 16, 2024 8:14 PM
+>> To: intel-wired-lan@lists.osuosl.org
+>> Cc: netdev@vger.kernel.org; linux-kernel@vger.kernel.org; Eric Dumazet
+>> <edumazet@google.com>; Nguyen, Anthony L
+>> <anthony.l.nguyen@intel.com>; Asbjørn Sloth Tønnesen <ast@fiberby.net>;
+>> Jakub Kicinski <kuba@kernel.org>; Paolo Abeni <pabeni@redhat.com>;
+>> David S. Miller <davem@davemloft.net>
+>> Subject: [Intel-wired-lan] [PATCH iwl-next] ice: flower: validate control flags
+>>
+>> This driver currently doesn't support any control flags.
+>>
+>> Use flow_rule_has_control_flags() to check for control flags, such as can be
+>> set through `tc flower ... ip_flags frag`.
+>>
+>> In case any control flags are masked, flow_rule_has_control_flags() sets a NL
+>> extended error message, and we return -EOPNOTSUPP.
+>>
+>> Only compile-tested.
+>>
+>> Signed-off-by: Asbjørn Sloth Tønnesen <ast@fiberby.net>
+>> ---
+>>   drivers/net/ethernet/intel/ice/ice_tc_lib.c | 4 ++++
+>>   1 file changed, 4 insertions(+)
+>>
+> 
+> Hi,
+> 
+> I have tested this patch in upstream kernel - 6.9.0-rc5+ and observing no effect while adding tc flow rule with control flags.
+> 'Not supported' error is not shown while adding the below tc rule.
+> 
+> [root@cbl-mariner ~]# tc qdisc add dev ens5f0np0 ingress
+> [root@cbl-mariner ~]#
+> [root@cbl-mariner ~]# tc filter add dev ens5f0np0 ingress protocol ip flower ip_flags frag/firstfrag action drop
 
-You can get this release via the git tree at:
+Thank you for testing!
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-stable-rt.git
+I think the issue you are observing, is because you are missing "skip_sw":
+tc filter add dev ens5f0np0 ingress protocol ip flower skip_sw \
+	ip_flags frag/firstfrag action drop
 
-  branch: v5.15-rt
-  Head SHA1: c5c5389dfcb81eda122e18fbfb3342483e8dab53
+Without skip_sw, then the hardware offload is opportunistic,
+and therefore the error in hardware offloading doesn't bubble
+through to user space.
 
-Or to build 5.15.158-rt76 directly, the following patches should be applied:
+Without skip_sw, you should still be able to observe a change in
+`tc filter show dev ens5f0np0 ingress`. Without the patch you
+should see "in_hw", and with it you should see "not_in_hw".
 
-  https://www.kernel.org/pub/linux/kernel/v5.x/linux-5.15.tar.xz
+With skip_sw, then the error in hardware offloading causes
+the tc command to fail, with the -EOPNOTSUPP error and
+associated extended Netlink error message.
 
-  https://www.kernel.org/pub/linux/kernel/v5.x/patch-5.15.158.xz
+Also see Ido's testing for mlxsw in this other thread:
+https://lore.kernel.org/netdev/ZiABPNMbOOYGiHCq@shredder/#t
 
-  https://www.kernel.org/pub/linux/kernel/projects/rt/5.15/patch-5.15.158-rt76.patch.xz
-
-
-Enjoy!
-Joseph Salisbury
+-- 
+Best regards
+Asbjørn Sloth Tønnesen
+Network Engineer
+Fiberby - AS42541
 
