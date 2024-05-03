@@ -1,217 +1,109 @@
-Return-Path: <linux-kernel+bounces-168006-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-168007-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 47B358BB222
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 20:06:18 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1F23F8BB225
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 20:06:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CA58E1F234B3
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 18:06:17 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4EF98B22AED
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 18:06:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52466159588;
-	Fri,  3 May 2024 18:03:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55F7D1586C0;
+	Fri,  3 May 2024 18:06:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="T2KjVBTL"
-Received: from mail-pj1-f41.google.com (mail-pj1-f41.google.com [209.85.216.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hr6+aV4S"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0BE31586C3;
-	Fri,  3 May 2024 18:03:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 914D715359B;
+	Fri,  3 May 2024 18:06:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714759420; cv=none; b=B4E2TAHFWrGM9wzVU+O89lnncmu44BD7WZd1JQg6V0B06c6bZQyornyh4oDL29Ll+u2s12lh/lnnPlqAeIqW7BRJDWhqc6n6Te6CrLW8SqP5zN9yE0aLi9SxE2DcJ71lXVg9F9IMl6Y3hzqPEa11W/VUrdPJDyO6XPVWvH97vlw=
+	t=1714759596; cv=none; b=RxUSkquVJoGNmhzrpAAWm31/aissZCJ/VFbe6F7274oD/AzmYz01JOcKGmIuFV6qnsluXB+4wtpSia7mEdmiS0SZF07DAzLHSXowh9fc1N34HY6VMB4kmDHTEA7Wfff+B0NYCQBeKmzyfEz+kmR9XKm4umRGW2VHz6amt1EYols=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714759420; c=relaxed/simple;
-	bh=ybBnohGJ7OCPoSTxetQTUQLupbXJ1oRN8/fNm62kyjs=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=DMTr/Bw4NRvCuMJMYbFW5Gr557LTWKX3VUeyHwKtwVrANHhaeTKbwwzBHQfSahyOhDh1yTn8mONM7gzS9iERzQu5RZTx9bgdjfz/sQX/x3VWcGXMkFKDnyJYrkWpgOHmqrYALcKMQ2xk07KxlGGzmxjTN6VCldZBYCkUiP+Ff8g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=T2KjVBTL; arc=none smtp.client-ip=209.85.216.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f41.google.com with SMTP id 98e67ed59e1d1-2b2bc7b37bcso3326512a91.2;
-        Fri, 03 May 2024 11:03:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714759417; x=1715364217; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=FJBP6tJNRliKd9d9ij7Yg8o1fHkwrBen/j2P4vsQ2FA=;
-        b=T2KjVBTL9ReFjdG0/E40kovejNXoegh5Vk1pQPJCBcf+bqBYJ8hlaC8BF8vecNEjnE
-         qPL0ocjPb4HZYwOGPtNfIrPhCNXqCbceZs2yUxFE3fiChRDKne4fhcYLnAdC/LT9FItQ
-         8X24X5PZYLXA6iYybafkB9RGEaWRh+USb3VxsX2N9snE4L0cx8SScovErk50lJO9a/Lh
-         mpqLf3gqYU5AR/ZayBP69rAclid7cKQ8/uExWEsnHzyzApUD2l25jqyMWQXG7dxyO+EQ
-         wjIZE2X465LLuEOM4mR20ATrneGmPKOQzM1ZEsKJpLEN42kRP65zT3vuE1z33AGrH5Jk
-         gLOQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714759417; x=1715364217;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=FJBP6tJNRliKd9d9ij7Yg8o1fHkwrBen/j2P4vsQ2FA=;
-        b=XU/578osZCzLa0VrdJd2oGmy48I3gTG2g3ypM7PBqFY4e0MJoGRtSQznWZ2vx+izuK
-         9r5BQevFm3z1Ohy4simTbBRC5QDHosODN2ieafqsbYPLzYJny8Ksh95h55r6tkwvxWIN
-         6Z/ySuVnVRLsJKXq+eSUTu5RDgoNhrRZMbWJ5VWRJl1dD2UCc10jf9mghTdrerBumvQu
-         yFpSek+CeVD1C+ksH84rw+BWfncejWN4uwc3MHrUPD7jVymmWNk0s/YnTjq0mzyIdI8Y
-         P5sjsmxXZca6dkJbzFOl20eg+DPt/yACG2BaUU3sXmclnSFVo5/+8H8TWpWFyeyb7P3W
-         YhFA==
-X-Forwarded-Encrypted: i=1; AJvYcCWyN46Sv/hZptaxwX1RDiQpNQgknnWo7FjNZ1qx/T6C4AYQAudVN8aL7+am6EiOmtgfeThc5fx2GaY+QzJ5HgWrBl+SiWK7n5garZ46JT/tAKzc/fF/2z56w3nAH8W0I8jriL2LStp7hX86PpyFaZDbkXNc5hx4rEQQMIyEro2WvCHPl+mdqKBkY3NQ2CndMIx57bwIu090NynqLEhIZsdODyIqtAzYKRV7enXUlH+dZC7ZVIdcz67Fx6Ge
-X-Gm-Message-State: AOJu0YyCuEdR4OLYsLQF+X5wvQDf+KKlNHTnI0nNWzWvQRQ83vkykWul
-	1JbVcj5IMikeP2o39exjcky1yCGc4xgxlien5ua9uLXs0ei3/TbvCmt/Zzf/G8iGckvyJ+ts0+W
-	EymyAMCoH22ehecvBgjtUcBJo0+s=
-X-Google-Smtp-Source: AGHT+IHGv2AfdGlWnLUJO3nFJ39n5eguagCUVgfAL/9b1Z8ZReC8l08QWuqFwk87+N9AlG6CBDQe1aHE2ylNhbCRhIw=
-X-Received: by 2002:a17:90b:158:b0:2a0:9b18:daf with SMTP id
- em24-20020a17090b015800b002a09b180dafmr4011307pjb.42.1714759417151; Fri, 03
- May 2024 11:03:37 -0700 (PDT)
+	s=arc-20240116; t=1714759596; c=relaxed/simple;
+	bh=eZHc3+HDuXQRkSr68soKZWf/U0hOwVb3v5Yz0qKASQg=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=S+RiCfShY5f+cfWYdfWDckyfb//e9GSLQAJNxhnOkli/4lNzFStxKrOu6ORmZswE8hL7sTu4UQEIHEl5ddKepM0v0VyLHJqg+H0AkDEM65IzbR5z5WGo+PxX0FeZPV2Z9clxj+D1i5Tqz7dq38BnSYqGofzoMoS1bjhH6C4zCK4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hr6+aV4S; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5A216C116B1;
+	Fri,  3 May 2024 18:06:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714759596;
+	bh=eZHc3+HDuXQRkSr68soKZWf/U0hOwVb3v5Yz0qKASQg=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=hr6+aV4S49DHFrNX7b8XaR0ZcqrILVkIeva6hMX92BrKJhaEtfus465cVAmKtH8L0
+	 9p+lbt8q60KgnTLIlBO28xLeL7iiHDt7jJJGqxbeydDaIt2ZQbI+QwCppPaA1Kpf/P
+	 2VOSRRuztTku7/K0K8PHRnJ8VK8Ugm9+sCV4oK5boXyt64KiYZvj/afQ9Va8V1PWt5
+	 PWpr18PSV6tdXlaAaurrnMrF2WrRjCqwCUGJbQZSW6nPxJHR6EkNlw7NXEU+W5oaX+
+	 gdE+qQYorwe4s3r9aamQG5HXkdkvD6vF3oraymiSxEOfT75cKS8MXp+KWlOTRQgEh6
+	 6JquVKs10WSoA==
+From: SeongJae Park <sj@kernel.org>
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: SeongJae Park <sj@kernel.org>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Shuah Khan <shuah@kernel.org>,
+	damon@lists.linux.dev,
+	linux-mm@kvack.org,
+	linux-doc@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 00/10] mm/damon: misc fixes and improvements
+Date: Fri,  3 May 2024 11:06:33 -0700
+Message-Id: <20240503180633.72917-1-sj@kernel.org>
+X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20240503180318.72798-1-sj@kernel.org>
+References: 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240502122313.1579719-1-jolsa@kernel.org> <CAEf4BzYxsRMx9M_AiLavTHFpndSmZqOM8QcYhDTbBviSpv1r+A@mail.gmail.com>
- <ZjPx0fncg-8brFBk@krava>
-In-Reply-To: <ZjPx0fncg-8brFBk@krava>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Fri, 3 May 2024 11:03:24 -0700
-Message-ID: <CAEf4Bzb-dM+464JvW96KuxwOTfRQA1pxZRWM+pA7AfSWtWwqZw@mail.gmail.com>
-Subject: Re: [PATCHv4 bpf-next 0/7] uprobe: uretprobe speed up
-To: Jiri Olsa <olsajiri@gmail.com>
-Cc: Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>, 
-	Oleg Nesterov <oleg@redhat.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, linux-kernel@vger.kernel.org, 
-	linux-trace-kernel@vger.kernel.org, linux-api@vger.kernel.org, 
-	linux-man@vger.kernel.org, x86@kernel.org, bpf@vger.kernel.org, 
-	Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>, 
-	John Fastabend <john.fastabend@gmail.com>, Peter Zijlstra <peterz@infradead.org>, 
-	Thomas Gleixner <tglx@linutronix.de>, "Borislav Petkov (AMD)" <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>, 
-	Andy Lutomirski <luto@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Thu, May 2, 2024 at 1:04=E2=80=AFPM Jiri Olsa <olsajiri@gmail.com> wrote=
-:
->
-> On Thu, May 02, 2024 at 09:43:02AM -0700, Andrii Nakryiko wrote:
-> > On Thu, May 2, 2024 at 5:23=E2=80=AFAM Jiri Olsa <jolsa@kernel.org> wro=
-te:
-> > >
-> > > hi,
-> > > as part of the effort on speeding up the uprobes [0] coming with
-> > > return uprobe optimization by using syscall instead of the trap
-> > > on the uretprobe trampoline.
-> > >
-> > > The speed up depends on instruction type that uprobe is installed
-> > > and depends on specific HW type, please check patch 1 for details.
-> > >
-> > > Patches 1-6 are based on bpf-next/master, but path 1 and 2 are
-> > > apply-able on linux-trace.git tree probes/for-next branch.
-> > > Patch 7 is based on man-pages master.
-> > >
-> > > v4 changes:
-> > >   - added acks [Oleg,Andrii,Masami]
-> > >   - reworded the man page and adding more info to NOTE section [Masam=
-i]
-> > >   - rewrote bpf tests not to use trace_pipe [Andrii]
-> > >   - cc-ed linux-man list
-> > >
-> > > Also available at:
-> > >   https://git.kernel.org/pub/scm/linux/kernel/git/jolsa/perf.git
-> > >   uretprobe_syscall
-> > >
-> >
-> > It looks great to me, thanks! Unfortunately BPF CI build is broken,
-> > probably due to some of the Makefile additions, please investigate and
-> > fix (or we'll need to fix something on BPF CI side), but it looks like
-> > you'll need another revision, unfortunately.
-> >
-> > pw-bot: cr
-> >
-> >   [0] https://github.com/kernel-patches/bpf/actions/runs/8923849088/job=
-/24509002194
->
-> yes, I think it's missing the 32-bit libc for uprobe_compat binary,
-> probably it needs to be added to github.com:libbpf/ci.git setup-build-env=
-/action.yml ?
-> hm but I'm not sure how to test it, need to check
+Andrew, please add DAMON selftests patchset[1] that I posted yesterday before
+this patchset.  Otherwise, patches would get conflicts.
 
-You can create a custom PR directly against Github repo
-(kernel-patches/bpf) and BPF CI will run all the tests on your custom
-code. This way you can iterate without spamming the mailing list.
+[1] https://lore.kernel.org/20240502172718.74166-1-sj@kernel.org
 
-But I'm just wondering if it's worth complicating setup just for
-testing this x32 compat mode. So maybe just dropping one of those
-patches would be better?
 
->
-> >
-> >
-> >
-> > But while we are at it.
-> >
-> > Masami, Oleg,
-> >
-> > What should be the logistics of landing this? Can/should we route this
-> > through the bpf-next tree, given there are lots of BPF-based
-> > selftests? Or you want to take this through
-> > linux-trace/probes/for-next? In the latter case, it's probably better
-> > to apply only the first two patches to probes/for-next and the rest
-> > should still go through the bpf-next tree (otherwise we are running
->
-> I think this was the plan, previously mentioned in here:
-> https://lore.kernel.org/bpf/20240423000943.478ccf1e735a63c6c1b4c66b@kerne=
-l.org/
->
+Thanks,
+SJ
 
-Ok, then we'll have to land this patch set as two separate ones. It's
-fine, let's figure out if you need to do anything for shadow stacks
-and try to land it soon.
+On Fri,  3 May 2024 11:03:08 -0700 SeongJae Park <sj@kernel.org> wrote:
 
-> > into conflicts in BPF selftests). Previously we were handling such
-> > cross-tree dependencies by creating a named branch or tag, and merging
-> > it into bpf-next (so that all SHAs are preserved). It's a bunch of
-> > extra work for everyone involved, so the simplest way would be to just
-> > land through bpf-next, of course. But let me know your preferences.
-> >
-> > Thanks!
-> >
-> > > thanks,
-> > > jirka
-> > >
-> > >
-> > > Notes to check list items in Documentation/process/adding-syscalls.rs=
-t:
-> > >
-> > > - System Call Alternatives
-> > >   New syscall seems like the best way in here, becase we need
-> >
-> > typo (thanks, Gmail): because
->
-> ok
->
-> >
-> > >   just to quickly enter kernel with no extra arguments processing,
-> > >   which we'd need to do if we decided to use another syscall.
-> > >
-> > > - Designing the API: Planning for Extension
-> > >   The uretprobe syscall is very specific and most likely won't be
-> > >   extended in the future.
-> > >
-> > >   At the moment it does not take any arguments and even if it does
-> > >   in future, it's allowed to be called only from trampoline prepared
-> > >   by kernel, so there'll be no broken user.
-> > >
-> > > - Designing the API: Other Considerations
-> > >   N/A because uretprobe syscall does not return reference to kernel
-> > >   object.
-> > >
-> > > - Proposing the API
-> > >   Wiring up of the uretprobe system call si in separate change,
-> >
-> > typo: is
->
-> ok, thanks
->
-> jirka
+> Add miscelleneous and non-urgent fixes and improvements for DAMON code,
+> selftests, and documents.
+> 
+> SeongJae Park (10):
+>   mm/damon/core: initialize ->esz_bp from damos_quota_init_priv()
+>   selftests/damon/_damon_sysfs: check errors from nr_schemes file reads
+>   selftests/damon/_damon_sysfs: find sysfs mount point from /proc/mounts
+>   selftests/damon/_damon_sysfs: use 'is' instead of '==' for 'None'
+>   selftests/damon: classify tests for functionalities and regressions
+>   Docs/admin-guide/mm/damon/usage: fix wrong example of DAMOS filter
+>     matching sysfs file
+>   Docs/admin-guide/mm/damon/usage: fix wrong schemes effective quota
+>     update command
+>   Docs/mm/damon/design: use a list for supported filters
+>   Docs/mm/damon/maintainer-profile: change the maintainer's timezone
+>     from PST to PT
+>   Docs/mm/damon/maintainer-profile: allow posting patches based on
+>     damon/next tree
+> 
+>  Documentation/admin-guide/mm/damon/usage.rst  |  6 +-
+>  Documentation/mm/damon/design.rst             | 46 +++++----
+>  Documentation/mm/damon/maintainer-profile.rst | 13 +--
+>  mm/damon/core.c                               |  1 +
+>  tools/testing/selftests/damon/Makefile        | 13 ++-
+>  tools/testing/selftests/damon/_damon_sysfs.py | 95 +++++++++++--------
+>  6 files changed, 100 insertions(+), 74 deletions(-)
+> 
+> 
+> base-commit: fc7314cb6b750187a1366e0bf9da4c3ca8cfd064
+> -- 
+> 2.39.2
 
