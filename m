@@ -1,116 +1,170 @@
-Return-Path: <linux-kernel+bounces-167296-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-167297-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5A7F28BA75F
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 09:07:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 76C438BA764
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 09:07:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8C2B61C21672
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 07:07:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A87431C21572
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 07:07:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B4731465B9;
-	Fri,  3 May 2024 07:07:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB5A5146A6F;
+	Fri,  3 May 2024 07:07:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sRTyb8do"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BMWrQKDq"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA29A1465A0;
-	Fri,  3 May 2024 07:07:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E80811465B5;
+	Fri,  3 May 2024 07:07:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714720042; cv=none; b=fGs/tvLa/tX+ikWLiGIVsvdpxpP8oFA25cGsOp0Tzlzbo1cUdtBW1pD9J426f4/OeH8ru9GXhNJMlDvsdlpoHrisLt1pCJSJYm1HpzeNaXkWz/icfVFQCSrfJYpYi0Go+lGzES0GxKehgqlI50cJeW/+VljS0JFH4Ljq70v42PA=
+	t=1714720059; cv=none; b=d5G1sA6mnhmlOn0vqIP/BSAEdQPRrPK3CwwBmlwlosrHHXsmMI9SeBw7YAwWXeYUpSBZdFyel9iqvfc1GZse53zl5qdU20n6VsXl1/Xq/Q67Uw3bjdut1OJJDRXfxXX1gAKPGn33F5ODJSvZ6EQt60midvz089WH50T8EJnfcz4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714720042; c=relaxed/simple;
-	bh=qxJUpV3gcX4/29yYO+koZ314peU2n/kHV9AlfZoyi5w=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=uDmYxK9tY0EE3U4vHTA48YIWMMHCZYYGhbT+zeZ7I9mL5IOC69DGiVyywooOPeDpkvRMoGht9bY/xM0ODbQukc4mYf2o3sf+7BX4bIHh0c2Uvos2QLFrvciqjBlmoYmaU5GNXEB50I1nYIvnGNp9UOOiElMUJgQxjhwEJyIP/O4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sRTyb8do; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D8E93C116B1;
-	Fri,  3 May 2024 07:07:20 +0000 (UTC)
+	s=arc-20240116; t=1714720059; c=relaxed/simple;
+	bh=c+Ap1aPRU+I78lPYKeW9DP8O6zCFSYbokug+4j7STuY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=G/zIIRVfajIsXRfxJNha5z161ppTA26QRWZ6KAqY9IrWnR0o4VgPZD2ZiIIknt8rZu90oBfYr/wIPoU565LixHMcAsOIRAZpyP3cTmTqeGQZtVr0kXyUrQYg+WSTGaOYws1OVs7gvvrEWAutairdSqSjZiN79tNFcbgw21mPqjs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BMWrQKDq; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B8F50C116B1;
+	Fri,  3 May 2024 07:07:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714720042;
-	bh=qxJUpV3gcX4/29yYO+koZ314peU2n/kHV9AlfZoyi5w=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=sRTyb8dogQOZnKoJuQbHnsuaxIkRgxDoZmBwsgYyXQsyLYKkt57pVLa7iEqIJ44yG
-	 K7LvKmqylnQSQfzAaX+uccVS91DLtR6uRMDbGrav0s+QQXsmOHfiMB7pGJiMrv+Btl
-	 aWQTZaSm77pk7P5cYvj8oYof96lxwl9yZU4YIlk2bX9j/URqQmr+YO9lZ+vHO4Snxg
-	 W2Z0wzqdYB48whz22KMOoyu2VnnocvXskeH57lFaEtyfzks2tOBYWDxtHHUTbyHVTt
-	 kor8i4kqqg9MJmGNagrNKcM1K/PxLzeZ9SHMgGm9FvqGpaje38IXh7CDd0rIX90YVP
-	 Aa70vh6LNaRZQ==
-Date: Fri, 3 May 2024 08:07:17 +0100
-From: Lee Jones <lee@kernel.org>
-To: FLAVIO SULIGOI <f.suligoi@asem.it>
-Cc: Daniel Thompson <daniel.thompson@linaro.org>,
-	Jingoo Han <jingoohan1@gmail.com>, Helge Deller <deller@gmx.de>,
-	Dan Carpenter <dan.carpenter@linaro.org>,
-	"dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-	"linux-fbdev@vger.kernel.org" <linux-fbdev@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: EXTERNAL: Re: (subset) [PATCH v1 1/1] backlight: mp3309c: fix
- leds flickering in pwm mode
-Message-ID: <20240503070717.GB1227636@google.com>
-References: <20240417153105.1794134-1-f.suligoi@asem.it>
- <20240417153105.1794134-2-f.suligoi@asem.it>
- <171466849494.1206441.17324969195592920195.b4-ty@kernel.org>
- <20240502164853.GB1200070@google.com>
- <PH0PR22MB37891FE6DC843E8EF05BDF7DFA1F2@PH0PR22MB3789.namprd22.prod.outlook.com>
+	s=k20201202; t=1714720058;
+	bh=c+Ap1aPRU+I78lPYKeW9DP8O6zCFSYbokug+4j7STuY=;
+	h=Date:Subject:To:References:From:In-Reply-To:From;
+	b=BMWrQKDqv+OytmuhDgxXsXNGGTUvo1iWQ8UOfCHo5NCWSl+7ivbrFm6FOnHJytz1W
+	 J/hTktnZgNJqc+TOlmd9qlry9rXtUw69yTwnyhAbZ/RTnw+3ojz5/LjxsDov+yFo1d
+	 X8scudMaowgH0m4gC0jJ8KyjnxfH9bOwjENLDZyhXdrW6gHEb8rVHToF6kN81ipunN
+	 o5MvcEBZZFiU8r1hCbvCgud53Q0I6s8dCcvEH1nmiZn02tZpCIAcMFvNzGIP0PafUf
+	 ssl68b/3YQK7T3CbVUZs/h1cp5xSV4YjsGDZ+BCxCFP5JesRWTGtgFJhrRW9u3JUW9
+	 h2q5LpEsiYE9w==
+Message-ID: <95bb10cf-7707-43e2-931c-d0aa6431bab3@kernel.org>
+Date: Fri, 3 May 2024 09:07:33 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <PH0PR22MB37891FE6DC843E8EF05BDF7DFA1F2@PH0PR22MB3789.namprd22.prod.outlook.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/2] dt-bindings: touchscreen: convert elan,ektf2127 to
+ json-schema
+To: Andreas Kemnade <andreas@kemnade.info>, dmitry.torokhov@gmail.com,
+ robh@kernel.org, krzk+dt@kernel.org, conor+dt@kernel.org,
+ hdegoede@redhat.com, andy.shevchenko@gmail.com,
+ u.kleine-koenig@pengutronix.de, siebren.vroegindeweij@hotmail.com,
+ linux-input@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240502185819.788716-1-andreas@kemnade.info>
+ <20240502185819.788716-2-andreas@kemnade.info>
+From: Krzysztof Kozlowski <krzk@kernel.org>
+Content-Language: en-US
+Autocrypt: addr=krzk@kernel.org; keydata=
+ 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 fv0=
+In-Reply-To: <20240502185819.788716-2-andreas@kemnade.info>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Fri, 03 May 2024, FLAVIO SULIGOI wrote:
+On 02/05/2024 20:58, Andreas Kemnade wrote:
+> Convert EKTF2127 infrared touchscreen controller binding to DT schema
+> and add ektf2232 compatible.
 
-> Hi Lee,
+This should be two commits.
+
 > 
-> ...
+> Signed-off-by: Andreas Kemnade <andreas@kemnade.info>
+> ---
+>  .../bindings/input/touchscreen/ektf2127.txt   | 25 --------
+>  .../input/touchscreen/elan,ektf2127.yaml      | 59 +++++++++++++++++++
+>  2 files changed, 59 insertions(+), 25 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/input/touchscreen/ektf2127.txt
+>  create mode 100644 Documentation/devicetree/bindings/input/touchscreen/elan,ektf2127.yaml
 > 
-> > Subject: EXTERNAL: Re: (subset) [PATCH v1 1/1] backlight: mp3309c: fix
-> > leds flickering in pwm mode
-> > 
-> > [Use caution with links & attachments]
-> > 
-> > 
-> > 
-> > On Thu, 02 May 2024, Lee Jones wrote:
-> > 
-> > > On Wed, 17 Apr 2024 17:31:05 +0200, Flavio Suligoi wrote:
-> > > > The mp3309 has two configuration registers, named according to their
-> > > > address (0x00 and 0x01).
-> > > > In the second register (0x01), the bit DIMS (Dimming Mode Select)
-> > > > must be always 0 (zero), in both analog (via i2c commands) and pwm
-> > > > dimming mode.
-> > > >
-> > > > In the initial driver version, the DIMS bit was set in pwm mode and
-> > > > reset in analog mode.
-> > > > But if the DIMS bit is set in pwm dimming mode and other devices are
-> > > > connected on the same i2c bus, every i2c commands on the bus
-> > > > generates a flickering on the LEDs powered by the mp3309c.
-> > > >
-> > > > [...]
-> > >
-> > > Applied, thanks!
-> > >
-> > > [1/1] backlight: mp3309c: fix leds flickering in pwm mode
-> > >       commit: ce60cddc2abf61902dfca71d630624db95315124
-> > 
-> > Applied, but in future it's; I2C, PWM and LED, thanks.
-> 
-> Sorry for my question, but do you mean that I also have to add the I2C,
-> PWM and LED mailing lists in my messages related to the mp33309c patches?
 
-Just use proper capitalisation when you abbreviate the names these
-subsystems please.
+..
 
--- 
-Lee Jones [李琼斯]
+> +allOf:
+> +  - $ref: touchscreen.yaml#
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - elan,ektf2127
+> +      - elan,ektf2132
+> +      - elan,ektf2232
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +
+> +  power-gpios:
+> +    maxItems: 1
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - interrupts
+> +  - power-gpios
+> +
+> +unevaluatedProperties: false
+> +
+> +
+
+Just one blank line.
+
+> +examples:
+> +  - |
+> +    #include <dt-bindings/gpio/gpio.h>
+> +    #include <dt-bindings/interrupt-controller/irq.h>
+> +
+
+
+Best regards,
+Krzysztof
+
 
