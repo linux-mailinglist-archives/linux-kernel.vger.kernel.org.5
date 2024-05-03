@@ -1,86 +1,143 @@
-Return-Path: <linux-kernel+bounces-167546-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-167548-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8CBD28BAB1F
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 12:57:52 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A5C208BAB25
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 12:58:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 282731F219EB
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 10:57:52 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 895301C2221E
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 10:58:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12D7E15216F;
-	Fri,  3 May 2024 10:57:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7EC6E152519;
+	Fri,  3 May 2024 10:58:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tacbuA+V"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=digikod.net header.i=@digikod.net header.b="ViuqFlyT"
+Received: from smtp-190b.mail.infomaniak.ch (smtp-190b.mail.infomaniak.ch [185.125.25.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 528E017758;
-	Fri,  3 May 2024 10:57:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 304861514D5;
+	Fri,  3 May 2024 10:58:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.125.25.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714733863; cv=none; b=KiQq8WnzIiElHdgyjdiw0ZNryP67z8tfvk3uMjUQs//nZRj9gbbTHJPe5LusFUaNNHuKRWV5hIeA8VKq7TuxlrrXRY6S69GcGsjkvxRAkK7kmmbhWVKlzpga9rS+OyREwSguPn8cvsTaN65H9biYbwHGpZMNQrVmYLYCUKn4jV0=
+	t=1714733916; cv=none; b=krDegRzwg+QW4Whx+ezg4DBu5evzGB8UgRA7itg3BBMqGDe3i0LkJ0w+jweLSGhSdVwDd4sHEmrgefIuyNc7OTbMl1JhUMHNToQIdGwGI8GKLqsXYlMJ46+F1/3hWj4gyqyI9DKEQXT7lDN/aJEgdg2VeOnkK4wXxwj8BRjSACA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714733863; c=relaxed/simple;
-	bh=P5CKWZ2xCu+HyLA9GJYxKRvnqvJqVTPDARsJ0/n8HOk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=fJoHN8URsQDZrs5KiHEkbeHUwqZ2kNC2pfbrR7oNH0Rm8hIgGmymvKiaV/5Fhcq/w7Ul3+cpX0hfpVIItrqSqgZKIsU4pPn3G9F/TZmNaXXD6eblBogjJYTaMk0mnm6iX9jml/YEfJPEN5iFMlJigT+AoQkZGtaa7voHobkrsE8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tacbuA+V; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C3443C116B1;
-	Fri,  3 May 2024 10:57:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714733862;
-	bh=P5CKWZ2xCu+HyLA9GJYxKRvnqvJqVTPDARsJ0/n8HOk=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=tacbuA+VyWNAhuawI+diZSSbU8d/A0IAarPODCRabmX+qWRJNz4ZoV6MkwWZqez73
-	 yoXbOqWyx0/xZxtWpOSyiCe7oNP33ufjaM5oEj1pOatce71qXAyxm5wHRGJ6uWe2II
-	 59oCR3/Cz5KQur9BeWfk9kMk3/7xLTJ+hk8PDcRqMQ93idmy8bMd59YCtQdXTCqC9B
-	 twWS1Q6ZQ/KnL5PBd/guYHPgsNAdNPOXRzKm3qEvmIMeNnv9amxcrOfr4NTXm83ZVM
-	 jM06SnQmSeb9J4eBWm44ykxgNIQ+3VKHVlL5qdfFLU04vgmbF5h/xADy0JRZRFphAt
-	 8bZn+QK8jNIYA==
-Received: from johan by xi.lan with local (Exim 4.97.1)
-	(envelope-from <johan@kernel.org>)
-	id 1s2qbo-000000006NE-0kC8;
-	Fri, 03 May 2024 12:57:44 +0200
-Date: Fri, 3 May 2024 12:57:44 +0200
-From: Johan Hovold <johan@kernel.org>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 00/52] USB: store owner from modules with
- usb_serial_register_drivers()
-Message-ID: <ZjTDKKiYhU7zC9Sb@hovoldconsulting.com>
-References: <20240328-module-owner-usb-serial-v1-0-bc46c9ffbf56@linaro.org>
- <ZhzrPA1wP7bER6Pi@hovoldconsulting.com>
- <ee4daf22-8979-45f7-8e20-3cafd6c3e8f3@linaro.org>
+	s=arc-20240116; t=1714733916; c=relaxed/simple;
+	bh=fdS7g9OZWSVyYiFzvx5Vjx/iMPNyksye/pOut54QdLw=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=gnw2guh2CRxLH7cB9tVyb7XJbe+x0tW6S2nZ3xiXVYVMYJ3z48oXIqaK7OSJlehq01XgV2mtN044f7oZ50Faom7MlhEhOzKIDdDUmzMoBNJzu8klL9M9NoLN/budAcIILxfu3ypUJmxTIxtkDTyJxjKQXn/qu68VIjZsi1oVlcI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=digikod.net; spf=pass smtp.mailfrom=digikod.net; dkim=pass (1024-bit key) header.d=digikod.net header.i=@digikod.net header.b=ViuqFlyT; arc=none smtp.client-ip=185.125.25.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=digikod.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=digikod.net
+Received: from smtp-4-0001.mail.infomaniak.ch (smtp-4-0001.mail.infomaniak.ch [10.7.10.108])
+	by smtp-4-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4VW7870Cg8z3j0;
+	Fri,  3 May 2024 12:58:31 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=digikod.net;
+	s=20191114; t=1714733910;
+	bh=fdS7g9OZWSVyYiFzvx5Vjx/iMPNyksye/pOut54QdLw=;
+	h=From:To:Cc:Subject:Date:From;
+	b=ViuqFlyT6F0/nXHVXXY4zPieTYIyYqudSQ5VPCUi1FOX7dhb3F8Wz0ckvP+mX6QjE
+	 boQ4yyv1n/KEau6gcg7J1BjEJR/Jm+ariUYom6vNO+T1gIXSxE4T8AnBAxi+vslLZI
+	 xqIh+ae8jpIikO37aptyiLwq2XU/AFzn+Ht8LIJs=
+Received: from unknown by smtp-4-0001.mail.infomaniak.ch (Postfix) with ESMTPA id 4VW7860V4rzYJW;
+	Fri,  3 May 2024 12:58:30 +0200 (CEST)
+From: =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>
+To: Christian Brauner <brauner@kernel.org>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Kees Cook <keescook@chromium.org>,
+	Mark Brown <broonie@kernel.org>,
+	Sean Christopherson <seanjc@google.com>,
+	Shengyu Li <shengyu.li.evgeny@gmail.com>,
+	Shuah Khan <shuah@kernel.org>
+Cc: =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>,
+	"David S . Miller" <davem@davemloft.net>,
+	=?UTF-8?q?G=C3=BCnther=20Noack?= <gnoack@google.com>,
+	Will Drewry <wad@chromium.org>,
+	kernel test robot <oliver.sang@intel.com>,
+	kvm@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	netdev@vger.kernel.org
+Subject: [PATCH v5 00/10] Fix Kselftest's vfork() side effects
+Date: Fri,  3 May 2024 12:58:10 +0200
+Message-ID: <20240503105820.300927-1-mic@digikod.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ee4daf22-8979-45f7-8e20-3cafd6c3e8f3@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Infomaniak-Routing: alpha
 
-On Fri, May 03, 2024 at 11:49:53AM +0200, Krzysztof Kozlowski wrote:
-> On 15/04/2024 10:54, Johan Hovold wrote:
+Hi,
 
-> > No, sending 51 trivial one-line cleanup patches like this is not
-> > acceptable.
-> > 
-> > This is just one logical change so squash them all into one patch for
-> > the entire subsystem (i.e. this series should contain two patches).
-> 
-> Sure. This is not exactly one logical change, but two, because the first
-> patch might fix some drivers which forgot to set the owner (even if I
-> did not identify them).
+This fifth series fixes _metadata reset and fixes the last patch to
+handle code set with direct calls to _exit().
 
-Sorry if this wasn't clear enough, but I was referring to the last 51
-one-line patches being one logical change (and hence the series should
-contain two patches as I mentioned).
+As reported by Kernel Test Robot [1], some pidfd tests fail.  This is
+due to the use of vfork() which introduced some side effects.
+Similarly, while making it more generic, a previous commit made some
+Landlock file system tests flaky, and subject to the host's file system
+mount configuration.
 
-Johan
+This series fixes all these side effects by replacing vfork() with
+clone3() and CLONE_VFORK, which is cleaner (no arbitrary shared memory)
+and makes the Kselftest framework more robust.
+
+I tried different approaches and I found this one to be the cleaner and
+less invasive for current test cases.
+
+I successfully ran the following tests (using TEST_F and
+fork/clone/clone3, and KVM_ONE_VCPU_TEST) with this series:
+- kvm:fix_hypercall_test
+- kvm:sync_regs_test
+- kvm:userspace_msr_exit_test
+- kvm:vmx_pmu_caps_test
+- landlock:fs_test
+- landlock:net_test
+- landlock:ptrace_test
+- move_mount_set_group:move_mount_set_group_test
+- net/af_unix:scm_pidfd
+- perf_events:remove_on_exec
+- pidfd:pidfd_getfd_test
+- pidfd:pidfd_setns_test
+- seccomp:seccomp_bpf
+- user_events:abi_test
+
+[1] https://lore.kernel.org/oe-lkp/202403291015.1fcfa957-oliver.sang@intel.com
+
+Previous versions:
+v1: https://lore.kernel.org/r/20240426172252.1862930-1-mic@digikod.net
+v2: https://lore.kernel.org/r/20240429130931.2394118-1-mic@digikod.net
+v3: https://lore.kernel.org/r/20240429191911.2552580-1-mic@digikod.net
+v4: https://lore.kernel.org/r/20240502210926.145539-1-mic@digikod.net
+
+Regards,
+
+Mickaël Salaün (10):
+  selftests/pidfd: Fix config for pidfd_setns_test
+  selftests/landlock: Fix FS tests when run on a private mount point
+  selftests/harness: Fix fixture teardown
+  selftests/harness: Fix interleaved scheduling leading to race
+    conditions
+  selftests/landlock: Do not allocate memory in fixture data
+  selftests/harness: Constify fixture variants
+  selftests/pidfd: Fix wrong expectation
+  selftests/harness: Share _metadata between forked processes
+  selftests/harness: Fix vfork() side effects
+  selftests/harness: Handle TEST_F()'s explicit exit codes
+
+ tools/testing/selftests/kselftest_harness.h   | 122 +++++++++++++-----
+ tools/testing/selftests/landlock/fs_test.c    |  83 +++++++-----
+ tools/testing/selftests/pidfd/config          |   2 +
+ .../selftests/pidfd/pidfd_setns_test.c        |   2 +-
+ 4 files changed, 143 insertions(+), 66 deletions(-)
+
+
+base-commit: e67572cd2204894179d89bd7b984072f19313b03
+-- 
+2.45.0
+
 
