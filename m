@@ -1,139 +1,150 @@
-Return-Path: <linux-kernel+bounces-168434-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-168435-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 162608BB88D
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 May 2024 01:55:24 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 290CF8BB890
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 May 2024 01:59:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3ABDEB2187F
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 23:55:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B6A641F2358A
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 23:59:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A410985639;
-	Fri,  3 May 2024 23:55:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0111A84E05;
+	Fri,  3 May 2024 23:59:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="ZGjV9bOJ"
-Received: from mail-lj1-f181.google.com (mail-lj1-f181.google.com [209.85.208.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ahp/jcO7"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FE9A5CDE6
-	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 23:55:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 411275CDE6
+	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 23:59:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714780506; cv=none; b=T14TVGGqvlBSGkDn3EwHtaKzRMAWYL/5AI+FV4UYeHCSyPPJbwCw0sJZHJH9eO6yqdfhtDnCNhJo89JzZwMhbWwZLNEADRT9thTnbf8W3YNy+GWBESXs3B2x2xbGsw1kkRWovxVcp65GhYmqNEeRLGHyZmp83lgadKHZwAcBwTo=
+	t=1714780753; cv=none; b=d3RsFXf+zKmdEZlRyY/bq9CqS6Hen+XmxSWKBuSYdS9Xxcq7gHED6ebJT0ipBtLuHVqk2+ymf1hyXKyM9kMRSHDOf8gtmCvi6XnD50c9gwhbjUG72DTaXJMNMisoPNutZpL1IN4LKvUrFkSbUF6B+i+6ouh1rP9xELzy9KNJM7E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714780506; c=relaxed/simple;
-	bh=tf8gPRKnHuj1S8RN72oCYha0zRiI+Zqb52T37Eym2SU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=W0NqODA3tS9RS8eIsy7/vRgcUS3hB6xulrCuduglM+4rOOjdmV0HJZ/LgOZfmMTYcNo0xKfNnNsrIWAZHLef7ljM17VZmmOUjxml7rtmjbozTkzofQGk/+cgAIh7y7W0M8hMDMxyKHKtRuOBXqS6fMAJyUENTmO3y46h3Df5vaI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=ZGjV9bOJ; arc=none smtp.client-ip=209.85.208.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-lj1-f181.google.com with SMTP id 38308e7fff4ca-2dfb4ea2bbfso2358661fa.2
-        for <linux-kernel@vger.kernel.org>; Fri, 03 May 2024 16:55:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1714780503; x=1715385303; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=NxPhlO3npeMKaw71dXY38r1VkXmdKnYRPE7+RntnY6E=;
-        b=ZGjV9bOJtsx4vpIPOC+jl/xOHEhJ7ml4JgIzgS1AsIh9S5KtVKfqLKs5lLGdXsqdqf
-         rWkxV9dUaT0DUgXtI/DlRGk7Nc6D3XFWtZVWDF3oll1MHPi3o8BiJMn9wp/AQUXXjouJ
-         RyC5Ror5S88Byqw9QIUO/60WEA9J8Zz0r3ca4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714780503; x=1715385303;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=NxPhlO3npeMKaw71dXY38r1VkXmdKnYRPE7+RntnY6E=;
-        b=pH3TbkoomEEXDC/HY4peJulQuL9/bEb82Od1nQmG0MRns/rmqM4Q4n6wyWilXll8ve
-         fJqrobWQFvNTmatmu1OMzEvfsGwatL0dUOlNLor4EWqsN1WjMy59GdNQXGdowc76WYxa
-         nwtsl3uKVlckcfKgUvrk2JCxMEZ7xayijoR8vmhAAJUT1vHl5PeXG97LvdoKewgZX/nD
-         UQfApEuUFKKsOYFoUL7LW0ew6az/jBgdWLsPtZE7pnJbWc3pmXrUahTL8rTWrv1k8lOB
-         QJEqzOUfpqBRTLxEExft74X/ItajZJpVE/k0pSgqbXP/X+FB82GuXAnHTrLZ9irF+IHP
-         5bXw==
-X-Forwarded-Encrypted: i=1; AJvYcCVCbNC2e4YYhwFHsTZQJ54P1t4x5sdacnMmbJFlenB0Y7UcHKU0VI+qsDqmkvkwUhOHacvFJL+RnI/J5J2NQ5W2A4v7jtLVaiXmMBqE
-X-Gm-Message-State: AOJu0YybScNfCBsSRrcP4FvEO04f8+b5Clr2572pmYD0gXqjroSr6y5B
-	z01Db9BS9zspPVz/ww22ILk4BgFrkGTv3fli75Z84mT/2BP/M7T640pV7u5nfm/JXtGbpFRCcac
-	+0s5d9w==
-X-Google-Smtp-Source: AGHT+IEwaCD6OLDQvfYNGEc61mDX9qkuPQrhiK+i7ZlsRKgVXhIXMk3g6RkT2wuC6XkUmv2NvUzVRg==
-X-Received: by 2002:a05:6512:3f1a:b0:51e:1264:8435 with SMTP id y26-20020a0565123f1a00b0051e12648435mr3202897lfa.27.1714780503124;
-        Fri, 03 May 2024 16:55:03 -0700 (PDT)
-Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com. [209.85.218.49])
-        by smtp.gmail.com with ESMTPSA id jt21-20020a170906ca1500b00a526e6f5cbdsm2261694ejb.47.2024.05.03.16.55.02
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 03 May 2024 16:55:02 -0700 (PDT)
-Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-a59a387fbc9so29679766b.1
-        for <linux-kernel@vger.kernel.org>; Fri, 03 May 2024 16:55:02 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCW3YQayQosnJLQ5hA71BScfNZqNuoCkpM8R31hWrInDbt3yD2HmxGyMVrBlQQv/8l4mqdueojNFGR6p1AKJJ79Hp8pXmwAAKbvx2at/
-X-Received: by 2002:a17:906:3e4e:b0:a59:a64c:9a26 with SMTP id
- t14-20020a1709063e4e00b00a59a64c9a26mr202788eji.23.1714780501707; Fri, 03 May
- 2024 16:55:01 -0700 (PDT)
+	s=arc-20240116; t=1714780753; c=relaxed/simple;
+	bh=NL0WiPs/jhkLItIYOWa0RRUZ6Qr80md6Wk/uzeebyAw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=gIeE/lxJ1dl39xBGbNVBXi9FHpgVtBWfuDyDq38Hh6WnY/cXR2lj1RQZBgKD6gwUvG7AWF74zqWMnro56id9T8dDoj+1n389viQgSE+/XitesnjzLhmATZyQeCJvlatjTm1+QOnUObqXvHtG9208/cABnWxvcRxfUVoUiO6Ymfo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ahp/jcO7; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A845AC116B1;
+	Fri,  3 May 2024 23:59:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714780752;
+	bh=NL0WiPs/jhkLItIYOWa0RRUZ6Qr80md6Wk/uzeebyAw=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=Ahp/jcO73gw1ELQN0e+CLvHEDzQSMCIFEh5UocYY763udZwbUA7gxpE2WJZBWjJiK
+	 U2/+knE9m7VyP0KDxaMgjb4j+D3z2qFtU92srNhrSDPPFucrrmlkCNbWnyDy2V/r86
+	 FC6eUnHf1STvqN5bFtZs6l1/E5uAaZVHYpPDtuusPFH82pSG+BsM2osezwyyv75hSD
+	 Xtf5z3kbA+DLbNFHmAYnWW9xUCGNI5SB8EXDeVUEEmmnbXb2yugtUlDHK2NonmTS96
+	 wJ0oA6CAbPowYxmY/KR2rCaC279d49433XUPQ+lFq67DU31PLHQs5AAS04XxvjCtkH
+	 EpLcfHgB6DsoQ==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id 46210CE09B5; Fri,  3 May 2024 16:59:12 -0700 (PDT)
+Date: Fri, 3 May 2024 16:59:12 -0700
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Boqun Feng <boqun.feng@gmail.com>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>,
+	Marco Elver <elver@google.com>,
+	Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Dmitry Vyukov <dvyukov@google.com>,
+	syzbot <syzbot+b7c3ba8cdc2f6cf83c21@syzkaller.appspotmail.com>,
+	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+	Nathan Chancellor <nathan@kernel.org>,
+	Arnd Bergmann <arnd@kernel.org>, Al Viro <viro@zeniv.linux.org.uk>,
+	Jiri Slaby <jirislaby@kernel.org>
+Subject: Re: [PATCH v3] tty: tty_io: remove hung_up_tty_fops
+Message-ID: <2beaba9f-6f83-4a7c-8835-fe5fe88a006c@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <CAHk-=whnQXNVwuf42Sh2ngBGhBqbJjUfq5ux6e7Si_XSPAt05A@mail.gmail.com>
+ <d4de136e-c4e0-45c2-b33e-9a819cb3a791@paulmck-laptop>
+ <CAHk-=wi3iondeh_9V2g3Qz5oHTRjLsOpoy83hb58MVh=nRZe0A@mail.gmail.com>
+ <892324fc-9b75-4e8a-b3b6-cf3c5b4c3506@paulmck-laptop>
+ <CANpmjNOY=Qpm3hBu-eN4Xk8n-2VXQRvcQ3_PfwPwNw9MmC8ctw@mail.gmail.com>
+ <CAHk-=whTakjVGgBC5OtoZ5Foo=hd4-g+NZ79nkMDVj6Ug7ARKQ@mail.gmail.com>
+ <CAHk-=wiGzmJXZwHxCE6P0jVBqU4gHEm=zcfj3v+zM_S_9RF4_Q@mail.gmail.com>
+ <1c886023-ae61-46ba-bb3c-b460c30de937@paulmck-laptop>
+ <b3b81374-a19d-4bf5-abb3-15e48c72f01a@paulmck-laptop>
+ <ZjPBPWSSdE_VcH_V@boqun-archlinux>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <202405031110.6F47982593@keescook> <20240503211129.679762-2-torvalds@linux-foundation.org>
- <20240503212428.GY2118490@ZenIV> <CAHk-=wjpsTEkHgo1uev3xGJ2bQXYShaRf3GPEqDWNgUuKx0JFw@mail.gmail.com>
- <20240503214531.GB2118490@ZenIV> <CAHk-=wgC+QpveKCJpeqsaORu7htoNNKA8mp+d9mvJEXmSKjhbw@mail.gmail.com>
- <20240503220145.GD2118490@ZenIV> <20240503220744.GE2118490@ZenIV>
- <CAHk-=whULchE1i5LA2Fa=ZndSAzPXGWh_e5+a=YV3qT1BEST7w@mail.gmail.com> <20240503233900.GG2118490@ZenIV>
-In-Reply-To: <20240503233900.GG2118490@ZenIV>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Fri, 3 May 2024 16:54:45 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wjjjsm=f+ZJRe3dXebBQS8PzpYmHjAJnk-9-2FAj3-QoQ@mail.gmail.com>
-Message-ID: <CAHk-=wjjjsm=f+ZJRe3dXebBQS8PzpYmHjAJnk-9-2FAj3-QoQ@mail.gmail.com>
-Subject: Re: [PATCH] epoll: try to be a _bit_ better about file lifetimes
-To: Al Viro <viro@zeniv.linux.org.uk>
-Cc: keescook@chromium.org, axboe@kernel.dk, brauner@kernel.org, 
-	christian.koenig@amd.com, dri-devel@lists.freedesktop.org, 
-	io-uring@vger.kernel.org, jack@suse.cz, laura@labbott.name, 
-	linaro-mm-sig@lists.linaro.org, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-media@vger.kernel.org, 
-	minhquangbui99@gmail.com, sumit.semwal@linaro.org, 
-	syzbot+045b454ab35fd82a35fb@syzkaller.appspotmail.com, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZjPBPWSSdE_VcH_V@boqun-archlinux>
 
-On Fri, 3 May 2024 at 16:39, Al Viro <viro@zeniv.linux.org.uk> wrote:
->
-> *IF* those files are on purely internal filesystem, that's probably
-> OK; do that with something on something mountable (char device,
-> sysfs file, etc.) and you have a problem with filesystem staying
-> busy.
+On Thu, May 02, 2024 at 09:37:17AM -0700, Boqun Feng wrote:
+> On Wed, May 01, 2024 at 03:32:34PM -0700, Paul E. McKenney wrote:
+> > On Wed, May 01, 2024 at 02:49:17PM -0700, Paul E. McKenney wrote:
+> > > On Wed, May 01, 2024 at 02:20:35PM -0700, Linus Torvalds wrote:
+> > > > On Wed, 1 May 2024 at 14:06, Linus Torvalds
+> > > > <torvalds@linux-foundation.org> wrote:
+> > 
+> > [ . . . ]
+> > 
+> > > > I'd love to see an extension where "const volatile" basically means
+> > > > exactly that: the volatile tells the compiler that it can't
+> > > > rematerialize by doing the load multiple times, but the "const" would
+> > > > say that if the compiler sees two or more accesses, it can still CSE
+> > > > them.
+> > 
+> > Except that "const volatile" already means "you cannot write to it,
+> > and reads will not be fused".  :-/
+> > 
+> > > No promises, other than that if we don't ask, they won't say "yes".
+> > > 
+> > > Let me see what can be done.
+> > 
+> > >From a semantics viewpoint __atomic_load_n(&x, __ATOMIC_RELAXED) would
+> > work for loading from x.  The compilers that I tried currently do not
+> > fuse loads, but they are allowed to do so.
+> 
+> Yeah, I wonder the same, from what I read, "const volatile" seems to
+> be just a (non-volatile) relaxed atomic load.
 
-Yeah, I agree, it's a bit annoying in general. That said, it's easy to
-do: stash a file descriptor in a unix domain socket, and that's
-basically exactly what you have: a random reference to a 'struct file'
-that will stay around for as long as you just keep that socket around,
-long after the "real" file descriptor has been closed, and entirely
-separately from it.
+Hmmm...  Maybe something like this very lightly tested patch?
 
-And yes, that's exactly why unix domain socket transfers have caused
-so many problems over the years, with both refcount overflows and
-nasty garbage collection issues.
+(I did not immediately see a use case for WRITE_ONCE_MERGEABLE(),
+but that is likely a failure of imagination on my part.)
 
-So randomly taking references to file descriptors certainly isn't new.
+------------------------------------------------------------------------
 
-In fact, it's so common that I find the epoll pattern annoying, in
-that it does something special and *not* taking a ref - and it does
-that special thing to *other* ("innocent") file descriptors. Yes,
-dma-buf is a bit like those unix domain sockets in that it can keep
-random references alive for random times, but at least it does it just
-to its own file descriptors, not random other targets.
-
-So the dmabuf thing is very much a "I'm a special file that describes
-a dma buffer", and shouldn't really affect anything outside of active
-dmabuf uses (which admittedly is a large portion of the GPU drivers,
-and has been expanding from there...). I
-
-So the reason I'm annoyed at epoll in this case is that I think epoll
-triggered the bug in some entirely innocent subsystem. dma-buf is
-doing something differently odd, yes, but at least it's odd in a "I'm
-a specialized thing" sense, not in some "I screw over others" sense.
-
-             Linus
+diff --git a/include/asm-generic/rwonce.h b/include/asm-generic/rwonce.h
+index 8d0a6280e9824..55e87a8aec56f 100644
+--- a/include/asm-generic/rwonce.h
++++ b/include/asm-generic/rwonce.h
+@@ -79,6 +79,15 @@ unsigned long __read_once_word_nocheck(const void *addr)
+ 	(typeof(x))__read_once_word_nocheck(&(x));			\
+ })
+ 
++/*
++ * Use READ_ONCE_MERGEABLE() and WRITE_ONCE_MERGEABLE() when you need to
++ * avoid duplicating or tearing a load or store, respectively, but when
++ * it is OK to merge nearby loads and stores.  It must also be OK for a
++ * later nearby load to take its value directly from a prior store.
++ */
++#define READ_ONCE_MERGEABLE(x) __atomic_load_n(&x, __ATOMIC_RELAXED)
++#define WRITE_ONCE_MERGEABLE(x, val) __atomic_store_n(&x, val, __ATOMIC_RELAXED)
++
+ static __no_kasan_or_inline
+ unsigned long read_word_at_a_time(const void *addr)
+ {
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index d5507ac1bbf19..b37c0dbde8cde 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -459,7 +459,7 @@ static void adjust_jiffies_till_sched_qs(void)
+ 		return;
+ 	}
+ 	/* Otherwise, set to third fqs scan, but bound below on large system. */
+-	j = READ_ONCE(jiffies_till_first_fqs) +
++	j = READ_ONCE_MERGEABLE(jiffies_till_first_fqs) +
+ 		      2 * READ_ONCE(jiffies_till_next_fqs);
+ 	if (j < HZ / 10 + nr_cpu_ids / RCU_JIFFIES_FQS_DIV)
+ 		j = HZ / 10 + nr_cpu_ids / RCU_JIFFIES_FQS_DIV;
 
