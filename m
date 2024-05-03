@@ -1,141 +1,75 @@
-Return-Path: <linux-kernel+bounces-167631-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-167632-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 194118BAC39
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 14:20:40 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 539B18BAC3A
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 14:20:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 49D8A1C22153
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 12:20:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0900A1F23DA1
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 12:20:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12E341534E0;
-	Fri,  3 May 2024 12:20:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7406E153505;
+	Fri,  3 May 2024 12:20:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="IChCKY5t";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="IChCKY5t"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="cDEZkJUk"
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9C3C219EB
-	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 12:20:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C70B714F9F9;
+	Fri,  3 May 2024 12:20:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714738833; cv=none; b=RjqlGhfPbrOJsRS7blMJmdERfxJSpj+KeY2zEN1OlHW+jzLs5X/WTE+Ss+jANFkFJal2Z0ZNRU3GJtGvjCEnvHHZgmD7fWw1gQ0UIFB612tVQkREBm3LTCzmEXUa5hkqe2MUt3S+NyOKxz3os/zZYRcATjol3Q/sxzcaICwf68o=
+	t=1714738841; cv=none; b=lGlKK378Y2O/0as1F7KPuU5cn55uDjrpvWHDOTmXCht35uoULwuJ+SX3+hrL7DrqoGQd88EsN0FuuAN0sng+tqNCl/QO5AJwEVAPwVuJqlJZ2JvDmPGrn/30yryhmxztyCSjhR9z4O6WaUFWApQImzOOY4Eex4K0mp6l/SZCaWM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714738833; c=relaxed/simple;
-	bh=E+/cECiiPvGgfMopiQuKkU83Wbxmf5UDXkAl12lTk00=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=cPConLsP8UFBtvMkjs+ddZJD2cNQbhjqemIRMfqfWz24qmj4EH4Vs5/HGDhWRqrB89K0gceqZEUiyuSmQsC+WHU60mNB7N1luuezMv8PV5LtPn+ikDvTae5uL/ZvZIDGR3tjfAlea8k48LKbifUFs6a1COOXOmPUy5IqrB1keJU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=IChCKY5t; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=IChCKY5t; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id C743B20359;
-	Fri,  3 May 2024 12:20:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1714738828; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=ut+JW89x87VZepZnO2x2XzUTpzW28xGmJv03rNS6b4A=;
-	b=IChCKY5tWm5MO4ZrqNegxopgfKarmL+AoRo62F1aGEhECBlAjh5e05TZZsjxEo/DQfWPQe
-	Da2XiUWsxBGIlm35Nbx9WSQolWOk5hQClMYWL56KBqChfWIxh3GTaQR5x7D/AQ6TfnOpIY
-	KNVFeHHrjQIQeMePtkp97hCiregmZYs=
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b=IChCKY5t
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1714738828; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=ut+JW89x87VZepZnO2x2XzUTpzW28xGmJv03rNS6b4A=;
-	b=IChCKY5tWm5MO4ZrqNegxopgfKarmL+AoRo62F1aGEhECBlAjh5e05TZZsjxEo/DQfWPQe
-	Da2XiUWsxBGIlm35Nbx9WSQolWOk5hQClMYWL56KBqChfWIxh3GTaQR5x7D/AQ6TfnOpIY
-	KNVFeHHrjQIQeMePtkp97hCiregmZYs=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 9334613991;
-	Fri,  3 May 2024 12:20:28 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id axdxIozWNGbmagAAD6G6ig
-	(envelope-from <jgross@suse.com>); Fri, 03 May 2024 12:20:28 +0000
-From: Juergen Gross <jgross@suse.com>
-To: torvalds@linux-foundation.org
-Cc: linux-kernel@vger.kernel.org,
-	xen-devel@lists.xenproject.org,
-	sstabellini@kernel.org
-Subject: [GIT PULL] xen: branch for v6.9-rc7
-Date: Fri,  3 May 2024 14:20:28 +0200
-Message-Id: <20240503122028.16437-1-jgross@suse.com>
-X-Mailer: git-send-email 2.35.3
+	s=arc-20240116; t=1714738841; c=relaxed/simple;
+	bh=GmWwVje1unjuK7lL1AHBqfUMZpJj6+qljR/mYjzyXxM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ni3DCrZcOZZt9RItw+N1Ya7ieoojltnilqC/znE+xwdp+u6V/72OOQ9wl402dlXUzm3/LiKwC2hOPRkA8VgaG3L+rjGZm1qcQ6CnrUutkMuPYQJ8JvThnBLc6VJBOfGrP+B7vjLnA6mGZutofKmmHkzI7/6T5LnfiwLCzBCdwhA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=cDEZkJUk; arc=none smtp.client-ip=90.155.50.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=wAR49S+Q3+midVFaG+tbPBcVJqTAyA2eqOKvGm8H1xM=; b=cDEZkJUk8dwwEAj7zZcr1bbwY9
+	k04xJ16jARjmfoHOPbUuv818QfkNpE3lRyb9TOTtmdMEOi2vjaOnmcwcnZPdOzvop36NwuMixbLyu
+	5AOEyyRGR7xlkXUmW3c8w+sUy1la78b6Kq4GC1iAmCiPhlsJQYb5U81xFgyEzuTasV2VIQdYCH8li
+	iV87FwqmtRyVtEqN+rPTzIR3Tui0vQvnjuBgj2P3/sJJuYVv5f1MQnvA8A8W3vDqJQfeTYlo0GQhG
+	ZgLNDDAmCQO8EM6KEkTo6cdSJukwdMH5ep8clhIR2dYBHjMtOt0/kQHu6+NyMQ/bY3Yx1AoTJx6Tq
+	5KQoJtGA==;
+Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1s2rtw-000000043Si-38lO;
+	Fri, 03 May 2024 12:20:32 +0000
+Date: Fri, 3 May 2024 13:20:32 +0100
+From: Matthew Wilcox <willy@infradead.org>
+To: Kuan-Wei Chiu <visitorckw@gmail.com>
+Cc: akpm@linux-foundation.org, Liam.Howlett@oracle.com, nathan@kernel.org,
+	ndesaulniers@google.com, morbo@google.com, justinstitt@google.com,
+	linux-kernel@vger.kernel.org, maple-tree@lists.infradead.org,
+	linux-mm@kvack.org, llvm@lists.linux.dev, jserv@ccns.ncku.edu.tw
+Subject: Re: [PATCH] maple_tree: Fix build failure with W=1 and LLVM=1
+Message-ID: <ZjTWkM9hTnoIhzqV@casper.infradead.org>
+References: <20240503095027.747838-1-visitorckw@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Flag: NO
-X-Spam-Score: -5.01
-X-Rspamd-Action: no action
-X-Rspamd-Queue-Id: C743B20359
-X-Spam-Level: 
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-5.01 / 50.00];
-	BAYES_HAM(-3.00)[99.99%];
-	DWL_DNSWL_MED(-2.00)[suse.com:dkim];
-	MID_CONTAINS_FROM(1.00)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	R_MISSING_CHARSET(0.50)[];
-	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	ARC_NA(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	RCVD_TLS_ALL(0.00)[];
-	DKIM_TRACE(0.00)[suse.com:+];
-	RCVD_COUNT_TWO(0.00)[2];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	TO_DN_NONE(0.00)[];
-	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	DNSWL_BLOCKED(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	RCPT_COUNT_THREE(0.00)[4];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.com:dkim]
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240503095027.747838-1-visitorckw@gmail.com>
 
-Linus,
+On Fri, May 03, 2024 at 05:50:27PM +0800, Kuan-Wei Chiu wrote:
+> When compiling library code using "make W=1 LLVM=1 lib/", clang
+> generated the following compilation errors:
+> 
+> lib/maple_tree.c:351:21: error: unused function 'mte_set_full' [-Werror,-Wunused-function]
+> static inline void *mte_set_full(const struct maple_enode *node)
 
-Please git pull the following tag:
-
- git://git.kernel.org/pub/scm/linux/kernel/git/xen/tip.git for-linus-6.9a-rc7-tag
-
-xen: branch for v6.9-rc7
-
-It contains two fixes when running as Xen PV guests for issues
-introduced in the 6.9 merge window, both related to apic id handling.
-
-
-Thanks.
-
-Juergen
-
- arch/x86/xen/enlighten_pv.c | 11 ++++++++++-
- arch/x86/xen/smp_pv.c       |  4 ++--
- 2 files changed, 12 insertions(+), 3 deletions(-)
-
-Juergen Gross (1):
-      x86/xen: return a sane initial apic id when running as PV guest
-
-Thomas Gleixner (1):
-      x86/xen/smp_pv: Register the boot CPU APIC properly
+Uh, clang is wrong to flag these as an error.  They're just not used
+yet.
 
