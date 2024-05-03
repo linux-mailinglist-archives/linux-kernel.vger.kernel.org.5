@@ -1,149 +1,101 @@
-Return-Path: <linux-kernel+bounces-168147-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-168148-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D48148BB449
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 21:43:01 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7E77D8BB44B
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 21:43:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 11DA91C21C87
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 19:43:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 345281F228EA
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 19:43:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA6A2158A39;
-	Fri,  3 May 2024 19:42:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A903C158A39;
+	Fri,  3 May 2024 19:43:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="GmtIxKKw"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="L+2VW4/8"
+Received: from mail-io1-f46.google.com (mail-io1-f46.google.com [209.85.166.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6A8FD51A;
-	Fri,  3 May 2024 19:42:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F01E6158A04
+	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 19:43:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714765374; cv=none; b=L5YMR448ADJkqycfscmwCjuoU+hu1dZuo1y1749cMCLmokZI7Kh3FIPjkrViSLTBLkZ0IOo+y2txhhsfxYudlC2Ip0zZAmbZXAnVzHJRwOSRTpGOTbhw7Xfu0Ek6ft82Xee0zcTv64NglfHL9jmpJki0kF/OBtfjIGW55P7VtNE=
+	t=1714765410; cv=none; b=e4YvWmSGX91IcvZ/Y9yZK5MTSKCM4el86lxjh8YzS6jAMymGFlPtYAkvLd9U3rgxkDbkGYxEyDmLrrevaToRWAosOcEKHo8olsyl5WL+82QxsXBxCgByI7NIRYPWKxWc03U7gHoSFxm7e4tvNtmArETJWWicOYRDPq6qQkSHKxI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714765374; c=relaxed/simple;
-	bh=IQN5QjIn1RZWTwXEakOXK5gedy/uHSNwa88sq9b6KVY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=QRq/N/nluZYxgJQuFRVvnGujPSL245WgzLc1luTwVSpQmM+omyTL9rwKt4X4amKvELgywjyy0qBmhIFHP+IRM9xZDRRP4sG8TKVJw6Sgb80qimfVbLCad9tx0ZyIb4bHeBEkzlAp4i3D6+a5JpfgxqEFoK0gyenW3Co5W3xEn2s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=GmtIxKKw; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 443Jeo2Z014580;
-	Fri, 3 May 2024 19:42:35 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=Rgm4jiBiBwxRzKcwO+Se0j2hgZlRD3hn15OaPV3cY8A=; b=Gm
-	tIxKKwsXCk3RYVFfgKI/qKa/36laJsGV+Pfdx18zKNlIuDEQYKaTQ5n8HopRxfMP
-	xIr4r7kq7nxVOIZiuf7D9llaTej8edvKXHYb8Z/p8WlTBIrZRdxLDNm64S2jmgZV
-	i9E1AkkdINb0T2/xN2Bg0QYHM0SAze33EiG9gNNoo9k6UulD8uoeXVr6npSgr6x5
-	/EFeQbvJUbrzEMAyWd174OZeJvnc5ht7FCgxdix/Z/AvFK9s5yt5hzhiF+tYyOwT
-	TwVQwDXP8dfUxXENcmmRyr2iWJOUzIYh7IF4IQeBsfAL/IgCMN7OvDqaxdIB4qz3
-	TafBAtLZXfqsX0kec6Eg==
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xv8vsbmbd-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 03 May 2024 19:42:34 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 443JgXuS023300
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 3 May 2024 19:42:33 GMT
-Received: from [10.110.114.34] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Fri, 3 May 2024
- 12:42:32 -0700
-Message-ID: <69b593b7-109c-825f-3dbb-5e8cce63ff01@quicinc.com>
-Date: Fri, 3 May 2024 12:42:31 -0700
+	s=arc-20240116; t=1714765410; c=relaxed/simple;
+	bh=tRo3l+NY6pKlyguTf4ZErUgbx5G9G0vJfh3NkwVHbv8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=RAFvtuvb9gsEnmoqn/zD9QrWbEDbWhDsjZJwSNOKRRzS+r94wsCbVoZaWoeL7xfcPwVLP3eW5FL2UIcFpKD4OIK+A7SKZr4mpxB8bYXcuStcxgUeuiujF3aAj9KrIqwYG41CPmcZkwwGDh4dFmGstmLhNjAoNkrs4xHzzQTrKEM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=L+2VW4/8; arc=none smtp.client-ip=209.85.166.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Received: by mail-io1-f46.google.com with SMTP id ca18e2360f4ac-7d9c78d7f97so193739f.3
+        for <linux-kernel@vger.kernel.org>; Fri, 03 May 2024 12:43:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google; t=1714765407; x=1715370207; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=CoehBqnXPQ17o2dkVZhBr+IIq52xBLa/0bscC+2UHww=;
+        b=L+2VW4/8OZAOrSx0eMkiW0V69snecqC2GOVIpcwZnFkBgdOsXDuQz1diIyA74mhATG
+         tPEvYtUpD7c+blT7ZftG9fIE5/lolPotHzijLuVq5VVXtcam0ozxoPItCI1EmRN5BQU3
+         VvK/PXTx+vFb5iQme2Wks4CQAVYYBRmw6piKE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714765407; x=1715370207;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=CoehBqnXPQ17o2dkVZhBr+IIq52xBLa/0bscC+2UHww=;
+        b=e5lxcPLyKXKJQ2gvn+Agz1imadHKsQvGjnaMOFjM9REMMX7GYueqpkzYP3F5Bb6CUK
+         PzurDJ3Z7KOsvS+6eJSdOvcLywqVzi4J4DIUZcTHd2bYxtXjb17E6/v6oEKiamhbQs37
+         0BmYemjFpT02qD/vHL46Ero6SdE2I8Bje6ZuE9xO6HC5+rNyvod4FbnOZLiVxH4WIhmd
+         mQuGWIAydc3YNYa2oYl/oJiCop43nPYCCXcoAKIF0LPEN0nE1MkCiojUH1ALliFTDtZS
+         4WMlO1cC6K9QryuwKbTb4WOPjvXrSy366HylJWF2VQ2DbnBFdgTR22NDEJQU0OkRVpy9
+         brSw==
+X-Gm-Message-State: AOJu0Yxfni8D5UQMMCp+N6obZuj1GIaAcMKK1FOkK6NlUj2PxKIaqy+n
+	dU2LN/C49eG8Ns9EiPS5/pD7+MPbg79kGy/1YsU+Qn5VtXD3/jVRzoAYZ0IGev8=
+X-Google-Smtp-Source: AGHT+IG9sDNLiicfk/AlMxI0Uk0RAKTyF0DWx5qbaxCi1rjdOmrTdOLWZifYuj1bIkRUBQrj+qo5HQ==
+X-Received: by 2002:a5d:8909:0:b0:7de:b279:fb3e with SMTP id b9-20020a5d8909000000b007deb279fb3emr3636654ion.1.1714765407144;
+        Fri, 03 May 2024 12:43:27 -0700 (PDT)
+Received: from [192.168.1.128] ([38.175.170.29])
+        by smtp.gmail.com with ESMTPSA id u9-20020a05663825c900b00487bcf58da9sm943699jat.90.2024.05.03.12.43.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 03 May 2024 12:43:26 -0700 (PDT)
+Message-ID: <a4e28fb2-6dc2-49f5-831f-95c9fc60570b@linuxfoundation.org>
+Date: Fri, 3 May 2024 13:43:26 -0600
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [PATCH v2 2/2] drm/ci: validate drm/msm XML register files
- against schema
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] selftest/tty: Use harness framework in tty
+To: Shengyu Li <shengyu.li.evgeny@gmail.com>, shuah@kernel.org,
+ msekleta@redhat.com, gregkh@linuxfoundation.org, broonie@kernel.org
+Cc: linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+ Shuah Khan <skhan@linuxfoundation.org>
+References: <20240430161807.96050-1-shengyu.li.evgeny@gmail.com>
 Content-Language: en-US
-To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Rob Clark
-	<robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        Marijn Suijten
-	<marijn.suijten@somainline.org>,
-        David Airlie <airlied@gmail.com>, Daniel
- Vetter <daniel@ffwll.ch>,
-        Helen Koike <helen.koike@collabora.com>,
-        Maarten
- Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard
-	<mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>
-CC: <linux-arm-msm@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
-        <freedreno@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>
-References: <20240503-fd-fix-lxml-v2-0-f80a60ce21a1@linaro.org>
- <20240503-fd-fix-lxml-v2-2-f80a60ce21a1@linaro.org>
-From: Abhinav Kumar <quic_abhinavk@quicinc.com>
-In-Reply-To: <20240503-fd-fix-lxml-v2-2-f80a60ce21a1@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+From: Shuah Khan <skhan@linuxfoundation.org>
+In-Reply-To: <20240430161807.96050-1-shengyu.li.evgeny@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: WEqClIqYZAfkNL2YIBX1xByGEZaaO_ot
-X-Proofpoint-GUID: WEqClIqYZAfkNL2YIBX1xByGEZaaO_ot
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
- definitions=2024-05-03_13,2024-05-03_02,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999
- suspectscore=0 priorityscore=1501 mlxscore=0 spamscore=0 adultscore=0
- impostorscore=0 lowpriorityscore=0 bulkscore=0 malwarescore=0 phishscore=0
- clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2404010003 definitions=main-2405030139
 
-
-
-On 5/3/2024 11:15 AM, Dmitry Baryshkov wrote:
-> In order to validate drm/msm register definition files against schema,
-> reuse the nodebugfs build step. The validation entry is guarded by
-> the EXPERT Kconfig option and we don't want to enable that option for
-> all the builds.
+On 4/30/24 10:18, Shengyu Li wrote:
+> Similarly, this one is based on automated tools and a very
+> small percentage of manual modifications to automatically refactor
+> the version that uses kselftest_harness.h, which is logically clearer.
 > 
-> Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+> Signed-off-by: Shengyu Li <shengyu.li.evgeny@gmail.com>
 > ---
->   drivers/gpu/drm/ci/build.sh  | 3 +++
->   drivers/gpu/drm/ci/build.yml | 1 +
->   2 files changed, 4 insertions(+)
 > 
-> diff --git a/drivers/gpu/drm/ci/build.sh b/drivers/gpu/drm/ci/build.sh
-> index 106f2d40d222..28a495c0c39c 100644
-> --- a/drivers/gpu/drm/ci/build.sh
-> +++ b/drivers/gpu/drm/ci/build.sh
-> @@ -12,6 +12,9 @@ rm -rf .git/rebase-apply
->   apt-get update
->   apt-get install -y libssl-dev
->   
-> +# for msm header validation
-> +apt-get install -y python3-lxml
-> +
->   if [[ "$KERNEL_ARCH" = "arm64" ]]; then
->       GCC_ARCH="aarch64-linux-gnu"
->       DEBIAN_ARCH="arm64"
-> diff --git a/drivers/gpu/drm/ci/build.yml b/drivers/gpu/drm/ci/build.yml
-> index 17ab38304885..9c198239033d 100644
-> --- a/drivers/gpu/drm/ci/build.yml
-> +++ b/drivers/gpu/drm/ci/build.yml
-> @@ -106,6 +106,7 @@ build-nodebugfs:arm64:
->     extends: .build:arm64
->     variables:
->       DISABLE_KCONFIGS: "DEBUG_FS"
-> +    ENABLE_KCONFIGS: "EXPERT DRM_MSM_VALIDATE_XML"
->   
+> v2: Fixed the last Assert
 
-Wouldnt this end up enabling DRM_MSM_VALIDATE_XML for any arm64 device.
+See feedback on your v1. Same comments apply here.
+Explain why this refactor is necessary.
 
-Cant we make this build rule msm specific?
+thanks,
+-- Shuah
 
