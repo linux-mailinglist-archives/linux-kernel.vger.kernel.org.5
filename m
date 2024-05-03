@@ -1,116 +1,102 @@
-Return-Path: <linux-kernel+bounces-168322-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-168323-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2E2DB8BB66B
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 23:53:09 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 141A48BB673
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 23:53:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D76DB1F23E13
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 21:53:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 45ED71C231FE
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 21:53:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E97E56750;
-	Fri,  3 May 2024 21:53:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4595867A0D;
+	Fri,  3 May 2024 21:53:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="huuBMvIb"
-Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b="uPPrhUlI"
+Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [62.89.141.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F0042E3E0
-	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 21:52:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D44AB38DDD;
+	Fri,  3 May 2024 21:53:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.89.141.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714773179; cv=none; b=NTC3f+VJW+9cfCukIDkcuBN8JRN1BrL6CApRilLPRReEv3DkZ7JCPychoEaspS+Aes5sYWBqvECRN3HtpytGRtQJmiAaJ/aMxYbCKJ/ExXsFtGYCCPJ+TNVqTQb1iophQJwprjGhJkwwR4KHToMwlU+j7dCzxUlb6GNVVkK1yxU=
+	t=1714773190; cv=none; b=TQpakMVC6d4j/V/LPw1MmoM2KdL68pxrhOZI8smIwX84ossTyYExGI0NJ8qjVDps5IfWXVuO0o+8p/arXjsfwXJS8VIxe/sjcQlfuPfKaz0TZvgM4BppE1F8/urab75OoIrsda0MqDTnNaHQmHtbtFNY8nnDWSFSEdSD6Pk9ibo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714773179; c=relaxed/simple;
-	bh=d5soG/vdOcHc+T4G2kOCRoZhsfh2zUDag1A1J17X/z0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Mmp5AgQ4aBcIedSIAgJY/OoxUADuNQSntor49QQtrjrNRwHg/wgJMk1BHdNF5W6nrm4GJ+1BnIXnRFjhITWj7voaI+7S+rrS2Mp9AA5Z0iLx0amAuovsTSunKcc/qw4YE9gbFasQ4MUQgJNh5c2LqdLdbLsiJIyfZgekRogY0t0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=huuBMvIb; arc=none smtp.client-ip=209.85.218.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-a59a5f81af4so18528666b.3
-        for <linux-kernel@vger.kernel.org>; Fri, 03 May 2024 14:52:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1714773176; x=1715377976; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=A7KwjGqB6cN3Dl955k2+YGPiXLoEdjHxOLmUV0m+ZBo=;
-        b=huuBMvIbJRnhXNGnfhWTl/8RmzkvVfAA/eyOTiGwbrJpFW1AMRk4T2gc6j+pnbqa4g
-         qkD29080e6P3DhOf0a4zzVcKj0oTS0l19mdgaBNgdbXLxQnAZ4vnD+aOs5IsnaDHcATT
-         gZQ4zEBUYQFaZvFKsi4yYIvc0vm8F9Ue44vTo=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714773176; x=1715377976;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=A7KwjGqB6cN3Dl955k2+YGPiXLoEdjHxOLmUV0m+ZBo=;
-        b=Ls0I6fBN16YrrbBao8/9BSZsEAxuaCT9jWsJHGvm09/lxFoFwqjEv+DPXS53X81HYc
-         16JOYlPoFNYwvsnCQiI2T27zq1VdcfRfp82/WJaV5R8pMNJYvxv0kHPSFBnYMMJDprJM
-         11LH+efqlRRC5fp9WC/f/wnqK+hfpHsYiV+i6Wf6qV05Q8kEL9j4Vgd1UbpjQ0npDFnk
-         zREF6i7KLO6y0e8KDZIJs26UWGKpRe+7SqM+EpJO1fgESJs8shIZHu4ZYfHxveG8YVDT
-         pTyP+5pggbqmLZCXuz2KmAklulzeSeWZoXjGyOTkFiDxASsKH2gUbreobAAX+9wq/h3Z
-         9/JQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWpqjKzGpaif00ZQIJA9QTeDhLPVijiFOMHEu1l5ZU43rBtbdI4mVq88YoVzLlKSVLsHVNdkGe4Y4+Vfgh0/ygogvjv4VKLWI5X3x6C
-X-Gm-Message-State: AOJu0YyaZekuyk9+awQNuNNoAvt3/2WIK2ew7IpVMk84Za6BmkfieTPh
-	SxKs4METUh0nyVUHRuBndBPVeWWMOi2KQFZaD2vswOQyYn6Th5Gr0kFVZJYUxvsQlS+9+CDv7E8
-	jDSzTEQ==
-X-Google-Smtp-Source: AGHT+IFGxHgYcp/H6KhNb8EKYEhe0xK6mCTjl3AuFPADnxYT8yJJWnP6XA2o9a5PcoUQkSy3FbyZeA==
-X-Received: by 2002:a17:906:2610:b0:a58:7f48:18c4 with SMTP id h16-20020a170906261000b00a587f4818c4mr2342501ejc.68.1714773176437;
-        Fri, 03 May 2024 14:52:56 -0700 (PDT)
-Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com. [209.85.218.47])
-        by smtp.gmail.com with ESMTPSA id f17-20020a170906391100b00a5992566e62sm1109776eje.85.2024.05.03.14.52.55
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 03 May 2024 14:52:55 -0700 (PDT)
-Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-a58a36008ceso16640266b.0
-        for <linux-kernel@vger.kernel.org>; Fri, 03 May 2024 14:52:55 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCUjGO5c6TwiAEhql1fzdEEiRTxT5Y7gR2nTyazXV6cVVoPvNnbzH7GGrJzhyAD9dzayphP5Hr2Xpz2pxJdnqkzGcfYOoFTW7WYNXbci
-X-Received: by 2002:a17:906:eca8:b0:a58:c639:9518 with SMTP id
- qh8-20020a170906eca800b00a58c6399518mr2622517ejb.76.1714773175036; Fri, 03
- May 2024 14:52:55 -0700 (PDT)
+	s=arc-20240116; t=1714773190; c=relaxed/simple;
+	bh=bExJpdyXIdMIq8/+qTePccS+7WON3s7AOlpfVjopwp0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=RrWZA2BdPJbt7ImYcqGUdbfqtfE1jT0jnBr1yDqsiB9reCNvlRnnC2HwKSHF0YxTWvOr20u8PFFRAlpfQRKO/yxr1OWve71XcSZVW1r1bAxtm9rXEZCs5UrWhbBJngmvLQ51Nu2NFNlnFf3yN6SDi43YeEgDLO7sd5m2V2vuPJ4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk; spf=none smtp.mailfrom=ftp.linux.org.uk; dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b=uPPrhUlI; arc=none smtp.client-ip=62.89.141.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ftp.linux.org.uk
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=RM0gQuvw5vrpD7I8AUwAP4n456JHvifrZgveaZJKmdE=; b=uPPrhUlILbBbJfo6/OhWVeAbu8
+	vvKn1CG9kgelugjtObY1dI4pNbQXkZIW6pXr2dc0D6qKypOtbaQBml/wdQDHlIMzvfUJmoVwYGsJn
+	fA4PaeOD3BaZTDGM8djdR0WoP8j8VEVDIDkDDcul8gNfa9TPQLlGSTmYPCfcwv2C87YIgZA0ttd+k
+	tSChqsyTaVKQu+LGbkHrPMYX+EIi3msdOV9A/Hdh5A1JnJUuZmQln8p/PoX4NkCiWVsNMbqpyA56c
+	g4JUV2/tw5QhQBueA3SbOHD/TX9duqmuzKywCDUhAdOVdAfgznrbJmMOmACfYGqm098yFnGkundvY
+	KnSQcN+Q==;
+Received: from viro by zeniv.linux.org.uk with local (Exim 4.96 #2 (Red Hat Linux))
+	id 1s30pz-00B9qR-1v;
+	Fri, 03 May 2024 21:53:03 +0000
+Date: Fri, 3 May 2024 22:53:03 +0100
+From: Al Viro <viro@zeniv.linux.org.uk>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Kees Cook <keescook@chromium.org>, Jens Axboe <axboe@kernel.dk>,
+	Bui Quang Minh <minhquangbui99@gmail.com>,
+	Christian Brauner <brauner@kernel.org>,
+	syzbot <syzbot+045b454ab35fd82a35fb@syzkaller.appspotmail.com>,
+	io-uring@vger.kernel.org, jack@suse.cz,
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+	syzkaller-bugs@googlegroups.com,
+	Sumit Semwal <sumit.semwal@linaro.org>,
+	Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+	linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
+	linaro-mm-sig@lists.linaro.org, Laura Abbott <laura@labbott.name>
+Subject: Re: get_file() unsafe under epoll (was Re: [syzbot] [fs?]
+ [io-uring?] general protection fault in __ep_remove)
+Message-ID: <20240503215303.GC2118490@ZenIV>
+References: <7c41cf3c-2a71-4dbb-8f34-0337890906fc@gmail.com>
+ <202405031110.6F47982593@keescook>
+ <64b51cc5-9f5b-4160-83f2-6d62175418a2@kernel.dk>
+ <202405031207.9D62DA4973@keescook>
+ <d6285f19-01aa-49c8-8fef-4b5842136215@kernel.dk>
+ <202405031237.B6B8379@keescook>
+ <202405031325.B8979870B@keescook>
+ <20240503211109.GX2118490@ZenIV>
+ <20240503213625.GA2118490@ZenIV>
+ <CAHk-=wgRphONC5NBagypZpgriCUtztU7LCC9BzGZDEjWQbSVWQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <202405031110.6F47982593@keescook> <20240503211129.679762-2-torvalds@linux-foundation.org>
- <20240503212428.GY2118490@ZenIV> <CAHk-=wjpsTEkHgo1uev3xGJ2bQXYShaRf3GPEqDWNgUuKx0JFw@mail.gmail.com>
- <20240503214531.GB2118490@ZenIV>
-In-Reply-To: <20240503214531.GB2118490@ZenIV>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Fri, 3 May 2024 14:52:38 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wgC+QpveKCJpeqsaORu7htoNNKA8mp+d9mvJEXmSKjhbw@mail.gmail.com>
-Message-ID: <CAHk-=wgC+QpveKCJpeqsaORu7htoNNKA8mp+d9mvJEXmSKjhbw@mail.gmail.com>
-Subject: Re: [PATCH] epoll: try to be a _bit_ better about file lifetimes
-To: Al Viro <viro@zeniv.linux.org.uk>
-Cc: keescook@chromium.org, axboe@kernel.dk, brauner@kernel.org, 
-	christian.koenig@amd.com, dri-devel@lists.freedesktop.org, 
-	io-uring@vger.kernel.org, jack@suse.cz, laura@labbott.name, 
-	linaro-mm-sig@lists.linaro.org, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-media@vger.kernel.org, 
-	minhquangbui99@gmail.com, sumit.semwal@linaro.org, 
-	syzbot+045b454ab35fd82a35fb@syzkaller.appspotmail.com, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wgRphONC5NBagypZpgriCUtztU7LCC9BzGZDEjWQbSVWQ@mail.gmail.com>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 
-On Fri, 3 May 2024 at 14:45, Al Viro <viro@zeniv.linux.org.uk> wrote:
->
-> How do you get through eventpoll_release_file() while someone
-> has entered ep_item_poll()?
+On Fri, May 03, 2024 at 02:42:22PM -0700, Linus Torvalds wrote:
+> On Fri, 3 May 2024 at 14:36, Al Viro <viro@zeniv.linux.org.uk> wrote:
+> >
+> > ... the last part is no-go - poll_wait() must be able to grab a reference
+> > (well, the callback in it must)
+> 
+> Yeah. I really think that *poll* itself is doing everything right. It
+> knows that it's called with a file pointer with a reference, and it
+> adds its own references as needed.
 
-Doesn't matter.
+Not really.  Note that select's __pollwait() does *NOT* leave a reference
+at the mercy of driver - it's stuck into poll_table_entry->filp and
+the poll_freewait() knows how to take those out.
 
-Look, it's enough that the file count has gone down to zero. You may
-not even have gotten to eventpoll_release_file() yet - the important
-part is that you're on your *way* to it.
 
-That means that the file will be released - and it means that you have
-violated all the refcounting rules for poll().
-
-So I think you're barking up the wrong tree.
-
-                  Linus
+dmabuf does something very different - it grabs the damn thing into
+its private data structures and for all we know it could keep it for
+a few hours, until some even materializes.
 
