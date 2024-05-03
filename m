@@ -1,132 +1,155 @@
-Return-Path: <linux-kernel+bounces-167251-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-167252-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3BADE8BA66D
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 06:52:57 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3DFFC8BA672
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 06:54:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C014D280D5D
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 04:52:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E8E131F227E8
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 04:54:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6277613A275;
-	Fri,  3 May 2024 04:51:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7920D6A003;
+	Fri,  3 May 2024 04:54:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="A0fmQPTw"
-Received: from mail-pg1-f178.google.com (mail-pg1-f178.google.com [209.85.215.178])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FQtweVUQ"
+Received: from mail-lf1-f50.google.com (mail-lf1-f50.google.com [209.85.167.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 673D813A256
-	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 04:51:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 20A11137C36;
+	Fri,  3 May 2024 04:54:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714711863; cv=none; b=ee0GMB8wl+4HEj9wYBc3G4iQNtVsTpwKoYgBgnRh6uX6MuIztx2sNTIIEBdxS57p/Xf0OpX5fpjIE8f6KmtkNzpZuiGVzmEcW8RebS27vvQJMH1bmS2FouVPSNHRAhwGQBBuR56bCLTypTKbWwAft7kgvF8PFwnAFo38vkfxvls=
+	t=1714712066; cv=none; b=S1D7CFqTusC+ZOKAYYW1CFAdyUeLAvTbQVdCS85k2a4PBknDWTLM/j4iht9cm/qUG0Uc7iDjFr/1dmY/ERPNCtC6rY9BT4XdB3g5yKr+iwhK1vLzHwXgvtu+Xr7d+hGk9JbQ4UHRGxLTGGvHUDU4Tqc0mTcm8ZA46+H7Ged6hVk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714711863; c=relaxed/simple;
-	bh=aClvRhkni8+VngBib+tXbyLWgA3xiyhnWY6l4lDY2FI=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=Gjbt1jXnRyWmgrOIengGMHepV38fHNQ5Z5lrF/t6SeK/+JyRPxY5khrOe71uehdPDYjYa88ZF9a2w433zt7zZ3Lj/nWVUxPyA8TbCwQB+2I2SVuwBcysSin4UnGBKqbjF4OLPPgolabWM3qj3fUIcfSrmEO4Mvly/if3LzuTwr4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=A0fmQPTw; arc=none smtp.client-ip=209.85.215.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
-Received: by mail-pg1-f178.google.com with SMTP id 41be03b00d2f7-602801ea164so5967629a12.0
-        for <linux-kernel@vger.kernel.org>; Thu, 02 May 2024 21:51:02 -0700 (PDT)
+	s=arc-20240116; t=1714712066; c=relaxed/simple;
+	bh=5Vk/o77IrN6HMyMH3vHDq6aK7PmYvi2tirm6073Fm2U=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=TGEYkgDKb05qwFSdZS1DNGSPZAn7jhPX6xhwVNxuLhux5ncEStkOj3GNubXUvqLazcnrewqrgO0btipTvihxSIn5H4ZZyUIgC+D9ree1UGGEiY9gS7V3PodzN9KA/wC5r4LZQSQiIM4ycz+mKlrCmGmvHxwuhNZ8TEmi+SMeE9w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FQtweVUQ; arc=none smtp.client-ip=209.85.167.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f50.google.com with SMTP id 2adb3069b0e04-51f1b378ca5so2576927e87.1;
+        Thu, 02 May 2024 21:54:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1714711862; x=1715316662; darn=vger.kernel.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=vtwC5CithaOsyDnX18EUQqmgLnixhsZn53ghod6HD4Y=;
-        b=A0fmQPTwPQt+hnzMkhsdI3xnEzBKHGTojDsdY/fbRbDd7GKLkJhSHWBqC58JmIbtS7
-         RYxEjHs7JmLrG37VRrm1b/w0hxO4NgxkdvtyqdvKkuw4LmHUbX87XMx/UOzQlDiJ8UAB
-         d9++7nkaodKJ3aGkMIrwvaO+GQCi8RJ6xj5x7OL9NMMV7YLTraiQ1xY8J8/n6GMM1ra9
-         vUeJQh1/2bOD618IwKpfDwW6o7slbkVqBRy2VIO+hPMzaq9+gE4AaYqobaPulWoPkibV
-         GG9jJYc5Rm3PP9hTxeA1wMLgHs6vkmCWcsbAO32qyEagZd/s2MoxTAmtfpoo43+btKkC
-         Wz0g==
+        d=gmail.com; s=20230601; t=1714712063; x=1715316863; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=loZHn25HlcmFKvqsuM9XCvTx/kGvrnibzVi5KvehX28=;
+        b=FQtweVUQVNbyUpzwMhhxwfIP9Id1fHXXvN9O34ovL4Dc+1AeVjVJROnJPX7/hjNXeb
+         jwJJoX7ru5aAjkdIn10PgvJuBLRs+d45ofCKf9NTGREx9qkQ5viqYJMA6NFkIZT9hkfQ
+         1AAZgRBmPI7Jydl5eys13fgrCRJ+W0mfxI6fGoMGaN6VPlTrZXIGlMLyGOTo/HM6BDLg
+         jJXjI1L/JYwWPWqMWltuBglNmK2KMbRIyCWyDH3YSVbLnMZ+hm6xV9A3TC4kvfMlSahY
+         nzUJqS2aKJQyi2knsZdFnjBRmjCKBma2R8rDQOZ+xwBD9NOKu/R6W3QdTtlJit/MZHcG
+         cVIQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714711862; x=1715316662;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=vtwC5CithaOsyDnX18EUQqmgLnixhsZn53ghod6HD4Y=;
-        b=HosSaWHEDQkxnjxMuaQV+GFTvfgoR+YKEyRKmyHNgsX1jZWp3ULZkP7kfkxOqgdjJR
-         uFjMqWs0BQDt0USUq6/J6XJmlBZx4gQA09fkmSSs8kfFbs28ER29syuGWRxGW3unKleZ
-         hhN8UnJuSSGwusYH1VRsdb3gUoHfBaqUfQ1Q8TGu35zWmeqGZFdxYwrnIAUJPskIu7XU
-         ZOX9wtFnAyX902X9uwPQmAcSB1QjMd91OWH9D1Dej9XHGUkQqVdXsJUfi90vqE7KMYJq
-         i5sti/jeKgmxX1TAjH0zuR+0TDjqQHrRgRgrqdL8FZxsaRnCWyMJS1DeFpMwngWVX5G0
-         LAoA==
-X-Forwarded-Encrypted: i=1; AJvYcCWutdNhmDTCER7zZdPqapfmnb3iKQ+jJ/85gwyJy6KM+/VpJ0gdJv8U7azKzJO+KHDysxx7Nl0+BsMVKsX9G/7m3QZFUuJyKFWX4sJZ
-X-Gm-Message-State: AOJu0Yz2T+j5gRtbckwSEqTgL1qfOgxN/DA19ahj+PSsie1KphFPQsnC
-	T/aX4LZYRq28CsmLV5unm3qnhdD1sT0dAhp98Sp5nhCDYiXlXToO3CALAGs8ZVs=
-X-Google-Smtp-Source: AGHT+IHfmJLnWNlQ+jLqowVWeSehnNZwiNPlCiwptv1oonBtcaPkYBu1VzKgOUEcLWxXtlfYGmWvRw==
-X-Received: by 2002:a05:6a20:258c:b0:1a9:ffa0:d007 with SMTP id k12-20020a056a20258c00b001a9ffa0d007mr1997150pzd.58.1714711861757;
-        Thu, 02 May 2024 21:51:01 -0700 (PDT)
-Received: from charlie.ba.rivosinc.com ([64.71.180.162])
-        by smtp.gmail.com with ESMTPSA id li11-20020a170903294b00b001e3c77db2aesm2276384plb.88.2024.05.02.21.50.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 May 2024 21:50:58 -0700 (PDT)
-From: Charlie Jenkins <charlie@rivosinc.com>
-Date: Thu, 02 May 2024 21:50:51 -0700
-Subject: [PATCH v4 2/2] riscv: cpufeature: Fix extension subset checking
+        d=1e100.net; s=20230601; t=1714712063; x=1715316863;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=loZHn25HlcmFKvqsuM9XCvTx/kGvrnibzVi5KvehX28=;
+        b=gcvKjxaO/Lq/tr2QZcqv1TpSScPQja7EpUhQnJPj9/6rynXhX0UHUb3CnyMxVRhvZK
+         BPjaxcS4j6tFM37GvCl0q6C9IL5Q5isaYgIX5CersdPuYhEo37ITgsnSiyyXwrZOEPl6
+         LIXjpGiYZ/1VPw3a59jrx10pJ/ZMKi530Ai+eIKNHDLwuCW/NCcfwwfWDeGTFqSEcvj5
+         pJMe2erMFWPBm6aZOhGozJRuvjlHMjdLyuF6aBSqUASgHe4TuonGu56ZsSMvRgkJ9wQm
+         tvTpt/qxkfL3ss7wsValISFRosSb80BWHR78GK1ZWNHU0J6aNqJ0oKunQmWzfcnHfD87
+         Iy+Q==
+X-Forwarded-Encrypted: i=1; AJvYcCW+fz/azFrsmjEDByMQBv8SZahizSHfATy79iyFCz1EpW5gK9XSKngXTri1kd6Sa1WCRINnX8ifwL4nB2SkTNpQhFRRp1mej8/ca4H1kJ0KJJkGAljl7LM9ZQe8Y754vMpVjjqLtm2HnXxdRMOjdbsIQ/ydcoWyvTLznoPJcKJxg+9/iZM/YW3f
+X-Gm-Message-State: AOJu0YwYhVPW1mc96mGvxqIY16y1Lre/urtTZVFF0poJDAhREoL+2CCd
+	u9kSLdyiDeddphJamKPD6incr64HUYZcZ/Vcc9BG0LcQGc2FJD1K
+X-Google-Smtp-Source: AGHT+IFQOjsN5z4X0Y11iSOg7oq/hzAzCCnkqGbNdxRqrYzdUZn7dn7SXecPkjPH+UsG3Nxix6eRpw==
+X-Received: by 2002:ac2:546c:0:b0:51b:9254:91e7 with SMTP id e12-20020ac2546c000000b0051b925491e7mr1213779lfn.61.1714712062993;
+        Thu, 02 May 2024 21:54:22 -0700 (PDT)
+Received: from ?IPV6:2a10:a5c0:800d:dd00:8cfe:d6e7:6701:9dfd? ([2a10:a5c0:800d:dd00:8cfe:d6e7:6701:9dfd])
+        by smtp.gmail.com with ESMTPSA id y17-20020ac24471000000b0051e12057075sm413999lfl.179.2024.05.02.21.54.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 02 May 2024 21:54:22 -0700 (PDT)
+Message-ID: <74655775-a8e2-45f4-8a1b-8046dffa5520@gmail.com>
+Date: Fri, 3 May 2024 07:54:21 +0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 1/6] dt-bindings: ROHM BD96801 PMIC regulators
+To: Conor Dooley <conor@kernel.org>
+Cc: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+ Lee Jones <lee@kernel.org>, Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
+ Mark Brown <broonie@kernel.org>, Wim Van Sebroeck <wim@linux-watchdog.org>,
+ Guenter Roeck <linux@roeck-us.net>, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-watchdog@vger.kernel.org
+References: <cover.1714478142.git.mazziesaccount@gmail.com>
+ <c747a3395a52bdb9b9697f814cd781fb0903b894.1714478142.git.mazziesaccount@gmail.com>
+ <20240502-vitalize-oat-ecbc14647df8@spud>
+Content-Language: en-US, en-GB
+From: Matti Vaittinen <mazziesaccount@gmail.com>
+In-Reply-To: <20240502-vitalize-oat-ecbc14647df8@spud>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240502-cpufeature_fixes-v4-2-b3d1a088722d@rivosinc.com>
-References: <20240502-cpufeature_fixes-v4-0-b3d1a088722d@rivosinc.com>
-In-Reply-To: <20240502-cpufeature_fixes-v4-0-b3d1a088722d@rivosinc.com>
-To: Paul Walmsley <paul.walmsley@sifive.com>, 
- Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, 
- Guo Ren <guoren@kernel.org>, Conor Dooley <conor@kernel.org>, 
- Conor Dooley <conor.dooley@microchip.com>, 
- =?utf-8?q?Cl=C3=A9ment_L=C3=A9ger?= <cleger@rivosinc.com>, 
- Evan Green <evan@rivosinc.com>
-Cc: Palmer Dabbelt <palmer@rivosinc.com>, linux-riscv@lists.infradead.org, 
- linux-kernel@vger.kernel.org, Charlie Jenkins <charlie@rivosinc.com>, 
- Alexandre Ghiti <alexghiti@rivosinc.com>, 
- Andrew Jones <ajones@ventanamicro.com>
-X-Mailer: b4 0.13.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1714711851; l=1173;
- i=charlie@rivosinc.com; s=20231120; h=from:subject:message-id;
- bh=aClvRhkni8+VngBib+tXbyLWgA3xiyhnWY6l4lDY2FI=;
- b=gwRqVJm01uxvkdlrQKBBOn3dquKs2d0HbChFUuQQkjkWjU4Pgd55dBFMK5u5tp3XbrAvXtJiV
- gG2bGvn4tcMBAHUDeEUo4MTq+EhGf2AyyVTIO2ihJ6xqFiTuHUUJ79s
-X-Developer-Key: i=charlie@rivosinc.com; a=ed25519;
- pk=t4RSWpMV1q5lf/NWIeR9z58bcje60/dbtxxmoSfBEcs=
 
-This loop is supposed to check if ext->subset_ext_ids[j] is valid, rather
-than if ext->subset_ext_ids[i] is valid, before setting the extension
-id ext->subset_ext_ids[j] in isainfo->isa.
+Hi Conor,
 
-Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
-Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
-Reviewed-by: Alexandre Ghiti <alexghiti@rivosinc.com>
-Reviewed-by: Andrew Jones <ajones@ventanamicro.com>
-Fixes: 0d8295ed975b ("riscv: add ISA extension parsing for scalar crypto")
----
- arch/riscv/kernel/cpufeature.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On 5/2/24 19:20, Conor Dooley wrote:
+> On Tue, Apr 30, 2024 at 02:59:50PM +0300, Matti Vaittinen wrote:
+>> ROHM BD96801 is a highly configurable automotive grade PMIC. Introduce
+>> DT bindings for the BD96801 regulators.
+>>
+>> Signed-off-by: Matti Vaittinen <mazziesaccount@gmail.com>
+>>
+>> ---
+>> RFCv2 => v1
+> 
+> RFC is a status, not a version - ideally this would have been v3 and the
+> next version v4.
 
-diff --git a/arch/riscv/kernel/cpufeature.c b/arch/riscv/kernel/cpufeature.c
-index 13d4fc0d1817..5ef48cb20ee1 100644
---- a/arch/riscv/kernel/cpufeature.c
-+++ b/arch/riscv/kernel/cpufeature.c
-@@ -603,7 +603,7 @@ static int __init riscv_fill_hwcap_from_ext_list(unsigned long *isa2hwcap)
- 
- 			if (ext->subset_ext_size) {
- 				for (int j = 0; j < ext->subset_ext_size; j++) {
--					if (riscv_isa_extension_check(ext->subset_ext_ids[i]))
-+					if (riscv_isa_extension_check(ext->subset_ext_ids[j]))
- 						set_bit(ext->subset_ext_ids[j], isainfo->isa);
- 				}
- 			}
+Thanks for the clarification. I've always wondered if an RFC should be 
+seen as a separate series. Previously I've ended up just dropping the 
+RFC and pumping up the version. This time the switch from RFC => non RFC 
+was somewhat radical as a lot of the features were dropped. Furthermore, 
+I've developed the 'simple' version (this non RFC one) and 
+'experimental' version (the RFC one) in separate branches - which made 
+the separation even stronger in my mind - I probably started thinking 
+these as two different patch series.
+
+But, as I said, thanks for the clarification! I guess it's still better 
+to make next version v2 (and not v4) to not add even more confusion...
+
+>>      - Drop regulator-name pattern requirement
+>>      - do not require regulator-name
+> 
+> 
+> Krzysztof had some comments on the buck/ldo node names
+
+I think Krzysztof pointed out that the regulator-name property should 
+not match the data-sheet but the board. If he had something to say about 
+the node names, then I've missed his comment!
+
+> and on the
+> initial value properties that I'm not sure if have been addressed, so
+> gonna leave this series to him.
+
+Thanks for pointing out I may have missed addressing some of his 
+concerns. I though I fixed all issues he pointed to me but it may be I 
+missed some - or accidentally dropped some change(s) when merging fixes 
+from the 'experimental' branch to the 'simple'. I'll revise Krzysztof's 
+feedback to the RFC before sending the next version!
+
+Thanks!
+
+Yours,
+	-- Matti
 
 -- 
-2.44.0
+Matti Vaittinen
+Linux kernel developer at ROHM Semiconductors
+Oulu Finland
+
+~~ When things go utterly wrong vim users can always type :help! ~~
 
 
