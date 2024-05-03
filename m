@@ -1,204 +1,97 @@
-Return-Path: <linux-kernel+bounces-168333-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-168334-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 815B28BB6E0
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 May 2024 00:08:40 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BB74C8BB6E5
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 May 2024 00:13:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2EDD6282F63
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 22:08:39 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D8306B2138B
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 22:13:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C55775B5D3;
-	Fri,  3 May 2024 22:08:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 132035B1FB;
+	Fri,  3 May 2024 22:12:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="puxVyU7p"
-Received: from mail-pg1-f201.google.com (mail-pg1-f201.google.com [209.85.215.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ILhKzxu7"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6AB1537E9
-	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 22:08:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52E38364AC;
+	Fri,  3 May 2024 22:12:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714774110; cv=none; b=cHZvLbqXvm6+Kh9jjV9/pV6arSlOiqHYEHDbirph6y8PoCHWxCsW7OuohOv3gKbugSVrxFWIsEJdTAxnW2nQyMpY4h7uhME6UCFhR9SeJ7zqcmHgHHqUYaVi6cN2c5xOBPlf9ECsJb87AQZwLfO9EWWSVcOZplX8U8i0AXEGDwQ=
+	t=1714774377; cv=none; b=mrgHFSKP2q+Az/vHi6rKjobdFhDIj6RS94TbhFh24a82wIr7Ue5RNkWkVXAj/vXSqtR2BGeO1ps8d2fbeQXK9EdZmSHKehoeu86dxuNbkIVF9l3vZmyv5r7+sZBz+Vxgyp51vGlt+Pcnd3LKjFEQQ4R2j+I+sfkkXPqW2+qiSYI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714774110; c=relaxed/simple;
-	bh=A6jfGpt5EXKwXCAL1hqPBBb2Pa8wWg1lk91tDEEpOts=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=XBV+AxXUtiZPYZMH/eCUDVoCOSwoOmzEh/xJhbg6PcDme3kXnDlPLyJxAV8RyapqQgSq1MQGF47FyOXB4xFhMZs48Y3Uozgv8EBOKY5/G3kJ1mWIwUN+CLlbljjBfaLjlmlkVp6oQkwZnUtiLsQe7Xqv8tFHWyXXzmbm/soEfgE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=puxVyU7p; arc=none smtp.client-ip=209.85.215.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-pg1-f201.google.com with SMTP id 41be03b00d2f7-5cf35636346so116372a12.3
-        for <linux-kernel@vger.kernel.org>; Fri, 03 May 2024 15:08:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1714774108; x=1715378908; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=ckpfH3TSd67b3OSfhynVSXxzSMXIc0DSB6D80LvHG50=;
-        b=puxVyU7pfTfwfPf8OVy3syZfjCunKkG5RKbo7t0ZXQPu2LnbSPVJMhA0q4uZ6OLAb7
-         bhTXT5wT7EqqoY83J1TbgL2PHVdCvHmA0ByQ7d1Vkf0aiz6yjPZ5vIj6tiVz0YjTuaMh
-         9+/dRK3CU2vBGW4UN/at36gI6P1P8u+FgAvO/mD0UVgxdbP9vYr9X9cbmxZN6Vk+4F8e
-         20c5NIAjxVB4az5LtUsakGmQ+6KNZ1ffTIMOF9TVIdrFJxH8OgZvTRpFl10eSGg8Cqi8
-         iBiR+UIwsjesAjND0pqrXi7zG/Y6tGeJqfZMi0lt3JgwDJJxoWWdvjo8gW+lo60PFgXj
-         XbLQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714774108; x=1715378908;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ckpfH3TSd67b3OSfhynVSXxzSMXIc0DSB6D80LvHG50=;
-        b=ipRAjQQJynRNPJrMD+Pug8BHDaZIk8fjbo9bPIqr/JQc0dM+L3NOMoOGpjFMlzySzf
-         dwd8iA4S40HxzkJa9gLuzNTnQLASXQxzc3ogX2M+6Nu0XnyVVF6o0oWpQ160+uNpRc+Q
-         8VGOqrb2TqQo1EPc2MqwEcvs7IEPARW3xTbMblir6Ab6wj0h62Y6+M8AiLXYqQFN9lwX
-         R+wAJAymLXnjT6fe58aeY45xFsv2mejrVCLld8/2+FnN5n3b/OtKXwb4wnBkFxSigFF9
-         XYSpFRXXHAopn8HMoY/INHolWyH1Z1FFduXnsgaGvgEMymCvnBat93MVpbX06tQxcPKh
-         MahA==
-X-Forwarded-Encrypted: i=1; AJvYcCVfQpBEoi9GYtVgl5dNzz8JfPZu/0DpItMEtB0wKg9SGIvHaNxrHIcdSlrXYTiqRVZOmRyT6/J7o70UuP+KT3Mc0g4IGfV0xODQ4w2z
-X-Gm-Message-State: AOJu0YzYfoKUGheNQXiCy4q9CdfNpRfLjIVq2VO+m4V11nntiye4FS+K
-	GFjso+5Ct54Q3tsxqcCKo0Sjn2+5Nx69kkspbuXGP0j2RbWCE0dX0la5VxOnX7JiiO0MIzZrU1X
-	ipQ==
-X-Google-Smtp-Source: AGHT+IEFdrePC6jrLSxMCygJbktCPsMWiSl/LWI6oM30L+7vw4xa5OxhWDTaaP8A8BzveH9E5qNZgrCJqhE=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a63:56:0:b0:61b:2c4c:30e6 with SMTP id
- 83-20020a630056000000b0061b2c4c30e6mr10162pga.1.1714774107972; Fri, 03 May
- 2024 15:08:27 -0700 (PDT)
-Date: Fri, 3 May 2024 15:08:26 -0700
-In-Reply-To: <20240426041559.3717884-2-foxywang@tencent.com>
+	s=arc-20240116; t=1714774377; c=relaxed/simple;
+	bh=YkP2K6jpxNEQf4lXAwpJOOcHT6UPDCIc3FFQpwklXDg=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To; b=GX3XvNhbofPl/AaxxHUIygHfZYwgwr474zVRLHXHHrcefqTFQ+OOfWFwQqDtOgglAZ6FwA8IxBGR43JEOWOMkf2VGULpm1CR1WmTU/tN7HV6ihHsk2332z92/hC70aU/4TmcfFt3ZhZFp6EpTtBjtiUsbpiO/kV4NeyL22bneTE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ILhKzxu7; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A857EC116B1;
+	Fri,  3 May 2024 22:12:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714774376;
+	bh=YkP2K6jpxNEQf4lXAwpJOOcHT6UPDCIc3FFQpwklXDg=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:From;
+	b=ILhKzxu7oUwgRZMSb5FgKI+skcjYd8K+c+U9i5uDdl07ql6s35NefExj3VJiRt0M+
+	 nZDQnRX8dY9Q6Q+YU5yyzBBiFAkA0Y2j9PsQwj6nKx+RQGH7fzGIS4rwA7cvIndaT6
+	 fV89eLej03eDgVvxwWmnWkqsXMiReHz7+7j9ExwfuaC2g1VlTsUGzpt04Uf472L3fJ
+	 sqwrkSMWan41jm/wREC5pG8br2+kbd2Qx7DPA0UrK20MrQ9vW8dT4iWC7q036iDVl+
+	 5HJq/nA+ogSZzOc9a9x+gurcR9NosBuL12k7FelkACuMKbVElrkQJ8EY8ASSVDP4oy
+	 vNmdUKkWcndZQ==
+Date: Fri, 3 May 2024 17:12:54 -0500
+From: Bjorn Helgaas <helgaas@kernel.org>
+To: Kunwu Chan <chentao@kylinos.cn>
+Cc: bhelgaas@google.com, tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
+	dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com,
+	linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Andres Salomon <dilinger@queued.net>
+Subject: Re: [PATCH] x86: Code cleanup for ehci_hdr
+Message-ID: <20240503221254.GA1607085@bhelgaas>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240426041559.3717884-1-foxywang@tencent.com> <20240426041559.3717884-2-foxywang@tencent.com>
-Message-ID: <ZjVgWvrXyyVYXoxj@google.com>
-Subject: Re: [v4 RESEND 1/3] KVM: setup empty irq routing when create vm
-From: Sean Christopherson <seanjc@google.com>
-To: Yi Wang <up2wing@gmail.com>
-Cc: pbonzini@redhat.com, tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, 
-	dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com, 
-	kvm@vger.kernel.org, linux-kernel@vger.kernel.org, wanpengli@tencent.com, 
-	foxywang@tencent.com, oliver.upton@linux.dev, maz@kernel.org, 
-	anup@brainfault.org, atishp@atishpatra.org, borntraeger@linux.ibm.com, 
-	frankja@linux.ibm.com, imbrenda@linux.ibm.com, weijiang.yang@intel.com
-Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240125030623.513902-1-chentao@kylinos.cn>
 
-On Fri, Apr 26, 2024, Yi Wang wrote:
-> From: Yi Wang <foxywang@tencent.com>
+[+cc Andres, author of 3ef0e1f8cad0]
+
+On Thu, Jan 25, 2024 at 11:06:23AM +0800, Kunwu Chan wrote:
+> This part was commented from commit 3ef0e1f8cad0
+> ("x86: olpc: add One Laptop Per Child architecture support")
+> in about 16 years before.
 > 
-> Add a new function to setup empty irq routing in kvm path, which
-> can be invoded in non-architecture-specific functions. The difference
-> compared to the kvm_setup_empty_irq_routing() is this function just
-> alloc the empty irq routing and does not need synchronize srcu, as
-> we will call it in kvm_create_vm().
+> If there are no plans to enable this part code in the future,
+> we can remove this dead code.
 > 
-> Using the new adding function, we can setup empty irq routing when
-> kvm_create_vm(), so that x86 and s390 no longer need to set
-> empty/dummy irq routing when creating an IRQCHIP 'cause it avoid
-> an synchronize_srcu.
-> 
-> Signed-off-by: Yi Wang <foxywang@tencent.com>
+> Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
+
+Applied to pci/misc for v6.10, thanks.
+
 > ---
->  include/linux/kvm_host.h |  1 +
->  virt/kvm/irqchip.c       | 19 +++++++++++++++++++
->  virt/kvm/kvm_main.c      |  4 ++++
->  3 files changed, 24 insertions(+)
+>  arch/x86/pci/olpc.c | 3 ---
+>  1 file changed, 3 deletions(-)
 > 
-> diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
-> index 48f31dcd318a..9256539139ef 100644
-> --- a/include/linux/kvm_host.h
-> +++ b/include/linux/kvm_host.h
-> @@ -2100,6 +2100,7 @@ int kvm_set_irq_routing(struct kvm *kvm,
->  			const struct kvm_irq_routing_entry *entries,
->  			unsigned nr,
->  			unsigned flags);
-> +int kvm_setup_empty_irq_routing_lockless(struct kvm *kvm);
-
-This is in an #ifdef, the #else needs a stub (for MIPS).
-
->  int kvm_set_routing_entry(struct kvm *kvm,
->  			  struct kvm_kernel_irq_routing_entry *e,
->  			  const struct kvm_irq_routing_entry *ue);
-> diff --git a/virt/kvm/irqchip.c b/virt/kvm/irqchip.c
-> index 1e567d1f6d3d..266bab99a8a8 100644
-> --- a/virt/kvm/irqchip.c
-> +++ b/virt/kvm/irqchip.c
-> @@ -237,3 +237,22 @@ int kvm_set_irq_routing(struct kvm *kvm,
->  
->  	return r;
->  }
-> +
-> +int kvm_setup_empty_irq_routing_lockless(struct kvm *kvm)
-
-I vote for kvm_init_irq_routing() to make it more obvious that the API is purely
-for initializing the routing, i.e. only to be used at VM creation.  Then the
-"lockless" tag is largely redundant.  And then maybe add a comment about how this
-creates an empty routing table?  Because every time I look at this code, it takes
-me a few seconds to remember how this is actually an empty table.
-
-> +{
-> +	struct kvm_irq_routing_table *new;
-> +	int chip_size;
-> +
-> +	new = kzalloc(struct_size(new, map, 1), GFP_KERNEL_ACCOUNT);
-> +	if (!new)
-> +		return -ENOMEM;
-> +
-> +	new->nr_rt_entries = 1;
-> +
-> +	chip_size = sizeof(int) * KVM_NR_IRQCHIPS * KVM_IRQCHIP_NUM_PINS;
-> +	memset(new->chip, -1, chip_size);
-> +
-> +	RCU_INIT_POINTER(kvm->irq_routing, new);
-> +
-> +	return 0;
-> +}
-> diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-> index ff0a20565f90..b5f4fa9d050d 100644
-> --- a/virt/kvm/kvm_main.c
-> +++ b/virt/kvm/kvm_main.c
-> @@ -1285,6 +1285,10 @@ static struct kvm *kvm_create_vm(unsigned long type, const char *fdname)
->  	if (r)
->  		goto out_err;
->  
-> +	r = kvm_setup_empty_irq_routing_lockless(kvm);
-> +	if (r)
-> +		goto out_err;
-
-This is too late.  It might not matter in practice, but the call before this is
-to kvm_arch_post_init_vm(), which quite strongly suggests that *all* common setup
-is done before that arch hook is invoked.
-
-Calling this right before kvm_arch_init_vm() seems like the best/easiest fit, e.g.
-
-diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-index 2e388972d856..ab607441686f 100644
---- a/virt/kvm/kvm_main.c
-+++ b/virt/kvm/kvm_main.c
-@@ -1197,9 +1197,13 @@ static struct kvm *kvm_create_vm(unsigned long type, const char *fdname)
-                rcu_assign_pointer(kvm->buses[i],
-                        kzalloc(sizeof(struct kvm_io_bus), GFP_KERNEL_ACCOUNT));
-                if (!kvm->buses[i])
--                       goto out_err_no_arch_destroy_vm;
-+                       goto out_err_no_irq_routing;
-        }
- 
-+       r = kvm_init_irq_routing(kvm);
-+       if (r)
-+               goto out_err_no_irq_routing;
-+
-        r = kvm_arch_init_vm(kvm, type);
-        if (r)
-                goto out_err_no_arch_destroy_vm;
-@@ -1254,6 +1258,8 @@ static struct kvm *kvm_create_vm(unsigned long type, const char *fdname)
-        WARN_ON_ONCE(!refcount_dec_and_test(&kvm->users_count));
-        for (i = 0; i < KVM_NR_BUSES; i++)
-                kfree(kvm_get_bus(kvm, i));
-+       kvm_free_irq_routing(kvm);
-+out_err_no_irq_routing:
-        cleanup_srcu_struct(&kvm->irq_srcu);
- out_err_no_irq_srcu:
-        cleanup_srcu_struct(&kvm->srcu);
-
+> diff --git a/arch/x86/pci/olpc.c b/arch/x86/pci/olpc.c
+> index f3aab76e357a..4b18c6404363 100644
+> --- a/arch/x86/pci/olpc.c
+> +++ b/arch/x86/pci/olpc.c
+> @@ -154,9 +154,6 @@ static const uint32_t ehci_hdr[] = {  /* dev f function 4 - devfn = 7d */
+>  	0x0,	0x40,	0x0,	0x40a,			/* CapPtr INT-D, IRQA */
+>  	0xc8020001, 0x0, 0x0,	0x0,	/* Capabilities - 40 is R/O, 44 is
+>  					   mask 8103 (power control) */
+> -#if 0
+> -	0x1,	0x40080000, 0x0, 0x0,	/* EECP - see EHCI spec section 2.1.7 */
+> -#endif
+>  	0x01000001, 0x0, 0x0,	0x0,	/* EECP - see EHCI spec section 2.1.7 */
+>  	0x2020,	0x0,	0x0,	0x0,	/* (EHCI page 8) 60 SBRN (R/O),
+>  					   61 FLADJ (R/W), PORTWAKECAP  */
+> -- 
+> 2.39.2
+> 
 
