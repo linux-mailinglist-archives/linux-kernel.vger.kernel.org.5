@@ -1,209 +1,168 @@
-Return-Path: <linux-kernel+bounces-167642-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-167643-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 318FF8BAC8F
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 14:34:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 181A08BAC99
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 14:36:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 547371C227D5
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 12:34:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 437DF1C213C6
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 12:36:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA36324A08;
-	Fri,  3 May 2024 12:34:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88FA115219B;
+	Fri,  3 May 2024 12:36:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="plsu0EXA"
-Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=finest.io header.i=parker@finest.io header.b="FNAgmZVE"
+Received: from mout.perfora.net (mout.perfora.net [74.208.4.197])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 82F061EB31
-	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 12:34:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9E8128F5;
+	Fri,  3 May 2024 12:36:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.208.4.197
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714739685; cv=none; b=I6WfY6mheXurmi2/p0JPBLb+lOf0repj789GhxIT1PC+wQqEl9JBCcCt1OfRQsfqx/ARA73dkKlL65L7iGAQJjgjyCsuJ9321F8ATPV5RKdjX6sDowWOADzSG3xCQCm/nMzwcCbIKHaG5oro5ZC0O9koD4LioYh90gfcrpHJtQM=
+	t=1714739810; cv=none; b=IJn/lQMJ5ax5EzvzwA3aYLXzYjeSlae3epHcaZIJOWlLZtoQ9zAkHnoRZ2t8JVmwTzW9dBFr8utXXvNtQoDbruEm8OQNFVnx9E2VVfEeOBFFuxnomKGdUxatdqcdYx58IRoDrNqa1W4Rk3oTUi7lspwZ24ErI7jWVBevXGcBJv8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714739685; c=relaxed/simple;
-	bh=/W93gMGJGyWb6vgcQO2hTPyQCT1+wN2G+A++W9T6d+Q=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=h2zOke0c77uz2VMvePkcR40PvE2XtZ+dfXQ3XUrs51UN3vIHKN6PcPoOedWn1UYKaD6riZkgpEqyF/rji24OgdPMb8ILE8/rKGPsxsNoW7vWzAyMPznJLQ3Urjn/9os4t02kVpHdcL6/H8rIfDYGVmb+I/P9HNGnItlZ+zeFAs4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=plsu0EXA; arc=none smtp.client-ip=209.85.214.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-1ec76185c0fso122795ad.1
-        for <linux-kernel@vger.kernel.org>; Fri, 03 May 2024 05:34:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1714739683; x=1715344483; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=HGd5yQ+FbYYaeGV9S8djZOCUHtU56jARjfGFGSFbWAk=;
-        b=plsu0EXAowSZ5N0lX06PlbCUhRNE4A1acCH9cu5s8NH5Cs8OGqdfwBgT4fyvMp5rIv
-         o/AvugXhCm6S1jzZyJueZLiQeZeqQw8RNOYkp6SpWTd7tj4oopovRqs66RbwXdLQnZ63
-         qHaA5HIcCauh/iLYTxJm0cLuowd5aaOpM8EzanEyV4PW/MpH/E8/txuE+DNpyJd/pZjb
-         xl3hdvFUxovXXCTgfZSeroh6b4VA4NsSSh2DCkF+wpgQtCY7WgGw0kEZu2eb3HfUVotz
-         rlJ3g3h++k0zaF3vG7Wtle4vVw+UYjkC/f/aTbZVqUZmshPjWvNTpYycEHx2pD5sXZr/
-         G+bA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714739683; x=1715344483;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=HGd5yQ+FbYYaeGV9S8djZOCUHtU56jARjfGFGSFbWAk=;
-        b=fcISxXJyesK9uSsdk0zFkxaubGMuPPuc+2SzfxLTnrv8HI00kT7ISptlQtBg121V9v
-         SHnGLwiDPmlfo1a+dkFIduEhtot50D9qtIM7mWjjfOTMdmFpj3dyri2+WvDhv/Ni+U/N
-         J7bHhQ/Z1iJJQ8JHQthYeHCNOJ3CUjehTlXZgi37bicqwCgeIk4HjwO1fnl39APrQZEI
-         7bxu/vVarmPaH0InfI5K1EWMzRh11qvg6WEjhcUWBxBnYPT6CHc7MNypc46Jr5ifWRuU
-         9g2Q6txDh0vEYx+cTxzTpu95sh5u4uWRDWq/28nxyjVfMmzBJr+TesU6+cgt7PtqVy9u
-         eiKw==
-X-Forwarded-Encrypted: i=1; AJvYcCUiaHoLtlgJQYAPWgNwTGCNEYmIdEiW4FdWirFK1N6gcwvKBNZX/vSBpvtQNmzTlxWPqJC2Vyil0zhlXf1CP8r/GUSeFnUTo5BCZ6md
-X-Gm-Message-State: AOJu0Yx9WcYpbRXpGIz1dQcbwxKNnuWjB4sOmIleh63RcJL4Zfdw6AFo
-	teyELLTdtkbeoyWb2H0weD2WMqUzDzIcQtqwLhwx5BdyU7jvHd4VY9ifuBw8zcQb3T3LTFbqPEc
-	8z2Eo3ZPKQWreu2/aVXSHxQsjCoHVj+1T+3Nu
-X-Google-Smtp-Source: AGHT+IGLy6D3yQuVSWGCX/oTNa4GAxl57gtqrWYM2jk4hU2dAM/sY+AhNIzLrPUW+Hv3E6n9P/SIw+E3pd5D23lQqCE=
-X-Received: by 2002:a17:902:eccc:b0:1e5:e5e8:73f7 with SMTP id
- d9443c01a7336-1ed2c5fc9d9mr2123955ad.2.1714739682281; Fri, 03 May 2024
- 05:34:42 -0700 (PDT)
+	s=arc-20240116; t=1714739810; c=relaxed/simple;
+	bh=nXZwx6IVJMBUefq5xdQYjmzDRIJO0v+73VppqwXi8oY=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=SukCMBSo0+ujholigsqmCKSyWH0wpT2Xlmsy2inSosLc9UdC6pueqypeAnjVxMbMp3DtGLBXcQqKWDYnL6D0i9Mf0RM6gXRZ1Xfjlr4RChiU4b2HBCJL0/RcIQYQH1TdS5CEZFmn8vgJ/IPInfIzf1R8c+UZFid2w8jlTIiiLlA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=finest.io; spf=pass smtp.mailfrom=finest.io; dkim=pass (2048-bit key) header.d=finest.io header.i=parker@finest.io header.b=FNAgmZVE; arc=none smtp.client-ip=74.208.4.197
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=finest.io
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=finest.io
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=finest.io;
+	s=s1-ionos; t=1714739800; x=1715344600; i=parker@finest.io;
+	bh=LPHhZm5lowvrZny9uJ95Cq5UJFclBqQhK3jaWOkbXOI=;
+	h=X-UI-Sender-Class:Date:From:To:Cc:Subject:Message-ID:In-Reply-To:
+	 References:MIME-Version:Content-Type:Content-Transfer-Encoding:cc:
+	 content-transfer-encoding:content-type:date:from:message-id:
+	 mime-version:reply-to:subject:to;
+	b=FNAgmZVEZ/orShUL7OL8sfx3sPurnAzvRjAn7KBacU5F10Rzm103golGxICUUB5B
+	 QKQRheBvnEN53kSh3jA8tp/yfB/aSmIHsmWQW5+pCnYM/ctpb6/SQGsVY9cG8Czxh
+	 fxyxev4g9GV62wL57rlIr8ogMltMOgzgpKQWyUZO6TQ2uk1++o/8OyNQ8TrJEXfRc
+	 6MycymvBk3d69xMfwci/Cs++qr19qd4Ib7e9M5Ss7VFHH8fh/vPTNqnmXEbkze192
+	 dtOuMLJ+6JIbyOLDEZwwbJqinwrflZgokjCMXSNZGmNTAWP/m3PKMLpqMUhlws3CI
+	 306Qop0yDfljSrV4Hg==
+X-UI-Sender-Class: 55c96926-9e95-11ee-ae09-1f7a4046a0f6
+Received: from SWDEV2.connecttech.local ([98.159.241.229]) by
+ mrelay.perfora.net (mreueus003 [74.208.5.2]) with ESMTPSA (Nemesis) id
+ 0M3z4W-1su0jq2fD8-00rZ6e; Fri, 03 May 2024 14:36:40 +0200
+Date: Fri, 3 May 2024 08:36:38 -0400
+From: Parker Newman <parker@finest.io>
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Parker Newman <pnewman@connecttech.com>, linux-kernel@vger.kernel.org,
+ linux-serial@vger.kernel.org, Greg Kroah-Hartman
+ <gregkh@linuxfoundation.org>, Jiri Slaby <jirislaby@kernel.org>
+Subject: Re: [PATCH v1 00/13] serial: 8250_exar: Clean up the driver
+Message-ID: <20240503083638.0f8d9afb@SWDEV2.connecttech.local>
+In-Reply-To: <ZjPVEr7D0lEf86kQ@smile.fi.intel.com>
+References: <20240502144626.2716994-1-andriy.shevchenko@linux.intel.com>
+	<20240502114645.4445b3da@SWDEV2.connecttech.local>
+	<ZjO4vYEBzxU3fpzC@smile.fi.intel.com>
+	<20240502120840.02c65f30@SWDEV2.connecttech.local>
+	<ZjPL5z7ah-Qkct6l@smile.fi.intel.com>
+	<20240502134949.5e780635@SWDEV2.connecttech.local>
+	<ZjPVEr7D0lEf86kQ@smile.fi.intel.com>
+Organization: Connect Tech Inc.
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <000000000000dcd2ae06178bccb0@google.com>
-In-Reply-To: <000000000000dcd2ae06178bccb0@google.com>
-From: Aleksandr Nogikh <nogikh@google.com>
-Date: Fri, 3 May 2024 14:34:30 +0200
-Message-ID: <CANp29Y5k1S5ETBibTzWv7y6jiKevOhMYg0LYqM+PGvuFYiM14A@mail.gmail.com>
-Subject: Re: [syzbot] [crypto?] KMSAN: uninit-value in skcipher_walk_virt
-To: syzbot <syzbot+97b4444a5bd7bf30b3a8@syzkaller.appspotmail.com>, 
-	Kent Overstreet <kent.overstreet@linux.dev>
-Cc: davem@davemloft.net, herbert@gondor.apana.org.au, 
-	linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:n6/uzA2IhZbVt2TgRaG7NyI/MlOCAXoi9/8kT6hEFaqRH/NC3VZ
+ QInZr2mb9GSRUWHP82V7ASj9KQhTYkF5B1uacj8gipX0langyvY6v5oRNBpFVvIWGy10+Nk
+ +pKxEr5g+CzJgPmure6SaTGHUJLCxuQ1bZQZu4UbY+A7NJ0yanwNoNM1xn024910V5WS2/b
+ pza/H6Vc9BMROZ8St3ZCw==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:Y80D4vzoXK8=;wqrCnw9oWycvF2C1VXvSnRUeY2O
+ 2UQenEnZ5DBZ69bOXzzeM347nuuR+yPYrVZ2rT4V61xVu+tya3C7LO2W9x0WKi9FX5YdnBSS5
+ /NEPilaLmPfbZu7h1CE7xOATDIDGSNg5VYaNCRHVEA0Pz1LvINl+CiSOENFqSOhKiO86rUT3g
+ LBvPDsooqSRaRuI9DdKpnFs3IkutqtJOcV9MJB95t2736SmPX69go+vBtPJh67KnhudNo/nJb
+ SwmiERK5OgAR84PsxFxibxlIwG7JSCCmkl9squG6bBXhpmrDMjLJBLKMu6iDJrRHbhpj0Dwwn
+ jbcGVeYu/9jH1rHARsPnb55FLIJM1UlrDcUTbmKVsxs5nfprZHNjAo/Fw0Jo2rppq6+5k1t8S
+ uvC+If+31ZpKdjfCes7YRLgvM4k8dPBr8ju1LIElosiM4q5LCt+rffOKFbwWpCFJetGHHDlPh
+ 3DKAEP4Atz3iRe47gi7yKIk/9+3UNES4eghY5RrRLhGCmajNImaqclpyTv0BBU2MqDL0r5p0x
+ 0W6erUMd75ARsxkcqQNbhapDLtkNUPAJGeaCyodIGk+3lqngAGVr7dgjycqiVOpDdRXv+ghj2
+ 8hyUGV1/gdyWjFDwlGndrkc0AziOGGyrNNzpOCtV9e+I/grl2x+HUJHI4D5T5Tw1sJskPldMi
+ xUW/oj6NDbP7LWKV4v1b5gfv6mRNo15a+fD8nlsQ5U38lM9jEp7XSgYZnuDbGiLzZFjCCMIYX
+ dw1/byrpKxPQmndO60p5Vtd+VLxenL06j6Xo2Wx+R5BwQOm5KkADzk=
 
-#syz set subsystems: bcachefs
+On Thu, 2 May 2024 21:01:54 +0300
+Andy Shevchenko <andriy.shevchenko@linux.intel.com> wrote:
 
-On Fri, May 3, 2024 at 2:24=E2=80=AFPM syzbot
-<syzbot+97b4444a5bd7bf30b3a8@syzkaller.appspotmail.com> wrote:
+> On Thu, May 02, 2024 at 01:49:49PM -0400, Parker Newman wrote:
+> > On Thu, 2 May 2024 20:22:47 +0300
+> > Andy Shevchenko <andriy.shevchenko@linux.intel.com> wrote:
+> > > On Thu, May 02, 2024 at 12:08:40PM -0400, Parker Newman wrote:
+> > > > On Thu, 2 May 2024 19:01:01 +0300
+> > > > Andy Shevchenko <andriy.shevchenko@linux.intel.com> wrote:
+> > > > > On Thu, May 02, 2024 at 11:46:45AM -0400, Parker Newman wrote:
+> > > > > > On Thu,  2 May 2024 17:43:54 +0300
+> > > > > > Andy Shevchenko <andriy.shevchenko@linux.intel.com> wrote:
+> > > > > >
+> > > > > > > After a rework for CONNTECH was done, the driver may need a =
+bit of
+> > > > > > > love in order to become less verbose (in terms of indentatio=
+n and
+> > > > > > > code duplication) and hence easier to read.
+> > > > > > >
+> > > > > > > This clean up series fixes a couple of (not so critical) iss=
+ues and
+> > > > > > > cleans up the recently added code. No functional change inde=
+nted by
+> > > > > > > the cleaning up part.
+> > > > > >
+> > > > > > Just an FYI I submitted a patch series that fixed several of t=
+hese issues but I
+> > > > > > think it fell through the cracks (I know everyone is very busy=
+!).
+> > > > > >
+> > > > > > Link: https://lore.kernel.org/linux-serial/cover.1713533298.gi=
+t.pnewman@connecttech.com/
+> > > > > >
+> > > > > > I believe my previous patch series is no longer required. This=
+ one fixes
+> > > > > > everything.
+> > > > >
+> > > > > I haven't noticed that, if it contains duplicated patches, I may=
+ replace mine
+> > > > > with yours if you insist.
+> > > > >
+> > > > > In any case it's better to reply there that you prefer this seri=
+es to be
+> > > > > applied, so Greg will not pick it up.
+> > > > >
+> > > >
+> > > > I do not have a preference. I am fine with using yours if it is ea=
+sier on
+> > > > the maintainers.
+> > >
+> > > Up to you, there is no issue to take your patches in case they are t=
+he same
+> > > (or quite similar) as mine. I can pick them up, just tell me if you =
+want this
+> > > to happen with a list of the patches (as mail Message-Id).
+> >
+> > Just use yours.
 >
-> Hello,
+> Okay, thanks!
 >
-> syzbot found the following issue on:
+> If you are going to test, better to pay attention to the BIT() conversio=
+n patch
+> as Ilpo noted an issue. I believe it's easy to drop (via local git-rebas=
+e run)
+> or move and test separately.
 >
-> HEAD commit:    f03359bca01b Merge tag 'for-6.9-rc6-tag' of git://git.ker=
-n..
-> git tree:       upstream
-> console output: https://syzkaller.appspot.com/x/log.txt?x=3D17c169df18000=
-0
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=3Dbbf5674960220=
-57b
-> dashboard link: https://syzkaller.appspot.com/bug?extid=3D97b4444a5bd7bf3=
-0b3a8
-> compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Deb=
-ian) 2.40
-> userspace arch: i386
->
-> Unfortunately, I don't have any reproducer for this issue yet.
->
-> Downloadable assets:
-> disk image: https://storage.googleapis.com/syzbot-assets/b345b1c01095/dis=
-k-f03359bc.raw.xz
-> vmlinux: https://storage.googleapis.com/syzbot-assets/d59970ea319e/vmlinu=
-x-f03359bc.xz
-> kernel image: https://storage.googleapis.com/syzbot-assets/47407f406f40/b=
-zImage-f03359bc.xz
->
-> IMPORTANT: if you fix the issue, please add the following tag to the comm=
-it:
-> Reported-by: syzbot+97b4444a5bd7bf30b3a8@syzkaller.appspotmail.com
->
-> loop3: detected capacity change from 0 to 32768
-> bcachefs (loop3): mounting version 1.7: mi_btree_bitmap opts=3Dmetadata_c=
-hecksum=3Dnone,data_checksum=3Dnone,nojournal_transaction_names
-> bcachefs (loop3): recovering from clean shutdown, journal seq 10
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D
-> BUG: KMSAN: uninit-value in skcipher_walk_virt+0x91/0x1a0 crypto/skcipher=
-c:504
->  skcipher_walk_virt+0x91/0x1a0 crypto/skcipher.c:504
->  chacha_stream_xor+0x7c/0x710 crypto/chacha_generic.c:22
->  crypto_chacha_crypt+0x79/0xb0 crypto/chacha_generic.c:45
->  crypto_skcipher_encrypt+0x1a0/0x1e0 crypto/skcipher.c:671
->  do_encrypt_sg fs/bcachefs/checksum.c:107 [inline]
->  do_encrypt+0x99c/0xc30 fs/bcachefs/checksum.c:127
->  gen_poly_key fs/bcachefs/checksum.c:190 [inline]
->  bch2_checksum+0x21f/0x7c0 fs/bcachefs/checksum.c:226
->  bch2_btree_node_read_done+0x1898/0x75e0 fs/bcachefs/btree_io.c:1055
->  btree_node_read_work+0x8a5/0x1eb0 fs/bcachefs/btree_io.c:1324
->  bch2_btree_node_read+0x3d42/0x4b50
->  __bch2_btree_root_read fs/bcachefs/btree_io.c:1748 [inline]
->  bch2_btree_root_read+0xa6c/0x13d0 fs/bcachefs/btree_io.c:1772
->  read_btree_roots+0x454/0xee0 fs/bcachefs/recovery.c:457
->  bch2_fs_recovery+0x7adb/0x9310 fs/bcachefs/recovery.c:785
->  bch2_fs_start+0x7b2/0xbd0 fs/bcachefs/super.c:1043
->  bch2_fs_open+0x135f/0x1670 fs/bcachefs/super.c:2102
->  bch2_mount+0x90d/0x1d90 fs/bcachefs/fs.c:1903
->  legacy_get_tree+0x114/0x290 fs/fs_context.c:662
->  vfs_get_tree+0xa7/0x570 fs/super.c:1779
->  do_new_mount+0x71f/0x15e0 fs/namespace.c:3352
->  path_mount+0x742/0x1f20 fs/namespace.c:3679
->  do_mount fs/namespace.c:3692 [inline]
->  __do_sys_mount fs/namespace.c:3898 [inline]
->  __se_sys_mount+0x725/0x810 fs/namespace.c:3875
->  __ia32_sys_mount+0xe3/0x150 fs/namespace.c:3875
->  ia32_sys_call+0x3a9a/0x40a0 arch/x86/include/generated/asm/syscalls_32.h=
-:22
->  do_syscall_32_irqs_on arch/x86/entry/common.c:165 [inline]
->  __do_fast_syscall_32+0xb4/0x120 arch/x86/entry/common.c:386
->  do_fast_syscall_32+0x38/0x80 arch/x86/entry/common.c:411
->  do_SYSENTER_32+0x1f/0x30 arch/x86/entry/common.c:449
->  entry_SYSENTER_compat_after_hwframe+0x84/0x8e
->
-> Local variable __req_desc.i created at:
->  do_encrypt_sg fs/bcachefs/checksum.c:101 [inline]
->  do_encrypt+0x8f9/0xc30 fs/bcachefs/checksum.c:127
->  gen_poly_key fs/bcachefs/checksum.c:190 [inline]
->  bch2_checksum+0x21f/0x7c0 fs/bcachefs/checksum.c:226
->
-> CPU: 1 PID: 15218 Comm: syz-executor.3 Not tainted 6.9.0-rc6-syzkaller-00=
-131-gf03359bca01b #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS G=
-oogle 03/27/2024
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D
->
->
-> ---
-> This report is generated by a bot. It may contain errors.
-> See https://goo.gl/tpsmEJ for more information about syzbot.
-> syzbot engineers can be reached at syzkaller@googlegroups.com.
->
-> syzbot will keep track of this issue. See:
-> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
->
-> If the report is already addressed, let syzbot know by replying with:
-> #syz fix: exact-commit-title
->
-> If you want to overwrite report's subsystems, reply with:
-> #syz set subsystems: new-subsystem
-> (See the list of subsystem names on the web dashboard)
->
-> If the report is a duplicate of another one, reply with:
-> #syz dup: exact-subject-of-another-report
->
-> If you want to undo deduplication, reply with:
-> #syz undup
->
-> --
-> You received this message because you are subscribed to the Google Groups=
- "syzkaller-bugs" group.
-> To unsubscribe from this group and stop receiving emails from it, send an=
- email to syzkaller-bugs+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgi=
-d/syzkaller-bugs/000000000000dcd2ae06178bccb0%40google.com.
+
+I am working on testing now but patches 7 and 12 did not apply with git am=
+.
+Both failed around lines 1095/1096.
+I can apply them manually but I may be using the wrong branch (tty-next).
+Which branch/commit did you create your patches from? I don't see it in th=
+e
+patch submission.
 
