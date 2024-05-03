@@ -1,68 +1,68 @@
-Return-Path: <linux-kernel+bounces-168311-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-168312-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6258B8BB64D
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 23:46:42 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 141148BB64E
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 23:46:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 856811C20A85
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 21:46:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 957AF1F213B1
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 21:46:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11FFA137917;
-	Fri,  3 May 2024 21:38:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D50C8137933;
+	Fri,  3 May 2024 21:38:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="dctPQnKg"
-Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="gNeb0pjk"
+Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07819137766
-	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 21:38:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD7AE137903
+	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 21:38:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714772294; cv=none; b=rpYhCnkK9tbbnGMK8CQEI16MKMPTsA9v6qZYcJmxfnHOl/UtzwSkAr3IRGVzRVfjVVBzzMs1ITEHaQJE2exUJHHzmKwuEzh0gAbW2TFmtUEmi8RPLkSA5bHVWeA1zivr2bxz4lnEM6L+TLoh+7pdkvz53iBrEZVeEYptkh3klkQ=
+	t=1714772296; cv=none; b=PwrukfyYLrtLvzZhT03rvyKBfe3kJZ8pOO8H1T9mR4kuCsI8c8Yv6JOdj0iWOozD3RLOsSQFVx30NAs1fDsKi+bcNHModoJnqvEEyNyRo43olGF6MkcUaqCvpzEomOks5QbX2ALXhlcgJjaaYLgXCe2L9PPBipxIKgG1JI3TWi0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714772294; c=relaxed/simple;
-	bh=wi3nhmfubaEs7FDrXqrqYUjUQwr5WxQmbUhvxgTasvE=;
+	s=arc-20240116; t=1714772296; c=relaxed/simple;
+	bh=bvpX+7DrauxoowAu53h9wDnzFvPQ6Wo3F4LQXvo7Tc4=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=eO4oIf7l4uCV2v964HNkRqT5sDfN7P9ZohabygVLXDswzIQ3EbwtHvBLyhAJdfDfXnljO7QdcUzvEOpVI/Cvm3OermssquDnhfuy23jJlRTBDvefkNJ3P6KZ2DDUUULwWkBpUxZU3q9t9qttCa3iNJdG3ElZrqHnJhU1J64R9o0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=dctPQnKg; arc=none smtp.client-ip=209.85.214.179
+	 MIME-Version; b=rr+ELV6NhSpHSbEACKGK44dJog87JhpXcjzxfTRHRGFDHIj21lJHTNMwt7UB6tfBAAj3ugSpbhHjWEu0EJJ38abOUQHxInPS77PNNXTKo3ScCPwud2iP80RA1zYc3l7nmDRfP92H/MTNosszINxhZGYrTi9TnWe4BMYZCAozd0I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=gNeb0pjk; arc=none smtp.client-ip=209.85.214.173
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-1ecc23e6c9dso733305ad.2
-        for <linux-kernel@vger.kernel.org>; Fri, 03 May 2024 14:38:12 -0700 (PDT)
+Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-1e4266673bbso1052365ad.2
+        for <linux-kernel@vger.kernel.org>; Fri, 03 May 2024 14:38:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1714772292; x=1715377092; darn=vger.kernel.org;
+        d=chromium.org; s=google; t=1714772294; x=1715377094; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=X9J+mwbNCcE7m50P9Dlsv1H2Zyb5eg1SoTrNCCSKKxs=;
-        b=dctPQnKgta/9VLmEkKA7V7Bmlord9jpRKM7e1lcSKJqOTSJAvvU8MUPsee4Jf6FnEQ
-         QAHfnPXR7oyyUveBYTozIAO8ztruoqKNHQutO5r7tFU2f0V5yCplDSdBq7TpOYZPEkbV
-         SWV9nnEX6xBfTCLDl94DUekp8h1OYMmM0OijI=
+        bh=ekjI+s+uLAWB4kUzVZhMVrRRrlC73fq00flN601bwaM=;
+        b=gNeb0pjkTHcQzHrBJ635ULp2Qlm4aYXdrCoabN60QZTi0IJqhBXLAybQFAMh0+RFX/
+         ASe9hxqF0o+6BiglGhglu9DNM0juSHsQ2rZdB/16PZxMifm1aGiKKjLB7rjNMFzsiAZ8
+         l/Rmk+ro8bTVhWT++hh9A7KlVNlSzSJOwTDSY=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714772292; x=1715377092;
+        d=1e100.net; s=20230601; t=1714772294; x=1715377094;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=X9J+mwbNCcE7m50P9Dlsv1H2Zyb5eg1SoTrNCCSKKxs=;
-        b=F7vNHpxP0InFUidowu47dkfrMYd2LpoWOm7R020h2J8AzriEZDYgra9jH6fCsLm3x4
-         w+DuF8bjZFKORIRZ2mm5q+zRE6YWKORlSNrlaip3l8gCyiIocccQpIaJVzqyX1/YuUUx
-         0FXwZA22aUJVW4c4Qyqa/oElAK3+pFUau2xN4e+e4C2MsaS6kpVOQ36zWpiGY0DGDhS5
-         1Jqn4aHbQaqrGNe1HYz2qjrfL4+AGVDb1OdzSdszp4ueG1Tlgb2INlMHA1SylLCCx2ge
-         ONsyQxQfTJDJpZcA7Q0bde/DMj5CnX5z+qzGzuLtaRWHZIIeLkEmiIYHnhYO32B4Uz26
-         prsA==
-X-Forwarded-Encrypted: i=1; AJvYcCWKbfqxy/5TEboS5bOti0NfhIyBn6JsX8QOI+wl2uCUMt2SFbzVHrYZvvfr22GIi1YQHre+fiJN1wyAxRTW5R61PyNa8uMSQv/0bW1k
-X-Gm-Message-State: AOJu0YxciW4yP84QD804r1ElUC0YL58HnKOV6Hq9eUfLLWcZ9gbHwIac
-	e9vDwxv4Vr8f5Y8Qi6mJpgBOkTxK4YmPmWo9xk6vdaujDBQE7Ev0VI3ZrmWvTQ==
-X-Google-Smtp-Source: AGHT+IEhvNbol5zNlkCIgLPtF12l61bvixPmv0EHaY4itQnvJImVMXDJ99WT0lhGIYbPhxxJaaynFw==
-X-Received: by 2002:a17:902:da8c:b0:1e3:cfc5:589e with SMTP id j12-20020a170902da8c00b001e3cfc5589emr4661779plx.64.1714772292404;
-        Fri, 03 May 2024 14:38:12 -0700 (PDT)
+        bh=ekjI+s+uLAWB4kUzVZhMVrRRrlC73fq00flN601bwaM=;
+        b=O+e13Sm/RrmRze0DhOmEamL0BYMI8gS99C7oLIB6sJ/ByvnAFJHfuVHHYKOqtAXw7K
+         8XJFByWU6T3Rvsbs7we937bqkdp8ky0AvH0Zja/HD2k7etMHA1buMlqD6glcu2qC4+PK
+         Zr+m0OHAxl00jYkqOmT7FTe3NlagxbcMY2X236dKSYnCLAPSkAJTzuRabJSEInw4Wx4e
+         52iSSUU6iqOsiWlwxzO9wzGJCEaAxFveKa46/wzfypLqNuM3qODDELBKeHvvJIoaBvfV
+         FW/3pIJbJshI1ooEx5Tvvv1+axuGiTBiL1fseazLDCnm53Rl86JQSAlxm98wAmmGSI4c
+         1I9A==
+X-Forwarded-Encrypted: i=1; AJvYcCXD4Hh/z34wvwoYJxAfXSxGPkfEJ7SDxmLJ9qIilQKpgRxK+A5cPWDRcXqcXZSoXsjTe8MRGzCFYWVqjWlV4ftaRIfiM3wX8M0lEGrz
+X-Gm-Message-State: AOJu0YwCLmsZKP3hnZ/pHv8KtDowpn47B7jGtEshR7NffvmRwXel6jJi
+	e+cyqyk1d56/we+uGO7KJQSntFMif0OUbOWo++86/DC1rGeuhp6Ok1W/7pNolg==
+X-Google-Smtp-Source: AGHT+IFguT0/xs4KCtngccJNg5AiVarM5W9ebMgGc4GgQxudEnwAFv+ycO9TzXkPPacW4rwdnnJR0g==
+X-Received: by 2002:a17:902:bb17:b0:1e9:470:87e6 with SMTP id im23-20020a170902bb1700b001e9047087e6mr3553894plb.23.1714772294293;
+        Fri, 03 May 2024 14:38:14 -0700 (PDT)
 Received: from dianders.sjc.corp.google.com ([2620:15c:9d:2:fb6a:b54b:7580:64f3])
-        by smtp.gmail.com with ESMTPSA id j12-20020a170903024c00b001eb51a46f5bsm3729134plh.43.2024.05.03.14.38.10
+        by smtp.gmail.com with ESMTPSA id j12-20020a170903024c00b001eb51a46f5bsm3729134plh.43.2024.05.03.14.38.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 03 May 2024 14:38:11 -0700 (PDT)
+        Fri, 03 May 2024 14:38:13 -0700 (PDT)
 From: Douglas Anderson <dianders@chromium.org>
 To: dri-devel@lists.freedesktop.org,
 	Maxime Ripard <mripard@kernel.org>
@@ -80,9 +80,9 @@ Cc: Linus Walleij <linus.walleij@linaro.org>,
 	Sam Ravnborg <sam@ravnborg.org>,
 	Thomas Zimmermann <tzimmermann@suse.de>,
 	linux-kernel@vger.kernel.org
-Subject: [RFT PATCH v2 46/48] drm/panel: sony-acx565akm: Don't double-check enabled state in disable
-Date: Fri,  3 May 2024 14:33:27 -0700
-Message-ID: <20240503143327.RFT.v2.46.I6a51b36831a5c7b2b82bccf8c550cf0d076aa541@changeid>
+Subject: [RFT PATCH v2 47/48] drm/panel: sony-acx565akm: Don't call disable at remove
+Date: Fri,  3 May 2024 14:33:28 -0700
+Message-ID: <20240503143327.RFT.v2.47.I2513fd6824929a17c1ccd18a797b98a1a1063559@changeid>
 X-Mailer: git-send-email 2.45.0.rc1.225.g2a3ae87e7f-goog
 In-Reply-To: <20240503213441.177109-1-dianders@chromium.org>
 References: <20240503213441.177109-1-dianders@chromium.org>
@@ -94,22 +94,22 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-As talked about in commit d2aacaf07395 ("drm/panel: Check for already
-prepared/enabled in drm_panel"), we want to remove needless code from
-panel drivers that was storing and double-checking the
-prepared/enabled state. Even if someone was relying on the
-double-check before, that double-check is now in the core and not
-needed in individual drivers.
+It's the responsibility of a correctly written DRM modeset driver to
+call drm_atomic_helper_shutdown() at shutdown time and that should be
+disabling / unpreparing the panel if needed. Panel drivers shouldn't
+be calling these functions themselves.
 
-The acx565akm seems to do some unique stuff with the "enabled"
-state. Specifically:
-1. It seems to detect the enabled state based on how the bootloader
-   left the panel.
-2. It uses the enabled state to prevent certain sysfs files from
-   accessing a disabled panel.
+A recent effort was made to fix as many DRM modeset drivers as
+possible [1] [2] [3] and most drivers are fixed now.
 
-We'll leave the "enabled" state tracking for this. However, we can at
-least get rid of the double-check when trying to disable.
+A grep through mainline for compatible strings used by this driver
+indicates that it is used by TI OMAP boards. The TI OMAP driver
+appears to be correctly calling drm_atomic_helper_shutdown() so we can
+remove the calls.
+
+[1] https://lore.kernel.org/r/20230901234015.566018-1-dianders@chromium.org
+[2] https://lore.kernel.org/r/20230901234202.566951-1-dianders@chromium.org
+[3] https://lore.kernel.org/r/20230921192749.1542462-1-dianders@chromium.org
 
 Cc: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
 Cc: Sebastian Reichel <sebastian.reichel@collabora.com>
@@ -123,19 +123,19 @@ Changes in v2:
  1 file changed, 3 deletions(-)
 
 diff --git a/drivers/gpu/drm/panel/panel-sony-acx565akm.c b/drivers/gpu/drm/panel/panel-sony-acx565akm.c
-index 3d6a286056a0..a9a545a56404 100644
+index a9a545a56404..73ba93ff00fe 100644
 --- a/drivers/gpu/drm/panel/panel-sony-acx565akm.c
 +++ b/drivers/gpu/drm/panel/panel-sony-acx565akm.c
-@@ -454,9 +454,6 @@ static int acx565akm_power_on(struct acx565akm_panel *lcd)
+@@ -652,9 +652,6 @@ static void acx565akm_remove(struct spi_device *spi)
  
- static void acx565akm_power_off(struct acx565akm_panel *lcd)
- {
--	if (!lcd->enabled)
--		return;
+ 	if (lcd->has_bc)
+ 		acx565akm_backlight_cleanup(lcd);
 -
- 	acx565akm_set_display_state(lcd, 0);
- 	acx565akm_set_sleep_mode(lcd, 1);
- 	lcd->enabled = false;
+-	drm_panel_disable(&lcd->panel);
+-	drm_panel_unprepare(&lcd->panel);
+ }
+ 
+ static const struct of_device_id acx565akm_of_match[] = {
 -- 
 2.45.0.rc1.225.g2a3ae87e7f-goog
 
