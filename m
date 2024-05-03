@@ -1,269 +1,153 @@
-Return-Path: <linux-kernel+bounces-167715-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-167716-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A54B28BADE1
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 15:40:45 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4E53E8BADE3
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 15:40:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 313181F234D0
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 13:40:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E120D1F234AB
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 13:40:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26069153BDF;
-	Fri,  3 May 2024 13:40:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="OkOB9RfS"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1ED8154428;
+	Fri,  3 May 2024 13:40:36 +0000 (UTC)
+Received: from mail-io1-f72.google.com (mail-io1-f72.google.com [209.85.166.72])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61F04139CF8;
-	Fri,  3 May 2024 13:40:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA632153BCB
+	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 13:40:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.72
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714743634; cv=none; b=Bg87d/EMC5PSOibmXEFGWtAeM2OUiDIRSbNhr5C7Cfy1w4cDndJ+HEpVBIlBYDNH/TswO6+hS/6aXzfD7XmTrxmJ6Er6p9uT4gMPJYf3R+N9AhoKAp7b4KZEizHoavE9TjmJtN3nwDT8o6B6RvKBIlOipmrDZrbTFJsOwqfPZYE=
+	t=1714743636; cv=none; b=lU4PeBZ6PWpTCS25GzNGqJzi7IkCHNPap6yybthGIE5JP9IZB+PYb7JTT1Ve5zXtn7K+Xq/cVJtKjj0X3RKj+dJ4nz0Jg64oX+JgzVxQrbIZ9e4Y/y/VxNfyl43gaRTTjzCZsKFTGK4hojAA78lawJLSWgmvlQ4sFPPcN1mEZWw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714743634; c=relaxed/simple;
-	bh=izGzRh53kNir17NtrU6uAf2uWt6oz72X9pbN6GcH8g4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=aIfy5dLdwoJXbvtQotpq8UtZ6HhKTmeLW+e4cvmXfRs6M5sbyWONaBTj3p7UghJb0v60dmgRS+shrqjFIiAhehBzQtE8z4/1TV7Nc0dIApMyMod8em7JQ2NNZJYzppnRVQV1EcTZenb8ptBnVzsGhlCOzJ2xp0cvsACyCMWDnHc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=OkOB9RfS; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 443CLH05026098;
-	Fri, 3 May 2024 13:40:25 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=OTB8nHFLPaquXF5F/bBkNoQstl6p52xaF/pLsiIiK+E=; b=Ok
-	OB9RfSaE7dFEwpgN2ng24tTsRGHoRUdPZRLivDNQc4Kt5kpR4600xo8WiRIWzXjJ
-	sZabYLm8mWq8xYidXK8lDUJcMMH1FsPlkh0TngbWtId51nBXMhlkVPvZIU8nbLY3
-	Gi0thrgzD648jWAhKJW7Ke+pEi8oRF3wO9aer31NVSl9HctOKpORMHlLAPRA2gjV
-	UB9tX1NMJxom6EfLvAzi/5wBE8XEVyknmVz4UjXit1TTr0pfZfmGV5hT7jtZ7DXH
-	wvL9+Cqaue8c8sDGaMFH4KFDrL7FebKh4G2nslCXk6TphxdCR2J4/M+FO1dRWt8x
-	Anesn5ZMPjLpX9Xrh4ug==
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xv7pxk1jy-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 03 May 2024 13:40:25 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 443DeOCE027742
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 3 May 2024 13:40:24 GMT
-Received: from [10.214.66.164] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Fri, 3 May 2024
- 06:40:21 -0700
-Message-ID: <289b9ad6-58a3-aa39-48ae-a244fe108354@quicinc.com>
-Date: Fri, 3 May 2024 19:10:18 +0530
+	s=arc-20240116; t=1714743636; c=relaxed/simple;
+	bh=np4KX/dQO/jILjhh5P5s5rwj9Il7+4Lnx3P23KtV/EY=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=o+sj+osCqrqUagzSyu3iJO8k8dDFWW4QtgkrSPVR7BC3g+g2CIDar9Kv7FWrk2QQ7EuR+lAKqRyqXuB5LiAPEqom7BD4zytHF9MnZIELbX+FRaQ5p7lV1/AzLN+kTc73V0uSKhDwejPrY00hKN3cK2C5Gof/Fdvb1NnG4NmdFo8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.72
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f72.google.com with SMTP id ca18e2360f4ac-7decb47ceebso627642339f.2
+        for <linux-kernel@vger.kernel.org>; Fri, 03 May 2024 06:40:34 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714743634; x=1715348434;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=hrBI8RJiDyViM5gs3peU14/2k5AZb/mtjpSoFWNKvCQ=;
+        b=g75n59xn6t5f79QvaUmb1/X2yrCJJwij+J1OSqogANGMqd5DG3ZLpIMR/MsC82a1AD
+         mMuG7PobGq77Z/KttKloGvgxMCt3ZfwSvlqTvEzFpExQjZ1TfNTgMp7Gpy+wGQv6EXe9
+         hDPfKXERFQ5y7Rz4F5n7Wg72jt5dW6+zwltO6bpJr1muQdKNGfreN2Ffrh4SQP6fvDPv
+         zUjDjE02PlsK1CAYtYSO7zZtO6fgG1hM+7SfbPleW6oSxEG/NH7SU2CyluJK/jOb03v/
+         OurXvd50X8Q1lrbWbaC+tRO2cVZM3Nt0VbC0M1v4/uAZT9lJz0kMTlbunrT/n2nGb9eJ
+         e3ow==
+X-Forwarded-Encrypted: i=1; AJvYcCVs3Oo+gkFvGQmK9FVO921BNaw7EHJJwHlD3nQKVypzq0Vwj0WIoVQK1uIacBcyt0GBkSmMudBiiac6od4rg0N9SxQRfs5/u70R9en2
+X-Gm-Message-State: AOJu0YzmRRB982EVEWjvB9TkrDxRmfSjlRrCQra0rc/4qPjD41bvPnfY
+	YUXVqs90pd63SNfJxVTTd1wevadio2DXiiGEnbmJyhbq7cdDMX6QSanN7ZzwlJCnwsYKDUFkCXl
+	g/lXkeZyYCRLuv4EEMGrWmTD/QsChZ887/tQ6Edq6zfR3C7QYlGT8etE=
+X-Google-Smtp-Source: AGHT+IHLiPRuKvp1YPAZuP8DRx6hN3I7YDbeFST4/QEJYaCw4Jl0HdtdMkRvFt+ffhZTv5NWicEuTFyXspeRO/9/4mcHJcLnJ8vj
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH] dmabuf: fix dmabuf file poll uaf issue
-To: =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
-        zhiguojiang
-	<justinjiang@vivo.com>,
-        "T.J. Mercier" <tjmercier@google.com>
-CC: Sumit Semwal <sumit.semwal@linaro.org>, <linux-media@vger.kernel.org>,
-        <dri-devel@lists.freedesktop.org>, <linaro-mm-sig@lists.linaro.org>,
-        <linux-kernel@vger.kernel.org>, <opensource.kernel@vivo.com>
-References: <20240327022903.776-1-justinjiang@vivo.com>
- <5cf29162-a29d-4af7-b68e-aac5c862d20e@amd.com>
- <cc7defae-60c1-4cc8-aee5-475d4460e574@vivo.com>
- <23375ba8-9558-4886-9c65-af9fe8e8e8b6@amd.com>
- <CABdmKX2Kf4ZmVzv3LGTz2GyP-9+rAtFY9hSAxdkrwK8mG0gDvQ@mail.gmail.com>
- <e55cad9b-a361-4d27-a351-f6a4f5b8b734@vivo.com>
- <40ac02bb-efe2-4f52-a4f2-7b56d9b93d2c@amd.com>
- <4fedd80c-d5b6-4478-bfd3-02d1ee1a26e5@vivo.com>
- <aab5ec51-fcff-44f2-a4f5-2979bd776a03@amd.com>
- <2ebca2fd-9465-4e64-b3cc-ffb88ef87800@vivo.com>
- <d4209754-5f26-422d-aca0-45cccbc44ad0@amd.com>
-Content-Language: en-US
-From: Charan Teja Kalla <quic_charante@quicinc.com>
-In-Reply-To: <d4209754-5f26-422d-aca0-45cccbc44ad0@amd.com>
+X-Received: by 2002:a05:6e02:188e:b0:36c:5f85:6979 with SMTP id
+ o14-20020a056e02188e00b0036c5f856979mr125430ilu.0.1714743633939; Fri, 03 May
+ 2024 06:40:33 -0700 (PDT)
+Date: Fri, 03 May 2024 06:40:33 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000002e9eb506178cdd71@google.com>
+Subject: [syzbot] [jfs?] UBSAN: shift-out-of-bounds in extAlloc (2)
+From: syzbot <syzbot+13e8cd4926977f8337b6@syzkaller.appspotmail.com>
+To: jfs-discussion@lists.sourceforge.net, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, shaggy@kernel.org, 
+	syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: Rg_pKWba3Akm2TNgCyjNcGyIoHI3gh5C
-X-Proofpoint-ORIG-GUID: Rg_pKWba3Akm2TNgCyjNcGyIoHI3gh5C
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
- definitions=2024-05-03_09,2024-05-03_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 adultscore=0
- suspectscore=0 mlxlogscore=999 phishscore=0 lowpriorityscore=0 mlxscore=0
- bulkscore=0 spamscore=0 malwarescore=0 impostorscore=0 priorityscore=1501
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2404010003
- definitions=main-2405030098
 
-Thanks Christian/TJ for the inputs!!
+Hello,
 
-On 4/18/2024 12:16 PM, Christian König wrote:
-> As far as I can see the EPOLL holds a reference to the files it
-> contains. So it is perfectly valid to add the file descriptor to EPOLL
-> and then close it.
->
-> In this case the file won't be closed, but be kept alive by it's
-> reference in the EPOLL file descriptor.
+syzbot found the following issue on:
 
-I am not seeing that adding a 'fd' into the epoll monitoring list will
-increase its refcount.  Confirmed by writing a testcase that just do
-open + EPOLL_CTL_ADD and see the /proc/../fdinfo of epoll fd(Added
-file_count() info to the output)
-# cat /proc/136/fdinfo/3
-pos:    0
-flags:  02
-mnt_id: 14
-ino:    1041
-tfd:        4 events:       19 data:                4  pos:0 ino:81 sdev:5
-refcount: 1<-- The fd added to the epoll monitoring is still 1(same as
-open file refcount)
+HEAD commit:    9221b2819b8a Add linux-next specific files for 20240503
+git tree:       linux-next
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=14631754980000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=8ab537f51a6a0d98
+dashboard link: https://syzkaller.appspot.com/bug?extid=13e8cd4926977f8337b6
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15123b1f180000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16b7da2f180000
 
-From the code too, I don't see a file added in the epoll monitoring list
-will have an extra refcount but momentarily (where it increases the
-refcount of target file, add it to the rbtree of the epoll context and
-then decreasing the file refcount):
-do_epoll_ctl():
-	f = fdget(epfd);
-	tf = fdget(fd);
-	epoll_mutex_lock(&ep->mtx)
-	EPOLL_CTL_ADD:
-		ep_insert(ep, epds, tf.file, fd, full_check); // Added to the epoll
-monitoring rb tree list as epitem.
-	mutex_unlock(&ep->mtx);
-	fdput(tf);
-	fdput(f);
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/3e67dbdc3c37/disk-9221b281.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/ade618fa19f8/vmlinux-9221b281.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/df12e5073c97/bzImage-9221b281.xz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/41dea5c977c2/mount_0.gz
 
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+13e8cd4926977f8337b6@syzkaller.appspotmail.com
 
-Not sure If i am completely mistaken what you're saying here.
-
-> The fs layer which calls dma_buf_poll() should make sure that the file
-> can't go away until the function returns.
-> 
-> Then inside dma_buf_poll() we add another reference to the file while
-> installing the callback:
-> 
->                         /* Paired with fput in dma_buf_poll_cb */
->                         get_file(dmabuf->file); No, exactly that can't
-> happen either.
-> 
-
-I am not quite comfortable with epoll internals but I think below race
-is possible where "The 'file' passed to dma_buf_poll() is proper but
-->f_count == 0, which is indicating that a parallel freeing is
-happening". So, we should check the file->f_count value before taking
-the refcount.
-
-(A 'fd' registered for the epoll monitoring list is maintained as
-'epitem(epi)' in the rbtree of 'eventpoll(ep, called as epoll context).
-
-epoll_wait()				    __fput()(as file->f_count=0)
-------------------------------------------------------------------------
-a) ep_poll_callback():
-     Is the waitqueue function
-   called when signaled on the
-   wait_queue_head_t of the registered
-   poll() function.
-
-   1) It links the 'epi' to the ready list
-      of 'ep':
-       if (!ep_is_linked(epi))
-	 list_add_tail_lockless(&epi->rdllink,
-		&ep->rdllist)
-
-   2) wake_up(&ep->wq);
-	Wake up the process waiting
-	on epoll_wait() that endup
-	in ep_poll.
+loop0: detected capacity change from 0 to 32768
+------------[ cut here ]------------
+UBSAN: shift-out-of-bounds in fs/jfs/jfs_extent.c:319:16
+shift exponent 108 is too large for 64-bit type 's64' (aka 'long long')
+CPU: 0 PID: 5090 Comm: syz-executor421 Not tainted 6.9.0-rc6-next-20240503-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0x241/0x360 lib/dump_stack.c:114
+ ubsan_epilogue lib/ubsan.c:231 [inline]
+ __ubsan_handle_shift_out_of_bounds+0x3c8/0x420 lib/ubsan.c:468
+ extBalloc fs/jfs/jfs_extent.c:319 [inline]
+ extAlloc+0xe5c/0x1010 fs/jfs/jfs_extent.c:122
+ jfs_get_block+0x41b/0xe60 fs/jfs/inode.c:248
+ __block_write_begin_int+0x50c/0x1a70 fs/buffer.c:2128
+ __block_write_begin fs/buffer.c:2177 [inline]
+ block_write_begin+0x9b/0x1e0 fs/buffer.c:2236
+ jfs_write_begin+0x31/0x70 fs/jfs/inode.c:299
+ generic_perform_write+0x322/0x640 mm/filemap.c:4016
+ generic_file_write_iter+0xaf/0x310 mm/filemap.c:4137
+ new_sync_write fs/read_write.c:497 [inline]
+ vfs_write+0xa72/0xc90 fs/read_write.c:590
+ ksys_write+0x1a0/0x2c0 fs/read_write.c:643
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0xf5/0x240 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+RIP: 0033:0x7f4d15f6f639
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 61 17 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fff3dae85f8 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
+RAX: ffffffffffffffda RBX: 00007fff3dae87c8 RCX: 00007f4d15f6f639
+RDX: 00000000fffffef2 RSI: 0000000020000240 RDI: 0000000000000004
+RBP: 00007f4d15fe8610 R08: 0000000000000000 R09: 00007fff3dae87c8
+R10: 0000000000006162 R11: 0000000000000246 R12: 0000000000000001
+R13: 00007fff3dae87b8 R14: 0000000000000001 R15: 0000000000000001
+ </TASK>
+---[ end trace ]---
 
 
-b) ep_poll():
-    1) while (1) {
-	eavail = ep_events_available(ep);
-	(checks ep->rdlist)
-	ep_send_events(ep);
-	(notify the events to user)
-    }
-    (epoll_wait() calling process gets
-     woken up from a.2 and process the
-     events raised added to rdlist in a.1)
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-   2) ep_send_events():
-	mutex_lock(&ep->mtx);
-	(** The sync lock is taken **)
-	list_for_each_entry_safe(epi, tmp,
-			&txlist, rdllink) {
-	    list_del_init(&epi->rdllink);
-	    revents = ep_item_poll(epi, &pt, 1)
-	    (vfs_poll()-->...f_op->poll(=dma_buf_poll)
-	}
-	mutex_unlock(&ep->mtx)
-	(**release the lock.**)
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
-	(As part of procession of events,
-	 each epitem is removed from rdlist
-         and call the f_op->poll() of a file
-	 which will endup in dma_buf_poll())
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
 
-   3) dma_buf_poll():
- 	get_file(dmabuf->file);
-	(** f_count changed from 0->1 **)
-	dma_buf_poll_add_cb(resv, true, dcb):
-	(registers dma_buf_poll_cb() against fence)
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
 
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
 
-				c) eventpoll_release_file():
-				   mutex_lock(&ep->mtx);
-				   __ep_remove(ep, epi, true):
-				   mutex_unlock(&ep->mtx);
-				  (__ep_remove() will remove the
-				   'epi' from rbtree and if present
-				   from rdlist as well)
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
 
-				d) file_free(file), free the 'file'.
-
-e) dma_buf_poll_cb:
- /* Paired with get_file in dma_buf_poll */
- fput(dmabuf->file);
- (f_count changed from 1->0, where
-  we try to free the 'file' again
-  which is UAF/double free).
-
-
-		
-In the above race, If c) gets called first, then the 'epi' is removed
-from both rbtree and 'rdlink' under ep->mtx lock thus b.2 don't end up
-in calling the ->poll() as it don't see this event in the rdlist.
-
-Race only exist If b.2 executes first, where it will call dma_buf_poll
-with __valid 'struct file' under ep->mtx but its refcount is already
-could have been zero__. Later When e) is executed, it turns into double
-free of the 'file' structure.
-
-If you're convinced with the above race, should the fix here will be
-this simple check:
-diff --git a/drivers/dma-buf/dma-buf.c b/drivers/dma-buf/dma-buf.c
-index 8fe5aa67b167..e469dd9288cc
---- a/drivers/dma-buf/dma-buf.c
-+++ b/drivers/dma-buf/dma-buf.c
-@@ -240,6 +240,10 @@ static __poll_t dma_buf_poll(struct file *file,
-poll_table *poll)
- 	struct dma_resv *resv;
- 	__poll_t events;
-
-+	/* Check parallel freeing of file */
-+	if (!file_count(file))
-+		return 0;
-+
-
-Thanks,
-Charan
+If you want to undo deduplication, reply with:
+#syz undup
 
