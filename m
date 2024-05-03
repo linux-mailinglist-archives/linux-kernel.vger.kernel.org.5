@@ -1,255 +1,303 @@
-Return-Path: <linux-kernel+bounces-167538-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-167539-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8BBA88BAB0B
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 12:53:06 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 42A968BAB0C
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 12:53:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7F538B22C2C
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 10:53:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B0E9C1F230BF
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 10:53:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 527F5152183;
-	Fri,  3 May 2024 10:52:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ellerman.id.au header.i=@ellerman.id.au header.b="UUg9zGqV"
-Received: from mail.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60B88152182
-	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 10:52:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D5292152160;
+	Fri,  3 May 2024 10:53:03 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5348F14A4E9
+	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 10:53:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714733568; cv=none; b=gP1BRJTi65Xl92QzUIGYACRICxB75O+zSQKSz1xepnF/Jf83jwZ9LzI0lD4T0C8uuDv3ixHXrBJhTs3AehO3YSERmfIbT9mFWgblfXhKXGTb5xpPy3mUK6yj3F32HeI+JsqQLVUsfJ2dv5cFVi3HFJVhK0GGfXKat+Vnb+m66rQ=
+	t=1714733583; cv=none; b=iGE7EqP9H6oSj+IRzqokTLsfHvbn7D5Q7QZW+/xseKKyTxVYDVABE5LCZkhGVQ9eFNAloEBUxDcf2osCe7Wl7kqj2WalFCbk8GELztBt7V7Z2tnlWPNesjJW3iYD+SzZtAzrrsX6mMwZG1P0YOogOmUkvc47QiEN4tV83Za3qm4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714733568; c=relaxed/simple;
-	bh=rQZxfPb2JvxUkeWxTZNN47NK7WjEzCfRAr/is13VCYQ=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=XYMFRc6ETPxjRwPjH6oBRRLSMdTwqvUGLPWnaHTonpRK+my+qgykDWlinOwKizy4Ojbii7nGlWF+WQlJYjx+J5zuyvr6PitkKT8NsJHofbhp8WumlFKXoPmAYHVb38eO41OvKJTwmDAkpNQLToojCJPDVx/H2nmbfpdRIjbTlVQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ellerman.id.au; spf=pass smtp.mailfrom=ellerman.id.au; dkim=pass (2048-bit key) header.d=ellerman.id.au header.i=@ellerman.id.au header.b=UUg9zGqV; arc=none smtp.client-ip=150.107.74.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ellerman.id.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ellerman.id.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
-	s=201909; t=1714733563;
-	bh=ZfARJMAeGDHwnZr6jfrWnf7G0nl1Vx+4p8TBupYAP6o=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=UUg9zGqV+ytbffMvCVS4hkNJIluh/NOrs7h6CuV+eD39RrpcbOvTBd0cEIn5iCcDX
-	 WIqe/qqYuTfVkwcNpQXWCBMIJAUePcYyav0Rr33fookbEY5QGOldaDvU/XsE8OdLEr
-	 rOzEQAjbsSqvBdNalODkfDIRLukSNmUA3ghhqyYLzVnU6FnSEiCO08246ZFLvAB02H
-	 J0eLhXUIl9rC+IftNynU9RufML6sGvzAAdZoXE0muQy5xQwkS9APiIu1UkymfIqmfN
-	 96kt6hHTHGD98QtQbu+4GfAhJDWKOds0QU9OLwE5UVrNjqaCcduZPoZFx+XwhmZoLe
-	 KBuxApvwjnGJA==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4VW71R4qZBz4x0C;
-	Fri,  3 May 2024 20:52:43 +1000 (AEST)
-From: Michael Ellerman <mpe@ellerman.id.au>
-To: Stephen Rothwell <sfr@canb.auug.org.au>
-Cc: Linux for PowerPC mailing list <linuxppc-dev@lists.ozlabs.org>, Linux
- kernel mailing list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] Fix the address of the linuxppc-dev mailing list
-In-Reply-To: <20240503121012.3ba5000b@canb.auug.org.au>
-References: <20240503121012.3ba5000b@canb.auug.org.au>
-Date: Fri, 03 May 2024 20:52:43 +1000
-Message-ID: <87ikzvupz8.fsf@mail.lhotse>
+	s=arc-20240116; t=1714733583; c=relaxed/simple;
+	bh=NgMaqI6q4AcKMSywvcduooCSP9pu49qYYUpG30BH8pM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=o81K//h27NTfhNeyWEtyHAXUUZbe2iAiPnsheUrabiuX+3uUtcyILoblg4+A0m5esSK4UyxTX7Rv/U39YSGVE0IukBR+qUNVYQfC2iOmOv35oLtbFjxMokNtAKe7uJvpgDmY/8+J6XjRaF4lYjotwrYeQw7KG1n1L24Ue+Nnfbs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 008CC2F4;
+	Fri,  3 May 2024 03:53:26 -0700 (PDT)
+Received: from [10.57.67.51] (unknown [10.57.67.51])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6B2213F793;
+	Fri,  3 May 2024 03:52:59 -0700 (PDT)
+Message-ID: <31740cc9-aa0d-4060-a32d-74cb110b8672@arm.com>
+Date: Fri, 3 May 2024 11:52:58 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] mm/vmstat: sum up all possible CPUs instead of using
+ vm_events_fold_cpu
+Content-Language: en-GB
+To: Barry Song <21cnbao@gmail.com>
+Cc: akpm@linux-foundation.org, linux-mm@kvack.org, hannes@cmpxchg.org,
+ linux-kernel@vger.kernel.org, david@redhat.com, v-songbaohua@oppo.com,
+ vbabka@suse.cz, willy@infradead.org
+References: <20240503020924.208431-1-21cnbao@gmail.com>
+ <c055203a-4365-4f5e-8276-5c57634abe73@arm.com>
+ <CAGsJ_4zurpmR6bdOR+RtwZaV1CS49yiQ03+gQ4y2wVgnEQpoyw@mail.gmail.com>
+From: Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <CAGsJ_4zurpmR6bdOR+RtwZaV1CS49yiQ03+gQ4y2wVgnEQpoyw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-Stephen Rothwell <sfr@canb.auug.org.au> writes:
-> This list was moved many years ago.
->
-> Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
-> ---
->  Documentation/ABI/testing/sysfs-devices-system-cpu | 14 +++++++-------
->  .../ABI/testing/sysfs-firmware-opal-powercap       |  4 ++--
->  Documentation/ABI/testing/sysfs-firmware-opal-psr  |  4 ++--
->  .../ABI/testing/sysfs-firmware-opal-sensor-groups  |  4 ++--
->  .../testing/sysfs-firmware-papr-energy-scale-info  | 10 +++++-----
->  5 files changed, 18 insertions(+), 18 deletions(-)
+On 03/05/2024 11:17, Barry Song wrote:
+> On Fri, May 3, 2024 at 5:16 PM Ryan Roberts <ryan.roberts@arm.com> wrote:
+>>
+>> On 03/05/2024 03:09, Barry Song wrote:
+>>> From: Barry Song <v-songbaohua@oppo.com>
+>>>
+>>> When unplugging a CPU, the current code merges its vm_events
+>>> with an online CPU. Because, during summation, it only considers
+>>> online CPUs, which is a crude workaround. By transitioning to
+>>> summing up all possible CPUs, we can eliminate the need for
+>>> vm_events_fold_cpu.
+>>>
+>>> Suggested-by: Ryan Roberts <ryan.roberts@arm.com>
+>>> Signed-off-by: Barry Song <v-songbaohua@oppo.com>
+>>> ---
+>>>  originally suggested by Ryan while he reviewed mTHP counters
+>>>  patchset[1]; I am also applying this suggestion to vm_events
+>>>
+>>>  -v2:
+>>>  also drop cpus_read_lock() as we don't care about cpu hotplug any more;
+>>>  -v1:
+>>>  https://lore.kernel.org/linux-mm/20240412123039.442743-1-21cnbao@gmail.com/
+>>>
+>>>  [1] https://lore.kernel.org/linux-mm/ca73cbf1-8304-4790-a721-3c3a42f9d293@arm.com/
+>>>
+>>>  include/linux/vmstat.h |  5 -----
+>>>  mm/page_alloc.c        |  8 --------
+>>>  mm/vmstat.c            | 21 +--------------------
+>>>  3 files changed, 1 insertion(+), 33 deletions(-)
+>>>
+>>> diff --git a/include/linux/vmstat.h b/include/linux/vmstat.h
+>>> index 735eae6e272c..f7eaeb8bfa47 100644
+>>> --- a/include/linux/vmstat.h
+>>> +++ b/include/linux/vmstat.h
+>>> @@ -83,8 +83,6 @@ static inline void count_vm_events(enum vm_event_item item, long delta)
+>>>
+>>>  extern void all_vm_events(unsigned long *);
+>>>
+>>> -extern void vm_events_fold_cpu(int cpu);
+>>> -
+>>>  #else
+>>>
+>>>  /* Disable counters */
+>>> @@ -103,9 +101,6 @@ static inline void __count_vm_events(enum vm_event_item item, long delta)
+>>>  static inline void all_vm_events(unsigned long *ret)
+>>>  {
+>>>  }
+>>> -static inline void vm_events_fold_cpu(int cpu)
+>>> -{
+>>> -}
+>>>
+>>>  #endif /* CONFIG_VM_EVENT_COUNTERS */
+>>>
+>>> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+>>> index cd584aace6bf..8b56d785d587 100644
+>>> --- a/mm/page_alloc.c
+>>> +++ b/mm/page_alloc.c
+>>> @@ -5826,14 +5826,6 @@ static int page_alloc_cpu_dead(unsigned int cpu)
+>>>       mlock_drain_remote(cpu);
+>>>       drain_pages(cpu);
+>>>
+>>> -     /*
+>>> -      * Spill the event counters of the dead processor
+>>> -      * into the current processors event counters.
+>>> -      * This artificially elevates the count of the current
+>>> -      * processor.
+>>> -      */
+>>> -     vm_events_fold_cpu(cpu);
+>>> -
+>>>       /*
+>>>        * Zero the differential counters of the dead processor
+>>>        * so that the vm statistics are consistent.
+>>> diff --git a/mm/vmstat.c b/mm/vmstat.c
+>>> index db79935e4a54..aaa32418652e 100644
+>>> --- a/mm/vmstat.c
+>>> +++ b/mm/vmstat.c
+>>> @@ -114,7 +114,7 @@ static void sum_vm_events(unsigned long *ret)
+>>>
+>>>       memset(ret, 0, NR_VM_EVENT_ITEMS * sizeof(unsigned long));
+>>>
+>>> -     for_each_online_cpu(cpu) {
+>>> +     for_each_possible_cpu(cpu) {
+>>
+>> One thought comes to mind (due to my lack of understanding exactly what
+>> "possible" means): Linux is compiled with a max number of cpus - NR_CPUS - 512
+>> for arm64's defconfig. Does all possible cpus include all 512? On an 8 CPU
+>> system that would be increasing the number of loops by 64 times.
+>>
+>> Or perhaps possible just means CPUs that have ever been online?
+> 
+> Hi Ryan,
+> 
+> On arm64, we get possible CPUs either from device tree or ACPI. they are both
+> much less than NR_CPUS.
 
-These are mostly powerpc specific files so I can take this.
+Ahh great. In that case, this patch seems good to me, although I'm not too
+familiar with the code.
 
-cheers
+> 
+> /*
+>  * Enumerate the possible CPU set from the device tree or ACPI and build the
+>  * cpu logical map array containing MPIDR values related to logical
+>  * cpus. Assumes that cpu_logical_map(0) has already been initialized.
+>  */
+> void __init smp_init_cpus(void)
+> 
+> for device tree case, it is,
+> 
+> /*
+>  * Enumerate the possible CPU set from the device tree and build the
+>  * cpu logical map array containing MPIDR values related to logical
+>  * cpus. Assumes that cpu_logical_map(0) has already been initialized.
+>  */
+> static void __init of_parse_and_init_cpus(void)
+> {
+>         struct device_node *dn;
+> 
+>         for_each_of_cpu_node(dn) {
+>                 u64 hwid = of_get_cpu_hwid(dn, 0);
+> 
+>                 if (hwid & ~MPIDR_HWID_BITMASK)
+>                         goto next;
+> 
+>                 if (is_mpidr_duplicate(cpu_count, hwid)) {
+>                         pr_err("%pOF: duplicate cpu reg properties in the DT\n",
+>                                 dn);
+>                         goto next;
+>                 }
+> 
+>                 /*
+>                  * The numbering scheme requires that the boot CPU
+>                  * must be assigned logical id 0. Record it so that
+>                  * the logical map built from DT is validated and can
+>                  * be used.
+>                  */
+>                 if (hwid == cpu_logical_map(0)) {
+>                         if (bootcpu_valid) {
+>                                 pr_err("%pOF: duplicate boot cpu reg
+> property in DT\n",
+>                                         dn);
+>                                 goto next;
+>                         }
+> 
+>                         bootcpu_valid = true;
+>                         early_map_cpu_to_node(0, of_node_to_nid(dn));
+> 
+>                         /*
+>                          * cpu_logical_map has already been
+>                          * initialized and the boot cpu doesn't need
+>                          * the enable-method so continue without
+>                          * incrementing cpu.
+>                          */
+>                         continue;
+>                 }
+> 
+>                 if (cpu_count >= NR_CPUS)
+>                         goto next;
+> 
+>                 pr_debug("cpu logical map 0x%llx\n", hwid);
+>                 set_cpu_logical_map(cpu_count, hwid);
+> 
+>                 early_map_cpu_to_node(cpu_count, of_node_to_nid(dn));
+> next:
+>                 cpu_count++;
+>         }
+> }
+> 
+> even for ARM32, we get that sometimes from scu_get_core_count(),
+> eg.
+> static void __init omap4_smp_init_cpus(void)
+> {
+>         unsigned int i = 0, ncores = 1, cpu_id;
+> 
+>         /* Use ARM cpuid check here, as SoC detection will not work so early */
+>         cpu_id = read_cpuid_id() & CPU_MASK;
+>         if (cpu_id == CPU_CORTEX_A9) {
+>                 /*
+>                  * Currently we can't call ioremap here because
+>                  * SoC detection won't work until after init_early.
+>                  */
+>                 cfg.scu_base =  OMAP2_L4_IO_ADDRESS(scu_a9_get_base());
+>                 BUG_ON(!cfg.scu_base);
+>                 ncores = scu_get_core_count(cfg.scu_base);
+>         } else if (cpu_id == CPU_CORTEX_A15) {
+>                 ncores = OMAP5_CORE_COUNT;
+>         }
+> 
+>         /* sanity check */
+>         if (ncores > nr_cpu_ids) {
+>                 pr_warn("SMP: %u cores greater than maximum (%u), clipping\n",
+>                         ncores, nr_cpu_ids);
+>                 ncores = nr_cpu_ids;
+>         }
+> 
+>         for (i = 0; i < ncores; i++)
+>                 set_cpu_possible(i, true);
+> }
+> 
+> Other architectures do exactly the same jobs.
+> 
+> 
+> 
+>>
+>> Either way, I guess it's not considered a performance bottleneck because, from
+>> memory, the scheduler and many other places are iterating over all possible cpus.
+>>
+>>>               struct vm_event_state *this = &per_cpu(vm_event_states, cpu);
+>>>
+>>>               for (i = 0; i < NR_VM_EVENT_ITEMS; i++)
+>>> @@ -129,29 +129,10 @@ static void sum_vm_events(unsigned long *ret)
+>>>  */
+>>>  void all_vm_events(unsigned long *ret)
+>>>  {
+>>> -     cpus_read_lock();
+>>>       sum_vm_events(ret);
+>>> -     cpus_read_unlock();
+>>>  }
+>>>  EXPORT_SYMBOL_GPL(all_vm_events);
+>>>
+>>> -/*
+>>> - * Fold the foreign cpu events into our own.
+>>> - *
+>>> - * This is adding to the events on one processor
+>>> - * but keeps the global counts constant.
+>>> - */
+>>> -void vm_events_fold_cpu(int cpu)
+>>> -{
+>>> -     struct vm_event_state *fold_state = &per_cpu(vm_event_states, cpu);
+>>> -     int i;
+>>> -
+>>> -     for (i = 0; i < NR_VM_EVENT_ITEMS; i++) {
+>>> -             count_vm_events(i, fold_state->event[i]);
+>>> -             fold_state->event[i] = 0;
+>>> -     }
+>>> -}
+>>> -
+>>>  #endif /* CONFIG_VM_EVENT_COUNTERS */
+>>>
+>>>  /*
+>>
+> 
+> Thanks
+> Barry
 
-> diff --git a/Documentation/ABI/testing/sysfs-devices-system-cpu b/Documentation/ABI/testing/sysfs-devices-system-cpu
-> index 710d47be11e0..e7e160954e79 100644
-> --- a/Documentation/ABI/testing/sysfs-devices-system-cpu
-> +++ b/Documentation/ABI/testing/sysfs-devices-system-cpu
-> @@ -423,7 +423,7 @@ What:		/sys/devices/system/cpu/cpuX/cpufreq/throttle_stats
->  		/sys/devices/system/cpu/cpuX/cpufreq/throttle_stats/occ_reset
->  Date:		March 2016
->  Contact:	Linux kernel mailing list <linux-kernel@vger.kernel.org>
-> -		Linux for PowerPC mailing list <linuxppc-dev@ozlabs.org>
-> +		Linux for PowerPC mailing list <linuxppc-dev@lists.ozlabs.org>
->  Description:	POWERNV CPUFreq driver's frequency throttle stats directory and
->  		attributes
->  
-> @@ -473,7 +473,7 @@ What:		/sys/devices/system/cpu/cpufreq/policyX/throttle_stats
->  		/sys/devices/system/cpu/cpufreq/policyX/throttle_stats/occ_reset
->  Date:		March 2016
->  Contact:	Linux kernel mailing list <linux-kernel@vger.kernel.org>
-> -		Linux for PowerPC mailing list <linuxppc-dev@ozlabs.org>
-> +		Linux for PowerPC mailing list <linuxppc-dev@lists.ozlabs.org>
->  Description:	POWERNV CPUFreq driver's frequency throttle stats directory and
->  		attributes
->  
-> @@ -608,7 +608,7 @@ Description:	Umwait control
->  What:		/sys/devices/system/cpu/svm
->  Date:		August 2019
->  Contact:	Linux kernel mailing list <linux-kernel@vger.kernel.org>
-> -		Linux for PowerPC mailing list <linuxppc-dev@ozlabs.org>
-> +		Linux for PowerPC mailing list <linuxppc-dev@lists.ozlabs.org>
->  Description:	Secure Virtual Machine
->  
->  		If 1, it means the system is using the Protected Execution
-> @@ -617,7 +617,7 @@ Description:	Secure Virtual Machine
->  
->  What:		/sys/devices/system/cpu/cpuX/purr
->  Date:		Apr 2005
-> -Contact:	Linux for PowerPC mailing list <linuxppc-dev@ozlabs.org>
-> +Contact:	Linux for PowerPC mailing list <linuxppc-dev@lists.ozlabs.org>
->  Description:	PURR ticks for this CPU since the system boot.
->  
->  		The Processor Utilization Resources Register (PURR) is
-> @@ -628,7 +628,7 @@ Description:	PURR ticks for this CPU since the system boot.
->  
->  What: 		/sys/devices/system/cpu/cpuX/spurr
->  Date:		Dec 2006
-> -Contact:	Linux for PowerPC mailing list <linuxppc-dev@ozlabs.org>
-> +Contact:	Linux for PowerPC mailing list <linuxppc-dev@lists.ozlabs.org>
->  Description:	SPURR ticks for this CPU since the system boot.
->  
->  		The Scaled Processor Utilization Resources Register
-> @@ -640,7 +640,7 @@ Description:	SPURR ticks for this CPU since the system boot.
->  
->  What: 		/sys/devices/system/cpu/cpuX/idle_purr
->  Date:		Apr 2020
-> -Contact:	Linux for PowerPC mailing list <linuxppc-dev@ozlabs.org>
-> +Contact:	Linux for PowerPC mailing list <linuxppc-dev@lists.ozlabs.org>
->  Description:	PURR ticks for cpuX when it was idle.
->  
->  		This sysfs interface exposes the number of PURR ticks
-> @@ -648,7 +648,7 @@ Description:	PURR ticks for cpuX when it was idle.
->  
->  What: 		/sys/devices/system/cpu/cpuX/idle_spurr
->  Date:		Apr 2020
-> -Contact:	Linux for PowerPC mailing list <linuxppc-dev@ozlabs.org>
-> +Contact:	Linux for PowerPC mailing list <linuxppc-dev@lists.ozlabs.org>
->  Description:	SPURR ticks for cpuX when it was idle.
->  
->  		This sysfs interface exposes the number of SPURR ticks
-> diff --git a/Documentation/ABI/testing/sysfs-firmware-opal-powercap b/Documentation/ABI/testing/sysfs-firmware-opal-powercap
-> index c9b66ec4f165..d2d12ee89288 100644
-> --- a/Documentation/ABI/testing/sysfs-firmware-opal-powercap
-> +++ b/Documentation/ABI/testing/sysfs-firmware-opal-powercap
-> @@ -1,6 +1,6 @@
->  What:		/sys/firmware/opal/powercap
->  Date:		August 2017
-> -Contact:	Linux for PowerPC mailing list <linuxppc-dev@ozlabs.org>
-> +Contact:	Linux for PowerPC mailing list <linuxppc-dev@lists.ozlabs.org>
->  Description:	Powercap directory for Powernv (P8, P9) servers
->  
->  		Each folder in this directory contains a
-> @@ -11,7 +11,7 @@ What:		/sys/firmware/opal/powercap/system-powercap
->  		/sys/firmware/opal/powercap/system-powercap/powercap-max
->  		/sys/firmware/opal/powercap/system-powercap/powercap-current
->  Date:		August 2017
-> -Contact:	Linux for PowerPC mailing list <linuxppc-dev@ozlabs.org>
-> +Contact:	Linux for PowerPC mailing list <linuxppc-dev@lists.ozlabs.org>
->  Description:	System powercap directory and attributes applicable for
->  		Powernv (P8, P9) servers
->  
-> diff --git a/Documentation/ABI/testing/sysfs-firmware-opal-psr b/Documentation/ABI/testing/sysfs-firmware-opal-psr
-> index cc2ece70e365..1e55b56a0f89 100644
-> --- a/Documentation/ABI/testing/sysfs-firmware-opal-psr
-> +++ b/Documentation/ABI/testing/sysfs-firmware-opal-psr
-> @@ -1,6 +1,6 @@
->  What:		/sys/firmware/opal/psr
->  Date:		August 2017
-> -Contact:	Linux for PowerPC mailing list <linuxppc-dev@ozlabs.org>
-> +Contact:	Linux for PowerPC mailing list <linuxppc-dev@lists.ozlabs.org>
->  Description:	Power-Shift-Ratio directory for Powernv P9 servers
->  
->  		Power-Shift-Ratio allows to provide hints the firmware
-> @@ -10,7 +10,7 @@ Description:	Power-Shift-Ratio directory for Powernv P9 servers
->  
->  What:		/sys/firmware/opal/psr/cpu_to_gpu_X
->  Date:		August 2017
-> -Contact:	Linux for PowerPC mailing list <linuxppc-dev@ozlabs.org>
-> +Contact:	Linux for PowerPC mailing list <linuxppc-dev@lists.ozlabs.org>
->  Description:	PSR sysfs attributes for Powernv P9 servers
->  
->  		Power-Shift-Ratio between CPU and GPU for a given chip
-> diff --git a/Documentation/ABI/testing/sysfs-firmware-opal-sensor-groups b/Documentation/ABI/testing/sysfs-firmware-opal-sensor-groups
-> index 3a2dfe542e8c..fcb1fb4795b6 100644
-> --- a/Documentation/ABI/testing/sysfs-firmware-opal-sensor-groups
-> +++ b/Documentation/ABI/testing/sysfs-firmware-opal-sensor-groups
-> @@ -1,6 +1,6 @@
->  What:		/sys/firmware/opal/sensor_groups
->  Date:		August 2017
-> -Contact:	Linux for PowerPC mailing list <linuxppc-dev@ozlabs.org>
-> +Contact:	Linux for PowerPC mailing list <linuxppc-dev@lists.ozlabs.org>
->  Description:	Sensor groups directory for POWER9 powernv servers
->  
->  		Each folder in this directory contains a sensor group
-> @@ -11,7 +11,7 @@ Description:	Sensor groups directory for POWER9 powernv servers
->  
->  What:		/sys/firmware/opal/sensor_groups/<sensor_group_name>/clear
->  Date:		August 2017
-> -Contact:	Linux for PowerPC mailing list <linuxppc-dev@ozlabs.org>
-> +Contact:	Linux for PowerPC mailing list <linuxppc-dev@lists.ozlabs.org>
->  Description:	Sysfs file to clear the min-max of all the sensors
->  		belonging to the group.
->  
-> diff --git a/Documentation/ABI/testing/sysfs-firmware-papr-energy-scale-info b/Documentation/ABI/testing/sysfs-firmware-papr-energy-scale-info
-> index 141a6b371469..f5cefb81ac9d 100644
-> --- a/Documentation/ABI/testing/sysfs-firmware-papr-energy-scale-info
-> +++ b/Documentation/ABI/testing/sysfs-firmware-papr-energy-scale-info
-> @@ -1,6 +1,6 @@
->  What:		/sys/firmware/papr/energy_scale_info
->  Date:		February 2022
-> -Contact:	Linux for PowerPC mailing list <linuxppc-dev@ozlabs.org>
-> +Contact:	Linux for PowerPC mailing list <linuxppc-dev@lists.ozlabs.org>
->  Description:	Directory hosting a set of platform attributes like
->  		energy/frequency on Linux running as a PAPR guest.
->  
-> @@ -10,20 +10,20 @@ Description:	Directory hosting a set of platform attributes like
->  
->  What:		/sys/firmware/papr/energy_scale_info/<id>
->  Date:		February 2022
-> -Contact:	Linux for PowerPC mailing list <linuxppc-dev@ozlabs.org>
-> +Contact:	Linux for PowerPC mailing list <linuxppc-dev@lists.ozlabs.org>
->  Description:	Energy, frequency attributes directory for POWERVM servers
->  
->  What:		/sys/firmware/papr/energy_scale_info/<id>/desc
->  Date:		February 2022
-> -Contact:	Linux for PowerPC mailing list <linuxppc-dev@ozlabs.org>
-> +Contact:	Linux for PowerPC mailing list <linuxppc-dev@lists.ozlabs.org>
->  Description:	String description of the energy attribute of <id>
->  
->  What:		/sys/firmware/papr/energy_scale_info/<id>/value
->  Date:		February 2022
-> -Contact:	Linux for PowerPC mailing list <linuxppc-dev@ozlabs.org>
-> +Contact:	Linux for PowerPC mailing list <linuxppc-dev@lists.ozlabs.org>
->  Description:	Numeric value of the energy attribute of <id>
->  
->  What:		/sys/firmware/papr/energy_scale_info/<id>/value_desc
->  Date:		February 2022
-> -Contact:	Linux for PowerPC mailing list <linuxppc-dev@ozlabs.org>
-> +Contact:	Linux for PowerPC mailing list <linuxppc-dev@lists.ozlabs.org>
->  Description:	String value of the energy attribute of <id>
-> -- 
-> 2.43.0
->
-> -- 
-> Cheers,
-> Stephen Rothwell
 
