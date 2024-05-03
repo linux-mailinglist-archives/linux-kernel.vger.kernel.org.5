@@ -1,74 +1,74 @@
-Return-Path: <linux-kernel+bounces-167867-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-167868-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8ACA18BB088
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 18:05:35 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 64B768BB08B
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 18:06:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DAC30B20DB2
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 16:05:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1B141282CC6
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 16:06:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F2E015533F;
-	Fri,  3 May 2024 16:05:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3454C15534C;
+	Fri,  3 May 2024 16:06:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="QDTjATPd"
-Received: from mail-lj1-f178.google.com (mail-lj1-f178.google.com [209.85.208.178])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="jnNwcbKa"
+Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5145F15531C
-	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 16:05:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B1601CD35
+	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 16:06:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714752322; cv=none; b=iSEC0/K0O6ix5ru+aoiPuegRD1mk7e89yhlld4B0q1/uui1WQ8C2jVqx//9K/5wOC4yx1BnO2pfd2EW8bh11/Kb3gSRoTgXYZpEIcKbnkvTmOvTEwLNMJoCMAQ7iETIB+5nhQqf1T6LZrpYrAmAd3lW1o/30/j+My8iAAX036ks=
+	t=1714752390; cv=none; b=qo9gcnj7fjnh6efjYzFwBlsxKl9wVOvGyqaRCgAMWPMQH9SGi/a0gRYsYMEM1wp8clTgZPnq7rSUrn2PLZIp2Cu4o9G83yE7o+HnYOeLAVGkZczCec3BF60+V6aXTKxdHlRJoB7wwG+Zt5HzROpVhRvopBNX6XjhPvVeBfUTYTI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714752322; c=relaxed/simple;
-	bh=3wFRUkRUjz1omlOVSbpuUBuHXpaaRaKV8kxfe/9Pw0Y=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=YrFbMP6j3ZnNBgXc8IXKVyWHeJNqWKAaEJ+kXs6NfHY0TJdbiMN1vVG6feoFekuPJwwe7Ny3bIaKPIKD/eMiv4YNQQsfKLHBUaluxdaLm60jzdIb3QfAXQ6eoLE7ra9zzDCgagBA9d60SUqBpvezybnkEZ02WT2Bqae2Ghtu0dI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=QDTjATPd; arc=none smtp.client-ip=209.85.208.178
+	s=arc-20240116; t=1714752390; c=relaxed/simple;
+	bh=TouCGH5BPok4oaVsl/yEX4vdXHswWErpY8YWDlTAscY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ZYzfl3NamS97eYWicARFYcRwVF9TcLI2L2AeaBKuu2ZwqOGL+yPpL89soR3RlzbY2ujaceML3Oau5UfNToJ6L5zv22J5cMGrMQQiVyuXPf1C2WK7RZgZ+bf7vgN00puPOSdrZYKlahpvZNgFfgHoarc4HTlGf2pJfqxXOClk6P8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=jnNwcbKa; arc=none smtp.client-ip=209.85.128.49
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lj1-f178.google.com with SMTP id 38308e7fff4ca-2db7c6b5598so119132581fa.1
-        for <linux-kernel@vger.kernel.org>; Fri, 03 May 2024 09:05:21 -0700 (PDT)
+Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-41b782405bbso58057455e9.1
+        for <linux-kernel@vger.kernel.org>; Fri, 03 May 2024 09:06:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1714752319; x=1715357119; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1714752386; x=1715357186; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:content-language
-         :references:cc:to:from:subject:user-agent:mime-version:date
+         :from:references:cc:to:subject:user-agent:mime-version:date
          :message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=pI3kz89fWVHdo2YRBeHbPpve2YagNXI7R+KDETZ+WU0=;
-        b=QDTjATPdtx9v1JKBtVPN1D6W5McMeV9jR49BSTRYsiXUOPaC7ov+eJ/l3tVAsTsDgs
-         kk3n8GEN9/7DnRX+VXTWq7WdJm6b5KrK3/5Z4UHXbPWzrEAjqlJ9eJdD40FPJZ0wPAn8
-         TqWyJHpEMgj0RMky2h1EV1y39VM+RpzhOTUJfM8litHbmMxD4LeSjEjR/RoufHAF42va
-         bue5iLkreU1uF2sIQ5DUX0odscYOX9E4OI6297Zi8BIXOCIuioKD67i3WWEzofUSJCMX
-         vQCCxYY8amQApgtXGJpV7+hKR1l9FhDjfSZN04F6lvO0gh6EbQJjEg7rVDkMNt4iDwsE
-         gGQw==
+        bh=RbupB7f3aV2sszX3kEEkcJM0tmBKeeypaOUtnM8Pcmw=;
+        b=jnNwcbKaijluQc96eVkjZ0OO+P4S3adRgV0cpdWD8C9JcjkWp5ycMidRkCyFZxRdY+
+         Tjx82vmWTFjSAx1+xTuho6RZoh5sdLKDcSbfJ3FUke9yHzsExvkHV/b+AWGyf+Lpt0Lt
+         JNB7j31w+vVaaN4foyUwv/9DzHozEh+q9Aj2Bwo/k7sK3ETZuOwPkllEfoJ6up5yLMYq
+         8HqaKgCDyzncqj8jr0OUu33B4C17YTbmtConr/cRSNitRpDxtXQEiG6CofVWpiipb9ET
+         KYAm2njEURbpaWwWaAfvb9bsInPvIsO1suakIOgYtLHSZArTlHwVgO4EKnUlxibl4qd9
+         0bHw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714752319; x=1715357119;
+        d=1e100.net; s=20230601; t=1714752386; x=1715357186;
         h=content-transfer-encoding:in-reply-to:autocrypt:content-language
-         :references:cc:to:from:subject:user-agent:mime-version:date
+         :from:references:cc:to:subject:user-agent:mime-version:date
          :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=pI3kz89fWVHdo2YRBeHbPpve2YagNXI7R+KDETZ+WU0=;
-        b=hFzDBZFw3HU4wYrV42RVp0mgybEFT8VlMEJc8eUmL0P7OIU7SmGNuBBfj35AhaV4jU
-         ynqgYGKnCJ3cXG38sD3qNW6sbd2a7N7rw19T9cXiwHTcwp4KSdrTTxIvVlR0+OhJ4yOP
-         BXGo/S04GEbGzFXbU4Xqok1CTPUL4IVfjLF0CRD7gy4AKl7D8kv793O1xSS/SyNBbi8e
-         aK2Ig5/o1MP4eCVj+fqMpM4fSORaxKC88E61i0cpSJ9otUjtsCo7dsYBGbPBfNbHfoBt
-         3irowZjGhpr1rLC8kDbhM7fo20fKazN8Rz94j7vZujEQZW6hYLavSFEtZP9PDccU8D0X
-         ktSA==
-X-Forwarded-Encrypted: i=1; AJvYcCVTtupB2mGeFpKhgyBmgbIwGiIb/IqvqLOcL+Qt3gPzTZzVFeWcHepM7K9nmVoe69umqF6n7rF/3UDjX/o4Z42am8oFkQtSobQocQmh
-X-Gm-Message-State: AOJu0YzSrg2TvqqhSBZqS/ClSeHfs3PnH9cggquCEIAjgAhvhMs1f1/O
-	QCd4r8wHgVq9lDRRyzQLox7FJX5t8+vEA3LahZraH8RqY5o4lcXCAfNpvyEvn/I=
-X-Google-Smtp-Source: AGHT+IGMuClGgxOf4NU45iXsc7aEDak8j/FRo9Y1ShE3foPvO6nSSlPTV5cbk0Bwn5yFvjbMBqjQUg==
-X-Received: by 2002:a2e:bba2:0:b0:2e1:f199:3853 with SMTP id y34-20020a2ebba2000000b002e1f1993853mr1743575lje.47.1714752319488;
-        Fri, 03 May 2024 09:05:19 -0700 (PDT)
+        bh=RbupB7f3aV2sszX3kEEkcJM0tmBKeeypaOUtnM8Pcmw=;
+        b=tvx5e3XYMkXnWJ3DyvixqeIVcfTJoNWvqVLyAk1WXz0sMhRJe49FVBArHynWwoGXNi
+         HruoHLqhs6PjyFyMPVHHnP7V/AbPhxvzGkZquchFM8voS/MCFCLPBB8/FLbGH925cSfG
+         zgGD8a/qPXo1OYxrE0c+vi0MXQYZt6jWsFS3QILOHo8zz0wzO54f/zYmog+FNNJXSp/0
+         NDPk77MZdTPWoVbu+QkXRAm93PC1WzlViwzb4/qs5oUwKx8CkvVx2cILdYEihiUrG49l
+         w/DTpomu4yr2jy7oKRue6dlH9rPLzav1JBTfI1wU6Lp5NHWfp7zijYHPjBi3yGpkwErg
+         DnNw==
+X-Forwarded-Encrypted: i=1; AJvYcCVge5jJUI4IcvkNdU3PrgutN5l98B1lA0PlIOKLQ8jFGxtyjnZv2P5N9msWX2zFaK2WVB880Fb6lXTUsPf8+JkfTOjAAW9dkH6xH9Dl
+X-Gm-Message-State: AOJu0YwgM0dw5LDpbej1MbaheCAba8QHtDL363udB69vCjN/btDFzUV1
+	2n3s9IdJzlF1FhgXi7/KeebU4MgAhqDysHfliqrDzS0TKHK4JAuknLehgnxnJFA=
+X-Google-Smtp-Source: AGHT+IExGOjq7cHgzt7HF328hWxDKfwf6uLJ3xTaEx61jCcmDImDNnnQkRoi1An+uovmvkneIPE69Q==
+X-Received: by 2002:a05:600c:34d2:b0:41c:3e1:9dbd with SMTP id d18-20020a05600c34d200b0041c03e19dbdmr2238169wmq.40.1714752386391;
+        Fri, 03 May 2024 09:06:26 -0700 (PDT)
 Received: from [192.168.1.20] ([178.197.223.16])
-        by smtp.gmail.com with ESMTPSA id ay35-20020a05600c1e2300b00419f419236fsm6089474wmb.41.2024.05.03.09.05.18
+        by smtp.gmail.com with ESMTPSA id u21-20020a05600c139500b004190d7126c0sm9847463wmf.38.2024.05.03.09.06.23
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 03 May 2024 09:05:18 -0700 (PDT)
-Message-ID: <13ed1865-d702-47b6-b186-d5f060103280@linaro.org>
-Date: Fri, 3 May 2024 18:05:17 +0200
+        Fri, 03 May 2024 09:06:25 -0700 (PDT)
+Message-ID: <4a75aae4-9ed6-4e7e-883f-23ffdc1354ec@linaro.org>
+Date: Fri, 3 May 2024 18:06:23 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -76,29 +76,19 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 01/11] dt-bindings: clock: mobileye,eyeq5-clk: drop
- bindings
+Subject: Re: [PATCH 1/2] media: dt-bindings: Add ST VD56G3 camera sensor
+ binding
+To: Sylvain Petinot <sylvain.petinot@foss.st.com>,
+ Rob Herring <robh@kernel.org>
+Cc: benjamin.mugnier@foss.st.com, mchehab@kernel.org,
+ krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+ linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240417133453.17406-1-sylvain.petinot@foss.st.com>
+ <20240417133453.17406-2-sylvain.petinot@foss.st.com>
+ <20240418130916.GA1016598-robh@kernel.org>
+ <e38eeaab-f3dd-4129-86aa-9f6bb03bdc40@foss.st.com>
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To: =?UTF-8?Q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>,
- Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>,
- Michael Turquette <mturquette@baylibre.com>, Stephen Boyd
- <sboyd@kernel.org>, Philipp Zabel <p.zabel@pengutronix.de>,
- Linus Walleij <linus.walleij@linaro.org>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- "Rafael J. Wysocki" <rafael@kernel.org>, Lee Jones <lee@kernel.org>,
- Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc: linux-mips@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
- linux-gpio@vger.kernel.org,
- Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>,
- Gregory CLEMENT <gregory.clement@bootlin.com>,
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
- Tawfik Bayouk <tawfik.bayouk@mobileye.com>
-References: <20240503-mbly-olb-v2-0-95ce5a1e18fe@bootlin.com>
- <20240503-mbly-olb-v2-1-95ce5a1e18fe@bootlin.com>
- <ee278102-f4b8-4ca0-879e-f83cd54efbd0@linaro.org>
 Content-Language: en-US
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -144,25 +134,37 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <ee278102-f4b8-4ca0-879e-f83cd54efbd0@linaro.org>
+In-Reply-To: <e38eeaab-f3dd-4129-86aa-9f6bb03bdc40@foss.st.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 
-On 03/05/2024 17:57, Krzysztof Kozlowski wrote:
-> On 03/05/2024 16:20, Théo Lebrun wrote:
->> Switch from sub-nodes in system-controller for each functionality to a
->> single node representing the entire OLB instance. dt-bindings is
->> unnecessary and soc/mobileye/mobileye,eyeq5-olb.yaml will inherit all
->> properties.
+On 03/05/2024 10:25, Sylvain Petinot wrote:
+>>> +...
+>>> diff --git a/MAINTAINERS b/MAINTAINERS
+>>> index 7c121493f43d..991e65627e18 100644
+>>> --- a/MAINTAINERS
+>>> +++ b/MAINTAINERS
+>>> @@ -20868,6 +20868,15 @@ S:	Maintained
+>>>  F:	Documentation/hwmon/stpddc60.rst
+>>>  F:	drivers/hwmon/pmbus/stpddc60.c
+>>>  
+>>> +ST VD56G3 DRIVER
+>>> +M:	Benjamin Mugnier <benjamin.mugnier@foss.st.com>
+>>> +M:	Sylvain Petinot <sylvain.petinot@foss.st.com>
+>>> +L:	linux-media@vger.kernel.org
+>>> +S:	Maintained
+>>> +T:	git git://linuxtv.org/media_tree.git
+>>
+>> This should be covered by the media maintainer entry.
 > 
-> Why changing this? You just added these bindings not so long time ago...
-> This is very confusing to push bindings and then immediately ask to
-> remove them.
+> I'm really sorry but I don't see what you're referring to. Can you point
+> me to the correct direction please ?
+> 
 
-One more point - anyway this should be revert with clear explanation WHY
-you are reverting bindings.
+Find the media maintainer entry. Do you see Git tree there? Then it is
+done. Otherwise, do you have write commit access to above Git? Are you
+going to commit to that Git?
 
-Same for second patch.
 
 Best regards,
 Krzysztof
