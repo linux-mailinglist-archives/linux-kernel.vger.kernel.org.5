@@ -1,238 +1,150 @@
-Return-Path: <linux-kernel+bounces-168329-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-168328-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id EA0E28BB6D1
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 May 2024 00:01:14 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 17F338BB6CE
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 May 2024 00:01:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 630AE1F239A6
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 22:01:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BDD0B1F23585
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 22:00:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF44058AA7;
-	Fri,  3 May 2024 22:01:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D8EC658ACC;
+	Fri,  3 May 2024 22:00:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="OG79JLAq"
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2074.outbound.protection.outlook.com [40.107.244.74])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bmZxYtTu"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1FE4B60BB6;
-	Fri,  3 May 2024 22:01:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.244.74
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714773668; cv=fail; b=CJ9O5I7i0VZpu98CPp4+eZcsj5r7wF/5wsUrd7PwWLCts6E+fCWPT9xf9xC7JZUmkzXGKZWMJXm88O3H8J/YTqnLpICRFflkAKFJ+j3og+g4s/SMzIeXPBWy2ETAo5OAeQveasDg2EMsyiNrlBf/e/4Zml/jytz3fgJHcL4LogA=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714773668; c=relaxed/simple;
-	bh=UH6PmjiPmEI0L9zbQ2r4IaUitoM7zMka7Bu03VRggnI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=jTJI2LSg+TVV9+JLgmgT7P9vE+fOZMTI69Cc5kLSdX3vwe013dNYHekdYIqiu2P0q84ZmnI8jmUWMaj7EN1O4drcZ6WXWkgqt1H3dTzSgieUCB391JTOT1rA8uzMC4dxv9Xcs/kwNO2uT1QLxqTDRKwLDBLt6BfNGTogWbKsQ3U=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=OG79JLAq; arc=fail smtp.client-ip=40.107.244.74
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=BU8ULqmI8W+W1oKa3KoZC9o4rxi4qNGl3l/kykFFsPFTzWt7NJG2kO8b/06LvIVW0GuBWtviHReCmL/zr7OuikCtd1E1vO4KiPV8qNh7ZL4xyFFcsvSIfG04csEe20w8yVEwxXeng9PA8L7s4P+PtIUtOzk3r0r8tQJUuPn2vpcFR3r6ye6cQ34axJQ92/GnAaoIOlt3TYpZaAtYEWIC7cbq1L1JhmqNMdAjf+uig+JBVS8pJfMgbFfNN3j4Q7C5Iy4Adn9R05Koa7qNz57LQksYMSG8pW822UC9GKyMbgjh1jjXAI5AvXXCslw3a5I67C9kS32Idjid8MW8xVYKXw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=2u57zfoJduSdp0Sow1nf2I0kiy7AW2C0Q8aXlIOPWpU=;
- b=RWPtibLTTWb7ScZ7Zq+s5LPiAKtwHMFgm/cnLgMj/UU5b2xoCiEGnbTIZt+e1202Z5t1tRISFq7ebAXEI2Kt77y3yFjOo6Jn0NmqoDBM/YR7NuJSyYjMj2gskBBp0TkWG/inr6u/mbMWbUu2FvRl7IxvGf2aYvcYmRvJL68l0swDn6or76pTC8T7ENSD69cVZkWe/zSQJusds7Se4AdrpSwNATGLj9t/5zD2VnOdZYElwoV8v3k2YPjn4dxy22Lj5ROsuxVVZW9fjGWVxXP0gbn6WjBjpGxQCD+qUAFQeulakMKcWhhxmuF3mohtSw3caym9qt7IqQ14y+8XMTi/MA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.117.161) smtp.rcpttodomain=intel.com smtp.mailfrom=nvidia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=2u57zfoJduSdp0Sow1nf2I0kiy7AW2C0Q8aXlIOPWpU=;
- b=OG79JLAq+tuHesyWj/bDViQAVlpd94Z/XiodoTuFRM0JR5WV4hj+ZjG19leVBKKd97Y4ziPxuZvfJp3oJ5kcopAXDHwyBit9hSMPb8/MgXnx/t2evZYDLgYUzL0CIBj/6+4o1bFj8WG1ykrExy0q86gMrcMdx6Cz2965Nanc2FTUKleXL7h++yRyuf1HCofbfSfMY4ZUEqbij51qk8EFUFRXlYDZi1GMIzKSY19hEg07DaCcxtjZ46ayM77eNVXMxkAGnMdGt0Rc9nx9EzIrtecPk6rBeMSiJ3LsonnRsAXYJkMCXQqzrwXnGUt1yOg92/O/Ga7aci5QMF/qYcnmMg==
-Received: from CH0PR03CA0029.namprd03.prod.outlook.com (2603:10b6:610:b0::34)
- by CH3PR12MB8283.namprd12.prod.outlook.com (2603:10b6:610:12a::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7544.28; Fri, 3 May
- 2024 22:00:45 +0000
-Received: from CH3PEPF00000012.namprd21.prod.outlook.com
- (2603:10b6:610:b0:cafe::5) by CH0PR03CA0029.outlook.office365.com
- (2603:10b6:610:b0::34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7472.34 via Frontend
- Transport; Fri, 3 May 2024 22:00:45 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.161)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.117.161 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.117.161; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.117.161) by
- CH3PEPF00000012.mail.protection.outlook.com (10.167.244.117) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7519.0 via Frontend Transport; Fri, 3 May 2024 22:00:45 +0000
-Received: from rnnvmail201.nvidia.com (10.129.68.8) by mail.nvidia.com
- (10.129.200.67) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Fri, 3 May 2024
- 15:00:21 -0700
-Received: from [10.110.48.28] (10.126.231.35) by rnnvmail201.nvidia.com
- (10.129.68.8) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Fri, 3 May 2024
- 15:00:20 -0700
-Message-ID: <63750681-92b1-4c21-8d58-6a22709822fb@nvidia.com>
-Date: Fri, 3 May 2024 15:00:20 -0700
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E0363398A;
+	Fri,  3 May 2024 22:00:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1714773650; cv=none; b=Pp3+zFllZCzRk/hmyiHLYTiuQ7hQb0lD482BZARtLKWOacqd2XQrtMZHTBtvXcroIDqZDX8zGstZIQjHS43Fa+d25JAxI7JUIK9WY67OarrewYIgkIlqT1axz9v4kFstQQvaISiW2Xf2ryoDyYv94wqSAjX52WmE5lRoow3HH78=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1714773650; c=relaxed/simple;
+	bh=Wjp+m2xGOm+Aog+4t+45QhXtC0X2FqTKlfMFUw3zH6w=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=imfZacUQLJxWeMs2xnfNeO4N1oyihm1lxC/O7F09dsAf9WcpHCdazJceVQK3YJQ9XFRvBaWX9ZYe6WNEE73ogoLdE2AjQC+RpCupFZ5r2DQyH4WFsfOKQZEuJ8vBTNvOl3bXYxMj+LOLNNSNipo0PhS4bOJwjwuc0IKekOct7Vw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bmZxYtTu; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8FC71C116B1;
+	Fri,  3 May 2024 22:00:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714773649;
+	bh=Wjp+m2xGOm+Aog+4t+45QhXtC0X2FqTKlfMFUw3zH6w=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=bmZxYtTuJeCrIAQBq9YXi4/ta3tvs8Z+0/8apdL/RakcPJRNsPpsbG/8Rg2O5zRYI
+	 Fol4TpA4dwovaZTtS6ygHr5mfhlFr7iiSzKvjH+b8GPODj/IULorQ2yE3JYEP40pXn
+	 2tRj9kmikk7IiGOf+ZJdcoAL+pZRGDERG0rRVO3ZFLNm+NaENfh+/b1Kr0AA2uhUqg
+	 UUrc74RelCG6z8e3qDBPsB4r05kzX3kY08pMMF00JSx2mKsKMfJj3dbu0CRwbKqWne
+	 SdsFULdUEsmKz54uORoBhvTMGWIRDrLJ8dxDfPcCJd9EPYut2Fty+fQAUawexFm7XC
+	 My8F/qkdQ3uyw==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id 2A074CE0DEC; Fri,  3 May 2024 15:00:49 -0700 (PDT)
+Date: Fri, 3 May 2024 15:00:49 -0700
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Sean Christopherson <seanjc@google.com>
+Cc: Leonardo Bras <leobras@redhat.com>, Paolo Bonzini <pbonzini@redhat.com>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Boqun Feng <boqun.feng@gmail.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	Zqiang <qiang.zhang1211@gmail.com>,
+	Marcelo Tosatti <mtosatti@redhat.com>, kvm@vger.kernel.org,
+	linux-kernel@vger.kernel.org, rcu@vger.kernel.org
+Subject: Re: [RFC PATCH v1 0/2] Avoid rcu_core() if CPU just left guest vcpu
+Message-ID: <3b2c222b-9ef7-43e2-8ab3-653a5ee824d4@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20240328171949.743211-1-leobras@redhat.com>
+ <ZgsXRUTj40LmXVS4@google.com>
+ <ZjUwHvyvkM3lj80Q@LeoBras>
+ <ZjVXVc2e_V8NiMy3@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] selftests/resctrl: fix clang build warnings related to
- abs(), labs() calls
-To: Reinette Chatre <reinette.chatre@intel.com>,
-	=?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-CC: Shuah Khan <shuah@kernel.org>, Nathan Chancellor <nathan@kernel.org>,
-	"Nick Desaulniers" <ndesaulniers@google.com>, Bill Wendling
-	<morbo@google.com>, Justin Stitt <justinstitt@google.com>, Fenghua Yu
-	<fenghua.yu@intel.com>, Valentin Obst <kernel@valentinobst.de>,
-	<linux-kselftest@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-	<llvm@lists.linux.dev>
-References: <20240503023209.80787-1-jhubbard@nvidia.com>
- <793bd068-c3b4-6330-41a4-bea597b1d820@linux.intel.com>
- <f908ba74-86c0-409c-854d-9da5f3917b05@nvidia.com>
- <26f3effc-6ea1-4670-a301-76df3a710fa9@intel.com>
- <b88e73ea-d3f6-42d0-b9e0-f97665546178@nvidia.com>
- <46a6019c-b029-4764-8c66-ad61f4191716@intel.com>
-Content-Language: en-US
-From: John Hubbard <jhubbard@nvidia.com>
-In-Reply-To: <46a6019c-b029-4764-8c66-ad61f4191716@intel.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: rnnvmail203.nvidia.com (10.129.68.9) To
- rnnvmail201.nvidia.com (10.129.68.8)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CH3PEPF00000012:EE_|CH3PR12MB8283:EE_
-X-MS-Office365-Filtering-Correlation-Id: 10703489-1755-4b03-3b2c-08dc6bbc7bb6
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230031|7416005|1800799015|36860700004;
-X-Microsoft-Antispam-Message-Info:
-	=?utf-8?B?dlFFT21sZktYMStIa2dMY2xuL2plVEtNN1dqbExheWtKUVBjbGVQVjVZd2JK?=
- =?utf-8?B?UWF1cDF0K042R0F0RCt1d0VuTlJUaDMyZktMYXk1aXVLdzVPRGFZakpPbXZH?=
- =?utf-8?B?VDd6Z3Y4aFpXTDZEaUVyWnVsY0pJZTQ0N2hua0tsSkZUZFVNUWxhS0RFdnhU?=
- =?utf-8?B?dEhYRkNNa0ZmMitJSWRMdlVueEdBeFdzb1FadTlsRmx0KzJTc1VXcXZIZ09J?=
- =?utf-8?B?ZjdNWG5Id2hqczBjeUZzVmRyRk4zQ1MrQ2c1aEJPL1FRSGZFdUkvWGhybWpx?=
- =?utf-8?B?RHVzTmVHbWFsNCtIWmNEdTZvNTJ1eTBNbUJpelYxa2NkL25pRGF0MWM4RXBM?=
- =?utf-8?B?Q3lXdStvUlpiQWdtYUZFVy81bjh2MDMvWTNnUy9pTzRQRFNaYnZGUFhLaHd4?=
- =?utf-8?B?OFhjWUJ1SkJoc05tTDI2dHcvc2tiMW5PUHlac2RxekNLR253bWxYYlcwYmVG?=
- =?utf-8?B?NmNHR1p6U3I4bksvMG05TDJTQytxcmJaeHQvZEN0aENybkVHZHlybnhHS0RL?=
- =?utf-8?B?NGwzaUkxdlVFQmdBQjNxK3hUbVZjeDlRMGlIbWNlamVJM2JvMEdxaUV0NEFj?=
- =?utf-8?B?UytYekRuazBiWlI2ZUsrcVcwMUZVcUFsMlE3ZWNpQVJmeXVWcHJZYlJEa09n?=
- =?utf-8?B?VDVpR2g1eVkxUkEwQXdwQVpzVzNidS9QbjZhTXg0RDVIVXNGZlZaVS8wUEph?=
- =?utf-8?B?Z3NKVnE0dFB4TkxIeEl5VHpsL1RHdVdJRndJRDdUcjhrczB6dTRFMUl6ejl5?=
- =?utf-8?B?YlZTWitOMWdoaElJbDNtN2FqaGpMVkMxRzZVeXZKVjNQTmNzV3JCN1NGeEtE?=
- =?utf-8?B?cUZuajUwNXYyUkRNZVB2Qk1zdnVEWVZZWTc2dVJCZ3lYNExmTFR0K2RQaDVn?=
- =?utf-8?B?Mm4zKzFqbGJJRkNqakFWbTV6VDl6TWVXS0trYk9tNkZ5S2IwNk55alBlQ3pI?=
- =?utf-8?B?MDFwclNCeHNzeU00emlpS05aa08zdElJMjJDYVZvaDZGcjJhLzFzTndxemFK?=
- =?utf-8?B?Yk5qT3dscFBFUlF2aitoREVMSGFmN21hOG1XK3BseUhaM2x5d2EyZk5iV0FI?=
- =?utf-8?B?K1ZMekNYRFZjcjJiSnk1VWNFYzU5b2t3RG11RE54WDd5ZXpTQ3lCbldCUDg3?=
- =?utf-8?B?RmVRL2ltR1F6NHNjNVM1V0E0eDNIMCtpOHNMTmV0RU11Zy8xYlZ4Z3dyWDBm?=
- =?utf-8?B?WkNrcEQrY1Y5a1p1VEJTK0l4NVlUdUtoQVZhWTR5eTlpTkhGU2JDd1NucWx3?=
- =?utf-8?B?TFVkeVpvd3h6TTdIZ1JpZnc5WGtlOGsxdVNrakJkVEdnM0x3NjVFZmlOMFZr?=
- =?utf-8?B?NEpZS09BQlJJakZscjBLbC9BWDliZDhFUkJZdmI4YWRBVFRGRWRRN3RUeVh3?=
- =?utf-8?B?cWc2TkZXYW1GUytxUWVhY1NycDNHd3A3bU9MbW9IcmljRGdDTDJ4Y0t0YzV3?=
- =?utf-8?B?WUZQTVJuY2JHdXR0MlNickQrSllQSlR2VEp1K2pBS2ViUXVBMXBJVUxYM3JC?=
- =?utf-8?B?RTRGWlArQU16QndVQno3bXowamd6bGpmeVB1VW9Lem1yMVM5bFZIWnovSlBr?=
- =?utf-8?B?bHhqU3JnNUFad2xBWFA5S01FY0g3R3Q4SThmZDAwcGRjNGRZZ1R0YStuKysw?=
- =?utf-8?B?ZWlNN0FGbEQ0Tm1ZeFhqejJQVWs0MnoxOFdXbzJDVUVxeWMrZTJrak5ycVRC?=
- =?utf-8?B?YlIyR1VoY3kxenJVYWV1aE5sYjRkaUFoS2FWSkFEOEo1aXE0aFVBOVptbGpx?=
- =?utf-8?B?VWVXTU4yWVI1aW1lVDBZb1pVNUFTVGtPQzIweURjUk1mM2ZwV0RNZW9MbTlT?=
- =?utf-8?B?a0xuRzJpSXFET3J2d0l6dDd1cUFNcjluU0pUbS8vOTllMUxKWTV6b0I5b1dF?=
- =?utf-8?Q?2obHMmfvQks9K?=
-X-Forefront-Antispam-Report:
-	CIP:216.228.117.161;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge2.nvidia.com;CAT:NONE;SFS:(13230031)(7416005)(1800799015)(36860700004);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 May 2024 22:00:45.1769
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 10703489-1755-4b03-3b2c-08dc6bbc7bb6
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.161];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	CH3PEPF00000012.namprd21.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR12MB8283
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZjVXVc2e_V8NiMy3@google.com>
 
-On 5/3/24 1:46 PM, Reinette Chatre wrote:
-> Hi John,
-> On 5/3/2024 12:12 PM, John Hubbard wrote:
->> On 5/3/24 11:37 AM, Reinette Chatre wrote:
->>> On 5/3/2024 9:52 AM, John Hubbard wrote:
->>>> On 5/3/24 1:00 AM, Ilpo Järvinen wrote:
->>>>> On Thu, 2 May 2024, John Hubbard wrote:
->>>> ...
-..
->> I assumed that this code did not expect to handle negative numbers,
->> because it is using unsigned math throughout.
->>
->> If you do expect it to handle cases where, for example, this happens:
->>
->>     avg_bw_imc > avg_bw_resc
+On Fri, May 03, 2024 at 02:29:57PM -0700, Sean Christopherson wrote:
+> On Fri, May 03, 2024, Leonardo Bras wrote:
+> > > KVM can provide that information with much better precision, e.g. KVM
+> > > knows when when it's in the core vCPU run loop.
+> > 
+> > That would not be enough.
+> > I need to present the application/problem to make a point:
+> > 
+> > - There is multiple  isolated physical CPU (nohz_full) on which we want to 
+> >   run KVM_RT vcpus, which will be running a real-time (low latency) task.
+> > - This task should not miss deadlines (RT), so we test the VM to make sure 
+> >   the maximum latency on a long run does not exceed the latency requirement
+> > - This vcpu will run on SCHED_FIFO, but has to run on lower priority than
+> >   rcuc, so we can avoid stalling other cpus.
+> > - There may be some scenarios where the vcpu will go back to userspace
+> >   (from KVM_RUN ioctl), and that does not mean it's good to interrupt the 
+> >   this to run other stuff (like rcuc).
+> >
+> > Now, I understand it will cover most of our issues if we have a context 
+> > tracking around the vcpu_run loop, since we can use that to decide not to 
+> > run rcuc on the cpu if the interruption hapenned inside the loop.
+> > 
+> > But IIUC we can have a thread that "just got out of the loop" getting 
+> > interrupted by the timer, and asked to run rcu_core which will be bad for 
+> > latency.
+> > 
+> > I understand that the chance may be statistically low, but happening once 
+> > may be enough to crush the latency numbers.
+> > 
+> > Now, I can't think on a place to put this context trackers in kvm code that 
+> > would avoid the chance of rcuc running improperly, that's why the suggested 
+> > timeout, even though its ugly.
+> > 
+> > About the false-positive, IIUC we could reduce it if we reset the per-cpu 
+> > last_guest_exit on kvm_put.
 > 
-> The existing code seems to handle this ok. A sample program with this
-> scenario comparing existing computation with your first proposal is
-> below:
+> Which then opens up the window that you're trying to avoid (IRQ arriving just
+> after the vCPU is put, before the CPU exits to userspace).
 > 
-> #include <stdio.h>
-> #include <stdlib.h>
+> If you want the "entry to guest is imminent" status to be preserved across an exit
+> to userspace, then it seems liek the flag really should be a property of the task,
+> not a property of the physical CPU.  Similar to how rcu_is_cpu_rrupt_from_idle()
+> detects that an idle task was interrupted, that goal is to detect if a vCPU task
+> was interrupted.
 > 
-> void main(void) {
-> 	unsigned long avg_bw_resc = 20000;
-> 	unsigned long avg_bw_imc = 40000;
-> 	float avg_diff;
+> PF_VCPU is already "taken" for similar tracking, but if we want to track "this
+> task will soon enter an extended quiescent state", I don't see any reason to make
+> it specific to vCPU tasks.  Unless the kernel/KVM dynamically manages the flag,
+> which as above will create windows for false negatives, the kernel needs to
+> trust userspace to a certaine extent no matter what.  E.g. even if KVM sets a
+> PF_xxx flag on the first KVM_RUN, nothing would prevent userspace from calling
+> into KVM to get KVM to set the flag, and then doing something else entirely with
+> the task.
 > 
-> 	/* Existing code */
-> 	avg_diff = (float)labs(avg_bw_resc - avg_bw_imc) / avg_bw_imc;
-> 	printf("Existing code: avg_diff = %f\n", avg_diff);
-> 
-> 	/* Original proposed fix */
-> 	avg_diff = (float)(avg_bw_resc - avg_bw_imc) / avg_bw_imc;
-> 	printf("Original proposed fix: avg_diff = %f\n", avg_diff);
-> }
-> 
-> output:
-> Existing code: avg_diff = 0.500000
-> Original proposed fix: avg_diff = 461168590192640.000000
+> So if we're comfortable relying on the 1 second timeout to guard against a
+> misbehaving userspace, IMO we might as well fully rely on that guardrail.  I.e.
+> add a generic PF_xxx flag (or whatever flag location is most appropriate) to let
+> userspace communicate to the kernel that it's a real-time task that spends the
+> overwhelming majority of its time in userspace or guest context, i.e. should be
+> given extra leniency with respect to rcuc if the task happens to be interrupted
+> while it's in kernel context.
 
-That seems "a little bit" wrong. haha :)
+But if the task is executing in host kernel context for quite some time,
+then the host kernel's RCU really does need to take evasive action.
 
-> 
->>
->> ...then a proper solution is easy, and looks like this:
->>
->> diff --git a/tools/testing/selftests/resctrl/mbm_test.c b/tools/testing/selftests/resctrl/mbm_test.c
->> index c873793d016d..b87f91a41494 100644
->> --- a/tools/testing/selftests/resctrl/mbm_test.c
->> +++ b/tools/testing/selftests/resctrl/mbm_test.c
->> @@ -17,8 +17,8 @@
->>   static int
->>   show_bw_info(unsigned long *bw_imc, unsigned long *bw_resc, size_t span)
->>   {
->> -       unsigned long avg_bw_imc = 0, avg_bw_resc = 0;
->> -       unsigned long sum_bw_imc = 0, sum_bw_resc = 0;
->> +       long avg_bw_imc = 0, avg_bw_resc = 0;
->> +       long sum_bw_imc = 0, sum_bw_resc = 0;
->>          int runs, ret, avg_diff_per;
->>          float avg_diff = 0;
->>
->> Should I resend the patch with that approach?
-> 
-> ok. That indeed makes the computations easier to understand. I assume
-> you intend to fix the snippet in mba_test.c also?
-> 
+On the other hand, if that task is executing in guest context (either
+kernel or userspace), then the host kernel's RCU can immediately report
+that task's quiescent state.
 
-Yes, will do that. Thanks for spotting the bug in the original "fix"!
+Too much to ask for the host kernel's RCU to be able to sense the
+difference?  ;-)
 
-thanks,
--- 
-John Hubbard
-NVIDIA
-
+							Thanx, Paul
 
