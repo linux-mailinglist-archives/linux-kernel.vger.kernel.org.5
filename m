@@ -1,141 +1,121 @@
-Return-Path: <linux-kernel+bounces-167374-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-167413-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4CD1D8BA89B
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 10:20:35 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 14CC08BA937
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 10:48:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 864CEB22537
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 08:20:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A83C81F22D69
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 08:48:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DFB18148FE2;
-	Fri,  3 May 2024 08:20:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2FFB75914D;
+	Fri,  3 May 2024 08:48:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Kcghk5aV"
-Received: from mail-oo1-f41.google.com (mail-oo1-f41.google.com [209.85.161.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="KQZv1N6i"
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D54C5148313;
-	Fri,  3 May 2024 08:20:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4591979CD;
+	Fri,  3 May 2024 08:48:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714724423; cv=none; b=tp5Eb+XRjmQZNjk6tfq+SPdtMzNWmlGIvDbWKNro2Tba3bGZf/R3+nVSCV/dmJhaH5iCnfU2OO6sfRppYG8kvxBJZe31nCTrm8c5iBYV8TVSbR2uCD2G3vQSv+mv6fWI0YNKhkFKbbOUGIy21bAKaFK6dop0YQ1PW+gYfWEH4ao=
+	t=1714726112; cv=none; b=KPaOl90VvbvIINo+U9G3iaMJBhA8eyafV1sQYwL/E/bS/QOy39klPHGthexC1wEIMjJlh9iNlUaZOcMMn9RepvxFAkya4ueTX1ejerjo3uVvTxraU1TnRLR6VgcxxBtwXkwoWrDzHMbvkbXLmG0b9k2CfkC39qQjUBK3HFUiV64=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714724423; c=relaxed/simple;
-	bh=MNIFnx2qTxrjZunIYAyHq5H9qZ0uBcjf4J51U8fNhhU=;
+	s=arc-20240116; t=1714726112; c=relaxed/simple;
+	bh=4LAK9etsRaOQZ6Axh1wlzY3z93PBUnIV4rktOBkXROg=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ZUYDFnyjdsE5FFthjcIFjA0UwTEkc2yD5O/lpIqtkGE0JTDnvwppO5QybEcCJM313TO3bhsEYSn0JUclB7LoPh8OmD/MoPaZBmz13726YTzvwCIp9w+Q2X/Ui880kfKEdDwZEURZlyAISOUPkZf1meNLdSWupkZxBatR5b8n6Dg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Kcghk5aV; arc=none smtp.client-ip=209.85.161.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oo1-f41.google.com with SMTP id 006d021491bc7-5aa2bd6f651so5963236eaf.0;
-        Fri, 03 May 2024 01:20:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714724421; x=1715329221; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=3hH1YXLlyA1Xepv5zeFpL8G//5XUCXH9AjpKXyKmtRc=;
-        b=Kcghk5aVMyBY1/vaFpDT3trMyEoFIiG2BulFKLaVKsP5FwNn40HTfEWWpK5DDNVTgF
-         QOUWBCwLeV4JcnPbSPpQRr0UlvB60DNVHhXHx8X+DR465UtvA8x4FYtTggC7fb6knK+9
-         mKLocIAZT3+VS+9fS8WCoqD1KeJN2dfUhqzeZ4II+keRIrsSm9tqNTUmppGJQCbwb7gC
-         z/wt8FQq0QdVEA8LueqyEw5TPWdkR5oJo4WQOJwmHpV2C5ImV6DBQywIPGHXEn+RoPPo
-         QnRkGG2UM3/UPUHgKJJvl0IQwhKxlEvwAt6BThFssga22yBzYzCzKswzQHJTjrPvPsLC
-         aCQg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714724421; x=1715329221;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=3hH1YXLlyA1Xepv5zeFpL8G//5XUCXH9AjpKXyKmtRc=;
-        b=XnvFMubc1BxFZ5Xiga7eCANTA8OdRMWejQXxwcAKEWlOfvX4HpunToPPQ5RXwNrIAB
-         yILqLUfd0g3y2ZEQdkjz6xchtWpSFC0aFTKEO8shfhwIEhbmXGnBkhq/cABPbH59tkF3
-         CFlY7yGQKm/xJlWTN402s1v4A4Eg0DdgsmfwnvlFwYbvNDD+u2e3aNEVOvBnCZqEFYFj
-         3EMm7e3NTK0sFv5m9HXxX4r0ntk74EXYDqwM8EwIXaef+360iUOE8F5vmRe06KjiUxRd
-         1bMdnqyMRw58gbNaoIuE1cujuueXI2qyov2fRV8vfJ8mxF1PP+HArWZ1Wnymx6dayiTw
-         Yomw==
-X-Forwarded-Encrypted: i=1; AJvYcCUmEsR+iyQsb9LrCWA2+nPxK22DdzixRHSTBPtDlodKVtYJgACfUnH+JrBqksULpqjn6bIUJt70dJVzcQLmAhxRxi5M1WWfXx6YrObfUSS8LfU1H2XmOTqTq3wjyC1mWwFdOylpQ8zvAEHDs+DbAw2AZcthQlSsUnvIfnuGZcsOgw==
-X-Gm-Message-State: AOJu0Ywq2Krjtr+zSEIZIXUnQ2NPXOD8M5vmc4elMA2dffNsYj9m2eIX
-	b4IUTIeTs3EdjF0VUccSoyrN2ZNBrTG/SbX/IKnWaLJ/CH4frHFr
-X-Google-Smtp-Source: AGHT+IGX/ND1xY8XwJ5CXNf6LkUuVIkOsSBWoWuk/E0wuSsHPBhj9ByTB65T3ot42p7umDDjfusQnw==
-X-Received: by 2002:a05:6358:5912:b0:18d:7755:8219 with SMTP id g18-20020a056358591200b0018d77558219mr1767900rwf.32.1714724420825;
-        Fri, 03 May 2024 01:20:20 -0700 (PDT)
-Received: from archie.me ([103.124.138.155])
-        by smtp.gmail.com with ESMTPSA id bz20-20020a056a02061400b005f7fed76e59sm2283395pgb.78.2024.05.03.01.20.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 03 May 2024 01:20:20 -0700 (PDT)
-Received: by archie.me (Postfix, from userid 1000)
-	id 86C7218462B27; Fri, 03 May 2024 15:20:17 +0700 (WIB)
-Date: Fri, 3 May 2024 15:20:17 +0700
-From: Bagas Sanjaya <bagasdotme@gmail.com>
-To: Usama Arif <usamaarif642@gmail.com>, hannes@cmpxchg.org, tj@kernel.org,
-	lizefan.x@bytedance.com, nphamcs@gmail.com, corbet@lwn.net
-Cc: linux-mm@kvack.org, cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org, kernel-team@meta.com
-Subject: Re: [PATCH v2 1/1] cgroup: Add documentation for missing zswap
- memory.stat
-Message-ID: <ZjSeQaPR90gV61xp@archie.me>
-References: <20240502185307.3942173-1-usamaarif642@gmail.com>
- <20240502185307.3942173-2-usamaarif642@gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=DjmL9IEZC1rZqdJ7KZWK62e2gGTkoKpfLdYYxJKPO6UMFdMolRaMS/jOMezqT6c6JMaEKViM2zAaFuWgpwWaxNBxxY8LagYMuDEzzbVZbzCrpMdroPBeizngKmMGSqG/J4KW/XX8puPd/MFGZnY8QyIwWRctcCSTMO3XA7meT7o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=KQZv1N6i; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353727.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 4438jcMi004089;
+	Fri, 3 May 2024 08:48:29 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=bXFb74UHnqadsLdb0RbUOARUSWrSSEa7RZIBYJ2ApO0=;
+ b=KQZv1N6igTzVOXlu+fPckpGSkDaGUDXRXtgoYQw48gP+gfUaKl9MT5yV2n6bdGcgO0zy
+ oBBRHBtSbs5/ZqYNa1b2ZJWz24TXWHtQJYfDJqu3hIwwGTEymb4hducuasbCh561tEoE
+ 4BCRsdjEU6/r0mWQ5ZlG0/Ts/dudMG5IRq109QHumJ61T3h/6EhfO3qOLLbd+Mh00qoB
+ ayF0byzT55SThP9NPAD7WxKZmUSQGJeGoqOOblRXldrZ4LjNosqWxEGNtQErb/YAjlEx
+ /dVI3/aV5xhj+z33auPCAURZiGGc6NTuZtQEZJBJP9fkT4pd8u8j9a7/eKQIHPN2OPzj 0g== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xvvgbr15p-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 03 May 2024 08:48:29 +0000
+Received: from m0353727.ppops.net (m0353727.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 4438mSQv010418;
+	Fri, 3 May 2024 08:48:28 GMT
+Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xvvgbr152-7
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 03 May 2024 08:48:28 +0000
+Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 4435WPhe001509;
+	Fri, 3 May 2024 08:21:15 GMT
+Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
+	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3xsbpucux0-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 03 May 2024 08:21:15 +0000
+Received: from smtpav05.fra02v.mail.ibm.com (smtpav05.fra02v.mail.ibm.com [10.20.54.104])
+	by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 4438L9ID17105312
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Fri, 3 May 2024 08:21:11 GMT
+Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id AE71620040;
+	Fri,  3 May 2024 08:21:09 +0000 (GMT)
+Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 28C6D20043;
+	Fri,  3 May 2024 08:21:09 +0000 (GMT)
+Received: from li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com (unknown [9.171.68.221])
+	by smtpav05.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+	Fri,  3 May 2024 08:21:09 +0000 (GMT)
+Date: Fri, 3 May 2024 10:21:07 +0200
+From: Alexander Gordeev <agordeev@linux.ibm.com>
+To: Thomas Huth <thuth@redhat.com>
+Cc: linux-s390@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>, linux-kernel@vger.kernel.org,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>
+Subject: Re: [PATCH v2] s390: Remove comment about TIF_FPU
+Message-ID: <ZjSecweC4gCRa80x@li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com>
+References: <20240503080648.81461-1-thuth@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="crh03WeP2jR7Qlt/"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240502185307.3942173-2-usamaarif642@gmail.com>
+In-Reply-To: <20240503080648.81461-1-thuth@redhat.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: sPleoafmuW_otZpaQspvGUpoJAdV0bK-
+X-Proofpoint-GUID: kd5mTUzxk5t5o-Y645cKcDvwLJ0aHOZC
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
+ definitions=2024-05-03_05,2024-05-03_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 suspectscore=0
+ clxscore=1015 impostorscore=0 mlxlogscore=514 malwarescore=0 mlxscore=0
+ lowpriorityscore=0 adultscore=0 phishscore=0 priorityscore=1501
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2404010000 definitions=main-2405030063
 
+On Fri, May 03, 2024 at 10:06:48AM +0200, Thomas Huth wrote:
+> It has been removed in commit 2c6b96762fbd ("s390/fpu: remove TIF_FPU"),
+> so we should not mention TIF_FPU in the comment here anymore. Since the
+> remaining parts of the comment just document the obvious fact that
+> save_user_fpu_regs() saves the FPU state, simply remove the comment now
+> completely.
+> 
+> Signed-off-by: Thomas Huth <thuth@redhat.com>
+> ---
+>  v2: Drop the comment completely
+> 
+>  arch/s390/kernel/process.c | 5 -----
+>  1 file changed, 5 deletions(-)
 
---crh03WeP2jR7Qlt/
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Thu, May 02, 2024 at 07:50:24PM +0100, Usama Arif wrote:
-> diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admi=
-n-guide/cgroup-v2.rst
-> index 17e6e9565156..eaf9e66e472a 100644
-> --- a/Documentation/admin-guide/cgroup-v2.rst
-> +++ b/Documentation/admin-guide/cgroup-v2.rst
-> @@ -1572,6 +1572,15 @@ PAGE_SIZE multiple when read back.
->  	  pglazyfreed (npn)
->  		Amount of reclaimed lazyfree pages
-> =20
-> +	  zswpin
-> +		Number of pages moved in to memory from zswap.
-> +
-> +	  zswpout
-> +		Number of pages moved out of memory to zswap.
-> +
-> +	  zswpwb
-> +		Number of pages written from zswap to swap.
-> +
->  	  thp_fault_alloc (npn)
->  		Number of transparent hugepages which were allocated to satisfy
->  		a page fault. This counter is not present when CONFIG_TRANSPARENT_HUGE=
-PAGE
-
-LGTM, thanks!
-
-Reviewed-by: Bagas Sanjaya <bagasdotme@gmail.com>
-
---=20
-An old man doll... just what I always wanted! - Clara
-
---crh03WeP2jR7Qlt/
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZjSePQAKCRD2uYlJVVFO
-o66XAQCCDUlqsMuoqiEoVUacN+LWFuXAOwveu8ll93ptMzCLuAD+PmqqrXvbV07D
-GbRC9OsCb8v87evI9zIURxytHAfibw4=
-=No1B
------END PGP SIGNATURE-----
-
---crh03WeP2jR7Qlt/--
+Applied, thanks!
 
