@@ -1,170 +1,134 @@
-Return-Path: <linux-kernel+bounces-168313-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-168257-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B4E898BB650
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 23:47:07 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 45D038BB5CC
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 23:34:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 252561F23FFA
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 21:47:07 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5B503B245D9
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 21:34:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B1FA137C26;
-	Fri,  3 May 2024 21:38:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 01BA958AC3;
+	Fri,  3 May 2024 21:33:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="nlNk1Alg"
-Received: from mail-pj1-f54.google.com (mail-pj1-f54.google.com [209.85.216.54])
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="I041ed7w"
+Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A895913793F
-	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 21:38:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A580954BD8
+	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 21:33:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714772300; cv=none; b=TBM0GwwGsFpss642XpXQVgkQLexrkwtyQNoI7UAcNryQ0OYhoT+8wae0ldOwUSjDsiHQNgo55xizUmdkWGRrFha6to+mxsOfQKiflC9ZykFagCOd7031is7ZPPysArHN52xwcFaYh/yqOkoeNaw0SehuLVTkRl+GNU9UraV0I9g=
+	t=1714772038; cv=none; b=CrM5qVFq5be+EeaJhjM548Rz+7wLO03H+MZhuB4t0IRPUQPhT0GBxh9EQsSYj9CdV76thm0QuKrQGphJf/lQCa7MyPf+e2t2VG0MxbMAw2RsgKUg4eFKfpaOO55DDGSfp5nbTPpxDLQyMfq9nWyWhIBtTZyQTEMh+xa66fryB1A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714772300; c=relaxed/simple;
-	bh=EaWtWEnAFoVYQQ7NdwPJMqMdWOvHRnxTyipd/TFLpqw=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=VlUaUhfS2QxvrvxMaw8ES0PsthHizPjQKIHP950OtONxv9mnmCpWRgnDZKmSNovJrTJlmT0yNP6mxUFcjQz3eAY60Hpz9oFFlAPgdxs/zwVD5CHcmA0SmvWyPHsyCZrbxFwUyNKlAB64+DeYURsKA/Bo2Q1IUGl6/E4QxZ/WOUo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=nlNk1Alg; arc=none smtp.client-ip=209.85.216.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pj1-f54.google.com with SMTP id 98e67ed59e1d1-2b27c660174so132440a91.1
-        for <linux-kernel@vger.kernel.org>; Fri, 03 May 2024 14:38:17 -0700 (PDT)
+	s=arc-20240116; t=1714772038; c=relaxed/simple;
+	bh=9Qapmfzm6lSNA1KjLLEHmaWSypEB5MZ/Duccomf7UwA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=HbVzQVh1SznxwWGKLm+C9srm60jsrAY6sEzt/M36TXGVwNej9QkmC2cbqoAP0RMb8b+Wu7jFmccXaaYKWQeg13mlzy5kSH7cW0rc3K1UTeaJsx+KeGTbCcFCsqBPxzha6xd7NiSVvyq3sHZRnoNaA/x+Hp//bhxMgsgJ0gPrzH0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=I041ed7w; arc=none smtp.client-ip=209.85.218.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-a599a298990so13922966b.2
+        for <linux-kernel@vger.kernel.org>; Fri, 03 May 2024 14:33:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1714772297; x=1715377097; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=gkS+rg5OKiFoHCGrecPUpnEeRZJMeWyJ+snKafgy5vs=;
-        b=nlNk1Alg9L0OtkB8zxq3JA6tAKSLOHp6f15vm5koUH9FP5DyEm6Dg6BXgAdntsrdWi
-         avR5+u0SMT8Tl9+KVjdPN1txM+DeSEUVl1q4siPnjm0p5NGFVgm+Fpm/Zu3UQO6kvwDW
-         1g8heKyPmEo6JvdjTVzP0b5+CbBvPte2wS4lg=
+        d=linux-foundation.org; s=google; t=1714772035; x=1715376835; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=H0cKj1/eeDlsag1nYyx5cuj3RktPC8YvvhuCxa/6SIc=;
+        b=I041ed7wq74EqHv+lLpw/4OnY1kI3FzQ0ynGOUp7811sa7ORamvQCjH55bC3YnkSar
+         Klx1rhzeK82r5sekSRH+Cic3Wo0satWx94LLNP051CXWwirSPCCliSE8FVQHfxNUSvej
+         uk8KtcOJLyEkqe0pyZgWuEHuRw49MMa4Hn1p4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714772297; x=1715377097;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=gkS+rg5OKiFoHCGrecPUpnEeRZJMeWyJ+snKafgy5vs=;
-        b=FOGW2LQNmWdJx7YAVpfV/GEbiGPxFVmhTe2PcM1iMFg6EszADJ5Slx1MMFXN1etwDl
-         uSXIMnk3DV+UTJhFW9fD/hE5oT/OYg8rLkxDCu30ApL5+iYQTBTvo+eTWjPLRL4JoiWW
-         UDJfnd68dti+aYoiFFSIApA5M14bfXUYu6piLOZfdY2vJ+CT++vbMsSiHgYUZZZr9AKq
-         uNVQXTMDgJ2BPY8bVcmqNtlzz6lyznydCasv3Oj9AlBHUhpcGawKhKFyzqhuCrfCyLpQ
-         AexZwtqUirKO/RLXPtXpVOlWJpiiGgXB1IRDS0RNTHF6S8yUbfDBBfSJpMcYn+Yx9y9p
-         sHcw==
-X-Forwarded-Encrypted: i=1; AJvYcCW4a8Kla4/Z8txnulw6BfuQsqI19fPtT7vkV0ST/Iw9NoM5V8RhF32cMPj0N3+i1/XKXDAZZonBYSggzyqmoOLWUL8SapYtgoBoi8sG
-X-Gm-Message-State: AOJu0YwyrAGcgsEmQONJU8FTOY+JZVPcCeIio2TiDOo7gKSkzmmQiUCT
-	t5J86U7anjB6I1pyXLKDLyvgGkr5iOV8cRJmXvr3cOi7ITGEV92MLcCikfk5HA==
-X-Google-Smtp-Source: AGHT+IHkW28tWyRIV7NmgOtGvUD0tFuJ+wrkeXjluxHwAroLQKxUR2uvyN5Qr5JmQy9q9YdYC6JW1Q==
-X-Received: by 2002:a17:90a:6081:b0:2a2:8ed7:da34 with SMTP id z1-20020a17090a608100b002a28ed7da34mr3992252pji.1.1714772297001;
-        Fri, 03 May 2024 14:38:17 -0700 (PDT)
-Received: from dianders.sjc.corp.google.com ([2620:15c:9d:2:fb6a:b54b:7580:64f3])
-        by smtp.gmail.com with ESMTPSA id j12-20020a170903024c00b001eb51a46f5bsm3729134plh.43.2024.05.03.14.38.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 03 May 2024 14:38:16 -0700 (PDT)
-From: Douglas Anderson <dianders@chromium.org>
-To: dri-devel@lists.freedesktop.org,
-	Maxime Ripard <mripard@kernel.org>
-Cc: Linus Walleij <linus.walleij@linaro.org>,
-	Chris Morgan <macromorgan@hotmail.com>,
-	Yuran Pereira <yuran.pereira@hotmail.com>,
-	Neil Armstrong <neil.armstrong@linaro.org>,
-	Douglas Anderson <dianders@chromium.org>,
-	Daniel Vetter <daniel@ffwll.ch>,
-	David Airlie <airlied@gmail.com>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [RFT PATCH v2 48/48] drm/panel: Update TODO list item for cleaning up prepared/enabled tracking
-Date: Fri,  3 May 2024 14:33:29 -0700
-Message-ID: <20240503143327.RFT.v2.48.I104cdece7324b0c365e552a17f9883414ffaea01@changeid>
-X-Mailer: git-send-email 2.45.0.rc1.225.g2a3ae87e7f-goog
-In-Reply-To: <20240503213441.177109-1-dianders@chromium.org>
-References: <20240503213441.177109-1-dianders@chromium.org>
+        d=1e100.net; s=20230601; t=1714772035; x=1715376835;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=H0cKj1/eeDlsag1nYyx5cuj3RktPC8YvvhuCxa/6SIc=;
+        b=lXX/SL7nJ1CXyaRv9z7YcqEhevezV13m1PDRl4Ea8W4m3mvkB2cp2ZX2WdvRAz9Pgd
+         O/BsXioTV5QupsMQ9v/a73EV11Vt51LD46HByZk9RekjAPJ4kUt2jxtRyFVp9ZmGdHAF
+         erba8WUXhMFk4E60jPwJL3IoUH9t/Edk7EGIAMQBatr5cTBBmBmsMOTkyqiGV9jACnVf
+         7i3w1+G8zYDuVyHCXwp937KoC1puWXeTq0mCfZjA6svKDeoKPB2rcUHzoHpE3+LnIpkL
+         TH9HcQ9w1jRnFUQTVNaxZdvcLKQcZ6e4kJskd3DdnEbVLw6j+D09iPn8AL2XiShPIK2Z
+         401Q==
+X-Forwarded-Encrypted: i=1; AJvYcCU5rMSUUuqYg0swefKCjDaLb4MyBJTdFxdi8S58H3R6iVWjiiPlOX7zqJS9zIC9cV/q2Vn4aX+/68M6skpzXJ4KtvuVNWJLXY0Vqafn
+X-Gm-Message-State: AOJu0YxSNzTgoRPUImWIIJZI6Ist8ZIudSrfCTAbSc5q+Lxo2NSUT4YU
+	OdkJqb9vVCM6mNStwhHfKWWiiHVkggy5BMv/sVV0xiu63yXo3NPR08sU/+KEH7DeYXBpI0ULojJ
+	fweRToA==
+X-Google-Smtp-Source: AGHT+IG8MhpUXmKnXX/11quCokJaAqAwf2Vj5OIgCJccUL6T64QtDABYTBQcAin7T4x/QZrlRzN1Aw==
+X-Received: by 2002:a17:906:2492:b0:a59:9f4e:4e3d with SMTP id e18-20020a170906249200b00a599f4e4e3dmr809157ejb.3.1714772034809;
+        Fri, 03 May 2024 14:33:54 -0700 (PDT)
+Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com. [209.85.218.43])
+        by smtp.gmail.com with ESMTPSA id dt14-20020a170907728e00b00a5974a4d662sm1737366ejc.151.2024.05.03.14.33.54
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 03 May 2024 14:33:54 -0700 (PDT)
+Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-a599a298990so13918466b.2
+        for <linux-kernel@vger.kernel.org>; Fri, 03 May 2024 14:33:54 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCUl+cnbXHSRYiie7KCI+yuTgiWT4lFBoT3lVlxO++wXyqu8eJVhkU1unjlstugFZWwzbGDn5R7utdynpxC5P/zC4T4Bdt9FBmlajPiQ
+X-Received: by 2002:a17:906:2c50:b0:a59:761d:8291 with SMTP id
+ f16-20020a1709062c5000b00a59761d8291mr2183947ejh.9.1714772033952; Fri, 03 May
+ 2024 14:33:53 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <202405031110.6F47982593@keescook> <20240503211129.679762-2-torvalds@linux-foundation.org>
+ <20240503212428.GY2118490@ZenIV>
+In-Reply-To: <20240503212428.GY2118490@ZenIV>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Fri, 3 May 2024 14:33:37 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wjpsTEkHgo1uev3xGJ2bQXYShaRf3GPEqDWNgUuKx0JFw@mail.gmail.com>
+Message-ID: <CAHk-=wjpsTEkHgo1uev3xGJ2bQXYShaRf3GPEqDWNgUuKx0JFw@mail.gmail.com>
+Subject: Re: [PATCH] epoll: try to be a _bit_ better about file lifetimes
+To: Al Viro <viro@zeniv.linux.org.uk>
+Cc: keescook@chromium.org, axboe@kernel.dk, brauner@kernel.org, 
+	christian.koenig@amd.com, dri-devel@lists.freedesktop.org, 
+	io-uring@vger.kernel.org, jack@suse.cz, laura@labbott.name, 
+	linaro-mm-sig@lists.linaro.org, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-media@vger.kernel.org, 
+	minhquangbui99@gmail.com, sumit.semwal@linaro.org, 
+	syzbot+045b454ab35fd82a35fb@syzkaller.appspotmail.com, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-Now that most panels have been updated not to track/double-check their
-prepared/enabled state update the TODO with next steps.
+On Fri, 3 May 2024 at 14:24, Al Viro <viro@zeniv.linux.org.uk> wrote:
+>
+> Can we get to ep_item_poll(epi, ...) after eventpoll_release_file()
+> got past __ep_remove()?  Because if we can, we have a worse problem -
+> epi freed under us.
 
-Signed-off-by: Douglas Anderson <dianders@chromium.org>
----
+Look at the hack in __ep_remove(): if it is concurrent with
+eventpoll_release_file(), it will hit this code
 
-(no changes since v1)
+        spin_lock(&file->f_lock);
+        if (epi->dying && !force) {
+                spin_unlock(&file->f_lock);
+                return false;
+        }
 
- Documentation/gpu/todo.rst | 47 +++++++++++++++++++++-----------------
- 1 file changed, 26 insertions(+), 21 deletions(-)
+and not free the epi.
 
-diff --git a/Documentation/gpu/todo.rst b/Documentation/gpu/todo.rst
-index e2a0585915b3..4063bc45bbd3 100644
---- a/Documentation/gpu/todo.rst
-+++ b/Documentation/gpu/todo.rst
-@@ -469,30 +469,35 @@ Contact: Thomas Zimmermann <tzimmermann@suse.de>
- 
- Level: Starter
- 
--Clean up checks for already prepared/enabled in panels
--------------------------------------------------------
--
--In a whole pile of panel drivers, we have code to make the
--prepare/unprepare/enable/disable callbacks behave as no-ops if they've already
--been called. To get some idea of the duplicated code, try::
--
--  git grep 'if.*>prepared' -- drivers/gpu/drm/panel
--  git grep 'if.*>enabled' -- drivers/gpu/drm/panel
--
--In the patch ("drm/panel: Check for already prepared/enabled in drm_panel")
--we've moved this check to the core. Now we can most definitely remove the
--check from the individual panels and save a pile of code.
--
--In adition to removing the check from the individual panels, it is believed
--that even the core shouldn't need this check and that should be considered
--an error if other code ever relies on this check. The check in the core
--currently prints a warning whenever something is relying on this check with
--dev_warn(). After a little while, we likely want to promote this to a
--WARN(1) to help encourage folks not to rely on this behavior.
-+Remove disable/unprepare in remove/shutdown in panel-simple and panel-edp
-+-------------------------------------------------------------------------
-+
-+As of commit d2aacaf07395 ("drm/panel: Check for already prepared/enabled in
-+drm_panel"), we have a check in the drm_panel core to make sure nobody
-+double-calls prepare/enable/disable/unprepare. Eventually that should probably
-+be turned into a WARN_ON() or somehow made louder, but right now we actually
-+expect it to trigger and so we don't want it to be too loud.
-+
-+Specifically, that warning will trigger for panel-edp and panel-simple at
-+shutdown time because those panels hardcode a call to drm_panel_disable()
-+and drm_panel_unprepare() at shutdown and remove time that they call regardless
-+of panel state. On systems with a properly coded DRM modeset driver that
-+calls drm_atomic_helper_shutdown() this is pretty much guaranteed to cause
-+the warning to fire.
-+
-+Unfortunately we can't safely remove the calls in panel-edp and panel-simple
-+until we're sure that all DRM modeset drivers that are used with those panels
-+properly call drm_atomic_helper_shutdown(). This TODO item is to validate
-+that all DRM modeset drivers used with panel-edp and panel-simple properly
-+call drm_atomic_helper_shutdown() and then remove the calls to
-+disable/unprepare from those panels. Alternatively, this TODO item could be
-+removed by convincing stakeholders that those calls are fine and downgrading
-+the error message in drm_panel_disable() / drm_panel_unprepare() to a
-+debug-level message.
- 
- Contact: Douglas Anderson <dianders@chromium.org>
- 
--Level: Starter/Intermediate
-+Level: Intermediate
- 
- 
- Core refactorings
--- 
-2.45.0.rc1.225.g2a3ae87e7f-goog
+But as far as I can tell, almost nothing else cares about the f_lock
+and dying logic.
 
+And in fact, I don't think doing
+
+        spin_lock(&file->f_lock);
+
+is even valid in the places that look up file through "epi->ffd.file",
+because the lock itself is inside the thing that you can't trust until
+you've taken the lock...
+
+So I agree with Kees about the use of "atomic_dec_not_zero()" kind of
+logic - but it also needs to be in an RCU-readlocked region, I think.
+
+I wish epoll() just took the damn file ref itself. But since it relies
+on the file refcount to release the data structure, that obviously
+can't work.
+
+                Linus
 
