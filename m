@@ -1,152 +1,105 @@
-Return-Path: <linux-kernel+bounces-167454-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-167455-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 783EF8BA9CC
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 11:22:30 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 289D08BA9CF
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 11:22:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 341CA2853AF
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 09:22:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5AD711C20B8D
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 09:22:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B5A6153BF6;
-	Fri,  3 May 2024 09:19:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 423F6150987;
+	Fri,  3 May 2024 09:19:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="IHOz0KbR"
-Received: from mail-oa1-f54.google.com (mail-oa1-f54.google.com [209.85.160.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Mdvq/YrO"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D6D614F9E9
-	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 09:19:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E40D14F114;
+	Fri,  3 May 2024 09:19:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714727950; cv=none; b=hMRQwI+OEfYdCWBJlm4V3IUEM74lNimE3jv8PVlWB3wjl645Bs0TDxjK/+cUWH4tsRk917OR/3FcOC/cCS2EPE8UEi4IoT5QQFg4fKlsf3Gxatkr6dJh3MFyBzucUa+epCVZT+m5+QknJGHCmIlOeHst/sjGIHWBW2MjMDkVPjA=
+	t=1714727966; cv=none; b=b1xvWyGGqoZZWjkq+ZU/j0LCSGgJc+2BMDezpDwSzJpL8zKNfhx2fvKfGugL1QvM3hp2AchtiNtGUllAawv27pOWSQIxOLqCHOKgGnp7tEJplJk+dR38mafIv2Njkhd18MRyeOlLJdws6muguDTxUb3hDX1V2LrzCfoZi0UqOXo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714727950; c=relaxed/simple;
-	bh=0QKD/VRLqE4UJhTMThwx4W0GPaxzgatlvvK+3EE9Gd0=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ElMue4yRihoYqS/RqVtelBCaaWL9yJrtsj2McOWIk0a60MLntmGFvKMCQPnAxlnvRqgVTjiru8ydHbINWxSngK+Kfr/4Rr1e9dfSBYk+L0DiO52wl8vuxSjmPeicHm9q/Vy4kiuXraAz2FK1gg6t2seyPtNd6wPbdVf2vJSj5nM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=IHOz0KbR; arc=none smtp.client-ip=209.85.160.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-oa1-f54.google.com with SMTP id 586e51a60fabf-22ed075a629so3659405fac.3
-        for <linux-kernel@vger.kernel.org>; Fri, 03 May 2024 02:19:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1714727948; x=1715332748; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ow2rUHFnrcYhlTotFbBj4Gwxyq4hSnuB9nn9e+mMxIY=;
-        b=IHOz0KbRsCWDmyk62A8DSzaWNbCFkXUEHz7oF0LP+WFTA/3tZYHrLdsPPsQZE3T3DJ
-         RqpuzC4c/zAin4Jdd5j4mTZi0AZyVWEOcRynU0KWu6zjVlw1S6d8KXOMxHoUZzbmX3ap
-         FaeyM8UlIekF3evU/I46w9C+sTX631q4Jto8s=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714727948; x=1715332748;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ow2rUHFnrcYhlTotFbBj4Gwxyq4hSnuB9nn9e+mMxIY=;
-        b=IUZ9+mDNZvrtAwJAOtFo+VR9oPGLpIPnF1Fzj50ebtH0z33Ijyu63NzwbwB+GGooQ8
-         /IZK5b0DuR+Ppq0ntjgIm5L0DMH/0+vmNM3yRx6SUrXLzI8sjXIE7tyTlwsyHYHtjDhG
-         4+XNi6ktC+N2zlq7TSQPkywO8/m84LVtWRYsxdqRqCE1w6H1vMUuCzw/cW0LLl1Z4oEx
-         gnA7grD6cz4XJi1dXu+jTiPjQ+HucH3xMn7PuCB+NNagSizT4jbZhiogQIKaVYvIpfEH
-         el+43YQ+uc3xaVp7NfkjWQQN5UM5nG+wSsHtu+aTSg4tjVKRSxgA5yg+3RNXeJ40a9QT
-         6RgA==
-X-Gm-Message-State: AOJu0YyiKon4iK/htvyv+5XeVwY1oFwrNnS7oLopU7gZ76LQoE1tVjCd
-	3id9r0KLl1dA7KXDnexMGjsx3y4tx+3D4Ii7llw4yOHrs1ipj4owpP3SallRWg==
-X-Google-Smtp-Source: AGHT+IFh54usQd29tLvgBlBuW5xhaTflCGP1cxkIKo9T2fan/lx76Q1QQ5HqlGXP71ctFVnUWzGFvA==
-X-Received: by 2002:a05:6871:7821:b0:22e:d0e3:925f with SMTP id oy33-20020a056871782100b0022ed0e3925fmr2523349oac.1.1714727948591;
-        Fri, 03 May 2024 02:19:08 -0700 (PDT)
-Received: from tigerii.tok.corp.google.com ([2401:fa00:8f:203:dc60:24a3:e365:f27c])
-        by smtp.gmail.com with ESMTPSA id j6-20020aa78d06000000b006ecec1f4b08sm2621938pfe.118.2024.05.03.02.19.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 03 May 2024 02:19:08 -0700 (PDT)
-From: Sergey Senozhatsky <senozhatsky@chromium.org>
-To: Andrew Morton <akpm@linux-foundation.org>,
-	Minchan Kim <minchan@kernel.org>
-Cc: linux-kernel@vger.kernel.org,
-	linux-block@vger.kernel.org,
-	Sergey Senozhatsky <senozhatsky@chromium.org>
-Subject: [PATCH 14/14] Documentation/zram: add documentation for algorithm parameters
-Date: Fri,  3 May 2024 18:17:39 +0900
-Message-ID: <20240503091823.3616962-15-senozhatsky@chromium.org>
-X-Mailer: git-send-email 2.45.0.rc1.225.g2a3ae87e7f-goog
-In-Reply-To: <20240503091823.3616962-1-senozhatsky@chromium.org>
-References: <20240503091823.3616962-1-senozhatsky@chromium.org>
+	s=arc-20240116; t=1714727966; c=relaxed/simple;
+	bh=YFoaA2afiGryqt098GWkvq1dcjMWzSgISiyLhoAW5Bk=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=moGalLDkMib8OR1lO1M4nTPUWwVRqHEAv9O8E4ptVow/SWUIwTdTQhiNBEZL7EbtVr3GToI1Pc87bpWQzLz/h0uQIYpEV/Xswi/vEp4QmOOqYV1WPUhziw4zAsfwbejKhnUc6l2L9GrHTdJgMyzLwkkO/AC+wQwXD+zjVLtl0XY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Mdvq/YrO; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 19A78C116B1;
+	Fri,  3 May 2024 09:19:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714727966;
+	bh=YFoaA2afiGryqt098GWkvq1dcjMWzSgISiyLhoAW5Bk=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=Mdvq/YrOIbZmbljuxTHM5LkOTYH582IFf7I5al1Wgo6piaDRc+7pw+2wYV35VAFN5
+	 GWYn2UoxoiaMPQ5Or5wFyPj+Qerbxe86wZzHRz4nI5O6JY0PibJdfbsVo+PXhx5JPP
+	 wfWiQYDEEPZbK9tw2bd7eLctOIiC1U/JWrGIBMnkVqpAL9oIV0qKDEzLdw73Z2y+/O
+	 EetXu3Z82EoBkcwQJPFXvRO1rSdOWUxj0JbCKzXhFBQpQcA3Iw9SyE/HEJfXrX/uZQ
+	 dbsGn8lc++fsGfB8nSgtNUpWluo6WE19aE3uUbaMStyiY0iIj7im92GV++ZvLKVje6
+	 +Q1nH2bp/cR5g==
+From: Lee Jones <lee@kernel.org>
+To: linux-kernel@vger.kernel.org, Bhargav Raviprakash <bhargav.r@ltts.com>
+Cc: m.nirmaladevi@ltts.com, lee@kernel.org, robh+dt@kernel.org, 
+ krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, jpanis@baylibre.com, 
+ devicetree@vger.kernel.org, arnd@arndb.de, gregkh@linuxfoundation.org, 
+ lgirdwood@gmail.com, broonie@kernel.org, linus.walleij@linaro.org, 
+ linux-gpio@vger.kernel.org, linux-arm-kernel@lists.infradead.org, nm@ti.com, 
+ vigneshr@ti.com, kristo@kernel.org, eblanc@baylibre.com
+In-Reply-To: <0109018f2f24c15e-c50bfc29-5f1d-4368-a4b8-2c9f1d398abb-000000@ap-south-1.amazonses.com>
+References: <0109018f2f24c15e-c50bfc29-5f1d-4368-a4b8-2c9f1d398abb-000000@ap-south-1.amazonses.com>
+Subject: Re: (subset) [PATCH v8 00/10] Add support for TI TPS65224 PMIC
+Message-Id: <171472796178.1311350.4406575677999610125.b4-ty@kernel.org>
+Date: Fri, 03 May 2024 10:19:21 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
+X-Mailer: b4 0.12.4
 
-Document brief description of compression algorithms' parameters:
-compression level and pre-trained dictionary.
+On Tue, 30 Apr 2024 13:14:49 +0000, Bhargav Raviprakash wrote:
+> This series modifies the existing TPS6594 drivers to add support for the
+> TPS65224 PMIC device that is a derivative of TPS6594. TPS65224 has a
+> similar register map to TPS6594 with a few differences. SPI, I2C, ESM,
+> PFSM, Regulators and GPIO features overlap between the two devices.
+> 
+> TPS65224 is a Power Management IC (PMIC) which provides regulators and
+> other features like GPIOs, Watchdog, Error Signal Monitor (ESM) and
+> Pre-configurable Finite State Machine (PFSM). The SoC and the PMIC can
+> communicate through the I2C or SPI interfaces. The PMIC TPS65224
+> additionally has a 12-bit ADC.
+> Data Sheet for TPS65224: https://www.ti.com/product/TPS65224-Q1
+> 
+> [...]
 
-Signed-off-by: Sergey Senozhatsky <senozhatsky@chromium.org>
----
- Documentation/admin-guide/blockdev/zram.rst | 38 ++++++++++++++++-----
- 1 file changed, 29 insertions(+), 9 deletions(-)
+Applied, thanks!
 
-diff --git a/Documentation/admin-guide/blockdev/zram.rst b/Documentation/admin-guide/blockdev/zram.rst
-index 091e8bb38887..58d79f9099e3 100644
---- a/Documentation/admin-guide/blockdev/zram.rst
-+++ b/Documentation/admin-guide/blockdev/zram.rst
-@@ -102,15 +102,26 @@ Examples::
- 	#select lzo compression algorithm
- 	echo lzo > /sys/block/zram0/comp_algorithm
- 
--For the time being, the `comp_algorithm` content does not necessarily
--show every compression algorithm supported by the kernel. We keep this
--list primarily to simplify device configuration and one can configure
--a new device with a compression algorithm that is not listed in
--`comp_algorithm`. The thing is that, internally, ZRAM uses Crypto API
--and, if some of the algorithms were built as modules, it's impossible
--to list all of them using, for instance, /proc/crypto or any other
--method. This, however, has an advantage of permitting the usage of
--custom crypto compression modules (implementing S/W or H/W compression).
-+For the time being, the `comp_algorithm` content shows only compression
-+algorithms that are supported by zram.
-+
-+It is also possible to pass algorithm specific configuration parameters::
-+
-+	#set compression level to 8
-+	echo "zstd level=8" > /sys/block/zram0/comp_algorithm
-+
-+Note that `comp_algorithm` also supports `algo=name` format::
-+
-+	#set compression level to 8
-+	echo "algo=zstd level=8" > /sys/block/zram0/comp_algorithm
-+
-+Certain compression algorithms support pre-trained dictionaries, which
-+significantly change algorithms' characteristics. In order to configure
-+compression algorithm to use external pre-trained dictionary, pass full
-+path to the dictionary along with other parameters::
-+
-+	#pass path to pre-trained dictionary
-+	echo "algo=zstd dict=/etc/dictioary" > /sys/block/zram0/comp_algorithm
- 
- 4) Set Disksize
- ===============
-@@ -442,6 +453,15 @@ configuration:::
- 	#select deflate recompression algorithm, priority 2
- 	echo "algo=deflate priority=2" > /sys/block/zramX/recomp_algorithm
- 
-+The `recomp_algorithm` also supports algorithm configuration parameters, e.g.
-+compression level and pre-trained dircionary::
-+
-+	#pass compression level
-+	echo "algo=zstd level=8" > /sys/block/zramX/recomp_algorithm
-+
-+	#pass path to pre-trained dictionary
-+	echo "algo=zstd dict=/etc/dictioary" > /sys/block/zramX/recomp_algorithm
-+
- Another device attribute that CONFIG_ZRAM_MULTI_COMP enables is recompress,
- which controls recompression.
- 
--- 
-2.45.0.rc1.225.g2a3ae87e7f-goog
+[01/10] mfd: tps6594: Add register definitions for TI TPS65224 PMIC
+        commit: 84ccfaee29fe46e305244a69c4471e83629ad5d1
+[02/10] mfd: tps6594: use volatile_table instead of volatile_reg
+        commit: 436250638b6d8e6cf8dceed82cdbbfc90ce3a775
+[03/10] dt-bindings: mfd: ti,tps6594: Add TI TPS65224 PMIC
+        commit: 91fbd800649f62bcc6a002ae9e0c0b6b5bb3f0d0
+[04/10] mfd: tps6594-i2c: Add TI TPS65224 PMIC I2C
+        commit: f8e5fc60e6666b46ce113b6b6de221ebba88668f
+[05/10] mfd: tps6594-spi: Add TI TPS65224 PMIC SPI
+        commit: 02716864fd5a53e057dcecdb36c807be6494120c
+[06/10] mfd: tps6594-core: Add TI TPS65224 PMIC core
+        commit: 9d855b8144e6016357eecdd9b3fe7cf8c61a1de3
+[07/10] misc: tps6594-pfsm: Add TI TPS65224 PMIC PFSM
+        commit: 91020aecc8136174429d41a6dae3de7cf39f8000
+[08/10] regulator: tps6594-regulator: Add TI TPS65224 PMIC regulators
+        commit: 00c826525fbae0230f6c3e9879e56d50267deb42
+[09/10] pinctrl: pinctrl-tps6594: Add TPS65224 PMIC pinctrl and GPIO
+        commit: 2088297159178ffc7c695fa34a7a88707371927d
+
+--
+Lee Jones [李琼斯]
 
 
