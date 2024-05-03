@@ -1,120 +1,442 @@
-Return-Path: <linux-kernel+bounces-167903-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-167904-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 55F6C8BB0DE
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 18:27:42 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2AE088BB0E6
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 18:29:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0CC2C28101D
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 16:27:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D6F412822E4
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 16:29:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F74215538A;
-	Fri,  3 May 2024 16:27:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E20D15667F;
+	Fri,  3 May 2024 16:29:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eSxJmFl+"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="TKfvy8u8"
+Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com [209.85.167.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 652FC4D9FD
-	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 16:27:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1223E1553B6
+	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 16:29:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714753656; cv=none; b=BSXeTiwoht0Tb3cNeQrqFDMTvLm2XyWKHswUit0PcDGpdo01fjk4rz/N+nJacFOTf/2uoTkUidJYfKWXkPOL6a9hD2qrJ+lCW/Eg92i4Vs8vdVStGHBfcji916q2iFL6wSJh28wQyfkEc4cijE5TjYntSv4zL6KAM1DyhTcfQwA=
+	t=1714753745; cv=none; b=mbBTiDrWqhhCH8pDa3tkYqFnjIyAYuiR0fCo/2Tr5pTBjKxZq4IYBKu+HuBxeS5kfQ43ffBCy+VOJ15HiYS9yzKjuRTAMO054S2BoEjFfS/jqcum+7iluv5DioJLNP++m11dOnzrRcfqpWNgOLNnV3bvEyDwe/mXdaNjgonLn6o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714753656; c=relaxed/simple;
-	bh=/5WkH6/GqRaDUYQJDb4/SAmQ283pmiDQISzKI223Yw8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=YuIPxz4CCGVRV/V5D9MXudIA6i5cOVJNUeMUy8S5TBoG+dktnP60ZDnJrpnoLjQ6k5qEJCAQF0h7mzDHwcZ5tMXcoP8e/FUcLld1SLCfGm6h7s9ZkIEntEXQNu/5pPFlL05AjwjxsRkkq2JWPFO/8Trh/4vypmWMkHPjZQH9aFE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eSxJmFl+; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3CAD1C116B1;
-	Fri,  3 May 2024 16:27:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714753656;
-	bh=/5WkH6/GqRaDUYQJDb4/SAmQ283pmiDQISzKI223Yw8=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=eSxJmFl+hmo1cor0GBSFAqY1kGiStzeAy3HsDnF5j0GE7l0LjBMZpiC4Aj/iIn9Zv
-	 CJmoWaicIEUDAaRbjwbC6W48BLVWULOpcV7HhDDe9qjJXE+5+De5WBuN3PPpWD/r6e
-	 66Vn+2Uw388BQq9G2tQVcJAWYJGT70Yk0I7Ntheg9oKjbY2HgMTwi63+fTCrgz7RXe
-	 7T3Z3Cnn7A327vlZfyK7Hn5JdcTuvojBGDsuNwLb+reA6t7RBiEYuR4B/hUL4QgEtE
-	 RKkOUlBvQD/vAnH8HJNYu1y88jFdss1Ahr1QtUQfw6ThZUesVyKVV+eEg+JmTH4tKs
-	 3xAA6+iGPDsSg==
-Date: Fri, 3 May 2024 09:27:33 -0700
-From: Nathan Chancellor <nathan@kernel.org>
-To: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-Cc: Anatoliy Klymenko <anatoliy.klymenko@amd.com>,
-	dri-devel@lists.freedesktop.org,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	kernel test robot <lkp@intel.com>,
-	Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-	Michal Simek <michal.simek@amd.com>
-Subject: Re: [PATCH v3 0/2] Fix Kernel CI issues
-Message-ID: <20240503162733.GA4136865@thelio-3990X>
-References: <20240426-dp-live-fmt-fix-v3-0-e904b5ae51d7@amd.com>
- <2a14d8ff-a8f5-4ebe-9f0e-a5554b417f0c@ideasonboard.com>
+	s=arc-20240116; t=1714753745; c=relaxed/simple;
+	bh=+gJrURUGg8vTjavvnvTV30xxUQYc3d46PCw+cBhsEmg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ktWjEi9nPg/O7MqT2Flit7RTZfAicdZZK0brBRnv4PqENjaLOZNBmGW+RKiE3wJHZtCRxDtF1sGN7U6shB6mH8szafryHfapheGJY4QZPDQ+B1yJYkCTNpwqiEJMrK+RyEQ7904A6sDbGU0WS2Q+ClXsnHfnlxKgA+1tJf7ifPk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=TKfvy8u8; arc=none smtp.client-ip=209.85.167.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
+Received: by mail-lf1-f41.google.com with SMTP id 2adb3069b0e04-51ae2e37a87so11304429e87.2
+        for <linux-kernel@vger.kernel.org>; Fri, 03 May 2024 09:29:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1714753741; x=1715358541; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=KcJ+k0H6/m0Cv9X3Vbvj6SbMtSmOhVR/JgA1iQ66e10=;
+        b=TKfvy8u82Aoba8D9OUVpQeWI3aGDz46ehlGm4H5xtSrbq2aDsDuGv6dlx/WLX2sIRk
+         BS+91Abf3LMJCwmL2aOCQh4VTkF2K3zvV1TihwXD/dpuaeIlXJULDApdD/io7eq21Tl6
+         tLMQdSUU0v8GFK3v+7VEuT4qHnc6ydBbHxtNElBCobJFldXqL0uO6bm0ghE+iTVFA6I7
+         fqqPIZs3YW7RshvjbOFWiBTYgQmcqoQK7Ddk5qBfuVkNg28udBG+QbIdAp6JNlVkqjCV
+         DL/y0WU4dxQfwrKTLaR80LG9hXmXd+Ev9OddgGtrRmJJxag6+vW66CoFslSrhDgJgxbf
+         790A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714753741; x=1715358541;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=KcJ+k0H6/m0Cv9X3Vbvj6SbMtSmOhVR/JgA1iQ66e10=;
+        b=bX4VQECYjf/nwWeJY8KF9kFXZkZlfYsJJ1yi1sNeJdCpYVf3aCRYQ76q7FJRuRar5x
+         WffpskfiXrEbXrqVr/VlqXKqvwPZGU9EaW6ZzROU5bGDDi0TQ8XztEGltPff56rFSnEv
+         DdD0KjHPodVy8IKpxEl91fsfVUzqiyf+1B98DE5U/KdCy9Z2TBLjCD2TquYWaqiKnCaT
+         Idh+vxMvCncASXWlNlHWbawVqJMXhK2qk8+j6RrKrscVA/k2g5YEJT+bD366hls7Az35
+         9iWtCnCtL1w2Vda8T3sF546lqL3IO92sFHmJ2bdJ+KTVqUlJ+Mv4JMNFS/5Rl1Kj8gC+
+         YwwQ==
+X-Forwarded-Encrypted: i=1; AJvYcCW1VehBW+/rakwZCGFhio4og6Z93EIyX1EO9y2YrdGDMydQF2OufrAYkz7N9OSp7lCCGKYn4zBIXK6QNRfXAWlbzsvwBq8IaFbJicEY
+X-Gm-Message-State: AOJu0YxVwW/oNb7myhDPN84xr3RTVHPvafY1xdDseb3C7mK2VJZNQDYs
+	0J9sCdcb3ilTc2ue7MTTy2U8FohzFPVWPk+8xqj3kvJdWTephqROXxTw2xp4VkpqzCby5Ul+nb3
+	5J1Q4mPVebbavk16zYP00JbcFt/v5AifnzKcYwQ==
+X-Google-Smtp-Source: AGHT+IFtdP67COLORBthU+58PbG7sbgN360zM6O7Llu9lr3w+NSo/oXEx4BQXw+Mu92MLwTVGUQE6PDxBjuL9iQgMRY=
+X-Received: by 2002:ac2:4959:0:b0:51d:abb3:d701 with SMTP id
+ o25-20020ac24959000000b0051dabb3d701mr2283308lfi.5.1714753740901; Fri, 03 May
+ 2024 09:29:00 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2a14d8ff-a8f5-4ebe-9f0e-a5554b417f0c@ideasonboard.com>
+References: <20240502-dev-charlie-support_thead_vector_6_9-v5-0-d1b5c013a966@rivosinc.com>
+ <20240502-dev-charlie-support_thead_vector_6_9-v5-5-d1b5c013a966@rivosinc.com>
+In-Reply-To: <20240502-dev-charlie-support_thead_vector_6_9-v5-5-d1b5c013a966@rivosinc.com>
+From: Evan Green <evan@rivosinc.com>
+Date: Fri, 3 May 2024 09:28:24 -0700
+Message-ID: <CALs-Hsvt4f4hP--6Wb8QAYM20dPFegRj-GeaD7hoJiW1ZY+w4Q@mail.gmail.com>
+Subject: Re: [PATCH v5 05/17] riscv: Extend cpufeature.c to detect vendor extensions
+To: Charlie Jenkins <charlie@rivosinc.com>
+Cc: Conor Dooley <conor@kernel.org>, Rob Herring <robh@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+	Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
+	Albert Ou <aou@eecs.berkeley.edu>, Guo Ren <guoren@kernel.org>, 
+	Conor Dooley <conor+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>, 
+	Jernej Skrabec <jernej.skrabec@gmail.com>, Samuel Holland <samuel@sholland.org>, 
+	Conor Dooley <conor.dooley@microchip.com>, =?UTF-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <cleger@rivosinc.com>, 
+	Jonathan Corbet <corbet@lwn.net>, Shuah Khan <shuah@kernel.org>, linux-riscv@lists.infradead.org, 
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Palmer Dabbelt <palmer@rivosinc.com>, linux-arm-kernel@lists.infradead.org, 
+	linux-sunxi@lists.linux.dev, linux-doc@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Tomi,
+On Thu, May 2, 2024 at 9:46=E2=80=AFPM Charlie Jenkins <charlie@rivosinc.co=
+m> wrote:
+>
+> Separate vendor extensions out into one struct per vendor
+> instead of adding vendor extensions onto riscv_isa_ext.
+>
+> Add a hidden config RISCV_ISA_VENDOR_EXT to conditionally include this
+> code.
+>
+> The xtheadvector vendor extension is added using these changes.
+>
+> Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
+> ---
+>  arch/riscv/Kconfig                               |  2 +
+>  arch/riscv/Kconfig.vendor                        | 19 +++++
+>  arch/riscv/include/asm/cpufeature.h              | 18 +++++
+>  arch/riscv/include/asm/vendor_extensions.h       | 34 +++++++++
+>  arch/riscv/include/asm/vendor_extensions/thead.h | 16 ++++
+>  arch/riscv/kernel/Makefile                       |  2 +
+>  arch/riscv/kernel/cpufeature.c                   | 93 ++++++++++++++++++=
++-----
+>  arch/riscv/kernel/vendor_extensions.c            | 18 +++++
+>  arch/riscv/kernel/vendor_extensions/Makefile     |  3 +
+>  arch/riscv/kernel/vendor_extensions/thead.c      | 18 +++++
+>  10 files changed, 203 insertions(+), 20 deletions(-)
+>
+> diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+> index be09c8836d56..fec86fba3acd 100644
+> --- a/arch/riscv/Kconfig
+> +++ b/arch/riscv/Kconfig
+> @@ -759,6 +759,8 @@ config RISCV_EFFICIENT_UNALIGNED_ACCESS
+>
+>  endchoice
+>
+> +source "arch/riscv/Kconfig.vendor"
+> +
+>  endmenu # "Platform type"
+>
+>  menu "Kernel features"
+> diff --git a/arch/riscv/Kconfig.vendor b/arch/riscv/Kconfig.vendor
+> new file mode 100644
+> index 000000000000..85ac30496b0e
+> --- /dev/null
+> +++ b/arch/riscv/Kconfig.vendor
+> @@ -0,0 +1,19 @@
+> +menu "Vendor extensions"
+> +
+> +config RISCV_ISA_VENDOR_EXT
+> +       bool
+> +
+> +menu "T-Head"
+> +config RISCV_ISA_VENDOR_EXT_THEAD
+> +       bool "T-Head vendor extension support"
+> +       select RISCV_ISA_VENDOR_EXT
+> +       default y
+> +       help
+> +         Say N here to disable detection of and support for all T-Head v=
+endor
+> +         extensions. Without this option enabled, T-Head vendor extensio=
+ns will
+> +         not be detected at boot and their presence not reported to user=
+space.
+> +
+> +         If you don't know what to do here, say Y.
+> +endmenu
+> +
+> +endmenu
+> diff --git a/arch/riscv/include/asm/cpufeature.h b/arch/riscv/include/asm=
+/cpufeature.h
+> index 0c4f08577015..fedd479ccfd1 100644
+> --- a/arch/riscv/include/asm/cpufeature.h
+> +++ b/arch/riscv/include/asm/cpufeature.h
+> @@ -35,6 +35,24 @@ extern u32 riscv_vlenb_of;
+>
+>  void riscv_user_isa_enable(void);
+>
+> +#define _RISCV_ISA_EXT_DATA(_name, _id, _subset_exts, _subset_exts_size)=
+ {     \
+> +       .name =3D #_name,                                                =
+         \
+> +       .property =3D #_name,                                            =
+         \
+> +       .id =3D _id,                                                     =
+         \
+> +       .subset_ext_ids =3D _subset_exts,                                =
+         \
+> +       .subset_ext_size =3D _subset_exts_size                           =
+         \
+> +}
+> +
+> +#define __RISCV_ISA_EXT_DATA(_name, _id) _RISCV_ISA_EXT_DATA(_name, _id,=
+ NULL, 0)
+> +
+> +/* Used to declare pure "lasso" extension (Zk for instance) */
+> +#define __RISCV_ISA_EXT_BUNDLE(_name, _bundled_exts) \
+> +       _RISCV_ISA_EXT_DATA(_name, RISCV_ISA_EXT_INVALID, _bundled_exts, =
+ARRAY_SIZE(_bundled_exts))
+> +
+> +/* Used to declare extensions that are a superset of other extensions (Z=
+vbb for instance) */
+> +#define __RISCV_ISA_EXT_SUPERSET(_name, _id, _sub_exts) \
+> +       _RISCV_ISA_EXT_DATA(_name, _id, _sub_exts, ARRAY_SIZE(_sub_exts))
+> +
+>  #if defined(CONFIG_RISCV_MISALIGNED)
+>  bool check_unaligned_access_emulated_all_cpus(void);
+>  void unaligned_emulation_finish(void);
+> diff --git a/arch/riscv/include/asm/vendor_extensions.h b/arch/riscv/incl=
+ude/asm/vendor_extensions.h
+> new file mode 100644
+> index 000000000000..bf4dac66e6e6
+> --- /dev/null
+> +++ b/arch/riscv/include/asm/vendor_extensions.h
+> @@ -0,0 +1,34 @@
+> +/* SPDX-License-Identifier: GPL-2.0-only */
+> +/*
+> + * Copyright 2024 Rivos, Inc
+> + */
+> +
+> +#ifndef _ASM_VENDOR_EXTENSIONS_H
+> +#define _ASM_VENDOR_EXTENSIONS_H
+> +
+> +#include <asm/cpufeature.h>
+> +
+> +#include <linux/array_size.h>
+> +#include <linux/types.h>
+> +
+> +/*
+> + * The extension keys of each vendor must be strictly less than this val=
+ue.
+> + */
+> +#define RISCV_ISA_VENDOR_EXT_MAX 32
+> +
+> +struct riscv_isavendorinfo {
+> +       DECLARE_BITMAP(isa, RISCV_ISA_VENDOR_EXT_MAX);
+> +};
 
-On Sat, Apr 27, 2024 at 10:48:16AM +0300, Tomi Valkeinen wrote:
-> On 26/04/2024 22:27, Anatoliy Klymenko wrote:
-> > Fix number of CI reported W=1 build issues.
-> > 
-> > Patch 1/2: Fix function arguments description.
-> > Closes: https://lore.kernel.org/oe-kbuild-all/202404260616.KFGDpCDN-lkp@intel.com/
-> > 
-> > Patch 2/2: Fix clang compilation error.
-> > Closes: https://lore.kernel.org/oe-kbuild-all/202404260946.4oZXvHD2-lkp@intel.com/
-> > 
-> > Signed-off-by: Anatoliy Klymenko <anatoliy.klymenko@amd.com>
-> > ---
-> > Changes in v3:
-> > - Add Signed-off-by tag.
-> > 
-> > - Link to v2: https://lore.kernel.org/r/20240425-dp-live-fmt-fix-v2-0-6048e81211de@amd.com
-> > 
-> > Changes in v2:
-> > - Compilation error fix added.
-> > 
-> > - Link to v1: https://lore.kernel.org/r/20240425-dp-live-fmt-fix-v1-1-405f352d3485@amd.com
-> > 
-> > ---
-> > Anatoliy Klymenko (2):
-> >        drm: xlnx: zynqmp_dpsub: Fix few function comments
-> >        drm: xlnx: zynqmp_dpsub: Fix compilation error
-> > 
-> >   drivers/gpu/drm/xlnx/zynqmp_disp.c | 6 +++---
-> >   1 file changed, 3 insertions(+), 3 deletions(-)
-> > ---
-> > base-commit: 2bdb481bf7a93c22b9fea8daefa2834aab23a70f
-> > change-id: 20240425-dp-live-fmt-fix-a10bf7973596
-> > 
-> > Best regards,
-> 
-> Thanks, pushed to drm-misc-next.
+Nice, I think this was a good compromise: being honest with the
+compiler about the fixed array sizes, with the tradeoff that all
+vendors have to use the same ceiling for the number of bits. If one
+vendor raises this ceiling absurdly and starts creating huge amounts
+of waste we can revisit.
 
-I think the second patch also needs to go to drm-misc-next-fixes? The
-clang warning fixed by it has returned in next-20240503 because it
-appears that for-linux-next was switch from drm-misc-next to
-drm-misc-next-fixes, as I see for-linux-next was pointing to commit
-235e60653f8d ("drm/debugfs: Drop conditionals around of_node pointers")
-on drm-misc-next in next-20240502 but it is now pointing to commit
-be3f3042391d ("drm: zynqmp_dpsub: Always register bridge") on
-drm-misc-next-fixes in next-20240503.
+> +
+> +struct riscv_isa_vendor_ext_data_list {
+> +       const size_t ext_data_count;
+> +       const struct riscv_isa_ext_data *ext_data;
+> +       struct riscv_isavendorinfo per_hart_isa_bitmap[NR_CPUS];
+> +       struct riscv_isavendorinfo all_harts_isa_bitmap;
+> +};
+> +
+> +extern struct riscv_isa_vendor_ext_data_list *riscv_isa_vendor_ext_list[=
+];
+> +
+> +extern const size_t riscv_isa_vendor_ext_list_size;
+> +
+> +#endif /* _ASM_VENDOR_EXTENSIONS_H */
+> diff --git a/arch/riscv/include/asm/vendor_extensions/thead.h b/arch/risc=
+v/include/asm/vendor_extensions/thead.h
+> new file mode 100644
+> index 000000000000..48421d1553ad
+> --- /dev/null
+> +++ b/arch/riscv/include/asm/vendor_extensions/thead.h
+> @@ -0,0 +1,16 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +#ifndef _ASM_RISCV_VENDOR_EXTENSIONS_THEAD_H
+> +#define _ASM_RISCV_VENDOR_EXTENSIONS_THEAD_H
+> +
+> +#include <asm/vendor_extensions.h>
+> +
+> +#include <linux/types.h>
+> +
+> +/*
+> + * Extension keys must be strictly less than RISCV_ISA_VENDOR_EXT_MAX.
+> + */
+> +#define RISCV_ISA_VENDOR_EXT_XTHEADVECTOR              0
+> +
+> +extern struct riscv_isa_vendor_ext_data_list riscv_isa_vendor_ext_list_t=
+head;
+> +
+> +#endif
+> diff --git a/arch/riscv/kernel/Makefile b/arch/riscv/kernel/Makefile
+> index 81d94a8ee10f..53361c50fb46 100644
+> --- a/arch/riscv/kernel/Makefile
+> +++ b/arch/riscv/kernel/Makefile
+> @@ -58,6 +58,8 @@ obj-y +=3D riscv_ksyms.o
+>  obj-y  +=3D stacktrace.o
+>  obj-y  +=3D cacheinfo.o
+>  obj-y  +=3D patch.o
+> +obj-y  +=3D vendor_extensions.o
+> +obj-y  +=3D vendor_extensions/
+>  obj-y  +=3D probes/
+>  obj-y  +=3D tests/
+>  obj-$(CONFIG_MMU) +=3D vdso.o vdso/
+> diff --git a/arch/riscv/kernel/cpufeature.c b/arch/riscv/kernel/cpufeatur=
+e.c
+> index 12c79db0b0bb..cc9ec393c8f6 100644
+> --- a/arch/riscv/kernel/cpufeature.c
+> +++ b/arch/riscv/kernel/cpufeature.c
+> @@ -24,6 +24,7 @@
+>  #include <asm/processor.h>
+>  #include <asm/sbi.h>
+>  #include <asm/vector.h>
+> +#include <asm/vendor_extensions.h>
+>
+>  #define NUM_ALPHA_EXTS ('z' - 'a' + 1)
+>
+> @@ -102,24 +103,6 @@ static bool riscv_isa_extension_check(int id)
+>         return true;
+>  }
+>
+> -#define _RISCV_ISA_EXT_DATA(_name, _id, _subset_exts, _subset_exts_size)=
+ {     \
+> -       .name =3D #_name,                                                =
+         \
+> -       .property =3D #_name,                                            =
+         \
+> -       .id =3D _id,                                                     =
+         \
+> -       .subset_ext_ids =3D _subset_exts,                                =
+         \
+> -       .subset_ext_size =3D _subset_exts_size                           =
+         \
+> -}
+> -
+> -#define __RISCV_ISA_EXT_DATA(_name, _id) _RISCV_ISA_EXT_DATA(_name, _id,=
+ NULL, 0)
+> -
+> -/* Used to declare pure "lasso" extension (Zk for instance) */
+> -#define __RISCV_ISA_EXT_BUNDLE(_name, _bundled_exts) \
+> -       _RISCV_ISA_EXT_DATA(_name, RISCV_ISA_EXT_INVALID, _bundled_exts, =
+ARRAY_SIZE(_bundled_exts))
+> -
+> -/* Used to declare extensions that are a superset of other extensions (Z=
+vbb for instance) */
+> -#define __RISCV_ISA_EXT_SUPERSET(_name, _id, _sub_exts) \
+> -       _RISCV_ISA_EXT_DATA(_name, _id, _sub_exts, ARRAY_SIZE(_sub_exts))
+> -
+>  static const unsigned int riscv_zk_bundled_exts[] =3D {
+>         RISCV_ISA_EXT_ZBKB,
+>         RISCV_ISA_EXT_ZBKC,
+> @@ -353,6 +336,21 @@ static void __init riscv_parse_isa_string(unsigned l=
+ong *this_hwcap, struct risc
+>                 bool ext_long =3D false, ext_err =3D false;
+>
+>                 switch (*ext) {
+> +               case 'x':
+> +               case 'X':
+> +                       if (acpi_disabled)
+> +                               pr_warn_once("Vendor extensions are ignor=
+ed in riscv,isa. Use riscv,isa-extensions instead.");
+> +                       /*
+> +                        * To skip an extension, we find its end.
+> +                        * As multi-letter extensions must be split from =
+other multi-letter
+> +                        * extensions with an "_", the end of a multi-let=
+ter extension will
+> +                        * either be the null character or the "_" at the=
+ start of the next
+> +                        * multi-letter extension.
+> +                        */
+> +                       for (; *isa && *isa !=3D '_'; ++isa)
+> +                               ;
+> +                       ext_err =3D true;
+> +                       break;
+>                 case 's':
+>                         /*
+>                          * Workaround for invalid single-letter 's' & 'u'=
+ (QEMU).
+> @@ -368,8 +366,6 @@ static void __init riscv_parse_isa_string(unsigned lo=
+ng *this_hwcap, struct risc
+>                         }
+>                         fallthrough;
+>                 case 'S':
+> -               case 'x':
+> -               case 'X':
+>                 case 'z':
+>                 case 'Z':
+>                         /*
+> @@ -572,6 +568,59 @@ static void __init riscv_fill_hwcap_from_isa_string(=
+unsigned long *isa2hwcap)
+>                 acpi_put_table((struct acpi_table_header *)rhct);
+>  }
+>
+> +static void __init riscv_fill_cpu_vendor_ext(struct device_node *cpu_nod=
+e, int cpu)
+> +{
+> +       if (!IS_ENABLED(CONFIG_RISCV_ISA_VENDOR_EXT))
+> +               return;
+> +
+> +       for (int i =3D 0; i < riscv_isa_vendor_ext_list_size; i++) {
+> +               struct riscv_isa_vendor_ext_data_list *ext_list =3D riscv=
+_isa_vendor_ext_list[i];
+> +
+> +               for (int j =3D 0; j < ext_list->ext_data_count; j++) {
+> +                       const struct riscv_isa_ext_data ext =3D ext_list-=
+>ext_data[j];
+> +                       struct riscv_isavendorinfo *isavendorinfo =3D &ex=
+t_list->per_hart_isa_bitmap[cpu];
+> +
+> +                       if (of_property_match_string(cpu_node, "riscv,isa=
+-extensions",
+> +                                                    ext.property) < 0)
+> +                               continue;
+> +
+> +                       /*
+> +                        * Assume that subset extensions are all members =
+of the
+> +                        * same vendor.
+> +                        */
+> +                       if (ext.subset_ext_size)
+> +                               for (int k =3D 0; k < ext.subset_ext_size=
+; k++)
+> +                                       set_bit(ext.subset_ext_ids[k], is=
+avendorinfo->isa);
+> +
+> +                       set_bit(ext.id, isavendorinfo->isa);
+> +               }
+> +       }
+> +}
+> +
+> +static void __init riscv_fill_vendor_ext_list(int cpu)
+> +{
+> +       bool first =3D true;
+> +
+> +       if (!IS_ENABLED(CONFIG_RISCV_ISA_VENDOR_EXT))
+> +               return;
+> +
+> +       for (int i =3D 0; i < riscv_isa_vendor_ext_list_size; i++) {
+> +               struct riscv_isa_vendor_ext_data_list *ext_list =3D riscv=
+_isa_vendor_ext_list[i];
+> +
+> +               if (first) {
+> +                       bitmap_copy(ext_list->all_harts_isa_bitmap.isa,
+> +                                   ext_list->per_hart_isa_bitmap[cpu].is=
+a,
+> +                                   RISCV_ISA_VENDOR_EXT_MAX);
+> +                       first =3D false;
 
-Cheers,
-Nathan
+I think this is still not quite right. This behaves properly when
+called on the first cpu (let's say 0), but then we call it again with
+cpu 1, first gets set to true, and we clobber the old work we did for
+cpu 0. If we knew that cpu 0 was always called first (this looks true
+since both calls are within a for_each_possible_cpu() loop), and that
+this was only called once at boot for cpu 0 (looks true, and
+riscv_fill_hwcap() is __init), then it could be bool first =3D cpu =3D=3D 0=
+.
 
