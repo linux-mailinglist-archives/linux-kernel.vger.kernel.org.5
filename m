@@ -1,150 +1,135 @@
-Return-Path: <linux-kernel+bounces-167113-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-167114-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DA7458BA4A6
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 02:41:01 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id C48BF8BA4AB
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 02:41:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 03459B23032
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 00:40:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7C1891F22BF2
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 00:41:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 48EF31C69D;
-	Fri,  3 May 2024 00:39:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38CEAD51E;
+	Fri,  3 May 2024 00:41:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="h1xL6M+D"
-Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="E62hMc/S"
+Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C19411BF24
-	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 00:39:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3016B8F47
+	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 00:41:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714696796; cv=none; b=FoKjx61PSxAnRpIbwXGcZSa0FyBnSID8qfwo8nOp/4XMdLZLA4Y+4g2pkM9N8tPrCJnQgn3PAjZpq3KIcHg/7f/sSjEkehxWtBAp0dXN5V9gDEnFD2u6inYR24MK5lk+ayIN0eh1o328k6lJdTqek3WFbDKuZ1Uj/EEsO5DZDf8=
+	t=1714696887; cv=none; b=WtQRFdyX5bR68pvx3DPZRwLM0TKIlPGKlP3zXYziyRzfaPj51NTfUIjJP6a4entoov+kC+yJ77engun2HXwFXiWgCZTDMojoq8tTNQgi5lPT04Froi7x/tr9eI/da8I/X1MQDtvjgHryJpAgrwLBxhZ8kFh/CQ7c0hS6vZHLNes=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714696796; c=relaxed/simple;
-	bh=qgu2ViOZOk6hT9QT2PkX/dUFnBm0XSHB9y0xx2sW4YM=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=FsL8Nl9hDIC93q6QFNCgmllBQjdD3TtISVRz9JQ+xDHBdz70dx3HLHdk6Kvy19jDcoWdHluTUqO74Hv3tE21bgIFWdImNC2iXtQRV1gpZu5ZjcmdCtyLfahttUTpfz7aGQ136FRbB8NCAG2i/c7P8hsef/h71XqJtoimWX8XKfk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--jthies.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=h1xL6M+D; arc=none smtp.client-ip=209.85.128.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--jthies.bounces.google.com
-Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-61be530d024so79238927b3.2
-        for <linux-kernel@vger.kernel.org>; Thu, 02 May 2024 17:39:53 -0700 (PDT)
+	s=arc-20240116; t=1714696887; c=relaxed/simple;
+	bh=pbSDQnfcM9BD+einzGGOUVd3T1E36CfJlU1tKpjCybU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=GaTf9qZfHkzqwW3cuLTG70+UbhNMxbIcx0BBKBaayF0oUJ/tfMYE6y4jSADUenEjVtZRdZWZJfsHxzJ0tubmoKWWAhtvhvBd/TIItY/Dt05Hd+GD/a7fkl9Z/pdWdPI5UhwAOoz8hgdz1IPBPa/0V0XHeXv4pZMJy/0kjkwwHJw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=E62hMc/S; arc=none smtp.client-ip=209.85.214.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-1ed41eb3382so277985ad.0
+        for <linux-kernel@vger.kernel.org>; Thu, 02 May 2024 17:41:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1714696793; x=1715301593; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=GHcklqlVkDgPCWtLjA6mJ8uUEpbeCPdZPZls8J1AN9k=;
-        b=h1xL6M+DA8QIWugKiHHdt/J2FOJubjBSjEFNpwHZEbnvkxgnH9rnOrRBjQB3kYnhQU
-         /KcfkNEBsehVD3Poug2wyH7L222UAKxUzKMQYntR2ho4ceCs5WeQHDSlxiqt/9c07pK4
-         3tqh6299oDBm2dYAmE8rPdLcciUkAfO2J0EhjT0PSnGie6uLqhl0L9krye/8MtZOydQr
-         3HJiz52Mi1b4L1t8vWY3HY7TKsqqS5AbJ2ouFWakgmNgCurfpX7Jz7nbdy5Peznstbok
-         cwrO5GMHFX3vxOT/NAfJ5TlfVKnEIsmI5BYm+cOIo/QOCkqJVQ0gG204c3Y8h23/iT7N
-         8fCQ==
+        d=chromium.org; s=google; t=1714696885; x=1715301685; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Ag+GJVh/sQYDPGeOkIngGB4bIRPX939JLId/QM0OSvU=;
+        b=E62hMc/SHto+4x+x0c/d1GGFMi2XNcRny4gL6X4LtWZe5jdWibBTZzsCHv45Year5g
+         mGraw44ODS3o1xSHCSKlcpIYVrRUtr194f+Cx9fXOw3sCFMxLRoJ/mmcVveRbRS0KEzp
+         0ps9cvxit1qKIDf7kSeohas7Hi8DlsCrb894Q=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714696793; x=1715301593;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=GHcklqlVkDgPCWtLjA6mJ8uUEpbeCPdZPZls8J1AN9k=;
-        b=C3YxSCWzQ4U+6RfrtpNGJ+Iv1WgFHuN7WZqSlcaT0z6ogj3SjR1sPtSPWSt8wJAW8k
-         yFNVjoqlSYW2Jv2tGh7EMjNjq4gW0SyFK9PXR/34g/vDijA4hqce0w/Ge4tsEDHhOxy+
-         tHnxtZSqzH52W5ovbUWzeXUK+Yi8apyTeSIUGWzhoEKCZSJBqfUmbeXowFnD0FbaMOO3
-         mqMdD1OSzN7RQyl0uENkXwYJdocNQopjOiIU9L9Fun0XCW3K64NV6qoNXSsLToyEzASv
-         VJ1I3F5qm0o4ChKSKtJJ2EHgoego69UatQvnxMGz9Pm73uNp8kS944BgFrTZYjf8t59V
-         QmsA==
-X-Forwarded-Encrypted: i=1; AJvYcCUy7QrTwUAZvvWwNoASD66MNkEJGr17hHeS+zNUeFVccDYIxCaXXE5jzsnpBqUCeYHb/QIXquQ0u6j38dRRl+f5SdzDRQGKqzwbdweD
-X-Gm-Message-State: AOJu0Yw5Fd5hvm1+17g3JWZzthZzqtiYBEcOBrP/ngSSyplxbpWMSURy
-	yqc40kisaT3VGzvEDeacEl0uq8IZdjGOlEVFk0V1aCWor+giap7arlLOs/sY+qd3Kvxwuekb/hq
-	rKA==
-X-Google-Smtp-Source: AGHT+IGyhxQqfnpdZfpT1wcZoFyJw5400zJ79x/mYwXvqDLeSrFZkOdCg3BGriKoPCxDjgmRotLTtkzJ8gw=
-X-Received: from jthies.c.googlers.com ([fda3:e722:ac3:cc00:20:ed76:c0a8:23db])
- (user=jthies job=sendgmr) by 2002:a25:c591:0:b0:de6:1646:58b2 with SMTP id
- v139-20020a25c591000000b00de6164658b2mr205344ybe.13.1714696792849; Thu, 02
- May 2024 17:39:52 -0700 (PDT)
-Date: Fri,  3 May 2024 00:39:20 +0000
-In-Reply-To: <20240503003920.1482447-1-jthies@google.com>
+        d=1e100.net; s=20230601; t=1714696885; x=1715301685;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Ag+GJVh/sQYDPGeOkIngGB4bIRPX939JLId/QM0OSvU=;
+        b=rW4WLBxARY6fc1MwgcUeyRAz+JKvkalauFs2pB3IDKOR5AUvcZ6A3veOouj15sp37A
+         sgvZ2eZWoEJ8nC9ISYaOaaFjHMk6FK7i5f0hR5NiHZpYA0PShK8rv1yMO7+zUD1ShKS7
+         L4t/TbYofGAem7TizyvOJO2Nuexg8Uc9atrBqXQQJQDQwS6u8K71ujxajTikl+QWXv63
+         z4GAbqXqcF+UxKsPql7/ZMI5tCld653dP6u3Alluy6N0hO4UGpvdq4BTGTJBMV2aNTu7
+         KoW25RUBJ4j0rUuw72aAgIOTDGVHR8xMX6idyoASJA083smYWCtyBLITuC5CIEKdlaQr
+         GHDA==
+X-Forwarded-Encrypted: i=1; AJvYcCVb2fgSuSz3c2cT+Jn51Pkd1wr/P4WgIPrcRBUjjJR8TcebNsK/qoDeZD22rJaJqFeoxbMI6USuX37GQwh/gMmKnLB8bzmbWgUtNoaR
+X-Gm-Message-State: AOJu0YxyPl53JpXE4aKnwIxhK2JDi83XdPCD5M0AFtyorIk4GZRU2lst
+	VwgLe/utYZNtTKeDYEr3gOOuve/TAQ2JrH8bbs9t3cmGG3wynzMoQKn5K/K0mg==
+X-Google-Smtp-Source: AGHT+IGVw+PoNIInYTycTHxfqWIBoyYdGBoTX5SvKBDwlvlFcv6C6IZTK45dYCllqIK8OWMFfs/z6Q==
+X-Received: by 2002:a17:902:f648:b0:1e4:19e3:56cb with SMTP id m8-20020a170902f64800b001e419e356cbmr1772102plg.12.1714696885501;
+        Thu, 02 May 2024 17:41:25 -0700 (PDT)
+Received: from www.outflux.net ([198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id f2-20020a170902ce8200b001ecf865a019sm1958663plg.224.2024.05.02.17.41.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 02 May 2024 17:41:25 -0700 (PDT)
+Date: Thu, 2 May 2024 17:41:23 -0700
+From: Kees Cook <keescook@chromium.org>
+To: Al Viro <viro@zeniv.linux.org.uk>
+Cc: Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
+	linux-fsdevel@vger.kernel.org, Zack Rusin <zack.rusin@broadcom.com>,
+	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Maxime Ripard <mripard@kernel.org>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+	Jani Nikula <jani.nikula@linux.intel.com>,
+	Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+	Rodrigo Vivi <rodrigo.vivi@intel.com>,
+	Tvrtko Ursulin <tursulin@ursulin.net>,
+	Andi Shyti <andi.shyti@linux.intel.com>,
+	Lucas De Marchi <lucas.demarchi@intel.com>,
+	Matt Atwood <matthew.s.atwood@intel.com>,
+	Matthew Auld <matthew.auld@intel.com>,
+	Nirmoy Das <nirmoy.das@intel.com>,
+	Jonathan Cavitt <jonathan.cavitt@intel.com>,
+	Will Deacon <will@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Boqun Feng <boqun.feng@gmail.com>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Kent Overstreet <kent.overstreet@linux.dev>,
+	Masahiro Yamada <masahiroy@kernel.org>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Nicolas Schier <nicolas@fjasle.eu>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+	intel-gfx@lists.freedesktop.org, linux-kbuild@vger.kernel.org,
+	linux-hardening@vger.kernel.org
+Subject: Re: [PATCH 5/5] fs: Convert struct file::f_count to refcount_long_t
+Message-ID: <202405021736.574A688@keescook>
+References: <20240502222252.work.690-kees@kernel.org>
+ <20240502223341.1835070-5-keescook@chromium.org>
+ <20240502224250.GM2118490@ZenIV>
+ <202405021548.040579B1C@keescook>
+ <20240502231228.GN2118490@ZenIV>
+ <202405021620.C8115568@keescook>
+ <20240502234152.GP2118490@ZenIV>
+ <202405021708.267B02842@keescook>
+ <20240503001445.GR2118490@ZenIV>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240503003920.1482447-1-jthies@google.com>
-X-Mailer: git-send-email 2.45.0.rc1.225.g2a3ae87e7f-goog
-Message-ID: <20240503003920.1482447-5-jthies@google.com>
-Subject: [PATCH v3 4/4] usb: typec: ucsi: Always set number of alternate modes
-From: Jameson Thies <jthies@google.com>
-To: heikki.krogerus@linux.intel.com, linux-usb@vger.kernel.org
-Cc: jthies@google.com, pmalani@chromium.org, bleung@google.com, 
-	abhishekpandit@chromium.org, andersson@kernel.org, 
-	dmitry.baryshkov@linaro.org, fabrice.gasnier@foss.st.com, 
-	gregkh@linuxfoundation.org, hdegoede@redhat.com, neil.armstrong@linaro.org, 
-	rajaram.regupathy@intel.com, saranya.gopal@intel.com, 
-	linux-kernel@vger.kernel.org, Benson Leung <bleung@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240503001445.GR2118490@ZenIV>
 
-Providing the number of known alternate modes allows user space to
-determine when device registration has completed. Always register a
-number of known alternate modes for the partner and cable plug, even
-when the number of supported alternate modes is 0.
+On Fri, May 03, 2024 at 01:14:45AM +0100, Al Viro wrote:
+> On Thu, May 02, 2024 at 05:10:18PM -0700, Kees Cook wrote:
+> 
+> > But anyway, there needs to be a general "oops I hit 0"-aware form of
+> > get_file(), and it seems like it should just be get_file() itself...
+> 
+> ... which brings back the question of what's the sane damage mitigation
+> for that.  Adding arseloads of never-exercised failure exits is generally
+> a bad idea - it's asking for bitrot and making the thing harder to review
+> in future.
 
-Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Reviewed-by: Benson Leung <bleung@chromium.org>
-Signed-off-by: Jameson Thies <jthies@google.com>
----
-Changes in V3:
-- None.
+Linus seems to prefer best-effort error recovery to sprinkling BUG()s
+around.  But if that's really the solution, then how about get_file()
+switching to to use inc_not_zero and BUG on 0?
 
-Changes in V2:
-- None.
-
- drivers/usb/typec/ucsi/ucsi.c | 14 +++++++++++---
- 1 file changed, 11 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/usb/typec/ucsi/ucsi.c b/drivers/usb/typec/ucsi/ucsi.c
-index bb6e57064513d..52a14bfe4107e 100644
---- a/drivers/usb/typec/ucsi/ucsi.c
-+++ b/drivers/usb/typec/ucsi/ucsi.c
-@@ -812,10 +812,11 @@ static int ucsi_check_altmodes(struct ucsi_connector *con)
- 	/* Ignoring the errors in this case. */
- 	if (con->partner_altmode[0]) {
- 		num_partner_am = ucsi_get_num_altmode(con->partner_altmode);
--		if (num_partner_am > 0)
--			typec_partner_set_num_altmodes(con->partner, num_partner_am);
-+		typec_partner_set_num_altmodes(con->partner, num_partner_am);
- 		ucsi_altmode_update_active(con);
- 		return 0;
-+	} else {
-+		typec_partner_set_num_altmodes(con->partner, 0);
- 	}
- 
- 	return ret;
-@@ -1138,7 +1139,7 @@ static int ucsi_check_connection(struct ucsi_connector *con)
- static int ucsi_check_cable(struct ucsi_connector *con)
- {
- 	u64 command;
--	int ret;
-+	int ret, num_plug_am;
- 
- 	if (con->cable)
- 		return 0;
-@@ -1172,6 +1173,13 @@ static int ucsi_check_cable(struct ucsi_connector *con)
- 			return ret;
- 	}
- 
-+	if (con->plug_altmode[0]) {
-+		num_plug_am = ucsi_get_num_altmode(con->plug_altmode);
-+		typec_plug_set_num_altmodes(con->plug, num_plug_am);
-+	} else {
-+		typec_plug_set_num_altmodes(con->plug, 0);
-+	}
-+
- 	return 0;
- }
- 
 -- 
-2.45.0.rc1.225.g2a3ae87e7f-goog
-
+Kees Cook
 
