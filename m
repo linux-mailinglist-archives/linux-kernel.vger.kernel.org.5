@@ -1,107 +1,191 @@
-Return-Path: <linux-kernel+bounces-167471-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-167472-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 245A28BA9F8
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 11:37:48 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3099E8BAA02
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 11:41:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CE06C281952
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 09:37:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5342A1C216FD
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 09:41:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA77114F9CD;
-	Fri,  3 May 2024 09:37:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D68514F9E2;
+	Fri,  3 May 2024 09:40:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bbvW7QrS"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="pL50x3O3"
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DDB2E42078;
-	Fri,  3 May 2024 09:37:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ADE5714F113;
+	Fri,  3 May 2024 09:40:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.154.123
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714729057; cv=none; b=VUZVEGwxUNTWFQ5fxp/3uGigSObcOItlbo8iEkfwkgvuA5GJlwVBGQuvpMre4O5NiM6oxlX0Gk5NO01OLMZJF3Q61tHCScujcGwkk+XLdWsw/4XpcoJw/1iWF0KwPyr3krJjlqn0NlHFnZdbmCuTt0cAnAYw3Sv17IMxMWoENSw=
+	t=1714729250; cv=none; b=BXX1IgMpQ6hPJj3ll9ZbMN1IklOOn6FlVK7Zq1HkC6j8bOCjxadHExP4nJxga6s5YAaOkwROU9t+tH3UpWh6Wyw0x7BPvB++jrxVeG47pW6CUyurhQkx/1wFZ0sPPc8I8CEOljmq4yqmeXsNKvb7Y5JQ6dLHS28lCUumm/aX9c0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714729057; c=relaxed/simple;
-	bh=EY1m386ze5p5efmGezaRioeyr4xQQNVljq2tWo0fXlY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=BdiwK+fdeT2SjE/BFBGkMcVFdVuGXDRb/QZtVSapnT/9PDKZXB6ujR+Qv4MovHDxrFoJHI5I6IrSbyFEt4W1FPuYFt2aEc/DjKVrm65TKyRuPNPmzyltd4j6IWynZbqRjTOMtcJyhtCrJKAuJ1YvRFvxorx6W3IQG+OOwkMqgXg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bbvW7QrS; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 96E47C116B1;
-	Fri,  3 May 2024 09:37:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714729056;
-	bh=EY1m386ze5p5efmGezaRioeyr4xQQNVljq2tWo0fXlY=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=bbvW7QrSUYaP7ll/nGqB8pNM3bYN8sV9MkSKBUePESxJ5x8/Vn3Y+PwKBz/X+x19y
-	 2v9TnIRi6ivEtcarof8Y685DmLp3CJlXXRGXdMdiwLqyZr4o5yM2aLqSRa9Nj4+59K
-	 REDZ7vgd6608hUHudlZ/ac9mJUabY8+yduLtuNKbgWn2X9VYbzEplRFVv64ePQExSt
-	 0AatHid8re8GR7Rofi9O+SJql98nf+mvKZwcX0rW10J6LFM7g+ZifZQ9PfKVL6TLCO
-	 KWOixJUGNN5Lgl6iDEJ3WHBgZ+Y7vSVu6PLRZ4olHsDGeO+Cysql0pUbhEl3HXE1mf
-	 5crSWWJpt/jrQ==
-Date: Fri, 3 May 2024 11:37:25 +0200
-From: Christian Brauner <brauner@kernel.org>
-To: Kees Cook <keescook@chromium.org>
-Cc: Al Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>, 
-	linux-fsdevel@vger.kernel.org, Zack Rusin <zack.rusin@broadcom.com>, 
-	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>, Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
-	Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, 
-	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
-	Jani Nikula <jani.nikula@linux.intel.com>, Joonas Lahtinen <joonas.lahtinen@linux.intel.com>, 
-	Rodrigo Vivi <rodrigo.vivi@intel.com>, Tvrtko Ursulin <tursulin@ursulin.net>, 
-	Andi Shyti <andi.shyti@linux.intel.com>, Lucas De Marchi <lucas.demarchi@intel.com>, 
-	Matt Atwood <matthew.s.atwood@intel.com>, Matthew Auld <matthew.auld@intel.com>, 
-	Nirmoy Das <nirmoy.das@intel.com>, Jonathan Cavitt <jonathan.cavitt@intel.com>, 
-	Will Deacon <will@kernel.org>, Peter Zijlstra <peterz@infradead.org>, 
-	Boqun Feng <boqun.feng@gmail.com>, Mark Rutland <mark.rutland@arm.com>, 
-	Kent Overstreet <kent.overstreet@linux.dev>, Masahiro Yamada <masahiroy@kernel.org>, 
-	Nathan Chancellor <nathan@kernel.org>, Nicolas Schier <nicolas@fjasle.eu>, 
-	Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org, 
-	intel-gfx@lists.freedesktop.org, linux-kbuild@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH 5/5] fs: Convert struct file::f_count to refcount_long_t
-Message-ID: <20240503-inventar-braut-c82e15e56a32@brauner>
-References: <20240502222252.work.690-kees@kernel.org>
- <20240502223341.1835070-5-keescook@chromium.org>
- <20240502224250.GM2118490@ZenIV>
- <202405021548.040579B1C@keescook>
- <20240502231228.GN2118490@ZenIV>
- <202405021620.C8115568@keescook>
- <20240502234152.GP2118490@ZenIV>
- <202405021708.267B02842@keescook>
- <20240503001445.GR2118490@ZenIV>
- <202405021736.574A688@keescook>
+	s=arc-20240116; t=1714729250; c=relaxed/simple;
+	bh=f+L7mTCSRybSvFROrdfW8LntJl7i3UmEP3ZMl7K/m44=;
+	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Ykrtpk6eimBrgGkJLEOAhodCHbKTJmrpLFpMXJRgZv1pyrE4hzR60yqj6HLKSiMOtk9JAGuh78X6NTpQWrZf8Anf9nSxa8RZHnpWJhGVx0T1Hj3+19V2HHtUs3ydfiEWJEQAIKPCHsdI+2sRl+HczWwSuE0c2iE+ZVO5bgvyomA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=pL50x3O3; arc=none smtp.client-ip=68.232.154.123
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microchip.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1714729248; x=1746265248;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=f+L7mTCSRybSvFROrdfW8LntJl7i3UmEP3ZMl7K/m44=;
+  b=pL50x3O38MeafsyrA5XGyHle6VIB3e2j+SsDQTsQ3N/92aE4FnDp2f39
+   PF/oichL6NflgE6qU4EH7Lb5nQEhPIaDiSVjIdBZwT4pBtcOYZr44tgem
+   liTa05JLH7DllEgzvR7FoVE0mZzKp+oEJ80cKoXVQc+Q/Rm+8Xo/QcmVe
+   dGf+rJCettdjt0zzNhoTVStDHH0jYHAG7w+SCwaL+Ji1b8NIJDGFfc3mK
+   5UMbB0avfWEAfJ3UdbmmovbfgNYD7Ft21SWWyld8GJ3T/C8MHr+4ieYc3
+   134ZmrXsfBGWnYgwJmDbb/Hpx3ZpPEfB6T2N7MxrWAyvA/w5o2vhc2R8H
+   A==;
+X-CSE-ConnectionGUID: bbg/IDqlTRajfoIJVPCGSg==
+X-CSE-MsgGUID: JYFz59PQRziij8+7tAJupQ==
+X-IronPort-AV: E=Sophos;i="6.07,251,1708412400"; 
+   d="scan'208";a="24058447"
+X-Amp-Result: SKIPPED(no attachment in message)
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa2.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 03 May 2024 02:40:47 -0700
+Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Fri, 3 May 2024 02:39:56 -0700
+Received: from localhost (10.10.85.11) by chn-vm-ex02.mchp-main.com
+ (10.10.85.144) with Microsoft SMTP Server id 15.1.2507.35 via Frontend
+ Transport; Fri, 3 May 2024 02:39:56 -0700
+Date: Fri, 3 May 2024 15:07:34 +0530
+From: Raju Lakkaraju <Raju.Lakkaraju@microchip.com>
+To: Andrew Lunn <andrew@lunn.ch>
+CC: Raju Lakkaraju <Raju.Lakkaraju@microchip.com>, <netdev@vger.kernel.org>,
+	<lxu@maxlinear.com>, <hkallweit1@gmail.com>, <linux@armlinux.org.uk>,
+	<davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
+	<pabeni@redhat.com>, <linux-kernel@vger.kernel.org>,
+	<UNGLinuxDriver@microchip.com>
+Subject: Re: [PATCH net-next] net: phy: add wol config options in phy device
+Message-ID: <ZjSwXghk/lsT6Ndo@HYD-DK-UNGSW21.microchip.com>
+References: <20240430050635.46319-1-Raju.Lakkaraju@microchip.com>
+ <7fe419b2-fc73-4584-ae12-e9e313d229c3@lunn.ch>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset="utf-8"
 Content-Disposition: inline
-In-Reply-To: <202405021736.574A688@keescook>
+In-Reply-To: <7fe419b2-fc73-4584-ae12-e9e313d229c3@lunn.ch>
 
-On Thu, May 02, 2024 at 05:41:23PM -0700, Kees Cook wrote:
-> On Fri, May 03, 2024 at 01:14:45AM +0100, Al Viro wrote:
-> > On Thu, May 02, 2024 at 05:10:18PM -0700, Kees Cook wrote:
-> > 
-> > > But anyway, there needs to be a general "oops I hit 0"-aware form of
-> > > get_file(), and it seems like it should just be get_file() itself...
-> > 
-> > ... which brings back the question of what's the sane damage mitigation
-> > for that.  Adding arseloads of never-exercised failure exits is generally
-> > a bad idea - it's asking for bitrot and making the thing harder to review
-> > in future.
+Hi Andrew,
+
+Thank you for review comments.
+
+The 05/02/2024 16:51, Andrew Lunn wrote:
+> EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
 > 
-> Linus seems to prefer best-effort error recovery to sprinkling BUG()s
-> around.  But if that's really the solution, then how about get_file()
-> switching to to use inc_not_zero and BUG on 0?
+> On Tue, Apr 30, 2024 at 10:36:35AM +0530, Raju Lakkaraju wrote:
+> > Introduce a new member named 'wolopts' to the 'phy_device' structure to
+> > store the user-specified Wake-on-LAN (WOL) settings. Update this member
+> > within the phy driver's 'set_wol()' function whenever the WOL configuration
+> > is modified by the user.
+> >
+> > Currently, when the system resumes from sleep, the 'phy_init_hw()' function
+> > resets the PHY's configuration and interrupts, which leads to problems upon
+> > subsequent WOL attempts. By retaining the desired WOL settings in 'wolopts',
+> > we can ensure that the PHY's WOL configuration is correctly reapplied
+> > through 'phy_ethtool_set_wol()' before a system suspend, thereby resolving
+> > the issue
+> 
+> Sorry it took a white to review this.
+> 
 
-Making get_file() return an error is not an option. For all current
-callers that's pointless churn for a condition that's not supposed to
-happen at all.
+Based on your review comments, I will update this.
 
-Additionally, iirc *_inc_not_zero() variants are implemented with
-try_cmpxchg() which scales poorly under contention for a condition
-that's not supposed to happen.
+> >
+> > Signed-off-by: Raju Lakkaraju <Raju.Lakkaraju@microchip.com>
+> > ---
+> >  drivers/net/phy/mxl-gpy.c    | 5 +++++
+> >  drivers/net/phy/phy_device.c | 5 +++++
+> >  include/linux/phy.h          | 2 ++
+> >  3 files changed, 12 insertions(+)
+> >
+> > diff --git a/drivers/net/phy/mxl-gpy.c b/drivers/net/phy/mxl-gpy.c
+> > index b2d36a3a96f1..6edb29a1d77e 100644
+> > --- a/drivers/net/phy/mxl-gpy.c
+> > +++ b/drivers/net/phy/mxl-gpy.c
+> > @@ -680,6 +680,7 @@ static int gpy_set_wol(struct phy_device *phydev,
+> >       struct net_device *attach_dev = phydev->attached_dev;
+> >       int ret;
+> >
+> > +     phydev->wolopts = 0;
+> 
+> Is this specific to mlx-gpy?
+> 
+
+Currently I have GPY211C PHY along with PCI11414 chip hardware. That's reason
+I add these changes for GPY211C PHY.
+I test the changes on my board.
+
+> You should be trying to solve the problem for all PHYs which support
+> WoL. So i expect the core to be doing most of the work. In fact, i
+> don't think there is any need for driver specific code.
+
+Ok. I will change.
+
+> 
+> phy_ethtool_set_wol() can set phydev->wolopts after calling
+> phydev->drv->set_wol(). If it returns an error, including -ENOTSUPP,
+> set phydev->wolopts to 0, otherwise set it to wolopts.
+> 
+
+Ok.
+One quick question.
+some of the options (ex. WAKE_PHY, WAKE_MAGIC etc) support on PHY and other
+options (ex. WAKE_UCAST, WAKE_MAGICSECURE etc) on MAC of Ethernet device.
+
+Suppose, user configure the combination (i.e. wol gu) option,
+Is PHY flag should hold combination option or only PHY supported option ?
+Ex:
+$ sudo ethtool -s enp5s0 wol gu
+
+Output of phydev's wolopts flag values should be 0x00000022 or 0x00000020 ?
+In this case, PHY support WAKE_MAGIC and MAC support WAKE_UCAST
+
+Anyhow, even phy's wolopts holds the user configuration value, get_wol( )
+function read from PHY register and display only "g" 
+
+> > @@ -2038,6 +2038,11 @@ int phy_suspend(struct phy_device *phydev)
+> >       if (phydev->suspended)
+> >               return 0;
+> >
+> > +     if (phydev->wolopts) {
+> > +             wol.wolopts = phydev->wolopts;
+> > +             phy_ethtool_set_wol(phydev, &wol);
+> > +     }
+> 
+> Why on suspend? I would expect it to be on resume, after the PHY has
+> been reset.
+
+Ok. I will change.
+May be in phy_init_hw( ) function is better place to re-config the WOL
+
+> 
+> I also think you need to save sopass[] in phydev, since some PHYs
+> support WAKE_MAGICSECURE. Just because mlx-gpy does not need the
+> password does not mean we should ignore it in general. I also think it
+> is safe to store in memory. Its is not a highly confidential
+> password. I would not be too surprised if some PHYs have the registers
+> read/write rather than write only.
+
+Ok. I will add sopass[] also.
+
+> 
+>         Andrew
+
+-- 
+Thanks,                                                                         
+Raju
 
