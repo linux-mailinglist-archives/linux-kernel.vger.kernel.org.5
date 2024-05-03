@@ -1,153 +1,213 @@
-Return-Path: <linux-kernel+bounces-167877-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-167878-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 333448BB09E
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 18:12:25 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0F08F8BB09F
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 18:12:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C013B1F21410
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 16:12:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B7EE2283594
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 16:12:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5DDA1152DFE;
-	Fri,  3 May 2024 16:12:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3749D155343;
+	Fri,  3 May 2024 16:12:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="cDnDiyzQ"
-Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
+	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="IbZhBw7V"
+Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 433ED46421
-	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 16:12:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A507226AF5
+	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 16:12:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714752735; cv=none; b=Emg74fOoqmj6YbKJNO392R9KqouEwIOuVnItGp4haG2iUnsr08AkCqFBAtJIqOvpxEmQJyb2h0VqCBymn6sGyATDRobGfPewBJ+ab+LAPFGiljQoFS+vXCdpfvoTQUEmSjhgSh5fSEVoT2LSnGpxV2zml7bzixwVkQnqc/o/uW0=
+	t=1714752771; cv=none; b=qAnfXSZTKPNvzFFBQbuE4ktbBDzvfMw+yUfnbL0KIFaapc2NaFeECnpM+whYlisym6+oxtXwMBobY2gjzAhvNmsguVPUGT6L/MbhuDe8eJhkOGCyU3y0VJgxo5kCJJYIH+RvHCCtol6PO6tFd+/crI0hqeucwbh5/FbqHWOkR/s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714752735; c=relaxed/simple;
-	bh=d4IuGFtalUbbFHdhNE+Kmfob/ZGfP/hZ2lAynUSJ3IE=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=iR8Tl7Hk4J6YhgtTDaMwq9gy/PHbFIful9FIWxxJz6MYGYqd9RIT5qzYv/1H55gR7lCeXZWirXGp2xn7AFIHj58o3FVicXeBtsbXpeCSp+347rfN17T6zWopKIvQj8VScoo/g1TvLYRJ69w5VjLq5Sxzl/oGYJPNdfok2HWU/n0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--jdenose.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=cDnDiyzQ; arc=none smtp.client-ip=209.85.128.202
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--jdenose.bounces.google.com
-Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-61bef0accddso83646937b3.0
-        for <linux-kernel@vger.kernel.org>; Fri, 03 May 2024 09:12:14 -0700 (PDT)
+	s=arc-20240116; t=1714752771; c=relaxed/simple;
+	bh=Muf+5crQf7UO0Ztgnrn20cNGhDFiaFXdMImvGaP1lk4=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=MxnXIH0m9kzTymgCIoPv/D7ghhxnmUqizOYUN0F0MLQqLsb+EvI3X7tlDR+0jlditZ5jYq2atqHW8Ja6DjN9nmLkNf8MtVZqGQ2QvdK6slA/aMLvVeoZMrQVGsb2+SkD4K3XsGKx1MidkxhcS1fDrxStyJTCqtN+OBbBePmZrWI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=IbZhBw7V; arc=none smtp.client-ip=209.85.214.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
+Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-1ecff927a45so16843755ad.0
+        for <linux-kernel@vger.kernel.org>; Fri, 03 May 2024 09:12:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1714752733; x=1715357533; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=bPKPhF5hHSV72rXRuskt7REVZj/wmqzryYtSK+EmwAs=;
-        b=cDnDiyzQbvAADmzGrlOYPdFI8d06y61eOKNfA/Kx05I7WPpQ//fKg2PwrFNINPc4Ta
-         OD76VE+h3jrzTRdnQiBa2f/BaSLZ1BAkR/vEUX+ZgpeiQNQZxd4GY9lS2HrNpgtfHoDu
-         hrKLtDLcyVZTycqapNwKWEGDwOgfcoqE22DKrUFQZ9z4JNLkR5x9XaEbn3rCuCfjs0q4
-         Gb/1MNFOaZqoepST31p3xzOZf1uVhh++LmGpu4Hfed7ezOg2SNeQXzdBVCHLwCMqE/PD
-         +iwx/lyihg3ywydnBSV9U8Bwi+vjbpzpXtt/JSiP6HCCJZc1nQQ3wpgJF3w6uZJzUkfC
-         VMHw==
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1714752769; x=1715357569; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=+SsYPCHFIzDKMqt+c2VcTik9i4CFhHISqpzih2Y5YwM=;
+        b=IbZhBw7Vhb8bM/cuQkB5gmG5+npvX7IIO7qXfLgT5jDaVRoH8fUorRaUH0GZK+Bi2x
+         ak6qE4RG9hNCMX8kG+sn9Uti3pHWOSF1ISEqre/HjV2115ktd3J2yh2MmftlIJ6lenhy
+         Dw/bZ4l4n4oDzsSKAFmpCpG69M+a6QMIewQSNHyR9gpKpzNcbm06/lIWV6BrrtXhVORP
+         g60kBR1K9q7A8m17wplJrQVS7esLIWnnrl+s84XrvIjbvjjWdkhDD1aBYidnGUDvfQzg
+         jRfwo1YDVlUTXEPMVv2RFTuekGC9z8V8cawgxvtBt3bYjwniSk4CcZuYWTNfLU6Buwpb
+         bSLw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714752733; x=1715357533;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=bPKPhF5hHSV72rXRuskt7REVZj/wmqzryYtSK+EmwAs=;
-        b=BFM0a19e+NHHg9ToL+XMAgkRAA1vw/VHok2brSYDqmLhgGzH0Kn2JKvkVkTifaAM1B
-         DWH05I57ygia6lGp4ak66btoNpzYXfxFnaw/OQLNW2kSB5BP4Du4ABqasSmhT78cdHuO
-         rAaDryrKLMvcYudTlXG7EI1wDW17r/O1Vd5WxXIn0FF7YkvQZzBsTFZYZfclRLBigjwT
-         HOnRPkCwKL/4rrH+zDIoKzBKcYnuSQuX8E++2yh1obRscDSdvINPUWi3OhNMHJrABo2o
-         DLwYdtijs90aB3aoIke1qB+/FNnforDvHYLuzIF10GNffkZuzoqbgPb0Pod1y3vCwC43
-         AOmw==
-X-Forwarded-Encrypted: i=1; AJvYcCUf/dt+5CenqbyMf6rgbvPkYFupuBTJE7co+IHDhcFN5HelmHJQdlleh+dYfqSSdISvqKSynfcjKaOi/KymkA7dPlpAc8lX6fGkKahc
-X-Gm-Message-State: AOJu0YxgJGffAgKCr9vK2jTXSACPZO4n4jR3hVVYpJrZIOkHPuFncwBH
-	oVTu9TeKZ2CZ2VCBEUIiLTHd+vOn+au+IRgDbPGCPa9iaad9a0hh9LR/zP8Ww51QQ+lkiP3myw8
-	RRGPhvQ==
-X-Google-Smtp-Source: AGHT+IH9YLvTTbCs+pigjyGOB76rOPYdVPQPbMQLFumi4iZDMdmJZ5B6gE7d+OC9FMN99jfTq+zqBSJuVkqT
-X-Received: from dynamight.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:17a])
- (user=jdenose job=sendgmr) by 2002:a25:ad9b:0:b0:de5:9f2c:c17c with SMTP id
- z27-20020a25ad9b000000b00de59f2cc17cmr891850ybi.9.1714752733280; Fri, 03 May
- 2024 09:12:13 -0700 (PDT)
-Date: Fri,  3 May 2024 16:12:07 +0000
-In-Reply-To: <ZjQeE643YAbK1hq5@google.com>
+        d=1e100.net; s=20230601; t=1714752769; x=1715357569;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=+SsYPCHFIzDKMqt+c2VcTik9i4CFhHISqpzih2Y5YwM=;
+        b=Acz82G7jtoWobvpXpWXrFiS2Js0BuVXZCi2FM4SOgOGGv4Wa/9UQdpbEvb3fwNc9MO
+         dRUja8xelqzgJPK8SIEr1Tyy5AlkPrAktyk9sz2uWfYiHkDo9ZB9jg8Kiff0rBewGP90
+         eCISG7+uj4KTzOqBz3lDw8d6xXn00wEJrZwzZFU1ooHOePof3vgtOqwx6GseNFTlE3gd
+         ukM1J3bUJXSGjW7fIjg0NGp9M9CSMMsn3rnOWPG+WRBTtKLnjY1zl7Qoio4Box21PFQY
+         oqszfK3enKSEeBHPUA417MWP6uvo6M53yQVKy3y6IL2YqMnKXZHHRrbnXFAa1v0ONKM/
+         Smag==
+X-Forwarded-Encrypted: i=1; AJvYcCWanxuBVWA7FHUMd+jR3u++KeVLGXtqPdeyDvaIgLEUXFdEOf9qUP+A/vwh1CYfhopd1Yc1I9O/iVkeY4VCZXL4mb7I0TFmcxu53NC8
+X-Gm-Message-State: AOJu0YzNUTsOZhE4AwDRhaKJp0mZ3IyObwGeF6FeSbEFpv7LmB4sZZcK
+	5rRSXy4efrNvtXLZuulJamLL/rtaqhWXrFcmzC8yquJ+MAYjZq2OZqdk+p1newg=
+X-Google-Smtp-Source: AGHT+IHI9LbCKHBkbWwHrBelW4UzMSUbdbIWW4nvucUsVTKhhMXlCsPu0hGFWBuw389Bh7kh55CCEw==
+X-Received: by 2002:a17:902:e80c:b0:1e8:813f:4009 with SMTP id u12-20020a170902e80c00b001e8813f4009mr3673385plg.14.1714752768891;
+        Fri, 03 May 2024 09:12:48 -0700 (PDT)
+Received: from tjeznach.ba.rivosinc.com ([64.71.180.162])
+        by smtp.gmail.com with ESMTPSA id x3-20020a170902ec8300b001e2086fddecsm3424746plg.139.2024.05.03.09.12.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 03 May 2024 09:12:47 -0700 (PDT)
+From: Tomasz Jeznach <tjeznach@rivosinc.com>
+To: Joerg Roedel <joro@8bytes.org>,
+	Will Deacon <will@kernel.org>,
+	Robin Murphy <robin.murphy@arm.com>,
+	Paul Walmsley <paul.walmsley@sifive.com>
+Cc: Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	Anup Patel <apatel@ventanamicro.com>,
+	Sunil V L <sunilvl@ventanamicro.com>,
+	Nick Kossifidis <mick@ics.forth.gr>,
+	Sebastien Boeuf <seb@rivosinc.com>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	devicetree@vger.kernel.org,
+	iommu@lists.linux.dev,
+	linux-riscv@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	linux@rivosinc.com,
+	Tomasz Jeznach <tjeznach@rivosinc.com>
+Subject: [PATCH v4 0/7] Linux RISC-V IOMMU Support
+Date: Fri,  3 May 2024 09:12:33 -0700
+Message-Id: <cover.1714752293.git.tjeznach@rivosinc.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <ZjQeE643YAbK1hq5@google.com>
-X-Mailer: git-send-email 2.45.0.rc1.225.g2a3ae87e7f-goog
-Message-ID: <20240503155020.v2.1.Ifa0e25ebf968d8f307f58d678036944141ab17e6@changeid>
-Subject: [PATCH v2] Input: elantech - fix touchpad state on resume for Lenovo N24
-From: Jonathan Denose <jdenose@google.com>
-To: dmitry.torokhov@gmail.com
-Cc: gregkh@linuxfoundation.org, jdenose@google.com, jefferymiller@google.com, 
-	linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-The Lenovo N24 on resume becomes stuck in a state where it
-sends incorrect packets, causing elantech_packet_check_v4 to fail.
-The only way for the device to resume sending the correct packets is for
-it to be disabled and then re-enabled.
+This patch series introduces support for RISC-V IOMMU architected
+hardware into the Linux kernel.
 
-This change adds a dmi check to trigger this behavior on resume.
-Signed-off-by: Jonathan Denose <jdenose@google.com>
----
+The RISC-V IOMMU specification, which this series is based on, is
+ratified and available at GitHub/riscv-non-isa [1].
 
-Changes in v2:
-- change ps2_sendbyte() calls to ps2_command()
+At a high level, the RISC-V IOMMU specification defines:
 
- drivers/input/mouse/elantech.c | 33 +++++++++++++++++++++++++++++++++
- 1 file changed, 33 insertions(+)
+1) Data structures:
+  - Device-context: Associates devices with address spaces and holds
+    per-device parameters for address translations.
+  - Process-contexts: Associates different virtual address spaces based
+    on device-provided process identification numbers.
+  - MSI page table configuration used to direct an MSI to a guest
+    interrupt file in an IMSIC.
+2) In-memory queue interface:
+  - Command-queue for issuing commands to the IOMMU.
+  - Fault/event queue for reporting faults and events.
+  - Page-request queue for reporting "Page Request" messages received
+    from PCIe devices.
+  - Message-signaled and wire-signaled interrupt mechanisms.
+3) Memory-mapped programming interface:
+  - Mandatory and optional register layout and description.
+  - Software guidelines for device initialization and capabilities discovery.
 
-diff --git a/drivers/input/mouse/elantech.c b/drivers/input/mouse/elantech.c
-index 4e38229404b4b..18f26315cae25 100644
---- a/drivers/input/mouse/elantech.c
-+++ b/drivers/input/mouse/elantech.c
-@@ -1476,6 +1476,23 @@ static void elantech_disconnect(struct psmouse *psmouse)
- 	psmouse->private = NULL;
- }
- 
-+/*
-+ * Some hw_version 4 models fail to properly activate absolute mode on
-+ * resume without going through disable/enable cycle.
-+ */
-+static const struct dmi_system_id elantech_needs_reenable[] = {
-+#if defined(CONFIG_DMI) && defined(CONFIG_X86)
-+	{
-+		/* Lenovo N24 */
-+		.matches = {
-+			DMI_MATCH(DMI_SYS_VENDOR, "LENOVO"),
-+			DMI_MATCH(DMI_PRODUCT_NAME, "81AF"),
-+		},
-+	},
-+#endif
-+	{ }
-+};
-+
- /*
-  * Put the touchpad back into absolute mode when reconnecting
-  */
-@@ -1486,6 +1503,22 @@ static int elantech_reconnect(struct psmouse *psmouse)
- 	if (elantech_detect(psmouse, 0))
- 		return -1;
- 
-+	if (dmi_check_system(elantech_needs_reenable)) {
-+		int err;
-+
-+		err = ps2_command(&psmouse->ps2dev, NULL, PSMOUSE_CMD_DISABLE);
-+
-+		if (err)
-+			psmouse_warn(psmouse, "Failed to deactivate mouse on %s: %d\n",
-+					psmouse->ps2dev.serio->phys, err);
-+
-+		err = ps2_command(&psmouse->ps2dev, NULL, PSMOUSE_CMD_ENABLE);
-+
-+		if (err)
-+			psmouse_warn(psmouse, "Failed to reactivate mouse on %s: %d\n",
-+					psmouse->ps2dev.serio->phys, err);
-+	}
-+
- 	if (elantech_set_absolute_mode(psmouse)) {
- 		psmouse_err(psmouse,
- 			    "failed to put touchpad back into absolute mode.\n");
+
+This series introduces RISC-V IOMMU hardware initialization and complete
+single-stage translation with paging domain support.
+
+The patches are organized as follows:
+
+Patch 1: Introduces minimal required device tree bindings for the driver.
+Patch 2: Defines RISC-V IOMMU data structures, hardware programming interface
+         registers layout, and minimal initialization code for enabling global
+         pass-through for all connected masters.
+Patch 3: Implements the device driver for PCIe implementation of RISC-V IOMMU
+         architected hardware.
+Patch 4: Introduces IOMMU interfaces to the kernel subsystem.
+Patch 5: Implements device directory management with discovery sequences for
+         I/O mapped or in-memory device directory table location, hardware
+         capabilities discovery, and device to domain attach implementation.
+Patch 6: Implements command and fault queue, and introduces directory cache
+         invalidation sequences.
+Patch 7: Implements paging domain, using highest page-table mode advertised
+         by the hardware. This series enables only 4K mappings; complete support
+         for large page mappings will be introduced in follow-up patch series.
+
+Follow-up patch series, providing large page support and updated walk cache
+management based on the revised specification, and complete ATS/PRI/SVA support,
+will be posted to GitHub [2].
+
+Changes from v3:
+- dt-bindings: s/qemu,iommu/qemu,riscv-iommu/, fix iommu-map sample
+- device probe will fail if IOMMU if running in restricted BARE mode
+- synchronize_rcu moved to release_device, fixes for bonds locking, iotlb_inval fix
+- page table radix tree selection based on IOMMU capabilities, failover to use SATP
+- private iommu per device data structure added
+- Editorial changes: rename goto labels, blocking_domain/blocking_domain, reformat
+  to fit mostly under 80 characters per line
+
+Patch series depends on (applied to iommu-next):
+  IOMMU memory observability, v6 [3]
+  iommu, dma-mapping: Simplify arch_setup_dma_ops(), v4 [4]
+
+Best regards,
+ Tomasz Jeznach
+
+[1] link: https://github.com/riscv-non-isa/riscv-iommu
+[2] link: https://github.com/tjeznach/linux
+[3] link: https://lore.kernel.org/linux-iommu/20240413002522.1101315-1-pasha.tatashin@soleen.com/
+[4] link: https://lore.kernel.org/linux-iommu/cover.1713523152.git.robin.murphy@arm.com/
+v3 link:  https://lore.kernel.org/linux-iommu/cover.1714494653.git.tjeznach@rivosinc.com/ 
+v2 link:  https://lore.kernel.org/linux-iommu/cover.1713456597.git.tjeznach@rivosinc.com/
+v1 link:  https://lore.kernel.org/linux-iommu/cover.1689792825.git.tjeznach@rivosinc.com/
+
+
+Tomasz Jeznach (7):
+  dt-bindings: iommu: riscv: Add bindings for RISC-V IOMMU
+  iommu/riscv: Add RISC-V IOMMU platform device driver
+  iommu/riscv: Add RISC-V IOMMU PCIe device driver
+  iommu/riscv: Enable IOMMU registration and device probe.
+  iommu/riscv: Device directory management.
+  iommu/riscv: Command and fault queue support
+  iommu/riscv: Paging domain support
+
+ .../bindings/iommu/riscv,iommu.yaml           |  147 ++
+ MAINTAINERS                                   |    8 +
+ drivers/iommu/Kconfig                         |    1 +
+ drivers/iommu/Makefile                        |    2 +-
+ drivers/iommu/riscv/Kconfig                   |   20 +
+ drivers/iommu/riscv/Makefile                  |    3 +
+ drivers/iommu/riscv/iommu-bits.h              |  782 ++++++++
+ drivers/iommu/riscv/iommu-pci.c               |  119 ++
+ drivers/iommu/riscv/iommu-platform.c          |   92 +
+ drivers/iommu/riscv/iommu.c                   | 1616 +++++++++++++++++
+ drivers/iommu/riscv/iommu.h                   |   88 +
+ 11 files changed, 2877 insertions(+), 1 deletion(-)
+ create mode 100644 Documentation/devicetree/bindings/iommu/riscv,iommu.yaml
+ create mode 100644 drivers/iommu/riscv/Kconfig
+ create mode 100644 drivers/iommu/riscv/Makefile
+ create mode 100644 drivers/iommu/riscv/iommu-bits.h
+ create mode 100644 drivers/iommu/riscv/iommu-pci.c
+ create mode 100644 drivers/iommu/riscv/iommu-platform.c
+ create mode 100644 drivers/iommu/riscv/iommu.c
+ create mode 100644 drivers/iommu/riscv/iommu.h
+
+
+base-commit: e67572cd2204894179d89bd7b984072f19313b03
+message-id: 20240413002522.1101315-1-pasha.tatashin@soleen.com
+message-id: cover.1713523152.git.robin.murphy@arm.com
 -- 
-2.45.0.rc1.225.g2a3ae87e7f-goog
+2.34.1
 
 
