@@ -1,96 +1,164 @@
-Return-Path: <linux-kernel+bounces-167797-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-167798-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6189D8BAF49
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 16:54:56 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 88AFC8BAF4B
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 16:55:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 939951C22499
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 14:54:55 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 86E5DB2172B
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 14:55:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1A474A99C;
-	Fri,  3 May 2024 14:54:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="EEwiSmqj"
-Received: from mail-qk1-f178.google.com (mail-qk1-f178.google.com [209.85.222.178])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52EA54AEEF;
+	Fri,  3 May 2024 14:55:34 +0000 (UTC)
+Received: from mail-io1-f70.google.com (mail-io1-f70.google.com [209.85.166.70])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 956A51E4B1
-	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 14:54:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58B201E4B1
+	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 14:55:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.70
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714748089; cv=none; b=iE0Dv71eLDfeYte6oETIelPEIzFSIDqtgrnsGOr5tReGFqEMYtVVjSuVLqqbDzye3FlPIAR/6AoUucbog6gLtAsMyQRTjiw5ZNb2vWFrpYGV2mGKFlAQLavWDI5PPLXvn5du2iqEgH4j+Mqm7x1F5majO+xbEZCps4KfFQsemc4=
+	t=1714748133; cv=none; b=Ix/pFUTBGyThH5zVIvcrhfBszTkkl98EUpDi/pnHZ6IXU9uA0Gyn24xcTh0qbJgKwg1r0gpJRGHzhdZ47+2dvyL8ZXJaWsr+1XXHYj2cJ6bZzt2n32T9j80c8XK8w2D0VPwqGiASkRuywMVZO1m9NoNHPx5//Xlt7+JkNUAfJRU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714748089; c=relaxed/simple;
-	bh=v8kH573V3nLbemGi4DJG1xZ2+1X080JwmMxd/o2exl4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=KEzRZu50kQBnTZ3iq1BvbRoRehSvVQTBFRQb4ImfshtblDdSQ7XwEqt9ecMl6+6HZkdbKrQ9umatrwTwUbII15E3tyBLOBkUvQNKLJqmtJ9Jy7Pe9mmKNI1uOeoOo5hrpplwVu8aPsGJVQd7Weridv0yb8vjeVz0ZSkNet6joI4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b=EEwiSmqj; arc=none smtp.client-ip=209.85.222.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
-Received: by mail-qk1-f178.google.com with SMTP id af79cd13be357-78f056f928eso677911985a.0
-        for <linux-kernel@vger.kernel.org>; Fri, 03 May 2024 07:54:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1714748085; x=1715352885; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=OgnwKfJB3kJ01AY0EqJ3oTDVPySeG9MAN3LYuEwZg9o=;
-        b=EEwiSmqjvyH5JN2HY4xW0QKQOg+lpi1pQvJgTLsC87Y+HFMnsNh7FgPPC7eJg9qeh3
-         AMQPv2ya26IUuKrfVZ2J1Xn6UPovwODBeUFEvY1xmndCtlLOM6wASzBoAOYE3xaoi0Qs
-         B0y6L9WwMkf7gzlSKrf9KsMAc3N/jlokt7G3utma1AbkSDvna1mVTF4T1cO/idwv8sDz
-         BSXLF3zGHdFovluYeCibhLrIrbuyuZQFPtF3vgmk4IT/Qxc6OfmDGmHicEsWhhgGI7qJ
-         mKASZKT1aFmJ1opiLtTPCeCC5qUCthpJJVZmQkhS/uoHz3v/Cvf9L1u0Tx2CIA5Q40La
-         bUOw==
+	s=arc-20240116; t=1714748133; c=relaxed/simple;
+	bh=QKHQ8GXzaHQv7SZhL6uyVbGA/6cXE3hUh7Z5YIWKyic=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=IvqqfSkq3UAp5KKYMlyBDTog60vZ2A4XkeXmrLXBFiINZzOAn4S3oSBLSxYEazIpIqFwx0cL1Dex9I6BIN/K56hOnM1SMUo9S4F1Jtu8wSA8j+5B4vjRVUsZMXYpXJHnKlhGJZjZY6DXS8m7kXHL7a6Uc46xHSYRM3j9e/18Lxs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.70
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f70.google.com with SMTP id ca18e2360f4ac-7de9cd658acso1009602939f.3
+        for <linux-kernel@vger.kernel.org>; Fri, 03 May 2024 07:55:31 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714748085; x=1715352885;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=OgnwKfJB3kJ01AY0EqJ3oTDVPySeG9MAN3LYuEwZg9o=;
-        b=w6tpMnclyginO1zTZqopv8JhnaPgkDUVFPlldQ9tzeMa7cgf/8UA+Bg0ZyOpLG00Zs
-         0MMLAvOT68z5zCWPgTyRXHIjQVTGodLD/4rElmEV5sTfKqo9l3o4ku7mzFk6/wLXC1Lz
-         6WSQQcwjHJG1BjOWtqlZSgxmBBbOIqSejh6+HltaKfuhOJuV7zTJtizu0YsjP7QVMMfS
-         5uwBzBmFbUkk0YID9sjW4gUMWS96L2rB4nL8CHTeXFsnfBu4skgRCs+RT3zfi8Mh+x/5
-         JNohiIqlX30Ky57MqWnp1bzkgvlpEVnY0xPx7zgZpbF0Ny21viS9cNygtuSE7G29yW3b
-         yidw==
-X-Forwarded-Encrypted: i=1; AJvYcCUAHm19dkIF8E1BGAgk5XQe20kCVFrWrxOQY/HmkH5GTvVunyC+B0Tzm24QI++OVIghZuoqOvkacvCRGecRfI3682quMJY78RrWu2pT
-X-Gm-Message-State: AOJu0Ywv0ux3bG6G0nI4yN7noB29Ir/xlDdjA2LbZwpXHXarfe6xievt
-	dsQPZGmrptUsUxEjrYnqPCL7FRtJBGJHS2HDtzs4k7MLt9xRsKH8zNxJzqVQADc=
-X-Google-Smtp-Source: AGHT+IEtOZyEr24VbO8xFLGbBcJxGsTi5hvCM74iUWTfb4RSHWb9Vplkpo+dXXpzeArp6XXpPQ0+mQ==
-X-Received: by 2002:a05:620a:3b8a:b0:78d:61a4:6955 with SMTP id ye10-20020a05620a3b8a00b0078d61a46955mr2685812qkn.67.1714748085468;
-        Fri, 03 May 2024 07:54:45 -0700 (PDT)
-Received: from localhost ([2603:7000:c01:2716:da5e:d3ff:fee7:26e7])
-        by smtp.gmail.com with ESMTPSA id p18-20020a05620a22f200b0078edc0a447dsm1297062qki.68.2024.05.03.07.54.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 03 May 2024 07:54:44 -0700 (PDT)
-Date: Fri, 3 May 2024 10:54:44 -0400
-From: Johannes Weiner <hannes@cmpxchg.org>
-To: Usama Arif <usamaarif642@gmail.com>
-Cc: tj@kernel.org, lizefan.x@bytedance.com, nphamcs@gmail.com,
-	corbet@lwn.net, linux-mm@kvack.org, cgroups@vger.kernel.org,
-	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-	kernel-team@meta.com
-Subject: Re: [PATCH v2 1/1] cgroup: Add documentation for missing zswap
- memory.stat
-Message-ID: <20240503145444.GC2538005@cmpxchg.org>
-References: <20240502185307.3942173-1-usamaarif642@gmail.com>
- <20240502185307.3942173-2-usamaarif642@gmail.com>
+        d=1e100.net; s=20230601; t=1714748130; x=1715352930;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=vHjzFqTGEImXhvutzT4hL2jo5Ja0cpO/UGtE6EWFnh0=;
+        b=g8VPslAIbuwcicr8G6jMWluxAYncNZEWOfG5ja6zMJIll8MRDjXcY2AGMlX8wESArQ
+         vmq0eapcEj5vGFJ08XqMKUoqqpZ0iUayW/G9jQ0tLxikkN7b78lzK6HKh+CIGbRsheYc
+         XwhQDmLCOfm+QdXJUB7jXWtyVrpaPptH0jXQu8PEHEyttT4qgU5tbbsQPm5VZxbsye5z
+         rTlZaLJqhl94aicDdV42AVhy4RHFJZzpHU89qZvJ5ewxA7rJ6aukZ2tNYwmJ7HYlsrQk
+         JmCoPEkKgdCQqJibzrC9oWau4+mTUZ/WncnrBvh8fJcZWyP76lUKZ5ka+zmDYUw/0shK
+         dg7Q==
+X-Forwarded-Encrypted: i=1; AJvYcCX506DxOusAhy0gGNiei2G8SJk/ylGwiBx3Doi0yZKe2TJvYXBkfDjhEPdjBW5DzpfzQMzmW3vzhQ2ycIWuNvzU4yqJHWaURhZWUGe5
+X-Gm-Message-State: AOJu0Yy1IKoMVlKceWKCCc19gU7cgDVsM/VCcAn4vWyADrK5rIYDxn8s
+	mP4Ey7nHJgO54qNcYCd4D9MTNtwnsnkWOmdyh0BCBA++0wiOv+y7JCgmk9VVTcvS8QVLfwZlP8z
+	wFUbnFU6dycoN6/SwhBQ/2ni6J5pJuGY6vea5nlDdTrvQ3DY7877yjRA=
+X-Google-Smtp-Source: AGHT+IFecX4KwUhq16GQoy4m1dbwzzqR8OHn14RgAK+2KWtIOJI1j0KW8HKfFgVz9Pdk+V9aZeJgfv0sRXkZnm8CXbiaWOCOgPOj
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240502185307.3942173-2-usamaarif642@gmail.com>
+X-Received: by 2002:a05:6638:8c16:b0:487:cbff:ac40 with SMTP id
+ jl22-20020a0566388c1600b00487cbffac40mr122447jab.4.1714748130405; Fri, 03 May
+ 2024 07:55:30 -0700 (PDT)
+Date: Fri, 03 May 2024 07:55:30 -0700
+In-Reply-To: <000000000000f75b4906178da124@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000003143a506178de969@google.com>
+Subject: Re: [syzbot] [bcachefs?] kernel BUG in bch2_btree_node_read_done
+From: syzbot <syzbot+bf7215c0525098e7747a@syzkaller.appspotmail.com>
+To: bfoster@redhat.com, kent.overstreet@linux.dev, 
+	linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-On Thu, May 02, 2024 at 07:50:24PM +0100, Usama Arif wrote:
-> This includes zswpin, zswpout and zswpwb.
-> 
-> Signed-off-by: Usama Arif <usamaarif642@gmail.com>
+syzbot has found a reproducer for the following issue on:
 
-Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+HEAD commit:    9221b2819b8a Add linux-next specific files for 20240503
+git tree:       linux-next
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=131169df180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=8ab537f51a6a0d98
+dashboard link: https://syzkaller.appspot.com/bug?extid=bf7215c0525098e7747a
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=177775df180000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=107ed354980000
+
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/3e67dbdc3c37/disk-9221b281.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/ade618fa19f8/vmlinux-9221b281.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/df12e5073c97/bzImage-9221b281.xz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/7414e75d88aa/mount_0.gz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+bf7215c0525098e7747a@syzkaller.appspotmail.com
+
+loop0: detected capacity change from 0 to 32768
+bcachefs (loop0): mounting version 1.7: mi_btree_bitmap opts=metadata_checksum=crc64,data_checksum=none,nojournal_transaction_names
+bcachefs (loop0): recovering from clean shutdown, journal seq 10
+------------[ cut here ]------------
+kernel BUG at fs/bcachefs/backpointers.h:75!
+Oops: invalid opcode: 0000 [#1] PREEMPT SMP KASAN PTI
+CPU: 0 PID: 5095 Comm: syz-executor372 Not tainted 6.9.0-rc6-next-20240503-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
+RIP: 0010:bucket_pos_to_bp fs/bcachefs/backpointers.h:75 [inline]
+RIP: 0010:bch2_backpointer_invalid+0x9cc/0x9d0 fs/bcachefs/backpointers.c:65
+Code: fc ff ff e8 f6 19 8d fd 48 c7 c7 40 7f 91 8e 48 89 de e8 87 e9 e2 00 e9 fc f7 ff ff e8 dd 19 8d fd 90 0f 0b e8 d5 19 8d fd 90 <0f> 0b 66 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 53 e8
+RSP: 0018:ffffc9000344e600 EFLAGS: 00010293
+RAX: ffffffff8408fc0b RBX: 00000000002d3cb6 RCX: ffff88807db18000
+RDX: 0000000000000000 RSI: 00000000002d3cb6 RDI: 000000000000001b
+RBP: 000000b4f2d90000 R08: ffffffff8408f5aa R09: 1ffffffff25f54b0
+R10: dffffc0000000000 R11: fffffbfff25f54b1 R12: 1ffff92000689d58
+R13: ffffc9000344eaa0 R14: ffff8880747000bb R15: 000000000000001b
+FS:  0000555571535380(0000) GS:ffff8880b9400000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000561aa32c7360 CR3: 0000000077a0a000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ bch2_btree_node_read_done+0x3e7d/0x5ed0 fs/bcachefs/btree_io.c:1234
+ btree_node_read_work+0x665/0x1300 fs/bcachefs/btree_io.c:1345
+ bch2_btree_node_read+0x2637/0x2c80 fs/bcachefs/btree_io.c:1730
+ __bch2_btree_root_read fs/bcachefs/btree_io.c:1769 [inline]
+ bch2_btree_root_read+0x61e/0x970 fs/bcachefs/btree_io.c:1793
+ read_btree_roots+0x22d/0x7b0 fs/bcachefs/recovery.c:472
+ bch2_fs_recovery+0x2334/0x36e0 fs/bcachefs/recovery.c:800
+ bch2_fs_start+0x356/0x5b0 fs/bcachefs/super.c:1030
+ bch2_fs_open+0xa8d/0xdf0 fs/bcachefs/super.c:2105
+ bch2_mount+0x71d/0x1320 fs/bcachefs/fs.c:1917
+ legacy_get_tree+0xee/0x190 fs/fs_context.c:662
+ vfs_get_tree+0x90/0x2a0 fs/super.c:1780
+ do_new_mount+0x2be/0xb40 fs/namespace.c:3352
+ do_mount fs/namespace.c:3692 [inline]
+ __do_sys_mount fs/namespace.c:3898 [inline]
+ __se_sys_mount+0x2d9/0x3c0 fs/namespace.c:3875
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0xf5/0x240 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+RIP: 0033:0x7f754d2be98a
+Code: d8 64 89 02 48 c7 c0 ff ff ff ff eb a6 e8 5e 04 00 00 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fffdfc823d8 EFLAGS: 00000282 ORIG_RAX: 00000000000000a5
+RAX: ffffffffffffffda RBX: 00007fffdfc823f0 RCX: 00007f754d2be98a
+RDX: 0000000020011a00 RSI: 0000000020011a40 RDI: 00007fffdfc823f0
+RBP: 0000000000000004 R08: 00007fffdfc82430 R09: 00000000000119f7
+R10: 0000000002000000 R11: 0000000000000282 R12: 0000000002000000
+R13: 00007fffdfc82430 R14: 0000000000000003 R15: 0000000001000000
+ </TASK>
+Modules linked in:
+---[ end trace 0000000000000000 ]---
+RIP: 0010:bucket_pos_to_bp fs/bcachefs/backpointers.h:75 [inline]
+RIP: 0010:bch2_backpointer_invalid+0x9cc/0x9d0 fs/bcachefs/backpointers.c:65
+Code: fc ff ff e8 f6 19 8d fd 48 c7 c7 40 7f 91 8e 48 89 de e8 87 e9 e2 00 e9 fc f7 ff ff e8 dd 19 8d fd 90 0f 0b e8 d5 19 8d fd 90 <0f> 0b 66 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 53 e8
+RSP: 0018:ffffc9000344e600 EFLAGS: 00010293
+RAX: ffffffff8408fc0b RBX: 00000000002d3cb6 RCX: ffff88807db18000
+RDX: 0000000000000000 RSI: 00000000002d3cb6 RDI: 000000000000001b
+RBP: 000000b4f2d90000 R08: ffffffff8408f5aa R09: 1ffffffff25f54b0
+R10: dffffc0000000000 R11: fffffbfff25f54b1 R12: 1ffff92000689d58
+R13: ffffc9000344eaa0 R14: ffff8880747000bb R15: 000000000000001b
+FS:  0000555571535380(0000) GS:ffff8880b9500000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000561aa3246638 CR3: 0000000077a0a000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+
+
+---
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
 
