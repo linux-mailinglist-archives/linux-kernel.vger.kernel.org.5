@@ -1,595 +1,419 @@
-Return-Path: <linux-kernel+bounces-168410-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-168411-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D7F648BB843
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 May 2024 01:29:01 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E5D9F8BB847
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 May 2024 01:30:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 63F85286A26
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 23:29:00 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9BB29282B4C
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 23:30:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DACC784A56;
-	Fri,  3 May 2024 23:28:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 42FE284A52;
+	Fri,  3 May 2024 23:30:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="riVmmT3U"
-Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="nG+YhkUd"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.19])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B44C482492
-	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 23:28:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.202
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714778935; cv=none; b=tvH0YU2Dw+X86YX3/x0AzEmr4pg3WPA8kUGirGgaxa3sEbeBTu8PSpGYLrcnjwLOX/t9yxvN6eqOnm7VzPTIAsWWkyU/v7NVwuZC2HVdwGIEa7WJmUC6K27ZhCdiL+fw+k+GwaNN8ZbH6QdnGyKZv/HtlaiqigYevkEER0eC4lE=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714778935; c=relaxed/simple;
-	bh=Wu152A3MYMOCDYS3ka/VAXl1xnRoga+OJkp5CTqqtUQ=;
-	h=Date:Message-Id:Mime-Version:Subject:From:To:Content-Type; b=J2o29nTaJ0V9vzGI2PUVg5MLoTG5bCkPDGPw+Frhm/Fn2p8SiwfyLOICqQOYKOLXUXKN6ySKrWGs85TFLBGDnNtWZvKntcP7Qyt+7ObIdgisvwrkavD6zfG3I7O7uz8ZU/wEYXIN7TYlRc+Psd89xaMmPq9nrOPRAy19kraZCWc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=riVmmT3U; arc=none smtp.client-ip=209.85.128.202
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com
-Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-61be530d024so2811527b3.2
-        for <linux-kernel@vger.kernel.org>; Fri, 03 May 2024 16:28:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1714778933; x=1715383733; darn=vger.kernel.org;
-        h=to:from:subject:mime-version:message-id:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=OUK2QAHKg6XvqT3wnheppijLOvk2sbqSOL0kLnQxZzs=;
-        b=riVmmT3UgEErp0R4uu4ogKJkyI6XSlDJMYf9mqTx4NRc/9JwgHqM6B6BfFKAFybJl/
-         5BxDWDpZt8RHF50XIG7+/00rAqPRBq6tQ5DZTCgzVkohbRfuQCDDUi6yNtxzqFoI2Eau
-         DYEZxUOPH+vHNT5kFZrB6uvMv5ZtC9kGyamFWhg6v52QFUjWH6ZTvIc+v8RKYlhYYJri
-         SN3/mpCH/tC2kX7YGFG4B8Bj+cIAQWbckC+8spsY7vM3MbeyiKVVDNYXLphT7CHFeP5Z
-         4emwEvgYNaBQxo+/aDl9a4hHPuQysTiJOg0E0IvqL4rklYnyJrpd0qK94lhCqkgxSYKA
-         igNA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714778933; x=1715383733;
-        h=to:from:subject:mime-version:message-id:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=OUK2QAHKg6XvqT3wnheppijLOvk2sbqSOL0kLnQxZzs=;
-        b=aStXm5p75TMckCvid2903wwrVlAXCk80OoI2GdOFoUTqkpgm5v/fafHlGmbKN7ZCrx
-         rR0qjau1eRCBXu06dDukmH5aZWNFpb9yNj77i/1ZRcj9uMiIUZPdJBvgtv6kB0uVUVwc
-         psrw4jilrmOeLHiZoY5h7y+Eh4mywtOtFF7KgJDPnlfmNHFX+t0bmMMwlDGNgpR0P29D
-         fYaxSbO4/n9XUPHHZ6qvijg10DeFlOgDnNpxqpXYYd8RUTELFx4OGwp8fdIPSzKNrVqu
-         Sf0G5wTLA/06+Hfc8Sqd1I4FPwPoRwSKBOMSQ9DZHrYQ3G4mHu3Cfhi24forseXUsO7J
-         tw9g==
-X-Forwarded-Encrypted: i=1; AJvYcCU4+PEfWDuiYqG7kgdpAml0vgYLLPq8jH/t3sa1yu2YjPSJNcTvEiwLqEuSI/8VfdWvWcHa3ohW1FgRoy3Hhkon5DRlhSbYTrUgn2J5
-X-Gm-Message-State: AOJu0YxRApo4E8ZUivR1vs+AgPJUvVZiIH6Ue75Gqt/ZY8DLocguwx0i
-	nxjuPHOo4SWhQ6/vPfXlhYkM7Y0ZTv6r6g0Ok3FgcCWOMhkYgVmnhu+ybdwe3xLaJ/RGN6XwdhT
-	SLsF79w==
-X-Google-Smtp-Source: AGHT+IEDqcJkl+OXCSr9M83AsaQ1rdc0vrYm9SEHU47sm3AVxkiZ/UKhhhQf4XhbVm2AIUdjvM0J4Z/Zu9Qe
-X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:dec4:52bb:942:da64])
- (user=irogers job=sendgmr) by 2002:a05:6902:c0b:b0:de5:3003:4b83 with SMTP id
- fs11-20020a0569020c0b00b00de530034b83mr587523ybb.8.1714778932760; Fri, 03 May
- 2024 16:28:52 -0700 (PDT)
-Date: Fri,  3 May 2024 16:28:49 -0700
-Message-Id: <20240503232849.17752-1-irogers@google.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 66E27290F;
+	Fri,  3 May 2024 23:30:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.19
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1714779048; cv=fail; b=C1qIhQcUabEWpiC9N7UXIQivJIIAuKNT3Kvtcgl3ddSkWc6DTr4vDodSXkusgZKLkOTFJv5VFURyZbS05nSDMKmOrr7Nf3yvrVBCJ2DBUMQ70cFTvu6eUirVAp2N9IEhb0LkUkNoe1IlohlGmZVKg57eRbuGyv1b7sTtZIHvnkE=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1714779048; c=relaxed/simple;
+	bh=evbXqUwE+4rUD+yH4hdfAONsZMcBzs0j25FbnoZAhL8=;
+	h=Message-ID:Date:Subject:To:CC:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=Vs/wYbGpeZ2+R+pZfGitI4S5FKmQDagl5d5QmPaOywhrM2zfJlEA7OIhNLAeLymMAUsG9GVQo/nojk7kw3TyxPCQI733Ai5rNAf+1CSZ0DpeEzUe64O5G+ix/oTpj/Dv8kzEo/w1LlhbibEhTX7wkSTuoByzq6QFpDZW7q6+7DI=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=nG+YhkUd; arc=fail smtp.client-ip=198.175.65.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1714779046; x=1746315046;
+  h=message-id:date:subject:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=evbXqUwE+4rUD+yH4hdfAONsZMcBzs0j25FbnoZAhL8=;
+  b=nG+YhkUd+qk34v5NJT96joP4QIOIYvLDFlA75qDrIC4qgo4Q3noZumxO
+   k79gQyly58n+sgk38XnOOh42ePf4uHEKdJgLWj7H02bYbJ8Do2fpPOwuH
+   wv3Cxeq4Sr9BkhRFqKv2adnezvGXQcYBMT7DBAj69mq+NoThUesP26ytf
+   y3mUHR1P9nirJSdFJQBq/ek3XEVgOfnspPNgCUgzRKjbLm1IfNIigGyLs
+   /tKSerB/52fSdV5o5owLr5oRL5tofQgfFAuO8v+e0Fg92fnh7jab2I7Or
+   QNFTuq/C/w9NgqU+KzpEzkq244GnvJbuyvadpgZcQRMHrjlHO5Awv5JqV
+   g==;
+X-CSE-ConnectionGUID: o4YjBMvjQqSwdc+6NYebPQ==
+X-CSE-MsgGUID: h05N0VJNSQOluGS9+XtDlg==
+X-IronPort-AV: E=McAfee;i="6600,9927,11063"; a="10452897"
+X-IronPort-AV: E=Sophos;i="6.07,252,1708416000"; 
+   d="scan'208";a="10452897"
+Received: from fmviesa001.fm.intel.com ([10.60.135.141])
+  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 May 2024 16:30:46 -0700
+X-CSE-ConnectionGUID: Iyap0HABTmOSRvLUs7e57g==
+X-CSE-MsgGUID: 1zkd6caITiarLB3s8MFO4Q==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,252,1708416000"; 
+   d="scan'208";a="58790899"
+Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
+  by fmviesa001.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 03 May 2024 16:30:45 -0700
+Received: from fmsmsx603.amr.corp.intel.com (10.18.126.83) by
+ fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Fri, 3 May 2024 16:30:45 -0700
+Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
+ fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Fri, 3 May 2024 16:30:45 -0700
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.168)
+ by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Fri, 3 May 2024 16:30:44 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=VKfQDFFLxKLuf5pIhVv05PWHTrjAwopuKjQOG21Lb+MHAKgWPcz2NaIsw/AZnyQylLG+ew+A80eTGp3XK8fr9QSY8v6zy+HyIesrcscAEx7+/A3bYuGa2QAdZTP8HZdJaL13xDwn/HQaddKmdAO5EfO6b8o4txf8/QxPa8aCYNiF6udwAYpovKioMG7IhQMWfTSN5qvBWZGaVHLOQmr0fwrRMjdNhk7wIOwqS48HP9R6Gjs6D4lejpsSoK6BUf8efy3TorIp1ppr5SRY9LwSD1+dGGq8+h5PS9/q0s5E95L2RAic1O53jhiqtOvJ2Up56UZgGgD9ihzGI1H7GrdCZQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=H7H08lSTuo3G/Tzhv9SigNRSpqXN2i3kWN5cxKf9Xs8=;
+ b=AVdjVD6IwgaHpqM3P/Ryanvk7hCBYumQfQOV74uQ5/els25pM3WLHTcbPcZphi6QsXvPpSHCfXrBA/7qoh+B+AU4In8Pj5kFSp5s3KyOItwZ8pSknmXuU3sN+YK82sC89AgIgjSIYnxnXag+wfbOF8ykeBat1BdDcPYMnZzadLnWSw3WD1Xr87WUPv/2bji1i4P6qdLJj6wFqXHXrwnroJJyx+GGE+DaFNPbaISK2gEP4pIjgkGs2T+pWpME/1GY+kb8vfyLiqVbYHZxa0qH8tKwWp1JOAycQUyq8vT8ibXWdCm2yAUUg7hYDZ7WWYM4XnO10ZUKbjqzdN9sK5vGXA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from SJ2PR11MB7573.namprd11.prod.outlook.com (2603:10b6:a03:4d2::10)
+ by MW4PR11MB6618.namprd11.prod.outlook.com (2603:10b6:303:1ec::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7519.36; Fri, 3 May
+ 2024 23:30:37 +0000
+Received: from SJ2PR11MB7573.namprd11.prod.outlook.com
+ ([fe80::b394:287f:b57e:2519]) by SJ2PR11MB7573.namprd11.prod.outlook.com
+ ([fe80::b394:287f:b57e:2519%4]) with mapi id 15.20.7544.023; Fri, 3 May 2024
+ 23:30:37 +0000
+Message-ID: <54b1fe8f-13e5-440b-bb36-4100c1d283d0@intel.com>
+Date: Fri, 3 May 2024 16:30:34 -0700
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH v3 07/17] x86/resctrl: Add support to enable/disable
+ ABMC feature
+To: Babu Moger <babu.moger@amd.com>, <corbet@lwn.net>, <fenghua.yu@intel.com>,
+	<tglx@linutronix.de>, <mingo@redhat.com>, <bp@alien8.de>,
+	<dave.hansen@linux.intel.com>
+CC: <x86@kernel.org>, <hpa@zytor.com>, <paulmck@kernel.org>,
+	<rdunlap@infradead.org>, <tj@kernel.org>, <peterz@infradead.org>,
+	<yanjiewtw@gmail.com>, <kim.phillips@amd.com>, <lukas.bulwahn@gmail.com>,
+	<seanjc@google.com>, <jmattson@google.com>, <leitao@debian.org>,
+	<jpoimboe@kernel.org>, <rick.p.edgecombe@intel.com>,
+	<kirill.shutemov@linux.intel.com>, <jithu.joseph@intel.com>,
+	<kai.huang@intel.com>, <kan.liang@linux.intel.com>,
+	<daniel.sneddon@linux.intel.com>, <pbonzini@redhat.com>,
+	<sandipan.das@amd.com>, <ilpo.jarvinen@linux.intel.com>,
+	<peternewman@google.com>, <maciej.wieczor-retman@intel.com>,
+	<linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<eranian@google.com>, <james.morse@arm.com>
+References: <cover.1711674410.git.babu.moger@amd.com>
+ <0db75c94886da62b8da498ef159d8fe27b0b3811.1711674410.git.babu.moger@amd.com>
+Content-Language: en-US
+From: Reinette Chatre <reinette.chatre@intel.com>
+In-Reply-To: <0db75c94886da62b8da498ef159d8fe27b0b3811.1711674410.git.babu.moger@amd.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: MW4P221CA0007.NAMP221.PROD.OUTLOOK.COM
+ (2603:10b6:303:8b::12) To SJ2PR11MB7573.namprd11.prod.outlook.com
+ (2603:10b6:a03:4d2::10)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.45.0.rc1.225.g2a3ae87e7f-goog
-Subject: [PATCH v3] perf evsel: Refactor tool events
-From: Ian Rogers <irogers@google.com>
-To: weilin.wang@intel.com, Peter Zijlstra <peterz@infradead.org>, 
-	Ingo Molnar <mingo@redhat.com>, Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
-	Mark Rutland <mark.rutland@arm.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Ian Rogers <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>, 
-	Kan Liang <kan.liang@linux.intel.com>, Ze Gao <zegao2021@gmail.com>, 
-	Leo Yan <leo.yan@linux.dev>, Ravi Bangoria <ravi.bangoria@amd.com>, 
-	Dmitrii Dolgov <9erthalion6@gmail.com>, Song Liu <song@kernel.org>, 
-	James Clark <james.clark@arm.com>, linux-perf-users@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SJ2PR11MB7573:EE_|MW4PR11MB6618:EE_
+X-MS-Office365-Filtering-Correlation-Id: 5d0b8ac3-2b7b-40d6-d971-08dc6bc90990
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230031|7416005|1800799015|366007|376005;
+X-Microsoft-Antispam-Message-Info: =?utf-8?B?aGM3Ynl6VTBHVlQva1Q2SlhtRk9CTUlVNWJuWFNlVnRFalcxaTQzblhmam1u?=
+ =?utf-8?B?c1ZFSUx5bjdTTVEwSjVPc3FRTTFjWDQ5OERwN3I1cjFBOGsxemM1UFRkNTVG?=
+ =?utf-8?B?QUhqeVRPMmFNRFlWdkdKZVdZNmF1d2Q3Mm5Fekw3RjlWeFNTdlVVamNETERi?=
+ =?utf-8?B?bnBLZXJSTXN1N0NmZm5Jc1d4MGwyZDRZbFRUVFlCY1ZEMXFMQlBkYmZMVkhE?=
+ =?utf-8?B?MThjMzFKV05xNlgvUE9LOWl6T2UyTnNad3FhNTltbVJwM3ExSHhyeDh4ejJa?=
+ =?utf-8?B?bnZWbVhQaXREbWVIVGVtVE16Z3NKRlZZQ3NaTGNtOFhiUmtnOGM2UXlMN1Zh?=
+ =?utf-8?B?enVIcWpDTndFU01vRGp5YnFrd2VWbitsVG5TRmNwZFFZdlU5SlBKdG9Uck9K?=
+ =?utf-8?B?RzJnZ3ZuWXdKYW40c1kxUjhvVDBDYVVwTzA2bjhSYWNUN00zU0F0dUNPaW81?=
+ =?utf-8?B?NVdKZnRUYkNHdGFzVFpRVUpRTWs0ZWdHMWhUUnRFMnQ3WjA5Tnp3TzdsVFNB?=
+ =?utf-8?B?R2gwN2ZLdy9DSDRmckZ4Z0F2MUxGVTlMYnovaFRXNUU5NGR2U0UzK1ZIR1lw?=
+ =?utf-8?B?dlA1bmlBajhiVUlRRTBuNEc3M3N1Zkp6cW1QdEl4b0R5LzNuZ0s3WHJDbFFQ?=
+ =?utf-8?B?NDMwQ3lUNU9ONjlOWXUrVXVFYk1wckVmb0pjcVR4ZGNReVdMNWhGZ3JISVhK?=
+ =?utf-8?B?Z1hyZkNxdkFRMzdteVIvU0hMckVyOXlOMDRVdnJGekkvZDFtRXJ4aHBLaGEw?=
+ =?utf-8?B?cWwxdUdxMUlVL00rTjh4a3JCUjZVM3FaOFRiN09FUXg4Qlp6ckR6QTlaaThI?=
+ =?utf-8?B?UEY4ZjVwb280aGJtbGE4NlBXYyszWEMzSkwyby9iV1NSSmpSVEFaeTMydjVW?=
+ =?utf-8?B?TG9PTUV3MmowWFBOSCtHcDQvcENPNGtSTXRYNzdpejV1SEk1bU9UNlp2dTQ0?=
+ =?utf-8?B?RWxOUlpNblBVV081UGlySkw5anRGckxkbjVOSTdDMXE5N0YvTjIwZGIyUDdD?=
+ =?utf-8?B?OFQwTTNsaVlrKzZrUUh5QUNwNzVyeC91U2o3ZUN3c3JrM1dBdmR0WnYzOUNO?=
+ =?utf-8?B?WWtnOW4vcDNEaHM1YVJGa01IaWdVbjJGZk9ObDhuNTNQNnRMMlJxZmhXL2F0?=
+ =?utf-8?B?Skp1Z0dUNEtqcjZnbDhjR2crNnVzTk9xMEVCNlQyQmswK3B4TzFaOEdkdm1T?=
+ =?utf-8?B?OVNtTDlOKzNuN3ZxdGZGNHZUamNNeVlHT3RmMG5ZQUFqMVczejNRUDV5Z0R1?=
+ =?utf-8?B?M2phc1N3QXBhM2FaTUZlbUhTVlVCczdMczBjNHFLK3l3MzVleUZFUGtsMG5m?=
+ =?utf-8?B?Y3dnZk1DdjJBaTBZWGdhN05ib0tvd05MejE5L2dXRTBRL2ZTc0l5TkZSSm1j?=
+ =?utf-8?B?T0lXNXcyeUVWbVFvdi85cVF3N3hxNWk4eG1iTWExL2VXVWU2aUF5d1RjeDhW?=
+ =?utf-8?B?Um5uVllLZlB6SklHTGpJSTBFZGlHT1VBb0RDNTlLQzFrQ0JKZnNoQmdYVTFm?=
+ =?utf-8?B?dVpHRFVFbmd3OHJyc0FjZWpsWlRDVkNaOTVqNkhQdmIxSEJ4b1dmdzd5T2tU?=
+ =?utf-8?B?akJQUHVOaklnTTh4VzZmNTQ3a3RoNFdoUGxaRVdnajFhS2RvbGpNdENpQWR6?=
+ =?utf-8?Q?R7od7tge5YOR/BryaK2tIdm4GJHAA4XQJf10Hr3BTYlQ=3D?=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ2PR11MB7573.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7416005)(1800799015)(366007)(376005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?WWJ2WURNa3dETUN3YlpVeFVGS3QvWDMzdWdYQ3YrN2F0SSt0eHdWVnFodW5W?=
+ =?utf-8?B?Mklod1BjRW1vVGszR0V4OEpZdTFFUkcwSjFsWmlpMk1ub05rNmNxcE9PRjho?=
+ =?utf-8?B?amhWL1NaOGc4bXpMOSt3LzVaZzVmdkxNK29DbDhISzVuSlRkc21TVnJYdXJL?=
+ =?utf-8?B?NXlVQ1p0SUhvS1BSM3hXMjNrZDdqeUZhQnN5YzNPQ3RTSENuT2ZraWZyL3Y5?=
+ =?utf-8?B?WXZmRHdFY1ZJekdhMlRROG55UlZEQlhvZGdoUm01SEExS2wwT3hySEtyc1Va?=
+ =?utf-8?B?VSs1Qzc0Z1B4UFJuV2pGL21Xc2dlbDFGcmU3RVVobi9rOUdzS2RPYjdyTHdX?=
+ =?utf-8?B?b1l3M3JWd0pWY3orVFB0Vk53RFB1ajEweWNBUDVuSnczcVhrSzhjRXdpb2hn?=
+ =?utf-8?B?OUE4NjUzcFgrT0liMEZraEF1WTlSV0dWRk9pT3RXVzJDSFdsR3BKM1gvR05i?=
+ =?utf-8?B?SjRnZGJnaEx5RThpK2o1K1dOa3JqRWw2NVNwOWdVdUh1cmZxbnl6dHl6UUxu?=
+ =?utf-8?B?VU5aZUtpVURoUkpML2lkOEVCckFhWVdOaGZaK0piVEZqcXUyNG56cjRDVVdk?=
+ =?utf-8?B?Q3VMSGIvZzE5N1duMklBK2NmWlE0aTFBb1dCTXUrUHJqZDkrdlZZNllOQkFR?=
+ =?utf-8?B?RFNZdjFUS1Y1dFJCM3pJbWx3UGRoNWttc3JYeGxtVUMvdDRVR1dOOE14NmFE?=
+ =?utf-8?B?b1R4dmRzYlpJTTA5QVlPUHh0cVZ3SzhFTXM1UmRTQlNGcytpMy9PRWJsN0xa?=
+ =?utf-8?B?RUhtYStvdTdKY1dlMG4yeDFVdm8zcXNnOTNnNDFXa3ZJWTYvYUhkblF2ZFdt?=
+ =?utf-8?B?R2FrT0ZISm5DRk1GclYraG1rMnordE02WHZySVBzNHk2MVR0NDA0MjdsdFM2?=
+ =?utf-8?B?QjlRMmZZbmNTUmlEc0tVbUZ2T2w5ZWd3SFhLa1M3d3ZnLzlLSmdmTHBzYXpz?=
+ =?utf-8?B?ODdrbGd2UHpabDVVNk0yVmhqME1lMnIrVlpaOTNLdUxVa0prU0xWTnRNcTVQ?=
+ =?utf-8?B?b25RZ1A5VlN2OVBYVVVnU1dwYmgxQ09weVZtYmRTQlhCZ0Jtc2U2VjE4QkVV?=
+ =?utf-8?B?aTkwazI2ZDZuME1ISWlXNkpTLzFINjdWQnZqOWUwR0dYYlRCa3Bnd2JPdWNq?=
+ =?utf-8?B?NlljZnI5TTNhODBwOHVpZVRkNy9sZnA1RzlPUSsvRjZ6ck1sREYvWXRYTVBQ?=
+ =?utf-8?B?WXFkdHgzdUlXcEh6MzY1R3pUb2VObVI0dHpDSW5nSnkxNThLZHRtSEgvcU1O?=
+ =?utf-8?B?REp1RzJTbTd4ZnRDN3RRMzZkSk5JOVhIOS9BdFlOWTVNaHhXQWcvSUtoQnFB?=
+ =?utf-8?B?Y1dHU3NPK3BSTGNlRTIzQ1JDblFRNkttRjJ2ck04M2Z6eE5xTkw4SkxOVjBL?=
+ =?utf-8?B?UmptT29UK3ZUTjYvUGJiNTZEcUJlZWljZSs5UGlENndObEw2bEpFSW5sTUZ6?=
+ =?utf-8?B?ZkNuU2V0cXlUcW94SUc2SjdoQlBRMFdrRlh3WEFrOUJGamdHbTVWU1VwUlRp?=
+ =?utf-8?B?aHR1TXEwSVRmUlBUbm54cUh4azRHMElkdDdJYnlNam8xNWExOGltSUNwc0hN?=
+ =?utf-8?B?Y09acCsxK0dMeFdHK29pQXNQS2s3clZidkxmaTVXRlBKbkphT0UzdEtMcmll?=
+ =?utf-8?B?V0srZGttT09MdjJJUnFua2NKdHRZRXBpZmlKT2xXdkdJd3BHY1NwdEQ4UlV2?=
+ =?utf-8?B?azFKblltYkZSUlY4Rk5QZytQUkhpVlBOVmgvdkVqaVhiaFJldFVOTCtRdUsv?=
+ =?utf-8?B?YnF5UU96RFR3NXpVTXF0dEpBQTFUN3IrVUZHbUlUNkFwZGdjUGNCYnNJTXlV?=
+ =?utf-8?B?Z2xsNm9FenZzbVB1NFZOSDdkVUVlUTNMVTZ4a3RUR25LbGF1ajdmQng5WlJi?=
+ =?utf-8?B?MzhUOWxhb1EzVWtLSFFWbGtnYitJQ1lKS2lkRStYOXNpZ1J1UmxMV3djeXh1?=
+ =?utf-8?B?cFlyNFRSb2NNT0ZJSHRlZjNLd1lnVVhHbWJhT01SOUJlUHpvdFVxR29rdnFV?=
+ =?utf-8?B?elJ4aG9NYUtJYUJWWGp2TGludS9WQ1d1aUNpV0s0TWwrV1FkbjloMjZGVHQ4?=
+ =?utf-8?B?a3NoNWtOMW1qbjRLbnZOTUR3aHFQRTRmMEJ3ckt5YVlQdlVhVXZGV2RqYWlO?=
+ =?utf-8?B?dko3dDVEaVpKTUU2b1pSclpWTEl0c21MOGtwYXdmTy9iMWduL0NKeEcwVkpk?=
+ =?utf-8?B?NkE9PQ==?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5d0b8ac3-2b7b-40d6-d971-08dc6bc90990
+X-MS-Exchange-CrossTenant-AuthSource: SJ2PR11MB7573.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 May 2024 23:30:37.4507
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: yAL8eDMHzrdfGqbePRi9D5p+Bup35bfkbMbrCVTe3qdoTqScjd+2jhHW6zOuJuMbIDYVYZ+x5sfDedDJgLB+a29ZcHDJAS/YsuvQf/bRd7U=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR11MB6618
+X-OriginatorOrg: intel.com
 
-Tool events unnecessarily open a dummy perf event which is useless
-even with `perf record` which will still open a dummy event. Change
-the behavior of tool events so:
+Hi Babu,
 
- - duration_time - call `rdclock` on open and then report the count as
-   a delta since the start in evsel__read_counter. This moves code out
-   of builtin-stat making it more general purpose.
+On 3/28/2024 6:06 PM, Babu Moger wrote:
+> Add the functionality to enable/disable ABMC feature.
+> 
+> ABMC is enabled by setting enabled bit(0) in MSR L3_QOS_EXT_CFG. When the
+> state of ABMC is changed, it must be changed to the updated value on all
+> logical processors in the QOS Domain.
 
- - user_time/system_time - open the fd as either `/proc/pid/stat` or
-   `/proc/stat` for cases like system wide. evsel__read_counter will
-   read the appropriate field out of the procfs file. These values
-   were previously supplied by wait4, if the procfs read fails then
-   the wait4 values are used, assuming the process/thread terminated.
-   By reading user_time and system_time this way, interval mode, per
-   PID and per CPU can be supported although there are restrictions
-   given what the files provide (e.g. per PID can't be combined with
-   per CPU).
+This patch does much more than enable what is mentioned above. There is little
+information about what this patch aims to accomplish. Without this it makes
+review difficult.
 
-Opening any of the tool events for `perf record` is changed to return
-invalid.
+> 
+> The ABMC feature details are documented in APM listed below [1].
+> [1] AMD64 Architecture Programmer's Manual Volume 2: System Programming
+> Publication # 24593 Revision 3.41 section 19.3.3.3 Assignable Bandwidth
+> Monitoring (ABMC).
+> 
+> Signed-off-by: Babu Moger <babu.moger@amd.com>
+> Link: https://bugzilla.kernel.org/show_bug.cgi?id=206537
+> ---
+> v3: No changes.
+> 
+> v2: Few text changes in commit message.
+> ---
+>  arch/x86/include/asm/msr-index.h       |  1 +
+>  arch/x86/kernel/cpu/resctrl/internal.h | 12 ++++
+>  arch/x86/kernel/cpu/resctrl/rdtgroup.c | 76 +++++++++++++++++++++++++-
+>  3 files changed, 88 insertions(+), 1 deletion(-)
+> 
+> diff --git a/arch/x86/include/asm/msr-index.h b/arch/x86/include/asm/msr-index.h
+> index 05956bd8bacf..f16ee50b1a23 100644
+> --- a/arch/x86/include/asm/msr-index.h
+> +++ b/arch/x86/include/asm/msr-index.h
+> @@ -1165,6 +1165,7 @@
+>  #define MSR_IA32_MBA_BW_BASE		0xc0000200
+>  #define MSR_IA32_SMBA_BW_BASE		0xc0000280
+>  #define MSR_IA32_EVT_CFG_BASE		0xc0000400
+> +#define MSR_IA32_L3_QOS_EXT_CFG		0xc00003ff
+>  
+>  /* MSR_IA32_VMX_MISC bits */
+>  #define MSR_IA32_VMX_MISC_INTEL_PT                 (1ULL << 14)
+> diff --git a/arch/x86/kernel/cpu/resctrl/internal.h b/arch/x86/kernel/cpu/resctrl/internal.h
+> index 722388621403..8238ee437369 100644
+> --- a/arch/x86/kernel/cpu/resctrl/internal.h
+> +++ b/arch/x86/kernel/cpu/resctrl/internal.h
+> @@ -96,6 +96,9 @@ cpumask_any_housekeeping(const struct cpumask *mask, int exclude_cpu)
+>  	return cpu;
+>  }
+>  
+> +/* ABMC ENABLE */
 
-Signed-off-by: Ian Rogers <irogers@google.com>
----
-v3. v1 and v2 were posted as RFCs with retirement latency patches,
-    this patch is now posted as standalone cleanup as we consider
-    alternatives with the retirement latency implementation. The patch
-    is updated to hopefully fix Namhyung's review feedback. user_time
-    and system_time are opened with an all online CPUs cpu
-    map. evsel's saved_times needs to be an xyarray to handle saving
-    the original time value per PID or per CPU.
----
- tools/perf/builtin-stat.c      |  75 +++++------
- tools/perf/util/evsel.c        | 226 ++++++++++++++++++++++++++++++++-
- tools/perf/util/evsel.h        |  14 ++
- tools/perf/util/parse-events.c |   7 +-
- 4 files changed, 277 insertions(+), 45 deletions(-)
+Can this comment be made more useful?
 
-diff --git a/tools/perf/builtin-stat.c b/tools/perf/builtin-stat.c
-index 65a3dd7ffac3..01fc61d69b43 100644
---- a/tools/perf/builtin-stat.c
-+++ b/tools/perf/builtin-stat.c
-@@ -255,45 +255,38 @@ static int evsel__write_stat_event(struct evsel *counter, int cpu_map_idx, u32 t
- 					   process_synthesized_event, NULL);
- }
- 
--static int read_single_counter(struct evsel *counter, int cpu_map_idx,
--			       int thread, struct timespec *rs)
--{
--	switch(counter->tool_event) {
--		case PERF_TOOL_DURATION_TIME: {
--			u64 val = rs->tv_nsec + rs->tv_sec*1000000000ULL;
--			struct perf_counts_values *count =
--				perf_counts(counter->counts, cpu_map_idx, thread);
--			count->ena = count->run = val;
--			count->val = val;
--			return 0;
--		}
--		case PERF_TOOL_USER_TIME:
--		case PERF_TOOL_SYSTEM_TIME: {
--			u64 val;
--			struct perf_counts_values *count =
--				perf_counts(counter->counts, cpu_map_idx, thread);
--			if (counter->tool_event == PERF_TOOL_USER_TIME)
--				val = ru_stats.ru_utime_usec_stat.mean;
--			else
--				val = ru_stats.ru_stime_usec_stat.mean;
--			count->ena = count->run = val;
--			count->val = val;
--			return 0;
--		}
--		default:
--		case PERF_TOOL_NONE:
--			return evsel__read_counter(counter, cpu_map_idx, thread);
--		case PERF_TOOL_MAX:
--			/* This should never be reached */
--			return 0;
-+static int read_single_counter(struct evsel *counter, int cpu_map_idx, int thread)
-+{
-+	int err = evsel__read_counter(counter, cpu_map_idx, thread);
-+
-+	/*
-+	 * Reading user and system time will fail when the process
-+	 * terminates. Use the wait4 values in that case.
-+	 */
-+	if (err && cpu_map_idx == 0 &&
-+	    (counter->tool_event == PERF_TOOL_USER_TIME ||
-+	     counter->tool_event == PERF_TOOL_SYSTEM_TIME)) {
-+		u64 val, *start_time;
-+		struct perf_counts_values *count =
-+			perf_counts(counter->counts, cpu_map_idx, thread);
-+
-+		start_time = xyarray__entry(counter->start_times, cpu_map_idx, thread);
-+		if (counter->tool_event == PERF_TOOL_USER_TIME)
-+			val = ru_stats.ru_utime_usec_stat.mean;
-+		else
-+			val = ru_stats.ru_stime_usec_stat.mean;
-+		count->ena = count->run = *start_time + val;
-+		count->val = val;
-+		return 0;
- 	}
-+	return err;
- }
- 
- /*
-  * Read out the results of a single counter:
-  * do not aggregate counts across CPUs in system-wide mode
-  */
--static int read_counter_cpu(struct evsel *counter, struct timespec *rs, int cpu_map_idx)
-+static int read_counter_cpu(struct evsel *counter, int cpu_map_idx)
- {
- 	int nthreads = perf_thread_map__nr(evsel_list->core.threads);
- 	int thread;
-@@ -311,7 +304,7 @@ static int read_counter_cpu(struct evsel *counter, struct timespec *rs, int cpu_
- 		 * (via evsel__read_counter()) and sets their count->loaded.
- 		 */
- 		if (!perf_counts__is_loaded(counter->counts, cpu_map_idx, thread) &&
--		    read_single_counter(counter, cpu_map_idx, thread, rs)) {
-+		    read_single_counter(counter, cpu_map_idx, thread)) {
- 			counter->counts->scaled = -1;
- 			perf_counts(counter->counts, cpu_map_idx, thread)->ena = 0;
- 			perf_counts(counter->counts, cpu_map_idx, thread)->run = 0;
-@@ -340,7 +333,7 @@ static int read_counter_cpu(struct evsel *counter, struct timespec *rs, int cpu_
- 	return 0;
- }
- 
--static int read_affinity_counters(struct timespec *rs)
-+static int read_affinity_counters(void)
- {
- 	struct evlist_cpu_iterator evlist_cpu_itr;
- 	struct affinity saved_affinity, *affinity;
-@@ -361,10 +354,8 @@ static int read_affinity_counters(struct timespec *rs)
- 		if (evsel__is_bpf(counter))
- 			continue;
- 
--		if (!counter->err) {
--			counter->err = read_counter_cpu(counter, rs,
--							evlist_cpu_itr.cpu_map_idx);
--		}
-+		if (!counter->err)
-+			counter->err = read_counter_cpu(counter, evlist_cpu_itr.cpu_map_idx);
- 	}
- 	if (affinity)
- 		affinity__cleanup(&saved_affinity);
-@@ -388,11 +379,11 @@ static int read_bpf_map_counters(void)
- 	return 0;
- }
- 
--static int read_counters(struct timespec *rs)
-+static int read_counters(void)
- {
- 	if (!stat_config.stop_read_counter) {
- 		if (read_bpf_map_counters() ||
--		    read_affinity_counters(rs))
-+		    read_affinity_counters())
- 			return -1;
- 	}
- 	return 0;
-@@ -423,7 +414,7 @@ static void process_interval(void)
- 
- 	evlist__reset_aggr_stats(evsel_list);
- 
--	if (read_counters(&rs) == 0)
-+	if (read_counters() == 0)
- 		process_counters();
- 
- 	if (STAT_RECORD) {
-@@ -911,7 +902,7 @@ static int __run_perf_stat(int argc, const char **argv, int run_idx)
- 	 * avoid arbitrary skew, we must read all counters before closing any
- 	 * group leaders.
- 	 */
--	if (read_counters(&(struct timespec) { .tv_nsec = t1-t0 }) == 0)
-+	if (read_counters() == 0)
- 		process_counters();
- 
- 	/*
-diff --git a/tools/perf/util/evsel.c b/tools/perf/util/evsel.c
-index 3536404e9447..d98415e1f0b7 100644
---- a/tools/perf/util/evsel.c
-+++ b/tools/perf/util/evsel.c
-@@ -10,6 +10,7 @@
- #include <errno.h>
- #include <inttypes.h>
- #include <linux/bitops.h>
-+#include <api/io.h>
- #include <api/fs/fs.h>
- #include <api/fs/tracing_path.h>
- #include <linux/hw_breakpoint.h>
-@@ -30,6 +31,7 @@
- #include "counts.h"
- #include "event.h"
- #include "evsel.h"
-+#include "time-utils.h"
- #include "util/env.h"
- #include "util/evsel_config.h"
- #include "util/evsel_fprintf.h"
-@@ -1487,6 +1489,9 @@ void evsel__exit(struct evsel *evsel)
- 	evsel->per_pkg_mask = NULL;
- 	zfree(&evsel->metric_events);
- 	perf_evsel__object.fini(evsel);
-+	if (evsel->tool_event == PERF_TOOL_SYSTEM_TIME ||
-+	    evsel->tool_event == PERF_TOOL_USER_TIME)
-+		xyarray__delete(evsel->start_times);
- }
- 
- void evsel__delete(struct evsel *evsel)
-@@ -1600,11 +1605,173 @@ static int evsel__read_group(struct evsel *leader, int cpu_map_idx, int thread)
- 	return evsel__process_group_data(leader, cpu_map_idx, thread, data);
- }
- 
-+static bool read_until_char(struct io *io, char e)
-+{
-+	char c;
-+
-+	do {
-+		c = io__get_char(io);
-+		if (c == -1)
-+			return false;
-+	} while (c != e);
-+	return true;
-+}
-+
-+static int read_stat_field(int fd, struct perf_cpu cpu, int field, __u64 *val)
-+{
-+	char buf[256];
-+	struct io io;
-+	int i;
-+
-+	io__init(&io, fd, buf, sizeof(buf));
-+
-+	/* Skip lines to relevant CPU. */
-+	for (i = -1; i < cpu.cpu; i++) {
-+		if (!read_until_char(&io, '\n'))
-+			return -EINVAL;
-+	}
-+	/* Skip to "cpu". */
-+	if (io__get_char(&io) != 'c') return -EINVAL;
-+	if (io__get_char(&io) != 'p') return -EINVAL;
-+	if (io__get_char(&io) != 'u') return -EINVAL;
-+
-+	/* Skip N of cpuN. */
-+	if (!read_until_char(&io, ' '))
-+		return -EINVAL;
-+
-+	i = 1;
-+	while (true) {
-+		if (io__get_dec(&io, val) != ' ')
-+			break;
-+		if (field == i)
-+			return 0;
-+		i++;
-+	}
-+	return -EINVAL;
-+}
-+
-+static int read_pid_stat_field(int fd, int field, __u64 *val)
-+{
-+	char buf[256];
-+	struct io io;
-+	int c, i;
-+
-+	io__init(&io, fd, buf, sizeof(buf));
-+	if (io__get_dec(&io, val) != ' ')
-+		return -EINVAL;
-+	if (field == 1)
-+		return 0;
-+
-+	/* Skip comm. */
-+	if (io__get_char(&io) != '(' || !read_until_char(&io, ')'))
-+		return -EINVAL;
-+	if (field == 2)
-+		return -EINVAL; /* String can't be returned. */
-+
-+	/* Skip state */
-+	if (io__get_char(&io) != ' ' || io__get_char(&io) == -1)
-+		return -EINVAL;
-+	if (field == 3)
-+		return -EINVAL; /* String can't be returned. */
-+
-+	/* Loop over numeric fields*/
-+	if (io__get_char(&io) != ' ')
-+		return -EINVAL;
-+
-+	i = 4;
-+	while (true) {
-+		c = io__get_dec(&io, val);
-+		if (c == -1)
-+			return -EINVAL;
-+		if (c == -2) {
-+			/* Assume a -ve was read */
-+			c = io__get_dec(&io, val);
-+			*val *= -1;
-+		}
-+		if (c != ' ')
-+			return -EINVAL;
-+		if (field == i)
-+			return 0;
-+		i++;
-+	}
-+	return -EINVAL;
-+}
-+
-+static int evsel__read_tool(struct evsel *evsel, int cpu_map_idx, int thread)
-+{
-+	__u64 *start_time, cur_time, delta_start;
-+	int fd, err = 0;
-+	struct perf_counts_values *count;
-+	bool adjust = false;
-+
-+	count = perf_counts(evsel->counts, cpu_map_idx, thread);
-+
-+	switch (evsel->tool_event) {
-+	case PERF_TOOL_DURATION_TIME:
-+		/*
-+		 * Pretend duration_time is only on the first CPU and thread, or
-+		 * else aggregation will scale duration_time by the number of
-+		 * CPUs/threads.
-+		 */
-+		start_time = &evsel->start_time;
-+		if (cpu_map_idx == 0 && thread == 0)
-+			cur_time = rdclock();
-+		else
-+			cur_time = *start_time;
-+		break;
-+	case PERF_TOOL_USER_TIME:
-+	case PERF_TOOL_SYSTEM_TIME: {
-+		bool system = evsel->tool_event == PERF_TOOL_SYSTEM_TIME;
-+
-+		start_time = xyarray__entry(evsel->start_times, cpu_map_idx, thread);
-+		fd = FD(evsel, cpu_map_idx, thread);
-+		lseek(fd, SEEK_SET, 0);
-+		if (evsel->pid_stat) {
-+			/* The event exists solely on 1 CPU. */
-+			if (cpu_map_idx == 0)
-+				err = read_pid_stat_field(fd, system ? 15 : 14, &cur_time);
-+			else
-+				cur_time = 0;
-+		} else {
-+			/* The event is for all threads. */
-+			if (thread == 0) {
-+				struct perf_cpu cpu = perf_cpu_map__cpu(evsel->core.cpus,
-+									cpu_map_idx);
-+
-+				err = read_stat_field(fd, cpu, system ? 3 : 1, &cur_time);
-+			} else {
-+				cur_time = 0;
-+			}
-+		}
-+		adjust = true;
-+		break;
-+	}
-+	case PERF_TOOL_NONE:
-+	case PERF_TOOL_MAX:
-+	default:
-+		err = -EINVAL;
-+	}
-+	if (err)
-+		return err;
-+
-+	delta_start = cur_time - *start_time;
-+	if (adjust) {
-+		__u64 ticks_per_sec = sysconf(_SC_CLK_TCK);
-+
-+		delta_start *= 1000000000 / ticks_per_sec;
-+	}
-+	count->val    = delta_start;
-+	count->ena    = count->run = delta_start;
-+	count->lost   = 0;
-+	return 0;
-+}
-+
- int evsel__read_counter(struct evsel *evsel, int cpu_map_idx, int thread)
- {
--	u64 read_format = evsel->core.attr.read_format;
-+	if (evsel__is_tool(evsel))
-+		return evsel__read_tool(evsel, cpu_map_idx, thread);
- 
--	if (read_format & PERF_FORMAT_GROUP)
-+	if (evsel->core.attr.read_format & PERF_FORMAT_GROUP)
- 		return evsel__read_group(evsel, cpu_map_idx, thread);
- 
- 	return evsel__read_one(evsel, cpu_map_idx, thread);
-@@ -1823,6 +1990,14 @@ static int __evsel__prepare_open(struct evsel *evsel, struct perf_cpu_map *cpus,
- 	    perf_evsel__alloc_fd(&evsel->core, perf_cpu_map__nr(cpus), nthreads) < 0)
- 		return -ENOMEM;
- 
-+	if ((evsel->tool_event == PERF_TOOL_SYSTEM_TIME ||
-+	     evsel->tool_event == PERF_TOOL_USER_TIME) &&
-+	    !evsel->start_times) {
-+		evsel->start_times = xyarray__new(perf_cpu_map__nr(cpus), nthreads, sizeof(__u64));
-+		if (!evsel->start_times)
-+			return -ENOMEM;
-+	}
-+
- 	evsel->open_flags = PERF_FLAG_FD_CLOEXEC;
- 	if (evsel->cgrp)
- 		evsel->open_flags |= PERF_FLAG_PID_CGROUP;
-@@ -2005,6 +2180,13 @@ static int evsel__open_cpu(struct evsel *evsel, struct perf_cpu_map *cpus,
- 	int pid = -1, err, old_errno;
- 	enum rlimit_action set_rlimit = NO_CHANGE;
- 
-+	if (evsel->tool_event == PERF_TOOL_DURATION_TIME) {
-+		if (evsel->core.attr.sample_period) /* no sampling */
-+			return -EINVAL;
-+		evsel->start_time = rdclock();
-+		return 0;
-+	}
-+
- 	err = __evsel__prepare_open(evsel, cpus, threads);
- 	if (err)
- 		return err;
-@@ -2037,6 +2219,46 @@ static int evsel__open_cpu(struct evsel *evsel, struct perf_cpu_map *cpus,
- 			if (!evsel->cgrp && !evsel->core.system_wide)
- 				pid = perf_thread_map__pid(threads, thread);
- 
-+			if (evsel->tool_event == PERF_TOOL_USER_TIME ||
-+			    evsel->tool_event == PERF_TOOL_SYSTEM_TIME) {
-+				bool system = evsel->tool_event == PERF_TOOL_SYSTEM_TIME;
-+				__u64 *start_time = NULL;
-+
-+				if (evsel->core.attr.sample_period) {
-+					/* no sampling */
-+					err = -EINVAL;
-+					goto out_close;
-+				}
-+				if (pid > -1) {
-+					char buf[64];
-+
-+					snprintf(buf, sizeof(buf), "/proc/%d/stat", pid);
-+					fd = open(buf, O_RDONLY);
-+					evsel->pid_stat = true;
-+				} else {
-+					fd = open("/proc/stat", O_RDONLY);
-+				}
-+				FD(evsel, idx, thread) = fd;
-+				if (fd < 0) {
-+					err = -errno;
-+					goto out_close;
-+				}
-+				start_time = xyarray__entry(evsel->start_times, idx, thread);
-+				if (pid > -1) {
-+					err = read_pid_stat_field(fd, system ? 15 : 14,
-+								  start_time);
-+				} else {
-+					struct perf_cpu cpu;
-+
-+					cpu = perf_cpu_map__cpu(evsel->core.cpus, idx);
-+					err = read_stat_field(fd, cpu, system ? 3 : 1,
-+							      start_time);
-+				}
-+				if (err)
-+					goto out_close;
-+				continue;
-+			}
-+
- 			group_fd = get_group_fd(evsel, idx, thread);
- 
- 			if (group_fd == -2) {
-diff --git a/tools/perf/util/evsel.h b/tools/perf/util/evsel.h
-index 517cff431de2..d592dd9fb969 100644
---- a/tools/perf/util/evsel.h
-+++ b/tools/perf/util/evsel.h
-@@ -170,6 +170,20 @@ struct evsel {
- 
- 	/* for missing_features */
- 	struct perf_pmu		*pmu;
-+
-+	/* For tool events */
-+	/* Beginning time subtracted when the counter is read. */
-+	union {
-+		/* duration_time is a single global time. */
-+		__u64 start_time;
-+		/*
-+		 * user_time and system_time read an initial value potentially
-+		 * per-CPU or per-pid.
-+		 */
-+		struct xyarray *start_times;
-+	};
-+	/* Is the tool's fd for /proc/pid/stat or /proc/stat. */
-+	bool pid_stat;
- };
- 
- struct perf_missing_features {
-diff --git a/tools/perf/util/parse-events.c b/tools/perf/util/parse-events.c
-index 0f308b4db2b9..a8866c0ce4b6 100644
---- a/tools/perf/util/parse-events.c
-+++ b/tools/perf/util/parse-events.c
-@@ -308,11 +308,16 @@ static int add_event_tool(struct list_head *list, int *idx,
- 		.type = PERF_TYPE_SOFTWARE,
- 		.config = PERF_COUNT_SW_DUMMY,
- 	};
-+	const char *cpu_list = NULL;
- 
-+	if (tool_event == PERF_TOOL_DURATION_TIME) {
-+		/* Duration time is gathered globally, pretend it is only on CPU0. */
-+		cpu_list = "0";
-+	}
- 	evsel = __add_event(list, idx, &attr, /*init_attr=*/true, /*name=*/NULL,
- 			    /*metric_id=*/NULL, /*pmu=*/NULL,
- 			    /*config_terms=*/NULL, /*auto_merge_stats=*/false,
--			    /*cpu_list=*/"0");
-+			    cpu_list);
- 	if (!evsel)
- 		return -ENOMEM;
- 	evsel->tool_event = tool_event;
--- 
-2.45.0.rc1.225.g2a3ae87e7f-goog
+> +#define ABMC_ENABLE			BIT(0)
+> +
+>  struct rdt_fs_context {
+>  	struct kernfs_fs_context	kfc;
+>  	bool				enable_cdpl2;
+> @@ -433,6 +436,7 @@ struct rdt_parse_data {
+>   * @mbm_cfg_mask:	Bandwidth sources that can be tracked when Bandwidth
+>   *			Monitoring Event Configuration (BMEC) is supported.
+>   * @cdp_enabled:	CDP state of this resource
+> + * @abmc_enabled:	ABMC feature is enabled
+>   *
+>   * Members of this structure are either private to the architecture
+>   * e.g. mbm_width, or accessed via helpers that provide abstraction. e.g.
+> @@ -448,6 +452,7 @@ struct rdt_hw_resource {
+>  	unsigned int		mbm_width;
+>  	unsigned int		mbm_cfg_mask;
+>  	bool			cdp_enabled;
+> +	bool			abmc_enabled;
+>  };
+>  
+>  static inline struct rdt_hw_resource *resctrl_to_arch_res(struct rdt_resource *r)
+> @@ -491,6 +496,13 @@ static inline bool resctrl_arch_get_cdp_enabled(enum resctrl_res_level l)
+>  
+>  int resctrl_arch_set_cdp_enabled(enum resctrl_res_level l, bool enable);
+>  
+> +static inline bool resctrl_arch_get_abmc_enabled(enum resctrl_res_level l)
+> +{
+> +	return rdt_resources_all[l].abmc_enabled;
+> +}
+> +
+> +int resctrl_arch_set_abmc_enabled(enum resctrl_res_level l, bool enable);
+> +
+>  /*
+>   * To return the common struct rdt_resource, which is contained in struct
+>   * rdt_hw_resource, walk the resctrl member of struct rdt_hw_resource.
+> diff --git a/arch/x86/kernel/cpu/resctrl/rdtgroup.c b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
+> index 05f551bc316e..f49073c86884 100644
+> --- a/arch/x86/kernel/cpu/resctrl/rdtgroup.c
+> +++ b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
+> @@ -850,9 +850,15 @@ static int rdtgroup_mbm_assign_show(struct kernfs_open_file *of,
+>  				    struct seq_file *s, void *v)
+>  {
+>  	struct rdt_resource *r = of->kn->parent->priv;
+> +	struct rdt_hw_resource *hw_res = resctrl_to_arch_res(r);
+>  
+> -	if (r->mbm_assign_capable)
+> +	if (r->mbm_assign_capable && hw_res->abmc_enabled) {
+> +		seq_puts(s, "[abmc]\n");
+> +		seq_puts(s, "legacy_mbm\n");
+> +	} else if (r->mbm_assign_capable) {
+>  		seq_puts(s, "abmc\n");
+> +		seq_puts(s, "[legacy_mbm]\n");
+> +	}
+>  
+>  	return 0;
+>  }
+> @@ -2433,6 +2439,74 @@ int resctrl_arch_set_cdp_enabled(enum resctrl_res_level l, bool enable)
+>  	return 0;
+>  }
+>  
+> +static void resctrl_abmc_msrwrite(void *arg)
+> +{
+> +	bool *enable = arg;
+> +	u64 msrval;
+> +
+> +	rdmsrl(MSR_IA32_L3_QOS_EXT_CFG, msrval);
+> +
+> +	if (*enable)
+> +		msrval |= ABMC_ENABLE;
+> +	else
+> +		msrval &= ~ABMC_ENABLE;
+> +
+> +	wrmsrl(MSR_IA32_L3_QOS_EXT_CFG, msrval);
+> +}
+> +
+> +static int resctrl_abmc_setup(enum resctrl_res_level l, bool enable)
+> +{
+> +	struct rdt_resource *r = &rdt_resources_all[l].r_resctrl;
+> +	struct rdt_domain *d;
+> +
+> +	/* Update QOS_CFG MSR on all the CPUs in cpu_mask */
 
+"all the CPUs in cpu_mask" -> "all the CPUs associated with the resource"?
+
+> +	list_for_each_entry(d, &r->domains, list) {
+> +		on_each_cpu_mask(&d->cpu_mask, resctrl_abmc_msrwrite, &enable, 1);
+> +		resctrl_arch_reset_rmid_all(r, d);
+
+Could the changelog please explain why this is needed and what the impact of
+this is?
+
+> +	}
+> +
+> +	return 0;
+> +}
+
+I think the naming can be changed to make these easier to understand. For example,
+resctrl_abmc_msrwrite() -> resctrl_abmc_set_one()
+resctrl_abmc_setup() -> resctrl_abmc_set_all()
+
+> +
+> +static int resctrl_abmc_enable(enum resctrl_res_level l)
+> +{
+> +	struct rdt_hw_resource *hw_res = &rdt_resources_all[l];
+> +	int ret = 0;
+> +
+> +	if (!hw_res->abmc_enabled) {
+> +		ret = resctrl_abmc_setup(l, true);
+> +		if (!ret)
+> +			hw_res->abmc_enabled = true;
+> +	}
+> +
+> +	return ret;
+> +}
+> +
+> +static void resctrl_abmc_disable(enum resctrl_res_level l)
+> +{
+> +	struct rdt_hw_resource *hw_res = &rdt_resources_all[l];
+> +
+> +	if (hw_res->abmc_enabled) {
+> +		resctrl_abmc_setup(l, false);
+> +		hw_res->abmc_enabled = false;
+> +	}
+> +}
+> +
+> +int resctrl_arch_set_abmc_enabled(enum resctrl_res_level l, bool enable)
+> +{
+> +	struct rdt_hw_resource *hw_res = &rdt_resources_all[l];
+> +
+> +	if (!hw_res->r_resctrl.mbm_assign_capable)
+> +		return -EINVAL;
+> +
+> +	if (enable)
+> +		return resctrl_abmc_enable(l);
+> +
+> +	resctrl_abmc_disable(l);
+> +
+> +	return 0;
+> +}
+
+Why is resctrl_arch_set_abmc_enabled() necessary? It seem to add an unnecessary
+layer of abstraction.
+
+> +
+>  /*
+>   * We don't allow rdtgroup directories to be created anywhere
+>   * except the root directory. Thus when looking for the rdtgroup
+
+Reinette
 
