@@ -1,270 +1,282 @@
-Return-Path: <linux-kernel+bounces-167720-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-167719-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id BD0F68BADFC
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 15:46:27 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1D9C18BADF7
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 15:45:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D52C01C21860
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 13:46:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C9070282068
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 13:45:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C7B9153BEE;
-	Fri,  3 May 2024 13:46:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 98F68153BD1;
+	Fri,  3 May 2024 13:45:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="bPfpqp39"
-Received: from mail-yb1-f176.google.com (mail-yb1-f176.google.com [209.85.219.176])
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="llhNICT+";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="DXaCRHt8";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="llhNICT+";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="DXaCRHt8"
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FFF9153BDF
-	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 13:46:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CEBB51E4B1
+	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 13:45:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714743979; cv=none; b=OnE38gNJ95zkY1fmUTb6UeuQi6iwMUVVMqrBrqKUH8ghoN9KoSI1YzZioLlMlmrnCmkA42R+8lLqgK17lmGtYA7kbeSuDAVe9qIqzCJzgE4Rzzka3v3rFQVpzy9gTT/RzhVHrZpJeCRLdNHDavE3Q32/wAo6ouABziojyeMdMuY=
+	t=1714743943; cv=none; b=tvZQZRVsYVvlYO89OWh36XHGHTBnl8M+MS0knEOa1vIAF/BoFeopgc/jIQ67XJeCnBawTg2TEHzau+EaNb2/sUT6Q3SiR0Jlkd0yD3JkJsCpoI/1tZQU88jHlRy21i99yqbbeDItUU7F4G1Fe68e3PO/MwAl/OjAZSwpzoMOumg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714743979; c=relaxed/simple;
-	bh=niQWlxJn5XH2Swl9BN4qcIlg9vZWKA0A2TStH6e2UPs=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=XzgWicDa7QRIURPDf4Oh+4WG/tiarQVzE/uH5jwDuHWQqB/THbd+iSeQWi2LVuJMEti5l6huZwpjlgLB6Ygl8vNiRpKzMbf7+IZ2wO2XvnaYtCbO1pP+XavTJj4XffyARwTGY09M8Jd2zlRKYzfz6nPdX6tMw4163++1Ml+QlFo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=bPfpqp39; arc=none smtp.client-ip=209.85.219.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yb1-f176.google.com with SMTP id 3f1490d57ef6-de54b28c41eso10202389276.0
-        for <linux-kernel@vger.kernel.org>; Fri, 03 May 2024 06:46:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1714743975; x=1715348775; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=VkO+KdbtUN9IqeShpgEcMEOobBVHfZYBUo6hb6ifhXo=;
-        b=bPfpqp39tcYsWlqnH+99DQhVeIRoCYTSdB3e9J8LjZjs22tlB4NpMhX2w5RaLg/Iow
-         HG4hbdU+NnONVw9yHxHWW8cfeu3YW3ua9XtjrloQm6ZiftdQ/oRDt6y7XOrtND/SQXsp
-         vig7laLYLUgA060wJ3RWLlQo1FJUJYasi2mmpX8qTM3bmXt1q/eTBzealY0KckmmBRvg
-         fFyDc5ZiKnOWuvKDua7D9PYbpHYkK3fEQS9KO+aTwOy23ob8mAI7M8INbXf+9YAAnXEH
-         erRCMFSwOL0/HBTz05ik0P53TIU1GQ2LsyLegu7PiZQHxxPxoSyI/EWYDFqUD3VZQtvd
-         1/dQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714743975; x=1715348775;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=VkO+KdbtUN9IqeShpgEcMEOobBVHfZYBUo6hb6ifhXo=;
-        b=Y4dOJegK7zKH4eysxd+U5NefuVi6dQAtFyrISZaRtWYCWMMYEfFjRvj+2QcBIcJb9r
-         tu2O2pRw0w8aeKC8zI4LM+5nZfNb70P+jCWYR+a5BlWvi4tvpPE8AD9E2OgmEs7J/GkP
-         E8hSDNOGVvl6fMx3asvMCcInlp77R9EaBQ2onaCOPyEXNbFOZCx/AXm4PKZoNnmAf1lI
-         WmlD1Venf/Yi9pIpdRaAqm079RD20/r3Lup86m+JC6cePBTU1TPWv5KCMf1Hc1fyW5pp
-         jROmYJh0X1VizK6SUCpkyatflHpfMkplIdMIASvj3HvAELtvMd6tcMQi06BUkVdetG/H
-         Yspw==
-X-Forwarded-Encrypted: i=1; AJvYcCW9aSu2S+PbQTp1RIaZCCFdR/iXrBDte6ZVrRmrlct2DXyZZUzZaIb1CRCB5PCPgDu4nh1gijis6SMJ9D+hcehzp8T8KHYwOjyHrjbT
-X-Gm-Message-State: AOJu0Yx1O4zFatu8P6ZYI/4YqBtg7TbrPiQu/SHhyt7kQ8m41m8nygN8
-	PoB48YD8k7GpKL1RgUHqPmZp5K6rYbQyVB6zuJzU0kzTsnUCdNVZLbU7S1Sadw8HS65jre3Iku3
-	WcJx3zzLhNKPiMfsTqz97dGRIdrEusS+TSsfwtA==
-X-Google-Smtp-Source: AGHT+IH/Xb1XcZDOaCvizhYyHNNZjGRIDjGUlZ+m+l5KoU1hpsPb+0dWkoH6eUByYXw6Znq4ecrpXd3LLQEK4dA3cKc=
-X-Received: by 2002:a25:b04a:0:b0:de8:8cd9:c43d with SMTP id
- e10-20020a25b04a000000b00de88cd9c43dmr2564219ybj.12.1714743975056; Fri, 03
- May 2024 06:46:15 -0700 (PDT)
+	s=arc-20240116; t=1714743943; c=relaxed/simple;
+	bh=jl6p8UMhfaFUUEWbOK+4DeRjdEQfNDIYyjHHEbZNOHA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=jvABuba3ZyySnAyma33N09aSaMgqzSWbVRLhZQbQaImtFOhRdlNcikdOsCr8yTPDNXoo6lfa54XRRCr9mzVPPhoi5+74o799tvp1eabRd6q9duWw7rkRv85yR+pgXDz/738mPjFNiJM1FhYpMEdKASKm6FSMrts1TVG0GztuRS8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=llhNICT+; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=DXaCRHt8; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=llhNICT+; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=DXaCRHt8; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 0EF6921F92;
+	Fri,  3 May 2024 13:45:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1714743940; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=7QCZQzqpxuWUxcQX3tjIcKBIYpEWQQAw/khjASQyEyM=;
+	b=llhNICT+mD41NH8zQpCITtktDPIzcn7OszFJ/FePIe0oJ+/EOGbZVgOYj0/gqbYdrtkth4
+	YD0L9YU96mVSWhDnRkKaZk+/FFOBGV+5lTDruvtPSfdcBFdJo70BLdDPX6UR1QG84o5vci
+	ZqfBFHNVpE2gpK09NVW4XPk9OeNp0/s=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1714743940;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=7QCZQzqpxuWUxcQX3tjIcKBIYpEWQQAw/khjASQyEyM=;
+	b=DXaCRHt8xaPU7KvU4AXSBPrLlUOKO43IjFps7v3IBWOlj5UOZqU6X1EjaZT1ScD1jO4tOR
+	hCDUm627H5cVbQAA==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1714743940; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=7QCZQzqpxuWUxcQX3tjIcKBIYpEWQQAw/khjASQyEyM=;
+	b=llhNICT+mD41NH8zQpCITtktDPIzcn7OszFJ/FePIe0oJ+/EOGbZVgOYj0/gqbYdrtkth4
+	YD0L9YU96mVSWhDnRkKaZk+/FFOBGV+5lTDruvtPSfdcBFdJo70BLdDPX6UR1QG84o5vci
+	ZqfBFHNVpE2gpK09NVW4XPk9OeNp0/s=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1714743940;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=7QCZQzqpxuWUxcQX3tjIcKBIYpEWQQAw/khjASQyEyM=;
+	b=DXaCRHt8xaPU7KvU4AXSBPrLlUOKO43IjFps7v3IBWOlj5UOZqU6X1EjaZT1ScD1jO4tOR
+	hCDUm627H5cVbQAA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id ECA1A139CB;
+	Fri,  3 May 2024 13:45:39 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id QvpvOYPqNGaMCQAAD6G6ig
+	(envelope-from <vbabka@suse.cz>); Fri, 03 May 2024 13:45:39 +0000
+Message-ID: <d855af59-be1f-40e0-b5db-840ca1b23cdd@suse.cz>
+Date: Fri, 3 May 2024 15:45:39 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240415-ti-sci-pd-v1-0-a0e56b8ad897@ideasonboard.com>
- <20240415-ti-sci-pd-v1-2-a0e56b8ad897@ideasonboard.com> <d4cd0323-4792-49b0-a4e2-0bc92068e7f0@ideasonboard.com>
-In-Reply-To: <d4cd0323-4792-49b0-a4e2-0bc92068e7f0@ideasonboard.com>
-From: Ulf Hansson <ulf.hansson@linaro.org>
-Date: Fri, 3 May 2024 15:45:38 +0200
-Message-ID: <CAPDyKFqShuq98qV5nSPzSqwLLUZ7LxLvp1eihGRBkU4qUKdWwQ@mail.gmail.com>
-Subject: Re: [PATCH RFC 2/2] pmdomain: ti-sci: Support retaining PD boot time state
-To: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>, Abel Vesa <abel.vesa@linaro.org>, 
-	Saravana Kannan <saravanak@google.com>, Stephen Boyd <sboyd@kernel.org>
-Cc: Nishanth Menon <nm@ti.com>, Tero Kristo <kristo@kernel.org>, 
-	Santosh Shilimkar <ssantosh@kernel.org>, Dave Gerlach <d-gerlach@ti.com>, J Keerthy <j-keerthy@ti.com>, 
-	Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Santosh Shilimkar <santosh.shilimkar@oracle.com>, linux-arm-kernel@lists.infradead.org, 
-	linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	devicetree@vger.kernel.org, dri-devel@lists.freedesktop.org, 
-	Devarsh Thakkar <devarsht@ti.com>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] mm/vmstat: sum up all possible CPUs instead of using
+ vm_events_fold_cpu
+Content-Language: en-US
+To: Ryan Roberts <ryan.roberts@arm.com>, Barry Song <21cnbao@gmail.com>,
+ akpm@linux-foundation.org, linux-mm@kvack.org
+Cc: hannes@cmpxchg.org, linux-kernel@vger.kernel.org, david@redhat.com,
+ v-songbaohua@oppo.com, willy@infradead.org
+References: <20240503020924.208431-1-21cnbao@gmail.com>
+ <c055203a-4365-4f5e-8276-5c57634abe73@arm.com>
+From: Vlastimil Babka <vbabka@suse.cz>
+Autocrypt: addr=vbabka@suse.cz; keydata=
+ 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
+ EP+ylKVEKb0Q2A==
+In-Reply-To: <c055203a-4365-4f5e-8276-5c57634abe73@arm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Flag: NO
+X-Spam-Score: -4.29
+X-Spam-Level: 
+X-Spamd-Result: default: False [-4.29 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	XM_UA_NO_VERSION(0.01)[];
+	FREEMAIL_TO(0.00)[arm.com,gmail.com,linux-foundation.org,kvack.org];
+	ARC_NA(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RCPT_COUNT_SEVEN(0.00)[9];
+	MIME_TRACE(0.00)[0:+];
+	MID_RHS_MATCH_FROM(0.00)[];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	TO_DN_SOME(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns]
 
-+ Abel, Saravanna, Stephen
+On 5/3/24 11:16 AM, Ryan Roberts wrote:
+> On 03/05/2024 03:09, Barry Song wrote:
+>> @@ -83,8 +83,6 @@ static inline void count_vm_events(enum vm_event_item item, long delta)
+>>  
+>>  extern void all_vm_events(unsigned long *);
+>>  
+>> -extern void vm_events_fold_cpu(int cpu);
+>> -
+>>  #else
+>>  
+>>  /* Disable counters */
+>> @@ -103,9 +101,6 @@ static inline void __count_vm_events(enum vm_event_item item, long delta)
+>>  static inline void all_vm_events(unsigned long *ret)
+>>  {
+>>  }
+>> -static inline void vm_events_fold_cpu(int cpu)
+>> -{
+>> -}
+>>  
+>>  #endif /* CONFIG_VM_EVENT_COUNTERS */
+>>  
+>> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+>> index cd584aace6bf..8b56d785d587 100644
+>> --- a/mm/page_alloc.c
+>> +++ b/mm/page_alloc.c
+>> @@ -5826,14 +5826,6 @@ static int page_alloc_cpu_dead(unsigned int cpu)
+>>  	mlock_drain_remote(cpu);
+>>  	drain_pages(cpu);
+>>  
+>> -	/*
+>> -	 * Spill the event counters of the dead processor
+>> -	 * into the current processors event counters.
+>> -	 * This artificially elevates the count of the current
+>> -	 * processor.
+>> -	 */
+>> -	vm_events_fold_cpu(cpu);
+>> -
+>>  	/*
+>>  	 * Zero the differential counters of the dead processor
+>>  	 * so that the vm statistics are consistent.
+>> diff --git a/mm/vmstat.c b/mm/vmstat.c
+>> index db79935e4a54..aaa32418652e 100644
+>> --- a/mm/vmstat.c
+>> +++ b/mm/vmstat.c
+>> @@ -114,7 +114,7 @@ static void sum_vm_events(unsigned long *ret)
+>>  
+>>  	memset(ret, 0, NR_VM_EVENT_ITEMS * sizeof(unsigned long));
+>>  
+>> -	for_each_online_cpu(cpu) {
+>> +	for_each_possible_cpu(cpu) {
+> 
+> One thought comes to mind (due to my lack of understanding exactly what
+> "possible" means): Linux is compiled with a max number of cpus - NR_CPUS - 512
+> for arm64's defconfig. Does all possible cpus include all 512? On an 8 CPU
+> system that would be increasing the number of loops by 64 times.
+> 
+> Or perhaps possible just means CPUs that have ever been online?
 
-On Mon, 15 Apr 2024 at 19:17, Tomi Valkeinen
-<tomi.valkeinen@ideasonboard.com> wrote:
->
-> On 15/04/2024 19:00, Tomi Valkeinen wrote:
-> > Add a new flag, TI_SCI_PD_KEEP_BOOT_STATE, which can be set in the dts
-> > when referring to power domains. When this flag is set, the ti-sci
-> > driver will check if the PD is currently enabled in the HW, and if so,
-> > set the GENPD_FLAG_ALWAYS_ON flag so that the PD will stay enabled.
-> >
-> > The main issue I'm trying to solve here is this:
-> >
-> > If the Display Subsystem (DSS) has been enabled by the bootloader, the
-> > related PD has also been enabled in the HW. When the tidss driver
-> > probes, the driver framework will automatically enable the PD. While
-> > executing the probe function it is very common for the probe to return
-> > EPROBE_DEFER, and, in rarer cases, an actual error. When this happens
-> > (probe() returns an error), the driver framework will automatically
-> > disable the related PD.
-> >
-> > Powering off the PD while the DSS is enabled and displaying a picture
-> > will cause the DSS HW to enter a bad state, from which (afaik) it can't
-> > be woken up except with full power-cycle. Trying to access the DSS in
-> > this state (e.g. when retrying the probe) will usually cause the board
-> > to hang sooner or later.
-> >
-> > Even if we wouldn't have this board-hangs issue, it's nice to be able to
-> > keep the DSS PD enabled: we want to keep the DSS enabled when the
-> > bootloader has enabled the screen. If, instead, we disable the PD at the
-> > first EPROBE_DEFER, the screen will (probably) go black.
->
-> A few things occurred to me. The driver is supposed to clear the
-> GENPD_FLAG_ALWAYS_ON when the driver has probed successfully. There are
-> two possible issues with that:
->
-> - Afaics, there's no API to do that, and currently I just clear the bit
-> in genpd->flags. There's a clear race there, so some locking would be
-> required.
->
-> - This uses the GENPD_FLAG_ALWAYS_ON flag to say "PD is always on, until
-> the driver has started". If the PD would have GENPD_FLAG_ALWAYS_ON set
-> for other reasons, the driver would still go and clear the flag, which
-> might break things.
->
-> Also, unrelated to the above and not a problem in practice at the very
-> moment, but I think clocks should also be dealt with somehow. Something,
-> at early-ish boot stage, should mark the relevant clocks as in use, so
-> that there's no chance they would be turned off when the main kernel has
-> started (the main display driver is often a module).
->
-> It would be nice to deal with all the above in a single place. I wonder
-> if the tidss driver itself could somehow be split into two parts, an
-> early part that would probe with minimal dependencies, mainly to reserve
-> the core resources without doing any kind of DRM init. And a main part
-> which would (somehow) finish the initialization at a later point, when
-> we have the filesystem (for firmware) and the other bridge/panel drivers
-> have probed.
->
-> That can be somewhat achieved with simplefb or simpledrm, though, but we
-> can't do any TI DSS specific things there, and it also creates a
-> requirement to have either of those drivers built-in, and the related DT
-> nodes to be added.
+IIRC on x86 it comes from some BIOS tables, and some bioses might be not
+providing very realistic numbers, so it can be unnecessary large.
 
-Without going into too much detail, this and similar problems have
-been discussed in the past. With the fw_devlink and the ->sync_state()
-callback we are getting closer to a solution, but for genpd a solution
-is still pending.
+> Either way, I guess it's not considered a performance bottleneck because, from
+> memory, the scheduler and many other places are iterating over all possible cpus.
 
-If you want to read up on earlier discussions and join us moving
-forward, that would be great. The last attempt for genpd to move this
-forward was posted by Abel Vesa:
-https://lore.kernel.org/linux-pm/20230621144019.3219858-1-abel.vesa@linaro.org/
+I doubt anything does it in a fastpath. But this affects only reading
+/proc/vmstat, right? Which is not a fastpath. Also update_balloon_stats()
+which is probably ok as well?
 
-Beyond that, we have also discussed various solutions at the last LPC
-in Richmond. I think the consensus at that point was that Saravana
-targeted to post something for clocks - and when that was done, we
-should do the similar thing for genpd. Anyway, I have looped them into
-this thread, so they can share any updates on their side of the
-matter.
+Either way I don't see a clear advantage nor disadvantage of this.
 
->
->   Tomi
+>>  		struct vm_event_state *this = &per_cpu(vm_event_states, cpu);
+>>  
+>>  		for (i = 0; i < NR_VM_EVENT_ITEMS; i++)
+>> @@ -129,29 +129,10 @@ static void sum_vm_events(unsigned long *ret)
+>>  */
+>>  void all_vm_events(unsigned long *ret)
+>>  {
+>> -	cpus_read_lock();
+>>  	sum_vm_events(ret);
+>> -	cpus_read_unlock();
+>>  }
+>>  EXPORT_SYMBOL_GPL(all_vm_events);
+>>  
+>> -/*
+>> - * Fold the foreign cpu events into our own.
+>> - *
+>> - * This is adding to the events on one processor
+>> - * but keeps the global counts constant.
+>> - */
+>> -void vm_events_fold_cpu(int cpu)
+>> -{
+>> -	struct vm_event_state *fold_state = &per_cpu(vm_event_states, cpu);
+>> -	int i;
+>> -
+>> -	for (i = 0; i < NR_VM_EVENT_ITEMS; i++) {
+>> -		count_vm_events(i, fold_state->event[i]);
+>> -		fold_state->event[i] = 0;
+>> -	}
+>> -}
+>> -
+>>  #endif /* CONFIG_VM_EVENT_COUNTERS */
+>>  
+>>  /*
+> 
 
-Kind regards
-Uffe
-
->
-> > Another option here would perhaps be to change the driver framework
-> > (drivers/base/platform.c) which attaches and detaches the PD, and make
-> > it somehow optional, allowing the driver the manage the PD. That option
-> > has two downsides: 1) the driver _has_ to manage the PD, which would
-> > rule out the use of simplefb and simpledrm, and 2) it would leave the PD
-> > in off state from Linux's perspective until a driver enables the PD, and
-> > that might mean that the PD gets actually disabled as part of normal
-> > system wide power management (disabling unused resources).
-> >
-> > Yet another option would be to do this outside the ti_sci_pm_domains
-> > driver: a piece of code that would somehow be ran after the
-> > ti_sci_pm_domains driver has probed (so that we have the PDs), but
-> > before tidss/simplefb/simpledrm probes. The problem here is the
-> > "somehow" part. Also, this would partly have the same issue 2) as
-> > mentioned above.
-> >
-> > TODO: If this approach is ok, sci-pm-domain.yaml needs to be extended.
-> > Also, it sounds a bit like the cell value is not a bit-mask, so maybe
-> > adding TI_SCI_PD_KEEP_BOOT_STATE flag this way is not fine.
-> >
-> > Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-> > ---
-> >   drivers/pmdomain/ti/ti_sci_pm_domains.c    | 27 +++++++++++++++++++++++++--
-> >   include/dt-bindings/soc/ti,sci_pm_domain.h |  1 +
-> >   2 files changed, 26 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/drivers/pmdomain/ti/ti_sci_pm_domains.c b/drivers/pmdomain/ti/ti_sci_pm_domains.c
-> > index 1510d5ddae3d..b71b390aaa39 100644
-> > --- a/drivers/pmdomain/ti/ti_sci_pm_domains.c
-> > +++ b/drivers/pmdomain/ti/ti_sci_pm_domains.c
-> > @@ -103,7 +103,7 @@ static struct generic_pm_domain *ti_sci_pd_xlate(
-> >               return ERR_PTR(-ENOENT);
-> >
-> >       genpd_to_ti_sci_pd(genpd_data->domains[idx])->exclusive =
-> > -             genpdspec->args[1];
-> > +             genpdspec->args[1] & TI_SCI_PD_EXCLUSIVE;
-> >
-> >       return genpd_data->domains[idx];
-> >   }
-> > @@ -161,6 +161,8 @@ static int ti_sci_pm_domain_probe(struct platform_device *pdev)
-> >                               break;
-> >
-> >                       if (args.args_count >= 1 && args.np == dev->of_node) {
-> > +                             bool is_on = false;
-> > +
-> >                               if (args.args[0] > max_id) {
-> >                                       max_id = args.args[0];
-> >                               } else {
-> > @@ -189,7 +191,28 @@ static int ti_sci_pm_domain_probe(struct platform_device *pdev)
-> >                               pd->idx = args.args[0];
-> >                               pd->parent = pd_provider;
-> >
-> > -                             pm_genpd_init(&pd->pd, NULL, true);
-> > +                             /*
-> > +                              * If TI_SCI_PD_KEEP_BOOT_STATE is set and the
-> > +                              * PD has been enabled by the bootloader, set
-> > +                              * the PD to GENPD_FLAG_ALWAYS_ON. This will
-> > +                              * make sure the PD stays enabled until a driver
-> > +                              * takes over and clears the GENPD_FLAG_ALWAYS_ON
-> > +                              * flag.
-> > +                              */
-> > +                             if (args.args_count > 1 &&
-> > +                                 args.args[1] & TI_SCI_PD_KEEP_BOOT_STATE) {
-> > +                                     /*
-> > +                                      * We ignore any error here, and in case
-> > +                                      * of error just assume the PD is off.
-> > +                                      */
-> > +                                     pd_provider->ti_sci->ops.dev_ops.is_on(pd_provider->ti_sci,
-> > +                                             pd->idx, NULL, &is_on);
-> > +
-> > +                                     if (is_on)
-> > +                                             pd->pd.flags |= GENPD_FLAG_ALWAYS_ON;
-> > +                             }
-> > +
-> > +                             pm_genpd_init(&pd->pd, NULL, !is_on);
-> >
-> >                               list_add(&pd->node, &pd_provider->pd_list);
-> >                       }
-> > diff --git a/include/dt-bindings/soc/ti,sci_pm_domain.h b/include/dt-bindings/soc/ti,sci_pm_domain.h
-> > index 8f2a7360b65e..af610208e3a3 100644
-> > --- a/include/dt-bindings/soc/ti,sci_pm_domain.h
-> > +++ b/include/dt-bindings/soc/ti,sci_pm_domain.h
-> > @@ -3,6 +3,7 @@
-> >   #ifndef __DT_BINDINGS_TI_SCI_PM_DOMAIN_H
-> >   #define __DT_BINDINGS_TI_SCI_PM_DOMAIN_H
-> >
-> > +#define TI_SCI_PD_KEEP_BOOT_STATE 2
-> >   #define TI_SCI_PD_EXCLUSIVE 1
-> >   #define TI_SCI_PD_SHARED    0
-> >
-> >
->
 
