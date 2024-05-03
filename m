@@ -1,143 +1,86 @@
-Return-Path: <linux-kernel+bounces-167691-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-167690-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 920238BAD7B
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 15:19:34 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 01A5B8BAD78
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 15:19:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B42881C220D3
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 13:19:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 32AFB1C22067
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 13:19:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05E93154C19;
-	Fri,  3 May 2024 13:15:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D05CD15444B;
+	Fri,  3 May 2024 13:15:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Bx6WWJ8q"
-Received: from mail-yb1-f172.google.com (mail-yb1-f172.google.com [209.85.219.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UMgF+XHk"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2C0D154BF4
-	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 13:15:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F2B515442F;
+	Fri,  3 May 2024 13:15:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714742133; cv=none; b=YbnSKeK11X1p7F4Ty1NxQWblmSSOfJcP6M6KQsIgT7iTI1O49cjZQhEC0f/Xq2dl0mOE3gqVRAVHpNe7WDYypsIBlZBz6Ohk2azHtGbH9TTPd2uul8WNVLSiLcDg1xW4zd9h33T1FqXnj14v0HXhQ1PLA2WBq0NEKoHszo5SpJg=
+	t=1714742130; cv=none; b=adHzu++1EwoH4JV9LkHeXzj1n84+64KdPRpdXSf7fKojbJl8tkI48BzNVgQM08z73kM5k61Lnt3BdFL1Koqu44Qg9DkpBzGJVHc6Rdez+6QDz9qZZmgiyghUiN8kzbsPj3ButMM+3mvpNPekEBh5W9AxYTTb6bE4x8cfdBzxKH4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714742133; c=relaxed/simple;
-	bh=nJ+FiEP00RrtPRa8uswJfiMy2zzb9NIscqnw+JbmrlE=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=u/DzG2vj8vRNa2DsL2jWSk57TmjpJ4ym/qplLH7dk4XUADQo9lageTUuAfu9WC24R4d9pAYAKXOkjBV7Pwbhel9PuN/RBhKOXbfHRc4sw9wwJPUdqjgH+yMwvMhoMGjq2pAOxigDZctBnjutjcIhp7MsIiWFhCaaS1FTxdmP3cg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Bx6WWJ8q; arc=none smtp.client-ip=209.85.219.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yb1-f172.google.com with SMTP id 3f1490d57ef6-de596c078c2so9142168276.0
-        for <linux-kernel@vger.kernel.org>; Fri, 03 May 2024 06:15:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1714742131; x=1715346931; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=Bz627HBjMOmmynWa0zBG+92oc4pA2ou1WBH5AOlZFK8=;
-        b=Bx6WWJ8qiPazUlp8r1gkkyCLZa9f5OkTzjOIqttSst6zQZrPv50T1KhDTmnL8MNTQr
-         cgPm/gkLVU5/KH3DqDXag8VGgXHWxjYPRyIEYvXv7t045Uv0zHnmVSNHclJHIe9PP7Kn
-         kmblALCI+aFYUXuGROLqsNJ1qk5jSjGS91V/FXY6Ab1JqQ5YAPgHKR842sgZmI7paRxx
-         IqrGolnbzOeLUF9hXvCLG0Mz4FXLe3BfePUWziJSq2KPgizc5MpEilaiX1eRot1jdBom
-         XNQJTWFVOxNSMM5e8dLStGvi80mntT2tDUCsq1I51h//Y0v0hzdA2yW2jpe+P6ZHwKeU
-         5QKA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714742131; x=1715346931;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Bz627HBjMOmmynWa0zBG+92oc4pA2ou1WBH5AOlZFK8=;
-        b=NOoZXqRFtvHVREIqBLSVv4HPg/Bw7m2YK7q+ZiPaOu/zJM8NJEtx/qOfwlyLvzitVM
-         o0/ACfjJ1exiflDXrhiJ5t9GWJ9HacVqFWjPmSSArNjeh5TvLzKwcBH/Vep/lpAbITgD
-         cmoF0dUu74Qe5jpuPkKn5FB5hfxLLY/i6g0S6kVtl4VWkKN41NJxn5yhL0PiFcV/75CL
-         xpN/IuyelS6Y/Ovzki1CGuwuFiruukgoS7gaPHVJ7PGETntVuH+WcF6XI9JIGlnCvCr3
-         9c0wKCruPX1k9tvIhRGai/TPPuCSPVp6Zm0YGMmRMmVOPeZhroTlmesY7JcXwmullUQm
-         zQbw==
-X-Forwarded-Encrypted: i=1; AJvYcCWrgCInjpP67A/D9XFO9q2SP5eSjeK+x6kGrLfgR+BCyMGZmFioM4lvi6x8n63mP/+XVECzrmWBRG2CEszn+q+SF1noF4xMPHEpvvJk
-X-Gm-Message-State: AOJu0YxP2FEW2gDtupZrOR65NRmU5INusqxZyVcjzD34GsoFGUIg5ZRE
-	kB7Enqjw6wyOLi4UxanPspEE18RrNvQ9QjhmnsmuSbCm0hWw3itpwpoEPa4z7IgbpjszB1tVhtd
-	d1947KjlrR9GqwS7b8j6xCzuB98xb5YbzSTAPxXKemOf1IkaX
-X-Google-Smtp-Source: AGHT+IGffsIdpZF6BPv9Of+hyi7vyRpyRz79bbW9RmMLTofCsWiZmPRZRs0kpQ7Tcy7txTp5OlV1qfabQJWeVMOx5Es=
-X-Received: by 2002:a25:abc3:0:b0:dcf:3ef5:4d30 with SMTP id
- v61-20020a25abc3000000b00dcf3ef54d30mr2869989ybi.17.1714742130823; Fri, 03
- May 2024 06:15:30 -0700 (PDT)
+	s=arc-20240116; t=1714742130; c=relaxed/simple;
+	bh=u7OhV14b+KvvL/Ob6hW0mx28C4XmQQk3bSQXLrG+R1g=;
+	h=Content-Type:MIME-Version:Subject:From:In-Reply-To:References:To:
+	 Cc:Message-ID:Date; b=Fb4G9dMIPUz8HVZnrVQcvqupKJxIRhmqyGUuCsGRpAo4427kvG4dBEvZU4unuCPm8PNoVVYILQALrc9/FBeyr7rH5ELD9xyI2RiAzoVu8wvvu812sysTdDJ1w80nlx5nTy4PdzzMj2cPGi0thzHPHaajRiaCNRlpQiSPkDfW70M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UMgF+XHk; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 40C9DC4AF1B;
+	Fri,  3 May 2024 13:15:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714742129;
+	bh=u7OhV14b+KvvL/Ob6hW0mx28C4XmQQk3bSQXLrG+R1g=;
+	h=Subject:From:In-Reply-To:References:To:Cc:Date:From;
+	b=UMgF+XHkCoWysTyGLbnNRboqoX82pBZjHq8IISsbQmKwb5+lz58zNVpq6t6zv9b8l
+	 2yaWIOPp89LuHIkKP9PCcUmyoY59voKR9wOPjUIm87jdE0jkhrmkTkuJk12oMYV5Er
+	 ekmjuSPQrZDSCbd/TNlLNKzar9aesWO49u5WOWLBwPSu/IrF66f16F/xA5fzbVEfgU
+	 2PyoozYi0OAdoiFeIDTI8jZdYhHyZZFqHSSakr+aZSTbhVmSC//38jPuaeUMhuHFzP
+	 58uhFZFU67uwhluWGQnlPHpX3HcBSv288izLYJVZlg10gBh6PpeF8u9ev6/kEDJySG
+	 5IcYCl1Jd8wIg==
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240430145937.133643-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
-In-Reply-To: <20240430145937.133643-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
-From: Ulf Hansson <ulf.hansson@linaro.org>
-Date: Fri, 3 May 2024 15:14:55 +0200
-Message-ID: <CAPDyKFpRjoVdyXh275YR3f4oOFR7MY49_JNzZ2nvrmSMYokRkA@mail.gmail.com>
-Subject: Re: [PATCH v3 0/3] Update compat strings for SD/MMC nodes on RZ/{G2L
- (family), G3S, V2M} SoCs
-To: Prabhakar <prabhakar.csengg@gmail.com>
-Cc: Geert Uytterhoeven <geert+renesas@glider.be>, Rob Herring <robh@kernel.org>, 
-	Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Magnus Damm <magnus.damm@gmail.com>, Wolfram Sang <wsa+renesas@sang-engineering.com>, 
-	linux-mmc@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org, 
-	Biju Das <biju.das.jz@bp.renesas.com>, 
-	Fabrizio Castro <fabrizio.castro.jz@renesas.com>, 
-	Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH 1/2] wifi: ath11k: refactor CE remap & unmap
+From: Kalle Valo <kvalo@kernel.org>
+In-Reply-To: <20240430-ce-unmap-v1-1-e468328f95d9@quicinc.com>
+References: <20240430-ce-unmap-v1-1-e468328f95d9@quicinc.com>
+To: Jeff Johnson <quic_jjohnson@quicinc.com>
+Cc: Jeff Johnson <jjohnson@kernel.org>, <linux-wireless@vger.kernel.org>,
+ <ath11k@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+ Jeff Johnson <quic_jjohnson@quicinc.com>
+User-Agent: pwcli/0.1.1-git (https://github.com/kvalo/pwcli/) Python/3.11.2
+Message-ID: <171474212652.1512332.14638586836562362719.kvalo@kernel.org>
+Date: Fri,  3 May 2024 13:15:28 +0000 (UTC)
 
-On Tue, 30 Apr 2024 at 17:00, Prabhakar <prabhakar.csengg@gmail.com> wrote:
->
-> From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
->
-> Hi All,
->
-> - RZ/G2UL and RZ/Five ("r9a07g043")
-> - RZ/G2L(C) ("r9a07g044")
-> - RZ/V2L ("r9a07g054")
-> - RZ/G3S ("r9a08g045")
-> - RZ/V2M ("r9a09g011")
->
-> The SD/MMC Interface in the above listed SoCs is not identical to that of
-> R-Car Gen3. These SoCs have HS400 disabled and use fixed address mode.
-> Therefore, we need to apply fixed_addr_mode and hs400_disabled quirks.
-> 'renesas,rzg2l-sdhi' is introduced as a generic compatible string for the
-> above SoCs where fixed_addr_mode and hs400_disabled quirks will be applied.
->
-> v2->v3
-> - Dropped items keyword
-> - Sorted strings alphabetically
-> - Collected Ack and RB tags
->
-> v1->v2
-> - Updated commit messages for patch #1 and #2
-> - Dropped SoC DTSI changes as its a hard dependency
-> - Grouped single const value items into an enum list.
-> - For backward compatibility retained RZ/V2M compat string
->
-> v1: https://patchwork.kernel.org/project/linux-renesas-soc/cover/20240422213006.505576-1-prabhakar.mahadev-lad.rj@bp.renesas.com/
->
-> Cheers,
-> Prabhakar
->
-> Lad Prabhakar (3):
->   dt-bindings: mmc: renesas,sdhi: Group single const value items into an
->     enum list
->   dt-bindings: mmc: renesas,sdhi: Document RZ/G2L family compatibility
->   mmc: renesas_sdhi: Add compatible string for RZ/G2L family, RZ/G3S,
->     and RZ/V2M SoCs
->
->  .../devicetree/bindings/mmc/renesas,sdhi.yaml | 39 ++++++++-----------
->  drivers/mmc/host/renesas_sdhi_internal_dmac.c |  9 +++--
->  2 files changed, 21 insertions(+), 27 deletions(-)
->
-> --
-> 2.34.1
->
+Jeff Johnson <quic_jjohnson@quicinc.com> wrote:
 
-The series applied for next, thanks!
+> Currently the logic that handles hw_params->ce_remap is inline code,
+> both for doing the remap and the unmap. An upcoming change needs to do
+> the unmap in a second place, so refactor the unmap logic into a
+> separate function. And although it is only called from one place,
+> refactor the remap logic as well to have functional symmetry.
+> 
+> No functional changes, compile tested only.
+> 
+> Signed-off-by: Jeff Johnson <quic_jjohnson@quicinc.com>
+> Signed-off-by: Kalle Valo <quic_kvalo@quicinc.com>
 
-Kind regards
-Uffe
+2 patches applied to ath-next branch of ath.git, thanks.
+
+8b9ea752a9d6 wifi: ath11k: refactor CE remap & unmap
+c57d00a4d3d8 wifi: ath11k: unmap the CE in ath11k_ahb_probe() error path
+
+-- 
+https://patchwork.kernel.org/project/linux-wireless/patch/20240430-ce-unmap-v1-1-e468328f95d9@quicinc.com/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+
 
