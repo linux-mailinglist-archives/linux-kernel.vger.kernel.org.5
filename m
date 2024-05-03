@@ -1,45 +1,45 @@
-Return-Path: <linux-kernel+bounces-167360-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-167361-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F3ADE8BA86E
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 10:14:00 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A85F18BA870
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 10:14:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 311151C2180F
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 08:14:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3ABF01F2267E
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 08:14:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F98914F9CF;
-	Fri,  3 May 2024 08:12:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F22914F13D;
+	Fri,  3 May 2024 08:12:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ExymHTvj"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jB5+pj7P"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DBD0C14F9DA;
-	Fri,  3 May 2024 08:12:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87B89149DF6;
+	Fri,  3 May 2024 08:12:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714723947; cv=none; b=J9jwaLS36I1uskhQBdPjEf2iBIPvSvOzmgZ+nGPHg7CQk+iYq79HZEg4avm0Y9bw49TvcHh6ZGVABDS+hu9DiuHopQ+rDd8TC/ERurKtGLQs/6xxI+h6GFuLH4Lml6oQVVNijujg19MXxOijzpSFcGj56tVrhqVA2xUSOriFtVA=
+	t=1714723950; cv=none; b=TlmK6gZ+fgzhzvm/KA+duMxGRmfL1lWCBkckfQ1C4XQ/+Let939WuHkZXliQZr4YF2WdsX6Nlu2CXLnvWSMBsHy/FpS8bh0MFO8TkB1q/lPeecErhPNG4FawEV2KDtMEVM2vNmF9c96WTyzO3Zef0hpdBPTKkX0GXUXbmR8N6TA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714723947; c=relaxed/simple;
-	bh=hBY4yzirR+6peUPSmr/L6JeuzaTkaL7zjOUip5Zgez4=;
+	s=arc-20240116; t=1714723950; c=relaxed/simple;
+	bh=9BAn9hUftPS3eYIiTpLzl4khfNyMbi9G7KQSc69tEzA=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=PeJqu6Ie8+qJOqcWlO4LBEX6VeCVaSyFjYTMq3xePvAZ7SKMDu1ap6N4q8gGfQP9vmlWuCG0fOIqg+XCpa3pNt06RcldjQJv91yo30ozzVOaxvYHWBSXSVR2gn5vdppu0delDXzMp7nIpO/rpaWvPcSj9n5J7HzPRsjLWvB5f50=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ExymHTvj; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 82BAFC116B1;
-	Fri,  3 May 2024 08:12:25 +0000 (UTC)
+	 MIME-Version; b=EyzDPNWUnWpAP2w2/LLlCQz8MxLkS6t2OPOzpsyTx6CgzyQVNEwXL5V/vSELZlzvm1kdbHrbdQ4ldFWmUJl2vgtThdnaTJ8I8/VhQhnAyFvOFuh7enR+ujpesP+YtH368RAxWqEuJlx5ZEW3hgajsJv1683o8LIMKYmwg07tzXk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jB5+pj7P; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 322FDC116B1;
+	Fri,  3 May 2024 08:12:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714723947;
-	bh=hBY4yzirR+6peUPSmr/L6JeuzaTkaL7zjOUip5Zgez4=;
+	s=k20201202; t=1714723950;
+	bh=9BAn9hUftPS3eYIiTpLzl4khfNyMbi9G7KQSc69tEzA=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=ExymHTvjQ8CJTlsT8pDeCTWElcNO1CBiAhG8iTFM8EjWM6V3mNOwq4K8zwFxF0dFL
-	 h5CyAuZBkoghIoiOSwJFHGF18cHqnb3UC0wa3iTSoWvZZfpJEqj0Kx9oeUA0oY9BI1
-	 zTU9KigRv+wKyeY96tPbQJ7aADviH3+ucfKceizCwUm5BZeHZzJKFgcWDqDf+j/lB1
-	 JJvXNzbaFYqRqhPa4Jq1RCg4Kpu8pXwib1KAwgidJKh9lfKW67jC5Bz3r+s25YGng/
-	 l1wB14nREqmnpqOmLiQVXdfJsWZjGnnvSaBZX6LPD+Y+gYf3bQpX03v4wsXXmg5Hbj
-	 PeOEnSXAuLfQw==
+	b=jB5+pj7Pxp2NPdrQlZ6tbBSj2ibqT4eat2lOYfizgPpwpBW4AvNB8vLZvYnAvjmeS
+	 bbTtxKQ+A38d8G9q1t/KAN4VuMjpqG7nQ0VBn5boJj2a1U0Tc33fQ2zDFkktwA+t/N
+	 8HnRULlDNZmMF3dVk6GO6qNuuGlAxQwMdZR568nwo7ync7zRWblln28/4P7Vo9N8zs
+	 gPeP/2EzLvv/KE2mPiKe1Y/T+8PMaxzPNbWbGVRdGuwiTJi1elwPcQYCmRhVODGiNA
+	 2OEQRv3OqP87kZPlS37WKaBaiU9NfcroqcKNlcNv/boTzyH8ISZMsgiNFjQvtaxEHJ
+	 CFEhhMz7//Ksw==
 From: Arnd Bergmann <arnd@kernel.org>
 To: linux-alpha@vger.kernel.org
 Cc: Arnd Bergmann <arnd@arndb.de>,
@@ -51,9 +51,9 @@ Cc: Arnd Bergmann <arnd@arndb.de>,
 	Linus Torvalds <torvalds@linux-foundation.org>,
 	"Paul E. McKenney" <paulmck@kernel.org>,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 08/14] alpha: jensen, t2 - make __EXTERN_INLINE same as for the rest
-Date: Fri,  3 May 2024 10:11:19 +0200
-Message-Id: <20240503081125.67990-9-arnd@kernel.org>
+Subject: [PATCH 09/14] alpha: trim the unused stuff from asm-offsets.c
+Date: Fri,  3 May 2024 10:11:20 +0200
+Message-Id: <20240503081125.67990-10-arnd@kernel.org>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240503081125.67990-1-arnd@kernel.org>
 References: <20240503081125.67990-1-arnd@kernel.org>
@@ -67,72 +67,55 @@ Content-Transfer-Encoding: 8bit
 
 From: Al Viro <viro@zeniv.linux.org.uk>
 
-We want io.h primitives (readb(), etc.) to be extern inline.
-However, that requires the backing out-of-line implementation
-somewhere, preferably kept in sync with the inline ones.
-
-The way it's done is __EXTERN_INLINE macro that defaults to
-extern inline, but can be overridden in compilation unit where
-the out-of-line instance will be.
-
-That works, but it's brittle - we *must* make sure that asm/io.h
-is the very first include in such compilation units.  There'd
-been a bunch of bugs of that sort in the past.
-
-Another issue is the choice of overriding definition for
-__EXTERN_INLINE; it must be either 'inline' or empty.  Either
-will do for compilation purposes - inline void foo(...) {...}
-(without extern or static) is going to generate out-of-line
-instance.  The difference is that 'definition without a
-prototype' heuristics trigger on
-void foo(void)
-{
-	...
-}
-but not on
-inline void foo(void)
-{
-	...
-}
-
-Most of the overrides go for 'inline'; in two cases (sys_jensen
-and core_t2) __EXTERN_INLINE is defined as empty.  Without
--Wmissing-prototypes it didn't matter, but now that we have
-that thing always on...
+Out of 21 constants, only 6 are used...
 
 Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- arch/alpha/kernel/core_t2.c    | 2 +-
- arch/alpha/kernel/sys_jensen.c | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ arch/alpha/kernel/asm-offsets.c | 21 +--------------------
+ 1 file changed, 1 insertion(+), 20 deletions(-)
 
-diff --git a/arch/alpha/kernel/core_t2.c b/arch/alpha/kernel/core_t2.c
-index 98d5b6ff8a76..3d72d90624f1 100644
---- a/arch/alpha/kernel/core_t2.c
-+++ b/arch/alpha/kernel/core_t2.c
-@@ -10,7 +10,7 @@
-  * Code common to all T2 core logic chips.
-  */
+diff --git a/arch/alpha/kernel/asm-offsets.c b/arch/alpha/kernel/asm-offsets.c
+index bf1eedd27cf7..4cfeae42c79a 100644
+--- a/arch/alpha/kernel/asm-offsets.c
++++ b/arch/alpha/kernel/asm-offsets.c
+@@ -10,35 +10,16 @@
+ #include <linux/sched.h>
+ #include <linux/ptrace.h>
+ #include <linux/kbuild.h>
+-#include <asm/io.h>
++#include <asm/machvec.h>
  
--#define __EXTERN_INLINE
-+#define __EXTERN_INLINE inline
- #include <asm/io.h>
- #include <asm/core_t2.h>
- #undef __EXTERN_INLINE
-diff --git a/arch/alpha/kernel/sys_jensen.c b/arch/alpha/kernel/sys_jensen.c
-index 5c9c88428124..a1bb1c4a7e93 100644
---- a/arch/alpha/kernel/sys_jensen.c
-+++ b/arch/alpha/kernel/sys_jensen.c
-@@ -7,7 +7,7 @@
-  *
-  * Code supporting the Jensen.
-  */
--#define __EXTERN_INLINE
-+#define __EXTERN_INLINE inline
- #include <asm/io.h>
- #include <asm/jensen.h>
- #undef  __EXTERN_INLINE
+ static void __used foo(void)
+ {
+-	DEFINE(TI_TASK, offsetof(struct thread_info, task));
+ 	DEFINE(TI_FLAGS, offsetof(struct thread_info, flags));
+-	DEFINE(TI_CPU, offsetof(struct thread_info, cpu));
+ 	DEFINE(TI_FP, offsetof(struct thread_info, fp));
+ 	DEFINE(TI_STATUS, offsetof(struct thread_info, status));
+ 	BLANK();
+ 
+-        DEFINE(TASK_BLOCKED, offsetof(struct task_struct, blocked));
+-        DEFINE(TASK_CRED, offsetof(struct task_struct, cred));
+-        DEFINE(TASK_REAL_PARENT, offsetof(struct task_struct, real_parent));
+-        DEFINE(TASK_GROUP_LEADER, offsetof(struct task_struct, group_leader));
+-        DEFINE(TASK_TGID, offsetof(struct task_struct, tgid));
+-        BLANK();
+-
+-        DEFINE(CRED_UID,  offsetof(struct cred, uid));
+-        DEFINE(CRED_EUID, offsetof(struct cred, euid));
+-        DEFINE(CRED_GID,  offsetof(struct cred, gid));
+-        DEFINE(CRED_EGID, offsetof(struct cred, egid));
+-        BLANK();
+-
+ 	DEFINE(SIZEOF_PT_REGS, sizeof(struct pt_regs));
+-	DEFINE(PT_PTRACED, PT_PTRACED);
+-	DEFINE(CLONE_VM, CLONE_VM);
+-	DEFINE(CLONE_UNTRACED, CLONE_UNTRACED);
+-	DEFINE(SIGCHLD, SIGCHLD);
+ 	BLANK();
+ 
+ 	DEFINE(HAE_CACHE, offsetof(struct alpha_machine_vector, hae_cache));
 -- 
 2.39.2
 
