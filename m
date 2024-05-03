@@ -1,217 +1,130 @@
-Return-Path: <linux-kernel+bounces-168158-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-168159-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 873678BB471
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 22:00:08 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id AE5F38BB476
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 22:01:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B242C1C224C9
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 20:00:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6839E28173E
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 20:01:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB3C1158D82;
-	Fri,  3 May 2024 19:59:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C7B1158D78;
+	Fri,  3 May 2024 20:01:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="b3im61za"
-Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AnqBxSL+"
+Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B1ADD158A11
-	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 19:59:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 72D62158A11;
+	Fri,  3 May 2024 20:01:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714766396; cv=none; b=T1cdaRhR3G37laEee00YN+qSnEMuRwqPRkTBrUwKw23vctwfHDPW/sbsaLXePjDL/hdcj2fdOBDGYMnKXZHQoJnA6qY+MZR+bPYauKjS3G2YoZQYY7jsr8jnWUUJL5A9EMpl3SJePeWJ+KDG6e712wuUuvWBleh+98qKc34nPzo=
+	t=1714766488; cv=none; b=bHnPttwz4RRVK5vIX2o/U0XoAWCZOSGDefMqp3ztqlbUL5XK0OSSvy/TE29e1o+4DyK2ppK1K2S2uZlwt4pH/MuE7CssFqhHvjFeX6tj14GKlgvqAOA/uie0E0E2XKl76GZ+Ht6Rl+iArNmhobKazNuPCRGKEgYeZ/l0rHFppoU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714766396; c=relaxed/simple;
-	bh=beW2GRBusmoKiQrMjaKiQjjBpA89CRgNEN6X1/xF3ns=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=PaDwInTQv93XwSjyNCJbTjk3ttQkDtCLz9QB2lArKAvabEc0LpsOPBK3gStcIPjcXF5LeuB9jfCkwKLcJUA7P1NWayaWtw11Yz214fwGveSpAL4yebYAAbnAmav1+dLLPAq3DF3jrfTFtF0oUR6uLl04RQdJb0NGUw0fdOhD0Tw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=b3im61za; arc=none smtp.client-ip=209.85.214.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-1ecddf96313so290555ad.2
-        for <linux-kernel@vger.kernel.org>; Fri, 03 May 2024 12:59:54 -0700 (PDT)
+	s=arc-20240116; t=1714766488; c=relaxed/simple;
+	bh=hPEqob8cQJS3NsWU5XrkHHRjPy8+sKpmtawBRZMffhY=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=AldxR5ytgbN1bnXqVXDViA9wVoSC3APZyW3YadirQ8Evr+gkYX5HtNufjsHYxJUUc/gqg0n33GvLvq/4CQwV3azkWdGLYYQr7VnXLsMS7mUMyyJWsPTA1CRNIQqE+2bxG0pJ0hcoQ2y2htQvo+sRBtERcuo+lwa2CeQfFLgXItA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=AnqBxSL+; arc=none smtp.client-ip=209.85.214.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-1ecddf96313so305225ad.2;
+        Fri, 03 May 2024 13:01:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1714766394; x=1715371194; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=kXbuS/Hft89FN1tBWD1yXoLgj43aVjsF859uRSyCcO8=;
-        b=b3im61zadIpLdYujeNcd402k760wCKJlgp5Z4gp5IuPQRgxicPEVayx5/K9nRO8la0
-         NheO2zb4JRXkL7gAxEcZyZNdGNaHsiHbLRmhpZWpMzQFBMbvq4kTFUDqL684mIK15WIK
-         O8BvDXW1eGqkwDCn+evRLRFiGhxw8o9k/E/6E=
+        d=gmail.com; s=20230601; t=1714766486; x=1715371286; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=YfhSmmcDj/a2edtCK/DxZRFrA53blVaphRlpcsRhEhE=;
+        b=AnqBxSL+BLK16BMSaHSKj8qWclghvs0r2FyDIaLu+6AqNKlSGdtq25qT7ySlPjefNj
+         G/oPM8UkQ4CH6FQii/RITGXnBjPC8xffH8D+V0fLP+OrQKBavfZBZMbdod5d2VfvcXV+
+         x+m8k8yYms6f4esyGb4kGqOe5TS9WAPax2Yv9ap9v/qY9HOEwdCsZyFIV7P1AmjMmHOo
+         0TOmLUSgirbr7fRZgKwfW2iO/IOfcn1TUQl5yeugnhoWwAe14Wvtt2M2g+rKU7oq+xG/
+         c52B0W+iq4Q8c7BZ5i+dSfUU0YoeAGR1qD1RCh3fYpdt4RBQ3b9saX9eBn/bK3Dm5Tc+
+         QG3g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714766394; x=1715371194;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=kXbuS/Hft89FN1tBWD1yXoLgj43aVjsF859uRSyCcO8=;
-        b=sWMHqsNRCLnSnDTQF89ALlKmAkH02KnODJGIcE8qv/LlrzOoicsuZjaqSbMqPwGpJH
-         eBnixSoD8YBp/znfR/NZ2TIT1FQmVZ1v4SeyUfbH01ltOqrgrU/WhSWPcdtn1qTEBxrQ
-         8GRX24xqpOc8XGNc5R6633BLSE0yBUpvNICooXTtoqpgISopxpHj9e3KMN0Yymny/DAK
-         bSDswGjJUsD0O61Bk+qDQkdv7Vny6EEs4wtJu1ySWt4MnKgJJNMZEd4E4sv7BCOwP1IV
-         aTaTdiwpaPdXbECu5rjqa76Vh3zDOi8RWUSJC7ekgBy73S2xEC4qgOD8zPAwFxJsDCXz
-         5taw==
-X-Forwarded-Encrypted: i=1; AJvYcCXOilax9scaPcCASYbiedXlQzsCR0ncIBT1gW/NVj+Sz9WB/YY6z1IduEUTR/9bAGU0f/VMWMlIs66ZL8mDR2TLZHIQifguqLYmbYsf
-X-Gm-Message-State: AOJu0Yxrosioo3Cexy33gcdqgsNoSGaM77unPYLnu/qZyftLXwzNhgls
-	zY1dL5scYh/X3Jb9mUQ16ZZz/4TmTWXRkKKmKgtrXtJ53//47ghfJIWEUQz+8w==
-X-Google-Smtp-Source: AGHT+IF7CJaHehS47rwSXtmiD/0Qq2/Az5cGhZ/XA6S28lF8JjtukRtodBuIYdyT740U/+9Oz5YhZA==
-X-Received: by 2002:a17:902:d58d:b0:1eb:d79a:c111 with SMTP id k13-20020a170902d58d00b001ebd79ac111mr5316118plh.4.1714766394020;
-        Fri, 03 May 2024 12:59:54 -0700 (PDT)
-Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id j12-20020a170903024c00b001eb51a46f5bsm3651440plh.43.2024.05.03.12.59.52
+        d=1e100.net; s=20230601; t=1714766486; x=1715371286;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=YfhSmmcDj/a2edtCK/DxZRFrA53blVaphRlpcsRhEhE=;
+        b=FQWn+9ENWLzmrf8wp6j1V4wyKlpKNqHqpzW95EQTaykZEnJlE3YpmBHf1f3Kc4dvy7
+         fne2dhRI8ceYZKSVfr30SxKfOPGVhTku1DmFJgOL81HXkZ6T4G5oE4zqspv4lrTJPYqF
+         Ar+x9o1aQGFMNzuIOCCoWQm33IHhCXUgnGHJNR2pMHxjeyUuo8JWFDJFRP3iQjia3zoq
+         TMVW5RmY8ZlAPNC4G6dU6AxDaHOPqUuhtpdbE/oB8wBqs16TADukqg9StQGY7weiJHeR
+         ZDZ1WyaU30KM8UMj5/i5ZrEQcGaulLzGIoNSGmJ0xbkrHAFFEP9NOu0dzhN9Gi2g1ado
+         QuqA==
+X-Forwarded-Encrypted: i=1; AJvYcCWjXUYI/yQdInxyluHjS7RK0ViRl88nlvVWt98NYLsyYl7AzOQw6rUbc1UGoXyxRFmp1SAxSge9D0On9HVbRR1jLWnHMdvH/m1sq2wfxf0ZSsm035fpch2uoc2NGPndjHa/5XPe
+X-Gm-Message-State: AOJu0Yw0aKeMzHEUFGAm7cnKKruCFY5MeLtA+1Ji7livMs3pU1brIt5I
+	drsrawZ0r7Copz10R6eDSctccfMZuD7lJqWcYkyo9kO94AhCwuzf
+X-Google-Smtp-Source: AGHT+IGKbgsuBPLYBmLsJqbPT/EtMURV5XOK+N4g06YiOkmBh4jZi0qc3MZ408O+YCIxq/IZiy539g==
+X-Received: by 2002:a17:902:b186:b0:1e2:9066:4a8b with SMTP id s6-20020a170902b18600b001e290664a8bmr4052338plr.26.1714766485707;
+        Fri, 03 May 2024 13:01:25 -0700 (PDT)
+Received: from frhdebian.corp.toradex.com ([201.82.41.210])
+        by smtp.gmail.com with ESMTPSA id x21-20020a170902ea9500b001e510b3e807sm3595205plb.263.2024.05.03.13.01.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 03 May 2024 12:59:52 -0700 (PDT)
-Date: Fri, 3 May 2024 12:59:52 -0700
-From: Kees Cook <keescook@chromium.org>
-To: Jens Axboe <axboe@kernel.dk>
-Cc: Bui Quang Minh <minhquangbui99@gmail.com>,
-	Al Viro <viro@zeniv.linux.org.uk>,
-	Christian Brauner <brauner@kernel.org>,
-	syzbot <syzbot+045b454ab35fd82a35fb@syzkaller.appspotmail.com>,
-	io-uring@vger.kernel.org, jack@suse.cz,
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-	syzkaller-bugs@googlegroups.com,
-	Sumit Semwal <sumit.semwal@linaro.org>,
-	Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-	linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
-	linaro-mm-sig@lists.linaro.org, Laura Abbott <laura@labbott.name>
-Subject: Re: get_file() unsafe under epoll (was Re: [syzbot] [fs?]
- [io-uring?] general protection fault in __ep_remove)
-Message-ID: <202405031237.B6B8379@keescook>
-References: <0000000000002d631f0615918f1e@google.com>
- <7c41cf3c-2a71-4dbb-8f34-0337890906fc@gmail.com>
- <202405031110.6F47982593@keescook>
- <64b51cc5-9f5b-4160-83f2-6d62175418a2@kernel.dk>
- <202405031207.9D62DA4973@keescook>
- <d6285f19-01aa-49c8-8fef-4b5842136215@kernel.dk>
+        Fri, 03 May 2024 13:01:25 -0700 (PDT)
+From: Hiago De Franco <hiagofranco@gmail.com>
+To: "David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>
+Cc: Sean Anderson <sean.anderson@linux.dev>,
+	netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Hiago De Franco <hiago.franco@toradex.com>
+Subject: [PATCH] net: ethernet: ti: am65-cpsw-nuss: create platform device for port nodes
+Date: Fri,  3 May 2024 17:00:38 -0300
+Message-ID: <20240503200038.573669-1-hiagofranco@gmail.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d6285f19-01aa-49c8-8fef-4b5842136215@kernel.dk>
+Content-Transfer-Encoding: 8bit
 
-On Fri, May 03, 2024 at 01:35:09PM -0600, Jens Axboe wrote:
-> On 5/3/24 1:22 PM, Kees Cook wrote:
-> > On Fri, May 03, 2024 at 12:49:11PM -0600, Jens Axboe wrote:
-> >> On 5/3/24 12:26 PM, Kees Cook wrote:
-> >>> Thanks for doing this analysis! I suspect at least a start of a fix
-> >>> would be this:
-> >>>
-> >>> diff --git a/drivers/dma-buf/dma-buf.c b/drivers/dma-buf/dma-buf.c
-> >>> index 8fe5aa67b167..15e8f74ee0f2 100644
-> >>> --- a/drivers/dma-buf/dma-buf.c
-> >>> +++ b/drivers/dma-buf/dma-buf.c
-> >>> @@ -267,9 +267,8 @@ static __poll_t dma_buf_poll(struct file *file, poll_table *poll)
-> >>>  
-> >>>  		if (events & EPOLLOUT) {
-> >>>  			/* Paired with fput in dma_buf_poll_cb */
-> >>> -			get_file(dmabuf->file);
-> >>> -
-> >>> -			if (!dma_buf_poll_add_cb(resv, true, dcb))
-> >>> +			if (!atomic_long_inc_not_zero(&dmabuf->file) &&
-> >>> +			    !dma_buf_poll_add_cb(resv, true, dcb))
-> >>>  				/* No callback queued, wake up any other waiters */
-> >>
-> >> Don't think this is sane at all. I'm assuming you meant:
-> >>
-> >> 	atomic_long_inc_not_zero(&dmabuf->file->f_count);
-> > 
-> > Oops, yes, sorry. I was typed from memory instead of copy/paste.
-> 
-> Figured :-)
-> 
-> >> but won't fly as you're not under RCU in the first place. And what
-> >> protects it from being long gone before you attempt this anyway? This is
-> >> sane way to attempt to fix it, it's completely opposite of what sane ref
-> >> handling should look like.
-> >>
-> >> Not sure what the best fix is here, seems like dma-buf should hold an
-> >> actual reference to the file upfront rather than just stash a pointer
-> >> and then later _hope_ that it can just grab a reference. That seems
-> >> pretty horrible, and the real source of the issue.
-> > 
-> > AFAICT, epoll just doesn't hold any references at all. It depends,
-> > I think, on eventpoll_release() (really eventpoll_release_file())
-> > synchronizing with epoll_wait() (but I don't see how this happens, and
-> > the race seems to be against ep_item_poll() ...?)
-> >
-> > I'm really confused about how eventpoll manages the lifetime of polled
-> > fds.
-> 
-> epoll doesn't hold any references, and it's got some ugly callback to
-> deal with that. It's not ideal, nor pretty, but that's how it currently
-> works. See eventpoll_release() and how it's called. This means that
-> epoll itself is supposedly safe from the file going away, even though it
-> doesn't hold a reference to it.
+From: Hiago De Franco <hiago.franco@toradex.com>
 
-Right -- what remains unclear to me is how struct file lifetime is
-expected to work in the struct file_operations::poll callbacks. Because
-using get_file() there looks clearly unsafe...
+After this change, an 'of_node' link from '/sys/devices/platform' to
+'/sys/firmware/devicetree' will be created. The 'ethernet-ports' device
+allows multiple netdevs to have the exact same parent device, e.g. port@x
+netdevs are child nodes of ethernet-ports.
 
-> Except that in this case, the file is already gone by the time
-> eventpoll_release() is called. Which presumably is some interaction with
-> the somewhat suspicious file reference management that dma-buf is doing.
-> But I didn't look into that much, outside of noting it looks a bit
-> suspect.
+When ethernet aliases are used (e.g. 'ethernet0 = &cpsw_port1' and
+'ethernet1 = &cpsw_port2') in the device tree, without an of_node
+device exposed to the userspace, it is not possible to determine where
+exactly the alias is pointing to.
 
-Not yet, though. Here's (one) race state from the analysis. I added lines
-for the dma_fence_add_callback()/dma_buf_poll_cb() case, since that's
-the case that would escape any eventpoll_release/epoll_wait
-synchronization (if it exists?):
+As an example, this is essential for applications like systemd, which rely
+on the of_node information to identify and manage Ethernet devices
+using device tree aliases introduced in the v251 naming scheme.
 
-close(dmabuf->file)
-__fput_sync (f_count == 1, last ref)
-f_count-- (f_count == 0 now)
-__fput
-                                     epoll_wait
-                                     vfs_poll(dmabuf->file)
-                                     get_file(dmabuf->file)(f_count == 1)
-                                     dma_fence_add_callback()
-eventpoll_release
-dmabuf->file deallocation
-                                     dma_buf_poll_cb()
-                                     fput(dmabuf->file) (f_count == 1)
-                                     f_count--
-                                     dmabuf->file deallocation
+Signed-off-by: Hiago De Franco <hiago.franco@toradex.com>
+---
+ drivers/net/ethernet/ti/am65-cpsw-nuss.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-Without fences to create a background callback, we just do a double-free:
-
-close(dmabuf->file)
-__fput_sync (f_count == 1, last ref)
-f_count-- (f_count == 0 now)
-__fput
-                                     epoll_wait
-                                     vfs_poll(dmabuf->file)
-                                     get_file(dmabuf->file)(f_count == 1)
-                                     dma_buf_poll_cb()
-                                     fput(dmabuf->file) (f_count == 1)
-                                     f_count--
-                                     eventpoll_release
-                                     dmabuf->file deallocation
-eventpoll_release
-dmabuf->file deallocation
-
-
-get_file(), via epoll_wait()->vfs_poll()->dma_buf_poll(), has raised
-f_count again. Then eventpoll_release() is doing things to remove
-dmabuf->file from the eventpoll lists, but I *think* this is synchronized
-so that an epoll_wait() will only call .poll handlers with a valid
-(though possibly f_count==0) file, but I can't figure out where that
-happens. (If it's not happening, we have a much bigger problem, but I
-imagine we'd see massive corruption all the time, which we don't.)
-
-So, yeah, I can't figure out how eventpoll_release() and epoll_wait()
-are expected to behave safely for .poll handlers.
-
-Regardless, for the simple case: it seems like it's just totally illegal
-to use get_file() in a poll handler. Is this known/expected? And if so,
-how can dmabuf possibly deal with that?
-
+diff --git a/drivers/net/ethernet/ti/am65-cpsw-nuss.c b/drivers/net/ethernet/ti/am65-cpsw-nuss.c
+index 1d00e21808c1..f74915f56fa2 100644
+--- a/drivers/net/ethernet/ti/am65-cpsw-nuss.c
++++ b/drivers/net/ethernet/ti/am65-cpsw-nuss.c
+@@ -2091,6 +2091,13 @@ static int am65_cpsw_nuss_init_slave_ports(struct am65_cpsw_common *common)
+ 		if (strcmp(port_np->name, "port"))
+ 			continue;
+ 
++		if (!of_platform_device_create(port_np, NULL, NULL)) {
++			dev_err(dev, "%pOF error creating port platform device\n",
++				port_np);
++			ret = -ENODEV;
++			goto of_node_put;
++		}
++
+ 		ret = of_property_read_u32(port_np, "reg", &port_id);
+ 		if (ret < 0) {
+ 			dev_err(dev, "%pOF error reading port_id %d\n",
 -- 
-Kees Cook
+2.43.0
+
 
