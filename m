@@ -1,104 +1,87 @@
-Return-Path: <linux-kernel+bounces-167204-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-167205-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 989AD8BA58E
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 05:07:38 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C60CF8BA596
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 05:15:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5435E28194B
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 03:07:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F30B51C21BFD
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 03:15:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF1FC1C6A7;
-	Fri,  3 May 2024 03:07:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 84DB51CA9C;
+	Fri,  3 May 2024 03:15:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="sHYypycA"
-Received: from mail.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="McdLShCY"
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9FC971B94F;
-	Fri,  3 May 2024 03:07:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C6EF1BF31
+	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 03:15:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714705650; cv=none; b=Xxlc/UB+cSIKcQ0zBHAsflmwANUh6Qj4XQapGrTzGwNIIskOMxkgsUqzJc2KGNfnpTnwNswJC/WbYsI6cuB/OmW3gQ6sYyO5Iq+hjaSLniLfxF/drTAfNzL6TiqgFXdiUChK7GJLE3rZNxnT6UycEPu/FcPwyAdBBc9Qdl1G5yQ=
+	t=1714706141; cv=none; b=QfmlEQn79y4z3IehJks2vJ9FDaczUD0flixSv3sYHt4SJf/FqvjDKOs3rh6vL1lA57NTjXvhqW5zxoWlqb33jNYAE7w14C61B7kcLH2RhkZ9Sp4lnJ4o9Y/6FjCegx2G4BaHmc5E6x2dFGyeSyhIKRp7MCqDzkJX4dDGf8Bp0cg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714705650; c=relaxed/simple;
-	bh=1ovSMFPjVf4rAtNZlU7k9MxEOjjoTfdNVJR0BZDvZfo=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=gCtqJP4qKqQl/SVsXwzzQN+NOfDJHjzECUFtxO9yQN3kVz9oA6qHi2Wb41OlvwO36zCzDWW9/S3cD4K9lea6UV81FdJ+9luJHSpCgmFqxzRuhmXT40wupEaeD6ONzYLtbfl5mqno3U+9p/pcl60zRKkZQ0FfVyzF5zGNnpLz9uo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=sHYypycA; arc=none smtp.client-ip=150.107.74.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-	s=201702; t=1714705644;
-	bh=KUL3yRs/PDKjGG2sJfomvJoG1R3xnVVXhftZbRvV2Yg=;
-	h=Date:From:To:Cc:Subject:From;
-	b=sHYypycAuEqpd9QGK/QqVh3cEqdUW7Yjbou6NnbS+3I3NvRv7XS3M+UCGbp1du5ac
-	 Qg2Y7Yp3pimUQt2zpY0xspzsen4UnH0IcwzseweGUJT+qqrhXHZZ9G4kyVqhoC75sr
-	 Kbgz4XajsUzbjbbZJg1FCAPSBeGY9JLR6HoVKOLxb3uEOwsSHmOw+rk74dl6GQilJs
-	 hkL8SzfMJJJzASCOrBNU0CYmdoW0XQSnR6WcrfoYwMgUxhLesXj5uzd0poZ/7FjWna
-	 d5oEJ44gb6ST2AIzoatFeo2IjyDo3J34aWKhvlA26NBknR7hqqBSt5kCfRxtLxJiFv
-	 /8bXDCaToUpMA==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4VVwhX0c2Kz4wxf;
-	Fri,  3 May 2024 13:07:23 +1000 (AEST)
-Date: Fri, 3 May 2024 13:07:22 +1000
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-To: Marcel Holtmann <marcel@holtmann.org>, Johan Hedberg
- <johan.hedberg@gmail.com>, Matthias Brugger <matthias.bgg@gmail.com>,
- AngeloGioacchino Del Regno <angelogioacchino.delregno@kernel.org>
-Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux Next
- Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: duplicate patch in the bluetooth tree
-Message-ID: <20240503130722.2390748f@canb.auug.org.au>
+	s=arc-20240116; t=1714706141; c=relaxed/simple;
+	bh=MXocKZDLZWja688de5gaJhOAfAuzW9dJi6b06eCcMlw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=mYHFxc25Zud59n5sd4kbkAMdXbWoeTycPPL/BQNaxpuTyDVxTVO3hnqK4ivLZcOhGSQ8pg8vIRNXCQ/2AALCbHg4TxvUNwJRB4C7L9HprEUfPM6w+qzzF0e8XzJTpTJtxmUm0piRYFYyOjjKGellpGW7NLePixjbR59JUIghL9E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=McdLShCY; arc=none smtp.client-ip=18.9.28.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
+Received: from cwcc.thunk.org (pool-108-26-156-33.bstnma.fios.verizon.net [108.26.156.33])
+	(authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 4433EtkY032537
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 2 May 2024 23:14:57 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+	t=1714706099; bh=NAqoULF99IJZLWZbdS/0WDOtUiZwYwO7FwxqIEARW9o=;
+	h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
+	b=McdLShCY+4nSQ/9AnagG/HjzZwTfLkbMnFAZk1OvJbC1gWkxj6PtyEocW0pW89iPw
+	 B/vomUxiqjgnK3UoGyKHLGbFp+tFWir5bqyrR5WRBHLuAQvQjyqiiIKSAwP9ealtyk
+	 OPEskfk6BfZ7W5s+/MAKfghpzTpOa2uG7pJTBwMeN+Y55BUFXAkI23Yatdp8bvOIKy
+	 WBqXLVup1oe2g932mMndqoevprX3vwSZ58xpqiMKKcVNSFhB/PbNWaV6hJsv7aXPE3
+	 arLQidyqISHH2j7LpueYpKtSB8SV/tYxfDeFOrwfAvdk2mh1dztpzEuhthiZKwJRSu
+	 SB4ILQWTHfpQg==
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+	id A515515C02BB; Thu,  2 May 2024 23:14:55 -0400 (EDT)
+Date: Thu, 2 May 2024 23:14:55 -0400
+From: "Theodore Ts'o" <tytso@mit.edu>
+To: Baokun Li <libaokun@huaweicloud.com>
+Cc: linux-ext4@vger.kernel.org, adilger.kernel@dilger.ca, jack@suse.cz,
+        ritesh.list@gmail.com, ojaswin@linux.ibm.com, adobriyan@gmail.com,
+        linux-kernel@vger.kernel.org, yi.zhang@huawei.com,
+        yangerkun@huawei.com
+Subject: Re: [PATCH v4 0/9] ext4: avoid sysfs variables overflow causing
+ BUG_ON/SOOB
+Message-ID: <20240503031455.GF1743554@mit.edu>
+References: <20240319113325.3110393-1-libaokun1@huawei.com>
+ <985285f6-973b-30d5-4742-29cf5e8c0e27@huaweicloud.com>
+ <8cf61cfc-8717-ee33-c94f-959212ce9c85@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/iJo6q8CI4=aa4111X7mn/q7";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8cf61cfc-8717-ee33-c94f-959212ce9c85@huaweicloud.com>
 
---Sig_/iJo6q8CI4=aa4111X7mn/q7
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Fri, May 03, 2024 at 10:03:04AM +0800, Baokun Li wrote:
+> Hi Ted,
+> 
+> Would you consider merging in this patchset in the current merge
+> window? I would appreciate it if you could.
 
-Hi all,
+Yes, in fact it's next on my review list.  I've been working through
+the patches on ext4's patchwork site roughly in chronological order
+(focusing first on fixes and those that have been reviewed by other
+folks).
 
-The following commit is also in the mediatek tree as a different commit
-(but the same patch):
-
-  f90ac18d01cd ("arm64: dts: mediatek: mt8183-pico6: Fix bluetooth node")
-
-This is commit
-
-  7c9faab9d28f ("arm64: dts: mediatek: mt8183-pico6: Fix bluetooth node")
-
-in the mediatek tree.
-
---=20
 Cheers,
-Stephen Rothwell
 
---Sig_/iJo6q8CI4=aa4111X7mn/q7
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmY0VOoACgkQAVBC80lX
-0GzNRgf+IoITW/T4PBpHgwBb/NTLzjSuDjg1toSBmQB8AQchEl2Y6CXj+551IDQT
-ExYvWsjWysOkuiU3KyIpfgDZ6cJA4r0lhXVnQQ3rOpNKK9QDK60xQ3wMprfrb9oJ
-iwCHmnNzJAZePgOhwYsRr5R5kVKyELkI3Ve88eyl5e3j9Pjj1i6GfcYtbaOHaw4e
-Xlgozb8RgqzJ7G9gPC3sHHJRI4l8AHLjFWWmh/PcxgLzK9d42PymZCrnx3kGOpoR
-x+WQon9vprFkKnOKk/21ohqe0OiG4YaJlrsudgYIhqQs0bD+3SjfpH48+An57d6Q
-zNSB03oXvS+z8EjbqzfMe/0/4DV/Vg==
-=7AYI
------END PGP SIGNATURE-----
-
---Sig_/iJo6q8CI4=aa4111X7mn/q7--
+					- Ted
 
