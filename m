@@ -1,103 +1,203 @@
-Return-Path: <linux-kernel+bounces-168318-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-168319-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9F8178BB660
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 23:48:31 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4DD068BB662
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 23:48:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D7B17B26DD4
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 21:48:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 70B7D1C23DE5
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 21:48:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 93B8484DF7;
-	Fri,  3 May 2024 21:45:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0A568563F;
+	Fri,  3 May 2024 21:46:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b="LBITSpJY"
-Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [62.89.141.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=kwiboo.se header.i=@kwiboo.se header.b="ai5UqITR"
+Received: from smtp.forwardemail.net (smtp.forwardemail.net [167.172.40.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D15B958AC4;
-	Fri,  3 May 2024 21:45:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.89.141.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4EDC25B1FB
+	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 21:46:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=167.172.40.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714772742; cv=none; b=Wes5WWDUT25GfLUX5I9hkAeipwq9C0nZBf4Z2886fo+s2T6InXmjXKwU5z7QV85SPZpBa9ofAp1g+gj7HYXyPiAsK+oZpR97btQxuIDiZ0r9HolAF/cOyYABdodKPGTCz7yXdFWF9C8evE3dq6wPKuqTqxzr/jB1Hj+AB05XA+s=
+	t=1714772787; cv=none; b=qYpDKPNcKLtZ0E8ohZpn4cBZOXwJ0jce0ldNDphChIqqiImlBuUFEOqmJTjDXZf78BQOc6StNEf1YkMQdPhZKkT45oiJuH5Q2Seh+Bqf0sReaKUoOiheJ4kfiVJqXH4xj9aEG7sNiHOeIPnLitT+eaG6Rc2eGjYx1lBeDvEeHCc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714772742; c=relaxed/simple;
-	bh=lOYEhpsDzSYPAdQ3BrBv0vEy/GPofPZX+8B5tDMr4Qo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=PsaOIklf60V4xlXoSOn3/3itSDzse/Mc2dps0S0BPukCzQ9KxLffEguyl34LRb3MTsEBN26t8S62H+pjnapS4hwBGHVE7tDmbFIlPXxD6pEfiuJeGrauS2vm7uS0lFCIlPaHT9lBn9VTftrhu+PjOtk1Sq/q7cc72Mex3BnWQgY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk; spf=none smtp.mailfrom=ftp.linux.org.uk; dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b=LBITSpJY; arc=none smtp.client-ip=62.89.141.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ftp.linux.org.uk
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=3lCoy8uzoX7QQd8eqESv9U82+gq2FTw7cMvL87kLhkY=; b=LBITSpJYboAcmP2sLMLog8nydW
-	mt/eEb1k1RxaC/1rf9axcfr3DpdDFVZWBzSM5oiyiRFUxSmSTNk7S/pL3r/LyK0sUx0B7ulVQ3JNQ
-	r6F9ALR0ltwB+yhzi14FlChXAh3y8p88L3KhQBzlGvQE9Qyjmf9GyQKp0ImLKiTti9oHi8k3hRvo3
-	wVh2ps6XnwBsfVzZeN71mN1klcTNC+Iw2ovocjktngU/aRLmD9i2C0kfkNl/XDxg43VHY7LcXvmHW
-	cP5n8cc1rlrFA4QbwGKtuB0RilMr6TQXDJT8CFkSL/wplslwGYSr1h0+/PUFgSGJlDgXOv0RWp+HJ
-	KdWj72Tw==;
-Received: from viro by zeniv.linux.org.uk with local (Exim 4.96 #2 (Red Hat Linux))
-	id 1s30ih-00B9OV-2B;
-	Fri, 03 May 2024 21:45:31 +0000
-Date: Fri, 3 May 2024 22:45:31 +0100
-From: Al Viro <viro@zeniv.linux.org.uk>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: keescook@chromium.org, axboe@kernel.dk, brauner@kernel.org,
-	christian.koenig@amd.com, dri-devel@lists.freedesktop.org,
-	io-uring@vger.kernel.org, jack@suse.cz, laura@labbott.name,
-	linaro-mm-sig@lists.linaro.org, linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-	minhquangbui99@gmail.com, sumit.semwal@linaro.org,
-	syzbot+045b454ab35fd82a35fb@syzkaller.appspotmail.com,
-	syzkaller-bugs@googlegroups.com
-Subject: Re: [PATCH] epoll: try to be a _bit_ better about file lifetimes
-Message-ID: <20240503214531.GB2118490@ZenIV>
-References: <202405031110.6F47982593@keescook>
- <20240503211129.679762-2-torvalds@linux-foundation.org>
- <20240503212428.GY2118490@ZenIV>
- <CAHk-=wjpsTEkHgo1uev3xGJ2bQXYShaRf3GPEqDWNgUuKx0JFw@mail.gmail.com>
+	s=arc-20240116; t=1714772787; c=relaxed/simple;
+	bh=vCATFAVm5j2l/tgS89AFZ3qjqyT58OStIRa316aPxP4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=QY0xWwjMR/0qR1//n9ViHoOYh+dXIcouthDHEmw1qAOrXAKznDNI9uIfTgl0FpWJrkQi3lG+HhOLH06qUCfrGAy715Y2X5BP7R7iAr0wlEUQ/DNm9+LXUoHq5VnwElrtZrkSYdO2s8a0VLWfDloVL4HIVLuZgNBYPxdSIxAvdIM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=kwiboo.se; spf=pass smtp.mailfrom=fe-bounces.kwiboo.se; dkim=pass (2048-bit key) header.d=kwiboo.se header.i=@kwiboo.se header.b=ai5UqITR; arc=none smtp.client-ip=167.172.40.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=kwiboo.se
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fe-bounces.kwiboo.se
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kwiboo.se;
+ h=Content-Transfer-Encoding: Content-Type: In-Reply-To: From: References:
+ Cc: To: Subject: MIME-Version: Date: Message-ID; q=dns/txt;
+ s=fe-e1b5cab7be; t=1714772772;
+ bh=yJluxrbqMAEdPs4Fo4cA70yAXpw93jOBKBZ/ta4Y4TQ=;
+ b=ai5UqITRcaaBjabCnd1fzYfTiHFXQkY6itWKCk3KXZzdR51JrmNnb+8mcHfInc7J3tk3zjocR
+ 6WG8ELeCdTHEzBu1iqg4dhIOz5gwhAKTYTsMf+hif3E053p0PRrn50BDK+oIaUOJf0SjXFHGTUj
+ VSuEviCRVwErU5SBjCpZDbIBp6tX9IC9FXsmVW9ue2jvIMYg/3r8J+AVE33S1sdu71FX29pZefD
+ AMoxC+jaVBsNMtbow5py60GZyHxe/Bs1Pd13KReKOHbH1zcSBuc7WmMYBwEqjQX5bNB/JzVSxCK
+ u3LMoIdEB8YZ2NQsZIxPIz/g2g1Ztx93OAv9p+/Z79Ow==
+Message-ID: <d613aa4d-8c87-4735-8209-00510d5097fb@kwiboo.se>
+Date: Fri, 3 May 2024 23:46:06 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wjpsTEkHgo1uev3xGJ2bQXYShaRf3GPEqDWNgUuKx0JFw@mail.gmail.com>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 2/2] arm64: dts: rockchip: Add Radxa ROCK 3C
+To: Chukun Pan <amadeus@jmu.edu.cn>
+Cc: Heiko Stuebner <heiko@sntech.de>, Conor Dooley <conor+dt@kernel.org>,
+ Krzysztof Kozlowski <krzk+dt@kernel.org>, Rob Herring <robh@kernel.org>,
+ linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org,
+ linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+References: <20240428123618.72170-1-amadeus@jmu.edu.cn>
+ <20240428123618.72170-3-amadeus@jmu.edu.cn>
+Content-Language: en-US
+From: Jonas Karlman <jonas@kwiboo.se>
+In-Reply-To: <20240428123618.72170-3-amadeus@jmu.edu.cn>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Report-Abuse-To: abuse@forwardemail.net
+X-Report-Abuse: abuse@forwardemail.net
+X-Complaints-To: abuse@forwardemail.net
+X-ForwardEmail-Version: 0.4.40
+X-ForwardEmail-Sender: rfc822; jonas@kwiboo.se, smtp.forwardemail.net,
+ 167.172.40.54
+X-ForwardEmail-ID: 66355b2215cb5945d1c987e2
 
-On Fri, May 03, 2024 at 02:33:37PM -0700, Linus Torvalds wrote:
+Hi Chukun,
 
-> Look at the hack in __ep_remove(): if it is concurrent with
-> eventpoll_release_file(), it will hit this code
+On 2024-04-28 14:36, Chukun Pan wrote:
+> The Radxa ROCK 3C is a development board with the
+> Rockchip RK3566 SoC. It has the following features:
 > 
->         spin_lock(&file->f_lock);
->         if (epi->dying && !force) {
->                 spin_unlock(&file->f_lock);
->                 return false;
->         }
+> - 1/2/4GB LPDDR4
+> - 1x HDMI Type A
+> - 1x PCIE 2.0 slot
+> - 1x FAN connector
+> - 3.5mm jack with mic
+> - 1GbE RTL8211F Ethernet
+> - 1x USB 3.0, 3x USB 2.0
+> - 40-pin expansion header
+> - MicroSD card/eMMC socket
+> - 16MB SPI NOR (gd25lq128d)
+> - AP6256 or AIC8800 WiFi/BT
 > 
-> and not free the epi.
+> Signed-off-by: Chukun Pan <amadeus@jmu.edu.cn>
+> ---
+>  arch/arm64/boot/dts/rockchip/Makefile         |   1 +
+>  .../boot/dts/rockchip/rk3566-rock-3c.dts      | 750 ++++++++++++++++++
+>  2 files changed, 751 insertions(+)
+>  create mode 100644 arch/arm64/boot/dts/rockchip/rk3566-rock-3c.dts
+> 
 
-What does that have to do with ep_item_poll()?
+[snip]
 
-eventpoll_release_file() itself calls __ep_remove().  Have that
-happen while ep_item_poll() is running in another thread and
-you've got a problem.
+> +
+> +&i2c0 {
+> +	status = "okay";
+> +
+> +	vdd_cpu: regulator@1c {
+> +		compatible = "tcs,tcs4525";
+> +		reg = <0x1c>;
+> +		fcs,suspend-voltage-selector = <1>;
+> +		regulator-name = "vdd_cpu";
+> +		regulator-always-on;
+> +		regulator-boot-on;
+> +		regulator-min-microvolt = <800000>;
+> +		regulator-max-microvolt = <1150000>;
+> +		regulator-ramp-delay = <2300>;
+> +		vin-supply = <&vcc5v0_sys>;
+> +
+> +		regulator-state-mem {
+> +			regulator-off-in-suspend;
+> +		};
+> +	};
+> +
+> +	rk809: pmic@20 {
+> +		compatible = "rockchip,rk809";
+> +		reg = <0x20>;
 
-AFAICS, exclusion is on ep->mtx.  Callers of ep_item_poll() are
-* __ep_eventpoll_poll() - grabs ->mtx
-* ep_insert() - called under ->mtx
-* ep_modify() - calls are under ->mtx
-* ep_send_events() - grabs ->mtx
+[snip]
 
-and eventpoll_release_file() grabs ->mtx around __ep_remove().
+> +		codec {
+> +			mic-in-differential;
 
-How do you get through eventpoll_release_file() while someone
-has entered ep_item_poll()?
+This should be rockchip,mic-in-differential or removed.
+
+> +		};
+> +	};
+> +
+> +	eeprom: eeprom@50 {
+> +		compatible = "belling,bl24c16a", "atmel,24c16";
+> +		reg = <0x50>;
+> +		pagesize = <16>;
+> +	};
+> +};
+> +
+
+[snip]
+
+> +
+> +&sdmmc0 {
+> +	bus-width = <4>;
+> +	cap-sd-highspeed;
+> +	disable-wp;
+> +	pinctrl-names = "default";
+> +	pinctrl-0 = <&sdmmc0_bus4 &sdmmc0_clk &sdmmc0_cmd &sdmmc0_det>;
+> +	sd-uhs-sdr50;
+
+Do you have any references to issues related to why sd-uhs-sdr104 is not
+used here?
+
+My testing shows that io-domain is getting notified and correctly
+configured during boot. And card seem to be working correctly.
+
+[    2.162780] mmc_host mmc1: Bus speed (slot 0) = 375000Hz (slot req 400000Hz, actual 375000HZ div = 0)
+
+[    2.229408] rockchip-iodomain fdc20000.syscon:io-domains: Setting to 3300000
+[    2.230042] rockchip-iodomain fdc20000.syscon:io-domains: Setting to 3300000 done
+[    2.231493] rockchip-iodomain fdc20000.syscon:io-domains: Setting to 1800000
+[    2.232121] rockchip-iodomain fdc20000.syscon:io-domains: Setting to 1800000 done
+[    2.257294] mmc_host mmc1: Bus speed (slot 0) = 150000000Hz (slot req 150000000Hz, actual 150000000HZ div = 0)
+[    2.269482] dwmmc_rockchip fe2b0000.mmc: Successfully tuned phase to 254
+[    2.270098] mmc1: new ultra high speed SDR104 SDXC card at address aaaa
+[    2.271533] mmcblk1: mmc1:aaaa SD64G 59.5 GiB
+[    2.277357]  mmcblk1: p1
+
+Also when the card is later removed/re-inserted:
+
+[   80.181598] mmc1: card aaaa removed
+[   83.836785] rockchip-iodomain fdc20000.syscon:io-domains: Setting to 3300000
+[   83.837611] rockchip-iodomain fdc20000.syscon:io-domains: Setting to 3300000 done
+[   83.839263] rockchip-iodomain fdc20000.syscon:io-domains: Setting to 3300000
+[   83.839952] rockchip-iodomain fdc20000.syscon:io-domains: Setting to 3300000 done
+[   83.855358] mmc_host mmc1: Bus speed (slot 0) = 375000Hz (slot req 400000Hz, actual 375000HZ div = 0)
+[   84.153827] rockchip-iodomain fdc20000.syscon:io-domains: Setting to 3300000
+[   84.154524] rockchip-iodomain fdc20000.syscon:io-domains: Setting to 3300000 done
+[   84.156149] rockchip-iodomain fdc20000.syscon:io-domains: Setting to 1800000
+[   84.156838] rockchip-iodomain fdc20000.syscon:io-domains: Setting to 1800000 done
+[   84.183932] mmc_host mmc1: Bus speed (slot 0) = 150000000Hz (slot req 150000000Hz, actual 150000000HZ div = 0)
+[   84.202888] dwmmc_rockchip fe2b0000.mmc: Successfully tuned phase to 257
+[   84.203574] mmc1: new ultra high speed SDR104 SDXC card at address aaaa
+[   84.205537] mmcblk1: mmc1:aaaa SD64G 59.5 GiB
+[   84.211434]  mmcblk1: p1
+
+sd-uhs-ddr50 should also work based on my testing.
+
+Regards,
+Jonas
+
+> +	vmmc-supply = <&vcc3v3_sys>;
+> +	vqmmc-supply = <&vccio_sd>;
+> +	status = "okay";
+> +};
+> +
+
+[snip]
 
