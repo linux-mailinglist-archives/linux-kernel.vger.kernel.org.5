@@ -1,263 +1,117 @@
-Return-Path: <linux-kernel+bounces-168223-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-168224-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E43498BB553
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 23:13:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 28B258BB556
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 23:14:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1348A1C23065
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 21:13:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 59D171C210E1
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 21:14:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6229C41C87;
-	Fri,  3 May 2024 21:12:25 +0000 (UTC)
-Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 50A18134B1;
+	Fri,  3 May 2024 21:14:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kwiboo.se header.i=@kwiboo.se header.b="t81/V0Ck"
+Received: from smtp.forwardemail.net (smtp.forwardemail.net [149.28.215.223])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 156853F8F1
-	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 21:12:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.71
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6F692206E
+	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 21:14:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=149.28.215.223
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714770744; cv=none; b=jH0LYVoualV7Y/hDkWjcTNO3RhNQsL4bUYJUDmyj6fIfPqOT19nBVB8pGtZRfSUI4qT7CGHAlWPOcwvx/aCxt57iulH6L3fRQj8PnP4JRgWDwXr2P82Se5nIdPYaOmSHXIvFCd7taPfmvWmCV+4WFxHgrMqTe5ebU/uquwsI2x0=
+	t=1714770847; cv=none; b=ubnU92VqBhF2OiDlATFaNu3O1fyEb/YTtWA+8rFxyT0yOQPoIs9AnEEaKroz5TrZq9IkNscDmLlblkkqw/y9dvAMeoPLfTVr74JAIs0fl5m9LdINY39wDeC7jQGb+oAPL7qa6sySNSDQ1eU0E23sCaJtwM6AZ+pqxT5jCLqybxs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714770744; c=relaxed/simple;
-	bh=ycDghc68qzDwYAQewVv9WPRcdtL4zIPqb42JlXJQlJ8=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=Y+PnFIu3HzU+NMv7othcgBkHjJZ9qOUkfctSzjUuNuEiphEtORZw9AtEr5/AOcOw/ufdkY22auqUFaIbygQEeWTJJovvfqqvHrYU6o4rmnAWdOQ6fAVXtYjqy9fwoBdNdF2iG7WRVdLHlJO5jqcJTuchKWYNnRDOZHPXntlv+G0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.71
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f71.google.com with SMTP id ca18e2360f4ac-7de9cd658acso10548739f.3
-        for <linux-kernel@vger.kernel.org>; Fri, 03 May 2024 14:12:22 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714770742; x=1715375542;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=7QQ1yqs7rz6ixM8Q6PLgTtJHT4Ut7GB+/Wz+jhLZ1Rk=;
-        b=Ds9wy3Md4QjNw5pZb1oIpQt81SdlSQalc3N2C9wrn9vd5tiKKPnTEZg/02b3QecFhh
-         Zbus9l99tZPwNvyXgHVAszGlF+19CN/gHn9b/WHSXPGDRiE+SCmM5cGK33ndL3dbPJ6j
-         zjF9qU9R6GQlhXbzT8IuQjqB+9kb0ldM0b0hR96nzH98tzMEJLycsY1qnvZjXpM/wX3p
-         8m5eOQIJREb8yiiHuaY5cIYp9H5/0UFkOOinksPJXRClj/S/k8wrgsoZQYIar5r1l/Gd
-         fWpYYaAYOSbgYp3siGlnBcx8vkHXaiad0YdmpKwnAsQ7l9XkOxvgDb3Uh+nT/EDvhacS
-         6TBw==
-X-Forwarded-Encrypted: i=1; AJvYcCWgzZlZQdoBSNapWbkeZsoDdE3fPE3oTMEHUZIH2eXO+dd8Y+kBRD4HUMnu1BKc5897pcoLYulXXSOUTuVCcbsKGE1WfQs2corpUC8e
-X-Gm-Message-State: AOJu0YzaJaQJLpb9NgoJ/KGUM/xJj3i1q8pc/zvjcNW0QRD8Yb+jKJC6
-	EgKrLKlr8oPNjOT8wdDX/dYU471tpBHVbygArQ/UZxm061cPRzqXqDSJhh6k9Vy5Uq5UWYiCR5h
-	pewYCLnNOwyZYUL2BFr9UeKeZevnh/2tKem9X2RgYxaSWwxh+drT8w+w=
-X-Google-Smtp-Source: AGHT+IGwozsz3tqmLYxBXyx9gpKBDwRjL+CDjFgR59GW2XTkvZNO4MP6/g+XMe/zXrELNjI818ssvFVinNSgKcwwSBdXn88yHXyZ
+	s=arc-20240116; t=1714770847; c=relaxed/simple;
+	bh=E8fSfPDanWKhY63OGzNYEeZVAK8ZOVmfz2dJ0kcur2U=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=YtbWSuTFoxLM/ue7e7bQ1eTbVPwy6YXp4GMzOT3WFZ/cfzi/a9ym9vyrNBnnKJI4skoyTAi9INlwx/k/OFA0rTCdnFrmsJzfOgACl8NqV5/ncrABrj4jbEvrEoS/eA8k8UFZnRUQM40t9pJlBPYHKZlM/6IEedV0cpHmDWPvwh4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=kwiboo.se; spf=pass smtp.mailfrom=fe-bounces.kwiboo.se; dkim=pass (2048-bit key) header.d=kwiboo.se header.i=@kwiboo.se header.b=t81/V0Ck; arc=none smtp.client-ip=149.28.215.223
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=kwiboo.se
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fe-bounces.kwiboo.se
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kwiboo.se;
+ h=Content-Transfer-Encoding: MIME-Version: Message-ID: Date: Subject: Cc:
+ To: From; q=dns/txt; s=fe-e1b5cab7be; t=1714770836;
+ bh=IEtiYMrqhyG7VeKkvj3sxxLLjVBj8CFwUTkak0hK3lE=;
+ b=t81/V0Ck3Ab0yo3Oy8IUXyk30C2Fx6ctMxyovFDDfJgIGuqCCFX9iq1BGWYQ6N/k9muvxTdI9
+ RNrWubygr/CutmsO/RddrJq6XhR6lWN8Qapd2mBVTuFCP40IpamzDqOv5GmedNm8cSdqfo5djSr
+ iO9hMTdR72lBxP5QeJkkHXcnZ+T93qvUosnheBhSFZuWbqSWHza/aUBj5Pvc6IeG1RkB3dlAsFV
+ wVgZqd3W7M8Tr0LDnQ0cMQwBelWfJYnZSdCeTwLf9zKEI2vTyFROfS3iSOX7XTt4ii8w+B4aSf+
+ 5Zk8d/M0fPseTc3W+EMu1RiWUE7H3oGrcSliUWQBJvhA==
+From: Jonas Karlman <jonas@kwiboo.se>
+To: Heiko Stuebner <heiko@sntech.de>, Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley
+ <conor+dt@kernel.org>
+Cc: devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org, Jonas
+ Karlman <jonas@kwiboo.se>
+Subject: [PATCH v4 0/2] arm64: dts: rockchip: Add Radxa ZERO 3W/3E
+Date: Fri,  3 May 2024 21:13:39 +0000
+Message-ID: <20240503211346.1834868-1-jonas@kwiboo.se>
+X-Mailer: git-send-email 2.43.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:12c3:b0:36b:140e:a4c with SMTP id
- i3-20020a056e0212c300b0036b140e0a4cmr136165ilm.3.1714770742390; Fri, 03 May
- 2024 14:12:22 -0700 (PDT)
-Date: Fri, 03 May 2024 14:12:22 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000f8c4ed0617932cf8@google.com>
-Subject: [syzbot] [xfs?] possible deadlock in xfs_qm_dqfree_one (2)
-From: syzbot <syzbot+8ff4d7e4aeff9f0a6390@syzkaller.appspotmail.com>
-To: chandan.babu@oracle.com, djwong@kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Report-Abuse-To: abuse@forwardemail.net
+X-Report-Abuse: abuse@forwardemail.net
+X-Complaints-To: abuse@forwardemail.net
+X-ForwardEmail-Version: 0.4.40
+X-ForwardEmail-Sender: rfc822; jonas@kwiboo.se, smtp.forwardemail.net,
+ 149.28.215.223
+X-ForwardEmail-ID: 663553905f172f3129915380
 
-Hello,
+This series adds initial support for the Radxa ZERO 3W/3E boards.
 
-syzbot found the following issue on:
+The Radxa ZERO 3W/3E is an ultra-small, high-performance single board
+computer based on the Rockchip RK3566, with a compact form factor and
+rich interfaces.
 
-HEAD commit:    b947cc5bf6d7 Merge tag 'erofs-for-6.9-rc7-fixes' of git://..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=11806d37180000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=8a10709e36c02a40
-dashboard link: https://syzkaller.appspot.com/bug?extid=8ff4d7e4aeff9f0a6390
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+Schematic for ZERO 3W and ZERO 3E can be found at:
+https://dl.radxa.com/zero3/docs/hw/3w/radxa_zero_3w_v1110_schematic.pdf
+https://dl.radxa.com/zero3/docs/hw/3e/radxa_zero_3e_v1200_schematic.pdf
 
-Unfortunately, I don't have any reproducer for this issue yet.
+Changes in v2:
+- Collect acked-by tag
+- Add to Makefile
+- Add patch to fix #sound-dai-cells warning
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/91fab71c3d68/disk-b947cc5b.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/fec2372d99b3/vmlinux-b947cc5b.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/cd335eaa33d7/bzImage-b947cc5b.xz
+Changes in v3:
+- Fix devicetree spelling
+- Sort hdmi-con, leds, pmic@20 and regulator@40 nodes
+- Change to regulator-off-in-suspend for vdd_logic
+- Drop patch to fix #sound-dai-cells warning, similar patch [1] already
+  exists
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+8ff4d7e4aeff9f0a6390@syzkaller.appspotmail.com
+Changes in v4:
+- Change compatible of vdd_logic
+- Add vcc5v_midu and vbus regulator and related vcc8/vcc9-supply prop
+- Adjust clock_in_out prop for gmac1
+- Add cap-mmc-highspeed prop to sdhci
+- Add sdmmc1 and uart1 nodes used for wifi/bt on 3W
+- Rename rk3566-radxa-zero3.dtsi to rk3566-radxa-zero-3.dtsi
+- Rebase on latest mmind/for-next tree
 
-======================================================
-WARNING: possible circular locking dependency detected
-6.9.0-rc6-syzkaller-00005-gb947cc5bf6d7 #0 Not tainted
-------------------------------------------------------
-kswapd0/88 is trying to acquire lock:
-ffff88805aa35958 (&qinf->qi_tree_lock){+.+.}-{3:3}, at: xfs_qm_dqfree_one+0x6f/0x1a0 fs/xfs/xfs_qm.c:1654
+[1] https://lore.kernel.org/linux-rockchip/3a035c16-75b5-471d-aa9d-e91c2bb9f8d0@gmail.com/
 
-but task is already holding lock:
-ffffffff8db37c40 (fs_reclaim){+.+.}-{0:0}, at: balance_pgdat+0x166/0x19a0 mm/vmscan.c:6782
+Jonas Karlman (2):
+  dt-bindings: arm: rockchip: Add Radxa ZERO 3W/3E
+  arm64: dts: rockchip: Add Radxa ZERO 3W/3E
 
-which lock already depends on the new lock.
+ .../devicetree/bindings/arm/rockchip.yaml     |   7 +
+ arch/arm64/boot/dts/rockchip/Makefile         |   2 +
+ .../dts/rockchip/rk3566-radxa-zero-3.dtsi     | 464 ++++++++++++++++++
+ .../dts/rockchip/rk3566-radxa-zero-3e.dts     |  41 ++
+ .../dts/rockchip/rk3566-radxa-zero-3w.dts     |  85 ++++
+ 5 files changed, 599 insertions(+)
+ create mode 100644 arch/arm64/boot/dts/rockchip/rk3566-radxa-zero-3.dtsi
+ create mode 100644 arch/arm64/boot/dts/rockchip/rk3566-radxa-zero-3e.dts
+ create mode 100644 arch/arm64/boot/dts/rockchip/rk3566-radxa-zero-3w.dts
 
+-- 
+2.43.2
 
-the existing dependency chain (in reverse order) is:
-
--> #2 (fs_reclaim){+.+.}-{0:0}:
-       __fs_reclaim_acquire mm/page_alloc.c:3698 [inline]
-       fs_reclaim_acquire+0x102/0x160 mm/page_alloc.c:3712
-       might_alloc include/linux/sched/mm.h:312 [inline]
-       slab_pre_alloc_hook mm/slub.c:3746 [inline]
-       slab_alloc_node mm/slub.c:3827 [inline]
-       kmalloc_trace+0x51/0x330 mm/slub.c:3992
-       kmalloc include/linux/slab.h:628 [inline]
-       add_stack_record_to_list mm/page_owner.c:177 [inline]
-       inc_stack_record_count mm/page_owner.c:219 [inline]
-       __set_page_owner+0x34a/0x560 mm/page_owner.c:334
-       set_page_owner include/linux/page_owner.h:32 [inline]
-       post_alloc_hook+0x2d4/0x350 mm/page_alloc.c:1534
-       prep_new_page mm/page_alloc.c:1541 [inline]
-       get_page_from_freelist+0xa28/0x3780 mm/page_alloc.c:3317
-       __alloc_pages+0x22b/0x2460 mm/page_alloc.c:4575
-       __alloc_pages_bulk+0x742/0x14f0 mm/page_alloc.c:4523
-       alloc_pages_bulk_array include/linux/gfp.h:202 [inline]
-       xfs_buf_alloc_pages+0x20f/0x9d0 fs/xfs/xfs_buf.c:398
-       xfs_buf_find_insert fs/xfs/xfs_buf.c:650 [inline]
-       xfs_buf_get_map+0x1e71/0x30e0 fs/xfs/xfs_buf.c:755
-       xfs_buf_read_map+0xd2/0xb40 fs/xfs/xfs_buf.c:860
-       xfs_trans_read_buf_map+0x352/0x990 fs/xfs/xfs_trans_buf.c:289
-       xfs_trans_read_buf fs/xfs/xfs_trans.h:210 [inline]
-       xfs_qm_dqflush+0x224/0x1470 fs/xfs/xfs_dquot.c:1271
-       xfs_qm_flush_one+0x2f7/0x3b0 fs/xfs/xfs_qm.c:1285
-       xfs_qm_dquot_walk.isra.0+0x21a/0x3d0 fs/xfs/xfs_qm.c:88
-       xfs_qm_quotacheck+0x7af/0x920 fs/xfs/xfs_qm.c:1375
-       xfs_qm_mount_quotas+0x11a/0x650 fs/xfs/xfs_qm.c:1488
-       xfs_mountfs+0x1c45/0x1d40 fs/xfs/xfs_mount.c:963
-       xfs_fs_fill_super+0x1424/0x1d80 fs/xfs/xfs_super.c:1730
-       get_tree_bdev+0x372/0x610 fs/super.c:1614
-       vfs_get_tree+0x92/0x380 fs/super.c:1779
-       do_new_mount fs/namespace.c:3352 [inline]
-       path_mount+0x14e6/0x1f20 fs/namespace.c:3679
-       do_mount fs/namespace.c:3692 [inline]
-       __do_sys_mount fs/namespace.c:3898 [inline]
-       __se_sys_mount fs/namespace.c:3875 [inline]
-       __x64_sys_mount+0x297/0x320 fs/namespace.c:3875
-       do_syscall_x64 arch/x86/entry/common.c:52 [inline]
-       do_syscall_64+0xcf/0x260 arch/x86/entry/common.c:83
-       entry_SYSCALL_64_after_hwframe+0x77/0x7f
-
--> #1 (&xfs_dquot_project_class){+.+.}-{3:3}:
-       __mutex_lock_common kernel/locking/mutex.c:608 [inline]
-       __mutex_lock+0x175/0x9c0 kernel/locking/mutex.c:752
-       xfs_dqlock fs/xfs/xfs_dquot.h:125 [inline]
-       xfs_qm_dqget_cache_insert.constprop.0+0xda/0x3d0 fs/xfs/xfs_dquot.c:842
-       xfs_qm_dqget+0x182/0x4a0 fs/xfs/xfs_dquot.c:909
-       xfs_qm_quotacheck_dqadjust+0xb3/0x550 fs/xfs/xfs_qm.c:1096
-       xfs_qm_dqusage_adjust+0x4ef/0x660 fs/xfs/xfs_qm.c:1229
-       xfs_iwalk_ag_recs+0x4d2/0x850 fs/xfs/xfs_iwalk.c:213
-       xfs_iwalk_run_callbacks+0x1f3/0x540 fs/xfs/xfs_iwalk.c:372
-       xfs_iwalk_ag+0x823/0xa60 fs/xfs/xfs_iwalk.c:478
-       xfs_iwalk_ag_work+0x144/0x1c0 fs/xfs/xfs_iwalk.c:620
-       xfs_pwork_work+0x82/0x160 fs/xfs/xfs_pwork.c:47
-       process_one_work+0x9ac/0x1ac0 kernel/workqueue.c:3254
-       process_scheduled_works kernel/workqueue.c:3335 [inline]
-       worker_thread+0x6c8/0xf70 kernel/workqueue.c:3416
-       kthread+0x2c4/0x3a0 kernel/kthread.c:388
-       ret_from_fork+0x48/0x80 arch/x86/kernel/process.c:147
-       ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
-
--> #0 (&qinf->qi_tree_lock){+.+.}-{3:3}:
-       check_prev_add kernel/locking/lockdep.c:3134 [inline]
-       check_prevs_add kernel/locking/lockdep.c:3253 [inline]
-       validate_chain kernel/locking/lockdep.c:3869 [inline]
-       __lock_acquire+0x2478/0x3b30 kernel/locking/lockdep.c:5137
-       lock_acquire kernel/locking/lockdep.c:5754 [inline]
-       lock_acquire+0x1b1/0x560 kernel/locking/lockdep.c:5719
-       __mutex_lock_common kernel/locking/mutex.c:608 [inline]
-       __mutex_lock+0x175/0x9c0 kernel/locking/mutex.c:752
-       xfs_qm_dqfree_one+0x6f/0x1a0 fs/xfs/xfs_qm.c:1654
-       xfs_qm_shrink_scan+0x25c/0x3f0 fs/xfs/xfs_qm.c:531
-       do_shrink_slab+0x452/0x11c0 mm/shrinker.c:435
-       shrink_slab+0x18a/0x1310 mm/shrinker.c:662
-       shrink_one+0x493/0x7c0 mm/vmscan.c:4774
-       shrink_many mm/vmscan.c:4835 [inline]
-       lru_gen_shrink_node mm/vmscan.c:4935 [inline]
-       shrink_node+0x231f/0x3a80 mm/vmscan.c:5894
-       kswapd_shrink_node mm/vmscan.c:6704 [inline]
-       balance_pgdat+0x9a0/0x19a0 mm/vmscan.c:6895
-       kswapd+0x5ea/0xbf0 mm/vmscan.c:7164
-       kthread+0x2c4/0x3a0 kernel/kthread.c:388
-       ret_from_fork+0x48/0x80 arch/x86/kernel/process.c:147
-       ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
-
-other info that might help us debug this:
-
-Chain exists of:
-  &qinf->qi_tree_lock --> &xfs_dquot_project_class --> fs_reclaim
-
- Possible unsafe locking scenario:
-
-       CPU0                    CPU1
-       ----                    ----
-  lock(fs_reclaim);
-                               lock(&xfs_dquot_project_class);
-                               lock(fs_reclaim);
-  lock(&qinf->qi_tree_lock);
-
- *** DEADLOCK ***
-
-1 lock held by kswapd0/88:
- #0: ffffffff8db37c40 (fs_reclaim){+.+.}-{0:0}, at: balance_pgdat+0x166/0x19a0 mm/vmscan.c:6782
-
-stack backtrace:
-CPU: 0 PID: 88 Comm: kswapd0 Not tainted 6.9.0-rc6-syzkaller-00005-gb947cc5bf6d7 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0x116/0x1f0 lib/dump_stack.c:114
- check_noncircular+0x31a/0x400 kernel/locking/lockdep.c:2187
- check_prev_add kernel/locking/lockdep.c:3134 [inline]
- check_prevs_add kernel/locking/lockdep.c:3253 [inline]
- validate_chain kernel/locking/lockdep.c:3869 [inline]
- __lock_acquire+0x2478/0x3b30 kernel/locking/lockdep.c:5137
- lock_acquire kernel/locking/lockdep.c:5754 [inline]
- lock_acquire+0x1b1/0x560 kernel/locking/lockdep.c:5719
- __mutex_lock_common kernel/locking/mutex.c:608 [inline]
- __mutex_lock+0x175/0x9c0 kernel/locking/mutex.c:752
- xfs_qm_dqfree_one+0x6f/0x1a0 fs/xfs/xfs_qm.c:1654
- xfs_qm_shrink_scan+0x25c/0x3f0 fs/xfs/xfs_qm.c:531
- do_shrink_slab+0x452/0x11c0 mm/shrinker.c:435
- shrink_slab+0x18a/0x1310 mm/shrinker.c:662
- shrink_one+0x493/0x7c0 mm/vmscan.c:4774
- shrink_many mm/vmscan.c:4835 [inline]
- lru_gen_shrink_node mm/vmscan.c:4935 [inline]
- shrink_node+0x231f/0x3a80 mm/vmscan.c:5894
- kswapd_shrink_node mm/vmscan.c:6704 [inline]
- balance_pgdat+0x9a0/0x19a0 mm/vmscan.c:6895
- kswapd+0x5ea/0xbf0 mm/vmscan.c:7164
- kthread+0x2c4/0x3a0 kernel/kthread.c:388
- ret_from_fork+0x48/0x80 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
- </TASK>
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
 
