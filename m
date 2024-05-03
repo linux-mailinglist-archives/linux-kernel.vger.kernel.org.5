@@ -1,112 +1,141 @@
-Return-Path: <linux-kernel+bounces-167373-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-167374-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 19F228BA893
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 10:18:57 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4CD1D8BA89B
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 10:20:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C35BE1F228D0
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 08:18:56 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 864CEB22537
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 08:20:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4709D148855;
-	Fri,  3 May 2024 08:18:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DFB18148FE2;
+	Fri,  3 May 2024 08:20:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cT/UZhzh"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Kcghk5aV"
+Received: from mail-oo1-f41.google.com (mail-oo1-f41.google.com [209.85.161.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 84DBD149C5C;
-	Fri,  3 May 2024 08:18:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D54C5148313;
+	Fri,  3 May 2024 08:20:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714724311; cv=none; b=frLJ4f9KopfuV1h4vE/nggxTI2X3+pN0Ezm1dBIDedr60c4Y4a14cNnRywCtCgm+Pk3juLhUf7kXcGA2zprD8dF6HFltMUt/+y+j8wd0H4jEZKoY/TlB+8qSujbsx2NY+vGj6uBLFXMGoxQaPHpOLgmDEedTGevUE/DjQwe30+g=
+	t=1714724423; cv=none; b=tp5Eb+XRjmQZNjk6tfq+SPdtMzNWmlGIvDbWKNro2Tba3bGZf/R3+nVSCV/dmJhaH5iCnfU2OO6sfRppYG8kvxBJZe31nCTrm8c5iBYV8TVSbR2uCD2G3vQSv+mv6fWI0YNKhkFKbbOUGIy21bAKaFK6dop0YQ1PW+gYfWEH4ao=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714724311; c=relaxed/simple;
-	bh=Ar7uJX7Y9sXsbDOmIJMUCHFevTN4ih2GP+FjawYHoKU=;
+	s=arc-20240116; t=1714724423; c=relaxed/simple;
+	bh=MNIFnx2qTxrjZunIYAyHq5H9qZ0uBcjf4J51U8fNhhU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=UAQD4LHwccQUBUPd2e0OerMkzVm9MRNMGvl/jAKo2eZ82D8THYBvuXZ5qliatq+MNpNtWLrr0AsmSNN4+wqykfX3GGBuB72CWnvLF2V7YJhuxmk1BjtdSfKHYqS7UBlGj0vkxw8LvWjPVlUe9Ir+yH0FzYTBk6cq7utGguNeqIA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cT/UZhzh; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EE542C116B1;
-	Fri,  3 May 2024 08:18:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714724310;
-	bh=Ar7uJX7Y9sXsbDOmIJMUCHFevTN4ih2GP+FjawYHoKU=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=cT/UZhzheEo8BNxry12VAnxMma0HNlH+1RB/bHS5QYg5IOSD4mj9+VCZlPjHcsW02
-	 OrZ+ZycUrCzOTOvkD8dkC16GR/JbSBgaOd9JDrErk+YAWC2fz+xjWftfCN0N7BghHk
-	 xEsJTrz9UZKrT/srpvSTzey8HFeOXP4hkOeA/z+KA0xCFWvNmxJpXEnuCfbD+XG2sv
-	 zoVA2H6qKUvNZOdEaShKbDPliat7oTAhGXrnef4/3S3ajxDc0z+gkUC2vEixxsA4Kv
-	 G0swc9lUWOKI956K6ZSLvtZuKLh5A6B8bJH4zsZ5LMruxVuMpUr3vhdriOpaX3po+l
-	 I0Tog+m54kBCQ==
-Date: Fri, 3 May 2024 09:18:24 +0100
-From: Lee Jones <lee@kernel.org>
-To: Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Heiko Stuebner <heiko@sntech.de>,
-	Linus Walleij <linus.walleij@linaro.org>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>,
-	Sebastian Reichel <sebastian.reichel@collabora.com>,
-	Alex Bee <knaerzche@gmail.com>
-Cc: Chris Zhong <zyw@rock-chips.com>, Zhang Qing <zhangqing@rock-chips.com>,
-	devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
-	linux-gpio@vger.kernel.org
-Subject: Re: [PATCH v4 0/5] Add RK816 PMIC support
-Message-ID: <20240503081824.GI1227636@google.com>
-References: <20240416161237.2500037-1-knaerzche@gmail.com>
- <171472425816.1279735.1509285489643125462.b4-ty@kernel.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=ZUYDFnyjdsE5FFthjcIFjA0UwTEkc2yD5O/lpIqtkGE0JTDnvwppO5QybEcCJM313TO3bhsEYSn0JUclB7LoPh8OmD/MoPaZBmz13726YTzvwCIp9w+Q2X/Ui880kfKEdDwZEURZlyAISOUPkZf1meNLdSWupkZxBatR5b8n6Dg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Kcghk5aV; arc=none smtp.client-ip=209.85.161.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oo1-f41.google.com with SMTP id 006d021491bc7-5aa2bd6f651so5963236eaf.0;
+        Fri, 03 May 2024 01:20:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1714724421; x=1715329221; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=3hH1YXLlyA1Xepv5zeFpL8G//5XUCXH9AjpKXyKmtRc=;
+        b=Kcghk5aVMyBY1/vaFpDT3trMyEoFIiG2BulFKLaVKsP5FwNn40HTfEWWpK5DDNVTgF
+         QOUWBCwLeV4JcnPbSPpQRr0UlvB60DNVHhXHx8X+DR465UtvA8x4FYtTggC7fb6knK+9
+         mKLocIAZT3+VS+9fS8WCoqD1KeJN2dfUhqzeZ4II+keRIrsSm9tqNTUmppGJQCbwb7gC
+         z/wt8FQq0QdVEA8LueqyEw5TPWdkR5oJo4WQOJwmHpV2C5ImV6DBQywIPGHXEn+RoPPo
+         QnRkGG2UM3/UPUHgKJJvl0IQwhKxlEvwAt6BThFssga22yBzYzCzKswzQHJTjrPvPsLC
+         aCQg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714724421; x=1715329221;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=3hH1YXLlyA1Xepv5zeFpL8G//5XUCXH9AjpKXyKmtRc=;
+        b=XnvFMubc1BxFZ5Xiga7eCANTA8OdRMWejQXxwcAKEWlOfvX4HpunToPPQ5RXwNrIAB
+         yILqLUfd0g3y2ZEQdkjz6xchtWpSFC0aFTKEO8shfhwIEhbmXGnBkhq/cABPbH59tkF3
+         CFlY7yGQKm/xJlWTN402s1v4A4Eg0DdgsmfwnvlFwYbvNDD+u2e3aNEVOvBnCZqEFYFj
+         3EMm7e3NTK0sFv5m9HXxX4r0ntk74EXYDqwM8EwIXaef+360iUOE8F5vmRe06KjiUxRd
+         1bMdnqyMRw58gbNaoIuE1cujuueXI2qyov2fRV8vfJ8mxF1PP+HArWZ1Wnymx6dayiTw
+         Yomw==
+X-Forwarded-Encrypted: i=1; AJvYcCUmEsR+iyQsb9LrCWA2+nPxK22DdzixRHSTBPtDlodKVtYJgACfUnH+JrBqksULpqjn6bIUJt70dJVzcQLmAhxRxi5M1WWfXx6YrObfUSS8LfU1H2XmOTqTq3wjyC1mWwFdOylpQ8zvAEHDs+DbAw2AZcthQlSsUnvIfnuGZcsOgw==
+X-Gm-Message-State: AOJu0Ywq2Krjtr+zSEIZIXUnQ2NPXOD8M5vmc4elMA2dffNsYj9m2eIX
+	b4IUTIeTs3EdjF0VUccSoyrN2ZNBrTG/SbX/IKnWaLJ/CH4frHFr
+X-Google-Smtp-Source: AGHT+IGX/ND1xY8XwJ5CXNf6LkUuVIkOsSBWoWuk/E0wuSsHPBhj9ByTB65T3ot42p7umDDjfusQnw==
+X-Received: by 2002:a05:6358:5912:b0:18d:7755:8219 with SMTP id g18-20020a056358591200b0018d77558219mr1767900rwf.32.1714724420825;
+        Fri, 03 May 2024 01:20:20 -0700 (PDT)
+Received: from archie.me ([103.124.138.155])
+        by smtp.gmail.com with ESMTPSA id bz20-20020a056a02061400b005f7fed76e59sm2283395pgb.78.2024.05.03.01.20.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 03 May 2024 01:20:20 -0700 (PDT)
+Received: by archie.me (Postfix, from userid 1000)
+	id 86C7218462B27; Fri, 03 May 2024 15:20:17 +0700 (WIB)
+Date: Fri, 3 May 2024 15:20:17 +0700
+From: Bagas Sanjaya <bagasdotme@gmail.com>
+To: Usama Arif <usamaarif642@gmail.com>, hannes@cmpxchg.org, tj@kernel.org,
+	lizefan.x@bytedance.com, nphamcs@gmail.com, corbet@lwn.net
+Cc: linux-mm@kvack.org, cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org, kernel-team@meta.com
+Subject: Re: [PATCH v2 1/1] cgroup: Add documentation for missing zswap
+ memory.stat
+Message-ID: <ZjSeQaPR90gV61xp@archie.me>
+References: <20240502185307.3942173-1-usamaarif642@gmail.com>
+ <20240502185307.3942173-2-usamaarif642@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="crh03WeP2jR7Qlt/"
+Content-Disposition: inline
+In-Reply-To: <20240502185307.3942173-2-usamaarif642@gmail.com>
+
+
+--crh03WeP2jR7Qlt/
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <171472425816.1279735.1509285489643125462.b4-ty@kernel.org>
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, 03 May 2024, Lee Jones wrote:
+On Thu, May 02, 2024 at 07:50:24PM +0100, Usama Arif wrote:
+> diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admi=
+n-guide/cgroup-v2.rst
+> index 17e6e9565156..eaf9e66e472a 100644
+> --- a/Documentation/admin-guide/cgroup-v2.rst
+> +++ b/Documentation/admin-guide/cgroup-v2.rst
+> @@ -1572,6 +1572,15 @@ PAGE_SIZE multiple when read back.
+>  	  pglazyfreed (npn)
+>  		Amount of reclaimed lazyfree pages
+> =20
+> +	  zswpin
+> +		Number of pages moved in to memory from zswap.
+> +
+> +	  zswpout
+> +		Number of pages moved out of memory to zswap.
+> +
+> +	  zswpwb
+> +		Number of pages written from zswap to swap.
+> +
+>  	  thp_fault_alloc (npn)
+>  		Number of transparent hugepages which were allocated to satisfy
+>  		a page fault. This counter is not present when CONFIG_TRANSPARENT_HUGE=
+PAGE
 
-> On Tue, 16 Apr 2024 18:12:32 +0200, Alex Bee wrote:
-> > This series aims to add support for Rockchip RK816 PMIC series. As per
-> > datasheet it's targeted for RK3126/RK3128 (RK816-1), RK1108 (RK816-2) and
-> > PX3-SE (RK816-3) but might be used for other SoCs as well. The MFD consists
-> > of an integrated RTC, a GPIO controller, two 32k clock outputs, a power
-> > key, 3 buck- and 6 ldo regulators, 3 regulator-switches, and charger with
-> > integrated fuel gauge. Charger and fuel gauge are not part of this series.
-> > Two of the switches (otg/boost) are part of the binding, but not of
-> > the driver. They must only ever be enabled if no battery charging is
-> > happening, but it will be enabled automatically if a battery is attached
-> > and an external power source is connected. Thus that needs some
-> > incorporation of a yet to be added charger driver.
-> > Integration in the existing rk8xx-infrastructure was pretty straightforward
-> > and only needed very little tweaking. In order to not further bloat the
-> > driver(s) too much with additional `#define`s I tried to re-use existing
-> > ones wherever possible.
-> > 
-> > [...]
-> 
-> Applied, thanks!
-> 
-> [1/5] dt-bindings: mfd: Add rk816 binding
->       commit: 06dfb41b1cf8d64327e5c4391e165f466506c4f0
-> [2/5] mfd: rk8xx: Add RK816 support
->       commit: e9006f81faf8e438ea83626db578610e49f31576
-> [3/5] pinctrl: rk805: Add rk816 pinctrl support
->       commit: 1bd97d64b5f0c01d03ecc9473ccfcf180dbbf54a
-> [4/5] regulator: rk808: Support apply_bit for rk808_set_suspend_voltage_range
->       commit: 9f4e899c286b5127e2443d50e37ee2112efbfa2c
-> [5/5] regulator: rk808: Add RK816 support
->       commit: 5eb068da74a0b443fb99a89d9e5062691649c470
+LGTM, thanks!
 
-Submitted for build testing.
+Reviewed-by: Bagas Sanjaya <bagasdotme@gmail.com>
 
-If successful, I'll follow-up with a PR.
+--=20
+An old man doll... just what I always wanted! - Clara
 
--- 
-Lee Jones [李琼斯]
+--crh03WeP2jR7Qlt/
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZjSePQAKCRD2uYlJVVFO
+o66XAQCCDUlqsMuoqiEoVUacN+LWFuXAOwveu8ll93ptMzCLuAD+PmqqrXvbV07D
+GbRC9OsCb8v87evI9zIURxytHAfibw4=
+=No1B
+-----END PGP SIGNATURE-----
+
+--crh03WeP2jR7Qlt/--
 
