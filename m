@@ -1,238 +1,240 @@
-Return-Path: <linux-kernel+bounces-167332-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-167333-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id CCF078BA803
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 09:44:33 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3A84E8BA807
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 09:47:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5A35E1F223A7
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 07:44:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 56D511C20E04
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 07:47:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 084AF147C8E;
-	Fri,  3 May 2024 07:44:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF285147C78;
+	Fri,  3 May 2024 07:47:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b="iJyz60oM"
-Received: from smtp-relay-internal-0.canonical.com (smtp-relay-internal-0.canonical.com [185.125.188.122])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="dTS9KYJH"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 14A9F1474AB
-	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 07:44:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.125.188.122
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0DB6F146A63
+	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 07:47:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714722261; cv=none; b=a0S47/+eJHOcw8TXVQWbnxAFf2JRYP9um67nvV9Ca2Otgvpy6KZ45SlqzC02HJTIJ8X5FtqOqj5+JsEb9mbIaec1TBzbapF8XQQqQviLnOsBHXVdLaYj6USfdgT23hO2Iz142Hmokg4GuZ2Ghyrd1goCAJsp5bOUFv5VHJNRJyc=
+	t=1714722442; cv=none; b=EjOFW8abOb4ZcbydcAGzsu8szXXvvHEXary9WI0W6kWzyLFiQLjqjIn2zgenft1D/IyMdlQrcnZIgNtoCN2GWu1/DPYD7WcKB1/AWEzNkZUQXOneHCneNkWECt/9kHSA5VxVyAQD5ll1qofNr+wKLvnbcL5lVcsxLbpMVro/Xw4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714722261; c=relaxed/simple;
-	bh=2zRAqAVRpoB8VovR5yi3XXB5XFTz7TdQO1H+uK96JJ8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Y2bHmS7FIMmf4KvzyFpxG4638hOa/bmIvqOYW26XSQU32hNFq5uUIfNtrrUXSWg6T2vDOmlOoM3ukV8YoxvwDFTqY68qjw/5xkEhQIcERimmjwGh8HV8Zn1u8lBgcYjfajWpe374xAzpGTS0aFmtPRRBJ6zEcmiDyZ2LYDZdRD8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com; spf=pass smtp.mailfrom=canonical.com; dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b=iJyz60oM; arc=none smtp.client-ip=185.125.188.122
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canonical.com
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com [209.85.221.71])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id D52E54249B
-	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 07:44:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-	s=20210705; t=1714722255;
-	bh=HQocY+zIiybxmg572V2oftlBH1WtE88jZjblSyh+67E=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type;
-	b=iJyz60oM3SH1R7K98X9ir0hOYo345rqXnopVU6w4o9PWnv6IeOLWhHBV3HbRssaHZ
-	 eTwxTOgvjP2/6BJKT+5HflAIYmctcXnpFQUzrk0Y9m8Fo6UQFZa/x3Wv3lUrj76WpZ
-	 XTqygFJfj7Nb2Bi0Vm0iRLjXAZkDRWfkU8+FW9ZyhLRVQyXH3KLC6fLZ8UlbxX2dG+
-	 DFrQmPj4nqpqST9vYaSkDnBF8qIHf3rPTi///h4SJkwsRUdMpTpViEzr+WQeGWB6/T
-	 7QpYnJN38s7Hq1xc2eOKpwmDi/HtWfoLXriH025XfIB0C8hKBJSlXfodlZVPTDxpAA
-	 Zy94NoZqT/CWQ==
-Received: by mail-wr1-f71.google.com with SMTP id ffacd0b85a97d-34da8f1bf7cso2331424f8f.2
-        for <linux-kernel@vger.kernel.org>; Fri, 03 May 2024 00:44:15 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714722255; x=1715327055;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=HQocY+zIiybxmg572V2oftlBH1WtE88jZjblSyh+67E=;
-        b=OQdhCpDJpn4qx33/5yVmWCEBFadsLSzaL27dxa2TQvjPoAbUGlBInYqW7IdADa1SmM
-         KBeOjIK6C3r/1Jmp661wynsRDSDP2NjZYr02OM0XnEM+LlDi7DTqWM5Wj/r1ZypKzUr0
-         k2J3mvs1Yxhl8t/5rnMIfSPKxSv7aI8WhvnjgHrGj/dq+Qwj5LTRJQs9Usl1QSU9MZSk
-         dJT2Lh+VeVEzUb4wNDOnhQEBdgsFzLyVbcX6V9LAzvkrI29sT033AFZ/yNEmMcVEuQ2o
-         vtcwY8hYwu7zUC/ArD4pjV85syd6uHzIbzP4MU0ZFebG9Gvtk23CjhbEnzO2FUUilAaY
-         yhqQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXRrrzx62tf9F8snbancg98opSOcm4r0wx5pOnP1k+puBvzrIKYerlRZZVQGxQPwSXyDnNEPc2+dbMZsOhemNiIj3b0w8jkCBSn/tHC
-X-Gm-Message-State: AOJu0YzepJLZQ4vYYNJ6yKXut+p9ajC4GhJrO1LaMlDUrdzEjJzCCXH6
-	Gfnc1Kqj7FK1Wn+wjHQvaQCdNKpIH+iHQlWMkt671GYbv4Veuls+5PFXPrOy05TM4UuUqG5HHoo
-	YyqBDRe5PHZqEjt5JQqJuFLNoLJ6K86Z80ARZuBT9XTqXbslafwozo170sksLd+nseffVGFmnIn
-	2+kquRo2BF7vSVtEyWY6yTv3Vik7igzHWsbi823rkpwLrbruINbxAY
-X-Received: by 2002:a05:6000:112:b0:34c:fd73:55d with SMTP id o18-20020a056000011200b0034cfd73055dmr1722871wrx.70.1714722255534;
-        Fri, 03 May 2024 00:44:15 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHShT4u1aVmW6SGvB2TY5tSgwQwi7lin2dyXVmQGaomNM8W6zmFoTjKiJLXEOTsSv0jrb2dbsuiZNCqCaVckFY=
-X-Received: by 2002:a05:6000:112:b0:34c:fd73:55d with SMTP id
- o18-20020a056000011200b0034cfd73055dmr1722849wrx.70.1714722255134; Fri, 03
- May 2024 00:44:15 -0700 (PDT)
+	s=arc-20240116; t=1714722442; c=relaxed/simple;
+	bh=RBrnUVSfQbZt/PtqodXygffgmSLSokBDsnkqALquQ+8=;
+	h=Date:From:To:Cc:Subject:Message-ID; b=o5cHEFNDfJ22g2yd/umhqrLd4DAOuND1BJ6y7zoDok8nX06rfWczgsx2jX1cVhbal6E7EgpjA7fAhWtIEMStm7nIioi4BKjjDhm/ROpQsOoDC8C77qlfxtVLx/IQTz4rPwERi/SS1oHAnSQVbMC8AzG0lVHRMvd1piAl6KAz5Ko=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=dTS9KYJH; arc=none smtp.client-ip=192.198.163.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1714722441; x=1746258441;
+  h=date:from:to:cc:subject:message-id;
+  bh=RBrnUVSfQbZt/PtqodXygffgmSLSokBDsnkqALquQ+8=;
+  b=dTS9KYJH8GFZJiugvcnxtLHFOIm0EV7hML7qYVVImPCPR9OCVajUgeEm
+   A5qmoPB2cC/KIXxLjIdHNfk407o7TJ9tslhhv/tquubiQVmYHPVJvx1yD
+   ehKbbQTM5KdaPLD3GgSZ7FH7MGLWCiTNy2Y2CpQ38qyMfkfZyLYrOdP1G
+   ulI6WFR3m9NM6GJIpvjtobn+BEsfaUT7YLIvDcZgk1Zk1alRFdFuJmZyi
+   j3c+ogifp90fYlcjiQV1pf136Hu0435u0V7a0EX4mUlqR17RDqFKKAY7B
+   0SLOQ7YN2Q7/R44MeON99Uq8fJY/Wlp+bgq6jNUOhGTTSrNewku41kXSS
+   g==;
+X-CSE-ConnectionGUID: v8tLSkNkS32cDkMB46nlmw==
+X-CSE-MsgGUID: nTP1/1U+R7mGcaneeJY/Fg==
+X-IronPort-AV: E=McAfee;i="6600,9927,11062"; a="10685115"
+X-IronPort-AV: E=Sophos;i="6.07,247,1708416000"; 
+   d="scan'208";a="10685115"
+Received: from fmviesa009.fm.intel.com ([10.60.135.149])
+  by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 May 2024 00:47:21 -0700
+X-CSE-ConnectionGUID: JpZIA+TnQZirDF5o72u7+A==
+X-CSE-MsgGUID: 8dR3eRRZSx+iu5wPzUxQfQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,247,1708416000"; 
+   d="scan'208";a="27354522"
+Received: from lkp-server01.sh.intel.com (HELO e434dd42e5a1) ([10.239.97.150])
+  by fmviesa009.fm.intel.com with ESMTP; 03 May 2024 00:47:19 -0700
+Received: from kbuild by e434dd42e5a1 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1s2ndV-000BRU-00;
+	Fri, 03 May 2024 07:47:17 +0000
+Date: Fri, 03 May 2024 15:46:57 +0800
+From: kernel test robot <lkp@intel.com>
+To: "x86-ml" <x86@kernel.org>
+Cc: linux-kernel@vger.kernel.org
+Subject: [tip:master] BUILD SUCCESS
+ 9699b5214fb36086a89413f70488fc4398bcb54f
+Message-ID: <202405031555.ZhJvsnuq-lkp@intel.com>
+User-Agent: s-nail v14.9.24
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20240502091215.13068-1-en-wei.wu@canonical.com> <4bd85100-0f3d-4e38-973c-e6938f304dde@molgen.mpg.de>
-In-Reply-To: <4bd85100-0f3d-4e38-973c-e6938f304dde@molgen.mpg.de>
-From: En-Wei WU <en-wei.wu@canonical.com>
-Date: Fri, 3 May 2024 15:44:04 +0800
-Message-ID: <CAMqyJG3mD0bcPoZg5ay-3PqgPvCR1OaraE6X00kH1QRTE3XNMw@mail.gmail.com>
-Subject: Re: [Intel-wired-lan] [PATCH] e1000e: fix link fluctuations problem
-To: Paul Menzel <pmenzel@molgen.mpg.de>
-Cc: Jesse Brandeburg <jesse.brandeburg@intel.com>, netdev@vger.kernel.org, 
-	rickywu0421@gmail.com, linux-kernel@vger.kernel.org, edumazet@google.com, 
-	intel-wired-lan@lists.osuosl.org, kuba@kernel.org, anthony.l.nguyen@intel.com, 
-	pabeni@redhat.com, davem@davemloft.net
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-Dear Paul Menzel,
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git master
+branch HEAD: 9699b5214fb36086a89413f70488fc4398bcb54f  Merge branch into tip/master: 'x86/timers'
 
-Thank you for your quick response.
+elapsed time: 1188m
 
-> Do you mean ho*t*-plugging?
-> Increas*ing*?
+configs tested: 148
+configs skipped: 4
 
-Yes, sorry about the misspelling.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-> Could you please document what NICs you saw this
-Yes. I saw this in Intel I219-LM. I haven't seen this bug on other NICs.
+tested configs:
+alpha                             allnoconfig   gcc  
+alpha                            allyesconfig   gcc  
+alpha                               defconfig   gcc  
+arc                              allmodconfig   gcc  
+arc                               allnoconfig   gcc  
+arc                              allyesconfig   gcc  
+arc                                 defconfig   gcc  
+arc                   randconfig-001-20240503   gcc  
+arc                   randconfig-002-20240503   gcc  
+arm                              allmodconfig   gcc  
+arm                               allnoconfig   clang
+arm                              allyesconfig   gcc  
+arm                                 defconfig   clang
+arm                   randconfig-001-20240503   clang
+arm                   randconfig-002-20240503   clang
+arm                   randconfig-003-20240503   clang
+arm                   randconfig-004-20240503   gcc  
+arm64                            allmodconfig   clang
+arm64                             allnoconfig   gcc  
+arm64                               defconfig   gcc  
+arm64                 randconfig-001-20240503   clang
+arm64                 randconfig-002-20240503   gcc  
+arm64                 randconfig-003-20240503   clang
+arm64                 randconfig-004-20240503   clang
+csky                             allmodconfig   gcc  
+csky                              allnoconfig   gcc  
+csky                             allyesconfig   gcc  
+csky                                defconfig   gcc  
+csky                  randconfig-001-20240503   gcc  
+csky                  randconfig-002-20240503   gcc  
+hexagon                          allmodconfig   clang
+hexagon                           allnoconfig   clang
+hexagon                          allyesconfig   clang
+hexagon                             defconfig   clang
+hexagon               randconfig-001-20240503   clang
+hexagon               randconfig-002-20240503   clang
+i386                             allmodconfig   gcc  
+i386                              allnoconfig   gcc  
+i386                             allyesconfig   gcc  
+i386         buildonly-randconfig-001-20240503   clang
+i386         buildonly-randconfig-002-20240503   clang
+i386         buildonly-randconfig-003-20240503   gcc  
+i386         buildonly-randconfig-004-20240503   gcc  
+i386         buildonly-randconfig-005-20240503   gcc  
+i386         buildonly-randconfig-006-20240503   clang
+i386                                defconfig   clang
+i386                  randconfig-001-20240503   gcc  
+i386                  randconfig-002-20240503   clang
+i386                  randconfig-003-20240503   clang
+i386                  randconfig-004-20240503   gcc  
+i386                  randconfig-005-20240503   clang
+i386                  randconfig-006-20240503   clang
+i386                  randconfig-011-20240503   clang
+i386                  randconfig-012-20240503   gcc  
+i386                  randconfig-013-20240503   gcc  
+i386                  randconfig-014-20240503   gcc  
+i386                  randconfig-015-20240503   gcc  
+i386                  randconfig-016-20240503   clang
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                           defconfig   gcc  
+loongarch             randconfig-001-20240503   gcc  
+loongarch             randconfig-002-20240503   gcc  
+m68k                             allmodconfig   gcc  
+m68k                              allnoconfig   gcc  
+m68k                             allyesconfig   gcc  
+m68k                                defconfig   gcc  
+microblaze                       allmodconfig   gcc  
+microblaze                        allnoconfig   gcc  
+microblaze                       allyesconfig   gcc  
+microblaze                          defconfig   gcc  
+mips                              allnoconfig   gcc  
+mips                             allyesconfig   gcc  
+nios2                            allmodconfig   gcc  
+nios2                             allnoconfig   gcc  
+nios2                            allyesconfig   gcc  
+nios2                               defconfig   gcc  
+nios2                 randconfig-001-20240503   gcc  
+nios2                 randconfig-002-20240503   gcc  
+openrisc                          allnoconfig   gcc  
+openrisc                         allyesconfig   gcc  
+openrisc                            defconfig   gcc  
+parisc                           allmodconfig   gcc  
+parisc                            allnoconfig   gcc  
+parisc                           allyesconfig   gcc  
+parisc                              defconfig   gcc  
+parisc                randconfig-001-20240503   gcc  
+parisc                randconfig-002-20240503   gcc  
+parisc64                            defconfig   gcc  
+powerpc                          allmodconfig   gcc  
+powerpc                           allnoconfig   gcc  
+powerpc                          allyesconfig   clang
+powerpc               randconfig-001-20240503   clang
+powerpc               randconfig-002-20240503   clang
+powerpc               randconfig-003-20240503   gcc  
+powerpc64             randconfig-001-20240503   clang
+riscv                            allmodconfig   clang
+riscv                             allnoconfig   gcc  
+riscv                            allyesconfig   clang
+riscv                               defconfig   clang
+s390                             allmodconfig   clang
+s390                              allnoconfig   clang
+s390                             allyesconfig   gcc  
+s390                                defconfig   clang
+sh                               allmodconfig   gcc  
+sh                                allnoconfig   gcc  
+sh                               allyesconfig   gcc  
+sh                                  defconfig   gcc  
+sparc                            allmodconfig   gcc  
+sparc                             allnoconfig   gcc  
+sparc                               defconfig   gcc  
+sparc64                          allmodconfig   gcc  
+sparc64                          allyesconfig   gcc  
+sparc64                             defconfig   gcc  
+um                               allmodconfig   clang
+um                                allnoconfig   clang
+um                               allyesconfig   gcc  
+um                                  defconfig   clang
+um                             i386_defconfig   gcc  
+x86_64                            allnoconfig   clang
+x86_64                           allyesconfig   clang
+x86_64       buildonly-randconfig-001-20240503   gcc  
+x86_64       buildonly-randconfig-002-20240503   gcc  
+x86_64       buildonly-randconfig-003-20240503   gcc  
+x86_64       buildonly-randconfig-004-20240503   clang
+x86_64       buildonly-randconfig-005-20240503   gcc  
+x86_64       buildonly-randconfig-006-20240503   clang
+x86_64                              defconfig   gcc  
+x86_64                randconfig-001-20240503   clang
+x86_64                randconfig-002-20240503   clang
+x86_64                randconfig-003-20240503   clang
+x86_64                randconfig-004-20240503   gcc  
+x86_64                randconfig-005-20240503   gcc  
+x86_64                randconfig-006-20240503   clang
+x86_64                randconfig-011-20240503   clang
+x86_64                randconfig-012-20240503   clang
+x86_64                randconfig-013-20240503   clang
+x86_64                randconfig-014-20240503   clang
+x86_64                randconfig-015-20240503   clang
+x86_64                randconfig-016-20240503   clang
+x86_64                randconfig-071-20240503   clang
+x86_64                randconfig-072-20240503   clang
+x86_64                randconfig-073-20240503   clang
+x86_64                randconfig-074-20240503   clang
+x86_64                randconfig-075-20240503   clang
+x86_64                randconfig-076-20240503   gcc  
+x86_64                          rhel-8.3-rust   clang
+xtensa                            allnoconfig   gcc  
 
-> and if it is documented in any datasheet/errata?
-No, we couldn't find any datasheet/errata documenting this.
-
-> Does this have any downsides on systems with non-buggy hardware?
-No, I've tested other non-buggy hardwares (like I219-V) and it has no
-effect on them.
-
->Could you please split this hunk into a separate patch?
-Sure! I'll send the v2 patchset soon.
-
-> Are there any other  public bug reports and discussions you could referen=
-ce?
-No. We have an internal private bug report but it cannot be exposed to
-the public.
-
-Thank you for your time.
-
-On Fri, 3 May 2024 at 13:34, Paul Menzel <pmenzel@molgen.mpg.de> wrote:
->
-> [Fix address jesse.brandeburg@intel.co*m*]
->
->
-> Dear Ricky,
->
->
-> Thank you for your patch.
->
->
-> Am 02.05.24 um 11:12 schrieb Ricky Wu:
-> > As described in https://bugzilla.kernel.org/show_bug.cgi?id=3D218642,
-> > some e1000e NIC reports link up -> link down -> link up when hog-pluggi=
-ng
->
-> Do you mean ho*t*-plugging?
->
-> > the Ethernet cable.
-> >
-> > The problem is because the unstable behavior of Link Status bit in
-> > PHY Status Register of some e1000e NIC. When we re-plug the cable,
-> > the e1000e_phy_has_link_generic() (called after the Link-Status-Changed
-> > interrupt) has read this bit with 1->0->1 (1=3Dlink up, 0=3Dlink down)
-> > and e1000e reports it to net device layer respectively.
->
-> Wow. I guess this was =E2=80=9Cfun=E2=80=9D to debug. Could you please do=
-cument, what
-> NICs you saw this, and if it is documented in any datasheet/errata?
->
-> > This patch solves the problem by passing polling delays on
-> > e1000e_phy_has_link_generic() so that it will not get the unstable
-> > states of Link Status bit.
->
-> Does this have any downsides on systems with non-buggy hardware?
->
-> > Also, the sleep codes in e1000e_phy_has_link_generic() only take
-> > effect when error occurs reading the MII register. Moving these codes
-> > forward to the beginning of the loop so that the polling delays passed
-> > into this function can take effect on any situation.
->
-> Could you please split this hunk into a separate patch?
->
-> Should it Fixes: tag be added?
->
-> Are there any other  public bug reports and discussions you could referen=
-ce?
->
-> Link: https://bugzilla.kernel.org/show_bug.cgi?id=3D218642
->
-> > Signed-off-by: Ricky Wu <en-wei.wu@canonical.com>
-> > ---
-> >   drivers/net/ethernet/intel/e1000e/ich8lan.c |  5 ++++-
-> >   drivers/net/ethernet/intel/e1000e/phy.c     | 10 ++++++----
-> >   2 files changed, 10 insertions(+), 5 deletions(-)
-> >
-> > diff --git a/drivers/net/ethernet/intel/e1000e/ich8lan.c b/drivers/net/=
-ethernet/intel/e1000e/ich8lan.c
-> > index f9e94be36e97..c462aa6e6dee 100644
-> > --- a/drivers/net/ethernet/intel/e1000e/ich8lan.c
-> > +++ b/drivers/net/ethernet/intel/e1000e/ich8lan.c
-> > @@ -1427,8 +1427,11 @@ static s32 e1000_check_for_copper_link_ich8lan(s=
-truct e1000_hw *hw)
-> >       /* First we want to see if the MII Status Register reports
-> >        * link.  If so, then we want to get the current speed/duplex
-> >        * of the PHY.
-> > +      * Some PHYs have link fluctuations with the instability of
-> > +      * Link Status bit (BMSR_LSTATUS) in MII Status Register.
-> > +      * Increase the iteration times and delay solves the problem.
->
-> Increas*ing*?
->
-> >        */
-> > -     ret_val =3D e1000e_phy_has_link_generic(hw, 1, 0, &link);
-> > +     ret_val =3D e1000e_phy_has_link_generic(hw, COPPER_LINK_UP_LIMIT,=
- 100000, &link);
->
-> Could you please document how 100000 was chosen?
->
-> >       if (ret_val)
-> >               goto out;
-> >
-> > diff --git a/drivers/net/ethernet/intel/e1000e/phy.c b/drivers/net/ethe=
-rnet/intel/e1000e/phy.c
-> > index 93544f1cc2a5..ef056363d721 100644
-> > --- a/drivers/net/ethernet/intel/e1000e/phy.c
-> > +++ b/drivers/net/ethernet/intel/e1000e/phy.c
-> > @@ -1776,7 +1776,13 @@ s32 e1000e_phy_has_link_generic(struct e1000_hw =
-*hw, u32 iterations,
-> >       u16 i, phy_status;
-> >
-> >       *success =3D false;
-> > +
-> >       for (i =3D 0; i < iterations; i++) {
-> > +             if (usec_interval >=3D 1000)
-> > +                     msleep(usec_interval / 1000);
-> > +             else
-> > +                     udelay(usec_interval);
-> > +
-> >               /* Some PHYs require the MII_BMSR register to be read
-> >                * twice due to the link bit being sticky.  No harm doing
-> >                * it across the board.
-> > @@ -1799,10 +1805,6 @@ s32 e1000e_phy_has_link_generic(struct e1000_hw =
-*hw, u32 iterations,
-> >                       *success =3D true;
-> >                       break;
-> >               }
-> > -             if (usec_interval >=3D 1000)
-> > -                     msleep(usec_interval / 1000);
-> > -             else
-> > -                     udelay(usec_interval);
-> >       }
-> >
-> >       return ret_val;
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
