@@ -1,233 +1,142 @@
-Return-Path: <linux-kernel+bounces-167771-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-167773-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B873F8BAEF6
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 16:25:41 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id D9F018BAEFD
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 16:28:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 709D52818E8
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 14:25:40 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3186FB21C72
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 14:28:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 64865154C16;
-	Fri,  3 May 2024 14:24:31 +0000 (UTC)
-Received: from mail-io1-f72.google.com (mail-io1-f72.google.com [209.85.166.72])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F249154C16;
+	Fri,  3 May 2024 14:27:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="fGYJU+jX"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B345154C0D
-	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 14:24:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.72
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 142AE152193;
+	Fri,  3 May 2024 14:27:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714746270; cv=none; b=cE5PXiWL7QiiEbHh97Ux2JyVuax3QLOxr/6istcmzIgmF9kkuYNxSSZU+5vCYhUhnvF+EfcD4IzSpETpGgZndZdrh3bGOOZel1NC9lR6SVoTcdquWO5bvT2DYRNq0476cR0wpH+/1eEchqG5Zky8jRw8j2NHwjYBpkmoLITsZ+M=
+	t=1714746472; cv=none; b=hXxXjvgZUjFnur09iU10k4/pBWhgK3w/meBAVHVCeCA8x7VzNSlLO47NOagqxfgiUJDaJmnMqP7dtzroTr1pDfdhAjykweHgYQs19O7bbZGnJQyguFgMvkU5StpCgxUboN8JcRoKuPHMmollEDvZCVTriijKsSk3+I6taLjNo+w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714746270; c=relaxed/simple;
-	bh=nVXcJHcZXdesKjE8vJRpj0lZ1/+RgYD7tyy8wrtKiRc=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=eElOF5ZNxDQP/laGkT/m0lodGb8CJ8KwI2ACYh+D4JxvSeQDXwr/DXBmI3SAOTo5amhe0mrnf0wHhOyBN5PIzLqeJtLfNGEEj9JoR0vvfE3azbzdBzF2li02wYsuUKP/9wgjA/Z0Eh4ntcwN0bxpCHGCLmCRjYb1NO51VpFMNbM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.72
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f72.google.com with SMTP id ca18e2360f4ac-7d9fde69c43so887789239f.1
-        for <linux-kernel@vger.kernel.org>; Fri, 03 May 2024 07:24:28 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714746268; x=1715351068;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=a1rCHm96AiJhRq3rpvqRExVN/wMvxevJc+nhep5CfRs=;
-        b=ac3mN29hGZXKBTh7KosFNQcbBKrtW7t8mZQQJcAvxZ+EYc4DbCR7D16XTM77OwdJPq
-         U9F849hiphP/v/+ZYsnMMwlj0JqO7o4IWXXdVQey/Cekdx7+K2LBrzBSyTFYHKiIDfEa
-         5BaPug8JVIDb4/WzXkq/jZrCwdQgIedU5n/c2tF370G2nCijZabFPqtAOUM58re7v1l/
-         0Zh3MACAEc+sKIsW0nz6YvFtfKbeRpYbKqx+sL4DklX9U002DqG3/9rGxs/Avy1cZofS
-         ztkFr2bYlPoDWXwEX0wheq8foI0zRU0ZJR1NeB1SQNVugzjQpYnVstFP6ZqZYs6qMg0L
-         mMaw==
-X-Forwarded-Encrypted: i=1; AJvYcCUKrUDiYA0bfHA/kDrjoKKYbqj4aBUPBH+Mkfa7WxKH8clMqILEv8U4a92R2pTzT0v1Eps6PYoK3SSRT1rzmEeGU5rELVSKsuBKvEeU
-X-Gm-Message-State: AOJu0YxRpDNYUraxDRZJxKDJANhNGKoxyVckOx/+CvNSt77DzwwwnJKu
-	zqehsHVQg8RpDIxUPVaE/8QraXnAt/xXFqlQ9hFSfIYAeBWNB7zqj4j0K5aZmpWHZyVp+D1fsUk
-	/LHdHRFQ3hcIUgpKRjT/HEamYWc1XqlRmNlzzgAOFOUKUuC7FX5JV/rQ=
-X-Google-Smtp-Source: AGHT+IFvqLmMgYZls/CBXxPOB4E2J7JTnZPI5bKV+raQMke2LclpyYp29bASoj4Vkqi4AHNVQ3qtxMiFMpTUVJ53Ku31oig1E3w/
+	s=arc-20240116; t=1714746472; c=relaxed/simple;
+	bh=DrBGLgX8Lrjw7dwGYbKIReB5FXtCr5ZSrbTwUaBz7Xg=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=u3psqTRWijvp3+lgX6dQLYreGMW46DDn6KWelAk0JEeFbdBaa+LG5r1HGz5W/9rve/AqCHg+pou55zPCqRgo/v7pVZOdi4DuKAL2rlzwT7xS2mmHAZ2HgGh/pJfy/Ku1i3waHnqfnR6blZS5ai4CKUQK0iw9IM8cWaJZMOi3hhs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=fGYJU+jX; arc=none smtp.client-ip=198.175.65.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1714746471; x=1746282471;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=DrBGLgX8Lrjw7dwGYbKIReB5FXtCr5ZSrbTwUaBz7Xg=;
+  b=fGYJU+jXcQYXyHStZtKCMnpH73tEmvdbzTOmKvYHVUAiBtrYyFbrJTzC
+   a8isyt+L2Fvv+kHkNxezx2FxewGIRyyV9vqvwgbJqrgFRUAtoIG7L9P4H
+   U++zfIGS/Bk9HCju/uL40ydfJgNK216yoGxBvUuslPjffpqWyqGBLKemb
+   qX/YgjmhB5GM6kTsy9e3/mrcaO9mVTjuR2XoZ6+IbH5PPSVfxep5OL/fe
+   G/OcJEraFf/zHcs5P4cAQZ2RFU518G1fXwspi9rm/2GWyw4FOn+TzRktR
+   gjO7yETlVZjshy+/X6VOZ9RkuAR0TLwkRPIAcUkZFnpkTCXDeVuDOx8ER
+   Q==;
+X-CSE-ConnectionGUID: HSrbAGk/QUyjKQRr9BYDHQ==
+X-CSE-MsgGUID: F5bHBC9CSHuspS5aZhEtSQ==
+X-IronPort-AV: E=McAfee;i="6600,9927,11063"; a="10680766"
+X-IronPort-AV: E=Sophos;i="6.07,251,1708416000"; 
+   d="scan'208";a="10680766"
+Received: from orviesa008.jf.intel.com ([10.64.159.148])
+  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 May 2024 07:25:55 -0700
+X-CSE-ConnectionGUID: UB+JpBRVSh+jzT1Od1MP2g==
+X-CSE-MsgGUID: zisVq0q/R1+YvZZzSPoPoQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,251,1708416000"; 
+   d="scan'208";a="28055180"
+Received: from tdx-lm.sh.intel.com ([10.239.53.27])
+  by orviesa008.jf.intel.com with ESMTP; 03 May 2024 07:25:50 -0700
+From: Wei Wang <wei.w.wang@intel.com>
+To: seanjc@google.com,
+	pbonzini@redhat.com
+Cc: kvm@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Wei Wang <wei.w.wang@intel.com>
+Subject: [PATCH v1] KVM: x86: 0-initialize kvm_caps.supported_xss on definition
+Date: Fri,  3 May 2024 22:25:48 +0800
+Message-Id: <20240503142548.194585-1-wei.w.wang@intel.com>
+X-Mailer: git-send-email 2.27.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1d98:b0:36c:4d81:8656 with SMTP id
- h24-20020a056e021d9800b0036c4d818656mr165011ila.0.1714746268271; Fri, 03 May
- 2024 07:24:28 -0700 (PDT)
-Date: Fri, 03 May 2024 07:24:28 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000003355e706178d7a8a@google.com>
-Subject: [syzbot] [bcachefs?] WARNING in __virt_to_phys (3)
-From: syzbot <syzbot+3333603f569fc2ef258c@syzkaller.appspotmail.com>
-To: bfoster@redhat.com, kent.overstreet@linux.dev, 
-	linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 
-Hello,
+0-initialize kvm_caps.supported_xss on definition, so that it doesn't
+need to be explicitly zero-ed either in the common x86 or VMX/SVM
+initialization paths. This simplifies the code and reduces LOCs.
 
-syzbot found the following issue on:
+No functional changes intended.
 
-HEAD commit:    6a71d2909427 Merge branch 'for-next/core' into for-kernelci
-git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-kernelci
-console output: https://syzkaller.appspot.com/x/log.txt?x=119f5f18980000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=fca646cf17cc616b
-dashboard link: https://syzkaller.appspot.com/bug?extid=3333603f569fc2ef258c
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-userspace arch: arm64
-
-Unfortunately, I don't have any reproducer for this issue yet.
-
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/c77d21fa1405/disk-6a71d290.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/429fcd369816/vmlinux-6a71d290.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/d3d8a4b85112/Image-6a71d290.gz.xz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+3333603f569fc2ef258c@syzkaller.appspotmail.com
-
-------------[ cut here ]------------
-virt_to_phys used for non-linear address: fffffffffffff75e (0xfffffffffffff75e)
-WARNING: CPU: 1 PID: 9858 at arch/arm64/mm/physaddr.c:15 __virt_to_phys+0xc4/0x138 arch/arm64/mm/physaddr.c:12
-Modules linked in:
-CPU: 1 PID: 9858 Comm: syz-executor.4 Not tainted 6.9.0-rc4-syzkaller-g6a71d2909427 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
-pstate: 60401005 (nZCv daif +PAN -UAO -TCO -DIT +SSBS BTYPE=--)
-pc : __virt_to_phys+0xc4/0x138 arch/arm64/mm/physaddr.c:12
-lr : __virt_to_phys+0xc4/0x138 arch/arm64/mm/physaddr.c:12
-sp : ffff80009adf6e00
-x29: ffff80009adf6e00 x28: 1ffff000135bee02 x27: fffffffffffff75e
-x26: ffff80009adf7010 x25: ffff7000135bedf4 x24: dfff800000000000
-x23: ffff000130f00000 x22: 000f600000000000 x21: 000000000000002d
-x20: fffffffffffff75e x19: 000ffffffffff75e x18: 1fffe000367bdd96
-x17: ffff80008ee7d000 x16: ffff800080333fec x15: 0000000000000001
-x14: 1fffe000367c0990 x13: 0000000000000000 x12: 0000000000000003
-x11: 0000000000000001 x10: 0000000000000003 x9 : 56d29d05a132eb00
-x8 : 56d29d05a132eb00 x7 : ffff8000802aabc8 x6 : 0000000000000000
-x5 : 0000000000000001 x4 : 0000000000000001 x3 : 0000000000000000
-x2 : 0000000000000006 x1 : ffff80008afdfb40 x0 : ffff80012501d000
-Call trace:
- __virt_to_phys+0xc4/0x138 arch/arm64/mm/physaddr.c:12
- virt_to_phys arch/arm64/include/asm/memory.h:368 [inline]
- virt_to_pfn arch/arm64/include/asm/memory.h:382 [inline]
- virt_to_folio include/linux/mm.h:1304 [inline]
- kfree+0xa4/0x3e8 mm/slub.c:4382
- bch2_fs_recovery+0x32c/0x4854 fs/bcachefs/recovery.c:902
- bch2_fs_start+0x30c/0x53c fs/bcachefs/super.c:1042
- bch2_fs_open+0x8b4/0xb64 fs/bcachefs/super.c:2101
- bch2_mount+0x558/0xe10 fs/bcachefs/fs.c:1900
- legacy_get_tree+0xd4/0x16c fs/fs_context.c:662
- vfs_get_tree+0x90/0x288 fs/super.c:1779
- do_new_mount+0x278/0x900 fs/namespace.c:3352
- path_mount+0x590/0xe04 fs/namespace.c:3679
- do_mount fs/namespace.c:3692 [inline]
- __do_sys_mount fs/namespace.c:3898 [inline]
- __se_sys_mount fs/namespace.c:3875 [inline]
- __arm64_sys_mount+0x45c/0x594 fs/namespace.c:3875
- __invoke_syscall arch/arm64/kernel/syscall.c:34 [inline]
- invoke_syscall+0x98/0x2b8 arch/arm64/kernel/syscall.c:48
- el0_svc_common+0x130/0x23c arch/arm64/kernel/syscall.c:133
- do_el0_svc+0x48/0x58 arch/arm64/kernel/syscall.c:152
- el0_svc+0x54/0x168 arch/arm64/kernel/entry-common.c:712
- el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:730
- el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:598
-irq event stamp: 76030
-hardirqs last  enabled at (76029): [<ffff8000802aac68>] raw_spin_rq_unlock_irq kernel/sched/sched.h:1397 [inline]
-hardirqs last  enabled at (76029): [<ffff8000802aac68>] finish_lock_switch+0xbc/0x1e4 kernel/sched/core.c:5163
-hardirqs last disabled at (76030): [<ffff80008ae6da08>] el1_dbg+0x24/0x80 arch/arm64/kernel/entry-common.c:470
-softirqs last  enabled at (75882): [<ffff8000800218e4>] softirq_handle_end kernel/softirq.c:400 [inline]
-softirqs last  enabled at (75882): [<ffff8000800218e4>] __do_softirq+0xb10/0xd2c kernel/softirq.c:583
-softirqs last disabled at (75823): [<ffff80008002ad34>] ____do_softirq+0x14/0x20 arch/arm64/kernel/irq.c:81
----[ end trace 0000000000000000 ]---
-Unable to handle kernel paging request at virtual address ffffffffc37affc8
-KASAN: maybe wild-memory-access in range [0x0003fffe1bd7fe40-0x0003fffe1bd7fe47]
-Mem abort info:
-  ESR = 0x0000000096000006
-  EC = 0x25: DABT (current EL), IL = 32 bits
-  SET = 0, FnV = 0
-  EA = 0, S1PTW = 0
-  FSC = 0x06: level 2 translation fault
-Data abort info:
-  ISV = 0, ISS = 0x00000006, ISS2 = 0x00000000
-  CM = 0, WnR = 0, TnD = 0, TagAccess = 0
-  GCS = 0, Overlay = 0, DirtyBit = 0, Xs = 0
-swapper pgtable: 4k pages, 48-bit VAs, pgdp=00000001ad5bd000
-[ffffffffc37affc8] pgd=0000000000000000, p4d=00000001b0d98003, pud=00000001b0d99003, pmd=0000000000000000
-Internal error: Oops: 0000000096000006 [#1] PREEMPT SMP
-Modules linked in:
-CPU: 1 PID: 9858 Comm: syz-executor.4 Tainted: G        W          6.9.0-rc4-syzkaller-g6a71d2909427 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
-pstate: 60401005 (nZCv daif +PAN -UAO -TCO -DIT +SSBS BTYPE=--)
-pc : _compound_head include/linux/page-flags.h:247 [inline]
-pc : virt_to_folio include/linux/mm.h:1306 [inline]
-pc : kfree+0xbc/0x3e8 mm/slub.c:4382
-lr : virt_to_phys arch/arm64/include/asm/memory.h:368 [inline]
-lr : virt_to_pfn arch/arm64/include/asm/memory.h:382 [inline]
-lr : virt_to_folio include/linux/mm.h:1304 [inline]
-lr : kfree+0xa4/0x3e8 mm/slub.c:4382
-sp : ffff80009adf6e30
-x29: ffff80009adf6e40 x28: 1ffff000135bee02 x27: fffffffffffff75e
-x26: ffff80009adf7010 x25: ffff7000135bedf4 x24: dfff800000000000
-x23: ffff000130f00000 x22: 0000000000000001 x21: ffffffffc37affc0
-x20: ffff80008293e95c x19: fffffffffffff75e x18: 1fffe000367bdd96
-x17: ffff80008ee7d000 x16: ffff800080333fec x15: 0000000000000001
-x14: 1fffe000367c0990 x13: 0000000000000000 x12: 0000000000000003
-x11: 0000000000040000 x10: 000000000003ffff x9 : 00003e00037affc0
-x8 : ffffc1ffc0000000 x7 : ffff8000802aabc8 x6 : 0000000000000000
-x5 : 0000000000000001 x4 : 0000000000000001 x3 : 0000000000000000
-x2 : 0000000000000006 x1 : ffff80008afdfb40 x0 : 000080011ebff75e
-Call trace:
- virt_to_folio include/linux/mm.h:1304 [inline]
- kfree+0xbc/0x3e8 mm/slub.c:4382
- bch2_fs_recovery+0x32c/0x4854 fs/bcachefs/recovery.c:902
- bch2_fs_start+0x30c/0x53c fs/bcachefs/super.c:1042
- bch2_fs_open+0x8b4/0xb64 fs/bcachefs/super.c:2101
- bch2_mount+0x558/0xe10 fs/bcachefs/fs.c:1900
- legacy_get_tree+0xd4/0x16c fs/fs_context.c:662
- vfs_get_tree+0x90/0x288 fs/super.c:1779
- do_new_mount+0x278/0x900 fs/namespace.c:3352
- path_mount+0x590/0xe04 fs/namespace.c:3679
- do_mount fs/namespace.c:3692 [inline]
- __do_sys_mount fs/namespace.c:3898 [inline]
- __se_sys_mount fs/namespace.c:3875 [inline]
- __arm64_sys_mount+0x45c/0x594 fs/namespace.c:3875
- __invoke_syscall arch/arm64/kernel/syscall.c:34 [inline]
- invoke_syscall+0x98/0x2b8 arch/arm64/kernel/syscall.c:48
- el0_svc_common+0x130/0x23c arch/arm64/kernel/syscall.c:133
- do_el0_svc+0x48/0x58 arch/arm64/kernel/syscall.c:152
- el0_svc+0x54/0x168 arch/arm64/kernel/entry-common.c:712
- el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:730
- el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:598
-Code: 927acd29 f2d83fe8 cb151929 8b080135 (f94006a8) 
----[ end trace 0000000000000000 ]---
-----------------
-Code disassembly (best guess):
-   0:	927acd29 	and	x9, x9, #0x3ffffffffffffc0
-   4:	f2d83fe8 	movk	x8, #0xc1ff, lsl #32
-   8:	cb151929 	sub	x9, x9, x21, lsl #6
-   c:	8b080135 	add	x21, x9, x8
-* 10:	f94006a8 	ldr	x8, [x21, #8] <-- trapping instruction
-
-
+Signed-off-by: Wei Wang <wei.w.wang@intel.com>
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+ arch/x86/kvm/svm/svm.c | 1 -
+ arch/x86/kvm/vmx/vmx.c | 2 --
+ arch/x86/kvm/x86.c     | 4 +---
+ 3 files changed, 1 insertion(+), 6 deletions(-)
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
+index 9aaf83c8d57d..8105e5383b62 100644
+--- a/arch/x86/kvm/svm/svm.c
++++ b/arch/x86/kvm/svm/svm.c
+@@ -5092,7 +5092,6 @@ static __init void svm_set_cpu_caps(void)
+ 	kvm_set_cpu_caps();
+ 
+ 	kvm_caps.supported_perf_cap = 0;
+-	kvm_caps.supported_xss = 0;
+ 
+ 	/* CPUID 0x80000001 and 0x8000000A (SVM features) */
+ 	if (nested) {
+diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+index 22411f4aff53..495125723c15 100644
+--- a/arch/x86/kvm/vmx/vmx.c
++++ b/arch/x86/kvm/vmx/vmx.c
+@@ -7952,8 +7952,6 @@ static __init void vmx_set_cpu_caps(void)
+ 	if (vmx_umip_emulated())
+ 		kvm_cpu_cap_set(X86_FEATURE_UMIP);
+ 
+-	/* CPUID 0xD.1 */
+-	kvm_caps.supported_xss = 0;
+ 	if (!cpu_has_vmx_xsaves())
+ 		kvm_cpu_cap_clear(X86_FEATURE_XSAVES);
+ 
+diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+index 91478b769af0..6a97592950ff 100644
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -94,6 +94,7 @@
+ 
+ struct kvm_caps kvm_caps __read_mostly = {
+ 	.supported_mce_cap = MCG_CTL_P | MCG_SER_P,
++	.supported_xss = 0,
+ };
+ EXPORT_SYMBOL_GPL(kvm_caps);
+ 
+@@ -9795,9 +9796,6 @@ int kvm_x86_vendor_init(struct kvm_x86_init_ops *ops)
+ 
+ 	kvm_register_perf_callbacks(ops->handle_intel_pt_intr);
+ 
+-	if (!kvm_cpu_cap_has(X86_FEATURE_XSAVES))
+-		kvm_caps.supported_xss = 0;
+-
+ #define __kvm_cpu_cap_has(UNUSED_, f) kvm_cpu_cap_has(f)
+ 	cr4_reserved_bits = __cr4_reserved_bits(__kvm_cpu_cap_has, UNUSED_);
+ #undef __kvm_cpu_cap_has
 
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
+base-commit: 16c20208b9c2fff73015ad4e609072feafbf81ad
+-- 
+2.27.0
 
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
 
