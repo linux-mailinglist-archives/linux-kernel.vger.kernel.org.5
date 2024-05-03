@@ -1,172 +1,224 @@
-Return-Path: <linux-kernel+bounces-167477-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-167478-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A75678BAA10
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 11:42:35 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7833C8BAA14
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 11:43:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 376771F213EB
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 09:42:35 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7DA05B210AD
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 09:43:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8368B14F9CC;
-	Fri,  3 May 2024 09:42:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A96A13959C;
+	Fri,  3 May 2024 09:42:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="AYCZDhK9"
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2058.outbound.protection.outlook.com [40.107.236.58])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CO+KsKW7"
+Received: from mail-oa1-f51.google.com (mail-oa1-f51.google.com [209.85.160.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8AA214F133;
-	Fri,  3 May 2024 09:42:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.236.58
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714729346; cv=fail; b=KwWowYoV25eaoLZgkw1GqBtmeKfblkedJuAK5ruIttwLRKp0fIaJdSt1pwm7ySilzBtHIta9JIkw/ENXcreyONVEp8te04ahClsWyW0l3YOzGdPt+5db4wRCHFSAUMFWkdcvf/VljK1PsS+KFPh+YVBi5ti0b3YjilGoyYS1lCY=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714729346; c=relaxed/simple;
-	bh=3akHtITxj/VzSt9L+6TeWeNolyLCZwwkcxMnq14dspY=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=bfHi6WP55xrDXLG4UkdbVTSwABe9UdtuqmJxyQeLoEsr5ojuADB4kCAtJEo6NvGQcf6KqKX2/s92RbSFvgRi1RehhXE8n5IRxRMJIch447yLpnYVgwmklydple78Flna2JiT6nNBELHh+t4tQUTc+NlZlw1vR+DXI3POQLWHNU0=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=AYCZDhK9; arc=fail smtp.client-ip=40.107.236.58
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=F9qQ6E2Ydf5M9TxEs/gZYFk/eO8tIBX3HJLd6FQmNMJHIiIEZPlKGo2VQFj2rYMpOjq4oPRPT8D02nCnd1Jy60XPMhLML2b1suihs2cHS3+hNZ7DZGhDyhVQsPxboYzuiYsAItHtQaCtX5D+X23o+KkGPQDLj8jRR8eLdoaRUyOgKQalgo7F87WTY/KBytYJtDDonHH3l1jx3N96bTMn755E4lu1n8L1xVUCEUtBBOV2q9B6e9GR6a5n/nC0/twmeHkp2AX8NX8XnbEYflq8px4mc9GOujfzPOFW2CxTCxkFoGgWGqsPIoHpkmMRZFzyMa9ljOLYX5t8PzYoXV/imw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=h87GIoUzMAMiPdoTA71NfKITgGso5m4KaVw0yKqnSXk=;
- b=S8y0wHKHaAQyKlVYKy3lQHw8+dhD97E6cRUyRwZxQa77vkyB/I35KOEqNxfRAgidcM5R8HUVfk0vZoP+t+AOz6IQ2TRi8EunU504ngxCgQZgKpvIo3cyN0LNpqaJdO8ZJIyz9PMnL5mlnwSaIGDwE9vvaaY6QRwOcbabWKK7eEM+Fd7filgjfL3kzmZ3/5T/XzSHGPBI3bTvd3vMJsyD/thnxB2JIvRScE49CG/q0UllOpvZusWN1kS34l53aaDkiukO7c6TbnZTnQjfnZYUrkW8KjmMf08zPAtymuuueS1S9SPT0JHP+1L++2e9d4wqP99XW+CPw1/4ihufs4Gs+w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=lists.infradead.org smtp.mailfrom=amd.com;
- dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
- header.from=amd.com; dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=h87GIoUzMAMiPdoTA71NfKITgGso5m4KaVw0yKqnSXk=;
- b=AYCZDhK9IgvQaQYHeDqbdmLBi5zkeVzYoYqn+7b5ixiKWyRmHJ58BQpC1s2Ixdarhy3pAsV/FpHn1JcVfQNLaIMGf158FP/OCSjQUmeQLCENyePm2+30+cO1Y8FxiVBIvmlUwVO59XB/BfrGTcQhJNqxf+PWmNdtn2B3puKf2m0=
-Received: from SN4PR0501CA0098.namprd05.prod.outlook.com
- (2603:10b6:803:42::15) by PH7PR12MB6539.namprd12.prod.outlook.com
- (2603:10b6:510:1f0::14) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7519.32; Fri, 3 May
- 2024 09:42:21 +0000
-Received: from SN1PEPF0002636C.namprd02.prod.outlook.com
- (2603:10b6:803:42:cafe::7f) by SN4PR0501CA0098.outlook.office365.com
- (2603:10b6:803:42::15) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7544.30 via Frontend
- Transport; Fri, 3 May 2024 09:42:21 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB03.amd.com; pr=C
-Received: from SATLEXMB03.amd.com (165.204.84.17) by
- SN1PEPF0002636C.mail.protection.outlook.com (10.167.241.137) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7544.18 via Frontend Transport; Fri, 3 May 2024 09:42:21 +0000
-Received: from SATLEXMB06.amd.com (10.181.40.147) by SATLEXMB03.amd.com
- (10.181.40.144) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Fri, 3 May
- 2024 04:42:21 -0500
-Received: from SATLEXMB04.amd.com (10.181.40.145) by SATLEXMB06.amd.com
- (10.181.40.147) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Fri, 3 May
- 2024 04:42:20 -0500
-Received: from xhdvaralaxm41.xilinx.com (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server id 15.1.2507.35 via Frontend
- Transport; Fri, 3 May 2024 04:42:18 -0500
-From: Sai Pavan Boddu <sai.pavan.boddu@amd.com>
-To: <linux-arm-kernel@lists.infradead.org>, <linux-i2c@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>
-CC: Michal Simek <michal.simek@amd.com>, Andi Shyti <andi.shyti@kernel.org>,
-	Lars-Peter Clausen <lars@metafoo.de>, Wolfram Sang <wsa@kernel.org>
-Subject: [PATCH v2] i2c: cadence: Avoid fifo clear after start
-Date: Fri, 3 May 2024 15:12:08 +0530
-Message-ID: <20240503094208.296834-1-sai.pavan.boddu@amd.com>
-X-Mailer: git-send-email 2.37.6
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8C7D14F134;
+	Fri,  3 May 2024 09:42:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.51
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1714729372; cv=none; b=n1do83+l/KmUqPk5HRBXl8xWj2/62BvmGE0es2iVG0xWDg2SOPcNi9l/+yQk9CV6KJMmXbMbzwiuB15r3gtFwuRlCbSw9DlZJKkBvWYrhOaVq00immp22rKW2CkijHW50aqu9MKNLv80lbghhhrKp3OYHbLI8UeQXZO1V3Aic2E=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1714729372; c=relaxed/simple;
+	bh=vAkeSvwTfuryQcOcS4QPlGjT1AW22DjrKxga/xC2nPQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=vBTreP5XUGXqzcUVZfUT3XjQ1CETVwBTdAsH4nmFBmdYCOxgjHLr2MGMqfD4RE3bvwRUZF/KMESiuzSwBqPHxMGiH7mZCBBhddpYFS4X6f2s8riq5G14+ZuvR/pN9XlAmwgyXSlsQB7Mve0PnGksE4pe0szd+nvZ0XOPtPCokyM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CO+KsKW7; arc=none smtp.client-ip=209.85.160.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oa1-f51.google.com with SMTP id 586e51a60fabf-238e171b118so3938543fac.3;
+        Fri, 03 May 2024 02:42:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1714729370; x=1715334170; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=GNvNnv7fLkPCXzKFOmKReFLq3t6eZIeRklyaC85DyKA=;
+        b=CO+KsKW7c9NzcpO4T4LJjUvh/c3Kz04cgDAYgMhSIwZEeK4XysFd/q4Ua+39s/9fgD
+         UR2OCocMtsU+EbPWfJni/l11rG82IiwxWmquAEJzbbJjh7bMLd/HcA3vWYheNR2zXCUp
+         NAk3Naiv79zXES0Ipp1wZIoWUS46/RTTHx1sWJZlmySww1JHUaz/lBRbLT8Tc1N+PJkL
+         6NaWlxHZ3vZeHZo+PuOsrXmf1UC/sQ1MbMG0h9FpenG3+v1Srz67+0qeKxUmHhh9ZGkt
+         AfuBH6KFTlJuh2FOmLnla6dIQ805ImsYnTeoMKgFwuFB3qoGsYZfI7XX6x7YLoTeWwcY
+         Zl7A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714729370; x=1715334170;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=GNvNnv7fLkPCXzKFOmKReFLq3t6eZIeRklyaC85DyKA=;
+        b=kdofIqFXxckTkwK/T6j6PSJXO14ZftuIVOzpDNFR4C5EemXk53En1fvfnv6tkRxAPv
+         UHf0gLs1nS/fW6mjAhlJqnKh+810xEcdC4aMC34vM0nkzVUln7A47ovd8EzNw3wqBxgb
+         7uxbYY8tyRkTCl70Da55h3YvNTu+MJoBRtzZL6DGHtao1EFXoGAsTqn2WM3DmbckLv7l
+         OPRgf6cF9ypz80Pv4kLUeie5MskXPiuO+D493ZRSVkpdfDkGKwU23oUZXa7OEcoyr3VF
+         lDsHdizjeV6ENqv2mfVuq+2iAfs7O8o4Yhyj3MEbroEJpIUG3jjGwfmQzhBtWAugwgXf
+         MvwA==
+X-Forwarded-Encrypted: i=1; AJvYcCVgqmwR5bFxQZKxRw2o9P5c8uRumGL3FZP03MHn4L9v9u4B2WDC+WM/09dV/Xjhv8yPY8+YaTNcO7v5EDQXx335yTh1ePe9m5OX163T
+X-Gm-Message-State: AOJu0YwNLwh1XJplw/IyPOAYmqNX3P+BHhMOEHaR7nZrqt+DhmC1pB/t
+	IWwitb47GmTljgfls0ONVebtxN7BWKK+DE2S8npX4mZT/89yIv+0qnW43bS1vmDLV49eXdcYRIp
+	Q9i8yJD6vEJOqdHQ7IE1CmrltY64=
+X-Google-Smtp-Source: AGHT+IGQcWXxd+BM5x+nAd/5x4yuwDSrpPyFyTdrKfaxLe3etJovQ+UiyQUFC9RN9OY08oq5WERdzlNMzq8Vdb6sLIo=
+X-Received: by 2002:a05:6870:fba1:b0:23c:ca10:cc23 with SMTP id
+ kv33-20020a056870fba100b0023cca10cc23mr2524346oab.51.1714729369911; Fri, 03
+ May 2024 02:42:49 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SN1PEPF0002636C:EE_|PH7PR12MB6539:EE_
-X-MS-Office365-Filtering-Correlation-Id: d01d14eb-40dd-4a44-baf5-08dc6b5554aa
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230031|36860700004|376005|1800799015;
-X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?ZVw6xPjK70yjEOg9BFTi0RdpG6IBqx4NDKWYolHu8J2tND+PeBC0Rx9m05rb?=
- =?us-ascii?Q?fe4UWzQ/l9XmkJ1sGBlTJZaqRFuZS7TY+UmRp2EhofBESONV5an9TN3IBBxk?=
- =?us-ascii?Q?+HQiD3HYYj0u/4ttBf1Jb20ndxUOqlI31M5THRWJchFGDW0i54n4eBlQjQAn?=
- =?us-ascii?Q?oFtwwPokCPIIm3+FeSQTW3AmGwx941IL6ZBi/clb6tDZdXZOYacQg/BkMSt8?=
- =?us-ascii?Q?F3weNB8lQgWOtcqLqVMH+jbfaz2sF486xEyBz1xA0qggoS0Vrrr1m6hcZMm+?=
- =?us-ascii?Q?8DV+Wh+fYg3Ind3KqCnBjJyrNaIedVVY8O170DAFx4hrRVmVWJ4oHP5cad6U?=
- =?us-ascii?Q?iDFZOOvhXd6MSGBQTBuW4XFO2UowF4eQw1YF1XXespjbG6wiQawXsdhXhRBO?=
- =?us-ascii?Q?aNuOCDY/QVHmeO7GcqyKUVh/vpcx3dao8edpzSGkrWz3WtcCUJSi1CYs3kV/?=
- =?us-ascii?Q?B45Y09jYMYJeDDwlcq/K6Pi1LFvFU7I9uYU1t3QeQT1yrPaEP61PfjcPNQUJ?=
- =?us-ascii?Q?DXHzg0BF+rE1YeaAhPAM3/aKHDqGOXSz4DiOO9L/c0YFN4Mmz/KzesL6ItKk?=
- =?us-ascii?Q?nrpDS4ZZrQJ3x8dyqAkCbDhZJhTiG9957WLskFsmi8fgUcthbPrrmZa9cU6U?=
- =?us-ascii?Q?Zs+nktPA4e7ONGyTz0pg5suRvLvzb5yEhiKifexYnX7OBC/0r7SEQzt5Tyep?=
- =?us-ascii?Q?fh07xaQsqxXdtWGmohXyJkjzFQkkq3NJMuG+9+7ZezDLmvlS7mz1VEb1sVvn?=
- =?us-ascii?Q?D5FFVJpOwtaE22UZuH/0mV22/AG4ZQmM+3jHMJzNWk5F+v0UD30oCimyeOqa?=
- =?us-ascii?Q?ZxHT3qWdg19xz/YGEP917SOJlOyzxiszjC62qMGudP6GCFZSYjZO56gJCSQ2?=
- =?us-ascii?Q?te3m8xGVDlAkd+MJJn5r3KgM9a98fdT5GvtaI7NhifKmCx/5zOvHhG2KFU4J?=
- =?us-ascii?Q?hiFDPAwliShKHpyCkNtp+IW7mdDeHQYC4BBUpFF8pDygkItt59yVss4uotD6?=
- =?us-ascii?Q?04ipMb59fPqMYT0c9BBMPZQRiu3TKwhYgyI69PF9WosuW7LvVc6Iy+DaXEB4?=
- =?us-ascii?Q?HciC5oZVfEla2w/3guEHnScA0hgMCyU0yM5rGB3JAhPFTnudfp9wBUayeQKo?=
- =?us-ascii?Q?+o3h2kWt1bDZVahFOlZKcPyVlQGq3s0q12dVB1r5v1wy6tPCGvX7cSrxchvF?=
- =?us-ascii?Q?2x9u6CWkQig37Ca68jqsS/dxbLoVbKkwUQ0RQ2k6U3NX1wNd8XhLWxbldBHk?=
- =?us-ascii?Q?YoytcGRRjipzElyPokSOpJ3gMCivSMP1bdWqXMH1AMAZAgmR+s+DrbYTTGix?=
- =?us-ascii?Q?PrElMK3sgEtJ15HQHZdilzBvRzAH570tbW+1zS/FFydfQRsKb8/OSy0L6kEA?=
- =?us-ascii?Q?JomECpZCxBIdkIwyqSpCfRiPWOiT?=
-X-Forefront-Antispam-Report:
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB03.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(36860700004)(376005)(1800799015);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 May 2024 09:42:21.6010
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: d01d14eb-40dd-4a44-baf5-08dc6b5554aa
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB03.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	SN1PEPF0002636C.namprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB6539
+References: <20240429104633.11060-1-ilpo.jarvinen@linux.intel.com> <20240429104633.11060-8-ilpo.jarvinen@linux.intel.com>
+In-Reply-To: <20240429104633.11060-8-ilpo.jarvinen@linux.intel.com>
+From: Sergio Paracuellos <sergio.paracuellos@gmail.com>
+Date: Fri, 3 May 2024 11:42:37 +0200
+Message-ID: <CAMhs-H_x85BXw0z+gRpS84UT3OCcaewtP7cDq4SVD4YWyeUcRw@mail.gmail.com>
+Subject: Re: [PATCH 07/10] PCI: Replace PCI_CONF1{,_EXT}_ADDRESS() with the
+ new helpers
+To: =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Cc: linux-pci@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>, 
+	Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>, Rob Herring <robh@kernel.org>, 
+	=?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>, 
+	Lorenzo Pieralisi <lpieralisi@kernel.org>, Linus Walleij <linus.walleij@linaro.org>, 
+	Matthias Brugger <matthias.bgg@gmail.com>, 
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, linux-kernel@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-The Driver unintentionally programs ctrl reg to clear the fifo, which
-happens after the start of transaction. Previously, this was not an issue
-as it involved read-modified-write. However, this issue breaks i2c reads
-on QEMU, as i2c-read is executed before guest starts programming control
-register.
+Hi,
 
-Fixes: ff0cf7bca630 ("i2c: cadence: Remove unnecessary register reads")
-Signed-off-by: Sai Pavan Boddu <sai.pavan.boddu@amd.com>
-Acked-by: Michal Simek <michal.simek@amd.com>
----
-Changes for V2:
-	Fix commit message.
+On Mon, Apr 29, 2024 at 12:47=E2=80=AFPM Ilpo J=C3=A4rvinen
+<ilpo.jarvinen@linux.intel.com> wrote:
+>
+> Replace the old PCI_CONF1{,_EXT}_ADDRESS() helpers used to calculate
+> PCI Configuration Space Type 1 addresses with the new
+> pci_conf1{,_ext}_offset() helpers that are more generic and more widely
+> available.
+>
+> Signed-off-by: Ilpo J=C3=A4rvinen <ilpo.jarvinen@linux.intel.com>
+> ---
+>  drivers/pci/controller/pci-ftpci100.c | 6 ++----
+>  drivers/pci/controller/pci-ixp4xx.c   | 5 ++---
+>  drivers/pci/controller/pcie-mt7621.c  | 7 +++----
+>  drivers/pci/pci.h                     | 8 --------
+>  4 files changed, 7 insertions(+), 19 deletions(-)
+>
+> diff --git a/drivers/pci/controller/pci-ftpci100.c b/drivers/pci/controll=
+er/pci-ftpci100.c
+> index ffdeed25e961..a8d0217a0b94 100644
+> --- a/drivers/pci/controller/pci-ftpci100.c
+> +++ b/drivers/pci/controller/pci-ftpci100.c
+> @@ -182,8 +182,7 @@ static int faraday_raw_pci_read_config(struct faraday=
+_pci *p, int bus_number,
+>                                        unsigned int fn, int config, int s=
+ize,
+>                                        u32 *value)
+>  {
+> -       writel(PCI_CONF1_ADDRESS(bus_number, PCI_SLOT(fn),
+> -                                PCI_FUNC(fn), config),
+> +       writel(pci_conf1_addr(bus_number, fn, config, true),
+>                         p->base + FTPCI_CONFIG);
+>
+>         *value =3D readl(p->base + FTPCI_DATA);
+> @@ -214,8 +213,7 @@ static int faraday_raw_pci_write_config(struct farada=
+y_pci *p, int bus_number,
+>  {
+>         int ret =3D PCIBIOS_SUCCESSFUL;
+>
+> -       writel(PCI_CONF1_ADDRESS(bus_number, PCI_SLOT(fn),
+> -                                PCI_FUNC(fn), config),
+> +       writel(pci_conf1_addr(bus_number, fn, config, true),
+>                         p->base + FTPCI_CONFIG);
+>
+>         switch (size) {
+> diff --git a/drivers/pci/controller/pci-ixp4xx.c b/drivers/pci/controller=
+/pci-ixp4xx.c
+> index ec0125344ca1..fd52f4a3ef31 100644
+> --- a/drivers/pci/controller/pci-ixp4xx.c
+> +++ b/drivers/pci/controller/pci-ixp4xx.c
+> @@ -192,9 +192,8 @@ static u32 ixp4xx_config_addr(u8 bus_num, u16 devfn, =
+int where)
+>                        BIT(32 - PCI_SLOT(devfn));
+>         } else {
+>                 /* type 1 */
+> -               return (PCI_CONF1_ADDRESS(bus_num, PCI_SLOT(devfn),
+> -                                         PCI_FUNC(devfn), where) &
+> -                       ~PCI_CONF1_ENABLE) | PCI_CONF1_TRANSACTION;
+> +               return pci_conf1_addr(bus_num, devfn, where, false) |
+> +                      PCI_CONF1_TRANSACTION;
+>         }
+>  }
+>
+> diff --git a/drivers/pci/controller/pcie-mt7621.c b/drivers/pci/controlle=
+r/pcie-mt7621.c
+> index 79e225edb42a..2b2d9828a910 100644
+> --- a/drivers/pci/controller/pcie-mt7621.c
+> +++ b/drivers/pci/controller/pcie-mt7621.c
+> @@ -127,8 +127,7 @@ static void __iomem *mt7621_pcie_map_bus(struct pci_b=
+us *bus,
+>                                          unsigned int devfn, int where)
+>  {
+>         struct mt7621_pcie *pcie =3D bus->sysdata;
+> -       u32 address =3D PCI_CONF1_EXT_ADDRESS(bus->number, PCI_SLOT(devfn=
+),
+> -                                           PCI_FUNC(devfn), where);
+> +       u32 address =3D pci_conf1_ext_addr(bus->number, devfn, where, tru=
+e);
+>
+>         writel_relaxed(address, pcie->base + RALINK_PCI_CONFIG_ADDR);
+>
+> @@ -143,7 +142,7 @@ static struct pci_ops mt7621_pcie_ops =3D {
+>
+>  static u32 read_config(struct mt7621_pcie *pcie, unsigned int dev, u32 r=
+eg)
+>  {
+> -       u32 address =3D PCI_CONF1_EXT_ADDRESS(0, dev, 0, reg);
+> +       u32 address =3D pci_conf1_ext_addr(0, PCI_DEVFN(dev, 0), reg, tru=
+e);
+>
+>         pcie_write(pcie, address, RALINK_PCI_CONFIG_ADDR);
+>         return pcie_read(pcie, RALINK_PCI_CONFIG_DATA);
+> @@ -152,7 +151,7 @@ static u32 read_config(struct mt7621_pcie *pcie, unsi=
+gned int dev, u32 reg)
+>  static void write_config(struct mt7621_pcie *pcie, unsigned int dev,
+>                          u32 reg, u32 val)
+>  {
+> -       u32 address =3D PCI_CONF1_EXT_ADDRESS(0, dev, 0, reg);
+> +       u32 address =3D pci_conf1_ext_addr(0, PCI_DEVFN(dev, 0), reg, tru=
+e);
+>
+>         pcie_write(pcie, address, RALINK_PCI_CONFIG_ADDR);
+>         pcie_write(pcie, val, RALINK_PCI_CONFIG_DATA);
+> diff --git a/drivers/pci/pci.h b/drivers/pci/pci.h
+> index cf0530a60105..fdf9624b0b12 100644
+> --- a/drivers/pci/pci.h
+> +++ b/drivers/pci/pci.h
+> @@ -833,12 +833,4 @@ struct pci_devres {
+>
+>  struct pci_devres *find_pci_dr(struct pci_dev *pdev);
+>
+> -#define PCI_CONF1_ADDRESS(bus, dev, func, reg) \
+> -       (PCI_CONF1_ENABLE | \
+> -        pci_conf1_addr(bus, PCI_DEVFN(dev, func), reg & ~0x3U))
+> -
+> -#define PCI_CONF1_EXT_ADDRESS(bus, dev, func, reg) \
+> -       (PCI_CONF1_ENABLE | \
+> -        pci_conf1_ext_addr(bus, PCI_DEVFN(dev, func), reg & ~0x3U))
+> -
+>  #endif /* DRIVERS_PCI_H */
+> --
+> 2.39.2
+>
 
- drivers/i2c/busses/i2c-cadence.c | 1 +
- 1 file changed, 1 insertion(+)
+I have tested in a GnuBee v1 board based on mt7621 and all PCI
+enumeration and so on is working properly. Hence, for MT7621:
 
-diff --git a/drivers/i2c/busses/i2c-cadence.c b/drivers/i2c/busses/i2c-cadence.c
-index 4bb7d6756947..2fce3e84ba64 100644
---- a/drivers/i2c/busses/i2c-cadence.c
-+++ b/drivers/i2c/busses/i2c-cadence.c
-@@ -633,6 +633,7 @@ static void cdns_i2c_mrecv(struct cdns_i2c *id)
- 
- 	if (hold_clear) {
- 		ctrl_reg &= ~CDNS_I2C_CR_HOLD;
-+		ctrl_reg &= ~CDNS_I2C_CR_CLR_FIFO;
- 		/*
- 		 * In case of Xilinx Zynq SOC, clear the HOLD bit before transfer size
- 		 * register reaches '0'. This is an IP bug which causes transfer size
--- 
-2.37.6
+Acked-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
+Tested-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
 
+Thanks,
+    Sergio Paracuellos
 
