@@ -1,187 +1,150 @@
-Return-Path: <linux-kernel+bounces-167621-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-167622-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D78228BAC15
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 14:07:04 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0FFEB8BAC17
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 14:08:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 847C428179C
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 12:07:03 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 570AEB215AD
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 12:08:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5DF8A152E0B;
-	Fri,  3 May 2024 12:06:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83E2A152E0B;
+	Fri,  3 May 2024 12:08:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="bRqBNXvL";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="S+TYDqRV";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="bRqBNXvL";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="S+TYDqRV"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="tn9wkTGU"
+Received: from mail.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 180C915219F;
-	Fri,  3 May 2024 12:06:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 04A782D047;
+	Fri,  3 May 2024 12:08:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714738015; cv=none; b=brw/bGL0ymGd1KB6lJu25zVI+e1sYUtAVT8/sxTTphqKyDhOWSjz/ZyQ55NMV+JsuvEaq7oxY0g/zGq6p0yN56nT40bOgN6oWugViIzmqwl0NZskdAAULtp2pCdf+0ihHhIll5P0ZbJVH7dt56vC5zKzc3lTaJuTG4Sv1i6LWrw=
+	t=1714738117; cv=none; b=Ai3R01qdWnxirY9zjZFLxhS7AebcW57Ev6iwpGsFzEZG+KsMKmCiWs6UcKqMIf0RGxqGGh62A7U7SkgdZO+sQRl6YAzO2r3Y3NbnRijjUnTjClstQ8o0ARoV4u8f9jqXWJkndnpzj6SNRXnQKc/mImMnKMK8Bn8CvQsAM7EmI/0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714738015; c=relaxed/simple;
-	bh=bLEROzC97gkbPw5RNJtxVFHx7EawHPv2uzdKzjVzDEQ=;
-	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=ZnXZxvktkqDp9i5wc6x5RRimZ4RotovAszJp5+yhKOe1elisDuiyImrmt6boP/LW4wMxzgfPewYY61GSKYx9V1AtB9VKaQV2nrhUzomN1fxnJlF+a3kKiVob4hPu0bKOpzMeNHxjYU6exUUIySkeowANfXmRylK1dEfg2NPnoXU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=bRqBNXvL; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=S+TYDqRV; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=bRqBNXvL; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=S+TYDqRV; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	s=arc-20240116; t=1714738117; c=relaxed/simple;
+	bh=lquxxrcjF3xZu+atm9recj4rSMedgMoAfTuoNjXBLhE=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=O1dNow88L1Fox7WGntWs4XV7m/7LZYKjsct2NFYzmzL74+AqBkrLyjmbKSVxjIyDTKrjhl4XAyET6W07E5oBouhJmrvJLUGs9k0bNambUBLI1z5vajZARg5CM+KhouKkvPSNaCzXp1C2g5UWNmuhpVWjxi+YlWMVc9/m9LbvaBs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=tn9wkTGU; arc=none smtp.client-ip=150.107.74.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+	s=201702; t=1714738111;
+	bh=jS0YccWUoBr+6hDrqtlbj+Xj122L9wmc7ZsHlWYue5w=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=tn9wkTGU/DqvDM6VzwtNOqxO8goPwXCrFluhJPBhZGuL/+MZ9JrqMlFs0n9O6Ocks
+	 GP0vpE0+tBO12xUICUbhD5e17C/GrE8KPiOE7AWMypHdvwquGPHPeS+vg/dNCmB3iB
+	 QbVyfi7J54qYFZPUl32LRK6/nij9rR8QgdR8nV+qiTnQu+vj1l1+C6rppAioEuAwZK
+	 AvmRNX1p+9AxneMzgLXFaCvI+IIEXyuqMADGNPqfhrUv1ufI60woMLXvIXF7nQZ1ap
+	 g8UibEfsogEYDuT8pV27EnctLztXRPvetJRu03ZTat1b/G6ReM14qCNpMdEwVWK9vp
+	 re7TQ9hrPhRmA==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 3D12120307;
-	Fri,  3 May 2024 12:06:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1714738012; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=8XRDU8yPPdJlA8bt/QVltW6z1qn8mYxw5vsm9FBKyYE=;
-	b=bRqBNXvLNXozsBoxKlzOzcsnyHUPt0xDh/DIw8ek8kc0hCQi8xTszQ+LuqYSLGghhFqDvi
-	au3iIFZE7D2LS8/vrlcXr+40BMyJon2IlXPIRojWvpJUzPI9dFbriL/qT2BueLba5IY/ug
-	1eCHqXXCKL9TTW10Fb9hBqmVx3x3Prc=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1714738012;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=8XRDU8yPPdJlA8bt/QVltW6z1qn8mYxw5vsm9FBKyYE=;
-	b=S+TYDqRVHtrkevPltTV9UUSt+TIihJUQVEZ/7i3avgDUd9hjGSqhrS2BO7E9RhPpMCARm4
-	OfIakP7VDG4c6yAg==
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=bRqBNXvL;
-	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=S+TYDqRV
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1714738012; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=8XRDU8yPPdJlA8bt/QVltW6z1qn8mYxw5vsm9FBKyYE=;
-	b=bRqBNXvLNXozsBoxKlzOzcsnyHUPt0xDh/DIw8ek8kc0hCQi8xTszQ+LuqYSLGghhFqDvi
-	au3iIFZE7D2LS8/vrlcXr+40BMyJon2IlXPIRojWvpJUzPI9dFbriL/qT2BueLba5IY/ug
-	1eCHqXXCKL9TTW10Fb9hBqmVx3x3Prc=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1714738012;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=8XRDU8yPPdJlA8bt/QVltW6z1qn8mYxw5vsm9FBKyYE=;
-	b=S+TYDqRVHtrkevPltTV9UUSt+TIihJUQVEZ/7i3avgDUd9hjGSqhrS2BO7E9RhPpMCARm4
-	OfIakP7VDG4c6yAg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 0AC0313991;
-	Fri,  3 May 2024 12:06:52 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id iiSwAFzTNGZwZgAAD6G6ig
-	(envelope-from <tiwai@suse.de>); Fri, 03 May 2024 12:06:52 +0000
-Date: Fri, 03 May 2024 14:07:05 +0200
-Message-ID: <87bk5nayl2.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Jaroslav Kysela <perex@perex.cz>
-Cc: Mark Brown <broonie@kernel.org>,
-	linux-sound@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	"end.to.start" <end.to.start@mail.ru>,
-	lgirdwood@gmail.com,
-	tiwai@suse.com
-Subject: Re: [PATCH 1/1] sound: Support microphone from device Acer 315-24p
-In-Reply-To: <9a683d7f-8bde-47f4-9f63-97b65744711b@perex.cz>
-References: <20240408152454.45532-1-end.to.start@mail.ru>
-	<171268609844.62778.6340689132993321193.b4-ty@kernel.org>
-	<9a683d7f-8bde-47f4-9f63-97b65744711b@perex.cz>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4VW8hv5Zffz4wck;
+	Fri,  3 May 2024 22:08:31 +1000 (AEST)
+Date: Fri, 3 May 2024 22:08:26 +1000
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+To: "Russell King (Oracle)" <linux@armlinux.org.uk>
+Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux Next
+ Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build failure after merge of the arm tree
+Message-ID: <20240503220826.48a59ffd@canb.auug.org.au>
+In-Reply-To: <ZjSduO+MI7EA3O9A@shell.armlinux.org.uk>
+References: <20240503101516.09f01e44@canb.auug.org.au>
+	<ZjSduO+MI7EA3O9A@shell.armlinux.org.uk>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="Sig_/W2VRBVMfeC3EtYxOTKWPpvr";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+
+--Sig_/W2VRBVMfeC3EtYxOTKWPpvr
 Content-Type: text/plain; charset=US-ASCII
-X-Spam-Flag: NO
-X-Spam-Score: -5.51
-X-Rspamd-Action: no action
-X-Rspamd-Queue-Id: 3D12120307
-X-Spam-Level: 
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-5.51 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	DWL_DNSWL_MED(-2.00)[suse.de:dkim];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_CONTAINS_FROM(1.00)[];
-	R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	ARC_NA(0.00)[];
-	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	MIME_TRACE(0.00)[0:+];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com,mail.ru];
-	FREEMAIL_CC(0.00)[kernel.org,vger.kernel.org,mail.ru,gmail.com,suse.com];
-	RCVD_TLS_ALL(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[7];
-	DKIM_TRACE(0.00)[suse.de:+];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns]
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, 03 May 2024 13:23:28 +0200,
-Jaroslav Kysela wrote:
-> 
-> On 09. 04. 24 20:08, Mark Brown wrote:
-> > On Mon, 08 Apr 2024 18:24:54 +0300, end.to.start wrote:
-> >> This patch adds microphone detection for the Acer 315-24p, after which a microphone appears on the device and starts working
-> >> 
-> >> 
-> > 
-> > Applied to
-> > 
-> >     https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
-> > 
-> > Thanks!
-> > 
-> > [1/1] sound: Support microphone from device Acer 315-24p
-> >        commit: 4b9a474c7c820391c0913d64431ae9e1f52a5143
-> > 
-> > All being well this means that it will be integrated into the linux-next
-> > tree (usually sometime in the next 24 hours) and sent to Linus during
-> > the next merge window (or sooner if it is a bug fix), however if
-> > problems are discovered then the patch may be dropped or reverted.
-> 
-> Shall we really accept those anonymous contributions?
-> 
-> From submitting-patches.rst:
-> 
-> """
-> then you just add a line saying::
-> 
->         Signed-off-by: Random J Developer <random@developer.example.org>
-> 
-> using a known identity (sorry, no anonymous contributions.)
-> """
+Hi Russell,
 
-Yeah, that's a bad example, and I noticed too late after sending a PR
-to Linus, too (I concentrated only on the diffs).
+On Fri, 3 May 2024 09:18:00 +0100 "Russell King (Oracle)" <linux@armlinux.o=
+rg.uk> wrote:
+>
+> On Fri, May 03, 2024 at 10:15:16AM +1000, Stephen Rothwell wrote:
+> >=20
+> > After merging the arm tree, today's linux-next build (x86_64 allmodconf=
+ig)
+> > failed like this:
+> >=20
+> > drivers/clk/clkdev.c: In function 'vclkdev_alloc':
+> > drivers/clk/clkdev.c:195:16: error: assignment to '__va_list_tag (*)[1]=
+' from incompatible pointer type '__va_list_tag **' [-Werror=3Dincompatible=
+-pointer-types]
+> >   195 |         fmt.va =3D &ap;
+> >       |                ^
+> > cc1: all warnings being treated as errors =20
+>=20
+> This builds perfectly fine for me - this is on debian stable with
+> arm-linux-gnueabihf-gcc (Debian 10.2.1-6) 10.2.1 20210110:
+>=20
+> No warnings, no errors.
+>=20
+> va_format is defined as:
+>=20
+> struct va_format {
+>         const char *fmt;
+>         va_list *va;
+> };
+>=20
+> and what we have here is a "va_list ap".
+>=20
+> Therefore, the assignment:
+>=20
+>         fmt.va =3D &ap;
+>=20
+> is correct.
+>=20
+> What certainly won't work is:
+>=20
+> 	fmt.va =3D ap;
+>=20
+> and there aren't any other reasonable alternatives.
+>=20
+> My conclusion: your compiler is being stupid.
 
-The code change itself looks OK, so this is no big problem.
-But let's decline such a submission at the next time.
+Definitely possible.  My build is an x86_64 allmodconfig cross build
+hosted on PowerPC64LE.
 
+$ x86_64-linux-gnu-gcc --version
+x86_64-linux-gnu-gcc (Debian 13.2.0-7) 13.2.0
 
-thanks,
+It still fails for me even just building your tree.  :-(
 
-Takashi
+And if I revert commit 5d998425e37b it does not fail (of course).
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/W2VRBVMfeC3EtYxOTKWPpvr
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmY007oACgkQAVBC80lX
+0GzvaAgAoSjIVTPnLl2uuWdiBZABK+leKnUuRZ72LlHPzbaSPqL8MSeDMBYmmhVD
+baL34AhzTWx8vrmennM+bxb/PyQLpW4w0cKHp92B/moeNF727l0SV9a5KR+G4Mhz
+YEwtKgymg00b27D+UVaS3kXcvcvRCClB3/5VA4xCWLtbECuiUgL6BL6OqKuIb2PG
+z6x4dnN8RY+84Mlr6HOmeg6jd0Wm+oxeS0/pwPA0xp2lJ3rnASw+OadPRo/7QrlN
+6pDI3+DA9/dSwTKiT4jpugZrFHUxxp51d3DY2i5ApHbUYoUlNUhfpO6+9ZWVtUKT
+z24IvH3YgrUeuWnMO4L26LNflw00Qg==
+=LqO/
+-----END PGP SIGNATURE-----
+
+--Sig_/W2VRBVMfeC3EtYxOTKWPpvr--
 
