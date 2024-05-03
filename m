@@ -1,188 +1,153 @@
-Return-Path: <linux-kernel+bounces-167569-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-167570-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 082E38BAB6C
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 13:13:25 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 369EC8BAB6F
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 13:13:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AE5FB1F227E2
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 11:13:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D23E91F22A85
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 11:13:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B52015217E;
-	Fri,  3 May 2024 11:13:18 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18202F9EB;
-	Fri,  3 May 2024 11:13:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C236A152196;
+	Fri,  3 May 2024 11:13:48 +0000 (UTC)
+Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B9D6414F9D7;
+	Fri,  3 May 2024 11:13:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714734797; cv=none; b=Zf0+zTrozjqR/3qT/Ws/Ie2uWHit2pbwrNCW5FSNiPEqFeEyiGhc6Tpr1BzWnM/z/K1dMAJQxOP0ErU3GAwDLvgYfE7/bEvrUdowXyObunY0KIFtTtx2XDxlZl7UVjW4kY3nvX2Y0tlQukWiNJGP7dpvs1bcEjGwJc8o4qjzW98=
+	t=1714734828; cv=none; b=Thk+MN3vOufXr8JV2FdIqymCNAWwBizWI/DRY7gA1682ytSyzs7eKKGc+l3Q7Qyy7iAssO50v1ncNSXUpwypJYu5pwC4PoVvp6eKy5f1h4/r2qNzROamNWZz4aZOcq61xAF9HgoYuQmD7T/i0Vg5JB/KgjUzY8/i6GEZ5iYiJR0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714734797; c=relaxed/simple;
-	bh=ON9EuF/kfQrrlVsD3lIzJIMaCvPZdPofeSBKWj6O2Q8=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=bASYgZFTX7vVsyTwKD6HW1uXhIFGdv8sAzGSVezCokW088zRHhLFsx4O9kNIwXu7oucaU9E5RGrCq74Wxx59SfPo/8YW1PrElx/BHKlEBPTT1kT7YNZcWyYZVqfdUc5U7qIusxic0jiSUpRjDiMsWdfx6EoBnsqxvCSu5SQSzxQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 076C42F4;
-	Fri,  3 May 2024 04:13:35 -0700 (PDT)
-Received: from donnerap.manchester.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 597993F793;
-	Fri,  3 May 2024 04:13:08 -0700 (PDT)
-Date: Fri, 3 May 2024 12:13:04 +0100
-From: Andre Przywara <andre.przywara@arm.com>
-To: Alois Fertl <a.fertl@t-online.de>
-Cc: a.zummo@towertech.it, alexandre.belloni@bootlin.com, wens@csie.org,
- jernej.skrabec@gmail.com, samuel@sholland.org, linux-rtc@vger.kernel.org,
- linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org, Ryan Walklin
- <ryan@testtoast.com>
-Subject: Re: [PATCH v3 1/1] drivers/rtc: rtc-sun6i: AutoCal Internal OSC
- Clock
-Message-ID: <20240503121304.5fc6add5@donnerap.manchester.arm.com>
-In-Reply-To: <20240502180736.7330-1-a.fertl@t-online.de>
-References: <20240502180736.7330-1-a.fertl@t-online.de>
-Organization: ARM
-X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.32; aarch64-unknown-linux-gnu)
+	s=arc-20240116; t=1714734828; c=relaxed/simple;
+	bh=eP7UrYAm+QXdT7GsbpqZgXK33rijqXS4hxtOIMaJM+8=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=cz11+Zu0d+6mzguD3s/+6LOiftL4wRuZ7jeOHxXsy6aQOBoKN7T+erG3SP4R5Hnnw+Uv1smdgu4ABUX/PsgkrAtOuSlHNvXwyGY+/9uKiYnZz36SeYsa9575j0Ies05SkSOrN6C1/gIzIHaGuhSmfI1isR+qm4ZR4US83M5n5tA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.218.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-a51a7d4466bso1088818866b.2;
+        Fri, 03 May 2024 04:13:46 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714734825; x=1715339625;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=fjeIuy9dzDTEtIZgB/dBWOi7o2OzXsFxxtGO6ENhPS8=;
+        b=vEWqM0QEokyGJAFxAtZNBfDp70qaIpf5jeJOwc4jaDIMLpEkhZHdI0KOUOnC6BcbDn
+         p+JKmNhgNvSvmuLKdkPKlCy30IAfmq5mMW7HlwxlmfIVb0PSyUmuEFbXcxidZpgMXnz9
+         va6SQIBHxD6FsqCHsvy1wcgsjskz9RRW0d1Mnyu7kVIUus+DydCqI4Oa4kuWxA4seFuf
+         6cUhl0+PGyQs9fF64BKqIrgGthstxDwi1pFH5furub4Oooeh1iJBZ/JnkSHySw1V0hg9
+         npByLoDBrNIUdYPubdw6k0prxR2IXl2bU9g27ftOYLW1SPxJGkwJXaJBNsNgHXywzVPY
+         5DlQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUiJf7CC4KdbDxhVzvJfAjsbhYBvxo9eKYHEt/WgG7hT/Y3UtYDMfNoj6+dD5aT179/bhod6UGte365Si9Qgq1aCgcPhBi0Dd89GMrEKinQms0BWbmgMxK8T8iOHHEtceV5OZsMjQbzHQ==
+X-Gm-Message-State: AOJu0YyVFz52F90oMCfNRqdwXRKno2jpoEJljPKEQ4kEuBUc9vTJhj0d
+	ZZuRzzkR6LKaSrt6Evvb82y7bk3VWSW+8G0genWm9n+ZWw6dqqnhBniLig==
+X-Google-Smtp-Source: AGHT+IHJxQZVhIx315d2eMT4ER2zN7KMg67+sDv4OXDn7eZIjMXdEpmX9lpfpSRhmextaA64KUwc/Q==
+X-Received: by 2002:a17:906:40ca:b0:a55:ac3d:5871 with SMTP id a10-20020a17090640ca00b00a55ac3d5871mr1312923ejk.77.1714734825020;
+        Fri, 03 May 2024 04:13:45 -0700 (PDT)
+Received: from localhost (fwdproxy-lla-003.fbsv.net. [2a03:2880:30ff:3::face:b00c])
+        by smtp.gmail.com with ESMTPSA id t24-20020a1709063e5800b00a58bcb55704sm1561929eji.165.2024.05.03.04.13.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 03 May 2024 04:13:44 -0700 (PDT)
+From: Breno Leitao <leitao@debian.org>
+To: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+	Jason Gunthorpe <jgg@ziepe.ca>,
+	Leon Romanovsky <leon@kernel.org>
+Cc: netdev@vger.kernel.org,
+	linux-rdma@vger.kernel.org (open list:HFI1 DRIVER),
+	linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH net-next 1/2] IB/hfi1: Do not use custom stat allocator
+Date: Fri,  3 May 2024 04:13:31 -0700
+Message-ID: <20240503111333.552360-1-leitao@debian.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On Thu,  2 May 2024 20:07:36 +0200
-Alois Fertl <a.fertl@t-online.de> wrote:
+With commit 34d21de99cea9 ("net: Move {l,t,d}stats allocation to core and
+convert veth & vrf"), stats allocation could be done on net core
+instead of in this driver.
 
-Hi Alois,
+With this new approach, the driver doesn't have to bother with error
+handling (allocation failure checking, making sure free happens in the
+right spot, etc). This is core responsibility now.
 
-many thanks for taking care and sending a patch! I think this problem is
-plaguing some people.
+Remove the allocation in the hfi1 driver and leverage the network
+core allocation instead.
 
-> I have a M98-8K PLUS Magcubic TV-Box based on the Allwinner H618 SOC.
-> On board is a Sp6330 wifi/bt module that requires a 32kHz clock to
-> operate correctly. Without this change the clock from the SOC is
-> ~29kHz and BT module does not start up. The patch enables the Internal
-> OSC Clock Auto Calibration of the H616/H618 which than provides the
-> necessary 32kHz and the BT module initializes successfully.
-> Add a flag and set it for H6 AND H616. The H618 is the same as H616
-> regarding rtc.
+Signed-off-by: Breno Leitao <leitao@debian.org>
+---
+ drivers/infiniband/hw/hfi1/ipoib_main.c | 19 +++----------------
+ 1 file changed, 3 insertions(+), 16 deletions(-)
 
-(many thanks to Ryan for the head up on this)
-
-So what tree is this patch based on? It certainly is not mainline, is it?
-Mainline never supported the H616 RTC clocks via the RTC driver, this was
-only through the new driver in the clk
-directory, in drivers/clk/sunxi-ng/ccu-sun6i-rtc.c:
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=8a93720329d4d2
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=d91612d7f01aca
-
-Please note that the H6 RTC clocks were intended to be handled via the new
-driver as well, but this part was reverted:
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=60d9f050da63b
-
-Please only send patches based on the mainline tree.
-
-I doesn't look that hard to adjust the patch to mainline, though to cover
-the H6 is well this would require this code in both drivers. So when we
-want to address the H6 as well, it might make sense to solve the problem
-that triggered the revert first, to only have that change only in one
-file. 
-
-> Signed-off-by: Alois Fertl <a.fertl@t-online.de>
-> ---
-> 
-> v1->v2
-> - add flag and activate for H6 AND H616
-> 
-> v2->v3
-> - correct findings from review
-> 
-> I was hoping to get some feedback regarding the situation on H6,
-> where an external 32k crystal can be present.
-> From what I understand from the H6 manual there should be no
-> conflict as one can select which souce will drive the output.
-> Should certainly be tested but I don`t have H6 hardware.
-
-I think I should have H6 boards both with and without an external crystal
-oscillator, so can check the situation there, but only next week.
-
->  drivers/rtc/rtc-sun6i.c | 17 ++++++++++++++++-
-> 
->  1 file changed, 16 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/rtc/rtc-sun6i.c b/drivers/rtc/rtc-sun6i.c
-> index e0b85a0d5645..20e81ccdef29 100644
-> --- a/drivers/rtc/rtc-sun6i.c
-> +++ b/drivers/rtc/rtc-sun6i.c
-> @@ -42,6 +42,11 @@
->  
->  #define SUN6I_LOSC_CLK_PRESCAL			0x0008
->  
-> +#define SUN6I_LOSC_CLK_AUTO_CAL			0x000c
-> +#define SUN6I_LOSC_CLK_AUTO_CAL_16MS		BIT(2)
-> +#define SUN6I_LOSC_CLK_AUTO_CAL_ENABLE		BIT(1)
-> +#define SUN6I_LOSC_CLK_AUTO_CAL_SEL_CAL		BIT(0)
-> +
->  /* RTC */
->  #define SUN6I_RTC_YMD				0x0010
->  #define SUN6I_RTC_HMS				0x0014
-> @@ -126,7 +131,6 @@
->   *     registers (R40, H6)
->   *   - SYS power domain controls (R40)
->   *   - DCXO controls (H6)
-> - *   - RC oscillator calibration (H6)
->   *
->   * These functions are not covered by this driver.
->   */
-> @@ -138,6 +142,7 @@ struct sun6i_rtc_clk_data {
->  	unsigned int has_losc_en : 1;
->  	unsigned int has_auto_swt : 1;
->  	unsigned int no_ext_losc : 1;
-> +	unsigned int has_auto_cal : 1;
->  };
->  
->  #define RTC_LINEAR_DAY	BIT(0)
-> @@ -268,6 +273,14 @@ static void __init sun6i_rtc_clk_init(struct device_node *node,
->  	}
->  	writel(reg, rtc->base + SUN6I_LOSC_CTRL);
->  
-> +	if (rtc->data->has_auto_cal) {
-> +		/* Enable internal OSC clock auto calibration */
-> +		reg = SUN6I_LOSC_CLK_AUTO_CAL_16MS |
-> +			SUN6I_LOSC_CLK_AUTO_CAL_ENABLE |
-> +			SUN6I_LOSC_CLK_AUTO_CAL_SEL_CAL;
-> +		writel(reg, rtc->base + SUN6I_LOSC_CLK_AUTO_CAL);
-> +	}
-> +
->  	/* Yes, I know, this is ugly. */
->  	sun6i_rtc = rtc;
->  
-> @@ -380,6 +393,7 @@ static const struct sun6i_rtc_clk_data sun50i_h6_rtc_data = {
->  	.has_out_clk = 1,
->  	.has_losc_en = 1,
->  	.has_auto_swt = 1,
-> +	.has_auto_cal = 1,
->  };
->  
->  static void __init sun50i_h6_rtc_clk_init(struct device_node *node)
-> @@ -395,6 +409,7 @@ static const struct sun6i_rtc_clk_data sun50i_h616_rtc_data = {
-
-For the records: this whole struct does not exist in mainline.
-
-Cheers,
-Andre
-
->  	.has_prescaler = 1,
->  	.has_out_clk = 1,
->  	.no_ext_losc = 1,
-> +	.has_auto_cal = 1,
->  };
->  
->  static void __init sun50i_h616_rtc_clk_init(struct device_node *node)
+diff --git a/drivers/infiniband/hw/hfi1/ipoib_main.c b/drivers/infiniband/hw/hfi1/ipoib_main.c
+index 5d814afdf7f3..59c6e55f4119 100644
+--- a/drivers/infiniband/hw/hfi1/ipoib_main.c
++++ b/drivers/infiniband/hw/hfi1/ipoib_main.c
+@@ -21,36 +21,25 @@ static int hfi1_ipoib_dev_init(struct net_device *dev)
+ 	struct hfi1_ipoib_dev_priv *priv = hfi1_ipoib_priv(dev);
+ 	int ret;
+ 
+-	dev->tstats = netdev_alloc_pcpu_stats(struct pcpu_sw_netstats);
+-	if (!dev->tstats)
+-		return -ENOMEM;
+-
+ 	ret = priv->netdev_ops->ndo_init(dev);
+ 	if (ret)
+-		goto out_ret;
++		return ret;
+ 
+ 	ret = hfi1_netdev_add_data(priv->dd,
+ 				   qpn_from_mac(priv->netdev->dev_addr),
+ 				   dev);
+ 	if (ret < 0) {
+ 		priv->netdev_ops->ndo_uninit(dev);
+-		goto out_ret;
++		return ret;
+ 	}
+ 
+ 	return 0;
+-out_ret:
+-	free_percpu(dev->tstats);
+-	dev->tstats = NULL;
+-	return ret;
+ }
+ 
+ static void hfi1_ipoib_dev_uninit(struct net_device *dev)
+ {
+ 	struct hfi1_ipoib_dev_priv *priv = hfi1_ipoib_priv(dev);
+ 
+-	free_percpu(dev->tstats);
+-	dev->tstats = NULL;
+-
+ 	hfi1_netdev_remove_data(priv->dd, qpn_from_mac(priv->netdev->dev_addr));
+ 
+ 	priv->netdev_ops->ndo_uninit(dev);
+@@ -173,9 +162,6 @@ static void hfi1_ipoib_netdev_dtor(struct net_device *dev)
+ 
+ 	hfi1_ipoib_txreq_deinit(priv);
+ 	hfi1_ipoib_rxq_deinit(priv->netdev);
+-
+-	free_percpu(dev->tstats);
+-	dev->tstats = NULL;
+ }
+ 
+ static void hfi1_ipoib_set_id(struct net_device *dev, int id)
+@@ -234,6 +220,7 @@ static int hfi1_ipoib_setup_rn(struct ib_device *device,
+ 
+ 	netdev->priv_destructor = hfi1_ipoib_netdev_dtor;
+ 	netdev->needs_free_netdev = true;
++	netdev->pcpu_stat_type = NETDEV_PCPU_STAT_TSTATS;
+ 
+ 	return 0;
+ }
+-- 
+2.43.0
 
 
