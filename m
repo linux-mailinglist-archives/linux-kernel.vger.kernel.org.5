@@ -1,173 +1,139 @@
-Return-Path: <linux-kernel+bounces-168433-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-168434-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6B2E08BB887
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 May 2024 01:54:02 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 162608BB88D
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 May 2024 01:55:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 48C8A1C232BC
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 23:54:01 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3ABDEB2187F
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 23:55:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E613C85640;
-	Fri,  3 May 2024 23:53:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A410985639;
+	Fri,  3 May 2024 23:55:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b="WqEWKVn3"
-Received: from mail-pg1-f170.google.com (mail-pg1-f170.google.com [209.85.215.170])
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="ZGjV9bOJ"
+Received: from mail-lj1-f181.google.com (mail-lj1-f181.google.com [209.85.208.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 796FA5CDE6
-	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 23:53:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FE9A5CDE6
+	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 23:55:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714780427; cv=none; b=Ks9Q8Xd2JNa7nYr3q837xCfRyTEtbj/WsiNhgRO+lLaiA515klUm4Qi8s4oco04TkSjD3ZZQuAKqAAWDJFwvAAWsSX9peo24SsoUd+oJLEyFAmK43TIabfKwKsNg67JaYBTTX0BWoqiBh1vhwjhzNBv/1Ehe7dq3HDS+GI/NinI=
+	t=1714780506; cv=none; b=T14TVGGqvlBSGkDn3EwHtaKzRMAWYL/5AI+FV4UYeHCSyPPJbwCw0sJZHJH9eO6yqdfhtDnCNhJo89JzZwMhbWwZLNEADRT9thTnbf8W3YNy+GWBESXs3B2x2xbGsw1kkRWovxVcp65GhYmqNEeRLGHyZmp83lgadKHZwAcBwTo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714780427; c=relaxed/simple;
-	bh=xhq22uzQmypOoVpCkNFBLHGOvrAtFOUR8wHYL+PkZa0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=bues7uHJW2BdIB0klFQ4U0F4fRLe67DcdwtgECLXQo4Z3fhAN0hTrPsKzJOJD+G5K93pFbsKoYJmVCqQswv5k+Pj10fC00jZZGXjvgLJ44+L4LNC0DyexkKfIe+DYEpCwXz9TTlm+Jj00bb2Pwiyk64vdP7hb13pf3ohhBrWHfM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com; spf=pass smtp.mailfrom=fastly.com; dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b=WqEWKVn3; arc=none smtp.client-ip=209.85.215.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fastly.com
-Received: by mail-pg1-f170.google.com with SMTP id 41be03b00d2f7-61aef9901deso131983a12.1
-        for <linux-kernel@vger.kernel.org>; Fri, 03 May 2024 16:53:44 -0700 (PDT)
+	s=arc-20240116; t=1714780506; c=relaxed/simple;
+	bh=tf8gPRKnHuj1S8RN72oCYha0zRiI+Zqb52T37Eym2SU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=W0NqODA3tS9RS8eIsy7/vRgcUS3hB6xulrCuduglM+4rOOjdmV0HJZ/LgOZfmMTYcNo0xKfNnNsrIWAZHLef7ljM17VZmmOUjxml7rtmjbozTkzofQGk/+cgAIh7y7W0M8hMDMxyKHKtRuOBXqS6fMAJyUENTmO3y46h3Df5vaI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=ZGjV9bOJ; arc=none smtp.client-ip=209.85.208.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Received: by mail-lj1-f181.google.com with SMTP id 38308e7fff4ca-2dfb4ea2bbfso2358661fa.2
+        for <linux-kernel@vger.kernel.org>; Fri, 03 May 2024 16:55:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fastly.com; s=google; t=1714780424; x=1715385224; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=5avDtjhLdQj9IgYkItzDxuI0WthI0sSdax4HN8vbOzQ=;
-        b=WqEWKVn3W+NdCaa/KQbuSm0SpLbqAEwi3Ny5Lw+Vv/KPxNlz/dEFifveE+gVytI7i0
-         URRpdHFX1XyuxYGbbr7Ne3wjZCiG77EEuF1kbUvqGyNwef3Fz401LKepq1AqG+m4Dmys
-         LhE4gXaKxQ8bdlVSlHqwcLktjIyZhIDsH9VP0=
+        d=linux-foundation.org; s=google; t=1714780503; x=1715385303; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=NxPhlO3npeMKaw71dXY38r1VkXmdKnYRPE7+RntnY6E=;
+        b=ZGjV9bOJtsx4vpIPOC+jl/xOHEhJ7ml4JgIzgS1AsIh9S5KtVKfqLKs5lLGdXsqdqf
+         rWkxV9dUaT0DUgXtI/DlRGk7Nc6D3XFWtZVWDF3oll1MHPi3o8BiJMn9wp/AQUXXjouJ
+         RyC5Ror5S88Byqw9QIUO/60WEA9J8Zz0r3ca4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714780424; x=1715385224;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=5avDtjhLdQj9IgYkItzDxuI0WthI0sSdax4HN8vbOzQ=;
-        b=sOW0iWIYH6qWIvxA0b/dvmNKV1JiWVQ+rbJDSrcaIhYjWsJ0UyAT1P1xii1OUdMgUg
-         kMiWGXD6eZn312ZBCX3A8cWKM7lufX5t4x42e+yHTdFQhtkulw3LWvA6y6Y/gwZ11sre
-         LVxOl+YuHZE5hFKsK5pOURZ7Cv2cKhDWG5tnM5GkxkIUUpOZWCNpXroJmUCFg8fvoUJD
-         5BwuznI1RA88doz4ICiYGSIfa4ENWgGP8jb4oFovPoqqUkZMOnq14UhxouJOw6L/k+lE
-         CbLRPr++Lp9Nc/2Dm26RS1NOioK8aywiwjysAoDXR90/NGjAQRBNioE4rRjj5z26fdaA
-         eZFw==
-X-Forwarded-Encrypted: i=1; AJvYcCXvnlojHNnTnuSi/6maJcY4gTl7BOaIvf95Qw/2Gdij8EVIlfLb6DqmKLGMi91sdoZlUXY6vJWsVYU4d0wLfV0tCXWtw1HUWYbEw2gg
-X-Gm-Message-State: AOJu0YwJKZZm/ABk+sbegJsszjt+rA3lQTZi8g2+FNYYCtMM6RuGl9U0
-	txHZmiZ5stIqok+S5xUvSy1NbZukEC4RgZ9enwm+nOvZ1OTUhxv7jym6HuQfa3B7b2cUyQNhlD0
-	1OTk=
-X-Google-Smtp-Source: AGHT+IFs7xIHfqq9Lj6Fqlq3My9vl2wwYg+s9bmVBnuUhEqmAlP9X3ekQ4lmIBlGbrA0NaWexsKkag==
-X-Received: by 2002:a17:903:41cc:b0:1eb:49cb:bf70 with SMTP id u12-20020a17090341cc00b001eb49cbbf70mr5271667ple.62.1714780423773;
-        Fri, 03 May 2024 16:53:43 -0700 (PDT)
-Received: from LQ3V64L9R2 (c-24-6-151-244.hsd1.ca.comcast.net. [24.6.151.244])
-        by smtp.gmail.com with ESMTPSA id h8-20020a170902f54800b001ed6868e257sm765764plf.123.2024.05.03.16.53.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 03 May 2024 16:53:43 -0700 (PDT)
-Date: Fri, 3 May 2024 16:53:40 -0700
-From: Joe Damato <jdamato@fastly.com>
-To: Jakub Kicinski <kuba@kernel.org>
-Cc: Zhu Yanjun <zyjzyj2000@gmail.com>, linux-kernel@vger.kernel.org,
-	netdev@vger.kernel.org, tariqt@nvidia.com, saeedm@nvidia.com,
-	gal@nvidia.com, nalramli@fastly.com,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Leon Romanovsky <leon@kernel.org>,
-	"open list:MELLANOX MLX5 core VPI driver" <linux-rdma@vger.kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>
-Subject: Re: [PATCH net-next 0/1] mlx5: Add netdev-genl queue stats
-Message-ID: <ZjV5BG8JFGRBoKaz@LQ3V64L9R2>
-References: <20240503022549.49852-1-jdamato@fastly.com>
- <c3f4f1a4-303d-4d57-ae83-ed52e5a08f69@linux.dev>
- <ZjUwT_1SA9tF952c@LQ3V64L9R2>
- <20240503145808.4872fbb2@kernel.org>
+        d=1e100.net; s=20230601; t=1714780503; x=1715385303;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=NxPhlO3npeMKaw71dXY38r1VkXmdKnYRPE7+RntnY6E=;
+        b=pH3TbkoomEEXDC/HY4peJulQuL9/bEb82Od1nQmG0MRns/rmqM4Q4n6wyWilXll8ve
+         fJqrobWQFvNTmatmu1OMzEvfsGwatL0dUOlNLor4EWqsN1WjMy59GdNQXGdowc76WYxa
+         nwtsl3uKVlckcfKgUvrk2JCxMEZ7xayijoR8vmhAAJUT1vHl5PeXG97LvdoKewgZX/nD
+         UQfApEuUFKKsOYFoUL7LW0ew6az/jBgdWLsPtZE7pnJbWc3pmXrUahTL8rTWrv1k8lOB
+         QJEqzOUfpqBRTLxEExft74X/ItajZJpVE/k0pSgqbXP/X+FB82GuXAnHTrLZ9irF+IHP
+         5bXw==
+X-Forwarded-Encrypted: i=1; AJvYcCVCbNC2e4YYhwFHsTZQJ54P1t4x5sdacnMmbJFlenB0Y7UcHKU0VI+qsDqmkvkwUhOHacvFJL+RnI/J5J2NQ5W2A4v7jtLVaiXmMBqE
+X-Gm-Message-State: AOJu0YybScNfCBsSRrcP4FvEO04f8+b5Clr2572pmYD0gXqjroSr6y5B
+	z01Db9BS9zspPVz/ww22ILk4BgFrkGTv3fli75Z84mT/2BP/M7T640pV7u5nfm/JXtGbpFRCcac
+	+0s5d9w==
+X-Google-Smtp-Source: AGHT+IEwaCD6OLDQvfYNGEc61mDX9qkuPQrhiK+i7ZlsRKgVXhIXMk3g6RkT2wuC6XkUmv2NvUzVRg==
+X-Received: by 2002:a05:6512:3f1a:b0:51e:1264:8435 with SMTP id y26-20020a0565123f1a00b0051e12648435mr3202897lfa.27.1714780503124;
+        Fri, 03 May 2024 16:55:03 -0700 (PDT)
+Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com. [209.85.218.49])
+        by smtp.gmail.com with ESMTPSA id jt21-20020a170906ca1500b00a526e6f5cbdsm2261694ejb.47.2024.05.03.16.55.02
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 03 May 2024 16:55:02 -0700 (PDT)
+Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-a59a387fbc9so29679766b.1
+        for <linux-kernel@vger.kernel.org>; Fri, 03 May 2024 16:55:02 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCW3YQayQosnJLQ5hA71BScfNZqNuoCkpM8R31hWrInDbt3yD2HmxGyMVrBlQQv/8l4mqdueojNFGR6p1AKJJ79Hp8pXmwAAKbvx2at/
+X-Received: by 2002:a17:906:3e4e:b0:a59:a64c:9a26 with SMTP id
+ t14-20020a1709063e4e00b00a59a64c9a26mr202788eji.23.1714780501707; Fri, 03 May
+ 2024 16:55:01 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240503145808.4872fbb2@kernel.org>
+References: <202405031110.6F47982593@keescook> <20240503211129.679762-2-torvalds@linux-foundation.org>
+ <20240503212428.GY2118490@ZenIV> <CAHk-=wjpsTEkHgo1uev3xGJ2bQXYShaRf3GPEqDWNgUuKx0JFw@mail.gmail.com>
+ <20240503214531.GB2118490@ZenIV> <CAHk-=wgC+QpveKCJpeqsaORu7htoNNKA8mp+d9mvJEXmSKjhbw@mail.gmail.com>
+ <20240503220145.GD2118490@ZenIV> <20240503220744.GE2118490@ZenIV>
+ <CAHk-=whULchE1i5LA2Fa=ZndSAzPXGWh_e5+a=YV3qT1BEST7w@mail.gmail.com> <20240503233900.GG2118490@ZenIV>
+In-Reply-To: <20240503233900.GG2118490@ZenIV>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Fri, 3 May 2024 16:54:45 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wjjjsm=f+ZJRe3dXebBQS8PzpYmHjAJnk-9-2FAj3-QoQ@mail.gmail.com>
+Message-ID: <CAHk-=wjjjsm=f+ZJRe3dXebBQS8PzpYmHjAJnk-9-2FAj3-QoQ@mail.gmail.com>
+Subject: Re: [PATCH] epoll: try to be a _bit_ better about file lifetimes
+To: Al Viro <viro@zeniv.linux.org.uk>
+Cc: keescook@chromium.org, axboe@kernel.dk, brauner@kernel.org, 
+	christian.koenig@amd.com, dri-devel@lists.freedesktop.org, 
+	io-uring@vger.kernel.org, jack@suse.cz, laura@labbott.name, 
+	linaro-mm-sig@lists.linaro.org, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-media@vger.kernel.org, 
+	minhquangbui99@gmail.com, sumit.semwal@linaro.org, 
+	syzbot+045b454ab35fd82a35fb@syzkaller.appspotmail.com, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-On Fri, May 03, 2024 at 02:58:08PM -0700, Jakub Kicinski wrote:
-> On Fri, 3 May 2024 11:43:27 -0700 Joe Damato wrote:
-> > 1. it includes the PTP stats that I don't include in my qstats, and/or
-> > 2. some other reason I don't understand
-> 
-> Can you add the PTP stats to the "base" values? 
-> I.e. inside mlx5e_get_base_stats()?
+On Fri, 3 May 2024 at 16:39, Al Viro <viro@zeniv.linux.org.uk> wrote:
+>
+> *IF* those files are on purely internal filesystem, that's probably
+> OK; do that with something on something mountable (char device,
+> sysfs file, etc.) and you have a problem with filesystem staying
+> busy.
 
-I tried adding them to rx and tx and mlx5e_get_base_stats (similar to what
-mlx5e_fold_sw_stats64 does) and the test still fails.
+Yeah, I agree, it's a bit annoying in general. That said, it's easy to
+do: stash a file descriptor in a unix domain socket, and that's
+basically exactly what you have: a random reference to a 'struct file'
+that will stay around for as long as you just keep that socket around,
+long after the "real" file descriptor has been closed, and entirely
+separately from it.
 
-Maybe something about the rtnl stats are what's off here and the queue
-stats are fine?
+And yes, that's exactly why unix domain socket transfers have caused
+so many problems over the years, with both refcount overflows and
+nasty garbage collection issues.
 
-FWIW: I spoke with the Mellanox folks off list several weeks ago and they
-seemed to suggest skipping the PTP stats made the most sense.
+So randomly taking references to file descriptors certainly isn't new.
 
-I think at that time I didn't really understand get_base_stats that well,
-so maybe we'd have come to a different conclusion then.
+In fact, it's so common that I find the epoll pattern annoying, in
+that it does something special and *not* taking a ref - and it does
+that special thing to *other* ("innocent") file descriptors. Yes,
+dma-buf is a bit like those unix domain sockets in that it can keep
+random references alive for random times, but at least it does it just
+to its own file descriptors, not random other targets.
 
-FWIW, here's what I tried and the rtnl vs qstat test still failed in
-exactly the same way:
+So the dmabuf thing is very much a "I'm a special file that describes
+a dma buffer", and shouldn't really affect anything outside of active
+dmabuf uses (which admittedly is a large portion of the GPU drivers,
+and has been expanding from there...). I
 
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-@@ -5337,10 +5337,25 @@ static void mlx5e_get_base_stats(struct net_device *dev,
-                rx->packets = 0;
-                rx->bytes = 0;
-                rx->alloc_fail = 0;
-+               if (priv->rx_ptp_opened) {
-+                       struct mlx5e_rq_stats *rq_stats = &priv->ptp_stats.rq;
-+                       rx->packets = rq_stats->packets;
-+                       rx->bytes = rq_stats->bytes;
-+               }
-        }
+So the reason I'm annoyed at epoll in this case is that I think epoll
+triggered the bug in some entirely innocent subsystem. dma-buf is
+doing something differently odd, yes, but at least it's odd in a "I'm
+a specialized thing" sense, not in some "I screw over others" sense.
 
-        tx->packets = 0;
-        tx->bytes = 0;
-+
-+       if (priv->tx_ptp_opened) {
-+               int i;
-+               for (i = 0; i < priv->max_opened_tc; i++) {
-+                       struct mlx5e_sq_stats *sq_stats = &priv->ptp_stats.sq[i];
-+
-+                       tx->packets    += sq_stats->packets;
-+                       tx->bytes      += sq_stats->bytes;
-+               }
-+       }
- }
-
-> We should probably touch up the kdoc a little bit, but it sounds like
-> the sort of thing which would fall into the realm of "misc delta"
-> values:
-> 
-> diff --git a/include/net/netdev_queues.h b/include/net/netdev_queues.h
-> index c7ac4539eafc..f5d9f3ad5b66 100644
-> --- a/include/net/netdev_queues.h
-> +++ b/include/net/netdev_queues.h
-> @@ -59,6 +59,8 @@ struct netdev_queue_stats_tx {
->   * statistics will not generally add up to the total number of events for
->   * the device. The @get_base_stats callback allows filling in the delta
->   * between events for currently live queues and overall device history.
-> + * @get_base_stats can also be used to report any miscellaneous packets
-> + * transferred outside of the main set of queues used by the networking stack.
->   * When the statistics for the entire device are queried, first @get_base_stats
->   * is issued to collect the delta, and then a series of per-queue callbacks.
->   * Only statistics which are set in @get_base_stats will be reported
-> 
-> 
-> SG?
-
-I think that sounds good and makes sense, yea. By that definition, then I
-should leave the PTP stats as shown above. If you agree, I'll add that
-to the v2.
-
-I feel like I should probably wait before sending a v2 with PTP included in
-get_base_stats to see if the Mellanox folks have any hints about why rtnl
-!= queue stats on mlx5?
-
-What do you think?
+             Linus
 
