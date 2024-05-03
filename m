@@ -1,219 +1,152 @@
-Return-Path: <linux-kernel+bounces-167577-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-167578-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 78A408BAB85
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 13:23:37 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7EBF68BAB87
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 13:23:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E68AF1F2279F
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 11:23:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B06AE1C21AC3
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 11:23:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC154152199;
-	Fri,  3 May 2024 11:23:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4384915218D;
+	Fri,  3 May 2024 11:23:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=jms.id.au header.i=@jms.id.au header.b="bFAEX0Ov"
-Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=perex.cz header.i=@perex.cz header.b="cK+HM+OH"
+Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2217139D12
-	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 11:23:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65B331514EC;
+	Fri,  3 May 2024 11:23:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=77.48.224.245
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714735409; cv=none; b=NAeeFphJYY/uPfkm62duCN8RE95UKveSrWTjQE6SsHMnZcfm1OfJRvS6NaNkFwzjf6sIJck0QQ0ey9cUoKvCBkNVCgklc3TLg/78dTbKpIcORYQYoiMxyt1Aj2pMcTDfKpCHWsEc7EBibNVJg/PZE0WZ4U6NI+1xUxiTZiBYk1c=
+	t=1714735427; cv=none; b=NQO+uVmHxnpxUlcQYevqCQwAUCjYTL/+atePY6RDOosG8u6mThhBHvxSQkiibT9jGAJq+Et2ubYmeRT7tQG2A0jUDMmWA4O0KA6ccNlZacQqXUxBqyGufDbqhXLs4f/EBlJc2CX8LUq7g+ct4jTT/+Uj4RuTfkdVcVY9oMS/EYM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714735409; c=relaxed/simple;
-	bh=hfh1WeCNv7h2tGrmKApVhSXTKBpX68998FW3xDeVNNs=;
-	h=MIME-Version:From:Date:Message-ID:Subject:To:Cc:Content-Type; b=TfK15Sdhdoykp44tSa843OQoNLqnuoqqkrnoNcoKi07YfzMOudSQ4rjramQ+fngqUk6J0EiRkRPrmsje+YnMQ3C+/+rBviySxNsv1kWEP2nFVMD2SRWZ/ICQLwnUKRFCkADnWCd2pP+zk/Zsgnp9xZFxF2Fh3Vg6qMA1KLgqIwk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=jms.id.au; spf=pass smtp.mailfrom=gmail.com; dkim=pass (1024-bit key) header.d=jms.id.au header.i=@jms.id.au header.b=bFAEX0Ov; arc=none smtp.client-ip=209.85.218.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=jms.id.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-a595c61553cso432787966b.1
-        for <linux-kernel@vger.kernel.org>; Fri, 03 May 2024 04:23:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=jms.id.au; s=google; t=1714735404; x=1715340204; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=R+1IKXv/OZSXxG3m940o49kC0CNjH3iNdy76Z/a3dsM=;
-        b=bFAEX0Ovb2TXSe6ZLvJLARc92+ehGrl6Eupvgd6hIpparaFAqLojCArQPvWXLjmH7G
-         zgDC4I8KM5pnRGPvoGjuDXR+rVBmnR8m9oGR5S1imLc03zqTUOLIqFDRzGK5HGcNbhMb
-         SJi3PA76H9TnMJ/vI/ZT0mKmD4p1s4KXH33gE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714735404; x=1715340204;
-        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=R+1IKXv/OZSXxG3m940o49kC0CNjH3iNdy76Z/a3dsM=;
-        b=Xwe4j+ygQ2Ut91fu2fiOiVz/zt0I2CQELZ6CQ06Hk+MVibzGILWQYyyMusjpOPancv
-         xmJZDW2viEjX3Fedn7UC3GGIvLX/DaxDCbGzd0erygZDtesKtOSkzuQrcYS359hUiGoj
-         8erYfA59nhYwuXLfTaSer3DZclLxaSL7lxYu2oI7GYcbQnkPNdKFmLcVwma8OfKDB8sq
-         HrbyaylzBllX7Im2glJXsPtwgD/haJKo9TZvH/KCJdvHz+cYoEbjfl+013qS5NOq34cK
-         6tYX0upmWoxPjveg5Mh3Zd1L/WTpGeA3BjdiSGla+iyTmlCfw5Fva4Y4jU+wnUfTKOua
-         hkNg==
-X-Forwarded-Encrypted: i=1; AJvYcCX0KJGjRRaPiZtWoNMiDXFMkTnyjqP0UEvvP24pVZqX9vTorRTF00bj+K9hNPMx0/J4nNXt1UJIjRuIiVl7BfEEHtKAQls1kioxMZr2
-X-Gm-Message-State: AOJu0YzWEkuMGFbxvkvSorCG9Y/zJ4Xyy5gEYyry0T1l5z/lZldEhIZT
-	lUVhmGV/35iAeqZR2RY5fx/8L6ZWTGAzUEf+4lqu3LBPUAtWQD3b2eSJ7l7vAUAyOj97jiy5nG7
-	FhHqxOWqXlqBC4ekv8ONVlGsbKzYRHZB3
-X-Google-Smtp-Source: AGHT+IF2HiAsSB7nvhSgmkq3UxH39sAbU3Gg3QDWl9FZyADcdhsRlEGNq8GtPY3FVHPtpRfyPmydswOZnsRyZW7iZ3M=
-X-Received: by 2002:a17:906:ae8b:b0:a52:30d3:41dd with SMTP id
- md11-20020a170906ae8b00b00a5230d341ddmr1617971ejb.41.1714735403495; Fri, 03
- May 2024 04:23:23 -0700 (PDT)
+	s=arc-20240116; t=1714735427; c=relaxed/simple;
+	bh=JQaB4OAJDQmS1p/ylII5ZpFBW1dwo4y3IgLFNbgi0lY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ShIcRZ9Lxy5olgoiwcK5Qi3fwiQL6ZNwIHb1a2s1OqYQSb06g66teDqebK9ymL1stHiR6Dew3T4IFYrx//5vSaG8slKRN/l7mXcddBGAoWt3FVOQ02NIpRRPKN9lujO7mrAVE7svKISgYl6PVVMrV2vB9LLxezrDzkrvYT/V/Iw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=perex.cz; spf=pass smtp.mailfrom=perex.cz; dkim=pass (1024-bit key) header.d=perex.cz header.i=@perex.cz header.b=cK+HM+OH; arc=none smtp.client-ip=77.48.224.245
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=perex.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=perex.cz
+Received: from mail1.perex.cz (localhost [127.0.0.1])
+	by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id EC27911F0;
+	Fri,  3 May 2024 13:23:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz EC27911F0
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
+	t=1714735416; bh=9sGhN+OcoQRxU92n4HIKysKo+yl+2paGeQdM2U4pRVI=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=cK+HM+OHG5JBseJVoE4U9e9WqcEs0iGadlNs8ABO6pfJKQfUMu0BcO3vjUwFws3sQ
+	 6JeXZJJpKNc7Cv6DqfNpI/7NuThi+KRbPI57HCHsG084Kprh575ZUD7r/9eQ26esAt
+	 wM3Qm+6QsOYWDWxaOelqbm2N6U9fyR28jkWLutXc=
+Received: from [192.168.100.98] (unknown [192.168.100.98])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: perex)
+	by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
+	Fri,  3 May 2024 13:23:29 +0200 (CEST)
+Message-ID: <9a683d7f-8bde-47f4-9f63-97b65744711b@perex.cz>
+Date: Fri, 3 May 2024 13:23:28 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: Joel Stanley <joel@jms.id.au>
-Date: Fri, 3 May 2024 20:53:11 +0930
-Message-ID: <CACPK8Xd2Qc9MQUJ-8GuRjmyU50oMHpmmHPHLqAh9W_1Gyqi2ug@mail.gmail.com>
-Subject: [GIT PULL] ARM: aspeed: devicetree changes for 6.10
-To: SoC Team <soc@kernel.org>
-Cc: linux-aspeed <linux-aspeed@lists.ozlabs.org>, 
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Andrew Jeffery <andrew@codeconstruct.com.au>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/1] sound: Support microphone from device Acer 315-24p
+Content-Language: en-US
+To: Mark Brown <broonie@kernel.org>, linux-sound@vger.kernel.org,
+ linux-kernel@vger.kernel.org, "end.to.start" <end.to.start@mail.ru>
+Cc: lgirdwood@gmail.com, tiwai@suse.com
+References: <20240408152454.45532-1-end.to.start@mail.ru>
+ <171268609844.62778.6340689132993321193.b4-ty@kernel.org>
+From: Jaroslav Kysela <perex@perex.cz>
+Autocrypt: addr=perex@perex.cz; keydata=
+ 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
+In-Reply-To: <171268609844.62778.6340689132993321193.b4-ty@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Hello Soc maintainers,
+On 09. 04. 24 20:08, Mark Brown wrote:
+> On Mon, 08 Apr 2024 18:24:54 +0300, end.to.start wrote:
+>> This patch adds microphone detection for the Acer 315-24p, after which a microphone appears on the device and starts working
+>>
+>>
+> 
+> Applied to
+> 
+>     https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+> 
+> Thanks!
+> 
+> [1/1] sound: Support microphone from device Acer 315-24p
+>        commit: 4b9a474c7c820391c0913d64431ae9e1f52a5143
+> 
+> All being well this means that it will be integrated into the linux-next
+> tree (usually sometime in the next 24 hours) and sent to Linus during
+> the next merge window (or sooner if it is a bug fix), however if
+> problems are discovered then the patch may be dropped or reverted.
 
-Here are the ASPEED device tree changes for 6.10. I've missed a few
-releases as I was
-on leave. Andrew Jeffery has stepped up and helped this cycle, some of the
-patches were committed by him this time around.
+Shall we really accept those anonymous contributions?
 
-The following changes since commit 4cece764965020c22cff7665b18a012006359095:
+ From submitting-patches.rst:
 
-  Linux 6.9-rc1 (2024-03-24 14:10:05 -0700)
+"""
+then you just add a line saying::
 
-are available in the Git repository at:
+         Signed-off-by: Random J Developer <random@developer.example.org>
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/joel/bmc.git
-tags/aspeed-6.10-devicetree
+using a known identity (sorry, no anonymous contributions.)
+"""
 
-for you to fetch changes up to c44211af1aa9c6b93178a3993e18a7ebffab7488:
+					Jaroslav
 
-  ARM: dts: aspeed: Add ASRock E3C256D4I BMC (2024-05-02 17:57:16 +0930)
+-- 
+Jaroslav Kysela <perex@perex.cz>
+Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
 
-----------------------------------------------------------------
-ASPEED device tree updates for 6.10
-
- - New and removed machines:
-
-  * IBM System1 AST2600 BMC, a x86 server
-  * ASUS X4TF AST2600 BMC, a x86 server
-  * ASRock SPC621D8HM3 AST2500 BMC, a Intel Xeon system
-  * ASRock E3C256D4I AST2500 BMC, a Intel Xeon system
-  * Add ASRock X570D4U's AST2500 BMC, an AMD Ryzen 5000 system
-  * Facebook Harma's AST2600 BMC
-  * Facebook Cloudripper is removed
-
- - Updates to machines merged this cycle, as well as bonnell,
-   yosemite4, minerva and others
-
-----------------------------------------------------------------
-Andrew Geissler (1):
-      ARM: dts: aspeed: system1: IBM System1 BMC board
-
-Delphine CC Chiu (2):
-      ARM: dts: aspeed: yosemite4: Enable ipmb device for OCP debug card
-      ARM: dts: aspeed: yosemite4: set bus13 frequency to 100k
-
-Eddie James (2):
-      ARM: dts: aspeed: FSI interrupt support
-      ARM: dts: Aspeed: Bonnell: Fix NVMe LED labels
-
-Kelly Hung (2):
-      dt-bindings: arm: aspeed: add ASUS X4TF board
-      ARM: dts: aspeed: x4tf: Add dts for asus x4tf project
-
-Krzysztof Kozlowski (5):
-      ARM: dts: aspeed: greatlakes: correct Mellanox multi-host property
-      ARM: dts: aspeed: yosemite4: correct Mellanox multi-host property
-      ARM: dts: aspeed: yosemitev2: correct Mellanox multi-host property
-      ARM: dts: aspeed: harma: correct Mellanox multi-host property
-      ARM: dts: aspeed: drop unused ref_voltage ADC property
-
-Ninad Palsule (1):
-      dt-bindings: arm: aspeed: add IBM system1-bmc
-
-Peter Yin (14):
-      dt-bindings: arm: aspeed: add Meta Harma board
-      ARM: dts: aspeed: Harma: Add Meta Harma (AST2600) BMC
-      ARM: dts: aspeed: Harma: Revise SGPIO line name.
-      ARM: dts: aspeed: Harma: mapping ttyS2 to UART4.
-      ARM: dts: aspeed: Harma: Remove Vuart
-      ARM: dts: aspeed: Harma: Add cpu power good line name
-      ARM: dts: aspeed: Harma: Add spi-gpio
-      ARM: dts: aspeed: Harma: Add PDB temperature
-      ARM: dts: aspeed: Harma: Revise max31790 address
-      ARM: dts: aspeed: Harma: Add NIC Fru device
-      ARM: dts: aspeed: Harma: Add ltc4286 device
-      ARM: dts: aspeed: Harma: Revise node name
-      ARM: dts: aspeed: Harma: Add retimer device
-      ARM: dts: aspeed: Harma: Modify GPIO line name
-
-Renze Nicolai (5):
-      dt-bindings: arm: aspeed: add Asrock X570D4U board
-      ARM: dts: aspeed: asrock: Add ASRock X570D4U BMC
-      ARM: dts: aspeed: Modify GPIO table for Asrock X570D4U BMC
-      ARM: dts: aspeed: Disable unused ADC channels for Asrock X570D4U BMC
-      ARM: dts: aspeed: Modify I2C bus configuration
-
-Tao Ren (1):
-      ARM: dts: aspeed: Remove Facebook Cloudripper dts
-
-Yang Chen (11):
-      ARM: dts: aspeed: minerva: Revise the name of DTS
-      ARM: dts: aspeed: minerva: Modify mac3 setting
-      ARM: dts: aspeed: minerva: Change sgpio use
-      ARM: dts: aspeed: minerva: Enable power monitor device
-      ARM: dts: aspeed: minerva: Add temperature sensor
-      ARM: dts: aspeed: minerva: correct the address of eeprom
-      ARM: dts: aspeed: minerva: add bus labels and aliases
-      ARM: dts: aspeed: minerva: add fan rpm controller
-      ARM: dts: aspeed: minerva: Add led-fan-fault gpio
-      ARM: dts: aspeed: minerva: add gpio line name
-      ARM: dts: aspeed: minerva: add sgpio line name
-
-Zev Weiss (8):
-      dt-bindings: arm: aspeed: document ASRock SPC621D8HM3
-      ARM: dts: aspeed: Add ASRock SPC621D8HM3 BMC
-      ARM: dts: aspeed: asrock: Use MAC address from FRU EEPROM
-      ARM: dts: aspeed: Add vendor prefixes to lm25066 compat strings
-      ARM: dts: aspeed: ahe50dc: Update lm25066 regulator name
-      dt-bindings: trivial-devices: add isil,isl69269
-      dt-bindings: arm: aspeed: document ASRock E3C256D4I
-      ARM: dts: aspeed: Add ASRock E3C256D4I BMC
-
- .../devicetree/bindings/arm/aspeed/aspeed.yaml     |    6 +
- .../devicetree/bindings/trivial-devices.yaml       |    2 +
- arch/arm/boot/dts/aspeed/Makefile                  |    9 +-
- .../dts/aspeed/aspeed-bmc-ampere-mtmitchell.dts    |    1 -
- .../dts/aspeed/aspeed-bmc-asrock-e3c246d4i.dts     |    9 +
- .../dts/aspeed/aspeed-bmc-asrock-e3c256d4i.dts     |  322 ++++
- .../dts/aspeed/aspeed-bmc-asrock-romed8hm3.dts     |   13 +-
- .../dts/aspeed/aspeed-bmc-asrock-spc621d8hm3.dts   |  324 ++++
- .../boot/dts/aspeed/aspeed-bmc-asrock-x570d4u.dts  |  360 +++++
- arch/arm/boot/dts/aspeed/aspeed-bmc-asus-x4tf.dts  |  581 +++++++
- .../boot/dts/aspeed/aspeed-bmc-delta-ahe50dc.dts   |    4 +-
- .../dts/aspeed/aspeed-bmc-facebook-cloudripper.dts |  544 -------
- .../dts/aspeed/aspeed-bmc-facebook-greatlakes.dts  |    4 +-
- .../boot/dts/aspeed/aspeed-bmc-facebook-harma.dts  |  648 ++++++++
- .../dts/aspeed/aspeed-bmc-facebook-minerva-cmc.dts |  265 ----
- .../dts/aspeed/aspeed-bmc-facebook-minerva.dts     |  543 +++++++
- .../dts/aspeed/aspeed-bmc-facebook-yosemite4.dts   |   15 +-
- .../dts/aspeed/aspeed-bmc-facebook-yosemitev2.dts  |    2 +-
- .../arm/boot/dts/aspeed/aspeed-bmc-ibm-bonnell.dts |    8 +-
- .../arm/boot/dts/aspeed/aspeed-bmc-ibm-system1.dts | 1623 ++++++++++++++++++++
- arch/arm/boot/dts/aspeed/aspeed-g6.dtsi            |    4 +
- arch/arm/boot/dts/aspeed/ibm-power10-dual.dtsi     |    2 +
- 22 files changed, 4460 insertions(+), 829 deletions(-)
- create mode 100644 arch/arm/boot/dts/aspeed/aspeed-bmc-asrock-e3c256d4i.dts
- create mode 100644 arch/arm/boot/dts/aspeed/aspeed-bmc-asrock-spc621d8hm3.dts
- create mode 100644 arch/arm/boot/dts/aspeed/aspeed-bmc-asrock-x570d4u.dts
- create mode 100644 arch/arm/boot/dts/aspeed/aspeed-bmc-asus-x4tf.dts
- delete mode 100644 arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-cloudripper.dts
- create mode 100644 arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-harma.dts
- delete mode 100644 arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-minerva-cmc.dts
- create mode 100644 arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-minerva.dts
- create mode 100644 arch/arm/boot/dts/aspeed/aspeed-bmc-ibm-system1.dts
 
