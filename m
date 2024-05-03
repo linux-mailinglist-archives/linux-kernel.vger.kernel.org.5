@@ -1,145 +1,111 @@
-Return-Path: <linux-kernel+bounces-168389-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-168390-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1A87E8BB7D7
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 May 2024 01:02:09 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2B5828BB7DC
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 May 2024 01:03:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C066D285A2B
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 23:02:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5D8591C22AFD
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 23:03:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B7F183A01;
-	Fri,  3 May 2024 23:01:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8096D83CB8;
+	Fri,  3 May 2024 23:03:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="zCe+/lF3"
-Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b="ZKRWD2ib"
+Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [62.89.141.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5FA52339A1
-	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 23:01:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E23561EA87;
+	Fri,  3 May 2024 23:03:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.89.141.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714777318; cv=none; b=JbePJWeDNESwzCV8WLTb5Utm9flnZGP9MvCW5k3aBcq2xmJvCIzXw+XkB/eJQYnnAcPHzXiuIeJwxslDjRUUER9cfchaCArtjejFjfWpGh6H/gHPk0EAJDr5YBPswRxNnUm5pBGYoBozqzJLGF/v/LEPm9bLBdoEFbr+5pyEmAI=
+	t=1714777411; cv=none; b=QhgFCp53+4M4T4pkFQJcgCTi9pVGNtTIfEaKipCUAgW+WGmtM3SMiut3g5L3R8qnulG8jip6tObEVuhdVRDGXX4W6SE3vF5tJ6foofDZR0KVOXWLeWZQFN+VADeIDETa7SDDG+Zr5v/Sk0H57MGg0+q8qbZPsfzsBS87dN3DN9Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714777318; c=relaxed/simple;
-	bh=4+92T3dF1pCkzFJyIvWH9pdOMABziRyYEtERHQRUflQ=;
+	s=arc-20240116; t=1714777411; c=relaxed/simple;
+	bh=KqEp4cDEXyDj5kpZyY+d8mwhPTn8pcxLOt8m2Wid2/s=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=SptrdcLP1ianSj5OSeA2qVp9QmW0rU8nd1afDbasbLg2aDXLer0EsomrVzF7a9LyQx26Awgg3zhXFqpN7mEP34wvKmmn2ne0DutrhMyxtlTh7yJ27PrvPnYdYObFAa5oz8ZKhoo3TBtH+kKErQOYE8Fuqz+lIPr+xFumPF8y7GU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=zCe+/lF3; arc=none smtp.client-ip=209.85.214.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
-Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-1e65a1370b7so1618485ad.3
-        for <linux-kernel@vger.kernel.org>; Fri, 03 May 2024 16:01:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1714777317; x=1715382117; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=4+92T3dF1pCkzFJyIvWH9pdOMABziRyYEtERHQRUflQ=;
-        b=zCe+/lF34YSpkLm2TxtBbKSM5HvQTiKwAV3/44wZGfe5OEzwrVa15OMDxIqPZ6I5Ir
-         fuY3gGUb1FAi2faOv0IGo2pG5+C0IrtWoAvDo27Rm59TDonSdrohlP/jS86LM+nBFEtr
-         GQ3wWvTpg2+gE2rC84ee/b9iJ/8BqenQTpLVlydzmF1Q0OR+SG+iFBTc7vA2g6AR9wul
-         m/yFYwnkqQjsc8A+msgyA4Sd2DrAZoqHoiIs/JMbDHBl0iLiHDMXXc9ty8yA5mVjjUPu
-         NIXwFUvpRU7gKebDzlcSK+ISTKqFUA3d5KvW+ehUNElxgrnfJxbe9q+O7QQnllgNc6za
-         k4nA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714777317; x=1715382117;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=4+92T3dF1pCkzFJyIvWH9pdOMABziRyYEtERHQRUflQ=;
-        b=bdw2U0YsLt9bkLBjvRe2OcVzxdBmvrvWx3xBe68DbisnMJAc/G5njF/A7Dxd+8vQ1A
-         3y/7WxqQP/XnfggECveu42zI1KDIBngFYnSJze+Yoq4pt4Sra+YP+BSpFZ1Fc4VRmu6i
-         yingBfm+LQGRfroq+As/v5WyTzwJ/aPQu+0c8LIYF+vHGR1PblsnxwdCEphiRNoxgxYy
-         TNktWlH65hV1GS9Fs9z9CZc5aTi7zt5/IATOKvlCo/UucFG6Rhjm6tbBFw5+T58glmvu
-         RbGsq/ocMQ56LK6dD/VDLMO8cATvzdmkx5tAVLy3HSkDjbuSArfzPLDuUTFa0gtYulR+
-         ukrQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVQCxfr8Ix4oa0YhtReow4iXw7vijGsTRtCLslyNnUutzh6CAHUY2NsmAwfgL6dtgA/8I/c1Xys4jpEM41mr2oWX4/c5bUr64gB6Q+o
-X-Gm-Message-State: AOJu0YwYxjr2fJyDYi0TI9XG5+uOjTS4eYxJj3dKXDPnvpDmE3fnxMcN
-	VEJSq08/KBlOrpNpqS3gwwE403a7H3Q1agbYP/9TIlHkP2D97a9sLqu1LUua+oA=
-X-Google-Smtp-Source: AGHT+IHzq6AzE/NVvcqxm4ol0K1axCLWE5IjNbsp5PyIHu/cbS2sPY/kkICJk49x3bkJcMIgzsAwYg==
-X-Received: by 2002:a17:903:32cf:b0:1e2:ca65:68c2 with SMTP id i15-20020a17090332cf00b001e2ca6568c2mr5565119plr.51.1714777316672;
-        Fri, 03 May 2024 16:01:56 -0700 (PDT)
-Received: from debug.ba.rivosinc.com ([64.71.180.162])
-        by smtp.gmail.com with ESMTPSA id f7-20020a170902684700b001eab1a1a752sm3841345pln.120.2024.05.03.16.01.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 03 May 2024 16:01:56 -0700 (PDT)
-Date: Fri, 3 May 2024 16:01:53 -0700
-From: Deepak Gupta <debug@rivosinc.com>
-To: "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
-Cc: "olsajiri@gmail.com" <olsajiri@gmail.com>,
-	"songliubraving@fb.com" <songliubraving@fb.com>,
-	"luto@kernel.org" <luto@kernel.org>,
-	"mhiramat@kernel.org" <mhiramat@kernel.org>,
-	"andrii@kernel.org" <andrii@kernel.org>,
-	"linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
-	"john.fastabend@gmail.com" <john.fastabend@gmail.com>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"mingo@redhat.com" <mingo@redhat.com>,
-	"rostedt@goodmis.org" <rostedt@goodmis.org>,
-	"ast@kernel.org" <ast@kernel.org>,
-	"tglx@linutronix.de" <tglx@linutronix.de>,
-	"yhs@fb.com" <yhs@fb.com>, "oleg@redhat.com" <oleg@redhat.com>,
-	"linux-man@vger.kernel.org" <linux-man@vger.kernel.org>,
-	"daniel@iogearbox.net" <daniel@iogearbox.net>,
-	"peterz@infradead.org" <peterz@infradead.org>,
-	"linux-trace-kernel@vger.kernel.org" <linux-trace-kernel@vger.kernel.org>,
-	"bp@alien8.de" <bp@alien8.de>,
-	"bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-	"x86@kernel.org" <x86@kernel.org>,
-	"broonie@kernel.org" <broonie@kernel.org>
-Subject: Re: [PATCHv4 bpf-next 2/7] uprobe: Add uretprobe syscall to speed up
- return probe
-Message-ID: <ZjVs4bxi7CpWhtEQ@debug.ba.rivosinc.com>
-References: <20240502122313.1579719-1-jolsa@kernel.org>
- <20240502122313.1579719-3-jolsa@kernel.org>
- <20240503113453.GK40213@noisy.programming.kicks-ass.net>
- <ZjTg2cunShA6VbpY@krava>
- <725e2000dc56d55da4097cface4109c17fe5ad1a.camel@intel.com>
- <ZjU4ganRF1Cbiug6@krava>
- <6c143c648e2eff6c4d4b5e4700d1a8fbcc0f8cbc.camel@intel.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=TTXFetoakoM5sMyLNE0TvCQHUBiHbRz4sY4DTCHHfpaR9WEnJ2M5m0x9VkNLHaOTnAbDLLIJrLu1qQZKlp2rn3X42P5SUjiYgxtaAdOk9SiBXgHcVkDyOTG7b0FiMUNNvz8WoKUwp1E2Ack48BlY46RNEun1QqDV55BwLc41Q94=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk; spf=none smtp.mailfrom=ftp.linux.org.uk; dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b=ZKRWD2ib; arc=none smtp.client-ip=62.89.141.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ftp.linux.org.uk
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=cSDdKBLN0a5uI9scqsrmM49KsAV9URcP7+bHrbasnBA=; b=ZKRWD2ibo8voqmliDBcVDvN5cn
+	/J5M/yDDbeZNdFnxzKaOxhsSkppprX3nENPQ0z3ugjwuDMe8tlOqb2H9u0+kPfmRHjzW0fkG5yIqK
+	5oMf9bmXAKEj7jmrC9MBBwV0BQN7ufjs49HUQ5Wy/J9G7EnLMFlsSbDAMOO2TRReS+grtgUOcSqnR
+	M6fY72Cud6MedRUa79lH44WMOzNeJnHRW2gs7c2goZq9n8vvF96i89CfhXI5/xAijTEX7PXVxsOZu
+	mNJv9YI0vA9p2YJOkwZNX3RMTA7af85jNkMRbId/g0Q7XANJDk1Fv/AEo0Bggo7yTWSDvAtdOh+wY
+	kTLCW7YA==;
+Received: from viro by zeniv.linux.org.uk with local (Exim 4.96 #2 (Red Hat Linux))
+	id 1s31vy-00BEDK-1T;
+	Fri, 03 May 2024 23:03:18 +0000
+Date: Sat, 4 May 2024 00:03:18 +0100
+From: Al Viro <viro@zeniv.linux.org.uk>
+To: Kees Cook <keescook@chromium.org>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, axboe@kernel.dk,
+	brauner@kernel.org, christian.koenig@amd.com,
+	dri-devel@lists.freedesktop.org, io-uring@vger.kernel.org,
+	jack@suse.cz, laura@labbott.name, linaro-mm-sig@lists.linaro.org,
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-media@vger.kernel.org, minhquangbui99@gmail.com,
+	sumit.semwal@linaro.org,
+	syzbot+045b454ab35fd82a35fb@syzkaller.appspotmail.com,
+	syzkaller-bugs@googlegroups.com
+Subject: Re: [PATCH] epoll: try to be a _bit_ better about file lifetimes
+Message-ID: <20240503230318.GF2118490@ZenIV>
+References: <202405031110.6F47982593@keescook>
+ <20240503211129.679762-2-torvalds@linux-foundation.org>
+ <20240503212428.GY2118490@ZenIV>
+ <CAHk-=wjpsTEkHgo1uev3xGJ2bQXYShaRf3GPEqDWNgUuKx0JFw@mail.gmail.com>
+ <20240503214531.GB2118490@ZenIV>
+ <CAHk-=wgC+QpveKCJpeqsaORu7htoNNKA8mp+d9mvJEXmSKjhbw@mail.gmail.com>
+ <202405031529.2CD1BFED37@keescook>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <6c143c648e2eff6c4d4b5e4700d1a8fbcc0f8cbc.camel@intel.com>
+In-Reply-To: <202405031529.2CD1BFED37@keescook>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 
-On Fri, May 03, 2024 at 07:38:18PM +0000, Edgecombe, Rick P wrote:
->+Some more shadow stack folks from other archs. We are discussing how uretprobes
->work with shadow stack.
->
->Context:
->https://lore.kernel.org/lkml/ZjU4ganRF1Cbiug6@krava/
+On Fri, May 03, 2024 at 03:46:25PM -0700, Kees Cook wrote:
+> On Fri, May 03, 2024 at 02:52:38PM -0700, Linus Torvalds wrote:
+> > That means that the file will be released - and it means that you have
+> > violated all the refcounting rules for poll().
+> 
+> I feel like I've been looking at this too long. I think I see another
+> problem here, but with dmabuf even when epoll is fixed:
+> 
+> dma_buf_poll()
+> 	get_file(dmabuf->file)		/* f_count + 1 */
+> 	dma_buf_poll_add_cb()
+> 		dma_resv_for_each_fence ...
+> 			dma_fence_add_callback(fence, ..., dma_buf_poll_cb)
+> 
+> dma_buf_poll_cb()
+> 	...
+>         fput(dmabuf->file);		/* f_count - 1 ... for each fence */
+> 
+> Isn't it possible to call dma_buf_poll_cb() (and therefore fput())
+> multiple times if there is more than 1 fence? Perhaps I've missed a
+> place where a single struct dma_resv will only ever signal 1 fence? But
+> looking through dma_fence_signal_timestamp_locked(), I don't see
+> anything about resv nor somehow looking into other fence cb_list
+> contents...
 
-Thanks Rick.
+At a guess,
+                r = dma_fence_add_callback(fence, &dcb->cb, dma_buf_poll_cb);
+		if (!r)
+			return true;
 
-Yeah I didn't give enough attention to uprobes either.
-Although now that I think for RISC-V shadow stack, it shouldn't be an issue.
-On RISC-V return addresses don't get pushed as part of call instruction.
-There is a distinct instruction "shadow stack push of return address" in prolog.
-Similarly in epilog there is distinct instruction "shadow stack pop and check with
-link register".
-
-On RISC-V, uretprobe would install a uprobe on function start and when it's hit.
-It'll replace pt_regs->ra = trampoline_handler. As function will resume, trampoline
-addr will get pushed and popped. Although trampoline_handler would have to be enlightened
-to eventually return to original return site.
-
->
->On Fri, 2024-05-03 at 21:18 +0200, Jiri Olsa wrote:
->>
->> hack below seems to fix it for the current uprobe setup,
->> we need similar fix for the uretprobe syscall trampoline setup
->
->It seems like a reasonable direction.
->
->Security-wise, applications cannot do this on themselves, or it is an otherwise
->privileged thing right?
->
->
+prevents that - it returns 0 on success and -E... on error;
+insertion into the list happens only when it's returning 0,
+so...
 
