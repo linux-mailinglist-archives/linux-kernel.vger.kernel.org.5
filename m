@@ -1,124 +1,254 @@
-Return-Path: <linux-kernel+bounces-167515-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-167517-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7EA758BAAA7
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 12:20:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 879008BAAB2
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 12:23:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AF7151C22419
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 10:20:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9F15B1C2208B
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 10:23:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD2E61514EF;
-	Fri,  3 May 2024 10:19:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 661891509A7;
+	Fri,  3 May 2024 10:23:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ceQLMO7c"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.19])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="eHBR2JW9";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="+IWhWpVd";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="eHBR2JW9";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="+IWhWpVd"
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 919C11514EC;
-	Fri,  3 May 2024 10:19:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.19
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4082A150981;
+	Fri,  3 May 2024 10:23:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714731574; cv=none; b=UGIv7cZW9IG4MSIih/p33qcf+G4QkfGbIuY92yw6MHZcPbdH9M5l+nvnHpHSzcUrsWF2q3lNUAe6PIj+y1xWmd/1kpjZvcxIrYWuID6VCHz3QI9OTGI9ExxhOgkj/Nbwzm9rCmNEboOYqWVFFTYL9gRUCy9ryZrIBV/RMk9S4So=
+	t=1714731817; cv=none; b=JIB5RBEndqfG47m6OEg2ulzK/G0dE7tcTrqzJJ5BWRyqgw8w/vkIbCWg5B2BUjZROqmK6BfAGZ7SZ/b8c+Xx0Io8RxQsjC3dPYwQZOkGEFaPYvfCzZ85ifhbbQH1Fz+vOauabBXfxu3Z7R8+aV1VD+wg4Xh2qtYaIlBDwlUMOeI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714731574; c=relaxed/simple;
-	bh=/lDfUxTRFR9mzrkg5jEHWirycAbncJU/9vGHcLZJTHE=;
+	s=arc-20240116; t=1714731817; c=relaxed/simple;
+	bh=fHtHD+g9ZeMccn+bieIn+XHwW1USx6/ejeg+8z6817o=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=epuh57Gr4w2QWgleNmprQtpY0hjXIizafy7MnQ2NC2vGW+M4S5KFx8f8AnJdhzIQMA4VTbNo4WKCIY9uJh1005TGnFOUtf0SiNvaxVo5pHYeyyeXZEZoFOJf3Jau2w3kRhKjOis5xsWlNVS+AGHoaPGan1Angixulx1ASGJMhN8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ceQLMO7c; arc=none smtp.client-ip=198.175.65.19
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1714731573; x=1746267573;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=/lDfUxTRFR9mzrkg5jEHWirycAbncJU/9vGHcLZJTHE=;
-  b=ceQLMO7c95D4fan8HM48UQbXwkT+Tpi1vV+X3sm8Gl3Xgkc/wi2VeXtz
-   9Q+7zuaCQNXHCrp2weBjBdVsB0zrm+LDE2e2mKEmbEg5CqGdofsbS2rwt
-   Xb8tCm5QOpkyuI32HhBqPM0mutjqSfVar1newnztw7zIeNdbiVAM08iF1
-   LXmVmUvC7uIY8SQ14ApdGbcv9k8VeI5a25x89pl8cQFGxQ2/9byhsULA4
-   YwM9nHdu7pdaWT6LsL6b/WjHpB2AEI1gxG5dqRTu0UzoamSGTW442OwST
-   Tf6M+IwJw8Bb2qs7Dd7M1+NuGaKl1XVzkeUMZuUkgQvGmoHVel2s7mnhH
-   w==;
-X-CSE-ConnectionGUID: r5ZyBRgkTNaEsjsC2pBpmw==
-X-CSE-MsgGUID: ZqFNwp6dRoyo87RoqRVaRQ==
-X-IronPort-AV: E=McAfee;i="6600,9927,11062"; a="10390955"
-X-IronPort-AV: E=Sophos;i="6.07,251,1708416000"; 
-   d="scan'208";a="10390955"
-Received: from orviesa009.jf.intel.com ([10.64.159.149])
-  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 May 2024 03:19:32 -0700
-X-CSE-ConnectionGUID: SioMnQgmSzScssdJPzZcBA==
-X-CSE-MsgGUID: 0JKIIG6tQkKTg7ZClaSN9Q==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,251,1708416000"; 
-   d="scan'208";a="27464215"
-Received: from lkp-server01.sh.intel.com (HELO e434dd42e5a1) ([10.239.97.150])
-  by orviesa009.jf.intel.com with ESMTP; 03 May 2024 03:19:27 -0700
-Received: from kbuild by e434dd42e5a1 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1s2q0i-000BZw-0K;
-	Fri, 03 May 2024 10:19:24 +0000
-Date: Fri, 3 May 2024 18:19:18 +0800
-From: kernel test robot <lkp@intel.com>
-To: Lyndon Sanche <lsanche@lyndeno.ca>
-Cc: Paul Gazzillo <paul@pgazz.com>,
-	Necip Fazil Yildiran <fazilyildiran@gmail.com>,
-	oe-kbuild-all@lists.linux.dev, mario.limonciello@amd.com,
-	pali@kernel.org, W_Armin@gmx.de,
-	srinivas.pandruvada@linux.intel.com, ilpo.jarvinen@linux.intel.com,
-	lkp@intel.com, Hans de Goede <hdegoede@redhat.com>,
-	Matthew Garrett <mjg59@srcf.ucam.org>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Heiner Kallweit <hkallweit1@gmail.com>,
-	Vegard Nossum <vegard.nossum@oracle.com>,
-	platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Dell.Client.Kernel@dell.com
-Subject: Re: [PATCH v5] platform/x86: dell-laptop: Implement platform_profile
-Message-ID: <202405031851.NYy0ZB02-lkp@intel.com>
-References: <20240501215829.4991-2-lsanche@lyndeno.ca>
+	 Content-Type:Content-Disposition:In-Reply-To; b=r+xMg/dxYXJ93cLJmJRNULoU/L5NMZbNINp6ecejrvTp3IFCvbyqSziBzSckMAvCB9fH4YiYdQaPYd3iYLePc+P01UyY6iudTuOOi/uxQnJ0aRYtGKkUZSNITIWfLJjwtRkGJdisj4C0VWZd9NBw1xZff9vAF0CIPfIfjYjSpmo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=eHBR2JW9; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=+IWhWpVd; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=eHBR2JW9; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=+IWhWpVd; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 4F6B5337BF;
+	Fri,  3 May 2024 10:23:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1714731813; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=fbe1RMkmxuSQr7773iy44PO+z9CJb3ltRRFeG3he+PM=;
+	b=eHBR2JW91Cub5ghh08YZgv0gotBMYgWmUYcxm0nc9ddIdpMtjYHkaYiB/MdBy0g6WtZgj1
+	KZ3g1iVOEgzaZU2saWuY1aBCD3cbRhd4rm9yb1sL0GHhiuWxsFx+COGId8Eoaf8BiZK12n
+	ahBepk7qxjL0DG9Q74e3fsl95DgSY70=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1714731813;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=fbe1RMkmxuSQr7773iy44PO+z9CJb3ltRRFeG3he+PM=;
+	b=+IWhWpVd47hr9VNZX2IscVXbEBcjuy7zjRj+/nMQu0vqKOtif3k8gsV8PvkC2ww6YpjlLl
+	QBgO0uEWI3hXBNCQ==
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=eHBR2JW9;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=+IWhWpVd
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1714731813; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=fbe1RMkmxuSQr7773iy44PO+z9CJb3ltRRFeG3he+PM=;
+	b=eHBR2JW91Cub5ghh08YZgv0gotBMYgWmUYcxm0nc9ddIdpMtjYHkaYiB/MdBy0g6WtZgj1
+	KZ3g1iVOEgzaZU2saWuY1aBCD3cbRhd4rm9yb1sL0GHhiuWxsFx+COGId8Eoaf8BiZK12n
+	ahBepk7qxjL0DG9Q74e3fsl95DgSY70=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1714731813;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=fbe1RMkmxuSQr7773iy44PO+z9CJb3ltRRFeG3he+PM=;
+	b=+IWhWpVd47hr9VNZX2IscVXbEBcjuy7zjRj+/nMQu0vqKOtif3k8gsV8PvkC2ww6YpjlLl
+	QBgO0uEWI3hXBNCQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 40A2613991;
+	Fri,  3 May 2024 10:23:33 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id 8Lm/DyW7NGZeRAAAD6G6ig
+	(envelope-from <jack@suse.cz>); Fri, 03 May 2024 10:23:33 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id CF584A0A12; Fri,  3 May 2024 12:23:28 +0200 (CEST)
+Date: Fri, 3 May 2024 12:23:28 +0200
+From: Jan Kara <jack@suse.cz>
+To: Baokun Li <libaokun1@huawei.com>
+Cc: Jan Kara <jack@suse.cz>, tytso@mit.edu,
+	syzbot <syzbot+dd43bd0f7474512edc47@syzkaller.appspotmail.com>,
+	adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+	llvm@lists.linux.dev, nathan@kernel.org, ndesaulniers@google.com,
+	ritesh.list@gmail.com, syzkaller-bugs@googlegroups.com,
+	trix@redhat.com, yangerkun <yangerkun@huawei.com>
+Subject: Re: [syzbot] [ext4?] WARNING in mb_cache_destroy
+Message-ID: <20240503102328.cstcauc5qakmk2bg@quack3>
+References: <00000000000072c6ba06174b30b7@google.com>
+ <0000000000003bf5be061751ae70@google.com>
+ <20240502103341.t53u6ya7ujbzkkxo@quack3>
+ <dca44ba5-5c33-05ef-d9de-21a84f9d7eaa@huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20240501215829.4991-2-lsanche@lyndeno.ca>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <dca44ba5-5c33-05ef-d9de-21a84f9d7eaa@huawei.com>
+X-Spam-Flag: NO
+X-Spam-Score: -2.51
+X-Rspamd-Action: no action
+X-Rspamd-Queue-Id: 4F6B5337BF
+X-Spam-Level: 
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-2.51 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	SUSPICIOUS_RECIPS(1.50)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_RHS_NOT_FQDN(0.50)[];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	MIME_TRACE(0.00)[0:+];
+	RCPT_COUNT_TWELVE(0.00)[15];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	RCVD_COUNT_THREE(0.00)[3];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	ARC_NA(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	TO_DN_SOME(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	TAGGED_RCPT(0.00)[dd43bd0f7474512edc47];
+	MISSING_XM_UA(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	FREEMAIL_CC(0.00)[suse.cz,mit.edu,syzkaller.appspotmail.com,dilger.ca,vger.kernel.org,lists.linux.dev,kernel.org,google.com,gmail.com,googlegroups.com,redhat.com,huawei.com];
+	DKIM_TRACE(0.00)[suse.cz:+];
+	SUBJECT_HAS_QUESTION(0.00)[]
 
-Hi Lyndon,
+Hi!
 
-kernel test robot noticed the following build warnings:
+On Fri 03-05-24 17:51:07, Baokun Li wrote:
+> On 2024/5/2 18:33, Jan Kara wrote:
+> > On Tue 30-04-24 08:04:03, syzbot wrote:
+> > > syzbot has bisected this issue to:
+> > > 
+> > > commit 67d7d8ad99beccd9fe92d585b87f1760dc9018e3
+> > > Author: Baokun Li <libaokun1@huawei.com>
+> > > Date:   Thu Jun 16 02:13:56 2022 +0000
+> > > 
+> > >      ext4: fix use-after-free in ext4_xattr_set_entry
+> > So I'm not sure the bisect is correct since the change is looking harmless.
+> Yes, the root cause of the problem has nothing to do with this patch,
+> and please see the detailed analysis below.
+> > But it is sufficiently related that there indeed may be some relationship.
+> > Anyway, the kernel log has:
+> > 
+> > [   44.932900][ T1063] EXT4-fs warning (device loop0): ext4_evict_inode:297: xattr delete (err -12)
+> > [   44.943316][ T1063] EXT4-fs (loop0): unmounting filesystem.
+> > [   44.949531][ T1063] ------------[ cut here ]------------
+> > [   44.955050][ T1063] WARNING: CPU: 0 PID: 1063 at fs/mbcache.c:409 mb_cache_destroy+0xda/0x110
+> > 
+> > So ext4_xattr_delete_inode() called when removing inode has failed with
+> > ENOMEM and later mb_cache_destroy() was eventually complaining about having
+> > mbcache entry with increased refcount. So likely some error cleanup path is
+> > forgetting to drop mbcache entry reference somewhere but at this point I
+> > cannot find where. We'll likely need to play with the reproducer to debug
+> > that. Baokun, any chance for looking into this?
+> > 
+> > 								Honza
+> As you guessed, when -ENOMEM is returned in ext4_sb_bread(),
+> the reference count of ce is not properly released, as follows.
+> 
+> ext4_create
+>  __ext4_new_inode
+>   security_inode_init_security
+>    ext4_initxattrs
+>     ext4_xattr_set_handle
+>      ext4_xattr_block_find
+>      ext4_xattr_block_set
+>       ext4_xattr_block_cache_find
+>         ce = mb_cache_entry_find_first
+>             __entry_find
+>             atomic_inc_not_zero(&entry->e_refcnt)
+>         bh = ext4_sb_bread(inode->i_sb, ce->e_value, REQ_PRIO);
+>         if (PTR_ERR(bh) == -ENOMEM)
+>             return NULL;
+> 
+> Before merging into commit 67d7d8ad99be("ext4: fix use-after-free
+> in ext4_xattr_set_entry"), it will not return early in
+> ext4_xattr_ibody_find(),
+> so it tries to find it in iboy, fails the check in xattr_check_inode() and
+> returns without executing ext4_xattr_block_find(). Thus it will bisect
+> the patch, but actually has nothing to do with it.
+> 
+> ext4_xattr_ibody_get
+>  xattr_check_inode
+>   __xattr_check_inode
+>    check_xattrs
+>     if (end - (void *)header < sizeof(*header) + sizeof(u32))
+>       "in-inode xattr block too small"
+> 
+> Here's the patch in testing, I'll send it out officially after it is tested.
+> (PS:  I'm not sure if propagating the ext4_xattr_block_cache_find() errors
+> would be better.)
 
-[auto build test WARNING on linus/master]
-[also build test WARNING on v6.9-rc6 next-20240503]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+Great! Thanks for debugging this! Some comments to your fix below:
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Lyndon-Sanche/platform-x86-dell-laptop-Implement-platform_profile/20240502-060146
-base:   linus/master
-patch link:    https://lore.kernel.org/r/20240501215829.4991-2-lsanche%40lyndeno.ca
-patch subject: [PATCH v5] platform/x86: dell-laptop: Implement platform_profile
-config: i386-kismet-CONFIG_ACPI_PLATFORM_PROFILE-CONFIG_DELL_LAPTOP-0-0 (https://download.01.org/0day-ci/archive/20240503/202405031851.NYy0ZB02-lkp@intel.com/config)
-reproduce: (https://download.01.org/0day-ci/archive/20240503/202405031851.NYy0ZB02-lkp@intel.com/reproduce)
+> diff --git a/fs/ext4/xattr.c b/fs/ext4/xattr.c
+> index b67a176bfcf9..5c9e751915fd 100644
+> --- a/fs/ext4/xattr.c
+> +++ b/fs/ext4/xattr.c
+> @@ -3113,11 +3113,10 @@ ext4_xattr_block_cache_find(struct inode *inode,
+> 
+>          bh = ext4_sb_bread(inode->i_sb, ce->e_value, REQ_PRIO);
+>          if (IS_ERR(bh)) {
+> -            if (PTR_ERR(bh) == -ENOMEM)
+> -                return NULL;
+> +            if (PTR_ERR(bh) != -ENOMEM)
+> +                EXT4_ERROR_INODE(inode, "block %lu read error",
+> +                         (unsigned long)ce->e_value);
+>              bh = NULL;
+> -            EXT4_ERROR_INODE(inode, "block %lu read error",
+> -                     (unsigned long)ce->e_value);
+>          } else if (ext4_xattr_cmp(header, BHDR(bh)) == 0) {
+>              *pce = ce;
+>              return bh;
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202405031851.NYy0ZB02-lkp@intel.com/
+So if we get the ENOMEM error, continuing the iteration seems to be
+pointless as we'll likely get it for the following entries as well. I think
+the original behavior of aborting the iteration in case of ENOMEM is
+actually better. We just have to do mb_cache_entry_put(ea_block_cache, ce)
+before returning...
 
-kismet warnings: (new ones prefixed by >>)
->> kismet: WARNING: unmet direct dependencies detected for ACPI_PLATFORM_PROFILE when selected by DELL_LAPTOP
-   WARNING: unmet direct dependencies detected for ACPI_PLATFORM_PROFILE
-     Depends on [n]: ACPI [=n]
-     Selected by [y]:
-     - DELL_LAPTOP [=y] && X86_PLATFORM_DEVICES [=y] && X86_PLATFORM_DRIVERS_DELL [=y] && DMI [=y] && BACKLIGHT_CLASS_DEVICE [=y] && (ACPI_VIDEO [=n] || ACPI_VIDEO [=n]=n) && (RFKILL [=n] || RFKILL [=n]=n) && (DELL_WMI [=n] || DELL_WMI [=n]=n) && SERIO_I8042 [=y] && DELL_SMBIOS [=y]
+								Honza
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
