@@ -1,139 +1,179 @@
-Return-Path: <linux-kernel+bounces-168174-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-168175-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0A55E8BB4B5
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 22:21:20 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E135A8BB4B8
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 22:21:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3B7271C2303C
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 20:21:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5B4CC1F25BF4
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 20:21:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C92D0158D99;
-	Fri,  3 May 2024 20:21:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 966F6158DA1;
+	Fri,  3 May 2024 20:21:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OrUd5XS8"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="e7uAo3RQ"
+Received: from mail-yw1-f170.google.com (mail-yw1-f170.google.com [209.85.128.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D04C157E62;
-	Fri,  3 May 2024 20:21:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 703B5157E62;
+	Fri,  3 May 2024 20:21:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714767672; cv=none; b=t6xDIwKc/SkavF2x1K81DtpE7bktwgtBIbh9kdpxcSTpkPm0lBanYwz8HlTChZVagQTJBM1iUnNrhUVq5b31gUBRuHehE+7OP5cNbK2OAwz0eyPVgVxMjw/unZUAHchIJmOh/tzHz/w6m1CzfXIk4/Frdls6NfR4OmhFbJzNqb0=
+	t=1714767691; cv=none; b=ah8i4c+K8OhPxZ7PvCoCMnqlrgUCwstNvA9+4C10qht/3o1XuS940dyEcCrQkjunoBQoY6wf9Hnf05b/Md2kQsfP01Fuc3KJ5GAEMbbY0ZYvRWwZEIjCNpu9eju/C+nSNxg4/kGTTNIYN3AR1zIwMdUif3nqKWGtJMCTGLUPkEc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714767672; c=relaxed/simple;
-	bh=ybKkS+1yGYkf7MFehjLArh675WknPQu5/9lQl5Hso90=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=GfjhAeUcS0Mk2xSS5m1QvI7GtLm1Rplu21ElFT3kSMP4ntO+m8FU65Zn5Q2SLzwDfg7Ty0f1IFBkewdLNzXXFQvvHfCjL+fNPIEZ+2OJWHj1OvdwDwJ0kKkCKVj60gJkyMf4TnjIpB6UW/l15yc8nabwBhs9BBBm8JqdIlCXBFA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OrUd5XS8; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 058C7C116B1;
-	Fri,  3 May 2024 20:21:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714767671;
-	bh=ybKkS+1yGYkf7MFehjLArh675WknPQu5/9lQl5Hso90=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=OrUd5XS8OGzs8O+Z0BXHye0IFQANFQqvVkAGISHp6VQsdCuX146vOsckPdr8KJ/IT
-	 Ji9z3Jruw8RbHT8f4SjhonjFJxAoTlFtooUI9Q//8ZmSLdUUE7OJqTMzCMwNTmaIem
-	 i1srsf1JCnS6lOcamUIu1StficWnJLokgQtU9Cwp4GJorqji69fYmk/KN1PNXURw52
-	 jaExLfk0ol8Qk2YSUQwLMG/Z6WHRzNBAfKk57p/iZRyTa3cSsEM6/h9wZSCScqpBA/
-	 6wx1StqU+TvpRJ6gvHUDaGwXnnWCeb42nA4NYPlNHK9kmKn9gLjqCt2784H+fNLwn7
-	 x3u9pjrQvVdbQ==
-Date: Fri, 3 May 2024 17:21:08 -0300
-From: Arnaldo Carvalho de Melo <acme@kernel.org>
-To: Ian Rogers <irogers@google.com>
-Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
-	Namhyung Kim <namhyung@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	Kan Liang <kan.liang@linux.intel.com>,
-	James Clark <james.clark@arm.com>,
-	Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
-	Colin Ian King <colin.i.king@gmail.com>,
-	nabijaczleweli@nabijaczleweli.xyz, Leo Yan <leo.yan@linux.dev>,
-	Song Liu <song@kernel.org>,
-	Ilkka Koskinen <ilkka@os.amperecomputing.com>,
-	Ben Gainey <ben.gainey@arm.com>,
-	K Prateek Nayak <kprateek.nayak@amd.com>,
-	Yanteng Si <siyanteng@loongson.cn>,
-	Sun Haiyong <sunhaiyong@loongson.cn>,
-	Changbin Du <changbin.du@huawei.com>,
-	Andi Kleen <ak@linux.intel.com>,
-	Thomas Richter <tmricht@linux.ibm.com>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Dima Kogan <dima@secretsauce.net>,
-	zhaimingbing <zhaimingbing@cmss.chinamobile.com>,
-	Paran Lee <p4ranlee@gmail.com>, Li Dong <lidong@vivo.com>,
-	Tiezhu Yang <yangtiezhu@loongson.cn>,
-	Yang Jihong <yangjihong1@huawei.com>,
-	Chengen Du <chengen.du@canonical.com>,
-	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 1/7] perf dsos: Switch backing storage to array from
- rbtree/list
-Message-ID: <ZjVHNB7pTKKWERFn@x1>
-References: <20240429184614.1224041-1-irogers@google.com>
- <20240429184614.1224041-2-irogers@google.com>
+	s=arc-20240116; t=1714767691; c=relaxed/simple;
+	bh=zagYwoQ/oOAX+wQ6LBY2V6facBBV+qCiO0lTgP9qC6s=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=LvzOoLfUjvdryXecjJHTs4Us5L0NXWnf59UCEkZw9Cd2sJHFzPqfbFyfcebRYiJQeKkvdRzMW33/zV+0DCmlW65GebW+jlF/mv1p4fO9BbPG9qDXFC7g80xKyjunFG1HRJo4TeoV5G/+N+gFIECiKaA3ZXPxJcK1cTJ3iZ2XttE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=e7uAo3RQ; arc=none smtp.client-ip=209.85.128.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f170.google.com with SMTP id 00721157ae682-61b68644ab4so336157b3.0;
+        Fri, 03 May 2024 13:21:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1714767689; x=1715372489; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=d18X7ZM0l6kj5GwwaRvOjC1+xsFoXnqqYPXvHkjD73M=;
+        b=e7uAo3RQ70ZPwEF/ODnqBqEpMm2WWJIVBnlOnhwySNREid9mBb1c26nlc4+mDHTaB7
+         xdg5u0m4TMHyI1goNA0OxjTMbdPOZzVQG/nAz/kcPorsn4CFx4FBrNmxg2MMqQhnQMxO
+         Q4qQ9VjzO6gt1mgXa+3F3ZEpAdDuWlNKYOs4knAgoxCvDctdD+bxKorTZQmn+OG04Pzf
+         JC7d1rOT1hZ2FfT11KPb/egVEf2FCKGDDKS63bfTr4e16OeluSMKzGRtUP7hCsGVXNa2
+         ZCg9Li+DOmC0b+1ALqtrpipvsc5O1syiQK9tyPSBFNDyxfo1epkixiyLX3/iwqMgo/gS
+         tZzA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714767689; x=1715372489;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=d18X7ZM0l6kj5GwwaRvOjC1+xsFoXnqqYPXvHkjD73M=;
+        b=AHW6Xp00nNWTy54sxhz2z3cidlOo2GPudDNZRnMjOfJJuHGXfslV7ctWU0FihAg80/
+         QnfanrHzeqL4u/76Rowo4z77b0npGgg9IcOFH1tWwkMvzMPzS91WwZUwupdW08VGh4kV
+         2K3kZY9D4vYwTX+ahGZLo9yDLClVEKUG0tdfKyV+vF+EZaPvWZnrXe0VgAkEp55lceSp
+         AhqhSCG3PdyA06auLazsyPd9Q/IMQZSc3+viIliLLy5Nbu9qkmk/2T5SDyRodw8SxInD
+         qp5sUyOBTYHQTnK/ai0np8Q6oDNH5QeO4h/2I0VBMmXc54d6a4dHMuhJmK2gj/Lp6tQK
+         fdiw==
+X-Forwarded-Encrypted: i=1; AJvYcCU/VyXYiInw9Sz1EFssjvkC/N7xluKng5lw8gSwSlVpWBHhMfUc4OnReeXJpMiJbXKGFPfWlC0GQVdEHZYDKt77EicEMX++w5qQ+4XGBV3BvgGcdlA6evLZ0pWrLlt+bblK3ldAdZyCyoRWzKc4b4PAjy/zi9uHcvjyNTzgrZ5fPoTUoE4=
+X-Gm-Message-State: AOJu0YyOBmU4XiKN8Ydpbz42Ors6X8sL41D32udm8U6XLOXeHJNOtKPO
+	1GXWpKQ0wmZBO8hvH1PJkPRJ89oc90RrE1A8wORAAS+KU0KhN8kuGrXpIQ==
+X-Google-Smtp-Source: AGHT+IGJ0cbEIDK+2nFR627oFgjwYDQME0bBTz1odCdcdH/20DIWvwb2tCXH1qw6TW0ogxYjkBugnA==
+X-Received: by 2002:a05:690c:3811:b0:615:6d2c:2cf6 with SMTP id jx17-20020a05690c381100b006156d2c2cf6mr4076260ywb.47.1714767689259;
+        Fri, 03 May 2024 13:21:29 -0700 (PDT)
+Received: from [10.69.55.76] ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id hd15-20020a05622a298f00b0043aa9ad3859sm1935388qtb.43.2024.05.03.13.21.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 03 May 2024 13:21:28 -0700 (PDT)
+Message-ID: <45b7742c-9cde-4238-9c2c-c75dfbe9d8f3@gmail.com>
+Date: Fri, 3 May 2024 13:21:25 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/3] gpio: of: support gpio-ranges for multiple gpiochip
+ devices
+To: Linus Walleij <linus.walleij@linaro.org>
+Cc: Bartosz Golaszewski <brgl@bgdev.pl>, Phil Elwell <phil@raspberrypi.com>,
+ Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>,
+ Florian Fainelli <florian.fainelli@broadcom.com>,
+ bcm-kernel-feedback-list@broadcom.com, linux-gpio@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+References: <20240424185039.1707812-1-opendmb@gmail.com>
+ <20240424185039.1707812-3-opendmb@gmail.com>
+ <CACRpkda4v6Nu8V3MVamDpfs4qnc89e8Vd8fSyaNsqJQ40GQqZg@mail.gmail.com>
+Content-Language: en-US
+From: Doug Berger <opendmb@gmail.com>
+In-Reply-To: <CACRpkda4v6Nu8V3MVamDpfs4qnc89e8Vd8fSyaNsqJQ40GQqZg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240429184614.1224041-2-irogers@google.com>
 
-On Mon, Apr 29, 2024 at 11:46:08AM -0700, Ian Rogers wrote:
-> DSOs were held on a list for fast iteration and in an rbtree for fast
-> finds. Switch to using a lazily sorted array where iteration is just
-> iterating through the array and binary searches are the same
-> complexity as searching the rbtree. The find may need to sort the
-> array first which does increase the complexity, but add operations
-> have lower complexity and overall the complexity should remain about
-> the same.
+On 5/3/2024 1:25 AM, Linus Walleij wrote:
+> Hi Dough,
+> 
+> thanks for your patch!
+Thanks for your review!
 
-With just this first one applied:
+> 
+> I'm a bit confused here:
+"Communication is hard" and I may be confused about your confusion, but 
+hopefully we can work it out.
 
-⬢[acme@toolbox perf-tools-next]$ git log --oneline -10
-325557715f1d8593 (HEAD) perf dsos: Switch backing storage to array from rbtree/list
-7b6dd7a923281a7c perf pmu: Assume sysfs events are always the same case
-6debc5aa326fa2ee perf test pmu: Test all sysfs PMU event names are the same case
-18eb2ca8c18f0612 perf test pmu: Add an eagerly loaded event test
-aa1551f299ba414c perf test pmu: Refactor format test and exposed test APIs
-785623ee855e893d perf Document: Sysfs event names must be lower or upper case
-97c48ea8ff1cd70f perf test pmu-events: Make it clearer that pmu-events tests JSON events
-3cdd98b42d212160 (x1/perf-tools-next) perf maps: Remove check_invariants() from maps__lock()
-e3123079b906dc2e perf cs-etm: Improve version detection and error reporting
-bc5e0e1b93565e37 perf cs-etm: Remove repeated fetches of the ETM PMU
-⬢[acme@toolbox perf-tools-next]$
+> 
+> On Wed, Apr 24, 2024 at 8:51 PM Doug Berger <opendmb@gmail.com> wrote:
+> 
+> 
+>> +               /* Ignore ranges outside of this GPIO chip */
+>> +               if (pinspec.args[0] >= (chip->offset + chip->ngpio))
+>> +                       continue;
+>> +               if (pinspec.args[0] + pinspec.args[2] <= chip->offset)
+>> +                       continue;
+> 
+> Here pinspec.args[0] and [2] comes directly from the device tree.
+> 
+> The documentation in Documentation/devicetree/bindings/gpio/gpio.txt
+> says:
+> 
+>> 2.2) Ordinary (numerical) GPIO ranges
+>> -------------------------------------
+>>
+>> It is useful to represent which GPIOs correspond to which pins on which pin
+>> controllers. The gpio-ranges property described below represents this with
+>> a discrete set of ranges mapping pins from the pin controller local number space
+>> to pins in the GPIO controller local number space.
+>>
+>> The format is: <[pin controller phandle], [GPIO controller offset],
+>>                  [pin controller offset], [number of pins]>;
+>>
+>> The GPIO controller offset pertains to the GPIO controller node containing the
+>> range definition.
+I think we are in agreement here. For extra clarity, I will add that in 
+my understanding pinspec.args[0] corresponds to [GPIO controller offset] 
+and pinspec.args[2] corresponds to [number of pins].
 
-root@number:~# perf -v
-perf version 6.9.rc5.g325557715f1d
-root@number:~# perf probe -l
-DSO [kernel.kallsyms] is still in rbtree when being deleted!
-DSO /lib/modules/6.8.7-200.fc39.x86_64/kernel/drivers/hid/hid-sensor-hub.ko.xz is still in rbtree when being deleted!
-DSO /lib/modules/6.8.7-200.fc39.x86_64/kernel/drivers/hid/uhid.ko.xz is still in rbtree when being deleted!
-DSO /lib/modules/6.8.7-200.fc39.x86_64/kernel/drivers/net/tun.ko.xz is still in rbtree when being deleted!
-DSO /lib/modules/6.8.7-200.fc39.x86_64/kernel/fs/overlayfs/overlay.ko.xz is still in rbtree when being deleted!
-DSO /lib/modules/6.8.7-200.fc39.x86_64/kernel/net/bluetooth/rfcomm/rfcomm.ko.xz is still in rbtree when being deleted!
-DSO /lib/modules/6.8.7-200.fc39.x86_64/kernel/drivers/input/misc/uinput.ko.xz is still in rbtree when being deleted!
-DSO /lib/modules/6.8.7-200.fc39.x86_64/kernel/sound/core/seq/snd-seq-dummy.ko.xz is still in rbtree when being deleted!
-<SNIP a lot of other modules, probably all of them>
+> 
+> So I do not understand how pinspec[0] and [2] can ever be compared
+> to something involving chip->offset which is a Linux-specific offset.
+> 
+> It rather looks like you are trying to accomodate the Linux numberspace
+> in the ranges, which it was explicitly designed to avoid.
+The struct gpio_chip documentation in include/linux/gpio/driver.h says:
 
-Then with:
+ > * @offset: when multiple gpio chips belong to the same device this
+ > *	can be used as offset within the device so friendly names can
+ > *	be properly assigned.
 
-65e1e704f37916a0 (HEAD -> perf-tools-next) perf dsos: Switch hand code to bsearch
-64377d6b7d5f9a71 perf dsos: Remove __dsos__findnew_link_by_longname_id
-8e773b8be95aff66 perf dsos: Remove __dsos__addnew
-b1d064fc9b912ece perf dsos: Switch backing storage to array from rbtree/list
+It is my understanding that this value represents the offset of a 
+gpiochip relative to the GPIO controller device defined by the GPIO 
+controller node in device tree. This puts it in the same number space as 
+[GPIO controller offset]. I believe it was introduced for the specific 
+purpose of translating [GPIO controller offset] values into 
+Linux-specific offsets, which is why it is being reused for that purpose 
+in this patch.
 
-applied it continues like that, the next patch in line isn't applying.
+For GPIO Controllers that contain a single gpiochip the 'offset' member 
+is 0 and the device tree node offsets can be applied directly to the 
+gpiochip. However, when a GPIO Controller contains multiple gpiochips, 
+the device tree node offsets must be translated to each individual gpiochip.
 
-I'll push what I have to tmp.perf-tools-next.
+> 
+> I just don't get it.
+> 
+> So NACK until I understand what is going on here.
+> 
+> Yours,
+> Linus Walleij
+I hope it makes sense now, but if not please help me understand what I 
+may be missing.
 
-- Arnaldo
+Thanks,
+     Doug
+
 
