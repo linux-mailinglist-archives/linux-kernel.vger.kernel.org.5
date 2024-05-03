@@ -1,101 +1,80 @@
-Return-Path: <linux-kernel+bounces-168080-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-168081-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 40D178BB364
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 20:43:09 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0BBD58BB367
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 20:43:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C21971F23888
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 18:43:08 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3C649B215E0
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 18:43:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2DA6C12F391;
-	Fri,  3 May 2024 18:42:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7EA312F5A7;
+	Fri,  3 May 2024 18:43:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="JuLdIbmU"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b="ePikg0wS"
+Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C7A52E3E0
-	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 18:42:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E37036B1C
+	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 18:43:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714761778; cv=none; b=ez5DwhQsF+ACNH0K+f7EaHXuC6ow/GbstauhbFHfke2NNAvSOMJV2gbirw8obhddtDGGtKfyKGgIGk8m6VqFGvSkpFoRGp/Wlw/FijVzFonxpDK5BaVBegScNwEgT4NaKBaAew5DZbds0C62nRYwklj4AyYM0gQTQKc6Dn7DXog=
+	t=1714761814; cv=none; b=t5nGsEXXNAxvZPhw7XTspgqfocVKbws/axr9CTZqXFGikRApRd1btgLinQxh9garFJD4v/C3LQdI53JoJXhTdNo2UMaNTOaabUzNeQHDGajX8uLb8sA95llVI56mpx/td+6vXkfIEExkkE2iaOu+Ph9b03XTnyUYCFMlj3FK8lI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714761778; c=relaxed/simple;
-	bh=tU6G7JYGWRkG+2O/O2roQvpxabuBZJxtfMZ8Pdnsff0=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type:Content-Disposition; b=GAJ5T4lOeAiuHsMojuLDOBlBsX2e4Z4DfL/Khw6i2XXqD5NLg8hfUk+9AL98ulJvH/IlZcVDenz2/d+XajCZLtiso1l89d6m8JKRHKIo+8vTHs8HaQcxvfAv3bWCyNC7KXYRxYM24voRP514MRrMYSCcsRZeA//h30UYk14pvsE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=JuLdIbmU; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1714761775;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=7jg1F0r+Luam104Y7UVnMDpQtCctuiu4jLX0tf0Er1I=;
-	b=JuLdIbmUOWthf/SfUfhZzbHmM8sbDv35ewFqCntRW8JzA5xdoFZXjhtGrrvceHccjfYqni
-	Ww4u41V/TZI3ndQdNBQKmEWFUDuNAQFGPTsLeUqu5ER5W62z6KGH3egaXQN+v9d6t0D8eF
-	htKso3kNlnZltOP4VhIYoR5/Ncki3Zg=
-Received: from mail-pl1-f200.google.com (mail-pl1-f200.google.com
- [209.85.214.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-275-0uTna2ItPFalFzNgsS5EwQ-1; Fri, 03 May 2024 14:42:54 -0400
-X-MC-Unique: 0uTna2ItPFalFzNgsS5EwQ-1
-Received: by mail-pl1-f200.google.com with SMTP id d9443c01a7336-1ec4c65a091so34720395ad.3
-        for <linux-kernel@vger.kernel.org>; Fri, 03 May 2024 11:42:54 -0700 (PDT)
+	s=arc-20240116; t=1714761814; c=relaxed/simple;
+	bh=PcHI2mXSjOY4NXtmW1TqHHOIJEHPiSVx2p/CZ40zV8M=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=EGyhvbaXGmo08IQeffMprgpwpFnpErLE07gQda7u4AFBw4g3TYctJZgW1KB0OYeYqMElVCM482AKN5w+mItoqXyfnA9wMilpeWfiZQjdfexksluOh6wlx02NkgTdPqYBIbJngRveisHNsrfA+jynVHpF/8Jfr1ZCfXiGWNkKTI8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com; spf=pass smtp.mailfrom=fastly.com; dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b=ePikg0wS; arc=none smtp.client-ip=209.85.214.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fastly.com
+Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-1ec5387aed9so39090665ad.3
+        for <linux-kernel@vger.kernel.org>; Fri, 03 May 2024 11:43:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fastly.com; s=google; t=1714761811; x=1715366611; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=FFXylIM8Lgjr0fl64+mxvP0VZact2yQlaPnfxj1/4U0=;
+        b=ePikg0wS7nTpjPmUR9Wbw6vKzXEnI/bGfNsx6oJ7FIjeCLMXrduM8RQj+wa/5iCWUZ
+         I9qpk0rwSPpR/1riJIpwK/BXbbp4QM//XGQKS6TaaddmJOG0VIOmkSRyqOdNixS7QFW2
+         9C7kyvoyJI4gZJyD9NIIW2aPH0ae0WsAfVdNo=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714761773; x=1715366573;
-        h=content-transfer-encoding:content-disposition:mime-version
-         :references:in-reply-to:message-id:date:subject:cc:to:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=7jg1F0r+Luam104Y7UVnMDpQtCctuiu4jLX0tf0Er1I=;
-        b=VvPiB/AwN4XhcqffS/c6GdLAIyookTKT07Y/+VJuLtCjo+fH1cBIyJGOLiLK7CCVqa
-         gjUOX6KfpbPAHNjDv30ga7IBw9CyOyo5pu9KdXm4NSKw1rfkno8NtVbHVEzTaNH5HCuz
-         CWV0OXBqP6kMolvMaSqXuzcQKhh9Q1AEosIljiIQL+zfzFwl/QKjvpE2EHlm4ts7EaA2
-         n1iM95ytKCR0cDUzmGmI0fjK9pQEWKIO1QZViNqYj/hLqit9KX+TdMdp2tHV3ogSv1+g
-         DBsoQqL4AREn9o2smvmBdsUseM6hVzb11AKblQbvaDO+0UUVTm4EYMsLvycTqjclICh8
-         XrKw==
-X-Forwarded-Encrypted: i=1; AJvYcCXtxU29yt5mrvTSsMUp0qkCvCW220S0q0gUPPzO6tgTaolZTpjRpoHdinz0bTCVQAmjBP2an1pVndEI0EtsOlWt2al3HMzlw+NIZ/KX
-X-Gm-Message-State: AOJu0Ywi5BID49kMqjB4sdxYLZXLEhln7gw3j0mFfE+fT0tx+0mg0Cj2
-	BGk2XbHnHyIlJ/8+ZVhdzp0E3l/yZSXd6VPWNgWv9hO/FycAh+IW2pcTmewxUiPsgbSFq81lJUx
-	LLM+6ARuskuUloNXWLD18NMiP0oO1Fx+t0XvJSPJr6kno1ynpHnhtnlV2uXwkRA==
-X-Received: by 2002:a17:902:f70f:b0:1dd:81a3:8dc3 with SMTP id h15-20020a170902f70f00b001dd81a38dc3mr4364025plo.46.1714761773116;
-        Fri, 03 May 2024 11:42:53 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHO/B7NcxkkrJOjUeyFPE3oTYjTTOUH1HEefTB3GxhO5X3BJw+May4aWchCVGJZGF1h0o9dfQ==
-X-Received: by 2002:a17:902:f70f:b0:1dd:81a3:8dc3 with SMTP id h15-20020a170902f70f00b001dd81a38dc3mr4363995plo.46.1714761772691;
-        Fri, 03 May 2024 11:42:52 -0700 (PDT)
-Received: from LeoBras.redhat.com ([2804:1b3:a800:4b0a:b7a4:5eb9:b8a9:508d])
-        by smtp.gmail.com with ESMTPSA id l16-20020a170903245000b001eb6280cb42sm3590633pls.11.2024.05.03.11.42.47
+        d=1e100.net; s=20230601; t=1714761811; x=1715366611;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=FFXylIM8Lgjr0fl64+mxvP0VZact2yQlaPnfxj1/4U0=;
+        b=EYfLVtCtzbNKwp/Z9sWkEHkjmgy5yGtlH1rdrXpc+RKCKRQSXAWxVOqFVlY8/ZTBKS
+         bfWDNhyO4NYr+sjCUluwC9BfplI08+k4ZlNUVAqtlPKAcmENv6mDtuRyPtRuIkhml+9U
+         vW4DckFJidp5NRn/Hyoqk/l//gjfjcuVOEFRhNvkPbUkT4KHc5ME3DGX7r97wsBs+syh
+         GiEPFjXw7Dx4MDa+dqW06kI80EDEfjsYHn00xcJmDDYCBS1n1f8H/q9PJG145Q+e5U11
+         FfbRUNDpeagFr5tdk3ztdnYHwygsfBIbwd+wyvOB20/piJVn5loO+H59pxhk3/s8Rty4
+         5PTQ==
+X-Gm-Message-State: AOJu0Yzb6JFGJ4FOr/CDagBGboPXOekhvRR48vNdTAoK32VxG5pIqYeH
+	q3UB3XjlLrv2Iz/3CVNgjl5/xmPl14wNFaHu0uQ4A9Kj57CX7rM81+1HCkPPb00=
+X-Google-Smtp-Source: AGHT+IELQNadSxtn2qD7K4UmKbShRX1xBPsnrbEvAT1ulySbjcsBh1/3r1nD5X/Dflgo+e9sRpoYKA==
+X-Received: by 2002:a17:902:7612:b0:1e6:622c:7bb4 with SMTP id k18-20020a170902761200b001e6622c7bb4mr3161044pll.19.1714761810756;
+        Fri, 03 May 2024 11:43:30 -0700 (PDT)
+Received: from LQ3V64L9R2 (c-24-6-151-244.hsd1.ca.comcast.net. [24.6.151.244])
+        by smtp.gmail.com with ESMTPSA id 2-20020a170902ee4200b001ecc9a92e1csm3562096plo.267.2024.05.03.11.43.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 03 May 2024 11:42:52 -0700 (PDT)
-From: Leonardo Bras <leobras@redhat.com>
-To: Sean Christopherson <seanjc@google.com>
-Cc: Leonardo Bras <leobras@redhat.com>,
-	Paolo Bonzini <pbonzini@redhat.com>,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang1211@gmail.com>,
-	Marcelo Tosatti <mtosatti@redhat.com>,
-	kvm@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	rcu@vger.kernel.org
-Subject: Re: [RFC PATCH v1 0/2] Avoid rcu_core() if CPU just left guest vcpu
-Date: Fri,  3 May 2024 15:42:38 -0300
-Message-ID: <ZjUwHvyvkM3lj80Q@LeoBras>
-X-Mailer: git-send-email 2.45.0
-In-Reply-To: <ZgsXRUTj40LmXVS4@google.com>
-References: <20240328171949.743211-1-leobras@redhat.com> <ZgsXRUTj40LmXVS4@google.com>
+        Fri, 03 May 2024 11:43:30 -0700 (PDT)
+Date: Fri, 3 May 2024 11:43:27 -0700
+From: Joe Damato <jdamato@fastly.com>
+To: Zhu Yanjun <zyjzyj2000@gmail.com>
+Cc: linux-kernel@vger.kernel.org, netdev@vger.kernel.org, tariqt@nvidia.com,
+	saeedm@nvidia.com, gal@nvidia.com, nalramli@fastly.com,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Leon Romanovsky <leon@kernel.org>,
+	"open list:MELLANOX MLX5 core VPI driver" <linux-rdma@vger.kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>
+Subject: Re: [PATCH net-next 0/1] mlx5: Add netdev-genl queue stats
+Message-ID: <ZjUwT_1SA9tF952c@LQ3V64L9R2>
+References: <20240503022549.49852-1-jdamato@fastly.com>
+ <c3f4f1a4-303d-4d57-ae83-ed52e5a08f69@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -104,148 +83,155 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <c3f4f1a4-303d-4d57-ae83-ed52e5a08f69@linux.dev>
 
-Hello Sean, Marcelo and Paul,
-
-Thank you for your comments on this thread!
-I will try to reply some of the questions below:
-
-(Sorry for the delay, I was OOO for a while.)
-
-
-On Mon, Apr 01, 2024 at 01:21:25PM -0700, Sean Christopherson wrote:
-> On Thu, Mar 28, 2024, Leonardo Bras wrote:
-> > I am dealing with a latency issue inside a KVM guest, which is caused by
-> > a sched_switch to rcuc[1].
+On Fri, May 03, 2024 at 12:55:41PM +0200, Zhu Yanjun wrote:
+> On 03.05.24 04:25, Joe Damato wrote:
+> > Hi:
 > > 
-> > During guest entry, kernel code will signal to RCU that current CPU was on
-> > a quiescent state, making sure no other CPU is waiting for this one.
+> > This is only 1 patch, so I know a cover letter isn't necessary, but it
+> > seems there are a few things to mention.
 > > 
-> > If a vcpu just stopped running (guest_exit), and a syncronize_rcu() was
-> > issued somewhere since guest entry, there is a chance a timer interrupt
-> > will happen in that CPU, which will cause rcu_sched_clock_irq() to run.
+> > This change adds support for the per queue netdev-genl API to mlx5,
+> > which seems to output stats:
 > > 
-> > rcu_sched_clock_irq() will check rcu_pending() which will return true,
-> > and cause invoke_rcu_core() to be called, which will (in current config)
-> > cause rcuc/N to be scheduled into the current cpu.
+> > ./cli.py --spec ../../../Documentation/netlink/specs/netdev.yaml \
+> >           --dump qstats-get --json '{"scope": "queue"}'
 > > 
-> > On rcu_pending(), I noticed we can avoid returning true (and thus invoking
-> > rcu_core()) if the current cpu is nohz_full, and the cpu came from either
-> > idle or userspace, since both are considered quiescent states.
+> > ...snip
+> >   {'ifindex': 7,
+> >    'queue-id': 28,
+> >    'queue-type': 'tx',
+> >    'tx-bytes': 399462,
+> >    'tx-packets': 3311},
+> > ...snip
+> 
+> Ethtool -S ethx can get the above information
+> "
+> ...
+>      tx-0.packets: 2094
+>      tx-0.bytes: 294141
+>      rx-0.packets: 2200
+>      rx-0.bytes: 267673
+> ...
+> "
+> 
 > > 
-> > Since this is also true to guest context, my idea to solve this latency
-> > issue by avoiding rcu_core() invocation if it was running a guest vcpu.
+> > I've tried to use the tooling suggested to verify that the per queue
+> > stats match the rtnl stats by doing this:
 > > 
-> > On the other hand, I could not find a way of reliably saying the current
-> > cpu was running a guest vcpu, so patch #1 implements a per-cpu variable
-> > for keeping the time (jiffies) of the last guest exit.
+> >    NETIF=eth0 tools/testing/selftests/drivers/net/stats.py
 > > 
-> > In patch #2 I compare current time to that time, and if less than a second
-> > has past, we just skip rcu_core() invocation, since there is a high chance
-> > it will just go back to the guest in a moment.
-> 
-> What's the downside if there's a false positive?
-
-False positive being guest_exit without going back in this CPU, right?
-If so in WSC, supposing no qs happens and there is a pending request, RCU 
-will take a whole second to run again, possibly making other CPUs wait 
-this long for a synchronize_rcu.
-
-This value (1 second) could defined in .config or as a parameter if needed, 
-but does not seem a big deal, 
-
-> 
-> > What I know it's weird with this patch:
-> > 1 - Not sure if this is the best way of finding out if the cpu was
-> >     running a guest recently.
+> > And the tool outputs that there is a failure:
 > > 
-> > 2 - This per-cpu variable needs to get set at each guest_exit(), so it's
-> >     overhead, even though it's supposed to be in local cache. If that's
-> >     an issue, I would suggest having this part compiled out on 
-> >     !CONFIG_NO_HZ_FULL, but further checking each cpu for being nohz_full
-> >     enabled seems more expensive than just setting this out.
+> >    # Exception| Exception: Qstats are lower, fetched later
+> >    not ok 3 stats.pkt_byte_sum
 > 
-> A per-CPU write isn't problematic, but I suspect reading jiffies will be quite
-> imprecise, e.g. it'll be a full tick "behind" on many exits.
+> With ethtool, does the above problem still occur?
 
-That would not be a problem, as it would mean 1 tick less waiting in the 
-false positive WSC, and the 1s amount is plenty.
+Thanks for the suggestion, with ethtool it seems correct using the same
+logic as the test, I understand correctly.
 
+The failing test fetches rtnl first then qstats, but sees lower qstats - the
+test expects qstats to be equal or higher since they are read later. In order to
+reproduce this with ethtool, I'd need to fetch with ethtool first and then
+fetch qstats and compare.
+
+A correct output would show equal or higher stats from qstats than ethtool
+because there is minor delay in running the commands.
+
+Here's a quick example using ethtool of what I get (note that in the output of
+cli.py the bytes are printed before the packets):
+
+$ ethtool -S eth0 | egrep '(rx[0-3]_(bytes|packets))' && \
+  echo "======" && \
+  ./cli.py --spec ../../../Documentation/netlink/specs/netdev.yaml \
+           --dump qstats-get --json '{"scope": "queue", "ifindex": 7}' \
+  |  egrep '(rx-(packets|bytes))'
+
+     rx0_packets: 10799916
+     rx0_bytes: 4949724904
+     rx1_packets: 26170804
+     rx1_bytes: 12694250232
+     rx2_packets: 11901885
+     rx2_bytes: 5593129387
+     rx3_packets: 13219784
+     rx3_bytes: 6151431963
+======
+  'rx-bytes': 4949927222,
+  'rx-packets': 10800354},
+  'rx-bytes': 12694488803,
+  'rx-packets': 26171309},
+  'rx-bytes': 5593321247,
+  'rx-packets': 11902360},
+  'rx-bytes': 6151735533,
+  'rx-packets': 13220389},
+
+
+So you can see that the numbers "look right", the qstats (collected by cli.py)
+are collected later and are slightly larger, as expected:
+
+rx0_packets from ethtool: 10799916
+rx0_packets from cli.py:  10800354
+
+rx0_bytes from ethtool: 4949724904
+rx0_bytes from cli.py:  4949927222
+
+So this looks correct to me and in this case I'd be more inclinded to assume
+that RTNL on mlx5 is "overcounting" because:
+
+1. it includes the PTP stats that I don't include in my qstats, and/or
+2. some other reason I don't understand
+
+> > 
+> > The other tests all pass (including stats.qstat_by_ifindex).
+> > 
+> > This appears to mean that the netdev-genl queue stats have lower numbers
+> > than the rtnl stats even though the rtnl stats are fetched first. I
+> > added some debugging and found that both rx and tx bytes and packets are
+> > slightly lower.
+> > 
+> > The only explanations I can think of for this are:
+> > 
+> > 1. tx_ptp_opened and rx_ptp_opened are both true, in which case
+> >     mlx5e_fold_sw_stats64 adds bytes and packets to the rtnl struct and
+> >     might account for the difference. I skip this case in my
+> >     implementation, so that could certainly explain it.
+> > 2. Maybe I'm just misunderstanding how stats aggregation works in mlx5,
+> >     and that's why the numbers are slightly off?
+> > 
+> > It appears that the driver uses a workqueue to queue stats updates which
+> > happen periodically.
+> > 
+> >   0. the driver occasionally calls queue_work on the update_stats_work
+> >      workqueue.
+> >   1. This eventually calls MLX5E_DECLARE_STATS_GRP_OP_UPDATE_STATS(sw),
+> >      in drivers/net/ethernet/mellanox/mlx5/core/en_stats.c, which appears
+> >      to begin by first memsetting the internal stats struct where stats are
+> >      aggregated to zero. This would mean, I think, the get_base_stats
+> >      netdev-genl API implementation that I have is correct: simply set
+> >      everything to 0.... otherwise we'd end up double counting in the
+> >      netdev-genl RX and TX handlers.
+> >   2. Next, each of the stats helpers are called to collect stats into the
+> >      freshly 0'd internal struct (for example:
+> >      mlx5e_stats_grp_sw_update_stats_rq_stats).
+> > 
+> > That seems to be how stats are aggregated, which would suggest that if I
+> > simply .... do what I'm doing in this change the numbers should line up.
+> > 
+> > But they don't and its either because of PTP or because I am
+> > misunderstanding/doing something wrong.
+> > 
+> > Maybe the MLNX folks can suggest a hint?
+> > 
+> > Thanks,
+> > Joe
+> > 
+> > Joe Damato (1):
+> >    net/mlx5e: Add per queue netdev-genl stats
+> > 
+> >   .../net/ethernet/mellanox/mlx5/core/en_main.c | 68 +++++++++++++++++++
+> >   1 file changed, 68 insertions(+)
+> > 
 > 
-> > 3 - It checks if the guest exit happened over than 1 second ago. This 1
-> >     second value was copied from rcu_nohz_full_cpu() which checks if the
-> >     grace period started over than a second ago. If this value is bad,
-> >     I have no issue changing it.
-> 
-> IMO, checking if a CPU "recently" ran a KVM vCPU is a suboptimal heuristic regardless
-> of what magic time threshold is used.  IIUC, what you want is a way to detect if
-> a CPU is likely to _run_ a KVM vCPU in the near future.
-
-That's correct!
-
->  KVM can provide that
-> information with much better precision, e.g. KVM knows when when it's in the core
-> vCPU run loop.
-
-That would not be enough.
-I need to present the application/problem to make a point:
-
-- There is multiple  isolated physical CPU (nohz_full) on which we want to 
-  run KVM_RT vcpus, which will be running a real-time (low latency) task.
-- This task should not miss deadlines (RT), so we test the VM to make sure 
-  the maximum latency on a long run does not exceed the latency requirement
-- This vcpu will run on SCHED_FIFO, but has to run on lower priority than
-  rcuc, so we can avoid stalling other cpus.
-- There may be some scenarios where the vcpu will go back to userspace
-  (from KVM_RUN ioctl), and that does not mean it's good to interrupt the 
-  this to run other stuff (like rcuc).
-
-Now, I understand it will cover most of our issues if we have a context 
-tracking around the vcpu_run loop, since we can use that to decide not to 
-run rcuc on the cpu if the interruption hapenned inside the loop.
-
-But IIUC we can have a thread that "just got out of the loop" getting 
-interrupted by the timer, and asked to run rcu_core which will be bad for 
-latency.
-
-I understand that the chance may be statistically low, but happening once 
-may be enough to crush the latency numbers.
-
-Now, I can't think on a place to put this context trackers in kvm code that 
-would avoid the chance of rcuc running improperly, that's why the suggested 
-timeout, even though its ugly.
-
-About the false-positive, IIUC we could reduce it if we reset the per-cpu 
-last_guest_exit on kvm_put.
-
-> 
-> > 4 - Even though I could detect no issue, I included linux/kvm_host.h into 
-> >     rcu/tree_plugin.h, which is the first time it's getting included
-> >     outside of kvm or arch code, and can be weird.
-> 
-> Heh, kvm_host.h isn't included outside of KVM because several architectures can
-> build KVM as a module, which means referencing global KVM varibles from the kernel
-> proper won't work.
-> 
-> >     An alternative would be to create a new header for providing data for
-> >     non-kvm code.
-> 
-> I doubt a new .h or .c file is needed just for this, there's gotta be a decent
-> landing spot for a one-off variable.
-
-You are probably right
-
->  E.g. I wouldn't be at all surprised if there
-> is additional usefulness in knowing if a CPU is in KVM's core run loop and thus
-> likely to do a VM-Enter in the near future, at which point you could probably make
-> a good argument for adding a flag in "struct context_tracking".  Even without a
-> separate use case, there's a good argument for adding that info to context_tracking.
-
-For the tracking solution, makes sense :)
-Not sure if the 'timeout' alternative will be that useful outside rcu.
-
-Thanks!
-Leo
-
 
