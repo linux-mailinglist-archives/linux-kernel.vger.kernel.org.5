@@ -1,117 +1,117 @@
-Return-Path: <linux-kernel+bounces-167414-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-167416-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0BEF08BA93C
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 10:51:28 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id E215A8BA943
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 10:53:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A08C61F21B84
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 08:51:27 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4387AB21931
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 08:53:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2667914A601;
-	Fri,  3 May 2024 08:51:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C2E714F121;
+	Fri,  3 May 2024 08:53:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="HCrXgZ1E"
-Received: from mail-lj1-f174.google.com (mail-lj1-f174.google.com [209.85.208.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="IK7scVgx"
+Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2FFD1474AA
-	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 08:51:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75DF942078;
+	Fri,  3 May 2024 08:53:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.92.199
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714726281; cv=none; b=IdjFwBPiAYhMOmWNZ5mPMYJPdA9TiHRsr3GCchQu9cc9u4qvnCLCUk2VxtnaoV2AQD44ZC7J796TTrI88gXgXreAabPaZQhQ3JfrrdyzERvCVPakhjIbydra5CPKVt9rclOTQNp4GytKIvaGGvmxFqQ5aG7k5aQl0SnmI5EyPAM=
+	t=1714726384; cv=none; b=gUwbWgkBo0v1+DjvP/dN6L+BJF2sHKqVcLKv1QPtc8XU2lwWX2j5VNwFtJFPFvCvtfwhOtShmz109pCUQ44MlLC+Hw5BpeC2ixq5vfrN6BAfoiLwoMentXgtr6UEcJZ7EX2pUvHMtEtOpq9l1JyxR7WUzloSx7kVKLPmX+V2dx0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714726281; c=relaxed/simple;
-	bh=IEjd9yHeRN2jxLghIr0Q/jIHE64VNvDXmfQrbY/lmKM=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=KyaUsxTmEvfatMhp8hQrdy8MA1228SS8jvHR/d5skNcLSxm8qI+CAJaVxnFCwvl1sjjQ8zrv1073L4CRiEKhNJdWUTdj4+UoO1tQSWlj2GgBa4aXqPqGyFDvEf9TPyJbYW7PBhBv2kqtI2UV4thUV+tzWglp7nLTCb4urNabKeY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=HCrXgZ1E; arc=none smtp.client-ip=209.85.208.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lj1-f174.google.com with SMTP id 38308e7fff4ca-2e271acb015so1638971fa.1
-        for <linux-kernel@vger.kernel.org>; Fri, 03 May 2024 01:51:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1714726278; x=1715331078; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ZWk/psw7Jn7h8F9Bpz9pTT51OJv92Z7OG1gjIzaGghI=;
-        b=HCrXgZ1EX0CBIZ7mbj3uk+1mDN13w1okTDa8Y/rgCmAPRi0/bOG913P6prd1wdWIt6
-         aqEXgzerEWWyWmk8K/WpxcrWynH6PSvSpj5teKdFzj56bJtlpmcib7jKJc3llm/1aiMh
-         d8QUWW68QgTHqVU6Z0DMqyHZtiqTIyju40ud8kQ4fYum7vSk9xBb31WT5kLIFnEG/OJ2
-         1b9HnK7T42e7c6hwf09untSlj6RMPsuMtKXwpBgyuyH8AAcYN3TtJKN8cnuDO6svdZy7
-         EBYowrzKn6YR5jNOBDdhBZm+aUTU1ykNcKmL/wfpr10dL/y3fO6LrYZEG4ICRKYDtrnP
-         akgA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714726278; x=1715331078;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ZWk/psw7Jn7h8F9Bpz9pTT51OJv92Z7OG1gjIzaGghI=;
-        b=J6Kxn4c0/609mjMFe9mQqsdPrBniMiFq8gLX8nrwAaBJgB5+IjzonZx3pzeJxAc0B0
-         J1btZn9mondlPhhwLZJkT/KKDoIUGt/H83Aezaz9HqNWIvAhbc21sbCFRvirOlInRSbM
-         dnvhdgjdJPmE7VgQ6Syp1koz+tuu2yhNUaPtUPV8INCML41oVFUh/wT1Hl0Hp/Q1DtVq
-         N3z6ma8VkGY5HacNTD+6P0Rd9k2CpTc+v+GUGkiAiuw7bByebhNb8Rrw9fHdLLss4dBo
-         5mKABPUBlqyGYQuEY8Zj/wcWB78lHo256ITGAJAO+KYS5TVo0TgIu1HvL83mJtbG9Xvq
-         L9Eg==
-X-Forwarded-Encrypted: i=1; AJvYcCX1IXW/GpiB4fsmJVFXfwBJZn/YyzMBwDYRsJYWsja4h8IH6bz7g/bRF9glguwECmnQo/G4CaQW6HcuvGF9Kzu0KCBzcrKXRpAqOcYm
-X-Gm-Message-State: AOJu0YwqdEQwmqz5Skmmtmgvu6VLFSJqfLMAoOYqpewTf3zUfYf5SYJX
-	ANovNlGOmhQx3cPx3OgykH0Ha9SRfMEbdvlXn1ODxOXHrFLp1eJTvtkNNHwm/LdWWoJqJbvZMTa
-	uqZ0=
-X-Google-Smtp-Source: AGHT+IHcI2LurCc2hKenAfI5jjKmPmOLR9ME3lIwcmztZCp99vEXqtLskwgBUgkpuv4Q6SUOsRVoww==
-X-Received: by 2002:a05:6512:2eb:b0:51d:70d9:ece0 with SMTP id m11-20020a05651202eb00b0051d70d9ece0mr1451847lfq.6.1714726277628;
-        Fri, 03 May 2024 01:51:17 -0700 (PDT)
-Received: from arrakeen.starnux.net ([2a01:e0a:982:cbb0:8261:5fff:fe11:bdda])
-        by smtp.gmail.com with ESMTPSA id i15-20020adfb64f000000b0034af40b2efdsm3204178wre.108.2024.05.03.01.51.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 03 May 2024 01:51:17 -0700 (PDT)
-From: Neil Armstrong <neil.armstrong@linaro.org>
-To: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
- Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, 
- David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
- Jerome Brunet <jbrunet@baylibre.com>
-Cc: Kevin Hilman <khilman@baylibre.com>, 
- Martin Blumenstingl <martin.blumenstingl@googlemail.com>, 
- dri-devel@lists.freedesktop.org, linux-amlogic@lists.infradead.org, 
- linux-kernel@vger.kernel.org
-In-Reply-To: <20240426160256.3089978-1-jbrunet@baylibre.com>
-References: <20240426160256.3089978-1-jbrunet@baylibre.com>
-Subject: Re: [PATCH 0/2] drm/meson: fix hdmi auxiliary system operation
- without display
-Message-Id: <171472627680.386161.1617857178874394298.b4-ty@linaro.org>
-Date: Fri, 03 May 2024 10:51:16 +0200
+	s=arc-20240116; t=1714726384; c=relaxed/simple;
+	bh=tfIsg2m0rTplnSPTjbZcbaofplOQsoByH+XZniAFybY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=jiPE+WLTrsZfQDmU6AZ940BYYIobb3M+2DLAiNh97DCPLCRsRV+e7X7L+OUu8UoHgI8QIm3px+OIRVMklsDN+dGg2/W0r90F7ZsnIZAyKMMV+IZv6MFR0Fc7qh20ffAt8PnTwI/IZiTlPULQH2nbTo8vrENWe10psi4wcch+EfM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=IK7scVgx; arc=none smtp.client-ip=90.155.92.199
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=hMz32PGVzRagLNUVyXc5cqkcVrop94QJdt3HE/Yw+ZQ=; b=IK7scVgxgViuf5ll8PEndwdTJJ
+	8VNej+oQcUSk3N4WaIuIm04w4D84WTvu2RRECZt1AiyZWkEompbhdi2HEuzp4cZdaa0FW0RYwDSUw
+	w1cudsaYNJQK9MscRomaEEgkEU14UnlozL1mqIhSrHwc7lMH/knwAwTPEYdlcW+e+QESVEvtdDMKE
+	M8N85xi54qChXfviTPYACczxgyQ7pvibqJrwrX8RGZdyBgd+pd2V+beGqIIapJGKP4cG41dSdJAMf
+	THlfOEEQfAZSZlt5L7A3Zwg1b6ERclkhL4fePFychLCCqmIUTz/y6ahhY0ml1X+MEN8GV7BsNedBC
+	1TEpXGbw==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+	by desiato.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1s2oef-00000000UIt-12Pg;
+	Fri, 03 May 2024 08:52:33 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+	id DD61F309319; Fri,  3 May 2024 10:52:32 +0200 (CEST)
+Date: Fri, 3 May 2024 10:52:32 +0200
+From: Peter Zijlstra <peterz@infradead.org>
+To: Tejun Heo <tj@kernel.org>
+Cc: torvalds@linux-foundation.org, mingo@redhat.com, juri.lelli@redhat.com,
+	vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+	rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+	bristot@redhat.com, vschneid@redhat.com, ast@kernel.org,
+	daniel@iogearbox.net, andrii@kernel.org, martin.lau@kernel.org,
+	joshdon@google.com, brho@google.com, pjt@google.com,
+	derkling@google.com, haoluo@google.com, dvernet@meta.com,
+	dschatzberg@meta.com, dskarlat@cs.cmu.edu, riel@surriel.com,
+	changwoo@igalia.com, himadrics@inria.fr, memxor@gmail.com,
+	andrea.righi@canonical.com, joel@joelfernandes.org,
+	linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+	kernel-team@meta.com
+Subject: Re: [PATCHSET v6] sched: Implement BPF extensible scheduler class
+Message-ID: <20240503085232.GC30852@noisy.programming.kicks-ass.net>
+References: <20240501151312.635565-1-tj@kernel.org>
+ <20240502084800.GY30852@noisy.programming.kicks-ass.net>
+ <ZjPnb1vdt80FrksA@slm.duckdns.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.13.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZjPnb1vdt80FrksA@slm.duckdns.org>
 
-Hi,
-
-On Fri, 26 Apr 2024 18:02:52 +0200, Jerome Brunet wrote:
-> CEC and ARC should work even when HDMI is not actively used for the
-> display but it is not the case with Amlogic HDMI.
+On Thu, May 02, 2024 at 09:20:15AM -1000, Tejun Heo wrote:
+> Hello, Peter.
 > 
-> This is important for devices such as sound bars which may use DSI
-> to display a UI and HDMI for CEC/ARC. A display is not required for these
-> functions
+> On Thu, May 02, 2024 at 10:48:00AM +0200, Peter Zijlstra wrote:
+> > Can you please put your efforts and the touted Google collaboration in
+> > fixing the existing cgroup mess?
 > 
-> [...]
+> I suppose you're referring to Rik's flattened hierarchy patchset.
+> 
+>   https://lore.kernel.org/all/20190822021740.15554-1-riel@surriel.com
+> 
+> Rik spent a lot of time and energy on it and IIRC one of the reasons why it
+> didn't get pushed further was the lack of any enthusiasm or support from the
+> upstream community.
+> 
+> We can resurrect the discussion on that patchset but how is that connected
+> to sched_ext? 
 
-Thanks, Applied to https://gitlab.freedesktop.org/drm/misc/kernel.git (drm-misc-fixes)
+I'm absolutely not taking any of this until at the very least the cgroup
+situation that's been created is solved. And even then, I fundamentally
+believe the approach to be detrimental to the scheduler eco-system.
+Witness the metric ton of toy schedulers written for it, that's all
+effort not put into improving the existing code.
 
-[1/2] drm/meson: dw-hdmi: power up phy on device init
-      https://gitlab.freedesktop.org/drm/misc/kernel/-/commit/04703bfd7f99c016a823c74712b97f8b5590ce87
-[2/2] drm/meson: dw-hdmi: add bandgap setting for g12
-      https://gitlab.freedesktop.org/drm/misc/kernel/-/commit/08001033121dd92b8297a5b7333636b466c30f13
+You guys Google/Facebook got us the cgroup thing, Google did a lot of
+the work for cpu-cgroup, and now you Facebook say you can't live with it
+because it's too expensive. Yes Rik did put a lot of effort into it, but
+Google shot it down. What am I to do?
 
--- 
-Neil
+You Google/Facebook are touting collaboration, collaborate on fixing it.
+Instead of re-posting this over and over. After all, your main
+motivation for starting this was the cpu-cgroup overhead.
+
+From where I'm sitting, you created a problem (cpu-cgroup) and now
+you're creating an even bigger problem as a work-around. Very much not
+appreciated.
+
 
 
