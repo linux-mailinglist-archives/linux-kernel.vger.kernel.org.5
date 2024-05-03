@@ -1,117 +1,145 @@
-Return-Path: <linux-kernel+bounces-168388-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-168389-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0E9778BB7D1
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 May 2024 00:53:16 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1A87E8BB7D7
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 May 2024 01:02:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BFA03286874
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 22:53:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C066D285A2B
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 23:02:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C12D982D94;
-	Fri,  3 May 2024 22:53:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B7F183A01;
+	Fri,  3 May 2024 23:01:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oN1qhSjF"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="zCe+/lF3"
+Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1181877F08;
-	Fri,  3 May 2024 22:53:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5FA52339A1
+	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 23:01:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714776788; cv=none; b=tKzJwaEmzUrxwY07b+kF3orPGxfpiFPnyD0sEwkVCJNpm4hcuVvrzmS6ELhqc4N4F1Qjw7KOVvgUoci2h07T3/wUyMvU28ntirNkzgBOS3YWZNpHD2E4B0ROEKbUfM15i5Y2MtKxiQlfEbZSjiCU7VSMlV2GWiw9/xpKxmHSJgM=
+	t=1714777318; cv=none; b=JbePJWeDNESwzCV8WLTb5Utm9flnZGP9MvCW5k3aBcq2xmJvCIzXw+XkB/eJQYnnAcPHzXiuIeJwxslDjRUUER9cfchaCArtjejFjfWpGh6H/gHPk0EAJDr5YBPswRxNnUm5pBGYoBozqzJLGF/v/LEPm9bLBdoEFbr+5pyEmAI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714776788; c=relaxed/simple;
-	bh=mXcYLMX35fPnLEPH9zrI4bMp+JPZC+O689bhhbTpo/o=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To; b=fkJLHmyuo2TihCut6a3G1DZXW9EX7JuRvuLkSSX1ncGH0h5wlB7Y/TPg8x1T04mrXTJDF8+XsPxRQHcaTh+1kIWfsrwuxpuUP84iE0iIj55xQYDub61fGSQ+Ky/1EFXpLU/h7JxCT4n2KBvEMJ9VtgRg8ESeuE13bslZE6vL1Lk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oN1qhSjF; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B2293C116B1;
-	Fri,  3 May 2024 22:53:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714776787;
-	bh=mXcYLMX35fPnLEPH9zrI4bMp+JPZC+O689bhhbTpo/o=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:From;
-	b=oN1qhSjFtfExfcxp83Bnx+pofMcdi/EXKHF/817yLrh6CgflKgvoJCwR2vGGsCl8W
-	 BH3uD1m9s+Y+lFfVKyFCLD5HmKBXBd4Cv8OTNmjN8FMXOu7vHV/ktIA32LAwkmJzpb
-	 SMEKKGVzYWgrVCP4JBFVtZ+bDAAWNE6BsWablP9gsqxQvdUqpRAqi7TCqG22Kg00Jr
-	 TJLehTP1MnHzrOFt3RrIlDmIx/739zyd/khyjVxrI+VT/LjQ9sgoQY14/G3e88rupv
-	 vnEmTJ0KBZeGyGQ7H18LOxlzu83Dc4xmNsZA+Pk979Ea1/wfmQn+bqC6qvw5vvzFk+
-	 0bFWAPvc5oMAA==
-Date: Fri, 3 May 2024 17:53:05 -0500
-From: Bjorn Helgaas <helgaas@kernel.org>
-To: Ilpo =?utf-8?B?SsOkcnZpbmVu?= <ilpo.jarvinen@linux.intel.com>
-Cc: Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
-	Mahesh J Salgaonkar <mahesh@linux.ibm.com>,
-	Oliver O'Halloran <oohall@gmail.com>,
-	Lukas Wunner <lukas@wunner.de>, linux-kernel@vger.kernel.org,
-	linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH v3 1/2] PCI: Add TLP Prefix reading into
- pcie_read_tlp_log()
-Message-ID: <20240503225305.GA1609388@bhelgaas>
+	s=arc-20240116; t=1714777318; c=relaxed/simple;
+	bh=4+92T3dF1pCkzFJyIvWH9pdOMABziRyYEtERHQRUflQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=SptrdcLP1ianSj5OSeA2qVp9QmW0rU8nd1afDbasbLg2aDXLer0EsomrVzF7a9LyQx26Awgg3zhXFqpN7mEP34wvKmmn2ne0DutrhMyxtlTh7yJ27PrvPnYdYObFAa5oz8ZKhoo3TBtH+kKErQOYE8Fuqz+lIPr+xFumPF8y7GU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=zCe+/lF3; arc=none smtp.client-ip=209.85.214.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
+Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-1e65a1370b7so1618485ad.3
+        for <linux-kernel@vger.kernel.org>; Fri, 03 May 2024 16:01:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1714777317; x=1715382117; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=4+92T3dF1pCkzFJyIvWH9pdOMABziRyYEtERHQRUflQ=;
+        b=zCe+/lF34YSpkLm2TxtBbKSM5HvQTiKwAV3/44wZGfe5OEzwrVa15OMDxIqPZ6I5Ir
+         fuY3gGUb1FAi2faOv0IGo2pG5+C0IrtWoAvDo27Rm59TDonSdrohlP/jS86LM+nBFEtr
+         GQ3wWvTpg2+gE2rC84ee/b9iJ/8BqenQTpLVlydzmF1Q0OR+SG+iFBTc7vA2g6AR9wul
+         m/yFYwnkqQjsc8A+msgyA4Sd2DrAZoqHoiIs/JMbDHBl0iLiHDMXXc9ty8yA5mVjjUPu
+         NIXwFUvpRU7gKebDzlcSK+ISTKqFUA3d5KvW+ehUNElxgrnfJxbe9q+O7QQnllgNc6za
+         k4nA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714777317; x=1715382117;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=4+92T3dF1pCkzFJyIvWH9pdOMABziRyYEtERHQRUflQ=;
+        b=bdw2U0YsLt9bkLBjvRe2OcVzxdBmvrvWx3xBe68DbisnMJAc/G5njF/A7Dxd+8vQ1A
+         3y/7WxqQP/XnfggECveu42zI1KDIBngFYnSJze+Yoq4pt4Sra+YP+BSpFZ1Fc4VRmu6i
+         yingBfm+LQGRfroq+As/v5WyTzwJ/aPQu+0c8LIYF+vHGR1PblsnxwdCEphiRNoxgxYy
+         TNktWlH65hV1GS9Fs9z9CZc5aTi7zt5/IATOKvlCo/UucFG6Rhjm6tbBFw5+T58glmvu
+         RbGsq/ocMQ56LK6dD/VDLMO8cATvzdmkx5tAVLy3HSkDjbuSArfzPLDuUTFa0gtYulR+
+         ukrQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVQCxfr8Ix4oa0YhtReow4iXw7vijGsTRtCLslyNnUutzh6CAHUY2NsmAwfgL6dtgA/8I/c1Xys4jpEM41mr2oWX4/c5bUr64gB6Q+o
+X-Gm-Message-State: AOJu0YwYxjr2fJyDYi0TI9XG5+uOjTS4eYxJj3dKXDPnvpDmE3fnxMcN
+	VEJSq08/KBlOrpNpqS3gwwE403a7H3Q1agbYP/9TIlHkP2D97a9sLqu1LUua+oA=
+X-Google-Smtp-Source: AGHT+IHzq6AzE/NVvcqxm4ol0K1axCLWE5IjNbsp5PyIHu/cbS2sPY/kkICJk49x3bkJcMIgzsAwYg==
+X-Received: by 2002:a17:903:32cf:b0:1e2:ca65:68c2 with SMTP id i15-20020a17090332cf00b001e2ca6568c2mr5565119plr.51.1714777316672;
+        Fri, 03 May 2024 16:01:56 -0700 (PDT)
+Received: from debug.ba.rivosinc.com ([64.71.180.162])
+        by smtp.gmail.com with ESMTPSA id f7-20020a170902684700b001eab1a1a752sm3841345pln.120.2024.05.03.16.01.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 03 May 2024 16:01:56 -0700 (PDT)
+Date: Fri, 3 May 2024 16:01:53 -0700
+From: Deepak Gupta <debug@rivosinc.com>
+To: "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
+Cc: "olsajiri@gmail.com" <olsajiri@gmail.com>,
+	"songliubraving@fb.com" <songliubraving@fb.com>,
+	"luto@kernel.org" <luto@kernel.org>,
+	"mhiramat@kernel.org" <mhiramat@kernel.org>,
+	"andrii@kernel.org" <andrii@kernel.org>,
+	"linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
+	"john.fastabend@gmail.com" <john.fastabend@gmail.com>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"mingo@redhat.com" <mingo@redhat.com>,
+	"rostedt@goodmis.org" <rostedt@goodmis.org>,
+	"ast@kernel.org" <ast@kernel.org>,
+	"tglx@linutronix.de" <tglx@linutronix.de>,
+	"yhs@fb.com" <yhs@fb.com>, "oleg@redhat.com" <oleg@redhat.com>,
+	"linux-man@vger.kernel.org" <linux-man@vger.kernel.org>,
+	"daniel@iogearbox.net" <daniel@iogearbox.net>,
+	"peterz@infradead.org" <peterz@infradead.org>,
+	"linux-trace-kernel@vger.kernel.org" <linux-trace-kernel@vger.kernel.org>,
+	"bp@alien8.de" <bp@alien8.de>,
+	"bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+	"x86@kernel.org" <x86@kernel.org>,
+	"broonie@kernel.org" <broonie@kernel.org>
+Subject: Re: [PATCHv4 bpf-next 2/7] uprobe: Add uretprobe syscall to speed up
+ return probe
+Message-ID: <ZjVs4bxi7CpWhtEQ@debug.ba.rivosinc.com>
+References: <20240502122313.1579719-1-jolsa@kernel.org>
+ <20240502122313.1579719-3-jolsa@kernel.org>
+ <20240503113453.GK40213@noisy.programming.kicks-ass.net>
+ <ZjTg2cunShA6VbpY@krava>
+ <725e2000dc56d55da4097cface4109c17fe5ad1a.camel@intel.com>
+ <ZjU4ganRF1Cbiug6@krava>
+ <6c143c648e2eff6c4d4b5e4700d1a8fbcc0f8cbc.camel@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240412133635.3831-2-ilpo.jarvinen@linux.intel.com>
+In-Reply-To: <6c143c648e2eff6c4d4b5e4700d1a8fbcc0f8cbc.camel@intel.com>
 
-On Fri, Apr 12, 2024 at 04:36:34PM +0300, Ilpo Järvinen wrote:
-> pcie_read_tlp_log() handles only 4 TLP Header Log DWORDs but TLP Prefix
-> Log (PCIe r6.1 secs 7.8.4.12 & 7.9.14.13) may also be present.
-> 
-> Generalize pcie_read_tlp_log() and struct pcie_tlp_log to handle also
-> TLP Prefix Log. The layout of relevant registers in AER and DPC
-> Capability is not identical because the offsets of TLP Header Log and
-> TLP Prefix Log vary so the callers must pass the offsets to
-> pcie_read_tlp_log().
+On Fri, May 03, 2024 at 07:38:18PM +0000, Edgecombe, Rick P wrote:
+>+Some more shadow stack folks from other archs. We are discussing how uretprobes
+>work with shadow stack.
+>
+>Context:
+>https://lore.kernel.org/lkml/ZjU4ganRF1Cbiug6@krava/
 
-I think the layouts of the Header Log and the TLP Prefix Log *are*
-identical, but they are at different offsets in the AER Capability vs
-the DPC Capability.  Lukas and I have both stumbled over this.
+Thanks Rick.
 
-Similar and more comments at:
-https://lore.kernel.org/r/20240322193011.GA701027@bhelgaas
+Yeah I didn't give enough attention to uprobes either.
+Although now that I think for RISC-V shadow stack, it shouldn't be an issue.
+On RISC-V return addresses don't get pushed as part of call instruction.
+There is a distinct instruction "shadow stack push of return address" in prolog.
+Similarly in epilog there is distinct instruction "shadow stack pop and check with
+link register".
 
-> Convert eetlp_prefix_path into integer called eetlp_prefix_max and
-> make is available also when CONFIG_PCI_PASID is not configured to
-> be able to determine the number of E-E Prefixes.
+On RISC-V, uretprobe would install a uprobe on function start and when it's hit.
+It'll replace pt_regs->ra = trampoline_handler. As function will resume, trampoline
+addr will get pushed and popped. Although trampoline_handler would have to be enlightened
+to eventually return to original return site.
 
-s/make is/make it/
-
-I think this could be a separate patch.
-
-> --- a/include/linux/aer.h
-> +++ b/include/linux/aer.h
-> @@ -20,6 +20,7 @@ struct pci_dev;
->  
->  struct pcie_tlp_log {
->  	u32 dw[4];
-> +	u32 prefix[4];
->  };
->  
->  struct aer_capability_regs {
-> @@ -37,7 +38,9 @@ struct aer_capability_regs {
->  	u16 uncor_err_source;
->  };
->  
-> -int pcie_read_tlp_log(struct pci_dev *dev, int where, struct pcie_tlp_log *log);
-> +int pcie_read_tlp_log(struct pci_dev *dev, int where, int where2,
-> +		      unsigned int tlp_len, struct pcie_tlp_log *log);
-> +unsigned int aer_tlp_log_len(struct pci_dev *dev);
-
-I think it was a mistake to expose pcie_read_tlp_log() outside
-drivers/pci, and I don't think we should expose aer_tlp_log_len()
-either.
-
-We might be stuck with exposing struct pcie_tlp_log since it looks
-like ras_event.h uses it.
-
-Bjorn
+>
+>On Fri, 2024-05-03 at 21:18 +0200, Jiri Olsa wrote:
+>>
+>> hack below seems to fix it for the current uprobe setup,
+>> we need similar fix for the uretprobe syscall trampoline setup
+>
+>It seems like a reasonable direction.
+>
+>Security-wise, applications cannot do this on themselves, or it is an otherwise
+>privileged thing right?
+>
+>
 
