@@ -1,223 +1,215 @@
-Return-Path: <linux-kernel+bounces-167426-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-167428-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 679FD8BA973
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 11:08:07 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id DA36C8BA97C
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 11:10:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8A91E1C225F9
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 09:08:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 52A411F2301B
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 09:10:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D55514F110;
-	Fri,  3 May 2024 09:07:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A43614F10B;
+	Fri,  3 May 2024 09:09:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="myHxHAay"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=manjaro.org header.i=@manjaro.org header.b="dc4vYj6f"
+Received: from mail.manjaro.org (mail.manjaro.org [116.203.91.91])
+	(using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A03F514E2F2;
-	Fri,  3 May 2024 09:07:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B69371C695;
+	Fri,  3 May 2024 09:09:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=116.203.91.91
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714727275; cv=none; b=An3AeIq0IFabkzwQVsO+vZsLkp92jA6arSSCgABMwx1p5OokDiPghHxwkB9MmFyNPid4C1eyo3kmKiKq8OUyox9FU+qUieS1zDqltyO9KtWxs0whuCmlOrXeloWfxAWPiMfz0KqqysMqLKWlfLs40pZ2sb3PDFlcSPpQcKotv3Y=
+	t=1714727398; cv=none; b=NvCRQWv3ish90d6acPmWNA4Z9HKzxNUotE2Drsh3PZwbzSQPCM9h9rgnCmXX7cFDAy0LCIpRenVL1nLp74UFZRoNVUy1ItGGyB8iJfuRR6tzKfMragH2c+SkdihEyHER+5vL6HyBz2qd+MNt4X6/VCkAkxD1N1R26rMTgqed+nY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714727275; c=relaxed/simple;
-	bh=crGkBfU45fE9CNuOJ1cV0bXC5GMmaM5BnQQH6lqN5yU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Rc07yA1f55otCABSDONIqqIMiuk8o9clHsHkCcVxNByuOV938r4nivbwcNqXJvfglDwfy42aRDyQIsE411KChMdk2MfjwvSCPrAw0lIrDUsguxWUERCEqx/Yc3O15Lzic4kWZSvoC1QN5XKPj7eRaIgbJ/7dKE3RBl6GwMPIuCs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=myHxHAay; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C7B85C116B1;
-	Fri,  3 May 2024 09:07:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714727275;
-	bh=crGkBfU45fE9CNuOJ1cV0bXC5GMmaM5BnQQH6lqN5yU=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=myHxHAay2QAP+hSP6jsNWc8KzeMU7YsVpYTaLCm2BOlH7pMfgJ+OlP00pKGPyRVv0
-	 rm9mqi4ASJNMU1fWIGoZYBAXg/4QUnbLgwwfXmfvlnD0Aps214BYT9f6AQxD/rzMG5
-	 rjkixU0dwAPvoAamyCCq1xfAOlwzacKsEiU9nnc/epoOrtLVWwhlgFReVq+YoQS4sI
-	 189riYk522+mqpMpLPaiVGOgUh626tx1M/ieSUc9zqB9jiJHJ87YHpqNh/XeoRsU94
-	 FqQV1nOiOJnfDEO5ycpfATWmxd9sEXooOa80qGJU0iFpbQWRFWaPZC495H3iNUI24R
-	 jz9I2SK3/47uw==
-Message-ID: <b7c7fab7-07d5-4654-a903-473f0c6dd4aa@kernel.org>
-Date: Fri, 3 May 2024 11:07:49 +0200
+	s=arc-20240116; t=1714727398; c=relaxed/simple;
+	bh=nEL4G7PhDEc/Zx1IkbEq9WSzOu6qYRaQ+lxf10JQ2U4=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Ui1AQonJI1K+EKoboa36xGKsry58TcBTWIPRpGLpGWRmVgtXWSWH68xq0NGxQtIlyw3bzmVlNVvqlBop9c974uSvqsoiD4AbsIykavSLle+Tl489m9eMtz/CPDc9jfZ8izELMXV689F2RZIMixF1iwelOggJwWOqUMHtLXH4cY4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=manjaro.org; spf=pass smtp.mailfrom=manjaro.org; dkim=pass (2048-bit key) header.d=manjaro.org header.i=@manjaro.org header.b=dc4vYj6f; arc=none smtp.client-ip=116.203.91.91
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=manjaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=manjaro.org
+From: Dragan Simic <dsimic@manjaro.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=manjaro.org; s=2021;
+	t=1714727392;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=MjEx/8Jhqu50A+F4dmxrKpreeNGGtv+njLvY/BSbw3o=;
+	b=dc4vYj6fJdV3pmxnTV8NyiwI/NQ3i5cE36Z1mPyPNBnruOi6h6PIrnOfxwD5xN/WtzMrw9
+	UmaLrmaFPRvP6wVnH6pV5pnm9pKcFZ/BsxxYv5Up7XyyFeFJ/CSgIVs+zRmr+K15+k75nJ
+	GvtPQ+ipBQq+Ea5W3AoOkM0qENYubvqJcuVtAyj4vOgdvFOr07+/yCevEFT2z6VBbqMqHD
+	BkLy8jzrzkurUeXO1giEnLjkf21aKXl9/qxUouZIYLhmXJgAXU/NQ3OZ5jq40YW3dhpw+D
+	NoMP+8xN9wQacPY1pZEGkR+cAS7qaHrrWg8UwakEqJNh1df0qyJwY2tjFCW29g==
+To: linux-sunxi@lists.linux.dev
+Cc: wens@csie.org,
+	jernej.skrabec@gmail.com,
+	samuel@sholland.org,
+	linux-arm-kernel@lists.infradead.org,
+	devicetree@vger.kernel.org,
+	robh@kernel.org,
+	krzk+dt@kernel.org,
+	conor+dt@kernel.org,
+	linux-kernel@vger.kernel.org,
+	Andre Przywara <andre.przywara@arm.com>
+Subject: [PATCH] arm64: dts: allwinner: Add cache information to the SoC dtsi for H616
+Date: Fri,  3 May 2024 11:09:41 +0200
+Message-Id: <9d52e6d338a059618d894abb0764015043330c2b.1714727227.git.dsimic@manjaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net v3] nfc: nci: Fix uninit-value in nci_rx_work
-To: Ryosuke Yasuoka <ryasuoka@redhat.com>, davem@davemloft.net,
- edumazet@google.com, kuba@kernel.org, pabeni@redhat.com, horms@kernel.org
-Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
- syoshida@redhat.com, syzbot+d7b4dc6cd50410152534@syzkaller.appspotmail.com
-References: <20240502082323.250739-1-ryasuoka@redhat.com>
-From: Krzysztof Kozlowski <krzk@kernel.org>
-Content-Language: en-US
-Autocrypt: addr=krzk@kernel.org; keydata=
- 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 fv0=
-In-Reply-To: <20240502082323.250739-1-ryasuoka@redhat.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Authentication-Results: ORIGINATING;
+	auth=pass smtp.auth=dsimic@manjaro.org smtp.mailfrom=dsimic@manjaro.org
 
-On 02/05/2024 10:22, Ryosuke Yasuoka wrote:
-> syzbot reported the following uninit-value access issue [1]
-> 
-> nci_rx_work() parses received packet from ndev->rx_q. It should be
-> validated header size, payload size and total packet size before
-> processing the packet. If an invalid packet is detected, it should be
-> silently discarded.
-> 
-> Fixes: d24b03535e5e ("nfc: nci: Fix uninit-value in nci_dev_up and nci_ntf_packet")
-> Reported-and-tested-by: syzbot+d7b4dc6cd50410152534@syzkaller.appspotmail.com
-> Closes: https://syzkaller.appspot.com/bug?extid=d7b4dc6cd50410152534 [1]
-> Signed-off-by: Ryosuke Yasuoka <ryasuoka@redhat.com>
-> ---
-> 
-> v3
-> - As Simon pointed out, the valid packets will reach invalid_pkt_free
-> and kfree_skb(skb) after being handled correctly in switch statement.
-> It can lead to double free issues, which is not intended. So this patch
-> uses "continue" instead of "break" in switch statement.
-> 
-> - In the current implementation, once zero payload size is detected, the
-> for statement exits. It should continue processing subsequent packets. 
-> So this patch just frees skb in invalid_pkt_free when the invalid 
-> packets are detected.
-> 
-> v2
-> https://lore.kernel.org/lkml/20240428134525.GW516117@kernel.org/T/
-> 
-> - The v1 patch only checked whether skb->len is zero. This patch also
->   checks header size, payload size and total packet size.
-> 
-> 
-> v1
-> https://lore.kernel.org/linux-kernel/CANn89iJrQevxPFLCj2P=U+XSisYD0jqrUQpa=zWMXTjj5+RriA@mail.gmail.com/T/
-> 
-> 
->  net/nfc/nci/core.c | 33 ++++++++++++++++++++++++---------
->  1 file changed, 24 insertions(+), 9 deletions(-)
-> 
-> diff --git a/net/nfc/nci/core.c b/net/nfc/nci/core.c
-> index 0d26c8ec9993..e4f92a090022 100644
-> --- a/net/nfc/nci/core.c
-> +++ b/net/nfc/nci/core.c
-> @@ -1463,6 +1463,16 @@ int nci_core_ntf_packet(struct nci_dev *ndev, __u16 opcode,
->  				 ndev->ops->n_core_ops);
->  }
->  
-> +static bool nci_valid_size(struct sk_buff *skb, unsigned int header_size)
-> +{
-> +	if (skb->len < header_size ||
-> +	    !nci_plen(skb->data) ||
-> +	    skb->len < header_size + nci_plen(skb->data)) {
-> +		return false;
-> +	}
-> +	return true;
-> +}
-> +
->  /* ---- NCI TX Data worker thread ---- */
->  
->  static void nci_tx_work(struct work_struct *work)
-> @@ -1516,30 +1526,35 @@ static void nci_rx_work(struct work_struct *work)
->  		nfc_send_to_raw_sock(ndev->nfc_dev, skb,
->  				     RAW_PAYLOAD_NCI, NFC_DIRECTION_RX);
->  
-> -		if (!nci_plen(skb->data)) {
-> -			kfree_skb(skb);
-> -			break;
-> -		}
-> +		if (!skb->len)
-> +			goto invalid_pkt_free;
->  
->  		/* Process frame */
->  		switch (nci_mt(skb->data)) {
->  		case NCI_MT_RSP_PKT:
-> +			if (!nci_valid_size(skb, NCI_CTRL_HDR_SIZE))
-> +				goto invalid_pkt_free;
->  			nci_rsp_packet(ndev, skb);
-> -			break;
-> +			continue;
+Add missing cache information to the Allwinner H616 SoC dtsi, to allow
+the userspace, which includes lscpu(1) that uses the virtual files provided
+by the kernel under the /sys/devices/system/cpu directory, to display the
+proper H616 cache information.
 
-I don't find this code readable.
+Adding the cache information to the H616 SoC dtsi also makes the following
+warning message in the kernel log go away:
 
->  
->  		case NCI_MT_NTF_PKT:
-> +			if (!nci_valid_size(skb, NCI_CTRL_HDR_SIZE))
-> +				goto invalid_pkt_free;
->  			nci_ntf_packet(ndev, skb);
-> -			break;
-> +			continue;
->  
->  		case NCI_MT_DATA_PKT:
-> +			if (!nci_valid_size(skb, NCI_DATA_HDR_SIZE))
-> +				goto invalid_pkt_free;
->  			nci_rx_data_packet(ndev, skb);
-> -			break;
-> +			continue;
->  
->  		default:
->  			pr_err("unknown MT 0x%x\n", nci_mt(skb->data));
-> -			kfree_skb(skb);
-> -			break;
-> +			goto invalid_pkt_free;
->  		}
-> +invalid_pkt_free:
-> +		kfree_skb(skb);
+  cacheinfo: Unable to detect cache hierarchy for CPU 0
 
-Why you cannot kfree in "default" and error cases? I don't think that
-goto inside loop makes this code easier to follow.
+Rather conspicuously, almost no cache-related information is available in
+the publicly available Allwinner H616 datasheet (version 1.0) and H616 user
+manual (version 1.0).  Thus, the cache parameters for the H616 SoC dtsi were
+obtained and derived by hand from the cache size and layout specifications
+found in the following technical reference manual, and from the cache size
+and die revision hints available from the following community-provided data
+and memory subsystem benchmarks:
 
->  	}
->  
->  	/* check if a data exchange timeout has occurred */
+  - ARM Cortex-A53 revision r0p4 TRM, version J
+  - Summary of the two available H616 die revisions and their differences
+    in cache sizes observed from the CSSIDR_EL1 register readouts, provided
+    by Andre Przywara [1][2]
+  - Tinymembench benchmark results of the H616-based OrangePi Zero 2 SBC,
+    provided by Thomas Kaiser [3]
 
-Best regards,
-Krzysztof
+For future reference, here's a brief summary of the available documentation
+and the community-provided data and memory subsystem benchmarks:
 
+  - All caches employ the 64-byte cache line length
+  - Each Cortex-A53 core has 32 KB of L1 2-way, set-associative instruction
+    cache and 32 KB of L1 4-way, set-associative data cache
+  - The size of the L2 cache depends on the actual H616 die revision (there
+    are two die revisions), so the entire SoC can have either 256 KB or 1 MB
+    of unified L2 16-way, set-associative cache [1]
+
+Also for future reference, here's the relevant excerpt from the community-
+provided H616 memory subsystem benchmark, [3] which confirms that 32 KB and
+256 KB are the L1 data and L2 cache sizes, respectively:
+
+    block size : single random read / dual random read
+          1024 :    0.0 ns          /     0.0 ns
+          2048 :    0.0 ns          /     0.0 ns
+          4096 :    0.0 ns          /     0.0 ns
+          8192 :    0.0 ns          /     0.0 ns
+         16384 :    0.0 ns          /     0.0 ns
+         32768 :    0.0 ns          /     0.0 ns
+         65536 :    4.3 ns          /     7.3 ns
+        131072 :    6.6 ns          /    10.5 ns
+        262144 :    9.8 ns          /    15.2 ns
+        524288 :   91.8 ns          /   142.9 ns
+       1048576 :  138.6 ns          /   188.3 ns
+       2097152 :  163.0 ns          /   204.8 ns
+       4194304 :  178.8 ns          /   213.5 ns
+       8388608 :  187.1 ns          /   217.9 ns
+      16777216 :  192.2 ns          /   220.9 ns
+      33554432 :  196.5 ns          /   224.0 ns
+      67108864 :  215.7 ns          /   259.5 ns
+
+The changes introduced to the H616 SoC dtsi by this patch specify 256 KB as
+the L2 cache size.  As outlined by Andre Przywara, [2] a follow-up TF-A patch
+will perform runtime adjustment of the device tree data, making the correct
+L2 cache size of 1 MB present in the device tree for the boards based on the
+revision of H616 that actually provides 1 MB of L2 cache.
+
+[1] https://lore.kernel.org/linux-sunxi/20240430114627.0cfcd14a@donnerap.manchester.arm.com/
+[2] https://lore.kernel.org/linux-sunxi/20240501103059.10a8f7de@donnerap.manchester.arm.com/
+[3] https://raw.githubusercontent.com/ThomasKaiser/sbc-bench/master/results/4knM.txt
+
+Suggested-by: Andre Przywara <andre.przywara@arm.com>
+Helped-by: Andre Przywara <andre.przywara@arm.com>
+Signed-off-by: Dragan Simic <dsimic@manjaro.org>
+---
+ .../arm64/boot/dts/allwinner/sun50i-h616.dtsi | 37 +++++++++++++++++++
+ 1 file changed, 37 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h616.dtsi b/arch/arm64/boot/dts/allwinner/sun50i-h616.dtsi
+index b2e85e52d1a1..4faed88d8909 100644
+--- a/arch/arm64/boot/dts/allwinner/sun50i-h616.dtsi
++++ b/arch/arm64/boot/dts/allwinner/sun50i-h616.dtsi
+@@ -26,30 +26,67 @@ cpu0: cpu@0 {
+ 			reg = <0>;
+ 			enable-method = "psci";
+ 			clocks = <&ccu CLK_CPUX>;
++			i-cache-size = <0x8000>;
++			i-cache-line-size = <64>;
++			i-cache-sets = <256>;
++			d-cache-size = <0x8000>;
++			d-cache-line-size = <64>;
++			d-cache-sets = <128>;
++			next-level-cache = <&l2_cache>;
+ 		};
+ 
+ 		cpu1: cpu@1 {
+ 			compatible = "arm,cortex-a53";
+ 			device_type = "cpu";
+ 			reg = <1>;
+ 			enable-method = "psci";
+ 			clocks = <&ccu CLK_CPUX>;
++			i-cache-size = <0x8000>;
++			i-cache-line-size = <64>;
++			i-cache-sets = <256>;
++			d-cache-size = <0x8000>;
++			d-cache-line-size = <64>;
++			d-cache-sets = <128>;
++			next-level-cache = <&l2_cache>;
+ 		};
+ 
+ 		cpu2: cpu@2 {
+ 			compatible = "arm,cortex-a53";
+ 			device_type = "cpu";
+ 			reg = <2>;
+ 			enable-method = "psci";
+ 			clocks = <&ccu CLK_CPUX>;
++			i-cache-size = <0x8000>;
++			i-cache-line-size = <64>;
++			i-cache-sets = <256>;
++			d-cache-size = <0x8000>;
++			d-cache-line-size = <64>;
++			d-cache-sets = <128>;
++			next-level-cache = <&l2_cache>;
+ 		};
+ 
+ 		cpu3: cpu@3 {
+ 			compatible = "arm,cortex-a53";
+ 			device_type = "cpu";
+ 			reg = <3>;
+ 			enable-method = "psci";
+ 			clocks = <&ccu CLK_CPUX>;
++			i-cache-size = <0x8000>;
++			i-cache-line-size = <64>;
++			i-cache-sets = <256>;
++			d-cache-size = <0x8000>;
++			d-cache-line-size = <64>;
++			d-cache-sets = <128>;
++			next-level-cache = <&l2_cache>;
++		};
++
++		l2_cache: l2-cache {
++			compatible = "cache";
++			cache-level = <2>;
++			cache-unified;
++			cache-size = <0x40000>;
++			cache-line-size = <64>;
++			cache-sets = <256>;
+ 		};
+ 	};
+ 
 
