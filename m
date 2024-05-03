@@ -1,200 +1,195 @@
-Return-Path: <linux-kernel+bounces-167469-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-167470-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D48958BA9F1
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 11:33:46 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D4A788BA9F4
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 11:36:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 038101C203A7
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 09:33:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 423E31F217FA
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 09:36:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 72EA714F13D;
-	Fri,  3 May 2024 09:33:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3996114F136;
+	Fri,  3 May 2024 09:36:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LzTvZuSm"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YoiDuEgm"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B1A061367;
-	Fri,  3 May 2024 09:33:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B1F7139CE5
+	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 09:36:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714728816; cv=none; b=Qrj49COi5Jk+T0C5RKYJkGkzaSFu0gkxuRO9skPkmhDNFil3hSlyKe6NdochGIuw7Za2Aezw18R5iXaPloSlf//mPcZwej/DNzbB0QLXTTvCJCJVO9no6vX+0aaWgF++4DiM0rL7vGfZLuvvmZNXP/4zWBr74yqGthKDxTcawic=
+	t=1714728968; cv=none; b=I3ia5J5vBS0/Ylk2nUxgfK4uvIWMFUXRuF+noWaAFMg7xvnNQ759Bc5QS+G5VSuW4m92apUABadsUsueRSggTj8Ibgald/OARjeXYWl+UT1FVtZggZgZ5XiJ7ND9T6aMV5+l3lc4CoH/vEBj7tjrNHOkUu+N55PFHODxbQ6aefU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714728816; c=relaxed/simple;
-	bh=v/51Kvqf2YPc7OkiFmKvzSlAQA/mzLPnt8TJCh81qMI=;
+	s=arc-20240116; t=1714728968; c=relaxed/simple;
+	bh=C7XFDo4hhiACl+wVIfnERAMzvyYgBlfRWYA4uR9ogoc=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=IA5pJlNgc4Ba2p06c9nymK5Yi6i3W+d1FoQqrUrgKRoDPSpXgDXavFbb6eFx2OQJKflk3nG7F/PMbTRXwRCS+T0jJj6l7FrqvYtb0aAF/mXpfrwFpIb0oWkxujeIXRLw5vebLyJ1zgxCEXx2P1NCu7zx2lUKMdqRfkRNCJaJdqk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LzTvZuSm; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D3AF1C116B1;
-	Fri,  3 May 2024 09:33:33 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=DB0/wOGqORkNBE3SYmQRlW2mIRZHvajfA3RmUv7jxFMf21htKgNAz66PVbCOpm89HghFOOFowt0Bso51loqNZ9A19gDW6olo3frR0bdPNe9Va7UlUsFvC/9ZMlcq8EP8iApmZlr0b9+AJIdS0kXU1hqAx8tB1xZGGmx5tanywFI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YoiDuEgm; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7BA79C116B1;
+	Fri,  3 May 2024 09:36:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714728816;
-	bh=v/51Kvqf2YPc7OkiFmKvzSlAQA/mzLPnt8TJCh81qMI=;
+	s=k20201202; t=1714728968;
+	bh=C7XFDo4hhiACl+wVIfnERAMzvyYgBlfRWYA4uR9ogoc=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=LzTvZuSm/5PtavQI3wADx0KGUxs+kUgPcYMDKFHBS8l75cmt3Sy/V2D0G4j0VPRgs
-	 sl4l7q9XzHK35l2cBE3PIQoa/5zCMicO7R3xH2ljQpKA0AXiP6ITfGzNCrLzr8snOY
-	 llgCbhaMr8sEdG+jVUcQNX2I4kfvCcnnimTS3jiA3ZkuWIsmE4Xaq+m8yzxRm3KH9y
-	 rCoUMGBu4fgPUbBUts14/BPUZjhjBWD4G7YdfYUV9oE5mUC5kpkYDHAP5WOHXV4XKL
-	 F8MdOA899tm1w0tvtnwvMeL86xSSo25hcUKOAyLwCz+vIBWB7n6kXqlx4ULrkeLxEH
-	 RAPClPUZzw2/w==
-Date: Fri, 3 May 2024 10:33:31 +0100
-From: Simon Horman <horms@kernel.org>
-To: Justin Lai <justinlai0215@realtek.com>
-Cc: kuba@kernel.org, davem@davemloft.net, edumazet@google.com,
-	pabeni@redhat.com, linux-kernel@vger.kernel.org,
-	netdev@vger.kernel.org, andrew@lunn.ch, jiri@resnulli.us,
-	pkshih@realtek.com, larry.chiu@realtek.com
-Subject: Re: [PATCH net-next v17 01/13] rtase: Add pci table supported in
- this module
-Message-ID: <20240503093331.GN2821784@kernel.org>
-References: <20240502091847.65181-1-justinlai0215@realtek.com>
- <20240502091847.65181-2-justinlai0215@realtek.com>
+	b=YoiDuEgmZP4OHd6tzTBJp2IDJbnEtbOVIoWIW/7FPn42N/58Iv4DJbfYojxxa/42W
+	 7us0UDc9GG+RrNA9/msNveq14y+0ljSxJyzdIjzJklBqAsEPwrFpgHWMbFbwa0sRBO
+	 u+VvWOsNjEq85ENtvIW6Ehvuo+tu+BwAJvhBb9F6LTv68ksWbNXtYhnsArN4F1iJN3
+	 rpZuGo12J3izh9hLpR0L7D02EjFVNf5G3tmlLuTYfcwQ2J3GNu5TvLuZ6llKDRy47v
+	 eJaAUDIiMT0Yg5pXgGeQdZqiL/bV6Nx/PVjaU41O9nlCcrUvd1hiBF6qdtmcE+zKnR
+	 SlOMfmXjAqwGA==
+Date: Fri, 3 May 2024 10:36:04 +0100
+From: Lee Jones <lee@kernel.org>
+To: Min Li <lnimi@hotmail.com>
+Cc: linux-kernel@vger.kernel.org, Min Li <min.li.xe@renesas.com>
+Subject: Re: [PATCH mfd v2 2/2] mfd: rsmu: add FemtoClock3 support
+Message-ID: <20240503093604.GO1227636@google.com>
+References: <20240501163256.28463-1-lnimi@hotmail.com>
+ <LV3P220MB120270F8FC18DCCCFD534D82A0192@LV3P220MB1202.NAMP220.PROD.OUTLOOK.COM>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240502091847.65181-2-justinlai0215@realtek.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <LV3P220MB120270F8FC18DCCCFD534D82A0192@LV3P220MB1202.NAMP220.PROD.OUTLOOK.COM>
 
-On Thu, May 02, 2024 at 05:18:35PM +0800, Justin Lai wrote:
-> Add pci table supported in this module, and implement pci_driver function
-> to initialize this driver, remove this driver, or shutdown this driver.
+On Wed, 01 May 2024, Min Li wrote:
+
+> From: Min Li <min.li.xe@renesas.com>
 > 
-> Signed-off-by: Justin Lai <justinlai0215@realtek.com>
+> The RENESAS FemtoClock3 Wireless is a high-performance
+> jitter attenuator, frequency translator, and clock
+> synthesizer. This patch only adds I2C bus access for
+> FemtoClock3 through REGMAP.
 
-..
+Nit: Choose a better place to line wrap.
 
-> diff --git a/drivers/net/ethernet/realtek/rtase/rtase_main.c b/drivers/net/ethernet/realtek/rtase/rtase_main.c
-> new file mode 100644
-> index 000000000000..5ddb5f7abfe9
-> --- /dev/null
-> +++ b/drivers/net/ethernet/realtek/rtase/rtase_main.c
-> @@ -0,0 +1,618 @@
-> +// SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause
-> +/*
-> + *  rtase is the Linux device driver released for Realtek Automotive Switch
-> + *  controllers with PCI-Express interface.
-> + *
-> + *  Copyright(c) 2023 Realtek Semiconductor Corp.
-> + *
-> + *  Below is a simplified block diagram of the chip and its relevant interfaces.
-> + *
-> + *               *************************
-> + *               *                       *
-> + *               *  CPU network device   *
-> + *               *                       *
-> + *               *   +-------------+     *
-> + *               *   |  PCIE Host  |     *
-> + *               ***********++************
-> + *                          ||
-> + *                         PCIE
-> + *                          ||
-> + *      ********************++**********************
-> + *      *            | PCIE Endpoint |             *
-> + *      *            +---------------+             *
-> + *      *                | GMAC |                  *
-> + *      *                +--++--+  Realtek         *
-> + *      *                   ||     RTL90xx Series  *
-> + *      *                   ||                     *
-> + *      *     +-------------++----------------+    *
-> + *      *     |           | MAC |             |    *
-> + *      *     |           +-----+             |    *
-> + *      *     |                               |    *
-> + *      *     |     Ethernet Switch Core      |    *
-> + *      *     |                               |    *
-> + *      *     |   +-----+           +-----+   |    *
-> + *      *     |   | MAC |...........| MAC |   |    *
-> + *      *     +---+-----+-----------+-----+---+    *
-> + *      *         | PHY |...........| PHY |        *
-> + *      *         +--++-+           +--++-+        *
-> + *      *************||****************||***********
+This block looks odd squished like that.
 
-Thanks for the diagram, I like it a lot :)
+> Signed-off-by: Min Li <min.li.xe@renesas.com>
+> ---
+>  drivers/mfd/rsmu_core.c  | 10 +++++-----
+>  drivers/mfd/rsmu_i2c.c   | 16 ++++++++--------
+>  include/linux/mfd/rsmu.h |  4 ++--
+>  3 files changed, 15 insertions(+), 15 deletions(-)
+> 
+> diff --git a/drivers/mfd/rsmu_core.c b/drivers/mfd/rsmu_core.c
+> index 29437fd0b..951ddd92c 100644
+> --- a/drivers/mfd/rsmu_core.c
+> +++ b/drivers/mfd/rsmu_core.c
+> @@ -40,12 +40,12 @@ static struct mfd_cell rsmu_sabre_devs[] = {
+>  	},
+>  };
+>  
+> -static struct mfd_cell rsmu_sl_devs[] = {
+> +static struct mfd_cell rsmu_fc3_devs[] = {
+>  	[RSMU_PHC] = {
+> -		.name = "8v19n85x-phc",
+> +		.name = "rc38xxx-phc",
 
-> + *
-> + *  The block of the Realtek RTL90xx series is our entire chip architecture,
-> + *  the GMAC is connected to the switch core, and there is no PHY in between.
-> + *  In addition, this driver is mainly used to control GMAC, but does not
-> + *  control the switch core, so it is not the same as DSA.
-> + */
+No explanation is provided for this name change.
 
-..
+How is this okay?
 
-> +static int rtase_alloc_msix(struct pci_dev *pdev, struct rtase_private *tp)
-> +{
-> +	int ret;
-> +	u16 i;
-> +
-> +	memset(tp->msix_entry, 0x0, RTASE_NUM_MSIX * sizeof(struct msix_entry));
-> +
-> +	for (i = 0; i < RTASE_NUM_MSIX; i++)
-> +		tp->msix_entry[i].entry = i;
-> +
-> +	ret = pci_enable_msix_exact(pdev, tp->msix_entry, tp->int_nums);
-> +	if (!ret) {
+What happened to SnowLotus?
 
-In Linux Networking code it is an idiomatic practice to keep
-handle errors in branches and use the main path of execution
-for the non error path.
+>  	},
+>  	[RSMU_CDEV] = {
+> -		.name = "8v19n85x-cdev",
+> +		.name = "rc38xxx-cdev",
+>  	},
+>  };
+>  
+> @@ -61,8 +61,8 @@ int rsmu_core_init(struct rsmu_ddata *rsmu)
+>  	case RSMU_SABRE:
+>  		cells = rsmu_sabre_devs;
+>  		break;
+> -	case RSMU_SL:
+> -		cells = rsmu_sl_devs;
+> +	case RSMU_FC3:
+> +		cells = rsmu_fc3_devs;
+>  		break;
+>  	default:
+>  		dev_err(rsmu->dev, "Unsupported RSMU device type: %d\n", rsmu->type);
+> diff --git a/drivers/mfd/rsmu_i2c.c b/drivers/mfd/rsmu_i2c.c
+> index cba64f107..a3f50a184 100644
+> --- a/drivers/mfd/rsmu_i2c.c
+> +++ b/drivers/mfd/rsmu_i2c.c
+> @@ -262,11 +262,11 @@ static const struct regmap_config rsmu_sabre_regmap_config = {
+>  	.can_multi_write = true,
+>  };
+>  
+> -static const struct regmap_config rsmu_sl_regmap_config = {
+> +static const struct regmap_config rsmu_fc3_regmap_config = {
+>  	.reg_bits = 16,
+>  	.val_bits = 8,
+>  	.reg_format_endian = REGMAP_ENDIAN_BIG,
+> -	.max_register = 0x340,
+> +	.max_register = 0xE88,
+>  	.cache_type = REGCACHE_NONE,
+>  	.can_multi_write = true,
+>  };
+> @@ -302,8 +302,8 @@ static int rsmu_i2c_probe(struct i2c_client *client)
+>  	case RSMU_SABRE:
+>  		cfg = &rsmu_sabre_regmap_config;
+>  		break;
+> -	case RSMU_SL:
+> -		cfg = &rsmu_sl_regmap_config;
+> +	case RSMU_FC3:
+> +		cfg = &rsmu_fc3_regmap_config;
+>  		break;
+>  	default:
+>  		dev_err(rsmu->dev, "Unsupported RSMU device type: %d\n", rsmu->type);
+> @@ -336,8 +336,8 @@ static const struct i2c_device_id rsmu_i2c_id[] = {
+>  	{ "8a34001",  RSMU_CM },
+>  	{ "82p33810", RSMU_SABRE },
+>  	{ "82p33811", RSMU_SABRE },
+> -	{ "8v19n850", RSMU_SL },
+> -	{ "8v19n851", RSMU_SL },
+> +	{ "rc38xxx0", RSMU_FC3 },
+> +	{ "rc38xxx1", RSMU_FC3 },
+>  	{}
+>  };
+>  MODULE_DEVICE_TABLE(i2c, rsmu_i2c_id);
+> @@ -347,8 +347,8 @@ static const struct of_device_id rsmu_i2c_of_match[] = {
+>  	{ .compatible = "idt,8a34001",  .data = (void *)RSMU_CM },
+>  	{ .compatible = "idt,82p33810", .data = (void *)RSMU_SABRE },
+>  	{ .compatible = "idt,82p33811", .data = (void *)RSMU_SABRE },
+> -	{ .compatible = "idt,8v19n850", .data = (void *)RSMU_SL },
+> -	{ .compatible = "idt,8v19n851", .data = (void *)RSMU_SL },
+> +	{ .compatible = "idt,rc38xxx0", .data = (void *)RSMU_FC3 },
+> +	{ .compatible = "idt,rc38xxx1", .data = (void *)RSMU_FC3 },
+>  	{}
+>  };
+>  MODULE_DEVICE_TABLE(of, rsmu_i2c_of_match);
+> diff --git a/include/linux/mfd/rsmu.h b/include/linux/mfd/rsmu.h
+> index 0379aa207..b4a90fc81 100644
+> --- a/include/linux/mfd/rsmu.h
+> +++ b/include/linux/mfd/rsmu.h
+> @@ -11,11 +11,11 @@
+>  #define RSMU_MAX_WRITE_COUNT	(255)
+>  #define RSMU_MAX_READ_COUNT	(255)
+>  
+> -/* The supported devices are ClockMatrix, Sabre and SnowLotus */
+> +/* The supported devices are ClockMatrix, Sabre and FemtoClock3 */
+>  enum rsmu_type {
+>  	RSMU_CM		= 0x34000,
+>  	RSMU_SABRE	= 0x33810,
+> -	RSMU_SL		= 0x19850,
+> +	RSMU_FC3	= 0x38312,
+>  };
+>  
+>  /**
+> -- 
+> 2.39.2
+> 
 
-In this case I think that would look a bit like this:
-
-	ret = pci_enable_msix_exact(pdev, tp->msix_entry, tp->int_nums);
-	if (ret)
-		return ret;
-
-	...
-
-	return 0;
-
-> +
-> +		for (i = 0; i < tp->int_nums; i++)
-> +			tp->int_vector[i].irq = pci_irq_vector(pdev, i);
-
-pci_irq_vector() can fail, should that be handled here?
-
-> +	}
-> +
-> +	return ret;
-> +}
-> +
-> +static int rtase_alloc_interrupt(struct pci_dev *pdev,
-> +				 struct rtase_private *tp)
-> +{
-> +	int ret;
-> +
-> +	ret = rtase_alloc_msix(pdev, tp);
-> +	if (ret) {
-> +		ret = pci_enable_msi(pdev);
-> +		if (ret)
-> +			dev_err(&pdev->dev,
-> +				"unable to alloc interrupt.(MSI)\n");
-
-If an error occurs then it is a good practice to unwind resource
-allocations made within the context of this function call, as this
-leads to more symmetric unwind paths in callers.
-
-In this case I think any resources consumed by rtase_alloc_msix()
-should be released if pci_enable_msi fails. Probably using
-a goto label is appropriate here.
-
-Likewise, I suggest that similar logic applies to errors within
-rtase_alloc_msix().
-
-> +		else
-> +			tp->sw_flag |= RTASE_SWF_MSI_ENABLED;
-> +	} else {
-> +		tp->sw_flag |= RTASE_SWF_MSIX_ENABLED;
-> +	}
-> +
-> +	return ret;
-> +}
-
-..
+-- 
+Lee Jones [李琼斯]
 
