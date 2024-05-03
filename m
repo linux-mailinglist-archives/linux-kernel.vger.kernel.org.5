@@ -1,60 +1,65 @@
-Return-Path: <linux-kernel+bounces-167980-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-167981-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D3A398BB1D8
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 19:33:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 103DA8BB1D9
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 19:33:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 106DD1C22789
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 17:33:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 40DCD1C211AE
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 17:33:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB15A1581E4;
-	Fri,  3 May 2024 17:33:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 98D4A15820C;
+	Fri,  3 May 2024 17:33:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NfNyl+zV"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MLeQbgEl"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E934815698B;
-	Fri,  3 May 2024 17:33:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE9EB158200
+	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 17:33:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714757584; cv=none; b=XiFWC8lPxxgPj2vSZLIPraSqMb/tEs+cOPc5pdKcNMJaWgJQ4Y1xxBIhiZjwWWCFhpIpMzpk5UYJqpMIgQA8PuvHvcVnfge4Ddy8DZOEjyi/FVYk3nWmNZa8utiewLyjqHz4b3ySsz/XFOsFnEC9k7mWhCcWnp8RfdSt2emKqSM=
+	t=1714757586; cv=none; b=Hf965/0VHztGebSM40IQp3jJJvBbRTuGlg1XrD8k1DNKhp7RrFL6RWjXhtGq3mvf46lo9XV2toJcTLa8pZS1/nMCAczmB57S+dArbu4EL3PadyYOtU6Oyixr0fchfm3fnkMvD/foJObe/wcGHmurvYSZ1SRkxEIvtWCciFtQaGA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714757584; c=relaxed/simple;
-	bh=bxs2MrtcFn9XA7XJyfymNrvY4aBIko4rE8ptPAXCSC0=;
+	s=arc-20240116; t=1714757586; c=relaxed/simple;
+	bh=ivUf0YHwPrVFlk2SOzJDvBwivlo23YyIa4VrFwPBDEQ=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=pQEzgDCoEXdOJksszzaScFR36lEpiEtEWKnZVn35gyucCjdkatToFlduBrf7UzdqjqOoMeKzwYHebYYFPMKY1TmLwnLtYhJYPtwdoPoKLpS2vxf3rzODbBN3au1IRL3iULTGEDfmmBD39Chx5es9qisQgRjglOLF7JhTOb7EQrA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NfNyl+zV; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C9932C116B1;
-	Fri,  3 May 2024 17:33:01 +0000 (UTC)
+	 MIME-Version:Content-Type; b=XIZL8CDb48ICTZFOvUkPKwciu/vDyUHUVedlesGlYesWsUJkrahHC0Rc6kLE/QQ4Ok7K7gjrklOMlKBOXAMD+WZX/I293XV7RGT+qEtyZtgoBrUs0wk1KRpXq59aXuKVXhnrA+WRvNBEtdIiEuVZYgNNk6TfWeYaDZe+8CgXqDY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MLeQbgEl; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F1F6BC4AF14;
+	Fri,  3 May 2024 17:33:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714757583;
-	bh=bxs2MrtcFn9XA7XJyfymNrvY4aBIko4rE8ptPAXCSC0=;
+	s=k20201202; t=1714757586;
+	bh=ivUf0YHwPrVFlk2SOzJDvBwivlo23YyIa4VrFwPBDEQ=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=NfNyl+zVStx5U4N/Zz52jJkmPndgTx1kJNseuatyBdzGlKUdaNSFEXNQDYHubn/xZ
-	 po6zBbG4m8qFRPPr7Ny/OqHmWprXO2CfsjmqXtXz+XP9b8/TVJAYnoxNHngZHCExHz
-	 4ehDBKPkBZuFJQhnr820fcbB0zPWB+nRs0ddYuLluYdQQvL27dj1vaxfZt4erZCEQ4
-	 qaYdqAGWfE4tRrYL8hHTPj2AhfkTcxoXZ/4seSS3HhlWplBey/YiG4GJ5chYzlXOTQ
-	 6kCfAFdMvYIIMRIcAiA1mzqw5fkDJmlRH22pge6wJTBlkMExsMJ7wbbXxCCmS4tcwj
-	 uiNV3Zua66kew==
+	b=MLeQbgElhsj2RIOlErTUvVgbZCmql4j0DNrKHvhiGsPlog+1gYqERx0Slyq204o/f
+	 SuYhadOnJViQne0PLgm15gF9VQVMjwWw86B/72S9JXUjoYbVkuPcqOqQ1cp810wAXe
+	 TNfZOSXSt/uQ+qWSupEfCaWL7P4Au7ckSyvqhQ0Y8BdRIvNuJrDfwjNK0wMYGIFt4V
+	 kq3/Fzp24mxcPj2JfVTCjzASM14OegWs2IYjE+SnBof6QD5bmmzcVIsZcxhUxvDy0a
+	 J3Jmw24IIIvaWqLCINLevJjxwKk3bkvCh7LVsHYT0YC1qlMNyPymw993Pv2p1PAMDX
+	 FS5z5rMT5IMow==
 From: Will Deacon <will@kernel.org>
-To: Jonathan Corbet <corbet@lwn.net>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
+To: mark.rutland@arm.com,
+	George Guo <dongtai.guo@linux.dev>
+Cc: catalin.marinas@arm.com,
+	kernel-team@android.com,
+	Will Deacon <will@kernel.org>,
+	ardb@kernel.org,
+	guodongtai@kylinos.cn,
+	jbaron@akamai.com,
+	jpoimboe@kernel.org,
 	linux-arm-kernel@lists.infradead.org,
-	Andrea della Porta <andrea.porta@suse.com>
-Cc: kernel-team@android.com,
-	Will Deacon <will@kernel.org>
-Subject: Re: [PATCH v3] arm64: Add the arm64.no32bit_el0 command line option
-Date: Fri,  3 May 2024 18:32:56 +0100
-Message-Id: <171473808737.3281813.8263493761556062643.b4-ty@kernel.org>
+	linux-kernel@vger.kernel.org,
+	peterz@infradead.org,
+	rostedt@goodmis.org
+Subject: Re: [PATCH v3 0/1] cleanup arch_static_branch/_jump
+Date: Fri,  3 May 2024 18:32:57 +0100
+Message-Id: <171474219706.3292579.15222046072610530568.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20240429102833.6426-1-andrea.porta@suse.com>
-References: <20240429102833.6426-1-andrea.porta@suse.com>
+In-Reply-To: <20240430085655.2798551-1-dongtai.guo@linux.dev>
+References: <ZiYs3itsmdOmuPq4@FVFF77S0Q05N> <20240430085655.2798551-1-dongtai.guo@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -64,20 +69,22 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 
-On Mon, 29 Apr 2024 12:28:33 +0200, Andrea della Porta wrote:
-> Introducing the field 'el0' to the idreg-override for register
-> ID_AA64PFR0_EL1. This field is also aliased to the new kernel
-> command line option 'arm64.no32bit_el0' as a more recognizable
-> and mnemonic name to disable the execution of 32 bit userspace
-> applications (i.e. avoid Aarch32 execution state in EL0) from
-> kernel command line.
+On Tue, 30 Apr 2024 16:56:54 +0800, George Guo wrote:
+> I have tried to define macro with key and lable in v3.
+> What do you think on v3 patch?
+> 
+> George Guo (1):
+>   arm64: simplify arch_static_branch/_jump function
+> 
+> arch/arm64/include/asm/jump_label.h | 28 +++++++++++++++-------------
+>  1 file changed, 15 insertions(+), 13 deletions(-)
 > 
 > [...]
 
 Applied to arm64 (for-next/misc), thanks!
 
-[1/1] arm64: Add the arm64.no32bit_el0 command line option
-      https://git.kernel.org/arm64/c/1279e8d0dcea
+[1/1] arm64: simplify arch_static_branch/_jump function
+      https://git.kernel.org/arm64/c/588de8c6d362
 
 Cheers,
 -- 
