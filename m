@@ -1,164 +1,263 @@
-Return-Path: <linux-kernel+bounces-167798-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-167799-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 88AFC8BAF4B
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 16:55:47 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 10AD48BAF55
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 17:00:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 86E5DB2172B
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 14:55:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 963D128463F
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 15:00:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52EA54AEEF;
-	Fri,  3 May 2024 14:55:34 +0000 (UTC)
-Received: from mail-io1-f70.google.com (mail-io1-f70.google.com [209.85.166.70])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0AA764AED7;
+	Fri,  3 May 2024 15:00:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="CyfQHxL/"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.17])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58B201E4B1
-	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 14:55:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.70
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714748133; cv=none; b=Ix/pFUTBGyThH5zVIvcrhfBszTkkl98EUpDi/pnHZ6IXU9uA0Gyn24xcTh0qbJgKwg1r0gpJRGHzhdZ47+2dvyL8ZXJaWsr+1XXHYj2cJ6bZzt2n32T9j80c8XK8w2D0VPwqGiASkRuywMVZO1m9NoNHPx5//Xlt7+JkNUAfJRU=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714748133; c=relaxed/simple;
-	bh=QKHQ8GXzaHQv7SZhL6uyVbGA/6cXE3hUh7Z5YIWKyic=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=IvqqfSkq3UAp5KKYMlyBDTog60vZ2A4XkeXmrLXBFiINZzOAn4S3oSBLSxYEazIpIqFwx0cL1Dex9I6BIN/K56hOnM1SMUo9S4F1Jtu8wSA8j+5B4vjRVUsZMXYpXJHnKlhGJZjZY6DXS8m7kXHL7a6Uc46xHSYRM3j9e/18Lxs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.70
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f70.google.com with SMTP id ca18e2360f4ac-7de9cd658acso1009602939f.3
-        for <linux-kernel@vger.kernel.org>; Fri, 03 May 2024 07:55:31 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714748130; x=1715352930;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=vHjzFqTGEImXhvutzT4hL2jo5Ja0cpO/UGtE6EWFnh0=;
-        b=g8VPslAIbuwcicr8G6jMWluxAYncNZEWOfG5ja6zMJIll8MRDjXcY2AGMlX8wESArQ
-         vmq0eapcEj5vGFJ08XqMKUoqqpZ0iUayW/G9jQ0tLxikkN7b78lzK6HKh+CIGbRsheYc
-         XwhQDmLCOfm+QdXJUB7jXWtyVrpaPptH0jXQu8PEHEyttT4qgU5tbbsQPm5VZxbsye5z
-         rTlZaLJqhl94aicDdV42AVhy4RHFJZzpHU89qZvJ5ewxA7rJ6aukZ2tNYwmJ7HYlsrQk
-         JmCoPEkKgdCQqJibzrC9oWau4+mTUZ/WncnrBvh8fJcZWyP76lUKZ5ka+zmDYUw/0shK
-         dg7Q==
-X-Forwarded-Encrypted: i=1; AJvYcCX506DxOusAhy0gGNiei2G8SJk/ylGwiBx3Doi0yZKe2TJvYXBkfDjhEPdjBW5DzpfzQMzmW3vzhQ2ycIWuNvzU4yqJHWaURhZWUGe5
-X-Gm-Message-State: AOJu0Yy1IKoMVlKceWKCCc19gU7cgDVsM/VCcAn4vWyADrK5rIYDxn8s
-	mP4Ey7nHJgO54qNcYCd4D9MTNtwnsnkWOmdyh0BCBA++0wiOv+y7JCgmk9VVTcvS8QVLfwZlP8z
-	wFUbnFU6dycoN6/SwhBQ/2ni6J5pJuGY6vea5nlDdTrvQ3DY7877yjRA=
-X-Google-Smtp-Source: AGHT+IFecX4KwUhq16GQoy4m1dbwzzqR8OHn14RgAK+2KWtIOJI1j0KW8HKfFgVz9Pdk+V9aZeJgfv0sRXkZnm8CXbiaWOCOgPOj
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 317CA46BA0;
+	Fri,  3 May 2024 15:00:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.17
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1714748442; cv=fail; b=cILcNgU9cvr1tLk3uNlgWXiRxN4IVDqOrg7iOIEtmCbS8GctqaTSAJLnkT84rfULwkjjMO2jAknwCZaJIWp2rFybARCkZUunghHaMuQnDK68WA1dQiNfv92voH2tpuLhzQzlcYRkULNWbw3kjHORbaMmPNR28vWI6yIElog/WUA=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1714748442; c=relaxed/simple;
+	bh=/H+xcmsYyGUQ4iQbb6s5qb0GRQ13yuK78KzgMWbX7i4=;
+	h=Date:From:To:CC:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=OLk4V8xKoWHsbJh3xl3owVfPOno5GbaoY7BGyljC0PvDvS07VnIYTF+AMClFIO6hDXS/3ItMTcM3asxkGHBp6qojCRYluAkjbTyE+LHOclqvGYxFBRVGweovBndeuC0U1s5Oad6HRdTU3QXQvL6zw/ziU9dapND9jjDz13P0afg=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=CyfQHxL/; arc=fail smtp.client-ip=198.175.65.17
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1714748441; x=1746284441;
+  h=date:from:to:cc:subject:message-id:references:
+   in-reply-to:mime-version;
+  bh=/H+xcmsYyGUQ4iQbb6s5qb0GRQ13yuK78KzgMWbX7i4=;
+  b=CyfQHxL/V3UCr7PeRJAiGBZTOCGDT3klVk2iyfgwHmLq2trXzN8WqdhK
+   qQvlhumlKVWRUV0EAKB6kypRd4czK1suoJckHp5swBzk9EqBNfi27sQat
+   +NQ2FaMAIz5lh/O3ssPw54gCkOOwOFsk2RkKMv47+kEI/UAQmKNYpG21d
+   ex/KkTNHSQe5lqX9sSL2BONXl/N3M/7QyfjnULN1bedznHsw2wkL42C7j
+   4M9Tgtealq7LL9w+kEvCWocQEczRfx5a0LxrgjattW33gIphlDzOEy0vo
+   1LW3P0+UVYzPbiH7BtR4fZcsC7HnDRfVWwHbrVnpuGu8rWAjIDbu5q8Bs
+   Q==;
+X-CSE-ConnectionGUID: VyNomXuuSnOiOWv1kyplwQ==
+X-CSE-MsgGUID: /HPPHWuDSP25sSLekqiCRQ==
+X-IronPort-AV: E=McAfee;i="6600,9927,11063"; a="10685815"
+X-IronPort-AV: E=Sophos;i="6.07,251,1708416000"; 
+   d="scan'208";a="10685815"
+Received: from orviesa003.jf.intel.com ([10.64.159.143])
+  by orvoesa109.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 May 2024 08:00:40 -0700
+X-CSE-ConnectionGUID: FpUsqD5JRaW3ocx8YYbHTg==
+X-CSE-MsgGUID: uNutJdOiT3iiTeUL6dnDlA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,251,1708416000"; 
+   d="scan'208";a="32150256"
+Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
+  by orviesa003.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 03 May 2024 08:00:40 -0700
+Received: from orsmsx603.amr.corp.intel.com (10.22.229.16) by
+ ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Fri, 3 May 2024 08:00:39 -0700
+Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
+ orsmsx603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Fri, 3 May 2024 08:00:39 -0700
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.168)
+ by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Fri, 3 May 2024 08:00:39 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=mAHuST9TgjhhLJX1UzLlQqUF5NpVYydEQZqhi6zZQSuW/Y726nf2py2Z7+y+eRqadjHAdlLyKBRMxAUzXNFbgaEvXp8PvupuJ4O7L3zyHAohTaNg21caVUyiA0E1ALs7eBdDiGcc4fC0FV0Aj8w0+Ua4VNSTTbQUUY2PjhMukCCCSLhKBp75dj2/KvuUKciUL16mJy0Frf7TSg4cEVZMWmLmiBlfKzIxhiEIca2f9PhSUQSyUnyHiGdN3yx/5A5nSK5NxvafvPPupdDsItUTcwQS1NePO6Xo10pJ5UQqtcHPUWObTRlOGJ+j6NKNAJ40YnIkHS2Ha/aGC8TW0UQOcQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=eeApb+ITYQSwDRzKu+3Hy0NR3ba5JOGGwN6JHs0OJgQ=;
+ b=hkfA2z5b8NZAYNbO/2k1ztXm7UQPWeKm1v9AMm4jigAqi0vBrGde+Cdn15urCM5ibiYUZrf5RygDg80DeXP2c3ciMLbs/n9yUfTwmKxmOuPOumjymnTxEcFSbOc21+adMxVsHiaupHarC6B5lOK410XKM18DoxtKMYH9kNmHT0+PFS0u5ZT8fWY0Lyp2BcKZ6iFEkGDKEB8iu9UnkzvaXPGjc9RxsFyM8NUVhsQsqS4dtbe2y+ggNEScbSqU5G2LHwdVKYt8EeCa4dg4b9tB5wGNlRMHYhw8xm3PfG1OnDp1cKtoySx696Ju+givpyQpaBcdJ2gWNpZEeJB5vgAZxA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from DM4PR11MB6020.namprd11.prod.outlook.com (2603:10b6:8:61::19) by
+ DM4PR11MB8203.namprd11.prod.outlook.com (2603:10b6:8:187::8) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7519.35; Fri, 3 May 2024 15:00:34 +0000
+Received: from DM4PR11MB6020.namprd11.prod.outlook.com
+ ([fe80::4af6:d44e:b6b0:fdce]) by DM4PR11MB6020.namprd11.prod.outlook.com
+ ([fe80::4af6:d44e:b6b0:fdce%4]) with mapi id 15.20.7544.029; Fri, 3 May 2024
+ 15:00:28 +0000
+Date: Fri, 3 May 2024 23:00:18 +0800
+From: Chen Yu <yu.c.chen@intel.com>
+To: "Kirill A. Shutemov" <kirill@shutemov.name>
+CC: Ard Biesheuvel <ardb@kernel.org>, <linux-efi@vger.kernel.org>, "Kirill A.
+ Shutemov" <kirill.shutemov@linux.intel.com>, Vlastimil Babka
+	<vbabka@suse.cz>, Nikolay Borisov <nik.borisov@suse.com>, Chao Gao
+	<chao.gao@intel.com>, <linux-kernel@vger.kernel.org>, "Hossain, Md Iqbal"
+	<md.iqbal.hossain@intel.com>
+Subject: Re: [PATCH v2] efi/unaccepted: touch soft lockup during memory accept
+Message-ID: <ZjT8Agb5vUNUxuVo@chenyu5-mobl2>
+References: <20240411004907.649394-1-yu.c.chen@intel.com>
+ <ZiZ2yUI09QIrYr/4@chenyu5-mobl2>
+ <CAMj1kXGdRkiLh+3DePZuejaqEphyP=gN6bnK6v08ueP3MP40EA@mail.gmail.com>
+ <CAMj1kXHLGMXtD-Ad_1TKPmkrvppeNNtKUn-G5q4jr8ZKOab18Q@mail.gmail.com>
+ <53exjhamp57x7brn2b5jxdpbzc3amv5i646gmgitnvwjgdwfrd@5v5qifom5tez>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <53exjhamp57x7brn2b5jxdpbzc3amv5i646gmgitnvwjgdwfrd@5v5qifom5tez>
+X-ClientProxiedBy: SGAP274CA0006.SGPP274.PROD.OUTLOOK.COM (2603:1096:4:b6::18)
+ To DM4PR11MB6020.namprd11.prod.outlook.com (2603:10b6:8:61::19)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:8c16:b0:487:cbff:ac40 with SMTP id
- jl22-20020a0566388c1600b00487cbffac40mr122447jab.4.1714748130405; Fri, 03 May
- 2024 07:55:30 -0700 (PDT)
-Date: Fri, 03 May 2024 07:55:30 -0700
-In-Reply-To: <000000000000f75b4906178da124@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000003143a506178de969@google.com>
-Subject: Re: [syzbot] [bcachefs?] kernel BUG in bch2_btree_node_read_done
-From: syzbot <syzbot+bf7215c0525098e7747a@syzkaller.appspotmail.com>
-To: bfoster@redhat.com, kent.overstreet@linux.dev, 
-	linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM4PR11MB6020:EE_|DM4PR11MB8203:EE_
+X-MS-Office365-Filtering-Correlation-Id: 562c0bf2-1c3d-4f3c-c192-08dc6b81c54e
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230031|1800799015|376005|366007;
+X-Microsoft-Antispam-Message-Info: =?us-ascii?Q?THueSNnIK7oqYkVs9YDx5a2cM5EbH/8wpxcnzA8mnZ4NHD6cWUTu9qPIvT4+?=
+ =?us-ascii?Q?fZ0/amoeEaerxVMMblEOCuyWZndfn4h5qUe6P2LOEX67YEdTgCFKk7R0N14y?=
+ =?us-ascii?Q?rUH8iRu3HtO/xqlAcQ/zss2is7Zn1No8/QKgkN1a5enBp7q9y6zgZG+ldsov?=
+ =?us-ascii?Q?i1Lc2oizzfBaiFh2RyFkX64Hz/q4iUosZqiRx7ttnXyIyWCOtuDscJ8wta6/?=
+ =?us-ascii?Q?3bDfg0KVWuD58MaJ5/3CiORpFok7DIfJj9x86vcFxSIzu/xevtbbUwslu+9f?=
+ =?us-ascii?Q?sR4+cIqDodewrnd9F1JQ4cexNQlgwgKN252EIe2CVd4F5CZhRLGNZ+Msnezi?=
+ =?us-ascii?Q?wxIgvEBFzub075eH84r5dxud8PCrIBFHbrgXj5+tMw/yTgSk/O/aOJ8nQG+G?=
+ =?us-ascii?Q?FllmloLixdga7dl7pm+vOXg/Uuq08ZR2PltTVeBCu0Y0TGdcLyBQtigMm2xO?=
+ =?us-ascii?Q?qsW9mpVlEhq20yTmeHpvJ8nKXMTZbgqB03kv4u9WsNlGJqCchYkMNi4P+IIz?=
+ =?us-ascii?Q?I/dDJt3r5VHXqTmMvBdNtk8tlF1FZLtGnj44XPTZcUXtFE1XXRwLTlp5/rrd?=
+ =?us-ascii?Q?Cd2Yqgo65kebrUGWY+oT+pCPd+AZwERZLuwD77WBzbs6LmPh1MC/Pwq/Z2DM?=
+ =?us-ascii?Q?3RzlGQ7T0iuVGK//f6UK3fak1qnUhfGOKTyqKbN8IXHVVLvQzJI7Pj2Mw1kd?=
+ =?us-ascii?Q?znFCjdm50/78KixV2S5ToBK1zMBklcz2AT/sm39dD+levhXB4IQM686MNIkI?=
+ =?us-ascii?Q?Akdg5X6KN+RNkQy7grLYevqp+RsPvVfterTShp8cQrR1L3ZvhgEoJEydRsgu?=
+ =?us-ascii?Q?nhSX+PaaEBaODo2UDHHv2UOCtloYlInJ03EepitoOlddqsDZ8aTjnoKBETcm?=
+ =?us-ascii?Q?ECScNQfdLhfaxFlQzA7goPMYleFDJOKGVV0K0TQbt4LZzbBPkiXt33bVhItp?=
+ =?us-ascii?Q?CJn0LdxgFesP61NakZ2S2lALr3ng+rNmy5AlV6TGLd0qA91twhoMWOQ7e2Xm?=
+ =?us-ascii?Q?lxlCP3DalgecDgp9Jmf52tvVTiIiXiN3WkQ/GWCLRy2hdpo0T6PJpnKNO6MY?=
+ =?us-ascii?Q?luvFgT5lfoPvIDbFCHE5sXqO6ZGpTcbeBlIV3bdTX2Zgqf6tQ5+E8hVwNdhb?=
+ =?us-ascii?Q?N87K2ReXCLwp7F5Cd4gDOdJ7L3vV46yRuETMIc4Lna4qCRFUUmcPnMQb9xb5?=
+ =?us-ascii?Q?TuiIGDEU3m9dsMnUVIMmIrBrzDskKfzAAmbnUOq1OcRvisaSRie1pncWTJbc?=
+ =?us-ascii?Q?brR+24wImMCgW5Ypm9zM43dtsu3T+8eVOyNtZTi0KA=3D=3D?=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR11MB6020.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(376005)(366007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?rw+kd1JfWFPAevJ6xkICZk38LupEuz2kdziDs60sIRQ2l5T/dGVqEwzRJ49U?=
+ =?us-ascii?Q?ssg0S76Vfgh+R3jGy3qI2kSDQ3eiB8i+xnJC+pMu/+X55IJpA4C1UBAmznsS?=
+ =?us-ascii?Q?10LkGAbxQDDfyOUkerPoQFknj+zr8unp+Xpl5hnNeOswwZVJ4skFKtXIC6Hq?=
+ =?us-ascii?Q?DnYAGVzZCPbG54vPmvUmijfoBiCpUTlDPhIE2yE1YiqBP/tUgK4Ds1bCvktr?=
+ =?us-ascii?Q?CDknQcCaj3II1WQLtXdkh4GiBr+4YMU5bFd7nhXWO1+ehk5mIxyFr9llTW6x?=
+ =?us-ascii?Q?Yt2RscuLXOSHSlG30Kbq4chqXBuQmS21ke+N/9IvBeor+xjddDScTvLV3gCD?=
+ =?us-ascii?Q?F8jcO+0KAB6NFUw7Kb249kXyu09GyD4UoFK1BIKBA/xW5a+CCaWNag6e6CXi?=
+ =?us-ascii?Q?Hn+wQs4xN5iPd8zI515R5lAapHpPeH50RlVkB36lvAx6ADF8Oazj1hLiC4aM?=
+ =?us-ascii?Q?TPfDGcLdnd5alaiMC5cfwm51cyCOTCqQL+eWUJiCQ82ExbLG/iQrQ/fdq3st?=
+ =?us-ascii?Q?/Ihx8+LcNwf2buQZrmbvtaNjn0wvWHmuEpLf2o7g8x9Yju7KTfNfL/RfExZh?=
+ =?us-ascii?Q?j2WYRbBVSOmJdomWl4dCFiR3XrN1dL2vBM98COse0AFIqCCJ54bv7jBxztDX?=
+ =?us-ascii?Q?cz+LWPjNSjHMsjxndPcgoXNf/3mVEa8aG4TbFkyLi8AEDqERL1woR/PAbKcK?=
+ =?us-ascii?Q?RsbpmNxSAcZTuDOPNG43omElPzkac3trccAV+LBTKintw1j0bHmKVVW4t1oB?=
+ =?us-ascii?Q?3JPhanG+eW3CsYbVUSgo6iq27RIqwRF1Q67bMmognHqfac6rbUDQwIKSogFu?=
+ =?us-ascii?Q?fDiKaxa0Bx9bsa41Ki8Z/M9LycMTx5QptvND9kIuATJiCHN9meGuBDn0GCD8?=
+ =?us-ascii?Q?XsGPSEiSJQmlaaKffmuU+UKNdK+TsXfCEP2KIvTyVg1IJdIPPDlG1Bl3Uoz8?=
+ =?us-ascii?Q?M2XtKek8n11uFklQJ+gVPlZlMSDElIUuTfqKChOH0cuXilBws6C2/TTzkhrf?=
+ =?us-ascii?Q?AZINL7eluU2sjullQZItc0M5inLMBYMA1Kd6lFGNm6jcL74D2Yw2aPS91glT?=
+ =?us-ascii?Q?3IQTCeKzoLFQ9SJIOnRcuPqWymOSu6czcBNcGCNF8BcklpxhEsZ21a7kYkJj?=
+ =?us-ascii?Q?oFWBKwd7uISxDCA55fI0ommOxcfIYV+jI8F4BuQfb1NPYKL4ONJ1evtoZDLC?=
+ =?us-ascii?Q?ETxHYEgHMSPuoXI3S+aEL0PX1yVSbtmq3ML7KLECnZaqwg61jQpZ0bS0eNlT?=
+ =?us-ascii?Q?Jiqb+SLgCjqJ1bKRmCOvmn5gQL+cZz5t2ROKagcQ8eBrrFZJPz5PmPVmOFY8?=
+ =?us-ascii?Q?omtuIXD1TSZstmlMptE+hec9Gl36Ge4qzWJcFiTgUdMn8h09NVO0kjh33r+/?=
+ =?us-ascii?Q?jf8WnTQ6aQNCqTQHU5TiOTGKEpTyCO8FKgURX8n3w/l4YYmeKeZjPbKtgynq?=
+ =?us-ascii?Q?Orths3sBFWhVLgJmxsafJIsYlonlO3nwWPGUDigA9r1+bNb7694IPHoyzkru?=
+ =?us-ascii?Q?12EQBPlhsmCZNxPBELyHGtyXTsggoCcJXCl35IN2YQPtTzN5qyzdd5uU/1XM?=
+ =?us-ascii?Q?LhJ/sbuJmIdN7p89lFYNIye5Bv7vPGM0oxTNF9iA?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 562c0bf2-1c3d-4f3c-c192-08dc6b81c54e
+X-MS-Exchange-CrossTenant-AuthSource: DM4PR11MB6020.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 May 2024 15:00:28.7045
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Prp3v7CvHpDbCo/mSjmMgN0Yu+Lwjr/tMdvQ70QfPu+IfgAdOEbqdXsnrt41t8vcAD2j+n0uFpGOeksiLfCMeA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR11MB8203
+X-OriginatorOrg: intel.com
 
-syzbot has found a reproducer for the following issue on:
+On 2024-05-03 at 16:47:49 +0300, Kirill A. Shutemov wrote:
+> On Fri, May 03, 2024 at 12:31:12PM +0200, Ard Biesheuvel wrote:
+> > On Wed, 24 Apr 2024 at 19:12, Ard Biesheuvel <ardb@kernel.org> wrote:
+> > >
+> > > On Mon, 22 Apr 2024 at 16:40, Chen Yu <yu.c.chen@intel.com> wrote:
+> > > >
+> > > > On 2024-04-11 at 08:49:07 +0800, Chen Yu wrote:
+> > > > > Commit 50e782a86c98 ("efi/unaccepted: Fix soft lockups caused
+> > > > > by parallel memory acceptance") has released the spinlock so
+> > > > > other CPUs can do memory acceptance in parallel and not
+> > > > > triggers softlockup on other CPUs.
+> > > > >
+> > > > > However the softlock up was intermittent shown up if the memory
+> > > > > of the TD guest is large, and the timeout of softlockup is set
+> > > > > to 1 second.
+> > > > >
+> > > > > The symptom is:
+> > > > > When the local irq is enabled at the end of accept_memory(),
+> > > > > the softlockup detects that the watchdog on single CPU has
+> > > > > not been fed for a while. That is to say, even other CPUs
+> > > > > will not be blocked by spinlock, the current CPU might be
+> > > > > stunk with local irq disabled for a while, which hurts not
+> > > > > only nmi watchdog but also softlockup.
+> > > > >
+> > > > > Chao Gao pointed out that the memory accept could be time
+> > > > > costly and there was similar report before. Thus to avoid
+> > > > > any softlocup detection during this stage, give the
+> > > > > softlockup a flag to skip the timeout check at the end of
+> > > > > accept_memory(), by invoking touch_softlockup_watchdog().
+> > > > >
+> > > > > Fixes: 50e782a86c98 ("efi/unaccepted: Fix soft lockups caused by parallel memory acceptance")
+> > > > > Reported-by: "Hossain, Md Iqbal" <md.iqbal.hossain@intel.com>
+> > > > > Reviewed-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+> > > > > Signed-off-by: Chen Yu <yu.c.chen@intel.com>
+> > > > > ---
+> > > > > v1 -> v2:
+> > > > >        Refine the commit log and add fixes tag/reviewed-by tag from Kirill.
+> > > >
+> > > > Gently pinging about this patch.
+> > > >
+> > >
+> > > Queued up in efi/urgent now, thanks.
+> > 
+> > OK, I was about to send this patch to Linus (and I am still going to).
+> > 
+> > However, I do wonder if sprinkling touch_softlockup_watchdog() left
+> > and right is really the right solution here.
+> > 
+> > Looking at the backtrace, this is a page fault originating in user
+> > space. So why do we end up calling into the hypervisor to accept a
+> > chunk of memory large enough to trigger the softlockup watchdog? Or is
+> > the hypercall simply taking a disproportionate amount of time?
+> 
+> Note that softlockup timeout was set to 1 second to trigger this. So this
+> is exaggerated case.
+> 
+> > And AIUI, touch_softlockup_watchdog() hides the fact that we are
+> > hogging the CPU for way too long - is there any way we can at least
+> > yield the CPU on this condition?
+> 
+> Not really. There's no magic entity that handles accept. It is done by
+> CPU.
+> 
+> There's a feature in pipeline that makes page accept interruptable in TDX
+> guest. It can help some cases. But if ended up in this codepath from
+> non-preemptable context, it won't help.
+>
 
-HEAD commit:    9221b2819b8a Add linux-next specific files for 20240503
-git tree:       linux-next
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=131169df180000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=8ab537f51a6a0d98
-dashboard link: https://syzkaller.appspot.com/bug?extid=bf7215c0525098e7747a
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=177775df180000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=107ed354980000
+Is it possible to enable the local irq for a little while after
+each arch_accept_memory(phys_start, phys_end),
+and even split the [phys_start,phys_end] to smaller regions?
+so the watchdog can be fed on time/tick is normal. But currently
+the softlock fed at the end seems to be more easier to implement.
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/3e67dbdc3c37/disk-9221b281.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/ade618fa19f8/vmlinux-9221b281.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/df12e5073c97/bzImage-9221b281.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/7414e75d88aa/mount_0.gz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+bf7215c0525098e7747a@syzkaller.appspotmail.com
-
-loop0: detected capacity change from 0 to 32768
-bcachefs (loop0): mounting version 1.7: mi_btree_bitmap opts=metadata_checksum=crc64,data_checksum=none,nojournal_transaction_names
-bcachefs (loop0): recovering from clean shutdown, journal seq 10
-------------[ cut here ]------------
-kernel BUG at fs/bcachefs/backpointers.h:75!
-Oops: invalid opcode: 0000 [#1] PREEMPT SMP KASAN PTI
-CPU: 0 PID: 5095 Comm: syz-executor372 Not tainted 6.9.0-rc6-next-20240503-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
-RIP: 0010:bucket_pos_to_bp fs/bcachefs/backpointers.h:75 [inline]
-RIP: 0010:bch2_backpointer_invalid+0x9cc/0x9d0 fs/bcachefs/backpointers.c:65
-Code: fc ff ff e8 f6 19 8d fd 48 c7 c7 40 7f 91 8e 48 89 de e8 87 e9 e2 00 e9 fc f7 ff ff e8 dd 19 8d fd 90 0f 0b e8 d5 19 8d fd 90 <0f> 0b 66 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 53 e8
-RSP: 0018:ffffc9000344e600 EFLAGS: 00010293
-RAX: ffffffff8408fc0b RBX: 00000000002d3cb6 RCX: ffff88807db18000
-RDX: 0000000000000000 RSI: 00000000002d3cb6 RDI: 000000000000001b
-RBP: 000000b4f2d90000 R08: ffffffff8408f5aa R09: 1ffffffff25f54b0
-R10: dffffc0000000000 R11: fffffbfff25f54b1 R12: 1ffff92000689d58
-R13: ffffc9000344eaa0 R14: ffff8880747000bb R15: 000000000000001b
-FS:  0000555571535380(0000) GS:ffff8880b9400000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000561aa32c7360 CR3: 0000000077a0a000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- bch2_btree_node_read_done+0x3e7d/0x5ed0 fs/bcachefs/btree_io.c:1234
- btree_node_read_work+0x665/0x1300 fs/bcachefs/btree_io.c:1345
- bch2_btree_node_read+0x2637/0x2c80 fs/bcachefs/btree_io.c:1730
- __bch2_btree_root_read fs/bcachefs/btree_io.c:1769 [inline]
- bch2_btree_root_read+0x61e/0x970 fs/bcachefs/btree_io.c:1793
- read_btree_roots+0x22d/0x7b0 fs/bcachefs/recovery.c:472
- bch2_fs_recovery+0x2334/0x36e0 fs/bcachefs/recovery.c:800
- bch2_fs_start+0x356/0x5b0 fs/bcachefs/super.c:1030
- bch2_fs_open+0xa8d/0xdf0 fs/bcachefs/super.c:2105
- bch2_mount+0x71d/0x1320 fs/bcachefs/fs.c:1917
- legacy_get_tree+0xee/0x190 fs/fs_context.c:662
- vfs_get_tree+0x90/0x2a0 fs/super.c:1780
- do_new_mount+0x2be/0xb40 fs/namespace.c:3352
- do_mount fs/namespace.c:3692 [inline]
- __do_sys_mount fs/namespace.c:3898 [inline]
- __se_sys_mount+0x2d9/0x3c0 fs/namespace.c:3875
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xf5/0x240 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7f754d2be98a
-Code: d8 64 89 02 48 c7 c0 ff ff ff ff eb a6 e8 5e 04 00 00 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007fffdfc823d8 EFLAGS: 00000282 ORIG_RAX: 00000000000000a5
-RAX: ffffffffffffffda RBX: 00007fffdfc823f0 RCX: 00007f754d2be98a
-RDX: 0000000020011a00 RSI: 0000000020011a40 RDI: 00007fffdfc823f0
-RBP: 0000000000000004 R08: 00007fffdfc82430 R09: 00000000000119f7
-R10: 0000000002000000 R11: 0000000000000282 R12: 0000000002000000
-R13: 00007fffdfc82430 R14: 0000000000000003 R15: 0000000001000000
- </TASK>
-Modules linked in:
----[ end trace 0000000000000000 ]---
-RIP: 0010:bucket_pos_to_bp fs/bcachefs/backpointers.h:75 [inline]
-RIP: 0010:bch2_backpointer_invalid+0x9cc/0x9d0 fs/bcachefs/backpointers.c:65
-Code: fc ff ff e8 f6 19 8d fd 48 c7 c7 40 7f 91 8e 48 89 de e8 87 e9 e2 00 e9 fc f7 ff ff e8 dd 19 8d fd 90 0f 0b e8 d5 19 8d fd 90 <0f> 0b 66 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 53 e8
-RSP: 0018:ffffc9000344e600 EFLAGS: 00010293
-RAX: ffffffff8408fc0b RBX: 00000000002d3cb6 RCX: ffff88807db18000
-RDX: 0000000000000000 RSI: 00000000002d3cb6 RDI: 000000000000001b
-RBP: 000000b4f2d90000 R08: ffffffff8408f5aa R09: 1ffffffff25f54b0
-R10: dffffc0000000000 R11: fffffbfff25f54b1 R12: 1ffff92000689d58
-R13: ffffc9000344eaa0 R14: ffff8880747000bb R15: 000000000000001b
-FS:  0000555571535380(0000) GS:ffff8880b9500000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000561aa3246638 CR3: 0000000077a0a000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-
-
----
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
+thanks,
+Chenyu
 
