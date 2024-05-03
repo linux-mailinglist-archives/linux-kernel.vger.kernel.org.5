@@ -1,144 +1,156 @@
-Return-Path: <linux-kernel+bounces-167432-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-167433-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2C8B38BA989
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 11:12:05 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 07A108BA98F
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 11:13:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D7C941F22A45
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 09:12:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2B1611C2175C
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 09:13:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B28BE14F127;
-	Fri,  3 May 2024 09:11:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D157F14F12A;
+	Fri,  3 May 2024 09:13:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="cHooHtXt"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="X14Yt8iO"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 84F3F14E2CB;
-	Fri,  3 May 2024 09:11:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF6B9146D4B;
+	Fri,  3 May 2024 09:13:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714727511; cv=none; b=ulGswManYzK43yFjuMT1gS4Hf6pPAV4pHqSCYzXBy45Tm++0AvZ+GQ9uHL/W7rJUrarHde7OUy7A3ZtuxWaX8rC285cDmYGiNyXDjzpFsdssnF2NloNPO+cywIewkJ5RDeD4r0MyYRjjy+5a975UidQWEOUsQUUnClxgdyUamW0=
+	t=1714727595; cv=none; b=ZPcGbs5qqrSDumqzPc0HatnGC2f3xUxotCm/oulyIxN2iZxnpR/rJR5f2L8uwq3NI1lZvHr/4YphirWr80wlSe1n22tD0qzy3d3Tcz4MCpN2poXRq+urm6UBFd5q400KqXAz8qOan3JuMw6whjbNH9JwpRc4ESIM7FRqR0n8jN4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714727511; c=relaxed/simple;
-	bh=efRS0J2Mfz3BfrMBUM6bOn7BAON849782woB55PVO+Y=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=IX2e7rVNVquTN6EeuF7hLpCThRbj1yV5haPlXKJor3SUPnp1Fdt0QsT6lEBSeXcjw0btVxnrVRe+daXfksJksMTLQcDzRzDnyVEgQsPOjxUnp1Hb0ZZa7p6TQ9/3NhuYwdiibjGJEJraEAs3Bs8QFj29bxocp2upUX+eh9QfFvA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=cHooHtXt; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 4436rYn8030152;
-	Fri, 3 May 2024 09:11:44 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=5TYtEABa+Npo1ej5cnl3qJo/mPfhw85IRdYbSazcmzQ=; b=cH
-	ooHtXthFEgtPrCn4gC0VJyzZx8GmFqzLH7Djgdx+DWz9se3Kg1Htq9tJ2Wd2BuAL
-	cN6yX0QwzIDc4ewt2nALkr7LZFfcqjOiEh/FrpwC0tICYyK1hcywzGWBYWA+VmqP
-	s2xsGFGw2pq296BOAk6V9azvbZcLC+Z/X6E0JtmakSl4btHqeIsGnWwPYJ+F+XDG
-	BHefW5j97VLUePTf9p7xWwGuezKu9CfGA1l5y62CSe35rwsukBgeEpvAKm/zh2BM
-	3TDcwUs2fOMZs2tfF1hXagpE4qwX+kyH8/2tJvL63mSIiElX9FHZ5ezYPGMiTsQ2
-	5mD7tAyjtkO500WaWxyQ==
-Received: from nasanppmta04.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xvmxyrsfr-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 03 May 2024 09:11:44 +0000 (GMT)
-Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
-	by NASANPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 4439BhF5010268
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 3 May 2024 09:11:43 GMT
-Received: from [10.216.42.60] (10.80.80.8) by nasanex01a.na.qualcomm.com
- (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Fri, 3 May 2024
- 02:11:39 -0700
-Message-ID: <883248ce-23a7-1f41-aeab-67dc0828566b@quicinc.com>
-Date: Fri, 3 May 2024 14:41:17 +0530
+	s=arc-20240116; t=1714727595; c=relaxed/simple;
+	bh=3LaUaAv7CyMgsmPwhMzjeWmmLQOKPPAU1rg5+fLg16Y=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Akz5aPQWVFLeH3C0yX62tyAlATK181UBEji1DFiEQZzk/G2xXonEZPKNg2C1ONVq+HNZjflc3HCE+/D7Zm2rEMC7msuKuF3ZcYLMGjCC0KiSIdyFaYHsdz7qlBHrw1KMtHx5EBpy+oxhMuuUBVdEbmmMheRGWIVRGXO/im43hZU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=X14Yt8iO; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3C6B6C116B1;
+	Fri,  3 May 2024 09:13:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714727594;
+	bh=3LaUaAv7CyMgsmPwhMzjeWmmLQOKPPAU1rg5+fLg16Y=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=X14Yt8iOniJkilrmKoZkCD67RtnmMu1YNUsyONG1snPV1Xl2iOjt5G/S9DDBkqhDE
+	 +oLAX5nuJ2lbJuEGOQrMsxSVlWclgAXvyouhYBOqERsC8trTUQrVNf2Hp1pyRA5NbP
+	 15cwS8bOq57cZfaShsVHT9DoPy8EWK1REvCTtkV41JybZBF1PYKJJ9TT0OgM8G5fr2
+	 octBJP4J3rV0uBoP6x6WaIolQcXWFYOXiR5g8gIwfGeBPg96F5L+vOLKWa2nBQN8/4
+	 C0gM8lCFunDpmlEbheXfKT1e30qNKHZ1F68YMQeI1J4qwo0pFUtSREJ7PzjUer6gEJ
+	 xRS1eqReFgfZA==
+Message-ID: <c39eab66-4e78-4f24-bcaf-003161b38ed0@kernel.org>
+Date: Fri, 3 May 2024 11:13:06 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.9.1
-Subject: Re: [PATCH] clk: qcom: gcc-ipq9574: Add BRANCH_HALT_VOTED flag
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 2/2] pinctrl: samsung: support a bus clock
+To: =?UTF-8?Q?Andr=C3=A9_Draszik?= <andre.draszik@linaro.org>,
+ Tudor Ambarus <tudor.ambarus@linaro.org>,
+ Sylwester Nawrocki <s.nawrocki@samsung.com>,
+ Alim Akhtar <alim.akhtar@samsung.com>,
+ Linus Walleij <linus.walleij@linaro.org>, Rob Herring <robh@kernel.org>,
+ Conor Dooley <conor+dt@kernel.org>, Tomasz Figa <tomasz.figa@gmail.com>,
+ Peter Griffin <peter.griffin@linaro.org>
+Cc: Will McVicker <willmcvicker@google.com>,
+ Sam Protsenko <semen.protsenko@linaro.org>, kernel-team@android.com,
+ linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org,
+ linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240426-samsung-pinctrl-busclock-v3-0-adb8664b8a7e@linaro.org>
+ <20240426-samsung-pinctrl-busclock-v3-2-adb8664b8a7e@linaro.org>
+ <ea6f17d7-49bf-4a1e-ba3b-757e29221590@linaro.org>
+ <9a960401-f41f-4902-bcbd-8f30f318ba98@kernel.org>
+ <c4c73732595b067369a6c8d71508d54358962552.camel@linaro.org>
+From: Krzysztof Kozlowski <krzk@kernel.org>
 Content-Language: en-US
-To: Stephen Boyd <sboyd@kernel.org>, <linux-arm-msm@vger.kernel.org>,
-        <linux-clk@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <mturquette@baylibre.com>, <quic_srichara@quicinc.com>,
-        <quic_varada@quicinc.com>
-References: <20240502034247.2621996-1-quic_mdalam@quicinc.com>
- <2e05b0e246431d9dcf28c7135fff8231.sboyd@kernel.org>
-From: Md Sadre Alam <quic_mdalam@quicinc.com>
-In-Reply-To: <2e05b0e246431d9dcf28c7135fff8231.sboyd@kernel.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nasanex01a.na.qualcomm.com (10.52.223.231)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: xn3tNLO9LbxzwdmLuyROzMFXE30ijDug
-X-Proofpoint-ORIG-GUID: xn3tNLO9LbxzwdmLuyROzMFXE30ijDug
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
- definitions=2024-05-03_05,2024-05-03_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
- impostorscore=0 spamscore=0 mlxscore=0 priorityscore=1501 adultscore=0
- mlxlogscore=999 bulkscore=0 malwarescore=0 phishscore=0 lowpriorityscore=0
- clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2404010003 definitions=main-2405030066
+Autocrypt: addr=krzk@kernel.org; keydata=
+ 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 fv0=
+In-Reply-To: <c4c73732595b067369a6c8d71508d54358962552.camel@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-
-
-On 5/3/2024 3:38 AM, Stephen Boyd wrote:
-> Quoting Md Sadre Alam (2024-05-01 20:42:47)
->> Add BRANCH_HALT_VOTED flag to inform clock framework
->> don't check for CLK_OFF bit.
+On 02/05/2024 12:41, André Draszik wrote:
+> On Thu, 2024-05-02 at 09:46 +0200, Krzysztof Kozlowski wrote:
+>> On 02/05/2024 09:41, Tudor Ambarus wrote:
+>>>>  
+>>>> @@ -223,6 +268,13 @@ static void exynos_irq_release_resources(struct irq_data *irqd)
+>>>>  	shift = irqd->hwirq * bank_type->fld_width[PINCFG_TYPE_FUNC];
+>>>>  	mask = (1 << bank_type->fld_width[PINCFG_TYPE_FUNC]) - 1;
+>>>>  
+>>>> +	if (clk_enable(bank->drvdata->pclk)) {
+>>>> +		dev_err(bank->gpio_chip.parent,
+>>>> +			"unable to enable clock for deconfiguring pin %s-%lu\n",
+>>>> +			bank->name, irqd->hwirq);
+>>>> +		return;
+>>>
+>>> but here we just print an error. I guess that for consistency reasons it
+>>> would be good to follow up with a patch and change the return types of
+>>> these methods and return the error too when the clock enable fails.
 >>
->> CRYPTO_AHB_CLK_ENA and CRYPTO_AXI_CLK_ENA enable bit is
->> present in other VOTE registers also, like TZ.
->> If anyone else also enabled this clock, even if we turn
->> off in GCC_APCS_CLOCK_BRANCH_ENA_VOTE | 0x180B004, it won't
->> turn off.
-> 
-> Are you seeing problems where we need to send this patch to stable?
-Yes
-> 
+>> That's a release, so usually void callback. The true issue is that we
+>> expect release to always succeed, I think.
 >>
->> Signed-off-by: Md Sadre Alam <quic_mdalam@quicinc.com>
->> ---
+>> This points to issue with this patchset: looks like some patchwork all
+>> around the places having register accesses. But how do you even expect
+>> interrupts and pins to work if entire pinctrl block is clock gated?
 > 
-> Any fixes tag?
-Will add in next patch
-> 
->>   drivers/clk/qcom/gcc-ipq9574.c | 10 ++++++----
->>   1 file changed, 6 insertions(+), 4 deletions(-)
->>
->> diff --git a/drivers/clk/qcom/gcc-ipq9574.c b/drivers/clk/qcom/gcc-ipq9574.c
->> index 0a3f846695b8..f8b9a1e93bef 100644
->> --- a/drivers/clk/qcom/gcc-ipq9574.c
->> +++ b/drivers/clk/qcom/gcc-ipq9574.c
->> @@ -2140,9 +2140,10 @@ static struct clk_rcg2 pcnoc_bfdcd_clk_src = {
->>   
->>   static struct clk_branch gcc_crypto_axi_clk = {
->>          .halt_reg = 0x16010,
->> +       .halt_check = BRANCH_HALT_VOTED,
->>          .clkr = {
->> -               .enable_reg = 0x16010,
->> -               .enable_mask = BIT(0),
->> +               .enable_reg = 0xb004,
-> 
-> You could be more explicit in the commit text that you're changing the
-> register offset to the voting register.
-will update the commit message in next patch.
-> 
->> +               .enable_mask = BIT(15),
+> I was initially thinking the same, but the clock seems to be required for
+> register access only, interrupts are still being received and triggered
+> with pclk turned off as per my testing.
 
-Thanks for reviewing.
-Regards,
-Alam.
+Probably we could simplify this all and keep the clock enabled always,
+when device is not suspended. Toggling clock on/off for every pin change
+is also an overhead. Anyway, I merged the patches for now, because it
+addresses real problem and seems like one of reasonable solutions.
+
+Best regards,
+Krzysztof
+
 
