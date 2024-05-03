@@ -1,127 +1,114 @@
-Return-Path: <linux-kernel+bounces-167702-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-167703-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 440498BADAE
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 15:24:47 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id EDC478BADAF
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 15:25:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 750D61C21900
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 13:24:46 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5A801B20EAC
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 13:24:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B2BB153808;
-	Fri,  3 May 2024 13:24:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 042C715380B;
+	Fri,  3 May 2024 13:24:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YAAMtZka"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="kW3w76/r"
+Received: from mail-pf1-f201.google.com (mail-pf1-f201.google.com [209.85.210.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BFAB214A0AB;
-	Fri,  3 May 2024 13:24:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C76114A0AB
+	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 13:24:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714742679; cv=none; b=k091JboE2Vb3n8XBVgmblCSeOngc7ZodygozSmFpe7zqiI4pzbK1Zieg0QYnN9fQCQNErqAGkmbKNeKrGXCtmXTqLp3umeTMIQQbxgi0LT4/cEJdSxD8SQjbo4g0jPe2qaKHK1AluiEoghY3p9aov7yzj6OoIvF9Bcet11OQMtg=
+	t=1714742690; cv=none; b=bSGEONmJRKamJHor2CH0xOjMIbd6mFUcp+5wQIkLkGegaYYeB4/cLeRTU01TD87fhRrqkka/bEXuI08GSrdYkGONUeGS/nKjoYWaUUhCBMfLCpnXal9kPRPX6dcZa2bqoHxm82fx2HbhMkzgpyb9V46Xgt0v0sXg1TbX//to7lY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714742679; c=relaxed/simple;
-	bh=vBejc4y26BCn3jsVAONmf4WH+VOYO6P0hxMPw087VT0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=lYx2TDEtQY8sUMvqFdEopnalYPdKcn108xnVJAIH5liLUGwJAaygdmrpiBc/IL1kxJuJQscwzFFZ24hBtCSQG6sabKMfcrHPNajCkJE2jF87vEQRBS8WeAJEgPLzy6k7XfBfDyi+/aBiUUQ84DdjXvlVq5iLM2CcdrE7kLFELi4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YAAMtZka; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1172FC116B1;
-	Fri,  3 May 2024 13:24:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714742679;
-	bh=vBejc4y26BCn3jsVAONmf4WH+VOYO6P0hxMPw087VT0=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=YAAMtZkaKaPmLIMMrzKy1xRAU9cA+SRW0uBiMhQw8xje/Yr3ZK0z7KC0jht54W2JL
-	 XZC8RfTVVrk3/1JMgs3RPDVIwmFEo5YTKI0iBMIng6dAPFXO7Icv3gjqDV19ewqjPa
-	 PVaF5CcsBVvmhf7pxREDdCvFGAMWTTaGc0/PBXx4EP3k3ksP53vOt0ejW5+ZXBjKIF
-	 wxkBbAHveeNqepoBEzwvbHRkX9GSrnZaufLn0d0e18xsNnWhVjKvdXYKAfn50xqbZD
-	 FdkPm770QijZ6/pRNvnar5RYKZ1/LEzhsRUlm3xoIfBdWufXjyY+iybWdgwHuVjAeQ
-	 Y0Rkk35uiMRiA==
-Date: Fri, 3 May 2024 08:24:38 -0500
-From: Rob Herring <robh@kernel.org>
-To: Josua Mayer <josua@solid-run.com>
-Cc: Andrew Lunn <andrew@lunn.ch>,
-	Gregory Clement <gregory.clement@bootlin.com>,
-	Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Yazan Shhady <yazan.shhady@solid-run.com>,
-	"linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
-	"devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v4 4/4] arm64: dts: add description for solidrun cn9131
- solidwan board
-Message-ID: <20240503132438.GA460984-robh@kernel.org>
-References: <20240502-cn9130-som-v4-0-0a2e2f1c70d8@solid-run.com>
- <20240502-cn9130-som-v4-4-0a2e2f1c70d8@solid-run.com>
- <d72c7637-e59f-4104-93e9-6faab2da0836@solid-run.com>
+	s=arc-20240116; t=1714742690; c=relaxed/simple;
+	bh=LnQBqRowOn/mmqH744BQ56CUkrHMmmG7pILmr2k3FwQ=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=Lz/CaU2t46haTT7ywsrw8cRNkxNUslpTiDst3QYptIYa47cJN87yiYVHY7nrbZToa3JBRO6HBzrzEQcMkrLp7zCP7rNzdnqr8OGT7x1eQXvyZCvgnQK+FG3RCbhjIpXJcKqiWnZl0oL5fgU42K2tagcvClJ71QqcFKTh2amdP44=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=kW3w76/r; arc=none smtp.client-ip=209.85.210.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-pf1-f201.google.com with SMTP id d2e1a72fcca58-6f041e39bc7so8425144b3a.1
+        for <linux-kernel@vger.kernel.org>; Fri, 03 May 2024 06:24:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1714742688; x=1715347488; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=+ccOeukr23e3h6a0N8DffRaB2MUtEUXB1eb2oExcKkQ=;
+        b=kW3w76/rsYjB2Aw2hH5w+q98JKgzG+DyYm6qhv9gF2jS+2J8EE6ZiUxcYdjIDfKZV9
+         hVeJCOICkGQGIa1vyzFmb8v3+7sNDVjcl6XPCcxof2AC2y5hWgIHADeaEuSnM5Ehbzd+
+         r2X75cvehYAW/hljvHI4wCTg2bAvHOZ+Fg5eJuEIM0MdAQFtfyKnmohkcgQN8Q3wwUr3
+         5ErAGQX+Eqjc++Vv4kwhqRcMIELSk4MSqQiYZxFYEx+YWR+s0gAD2xzhN0FaiQExpZUI
+         arorupLC/GMjgPEjZaiOc9BQYj8vS2VWw9ZFWUMO1mAD8LHstE1ut1SO2cZxLbIORbXL
+         F6Ow==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714742688; x=1715347488;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=+ccOeukr23e3h6a0N8DffRaB2MUtEUXB1eb2oExcKkQ=;
+        b=E/RTym4geGe7kPiv8EyrYlpGnt4fmgZ9pv3Vn5MATV8b1Tn5nh71yPSakWOWHuKEPt
+         fZW2j9S7QOp1xEHaNmv9zg4BPhjUwuCOkJvtAlg4DyMX9nSd4Pgfoyy5/NTgDrgUlr9m
+         2GmJQ14yDq+lz8140zskQmQVIdYzP/V2yS9w4PuoCxTGmJhA8tlyLRJVh7TxPAnfd/A1
+         0y8it/Y7qY6bYpLYHeskkDFm0x103wBj6rrIMBg3PdmkrFMWMhI5iS7z6YDpC9liwZ8P
+         4K8+tihLIHE47i5P7sb4K3NcNkEd9u09vP4Eh9LD9FGvC2vPIoS3S425FdqSYn4uEVFr
+         rwuA==
+X-Forwarded-Encrypted: i=1; AJvYcCWTtFFMURHXD5hsYh/ZvoJd3xhO004PzV4t3XDO+zsmBBtGOxqdebtCglf2MbIvvhhE9BwBFFOI94TfNl1FHvEd6dEXyNypJzRHIrB7
+X-Gm-Message-State: AOJu0YwzNgVkCz0vNIoaPhZR6iTBcZig0PB88G5pE4RE3qes3lunWPve
+	T8JE33u9CLu0be6hzKyaGjsbGV54JCVC+j0IU69IwkmIKp7sbYLsG+EfZenRbJvoIDiNI427Dc1
+	ztQ==
+X-Google-Smtp-Source: AGHT+IFqaqDYUgUT1sFW3BILdnSLhDiEXyo5YaoA9nj8RUO7yNSem5r8cA469uOkvhX2zmIw7iPay/E5mxs=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a05:6a00:181a:b0:6f4:42d7:fe02 with SMTP id
+ y26-20020a056a00181a00b006f442d7fe02mr106073pfa.3.1714742688288; Fri, 03 May
+ 2024 06:24:48 -0700 (PDT)
+Date: Fri, 3 May 2024 06:24:47 -0700
+In-Reply-To: <DS0PR11MB6373EA67C70B8579A194089EDC1F2@DS0PR11MB6373.namprd11.prod.outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d72c7637-e59f-4104-93e9-6faab2da0836@solid-run.com>
+Mime-Version: 1.0
+References: <20240425125252.48963-1-wei.w.wang@intel.com> <20240425125252.48963-4-wei.w.wang@intel.com>
+ <ZjQjYiwBg1jGmdUq@google.com> <DS0PR11MB6373EA67C70B8579A194089EDC1F2@DS0PR11MB6373.namprd11.prod.outlook.com>
+Message-ID: <ZjTlkSi9jYn2e9oc@google.com>
+Subject: Re: [PATCH v3 3/3] KVM: x86/pmu: Add KVM_PMU_CALL() to simplify
+ static calls of kvm_pmu_ops
+From: Sean Christopherson <seanjc@google.com>
+To: Wei W Wang <wei.w.wang@intel.com>
+Cc: "pbonzini@redhat.com" <pbonzini@redhat.com>, "kvm@vger.kernel.org" <kvm@vger.kernel.org>, 
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
 
-On Thu, May 02, 2024 at 05:35:44PM +0000, Josua Mayer wrote:
-> Am 02.05.24 um 14:32 schrieb Josua Mayer:
-> > Add description for the SolidRun CN9131 SolidWAN, based on CN9130 SoM
-> > with an extra communication  processor on the carrier board.
-> >
-> > This board differentiates itself from CN9130 Clearfog by providing
-> > additional SoC native network interfaces and pci buses:
-> > 2x 10Gbps SFP+
-> > 4x 1Gbps RJ45
-> > 1x miniPCI-E
-> > 1x m.2 b-key with sata, usb-2.0 and usb-3.0
-> > 1x m.2 m-key with pcie and usb-2.0
-> > 1x m.2 b-key with pcie, usb-2.0, usb-3.0 and 2x sim slots
-> > 1x mpcie with pcie only
-> > 2x type-a usb-2.0/3.0
-> >
-> > Signed-off-by: Josua Mayer <josua@solid-run.com>
-> > ---
-> >  arch/arm64/boot/dts/marvell/Makefile               |   1 +
-> >  arch/arm64/boot/dts/marvell/cn9131-cf-solidwan.dts | 643 +++++++++++++++++++++
-> >  2 files changed, 644 insertions(+)
-> >
-> cut
-> > +	/* Type-A port on J53 */
-> > +	reg_usb_a_vbus0: regulator-usb-a-vbus0 {
-> > +		compatible = "regulator-fixed";
-> > +		pinctrl-0 = <&cp0_reg_usb_a_vbus0_pins>;
-> > +		pinctrl-names = "default";
-> > +		regulator-name = "vbus0";
-> > +		regulator-min-microvolt = <5000000>;
-> > +		regulator-max-microvolt = <5000000>;
-> > +		regulator-oc-protection-microamp = <1000000>;
+On Fri, May 03, 2024, Wei W Wang wrote:
+> On Friday, May 3, 2024 7:36 AM, Sean Christopherson wrote:
+> > On Thu, Apr 25, 2024, Wei Wang wrote:
+> > >  #define KVM_X86_CALL(func) static_call(kvm_x86_##func)
+> > > +#define KVM_PMU_CALL(func) static_call(kvm_x86_pmu_##func)
+> > 
+> > ...
+> > 
+> > > @@ -796,7 +796,7 @@ void kvm_pmu_init(struct kvm_vcpu *vcpu)
+> > >  	struct kvm_pmu *pmu = vcpu_to_pmu(vcpu);
+> > >
+> > >  	memset(pmu, 0, sizeof(*pmu));
+> > > -	static_call(kvm_x86_pmu_init)(vcpu);
+> > > +	KVM_PMU_CALL(init)(vcpu);
+> > >  	kvm_pmu_refresh(vcpu);
+> > 
+> > I usually like macros to use CAPS so that they're clearly macros, but in this case
+> > I find the code a bit jarring.  Essentially, I *want* my to be fooled into thinking
+> > it's a function call, because that's really what it is.
+> > 
+> > So rather than all caps, what if we follow function naming style?  E.g.
 > 
-> Is it correct to specify over-current protection for a 
-> regulator-fixed? It causes kernel messages:
+> Yep, it looks good to me, and the coding-style doc mentions that "CAPITALIZED
+> macro names are appreciated but macros resembling functions may be named in
+> lower case".
 > 
-> [ 7.988337] vbus0: IC does not support requested over-current limits 
-> [ 7.994756] vbus0: IC does not support requested over voltage limits 
-> [ 7.998796] vbus1: IC does not support requested over-current limits
-> ...
+> To maintain consistency, maybe apply the same lower-case style for KVM_X86_CALL()?
 
-Seems like you have your answer...
-
->
-> The reason I put the property was that the 1A limit is a property of 
-> the regulator component (NCP380-1.0A). Maybe that is the wrong property?
-> 
-> It also generates an interrupt for which I found no suitable description.
-
-Then you should describe the actual device because it is not just a 
-regulator-fixed. I suppose we could consider adding an interrupt to 
-regulator-fixed, but then its function can only be for (presumably) 
-over-current. Even details on how to handle it could vary as well.
-
-Rob
-
+Yeah, for sure, I should have explicitly called that out.
 
