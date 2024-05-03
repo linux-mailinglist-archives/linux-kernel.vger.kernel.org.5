@@ -1,147 +1,176 @@
-Return-Path: <linux-kernel+bounces-167863-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-167864-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B3B7B8BB07A
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 18:00:01 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 70D048BB07C
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 18:01:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F3486B2211B
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 15:59:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2C010281469
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 16:01:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF791155328;
-	Fri,  3 May 2024 15:59:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="VftR7GSO"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 634B6155312
-	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 15:59:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DBE52155322;
+	Fri,  3 May 2024 16:01:01 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1BDF026AF5
+	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 16:00:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714751995; cv=none; b=js0PaoewtZsqfeJhikyjrtwdac+vksbveU4d1jwJaZb1WJhr7X79df3skODA7jngGc4wZH6MyJwEbtlIbKuuNoKC3zr2lpt/o9B1/oguvOx0INurHX977wKLwsI3Q1GtDmGJQVbKocfuCG4Nb1qbsqF703nYj7s5/QjpO1AlYx8=
+	t=1714752061; cv=none; b=O6d8d/8Zq4lPH0T0vzHF3XvU3fD40ay0FTxcU1uV3lEfubGlZvb9TkHVvBZ+P0K/bdlbrTc9CNNCWGezjWybMPVCH3e6czTMW1yGbCr5KaawJcppvgoTO08I52H647fdRHkCjdgvbtH8zBKf6P+N7bGqjeG76Sc9kkWZy4Ahstg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714751995; c=relaxed/simple;
-	bh=62Oiyyi9HhrZbSTOPmcYG6s9RTji4r+qlEEYxy+w26Y=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=bBgFTtAIcbKOgy97I+AgyPcnTWjzqDqdCSq1O9R1JVFtisb7OKpfL1JnXhlPhuuHZ8Sa1iqP4ceGrR/5vFezOgxYqgofPlTOqpUv8N1yJ8OsDTd3EUdXKQuchaVoAJLko2Uzz6yCOiNu/1fe8Bc/M5Bs/eE0z5L7rm9CL/7Z4ug=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=VftR7GSO; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1714751992;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=dotrxA6jk+pxTdtbX79vKTZRiS20tBeZ4KHr0DfXaIM=;
-	b=VftR7GSOwmX5LIQJSpXQ0QfnRzS5rU1AmriYOrlA1fN0L/sry4HkEXywGNIHKGr5U5XH7a
-	C5vNYny46WPfArzzswEw2m2liMj0cZU8iH+Zgd2XoAVSecMjIZzgIMFizBDpFsft/DS4GH
-	fvPGCadQrquH39n3aYU+CeToJQnZqbc=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-664-YsEe4rRvPmiC4aoDpGZaTg-1; Fri,
- 03 May 2024 11:59:47 -0400
-X-MC-Unique: YsEe4rRvPmiC4aoDpGZaTg-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 6E1C93C3D0CA;
-	Fri,  3 May 2024 15:59:46 +0000 (UTC)
-Received: from [10.22.34.156] (unknown [10.22.34.156])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id E6C1B2166B31;
-	Fri,  3 May 2024 15:59:45 +0000 (UTC)
-Message-ID: <16557e30-8353-4cd1-995b-23ec763d2b07@redhat.com>
-Date: Fri, 3 May 2024 11:59:44 -0400
+	s=arc-20240116; t=1714752061; c=relaxed/simple;
+	bh=AzrwmgjmsQOHBRTm2KCP6QAVQci1+KUTVkY25ZOI5G4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=fUF9C3UM72BYbeEXYFTUCHDRBsGXcD89KAf2ywy68YQNmYQFlP9ETH435kHNa204U8r6Ty4PRwi7lpjBXKq9f/0Y2cWcc0EtvVIzgvtqQNEUUFYvQDsR4sOJ8gj5NrjOAgRKDoumVVpWbSVnGc1c7R5GMMZSobmQ/rziENqgOsw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9C3BD13D5;
+	Fri,  3 May 2024 09:01:23 -0700 (PDT)
+Received: from FVFF77S0Q05N (unknown [10.57.34.156])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 41A513F793;
+	Fri,  3 May 2024 09:00:52 -0700 (PDT)
+Date: Fri, 3 May 2024 17:00:49 +0100
+From: Mark Rutland <mark.rutland@arm.com>
+To: Liao Chang <liaochang1@huawei.com>
+Cc: catalin.marinas@arm.com, will@kernel.org, maz@kernel.org,
+	oliver.upton@linux.dev, james.morse@arm.com, suzuki.poulose@arm.com,
+	yuzenghui@huawei.com, tglx@linutronix.de, ardb@kernel.org,
+	broonie@kernel.org, anshuman.khandual@arm.com,
+	miguel.luis@oracle.com, joey.gouly@arm.com, ryan.roberts@arm.com,
+	jeremy.linton@arm.com, ericchancf@google.com,
+	kristina.martsenko@arm.com, robh@kernel.org,
+	scott@os.amperecomputing.com, songshuaishuai@tinylab.org,
+	shijie@os.amperecomputing.com, akpm@linux-foundation.org,
+	bhe@redhat.com, horms@kernel.org, mhiramat@kernel.org,
+	rmk+kernel@armlinux.org.uk, shahuang@redhat.com,
+	takakura@valinux.co.jp, dianders@chromium.org, swboyd@chromium.org,
+	sumit.garg@linaro.org, frederic@kernel.org, reijiw@google.com,
+	akihiko.odaki@daynix.com, ruanjinjie@huawei.com,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	kvmarm@lists.linux.dev
+Subject: Re: [PATCH v3 1/8] arm64/sysreg: Add definitions for immediate
+ versions of MSR ALLINT
+Message-ID: <ZjUKMWPknEhLYoK8@FVFF77S0Q05N>
+References: <20240415064758.3250209-1-liaochang1@huawei.com>
+ <20240415064758.3250209-2-liaochang1@huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH next v2 5/5] locking/osq_lock: Optimise decode_cpu() and
- per_cpu_ptr().
-From: Waiman Long <longman@redhat.com>
-To: David Laight <David.Laight@ACULAB.COM>,
- "'linux-kernel@vger.kernel.org'" <linux-kernel@vger.kernel.org>,
- "'peterz@infradead.org'" <peterz@infradead.org>
-Cc: "'mingo@redhat.com'" <mingo@redhat.com>,
- "'will@kernel.org'" <will@kernel.org>,
- "'boqun.feng@gmail.com'" <boqun.feng@gmail.com>,
- 'Linus Torvalds' <torvalds@linux-foundation.org>,
- "'virtualization@lists.linux-foundation.org'"
- <virtualization@lists.linux-foundation.org>,
- 'Zeng Heng' <zengheng4@huawei.com>
-References: <2b4e8a5816a742d2bd23fdbaa8498e80@AcuMS.aculab.com>
- <7c1148fe64fb46a7a81c984776cd91df@AcuMS.aculab.com>
- <9d4024ba-6422-4775-b934-bfa80a72a858@redhat.com>
-Content-Language: en-US
-In-Reply-To: <9d4024ba-6422-4775-b934-bfa80a72a858@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240415064758.3250209-2-liaochang1@huawei.com>
 
+On Mon, Apr 15, 2024 at 06:47:51AM +0000, Liao Chang wrote:
+> From: Mark Brown <broonie@kernel.org>
+> 
+> Encodings are provided for ALLINT which allow setting of ALLINT.ALLINT
+> using an immediate rather than requiring that a register be loaded with
+> the value to write. Since these don't currently fit within the scheme we
+> have for sysreg generation add manual encodings like we currently do for
+> other similar registers such as SVCR.
+> 
+> Since it is required that these immediate versions be encoded with xzr
+> as the source register provide asm wrapper which ensure this is the
+> case.
+> 
+> Signed-off-by: Mark Brown <broonie@kernel.org>
+> Signed-off-by: Liao Chang <liaochang1@huawei.com>
+> ---
+>  arch/arm64/include/asm/nmi.h    | 27 +++++++++++++++++++++++++++
+>  arch/arm64/include/asm/sysreg.h |  2 ++
+>  2 files changed, 29 insertions(+)
+>  create mode 100644 arch/arm64/include/asm/nmi.h
 
-On 12/31/23 23:14, Waiman Long wrote:
->
-> On 12/31/23 16:55, David Laight wrote:
->> per_cpu_ptr() indexes __per_cpu_offset[] with the cpu number.
->> This requires the cpu number be 64bit.
->> However the value is osq_lock() comes from a 32bit xchg() and there
->> isn't a way of telling gcc the high bits are zero (they are) so
->> there will always be an instruction to clear the high bits.
->>
->> The cpu number is also offset by one (to make the initialiser 0)
->> It seems to be impossible to get gcc to convert 
->> __per_cpu_offset[cpu_p1 - 1]
->> into (__per_cpu_offset - 1)[cpu_p1] (transferring the offset to the 
->> address).
->>
->> Converting the cpu number to 32bit unsigned prior to the decrement means
->> that gcc knows the decrement has set the high bits to zero and doesn't
->> add a register-register move (or cltq) to zero/sign extend the value.
->>
->> Not massive but saves two instructions.
->>
->> Signed-off-by: David Laight <david.laight@aculab.com>
->> ---
->>   kernel/locking/osq_lock.c | 6 ++----
->>   1 file changed, 2 insertions(+), 4 deletions(-)
->>
->> diff --git a/kernel/locking/osq_lock.c b/kernel/locking/osq_lock.c
->> index 35bb99e96697..37a4fa872989 100644
->> --- a/kernel/locking/osq_lock.c
->> +++ b/kernel/locking/osq_lock.c
->> @@ -29,11 +29,9 @@ static inline int encode_cpu(int cpu_nr)
->>       return cpu_nr + 1;
->>   }
->>   -static inline struct optimistic_spin_node *decode_cpu(int 
->> encoded_cpu_val)
->> +static inline struct optimistic_spin_node *decode_cpu(unsigned int 
->> encoded_cpu_val)
->>   {
->> -    int cpu_nr = encoded_cpu_val - 1;
->> -
->> -    return per_cpu_ptr(&osq_node, cpu_nr);
->> +    return per_cpu_ptr(&osq_node, encoded_cpu_val - 1);
->>   }
->>     /*
->
-> You really like micro-optimization.
->
-> Anyway,
->
-> Reviewed-by: Waiman Long <longman@redhat.com>
->
-David,
+We have helpers for manipulating PSTATE bits; AFAICT we only need the three
+lines below:
 
-Could you respin the series based on the latest upstream code?
+----8<----
+diff --git a/arch/arm64/include/asm/sysreg.h b/arch/arm64/include/asm/sysreg.h
+index 9e8999592f3af..5c209d07ae57e 100644
+--- a/arch/arm64/include/asm/sysreg.h
++++ b/arch/arm64/include/asm/sysreg.h
+@@ -94,18 +94,21 @@
+ 
+ #define PSTATE_PAN                     pstate_field(0, 4)
+ #define PSTATE_UAO                     pstate_field(0, 3)
++#define PSTATE_ALLINT                  pstate_field(1, 0)
+ #define PSTATE_SSBS                    pstate_field(3, 1)
+ #define PSTATE_DIT                     pstate_field(3, 2)
+ #define PSTATE_TCO                     pstate_field(3, 4)
+ 
+ #define SET_PSTATE_PAN(x)              SET_PSTATE((x), PAN)
+ #define SET_PSTATE_UAO(x)              SET_PSTATE((x), UAO)
++#define SET_PSTATE_ALLINT(x)           SET_PSTATE((x), ALLINT)
+ #define SET_PSTATE_SSBS(x)             SET_PSTATE((x), SSBS)
+ #define SET_PSTATE_DIT(x)              SET_PSTATE((x), DIT)
+ #define SET_PSTATE_TCO(x)              SET_PSTATE((x), TCO)
+ 
+ #define set_pstate_pan(x)              asm volatile(SET_PSTATE_PAN(x))
+ #define set_pstate_uao(x)              asm volatile(SET_PSTATE_UAO(x))
++#define set_pstate_allint(x)           asm volatile(SET_PSTATE_ALLINT(x))
+ #define set_pstate_ssbs(x)             asm volatile(SET_PSTATE_SSBS(x))
+ #define set_pstate_dit(x)              asm volatile(SET_PSTATE_DIT(x))
+---->8---- 
 
-Thanks,
-Longman
+The addition of <asm/nmi.h> and refrences to <linux/cpumask.h> and
+arm64_supports_nmi() don't seem like they should be part of this patch.
 
+Mark.
+
+> 
+> diff --git a/arch/arm64/include/asm/nmi.h b/arch/arm64/include/asm/nmi.h
+> new file mode 100644
+> index 000000000000..0c566c649485
+> --- /dev/null
+> +++ b/arch/arm64/include/asm/nmi.h
+> @@ -0,0 +1,27 @@
+> +/* SPDX-License-Identifier: GPL-2.0-only */
+> +/*
+> + * Copyright (C) 2022 ARM Ltd.
+> + */
+> +#ifndef __ASM_NMI_H
+> +#define __ASM_NMI_H
+> +
+> +#ifndef __ASSEMBLER__
+> +
+> +#include <linux/cpumask.h>
+> +
+> +extern bool arm64_supports_nmi(void);
+> +
+> +#endif /* !__ASSEMBLER__ */
+> +
+> +static __always_inline void _allint_clear(void)
+> +{
+> +	asm volatile(__msr_s(SYS_ALLINT_CLR, "xzr"));
+> +}
+> +
+> +static __always_inline void _allint_set(void)
+> +{
+> +	asm volatile(__msr_s(SYS_ALLINT_SET, "xzr"));
+> +}
+> +
+> +#endif
+> +
+> diff --git a/arch/arm64/include/asm/sysreg.h b/arch/arm64/include/asm/sysreg.h
+> index 9e8999592f3a..b105773c57ca 100644
+> --- a/arch/arm64/include/asm/sysreg.h
+> +++ b/arch/arm64/include/asm/sysreg.h
+> @@ -167,6 +167,8 @@
+>   * System registers, organised loosely by encoding but grouped together
+>   * where the architected name contains an index. e.g. ID_MMFR<n>_EL1.
+>   */
+> +#define SYS_ALLINT_CLR			sys_reg(0, 1, 4, 0, 0)
+> +#define SYS_ALLINT_SET			sys_reg(0, 1, 4, 1, 0)
+>  #define SYS_SVCR_SMSTOP_SM_EL0		sys_reg(0, 3, 4, 2, 3)
+>  #define SYS_SVCR_SMSTART_SM_EL0		sys_reg(0, 3, 4, 3, 3)
+>  #define SYS_SVCR_SMSTOP_SMZA_EL0	sys_reg(0, 3, 4, 6, 3)
+> -- 
+> 2.34.1
+> 
 
