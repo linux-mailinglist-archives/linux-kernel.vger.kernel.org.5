@@ -1,92 +1,147 @@
-Return-Path: <linux-kernel+bounces-168154-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-168155-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 79B138BB460
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 21:51:15 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C4F238BB463
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 21:55:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AB3431C2295C
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 19:51:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0220A1C21FA6
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 19:55:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1DB90158D74;
-	Fri,  3 May 2024 19:51:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 33119158D6B;
+	Fri,  3 May 2024 19:55:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="Vcue1ghk"
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="PDfg3uv+"
+Received: from mail-io1-f53.google.com (mail-io1-f53.google.com [209.85.166.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3DEFA1581FD;
-	Fri,  3 May 2024 19:51:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB542339A1
+	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 19:55:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714765865; cv=none; b=SQKx1aqXii+VvVvWMpZE5fJaStp0CbW58B1/w//mP6TwR8IyVVcaV1/6prhMh1+Ej8KEaa9tOUhZyfHmEeLlzmtZzmbtLcBFphA/+zUkgF4djmnVPN0JZpW/JpyU1Di8h0NU+Do+coArdm1UN8kIRzBkl4h3wbyfkurzUV4EOwA=
+	t=1714766105; cv=none; b=KK0Pj2jUzP0T4dw+6GRglxoUU6O4OxrVCmSOcChVU5w+yqOxkhDuDIrC2+HQV819t3C5GXjqBeEjdFSRpmJgGLX71lPr9J/7mf2K8L8dwWS770qngEdqbuEk5E1z3nOHwiw+EZbL92Gk99xhDeFwh2NasWdfe8rkrQsseM1VQto=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714765865; c=relaxed/simple;
-	bh=2JyPRo2Ro2xyGaHzv78UPZmNJQTNXNYjBIsAi3zZbGc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=c3KjKacnWgJSjqI37srDcNTK/KgIqQkVPWzqZ0RQVhU9yEcRY9Qfmps7u5DKvSL8jLtbxTFAivDtZrUKsalqkJVQxh835kAw2rxbEs3CnwWvJGAlUr/lmsWrMihHdzOAlmyU8I3IAUQZKMSG3+OUZ1OnQCBeyTpIQK0D9EPZxHw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=Vcue1ghk; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=dT/tZ4BeVrX503tjBuNztLOilBaPjVoqnxlR5AjEN90=; b=Vcue1ghkLjZN/Pe40AnCT5GmP9
-	p8Ci91b4oylITVwrlE0lJHNHQ8hYq8UsAy82XhSPcb+39l0pSU2jMCfwsg7UsBtpZdXW/2K3xIxGK
-	u9HR7Zh2jJwR8nfJ2le4iJHsE2UB+SHcXEycw6svdqdqv/C/4U7+4JyRa+LItfjvHwd2Ds5L1J61F
-	NTthaERztVnLYJ4DMtLSk5GPab0AxaDZJmRKX7Jo8NFhujqnDUmCjPDEcrf0hO5NLpC7lg2XzhU69
-	fnoJsP0dMW8pBG/xWO/jjigWBxxAZ1sUDpqirxvfJSUOJp6BTVnpp8l394Zwx7d2VYgPLAvr8HYML
-	e/xZoG2Q==;
-Received: from mcgrof by bombadil.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1s2yvs-00000000EEx-2NIY;
-	Fri, 03 May 2024 19:51:00 +0000
-Date: Fri, 3 May 2024 12:51:00 -0700
-From: Luis Chamberlain <mcgrof@kernel.org>
-To: Allen Pais <apais@linux.microsoft.com>
-Cc: linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-mm@kvack.org, viro@zeniv.linux.org.uk, brauner@kernel.org,
-	jack@suse.cz, ebiederm@xmission.com, keescook@chromium.org,
-	j.granados@samsung.com, allen.lkml@gmail.com
-Subject: Re: [PATCH v3] fs/coredump: Enable dynamic configuration of max file
- note size
-Message-ID: <ZjVAJOsC-EtlIXd6@bombadil.infradead.org>
-References: <20240502235603.19290-1-apais@linux.microsoft.com>
+	s=arc-20240116; t=1714766105; c=relaxed/simple;
+	bh=H+O3hAtZlwC5F0x+rCtibViAkb8br0MyxnKFwP8yITs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=gPSUbROLReLivZ9SD+c6S+QD5tzkatReNTlcAzIWdEXMrGaWT8S6M1x+Io6+B+fqFy7pMaur685Focrf7Pg5gIBYugxVdYpOMrNTA8X+WlFlpVy/OmYVK8aAjIi/Hk9gsgvd8keaCfAkBduKlc0P1K310WjXu9B6iOZLinckWZo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=PDfg3uv+; arc=none smtp.client-ip=209.85.166.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Received: by mail-io1-f53.google.com with SMTP id ca18e2360f4ac-7d9c78d7f97so276939f.3
+        for <linux-kernel@vger.kernel.org>; Fri, 03 May 2024 12:55:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google; t=1714766102; x=1715370902; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=vVDV1OeG9hQ/qmATCNcC1pLFdhB98ACZJusaLHASqpk=;
+        b=PDfg3uv+K1U261iLrHrxJoV1+BleoujsesJ+cSZarmag8aMArfecMRpz9t0Ssh9DMa
+         4ujVDlixbpB21PYUk+a4pGebCe6t6mGFxuUxB6SUwELkENLxVdCHmHxlbK3cchiftomh
+         t6dJLfADDYfSHkMOrK50igdhEDQeXMCbmW3f4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714766102; x=1715370902;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=vVDV1OeG9hQ/qmATCNcC1pLFdhB98ACZJusaLHASqpk=;
+        b=TcPcT6q9pJh02VfHu60lw6sZZxY7CY317Y+O6XQa9z0El2cawSrUmFy8VFUht32HPO
+         3NdMeP/xXOScud0MCWzRqMTclbf+ainkPp/AZkaBRufKYoJVQM2X5jMK0WnqYiObtHeH
+         cMx00mVES0LnrnfqbWUZq07gETuqlsbXJFvCiVzCKzNVXmkeOvBE5sCcS7hK3YgjMPEO
+         wIVAATdmN2UEP406+A0e2AmRDnqp8Zgt/TisAsylD3G1y6OLbUZ1RDS4SAgqR1HYKX/J
+         V00AO3E/spUiaicI5NJQOFLIUFvqkX0AFpLFROGeSiMCz92ik6RPn5nst5GntJuvrUVb
+         +U5Q==
+X-Forwarded-Encrypted: i=1; AJvYcCUv30UJRyCJTcO2WHlQti6/qk3pMDhHjMcR6eiF1Wx8a1giAFhOkeHsciQMWwbHRzbbxnQXI9FPD8mfKSoa/zSvamjMDkW8htJOaBF6
+X-Gm-Message-State: AOJu0YwqvwIraCFTguVGTnrkuVHGkAgoqlwRac7z1tZ8AhIn5vQ8S8fF
+	qRvCgN3P0BZUxbWk3hnAGYjaDK1Od7mycIK+Fm+w0mUDQe6bRV6o92xzbyzQ7uA=
+X-Google-Smtp-Source: AGHT+IEDvSK7zLWibDn57CFEVCFTU9+3wameuwSnNxEOPxolDZ6i9b9QnwmRipUUufkKlsJMbAAXSQ==
+X-Received: by 2002:a05:6e02:219c:b0:36b:15e0:de18 with SMTP id j28-20020a056e02219c00b0036b15e0de18mr4223000ila.0.1714766102018;
+        Fri, 03 May 2024 12:55:02 -0700 (PDT)
+Received: from [192.168.1.128] ([38.175.170.29])
+        by smtp.gmail.com with ESMTPSA id w8-20020a056e021a6800b0036c0d4b720asm820586ilv.74.2024.05.03.12.55.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 03 May 2024 12:55:01 -0700 (PDT)
+Message-ID: <3beb08a6-0be7-4305-9ac5-2ccc9e6d02c5@linuxfoundation.org>
+Date: Fri, 3 May 2024 13:55:00 -0600
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240502235603.19290-1-apais@linux.microsoft.com>
-Sender: Luis Chamberlain <mcgrof@infradead.org>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] selftests: default to host arch for LLVM builds
+To: Valentin Obst <kernel@valentinobst.de>, jhubbard@nvidia.com
+Cc: anders.roxell@linaro.org, bpoirier@nvidia.com, broonie@kernel.org,
+ guillaume.tucker@collabora.com, linux-kernel@vger.kernel.org,
+ linux-kselftest@vger.kernel.org, mpdesouza@suse.com, nathan@kernel.org,
+ sashal@kernel.org, shuah@kernel.org, Shuah Khan <skhan@linuxfoundation.org>
+References: <6d398f1d-6882-40fb-8ced-7fe6bee2aee7@nvidia.com>
+ <20240428120806.19275-1-kernel@valentinobst.de>
+Content-Language: en-US
+From: Shuah Khan <skhan@linuxfoundation.org>
+In-Reply-To: <20240428120806.19275-1-kernel@valentinobst.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Thanks for the cleanups, this is certainly now in the right direction.
-Generic long term growth questions below.
+On 4/28/24 06:08, Valentin Obst wrote:
+>>> Align the behavior for gcc and clang builds by interpreting unset
+>>> `ARCH` and `CROSS_COMPILE` variables in `LLVM` builds as a sign that the
+>>> user wants to build for the host architecture.
+>>>
+>>> This patch preserves the properties that setting the `ARCH` variable to an
+>>> unknown value will trigger an error that complains about insufficient
+>>> information, and that a set `CROSS_COMPILE` variable will override the
+>>> target triple that is determined based on presence/absence of `ARCH`.
+>>>
+>>> When compiling with clang, i.e., `LLVM` is set, an unset `ARCH` variable in
+>>> combination with an unset `CROSS_COMPILE` variable, i.e., compiling for
+>>> the host architecture, leads to compilation failures since `lib.mk` can
+>>> not determine the clang target triple. In this case, the following error
+>>> message is displayed for each subsystem that does not set `ARCH` in its
+>>> own Makefile before including `lib.mk` (lines wrapped at 75 chrs):
+>>>
+>>>     make[1]: Entering directory '/mnt/build/linux/tools/testing/selftests/
+>>>      sysctl'
+>>>     ../lib.mk:33: *** Specify CROSS_COMPILE or add '--target=' option to
+>>>      lib.mk.  Stop.
+>>>     make[1]: Leaving directory '/mnt/build/linux/tools/testing/selftests/
+>>>      sysctl'
+>>
+>> Thanks for fixing this.
+>>
+>> And yes, the selftests "normal" (non-cross-compile) build is *broken*
+>> right now, for clang. I didn't realize from the patch title that this is
+>> actually a significant fix. Maybe we should change the subject line (patch
+>> title) to something like:
+>>
+>>      [PATCH] selftests: fix the clang build: default to host arch for LLVM builds
+> 
+> Yes, I agree that the title should contain the word 'fix' somewhere. For
+> me its okay if maintainers reword the title when applying the patch,
+> alternatively I can send a v2. (Is it still a v2 if I change the title, or
+> rather a new patch?).
+> 
+> Any thoughts on whether this also needs a 'Cc stable'? Its not quite
+> clear to me if this fix meets the requirements. As above, no objections if
+> maintainers should decide to add it.
+> 
+>>
+>> ?
+>>
+>> Just a thought. The "Fixes:" tag covers it already, I realize.
+>>
+>> Anyway, this looks correct, and fixes that aspect of the build for me, so
+>> either way, please feel free to add:
+>>
+>> Reviewed-by: John Hubbard <jhubbard@nvidia.com>
+> 
 
-On Thu, May 02, 2024 at 11:56:03PM +0000, Allen Pais wrote:
-> Why is this being done?
-> We have observed that during a crash when there are more than 65k mmaps
-> in memory, the existing fixed limit on the size of the ELF notes section
-> becomes a bottleneck. The notes section quickly reaches its capacity,
+Thanks for the patch. Applied to linux-kselftest next for Linux 6.10-rc1
 
-I'm not well versed here on how core dumps associate mmaps to ELF notes
-section, can you elaborate? Does each new mmap potentially peg
-information on ELF notes section? Where do we standardize on this? Does
-it also change depending on any criteria of the mmap?
+thanks,
+-- Shuah
 
-Depending on the above, we might want to be proactive to get a sense of
-when we want to go beyond the new 16 MiB max cap on new mmaps for instance.
-How many mmaps can we have anyway too?
-
-> leading to incomplete memory segment information in the resulting coredump.
-> This truncation compromises the utility of the coredumps, as crucial
-> information about the memory state at the time of the crash might be
-> omitted.
-
-  Luis
 
