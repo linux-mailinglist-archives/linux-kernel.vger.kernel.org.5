@@ -1,247 +1,139 @@
-Return-Path: <linux-kernel+bounces-168110-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-168111-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 174FB8BB3CF
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 21:18:41 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2E3BF8BB3D1
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 21:19:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 37F141C2372D
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 19:18:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9656D1F2586E
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 19:19:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A7B7158876;
-	Fri,  3 May 2024 19:18:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JKvL27KE"
-Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com [209.85.218.41])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E552158868;
+	Fri,  3 May 2024 19:19:27 +0000 (UTC)
+Received: from mail-io1-f70.google.com (mail-io1-f70.google.com [209.85.166.70])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70AC1156F2A;
-	Fri,  3 May 2024 19:18:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9110457C82
+	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 19:19:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.70
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714763912; cv=none; b=GWh4xyXLoX5n3UzBQ1GPZtSdql1Y2eJS5hBQ/gnKmuwPx3pJ5RpkBXkeoyGLpz2GDp7SyKH0dxysIcSXaLzmzNZde8c7dtb2JufGW2TI6kanbestIlhnZf7idRdABV1lv1PA453jkOfRZ+T+70qtqaVMdfij9eVoLS98hewGy2A=
+	t=1714763967; cv=none; b=PvlZHDFSRO29QcY49gnp6N3h7edkJTqZCQ0gMh0NXTSVtzsb+0tNhOmTekus5WfJHNv66MHOTvYOlHzcQTSM/BhQxLdNmRhiuqdeS1U47KwVyBkY7RPFU4yGGZ6zK5V7er2oG0DnYk3jN5viMPEpiPRw0TWurdRd5mHGYeP1/9U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714763912; c=relaxed/simple;
-	bh=Cf9LoRUpPjAh+yLyJB4d5K3369qJcbMglaMH7KY/O5I=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=R6dvo/0RlTIO+RlFBLpLX3jtcuzM5dtA7ux0pf+PlYAYIiAxoSr+nUo7HCIFT5Sh4Q8L2dWHbx/ff2mktOVb16Fnq6tvdZHAoXTh7EWdklUSJMA0/7OYlqGdMAtsm00qpd2hI3GWQAgcmoMqG230vKuL9Md4Tgti4RmJ8j4jGhw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JKvL27KE; arc=none smtp.client-ip=209.85.218.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-a5544fd07easo1465701066b.0;
-        Fri, 03 May 2024 12:18:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714763909; x=1715368709; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=6aq4UQcdpcKwckp57zb2we9p40MZ5pzcBeJbE0PaEe8=;
-        b=JKvL27KE2qSmFTbHT3DnJk19eRmc8tYNVLIn9YU8X8PHBQY8wr+OTwPnUvu8SqFEwO
-         Fsl55q2iBrbqxPwtCjEMe5Qq6dbVLMs1XHUc2u0t1avjjNNKrCOQ1RpmQKCkFL1vEuK4
-         5qohQiAxOjScYix4+Sn1JbXJy5esXQGaKiBU+LxUgW5oce2CoLQxDhgvmgvFfDYVxmVV
-         MBLX7R5op/LIkvoALgG7YF/biubKWnDdj0otdO+zkPY6epQmpbqXUTJMkrVSIOMvlqJ8
-         2Mad6loI+QVpJcmyLkyUgCrpEBwQtA8oBBgyo6LkbPSd9WGVItsL352VAkEW+Yq23Yxz
-         IsOQ==
+	s=arc-20240116; t=1714763967; c=relaxed/simple;
+	bh=kJw4Nxpl/ECPGT5QfyfmhtgM8yNJUkmbHzdzUkLRdvo=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=sYOD/qlXb5Fu7xGoP0opzDsy0L75NMHNJ26+zr6ziZ5UCjyLencJYQ4tScNnUwx5Yv3u6ZbArTfJEY+Oz4cObsTgSiGhATYGflbMOQJXv68Xdf1OKpHgQ0HYqEhJ35EbCZMcAHj2UxT3yhZ+zc09k3RXS3bRMdZbH87QuToV/BI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.70
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f70.google.com with SMTP id ca18e2360f4ac-7da41c44da7so1912339f.0
+        for <linux-kernel@vger.kernel.org>; Fri, 03 May 2024 12:19:25 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714763909; x=1715368709;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from
+        d=1e100.net; s=20230601; t=1714763965; x=1715368765;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=6aq4UQcdpcKwckp57zb2we9p40MZ5pzcBeJbE0PaEe8=;
-        b=NH7UWAIP1jO0w5s9zPT2mxfbBxbUrDOtYUUo/UtslBKTM24yT9rGMh95ZkePh+12db
-         5Wv7dCJJBpVfd0Qmr5A9yJTBVsP7m3Jm3N36bwb4W5NbvnMoevh2/srOeJzDFfp1DzS5
-         BcYQtNawAynqIYKAhDb5A6Od1V9FfCQHFd67nYnZQOeFKu3X/FmG3PH4ZwGNxThNMiQe
-         udKEGVPpUg16eP0qhlcu+TQonjLqHQgMA5JOr5aIEtImNNYPZ/rcCSPYH+RlHTFQnDa5
-         rJU6N8m7tCaD7it+XS3HIZ9HioPcJ1PBc1KBO2HQMMR61RY5z65PVW9WoVLUUIUFGgn3
-         phug==
-X-Forwarded-Encrypted: i=1; AJvYcCUF8uU+Cf5fglxcldK2PPkjBXJZRZ5sSw/F7bIJE+OpAg08YJrYiEhSxU8PnhCnd8Kcdif2Y4WI5y50OLowInF+eXGu9uQDPD5geK57SSupWawySRftdaYBUkhcsanu+Myi8RwBUPiFBGKXQoeW4ePLDrZmvTLQ+QUo6AeoOgZjvEcr/bJgRJFpZ6HjcEmFd3GUVogTPW802CaWA4p6EkyvpkgqCfmOmjlkVg4FwlscbzAsev9BTo8ShQxk
-X-Gm-Message-State: AOJu0YzTnx/MLXyp4ijHlhB1lwcx/8pkCdRS1UuquTCPbzaNt21VFOKN
-	GeBY2R1zk/FLmN5kg63HzcQFZnUW+4PeSM/3k8J6g4iVQpZEpBql
-X-Google-Smtp-Source: AGHT+IH3PC/LlW/jHmTN85qf2LBTbgiAMP6Up8zHTigpFCHasVU/hv3IlOZVVnIm5jTFS2fJ/94rdQ==
-X-Received: by 2002:a50:9993:0:b0:570:5e7f:62cb with SMTP id m19-20020a509993000000b005705e7f62cbmr2156480edb.29.1714763908575;
-        Fri, 03 May 2024 12:18:28 -0700 (PDT)
-Received: from krava ([83.240.62.36])
-        by smtp.gmail.com with ESMTPSA id d17-20020a056402517100b0056fe755f1e6sm1978876ede.91.2024.05.03.12.18.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 03 May 2024 12:18:28 -0700 (PDT)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Fri, 3 May 2024 21:18:25 +0200
-To: "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
-Cc: "olsajiri@gmail.com" <olsajiri@gmail.com>,
-	"peterz@infradead.org" <peterz@infradead.org>,
-	"songliubraving@fb.com" <songliubraving@fb.com>,
-	"luto@kernel.org" <luto@kernel.org>,
-	"mhiramat@kernel.org" <mhiramat@kernel.org>,
-	"andrii@kernel.org" <andrii@kernel.org>,
-	"linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
-	"john.fastabend@gmail.com" <john.fastabend@gmail.com>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"mingo@redhat.com" <mingo@redhat.com>,
-	"rostedt@goodmis.org" <rostedt@goodmis.org>,
-	"ast@kernel.org" <ast@kernel.org>,
-	"tglx@linutronix.de" <tglx@linutronix.de>,
-	"yhs@fb.com" <yhs@fb.com>,
-	"linux-man@vger.kernel.org" <linux-man@vger.kernel.org>,
-	"oleg@redhat.com" <oleg@redhat.com>,
-	"daniel@iogearbox.net" <daniel@iogearbox.net>,
-	"linux-trace-kernel@vger.kernel.org" <linux-trace-kernel@vger.kernel.org>,
-	"bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-	"bp@alien8.de" <bp@alien8.de>, "x86@kernel.org" <x86@kernel.org>
-Subject: Re: [PATCHv4 bpf-next 2/7] uprobe: Add uretprobe syscall to speed up
- return probe
-Message-ID: <ZjU4ganRF1Cbiug6@krava>
-References: <20240502122313.1579719-1-jolsa@kernel.org>
- <20240502122313.1579719-3-jolsa@kernel.org>
- <20240503113453.GK40213@noisy.programming.kicks-ass.net>
- <ZjTg2cunShA6VbpY@krava>
- <725e2000dc56d55da4097cface4109c17fe5ad1a.camel@intel.com>
+        bh=6qnsRLW7cqSlV4zcaKSMwF+Vp1XMnKteA9A1GTQ+p10=;
+        b=njiEZy5pEpQSQQDwWhipTm6sdCsB4MKqM8K7ZqANN/Z1xOI26dCO6tO5kbI7F8KSKh
+         drJUuh0yusY/KkszEr75KVMF0XyrJ6wtLWa4VJtJvrdxsJEEWygjhu5mo2C91dl59Bt0
+         1O1IHs+MKilgi9pCzGcuHa/snbsPgwlxvXw0QMo3vyRMuOeyXIqspEiBLcfQ3K82KB6Q
+         Yg591N+hVV44SP96UpJttkozaZeOIfF1E3ajG6u5qyCaWwSF6vMjPfU3gTTkAhaYUhhG
+         bEvL6FsOvne4luCnG7HTpxfRKZiBl+S4Z+eJkSP6uCXsIxI/sLV3+vsLBE8t1gw8375E
+         7uvA==
+X-Forwarded-Encrypted: i=1; AJvYcCWgbNZEaDwd6zqLPZIH4lNX12CyywGhmFAV2y+luB9FbGUcxNSv/hZMEXidnQOtl9hlsDhq/6GrBoEEsjtwoYpJ2VE6L2o7edbIRfpa
+X-Gm-Message-State: AOJu0YyKZ0ecbaN5V+5qsiVbzAbjtChTp4IhzKTRQgfUV+dy7LjMGxO/
+	26zkXTHwG7wytu1XjaateBh40OwQWOfcsHhiy1JjBT9cnYYSm3+CLodjYw2O/idDVF2AeXGY0F7
+	F8eWhZ+6eAVTfJNN0lXkavU4Qm5tCQjt92abrgNOOkGJfLM0np3kKeKM=
+X-Google-Smtp-Source: AGHT+IFC5qQF+9TFJEVRQwaGYfGWBnDfUJ/RplpNTeqFyZDfrZuJC5hUgIFlW/KONEPhC0XL+/00hLKW+95QZR+xU5bHk3Ol0Ngp
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <725e2000dc56d55da4097cface4109c17fe5ad1a.camel@intel.com>
+X-Received: by 2002:a02:a412:0:b0:488:59cc:eb4c with SMTP id
+ c18-20020a02a412000000b0048859cceb4cmr46582jal.3.1714763964884; Fri, 03 May
+ 2024 12:19:24 -0700 (PDT)
+Date: Fri, 03 May 2024 12:19:24 -0700
+In-Reply-To: <00000000000078baec06178e6601@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000000400d06179199d8@google.com>
+Subject: Re: [syzbot] [bcachefs?] WARNING in bch2_trans_srcu_unlock
+From: syzbot <syzbot+1e515cab343dbe5aa38a@syzkaller.appspotmail.com>
+To: bfoster@redhat.com, kent.overstreet@linux.dev, 
+	linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-On Fri, May 03, 2024 at 03:53:15PM +0000, Edgecombe, Rick P wrote:
-> On Fri, 2024-05-03 at 15:04 +0200, Jiri Olsa wrote:
-> > On Fri, May 03, 2024 at 01:34:53PM +0200, Peter Zijlstra wrote:
-> > > On Thu, May 02, 2024 at 02:23:08PM +0200, Jiri Olsa wrote:
-> > > > Adding uretprobe syscall instead of trap to speed up return probe.
-> > > > 
-> > > > At the moment the uretprobe setup/path is:
-> > > > 
-> > > >    - install entry uprobe
-> > > > 
-> > > >    - when the uprobe is hit, it overwrites probed function's return
-> > > > address
-> > > >      on stack with address of the trampoline that contains breakpoint
-> > > >      instruction
-> > > > 
-> > > >    - the breakpoint trap code handles the uretprobe consumers execution
-> > > > and
-> > > >      jumps back to original return address
-> 
-> Hi,
-> 
-> I worked on the x86 shadow stack support.
-> 
-> I didn't know uprobes did anything like this. In hindsight I should have looked
-> more closely. The current upstream behavior is to overwrite the return address
-> on the stack?
-> 
-> Stupid uprobes question - what is actually overwriting the return address on the
-> stack? Is it the kernel? If so perhaps the kernel could just update the shadow
-> stack at the same time.
+syzbot has found a reproducer for the following issue on:
 
-yes, it's in kernel - arch_uretprobe_hijack_return_addr .. so I guess
-we need to update the shadow stack with the new return value as well
+HEAD commit:    f03359bca01b Merge tag 'for-6.9-rc6-tag' of git://git.kern..
+git tree:       upstream
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=11e60b38980000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=d2f00edef461175
+dashboard link: https://syzkaller.appspot.com/bug?extid=1e515cab343dbe5aa38a
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11d42c70980000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=15ce8250980000
 
-> 
-> > > > 
-> > > > This patch replaces the above trampoline's breakpoint instruction with new
-> > > > ureprobe syscall call. This syscall does exactly the same job as the trap
-> > > > with some more extra work:
-> > > > 
-> > > >    - syscall trampoline must save original value for rax/r11/rcx registers
-> > > >      on stack - rax is set to syscall number and r11/rcx are changed and
-> > > >      used by syscall instruction
-> > > > 
-> > > >    - the syscall code reads the original values of those registers and
-> > > >      restore those values in task's pt_regs area
-> > > > 
-> > > >    - only caller from trampoline exposed in '[uprobes]' is allowed,
-> > > >      the process will receive SIGILL signal otherwise
-> > > > 
-> > > 
-> > > Did you consider shadow stacks? IIRC we currently have userspace shadow
-> > > stack support available, and that will utterly break all of this.
-> > 
-> > nope.. I guess it's the extra ret instruction in the trampoline that would
-> > make it crash?
-> 
-> The original behavior seems problematic for shadow stack IIUC. I'm not sure of
-> the additional breakage with the new behavior.
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/e3ee5200440e/disk-f03359bc.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/c651e70b4ae3/vmlinux-f03359bc.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/196f43b316ad/bzImage-f03359bc.xz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/4b5f0e6cc6de/mount_0.gz
 
-I can see it's broken also for current uprobes
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+1e515cab343dbe5aa38a@syzkaller.appspotmail.com
 
-> 
-> Roughly, how shadow stack works is there is an additional protected stack for
-> the app thread. The HW pushes to from the shadow stack with CALL, and pops from
-> it with RET. But it also continues to push and pop from the normal stack. On
-> pop, if the values don't match between the two stacks, an exception is
-> generated. The whole point is to prevent the app from overwriting its stack
-> return address to return to random places.
-> 
-> Userspace cannot (normally) write to the shadow stack, but the kernel can do
-> this or adust the SSP (shadow stack pointer). So in the kernel (for things like
-> sigreturn) there is an ability to do what is needed. Ptracers also can do things
-> like this.
-
-hack below seems to fix it for the current uprobe setup,
-we need similar fix for the uretprobe syscall trampoline setup
-
-jirka
+------------[ cut here ]------------
+btree trans held srcu lock (delaying memory reclaim) for 29 seconds
+WARNING: CPU: 0 PID: 5076 at fs/bcachefs/btree_iter.c:2873 check_srcu_held_too_long fs/bcachefs/btree_iter.c:2871 [inline]
+WARNING: CPU: 0 PID: 5076 at fs/bcachefs/btree_iter.c:2873 bch2_trans_srcu_unlock+0x4f1/0x600 fs/bcachefs/btree_iter.c:2887
+Modules linked in:
+CPU: 0 PID: 5076 Comm: syz-executor304 Not tainted 6.9.0-rc6-syzkaller-00131-gf03359bca01b #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
+RIP: 0010:check_srcu_held_too_long fs/bcachefs/btree_iter.c:2871 [inline]
+RIP: 0010:bch2_trans_srcu_unlock+0x4f1/0x600 fs/bcachefs/btree_iter.c:2887
+Code: 2b 1f 48 c1 eb 02 48 b9 c3 f5 28 5c 8f c2 f5 28 48 89 d8 48 f7 e1 48 c1 ea 02 48 c7 c7 40 26 11 8c 48 89 d6 e8 e0 a5 49 fd 90 <0f> 0b 90 90 e9 c0 fe ff ff 44 89 f9 80 e1 07 38 c1 0f 8c 38 fb ff
+RSP: 0018:ffffc90003edf1b0 EFLAGS: 00010246
+RAX: bf0e0aad7b822500 RBX: 00000000000002da RCX: ffff888029225a00
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
+RBP: 00000000ffffac70 R08: ffffffff81588e32 R09: 1ffff1101728519a
+R10: dffffc0000000000 R11: ffffed101728519b R12: dffffc0000000000
+R13: 1ffff11003c1100d R14: 1ffff11003c11008 R15: ffff88801e088068
+FS:  000055556aeb6380(0000) GS:ffff8880b9400000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000559d71bf4968 CR3: 000000001b6f2000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ bch2_trans_begin+0x1482/0x1920 fs/bcachefs/btree_iter.c:2963
+ __bchfs_fallocate fs/bcachefs/fs-io.c:608 [inline]
+ bchfs_fallocate fs/bcachefs/fs-io.c:733 [inline]
+ bch2_fallocate_dispatch+0x1181/0x3810 fs/bcachefs/fs-io.c:780
+ vfs_fallocate+0x564/0x6c0 fs/open.c:330
+ do_vfs_ioctl+0x2592/0x2e50 fs/ioctl.c:883
+ __do_sys_ioctl fs/ioctl.c:902 [inline]
+ __se_sys_ioctl+0x81/0x170 fs/ioctl.c:890
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0xf5/0x240 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+RIP: 0033:0x7f180396cb19
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 f1 17 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffe82aad958 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+RAX: ffffffffffffffda RBX: 0073746e6576652e RCX: 00007f180396cb19
+RDX: 0000000020000000 RSI: 0000000040305828 RDI: 0000000000000005
+RBP: 652e79726f6d656d R08: 000055556aeb74c0 R09: 000055556aeb74c0
+R10: 000055556aeb74c0 R11: 0000000000000246 R12: 00007ffe82aad980
+R13: 00007ffe82aadba8 R14: 431bde82d7b634db R15: 00007f18039b503b
+ </TASK>
 
 
 ---
-diff --git a/arch/x86/include/asm/shstk.h b/arch/x86/include/asm/shstk.h
-index 42fee8959df7..99a0948a3b79 100644
---- a/arch/x86/include/asm/shstk.h
-+++ b/arch/x86/include/asm/shstk.h
-@@ -21,6 +21,7 @@ unsigned long shstk_alloc_thread_stack(struct task_struct *p, unsigned long clon
- void shstk_free(struct task_struct *p);
- int setup_signal_shadow_stack(struct ksignal *ksig);
- int restore_signal_shadow_stack(void);
-+void uprobe_change_stack(unsigned long addr);
- #else
- static inline long shstk_prctl(struct task_struct *task, int option,
- 			       unsigned long arg2) { return -EINVAL; }
-diff --git a/arch/x86/kernel/shstk.c b/arch/x86/kernel/shstk.c
-index 59e15dd8d0f8..d2c4dbe5843c 100644
---- a/arch/x86/kernel/shstk.c
-+++ b/arch/x86/kernel/shstk.c
-@@ -577,3 +577,11 @@ long shstk_prctl(struct task_struct *task, int option, unsigned long arg2)
- 		return wrss_control(true);
- 	return -EINVAL;
- }
-+
-+void uprobe_change_stack(unsigned long addr)
-+{
-+	unsigned long ssp;
-+
-+	ssp = get_user_shstk_addr();
-+	write_user_shstk_64((u64 __user *)ssp, (u64)addr);
-+}
-diff --git a/arch/x86/kernel/uprobes.c b/arch/x86/kernel/uprobes.c
-index 81e6ee95784d..88afbeaacb8f 100644
---- a/arch/x86/kernel/uprobes.c
-+++ b/arch/x86/kernel/uprobes.c
-@@ -348,7 +348,7 @@ void *arch_uprobe_trampoline(unsigned long *psize)
- 	 * only for native 64-bit process, the compat process still uses
- 	 * standard breakpoint.
- 	 */
--	if (user_64bit_mode(regs)) {
-+	if (0 && user_64bit_mode(regs)) {
- 		*psize = uretprobe_syscall_end - uretprobe_syscall_entry;
- 		return uretprobe_syscall_entry;
- 	}
-@@ -1191,8 +1191,10 @@ arch_uretprobe_hijack_return_addr(unsigned long trampoline_vaddr, struct pt_regs
- 		return orig_ret_vaddr;
- 
- 	nleft = copy_to_user((void __user *)regs->sp, &trampoline_vaddr, rasize);
--	if (likely(!nleft))
-+	if (likely(!nleft)) {
-+		uprobe_change_stack(trampoline_vaddr);
- 		return orig_ret_vaddr;
-+	}
- 
- 	if (nleft != rasize) {
- 		pr_err("return address clobbered: pid=%d, %%sp=%#lx, %%ip=%#lx\n",
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
 
