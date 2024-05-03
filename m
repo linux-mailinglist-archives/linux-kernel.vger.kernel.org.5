@@ -1,219 +1,204 @@
-Return-Path: <linux-kernel+bounces-168011-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-168012-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 011658BB232
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 20:11:15 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 83BA08BB23B
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 20:14:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id ECF1DB20D8D
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 18:11:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3AF18283CB4
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 18:14:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A0EC91586D3;
-	Fri,  3 May 2024 18:11:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2478A158847;
+	Fri,  3 May 2024 18:14:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="SK6ea7SW"
-Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B9941586C2
-	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 18:11:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="DNUkSqts"
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B135541A80;
+	Fri,  3 May 2024 18:14:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714759863; cv=none; b=gvWiVx9uRm6NSjtdtbd0CGUcg8Y+/VmVkto4+kjtN/vkygnfTO4Hxj6QQN/IZs5iO7u2dg1NHevDie+25IGgygGejc8xtIf/n6Gx2pI5w8algNz5LG2KP+AE4rFYahA8ehCDHbx58AroyuZs4KyD17EcKd/N8a60KD9ShlyT0xk=
+	t=1714760042; cv=none; b=a3Mp31wRLkH4uGmaSRGiUAizhNkLhYhohUYoyEk5gZFmYWKXXYX8h2e8DtbPWLQbDgzcUbvrELxSm6pxEjLGxqKAESKWcQtd2ICealce0tKstqbKHDy1e+FqapLo/O6jzAjyb4watBWuStNxhJn0cxeeJM8Aj3ez5rZaBhLYuPY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714759863; c=relaxed/simple;
-	bh=BDV4LFF0W3nkIbkwscNnSoy9CovnMcY/0BmN6MMpQpw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=KDsgqcl04xcK37gwkojcNSux2Aijve8nAUV8zfPLSVRbWY5Je5rdVk1g+tBvpiE043VIjuErq5m76W7/9rWeBn/DMpIANgosZDYi4sJRyr7cXxxWbILk2rCSRxF5+e1qwYhOzkiBYBhKrERXUL1sdFgpZHm+F0l8g1IeN2E9p+A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=SK6ea7SW; arc=none smtp.client-ip=209.85.214.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
-Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-1e4c4fb6af3so22565285ad.0
-        for <linux-kernel@vger.kernel.org>; Fri, 03 May 2024 11:11:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1714759861; x=1715364661; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=HP0E+W4CNjdiqYdYJTTOaBAgmGAiW3lunGcWq/PWMeo=;
-        b=SK6ea7SWcCTVLkMgA2TMLRZ7CwQrx7moN0OofIRPrJz9UYsqCr1J2OU3cL8RAaHyjg
-         D6lT1GWwhdaux5D7r3mqU6+QK7OKfyWGh+dpkbshOQ4InYftVEXX2z8+xzxk+YdS0VHB
-         zqt/sdvUmerb+W25yIkRiw7Oce68wgvoQ7Ne61qpGfT7wkXqW+BFs/c7FvjmYTRXb+hg
-         W8PwqEatFikd+O+Qj66Hu7wvLuM8mhdk6j8gcZbYligQTOpNhFFVOOxcQICFxkvSCDOi
-         z/+D/uVAlBZjxim2B4blveUE8rvf9nMtp33thO/pjqtPoCA71PAGMRoc3bJI+OJrYrxW
-         xBOQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714759861; x=1715364661;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=HP0E+W4CNjdiqYdYJTTOaBAgmGAiW3lunGcWq/PWMeo=;
-        b=cDzPMrFPSTQOMXfnrAtLctoWmb1rFE7VXj+2Lb4JfkWQW01YKNdGkqtKj0oOuWC0jy
-         1MFl/c4JzCu8P6et3bC25f99PHyYL1TeO4CydaTx/LCTIV4fu7ir1hh/FhykB7mzJ1IX
-         IRwLK5VEif9gr0jCF8CWbNr7d2TlPG3PkwSMBwTgpRw9LOePyW9ajW8NVjUIOkEUDkPQ
-         ippiTU0zV2xaVMl4qoXF9XZVjSfC6rEdnMDAWg2cAgyW/4yWaIU1c2kT3sVnLVBdVC/G
-         TInpr1ztxLtCgFtGOtDoYXp4Lnd5rm/Z1Q56pMWwThbuu1O5tjjI2qIqDoD50wEF3C0i
-         WOZA==
-X-Forwarded-Encrypted: i=1; AJvYcCUC/5RC3b7RaUWQ6KmBrzObyG+jtjfILe2eYT8l/VRuro26q6e7Pyxud4TWb3tEEWGDiExyxudZmnzBKPy7DqtKYqA/A6H7Q3PPBrpr
-X-Gm-Message-State: AOJu0YwyeG6wtBLouBlHYizYit/n1q8bJbJFF3SD25dSWX0DAQKT3mF8
-	B+cZMcbrt4gAQDPYgpqEoWqdgZi3Pj57nnCfyh/kz7QrzWurqc45gFZdMN8GNLc=
-X-Google-Smtp-Source: AGHT+IHo2vpIWpxJAU/WjqREvj8GpGY4pEVGXqwcLeuMUP5qY8hdLdogyncesU12hPqCxKNhJeFqIg==
-X-Received: by 2002:a17:903:120f:b0:1e5:560d:8519 with SMTP id l15-20020a170903120f00b001e5560d8519mr5281572plh.0.1714759861404;
-        Fri, 03 May 2024 11:11:01 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-68-80-239.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.80.239])
-        by smtp.gmail.com with ESMTPSA id p23-20020a1709027ed700b001ec379d8167sm3590693plb.115.2024.05.03.11.11.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 03 May 2024 11:11:00 -0700 (PDT)
-Received: from jgg by wakko with local (Exim 4.95)
-	(envelope-from <jgg@ziepe.ca>)
-	id 1s2xN5-007WHT-5q;
-	Fri, 03 May 2024 15:10:59 -0300
-Date: Fri, 3 May 2024 15:10:59 -0300
-From: Jason Gunthorpe <jgg@ziepe.ca>
-To: Tomasz Jeznach <tjeznach@rivosinc.com>
-Cc: Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-	Robin Murphy <robin.murphy@arm.com>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>,
-	Anup Patel <apatel@ventanamicro.com>,
-	Sunil V L <sunilvl@ventanamicro.com>,
-	Nick Kossifidis <mick@ics.forth.gr>,
-	Sebastien Boeuf <seb@rivosinc.com>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzk+dt@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org,
-	iommu@lists.linux.dev, linux-riscv@lists.infradead.org,
-	linux-kernel@vger.kernel.org, linux@rivosinc.com
-Subject: Re: [PATCH v3 7/7] iommu/riscv: Paging domain support
-Message-ID: <20240503181059.GC901876@ziepe.ca>
-References: <cover.1714494653.git.tjeznach@rivosinc.com>
- <b83f81c04d1f3885d860b1eec03761fe63a33183.1714494653.git.tjeznach@rivosinc.com>
- <20240501145621.GD1723318@ziepe.ca>
- <CAH2o1u63GjMnYrfa8W-c1hdp+TAA0R-FyxXM4dEiFF+KEGWwbA@mail.gmail.com>
+	s=arc-20240116; t=1714760042; c=relaxed/simple;
+	bh=5krfrUCEeWficu1QJGsQsOe283vA8jy1feYZfvpZZI0=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=nOmXH16E/KXOu5Taij+kOM/GoE0I1ye3GvjM/rr/3mFQP5a/aX6xaNX2Fjc5u9uLCjxHRK+v0fpFXWplvBMXehVg/Jnj0XKC3Pymzh6dCp+H/4/u25v5H+yX6p9nc3FQRRnoyStMeTMyeBIIIRzI6foE0tHTfc+iqtxBJSDvgN4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=DNUkSqts; arc=none smtp.client-ip=13.77.154.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+Received: from rrs24-12-35.corp.microsoft.com (unknown [131.107.8.16])
+	by linux.microsoft.com (Postfix) with ESMTPSA id 1DBB620B2C82;
+	Fri,  3 May 2024 11:13:59 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 1DBB620B2C82
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1714760039;
+	bh=t+bej/Nszfp4Y3aAKK+ve+PXcHDiGLvMwGoKGwruaU0=;
+	h=From:To:Cc:Subject:Date:From;
+	b=DNUkSqtsm6b3XI7FuFq/j+HJpnUQJ32mAJ++/DwNJ3GGcuMwqkilZaB6IiZlNPSmm
+	 ldOTvkNccJ4qVk3MI2EkzRUpVxeU8sfwD6q5LTxBNrYdg9CFW+jmdjvWvwGxkImQR7
+	 ulzhaJogqcXmtU4cfYAaVycpjIavI6G7SrciLi7M=
+From: Easwar Hariharan <eahariha@linux.microsoft.com>
+To: 
+Cc: Wolfram Sang <wsa+renesas@sang-engineering.com>,
+	amd-gfx@lists.freedesktop.org (open list:RADEON and AMDGPU DRM DRIVERS),
+	dri-devel@lists.freedesktop.org (open list:DRM DRIVERS),
+	linux-kernel@vger.kernel.org (open list),
+	intel-gfx@lists.freedesktop.org (open list:INTEL DRM DISPLAY FOR XE AND I915 DRIVERS),
+	intel-xe@lists.freedesktop.org (open list:INTEL DRM DISPLAY FOR XE AND I915 DRIVERS),
+	nouveau@lists.freedesktop.org (open list:DRM DRIVER FOR NVIDIA GEFORCE/QUADRO GPUS),
+	linux-i2c@vger.kernel.org (open list:I2C SUBSYSTEM HOST DRIVERS),
+	linux-media@vger.kernel.org (open list:BTTV VIDEO4LINUX DRIVER),
+	linux-fbdev@vger.kernel.org (open list:FRAMEBUFFER LAYER),
+	Easwar Hariharan <eahariha@linux.microsoft.com>
+Subject: [PATCH v2 00/12] Make I2C terminology more inclusive for I2C Algobit and consumers
+Date: Fri,  3 May 2024 18:13:21 +0000
+Message-Id: <20240503181333.2336999-1-eahariha@linux.microsoft.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAH2o1u63GjMnYrfa8W-c1hdp+TAA0R-FyxXM4dEiFF+KEGWwbA@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 
-On Fri, May 03, 2024 at 10:44:14AM -0700, Tomasz Jeznach wrote:
-> > > +     list_for_each_entry_rcu(bond, &domain->bonds, list) {
-> > > +             if (bond->dev == dev) {
-> > > +                     list_del_rcu(&bond->list);
-> > > +                     found = bond;
-> > > +             }
-> > > +     }
-> > > +     spin_unlock_irqrestore(&domain->lock, flags);
-> > > +
-> > > +     /* Release and wait for all read-rcu critical sections have completed. */
-> > > +     kfree_rcu(found, rcu);
-> > > +     synchronize_rcu();
-> >
-> > Please no, synchronize_rcu() on a path like this is not so
-> > reasonable.. Also you don't need kfree_rcu() if you write it like this.
-> >
-> > This still looks better to do what I said before, put the iommu not
-> > the dev in the bond struct.
-> >
-> >
-> 
-> I was trying not to duplicate data in bond struct and use whatever is
-> available to be referenced from dev pointer (eg iommu / ids / private
-> iommu dev data).
+I2C v7, SMBus 3.2, and I3C 1.1.1 specifications have replaced "master/slave"
+with more appropriate terms. Inspired by and following on to Wolfram's
+series to fix drivers/i2c/[1], fix the terminology for users of the
+I2C_ALGOBIT bitbanging interface, now that the approved verbiage exists
+in the specification.
 
-I'm not sure that is a valuable goal considering the RCU
-complexity.. But I suppose it would be a bit of a hassle to replicate
-the ids list into bond structurs. Maybe something to do when you get
-to ATS since you'll probably want to replicate the ATS RIDs. (see what
-Intel did, which I think is pretty good)
+Compile tested, no functionality changes intended
 
-> If I'm reading core iommu code correctly, device pointer and iommu
-> pointers should be valid between _probe_device and _release_device
-> calls. I've moved synchronize_rcu out of the domain attach path to
-> _release_device, LMK if that would be ok for now.  I'll have a
-> second another to rework other patches to avoid storing dev pointers
-> at all.
+Please chime in with your opinions and suggestions.
 
-Yes, that seems better.. I'm happier to see device hot-unplug be slow
-than un attach
+This series is based on 3d25a941ea50 ("Merge tag 'block-6.9-20240503' of git://git.kernel.dk/linux")
 
-There is another issue with the RCU that I haven't wrapped my head
-around..
+[1]:
+https://lore.kernel.org/all/20240322132619.6389-1-wsa+renesas@sang-engineering.com/
+----
 
-Technically we can have concurrent map/unmap/invalidation along side
-device attach/detach. Does the invalidation under RCU work correctly?
+changelog:
+v1->v2:
+- v1 link: https://lore.kernel.org/all/20240430173812.1423757-1-eahariha@linux.microsoft.com/ 
+- Switch to specification verbiage master->controller, slave->target,
+  drop usage of host/client [Thomas]
+- Pick up Reviewed-bys and Acked-bys from Rodrigo, Zhi, and Thomas [gma500, i915]
+- Fix up some straggler master/slave terms in amdgpu, cx25821, ivtv,
+  cx23885
 
-For detach I think yes:
+v0->v1:
+- v0 link: https://lore.kernel.org/all/20240329170038.3863998-1-eahariha@linux.microsoft.com/
+- Drop drivers/infiniband patches [Leon, Dennis]
+- Switch to specification verbiage master->controller, slave->target,
+  drop usage of client [Andi, Ville, Jani, Christian]
+- Add I3C specification version in commit messages [Andi]
+- Pick up Reviewed-bys from Martin and Simon [sfc]
+- Drop i2c/treewide patch to make this series independent from Wolfram's
+  ([1]) [Wolfram]
+- Split away drm/nouveau patch to allow expansion into non-I2C
+  non-inclusive terms
+----
 
-   Inv CPU                                   Detach CPU
+Easwar Hariharan (12):
+  drm/amdgpu, drm/radeon: Make I2C terminology more inclusive
+  drm/gma500: Make I2C terminology more inclusive
+  drm/i915: Make I2C terminology more inclusive
+  media: au0828: Make I2C terminology more inclusive
+  media: cobalt: Make I2C terminology more inclusive
+  media: cx18: Make I2C terminology more inclusive
+  media: cx25821: Make I2C terminology more inclusive
+  media: ivtv: Make I2C terminology more inclusive
+  media: cx23885: Make I2C terminology more inclusive
+  sfc: falcon: Make I2C terminology more inclusive
+  fbdev/smscufx: Make I2C terminology more inclusive
+  fbdev/viafb: Make I2C terminology more inclusive
 
-  write io_pte                               Update device descriptor
-  rcu_read_lock
-    list_for_each
-      <make invalidation command>            <make description inv cmd>
-      dma_wmb()                              dma_wmb()
-      <doorbell>                             <cmd doorbell>
-  rcu_read_unlock
-                                             list_del_rcu()
-                                             <wipe ASID>
+ .../gpu/drm/amd/amdgpu/amdgpu_atomfirmware.c  |  8 ++---
+ drivers/gpu/drm/amd/amdgpu/amdgpu_i2c.c       | 10 +++----
+ drivers/gpu/drm/amd/amdgpu/atombios_i2c.c     |  8 ++---
+ drivers/gpu/drm/amd/amdgpu/atombios_i2c.h     |  2 +-
+ drivers/gpu/drm/amd/amdgpu/smu_v11_0_i2c.c    | 20 ++++++-------
+ .../gpu/drm/amd/display/dc/bios/bios_parser.c |  2 +-
+ .../drm/amd/display/dc/bios/bios_parser2.c    |  2 +-
+ .../drm/amd/display/dc/core/dc_link_exports.c |  4 +--
+ drivers/gpu/drm/amd/display/dc/dc.h           |  2 +-
+ drivers/gpu/drm/amd/display/dc/dce/dce_i2c.c  |  4 +--
+ .../display/include/grph_object_ctrl_defs.h   |  2 +-
+ drivers/gpu/drm/amd/include/atombios.h        |  2 +-
+ drivers/gpu/drm/amd/include/atomfirmware.h    | 26 ++++++++--------
+ .../powerplay/hwmgr/vega20_processpptables.c  |  4 +--
+ .../amd/pm/powerplay/inc/smu11_driver_if.h    |  2 +-
+ .../inc/pmfw_if/smu11_driver_if_arcturus.h    |  2 +-
+ .../inc/pmfw_if/smu11_driver_if_navi10.h      |  2 +-
+ .../pmfw_if/smu11_driver_if_sienna_cichlid.h  |  2 +-
+ .../inc/pmfw_if/smu13_driver_if_aldebaran.h   |  2 +-
+ .../inc/pmfw_if/smu13_driver_if_v13_0_0.h     |  2 +-
+ .../inc/pmfw_if/smu13_driver_if_v13_0_7.h     |  2 +-
+ .../gpu/drm/amd/pm/swsmu/smu11/arcturus_ppt.c |  4 +--
+ .../amd/pm/swsmu/smu11/sienna_cichlid_ppt.c   |  8 ++---
+ drivers/gpu/drm/gma500/cdv_intel_lvds.c       |  2 +-
+ drivers/gpu/drm/gma500/intel_bios.c           | 22 +++++++-------
+ drivers/gpu/drm/gma500/intel_bios.h           |  4 +--
+ drivers/gpu/drm/gma500/intel_gmbus.c          |  2 +-
+ drivers/gpu/drm/gma500/psb_drv.h              |  2 +-
+ drivers/gpu/drm/gma500/psb_intel_drv.h        |  2 +-
+ drivers/gpu/drm/gma500/psb_intel_lvds.c       |  4 +--
+ drivers/gpu/drm/gma500/psb_intel_sdvo.c       | 26 ++++++++--------
+ drivers/gpu/drm/i915/display/dvo_ch7017.c     | 14 ++++-----
+ drivers/gpu/drm/i915/display/dvo_ch7xxx.c     | 18 +++++------
+ drivers/gpu/drm/i915/display/dvo_ivch.c       | 16 +++++-----
+ drivers/gpu/drm/i915/display/dvo_ns2501.c     | 18 +++++------
+ drivers/gpu/drm/i915/display/dvo_sil164.c     | 18 +++++------
+ drivers/gpu/drm/i915/display/dvo_tfp410.c     | 18 +++++------
+ drivers/gpu/drm/i915/display/intel_bios.c     | 22 +++++++-------
+ drivers/gpu/drm/i915/display/intel_ddi.c      |  2 +-
+ .../gpu/drm/i915/display/intel_display_core.h |  2 +-
+ drivers/gpu/drm/i915/display/intel_dsi.h      |  2 +-
+ drivers/gpu/drm/i915/display/intel_dsi_vbt.c  | 20 ++++++-------
+ drivers/gpu/drm/i915/display/intel_dvo.c      | 14 ++++-----
+ drivers/gpu/drm/i915/display/intel_dvo_dev.h  |  2 +-
+ drivers/gpu/drm/i915/display/intel_gmbus.c    |  4 +--
+ drivers/gpu/drm/i915/display/intel_sdvo.c     | 30 +++++++++----------
+ drivers/gpu/drm/i915/display/intel_vbt_defs.h |  4 +--
+ drivers/gpu/drm/i915/gvt/edid.c               | 28 ++++++++---------
+ drivers/gpu/drm/i915/gvt/edid.h               |  4 +--
+ drivers/gpu/drm/i915/gvt/opregion.c           |  2 +-
+ drivers/gpu/drm/radeon/atombios.h             | 16 +++++-----
+ drivers/gpu/drm/radeon/atombios_i2c.c         |  4 +--
+ drivers/gpu/drm/radeon/radeon_combios.c       | 28 ++++++++---------
+ drivers/gpu/drm/radeon/radeon_i2c.c           | 10 +++----
+ drivers/gpu/drm/radeon/radeon_mode.h          |  6 ++--
+ drivers/media/pci/cobalt/cobalt-i2c.c         |  6 ++--
+ drivers/media/pci/cx18/cx18-av-firmware.c     |  8 ++---
+ drivers/media/pci/cx18/cx18-cards.c           |  6 ++--
+ drivers/media/pci/cx18/cx18-cards.h           |  4 +--
+ drivers/media/pci/cx18/cx18-gpio.c            |  6 ++--
+ drivers/media/pci/cx23885/cx23885-core.c      |  6 ++--
+ drivers/media/pci/cx23885/cx23885-f300.c      |  8 ++---
+ drivers/media/pci/cx23885/cx23885-i2c.c       |  6 ++--
+ drivers/media/pci/cx23885/cx23885.h           |  2 +-
+ drivers/media/pci/cx25821/cx25821-core.c      |  2 +-
+ drivers/media/pci/cx25821/cx25821-i2c.c       |  6 ++--
+ .../media/pci/cx25821/cx25821-medusa-video.c  |  2 +-
+ drivers/media/pci/cx25821/cx25821.h           |  2 +-
+ drivers/media/pci/ivtv/ivtv-i2c.c             | 20 ++++++-------
+ drivers/media/usb/au0828/au0828-i2c.c         |  4 +--
+ drivers/media/usb/au0828/au0828-input.c       |  2 +-
+ drivers/net/ethernet/sfc/falcon/falcon.c      |  2 +-
+ drivers/video/fbdev/smscufx.c                 |  4 +--
+ drivers/video/fbdev/via/chip.h                |  8 ++---
+ drivers/video/fbdev/via/dvi.c                 | 24 +++++++--------
+ drivers/video/fbdev/via/lcd.c                 |  6 ++--
+ drivers/video/fbdev/via/via_aux.h             |  2 +-
+ drivers/video/fbdev/via/via_i2c.c             | 12 ++++----
+ drivers/video/fbdev/via/vt1636.c              |  6 ++--
+ 79 files changed, 321 insertions(+), 321 deletions(-)
 
-In this case I think we never miss an invalidation, the list_del is
-always after the HW has been fully fenced, so I don't think we can
-have any issue. Maybe a suprious invalidation if the ASID gets
-re-used, but who cares.
 
-Attach is different..
+base-commit: 3d25a941ea5013b552b96330c83052ccace73a48
+-- 
+2.34.1
 
-   Inv CPU                                   Attach CPU
-
-  write io_pte
-  rcu_read_lock
-    list_for_each // empty
-                                             list_add_rcu()
-                                             Update device descriptor
-                                             <make description inv cmd>
-                                             dma_wmb()
-                                             <cmd doorbell>
-  rcu_read_unlock
-
-As above shows we can "miss" an invalidation. The issue is narrow, the
-io_pte could still be sitting in write buffers in "Inv CPU" and not
-yet globally visiable. "Attach CPU" could get the device descriptor
-installed in the IOMMU and the IOMMU could walk an io_pte that is in
-the old state. Effectively this is because there is no release/acquire
-barrier passing the io_pte store from the Inv CPU to the Attach CPU to the
-IOMMU.
-
-It seems like it should be solvable somehow:
- 1) Inv CPU releases all the io ptes
- 2) Attach CPU acquires the io ptes before updating the DDT
- 3) Inv CPU acquires the RCU list in such a way that either attach
-    CPU will acquire the io_pte or inv CPU will acquire the RCU list.
- 4) Either invalidation works or we release the new iopte to the SMMU
-    and don't need it.
-
-But #3 is a really weird statement. smb_mb() on both sides may do the
-job??
-
-> > The number of radix levels is a tunable alot of iommus have that we
-> > haven't really exposed to anything else yet.
-> 
-> Makes sense. I've left an option to pick mode from MMU for cases where
-> dev/iommu is not known at allocation time (with iommu_domain_alloc()).
-> I'd guess it's reasonable to assume IOMMU supported page modes will
-> match MMU.
-
-Reasonable, but for this case you'd be best to have a global static
-that unifies the capability of all the iommu instances. Then you can
-pick the right thing from the installed iommus, and arguably, that is
-the right thing to do in all cases as we'd slightly prefer domains
-that work everywhere in that edge case.
-
-Jason
 
