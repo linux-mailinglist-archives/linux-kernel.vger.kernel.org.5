@@ -1,170 +1,217 @@
-Return-Path: <linux-kernel+bounces-167168-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-167169-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id E1D6B8BA52A
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 04:08:34 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4FEEA8BA52D
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 04:09:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EAB05B2293C
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 02:08:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6DAAF1C21D40
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 02:09:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 366AC14277;
-	Fri,  3 May 2024 02:08:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="KnOLduno"
-Received: from IND01-MAX-obe.outbound.protection.outlook.com (mail-maxind01olkn2047.outbound.protection.outlook.com [40.92.102.47])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B963915EA6;
+	Fri,  3 May 2024 02:09:22 +0000 (UTC)
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C29312B89;
-	Fri,  3 May 2024 02:08:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.102.47
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714702103; cv=fail; b=BD+e8FBFrPdjLEgsI5j88k6WBelWp16AFuSTchs5sJixHEjc8Xm//eVHWymhAdOVR2jeXo16CrpJRuzyWoDk+HHKM7XwvhqLBYUhE0XJHfYjqhBDRt54BWHf+iZNHIZJsjQAPKRrsVuye+O0xor5yktgqzSc+wx4b4RRZILeQLE=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714702103; c=relaxed/simple;
-	bh=LPUT/3K/ZlKFpo1EPXVnXZXjmqnZW/xdhKY2Gx5otog=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=hx11JHyHsQKn0IaAK0cFq3g442sHJA35mHUfY1viN01stY6hABQgw4zyDO6niGgAnnpFqJjdptWSprTN27wRmSFbgaUYBEmrjkMCQMpC+EeA43FZJKHFXZv5nfiJZo1etPJbRtcCLUErKf2ZlThUWtfCtNkutdWfbI/nhs+58Yc=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=KnOLduno; arc=fail smtp.client-ip=40.92.102.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=mO2CgsBMKVZRtcuD+E4X70yopjOo8MpAhrW61lwWSYHl7dg0fd6WkeFkF0ewwtKSVef2AnYXWeE0PfAKfXX4jSeYK5OQ24i3I2FaW578FX5ZMFK9EEV/Y4+LsyPAnyih63AKd3uAXGvn6eC4nnLs+4YdO3tTSs7OPO8Z76ZHsxRscUYsuxIXE+iFWpM2Ixa9CL0PNf1YImAMmNs+Hp4jLt1kfIqYqB2rIkcBvhw8MV+oEi7IKnFalnfDtokDpd43/15JKJwEZN68d6oRbkpKVBkso3iNGbzeujAqXeUCj327ano2CkzstDZFbeHvk2M0/QeiSQDz5j6cS0UEAj6ZlA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=1KqeIxjMWYA3fUINUIfyDkstw4tqGlltz4Js6LflWiY=;
- b=IOnzlAxJgus+KtlVVj1TzuDYIiF8MlRiaTEj4y1zrv8t01lWC72RUAqAgW/T0PDjUDJ3xnibgtxTonhqVJkXfOLltpaZrzdx4Ho6lJJGWLGE6gbI3N6zHG5WUfWZuFUMPIHY6neTTMREBql8v1wrSD8C9rWFgPOm269hWeVt7bO15Zo0dAtlVXLAuszaKt+iRXLKsEAYocd6u1ejE73J/mExLtW+qAjq8jgirX1RDamM7aLXj24oQHk4x3tNb0eEmQT1fsu/YovAlfhOAcvDI3xTItELnybEJ+5fNVoGAyW8almnwcFXO/FZ2OOSr1Qq3JLws2oBh7ZHvocC/RuBAQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=1KqeIxjMWYA3fUINUIfyDkstw4tqGlltz4Js6LflWiY=;
- b=KnOLdunouPhCYqZ+Rui9Il57X1eKR5I4c9imwDOxPcfTnqgHL68JErBseU/tdg/zD0VUuAAgTOM/o/z47IqCtVAaWc+BRB+IrM8h+Z8H3xHtyTlwWfOSJ47C4IE1UO01ud59V6k+MWhk3daHYV0XVO3bGGPsDCIiIxvU5pmrcWIetKr/Dqz8HiqMqsXDoh+Bj5R0kj1bhNnqohctu2yklIsmqV81c7JzEiy3WCy85JenBi6aL19VaF40NfT+sAO3ZidMXAlzLbixnjqFmS3X1zfr9en9iXN+KdKsvG7PlKwBJLzwBDvep/EDuFdE9vqz5sIuM5ntHLEaQDfY6XJfcw==
-Received: from MA0P287MB2822.INDP287.PROD.OUTLOOK.COM (2603:1096:a01:138::5)
- by PN3P287MB0025.INDP287.PROD.OUTLOOK.COM (2603:1096:c01:8f::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7544.29; Fri, 3 May
- 2024 02:08:15 +0000
-Received: from MA0P287MB2822.INDP287.PROD.OUTLOOK.COM
- ([fe80::664:2ecc:c36:1f2c]) by MA0P287MB2822.INDP287.PROD.OUTLOOK.COM
- ([fe80::664:2ecc:c36:1f2c%3]) with mapi id 15.20.7544.029; Fri, 3 May 2024
- 02:08:14 +0000
-Message-ID:
- <MA0P287MB2822AE8021C7ED48BD9A6D12FE1F2@MA0P287MB2822.INDP287.PROD.OUTLOOK.COM>
-Date: Fri, 3 May 2024 10:08:07 +0800
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 0/2] riscv: sophgo: add USB phy support for CV18XX
- series
-To: Inochi Amaoto <inochiama@outlook.com>, Vinod Koul <vkoul@kernel.org>,
- Kishon Vijay Abraham I <kishon@kernel.org>, Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>
-Cc: Jisheng Zhang <jszhang@kernel.org>, Liu Gui <kenneth.liu@sophgo.com>,
- Jingbao Qiu <qiujingbao.dlmu@gmail.com>, dlan@gentoo.org,
- linux-phy@lists.infradead.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <IA1PR20MB4953182B8EDB465430289400BB1B2@IA1PR20MB4953.namprd20.prod.outlook.com>
-From: Chen Wang <unicorn_wang@outlook.com>
-In-Reply-To: <IA1PR20MB4953182B8EDB465430289400BB1B2@IA1PR20MB4953.namprd20.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-TMN: [jQ0SIiVbP2pdm/JmQrX62+5zU0Wr37OU]
-X-ClientProxiedBy: TYCP286CA0076.JPNP286.PROD.OUTLOOK.COM
- (2603:1096:400:2b3::13) To MA0P287MB2822.INDP287.PROD.OUTLOOK.COM
- (2603:1096:a01:138::5)
-X-Microsoft-Original-Message-ID:
- <b30c9612-614f-4c63-8ed5-735d389525e1@outlook.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BEA3D134A9;
+	Fri,  3 May 2024 02:09:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1714702162; cv=none; b=U7TkN2Pfi3FfZHsQvsCq7CNgk9DAm/Ql41qElNOPO26rB51X18ylcKgzSdrFo6kRgBMwVmR7EBb4SAtO34pUgGKgFBibbp4QqSf/jpo/LDKf1LthZUd+Klih6KYTvUwIQkGr1+f4MrojO1AxkxOqdhtVkZEa6vOlapsTr8A6Nzo=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1714702162; c=relaxed/simple;
+	bh=npw/t6DUs7VRxXxX33ZJq9vhUD6Uee9GtuDDHixl3kY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ssMQLKaDaCfkex8mZqvu4UGFsCfRuzLHSNHKVnkDAqq/rIMsKBaGlY3e6OL1g8TiNvw70AjNKYDTkCN2mkIrv+LNT0hvL6ssA076VRnqorjxe3siFjWq0qDZCei0k0isKuQ8XIro70rEMu6ONXNiLg62mHTAYIKpYf9IKjJOcuA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4VVvPB3y0lz4f3jd0;
+	Fri,  3 May 2024 10:09:02 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.112])
+	by mail.maildlp.com (Postfix) with ESMTP id 87D521A0175;
+	Fri,  3 May 2024 10:09:10 +0800 (CST)
+Received: from [10.174.177.174] (unknown [10.174.177.174])
+	by APP1 (Coremail) with SMTP id cCh0CgDHlxBDRzRmnSNtLg--.12952S3;
+	Fri, 03 May 2024 10:09:10 +0800 (CST)
+Message-ID: <afc46ac9-e3a2-b07f-c902-a9586c420824@huaweicloud.com>
+Date: Fri, 3 May 2024 10:09:07 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MA0P287MB2822:EE_|PN3P287MB0025:EE_
-X-MS-Office365-Filtering-Correlation-Id: 3c7f11bd-b4be-40e7-345c-08dc6b15e323
-X-Microsoft-Antispam: BCL:0;ARA:14566002|461199019|3412199016|440099019;
-X-Microsoft-Antispam-Message-Info:
-	6sqAT3BsHVc7ELVuJn9PqMbuB27/sEO5PiVmybLJzlCdCfCNEl8fovRz3goiqB+A3UevXU2XfS6p0Ygz0uBdZzt4h+4GJmF7aW1I6ubzWNYLibbqW0GxiA5+MxZlOsvkq9g+Tq4pn8bguHBfchcMPtYD+WR5IvDEkvxvb6hHLa1k/ryToSlLmix6asEN4BSU3BuvNhIElUTRRjhcsfbDptQz1dV09GUCtEJWaUQQhSpQD85ptalvJnin9gui5dHdTrBCxJU96QtZLsRF0gnYtzAKOv2VVOPnsXlMCND3QxvR4mNWUNht7VGrPjkkSzBdzA1dFbJql+Ys2jrQ7E81IGZf1sDG4VyXd+PIf9dJ67teX1JeqNHiBIDg2atbRAJsAau4k/S7lyc1GB/YxKU3JRchbrhMAaQPCdErzu+SglZDBLszW3+dN/8LzqE7vhpfd8zYyVk+CFUV1hCI6k2Bai4c0AzkL9u3UsA+ior67HST8Zg2nK8QG13tHBMSk7Adj3jGufF5AeSpLHcz2ykLl0xiCBooJX+gg4YnK6uFRDzeS5ql0cWW0EeSUAuBcxvd
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?dlNDdVlZeXc0cWo2VnNueHB1eE1UbDVibjhBNTJNNjhqTXZYbmd2K1FENFFB?=
- =?utf-8?B?cWdGVFR5NEZaL29Kak11UFNiVFk3QVFnN0JEbnJBWDU0a3BrMTl3T1VBQ0F2?=
- =?utf-8?B?Vmk4bFlmdXBzYWtXRVRCQjhIWUJxQ2ovMGtoY05vb2IrWW81ek1sS1NRcFph?=
- =?utf-8?B?dEFOTjBGQmxLdDRkSmJFRUw1a2JILzFtWHlJeElIZEFPT0dmdEZWY1lBNzNw?=
- =?utf-8?B?MERFS2gwSWJUUGFtOUpTbzVWM2QrT3ZDdGpxS254UWhvVnhONnRpS2lWWEdl?=
- =?utf-8?B?bHA2WWh4ZHQ0K0VwQTRFNjhQRGxKTTRSS2FnZ1FzMXhhVm1VZVkvOFNCbUhS?=
- =?utf-8?B?MzRKckRrQ0J2NytjNWI2WlBFbS9wSDAzUGNiQlpNdXpqZnYxNlF6RzNTT3J6?=
- =?utf-8?B?STdIMys5RGVGSzhLcFcvZUF0K3c3OWkxMDM5dHFMRFRkU3NaR1cvSkIrZWhP?=
- =?utf-8?B?SFRObmdRdVFBQzkxc1MzQkpIckR2eVEwamh6UEtBb1J5OExYTk41Y1JCRU00?=
- =?utf-8?B?ZWlDbWJ2NEVGaTh5U3h1RU13bXhyRWxkcWN5d1pqOS92ZHVhUHpQRWZxTjlk?=
- =?utf-8?B?QTVOYlJ6b0tXMlpGcmYwUFFIU0d3R2dNdEZUcTNkeFVWNmZHRXBNeHlSWXRu?=
- =?utf-8?B?UmF2VDB4ZGppNW9GVEc0ZG5udHl5VERSNHBZMG9hMDBIanVOQVZvMWVZK2R6?=
- =?utf-8?B?UEwzRFlWamhJVDEwblFHTSsxb29OcGQ2cjMweVVJQWdZQzVyQ2p1R01lMGRt?=
- =?utf-8?B?eWNxczdQZHBmaHNEY25oMDNsenVNaTNia3Q3TkRLbmM3clNrZmxOSHFnYzFJ?=
- =?utf-8?B?dGxsK2dIclJVZmhYQTRJNXdtd3Q3S2RlUGpHZVZuM1N4R2VUeUljdFVIZzR0?=
- =?utf-8?B?cng5QnBaUGw5ZncyL2FqOHNMRWVIZWpTMFdienBNdWxKVTdSUU8yTTFOakQv?=
- =?utf-8?B?a0t4MDNiUjV5dVZzVnhqc0FZSGxXQ3REWDZHRy9paFpPQ2JJUVN2bXRwNHFh?=
- =?utf-8?B?cTg2Q2ZSWU8vb0h1eFRaLzhBSG8rWEhYY3FKTzZLdmZDWGpjRDVRNXMxMnpP?=
- =?utf-8?B?THNWNFdlMlhYWGRubmVxajRpTzRtREV2N1RXRzBuc3VzcEJPeGdPVm9MeWo5?=
- =?utf-8?B?U3N1blYzeG8yb1FXL2hScUdvMnRQbW1sQzdFaC9MWFdLekhXTWFZcFpScDBa?=
- =?utf-8?B?UmhUdWZPVWwra1pGVnBudml1ZUR1RDdMQVpzWXhiVXFUazhvQmpoQXQzMG5V?=
- =?utf-8?B?SVhtT3NNaFRBc25SSHp2N3BKaE9QcjdxeHJyTWVRWmhXblRnb2hJRzg2QVFj?=
- =?utf-8?B?SzMvbnJ3QXBaTmtKMlVWMmFsUDMyN0JidUZEd3JGQWpKUEdWSmtjSTFOMERW?=
- =?utf-8?B?UlhoWkRWNm9ncGxvelQvaVhjclNUN0YycHM5Z1U1MlZrTWR2azJVYmVyd3NP?=
- =?utf-8?B?L04xN1JrT3Zvc1EySWoyRWlmU2JqRlF6UGZWek5qa0t0a3NvYTZSYTdLUVBs?=
- =?utf-8?B?YlFRd2QvL3FpbXZvUkVXa1NwdnlraU8zcGVsV3NYc0x4UnF1SXlZN2hEWjBv?=
- =?utf-8?B?elF5VHM4ckFyM2x1RWhGT0dIL1YyL3hQU0tkTHVpSXZ6SlVoREZkMnZrYVh1?=
- =?utf-8?B?NW5KWCt4YUEraldRNU5DeDMwcUNNMElsWGtsNHVWV1M5SUFpVGcrVkxHdnZz?=
- =?utf-8?Q?IhHv70CVPFu2jZwzmgwS?=
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3c7f11bd-b4be-40e7-345c-08dc6b15e323
-X-MS-Exchange-CrossTenant-AuthSource: MA0P287MB2822.INDP287.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 May 2024 02:08:14.8918
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
-	00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PN3P287MB0025
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.1.2
+Subject: Re: [PATCH] ext4: fix uninitialized ratelimit_state->lock access in
+ __ext4_fill_super()
+Content-Language: en-US
+To: linux-ext4@vger.kernel.org, tytso@mit.edu
+Cc: adilger.kernel@dilger.ca, jack@suse.cz, ritesh.list@gmail.com,
+ linux-kernel@vger.kernel.org, yangerkun@huawei.com,
+ Baokun Li <libaokun1@huawei.com>
+References: <20240102133730.1098120-1-libaokun1@huawei.com>
+ <a1874551-7e02-aa0d-9ef7-4322e920c661@huaweicloud.com>
+From: Baokun Li <libaokun@huaweicloud.com>
+In-Reply-To: <a1874551-7e02-aa0d-9ef7-4322e920c661@huaweicloud.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:cCh0CgDHlxBDRzRmnSNtLg--.12952S3
+X-Coremail-Antispam: 1UD129KBjvJXoWxtr1ruFy5Jr4rtFykZFy5urg_yoW7tFW5pr
+	n7JFyxJryUu34kJw4UJF1UJFyUJw1UG3WDJr18XF1UJrWUXr12qr4UXF10gF1UCr48Ar1U
+	Jr1UJrnrZw1UJrJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUk0b4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6r1S6rWUM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxk0xIA0c2IEe2xFo4CEbIxvr21l42xK82IYc2Ij
+	64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
+	8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE
+	2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42
+	xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv
+	6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUOyCJDUUUU
+X-CM-SenderInfo: 5olet0hnxqqx5xdzvxpfor3voofrz/
 
-Inochi,
+Hi Ted,
 
-Please also send this patchset to the linux-riscv mailinglist next time.
+Would you consider merging in this patch in the current merge
+window? This patch has been merged in our internal branch for
+a while now and so far it is safe.
 
-Thanks,
+Regards,
+Baokun
 
-Chen
+On 2024/4/23 9:41, Baokun Li wrote:
+> Gently ping again.
+>
+> On 2024/1/2 21:37, Baokun Li wrote:
+>> In the following concurrency we will access the uninitialized rs->lock:
+>>
+>> ext4_fill_super
+>>    ext4_register_sysfs
+>>     // sysfs registered msg_ratelimit_interval_ms
+>>                               // Other processes modify rs->interval to
+>>                               // non-zero via msg_ratelimit_interval_ms
+>>    ext4_orphan_cleanup
+>>      ext4_msg(sb, KERN_INFO, "Errors on filesystem, "
+>>        __ext4_msg
+>> ___ratelimit(&(EXT4_SB(sb)->s_msg_ratelimit_state)
+>>            if (!rs->interval)  // do nothing if interval is 0
+>>              return 1;
+>>            raw_spin_trylock_irqsave(&rs->lock, flags)
+>>              raw_spin_trylock(lock)
+>>                _raw_spin_trylock
+>>                  __raw_spin_trylock
+>>                    spin_acquire(&lock->dep_map, 0, 1, _RET_IP_)
+>>                      lock_acquire
+>>                        __lock_acquire
+>>                          register_lock_class
+>>                            assign_lock_key
+>>                              dump_stack();
+>>    ratelimit_state_init(&sbi->s_msg_ratelimit_state, 5 * HZ, 10);
+>>      raw_spin_lock_init(&rs->lock);
+>>      // init rs->lock here
+>>
+>> and get the following dump_stack:
+>>
+>> =========================================================
+>> INFO: trying to register non-static key.
+>> The code is fine but needs lockdep annotation, or maybe
+>> you didn't initialize this object before use?
+>> turning off the locking correctness validator.
+>> CPU: 12 PID: 753 Comm: mount Tainted: G E 6.7.0-rc6-next-20231222 #504
+>> [...]
+>> Call Trace:
+>>   dump_stack_lvl+0xc5/0x170
+>>   dump_stack+0x18/0x30
+>>   register_lock_class+0x740/0x7c0
+>>   __lock_acquire+0x69/0x13a0
+>>   lock_acquire+0x120/0x450
+>>   _raw_spin_trylock+0x98/0xd0
+>>   ___ratelimit+0xf6/0x220
+>>   __ext4_msg+0x7f/0x160 [ext4]
+>>   ext4_orphan_cleanup+0x665/0x740 [ext4]
+>>   __ext4_fill_super+0x21ea/0x2b10 [ext4]
+>>   ext4_fill_super+0x14d/0x360 [ext4]
+>> [...]
+>> =========================================================
+>>
+>> Normally interval is 0 until s_msg_ratelimit_state is initialized, so
+>> ___ratelimit() does nothing. But registering sysfs precedes initializing
+>> rs->lock, so it is possible to change rs->interval to a non-zero value
+>> via the msg_ratelimit_interval_ms interface of sysfs while rs->lock is
+>> uninitialized, and then a call to ext4_msg triggers the problem by
+>> accessing an uninitialized rs->lock. Therefore register sysfs after all
+>> initializations are complete to avoid such problems.
+>>
+>> Signed-off-by: Baokun Li <libaokun1@huawei.com>
+>> ---
+>>   fs/ext4/super.c | 22 ++++++++++------------
+>>   1 file changed, 10 insertions(+), 12 deletions(-)
+>>
+>> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+>> index 0980845c8b8f..1db23b0e8a4f 100644
+>> --- a/fs/ext4/super.c
+>> +++ b/fs/ext4/super.c
+>> @@ -5564,19 +5564,15 @@ static int __ext4_fill_super(struct 
+>> fs_context *fc, struct super_block *sb)
+>>       if (err)
+>>           goto failed_mount6;
+>>   -    err = ext4_register_sysfs(sb);
+>> -    if (err)
+>> -        goto failed_mount7;
+>> -
+>>       err = ext4_init_orphan_info(sb);
+>>       if (err)
+>> -        goto failed_mount8;
+>> +        goto failed_mount7;
+>>   #ifdef CONFIG_QUOTA
+>>       /* Enable quota usage during mount. */
+>>       if (ext4_has_feature_quota(sb) && !sb_rdonly(sb)) {
+>>           err = ext4_enable_quotas(sb);
+>>           if (err)
+>> -            goto failed_mount9;
+>> +            goto failed_mount8;
+>>       }
+>>   #endif  /* CONFIG_QUOTA */
+>>   @@ -5602,7 +5598,7 @@ static int __ext4_fill_super(struct 
+>> fs_context *fc, struct super_block *sb)
+>>           ext4_msg(sb, KERN_INFO, "recovery complete");
+>>           err = ext4_mark_recovery_complete(sb, es);
+>>           if (err)
+>> -            goto failed_mount10;
+>> +            goto failed_mount9;
+>>       }
+>>         if (test_opt(sb, DISCARD) && 
+>> !bdev_max_discard_sectors(sb->s_bdev))
+>> @@ -5619,15 +5615,17 @@ static int __ext4_fill_super(struct 
+>> fs_context *fc, struct super_block *sb)
+>>       atomic_set(&sbi->s_warning_count, 0);
+>>       atomic_set(&sbi->s_msg_count, 0);
+>>   +    /* Register sysfs after all initializations are complete. */
+>> +    err = ext4_register_sysfs(sb);
+>> +    if (err)
+>> +        goto failed_mount9;
+>> +
+>>       return 0;
+>>   -failed_mount10:
+>> +failed_mount9:
+>>       ext4_quotas_off(sb, EXT4_MAXQUOTAS);
+>> -failed_mount9: __maybe_unused
+>> +failed_mount8: __maybe_unused
+>>       ext4_release_orphan_info(sb);
+>> -failed_mount8:
+>> -    ext4_unregister_sysfs(sb);
+>> -    kobject_put(&sbi->s_kobj);
+>>   failed_mount7:
+>>       ext4_unregister_li_request(sb);
+>>   failed_mount6:
+>
 
-On 2024/4/29 8:30, Inochi Amaoto wrote:
-> Add USB PHY support for CV18XX/SG200X series
->
-> Changed from v1:
-> 1. remove dr_mode property and use default mode instead.
-> 2. improve the description of `vbus_det-gpios` and `sophgo,switch-gpios`
->
-> Inochi Amaoto (2):
->    dt-bindings: phy: Add Sophgo CV1800 USB phy
->    phy: sophgo: Add USB 2.0 PHY driver for Sophgo CV18XX/SG200X
->
->   .../bindings/phy/sophgo,cv1800-usb-phy.yaml   |  68 ++++
->   drivers/phy/Kconfig                           |   1 +
->   drivers/phy/Makefile                          |   1 +
->   drivers/phy/sophgo/Kconfig                    |  19 +
->   drivers/phy/sophgo/Makefile                   |   2 +
->   drivers/phy/sophgo/phy-cv1800-usb.c           | 378 ++++++++++++++++++
->   6 files changed, 469 insertions(+)
->   create mode 100644 Documentation/devicetree/bindings/phy/sophgo,cv1800-usb-phy.yaml
->   create mode 100644 drivers/phy/sophgo/Kconfig
->   create mode 100644 drivers/phy/sophgo/Makefile
->   create mode 100644 drivers/phy/sophgo/phy-cv1800-usb.c
->
-> --
-> 2.44.0
->
 
