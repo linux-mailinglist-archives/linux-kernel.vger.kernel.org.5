@@ -1,166 +1,184 @@
-Return-Path: <linux-kernel+bounces-168373-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-168374-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id F23BA8BB7AB
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 May 2024 00:42:16 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2A57C8BB7B2
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 May 2024 00:42:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AD9282894D4
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 22:42:15 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 426ABB24E46
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 22:42:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3474F84A22;
-	Fri,  3 May 2024 22:38:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 978C183A1A;
+	Fri,  3 May 2024 22:41:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="ZmAhSACs"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="Nqvsmtiu"
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE2AB2C684;
-	Fri,  3 May 2024 22:38:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9731E5A4D1;
+	Fri,  3 May 2024 22:41:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.32.30.218
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714775938; cv=none; b=ormzEf/4QU9eJEAyn9GOx7AzKE6vU8y3AX8l2qsWTuOcYPE3ixsJFUEgNpGlIjPVLOkVAfrABbcl5LjMF0x0ZsLT9dhsVKkGG+7QqIrSeF/TYGFW1dtLoVE8SIgm6eLqp/k8rAEo252nf3HO0YeqS61n3i2z0KhbQ157u3SIGG0=
+	t=1714776089; cv=none; b=RP0th63Ymb/O8X90kZC/0ieQdHTFY6pRml18nd66texmIyO5LjRP2Da/kFugyt2enrv9OUD8QORObd+KRCNEGdSx1ittt8JdI9jtaBUOgEw3qJxUXdmf7BABe+DrqrwcjgBj2NEO07yEBpi7/v7p9sjiWDtXDJ8uWRINSLVOUw4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714775938; c=relaxed/simple;
-	bh=SM9kYn7TNaYtIgIW4dTtS96tqMgkyYWOqgZTw1Kw9S8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=IFrDtbMYhCZnD9SlL5R+ZTAKIY9YN5F58DAt/+yfNHCxdx6vykSetZc+glPsGIE1ZKEW1E9BWv2xTwicxD7sK/wDd8owlNbV0P+nug3QmkySkvCWt+QLpBuOU0LH6mlAVWS2BAdY29O7nlxh0kJ4gC6GOTLAOOGkK320OqtwL8I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=ZmAhSACs; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 443LNWRh020078;
-	Fri, 3 May 2024 22:38:41 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=urnXA00algNWY4sZig1/JWwNFY3hO76XDLqsf9MC3bE=; b=Zm
-	AhSACs0y5sI5/mfNnvkifc1xLlUywujp2TTczjo1qapAfjws9dv5Smr/bJYOgL/a
-	f3OYu5ekBvmX/bJOGb90K2bKdnqrM6ZCS94BjVuZa3ebVj5NRAVw9U6e2m5ROGjn
-	GCbGbBNS5Rck0F5tnArbksG5rvNakGMEauflI+hQZ/TFc9xJxhghTZJrCg6o4YFw
-	+QfqwEi9t4pm1NNiCZOqoO4aFlx4zMPLdzaWlkbkzj4cy+9mjmjph0gotYL5xCSr
-	Ao+N5T7DN/0iFlT/ZtfDRWGPRnZC9nfniNONBs/WhhC10BYm34/GDHW3eY61NIKU
-	THKJTCR765/UCmX6EoOA==
-Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xvwfa9j3e-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 03 May 2024 22:38:41 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 443Mce6T028489
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 3 May 2024 22:38:40 GMT
-Received: from [10.110.114.34] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Fri, 3 May 2024
- 15:38:39 -0700
-Message-ID: <24fb0b07-af03-1341-d98c-46f4f167fbbb@quicinc.com>
-Date: Fri, 3 May 2024 15:38:38 -0700
+	s=arc-20240116; t=1714776089; c=relaxed/simple;
+	bh=RbTEJRV19W8aUV25aicB9Lc9FGKSV9i7uBy5lh277iA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=WVXO6QdrwhH0W9KTfZseR1bZZhv7h3O7+i+fk9CZ2HCsE4KrR8GEEUbb6U0Vi0TaxNrF3S3fa2bi3zxsGerrNULRLDBlZlxdLqVmyBR9p6iFmjC3emp1jaG20/H60UZPAsZ0jV68NHvRlmUeSTpC9S9D4HtPxtI5LwuYN5ps8Ls=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk; spf=none smtp.mailfrom=armlinux.org.uk; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=Nqvsmtiu; arc=none smtp.client-ip=78.32.30.218
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=YbCgkPFJ7uX0DwyxFD5pk3vPIn/OhpmKwMp9kOGE4Vs=; b=NqvsmtiuTI8ZAQwI9lJ4o9s5yR
+	M4Qyd6viYX5AMAvYmHXavG4DMapBiPHPJOlbDIulrPS/aSUU6IQfxRG9b1GZ46d9jGxPJSirgpYkK
+	wyY4SLEULF2hpq2dgfoMgsTGmzcgnye4gDWRtR0GGrKQeVZ9YKkZ+hErd9crdnnDoRFkrWltqdoIU
+	WbyJtZrx0wJM37LjJrzo22eOG2JKusyAyHVPbbO89qez1bLsPC73EZ1sfE6VJ96gq92/UconGPHIk
+	GZpOKL0VYzMLOIhL2N0lmMbj2Cpwk/jWa17xzpbBganpT2ggHKEYRyTBQ650dMWFVCOpqu02NmJ4+
+	p12haisA==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:49644)
+	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <linux@armlinux.org.uk>)
+	id 1s31aT-0000W0-1K;
+	Fri, 03 May 2024 23:41:05 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+	(envelope-from <linux@shell.armlinux.org.uk>)
+	id 1s31aR-0004x5-Hl; Fri, 03 May 2024 23:41:03 +0100
+Date: Fri, 3 May 2024 23:41:03 +0100
+From: "Russell King (Oracle)" <linux@armlinux.org.uk>
+To: Stefan Eichenberger <eichest@gmail.com>
+Cc: Andrew Lunn <andrew@lunn.ch>, davem@davemloft.net, edumazet@google.com,
+	kuba@kernel.org, pabeni@redhat.com, robh@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+	lxu@maxlinear.com, hkallweit1@gmail.com, michael@walle.cc,
+	netdev@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH 2/2] net: phy: mxl-gpy: add new device tree property
+ to disable SGMII autoneg
+Message-ID: <ZjVn/5KD72zKEcnK@shell.armlinux.org.uk>
+References: <ZilLz8f6vQQCg4NB@shell.armlinux.org.uk>
+ <Zio9g9+wsFX39Vkx@eichest-laptop>
+ <ZippHJrnvzXsTiK4@shell.armlinux.org.uk>
+ <Zip8Hd/ozP3R8ASS@eichest-laptop>
+ <ZiqFOko7zFjfTdz4@shell.armlinux.org.uk>
+ <ZiqUB0lwgw7vIozG@eichest-laptop>
+ <Ziq5+gRXGmqt9bXM@shell.armlinux.org.uk>
+ <ZjOYuP5ypnH8GJWd@eichest-laptop>
+ <ZjOftdnoToSSsVJ1@shell.armlinux.org.uk>
+ <ZjUSaVqkmt7+ihTA@eichest-laptop>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [PATCH v2 2/2] drm/ci: validate drm/msm XML register files
- against schema
-Content-Language: en-US
-To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-CC: Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        Marijn
- Suijten <marijn.suijten@somainline.org>,
-        David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-        Helen Koike <helen.koike@collabora.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard
-	<mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        <linux-arm-msm@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
-        <freedreno@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>
-References: <20240503-fd-fix-lxml-v2-0-f80a60ce21a1@linaro.org>
- <20240503-fd-fix-lxml-v2-2-f80a60ce21a1@linaro.org>
- <69b593b7-109c-825f-3dbb-5e8cce63ff01@quicinc.com>
- <CAA8EJpp4x+NEpMAGtgOmu-0NY8ycTu0iQX6-1Vv76mkKPea_Cw@mail.gmail.com>
-From: Abhinav Kumar <quic_abhinavk@quicinc.com>
-In-Reply-To: <CAA8EJpp4x+NEpMAGtgOmu-0NY8ycTu0iQX6-1Vv76mkKPea_Cw@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: 5O7mhWqJWY2GtAgNP9TNe07xL1XgU3Z8
-X-Proofpoint-ORIG-GUID: 5O7mhWqJWY2GtAgNP9TNe07xL1XgU3Z8
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
- definitions=2024-05-03_15,2024-05-03_02,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
- impostorscore=0 lowpriorityscore=0 bulkscore=0 adultscore=0
- priorityscore=1501 clxscore=1015 mlxscore=0 suspectscore=0 phishscore=0
- spamscore=0 mlxlogscore=999 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.19.0-2404010003 definitions=main-2405030161
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZjUSaVqkmt7+ihTA@eichest-laptop>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 
-
-
-On 5/3/2024 1:20 PM, Dmitry Baryshkov wrote:
-> On Fri, 3 May 2024 at 22:42, Abhinav Kumar <quic_abhinavk@quicinc.com> wrote:
->>
->>
->>
->> On 5/3/2024 11:15 AM, Dmitry Baryshkov wrote:
->>> In order to validate drm/msm register definition files against schema,
->>> reuse the nodebugfs build step. The validation entry is guarded by
->>> the EXPERT Kconfig option and we don't want to enable that option for
->>> all the builds.
->>>
->>> Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
->>> ---
->>>    drivers/gpu/drm/ci/build.sh  | 3 +++
->>>    drivers/gpu/drm/ci/build.yml | 1 +
->>>    2 files changed, 4 insertions(+)
->>>
->>> diff --git a/drivers/gpu/drm/ci/build.sh b/drivers/gpu/drm/ci/build.sh
->>> index 106f2d40d222..28a495c0c39c 100644
->>> --- a/drivers/gpu/drm/ci/build.sh
->>> +++ b/drivers/gpu/drm/ci/build.sh
->>> @@ -12,6 +12,9 @@ rm -rf .git/rebase-apply
->>>    apt-get update
->>>    apt-get install -y libssl-dev
->>>
->>> +# for msm header validation
->>> +apt-get install -y python3-lxml
->>> +
->>>    if [[ "$KERNEL_ARCH" = "arm64" ]]; then
->>>        GCC_ARCH="aarch64-linux-gnu"
->>>        DEBIAN_ARCH="arm64"
->>> diff --git a/drivers/gpu/drm/ci/build.yml b/drivers/gpu/drm/ci/build.yml
->>> index 17ab38304885..9c198239033d 100644
->>> --- a/drivers/gpu/drm/ci/build.yml
->>> +++ b/drivers/gpu/drm/ci/build.yml
->>> @@ -106,6 +106,7 @@ build-nodebugfs:arm64:
->>>      extends: .build:arm64
->>>      variables:
->>>        DISABLE_KCONFIGS: "DEBUG_FS"
->>> +    ENABLE_KCONFIGS: "EXPERT DRM_MSM_VALIDATE_XML"
->>>
->>
->> Wouldnt this end up enabling DRM_MSM_VALIDATE_XML for any arm64 device.
->>
->> Cant we make this build rule msm specific?
+On Fri, May 03, 2024 at 06:35:53PM +0200, Stefan Eichenberger wrote:
+> On Thu, May 02, 2024 at 03:14:13PM +0100, Russell King (Oracle) wrote:
+> > On Thu, May 02, 2024 at 03:44:24PM +0200, Stefan Eichenberger wrote:
+> > > Hi Russell,
+> > > 
+> > > Sorry for the late reply but I wanted to give you some update after
+> > > testing with the latest version of your patches on net-queue.
+> > 
+> > I've also been randomly distracted, and I've been meaning to ping you
+> > to test some of the updates.
+> > 
+> > http://git.armlinux.org.uk/cgit/linux-arm.git/log/?h=net-queue
+> > 
+> > The current set begins with:
+> > 
+> > "net: sfp-bus: constify link_modes to sfp_select_interface()" which is
+> > now in net-next, then the patches between and including:
+> > 
+> > "net: phylink: validate sfp_select_interface() returned interface" to
+> > "net: phylink: clean up phylink_resolve()"
+> > 
+> > That should get enough together for the PCS "neg" mode to be consistent
+> > with what the MAC driver sees.
+> > 
+> > The remaining bits that I still need to sort out is the contents of
+> > phylink_pcs_neg_mode() for the 802.3z mode with PHY, and also working
+> > out some way of handling the SGMII case where the PHY and PCS disagree
+> > (one only supporting inband the other not supporting inband.)
+> > 
+> > I'm not sure when I'll be able to get to that - things are getting
+> > fairly chaotic again, meaning I have again less time to spend on
+> > mainline... and I'd like to take some vacation time very soon (I really
+> > need some time off!)
 > 
-> No need to. We just need to validate the files at least once during
-> the whole pipeline build.
->
+> No problem, I'm also quite busy at the moment and I have the workaround
+> to test the hardware, so it is nothing urgent for me.
+> 
+> > > I think I see the problem you are describing.
+> > > 
+> > > When the driver starts it will negotiate MLO_AN_PHY based on the
+> > > capabilities of the PHY and of the PCS. However when I switch to 1GBit/s
+> > > it should switch to MLO_AN_INBAND but this does not work. Here the
+> > > output of phylink:
+> > 
+> > I'm designing this to work the other way - inband being able to fall
+> > back to PHY (out of band) mode rather than PHY mode being able to fall
+> > forwards to inband mode.
+> 
+> I tested again with 89e0a87ef79db9f3ce879e9d977429ba89ca8229 and I think
+> in my setup the problem is that it doesn't fall back to PHY mode but
+> takes it as default mode. Here what happens when I have the mxl-gpy PHY
+> connected to a 1000 GBit/s port:
+> [    9.331179] mvpp2 f2000000.ethernet eth1: Using firmware node mac address 00:51:82:11:22:02
+> [   14.674836] mvpp2 f2000000.ethernet eth1: PHY f212a600.mdio-mii:11 doesn't supply possible interfaces
+> [   14.674853] mvpp2 f2000000.ethernet eth1:  interface 2 (mii) rate match none supports 0-3,6,13-14
+> [   14.674864] mvpp2 f2000000.ethernet eth1:  interface 4 (sgmii) rate match none supports 0-3,5-6,13-14
+> [   14.674871] mvpp2 f2000000.ethernet eth1:  interface 9 (rgmii) rate match none supports 0-3,5-6,13-14
+> [   14.674877] mvpp2 f2000000.ethernet eth1:  interface 10 (rgmii-id) rate match none supports 0-3,5-6,13-14
+> [   14.674883] mvpp2 f2000000.ethernet eth1:  interface 11 (rgmii-rxid) rate match none supports 0-3,5-6,13-14
+> [   14.674889] mvpp2 f2000000.ethernet eth1:  interface 12 (rgmii-txid) rate match none supports 0-3,5-6,13-14
+> [   14.674895] mvpp2 f2000000.ethernet eth1:  interface 22 (1000base-x) rate match none supports 5-6,13-14
+> [   14.674900] mvpp2 f2000000.ethernet eth1:  interface 23 (2500base-x) rate match none supports 6,13-14,47
+> [   14.674907] mvpp2 f2000000.ethernet eth1: PHY [f212a600.mdio-mii:11] driver [Maxlinear Ethernet GPY215C] (irq=POLL)
+> [   14.685444] mvpp2 f2000000.ethernet eth1: phy: 2500base-x setting supported 00,00000000,00008000,0000606f advertising 00,00000000,00008000,0000606f
+> [   14.686635] mvpp2 f2000000.ethernet eth1: configuring for phy/2500base-x link mode
+> [   14.694263] mvpp2 f2000000.ethernet eth1: major config, requested phy/2500base-x
 
-ah okay, today the arm64 config anyway sets all arm64 vendor drm configs 
-to y.
+                                                                       ^^^
 
-A couple of more questions:
+You're still requesting (from firmware) for PHY mode, and phylink will
+_always_ use out-of-band if firmware requests that.
 
-1) Why is this enabled only for no-debugfs option?
-2) Will there be any concerns from other vendors to enable CONFIG_EXPERT 
-in their CI runs as the arm64 config is shared across all arm64 vendors.
+> [   14.700402] mvpp2 f2000000.ethernet eth1: major config, active phy/outband/2500base-x
+
+So it uses PHY mode for 2500base-X, which is correct.
+
+> [   17.768370] mvpp2 f2000000.ethernet eth1: major config, requested phy/sgmii
+
+Still requesting PHY mode with SGMII, which historically we've always
+used out-of-band mode for, so we preserve that behaviour.
+
+> [   17.774602] mvpp2 f2000000.ethernet eth1: firmware wants phy mode, but PHY requires inband
+
+So we complain about it with an error, because it is wrong...
+
+> [   17.782976] mvpp2 f2000000.ethernet eth1: major config, active phy/outband/sgmii
+
+and we still try to use it (correctly, because that's what phylink
+has always done in this case.)
+
+As I tried to explain, there is fall-back from MLO_AN_INBAND to
+MLO_AN_PHY, but there won't be fall-forward from MLO_AN_PHY to
+MLO_AN_INBAND.
+
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
 
