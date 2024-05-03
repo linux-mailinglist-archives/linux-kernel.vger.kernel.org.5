@@ -1,126 +1,163 @@
-Return-Path: <linux-kernel+bounces-167486-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-167487-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2C2A18BAA27
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 11:49:32 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 803608BAA29
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 11:50:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6C5F9B20A19
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 09:49:29 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0C3A21F22131
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 09:50:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B64E714F9D3;
-	Fri,  3 May 2024 09:49:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2875214F9DF;
+	Fri,  3 May 2024 09:49:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="ahvunxfP"
-Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="J8qKnF5M"
+Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C28214F9C1
-	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 09:49:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BBD4A13959C
+	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 09:49:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714729763; cv=none; b=qlMG5ucWb+xS9XQl9d38pWIRS1+ZV+FwIgq6DQWbZjO6qlm2hZMmfeTLoONsGoSSOfTmardXcBp5DRRLC7fS9CgsXRYqNaHmAQUdyZM/fELiie+dV4xvNDNY4j2Ln9gIJCDylkuuGyjPVRL3ov3q6fm+WhLZAgj1eULmF1A91Sw=
+	t=1714729798; cv=none; b=PE9u7TgmtUBayofEIRtT+2MClRGepFacz8/gvZmYEQOfi3G12/VSbUm3ZFSQWpyI8g10EO2LXLb/Ks3i+fnaqt2wQsld/R7wotEQYyHWZzrI+An1IRIrt1NUewtSwYbpgum6dpszaU7BH9ktGYBdX5lxV1cAKfADlH+yR7cBOY8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714729763; c=relaxed/simple;
-	bh=P+9mJYi0mw/Xi2q+V00fvL0lb6TLMgX/WAJ2ktr/UUI=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=E8hfOOWc+3GYt8X+gZp38khUwAY/HhF4Z580/Mr8+VJKwkVLMqA1QyGa1nlqU2Hh5LTexCCVBC7yMLVsC9V3ndgkqWqtdAJ1z8kVftFWvJrfwJkEF2htvbL19w6PqkRPT/Z3oPN7SUQcyJQPeOtQJkocWweQsZg0xMGO6isPBt8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=ahvunxfP; arc=none smtp.client-ip=209.85.128.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-41b869326daso51005715e9.0
-        for <linux-kernel@vger.kernel.org>; Fri, 03 May 2024 02:49:20 -0700 (PDT)
+	s=arc-20240116; t=1714729798; c=relaxed/simple;
+	bh=3LrDmRQsKNnunMPXbC7EWhw7STX0WisSOg83GBg9AIQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=r2xHX5XKpHMJxfqvkYyg/Vx/0e+DDfn18u838cti99YUOdjopWnq+OcAYduv8U10apgVlbnr1pp3gug3EVFz5odqoMvDsVmbBJVTWjqJxO8c5RG7vngMD/LE0Kx1JlHLvvT6oQ6gX18IkhMaG8vBZPErr090vvgs6ILDb4rGhHI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=J8qKnF5M; arc=none smtp.client-ip=209.85.128.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-41adf155cffso61608085e9.2
+        for <linux-kernel@vger.kernel.org>; Fri, 03 May 2024 02:49:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1714729759; x=1715334559; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:user-agent:organization
-         :references:in-reply-to:date:cc:to:from:subject:message-id:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=bTlYHX9HW/iMrwFdXDCczbWv+pcOM42X63zZb22zzqk=;
-        b=ahvunxfPkR9us0A9CGy+K2b3kofcJVvqi8Ak/EF56eChjtLDgsJs+9LyZ51/zF0sPw
-         g/rkJ6u9/t+HfzdwlHp6CvlnTq5/mdJXHLYNcihm3Wz1XQNrxWiWyYiSVlujyQstaDdF
-         kd2UmV4m+AM/oIKOeE1kIVPbAzX+KSkeLpz3rE0mHwfquB3iQtnuvvaOmFirZxYJhaCP
-         Iy+J5e2phzzfclT9UGqbcc0fKY0y095u7WJSorAd1rC+iCsGJLMiMK37tG/hnketNkkb
-         trekxWn/f9S4IbS1JPam0fNQ+EUVHWxh+37rxrOTbmvCMfWsBN7lNfXXqczNNvPRwQET
-         vWNg==
+        d=linaro.org; s=google; t=1714729795; x=1715334595; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
+         :from:references:cc:to:subject:user-agent:mime-version:date
+         :message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=LKTWeNLujJDpv5WJYvNAC9ytQfUmNr0+EX2BojvW9Mw=;
+        b=J8qKnF5M449SMejK6JV1jRsX7nSfjX9JFKFF/AmvVj7m8zavkTAW4BxYHJ2GMTMcAX
+         oAgUncTcNeW6CCrldMWI3gJFF0LHiRaGT6izIPwDqDjhMrN/lJMUSaFRmbiOHfKmPvWU
+         e4ELEyqU9jj+eAfiMoUu+4K8OcXzUEf11lX0+Gy/CGugdieJu0gddfFLRJgOTOVzDQ0V
+         8fdenWebyjuSkptDEggV82O7Qy/o+SlOXtB4ezM/Qz8zUw6OhD1WnVA0m0JwmqqYUJ4U
+         K9z8mEhmsm/aGqTDzj43noOktPK50bjsZANfOpe+bRkI9bCPIYVEG1oWJRcNPG1j5jEJ
+         Qm8w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714729759; x=1715334559;
-        h=content-transfer-encoding:mime-version:user-agent:organization
-         :references:in-reply-to:date:cc:to:from:subject:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=bTlYHX9HW/iMrwFdXDCczbWv+pcOM42X63zZb22zzqk=;
-        b=HlY4gMFWiuZMWyaBq5agvyeQ+UyBeor+fRPVmKyA5Kz4Vz88AXWNrdADhYYi8mcQOw
-         aTwU58Ix/PMNyJm6O5K8usjDQrV0LKPFz4LmbnhYHwUa/4cPohVfWs6QYd3yzQztLChL
-         BnpmPxw1tWaZRGGslZoszeMpNQDqZX/JJHYiUSmylzcqOadFWm7I+a16Jr90Qwusws8w
-         NmSZhlBFI1uNk8HEUeX2NXT+/rxVY16DbhEP/logCnn+PW2Knd6dx8l+uIMw0kvzvPpz
-         G+LY9MuVOuQNnLtbZwFkA4exAm6wAqhB2lhtHyFbVXFHXcqO1Sl9Hx7/vg9NDgWN5i+y
-         nHxQ==
-X-Forwarded-Encrypted: i=1; AJvYcCULxNi7vev8XPVJEGW79nx8X5LFsxXK+D3wAvzn3bXROjo6o6Xlp28K6Pi3BQIXjZtrbYSLoosbswaSxuO2u+yk7C6HXU8XC2lcdkDx
-X-Gm-Message-State: AOJu0Yw6+pdz30JzRZWChGi4Jw6oJGTxqxsHnSDB1nI6vYtOW0FRAYkl
-	F0wD05ryVJwlPNMVFWm84ZE3kNVMFnU0aus/DKCpi/dQmfXMBSgNc5WkAGuRJ0k=
-X-Google-Smtp-Source: AGHT+IHNK/eSu3kkHJAl2lYdhqDh2NtM/OSA0hLIJ4EUQ7LM943ZK5EAqN6vWyVzd87D2z7YA0u1ig==
-X-Received: by 2002:a05:600c:1e8d:b0:41b:f28a:a11e with SMTP id be13-20020a05600c1e8d00b0041bf28aa11emr2023533wmb.22.1714729759366;
-        Fri, 03 May 2024 02:49:19 -0700 (PDT)
-Received: from ?IPv6:2a01:e0a:1d:5380:6cdc:9dff:7d8c:ff76? ([2a01:e0a:1d:5380:6cdc:9dff:7d8c:ff76])
-        by smtp.gmail.com with ESMTPSA id c7-20020a05600c0a4700b0041ba0439a78sm8756341wmq.45.2024.05.03.02.49.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 03 May 2024 02:49:19 -0700 (PDT)
-Message-ID: <4ffdf9130493c47e1893f15924d68a3da63dc92c.camel@suse.com>
-Subject: Re: Early kernel panic in dmi_decode when running 32-bit kernel on
- Hyper-V on Windows 11
-From: Jean DELVARE <jdelvare@suse.com>
-To: Michael Kelley <mhklinux@outlook.com>, Michael Schierl
- <schierlm@gmx.de>,  "K. Y. Srinivasan" <kys@microsoft.com>, Haiyang Zhang
- <haiyangz@microsoft.com>, Wei Liu <wei.liu@kernel.org>, Dexuan Cui
- <decui@microsoft.com>
-Cc: "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>, 
-	"linux-kernel@vger.kernel.org"
-	 <linux-kernel@vger.kernel.org>
-Date: Fri, 03 May 2024 11:49:17 +0200
-In-Reply-To: <SN6PR02MB41579E87F827F26B3A2E10FED4182@SN6PR02MB4157.namprd02.prod.outlook.com>
-References: <2db080ae-5e59-46e8-ac4e-13cdf26067cc@gmx.de>
-	 <SN6PR02MB41578C71EB900E5725231462D4092@SN6PR02MB4157.namprd02.prod.outlook.com>
-	 <e416f2a0-6162-481e-9194-11101fa1224c@gmx.de>
-	 <SN6PR02MB41573B2FED887B1E3DCADB55D4092@SN6PR02MB4157.namprd02.prod.outlook.com>
-	 <71af4abb-cffd-449e-b397-bd3134d98fb3@gmx.de>
-	 <SN6PR02MB4157CFEA1F504635E4B8B471D4082@SN6PR02MB4157.namprd02.prod.outlook.com>
-	 <dade3cd83d4957d4407470f0ea494777406b44bd.camel@suse.com>
-	 <3c6f9fea-6865-40da-96c5-d12bc08ba266@gmx.de>
-	 <SN6PR02MB4157C677FDAD6507B443A8C7D40F2@SN6PR02MB4157.namprd02.prod.outlook.com>
-	 <SN6PR02MB415733CB1854317C980C3F18D40D2@SN6PR02MB4157.namprd02.prod.outlook.com>
-	 <938f6eda-f62c-457f-bc42-b2d12fc6e2c7@gmx.de>
-	 <SN6PR02MB41579E87F827F26B3A2E10FED4182@SN6PR02MB4157.namprd02.prod.outlook.com>
-Organization: SUSE Linux
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.42.4 
+        d=1e100.net; s=20230601; t=1714729795; x=1715334595;
+        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
+         :from:references:cc:to:subject:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=LKTWeNLujJDpv5WJYvNAC9ytQfUmNr0+EX2BojvW9Mw=;
+        b=dlcVo9Aksu1jC5sGrD+U8DD746EnzaXoZ10D3/20EzgjCujMA8BjLqoHgh4o9IjyY/
+         zQyPtN6rJxITYQ4if8yflnyRyaOp71niKVjS/xWPDIqSTL9nulR6nXwYoihyGjfllFcG
+         0QAQ3jTZlmecrNHbxGW43df2UuApnORAwO0nXR4sEOWtCVuDbAX2ecJFEd58ron7xUKE
+         VduHox7V8jniFlXWqQ3fGSMvKbfTkc/EQ6a0XPe2QSdg9hSlXcQ2LXjXgNisSfOLXpmD
+         IAIFTILUlKzebCnFZiPbN5TQNPuYOfpHBp9V1gwOoo3XQ0u/RjIt6pUEABTtTCc9pWx2
+         e6BQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUSQlYcMa9d15l7Yz0itu5RCBFDxfvWrhYyDTditHiUzzN2PqHE89RtN3mgPYTyF5YhCL/wKWc36iBaM3bUXQ7HYnMxGu6f8dLb2NtK
+X-Gm-Message-State: AOJu0YxjWBJ3haEfbe9kKmXYFUnzTg5RH76jh/9ymayg0aBfUS8xG5Ye
+	LGJMHAgEeRdfylhf/b4hn3mwJNEPP+dIJn1AbxA9L/CWcvKkJZ6ord/mOyylSNcKY9O7Uk1zdIc
+	xI+U=
+X-Google-Smtp-Source: AGHT+IEfI40a6iSmYG8mIB0oqwq0TBDFtTKfIa/5JpmnC4jZ+ocIwVS0s47muTzX8eqzlquyaYfBTA==
+X-Received: by 2002:a05:600c:3554:b0:41b:6dbb:52f9 with SMTP id i20-20020a05600c355400b0041b6dbb52f9mr1682526wmq.39.1714729795116;
+        Fri, 03 May 2024 02:49:55 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.223.16])
+        by smtp.gmail.com with ESMTPSA id g19-20020a05600c311300b0041496734318sm8775845wmo.24.2024.05.03.02.49.53
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 03 May 2024 02:49:54 -0700 (PDT)
+Message-ID: <ee4daf22-8979-45f7-8e20-3cafd6c3e8f3@linaro.org>
+Date: Fri, 3 May 2024 11:49:53 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 00/52] USB: store owner from modules with
+ usb_serial_register_drivers()
+To: Johan Hovold <johan@kernel.org>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240328-module-owner-usb-serial-v1-0-bc46c9ffbf56@linaro.org>
+ <ZhzrPA1wP7bER6Pi@hovoldconsulting.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Content-Language: en-US
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <ZhzrPA1wP7bER6Pi@hovoldconsulting.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Hi Michael,
-
-On Thu, 2024-05-02 at 17:02 +0000, Michael Kelley wrote:
-> From: Michael Schierl <schierlm@gmx.de> Sent: Friday, April 19, 2024 1:47 PM
-> > 
-> > > Regardless of the 32-bit vs. 64-bit behavior, the DMI blob is malformed,
-> > > almost certainly as created by Hyper-V.  I'll see if I can bring this to
-> > > the attention of one of my previous contacts on the Hyper-V team.
-> > 
+On 15/04/2024 10:54, Johan Hovold wrote:
+> On Thu, Mar 28, 2024 at 11:05:38PM +0100, Krzysztof Kozlowski wrote:
+>> Merging
+>> =======
+>> All further patches depend on the first patch.
+>>
+>> Description
+>> ===========
+>> This is going to be a bit of a patch-bomb, but with trivial patches, so
+>> I think it is still acceptable. If it is too much, apologies and I will
+>> solve it.
 > 
-> FYI, the right people on the Hyper-V team have been informed of the
-> issue, and there's an internal bug report filed to track the resolution.
-> I don't have access to the internal bug report, and can't predict when or
-> how a fix might be made available. But given the impact, they should
-> be motivated to work on it.
+> No, sending 51 trivial one-line cleanup patches like this is not
+> acceptable.
+> 
+> This is just one logical change so squash them all into one patch for
+> the entire subsystem (i.e. this series should contain two patches).
+> 
 
-Thank you very much for your perseverance, let's see where it goes.
+Sure. This is not exactly one logical change, but two, because the first
+patch might fix some drivers which forgot to set the owner (even if I
+did not identify them).
 
--- 
-Jean Delvare
-SUSE L3 Support
+Best regards,
+Krzysztof
+
 
