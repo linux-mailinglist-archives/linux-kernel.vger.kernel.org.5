@@ -1,122 +1,186 @@
-Return-Path: <linux-kernel+bounces-168139-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-168140-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 042238BB428
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 21:35:04 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2EC578BB42B
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 21:35:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 98D471F21440
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 19:35:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 50C9E1C22D60
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 19:35:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27F1F158A03;
-	Fri,  3 May 2024 19:34:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A652158A21;
+	Fri,  3 May 2024 19:35:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="XMnBcTJK";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="CPxN2IkV"
-Received: from wfout4-smtp.messagingengine.com (wfout4-smtp.messagingengine.com [64.147.123.147])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="kIk/pWhL"
+Received: from mail-pj1-f51.google.com (mail-pj1-f51.google.com [209.85.216.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F171E13B593
-	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 19:34:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.147
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19015158866
+	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 19:35:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714764897; cv=none; b=FdY8TTOaq7uwYuqXne1AXefDuF6NaXytEv/XqIIhy2UYEGzOkHYvIJ2GlKyODpTM5Q1AdDPMrdMtGU6ZasB74xDcpkm6M3PKigL2js7Rl/cmJyTpMTrPhV79qa/n9Sc6BO8TLP+nX/nhhqwKZW50ccIZ9XXL7010rsYxsYpYav4=
+	t=1714764914; cv=none; b=gv8Cdz+z9vAbWriwTtdCvtgK2d542du1/a800wFh3mTxTnWjbuTgyRFZB7B1UXpBOi9n37Bsoqe8VmYQ40+SQ/vb0iX0RpswaZkP1c1CBdXWoDu59xMNUSV9izx4qVvp3/nIidiulbjcViLBFv5lmXjdNbBLtxq3SSX1e42yb18=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714764897; c=relaxed/simple;
-	bh=4OSCQtExy8HDG9vzT7OzvTAzSTFKGqszq7wFXETz4sg=;
-	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
-	 Subject:Content-Type; b=DlIoTK9wAIq7rTT9gzxUPSvLBuo2Q+WBlS35ari05XbWfDyEzcKAW+F2bLT0RsnpVVPunGaZ8Tem7U7p8Lc/MIIacewC5+3E+PiBUNjKP/mP+G3xFPzcVYViUtpSqURfj72WiIWUclD1A8WBLb8ZFxZ6NnUW9gFBGUFHY2jyIto=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=XMnBcTJK; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=CPxN2IkV; arc=none smtp.client-ip=64.147.123.147
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-	by mailfout.west.internal (Postfix) with ESMTP id A856F1C0008E;
-	Fri,  3 May 2024 15:34:53 -0400 (EDT)
-Received: from imap51 ([10.202.2.101])
-  by compute5.internal (MEProxy); Fri, 03 May 2024 15:34:53 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-	:cc:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm2; t=1714764893; x=1714851293; bh=miihCwvzsW
-	ti5H/aziJQQJwZEV59oT6FVoAAjQJ/FoY=; b=XMnBcTJK6WsK8VnpK9FybXx/lc
-	MANr2mIMS4jUyBH3rA2/deUKa41SFOllmTMDwhhmPTNEK3zMZz+Q0AZJ3IRzLuLF
-	vYxF74S9idutLcRT5zd90CcdyhneGxCAw6f95CqM8FwwtGuV5Qe2XZQPWsuLbiDR
-	mfdlU7AonokQRHKmuznwSMlxMn9K0aDsGc+u9cFUK/dt+M6AkQu1o99XqrhlPNnx
-	ZGjdTMVAnMlOPsuEseEzaLZryslT8Ij72vYnMVrHGPln4lrrjf4manOjvCAJGLfA
-	T6DAGaBwIsxFGGmE4aRVZUmdm4hay10di3dQ49ZPVS/2W0U9km7zO1Wyx8SA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm3; t=1714764893; x=1714851293; bh=miihCwvzsWti5H/aziJQQJwZEV59
-	oT6FVoAAjQJ/FoY=; b=CPxN2IkVcXUYwd4icjzj9Y7e5Ris+38L/WrSmjwFpqs/
-	GGm/wVBu7YnlcdSaYGLxVEljKiktURHUu5GC/3UublQcMsdCT1p9rvnkfTDWLw0v
-	E7tUsCNoBgimK3hG6QK/mSTuFCAiwpK5Dn/3XtbB6GBxJd51AL12s8GCe/e89aeR
-	OmRoU+hPKqhEHKVESS7Cj0XKwd6NKxvAq+6I2gWnqUTdJIXUlQ4doRahUCxDF2E2
-	JkzYXG9ooK03ZIna8g61caFOahrv2Mbh2vHNuQBF+WfLUbW5GmaKU3o3dCsDk6xK
-	aKneskem/dT5woD5rd9MaOgyMc5W1bngaWguIVsGwg==
-X-ME-Sender: <xms:XTw1ZgNlOYHYJXtlY1bKoGAbOSrilDJbl8YBbwfiZOybegHdN9kKOQ>
-    <xme:XTw1Zm_Q6pY4karNe84k5t__kdu77sWW20VT76R4vqW9uG-hdox8JmSl534i4oM-N
-    c45SQWJ7VGiYzPmgzU>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrvddvtddgudeflecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpefofgggkfgjfhffhffvvefutgesthdtredtreertdenucfhrhhomhepfdet
-    rhhnugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrg
-    htthgvrhhnpeffheeugeetiefhgeethfejgfdtuefggeejleehjeeutefhfeeggefhkedt
-    keetffenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
-    grrhhnugesrghrnhgusgdruggv
-X-ME-Proxy: <xmx:XTw1ZnTR8pguF3RYs5Ef2nRv91ItQ6zc75hRnTu6ivlyy_ci3FOstg>
-    <xmx:XTw1ZovSZDuoT7V67cZ0gYLfZB_7Co9GcISgkLKCPpOIF0nwclNntQ>
-    <xmx:XTw1ZodLfr0ZS96yw63m55-QtwC0uEqIE6NoPrRuHS41YNk4INpjtw>
-    <xmx:XTw1Zs0O_FkWXLZcHkNKg9j_NQ0Rm6FYloFiGF0Xp2Fn2pvWY-rQBA>
-    <xmx:XTw1Zpqifl5vv38rMBAve1CUAYod5EkKwrcaSmPf5JHFZkolXSkTiY34>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id E7D63B6008D; Fri,  3 May 2024 15:34:52 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.11.0-alpha0-417-gddc99d37d-fm-hotfix-20240424.001-g2c179674
+	s=arc-20240116; t=1714764914; c=relaxed/simple;
+	bh=r8Nv21VrvCRT1FuqygB1ITanHjlHw4scuJdDnqqN7w8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=kEOPUc3+Pyqx5LISKTTlITozz/3RcOL6qNJTEzbTwypE7pH334h0mbULmO04uQ6b58eeifnPZVdJcQb5KikCuurynM44gICTNQ5XJ61rdjYQswVWXceUHslXcfe8qdEOtt8oj7ULgnwHpzTHLKKVVw4yd+9KhKHVnphpJI+CDm4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=kIk/pWhL; arc=none smtp.client-ip=209.85.216.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
+Received: by mail-pj1-f51.google.com with SMTP id 98e67ed59e1d1-2b3e2d3d05cso19905a91.3
+        for <linux-kernel@vger.kernel.org>; Fri, 03 May 2024 12:35:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1714764911; x=1715369711; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ORetLTXl3HzmbjljZHEUgf3Mmr/eaSDx8Jozq/iEtsM=;
+        b=kIk/pWhLLh24YCRYq99z9MlLqs5IGr1laqUoGKIcb/YeqEOpn34TV5+d0nSq/IzRDC
+         op9OgzM/NDXqRj08cYtt1YQdMojR+dcKkjiZ44pL9uedK1vgPXZn+9GvR7nOh96Ial/e
+         w1foGDzUo9hovPN6zEOoQ8hV7PafXmJf5vqDNjB1TTCdkKQ1wNb0I++90yfVMY+wDfwV
+         f1CPg/rpax5507TL8k8Q6h1za4Fy58/KS1OQk74JpEnZaU7KCV+izDDhcdCaiBy8Aa+E
+         jsvsm77j3EjNFgNTgRizpY3MtRLLAQpb5JGHoWZ5t8fqUsoXbY75SUYAhDzPyhkQxaZh
+         D/nA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714764911; x=1715369711;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ORetLTXl3HzmbjljZHEUgf3Mmr/eaSDx8Jozq/iEtsM=;
+        b=iSvopkqgqueDtMbbmtUT9yS76HXzrzkDh/kpXyW9S5uHN84BVSfTmUsTQ21OO1bjzj
+         6O/tV8sL7IFOQZXjVMBx2XBmRhU3zaV+WLnF/F7T+rT5KZnUWLdhYpaDyzA3T/jWfOD3
+         K5u4HsYhFMvdWdqsMfTzlNeDGhuifkzG3JGDCiGn40PP2s9Qzl0hj2yIqrknSEv374Ww
+         42B8Mk9p+DsHouI4bIT4Tz+NNM4utDOF3xLdVIcORzGFeR14nNTegccgkHrNohnnxfIm
+         rkJGCxzzaobUD+v0LV0gSJEa3eu3thV4N9nzAcbxvIHhkBii2iyLxWEuVNmZTkN1cndH
+         gNlg==
+X-Forwarded-Encrypted: i=1; AJvYcCWDxJDmyV8N6YQx+5Pz55dgvTSjwKQ9e5PNzi6DKMEIouRoIjfj9TDAfaAzYLEu5qnkx15X/Hua9OttzbsZ/hyC4iL4uZcJq+/auhO9
+X-Gm-Message-State: AOJu0YzX82kcOiUi5qL9bBGPAaOhNt7QrtmOlBp6aBDfRK/lD7H0VWIS
+	dDRV8Y/wsad53koggtP/9E3U0eS+6lyRRDQ6lzF6KHzlZa45CTlHzwbxtesYrWMzFpeyHBoavpI
+	G
+X-Google-Smtp-Source: AGHT+IHPB1IZ4O2sSxiGYAZKvpeGjbdnZ2bAwpyCrMWAsjHJbfq5KyMCcWf/Ef7me/A0cgN11ffW+A==
+X-Received: by 2002:aa7:880c:0:b0:6ec:ef1c:5c55 with SMTP id c12-20020aa7880c000000b006ecef1c5c55mr3736637pfo.2.1714764911345;
+        Fri, 03 May 2024 12:35:11 -0700 (PDT)
+Received: from [192.168.1.150] ([198.8.77.194])
+        by smtp.gmail.com with ESMTPSA id gx14-20020a056a001e0e00b006f44be6cef2sm1664133pfb.114.2024.05.03.12.35.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 03 May 2024 12:35:10 -0700 (PDT)
+Message-ID: <d6285f19-01aa-49c8-8fef-4b5842136215@kernel.dk>
+Date: Fri, 3 May 2024 13:35:09 -0600
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <cb22252d-1ea9-4094-9f7a-b94c2142d1f2@app.fastmail.com>
-In-Reply-To: <ZjUzt3Rysyk-oGdQ@smile.fi.intel.com>
-References: <ZjUzt3Rysyk-oGdQ@smile.fi.intel.com>
-Date: Fri, 03 May 2024 21:34:13 +0200
-From: "Arnd Bergmann" <arnd@arndb.de>
-To: "Andy Shevchenko" <andriy.shevchenko@linux.intel.com>,
- "David Howells" <dhowells@redhat.com>
-Cc: linux-kernel@vger.kernel.org
-Subject: Re: compiler_types.h in UAPI?
-Content-Type: text/plain
+User-Agent: Mozilla Thunderbird
+Subject: Re: get_file() unsafe under epoll (was Re: [syzbot] [fs?] [io-uring?]
+ general protection fault in __ep_remove)
+To: Kees Cook <keescook@chromium.org>
+Cc: Bui Quang Minh <minhquangbui99@gmail.com>,
+ Al Viro <viro@zeniv.linux.org.uk>, Christian Brauner <brauner@kernel.org>,
+ syzbot <syzbot+045b454ab35fd82a35fb@syzkaller.appspotmail.com>,
+ io-uring@vger.kernel.org, jack@suse.cz, linux-fsdevel@vger.kernel.org,
+ linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+ Sumit Semwal <sumit.semwal@linaro.org>,
+ =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+ linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
+ linaro-mm-sig@lists.linaro.org, Laura Abbott <laura@labbott.name>
+References: <0000000000002d631f0615918f1e@google.com>
+ <7c41cf3c-2a71-4dbb-8f34-0337890906fc@gmail.com>
+ <202405031110.6F47982593@keescook>
+ <64b51cc5-9f5b-4160-83f2-6d62175418a2@kernel.dk>
+ <202405031207.9D62DA4973@keescook>
+Content-Language: en-US
+From: Jens Axboe <axboe@kernel.dk>
+In-Reply-To: <202405031207.9D62DA4973@keescook>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Fri, May 3, 2024, at 20:57, Andy Shevchenko wrote:
-> Hi!
+On 5/3/24 1:22 PM, Kees Cook wrote:
+> On Fri, May 03, 2024 at 12:49:11PM -0600, Jens Axboe wrote:
+>> On 5/3/24 12:26 PM, Kees Cook wrote:
+>>> Thanks for doing this analysis! I suspect at least a start of a fix
+>>> would be this:
+>>>
+>>> diff --git a/drivers/dma-buf/dma-buf.c b/drivers/dma-buf/dma-buf.c
+>>> index 8fe5aa67b167..15e8f74ee0f2 100644
+>>> --- a/drivers/dma-buf/dma-buf.c
+>>> +++ b/drivers/dma-buf/dma-buf.c
+>>> @@ -267,9 +267,8 @@ static __poll_t dma_buf_poll(struct file *file, poll_table *poll)
+>>>  
+>>>  		if (events & EPOLLOUT) {
+>>>  			/* Paired with fput in dma_buf_poll_cb */
+>>> -			get_file(dmabuf->file);
+>>> -
+>>> -			if (!dma_buf_poll_add_cb(resv, true, dcb))
+>>> +			if (!atomic_long_inc_not_zero(&dmabuf->file) &&
+>>> +			    !dma_buf_poll_add_cb(resv, true, dcb))
+>>>  				/* No callback queued, wake up any other waiters */
+>>
+>> Don't think this is sane at all. I'm assuming you meant:
+>>
+>> 	atomic_long_inc_not_zero(&dmabuf->file->f_count);
+> 
+> Oops, yes, sorry. I was typed from memory instead of copy/paste.
+
+Figured :-)
+
+>> but won't fly as you're not under RCU in the first place. And what
+>> protects it from being long gone before you attempt this anyway? This is
+>> sane way to attempt to fix it, it's completely opposite of what sane ref
+>> handling should look like.
+>>
+>> Not sure what the best fix is here, seems like dma-buf should hold an
+>> actual reference to the file upfront rather than just stash a pointer
+>> and then later _hope_ that it can just grab a reference. That seems
+>> pretty horrible, and the real source of the issue.
+> 
+> AFAICT, epoll just doesn't hold any references at all. It depends,
+> I think, on eventpoll_release() (really eventpoll_release_file())
+> synchronizing with epoll_wait() (but I don't see how this happens, and
+> the race seems to be against ep_item_poll() ...?)
 >
-> Today I have stumbled over use of __force and other compiler_types.h related
-> things in UAPI headers. Can anybody explain to me how do they suppose to work
-> outside of the kernel? Or did I miss something obvious? Or it was a mistake
-> during UAPI split to move swab.h and byteorder/ (most of the users of those)
-> to UAPI in the first place?
+> I'm really confused about how eventpoll manages the lifetime of polled
+> fds.
 
-These get stripped out by scripts/headers_install.sh during
-the 'make headers_install' stage:
+epoll doesn't hold any references, and it's got some ugly callback to
+deal with that. It's not ideal, nor pretty, but that's how it currently
+works. See eventpoll_release() and how it's called. This means that
+epoll itself is supposedly safe from the file going away, even though it
+doesn't hold a reference to it.
 
-sed -E -e '
-        s/([[:space:](])(__user|__force|__iomem)[[:space:]]/\1/g
-        s/__attribute_const__([[:space:]]|$)/\1/g
-        s@^#include <linux/compiler(|_types).h>@@
-        s/(^|[^a-zA-Z0-9])__packed([^a-zA-Z0-9_]|$)/\1__attribute__((packed))\2/g
-        s/(^|[[:space:](])(inline|asm|volatile)([[:space:](]|$)/\1__\2__\3/g
-        s@#(ifndef|define|endif[[:space:]]*/[*])[[:space:]]*_UAPI@#\1 @
-' $INFILE > $TMPFILE || exit 1
+Except that in this case, the file is already gone by the time
+eventpoll_release() is called. Which presumably is some interaction with
+the somewhat suspicious file reference management that dma-buf is doing.
+But I didn't look into that much, outside of noting it looks a bit
+suspect.
 
+>>> Due to this issue I've proposed fixing get_file() to detect pathological states:
+>>> https://lore.kernel.org/lkml/20240502222252.work.690-kees@kernel.org/
+>>
+>> I don't think this would catch this case, as the memory could just be
+>> garbage at this point.
+> 
+> It catches it just fine! :) I tested it against the published PoC.
 
-      Arnd
+Sure it _may_ catch the issue, but the memory may also just be garbage
+at that point. Not saying it's a useless addition, outside of the usual
+gripes of making the hot path slower, just that it won't catch all
+cases. Which I guess is fine and expected.
+
+> And for cases where further allocations have progressed far enough to
+> corrupt the freed struct file and render the check pointless, nothing
+> different has happened than what happens today. At least now we have a
+> window to catch the situation across the time frame before it is both
+> reallocated _and_ the contents at the f_count offset gets changed to
+> non-zero.
+
+Right.
+
+-- 
+Jens Axboe
+
 
