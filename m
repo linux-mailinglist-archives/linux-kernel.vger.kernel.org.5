@@ -1,106 +1,82 @@
-Return-Path: <linux-kernel+bounces-167594-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-167598-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C92968BABB8
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 13:38:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id A9DB78BABC2
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 13:39:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 76CE12812C8
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 11:38:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3997F28496D
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 11:39:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 93C3E152DF0;
-	Fri,  3 May 2024 11:38:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="XizIh0rW"
-Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9307615356D;
+	Fri,  3 May 2024 11:38:54 +0000 (UTC)
+Received: from gloria.sntech.de (gloria.sntech.de [185.11.138.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 74D1314534A
-	for <linux-kernel@vger.kernel.org>; Fri,  3 May 2024 11:38:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22289152E1D;
+	Fri,  3 May 2024 11:38:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.11.138.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714736287; cv=none; b=CeK24+rwZVK+4g3fAjR5YLMQ5myfiawGN++v7l3jiMsZT5CITE1IHDf0trCyZ4dosbU9ysUhQ5rf8BqXKCHnyji1sGKzciYbH8NjvFezMz9eXrk+0pF6tdLQjYo+4igtArWtpTy/9+m20ap9viold+Bhmm/eUmDMCrPI7jWtLJk=
+	t=1714736334; cv=none; b=tfyXxrNEQlyCQOA0MpBsMsGkZBFAblgzEF033rTwuW+M9m0U4gKVzB7a2wtYIImjineWhy3bTZ04id6Eq+bXqQWdAujWz1PFYzi9nLp0ZsVT9dxasSRS6ZrNlirLA787sc5TBNH7TR+COb37qy4q68dG8zwPt/oW9ae10jA18wg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714736287; c=relaxed/simple;
-	bh=2mFwIyJjhlyZVBLu3QUcc225c9YGrTsjtcIlVVK9h4w=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=dOajeLaAffWkdt2vBcJsmW1g1FjpSBy3ZD+xbbRNgLpoqlldJw/5V5RiO8wtEKy6LHK7+Zn+Ukm7kscaxCpRtSIJTNo3+caIPk4h1hQAiQgz3hrSyvqL1VCM6jzD8KvUJRVfPK4Fr9UQyKnrcWlwVPokVtDZF2r0V3jyJNXyY4k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=XizIh0rW; arc=none smtp.client-ip=209.85.128.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-41b5e74fa2fso59711865e9.1
-        for <linux-kernel@vger.kernel.org>; Fri, 03 May 2024 04:38:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1714736285; x=1715341085; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=MLQCofPdnJ63uOr5tDqjn2YZWUonrylBn211XOLOE44=;
-        b=XizIh0rWMaGtGbkF5dUoT3wX2ZbEhrBEWDLxu3KA74Dk8WkpGgqsXSvlCyRaq/SPnt
-         d2cpaOkZSUR/Y6M8KTAo4H4nFmQBQNbghTM3aHNeGjZYm/A+OvMbDdBviW1gMr+zoZT4
-         MrSlqRIu1K4zbOHpHU4ThYpHfSzncy1vqlKvwNL3RMTzk92J7lMrPl+hU3kDn34AFaXz
-         FF0Y29A3ouZjpLFvDHwHbVseEbC1RZLgYQXisZjmhqSh9NMmQsmbtt1q/65KFVfZffml
-         xalTMZ40rCcRN3QURAgeb5tt8CkVZmJprGW/5YBwD+glgRqaCWeU7m070tevUbfVwk5V
-         iqhw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714736285; x=1715341085;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=MLQCofPdnJ63uOr5tDqjn2YZWUonrylBn211XOLOE44=;
-        b=CSxlTms8IrrB7Rfm5jXdDUxsjVL0PPZFAWqSNrbBDa5Kr8nnW1LAluW9FvCczrhi1u
-         f/ArP7vxDTFcQYqkb2Sgr4Pf9wXjZHCSymI+1th/yEXQx0QlXrC0MkW0kJQZL977Bznb
-         0AMGOJAWwGsa+V27P4+Yz4yGj+2fEQwCheyoyqn/wUQf32rKcEqQZhORJORBq/9/ju4P
-         Js+pTHMsDuvenJRGBWp36lK70z6+T8H1O3DLYwaeYEJQZlm/Zp70UG2h8mMAxJO2o/so
-         i0pnRT0fRr2i/R0y+0K3svEW8MTk6Rq0F0Hvs9DU9mdta6xjGb2S96jbmB4OGqwzajtK
-         F2HA==
-X-Forwarded-Encrypted: i=1; AJvYcCX61SR1yy1o3KRknd7HBODfyeOuAv/laZUmabQuEF4Ez+qvrbhjg9jU4qYFpB2ML5SftTe3lsj/j6Sh9vBqtqY4LUg7687FVVA8roXC
-X-Gm-Message-State: AOJu0YxPW+bGnzBD9erF4sfritvY7Lce4pgTc1yuynjjVOlsdNPxPK7R
-	Qm9rUuCyZhgXsWEj0tTLHN2gmEZF/sbFUMaB8SQRPjcmo5LnTSmfQmrMWpZUqkqo/iPfK2+MJUV
-	c
-X-Google-Smtp-Source: AGHT+IEUFq74MPGIgnW3XCqkUsaInfSWPvUq0gwS1ToGTdl+wAiuIT9mb9JtsW4g2vBgPQlcLO6dgw==
-X-Received: by 2002:a05:600c:4fc3:b0:41a:ff7d:2473 with SMTP id o3-20020a05600c4fc300b0041aff7d2473mr1857856wmq.4.1714736284563;
-        Fri, 03 May 2024 04:38:04 -0700 (PDT)
-Received: from localhost ([102.222.70.76])
-        by smtp.gmail.com with ESMTPSA id u21-20020a05600c139500b004190d7126c0sm9131680wmf.38.2024.05.03.04.38.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 03 May 2024 04:38:04 -0700 (PDT)
-Date: Fri, 3 May 2024 14:38:00 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: Markus Elfring <Markus.Elfring@web.de>
-Cc: Duoming Zhou <duoming@zju.edu.cn>, linux-hams@vger.kernel.org,
-	netdev@vger.kernel.org, kernel-janitors@vger.kernel.org,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	=?iso-8859-1?Q?J=F6rg?= Reuter <jreuter@yaina.de>,
-	Paolo Abeni <pabeni@redhat.com>,
-	LKML <linux-kernel@vger.kernel.org>,
-	Lars Kellogg-Stedman <lars@oddbit.com>,
-	Simon Horman <horms@kernel.org>
-Subject: Re: [PATCH net v2 2/2] ax25: fix potential reference counting leak
- in ax25_addr_ax25dev
-Message-ID: <e471ec93-6182-4af0-9584-a35e2680c66d@moroto.mountain>
-References: <cover.1714690906.git.duoming@zju.edu.cn>
- <74e840d98f2bfc79c6059993b2fc1ed3888faba4.1714690906.git.duoming@zju.edu.cn>
- <6eac7fc4-9ade-41bb-a861-d7f339b388f6@web.de>
+	s=arc-20240116; t=1714736334; c=relaxed/simple;
+	bh=Jway82AsPdhO04WhQYbW1WMsFZwfn5TxuGBO2IOOefk=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=RwKQgXZ8x4/tgoQvUo5t9ryMtGWfxgm2lYL/LzcmdT0y9ofPncBjbn992dOc3iuglkxRSi85Bg09zs0Y4La45d4RBXmUdZlE38rasr+6VnoO/GQfOnbsIZIn+odubCpWs8Ua0WXJsb8SLb5XYVcVyWmjacIVB57Jy/WcPy5/IHY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sntech.de; spf=pass smtp.mailfrom=sntech.de; arc=none smtp.client-ip=185.11.138.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sntech.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sntech.de
+Received: from [213.70.33.226] (helo=phil.sntech)
+	by gloria.sntech.de with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <heiko@sntech.de>)
+	id 1s2rFO-0000Tc-1q; Fri, 03 May 2024 13:38:38 +0200
+From: Heiko Stuebner <heiko@sntech.de>
+To: Chukun Pan <amadeus@jmu.edu.cn>
+Cc: Heiko Stuebner <heiko@sntech.de>,
+	linux-rockchip@lists.infradead.org,
+	Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	Rob Herring <robh@kernel.org>,
+	linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	devicetree@vger.kernel.org,
+	Conor Dooley <conor+dt@kernel.org>
+Subject: Re: [PATCH v2 0/2] arm64: dts: rockchip: Add Radxa ROCK 3C
+Date: Fri,  3 May 2024 13:38:19 +0200
+Message-Id: <171473602992.3469033.3176474743011728197.b4-ty@sntech.de>
+X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20240428123618.72170-1-amadeus@jmu.edu.cn>
+References: <20240428123618.72170-1-amadeus@jmu.edu.cn>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <6eac7fc4-9ade-41bb-a861-d7f339b388f6@web.de>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 
-Yeah, it's true that we should delete the curly braces around the if
-block.  Otherwise checkpatch.pl -f will complain.
+On Sun, 28 Apr 2024 20:36:16 +0800, Chukun Pan wrote:
+> Changes in v2:
+>   Collected Acked-by.
+>   Drop cd-gpios for sdhci.
+>   Add mmc-hs200-1_8v to eMMC.
+>   Correct the spi max frequency.
+>   Update model name and compatible.
+>   Update regulator according to the schematic.
+> 
+> [...]
 
-The commit message is fine as-is.  Please stop nit-picking.
+Applied, thanks!
 
-regards,
-dan carpenter
+[1/2] dt-bindings: arm: rockchip: add Radxa ROCK 3C
+      commit: c0c153e341d2a82241bf0a0b78117ceeb29be3eb
+[2/2] arm64: dts: rockchip: Add Radxa ROCK 3C
+      commit: ee219017ddb50be14c60d3cbe3e51ac0b2008d40
 
+Best regards,
+-- 
+Heiko Stuebner <heiko@sntech.de>
 
