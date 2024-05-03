@@ -1,111 +1,74 @@
-Return-Path: <linux-kernel+bounces-168265-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-168276-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D4D8D8BB5F7
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 23:37:09 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 028FE8BB622
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 23:39:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 75D141F235FB
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 21:37:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 341CB1C20941
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 May 2024 21:39:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6745178C89;
-	Fri,  3 May 2024 21:36:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 699FA12FB08;
+	Fri,  3 May 2024 21:36:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b="QT8f1mjV"
-Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [62.89.141.173])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="H6yvp+1o"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3172A5CDF2;
-	Fri,  3 May 2024 21:36:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.89.141.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1F5912F383;
+	Fri,  3 May 2024 21:36:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714772191; cv=none; b=H8G0V/ca8x4Kg4g8vvAG4YkmyvMEo/kRd1Nk86KVXeim3aJZlOLj3KKf/39Hzg+9PCPFe/RbPY6/5q3aCB3RvZPja3/otN6l6aab2DMqbw8DQSIev0AQUZfdGyQ4d6PHFovl1/JHz8PWtTXxRxhG0pFpmZvdoSfV6M0lsO2K5us=
+	t=1714772216; cv=none; b=ene6OZUkzD9ZlJITj8Eumza7C4uLR15LndlAlgFiPnZE7r02eyejzm7iWe9C+xnDPmUNQGC7GNDg02paXBTwVLmb8O+233O8VwXlrmCidUp4RNITkDKWBWIxBs7jNU8PC86DW9sxqtRLtgINF9dtOEjOm1EKylDyKpsjj1HIRoY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714772191; c=relaxed/simple;
-	bh=qE5JsI+Gw929zCd7z8ChJ12FxlC+w9fukEWTQF9pEac=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=upHGMFRYTfT5dSzhlDz+f2eDaFs6Y0gz1nYJyv/wvpn8rBjj/Sx4pDlaslcsVi/Q5MmYK2OoLqqccmmMhbW0zIJNuC8zJDaCbTXbzbUsKtIUL4IRnw2epOrYpDwZESQE7V7c4VpbploCkGC+wN/F3BmwM5Y4X6HL6VamE4O97qA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk; spf=none smtp.mailfrom=ftp.linux.org.uk; dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b=QT8f1mjV; arc=none smtp.client-ip=62.89.141.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ftp.linux.org.uk
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=J3cXx30+FsboiPTcISOtZ9TwfuIcCg4JxBIH2uqHWq8=; b=QT8f1mjVdApb6qDPIYAjbnpkXa
-	huWJ8WJkoI5MWTqxqBfivrYJAGWWz9GQcJDFBaHiLEkKu3dwesImOrNP9SYMXxS1z4uhtQCjc+Lkl
-	SUirU7g26F8NX/T0yaZVYScsT1TccXQaORjVO3HH+n+JjgdGmmtvVLBK5raOfaCu9jSJyxJAQVtDy
-	qIsaithpJee/MVfppIsBP4Z3bqcg+1vZWIgupErqLWUqr6KIim87g5615EV32qW3zOigsdrpMFT9K
-	NoLhUSqNDAw8suQ4f7sPMc02J2taTcMV4BLsWPBBjLg+Kp4m+dBi71MZhNGBdEM+XhSQPtKevD8SG
-	6LiY+Ybg==;
-Received: from viro by zeniv.linux.org.uk with local (Exim 4.96 #2 (Red Hat Linux))
-	id 1s30Zt-00B8nN-0t;
-	Fri, 03 May 2024 21:36:25 +0000
-Date: Fri, 3 May 2024 22:36:25 +0100
-From: Al Viro <viro@zeniv.linux.org.uk>
-To: Kees Cook <keescook@chromium.org>
-Cc: Jens Axboe <axboe@kernel.dk>, Bui Quang Minh <minhquangbui99@gmail.com>,
-	Christian Brauner <brauner@kernel.org>,
-	syzbot <syzbot+045b454ab35fd82a35fb@syzkaller.appspotmail.com>,
-	io-uring@vger.kernel.org, jack@suse.cz,
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-	syzkaller-bugs@googlegroups.com,
-	Sumit Semwal <sumit.semwal@linaro.org>,
-	Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-	linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
-	linaro-mm-sig@lists.linaro.org, Laura Abbott <laura@labbott.name>,
-	Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: get_file() unsafe under epoll (was Re: [syzbot] [fs?]
- [io-uring?] general protection fault in __ep_remove)
-Message-ID: <20240503213625.GA2118490@ZenIV>
-References: <0000000000002d631f0615918f1e@google.com>
- <7c41cf3c-2a71-4dbb-8f34-0337890906fc@gmail.com>
- <202405031110.6F47982593@keescook>
- <64b51cc5-9f5b-4160-83f2-6d62175418a2@kernel.dk>
- <202405031207.9D62DA4973@keescook>
- <d6285f19-01aa-49c8-8fef-4b5842136215@kernel.dk>
- <202405031237.B6B8379@keescook>
- <202405031325.B8979870B@keescook>
- <20240503211109.GX2118490@ZenIV>
+	s=arc-20240116; t=1714772216; c=relaxed/simple;
+	bh=oJxbG4iY5MyfxFSePgZ5OYJPB8lo3UrJt32E8U7juLs=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=NQd2t2ik4ItDv3x3tYopr5FUYvGI4pae8E5/PXPHxHWUDcx9f9BmoBlSCikGnHlDIC8rkouuB4zg3txYEqtQlp2RC1OpMIzZx8N70GdXRt+TwB+ZhrSTOwTIlm2mmJR+8C7+so03+NlVeZGF8o/ozSpWBk6snhWOfbxAEQjFBEc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=H6yvp+1o; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BD247C4AF14;
+	Fri,  3 May 2024 21:36:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714772216;
+	bh=oJxbG4iY5MyfxFSePgZ5OYJPB8lo3UrJt32E8U7juLs=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=H6yvp+1o9rEoCh6PRS62OY8NaRXlf2To9Z940HIrR8qjT10QbMU2zhYGIr7kB+pIl
+	 znh0FVGv6grs9F3m0S8MonRqJE9be4r/dfn4dsWIPQh5jYQnsPEBZstx6kBxew8IBt
+	 9t48TZx6ngGRGeMcHrjww+zxIGK1xMSkaOXFN8W411C5BI8rAr35QrjF7cgRxtGyss
+	 ysUHH9rME9fPa2t5AJYITgTBWemWaySP4SGrHpxbXNBC7Dso3Ju2m93M2hTAOLRGaO
+	 bbyILPq6arDtav+jI+XF0VaUpQXpos+ozYNvqiHGifulyDiCciaGtpTZ6l50dyshCK
+	 LXtrK7+sJcAYA==
+Date: Fri, 3 May 2024 14:36:54 -0700
+From: Jakub Kicinski <kuba@kernel.org>
+To: Florian Fainelli <florian.fainelli@broadcom.com>
+Cc: Heng Qi <hengqi@linux.alibaba.com>, netdev@vger.kernel.org,
+ jgg@nvidia.com, leonro@nvidia.com, Andrew Morton
+ <akpm@linux-foundation.org>, Tal Gilboa <talgi@nvidia.com>, "open
+ list:LIBRARY CODE" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH net-next] lib: Allow for the DIM library to be modular
+Message-ID: <20240503143654.6843f43e@kernel.org>
+In-Reply-To: <60ac51d1-da8a-4108-97c0-2d1ca8dc997e@broadcom.com>
+References: <20240503002540.7154-1-florian.fainelli@broadcom.com>
+	<20240502175815.4f1619c6@kernel.org>
+	<60ac51d1-da8a-4108-97c0-2d1ca8dc997e@broadcom.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240503211109.GX2118490@ZenIV>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Fri, May 03, 2024 at 10:11:09PM +0100, Al Viro wrote:
-> On Fri, May 03, 2024 at 01:28:37PM -0700, Kees Cook wrote:
-> > 
-> > Is this the right approach? It still feels to me like get_file() needs
-> > to happen much earlier...
-> 
-> I don't believe it needs to happen at all.  The problem is not that
-> ->release() can be called during ->poll() - it can't and it doesn't.
-> It's that this instance of ->poll() is trying to extend the lifetime
-> of that struct file, when it might very well be past the point of no
-> return.
-> 
-> What we need is
-> 	* promise that ep_item_poll() won't happen after eventpoll_release_file().
-> AFAICS, we do have that.
-> 	* ->poll() not playing silly buggers.
-> 
-> As it is, dma_buf ->poll() is very suspicious regardless of that
-> mess - it can grab reference to file for unspecified interval.
-> Have that happen shortly before reboot and you are asking for failing
-> umount.
-> 
-> ->poll() must be refcount-neutral wrt file passed to it.  I'm seriously
-> tempted to make ->poll() take const struct file * and see if there's
-> anything else that would fall out.
+On Thu, 2 May 2024 20:19:27 -0700 Florian Fainelli wrote:
+> Looking at "[PATCH net-next v11 0/4] ethtool: provide the dim profile 
+> fine-tuning channel" it seems like Heng took care of making all of the 
+> newly added functions EXPORT_SYMBOL(). The only thing I see missing is a 
+> "select DIMLIB" from config ETHTOOL_NETLINK, do you see something else?
 
-.. the last part is no-go - poll_wait() must be able to grab a reference
-(well, the callback in it must)
+I think we refer to the default DIM tables from net/core/ to clone
+them at init time. But we can move the init function into DIM itself.
+That's probably for the better.
 
